@@ -11,7 +11,7 @@ public class EndpointTest {
 	public void testSetDescription() {
 		Helper.testSetter(new Endpoint(), Endpoint.PROPERTY_DESCRIPTION, null, "My Description");
 	} 
- 
+
 	@Test
 	public void testSetName() { 
 		Helper.testSetter(new Endpoint(), Endpoint.PROPERTY_NAME, null, "My Name");
