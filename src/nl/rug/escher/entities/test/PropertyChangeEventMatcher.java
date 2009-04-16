@@ -15,7 +15,11 @@ class PropertyChangeEventMatcher implements IArgumentMatcher {
 	}
 
 	public void appendTo(StringBuffer buffer) {
-		// TODO: implement
+		buffer.append("PropertyChangeEventMatcher(");
+		buffer.append("source = " + d_expected.getSource() + ", ");
+		buffer.append("property = " + d_expected.getPropertyName() + ", ");
+		buffer.append("oldValue = " + d_expected.getOldValue() + ", ");
+		buffer.append("newValue = " + d_expected.getNewValue() + ")");
 	}
 	
 	public boolean eq(Object o1, Object o2) {
