@@ -2,9 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JGoodies"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/EasyMock"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SpringContracts"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="lib/jgoodies/binding-2.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/jgoodies/forms-1.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/jgoodies/looks-2.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/junit/junit-4.6.jar"/>
+	<classpathentry kind="lib" path="lib/junit/junit-dep-4.6.jar"/>
+	<classpathentry kind="lib" path="lib/easymock/easymock.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class EndpointTest {
+public class EndpointTest { 
 	private Endpoint d_endpoint;
 
 	@Before
