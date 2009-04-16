@@ -13,7 +13,7 @@ public class EndpointTest {
 	}
 
 	@Test
-	public void testSetName() {
+	public void testSetName() { 
 		Helper.testSetter(new Endpoint(), Endpoint.PROPERTY_NAME, null, "My Name");
 	}
 
