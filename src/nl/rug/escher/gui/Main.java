@@ -79,7 +79,7 @@ public class Main extends JFrame {
 	}
 	
 	private void showAddEndpointDialog() {
-		AddEndpointDialog dialog = new AddEndpointDialog();
+		AddEndpointDialog dialog = new AddEndpointDialog(this);
 		dialog.setVisible(true);
 	}
 

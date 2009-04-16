@@ -7,6 +7,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -16,7 +17,8 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
 public class AddEndpointDialog extends JDialog {
-	public AddEndpointDialog() {
+	public AddEndpointDialog(JFrame frame) {
+		super(frame, "Add Endpoint");
 		EndpointView view = new EndpointView(new PresentationModel<Endpoint>(new Endpoint()));
 		setContentPane(createPanel(view));
 		pack();
