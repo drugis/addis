@@ -53,11 +53,16 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-    <target name="ADDIS">
+    <target name="test" depends="build">
         <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
+        <junit fork="yes" printsummary="withOutAndErr" haltonfailure="true">
             <formatter type="xml"/>
-            <classpath refid="ADDIS.classpath"/>
+        	<classpath refid="ADDIS.classpath"/>	
+        	<batchtest todir="${junit.output.dir}">
+        		<fileset dir="bin/">
+        			<include name="**/*test/*Test.class"/>
+        		</fileset>
+        	</batchtest>
         </junit>
     </target>
     <target name="junitreport">
