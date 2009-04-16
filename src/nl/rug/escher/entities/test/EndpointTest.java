@@ -10,7 +10,7 @@ public class EndpointTest {
 	@Test
 	public void testSetDescription() {
 		Helper.testSetter(new Endpoint(), Endpoint.PROPERTY_DESCRIPTION, null, "My Description");
-	}
+	} 
 
 	@Test
 	public void testSetName() { 
