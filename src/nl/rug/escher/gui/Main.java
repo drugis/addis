@@ -18,6 +18,9 @@ import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import nl.rug.escher.entities.Domain;
+import nl.rug.escher.entities.DomainImpl;
+
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.windows.WindowsLookAndFeel;
 import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
@@ -26,12 +29,16 @@ public class Main extends JFrame {
 	private JMenuBar d_menuBar;
 	private JComponent d_leftPanel;
 	private JComponent d_rightPanel;
+	
+	private Domain d_domain;
 
 	public Main() {
 		super("Escher ADDIS");
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);	
 		setPreferredSize(new Dimension(800, 500));
 		initializeLookAndFeel();
+		
+		d_domain = new DomainImpl();
 	}
 	
 	private void initializeLookAndFeel() {
@@ -79,7 +86,7 @@ public class Main extends JFrame {
 	}
 	
 	private void showAddEndpointDialog() {
-		AddEndpointDialog dialog = new AddEndpointDialog(this);
+		AddEndpointDialog dialog = new AddEndpointDialog(this, d_domain);
 		dialog.setVisible(true);
 	}
 

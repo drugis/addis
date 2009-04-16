@@ -28,4 +28,8 @@ public class Endpoint extends Model {
 	public String getName() {
 		return d_name;
 	}
+	
+	public String toString() {
+		return getName();
+	}
 }

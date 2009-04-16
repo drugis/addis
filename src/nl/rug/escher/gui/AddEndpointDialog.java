@@ -8,18 +8,23 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.Endpoint;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
 public class AddEndpointDialog extends JDialog {
-	public AddEndpointDialog(JFrame frame) {
+	private Domain d_domain;
+	private Endpoint d_endpoint;
+	
+	public AddEndpointDialog(JFrame frame, Domain domain) {
 		super(frame, "Add Endpoint");
-		EndpointView view = new EndpointView(new PresentationModel<Endpoint>(new Endpoint()));
+		d_domain = domain;
+		d_endpoint = new Endpoint();
+		EndpointView view = new EndpointView(new PresentationModel<Endpoint>(d_endpoint));
 		setContentPane(createPanel(view));
 		pack();
 	}
@@ -67,8 +72,8 @@ public class AddEndpointDialog extends JDialog {
 	}
 	
 	private void commit() {
-		JOptionPane.showMessageDialog(this, "Adding.");
+		d_domain.addEndpoint(d_endpoint);
+		System.out.println("Endpoints: " + d_domain.getEndpoints());
 		setVisible(false);
-		// TODO: add to data model
 	}
 }
