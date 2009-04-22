@@ -10,12 +10,13 @@ import javax.swing.tree.TreePath;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.DomainListener;
-import nl.rug.escher.entities.Endpoint;
 
 public class DomainTreeModel implements TreeModel {
 	public static final int ENDPOINTS = 0;
+	public static final int STUDIES = 1;
 	private String d_root = "Database";
 	private String d_endpointsNode = "Endpoints";
+	private String d_studiesNode = "Studies";
 	private Domain d_domain;
 	
 	private List<TreeModelListener> d_listeners;
@@ -41,10 +42,18 @@ public class DomainTreeModel implements TreeModel {
 	public Object getChild(Object parent, int childIndex) {
 		if (d_root == parent && childIndex == ENDPOINTS) {
 			return d_endpointsNode;
+		} else if (d_root == parent && childIndex == STUDIES) {
+			return d_studiesNode;
 		} else if (isEndpointRequest(parent, childIndex)) {
 			return d_domain.getEndpoints().get(childIndex);
+		} else if (isStudyRequest(parent, childIndex)) {
+			return d_domain.getStudies().get(childIndex);
 		}
 		return null;
+	}
+
+	private boolean isStudyRequest(Object parent, int childIndex) {
+		return d_studiesNode == parent && childIndex >= 0 && childIndex < d_domain.getStudies().size();
 	}
 
 	private boolean isEndpointRequest(Object parent, int childIndex) {
@@ -53,9 +62,11 @@ public class DomainTreeModel implements TreeModel {
 
 	public int getChildCount(Object parent) {
 		if (d_root == parent) {
-			return 1;
+			return 2;
 		} else if (d_endpointsNode == parent) {
 			return d_domain.getEndpoints().size();
+		} else if (d_studiesNode == parent) {
+			return d_domain.getStudies().size();
 		}
 		return 0;
 	}
@@ -64,10 +75,14 @@ public class DomainTreeModel implements TreeModel {
 		if (parent == d_root && child == d_endpointsNode) {
 			return 0;
 		}
+		if (parent == d_root && child == d_studiesNode) {
+			return 1;
+		}
 		if (parent == d_endpointsNode) {
-			if (child instanceof Endpoint) {
-				return d_domain.getEndpoints().indexOf(child);
-			}
+			return d_domain.getEndpoints().indexOf(child);
+		}
+		if (parent == d_studiesNode) {
+			return d_domain.getStudies().indexOf(child);
 		}
 		return -1;
 	}
@@ -77,7 +92,7 @@ public class DomainTreeModel implements TreeModel {
 	}
 
 	public boolean isLeaf(Object node) {
-		return d_domain.getEndpoints().contains(node);
+		return d_domain.getEndpoints().contains(node) || d_domain.getStudies().contains(node);
 	}
 
 	public void addTreeModelListener(TreeModelListener listener) {

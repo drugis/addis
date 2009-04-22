@@ -9,6 +9,7 @@ import javax.swing.event.TreeModelListener;
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.DomainImpl;
 import nl.rug.escher.entities.Endpoint;
+import nl.rug.escher.entities.Study;
 import nl.rug.escher.gui.DomainTreeModel;
 
 import org.junit.Before;
@@ -18,12 +19,15 @@ public class DomainTreeModelTest {
 	DomainTreeModel d_treeModel;
 	Domain d_domain;
 	Endpoint d_firstEndpoint;
+	Study d_firstStudy;
 	
 	@Before
 	public void setUp() {
 		d_domain = new DomainImpl();
 		d_firstEndpoint = new Endpoint();
+		d_firstStudy = new Study();
 		d_domain.addEndpoint(d_firstEndpoint);
+		d_domain.addStudy(d_firstStudy);
 		d_treeModel = new DomainTreeModel(d_domain);
 	}
 	
@@ -40,16 +44,32 @@ public class DomainTreeModelTest {
 	}
 	
 	@Test
+	public void testGetStudiesNode() {
+		assertNotNull(getStudiesNode());
+		assertEquals("Studies", getStudiesNode().toString());
+	}
+	
+	private Object getStudiesNode() {
+		return d_treeModel.getChild(d_treeModel.getRoot(), DomainTreeModel.STUDIES);
+	}
+
+	@Test
 	public void testGetEndpoint() {
-		Object endpointsNode = getEndpointsNode();
-		assertEquals(d_firstEndpoint, d_treeModel.getChild(endpointsNode, 0));
-		assertEquals(null, d_treeModel.getChild(endpointsNode, 1));
+		assertEquals(d_firstEndpoint, d_treeModel.getChild(getEndpointsNode(), 0));
+		assertEquals(null, d_treeModel.getChild(getEndpointsNode(), 1));
+	}
+	
+	@Test
+	public void testGetStudy() {
+		assertEquals(d_firstStudy, d_treeModel.getChild(getStudiesNode(), 0));
+		assertEquals(null, d_treeModel.getChild(getStudiesNode(), 1));
 	}
 	
 	@Test
 	public void testGetChildCount() {
-		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getRoot()));
+		assertEquals(2, d_treeModel.getChildCount(d_treeModel.getRoot()));
 		assertEquals(1, d_treeModel.getChildCount(getEndpointsNode()));
+		assertEquals(1, d_treeModel.getChildCount(getStudiesNode()));
 		assertEquals(0, d_treeModel.getChildCount(d_firstEndpoint));
 	}
 
@@ -59,17 +79,20 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testGetIndexOfChild() {
-		Object endpointsNode = getEndpointsNode();
-		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), endpointsNode));
-		assertEquals(0, d_treeModel.getIndexOfChild(endpointsNode, d_firstEndpoint));
-		assertEquals(-1, d_treeModel.getIndexOfChild(endpointsNode, new Object()));
+		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getEndpointsNode()));
+		assertEquals(0, d_treeModel.getIndexOfChild(getEndpointsNode(), d_firstEndpoint));
+		assertEquals(-1, d_treeModel.getIndexOfChild(getEndpointsNode(), new Object()));
+		assertEquals(1, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getStudiesNode()));
+		assertEquals(0, d_treeModel.getIndexOfChild(getStudiesNode(), d_firstStudy));
 	}
 	
 	@Test
 	public void testIsLeaf() {
 		assertFalse(d_treeModel.isLeaf(d_treeModel.getRoot()));
 		assertFalse(d_treeModel.isLeaf(getEndpointsNode()));
+		assertFalse(d_treeModel.isLeaf(getStudiesNode()));
 		assertTrue(d_treeModel.isLeaf(d_firstEndpoint));
+		assertTrue(d_treeModel.isLeaf(d_firstStudy));
 	}
 	
 	@Test
@@ -80,6 +103,18 @@ public class DomainTreeModelTest {
 		
 		d_treeModel.addTreeModelListener(listener);
 		d_domain.addEndpoint(new Endpoint());
+		
+		verify(listener);
+	}
+	
+	@Test
+	public void testAddStudyFires() {
+		TreeModelListener listener = createMock(TreeModelListener.class);
+		listener.treeStructureChanged((TreeModelEvent)notNull());
+		replay(listener);
+		
+		d_treeModel.addTreeModelListener(listener);
+		d_domain.addStudy(new Study());
 		
 		verify(listener);
 	}
