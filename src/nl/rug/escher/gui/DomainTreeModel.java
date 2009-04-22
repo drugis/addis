@@ -25,6 +25,10 @@ public class DomainTreeModel implements TreeModel {
 		public void endpointsChanged() {
 			fireTreeStructureChanged();
 		}
+
+		public void studiesChanged() {
+			fireTreeStructureChanged();
+		}
 	}
 	
 	public DomainTreeModel(Domain domain) {

@@ -28,8 +28,7 @@ public class AddStudyDialog extends OkCancelDialog {
 
 	@Override
 	protected void commit() {
-		//d_domain.addEndpoint(d_endpoint);
-		System.out.println("Add study: " + d_study);
+		d_domain.addStudy(d_study);
 		setVisible(false);
 	}
 }
