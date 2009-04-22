@@ -17,9 +17,11 @@ import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.tree.TreePath;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.DomainImpl;
+import nl.rug.escher.entities.Endpoint;
 
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.windows.WindowsLookAndFeel;
@@ -39,6 +41,15 @@ public class Main extends JFrame {
 		initializeLookAndFeel();
 		
 		d_domain = new DomainImpl();
+		
+		initDefaultData();
+	}
+
+	private void initDefaultData() {
+		Endpoint endpoint = new Endpoint();
+		endpoint.setName("HAM-D");
+		endpoint.setDescription("Change from baseline in HAM-D total score (21 items)");
+		d_domain.addEndpoint(endpoint);
 	}
 	
 	private void initializeLookAndFeel() {
@@ -143,7 +154,11 @@ public class Main extends JFrame {
 	}
 
 	private void initLeftPanel() {
-		d_leftPanel = new JTree(new DomainTreeModel(d_domain));
+		DomainTreeModel model = new DomainTreeModel(d_domain);
+		JTree tree = new JTree(model);
+		tree.setRootVisible(false);
+		tree.expandPath(new TreePath(new Object[]{model.getRoot(), model.getEndpointsNode()}));
+		d_leftPanel = tree;
 	}
 	
 	private void initRightPanel() {

@@ -115,4 +115,12 @@ public class DomainTreeModel implements TreeModel {
 		// TODO Auto-generated method stub
 
 	}
+
+	public Object getStudiesNode() {
+		return getChild(getRoot(), DomainTreeModel.STUDIES);
+	}
+
+	public Object getEndpointsNode() {
+		return getChild(getRoot(), DomainTreeModel.ENDPOINTS);
+	}
 }

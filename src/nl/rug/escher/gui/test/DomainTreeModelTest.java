@@ -50,7 +50,7 @@ public class DomainTreeModelTest {
 	}
 	
 	private Object getStudiesNode() {
-		return d_treeModel.getChild(d_treeModel.getRoot(), DomainTreeModel.STUDIES);
+		return d_treeModel.getStudiesNode();
 	}
 
 	@Test
@@ -74,7 +74,7 @@ public class DomainTreeModelTest {
 	}
 
 	private Object getEndpointsNode() {
-		return d_treeModel.getChild(d_treeModel.getRoot(), DomainTreeModel.ENDPOINTS);
+		return d_treeModel.getEndpointsNode();
 	}
 	
 	@Test
