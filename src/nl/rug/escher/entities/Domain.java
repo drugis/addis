@@ -16,4 +16,15 @@ public interface Domain {
 	 * @return A list of endpoints. Never a null.
 	 */
 	public List<Endpoint> getEndpoints();
+	
+	
+	/**
+	 * Add a listener to the domain object.
+	 */
+	public void addListener(DomainListener listener);
+	
+	/**
+	 * Remove a listener from the domain object.
+	 */
+	public void removeListener(DomainListener listener);
 }

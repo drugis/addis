@@ -126,7 +126,7 @@ public class Main extends JFrame {
 	}
 
 	private void initLeftPanel() {
-		d_leftPanel = new JTree();
+		d_leftPanel = new JTree(new DomainTreeModel(d_domain));
 	}
 	
 	private void initRightPanel() {

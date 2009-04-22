@@ -1,11 +1,13 @@
 package nl.rug.escher.entities.test;
 
 import static org.junit.Assert.*;
+import static org.easymock.EasyMock.*;
 
 import java.util.Collections;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.DomainImpl;
+import nl.rug.escher.entities.DomainListener;
 import nl.rug.escher.entities.Endpoint;
 
 import org.junit.Before;
@@ -37,6 +39,17 @@ public class DomainTest {
 		d_domain.addEndpoint(e);
 		assertEquals(1, d_domain.getEndpoints().size());
 		assertEquals(Collections.singletonList(e), d_domain.getEndpoints());
+	}
+	
+	@Test
+	public void testAddEndpointListener() {
+		DomainListener mockListener = createMock(DomainListener.class);
+		mockListener.endpointsChanged();
+		replay(mockListener);
+		
+		d_domain.addListener(mockListener);
+		d_domain.addEndpoint(new Endpoint());
+		verify(mockListener);
 	}
 
 }
