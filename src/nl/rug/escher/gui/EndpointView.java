@@ -11,7 +11,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class EndpointView {
+public class EndpointView implements ViewBuilder {
 	JTextField d_name;
 	JTextField d_description;
 	PresentationModel<Endpoint> d_model;
@@ -28,6 +28,9 @@ public class EndpointView {
 		d_description.setColumns(30);
 	}
 	
+	/**
+	 * @see nl.rug.escher.gui.ViewBuilder#buildPanel()
+	 */
 	public JComponent buildPanel() {
 		initComponents();
 

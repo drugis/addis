@@ -70,6 +70,7 @@ public class Main extends JFrame {
 		d_menuBar.add(fileMenu);
 		
 		d_menuBar.add(createAddEndpointButton());
+		d_menuBar.add(createAddStudyButton());
 		
 		add(d_menuBar, BorderLayout.NORTH);
 	}
@@ -85,8 +86,24 @@ public class Main extends JFrame {
 		return button;
 	}
 	
+	private JComponent createAddStudyButton() {
+		JButton button = new JButton("Add Study");
+		button.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				showAddStudyDialog();
+			}
+		});
+		
+		return button;
+	}
+	
 	private void showAddEndpointDialog() {
 		AddEndpointDialog dialog = new AddEndpointDialog(this, d_domain);
+		dialog.setVisible(true);
+	}
+	
+	private void showAddStudyDialog() {
+		AddStudyDialog dialog = new AddStudyDialog(this, d_domain);
 		dialog.setVisible(true);
 	}
 
