@@ -6,11 +6,10 @@
               as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="ADDIS">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../../eclipse"/>
     <property name="junit.output.dir" value="junit"/>
     <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.6"/>
-    <property name="source" value="1.6"/>
+    <property name="target" value="1.5"/>
+    <property name="source" value="1.5"/>
     <path id="ADDIS.classpath">
         <pathelement location="bin"/>
         <pathelement location="lib/jgoodies/binding-2.0.6.jar"/>
@@ -19,6 +18,13 @@
         <pathelement location="lib/junit/junit-4.6.jar"/>
         <pathelement location="lib/junit/junit-dep-4.6.jar"/>
         <pathelement location="lib/easymock/easymock.jar"/>
+        <pathelement location="lib/db4o/db4o-7.4.88.12908-java5.jar"/>
+        <pathelement location="lib/datanucleus/datanucleus-core-1.1.2.jar"/>
+        <pathelement location="lib/datanucleus/datanucleus-db4o-1.1.1.jar"/>
+        <pathelement location="lib/datanucleus/jdo2-api-2.3-SNAPSHOT.jar"/>
+        <pathelement location="src/datanucleus.properties"/>
+        <pathelement location="src/datanucleus.test.properties"/>
+        <pathelement location="lib/datanucleus/log4j-1.2.8.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -53,17 +59,65 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-    <target name="test" depends="build">
+    <target name="Main">
+        <java classname="nl.rug.escher.gui.Main" failonerror="true" fork="yes">
+            <classpath refid="ADDIS.classpath"/>
+        </java>
+    </target>
+    <target name="StudyTest">
         <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr" haltonfailure="true">
+        <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-        	<classpath refid="ADDIS.classpath"/>	
-        	<batchtest todir="${junit.output.dir}">
-        		<fileset dir="bin/">
-        			<include name="**/*test/*Test.class"/>
-        		</fileset>
-        	</batchtest>
+            <test name="nl.rug.escher.entities.test.StudyTest" todir="${junit.output.dir}"/>
+            <classpath refid="ADDIS.classpath"/>
         </junit>
+    </target>
+    <target name="StudyTest.testSetId">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="nl.rug.escher.entities.test.StudyTest" todir="${junit.output.dir}"/>
+            <classpath refid="ADDIS.classpath"/>
+        </junit>
+    </target>
+    <target name="DomainTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="nl.rug.escher.entities.test.DomainTest" todir="${junit.output.dir}"/>
+            <classpath refid="ADDIS.classpath"/>
+        </junit>
+    </target>
+    <target name="EndpointTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="nl.rug.escher.entities.test.EndpointTest" todir="${junit.output.dir}"/>
+            <classpath refid="ADDIS.classpath"/>
+        </junit>
+    </target>
+    <target name="DomainTreeModelTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="nl.rug.escher.gui.test.DomainTreeModelTest" todir="${junit.output.dir}"/>
+            <classpath refid="ADDIS.classpath"/>
+        </junit>
+    </target>
+    <target name="PersistenceTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="nl.rug.escher.entities.test.PersistenceTest" todir="${junit.output.dir}"/>
+            <classpath refid="ADDIS.classpath"/>
+        </junit>
+    </target>
+    <target name="DataNucleus Enhancer">
+        <java classname="org.datanucleus.enhancer.DataNucleusEnhancer" failonerror="true" fork="yes">
+            <jvmarg line=" -Dlog4j.configuration=file:&quot;/home/gert/.eclipse/org.eclipse.platform_3.4.0_1140858100/plugins/org.datanucleus.ide.eclipse_1.0.0.m2/log4j.properties&quot; "/>
+            <arg line=" -enhancerName ASM -api JDO &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/entities/Domain.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/entities/DomainImpl.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/entities/DomainListener.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/entities/Endpoint.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/entities/Study.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/entities/test/DomainTest.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/entities/test/EndpointTest.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/entities/test/Helper.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/entities/test/PersistenceTest.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/entities/test/PropertyChangeEventMatcher.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/entities/test/StudyTest.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/gui/AddEndpointDialog.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/gui/AddStudyDialog.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/gui/DomainTreeModel$DomainListenerImpl.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/gui/DomainTreeModel.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/gui/EndpointView.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/gui/Main$1.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/gui/Main$2.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/gui/Main$3.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/gui/Main.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/gui/OkCancelDialog$1.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/gui/OkCancelDialog$2.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/gui/OkCancelDialog.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/gui/StudyView.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/gui/ViewBuilder.class&quot;  &quot;/home/gert/escher/ADDIS/bin/nl/rug/escher/gui/test/DomainTreeModelTest.class&quot; "/>
+            <classpath refid="ADDIS.classpath"/>
+        </java>
     </target>
     <target name="junitreport">
         <junitreport todir="${junit.output.dir}">
