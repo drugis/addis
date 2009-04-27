@@ -8,5 +8,12 @@
 	<classpathentry kind="lib" path="lib/junit/junit-4.6.jar"/>
 	<classpathentry kind="lib" path="lib/junit/junit-dep-4.6.jar"/>
 	<classpathentry kind="lib" path="lib/easymock/easymock.jar"/>
+	<classpathentry kind="lib" path="lib/db4o/db4o-7.4.88.12908-java5.jar"/>
+	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-core-1.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-db4o-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/datanucleus/jdo2-api-2.3-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="src/datanucleus.properties"/>
+	<classpathentry kind="lib" path="src/datanucleus.test.properties"/>
+	<classpathentry kind="lib" path="lib/datanucleus/log4j-1.2.8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

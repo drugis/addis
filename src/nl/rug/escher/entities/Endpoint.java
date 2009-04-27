@@ -1,7 +1,11 @@
 package nl.rug.escher.entities;
 
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+
 import com.jgoodies.binding.beans.Model;
 
+@PersistenceCapable
 public class Endpoint extends Model {
 	private String d_name;
 	private String d_description;
@@ -15,6 +19,7 @@ public class Endpoint extends Model {
 		firePropertyChange(PROPERTY_DESCRIPTION, oldVal, d_description);
 	}
 	
+	@Persistent
 	public String getDescription() {
 		return d_description;
 	}
@@ -25,6 +30,7 @@ public class Endpoint extends Model {
 		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
 	}
 	
+	@Persistent
 	public String getName() {
 		return d_name;
 	}

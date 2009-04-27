@@ -46,10 +46,14 @@ public class Main extends JFrame {
 	}
 
 	private void initDefaultData() {
+		d_domain.addEndpoint(buildDefaultEndpoint());
+	}
+	
+	public static Endpoint buildDefaultEndpoint() {
 		Endpoint endpoint = new Endpoint();
 		endpoint.setName("HAM-D");
 		endpoint.setDescription("Change from baseline in HAM-D total score (21 items)");
-		d_domain.addEndpoint(endpoint);
+		return endpoint;
 	}
 	
 	private void initializeLookAndFeel() {
