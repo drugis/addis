@@ -47,12 +47,20 @@ public class Main extends JFrame {
 
 	private void initDefaultData() {
 		d_domain.addEndpoint(buildDefaultEndpoint());
+		d_domain.addEndpoint(buildDefaultEndpoint2());
 	}
 	
 	public static Endpoint buildDefaultEndpoint() {
 		Endpoint endpoint = new Endpoint();
 		endpoint.setName("HAM-D");
 		endpoint.setDescription("Change from baseline in HAM-D total score (21 items)");
+		return endpoint;
+	}
+	
+	public static Endpoint buildDefaultEndpoint2() {
+		Endpoint endpoint = new Endpoint();
+		endpoint.setName("CGI Severity");
+		endpoint.setDescription("Change from baseline CGI Severity of Illness score");
 		return endpoint;
 	}
 	

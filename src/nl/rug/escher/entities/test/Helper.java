@@ -9,6 +9,7 @@ import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.Method;
 
 
 
@@ -16,9 +17,6 @@ import com.jgoodies.binding.beans.Model;
 
 public class Helper {
 	public static void testSetter(Model source, String propertyName, Object oldValue, Object newValue) {
-		String setter = deriveSetter(propertyName);
-		String getter = deriveGetter(propertyName);
-		
 		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
 		mock.propertyChange(eqEvent(new PropertyChangeEvent(
 				source, propertyName, oldValue, newValue)));
@@ -27,14 +25,31 @@ public class Helper {
 		source.addPropertyChangeListener(mock);
 		Object desc = null;
 		try {
-			source.getClass().getMethod(setter, newValue.getClass()).invoke(source, newValue);
-			desc = source.getClass().getMethod(getter).invoke(source);
+			getSetterMethod(source, propertyName, newValue).invoke(source, newValue);
+			desc = getGetterMethod(source, propertyName).invoke(source);
 		} catch (Exception e) {
 			fail(e.toString());
 		}
 			
 		assertEquals(newValue, desc);
 		verify(mock);
+	}
+
+	private static Method getGetterMethod(Model source, String propertyName)
+			throws NoSuchMethodException {
+		return source.getClass().getMethod(deriveGetter(propertyName));
+	}
+
+	private static Method getSetterMethod(Model source, String propertyName,
+			Object newValue) throws NoSuchMethodException {
+		Method[] methods = source.getClass().getMethods();
+		for (Method m : methods) {
+			if (m.getName().equals(deriveSetter(propertyName))) {
+				return m;
+			}
+		}
+		throw new NoSuchMethodException("Cannot find method " + deriveSetter(propertyName) + 
+				" of class " + source.getClass().getCanonicalName());
 	}
 
 	private static String deriveGetter(String propertyName) {

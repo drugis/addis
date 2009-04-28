@@ -31,7 +31,6 @@ public interface Domain {
 	 */
 	public List<Study> getStudies();
 	
-	
 	/**
 	 * Add a listener to the domain object.
 	 */

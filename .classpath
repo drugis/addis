@@ -12,8 +12,6 @@
 	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-core-1.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-db4o-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/datanucleus/jdo2-api-2.3-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="src/datanucleus.properties"/>
-	<classpathentry kind="lib" path="src/datanucleus.test.properties"/>
 	<classpathentry kind="lib" path="lib/datanucleus/log4j-1.2.8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
