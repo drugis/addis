@@ -30,6 +30,9 @@ public class DomainTreeModel implements TreeModel {
 		public void studiesChanged() {
 			fireTreeStructureChanged();
 		}
+
+		public void drugsChanged() {
+		}
 	}
 	
 	public DomainTreeModel(Domain domain) {

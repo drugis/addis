@@ -16,4 +16,8 @@ public class Drug extends Model {
 		d_name = name;
 		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
 	}
+	
+	public String toString() {
+		return getName();
+	}
 }

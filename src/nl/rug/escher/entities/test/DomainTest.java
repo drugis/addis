@@ -8,6 +8,7 @@ import java.util.Collections;
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.DomainImpl;
 import nl.rug.escher.entities.DomainListener;
+import nl.rug.escher.entities.Drug;
 import nl.rug.escher.entities.Endpoint;
 import nl.rug.escher.entities.Study;
 
@@ -27,6 +28,7 @@ public class DomainTest {
 	public void testEmptyDomain() {
 		assertTrue(d_domain.getEndpoints().isEmpty());
 		assertTrue(d_domain.getStudies().isEmpty());
+		assertTrue(d_domain.getDrugs().isEmpty());
 	}
 	
 	@Test(expected=NullPointerException.class)
@@ -36,6 +38,11 @@ public class DomainTest {
 	
 	@Test(expected=NullPointerException.class)
 	public void testAddStudyNull() {
+		d_domain.addStudy(null);
+	}
+	
+	@Test(expected=NullPointerException.class)
+	public void testAddDrugNull() {
 		d_domain.addStudy(null);
 	}
 
@@ -58,6 +65,15 @@ public class DomainTest {
 	}
 	
 	@Test
+	public void testAddDrug() {
+		Drug d = new Drug();
+		assertEquals(0, d_domain.getDrugs().size());
+		d_domain.addDrug(d);
+		assertEquals(1, d_domain.getDrugs().size());
+		assertEquals(Collections.singletonList(d), d_domain.getDrugs());
+	}
+	
+	@Test
 	public void testAddEndpointListener() {
 		DomainListener mockListener = createMock(DomainListener.class);
 		mockListener.endpointsChanged();
@@ -76,6 +92,17 @@ public class DomainTest {
 		
 		d_domain.addListener(mockListener);
 		d_domain.addStudy(new Study());
+		verify(mockListener);
+	}
+	
+	@Test
+	public void testAddDrugListener() {
+		DomainListener mockListener = createMock(DomainListener.class);
+		mockListener.drugsChanged();
+		replay(mockListener);
+		
+		d_domain.addListener(mockListener);
+		d_domain.addDrug(new Drug());
 		verify(mockListener);
 	}
 }

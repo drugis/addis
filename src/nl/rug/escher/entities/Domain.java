@@ -32,6 +32,21 @@ public interface Domain {
 	public List<Study> getStudies();
 	
 	/**
+	 * Adds an drug to the data model.
+	 * 
+	 * @param e the drug to add
+	 * @throws NullPointerException if e is null
+	 */
+	public void addDrug(Drug d) throws NullPointerException;
+
+	/**
+	 * Get the drugs stored in the data model.
+	 * @return A list of drugs. Never a null.
+	 */
+	public List<Drug> getDrugs();
+	
+	
+	/**
 	 * Add a listener to the domain object.
 	 */
 	public void addListener(DomainListener listener);

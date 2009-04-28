@@ -94,6 +94,7 @@ public class Main extends JFrame {
 		
 		d_menuBar.add(createAddEndpointButton());
 		d_menuBar.add(createAddStudyButton());
+		d_menuBar.add(createAddDrugButton());
 		
 		add(d_menuBar, BorderLayout.NORTH);
 	}
@@ -120,6 +121,18 @@ public class Main extends JFrame {
 		return button;
 	}
 	
+	private JComponent createAddDrugButton() {
+		JButton button = new JButton("Add Drug");
+		button.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				showAddDrugDialog();
+			}
+
+		});
+		
+		return button;
+	}
+	
 	private void showAddEndpointDialog() {
 		AddEndpointDialog dialog = new AddEndpointDialog(this, d_domain);
 		dialog.setVisible(true);
@@ -127,6 +140,11 @@ public class Main extends JFrame {
 	
 	private void showAddStudyDialog() {
 		AddStudyDialog dialog = new AddStudyDialog(this, d_domain);
+		dialog.setVisible(true);
+	}
+	
+	private void showAddDrugDialog() {
+		AddDrugDialog dialog = new AddDrugDialog(this, d_domain);
 		dialog.setVisible(true);
 	}
 
