@@ -5,11 +5,17 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reportMatcher;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import nl.rug.escher.entities.PatientGroup;
+import nl.rug.escher.entities.Study;
 
 
 
@@ -51,6 +57,11 @@ public class Helper {
 		throw new NoSuchMethodException("Cannot find method " + deriveSetter(propertyName) + 
 				" of class " + source.getClass().getCanonicalName());
 	}
+	
+	private static Method getAdderMethod(Model source, String methodName, Object toAdd) 
+	throws NoSuchMethodException {
+		return source.getClass().getMethod(methodName, toAdd.getClass());
+	}
 
 	private static String deriveGetter(String propertyName) {
 		return "get" + capitalize(propertyName);
@@ -67,6 +78,39 @@ public class Helper {
 	public static PropertyChangeEvent eqEvent(PropertyChangeEvent in) {
 	    reportMatcher(new PropertyChangeEventMatcher(in));
 	    return null;
+	}
+
+	static void testAdder(Study source, String propertyName, PatientGroup g2) {
+		testAdder(source, propertyName, null, g2);
+	}
+
+	static void testAdder(Study source, String propertyName, PatientGroup g2, String propertySingular) {
+		testAdder(source, propertyName, propertySingular, g2);
+	}
+
+	@SuppressWarnings("unchecked")
+	static void testAdder(Model source, String propertyName, String methodName, Object g2) {
+		List list1 = new ArrayList();
+		List list2 = new ArrayList();
+		list2.add(g2);
+		
+		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
+		mock.propertyChange(eqEvent(new PropertyChangeEvent(
+				source, propertyName, list1, list2)));
+		replay(mock);
+		
+		source.addPropertyChangeListener(mock);
+		Object actual = null;
+		try {
+			getAdderMethod(source, methodName, g2).invoke(source, g2);
+			actual = getGetterMethod(source, propertyName).invoke(source);
+		} catch (Exception e) {
+			fail(e.toString());
+		}
+		
+		assertTrue(((List)actual).contains(g2));
+		assertEquals(1, ((List)actual).size());
+		verify(mock);
 	}
 
 }

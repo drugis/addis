@@ -49,4 +49,7 @@ public class PatientGroup extends Model {
 		return d_measurements;
 	}
 
+	public void setMeasurements(List<Measurement> measurements) {
+		
+	}
 }
