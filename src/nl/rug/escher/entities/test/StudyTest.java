@@ -40,11 +40,7 @@ public class StudyTest {
 	
 	@Test
 	public void testAddPatientGroup() {
-		Study study = new Study();
-		String propertyName = Study.PROPERTY_PATIENTGROUPS;
-		PatientGroup g2 = new PatientGroup();
-		
-		Helper.testAdder(study, propertyName, "addPatientGroup", g2);
+		Helper.testAdder(new Study(), Study.PROPERTY_PATIENTGROUPS, "addPatientGroup", new PatientGroup());
 	}
 	
 	@Test

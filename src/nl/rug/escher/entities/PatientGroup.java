@@ -14,6 +14,7 @@ public class PatientGroup extends Model {
 	public static final String PROPERTY_STUDY = "study";
 	public static final String PROPERTY_DRUG = "drug";
 	public static final String PROPERTY_DOSE = "dose";
+	public static final String PROPERTY_MEASUREMENTS = "measurements";
 	
 	public Study getStudy() {
 		return d_study;
@@ -50,6 +51,14 @@ public class PatientGroup extends Model {
 	}
 
 	public void setMeasurements(List<Measurement> measurements) {
-		
+		List<Measurement> oldVal = d_measurements;
+		d_measurements = measurements;
+		firePropertyChange(PROPERTY_MEASUREMENTS, oldVal, d_measurements);
+	}
+	
+	public void addMeasurement(Measurement m) {
+		List<Measurement> newVal = new ArrayList<Measurement>(d_measurements);
+		newVal.add(m);
+		setMeasurements(newVal);
 	}
 }
