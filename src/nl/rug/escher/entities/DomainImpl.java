@@ -47,12 +47,33 @@ public class DomainImpl implements Domain {
 	}
 
 	public void addStudy(Study s) throws NullPointerException {
+		printStudy(s);
 		if (s == null) {
 			throw new NullPointerException("Study may not be null");
 		}
 		d_studies.add(s);
 		
 		fireStudiesChanged();
+	}
+
+	private void printStudy(Study s) {
+		System.out.println("Study " + s.getId());
+		System.out.println("Has Endpoints: ");
+		for (Endpoint e : s.getEndpoints()) {
+			System.out.println("\t" + e.getName() + " (" + e.getDescription() + ")");
+		}
+		System.out.println("Has PatientGroups: ");
+		for (PatientGroup g : s.getPatientGroups()) {
+			printPatientGroup(g);
+		}
+	}
+
+	private void printPatientGroup(PatientGroup g) {
+		System.out.println("\t" + g.getDrug().getName() + " " + g.getDose().getQuantity()
+				+ " " + g.getDose().getUnit());
+		for (Measurement m : g.getMeasurements()) {
+			System.out.println("\t\t" + m.getEndpoint() + " " + m.getMean() + " +/- " + m.getStdDev());
+		}
 	}
 
 	private void fireStudiesChanged() {
