@@ -17,4 +17,8 @@ public enum SIUnit {
 	public String getSymbol() {
 		return d_symbol;
 	}
+	
+	public String toString() {
+		return d_symbol;
+	}
 }

@@ -9,11 +9,13 @@ import javax.swing.JTextField;
 import javax.swing.text.DefaultFormatter;
 
 import nl.rug.escher.entities.Domain;
+import nl.rug.escher.entities.Dose;
 import nl.rug.escher.entities.Drug;
 import nl.rug.escher.entities.Endpoint;
 import nl.rug.escher.entities.Measurement;
 import nl.rug.escher.entities.PatientGroup;
 import nl.rug.escher.entities.Study;
+import nl.rug.escher.gui.AddStudyDialog.EndpointHolder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -29,11 +31,14 @@ public class StudyView implements ViewBuilder {
 	private JTextField d_id;
 	private JComboBox d_endpoint;
 	private PresentationModel<Study> d_model;
+	private PresentationModel<EndpointHolder> d_endpointModel;
 	private SelectionInList<Endpoint> d_endpointSelectionInList;
 	private Domain d_domain;
 
-	public StudyView(PresentationModel<Study> presentationModel, Domain domain) {
+	public StudyView(PresentationModel<Study> presentationModel,
+			PresentationModel<EndpointHolder> presentationModel2, Domain domain) {
 		d_model = presentationModel;
+		d_endpointModel = presentationModel2;
 		d_domain = domain;
 	}
 	
@@ -41,9 +46,9 @@ public class StudyView implements ViewBuilder {
 		d_id = BasicComponentFactory.createTextField(d_model.getModel(Study.PROPERTY_ID));
 		d_id.setColumns(15);
 		
-		d_endpointSelectionInList = new SelectionInList<Endpoint>(d_domain.getEndpoints());
+		d_endpointSelectionInList = new SelectionInList<Endpoint>(d_domain.getEndpoints(), 
+				d_endpointModel.getModel(EndpointHolder.PROPERTY_ENDPOINT));
 		d_endpoint = BasicComponentFactory.createComboBox(d_endpointSelectionInList);
-		
 	}
 
 	public JComponent buildPanel() {
@@ -98,6 +103,9 @@ public class StudyView implements ViewBuilder {
 				new PresentationModel<Measurement>(g.getMeasurements().get(0));
 			
 			builder.add(createDrugSelector(model), cc.xy(1, row));
+			
+			DoseView view = new DoseView(new PresentationModel<Dose>(g.getDose()));
+			builder.add(view.buildPanel(), cc.xy(3, row));
 			
 			builder.add(buildFormatted(mModel.getModel(Measurement.PROPERTY_MEAN)), cc.xy(5,row));
 			
