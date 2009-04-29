@@ -21,6 +21,7 @@ import javax.swing.tree.TreePath;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.DomainImpl;
+import nl.rug.escher.entities.Drug;
 import nl.rug.escher.entities.Endpoint;
 
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
@@ -48,8 +49,22 @@ public class Main extends JFrame {
 	private void initDefaultData() {
 		d_domain.addEndpoint(buildDefaultEndpoint());
 		d_domain.addEndpoint(buildDefaultEndpoint2());
+		d_domain.addDrug(buildDefaultDrug1());
+		d_domain.addDrug(buildDefaultDrug2());
 	}
 	
+	private Drug buildDefaultDrug2() {
+		Drug drug = new Drug();
+		drug.setName("Paroxetine");
+		return drug;
+	}
+
+	private Drug buildDefaultDrug1() {
+		Drug drug = new Drug();
+		drug.setName("Fluoxetine");
+		return drug;
+	}
+
 	public static Endpoint buildDefaultEndpoint() {
 		Endpoint endpoint = new Endpoint();
 		endpoint.setName("HAM-D");

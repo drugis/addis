@@ -2,10 +2,10 @@ package nl.rug.escher.gui;
 
 import javax.swing.JFrame;
 
-import com.jgoodies.binding.PresentationModel;
-
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.Drug;
+
+import com.jgoodies.binding.PresentationModel;
 
 public class AddDrugDialog extends OkCancelDialog {
 	private Domain d_domain;
@@ -16,7 +16,7 @@ public class AddDrugDialog extends OkCancelDialog {
 		d_domain = domain;
 		d_drug = new Drug();
 		DrugView view = new DrugView(new PresentationModel<Drug>(d_drug));
-		setContentPane(createPanel(view));
+		getUserPanel().add(view.buildPanel());
 		pack();
 	}
 	

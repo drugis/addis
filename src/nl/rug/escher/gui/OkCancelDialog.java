@@ -16,83 +16,22 @@ import javax.swing.JPanel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
 public abstract class OkCancelDialog extends JDialog {
-
-	public OkCancelDialog() {
-		super();
-	}
-
-	public OkCancelDialog(Frame owner) {
-		super(owner);
-	}
-
-	public OkCancelDialog(Dialog owner) {
-		super(owner);
-	}
-
-	public OkCancelDialog(Window owner) {
-		super(owner);
-	}
-
-	public OkCancelDialog(Frame owner, boolean modal) {
-		super(owner, modal);
-	}
-
-	public OkCancelDialog(Frame owner, String title) {
-		super(owner, title);
-	}
-
-	public OkCancelDialog(Dialog owner, boolean modal) {
-		super(owner, modal);
-	}
-
-	public OkCancelDialog(Dialog owner, String title) {
-		super(owner, title);
-	}
-
-	public OkCancelDialog(Window owner, ModalityType modalityType) {
-		super(owner, modalityType);
-	}
-
-	public OkCancelDialog(Window owner, String title) {
-		super(owner, title);
-	}
-
-	public OkCancelDialog(Frame owner, String title, boolean modal) {
-		super(owner, title, modal);
-	}
-
-	public OkCancelDialog(Dialog owner, String title, boolean modal) {
-		super(owner, title, modal);
-	}
-
-	public OkCancelDialog(Window owner, String title, ModalityType modalityType) {
-		super(owner, title, modalityType);
-	}
-
-	public OkCancelDialog(Frame owner, String title, boolean modal,
-			GraphicsConfiguration gc) {
-		super(owner, title, modal, gc);
-	}
-
-	public OkCancelDialog(Dialog owner, String title, boolean modal,
-			GraphicsConfiguration gc) {
-		super(owner, title, modal, gc);
-	}
-
-	public OkCancelDialog(Window owner, String title,
-			ModalityType modalityType, GraphicsConfiguration gc) {
-		super(owner, title, modalityType, gc);
-	}
+	private JPanel d_userPanel;
 
 	protected abstract void commit();
 
 	protected abstract void cancel();
+	
+	private void construct() {
+		setContentPane(createPanel());
+		pack();
+	}
 
-	protected JComponent createPanel(ViewBuilder view) {
+	private JComponent createPanel() {
 		JPanel panel = new JPanel(new BorderLayout());
 		
-		JComponent viewPanel = view.buildPanel();
-		panel.add(viewPanel, BorderLayout.CENTER);
+		createUserPanel();
+		panel.add(d_userPanel, BorderLayout.CENTER);
 		
 		JButton okButton = createOkButton();
 		JButton cancelButton = createCancelButton();
@@ -104,6 +43,14 @@ public abstract class OkCancelDialog extends JDialog {
 		panel.add(builder.getPanel(), BorderLayout.SOUTH);
 	
 		return panel;
+	}
+
+	private void createUserPanel() {
+		d_userPanel = new JPanel();
+	}
+	
+	protected JPanel getUserPanel() {
+		return d_userPanel;
 	}
 
 	private JButton createCancelButton() {
@@ -125,5 +72,87 @@ public abstract class OkCancelDialog extends JDialog {
 		});
 		return okButton;
 	}
+	
+	public OkCancelDialog() {
+		super();
+		construct();
+	}
 
+	public OkCancelDialog(Frame owner) {
+		super(owner);
+		construct();
+	}
+
+	public OkCancelDialog(Dialog owner) {
+		super(owner);
+		construct();
+	}
+
+	public OkCancelDialog(Window owner) {
+		super(owner);
+		construct();
+	}
+
+	public OkCancelDialog(Frame owner, boolean modal) {
+		super(owner, modal);
+		construct();
+	}
+
+	public OkCancelDialog(Frame owner, String title) {
+		super(owner, title);
+		construct();
+	}
+
+	public OkCancelDialog(Dialog owner, boolean modal) {
+		super(owner, modal);
+		construct();
+	}
+
+	public OkCancelDialog(Dialog owner, String title) {
+		super(owner, title);
+		construct();
+	}
+
+	public OkCancelDialog(Window owner, ModalityType modalityType) {
+		super(owner, modalityType);
+		construct();
+	}
+
+	public OkCancelDialog(Window owner, String title) {
+		super(owner, title);
+		construct();
+	}
+
+	public OkCancelDialog(Frame owner, String title, boolean modal) {
+		super(owner, title, modal);
+		construct();
+	}
+
+	public OkCancelDialog(Dialog owner, String title, boolean modal) {
+		super(owner, title, modal);
+		construct();
+	}
+
+	public OkCancelDialog(Window owner, String title, ModalityType modalityType) {
+		super(owner, title, modalityType);
+		construct();
+	}
+
+	public OkCancelDialog(Frame owner, String title, boolean modal,
+			GraphicsConfiguration gc) {
+		super(owner, title, modal, gc);
+		construct();
+	}
+
+	public OkCancelDialog(Dialog owner, String title, boolean modal,
+			GraphicsConfiguration gc) {
+		super(owner, title, modal, gc);
+		construct();
+	}
+
+	public OkCancelDialog(Window owner, String title,
+			ModalityType modalityType, GraphicsConfiguration gc) {
+		super(owner, title, modalityType, gc);
+		construct();
+	}
 }

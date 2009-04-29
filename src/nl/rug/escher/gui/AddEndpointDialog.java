@@ -17,7 +17,7 @@ public class AddEndpointDialog extends OkCancelDialog {
 		d_domain = domain;
 		d_endpoint = new Endpoint();
 		EndpointView view = new EndpointView(new PresentationModel<Endpoint>(d_endpoint));
-		setContentPane(createPanel(view));
+		getUserPanel().add(view.buildPanel());
 		pack();
 	}
 
