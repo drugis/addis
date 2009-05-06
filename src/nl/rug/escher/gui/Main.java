@@ -23,6 +23,7 @@ import javax.swing.tree.TreePath;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.DomainImpl;
+import nl.rug.escher.entities.Endpoint;
 import nl.rug.escher.entities.Study;
 
 import com.jgoodies.binding.PresentationModel;
@@ -187,11 +188,18 @@ public class Main extends JFrame {
 				
 				if (node instanceof Study) {
 					studySelected((Study)node);
+				} else if (node instanceof Endpoint) {
+					endpointSelected((Endpoint)node);
 				}
 			}
 		};
 	}
 
+	private void endpointSelected(Endpoint node) {
+		EndpointStudiesView view = new EndpointStudiesView(node, d_domain);
+		d_rightPanel.setViewportView(view.buildPanel());
+	}
+	
 	private void studySelected(Study node) {
 		StudyView view = new StudyView(new PresentationModel<Study>(node));
 		d_rightPanel.setViewportView(view.buildPanel());

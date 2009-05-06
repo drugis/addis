@@ -3,7 +3,9 @@ package nl.rug.escher.entities.test;
 import static org.junit.Assert.*;
 import static org.easymock.EasyMock.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.DomainImpl;
@@ -104,5 +106,39 @@ public class DomainTest {
 		d_domain.addListener(mockListener);
 		d_domain.addDrug(new Drug());
 		verify(mockListener);
+	}
+	
+	@Test
+	public void testGetStudiesByEndpoint() {
+		Endpoint e1 = new Endpoint();
+		e1.setName("e1");
+		Endpoint e2 = new Endpoint();
+		e2.setName("e2");
+		Endpoint e3 = new Endpoint();
+		e3.setName("e3");
+		
+		List<Endpoint> l1 = new ArrayList<Endpoint>();
+		l1.add(e1);
+		Study s1 = new Study();
+		s1.setId("s1");
+		s1.setEndpoints(l1);
+		
+		List<Endpoint> l2 = new ArrayList<Endpoint>();
+		l2.add(e2);
+		l2.add(e1);
+		Study s2 = new Study();
+		s2.setId("s2");
+		s2.setEndpoints(l2);
+		
+		d_domain.addStudy(s1);
+		d_domain.addStudy(s2);
+		
+		assertEquals(2, d_domain.getStudies(e1).size());
+		assertEquals(1, d_domain.getStudies(e2).size());
+		assertEquals(0, d_domain.getStudies(e3).size());
+		
+		assertTrue(d_domain.getStudies(e1).contains(s1));
+		assertTrue(d_domain.getStudies(e1).contains(s2));
+		assertTrue(d_domain.getStudies(e2).contains(s2));
 	}
 }

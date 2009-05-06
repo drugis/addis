@@ -84,4 +84,14 @@ public class DomainImpl implements Domain {
 		return d_drugs;
 	}
 
+	public List<Study> getStudies(Endpoint e) {
+		List<Study> list = new ArrayList<Study>();
+		for (Study s : d_studies) {
+			if (s.getEndpoints().contains(e)) {
+				list.add(s);
+			}
+		}
+		return list;
+	}
+
 }

@@ -31,6 +31,13 @@ public interface Domain {
 	 */
 	public List<Study> getStudies();
 	
+	
+	/**
+	 * Get studies by Endpoint.
+	 * @return A list of studies. Never null.
+	 */
+	public List<Study> getStudies(Endpoint e);
+	
 	/**
 	 * Adds an drug to the data model.
 	 * 
