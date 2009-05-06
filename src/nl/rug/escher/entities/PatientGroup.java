@@ -61,4 +61,8 @@ public class PatientGroup extends Model {
 		newVal.add(m);
 		setMeasurements(newVal);
 	}
+	
+	public String toString() {
+		return d_drug.toString() + " " + d_dose.toString();
+	}
 }

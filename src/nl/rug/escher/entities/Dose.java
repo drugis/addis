@@ -28,4 +28,8 @@ public class Dose extends Model {
 		d_quantity = quantity;
 		firePropertyChange(PROPERTY_QUANTITY, oldVal, d_quantity);
 	}
+	
+	public String toString() {
+		return d_quantity.toString() + " " + d_unit.toString();
+	}
 }

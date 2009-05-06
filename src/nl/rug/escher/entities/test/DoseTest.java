@@ -1,5 +1,6 @@
 package nl.rug.escher.entities.test;
 
+import static org.junit.Assert.*;
 import nl.rug.escher.entities.Dose;
 import nl.rug.escher.entities.SIUnit;
 
@@ -14,5 +15,13 @@ public class DoseTest {
 	@Test
 	public void testSetQuantity() {
 		Helper.testSetter(new Dose(), Dose.PROPERTY_QUANTITY, null, 40.0);
+	}
+	
+	@Test
+	public void testToString() {
+		Dose d = new Dose();
+		d.setQuantity(25.5);
+		d.setUnit(SIUnit.MILLIGRAMS_A_DAY);
+		assertEquals("25.5 " + SIUnit.MILLIGRAMS_A_DAY.toString(), d.toString());
 	}
 }

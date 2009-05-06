@@ -9,6 +9,7 @@ import nl.rug.escher.entities.Dose;
 import nl.rug.escher.entities.Drug;
 import nl.rug.escher.entities.Measurement;
 import nl.rug.escher.entities.PatientGroup;
+import nl.rug.escher.entities.SIUnit;
 import nl.rug.escher.entities.Study;
 
 import org.junit.Test;
@@ -47,5 +48,18 @@ public class PatientGroupTest {
 	public void testAddMeasurement() {
 		Helper.testAdder(new PatientGroup(), PatientGroup.PROPERTY_MEASUREMENTS,
 				"addMeasurement", new Measurement());
+	}
+	
+	@Test
+	public void testToString() {
+		PatientGroup group = new PatientGroup();
+		Dose dose = new Dose();
+		dose.setQuantity(25.5);
+		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
+		group.setDose(dose);
+		Drug drug = new Drug();
+		drug.setName("Fluoxetine");
+		group.setDrug(drug);
+		assertEquals("Fluoxetine " + dose.toString(), group.toString());
 	}
 }
