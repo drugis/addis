@@ -1,9 +1,6 @@
 package nl.rug.escher.entities.test;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reportMatcher;
-import static org.easymock.EasyMock.verify;
+import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -23,10 +20,7 @@ import com.jgoodies.binding.beans.Model;
 
 public class Helper {
 	public static void testSetter(Model source, String propertyName, Object oldValue, Object newValue) {
-		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
-		mock.propertyChange(eqEvent(new PropertyChangeEvent(
-				source, propertyName, oldValue, newValue)));
-		replay(mock);
+		PropertyChangeListener mock = mockListener(source, propertyName, oldValue, newValue);
 		
 		source.addPropertyChangeListener(mock);
 		Object desc = null;
@@ -41,6 +35,20 @@ public class Helper {
 		verify(mock);
 	}
 
+
+	public static PropertyChangeListener mockListener(Model source,
+			String propertyName, Object oldValue, Object newValue) {
+		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
+		PropertyChangeEvent event = new PropertyChangeEvent(
+				source, propertyName, oldValue, newValue);
+		mock.propertyChange(eqEvent(event));
+		mock.propertyChange(not(eqEvent(event)));
+		expectLastCall().anyTimes();
+		replay(mock);
+		return mock;
+	}
+	
+	
 	private static Method getGetterMethod(Model source, String propertyName)
 			throws NoSuchMethodException {
 		return source.getClass().getMethod(deriveGetter(propertyName));

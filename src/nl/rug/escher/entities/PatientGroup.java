@@ -15,6 +15,7 @@ public class PatientGroup extends Model {
 	public static final String PROPERTY_DRUG = "drug";
 	public static final String PROPERTY_DOSE = "dose";
 	public static final String PROPERTY_MEASUREMENTS = "measurements";
+	public static final String PROPERTY_LABEL = "label";
 	
 	public Study getStudy() {
 		return d_study;
@@ -31,9 +32,11 @@ public class PatientGroup extends Model {
 	}
 	
 	public void setDrug(Drug drug) {
+		String oldLabel = toString();
 		Drug oldVal = d_drug;
 		d_drug = drug;
 		firePropertyChange(PROPERTY_DRUG, oldVal, d_drug);
+		firePropertyChange(PROPERTY_LABEL, oldLabel, toString());
 	}
 	
 	public Dose getDose() {
@@ -41,9 +44,11 @@ public class PatientGroup extends Model {
 	}
 	
 	public void setDose(Dose dose) {
+		String oldLabel = toString();
 		Dose oldVal = d_dose;
 		d_dose = dose;
 		firePropertyChange(PROPERTY_DOSE, oldVal, d_dose);
+		firePropertyChange(PROPERTY_LABEL, oldLabel, toString());
 	}
 
 	public List<Measurement> getMeasurements() {
@@ -62,7 +67,28 @@ public class PatientGroup extends Model {
 		setMeasurements(newVal);
 	}
 	
+	/**
+	 * Get Measurement by Endpoint.
+	 * @param endpoint Endpoint to get measurement for.
+	 * @return Measurement if Endpoint is measured, null otherwise.
+	 */
+	public Measurement getMeasurement(Endpoint endpoint) {
+		for (Measurement m : d_measurements) {
+			if (m.getEndpoint().equals(endpoint)) {
+				return m;
+			}
+		}
+		return null;
+	}
+	
+	public String getLabel() {
+		return toString();
+	}
+	
 	public String toString() {
+		if (d_drug == null || d_dose == null) {
+			return "INCOMPLETE";
+		}
 		return d_drug.toString() + " " + d_dose.toString();
 	}
 }

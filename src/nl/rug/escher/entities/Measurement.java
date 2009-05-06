@@ -12,15 +12,18 @@ public class Measurement extends Model {
 	public static final String PROPERTY_STDDEV = "stdDev";
 	public static final String PROPERTY_PATIENTGROUP = "patientGroup";
 	public static final String PROPERTY_ENDPOINT = "endpoint";
+	public static final String PROPERTY_LABEL = "label";
 	
 	public Double getMean() {
 		return d_mean;
 	}
 	
 	public void setMean(Double mean) {
+		String oldLabel = getLabel();
 		Double oldVal = d_mean;
 		d_mean = mean;
 		firePropertyChange(PROPERTY_MEAN, oldVal, d_mean);
+		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
 	}
 	
 	public Double getStdDev() {
@@ -28,9 +31,11 @@ public class Measurement extends Model {
 	}
 	
 	public void setStdDev(Double stdDev) {
+		String oldLabel = getLabel();
 		Double oldVal = d_stdDev;
 		d_stdDev = stdDev;
 		firePropertyChange(PROPERTY_STDDEV, oldVal, d_stdDev);
+		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
 	}
 	
 	public PatientGroup getPatientGroup() {
@@ -51,5 +56,12 @@ public class Measurement extends Model {
 		Endpoint oldVal = d_endpoint;
 		d_endpoint = endpoint;
 		firePropertyChange(PROPERTY_ENDPOINT, oldVal, d_endpoint);
+	}
+	
+	public String getLabel() {
+		if (d_mean == null || d_stdDev == null) {
+			return "INCOMPLETE"; 
+		}
+		return d_mean.toString() + " \u00B1 " + d_stdDev.toString();
 	}
 }

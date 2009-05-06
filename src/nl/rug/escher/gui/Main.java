@@ -25,6 +25,7 @@ import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.DomainImpl;
 import nl.rug.escher.entities.Study;
 
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.windows.WindowsLookAndFeel;
 import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
@@ -32,7 +33,7 @@ import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 public class Main extends JFrame {
 	private JMenuBar d_menuBar;
 	private JComponent d_leftPanel;
-	private JComponent d_rightPanel;
+	private JScrollPane d_rightPanel;
 	
 	Domain d_domain;
 
@@ -191,8 +192,8 @@ public class Main extends JFrame {
 	}
 
 	private void studySelected(Study node) {
-		// TODO Auto-generated method stub
-		
+		StudyView view = new StudyView(new PresentationModel<Study>(node));
+		d_rightPanel.setViewportView(view.buildPanel());
 	}
 	
 	private void initRightPanel() {
