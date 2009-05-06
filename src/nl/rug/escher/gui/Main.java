@@ -21,8 +21,6 @@ import javax.swing.tree.TreePath;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.DomainImpl;
-import nl.rug.escher.entities.Drug;
-import nl.rug.escher.entities.Endpoint;
 
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.windows.WindowsLookAndFeel;
@@ -33,7 +31,7 @@ public class Main extends JFrame {
 	private JComponent d_leftPanel;
 	private JComponent d_rightPanel;
 	
-	private Domain d_domain;
+	Domain d_domain;
 
 	public Main() {
 		super("Escher ADDIS");
@@ -43,42 +41,10 @@ public class Main extends JFrame {
 		
 		d_domain = new DomainImpl();
 		
-		initDefaultData();
+		MainData data = new MainData();
+		data.initDefaultData(d_domain);
 	}
 
-	private void initDefaultData() {
-		d_domain.addEndpoint(buildDefaultEndpoint());
-		d_domain.addEndpoint(buildDefaultEndpoint2());
-		d_domain.addDrug(buildDefaultDrug1());
-		d_domain.addDrug(buildDefaultDrug2());
-	}
-	
-	private Drug buildDefaultDrug2() {
-		Drug drug = new Drug();
-		drug.setName("Paroxetine");
-		return drug;
-	}
-
-	private Drug buildDefaultDrug1() {
-		Drug drug = new Drug();
-		drug.setName("Fluoxetine");
-		return drug;
-	}
-
-	public static Endpoint buildDefaultEndpoint() {
-		Endpoint endpoint = new Endpoint();
-		endpoint.setName("HAM-D");
-		endpoint.setDescription("Change from baseline in HAM-D total score (21 items)");
-		return endpoint;
-	}
-	
-	public static Endpoint buildDefaultEndpoint2() {
-		Endpoint endpoint = new Endpoint();
-		endpoint.setName("CGI Severity");
-		endpoint.setDescription("Change from baseline CGI Severity of Illness score");
-		return endpoint;
-	}
-	
 	private void initializeLookAndFeel() {
 		try {
 			String osName = System.getProperty("os.name");
