@@ -30,6 +30,9 @@ public class Dose extends Model {
 	}
 	
 	public String toString() {
+		if (d_quantity == null || d_unit == null) {
+			return "INCOMPLETE";
+		}
 		return d_quantity.toString() + " " + d_unit.toString();
 	}
 }

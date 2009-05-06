@@ -1,7 +1,5 @@
 package nl.rug.escher.gui;
 
-import java.util.List;
-
 import javax.swing.JComponent;
 
 import nl.rug.escher.entities.Domain;

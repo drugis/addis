@@ -23,6 +23,7 @@ import javax.swing.tree.TreePath;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.DomainImpl;
+import nl.rug.escher.entities.DomainListener;
 import nl.rug.escher.entities.Endpoint;
 import nl.rug.escher.entities.Study;
 
@@ -36,6 +37,8 @@ public class Main extends JFrame {
 	private JComponent d_leftPanel;
 	private JScrollPane d_rightPanel;
 	
+	private ViewBuilder d_rightPanelBuilder;
+	
 	Domain d_domain;
 
 	public Main() {
@@ -45,6 +48,7 @@ public class Main extends JFrame {
 		initializeLookAndFeel();
 		
 		d_domain = new DomainImpl();
+		d_domain.addListener(new MainListener());
 		
 		MainData data = new MainData();
 		data.initDefaultData(d_domain);
@@ -197,11 +201,13 @@ public class Main extends JFrame {
 
 	private void endpointSelected(Endpoint node) {
 		EndpointStudiesView view = new EndpointStudiesView(node, d_domain);
+		d_rightPanelBuilder = view;
 		d_rightPanel.setViewportView(view.buildPanel());
 	}
 	
 	private void studySelected(Study node) {
 		StudyView view = new StudyView(new PresentationModel<Study>(node));
+		d_rightPanelBuilder = view;
 		d_rightPanel.setViewportView(view.buildPanel());
 	}
 	
@@ -215,5 +221,25 @@ public class Main extends JFrame {
 		frame.initComponents();
 		frame.pack();
 		frame.setVisible(true);
+	}
+	
+	private void dataModelChanged() {
+		if (d_rightPanelBuilder != null) {
+			d_rightPanel.setViewportView(d_rightPanelBuilder.buildPanel());
+		}
+	}
+	
+	private class MainListener implements DomainListener {
+		public void drugsChanged() {
+			dataModelChanged();
+		}
+
+		public void endpointsChanged() {
+			dataModelChanged();
+		}
+
+		public void studiesChanged() {
+			dataModelChanged();
+		}
 	}
 }

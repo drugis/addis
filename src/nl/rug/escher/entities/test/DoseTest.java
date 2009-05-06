@@ -20,6 +20,7 @@ public class DoseTest {
 	@Test
 	public void testToString() {
 		Dose d = new Dose();
+		assertEquals("INCOMPLETE", d.toString());
 		d.setQuantity(25.5);
 		d.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		assertEquals("25.5 " + SIUnit.MILLIGRAMS_A_DAY.toString(), d.toString());
