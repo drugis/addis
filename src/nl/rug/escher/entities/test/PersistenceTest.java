@@ -12,7 +12,7 @@ import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Transaction;
 
 import nl.rug.escher.entities.Endpoint;
-import nl.rug.escher.gui.Main;
+import nl.rug.escher.gui.MainData;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public class PersistenceTest {
 		PersistenceManagerFactory pmf = getFactory();
 		PersistenceManager pm = pmf.getPersistenceManager();
 	
-	    Endpoint endpoint = Main.buildDefaultEndpoint();
+	    Endpoint endpoint = MainData.buildDefaultEndpoint();
 	    try {
 			Transaction tx = pm.currentTransaction();
 			try {

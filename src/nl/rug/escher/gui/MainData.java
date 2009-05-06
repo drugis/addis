@@ -20,7 +20,8 @@ public class MainData {
 	}
 
 	public void initDefaultData(Domain domain) {
-		domain.addEndpoint(buildDefaultEndpoint());
+		d_hamd = buildDefaultEndpoint();
+		domain.addEndpoint(d_hamd);
 		domain.addEndpoint(buildDefaultEndpoint2());
 		domain.addDrug(buildDefaultDrug1());
 		domain.addDrug(buildDefaultDrug2());
@@ -88,11 +89,11 @@ public class MainData {
 		return d_fluoxetine;
 	}
 
-	public Endpoint buildDefaultEndpoint() {
-		d_hamd = new Endpoint();
-		d_hamd.setName("HAM-D");
-		d_hamd.setDescription("Change from baseline in HAM-D total score (21 items)");
-		return d_hamd;
+	public static Endpoint buildDefaultEndpoint() {
+		Endpoint e = new Endpoint();
+		e.setName("HAM-D");
+		e.setDescription("Change from baseline in HAM-D total score (21 items)");
+		return e;
 	}
 
 	public Endpoint buildDefaultEndpoint2() {
