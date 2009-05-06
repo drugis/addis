@@ -17,10 +17,13 @@ import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.DomainImpl;
+import nl.rug.escher.entities.Study;
 
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.windows.WindowsLookAndFeel;
@@ -169,7 +172,27 @@ public class Main extends JFrame {
 		JTree tree = new JTree(model);
 		tree.setRootVisible(false);
 		tree.expandPath(new TreePath(new Object[]{model.getRoot(), model.getEndpointsNode()}));
+		
+		tree.addTreeSelectionListener(createSelectionListener());
+		
 		d_leftPanel = tree;
+	}
+	
+	private TreeSelectionListener createSelectionListener() {
+		return new TreeSelectionListener() {
+			public void valueChanged(TreeSelectionEvent event) {
+				Object node = ((JTree)event.getSource()).getLastSelectedPathComponent();
+				
+				if (node instanceof Study) {
+					studySelected((Study)node);
+				}
+			}
+		};
+	}
+
+	private void studySelected(Study node) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	private void initRightPanel() {

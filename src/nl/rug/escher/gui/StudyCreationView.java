@@ -27,7 +27,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
-public class StudyView implements ViewBuilder {
+public class StudyCreationView implements ViewBuilder {
 	private JTextField d_id;
 	private JComboBox d_endpoint;
 	private PresentationModel<Study> d_model;
@@ -35,7 +35,7 @@ public class StudyView implements ViewBuilder {
 	private SelectionInList<Endpoint> d_endpointSelectionInList;
 	private Domain d_domain;
 
-	public StudyView(PresentationModel<Study> presentationModel,
+	public StudyCreationView(PresentationModel<Study> presentationModel,
 			PresentationModel<EndpointHolder> presentationModel2, Domain domain) {
 		d_model = presentationModel;
 		d_endpointModel = presentationModel2;

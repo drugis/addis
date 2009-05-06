@@ -45,14 +45,14 @@ public class AddStudyDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private Study d_study;
 	private EndpointHolder d_primaryEndpoint;
-	private StudyView d_view;
+	private StudyCreationView d_view;
 	
 	public AddStudyDialog(JFrame frame, Domain domain) {
 		super(frame, "Add Endpoint");
 		d_domain = domain;
 		d_study = new Study();
 		d_primaryEndpoint = new EndpointHolder();
-		d_view = new StudyView(new PresentationModel<Study>(d_study),
+		d_view = new StudyCreationView(new PresentationModel<Study>(d_study),
 				new PresentationModel<EndpointHolder>(d_primaryEndpoint), domain);
 		initUserPanel();
 	}
