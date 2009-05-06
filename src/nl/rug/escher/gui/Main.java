@@ -173,6 +173,7 @@ public class Main extends JFrame {
 		JTree tree = new JTree(model);
 		tree.setRootVisible(false);
 		tree.expandPath(new TreePath(new Object[]{model.getRoot(), model.getEndpointsNode()}));
+		tree.expandPath(new TreePath(new Object[]{model.getRoot(), model.getStudiesNode()}));
 		
 		tree.addTreeSelectionListener(createSelectionListener());
 		
