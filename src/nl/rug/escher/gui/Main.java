@@ -39,7 +39,7 @@ public class Main extends JFrame {
 	
 	private ViewBuilder d_rightPanelBuilder;
 	
-	Domain d_domain;
+	private Domain d_domain;
 
 	public Main() {
 		super("Escher ADDIS");
@@ -198,15 +198,20 @@ public class Main extends JFrame {
 			}
 		};
 	}
-
-	private void endpointSelected(Endpoint node) {
-		EndpointStudiesView view = new EndpointStudiesView(node, d_domain);
+	
+	public void endpointSelected(Endpoint e, Study selectedStudy) {
+		EndpointStudiesView view = new EndpointStudiesView(e, d_domain);
+		view.setSelectedStudy(selectedStudy);
 		d_rightPanelBuilder = view;
 		d_rightPanel.setViewportView(view.buildPanel());
 	}
+
+	public void endpointSelected(Endpoint node) {
+		endpointSelected(node, null);
+	}
 	
 	private void studySelected(Study node) {
-		StudyView view = new StudyView(new PresentationModel<Study>(node));
+		StudyView view = new StudyView(new PresentationModel<Study>(node), this);
 		d_rightPanelBuilder = view;
 		d_rightPanel.setViewportView(view.buildPanel());
 	}

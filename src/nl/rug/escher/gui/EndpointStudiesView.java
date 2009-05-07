@@ -1,6 +1,5 @@
 package nl.rug.escher.gui;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +26,7 @@ public class EndpointStudiesView implements ViewBuilder {
 	private Endpoint d_endpoint;
 	private Domain d_domain;
 	private List<JCheckBox> d_studySelect;
+	private Study d_selectedStudy;
 	
 	public EndpointStudiesView(Endpoint node, Domain domain) {
 		d_endpoint = node;
@@ -65,6 +65,9 @@ public class EndpointStudiesView implements ViewBuilder {
 			layout.appendRow(RowSpec.decode("p"));
 			
 			JCheckBox box = new JCheckBox();
+			if (s.equals(d_selectedStudy)) {
+				box.setSelected(true);
+			}
 			d_studySelect.add(box);
 			builder.add(box, cc.xy(1, row));
 			
@@ -106,5 +109,9 @@ public class EndpointStudiesView implements ViewBuilder {
 		JOptionPane.showMessageDialog(null,
 				"Meta-Analyze Not Implemented\n\n" + studies.toString(),
 				"Meta-Analyze", JOptionPane.ERROR_MESSAGE);
+	}
+
+	public void setSelectedStudy(Study selectedStudy) {
+		d_selectedStudy = selectedStudy;
 	}
 }
