@@ -2,8 +2,6 @@ package nl.rug.escher.gui;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -12,47 +10,25 @@ import javax.swing.JFrame;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.Dose;
-import nl.rug.escher.entities.Endpoint;
 import nl.rug.escher.entities.Measurement;
 import nl.rug.escher.entities.PatientGroup;
 import nl.rug.escher.entities.Study;
 
 import com.jgoodies.binding.PresentationModel;
-import com.jgoodies.binding.beans.Model;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
 public class AddStudyDialog extends OkCancelDialog {
-	public class EndpointHolder extends Model { // TODO: implement as adapter or something?
-		private Endpoint d_endpoint;
-		public static final String PROPERTY_ENDPOINT = "endpoint";
-		public void setEndpoint(Endpoint e) {
-			Endpoint oldVal = d_endpoint;
-			d_endpoint = e;
-			firePropertyChange(PROPERTY_ENDPOINT, oldVal, d_endpoint);
-		}
-		public Endpoint getEndpoint() {
-			return d_endpoint;
-		}
-		public List<Endpoint> asList() {
-			List<Endpoint> list = new ArrayList<Endpoint>();
-			if (d_endpoint != null) {
-				list.add(d_endpoint);
-			}
-			return list;
-		}
-	}
-	
 	private Domain d_domain;
 	private Study d_study;
 	private EndpointHolder d_primaryEndpoint;
-	private StudyCreationView d_view;
+	private AddStudyView d_view;
 	
 	public AddStudyDialog(JFrame frame, Domain domain) {
 		super(frame, "Add Endpoint");
 		d_domain = domain;
 		d_study = new Study();
 		d_primaryEndpoint = new EndpointHolder();
-		d_view = new StudyCreationView(new PresentationModel<Study>(d_study),
+		d_view = new AddStudyView(new PresentationModel<Study>(d_study),
 				new PresentationModel<EndpointHolder>(d_primaryEndpoint), domain);
 		initUserPanel();
 	}

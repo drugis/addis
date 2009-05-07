@@ -1,5 +1,7 @@
 package nl.rug.escher.gui;
 
+import java.util.Collections;
+
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.Dose;
 import nl.rug.escher.entities.Drug;
@@ -26,6 +28,44 @@ public class MainData {
 		domain.addDrug(buildDefaultDrug1());
 		domain.addDrug(buildDefaultDrug2());
 		domain.addStudy(buildDefaultStudy(domain));
+		domain.addStudy(buildDefaultStudy2(domain));
+	}
+
+	private Study buildDefaultStudy2(Domain domain) {
+		Study study = new Study();
+		study.setId("Incomplete Study");
+		study.setEndpoints(Collections.singletonList(d_hamd));
+		
+		PatientGroup parox = new PatientGroup();
+		parox.setDrug(d_paroxetine);
+		Dose dose = new Dose();
+		dose.setQuantity(25.5);
+		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
+		parox.setDose(dose);
+		Measurement pHamd = new Measurement();
+		pHamd.setEndpoint(d_hamd);
+		pHamd.setPatientGroup(parox);
+		pHamd.setMean(-13.92);
+		pHamd.setStdDev(1.1);
+		parox.addMeasurement(pHamd);
+		
+		PatientGroup fluox = new PatientGroup();
+		fluox.setDrug(d_fluoxetine);
+		dose = new Dose();
+		dose.setQuantity(27.5);
+		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
+		fluox.setDose(dose);
+		Measurement fHamd = new Measurement();
+		fHamd.setEndpoint(d_hamd);
+		fHamd.setPatientGroup(fluox);
+		fHamd.setMean(-14.78);
+		fHamd.setStdDev(1.1);
+		fluox.addMeasurement(fHamd);
+		
+		study.addPatientGroup(parox);
+		study.addPatientGroup(fluox);
+		
+		return study;
 	}
 
 	Study buildDefaultStudy(Domain domain) {

@@ -72,6 +72,11 @@ public class Main extends JFrame {
 			// Likely the Looks library is not in the class path; ignore.
 		}
 	}
+	
+	void showStudyAddEndpointDialog(Study study) {
+		StudyAddEndpointDialog dialog = new StudyAddEndpointDialog(this, d_domain, study);
+		dialog.setVisible(true);
+	}
 
 	private void initMenu() {
 		d_menuBar = new JMenuBar();
@@ -211,7 +216,7 @@ public class Main extends JFrame {
 	}
 	
 	private void studySelected(Study node) {
-		StudyView view = new StudyView(new PresentationModel<Study>(node), this);
+		StudyView view = new StudyView(new PresentationModel<Study>(node), d_domain, this);
 		d_rightPanelBuilder = view;
 		d_rightPanel.setViewportView(view.buildPanel());
 	}

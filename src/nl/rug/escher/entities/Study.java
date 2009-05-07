@@ -57,4 +57,10 @@ public class Study extends Model {
 	public String toString() {
 		return getId();
 	}
+	
+	public void addEndpoint(Endpoint endpoint) {
+		List<Endpoint> newVal = new ArrayList<Endpoint>(d_endpoints);
+		newVal.add(endpoint);
+		setEndpoints(newVal);
+	}
 }

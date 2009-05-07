@@ -15,7 +15,6 @@ import nl.rug.escher.entities.Endpoint;
 import nl.rug.escher.entities.Measurement;
 import nl.rug.escher.entities.PatientGroup;
 import nl.rug.escher.entities.Study;
-import nl.rug.escher.gui.AddStudyDialog.EndpointHolder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -27,7 +26,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
-public class StudyCreationView implements ViewBuilder {
+public class AddStudyView implements ViewBuilder {
 	private JTextField d_id;
 	private JComboBox d_endpoint;
 	private PresentationModel<Study> d_model;
@@ -35,7 +34,7 @@ public class StudyCreationView implements ViewBuilder {
 	private SelectionInList<Endpoint> d_endpointSelectionInList;
 	private Domain d_domain;
 
-	public StudyCreationView(PresentationModel<Study> presentationModel,
+	public AddStudyView(PresentationModel<Study> presentationModel,
 			PresentationModel<EndpointHolder> presentationModel2, Domain domain) {
 		d_model = presentationModel;
 		d_endpointModel = presentationModel2;

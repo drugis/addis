@@ -1,6 +1,11 @@
 package nl.rug.escher.entities.test;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.not;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reportMatcher;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -10,11 +15,6 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
-import nl.rug.escher.entities.PatientGroup;
-import nl.rug.escher.entities.Study;
-
-
 
 import com.jgoodies.binding.beans.Model;
 
@@ -86,14 +86,6 @@ public class Helper {
 	public static PropertyChangeEvent eqEvent(PropertyChangeEvent in) {
 	    reportMatcher(new PropertyChangeEventMatcher(in));
 	    return null;
-	}
-
-	static void testAdder(Study source, String propertyName, PatientGroup g2) {
-		testAdder(source, propertyName, null, g2);
-	}
-
-	static void testAdder(Study source, String propertyName, PatientGroup g2, String propertySingular) {
-		testAdder(source, propertyName, propertySingular, g2);
 	}
 
 	@SuppressWarnings("unchecked")

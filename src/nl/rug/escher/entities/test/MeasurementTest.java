@@ -1,6 +1,7 @@
 package nl.rug.escher.entities.test;
 
 import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
 import java.beans.PropertyChangeListener;
 
@@ -29,6 +30,15 @@ public class MeasurementTest {
 	@Test
 	public void testSetEndpoint() {
 		Helper.testSetter(new Measurement(), Measurement.PROPERTY_ENDPOINT, null, new Endpoint());
+	}
+	
+	@Test
+	public void testToString() {
+		Measurement m = new Measurement();
+		assertEquals("INCOMPLETE", m.toString());
+		m.setMean(0.0);
+		m.setStdDev(1.0);
+		assertEquals("0.0 \u00B1 1.0", m.toString());
 	}
 	
 	@Test

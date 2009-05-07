@@ -59,6 +59,11 @@ public class Measurement extends Model {
 	}
 	
 	public String getLabel() {
+		return toString();
+	}
+
+	@Override
+	public String toString() {
 		if (d_mean == null || d_stdDev == null) {
 			return "INCOMPLETE"; 
 		}

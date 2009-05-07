@@ -5,7 +5,9 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 
+import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.Endpoint;
 import nl.rug.escher.entities.Measurement;
 import nl.rug.escher.entities.PatientGroup;
@@ -16,17 +18,17 @@ import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.RowSpec;
 
 public class StudyView implements ViewBuilder {
 	PresentationModel<Study> d_model;
+	Domain d_domain;
 	Main d_mainWindow;
 
-	public StudyView(PresentationModel<Study> model, Main main) {
+	public StudyView(PresentationModel<Study> model, Domain domain, Main main) {
 		d_model = model;
 		d_mainWindow = main;
+		d_domain = domain;
 	}
 	
 	public JComponent buildPanel() {
@@ -36,8 +38,7 @@ public class StudyView implements ViewBuilder {
 				);
 		int fullWidth = 3;
 		for (int i = 1; i < d_model.getBean().getEndpoints().size(); ++i) {
-			layout.appendColumn(ColumnSpec.decode("3dlu"));
-			layout.appendColumn(ColumnSpec.decode("pref"));
+			LayoutUtil.addColumn(layout);
 			fullWidth += 2;
 		}
 		
@@ -71,8 +72,7 @@ public class StudyView implements ViewBuilder {
 		row += 2;
 		
 		for (PatientGroup g : d_model.getBean().getPatientGroups()) {
-			layout.appendRow(RowSpec.decode("3dlu"));
-			layout.appendRow(RowSpec.decode("p"));
+			LayoutUtil.addRow(layout);
 			builder.add(
 					BasicComponentFactory.createLabel(
 							new PresentationModel<PatientGroup>(g).getModel(PatientGroup.PROPERTY_LABEL)),
@@ -98,8 +98,7 @@ public class StudyView implements ViewBuilder {
 		
 		int row = 7;
 		for (Endpoint e : d_model.getBean().getEndpoints()) {
-			layout.appendRow(RowSpec.decode("3dlu"));
-			layout.appendRow(RowSpec.decode("p"));
+			LayoutUtil.addRow(layout);
 			builder.add(
 					BasicComponentFactory.createLabel(
 							new PresentationModel<Endpoint>(e).getModel(Endpoint.PROPERTY_NAME)),
@@ -108,7 +107,39 @@ public class StudyView implements ViewBuilder {
 					buildFindStudiesButton(e), cc.xy(3, row));
 			row += 2;
 		}
+		LayoutUtil.addRow(layout);
+		builder.add(buildAddEndpointButton(), cc.xy(1, row));
+		
+		row += 2;
+		
 		return row;
+	}
+
+	private JPanel buildAddEndpointButton() {
+		JButton button = new JButton("Add Endpoint");
+		button.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				addEndpointClicked();
+			}			
+		});
+		ButtonBarBuilder2 bbarBuilder = new ButtonBarBuilder2();
+		bbarBuilder.addGlue();
+		bbarBuilder.addButton(button);
+		
+		if (studyHasAllEndpoints()) {
+			button.setEnabled(false);
+		}
+		
+		JPanel panel = bbarBuilder.getPanel();
+		return panel;
+	}
+
+	private boolean studyHasAllEndpoints() {
+		return d_model.getBean().getEndpoints().containsAll(d_domain.getEndpoints());
+	}
+
+	private void addEndpointClicked() {
+		d_mainWindow.showStudyAddEndpointDialog(d_model.getBean());
 	}
 
 	private JComponent buildFindStudiesButton(final Endpoint endpoint) {

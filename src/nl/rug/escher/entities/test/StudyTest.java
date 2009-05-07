@@ -25,6 +25,11 @@ public class StudyTest {
 	}
 	
 	@Test
+	public void testAddEndpoint() {
+		Helper.testAdder(new Study(), Study.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint());
+	}
+	
+	@Test
 	public void testSetPatientGroups() {
 		List<PatientGroup> list = Collections.singletonList(new PatientGroup());
 		Helper.testSetter(new Study(), Study.PROPERTY_PATIENTGROUPS, Collections.EMPTY_LIST, 

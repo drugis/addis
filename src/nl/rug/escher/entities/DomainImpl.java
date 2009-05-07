@@ -1,5 +1,7 @@
 package nl.rug.escher.entities;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,12 @@ public class DomainImpl implements Domain {
 	private List<Study> d_studies;
 	private List<Drug> d_drugs;
 	private List<DomainListener> d_listeners;
+	
+	private PropertyChangeListener d_studyListener = new PropertyChangeListener() {
+		public void propertyChange(PropertyChangeEvent evt) {
+			fireStudiesChanged();
+		}
+	};
 	
 	public DomainImpl() {
 		d_endpoints = new ArrayList<Endpoint>();
@@ -50,6 +58,7 @@ public class DomainImpl implements Domain {
 		if (s == null) {
 			throw new NullPointerException("Study may not be null");
 		}
+		s.addPropertyChangeListener(d_studyListener);
 		d_studies.add(s);
 		
 		fireStudiesChanged();
