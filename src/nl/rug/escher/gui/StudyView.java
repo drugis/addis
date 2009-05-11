@@ -7,7 +7,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.text.DefaultFormatter;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.Endpoint;

@@ -106,6 +106,10 @@ public class EndpointStudiesView implements ViewBuilder {
 			}
 		}
 		
+		showMetaAnalysisDialog(studies);
+	}
+
+	private void showMetaAnalysisDialog(List<Study> studies) {
 		JOptionPane.showMessageDialog(null,
 				"Meta-Analyze Not Implemented\n\n" + studies.toString(),
 				"Meta-Analyze", JOptionPane.ERROR_MESSAGE);
