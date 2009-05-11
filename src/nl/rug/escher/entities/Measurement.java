@@ -3,25 +3,20 @@ package nl.rug.escher.entities;
 import com.jgoodies.binding.beans.Model;
 
 public abstract class Measurement extends Model {
-
 	private PatientGroup d_patientGroup;
-
-	public abstract String getLabel();
-
-	public abstract Double getStdDev();
-
-	public abstract Double getMean();
-
 	private Endpoint d_endpoint;
+
 	public static final String PROPERTY_MEAN = "mean";
 	public static final String PROPERTY_STDDEV = "stdDev";
 	public static final String PROPERTY_PATIENTGROUP = "patientGroup";
 	public static final String PROPERTY_ENDPOINT = "endpoint";
 	public static final String PROPERTY_LABEL = "label";
 
-	public Measurement() {
-		super();
-	}
+	public abstract String getLabel();
+
+	public abstract Double getStdDev();
+
+	public abstract Double getMean();
 
 	public PatientGroup getPatientGroup() {
 		return d_patientGroup;
