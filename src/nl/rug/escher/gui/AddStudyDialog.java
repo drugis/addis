@@ -72,6 +72,7 @@ public class AddStudyDialog extends OkCancelDialog {
 		Dose d = new Dose();
 		d.setQuantity(0.0);
 		group.setDose(d);
+		group.setSize(0);
 		return group;
 	}
 

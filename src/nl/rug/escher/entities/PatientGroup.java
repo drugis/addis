@@ -7,11 +7,13 @@ import com.jgoodies.binding.beans.Model;
 
 public class PatientGroup extends Model {
 	private Study d_study;
+	private Integer d_size;
 	private Drug d_drug;
 	private Dose d_dose;
 	private List<Measurement> d_measurements = new ArrayList<Measurement>();
 	
 	public static final String PROPERTY_STUDY = "study";
+	public static final String PROPERTY_SIZE = "size";
 	public static final String PROPERTY_DRUG = "drug";
 	public static final String PROPERTY_DOSE = "dose";
 	public static final String PROPERTY_MEASUREMENTS = "measurements";
@@ -90,5 +92,15 @@ public class PatientGroup extends Model {
 			return "INCOMPLETE";
 		}
 		return d_drug.toString() + " " + d_dose.toString();
+	}
+
+	public Integer getSize() {
+		return d_size;
+	}
+
+	public void setSize(Integer size) {
+		Integer oldVal = d_size;
+		d_size = size;
+		firePropertyChange(PROPERTY_SIZE, oldVal, d_size);
 	}
 }

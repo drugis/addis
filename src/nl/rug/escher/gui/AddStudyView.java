@@ -54,10 +54,10 @@ public class AddStudyView implements ViewBuilder {
 		initComponents();
 		
 		FormLayout layout = new FormLayout(
-				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref",
+				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);	
-		int fullWidth = 7;
+		int fullWidth = 9;
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
@@ -72,19 +72,15 @@ public class AddStudyView implements ViewBuilder {
 		
 		builder.addSeparator("Patient Groups", cc.xyw(1, 7, fullWidth));
 		int row = 9;
+		builder.addLabel("Size", cc.xy(1, row));
+		builder.addLabel("Drug", cc.xy(3, row));
+		builder.addLabel("Dose", cc.xy(5, row));
+		builder.addLabel("Mean", cc.xy(7, row));
+		builder.addLabel("StdDev", cc.xy(9, row));
 		if (patientGroupsPresent()) {
-			builder.addLabel("Drug", cc.xy(1, row));
-			builder.addLabel("Dose", cc.xy(3, row));
-			builder.addLabel("Mean", cc.xy(5, row));
-			builder.addLabel("StdDev", cc.xy(7, row));
 			buildPatientGroups(layout, fullWidth, builder, cc, row + 2);
 		} else {
-			builder.addLabel("Drug", cc.xy(1, row));
-			builder.addLabel("Dose", cc.xy(3, row));
-			builder.addLabel("Mean", cc.xy(5, row));
-			builder.addLabel("StdDev", cc.xy(7, row));
-			layout.appendRow(RowSpec.decode("3dlu"));
-			layout.appendRow(RowSpec.decode("p"));
+			LayoutUtil.addRow(layout);
 			builder.addLabel("No patient groups present", cc.xyw(1, row + 2, fullWidth));
 		}
 		
@@ -95,20 +91,21 @@ public class AddStudyView implements ViewBuilder {
 			PanelBuilder builder, CellConstraints cc, int row) {
 		List<PatientGroup> groups = d_model.getBean().getPatientGroups();
 		for (PatientGroup g : groups) {
-			layout.appendRow(RowSpec.decode("3dlu"));
-			layout.appendRow(RowSpec.decode("p"));
+			LayoutUtil.addRow(layout);
 			PresentationModel<PatientGroup> model = new PresentationModel<PatientGroup>(g);
 			PresentationModel<Measurement> mModel =
 				new PresentationModel<Measurement>(g.getMeasurements().get(0));
 			
-			builder.add(createDrugSelector(model), cc.xy(1, row));
+			builder.add(buildFormatted(model.getModel(PatientGroup.PROPERTY_SIZE)), cc.xy(1, row));
+			
+			builder.add(createDrugSelector(model), cc.xy(3, row));
 			
 			DoseView view = new DoseView(new PresentationModel<Dose>(g.getDose()));
-			builder.add(view.buildPanel(), cc.xy(3, row));
+			builder.add(view.buildPanel(), cc.xy(5, row));
 			
-			builder.add(buildFormatted(mModel.getModel(Measurement.PROPERTY_MEAN)), cc.xy(5,row));
+			builder.add(buildFormatted(mModel.getModel(Measurement.PROPERTY_MEAN)), cc.xy(7,row));
 			
-			builder.add(buildFormatted(mModel.getModel(Measurement.PROPERTY_STDDEV)), cc.xy(7,row));
+			builder.add(buildFormatted(mModel.getModel(Measurement.PROPERTY_STDDEV)), cc.xy(9,row));
 			
 			row += 2;
 		}

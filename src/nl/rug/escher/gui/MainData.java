@@ -42,6 +42,7 @@ public class MainData {
 		dose.setQuantity(25.5);
 		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		parox.setDose(dose);
+		parox.setSize(102);
 		Measurement pHamd = new Measurement();
 		pHamd.setEndpoint(d_hamd);
 		pHamd.setPatientGroup(parox);
@@ -55,6 +56,7 @@ public class MainData {
 		dose.setQuantity(27.5);
 		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		fluox.setDose(dose);
+		fluox.setSize(101);
 		Measurement fHamd = new Measurement();
 		fHamd.setEndpoint(d_hamd);
 		fHamd.setPatientGroup(fluox);
@@ -79,6 +81,7 @@ public class MainData {
 		dose.setQuantity(25.5);
 		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		parox.setDose(dose);
+		parox.setSize(102);
 		Measurement pHamd = new Measurement();
 		pHamd.setEndpoint(d_hamd);
 		pHamd.setPatientGroup(parox);
@@ -98,6 +101,7 @@ public class MainData {
 		dose.setQuantity(27.5);
 		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		fluox.setDose(dose);
+		fluox.setSize(101);
 		Measurement fHamd = new Measurement();
 		fHamd.setEndpoint(d_hamd);
 		fHamd.setPatientGroup(fluox);

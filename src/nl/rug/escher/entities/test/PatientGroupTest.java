@@ -24,6 +24,11 @@ public class PatientGroupTest {
 	}
 	
 	@Test
+	public void testSetSize() {
+		Helper.testSetter(new PatientGroup(), PatientGroup.PROPERTY_SIZE, null, 1);
+	}
+	
+	@Test
 	public void testSetDrug() {
 		Helper.testSetter(new PatientGroup(), PatientGroup.PROPERTY_DRUG, null, new Drug());
 	}

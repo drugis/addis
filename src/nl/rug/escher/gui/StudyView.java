@@ -1,11 +1,13 @@
 package nl.rug.escher.gui;
 
 import java.awt.event.ActionEvent;
+import java.text.NumberFormat;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.text.DefaultFormatter;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.Endpoint;
@@ -33,10 +35,10 @@ public class StudyView implements ViewBuilder {
 	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
-				"right:pref, 3dlu, pref",
+				"right:pref, 3dlu, pref, 3dlu, pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
-		int fullWidth = 3;
+		int fullWidth = 5;
 		for (int i = 1; i < d_model.getBean().getEndpoints().size(); ++i) {
 			LayoutUtil.addColumn(layout);
 			fullWidth += 2;
@@ -61,7 +63,8 @@ public class StudyView implements ViewBuilder {
 		builder.addSeparator("Data", cc.xyw(1, row, fullWidth));
 		row += 2;
 		
-		int col = 3;
+		builder.addLabel("Size", cc.xy(3, row));		
+		int col = 5;
 		for (Endpoint e : d_model.getBean().getEndpoints()) {
 			builder.add(
 					BasicComponentFactory.createLabel(
@@ -78,7 +81,13 @@ public class StudyView implements ViewBuilder {
 							new PresentationModel<PatientGroup>(g).getModel(PatientGroup.PROPERTY_LABEL)),
 					cc.xy(1, row));
 			
-			col = 3;
+			builder.add(
+					BasicComponentFactory.createLabel(
+							new PresentationModel<PatientGroup>(g).getModel(PatientGroup.PROPERTY_SIZE),
+							NumberFormat.getInstance()),
+							cc.xy(3, row));
+			
+			col = 5;
 			for (Endpoint e : d_model.getBean().getEndpoints()) {
 				Measurement m = g.getMeasurement(e);
 				builder.add(
