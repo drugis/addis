@@ -10,7 +10,7 @@ public class PatientGroup extends Model {
 	private Integer d_size;
 	private Drug d_drug;
 	private Dose d_dose;
-	private List<Measurement> d_measurements = new ArrayList<Measurement>();
+	private List<ContinuousMeasurement> d_measurements = new ArrayList<ContinuousMeasurement>();
 	
 	public static final String PROPERTY_STUDY = "study";
 	public static final String PROPERTY_SIZE = "size";
@@ -53,18 +53,18 @@ public class PatientGroup extends Model {
 		firePropertyChange(PROPERTY_LABEL, oldLabel, toString());
 	}
 
-	public List<Measurement> getMeasurements() {
+	public List<ContinuousMeasurement> getMeasurements() {
 		return d_measurements;
 	}
 
-	public void setMeasurements(List<Measurement> measurements) {
-		List<Measurement> oldVal = d_measurements;
+	public void setMeasurements(List<ContinuousMeasurement> measurements) {
+		List<ContinuousMeasurement> oldVal = d_measurements;
 		d_measurements = measurements;
 		firePropertyChange(PROPERTY_MEASUREMENTS, oldVal, d_measurements);
 	}
 	
-	public void addMeasurement(Measurement m) {
-		List<Measurement> newVal = new ArrayList<Measurement>(d_measurements);
+	public void addMeasurement(ContinuousMeasurement m) {
+		List<ContinuousMeasurement> newVal = new ArrayList<ContinuousMeasurement>(d_measurements);
 		newVal.add(m);
 		setMeasurements(newVal);
 	}
@@ -74,8 +74,8 @@ public class PatientGroup extends Model {
 	 * @param endpoint Endpoint to get measurement for.
 	 * @return Measurement if Endpoint is measured, null otherwise.
 	 */
-	public Measurement getMeasurement(Endpoint endpoint) {
-		for (Measurement m : d_measurements) {
+	public ContinuousMeasurement getMeasurement(Endpoint endpoint) {
+		for (ContinuousMeasurement m : d_measurements) {
 			if (m.getEndpoint().equals(endpoint)) {
 				return m;
 			}

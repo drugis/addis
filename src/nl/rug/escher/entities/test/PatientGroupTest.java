@@ -10,7 +10,7 @@ import java.util.List;
 import nl.rug.escher.entities.Dose;
 import nl.rug.escher.entities.Drug;
 import nl.rug.escher.entities.Endpoint;
-import nl.rug.escher.entities.Measurement;
+import nl.rug.escher.entities.ContinuousMeasurement;
 import nl.rug.escher.entities.PatientGroup;
 import nl.rug.escher.entities.SIUnit;
 import nl.rug.escher.entities.Study;
@@ -47,7 +47,7 @@ public class PatientGroupTest {
 	
 	@Test
 	public void testSetMeasurements() {
-		List<Measurement> list = Collections.singletonList(new Measurement());
+		List<ContinuousMeasurement> list = Collections.singletonList(new ContinuousMeasurement());
 		Helper.testSetter(new PatientGroup(), PatientGroup.PROPERTY_MEASUREMENTS, Collections.EMPTY_LIST, 
 				list);
 	}
@@ -55,7 +55,7 @@ public class PatientGroupTest {
 	@Test
 	public void testAddMeasurement() {
 		Helper.testAdder(new PatientGroup(), PatientGroup.PROPERTY_MEASUREMENTS,
-				"addMeasurement", new Measurement());
+				"addMeasurement", new ContinuousMeasurement());
 	}
 	
 	@Test
@@ -113,9 +113,9 @@ public class PatientGroupTest {
 		Endpoint e3 = new Endpoint();
 		e3.setName("e3");
 		
-		Measurement m1 = new Measurement();
+		ContinuousMeasurement m1 = new ContinuousMeasurement();
 		m1.setEndpoint(e1);
-		Measurement m2 = new Measurement();
+		ContinuousMeasurement m2 = new ContinuousMeasurement();
 		m2.setEndpoint(e2);
 		
 		PatientGroup g = new PatientGroup();

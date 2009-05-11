@@ -9,6 +9,7 @@ import javax.swing.text.DefaultFormatter;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.Endpoint;
+import nl.rug.escher.entities.ContinuousMeasurement;
 import nl.rug.escher.entities.Measurement;
 import nl.rug.escher.entities.PatientGroup;
 import nl.rug.escher.entities.Study;
@@ -24,13 +25,13 @@ public class StudyAddEndpointView implements ViewBuilder {
 	private Domain d_domain;
 	private Study d_study;
 	private PresentationModel<EndpointHolder> d_endpointModel;
-	private List<Measurement> d_measurements;
+	private List<ContinuousMeasurement> d_measurements;
 	
 	private JComboBox d_endpointSelect;
 	private SelectionInList<Endpoint> d_endpointSelectionInList;
 	
 	public StudyAddEndpointView(Domain domain, Study study,
-			PresentationModel<EndpointHolder> endpointModel, List<Measurement> measurements) {
+			PresentationModel<EndpointHolder> endpointModel, List<ContinuousMeasurement> measurements) {
 		d_domain = domain;
 		d_study = study;
 		d_endpointModel = endpointModel;
@@ -40,7 +41,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 
 	private void initializeMeasurements() {
 		for (PatientGroup g : d_study.getPatientGroups()) {
-			Measurement m = new Measurement();
+			ContinuousMeasurement m = new ContinuousMeasurement();
 			m.setPatientGroup(g);
 			m.setMean(0.0);
 			m.setStdDev(0.0);
@@ -94,9 +95,9 @@ public class StudyAddEndpointView implements ViewBuilder {
 
 	private void buildMeasurementsPart(PanelBuilder builder,
 			CellConstraints cc, int row, FormLayout layout) {
-		for (Measurement m : d_measurements) {
+		for (ContinuousMeasurement m : d_measurements) {
 			LayoutUtil.addRow(layout);
-			PresentationModel<Measurement> model = new PresentationModel<Measurement>(m);
+			PresentationModel<ContinuousMeasurement> model = new PresentationModel<ContinuousMeasurement>(m);
 			PresentationModel<PatientGroup> gModel = 
 				new PresentationModel<PatientGroup>(m.getPatientGroup());
 			builder.add(BasicComponentFactory.createLabel(gModel.getModel(PatientGroup.PROPERTY_LABEL)),

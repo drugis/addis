@@ -12,6 +12,7 @@ import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.Dose;
 import nl.rug.escher.entities.Drug;
 import nl.rug.escher.entities.Endpoint;
+import nl.rug.escher.entities.ContinuousMeasurement;
 import nl.rug.escher.entities.Measurement;
 import nl.rug.escher.entities.PatientGroup;
 import nl.rug.escher.entities.Study;
@@ -92,8 +93,8 @@ public class AddStudyView implements ViewBuilder {
 		for (PatientGroup g : groups) {
 			LayoutUtil.addRow(layout);
 			PresentationModel<PatientGroup> model = new PresentationModel<PatientGroup>(g);
-			PresentationModel<Measurement> mModel =
-				new PresentationModel<Measurement>(g.getMeasurements().get(0));
+			PresentationModel<ContinuousMeasurement> mModel =
+				new PresentationModel<ContinuousMeasurement>(g.getMeasurements().get(0));
 			
 			builder.add(buildFormatted(model.getModel(PatientGroup.PROPERTY_SIZE)), cc.xy(1, row));
 			

@@ -8,33 +8,34 @@ import java.beans.PropertyChangeListener;
 import org.junit.Test;
 
 import nl.rug.escher.entities.Endpoint;
+import nl.rug.escher.entities.ContinuousMeasurement;
 import nl.rug.escher.entities.Measurement;
 import nl.rug.escher.entities.PatientGroup;
 
 public class MeasurementTest {
 	@Test
 	public void testSetMean() {
-		Helper.testSetter(new Measurement(), Measurement.PROPERTY_MEAN, null, 25.91);
+		Helper.testSetter(new ContinuousMeasurement(), Measurement.PROPERTY_MEAN, null, 25.91);
 	}
 	
 	@Test
 	public void testSetStdDev() {
-		Helper.testSetter(new Measurement(), Measurement.PROPERTY_STDDEV, null, 0.46);
+		Helper.testSetter(new ContinuousMeasurement(), Measurement.PROPERTY_STDDEV, null, 0.46);
 	}
 	
 	@Test
 	public void testSetPatientGroup() {
-		Helper.testSetter(new Measurement(), Measurement.PROPERTY_PATIENTGROUP, null, new PatientGroup());
+		Helper.testSetter(new ContinuousMeasurement(), Measurement.PROPERTY_PATIENTGROUP, null, new PatientGroup());
 	}
 	
 	@Test
 	public void testSetEndpoint() {
-		Helper.testSetter(new Measurement(), Measurement.PROPERTY_ENDPOINT, null, new Endpoint());
+		Helper.testSetter(new ContinuousMeasurement(), Measurement.PROPERTY_ENDPOINT, null, new Endpoint());
 	}
 	
 	@Test
 	public void testToString() {
-		Measurement m = new Measurement();
+		ContinuousMeasurement m = new ContinuousMeasurement();
 		assertEquals("INCOMPLETE", m.toString());
 		m.setMean(0.0);
 		m.setStdDev(1.0);
@@ -43,7 +44,7 @@ public class MeasurementTest {
 	
 	@Test
 	public void testFireLabelChanged() {
-		Measurement measurement = new Measurement();
+		ContinuousMeasurement measurement = new ContinuousMeasurement();
 		measurement.setMean(25.5);
 		PropertyChangeListener l = Helper.mockListener(
 				measurement, Measurement.PROPERTY_LABEL, "INCOMPLETE", "25.5 \u00B1 1.1");

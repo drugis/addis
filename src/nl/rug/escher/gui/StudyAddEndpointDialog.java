@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import com.jgoodies.binding.PresentationModel;
 
 import nl.rug.escher.entities.Domain;
+import nl.rug.escher.entities.ContinuousMeasurement;
 import nl.rug.escher.entities.Measurement;
 import nl.rug.escher.entities.Study;
 
@@ -15,13 +16,13 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private Study d_study;
 	private EndpointHolder d_newEndpoint;
-	private List<Measurement> d_measurements;
+	private List<ContinuousMeasurement> d_measurements;
 	
 	public StudyAddEndpointDialog(JFrame frame, Domain domain, Study study) {
 		super(frame, "Add Endpoint to Study");
 		d_domain = domain;
 		d_study = study;
-		d_measurements = new ArrayList<Measurement>();
+		d_measurements = new ArrayList<ContinuousMeasurement>();
 		d_newEndpoint = new EndpointHolder();
 		StudyAddEndpointView view = new StudyAddEndpointView(d_domain, d_study,
 				new PresentationModel<EndpointHolder>(d_newEndpoint), d_measurements);
@@ -42,7 +43,7 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 	}
 
 	private void addMeasurementsToPatientGroups() {
-		for (Measurement m : d_measurements) {
+		for (ContinuousMeasurement m : d_measurements) {
 			m.getPatientGroup().addMeasurement(m);
 		}
 	}

@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.Dose;
-import nl.rug.escher.entities.Measurement;
+import nl.rug.escher.entities.ContinuousMeasurement;
 import nl.rug.escher.entities.PatientGroup;
 import nl.rug.escher.entities.Study;
 
@@ -65,7 +65,7 @@ public class AddStudyDialog extends OkCancelDialog {
 
 	private PatientGroup initializePatientGroup() {
 		PatientGroup group = new PatientGroup();
-		Measurement m = new Measurement();
+		ContinuousMeasurement m = new ContinuousMeasurement();
 		m.setMean(0.0);
 		m.setStdDev(0.0);
 		group.addMeasurement(m);
