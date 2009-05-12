@@ -4,24 +4,18 @@ import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
-import javax.swing.text.DefaultFormatter;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.Dose;
 import nl.rug.escher.entities.Drug;
 import nl.rug.escher.entities.Endpoint;
-import nl.rug.escher.entities.ContinuousMeasurement;
-import nl.rug.escher.entities.Measurement;
 import nl.rug.escher.entities.PatientGroup;
 import nl.rug.escher.entities.Study;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.list.SelectionInList;
-import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -31,7 +25,6 @@ public class AddStudyView implements ViewBuilder {
 	private JComboBox d_endpoint;
 	private PresentationModel<Study> d_model;
 	private PresentationModel<EndpointHolder> d_endpointModel;
-	private SelectionInList<Endpoint> d_endpointSelectionInList;
 	private Domain d_domain;
 
 	public AddStudyView(PresentationModel<Study> presentationModel,
@@ -45,19 +38,26 @@ public class AddStudyView implements ViewBuilder {
 		d_id = BasicComponentFactory.createTextField(d_model.getModel(Study.PROPERTY_ID));
 		d_id.setColumns(15);
 		
-		d_endpointSelectionInList = new SelectionInList<Endpoint>(d_domain.getEndpoints(), 
+		SelectionInList<Endpoint> endpointSelectionInList =
+			new SelectionInList<Endpoint>(d_domain.getEndpoints(), 
 				d_endpointModel.getModel(EndpointHolder.PROPERTY_ENDPOINT));
-		d_endpoint = BasicComponentFactory.createComboBox(d_endpointSelectionInList);
+		d_endpoint = BasicComponentFactory.createComboBox(endpointSelectionInList);
 	}
-
+	
 	public JComponent buildPanel() {
 		initComponents();
 		
 		FormLayout layout = new FormLayout(
-				"pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref",
+				"pref, 3dlu, pref, 3dlu, pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);	
-		int fullWidth = 9;
+		int fullWidth = 5;
+		if (getEndpoint() != null) {
+			for (int i = 0; i < MeasurementInputHelper.numComponents(getEndpoint()); ++i) {
+				LayoutUtil.addColumn(layout);
+				fullWidth += 2;
+			}
+		}
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
@@ -75,8 +75,13 @@ public class AddStudyView implements ViewBuilder {
 		builder.addLabel("Size", cc.xy(1, row));
 		builder.addLabel("Drug", cc.xy(3, row));
 		builder.addLabel("Dose", cc.xy(5, row));
-		builder.addLabel("Mean", cc.xy(7, row));
-		builder.addLabel("StdDev", cc.xy(9, row));
+		if (getEndpoint() != null) {
+			int col = 7;
+			for (String header : MeasurementInputHelper.getHeaders(getEndpoint())) {
+				builder.addLabel(header, cc.xy(col, row));
+				col += 2;
+			}
+		}
 		if (patientGroupsPresent()) {
 			buildPatientGroups(layout, fullWidth, builder, cc, row + 2);
 		} else {
@@ -87,36 +92,39 @@ public class AddStudyView implements ViewBuilder {
 		return builder.getPanel();	
 	}
 
+	private Endpoint getEndpoint() {
+		return d_endpointModel.getBean().getEndpoint();
+	}
+
 	private void buildPatientGroups(FormLayout layout, int fullWidth,
 			PanelBuilder builder, CellConstraints cc, int row) {
 		List<PatientGroup> groups = d_model.getBean().getPatientGroups();
 		for (PatientGroup g : groups) {
 			LayoutUtil.addRow(layout);
 			PresentationModel<PatientGroup> model = new PresentationModel<PatientGroup>(g);
-			PresentationModel<ContinuousMeasurement> mModel =
-				new PresentationModel<ContinuousMeasurement>(g.getMeasurements().get(0));
+			//PresentationModel<Measurement> mModel =
+			//	new PresentationModel<Measurement>(g.getMeasurements().get(0));
 			
-			builder.add(buildFormatted(model.getModel(PatientGroup.PROPERTY_SIZE)), cc.xy(1, row));
+			builder.add(MeasurementInputHelper.buildFormatted(model.getModel(PatientGroup.PROPERTY_SIZE)), cc.xy(1, row));
 			
 			builder.add(createDrugSelector(model), cc.xy(3, row));
 			
 			DoseView view = new DoseView(new PresentationModel<Dose>(g.getDose()));
 			builder.add(view.buildPanel(), cc.xy(5, row));
 			
-			builder.add(buildFormatted(mModel.getModel(Measurement.PROPERTY_MEAN)), cc.xy(7,row));
 			
-			builder.add(buildFormatted(mModel.getModel(Measurement.PROPERTY_STDDEV)), cc.xy(9,row));
+			if (g.getMeasurements().size() > 0) {
+				int col = 7;
+				for (JComponent component : MeasurementInputHelper.getComponents(g.getMeasurements().get(0))) {
+					builder.add(component, cc.xy(col, row));
+					col += 2;
+				}
+			}
 			
 			row += 2;
 		}
 	}
 
-	private static JFormattedTextField buildFormatted(ValueModel model) {
-		JFormattedTextField field = new JFormattedTextField(new DefaultFormatter());
-		PropertyConnector.connectAndUpdate(model, field, "value");
-		return field;
-	}
-	
 	private JComponent createDrugSelector(PresentationModel<PatientGroup> model) {
 		SelectionInList<Drug> drugSelectionInList =
 			new SelectionInList<Drug>(

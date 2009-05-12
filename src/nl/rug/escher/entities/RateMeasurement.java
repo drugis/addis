@@ -12,6 +12,12 @@ public class RateMeasurement extends Measurement {
 	public RateMeasurement() {
 		d_listener = new PatientGroupListener();
 	}
+	
+	public RateMeasurement(Endpoint e) {
+		super(e);
+		d_listener = new PatientGroupListener();
+		d_rate = 0; // FIXME
+	}
 
 	@Override
 	public String getLabel() {

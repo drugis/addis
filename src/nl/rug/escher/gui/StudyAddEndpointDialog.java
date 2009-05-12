@@ -1,31 +1,45 @@
 package nl.rug.escher.gui;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
 
-import com.jgoodies.binding.PresentationModel;
-
 import nl.rug.escher.entities.Domain;
-import nl.rug.escher.entities.ContinuousMeasurement;
 import nl.rug.escher.entities.Measurement;
 import nl.rug.escher.entities.Study;
+
+import com.jgoodies.binding.PresentationModel;
 
 public class StudyAddEndpointDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private Study d_study;
 	private EndpointHolder d_newEndpoint;
-	private List<ContinuousMeasurement> d_measurements;
+	private List<Measurement> d_measurements;
 	
 	public StudyAddEndpointDialog(JFrame frame, Domain domain, Study study) {
 		super(frame, "Add Endpoint to Study");
 		d_domain = domain;
 		d_study = study;
-		d_measurements = new ArrayList<ContinuousMeasurement>();
+		d_measurements = new ArrayList<Measurement>();
 		d_newEndpoint = new EndpointHolder();
-		StudyAddEndpointView view = new StudyAddEndpointView(d_domain, d_study,
+		final StudyAddEndpointView view = new StudyAddEndpointView(d_domain, d_study,
 				new PresentationModel<EndpointHolder>(d_newEndpoint), d_measurements);
+		
+		
+		d_newEndpoint.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				initPanel(view);
+			}
+		});
+		initPanel(view);
+	}
+
+	private void initPanel(StudyAddEndpointView view) {
+		d_measurements.clear();
+		getUserPanel().removeAll();
 		getUserPanel().add(view.buildPanel());
 		pack();
 	}
@@ -43,7 +57,7 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 	}
 
 	private void addMeasurementsToPatientGroups() {
-		for (ContinuousMeasurement m : d_measurements) {
+		for (Measurement m : d_measurements) {
 			m.getPatientGroup().addMeasurement(m);
 		}
 	}

@@ -28,6 +28,8 @@ public class AddEndpointDialog extends OkCancelDialog {
 	protected void commit() {
 		d_domain.addEndpoint(d_endpoint);
 		System.out.println("Endpoints: " + d_domain.getEndpoints());
+		System.out.println("Study " + d_domain.getStudies().get(0) + " has " +
+				d_domain.getStudies().get(0).getEndpoints());
 		setVisible(false);
 	}
 }

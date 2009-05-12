@@ -2,6 +2,9 @@ package nl.rug.escher.gui;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -10,7 +13,7 @@ import javax.swing.JFrame;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.Dose;
-import nl.rug.escher.entities.ContinuousMeasurement;
+import nl.rug.escher.entities.Measurement;
 import nl.rug.escher.entities.PatientGroup;
 import nl.rug.escher.entities.Study;
 
@@ -24,13 +27,27 @@ public class AddStudyDialog extends OkCancelDialog {
 	private AddStudyView d_view;
 	
 	public AddStudyDialog(JFrame frame, Domain domain) {
-		super(frame, "Add Endpoint");
+		super(frame, "Add Study");
 		d_domain = domain;
 		d_study = new Study();
 		d_primaryEndpoint = new EndpointHolder();
+		d_primaryEndpoint.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent arg0) {
+				buildMeasurements();
+				initUserPanel();
+			}
+		});
 		d_view = new AddStudyView(new PresentationModel<Study>(d_study),
 				new PresentationModel<EndpointHolder>(d_primaryEndpoint), domain);
 		initUserPanel();
+	}
+
+	protected void buildMeasurements() {
+		for (PatientGroup g : d_study.getPatientGroups()) {
+			g.setMeasurements(new ArrayList<Measurement>());
+			Measurement m = d_primaryEndpoint.getEndpoint().buildMeasurement();
+			g.addMeasurement(m);
+		}
 	}
 
 	private void initUserPanel() {
@@ -42,7 +59,7 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	private JComponent buildButtonBar() {
-		ButtonBarBuilder2 builder = new ButtonBarBuilder2();	
+		ButtonBarBuilder2 builder = new ButtonBarBuilder2();
 		builder.addButton(createAddPatientGroupButton());
 		return builder.getPanel();
 	}
@@ -65,10 +82,10 @@ public class AddStudyDialog extends OkCancelDialog {
 
 	private PatientGroup initializePatientGroup() {
 		PatientGroup group = new PatientGroup();
-		ContinuousMeasurement m = new ContinuousMeasurement();
-		m.setMean(0.0);
-		m.setStdDev(0.0);
-		group.addMeasurement(m);
+		if (d_primaryEndpoint.getEndpoint() != null) {
+			Measurement m = d_primaryEndpoint.getEndpoint().buildMeasurement();
+			group.addMeasurement(m);
+		}
 		Dose d = new Dose();
 		d.setQuantity(0.0);
 		group.setDose(d);

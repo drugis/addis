@@ -5,11 +5,9 @@ import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.text.DefaultFormatter;
 
 import nl.rug.escher.entities.Domain;
 import nl.rug.escher.entities.Endpoint;
-import nl.rug.escher.entities.ContinuousMeasurement;
 import nl.rug.escher.entities.Measurement;
 import nl.rug.escher.entities.PatientGroup;
 import nl.rug.escher.entities.Study;
@@ -25,27 +23,26 @@ public class StudyAddEndpointView implements ViewBuilder {
 	private Domain d_domain;
 	private Study d_study;
 	private PresentationModel<EndpointHolder> d_endpointModel;
-	private List<ContinuousMeasurement> d_measurements;
+	private List<Measurement> d_measurements;
 	
 	private JComboBox d_endpointSelect;
 	private SelectionInList<Endpoint> d_endpointSelectionInList;
 	
 	public StudyAddEndpointView(Domain domain, Study study,
-			PresentationModel<EndpointHolder> endpointModel, List<ContinuousMeasurement> measurements) {
+			PresentationModel<EndpointHolder> endpointModel, List<Measurement> measurements) {
 		d_domain = domain;
 		d_study = study;
 		d_endpointModel = endpointModel;
 		d_measurements = measurements;
-		initializeMeasurements();
 	}
 
 	private void initializeMeasurements() {
 		for (PatientGroup g : d_study.getPatientGroups()) {
-			ContinuousMeasurement m = new ContinuousMeasurement();
-			m.setPatientGroup(g);
-			m.setMean(0.0);
-			m.setStdDev(0.0);
-			d_measurements.add(m);
+			if (getEndpoint() != null) {
+				Measurement m = getEndpoint().buildMeasurement();
+				m.setPatientGroup(g);
+				d_measurements.add(m);
+			}
 		}
 	}
 	
@@ -62,12 +59,19 @@ public class StudyAddEndpointView implements ViewBuilder {
 	}
 
 	public JComponent buildPanel() {
+		initializeMeasurements();
 		initComponents();
 		
 		FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, pref, 3dlu, pref",
+				"right:pref, 3dlu, pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
-		int fullWidth = 5;
+		int fullWidth = 3;
+		if (getEndpoint() != null) {
+			for (int i = 1; i < MeasurementInputHelper.numComponents(getEndpoint()); ++i) {
+				LayoutUtil.addColumn(layout);
+				fullWidth += 2;
+			}
+		}
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
@@ -85,29 +89,37 @@ public class StudyAddEndpointView implements ViewBuilder {
 		builder.add(d_endpointSelect, cc.xyw(3, 7, fullWidth - 2));
 		
 		builder.addSeparator("Data", cc.xyw(1, 9, fullWidth));
-		builder.addLabel("Mean", cc.xy(3, 11));
-		builder.addLabel("StdDev", cc.xy(5, 11));
+		
+		if (getEndpoint() != null) {
+			int col = 3;
+			for (String header : MeasurementInputHelper.getHeaders(getEndpoint())) {
+				builder.addLabel(header, cc.xy(col, 11));
+				col += 2;
+			}
+		}
 		
 		buildMeasurementsPart(builder, cc, 13, layout);
 		
 		return builder.getPanel();
 	}
 
+	private Endpoint getEndpoint() {
+		return d_endpointModel.getBean().getEndpoint();
+	}
+
 	private void buildMeasurementsPart(PanelBuilder builder,
 			CellConstraints cc, int row, FormLayout layout) {
-		for (ContinuousMeasurement m : d_measurements) {
+		for (Measurement m : d_measurements) {
 			LayoutUtil.addRow(layout);
-			PresentationModel<ContinuousMeasurement> model = new PresentationModel<ContinuousMeasurement>(m);
 			PresentationModel<PatientGroup> gModel = 
 				new PresentationModel<PatientGroup>(m.getPatientGroup());
 			builder.add(BasicComponentFactory.createLabel(gModel.getModel(PatientGroup.PROPERTY_LABEL)),
 					cc.xy(1, row));
-			builder.add(BasicComponentFactory.createFormattedTextField(
-					model.getModel(Measurement.PROPERTY_MEAN), new DefaultFormatter()),
-					cc.xy(3, row));
-			builder.add(BasicComponentFactory.createFormattedTextField(
-					model.getModel(Measurement.PROPERTY_STDDEV), new DefaultFormatter()),
-					cc.xy(5, row));
+			int col = 3;
+			for (JComponent component : MeasurementInputHelper.getComponents(m)) {
+				builder.add(component, cc.xy(col, row));
+				col += 2;
+			}
 			row += 2;
 		}
 	}

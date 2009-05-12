@@ -10,7 +10,7 @@ public class PatientGroup extends Model {
 	private Integer d_size;
 	private Drug d_drug;
 	private Dose d_dose;
-	private List<ContinuousMeasurement> d_measurements = new ArrayList<ContinuousMeasurement>();
+	private List<Measurement> d_measurements = new ArrayList<Measurement>();
 	
 	public static final String PROPERTY_STUDY = "study";
 	public static final String PROPERTY_SIZE = "size";
@@ -34,11 +34,11 @@ public class PatientGroup extends Model {
 	}
 	
 	public void setDrug(Drug drug) {
-		String oldLabel = toString();
+		String oldLabel = getLabel();
 		Drug oldVal = d_drug;
 		d_drug = drug;
 		firePropertyChange(PROPERTY_DRUG, oldVal, d_drug);
-		firePropertyChange(PROPERTY_LABEL, oldLabel, toString());
+		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
 	}
 	
 	public Dose getDose() {
@@ -46,26 +46,27 @@ public class PatientGroup extends Model {
 	}
 	
 	public void setDose(Dose dose) {
-		String oldLabel = toString();
+		String oldLabel = getLabel();
 		Dose oldVal = d_dose;
 		d_dose = dose;
 		firePropertyChange(PROPERTY_DOSE, oldVal, d_dose);
-		firePropertyChange(PROPERTY_LABEL, oldLabel, toString());
+		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
 	}
 
-	public List<ContinuousMeasurement> getMeasurements() {
+	public List<Measurement> getMeasurements() {
 		return d_measurements;
 	}
 
-	public void setMeasurements(List<ContinuousMeasurement> measurements) {
-		List<ContinuousMeasurement> oldVal = d_measurements;
+	public void setMeasurements(List<Measurement> measurements) {
+		List<Measurement> oldVal = d_measurements;
 		d_measurements = measurements;
 		firePropertyChange(PROPERTY_MEASUREMENTS, oldVal, d_measurements);
 	}
 	
-	public void addMeasurement(ContinuousMeasurement m) {
-		List<ContinuousMeasurement> newVal = new ArrayList<ContinuousMeasurement>(d_measurements);
+	public void addMeasurement(Measurement m) {
+		List<Measurement> newVal = new ArrayList<Measurement>(d_measurements);
 		newVal.add(m);
+		m.setPatientGroup(this);
 		setMeasurements(newVal);
 	}
 	
@@ -74,8 +75,8 @@ public class PatientGroup extends Model {
 	 * @param endpoint Endpoint to get measurement for.
 	 * @return Measurement if Endpoint is measured, null otherwise.
 	 */
-	public ContinuousMeasurement getMeasurement(Endpoint endpoint) {
-		for (ContinuousMeasurement m : d_measurements) {
+	public Measurement getMeasurement(Endpoint endpoint) {
+		for (Measurement m : d_measurements) {
 			if (m.getEndpoint().equals(endpoint)) {
 				return m;
 			}
@@ -84,14 +85,15 @@ public class PatientGroup extends Model {
 	}
 	
 	public String getLabel() {
-		return toString();
-	}
-	
-	public String toString() {
 		if (d_drug == null || d_dose == null) {
 			return "INCOMPLETE";
 		}
 		return d_drug.toString() + " " + d_dose.toString();
+	}
+	
+	@Override
+	public String toString() {
+		return "PatientGroup(" + d_drug + ", " + d_dose + ", " + d_size + ")";
 	}
 
 	public Integer getSize() {

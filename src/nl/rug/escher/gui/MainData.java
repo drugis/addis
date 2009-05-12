@@ -1,5 +1,6 @@
 package nl.rug.escher.gui;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 import nl.rug.escher.entities.Domain;
@@ -8,6 +9,7 @@ import nl.rug.escher.entities.Drug;
 import nl.rug.escher.entities.Endpoint;
 import nl.rug.escher.entities.ContinuousMeasurement;
 import nl.rug.escher.entities.PatientGroup;
+import nl.rug.escher.entities.RateMeasurement;
 import nl.rug.escher.entities.SIUnit;
 import nl.rug.escher.entities.Study;
 
@@ -43,11 +45,9 @@ public class MainData {
 		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		parox.setDose(dose);
 		parox.setSize(102);
-		ContinuousMeasurement pHamd = new ContinuousMeasurement();
-		pHamd.setEndpoint(d_hamd);
+		RateMeasurement pHamd = (RateMeasurement)d_hamd.buildMeasurement();
 		pHamd.setPatientGroup(parox);
-		pHamd.setMean(-13.92);
-		pHamd.setStdDev(1.1);
+		pHamd.setRate(67);
 		parox.addMeasurement(pHamd);
 		
 		PatientGroup fluox = new PatientGroup();
@@ -57,11 +57,9 @@ public class MainData {
 		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		fluox.setDose(dose);
 		fluox.setSize(101);
-		ContinuousMeasurement fHamd = new ContinuousMeasurement();
-		fHamd.setEndpoint(d_hamd);
+		RateMeasurement fHamd = (RateMeasurement)d_hamd.buildMeasurement();
 		fHamd.setPatientGroup(fluox);
-		fHamd.setMean(-14.78);
-		fHamd.setStdDev(1.1);
+		fHamd.setRate(67);
 		fluox.addMeasurement(fHamd);
 		
 		study.addPatientGroup(parox);
@@ -73,7 +71,7 @@ public class MainData {
 	Study buildDefaultStudy(Domain domain) {
 		Study study = new Study();
 		study.setId("Chouinard et al, 1999");
-		study.setEndpoints(domain.getEndpoints());
+		study.setEndpoints(new ArrayList<Endpoint>(domain.getEndpoints()));
 		
 		PatientGroup parox = new PatientGroup();
 		parox.setDrug(d_paroxetine);
@@ -82,14 +80,11 @@ public class MainData {
 		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		parox.setDose(dose);
 		parox.setSize(102);
-		ContinuousMeasurement pHamd = new ContinuousMeasurement();
-		pHamd.setEndpoint(d_hamd);
+		RateMeasurement pHamd = (RateMeasurement)d_hamd.buildMeasurement();
 		pHamd.setPatientGroup(parox);
-		pHamd.setMean(-13.92);
-		pHamd.setStdDev(1.1);
+		pHamd.setRate(67);
 		parox.addMeasurement(pHamd);
-		ContinuousMeasurement pCgi = new ContinuousMeasurement();
-		pCgi.setEndpoint(d_cgi);
+		ContinuousMeasurement pCgi = (ContinuousMeasurement)d_cgi.buildMeasurement();
 		pCgi.setPatientGroup(parox);
 		pCgi.setMean(-1.69);
 		pCgi.setStdDev(0.16);
@@ -102,14 +97,11 @@ public class MainData {
 		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		fluox.setDose(dose);
 		fluox.setSize(101);
-		ContinuousMeasurement fHamd = new ContinuousMeasurement();
-		fHamd.setEndpoint(d_hamd);
+		RateMeasurement fHamd = (RateMeasurement)d_hamd.buildMeasurement();
 		fHamd.setPatientGroup(fluox);
-		fHamd.setMean(-14.78);
-		fHamd.setStdDev(1.1);
+		fHamd.setRate(67);
 		fluox.addMeasurement(fHamd);
-		ContinuousMeasurement fCgi = new ContinuousMeasurement();
-		fCgi.setEndpoint(d_cgi);
+		ContinuousMeasurement fCgi = (ContinuousMeasurement)d_cgi.buildMeasurement();
 		fCgi.setPatientGroup(fluox);
 		fCgi.setMean(-1.8);
 		fCgi.setStdDev(0.16);
@@ -136,7 +128,8 @@ public class MainData {
 	public static Endpoint buildDefaultEndpoint() {
 		Endpoint e = new Endpoint();
 		e.setName("HAM-D");
-		e.setDescription("Change from baseline in HAM-D total score (21 items)");
+		e.setDescription("");
+		e.setType(Endpoint.Type.RATE);
 		return e;
 	}
 
@@ -144,6 +137,7 @@ public class MainData {
 		d_cgi = new Endpoint();
 		d_cgi.setName("CGI Severity");
 		d_cgi.setDescription("Change from baseline CGI Severity of Illness score");
+		d_cgi.setType(Endpoint.Type.CONTINUOUS);
 		return d_cgi;
 	}
 }

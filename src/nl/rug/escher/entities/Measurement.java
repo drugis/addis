@@ -11,6 +11,14 @@ public abstract class Measurement extends Model {
 	public static final String PROPERTY_PATIENTGROUP = "patientGroup";
 	public static final String PROPERTY_ENDPOINT = "endpoint";
 	public static final String PROPERTY_LABEL = "label";
+	
+	protected Measurement() {
+		
+	}
+	
+	public Measurement(Endpoint e) {
+		d_endpoint = e;
+	}
 
 	public abstract String getLabel();
 

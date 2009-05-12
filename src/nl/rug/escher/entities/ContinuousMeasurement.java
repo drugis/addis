@@ -4,6 +4,17 @@ package nl.rug.escher.entities;
 public class ContinuousMeasurement extends Measurement {
 	private Double d_mean;
 	private Double d_stdDev;
+	
+	public ContinuousMeasurement() {
+		
+	}
+	
+	public ContinuousMeasurement(Endpoint e) {
+		super(e);
+		d_mean = 0.0; // FIXME
+		d_stdDev = 0.0; // FIXME
+	}
+	
 	@Override
 	public Double getMean() {
 		return d_mean;

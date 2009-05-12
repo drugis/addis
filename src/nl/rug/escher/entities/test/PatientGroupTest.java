@@ -11,6 +11,7 @@ import nl.rug.escher.entities.Dose;
 import nl.rug.escher.entities.Drug;
 import nl.rug.escher.entities.Endpoint;
 import nl.rug.escher.entities.ContinuousMeasurement;
+import nl.rug.escher.entities.Measurement;
 import nl.rug.escher.entities.PatientGroup;
 import nl.rug.escher.entities.SIUnit;
 import nl.rug.escher.entities.Study;
@@ -59,9 +60,17 @@ public class PatientGroupTest {
 	}
 	
 	@Test
-	public void testToString() {
+	public void testAddMeasurementSetsPatientGroup() {
+		PatientGroup g = new PatientGroup();
+		Measurement m = new ContinuousMeasurement();
+		g.addMeasurement(m);
+		assertEquals(g, m.getPatientGroup());
+	}
+	
+	@Test
+	public void testGetLabel() {
 		PatientGroup group = new PatientGroup();
-		assertEquals("INCOMPLETE", group.toString());
+		assertEquals("INCOMPLETE", group.getLabel());
 		
 		Dose dose = new Dose();
 		dose.setQuantity(25.5);
@@ -70,7 +79,7 @@ public class PatientGroupTest {
 		Drug drug = new Drug();
 		drug.setName("Fluoxetine");
 		group.setDrug(drug);
-		assertEquals("Fluoxetine " + dose.toString(), group.toString());
+		assertEquals("Fluoxetine " + dose.toString(), group.getLabel());
 	}
 	
 	@Test
@@ -86,11 +95,13 @@ public class PatientGroupTest {
 		dose.setQuantity(25.5);
 		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		group.setDose(dose);
-		String expect = group.toString();
+		String expect = group.getLabel();
 		group.setDose(null);
+		assertEquals("INCOMPLETE", group.getLabel());
 		l = Helper.mockListener(group, PatientGroup.PROPERTY_LABEL, "INCOMPLETE", expect);
 		group.addPropertyChangeListener(l);
 		group.setDose(dose);
+		assertEquals(expect, group.getLabel());
 		verify(l);
 		
 		group = new PatientGroup();
@@ -98,7 +109,7 @@ public class PatientGroupTest {
 		Drug drug2 = new Drug();
 		drug2.setName("Paroxetine");
 		group.setDrug(drug2);
-		l = Helper.mockListener(group, PatientGroup.PROPERTY_LABEL, group.toString(), expect);
+		l = Helper.mockListener(group, PatientGroup.PROPERTY_LABEL, group.getLabel(), expect);
 		group.addPropertyChangeListener(l);
 		group.setDrug(drug);
 		verify(l);
