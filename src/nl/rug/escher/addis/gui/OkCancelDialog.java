@@ -3,8 +3,6 @@ package nl.rug.escher.addis.gui;
 import java.awt.BorderLayout;
 import java.awt.Dialog;
 import java.awt.Frame;
-import java.awt.GraphicsConfiguration;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -88,11 +86,6 @@ public abstract class OkCancelDialog extends JDialog {
 		construct();
 	}
 
-	public OkCancelDialog(Window owner) {
-		super(owner);
-		construct();
-	}
-
 	public OkCancelDialog(Frame owner, boolean modal) {
 		super(owner, modal);
 		construct();
@@ -113,16 +106,6 @@ public abstract class OkCancelDialog extends JDialog {
 		construct();
 	}
 
-	public OkCancelDialog(Window owner, ModalityType modalityType) {
-		super(owner, modalityType);
-		construct();
-	}
-
-	public OkCancelDialog(Window owner, String title) {
-		super(owner, title);
-		construct();
-	}
-
 	public OkCancelDialog(Frame owner, String title, boolean modal) {
 		super(owner, title, modal);
 		construct();
@@ -130,29 +113,6 @@ public abstract class OkCancelDialog extends JDialog {
 
 	public OkCancelDialog(Dialog owner, String title, boolean modal) {
 		super(owner, title, modal);
-		construct();
-	}
-
-	public OkCancelDialog(Window owner, String title, ModalityType modalityType) {
-		super(owner, title, modalityType);
-		construct();
-	}
-
-	public OkCancelDialog(Frame owner, String title, boolean modal,
-			GraphicsConfiguration gc) {
-		super(owner, title, modal, gc);
-		construct();
-	}
-
-	public OkCancelDialog(Dialog owner, String title, boolean modal,
-			GraphicsConfiguration gc) {
-		super(owner, title, modal, gc);
-		construct();
-	}
-
-	public OkCancelDialog(Window owner, String title,
-			ModalityType modalityType, GraphicsConfiguration gc) {
-		super(owner, title, modalityType, gc);
 		construct();
 	}
 }
