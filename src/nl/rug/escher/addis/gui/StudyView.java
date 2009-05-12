@@ -14,6 +14,8 @@ import nl.rug.escher.addis.entities.Measurement;
 import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.common.gui.LayoutUtil;
+import nl.rug.escher.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;

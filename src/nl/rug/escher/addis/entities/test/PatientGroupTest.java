@@ -15,28 +15,29 @@ import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Test;
 
 public class PatientGroupTest {
 	@Test
 	public void testSetStudy() {
-		Helper.testSetter(new PatientGroup(), PatientGroup.PROPERTY_STUDY, null, new Study());
+		JUnitUtil.testSetter(new PatientGroup(), PatientGroup.PROPERTY_STUDY, null, new Study());
 	}
 	
 	@Test
 	public void testSetSize() {
-		Helper.testSetter(new PatientGroup(), PatientGroup.PROPERTY_SIZE, null, 1);
+		JUnitUtil.testSetter(new PatientGroup(), PatientGroup.PROPERTY_SIZE, null, 1);
 	}
 	
 	@Test
 	public void testSetDrug() {
-		Helper.testSetter(new PatientGroup(), PatientGroup.PROPERTY_DRUG, null, new Drug());
+		JUnitUtil.testSetter(new PatientGroup(), PatientGroup.PROPERTY_DRUG, null, new Drug());
 	}
 	
 	@Test
 	public void testSetDose() {
-		Helper.testSetter(new PatientGroup(), PatientGroup.PROPERTY_DOSE, null, new Dose());
+		JUnitUtil.testSetter(new PatientGroup(), PatientGroup.PROPERTY_DOSE, null, new Dose());
 	}
 	
 	@Test
@@ -49,13 +50,13 @@ public class PatientGroupTest {
 	@Test
 	public void testSetMeasurements() {
 		List<BasicContinuousMeasurement> list = Collections.singletonList(new BasicContinuousMeasurement());
-		Helper.testSetter(new PatientGroup(), PatientGroup.PROPERTY_MEASUREMENTS, Collections.EMPTY_LIST, 
+		JUnitUtil.testSetter(new PatientGroup(), PatientGroup.PROPERTY_MEASUREMENTS, Collections.EMPTY_LIST, 
 				list);
 	}
 	
 	@Test
 	public void testAddMeasurement() {
-		Helper.testAdder(new PatientGroup(), PatientGroup.PROPERTY_MEASUREMENTS,
+		JUnitUtil.testAdder(new PatientGroup(), PatientGroup.PROPERTY_MEASUREMENTS,
 				"addMeasurement", new BasicContinuousMeasurement());
 	}
 	
@@ -98,7 +99,7 @@ public class PatientGroupTest {
 		String expect = group.getLabel();
 		group.setDose(null);
 		assertEquals("INCOMPLETE", group.getLabel());
-		l = Helper.mockListener(group, PatientGroup.PROPERTY_LABEL, "INCOMPLETE", expect);
+		l = JUnitUtil.mockListener(group, PatientGroup.PROPERTY_LABEL, "INCOMPLETE", expect);
 		group.addPropertyChangeListener(l);
 		group.setDose(dose);
 		assertEquals(expect, group.getLabel());
@@ -109,7 +110,7 @@ public class PatientGroupTest {
 		Drug drug2 = new Drug();
 		drug2.setName("Paroxetine");
 		group.setDrug(drug2);
-		l = Helper.mockListener(group, PatientGroup.PROPERTY_LABEL, group.getLabel(), expect);
+		l = JUnitUtil.mockListener(group, PatientGroup.PROPERTY_LABEL, group.getLabel(), expect);
 		group.addPropertyChangeListener(l);
 		group.setDrug(drug);
 		verify(l);

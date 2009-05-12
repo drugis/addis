@@ -5,6 +5,8 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 
 import nl.rug.escher.addis.entities.Endpoint;
+import nl.rug.escher.common.gui.AuxComponentFactory;
+import nl.rug.escher.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -34,7 +36,7 @@ public class EndpointView implements ViewBuilder {
 	}
 
 	/**
-	 * @see nl.rug.escher.addis.gui.ViewBuilder#buildPanel()
+	 * @see nl.rug.escher.common.gui.ViewBuilder#buildPanel()
 	 */
 	public JComponent buildPanel() {
 		initComponents();

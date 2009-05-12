@@ -8,31 +8,32 @@ import java.util.List;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Test;
 
 public class StudyTest {
 	@Test
 	public void testSetId() {
-		Helper.testSetter(new Study(), Study.PROPERTY_ID, null, "NCT00351273");
+		JUnitUtil.testSetter(new Study(), Study.PROPERTY_ID, null, "NCT00351273");
 	}
 	
 	@Test
 	public void testSetEndpoints() {
 		List<Endpoint> list = Collections.singletonList(new Endpoint());
-		Helper.testSetter(new Study(), Study.PROPERTY_ENDPOINTS, Collections.EMPTY_LIST, 
+		JUnitUtil.testSetter(new Study(), Study.PROPERTY_ENDPOINTS, Collections.EMPTY_LIST, 
 				list);
 	}
 	
 	@Test
 	public void testAddEndpoint() {
-		Helper.testAdder(new Study(), Study.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint());
+		JUnitUtil.testAdder(new Study(), Study.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint());
 	}
 	
 	@Test
 	public void testSetPatientGroups() {
 		List<PatientGroup> list = Collections.singletonList(new PatientGroup());
-		Helper.testSetter(new Study(), Study.PROPERTY_PATIENTGROUPS, Collections.EMPTY_LIST, 
+		JUnitUtil.testSetter(new Study(), Study.PROPERTY_PATIENTGROUPS, Collections.EMPTY_LIST, 
 				list);
 	}
 	
@@ -45,7 +46,7 @@ public class StudyTest {
 	
 	@Test
 	public void testAddPatientGroup() {
-		Helper.testAdder(new Study(), Study.PROPERTY_PATIENTGROUPS, "addPatientGroup", new PatientGroup());
+		JUnitUtil.testAdder(new Study(), Study.PROPERTY_PATIENTGROUPS, "addPatientGroup", new PatientGroup());
 	}
 	
 	@Test

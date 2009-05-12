@@ -1,4 +1,4 @@
-package nl.rug.escher.addis.entities.test;
+package nl.rug.escher.common;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expectLastCall;
@@ -16,9 +16,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import com.jgoodies.binding.beans.Model;
 
-public class Helper {
+public class JUnitUtil {
 	public static void testSetter(Model source, String propertyName, Object oldValue, Object newValue) {
 		PropertyChangeListener mock = mockListener(source, propertyName, oldValue, newValue);
 		

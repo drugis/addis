@@ -1,4 +1,4 @@
-package nl.rug.escher.addis.gui;
+package nl.rug.escher.common.gui;
 
 import javax.swing.JComboBox;
 

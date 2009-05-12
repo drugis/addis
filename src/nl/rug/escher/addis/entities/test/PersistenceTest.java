@@ -31,7 +31,7 @@ public class PersistenceTest {
 		PersistenceManagerFactory pmf = getFactory();
 		PersistenceManager pm = pmf.getPersistenceManager();
 	
-	    Endpoint endpoint = MainData.buildDefaultEndpoint();
+	    Endpoint endpoint = MainData.buildEndpointHamd();
 	    try {
 			Transaction tx = pm.currentTransaction();
 			try {

@@ -8,6 +8,7 @@ import java.beans.PropertyChangeListener;
 import nl.rug.escher.addis.entities.Measurement;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.BasicRateMeasurement;
+import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +28,7 @@ public class BasicRateMeasurementTest {
 	
 	@Test
 	public void testSetRate() {
-		Helper.testSetter(new BasicRateMeasurement(), BasicRateMeasurement.PROPERTY_RATE, null, new Integer(67));
+		JUnitUtil.testSetter(new BasicRateMeasurement(), BasicRateMeasurement.PROPERTY_RATE, null, new Integer(67));
 	}
 	
 	@Test
@@ -37,7 +38,7 @@ public class BasicRateMeasurementTest {
 	
 	@Test
 	public void testFireSizeChanged() {
-		PropertyChangeListener l = Helper.mockListener(
+		PropertyChangeListener l = JUnitUtil.mockListener(
 				d_measurement, BasicRateMeasurement.PROPERTY_SIZE, 101, 102);
 		d_measurement.addPropertyChangeListener(l);
 		d_patientGroup.setSize(102);
@@ -47,14 +48,14 @@ public class BasicRateMeasurementTest {
 	
 	@Test
 	public void testFireLabelChanged() {
-		PropertyChangeListener l = Helper.mockListener(
+		PropertyChangeListener l = JUnitUtil.mockListener(
 				d_measurement, Measurement.PROPERTY_LABEL, "67/101", "68/101");
 		d_measurement.addPropertyChangeListener(l);
 		d_measurement.setRate(68);
 		verify(l);
 		
 		d_measurement.removePropertyChangeListener(l);
-		l = Helper.mockListener(
+		l = JUnitUtil.mockListener(
 				d_measurement, Measurement.PROPERTY_LABEL, "68/101", "68/102");
 		d_measurement.addPropertyChangeListener(l);
 		d_patientGroup.setSize(102);

@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicRateMeasurement;
+import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Test;
 
@@ -11,17 +12,17 @@ public class EndpointTest {
 
 	@Test
 	public void testSetDescription() {
-		Helper.testSetter(new Endpoint(), Endpoint.PROPERTY_DESCRIPTION, null, "My Description");
+		JUnitUtil.testSetter(new Endpoint(), Endpoint.PROPERTY_DESCRIPTION, null, "My Description");
 	}
 
 	@Test
 	public void testSetName() {
-		Helper.testSetter(new Endpoint(), Endpoint.PROPERTY_NAME, null, "My Name");
+		JUnitUtil.testSetter(new Endpoint(), Endpoint.PROPERTY_NAME, null, "My Name");
 	}
 	
 	@Test
 	public void testSetType() {
-		Helper.testSetter(new Endpoint(), Endpoint.PROPERTY_TYPE, null, Endpoint.Type.CONTINUOUS);
+		JUnitUtil.testSetter(new Endpoint(), Endpoint.PROPERTY_TYPE, null, Endpoint.Type.CONTINUOUS);
 	}
 	
 	@Test

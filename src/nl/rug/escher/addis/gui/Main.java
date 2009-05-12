@@ -25,6 +25,8 @@ import nl.rug.escher.addis.entities.DomainImpl;
 import nl.rug.escher.addis.entities.DomainListener;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.common.gui.GUIHelper;
+import nl.rug.escher.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 
@@ -41,13 +43,12 @@ public class Main extends JFrame {
 		super("Escher ADDIS");
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);	
 		setPreferredSize(new Dimension(800, 500));
-		Helper.initializeLookAndFeel();
+		GUIHelper.initializeLookAndFeel();
 		
 		d_domain = new DomainImpl();
 		d_domain.addListener(new MainListener());
 		
-		MainData data = new MainData();
-		data.initDefaultData(d_domain);
+		MainData.initDefaultData(d_domain);
 	}
 
 	void showStudyAddEndpointDialog(Study study) {

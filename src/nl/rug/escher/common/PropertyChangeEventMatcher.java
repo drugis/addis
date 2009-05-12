@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nl.rug.escher.addis.entities.test;
+package nl.rug.escher.common;
 
 import java.beans.PropertyChangeEvent;
 

@@ -1,4 +1,4 @@
-package nl.rug.escher.addis.gui;
+package nl.rug.escher.common.gui;
 
 import javax.swing.UIManager;
 
@@ -6,7 +6,7 @@ import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.windows.WindowsLookAndFeel;
 import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 
-public class Helper {
+public class GUIHelper {
 
 	public static void initializeLookAndFeel() {
 		try {

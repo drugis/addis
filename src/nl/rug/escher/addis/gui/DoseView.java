@@ -8,6 +8,7 @@ import javax.swing.text.DefaultFormatter;
 
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.SIUnit;
+import nl.rug.escher.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;

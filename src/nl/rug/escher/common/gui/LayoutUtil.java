@@ -1,4 +1,4 @@
-package nl.rug.escher.addis.gui;
+package nl.rug.escher.common.gui;
 
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;

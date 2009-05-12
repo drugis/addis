@@ -1,4 +1,4 @@
-package nl.rug.escher.addis.gui;
+package nl.rug.escher.common.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;

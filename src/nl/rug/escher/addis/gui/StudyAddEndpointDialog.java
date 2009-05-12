@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.PresentationModel;
 
