@@ -60,7 +60,7 @@
 	</target>
 	<target name="test" depends="build">
 		<mkdir dir="${junit.output.dir}"/>
-		<junit fork="yes" printsummary="withOutAndErr" haltonfailure="true">
+		<junit fork="yes" printsummary="withOutAndErr" haltonfailure="false">
 			<formatter type="xml"/>
 			<classpath refid="ADDIS.classpath"/>	
 			<batchtest todir="${junit.output.dir}">
