@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
+import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.Study;
 
@@ -88,10 +89,10 @@ public class StudyView implements ViewBuilder {
 			
 			col = 5;
 			for (Endpoint e : d_model.getBean().getEndpoints()) {
-				Measurement m = g.getMeasurement(e);
+				BasicMeasurement m = g.getMeasurement(e);
 				builder.add(
 						BasicComponentFactory.createLabel(
-								new PresentationModel<Measurement>(m).getModel(Measurement.PROPERTY_LABEL)),
+								new PresentationModel<BasicMeasurement>(m).getModel(Measurement.PROPERTY_LABEL)),
 						cc.xy(col, row));
 				col += 2;
 			}

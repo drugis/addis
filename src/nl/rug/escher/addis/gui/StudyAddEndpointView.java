@@ -8,7 +8,7 @@ import javax.swing.JComponent;
 
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.Measurement;
+import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.Study;
 
@@ -23,13 +23,13 @@ public class StudyAddEndpointView implements ViewBuilder {
 	private Domain d_domain;
 	private Study d_study;
 	private PresentationModel<EndpointHolder> d_endpointModel;
-	private List<Measurement> d_measurements;
+	private List<BasicMeasurement> d_measurements;
 	
 	private JComboBox d_endpointSelect;
 	private SelectionInList<Endpoint> d_endpointSelectionInList;
 	
 	public StudyAddEndpointView(Domain domain, Study study,
-			PresentationModel<EndpointHolder> endpointModel, List<Measurement> measurements) {
+			PresentationModel<EndpointHolder> endpointModel, List<BasicMeasurement> measurements) {
 		d_domain = domain;
 		d_study = study;
 		d_endpointModel = endpointModel;
@@ -39,7 +39,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 	private void initializeMeasurements() {
 		for (PatientGroup g : d_study.getPatientGroups()) {
 			if (getEndpoint() != null) {
-				Measurement m = getEndpoint().buildMeasurement();
+				BasicMeasurement m = getEndpoint().buildMeasurement();
 				m.setPatientGroup(g);
 				d_measurements.add(m);
 			}
@@ -109,7 +109,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 
 	private void buildMeasurementsPart(PanelBuilder builder,
 			CellConstraints cc, int row, FormLayout layout) {
-		for (Measurement m : d_measurements) {
+		for (BasicMeasurement m : d_measurements) {
 			LayoutUtil.addRow(layout);
 			PresentationModel<PatientGroup> gModel = 
 				new PresentationModel<PatientGroup>(m.getPatientGroup());

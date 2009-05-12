@@ -8,7 +8,7 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import nl.rug.escher.addis.entities.Domain;
-import nl.rug.escher.addis.entities.Measurement;
+import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.Study;
 
 import com.jgoodies.binding.PresentationModel;
@@ -17,13 +17,13 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private Study d_study;
 	private EndpointHolder d_newEndpoint;
-	private List<Measurement> d_measurements;
+	private List<BasicMeasurement> d_measurements;
 	
 	public StudyAddEndpointDialog(JFrame frame, Domain domain, Study study) {
 		super(frame, "Add Endpoint to Study");
 		d_domain = domain;
 		d_study = study;
-		d_measurements = new ArrayList<Measurement>();
+		d_measurements = new ArrayList<BasicMeasurement>();
 		d_newEndpoint = new EndpointHolder();
 		final StudyAddEndpointView view = new StudyAddEndpointView(d_domain, d_study,
 				new PresentationModel<EndpointHolder>(d_newEndpoint), d_measurements);
@@ -57,7 +57,7 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 	}
 
 	private void addMeasurementsToPatientGroups() {
-		for (Measurement m : d_measurements) {
+		for (BasicMeasurement m : d_measurements) {
 			m.getPatientGroup().addMeasurement(m);
 		}
 	}
@@ -67,7 +67,7 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 	}
 
 	private void addEndpointToMeasurements() {
-		for (Measurement m : d_measurements) {
+		for (BasicMeasurement m : d_measurements) {
 			m.setEndpoint(d_newEndpoint.getEndpoint());
 		}
 	}

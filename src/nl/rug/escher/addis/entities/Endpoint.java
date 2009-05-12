@@ -23,12 +23,12 @@ public class Endpoint extends Model {
 	public final static String PROPERTY_DESCRIPTION = "description";
 	public final static String PROPERTY_TYPE = "type";
 	
-	public Measurement buildMeasurement() {
+	public BasicMeasurement buildMeasurement() {
 		switch (getType()) {
 		case CONTINUOUS:
-			return new ContinuousMeasurement(this);
+			return new BasicContinuousMeasurement(this);
 		case RATE:
-			return new RateMeasurement(this);
+			return new BasicRateMeasurement(this);
 		default:
 			throw new IllegalStateException("Not all enum cases covered");
 		}

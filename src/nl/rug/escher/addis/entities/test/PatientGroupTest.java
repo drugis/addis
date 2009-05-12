@@ -7,11 +7,11 @@ import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.List;
 
-import nl.rug.escher.addis.entities.ContinuousMeasurement;
+import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.Measurement;
+import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.Study;
@@ -48,7 +48,7 @@ public class PatientGroupTest {
 	
 	@Test
 	public void testSetMeasurements() {
-		List<ContinuousMeasurement> list = Collections.singletonList(new ContinuousMeasurement());
+		List<BasicContinuousMeasurement> list = Collections.singletonList(new BasicContinuousMeasurement());
 		Helper.testSetter(new PatientGroup(), PatientGroup.PROPERTY_MEASUREMENTS, Collections.EMPTY_LIST, 
 				list);
 	}
@@ -56,13 +56,13 @@ public class PatientGroupTest {
 	@Test
 	public void testAddMeasurement() {
 		Helper.testAdder(new PatientGroup(), PatientGroup.PROPERTY_MEASUREMENTS,
-				"addMeasurement", new ContinuousMeasurement());
+				"addMeasurement", new BasicContinuousMeasurement());
 	}
 	
 	@Test
 	public void testAddMeasurementSetsPatientGroup() {
 		PatientGroup g = new PatientGroup();
-		Measurement m = new ContinuousMeasurement();
+		BasicMeasurement m = new BasicContinuousMeasurement();
 		g.addMeasurement(m);
 		assertEquals(g, m.getPatientGroup());
 	}
@@ -124,9 +124,9 @@ public class PatientGroupTest {
 		Endpoint e3 = new Endpoint();
 		e3.setName("e3");
 		
-		ContinuousMeasurement m1 = new ContinuousMeasurement();
+		BasicContinuousMeasurement m1 = new BasicContinuousMeasurement();
 		m1.setEndpoint(e1);
-		ContinuousMeasurement m2 = new ContinuousMeasurement();
+		BasicContinuousMeasurement m2 = new BasicContinuousMeasurement();
 		m2.setEndpoint(e2);
 		
 		PatientGroup g = new PatientGroup();

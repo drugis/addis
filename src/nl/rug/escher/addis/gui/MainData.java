@@ -3,13 +3,13 @@ package nl.rug.escher.addis.gui;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import nl.rug.escher.addis.entities.ContinuousMeasurement;
+import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.PatientGroup;
-import nl.rug.escher.addis.entities.RateMeasurement;
+import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.Study;
 
@@ -45,7 +45,7 @@ public class MainData {
 		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		parox.setDose(dose);
 		parox.setSize(102);
-		RateMeasurement pHamd = (RateMeasurement)d_hamd.buildMeasurement();
+		BasicRateMeasurement pHamd = (BasicRateMeasurement)d_hamd.buildMeasurement();
 		pHamd.setPatientGroup(parox);
 		pHamd.setRate(67);
 		parox.addMeasurement(pHamd);
@@ -57,7 +57,7 @@ public class MainData {
 		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		fluox.setDose(dose);
 		fluox.setSize(101);
-		RateMeasurement fHamd = (RateMeasurement)d_hamd.buildMeasurement();
+		BasicRateMeasurement fHamd = (BasicRateMeasurement)d_hamd.buildMeasurement();
 		fHamd.setPatientGroup(fluox);
 		fHamd.setRate(67);
 		fluox.addMeasurement(fHamd);
@@ -80,11 +80,11 @@ public class MainData {
 		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		parox.setDose(dose);
 		parox.setSize(102);
-		RateMeasurement pHamd = (RateMeasurement)d_hamd.buildMeasurement();
+		BasicRateMeasurement pHamd = (BasicRateMeasurement)d_hamd.buildMeasurement();
 		pHamd.setPatientGroup(parox);
 		pHamd.setRate(67);
 		parox.addMeasurement(pHamd);
-		ContinuousMeasurement pCgi = (ContinuousMeasurement)d_cgi.buildMeasurement();
+		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)d_cgi.buildMeasurement();
 		pCgi.setPatientGroup(parox);
 		pCgi.setMean(-1.69);
 		pCgi.setStdDev(0.16);
@@ -97,11 +97,11 @@ public class MainData {
 		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		fluox.setDose(dose);
 		fluox.setSize(101);
-		RateMeasurement fHamd = (RateMeasurement)d_hamd.buildMeasurement();
+		BasicRateMeasurement fHamd = (BasicRateMeasurement)d_hamd.buildMeasurement();
 		fHamd.setPatientGroup(fluox);
 		fHamd.setRate(67);
 		fluox.addMeasurement(fHamd);
-		ContinuousMeasurement fCgi = (ContinuousMeasurement)d_cgi.buildMeasurement();
+		BasicContinuousMeasurement fCgi = (BasicContinuousMeasurement)d_cgi.buildMeasurement();
 		fCgi.setPatientGroup(fluox);
 		fCgi.setMean(-1.8);
 		fCgi.setStdDev(0.16);

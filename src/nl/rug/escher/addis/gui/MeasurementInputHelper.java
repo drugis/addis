@@ -8,10 +8,10 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.value.ValueModel;
 
-import nl.rug.escher.addis.entities.ContinuousMeasurement;
+import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.Measurement;
-import nl.rug.escher.addis.entities.RateMeasurement;
+import nl.rug.escher.addis.entities.BasicMeasurement;
+import nl.rug.escher.addis.entities.BasicRateMeasurement;
 
 public class MeasurementInputHelper {
 
@@ -37,19 +37,19 @@ public class MeasurementInputHelper {
 		}
 	}
 
-	public static JComponent[] getComponents(Measurement m) {
-		if (m instanceof ContinuousMeasurement) {
-			PresentationModel<ContinuousMeasurement> model = 
-				new PresentationModel<ContinuousMeasurement>((ContinuousMeasurement)m);
+	public static JComponent[] getComponents(BasicMeasurement m) {
+		if (m instanceof BasicContinuousMeasurement) {
+			PresentationModel<BasicContinuousMeasurement> model = 
+				new PresentationModel<BasicContinuousMeasurement>((BasicContinuousMeasurement)m);
 			return new JComponent[] {
-				MeasurementInputHelper.buildFormatted(model.getModel(ContinuousMeasurement.PROPERTY_MEAN)),
-				MeasurementInputHelper.buildFormatted(model.getModel(ContinuousMeasurement.PROPERTY_STDDEV))
+				MeasurementInputHelper.buildFormatted(model.getModel(BasicContinuousMeasurement.PROPERTY_MEAN)),
+				MeasurementInputHelper.buildFormatted(model.getModel(BasicContinuousMeasurement.PROPERTY_STDDEV))
 			};
-		} else if (m instanceof RateMeasurement) {
-			PresentationModel<RateMeasurement> model = 
-				new PresentationModel<RateMeasurement>((RateMeasurement)m);
+		} else if (m instanceof BasicRateMeasurement) {
+			PresentationModel<BasicRateMeasurement> model = 
+				new PresentationModel<BasicRateMeasurement>((BasicRateMeasurement)m);
 			return new JComponent[] {
-				MeasurementInputHelper.buildFormatted(model.getModel(RateMeasurement.PROPERTY_RATE))
+				MeasurementInputHelper.buildFormatted(model.getModel(BasicRateMeasurement.PROPERTY_RATE))
 			};
 			
 		}

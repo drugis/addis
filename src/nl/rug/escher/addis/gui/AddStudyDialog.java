@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Dose;
-import nl.rug.escher.addis.entities.Measurement;
+import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.Study;
 
@@ -44,8 +44,8 @@ public class AddStudyDialog extends OkCancelDialog {
 
 	protected void buildMeasurements() {
 		for (PatientGroup g : d_study.getPatientGroups()) {
-			g.setMeasurements(new ArrayList<Measurement>());
-			Measurement m = d_primaryEndpoint.getEndpoint().buildMeasurement();
+			g.setMeasurements(new ArrayList<BasicMeasurement>());
+			BasicMeasurement m = d_primaryEndpoint.getEndpoint().buildMeasurement();
 			g.addMeasurement(m);
 		}
 	}
@@ -83,7 +83,7 @@ public class AddStudyDialog extends OkCancelDialog {
 	private PatientGroup initializePatientGroup() {
 		PatientGroup group = new PatientGroup();
 		if (d_primaryEndpoint.getEndpoint() != null) {
-			Measurement m = d_primaryEndpoint.getEndpoint().buildMeasurement();
+			BasicMeasurement m = d_primaryEndpoint.getEndpoint().buildMeasurement();
 			group.addMeasurement(m);
 		}
 		Dose d = new Dose();

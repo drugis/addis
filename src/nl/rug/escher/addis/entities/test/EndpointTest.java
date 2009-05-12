@@ -1,9 +1,9 @@
 package nl.rug.escher.addis.entities.test;
 
 import static org.junit.Assert.*;
-import nl.rug.escher.addis.entities.ContinuousMeasurement;
+import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.RateMeasurement;
+import nl.rug.escher.addis.entities.BasicRateMeasurement;
 
 import org.junit.Test;
 
@@ -28,10 +28,10 @@ public class EndpointTest {
 	public void testBuildMeasurement() {
 		Endpoint e = new Endpoint();
 		e.setType(Endpoint.Type.RATE);
-		assertTrue(e.buildMeasurement() instanceof RateMeasurement);
+		assertTrue(e.buildMeasurement() instanceof BasicRateMeasurement);
 		assertEquals(e, e.buildMeasurement().getEndpoint());
 		e.setType(Endpoint.Type.CONTINUOUS);
-		assertTrue(e.buildMeasurement() instanceof ContinuousMeasurement);
+		assertTrue(e.buildMeasurement() instanceof BasicContinuousMeasurement);
 		assertEquals(e, e.buildMeasurement().getEndpoint());
 	}
 	
