@@ -66,11 +66,18 @@ public class Helper {
 				" of class " + source.getClass().getCanonicalName());
 	}
 	
-	private static Method getAdderMethod(Model source, String methodName, Object toAdd) 
+	private static Method get1ParamMethod(Model source, String methodName, Object methodParam) 
 	throws NoSuchMethodException {
-		return source.getClass().getMethod(methodName, toAdd.getClass());
+		// TODO: we should check that the method has 1 param and that the param is correct type
+		Method[] methods = source.getClass().getMethods();
+		for (Method m : methods) {
+			if (m.getName().equals(methodName)) {
+				return m;
+			}
+		}
+		throw new NoSuchMethodException("no method " + methodName);
 	}
-
+	
 	private static String deriveGetter(String propertyName) {
 		return "get" + capitalize(propertyName);
 	}
@@ -89,10 +96,10 @@ public class Helper {
 	}
 
 	@SuppressWarnings("unchecked")
-	static void testAdder(Model source, String propertyName, String methodName, Object g2) {
+	public static void testAdder(Model source, String propertyName, String methodName, Object toAdd) {
 		List list1 = new ArrayList();
 		List list2 = new ArrayList();
-		list2.add(g2);
+		list2.add(toAdd);
 		
 		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
 		mock.propertyChange(eqEvent(new PropertyChangeEvent(
@@ -102,14 +109,38 @@ public class Helper {
 		source.addPropertyChangeListener(mock);
 		Object actual = null;
 		try {
-			getAdderMethod(source, methodName, g2).invoke(source, g2);
+			get1ParamMethod(source, methodName, toAdd).invoke(source, toAdd);
 			actual = getGetterMethod(source, propertyName).invoke(source);
 		} catch (Exception e) {
 			fail(e.toString());
 		}
 		
-		assertTrue(((List)actual).contains(g2));
-		assertEquals(1, ((List)actual).size());
+		assertTrue(((List) actual).contains(toAdd));
+		assertTrue(1 == ((List) actual).size());
+		verify(mock);
+	}
+
+
+	@SuppressWarnings("unchecked")
+	public static void testDeleter(Model source, String propertyName, String deleteMethodName, Object toDelete) throws Exception {
+		List list1 = new ArrayList();
+		List list2 = new ArrayList();
+		list1.add(toDelete);
+
+		// set the parameter
+		getSetterMethod(source, propertyName, list1).invoke(source, list1);
+
+		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
+		mock.propertyChange(eqEvent(new PropertyChangeEvent(
+				source, propertyName, list1, list2)));
+		replay(mock);
+
+		source.addPropertyChangeListener(mock);		
+
+		get1ParamMethod(source, deleteMethodName, toDelete).invoke(source, toDelete);
+
+		Object actual = getGetterMethod(source, propertyName).invoke(source);
+		assertTrue(0 ==  ((List) actual).size());
 		verify(mock);
 	}
 
