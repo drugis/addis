@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -28,9 +27,6 @@ import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Study;
 
 import com.jgoodies.binding.PresentationModel;
-import com.jgoodies.looks.plastic.PlasticLookAndFeel;
-import com.jgoodies.looks.windows.WindowsLookAndFeel;
-import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 
 public class Main extends JFrame {
 	private JMenuBar d_menuBar;
@@ -45,7 +41,7 @@ public class Main extends JFrame {
 		super("Escher ADDIS");
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);	
 		setPreferredSize(new Dimension(800, 500));
-		initializeLookAndFeel();
+		Helper.initializeLookAndFeel();
 		
 		d_domain = new DomainImpl();
 		d_domain.addListener(new MainListener());
@@ -54,25 +50,6 @@ public class Main extends JFrame {
 		data.initDefaultData(d_domain);
 	}
 
-	private void initializeLookAndFeel() {
-		try {
-			String osName = System.getProperty("os.name");
-			if (osName.startsWith("Windows")) {
-				UIManager.setLookAndFeel(new WindowsLookAndFeel());
-			} else  if (osName.startsWith("Mac")) {
-				// do nothing, use the Mac Aqua L&f
-			} else {
-				try {
-					UIManager.setLookAndFeel(new GTKLookAndFeel());
-				} catch (Exception e) {
-					UIManager.setLookAndFeel(new PlasticLookAndFeel());
-				}
-			}
-		} catch (Exception e) {
-			// Likely the Looks library is not in the class path; ignore.
-		}
-	}
-	
 	void showStudyAddEndpointDialog(Study study) {
 		StudyAddEndpointDialog dialog = new StudyAddEndpointDialog(this, d_domain, study);
 		dialog.setVisible(true);
