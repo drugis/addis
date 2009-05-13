@@ -39,7 +39,7 @@ public class BasicRateMeasurementTest {
 	@Test
 	public void testFireSizeChanged() {
 		PropertyChangeListener l = JUnitUtil.mockListener(
-				d_measurement, BasicRateMeasurement.PROPERTY_SIZE, 101, 102);
+				d_measurement, BasicRateMeasurement.PROPERTY_SAMPLESIZE, 101, 102);
 		d_measurement.addPropertyChangeListener(l);
 		d_patientGroup.setSize(102);
 		verify(l);

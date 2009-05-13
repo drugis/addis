@@ -5,15 +5,15 @@ import java.beans.PropertyChangeListener;
 
 public class BasicRateMeasurement extends BasicMeasurement implements RateMeasurement {
 	private Integer d_rate;
-	private PatientGroupListener d_listener;
+	private SampleSizeListener d_listener = new SampleSizeListener();
 	
 	public BasicRateMeasurement() {
-		d_listener = new PatientGroupListener();
+		addPropertyChangeListener(PROPERTY_SAMPLESIZE, d_listener);
 	}
 	
 	public BasicRateMeasurement(Endpoint e) {
 		super(e);
-		d_listener = new PatientGroupListener();
+		addPropertyChangeListener(PROPERTY_SAMPLESIZE, d_listener);
 		d_rate = 0; // FIXME
 	}
 
@@ -21,19 +21,9 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 		return toString();
 	}
 
-	/* (non-Javadoc)
-	 * @see nl.rug.escher.addis.entities.RateMeasurement#getSize()
-	 */
-	public Integer getSize() {
-		if (getPatientGroup() == null) {
-			return null;
-		}
-		return getPatientGroup().getSize();
-	}
-	
 	@Override
 	public String toString() {
-		return generateLabel(getSize());
+		return generateLabel(getSampleSize());
 	}
 	
 	private String generateLabel(Integer size) {
@@ -51,37 +41,18 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
 	}
 
-	/* (non-Javadoc)
-	 * @see nl.rug.escher.addis.entities.RateMeasurement#getRate()
-	 */
 	public Integer getRate() {
 		return d_rate;
 	}
 	
-	private class PatientGroupListener implements PropertyChangeListener {
+	private class SampleSizeListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent event) {
-			if (event.getPropertyName().equals(PatientGroup.PROPERTY_SIZE)) {
+			if (event.getPropertyName().equals(Measurement.PROPERTY_SAMPLESIZE)) {
 				Integer oldSize = (Integer)event.getOldValue();
 				Integer newSize = (Integer)event.getNewValue();
-				firePropertyChange(PROPERTY_SIZE, oldSize, newSize);
 				firePropertyChange(Measurement.PROPERTY_LABEL, 
 						generateLabel(oldSize), generateLabel(newSize));
 			}
-		}
-	}
-	
-	@Override
-	public void setPatientGroup(PatientGroup g) {
-		if (getPatientGroup() != null) {
-			getPatientGroup().removePropertyChangeListener(PatientGroup.PROPERTY_SIZE, d_listener);
-		}
-		Integer oldSize = getSize();
-		g.addPropertyChangeListener(PatientGroup.PROPERTY_SIZE, d_listener);
-		super.setPatientGroup(g);
-		Integer newSize = getSize();
-		if ((oldSize == null && newSize != null) || (oldSize != null && !oldSize.equals(newSize))) {
-			firePropertyChange(Measurement.PROPERTY_LABEL, 
-						generateLabel(oldSize), generateLabel(newSize));
-		}
+		}	
 	}
 }

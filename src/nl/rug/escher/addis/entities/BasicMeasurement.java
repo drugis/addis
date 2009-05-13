@@ -1,14 +1,17 @@
 package nl.rug.escher.addis.entities;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import com.jgoodies.binding.beans.Model;
 
 public abstract class BasicMeasurement extends Model implements Measurement {
 	private PatientGroup d_patientGroup;
 	private Endpoint d_endpoint;
+	private PatientGroupListener d_listener = new PatientGroupListener();
 
 	public static final String PROPERTY_PATIENTGROUP = "patientGroup";
 	protected BasicMeasurement() {
-		
 	}
 	
 	public BasicMeasurement(Endpoint e) {
@@ -19,10 +22,29 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 		return d_patientGroup;
 	}
 
-	public void setPatientGroup(PatientGroup patientGroup) {
+	private class PatientGroupListener implements PropertyChangeListener {
+		public void propertyChange(PropertyChangeEvent event) {
+			if (event.getPropertyName().equals(PatientGroup.PROPERTY_SIZE)) {
+				Integer oldSize = (Integer)event.getOldValue();
+				Integer newSize = (Integer)event.getNewValue();
+				firePropertyChange(PROPERTY_SAMPLESIZE, oldSize, newSize);
+			}
+		}
+	}
+	
+	public void setPatientGroup(PatientGroup g) {
+		if (getPatientGroup() != null) {
+			getPatientGroup().removePropertyChangeListener(PatientGroup.PROPERTY_SIZE, d_listener);
+		}
+		Integer oldSize = getSampleSize();
+		g.addPropertyChangeListener(PatientGroup.PROPERTY_SIZE, d_listener);
 		PatientGroup oldVal = d_patientGroup;
-		d_patientGroup = patientGroup;
+		d_patientGroup = g;
 		firePropertyChange(PROPERTY_PATIENTGROUP, oldVal, d_patientGroup);
+		Integer newSize = getSampleSize();
+		if ((oldSize == null && newSize != null) || (oldSize != null && !oldSize.equals(newSize))) {
+			firePropertyChange(PROPERTY_SAMPLESIZE, oldSize, newSize);
+		}
 	}
 
 	public Endpoint getEndpoint() {
@@ -35,4 +57,10 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 		firePropertyChange(PROPERTY_ENDPOINT, oldVal, d_endpoint);
 	}
 
+	public Integer getSampleSize() {
+		if (getPatientGroup() == null) {
+			return null;
+		}
+		return getPatientGroup().getSize();
+	}
 }
