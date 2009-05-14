@@ -18,4 +18,21 @@ public class DrugTest {
 		d.setName("Paroxetine");
 		assertEquals("Paroxetine", d.toString());
 	}
+	
+	@Test
+	public void testEquals() {
+		Drug d1 = new Drug("Paroxetine");
+		Drug d2 = new Drug("Paroxetine");
+		Drug d3 = new Drug("Fluoxetine");
+		
+		assertTrue(d1.equals(d2));
+		assertFalse(d1.equals(d3));
+	}
+	
+	@Test
+	public void testHashCode() {
+		Drug d1 = new Drug("Paroxetine");
+		Drug d2 = new Drug("Paroxetine");
+		assertEquals(d1.hashCode(), d2.hashCode());
+	}
 }

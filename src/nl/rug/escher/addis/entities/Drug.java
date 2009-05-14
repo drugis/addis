@@ -6,6 +6,14 @@ public class Drug extends Model {
 	private String d_name;
 	
 	public static final String PROPERTY_NAME = "name";
+	
+	public Drug() {
+		
+	}
+
+	public Drug(String name) {
+		d_name = name;
+	}
 
 	public String getName() {
 		return d_name;
@@ -17,7 +25,25 @@ public class Drug extends Model {
 		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
 	}
 	
+	@Override
 	public String toString() {
 		return getName();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Drug) {
+			Drug other = (Drug) o;
+			if (other.getName() == null) {
+				return getName() == null;
+			}
+			return other.getName().equals(getName());
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return getName() == null ? 0 : getName().hashCode();
 	}
 }

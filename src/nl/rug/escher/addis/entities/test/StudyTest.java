@@ -1,10 +1,15 @@
 package nl.rug.escher.addis.entities.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.Study;
@@ -47,6 +52,16 @@ public class StudyTest {
 	@Test
 	public void testAddPatientGroup() {
 		JUnitUtil.testAdder(new Study(), Study.PROPERTY_PATIENTGROUPS, "addPatientGroup", new PatientGroup());
+	}
+	
+	@Test
+	public void testGetDrugs() {
+		Study s = TestData.buildDefaultStudy2();
+		Set<Drug> expected = new HashSet<Drug>();
+		expected.add(TestData.buildDrugFluoxetine());
+		expected.add(TestData.buildDrugParoxetine());
+		expected.add(TestData.buildDrugViagra());
+		assertEquals(expected, s.getDrugs());
 	}
 	
 	@Test

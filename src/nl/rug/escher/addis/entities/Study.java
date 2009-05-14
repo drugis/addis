@@ -1,7 +1,9 @@
 package nl.rug.escher.addis.entities;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.jgoodies.binding.beans.Model;
 
@@ -18,6 +20,12 @@ public class Study extends Model {
 		d_endpoints = new ArrayList<Endpoint>();
 		d_patientGroups = new ArrayList<PatientGroup>();
 	}
+	
+	public Study(Endpoint e) {
+		this();
+		d_endpoints.add(e);
+	}
+	
 	public String getId() {
 		return d_id;
 	}
@@ -62,5 +70,13 @@ public class Study extends Model {
 		List<Endpoint> newVal = new ArrayList<Endpoint>(d_endpoints);
 		newVal.add(endpoint);
 		setEndpoints(newVal);
+	}
+
+	public Set<Drug> getDrugs() {
+		Set<Drug> drugs = new HashSet<Drug>();
+		for (PatientGroup g : getPatientGroups()) {
+			drugs.add(g.getDrug());
+		}
+		return drugs;
 	}
 }
