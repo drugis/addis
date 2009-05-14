@@ -33,7 +33,7 @@ public class MainData {
 		Drug paroxetine = buildDefaultDrugParoxetine();
 		Drug fluoxetine = buildDefaultDrugFluoxetine();
 		Study study = new Study();
-		study.setId("Incomplete Study");
+		study.setId("De Wilde et al, 1993");
 		study.setEndpoints(Collections.singletonList(hamd));
 		
 		PatientGroup parox = new PatientGroup();
@@ -42,10 +42,10 @@ public class MainData {
 		dose.setQuantity(25.5);
 		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		parox.setDose(dose);
-		parox.setSize(102);
+		parox.setSize(37);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement();
 		pHamd.setPatientGroup(parox);
-		pHamd.setRate(67);
+		pHamd.setRate(23);
 		parox.addMeasurement(pHamd);
 		
 		PatientGroup fluox = new PatientGroup();
@@ -54,10 +54,10 @@ public class MainData {
 		dose.setQuantity(27.5);
 		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		fluox.setDose(dose);
-		fluox.setSize(101);
+		fluox.setSize(41);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement();
 		fHamd.setPatientGroup(fluox);
-		fHamd.setRate(67);
+		fHamd.setRate(26);
 		fluox.addMeasurement(fHamd);
 		
 		study.addPatientGroup(parox);
