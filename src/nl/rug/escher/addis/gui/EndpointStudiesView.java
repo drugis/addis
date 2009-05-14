@@ -8,10 +8,14 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
+import nl.rug.escher.addis.entities.MetaAnalysis;
+import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.gui.ViewBuilder;
 
@@ -111,9 +115,36 @@ public class EndpointStudiesView implements ViewBuilder {
 	}
 
 	private void showMetaAnalysisDialog(List<Study> studies) {
-		JOptionPane.showMessageDialog(null,
-				"Meta-Analyze Not Implemented\n\n" + studies.toString(),
-				"Meta-Analyze", JOptionPane.ERROR_MESSAGE);
+		if (haveNonRateMeasurements(studies)) {
+			JOptionPane.showMessageDialog(null,
+					"Meta-Analyze Not Implemented for non-rate measurements\n\n" + studies.toString(),
+					"Meta-Analyze", JOptionPane.ERROR_MESSAGE);
+			
+		} else {
+			JDialog dialog = new JDialog((JDialog)null, "Meta-Analyze");
+			ViewBuilder view = new MetaAnalysisView(new MetaAnalysis(d_endpoint, studies));
+			dialog.setContentPane(view.buildPanel());
+			dialog.pack();
+			dialog.setVisible(true);
+		}
+	}
+
+	private boolean haveNonRateMeasurements(List<Study> studies) {
+		for (Study s : studies) {
+			if (hasNonRateMeasurements(s)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean hasNonRateMeasurements(Study s) {
+		for (PatientGroup g : s.getPatientGroups()) {
+			if (!(g.getMeasurement(d_endpoint) instanceof RateMeasurement)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void setSelectedStudy(Study selectedStudy) {
