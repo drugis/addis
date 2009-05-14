@@ -1,6 +1,6 @@
 package nl.rug.escher.addis.gui;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
@@ -14,18 +14,21 @@ import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.Study;
 
 public class MainData {
+	private static Endpoint s_endpointHamd;
+	private static Endpoint s_endpointCgi;
+	private static Drug s_parox;
+	private static Drug s_fluox;
 
 	public static void initDefaultData(Domain domain) {
-		Endpoint hamd = buildEndpointHamd();
-		domain.addEndpoint(hamd);
+		domain.addEndpoint(buildEndpointHamd());
 		domain.addEndpoint(buildDefaultEndpointCgi());
 		domain.addDrug(buildDefaultDrugFluoxetine());
 		domain.addDrug(buildDefaultDrugParoxetine());
-		domain.addStudy(buildDefaultStudy(domain));
-		domain.addStudy(buildDefaultStudy2(domain));
+		domain.addStudy(buildDefaultStudy());
+		domain.addStudy(buildDefaultStudy2());
 	}
 
-	private static Study buildDefaultStudy2(Domain domain) {
+	private static Study buildDefaultStudy2() {
 		Endpoint hamd = buildEndpointHamd();
 		Drug paroxetine = buildDefaultDrugParoxetine();
 		Drug fluoxetine = buildDefaultDrugFluoxetine();
@@ -63,14 +66,14 @@ public class MainData {
 		return study;
 	}
 
-	private static Study buildDefaultStudy(Domain domain) {
+	private static Study buildDefaultStudy() {
 		Drug paroxetine = buildDefaultDrugParoxetine();
 		Endpoint hamd = buildEndpointHamd();
 		Endpoint cgi = buildDefaultEndpointCgi();
 		Drug fluoxetine = buildDefaultDrugFluoxetine();
 		Study study = new Study();
 		study.setId("Chouinard et al, 1999");
-		study.setEndpoints(new ArrayList<Endpoint>(domain.getEndpoints()));
+		study.setEndpoints(Arrays.asList(new Endpoint[]{hamd, cgi}));
 		
 		PatientGroup parox = new PatientGroup();
 		parox.setDrug(paroxetine);
@@ -113,30 +116,41 @@ public class MainData {
 	}
 
 	private static Drug buildDefaultDrugParoxetine() {
-		Drug paroxetine = new Drug();
-		paroxetine.setName("Paroxetine");
-		return paroxetine;
+		if (s_parox == null) {
+			Drug paroxetine = new Drug();
+			paroxetine.setName("Paroxetine");
+			s_parox = paroxetine;
+		}
+		return s_parox;
 	}
 
 	private static Drug buildDefaultDrugFluoxetine() {
-		Drug fluoxetine = new Drug();
-		fluoxetine.setName("Fluoxetine");
-		return fluoxetine;
+		if (s_fluox == null) {
+			s_fluox = new Drug();
+			s_fluox.setName("Fluoxetine");
+		}
+		return s_fluox;
 	}
 
 	public static Endpoint buildEndpointHamd() {
-		Endpoint e = new Endpoint();
-		e.setName("HAM-D");
-		e.setDescription("");
-		e.setType(Endpoint.Type.RATE);
-		return e;
+		if (s_endpointHamd == null) {
+			Endpoint e = new Endpoint();
+			e.setName("HAM-D");
+			e.setDescription("");
+			e.setType(Endpoint.Type.RATE);
+			s_endpointHamd = e;
+		}
+		return s_endpointHamd;
 	}
 
 	public static Endpoint buildDefaultEndpointCgi() {
-		Endpoint cgi = new Endpoint();
-		cgi.setName("CGI Severity");
-		cgi.setDescription("Change from baseline CGI Severity of Illness score");
-		cgi.setType(Endpoint.Type.CONTINUOUS);
-		return cgi;
+		if (s_endpointCgi == null) { 
+			Endpoint cgi = new Endpoint();
+			cgi.setName("CGI Severity");
+			cgi.setDescription("Change from baseline CGI Severity of Illness score");
+			cgi.setType(Endpoint.Type.CONTINUOUS);
+			s_endpointCgi = cgi;
+		}
+		return s_endpointCgi;
 	}
 }
