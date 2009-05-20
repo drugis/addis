@@ -53,6 +53,13 @@ public class Endpoint extends Model {
 		return false;
 	}
 	
+	public int hashCode() {
+		if (d_name != null) {
+			return d_name.hashCode();
+		}
+		return 0;
+	}
+	
 	public void setDescription(String description) {
 		String oldVal = d_description;
 		d_description = description;
