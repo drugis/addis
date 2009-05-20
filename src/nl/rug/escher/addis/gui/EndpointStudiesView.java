@@ -1,5 +1,6 @@
 package nl.rug.escher.addis.gui;
 
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,9 @@ public class EndpointStudiesView implements ViewBuilder {
 	private Domain d_domain;
 	private List<JCheckBox> d_studySelect;
 	private Study d_selectedStudy;
+	private Frame d_frame;
 	
-	public EndpointStudiesView(Endpoint node, Domain domain) {
+	public EndpointStudiesView(Endpoint node, Domain domain, Frame frame) {
 		d_endpoint = node;
 		d_domain = domain;
 		d_studySelect = new ArrayList<JCheckBox>();
@@ -116,12 +118,12 @@ public class EndpointStudiesView implements ViewBuilder {
 
 	private void showMetaAnalysisDialog(List<Study> studies) {
 		if (haveNonRateMeasurements(studies)) {
-			JOptionPane.showMessageDialog(null,
+			JOptionPane.showMessageDialog(d_frame,
 					"Meta-Analyze Not Implemented for non-rate measurements\n\n" + studies.toString(),
 					"Meta-Analyze", JOptionPane.ERROR_MESSAGE);
 			
 		} else {
-			JDialog dialog = new JDialog((JDialog)null, "Meta-Analyze");
+			JDialog dialog = new JDialog(d_frame, "Meta-Analyze");
 			ViewBuilder view = new MetaAnalysisView(new MetaAnalysis(d_endpoint, studies));
 			dialog.setContentPane(view.buildPanel());
 			dialog.pack();
