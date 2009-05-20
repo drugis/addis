@@ -118,12 +118,9 @@ public class PatientGroupTest {
 	
 	@Test
 	public void testGetMeasurementByEndpoint() {
-		Endpoint e1 = new Endpoint();
-		e1.setName("e1");
-		Endpoint e2 = new Endpoint();
-		e2.setName("e2");
-		Endpoint e3 = new Endpoint();
-		e3.setName("e3");
+		Endpoint e1 = new Endpoint("e1");
+		Endpoint e2 = new Endpoint("e2");
+		Endpoint e3 = new Endpoint("e3");
 		
 		BasicContinuousMeasurement m1 = new BasicContinuousMeasurement();
 		m1.setEndpoint(e1);

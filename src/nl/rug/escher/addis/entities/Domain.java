@@ -62,4 +62,11 @@ public interface Domain {
 	 * Remove a listener from the domain object.
 	 */
 	public void removeListener(DomainListener listener);
+
+	/**
+	 * Get endpoint by name (primary key)
+	 * @param name
+	 * @return
+	 */
+	public Endpoint getEndpoint(String name);
 }

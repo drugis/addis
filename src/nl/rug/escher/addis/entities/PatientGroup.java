@@ -3,8 +3,12 @@ package nl.rug.escher.addis.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+
 import com.jgoodies.binding.beans.Model;
 
+@PersistenceCapable
 public class PatientGroup extends Model {
 	private Study d_study;
 	private Integer d_size;
@@ -19,6 +23,7 @@ public class PatientGroup extends Model {
 	public static final String PROPERTY_MEASUREMENTS = "measurements";
 	public static final String PROPERTY_LABEL = "label";
 	
+	@Persistent
 	public Study getStudy() {
 		return d_study;
 	}
@@ -29,6 +34,7 @@ public class PatientGroup extends Model {
 		firePropertyChange(PROPERTY_STUDY, oldVal, d_study);
 	}
 	
+	@Persistent
 	public Drug getDrug() {
 		return d_drug;
 	}
@@ -41,6 +47,7 @@ public class PatientGroup extends Model {
 		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
 	}
 	
+	@Persistent
 	public Dose getDose() {
 		return d_dose;
 	}
@@ -53,6 +60,7 @@ public class PatientGroup extends Model {
 		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
 	}
 
+	@Persistent
 	public List<BasicMeasurement> getMeasurements() {
 		return d_measurements;
 	}
@@ -96,6 +104,7 @@ public class PatientGroup extends Model {
 		return "PatientGroup(" + d_drug + ", " + d_dose + ", " + d_size + ")";
 	}
 
+	@Persistent
 	public Integer getSize() {
 		return d_size;
 	}

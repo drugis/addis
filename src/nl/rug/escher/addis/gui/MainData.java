@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
 import nl.rug.escher.addis.entities.Domain;
+import nl.rug.escher.addis.entities.DomainPersistent;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
@@ -14,24 +15,22 @@ import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.Study;
 
 public class MainData {
-	private static Endpoint s_endpointHamd;
-	private static Endpoint s_endpointCgi;
 	private static Drug s_parox;
 	private static Drug s_fluox;
 
 	public static void initDefaultData(Domain domain) {
-		domain.addEndpoint(buildEndpointHamd());
-		domain.addEndpoint(buildDefaultEndpointCgi());
-		domain.addDrug(buildDefaultDrugFluoxetine());
-		domain.addDrug(buildDefaultDrugParoxetine());
-		domain.addStudy(buildDefaultStudy());
-		domain.addStudy(buildDefaultStudy2());
+		buildEndpointHamd(domain);
+		buildDefaultEndpointCgi(domain);
+		domain.addDrug(buildDefaultDrugFluoxetine(domain));
+		domain.addDrug(buildDefaultDrugParoxetine(domain));
+		domain.addStudy(buildDefaultStudy(domain));
+		domain.addStudy(buildDefaultStudy2(domain));
 	}
 
-	private static Study buildDefaultStudy2() {
-		Endpoint hamd = buildEndpointHamd();
-		Drug paroxetine = buildDefaultDrugParoxetine();
-		Drug fluoxetine = buildDefaultDrugFluoxetine();
+	private static Study buildDefaultStudy2(Domain domain) {
+		Endpoint hamd = buildEndpointHamd(domain);
+		Drug paroxetine = buildDefaultDrugParoxetine(domain);
+		Drug fluoxetine = buildDefaultDrugFluoxetine(domain);
 		Study study = new Study();
 		study.setId("De Wilde et al, 1993");
 		study.setEndpoints(Collections.singletonList(hamd));
@@ -66,11 +65,11 @@ public class MainData {
 		return study;
 	}
 
-	private static Study buildDefaultStudy() {
-		Drug paroxetine = buildDefaultDrugParoxetine();
-		Endpoint hamd = buildEndpointHamd();
-		Endpoint cgi = buildDefaultEndpointCgi();
-		Drug fluoxetine = buildDefaultDrugFluoxetine();
+	private static Study buildDefaultStudy(Domain domain) {
+		Drug paroxetine = buildDefaultDrugParoxetine(domain);
+		Endpoint hamd = buildEndpointHamd(domain);
+		Endpoint cgi = buildDefaultEndpointCgi(domain);
+		Drug fluoxetine = buildDefaultDrugFluoxetine(domain);
 		Study study = new Study();
 		study.setId("Chouinard et al, 1999");
 		study.setEndpoints(Arrays.asList(new Endpoint[]{hamd, cgi}));
@@ -115,7 +114,7 @@ public class MainData {
 		return study;
 	}
 
-	private static Drug buildDefaultDrugParoxetine() {
+	private static Drug buildDefaultDrugParoxetine(Domain domain) {
 		if (s_parox == null) {
 			Drug paroxetine = new Drug();
 			paroxetine.setName("Paroxetine");
@@ -124,7 +123,7 @@ public class MainData {
 		return s_parox;
 	}
 
-	private static Drug buildDefaultDrugFluoxetine() {
+	private static Drug buildDefaultDrugFluoxetine(Domain domain) {
 		if (s_fluox == null) {
 			s_fluox = new Drug();
 			s_fluox.setName("Fluoxetine");
@@ -132,25 +131,23 @@ public class MainData {
 		return s_fluox;
 	}
 
-	public static Endpoint buildEndpointHamd() {
-		if (s_endpointHamd == null) {
-			Endpoint e = new Endpoint();
-			e.setName("HAM-D");
+	public static Endpoint buildEndpointHamd(Domain domain) {
+		if (domain.getEndpoint("HAM-D") == null) {
+			Endpoint e = new Endpoint("HAM-D");
 			e.setDescription("");
 			e.setType(Endpoint.Type.RATE);
-			s_endpointHamd = e;
+			domain.addEndpoint(e);
 		}
-		return s_endpointHamd;
+		return domain.getEndpoint("HAM-D");
 	}
 
-	public static Endpoint buildDefaultEndpointCgi() {
-		if (s_endpointCgi == null) { 
-			Endpoint cgi = new Endpoint();
-			cgi.setName("CGI Severity");
-			cgi.setDescription("Change from baseline CGI Severity of Illness score");
-			cgi.setType(Endpoint.Type.CONTINUOUS);
-			s_endpointCgi = cgi;
+	public static Endpoint buildDefaultEndpointCgi(Domain domain) {
+		if (domain.getEndpoint("CGI Severity") == null) {
+			Endpoint e = new Endpoint("CGI Severity");
+			e.setDescription("Change from baseline CGI Severity of Illness score");
+			e.setType(Endpoint.Type.CONTINUOUS);
+			domain.addEndpoint(e);
 		}
-		return s_endpointCgi;
+		return domain.getEndpoint("CGI Severity");
 	}
 }

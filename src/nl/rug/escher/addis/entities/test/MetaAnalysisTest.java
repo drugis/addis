@@ -31,8 +31,8 @@ public class MetaAnalysisTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testValidateStudiesMeasureEndpoint() {
-		Endpoint e = new Endpoint();
-		Endpoint other = new Endpoint();
+		Endpoint e = new Endpoint("e");
+		Endpoint other = new Endpoint("other");
 		Study s = new Study(other);
 		new MetaAnalysis(e, Collections.singletonList(s));
 	}

@@ -25,14 +25,14 @@ public class StudyTest {
 	
 	@Test
 	public void testSetEndpoints() {
-		List<Endpoint> list = Collections.singletonList(new Endpoint());
+		List<Endpoint> list = Collections.singletonList(new Endpoint("e"));
 		JUnitUtil.testSetter(new Study(), Study.PROPERTY_ENDPOINTS, Collections.EMPTY_LIST, 
 				list);
 	}
 	
 	@Test
 	public void testAddEndpoint() {
-		JUnitUtil.testAdder(new Study(), Study.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint());
+		JUnitUtil.testAdder(new Study(), Study.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e"));
 	}
 	
 	@Test

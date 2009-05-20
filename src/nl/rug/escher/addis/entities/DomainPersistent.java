@@ -5,11 +5,18 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DomainImpl implements Domain {
-	private List<Endpoint> d_endpoints;
-	private List<Study> d_studies;
-	private List<Drug> d_drugs;
-	private List<DomainListener> d_listeners;
+import javax.jdo.Extent;
+import javax.jdo.JDOHelper;
+import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
+import javax.jdo.Transaction;
+
+public class DomainPersistent implements Domain {
+	PersistenceManagerFactory d_pmf;
+	private List<Endpoint> d_endpoints = new ArrayList<Endpoint>();
+	private List<Study> d_studies = new ArrayList<Study>();
+	private List<Drug> d_drugs = new ArrayList<Drug>();
+	private List<DomainListener> d_listeners = new ArrayList<DomainListener>();
 	
 	private PropertyChangeListener d_studyListener = new PropertyChangeListener() {
 		public void propertyChange(PropertyChangeEvent evt) {
@@ -17,11 +24,12 @@ public class DomainImpl implements Domain {
 		}
 	};
 	
-	public DomainImpl() {
-		d_endpoints = new ArrayList<Endpoint>();
-		d_studies = new ArrayList<Study>();
-		d_drugs = new ArrayList<Drug>();
-		d_listeners = new ArrayList<DomainListener>();
+	public DomainPersistent() {
+		this(getFactory());
+	}
+	
+	public DomainPersistent(PersistenceManagerFactory pmf) {
+		d_pmf = pmf;
 	}
 
 	public void addEndpoint(Endpoint e) {
@@ -29,7 +37,15 @@ public class DomainImpl implements Domain {
 			throw new NullPointerException("Endpoint may not be null");
 		}
 		
-		d_endpoints.add(e);
+		PersistenceManager pm = d_pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try {
+			tx.begin();
+			pm.makePersistent(e);
+			tx.commit();
+		} finally {
+			pm.close();
+		}
 		
 		fireEndpointsChanged();
 	}
@@ -41,7 +57,31 @@ public class DomainImpl implements Domain {
 	}
 
 	public List<Endpoint> getEndpoints() {
-		return d_endpoints;
+		PersistenceManager pm = d_pmf.getPersistenceManager();
+		
+		List<Endpoint> endpoints = new ArrayList<Endpoint>();
+		Transaction tx = pm.currentTransaction();
+		try {
+			tx.begin();
+			Extent<Endpoint> extent = pm.getExtent(Endpoint.class);
+			for (Endpoint e : extent) {
+				endpoints.add(e);
+			}
+			tx.commit();
+		} finally {
+			pm.close();
+		}
+		
+		return endpoints;
+	}
+	
+	public Endpoint getEndpoint(String name) {
+		for (Endpoint e : getEndpoints()) {
+			if (e.getName().equals(name)) {
+				return e;
+			}
+		}
+		return null;
 	}
 
 	public void addListener(DomainListener listener) {
@@ -102,14 +142,8 @@ public class DomainImpl implements Domain {
 		}
 		return list;
 	}
-
-	public Endpoint getEndpoint(String name) {
-		for (Endpoint e : getEndpoints()) {
-			if (e.getName().equals(name)) {
-				return e;
-			}
-		}
-		return null;
+	
+	private static PersistenceManagerFactory getFactory() {
+		return JDOHelper.getPersistenceManagerFactory("datanucleus.properties");
 	}
-
 }

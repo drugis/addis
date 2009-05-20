@@ -3,8 +3,12 @@ package nl.rug.escher.addis.entities;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+
 import com.jgoodies.binding.beans.Model;
 
+@PersistenceCapable
 public abstract class BasicMeasurement extends Model implements Measurement {
 	private PatientGroup d_patientGroup;
 	private Endpoint d_endpoint;
@@ -18,6 +22,7 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 		d_endpoint = e;
 	}
 
+	@Persistent
 	public PatientGroup getPatientGroup() {
 		return d_patientGroup;
 	}
@@ -47,6 +52,7 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 		}
 	}
 
+	@Persistent
 	public Endpoint getEndpoint() {
 		return d_endpoint;
 	}

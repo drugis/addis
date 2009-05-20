@@ -23,6 +23,14 @@ public class Endpoint extends Model {
 	public final static String PROPERTY_DESCRIPTION = "description";
 	public final static String PROPERTY_TYPE = "type";
 	
+	public Endpoint() {
+		
+	}
+	
+	public Endpoint(String name) {
+		d_name = name;
+	}
+	
 	public BasicMeasurement buildMeasurement() {
 		switch (getType()) {
 		case CONTINUOUS:
@@ -32,6 +40,17 @@ public class Endpoint extends Model {
 		default:
 			throw new IllegalStateException("Not all enum cases covered");
 		}
+	}
+	
+	public boolean equals(Object o) {
+		if (o instanceof Endpoint) {
+			Endpoint other = (Endpoint)o;
+			if (other.getName() == null && getName() == null) {
+				return true;
+			}
+			return other.getName().equals(getName());
+		}
+		return false;
 	}
 	
 	public void setDescription(String description) {
@@ -66,6 +85,7 @@ public class Endpoint extends Model {
 		firePropertyChange(PROPERTY_TYPE, oldVal, d_type);
 	}
 
+	@Persistent
 	public Type getType() {
 		return d_type;
 	}
