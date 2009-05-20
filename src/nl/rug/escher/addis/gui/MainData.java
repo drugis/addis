@@ -1,5 +1,6 @@
 package nl.rug.escher.addis.gui;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -25,7 +26,7 @@ public class MainData {
 		Drug fluoxetine = buildDefaultDrugFluoxetine(domain);
 		Study study = new Study();
 		study.setId("De Wilde et al, 1993");
-		study.setEndpoints(Collections.singletonList(hamd));
+		study.setEndpoints(new ArrayList<Endpoint>(Arrays.asList(new Endpoint[]{hamd})));
 		
 		PatientGroup parox = new PatientGroup();
 		parox.setDrug(paroxetine);
@@ -68,7 +69,7 @@ public class MainData {
 		Drug fluoxetine = buildDefaultDrugFluoxetine(domain);
 		Study study = new Study();
 		study.setId("Chouinard et al, 1999");
-		study.setEndpoints(Arrays.asList(new Endpoint[]{hamd, cgi}));
+		study.setEndpoints(new ArrayList<Endpoint>(Arrays.asList(new Endpoint[]{hamd, cgi})));
 		
 		PatientGroup parox = new PatientGroup();
 		parox.setDrug(paroxetine);
@@ -107,9 +108,9 @@ public class MainData {
 		study.addPatientGroup(parox);
 		study.addPatientGroup(fluox);
 		
-		//if (domain.getStudy("Chouinard et al, 1999") == null) {
+		if (domain.getStudy("Chouinard et al, 1999") == null) {
 			domain.addStudy(study);
-		//}
+		}
 		
 		return study;
 	}
