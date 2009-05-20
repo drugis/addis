@@ -26,8 +26,14 @@
 		<pathelement location="src/datanucleus.properties"/>
 		<pathelement location="src/datanucleus.test.properties"/>
 		<pathelement location="lib/datanucleus/log4j-1.2.8.jar"/>
-		<fileset dir="lib/contract4j" />
+		<pathelement location="lib/contract4j/contract4j5.jar"/>
+		<!-- <fileset dir="lib/contract4j" /> -->
 		<!-- <pathelement location="lib/aspectj/aspectjrt.jar"/> -->
+	</path>
+
+	<path id="contract4j.classpath">
+		<fileset dir="lib/contract4j" />
+		<pathelement location="lib/aspectj/aspectjrt.jar"/>
 	</path>
 
 	<path id="ADDIS.enhancer.classpath">
@@ -74,13 +80,21 @@
 	</target>
 	<target depends="enhance-project" name="weave-project">
 		<iajc debug="true" inPath="bin" debugLevel="${debuglevel}" source="${source}" target="${target}"
-			classpathref="ADDIS.classpath" aspectpathref="aspect.path" />
+			aspectpathref="aspect.path" destDir="bin">
+			<classpath>
+				<path refid="ADDIS.classpath" />
+				<path refid="contract4j.classpath" />
+			</classpath>
+		</iajc>
 	</target>
 	<target name="test" depends="build">
 		<mkdir dir="${junit.output.dir}"/>
 		<junit fork="yes" printsummary="withOutAndErr" haltonfailure="false">
 			<formatter type="xml"/>
-			<classpath refid="ADDIS.classpath"/>	
+			<classpath>
+				<path refid="ADDIS.classpath"/>
+				<path refid="contract4j.classpath" />
+			</classpath>
 			<batchtest todir="${junit.output.dir}">
 				<fileset dir="bin/">
 					<include name="**/*test/*Test.class"/>
