@@ -43,6 +43,11 @@ public class DomainPersistent implements Domain {
 			tx.begin();
 			pm.makePersistent(e);
 			tx.commit();
+		} catch (Exception ex) {
+			if (tx.isActive()) {
+				tx.rollback();
+			}
+			ex.printStackTrace();
 		} finally {
 			pm.close();
 		}

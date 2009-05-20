@@ -1,11 +1,12 @@
 package nl.rug.escher.addis.entities;
 
+import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 import com.jgoodies.binding.beans.Model;
 
-@PersistenceCapable
+@PersistenceCapable(identityType=IdentityType.APPLICATION)
 public class Endpoint extends Model {
 	public enum Type {
 		CONTINUOUS,
@@ -77,7 +78,7 @@ public class Endpoint extends Model {
 		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
 	}
 	
-	@Persistent
+	@Persistent(primaryKey="true")
 	public String getName() {
 		return d_name;
 	}
