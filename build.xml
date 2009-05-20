@@ -5,6 +5,12 @@
 	<property name="debuglevel" value="source,lines,vars"/>
 	<property name="target" value="1.5"/>
 	<property name="source" value="1.5"/>
+	<property name="aspectjtools" location="lib/aspectj/aspectjtools.jar"/>
+
+	<path id="aspect.path">
+		<pathelement location="lib/contract4j/contract4j5.jar"/>
+	</path>
+
 	<path id="ADDIS.classpath">
 		<pathelement location="bin"/>
 		<pathelement location="lib/jgoodies/binding-2.0.6.jar"/>
@@ -20,15 +26,29 @@
 		<pathelement location="src/datanucleus.properties"/>
 		<pathelement location="src/datanucleus.test.properties"/>
 		<pathelement location="lib/datanucleus/log4j-1.2.8.jar"/>
+		<pathelement location="lib/contract4j/contract4j5.jar"/>
+		<!-- <fileset dir="lib/contract4j" /> -->
+		<!-- <pathelement location="lib/aspectj/aspectjrt.jar"/> -->
 	</path>
+
+	<path id="contract4j.classpath">
+		<fileset dir="lib/contract4j" />
+		<pathelement location="lib/aspectj/aspectjrt.jar"/>
+	</path>
+
 	<path id="ADDIS.enhancer.classpath">
 		<path refid="ADDIS.classpath" />
 		<pathelement location="lib/datanucleus-enhancer/asm-3.1.jar"/>
 		<pathelement location="lib/datanucleus-enhancer/datanucleus-enhancer-1.1.2.jar"/>
 	</path>
+
 	<taskdef name="nucleusenhancer"
 		classpathref="ADDIS.enhancer.classpath" 
 		classname="org.datanucleus.enhancer.tools.EnhancerTask" />
+
+	<taskdef classpath="${aspectjtools}"
+		resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties" />
+
 	<target name="init">
 		<mkdir dir="bin"/>
 		<copy includeemptydirs="false" todir="bin">
@@ -42,7 +62,7 @@
 	<target depends="clean" name="cleanall"/>
 	<target depends="build-subprojects,build-project" name="build"/>
 	<target name="build-subprojects"/>
-	<target depends="enhance-project" name="build-project">
+	<target depends="weave-project" name="build-project">
 	</target>
 	<target depends="init" name="compile-project">
 		<echo message="${ant.project.name}: ${ant.file}"/>
@@ -58,11 +78,23 @@
 			</fileset>
 		</nucleusenhancer>
 	</target>
+	<target depends="enhance-project" name="weave-project">
+		<iajc debug="true" inPath="bin" debugLevel="${debuglevel}" source="${source}" target="${target}"
+			aspectpathref="aspect.path" destDir="bin">
+			<classpath>
+				<path refid="ADDIS.classpath" />
+				<path refid="contract4j.classpath" />
+			</classpath>
+		</iajc>
+	</target>
 	<target name="test" depends="build">
 		<mkdir dir="${junit.output.dir}"/>
 		<junit fork="yes" printsummary="withOutAndErr" haltonfailure="false">
 			<formatter type="xml"/>
-			<classpath refid="ADDIS.classpath"/>	
+			<classpath>
+				<path refid="ADDIS.classpath"/>
+				<path refid="contract4j.classpath" />
+			</classpath>
 			<batchtest todir="${junit.output.dir}">
 				<fileset dir="bin/">
 					<include name="**/*test/*Test.class"/>

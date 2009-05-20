@@ -13,5 +13,17 @@
 	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-db4o-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/datanucleus/jdo2-api-2.3-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/datanucleus/log4j-1.2.8.jar"/>
+	<classpathentry kind="lib" path="lib/contract4j/contract4j5.jar">
+		<attributes>
+			<attribute name="org.eclipse.ajdt.inpath" value="org.eclipse.ajdt.inpath"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/contract4j/groovy-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/contract4j/jruby-complete-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/contract4j/commons-jexl-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/contract4j/bsf-2.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/contract4j/antlr-2.7.5.jar"/>
+	<classpathentry kind="lib" path="lib/contract4j/asm-2.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
