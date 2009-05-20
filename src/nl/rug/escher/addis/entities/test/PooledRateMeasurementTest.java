@@ -14,27 +14,28 @@ import nl.rug.escher.addis.entities.PooledRateMeasurement;
 import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.common.JUnitUtil;
 
+import org.contract4j5.errors.ContractError;
 import org.junit.Before;
 import org.junit.Test;
 
 public class PooledRateMeasurementTest {
-	
-	@Test(expected=NullPointerException.class)
+	@Test(expected=ContractError.class)
 	public void testConstructWithNull() {
 		new PooledRateMeasurement(null);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=ContractError.class)
 	public void testConstructWithEmpty() {
 		new PooledRateMeasurement(new ArrayList<RateMeasurement>());
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=ContractError.class)
 	public void testConstructWithDifferentEndpoints() {
-		Endpoint e1 = new Endpoint();
-		Endpoint e2 = new Endpoint();
+		d_m1 = new BasicRateMeasurement(new Endpoint());
+		d_m1.setRate(12);
+		d_m1.setPatientGroup(d_g1);
 		new PooledRateMeasurement(Arrays.asList(
-				new RateMeasurement[] {new BasicRateMeasurement(e1), new BasicRateMeasurement(e2)}));
+				new RateMeasurement[] {d_m1, d_m2}));
 	}
 	
 	Endpoint d_e;

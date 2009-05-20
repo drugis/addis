@@ -4,9 +4,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+import org.contract4j5.contract.Contract;
+import org.contract4j5.contract.Invar;
+import org.contract4j5.contract.Post;
+import org.contract4j5.contract.Pre;
+
 import com.jgoodies.binding.beans.Model;
 
+@Contract
 public class PooledRateMeasurement extends Model implements RateMeasurement {
+	@Invar("PooledRateMeasurement.measureSameEndpoint(d_measurements)") // Can't be done as precondition
 	private List<RateMeasurement> d_measurements;
 	private Integer d_rate;
 	private Integer d_size;
@@ -29,9 +36,9 @@ public class PooledRateMeasurement extends Model implements RateMeasurement {
 	 * @throws NullPointerException measurements may not be null.
 	 * @throws IllegalArgumentException All measurements should measure the same Endpoint. Empty list not allowed.
 	 */
+	@Pre("measurements != null && !measurements.isEmpty()")
 	public PooledRateMeasurement(List<RateMeasurement> measurements) 
 	throws IllegalArgumentException, NullPointerException {
-		validate(measurements);
 		d_measurements = measurements;
 		d_rate = calcRate();
 		d_size = calcSampleSize();
@@ -65,25 +72,22 @@ public class PooledRateMeasurement extends Model implements RateMeasurement {
 				getLabel());
 	}
 
-	private void validate(List<RateMeasurement> measurements) {
-		if (measurements == null) {
-			throw new NullPointerException();
-		}
-		if (measurements.size() == 0) {
-			throw new IllegalArgumentException("Pooling 0 measurements not allowed");
-		}
+	public static boolean measureSameEndpoint(List<RateMeasurement> measurements) {
 		Endpoint expected = measurements.get(0).getEndpoint();
 		for (RateMeasurement m : measurements) {
 			if (!m.getEndpoint().equals(expected)) {
-				throw new IllegalArgumentException("Pooling measurements with different endpoints not allowed");
+				return false;
 			}
 		}
+		return true;
 	}
 
+	@Post
 	public Endpoint getEndpoint() {
 		return d_measurements.get(0).getEndpoint();
 	}
 
+	@Post("$return >= 0")
 	public Integer getRate() {
 		return d_rate;
 	}
@@ -96,6 +100,7 @@ public class PooledRateMeasurement extends Model implements RateMeasurement {
 		return rate;
 	}
 	
+	@Post("$return >= 0")
 	public Integer getSampleSize() {
 		return d_size;
 	}
