@@ -7,8 +7,7 @@ import javax.jdo.annotations.FetchGroup;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
-@PersistenceCapable
-@FetchGroup(name="default", members={@Persistent(name="rate")})
+@PersistenceCapable(detachable="true")
 public class BasicRateMeasurement extends BasicMeasurement implements RateMeasurement {
 	private Integer d_rate;
 	private SampleSizeListener d_listener = new SampleSizeListener();
@@ -43,8 +42,8 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 		String oldLabel = getLabel();
 		Integer oldVal = d_rate;
 		d_rate = rate;
-		firePropertyChange(PROPERTY_RATE, oldVal, d_rate);
-		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
+		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_RATE, oldVal, d_rate));
+		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_LABEL, oldLabel, getLabel()));
 	}
 
 	@Persistent

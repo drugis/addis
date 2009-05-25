@@ -1,10 +1,12 @@
 package nl.rug.escher.addis.entities;
 
+import java.beans.PropertyChangeEvent;
+
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 
-@PersistenceCapable
+@PersistenceCapable(detachable="true")
 public class BasicContinuousMeasurement extends BasicMeasurement implements ContinuousMeasurement {
 	private Double d_mean;
 	private Double d_stdDev;
@@ -28,8 +30,8 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 		String oldLabel = getLabel();
 		Double oldVal = d_mean;
 		d_mean = mean;
-		firePropertyChange(PROPERTY_MEAN, oldVal, d_mean);
-		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
+		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_MEAN, oldVal, d_mean));
+		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_LABEL, oldLabel, getLabel()));
 	}
 	
 	@Persistent
@@ -41,8 +43,8 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 		String oldLabel = getLabel();
 		Double oldVal = d_stdDev;
 		d_stdDev = stdDev;
-		firePropertyChange(PROPERTY_STDDEV, oldVal, d_stdDev);
-		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
+		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_STDDEV, oldVal, d_stdDev));
+		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_LABEL, oldLabel, getLabel()));
 	}
 	
 	public String getLabel() {

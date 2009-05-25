@@ -66,6 +66,7 @@ public class MainData {
 		Drug paroxetine = buildDefaultDrugParoxetine(domain);
 		Endpoint hamd = buildEndpointHamd(domain);
 		Endpoint cgi = buildDefaultEndpointCgi(domain);
+		System.out.println(domain.getEndpoints());
 		Drug fluoxetine = buildDefaultDrugFluoxetine(domain);
 		Study study = new Study();
 		study.setId("Chouinard et al, 1999");
@@ -111,6 +112,8 @@ public class MainData {
 		if (domain.getStudy("Chouinard et al, 1999") == null) {
 			domain.addStudy(study);
 		}
+		
+		System.out.println(domain.getEndpoints());
 		
 		return study;
 	}
