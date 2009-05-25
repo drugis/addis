@@ -29,7 +29,6 @@ public class AddDrugDialog extends OkCancelDialog {
 	@Override
 	protected void commit() {
 		d_domain.addDrug(d_drug);
-		System.out.println("Drugs: " + d_domain.getDrugs());
 		setVisible(false);
 	}
 }
