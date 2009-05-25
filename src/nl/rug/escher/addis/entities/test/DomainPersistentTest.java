@@ -34,9 +34,11 @@ public class DomainPersistentTest {
 		Domain domain = new DomainPersistent(getFactory());
 		
 		Endpoint e = new Endpoint("e");
+		assertEquals("e", e.getName());
 		domain.addEndpoint(e);
 		
-		assertEquals(e, domain.getEndpoint("e"));
+		assertTrue(domain.getEndpoint("e") != null);
+		assertEquals("e", domain.getEndpoint("e").getName());
 	}
 	
 	@Test
@@ -46,6 +48,12 @@ public class DomainPersistentTest {
 		
 		Study s = new Study();
 		s.setId("STUDY");
-		s.setEndpoints(new ArrayList<Endpoint>());
+		s.setEndpoints(new ArrayList<Endpoint>(domain.getEndpoints()));
+		
+		domain.addStudy(s);
+		
+		assertNotNull(domain.getStudy("STUDY"));
+		assertEquals(1, domain.getStudy("STUDY").getEndpoints().size());
+		assertEquals(1, domain.getEndpoints().size());
 	}
 }
