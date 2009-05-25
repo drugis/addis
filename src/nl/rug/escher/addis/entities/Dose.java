@@ -1,19 +1,21 @@
 package nl.rug.escher.addis.entities;
 
+import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 import com.jgoodies.binding.beans.Model;
 
-@PersistenceCapable
+@PersistenceCapable(identityType=IdentityType.DATASTORE,detachable="true")
 public class Dose extends Model {
+	@Persistent
 	private SIUnit d_unit;
+	@Persistent
 	private Double d_quantity;
 	
 	public static final String PROPERTY_UNIT = "unit";
 	public static final String PROPERTY_QUANTITY = "quantity";
 	
-	@Persistent
 	public SIUnit getUnit() {
 		return d_unit;
 	}
@@ -24,7 +26,6 @@ public class Dose extends Model {
 		firePropertyChange(PROPERTY_UNIT, oldVal, d_unit);
 	}
 	
-	@Persistent
 	public Double getQuantity() {
 		return d_quantity;
 	}

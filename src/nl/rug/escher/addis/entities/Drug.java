@@ -6,8 +6,9 @@ import javax.jdo.annotations.Persistent;
 
 import com.jgoodies.binding.beans.Model;
 
-@PersistenceCapable(identityType=IdentityType.DATASTORE,detachable="true")
+@PersistenceCapable(identityType=IdentityType.APPLICATION,detachable="true")
 public class Drug extends Model {
+	@Persistent(primaryKey="true")
 	private String d_name;
 	
 	public static final String PROPERTY_NAME = "name";
@@ -20,7 +21,6 @@ public class Drug extends Model {
 		d_name = name;
 	}
 
-	@Persistent //(primaryKey="true")
 	public String getName() {
 		return d_name;
 	}

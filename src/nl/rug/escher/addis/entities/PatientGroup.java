@@ -13,17 +13,21 @@ import com.jgoodies.binding.beans.Model;
 
 @PersistenceCapable(detachable="true")
 @FetchGroup(name="pg-full", members={
-		@Persistent(name="measurements"),
-		@Persistent(name="size"), 
-		@Persistent(name="drug"),
-		@Persistent(name="dose"),
-		@Persistent(name="study")
+		@Persistent(name="d_measurements"),
+		@Persistent(name="d_drug"),
+		@Persistent(name="d_dose"),
+		@Persistent(name="d_study")
 		})
 public class PatientGroup extends Model {
+	@Persistent(mappedBy="d_patientGroups")
 	private Study d_study;
+	@Persistent
 	private Integer d_size;
+	@Persistent
 	private Drug d_drug;
+	@Persistent
 	private Dose d_dose;
+	@Element
 	private List<BasicMeasurement> d_measurements = new ArrayList<BasicMeasurement>();
 	
 	public static final String PROPERTY_STUDY = "study";
@@ -33,7 +37,6 @@ public class PatientGroup extends Model {
 	public static final String PROPERTY_MEASUREMENTS = "measurements";
 	public static final String PROPERTY_LABEL = "label";
 	
-	@Persistent(mappedBy="patientGroups")
 	public Study getStudy() {
 		return d_study;
 	}
@@ -44,7 +47,6 @@ public class PatientGroup extends Model {
 		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_STUDY, oldVal, d_study));
 	}
 	
-	@Persistent
 	public Drug getDrug() {
 		return d_drug;
 	}
@@ -57,7 +59,6 @@ public class PatientGroup extends Model {
 		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
 	}
 	
-	@Persistent
 	public Dose getDose() {
 		return d_dose;
 	}
@@ -71,7 +72,6 @@ public class PatientGroup extends Model {
 		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
 	}
 
-	@Element
 	public List<BasicMeasurement> getMeasurements() {
 		return d_measurements;
 	}
@@ -110,14 +110,11 @@ public class PatientGroup extends Model {
 		return d_drug.toString() + " " + d_dose.toString();
 	}
 	
-	/*
 	@Override
 	public String toString() {
 		return "PatientGroup(" + d_drug + ", " + d_dose + ", " + d_size + ")";
 	}
-	*/
 
-	@Persistent
 	public Integer getSize() {
 		return d_size;
 	}

@@ -8,7 +8,9 @@ import javax.jdo.annotations.Persistent;
 
 @PersistenceCapable(detachable="true")
 public class BasicContinuousMeasurement extends BasicMeasurement implements ContinuousMeasurement {
+	@Persistent
 	private Double d_mean;
+	@Persistent
 	private Double d_stdDev;
 	
 	public BasicContinuousMeasurement() {
@@ -21,7 +23,6 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 		d_stdDev = 0.0; // FIXME
 	}
 	
-	@Persistent
 	public Double getMean() {
 		return d_mean;
 	}
@@ -34,7 +35,6 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_LABEL, oldLabel, getLabel()));
 	}
 	
-	@Persistent
 	public Double getStdDev() {
 		return d_stdDev;
 	}
