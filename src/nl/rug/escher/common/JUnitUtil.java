@@ -1,3 +1,21 @@
+/*
+	This file is part of JSMAA.
+	(c) Tommi Tervonen, 2009	
+
+    JSMAA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    JSMAA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with JSMAA.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 package nl.rug.escher.common;
 
 import static org.easymock.EasyMock.createMock;
@@ -102,11 +120,7 @@ public class JUnitUtil {
 		List list2 = new ArrayList();
 		list2.add(toAdd);
 		
-		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
-		mock.propertyChange(eqEvent(new PropertyChangeEvent(
-				source, propertyName, list1, list2)));
-		replay(mock);
-		
+		PropertyChangeListener mock = mockListener(source, propertyName, list1, list2);
 		source.addPropertyChangeListener(mock);
 		Object actual = null;
 		try {
@@ -131,14 +145,10 @@ public class JUnitUtil {
 		// set the parameter
 		getSetterMethod(source, propertyName, list1).invoke(source, list1);
 
-		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
-		mock.propertyChange(eqEvent(new PropertyChangeEvent(
-				source, propertyName, list1, list2)));
-		replay(mock);
-
+		PropertyChangeListener mock = mockListener(source, propertyName, list1, list2);
 		source.addPropertyChangeListener(mock);		
 
-		get1ParamMethod(source, deleteMethodName, toDelete).invoke(source, toDelete);
+		get1ParamMethod(source, deleteMethodName, toDelete).invoke(source, toDelete);		
 
 		Object actual = getGetterMethod(source, propertyName).invoke(source);
 		assertTrue(0 ==  ((List) actual).size());
