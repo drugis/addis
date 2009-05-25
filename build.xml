@@ -11,8 +11,7 @@
 		<pathelement location="lib/contract4j/contract4j5.jar"/>
 	</path>
 
-	<path id="ADDIS.classpath">
-		<pathelement location="bin"/>
+	<path id="build.classpath">
 		<pathelement location="lib/jgoodies/binding-2.0.6.jar"/>
 		<pathelement location="lib/jgoodies/forms-1.2.1.jar"/>
 		<pathelement location="lib/jgoodies/looks-2.2.1.jar"/>
@@ -23,10 +22,15 @@
 		<pathelement location="lib/datanucleus/datanucleus-core-1.1.2.jar"/>
 		<pathelement location="lib/datanucleus/datanucleus-db4o-1.1.1.jar"/>
 		<pathelement location="lib/datanucleus/jdo2-api-2.3-SNAPSHOT.jar"/>
-		<pathelement location="src/datanucleus.properties"/>
-		<pathelement location="src/datanucleus.test.properties"/>
 		<pathelement location="lib/datanucleus/log4j-1.2.8.jar"/>
 		<pathelement location="lib/contract4j/contract4j5.jar"/>
+	</path>
+
+	<path id="ADDIS.classpath">
+		<pathelement location="bin"/>
+		<pathelement location="src/datanucleus.properties"/>
+		<pathelement location="src/datanucleus.test.properties"/>
+		<path refid="build.classpath" />
 		<!-- <fileset dir="lib/contract4j" /> -->
 		<!-- <pathelement location="lib/aspectj/aspectjrt.jar"/> -->
 	</path>
@@ -35,6 +39,12 @@
 		<fileset dir="lib/contract4j" />
 		<pathelement location="lib/aspectj/aspectjrt.jar"/>
 	</path>
+
+	<pathconvert property="class-path" pathsep=" " dirsep="/">
+		<path refid="build.classpath" />
+		<path refid="contract4j.classpath" />
+		<map from="${basedir}" to="." />		
+	</pathconvert>
 
 	<path id="ADDIS.enhancer.classpath">
 		<path refid="ADDIS.classpath" />
@@ -48,6 +58,22 @@
 
 	<taskdef classpath="${aspectjtools}"
 		resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties" />
+
+	<target name="dist" depends="build">
+		<delete dir="dist" />
+		<mkdir dir="dist" />
+		<mkdir dir="dist/lib" />
+		<copy todir="dist/lib" includeemptydirs="false">
+			<fileset dir="lib" />
+		</copy>
+
+		<jar destfile="dist/addis.jar" basedir="bin">
+			<manifest>
+				<attribute name="Main-Class" value="nl.rug.escher.addis.gui.Main" />
+				<attribute name="Class-Path" value="${class-path}" />
+			</manifest>
+		</jar>
+	</target>
 
 	<target name="init">
 		<mkdir dir="bin"/>
