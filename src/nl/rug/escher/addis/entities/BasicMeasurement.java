@@ -38,7 +38,7 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 				Integer oldSize = (Integer)event.getOldValue();
 				Integer newSize = (Integer)event.getNewValue();
 				if (BasicMeasurement.this != null) {
-					sampleSizeChange(oldSize, newSize);
+					firePropertyChange(PROPERTY_SAMPLESIZE, oldSize, newSize);
 				}
 			}
 		}
@@ -50,19 +50,13 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 		}
 		Integer oldSize = getSampleSize();
 		if (g != null && d_listener != null) {
-			//g.addPropertyChangeListener(PatientGroup.PROPERTY_SIZE, d_listener);
+			g.addPropertyChangeListener(PatientGroup.PROPERTY_SIZE, d_listener);
 		}
 		PatientGroup oldVal = d_patientGroup;
 		d_patientGroup = g;
 		firePropertyChange(PROPERTY_PATIENTGROUP, oldVal, d_patientGroup);
 		Integer newSize = getSampleSize();
-		if ((oldSize == null && newSize != null) || (oldSize != null && !oldSize.equals(newSize))) {
-			firePropertyChange(PROPERTY_SAMPLESIZE, oldSize, newSize);
-		}
-	}
-
-	public void sampleSizeChange(Integer oldSize, Integer newSize) {
-		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_SAMPLESIZE, oldSize, newSize));
+		firePropertyChange(PROPERTY_SAMPLESIZE, oldSize, newSize);
 	}
 
 	public Endpoint getEndpoint() {
@@ -72,7 +66,7 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 	public void setEndpoint(Endpoint endpoint) {
 		Endpoint oldVal = d_endpoint;
 		d_endpoint = endpoint;
-		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_ENDPOINT, oldVal, d_endpoint));
+		firePropertyChange(PROPERTY_ENDPOINT, oldVal, d_endpoint);
 	}
 
 	public Integer getSampleSize() {
