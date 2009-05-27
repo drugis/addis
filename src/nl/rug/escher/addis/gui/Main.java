@@ -1,11 +1,11 @@
 package nl.rug.escher.addis.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.io.FileNotFoundException;
 
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -23,7 +23,6 @@ import javax.swing.tree.TreePath;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainImpl;
 import nl.rug.escher.addis.entities.DomainListener;
-//import nl.rug.escher.addis.entities.DomainPersistent;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.gui.GUIHelper;
@@ -31,14 +30,17 @@ import nl.rug.escher.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 
+import fi.smaa.common.ImageLoader;
+
 public class Main extends JFrame {
-	private JMenuBar d_menuBar;
 	private JComponent d_leftPanel;
 	private JScrollPane d_rightPanel;
 	
 	private ViewBuilder d_rightPanelBuilder;
 	
 	private Domain d_domain;
+	
+	private ImageLoader imageLoader = new ImageLoader("/resources/gfx/");
 
 	public Main() {
 		super("Escher ADDIS");
@@ -59,53 +61,64 @@ public class Main extends JFrame {
 	}
 
 	private void initMenu() {
-		d_menuBar = new JMenuBar();
-		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.add(createFileMenu());
+		menuBar.add(createAddMenu());		
+		setJMenuBar(menuBar);
+	}
+
+	private JMenu createAddMenu() {
+		JMenu addMenu = new JMenu("Add");
+		addMenu.setMnemonic('a');
+		addMenu.add(createAddDrugMenuItem());		
+		addMenu.add(createAddEndpointMenuItem());
+		addMenu.add(createAddStudyMenuItem());		
+		return addMenu;
+	}
+
+	private JMenu createFileMenu() {
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic('f');
 		
-		fileMenu.add(initExitItem());
-		d_menuBar.add(fileMenu);
-		
-		d_menuBar.add(createAddEndpointButton());
-		d_menuBar.add(createAddStudyButton());
-		d_menuBar.add(createAddDrugButton());
-		
-		add(d_menuBar, BorderLayout.NORTH);
+		fileMenu.add(createExitItem());
+		return fileMenu;
 	}
 
-	private JComponent createAddEndpointButton() {
-		JButton button = new JButton("Add Endpoint");
-		button.addActionListener(new AbstractAction() {
+	private JMenuItem createAddEndpointMenuItem() {
+		JMenuItem item = new JMenuItem("Endpoint", getIcon(FileNames.ICON_ENDPOINT));
+		item.setMnemonic('e');
+		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				showAddEndpointDialog();
 			}
 		});
 		
-		return button;
+		return item;
 	}
 	
-	private JComponent createAddStudyButton() {
-		JButton button = new JButton("Add Study");
-		button.addActionListener(new AbstractAction() {
+	private JMenuItem createAddStudyMenuItem() {
+		JMenuItem item = new JMenuItem("Study", getIcon(FileNames.ICON_STUDY));
+		item.setMnemonic('s');
+		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				showAddStudyDialog();
 			}
 		});
 		
-		return button;
+		return item;
 	}
 	
-	private JComponent createAddDrugButton() {
-		JButton button = new JButton("Add Drug");
-		button.addActionListener(new AbstractAction() {
+	private JMenuItem createAddDrugMenuItem() {
+		JMenuItem item = new JMenuItem("Drug", getIcon(FileNames.ICON_DRUG));
+		item.setMnemonic('d');
+		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				showAddDrugDialog();
 			}
 
 		});
 		
-		return button;
+		return item;
 	}
 	
 	private void showAddEndpointDialog() {
@@ -122,18 +135,24 @@ public class Main extends JFrame {
 		AddDrugDialog dialog = new AddDrugDialog(this, d_domain);
 		dialog.setVisible(true);
 	}
+	
+	public Icon getIcon(String name) {
+		try {
+			return imageLoader.getIcon(name);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
-	private JMenuItem initExitItem() {
-		JMenuItem exitItem = new JMenuItem("Exit");
-		
+	private JMenuItem createExitItem() {
+		JMenuItem exitItem = new JMenuItem("Exit", getIcon(FileNames.ICON_STOP));
+		exitItem.setMnemonic('e');		
 		exitItem.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				exit();
 			}
 		});
-		
-		exitItem.setMnemonic('e');
-		
 		return exitItem;
 	}
 	
@@ -161,6 +180,7 @@ public class Main extends JFrame {
 	private void initLeftPanel() {
 		DomainTreeModel model = new DomainTreeModel(d_domain);
 		JTree tree = new JTree(model);
+		tree.setCellRenderer(new DomainTreeCellRenderer(imageLoader));
 		tree.setRootVisible(false);
 		tree.expandPath(new TreePath(new Object[]{model.getRoot(), model.getEndpointsNode()}));
 		tree.expandPath(new TreePath(new Object[]{model.getRoot(), model.getStudiesNode()}));
