@@ -48,7 +48,7 @@ public class DomainPersistentTest {
 		
 		Study s = new Study();
 		s.setId("STUDY");
-		s.setEndpoints(new ArrayList<Endpoint>(domain.getEndpoints()));
+		s.addEndpoint(domain.getEndpoints().iterator().next());
 		
 		domain.addStudy(s);
 		
