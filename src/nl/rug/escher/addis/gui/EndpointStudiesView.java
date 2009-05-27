@@ -1,5 +1,7 @@
 package nl.rug.escher.addis.gui;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -125,9 +127,17 @@ public class EndpointStudiesView implements ViewBuilder {
 					"Meta-Analyze", JOptionPane.ERROR_MESSAGE);
 			
 		} else {
-			JDialog dialog = new JDialog(d_frame, "Meta-Analyze");
+			final JDialog dialog = new JDialog(d_frame, "Meta-Analyze");
 			ViewBuilder view = new MetaAnalysisView(new MetaAnalysis(d_endpoint, studies));
-			dialog.setContentPane(view.buildPanel());
+			dialog.add(view.buildPanel(), BorderLayout.CENTER);
+			JButton closeButton = new JButton("Close");
+			closeButton.addActionListener(new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					dialog.setVisible(false);
+				}
+			});
+			dialog.add(closeButton, BorderLayout.SOUTH);
 			dialog.pack();
 			dialog.setVisible(true);
 		}
