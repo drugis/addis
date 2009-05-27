@@ -34,6 +34,7 @@ public class EndpointStudiesView implements ViewBuilder {
 	private List<JCheckBox> d_studySelect;
 	private Study d_selectedStudy;
 	private Frame d_frame;
+	private JButton d_metaAnalyzeButton;
 	
 	public EndpointStudiesView(Endpoint node, Domain domain, Frame frame) {
 		d_endpoint = node;
@@ -72,6 +73,7 @@ public class EndpointStudiesView implements ViewBuilder {
 			layout.appendRow(RowSpec.decode("p"));
 			
 			JCheckBox box = new JCheckBox();
+			box.addActionListener(new CheckBoxListener());
 			if (s.equals(d_selectedStudy)) {
 				box.setSelected(true);
 			}
@@ -86,13 +88,13 @@ public class EndpointStudiesView implements ViewBuilder {
 		layout.appendRow(RowSpec.decode("3dlu"));
 		layout.appendRow(RowSpec.decode("p"));
 		builder.add(buildMetaAnalyzeButton(), cc.xy(3, row));
-		
+		updateMetaAnalyzeButtonEnabled();
 		return builder.getPanel();
 	}
 
 	private JComponent buildMetaAnalyzeButton() {
-		JButton button = new JButton("Meta-Analyze");
-		button.addActionListener(new AbstractAction() {
+		d_metaAnalyzeButton = new JButton("Meta-Analyze");
+		d_metaAnalyzeButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				showMetaAnalysisDialog();
 			}
@@ -100,7 +102,7 @@ public class EndpointStudiesView implements ViewBuilder {
 		
 		ButtonBarBuilder2 builder = new ButtonBarBuilder2();
 		builder.addGlue();
-		builder.addButton(button);
+		builder.addButton(d_metaAnalyzeButton);
 		
 		return builder.getPanel();
 	}
@@ -152,4 +154,22 @@ public class EndpointStudiesView implements ViewBuilder {
 	public void setSelectedStudy(Study selectedStudy) {
 		d_selectedStudy = selectedStudy;
 	}
+	
+	private class CheckBoxListener extends AbstractAction {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			updateMetaAnalyzeButtonEnabled();
+		}
+	}
+	
+	private void updateMetaAnalyzeButtonEnabled() {
+		boolean someSelected = false;
+		for (JCheckBox box : d_studySelect) {
+			if (box.isSelected()) {
+				someSelected = true;
+				break;
+			}
+		}
+		d_metaAnalyzeButton.setEnabled(someSelected);
+	}			
 }
