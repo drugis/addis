@@ -2,6 +2,7 @@ package nl.rug.escher.common.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 
@@ -28,7 +29,7 @@ public abstract class OkCancelDialog extends JDialog {
 	private JComponent createPanel() {
 		JPanel panel = new JPanel(new BorderLayout());
 		
-		createUserPanel();
+		d_userPanel = new JPanel();
 		panel.add(d_userPanel, BorderLayout.CENTER);
 		
 		JButton okButton = createOkButton();
@@ -41,10 +42,6 @@ public abstract class OkCancelDialog extends JDialog {
 		panel.add(builder.getPanel(), BorderLayout.SOUTH);
 	
 		return panel;
-	}
-
-	private void createUserPanel() {
-		d_userPanel = new JPanel();
 	}
 	
 	protected JPanel getUserPanel() {

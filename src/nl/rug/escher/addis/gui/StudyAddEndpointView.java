@@ -19,6 +19,7 @@ import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class StudyAddEndpointView implements ViewBuilder {
@@ -64,15 +65,19 @@ public class StudyAddEndpointView implements ViewBuilder {
 		initializeMeasurements();
 		initComponents();
 		
-		FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, pref",
+		String colSpec = "right:pref, 3dlu, " +
+			(getNumComponents() > 0 ? "pref" : "pref:grow");
+		FormLayout layout = new FormLayout(colSpec,
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		int fullWidth = 3;
-		if (getEndpoint() != null) {
-			for (int i = 1; i < MeasurementInputHelper.numComponents(getEndpoint()); ++i) {
-				LayoutUtil.addColumn(layout);
-				fullWidth += 2;
+		for (int i = 1; i < getNumComponents(); ++i) {
+			layout.appendColumn(ColumnSpec.decode("3dlu"));
+			if (i < getNumComponents() - 1) {
+				layout.appendColumn(ColumnSpec.decode("pref"));				
+			} else {
+				layout.appendColumn(ColumnSpec.decode("pref:grow"));				
 			}
+			fullWidth += 2;
 		}
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -103,6 +108,14 @@ public class StudyAddEndpointView implements ViewBuilder {
 		buildMeasurementsPart(builder, cc, 13, layout);
 		
 		return builder.getPanel();
+	}
+
+	private int getNumComponents() {
+		Endpoint e = getEndpoint();
+		if (e == null) {
+			return 0;
+		}
+		return MeasurementInputHelper.numComponents(e);
 	}
 
 	private Endpoint getEndpoint() {
