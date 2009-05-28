@@ -4,21 +4,14 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jdo.annotations.Element;
 import javax.jdo.annotations.FetchGroup;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 import com.jgoodies.binding.beans.Model;
 
-@PersistenceCapable(detachable="true")
-@FetchGroup(name="pg-full", members={
-		@Persistent(name="measurements"),
-		@Persistent(name="size"), 
-		@Persistent(name="drug"),
-		@Persistent(name="dose"),
-		@Persistent(name="study")
-		})
+@PersistenceCapable
+@FetchGroup(name="default", members={@Persistent(name="measurements"), @Persistent(name="size")})
 public class PatientGroup extends Model {
 	private Study d_study;
 	private Integer d_size;
@@ -71,7 +64,7 @@ public class PatientGroup extends Model {
 		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
 	}
 
-	@Element
+	@Persistent
 	public List<BasicMeasurement> getMeasurements() {
 		return d_measurements;
 	}
@@ -79,7 +72,7 @@ public class PatientGroup extends Model {
 	public void setMeasurements(List<BasicMeasurement> measurements) {
 		List<BasicMeasurement> oldVal = d_measurements;
 		d_measurements = measurements;
-		//firePropertyChange(new PropertyChangeEvent(this, PROPERTY_MEASUREMENTS, oldVal, d_measurements));
+		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_MEASUREMENTS, oldVal, d_measurements));
 	}
 	
 	public void addMeasurement(BasicMeasurement m) {
@@ -95,7 +88,7 @@ public class PatientGroup extends Model {
 	 * @return Measurement if Endpoint is measured, null otherwise.
 	 */
 	public BasicMeasurement getMeasurement(Endpoint endpoint) {
-		for (BasicMeasurement m : getMeasurements()) {
+		for (BasicMeasurement m : d_measurements) {
 			if (m.getEndpoint().equals(endpoint)) {
 				return m;
 			}
@@ -110,12 +103,10 @@ public class PatientGroup extends Model {
 		return d_drug.toString() + " " + d_dose.toString();
 	}
 	
-	/*
 	@Override
 	public String toString() {
 		return "PatientGroup(" + d_drug + ", " + d_dose + ", " + d_size + ")";
 	}
-	*/
 
 	@Persistent
 	public Integer getSize() {

@@ -79,8 +79,6 @@ public class DomainPersistent implements Domain {
 		Transaction tx = pm.currentTransaction();
 		try {
 			pm.getFetchPlan().addGroup("default");
-			pm.getFetchPlan().addGroup("pg-full");
-            pm.getFetchPlan().setMaxFetchDepth(4);
 			tx.begin();
 			Query q = pm.newQuery(type);
 			Collection<T> res = (Collection<T>) q.execute();
@@ -137,9 +135,7 @@ public class DomainPersistent implements Domain {
 	}
 
 	public List<Study> getStudies() {
-		List<Study> studies = fetchObjects(Study.class);
-		System.out.println(studies);
-		return studies;
+		return fetchObjects(Study.class);
 	}
 
 	public void addDrug(Drug d) throws NullPointerException {

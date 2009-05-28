@@ -46,8 +46,8 @@ public class Endpoint extends Model {
 	public boolean equals(Object o) {
 		if (o instanceof Endpoint) {
 			Endpoint other = (Endpoint)o;
-			if (other.getName() == null) {
-				return getName() == null;
+			if (other.getName() == null && getName() == null) {
+				return true;
 			}
 			return other.getName().equals(getName());
 		}
