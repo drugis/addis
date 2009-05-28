@@ -28,7 +28,7 @@ public class MetaAnalysisView implements ViewBuilder {
 				"pref",
 				"p, 3dlu, p, 3dlu, p");
 		int fullWidth = 1;
-		for (Drug d : d_analysis.getDrugs()) {
+		for (int i = 0; i < d_analysis.getDrugs().size(); ++i) {
 			LayoutUtil.addColumn(layout);
 			fullWidth += 2;
 		}
