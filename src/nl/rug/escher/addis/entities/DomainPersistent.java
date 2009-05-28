@@ -16,6 +16,7 @@ import javax.jdo.spi.Detachable;
 
 public class DomainPersistent implements Domain {
 	PersistenceManagerFactory d_pmf;
+	private List<Study> d_studies = new ArrayList<Study>();
 	private List<DomainListener> d_listeners = new ArrayList<DomainListener>();
 	
 	private PropertyChangeListener d_studyListener = new PropertyChangeListener() {
@@ -78,7 +79,6 @@ public class DomainPersistent implements Domain {
 		Collection<T> objects = new ArrayList<T>();
 		Transaction tx = pm.currentTransaction();
 		try {
-			pm.getFetchPlan().addGroup("default");
 			tx.begin();
 			Query q = pm.newQuery(type);
 			Collection<T> res = (Collection<T>) q.execute();
@@ -161,17 +161,8 @@ public class DomainPersistent implements Domain {
 	}
 
 	public List<Study> getStudies(Endpoint e) {
-		if (e == null) {
-			throw new NullPointerException("Endpoint may not be null");
-		}
 		List<Study> list = new ArrayList<Study>();
-		for (Study s : getStudies()) {
-			if (s == null) {
-				throw new NullPointerException("Null study?");
-			}
-			if (s.getEndpoints() == null) {
-				throw new NullPointerException("Illegal study (" + s + ")");
-			}
+		for (Study s : d_studies) {
 			if (s.getEndpoints().contains(e)) {
 				list.add(s);
 			}

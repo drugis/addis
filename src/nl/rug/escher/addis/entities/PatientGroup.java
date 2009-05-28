@@ -1,17 +1,14 @@
 package nl.rug.escher.addis.entities;
 
-import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jdo.annotations.FetchGroup;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 import com.jgoodies.binding.beans.Model;
 
 @PersistenceCapable
-@FetchGroup(name="default", members={@Persistent(name="measurements"), @Persistent(name="size")})
 public class PatientGroup extends Model {
 	private Study d_study;
 	private Integer d_size;
@@ -26,7 +23,7 @@ public class PatientGroup extends Model {
 	public static final String PROPERTY_MEASUREMENTS = "measurements";
 	public static final String PROPERTY_LABEL = "label";
 	
-	@Persistent(mappedBy="patientGroups")
+	@Persistent
 	public Study getStudy() {
 		return d_study;
 	}
@@ -34,7 +31,7 @@ public class PatientGroup extends Model {
 	public void setStudy(Study study) {
 		Study oldVal = d_study;
 		d_study = study;
-		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_STUDY, oldVal, d_study));
+		firePropertyChange(PROPERTY_STUDY, oldVal, d_study);
 	}
 	
 	@Persistent
@@ -46,7 +43,7 @@ public class PatientGroup extends Model {
 		String oldLabel = getLabel();
 		Drug oldVal = d_drug;
 		d_drug = drug;
-		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_DRUG, oldVal, d_drug));
+		firePropertyChange(PROPERTY_DRUG, oldVal, d_drug);
 		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
 	}
 	
@@ -59,8 +56,7 @@ public class PatientGroup extends Model {
 		String oldLabel = getLabel();
 		Dose oldVal = d_dose;
 		d_dose = dose;
-		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_DOSE, oldVal, d_dose)); // TODO: WTF?
-		// apparently, in the above call, jgoodies tries to set source=null in stead of source=this..
+		firePropertyChange(PROPERTY_DOSE, oldVal, d_dose);
 		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
 	}
 
@@ -72,7 +68,7 @@ public class PatientGroup extends Model {
 	public void setMeasurements(List<BasicMeasurement> measurements) {
 		List<BasicMeasurement> oldVal = d_measurements;
 		d_measurements = measurements;
-		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_MEASUREMENTS, oldVal, d_measurements));
+		firePropertyChange(PROPERTY_MEASUREMENTS, oldVal, d_measurements);
 	}
 	
 	public void addMeasurement(BasicMeasurement m) {
@@ -116,6 +112,6 @@ public class PatientGroup extends Model {
 	public void setSize(Integer size) {
 		Integer oldVal = d_size;
 		d_size = size;
-		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_SIZE, oldVal, d_size));
+		firePropertyChange(PROPERTY_SIZE, oldVal, d_size);
 	}
 }

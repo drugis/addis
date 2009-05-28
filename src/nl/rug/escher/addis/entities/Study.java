@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.jdo.annotations.Element;
-import javax.jdo.annotations.FetchGroup;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -14,7 +13,6 @@ import javax.jdo.annotations.Persistent;
 import com.jgoodies.binding.beans.Model;
 
 @PersistenceCapable(identityType=IdentityType.APPLICATION,detachable="true")
-@FetchGroup(name="default",members={@Persistent(name="endpoints"),@Persistent(name="patientGroups")})
 public class Study extends Model {
 	private String d_id;
 	private List<Endpoint> d_endpoints;
