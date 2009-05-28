@@ -3,20 +3,19 @@ package nl.rug.escher.addis.entities;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.jdo.Extent;
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
-import javax.jdo.Query;
 import javax.jdo.Transaction;
-import javax.jdo.spi.Detachable;
 
 public class DomainPersistent implements Domain {
 	PersistenceManagerFactory d_pmf;
+	private List<Endpoint> d_endpoints = new ArrayList<Endpoint>();
 	private List<Study> d_studies = new ArrayList<Study>();
+	private List<Drug> d_drugs = new ArrayList<Drug>();
 	private List<DomainListener> d_listeners = new ArrayList<DomainListener>();
 	
 	private PropertyChangeListener d_studyListener = new PropertyChangeListener() {
@@ -72,30 +71,22 @@ public class DomainPersistent implements Domain {
 		return endpoints;
 	}
 
-	@SuppressWarnings("unchecked")
 	private <T> List<T> fetchObjects(Class<T> type) {
 		PersistenceManager pm = d_pmf.getPersistenceManager();
 		
-		Collection<T> objects = new ArrayList<T>();
+		List<T> objects = new ArrayList<T>();
 		Transaction tx = pm.currentTransaction();
 		try {
 			tx.begin();
-			Query q = pm.newQuery(type);
-			Collection<T> res = (Collection<T>) q.execute();
-			
-			objects = pm.detachCopyAll(res);
-			
-			tx.commit();
-		} catch (Exception e) {
-			if (tx.isActive()) {
-				tx.rollback();
+			Extent<T> extent = pm.getExtent(type);
+			for (T o : extent) {
+				objects.add(o);
 			}
-			e.printStackTrace();
-			throw new RuntimeException(e);
+			tx.commit();
 		} finally {
 			pm.close();
 		}
-		return new ArrayList<T>(objects);
+		return objects;
 	}
 	
 	public Endpoint getEndpoint(String name) {
@@ -122,8 +113,7 @@ public class DomainPersistent implements Domain {
 			throw new NullPointerException("Study may not be null");
 		}
 		s.addPropertyChangeListener(d_studyListener);
-		
-		persistObject(s);
+		d_studies.add(s);
 		
 		fireStudiesChanged();
 	}
@@ -135,7 +125,7 @@ public class DomainPersistent implements Domain {
 	}
 
 	public List<Study> getStudies() {
-		return fetchObjects(Study.class);
+		return d_studies;
 	}
 
 	public void addDrug(Drug d) throws NullPointerException {
@@ -178,15 +168,6 @@ public class DomainPersistent implements Domain {
 		for (Drug d : getDrugs()) {
 			if (d.getName().equals(name)) {
 				return d;
-			}
-		}
-		return null;
-	}
-
-	public Study getStudy(String id) {
-		for (Study s : getStudies()) {
-			if (s.getId().equals(id)) {
-				return s;
 			}
 		}
 		return null;

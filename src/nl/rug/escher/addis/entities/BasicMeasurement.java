@@ -22,7 +22,7 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 		d_endpoint = e;
 	}
 
-	@Persistent(mappedBy="measurements")
+	@Persistent
 	public PatientGroup getPatientGroup() {
 		return d_patientGroup;
 	}
@@ -42,9 +42,7 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 			getPatientGroup().removePropertyChangeListener(PatientGroup.PROPERTY_SIZE, d_listener);
 		}
 		Integer oldSize = getSampleSize();
-		if (g != null) {
-			g.addPropertyChangeListener(PatientGroup.PROPERTY_SIZE, d_listener);
-		}
+		g.addPropertyChangeListener(PatientGroup.PROPERTY_SIZE, d_listener);
 		PatientGroup oldVal = d_patientGroup;
 		d_patientGroup = g;
 		firePropertyChange(PROPERTY_PATIENTGROUP, oldVal, d_patientGroup);

@@ -6,7 +6,7 @@ import javax.jdo.annotations.Persistent;
 
 import com.jgoodies.binding.beans.Model;
 
-@PersistenceCapable(identityType=IdentityType.APPLICATION,detachable="true")
+@PersistenceCapable(identityType=IdentityType.APPLICATION)
 public class Endpoint extends Model {
 	public enum Type {
 		CONTINUOUS,

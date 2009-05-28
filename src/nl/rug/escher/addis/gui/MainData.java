@@ -15,8 +15,8 @@ import nl.rug.escher.addis.entities.Study;
 
 public class MainData {
 	public static void initDefaultData(Domain domain) {
-		buildDefaultStudy(domain);
-		buildDefaultStudy2(domain);
+		domain.addStudy(buildDefaultStudy(domain));
+		domain.addStudy(buildDefaultStudy2(domain));
 	}
 
 	private static Study buildDefaultStudy2(Domain domain) {
@@ -53,10 +53,6 @@ public class MainData {
 		
 		study.addPatientGroup(parox);
 		study.addPatientGroup(fluox);
-		
-		if (domain.getStudy("De Wilde et al, 1993") == null) {
-			domain.addStudy(study);
-		}
 		
 		return study;
 	}
@@ -106,10 +102,6 @@ public class MainData {
 		
 		study.addPatientGroup(parox);
 		study.addPatientGroup(fluox);
-		
-		//if (domain.getStudy("Chouinard et al, 1999") == null) {
-			domain.addStudy(study);
-		//}
 		
 		return study;
 	}

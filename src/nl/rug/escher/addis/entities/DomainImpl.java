@@ -120,13 +120,4 @@ public class DomainImpl implements Domain {
 		}
 		return null;
 	}
-
-	public Study getStudy(String id) {
-		for (Study s : getStudies()) {
-			if (s.getId().equals(id)) {
-				return s;
-			}
-		}
-		return null;
-	}
 }

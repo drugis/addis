@@ -31,10 +31,6 @@ public interface Domain {
 	 */
 	public List<Study> getStudies();
 	
-	/**
-	 * Get study by ID
-	 */
-	public Study getStudy(String id);
 	
 	/**
 	 * Get studies by Endpoint.
