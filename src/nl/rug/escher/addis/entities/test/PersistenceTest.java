@@ -7,7 +7,6 @@ import java.util.Iterator;
 
 import javax.jdo.Extent;
 import javax.jdo.JDOHelper;
-import javax.jdo.JDOUserException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Transaction;
@@ -56,30 +55,6 @@ public class PersistenceTest {
 				assertEquals(endpoint, it.next());
 				assertFalse(it.hasNext());
 				tx.commit();
-			} finally {
-			    if (tx.isActive()) {
-			        tx.rollback();
-			    }
-			}
-	    } finally {
-		    pm.close();
-	    }
-	}
-	
-	@Test(expected=JDOUserException.class)
-	public void testDuplicateEndpoint() {
-		PersistenceManagerFactory pmf = getFactory();
-		PersistenceManager pm = pmf.getPersistenceManager();
-	
-		Endpoint e1 = new Endpoint("e1");
-		Endpoint e2 = new Endpoint("e1");
-	    try {
-			Transaction tx = pm.currentTransaction();
-			try {
-			    tx.begin();
-			    pm.makePersistent(e1);
-			    pm.makePersistent(e2);
-			    tx.commit();
 			} finally {
 			    if (tx.isActive()) {
 			        tx.rollback();
