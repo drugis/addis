@@ -18,18 +18,11 @@
 		<pathelement location="lib/junit/junit-4.6.jar"/>
 		<pathelement location="lib/junit/junit-dep-4.6.jar"/>
 		<pathelement location="lib/easymock/easymock.jar"/>
-		<pathelement location="lib/db4o/db4o-7.4.88.12908-java5.jar"/>
-		<pathelement location="lib/datanucleus/datanucleus-core-1.1.2.jar"/>
-		<pathelement location="lib/datanucleus/datanucleus-db4o-1.1.1.jar"/>
-		<pathelement location="lib/datanucleus/jdo2-api-2.3-SNAPSHOT.jar"/>
-		<pathelement location="lib/datanucleus/log4j-1.2.8.jar"/>
 		<pathelement location="lib/contract4j/contract4j5.jar"/>
 	</path>
 
 	<path id="ADDIS.classpath">
 		<pathelement location="bin"/>
-		<pathelement location="src/datanucleus.properties"/>
-		<pathelement location="src/datanucleus.test.properties"/>
 		<path refid="build.classpath" />
 		<!-- <fileset dir="lib/contract4j" /> -->
 		<!-- <pathelement location="lib/aspectj/aspectjrt.jar"/> -->
@@ -49,16 +42,6 @@
 		<path refid="dist.class.path" />
 		<map from="${basedir}" to="." />		
 	</pathconvert>
-
-	<path id="ADDIS.enhancer.classpath">
-		<path refid="ADDIS.classpath" />
-		<pathelement location="lib/datanucleus-enhancer/asm-3.1.jar"/>
-		<pathelement location="lib/datanucleus-enhancer/datanucleus-enhancer-1.1.2.jar"/>
-	</path>
-
-	<taskdef name="nucleusenhancer"
-		classpathref="ADDIS.enhancer.classpath" 
-		classname="org.datanucleus.enhancer.tools.EnhancerTask" />
 
 	<taskdef classpath="${aspectjtools}"
 		resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties" />
@@ -102,14 +85,7 @@
 			<classpath refid="ADDIS.classpath"/>
 		</javac>
 	</target>
-	<target depends="compile-project" name="enhance-project">
-		<nucleusenhancer classpathref="ADDIS.enhancer.classpath">
-			<fileset dir="bin">
-				<include name="**/*.class" />
-			</fileset>
-		</nucleusenhancer>
-	</target>
-	<target depends="enhance-project" name="weave-project">
+	<target depends="compile-project" name="weave-project">
 		<iajc debug="true" inPath="bin" debugLevel="${debuglevel}" source="${source}" target="${target}"
 			aspectpathref="aspect.path" destDir="bin">
 			<classpath>
