@@ -18,7 +18,7 @@
 	</artifact:dependencies>
 
 	<path id="aspect.path">
-		<pathelement location="lib/contract4j/contract4j5.jar"/>
+		<pathelement location="lib/contract4j/contract4j5-gert.jar"/>
 	</path>
 
 	<artifact:dependencies pathId="dep.classpath">
@@ -37,7 +37,7 @@
 
 	<path id="build.classpath">
 		<path refid="dep.classpath"/>
-		<pathelement location="lib/contract4j/contract4j5.jar"/>
+		<pathelement location="lib/contract4j/contract4j5-gert.jar"/>
 	</path>
 	
 	
@@ -46,15 +46,22 @@
 		<path refid="build.classpath" />
 	</path>
 
-	<artifact:dependencies pathId="aspectjrt.classpath">
+	<artifact:dependencies pathId="contract4j.dep.classpath">
 		<dependency groupId="org.aspectj"
 			artifactId="aspectjrt" version="1.6.4"/>
+		<dependency groupId="org.codehaus.groovy"
+			artifactId="groovy" version="1.6.2"/>
+		<dependency groupId="commons-logging"
+			artifactId="commons-logging" version="1.1.1"/>
+		<dependency groupId="org.antlr"
+			artifactid="antlr" version="3.1.3"/>
 	</artifact:dependencies>
 
 	<path id="contract4j.classpath">
 		<fileset dir="lib/contract4j" />
+		<pathelement location="lib/contract4j/contract4j5-gert.jar"/>
 		<!-- <pathelement location="lib/aspectj/aspectjrt.jar"/> -->
-		<path refid="aspectjrt.classpath"/>
+		<path refid="contract4j.dep.classpath"/>
 	</path>
 
 	<path id="dist.class.path">
