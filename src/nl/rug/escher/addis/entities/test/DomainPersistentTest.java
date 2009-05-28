@@ -34,11 +34,9 @@ public class DomainPersistentTest {
 		Domain domain = new DomainPersistent(getFactory());
 		
 		Endpoint e = new Endpoint("e");
-		assertEquals("e", e.getName());
 		domain.addEndpoint(e);
 		
-		assertTrue(domain.getEndpoint("e") != null);
-		assertEquals("e", domain.getEndpoint("e").getName());
+		assertEquals(e, domain.getEndpoint("e"));
 	}
 	
 	@Test @Ignore("Blocked by DataNucleus bug that needs work-around")
@@ -48,12 +46,6 @@ public class DomainPersistentTest {
 		
 		Study s = new Study();
 		s.setId("STUDY");
-		s.setEndpoints(new ArrayList<Endpoint>(domain.getEndpoints()));
-		
-		domain.addStudy(s);
-		
-		assertNotNull(domain.getStudy("STUDY"));
-		assertEquals(1, domain.getStudy("STUDY").getEndpoints().size());
-		assertEquals(1, domain.getEndpoints().size());
+		s.setEndpoints(new ArrayList<Endpoint>());
 	}
 }
