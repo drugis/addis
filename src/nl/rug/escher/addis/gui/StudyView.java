@@ -36,6 +36,11 @@ public class StudyView implements ViewBuilder {
 	}
 	
 	public JComponent buildPanel() {
+		for (PatientGroup g : d_model.getBean().getPatientGroups()) {
+			System.out.println(g);
+			System.out.println(g.getMeasurements());
+			System.out.println(g.getStudy());
+		}
 		FormLayout layout = new FormLayout( 
 				"right:pref, 3dlu, pref, 3dlu, pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
