@@ -14,13 +14,10 @@ import javax.jdo.annotations.Persistent;
 import com.jgoodies.binding.beans.Model;
 
 @PersistenceCapable(identityType=IdentityType.APPLICATION,detachable="true")
-@FetchGroup(name="default",members={@Persistent(name="d_endpoints"),@Persistent(name="d_patientGroups")})
+@FetchGroup(name="default",members={@Persistent(name="endpoints"),@Persistent(name="patientGroups")})
 public class Study extends Model {
-	@Persistent(primaryKey="true")
 	private String d_id;
-	@Element
 	private List<Endpoint> d_endpoints;
-	@Element
 	private List<PatientGroup> d_patientGroups;
 
 	public final static String PROPERTY_ID = "id";
@@ -37,6 +34,7 @@ public class Study extends Model {
 		d_endpoints.add(e);
 	}
 	
+	@Persistent(primaryKey="true")
 	public String getId() {
 		return d_id;
 	}
@@ -47,6 +45,7 @@ public class Study extends Model {
 		firePropertyChange(PROPERTY_ID, oldVal, d_id);
 	}
 	
+	@Persistent
 	public List<Endpoint> getEndpoints() {
 		return d_endpoints;
 	}
@@ -57,6 +56,7 @@ public class Study extends Model {
 		firePropertyChange(PROPERTY_ENDPOINTS, oldVal, d_endpoints);
 	}
 
+	@Element
 	public List<PatientGroup> getPatientGroups() {
 		return d_patientGroups;
 	}

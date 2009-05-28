@@ -16,11 +16,8 @@ public class Endpoint extends Model {
 			return this.name().toLowerCase();
 		}
 	}
-	@Persistent(primaryKey="true")
 	private String d_name;
-	@Persistent
 	private String d_description;
-	@Persistent
 	private Type d_type;
 	
 	public final static String PROPERTY_NAME = "name";
@@ -70,6 +67,7 @@ public class Endpoint extends Model {
 		firePropertyChange(PROPERTY_DESCRIPTION, oldVal, d_description);
 	}
 	
+	@Persistent
 	public String getDescription() {
 		return d_description;
 	}
@@ -80,6 +78,7 @@ public class Endpoint extends Model {
 		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
 	}
 	
+	@Persistent(primaryKey="true")
 	public String getName() {
 		return d_name;
 	}
@@ -94,6 +93,7 @@ public class Endpoint extends Model {
 		firePropertyChange(PROPERTY_TYPE, oldVal, d_type);
 	}
 
+	@Persistent
 	public Type getType() {
 		return d_type;
 	}

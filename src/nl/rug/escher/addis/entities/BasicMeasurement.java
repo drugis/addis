@@ -10,11 +10,9 @@ import javax.jdo.annotations.Persistent;
 import com.jgoodies.binding.beans.Model;
 
 @PersistenceCapable(detachable="true")
-@FetchGroup(name="default",members={@Persistent(name="d_endpoint"),@Persistent(name="d_patientGroup")})
+@FetchGroup(name="default",members={@Persistent(name="endpoint")})
 public abstract class BasicMeasurement extends Model implements Measurement {
-	@Persistent(mappedBy="d_measurements")
 	private PatientGroup d_patientGroup;
-	@Persistent
 	private Endpoint d_endpoint;
 	private PatientGroupListener d_listener;
 
@@ -28,6 +26,7 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 		d_endpoint = e;
 	}
 
+	@Persistent(mappedBy="measurements")
 	public PatientGroup getPatientGroup() {
 		return d_patientGroup;
 	}
@@ -54,10 +53,10 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 		}
 		PatientGroup oldVal = d_patientGroup;
 		d_patientGroup = g;
-		firePropertyChange(PROPERTY_PATIENTGROUP, oldVal, d_patientGroup);
+		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_PATIENTGROUP, oldVal, d_patientGroup));
 		Integer newSize = getSampleSize();
 		if ((oldSize == null && newSize != null) || (oldSize != null && !oldSize.equals(newSize))) {
-			firePropertyChange(PROPERTY_SAMPLESIZE, oldSize, newSize);
+			firePropertyChange(new PropertyChangeEvent(this, PROPERTY_SAMPLESIZE, oldSize, newSize));
 		}
 	}
 
@@ -65,6 +64,7 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_SAMPLESIZE, oldSize, newSize));
 	}
 
+	@Persistent
 	public Endpoint getEndpoint() {
 		return d_endpoint;
 	}
