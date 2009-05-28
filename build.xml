@@ -6,7 +6,6 @@
 	<property name="target" value="1.5"/>
 	<property name="source" value="1.5"/>
 	<property name="aspectjtools" location="lib/aspectj/aspectjtools.jar"/>
-	<property name="datanucleus-version" value="nightly" />
 
 	<path id="aspect.path">
 		<pathelement location="lib/contract4j/contract4j5.jar"/>
@@ -19,9 +18,11 @@
 		<pathelement location="lib/junit/junit-4.6.jar"/>
 		<pathelement location="lib/junit/junit-dep-4.6.jar"/>
 		<pathelement location="lib/easymock/easymock.jar"/>
-		<!-- <pathelement location="lib/db4o/db4o-7.4.63.11890-java5.jar"/> -->
-		<fileset dir="lib/persistence/${datanucleus-version}" />
-		<fileset dir="lib/persistence/common" />
+		<pathelement location="lib/db4o/db4o-7.4.88.12908-java5.jar"/>
+		<pathelement location="lib/datanucleus/datanucleus-core-1.1.2.jar"/>
+		<pathelement location="lib/datanucleus/datanucleus-db4o-1.1.1.jar"/>
+		<pathelement location="lib/datanucleus/jdo2-api-2.3-SNAPSHOT.jar"/>
+		<pathelement location="lib/datanucleus/log4j-1.2.8.jar"/>
 		<pathelement location="lib/contract4j/contract4j5.jar"/>
 	</path>
 
@@ -51,8 +52,8 @@
 
 	<path id="ADDIS.enhancer.classpath">
 		<path refid="ADDIS.classpath" />
-		<fileset dir="lib/persistence-enhancer/${datanucleus-version}"/>
-		<fileset dir="lib/persistence-enhancer/common"/>
+		<pathelement location="lib/datanucleus-enhancer/asm-3.1.jar"/>
+		<pathelement location="lib/datanucleus-enhancer/datanucleus-enhancer-1.1.2.jar"/>
 	</path>
 
 	<taskdef name="nucleusenhancer"
