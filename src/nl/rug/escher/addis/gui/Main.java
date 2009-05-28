@@ -23,7 +23,6 @@ import javax.swing.tree.TreePath;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainImpl;
 import nl.rug.escher.addis.entities.DomainListener;
-//import nl.rug.escher.addis.entities.DomainPersistent;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.gui.GUIHelper;
@@ -46,7 +45,6 @@ public class Main extends JFrame {
 		setPreferredSize(new Dimension(800, 500));
 		GUIHelper.initializeLookAndFeel();
 		
-		//d_domain = new DomainPersistent();
 		d_domain = new DomainImpl();
 		d_domain.addListener(new MainListener());
 		

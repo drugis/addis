@@ -1,10 +1,6 @@
 package nl.rug.escher.addis.entities;
 
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
 
-
-@PersistenceCapable
 public class BasicContinuousMeasurement extends BasicMeasurement implements ContinuousMeasurement {
 	private Double d_mean;
 	private Double d_stdDev;
@@ -19,7 +15,9 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 		d_stdDev = 0.0; // FIXME
 	}
 	
-	@Persistent
+	/* (non-Javadoc)
+	 * @see nl.rug.escher.addis.entities.ContinuousMeasurement#getMean()
+	 */
 	public Double getMean() {
 		return d_mean;
 	}
@@ -32,7 +30,9 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
 	}
 	
-	@Persistent
+	/* (non-Javadoc)
+	 * @see nl.rug.escher.addis.entities.ContinuousMeasurement#getStdDev()
+	 */
 	public Double getStdDev() {
 		return d_stdDev;
 	}

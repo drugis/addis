@@ -11,7 +11,6 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Transaction;
 
-import nl.rug.escher.addis.entities.DomainImpl;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.gui.MainData;
 
@@ -32,7 +31,7 @@ public class PersistenceTest {
 		PersistenceManagerFactory pmf = getFactory();
 		PersistenceManager pm = pmf.getPersistenceManager();
 	
-	    Endpoint endpoint = MainData.buildEndpointHamd(new DomainImpl());
+	    Endpoint endpoint = MainData.buildEndpointHamd();
 	    try {
 			Transaction tx = pm.currentTransaction();
 			try {

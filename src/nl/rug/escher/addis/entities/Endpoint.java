@@ -1,11 +1,7 @@
 package nl.rug.escher.addis.entities;
 
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-
 import com.jgoodies.binding.beans.Model;
 
-@PersistenceCapable
 public class Endpoint extends Model {
 	public enum Type {
 		CONTINUOUS,
@@ -22,14 +18,6 @@ public class Endpoint extends Model {
 	public final static String PROPERTY_NAME = "name";
 	public final static String PROPERTY_DESCRIPTION = "description";
 	public final static String PROPERTY_TYPE = "type";
-	
-	public Endpoint() {
-		
-	}
-	
-	public Endpoint(String name) {
-		d_name = name;
-	}
 	
 	public BasicMeasurement buildMeasurement() {
 		switch (getType()) {
@@ -66,7 +54,6 @@ public class Endpoint extends Model {
 		firePropertyChange(PROPERTY_DESCRIPTION, oldVal, d_description);
 	}
 	
-	@Persistent
 	public String getDescription() {
 		return d_description;
 	}
@@ -77,7 +64,6 @@ public class Endpoint extends Model {
 		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
 	}
 	
-	@Persistent
 	public String getName() {
 		return d_name;
 	}
@@ -92,7 +78,6 @@ public class Endpoint extends Model {
 		firePropertyChange(PROPERTY_TYPE, oldVal, d_type);
 	}
 
-	@Persistent
 	public Type getType() {
 		return d_type;
 	}

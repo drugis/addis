@@ -50,7 +50,7 @@ public class DomainTest {
 
 	@Test
 	public void testAddEndpoint() {
-		Endpoint e = new Endpoint("e");
+		Endpoint e = new Endpoint();
 		assertEquals(0, d_domain.getEndpoints().size());
 		d_domain.addEndpoint(e);
 		assertEquals(1, d_domain.getEndpoints().size());
@@ -82,7 +82,7 @@ public class DomainTest {
 		replay(mockListener);
 		
 		d_domain.addListener(mockListener);
-		d_domain.addEndpoint(new Endpoint("x"));
+		d_domain.addEndpoint(new Endpoint());
 		verify(mockListener);
 	}
 	
@@ -110,9 +110,12 @@ public class DomainTest {
 	
 	@Test
 	public void testGetStudiesByEndpoint() {
-		Endpoint e1 = new Endpoint("e1");
-		Endpoint e2 = new Endpoint("e2");
-		Endpoint e3 = new Endpoint("e3");
+		Endpoint e1 = new Endpoint();
+		e1.setName("e1");
+		Endpoint e2 = new Endpoint();
+		e2.setName("e2");
+		Endpoint e3 = new Endpoint();
+		e3.setName("e3");
 		
 		List<Endpoint> l1 = new ArrayList<Endpoint>();
 		l1.add(e1);

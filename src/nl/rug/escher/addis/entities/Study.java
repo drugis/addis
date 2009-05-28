@@ -5,12 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-
 import com.jgoodies.binding.beans.Model;
 
-@PersistenceCapable
 public class Study extends Model {
 	private String d_id;
 	private List<Endpoint> d_endpoints;
@@ -30,7 +26,6 @@ public class Study extends Model {
 		d_endpoints.add(e);
 	}
 	
-	@Persistent
 	public String getId() {
 		return d_id;
 	}
@@ -41,7 +36,6 @@ public class Study extends Model {
 		firePropertyChange(PROPERTY_ID, oldVal, d_id);
 	}
 	
-	@Persistent
 	public List<Endpoint> getEndpoints() {
 		return d_endpoints;
 	}
@@ -52,7 +46,6 @@ public class Study extends Model {
 		firePropertyChange(PROPERTY_ENDPOINTS, oldVal, d_endpoints);
 	}
 
-	@Persistent
 	public List<PatientGroup> getPatientGroups() {
 		return d_patientGroups;
 	}

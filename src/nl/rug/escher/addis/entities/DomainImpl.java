@@ -103,13 +103,4 @@ public class DomainImpl implements Domain {
 		return list;
 	}
 
-	public Endpoint getEndpoint(String name) {
-		for (Endpoint e : getEndpoints()) {
-			if (e.getName().equals(name)) {
-				return e;
-			}
-		}
-		return null;
-	}
-
 }
