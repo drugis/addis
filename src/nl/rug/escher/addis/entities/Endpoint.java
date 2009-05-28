@@ -19,6 +19,14 @@ public class Endpoint extends Model {
 	public final static String PROPERTY_DESCRIPTION = "description";
 	public final static String PROPERTY_TYPE = "type";
 	
+	public Endpoint(String string) {
+		d_name = string;
+	}
+	
+	public Endpoint() {
+		
+	}
+
 	public BasicMeasurement buildMeasurement() {
 		switch (getType()) {
 		case CONTINUOUS:

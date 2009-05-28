@@ -31,7 +31,7 @@ public class PooledRateMeasurementTest {
 	
 	@Test(expected=ContractError.class)
 	public void testConstructWithDifferentEndpoints() {
-		d_m1 = new BasicRateMeasurement(new Endpoint());
+		d_m1 = new BasicRateMeasurement(new Endpoint("e1"));
 		d_m1.setRate(12);
 		d_m1.setPatientGroup(d_g1);
 		new PooledRateMeasurement(Arrays.asList(
@@ -47,7 +47,7 @@ public class PooledRateMeasurementTest {
 	
 	@Before
 	public void setUp() {
-		d_e = new Endpoint();
+		d_e = new Endpoint("e0");
 		d_g1 = new PatientGroup();
 		d_g1.setSize(100);
 		d_m1 = new BasicRateMeasurement(d_e);
