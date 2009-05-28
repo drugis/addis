@@ -1,12 +1,7 @@
 package nl.rug.escher.addis.entities;
 
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-
 import com.jgoodies.binding.beans.Model;
 
-@PersistenceCapable(identityType=IdentityType.APPLICATION,detachable="true")
 public class Endpoint extends Model {
 	public enum Type {
 		CONTINUOUS,
@@ -16,25 +11,22 @@ public class Endpoint extends Model {
 			return this.name().toLowerCase();
 		}
 	}
-	@Persistent(primaryKey="true")
 	private String d_name;
-	@Persistent
 	private String d_description;
-	@Persistent
 	private Type d_type;
 	
 	public final static String PROPERTY_NAME = "name";
 	public final static String PROPERTY_DESCRIPTION = "description";
 	public final static String PROPERTY_TYPE = "type";
 	
+	public Endpoint(String string) {
+		d_name = string;
+	}
+	
 	public Endpoint() {
 		
 	}
-	
-	public Endpoint(String name) {
-		d_name = name;
-	}
-	
+
 	public BasicMeasurement buildMeasurement() {
 		switch (getType()) {
 		case CONTINUOUS:
@@ -49,8 +41,8 @@ public class Endpoint extends Model {
 	public boolean equals(Object o) {
 		if (o instanceof Endpoint) {
 			Endpoint other = (Endpoint)o;
-			if (other.getName() == null) {
-				return getName() == null;
+			if (other.getName() == null && getName() == null) {
+				return true;
 			}
 			return other.getName().equals(getName());
 		}

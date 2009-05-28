@@ -20,10 +20,6 @@
 	<classpathentry kind="lib" path="lib/contract4j/antlr-2.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/contract4j/asm-2.2.jar"/>
 	<classpathentry kind="lib" path="lib/aspectj/aspectjrt.jar"/>
-	<classpathentry kind="lib" path="lib/persistence/nightly/datanucleus-core-1.1.4-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/persistence/nightly/datanucleus-db4o-1.1.2-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/persistence/common/db4o-7.4.88.12908-java5.jar"/>
-	<classpathentry kind="lib" path="lib/persistence/common/jdo2-api-2.3-ea.jar"/>
-	<classpathentry kind="lib" path="lib/persistence/common/log4j-1.2.8.jar"/>
+	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

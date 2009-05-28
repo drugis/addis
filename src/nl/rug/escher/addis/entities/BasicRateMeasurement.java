@@ -3,12 +3,7 @@ package nl.rug.escher.addis.entities;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-
-@PersistenceCapable(detachable="true")
 public class BasicRateMeasurement extends BasicMeasurement implements RateMeasurement {
-	@Persistent
 	private Integer d_rate;
 	private SampleSizeListener d_listener = new SampleSizeListener();
 	

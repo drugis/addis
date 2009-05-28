@@ -3,30 +3,13 @@ package nl.rug.escher.addis.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jdo.annotations.Element;
-import javax.jdo.annotations.FetchGroup;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-
 import com.jgoodies.binding.beans.Model;
 
-@PersistenceCapable(detachable="true")
-@FetchGroup(name="pg-full", members={
-		@Persistent(name="d_measurements"),
-		@Persistent(name="d_drug"),
-		@Persistent(name="d_dose"),
-		@Persistent(name="d_study")
-		})
 public class PatientGroup extends Model {
-	@Persistent(mappedBy="d_patientGroups")
 	private Study d_study;
-	@Persistent
 	private Integer d_size;
-	@Persistent
 	private Drug d_drug;
-	@Persistent
 	private Dose d_dose;
-	@Element
 	private List<BasicMeasurement> d_measurements = new ArrayList<BasicMeasurement>();
 	
 	public static final String PROPERTY_STUDY = "study";
@@ -93,7 +76,7 @@ public class PatientGroup extends Model {
 	 * @return Measurement if Endpoint is measured, null otherwise.
 	 */
 	public BasicMeasurement getMeasurement(Endpoint endpoint) {
-		for (BasicMeasurement m : getMeasurements()) {
+		for (BasicMeasurement m : d_measurements) {
 			if (m.getEndpoint().equals(endpoint)) {
 				return m;
 			}

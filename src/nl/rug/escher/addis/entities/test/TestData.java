@@ -156,7 +156,8 @@ public class TestData {
 
 	public static Endpoint buildEndpointHamd() {
 		if (s_endpointHamd == null) {
-			Endpoint e = new Endpoint("HAM-D");
+			Endpoint e = new Endpoint();
+			e.setName("HAM-D");
 			e.setDescription("");
 			e.setType(Endpoint.Type.RATE);
 			s_endpointHamd = e;
@@ -166,7 +167,8 @@ public class TestData {
 
 	public static Endpoint buildEndpointCgi() {
 		if (s_endpointCgi == null) { 
-			Endpoint cgi = new Endpoint("CGI Severity");
+			Endpoint cgi = new Endpoint();
+			cgi.setName("CGI Severity");
 			cgi.setDescription("Change from baseline CGI Severity of Illness score");
 			cgi.setType(Endpoint.Type.CONTINUOUS);
 			s_endpointCgi = cgi;

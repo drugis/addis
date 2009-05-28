@@ -31,10 +31,6 @@ public interface Domain {
 	 */
 	public List<Study> getStudies();
 	
-	/**
-	 * Get study by ID
-	 */
-	public Study getStudy(String id);
 	
 	/**
 	 * Get studies by Endpoint.
@@ -56,11 +52,6 @@ public interface Domain {
 	 */
 	public List<Drug> getDrugs();
 	
-	/**
-	 * Get drug by name.
-	 * 
-	 */
-	public Drug getDrug(String name);
 	
 	/**
 	 * Add a listener to the domain object.
@@ -71,11 +62,4 @@ public interface Domain {
 	 * Remove a listener from the domain object.
 	 */
 	public void removeListener(DomainListener listener);
-
-	/**
-	 * Get endpoint by name (primary key)
-	 * @param name
-	 * @return
-	 */
-	public Endpoint getEndpoint(String name);
 }

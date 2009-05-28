@@ -1,14 +1,8 @@
 package nl.rug.escher.addis.entities;
 
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-
 import com.jgoodies.binding.beans.Model;
 
-@PersistenceCapable(identityType=IdentityType.APPLICATION,detachable="true")
 public class Drug extends Model {
-	@Persistent(primaryKey="true")
 	private String d_name;
 	
 	public static final String PROPERTY_NAME = "name";

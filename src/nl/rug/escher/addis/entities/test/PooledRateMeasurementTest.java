@@ -47,7 +47,7 @@ public class PooledRateMeasurementTest {
 	
 	@Before
 	public void setUp() {
-		d_e = new Endpoint("e");
+		d_e = new Endpoint("e0");
 		d_g1 = new PatientGroup();
 		d_g1.setSize(100);
 		d_m1 = new BasicRateMeasurement(d_e);
@@ -123,6 +123,6 @@ public class PooledRateMeasurementTest {
 	
 	@Test(expected=RuntimeException.class)
 	public void testFailEndpointChanged() {
-		d_m2.setEndpoint(new Endpoint("e2"));
+		d_m2.setEndpoint(new Endpoint());
 	}
 }

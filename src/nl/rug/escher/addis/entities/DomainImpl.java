@@ -103,30 +103,4 @@ public class DomainImpl implements Domain {
 		return list;
 	}
 
-	public Endpoint getEndpoint(String name) {
-		for (Endpoint e : getEndpoints()) {
-			if (e.getName().equals(name)) {
-				return e;
-			}
-		}
-		return null;
-	}
-
-	public Drug getDrug(String name) {
-		for (Drug d : getDrugs()) {
-			if (d.getName().equals(name)) {
-				return d;
-			}
-		}
-		return null;
-	}
-
-	public Study getStudy(String id) {
-		for (Study s : getStudies()) {
-			if (s.getId().equals(id)) {
-				return s;
-			}
-		}
-		return null;
-	}
 }

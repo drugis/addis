@@ -5,22 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.jdo.annotations.Element;
-import javax.jdo.annotations.FetchGroup;
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-
 import com.jgoodies.binding.beans.Model;
 
-@PersistenceCapable(identityType=IdentityType.APPLICATION,detachable="true")
-@FetchGroup(name="default",members={@Persistent(name="d_endpoints"),@Persistent(name="d_patientGroups")})
 public class Study extends Model {
-	@Persistent(primaryKey="true")
 	private String d_id;
-	@Element
 	private List<Endpoint> d_endpoints;
-	@Element
 	private List<PatientGroup> d_patientGroups;
 
 	public final static String PROPERTY_ID = "id";

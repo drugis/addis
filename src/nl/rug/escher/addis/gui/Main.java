@@ -48,7 +48,6 @@ public class Main extends JFrame {
 		setPreferredSize(new Dimension(800, 500));
 		GUIHelper.initializeLookAndFeel();
 		
-		//d_domain = new DomainPersistent();
 		d_domain = new DomainImpl();
 		d_domain.addListener(new MainListener());
 		

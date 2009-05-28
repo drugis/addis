@@ -24,7 +24,7 @@ public class DomainTreeModelTest {
 	@Before
 	public void setUp() {
 		d_domain = new DomainImpl();
-		d_firstEndpoint = new Endpoint("e");
+		d_firstEndpoint = new Endpoint();
 		d_firstStudy = new Study();
 		d_domain.addEndpoint(d_firstEndpoint);
 		d_domain.addStudy(d_firstStudy);
@@ -102,7 +102,7 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addEndpoint(new Endpoint("e2"));
+		d_domain.addEndpoint(new Endpoint());
 		
 		verify(listener);
 	}
