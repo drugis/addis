@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
 import nl.rug.escher.addis.entities.Domain;
+import nl.rug.escher.addis.entities.DomainPersistent;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
@@ -14,7 +15,14 @@ import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.Study;
 
 public class MainData {
+	private static Drug s_parox;
+	private static Drug s_fluox;
+
 	public static void initDefaultData(Domain domain) {
+		buildEndpointHamd(domain);
+		buildDefaultEndpointCgi(domain);
+		domain.addDrug(buildDefaultDrugFluoxetine(domain));
+		domain.addDrug(buildDefaultDrugParoxetine(domain));
 		domain.addStudy(buildDefaultStudy(domain));
 		domain.addStudy(buildDefaultStudy2(domain));
 	}
@@ -107,21 +115,20 @@ public class MainData {
 	}
 
 	private static Drug buildDefaultDrugParoxetine(Domain domain) {
-		if (domain.getDrug("Paroxetine") == null) {
+		if (s_parox == null) {
 			Drug paroxetine = new Drug();
 			paroxetine.setName("Paroxetine");
-			domain.addDrug(paroxetine);
+			s_parox = paroxetine;
 		}
-		return domain.getDrug("Paroxetine");
+		return s_parox;
 	}
 
 	private static Drug buildDefaultDrugFluoxetine(Domain domain) {
-		if (domain.getDrug("Fluoxetine") == null) {
-			Drug fluox = new Drug();
-			fluox.setName("Fluoxetine");
-			domain.addDrug(fluox);
+		if (s_fluox == null) {
+			s_fluox = new Drug();
+			s_fluox.setName("Fluoxetine");
 		}
-		return domain.getDrug("Fluoxetine");
+		return s_fluox;
 	}
 
 	public static Endpoint buildEndpointHamd(Domain domain) {

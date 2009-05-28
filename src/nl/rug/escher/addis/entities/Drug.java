@@ -1,12 +1,11 @@
 package nl.rug.escher.addis.entities;
 
-import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 import com.jgoodies.binding.beans.Model;
 
-@PersistenceCapable(identityType=IdentityType.APPLICATION)
+@PersistenceCapable
 public class Drug extends Model {
 	private String d_name;
 	
@@ -20,7 +19,7 @@ public class Drug extends Model {
 		d_name = name;
 	}
 
-	@Persistent(primaryKey="true")
+	@Persistent
 	public String getName() {
 		return d_name;
 	}

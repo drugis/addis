@@ -52,11 +52,6 @@ public interface Domain {
 	 */
 	public List<Drug> getDrugs();
 	
-	/**
-	 * Get drug by name.
-	 * 
-	 */
-	public Drug getDrug(String name);
 	
 	/**
 	 * Add a listener to the domain object.

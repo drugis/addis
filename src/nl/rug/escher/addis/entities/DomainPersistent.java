@@ -37,17 +37,11 @@ public class DomainPersistent implements Domain {
 			throw new NullPointerException("Endpoint may not be null");
 		}
 		
-		persistObject(e);
-		
-		fireEndpointsChanged();
-	}
-
-	private void persistObject(Object o) {
 		PersistenceManager pm = d_pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
 		try {
 			tx.begin();
-			pm.makePersistent(o);
+			pm.makePersistent(e);
 			tx.commit();
 		} catch (Exception ex) {
 			if (tx.isActive()) {
@@ -57,6 +51,8 @@ public class DomainPersistent implements Domain {
 		} finally {
 			pm.close();
 		}
+		
+		fireEndpointsChanged();
 	}
 
 	private void fireEndpointsChanged() {
@@ -66,27 +62,22 @@ public class DomainPersistent implements Domain {
 	}
 
 	public List<Endpoint> getEndpoints() {
-		List<Endpoint> endpoints = fetchObjects(Endpoint.class);
-		
-		return endpoints;
-	}
-
-	private <T> List<T> fetchObjects(Class<T> type) {
 		PersistenceManager pm = d_pmf.getPersistenceManager();
 		
-		List<T> objects = new ArrayList<T>();
+		List<Endpoint> endpoints = new ArrayList<Endpoint>();
 		Transaction tx = pm.currentTransaction();
 		try {
 			tx.begin();
-			Extent<T> extent = pm.getExtent(type);
-			for (T o : extent) {
-				objects.add(o);
+			Extent<Endpoint> extent = pm.getExtent(Endpoint.class);
+			for (Endpoint e : extent) {
+				endpoints.add(e);
 			}
 			tx.commit();
 		} finally {
 			pm.close();
 		}
-		return objects;
+		
+		return endpoints;
 	}
 	
 	public Endpoint getEndpoint(String name) {
@@ -132,8 +123,7 @@ public class DomainPersistent implements Domain {
 		if (d == null) {
 			throw new NullPointerException("Drug may not be null");
 		}
-		
-		persistObject(d);
+		d_drugs.add(d);
 		
 		fireDrugsChanged();
 	}
@@ -145,9 +135,7 @@ public class DomainPersistent implements Domain {
 	}
 
 	public List<Drug> getDrugs() {
-		List<Drug> drugs = fetchObjects(Drug.class);
-		
-		return drugs;
+		return d_drugs;
 	}
 
 	public List<Study> getStudies(Endpoint e) {
@@ -162,14 +150,5 @@ public class DomainPersistent implements Domain {
 	
 	private static PersistenceManagerFactory getFactory() {
 		return JDOHelper.getPersistenceManagerFactory("datanucleus.properties");
-	}
-
-	public Drug getDrug(String name) {
-		for (Drug d : getDrugs()) {
-			if (d.getName().equals(name)) {
-				return d;
-			}
-		}
-		return null;
 	}
 }

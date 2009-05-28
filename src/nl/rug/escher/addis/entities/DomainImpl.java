@@ -112,12 +112,4 @@ public class DomainImpl implements Domain {
 		return null;
 	}
 
-	public Drug getDrug(String name) {
-		for (Drug d : getDrugs()) {
-			if (d.getName().equals(name)) {
-				return d;
-			}
-		}
-		return null;
-	}
 }
