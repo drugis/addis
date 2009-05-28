@@ -18,7 +18,7 @@
 	</artifact:dependencies>
 
 	<path id="aspect.path">
-		<pathelement location="lib/contract4j/contract4j5-gert.jar"/>
+		<pathelement location="lib/contract4j5-gert.jar"/>
 	</path>
 
 	<artifact:dependencies pathId="dep.classpath">
@@ -37,7 +37,7 @@
 
 	<path id="build.classpath">
 		<path refid="dep.classpath"/>
-		<pathelement location="lib/contract4j/contract4j5-gert.jar"/>
+		<pathelement location="lib/contract4j5-gert.jar"/>
 	</path>
 	
 	
@@ -59,7 +59,7 @@
 
 	<path id="contract4j.classpath">
 		<fileset dir="lib/contract4j" />
-		<pathelement location="lib/contract4j/contract4j5-gert.jar"/>
+		<pathelement location="lib/contract4j5-gert.jar"/>
 		<!-- <pathelement location="lib/aspectj/aspectjrt.jar"/> -->
 		<path refid="contract4j.dep.classpath"/>
 	</path>
