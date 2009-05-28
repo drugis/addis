@@ -42,8 +42,8 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 		String oldLabel = getLabel();
 		Integer oldVal = d_rate;
 		d_rate = rate;
-		firePropertyChange(PROPERTY_RATE, oldVal, d_rate);
-		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
+		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_RATE, oldVal, d_rate));
+		firePropertyChange(new PropertyChangeEvent(this, PROPERTY_LABEL, oldLabel, getLabel()));
 	}
 
 	public Integer getRate() {
