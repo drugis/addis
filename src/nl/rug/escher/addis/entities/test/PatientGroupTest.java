@@ -139,14 +139,6 @@ public class PatientGroupTest {
 		assertEquals(null, g.getMeasurement(e3));
 	}
 	
-	public static void assertNotEquals(Object expected, Object actual) {
-		if (expected == null) {
-			assertTrue(actual != null);
-		} else {
-			assertFalse(expected.equals(actual));
-		}
-	}
-	
 	@Test
 	public void testEquals() {
 		Study study1 = new Study("X");
@@ -164,11 +156,11 @@ public class PatientGroupTest {
 		assertEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
 				new PatientGroup(study1, drug1, dose1, size1, m1));
 		
-		assertNotEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
+		JUnitUtil.assertNotEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
 				new PatientGroup(study2, drug1, dose1, size1, m1));
-		assertNotEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
+		JUnitUtil.assertNotEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
 				new PatientGroup(study1, drug2, dose1, size1, m1));
-		assertNotEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
+		JUnitUtil.assertNotEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
 				new PatientGroup(study1, drug1, dose2, size1, m1));
 		
 		assertEquals(new PatientGroup(study1, drug1, dose1, size1, m1),

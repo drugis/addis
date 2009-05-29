@@ -3,6 +3,8 @@ package nl.rug.escher.addis.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.rug.escher.common.EqualsUtil;
+
 import com.jgoodies.binding.beans.Model;
 
 public class PatientGroup extends Model {
@@ -124,9 +126,9 @@ public class PatientGroup extends Model {
 	public boolean equals(Object o) {
 		if (o instanceof PatientGroup) {
 			PatientGroup other = (PatientGroup)o;
-			return equal(other.getStudy(), getStudy()) &&
-				equal(other.getDrug(), getDrug()) &&
-				equal(other.getDose(), getDose());
+			return EqualsUtil.equal(other.getStudy(), getStudy()) &&
+				EqualsUtil.equal(other.getDrug(), getDrug()) &&
+				EqualsUtil.equal(other.getDose(), getDose());
 		}
 		return false;
 	}
@@ -138,9 +140,5 @@ public class PatientGroup extends Model {
 		hash = hash * 31 + getDrug().hashCode();
 		hash = hash * 31 + getDose().hashCode();
 		return hash;
-	}
-	
-	private boolean equal(Object o1, Object o2) {
-		return o1 == null ? o2 == null : o1.equals(o2);
 	}
 }

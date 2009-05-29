@@ -1,6 +1,7 @@
 package nl.rug.escher.addis.entities;
 
 import com.jgoodies.binding.beans.Model;
+import static nl.rug.escher.common.EqualsUtil.equal;
 
 public class Dose extends Model {
 	private static final long serialVersionUID = -8789524312421940513L;
@@ -45,5 +46,23 @@ public class Dose extends Model {
 			return "INCOMPLETE";
 		}
 		return d_quantity.toString() + " " + d_unit.toString();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Dose) {
+			Dose other = (Dose)o;
+			return equal(other.getQuantity(), getQuantity()) &&
+				equal(other.getUnit(), getUnit());
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = hash * 31 + getQuantity().hashCode();
+		hash = hash * 31 + getUnit().hashCode();
+		return hash;
 	}
 }

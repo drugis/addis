@@ -25,6 +25,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reportMatcher;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -153,6 +154,15 @@ public class JUnitUtil {
 		Object actual = getGetterMethod(source, propertyName).invoke(source);
 		assertTrue(0 ==  ((List) actual).size());
 		verify(mock);
+	}
+
+
+	public static void assertNotEquals(Object expected, Object actual) {
+		if (expected == null) {
+			assertTrue(actual != null);
+		} else {
+			assertFalse(expected.equals(actual));
+		}
 	}
 
 }

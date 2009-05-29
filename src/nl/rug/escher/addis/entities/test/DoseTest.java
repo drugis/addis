@@ -29,6 +29,16 @@ public class DoseTest {
 	
 	@Test
 	public void testEquals() {
-		fail();
+		double q1 = 13.0;
+		double q2 = 8.8;
+		
+		assertEquals(new Dose(q1, SIUnit.MILLIGRAMS_A_DAY),
+				new Dose(q1, SIUnit.MILLIGRAMS_A_DAY));
+		
+		JUnitUtil.assertNotEquals(new Dose(q1, SIUnit.MILLIGRAMS_A_DAY),
+				new Dose(q2, SIUnit.MILLIGRAMS_A_DAY));
+		
+		assertEquals(new Dose(q1, SIUnit.MILLIGRAMS_A_DAY).hashCode(),
+				new Dose(q1, SIUnit.MILLIGRAMS_A_DAY).hashCode());
 	}
 }
