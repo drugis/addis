@@ -79,5 +79,17 @@ public class Study extends Model {
 			drugs.add(g.getDrug());
 		}
 		return drugs;
+	}	
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Study) {
+			Study other = (Study)o;
+			if (other.getId() == null) {
+				return getId() == null;
+			}
+			return other.getId().equals(getId());
+		}
+		return false;
 	}
 }

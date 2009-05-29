@@ -6,9 +6,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class DomainImpl implements Domain,Serializable {
+public class DomainImpl implements Domain, Serializable {
 	private static final long serialVersionUID = 3222342605059458693L;
 	private List<Endpoint> d_endpoints;
 	private List<Study> d_studies;
@@ -19,13 +20,20 @@ public class DomainImpl implements Domain,Serializable {
 	throws IOException, ClassNotFoundException {
 		in.defaultReadObject();
 		d_listeners = new ArrayList<DomainListener>();
+		d_studyListener = new StudyChangeListener();
+		
+		for (Study s : d_studies) {
+			s.addPropertyChangeListener(d_studyListener);
+		}
 	}
 	
-	private PropertyChangeListener d_studyListener = new PropertyChangeListener() {
+	private class StudyChangeListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
 			fireStudiesChanged();
 		}
-	};
+	}
+	
+	private transient PropertyChangeListener d_studyListener = new StudyChangeListener();
 	
 	public DomainImpl() {
 		d_endpoints = new ArrayList<Endpoint>();
@@ -62,6 +70,10 @@ public class DomainImpl implements Domain,Serializable {
 
 	public void removeListener(DomainListener listener) {
 		d_listeners.remove(listener);
+	}
+	
+	public List<DomainListener> getListeners() {
+		return Collections.unmodifiableList(d_listeners);
 	}
 
 	public void addStudy(Study s) throws NullPointerException {
@@ -113,4 +125,14 @@ public class DomainImpl implements Domain,Serializable {
 		return list;
 	}
 
+	public boolean equals(Object o) {
+		if (o instanceof Domain) {
+			Domain other = (Domain)o;
+			return getEndpoints().equals(other.getEndpoints()) &&
+				getDrugs().equals(other.getDrugs()) &&
+				getStudies().equals(other.getStudies());
+		}
+		
+		return false;
+	}
 }

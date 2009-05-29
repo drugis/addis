@@ -2,7 +2,13 @@ package nl.rug.escher.addis.gui;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
@@ -11,17 +17,16 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
-import javax.swing.WindowConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
 import nl.rug.escher.addis.entities.Domain;
-import nl.rug.escher.addis.entities.DomainImpl;
 import nl.rug.escher.addis.entities.DomainListener;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Study;
@@ -39,24 +44,75 @@ public class Main extends JFrame {
 	
 	private ViewBuilder d_rightPanelBuilder;
 	
-	private Domain d_domain;
+	private DomainManager d_domain;
 	
 	private ImageLoader imageLoader = new ImageLoader("/resources/gfx/");
 
 	public Main() {
 		super("Escher ADDIS");
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);	
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent evt) {
+				quitApplication();
+			}
+		});
+
 		setPreferredSize(new Dimension(800, 500));
 		GUIHelper.initializeLookAndFeel();
 		
-		d_domain = new DomainImpl();
-		d_domain.addListener(new MainListener());
+		initializeDomain();
 		
-		MainData.initDefaultData(d_domain);
+	}
+
+	protected void quitApplication() {
+		try {
+			saveDomainToFile();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this,
+					"Error saving domain", "Error saving domain",
+					JOptionPane.ERROR_MESSAGE);
+		}
+		System.exit(0);
+	}
+
+	private void saveDomainToFile() throws IOException {
+		File f = new File("domain.dat");
+		if (f.exists()) {
+			f.delete();
+		}
+		
+		FileOutputStream fos = new FileOutputStream(f);
+		d_domain.saveDomain(fos);
+	}
+
+	private void initializeDomain() {
+		d_domain = new DomainManager();
+		
+		try {
+			loadDomainFromFile();
+		} catch (Exception e) {
+			MainData.initDefaultData(d_domain.getDomain());
+		}
+		
+		d_domain.getDomain().addListener(new MainListener());
+	}
+	
+	private Domain getDomain() {
+		return d_domain.getDomain();
+	}
+
+	private void loadDomainFromFile() throws IOException, ClassNotFoundException {
+		File f = new File("domain.dat");
+		if (f.exists() && f.isFile()) {
+			FileInputStream fis = new FileInputStream(f);
+			d_domain.loadDomain(fis);
+		} else {
+			throw new FileNotFoundException("domain.dat not found");
+		}
 	}
 
 	void showStudyAddEndpointDialog(Study study) {
-		StudyAddEndpointDialog dialog = new StudyAddEndpointDialog(this, d_domain, study);
+		StudyAddEndpointDialog dialog = new StudyAddEndpointDialog(this, getDomain(), study);
 		dialog.setVisible(true);
 	}
 
@@ -122,17 +178,17 @@ public class Main extends JFrame {
 	}
 	
 	private void showAddEndpointDialog() {
-		AddEndpointDialog dialog = new AddEndpointDialog(this, d_domain);
+		AddEndpointDialog dialog = new AddEndpointDialog(this, getDomain());
 		dialog.setVisible(true);
 	}
 	
 	private void showAddStudyDialog() {
-		AddStudyDialog dialog = new AddStudyDialog(this, d_domain);
+		AddStudyDialog dialog = new AddStudyDialog(this, getDomain());
 		dialog.setVisible(true);
 	}
 	
 	private void showAddDrugDialog() {
-		AddDrugDialog dialog = new AddDrugDialog(this, d_domain);
+		AddDrugDialog dialog = new AddDrugDialog(this, getDomain());
 		dialog.setVisible(true);
 	}
 	
@@ -150,14 +206,10 @@ public class Main extends JFrame {
 		exitItem.setMnemonic('e');		
 		exitItem.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				exit();
+				quitApplication();
 			}
 		});
 		return exitItem;
-	}
-	
-	private void exit() {
-		System.exit(0);
 	}
 	
 	public void initComponents() {
@@ -178,7 +230,7 @@ public class Main extends JFrame {
 	}
 
 	private void initLeftPanel() {
-		DomainTreeModel model = new DomainTreeModel(d_domain);
+		DomainTreeModel model = new DomainTreeModel(getDomain());
 		JTree tree = new JTree(model);
 		tree.setCellRenderer(new DomainTreeCellRenderer(imageLoader));
 		tree.setRootVisible(false);
@@ -205,7 +257,7 @@ public class Main extends JFrame {
 	}
 	
 	public void endpointSelected(Endpoint e, Study selectedStudy) {
-		EndpointStudiesView view = new EndpointStudiesView(e, d_domain, this);
+		EndpointStudiesView view = new EndpointStudiesView(e, getDomain(), this);
 		view.setSelectedStudy(selectedStudy);
 		d_rightPanelBuilder = view;
 		d_rightPanel.setViewportView(view.buildPanel());
@@ -216,7 +268,7 @@ public class Main extends JFrame {
 	}
 	
 	private void studySelected(Study node) {
-		StudyView view = new StudyView(new PresentationModel<Study>(node), d_domain, this);
+		StudyView view = new StudyView(new PresentationModel<Study>(node), getDomain(), this);
 		d_rightPanelBuilder = view;
 		d_rightPanel.setViewportView(view.buildPanel());
 	}

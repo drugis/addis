@@ -141,4 +141,32 @@ public class DomainTest {
 		assertTrue(d_domain.getStudies(e1).contains(s2));
 		assertTrue(d_domain.getStudies(e2).contains(s2));
 	}
+	
+	@Test
+	public void testEquals() {
+		Domain d1 = new DomainImpl();
+		Domain d2 = new DomainImpl();
+		assertEquals(d1, d2);
+		
+		Endpoint e1 = new Endpoint("e1");
+		Endpoint e2 = new Endpoint("e2");
+		d1.addEndpoint(e1);
+		d1.addEndpoint(e2);
+		d2.addEndpoint(e1);
+		assertFalse(d1.equals(d2));
+		d2.addEndpoint(e2);
+		assertEquals(d1, d2);
+		
+		Drug d = new Drug("d1");
+		d1.addDrug(d);
+		assertFalse(d1.equals(d2));
+		d2.addDrug(d);
+		assertEquals(d1, d2);
+		
+		Study s = new Study();
+		d1.addStudy(s);
+		assertFalse(d1.equals(d2));
+		d2.addStudy(s);
+		assertEquals(d1, d2);
+	}
 }
