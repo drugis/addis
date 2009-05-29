@@ -75,7 +75,11 @@ public class StudyTest {
 
 	@Test
 	public void testEquals() {
-		fail();
-		// also test hashCode() for one case where equals is true
+		String name1 = "Study A";
+		String name2 = "Study B";
+		
+		assertEquals(new Study(name1), new Study(name1));
+		JUnitUtil.assertNotEquals(new Study(name1), new Study(name2));
+		assertEquals(new Study(name1).hashCode(), new Study(name1).hashCode());
 	}
 }
