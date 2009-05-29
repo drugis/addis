@@ -132,7 +132,7 @@ public class EndpointStudiesView implements ViewBuilder {
 			dialog.add(view.buildPanel(), BorderLayout.CENTER);
 			JButton closeButton = new JButton("Close");
 			closeButton.addActionListener(new AbstractAction() {
-				@Override
+				//@Override
 				public void actionPerformed(ActionEvent arg0) {
 					dialog.setVisible(false);
 				}
@@ -166,7 +166,7 @@ public class EndpointStudiesView implements ViewBuilder {
 	}
 	
 	private class CheckBoxListener extends AbstractAction {
-		@Override
+		//@Override
 		public void actionPerformed(ActionEvent arg0) {
 			updateMetaAnalyzeButtonEnabled();
 		}
