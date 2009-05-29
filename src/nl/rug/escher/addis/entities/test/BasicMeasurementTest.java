@@ -8,6 +8,7 @@ import nl.rug.escher.common.JUnitUtil;
 import org.junit.Test;
 
 public class BasicMeasurementTest {
+	@SuppressWarnings("serial")
 	public BasicMeasurement instance() {
 		return new BasicMeasurement() {
 			public String getLabel() {

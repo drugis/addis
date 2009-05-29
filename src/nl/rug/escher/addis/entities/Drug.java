@@ -3,6 +3,8 @@ package nl.rug.escher.addis.entities;
 import com.jgoodies.binding.beans.Model;
 
 public class Drug extends Model {
+	private static final long serialVersionUID = 5156008576438893074L;
+
 	private String d_name;
 	
 	public static final String PROPERTY_NAME = "name";

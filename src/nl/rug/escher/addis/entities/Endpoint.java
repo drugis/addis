@@ -3,6 +3,8 @@ package nl.rug.escher.addis.entities;
 import com.jgoodies.binding.beans.Model;
 
 public class Endpoint extends Model {
+	private static final long serialVersionUID = -1182348850033782011L;
+
 	public enum Type {
 		CONTINUOUS,
 		RATE;

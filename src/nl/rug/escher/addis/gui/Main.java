@@ -32,6 +32,7 @@ import com.jgoodies.binding.PresentationModel;
 
 import fi.smaa.common.ImageLoader;
 
+@SuppressWarnings("serial")
 public class Main extends JFrame {
 	private JComponent d_leftPanel;
 	private JScrollPane d_rightPanel;

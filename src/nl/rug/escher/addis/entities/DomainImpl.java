@@ -2,14 +2,24 @@ package nl.rug.escher.addis.entities;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DomainImpl implements Domain {
+public class DomainImpl implements Domain,Serializable {
+	private static final long serialVersionUID = 3222342605059458693L;
 	private List<Endpoint> d_endpoints;
 	private List<Study> d_studies;
 	private List<Drug> d_drugs;
-	private List<DomainListener> d_listeners;
+	private transient List<DomainListener> d_listeners;
+	
+	private void readObject(ObjectInputStream in)
+	throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		d_listeners = new ArrayList<DomainListener>();
+	}
 	
 	private PropertyChangeListener d_studyListener = new PropertyChangeListener() {
 		public void propertyChange(PropertyChangeEvent evt) {

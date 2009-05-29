@@ -8,6 +8,7 @@ import java.util.Set;
 import com.jgoodies.binding.beans.Model;
 
 public class Study extends Model {
+	private static final long serialVersionUID = -1373201520248610423L;
 	private String d_id;
 	private List<Endpoint> d_endpoints;
 	private List<PatientGroup> d_patientGroups;

@@ -6,6 +6,7 @@ import java.util.List;
 import com.jgoodies.binding.beans.Model;
 
 public class PatientGroup extends Model {
+	private static final long serialVersionUID = -2092185548220089471L;
 	private Study d_study;
 	private Integer d_size;
 	private Drug d_drug;

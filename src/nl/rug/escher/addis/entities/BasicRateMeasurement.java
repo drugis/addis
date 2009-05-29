@@ -2,10 +2,24 @@ package nl.rug.escher.addis.entities;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public class BasicRateMeasurement extends BasicMeasurement implements RateMeasurement {
+	private static final long serialVersionUID = -1004559723622385992L;
 	private Integer d_rate;
-	private SampleSizeListener d_listener = new SampleSizeListener();
+	private transient SampleSizeListener d_listener = new SampleSizeListener();
+	
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
+		in.defaultReadObject();
+		d_listener = new SampleSizeListener();
+		addPropertyChangeListener(PROPERTY_SAMPLESIZE, d_listener);
+	}
+	
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.defaultWriteObject();
+	}
 	
 	public BasicRateMeasurement() {
 		addPropertyChangeListener(PROPERTY_SAMPLESIZE, d_listener);

@@ -8,6 +8,7 @@ import nl.rug.escher.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.PresentationModel;
 
+@SuppressWarnings("serial")
 public class AddDrugDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private Drug d_drug;

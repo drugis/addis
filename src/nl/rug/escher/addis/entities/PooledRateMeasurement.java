@@ -2,6 +2,8 @@ package nl.rug.escher.addis.entities;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.List;
 
 import org.contract4j5.contract.Contract;
@@ -13,10 +15,16 @@ import com.jgoodies.binding.beans.Model;
 
 @Contract
 public class PooledRateMeasurement extends Model implements RateMeasurement {
+	private static final long serialVersionUID = 5124815300626704289L;
 	@Invar("PooledRateMeasurement.measureSameEndpoint(d_measurements)") // Can't be done as precondition
 	private List<RateMeasurement> d_measurements;
 	private Integer d_rate;
 	private Integer d_size;
+	
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		registerListener();
+	}
 	
 	private class ChildListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {

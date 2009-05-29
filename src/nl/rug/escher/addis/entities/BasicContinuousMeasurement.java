@@ -1,7 +1,7 @@
 package nl.rug.escher.addis.entities;
 
-
 public class BasicContinuousMeasurement extends BasicMeasurement implements ContinuousMeasurement {
+	private static final long serialVersionUID = 6086085465347586428L;
 	private Double d_mean;
 	private Double d_stdDev;
 	

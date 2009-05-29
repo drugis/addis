@@ -4,6 +4,10 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import nl.rug.escher.addis.entities.Measurement;
 import nl.rug.escher.addis.entities.PatientGroup;
@@ -24,6 +28,24 @@ public class BasicRateMeasurementTest {
 		d_measurement = new BasicRateMeasurement();
 		d_measurement.setPatientGroup(d_patientGroup);
 		d_measurement.setRate(67);
+	}
+	
+	@Test
+	public void testSerialization() throws Exception {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(bos);
+		oos.writeObject(d_measurement);
+		ObjectInputStream ois = new ObjectInputStream(
+				new ByteArrayInputStream(bos.toByteArray()));
+		d_measurement = (BasicRateMeasurement) ois.readObject();
+		
+		String oldLabel = d_measurement.getLabel();
+		String newLabel = "67/105";
+		PropertyChangeListener mock = JUnitUtil.mockListener(d_measurement, 
+				BasicRateMeasurement.PROPERTY_LABEL, oldLabel, newLabel);
+		d_measurement.addPropertyChangeListener(mock);
+		d_measurement.getPatientGroup().setSize(105);
+		verify(mock);
 	}
 	
 	@Test

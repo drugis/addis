@@ -3,6 +3,7 @@ package nl.rug.escher.addis.entities;
 import com.jgoodies.binding.beans.Model;
 
 public class Dose extends Model {
+	private static final long serialVersionUID = -8789524312421940513L;
 	private SIUnit d_unit;
 	private Double d_quantity;
 	

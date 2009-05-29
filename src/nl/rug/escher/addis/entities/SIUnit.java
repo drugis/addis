@@ -1,8 +1,11 @@
 package nl.rug.escher.addis.entities;
 
-public enum SIUnit {
+import java.io.Serializable;
+
+public enum SIUnit implements Serializable {
 	MILLIGRAMS_A_DAY("Milligrams a Day", "mg/day");
 	
+	private static final long serialVersionUID = 1L;
 	private String d_name;
 	private String d_symbol;
 	private SIUnit(String name, String symbol) {

@@ -2,10 +2,12 @@ package nl.rug.escher.addis.entities;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.Serializable;
 
 import com.jgoodies.binding.beans.Model;
 
 public abstract class BasicMeasurement extends Model implements Measurement {
+	private static final long serialVersionUID = 6892934487858770855L;
 	private PatientGroup d_patientGroup;
 	private Endpoint d_endpoint;
 	private PatientGroupListener d_listener = new PatientGroupListener();
@@ -22,7 +24,9 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 		return d_patientGroup;
 	}
 
-	private class PatientGroupListener implements PropertyChangeListener {
+	private class PatientGroupListener implements PropertyChangeListener, Serializable {
+		private static final long serialVersionUID = -443447362262064055L;
+
 		public void propertyChange(PropertyChangeEvent event) {
 			if (event.getPropertyName().equals(PatientGroup.PROPERTY_SIZE)) {
 				Integer oldSize = (Integer)event.getOldValue();

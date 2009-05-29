@@ -28,6 +28,7 @@ import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Study;
 import fi.smaa.common.ImageLoader;
 
+@SuppressWarnings("serial")
 public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 
 	private ImageLoader loader;

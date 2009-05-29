@@ -14,6 +14,7 @@ import nl.rug.escher.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.PresentationModel;
 
+@SuppressWarnings("serial")
 public class StudyAddEndpointDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private Study d_study;

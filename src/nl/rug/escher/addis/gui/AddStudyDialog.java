@@ -21,6 +21,7 @@ import nl.rug.escher.common.gui.OkCancelDialog;
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
+@SuppressWarnings("serial")
 public class AddStudyDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private Study d_study;

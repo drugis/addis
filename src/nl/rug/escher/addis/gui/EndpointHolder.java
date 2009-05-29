@@ -10,6 +10,7 @@ import nl.rug.escher.addis.entities.Endpoint;
 
 import com.jgoodies.binding.beans.Model;
 
+@SuppressWarnings("serial")
 public class EndpointHolder extends Model { // TODO: implement as adapter or something?
 	private Endpoint d_endpoint;
 	public static final String PROPERTY_ENDPOINT = "endpoint";

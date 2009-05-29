@@ -29,6 +29,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
+@SuppressWarnings("serial")
 public class EndpointStudiesView implements ViewBuilder {
 	private Endpoint d_endpoint;
 	private Domain d_domain;
@@ -93,6 +94,7 @@ public class EndpointStudiesView implements ViewBuilder {
 		return builder.getPanel();
 	}
 
+	@SuppressWarnings("serial")
 	private JComponent buildMetaAnalyzeButton() {
 		d_metaAnalyzeButton = new JButton("Meta-Analyze");
 		d_metaAnalyzeButton.addActionListener(new AbstractAction() {
@@ -119,6 +121,7 @@ public class EndpointStudiesView implements ViewBuilder {
 		showMetaAnalysisDialog(studies);
 	}
 
+	@SuppressWarnings("serial")
 	private void showMetaAnalysisDialog(List<Study> studies) {
 		if (haveNonRateMeasurements(studies)) {
 			JOptionPane.showMessageDialog(d_frame,
