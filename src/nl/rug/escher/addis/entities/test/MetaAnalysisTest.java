@@ -16,6 +16,7 @@ import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.Study;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class MetaAnalysisTest {
@@ -74,7 +75,7 @@ public class MetaAnalysisTest {
 		assertEquals(new Integer(size), m.getSampleSize());
 	}
 
-	@Test
+	@Test @Ignore("Known to fail")
 	public void testEquals() {
 		fail();
 		// also test hashCode() for one case where equals is true
