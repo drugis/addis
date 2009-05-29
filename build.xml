@@ -17,7 +17,10 @@
 
 	<artifact:pom id="addis-pom" file="pom.xml" />
 
-	<artifact:dependencies pathId="dep.classpath" pomRefId="addis-pom"/>
+	<artifact:dependencies
+		filesetId="dep.fileset"
+		pathId="dep.classpath"
+		pomRefId="addis-pom"/>
 
 	<path id="aspect.path">
 		<pathelement location="${nl.gertvv:contract4j5:jar}"/>
@@ -37,11 +40,6 @@
 		<path refid="build.classpath" />
 	</path>
 
-	<pathconvert property="dist-class-path" pathsep=" " dirsep="/">
-		<path refid="dist.class.path" />
-		<map from="${basedir}" to="." />		
-	</pathconvert>
-
 	<taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
 		<classpath>
 			<path refid="aspectjtools.classpath" />
@@ -52,11 +50,14 @@
 		<delete dir="dist" />
 		<mkdir dir="dist" />
 		<mkdir dir="dist/lib" />
-		<!--
 		<copy todir="dist/lib" includeemptydirs="false">
-			<fileset dir="lib" />
+			<fileset refid="dep.fileset" />
 		</copy>
-		-->
+		<pathconvert property="dist-class-path" pathsep=" " dirsep="/">
+			<fileset dir="dist/lib" />
+			<map from="${basedir}/dist" to="." />		
+		</pathconvert>
+
 
 		<jar destfile="dist/addis.jar" basedir="bin">
 			<manifest>
