@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="build" name="ADDIS" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+<project basedir="." default="build" name="ADDIS"
+	xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
 	<path id="maven-ant-tasks.classpath"
 		path="lib/maven-ant-tasks-2.0.10.jar" />
@@ -17,27 +18,16 @@
 			artifactid="aspectjtools" version="1.6.4"/>
 	</artifact:dependencies>
 
-	<path id="aspect.path">
-		<pathelement location="lib/contract4j5-gert.jar"/>
-	</path>
+	<artifact:pom id="addis-pom" file="pom.xml" />
 
-	<artifact:dependencies pathId="dep.classpath">
-		<dependency groupId="junit"
-			artifactId="junit" version="4.6"/>
-		<dependency groupId="com.jgoodies"
-			artifactId="binding" version="2.0.6"/>
-		<dependency groupId="com.jgoodies"
-			artifactId="forms" version="1.2.1"/>
-		<dependency groupId="com.jgoodies"
-			artifactId="looks" version="2.2.1"/>
-		<dependency groupId="org.easymock"
-			artifactId="easymock" version="2.4"/>
-	</artifact:dependencies>
-	
+	<artifact:dependencies pathId="dep.classpath" pomRefId="addis-pom"/>
+
+	<path id="aspect.path">
+		<pathelement location="${nl.gertvv:contract4j5:jar}"/>
+	</path>
 
 	<path id="build.classpath">
 		<path refid="dep.classpath"/>
-		<pathelement location="lib/contract4j5-gert.jar"/>
 	</path>
 	
 	
@@ -46,27 +36,8 @@
 		<path refid="build.classpath" />
 	</path>
 
-	<artifact:dependencies pathId="contract4j.dep.classpath">
-		<dependency groupId="org.aspectj"
-			artifactId="aspectjrt" version="1.6.4"/>
-		<dependency groupId="org.codehaus.groovy"
-			artifactId="groovy" version="1.6.2"/>
-		<dependency groupId="commons-logging"
-			artifactId="commons-logging" version="1.1.1"/>
-		<dependency groupId="org.antlr"
-			artifactid="antlr" version="3.1.3"/>
-	</artifact:dependencies>
-
-	<path id="contract4j.classpath">
-		<fileset dir="lib/contract4j" />
-		<pathelement location="lib/contract4j5-gert.jar"/>
-		<!-- <pathelement location="lib/aspectj/aspectjrt.jar"/> -->
-		<path refid="contract4j.dep.classpath"/>
-	</path>
-
 	<path id="dist.class.path">
 		<path refid="build.classpath" />
-		<path refid="contract4j.classpath" />
 	</path>
 
 	<pathconvert property="dist-class-path" pathsep=" " dirsep="/">
@@ -84,10 +55,11 @@
 		<delete dir="dist" />
 		<mkdir dir="dist" />
 		<mkdir dir="dist/lib" />
+		<!--
 		<copy todir="dist/lib" includeemptydirs="false">
-			<!-- <path refid="dist.class.path" /> -->
 			<fileset dir="lib" />
 		</copy>
+		-->
 
 		<jar destfile="dist/addis.jar" basedir="bin">
 			<manifest>
@@ -124,7 +96,6 @@
 			aspectpathref="aspect.path" destDir="bin">
 			<classpath>
 				<path refid="ADDIS.classpath" />
-				<path refid="contract4j.classpath" />
 			</classpath>
 		</iajc>
 	</target>
@@ -134,7 +105,6 @@
 			<formatter type="xml"/>
 			<classpath>
 				<path refid="ADDIS.classpath"/>
-				<path refid="contract4j.classpath" />
 			</classpath>
 			<batchtest todir="${junit.output.dir}">
 				<fileset dir="bin/">

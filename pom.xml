@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>nl.rug.escher.addis</groupId>
+	<artifactId>addis</artifactId>
+	<version>0.1-SNAPSHOT</version>
+
+	<repositories>
+		<repository>
+			<id>nl.gertvv</id>
+			<url>http://gertvv.nl/mvn</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jgoodies</groupId>
+			<artifactId>binding</artifactId>
+			<version>2.0.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jgoodies</groupId>
+			<artifactId>forms</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jgoodies</groupId>
+			<artifactId>looks</artifactId>
+			<version>2.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.gertvv</groupId>
+			<artifactId>contract4j5</artifactId>
+			<version>0.8.0-MINIMAL</version>
+		</dependency>
+	</dependencies>
+</project>

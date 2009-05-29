@@ -1,25 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/jgoodies/binding-2.0.6.jar"/>
-	<classpathentry kind="lib" path="lib/jgoodies/forms-1.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/jgoodies/looks-2.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/junit/junit-4.6.jar"/>
-	<classpathentry kind="lib" path="lib/junit/junit-dep-4.6.jar"/>
-	<classpathentry kind="lib" path="lib/easymock/easymock.jar"/>
-	<classpathentry kind="lib" path="lib/contract4j/contract4j5.jar">
-		<attributes>
-			<attribute name="org.eclipse.ajdt.inpath" value="org.eclipse.ajdt.inpath"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/contract4j/groovy-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/contract4j/jruby-complete-1.0.1.jar"/>
-	<classpathentry kind="lib" path="lib/contract4j/commons-jexl-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/contract4j/bsf-2.4.0.jar"/>
-	<classpathentry kind="lib" path="lib/contract4j/antlr-2.7.5.jar"/>
-	<classpathentry kind="lib" path="lib/contract4j/asm-2.2.jar"/>
-	<classpathentry kind="lib" path="lib/aspectj/aspectjrt.jar"/>
-	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
-	<classpathentry kind="output" path="bin"/>
+  <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="var" path="M2_REPO/com/jgoodies/binding/2.0.6/binding-2.0.6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/nl/gertvv/contract4j5/0.8.0-MINIMAL/contract4j5-0.8.0-MINIMAL.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/easymock/easymock/2.4/easymock-2.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/jgoodies/forms/1.2.1/forms-1.2.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/4.6/junit-4.6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/jgoodies/looks/2.2.1/looks-2.2.1.jar"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 </classpath>
