@@ -168,5 +168,7 @@ public class DomainTest {
 		assertFalse(d1.equals(d2));
 		d2.addStudy(s);
 		assertEquals(d1, d2);
+		
+		fail("Test for hashCode() also");
 	}
 }

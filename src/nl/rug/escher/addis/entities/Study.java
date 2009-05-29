@@ -17,6 +17,7 @@ public class Study extends Model {
 	public final static String PROPERTY_ENDPOINTS = "endpoints";
 	public final static String PROPERTY_PATIENTGROUPS = "patientGroups";
 
+	@Deprecated
 	public Study() {
 		d_endpoints = new ArrayList<Endpoint>();
 		d_patientGroups = new ArrayList<PatientGroup>();
@@ -27,6 +28,11 @@ public class Study extends Model {
 		d_endpoints.add(e);
 	}
 	
+	public Study(String id) {
+		this();
+		d_id = id;
+	}
+
 	public String getId() {
 		return d_id;
 	}
@@ -91,5 +97,10 @@ public class Study extends Model {
 			return other.getId().equals(getId());
 		}
 		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return getId() == null ? 0 : getId().hashCode();
 	}
 }

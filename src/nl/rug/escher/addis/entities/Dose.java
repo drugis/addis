@@ -10,6 +10,16 @@ public class Dose extends Model {
 	public static final String PROPERTY_UNIT = "unit";
 	public static final String PROPERTY_QUANTITY = "quantity";
 	
+	@Deprecated
+	public Dose() {
+		
+	}
+	
+	public Dose(double quantity, SIUnit unit) {
+		d_quantity = quantity;
+		d_unit = unit;
+	}
+	
 	public SIUnit getUnit() {
 		return d_unit;
 	}

@@ -2,6 +2,7 @@ package nl.rug.escher.addis.entities.test;
 
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
@@ -83,4 +84,11 @@ public class BasicRateMeasurementTest {
 		d_patientGroup.setSize(102);
 		verify(l);
 	}	
+	
+
+	@Test
+	public void testEquals() {
+		fail();
+		// also test hashCode() for one case where equals is true
+	}
 }

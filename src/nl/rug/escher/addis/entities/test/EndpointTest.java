@@ -43,5 +43,11 @@ public class EndpointTest {
 		e.setName(name);
 		assertEquals(name, e.toString());
 	}
+	
 
+	@Test
+	public void testEquals() {
+		fail();
+		// also test hashCode() for one case where equals is true
+	}
 }

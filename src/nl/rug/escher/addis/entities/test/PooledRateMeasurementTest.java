@@ -2,6 +2,7 @@ package nl.rug.escher.addis.entities.test;
 
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -124,5 +125,11 @@ public class PooledRateMeasurementTest {
 	@Test(expected=RuntimeException.class)
 	public void testFailEndpointChanged() {
 		d_m2.setEndpoint(new Endpoint());
+	}
+
+	@Test
+	public void testEquals() {
+		fail();
+		// also test hashCode() for one case where equals is true
 	}
 }

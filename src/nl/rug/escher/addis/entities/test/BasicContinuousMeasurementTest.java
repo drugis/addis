@@ -1,7 +1,7 @@
 package nl.rug.escher.addis.entities.test;
 
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.beans.PropertyChangeListener;
 
@@ -47,5 +47,11 @@ public class BasicContinuousMeasurementTest {
 		measurement.addPropertyChangeListener(l);
 		measurement.setMean(27.5);
 		verify(l);
+	}
+	
+	@Test
+	public void testEquals() {
+		fail();
+		// also test hashCode() for one case where equals is true
 	}
 }

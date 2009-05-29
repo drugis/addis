@@ -73,4 +73,10 @@ public class MetaAnalysisTest {
 		assertEquals(new Integer(rate), m.getRate());
 		assertEquals(new Integer(size), m.getSampleSize());
 	}
+
+	@Test
+	public void testEquals() {
+		fail();
+		// also test hashCode() for one case where equals is true
+	}
 }

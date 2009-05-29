@@ -26,4 +26,9 @@ public class DoseTest {
 		d.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		assertEquals("25.5 " + SIUnit.MILLIGRAMS_A_DAY.toString(), d.toString());
 	}
+	
+	@Test
+	public void testEquals() {
+		fail();
+	}
 }

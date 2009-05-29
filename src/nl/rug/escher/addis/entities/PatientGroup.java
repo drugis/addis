@@ -20,6 +20,19 @@ public class PatientGroup extends Model {
 	public static final String PROPERTY_MEASUREMENTS = "measurements";
 	public static final String PROPERTY_LABEL = "label";
 	
+	@Deprecated
+	public PatientGroup() {
+	}
+	
+	public PatientGroup(Study study, Drug drug, Dose dose, int size,
+			List<BasicMeasurement> measurements) {
+		d_study = study;
+		d_drug = drug;
+		d_dose = dose;
+		d_size = size;
+		d_measurements.addAll(measurements);
+	}
+	
 	public Study getStudy() {
 		return d_study;
 	}
@@ -105,5 +118,29 @@ public class PatientGroup extends Model {
 		Integer oldVal = d_size;
 		d_size = size;
 		firePropertyChange(PROPERTY_SIZE, oldVal, d_size);
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof PatientGroup) {
+			PatientGroup other = (PatientGroup)o;
+			return equal(other.getStudy(), getStudy()) &&
+				equal(other.getDrug(), getDrug()) &&
+				equal(other.getDose(), getDose());
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = hash * 31 + getStudy().hashCode();
+		hash = hash * 31 + getDrug().hashCode();
+		hash = hash * 31 + getDose().hashCode();
+		return hash;
+	}
+	
+	private boolean equal(Object o1, Object o2) {
+		return o1 == null ? o2 == null : o1.equals(o2);
 	}
 }

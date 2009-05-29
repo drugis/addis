@@ -3,6 +3,7 @@ package nl.rug.escher.addis.entities.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -70,5 +71,11 @@ public class StudyTest {
 		Study study = new Study();
 		study.setId(id);
 		assertEquals(id, study.toString());
+	}
+
+	@Test
+	public void testEquals() {
+		fail();
+		// also test hashCode() for one case where equals is true
 	}
 }

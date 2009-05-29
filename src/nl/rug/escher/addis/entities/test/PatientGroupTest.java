@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import static org.easymock.EasyMock.*;
 
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -136,5 +137,46 @@ public class PatientGroupTest {
 		
 		assertEquals(m2, g.getMeasurement(e2));
 		assertEquals(null, g.getMeasurement(e3));
+	}
+	
+	public static void assertNotEquals(Object expected, Object actual) {
+		if (expected == null) {
+			assertTrue(actual != null);
+		} else {
+			assertFalse(expected.equals(actual));
+		}
+	}
+	
+	@Test
+	public void testEquals() {
+		Study study1 = new Study("X");
+		Study study2 = new Study("Y");
+		Drug drug1 = new Drug("Drug");
+		Drug drug2 = new Drug("Drug 2");
+		Dose dose1 = new Dose(12, SIUnit.MILLIGRAMS_A_DAY);
+		Dose dose2 = new Dose(8, SIUnit.MILLIGRAMS_A_DAY);
+		int size1 = 1;
+		int size2 = 2;
+		List<BasicMeasurement> m1 = new ArrayList<BasicMeasurement>();
+		List<BasicMeasurement> m2 = new ArrayList<BasicMeasurement>();
+		m2.add(null);
+		
+		assertEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
+				new PatientGroup(study1, drug1, dose1, size1, m1));
+		
+		assertNotEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
+				new PatientGroup(study2, drug1, dose1, size1, m1));
+		assertNotEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
+				new PatientGroup(study1, drug2, dose1, size1, m1));
+		assertNotEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
+				new PatientGroup(study1, drug1, dose2, size1, m1));
+		
+		assertEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
+				new PatientGroup(study1, drug1, dose1, size2, m1));
+		assertEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
+				new PatientGroup(study1, drug1, dose1, size1, m2));
+		
+		assertEquals(new PatientGroup(study1, drug1, dose1, size1, m1).hashCode(),
+				new PatientGroup(study1, drug1, dose1, size1, m1).hashCode());
 	}
 }
