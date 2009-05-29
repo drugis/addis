@@ -26,5 +26,5 @@
 	<classpathentry kind="var" path="M2_REPO/com/jgoodies/looks/2.2.1/looks-2.2.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="output" path="target/classes"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
