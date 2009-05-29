@@ -1,6 +1,5 @@
 package nl.rug.escher.addis.gui;
 
-import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -8,8 +7,8 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.BasicMeasurement;
+import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.gui.OkCancelDialog;
 

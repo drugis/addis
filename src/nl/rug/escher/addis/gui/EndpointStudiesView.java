@@ -1,7 +1,6 @@
 package nl.rug.escher.addis.gui;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
