@@ -47,7 +47,11 @@ public class EndpointTest {
 
 	@Test
 	public void testEquals() {
-		fail();
-		// also test hashCode() for one case where equals is true
+		String name1 = "Endpoint A";
+		String name2 = "Endpoint B";
+		
+		assertEquals(new Endpoint(name1), new Endpoint(name1));
+		JUnitUtil.assertNotEquals(new Endpoint(name1), new Endpoint(name2));
+		assertEquals(new Endpoint(name1).hashCode(), new Endpoint(name1).hashCode());
 	}
 }
