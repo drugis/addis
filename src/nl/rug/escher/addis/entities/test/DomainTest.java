@@ -143,7 +143,7 @@ public class DomainTest {
 		assertTrue(d_domain.getStudies(e2).contains(s2));
 	}
 	
-	@Test @Ignore("Known to fail")
+	@Test
 	public void testEquals() {
 		Domain d1 = new DomainImpl();
 		Domain d2 = new DomainImpl();

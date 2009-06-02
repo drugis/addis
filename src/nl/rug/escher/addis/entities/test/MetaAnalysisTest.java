@@ -75,7 +75,7 @@ public class MetaAnalysisTest {
 		assertEquals(new Integer(size), m.getSampleSize());
 	}
 
-	@Test @Ignore("Known to fail")
+	@Test
 	public void testEquals() {
 		fail();
 		// also test hashCode() for one case where equals is true

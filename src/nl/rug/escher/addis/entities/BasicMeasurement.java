@@ -4,6 +4,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 
+import nl.rug.escher.common.EqualsUtil;
+
 import com.jgoodies.binding.beans.Model;
 
 public abstract class BasicMeasurement extends Model implements Measurement {
@@ -66,5 +68,23 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 			return null;
 		}
 		return getPatientGroup().getSize();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof BasicMeasurement) {
+			BasicMeasurement other = (BasicMeasurement)o;
+			return EqualsUtil.equal(other.getEndpoint(), getEndpoint()) &&
+				EqualsUtil.equal(other.getPatientGroup(), getPatientGroup());
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = hash * 31 + getEndpoint().hashCode();
+		hash = hash * 31 + getPatientGroup().hashCode();
+		return hash;
 	}
 }

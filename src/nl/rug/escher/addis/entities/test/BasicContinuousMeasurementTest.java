@@ -4,12 +4,20 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.*;
 
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
+import nl.rug.escher.addis.entities.BasicMeasurement;
+import nl.rug.escher.addis.entities.BasicRateMeasurement;
+import nl.rug.escher.addis.entities.Dose;
+import nl.rug.escher.addis.entities.Drug;
+import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
+import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.SIUnit;
+import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.JUnitUtil;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BasicContinuousMeasurementTest {
@@ -50,9 +58,42 @@ public class BasicContinuousMeasurementTest {
 		verify(l);
 	}
 	
-	@Test @Ignore("Known to fail")
+	@Test
 	public void testEquals() {
-		fail();
-		// also test hashCode() for one case where equals is true
+		Endpoint e1 = new Endpoint("e1");
+		Endpoint e2 = new Endpoint("e2");
+		Study s = new Study("STUDY");
+		Drug drug1 = new Drug("Drug 1");
+		Drug drug2 = new Drug("Drug 2");
+		Dose dose = new Dose(8.0, SIUnit.MILLIGRAMS_A_DAY);
+		PatientGroup g1 = new PatientGroup(s, drug1, dose, 8,
+				new ArrayList<BasicMeasurement>());
+		PatientGroup g2 = new PatientGroup(s, drug2, dose, 8,
+				new ArrayList<BasicMeasurement>());
+		
+		JUnitUtil.assertNotEquals(g1, g2);
+		
+		BasicContinuousMeasurement m1 = new BasicContinuousMeasurement(e1);
+		m1.setPatientGroup(g1);
+		m1.setMean(0.0);
+		m1.setStdDev(0.0);
+		BasicContinuousMeasurement m2 = new BasicContinuousMeasurement(e1);
+		m2.setPatientGroup(g1);
+		m2.setMean(3.0);
+		m2.setStdDev(2.0);
+		
+		assertEquals(m1, m2);
+		assertEquals(m1.hashCode(), m2.hashCode());
+		
+		m2.setPatientGroup(g2);
+		JUnitUtil.assertNotEquals(m1, m2);
+		
+		m2.setPatientGroup(g1);
+		m2.setEndpoint(e2);
+		JUnitUtil.assertNotEquals(m1, m2);
+		
+		BasicRateMeasurement m3 = new BasicRateMeasurement(e1);
+		m3.setPatientGroup(g1);
+		assertEquals(m1, m3);
 	}
 }

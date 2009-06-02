@@ -15,7 +15,7 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 		d_stdDev = 0.0; // FIXME
 	}
 	
-	/* (non-Javadoc)
+	/**
 	 * @see nl.rug.escher.addis.entities.ContinuousMeasurement#getMean()
 	 */
 	public Double getMean() {
@@ -30,7 +30,7 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
 	}
 	
-	/* (non-Javadoc)
+	/**
 	 * @see nl.rug.escher.addis.entities.ContinuousMeasurement#getStdDev()
 	 */
 	public Double getStdDev() {
@@ -48,7 +48,7 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	public String getLabel() {
 		return toString();
 	}
-
+	
 	@Override
 	public String toString() {
 		if (d_mean == null || d_stdDev == null) {

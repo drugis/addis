@@ -128,7 +128,7 @@ public class PooledRateMeasurementTest {
 		d_m2.setEndpoint(new Endpoint());
 	}
 
-	@Test @Ignore("Known to fail")
+	@Test
 	public void testEquals() {
 		fail();
 		// also test hashCode() for one case where equals is true
