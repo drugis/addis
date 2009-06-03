@@ -1,6 +1,7 @@
 package nl.rug.escher.addis.entities;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -71,5 +72,26 @@ public class MetaAnalysis {
 			measurements.add((RateMeasurement)getMeasurement(s, drug));
 		}
 		return new PooledRateMeasurement(measurements);
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof MetaAnalysis) {
+			MetaAnalysis other = (MetaAnalysis)o;
+			if (other.getStudies().size() != getStudies().size()) {
+				return false;
+			}
+			return getStudies().containsAll(other.getStudies()) && 
+					getEndpoint().equals(other.getEndpoint());
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = 31 * hash + getEndpoint().hashCode();
+		hash = 31 * hash + new HashSet<Study>(getStudies()).hashCode();
+		return hash;
 	}
 }

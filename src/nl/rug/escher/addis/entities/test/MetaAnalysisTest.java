@@ -2,6 +2,7 @@ package nl.rug.escher.addis.entities.test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +15,7 @@ import nl.rug.escher.addis.entities.MetaAnalysis;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -77,7 +79,36 @@ public class MetaAnalysisTest {
 
 	@Test
 	public void testEquals() {
-		fail();
-		// also test hashCode() for one case where equals is true
+		Endpoint e1 = new Endpoint("E1");
+		Endpoint e2 = new Endpoint("E2");
+		Study s1 = new Study("Test");
+		Study s2 = new Study("Study");
+		Study s3 = new Study("X");
+		s1.addEndpoint(e1);
+		s2.addEndpoint(e1);
+		s3.addEndpoint(e1);
+		s1.addEndpoint(e2);
+		s2.addEndpoint(e2);
+		s3.addEndpoint(e2);
+		
+		List<Study> l1 = new ArrayList<Study>();
+		l1.add(s1); l1.add(s2);
+		assertEquals(new MetaAnalysis(e1, l1), new MetaAnalysis(e1, l1));
+		assertEquals(
+				new MetaAnalysis(e1, l1).hashCode(),
+				new MetaAnalysis(e1, l1).hashCode());
+		
+		List<Study> l2 = new ArrayList<Study>();
+		l2.add(s1); l2.add(s3);
+		JUnitUtil.assertNotEquals(new MetaAnalysis(e1, l1), new MetaAnalysis(e1, l2));
+		
+		List<Study> l3 = new ArrayList<Study>();
+		l3.add(s2); l3.add(s1);
+		assertEquals(new MetaAnalysis(e1, l1), new MetaAnalysis(e1, l3));
+		assertEquals(
+				new MetaAnalysis(e1, l1).hashCode(),
+				new MetaAnalysis(e1, l3).hashCode());
+		
+		JUnitUtil.assertNotEquals(new MetaAnalysis(e2, l1), new MetaAnalysis(e1, l1));
 	}
 }

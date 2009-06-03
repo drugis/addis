@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.HashSet;
 import java.util.List;
 
 import org.contract4j5.contract.Contract;
@@ -127,5 +128,18 @@ public class PooledRateMeasurement extends Model implements RateMeasurement {
 
 	private String generateLabel(Integer rate, Integer sampleSize) {
 		return rate.toString() + "/" + sampleSize.toString();
+	}
+	
+	public boolean equals(Object o) {
+		if (o instanceof PooledRateMeasurement) {
+			PooledRateMeasurement other = (PooledRateMeasurement)o;
+			return other.d_measurements.size() == d_measurements.size() &&
+				other.d_measurements.containsAll(d_measurements);
+		}
+		return false;
+	}
+	
+	public int hashCode() {
+		return new HashSet<RateMeasurement>(d_measurements).hashCode();
 	}
 }

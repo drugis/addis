@@ -13,6 +13,7 @@ import nl.rug.escher.addis.entities.DomainListener;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -148,28 +149,30 @@ public class DomainTest {
 		Domain d1 = new DomainImpl();
 		Domain d2 = new DomainImpl();
 		assertEquals(d1, d2);
+		assertEquals(d1.hashCode(), d2.hashCode());
 		
 		Endpoint e1 = new Endpoint("e1");
 		Endpoint e2 = new Endpoint("e2");
 		d1.addEndpoint(e1);
 		d1.addEndpoint(e2);
 		d2.addEndpoint(e1);
-		assertFalse(d1.equals(d2));
+		JUnitUtil.assertNotEquals(d1, d2);
 		d2.addEndpoint(e2);
 		assertEquals(d1, d2);
+		assertEquals(d1.hashCode(), d2.hashCode());
 		
 		Drug d = new Drug("d1");
 		d1.addDrug(d);
-		assertFalse(d1.equals(d2));
+		JUnitUtil.assertNotEquals(d1, d2);
 		d2.addDrug(d);
 		assertEquals(d1, d2);
+		assertEquals(d1.hashCode(), d2.hashCode());
 		
-		Study s = new Study();
+		Study s = new Study("s1");
 		d1.addStudy(s);
-		assertFalse(d1.equals(d2));
+		JUnitUtil.assertNotEquals(d1, d2);
 		d2.addStudy(s);
 		assertEquals(d1, d2);
-		
-		fail("Test for hashCode() also");
+		assertEquals(d1.hashCode(), d2.hashCode());
 	}
 }

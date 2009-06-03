@@ -7,12 +7,18 @@ import static org.junit.Assert.fail;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.BasicRateMeasurement;
+import nl.rug.escher.addis.entities.Dose;
+import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.PooledRateMeasurement;
 import nl.rug.escher.addis.entities.RateMeasurement;
+import nl.rug.escher.addis.entities.SIUnit;
+import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.contract4j5.errors.ContractError;
@@ -130,7 +136,38 @@ public class PooledRateMeasurementTest {
 
 	@Test
 	public void testEquals() {
-		fail();
-		// also test hashCode() for one case where equals is true
+		Endpoint e = new Endpoint("e");
+		PatientGroup g1 = new PatientGroup(
+				new Study("s1"), new Drug("d1"),
+				new Dose(8.0, SIUnit.MILLIGRAMS_A_DAY),
+				50, new ArrayList<BasicMeasurement>());
+		PatientGroup g2 = new PatientGroup(
+				new Study("s2"), new Drug("d1"),
+				new Dose(8.0, SIUnit.MILLIGRAMS_A_DAY),
+				50, new ArrayList<BasicMeasurement>());
+		BasicRateMeasurement m1 = new BasicRateMeasurement(e);
+		g1.addMeasurement(m1);
+		BasicRateMeasurement m2 = new BasicRateMeasurement(e);
+		g2.addMeasurement(m2);
+		List<RateMeasurement> l1 = new ArrayList<RateMeasurement>();
+		l1.add(m1);
+		l1.add(m2);
+		List<RateMeasurement> l2 = new ArrayList<RateMeasurement>();
+		l2.add(m2);
+		l2.add(m1);
+		List<RateMeasurement> l3 = new ArrayList<RateMeasurement>();
+		l3.add(m2);
+		
+		assertEquals(new PooledRateMeasurement(l1), new PooledRateMeasurement(l1));
+		assertEquals(
+				new PooledRateMeasurement(l1).hashCode(),
+				new PooledRateMeasurement(l1).hashCode());
+		assertEquals(new PooledRateMeasurement(l2), new PooledRateMeasurement(l1));
+		assertEquals(
+				new PooledRateMeasurement(l2).hashCode(),
+				new PooledRateMeasurement(l1).hashCode());
+		JUnitUtil.assertNotEquals(
+				new PooledRateMeasurement(l1),
+				new PooledRateMeasurement(l3));
 	}
 }

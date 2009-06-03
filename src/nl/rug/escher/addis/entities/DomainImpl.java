@@ -135,4 +135,12 @@ public class DomainImpl implements Domain, Serializable {
 		
 		return false;
 	}
+	
+	public int hashCode() {
+		int hash = 1;
+		hash = hash * 31 + getEndpoints().hashCode();
+		hash = hash * 31 + getDrugs().hashCode();
+		hash = hash * 31 + getStudies().hashCode();
+		return hash;
+	}
 }
