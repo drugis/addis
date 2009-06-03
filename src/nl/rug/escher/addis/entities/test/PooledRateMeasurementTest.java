@@ -2,7 +2,6 @@ package nl.rug.escher.addis.entities.test;
 
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -23,7 +22,6 @@ import nl.rug.escher.common.JUnitUtil;
 
 import org.contract4j5.errors.ContractError;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class PooledRateMeasurementTest {

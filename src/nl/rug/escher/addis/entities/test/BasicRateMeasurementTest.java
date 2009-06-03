@@ -12,18 +12,17 @@ import java.util.ArrayList;
 
 import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
 import nl.rug.escher.addis.entities.BasicMeasurement;
+import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
 import nl.rug.escher.addis.entities.PatientGroup;
-import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BasicRateMeasurementTest {

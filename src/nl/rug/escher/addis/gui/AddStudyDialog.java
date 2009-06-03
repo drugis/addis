@@ -15,6 +15,7 @@ import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.gui.OkCancelDialog;
 
@@ -31,7 +32,7 @@ public class AddStudyDialog extends OkCancelDialog {
 	public AddStudyDialog(JFrame frame, Domain domain) {
 		super(frame, "Add Study");
 		d_domain = domain;
-		d_study = new Study();
+		d_study = new Study("X");
 		d_primaryEndpoint = new EndpointHolder();
 		d_primaryEndpoint.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
@@ -88,8 +89,7 @@ public class AddStudyDialog extends OkCancelDialog {
 			BasicMeasurement m = d_primaryEndpoint.getEndpoint().buildMeasurement();
 			group.addMeasurement(m);
 		}
-		Dose d = new Dose();
-		d.setQuantity(0.0);
+		Dose d = new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY);
 		group.setDose(d);
 		group.setSize(0);
 		return group;

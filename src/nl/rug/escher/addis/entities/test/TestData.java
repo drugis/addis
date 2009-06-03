@@ -33,15 +33,12 @@ public class TestData {
 		Endpoint hamd = buildEndpointHamd();
 		Drug paroxetine = buildDrugParoxetine();
 		Drug fluoxetine = buildDrugFluoxetine();
-		Study study = new Study();
-		study.setId("De Wilde et al, 1993");
+		Study study = new Study("De Wilde et al, 1993");
 		study.setEndpoints(Collections.singletonList(hamd));
 		
 		PatientGroup parox = new PatientGroup();
 		parox.setDrug(paroxetine);
-		Dose dose = new Dose();
-		dose.setQuantity(25.5);
-		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
+		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		parox.setDose(dose);
 		parox.setSize(37);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement();
@@ -51,9 +48,7 @@ public class TestData {
 		
 		PatientGroup fluox = new PatientGroup();
 		fluox.setDrug(fluoxetine);
-		dose = new Dose();
-		dose.setQuantity(27.5);
-		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
+		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
 		fluox.setDose(dose);
 		fluox.setSize(41);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement();
@@ -63,9 +58,7 @@ public class TestData {
 		
 		PatientGroup viagra = new PatientGroup();
 		viagra.setDrug(buildDrugViagra());
-		dose = new Dose();
-		dose.setQuantity(10.0);
-		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
+		dose = new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY);
 		viagra.setDose(dose);
 		viagra.setSize(100);
 		BasicRateMeasurement vHamd = (BasicRateMeasurement)hamd.buildMeasurement();
@@ -85,15 +78,12 @@ public class TestData {
 		Endpoint hamd = buildEndpointHamd();
 		Endpoint cgi = buildEndpointCgi();
 		Drug fluoxetine = buildDrugFluoxetine();
-		Study study = new Study();
-		study.setId("Chouinard et al, 1999");
+		Study study = new Study("Chouinard et al, 1999");
 		study.setEndpoints(Arrays.asList(new Endpoint[]{hamd, cgi}));
 		
 		PatientGroup parox = new PatientGroup();
 		parox.setDrug(paroxetine);
-		Dose dose = new Dose();
-		dose.setQuantity(25.5);
-		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
+		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		parox.setDose(dose);
 		parox.setSize(102);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement();
@@ -108,9 +98,7 @@ public class TestData {
 		
 		PatientGroup fluox = new PatientGroup();
 		fluox.setDrug(fluoxetine);
-		dose = new Dose();
-		dose.setQuantity(27.5);
-		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
+		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
 		fluox.setDose(dose);
 		fluox.setSize(101);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement();

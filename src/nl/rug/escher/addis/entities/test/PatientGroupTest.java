@@ -33,12 +33,12 @@ public class PatientGroupTest {
 	
 	@Test
 	public void testSetDrug() {
-		JUnitUtil.testSetter(new PatientGroup(), PatientGroup.PROPERTY_DRUG, null, new Drug());
+		JUnitUtil.testSetter(new PatientGroup(), PatientGroup.PROPERTY_DRUG, null, new Drug("D"));
 	}
 	
 	@Test
 	public void testSetDose() {
-		JUnitUtil.testSetter(new PatientGroup(), PatientGroup.PROPERTY_DOSE, null, new Dose());
+		JUnitUtil.testSetter(new PatientGroup(), PatientGroup.PROPERTY_DOSE, null, new Dose(1.0, SIUnit.MILLIGRAMS_A_DAY));
 	}
 	
 	@Test
@@ -74,9 +74,7 @@ public class PatientGroupTest {
 		PatientGroup group = new PatientGroup();
 		assertEquals("INCOMPLETE", group.getLabel());
 		
-		Dose dose = new Dose();
-		dose.setQuantity(25.5);
-		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
+		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		group.setDose(dose);
 		Drug drug = new Drug();
 		drug.setName("Fluoxetine");
@@ -93,9 +91,7 @@ public class PatientGroupTest {
 		
 		group = new PatientGroup();
 		group.setDrug(drug);
-		Dose dose = new Dose();
-		dose.setQuantity(25.5);
-		dose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
+		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		group.setDose(dose);
 		String expect = group.getLabel();
 		group.setDose(null);

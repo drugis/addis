@@ -1,6 +1,7 @@
 package nl.rug.escher.addis.entities.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +19,6 @@ import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class MetaAnalysisTest {
