@@ -11,8 +11,7 @@ public class Dose extends Model {
 	public static final String PROPERTY_UNIT = "unit";
 	public static final String PROPERTY_QUANTITY = "quantity";
 	
-	@Deprecated
-	public Dose() {
+	protected Dose() {
 		
 	}
 	

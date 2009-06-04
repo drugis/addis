@@ -9,7 +9,7 @@ import javax.swing.event.TreeModelListener;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainImpl;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.gui.DomainTreeModel;
 
 import org.junit.Before;
@@ -19,13 +19,13 @@ public class DomainTreeModelTest {
 	DomainTreeModel d_treeModel;
 	Domain d_domain;
 	Endpoint d_firstEndpoint;
-	Study d_firstStudy;
+	BasicStudy d_firstStudy;
 	
 	@Before
 	public void setUp() {
 		d_domain = new DomainImpl();
 		d_firstEndpoint = new Endpoint("Endpoint");
-		d_firstStudy = new Study("First");
+		d_firstStudy = new BasicStudy("First");
 		d_domain.addEndpoint(d_firstEndpoint);
 		d_domain.addStudy(d_firstStudy);
 		d_treeModel = new DomainTreeModel(d_domain);
@@ -114,7 +114,7 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addStudy(new Study("X"));
+		d_domain.addStudy(new BasicStudy("X"));
 		
 		verify(listener);
 	}

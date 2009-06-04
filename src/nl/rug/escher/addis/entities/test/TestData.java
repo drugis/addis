@@ -11,7 +11,7 @@ import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.SIUnit;
-import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.BasicStudy;
 
 public class TestData {
 	private static Endpoint s_endpointHamd;
@@ -29,11 +29,11 @@ public class TestData {
 		domain.addStudy(buildDefaultStudy2());
 	}
 
-	public static Study buildDefaultStudy2() {
+	public static BasicStudy buildDefaultStudy2() {
 		Endpoint hamd = buildEndpointHamd();
 		Drug paroxetine = buildDrugParoxetine();
 		Drug fluoxetine = buildDrugFluoxetine();
-		Study study = new Study("De Wilde et al, 1993");
+		BasicStudy study = new BasicStudy("De Wilde et al, 1993");
 		study.setEndpoints(Collections.singletonList(hamd));
 		
 		PatientGroup parox = new PatientGroup();
@@ -73,12 +73,12 @@ public class TestData {
 		return study;
 	}
 
-	public static Study buildDefaultStudy() {
+	public static BasicStudy buildDefaultStudy() {
 		Drug paroxetine = buildDrugParoxetine();
 		Endpoint hamd = buildEndpointHamd();
 		Endpoint cgi = buildEndpointCgi();
 		Drug fluoxetine = buildDrugFluoxetine();
-		Study study = new Study("Chouinard et al, 1999");
+		BasicStudy study = new BasicStudy("Chouinard et al, 1999");
 		study.setEndpoints(Arrays.asList(new Endpoint[]{hamd, cgi}));
 		
 		PatientGroup parox = new PatientGroup();

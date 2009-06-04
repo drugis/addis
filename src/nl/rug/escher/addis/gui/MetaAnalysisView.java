@@ -12,7 +12,7 @@ import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
 import nl.rug.escher.addis.entities.MetaAnalysis;
-import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.gui.LayoutUtil;
 import nl.rug.escher.common.gui.ViewBuilder;
 
@@ -53,10 +53,10 @@ public class MetaAnalysisView implements ViewBuilder {
 		}
 		
 		int row = 7;
-		for (Study s : d_analysis.getStudies()) {
+		for (BasicStudy s : d_analysis.getStudies()) {
 			LayoutUtil.addRow(layout);
 			builder.add(BasicComponentFactory.createLabel(
-					new PresentationModel<Study>(s).getModel(Study.PROPERTY_ID)), cc.xy(1, row));
+					new PresentationModel<BasicStudy>(s).getModel(BasicStudy.PROPERTY_ID)), cc.xy(1, row));
 			
 			col = 3;
 			for (Drug d : d_analysis.getDrugs()) {

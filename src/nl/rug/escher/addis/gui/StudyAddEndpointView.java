@@ -10,7 +10,7 @@ import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.PatientGroup;
-import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.gui.LayoutUtil;
 import nl.rug.escher.common.gui.ViewBuilder;
 
@@ -24,14 +24,14 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class StudyAddEndpointView implements ViewBuilder {
 	private Domain d_domain;
-	private Study d_study;
+	private BasicStudy d_study;
 	private PresentationModel<EndpointHolder> d_endpointModel;
 	private List<BasicMeasurement> d_measurements;
 	
 	private JComboBox d_endpointSelect;
 	private SelectionInList<Endpoint> d_endpointSelectionInList;
 	
-	public StudyAddEndpointView(Domain domain, Study study,
+	public StudyAddEndpointView(Domain domain, BasicStudy study,
 			PresentationModel<EndpointHolder> endpointModel, List<BasicMeasurement> measurements) {
 		d_domain = domain;
 		d_study = study;
@@ -88,7 +88,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 		builder.addSeparator("Study", cc.xyw(1, 1, fullWidth));
 		builder.addLabel("ID:", cc.xy(1, 3));
 		builder.add(BasicComponentFactory.createLabel(
-				new PresentationModel<Study>(d_study).getModel(Study.PROPERTY_ID)
+				new PresentationModel<BasicStudy>(d_study).getModel(BasicStudy.PROPERTY_ID)
 				), cc.xyw(3, 3, fullWidth - 2));
 		
 		builder.addSeparator("Endpoint", cc.xyw(1, 5, fullWidth));

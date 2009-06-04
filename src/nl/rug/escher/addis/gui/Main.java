@@ -29,7 +29,7 @@ import javax.swing.tree.TreePath;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainListener;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.gui.GUIHelper;
 import nl.rug.escher.common.gui.ViewBuilder;
 
@@ -111,7 +111,7 @@ public class Main extends JFrame {
 		}
 	}
 
-	void showStudyAddEndpointDialog(Study study) {
+	void showStudyAddEndpointDialog(BasicStudy study) {
 		StudyAddEndpointDialog dialog = new StudyAddEndpointDialog(this, getDomain(), study);
 		dialog.setVisible(true);
 	}
@@ -247,8 +247,8 @@ public class Main extends JFrame {
 			public void valueChanged(TreeSelectionEvent event) {
 				Object node = ((JTree)event.getSource()).getLastSelectedPathComponent();
 				
-				if (node instanceof Study) {
-					studySelected((Study)node);
+				if (node instanceof BasicStudy) {
+					studySelected((BasicStudy)node);
 				} else if (node instanceof Endpoint) {
 					endpointSelected((Endpoint)node);
 				}
@@ -256,7 +256,7 @@ public class Main extends JFrame {
 		};
 	}
 	
-	public void endpointSelected(Endpoint e, Study selectedStudy) {
+	public void endpointSelected(Endpoint e, BasicStudy selectedStudy) {
 		EndpointStudiesView view = new EndpointStudiesView(e, getDomain(), this);
 		view.setSelectedStudy(selectedStudy);
 		d_rightPanelBuilder = view;
@@ -267,8 +267,8 @@ public class Main extends JFrame {
 		endpointSelected(node, null);
 	}
 	
-	private void studySelected(Study node) {
-		StudyView view = new StudyView(new PresentationModel<Study>(node), getDomain(), this);
+	private void studySelected(BasicStudy node) {
+		StudyView view = new StudyView(new PresentationModel<BasicStudy>(node), getDomain(), this);
 		d_rightPanelBuilder = view;
 		d_rightPanel.setViewportView(view.buildPanel());
 	}

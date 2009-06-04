@@ -15,7 +15,7 @@ import nl.rug.escher.addis.entities.DomainImpl;
 import nl.rug.escher.addis.entities.DomainListener;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Before;
@@ -63,7 +63,7 @@ public class DomainTest {
 	
 	@Test
 	public void testAddStudy() {
-		Study s = new Study();
+		BasicStudy s = new BasicStudy("X");
 		assertEquals(0, d_domain.getStudies().size());
 		d_domain.addStudy(s);
 		assertEquals(1, d_domain.getStudies().size());
@@ -97,7 +97,7 @@ public class DomainTest {
 		replay(mockListener);
 		
 		d_domain.addListener(mockListener);
-		d_domain.addStudy(new Study());
+		d_domain.addStudy(new BasicStudy("X"));
 		verify(mockListener);
 	}
 	
@@ -123,14 +123,14 @@ public class DomainTest {
 		
 		List<Endpoint> l1 = new ArrayList<Endpoint>();
 		l1.add(e1);
-		Study s1 = new Study();
+		BasicStudy s1 = new BasicStudy("X");
 		s1.setId("s1");
 		s1.setEndpoints(l1);
 		
 		List<Endpoint> l2 = new ArrayList<Endpoint>();
 		l2.add(e2);
 		l2.add(e1);
-		Study s2 = new Study();
+		BasicStudy s2 = new BasicStudy("X");
 		s2.setId("s2");
 		s2.setEndpoints(l2);
 		
@@ -170,7 +170,7 @@ public class DomainTest {
 		assertEquals(d1, d2);
 		assertEquals(d1.hashCode(), d2.hashCode());
 		
-		Study s = new Study("s1");
+		BasicStudy s = new BasicStudy("s1");
 		d1.addStudy(s);
 		JUnitUtil.assertNotEquals(d1, d2);
 		d2.addStudy(s);

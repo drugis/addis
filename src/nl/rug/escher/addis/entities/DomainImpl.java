@@ -14,7 +14,7 @@ import java.util.TreeSet;
 public class DomainImpl implements Domain, Serializable {
 	private static final long serialVersionUID = 3222342605059458693L;
 	private SortedSet<Endpoint> d_endpoints;
-	private SortedSet<Study> d_studies;
+	private SortedSet<BasicStudy> d_studies;
 	private SortedSet<Drug> d_drugs;
 	private transient List<DomainListener> d_listeners;
 	
@@ -24,7 +24,7 @@ public class DomainImpl implements Domain, Serializable {
 		d_listeners = new ArrayList<DomainListener>();
 		d_studyListener = new StudyChangeListener();
 		
-		for (Study s : d_studies) {
+		for (BasicStudy s : d_studies) {
 			s.addPropertyChangeListener(d_studyListener);
 		}
 	}
@@ -39,7 +39,7 @@ public class DomainImpl implements Domain, Serializable {
 	
 	public DomainImpl() {
 		d_endpoints = new TreeSet<Endpoint>();
-		d_studies = new TreeSet<Study>();
+		d_studies = new TreeSet<BasicStudy>();
 		d_drugs = new TreeSet<Drug>();
 		d_listeners = new ArrayList<DomainListener>();
 	}
@@ -78,7 +78,7 @@ public class DomainImpl implements Domain, Serializable {
 		return Collections.unmodifiableList(d_listeners);
 	}
 
-	public void addStudy(Study s) throws NullPointerException {
+	public void addStudy(BasicStudy s) throws NullPointerException {
 		if (s == null) {
 			throw new NullPointerException("Study may not be null");
 		}
@@ -94,7 +94,7 @@ public class DomainImpl implements Domain, Serializable {
 		}
 	}
 
-	public SortedSet<Study> getStudies() {
+	public SortedSet<BasicStudy> getStudies() {
 		return Collections.unmodifiableSortedSet(d_studies);
 	}
 
@@ -117,9 +117,9 @@ public class DomainImpl implements Domain, Serializable {
 		return Collections.unmodifiableSortedSet(d_drugs);
 	}
 
-	public SortedSet<Study> getStudies(Endpoint e) {
-		SortedSet<Study> list = new TreeSet<Study>();
-		for (Study s : d_studies) {
+	public SortedSet<BasicStudy> getStudies(Endpoint e) {
+		SortedSet<BasicStudy> list = new TreeSet<BasicStudy>();
+		for (BasicStudy s : d_studies) {
 			if (s.getEndpoints().contains(e)) {
 				list.add(s);
 			}

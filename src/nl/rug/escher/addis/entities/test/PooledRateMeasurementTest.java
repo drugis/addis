@@ -17,7 +17,7 @@ import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.PooledRateMeasurement;
 import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.SIUnit;
-import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.contract4j5.errors.ContractError;
@@ -136,11 +136,11 @@ public class PooledRateMeasurementTest {
 	public void testEquals() {
 		Endpoint e = new Endpoint("e");
 		PatientGroup g1 = new PatientGroup(
-				new Study("s1"), new Drug("d1"),
+				new BasicStudy("s1"), new Drug("d1"),
 				new Dose(8.0, SIUnit.MILLIGRAMS_A_DAY),
 				50, new ArrayList<BasicMeasurement>());
 		PatientGroup g2 = new PatientGroup(
-				new Study("s2"), new Drug("d1"),
+				new BasicStudy("s2"), new Drug("d1"),
 				new Dose(8.0, SIUnit.MILLIGRAMS_A_DAY),
 				50, new ArrayList<BasicMeasurement>());
 		BasicRateMeasurement m1 = new BasicRateMeasurement(e);

@@ -15,7 +15,7 @@ import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.SIUnit;
-import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Test;
@@ -23,7 +23,7 @@ import org.junit.Test;
 public class PatientGroupTest {
 	@Test
 	public void testSetStudy() {
-		JUnitUtil.testSetter(new PatientGroup(), PatientGroup.PROPERTY_STUDY, null, new Study());
+		JUnitUtil.testSetter(new PatientGroup(), PatientGroup.PROPERTY_STUDY, null, new BasicStudy("X"));
 	}
 	
 	@Test
@@ -137,8 +137,8 @@ public class PatientGroupTest {
 	
 	@Test
 	public void testEquals() {
-		Study study1 = new Study("X");
-		Study study2 = new Study("Y");
+		BasicStudy study1 = new BasicStudy("X");
+		BasicStudy study2 = new BasicStudy("Y");
 		Drug drug1 = new Drug("Drug");
 		Drug drug2 = new Drug("Drug 2");
 		Dose dose1 = new Dose(12, SIUnit.MILLIGRAMS_A_DAY);

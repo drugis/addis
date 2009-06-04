@@ -12,7 +12,7 @@ import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.PatientGroup;
-import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.gui.LayoutUtil;
 import nl.rug.escher.common.gui.ViewBuilder;
 
@@ -26,11 +26,11 @@ import com.jgoodies.forms.layout.FormLayout;
 public class AddStudyView implements ViewBuilder {
 	private JTextField d_id;
 	private JComboBox d_endpoint;
-	private PresentationModel<Study> d_model;
+	private PresentationModel<BasicStudy> d_model;
 	private PresentationModel<EndpointHolder> d_endpointModel;
 	private Domain d_domain;
 
-	public AddStudyView(PresentationModel<Study> presentationModel,
+	public AddStudyView(PresentationModel<BasicStudy> presentationModel,
 			PresentationModel<EndpointHolder> presentationModel2, Domain domain) {
 		d_model = presentationModel;
 		d_endpointModel = presentationModel2;
@@ -38,7 +38,7 @@ public class AddStudyView implements ViewBuilder {
 	}
 	
 	public void initComponents() {
-		d_id = BasicComponentFactory.createTextField(d_model.getModel(Study.PROPERTY_ID));
+		d_id = BasicComponentFactory.createTextField(d_model.getModel(BasicStudy.PROPERTY_ID));
 		d_id.setColumns(15);
 		
 		SelectionInList<Endpoint> endpointSelectionInList =

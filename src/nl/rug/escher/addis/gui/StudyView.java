@@ -13,7 +13,7 @@ import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
 import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.PatientGroup;
-import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.gui.LayoutUtil;
 import nl.rug.escher.common.gui.ViewBuilder;
 
@@ -26,11 +26,11 @@ import com.jgoodies.forms.layout.FormLayout;
 
 @SuppressWarnings("serial")
 public class StudyView implements ViewBuilder {
-	PresentationModel<Study> d_model;
+	PresentationModel<BasicStudy> d_model;
 	Domain d_domain;
 	Main d_mainWindow;
 
-	public StudyView(PresentationModel<Study> model, Domain domain, Main main) {
+	public StudyView(PresentationModel<BasicStudy> model, Domain domain, Main main) {
 		d_model = model;
 		d_mainWindow = main;
 		d_domain = domain;
@@ -172,7 +172,7 @@ public class StudyView implements ViewBuilder {
 			CellConstraints cc) {
 		builder.addSeparator("Study", cc.xyw(1,1,fullWidth));
 		builder.addLabel("ID:", cc.xy(1, 3));
-		builder.add(BasicComponentFactory.createLabel(d_model.getModel(Study.PROPERTY_ID)),
+		builder.add(BasicComponentFactory.createLabel(d_model.getModel(BasicStudy.PROPERTY_ID)),
 				cc.xyw(3, 3, fullWidth - 2));
 	}
 

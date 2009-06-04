@@ -15,7 +15,7 @@ import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.SIUnit;
-import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Test;
@@ -62,7 +62,7 @@ public class BasicContinuousMeasurementTest {
 	public void testEquals() {
 		Endpoint e1 = new Endpoint("e1");
 		Endpoint e2 = new Endpoint("e2");
-		Study s = new Study("STUDY");
+		BasicStudy s = new BasicStudy("STUDY");
 		Drug drug1 = new Drug("Drug 1");
 		Drug drug2 = new Drug("Drug 2");
 		Dose dose = new Dose(8.0, SIUnit.MILLIGRAMS_A_DAY);

@@ -9,7 +9,7 @@ import com.jgoodies.binding.beans.Model;
 
 public class PatientGroup extends Model {
 	private static final long serialVersionUID = -2092185548220089471L;
-	private Study d_study;
+	private BasicStudy d_study;
 	private Integer d_size;
 	private Drug d_drug;
 	private Dose d_dose;
@@ -26,7 +26,7 @@ public class PatientGroup extends Model {
 	public PatientGroup() {
 	}
 	
-	public PatientGroup(Study study, Drug drug, Dose dose, int size,
+	public PatientGroup(BasicStudy study, Drug drug, Dose dose, int size,
 			List<BasicMeasurement> measurements) {
 		d_study = study;
 		d_drug = drug;
@@ -35,19 +35,19 @@ public class PatientGroup extends Model {
 		d_measurements.addAll(measurements);
 	}
 	
-	public PatientGroup(Study study, Drug drug, Dose dose, int size) {
+	public PatientGroup(BasicStudy study, Drug drug, Dose dose, int size) {
 		d_study = study;
 		d_drug = drug;
 		d_dose = dose;
 		d_size = size;
 	}
 	
-	public Study getStudy() {
+	public BasicStudy getStudy() {
 		return d_study;
 	}
 	
-	public void setStudy(Study study) {
-		Study oldVal = d_study;
+	public void setStudy(BasicStudy study) {
+		BasicStudy oldVal = d_study;
 		d_study = study;
 		firePropertyChange(PROPERTY_STUDY, oldVal, d_study);
 	}

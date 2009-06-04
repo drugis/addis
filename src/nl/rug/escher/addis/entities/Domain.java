@@ -23,20 +23,20 @@ public interface Domain {
 	 * @param e the study to add
 	 * @throws NullPointerException if e is null
 	 */
-	public void addStudy(Study s) throws NullPointerException;
+	public void addStudy(BasicStudy s) throws NullPointerException;
 
 	/**
 	 * Get the studies stored in the data model.
 	 * @return An unmodifiable sorted set of studies. Never a null.
 	 */
-	public SortedSet<Study> getStudies();
+	public SortedSet<BasicStudy> getStudies();
 	
 	
 	/**
 	 * Get studies by Endpoint.
 	 * @return An unmodifiable sorted set of studies. Never null.
 	 */
-	public SortedSet<Study> getStudies(Endpoint e);
+	public SortedSet<BasicStudy> getStudies(Endpoint e);
 	
 	/**
 	 * Adds an drug to the data model.

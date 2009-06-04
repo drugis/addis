@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 
 import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.Domain;
-import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.PresentationModel;
@@ -17,11 +17,11 @@ import com.jgoodies.binding.PresentationModel;
 @SuppressWarnings("serial")
 public class StudyAddEndpointDialog extends OkCancelDialog {
 	private Domain d_domain;
-	private Study d_study;
+	private BasicStudy d_study;
 	private EndpointHolder d_newEndpoint;
 	private List<BasicMeasurement> d_measurements;
 	
-	public StudyAddEndpointDialog(JFrame frame, Domain domain, Study study) {
+	public StudyAddEndpointDialog(JFrame frame, Domain domain, BasicStudy study) {
 		super(frame, "Add Endpoint to Study");
 		d_domain = domain;
 		d_study = study;

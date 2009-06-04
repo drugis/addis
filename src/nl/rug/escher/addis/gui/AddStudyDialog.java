@@ -16,7 +16,7 @@ import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.SIUnit;
-import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.PresentationModel;
@@ -25,14 +25,14 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 @SuppressWarnings("serial")
 public class AddStudyDialog extends OkCancelDialog {
 	private Domain d_domain;
-	private Study d_study;
+	private BasicStudy d_study;
 	private EndpointHolder d_primaryEndpoint;
 	private AddStudyView d_view;
 	
 	public AddStudyDialog(JFrame frame, Domain domain) {
 		super(frame, "Add Study");
 		d_domain = domain;
-		d_study = new Study("X");
+		d_study = new BasicStudy("X");
 		d_primaryEndpoint = new EndpointHolder();
 		d_primaryEndpoint.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
@@ -40,7 +40,7 @@ public class AddStudyDialog extends OkCancelDialog {
 				initUserPanel();
 			}
 		});
-		d_view = new AddStudyView(new PresentationModel<Study>(d_study),
+		d_view = new AddStudyView(new PresentationModel<BasicStudy>(d_study),
 				new PresentationModel<EndpointHolder>(d_primaryEndpoint), domain);
 		initUserPanel();
 	}
