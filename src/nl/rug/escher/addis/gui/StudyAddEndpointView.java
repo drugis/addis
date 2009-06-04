@@ -9,7 +9,7 @@ import javax.swing.JComponent;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicMeasurement;
-import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.gui.LayoutUtil;
 import nl.rug.escher.common.gui.ViewBuilder;
@@ -40,7 +40,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 	}
 
 	private void initializeMeasurements() {
-		for (PatientGroup g : d_study.getPatientGroups()) {
+		for (BasicPatientGroup g : d_study.getPatientGroups()) {
 			if (getEndpoint() != null) {
 				BasicMeasurement m = getEndpoint().buildMeasurement();
 				m.setPatientGroup(g);
@@ -126,9 +126,9 @@ public class StudyAddEndpointView implements ViewBuilder {
 			CellConstraints cc, int row, FormLayout layout) {
 		for (BasicMeasurement m : d_measurements) {
 			LayoutUtil.addRow(layout);
-			PresentationModel<PatientGroup> gModel = 
-				new PresentationModel<PatientGroup>(m.getPatientGroup());
-			builder.add(BasicComponentFactory.createLabel(gModel.getModel(PatientGroup.PROPERTY_LABEL)),
+			PresentationModel<BasicPatientGroup> gModel = 
+				new PresentationModel<BasicPatientGroup>(m.getPatientGroup());
+			builder.add(BasicComponentFactory.createLabel(gModel.getModel(BasicPatientGroup.PROPERTY_LABEL)),
 					cc.xy(1, row));
 			int col = 3;
 			for (JComponent component : MeasurementInputHelper.getComponents(m)) {

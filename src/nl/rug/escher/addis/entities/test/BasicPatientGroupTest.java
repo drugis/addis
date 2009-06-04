@@ -9,41 +9,51 @@ import java.util.Collections;
 import java.util.List;
 
 import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
+import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicMeasurement;
-import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.JUnitUtil;
 
+import org.junit.Before;
 import org.junit.Test;
 
-public class PatientGroupTest {
+public class BasicPatientGroupTest {
+	
+	private BasicPatientGroup d_pg;
+
+	@Before
+	public void setUp() {
+		d_pg = new BasicPatientGroup(null, null, null, 0);
+	}
+	
 	@Test
 	public void testSetStudy() {
-		JUnitUtil.testSetter(new PatientGroup(), PatientGroup.PROPERTY_STUDY, null, new BasicStudy("X"));
+		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_STUDY, null, new BasicStudy("X"));
 	}
 	
 	@Test
 	public void testSetSize() {
-		JUnitUtil.testSetter(new PatientGroup(), PatientGroup.PROPERTY_SIZE, null, 1);
+		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_SIZE, 0, 1);
 	}
 	
 	@Test
 	public void testSetDrug() {
-		JUnitUtil.testSetter(new PatientGroup(), PatientGroup.PROPERTY_DRUG, null, new Drug("D"));
+		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_DRUG, null, new Drug("D"));
 	}
 	
 	@Test
 	public void testSetDose() {
-		JUnitUtil.testSetter(new PatientGroup(), PatientGroup.PROPERTY_DOSE, null, new Dose(1.0, SIUnit.MILLIGRAMS_A_DAY));
+		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_DOSE, null, new Dose(1.0, SIUnit.MILLIGRAMS_A_DAY));
 	}
 	
 	@Test
 	public void testInitialMeasurements() {
-		PatientGroup p = new PatientGroup();
+		BasicPatientGroup p = d_pg;
 		assertNotNull(p.getMeasurements());
 		assertTrue(p.getMeasurements().isEmpty());
 	}
@@ -51,19 +61,19 @@ public class PatientGroupTest {
 	@Test
 	public void testSetMeasurements() {
 		List<BasicContinuousMeasurement> list = Collections.singletonList(new BasicContinuousMeasurement());
-		JUnitUtil.testSetter(new PatientGroup(), PatientGroup.PROPERTY_MEASUREMENTS, Collections.EMPTY_LIST, 
+		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_MEASUREMENTS, Collections.EMPTY_LIST, 
 				list);
 	}
 	
 	@Test
 	public void testAddMeasurement() {
-		JUnitUtil.testAdder(new PatientGroup(), PatientGroup.PROPERTY_MEASUREMENTS,
+		JUnitUtil.testAdder(d_pg, BasicPatientGroup.PROPERTY_MEASUREMENTS,
 				"addMeasurement", new BasicContinuousMeasurement());
 	}
 	
 	@Test
 	public void testAddMeasurementSetsPatientGroup() {
-		PatientGroup g = new PatientGroup();
+		BasicPatientGroup g = d_pg;
 		BasicMeasurement m = new BasicContinuousMeasurement();
 		g.addMeasurement(m);
 		assertEquals(g, m.getPatientGroup());
@@ -71,7 +81,7 @@ public class PatientGroupTest {
 	
 	@Test
 	public void testGetLabel() {
-		PatientGroup group = new PatientGroup();
+		BasicPatientGroup group = d_pg;
 		assertEquals("INCOMPLETE", group.getLabel());
 		
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
@@ -84,30 +94,30 @@ public class PatientGroupTest {
 	
 	@Test
 	public void testFireLabelChanged() {
-		PatientGroup group;
+		BasicPatientGroup group;
 		PropertyChangeListener l;
 		Drug drug = new Drug();
 		drug.setName("Fluoxetine");
 		
-		group = new PatientGroup();
+		group = d_pg;
 		group.setDrug(drug);
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		group.setDose(dose);
 		String expect = group.getLabel();
 		group.setDose(null);
 		assertEquals("INCOMPLETE", group.getLabel());
-		l = JUnitUtil.mockListener(group, PatientGroup.PROPERTY_LABEL, "INCOMPLETE", expect);
+		l = JUnitUtil.mockListener(group, BasicPatientGroup.PROPERTY_LABEL, "INCOMPLETE", expect);
 		group.addPropertyChangeListener(l);
 		group.setDose(dose);
 		assertEquals(expect, group.getLabel());
 		verify(l);
 		
-		group = new PatientGroup();
+		group = d_pg;
 		group.setDose(dose);
 		Drug drug2 = new Drug();
 		drug2.setName("Paroxetine");
 		group.setDrug(drug2);
-		l = JUnitUtil.mockListener(group, PatientGroup.PROPERTY_LABEL, group.getLabel(), expect);
+		l = JUnitUtil.mockListener(group, BasicPatientGroup.PROPERTY_LABEL, group.getLabel(), expect);
 		group.addPropertyChangeListener(l);
 		group.setDrug(drug);
 		verify(l);
@@ -127,7 +137,7 @@ public class PatientGroupTest {
 		BasicContinuousMeasurement m2 = new BasicContinuousMeasurement();
 		m2.setEndpoint(e2);
 		
-		PatientGroup g = new PatientGroup();
+		BasicPatientGroup g = d_pg;
 		g.addMeasurement(m2);
 		g.addMeasurement(m1);
 		
@@ -147,24 +157,34 @@ public class PatientGroupTest {
 		int size2 = 2;
 		List<BasicMeasurement> m1 = new ArrayList<BasicMeasurement>();
 		List<BasicMeasurement> m2 = new ArrayList<BasicMeasurement>();
-		m2.add(null);
+		m2.add(new BasicRateMeasurement());
 		
-		assertEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
-				new PatientGroup(study1, drug1, dose1, size1, m1));
+		assertEquals(new BasicPatientGroup(study1, drug1, dose1, size1, m1),
+				new BasicPatientGroup(study1, drug1, dose1, size1, m1));
 		
-		JUnitUtil.assertNotEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
-				new PatientGroup(study2, drug1, dose1, size1, m1));
-		JUnitUtil.assertNotEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
-				new PatientGroup(study1, drug2, dose1, size1, m1));
-		JUnitUtil.assertNotEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
-				new PatientGroup(study1, drug1, dose2, size1, m1));
+		JUnitUtil.assertNotEquals(new BasicPatientGroup(study1, drug1, dose1, size1, m1),
+				new BasicPatientGroup(study2, drug1, dose1, size1, m1));
+		JUnitUtil.assertNotEquals(new BasicPatientGroup(study1, drug1, dose1, size1, m1),
+				new BasicPatientGroup(study1, drug2, dose1, size1, m1));
+		JUnitUtil.assertNotEquals(new BasicPatientGroup(study1, drug1, dose1, size1, m1),
+				new BasicPatientGroup(study1, drug1, dose2, size1, m1));
 		
-		assertEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
-				new PatientGroup(study1, drug1, dose1, size2, m1));
-		assertEquals(new PatientGroup(study1, drug1, dose1, size1, m1),
-				new PatientGroup(study1, drug1, dose1, size1, m2));
+		assertEquals(new BasicPatientGroup(study1, drug1, dose1, size1, m1),
+				new BasicPatientGroup(study1, drug1, dose1, size2, m1));
+		assertEquals(new BasicPatientGroup(study1, drug1, dose1, size1, m1),
+				new BasicPatientGroup(study1, drug1, dose1, size1, m2));
 		
-		assertEquals(new PatientGroup(study1, drug1, dose1, size1, m1).hashCode(),
-				new PatientGroup(study1, drug1, dose1, size1, m1).hashCode());
+		assertEquals(new BasicPatientGroup(study1, drug1, dose1, size1, m1).hashCode(),
+				new BasicPatientGroup(study1, drug1, dose1, size1, m1).hashCode());
+	}
+	
+	@Test
+	public void testConstructorAddsItselfToMeasurements() {
+		List<BasicMeasurement> l = new ArrayList<BasicMeasurement>();
+		l.add(new BasicRateMeasurement());
+		
+		BasicPatientGroup pg = new BasicPatientGroup(new BasicStudy("X"), new Drug("Drug 2"), 
+				new Dose(8, SIUnit.MILLIGRAMS_A_DAY), 2, l);
+		assertEquals(pg, pg.getMeasurements().get(0).getPatientGroup());
 	}
 }

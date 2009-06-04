@@ -9,12 +9,12 @@ import java.util.Set;
 public class BasicStudy extends AbstractStudy implements Study {
 	private static final long serialVersionUID = -1373201520248610423L;
 	private List<Endpoint> d_endpoints;
-	private List<PatientGroup> d_patientGroups;
+	private List<BasicPatientGroup> d_patientGroups;
 	
 	public BasicStudy(String id) {
+		super(id);
 		d_endpoints = new ArrayList<Endpoint>();
-		d_patientGroups = new ArrayList<PatientGroup>();
-		d_id = id;
+		d_patientGroups = new ArrayList<BasicPatientGroup>();
 	}
 
 	public List<Endpoint> getEndpoints() {
@@ -27,18 +27,18 @@ public class BasicStudy extends AbstractStudy implements Study {
 		firePropertyChange(PROPERTY_ENDPOINTS, oldVal, d_endpoints);
 	}
 
-	public List<PatientGroup> getPatientGroups() {
+	public List<BasicPatientGroup> getPatientGroups() {
 		return d_patientGroups;
 	}
 
-	public void setPatientGroups(List<PatientGroup> patientGroups) {
-		List<PatientGroup> oldVal = d_patientGroups;
+	public void setPatientGroups(List<BasicPatientGroup> patientGroups) {
+		List<BasicPatientGroup> oldVal = d_patientGroups;
 		d_patientGroups = patientGroups;
 		firePropertyChange(PROPERTY_PATIENTGROUPS, oldVal, d_patientGroups);
 	}
 	
-	public void addPatientGroup(PatientGroup group) {
-		List<PatientGroup> newVal = new ArrayList<PatientGroup>(d_patientGroups);
+	public void addPatientGroup(BasicPatientGroup group) {
+		List<BasicPatientGroup> newVal = new ArrayList<BasicPatientGroup>(d_patientGroups);
 		newVal.add(group);
 		setPatientGroups(newVal);
 	}
@@ -51,7 +51,7 @@ public class BasicStudy extends AbstractStudy implements Study {
 
 	public Set<Drug> getDrugs() {
 		Set<Drug> drugs = new HashSet<Drug>();
-		for (PatientGroup g : getPatientGroups()) {
+		for (BasicPatientGroup g : getPatientGroups()) {
 			drugs.add(g.getDrug());
 		}
 		return drugs;

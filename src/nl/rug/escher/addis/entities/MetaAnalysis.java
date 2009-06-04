@@ -22,35 +22,15 @@ public class MetaAnalysis {
 		d_studies = studies;
 		d_drugs = findCommonDrugs();
 	}
-	
-	private Set<Drug> findCommonDrugs() {
-		Set<Drug> drugs = d_studies.get(0).getDrugs();
-		for (BasicStudy s : d_studies) {
-			drugs.retainAll(s.getDrugs());
-		}
-		return drugs;
-	}
-	
-	private void validate(Endpoint endpoint, List<BasicStudy> studies) {
-		for (BasicStudy s : studies) {
-			if (!s.getEndpoints().contains(endpoint)) {
-				throw new IllegalArgumentException("Study " + s + " does not measure " + endpoint);
-			}
-		}
+		
+	public Set<Drug> getDrugs() {
+		return d_drugs;
 	}
 	
 	public Endpoint getEndpoint() {
 		return d_endpoint;
 	}
 
-	public List<BasicStudy> getStudies() {
-		return d_studies;
-	}
-	
-	public Set<Drug> getDrugs() {
-		return d_drugs;
-	}
-	
 	/**
 	 * 
 	 * @param study A study contained in getStudies()
@@ -58,7 +38,7 @@ public class MetaAnalysis {
 	 * @return The measurement from Study on Drug
 	 */
 	public Measurement getMeasurement(BasicStudy study, Drug drug) {
-		for (PatientGroup g : study.getPatientGroups()) {
+		for (BasicPatientGroup g : study.getPatientGroups()) {
 			if (g.getDrug().equals(drug)) {
 				return g.getMeasurement(getEndpoint());
 			}
@@ -74,6 +54,18 @@ public class MetaAnalysis {
 		return new PooledRateMeasurement(measurements);
 	}
 	
+	public List<BasicStudy> getStudies() {
+		return d_studies;
+	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = 31 * hash + getEndpoint().hashCode();
+		hash = 31 * hash + new HashSet<BasicStudy>(getStudies()).hashCode();
+		return hash;
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof MetaAnalysis) {
@@ -87,11 +79,19 @@ public class MetaAnalysis {
 		return false;
 	}
 	
-	@Override
-	public int hashCode() {
-		int hash = 1;
-		hash = 31 * hash + getEndpoint().hashCode();
-		hash = 31 * hash + new HashSet<BasicStudy>(getStudies()).hashCode();
-		return hash;
+	private Set<Drug> findCommonDrugs() {
+		Set<Drug> drugs = d_studies.get(0).getDrugs();
+		for (BasicStudy s : d_studies) {
+			drugs.retainAll(s.getDrugs());
+		}
+		return drugs;
+	}
+	
+	private void validate(Endpoint endpoint, List<BasicStudy> studies) {
+		for (BasicStudy s : studies) {
+			if (!s.getEndpoints().contains(endpoint)) {
+				throw new IllegalArgumentException("Study " + s + " does not measure " + endpoint);
+			}
+		}
 	}
 }

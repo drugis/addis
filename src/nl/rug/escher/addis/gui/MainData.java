@@ -8,7 +8,7 @@ import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.BasicStudy;
@@ -35,24 +35,17 @@ public class MainData {
 		BasicStudy study = new BasicStudy("De Wilde et al, 1993");
 		study.setEndpoints(Collections.singletonList(hamd));
 		
-		PatientGroup parox = new PatientGroup();
-		parox.setDrug(paroxetine);
+
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		parox.setDose(dose);
-		parox.setSize(37);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement();
-		pHamd.setPatientGroup(parox);
 		pHamd.setRate(23);
-		parox.addMeasurement(pHamd);
+		BasicPatientGroup parox = new BasicPatientGroup(study, paroxetine, dose, 37);
+		parox.addMeasurement(pHamd);		
 		
-		PatientGroup fluox = new PatientGroup();
-		fluox.setDrug(fluoxetine);
 		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
-		fluox.setDose(dose);
-		fluox.setSize(41);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement();
-		fHamd.setPatientGroup(fluox);
 		fHamd.setRate(26);
+		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 41);		
 		fluox.addMeasurement(fHamd);
 		
 		study.addPatientGroup(parox);
@@ -69,34 +62,25 @@ public class MainData {
 		BasicStudy study = new BasicStudy("Chouinard et al, 1999");
 		study.setEndpoints(Arrays.asList(new Endpoint[]{hamd, cgi}));
 		
-		PatientGroup parox = new PatientGroup();
-		parox.setDrug(paroxetine);
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		parox.setDose(dose);
-		parox.setSize(102);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement();
-		pHamd.setPatientGroup(parox);
 		pHamd.setRate(67);
-		parox.addMeasurement(pHamd);
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)cgi.buildMeasurement();
-		pCgi.setPatientGroup(parox);
 		pCgi.setMean(-1.69);
 		pCgi.setStdDev(0.16);
+		BasicPatientGroup parox = new BasicPatientGroup(study, paroxetine, dose, 102);
+		parox.addMeasurement(pHamd);		
 		parox.addMeasurement(pCgi);
 		
-		PatientGroup fluox = new PatientGroup();
-		fluox.setDrug(fluoxetine);
 		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
-		fluox.setDose(dose);
-		fluox.setSize(101);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement();
-		fHamd.setPatientGroup(fluox);
 		fHamd.setRate(67);
-		fluox.addMeasurement(fHamd);
+
 		BasicContinuousMeasurement fCgi = (BasicContinuousMeasurement)cgi.buildMeasurement();
-		fCgi.setPatientGroup(fluox);
 		fCgi.setMean(-1.8);
 		fCgi.setStdDev(0.16);
+		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 101);
+		fluox.addMeasurement(fHamd);		
 		fluox.addMeasurement(fCgi);
 		
 		study.addPatientGroup(parox);

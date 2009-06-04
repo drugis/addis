@@ -11,7 +11,7 @@ import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.OddsRatio;
-import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.Interval;
@@ -37,11 +37,11 @@ public class OddsRatioTest {
 	public void setUp() {
 		Endpoint e = new Endpoint("E");
 		
-		PatientGroup g1 = new PatientGroup(new BasicStudy("X"), new Drug("D"), new Dose(8.8, SIUnit.MILLIGRAMS_A_DAY), s_sizeNum);
+		BasicPatientGroup g1 = new BasicPatientGroup(new BasicStudy("X"), new Drug("D"), new Dose(8.8, SIUnit.MILLIGRAMS_A_DAY), s_sizeNum);
 		d_numerator = new BasicContinuousMeasurement(e, s_meanNum, s_stdDevNum);
 		g1.addMeasurement(d_numerator);
 		
-		PatientGroup g2 = new PatientGroup(new BasicStudy("X"), new Drug("F"), new Dose(8.8, SIUnit.MILLIGRAMS_A_DAY), s_sizeDen);
+		BasicPatientGroup g2 = new BasicPatientGroup(new BasicStudy("X"), new Drug("F"), new Dose(8.8, SIUnit.MILLIGRAMS_A_DAY), s_sizeDen);
 		d_denominator = new BasicContinuousMeasurement(e, s_meanDen, s_stdDevDen);
 		g2.addMeasurement(d_denominator);
 		

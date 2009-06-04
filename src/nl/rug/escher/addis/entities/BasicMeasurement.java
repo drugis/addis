@@ -10,7 +10,7 @@ import com.jgoodies.binding.beans.Model;
 
 public abstract class BasicMeasurement extends Model implements Measurement {
 	private static final long serialVersionUID = 6892934487858770855L;
-	private PatientGroup d_patientGroup;
+	private BasicPatientGroup d_patientGroup;
 	private Endpoint d_endpoint;
 	private PatientGroupListener d_listener = new PatientGroupListener();
 
@@ -23,7 +23,7 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 		d_endpoint = e;
 	}
 
-	public PatientGroup getPatientGroup() {
+	public BasicPatientGroup getPatientGroup() {
 		return d_patientGroup;
 	}
 
@@ -31,7 +31,7 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 		private static final long serialVersionUID = -443447362262064055L;
 
 		public void propertyChange(PropertyChangeEvent event) {
-			if (event.getPropertyName().equals(PatientGroup.PROPERTY_SIZE)) {
+			if (event.getPropertyName().equals(BasicPatientGroup.PROPERTY_SIZE)) {
 				Integer oldSize = (Integer)event.getOldValue();
 				Integer newSize = (Integer)event.getNewValue();
 				firePropertyChange(PROPERTY_SAMPLESIZE, oldSize, newSize);
@@ -39,13 +39,13 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 		}
 	}
 	
-	public void setPatientGroup(PatientGroup g) {
+	public void setPatientGroup(BasicPatientGroup g) {
 		if (getPatientGroup() != null) {
-			getPatientGroup().removePropertyChangeListener(PatientGroup.PROPERTY_SIZE, d_listener);
+			getPatientGroup().removePropertyChangeListener(BasicPatientGroup.PROPERTY_SIZE, d_listener);
 		}
 		Integer oldSize = getSampleSize();
-		g.addPropertyChangeListener(PatientGroup.PROPERTY_SIZE, d_listener);
-		PatientGroup oldVal = d_patientGroup;
+		g.addPropertyChangeListener(BasicPatientGroup.PROPERTY_SIZE, d_listener);
+		BasicPatientGroup oldVal = d_patientGroup;
 		d_patientGroup = g;
 		firePropertyChange(PROPERTY_PATIENTGROUP, oldVal, d_patientGroup);
 		Integer newSize = getSampleSize();

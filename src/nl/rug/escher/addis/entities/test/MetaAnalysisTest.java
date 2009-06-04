@@ -14,7 +14,7 @@ import nl.rug.escher.addis.entities.DomainImpl;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.MetaAnalysis;
-import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.JUnitUtil;
@@ -64,7 +64,7 @@ public class MetaAnalysisTest {
 	@Test
 	public void testGetMeasurement() {
 		BasicStudy s = d_domain.getStudies().first();
-		PatientGroup g = s.getPatientGroups().get(1);
+		BasicPatientGroup g = s.getPatientGroups().get(1);
 		assertEquals(g.getMeasurement(d_analysis.getEndpoint()),
 				d_analysis.getMeasurement(s, g.getDrug()));
 	}

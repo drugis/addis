@@ -12,7 +12,7 @@ public interface Study extends Comparable<Study> {
 
 	public List<Endpoint> getEndpoints();
 
-	public List<PatientGroup> getPatientGroups();
+	public List<? extends PatientGroup> getPatientGroups();
 
 	public Set<Drug> getDrugs();
 }

@@ -11,13 +11,22 @@ import java.util.Set;
 
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.JUnitUtil;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class StudyTest {
+	
+	private BasicPatientGroup d_pg;
+
+	@Before
+	public void setUp() {
+		d_pg = new BasicPatientGroup(null, null, null, 0);
+	}
+	
 	@Test
 	public void testSetId() {
 		JUnitUtil.testSetter(new BasicStudy("X"), BasicStudy.PROPERTY_ID, "X", "NCT00351273");
@@ -37,7 +46,7 @@ public class StudyTest {
 	
 	@Test
 	public void testSetPatientGroups() {
-		List<PatientGroup> list = Collections.singletonList(new PatientGroup());
+		List<BasicPatientGroup> list = Collections.singletonList(d_pg);
 		JUnitUtil.testSetter(new BasicStudy("X"), BasicStudy.PROPERTY_PATIENTGROUPS, Collections.EMPTY_LIST, 
 				list);
 	}
@@ -51,7 +60,7 @@ public class StudyTest {
 	
 	@Test
 	public void testAddPatientGroup() {
-		JUnitUtil.testAdder(new BasicStudy("X"), BasicStudy.PROPERTY_PATIENTGROUPS, "addPatientGroup", new PatientGroup());
+		JUnitUtil.testAdder(new BasicStudy("X"), BasicStudy.PROPERTY_PATIENTGROUPS, "addPatientGroup", d_pg);
 	}
 	
 	@Test

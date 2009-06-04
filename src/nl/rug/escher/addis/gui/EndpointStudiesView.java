@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.MetaAnalysis;
-import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.CollectionUtil;
@@ -156,7 +156,7 @@ public class EndpointStudiesView implements ViewBuilder {
 	}
 
 	private boolean hasNonRateMeasurements(BasicStudy s) {
-		for (PatientGroup g : s.getPatientGroups()) {
+		for (BasicPatientGroup g : s.getPatientGroups()) {
 			if (!(g.getMeasurement(d_endpoint) instanceof RateMeasurement)) {
 				return true;
 			}

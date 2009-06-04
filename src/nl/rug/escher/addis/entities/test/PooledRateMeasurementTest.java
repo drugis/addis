@@ -13,7 +13,7 @@ import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.PooledRateMeasurement;
 import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.SIUnit;
@@ -48,19 +48,17 @@ public class PooledRateMeasurementTest {
 	BasicRateMeasurement d_m1;
 	BasicRateMeasurement d_m2;
 	PooledRateMeasurement d_m;
-	PatientGroup d_g1;
-	PatientGroup d_g2;
+	BasicPatientGroup d_g1;
+	BasicPatientGroup d_g2;
 	
 	@Before
 	public void setUp() {
 		d_e = new Endpoint("e0");
-		d_g1 = new PatientGroup();
-		d_g1.setSize(100);
+		d_g1 = new BasicPatientGroup(null, null, null, 100);
 		d_m1 = new BasicRateMeasurement(d_e);
 		d_m1.setRate(12);
 		d_m1.setPatientGroup(d_g1);
-		d_g2 = new PatientGroup();
-		d_g2.setSize(50);
+		d_g2 = new BasicPatientGroup(null, null, null, 50);
 		d_m2 = new BasicRateMeasurement(d_e);
 		d_m2.setRate(18);
 		d_m2.setPatientGroup(d_g2);
@@ -135,11 +133,11 @@ public class PooledRateMeasurementTest {
 	@Test
 	public void testEquals() {
 		Endpoint e = new Endpoint("e");
-		PatientGroup g1 = new PatientGroup(
+		BasicPatientGroup g1 = new BasicPatientGroup(
 				new BasicStudy("s1"), new Drug("d1"),
 				new Dose(8.0, SIUnit.MILLIGRAMS_A_DAY),
 				50, new ArrayList<BasicMeasurement>());
-		PatientGroup g2 = new PatientGroup(
+		BasicPatientGroup g2 = new BasicPatientGroup(
 				new BasicStudy("s2"), new Drug("d1"),
 				new Dose(8.0, SIUnit.MILLIGRAMS_A_DAY),
 				50, new ArrayList<BasicMeasurement>());

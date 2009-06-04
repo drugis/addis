@@ -13,7 +13,7 @@ import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
-import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.JUnitUtil;
@@ -66,9 +66,9 @@ public class BasicContinuousMeasurementTest {
 		Drug drug1 = new Drug("Drug 1");
 		Drug drug2 = new Drug("Drug 2");
 		Dose dose = new Dose(8.0, SIUnit.MILLIGRAMS_A_DAY);
-		PatientGroup g1 = new PatientGroup(s, drug1, dose, 8,
+		BasicPatientGroup g1 = new BasicPatientGroup(s, drug1, dose, 8,
 				new ArrayList<BasicMeasurement>());
-		PatientGroup g2 = new PatientGroup(s, drug2, dose, 8,
+		BasicPatientGroup g2 = new BasicPatientGroup(s, drug2, dose, 8,
 				new ArrayList<BasicMeasurement>());
 		
 		JUnitUtil.assertNotEquals(g1, g2);

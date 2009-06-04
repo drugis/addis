@@ -12,7 +12,7 @@ import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
 import nl.rug.escher.addis.entities.BasicMeasurement;
-import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.gui.LayoutUtil;
 import nl.rug.escher.common.gui.ViewBuilder;
@@ -77,16 +77,16 @@ public class StudyView implements ViewBuilder {
 		}
 		row += 2;
 		
-		for (PatientGroup g : d_model.getBean().getPatientGroups()) {
+		for (BasicPatientGroup g : d_model.getBean().getPatientGroups()) {
 			LayoutUtil.addRow(layout);
 			builder.add(
 					BasicComponentFactory.createLabel(
-							new PresentationModel<PatientGroup>(g).getModel(PatientGroup.PROPERTY_LABEL)),
+							new PresentationModel<BasicPatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_LABEL)),
 					cc.xy(1, row));
 			
 			builder.add(
 					BasicComponentFactory.createLabel(
-							new PresentationModel<PatientGroup>(g).getModel(PatientGroup.PROPERTY_SIZE),
+							new PresentationModel<BasicPatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_SIZE),
 							NumberFormat.getInstance()),
 							cc.xy(3, row));
 			

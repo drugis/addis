@@ -2,7 +2,7 @@ package nl.rug.escher.addis.entities.test;
 
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicMeasurement;
-import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Test;
@@ -19,7 +19,8 @@ public class BasicMeasurementTest {
 	
 	@Test
 	public void testSetPatientGroup() {
-		JUnitUtil.testSetter(instance(), BasicMeasurement.PROPERTY_PATIENTGROUP, null, new PatientGroup());
+		JUnitUtil.testSetter(instance(), BasicMeasurement.PROPERTY_PATIENTGROUP, null, 
+				new BasicPatientGroup(null, null, null, 0));
 	}
 	
 	@Test

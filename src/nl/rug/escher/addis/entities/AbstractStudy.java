@@ -5,11 +5,11 @@ import com.jgoodies.binding.beans.Model;
 public abstract class AbstractStudy extends Model implements Study {
 	private static final long serialVersionUID = -845477477003790845L;
 	
-	protected String d_id;
+	private String d_id;
 
-	public AbstractStudy() {
-		super();
-	}
+	public AbstractStudy(String id) {
+		d_id = id;
+	}	
 
 	public String getId() {
 		return d_id;

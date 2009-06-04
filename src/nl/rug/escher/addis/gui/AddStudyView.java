@@ -11,7 +11,7 @@ import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.gui.LayoutUtil;
 import nl.rug.escher.common.gui.ViewBuilder;
@@ -102,14 +102,14 @@ public class AddStudyView implements ViewBuilder {
 
 	private void buildPatientGroups(FormLayout layout, int fullWidth,
 			PanelBuilder builder, CellConstraints cc, int row) {
-		List<PatientGroup> groups = d_model.getBean().getPatientGroups();
-		for (PatientGroup g : groups) {
+		List<BasicPatientGroup> groups = d_model.getBean().getPatientGroups();
+		for (BasicPatientGroup g : groups) {
 			LayoutUtil.addRow(layout);
-			PresentationModel<PatientGroup> model = new PresentationModel<PatientGroup>(g);
+			PresentationModel<BasicPatientGroup> model = new PresentationModel<BasicPatientGroup>(g);
 			//PresentationModel<Measurement> mModel =
 			//	new PresentationModel<Measurement>(g.getMeasurements().get(0));
 			
-			builder.add(MeasurementInputHelper.buildFormatted(model.getModel(PatientGroup.PROPERTY_SIZE)), cc.xy(1, row));
+			builder.add(MeasurementInputHelper.buildFormatted(model.getModel(BasicPatientGroup.PROPERTY_SIZE)), cc.xy(1, row));
 			
 			builder.add(createDrugSelector(model), cc.xy(3, row));
 			
@@ -129,11 +129,11 @@ public class AddStudyView implements ViewBuilder {
 		}
 	}
 
-	private JComponent createDrugSelector(PresentationModel<PatientGroup> model) {
+	private JComponent createDrugSelector(PresentationModel<BasicPatientGroup> model) {
 		SelectionInList<Drug> drugSelectionInList =
 			new SelectionInList<Drug>(
 					new ArrayList<Drug>(d_domain.getDrugs()),
-					model.getModel(PatientGroup.PROPERTY_DRUG));
+					model.getModel(BasicPatientGroup.PROPERTY_DRUG));
 		return BasicComponentFactory.createComboBox(drugSelectionInList);
 	}
 
