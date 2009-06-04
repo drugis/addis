@@ -61,7 +61,7 @@ public class DomainImpl implements Domain, Serializable {
 	}
 
 	public Set<Endpoint> getEndpoints() {
-		return d_endpoints;
+		return Collections.unmodifiableSet(d_endpoints);
 	}
 
 	public void addListener(DomainListener listener) {
@@ -95,7 +95,7 @@ public class DomainImpl implements Domain, Serializable {
 	}
 
 	public Set<Study> getStudies() {
-		return d_studies;
+		return Collections.unmodifiableSet(d_studies);
 	}
 
 	public void addDrug(Drug d) throws NullPointerException {
@@ -114,7 +114,7 @@ public class DomainImpl implements Domain, Serializable {
 	}
 
 	public Set<Drug> getDrugs() {
-		return d_drugs;
+		return Collections.unmodifiableSet(d_drugs);
 	}
 
 	public Set<Study> getStudies(Endpoint e) {
