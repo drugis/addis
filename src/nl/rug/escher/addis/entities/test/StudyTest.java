@@ -20,7 +20,7 @@ import org.junit.Test;
 public class StudyTest {
 	@Test
 	public void testSetId() {
-		JUnitUtil.testSetter(new Study("X"), Study.PROPERTY_ID, null, "NCT00351273");
+		JUnitUtil.testSetter(new Study("X"), Study.PROPERTY_ID, "X", "NCT00351273");
 	}
 	
 	@Test

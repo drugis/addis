@@ -1,6 +1,6 @@
 package nl.rug.escher.addis.entities;
 
-import java.util.List;
+import java.util.Set;
 
 public interface Domain {
 	/**
@@ -15,7 +15,7 @@ public interface Domain {
 	 * Get the endpoints stored in the data model.
 	 * @return A list of endpoints. Never a null.
 	 */
-	public List<Endpoint> getEndpoints();
+	public Set<Endpoint> getEndpoints();
 	
 	/**
 	 * Adds an study to the data model.
@@ -29,14 +29,14 @@ public interface Domain {
 	 * Get the studies stored in the data model.
 	 * @return A list of studies. Never a null.
 	 */
-	public List<Study> getStudies();
+	public Set<Study> getStudies();
 	
 	
 	/**
 	 * Get studies by Endpoint.
 	 * @return A list of studies. Never null.
 	 */
-	public List<Study> getStudies(Endpoint e);
+	public Set<Study> getStudies(Endpoint e);
 	
 	/**
 	 * Adds an drug to the data model.
@@ -50,7 +50,7 @@ public interface Domain {
 	 * Get the drugs stored in the data model.
 	 * @return A list of drugs. Never a null.
 	 */
-	public List<Drug> getDrugs();
+	public Set<Drug> getDrugs();
 	
 	
 	/**

@@ -58,7 +58,7 @@ public class DomainTest {
 		assertEquals(0, d_domain.getEndpoints().size());
 		d_domain.addEndpoint(e);
 		assertEquals(1, d_domain.getEndpoints().size());
-		assertEquals(Collections.singletonList(e), d_domain.getEndpoints());
+		assertEquals(Collections.singleton(e), d_domain.getEndpoints());
 	}
 	
 	@Test
@@ -67,7 +67,7 @@ public class DomainTest {
 		assertEquals(0, d_domain.getStudies().size());
 		d_domain.addStudy(s);
 		assertEquals(1, d_domain.getStudies().size());
-		assertEquals(Collections.singletonList(s), d_domain.getStudies());
+		assertEquals(Collections.singleton(s), d_domain.getStudies());
 	}
 	
 	@Test
@@ -76,7 +76,7 @@ public class DomainTest {
 		assertEquals(0, d_domain.getDrugs().size());
 		d_domain.addDrug(d);
 		assertEquals(1, d_domain.getDrugs().size());
-		assertEquals(Collections.singletonList(d), d_domain.getDrugs());
+		assertEquals(Collections.singleton(d), d_domain.getDrugs());
 	}
 	
 	@Test

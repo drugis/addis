@@ -7,13 +7,15 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DomainImpl implements Domain, Serializable {
 	private static final long serialVersionUID = 3222342605059458693L;
-	private List<Endpoint> d_endpoints;
-	private List<Study> d_studies;
-	private List<Drug> d_drugs;
+	private Set<Endpoint> d_endpoints;
+	private Set<Study> d_studies;
+	private Set<Drug> d_drugs;
 	private transient List<DomainListener> d_listeners;
 	
 	private void readObject(ObjectInputStream in)
@@ -36,9 +38,9 @@ public class DomainImpl implements Domain, Serializable {
 	private transient PropertyChangeListener d_studyListener = new StudyChangeListener();
 	
 	public DomainImpl() {
-		d_endpoints = new ArrayList<Endpoint>();
-		d_studies = new ArrayList<Study>();
-		d_drugs = new ArrayList<Drug>();
+		d_endpoints = new HashSet<Endpoint>();
+		d_studies = new HashSet<Study>();
+		d_drugs = new HashSet<Drug>();
 		d_listeners = new ArrayList<DomainListener>();
 	}
 
@@ -58,7 +60,7 @@ public class DomainImpl implements Domain, Serializable {
 		}
 	}
 
-	public List<Endpoint> getEndpoints() {
+	public Set<Endpoint> getEndpoints() {
 		return d_endpoints;
 	}
 
@@ -92,7 +94,7 @@ public class DomainImpl implements Domain, Serializable {
 		}
 	}
 
-	public List<Study> getStudies() {
+	public Set<Study> getStudies() {
 		return d_studies;
 	}
 
@@ -111,12 +113,12 @@ public class DomainImpl implements Domain, Serializable {
 		}
 	}
 
-	public List<Drug> getDrugs() {
+	public Set<Drug> getDrugs() {
 		return d_drugs;
 	}
 
-	public List<Study> getStudies(Endpoint e) {
-		List<Study> list = new ArrayList<Study>();
+	public Set<Study> getStudies(Endpoint e) {
+		Set<Study> list = new HashSet<Study>();
 		for (Study s : d_studies) {
 			if (s.getEndpoints().contains(e)) {
 				list.add(s);

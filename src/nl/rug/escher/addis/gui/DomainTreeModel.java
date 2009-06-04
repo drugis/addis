@@ -10,6 +10,8 @@ import javax.swing.tree.TreePath;
 
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainListener;
+import nl.rug.escher.addis.entities.Endpoint;
+import nl.rug.escher.addis.entities.Study;
 
 public class DomainTreeModel implements TreeModel {
 	public static final int ENDPOINTS = 0;
@@ -48,9 +50,9 @@ public class DomainTreeModel implements TreeModel {
 		} else if (d_root == parent && childIndex == STUDIES) {
 			return d_studiesNode;
 		} else if (isEndpointRequest(parent, childIndex)) {
-			return d_domain.getEndpoints().get(childIndex);
+			return new ArrayList<Endpoint>(d_domain.getEndpoints()).get(childIndex); //FIXME
 		} else if (isStudyRequest(parent, childIndex)) {
-			return d_domain.getStudies().get(childIndex);
+			return new ArrayList<Study>(d_domain.getStudies()).get(childIndex); //FIXME
 		}
 		return null;
 	}
@@ -82,10 +84,10 @@ public class DomainTreeModel implements TreeModel {
 			return 1;
 		}
 		if (parent == d_endpointsNode) {
-			return d_domain.getEndpoints().indexOf(child);
+			return new ArrayList<Endpoint>(d_domain.getEndpoints()).indexOf(child); //FIXME
 		}
 		if (parent == d_studiesNode) {
-			return d_domain.getStudies().indexOf(child);
+			return new ArrayList<Study>(d_domain.getStudies()).indexOf(child); //FIXME
 		}
 		return -1;
 	}

@@ -1,5 +1,6 @@
 package nl.rug.escher.addis.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -41,8 +42,9 @@ public class AddStudyView implements ViewBuilder {
 		d_id.setColumns(15);
 		
 		SelectionInList<Endpoint> endpointSelectionInList =
-			new SelectionInList<Endpoint>(d_domain.getEndpoints(), 
-				d_endpointModel.getModel(EndpointHolder.PROPERTY_ENDPOINT));
+			new SelectionInList<Endpoint>(
+					new ArrayList<Endpoint>(d_domain.getEndpoints()), 
+					d_endpointModel.getModel(EndpointHolder.PROPERTY_ENDPOINT));
 		d_endpoint = BasicComponentFactory.createComboBox(endpointSelectionInList);
 	}
 	
@@ -130,7 +132,7 @@ public class AddStudyView implements ViewBuilder {
 	private JComponent createDrugSelector(PresentationModel<PatientGroup> model) {
 		SelectionInList<Drug> drugSelectionInList =
 			new SelectionInList<Drug>(
-					d_domain.getDrugs(),
+					new ArrayList<Drug>(d_domain.getDrugs()),
 					model.getModel(PatientGroup.PROPERTY_DRUG));
 		return BasicComponentFactory.createComboBox(drugSelectionInList);
 	}

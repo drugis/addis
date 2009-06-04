@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import nl.rug.escher.addis.entities.Domain;
@@ -29,7 +30,8 @@ public class MetaAnalysisTest {
 	public void setUp() {
 		d_domain = new DomainImpl();
 		TestData.initDefaultData(d_domain);
-		d_analysis = new MetaAnalysis(TestData.buildEndpointHamd(), d_domain.getStudies());
+		d_analysis = new MetaAnalysis(TestData.buildEndpointHamd(), 
+				new ArrayList<Study>(d_domain.getStudies()));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -47,7 +49,7 @@ public class MetaAnalysisTest {
 	
 	@Test
 	public void testGetStudies() {
-		assertEquals(d_domain.getStudies(), d_analysis.getStudies());
+		assertEquals(d_domain.getStudies(), new HashSet<Study>(d_analysis.getStudies()));
 	}
 	
 	@Test
@@ -60,7 +62,7 @@ public class MetaAnalysisTest {
 	
 	@Test
 	public void testGetMeasurement() {
-		Study s = d_domain.getStudies().get(0);
+		Study s = new ArrayList<Study>(d_domain.getStudies()).get(0); // FIXME
 		PatientGroup g = s.getPatientGroups().get(1);
 		assertEquals(g.getMeasurement(d_analysis.getEndpoint()),
 				d_analysis.getMeasurement(s, g.getDrug()));

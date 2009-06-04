@@ -112,9 +112,10 @@ public class EndpointStudiesView implements ViewBuilder {
 	
 	private void showMetaAnalysisDialog() {
 		List<Study> studies = new ArrayList<Study>();
+		List<Study> allStudies = new ArrayList<Study>(d_domain.getStudies(d_endpoint)); // FIXME
 		for (int i = 0; i < d_studySelect.size(); ++i) {
 			if (d_studySelect.get(i).isSelected()) {
-				studies.add(d_domain.getStudies(d_endpoint).get(i));
+				studies.add(allStudies.get(i));
 			}
 		}
 		
