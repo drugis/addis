@@ -25,10 +25,10 @@ public class MetaAnalysisView implements ViewBuilder {
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"pref",
+				"pref, 3dlu, pref",
 				"p, 3dlu, p, 3dlu, p");
-		int fullWidth = 1;
-		for (int i = 0; i < d_analysis.getDrugs().size(); ++i) {
+		int fullWidth = 3;
+		for (int i = 1; i < d_analysis.getDrugs().size(); ++i) {
 			LayoutUtil.addColumn(layout);
 			fullWidth += 2;
 		}
