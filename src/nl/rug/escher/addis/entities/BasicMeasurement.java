@@ -15,6 +15,7 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 	private PatientGroupListener d_listener = new PatientGroupListener();
 
 	public static final String PROPERTY_PATIENTGROUP = "patientGroup";
+	
 	protected BasicMeasurement() {
 	}
 	

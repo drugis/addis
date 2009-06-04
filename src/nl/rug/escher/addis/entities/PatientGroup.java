@@ -35,6 +35,13 @@ public class PatientGroup extends Model {
 		d_measurements.addAll(measurements);
 	}
 	
+	public PatientGroup(Study study, Drug drug, Dose dose, int size) {
+		d_study = study;
+		d_drug = drug;
+		d_dose = dose;
+		d_size = size;
+	}
+	
 	public Study getStudy() {
 		return d_study;
 	}
