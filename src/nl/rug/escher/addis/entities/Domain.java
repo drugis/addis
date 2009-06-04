@@ -1,6 +1,6 @@
 package nl.rug.escher.addis.entities;
 
-import java.util.Set;
+import java.util.SortedSet;
 
 public interface Domain {
 	/**
@@ -13,10 +13,10 @@ public interface Domain {
 
 	/**
 	 * Get the endpoints stored in the data model.
-	 * @return A list of endpoints. Never a null.
+	 * @return An unmodifiable sorted set of endpoints. Never a null.
 	 */
-	public Set<Endpoint> getEndpoints();
-	
+		public SortedSet<Endpoint> getEndpoints();
+		
 	/**
 	 * Adds an study to the data model.
 	 * 
@@ -27,16 +27,16 @@ public interface Domain {
 
 	/**
 	 * Get the studies stored in the data model.
-	 * @return A list of studies. Never a null.
+	 * @return An unmodifiable sorted set of studies. Never a null.
 	 */
-	public Set<Study> getStudies();
+	public SortedSet<Study> getStudies();
 	
 	
 	/**
 	 * Get studies by Endpoint.
-	 * @return A list of studies. Never null.
+	 * @return An unmodifiable sorted set of studies. Never null.
 	 */
-	public Set<Study> getStudies(Endpoint e);
+	public SortedSet<Study> getStudies(Endpoint e);
 	
 	/**
 	 * Adds an drug to the data model.
@@ -48,10 +48,9 @@ public interface Domain {
 
 	/**
 	 * Get the drugs stored in the data model.
-	 * @return A list of drugs. Never a null.
+	 * @return An unmodifiable sorted set of drugs. Never a null.
 	 */
-	public Set<Drug> getDrugs();
-	
+	public SortedSet<Drug> getDrugs();
 	
 	/**
 	 * Add a listener to the domain object.

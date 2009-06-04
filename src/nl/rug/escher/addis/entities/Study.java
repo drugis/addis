@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.jgoodies.binding.beans.Model;
 
-public class Study extends Model {
+public class Study extends Model implements Comparable<Study> {
 	private static final long serialVersionUID = -1373201520248610423L;
 	private String d_id;
 	private List<Endpoint> d_endpoints;
@@ -102,5 +102,9 @@ public class Study extends Model {
 	@Override
 	public int hashCode() {
 		return getId() == null ? 0 : getId().hashCode();
+	}
+
+	public int compareTo(Study other) {
+		return getId().compareTo(other.getId());
 	}
 }

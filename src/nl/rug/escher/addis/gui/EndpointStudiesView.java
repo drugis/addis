@@ -19,6 +19,7 @@ import nl.rug.escher.addis.entities.MetaAnalysis;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.common.CollectionUtil;
 import nl.rug.escher.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
@@ -112,17 +113,16 @@ public class EndpointStudiesView implements ViewBuilder {
 	
 	private void showMetaAnalysisDialog() {
 		List<Study> studies = new ArrayList<Study>();
-		List<Study> allStudies = new ArrayList<Study>(d_domain.getStudies(d_endpoint)); // FIXME
 		for (int i = 0; i < d_studySelect.size(); ++i) {
 			if (d_studySelect.get(i).isSelected()) {
-				studies.add(allStudies.get(i));
+				studies.add(CollectionUtil.getElementAtIndex(
+						d_domain.getStudies(d_endpoint), i));
 			}
 		}
 		
 		showMetaAnalysisDialog(studies);
 	}
 
-	@SuppressWarnings("serial")
 	private void showMetaAnalysisDialog(List<Study> studies) {
 		if (haveNonRateMeasurements(studies)) {
 			JOptionPane.showMessageDialog(d_frame,

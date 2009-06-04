@@ -28,7 +28,7 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 	public BasicRateMeasurement(Endpoint e) {
 		super(e);
 		addPropertyChangeListener(PROPERTY_SAMPLESIZE, d_listener);
-		d_rate = 0; // FIXME
+		d_rate = 0;
 	}
 
 	public String getLabel() {

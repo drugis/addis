@@ -12,6 +12,7 @@ import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainListener;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.common.CollectionUtil;
 
 public class DomainTreeModel implements TreeModel {
 	public static final int ENDPOINTS = 0;
@@ -50,9 +51,9 @@ public class DomainTreeModel implements TreeModel {
 		} else if (d_root == parent && childIndex == STUDIES) {
 			return d_studiesNode;
 		} else if (isEndpointRequest(parent, childIndex)) {
-			return new ArrayList<Endpoint>(d_domain.getEndpoints()).get(childIndex); //FIXME
+			return CollectionUtil.getElementAtIndex(d_domain.getEndpoints(), childIndex);
 		} else if (isStudyRequest(parent, childIndex)) {
-			return new ArrayList<Study>(d_domain.getStudies()).get(childIndex); //FIXME
+			return CollectionUtil.getElementAtIndex(d_domain.getStudies(), childIndex);
 		}
 		return null;
 	}
@@ -84,10 +85,10 @@ public class DomainTreeModel implements TreeModel {
 			return 1;
 		}
 		if (parent == d_endpointsNode) {
-			return new ArrayList<Endpoint>(d_domain.getEndpoints()).indexOf(child); //FIXME
+			return CollectionUtil.getIndexOfElement(d_domain.getEndpoints(), child);
 		}
 		if (parent == d_studiesNode) {
-			return new ArrayList<Study>(d_domain.getStudies()).indexOf(child); //FIXME
+			return CollectionUtil.getIndexOfElement(d_domain.getStudies(), child);
 		}
 		return -1;
 	}
@@ -97,7 +98,13 @@ public class DomainTreeModel implements TreeModel {
 	}
 
 	public boolean isLeaf(Object node) {
-		return d_domain.getEndpoints().contains(node) || d_domain.getStudies().contains(node);
+		if (node instanceof Endpoint) {
+			return d_domain.getEndpoints().contains(node);
+		}
+		if (node instanceof Study) {
+			return d_domain.getStudies().contains(node);
+		}
+		return false;
 	}
 
 	public void addTreeModelListener(TreeModelListener listener) {
@@ -117,8 +124,6 @@ public class DomainTreeModel implements TreeModel {
 	}
 
 	public void valueForPathChanged(TreePath path, Object node) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public Object getStudiesNode() {

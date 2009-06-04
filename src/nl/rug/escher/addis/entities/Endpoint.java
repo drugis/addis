@@ -2,7 +2,7 @@ package nl.rug.escher.addis.entities;
 
 import com.jgoodies.binding.beans.Model;
 
-public class Endpoint extends Model {
+public class Endpoint extends Model implements Comparable<Endpoint> {
 	private static final long serialVersionUID = -1182348850033782011L;
 
 	public enum Type {
@@ -90,5 +90,9 @@ public class Endpoint extends Model {
 
 	public Type getType() {
 		return d_type;
+	}
+
+	public int compareTo(Endpoint other) {
+		return getName().compareTo(other.getName());
 	}
 }

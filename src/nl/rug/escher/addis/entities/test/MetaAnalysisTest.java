@@ -62,7 +62,7 @@ public class MetaAnalysisTest {
 	
 	@Test
 	public void testGetMeasurement() {
-		Study s = new ArrayList<Study>(d_domain.getStudies()).get(0); // FIXME
+		Study s = d_domain.getStudies().first();
 		PatientGroup g = s.getPatientGroups().get(1);
 		assertEquals(g.getMeasurement(d_analysis.getEndpoint()),
 				d_analysis.getMeasurement(s, g.getDrug()));

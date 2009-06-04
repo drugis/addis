@@ -11,8 +11,8 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	
 	public BasicContinuousMeasurement(Endpoint e) {
 		super(e);
-		d_mean = 0.0; // FIXME
-		d_stdDev = 0.0; // FIXME
+		d_mean = 0.0;
+		d_stdDev = 0.0;
 	}
 	
 	/**

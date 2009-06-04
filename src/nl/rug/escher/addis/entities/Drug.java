@@ -2,7 +2,7 @@ package nl.rug.escher.addis.entities;
 
 import com.jgoodies.binding.beans.Model;
 
-public class Drug extends Model {
+public class Drug extends Model implements Comparable<Drug> {
 	private static final long serialVersionUID = 5156008576438893074L;
 
 	private String d_name;
@@ -47,5 +47,9 @@ public class Drug extends Model {
 	@Override
 	public int hashCode() {
 		return getName() == null ? 0 : getName().hashCode();
+	}
+
+	public int compareTo(Drug other) {
+		return getName().compareTo(other.getName());
 	}
 }

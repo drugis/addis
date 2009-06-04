@@ -7,15 +7,15 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class DomainImpl implements Domain, Serializable {
 	private static final long serialVersionUID = 3222342605059458693L;
-	private Set<Endpoint> d_endpoints;
-	private Set<Study> d_studies;
-	private Set<Drug> d_drugs;
+	private SortedSet<Endpoint> d_endpoints;
+	private SortedSet<Study> d_studies;
+	private SortedSet<Drug> d_drugs;
 	private transient List<DomainListener> d_listeners;
 	
 	private void readObject(ObjectInputStream in)
@@ -38,9 +38,9 @@ public class DomainImpl implements Domain, Serializable {
 	private transient PropertyChangeListener d_studyListener = new StudyChangeListener();
 	
 	public DomainImpl() {
-		d_endpoints = new HashSet<Endpoint>();
-		d_studies = new HashSet<Study>();
-		d_drugs = new HashSet<Drug>();
+		d_endpoints = new TreeSet<Endpoint>();
+		d_studies = new TreeSet<Study>();
+		d_drugs = new TreeSet<Drug>();
 		d_listeners = new ArrayList<DomainListener>();
 	}
 
@@ -60,8 +60,8 @@ public class DomainImpl implements Domain, Serializable {
 		}
 	}
 
-	public Set<Endpoint> getEndpoints() {
-		return Collections.unmodifiableSet(d_endpoints);
+	public SortedSet<Endpoint> getEndpoints() {
+		return Collections.unmodifiableSortedSet(d_endpoints);
 	}
 
 	public void addListener(DomainListener listener) {
@@ -94,8 +94,8 @@ public class DomainImpl implements Domain, Serializable {
 		}
 	}
 
-	public Set<Study> getStudies() {
-		return Collections.unmodifiableSet(d_studies);
+	public SortedSet<Study> getStudies() {
+		return Collections.unmodifiableSortedSet(d_studies);
 	}
 
 	public void addDrug(Drug d) throws NullPointerException {
@@ -113,12 +113,12 @@ public class DomainImpl implements Domain, Serializable {
 		}
 	}
 
-	public Set<Drug> getDrugs() {
-		return Collections.unmodifiableSet(d_drugs);
+	public SortedSet<Drug> getDrugs() {
+		return Collections.unmodifiableSortedSet(d_drugs);
 	}
 
-	public Set<Study> getStudies(Endpoint e) {
-		Set<Study> list = new HashSet<Study>();
+	public SortedSet<Study> getStudies(Endpoint e) {
+		SortedSet<Study> list = new TreeSet<Study>();
 		for (Study s : d_studies) {
 			if (s.getEndpoints().contains(e)) {
 				list.add(s);
