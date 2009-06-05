@@ -18,12 +18,21 @@ import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.JUnitUtil;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class BasicContinuousMeasurementTest {
+	private Endpoint d_endpoint;
+	
+	@Before
+	public void setUp() {
+		d_endpoint = new Endpoint("X");
+	}
+	
 	@Test
 	public void testSetMean() {
-		JUnitUtil.testSetter(new BasicContinuousMeasurement(), BasicContinuousMeasurement.PROPERTY_MEAN, null, 25.91);
+		JUnitUtil.testSetter(new BasicContinuousMeasurement(d_endpoint),
+				BasicContinuousMeasurement.PROPERTY_MEAN, 0.0, 25.91);
 	}
 	
 	@Test
