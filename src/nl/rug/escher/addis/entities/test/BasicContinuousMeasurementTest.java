@@ -37,16 +37,13 @@ public class BasicContinuousMeasurementTest {
 	
 	@Test
 	public void testSetStdDev() {
-		JUnitUtil.testSetter(new BasicContinuousMeasurement(d_endpoint), BasicContinuousMeasurement.PROPERTY_STDDEV, null, 0.46);
+		JUnitUtil.testSetter(new BasicContinuousMeasurement(d_endpoint), BasicContinuousMeasurement.PROPERTY_STDDEV, 0.0, 0.46);
 	}
 	
 	@Test
 	public void testToString() {
 		BasicContinuousMeasurement m = new BasicContinuousMeasurement(d_endpoint);
-		assertEquals("INCOMPLETE", m.toString());
-		m.setMean(0.0);
-		m.setStdDev(1.0);
-		assertEquals("0.0 \u00B1 1.0", m.toString());
+		assertEquals("0.0 \u00B1 0.0", m.toString());
 	}
 	
 	@Test
@@ -54,7 +51,7 @@ public class BasicContinuousMeasurementTest {
 		BasicContinuousMeasurement measurement = new BasicContinuousMeasurement(d_endpoint);
 		measurement.setMean(25.5);
 		PropertyChangeListener l = JUnitUtil.mockListener(
-				measurement, Measurement.PROPERTY_LABEL, "INCOMPLETE", "25.5 \u00B1 1.1");
+				measurement, Measurement.PROPERTY_LABEL, "25.5 \u00B1 0.0", "25.5 \u00B1 1.1");
 		measurement.addPropertyChangeListener(l);
 		measurement.setStdDev(1.1);
 		verify(l);
