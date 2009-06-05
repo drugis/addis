@@ -22,14 +22,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainListener;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.gui.GUIHelper;
 import nl.rug.escher.common.gui.ViewBuilder;
@@ -48,6 +50,8 @@ public class Main extends JFrame {
 	private DomainManager d_domain;
 	
 	private ImageLoader imageLoader = new ImageLoader("/resources/gfx/");
+	private DomainTreeModel d_domainTreeModel;
+	private JTree d_leftPanelTree;
 
 	public Main() {
 		super("Escher ADDIS");
@@ -231,16 +235,31 @@ public class Main extends JFrame {
 	}
 
 	private void initLeftPanel() {
-		DomainTreeModel model = new DomainTreeModel(getDomain());
-		JTree tree = new JTree(model);
-		tree.setCellRenderer(new DomainTreeCellRenderer(imageLoader));
-		tree.setRootVisible(false);
-		tree.expandPath(new TreePath(new Object[]{model.getRoot(), model.getEndpointsNode()}));
-		tree.expandPath(new TreePath(new Object[]{model.getRoot(), model.getStudiesNode()}));
+		d_domainTreeModel = new DomainTreeModel(getDomain());
+		d_leftPanelTree = new JTree(d_domainTreeModel);
+		d_leftPanelTree.setCellRenderer(new DomainTreeCellRenderer(imageLoader));
+		d_leftPanelTree.setRootVisible(false);
+		expandLeftPanelTree();
 		
-		tree.addTreeSelectionListener(createSelectionListener());
+		d_leftPanelTree.addTreeSelectionListener(createSelectionListener());
+		d_domainTreeModel.addTreeModelListener(new TreeModelListener() {
+			public void treeNodesChanged(TreeModelEvent arg0) {
+			}
+			public void treeNodesInserted(TreeModelEvent arg0) {
+			}
+			public void treeNodesRemoved(TreeModelEvent arg0) {
+			}
+			public void treeStructureChanged(TreeModelEvent arg0) {
+				expandLeftPanelTree();
+			}			
+		});
 		
-		d_leftPanel = tree;
+		d_leftPanel = d_leftPanelTree;
+	}
+
+	private void expandLeftPanelTree() {
+		d_leftPanelTree.expandPath(new TreePath(new Object[]{d_domainTreeModel.getRoot(), d_domainTreeModel.getEndpointsNode()}));
+		d_leftPanelTree.expandPath(new TreePath(new Object[]{d_domainTreeModel.getRoot(), d_domainTreeModel.getStudiesNode()}));
 	}
 	
 	private TreeSelectionListener createSelectionListener() {
