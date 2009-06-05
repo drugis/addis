@@ -11,7 +11,7 @@ import javax.swing.tree.TreePath;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainListener;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.CollectionUtil;
 
 public class DomainTreeModel implements TreeModel {
@@ -101,7 +101,7 @@ public class DomainTreeModel implements TreeModel {
 		if (node instanceof Endpoint) {
 			return d_domain.getEndpoints().contains(node);
 		}
-		if (node instanceof BasicStudy) {
+		if (node instanceof Study) {
 			return d_domain.getStudies().contains(node);
 		}
 		return false;

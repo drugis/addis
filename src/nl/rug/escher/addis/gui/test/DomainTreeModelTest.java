@@ -1,15 +1,22 @@
 package nl.rug.escher.addis.gui.test;
 
-import static org.junit.Assert.*;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.notNull;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainImpl;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.MetaStudy;
 import nl.rug.escher.addis.gui.DomainTreeModel;
 
 import org.junit.Before;
@@ -117,5 +124,12 @@ public class DomainTreeModelTest {
 		d_domain.addStudy(new BasicStudy("X"));
 		
 		verify(listener);
+	}
+	
+	@Test
+	public void testMetaStudyIsLeaf() {
+		MetaStudy study = new MetaStudy("meta", null);
+		d_domain.addStudy(study);
+		assertTrue(d_treeModel.isLeaf(study));
 	}
 }

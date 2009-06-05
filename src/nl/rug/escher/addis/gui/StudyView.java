@@ -8,12 +8,13 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import nl.rug.escher.addis.entities.BasicPatientGroup;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
-import nl.rug.escher.addis.entities.BasicMeasurement;
-import nl.rug.escher.addis.entities.BasicPatientGroup;
-import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.gui.LayoutUtil;
 import nl.rug.escher.common.gui.ViewBuilder;
 
@@ -26,11 +27,11 @@ import com.jgoodies.forms.layout.FormLayout;
 
 @SuppressWarnings("serial")
 public class StudyView implements ViewBuilder {
-	PresentationModel<BasicStudy> d_model;
+	PresentationModel<Study> d_model;
 	Domain d_domain;
 	Main d_mainWindow;
 
-	public StudyView(PresentationModel<BasicStudy> model, Domain domain, Main main) {
+	public StudyView(PresentationModel<Study> model, Domain domain, Main main) {
 		d_model = model;
 		d_mainWindow = main;
 		d_domain = domain;
@@ -77,25 +78,25 @@ public class StudyView implements ViewBuilder {
 		}
 		row += 2;
 		
-		for (BasicPatientGroup g : d_model.getBean().getPatientGroups()) {
+		for (PatientGroup g : d_model.getBean().getPatientGroups()) {
 			LayoutUtil.addRow(layout);
 			builder.add(
 					BasicComponentFactory.createLabel(
-							new PresentationModel<BasicPatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_LABEL)),
+							new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_LABEL)),
 					cc.xy(1, row));
 			
 			builder.add(
 					BasicComponentFactory.createLabel(
-							new PresentationModel<BasicPatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_SIZE),
+							new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_SIZE),
 							NumberFormat.getInstance()),
 							cc.xy(3, row));
 			
 			col = 5;
 			for (Endpoint e : d_model.getBean().getEndpoints()) {
-				BasicMeasurement m = g.getMeasurement(e);
+				Measurement m = g.getMeasurement(e);
 				builder.add(
 						BasicComponentFactory.createLabel(
-								new PresentationModel<BasicMeasurement>(m).getModel(Measurement.PROPERTY_LABEL)),
+								new PresentationModel<Measurement>(m).getModel(Measurement.PROPERTY_LABEL)),
 						cc.xy(col, row));
 				col += 2;
 			}
@@ -119,11 +120,13 @@ public class StudyView implements ViewBuilder {
 					buildFindStudiesButton(e), cc.xy(3, row));
 			row += 2;
 		}
-		LayoutUtil.addRow(layout);
-		builder.add(buildAddEndpointButton(), cc.xy(1, row));
-		
-		row += 2;
-		
+		if (d_model.getBean() instanceof BasicStudy) {
+			LayoutUtil.addRow(layout);
+			builder.add(buildAddEndpointButton(), cc.xy(1, row));
+			
+			row += 2;			
+		}
+
 		return row;
 	}
 
@@ -151,7 +154,7 @@ public class StudyView implements ViewBuilder {
 	}
 
 	private void addEndpointClicked() {
-		d_mainWindow.showStudyAddEndpointDialog(d_model.getBean());
+		d_mainWindow.showStudyAddEndpointDialog((BasicStudy)d_model.getBean());
 	}
 
 	private JComponent buildFindStudiesButton(final Endpoint endpoint) {
