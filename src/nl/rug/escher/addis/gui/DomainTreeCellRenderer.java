@@ -26,6 +26,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.MetaStudy;
 import fi.smaa.common.ImageLoader;
 
 @SuppressWarnings("serial")
@@ -44,6 +45,9 @@ public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 			if (value instanceof Endpoint) {
 				setIcon(loader.getIcon(FileNames.ICON_ENDPOINT));
 				setToolTipText("Endpoint");
+			} else if (value instanceof MetaStudy) {
+				setIcon(loader.getIcon(FileNames.ICON_METASTUDY));
+				setToolTipText("Study from meta-analysis");
 			} else if (value instanceof BasicStudy) {
 				setIcon(loader.getIcon(FileNames.ICON_STUDY));
 				setToolTipText("Study");				
