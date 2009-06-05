@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainImpl;
 import nl.rug.escher.addis.entities.MetaAnalysis;
 import nl.rug.escher.addis.entities.MetaStudy;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.PooledRateMeasurement;
+import nl.rug.escher.addis.entities.Study;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class MetaStudyTest {
 		Domain d_domain = new DomainImpl();
 		TestData.initDefaultData(d_domain);
 		d_analysis = new MetaAnalysis(TestData.buildEndpointHamd(), 
-				new ArrayList<BasicStudy>(d_domain.getStudies()));		
+				new ArrayList<Study>(d_domain.getStudies()));		
 		d_study = new MetaStudy("s", d_analysis);
 	}
 	

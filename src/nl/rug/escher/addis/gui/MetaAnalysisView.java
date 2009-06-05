@@ -2,19 +2,20 @@ package nl.rug.escher.addis.gui;
 
 import javax.swing.JComponent;
 
+import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.Drug;
+import nl.rug.escher.addis.entities.Endpoint;
+import nl.rug.escher.addis.entities.Measurement;
+import nl.rug.escher.addis.entities.MetaAnalysis;
+import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.common.gui.LayoutUtil;
+import nl.rug.escher.common.gui.ViewBuilder;
+
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-
-import nl.rug.escher.addis.entities.Drug;
-import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.Measurement;
-import nl.rug.escher.addis.entities.MetaAnalysis;
-import nl.rug.escher.addis.entities.BasicStudy;
-import nl.rug.escher.common.gui.LayoutUtil;
-import nl.rug.escher.common.gui.ViewBuilder;
 
 public class MetaAnalysisView implements ViewBuilder {
 	MetaAnalysis d_analysis;
@@ -53,10 +54,10 @@ public class MetaAnalysisView implements ViewBuilder {
 		}
 		
 		int row = 7;
-		for (BasicStudy s : d_analysis.getStudies()) {
+		for (Study s : d_analysis.getStudies()) {
 			LayoutUtil.addRow(layout);
 			builder.add(BasicComponentFactory.createLabel(
-					new PresentationModel<BasicStudy>(s).getModel(BasicStudy.PROPERTY_ID)), cc.xy(1, row));
+					new PresentationModel<Study>(s).getModel(BasicStudy.PROPERTY_ID)), cc.xy(1, row));
 			
 			col = 3;
 			for (Drug d : d_analysis.getDrugs()) {

@@ -1,7 +1,5 @@
 package nl.rug.escher.addis.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,15 +8,15 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.MetaAnalysis;
-import nl.rug.escher.addis.entities.BasicPatientGroup;
+import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.RateMeasurement;
-import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.CollectionUtil;
 import nl.rug.escher.common.gui.ViewBuilder;
 
@@ -35,11 +33,11 @@ public class EndpointStudiesView implements ViewBuilder {
 	private Endpoint d_endpoint;
 	private Domain d_domain;
 	private List<JCheckBox> d_studySelect;
-	private BasicStudy d_selectedStudy;
-	private Frame d_frame;
+	private Study d_selectedStudy;
+	private JFrame d_frame;
 	private JButton d_metaAnalyzeButton;
 	
-	public EndpointStudiesView(Endpoint node, Domain domain, Frame frame) {
+	public EndpointStudiesView(Endpoint node, Domain domain, JFrame frame) {
 		d_endpoint = node;
 		d_domain = domain;
 		d_studySelect = new ArrayList<JCheckBox>();
@@ -71,7 +69,7 @@ public class EndpointStudiesView implements ViewBuilder {
 		builder.addSeparator("Studies", cc.xyw(1, 7, 3));
 		
 		int row = 9;
-		for (BasicStudy s : d_domain.getStudies(d_endpoint)) {
+		for (Study s : d_domain.getStudies(d_endpoint)) {
 			layout.appendRow(RowSpec.decode("3dlu"));
 			layout.appendRow(RowSpec.decode("p"));
 			
@@ -84,7 +82,7 @@ public class EndpointStudiesView implements ViewBuilder {
 			builder.add(box, cc.xy(1, row));
 			
 			builder.add(BasicComponentFactory.createLabel(
-					new PresentationModel<BasicStudy>(s).getModel(BasicStudy.PROPERTY_ID)), cc.xy(3, row));
+					new PresentationModel<Study>(s).getModel(Study.PROPERTY_ID)), cc.xy(3, row));
 			row += 2;
 		}
 		
@@ -95,7 +93,6 @@ public class EndpointStudiesView implements ViewBuilder {
 		return builder.getPanel();
 	}
 
-	@SuppressWarnings("serial")
 	private JComponent buildMetaAnalyzeButton() {
 		d_metaAnalyzeButton = new JButton("Meta-Analyze");
 		d_metaAnalyzeButton.addActionListener(new AbstractAction() {
@@ -112,7 +109,7 @@ public class EndpointStudiesView implements ViewBuilder {
 	}
 	
 	private void showMetaAnalysisDialog() {
-		List<BasicStudy> studies = new ArrayList<BasicStudy>();
+		List<Study> studies = new ArrayList<Study>();
 		for (int i = 0; i < d_studySelect.size(); ++i) {
 			if (d_studySelect.get(i).isSelected()) {
 				studies.add(CollectionUtil.getElementAtIndex(
@@ -123,31 +120,21 @@ public class EndpointStudiesView implements ViewBuilder {
 		showMetaAnalysisDialog(studies);
 	}
 
-	private void showMetaAnalysisDialog(List<BasicStudy> studies) {
+	private void showMetaAnalysisDialog(List<Study> studies) {
 		if (haveNonRateMeasurements(studies)) {
 			JOptionPane.showMessageDialog(d_frame,
 					"Meta-Analyze Not Implemented for non-rate measurements\n\n" + studies.toString(),
 					"Meta-Analyze", JOptionPane.ERROR_MESSAGE);
 			
 		} else {
-			final JDialog dialog = new JDialog(d_frame, "Meta-Analyze");
-			ViewBuilder view = new MetaAnalysisView(new MetaAnalysis(d_endpoint, studies));
-			dialog.add(view.buildPanel(), BorderLayout.CENTER);
-			JButton closeButton = new JButton("Close");
-			closeButton.addActionListener(new AbstractAction() {
-				//@Override
-				public void actionPerformed(ActionEvent arg0) {
-					dialog.setVisible(false);
-				}
-			});
-			dialog.add(closeButton, BorderLayout.SOUTH);
-			dialog.pack();
+			MetaAnalysisDialog dialog = new MetaAnalysisDialog(d_frame, 
+					d_domain, new MetaAnalysis(d_endpoint, studies));
 			dialog.setVisible(true);
 		}
 	}
 
-	private boolean haveNonRateMeasurements(List<BasicStudy> studies) {
-		for (BasicStudy s : studies) {
+	private boolean haveNonRateMeasurements(List<Study> studies) {
+		for (Study s : studies) {
 			if (hasNonRateMeasurements(s)) {
 				return true;
 			}
@@ -155,8 +142,8 @@ public class EndpointStudiesView implements ViewBuilder {
 		return false;
 	}
 
-	private boolean hasNonRateMeasurements(BasicStudy s) {
-		for (BasicPatientGroup g : s.getPatientGroups()) {
+	private boolean hasNonRateMeasurements(Study s) {
+		for (PatientGroup g : s.getPatientGroups()) {
 			if (!(g.getMeasurement(d_endpoint) instanceof RateMeasurement)) {
 				return true;
 			}
@@ -164,7 +151,7 @@ public class EndpointStudiesView implements ViewBuilder {
 		return false;
 	}
 
-	public void setSelectedStudy(BasicStudy selectedStudy) {
+	public void setSelectedStudy(Study selectedStudy) {
 		d_selectedStudy = selectedStudy;
 	}
 	

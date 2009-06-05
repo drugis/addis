@@ -1,15 +1,12 @@
 package nl.rug.escher.addis.entities.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainImpl;
 import nl.rug.escher.addis.entities.Endpoint;
@@ -17,7 +14,11 @@ import nl.rug.escher.addis.entities.Measurement;
 import nl.rug.escher.addis.entities.MetaAnalysis;
 import nl.rug.escher.addis.entities.MetaStudy;
 import nl.rug.escher.addis.entities.PooledPatientGroup;
+import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.addis.entities.UnknownDose;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class PooledPatientGroupTest {
 	
@@ -30,7 +31,7 @@ public class PooledPatientGroupTest {
 		Domain d_domain = new DomainImpl();
 		TestData.initDefaultData(d_domain);
 		d_analysis = new MetaAnalysis(TestData.buildEndpointHamd(), 
-				new ArrayList<BasicStudy>(d_domain.getStudies()));		
+				new ArrayList<Study>(d_domain.getStudies()));		
 		d_study = new MetaStudy("s", d_analysis);
 		d_pg = new PooledPatientGroup(d_study, TestData.buildDrugFluoxetine());
 	}

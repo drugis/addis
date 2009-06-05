@@ -1,5 +1,6 @@
 package nl.rug.escher.addis.entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,12 +11,13 @@ import java.util.Set;
  * Current assumptions: each study has max one patient group for each drug;
  * every Measurement is a RateMeasurement.
  */
-public class MetaAnalysis {
-	private List<BasicStudy> d_studies;
+public class MetaAnalysis implements Serializable {
+	private static final long serialVersionUID = 3621813375995564247L;
+	private List<Study> d_studies;
 	private Set<Drug> d_drugs;
 	private Endpoint d_endpoint;
 	
-	public MetaAnalysis(Endpoint endpoint, List<BasicStudy> studies) throws IllegalArgumentException {
+	public MetaAnalysis(Endpoint endpoint, List<Study> studies) throws IllegalArgumentException {
 		validate(endpoint, studies);
 		
 		d_endpoint = endpoint;
@@ -37,8 +39,8 @@ public class MetaAnalysis {
 	 * @param drug A drug contained in getDrugs()
 	 * @return The measurement from Study on Drug
 	 */
-	public Measurement getMeasurement(BasicStudy study, Drug drug) {
-		for (BasicPatientGroup g : study.getPatientGroups()) {
+	public Measurement getMeasurement(Study study, Drug drug) {
+		for (PatientGroup g : study.getPatientGroups()) {
 			if (g.getDrug().equals(drug)) {
 				return g.getMeasurement(getEndpoint());
 			}
@@ -48,13 +50,13 @@ public class MetaAnalysis {
 	
 	public Measurement getPooledMeasurement(Drug drug) {
 		List<RateMeasurement> measurements = new ArrayList<RateMeasurement>();
-		for (BasicStudy s : d_studies) {
+		for (Study s : d_studies) {
 			measurements.add((RateMeasurement)getMeasurement(s, drug));
 		}
 		return new PooledRateMeasurement(measurements);
 	}
 	
-	public List<BasicStudy> getStudies() {
+	public List<Study> getStudies() {
 		return d_studies;
 	}
 	
@@ -62,7 +64,7 @@ public class MetaAnalysis {
 	public int hashCode() {
 		int hash = 1;
 		hash = 31 * hash + getEndpoint().hashCode();
-		hash = 31 * hash + new HashSet<BasicStudy>(getStudies()).hashCode();
+		hash = 31 * hash + new HashSet<Study>(getStudies()).hashCode();
 		return hash;
 	}
 	
@@ -81,14 +83,14 @@ public class MetaAnalysis {
 	
 	private Set<Drug> findCommonDrugs() {
 		Set<Drug> drugs = d_studies.get(0).getDrugs();
-		for (BasicStudy s : d_studies) {
+		for (Study s : d_studies) {
 			drugs.retainAll(s.getDrugs());
 		}
 		return drugs;
 	}
 	
-	private void validate(Endpoint endpoint, List<BasicStudy> studies) {
-		for (BasicStudy s : studies) {
+	private void validate(Endpoint endpoint, List<Study> studies) {
+		for (Study s : studies) {
 			if (!s.getEndpoints().contains(endpoint)) {
 				throw new IllegalArgumentException("Study " + s + " does not measure " + endpoint);
 			}
