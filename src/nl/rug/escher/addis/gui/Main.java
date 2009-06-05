@@ -157,7 +157,7 @@ public class Main extends JFrame {
 	}
 
 	private JMenuItem createDeleteItem() {
-		JMenuItem item = new JMenuItem("Delete");
+		JMenuItem item = new JMenuItem("Delete", getIcon(FileNames.ICON_DELETE));
 		item.setMnemonic('d');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
