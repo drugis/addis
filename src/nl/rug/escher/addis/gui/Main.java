@@ -253,8 +253,8 @@ public class Main extends JFrame {
 				expandLeftPanelTree();
 			}			
 		});
-		
-		d_leftPanel = d_leftPanelTree;
+
+		d_leftPanel = new JScrollPane(d_leftPanelTree);
 	}
 
 	private void expandLeftPanelTree() {
