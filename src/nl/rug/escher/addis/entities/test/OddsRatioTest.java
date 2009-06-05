@@ -1,19 +1,18 @@
 package nl.rug.escher.addis.entities.test;
 
-import static org.junit.Assert.*;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
 
 import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
-import nl.rug.escher.addis.entities.ContinuousMeasurement;
+import nl.rug.escher.addis.entities.BasicPatientGroup;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.OddsRatio;
-import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.SIUnit;
-import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.Interval;
 import nl.rug.escher.common.JUnitUtil;
 import nl.rug.escher.common.StudentTTable;

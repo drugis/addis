@@ -14,6 +14,7 @@ import com.jgoodies.binding.beans.Model;
 
 @Contract
 public class OddsRatio extends Model implements Measurement {
+	private static final long serialVersionUID = 5004304962294140838L;
 	private ContinuousMeasurement d_numerator;
 	private ContinuousMeasurement d_denominator;
 	
