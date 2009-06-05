@@ -10,17 +10,18 @@
 	<property name="debuglevel" value="source,lines,vars"/>
 	<property name="target" value="1.5"/>
 	<property name="source" value="1.5"/>
+
 	<artifact:dependencies pathId="aspectjtools.classpath">
 		<dependency groupId="org.aspectj"
 			artifactid="aspectjtools" version="1.6.4"/>
 	</artifact:dependencies>
 
-	<artifact:pom id="addis-pom" file="pom.xml" />
+	<artifact:pom id="addis" file="pom.xml" />
 
 	<artifact:dependencies
 		filesetId="dep.fileset"
 		pathId="dep.classpath"
-		pomRefId="addis-pom"/>
+		pomRefId="addis"/>
 
 	<path id="aspect.path">
 		<pathelement location="${nl.gertvv:contract4j5:jar}"/>
@@ -30,9 +31,8 @@
 		<path refid="dep.classpath"/>
 	</path>
 	
-	
 	<path id="ADDIS.classpath">
-		<pathelement location="bin"/>
+		<pathelement location="${addis.build.outputDirectory}"/>
 		<path refid="build.classpath" />
 	</path>
 
@@ -59,7 +59,7 @@
 		</pathconvert>
 
 
-		<jar destfile="dist/addis.jar" basedir="bin">
+		<jar destfile="dist/addis.jar" basedir="${addis.build.outputDirectory}">
 			<manifest>
 				<attribute name="Main-Class" value="nl.rug.escher.addis.gui.Main" />
 				<attribute name="Class-Path" value="${dist-class-path}" />
@@ -68,13 +68,13 @@
 	</target>
 
 	<target name="init">
-		<mkdir dir="bin"/>
-		<copy includeemptydirs="false" todir="bin">
-			<fileset dir="src" excludes="**/*.launch, **/*.java"/>
+		<mkdir dir="${addis.build.outputDirectory}"/>
+		<copy includeemptydirs="false" todir="${addis.build.outputDirectory}">
+			<fileset dir="resource" />
 		</copy>
 	</target>
 	<target name="clean">
-		<delete dir="bin"/>
+		<delete dir="${addis.build.outputDirectory}"/>
 		<delete dir="junit"/>
 	</target>
 	<target depends="clean" name="cleanall"/>
@@ -84,14 +84,14 @@
 	</target>
 	<target depends="init" name="compile-project">
 		<echo message="${ant.project.name}: ${ant.file}"/>
-		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
-			<src path="src"/>
+		<javac debug="true" debuglevel="${debuglevel}" destdir="${addis.build.outputDirectory}" source="${source}" target="${target}">
+			<src path="${addis.build.sourceDirectory}"/>
 			<classpath refid="ADDIS.classpath"/>
 		</javac>
 	</target>
 	<target depends="compile-project" name="weave-project">
-		<iajc debug="true" inPath="bin" debugLevel="${debuglevel}" source="${source}" target="${target}"
-			aspectpathref="aspect.path" destDir="bin">
+		<iajc debug="true" inPath="${addis.build.outputDirectory}" debugLevel="${debuglevel}" source="${source}" target="${target}"
+			aspectpathref="aspect.path" destDir="${addis.build.outputDirectory}">
 			<classpath>
 				<path refid="ADDIS.classpath" />
 			</classpath>
@@ -105,7 +105,7 @@
 				<path refid="ADDIS.classpath"/>
 			</classpath>
 			<batchtest todir="${junit.output.dir}">
-				<fileset dir="bin/">
+				<fileset dir="${addis.build.outputDirectory}/">
 					<include name="**/*test/*Test.class"/>
 				</fileset>
 			</batchtest>
