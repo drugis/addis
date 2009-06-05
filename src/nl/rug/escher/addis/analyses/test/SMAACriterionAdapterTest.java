@@ -18,10 +18,10 @@ import nl.rug.escher.addis.entities.test.TestData;
 import org.junit.Before;
 import org.junit.Test;
 
-import fi.smaa.Alternative;
-import fi.smaa.GaussianCriterion;
-import fi.smaa.GaussianMeasurement;
-import fi.smaa.LogNormalCriterion;
+import fi.smaa.jsmaa.model.Alternative;
+import fi.smaa.jsmaa.model.GaussianCriterion;
+import fi.smaa.jsmaa.model.GaussianMeasurement;
+import fi.smaa.jsmaa.model.LogNormalCriterion;
 
 public class SMAACriterionAdapterTest {
 	

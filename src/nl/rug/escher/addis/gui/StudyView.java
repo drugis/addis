@@ -1,6 +1,8 @@
 package nl.rug.escher.addis.gui;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.NumberFormat;
 
 import javax.swing.AbstractAction;
@@ -26,8 +28,8 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import fi.smaa.SMAAModel;
-import fi.smaa.gui.MainApp;
+import fi.smaa.jsmaa.gui.JSMAAMainFrame;
+import fi.smaa.jsmaa.model.SMAAModel;
 
 @SuppressWarnings("serial")
 public class StudyView implements ViewBuilder {
@@ -83,9 +85,15 @@ public class StudyView implements ViewBuilder {
 
 	private void smaaAnalysis() {
 		SMAAModel model = SMAAAdapter.getModel(d_model.getBean());
-		MainApp app = new MainApp();
-		app.startGui();
-		app.initWithModel(model);
+		final JSMAAMainFrame app = new JSMAAMainFrame(model);
+		app.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent evt) {
+				app.setVisible(false);
+				app.dispose();
+			}			
+		});
+		app.setVisible(true);
 	}
 
 	private int buildDataPart(FormLayout layout, int fullWidth,

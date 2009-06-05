@@ -11,11 +11,11 @@ import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.RateContinuousAdapter;
 import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.Study;
-import fi.smaa.Alternative;
-import fi.smaa.Criterion;
-import fi.smaa.GaussianCriterion;
-import fi.smaa.GaussianMeasurement;
-import fi.smaa.LogNormalCriterion;
+import fi.smaa.jsmaa.model.Alternative;
+import fi.smaa.jsmaa.model.Criterion;
+import fi.smaa.jsmaa.model.GaussianCriterion;
+import fi.smaa.jsmaa.model.GaussianMeasurement;
+import fi.smaa.jsmaa.model.LogNormalCriterion;
 
 public class SMAACriterionAdapter {
 	

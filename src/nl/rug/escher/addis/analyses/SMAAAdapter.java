@@ -3,9 +3,9 @@ package nl.rug.escher.addis.analyses;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.Study;
-import fi.smaa.Alternative;
-import fi.smaa.AlternativeExistsException;
-import fi.smaa.SMAAModel;
+import fi.smaa.jsmaa.model.Alternative;
+import fi.smaa.jsmaa.model.AlternativeExistsException;
+import fi.smaa.jsmaa.model.SMAAModel;
 
 public class SMAAAdapter {
 	
