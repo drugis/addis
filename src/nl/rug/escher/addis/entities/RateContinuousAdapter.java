@@ -1,7 +1,5 @@
 package nl.rug.escher.addis.entities;
 
-import java.beans.PropertyChangeListener;
-
 import com.jgoodies.binding.beans.Model;
 
 public class RateContinuousAdapter extends Model implements ContinuousMeasurement {

@@ -60,7 +60,8 @@ public class BasicPatientGroupTest {
 	
 	@Test
 	public void testSetMeasurements() {
-		List<BasicContinuousMeasurement> list = Collections.singletonList(new BasicContinuousMeasurement());
+		List<BasicContinuousMeasurement> list = 
+			Collections.singletonList(new BasicContinuousMeasurement(new Endpoint("e")));
 		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_MEASUREMENTS, Collections.EMPTY_LIST, 
 				list);
 	}
@@ -68,13 +69,13 @@ public class BasicPatientGroupTest {
 	@Test
 	public void testAddMeasurement() {
 		JUnitUtil.testAdder(d_pg, BasicPatientGroup.PROPERTY_MEASUREMENTS,
-				"addMeasurement", new BasicContinuousMeasurement());
+				"addMeasurement", new BasicContinuousMeasurement(new Endpoint("hmm")));
 	}
 	
 	@Test
 	public void testAddMeasurementSetsPatientGroup() {
 		BasicPatientGroup g = d_pg;
-		BasicMeasurement m = new BasicContinuousMeasurement();
+		BasicMeasurement m = new BasicContinuousMeasurement(new Endpoint("e"));
 		g.addMeasurement(m);
 		assertEquals(g, m.getPatientGroup());
 	}
@@ -125,17 +126,12 @@ public class BasicPatientGroupTest {
 	
 	@Test
 	public void testGetMeasurementByEndpoint() {
-		Endpoint e1 = new Endpoint();
-		e1.setName("e1");
-		Endpoint e2 = new Endpoint();
-		e2.setName("e2");
-		Endpoint e3 = new Endpoint();
-		e3.setName("e3");
+		Endpoint e1 = new Endpoint("e1");
+		Endpoint e2 = new Endpoint("e2");
+		Endpoint e3 = new Endpoint("e3");
 		
-		BasicContinuousMeasurement m1 = new BasicContinuousMeasurement();
-		m1.setEndpoint(e1);
-		BasicContinuousMeasurement m2 = new BasicContinuousMeasurement();
-		m2.setEndpoint(e2);
+		BasicContinuousMeasurement m1 = new BasicContinuousMeasurement(e1);
+		BasicContinuousMeasurement m2 = new BasicContinuousMeasurement(e2);
 		
 		BasicPatientGroup g = d_pg;
 		g.addMeasurement(m2);
