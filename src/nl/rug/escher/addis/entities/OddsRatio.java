@@ -13,7 +13,7 @@ import org.contract4j5.contract.Pre;
 import com.jgoodies.binding.beans.Model;
 
 @Contract
-public class OddsRatio extends Model implements Measurement {
+public class OddsRatio extends Model implements ContinuousMeasurement {
 	private static final long serialVersionUID = 5004304962294140838L;
 	private ContinuousMeasurement d_numerator;
 	private ContinuousMeasurement d_denominator;
@@ -64,13 +64,33 @@ public class OddsRatio extends Model implements Measurement {
 	 * @return The confidence interval.
 	 */
 	public Interval<Double> getConfidenceInterval() {
-		double t = StudentTTable.getT(getSampleSize() - 2);
-		double g = sq(t * d_denominator.getStdDev() / d_denominator.getMean());
-		double qx = getMean() / (1 - g);
-		double sd = qx * Math.sqrt((1 - g) * sq(d_numerator.getStdDev()) / sq(d_numerator.getMean()) +
-				sq(d_denominator.getStdDev()) / sq(d_denominator.getMean()));
+		double g = getG(getCriticalValue());
+		double qx = getAssymmetricalMean(g);
+		double sd = getStdDev(g, qx);
 		
-		return new Interval<Double>((qx - t * sd), (qx + t * sd));
+		return new Interval<Double>((qx - getCriticalValue() * sd), (qx + getCriticalValue() * sd));
+	}
+
+	private double getStdDev(double g, double qx) {
+		return qx * Math.sqrt((1 - g) * sq(d_numerator.getStdDev()) / sq(d_numerator.getMean()) +
+				sq(d_denominator.getStdDev()) / sq(d_denominator.getMean()));
+	}
+
+	private double getAssymmetricalMean(double g) {
+		return getMean() / (1 - g);
+	}
+
+	private double getG(double t) {
+		return sq(t * d_denominator.getStdDev() / d_denominator.getMean());
+	}
+
+	private double getCriticalValue() {
+		return StudentTTable.getT(getSampleSize() - 2);
+	}
+	
+	public Double getStdDev() {
+		double g = getG(getCriticalValue());
+		return getStdDev(g, getAssymmetricalMean(g));
 	}
 	
 	private static double sq(double d) {
@@ -81,7 +101,7 @@ public class OddsRatio extends Model implements Measurement {
 	 * Get the mean odds-ratio. This is mean(numerator) / mean(denominator)
 	 * @return The mean.
 	 */
-	public double getMean() {
+	public Double getMean() {
 		return d_numerator.getMean() / d_denominator.getMean();
 	}
 }

@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import nl.rug.escher.addis.analyses.SMAAAdapter;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
@@ -25,6 +26,9 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import fi.smaa.SMAAModel;
+import fi.smaa.gui.MainApp;
+
 @SuppressWarnings("serial")
 public class StudyView implements ViewBuilder {
 	PresentationModel<Study> d_model;
@@ -40,7 +44,7 @@ public class StudyView implements ViewBuilder {
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
 				"right:pref, 3dlu, pref, 3dlu, pref",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		int fullWidth = 5;
 		for (int i = 1; i < d_model.getBean().getEndpoints().size(); ++i) {
@@ -57,12 +61,34 @@ public class StudyView implements ViewBuilder {
 		
 		int row = buildEndpointsPart(layout, fullWidth, builder, cc);
 		
-		buildDataPart(layout, fullWidth, builder, cc, row);
+		row = buildDataPart(layout, fullWidth, builder, cc, row);
+		
+		buildAnalysesPart(fullWidth, builder, cc, row);
 		
 		return builder.getPanel();
 	}
 
-	private void buildDataPart(FormLayout layout, int fullWidth,
+	private void buildAnalysesPart(int fullWidth, PanelBuilder builder,
+			CellConstraints cc, int row) {
+		builder.addSeparator("Analyses", cc.xyw(1, row, fullWidth));
+		row += 2;
+		JButton smaaButton = new JButton("SMAA benefit-risk");
+		smaaButton.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				smaaAnalysis();
+			}
+		});
+		builder.add(smaaButton, cc.xy(1, row));
+	}
+
+	private void smaaAnalysis() {
+		SMAAModel model = SMAAAdapter.getModel(d_model.getBean());
+		MainApp app = new MainApp();
+		app.startGui();
+		app.initWithModel(model);
+	}
+
+	private int buildDataPart(FormLayout layout, int fullWidth,
 			PanelBuilder builder, CellConstraints cc, int row) {
 		builder.addSeparator("Data", cc.xyw(1, row, fullWidth));
 		row += 2;
@@ -103,6 +129,7 @@ public class StudyView implements ViewBuilder {
 			
 			row += 2;
 		}
+		return row;
 	}
 
 	private int buildEndpointsPart(FormLayout layout, int fullWidth, PanelBuilder builder,

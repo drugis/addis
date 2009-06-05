@@ -1,6 +1,7 @@
 package nl.rug.escher.addis.entities.test;
 
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
@@ -101,5 +102,16 @@ public class OddsRatioTest {
 		d_ratio.addPropertyChangeListener(l);
 		d_numerator.setMean(s_meanNum);
 		verify(l);
+	}
+	
+	@Test
+	public void testStdDev() {
+		double t = StudentTTable.getT(d_ratio.getSampleSize() - 2);
+		double g = square(t * s_stdDevDen / s_meanDen);
+		double q = d_ratio.getMean();
+		double sd = q / (1 - g) * Math.sqrt((1 - g) * square(s_stdDevNum) / square(s_meanNum) + 
+				square(s_stdDevDen) / square(s_meanDen));
+		
+		assertEquals(sd, d_ratio.getStdDev(), 0.00001);
 	}
 }
