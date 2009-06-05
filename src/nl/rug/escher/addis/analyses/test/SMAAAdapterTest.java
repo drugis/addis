@@ -48,7 +48,6 @@ public class SMAAAdapterTest {
 		assertEquals(d_study.getId(), model.getName());
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetCriteria() {
 		SMAAModel model = SMAAAdapter.getModel(d_study);

@@ -16,11 +16,10 @@ import fi.smaa.Criterion;
 import fi.smaa.GaussianCriterion;
 import fi.smaa.GaussianMeasurement;
 import fi.smaa.LogNormalCriterion;
-import fi.smaa.Measurement;
 
 public class SMAACriterionAdapter {
 	
-	public static Criterion<? extends Measurement> buildCriterion(
+	public static Criterion buildCriterion(
 			Endpoint e, Study s, List<Alternative> alts) {
 		
 		if (e.getType().equals(Endpoint.Type.CONTINUOUS)) {
@@ -32,7 +31,7 @@ public class SMAACriterionAdapter {
 		return null;
 	}
 	
-	private static Criterion<? extends Measurement> buildLogNormalCriterion(
+	private static Criterion buildLogNormalCriterion(
 			Endpoint e, Study s, List<Alternative> alts) {
 		
 		LogNormalCriterion crit = new LogNormalCriterion(e.getName());
@@ -63,7 +62,7 @@ public class SMAACriterionAdapter {
 		return list.get(list.indexOf(new Alternative(g.getLabel())));
 	}
 
-	private static Criterion<? extends Measurement> buildGaussianCriterion(
+	private static Criterion buildGaussianCriterion(
 			Endpoint e, Study s, List<Alternative> alts) {
 
 		GaussianCriterion crit = new GaussianCriterion(e.getName());

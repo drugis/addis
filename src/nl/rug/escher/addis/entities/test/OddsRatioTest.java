@@ -1,7 +1,6 @@
 package nl.rug.escher.addis.entities.test;
 
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
