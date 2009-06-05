@@ -15,10 +15,10 @@ public interface Domain {
 	 * Get the endpoints stored in the data model.
 	 * @return An unmodifiable sorted set of endpoints. Never a null.
 	 */
-		public SortedSet<Endpoint> getEndpoints();
+	public SortedSet<Endpoint> getEndpoints();
 		
 	/**
-	 * Adds an study to the data model.
+	 * Adds a study to the data model.
 	 * 
 	 * @param e the study to add
 	 * @throws NullPointerException if e is null
