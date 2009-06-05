@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -42,6 +43,8 @@ import fi.smaa.common.ImageLoader;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame {
+	public static final String APPNAME = "ADDIS";
+	public static final String APPVERSION = "0.1";
 	private JComponent d_leftPanel;
 	private JScrollPane d_rightPanel;
 	
@@ -55,7 +58,7 @@ public class Main extends JFrame {
 	private JMenuItem d_editMenuDeleteItem;
 
 	public Main() {
-		super("Escher ADDIS");
+		super(APPNAME + " v" + APPVERSION);
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent evt) {
@@ -126,9 +129,34 @@ public class Main extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(createFileMenu());
 		menuBar.add(createEditMenu());
-		menuBar.add(createAddMenu());		
+		menuBar.add(createAddMenu());
+		menuBar.add(Box.createHorizontalGlue());
+		menuBar.add(createHelpMenu());
 		setJMenuBar(menuBar);
 	}
+
+	private JMenu createHelpMenu() {
+		JMenu menu = new JMenu("Help");
+		menu.setMnemonic('h');
+		menu.add(createAboutItem());		
+		return menu;
+	}
+
+	private JMenuItem createAboutItem() {
+		JMenuItem item = new JMenuItem("About");
+		item.setMnemonic('a');
+		item.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				showAboutDialog();
+			}
+		});
+		return item;
+	}
+
+	private void showAboutDialog() {
+		final AboutDialog dlg = new AboutDialog(this);
+		dlg.setVisible(true);
+	}	
 
 	private JMenu createAddMenu() {
 		JMenu addMenu = new JMenu("Add");
