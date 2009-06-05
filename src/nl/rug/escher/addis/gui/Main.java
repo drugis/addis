@@ -52,6 +52,7 @@ public class Main extends JFrame {
 	private ImageLoader imageLoader = new ImageLoader("/resources/gfx/");
 	private DomainTreeModel d_domainTreeModel;
 	private JTree d_leftPanelTree;
+	private JMenuItem d_editMenuDeleteItem;
 
 	public Main() {
 		super("Escher ADDIS");
@@ -124,6 +125,7 @@ public class Main extends JFrame {
 	private void initMenu() {
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(createFileMenu());
+		menuBar.add(createEditMenu());
 		menuBar.add(createAddMenu());		
 		setJMenuBar(menuBar);
 	}
@@ -143,6 +145,32 @@ public class Main extends JFrame {
 		
 		fileMenu.add(createExitItem());
 		return fileMenu;
+	}
+	
+	private JMenu createEditMenu() {
+		JMenu editMenu = new JMenu("Edit");
+		editMenu.setMnemonic('e');
+		d_editMenuDeleteItem = createDeleteItem();
+		d_editMenuDeleteItem.setEnabled(false);		
+		editMenu.add(d_editMenuDeleteItem);
+		return editMenu;
+	}
+
+	private JMenuItem createDeleteItem() {
+		JMenuItem item = new JMenuItem("Delete");
+		item.setMnemonic('d');
+		item.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				deleteMenuAction();
+			}			
+		});
+
+		return item;
+	}
+
+	protected void deleteMenuAction() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private JMenuItem createAddEndpointMenuItem() {
@@ -266,31 +294,39 @@ public class Main extends JFrame {
 		return new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent event) {
 				Object node = ((JTree)event.getSource()).getLastSelectedPathComponent();
-				
 				if (node instanceof Study) {
 					studySelected((Study)node);
 				} else if (node instanceof Endpoint) {
 					endpointSelected((Endpoint)node);
+				} else {
+					noneSelected();
 				}
 			}
 		};
 	}
 	
+	protected void noneSelected() {
+		d_editMenuDeleteItem.setEnabled(false);
+	}
+
 	public void endpointSelected(Endpoint e, Study selectedStudy) {
 		EndpointStudiesView view = new EndpointStudiesView(e, getDomain(), this);
 		view.setSelectedStudy(selectedStudy);
 		d_rightPanelBuilder = view;
 		d_rightPanel.setViewportView(view.buildPanel());
+		d_editMenuDeleteItem.setEnabled(true);		
 	}
 
 	public void endpointSelected(Endpoint node) {
 		endpointSelected(node, null);
+		d_editMenuDeleteItem.setEnabled(true);		
 	}
 	
 	private void studySelected(Study node) {
 		StudyView view = new StudyView(new PresentationModel<Study>(node), getDomain(), this);
 		d_rightPanelBuilder = view;
 		d_rightPanel.setViewportView(view.buildPanel());
+		d_editMenuDeleteItem.setEnabled(true);		
 	}
 	
 	private void initRightPanel() {
