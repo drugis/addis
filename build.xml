@@ -97,6 +97,7 @@
 			</classpath>
 		</iajc>
 	</target>
+
 	<target name="test" depends="build">
 		<mkdir dir="${junit.output.dir}"/>
 		<junit fork="yes" printsummary="withOutAndErr" haltonfailure="false">
@@ -111,11 +112,13 @@
 			</batchtest>
 		</junit>
 	</target>
+
 	<target name="Main">
 		<java classname="nl.rug.escher.gui.Main" failonerror="true" fork="yes">
 			<classpath refid="ADDIS.classpath"/>
 		</java>
 	</target>
+
 	<target name="junitreport">
 		<junitreport todir="${junit.output.dir}">
 			<fileset dir="${junit.output.dir}">
@@ -123,5 +126,17 @@
 			</fileset>
 			<report format="frames" todir="${junit.output.dir}"/>
 		</junitreport>
+	</target>
+
+	<loadfile property="header" srcFile="HEADER" />
+
+	<target name="license">
+		<replaceregexp flags="s"
+			match=".*package nl.rug.escher.addis"
+			replace="${header}package nl.rug.escher.addis">
+			<fileset dir="${addis.build.sourceDirectory}">
+				<include name="**/*.java" />
+			</fileset>
+		</replaceregexp>
 	</target>
 </project>
