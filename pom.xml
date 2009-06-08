@@ -53,6 +53,10 @@
 			<id>nl.gertvv</id>
 			<url>http://gertvv.nl/mvn</url>
 		</repository>
+		<repository>
+			<id>org.drugis</id>
+			<url>http://drugis.org/mvn</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -90,6 +94,11 @@
 			<groupId>nl.gertvv</groupId>
 			<artifactId>contract4j5</artifactId>
 			<version>0.8.0-MINIMAL</version>
+		</dependency>
+		<dependency>
+			<groupId>fi.smaa</groupId>
+			<artifactId>jsmaa</artifactId>
+			<version>0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
