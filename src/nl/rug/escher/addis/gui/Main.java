@@ -58,7 +58,7 @@ import nl.rug.escher.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 
-import fi.smaa.jsmaa.common.ImageLoader;
+import fi.smaa.common.ImageLoader;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame {

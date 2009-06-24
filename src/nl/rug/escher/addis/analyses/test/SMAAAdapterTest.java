@@ -21,13 +21,16 @@ package nl.rug.escher.addis.analyses.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
 import nl.rug.escher.addis.analyses.SMAAAdapter;
+import nl.rug.escher.addis.entities.ContinuousMeasurement;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.RateContinuousAdapter;
+import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.addis.entities.test.TestData;
 
@@ -35,9 +38,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import fi.smaa.jsmaa.model.Alternative;
+import fi.smaa.jsmaa.model.CardinalCriterion;
 import fi.smaa.jsmaa.model.Criterion;
-import fi.smaa.jsmaa.model.GaussianCriterion;
-import fi.smaa.jsmaa.model.LogNormalCriterion;
+import fi.smaa.jsmaa.model.GaussianMeasurement;
+import fi.smaa.jsmaa.model.ImpactMatrix;
+import fi.smaa.jsmaa.model.LogNormalMeasurement;
+import fi.smaa.jsmaa.model.NoSuchValueException;
 import fi.smaa.jsmaa.model.SMAAModel;
 
 public class SMAAAdapterTest {
@@ -57,7 +63,7 @@ public class SMAAAdapterTest {
 		
 		assertEquals(groups.size(), alts.size());
 		for (PatientGroup g : groups) {
-			assertTrue(alts.contains(new Alternative(g.getLabel())));
+			assertNotNull(SMAAAdapter.findAlternative(g, model));
 		}
 	}
 	
@@ -68,29 +74,53 @@ public class SMAAAdapterTest {
 	}
 	
 	@Test
-	public void testGetCriteria() {
+	public void testGetCriteria() throws NoSuchValueException {
 		SMAAModel model = SMAAAdapter.getModel(d_study);
 		List<Criterion> crit = model.getCriteria();
 		List<Endpoint> endpoints = d_study.getEndpoints();
 		assertEquals(endpoints.size(), crit.size());
 		for (Endpoint e : endpoints) {
+			CardinalCriterion c = findCriterion(e, model);
 			if (e.getType().equals(Endpoint.Type.CONTINUOUS)) {
-				GaussianCriterion gaussianCriterion = new GaussianCriterion(e.getName());
-				assertTrue(crit.contains(gaussianCriterion));
-				GaussianCriterion gc = (GaussianCriterion) crit.get(crit.indexOf(gaussianCriterion));
-				assertEquals(d_study.getDrugs().size(),
-						gc.getMeasurements().size());
+				checkGaussianMeasurements(e, c, model);
 			} else if (e.getType().equals(Endpoint.Type.RATE)) {
-				assertTrue(crit.contains(new LogNormalCriterion(e.getName())));				
-				LogNormalCriterion logNormalCriterion = new LogNormalCriterion(e.getName());
-				assertTrue(crit.contains(logNormalCriterion));
-				LogNormalCriterion lnc = (LogNormalCriterion) crit.get(crit.indexOf(logNormalCriterion));
-				assertEquals(d_study.getDrugs().size(),
-						lnc.getMeasurements().size());				
+				checkLogNormalMeasurements(e, c, model);
 			}
 		}
-	}	
+	}
 	
+	private void checkLogNormalMeasurements(Endpoint e, CardinalCriterion c, SMAAModel model) throws NoSuchValueException {
+		ImpactMatrix mat = model.getImpactMatrix();
+		for (PatientGroup g : d_study.getPatientGroups()) {
+			LogNormalMeasurement m = (LogNormalMeasurement) mat.getMeasurement(
+					c, SMAAAdapter.findAlternative(g, model)
+					);
+			RateContinuousAdapter adapter = new RateContinuousAdapter(((RateMeasurement) g.getMeasurement(e)));			
+			assertEquals(adapter.getMean(), m.getMean());
+			assertEquals(adapter.getStdDev(), m.getStDev());
+		}		
+	}
+
+	private void checkGaussianMeasurements(Endpoint e, CardinalCriterion c, SMAAModel model) throws NoSuchValueException {
+		ImpactMatrix mat = model.getImpactMatrix();
+		for (PatientGroup g : d_study.getPatientGroups()) {
+			ContinuousMeasurement cm = (ContinuousMeasurement) g.getMeasurement(e);
+			GaussianMeasurement m = (GaussianMeasurement) mat.getMeasurement(c, SMAAAdapter.findAlternative(g, model));
+			assertEquals(cm.getMean(), m.getMean());
+			assertEquals(cm.getStdDev(), m.getStDev());
+		}		
+	}
+
+	private CardinalCriterion findCriterion(Endpoint e, SMAAModel model) {
+		for (Criterion c : model.getCriteria()) {
+			if (e.getName().equals(c.getName())) {
+				return (CardinalCriterion) c;
+			}
+		}
+		fail("Criterion not found");
+		return null;
+	}
+
 	@Test
 	public void testGetModel() {
 		assertNotNull(SMAAAdapter.getModel(d_study));

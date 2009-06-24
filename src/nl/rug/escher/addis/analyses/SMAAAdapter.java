@@ -19,11 +19,18 @@
 
 package nl.rug.escher.addis.analyses;
 
+import nl.rug.escher.addis.entities.ContinuousMeasurement;
 import nl.rug.escher.addis.entities.Endpoint;
+import nl.rug.escher.addis.entities.OddsRatio;
 import nl.rug.escher.addis.entities.PatientGroup;
+import nl.rug.escher.addis.entities.RateContinuousAdapter;
+import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.Study;
 import fi.smaa.jsmaa.model.Alternative;
-import fi.smaa.jsmaa.model.AlternativeExistsException;
+import fi.smaa.jsmaa.model.CardinalCriterion;
+import fi.smaa.jsmaa.model.GaussianMeasurement;
+import fi.smaa.jsmaa.model.LogNormalMeasurement;
+import fi.smaa.jsmaa.model.NoSuchValueException;
 import fi.smaa.jsmaa.model.SMAAModel;
 
 public class SMAAAdapter {
@@ -31,24 +38,64 @@ public class SMAAAdapter {
 	public static SMAAModel getModel(Study study) {
 		SMAAModel model = new SMAAModel(study.getId());
 		addAlternativesToModel(study, model);
-		addCriteriaToModel(study, model);
+		
+		try {
+			addCriteriaToModel(study, model);
+		} catch (NoSuchValueException e) {
+			throw new IllegalStateException("illegal state in model");
+		}
 		return model;
 	}
 
-	private static void addCriteriaToModel(Study study, SMAAModel model) {
+	private static void addCriteriaToModel(Study study, SMAAModel model) throws NoSuchValueException {
 		for (Endpoint e : study.getEndpoints()) {
-			model.addCriterion(SMAACriterionAdapter.buildCriterion(e, study, model.getAlternatives()));
+			buildCriterion(model, e, study);	
 		}
 	}
 
+	private static void buildCriterion(SMAAModel model, Endpoint e,
+			Study study) throws NoSuchValueException {
+		CardinalCriterion crit = new CardinalCriterion(e.getName());
+		model.addCriterion(crit);
+		
+		if (e.getType().equals(Endpoint.Type.RATE)) {
+			ContinuousMeasurement first = getAdaptedRate(study.getPatientGroups().get(0), e);
+			for (PatientGroup g : study.getPatientGroups()) {
+				OddsRatio od = new OddsRatio(getAdaptedRate(g, e), first);
+				Alternative alt = findAlternative(g, model);
+				LogNormalMeasurement meas = new LogNormalMeasurement(
+						od.getMean(), od.getStdDev());		
+				model.getImpactMatrix().setMeasurement(crit, alt, meas);
+			}
+		} else if (e.getType().equals(Endpoint.Type.CONTINUOUS)) {
+			for (PatientGroup g : study.getPatientGroups()) {
+				Alternative alt = findAlternative(g, model);				
+				ContinuousMeasurement cm = (ContinuousMeasurement) g.getMeasurement(e);
+				GaussianMeasurement meas = new GaussianMeasurement(cm.getMean(), cm.getStdDev());
+				model.getImpactMatrix().setMeasurement(crit, alt, meas);
+			}			
+		} else {
+			throw new RuntimeException("Unknown endpoint type");
+		}
+	}
+	
+	private static ContinuousMeasurement getAdaptedRate(PatientGroup g, Endpoint e) {
+		return new RateContinuousAdapter((RateMeasurement)g.getMeasurement(e));
+	}	
+
 	private static void addAlternativesToModel(Study study, SMAAModel model) {
 		for (PatientGroup d : study.getPatientGroups()) {
-			try {
-				model.addAlternative(new Alternative(d.getLabel()));
-			} catch (AlternativeExistsException e) {
-				throw new IllegalStateException(e);
+			model.addAlternative(new Alternative(d.getLabel()));
+		}
+	}
+
+	public static Alternative findAlternative(PatientGroup g, SMAAModel model) {
+		for (Alternative a : model.getAlternatives()) {
+			if (a.getName().equals(g.getLabel())) {
+				return a;
 			}
 		}
+		throw new IllegalStateException("Alternative not found");
 	}
 
 }

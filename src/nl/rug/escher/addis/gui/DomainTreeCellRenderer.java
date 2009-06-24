@@ -28,7 +28,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.MetaStudy;
-import fi.smaa.jsmaa.common.ImageLoader;
+import fi.smaa.common.ImageLoader;
 
 @SuppressWarnings("serial")
 public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
