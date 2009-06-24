@@ -19,6 +19,7 @@
 
 package nl.rug.escher.addis.gui;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
@@ -34,13 +35,15 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class EndpointView implements ViewBuilder {
-	JTextField d_name;
-	JTextField d_description;
-	PresentationModel<Endpoint> d_model;
+	private JTextField d_name;
+	private JTextField d_description;
+	private PresentationModel<Endpoint> d_model;
 	private JComboBox d_type;
+	private NotEmptyValidator d_validator;
 	
-	public EndpointView(PresentationModel<Endpoint> model) {
+	public EndpointView(PresentationModel<Endpoint> model, JButton okButton) {
 		d_model = model;
+		d_validator = new NotEmptyValidator(okButton);
 	}
 	
 	private void initComponents() {
@@ -49,10 +52,12 @@ public class EndpointView implements ViewBuilder {
 				d_model.getModel(Endpoint.PROPERTY_DESCRIPTION));
 		d_name.setColumns(30);
 		d_description.setColumns(30);
-		
+		d_validator.add(d_name);
+		d_validator.add(d_description);
 		d_type = AuxComponentFactory.createBoundComboBox(
 				Endpoint.Type.values(), d_model.getModel(Endpoint.PROPERTY_TYPE));
 		ComboBoxPopupOnFocusListener.add(d_type);
+		d_validator.add(d_type);
 	}
 
 	/**

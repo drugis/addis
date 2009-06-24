@@ -19,6 +19,7 @@
 
 package nl.rug.escher.addis.gui;
 
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
@@ -32,16 +33,19 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class DrugView implements ViewBuilder {
-	JTextField d_id;
-	PresentationModel<Drug> d_model;
+	private JTextField d_id;
+	private PresentationModel<Drug> d_model;
+	private NotEmptyValidator d_validator; 
 
-	public DrugView(PresentationModel<Drug> presentationModel) {
+	public DrugView(PresentationModel<Drug> presentationModel, JButton okButton) {
+		d_validator = new NotEmptyValidator(okButton);
 		d_model = presentationModel;
 	}
 	
 	public void initComponents() {
 		d_id = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_NAME));
 		d_id.setColumns(15);
+		d_validator.add(d_id);
 	}
 
 	public JComponent buildPanel() {

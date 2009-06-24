@@ -16,6 +16,9 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 @SuppressWarnings("serial")
 public abstract class OkCancelDialog extends JDialog {
 	private JPanel d_userPanel;
+	
+	protected JButton d_okButton;
+	protected JButton d_cancelButton;
 
 	protected abstract void commit();
 
@@ -32,12 +35,12 @@ public abstract class OkCancelDialog extends JDialog {
 		d_userPanel = new JPanel();
 		panel.add(d_userPanel, BorderLayout.CENTER);
 		
-		JButton okButton = createOkButton();
-		JButton cancelButton = createCancelButton();
+		d_okButton = createOkButton();
+		d_cancelButton = createCancelButton();
 		ButtonBarBuilder2 builder = new ButtonBarBuilder2();
 		builder.addGlue();
-		builder.addButton(okButton);
-		builder.addButton(cancelButton);
+		builder.addButton(d_okButton);
+		builder.addButton(d_cancelButton);
 		
 		panel.add(builder.getPanel(), BorderLayout.SOUTH);
 	

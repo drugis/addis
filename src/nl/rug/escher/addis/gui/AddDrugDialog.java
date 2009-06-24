@@ -36,9 +36,10 @@ public class AddDrugDialog extends OkCancelDialog {
 		super(frame, "Add Drug");
 		d_domain = domain;
 		d_drug = new Drug();
-		DrugView view = new DrugView(new PresentationModel<Drug>(d_drug));
+		DrugView view = new DrugView(new PresentationModel<Drug>(d_drug), d_okButton);
 		getUserPanel().add(view.buildPanel());
 		pack();
+		d_okButton.setEnabled(false);
 	}
 	
 	@Override
