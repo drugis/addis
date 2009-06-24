@@ -105,6 +105,7 @@ public class StudyView implements ViewBuilder {
 	private void smaaAnalysis() {
 		SMAAModel model = SMAAAdapter.getModel(d_model.getBean());
 		final JSMAAMainFrame app = new JSMAAMainFrame(model);
+		app.setMinimalFrame();
 		app.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent evt) {
