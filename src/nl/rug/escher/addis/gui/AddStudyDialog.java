@@ -51,7 +51,7 @@ public class AddStudyDialog extends OkCancelDialog {
 	public AddStudyDialog(JFrame frame, Domain domain) {
 		super(frame, "Add Study");
 		d_domain = domain;
-		d_study = new BasicStudy("X");
+		d_study = new BasicStudy("new study");
 		d_primaryEndpoint = new EndpointHolder();
 		d_primaryEndpoint.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {

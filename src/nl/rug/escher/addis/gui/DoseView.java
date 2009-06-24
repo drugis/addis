@@ -52,6 +52,7 @@ public class DoseView implements ViewBuilder {
 				SIUnit.values(),
 				d_model.getModel(Dose.PROPERTY_UNIT));
 		d_unit = BasicComponentFactory.createComboBox(unitSelectionInList);
+		ComboBoxPopupOnFocusListener.add(d_unit);
 	}
 
 	public JComponent buildPanel() {

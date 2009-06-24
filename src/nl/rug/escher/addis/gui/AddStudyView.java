@@ -59,12 +59,14 @@ public class AddStudyView implements ViewBuilder {
 	public void initComponents() {
 		d_id = BasicComponentFactory.createTextField(d_model.getModel(BasicStudy.PROPERTY_ID));
 		d_id.setColumns(15);
+		AutoSelectFocusListener.add(d_id);
 		
 		SelectionInList<Endpoint> endpointSelectionInList =
 			new SelectionInList<Endpoint>(
 					new ArrayList<Endpoint>(d_domain.getEndpoints()), 
 					d_endpointModel.getModel(EndpointHolder.PROPERTY_ENDPOINT));
 		d_endpoint = BasicComponentFactory.createComboBox(endpointSelectionInList);
+		ComboBoxPopupOnFocusListener.add(d_endpoint);
 	}
 	
 	public JComponent buildPanel() {
@@ -127,10 +129,13 @@ public class AddStudyView implements ViewBuilder {
 			PresentationModel<BasicPatientGroup> model = new PresentationModel<BasicPatientGroup>(g);
 			//PresentationModel<Measurement> mModel =
 			//	new PresentationModel<Measurement>(g.getMeasurements().get(0));
+			JTextField field = MeasurementInputHelper.buildFormatted(model.getModel(BasicPatientGroup.PROPERTY_SIZE));
+			AutoSelectFocusListener.add(field);
+			builder.add(field, cc.xy(1, row));
 			
-			builder.add(MeasurementInputHelper.buildFormatted(model.getModel(BasicPatientGroup.PROPERTY_SIZE)), cc.xy(1, row));
-			
-			builder.add(createDrugSelector(model), cc.xy(3, row));
+			JComboBox selector = createDrugSelector(model);
+			ComboBoxPopupOnFocusListener.add(selector);
+			builder.add(selector, cc.xy(3, row));
 			
 			DoseView view = new DoseView(new PresentationModel<Dose>(g.getDose()));
 			builder.add(view.buildPanel(), cc.xy(5, row));
@@ -148,7 +153,7 @@ public class AddStudyView implements ViewBuilder {
 		}
 	}
 
-	private JComponent createDrugSelector(PresentationModel<BasicPatientGroup> model) {
+	private JComboBox createDrugSelector(PresentationModel<BasicPatientGroup> model) {
 		SelectionInList<Drug> drugSelectionInList =
 			new SelectionInList<Drug>(
 					new ArrayList<Drug>(d_domain.getDrugs()),

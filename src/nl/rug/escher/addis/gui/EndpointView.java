@@ -52,6 +52,7 @@ public class EndpointView implements ViewBuilder {
 		
 		d_type = AuxComponentFactory.createBoundComboBox(
 				Endpoint.Type.values(), d_model.getModel(Endpoint.PROPERTY_TYPE));
+		ComboBoxPopupOnFocusListener.add(d_type);
 	}
 
 	/**
