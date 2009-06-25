@@ -43,6 +43,7 @@ public class MetaAnalysisDialog extends JDialog {
 
 	public MetaAnalysisDialog(JFrame parent, Domain domain, MetaAnalysis analysis) {
 		super(parent, "Meta-Analysis");
+		this.setModal(true);
 		d_domain = domain;
 		d_analysis = analysis;
 		
