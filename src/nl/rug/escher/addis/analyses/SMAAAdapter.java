@@ -21,7 +21,6 @@ package nl.rug.escher.addis.analyses;
 
 import nl.rug.escher.addis.entities.ContinuousMeasurement;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.LogOddsRatio;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.RiskRatio;
