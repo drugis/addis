@@ -35,6 +35,7 @@ public class AddEndpointDialog extends OkCancelDialog {
 	
 	public AddEndpointDialog(JFrame frame, Domain domain) {
 		super(frame, "Add Endpoint");
+		this.setModal(true);
 		d_domain = domain;
 		d_endpoint = new Endpoint();
 		EndpointView view = new EndpointView(new PresentationModel<Endpoint>(d_endpoint), d_okButton);

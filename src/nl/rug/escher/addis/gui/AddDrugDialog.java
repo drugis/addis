@@ -34,6 +34,7 @@ public class AddDrugDialog extends OkCancelDialog {
 	
 	public AddDrugDialog(JFrame frame, Domain domain) {
 		super(frame, "Add Drug");
+		this.setModal(true);
 		d_domain = domain;
 		d_drug = new Drug();
 		DrugView view = new DrugView(new PresentationModel<Drug>(d_drug), d_okButton);

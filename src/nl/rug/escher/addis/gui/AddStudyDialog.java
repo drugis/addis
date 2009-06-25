@@ -50,6 +50,7 @@ public class AddStudyDialog extends OkCancelDialog {
 	
 	public AddStudyDialog(JFrame frame, Domain domain) {
 		super(frame, "Add Study");
+		this.setModal(true);
 		d_domain = domain;
 		d_study = new BasicStudy("new study");
 		d_primaryEndpoint = new EndpointHolder();
