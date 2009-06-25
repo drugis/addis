@@ -195,4 +195,10 @@ public class DomainImpl implements Domain, Serializable {
 			throw new DependentEntitiesException(deps);
 		}
 	}
+
+	public void deleteEndpoint(Endpoint e) throws DependentEntitiesException {
+		checkDependents(e);
+		d_endpoints.remove(e);
+		fireEndpointsChanged();				
+	}
 }

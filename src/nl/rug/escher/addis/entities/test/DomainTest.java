@@ -290,5 +290,42 @@ public class DomainTest {
 		d_domain.deleteDrug(d);
 		verify(mock);
 	}
+
+	@Test
+	public void testDeleteEndpoint() throws DependentEntitiesException {
+		Endpoint e = new Endpoint("e");
+		d_domain.addEndpoint(e);
+		d_domain.deleteEndpoint(e);
+		assertTrue(d_domain.getEndpoints().isEmpty());
+	}
 	
+	@Test
+	public void testDeleteEndpointThrowsCorrectException() {
+		BasicStudy s1 = new BasicStudy("X");
+		d_domain.addStudy(s1);
+		
+		Endpoint e = new Endpoint("e");
+		d_domain.addEndpoint(e);
+		s1.addEndpoint(e);
+			
+		try {
+			d_domain.deleteEndpoint(e);
+			fail();
+		} catch (DependentEntitiesException e1) {
+			assertEquals(Collections.singleton(s1), e1.getDependents());
+		}
+	}
+	
+	@Test
+	public void testDeleteEndpointFires() throws DependentEntitiesException {
+		Endpoint d = new Endpoint("d");
+		d_domain.addEndpoint(d);
+		
+		DomainListener mock = createMock(DomainListener.class);
+		d_domain.addListener(mock);
+		mock.endpointsChanged();
+		replay(mock);
+		d_domain.deleteEndpoint(d);
+		verify(mock);
+	}	
 }

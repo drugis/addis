@@ -96,4 +96,12 @@ public interface Domain {
 	 * @throws DependeptEntititesException if some entities depend on this drug
 	 */
 	public void deleteDrug(Drug d) throws DependentEntitiesException;
+	
+	/**
+	 * Deletes an endpoint from the domain.
+	 * 
+	 * @param e the endpoint to delete
+	 * @throws DependentEntitiesException if some entities depend on this endpoint
+	 */
+	public void deleteEndpoint(Endpoint e) throws DependentEntitiesException;
 }
