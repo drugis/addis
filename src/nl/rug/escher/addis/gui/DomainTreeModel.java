@@ -35,9 +35,9 @@ import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.CollectionUtil;
 
 public class DomainTreeModel implements TreeModel {
-	public static final int ENDPOINTS = 0;
-	public static final int STUDIES = 1;
-	public static final int DRUGS = 2;
+	public static final int DRUGS = 0;	
+	public static final int ENDPOINTS = 1;
+	public static final int STUDIES = 2;
 	private String d_root = "Database";
 	private String d_endpointsNode = "Endpoints";
 	private String d_studiesNode = "Studies";

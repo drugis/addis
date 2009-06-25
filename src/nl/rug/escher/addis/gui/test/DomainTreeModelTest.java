@@ -125,11 +125,11 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testGetIndexOfChild() {
-		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getEndpointsNode()));
+		assertEquals(1, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getEndpointsNode()));
 		assertEquals(0, d_treeModel.getIndexOfChild(getEndpointsNode(), d_firstEndpoint));
 		assertEquals(-1, d_treeModel.getIndexOfChild(getEndpointsNode(), new Object()));
-		assertEquals(1, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getStudiesNode()));
-		assertEquals(2, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getDrugsNode()));		
+		assertEquals(2, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getStudiesNode()));
+		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getDrugsNode()));		
 		assertEquals(0, d_treeModel.getIndexOfChild(getStudiesNode(), d_firstStudy));
 		assertEquals(0, d_treeModel.getIndexOfChild(getDrugsNode(), d_firstDrug));
 	}

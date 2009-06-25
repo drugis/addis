@@ -364,6 +364,8 @@ public class Main extends JFrame {
 					studySelected((Study)node);
 				} else if (node instanceof Endpoint) {
 					endpointSelected((Endpoint)node);
+				} else if (node instanceof Drug) {
+					drugSelected((Drug) node);
 				} else {
 					noneSelected();
 				}
@@ -375,8 +377,11 @@ public class Main extends JFrame {
 		d_rightPanel.setViewportView(new JPanel());
 		d_editMenuDeleteItem.setEnabled(false);
 	}
-
-
+	
+	private void drugSelected(Drug drug) {
+		d_editMenuDeleteItem.setEnabled(true);		
+	}
+	
 	private void leftTreeFocusStudies() {
 		d_leftPanelTree.setSelectionPath(new TreePath(
 				new Object[] {d_domainTreeModel.getRoot(), 
