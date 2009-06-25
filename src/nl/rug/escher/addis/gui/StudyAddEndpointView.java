@@ -22,8 +22,10 @@ package nl.rug.escher.addis.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
@@ -49,9 +51,12 @@ public class StudyAddEndpointView implements ViewBuilder {
 	
 	private JComboBox d_endpointSelect;
 	private SelectionInList<Endpoint> d_endpointSelectionInList;
+	private NotEmptyValidator d_validator;
 	
 	public StudyAddEndpointView(Domain domain, BasicStudy study,
-			PresentationModel<EndpointHolder> endpointModel, List<BasicMeasurement> measurements) {
+			PresentationModel<EndpointHolder> endpointModel, List<BasicMeasurement> measurements,
+			JButton okButton) {
+		d_validator = new NotEmptyValidator(okButton);
 		d_domain = domain;
 		d_study = study;
 		d_endpointModel = endpointModel;
@@ -72,6 +77,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 		d_endpointSelectionInList = new SelectionInList<Endpoint>(getEndpoints(), 
 				d_endpointModel.getModel(EndpointHolder.PROPERTY_ENDPOINT));
 		d_endpointSelect = BasicComponentFactory.createComboBox(d_endpointSelectionInList);
+		d_validator.add(d_endpointSelect);
 	}
 
 	private List<Endpoint> getEndpoints() {
@@ -150,7 +156,8 @@ public class StudyAddEndpointView implements ViewBuilder {
 			builder.add(BasicComponentFactory.createLabel(gModel.getModel(BasicPatientGroup.PROPERTY_LABEL)),
 					cc.xy(1, row));
 			int col = 3;
-			for (JComponent component : MeasurementInputHelper.getComponents(m)) {
+			for (JTextField component : MeasurementInputHelper.getComponents(m)) {
+				d_validator.add(component);
 				builder.add(component, cc.xy(col, row));
 				col += 2;
 			}

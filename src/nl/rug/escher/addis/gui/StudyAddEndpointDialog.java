@@ -48,7 +48,8 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 		d_measurements = new ArrayList<BasicMeasurement>();
 		d_newEndpoint = new EndpointHolder();
 		final StudyAddEndpointView view = new StudyAddEndpointView(d_domain, d_study,
-				new PresentationModel<EndpointHolder>(d_newEndpoint), d_measurements);
+				new PresentationModel<EndpointHolder>(d_newEndpoint), d_measurements,
+				d_okButton);
 		
 		
 		d_newEndpoint.addPropertyChangeListener(new PropertyChangeListener() {
