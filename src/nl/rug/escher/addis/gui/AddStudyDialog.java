@@ -60,7 +60,8 @@ public class AddStudyDialog extends OkCancelDialog {
 			}
 		});
 		d_view = new AddStudyView(new PresentationModel<BasicStudy>(d_study),
-				new PresentationModel<EndpointHolder>(d_primaryEndpoint), domain);
+				new PresentationModel<EndpointHolder>(d_primaryEndpoint), domain,
+				d_okButton);
 		initUserPanel();
 	}
 

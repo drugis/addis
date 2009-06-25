@@ -22,6 +22,7 @@ package nl.rug.escher.addis.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
@@ -48,9 +49,12 @@ public class AddStudyView implements ViewBuilder {
 	private PresentationModel<BasicStudy> d_model;
 	private PresentationModel<EndpointHolder> d_endpointModel;
 	private Domain d_domain;
+	private NotEmptyValidator d_validator;
 
 	public AddStudyView(PresentationModel<BasicStudy> presentationModel,
-			PresentationModel<EndpointHolder> presentationModel2, Domain domain) {
+			PresentationModel<EndpointHolder> presentationModel2, Domain domain,
+			JButton okButton) {
+		d_validator = new NotEmptyValidator(okButton);		
 		d_model = presentationModel;
 		d_endpointModel = presentationModel2;
 		d_domain = domain;
@@ -60,12 +64,14 @@ public class AddStudyView implements ViewBuilder {
 		d_id = BasicComponentFactory.createTextField(d_model.getModel(BasicStudy.PROPERTY_ID));
 		d_id.setColumns(15);
 		AutoSelectFocusListener.add(d_id);
+		d_validator.add(d_id);
 		
 		SelectionInList<Endpoint> endpointSelectionInList =
 			new SelectionInList<Endpoint>(
 					new ArrayList<Endpoint>(d_domain.getEndpoints()), 
 					d_endpointModel.getModel(EndpointHolder.PROPERTY_ENDPOINT));
 		d_endpoint = BasicComponentFactory.createComboBox(endpointSelectionInList);
+		d_validator.add(d_endpoint);
 		ComboBoxPopupOnFocusListener.add(d_endpoint);
 	}
 	
@@ -130,20 +136,23 @@ public class AddStudyView implements ViewBuilder {
 			//PresentationModel<Measurement> mModel =
 			//	new PresentationModel<Measurement>(g.getMeasurements().get(0));
 			JTextField field = MeasurementInputHelper.buildFormatted(model.getModel(BasicPatientGroup.PROPERTY_SIZE));
+			d_validator.add(field);
 			AutoSelectFocusListener.add(field);
 			builder.add(field, cc.xy(1, row));
 			
 			JComboBox selector = createDrugSelector(model);
+			d_validator.add(selector);
 			ComboBoxPopupOnFocusListener.add(selector);
 			builder.add(selector, cc.xy(3, row));
 			
-			DoseView view = new DoseView(new PresentationModel<Dose>(g.getDose()));
+			DoseView view = new DoseView(new PresentationModel<Dose>(g.getDose()),
+					d_validator);
 			builder.add(view.buildPanel(), cc.xy(5, row));
-			
 			
 			if (g.getMeasurements().size() > 0) {
 				int col = 7;
-				for (JComponent component : MeasurementInputHelper.getComponents(g.getMeasurements().get(0))) {
+				for (JTextField component : MeasurementInputHelper.getComponents(g.getMeasurements().get(0))) {
+					d_validator.add(component);
 					builder.add(component, cc.xy(col, row));
 					col += 2;
 				}

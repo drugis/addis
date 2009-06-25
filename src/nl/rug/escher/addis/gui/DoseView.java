@@ -38,10 +38,16 @@ public class DoseView implements ViewBuilder {
 	PresentationModel<Dose> d_model;
 	private JFormattedTextField d_quantity;
 	private JComboBox d_unit;
+	private NotEmptyValidator d_validator;
 	
 	public DoseView(PresentationModel<Dose> dose) {
 		d_model = dose;
 	}
+	
+	public DoseView(PresentationModel<Dose> dose, NotEmptyValidator validator) {
+		d_model = dose;
+		d_validator = validator;
+	}	
 	
 	public void initComponents() {
 		d_quantity = new JFormattedTextField(new DefaultFormatter());
@@ -53,6 +59,11 @@ public class DoseView implements ViewBuilder {
 				d_model.getModel(Dose.PROPERTY_UNIT));
 		d_unit = BasicComponentFactory.createComboBox(unitSelectionInList);
 		ComboBoxPopupOnFocusListener.add(d_unit);
+		
+		if (d_validator != null) {
+			d_validator.add(d_quantity);
+			d_validator.add(d_unit);			
+		}		
 	}
 
 	public JComponent buildPanel() {

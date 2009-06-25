@@ -19,18 +19,18 @@
 
 package nl.rug.escher.addis.gui;
 
-import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
+import javax.swing.JTextField;
 import javax.swing.text.DefaultFormatter;
+
+import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
+import nl.rug.escher.addis.entities.BasicMeasurement;
+import nl.rug.escher.addis.entities.BasicRateMeasurement;
+import nl.rug.escher.addis.entities.Endpoint;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.value.ValueModel;
-
-import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
-import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.BasicMeasurement;
-import nl.rug.escher.addis.entities.BasicRateMeasurement;
 
 public class MeasurementInputHelper {
 
@@ -56,18 +56,18 @@ public class MeasurementInputHelper {
 		}
 	}
 
-	public static JComponent[] getComponents(BasicMeasurement m) {
+	public static JTextField[] getComponents(BasicMeasurement m) {
 		if (m instanceof BasicContinuousMeasurement) {
 			PresentationModel<BasicContinuousMeasurement> model = 
 				new PresentationModel<BasicContinuousMeasurement>((BasicContinuousMeasurement)m);
-			return new JComponent[] {
+			return new JTextField[] {
 				MeasurementInputHelper.buildFormatted(model.getModel(BasicContinuousMeasurement.PROPERTY_MEAN)),
 				MeasurementInputHelper.buildFormatted(model.getModel(BasicContinuousMeasurement.PROPERTY_STDDEV))
 			};
 		} else if (m instanceof BasicRateMeasurement) {
 			PresentationModel<BasicRateMeasurement> model = 
 				new PresentationModel<BasicRateMeasurement>((BasicRateMeasurement)m);
-			return new JComponent[] {
+			return new JTextField[] {
 				MeasurementInputHelper.buildFormatted(model.getModel(BasicRateMeasurement.PROPERTY_RATE))
 			};
 			
