@@ -32,10 +32,10 @@ import org.contract4j5.contract.Pre;
 import com.jgoodies.binding.beans.Model;
 
 @Contract
-public class OddsRatio extends Model implements ContinuousMeasurement {
+public class OddsRatio extends Model implements Measurement {
 	private static final long serialVersionUID = 5004304962294140838L;
-	private RateMeasurement d_numerator;
-	private RateMeasurement d_denominator;
+	protected RateMeasurement d_numerator;
+	protected RateMeasurement d_denominator;
 	
 	private class ChangeListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
@@ -70,7 +70,7 @@ public class OddsRatio extends Model implements ContinuousMeasurement {
 	public String getLabel() {
 		DecimalFormat format = new DecimalFormat("0.00");
 		Interval<Double> ci = getConfidenceInterval();
-		return format.format(getMean()) + " (" + format.format(ci.getLowerBound()) + "-" + 
+		return format.format(getRatio()) + " (" + format.format(ci.getLowerBound()) + "-" + 
 				format.format(ci.getUpperBound()) + ")";
 	}
 
@@ -96,7 +96,7 @@ public class OddsRatio extends Model implements ContinuousMeasurement {
 	}
 
 	private double getAssymmetricalMean(double g) {
-		return getMean() / (1 - g);
+		return getRatio() / (1 - g);
 	}
 
 	private double getG(double t) {
@@ -107,7 +107,7 @@ public class OddsRatio extends Model implements ContinuousMeasurement {
 		return StudentTTable.getT(getSampleSize() - 2);
 	}
 	
-	public Double getStdDev() {
+	public Double getError() {
 		double g = getG(getCriticalValue());
 		return getStdDev(g, getAssymmetricalMean(g));
 	}
@@ -120,7 +120,7 @@ public class OddsRatio extends Model implements ContinuousMeasurement {
 	 * Get the mean odds-ratio. This is mean(numerator) / mean(denominator)
 	 * @return The mean.
 	 */
-	public Double getMean() {
+	public Double getRatio() {
 		return getMean(d_numerator) / getMean(d_denominator);
 	}
 	

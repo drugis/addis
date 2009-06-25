@@ -63,7 +63,7 @@ public class SMAAAdapter {
 				OddsRatio od = new OddsRatio(getRate(g, e), first);
 				Alternative alt = findAlternative(g, model);
 				LogNormalMeasurement meas = new LogNormalMeasurement(
-						od.getMean(), od.getStdDev());		
+						od.getRatio(), od.getError());		
 				model.getImpactMatrix().setMeasurement(crit, alt, meas);
 			}
 		} else if (e.getType().equals(Endpoint.Type.CONTINUOUS)) {
