@@ -49,8 +49,10 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
 import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.DependentEntitiesException;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainListener;
+import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.gui.GUIHelper;
@@ -216,8 +218,22 @@ public class Main extends JFrame {
 	}
 
 	protected void deleteMenuAction() {
-		// TODO Auto-generated method stub
-		
+		Object selected = d_leftPanelTree.getSelectionPath().getLastPathComponent();
+		try {
+			if (selected instanceof Drug) {
+				d_domain.getDomain().deleteDrug((Drug) selected);
+			} else if (selected instanceof Endpoint) {
+				d_domain.getDomain().deleteEndpoint((Endpoint) selected);
+			} else if (selected instanceof Study) {
+				d_domain.getDomain().deleteStudy((Study) selected);
+			}
+		} catch (DependentEntitiesException e) {
+			JOptionPane.showMessageDialog(this,
+					selected + " is used by " + e.getDependents()
+					+ " - delete these first.",
+					"Error deleting " + selected,					
+					JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private JMenuItem createAddEndpointMenuItem() {
