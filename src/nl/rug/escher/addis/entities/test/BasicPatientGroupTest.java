@@ -201,5 +201,5 @@ public class BasicPatientGroupTest {
 		BasicPatientGroup pg = new BasicPatientGroup(new BasicStudy("X"), new Drug("Drug 2"), 
 				new Dose(8, SIUnit.MILLIGRAMS_A_DAY), 2, l);
 		assertEquals(pg, pg.getMeasurements().get(0).getPatientGroup());
-	}
+	}	
 }

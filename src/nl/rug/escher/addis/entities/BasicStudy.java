@@ -75,4 +75,11 @@ public class BasicStudy extends AbstractStudy implements Study {
 		}
 		return drugs;
 	}
+
+	public Set<Entity> getDependencies() {
+		HashSet<Entity> dep = new HashSet<Entity>(getDrugs());
+		dep.addAll(d_endpoints);
+		return dep;
+	}
+
 }

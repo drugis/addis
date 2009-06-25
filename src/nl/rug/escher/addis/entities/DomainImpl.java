@@ -26,7 +26,9 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -163,5 +165,24 @@ public class DomainImpl implements Domain, Serializable {
 		hash = hash * 31 + getDrugs().hashCode();
 		hash = hash * 31 + getStudies().hashCode();
 		return hash;
+	}
+	
+	public Set<Entity> getDependents(Entity e) {
+		Set<Entity> deps = new HashSet<Entity>();
+		for (Study s : getStudies()) {
+			if (s.getDependencies().contains(e)) {
+				deps.add(s);
+			}
+		}
+		return deps;
+	}
+
+	public void deleteStudy(Study s) throws DependentEntitiesException {
+		Set<Entity> deps = getDependents(s);
+		if (!deps.isEmpty()) {
+			throw new DependentEntitiesException(deps);
+		}
+		d_studies.remove(s);
+		fireStudiesChanged();
 	}
 }

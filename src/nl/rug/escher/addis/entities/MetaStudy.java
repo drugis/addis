@@ -21,6 +21,7 @@ package nl.rug.escher.addis.entities;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -54,6 +55,15 @@ public class MetaStudy extends AbstractStudy {
 		}
 		
 		return l;
+	}
+
+	public Set<Entity> getDependencies() {
+		List<Study> studies = getAnalysis().getStudies();
+		Set<Entity> deps = new HashSet<Entity>(studies);
+		for (Study s : studies) {
+			deps.addAll(s.getDependencies());
+		}
+		return deps;
 	}
 
 }

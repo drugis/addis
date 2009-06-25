@@ -19,9 +19,12 @@
 
 package nl.rug.escher.addis.entities;
 
+import java.util.Collections;
+import java.util.Set;
+
 import com.jgoodies.binding.beans.Model;
 
-public class Drug extends Model implements Comparable<Drug> {
+public class Drug extends Model implements Comparable<Drug>, Entity {
 	private static final long serialVersionUID = 5156008576438893074L;
 
 	private String d_name;
@@ -70,5 +73,9 @@ public class Drug extends Model implements Comparable<Drug> {
 
 	public int compareTo(Drug other) {
 		return getName().compareTo(other.getName());
+	}
+
+	public Set<Entity> getDependencies() {
+		return Collections.emptySet();
 	}
 }

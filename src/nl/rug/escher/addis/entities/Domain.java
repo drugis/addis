@@ -80,4 +80,12 @@ public interface Domain {
 	 * Remove a listener from the domain object.
 	 */
 	public void removeListener(DomainListener listener);
+
+	/**
+	 * Deletes a study from the domain.
+	 * 
+	 * @param s the study to delete
+	 * @throws DependentEntitiesException if some entities depend on the study
+	 */
+	public void deleteStudy(Study s) throws DependentEntitiesException;
 }

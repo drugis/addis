@@ -24,17 +24,22 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.DependentEntitiesException;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainImpl;
 import nl.rug.escher.addis.entities.DomainListener;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.MetaAnalysis;
+import nl.rug.escher.addis.entities.MetaStudy;
+import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Before;
@@ -196,4 +201,51 @@ public class DomainTest {
 		assertEquals(d1, d2);
 		assertEquals(d1.hashCode(), d2.hashCode());
 	}
+	
+	@Test
+	public void testDeleteStudy() throws DependentEntitiesException {
+		BasicStudy s = new BasicStudy("X");
+		d_domain.addStudy(s);
+		d_domain.deleteStudy(s);
+		assertTrue(d_domain.getStudies().isEmpty());
+	}
+	
+	@Test
+	public void testDeleteStudyThrowsCorrectException() {
+		BasicStudy s1 = new BasicStudy("X");
+		BasicStudy s2 = new BasicStudy("Y");
+		d_domain.addStudy(s1);
+		d_domain.addStudy(s2);
+		
+		Endpoint e = new Endpoint("e");
+		d_domain.addEndpoint(e);
+		s1.addEndpoint(e);
+		s2.addEndpoint(e);
+		
+		ArrayList<Study> studies = new ArrayList<Study>(d_domain.getStudies());
+		MetaAnalysis ma = new MetaAnalysis(e, studies); 
+		MetaStudy s = new MetaStudy("meta", ma);
+		d_domain.addStudy(s);
+
+		try {
+			d_domain.deleteStudy(s1);
+			fail();
+		} catch (DependentEntitiesException e1) {
+			assertEquals(Collections.singleton(s), e1.getDependents());
+		}
+	}
+	
+	@Test
+	public void testDeleteStudyFires() throws DependentEntitiesException {
+		BasicStudy s1 = new BasicStudy("X");
+		d_domain.addStudy(s1);
+		
+		DomainListener mock = createMock(DomainListener.class);
+		d_domain.addListener(mock);
+		mock.studiesChanged();
+		replay(mock);
+		d_domain.deleteStudy(s1);
+		verify(mock);
+	}
+	
 }

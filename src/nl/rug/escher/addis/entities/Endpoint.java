@@ -19,9 +19,12 @@
 
 package nl.rug.escher.addis.entities;
 
+import java.util.Collections;
+import java.util.Set;
+
 import com.jgoodies.binding.beans.Model;
 
-public class Endpoint extends Model implements Comparable<Endpoint> {
+public class Endpoint extends Model implements Comparable<Endpoint>, Entity {
 	private static final long serialVersionUID = -1182348850033782011L;
 
 	public enum Type {
@@ -113,5 +116,9 @@ public class Endpoint extends Model implements Comparable<Endpoint> {
 
 	public int compareTo(Endpoint other) {
 		return getName().compareTo(other.getName());
+	}
+
+	public Set<Entity> getDependencies() {
+		return Collections.emptySet();
 	}
 }

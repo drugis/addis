@@ -24,7 +24,7 @@ import java.util.Set;
 
 import com.jgoodies.binding.beans.Observable;
 
-public interface Study extends Comparable<Study>, Observable {
+public interface Study extends Comparable<Study>, Observable, Entity {
 	public final static String PROPERTY_ID = "id";
 	public final static String PROPERTY_ENDPOINTS = "endpoints";
 	public final static String PROPERTY_PATIENTGROUPS = "patientGroups";

@@ -20,6 +20,7 @@
 package nl.rug.escher.addis.entities.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -28,16 +29,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import nl.rug.escher.addis.entities.Drug;
-import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.Drug;
+import nl.rug.escher.addis.entities.Endpoint;
+import nl.rug.escher.addis.entities.Entity;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Before;
 import org.junit.Test;
 
-public class StudyTest {
+public class BasicStudyTest {
 	
 	private BasicPatientGroup d_pg;
 
@@ -107,5 +109,16 @@ public class StudyTest {
 		assertEquals(new BasicStudy(name1), new BasicStudy(name1));
 		JUnitUtil.assertNotEquals(new BasicStudy(name1), new BasicStudy(name2));
 		assertEquals(new BasicStudy(name1).hashCode(), new BasicStudy(name1).hashCode());
+	}
+	
+	@Test
+	public void testGetDependencies() {
+		BasicStudy s = TestData.buildDefaultStudy2();
+		assertFalse(s.getEndpoints().isEmpty());
+		assertFalse(s.getDrugs().isEmpty());
+		
+		Set<Entity> dep = new HashSet<Entity>(s.getEndpoints());
+		dep.addAll(s.getDrugs());
+		assertEquals(dep, s.getDependencies());
 	}
 }

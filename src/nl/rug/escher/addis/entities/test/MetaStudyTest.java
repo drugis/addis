@@ -23,10 +23,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainImpl;
+import nl.rug.escher.addis.entities.Entity;
 import nl.rug.escher.addis.entities.MetaAnalysis;
 import nl.rug.escher.addis.entities.MetaStudy;
 import nl.rug.escher.addis.entities.PatientGroup;
@@ -85,6 +88,16 @@ public class MetaStudyTest {
 		
 		assertEquals(m1, fluox.getMeasurement(TestData.buildEndpointHamd()));
 		assertEquals(m2, parox.getMeasurement(TestData.buildEndpointHamd()));
+	}
+	
+	@Test
+	public void testGetDependencies() {
+		List<Study> studies = d_study.getAnalysis().getStudies();
+		Set<Entity> deps = new HashSet<Entity>(studies);
+		for (Study s : studies) {
+			deps.addAll(s.getDependencies());
+		}
+		assertEquals(deps, d_study.getDependencies());
 	}
 	
 }
