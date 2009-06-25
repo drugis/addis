@@ -34,27 +34,27 @@ import com.jgoodies.binding.beans.Model;
 @Contract
 public class OddsRatio extends Model implements ContinuousMeasurement {
 	private static final long serialVersionUID = 5004304962294140838L;
-	private ContinuousMeasurement d_numerator;
-	private ContinuousMeasurement d_denominator;
+	private RateMeasurement d_numerator;
+	private RateMeasurement d_denominator;
 	
 	private class ChangeListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals(ContinuousMeasurement.PROPERTY_MEAN) ||
-					evt.getPropertyName().equals(ContinuousMeasurement.PROPERTY_STDDEV)) {
+			if (evt.getPropertyName().equals(RateMeasurement.PROPERTY_RATE) ||
+					evt.getPropertyName().equals(RateMeasurement.PROPERTY_SAMPLESIZE)) {
 				firePropertyChange(PROPERTY_LABEL, null, getLabel());
 			}
 		}
 	}
 	
 	/**
-	 * The Peto odds-ratio of two ContinuousMeasurements.
+	 * The odds-ratio of two RateMeasurements.
 	 * In a forest plot, the numerator will be on the right and the denominator on the left.
 	 * @param denominator
 	 * @param numerator
 	 */
 	@Pre("denominator != null && numerator != null && " +
 			"denominator.getEndpoint().equals(numerator.getEndpoint())")
-	public OddsRatio(ContinuousMeasurement denominator, ContinuousMeasurement numerator) {
+	public OddsRatio(RateMeasurement denominator, RateMeasurement numerator) { 
 		d_numerator = numerator;
 		d_denominator = denominator;
 		
@@ -91,8 +91,8 @@ public class OddsRatio extends Model implements ContinuousMeasurement {
 	}
 
 	private double getStdDev(double g, double qx) {
-		return qx * Math.sqrt((1 - g) * sq(d_numerator.getStdDev()) / sq(d_numerator.getMean()) +
-				sq(d_denominator.getStdDev()) / sq(d_denominator.getMean()));
+		return qx * Math.sqrt((1 - g) * sq(getStdDev(d_numerator)) / sq(getMean(d_numerator)) +
+				sq(getStdDev(d_denominator)) / sq(getMean(d_denominator)));
 	}
 
 	private double getAssymmetricalMean(double g) {
@@ -100,7 +100,7 @@ public class OddsRatio extends Model implements ContinuousMeasurement {
 	}
 
 	private double getG(double t) {
-		return sq(t * d_denominator.getStdDev() / d_denominator.getMean());
+		return sq(t * getStdDev(d_denominator) / getMean(d_denominator));
 	}
 
 	private double getCriticalValue() {
@@ -121,6 +121,14 @@ public class OddsRatio extends Model implements ContinuousMeasurement {
 	 * @return The mean.
 	 */
 	public Double getMean() {
-		return d_numerator.getMean() / d_denominator.getMean();
+		return getMean(d_numerator) / getMean(d_denominator);
+	}
+	
+	private double getMean(RateMeasurement m) {
+		return (double)m.getRate() / (double)(m.getSampleSize() - m.getRate());
+	}
+	
+	private double getStdDev(RateMeasurement m) {
+		return getMean(m) / Math.sqrt(m.getSampleSize());
 	}
 }

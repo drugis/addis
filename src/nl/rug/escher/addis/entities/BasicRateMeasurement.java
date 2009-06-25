@@ -45,9 +45,13 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 	}
 	
 	public BasicRateMeasurement(Endpoint e) {
+		this(e, 0);
+	}
+	
+	public BasicRateMeasurement(Endpoint e, int rate) {
 		super(e);
 		addPropertyChangeListener(PROPERTY_SAMPLESIZE, d_listener);
-		d_rate = 0;
+		d_rate = rate;
 	}
 
 	public String getLabel() {

@@ -24,8 +24,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
 
-import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
+import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
@@ -42,13 +42,15 @@ import org.junit.Test;
 public class OddsRatioTest {
 	private static final int s_sizeNum = 142;
 	private static final int s_sizeDen = 144;
-	private static final double s_meanNum = 73.0 / s_sizeNum; 
-	private static final double s_meanDen = 63.0 / s_sizeDen;
+	private static final int s_effectNum = 73;
+	private static final int s_effectDen = 63;
+	private static final double s_meanNum = (double)s_effectNum / (double)(s_sizeNum - s_effectNum); 
+	private static final double s_meanDen = (double)s_effectDen / (double)(s_sizeDen - s_effectDen);
 	private static final double s_stdDevNum = s_meanNum / Math.sqrt(s_sizeNum);
 	private static final double s_stdDevDen = s_meanDen / Math.sqrt(s_sizeDen);
 	
-	BasicContinuousMeasurement d_numerator;
-	BasicContinuousMeasurement d_denominator;
+	BasicRateMeasurement d_numerator;
+	BasicRateMeasurement d_denominator;
 	OddsRatio d_ratio;
 	
 	@Before
@@ -56,11 +58,13 @@ public class OddsRatioTest {
 		Endpoint e = new Endpoint("E");
 		
 		BasicPatientGroup g1 = new BasicPatientGroup(new BasicStudy("X"), new Drug("D"), new Dose(8.8, SIUnit.MILLIGRAMS_A_DAY), s_sizeNum);
-		d_numerator = new BasicContinuousMeasurement(e, s_meanNum, s_stdDevNum);
+		d_numerator = new BasicRateMeasurement(e);
+		d_numerator.setRate(s_effectNum);
 		g1.addMeasurement(d_numerator);
 		
 		BasicPatientGroup g2 = new BasicPatientGroup(new BasicStudy("X"), new Drug("F"), new Dose(8.8, SIUnit.MILLIGRAMS_A_DAY), s_sizeDen);
-		d_denominator = new BasicContinuousMeasurement(e, s_meanDen, s_stdDevDen);
+		d_denominator = new BasicRateMeasurement(e);
+		d_denominator.setRate(s_effectDen);
 		g2.addMeasurement(d_denominator);
 		
 		d_ratio = new OddsRatio(d_denominator, d_numerator);
@@ -102,23 +106,23 @@ public class OddsRatioTest {
 	
 	@Test
 	public void testGetLabel() {
-		assertEquals("1.18 (0.93-1.49)", d_ratio.getLabel());
+		assertEquals("1.36 (1.07-1.72)", d_ratio.getLabel());
 	}
 	
 	@Test
 	public void testPropertyChangeEvents() {
-		d_denominator.setMean(0.1);
+		d_denominator.setRate(1);
 		PropertyChangeListener l = 
-			JUnitUtil.mockListener(d_ratio, OddsRatio.PROPERTY_LABEL, null, "1.18 (0.93-1.49)");
+			JUnitUtil.mockListener(d_ratio, OddsRatio.PROPERTY_LABEL, null, "1.36 (1.07-1.72)");
 		d_ratio.addPropertyChangeListener(l);
-		d_denominator.setMean(s_meanDen);
+		d_denominator.setRate(s_effectDen);
 		verify(l);
 		d_ratio.removePropertyChangeListener(l);
 		
-		d_numerator.setMean(0.1);
-		l = JUnitUtil.mockListener(d_ratio, OddsRatio.PROPERTY_LABEL, null, "1.18 (0.93-1.49)");
+		d_numerator.setRate(1);
+		l = JUnitUtil.mockListener(d_ratio, OddsRatio.PROPERTY_LABEL, null, "1.36 (1.07-1.72)");
 		d_ratio.addPropertyChangeListener(l);
-		d_numerator.setMean(s_meanNum);
+		d_numerator.setRate(s_effectNum);
 		verify(l);
 	}
 	

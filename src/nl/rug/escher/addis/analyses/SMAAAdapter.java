@@ -23,7 +23,6 @@ import nl.rug.escher.addis.entities.ContinuousMeasurement;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.OddsRatio;
 import nl.rug.escher.addis.entities.PatientGroup;
-import nl.rug.escher.addis.entities.RateContinuousAdapter;
 import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.Study;
 import fi.smaa.jsmaa.model.Alternative;
@@ -59,9 +58,9 @@ public class SMAAAdapter {
 		model.addCriterion(crit);
 		
 		if (e.getType().equals(Endpoint.Type.RATE)) {
-			ContinuousMeasurement first = getAdaptedRate(study.getPatientGroups().get(0), e);
+			RateMeasurement first = getRate(study.getPatientGroups().get(0), e);
 			for (PatientGroup g : study.getPatientGroups()) {
-				OddsRatio od = new OddsRatio(getAdaptedRate(g, e), first);
+				OddsRatio od = new OddsRatio(getRate(g, e), first);
 				Alternative alt = findAlternative(g, model);
 				LogNormalMeasurement meas = new LogNormalMeasurement(
 						od.getMean(), od.getStdDev());		
@@ -79,8 +78,8 @@ public class SMAAAdapter {
 		}
 	}
 	
-	private static ContinuousMeasurement getAdaptedRate(PatientGroup g, Endpoint e) {
-		return new RateContinuousAdapter((RateMeasurement)g.getMeasurement(e));
+	private static RateMeasurement getRate(PatientGroup g, Endpoint e) {
+		return (RateMeasurement)g.getMeasurement(e);
 	}	
 
 	private static void addAlternativesToModel(Study study, SMAAModel model) {
