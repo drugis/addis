@@ -31,6 +31,7 @@ import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.RateContinuousAdapter;
 import nl.rug.escher.addis.entities.RateMeasurement;
+import nl.rug.escher.addis.entities.RiskRatio;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.addis.entities.test.TestData;
 
@@ -95,9 +96,11 @@ public class SMAAAdapterTest {
 			LogNormalMeasurement m = (LogNormalMeasurement) mat.getMeasurement(
 					c, SMAAAdapter.findAlternative(g, model)
 					);
-			RateContinuousAdapter adapter = new RateContinuousAdapter(((RateMeasurement) g.getMeasurement(e)));			
-			assertEquals(adapter.getMean(), m.getMean());
-			assertEquals(adapter.getStdDev(), m.getStDev());
+			PatientGroup first = d_study.getPatientGroups().get(0);
+			RiskRatio ratio = new RiskRatio((RateMeasurement) first.getMeasurement(e),
+					(RateMeasurement) g.getMeasurement(e));
+			assertEquals(ratio.getMean(), m.getMean());
+			assertEquals(ratio.getStdDev(), m.getStDev());
 		}		
 	}
 

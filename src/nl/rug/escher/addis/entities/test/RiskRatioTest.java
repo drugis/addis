@@ -16,42 +16,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package nl.rug.escher.addis.entities.test;
 
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-
-import java.beans.PropertyChangeListener;
-
+import static org.junit.Assert.*;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.OddsRatio;
+import nl.rug.escher.addis.entities.RiskRatio;
 import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.common.Interval;
-import nl.rug.escher.common.JUnitUtil;
 import nl.rug.escher.common.StudentTTable;
 
 import org.junit.Before;
 import org.junit.Test;
 
-public class OddsRatioTest {
+public class RiskRatioTest {
 	private static final int s_sizeNum = 142;
 	private static final int s_sizeDen = 144;
 	private static final int s_effectNum = 73;
 	private static final int s_effectDen = 63;
-	private static final double s_meanNum = (double)s_effectNum / (double)(s_sizeNum - s_effectNum); 
-	private static final double s_meanDen = (double)s_effectDen / (double)(s_sizeDen - s_effectDen);
+	private static final double s_meanNum = (double)s_effectNum / (double)s_sizeNum; 
+	private static final double s_meanDen = (double)s_effectDen / (double)s_sizeDen;
 	private static final double s_stdDevNum = s_meanNum / Math.sqrt(s_sizeNum);
 	private static final double s_stdDevDen = s_meanDen / Math.sqrt(s_sizeDen);
 	
 	BasicRateMeasurement d_numerator;
 	BasicRateMeasurement d_denominator;
-	OddsRatio d_ratio;
+	RiskRatio d_ratio;
 	
 	@Before
 	public void setUp() {
@@ -67,7 +61,7 @@ public class OddsRatioTest {
 		d_denominator.setRate(s_effectDen);
 		g2.addMeasurement(d_denominator);
 		
-		d_ratio = new OddsRatio(d_denominator, d_numerator);
+		d_ratio = new RiskRatio(d_denominator, d_numerator);
 	}
 	
 	@Test
@@ -81,8 +75,8 @@ public class OddsRatioTest {
 	}
 	
 	@Test
-	public void testGetRatio() {
-		assertEquals(s_meanNum / s_meanDen, (double)d_ratio.getRatio(), 0.00001);
+	public void testGetMean() {
+		assertEquals(s_meanNum / s_meanDen, (double)d_ratio.getMean(), 0.00001);
 	}
 	
 	@Test
@@ -105,35 +99,8 @@ public class OddsRatioTest {
 	}
 	
 	@Test
-	public void testGetLabel() {
-		assertEquals("1.36 (1.07-1.72)", d_ratio.getLabel());
-	}
-	
-	@Test
-	public void testPropertyChangeEvents() {
-		d_denominator.setRate(1);
-		PropertyChangeListener l = 
-			JUnitUtil.mockListener(d_ratio, OddsRatio.PROPERTY_LABEL, null, "1.36 (1.07-1.72)");
-		d_ratio.addPropertyChangeListener(l);
-		d_denominator.setRate(s_effectDen);
-		verify(l);
-		d_ratio.removePropertyChangeListener(l);
-		
-		d_numerator.setRate(1);
-		l = JUnitUtil.mockListener(d_ratio, OddsRatio.PROPERTY_LABEL, null, "1.36 (1.07-1.72)");
-		d_ratio.addPropertyChangeListener(l);
-		d_numerator.setRate(s_effectNum);
-		verify(l);
-	}
-	
-	@Test
-	public void testGetError() {
-		double t = StudentTTable.getT(d_ratio.getSampleSize() - 2);
-		double g = square(t * s_stdDevDen / s_meanDen);
-		double q = d_ratio.getRatio();
-		double sd = q / (1 - g) * Math.sqrt((1 - g) * square(s_stdDevNum) / square(s_meanNum) + 
-				square(s_stdDevDen) / square(s_meanDen));
-		
-		assertEquals(sd, d_ratio.getError(), 0.00001);
+	public void testStdDev() {
+		double sd = d_ratio.getConfidenceInterval().getLength() / (2 * 1.96);
+		assertEquals(sd, d_ratio.getStdDev(), 0.00001);
 	}
 }

@@ -16,4 +16,8 @@ public class Interval<N extends Number> {
 	public N getUpperBound() {
 		return d_upperBound;
 	}
+	
+	public double getLength() {
+		return d_upperBound.doubleValue() - d_lowerBound.doubleValue();
+	}
 }

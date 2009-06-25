@@ -24,6 +24,7 @@ import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.LogOddsRatio;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.RateMeasurement;
+import nl.rug.escher.addis.entities.RiskRatio;
 import nl.rug.escher.addis.entities.Study;
 import fi.smaa.jsmaa.model.Alternative;
 import fi.smaa.jsmaa.model.CardinalCriterion;
@@ -60,7 +61,7 @@ public class SMAAAdapter {
 		if (e.getType().equals(Endpoint.Type.RATE)) {
 			RateMeasurement first = getRate(study.getPatientGroups().get(0), e);
 			for (PatientGroup g : study.getPatientGroups()) {
-				LogOddsRatio od = new LogOddsRatio(getRate(g, e), first);
+				RiskRatio od = new RiskRatio(first, getRate(g, e));
 				Alternative alt = findAlternative(g, model);
 				LogNormalMeasurement meas = new LogNormalMeasurement(
 						od.getMean(), od.getStdDev());		
