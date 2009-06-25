@@ -224,8 +224,10 @@ public class Main extends JFrame {
 				d_domain.getDomain().deleteDrug((Drug) selected);
 			} else if (selected instanceof Endpoint) {
 				d_domain.getDomain().deleteEndpoint((Endpoint) selected);
+				leftTreeFocusEndpoints();
 			} else if (selected instanceof Study) {
 				d_domain.getDomain().deleteStudy((Study) selected);
+				leftTreeFocusStudies();
 			}
 		} catch (DependentEntitiesException e) {
 			JOptionPane.showMessageDialog(this,
@@ -369,9 +371,23 @@ public class Main extends JFrame {
 	}
 	
 	protected void noneSelected() {
+		d_rightPanel.setViewportView(new JPanel());
 		d_editMenuDeleteItem.setEnabled(false);
 	}
 
+
+	private void leftTreeFocusStudies() {
+		d_leftPanelTree.setSelectionPath(new TreePath(
+				new Object[] {d_domainTreeModel.getRoot(), 
+						d_domainTreeModel.getStudiesNode() }));
+	}
+	
+	private void leftTreeFocusEndpoints() {
+		d_leftPanelTree.setSelectionPath(new TreePath(
+				new Object[] {d_domainTreeModel.getRoot(), 
+						d_domainTreeModel.getEndpointsNode() }));
+	}	
+	
 	public void endpointSelected(Endpoint e, Study selectedStudy) {
 		EndpointStudiesView view = new EndpointStudiesView(e, getDomain(), this);
 		view.setSelectedStudy(selectedStudy);
