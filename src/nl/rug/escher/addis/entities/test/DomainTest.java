@@ -30,15 +30,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.DependentEntitiesException;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainImpl;
 import nl.rug.escher.addis.entities.DomainListener;
+import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.MetaAnalysis;
 import nl.rug.escher.addis.entities.MetaStudy;
+import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.JUnitUtil;
 
@@ -245,6 +248,46 @@ public class DomainTest {
 		mock.studiesChanged();
 		replay(mock);
 		d_domain.deleteStudy(s1);
+		verify(mock);
+	}
+
+	@Test
+	public void testDeleteDrug() throws DependentEntitiesException {
+		Drug d = new Drug("X");
+		d_domain.addDrug(d);
+		d_domain.deleteDrug(d);
+		assertTrue(d_domain.getDrugs().isEmpty());
+	}
+	
+	@Test
+	public void testDeleteDrugThrowsCorrectException() {
+		BasicStudy s1 = new BasicStudy("X");
+		d_domain.addStudy(s1);
+		
+		Drug d = new Drug("d");
+		d_domain.addDrug(d);
+	
+		BasicPatientGroup g = new BasicPatientGroup(s1, d, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY), 10);
+		s1.addPatientGroup(g);
+		
+		try {
+			d_domain.deleteDrug(d);
+			fail();
+		} catch (DependentEntitiesException e1) {
+			assertEquals(Collections.singleton(s1), e1.getDependents());
+		}
+	}
+	
+	@Test
+	public void testDeleteDrugFires() throws DependentEntitiesException {
+		Drug d = new Drug("d");
+		d_domain.addDrug(d);
+		
+		DomainListener mock = createMock(DomainListener.class);
+		d_domain.addListener(mock);
+		mock.drugsChanged();
+		replay(mock);
+		d_domain.deleteDrug(d);
 		verify(mock);
 	}
 	

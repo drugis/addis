@@ -178,11 +178,21 @@ public class DomainImpl implements Domain, Serializable {
 	}
 
 	public void deleteStudy(Study s) throws DependentEntitiesException {
-		Set<Entity> deps = getDependents(s);
+		checkDependents(s);
+		d_studies.remove(s);
+		fireStudiesChanged();
+	}
+
+	public void deleteDrug(Drug d) throws DependentEntitiesException {
+		checkDependents(d);
+		d_drugs.remove(d);
+		fireDrugsChanged();		
+	}
+
+	private void checkDependents(Entity d) throws DependentEntitiesException {
+		Set<Entity> deps = getDependents(d);
 		if (!deps.isEmpty()) {
 			throw new DependentEntitiesException(deps);
 		}
-		d_studies.remove(s);
-		fireStudiesChanged();
 	}
 }

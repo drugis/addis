@@ -88,4 +88,12 @@ public interface Domain {
 	 * @throws DependentEntitiesException if some entities depend on the study
 	 */
 	public void deleteStudy(Study s) throws DependentEntitiesException;
+	
+	/**
+	 * Deletes a drug from the domain.
+	 * 
+	 * @param d the drug to delete 
+	 * @throws DependeptEntititesException if some entities depend on this drug
+	 */
+	public void deleteDrug(Drug d) throws DependentEntitiesException;
 }
