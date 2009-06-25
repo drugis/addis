@@ -29,6 +29,7 @@ import javax.swing.tree.TreePath;
 
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainListener;
+import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.CollectionUtil;
@@ -36,9 +37,11 @@ import nl.rug.escher.common.CollectionUtil;
 public class DomainTreeModel implements TreeModel {
 	public static final int ENDPOINTS = 0;
 	public static final int STUDIES = 1;
+	public static final int DRUGS = 2;
 	private String d_root = "Database";
 	private String d_endpointsNode = "Endpoints";
 	private String d_studiesNode = "Studies";
+	private String d_drugsNode = "Drugs";
 	private Domain d_domain;
 	
 	private List<TreeModelListener> d_listeners;
@@ -54,6 +57,7 @@ public class DomainTreeModel implements TreeModel {
 		}
 
 		public void drugsChanged() {
+			fireTreeStructureChanged();
 		}
 	}
 	
@@ -69,8 +73,12 @@ public class DomainTreeModel implements TreeModel {
 			return d_endpointsNode;
 		} else if (d_root == parent && childIndex == STUDIES) {
 			return d_studiesNode;
+		} else if (d_root == parent && childIndex == DRUGS) {
+			return d_drugsNode;
 		} else if (isEndpointRequest(parent, childIndex)) {
 			return CollectionUtil.getElementAtIndex(d_domain.getEndpoints(), childIndex);
+		} else if (isDrugsRequest(parent, childIndex)) {
+			return CollectionUtil.getElementAtIndex(d_domain.getDrugs(), childIndex);
 		} else if (isStudyRequest(parent, childIndex)) {
 			return CollectionUtil.getElementAtIndex(d_domain.getStudies(), childIndex);
 		}
@@ -80,6 +88,10 @@ public class DomainTreeModel implements TreeModel {
 	private boolean isStudyRequest(Object parent, int childIndex) {
 		return d_studiesNode == parent && childIndex >= 0 && childIndex < d_domain.getStudies().size();
 	}
+	
+	private boolean isDrugsRequest(Object parent, int childIndex) {
+		return d_drugsNode == parent && childIndex >= 0 && childIndex < d_domain.getDrugs().size();
+	}	
 
 	private boolean isEndpointRequest(Object parent, int childIndex) {
 		return d_endpointsNode == parent && childIndex >= 0 && childIndex < d_domain.getEndpoints().size();
@@ -87,27 +99,35 @@ public class DomainTreeModel implements TreeModel {
 
 	public int getChildCount(Object parent) {
 		if (d_root == parent) {
-			return 2;
+			return 3;
 		} else if (d_endpointsNode == parent) {
 			return d_domain.getEndpoints().size();
 		} else if (d_studiesNode == parent) {
 			return d_domain.getStudies().size();
+		} else if (d_drugsNode == parent) {
+			return d_domain.getDrugs().size();
 		}
 		return 0;
 	}
 
 	public int getIndexOfChild(Object parent, Object child) {
 		if (parent == d_root && child == d_endpointsNode) {
-			return 0;
+			return ENDPOINTS;
 		}
 		if (parent == d_root && child == d_studiesNode) {
-			return 1;
+			return STUDIES;
 		}
+		if (parent == d_root && child == d_drugsNode) {
+			return DRUGS;
+		}		
 		if (parent == d_endpointsNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getEndpoints(), child);
 		}
 		if (parent == d_studiesNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getStudies(), child);
+		}
+		if (parent == d_drugsNode) {
+			return CollectionUtil.getIndexOfElement(d_domain.getDrugs(), child);			
 		}
 		return -1;
 	}
@@ -122,6 +142,9 @@ public class DomainTreeModel implements TreeModel {
 		}
 		if (node instanceof Study) {
 			return d_domain.getStudies().contains(node);
+		}
+		if (node instanceof Drug) {
+			return d_domain.getDrugs().contains(node);			
 		}
 		return false;
 	}
@@ -151,5 +174,9 @@ public class DomainTreeModel implements TreeModel {
 
 	public Object getEndpointsNode() {
 		return getChild(getRoot(), DomainTreeModel.ENDPOINTS);
+	}
+	
+	public Object getDrugsNode() {
+		return getChild(getRoot(), DomainTreeModel.DRUGS);
 	}
 }

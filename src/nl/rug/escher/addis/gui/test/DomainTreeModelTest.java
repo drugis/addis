@@ -34,6 +34,7 @@ import javax.swing.event.TreeModelListener;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainImpl;
+import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.MetaStudy;
 import nl.rug.escher.addis.gui.DomainTreeModel;
@@ -42,18 +43,21 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class DomainTreeModelTest {
-	DomainTreeModel d_treeModel;
-	Domain d_domain;
-	Endpoint d_firstEndpoint;
-	BasicStudy d_firstStudy;
+	private DomainTreeModel d_treeModel;
+	private Domain d_domain;
+	private Endpoint d_firstEndpoint;
+	private BasicStudy d_firstStudy;
+	private Drug d_firstDrug;
 	
 	@Before
 	public void setUp() {
 		d_domain = new DomainImpl();
 		d_firstEndpoint = new Endpoint("Endpoint");
 		d_firstStudy = new BasicStudy("First");
+		d_firstDrug = new Drug("Drug");
 		d_domain.addEndpoint(d_firstEndpoint);
 		d_domain.addStudy(d_firstStudy);
+		d_domain.addDrug(d_firstDrug);
 		d_treeModel = new DomainTreeModel(d_domain);
 	}
 	
@@ -75,6 +79,11 @@ public class DomainTreeModelTest {
 		assertEquals("Studies", getStudiesNode().toString());
 	}
 	
+	@Test
+	public void testGetDrugsNode() {
+		assertEquals("Drugs", getDrugsNode().toString());
+	}
+	
 	private Object getStudiesNode() {
 		return d_treeModel.getStudiesNode();
 	}
@@ -86,6 +95,16 @@ public class DomainTreeModelTest {
 	}
 	
 	@Test
+	public void testGetDrug() {
+		assertEquals(d_firstDrug, d_treeModel.getChild(getDrugsNode(), 0));
+		assertEquals(null, d_treeModel.getChild(getDrugsNode(), 1));		
+	}
+	
+	private Object getDrugsNode() {
+		return d_treeModel.getDrugsNode();
+	}
+
+	@Test
 	public void testGetStudy() {
 		assertEquals(d_firstStudy, d_treeModel.getChild(getStudiesNode(), 0));
 		assertEquals(null, d_treeModel.getChild(getStudiesNode(), 1));
@@ -93,8 +112,9 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testGetChildCount() {
-		assertEquals(2, d_treeModel.getChildCount(d_treeModel.getRoot()));
+		assertEquals(3, d_treeModel.getChildCount(d_treeModel.getRoot()));
 		assertEquals(1, d_treeModel.getChildCount(getEndpointsNode()));
+		assertEquals(1, d_treeModel.getChildCount(getDrugsNode()));		
 		assertEquals(1, d_treeModel.getChildCount(getStudiesNode()));
 		assertEquals(0, d_treeModel.getChildCount(d_firstEndpoint));
 	}
@@ -109,7 +129,9 @@ public class DomainTreeModelTest {
 		assertEquals(0, d_treeModel.getIndexOfChild(getEndpointsNode(), d_firstEndpoint));
 		assertEquals(-1, d_treeModel.getIndexOfChild(getEndpointsNode(), new Object()));
 		assertEquals(1, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getStudiesNode()));
+		assertEquals(2, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getDrugsNode()));		
 		assertEquals(0, d_treeModel.getIndexOfChild(getStudiesNode(), d_firstStudy));
+		assertEquals(0, d_treeModel.getIndexOfChild(getDrugsNode(), d_firstDrug));
 	}
 	
 	@Test
@@ -117,8 +139,10 @@ public class DomainTreeModelTest {
 		assertFalse(d_treeModel.isLeaf(d_treeModel.getRoot()));
 		assertFalse(d_treeModel.isLeaf(getEndpointsNode()));
 		assertFalse(d_treeModel.isLeaf(getStudiesNode()));
+		assertFalse(d_treeModel.isLeaf(getDrugsNode()));		
 		assertTrue(d_treeModel.isLeaf(d_firstEndpoint));
 		assertTrue(d_treeModel.isLeaf(d_firstStudy));
+		assertTrue(d_treeModel.isLeaf(d_firstDrug));		
 	}
 	
 	@Test
@@ -144,6 +168,18 @@ public class DomainTreeModelTest {
 		
 		verify(listener);
 	}
+	
+	@Test
+	public void testAddDrugFires() {
+		TreeModelListener listener = createMock(TreeModelListener.class);
+		listener.treeStructureChanged((TreeModelEvent)notNull());
+		replay(listener);
+		
+		d_treeModel.addTreeModelListener(listener);
+		d_domain.addDrug(new Drug("X"));
+		
+		verify(listener);
+	}	
 	
 	@Test
 	public void testMetaStudyIsLeaf() {
