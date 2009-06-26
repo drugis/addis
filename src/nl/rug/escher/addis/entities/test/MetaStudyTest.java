@@ -30,6 +30,7 @@ import java.util.Set;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainImpl;
 import nl.rug.escher.addis.entities.Entity;
+import nl.rug.escher.addis.entities.Measurement;
 import nl.rug.escher.addis.entities.MetaAnalysis;
 import nl.rug.escher.addis.entities.MetaStudy;
 import nl.rug.escher.addis.entities.PatientGroup;
@@ -85,9 +86,6 @@ public class MetaStudyTest {
 		
 		assertEquals(m1.getSampleSize(), fluox.getSize());
 		assertEquals(m2.getSampleSize(), parox.getSize());
-		
-		assertEquals(m1, fluox.getMeasurement(TestData.buildEndpointHamd()));
-		assertEquals(m2, parox.getMeasurement(TestData.buildEndpointHamd()));
 	}
 	
 	@Test
@@ -102,8 +100,9 @@ public class MetaStudyTest {
 	
 	@Test
 	public void testGetMeasurement() {
-		assertEquals(
-				d_study.getAnalysis().getPooledMeasurement(d_study.getPatientGroups().get(0).getDrug()),
-				d_study.getMeasurement(TestData.buildEndpointHamd(), d_study.getPatientGroups().get(0)));
+		PatientGroup pg = d_study.getPatientGroups().get(0);
+		Measurement expected = d_study.getAnalysis().getPooledMeasurement(pg.getDrug());
+		Measurement value = d_study.getMeasurement(TestData.buildEndpointHamd(), pg);
+		assertEquals(expected, value);
 	}
 }

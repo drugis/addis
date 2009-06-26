@@ -28,24 +28,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
+import nl.rug.escher.addis.entities.Endpoint.Type;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Before;
 import org.junit.Test;
 
 public class BasicRateMeasurementTest {
-	private BasicPatientGroup d_patientGroup;
 	private BasicRateMeasurement d_measurement;
 	
 	@Before
 	public void setUp() {
-		d_patientGroup = new BasicPatientGroup(null, null, null, 101);
-		d_measurement = new BasicRateMeasurement(new Endpoint("E"), 67, d_patientGroup.getSize());
-		d_patientGroup.addMeasurement(d_measurement);
+		d_measurement = new BasicRateMeasurement(new Endpoint("E", Type.RATE), 67, 101);
 	}
 	
 	@Test
@@ -68,7 +65,7 @@ public class BasicRateMeasurementTest {
 	
 	@Test
 	public void testSetRate() {
-		JUnitUtil.testSetter(new BasicRateMeasurement(), BasicRateMeasurement.PROPERTY_RATE, null, new Integer(67));
+		JUnitUtil.testSetter(new BasicRateMeasurement(new Endpoint("e", Type.RATE), 0, 0), BasicRateMeasurement.PROPERTY_RATE, 0, new Integer(67));
 	}
 	
 	@Test

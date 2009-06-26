@@ -96,8 +96,8 @@ public class SMAAAdapterTest {
 					c, SMAAAdapter.findAlternative(g, model)
 					);
 			PatientGroup first = d_study.getPatientGroups().get(0);
-			RiskRatio ratio = new RiskRatio((RateMeasurement) first.getMeasurement(e),
-					(RateMeasurement) g.getMeasurement(e));
+			RiskRatio ratio = new RiskRatio((RateMeasurement) d_study.getMeasurement(e, first),
+					(RateMeasurement) d_study.getMeasurement(e, g));
 			assertEquals(ratio.getMean(), m.getMean());
 			assertEquals(ratio.getStdDev(), m.getStDev());
 		}		
@@ -106,7 +106,7 @@ public class SMAAAdapterTest {
 	private void checkGaussianMeasurements(Endpoint e, CardinalCriterion c, SMAAModel model) throws NoSuchValueException {
 		ImpactMatrix mat = model.getImpactMatrix();
 		for (PatientGroup g : d_study.getPatientGroups()) {
-			ContinuousMeasurement cm = (ContinuousMeasurement) g.getMeasurement(e);
+			ContinuousMeasurement cm = (ContinuousMeasurement) d_study.getMeasurement(e, g);
 			GaussianMeasurement m = (GaussianMeasurement) mat.getMeasurement(c, SMAAAdapter.findAlternative(g, model));
 			assertEquals(cm.getMean(), m.getMean());
 			assertEquals(cm.getStdDev(), m.getStDev());

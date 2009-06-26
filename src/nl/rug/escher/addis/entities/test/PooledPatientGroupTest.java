@@ -20,16 +20,11 @@
 package nl.rug.escher.addis.entities.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainImpl;
-import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.Measurement;
 import nl.rug.escher.addis.entities.MetaAnalysis;
 import nl.rug.escher.addis.entities.MetaStudy;
 import nl.rug.escher.addis.entities.PooledPatientGroup;
@@ -74,22 +69,6 @@ public class PooledPatientGroupTest {
 	@Test
 	public void testGetStudy() {
 		assertEquals(d_study, d_pg.getStudy());
-	}
-	
-	@Test
-	public void testGetMeasurements() {
-		List<Measurement> l = Collections.singletonList(d_analysis.getPooledMeasurement(d_pg.getDrug()));
-		assertEquals(l, d_pg.getMeasurements());
-	}	
-
-	@Test
-	public void testGetMeasurementEndpoint() {
-		assertEquals(d_analysis.getPooledMeasurement(d_pg.getDrug()), d_pg.getMeasurement(d_analysis.getEndpoint()));
-	}
-	
-	@Test
-	public void testGetMeasurementFailsOnIncorrectEndpoint() {
-		assertNull(d_pg.getMeasurement(new Endpoint("aaagh")));
 	}
 	
 	@Test

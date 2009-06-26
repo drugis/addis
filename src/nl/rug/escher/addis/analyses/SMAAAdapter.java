@@ -58,9 +58,9 @@ public class SMAAAdapter {
 		model.addCriterion(crit);
 		
 		if (e.getType().equals(Endpoint.Type.RATE)) {
-			RateMeasurement first = getRate(study.getPatientGroups().get(0), e);
+			RateMeasurement first = (RateMeasurement)study.getMeasurement(e, study.getPatientGroups().get(0));
 			for (PatientGroup g : study.getPatientGroups()) {
-				RiskRatio od = new RiskRatio(first, getRate(g, e));
+				RiskRatio od = new RiskRatio(first, ((RateMeasurement)study.getMeasurement(e, g)));
 				Alternative alt = findAlternative(g, model);
 				LogNormalMeasurement meas = new LogNormalMeasurement(
 						od.getMean(), od.getStdDev());		
@@ -69,7 +69,7 @@ public class SMAAAdapter {
 		} else if (e.getType().equals(Endpoint.Type.CONTINUOUS)) {
 			for (PatientGroup g : study.getPatientGroups()) {
 				Alternative alt = findAlternative(g, model);				
-				ContinuousMeasurement cm = (ContinuousMeasurement) g.getMeasurement(e);
+				ContinuousMeasurement cm = (ContinuousMeasurement) study.getMeasurement(e, g);
 				GaussianMeasurement meas = new GaussianMeasurement(cm.getMean(), cm.getStdDev());
 				model.getImpactMatrix().setMeasurement(crit, alt, meas);
 			}			
@@ -78,10 +78,6 @@ public class SMAAAdapter {
 		}
 	}
 	
-	private static RateMeasurement getRate(PatientGroup g, Endpoint e) {
-		return (RateMeasurement)g.getMeasurement(e);
-	}	
-
 	private static void addAlternativesToModel(Study study, SMAAModel model) {
 		for (PatientGroup d : study.getPatientGroups()) {
 			model.addAlternative(new Alternative(d.getLabel()));

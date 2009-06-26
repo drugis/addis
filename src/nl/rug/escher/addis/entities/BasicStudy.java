@@ -19,53 +19,24 @@
 
 package nl.rug.escher.addis.entities;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 
 public class BasicStudy extends AbstractStudy implements MutableStudy {
 	private static final long serialVersionUID = -2400136708833976982L;
-
-	private static class MeasurementKey implements Serializable {
-		private static final long serialVersionUID = 6310789667384578005L;
-		private Endpoint d_endpoint;
-		private PatientGroup d_patientGroup;
-		
-		public MeasurementKey(Endpoint e, PatientGroup g) {
-			d_endpoint = e;
-			d_patientGroup = g;
-		}
-		
-		public boolean equals(Object o) {
-			if (o instanceof MeasurementKey) { 
-				MeasurementKey other = (MeasurementKey)o;
-				return d_endpoint.equals(other.d_endpoint) && d_patientGroup.equals(other.d_patientGroup);
-			}
-			return false;
-		}
-		
-		public int hashCode() {
-			int code = 1;
-			code = code * 31 + d_endpoint.hashCode();
-			code = code * 31 + d_patientGroup.hashCode();
-			return code;
-		}
-	}
 	
 	private List<Endpoint> d_endpoints;
 	private List<BasicPatientGroup> d_patientGroups;
-	private Map<MeasurementKey, Measurement> d_measurements;
 	
 	public BasicStudy(String id) {
 		super(id);
-		d_endpoints = new ArrayList<Endpoint>();
-		d_patientGroups = new ArrayList<BasicPatientGroup>();
-		d_measurements = new HashMap<MeasurementKey, Measurement>();
+		d_measurements = new HashMap<MeasurementKey, Measurement>();		
+		setEndpoints(new ArrayList<Endpoint>());
+		setPatientGroups(new ArrayList<BasicPatientGroup>());
 	}
 
 	public List<Endpoint> getEndpoints() {
@@ -75,7 +46,19 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 	public void setEndpoints(List<Endpoint> endpoints) {
 		List<Endpoint> oldVal = d_endpoints;
 		d_endpoints = endpoints;
+		updateMeasurements();		
 		firePropertyChange(PROPERTY_ENDPOINTS, oldVal, d_endpoints);
+	}
+
+	private void updateMeasurements() {
+		for (Endpoint e : d_endpoints) {
+			for (PatientGroup g : d_patientGroups) {
+				MeasurementKey key = new MeasurementKey(e, g);
+				if (d_measurements.get(key) == null) {
+					d_measurements.put(key, e.buildMeasurement());
+				}
+			}
+		}
 	}
 
 	public List<BasicPatientGroup> getPatientGroups() {
@@ -85,7 +68,8 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 	public void setPatientGroups(List<BasicPatientGroup> patientGroups) {
 		List<BasicPatientGroup> oldVal = d_patientGroups;
 		d_patientGroups = patientGroups;
-		firePropertyChange(PROPERTY_PATIENTGROUPS, oldVal, d_patientGroups);
+		updateMeasurements();		
+		firePropertyChange(PROPERTY_PATIENTGROUPS, oldVal, d_patientGroups);		
 	}
 	
 	public void addPatientGroup(BasicPatientGroup group) {
@@ -113,11 +97,6 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 		dep.addAll(d_endpoints);
 		return dep;
 	}
-
-	public Measurement getMeasurement(Endpoint e, PatientGroup g) {
-		forceLegalArguments(e, g);
-		return d_measurements.get(new MeasurementKey(e, g));
-	}
 	
 	public void setMeasurement(Endpoint e, PatientGroup g, Measurement m) {
 		forceLegalArguments(e, g);
@@ -126,14 +105,5 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 		}
 		d_measurements.put(new MeasurementKey(e, g), m);
 		((BasicMeasurement)m).setSampleSize(g.getSize());
-	}
-
-	private void forceLegalArguments(Endpoint e, PatientGroup g) {
-		if (!d_patientGroups.contains(g)) {
-			throw new IllegalArgumentException("PatientGroup " + g + " not part of this study.");
-		}
-		if (!d_endpoints.contains(e)) {
-			throw new IllegalArgumentException("Endpoint " + e + " not measured by this study.");
-		}
-	}
+	}	
 }

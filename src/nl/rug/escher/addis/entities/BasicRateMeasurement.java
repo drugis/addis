@@ -42,19 +42,17 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 		out.defaultWriteObject();
 	}
 	
-	public BasicRateMeasurement() {
-		addPropertyChangeListener(PROPERTY_SAMPLESIZE, d_listener);
-	}
-	
-	public BasicRateMeasurement(Endpoint e) {
-		this(e, 0, 0);
-	}
-	
 	public BasicRateMeasurement(Endpoint e, int rate, int size) {
 		super(e, size);
 		addPropertyChangeListener(PROPERTY_SAMPLESIZE, d_listener);
 		d_rate = rate;
 	}
+	
+	public BasicRateMeasurement(Endpoint e, int rate) {
+		super(e, 0);
+		addPropertyChangeListener(PROPERTY_SAMPLESIZE, d_listener);
+		d_rate = rate;
+	}	
 
 	public String getLabel() {
 		return toString();

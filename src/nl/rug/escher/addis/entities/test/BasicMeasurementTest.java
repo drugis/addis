@@ -42,6 +42,6 @@ public class BasicMeasurementTest {
 	
 	@Test
 	public void testSetEndpoint() {
-		JUnitUtil.testSetter(instance(), BasicMeasurement.PROPERTY_ENDPOINT, null, new Endpoint());
+		JUnitUtil.testSetter(instance(), BasicMeasurement.PROPERTY_ENDPOINT, null, new Endpoint("x", Type.RATE));
 	}
 }

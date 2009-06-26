@@ -43,6 +43,7 @@ import nl.rug.escher.addis.entities.MetaAnalysis;
 import nl.rug.escher.addis.entities.MetaStudy;
 import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.Endpoint.Type;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Before;
@@ -81,7 +82,7 @@ public class DomainTest {
 
 	@Test
 	public void testAddEndpoint() {
-		Endpoint e = new Endpoint();
+		Endpoint e = new Endpoint("e", Type.RATE);
 		assertEquals(0, d_domain.getEndpoints().size());
 		d_domain.addEndpoint(e);
 		assertEquals(1, d_domain.getEndpoints().size());
@@ -113,7 +114,7 @@ public class DomainTest {
 		replay(mockListener);
 		
 		d_domain.addListener(mockListener);
-		d_domain.addEndpoint(new Endpoint());
+		d_domain.addEndpoint(new Endpoint("e", Type.RATE));
 		verify(mockListener);
 	}
 	
@@ -141,12 +142,9 @@ public class DomainTest {
 	
 	@Test
 	public void testGetStudiesByEndpoint() {
-		Endpoint e1 = new Endpoint();
-		e1.setName("e1");
-		Endpoint e2 = new Endpoint();
-		e2.setName("e2");
-		Endpoint e3 = new Endpoint();
-		e3.setName("e3");
+		Endpoint e1 = new Endpoint("e1", Type.RATE);
+		Endpoint e2 = new Endpoint("e2", Type.RATE);
+		Endpoint e3 = new Endpoint("e3", Type.RATE);
 		
 		List<Endpoint> l1 = new ArrayList<Endpoint>();
 		l1.add(e1);
@@ -180,8 +178,8 @@ public class DomainTest {
 		assertEquals(d1, d2);
 		assertEquals(d1.hashCode(), d2.hashCode());
 		
-		Endpoint e1 = new Endpoint("e1");
-		Endpoint e2 = new Endpoint("e2");
+		Endpoint e1 = new Endpoint("e1", Type.RATE);
+		Endpoint e2 = new Endpoint("e2", Type.RATE);
 		d1.addEndpoint(e1);
 		d1.addEndpoint(e2);
 		d2.addEndpoint(e1);
@@ -220,7 +218,7 @@ public class DomainTest {
 		d_domain.addStudy(s1);
 		d_domain.addStudy(s2);
 		
-		Endpoint e = new Endpoint("e");
+		Endpoint e = new Endpoint("e", Type.RATE);
 		d_domain.addEndpoint(e);
 		s1.addEndpoint(e);
 		s2.addEndpoint(e);
@@ -293,7 +291,7 @@ public class DomainTest {
 
 	@Test
 	public void testDeleteEndpoint() throws DependentEntitiesException {
-		Endpoint e = new Endpoint("e");
+		Endpoint e = new Endpoint("e", Type.RATE);
 		d_domain.addEndpoint(e);
 		d_domain.deleteEndpoint(e);
 		assertTrue(d_domain.getEndpoints().isEmpty());
@@ -304,7 +302,7 @@ public class DomainTest {
 		BasicStudy s1 = new BasicStudy("X");
 		d_domain.addStudy(s1);
 		
-		Endpoint e = new Endpoint("e");
+		Endpoint e = new Endpoint("e", Type.RATE);
 		d_domain.addEndpoint(e);
 		s1.addEndpoint(e);
 			
@@ -318,7 +316,7 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteEndpointFires() throws DependentEntitiesException {
-		Endpoint d = new Endpoint("d");
+		Endpoint d = new Endpoint("d", Type.RATE);
 		d_domain.addEndpoint(d);
 		
 		DomainListener mock = createMock(DomainListener.class);

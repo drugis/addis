@@ -57,14 +57,14 @@ public class BasicStudyTest {
 	
 	@Test
 	public void testSetEndpoints() {
-		List<Endpoint> list = Collections.singletonList(new Endpoint());
+		List<Endpoint> list = Collections.singletonList(new Endpoint("e", Type.RATE));
 		JUnitUtil.testSetter(new BasicStudy("X"), BasicStudy.PROPERTY_ENDPOINTS, Collections.EMPTY_LIST, 
 				list);
 	}
 	
 	@Test
 	public void testAddEndpoint() {
-		JUnitUtil.testAdder(new BasicStudy("X"), BasicStudy.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint());
+		JUnitUtil.testAdder(new BasicStudy("X"), BasicStudy.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Type.RATE));
 	}
 	
 	@Test
@@ -106,15 +106,16 @@ public class BasicStudyTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetMeasurementThrowsException1() {
 		BasicStudy study = new BasicStudy("X");
-		study.getMeasurement(new Endpoint("E"), new BasicPatientGroup(study, null, null, 100));
+		study.getMeasurement(new Endpoint("E", Type.RATE), new BasicPatientGroup(study, null, null, 100));
 	}
 	
 	@Test
 	public void testSetMeasurement() {
 		BasicStudy study = new BasicStudy("X");
-		study.addEndpoint(new Endpoint("e", Type.RATE));
+		Endpoint endpoint = new Endpoint("e", Type.RATE);
+		study.addEndpoint(endpoint);
 		study.addPatientGroup(new BasicPatientGroup(study, null, null, 100));
-		BasicRateMeasurement m = new BasicRateMeasurement();
+		BasicRateMeasurement m = new BasicRateMeasurement(endpoint, 0, 100);
 		m.setEndpoint(study.getEndpoints().get(0));
 		m.setRate(12);
 		study.setMeasurement(study.getEndpoints().get(0), study.getPatientGroups().get(0), m);
@@ -125,19 +126,20 @@ public class BasicStudyTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetMeasurementThrowsException1() {
 		BasicStudy study = new BasicStudy("X");
-		study.setMeasurement(new Endpoint("E"), new BasicPatientGroup(study, null, null, 100),
-				new BasicRateMeasurement());
+		Endpoint e = new Endpoint("E", Type.RATE);
+		study.setMeasurement(e, new BasicPatientGroup(study, null, null, 100),
+				new BasicRateMeasurement(e, 0));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetMeasurementThrowsException2() {
 		BasicStudy study = new BasicStudy("X");
-		study.addEndpoint(new Endpoint("e"));
+		Endpoint e = new Endpoint("e", Type.RATE);
+		study.addEndpoint(e);
 		study.addPatientGroup(new BasicPatientGroup(study, null, null, 100));
 		
-		BasicRateMeasurement m = new BasicRateMeasurement();
+		BasicRateMeasurement m = new BasicRateMeasurement(e, 12);
 		m.setEndpoint(study.getEndpoints().get(0));
-		m.setRate(12);
 		
 		study.getEndpoints().get(0).setType(Type.CONTINUOUS);
 		study.setMeasurement(study.getEndpoints().get(0), study.getPatientGroups().get(0), m);

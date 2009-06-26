@@ -19,9 +19,6 @@
 
 package nl.rug.escher.addis.entities;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.jgoodies.binding.beans.Model;
 
 public class PooledPatientGroup extends Model implements PatientGroup {
@@ -46,17 +43,6 @@ public class PooledPatientGroup extends Model implements PatientGroup {
 
 	public String getLabel() {
 		return "META " + d_drug.toString();
-	}
-
-	public Measurement getMeasurement(Endpoint endpoint) {
-		if (!endpoint.equals(d_study.getAnalysis().getEndpoint())) {
-			return null;
-		}
-		return d_study.getAnalysis().getPooledMeasurement(d_drug);
-	}
-
-	public List<Measurement> getMeasurements() {
-		return Collections.singletonList(d_study.getAnalysis().getPooledMeasurement(d_drug));
 	}
 
 	public Integer getSize() {

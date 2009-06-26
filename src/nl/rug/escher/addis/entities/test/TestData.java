@@ -31,6 +31,7 @@ import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.Endpoint.Type;
 
 public class TestData {
 	private static Endpoint s_endpointHamd;
@@ -60,22 +61,18 @@ public class TestData {
 
 		BasicPatientGroup parox = new BasicPatientGroup(study, buildDrugParoxetine(), dose, 37);
 		pHamd.setSampleSize(parox.getSize());
-		parox.addMeasurement(pHamd);		
-
 
 		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement();
 		fHamd.setRate(26);
 		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 41);
 		fHamd.setSampleSize(fluox.getSize());
-		fluox.addMeasurement(fHamd);		
 		
 		dose = new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY);
 		BasicRateMeasurement vHamd = (BasicRateMeasurement)hamd.buildMeasurement();
 		vHamd.setRate(100);
 		BasicPatientGroup viagra = new BasicPatientGroup(study, buildDrugViagra(), dose, 100);
 		vHamd.setSampleSize(viagra.getSize());
-		viagra.addMeasurement(vHamd);
 	
 		study.addPatientGroup(parox);
 		study.addPatientGroup(fluox);
@@ -103,8 +100,6 @@ public class TestData {
 		BasicPatientGroup parox = new BasicPatientGroup(study, paroxetine, dose, 102);
 		pHamd.setSampleSize(parox.getSize());
 		pCgi.setSampleSize(parox.getSize());
-		parox.addMeasurement(pHamd);		
-		parox.addMeasurement(pCgi);
 
 		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement();
@@ -116,8 +111,6 @@ public class TestData {
 		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 101);
 		fHamd.setSampleSize(fluox.getSize());
 		fCgi.setSampleSize(fluox.getSize());
-		fluox.addMeasurement(fHamd);
-		fluox.addMeasurement(fCgi);		
 		
 		study.addPatientGroup(parox);
 		study.addPatientGroup(fluox);
@@ -136,26 +129,21 @@ public class TestData {
 
 	public static Drug buildDrugFluoxetine() {
 		if (s_fluox == null) {
-			s_fluox = new Drug();
-			s_fluox.setName("Fluoxetine");
+			s_fluox = new Drug("Fluoxetine");
 		}
 		return s_fluox;
 	}
 	
 	public static Drug buildDrugViagra() {
 		if (s_viagra == null) {
-			s_viagra = new Drug();
-			s_viagra.setName("Viagra");
+			s_viagra = new Drug("Viagra");
 		}
 		return s_viagra;
 	}
 
 	public static Endpoint buildEndpointHamd() {
 		if (s_endpointHamd == null) {
-			Endpoint e = new Endpoint();
-			e.setName("HAM-D");
-			e.setDescription("");
-			e.setType(Endpoint.Type.RATE);
+			Endpoint e = new Endpoint("HAM-D", Type.RATE);
 			s_endpointHamd = e;
 		}
 		return s_endpointHamd;
@@ -163,10 +151,8 @@ public class TestData {
 
 	public static Endpoint buildEndpointCgi() {
 		if (s_endpointCgi == null) { 
-			Endpoint cgi = new Endpoint();
-			cgi.setName("CGI Severity");
+			Endpoint cgi = new Endpoint("CGI Severity", Type.CONTINUOUS);
 			cgi.setDescription("Change from baseline CGI Severity of Illness score");
-			cgi.setType(Endpoint.Type.CONTINUOUS);
 			s_endpointCgi = cgi;
 		}
 		return s_endpointCgi;

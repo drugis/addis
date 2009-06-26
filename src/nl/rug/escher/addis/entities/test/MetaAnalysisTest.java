@@ -37,6 +37,7 @@ import nl.rug.escher.addis.entities.MetaAnalysis;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.Endpoint.Type;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Before;
@@ -56,8 +57,8 @@ public class MetaAnalysisTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testValidateStudiesMeasureEndpoint() {
-		Endpoint e = new Endpoint("e1");
-		Endpoint other = new Endpoint("e2");
+		Endpoint e = new Endpoint("e1", Type.RATE);
+		Endpoint other = new Endpoint("e2", Type.RATE);
 		BasicStudy s = new BasicStudy("X");
 		s.addEndpoint(other);
 		new MetaAnalysis(e, Collections.singletonList((Study)s));
@@ -85,7 +86,7 @@ public class MetaAnalysisTest {
 	public void testGetMeasurement() {
 		Study s = d_domain.getStudies().first();
 		PatientGroup g = s.getPatientGroups().get(1);
-		assertEquals(g.getMeasurement(d_analysis.getEndpoint()),
+		assertEquals(s.getMeasurement(d_analysis.getEndpoint(), g),
 				d_analysis.getMeasurement(s, g.getDrug()));
 	}
 	
@@ -102,8 +103,8 @@ public class MetaAnalysisTest {
 
 	@Test
 	public void testEquals() {
-		Endpoint e1 = new Endpoint("E1");
-		Endpoint e2 = new Endpoint("E2");
+		Endpoint e1 = new Endpoint("E1", Type.RATE);
+		Endpoint e2 = new Endpoint("E2", Type.RATE);
 		BasicStudy s1 = new BasicStudy("Test");
 		BasicStudy s2 = new BasicStudy("Study");
 		BasicStudy s3 = new BasicStudy("X");

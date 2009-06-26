@@ -24,15 +24,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
 
-import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicRateMeasurement;
-import nl.rug.escher.addis.entities.BasicStudy;
-import nl.rug.escher.addis.entities.Dose;
-import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.MutablePatientGroup;
 import nl.rug.escher.addis.entities.OddsRatio;
-import nl.rug.escher.addis.entities.SIUnit;
+import nl.rug.escher.addis.entities.Endpoint.Type;
 import nl.rug.escher.common.Interval;
 import nl.rug.escher.common.JUnitUtil;
 import nl.rug.escher.common.StudentTTable;
@@ -56,22 +51,15 @@ public class OddsRatioTest {
 	
 	@Before
 	public void setUp() {
-		Endpoint e = new Endpoint("E");
-		
-		MutablePatientGroup g1 = new BasicPatientGroup(new BasicStudy("X"), new Drug("D"), new Dose(8.8, SIUnit.MILLIGRAMS_A_DAY), s_sizeNum);
-		d_numerator = new BasicRateMeasurement(e, s_effectNum, s_sizeNum);
-		g1.addMeasurement(d_numerator);
-		
-		MutablePatientGroup g2 = new BasicPatientGroup(new BasicStudy("X"), new Drug("F"), new Dose(8.8, SIUnit.MILLIGRAMS_A_DAY), s_sizeDen);
+		Endpoint e = new Endpoint("E", Type.RATE);
+		d_numerator = new BasicRateMeasurement(e, s_effectNum, s_sizeNum);		
 		d_denominator = new BasicRateMeasurement(e, s_effectDen, s_sizeDen);
-		g2.addMeasurement(d_denominator);
-		
 		d_ratio = new OddsRatio(d_denominator, d_numerator);
 	}
 	
 	@Test
 	public void testGetEndpoint() {
-		assertEquals(new Endpoint("E"), d_ratio.getEndpoint());
+		assertEquals(new Endpoint("E", Type.RATE), d_ratio.getEndpoint());
 	}
 	
 	@Test

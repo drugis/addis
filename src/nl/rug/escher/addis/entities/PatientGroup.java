@@ -19,8 +19,6 @@
 
 package nl.rug.escher.addis.entities;
 
-import java.util.List;
-
 import com.jgoodies.binding.beans.Observable;
 
 public interface PatientGroup extends Observable {
@@ -33,22 +31,9 @@ public interface PatientGroup extends Observable {
 	public static final String PROPERTY_LABEL = "label";
 
 	public Study getStudy();
-
 	public Drug getDrug();
-
 	public Dose getDose();
-
-	public List<? extends Measurement> getMeasurements();
-
-	/**
-	 * Get Measurement by Endpoint.
-	 * @param endpoint Endpoint to get measurement for.
-	 * @return Measurement if Endpoint is measured, null otherwise.
-	 */
-	public Measurement getMeasurement(Endpoint endpoint);
-
 	public String getLabel();
-
 	public Integer getSize();
 
 }

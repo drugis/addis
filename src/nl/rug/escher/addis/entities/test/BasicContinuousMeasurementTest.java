@@ -20,21 +20,14 @@
 package nl.rug.escher.addis.entities.test;
 
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 
 import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
-import nl.rug.escher.addis.entities.BasicMeasurement;
-import nl.rug.escher.addis.entities.BasicRateMeasurement;
-import nl.rug.escher.addis.entities.Dose;
-import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
-import nl.rug.escher.addis.entities.BasicPatientGroup;
-import nl.rug.escher.addis.entities.SIUnit;
-import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.Endpoint.Type;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Before;
@@ -45,7 +38,7 @@ public class BasicContinuousMeasurementTest {
 	
 	@Before
 	public void setUp() {
-		d_endpoint = new Endpoint("X");
+		d_endpoint = new Endpoint("X", Type.CONTINUOUS);
 	}
 	
 	@Test

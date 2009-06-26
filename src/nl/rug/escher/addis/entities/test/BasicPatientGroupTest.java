@@ -19,24 +19,16 @@
 
 package nl.rug.escher.addis.entities.test;
 
-import static org.junit.Assert.*;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
-import nl.rug.escher.addis.entities.BasicRateMeasurement;
+import nl.rug.escher.addis.entities.BasicPatientGroup;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
-import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.BasicMeasurement;
-import nl.rug.escher.addis.entities.BasicPatientGroup;
-import nl.rug.escher.addis.entities.MutablePatientGroup;
 import nl.rug.escher.addis.entities.SIUnit;
-import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Before;
@@ -69,27 +61,6 @@ public class BasicPatientGroupTest {
 	@Test
 	public void testSetDose() {
 		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_DOSE, null, new Dose(1.0, SIUnit.MILLIGRAMS_A_DAY));
-	}
-	
-	@Test
-	public void testInitialMeasurements() {
-		BasicPatientGroup p = d_pg;
-		assertNotNull(p.getMeasurements());
-		assertTrue(p.getMeasurements().isEmpty());
-	}
-	
-	@Test
-	public void testSetMeasurements() {
-		List<BasicContinuousMeasurement> list = 
-			Collections.singletonList(new BasicContinuousMeasurement(new Endpoint("e"), d_pg.getSize()));
-		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_MEASUREMENTS, Collections.EMPTY_LIST, 
-				list);
-	}
-	
-	@Test
-	public void testAddMeasurement() {
-		JUnitUtil.testAdder(d_pg, BasicPatientGroup.PROPERTY_MEASUREMENTS,
-				"addMeasurement", new BasicContinuousMeasurement(new Endpoint("hmm"), d_pg.getSize()));
 	}
 	
 	@Test
@@ -134,22 +105,5 @@ public class BasicPatientGroupTest {
 		group.addPropertyChangeListener(l);
 		group.setDrug(drug);
 		verify(l);
-	}
-	
-	@Test
-	public void testGetMeasurementByEndpoint() {
-		Endpoint e1 = new Endpoint("e1");
-		Endpoint e2 = new Endpoint("e2");
-		Endpoint e3 = new Endpoint("e3");
-		
-		BasicContinuousMeasurement m1 = new BasicContinuousMeasurement(e1, d_pg.getSize());
-		BasicContinuousMeasurement m2 = new BasicContinuousMeasurement(e2, d_pg.getSize());
-		
-		BasicPatientGroup g = d_pg;
-		g.addMeasurement(m2);
-		g.addMeasurement(m1);
-		
-		assertEquals(m2, g.getMeasurement(e2));
-		assertEquals(null, g.getMeasurement(e3));
 	}
 }

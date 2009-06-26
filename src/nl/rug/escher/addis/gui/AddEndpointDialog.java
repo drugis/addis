@@ -24,6 +24,7 @@ import javax.swing.JFrame;
 
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
+import nl.rug.escher.addis.entities.Endpoint.Type;
 import nl.rug.escher.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.PresentationModel;
@@ -37,7 +38,7 @@ public class AddEndpointDialog extends OkCancelDialog {
 		super(frame, "Add Endpoint");
 		this.setModal(true);
 		d_domain = domain;
-		d_endpoint = new Endpoint();
+		d_endpoint = new Endpoint("e", Type.CONTINUOUS);
 		EndpointView view = new EndpointView(new PresentationModel<Endpoint>(d_endpoint), d_okButton);
 		getUserPanel().add(view.buildPanel());
 		pack();

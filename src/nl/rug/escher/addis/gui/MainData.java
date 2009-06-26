@@ -31,6 +31,7 @@ import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.Endpoint.Type;
 
 public class MainData {
 	private static Endpoint s_endpointHamd;
@@ -58,14 +59,12 @@ public class MainData {
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement();
 		pHamd.setRate(23);
-		BasicPatientGroup parox = new BasicPatientGroup(study, paroxetine, dose, 37);
-		parox.addMeasurement(pHamd);		
+		BasicPatientGroup parox = new BasicPatientGroup(study, paroxetine, dose, 37);		
 		
 		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement();
 		fHamd.setRate(26);
 		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 41);		
-		fluox.addMeasurement(fHamd);
 		
 		study.addPatientGroup(parox);
 		study.addPatientGroup(fluox);
@@ -88,8 +87,6 @@ public class MainData {
 		pCgi.setMean(-1.69);
 		pCgi.setStdDev(0.16);
 		BasicPatientGroup parox = new BasicPatientGroup(study, paroxetine, dose, 102);
-		parox.addMeasurement(pHamd);		
-		parox.addMeasurement(pCgi);
 		
 		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement();
@@ -99,8 +96,6 @@ public class MainData {
 		fCgi.setMean(-1.8);
 		fCgi.setStdDev(0.16);
 		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 101);
-		fluox.addMeasurement(fHamd);		
-		fluox.addMeasurement(fCgi);
 		
 		study.addPatientGroup(parox);
 		study.addPatientGroup(fluox);
@@ -127,10 +122,8 @@ public class MainData {
 
 	public static Endpoint buildEndpointHamd() {
 		if (s_endpointHamd == null) {
-			Endpoint e = new Endpoint();
-			e.setName("HAM-D");
+			Endpoint e = new Endpoint("HAM-D", Type.RATE);
 			e.setDescription("");
-			e.setType(Endpoint.Type.RATE);
 			s_endpointHamd = e;
 		}
 		return s_endpointHamd;
@@ -138,10 +131,8 @@ public class MainData {
 
 	public static Endpoint buildDefaultEndpointCgi() {
 		if (s_endpointCgi == null) { 
-			Endpoint cgi = new Endpoint();
-			cgi.setName("CGI Severity");
+			Endpoint cgi = new Endpoint("CGI Severity", Type.CONTINUOUS);
 			cgi.setDescription("Change from baseline CGI Severity of Illness score");
-			cgi.setType(Endpoint.Type.CONTINUOUS);
 			s_endpointCgi = cgi;
 		}
 		return s_endpointCgi;

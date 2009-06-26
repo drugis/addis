@@ -21,12 +21,11 @@ package nl.rug.escher.addis.entities.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.ContinuousMeasurement;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.MutablePatientGroup;
 import nl.rug.escher.addis.entities.RateContinuousAdapter;
+import nl.rug.escher.addis.entities.Endpoint.Type;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -38,10 +37,7 @@ public class RateContinuousAdapterTest {
 	
 	@Before
 	public void setUp() {
-		MutablePatientGroup g = new BasicPatientGroup(null, null, null, 100);
-		d_rate = new BasicRateMeasurement(new Endpoint("e"), 50, g.getSize());
-		g.addMeasurement(d_rate);
-		
+		d_rate = new BasicRateMeasurement(new Endpoint("e", Type.RATE), 50, 100);
 		d_continuous = new RateContinuousAdapter(d_rate);
 	}
 	

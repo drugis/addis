@@ -28,17 +28,12 @@ import java.util.List;
 
 import nl.rug.escher.addis.entities.Endpoint.Type;
 
-import org.contract4j5.contract.Contract;
-import org.contract4j5.contract.Invar;
 import org.contract4j5.contract.Post;
-import org.contract4j5.contract.Pre;
 
 import com.jgoodies.binding.beans.Model;
 
-@Contract
 public class PooledRateMeasurement extends Model implements RateMeasurement {
 	private static final long serialVersionUID = 5124815300626704289L;
-	@Invar("PooledRateMeasurement.measureSameEndpoint(d_measurements)") // Can't be done as precondition
 	private List<RateMeasurement> d_measurements;
 	private Integer d_rate;
 	private Integer d_size;
@@ -66,9 +61,17 @@ public class PooledRateMeasurement extends Model implements RateMeasurement {
 	 * @throws NullPointerException measurements may not be null.
 	 * @throws IllegalArgumentException All measurements should measure the same Endpoint. Empty list not allowed.
 	 */
-	@Pre("measurements != null && !measurements.isEmpty()")
 	public PooledRateMeasurement(List<RateMeasurement> measurements) 
 	throws IllegalArgumentException, NullPointerException {
+		if (measurements == null) {
+			throw new NullPointerException("measurements null");
+		}
+		if (measurements.isEmpty()) {
+			throw new IllegalArgumentException("measurements empty");
+		}
+		if (!measureSameEndpoint(measurements)) {
+			throw new IllegalArgumentException("measurements not measuring same endpoint");
+		}
 		d_measurements = measurements;
 		d_rate = calcRate();
 		d_size = calcSampleSize();
@@ -103,7 +106,11 @@ public class PooledRateMeasurement extends Model implements RateMeasurement {
 	}
 
 	public static boolean measureSameEndpoint(List<RateMeasurement> measurements) {
-		Endpoint expected = measurements.get(0).getEndpoint();
+		if (measurements.isEmpty()) {
+			return true;
+		}
+		RateMeasurement rateMeasurement = measurements.get(0);
+		Endpoint expected = rateMeasurement.getEndpoint();
 		for (RateMeasurement m : measurements) {
 			if (!m.getEndpoint().equals(expected)) {
 				return false;

@@ -23,20 +23,19 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
-import nl.rug.escher.addis.entities.Domain;
-import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
+import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.Domain;
+import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.MutablePatientGroup;
 import nl.rug.escher.addis.entities.SIUnit;
-import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.PresentationModel;
@@ -69,9 +68,11 @@ public class AddStudyDialog extends OkCancelDialog {
 
 	protected void buildMeasurements() {
 		for (MutablePatientGroup g : d_study.getPatientGroups()) {
+			/*
 			g.setMeasurements(new ArrayList<BasicMeasurement>());
 			BasicMeasurement m = d_primaryEndpoint.getEndpoint().buildMeasurement();
 			g.addMeasurement(m);
+			*/
 		}
 	}
 
@@ -108,10 +109,12 @@ public class AddStudyDialog extends OkCancelDialog {
 	private BasicPatientGroup initializePatientGroup() {
 		BasicPatientGroup group = new BasicPatientGroup(d_study, null,
 				new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY), 0);
+		/*
 		if (d_primaryEndpoint.getEndpoint() != null) {
 			BasicMeasurement m = d_primaryEndpoint.getEndpoint().buildMeasurement();
 			group.addMeasurement(m);
 		}
+		*/
 		return group;
 	}
 
@@ -130,7 +133,8 @@ public class AddStudyDialog extends OkCancelDialog {
 	private void bindEndpoint() {
 		d_study.setEndpoints(d_primaryEndpoint.asList());
 		for (BasicPatientGroup g : d_study.getPatientGroups()) {
-			g.getMeasurements().get(0).setEndpoint(d_primaryEndpoint.getEndpoint());
+			((BasicMeasurement)d_study.getMeasurement(d_primaryEndpoint.getEndpoint(), g))
+				.setEndpoint(d_primaryEndpoint.getEndpoint());
 		}
 	}
 }

@@ -84,6 +84,9 @@ public abstract class Ratio extends Model implements Measurement {
 	}
 
 	private double getCriticalValue() {
+		if (getSampleSize() < 2) {
+			return 0.0;
+		}
 		return StudentTTable.getT(getSampleSize() - 2);
 	}
 

@@ -61,7 +61,7 @@ public class MetaAnalysis implements Serializable {
 	public Measurement getMeasurement(Study study, Drug drug) {
 		for (PatientGroup g : study.getPatientGroups()) {
 			if (g.getDrug().equals(drug)) {
-				return g.getMeasurement(getEndpoint());
+				return study.getMeasurement(getEndpoint(), g);
 			}
 		}
 		return null;
@@ -69,8 +69,12 @@ public class MetaAnalysis implements Serializable {
 	
 	public Measurement getPooledMeasurement(Drug drug) {
 		List<RateMeasurement> measurements = new ArrayList<RateMeasurement>();
-		for (Study s : d_studies) {
-			measurements.add((RateMeasurement)getMeasurement(s, drug));
+		for (Study s : d_studies) {			
+			for (PatientGroup g : s.getPatientGroups()) {
+				if (g.getDrug().equals(drug)) {
+					measurements.add((RateMeasurement) s.getMeasurement(getEndpoint(), g));
+				}
+			}
 		}
 		return new PooledRateMeasurement(measurements);
 	}

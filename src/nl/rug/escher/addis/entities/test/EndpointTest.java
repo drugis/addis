@@ -23,6 +23,7 @@ import static org.junit.Assert.*;
 import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicRateMeasurement;
+import nl.rug.escher.addis.entities.Endpoint.Type;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Test;
@@ -31,22 +32,22 @@ public class EndpointTest {
 
 	@Test
 	public void testSetDescription() {
-		JUnitUtil.testSetter(new Endpoint(), Endpoint.PROPERTY_DESCRIPTION, null, "My Description");
+		JUnitUtil.testSetter(new Endpoint("e", Type.RATE), Endpoint.PROPERTY_DESCRIPTION, null, "My Description");
 	}
 
 	@Test
 	public void testSetName() {
-		JUnitUtil.testSetter(new Endpoint(), Endpoint.PROPERTY_NAME, null, "My Name");
+		JUnitUtil.testSetter(new Endpoint("e", Type.RATE), Endpoint.PROPERTY_NAME, "e", "My Name");
 	}
 	
 	@Test
 	public void testSetType() {
-		JUnitUtil.testSetter(new Endpoint(), Endpoint.PROPERTY_TYPE, null, Endpoint.Type.CONTINUOUS);
+		JUnitUtil.testSetter(new Endpoint("e", Type.RATE), Endpoint.PROPERTY_TYPE, Type.RATE, Endpoint.Type.CONTINUOUS);
 	}
 	
 	@Test
 	public void testBuildMeasurement() {
-		Endpoint e = new Endpoint();
+		Endpoint e = new Endpoint("e", Type.RATE);
 		e.setType(Endpoint.Type.RATE);
 		assertTrue(e.buildMeasurement() instanceof BasicRateMeasurement);
 		assertEquals(e, e.buildMeasurement().getEndpoint());
@@ -58,7 +59,7 @@ public class EndpointTest {
 	@Test
 	public void testToString() {
 		String name = "TestName";
-		Endpoint e = new Endpoint();
+		Endpoint e = new Endpoint("e", Type.RATE);
 		e.setName(name);
 		assertEquals(name, e.toString());
 	}
@@ -69,8 +70,8 @@ public class EndpointTest {
 		String name1 = "Endpoint A";
 		String name2 = "Endpoint B";
 		
-		assertEquals(new Endpoint(name1), new Endpoint(name1));
-		JUnitUtil.assertNotEquals(new Endpoint(name1), new Endpoint(name2));
-		assertEquals(new Endpoint(name1).hashCode(), new Endpoint(name1).hashCode());
+		assertEquals(new Endpoint(name1, Type.RATE), new Endpoint(name1, Type.RATE));
+		JUnitUtil.assertNotEquals(new Endpoint(name1, Type.RATE), new Endpoint(name2, Type.RATE));
+		assertEquals(new Endpoint(name1, Type.RATE).hashCode(), new Endpoint(name1, Type.RATE).hashCode());
 	}
 }

@@ -27,38 +27,31 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import nl.rug.escher.addis.entities.BasicMeasurement;
-import nl.rug.escher.addis.entities.BasicRateMeasurement;
-import nl.rug.escher.addis.entities.Dose;
-import nl.rug.escher.addis.entities.Drug;
-import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
-import nl.rug.escher.addis.entities.MutablePatientGroup;
+import nl.rug.escher.addis.entities.BasicRateMeasurement;
+import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.PooledRateMeasurement;
 import nl.rug.escher.addis.entities.RateMeasurement;
-import nl.rug.escher.addis.entities.SIUnit;
-import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.Endpoint.Type;
 import nl.rug.escher.common.JUnitUtil;
 
-import org.contract4j5.errors.ContractError;
 import org.junit.Before;
 import org.junit.Test;
 
 public class PooledRateMeasurementTest {
-	@Test(expected=ContractError.class)
+	@Test(expected=NullPointerException.class)
 	public void testConstructWithNull() {
 		new PooledRateMeasurement(null);
 	}
 	
-	@Test(expected=ContractError.class)
+	@Test(expected=IllegalArgumentException.class)
 	public void testConstructWithEmpty() {
 		new PooledRateMeasurement(new ArrayList<RateMeasurement>());
 	}
 	
-	@Test(expected=ContractError.class)
+	@Test(expected=IllegalArgumentException.class)
 	public void testConstructWithDifferentEndpoints() {
-		d_m1 = new BasicRateMeasurement(new Endpoint("e1"));
-		d_m1.setRate(12);
+		d_m1 = new BasicRateMeasurement(new Endpoint("e1", Type.RATE), 12);
 		new PooledRateMeasurement(Arrays.asList(
 				new RateMeasurement[] {d_m1, d_m2}));
 	}
@@ -72,7 +65,7 @@ public class PooledRateMeasurementTest {
 	
 	@Before
 	public void setUp() {
-		d_e = new Endpoint("e0");
+		d_e = new Endpoint("e0", Type.RATE);
 		d_g1 = new BasicPatientGroup(null, null, null, 100);
 		d_m1 = new BasicRateMeasurement(d_e, 12, d_g1.getSize());
 		d_g2 = new BasicPatientGroup(null, null, null, 50);
@@ -142,24 +135,14 @@ public class PooledRateMeasurementTest {
 	
 	@Test(expected=RuntimeException.class)
 	public void testFailEndpointChanged() {
-		d_m2.setEndpoint(new Endpoint());
+		d_m2.setEndpoint(new Endpoint("e", Type.RATE));
 	}
 
 	@Test
 	public void testEquals() {
-		Endpoint e = new Endpoint("e");
-		MutablePatientGroup g1 = new BasicPatientGroup(
-				new BasicStudy("s1"), new Drug("d1"),
-				new Dose(8.0, SIUnit.MILLIGRAMS_A_DAY),
-				50, new ArrayList<BasicMeasurement>());
-		MutablePatientGroup g2 = new BasicPatientGroup(
-				new BasicStudy("s2"), new Drug("d1"),
-				new Dose(8.0, SIUnit.MILLIGRAMS_A_DAY),
-				50, new ArrayList<BasicMeasurement>());
-		BasicRateMeasurement m1 = new BasicRateMeasurement(e);
-		g1.addMeasurement(m1);
-		BasicRateMeasurement m2 = new BasicRateMeasurement(e);
-		g2.addMeasurement(m2);
+		Endpoint e = new Endpoint("e", Type.RATE);
+		BasicRateMeasurement m1 = new BasicRateMeasurement(e, 0);
+		BasicRateMeasurement m2 = new BasicRateMeasurement(e, 0);
 		List<RateMeasurement> l1 = new ArrayList<RateMeasurement>();
 		l1.add(m1);
 		l1.add(m2);

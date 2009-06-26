@@ -43,6 +43,7 @@ import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.MetaAnalysis;
 import nl.rug.escher.addis.entities.MetaStudy;
 import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.Endpoint.Type;
 import nl.rug.escher.addis.gui.DomainTreeModel;
 
 import org.junit.Before;
@@ -58,7 +59,7 @@ public class DomainTreeModelTest {
 	@Before
 	public void setUp() {
 		d_domain = new DomainImpl();
-		d_firstEndpoint = new Endpoint("Endpoint");
+		d_firstEndpoint = new Endpoint("Endpoint", Type.RATE);
 		d_firstStudy = new BasicStudy("First");
 		d_firstDrug = new Drug("Drug");
 		d_domain.addEndpoint(d_firstEndpoint);
@@ -158,7 +159,7 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addEndpoint(new Endpoint("E"));
+		d_domain.addEndpoint(new Endpoint("E", Type.RATE));
 		
 		verify(listener);
 	}
@@ -191,10 +192,10 @@ public class DomainTreeModelTest {
 	public void testMetaStudyIsLeaf() {
 		List<Study> l = new ArrayList<Study>();
 		BasicStudy basicStudy = new BasicStudy("X");
-		basicStudy.addEndpoint(new Endpoint("E"));
+		basicStudy.addEndpoint(new Endpoint("E", Type.RATE));
 		l.add(basicStudy);
 		MetaStudy study = new MetaStudy("meta",
-				new MetaAnalysis(new Endpoint("E"), l));
+				new MetaAnalysis(new Endpoint("E", Type.RATE), l));
 		d_domain.addStudy(study);
 		assertTrue(d_treeModel.isLeaf(study));
 	}

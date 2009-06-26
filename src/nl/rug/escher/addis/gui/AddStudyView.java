@@ -149,6 +149,7 @@ public class AddStudyView implements ViewBuilder {
 					d_validator);
 			builder.add(view.buildPanel(), cc.xy(5, row));
 			
+			/*
 			if (g.getMeasurements().size() > 0) {
 				int col = 7;
 				for (JTextField component : MeasurementInputHelper.getComponents(g.getMeasurements().get(0))) {
@@ -157,6 +158,7 @@ public class AddStudyView implements ViewBuilder {
 					col += 2;
 				}
 			}
+			*/
 			
 			row += 2;
 		}

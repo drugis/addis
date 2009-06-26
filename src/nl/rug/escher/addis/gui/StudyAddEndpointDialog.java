@@ -82,9 +82,11 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 	}
 
 	private void addMeasurementsToPatientGroups() {
+		/*
 		for (Map.Entry<PatientGroup, BasicMeasurement> e: d_measurements.entrySet()) {
 			((BasicPatientGroup)e.getKey()).addMeasurement(e.getValue());
 		}
+		*/
 	}
 
 	private void addEndpointToStudy() {

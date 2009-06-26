@@ -5,6 +5,7 @@ import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.LogOddsRatio;
 import nl.rug.escher.addis.entities.OddsRatio;
+import nl.rug.escher.addis.entities.Endpoint.Type;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class LogOddsRatioTest {
 	
 	@Before
 	public void setUp() {
-		Endpoint e = new Endpoint("E");
+		Endpoint e = new Endpoint("E", Type.RATE);
 		
 		d_numerator = new BasicRateMeasurement(e, s_effectNum, s_sizeNum);
 		

@@ -36,7 +36,7 @@ public class Endpoint extends Model implements Comparable<Endpoint>, Entity {
 		}
 	}
 	private String d_name;
-	private String d_description;
+	private String d_description = "";
 	private Type d_type;
 	
 	public final static String PROPERTY_NAME = "name";
@@ -48,20 +48,12 @@ public class Endpoint extends Model implements Comparable<Endpoint>, Entity {
 		d_type = type;
 	}
 	
-	public Endpoint(String string) {
-		d_name = string;
-	}
-	
-	public Endpoint() {
-		
-	}
-
 	public BasicMeasurement buildMeasurement() {
 		switch (getType()) {
 		case CONTINUOUS:
 			return new BasicContinuousMeasurement(this, 0);
 		case RATE:
-			return new BasicRateMeasurement(this, 0, 0);
+			return new BasicRateMeasurement(this, 0);
 		default:
 			throw new IllegalStateException("Not all enum cases covered");
 		}
