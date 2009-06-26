@@ -21,14 +21,16 @@ package nl.rug.escher.addis.gui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JFrame;
 
 import nl.rug.escher.addis.entities.BasicMeasurement;
-import nl.rug.escher.addis.entities.Domain;
+import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.Domain;
+import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.PresentationModel;
@@ -38,14 +40,14 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private BasicStudy d_study;
 	private EndpointHolder d_newEndpoint;
-	private List<BasicMeasurement> d_measurements;
+	private Map<PatientGroup, BasicMeasurement> d_measurements;
 	
 	public StudyAddEndpointDialog(JFrame frame, Domain domain, BasicStudy study) {
 		super(frame, "Add Endpoint to Study");
 		this.setModal(true);
 		d_domain = domain;
 		d_study = study;
-		d_measurements = new ArrayList<BasicMeasurement>();
+		d_measurements = new HashMap<PatientGroup, BasicMeasurement>();
 		d_newEndpoint = new EndpointHolder();
 		final StudyAddEndpointView view = new StudyAddEndpointView(d_domain, d_study,
 				new PresentationModel<EndpointHolder>(d_newEndpoint), d_measurements,
@@ -80,8 +82,9 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 	}
 
 	private void addMeasurementsToPatientGroups() {
-		for (BasicMeasurement m : d_measurements) {
-			m.getPatientGroup().addMeasurement(m);
+		for (Map.Entry<PatientGroup, BasicMeasurement> e: d_measurements.entrySet()) {
+			e.getValue().setPatientGroup((BasicPatientGroup)e.getKey());
+			((BasicPatientGroup)e.getKey()).addMeasurement(e.getValue());
 		}
 	}
 
@@ -90,7 +93,7 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 	}
 
 	private void addEndpointToMeasurements() {
-		for (BasicMeasurement m : d_measurements) {
+		for (BasicMeasurement m : d_measurements.values()) {
 			m.setEndpoint(d_newEndpoint.getEndpoint());
 		}
 	}

@@ -21,18 +21,18 @@ package nl.rug.escher.addis.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
+import nl.rug.escher.addis.entities.BasicMeasurement;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.BasicMeasurement;
-import nl.rug.escher.addis.entities.BasicPatientGroup;
-import nl.rug.escher.addis.entities.BasicStudy;
-import nl.rug.escher.addis.entities.MutablePatientGroup;
+import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.common.gui.LayoutUtil;
 import nl.rug.escher.common.gui.ViewBuilder;
 
@@ -48,14 +48,15 @@ public class StudyAddEndpointView implements ViewBuilder {
 	private Domain d_domain;
 	private BasicStudy d_study;
 	private PresentationModel<EndpointHolder> d_endpointModel;
-	private List<BasicMeasurement> d_measurements;
+	private Map<PatientGroup, BasicMeasurement> d_measurements;
 	
 	private JComboBox d_endpointSelect;
 	private SelectionInList<Endpoint> d_endpointSelectionInList;
 	private NotEmptyValidator d_validator;
 	
 	public StudyAddEndpointView(Domain domain, BasicStudy study,
-			PresentationModel<EndpointHolder> endpointModel, List<BasicMeasurement> measurements,
+			PresentationModel<EndpointHolder> endpointModel,
+			Map<PatientGroup,BasicMeasurement> measurements,
 			JButton okButton) {
 		d_validator = new NotEmptyValidator(okButton);
 		d_domain = domain;
@@ -65,11 +66,10 @@ public class StudyAddEndpointView implements ViewBuilder {
 	}
 
 	private void initializeMeasurements() {
-		for (BasicPatientGroup g : d_study.getPatientGroups()) {
+		for (PatientGroup g : d_study.getPatientGroups()) {
 			if (getEndpoint() != null) {
 				BasicMeasurement m = getEndpoint().buildMeasurement();
-				m.setPatientGroup(g);
-				d_measurements.add(m);
+				d_measurements.put(g, m);
 			}
 		}
 	}
@@ -150,11 +150,13 @@ public class StudyAddEndpointView implements ViewBuilder {
 
 	private void buildMeasurementsPart(PanelBuilder builder,
 			CellConstraints cc, int row, FormLayout layout) {
-		for (BasicMeasurement m : d_measurements) {
+		for (Map.Entry<PatientGroup, BasicMeasurement> e: d_measurements.entrySet()) {
+			PatientGroup g = e.getKey();
+			BasicMeasurement m = e.getValue();
 			LayoutUtil.addRow(layout);
-			PresentationModel<MutablePatientGroup> gModel = 
-				new PresentationModel<MutablePatientGroup>(m.getPatientGroup());
-			builder.add(BasicComponentFactory.createLabel(gModel.getModel(BasicPatientGroup.PROPERTY_LABEL)),
+			PresentationModel<PatientGroup> gModel = 
+				new PresentationModel<PatientGroup>(g);
+			builder.add(BasicComponentFactory.createLabel(gModel.getModel(PatientGroup.PROPERTY_LABEL)),
 					cc.xy(1, row));
 			int col = 3;
 			for (JTextField component : MeasurementInputHelper.getComponents(m)) {
