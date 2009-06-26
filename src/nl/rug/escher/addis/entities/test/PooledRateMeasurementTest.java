@@ -59,7 +59,6 @@ public class PooledRateMeasurementTest {
 	public void testConstructWithDifferentEndpoints() {
 		d_m1 = new BasicRateMeasurement(new Endpoint("e1"));
 		d_m1.setRate(12);
-		d_m1.setPatientGroup(d_g1);
 		new PooledRateMeasurement(Arrays.asList(
 				new RateMeasurement[] {d_m1, d_m2}));
 	}
@@ -75,13 +74,9 @@ public class PooledRateMeasurementTest {
 	public void setUp() {
 		d_e = new Endpoint("e0");
 		d_g1 = new BasicPatientGroup(null, null, null, 100);
-		d_m1 = new BasicRateMeasurement(d_e);
-		d_m1.setRate(12);
-		d_m1.setPatientGroup(d_g1);
+		d_m1 = new BasicRateMeasurement(d_e, 12, d_g1.getSize());
 		d_g2 = new BasicPatientGroup(null, null, null, 50);
-		d_m2 = new BasicRateMeasurement(d_e);
-		d_m2.setRate(18);
-		d_m2.setPatientGroup(d_g2);
+		d_m2 = new BasicRateMeasurement(d_e, 18, d_g2.getSize());
 		d_m = new PooledRateMeasurement(Arrays.asList(new RateMeasurement[] {d_m1, d_m2}));
 	}
 	
@@ -100,7 +95,7 @@ public class PooledRateMeasurementTest {
 	@Test
 	public void testGetSampleSize() {
 		assertEquals(new Integer(d_m1.getSampleSize() + d_m2.getSampleSize()), d_m.getSampleSize());
-		((BasicPatientGroup)d_m2.getPatientGroup()).setSize(1000);
+		d_m2.setSampleSize(1000);
 		assertEquals(new Integer(d_m1.getSampleSize() + d_m2.getSampleSize()), d_m.getSampleSize());
 	}
 	
@@ -123,7 +118,7 @@ public class PooledRateMeasurementTest {
 		PropertyChangeListener l = JUnitUtil.mockListener(
 				d_m, RateMeasurement.PROPERTY_SAMPLESIZE, d_m.getSampleSize(), d_m.getSampleSize() + 10);
 		d_m.addPropertyChangeListener(l);
-		((BasicPatientGroup)d_m1.getPatientGroup()).setSize(d_m1.getPatientGroup().getSize() + 10);
+		d_m1.setSampleSize(d_m1.getSampleSize() + 10);
 		verify(l);
 	}
 	
@@ -141,7 +136,7 @@ public class PooledRateMeasurementTest {
 		PropertyChangeListener l = JUnitUtil.mockListener(
 				d_m, RateMeasurement.PROPERTY_LABEL, "30/150", "30/250");
 		d_m.addPropertyChangeListener(l);
-		((BasicPatientGroup)d_m1.getPatientGroup()).setSize(d_m1.getPatientGroup().getSize() + 100);
+		d_m1.setSampleSize(d_m1.getSampleSize() + 100);
 		verify(l);
 	}
 	

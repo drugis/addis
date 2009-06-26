@@ -19,9 +19,8 @@
 
 package nl.rug.escher.addis.entities.test;
 
-import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicMeasurement;
-import nl.rug.escher.addis.entities.BasicPatientGroup;
+import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Endpoint.Type;
 import nl.rug.escher.common.JUnitUtil;
 
@@ -39,12 +38,6 @@ public class BasicMeasurementTest {
 				return false;
 			}
 		};
-	}
-	
-	@Test
-	public void testSetPatientGroup() {
-		JUnitUtil.testSetter(instance(), BasicMeasurement.PROPERTY_PATIENTGROUP, null, 
-				new BasicPatientGroup(null, null, null, 0));
 	}
 	
 	@Test

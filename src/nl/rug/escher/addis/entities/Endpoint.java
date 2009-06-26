@@ -59,9 +59,9 @@ public class Endpoint extends Model implements Comparable<Endpoint>, Entity {
 	public BasicMeasurement buildMeasurement() {
 		switch (getType()) {
 		case CONTINUOUS:
-			return new BasicContinuousMeasurement(this);
+			return new BasicContinuousMeasurement(this, 0);
 		case RATE:
-			return new BasicRateMeasurement(this);
+			return new BasicRateMeasurement(this, 0, 0);
 		default:
 			throw new IllegalStateException("Not all enum cases covered");
 		}

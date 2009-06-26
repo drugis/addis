@@ -86,12 +86,14 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 		forceLegalArguments(e, g);
 		return g.getMeasurement(e);
 	}
+	
 	public void setMeasurement(Endpoint e, PatientGroup g, Measurement m) {
 		forceLegalArguments(e, g);
 		if (!m.isOfType(e.getType())) {
 			throw new IllegalArgumentException("Measurement does not conform with Endpoint");
 		}
 		((BasicPatientGroup)g).addMeasurement((BasicMeasurement)m);
+		((BasicMeasurement)m).setSampleSize(g.getSize());
 	}
 
 	private void forceLegalArguments(Endpoint e, PatientGroup g) {

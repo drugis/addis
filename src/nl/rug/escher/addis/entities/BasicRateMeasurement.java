@@ -47,11 +47,11 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 	}
 	
 	public BasicRateMeasurement(Endpoint e) {
-		this(e, 0);
+		this(e, 0, 0);
 	}
 	
-	public BasicRateMeasurement(Endpoint e, int rate) {
-		super(e);
+	public BasicRateMeasurement(Endpoint e, int rate, int size) {
+		super(e, size);
 		addPropertyChangeListener(PROPERTY_SAMPLESIZE, d_listener);
 		d_rate = rate;
 	}

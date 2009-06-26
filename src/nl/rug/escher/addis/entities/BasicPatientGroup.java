@@ -39,9 +39,6 @@ public class BasicPatientGroup extends Model implements MutablePatientGroup {
 		d_dose = dose;
 		d_size = size;
 		d_measurements.addAll(measurements);
-		for (BasicMeasurement m : d_measurements) {
-			m.setPatientGroup(this);
-		}
 	}
 	
 	public BasicPatientGroup(BasicStudy study, Drug drug, Dose dose, int size) {
@@ -98,7 +95,6 @@ public class BasicPatientGroup extends Model implements MutablePatientGroup {
 	public void addMeasurement(BasicMeasurement m) {
 		List<BasicMeasurement> newVal = new ArrayList<BasicMeasurement>(d_measurements);
 		newVal.add(m);
-		m.setPatientGroup(this);
 		setMeasurements(newVal);
 	}
 	

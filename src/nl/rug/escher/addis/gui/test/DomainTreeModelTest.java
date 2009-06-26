@@ -28,6 +28,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 
@@ -36,7 +40,9 @@ import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainImpl;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
+import nl.rug.escher.addis.entities.MetaAnalysis;
 import nl.rug.escher.addis.entities.MetaStudy;
+import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.addis.gui.DomainTreeModel;
 
 import org.junit.Before;
@@ -183,7 +189,12 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testMetaStudyIsLeaf() {
-		MetaStudy study = new MetaStudy("meta", null);
+		List<Study> l = new ArrayList<Study>();
+		BasicStudy basicStudy = new BasicStudy("X");
+		basicStudy.addEndpoint(new Endpoint("E"));
+		l.add(basicStudy);
+		MetaStudy study = new MetaStudy("meta",
+				new MetaAnalysis(new Endpoint("E"), l));
 		d_domain.addStudy(study);
 		assertTrue(d_treeModel.isLeaf(study));
 	}

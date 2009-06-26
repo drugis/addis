@@ -81,7 +81,7 @@ public class BasicPatientGroupTest {
 	@Test
 	public void testSetMeasurements() {
 		List<BasicContinuousMeasurement> list = 
-			Collections.singletonList(new BasicContinuousMeasurement(new Endpoint("e")));
+			Collections.singletonList(new BasicContinuousMeasurement(new Endpoint("e"), d_pg.getSize()));
 		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_MEASUREMENTS, Collections.EMPTY_LIST, 
 				list);
 	}
@@ -89,15 +89,7 @@ public class BasicPatientGroupTest {
 	@Test
 	public void testAddMeasurement() {
 		JUnitUtil.testAdder(d_pg, BasicPatientGroup.PROPERTY_MEASUREMENTS,
-				"addMeasurement", new BasicContinuousMeasurement(new Endpoint("hmm")));
-	}
-	
-	@Test
-	public void testAddMeasurementSetsPatientGroup() {
-		MutablePatientGroup g = d_pg;
-		BasicMeasurement m = new BasicContinuousMeasurement(new Endpoint("e"));
-		g.addMeasurement(m);
-		assertEquals(g, m.getPatientGroup());
+				"addMeasurement", new BasicContinuousMeasurement(new Endpoint("hmm"), d_pg.getSize()));
 	}
 	
 	@Test
@@ -150,8 +142,8 @@ public class BasicPatientGroupTest {
 		Endpoint e2 = new Endpoint("e2");
 		Endpoint e3 = new Endpoint("e3");
 		
-		BasicContinuousMeasurement m1 = new BasicContinuousMeasurement(e1);
-		BasicContinuousMeasurement m2 = new BasicContinuousMeasurement(e2);
+		BasicContinuousMeasurement m1 = new BasicContinuousMeasurement(e1, d_pg.getSize());
+		BasicContinuousMeasurement m2 = new BasicContinuousMeasurement(e2, d_pg.getSize());
 		
 		BasicPatientGroup g = d_pg;
 		g.addMeasurement(m2);
@@ -160,14 +152,4 @@ public class BasicPatientGroupTest {
 		assertEquals(m2, g.getMeasurement(e2));
 		assertEquals(null, g.getMeasurement(e3));
 	}
-	
-	@Test
-	public void testConstructorAddsItselfToMeasurements() {
-		List<BasicMeasurement> l = new ArrayList<BasicMeasurement>();
-		l.add(new BasicRateMeasurement());
-		
-		BasicPatientGroup pg = new BasicPatientGroup(new BasicStudy("X"), new Drug("Drug 2"), 
-				new Dose(8, SIUnit.MILLIGRAMS_A_DAY), 2, l);
-		assertEquals(pg, pg.getMeasurements().get(0).getPatientGroup());
-	}	
 }

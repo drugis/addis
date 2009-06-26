@@ -1,20 +1,13 @@
 package nl.rug.escher.addis.entities.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import nl.rug.escher.addis.entities.BasicRateMeasurement;
+import nl.rug.escher.addis.entities.Endpoint;
+import nl.rug.escher.addis.entities.LogOddsRatio;
+import nl.rug.escher.addis.entities.OddsRatio;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import nl.rug.escher.addis.entities.BasicPatientGroup;
-import nl.rug.escher.addis.entities.BasicRateMeasurement;
-import nl.rug.escher.addis.entities.BasicStudy;
-import nl.rug.escher.addis.entities.Dose;
-import nl.rug.escher.addis.entities.Drug;
-import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.LogOddsRatio;
-import nl.rug.escher.addis.entities.MutablePatientGroup;
-import nl.rug.escher.addis.entities.OddsRatio;
-import nl.rug.escher.addis.entities.SIUnit;
 
 public class LogOddsRatioTest {
 	private static final int s_sizeNum = 142;
@@ -32,15 +25,9 @@ public class LogOddsRatioTest {
 	public void setUp() {
 		Endpoint e = new Endpoint("E");
 		
-		MutablePatientGroup g1 = new BasicPatientGroup(new BasicStudy("X"), new Drug("D"), new Dose(8.8, SIUnit.MILLIGRAMS_A_DAY), s_sizeNum);
-		d_numerator = new BasicRateMeasurement(e);
-		d_numerator.setRate(s_effectNum);
-		g1.addMeasurement(d_numerator);
+		d_numerator = new BasicRateMeasurement(e, s_effectNum, s_sizeNum);
 		
-		MutablePatientGroup g2 = new BasicPatientGroup(new BasicStudy("X"), new Drug("F"), new Dose(8.8, SIUnit.MILLIGRAMS_A_DAY), s_sizeDen);
-		d_denominator = new BasicRateMeasurement(e);
-		d_denominator.setRate(s_effectDen);
-		g2.addMeasurement(d_denominator);
+		d_denominator = new BasicRateMeasurement(e, s_effectDen, s_sizeDen);
 		
 		d_ratio = new LogOddsRatio(d_denominator, d_numerator);
 	}

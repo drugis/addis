@@ -26,12 +26,12 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	private Double d_mean;
 	private Double d_stdDev;
 		
-	public BasicContinuousMeasurement(Endpoint e) {
-		this(e, 0.0, 0.0);
+	public BasicContinuousMeasurement(Endpoint e, int size) {
+		this(e, 0.0, 0.0, size);
 	}
 	
-	public BasicContinuousMeasurement(Endpoint e, double mean, double stdDev) {
-		super(e);
+	public BasicContinuousMeasurement(Endpoint e, double mean, double stdDev, int size) {
+		super(e, size);
 		d_mean = mean;
 		d_stdDev = stdDev;
 	}

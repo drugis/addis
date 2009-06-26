@@ -59,6 +59,7 @@ public class TestData {
 		pHamd.setRate(23);
 
 		BasicPatientGroup parox = new BasicPatientGroup(study, buildDrugParoxetine(), dose, 37);
+		pHamd.setSampleSize(parox.getSize());
 		parox.addMeasurement(pHamd);		
 
 
@@ -66,12 +67,14 @@ public class TestData {
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement();
 		fHamd.setRate(26);
 		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 41);
+		fHamd.setSampleSize(fluox.getSize());
 		fluox.addMeasurement(fHamd);		
 		
 		dose = new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY);
 		BasicRateMeasurement vHamd = (BasicRateMeasurement)hamd.buildMeasurement();
 		vHamd.setRate(100);
 		BasicPatientGroup viagra = new BasicPatientGroup(study, buildDrugViagra(), dose, 100);
+		vHamd.setSampleSize(viagra.getSize());
 		viagra.addMeasurement(vHamd);
 	
 		study.addPatientGroup(parox);
@@ -98,6 +101,8 @@ public class TestData {
 		pCgi.setStdDev(0.16);
 		
 		BasicPatientGroup parox = new BasicPatientGroup(study, paroxetine, dose, 102);
+		pHamd.setSampleSize(parox.getSize());
+		pCgi.setSampleSize(parox.getSize());
 		parox.addMeasurement(pHamd);		
 		parox.addMeasurement(pCgi);
 
@@ -109,6 +114,8 @@ public class TestData {
 		fCgi.setStdDev(0.16);
 		
 		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 101);
+		fHamd.setSampleSize(fluox.getSize());
+		fCgi.setSampleSize(fluox.getSize());
 		fluox.addMeasurement(fHamd);
 		fluox.addMeasurement(fCgi);		
 		

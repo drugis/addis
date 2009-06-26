@@ -59,13 +59,11 @@ public class OddsRatioTest {
 		Endpoint e = new Endpoint("E");
 		
 		MutablePatientGroup g1 = new BasicPatientGroup(new BasicStudy("X"), new Drug("D"), new Dose(8.8, SIUnit.MILLIGRAMS_A_DAY), s_sizeNum);
-		d_numerator = new BasicRateMeasurement(e);
-		d_numerator.setRate(s_effectNum);
+		d_numerator = new BasicRateMeasurement(e, s_effectNum, s_sizeNum);
 		g1.addMeasurement(d_numerator);
 		
 		MutablePatientGroup g2 = new BasicPatientGroup(new BasicStudy("X"), new Drug("F"), new Dose(8.8, SIUnit.MILLIGRAMS_A_DAY), s_sizeDen);
-		d_denominator = new BasicRateMeasurement(e);
-		d_denominator.setRate(s_effectDen);
+		d_denominator = new BasicRateMeasurement(e, s_effectDen, s_sizeDen);
 		g2.addMeasurement(d_denominator);
 		
 		d_ratio = new OddsRatio(d_denominator, d_numerator);

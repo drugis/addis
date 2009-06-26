@@ -38,9 +38,8 @@ public class RateContinuousAdapterTest {
 	
 	@Before
 	public void setUp() {
-		d_rate = new BasicRateMeasurement(new Endpoint("e"));
-		d_rate.setRate(50);
 		MutablePatientGroup g = new BasicPatientGroup(null, null, null, 100);
+		d_rate = new BasicRateMeasurement(new Endpoint("e"), 50, g.getSize());
 		g.addMeasurement(d_rate);
 		
 		d_continuous = new RateContinuousAdapter(d_rate);
