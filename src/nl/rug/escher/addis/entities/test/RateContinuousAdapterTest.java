@@ -25,6 +25,7 @@ import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.ContinuousMeasurement;
 import nl.rug.escher.addis.entities.Endpoint;
+import nl.rug.escher.addis.entities.MutablePatientGroup;
 import nl.rug.escher.addis.entities.RateContinuousAdapter;
 
 import org.junit.Before;
@@ -38,7 +39,7 @@ public class RateContinuousAdapterTest {
 	public void setUp() {
 		d_rate = new BasicRateMeasurement(new Endpoint("e"));
 		d_rate.setRate(50);
-		BasicPatientGroup g = new BasicPatientGroup(null, null, null, 100);
+		MutablePatientGroup g = new BasicPatientGroup(null, null, null, 100);
 		g.addMeasurement(d_rate);
 		
 		d_continuous = new RateContinuousAdapter(d_rate);

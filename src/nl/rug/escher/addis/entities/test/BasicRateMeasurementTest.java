@@ -70,7 +70,7 @@ public class BasicRateMeasurementTest {
 		PropertyChangeListener mock = JUnitUtil.mockListener(d_measurement, 
 				BasicRateMeasurement.PROPERTY_LABEL, oldLabel, newLabel);
 		d_measurement.addPropertyChangeListener(mock);
-		d_measurement.getPatientGroup().setSize(105);
+		((BasicPatientGroup)d_measurement.getPatientGroup()).setSize(105);
 		verify(mock);
 	}
 	

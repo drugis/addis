@@ -25,6 +25,7 @@ import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
+import nl.rug.escher.addis.entities.MutablePatientGroup;
 import nl.rug.escher.addis.entities.RiskRatio;
 import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.common.Interval;
@@ -51,12 +52,12 @@ public class RiskRatioTest {
 	public void setUp() {
 		Endpoint e = new Endpoint("E");
 		
-		BasicPatientGroup g1 = new BasicPatientGroup(new BasicStudy("X"), new Drug("D"), new Dose(8.8, SIUnit.MILLIGRAMS_A_DAY), s_sizeNum);
+		MutablePatientGroup g1 = new BasicPatientGroup(new BasicStudy("X"), new Drug("D"), new Dose(8.8, SIUnit.MILLIGRAMS_A_DAY), s_sizeNum);
 		d_numerator = new BasicRateMeasurement(e);
 		d_numerator.setRate(s_effectNum);
 		g1.addMeasurement(d_numerator);
 		
-		BasicPatientGroup g2 = new BasicPatientGroup(new BasicStudy("X"), new Drug("F"), new Dose(8.8, SIUnit.MILLIGRAMS_A_DAY), s_sizeDen);
+		MutablePatientGroup g2 = new BasicPatientGroup(new BasicStudy("X"), new Drug("F"), new Dose(8.8, SIUnit.MILLIGRAMS_A_DAY), s_sizeDen);
 		d_denominator = new BasicRateMeasurement(e);
 		d_denominator.setRate(s_effectDen);
 		g2.addMeasurement(d_denominator);

@@ -29,7 +29,7 @@ import com.jgoodies.binding.beans.Model;
 
 public abstract class BasicMeasurement extends Model implements Measurement {
 	private static final long serialVersionUID = 6892934487858770855L;
-	private BasicPatientGroup d_patientGroup;
+	private MutablePatientGroup d_patientGroup;
 	private Endpoint d_endpoint;
 	private PatientGroupListener d_listener = new PatientGroupListener();
 
@@ -42,7 +42,7 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 		d_endpoint = e;
 	}
 
-	public BasicPatientGroup getPatientGroup() {
+	public MutablePatientGroup getPatientGroup() {
 		return d_patientGroup;
 	}
 
@@ -60,11 +60,11 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 	
 	public void setPatientGroup(BasicPatientGroup g) {
 		if (getPatientGroup() != null) {
-			getPatientGroup().removePropertyChangeListener(BasicPatientGroup.PROPERTY_SIZE, d_listener);
+			getPatientGroup().removePropertyChangeListener(d_listener);
 		}
 		Integer oldSize = getSampleSize();
 		g.addPropertyChangeListener(BasicPatientGroup.PROPERTY_SIZE, d_listener);
-		BasicPatientGroup oldVal = d_patientGroup;
+		MutablePatientGroup oldVal = d_patientGroup;
 		d_patientGroup = g;
 		firePropertyChange(PROPERTY_PATIENTGROUP, oldVal, d_patientGroup);
 		Integer newSize = getSampleSize();

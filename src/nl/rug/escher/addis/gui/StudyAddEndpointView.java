@@ -32,6 +32,7 @@ import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.MutablePatientGroup;
 import nl.rug.escher.common.gui.LayoutUtil;
 import nl.rug.escher.common.gui.ViewBuilder;
 
@@ -151,8 +152,8 @@ public class StudyAddEndpointView implements ViewBuilder {
 			CellConstraints cc, int row, FormLayout layout) {
 		for (BasicMeasurement m : d_measurements) {
 			LayoutUtil.addRow(layout);
-			PresentationModel<BasicPatientGroup> gModel = 
-				new PresentationModel<BasicPatientGroup>(m.getPatientGroup());
+			PresentationModel<MutablePatientGroup> gModel = 
+				new PresentationModel<MutablePatientGroup>(m.getPatientGroup());
 			builder.add(BasicComponentFactory.createLabel(gModel.getModel(BasicPatientGroup.PROPERTY_LABEL)),
 					cc.xy(1, row));
 			int col = 3;

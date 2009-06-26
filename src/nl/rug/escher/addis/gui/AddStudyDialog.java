@@ -34,6 +34,7 @@ import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
+import nl.rug.escher.addis.entities.MutablePatientGroup;
 import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.gui.OkCancelDialog;
@@ -67,7 +68,7 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	protected void buildMeasurements() {
-		for (BasicPatientGroup g : d_study.getPatientGroups()) {
+		for (MutablePatientGroup g : d_study.getPatientGroups()) {
 			g.setMeasurements(new ArrayList<BasicMeasurement>());
 			BasicMeasurement m = d_primaryEndpoint.getEndpoint().buildMeasurement();
 			g.addMeasurement(m);

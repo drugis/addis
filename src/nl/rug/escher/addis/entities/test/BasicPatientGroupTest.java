@@ -34,6 +34,7 @@ import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
+import nl.rug.escher.addis.entities.MutablePatientGroup;
 import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.common.JUnitUtil;
@@ -93,7 +94,7 @@ public class BasicPatientGroupTest {
 	
 	@Test
 	public void testAddMeasurementSetsPatientGroup() {
-		BasicPatientGroup g = d_pg;
+		MutablePatientGroup g = d_pg;
 		BasicMeasurement m = new BasicContinuousMeasurement(new Endpoint("e"));
 		g.addMeasurement(m);
 		assertEquals(g, m.getPatientGroup());

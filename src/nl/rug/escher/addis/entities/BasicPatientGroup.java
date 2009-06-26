@@ -26,7 +26,7 @@ import nl.rug.escher.common.EqualsUtil;
 
 import com.jgoodies.binding.beans.Model;
 
-public class BasicPatientGroup extends Model implements PatientGroup {
+public class BasicPatientGroup extends Model implements MutablePatientGroup {
 	private static final long serialVersionUID = -2092185548220089471L;
 	private BasicStudy d_study;
 	private Integer d_size;

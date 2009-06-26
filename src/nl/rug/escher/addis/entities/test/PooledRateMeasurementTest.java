@@ -33,6 +33,7 @@ import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
+import nl.rug.escher.addis.entities.MutablePatientGroup;
 import nl.rug.escher.addis.entities.PooledRateMeasurement;
 import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.SIUnit;
@@ -99,7 +100,7 @@ public class PooledRateMeasurementTest {
 	@Test
 	public void testGetSampleSize() {
 		assertEquals(new Integer(d_m1.getSampleSize() + d_m2.getSampleSize()), d_m.getSampleSize());
-		d_m2.getPatientGroup().setSize(1000);
+		((BasicPatientGroup)d_m2.getPatientGroup()).setSize(1000);
 		assertEquals(new Integer(d_m1.getSampleSize() + d_m2.getSampleSize()), d_m.getSampleSize());
 	}
 	
@@ -122,7 +123,7 @@ public class PooledRateMeasurementTest {
 		PropertyChangeListener l = JUnitUtil.mockListener(
 				d_m, RateMeasurement.PROPERTY_SAMPLESIZE, d_m.getSampleSize(), d_m.getSampleSize() + 10);
 		d_m.addPropertyChangeListener(l);
-		d_m1.getPatientGroup().setSize(d_m1.getPatientGroup().getSize() + 10);
+		((BasicPatientGroup)d_m1.getPatientGroup()).setSize(d_m1.getPatientGroup().getSize() + 10);
 		verify(l);
 	}
 	
@@ -140,7 +141,7 @@ public class PooledRateMeasurementTest {
 		PropertyChangeListener l = JUnitUtil.mockListener(
 				d_m, RateMeasurement.PROPERTY_LABEL, "30/150", "30/250");
 		d_m.addPropertyChangeListener(l);
-		d_m1.getPatientGroup().setSize(d_m1.getPatientGroup().getSize() + 100);
+		((BasicPatientGroup)d_m1.getPatientGroup()).setSize(d_m1.getPatientGroup().getSize() + 100);
 		verify(l);
 	}
 	
@@ -152,11 +153,11 @@ public class PooledRateMeasurementTest {
 	@Test
 	public void testEquals() {
 		Endpoint e = new Endpoint("e");
-		BasicPatientGroup g1 = new BasicPatientGroup(
+		MutablePatientGroup g1 = new BasicPatientGroup(
 				new BasicStudy("s1"), new Drug("d1"),
 				new Dose(8.0, SIUnit.MILLIGRAMS_A_DAY),
 				50, new ArrayList<BasicMeasurement>());
-		BasicPatientGroup g2 = new BasicPatientGroup(
+		MutablePatientGroup g2 = new BasicPatientGroup(
 				new BasicStudy("s2"), new Drug("d1"),
 				new Dose(8.0, SIUnit.MILLIGRAMS_A_DAY),
 				50, new ArrayList<BasicMeasurement>());

@@ -21,7 +21,9 @@ package nl.rug.escher.addis.entities;
 
 import java.util.List;
 
-public interface PatientGroup {
+import com.jgoodies.binding.beans.Observable;
+
+public interface PatientGroup extends Observable {
 
 	public static final String PROPERTY_STUDY = "study";
 	public static final String PROPERTY_SIZE = "size";
