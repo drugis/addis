@@ -103,19 +103,6 @@ public class BasicStudyTest {
 		assertEquals(id, study.toString());
 	}
 	
-	@Test
-	public void testGetMeasurement() {
-		BasicStudy study = new BasicStudy("X");
-		study.addEndpoint(new Endpoint("e"));
-		study.addPatientGroup(new BasicPatientGroup(study, null, null, 100));
-		BasicRateMeasurement m = new BasicRateMeasurement();
-		m.setEndpoint(study.getEndpoints().get(0));
-		m.setRate(12);
-		study.getPatientGroups().get(0).addMeasurement(m);
-		
-		assertEquals(m, study.getMeasurement(study.getEndpoints().get(0), study.getPatientGroups().get(0)));
-	}
-	
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetMeasurementThrowsException1() {
 		BasicStudy study = new BasicStudy("X");

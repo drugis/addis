@@ -19,21 +19,53 @@
 
 package nl.rug.escher.addis.entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
 public class BasicStudy extends AbstractStudy implements MutableStudy {
-	private static final long serialVersionUID = -1373201520248610423L;
+	private static final long serialVersionUID = -2400136708833976982L;
+
+	private static class MeasurementKey implements Serializable {
+		private static final long serialVersionUID = 6310789667384578005L;
+		private Endpoint d_endpoint;
+		private PatientGroup d_patientGroup;
+		
+		public MeasurementKey(Endpoint e, PatientGroup g) {
+			d_endpoint = e;
+			d_patientGroup = g;
+		}
+		
+		public boolean equals(Object o) {
+			if (o instanceof MeasurementKey) { 
+				MeasurementKey other = (MeasurementKey)o;
+				return d_endpoint.equals(other.d_endpoint) && d_patientGroup.equals(other.d_patientGroup);
+			}
+			return false;
+		}
+		
+		public int hashCode() {
+			int code = 1;
+			code = code * 31 + d_endpoint.hashCode();
+			code = code * 31 + d_patientGroup.hashCode();
+			return code;
+		}
+	}
+	
 	private List<Endpoint> d_endpoints;
 	private List<BasicPatientGroup> d_patientGroups;
+	private Map<MeasurementKey, Measurement> d_measurements;
 	
 	public BasicStudy(String id) {
 		super(id);
 		d_endpoints = new ArrayList<Endpoint>();
 		d_patientGroups = new ArrayList<BasicPatientGroup>();
+		d_measurements = new HashMap<MeasurementKey, Measurement>();
 	}
 
 	public List<Endpoint> getEndpoints() {
@@ -84,7 +116,7 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 
 	public Measurement getMeasurement(Endpoint e, PatientGroup g) {
 		forceLegalArguments(e, g);
-		return g.getMeasurement(e);
+		return d_measurements.get(new MeasurementKey(e, g));
 	}
 	
 	public void setMeasurement(Endpoint e, PatientGroup g, Measurement m) {
@@ -92,7 +124,7 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 		if (!m.isOfType(e.getType())) {
 			throw new IllegalArgumentException("Measurement does not conform with Endpoint");
 		}
-		((BasicPatientGroup)g).addMeasurement((BasicMeasurement)m);
+		d_measurements.put(new MeasurementKey(e, g), m);
 		((BasicMeasurement)m).setSampleSize(g.getSize());
 	}
 
