@@ -22,8 +22,6 @@ package nl.rug.escher.addis.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.rug.escher.common.EqualsUtil;
-
 import com.jgoodies.binding.beans.Model;
 
 public class BasicPatientGroup extends Model implements MutablePatientGroup {
@@ -138,25 +136,5 @@ public class BasicPatientGroup extends Model implements MutablePatientGroup {
 		Integer oldVal = d_size;
 		d_size = size;
 		firePropertyChange(PROPERTY_SIZE, oldVal, d_size);
-	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof BasicPatientGroup) {
-			BasicPatientGroup other = (BasicPatientGroup)o;
-			return EqualsUtil.equal(other.getStudy(), getStudy()) &&
-				EqualsUtil.equal(other.getDrug(), getDrug()) &&
-				EqualsUtil.equal(other.getDose(), getDose());
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		int hash = 1;
-		hash = hash * 31 + getStudy().hashCode();
-		hash = hash * 31 + getDrug().hashCode();
-		hash = hash * 31 + getDose().hashCode();
-		return hash;
 	}
 }

@@ -21,6 +21,8 @@ package nl.rug.escher.addis.entities;
 
 import java.io.Serializable;
 
+import nl.rug.escher.addis.entities.Endpoint.Type;
+
 import com.jgoodies.binding.beans.Observable;
 
 public interface Measurement extends Observable, Serializable {
@@ -33,4 +35,6 @@ public interface Measurement extends Observable, Serializable {
 	public Endpoint getEndpoint();
 
 	public Integer getSampleSize();
+
+	public boolean isOfType(Type type);
 }

@@ -162,39 +162,6 @@ public class BasicPatientGroupTest {
 	}
 	
 	@Test
-	public void testEquals() {
-		BasicStudy study1 = new BasicStudy("X");
-		BasicStudy study2 = new BasicStudy("Y");
-		Drug drug1 = new Drug("Drug");
-		Drug drug2 = new Drug("Drug 2");
-		Dose dose1 = new Dose(12, SIUnit.MILLIGRAMS_A_DAY);
-		Dose dose2 = new Dose(8, SIUnit.MILLIGRAMS_A_DAY);
-		int size1 = 1;
-		int size2 = 2;
-		List<BasicMeasurement> m1 = new ArrayList<BasicMeasurement>();
-		List<BasicMeasurement> m2 = new ArrayList<BasicMeasurement>();
-		m2.add(new BasicRateMeasurement());
-		
-		assertEquals(new BasicPatientGroup(study1, drug1, dose1, size1, m1),
-				new BasicPatientGroup(study1, drug1, dose1, size1, m1));
-		
-		JUnitUtil.assertNotEquals(new BasicPatientGroup(study1, drug1, dose1, size1, m1),
-				new BasicPatientGroup(study2, drug1, dose1, size1, m1));
-		JUnitUtil.assertNotEquals(new BasicPatientGroup(study1, drug1, dose1, size1, m1),
-				new BasicPatientGroup(study1, drug2, dose1, size1, m1));
-		JUnitUtil.assertNotEquals(new BasicPatientGroup(study1, drug1, dose1, size1, m1),
-				new BasicPatientGroup(study1, drug1, dose2, size1, m1));
-		
-		assertEquals(new BasicPatientGroup(study1, drug1, dose1, size1, m1),
-				new BasicPatientGroup(study1, drug1, dose1, size2, m1));
-		assertEquals(new BasicPatientGroup(study1, drug1, dose1, size1, m1),
-				new BasicPatientGroup(study1, drug1, dose1, size1, m2));
-		
-		assertEquals(new BasicPatientGroup(study1, drug1, dose1, size1, m1).hashCode(),
-				new BasicPatientGroup(study1, drug1, dose1, size1, m1).hashCode());
-	}
-	
-	@Test
 	public void testConstructorAddsItselfToMeasurements() {
 		List<BasicMeasurement> l = new ArrayList<BasicMeasurement>();
 		l.add(new BasicRateMeasurement());

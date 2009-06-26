@@ -19,6 +19,8 @@
 
 package nl.rug.escher.addis.entities;
 
+import nl.rug.escher.addis.entities.Endpoint.Type;
+
 import org.contract4j5.contract.Contract;
 
 
@@ -39,5 +41,9 @@ public class OddsRatio extends Ratio {
 	@Override
 	protected double getMean(RateMeasurement m) {
 		return (double)m.getRate() / (double)(m.getSampleSize() - m.getRate());
+	}
+
+	public boolean isOfType(Type type) {
+		return false;
 	}
 }

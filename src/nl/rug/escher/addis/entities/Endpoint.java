@@ -43,6 +43,11 @@ public class Endpoint extends Model implements Comparable<Endpoint>, Entity {
 	public final static String PROPERTY_DESCRIPTION = "description";
 	public final static String PROPERTY_TYPE = "type";
 	
+	public Endpoint(String string, Type type) {
+		d_name = string;
+		d_type = type;
+	}
+	
 	public Endpoint(String string) {
 		d_name = string;
 	}

@@ -19,6 +19,8 @@
 
 package nl.rug.escher.addis.entities;
 
+import nl.rug.escher.addis.entities.Endpoint.Type;
+
 import com.jgoodies.binding.beans.Model;
 
 
@@ -48,5 +50,9 @@ public class RateContinuousAdapter extends Model implements ContinuousMeasuremen
 
 	public Integer getSampleSize() {
 		return d_measurement.getSampleSize();
+	}
+
+	public boolean isOfType(Type type) {
+		return type.equals(Type.CONTINUOUS);
 	}
 }

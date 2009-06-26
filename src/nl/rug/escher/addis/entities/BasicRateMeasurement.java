@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import nl.rug.escher.addis.entities.Endpoint.Type;
+
 public class BasicRateMeasurement extends BasicMeasurement implements RateMeasurement {
 	private static final long serialVersionUID = -1004559723622385992L;
 	private Integer d_rate;
@@ -91,5 +93,9 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 						generateLabel(oldSize), generateLabel(newSize));
 			}
 		}	
+	}
+
+	public boolean isOfType(Type type) {
+		return type.equals(Type.RATE);
 	}
 }

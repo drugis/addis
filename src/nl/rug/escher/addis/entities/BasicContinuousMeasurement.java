@@ -19,6 +19,8 @@
 
 package nl.rug.escher.addis.entities;
 
+import nl.rug.escher.addis.entities.Endpoint.Type;
+
 public class BasicContinuousMeasurement extends BasicMeasurement implements ContinuousMeasurement {
 	private static final long serialVersionUID = 6086085465347586428L;
 	private Double d_mean;
@@ -74,5 +76,9 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 			return "INCOMPLETE"; 
 		}
 		return d_mean.toString() + " \u00B1 " + d_stdDev.toString();
+	}
+
+	public boolean isOfType(Type type) {
+		return type.equals(Type.CONTINUOUS);
 	}
 }

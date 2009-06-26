@@ -26,6 +26,8 @@ import java.io.ObjectInputStream;
 import java.util.HashSet;
 import java.util.List;
 
+import nl.rug.escher.addis.entities.Endpoint.Type;
+
 import org.contract4j5.contract.Contract;
 import org.contract4j5.contract.Invar;
 import org.contract4j5.contract.Post;
@@ -160,5 +162,9 @@ public class PooledRateMeasurement extends Model implements RateMeasurement {
 	
 	public int hashCode() {
 		return new HashSet<RateMeasurement>(d_measurements).hashCode();
+	}
+
+	public boolean isOfType(Type type) {
+		return type.equals(Type.RATE);
 	}
 }

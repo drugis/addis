@@ -1,5 +1,7 @@
 package nl.rug.escher.addis.entities;
 
+import nl.rug.escher.addis.entities.Endpoint.Type;
+
 public class RiskRatio extends Ratio implements ContinuousMeasurement {
 	private static final long serialVersionUID = 3178825436484450721L;
 
@@ -18,5 +20,9 @@ public class RiskRatio extends Ratio implements ContinuousMeasurement {
 
 	public Double getStdDev() {
 		return getConfidenceInterval().getLength() / (2 * 1.96);
+	}
+
+	public boolean isOfType(Type type) {
+		return type.equals(Type.CONTINUOUS);
 	}
 }

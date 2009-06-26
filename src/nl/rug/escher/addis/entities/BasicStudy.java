@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 
-public class BasicStudy extends AbstractStudy implements Study {
+public class BasicStudy extends AbstractStudy implements MutableStudy {
 	private static final long serialVersionUID = -1373201520248610423L;
 	private List<Endpoint> d_endpoints;
 	private List<BasicPatientGroup> d_patientGroups;
@@ -82,4 +82,24 @@ public class BasicStudy extends AbstractStudy implements Study {
 		return dep;
 	}
 
+	public Measurement getMeasurement(Endpoint e, PatientGroup g) {
+		forceLegalArguments(e, g);
+		return g.getMeasurement(e);
+	}
+	public void setMeasurement(Endpoint e, PatientGroup g, Measurement m) {
+		forceLegalArguments(e, g);
+		if (!m.isOfType(e.getType())) {
+			throw new IllegalArgumentException("Measurement does not conform with Endpoint");
+		}
+		((BasicPatientGroup)g).addMeasurement((BasicMeasurement)m);
+	}
+
+	private void forceLegalArguments(Endpoint e, PatientGroup g) {
+		if (!d_patientGroups.contains(g)) {
+			throw new IllegalArgumentException("PatientGroup " + g + " not part of this study.");
+		}
+		if (!d_endpoints.contains(e)) {
+			throw new IllegalArgumentException("Endpoint " + e + " not measured by this study.");
+		}
+	}
 }

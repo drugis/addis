@@ -22,6 +22,7 @@ package nl.rug.escher.addis.entities.test;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
+import nl.rug.escher.addis.entities.Endpoint.Type;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Test;
@@ -32,6 +33,10 @@ public class BasicMeasurementTest {
 		return new BasicMeasurement() {
 			public String getLabel() {
 				return null;
+			}
+
+			public boolean isOfType(Type type) {
+				return false;
 			}
 		};
 	}

@@ -30,10 +30,12 @@ import java.util.List;
 import java.util.Set;
 
 import nl.rug.escher.addis.entities.BasicPatientGroup;
+import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Entity;
+import nl.rug.escher.addis.entities.Endpoint.Type;
 import nl.rug.escher.common.JUnitUtil;
 
 import org.junit.Before;
@@ -100,7 +102,61 @@ public class BasicStudyTest {
 		BasicStudy study = new BasicStudy(id);
 		assertEquals(id, study.toString());
 	}
-
+	
+	@Test
+	public void testGetMeasurement() {
+		BasicStudy study = new BasicStudy("X");
+		study.addEndpoint(new Endpoint("e"));
+		study.addPatientGroup(new BasicPatientGroup(study, null, null, 100));
+		BasicRateMeasurement m = new BasicRateMeasurement();
+		m.setEndpoint(study.getEndpoints().get(0));
+		m.setRate(12);
+		study.getPatientGroups().get(0).addMeasurement(m);
+		
+		assertEquals(m, study.getMeasurement(study.getEndpoints().get(0), study.getPatientGroups().get(0)));
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testGetMeasurementThrowsException1() {
+		BasicStudy study = new BasicStudy("X");
+		study.getMeasurement(new Endpoint("E"), new BasicPatientGroup(study, null, null, 100));
+	}
+	
+	@Test
+	public void testSetMeasurement() {
+		BasicStudy study = new BasicStudy("X");
+		study.addEndpoint(new Endpoint("e", Type.RATE));
+		study.addPatientGroup(new BasicPatientGroup(study, null, null, 100));
+		BasicRateMeasurement m = new BasicRateMeasurement();
+		m.setEndpoint(study.getEndpoints().get(0));
+		m.setRate(12);
+		study.setMeasurement(study.getEndpoints().get(0), study.getPatientGroups().get(0), m);
+		
+		assertEquals(m, study.getMeasurement(study.getEndpoints().get(0), study.getPatientGroups().get(0)));
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testSetMeasurementThrowsException1() {
+		BasicStudy study = new BasicStudy("X");
+		study.setMeasurement(new Endpoint("E"), new BasicPatientGroup(study, null, null, 100),
+				new BasicRateMeasurement());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testSetMeasurementThrowsException2() {
+		BasicStudy study = new BasicStudy("X");
+		study.addEndpoint(new Endpoint("e"));
+		study.addPatientGroup(new BasicPatientGroup(study, null, null, 100));
+		
+		BasicRateMeasurement m = new BasicRateMeasurement();
+		m.setEndpoint(study.getEndpoints().get(0));
+		m.setRate(12);
+		
+		study.getEndpoints().get(0).setType(Type.CONTINUOUS);
+		study.setMeasurement(study.getEndpoints().get(0), study.getPatientGroups().get(0), m);
+	}
+	
+	
 	@Test
 	public void testEquals() {
 		String name1 = "Study A";

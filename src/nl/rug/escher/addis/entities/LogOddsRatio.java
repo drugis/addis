@@ -23,6 +23,10 @@ public class LogOddsRatio extends OddsRatio implements ContinuousMeasurement {
 		return format.format(getMean()) + "\u00B1" + format.format(getStdDev());
 	}
 	
+	public boolean isOfType(Endpoint.Type type) {
+		return type.equals(Endpoint.Type.CONTINUOUS);
+	}
+	
 	private double invEffect(RateMeasurement m) {
 		return 1.0 / m.getRate();
 	}

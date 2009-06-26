@@ -100,4 +100,10 @@ public class MetaStudyTest {
 		assertEquals(deps, d_study.getDependencies());
 	}
 	
+	@Test
+	public void testGetMeasurement() {
+		assertEquals(
+				d_study.getAnalysis().getPooledMeasurement(d_study.getPatientGroups().get(0).getDrug()),
+				d_study.getMeasurement(TestData.buildEndpointHamd(), d_study.getPatientGroups().get(0)));
+	}
 }

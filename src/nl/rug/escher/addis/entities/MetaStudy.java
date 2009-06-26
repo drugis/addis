@@ -29,12 +29,21 @@ public class MetaStudy extends AbstractStudy {
 	
 	private static final long serialVersionUID = 4551624355872585225L;
 	private MetaAnalysis d_analysis;
+	private List<PatientGroup> d_patientGroups;
 
 	public MetaStudy(String id, MetaAnalysis analysis) {
 		super(id);
 		d_analysis = analysis;
+		initPatientGroups();
 	}
 	
+	private void initPatientGroups() {
+		d_patientGroups = new ArrayList<PatientGroup>();
+		for (Drug d : d_analysis.getDrugs()) {
+			d_patientGroups.add(new PooledPatientGroup(this, d));
+		}
+	}
+
 	public MetaAnalysis getAnalysis() {
 		return d_analysis;
 	}
@@ -48,13 +57,7 @@ public class MetaStudy extends AbstractStudy {
 	}
 
 	public List<PatientGroup> getPatientGroups() {
-		List<PatientGroup> l = new ArrayList<PatientGroup>();
-
-		for (Drug d : d_analysis.getDrugs()) {
-			l.add(new PooledPatientGroup(this, d));
-		}
-		
-		return l;
+		return d_patientGroups;
 	}
 
 	public Set<Entity> getDependencies() {
@@ -66,4 +69,21 @@ public class MetaStudy extends AbstractStudy {
 		return deps;
 	}
 
+	public Measurement getMeasurement(Endpoint e, PatientGroup g) {
+		if (!havePatientGroup(g)) {
+			throw new IllegalArgumentException("PatientGroup " + g + " not part of this study.");
+		}
+		if (!haveEndpoint(e)) {
+			throw new IllegalArgumentException("Endpoint " + e + " not measured by this study.");
+		}
+		return g.getMeasurement(e);
+	}
+
+	private boolean haveEndpoint(Endpoint e) {
+		return d_analysis.getEndpoint().equals(e);
+	}
+
+	private boolean havePatientGroup(PatientGroup g) {
+		return getPatientGroups().contains(g);
+	}
 }

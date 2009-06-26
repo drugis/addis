@@ -4,11 +4,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
-import org.contract4j5.contract.Contract;
-import org.contract4j5.contract.Pre;
-
 import nl.rug.escher.common.Interval;
 import nl.rug.escher.common.StudentTTable;
+
+import org.contract4j5.contract.Contract;
+import org.contract4j5.contract.Pre;
 
 import com.jgoodies.binding.beans.Model;
 
