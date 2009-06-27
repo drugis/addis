@@ -114,5 +114,13 @@ public abstract class AbstractStudy extends Model implements Study {
 			code = code * 31 + d_patientGroup.hashCode();
 			return code;
 		}
+		
+		public Endpoint getEndpoint() {
+			return d_endpoint;
+		}
+		
+		public PatientGroup getPatientGroup() {
+			return d_patientGroup;
+		}
 	}
 }

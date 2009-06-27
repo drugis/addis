@@ -166,4 +166,35 @@ public class BasicStudyTest {
 		dep.addAll(s.getDrugs());
 		assertEquals(dep, s.getDependencies());
 	}
+	
+	@Test
+	public void testSetMeasurementSetsSampleSize() {
+		BasicStudy study = new BasicStudy("X");
+		Endpoint endpoint = new Endpoint("e", Type.RATE);
+		study.addEndpoint(endpoint);
+		BasicPatientGroup pg = new BasicPatientGroup(study, null, null, 100);
+		study.addPatientGroup(pg);
+		BasicRateMeasurement m = new BasicRateMeasurement(endpoint, 12);
+		m.setEndpoint(endpoint);
+		study.setMeasurement(endpoint, pg, m);
+		
+		assertEquals(100, (int)study.getMeasurement(endpoint, pg).getSampleSize());		
+	}
+		
+	
+	@Test
+	public void testPatientGroupSizeChangeChangesMeasurement() {
+		BasicStudy study = new BasicStudy("X");
+		Endpoint endpoint = new Endpoint("e", Type.RATE);
+		study.addEndpoint(endpoint);
+		BasicPatientGroup pg = new BasicPatientGroup(study, null, null, 100);
+		study.addPatientGroup(pg);
+		BasicRateMeasurement m = new BasicRateMeasurement(endpoint, 0, 10);
+		m.setEndpoint(endpoint);
+		m.setRate(12);
+		study.setMeasurement(endpoint, pg, m);
+		
+		pg.setSize(50);
+		assertEquals(50, (int)study.getMeasurement(endpoint, pg).getSampleSize());		
+	}	
 }

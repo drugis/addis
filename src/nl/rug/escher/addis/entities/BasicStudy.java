@@ -19,24 +19,38 @@
 
 package nl.rug.escher.addis.entities;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Map.Entry;
 
 
 public class BasicStudy extends AbstractStudy implements MutableStudy {
 	private static final long serialVersionUID = -2400136708833976982L;
 	
-	private List<Endpoint> d_endpoints;
-	private List<BasicPatientGroup> d_patientGroups;
+	private List<Endpoint> d_endpoints = new ArrayList<Endpoint>();
+	private List<BasicPatientGroup> d_patientGroups = new ArrayList<BasicPatientGroup>();
+	private transient PatientGroupListener d_pgListener;
 	
 	public BasicStudy(String id) {
 		super(id);
 		d_measurements = new HashMap<MeasurementKey, Measurement>();		
 		setEndpoints(new ArrayList<Endpoint>());
 		setPatientGroups(new ArrayList<BasicPatientGroup>());
+		initPatientGroupListener();
+	}
+
+	private void initPatientGroupListener() {
+		d_pgListener = new PatientGroupListener();
+		for (PatientGroup g : d_patientGroups) {
+			g.addPropertyChangeListener(d_pgListener);
+		}
 	}
 
 	public List<Endpoint> getEndpoints() {
@@ -60,6 +74,11 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 			}
 		}
 	}
+	
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
+		in.defaultReadObject();
+		initPatientGroupListener();
+	}
 
 	public List<BasicPatientGroup> getPatientGroups() {
 		return d_patientGroups;
@@ -67,9 +86,15 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 
 	public void setPatientGroups(List<BasicPatientGroup> patientGroups) {
 		List<BasicPatientGroup> oldVal = d_patientGroups;
+		for (PatientGroup g : oldVal) {
+			g.addPropertyChangeListener(d_pgListener);
+		}		
 		d_patientGroups = patientGroups;
 		updateMeasurements();		
-		firePropertyChange(PROPERTY_PATIENTGROUPS, oldVal, d_patientGroups);		
+		for (PatientGroup g : d_patientGroups) {
+			g.addPropertyChangeListener(d_pgListener);
+		}		
+		firePropertyChange(PROPERTY_PATIENTGROUPS, oldVal, d_patientGroups);	
 	}
 	
 	public void addPatientGroup(BasicPatientGroup group) {
@@ -104,6 +129,27 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 			throw new IllegalArgumentException("Measurement does not conform with Endpoint");
 		}
 		d_measurements.put(new MeasurementKey(e, g), m);
-		((BasicMeasurement)m).setSampleSize(g.getSize());
+		if (m instanceof BasicRateMeasurement) {
+			((BasicRateMeasurement) m).setSampleSize(g.getSize());
+		}
 	}	
+	
+	private class PatientGroupListener implements PropertyChangeListener {
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName().equals(PatientGroup.PROPERTY_SIZE)) {
+				changeMeasurements((PatientGroup) evt.getSource(), (Integer) evt.getNewValue());
+			}
+		}		
+	}
+
+	public void changeMeasurements(PatientGroup source, int newValue) {
+		for (Entry<MeasurementKey, Measurement> entry : d_measurements.entrySet()) {
+			if (entry.getKey().getPatientGroup().equals(source)) {
+				Measurement m = entry.getValue();
+				if (m instanceof BasicRateMeasurement) {
+					((BasicRateMeasurement) m).setSampleSize(newValue);
+				}
+			}
+		}
+	}
 }
