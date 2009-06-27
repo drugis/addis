@@ -23,6 +23,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collections;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -57,6 +58,7 @@ public class AddStudyDialog extends OkCancelDialog {
 		d_primaryEndpoint = new EndpointHolder();
 		d_primaryEndpoint.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
+				setEndpoint();
 				buildMeasurements();
 				initUserPanel();
 			}
@@ -65,6 +67,10 @@ public class AddStudyDialog extends OkCancelDialog {
 				new PresentationModel<EndpointHolder>(d_primaryEndpoint), domain,
 				d_okButton);
 		initUserPanel();
+	}
+
+	protected void setEndpoint() {
+		d_study.setEndpoints(Collections.singletonList(d_primaryEndpoint.getEndpoint()));
 	}
 
 	protected void buildMeasurements() {
@@ -99,21 +105,18 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	protected void addPatientGroup() {
-		BasicPatientGroup group = initializePatientGroup();
-		d_study.addPatientGroup(group);
+		addNewPatientGroup();
 		initUserPanel();
 	}
 
-	private BasicPatientGroup initializePatientGroup() {
+	private void addNewPatientGroup() {
 		BasicPatientGroup group = new BasicPatientGroup(d_study, null,
 				new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY), 0);
-		/*
+		d_study.addPatientGroup(group);
 		if (d_primaryEndpoint.getEndpoint() != null) {
 			BasicMeasurement m = d_primaryEndpoint.getEndpoint().buildMeasurement();
-			group.addMeasurement(m);
+			d_study.setMeasurement(d_primaryEndpoint.getEndpoint(), group, m);
 		}
-		*/
-		return group;
 	}
 
 	@Override

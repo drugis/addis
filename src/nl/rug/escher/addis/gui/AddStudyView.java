@@ -27,12 +27,14 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
+import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.Measurement;
 import nl.rug.escher.common.gui.LayoutUtil;
 import nl.rug.escher.common.gui.ViewBuilder;
 
@@ -133,8 +135,6 @@ public class AddStudyView implements ViewBuilder {
 		for (BasicPatientGroup g : groups) {
 			LayoutUtil.addRow(layout);
 			PresentationModel<BasicPatientGroup> model = new PresentationModel<BasicPatientGroup>(g);
-			//PresentationModel<Measurement> mModel =
-			//	new PresentationModel<Measurement>(g.getMeasurements().get(0));
 			JTextField field = MeasurementInputHelper.buildFormatted(model.getModel(BasicPatientGroup.PROPERTY_SIZE));
 			d_validator.add(field);
 			AutoSelectFocusListener.add(field);
@@ -148,18 +148,16 @@ public class AddStudyView implements ViewBuilder {
 			DoseView view = new DoseView(new PresentationModel<Dose>(g.getDose()),
 					d_validator);
 			builder.add(view.buildPanel(), cc.xy(5, row));
-			
-			/*
-			if (g.getMeasurements().size() > 0) {
-				int col = 7;
-				for (JTextField component : MeasurementInputHelper.getComponents(g.getMeasurements().get(0))) {
-					d_validator.add(component);
-					builder.add(component, cc.xy(col, row));
-					col += 2;
-				}
+
+			Measurement meas = d_model.getBean().getMeasurement(
+					d_endpointModel.getBean().getEndpoint(),g);
+			int col = 7;
+			for (JTextField component : MeasurementInputHelper.getComponents((BasicMeasurement)meas)) {
+				d_validator.add(component);
+				builder.add(component, cc.xy(col, row));
+				col += 2;
 			}
-			*/
-			
+
 			row += 2;
 		}
 	}
