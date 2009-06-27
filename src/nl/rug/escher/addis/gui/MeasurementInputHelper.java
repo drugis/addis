@@ -35,14 +35,7 @@ import com.jgoodies.binding.value.ValueModel;
 public class MeasurementInputHelper {
 
 	public static int numComponents(Endpoint e) {
-		switch (e.getType()) {
-		case CONTINUOUS:
-			return 2;
-		case RATE:
-			return 1;
-		default:
-			throw new IllegalStateException("Unhandled enum value");
-		}
+		return getHeaders(e).length;
 	}
 
 	public static String[] getHeaders(Endpoint e) {
