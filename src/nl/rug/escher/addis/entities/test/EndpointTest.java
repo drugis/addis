@@ -32,7 +32,7 @@ public class EndpointTest {
 
 	@Test
 	public void testSetDescription() {
-		JUnitUtil.testSetter(new Endpoint("e", Type.RATE), Endpoint.PROPERTY_DESCRIPTION, null, "My Description");
+		JUnitUtil.testSetter(new Endpoint("e", Type.RATE), Endpoint.PROPERTY_DESCRIPTION, "", "My Description");
 	}
 
 	@Test

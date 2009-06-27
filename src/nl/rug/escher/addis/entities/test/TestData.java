@@ -77,7 +77,9 @@ public class TestData {
 		study.addPatientGroup(parox);
 		study.addPatientGroup(fluox);
 		study.addPatientGroup(viagra);
-		
+		study.setMeasurement(hamd, parox, pHamd);
+		study.setMeasurement(hamd, fluox, fHamd);
+		study.setMeasurement(hamd, viagra, vHamd);
 		return study;
 	}
 
@@ -114,6 +116,10 @@ public class TestData {
 		
 		study.addPatientGroup(parox);
 		study.addPatientGroup(fluox);
+		study.setMeasurement(hamd, parox, pHamd);
+		study.setMeasurement(hamd, fluox, fHamd);		
+		study.setMeasurement(cgi, parox, pCgi);
+		study.setMeasurement(cgi, fluox, fCgi);
 		
 		return study;
 	}

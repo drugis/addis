@@ -72,7 +72,7 @@ public class MetaAnalysis implements Serializable {
 		for (Study s : d_studies) {			
 			for (PatientGroup g : s.getPatientGroups()) {
 				if (g.getDrug().equals(drug)) {
-					measurements.add((RateMeasurement) s.getMeasurement(getEndpoint(), g));
+					measurements.add((RateMeasurement) s.getMeasurement(getEndpoint(), g));	
 				}
 			}
 		}
