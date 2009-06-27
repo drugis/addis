@@ -23,11 +23,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JFrame;
 
 import nl.rug.escher.addis.entities.BasicMeasurement;
-import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.PatientGroup;
@@ -77,16 +77,14 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 		setVisible(false);
 		
 		addEndpointToMeasurements();
-		addMeasurementsToPatientGroups();
 		addEndpointToStudy();
+		addMeasurementsToStudy();
 	}
 
-	private void addMeasurementsToPatientGroups() {
-		/*
-		for (Map.Entry<PatientGroup, BasicMeasurement> e: d_measurements.entrySet()) {
-			((BasicPatientGroup)e.getKey()).addMeasurement(e.getValue());
+	private void addMeasurementsToStudy() {
+		for (Entry<PatientGroup, BasicMeasurement> entry : d_measurements.entrySet()) {
+			d_study.setMeasurement(d_newEndpoint.getEndpoint(), entry.getKey(), entry.getValue());
 		}
-		*/
 	}
 
 	private void addEndpointToStudy() {

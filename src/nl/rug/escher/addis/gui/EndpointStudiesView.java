@@ -162,13 +162,11 @@ public class EndpointStudiesView implements ViewBuilder {
 	}
 
 	private boolean hasNonRateMeasurements(Study s) {
-		/*
 		for (PatientGroup g : s.getPatientGroups()) {
-			if (!(g.getMeasurement(d_endpoint) instanceof RateMeasurement)) {
+			if (!(s.getMeasurement(d_endpoint, g) instanceof RateMeasurement)) {
 				return true;
 			}
 		}
-		*/
 		return false;
 	}
 
@@ -177,7 +175,6 @@ public class EndpointStudiesView implements ViewBuilder {
 	}
 	
 	private class CheckBoxListener extends AbstractAction {
-		//@Override
 		public void actionPerformed(ActionEvent arg0) {
 			updateMetaAnalyzeButtonEnabled();
 		}
