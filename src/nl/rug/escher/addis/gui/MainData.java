@@ -54,20 +54,23 @@ public class MainData {
 		Drug fluoxetine = buildDefaultDrugFluoxetine();
 		BasicStudy study = new BasicStudy("De Wilde et al, 1993");
 		study.setEndpoints(Collections.singletonList(hamd));
-		
 
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement();
 		pHamd.setRate(23);
+		
 		BasicPatientGroup parox = new BasicPatientGroup(study, paroxetine, dose, 37);		
 		
 		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement();
 		fHamd.setRate(26);
+		
 		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 41);		
 		
 		study.addPatientGroup(parox);
 		study.addPatientGroup(fluox);
+		study.setMeasurement(hamd, parox, pHamd);
+		study.setMeasurement(hamd, fluox, fHamd);
 		
 		return study;
 	}
@@ -99,6 +102,10 @@ public class MainData {
 		
 		study.addPatientGroup(parox);
 		study.addPatientGroup(fluox);
+		study.setMeasurement(hamd, parox, pHamd);
+		study.setMeasurement(hamd, fluox, fHamd);
+		study.setMeasurement(cgi, parox, pCgi);
+		study.setMeasurement(cgi, fluox, pCgi);
 		
 		return study;
 	}
