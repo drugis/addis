@@ -28,7 +28,8 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import nl.rug.escher.addis.entities.AbstractStudy;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
@@ -147,16 +148,16 @@ public class DomainTest {
 		Endpoint e2 = new Endpoint("e2", Type.RATE);
 		Endpoint e3 = new Endpoint("e3", Type.RATE);
 		
-		List<Endpoint> l1 = new ArrayList<Endpoint>();
+		Set<Endpoint> l1 = new HashSet<Endpoint>();
 		l1.add(e1);
-		BasicStudy s1 = new BasicStudy("X");
+		AbstractStudy s1 = new BasicStudy("X");
 		s1.setId("s1");
 		s1.setEndpoints(l1);
 		
-		List<Endpoint> l2 = new ArrayList<Endpoint>();
+		Set<Endpoint> l2 = new HashSet<Endpoint>();
 		l2.add(e2);
 		l2.add(e1);
-		BasicStudy s2 = new BasicStudy("X");
+		AbstractStudy s2 = new BasicStudy("X");
 		s2.setId("s2");
 		s2.setEndpoints(l2);
 		

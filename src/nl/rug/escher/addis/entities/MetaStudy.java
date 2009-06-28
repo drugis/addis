@@ -29,7 +29,6 @@ public class MetaStudy extends AbstractStudy {
 	private static final long serialVersionUID = 4551624355872585225L;
 	private MetaAnalysis d_analysis;
 	private List<PatientGroup> d_patientGroups;
-	private List<Endpoint> d_additionalEndpoints = new ArrayList<Endpoint>();
 
 	public MetaStudy(String id, MetaAnalysis analysis) {
 		super(id);
@@ -55,10 +54,10 @@ public class MetaStudy extends AbstractStudy {
 		return d_analysis.getDrugs();
 	}
 
-	public List<Endpoint> getEndpoints() {
-		List<Endpoint> points = new ArrayList<Endpoint>();
+	public Set<Endpoint> getEndpoints() {
+		Set<Endpoint> points = new HashSet<Endpoint>();
 		points.add(d_analysis.getEndpoint());		
-		points.addAll(d_additionalEndpoints);
+		points.addAll(super.getEndpoints());
 		return points;
 	}
 
@@ -75,10 +74,6 @@ public class MetaStudy extends AbstractStudy {
 		return deps;
 	}
 
-	public void addEndpoint(Endpoint e) {
-		d_additionalEndpoints.add(e);
-	}
-
 	@Override
 	public void setMeasurement(Endpoint e, PatientGroup g, Measurement m) {
 		if (d_analysis.getEndpoint().equals(e)) {
@@ -86,4 +81,24 @@ public class MetaStudy extends AbstractStudy {
 		}
 		super.setMeasurement(e, g, m);
 	}
+
+	@Override
+	public void deleteEndpoint(Endpoint e) {
+		if (e.equals(d_analysis.getEndpoint())) {
+			throw new IllegalArgumentException("Cannot set meta-analyzed endpoint");
+		}
+		super.deleteEndpoint(e);
+	}
+	
+	@Override
+	public void setEndpoints(Set<Endpoint> endpoints) {
+		Set<Endpoint> oldVal = new HashSet<Endpoint>(d_endpoints);
+		oldVal.add(d_analysis.getEndpoint());
+		d_endpoints = endpoints;
+		updateMeasurements();
+		
+		Set<Endpoint> newVal = new HashSet<Endpoint>(endpoints);
+		newVal.add(d_analysis.getEndpoint());
+		firePropertyChange(PROPERTY_ENDPOINTS, oldVal, newVal);
+	}	
 }

@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.List;
+import java.util.Set;
 
 import nl.rug.escher.addis.analyses.SMAAAdapter;
 import nl.rug.escher.addis.entities.ContinuousMeasurement;
@@ -77,7 +78,7 @@ public class SMAAAdapterTest {
 	public void testGetCriteria() throws NoSuchValueException {
 		SMAAModel model = SMAAAdapter.getModel(d_study);
 		List<Criterion> crit = model.getCriteria();
-		List<Endpoint> endpoints = d_study.getEndpoints();
+		Set<Endpoint> endpoints = d_study.getEndpoints();
 		assertEquals(endpoints.size(), crit.size());
 		for (Endpoint e : endpoints) {
 			CardinalCriterion c = findCriterion(e, model);

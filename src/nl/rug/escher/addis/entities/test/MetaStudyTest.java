@@ -20,9 +20,10 @@
 package nl.rug.escher.addis.entities.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +41,9 @@ import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.PooledRateMeasurement;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.addis.entities.Endpoint.Type;
+import nl.rug.escher.common.JUnitUtil;
 
+import static org.easymock.EasyMock.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -65,7 +68,7 @@ public class MetaStudyTest {
 	
 	@Test
 	public void testGetEndpoints() {
-		assertEquals(Collections.singletonList(d_analysis.getEndpoint()), d_study.getEndpoints());
+		assertEquals(Collections.singleton(d_analysis.getEndpoint()), d_study.getEndpoints());
 	}
 	
 	@Test
@@ -118,8 +121,35 @@ public class MetaStudyTest {
 	
 	@Test
 	public void testAddEndpoint() {
-		Endpoint e = new Endpoint("ep", Type.RATE);
+		Endpoint e = new Endpoint("epoint", Type.RATE);
+		Collection<Endpoint> oldVal = new HashSet<Endpoint>(d_study.getEndpoints());						
+		Collection<Endpoint> newVal = new HashSet<Endpoint>(d_study.getEndpoints());
+		newVal.add(e);
+		
+		PropertyChangeListener mock = JUnitUtil.mockListener(d_study, Study.PROPERTY_ENDPOINTS,
+				oldVal, newVal);
+		d_study.addPropertyChangeListener(mock);
 		d_study.addEndpoint(e);
-		assertTrue(d_study.getEndpoints().contains(e));
+		verify(mock);		
 	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testDeleteMetaEndpointThrowsException() {
+		d_study.deleteEndpoint(d_study.getEndpoints().iterator().next());
+	}
+	
+	@Test
+	public void testDeleteEndpoint() throws Exception {
+		Endpoint e = new Endpoint("epoint", Type.RATE);
+		Set<Endpoint> newVal = new HashSet<Endpoint>(d_study.getEndpoints());		
+		d_study.addEndpoint(e);
+		Set<Endpoint> oldVal = new HashSet<Endpoint>(d_study.getEndpoints());				
+		
+		PropertyChangeListener mock = JUnitUtil.mockListener(d_study, Study.PROPERTY_ENDPOINTS,
+				oldVal, newVal);
+		d_study.addPropertyChangeListener(mock);
+		d_study.deleteEndpoint(e);
+		verify(mock);
+	}
+	
 }

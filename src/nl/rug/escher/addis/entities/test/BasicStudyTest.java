@@ -36,6 +36,7 @@ import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Entity;
+import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.addis.entities.Endpoint.Type;
 import nl.rug.escher.common.JUnitUtil;
 
@@ -58,14 +59,14 @@ public class BasicStudyTest {
 	
 	@Test
 	public void testSetEndpoints() {
-		List<Endpoint> list = Collections.singletonList(new Endpoint("e", Type.RATE));
-		JUnitUtil.testSetter(new BasicStudy("X"), AbstractStudy.PROPERTY_ENDPOINTS, Collections.EMPTY_LIST, 
+		Set<Endpoint> list = Collections.singleton(new Endpoint("e", Type.RATE));
+		JUnitUtil.testSetter(new BasicStudy("X"), AbstractStudy.PROPERTY_ENDPOINTS, Collections.EMPTY_SET, 
 				list);
 	}
 	
 	@Test
 	public void testAddEndpoint() {
-		JUnitUtil.testAdder(new BasicStudy("X"), AbstractStudy.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Type.RATE));
+		JUnitUtil.testAdderSet(new BasicStudy("X"), AbstractStudy.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Type.RATE));
 	}
 	
 	@Test
@@ -117,11 +118,11 @@ public class BasicStudyTest {
 		study.addEndpoint(endpoint);
 		study.addPatientGroup(new BasicPatientGroup(study, null, null, 100));
 		BasicRateMeasurement m = new BasicRateMeasurement(endpoint, 0, 100);
-		m.setEndpoint(study.getEndpoints().get(0));
+		m.setEndpoint(study.getEndpoints().iterator().next());
 		m.setRate(12);
-		study.setMeasurement(study.getEndpoints().get(0), study.getPatientGroups().get(0), m);
+		study.setMeasurement(study.getEndpoints().iterator().next(), study.getPatientGroups().get(0), m);
 		
-		assertEquals(m, study.getMeasurement(study.getEndpoints().get(0), study.getPatientGroups().get(0)));
+		assertEquals(m, study.getMeasurement(study.getEndpoints().iterator().next(), study.getPatientGroups().get(0)));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -140,10 +141,10 @@ public class BasicStudyTest {
 		study.addPatientGroup(new BasicPatientGroup(study, null, null, 100));
 		
 		BasicRateMeasurement m = new BasicRateMeasurement(e, 12);
-		m.setEndpoint(study.getEndpoints().get(0));
+		m.setEndpoint(study.getEndpoints().iterator().next());
 		
-		study.getEndpoints().get(0).setType(Type.CONTINUOUS);
-		study.setMeasurement(study.getEndpoints().get(0), study.getPatientGroups().get(0), m);
+		study.getEndpoints().iterator().next().setType(Type.CONTINUOUS);
+		study.setMeasurement(study.getEndpoints().iterator().next(), study.getPatientGroups().get(0), m);
 	}
 	
 	
@@ -197,5 +198,11 @@ public class BasicStudyTest {
 		
 		pg.setSize(50);
 		assertEquals(50, (int)study.getMeasurement(endpoint, pg).getSampleSize());		
-	}	
+	}
+	
+	@Test
+	public void testDeleteEndpoint() throws Exception {
+		JUnitUtil.testDeleterSet(new BasicStudy("study"), Study.PROPERTY_ENDPOINTS, "deleteEndpoint",
+				new Endpoint("e", Endpoint.Type.CONTINUOUS));
+	}
 }

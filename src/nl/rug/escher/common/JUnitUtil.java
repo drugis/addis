@@ -33,7 +33,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 import com.jgoodies.binding.beans.Model;
@@ -136,6 +139,27 @@ public class JUnitUtil {
 		verify(mock);
 	}
 
+	@SuppressWarnings("unchecked")
+	public static void testAdderSet(Model source, String propertyName, String methodName, Object toAdd) {
+		Set list1 = new HashSet();
+		Set list2 = new HashSet();
+		list2.add(toAdd);
+		
+		PropertyChangeListener mock = mockListener(source, propertyName, list1, list2);
+		source.addPropertyChangeListener(mock);
+		Object actual = null;
+		try {
+			get1ParamMethod(source, methodName, toAdd).invoke(source, toAdd);
+			actual = getGetterMethod(source, propertyName).invoke(source);
+		} catch (Exception e) {
+			fail(e.toString());
+		}
+		
+		assertTrue(((Collection) actual).contains(toAdd));
+		assertTrue(1 == ((Collection) actual).size());
+		verify(mock);
+	}
+	
 
 	@SuppressWarnings("unchecked")
 	public static void testDeleter(Model source, String propertyName, String deleteMethodName, Object toDelete) throws Exception {
@@ -156,6 +180,24 @@ public class JUnitUtil {
 		verify(mock);
 	}
 
+	@SuppressWarnings("unchecked")
+	public static void testDeleterSet(Model source, String propertyName, String deleteMethodName, Object toDelete) throws Exception {
+		Set list1 = new HashSet();
+		Set list2 = new HashSet();
+		list1.add(toDelete);
+
+		// set the parameter
+		getSetterMethod(source, propertyName, list1).invoke(source, list1);
+
+		PropertyChangeListener mock = mockListener(source, propertyName, list1, list2);
+		source.addPropertyChangeListener(mock);		
+
+		get1ParamMethod(source, deleteMethodName, toDelete).invoke(source, toDelete);		
+
+		Object actual = getGetterMethod(source, propertyName).invoke(source);
+		assertTrue(0 ==  ((Set) actual).size());
+		verify(mock);
+	}	
 
 	public static void assertNotEquals(Object expected, Object actual) {
 		if (expected == null) {

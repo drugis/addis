@@ -24,7 +24,6 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,14 +32,12 @@ import java.util.Set;
 public class BasicStudy extends AbstractStudy implements MutableStudy {
 	private static final long serialVersionUID = -2400136708833976982L;
 	
-	private List<Endpoint> d_endpoints = new ArrayList<Endpoint>();
 	private List<BasicPatientGroup> d_patientGroups = new ArrayList<BasicPatientGroup>();
 	private transient PatientGroupListener d_pgListener;
 	
 	public BasicStudy(String id) {
-		super(id);
-		d_measurements = new HashMap<MeasurementKey, Measurement>();		
-		setEndpoints(new ArrayList<Endpoint>());
+		super(id);	
+		setEndpoints(new HashSet<Endpoint>());
 		setPatientGroups(new ArrayList<BasicPatientGroup>());
 		initPatientGroupListener();
 	}
@@ -52,28 +49,6 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 		}
 	}
 
-	public List<Endpoint> getEndpoints() {
-		return d_endpoints;
-	}
-
-	public void setEndpoints(List<Endpoint> endpoints) {
-		List<Endpoint> oldVal = d_endpoints;
-		d_endpoints = endpoints;
-		updateMeasurements();		
-		firePropertyChange(PROPERTY_ENDPOINTS, oldVal, d_endpoints);
-	}
-
-	private void updateMeasurements() {
-		for (Endpoint e : d_endpoints) {
-			for (PatientGroup g : d_patientGroups) {
-				MeasurementKey key = new MeasurementKey(e, g);
-				if (d_measurements.get(key) == null) {
-					d_measurements.put(key, e.buildMeasurement());
-				}
-			}
-		}
-	}
-	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
 		in.defaultReadObject();
 		initPatientGroupListener();
@@ -102,12 +77,6 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 		setPatientGroups(newVal);
 	}
 	
-	public void addEndpoint(Endpoint endpoint) {
-		List<Endpoint> newVal = new ArrayList<Endpoint>(d_endpoints);
-		newVal.add(endpoint);
-		setEndpoints(newVal);
-	}
-
 	public Set<Drug> getDrugs() {
 		Set<Drug> drugs = new HashSet<Drug>();
 		for (BasicPatientGroup g : getPatientGroups()) {
@@ -118,7 +87,7 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 
 	public Set<Entity> getDependencies() {
 		HashSet<Entity> dep = new HashSet<Entity>(getDrugs());
-		dep.addAll(d_endpoints);
+		dep.addAll(getEndpoints());
 		return dep;
 	}
 	

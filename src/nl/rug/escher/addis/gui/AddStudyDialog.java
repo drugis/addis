@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
+import java.util.HashSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -70,7 +71,7 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	protected void setEndpoint() {
-		d_study.setEndpoints(Collections.singletonList(d_primaryEndpoint.getEndpoint()));
+		d_study.setEndpoints(Collections.singleton(d_primaryEndpoint.getEndpoint()));
 	}
 
 	protected void buildMeasurements() {
@@ -132,7 +133,7 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	private void bindEndpoint() {
-		d_study.setEndpoints(d_primaryEndpoint.asList());
+		d_study.setEndpoints(new HashSet<Endpoint>(d_primaryEndpoint.asList()));
 		for (BasicPatientGroup g : d_study.getPatientGroups()) {
 			((BasicMeasurement)d_study.getMeasurement(d_primaryEndpoint.getEndpoint(), g))
 				.setEndpoint(d_primaryEndpoint.getEndpoint());

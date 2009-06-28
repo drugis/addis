@@ -21,6 +21,7 @@ package nl.rug.escher.addis.gui;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 
 import nl.rug.escher.addis.entities.AbstractStudy;
 import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
@@ -54,7 +55,7 @@ public class MainData {
 		Drug paroxetine = buildDefaultDrugParoxetine();
 		Drug fluoxetine = buildDefaultDrugFluoxetine();
 		BasicStudy study = new BasicStudy("De Wilde et al, 1993");
-		study.setEndpoints(Collections.singletonList(hamd));
+		study.setEndpoints(Collections.singleton(hamd));
 
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement();
@@ -82,7 +83,7 @@ public class MainData {
 		Endpoint cgi = buildDefaultEndpointCgi();
 		Drug fluoxetine = buildDefaultDrugFluoxetine();
 		BasicStudy study = new BasicStudy("Chouinard et al, 1999");
-		study.setEndpoints(Arrays.asList(new Endpoint[]{hamd, cgi}));
+		study.setEndpoints(new HashSet<Endpoint>(Arrays.asList(new Endpoint[]{hamd, cgi})));
 		
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement();

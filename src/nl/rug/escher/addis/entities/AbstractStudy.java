@@ -21,7 +21,9 @@ package nl.rug.escher.addis.entities;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import com.jgoodies.binding.beans.Model;
@@ -31,12 +33,14 @@ public abstract class AbstractStudy extends Model implements MutableStudy {
 	
 	private String d_id;
 	protected Map<MeasurementKey, Measurement> d_measurements
-		= new HashMap<MeasurementKey, Measurement>();	
+		= new HashMap<MeasurementKey, Measurement>();
+
+	protected Set<Endpoint> d_endpoints = new HashSet<Endpoint>();	
 
 	public AbstractStudy(String id) {
 		d_id = id;
 	}	
-
+	
 	public String getId() {
 		return d_id;
 	}
@@ -112,6 +116,42 @@ public abstract class AbstractStudy extends Model implements MutableStudy {
 			}
 		}
 	}
+
+	public Set<Endpoint> getEndpoints() {
+		return d_endpoints;
+	}
+
+	public void setEndpoints(Set<Endpoint> endpoints) {
+		Set<Endpoint> oldVal = d_endpoints;
+		d_endpoints = endpoints;
+		updateMeasurements();
+		firePropertyChange(PROPERTY_ENDPOINTS, oldVal, d_endpoints);
+	}
+
+	public void addEndpoint(Endpoint endpoint) {
+		Set<Endpoint> newVal = new HashSet<Endpoint>(d_endpoints);
+		newVal.add(endpoint);
+		setEndpoints(newVal);
+	}
+
+	public void deleteEndpoint(Endpoint e) {
+		if (d_endpoints.contains(e)) {
+			Set<Endpoint> newVal = new HashSet<Endpoint>(d_endpoints);
+			newVal.remove(e);
+			setEndpoints(newVal);
+		}
+	}
+	
+	protected void updateMeasurements() {
+		for (Endpoint e : d_endpoints) {
+			for (PatientGroup g : getPatientGroups()) {
+				MeasurementKey key = new MeasurementKey(e, g);
+				if (d_measurements.get(key) == null) {
+					d_measurements.put(key, e.buildMeasurement());
+				}
+			}
+		}
+	}		
 
 	protected static class MeasurementKey implements Serializable {
 		private static final long serialVersionUID = 6310789667384578005L;

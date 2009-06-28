@@ -30,7 +30,7 @@ public interface Study extends Comparable<Study>, Observable, Entity {
 	public final static String PROPERTY_PATIENTGROUPS = "patientGroups";
 
 	public String getId();
-	public List<Endpoint> getEndpoints();
+	public Set<Endpoint> getEndpoints();
 	public List<? extends PatientGroup> getPatientGroups();
 	public Measurement getMeasurement(Endpoint e, PatientGroup g);
 	public Set<Drug> getDrugs();	
