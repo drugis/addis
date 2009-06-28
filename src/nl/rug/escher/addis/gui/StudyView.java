@@ -32,10 +32,10 @@ import javax.swing.JPanel;
 import nl.rug.escher.addis.analyses.SMAAAdapter;
 import nl.rug.escher.addis.entities.AbstractStudy;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
-import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
+import nl.rug.escher.addis.entities.MutableStudy;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.gui.LayoutUtil;
@@ -176,7 +176,7 @@ public class StudyView implements ViewBuilder {
 					buildFindStudiesButton(e), cc.xy(3, row));
 			row += 2;
 		}
-		if (d_model.getBean() instanceof BasicStudy) {
+		if (d_model.getBean() instanceof MutableStudy) {
 			LayoutUtil.addRow(layout);
 			builder.add(buildAddEndpointButton(), cc.xy(1, row));
 			
