@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import nl.rug.escher.addis.entities.AbstractStudy;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.DependentEntitiesException;
@@ -195,7 +196,7 @@ public class DomainTest {
 		assertEquals(d1, d2);
 		assertEquals(d1.hashCode(), d2.hashCode());
 		
-		BasicStudy s = new BasicStudy("s1");
+		AbstractStudy s = new BasicStudy("s1");
 		d1.addStudy(s);
 		JUnitUtil.assertNotEquals(d1, d2);
 		d2.addStudy(s);
@@ -205,7 +206,7 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteStudy() throws DependentEntitiesException {
-		BasicStudy s = new BasicStudy("X");
+		AbstractStudy s = new BasicStudy("X");
 		d_domain.addStudy(s);
 		d_domain.deleteStudy(s);
 		assertTrue(d_domain.getStudies().isEmpty());
@@ -213,8 +214,8 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteStudyThrowsCorrectException() {
-		BasicStudy s1 = new BasicStudy("X");
-		BasicStudy s2 = new BasicStudy("Y");
+		AbstractStudy s1 = new BasicStudy("X");
+		AbstractStudy s2 = new BasicStudy("Y");
 		d_domain.addStudy(s1);
 		d_domain.addStudy(s2);
 		
@@ -238,7 +239,7 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteStudyFires() throws DependentEntitiesException {
-		BasicStudy s1 = new BasicStudy("X");
+		AbstractStudy s1 = new BasicStudy("X");
 		d_domain.addStudy(s1);
 		
 		DomainListener mock = createMock(DomainListener.class);

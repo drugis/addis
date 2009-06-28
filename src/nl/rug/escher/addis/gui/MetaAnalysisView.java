@@ -21,7 +21,7 @@ package nl.rug.escher.addis.gui;
 
 import javax.swing.JComponent;
 
-import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.AbstractStudy;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
@@ -76,7 +76,7 @@ public class MetaAnalysisView implements ViewBuilder {
 		for (Study s : d_analysis.getStudies()) {
 			LayoutUtil.addRow(layout);
 			builder.add(BasicComponentFactory.createLabel(
-					new PresentationModel<Study>(s).getModel(BasicStudy.PROPERTY_ID)), cc.xy(1, row));
+					new PresentationModel<Study>(s).getModel(AbstractStudy.PROPERTY_ID)), cc.xy(1, row));
 			
 			col = 3;
 			for (Drug d : d_analysis.getDrugs()) {

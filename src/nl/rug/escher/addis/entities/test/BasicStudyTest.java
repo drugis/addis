@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import nl.rug.escher.addis.entities.AbstractStudy;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.BasicStudy;
@@ -52,43 +53,43 @@ public class BasicStudyTest {
 	
 	@Test
 	public void testSetId() {
-		JUnitUtil.testSetter(new BasicStudy("X"), BasicStudy.PROPERTY_ID, "X", "NCT00351273");
+		JUnitUtil.testSetter(new BasicStudy("X"), AbstractStudy.PROPERTY_ID, "X", "NCT00351273");
 	}
 	
 	@Test
 	public void testSetEndpoints() {
 		List<Endpoint> list = Collections.singletonList(new Endpoint("e", Type.RATE));
-		JUnitUtil.testSetter(new BasicStudy("X"), BasicStudy.PROPERTY_ENDPOINTS, Collections.EMPTY_LIST, 
+		JUnitUtil.testSetter(new BasicStudy("X"), AbstractStudy.PROPERTY_ENDPOINTS, Collections.EMPTY_LIST, 
 				list);
 	}
 	
 	@Test
 	public void testAddEndpoint() {
-		JUnitUtil.testAdder(new BasicStudy("X"), BasicStudy.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Type.RATE));
+		JUnitUtil.testAdder(new BasicStudy("X"), AbstractStudy.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Type.RATE));
 	}
 	
 	@Test
 	public void testSetPatientGroups() {
 		List<BasicPatientGroup> list = Collections.singletonList(d_pg);
-		JUnitUtil.testSetter(new BasicStudy("X"), BasicStudy.PROPERTY_PATIENTGROUPS, Collections.EMPTY_LIST, 
+		JUnitUtil.testSetter(new BasicStudy("X"), AbstractStudy.PROPERTY_PATIENTGROUPS, Collections.EMPTY_LIST, 
 				list);
 	}
 	
 	@Test
 	public void testInitialPatientGroups() {
-		BasicStudy study = new BasicStudy("X");
+		AbstractStudy study = new BasicStudy("X");
 		assertNotNull(study.getPatientGroups());
 		assertTrue(study.getPatientGroups().isEmpty());
 	}
 	
 	@Test
 	public void testAddPatientGroup() {
-		JUnitUtil.testAdder(new BasicStudy("X"), BasicStudy.PROPERTY_PATIENTGROUPS, "addPatientGroup", d_pg);
+		JUnitUtil.testAdder(new BasicStudy("X"), AbstractStudy.PROPERTY_PATIENTGROUPS, "addPatientGroup", d_pg);
 	}
 	
 	@Test
 	public void testGetDrugs() {
-		BasicStudy s = TestData.buildDefaultStudy2();
+		AbstractStudy s = TestData.buildDefaultStudy2();
 		Set<Drug> expected = new HashSet<Drug>();
 		expected.add(TestData.buildDrugFluoxetine());
 		expected.add(TestData.buildDrugParoxetine());
@@ -99,13 +100,13 @@ public class BasicStudyTest {
 	@Test
 	public void testToString() {
 		String id = "NCT00351273";
-		BasicStudy study = new BasicStudy(id);
+		AbstractStudy study = new BasicStudy(id);
 		assertEquals(id, study.toString());
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetMeasurementThrowsException1() {
-		BasicStudy study = new BasicStudy("X");
+		AbstractStudy study = new BasicStudy("X");
 		study.getMeasurement(new Endpoint("E", Type.RATE), new BasicPatientGroup(study, null, null, 100));
 	}
 	
@@ -125,7 +126,7 @@ public class BasicStudyTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetMeasurementThrowsException1() {
-		BasicStudy study = new BasicStudy("X");
+		AbstractStudy study = new BasicStudy("X");
 		Endpoint e = new Endpoint("E", Type.RATE);
 		study.setMeasurement(e, new BasicPatientGroup(study, null, null, 100),
 				new BasicRateMeasurement(e, 0));
@@ -158,7 +159,7 @@ public class BasicStudyTest {
 	
 	@Test
 	public void testGetDependencies() {
-		BasicStudy s = TestData.buildDefaultStudy2();
+		AbstractStudy s = TestData.buildDefaultStudy2();
 		assertFalse(s.getEndpoints().isEmpty());
 		assertFalse(s.getDrugs().isEmpty());
 		

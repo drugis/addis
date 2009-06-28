@@ -23,24 +23,24 @@ import com.jgoodies.binding.beans.Model;
 
 public class BasicPatientGroup extends Model implements MutablePatientGroup {
 	private static final long serialVersionUID = -2092185548220089471L;
-	private BasicStudy d_study;
+	private AbstractStudy d_study;
 	private Integer d_size;
 	private Drug d_drug;
 	private Dose d_dose;
 	
-	public BasicPatientGroup(BasicStudy study, Drug drug, Dose dose, int size) {
+	public BasicPatientGroup(AbstractStudy study, Drug drug, Dose dose, int size) {
 		d_study = study;
 		d_drug = drug;
 		d_dose = dose;
 		d_size = size;
 	}
 		
-	public BasicStudy getStudy() {
+	public AbstractStudy getStudy() {
 		return d_study;
 	}
 	
-	public void setStudy(BasicStudy study) {
-		BasicStudy oldVal = d_study;
+	public void setStudy(AbstractStudy study) {
+		AbstractStudy oldVal = d_study;
 		d_study = study;
 		firePropertyChange(PROPERTY_STUDY, oldVal, d_study);
 	}

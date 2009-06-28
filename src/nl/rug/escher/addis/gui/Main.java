@@ -48,7 +48,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
-import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.AbstractStudy;
 import nl.rug.escher.addis.entities.DependentEntitiesException;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainListener;
@@ -141,7 +141,7 @@ public class Main extends JFrame {
 		}
 	}
 
-	void showStudyAddEndpointDialog(BasicStudy study) {
+	void showStudyAddEndpointDialog(AbstractStudy study) {
 		StudyAddEndpointDialog dialog = new StudyAddEndpointDialog(this, getDomain(), study);
 		dialog.setVisible(true);
 	}

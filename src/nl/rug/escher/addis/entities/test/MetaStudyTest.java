@@ -20,6 +20,7 @@
 package nl.rug.escher.addis.entities.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,8 +28,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import nl.rug.escher.addis.entities.BasicRateMeasurement;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainImpl;
+import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Entity;
 import nl.rug.escher.addis.entities.Measurement;
 import nl.rug.escher.addis.entities.MetaAnalysis;
@@ -36,6 +39,7 @@ import nl.rug.escher.addis.entities.MetaStudy;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.PooledRateMeasurement;
 import nl.rug.escher.addis.entities.Study;
+import nl.rug.escher.addis.entities.Endpoint.Type;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -104,5 +108,18 @@ public class MetaStudyTest {
 		Measurement expected = d_study.getAnalysis().getPooledMeasurement(pg.getDrug());
 		Measurement value = d_study.getMeasurement(TestData.buildEndpointHamd(), pg);
 		assertEquals(expected, value);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testSetMeasurementThrowsException() {
+		d_study.setMeasurement(d_analysis.getEndpoint(), d_study.getPatientGroups().get(0),
+				new BasicRateMeasurement(d_analysis.getEndpoint(), 10));
+	}
+	
+	@Test
+	public void testAddEndpoint() {
+		Endpoint e = new Endpoint("ep", Type.RATE);
+		d_study.addEndpoint(e);
+		assertTrue(d_study.getEndpoints().contains(e));
 	}
 }

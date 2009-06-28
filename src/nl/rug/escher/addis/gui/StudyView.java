@@ -30,6 +30,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import nl.rug.escher.addis.analyses.SMAAAdapter;
+import nl.rug.escher.addis.entities.AbstractStudy;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
@@ -209,7 +210,7 @@ public class StudyView implements ViewBuilder {
 	}
 
 	private void addEndpointClicked() {
-		d_mainWindow.showStudyAddEndpointDialog((BasicStudy)d_model.getBean());
+		d_mainWindow.showStudyAddEndpointDialog((AbstractStudy)d_model.getBean());
 	}
 
 	private JComponent buildFindStudiesButton(final Endpoint endpoint) {
@@ -230,7 +231,7 @@ public class StudyView implements ViewBuilder {
 			CellConstraints cc) {
 		builder.addSeparator("Study", cc.xyw(1,1,fullWidth));
 		builder.addLabel("ID:", cc.xy(1, 3));
-		builder.add(BasicComponentFactory.createLabel(d_model.getModel(BasicStudy.PROPERTY_ID)),
+		builder.add(BasicComponentFactory.createLabel(d_model.getModel(AbstractStudy.PROPERTY_ID)),
 				cc.xyw(3, 3, fullWidth - 2));
 	}
 

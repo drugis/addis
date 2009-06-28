@@ -28,8 +28,8 @@ import java.util.Map.Entry;
 import javax.swing.JFrame;
 
 import nl.rug.escher.addis.entities.BasicMeasurement;
-import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
+import nl.rug.escher.addis.entities.MutableStudy;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.common.gui.OkCancelDialog;
 
@@ -38,11 +38,11 @@ import com.jgoodies.binding.PresentationModel;
 @SuppressWarnings("serial")
 public class StudyAddEndpointDialog extends OkCancelDialog {
 	private Domain d_domain;
-	private BasicStudy d_study;
+	private MutableStudy d_study;
 	private EndpointHolder d_newEndpoint;
 	private Map<PatientGroup, BasicMeasurement> d_measurements;
 	
-	public StudyAddEndpointDialog(JFrame frame, Domain domain, BasicStudy study) {
+	public StudyAddEndpointDialog(JFrame frame, Domain domain, MutableStudy study) {
 		super(frame, "Add Endpoint to Study");
 		this.setModal(true);
 		d_domain = domain;

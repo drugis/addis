@@ -22,10 +22,11 @@ package nl.rug.escher.addis.entities;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.jgoodies.binding.beans.Model;
 
-public abstract class AbstractStudy extends Model implements Study {
+public abstract class AbstractStudy extends Model implements MutableStudy {
 	private static final long serialVersionUID = -845477477003790845L;
 	
 	private String d_id;
@@ -89,6 +90,28 @@ public abstract class AbstractStudy extends Model implements Study {
 			throw new IllegalArgumentException("Endpoint " + e + " not measured by this study.");
 		}
 	}	
+
+	public void setMeasurement(Endpoint e, PatientGroup g, Measurement m) {
+		forceLegalArguments(e, g);
+		if (!m.isOfType(e.getType())) {
+			throw new IllegalArgumentException("Measurement does not conform with Endpoint");
+		}
+		d_measurements.put(new MeasurementKey(e, g), m);
+		if (m instanceof BasicRateMeasurement) {
+			((BasicRateMeasurement) m).setSampleSize(g.getSize());
+		}
+	}
+
+	public void changeMeasurements(PatientGroup source, int newValue) {
+		for (Entry<MeasurementKey, Measurement> entry : d_measurements.entrySet()) {
+			if (entry.getKey().getPatientGroup().equals(source)) {
+				Measurement m = entry.getValue();
+				if (m instanceof BasicRateMeasurement) {
+					((BasicRateMeasurement) m).setSampleSize(newValue);
+				}
+			}
+		}
+	}
 
 	protected static class MeasurementKey implements Serializable {
 		private static final long serialVersionUID = 6310789667384578005L;

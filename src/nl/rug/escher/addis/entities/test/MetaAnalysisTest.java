@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import nl.rug.escher.addis.entities.AbstractStudy;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainImpl;
@@ -59,7 +60,7 @@ public class MetaAnalysisTest {
 	public void testValidateStudiesMeasureEndpoint() {
 		Endpoint e = new Endpoint("e1", Type.RATE);
 		Endpoint other = new Endpoint("e2", Type.RATE);
-		BasicStudy s = new BasicStudy("X");
+		AbstractStudy s = new BasicStudy("X");
 		s.addEndpoint(other);
 		new MetaAnalysis(e, Collections.singletonList((Study)s));
 	}
@@ -105,9 +106,9 @@ public class MetaAnalysisTest {
 	public void testEquals() {
 		Endpoint e1 = new Endpoint("E1", Type.RATE);
 		Endpoint e2 = new Endpoint("E2", Type.RATE);
-		BasicStudy s1 = new BasicStudy("Test");
-		BasicStudy s2 = new BasicStudy("Study");
-		BasicStudy s3 = new BasicStudy("X");
+		AbstractStudy s1 = new BasicStudy("Test");
+		AbstractStudy s2 = new BasicStudy("Study");
+		AbstractStudy s3 = new BasicStudy("X");
 		s1.addEndpoint(e1);
 		s2.addEndpoint(e1);
 		s3.addEndpoint(e1);

@@ -28,10 +28,11 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
+import nl.rug.escher.addis.entities.AbstractStudy;
 import nl.rug.escher.addis.entities.BasicMeasurement;
-import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
+import nl.rug.escher.addis.entities.MutableStudy;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.common.gui.LayoutUtil;
 import nl.rug.escher.common.gui.ViewBuilder;
@@ -46,7 +47,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class StudyAddEndpointView implements ViewBuilder {
 	private Domain d_domain;
-	private BasicStudy d_study;
+	private MutableStudy d_study;
 	private PresentationModel<EndpointHolder> d_endpointModel;
 	private Map<PatientGroup, BasicMeasurement> d_measurements;
 	
@@ -54,7 +55,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 	private SelectionInList<Endpoint> d_endpointSelectionInList;
 	private NotEmptyValidator d_validator;
 	
-	public StudyAddEndpointView(Domain domain, BasicStudy study,
+	public StudyAddEndpointView(Domain domain, MutableStudy study,
 			PresentationModel<EndpointHolder> endpointModel,
 			Map<PatientGroup,BasicMeasurement> measurements,
 			JButton okButton) {
@@ -114,7 +115,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 		builder.addSeparator("Study", cc.xyw(1, 1, fullWidth));
 		builder.addLabel("ID:", cc.xy(1, 3));
 		builder.add(BasicComponentFactory.createLabel(
-				new PresentationModel<BasicStudy>(d_study).getModel(BasicStudy.PROPERTY_ID)
+				new PresentationModel<MutableStudy>(d_study).getModel(AbstractStudy.PROPERTY_ID)
 				), cc.xyw(3, 3, fullWidth - 2));
 		
 		builder.addSeparator("Endpoint", cc.xyw(1, 5, fullWidth));

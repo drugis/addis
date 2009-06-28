@@ -29,12 +29,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 
+import nl.rug.escher.addis.entities.AbstractStudy;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainImpl;
@@ -53,7 +53,7 @@ public class DomainTreeModelTest {
 	private DomainTreeModel d_treeModel;
 	private Domain d_domain;
 	private Endpoint d_firstEndpoint;
-	private BasicStudy d_firstStudy;
+	private AbstractStudy d_firstStudy;
 	private Drug d_firstDrug;
 	
 	@Before
@@ -191,7 +191,7 @@ public class DomainTreeModelTest {
 	@Test
 	public void testMetaStudyIsLeaf() {
 		List<Study> l = new ArrayList<Study>();
-		BasicStudy basicStudy = new BasicStudy("X");
+		AbstractStudy basicStudy = new BasicStudy("X");
 		basicStudy.addEndpoint(new Endpoint("E", Type.RATE));
 		l.add(basicStudy);
 		MetaStudy study = new MetaStudy("meta",

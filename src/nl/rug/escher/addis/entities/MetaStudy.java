@@ -20,7 +20,6 @@
 package nl.rug.escher.addis.entities;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +29,7 @@ public class MetaStudy extends AbstractStudy {
 	private static final long serialVersionUID = 4551624355872585225L;
 	private MetaAnalysis d_analysis;
 	private List<PatientGroup> d_patientGroups;
+	private List<Endpoint> d_additionalEndpoints = new ArrayList<Endpoint>();
 
 	public MetaStudy(String id, MetaAnalysis analysis) {
 		super(id);
@@ -56,7 +56,10 @@ public class MetaStudy extends AbstractStudy {
 	}
 
 	public List<Endpoint> getEndpoints() {
-		return Collections.singletonList(d_analysis.getEndpoint());
+		List<Endpoint> points = new ArrayList<Endpoint>();
+		points.add(d_analysis.getEndpoint());		
+		points.addAll(d_additionalEndpoints);
+		return points;
 	}
 
 	public List<PatientGroup> getPatientGroups() {
@@ -70,5 +73,17 @@ public class MetaStudy extends AbstractStudy {
 			deps.addAll(s.getDependencies());
 		}
 		return deps;
+	}
+
+	public void addEndpoint(Endpoint e) {
+		d_additionalEndpoints.add(e);
+	}
+
+	@Override
+	public void setMeasurement(Endpoint e, PatientGroup g, Measurement m) {
+		if (d_analysis.getEndpoint().equals(e)) {
+			throw new IllegalArgumentException("Cannot set measurement on meta-analysis endpoint");
+		}
+		super.setMeasurement(e, g, m);
 	}
 }

@@ -22,6 +22,7 @@ package nl.rug.escher.addis.gui;
 import java.util.Arrays;
 import java.util.Collections;
 
+import nl.rug.escher.addis.entities.AbstractStudy;
 import nl.rug.escher.addis.entities.BasicContinuousMeasurement;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Dose;
@@ -48,7 +49,7 @@ public class MainData {
 		domain.addStudy(buildDefaultStudy2());
 	}
 
-	private static BasicStudy buildDefaultStudy2() {
+	private static AbstractStudy buildDefaultStudy2() {
 		Endpoint hamd = buildEndpointHamd();
 		Drug paroxetine = buildDefaultDrugParoxetine();
 		Drug fluoxetine = buildDefaultDrugFluoxetine();
@@ -75,7 +76,7 @@ public class MainData {
 		return study;
 	}
 
-	private static BasicStudy buildDefaultStudy() {
+	private static AbstractStudy buildDefaultStudy() {
 		Drug paroxetine = buildDefaultDrugParoxetine();
 		Endpoint hamd = buildEndpointHamd();
 		Endpoint cgi = buildDefaultEndpointCgi();

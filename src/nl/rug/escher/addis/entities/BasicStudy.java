@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Map.Entry;
 
 
 public class BasicStudy extends AbstractStudy implements MutableStudy {
@@ -123,33 +122,11 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 		return dep;
 	}
 	
-	public void setMeasurement(Endpoint e, PatientGroup g, Measurement m) {
-		forceLegalArguments(e, g);
-		if (!m.isOfType(e.getType())) {
-			throw new IllegalArgumentException("Measurement does not conform with Endpoint");
-		}
-		d_measurements.put(new MeasurementKey(e, g), m);
-		if (m instanceof BasicRateMeasurement) {
-			((BasicRateMeasurement) m).setSampleSize(g.getSize());
-		}
-	}	
-	
 	private class PatientGroupListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equals(PatientGroup.PROPERTY_SIZE)) {
 				changeMeasurements((PatientGroup) evt.getSource(), (Integer) evt.getNewValue());
 			}
 		}		
-	}
-
-	public void changeMeasurements(PatientGroup source, int newValue) {
-		for (Entry<MeasurementKey, Measurement> entry : d_measurements.entrySet()) {
-			if (entry.getKey().getPatientGroup().equals(source)) {
-				Measurement m = entry.getValue();
-				if (m instanceof BasicRateMeasurement) {
-					((BasicRateMeasurement) m).setSampleSize(newValue);
-				}
-			}
-		}
 	}
 }
