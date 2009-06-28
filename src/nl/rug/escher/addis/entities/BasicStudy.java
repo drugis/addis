@@ -87,7 +87,7 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 	public void setPatientGroups(List<BasicPatientGroup> patientGroups) {
 		List<BasicPatientGroup> oldVal = d_patientGroups;
 		for (PatientGroup g : oldVal) {
-			g.addPropertyChangeListener(d_pgListener);
+			g.removePropertyChangeListener(d_pgListener);
 		}		
 		d_patientGroups = patientGroups;
 		updateMeasurements();		
