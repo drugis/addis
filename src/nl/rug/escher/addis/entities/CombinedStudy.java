@@ -7,6 +7,7 @@ import java.util.Set;
 
 public class CombinedStudy extends AbstractStudy {
 
+	private static final long serialVersionUID = -6356786572659381412L;
 	private Set<Study> d_studies;
 
 	public CombinedStudy(String id, Set<Study> studies) {
