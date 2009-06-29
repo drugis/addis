@@ -229,7 +229,7 @@ public class Main extends JFrame {
 			if (res != null) {
 				CombinedStudy c = new CombinedStudy(res, list);				
 				d_domain.getDomain().addStudy(c);
-				leftTreeFocusStudies();				
+				leftTreeFocusOnStudy(c);
 			}
 		}
 	}
@@ -354,6 +354,7 @@ public class Main extends JFrame {
 		
 		return item;
 	}
+	
 	
 	private void showAddEndpointDialog() {
 		AddEndpointDialog dialog = new AddEndpointDialog(this, getDomain());
@@ -525,4 +526,22 @@ public class Main extends JFrame {
 			dataModelChanged();
 		}
 	}
+
+	public void leftTreeFocusOnStudy(Study d_study) {
+		d_leftPanelTree.setSelectionPath(new TreePath(
+				new Object[] {d_domainTreeModel.getRoot(), 
+						d_domainTreeModel.getStudiesNode(), d_study }));		
+	}
+	
+	public void leftTreeFocusOnEndpoint(Endpoint ep) {
+		d_leftPanelTree.setSelectionPath(new TreePath(
+				new Object[] {d_domainTreeModel.getRoot(), 
+						d_domainTreeModel.getEndpointsNode(), ep }));		
+	}	
+	
+	public void leftTreeFocusOnDrug(Drug d) {
+		d_leftPanelTree.setSelectionPath(new TreePath(
+				new Object[] {d_domainTreeModel.getRoot(), 
+						d_domainTreeModel.getDrugsNode(), d }));		
+	}		
 }

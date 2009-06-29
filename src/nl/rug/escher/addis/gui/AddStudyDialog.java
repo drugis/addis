@@ -29,7 +29,6 @@ import java.util.HashSet;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 
 import nl.rug.escher.addis.entities.BasicMeasurement;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
@@ -51,9 +50,11 @@ public class AddStudyDialog extends OkCancelDialog {
 	private EndpointHolder d_primaryEndpoint;
 	private AddStudyView d_view;
 	private JButton d_addPatientGroupButton;
+	private Main d_main;
 	
-	public AddStudyDialog(JFrame frame, Domain domain) {
+	public AddStudyDialog(Main frame, Domain domain) {
 		super(frame, "Add Study");
+		this.d_main = frame;
 		this.setModal(true);
 		d_domain = domain;
 		d_study = new BasicStudy("");
@@ -137,6 +138,7 @@ public class AddStudyDialog extends OkCancelDialog {
 		bindEndpoint();
 		d_domain.addStudy(d_study);
 		setVisible(false);
+		d_main.leftTreeFocusOnStudy(d_study);
 	}
 
 	private void bindEndpoint() {

@@ -20,8 +20,6 @@
 package nl.rug.escher.addis.gui;
 
 
-import javax.swing.JFrame;
-
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Endpoint.Type;
@@ -33,9 +31,11 @@ import com.jgoodies.binding.PresentationModel;
 public class AddEndpointDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private Endpoint d_endpoint;
+	private Main d_main;
 	
-	public AddEndpointDialog(JFrame frame, Domain domain) {
+	public AddEndpointDialog(Main frame, Domain domain) {
 		super(frame, "Add Endpoint");
+		this.d_main = frame;
 		this.setModal(true);
 		d_domain = domain;
 		d_endpoint = new Endpoint("", Type.CONTINUOUS);
@@ -52,5 +52,6 @@ public class AddEndpointDialog extends OkCancelDialog {
 	protected void commit() {
 		d_domain.addEndpoint(d_endpoint);
 		setVisible(false);
+		d_main.leftTreeFocusOnEndpoint(d_endpoint);
 	}
 }

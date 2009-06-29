@@ -19,8 +19,6 @@
 
 package nl.rug.escher.addis.gui;
 
-import javax.swing.JFrame;
-
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.common.gui.OkCancelDialog;
@@ -31,9 +29,11 @@ import com.jgoodies.binding.PresentationModel;
 public class AddDrugDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private Drug d_drug;
+	private Main d_main;
 	
-	public AddDrugDialog(JFrame frame, Domain domain) {
+	public AddDrugDialog(Main frame, Domain domain) {
 		super(frame, "Add Drug");
+		this.d_main = frame;
 		this.setModal(true);
 		d_domain = domain;
 		d_drug = new Drug();
@@ -53,5 +53,6 @@ public class AddDrugDialog extends OkCancelDialog {
 	protected void commit() {
 		d_domain.addDrug(d_drug);
 		setVisible(false);
+		d_main.leftTreeFocusOnDrug(d_drug);
 	}
 }
