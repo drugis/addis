@@ -219,6 +219,23 @@ public class Main extends JFrame {
 
 	protected void deleteMenuAction() {
 		Object selected = d_leftPanelTree.getSelectionPath().getLastPathComponent();
+		String selectedType = "";
+		if (selected instanceof Drug) {
+			selectedType = "drug ";
+		} else if (selected instanceof Endpoint) {
+			selectedType = "endpoint ";
+		} else if (selected instanceof Study) {
+			selectedType = "study ";
+		}
+		
+		int conf = JOptionPane.showConfirmDialog(this, 
+				"Do you really want to delete " + selectedType + selected + " ?",
+				"Confirm deletion",					
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+				getIcon(FileNames.ICON_DELETE));
+		if (conf != JOptionPane.YES_OPTION) {
+			return;
+		}
 		try {
 			if (selected instanceof Drug) {
 				d_domain.getDomain().deleteDrug((Drug) selected);
