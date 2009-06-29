@@ -4,6 +4,8 @@ import nl.rug.escher.common.Interval;
 
 public class LogRiskRatio extends RiskRatio {
 
+	private static final long serialVersionUID = 5344954293964132074L;
+
 	public LogRiskRatio(RateMeasurement denominator, RateMeasurement numerator) {
 		super(denominator, numerator);
 	}

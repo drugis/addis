@@ -12,6 +12,7 @@ import nl.rug.escher.addis.entities.Measurement;
 import nl.rug.escher.common.gui.OkCancelDialog;
 import fi.smaa.common.ImageLoader;
 
+@SuppressWarnings("serial")
 public class StudyAddPatientGroupDialog extends OkCancelDialog {
 
 	private Domain d_domain;
