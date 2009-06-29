@@ -22,19 +22,17 @@ package nl.rug.escher.addis.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.FileNotFoundException;
 import java.text.NumberFormat;
 
 import javax.swing.AbstractAction;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import nl.rug.escher.addis.analyses.SMAAAdapter;
 import nl.rug.escher.addis.entities.AbstractStudy;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
+import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
@@ -47,7 +45,6 @@ import nl.rug.escher.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -140,7 +137,7 @@ public class StudyView implements ViewBuilder {
 		int col = 5;
 		for (Endpoint e : d_model.getBean().getEndpoints()) {
 			builder.add(
-					createEndpointLabel(d_model.getBean(), e),
+					GUIFactory.createEndpointLabelWithIcon(d_loader, d_model.getBean(), e),
 							cc.xy(col, row));
 			col += 2;
 		}
@@ -171,28 +168,25 @@ public class StudyView implements ViewBuilder {
 			
 			row += 2;
 		}
+		if (d_model.getBean() instanceof BasicStudy) {
+			LayoutUtil.addRow(layout);
+			JButton addGroupButton = new JButton("Add patient group");
+			addGroupButton.addActionListener(new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					addPatientGroup();
+				}			
+			});
+			builder.add(addGroupButton, cc.xy(1, row));
+			row += 2;			
+		}
 		return row;
 	}
 
-	public JComponent createEndpointLabel(Study s, Endpoint e) {
-		String fname = FileNames.ICON_STUDY;
-		if (s instanceof MetaStudy) {
-			MetaStudy ms = (MetaStudy) s;
-			if (ms.getAnalysis().getEndpoint().equals(e)) {
-				fname = FileNames.ICON_METASTUDY;
-			}
-		}
-		JLabel textLabel = null;
-		try {
-			Icon icon = d_loader.getIcon(fname);
-			textLabel = new JLabel(e.getName(), icon, JLabel.CENTER);			
-		} catch (FileNotFoundException ex) {
-			textLabel = new JLabel(e.getName());			
-			ex.printStackTrace();
-		}
-		Bindings.bind(textLabel, "text", 
-				new PresentationModel<Endpoint>(e).getModel(Endpoint.PROPERTY_NAME));
-		return textLabel;
+	protected void addPatientGroup() {
+		StudyAddPatientGroupDialog dlg = new StudyAddPatientGroupDialog(d_loader, d_mainWindow, d_domain,
+				(BasicStudy)d_model.getBean());
+		dlg.setVisible(true);
 	}
 
 	private int buildEndpointsPart(FormLayout layout, int fullWidth, PanelBuilder builder,
@@ -203,7 +197,7 @@ public class StudyView implements ViewBuilder {
 		for (Endpoint e : d_model.getBean().getEndpoints()) {
 			LayoutUtil.addRow(layout);
 			builder.add(
-					createEndpointLabel(d_model.getBean(), e),
+					GUIFactory.createEndpointLabelWithIcon(d_loader, d_model.getBean(), e),
 					cc.xy(1, row));
 			builder.add(
 					buildFindStudiesButton(e), cc.xy(3, row));

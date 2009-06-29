@@ -37,7 +37,7 @@ import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Dose;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.MutablePatientGroup;
+import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.SIUnit;
 import nl.rug.escher.common.gui.OkCancelDialog;
 
@@ -79,7 +79,7 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	protected void buildMeasurements() {
-		for (MutablePatientGroup g : d_study.getPatientGroups()) {
+		for (PatientGroup g : d_study.getPatientGroups()) {
 			Endpoint endpoint = d_primaryEndpoint.getEndpoint();
 			d_study.setMeasurement(endpoint, g, endpoint.buildMeasurement());
 		}
@@ -141,7 +141,7 @@ public class AddStudyDialog extends OkCancelDialog {
 
 	private void bindEndpoint() {
 		d_study.setEndpoints(new HashSet<Endpoint>(d_primaryEndpoint.asList()));
-		for (BasicPatientGroup g : d_study.getPatientGroups()) {
+		for (PatientGroup g : d_study.getPatientGroups()) {
 			((BasicMeasurement)d_study.getMeasurement(d_primaryEndpoint.getEndpoint(), g))
 				.setEndpoint(d_primaryEndpoint.getEndpoint());
 		}

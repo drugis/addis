@@ -33,7 +33,6 @@ import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicStudy;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Dose;
-import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
 import nl.rug.escher.common.gui.LayoutUtil;
@@ -141,7 +140,7 @@ public class AddStudyView implements ViewBuilder {
 			AutoSelectFocusListener.add(field);
 			builder.add(field, cc.xy(1, row));
 			
-			JComboBox selector = createDrugSelector(model);
+			JComboBox selector = GUIFactory.createDrugSelector(model, d_domain);
 			d_validator.add(selector);
 			ComboBoxPopupOnFocusListener.add(selector);
 			builder.add(selector, cc.xy(3, row));
@@ -161,14 +160,6 @@ public class AddStudyView implements ViewBuilder {
 
 			row += 2;
 		}
-	}
-
-	private JComboBox createDrugSelector(PresentationModel<BasicPatientGroup> model) {
-		SelectionInList<Drug> drugSelectionInList =
-			new SelectionInList<Drug>(
-					new ArrayList<Drug>(d_domain.getDrugs()),
-					model.getModel(BasicPatientGroup.PROPERTY_DRUG));
-		return BasicComponentFactory.createComboBox(drugSelectionInList);
 	}
 
 	private boolean patientGroupsPresent() {
