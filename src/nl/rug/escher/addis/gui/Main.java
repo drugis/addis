@@ -28,6 +28,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
@@ -50,6 +52,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
 import nl.rug.escher.addis.entities.AbstractStudy;
+import nl.rug.escher.addis.entities.CombinedStudy;
 import nl.rug.escher.addis.entities.DependentEntitiesException;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.DomainListener;
@@ -78,6 +81,7 @@ public class Main extends JFrame {
 	private DomainTreeModel d_domainTreeModel;
 	private JTree d_leftPanelTree;
 	private JMenuItem d_editMenuDeleteItem;
+	private JMenuItem d_addMenuCombinedItem;
 
 	public Main() {
 		super(APPNAME + " v" + APPVERSION);
@@ -187,7 +191,64 @@ public class Main extends JFrame {
 		addMenu.add(createAddDrugMenuItem());		
 		addMenu.add(createAddEndpointMenuItem());
 		addMenu.add(createAddStudyMenuItem());		
+		addMenu.addSeparator();
+		addMenu.add(createAddCombinedStudyItem());
 		return addMenu;
+	}
+
+	private JMenuItem createAddCombinedStudyItem() {
+		d_addMenuCombinedItem = createAddCombinedItem();
+		return d_addMenuCombinedItem;
+	}
+
+	private JMenuItem createAddCombinedItem() {
+		JMenuItem item = new JMenuItem("Combined study", getIcon(FileNames.ICON_COMBINEDSTUDY));
+		item.setMnemonic('c');
+		item.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				addCombinedStudy();
+			}			
+		});
+		return item;
+	}
+
+	private void addCombinedStudy() {
+		if (!checkTreeSelectionStudiesAndMultiple()) {			
+			JOptionPane.showMessageDialog(this,
+					"To create a combined study, select first more than 1 studies from the tree on the left.",
+					"Error creating a combined study",
+					JOptionPane.ERROR_MESSAGE);
+		} else {
+			Set<Study> list = new HashSet<Study>();
+			for (TreePath path : d_leftPanelTree.getSelectionPaths()) {
+				Study s = (Study) path.getLastPathComponent();
+				list.add(s);
+			}
+			String res = JOptionPane.showInputDialog(this, "Input name for new combined study", 
+					"Combined studies", JOptionPane.QUESTION_MESSAGE);
+			if (res != null) {
+				CombinedStudy c = new CombinedStudy(res, list);				
+				d_domain.getDomain().addStudy(c);
+				leftTreeFocusStudies();				
+			}
+		}
+	}
+
+	private boolean checkTreeSelectionStudiesAndMultiple() {
+		int numSel = d_leftPanelTree.getSelectionRows().length;
+		boolean allStudies = true;
+		
+		for (TreePath o : d_leftPanelTree.getSelectionPaths()) {
+			if (!(o.getLastPathComponent() instanceof Study)) {
+				allStudies = false;
+				break;
+			}
+		}
+		
+		if (numSel < 2 || !allStudies) {
+			return false;
+		}
+		return true;
 	}
 
 	private JMenu createFileMenu() {
@@ -203,7 +264,7 @@ public class Main extends JFrame {
 		editMenu.setMnemonic('e');
 		d_editMenuDeleteItem = createDeleteItem();
 		d_editMenuDeleteItem.setEnabled(false);		
-		editMenu.add(d_editMenuDeleteItem);
+		editMenu.add(d_editMenuDeleteItem);		
 		return editMenu;
 	}
 
