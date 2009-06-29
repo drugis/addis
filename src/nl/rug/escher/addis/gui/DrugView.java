@@ -43,7 +43,7 @@ public class DrugView implements ViewBuilder {
 	}
 	
 	public void initComponents() {
-		d_id = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_NAME));
+		d_id = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_NAME), false);
 		d_id.setColumns(15);
 		d_validator.add(d_id);
 	}
