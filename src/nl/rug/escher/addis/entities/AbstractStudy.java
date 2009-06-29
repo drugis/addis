@@ -80,9 +80,9 @@ public abstract class AbstractStudy extends Model implements MutableStudy {
 	public Measurement getMeasurement(Endpoint e, PatientGroup g) {
 		forceLegalArguments(e, g);
 		Measurement measurement = d_measurements.get(new MeasurementKey(e, g));
-		if (measurement == null) {
-			throw new IllegalStateException("measurement null - shouldn't be!");
-		}
+//		if (measurement == null) {
+			//throw new IllegalStateException("measurement null - shouldn't be!");
+//		}
 		return measurement;
 	}
 	

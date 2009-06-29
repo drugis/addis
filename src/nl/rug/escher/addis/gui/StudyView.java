@@ -164,10 +164,12 @@ public class StudyView implements ViewBuilder {
 			col = 5;
 			for (Endpoint e : d_model.getBean().getEndpoints()) {
 				Measurement m = d_model.getBean().getMeasurement(e, g);
-				builder.add(
-						BasicComponentFactory.createLabel(
-								new PresentationModel<Measurement>(m).getModel(Measurement.PROPERTY_LABEL)),
-						cc.xy(col, row));
+				if (m != null) {
+					builder.add(
+							BasicComponentFactory.createLabel(
+									new PresentationModel<Measurement>(m).getModel(Measurement.PROPERTY_LABEL)),
+									cc.xy(col, row));
+				}
 				col += 2;
 			}
 			

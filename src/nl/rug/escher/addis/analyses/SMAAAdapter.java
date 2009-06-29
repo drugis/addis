@@ -27,6 +27,7 @@ import nl.rug.escher.addis.entities.ContinuousMeasurement;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.LogRiskRatio;
+import nl.rug.escher.addis.entities.MetaStudy;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.RiskRatio;
@@ -66,15 +67,31 @@ public class SMAAAdapter {
 		if (e.getType().equals(Endpoint.Type.RATE)) {
 			buildRateMeasurement(model, crit, e, study);
 		} else if (e.getType().equals(Endpoint.Type.CONTINUOUS)) {
-			for (Drug d : study.getDrugs()) {
-				Alternative alt = findAlternative(d, model);
-				PatientGroup g = findPatientGroupForDrug(study, d);
-				ContinuousMeasurement cm = (ContinuousMeasurement) study.getMeasurement(e, g);
-				GaussianMeasurement meas = new GaussianMeasurement(cm.getMean(), cm.getStdDev());
-				model.getImpactMatrix().setMeasurement(crit, alt, meas);
-			}			
+			buildContinuousMeasurement(model, e, study, crit);			
 		} else {
 			throw new RuntimeException("Unknown endpoint type");
+		}
+	}
+
+	private static void buildContinuousMeasurement(SMAAModel model, Endpoint e,
+			Study study, CardinalCriterion crit)
+			throws UnableToBuildModelException, NoSuchValueException {
+		for (Drug d : study.getDrugs()) {
+			Alternative alt = findAlternative(d, model);
+			if (study instanceof CombinedStudy) {
+				CombinedStudy cs = (CombinedStudy) study;
+				for (Study s : cs.getStudies()) {
+					if (s instanceof MetaStudy) {
+						continue;
+					}
+					PatientGroup g = findPatientGroupForDrug(s, d);
+					ContinuousMeasurement cm = (ContinuousMeasurement) study.getMeasurement(e, g);
+					GaussianMeasurement meas = new GaussianMeasurement(cm.getMean(), cm.getStdDev());
+					model.getImpactMatrix().setMeasurement(crit, alt, meas);									
+				}
+			} else {
+				throw new UnableToBuildModelException("Not supported for other studies than combines ones.");				
+			}
 		}
 	}
 	
@@ -93,6 +110,9 @@ public class SMAAAdapter {
 			// rest of the measurement
 			// one measurement per study
 			for (Study s : cs.getStudies()) {
+				if (!(s instanceof MetaStudy)) {
+					continue;
+				}
 				//find measurement for the common drug (to compare against it)
 				RateMeasurement first = (RateMeasurement) s.getMeasurement(e,
 						findPatientGroupForDrug(s, commonDrug)
