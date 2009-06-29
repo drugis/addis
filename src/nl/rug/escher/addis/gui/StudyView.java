@@ -51,6 +51,7 @@ import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 
 import fi.smaa.common.ImageLoader;
@@ -73,15 +74,16 @@ public class StudyView implements ViewBuilder {
 	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
-				"right:pref, 3dlu, pref, 3dlu, pref",
+				"right:pref, 3dlu, pref, 3dlu, center:pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		int fullWidth = 5;
 		int[] colGroup = new int[d_model.getBean().getEndpoints().size()];
 		colGroup[0] = 5;	
 		for (int i = 1; i < d_model.getBean().getEndpoints().size(); ++i) {			
-			colGroup[i] = 5 + (i*2);			
-			LayoutUtil.addColumn(layout);
+			colGroup[i] = 5 + (i*2);
+			layout.appendColumn(ColumnSpec.decode("3dlu"));
+			layout.appendColumn(ColumnSpec.decode("center:pref"));			
 			fullWidth += 2;
 		}
 		
