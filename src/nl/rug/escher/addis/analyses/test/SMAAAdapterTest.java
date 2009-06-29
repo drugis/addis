@@ -32,7 +32,6 @@ import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.LogRiskRatio;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.RateMeasurement;
-import nl.rug.escher.addis.entities.RiskRatio;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.addis.entities.test.TestData;
 
