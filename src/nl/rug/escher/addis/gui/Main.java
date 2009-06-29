@@ -498,6 +498,7 @@ public class Main extends JFrame {
 	private void initRightPanel() {
 		JPanel panel = new JPanel();
 		d_rightPanel = new JScrollPane(panel);
+		d_rightPanel.getVerticalScrollBar().setUnitIncrement(16);		
 	}
 
 	public static void main(String[] args) {

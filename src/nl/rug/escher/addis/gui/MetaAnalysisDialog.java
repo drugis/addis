@@ -25,25 +25,26 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
-import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.MetaAnalysis;
 import nl.rug.escher.addis.entities.MetaStudy;
 import nl.rug.escher.common.gui.ViewBuilder;
 
+import com.jgoodies.forms.builder.ButtonBarBuilder2;
+
 @SuppressWarnings("serial")
 public class MetaAnalysisDialog extends JDialog {
 	
 	private MetaAnalysis d_analysis;
 	private Domain d_domain;
+	private Main d_main;
 
-	public MetaAnalysisDialog(JFrame parent, Domain domain, MetaAnalysis analysis) {
+	public MetaAnalysisDialog(Main parent, Domain domain, MetaAnalysis analysis) {
 		super(parent, "Meta-Analysis");
 		this.setModal(true);
+		this.d_main = parent;
 		d_domain = domain;
 		d_analysis = analysis;
 		
@@ -81,7 +82,10 @@ public class MetaAnalysisDialog extends JDialog {
 		String res = JOptionPane.showInputDialog(this, "Input name for new study", 
 				"Save meta-analysis as study", JOptionPane.QUESTION_MESSAGE);
 		if (res != null) {
-			d_domain.addStudy(new MetaStudy(res, d_analysis));
+			MetaStudy study = new MetaStudy(res, d_analysis);
+			d_domain.addStudy(study);
+			setVisible(false);
+			d_main.leftTreeFocusOnStudy(study);			
 		}
 	}
 

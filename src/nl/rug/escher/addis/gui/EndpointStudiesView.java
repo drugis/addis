@@ -27,7 +27,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import nl.rug.escher.addis.entities.Domain;
@@ -53,13 +52,14 @@ public class EndpointStudiesView implements ViewBuilder {
 	private Domain d_domain;
 	private List<JCheckBox> d_studySelect;
 	private Study d_selectedStudy;
-	private JFrame d_frame;
+	private Main d_frame;
 	private JButton d_metaAnalyzeButton;
 	
-	public EndpointStudiesView(Endpoint node, Domain domain, JFrame frame) {
+	public EndpointStudiesView(Endpoint node, Domain domain, Main frame) {
 		d_endpoint = node;
 		d_domain = domain;
 		d_studySelect = new ArrayList<JCheckBox>();
+		d_frame = frame;
 	}
 
 	public JComponent buildPanel() {
