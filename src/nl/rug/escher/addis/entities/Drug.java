@@ -27,7 +27,7 @@ import com.jgoodies.binding.beans.Model;
 public class Drug extends Model implements Comparable<Drug>, Entity {
 	private static final long serialVersionUID = 5156008576438893074L;
 
-	private String d_name;
+	private String d_name = "";
 	
 	public static final String PROPERTY_NAME = "name";
 	
@@ -72,6 +72,9 @@ public class Drug extends Model implements Comparable<Drug>, Entity {
 	}
 
 	public int compareTo(Drug other) {
+		if (other == null) {
+			return 1;
+		}
 		return getName().compareTo(other.getName());
 	}
 

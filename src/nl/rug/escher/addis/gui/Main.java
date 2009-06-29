@@ -42,6 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
+import javax.swing.UIManager;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -89,6 +90,7 @@ public class Main extends JFrame {
 
 		setPreferredSize(new Dimension(800, 500));
 		GUIHelper.initializeLookAndFeel();
+		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);		
 		
 		initializeDomain();
 		
