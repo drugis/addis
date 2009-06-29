@@ -35,6 +35,7 @@ import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
+import nl.rug.escher.addis.entities.MetaStudy;
 import nl.rug.escher.addis.entities.MutableStudy;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.Study;
@@ -233,7 +234,8 @@ public class StudyView implements ViewBuilder {
 
 	private void buildStudyPart(int fullWidth, PanelBuilder builder,
 			CellConstraints cc) {
-		builder.addSeparator("Study", cc.xyw(1,1,fullWidth));
+		String studyLabel = d_model.getBean() instanceof MetaStudy ? "Meta-study" : "Study";
+		builder.addSeparator(studyLabel, cc.xyw(1,1,fullWidth));
 		builder.addLabel("ID:", cc.xy(1, 3));
 		builder.add(BasicComponentFactory.createLabel(d_model.getModel(AbstractStudy.PROPERTY_ID)),
 				cc.xyw(3, 3, fullWidth - 2));
