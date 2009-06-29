@@ -47,7 +47,6 @@ public class StudyAddPatientGroupView implements ViewBuilder {
 		d_endpoints = d_study.getEndpoints();
 	}
 
-	@Override
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
 				"pref, 3dlu, fill:pref:grow",

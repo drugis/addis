@@ -172,7 +172,6 @@ public class StudyView implements ViewBuilder {
 			LayoutUtil.addRow(layout);
 			JButton addGroupButton = new JButton("Add patient group");
 			addGroupButton.addActionListener(new AbstractAction() {
-				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					addPatientGroup();
 				}			
