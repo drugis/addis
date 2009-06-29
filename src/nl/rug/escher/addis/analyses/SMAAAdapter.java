@@ -27,6 +27,7 @@ import nl.rug.escher.addis.entities.RiskRatio;
 import nl.rug.escher.addis.entities.Study;
 import fi.smaa.jsmaa.model.Alternative;
 import fi.smaa.jsmaa.model.CardinalCriterion;
+import fi.smaa.jsmaa.model.CardinalMeasurement;
 import fi.smaa.jsmaa.model.GaussianMeasurement;
 import fi.smaa.jsmaa.model.LogNormalMeasurement;
 import fi.smaa.jsmaa.model.NoSuchValueException;
@@ -58,13 +59,22 @@ public class SMAAAdapter {
 		model.addCriterion(crit);
 		
 		if (e.getType().equals(Endpoint.Type.RATE)) {
-			RateMeasurement first = (RateMeasurement)study.getMeasurement(e, study.getPatientGroups().get(0));
-			for (PatientGroup g : study.getPatientGroups()) {
-				RiskRatio od = new RiskRatio(first, ((RateMeasurement)study.getMeasurement(e, g)));
+			RateMeasurement first = null;
+			for (int i=0;i<study.getPatientGroups().size();i++) {
+				CardinalMeasurement meas = null;
+				PatientGroup g = study.getPatientGroups().get(i);				
+				if (i == 0) {
+					first = (RateMeasurement)study.getMeasurement(e, study.getPatientGroups().get(0));
+					meas = new GaussianMeasurement(1.0, 0.0);
+				} else {
+					RateMeasurement other = (RateMeasurement)study.getMeasurement(e, g);
+					RiskRatio od = new RiskRatio(first, other);
+					meas = new LogNormalMeasurement(
+							Math.log(od.getMean()), od.getStdDev());							
+				}
+
 				Alternative alt = findAlternative(g, model);
-				LogNormalMeasurement meas = new LogNormalMeasurement(
-						od.getMean(), od.getStdDev());		
-				model.getImpactMatrix().setMeasurement(crit, alt, meas);
+				model.getImpactMatrix().setMeasurement(crit, alt, meas);				
 			}
 		} else if (e.getType().equals(Endpoint.Type.CONTINUOUS)) {
 			for (PatientGroup g : study.getPatientGroups()) {

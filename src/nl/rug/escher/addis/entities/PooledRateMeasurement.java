@@ -153,6 +153,11 @@ public class PooledRateMeasurement extends Model implements RateMeasurement {
 		return rate.toString() + "/" + sampleSize.toString();
 	}
 	
+	@Override
+	public String toString() {
+		return generateLabel(d_rate, d_size);
+	}
+	
 	public boolean equals(Object o) {
 		if (o instanceof PooledRateMeasurement) {
 			PooledRateMeasurement other = (PooledRateMeasurement)o;

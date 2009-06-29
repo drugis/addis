@@ -25,4 +25,10 @@ public class RiskRatio extends Ratio implements ContinuousMeasurement {
 	public boolean isOfType(Type type) {
 		return type.equals(Type.CONTINUOUS);
 	}
+	
+	@Override
+	public String toString() {
+		return "[" + d_denominator.toString() + "] / [" 
+		+ d_numerator.toString() + "]";
+	}
 }
