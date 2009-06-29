@@ -408,7 +408,7 @@ public class Main extends JFrame {
 	}
 	
 	private void studySelected(Study node) {
-		StudyView view = new StudyView(new PresentationModel<Study>(node), getDomain(), this);
+		StudyView view = new StudyView(new PresentationModel<Study>(node), getDomain(), this, imageLoader);
 		d_rightPanelBuilder = view;
 		d_rightPanel.setViewportView(view.buildPanel());
 		d_editMenuDeleteItem.setEnabled(true);		

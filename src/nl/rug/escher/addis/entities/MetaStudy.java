@@ -60,7 +60,7 @@ public class MetaStudy extends AbstractStudy {
 		points.addAll(super.getEndpoints());
 		return points;
 	}
-
+	
 	public List<PatientGroup> getPatientGroups() {
 		return d_patientGroups;
 	}

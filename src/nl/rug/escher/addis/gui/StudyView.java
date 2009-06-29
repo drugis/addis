@@ -22,11 +22,14 @@ package nl.rug.escher.addis.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
 import java.text.NumberFormat;
 
 import javax.swing.AbstractAction;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import nl.rug.escher.addis.analyses.SMAAAdapter;
@@ -44,11 +47,13 @@ import nl.rug.escher.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import fi.smaa.common.ImageLoader;
 import fi.smaa.jsmaa.gui.JSMAAMainFrame;
 import fi.smaa.jsmaa.model.SMAAModel;
 
@@ -57,8 +62,10 @@ public class StudyView implements ViewBuilder {
 	PresentationModel<Study> d_model;
 	Domain d_domain;
 	Main d_mainWindow;
+	private ImageLoader d_loader;
 
-	public StudyView(PresentationModel<Study> model, Domain domain, Main main) {
+	public StudyView(PresentationModel<Study> model, Domain domain, Main main, ImageLoader loader) {
+		d_loader = loader;
 		d_model = model;
 		d_mainWindow = main;
 		d_domain = domain;
@@ -131,8 +138,7 @@ public class StudyView implements ViewBuilder {
 		int col = 5;
 		for (Endpoint e : d_model.getBean().getEndpoints()) {
 			builder.add(
-					BasicComponentFactory.createLabel(
-							new PresentationModel<Endpoint>(e).getModel(Endpoint.PROPERTY_NAME)),
+					createEndpointLabel(d_model.getBean(), e),
 							cc.xy(col, row));
 			col += 2;
 		}
@@ -166,6 +172,27 @@ public class StudyView implements ViewBuilder {
 		return row;
 	}
 
+	public JComponent createEndpointLabel(Study s, Endpoint e) {
+		String fname = FileNames.ICON_STUDY;
+		if (s instanceof MetaStudy) {
+			MetaStudy ms = (MetaStudy) s;
+			if (ms.getAnalysis().getEndpoint().equals(e)) {
+				fname = FileNames.ICON_METASTUDY;
+			}
+		}
+		JLabel textLabel = null;
+		try {
+			Icon icon = d_loader.getIcon(fname);
+			textLabel = new JLabel(e.getName(), icon, JLabel.CENTER);			
+		} catch (FileNotFoundException ex) {
+			textLabel = new JLabel(e.getName());			
+			ex.printStackTrace();
+		}
+		Bindings.bind(textLabel, "text", 
+				new PresentationModel<Endpoint>(e).getModel(Endpoint.PROPERTY_NAME));
+		return textLabel;
+	}
+
 	private int buildEndpointsPart(FormLayout layout, int fullWidth, PanelBuilder builder,
 			CellConstraints cc) {
 		builder.addSeparator("Endpoints", cc.xyw(1, 5, fullWidth));
@@ -174,8 +201,7 @@ public class StudyView implements ViewBuilder {
 		for (Endpoint e : d_model.getBean().getEndpoints()) {
 			LayoutUtil.addRow(layout);
 			builder.add(
-					BasicComponentFactory.createLabel(
-							new PresentationModel<Endpoint>(e).getModel(Endpoint.PROPERTY_NAME)),
+					createEndpointLabel(d_model.getBean(), e),
 					cc.xy(1, row));
 			builder.add(
 					buildFindStudiesButton(e), cc.xy(3, row));
@@ -185,7 +211,7 @@ public class StudyView implements ViewBuilder {
 			LayoutUtil.addRow(layout);
 			builder.add(buildAddEndpointButton(), cc.xy(1, row));
 			
-			row += 2;			
+			row += 2;
 		}
 
 		return row;
