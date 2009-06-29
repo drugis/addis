@@ -28,12 +28,8 @@ import java.util.Set;
 
 import nl.rug.escher.addis.analyses.SMAAAdapter;
 import nl.rug.escher.addis.analyses.UnableToBuildModelException;
-import nl.rug.escher.addis.entities.ContinuousMeasurement;
 import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
-import nl.rug.escher.addis.entities.LogRiskRatio;
-import nl.rug.escher.addis.entities.PatientGroup;
-import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.addis.entities.test.TestData;
 
@@ -43,9 +39,6 @@ import org.junit.Test;
 import fi.smaa.jsmaa.model.Alternative;
 import fi.smaa.jsmaa.model.CardinalCriterion;
 import fi.smaa.jsmaa.model.Criterion;
-import fi.smaa.jsmaa.model.GaussianMeasurement;
-import fi.smaa.jsmaa.model.ImpactMatrix;
-import fi.smaa.jsmaa.model.LogNormalMeasurement;
 import fi.smaa.jsmaa.model.NoSuchValueException;
 import fi.smaa.jsmaa.model.SMAAModel;
 
@@ -93,6 +86,8 @@ public class SMAAAdapterTest {
 	}
 	
 	private void checkLogNormalMeasurements(Endpoint e, CardinalCriterion c, SMAAModel model) throws NoSuchValueException {
+		fail();
+		/*
 		ImpactMatrix mat = model.getImpactMatrix();
 		boolean firstGroup = true;
 		for (PatientGroup g : d_study.getPatientGroups()) {
@@ -110,16 +105,20 @@ public class SMAAAdapterTest {
 				assertEquals(ratio.getStdDev(), m.getStDev(), 0.00001);				
 			}
 		}
+		*/
 	}
 
 	private void checkGaussianMeasurements(Endpoint e, CardinalCriterion c, SMAAModel model) throws NoSuchValueException {
+		fail();
+		/*
 		ImpactMatrix mat = model.getImpactMatrix();
 		for (PatientGroup g : d_study.getPatientGroups()) {
 			ContinuousMeasurement cm = (ContinuousMeasurement) d_study.getMeasurement(e, g);
 			GaussianMeasurement m = (GaussianMeasurement) mat.getMeasurement(c, SMAAAdapter.findAlternative(g, model));
 			assertEquals(cm.getMean(), m.getMean());
 			assertEquals(cm.getStdDev(), m.getStDev());
-		}		
+		}
+		*/		
 	}
 
 	private CardinalCriterion findCriterion(Endpoint e, SMAAModel model) {
@@ -133,7 +132,7 @@ public class SMAAAdapterTest {
 	}
 
 	@Test
-	public void testGetModel() {
+	public void testGetModel() throws UnableToBuildModelException {
 		assertNotNull(SMAAAdapter.getModel(d_study));
 	}
 	

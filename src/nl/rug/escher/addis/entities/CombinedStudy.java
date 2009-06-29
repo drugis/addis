@@ -36,6 +36,7 @@ public class CombinedStudy extends AbstractStudy {
 		Set<Entity> set = new HashSet<Entity>();
 		for (Study s : d_studies) {
 			set.addAll(s.getDependencies());
+			set.add(s);
 		}
 		return set;
 	}
