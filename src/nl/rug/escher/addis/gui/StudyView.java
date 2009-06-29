@@ -71,7 +71,7 @@ public class StudyView implements ViewBuilder {
 	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
-				"right:pref, 3dlu, pref, 3dlu, center:pref",
+				"right:pref, 3dlu, pref:grow, 3dlu, center:pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		int fullWidth = 5;
