@@ -27,6 +27,7 @@ import java.text.NumberFormat;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import nl.rug.escher.addis.analyses.SMAAAdapter;
@@ -34,11 +35,11 @@ import nl.rug.escher.addis.analyses.UnableToBuildModelException;
 import nl.rug.escher.addis.entities.AbstractStudy;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicStudy;
+import nl.rug.escher.addis.entities.CombinedStudy;
 import nl.rug.escher.addis.entities.Domain;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.Measurement;
 import nl.rug.escher.addis.entities.MetaStudy;
-import nl.rug.escher.addis.entities.MutableStudy;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.Study;
 import nl.rug.escher.common.gui.LayoutUtil;
@@ -129,7 +130,9 @@ public class StudyView implements ViewBuilder {
 			});
 			app.setVisible(true);
 		} catch (UnableToBuildModelException e) {
-			System.out.println(e.toString());
+			JOptionPane.showMessageDialog(d_mainWindow,
+					e.getMessage(), "Cannot perform SMAA analysis",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -147,33 +150,25 @@ public class StudyView implements ViewBuilder {
 			col += 2;
 		}
 		row += 2;
-		
-		for (PatientGroup g : d_model.getBean().getPatientGroups()) {
-			LayoutUtil.addRow(layout);
-			builder.add(
-					BasicComponentFactory.createLabel(
-							new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_LABEL)),
-					cc.xy(1, row));
-			
-			builder.add(
-					BasicComponentFactory.createLabel(
-							new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_SIZE),
-							NumberFormat.getInstance()),
-							cc.xy(3, row, "center, center"));
-			
-			col = 5;
-			for (Endpoint e : d_model.getBean().getEndpoints()) {
-				Measurement m = d_model.getBean().getMeasurement(e, g);
-				if (m != null) {
-					builder.add(
-							BasicComponentFactory.createLabel(
-									new PresentationModel<Measurement>(m).getModel(Measurement.PROPERTY_LABEL)),
-									cc.xy(col, row));
+
+		if (d_model.getBean() instanceof CombinedStudy) {
+			CombinedStudy cs = (CombinedStudy) d_model.getBean();
+			for (Study s : cs.getStudies()) {
+				LayoutUtil.addRow(layout);
+				builder.addLabel("Contained study:", cc.xy(1, row));
+				builder.add(BasicComponentFactory.createLabel(
+						new PresentationModel<Study>(s).getModel(Study.PROPERTY_ID)),
+						cc.xyw(3, row, fullWidth-2));
+				row += 2;
+				for (PatientGroup g : s.getPatientGroups()) {
+					row = buildPatientGroup(layout, builder, cc, row, g);
 				}
-				col += 2;
 			}
 			
-			row += 2;
+		} else {
+			for (PatientGroup g : d_model.getBean().getPatientGroups()) {
+				row = buildPatientGroup(layout, builder, cc, row, g);
+			}
 		}
 		if (d_model.getBean() instanceof BasicStudy) {
 			LayoutUtil.addRow(layout);
@@ -186,6 +181,37 @@ public class StudyView implements ViewBuilder {
 			builder.add(addGroupButton, cc.xy(1, row));
 			row += 2;			
 		}
+		return row;
+	}
+
+	private int buildPatientGroup(FormLayout layout, PanelBuilder builder,
+			CellConstraints cc, int row, PatientGroup g) {
+		int col;
+		LayoutUtil.addRow(layout);
+		builder.add(
+				BasicComponentFactory.createLabel(
+						new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_LABEL)),
+				cc.xy(1, row));
+		
+		builder.add(
+				BasicComponentFactory.createLabel(
+						new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_SIZE),
+						NumberFormat.getInstance()),
+						cc.xy(3, row, "center, center"));
+		
+		col = 5;
+		for (Endpoint e : d_model.getBean().getEndpoints()) {
+			Measurement m = d_model.getBean().getMeasurement(e, g);
+			if (m != null) {
+				builder.add(
+						BasicComponentFactory.createLabel(
+								new PresentationModel<Measurement>(m).getModel(Measurement.PROPERTY_LABEL)),
+								cc.xy(col, row));
+			}
+			col += 2;
+		}
+		
+		row += 2;
 		return row;
 	}
 
@@ -209,7 +235,7 @@ public class StudyView implements ViewBuilder {
 					buildFindStudiesButton(e), cc.xy(3, row));
 			row += 2;
 		}
-		if (d_model.getBean() instanceof MutableStudy) {
+		if (d_model.getBean() instanceof BasicStudy) {
 			LayoutUtil.addRow(layout);
 			builder.add(buildAddEndpointButton(), cc.xy(1, row));
 			
@@ -262,11 +288,20 @@ public class StudyView implements ViewBuilder {
 
 	private void buildStudyPart(int fullWidth, PanelBuilder builder,
 			CellConstraints cc) {
-		String studyLabel = d_model.getBean() instanceof MetaStudy ? "Meta-study" : "Study";
+		String studyLabel = getStudyLabel();
 		builder.addSeparator(studyLabel, cc.xyw(1,1,fullWidth));
 		builder.addLabel("ID:", cc.xy(1, 3));
 		builder.add(BasicComponentFactory.createLabel(d_model.getModel(AbstractStudy.PROPERTY_ID)),
 				cc.xyw(3, 3, fullWidth - 2));
 	}
 
+	private String getStudyLabel() {
+		if (d_model.getBean() instanceof MetaStudy) {
+			return "Meta-study";			
+		} else if (d_model.getBean() instanceof CombinedStudy) {
+			return "Combined study";
+		} else {
+			return "Study";
+		}
+	}
 }
