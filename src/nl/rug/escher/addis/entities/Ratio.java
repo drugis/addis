@@ -86,10 +86,6 @@ public abstract class Ratio extends Model implements Measurement {
 		return getStdDev(g, getAssymmetricalMean(g));
 	}
 
-	/**
-	 * Get the mean odds-ratio. This is mean(numerator) / mean(denominator)
-	 * @return The mean.
-	 */
 	public Double getRatio() {
 		return getMean(d_numerator) / getMean(d_denominator);
 	}

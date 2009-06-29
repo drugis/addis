@@ -29,6 +29,7 @@ import java.util.Set;
 import nl.rug.escher.addis.analyses.SMAAAdapter;
 import nl.rug.escher.addis.entities.ContinuousMeasurement;
 import nl.rug.escher.addis.entities.Endpoint;
+import nl.rug.escher.addis.entities.LogRiskRatio;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.RiskRatio;
@@ -98,7 +99,7 @@ public class SMAAAdapterTest {
 					c, SMAAAdapter.findAlternative(g, model)
 					);
 			PatientGroup first = d_study.getPatientGroups().get(0);
-			RiskRatio ratio = new RiskRatio((RateMeasurement) d_study.getMeasurement(e, first),
+			LogRiskRatio ratio = new LogRiskRatio((RateMeasurement) d_study.getMeasurement(e, first),
 					(RateMeasurement) d_study.getMeasurement(e, g));
 			assertEquals(ratio.getMean(), m.getMean(), 0.00001);
 			if (firstGroup) {

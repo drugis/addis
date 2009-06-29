@@ -21,6 +21,7 @@ package nl.rug.escher.addis.analyses;
 
 import nl.rug.escher.addis.entities.ContinuousMeasurement;
 import nl.rug.escher.addis.entities.Endpoint;
+import nl.rug.escher.addis.entities.LogRiskRatio;
 import nl.rug.escher.addis.entities.PatientGroup;
 import nl.rug.escher.addis.entities.RateMeasurement;
 import nl.rug.escher.addis.entities.RiskRatio;
@@ -65,12 +66,11 @@ public class SMAAAdapter {
 				PatientGroup g = study.getPatientGroups().get(i);				
 				if (i == 0) {
 					first = (RateMeasurement)study.getMeasurement(e, study.getPatientGroups().get(0));
-					meas = new LogNormalMeasurement(1.0, 0.0);
+					meas = new LogNormalMeasurement(0.0, 0.0);
 				} else {
 					RateMeasurement other = (RateMeasurement)study.getMeasurement(e, g);
-					RiskRatio od = new RiskRatio(first, other);
-					meas = new LogNormalMeasurement(
-							od.getMean(), od.getStdDev());							
+					RiskRatio od = new LogRiskRatio(first, other);
+					meas = new LogNormalMeasurement(od.getMean(), od.getStdDev());							
 				}
 
 				Alternative alt = findAlternative(g, model);

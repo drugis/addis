@@ -81,7 +81,7 @@ public class AddStudyView implements ViewBuilder {
 		initComponents();
 		
 		FormLayout layout = new FormLayout(
-				"pref, 3dlu, pref, 3dlu, pref",
+				"pref, 3dlu, fill:pref:grow, 3dlu, center:pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);	
 		int fullWidth = 5;
@@ -99,9 +99,9 @@ public class AddStudyView implements ViewBuilder {
 		
 		builder.addSeparator("Study", cc.xyw(1, 1, fullWidth));
 		builder.addLabel("Identifier:", cc.xy(1, 3, "right, c"));
-		builder.add(d_id, cc.xyw(3, 3, 3));
+		builder.add(d_id, cc.xyw(3, 3, fullWidth-2));
 		builder.addLabel("Endpoint:", cc.xy(1, 5, "right, c"));
-		builder.add(d_endpoint, cc.xyw(3, 5, 3));
+		builder.add(d_endpoint, cc.xyw(3, 5, fullWidth-2));
 		
 		builder.addSeparator("Patient Groups", cc.xyw(1, 7, fullWidth));
 		int row = 9;

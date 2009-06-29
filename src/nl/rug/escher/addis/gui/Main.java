@@ -99,12 +99,12 @@ public class Main extends JFrame {
 	protected void quitApplication() {
 		try {
 			saveDomainToFile();
+			System.exit(0);			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this,
 					"Error saving domain", "Error saving domain",
 					JOptionPane.ERROR_MESSAGE);
 		}
-		System.exit(0);
 	}
 
 	private void saveDomainToFile() throws IOException {
