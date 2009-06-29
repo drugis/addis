@@ -19,7 +19,12 @@
 
 package nl.rug.escher.addis.analyses;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import nl.rug.escher.addis.entities.CombinedStudy;
 import nl.rug.escher.addis.entities.ContinuousMeasurement;
+import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.LogRiskRatio;
 import nl.rug.escher.addis.entities.PatientGroup;
@@ -28,7 +33,6 @@ import nl.rug.escher.addis.entities.RiskRatio;
 import nl.rug.escher.addis.entities.Study;
 import fi.smaa.jsmaa.model.Alternative;
 import fi.smaa.jsmaa.model.CardinalCriterion;
-import fi.smaa.jsmaa.model.CardinalMeasurement;
 import fi.smaa.jsmaa.model.GaussianMeasurement;
 import fi.smaa.jsmaa.model.LogNormalMeasurement;
 import fi.smaa.jsmaa.model.NoSuchValueException;
@@ -36,7 +40,7 @@ import fi.smaa.jsmaa.model.SMAAModel;
 
 public class SMAAAdapter {
 	
-	public static SMAAModel getModel(Study study) {
+	public static SMAAModel getModel(Study study) throws UnableToBuildModelException {
 		SMAAModel model = new SMAAModel(study.getId());
 		addAlternativesToModel(study, model);
 		
@@ -48,37 +52,23 @@ public class SMAAAdapter {
 		return model;
 	}
 
-	private static void addCriteriaToModel(Study study, SMAAModel model) throws NoSuchValueException {
+	private static void addCriteriaToModel(Study study, SMAAModel model) throws NoSuchValueException, UnableToBuildModelException {
 		for (Endpoint e : study.getEndpoints()) {
 			buildCriterion(model, e, study);	
 		}
 	}
-
+	
 	private static void buildCriterion(SMAAModel model, Endpoint e,
-			Study study) throws NoSuchValueException {
+			Study study) throws NoSuchValueException, UnableToBuildModelException {
 		CardinalCriterion crit = new CardinalCriterion(e.getName());
 		model.addCriterion(crit);
-		
-		if (e.getType().equals(Endpoint.Type.RATE)) {
-			RateMeasurement first = null;
-			for (int i=0;i<study.getPatientGroups().size();i++) {
-				CardinalMeasurement meas = null;
-				PatientGroup g = study.getPatientGroups().get(i);				
-				if (i == 0) {
-					first = (RateMeasurement)study.getMeasurement(e, study.getPatientGroups().get(0));
-					meas = new LogNormalMeasurement(0.0, 0.0);
-				} else {
-					RateMeasurement other = (RateMeasurement)study.getMeasurement(e, g);
-					RiskRatio od = new LogRiskRatio(first, other);
-					meas = new LogNormalMeasurement(od.getMean(), od.getStdDev());							
-				}
 
-				Alternative alt = findAlternative(g, model);
-				model.getImpactMatrix().setMeasurement(crit, alt, meas);				
-			}
+		if (e.getType().equals(Endpoint.Type.RATE)) {
+			buildRateMeasurement(model, crit, e, study);
 		} else if (e.getType().equals(Endpoint.Type.CONTINUOUS)) {
-			for (PatientGroup g : study.getPatientGroups()) {
-				Alternative alt = findAlternative(g, model);				
+			for (Drug d : study.getDrugs()) {
+				Alternative alt = findAlternative(d, model);
+				PatientGroup g = findPatientGroupForDrug(study, d);
 				ContinuousMeasurement cm = (ContinuousMeasurement) study.getMeasurement(e, g);
 				GaussianMeasurement meas = new GaussianMeasurement(cm.getMean(), cm.getStdDev());
 				model.getImpactMatrix().setMeasurement(crit, alt, meas);
@@ -88,15 +78,67 @@ public class SMAAAdapter {
 		}
 	}
 	
-	private static void addAlternativesToModel(Study study, SMAAModel model) {
-		for (PatientGroup d : study.getPatientGroups()) {
-			model.addAlternative(new Alternative(d.getLabel()));
+	private static void buildRateMeasurement(SMAAModel model,
+			CardinalCriterion crit, Endpoint e, Study study) throws UnableToBuildModelException, NoSuchValueException {
+		if (study instanceof CombinedStudy) {
+			CombinedStudy cs = (CombinedStudy) study;
+			Set<Drug> drugs = cs.getCommonDrugs();
+			if (drugs.size() != 1) {
+				throw new UnableToBuildModelException("Not exactly 1 common drug in studies");
+			}
+			Drug commonDrug = drugs.iterator().next();
+			// measurement for the common drug
+			model.getImpactMatrix().setMeasurement(crit, findAlternative(commonDrug, model), 
+					new LogNormalMeasurement(0.0, 0.0));
+			// rest of the measurement
+			// one measurement per study
+			for (Study s : cs.getStudies()) {
+				//find measurement for the common drug (to compare against it)
+				RateMeasurement first = (RateMeasurement) s.getMeasurement(e,
+						findPatientGroupForDrug(s, commonDrug)
+				);
+
+				Set<Drug> subStudyDrugs = new HashSet<Drug>(s.getDrugs());
+				subStudyDrugs.remove(commonDrug);
+				if (subStudyDrugs.size() > 1) {
+					throw new UnableToBuildModelException("More than 2 drugs in a rate measurement study");
+				}
+				Drug subStudyDrug = subStudyDrugs.iterator().next();
+				Alternative alt = findAlternative(subStudyDrug, model);
+
+				RateMeasurement other = (RateMeasurement)s.getMeasurement(e,
+						findPatientGroupForDrug(s, subStudyDrug));
+				RiskRatio od = new LogRiskRatio(first, other);
+				model.getImpactMatrix().setMeasurement(crit, alt, 
+						new LogNormalMeasurement(od.getMean(), od.getStdDev()));				
+			}
+		} else {
+			throw new UnableToBuildModelException("Not supported for other studies than combines ones.");
 		}
 	}
 
-	public static Alternative findAlternative(PatientGroup g, SMAAModel model) {
+	private static PatientGroup findPatientGroupForDrug(Study study, Drug d) throws UnableToBuildModelException{
+		PatientGroup pg = null;
+		for (PatientGroup g : study.getPatientGroups()) {
+			if (g.getDrug().equals(d)) {
+				if (pg != null) {
+					throw new UnableToBuildModelException("Study with more than 1 patient group for the same drug not supported.");				
+				}
+				pg = g;
+			}
+		}
+		return pg;
+	}
+
+	private static void addAlternativesToModel(Study study, SMAAModel model) {
+		for (Drug d : study.getDrugs()) {
+			model.addAlternative(new Alternative(d.getName()));
+		}
+	}
+
+	public static Alternative findAlternative(Drug g, SMAAModel model) {
 		for (Alternative a : model.getAlternatives()) {
-			if (a.getName().equals(g.getLabel())) {
+			if (a.getName().equals(g.getName())) {
 				return a;
 			}
 		}

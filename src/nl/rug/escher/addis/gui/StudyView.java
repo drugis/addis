@@ -30,6 +30,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import nl.rug.escher.addis.analyses.SMAAAdapter;
+import nl.rug.escher.addis.analyses.UnableToBuildModelException;
 import nl.rug.escher.addis.entities.AbstractStudy;
 import nl.rug.escher.addis.entities.BasicPatientGroup;
 import nl.rug.escher.addis.entities.BasicStudy;
@@ -115,17 +116,21 @@ public class StudyView implements ViewBuilder {
 	}
 
 	private void smaaAnalysis() {
-		SMAAModel model = SMAAAdapter.getModel(d_model.getBean());
-		final JSMAAMainFrame app = new JSMAAMainFrame(model);
-		app.setMinimalFrame();
-		app.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent evt) {
-				app.setVisible(false);
-				app.dispose();
-			}			
-		});
-		app.setVisible(true);
+		try {
+			SMAAModel model = SMAAAdapter.getModel(d_model.getBean());
+			final JSMAAMainFrame app = new JSMAAMainFrame(model);
+			app.setMinimalFrame();
+			app.addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowClosing(WindowEvent evt) {
+					app.setVisible(false);
+					app.dispose();
+				}			
+			});
+			app.setVisible(true);
+		} catch (UnableToBuildModelException e) {
+			System.out.println(e.toString());
+		}
 	}
 
 	private int buildDataPart(FormLayout layout, int fullWidth,

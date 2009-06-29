@@ -27,7 +27,9 @@ import java.util.List;
 import java.util.Set;
 
 import nl.rug.escher.addis.analyses.SMAAAdapter;
+import nl.rug.escher.addis.analyses.UnableToBuildModelException;
 import nl.rug.escher.addis.entities.ContinuousMeasurement;
+import nl.rug.escher.addis.entities.Drug;
 import nl.rug.escher.addis.entities.Endpoint;
 import nl.rug.escher.addis.entities.LogRiskRatio;
 import nl.rug.escher.addis.entities.PatientGroup;
@@ -57,25 +59,25 @@ public class SMAAAdapterTest {
 	}
 	
 	@Test
-	public void testGetAlternatives() {
+	public void testGetAlternatives() throws UnableToBuildModelException {
 		SMAAModel model = SMAAAdapter.getModel(d_study);
 		List<Alternative> alts = model.getAlternatives();
-		List<? extends PatientGroup> groups = d_study.getPatientGroups();
+		Set<Drug> drugs = d_study.getDrugs();
 		
-		assertEquals(groups.size(), alts.size());
-		for (PatientGroup g : groups) {
-			assertNotNull(SMAAAdapter.findAlternative(g, model));
+		assertEquals(drugs.size(), alts.size());
+		for (Drug d : drugs) {
+			assertNotNull(SMAAAdapter.findAlternative(d, model));
 		}
 	}
 	
 	@Test
-	public void testModelName() {
+	public void testModelName() throws UnableToBuildModelException {
 		SMAAModel model = SMAAAdapter.getModel(d_study);
 		assertEquals(d_study.getId(), model.getName());
 	}
 	
 	@Test
-	public void testGetCriteria() throws NoSuchValueException {
+	public void testGetCriteria() throws NoSuchValueException, UnableToBuildModelException {
 		SMAAModel model = SMAAAdapter.getModel(d_study);
 		List<Criterion> crit = model.getCriteria();
 		Set<Endpoint> endpoints = d_study.getEndpoints();

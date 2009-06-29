@@ -12,6 +12,7 @@ public class CombinedStudy extends AbstractStudy {
 
 	public CombinedStudy(String id, Set<Study> studies) {
 		super(id);
+		assert(studies.size() > 0);
 		d_studies = studies;
 	}
 
@@ -57,6 +58,23 @@ public class CombinedStudy extends AbstractStudy {
 			}
 		}
 		return super.getMeasurement(e, g);
+	}
+	
+	public Set<Study> getStudies() {
+		return d_studies;
+	}
+	
+	public Set<Drug> getCommonDrugs() {
+		Set<Drug> drugs = null;
+		for (Study s : getStudies()) {
+			if (drugs == null) {
+				drugs = new HashSet<Drug>();
+				drugs.addAll(s.getDrugs());
+			} else {
+				drugs.retainAll(s.getDrugs());
+			}
+		}
+		return drugs;
 	}
 
 }
