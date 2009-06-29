@@ -11,21 +11,12 @@
 	<property name="target" value="1.5"/>
 	<property name="source" value="1.5"/>
 
-	<artifact:dependencies pathId="aspectjtools.classpath">
-		<dependency groupId="org.aspectj"
-			artifactid="aspectjtools" version="1.6.4"/>
-	</artifact:dependencies>
-
 	<artifact:pom id="addis" file="pom.xml" />
 
 	<artifact:dependencies
 		filesetId="dep.fileset"
 		pathId="dep.classpath"
 		pomRefId="addis"/>
-
-	<path id="aspect.path">
-		<pathelement location="${nl.gertvv:contract4j5:jar}"/>
-	</path>
 
 	<path id="build.classpath">
 		<path refid="dep.classpath"/>
@@ -39,12 +30,6 @@
 	<path id="dist.class.path">
 		<path refid="build.classpath" />
 	</path>
-
-	<taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
-		<classpath>
-			<path refid="aspectjtools.classpath" />
-		</classpath>
-	</taskdef>
 
 	<target name="dist" depends="build">
 		<delete dir="dist" />
@@ -80,7 +65,7 @@
 	<target depends="clean" name="cleanall"/>
 	<target depends="build-subprojects,build-project" name="build"/>
 	<target name="build-subprojects"/>
-	<target depends="weave-project" name="build-project">
+	<target depends="compile-project" name="build-project">
 	</target>
 	<target depends="init" name="compile-project">
 		<echo message="${ant.project.name}: ${ant.file}"/>
@@ -88,14 +73,6 @@
 			<src path="${addis.build.sourceDirectory}"/>
 			<classpath refid="ADDIS.classpath"/>
 		</javac>
-	</target>
-	<target depends="compile-project" name="weave-project">
-		<iajc debug="true" inPath="${addis.build.outputDirectory}" debugLevel="${debuglevel}" source="${source}" target="${target}"
-			aspectpathref="aspect.path" destDir="${addis.build.outputDirectory}">
-			<classpath>
-				<path refid="ADDIS.classpath" />
-			</classpath>
-		</iajc>
 	</target>
 
 	<target name="test" depends="build">
