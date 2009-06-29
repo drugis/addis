@@ -38,10 +38,11 @@ public class AddEndpointDialog extends OkCancelDialog {
 		super(frame, "Add Endpoint");
 		this.setModal(true);
 		d_domain = domain;
-		d_endpoint = new Endpoint("e", Type.CONTINUOUS);
+		d_endpoint = new Endpoint("", Type.CONTINUOUS);
 		EndpointView view = new EndpointView(new PresentationModel<Endpoint>(d_endpoint), d_okButton);
 		getUserPanel().add(view.buildPanel());
 		pack();
+		getRootPane().setDefaultButton(d_okButton);
 	}
 
 	protected void cancel() {

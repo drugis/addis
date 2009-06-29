@@ -47,9 +47,11 @@ public class EndpointView implements ViewBuilder {
 	}
 	
 	private void initComponents() {
-		d_name = BasicComponentFactory.createTextField(d_model.getModel(Endpoint.PROPERTY_NAME));
+		d_name = BasicComponentFactory.createTextField(d_model.getModel(Endpoint.PROPERTY_NAME), false);
+		AutoSelectFocusListener.add(d_name);
 		d_description = BasicComponentFactory.createTextField(
-				d_model.getModel(Endpoint.PROPERTY_DESCRIPTION));
+				d_model.getModel(Endpoint.PROPERTY_DESCRIPTION), false);
+		AutoSelectFocusListener.add(d_description);
 		d_name.setColumns(30);
 		d_description.setColumns(30);
 		d_validator.add(d_name);

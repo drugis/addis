@@ -65,7 +65,7 @@ public class AddStudyView implements ViewBuilder {
 	
 	public void initComponents() {
 		d_id = BasicComponentFactory.createTextField(d_model.getModel(AbstractStudy.PROPERTY_ID));
-		d_id.setColumns(15);
+		d_id.setColumns(30);
 		AutoSelectFocusListener.add(d_id);
 		d_validator.add(d_id);
 		

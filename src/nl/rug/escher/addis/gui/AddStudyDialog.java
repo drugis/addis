@@ -50,12 +50,13 @@ public class AddStudyDialog extends OkCancelDialog {
 	private BasicStudy d_study;
 	private EndpointHolder d_primaryEndpoint;
 	private AddStudyView d_view;
+	private JButton d_addPatientGroupButton;
 	
 	public AddStudyDialog(JFrame frame, Domain domain) {
 		super(frame, "Add Study");
 		this.setModal(true);
 		d_domain = domain;
-		d_study = new BasicStudy("new study");
+		d_study = new BasicStudy("");
 		d_primaryEndpoint = new EndpointHolder();
 		d_primaryEndpoint.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
@@ -72,6 +73,9 @@ public class AddStudyDialog extends OkCancelDialog {
 
 	protected void setEndpoint() {
 		d_study.setEndpoints(Collections.singleton(d_primaryEndpoint.getEndpoint()));
+		if (d_primaryEndpoint.getEndpoint() != null) {			
+			d_addPatientGroupButton.setEnabled(true);
+		}
 	}
 
 	protected void buildMeasurements() {
@@ -96,13 +100,16 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	private JComponent createAddPatientGroupButton() {
-		JButton button = new JButton("Add Patient Group");
-		button.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				addPatientGroup();
-			}
-		});
-		return button;
+		if (d_addPatientGroupButton == null) {
+			d_addPatientGroupButton = new JButton("Add Patient Group");
+			d_addPatientGroupButton.addActionListener(new AbstractAction() {
+				public void actionPerformed(ActionEvent arg0) {
+					addPatientGroup();
+				}
+			});
+			d_addPatientGroupButton.setEnabled(false);
+		}
+		return d_addPatientGroupButton;
 	}
 
 	protected void addPatientGroup() {
