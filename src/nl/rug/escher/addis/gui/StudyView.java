@@ -69,11 +69,15 @@ public class StudyView implements ViewBuilder {
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		int fullWidth = 5;
-		for (int i = 1; i < d_model.getBean().getEndpoints().size(); ++i) {
+		int[] colGroup = new int[d_model.getBean().getEndpoints().size()];
+		colGroup[0] = 5;	
+		for (int i = 1; i < d_model.getBean().getEndpoints().size(); ++i) {			
+			colGroup[i] = 5 + (i*2);			
 			LayoutUtil.addColumn(layout);
 			fullWidth += 2;
 		}
 		
+		layout.setColumnGroups(new int[][]{new int[]{3}, colGroup});
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		
@@ -122,7 +126,7 @@ public class StudyView implements ViewBuilder {
 		builder.addSeparator("Data", cc.xyw(1, row, fullWidth));
 		row += 2;
 		
-		builder.addLabel("Size", cc.xy(3, row));		
+		builder.addLabel("Size", cc.xy(3, row, "center, center"));		
 		int col = 5;
 		for (Endpoint e : d_model.getBean().getEndpoints()) {
 			builder.add(
@@ -144,7 +148,7 @@ public class StudyView implements ViewBuilder {
 					BasicComponentFactory.createLabel(
 							new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_SIZE),
 							NumberFormat.getInstance()),
-							cc.xy(3, row));
+							cc.xy(3, row, "center, center"));
 			
 			col = 5;
 			for (Endpoint e : d_model.getBean().getEndpoints()) {
