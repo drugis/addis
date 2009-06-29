@@ -28,8 +28,6 @@ import java.util.List;
 
 import nl.rug.escher.addis.entities.Endpoint.Type;
 
-import org.contract4j5.contract.Post;
-
 import com.jgoodies.binding.beans.Model;
 
 public class PooledRateMeasurement extends Model implements RateMeasurement {
@@ -119,12 +117,10 @@ public class PooledRateMeasurement extends Model implements RateMeasurement {
 		return true;
 	}
 
-	@Post
 	public Endpoint getEndpoint() {
 		return d_measurements.get(0).getEndpoint();
 	}
 
-	@Post("$return >= 0")
 	public Integer getRate() {
 		return d_rate;
 	}
@@ -137,7 +133,6 @@ public class PooledRateMeasurement extends Model implements RateMeasurement {
 		return rate;
 	}
 	
-	@Post("$return >= 0")
 	public Integer getSampleSize() {
 		return d_size;
 	}

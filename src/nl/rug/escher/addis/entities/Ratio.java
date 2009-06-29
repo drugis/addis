@@ -7,12 +7,8 @@ import java.text.DecimalFormat;
 import nl.rug.escher.common.Interval;
 import nl.rug.escher.common.StudentTTable;
 
-import org.contract4j5.contract.Contract;
-import org.contract4j5.contract.Pre;
-
 import com.jgoodies.binding.beans.Model;
 
-@Contract
 public abstract class Ratio extends Model implements Measurement {
 	private static final long serialVersionUID = 1647344976539753330L;
 
@@ -25,8 +21,6 @@ public abstract class Ratio extends Model implements Measurement {
 		}
 	}
 	
-	@Pre("denominator != null && numerator != null && " +
-			"denominator.getEndpoint().equals(numerator.getEndpoint())")
 	protected Ratio(RateMeasurement denominator, RateMeasurement numerator) {
 		d_numerator = numerator;
 		d_denominator = denominator;

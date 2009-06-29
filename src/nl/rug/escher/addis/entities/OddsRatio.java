@@ -21,10 +21,7 @@ package nl.rug.escher.addis.entities;
 
 import nl.rug.escher.addis.entities.Endpoint.Type;
 
-import org.contract4j5.contract.Contract;
 
-
-@Contract
 public class OddsRatio extends Ratio {
 	private static final long serialVersionUID = -6897859558867350347L;
 
