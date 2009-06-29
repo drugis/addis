@@ -65,12 +65,12 @@ public class SMAAAdapter {
 				PatientGroup g = study.getPatientGroups().get(i);				
 				if (i == 0) {
 					first = (RateMeasurement)study.getMeasurement(e, study.getPatientGroups().get(0));
-					meas = new GaussianMeasurement(1.0, 0.0);
+					meas = new LogNormalMeasurement(1.0, 0.0);
 				} else {
 					RateMeasurement other = (RateMeasurement)study.getMeasurement(e, g);
 					RiskRatio od = new RiskRatio(first, other);
 					meas = new LogNormalMeasurement(
-							Math.log(od.getMean()), od.getStdDev());							
+							od.getMean(), od.getStdDev());							
 				}
 
 				Alternative alt = findAlternative(g, model);

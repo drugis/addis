@@ -92,6 +92,7 @@ public class SMAAAdapterTest {
 	
 	private void checkLogNormalMeasurements(Endpoint e, CardinalCriterion c, SMAAModel model) throws NoSuchValueException {
 		ImpactMatrix mat = model.getImpactMatrix();
+		boolean firstGroup = true;
 		for (PatientGroup g : d_study.getPatientGroups()) {
 			LogNormalMeasurement m = (LogNormalMeasurement) mat.getMeasurement(
 					c, SMAAAdapter.findAlternative(g, model)
@@ -99,9 +100,14 @@ public class SMAAAdapterTest {
 			PatientGroup first = d_study.getPatientGroups().get(0);
 			RiskRatio ratio = new RiskRatio((RateMeasurement) d_study.getMeasurement(e, first),
 					(RateMeasurement) d_study.getMeasurement(e, g));
-			assertEquals(ratio.getMean(), m.getMean());
-			assertEquals(ratio.getStdDev(), m.getStDev());
-		}		
+			assertEquals(ratio.getMean(), m.getMean(), 0.00001);
+			if (firstGroup) {
+				assertEquals(0.0, m.getStDev(), 0.00001);			
+				firstGroup = false;
+			} else {
+				assertEquals(ratio.getStdDev(), m.getStDev(), 0.00001);				
+			}
+		}
 	}
 
 	private void checkGaussianMeasurements(Endpoint e, CardinalCriterion c, SMAAModel model) throws NoSuchValueException {
