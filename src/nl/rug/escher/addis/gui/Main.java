@@ -69,7 +69,7 @@ import fi.smaa.common.ImageLoader;
 @SuppressWarnings("serial")
 public class Main extends JFrame {
 	public static final String APPNAME = "ADDIS";
-	public static final String APPVERSION = "0.1";
+	public static final String APPVERSION = "0.2";
 	private JComponent d_leftPanel;
 	private JScrollPane d_rightPanel;
 	
