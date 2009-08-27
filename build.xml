@@ -46,7 +46,7 @@
 
 		<jar destfile="dist/addis.jar" basedir="${addis.build.outputDirectory}">
 			<manifest>
-				<attribute name="Main-Class" value="nl.rug.escher.addis.gui.Main" />
+				<attribute name="Main-Class" value="org.drugis.addis.gui.Main" />
 				<attribute name="Class-Path" value="${dist-class-path}" />
 			</manifest>
 		</jar>
@@ -91,7 +91,7 @@
 	</target>
 
 	<target name="Main">
-		<java classname="nl.rug.escher.gui.Main" failonerror="true" fork="yes">
+		<java classname="org.drugis.gui.Main" failonerror="true" fork="yes">
 			<classpath refid="ADDIS.classpath"/>
 		</java>
 	</target>
@@ -109,8 +109,8 @@
 
 	<target name="license">
 		<replaceregexp flags="s"
-			match=".*package nl.rug.escher.addis"
-			replace="${header}package nl.rug.escher.addis">
+			match=".*package org.drugis.addis"
+			replace="${header}package org.drugis.addis">
 			<fileset dir="${addis.build.sourceDirectory}">
 				<include name="**/*.java" />
 			</fileset>

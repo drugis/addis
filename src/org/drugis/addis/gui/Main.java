@@ -78,7 +78,7 @@ public class Main extends JFrame {
 	
 	private DomainManager d_domain;
 	
-	private ImageLoader imageLoader = new ImageLoader("/resources/gfx/");
+	private ImageLoader imageLoader = new ImageLoader("/org/drugis/addis/gfx/");
 	private DomainTreeModel d_domainTreeModel;
 	private JTree d_leftPanelTree;
 	private JMenuItem d_editMenuDeleteItem;
