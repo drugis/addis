@@ -30,12 +30,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.drugis.addis.AppInfo;
+
 @SuppressWarnings("serial")
 public class AboutDialog extends JDialog {
 
 	public AboutDialog(JFrame parent) {
 		super(parent);
-		setTitle("About " + Main.getAppName());
+		setTitle("About " + AppInfo.getAppName());
 		initComponents();
 		pack();
 	}
@@ -43,10 +45,10 @@ public class AboutDialog extends JDialog {
 	private void initComponents() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
-		panel.add(new JLabel(Main.getAppName() + " v" + Main.getAppVersion()),
+		panel.add(new JLabel(AppInfo.getAppName() + " v" + AppInfo.getAppVersion()),
 				BorderLayout.NORTH);
 		JPanel centerPanel = new JPanel();
-		String usStr = new String(Main.getAppName() + " is open source and licensed under GPLv3.");
+		String usStr = new String(AppInfo.getAppName() + " is open source and licensed under GPLv3.");
 		String usStr2 = "(c) 2009 Gert van Valkenhoef and Tommi Tervonen.";
 		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 		centerPanel.add(new JLabel(usStr));

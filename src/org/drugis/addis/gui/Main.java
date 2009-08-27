@@ -28,10 +28,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -54,6 +51,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
+import org.drugis.addis.AppInfo;
 import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.CombinedStudy;
 import org.drugis.addis.entities.DependentEntitiesException;
@@ -72,9 +70,6 @@ import fi.smaa.common.ImageLoader;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame {
-	public static final String APPNAMEFALLBACK = "ADDIS";
-	public static final String APPVERSIONFALLBACK = "UNKNOWN";
-	
 	private JComponent d_leftPanel;
 	private JScrollPane d_rightPanel;
 	
@@ -89,7 +84,7 @@ public class Main extends JFrame {
 	private JMenuItem d_addMenuCombinedItem;
 
 	public Main() {
-		super(getAppName() + " v" + getAppVersion());
+		super(AppInfo.getAppName() + " v" + AppInfo.getAppVersion());
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent evt) {
@@ -105,29 +100,6 @@ public class Main extends JFrame {
 		
 	}
 	
-	static String getAppVersion() {
-		return getProperty("application.version", APPVERSIONFALLBACK);
-	}
-
-	static String getAppName() {
-		return getProperty("application.name", APPNAMEFALLBACK);
-	}
-
-	private static String getProperty(String property, String fallback) {
-		try {
-			URL url = Main.class.getResource("/org/drugis/addis/application.properties");
-			if (url != null) {
-				InputStream is = url.openStream();
-				Properties props = new Properties();
-				props.load(is);
-				return props.getProperty(property, fallback);
-			}
-		} catch (IOException e) {
-			
-		}
-		return fallback;
-	}
-
 	protected void quitApplication() {
 		try {
 			saveDomainToFile();
