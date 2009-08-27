@@ -43,7 +43,6 @@
 			<map from="${basedir}/dist" to="." />		
 		</pathconvert>
 
-
 		<jar destfile="dist/addis.jar" basedir="${addis.build.outputDirectory}">
 			<manifest>
 				<attribute name="Main-Class" value="org.drugis.addis.gui.Main" />
@@ -57,6 +56,10 @@
 		<copy includeemptydirs="false" todir="${addis.build.outputDirectory}">
 			<fileset dir="resource" />
 		</copy>
+		<propertyfile file="${addis.build.outputDirectory}/org/drugis/addis/application.properties">
+			<entry key="application.name" value="${addis.name}" />
+			<entry key="application.version" value="${addis.version}" />
+		</propertyfile>
 	</target>
 	<target name="clean">
 		<delete dir="${addis.build.outputDirectory}"/>

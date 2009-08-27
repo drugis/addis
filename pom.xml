@@ -3,6 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.rug.escher.addis</groupId>
 	<artifactId>addis</artifactId>
+	<name>ADDIS</name>
 	<version>0.3-SNAPSHOT</version>
 
 	<build>
