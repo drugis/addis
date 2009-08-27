@@ -77,7 +77,7 @@ public class Main extends JFrame {
 	
 	private DomainManager d_domain;
 	
-	private ImageLoader imageLoader = new ImageLoader("/org/drugis/addis/gfx/");
+	private ImageLoader d_imageLoader = new ImageLoader("/org/drugis/addis/gfx/");
 	private DomainTreeModel d_domainTreeModel;
 	private JTree d_leftPanelTree;
 	private JMenuItem d_editMenuDeleteItem;
@@ -373,7 +373,7 @@ public class Main extends JFrame {
 	
 	public Icon getIcon(String name) {
 		try {
-			return imageLoader.getIcon(name);
+			return d_imageLoader.getIcon(name);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;
@@ -411,7 +411,7 @@ public class Main extends JFrame {
 	private void initLeftPanel() {
 		d_domainTreeModel = new DomainTreeModel(getDomain());
 		d_leftPanelTree = new JTree(d_domainTreeModel);
-		d_leftPanelTree.setCellRenderer(new DomainTreeCellRenderer(imageLoader));
+		d_leftPanelTree.setCellRenderer(new DomainTreeCellRenderer(d_imageLoader));
 		d_leftPanelTree.setRootVisible(false);
 		expandLeftPanelTree();
 		
@@ -489,7 +489,7 @@ public class Main extends JFrame {
 	}
 	
 	private void studySelected(Study node) {
-		StudyView view = new StudyView(new PresentationModel<Study>(node), getDomain(), this, imageLoader);
+		StudyView view = new StudyView(new PresentationModel<Study>(node), getDomain(), this, d_imageLoader);
 		d_rightPanelBuilder = view;
 		d_rightPanel.setViewportView(view.buildPanel());
 		d_editMenuDeleteItem.setEnabled(true);		
