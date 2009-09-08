@@ -27,7 +27,7 @@ import org.junit.Test;
 
 public class DrugTest {
 	@Test
-	public void testSetUnit() {
+	public void testSetName() {
 		JUnitUtil.testSetter(new Drug(), Drug.PROPERTY_NAME, "", "Paroxetine");
 	}
 	
