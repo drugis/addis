@@ -41,6 +41,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.Study;
@@ -60,7 +61,7 @@ public class DomainTreeModelTest {
 	public void setUp() {
 		d_domain = new DomainImpl();
 		d_firstEndpoint = new Endpoint("Endpoint", Type.RATE);
-		d_firstStudy = new BasicStudy("First");
+		d_firstStudy = new BasicStudy("First", new Indication(0L, ""));
 		d_firstDrug = new Drug("Drug");
 		d_domain.addEndpoint(d_firstEndpoint);
 		d_domain.addStudy(d_firstStudy);
@@ -171,7 +172,7 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addStudy(new BasicStudy("X"));
+		d_domain.addStudy(new BasicStudy("X", new Indication(0L, "")));
 		
 		verify(listener);
 	}
@@ -191,7 +192,7 @@ public class DomainTreeModelTest {
 	@Test
 	public void testMetaStudyIsLeaf() {
 		List<Study> l = new ArrayList<Study>();
-		AbstractStudy basicStudy = new BasicStudy("X");
+		AbstractStudy basicStudy = new BasicStudy("X", new Indication(0L, ""));
 		basicStudy.addEndpoint(new Endpoint("E", Type.RATE));
 		l.add(basicStudy);
 		MetaStudy study = new MetaStudy("meta",

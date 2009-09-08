@@ -28,10 +28,12 @@ public interface Study extends Comparable<Study>, Observable, Entity {
 	public final static String PROPERTY_ID = "id";
 	public final static String PROPERTY_ENDPOINTS = "endpoints";
 	public final static String PROPERTY_PATIENTGROUPS = "patientGroups";
+	public final static String PROPERTY_INDICATION = "indication";
 
 	public String getId();
 	public Set<Endpoint> getEndpoints();
 	public List<? extends PatientGroup> getPatientGroups();
 	public Measurement getMeasurement(Endpoint e, PatientGroup g);
 	public Set<Drug> getDrugs();	
+	public Indication getIndication();
 }

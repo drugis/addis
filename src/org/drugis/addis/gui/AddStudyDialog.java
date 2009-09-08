@@ -36,6 +36,7 @@ import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.common.gui.OkCancelDialog;
@@ -58,7 +59,7 @@ public class AddStudyDialog extends OkCancelDialog {
 		this.d_main = frame;
 		this.setModal(true);
 		d_domain = domain;
-		d_study = new BasicStudy("");
+		d_study = new BasicStudy("", new Indication(0L, ""));
 		d_primaryEndpoint = new EndpointHolder();
 		d_primaryEndpoint.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {

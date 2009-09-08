@@ -31,7 +31,7 @@ public class MetaStudy extends AbstractStudy {
 	private List<PatientGroup> d_patientGroups;
 
 	public MetaStudy(String id, MetaAnalysis analysis) {
-		super(id);
+		super(id, analysis.getIndication());
 		d_analysis = analysis;
 		initPatientGroups();
 	}

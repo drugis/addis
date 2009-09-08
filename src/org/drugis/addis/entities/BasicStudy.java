@@ -34,9 +34,9 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 	
 	private List<BasicPatientGroup> d_patientGroups = new ArrayList<BasicPatientGroup>();
 	private transient PatientGroupListener d_pgListener;
-	
-	public BasicStudy(String id) {
-		super(id);	
+
+	public BasicStudy(String id, Indication i) {
+		super(id, i);	
 		setEndpoints(new HashSet<Endpoint>());
 		setPatientGroups(new ArrayList<BasicPatientGroup>());
 		initPatientGroupListener();

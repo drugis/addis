@@ -11,9 +11,19 @@ public class CombinedStudy extends AbstractStudy {
 	private Set<Study> d_studies;
 
 	public CombinedStudy(String id, Set<Study> studies) {
-		super(id);
+		super(id, validateIndication(studies));
 		assert(studies.size() > 0);
 		d_studies = studies;
+	}
+
+	private static Indication validateIndication(Set<Study> studies) {
+		Study s0 = studies.iterator().next();
+		for (Study s : studies) {
+			if (!s.getIndication().equals(s0.getIndication())) {
+				throw new IllegalArgumentException("All studies should have same Indication");
+			}
+		}
+		return s0.getIndication();
 	}
 
 	public Set<Drug> getDrugs() {
@@ -77,5 +87,4 @@ public class CombinedStudy extends AbstractStudy {
 		}
 		return drugs;
 	}
-
 }

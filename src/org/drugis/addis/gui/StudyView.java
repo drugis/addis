@@ -38,13 +38,13 @@ import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.CombinedStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
-
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -75,7 +75,7 @@ public class StudyView implements ViewBuilder {
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
 				"right:pref, 3dlu, pref:grow, 3dlu, center:pref",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		int fullWidth = 5;
 		int[] colGroup = new int[d_model.getBean().getEndpoints().size()];
@@ -93,9 +93,9 @@ public class StudyView implements ViewBuilder {
 		
 		CellConstraints cc = new CellConstraints();
 		
-		buildStudyPart(fullWidth, builder, cc);
+		int row = buildStudyPart(fullWidth, builder, cc);
 		
-		int row = buildEndpointsPart(layout, fullWidth, builder, cc);
+		row = buildEndpointsPart(layout, fullWidth, builder, cc, row);
 		
 		row = buildDataPart(layout, fullWidth, builder, cc, row);
 		
@@ -223,10 +223,10 @@ public class StudyView implements ViewBuilder {
 	}
 
 	private int buildEndpointsPart(FormLayout layout, int fullWidth, PanelBuilder builder,
-			CellConstraints cc) {
-		builder.addSeparator("Endpoints", cc.xyw(1, 5, fullWidth));
+			CellConstraints cc, int row) {
+		builder.addSeparator("Endpoints", cc.xyw(1, row, fullWidth));
+		row += 2;
 		
-		int row = 7;
 		for (Endpoint e : d_model.getBean().getEndpoints()) {
 			LayoutUtil.addRow(layout);
 			builder.add(
@@ -287,13 +287,22 @@ public class StudyView implements ViewBuilder {
 		return builder.getPanel();
 	}
 
-	private void buildStudyPart(int fullWidth, PanelBuilder builder,
+	private int buildStudyPart(int fullWidth, PanelBuilder builder,
 			CellConstraints cc) {
 		String studyLabel = getStudyLabel();
 		builder.addSeparator(studyLabel, cc.xyw(1,1,fullWidth));
 		builder.addLabel("ID:", cc.xy(1, 3));
 		builder.add(BasicComponentFactory.createLabel(d_model.getModel(AbstractStudy.PROPERTY_ID)),
 				cc.xyw(3, 3, fullWidth - 2));
+		
+		builder.addLabel("Intended Indication:", cc.xy(1, 5));
+		
+		Indication indication = d_model.getBean().getIndication();
+		PresentationModel<Indication> iModel = new PresentationModel<Indication>(indication);
+		builder.add(BasicComponentFactory.createLabel(iModel.getModel(Indication.PROPERTY_LABEL)),
+				cc.xyw(3, 5, fullWidth - 2));
+		
+		return 7;
 	}
 
 	private String getStudyLabel() {

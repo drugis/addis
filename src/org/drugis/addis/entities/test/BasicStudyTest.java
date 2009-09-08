@@ -37,6 +37,7 @@ import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.JUnitUtil;
@@ -54,38 +55,48 @@ public class BasicStudyTest {
 	
 	@Test
 	public void testSetId() {
-		JUnitUtil.testSetter(new BasicStudy("X"), AbstractStudy.PROPERTY_ID, "X", "NCT00351273");
+		JUnitUtil.testSetter(new BasicStudy("X", new Indication(0L, "")), AbstractStudy.PROPERTY_ID, "X", "NCT00351273");
 	}
 	
 	@Test
 	public void testSetEndpoints() {
 		Set<Endpoint> list = Collections.singleton(new Endpoint("e", Type.RATE));
-		JUnitUtil.testSetter(new BasicStudy("X"), AbstractStudy.PROPERTY_ENDPOINTS, Collections.EMPTY_SET, 
+		JUnitUtil.testSetter(new BasicStudy("X", new Indication(0L, "")), AbstractStudy.PROPERTY_ENDPOINTS, Collections.EMPTY_SET, 
 				list);
 	}
 	
 	@Test
 	public void testAddEndpoint() {
-		JUnitUtil.testAdderSet(new BasicStudy("X"), AbstractStudy.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Type.RATE));
+		JUnitUtil.testAdderSet(new BasicStudy("X", new Indication(0L, "")), AbstractStudy.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Type.RATE));
 	}
 	
 	@Test
 	public void testSetPatientGroups() {
 		List<BasicPatientGroup> list = Collections.singletonList(d_pg);
-		JUnitUtil.testSetter(new BasicStudy("X"), AbstractStudy.PROPERTY_PATIENTGROUPS, Collections.EMPTY_LIST, 
+		JUnitUtil.testSetter(new BasicStudy("X", new Indication(0L, "")), AbstractStudy.PROPERTY_PATIENTGROUPS, Collections.EMPTY_LIST, 
 				list);
 	}
 	
 	@Test
 	public void testInitialPatientGroups() {
-		AbstractStudy study = new BasicStudy("X");
+		AbstractStudy study = new BasicStudy("X", new Indication(0L, ""));
 		assertNotNull(study.getPatientGroups());
 		assertTrue(study.getPatientGroups().isEmpty());
 	}
 	
 	@Test
+	public void testSetIndication() {
+		Indication i = new Indication(5L, "Some indication");
+		AbstractStudy study = new BasicStudy("X", i);
+		assertEquals(i, study.getIndication());
+		
+		Indication i2 = new Indication(6L, "Other indication");
+		JUnitUtil.testSetter(study, AbstractStudy.PROPERTY_INDICATION, i, i2);
+	}
+	
+	@Test
 	public void testAddPatientGroup() {
-		JUnitUtil.testAdder(new BasicStudy("X"), AbstractStudy.PROPERTY_PATIENTGROUPS, "addPatientGroup", d_pg);
+		JUnitUtil.testAdder(new BasicStudy("X", new Indication(0L, "")), AbstractStudy.PROPERTY_PATIENTGROUPS, "addPatientGroup", d_pg);
 	}
 	
 	@Test
@@ -101,19 +112,19 @@ public class BasicStudyTest {
 	@Test
 	public void testToString() {
 		String id = "NCT00351273";
-		AbstractStudy study = new BasicStudy(id);
+		AbstractStudy study = new BasicStudy(id, new Indication(0L, ""));
 		assertEquals(id, study.toString());
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetMeasurementThrowsException1() {
-		AbstractStudy study = new BasicStudy("X");
+		AbstractStudy study = new BasicStudy("X", new Indication(0L, ""));
 		study.getMeasurement(new Endpoint("E", Type.RATE), new BasicPatientGroup(study, null, null, 100));
 	}
 	
 	@Test
 	public void testSetMeasurement() {
-		BasicStudy study = new BasicStudy("X");
+		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
 		Endpoint endpoint = new Endpoint("e", Type.RATE);
 		study.addEndpoint(endpoint);
 		study.addPatientGroup(new BasicPatientGroup(study, null, null, 100));
@@ -127,7 +138,7 @@ public class BasicStudyTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetMeasurementThrowsException1() {
-		AbstractStudy study = new BasicStudy("X");
+		AbstractStudy study = new BasicStudy("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("E", Type.RATE);
 		study.setMeasurement(e, new BasicPatientGroup(study, null, null, 100),
 				new BasicRateMeasurement(e, 0));
@@ -135,7 +146,7 @@ public class BasicStudyTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetMeasurementThrowsException2() {
-		BasicStudy study = new BasicStudy("X");
+		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("e", Type.RATE);
 		study.addEndpoint(e);
 		study.addPatientGroup(new BasicPatientGroup(study, null, null, 100));
@@ -152,10 +163,11 @@ public class BasicStudyTest {
 	public void testEquals() {
 		String name1 = "Study A";
 		String name2 = "Study B";
+		Indication i = new Indication(0L, "");
 		
-		assertEquals(new BasicStudy(name1), new BasicStudy(name1));
-		JUnitUtil.assertNotEquals(new BasicStudy(name1), new BasicStudy(name2));
-		assertEquals(new BasicStudy(name1).hashCode(), new BasicStudy(name1).hashCode());
+		assertEquals(new BasicStudy(name1, i), new BasicStudy(name1, i));
+		JUnitUtil.assertNotEquals(new BasicStudy(name1, i), new BasicStudy(name2, i));
+		assertEquals(new BasicStudy(name1, i).hashCode(), new BasicStudy(name1, i).hashCode());
 	}
 	
 	@Test
@@ -171,7 +183,7 @@ public class BasicStudyTest {
 	
 	@Test
 	public void testSetMeasurementSetsSampleSize() {
-		BasicStudy study = new BasicStudy("X");
+		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
 		Endpoint endpoint = new Endpoint("e", Type.RATE);
 		study.addEndpoint(endpoint);
 		BasicPatientGroup pg = new BasicPatientGroup(study, null, null, 100);
@@ -186,7 +198,7 @@ public class BasicStudyTest {
 	
 	@Test
 	public void testPatientGroupSizeChangeChangesMeasurement() {
-		BasicStudy study = new BasicStudy("X");
+		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
 		Endpoint endpoint = new Endpoint("e", Type.RATE);
 		study.addEndpoint(endpoint);
 		BasicPatientGroup pg = new BasicPatientGroup(study, null, null, 100);
@@ -202,7 +214,7 @@ public class BasicStudyTest {
 	
 	@Test
 	public void testDeleteEndpoint() throws Exception {
-		JUnitUtil.testDeleterSet(new BasicStudy("study"), Study.PROPERTY_ENDPOINTS, "deleteEndpoint",
+		JUnitUtil.testDeleterSet(new BasicStudy("study", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "deleteEndpoint",
 				new Endpoint("e", Endpoint.Type.CONTINUOUS));
 	}
 }

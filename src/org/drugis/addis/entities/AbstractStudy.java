@@ -35,10 +35,13 @@ public abstract class AbstractStudy extends Model implements MutableStudy {
 	protected Map<MeasurementKey, Measurement> d_measurements
 		= new HashMap<MeasurementKey, Measurement>();
 
-	protected Set<Endpoint> d_endpoints = new HashSet<Endpoint>();	
+	protected Set<Endpoint> d_endpoints = new HashSet<Endpoint>();
 
-	public AbstractStudy(String id) {
+	private Indication d_indication = new Indication(310497006L, "Severe depression");
+
+	public AbstractStudy(String id, Indication i) {
 		d_id = id;
+		d_indication = i;
 	}	
 	
 	public String getId() {
@@ -152,6 +155,16 @@ public abstract class AbstractStudy extends Model implements MutableStudy {
 			}
 		}
 	}		
+
+	public Indication getIndication() {
+		return d_indication;
+	}
+	
+	public void setIndication(Indication i) {
+		Indication oldVal = d_indication;
+		d_indication = i;
+		firePropertyChange(PROPERTY_INDICATION, oldVal, d_indication);
+	}
 
 	protected static class MeasurementKey implements Serializable {
 		private static final long serialVersionUID = 6310789667384578005L;

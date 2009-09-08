@@ -16,6 +16,8 @@ public class Indication extends Model implements Comparable<Indication>, Entity 
 	
 	public static final String PROPERTY_NAME = "name";
 	public static final String PROPERTY_CODE = "code";
+
+	public static final String PROPERTY_LABEL = "label";
 	
 	public Indication(Long code, String name) {
 		d_code = code;
@@ -37,6 +39,7 @@ public class Indication extends Model implements Comparable<Indication>, Entity 
 		String oldVal = d_name;
 		d_name = name;
 		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
+		firePropertyChange(PROPERTY_LABEL, d_code + " " + oldVal, getLabel());
 	}
 
 	public String getName() {
@@ -47,10 +50,15 @@ public class Indication extends Model implements Comparable<Indication>, Entity 
 		Long oldVal = d_code;
 		d_code = code;
 		firePropertyChange(PROPERTY_CODE, oldVal, d_code);
+		firePropertyChange(PROPERTY_LABEL, oldVal + " " + d_name, getLabel());
 	}
 
 	public Long getCode() {
 		return d_code;
+	}
+	
+	public String getLabel() {
+		return toString();
 	}
 	
 	@Override

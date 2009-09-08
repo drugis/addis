@@ -63,6 +63,11 @@ public class MetaStudyTest {
 	}
 	
 	@Test
+	public void testGetIndication() {
+		assertEquals(d_analysis.getIndication(), d_study.getIndication());
+	}
+	
+	@Test
 	public void testGetDrugs() {
 		assertEquals(d_analysis.getDrugs(), d_study.getDrugs());
 	}

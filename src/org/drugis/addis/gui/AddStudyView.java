@@ -34,6 +34,7 @@ import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -49,6 +50,7 @@ import com.jgoodies.forms.layout.FormLayout;
 public class AddStudyView implements ViewBuilder {
 	private JTextField d_id;
 	private JComboBox d_endpoint;
+	private JComboBox d_indication;
 	private PresentationModel<BasicStudy> d_model;
 	private PresentationModel<EndpointHolder> d_endpointModel;
 	private Domain d_domain;
@@ -69,6 +71,13 @@ public class AddStudyView implements ViewBuilder {
 		AutoSelectFocusListener.add(d_id);
 		d_validator.add(d_id);
 		
+		SelectionInList<Indication> indicationSelectionInList =
+			new SelectionInList<Indication>(
+					new ArrayList<Indication>(d_domain.getIndications()),
+					d_model.getModel(BasicStudy.PROPERTY_INDICATION));
+		d_indication = BasicComponentFactory.createComboBox(indicationSelectionInList);
+		d_validator.add(d_indication);
+		
 		SelectionInList<Endpoint> endpointSelectionInList =
 			new SelectionInList<Endpoint>(
 					new ArrayList<Endpoint>(d_domain.getEndpoints()), 
@@ -83,7 +92,7 @@ public class AddStudyView implements ViewBuilder {
 		
 		FormLayout layout = new FormLayout(
 				"pref, 3dlu, fill:pref:grow, 3dlu, center:pref",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);	
 		int fullWidth = 5;
 		if (getEndpoint() != null) {
@@ -101,11 +110,15 @@ public class AddStudyView implements ViewBuilder {
 		builder.addSeparator("Study", cc.xyw(1, 1, fullWidth));
 		builder.addLabel("Identifier:", cc.xy(1, 3, "right, c"));
 		builder.add(d_id, cc.xyw(3, 3, fullWidth-2));
-		builder.addLabel("Endpoint:", cc.xy(1, 5, "right, c"));
-		builder.add(d_endpoint, cc.xyw(3, 5, fullWidth-2));
 		
-		builder.addSeparator("Patient Groups", cc.xyw(1, 7, fullWidth));
-		int row = 9;
+		builder.addLabel("Intended indication:", cc.xy(1, 5, "right, c"));
+		builder.add(d_indication, cc.xyw(3, 5, fullWidth-2));
+		
+		builder.addLabel("Endpoint:", cc.xy(1, 7, "right, c"));
+		builder.add(d_endpoint, cc.xyw(3, 7, fullWidth-2));
+		
+		builder.addSeparator("Patient Groups", cc.xyw(1, 9, fullWidth));
+		int row = 11;
 		builder.addLabel("Size", cc.xy(1, row));
 		builder.addLabel("Drug", cc.xy(3, row));
 		builder.addLabel("Dose", cc.xy(5, row));

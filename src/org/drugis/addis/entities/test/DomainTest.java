@@ -100,7 +100,7 @@ public class DomainTest {
 	
 	@Test
 	public void testAddStudy() {
-		BasicStudy s = new BasicStudy("X");
+		BasicStudy s = new BasicStudy("X", new Indication(0L, ""));
 		assertEquals(0, d_domain.getStudies().size());
 		d_domain.addStudy(s);
 		assertEquals(1, d_domain.getStudies().size());
@@ -143,7 +143,7 @@ public class DomainTest {
 		replay(mockListener);
 		
 		d_domain.addListener(mockListener);
-		d_domain.addStudy(new BasicStudy("X"));
+		d_domain.addStudy(new BasicStudy("X", new Indication(0L, "")));
 		verify(mockListener);
 	}
 	
@@ -177,14 +177,14 @@ public class DomainTest {
 		
 		Set<Endpoint> l1 = new HashSet<Endpoint>();
 		l1.add(e1);
-		AbstractStudy s1 = new BasicStudy("X");
+		AbstractStudy s1 = new BasicStudy("X", new Indication(0L, ""));
 		s1.setId("s1");
 		s1.setEndpoints(l1);
 		
 		Set<Endpoint> l2 = new HashSet<Endpoint>();
 		l2.add(e2);
 		l2.add(e1);
-		AbstractStudy s2 = new BasicStudy("X");
+		AbstractStudy s2 = new BasicStudy("X", new Indication(0L, ""));
 		s2.setId("s2");
 		s2.setEndpoints(l2);
 		
@@ -224,7 +224,7 @@ public class DomainTest {
 		assertEquals(d1, d2);
 		assertEquals(d1.hashCode(), d2.hashCode());
 		
-		AbstractStudy s = new BasicStudy("s1");
+		AbstractStudy s = new BasicStudy("s1", new Indication(0L, ""));
 		d1.addStudy(s);
 		JUnitUtil.assertNotEquals(d1, d2);
 		d2.addStudy(s);
@@ -234,7 +234,7 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteStudy() throws DependentEntitiesException {
-		AbstractStudy s = new BasicStudy("X");
+		AbstractStudy s = new BasicStudy("X", new Indication(0L, ""));
 		d_domain.addStudy(s);
 		d_domain.deleteStudy(s);
 		assertTrue(d_domain.getStudies().isEmpty());
@@ -242,8 +242,8 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteStudyThrowsCorrectException() {
-		AbstractStudy s1 = new BasicStudy("X");
-		AbstractStudy s2 = new BasicStudy("Y");
+		AbstractStudy s1 = new BasicStudy("X", new Indication(0L, ""));
+		AbstractStudy s2 = new BasicStudy("Y", new Indication(0L, ""));
 		d_domain.addStudy(s1);
 		d_domain.addStudy(s2);
 		
@@ -267,7 +267,7 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteStudyFires() throws DependentEntitiesException {
-		AbstractStudy s1 = new BasicStudy("X");
+		AbstractStudy s1 = new BasicStudy("X", new Indication(0L, ""));
 		d_domain.addStudy(s1);
 		
 		DomainListener mock = createMock(DomainListener.class);
@@ -288,7 +288,7 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteDrugThrowsCorrectException() {
-		BasicStudy s1 = new BasicStudy("X");
+		BasicStudy s1 = new BasicStudy("X", new Indication(0L, ""));
 		d_domain.addStudy(s1);
 		
 		Drug d = new Drug("d");
@@ -328,7 +328,7 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteEndpointThrowsCorrectException() {
-		BasicStudy s1 = new BasicStudy("X");
+		BasicStudy s1 = new BasicStudy("X", new Indication(0L, ""));
 		d_domain.addStudy(s1);
 		
 		Endpoint e = new Endpoint("e", Type.RATE);

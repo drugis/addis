@@ -35,6 +35,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.RateMeasurement;
@@ -60,9 +61,27 @@ public class MetaAnalysisTest {
 	public void testValidateStudiesMeasureEndpoint() {
 		Endpoint e = new Endpoint("e1", Type.RATE);
 		Endpoint other = new Endpoint("e2", Type.RATE);
-		AbstractStudy s = new BasicStudy("X");
+		AbstractStudy s = new BasicStudy("X", new Indication(0L, ""));
 		s.addEndpoint(other);
 		new MetaAnalysis(e, Collections.singletonList((Study)s));
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testValidateStudiesHaveIndication() {
+		Endpoint e = new Endpoint("e1", Type.RATE);
+		AbstractStudy s0 = new BasicStudy("X", new Indication(5L, "Some indication"));
+		AbstractStudy s1 = new BasicStudy("Y", new Indication(6L, "Some other indication"));
+		s0.addEndpoint(e);
+		s1.addEndpoint(e);
+		List<Study> list = new ArrayList<Study>();
+		list.add(s0);
+		list.add(s1);
+		new MetaAnalysis(e, list);
+	}
+	
+	@Test
+	public void testGetIndication() {
+		assertEquals(TestData.buildIndication(), d_analysis.getIndication());
 	}
 	
 	@Test
@@ -106,9 +125,9 @@ public class MetaAnalysisTest {
 	public void testEquals() {
 		Endpoint e1 = new Endpoint("E1", Type.RATE);
 		Endpoint e2 = new Endpoint("E2", Type.RATE);
-		AbstractStudy s1 = new BasicStudy("Test");
-		AbstractStudy s2 = new BasicStudy("Study");
-		AbstractStudy s3 = new BasicStudy("X");
+		AbstractStudy s1 = new BasicStudy("Test", new Indication(0L, ""));
+		AbstractStudy s2 = new BasicStudy("Study", new Indication(0L, ""));
+		AbstractStudy s3 = new BasicStudy("X", new Indication(0L, ""));
 		s1.addEndpoint(e1);
 		s2.addEndpoint(e1);
 		s3.addEndpoint(e1);

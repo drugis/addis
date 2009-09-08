@@ -32,11 +32,13 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Endpoint.Type;
 
 
 public class TestData {
+	private static Indication s_indication;
 	private static Endpoint s_endpointHamd;
 	private static Endpoint s_endpointCgi;
 	private static Drug s_parox;
@@ -44,6 +46,7 @@ public class TestData {
 	private static Drug s_viagra;
 
 	public static void initDefaultData(Domain domain) {
+		domain.addIndication(buildIndication());
 		domain.addEndpoint(buildEndpointHamd());
 		domain.addEndpoint(buildEndpointCgi());
 		domain.addDrug(buildDrugFluoxetine());
@@ -55,7 +58,7 @@ public class TestData {
 	public static AbstractStudy buildDefaultStudy2() {
 		Endpoint hamd = buildEndpointHamd();
 		Drug fluoxetine = buildDrugFluoxetine();
-		BasicStudy study = new BasicStudy("De Wilde et al, 1993");
+		BasicStudy study = new BasicStudy("De Wilde et al, 1993", buildIndication());
 		study.setEndpoints(Collections.singleton(hamd));
 		
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
@@ -91,7 +94,7 @@ public class TestData {
 		Endpoint hamd = buildEndpointHamd();
 		Endpoint cgi = buildEndpointCgi();
 		Drug fluoxetine = buildDrugFluoxetine();
-		BasicStudy study = new BasicStudy("Chouinard et al, 1999");
+		BasicStudy study = new BasicStudy("Chouinard et al, 1999", buildIndication());
 		study.setEndpoints(new HashSet<Endpoint>(Arrays.asList(new Endpoint[]{hamd, cgi})));
 		
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
@@ -141,6 +144,13 @@ public class TestData {
 			s_fluox = new Drug("Fluoxetine");
 		}
 		return s_fluox;
+	}
+	
+	public static Indication buildIndication() {
+		if (s_indication == null) {
+			s_indication = new Indication(310497006L, "Severe depression");
+		}
+		return s_indication;
 	}
 	
 	public static Drug buildDrugViagra() {

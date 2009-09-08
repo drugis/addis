@@ -113,10 +113,18 @@ public class MetaAnalysis implements Serializable {
 	}
 	
 	private void validate(Endpoint endpoint, List<Study> studies) {
+		Study s0 = studies.get(0);
 		for (Study s : studies) {
 			if (!s.getEndpoints().contains(endpoint)) {
 				throw new IllegalArgumentException("Study " + s + " does not measure " + endpoint);
 			}
+			if (!s0.getIndication().equals(s.getIndication())) {
+				throw new IllegalArgumentException("All studies should have same Indication");
+			}
 		}
+	}
+
+	public Indication getIndication() {
+		return d_studies.get(0).getIndication();
 	}
 }

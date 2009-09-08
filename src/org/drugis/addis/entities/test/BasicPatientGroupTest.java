@@ -29,6 +29,7 @@ import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -45,7 +46,7 @@ public class BasicPatientGroupTest {
 	
 	@Test
 	public void testSetStudy() {
-		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_STUDY, null, new BasicStudy("X"));
+		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_STUDY, null, new BasicStudy("X", new Indication(0L, "")));
 	}
 	
 	@Test
