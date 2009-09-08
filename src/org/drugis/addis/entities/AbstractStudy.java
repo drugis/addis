@@ -29,7 +29,7 @@ import java.util.Map.Entry;
 import com.jgoodies.binding.beans.Model;
 
 public abstract class AbstractStudy extends Model implements MutableStudy {
-	private static final long serialVersionUID = -845477477003790845L;
+	private static final long serialVersionUID = 4275729141451329959L;
 	
 	private String d_id;
 	protected Map<MeasurementKey, Measurement> d_measurements

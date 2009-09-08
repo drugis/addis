@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Set;
 
 public class MetaStudy extends AbstractStudy {
+	private static final long serialVersionUID = 8677431216685333996L;
 	
-	private static final long serialVersionUID = 4551624355872585225L;
 	private MetaAnalysis d_analysis;
 	private List<PatientGroup> d_patientGroups;
 

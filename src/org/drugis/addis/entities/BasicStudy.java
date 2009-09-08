@@ -30,7 +30,7 @@ import java.util.Set;
 
 
 public class BasicStudy extends AbstractStudy implements MutableStudy {
-	private static final long serialVersionUID = -2400136708833976982L;
+	private static final long serialVersionUID = 532314508658928979L;
 	
 	private List<BasicPatientGroup> d_patientGroups = new ArrayList<BasicPatientGroup>();
 	private transient PatientGroupListener d_pgListener;
