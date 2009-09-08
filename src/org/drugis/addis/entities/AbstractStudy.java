@@ -28,7 +28,7 @@ import java.util.Map.Entry;
 
 import com.jgoodies.binding.beans.Model;
 
-public abstract class AbstractStudy extends Model implements MutableStudy {
+public abstract class AbstractStudy extends Model implements Study {
 	private static final long serialVersionUID = 4275729141451329959L;
 	
 	private String d_id;

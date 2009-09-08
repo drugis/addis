@@ -35,6 +35,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.MetaStudy;
+import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.ImageLoader;
@@ -219,7 +220,7 @@ public class StudyView implements ViewBuilder {
 	}
 
 	private void addEndpointClicked() {
-		d_mainWindow.showStudyAddEndpointDialog((AbstractStudy)d_model.getBean());
+		d_mainWindow.showStudyAddEndpointDialog((MutableStudy)d_model.getBean());
 	}
 
 	private JComponent buildFindStudiesButton(final Endpoint endpoint) {

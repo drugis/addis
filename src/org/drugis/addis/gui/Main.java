@@ -50,13 +50,13 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
 import org.drugis.addis.AppInfo;
-import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
@@ -143,7 +143,7 @@ public class Main extends JFrame {
 		}
 	}
 
-	void showStudyAddEndpointDialog(AbstractStudy study) {
+	void showStudyAddEndpointDialog(MutableStudy study) {
 		StudyAddEndpointDialog dialog = new StudyAddEndpointDialog(this, getDomain(), study);
 		dialog.setVisible(true);
 	}
