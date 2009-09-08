@@ -59,6 +59,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
@@ -188,6 +189,7 @@ public class Main extends JFrame {
 	private JMenu createAddMenu() {
 		JMenu addMenu = new JMenu("Add");
 		addMenu.setMnemonic('a');
+		addMenu.add(createAddIndicationMenuItem());
 		addMenu.add(createAddDrugMenuItem());		
 		addMenu.add(createAddEndpointMenuItem());
 		addMenu.add(createAddStudyMenuItem());		
@@ -342,6 +344,19 @@ public class Main extends JFrame {
 		return item;
 	}
 	
+	private JMenuItem createAddIndicationMenuItem() {
+		JMenuItem item = new JMenuItem("Indication", getIcon(FileNames.ICON_INDICATION));
+		item.setMnemonic('i');
+		item.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				showAddIndicationDialog();
+			}
+
+		});
+		
+		return item;
+	}
+	
 	private JMenuItem createAddDrugMenuItem() {
 		JMenuItem item = new JMenuItem("Drug", getIcon(FileNames.ICON_DRUG));
 		item.setMnemonic('d');
@@ -355,6 +370,10 @@ public class Main extends JFrame {
 		return item;
 	}
 	
+	private void showAddIndicationDialog() {
+		AddIndicationDialog dialog = new AddIndicationDialog(this, getDomain());
+		dialog.setVisible(true);
+	}
 	
 	private void showAddEndpointDialog() {
 		AddEndpointDialog dialog = new AddEndpointDialog(this, getDomain());
@@ -549,5 +568,13 @@ public class Main extends JFrame {
 		d_leftPanelTree.setSelectionPath(new TreePath(
 				new Object[] {d_domainTreeModel.getRoot(), 
 						d_domainTreeModel.getDrugsNode(), d }));		
+	}
+
+	public void leftTreeFocusOnIndication(Indication indication) {
+		d_leftPanelTree.setSelectionPath(new TreePath(
+				new Object[] {d_domainTreeModel.getRoot(),
+						d_domainTreeModel.getIndicationsNode(), indication
+				} ));
+		
 	}		
 }
