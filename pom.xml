@@ -54,11 +54,6 @@
 			<artifactId>commons-math</artifactId>
 			<version>1.2</version>
 		</dependency>
-		<dependency>
-			<groupId>fi.smaa</groupId>
-			<artifactId>jsmaa</artifactId>
-			<version>0.3-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 
 </project>

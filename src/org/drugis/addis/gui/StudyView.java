@@ -20,22 +20,16 @@
 package org.drugis.addis.gui;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.text.NumberFormat;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.drugis.addis.analyses.SMAAAdapter;
-import org.drugis.addis.analyses.UnableToBuildModelException;
 import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicStudy;
-import org.drugis.addis.entities.CombinedStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
@@ -55,8 +49,6 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 
 import fi.smaa.common.ImageLoader;
-import fi.smaa.jsmaa.gui.JSMAAMainFrame;
-import fi.smaa.jsmaa.model.SMAAModel;
 
 @SuppressWarnings("serial")
 public class StudyView implements ViewBuilder {
@@ -108,33 +100,6 @@ public class StudyView implements ViewBuilder {
 			CellConstraints cc, int row) {
 		builder.addSeparator("Analyses", cc.xyw(1, row, fullWidth));
 		row += 2;
-		JButton smaaButton = new JButton("SMAA benefit-risk");
-		smaaButton.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				smaaAnalysis();
-			}
-		});
-		builder.add(smaaButton, cc.xy(1, row));
-	}
-
-	private void smaaAnalysis() {
-		try {
-			SMAAModel model = SMAAAdapter.getModel(d_model.getBean());
-			final JSMAAMainFrame app = new JSMAAMainFrame(model);
-			app.setMinimalFrame();
-			app.addWindowListener(new WindowAdapter() {
-				@Override
-				public void windowClosing(WindowEvent evt) {
-					app.setVisible(false);
-					app.dispose();
-				}			
-			});
-			app.setVisible(true);
-		} catch (UnableToBuildModelException e) {
-			JOptionPane.showMessageDialog(d_mainWindow,
-					e.getMessage(), "Cannot perform SMAA analysis",
-					JOptionPane.ERROR_MESSAGE);
-		}
 	}
 
 	private int buildDataPart(FormLayout layout, int fullWidth,
@@ -152,25 +117,10 @@ public class StudyView implements ViewBuilder {
 		}
 		row += 2;
 
-		if (d_model.getBean() instanceof CombinedStudy) {
-			CombinedStudy cs = (CombinedStudy) d_model.getBean();
-			for (Study s : cs.getStudies()) {
-				LayoutUtil.addRow(layout);
-				builder.addLabel("Contained study:", cc.xy(1, row));
-				builder.add(BasicComponentFactory.createLabel(
-						new PresentationModel<Study>(s).getModel(Study.PROPERTY_ID)),
-						cc.xyw(3, row, fullWidth-2));
-				row += 2;
-				for (PatientGroup g : s.getPatientGroups()) {
-					row = buildPatientGroup(layout, builder, cc, row, g);
-				}
-			}
-			
-		} else {
-			for (PatientGroup g : d_model.getBean().getPatientGroups()) {
-				row = buildPatientGroup(layout, builder, cc, row, g);
-			}
+		for (PatientGroup g : d_model.getBean().getPatientGroups()) {
+			row = buildPatientGroup(layout, builder, cc, row, g);
 		}
+			
 		if (d_model.getBean() instanceof BasicStudy) {
 			LayoutUtil.addRow(layout);
 			JButton addGroupButton = new JButton("Add patient group");
@@ -308,8 +258,6 @@ public class StudyView implements ViewBuilder {
 	private String getStudyLabel() {
 		if (d_model.getBean() instanceof MetaStudy) {
 			return "Meta-study";			
-		} else if (d_model.getBean() instanceof CombinedStudy) {
-			return "Combined study";
 		} else {
 			return "Study";
 		}

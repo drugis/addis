@@ -26,7 +26,6 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 import org.drugis.addis.entities.BasicStudy;
-import org.drugis.addis.entities.CombinedStudy;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
@@ -56,9 +55,6 @@ public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 			} else if (value instanceof BasicStudy) {
 				setIcon(loader.getIcon(FileNames.ICON_STUDY));
 				setToolTipText("Study");				
-			}else if (value instanceof CombinedStudy) {
-				setIcon(loader.getIcon(FileNames.ICON_COMBINEDSTUDY));
-				setToolTipText("Combined study");				
 			} else if (value instanceof Drug) {
 				setIcon(loader.getIcon(FileNames.ICON_DRUG));
 				setToolTipText("Drug");	
