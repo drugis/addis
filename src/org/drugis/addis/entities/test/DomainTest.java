@@ -42,6 +42,7 @@ import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.SIUnit;
@@ -65,6 +66,7 @@ public class DomainTest {
 		assertTrue(d_domain.getEndpoints().isEmpty());
 		assertTrue(d_domain.getStudies().isEmpty());
 		assertTrue(d_domain.getDrugs().isEmpty());
+		assertTrue(d_domain.getIndications().isEmpty());
 	}
 	
 	@Test(expected=NullPointerException.class)
@@ -80,6 +82,11 @@ public class DomainTest {
 	@Test(expected=NullPointerException.class)
 	public void testAddDrugNull() {
 		d_domain.addStudy(null);
+	}
+	
+	@Test(expected=NullPointerException.class)
+	public void testAddIndicationNull() {
+		d_domain.addIndication(null);
 	}
 
 	@Test
@@ -107,6 +114,15 @@ public class DomainTest {
 		d_domain.addDrug(d);
 		assertEquals(1, d_domain.getDrugs().size());
 		assertEquals(Collections.singleton(d), d_domain.getDrugs());
+	}
+	
+	@Test
+	public void testAddIndication() {
+		Indication i1 = new Indication(310497006L, "Severe depression");
+		assertEquals(0, d_domain.getIndications().size());
+		d_domain.addIndication(i1);
+		assertEquals(1, d_domain.getIndications().size());
+		assertEquals(Collections.singleton(i1), d_domain.getIndications());
 	}
 	
 	@Test
@@ -139,6 +155,17 @@ public class DomainTest {
 		
 		d_domain.addListener(mockListener);
 		d_domain.addDrug(new Drug());
+		verify(mockListener);
+	}
+	
+	@Test
+	public void testAddIndicationListener() {
+		DomainListener mockListener = createMock(DomainListener.class);
+		mockListener.indicationsChanged();
+		replay(mockListener);
+		
+		d_domain.addListener(mockListener);
+		d_domain.addIndication(new Indication(310497006L, "Severe depression"));
 		verify(mockListener);
 	}
 	

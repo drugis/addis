@@ -34,4 +34,9 @@ public interface DomainListener {
 	 * Called when the list of drugs (or the drugs within) has changed.
 	 */
 	public void drugsChanged();
+
+	/**
+	 * Called when the list of indications has changed.
+	 */
+	public void indicationsChanged();
 }

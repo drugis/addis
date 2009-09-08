@@ -37,6 +37,7 @@ public class DomainImpl implements Domain, Serializable {
 	private SortedSet<Endpoint> d_endpoints;
 	private SortedSet<Study> d_studies;
 	private SortedSet<Drug> d_drugs;
+	private SortedSet<Indication> d_indications;
 	private transient List<DomainListener> d_listeners;
 	
 	private void readObject(ObjectInputStream in)
@@ -62,6 +63,7 @@ public class DomainImpl implements Domain, Serializable {
 		d_endpoints = new TreeSet<Endpoint>();
 		d_studies = new TreeSet<Study>();
 		d_drugs = new TreeSet<Drug>();
+		d_indications = new TreeSet<Indication>();
 		d_listeners = new ArrayList<DomainListener>();
 	}
 
@@ -200,5 +202,23 @@ public class DomainImpl implements Domain, Serializable {
 		checkDependents(e);
 		d_endpoints.remove(e);
 		fireEndpointsChanged();				
+	}
+
+	public void addIndication(Indication i) throws NullPointerException {
+		if (i == null) {
+			throw new NullPointerException();
+		}
+		d_indications.add(i);
+		fireIndicationsChanged();
+	}
+
+	private void fireIndicationsChanged() {
+		for (DomainListener l : d_listeners) {
+			l.indicationsChanged();
+		}
+	}
+
+	public SortedSet<Indication> getIndications() {
+		return d_indications;
 	}
 }

@@ -526,6 +526,10 @@ public class Main extends JFrame {
 		public void studiesChanged() {
 			dataModelChanged();
 		}
+
+		public void indicationsChanged() {
+			dataModelChanged();
+		}
 	}
 
 	public void leftTreeFocusOnStudy(Study d_study) {

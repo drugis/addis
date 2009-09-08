@@ -23,6 +23,20 @@ import java.util.SortedSet;
 
 public interface Domain {
 	/**
+	 * Adds an indication to the data model.
+	 * 
+	 * @param i the Indication to add
+	 * @throws NullPointerException if i is null
+	 */
+	public void addIndication(Indication i) throws NullPointerException;
+	
+	/**
+	 * Get the indications stored in the data model.
+	 * @return An unmodifiable sorted set of indications. Never a null.
+	 */
+	public SortedSet<Indication> getIndications();
+	
+	/**
 	 * Adds an endpoint to the data model.
 	 * 
 	 * @param e the endpoint to add
