@@ -14,14 +14,13 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.Study;
+import org.drugis.common.ImageLoader;
 
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.list.SelectionInList;
-
-import fi.smaa.common.ImageLoader;
 
 public class GUIFactory {
 

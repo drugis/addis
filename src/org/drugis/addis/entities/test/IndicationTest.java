@@ -5,9 +5,8 @@ import static org.easymock.EasyMock.*;
 import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.Indication;
+import org.drugis.common.JUnitUtil;
 import org.junit.Test;
-
-import fi.smaa.common.JUnitUtil;
 
 public class IndicationTest {
 	@Test

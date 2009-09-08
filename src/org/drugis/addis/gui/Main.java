@@ -58,13 +58,12 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
+import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
 
 
 import com.jgoodies.binding.PresentationModel;
-
-import fi.smaa.common.ImageLoader;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame {

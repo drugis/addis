@@ -9,9 +9,8 @@ import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.OkCancelDialog;
-
-import fi.smaa.common.ImageLoader;
 
 @SuppressWarnings("serial")
 public class StudyAddPatientGroupDialog extends OkCancelDialog {

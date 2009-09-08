@@ -37,6 +37,7 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.Study;
+import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -47,8 +48,6 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
-
-import fi.smaa.common.ImageLoader;
 
 @SuppressWarnings("serial")
 public class StudyView implements ViewBuilder {

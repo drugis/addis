@@ -30,8 +30,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaStudy;
-
-import fi.smaa.common.ImageLoader;
+import org.drugis.common.ImageLoader;
 
 @SuppressWarnings("serial")
 public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
