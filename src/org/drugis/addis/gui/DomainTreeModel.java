@@ -31,15 +31,18 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.CollectionUtil;
 
 
 public class DomainTreeModel implements TreeModel {
-	public static final int DRUGS = 0;	
-	public static final int ENDPOINTS = 1;
-	public static final int STUDIES = 2;
+	public static final int INDICATIONS = 0;
+	public static final int DRUGS = 1;	
+	public static final int ENDPOINTS = 2;
+	public static final int STUDIES = 3;
 	private String d_root = "Database";
+	private String d_indicationsNode = "Indications";
 	private String d_endpointsNode = "Endpoints";
 	private String d_studiesNode = "Studies";
 	private String d_drugsNode = "Drugs";
@@ -74,12 +77,16 @@ public class DomainTreeModel implements TreeModel {
 	}
 
 	public Object getChild(Object parent, int childIndex) {
-		if (d_root == parent && childIndex == ENDPOINTS) {
+		if (d_root == parent && childIndex == INDICATIONS) {
+			return d_indicationsNode;
+		} else if (d_root == parent && childIndex == ENDPOINTS) {
 			return d_endpointsNode;
 		} else if (d_root == parent && childIndex == STUDIES) {
 			return d_studiesNode;
 		} else if (d_root == parent && childIndex == DRUGS) {
 			return d_drugsNode;
+		} else if (isIndicationRequest(parent, childIndex)) {
+			return CollectionUtil.getElementAtIndex(d_domain.getIndications(), childIndex);
 		} else if (isEndpointRequest(parent, childIndex)) {
 			return CollectionUtil.getElementAtIndex(d_domain.getEndpoints(), childIndex);
 		} else if (isDrugsRequest(parent, childIndex)) {
@@ -88,6 +95,10 @@ public class DomainTreeModel implements TreeModel {
 			return CollectionUtil.getElementAtIndex(d_domain.getStudies(), childIndex);
 		}
 		return null;
+	}
+
+	private boolean isIndicationRequest(Object parent, int childIndex) {
+		return d_indicationsNode == parent && childIndex >= 0 && childIndex < d_domain.getIndications().size();
 	}
 
 	private boolean isStudyRequest(Object parent, int childIndex) {
@@ -104,7 +115,9 @@ public class DomainTreeModel implements TreeModel {
 
 	public int getChildCount(Object parent) {
 		if (d_root == parent) {
-			return 3;
+			return 4;
+		} else if (d_indicationsNode == parent) {
+			return d_domain.getIndications().size();
 		} else if (d_endpointsNode == parent) {
 			return d_domain.getEndpoints().size();
 		} else if (d_studiesNode == parent) {
@@ -116,6 +129,9 @@ public class DomainTreeModel implements TreeModel {
 	}
 
 	public int getIndexOfChild(Object parent, Object child) {
+		if (parent == d_root && child == d_indicationsNode) {
+			return INDICATIONS;
+		}
 		if (parent == d_root && child == d_endpointsNode) {
 			return ENDPOINTS;
 		}
@@ -124,7 +140,10 @@ public class DomainTreeModel implements TreeModel {
 		}
 		if (parent == d_root && child == d_drugsNode) {
 			return DRUGS;
-		}		
+		}	
+		if (parent == d_indicationsNode) {
+			return CollectionUtil.getIndexOfElement(d_domain.getIndications(), child);
+		}
 		if (parent == d_endpointsNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getEndpoints(), child);
 		}
@@ -142,6 +161,9 @@ public class DomainTreeModel implements TreeModel {
 	}
 
 	public boolean isLeaf(Object node) {
+		if (node instanceof Indication) {
+			return d_domain.getIndications().contains(node);
+		}
 		if (node instanceof Endpoint) {
 			return d_domain.getEndpoints().contains(node);
 		}
@@ -171,6 +193,10 @@ public class DomainTreeModel implements TreeModel {
 	}
 
 	public void valueForPathChanged(TreePath path, Object node) {
+	}
+	
+	public Object getIndicationsNode() {
+		return getChild(getRoot(), DomainTreeModel.INDICATIONS);
 	}
 
 	public Object getStudiesNode() {

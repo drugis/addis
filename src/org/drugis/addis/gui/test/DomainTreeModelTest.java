@@ -53,6 +53,7 @@ import org.junit.Test;
 public class DomainTreeModelTest {
 	private DomainTreeModel d_treeModel;
 	private Domain d_domain;
+	private Indication d_firstIndication;
 	private Endpoint d_firstEndpoint;
 	private AbstractStudy d_firstStudy;
 	private Drug d_firstDrug;
@@ -63,6 +64,8 @@ public class DomainTreeModelTest {
 		d_firstEndpoint = new Endpoint("Endpoint", Type.RATE);
 		d_firstStudy = new BasicStudy("First", new Indication(0L, ""));
 		d_firstDrug = new Drug("Drug");
+		d_firstIndication = new Indication(8L, "Indication");
+		d_domain.addIndication(d_firstIndication);
 		d_domain.addEndpoint(d_firstEndpoint);
 		d_domain.addStudy(d_firstStudy);
 		d_domain.addDrug(d_firstDrug);
@@ -73,6 +76,12 @@ public class DomainTreeModelTest {
 	public void testGetRoot() {
 		assertNotNull(d_treeModel.getRoot());
 		assertNotNull(d_treeModel.getRoot().toString());
+	}
+	
+	@Test
+	public void testGetIndicationsNode() {
+		assertNotNull(getIndicationsNode());
+		assertEquals("Indications", getIndicationsNode().toString());
 	}
 	
 	@Test
@@ -92,8 +101,18 @@ public class DomainTreeModelTest {
 		assertEquals("Drugs", getDrugsNode().toString());
 	}
 	
+	private Object getIndicationsNode() {
+		return d_treeModel.getIndicationsNode();
+	}
+	
 	private Object getStudiesNode() {
 		return d_treeModel.getStudiesNode();
+	}
+	
+	@Test
+	public void testGetIndication() {
+		assertEquals(d_firstIndication, d_treeModel.getChild(getIndicationsNode(), 0));
+		assertEquals(null, d_treeModel.getChild(getIndicationsNode(), 1));
 	}
 
 	@Test
@@ -120,7 +139,8 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testGetChildCount() {
-		assertEquals(3, d_treeModel.getChildCount(d_treeModel.getRoot()));
+		assertEquals(4, d_treeModel.getChildCount(d_treeModel.getRoot()));
+		assertEquals(1, d_treeModel.getChildCount(getIndicationsNode()));
 		assertEquals(1, d_treeModel.getChildCount(getEndpointsNode()));
 		assertEquals(1, d_treeModel.getChildCount(getDrugsNode()));		
 		assertEquals(1, d_treeModel.getChildCount(getStudiesNode()));
@@ -133,11 +153,13 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testGetIndexOfChild() {
-		assertEquals(1, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getEndpointsNode()));
+		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getIndicationsNode()));
+		assertEquals(0, d_treeModel.getIndexOfChild(getIndicationsNode(), d_firstIndication));
+		assertEquals(2, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getEndpointsNode()));
 		assertEquals(0, d_treeModel.getIndexOfChild(getEndpointsNode(), d_firstEndpoint));
 		assertEquals(-1, d_treeModel.getIndexOfChild(getEndpointsNode(), new Object()));
-		assertEquals(2, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getStudiesNode()));
-		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getDrugsNode()));		
+		assertEquals(3, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getStudiesNode()));
+		assertEquals(1, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getDrugsNode()));		
 		assertEquals(0, d_treeModel.getIndexOfChild(getStudiesNode(), d_firstStudy));
 		assertEquals(0, d_treeModel.getIndexOfChild(getDrugsNode(), d_firstDrug));
 	}
@@ -145,12 +167,26 @@ public class DomainTreeModelTest {
 	@Test
 	public void testIsLeaf() {
 		assertFalse(d_treeModel.isLeaf(d_treeModel.getRoot()));
+		assertFalse(d_treeModel.isLeaf(getIndicationsNode()));		
 		assertFalse(d_treeModel.isLeaf(getEndpointsNode()));
 		assertFalse(d_treeModel.isLeaf(getStudiesNode()));
 		assertFalse(d_treeModel.isLeaf(getDrugsNode()));		
+		assertTrue(d_treeModel.isLeaf(d_firstIndication));
 		assertTrue(d_treeModel.isLeaf(d_firstEndpoint));
 		assertTrue(d_treeModel.isLeaf(d_firstStudy));
 		assertTrue(d_treeModel.isLeaf(d_firstDrug));		
+	}
+	
+	@Test
+	public void testAddIndicationFires() {
+		TreeModelListener listener = createMock(TreeModelListener.class);
+		listener.treeStructureChanged((TreeModelEvent)notNull());
+		replay(listener);
+		
+		d_treeModel.addTreeModelListener(listener);
+		d_domain.addIndication(new Indication(10L, "Blah"));
+		
+		verify(listener);
 	}
 	
 	@Test

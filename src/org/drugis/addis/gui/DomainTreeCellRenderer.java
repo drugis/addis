@@ -29,6 +29,7 @@ import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.CombinedStudy;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaStudy;
 
 import fi.smaa.common.ImageLoader;
@@ -60,7 +61,10 @@ public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 				setToolTipText("Combined study");				
 			} else if (value instanceof Drug) {
 				setIcon(loader.getIcon(FileNames.ICON_DRUG));
-				setToolTipText("Drug");				
+				setToolTipText("Drug");	
+			} else if (value instanceof Indication) {
+				setIcon(loader.getIcon(FileNames.ICON_INDICATION));
+				setToolTipText("Indication");
 			} else {
 				setToolTipText(null); //no tool tip
 			}

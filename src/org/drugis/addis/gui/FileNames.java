@@ -27,4 +27,5 @@ public class FileNames {
 	public static final String ICON_METASTUDY = "metastudy.gif";
 	public static final String ICON_DELETE = "delete.gif";
 	public static final String ICON_COMBINEDSTUDY = "combinedstudy.gif";
+	public static final String ICON_INDICATION = "indication.gif";
 }
