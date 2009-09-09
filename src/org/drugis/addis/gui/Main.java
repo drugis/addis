@@ -90,7 +90,7 @@ public class Main extends JFrame {
 
 		setPreferredSize(new Dimension(800, 500));
 		GUIHelper.initializeLookAndFeel();
-		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);		
+		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		
 		initializeDomain();
 		
