@@ -29,7 +29,7 @@ public abstract class AbstractLabelModel<B extends Observable> extends AbstractV
 		firePropertyChange("value", oldVal, newVal);
 	}
 
-	public B getBean() {
+	protected B getBean() {
 		return d_bean;
 	}
 }
