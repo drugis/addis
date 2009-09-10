@@ -20,20 +20,27 @@
 package org.drugis.addis.entities;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import com.jgoodies.binding.beans.Model;
 import com.jgoodies.binding.beans.Observable;
 
 public interface Study extends Comparable<Study>, Observable, Entity {
 	public final static String PROPERTY_ID = "id";
 	public final static String PROPERTY_ENDPOINTS = "endpoints";
 	public final static String PROPERTY_PATIENTGROUPS = "patientGroups";
-	public final static String PROPERTY_INDICATION = "indication";
+	public final static String PROPERTY_CHARACTERISTICS = "characteristics";
 
 	public String getId();
 	public Set<Endpoint> getEndpoints();
 	public List<? extends PatientGroup> getPatientGroups();
 	public Measurement getMeasurement(Endpoint e, PatientGroup g);
 	public Set<Drug> getDrugs();	
-	public Indication getIndication();
+	
+	/**
+	 * Get characteristics
+	 * @return An immutable map.
+	 */
+	public Map<StudyCharacteristic, Model> getCharacteristics();
 }

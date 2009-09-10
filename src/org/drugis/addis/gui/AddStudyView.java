@@ -36,9 +36,9 @@ import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
-
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -74,7 +74,9 @@ public class AddStudyView implements ViewBuilder {
 		SelectionInList<Indication> indicationSelectionInList =
 			new SelectionInList<Indication>(
 					new ArrayList<Indication>(d_domain.getIndications()),
-					d_model.getModel(BasicStudy.PROPERTY_INDICATION));
+					new CharacteristicHolder(
+						d_model.getBean(),
+						StudyCharacteristic.INDICATION));
 		d_indication = BasicComponentFactory.createComboBox(indicationSelectionInList);
 		d_validator.add(d_indication);
 		

@@ -43,6 +43,7 @@ import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.PooledRateMeasurement;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -64,7 +65,7 @@ public class MetaStudyTest {
 	
 	@Test
 	public void testGetIndication() {
-		assertEquals(d_analysis.getIndication(), d_study.getIndication());
+		assertEquals(d_analysis.getIndication(), d_study.getCharacteristics().get(StudyCharacteristic.INDICATION));
 	}
 	
 	@Test

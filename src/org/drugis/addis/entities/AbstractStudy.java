@@ -20,6 +20,7 @@
 package org.drugis.addis.entities;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -36,12 +37,13 @@ public abstract class AbstractStudy extends Model implements Study {
 		= new HashMap<MeasurementKey, Measurement>();
 
 	protected Set<Endpoint> d_endpoints = new HashSet<Endpoint>();
-
-	private Indication d_indication = new Indication(310497006L, "Severe depression");
+	
+	protected Map<StudyCharacteristic, Model> d_chars
+		= new HashMap<StudyCharacteristic, Model>();
 
 	public AbstractStudy(String id, Indication i) {
 		d_id = id;
-		d_indication = i;
+		d_chars.put(StudyCharacteristic.INDICATION, i);
 	}	
 	
 	public String getId() {
@@ -155,15 +157,9 @@ public abstract class AbstractStudy extends Model implements Study {
 			}
 		}
 	}		
-
-	public Indication getIndication() {
-		return d_indication;
-	}
 	
-	public void setIndication(Indication i) {
-		Indication oldVal = d_indication;
-		d_indication = i;
-		firePropertyChange(PROPERTY_INDICATION, oldVal, d_indication);
+	public Map<StudyCharacteristic, Model> getCharacteristics() {
+		return Collections.unmodifiableMap(d_chars);
 	}
 
 	protected static class MeasurementKey implements Serializable {

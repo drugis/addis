@@ -25,8 +25,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -39,10 +41,13 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.jgoodies.binding.beans.Model;
 
 public class BasicStudyTest {
 	
@@ -82,16 +87,6 @@ public class BasicStudyTest {
 		AbstractStudy study = new BasicStudy("X", new Indication(0L, ""));
 		assertNotNull(study.getPatientGroups());
 		assertTrue(study.getPatientGroups().isEmpty());
-	}
-	
-	@Test
-	public void testSetIndication() {
-		Indication i = new Indication(5L, "Some indication");
-		AbstractStudy study = new BasicStudy("X", i);
-		assertEquals(i, study.getIndication());
-		
-		Indication i2 = new Indication(6L, "Other indication");
-		JUnitUtil.testSetter(study, AbstractStudy.PROPERTY_INDICATION, i, i2);
 	}
 	
 	@Test
@@ -216,5 +211,15 @@ public class BasicStudyTest {
 	public void testDeleteEndpoint() throws Exception {
 		JUnitUtil.testDeleterSet(new BasicStudy("study", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "deleteEndpoint",
 				new Endpoint("e", Endpoint.Type.CONTINUOUS));
+	}
+	
+	@Test
+	public void testCharacteristics() {
+		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
+		Map<StudyCharacteristic, Model> oldVal = new HashMap<StudyCharacteristic, Model>();
+		oldVal.put(StudyCharacteristic.INDICATION, new Indication(0L, ""));
+		Map<StudyCharacteristic, Model> newVal = new HashMap<StudyCharacteristic, Model>();
+		newVal.put(StudyCharacteristic.INDICATION, new Indication(1L, "TEST"));
+		JUnitUtil.testSetter(study, Study.PROPERTY_CHARACTERISTICS, oldVal, newVal);
 	}
 }

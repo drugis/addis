@@ -8,7 +8,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class IndicationPresentation extends LabeledPresentationModel<Indication> {
-	private static class LabelModel extends AbstractLabelModel<Indication> {
+	public static class LabelModel extends AbstractLabelModel<Indication> {
 		protected LabelModel(Indication bean) {
 			super(bean);
 		}
