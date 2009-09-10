@@ -38,6 +38,7 @@ import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -248,8 +249,8 @@ public class StudyView implements ViewBuilder {
 		builder.addLabel("Intended Indication:", cc.xy(1, 5));
 		
 		Indication indication = d_model.getBean().getIndication();
-		PresentationModel<Indication> iModel = new PresentationModel<Indication>(indication);
-		builder.add(BasicComponentFactory.createLabel(iModel.getModel(Indication.PROPERTY_LABEL)),
+		IndicationPresentation p = new IndicationPresentation(indication);
+		builder.add(BasicComponentFactory.createLabel(p.getLabelModel()),
 				cc.xyw(3, 5, fullWidth - 2));
 		
 		return 7;
