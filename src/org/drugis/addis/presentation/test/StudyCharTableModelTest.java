@@ -79,4 +79,13 @@ public class StudyCharTableModelTest {
 			++column;
 		}
 	}
+	
+	@Test
+	public void testGetCharacteristicIndex() {
+		int column = 1;
+		for (StudyCharacteristic c : StudyCharacteristic.values()) {
+			assertEquals(column, d_model.getCharacteristicColumnIndex(c));
+			++column;
+		}
+	}
 }

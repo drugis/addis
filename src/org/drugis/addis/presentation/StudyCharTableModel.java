@@ -1,6 +1,7 @@
 package org.drugis.addis.presentation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -38,5 +39,9 @@ public class StudyCharTableModel extends AbstractTableModel {
 			return "Study ID";
 		}
 		return StudyCharacteristic.values()[columnIndex - 1].getDescription();
+	}
+	
+	public int getCharacteristicColumnIndex(StudyCharacteristic c) {
+		return Arrays.asList(StudyCharacteristic.values()).indexOf(c) + 1;
 	}
 }

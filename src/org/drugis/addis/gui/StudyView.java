@@ -27,6 +27,7 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -44,6 +45,8 @@ import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.presentation.IndicationPresentation;
+import org.drugis.addis.presentation.MetaStudyPresentationModel;
+import org.drugis.addis.presentation.StudyCharColumnManager;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
@@ -63,6 +66,7 @@ public class StudyView implements ViewBuilder {
 	Domain d_domain;
 	Main d_mainWindow;
 	private ImageLoader d_loader;
+	private StudyCharColumnManager d_columnManager;
 
 	public StudyView(PresentationModel<Study> model, Domain domain, Main main, ImageLoader loader) {
 		d_loader = loader;
@@ -112,19 +116,37 @@ public class StudyView implements ViewBuilder {
 			PanelBuilder builder, CellConstraints cc, int row) {
 		LayoutUtil.addRow(layout);
 		LayoutUtil.addRow(layout);
+		LayoutUtil.addRow(layout);
+		
+		final MetaStudyPresentationModel pm =
+			new MetaStudyPresentationModel((MetaStudy)d_model.getBean());
 		
 		builder.addSeparator("Included Studies", cc.xyw(1, row, fullWidth));
 		row += 2;
 		
-		StudyCharTableModel model = new StudyCharTableModel(((MetaStudy)d_model.getBean()).getAnalysis().getStudies());
-		JTable table = new JTable(model);
+		StudyCharTableModel model = new StudyCharTableModel(pm.getIncludedStudies());
+		final JTable table = new JTable(model);
 		table.setPreferredScrollableViewportSize(table.getPreferredSize());
 		table.setBackground(Color.WHITE);
 		JScrollPane pane = new JScrollPane(table);
 		pane.setBorder(BorderFactory.createEmptyBorder());
 		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		
+		d_columnManager = new StudyCharColumnManager(model, table.getColumnModel(), pm);
+		
 		builder.add(pane, cc.xyw(1, row, fullWidth));
+		row += 2;
+		
+		JButton customizeButton = new JButton("Customize Shown Characteristics");
+		customizeButton.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				JDialog dialog = new CharacteristicSelectDialog(d_mainWindow, pm);
+				dialog.setVisible(true);
+			}
+		});
+		
+		builder.add(customizeButton, cc.xy(3, row));
 		row += 2;
 		
 		return row;
