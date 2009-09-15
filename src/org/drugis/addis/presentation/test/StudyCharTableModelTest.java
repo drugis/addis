@@ -69,4 +69,14 @@ public class StudyCharTableModelTest {
 			++row;
 		}
 	}
+	
+	@Test
+	public void testGetColumnName() {
+		assertEquals("Study ID", d_model.getColumnName(0));
+		int column = 1;
+		for (StudyCharacteristic c : StudyCharacteristic.values()) {
+			assertEquals(c.getDescription(), d_model.getColumnName(column));
+			++column;
+		}
+	}
 }

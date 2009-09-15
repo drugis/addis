@@ -19,13 +19,17 @@
 
 package org.drugis.addis.gui;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.text.NumberFormat;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.BasicPatientGroup;
@@ -40,16 +44,13 @@ import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.presentation.IndicationPresentation;
-import org.drugis.addis.presentation.LabeledPresentationModel;
-import org.drugis.addis.presentation.LabeledPresentationModelFactory;
+import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.beans.Model;
-import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -95,36 +96,38 @@ public class StudyView implements ViewBuilder {
 		
 		row = buildEndpointsPart(layout, fullWidth, builder, cc, row);
 		
+		if (d_model.getBean() instanceof MetaStudy) {
+			row = buildStudiesPart(layout, fullWidth, builder, cc, row);
+		}
+		
 		row = buildDataPart(layout, fullWidth, builder, cc, row);
 		
 		buildAnalysesPart(fullWidth, builder, cc, row);
 		
-		if (d_model.getBean() instanceof MetaStudy)
-			printSomeStuff();
 		
 		return builder.getPanel();
 	}
 
-	private void printSomeStuff() {
-		MetaStudy s = (MetaStudy)d_model.getBean();
-		System.out.println(StudyCharacteristic.values());
-		for (StudyCharacteristic c : StudyCharacteristic.values()) {
-			System.out.print("\t" + c.getDescription());
-		}
-		System.out.println();
-		for (Study x : s.getAnalysis().getStudies()) {
-			System.out.print(x.getId());
-			for (StudyCharacteristic c : StudyCharacteristic.values()) {
-				Model val = x.getCharacteristics().get(c);
-				ValueModel label = null;
-				if (val != null) {
-					LabeledPresentationModel<?> p = LabeledPresentationModelFactory.build(val);
-					label = p.getLabelModel();
-				}
-				System.out.print("\t" + (label != null ? label.getValue() : null));
-			}
-			System.out.println();
-		}
+	private int buildStudiesPart(FormLayout layout, int fullWidth,
+			PanelBuilder builder, CellConstraints cc, int row) {
+		LayoutUtil.addRow(layout);
+		LayoutUtil.addRow(layout);
+		
+		builder.addSeparator("Included Studies", cc.xyw(1, row, fullWidth));
+		row += 2;
+		
+		StudyCharTableModel model = new StudyCharTableModel(((MetaStudy)d_model.getBean()).getAnalysis().getStudies());
+		JTable table = new JTable(model);
+		table.setPreferredScrollableViewportSize(table.getPreferredSize());
+		table.setBackground(Color.WHITE);
+		JScrollPane pane = new JScrollPane(table);
+		pane.setBorder(BorderFactory.createEmptyBorder());
+		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		builder.add(pane, cc.xyw(1, row, fullWidth));
+		row += 2;
+		
+		return row;
 	}
 
 	private void buildAnalysesPart(int fullWidth, PanelBuilder builder,

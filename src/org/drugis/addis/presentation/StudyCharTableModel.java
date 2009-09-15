@@ -32,4 +32,11 @@ public class StudyCharTableModel extends AbstractTableModel {
 		return d_studies.get(rowIndex).getCharacteristics().get(c);
 	}
 
+	@Override
+	public String getColumnName(int columnIndex) {
+		if (columnIndex == 0) {
+			return "Study ID";
+		}
+		return StudyCharacteristic.values()[columnIndex - 1].getDescription();
+	}
 }
