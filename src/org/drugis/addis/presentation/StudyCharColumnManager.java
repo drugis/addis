@@ -11,8 +11,10 @@ import org.drugis.addis.entities.StudyCharacteristic;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 public class StudyCharColumnManager {
-	public StudyCharColumnManager(final StudyCharTableModel tableModel,
-			final TableColumnModel columnModel, final MetaStudyPresentationModel pm) {
+	public static void connect(
+			final StudyCharTableModel tableModel,
+			final TableColumnModel columnModel,
+			final MetaStudyPresentationModel pm) {
 		for (StudyCharacteristic c : StudyCharacteristic.values()) {
 			final AbstractValueModel model = pm.getCharacteristicVisibleModel(c);
 			final TableColumn column = columnModel.getColumn(tableModel.getCharacteristicColumnIndex(c));

@@ -66,7 +66,6 @@ public class StudyView implements ViewBuilder {
 	Domain d_domain;
 	Main d_mainWindow;
 	private ImageLoader d_loader;
-	private StudyCharColumnManager d_columnManager;
 
 	public StudyView(PresentationModel<Study> model, Domain domain, Main main, ImageLoader loader) {
 		d_loader = loader;
@@ -133,7 +132,7 @@ public class StudyView implements ViewBuilder {
 		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		
-		d_columnManager = new StudyCharColumnManager(model, table.getColumnModel(), pm);
+		StudyCharColumnManager.connect(model, table.getColumnModel(), pm);
 		
 		builder.add(pane, cc.xyw(1, row, fullWidth));
 		row += 2;
