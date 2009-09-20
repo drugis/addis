@@ -1,20 +1,17 @@
 package org.drugis.addis.presentation;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
 
 @SuppressWarnings("serial")
 public class StudyCharTableModel extends AbstractTableModel {
-	List<Study> d_studies;
+	MetaStudyPresentationModel d_pm;
 	
-	public StudyCharTableModel(List<Study> studies) {
-		d_studies = new ArrayList<Study>(studies);
+	public StudyCharTableModel(MetaStudyPresentationModel pm) {
+		d_pm = pm;
 	}
 
 	public int getColumnCount() {
@@ -22,15 +19,15 @@ public class StudyCharTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		return d_studies.size();
+		return d_pm.getIncludedStudies().size();
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		if (columnIndex == 0) {
-			return d_studies.get(rowIndex).getId();
+			return d_pm.getIncludedStudies().get(rowIndex).getId();
 		}
 		StudyCharacteristic c = StudyCharacteristic.values()[columnIndex - 1];
-		return d_studies.get(rowIndex).getCharacteristics().get(c);
+		return d_pm.getIncludedStudies().get(rowIndex).getCharacteristics().get(c);
 	}
 
 	@Override

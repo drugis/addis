@@ -123,7 +123,7 @@ public class StudyView implements ViewBuilder {
 		builder.addSeparator("Included Studies", cc.xyw(1, row, fullWidth));
 		row += 2;
 		
-		StudyCharTableModel model = new StudyCharTableModel(pm.getIncludedStudies());
+		StudyCharTableModel model = new StudyCharTableModel(pm);
 		final JTable table = new JTable(model);
 		table.setPreferredScrollableViewportSize(table.getPreferredSize());
 		table.setBackground(Color.WHITE);
