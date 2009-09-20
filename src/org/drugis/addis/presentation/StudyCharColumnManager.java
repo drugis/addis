@@ -11,20 +11,35 @@ import org.drugis.addis.entities.StudyCharacteristic;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 public class StudyCharColumnManager {
-	public StudyCharColumnManager(final StudyCharTableModel tableModel,
-			final TableColumnModel columnModel, final MetaStudyPresentationModel pm) {
+	private TableColumnModel d_columnModel;
+
+	public StudyCharColumnManager(StudyCharTableModel tableModel,
+			TableColumnModel columnModel, MetaStudyPresentationModel pm) {
+		this.d_columnModel = columnModel;
+		
+		int hiddenColumns = 0;
 		for (StudyCharacteristic c : StudyCharacteristic.values()) {
-			final AbstractValueModel model = pm.getCharacteristicVisibleModel(c);
-			final TableColumn column = columnModel.getColumn(tableModel.getCharacteristicColumnIndex(c));
-			model.addPropertyChangeListener(new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent arg0) {
-					if (model.getValue().equals(Boolean.TRUE)) {
-						columnModel.addColumn(column);
-					} else {
-						columnModel.removeColumn(column);
-					}
-				}
-			});
+			AbstractValueModel model = pm.getCharacteristicVisibleModel(c);
+			TableColumn column = columnModel.getColumn(tableModel.getCharacteristicColumnIndex(c));			
+			if (model.booleanValue() == false) {
+				d_columnModel.removeColumn(column);
+			}
+			model.addPropertyChangeListener(new ColumnValueListener(column));
+		}
+	}
+	
+	private class ColumnValueListener implements PropertyChangeListener {
+		private TableColumn d_column;
+		
+		public ColumnValueListener(TableColumn column) {
+			d_column = column;
+		}
+		public void propertyChange(PropertyChangeEvent ev) {
+			if (ev.getNewValue().equals(Boolean.TRUE)) {
+				d_columnModel.addColumn(d_column);
+			} else {
+				d_columnModel.removeColumn(d_column);
+			}
 		}
 	}
 }

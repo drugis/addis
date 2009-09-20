@@ -58,12 +58,10 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.presentation.PresentationModelManager;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
-
-
-import com.jgoodies.binding.PresentationModel;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame {
@@ -78,6 +76,9 @@ public class Main extends JFrame {
 	private DomainTreeModel d_domainTreeModel;
 	private JTree d_leftPanelTree;
 	private JMenuItem d_editMenuDeleteItem;
+	
+	private PresentationModelManager pmManager = 
+		new PresentationModelManager();
 
 	public Main() {
 		super(AppInfo.getAppName() + " v" + AppInfo.getAppVersion());
@@ -446,8 +447,9 @@ public class Main extends JFrame {
 		d_editMenuDeleteItem.setEnabled(true);		
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void studySelected(Study node) {
-		StudyView view = new StudyView(new PresentationModel<Study>(node), getDomain(), this, d_imageLoader);
+		StudyView view = new StudyView(pmManager.getModel(node), getDomain(), this, d_imageLoader);
 		d_rightPanelBuilder = view;
 		d_rightPanel.setViewportView(view.buildPanel());
 		d_editMenuDeleteItem.setEnabled(true);		

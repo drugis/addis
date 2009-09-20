@@ -62,13 +62,13 @@ import com.jgoodies.forms.layout.FormLayout;
 
 @SuppressWarnings("serial")
 public class StudyView implements ViewBuilder {
-	PresentationModel<Study> d_model;
+	PresentationModel<? extends Study> d_model;
 	Domain d_domain;
 	Main d_mainWindow;
 	private ImageLoader d_loader;
 	private StudyCharColumnManager d_columnManager;
 
-	public StudyView(PresentationModel<Study> model, Domain domain, Main main, ImageLoader loader) {
+	public StudyView(PresentationModel<? extends Study> model, Domain domain, Main main, ImageLoader loader) {
 		d_loader = loader;
 		d_model = model;
 		d_mainWindow = main;
@@ -118,8 +118,8 @@ public class StudyView implements ViewBuilder {
 		LayoutUtil.addRow(layout);
 		LayoutUtil.addRow(layout);
 		
-		final MetaStudyPresentationModel pm =
-			new MetaStudyPresentationModel((MetaStudy)d_model.getBean());
+		final MetaStudyPresentationModel pm = 
+			(MetaStudyPresentationModel) d_model;
 		
 		builder.addSeparator("Included Studies", cc.xyw(1, row, fullWidth));
 		row += 2;
