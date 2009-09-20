@@ -46,7 +46,6 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
-import org.drugis.addis.presentation.StudyCharColumnManager;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
@@ -131,9 +130,7 @@ public class StudyView implements ViewBuilder {
 		pane.setBorder(BorderFactory.createEmptyBorder());
 		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		
-		StudyCharColumnManager.connect(model, table.getColumnModel(), pm);
-		
+				
 		builder.add(pane, cc.xyw(1, row, fullWidth));
 		row += 2;
 		

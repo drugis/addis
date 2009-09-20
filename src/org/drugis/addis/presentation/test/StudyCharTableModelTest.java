@@ -1,8 +1,15 @@
 package org.drugis.addis.presentation.test;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
@@ -15,6 +22,8 @@ import org.drugis.addis.presentation.MetaStudyPresentationModel;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.jgoodies.binding.value.ValueModel;
 
 public class StudyCharTableModelTest {
 	private Domain d_domain;
@@ -34,6 +43,8 @@ public class StudyCharTableModelTest {
 	@Test
 	public void testGetColumnCount() {
 		assertEquals(StudyCharacteristic.values().length + 1, d_model.getColumnCount());
+		d_pm.getCharacteristicVisibleModel(StudyCharacteristic.values()[0]).setValue(Boolean.FALSE);
+		assertEquals(StudyCharacteristic.values().length, d_model.getColumnCount());
 	}
 	
 	@Test
@@ -56,20 +67,37 @@ public class StudyCharTableModelTest {
 	}
 	
 	@Test
+	public void testHideColumnFires() {
+		ValueModel firstCharVisible = getFirstCharValueModel();
+		TableModelListener mock = createMock(TableModelListener.class);
+		d_model.addTableModelListener(mock);
+		mock.tableChanged(new TableModelEvent(d_model));
+		replay(mock);
+		firstCharVisible.setValue(Boolean.FALSE);
+		verify(mock);
+	}
+	private ValueModel getFirstCharValueModel() {
+		ValueModel firstCharVisible = d_pm.getCharacteristicVisibleModel(StudyCharacteristic.values()[0]);
+		return firstCharVisible;
+	}
+	
+	@Test
+	public void testCorrectColumnsAreShown() {
+		getFirstCharValueModel().setValue(Boolean.FALSE);
+		fail();
+	}
+	
+	@Test
+	public void testCorrectColumnsAreShownAfterConstructor() {
+		fail();
+	}
+	
+	@Test
 	public void testGetColumnName() {
 		assertEquals("Study ID", d_model.getColumnName(0));
 		int column = 1;
 		for (StudyCharacteristic c : StudyCharacteristic.values()) {
 			assertEquals(c.getDescription(), d_model.getColumnName(column));
-			++column;
-		}
-	}
-	
-	@Test
-	public void testGetCharacteristicIndex() {
-		int column = 1;
-		for (StudyCharacteristic c : StudyCharacteristic.values()) {
-			assertEquals(column, d_model.getCharacteristicColumnIndex(c));
 			++column;
 		}
 	}
