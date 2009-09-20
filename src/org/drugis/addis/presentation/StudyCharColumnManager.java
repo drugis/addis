@@ -12,12 +12,14 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 public class StudyCharColumnManager {
 	private TableColumnModel d_columnModel;
+	
+	
+	
 
-	public StudyCharColumnManager(StudyCharTableModel tableModel,
+	protected StudyCharColumnManager(StudyCharTableModel tableModel,
 			TableColumnModel columnModel, MetaStudyPresentationModel pm) {
 		this.d_columnModel = columnModel;
 		
-		int hiddenColumns = 0;
 		for (StudyCharacteristic c : StudyCharacteristic.values()) {
 			AbstractValueModel model = pm.getCharacteristicVisibleModel(c);
 			TableColumn column = columnModel.getColumn(tableModel.getCharacteristicColumnIndex(c));			
@@ -41,5 +43,12 @@ public class StudyCharColumnManager {
 				d_columnModel.removeColumn(d_column);
 			}
 		}
+	}
+
+	public static void connect(StudyCharTableModel model,
+			TableColumnModel columnModel, MetaStudyPresentationModel pm) {
+		
+		@SuppressWarnings("unused")
+		final StudyCharColumnManager mgr = new StudyCharColumnManager(model, columnModel, pm);
 	}
 }
