@@ -110,7 +110,7 @@ public class JUnitUtil {
 				" of class " + source.getClass().getCanonicalName());
 	}
 	
-	private static Method get1ParamMethod(Model source, String methodName, Object methodParam) 
+	private static Method get1ParamMethod(Observable source, String methodName, Object methodParam) 
 	throws NoSuchMethodException {
 		// TODO: we should check that the method has 1 param and that the param is correct type
 		Method[] methods = source.getClass().getMethods();
@@ -145,7 +145,7 @@ public class JUnitUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void testAdder(Model source, String propertyName, String methodName, Object toAdd) {
+	public static void testAdder(Observable source, String propertyName, String methodName, Object toAdd) {
 		List list1 = new ArrayList();
 		List list2 = new ArrayList();
 		list2.add(toAdd);
@@ -166,7 +166,7 @@ public class JUnitUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void testAdderSet(Model source, String propertyName, String methodName, Object toAdd) {
+	public static void testAdderSet(Observable source, String propertyName, String methodName, Object toAdd) {
 		Set list1 = new HashSet();
 		Set list2 = new HashSet();
 		list2.add(toAdd);
@@ -207,7 +207,7 @@ public class JUnitUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void testDeleterSet(Model source, String propertyName, String deleteMethodName, Object toDelete) throws Exception {
+	public static void testDeleterSet(Observable source, String propertyName, String deleteMethodName, Object toDelete) throws Exception {
 		Set list1 = new HashSet();
 		Set list2 = new HashSet();
 		list1.add(toDelete);
