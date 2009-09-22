@@ -19,20 +19,32 @@
 
 package org.drugis.addis.entities;
 
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Set;
 
-import com.jgoodies.binding.beans.Model;
+import org.drugis.common.ObserverManager;
 
-public class Drug extends Model implements Comparable<Drug>, Entity {
+import com.jgoodies.binding.beans.Observable;
+
+public class Drug implements Serializable, Observable, Comparable<Drug>, Entity {
 	private static final long serialVersionUID = 5156008576438893074L;
 
 	private String d_name = "";
+	transient private ObserverManager d_om = new ObserverManager(this);
 	
 	public static final String PROPERTY_NAME = "name";
 	
 	public Drug() {
 		
+	}
+	
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
+		in.defaultReadObject();
+		d_om = new ObserverManager(this);
 	}
 
 	public Drug(String name) {
@@ -48,7 +60,7 @@ public class Drug extends Model implements Comparable<Drug>, Entity {
 		d_name = name;
 		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
 	}
-	
+
 	@Override
 	public String toString() {
 		return getName();
@@ -80,5 +92,17 @@ public class Drug extends Model implements Comparable<Drug>, Entity {
 
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();
+	}
+	
+	private void firePropertyChange(String propertyName, String oldValue, String newValue) {
+		d_om.firePropertyChange(propertyName, oldValue, newValue);
+	}
+
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		d_om.addPropertyChangeListener(listener);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		d_om.removePropertyChangeListener(listener);
 	}
 }

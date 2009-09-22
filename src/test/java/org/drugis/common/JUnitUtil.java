@@ -44,9 +44,10 @@ import javax.swing.event.TableModelListener;
 
 
 import com.jgoodies.binding.beans.Model;
+import com.jgoodies.binding.beans.Observable;
 
 public class JUnitUtil {
-	public static void testSetter(Model source, String propertyName, Object oldValue, Object newValue) {
+	public static void testSetter(Observable source, String propertyName, Object oldValue, Object newValue) {
 		PropertyChangeListener mock = mockListener(source, propertyName, oldValue, newValue);
 		
 		source.addPropertyChangeListener(mock);
@@ -63,7 +64,7 @@ public class JUnitUtil {
 	}
 
 
-	public static PropertyChangeListener mockListener(Model source,
+	public static PropertyChangeListener mockListener(Observable source,
 			String propertyName, Object oldValue, Object newValue) {
 		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
 		PropertyChangeEvent event = new PropertyChangeEvent(
@@ -75,6 +76,16 @@ public class JUnitUtil {
 		return mock;
 	}
 	
+	public static PropertyChangeListener mockStrictListener(Observable source,
+			String propertyName, Object oldValue, Object newValue) {
+		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
+		PropertyChangeEvent event = new PropertyChangeEvent(
+				source, propertyName, oldValue, newValue);
+		mock.propertyChange(eqPropertyChangeEvent(event));
+		replay(mock);
+		return mock;
+	}
+	
 	public static TableModelListener mockTableModelListener(TableModelEvent expected) {
 		TableModelListener mock = createMock(TableModelListener.class);
 		mock.tableChanged((TableModelEvent)eqEventObject(expected));
@@ -82,12 +93,12 @@ public class JUnitUtil {
 		return mock;
 	}
 	
-	private static Method getGetterMethod(Model source, String propertyName)
+	private static Method getGetterMethod(Observable source, String propertyName)
 			throws NoSuchMethodException {
 		return source.getClass().getMethod(deriveGetter(propertyName));
 	}
 
-	private static Method getSetterMethod(Model source, String propertyName,
+	private static Method getSetterMethod(Observable source, String propertyName,
 			Object newValue) throws NoSuchMethodException {
 		Method[] methods = source.getClass().getMethods();
 		for (Method m : methods) {
