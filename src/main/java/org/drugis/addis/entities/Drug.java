@@ -22,33 +22,35 @@ package org.drugis.addis.entities;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Set;
 
 import org.drugis.common.ObserverManager;
 
-import com.jgoodies.binding.beans.Observable;
-
-public class Drug implements Serializable, Observable, Comparable<Drug>, Entity {
+public class Drug implements Comparable<Drug>, Entity {
 	private static final long serialVersionUID = 5156008576438893074L;
 
 	private String d_name = "";
-	transient private ObserverManager d_om = new ObserverManager(this);
+	transient private ObserverManager d_om;
 	
 	public static final String PROPERTY_NAME = "name";
 	
 	public Drug() {
-		
+		init();
+	}
+	
+	private void init() {
+		d_om = new ObserverManager(this);
 	}
 	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
 		in.defaultReadObject();
-		d_om = new ObserverManager(this);
+		init();
 	}
 
 	public Drug(String name) {
 		d_name = name;
+		init();
 	}
 
 	public String getName() {

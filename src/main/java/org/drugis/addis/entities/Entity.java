@@ -19,8 +19,11 @@
 
 package org.drugis.addis.entities;
 
+import java.io.Serializable;
 import java.util.Set;
 
-public interface Entity {
+import com.jgoodies.binding.beans.Observable;
+
+public interface Entity extends Serializable, Observable {
 	public Set<Entity> getDependencies();
 }
