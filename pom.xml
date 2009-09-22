@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>nl.rug.escher.addis</groupId>
+	<groupId>org.drugis</groupId>
 	<artifactId>addis</artifactId>
 	<name>ADDIS</name>
 	<version>0.3-SNAPSHOT</version>
-
-	<build>
-		<sourceDirectory>${basedir}/src</sourceDirectory>
-		<outputDirectory>${basedir}/bin</outputDirectory>
-		<resources>
-			<resource>
-				<directory>${basedir}/resource</directory>
-			</resource>
-		</resources>
-	</build>
 
 	<repositories>
 		<repository>
@@ -55,5 +45,40 @@
 			<version>1.2</version>
 		</dependency>
 	</dependencies>
+
+    <build>
+        <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.5</source>
+                        <target>1.5</target>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <configuration>
+                        <descriptorRefs>
+                            <descriptorRef>jar-with-dependencies</descriptorRef>
+                        </descriptorRefs>
+                        <archive>
+                            <manifest>
+                                <mainClass>org.drugis.addis.gui.Main</mainClass>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>make-assembly</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>single</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+        </plugins>
+    </build>
 
 </project>

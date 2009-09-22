@@ -1,115 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="build" name="ADDIS"
-	xmlns:artifact="antlib:org.apache.maven.artifact.ant">
-
-	<typedef resource="org/apache/maven/artifact/ant/antlib.xml"
-		uri="antlib:org.apache.maven.artifact.ant" />
-
-	<property environment="env"/>
-	<property name="junit.output.dir" value="junit"/>
-	<property name="debuglevel" value="source,lines,vars"/>
-	<property name="target" value="1.5"/>
-	<property name="source" value="1.5"/>
-
-	<artifact:pom id="addis" file="pom.xml" />
-
-	<artifact:dependencies
-		filesetId="dep.fileset"
-		pathId="dep.classpath"
-		pomRefId="addis"/>
-
-	<path id="build.classpath">
-		<path refid="dep.classpath"/>
-	</path>
-	
-	<path id="ADDIS.classpath">
-		<pathelement location="${addis.build.outputDirectory}"/>
-		<path refid="build.classpath" />
-	</path>
-
-	<path id="dist.class.path">
-		<path refid="build.classpath" />
-	</path>
-
-	<target name="dist" depends="build">
-		<delete dir="dist" />
-		<mkdir dir="dist" />
-		<mkdir dir="dist/lib" />
-		<copy todir="dist/lib" includeemptydirs="false">
-			<fileset refid="dep.fileset" />
-		</copy>
-		<pathconvert property="dist-class-path" pathsep=" " dirsep="/">
-			<fileset dir="dist/lib" />
-			<map from="${basedir}/dist" to="." />		
-		</pathconvert>
-
-		<jar destfile="dist/addis.jar" basedir="${addis.build.outputDirectory}">
-			<manifest>
-				<attribute name="Main-Class" value="org.drugis.addis.gui.Main" />
-				<attribute name="Class-Path" value="${dist-class-path}" />
-			</manifest>
-		</jar>
-	</target>
-
-	<target name="init">
-		<!-- create output directory -->
-		<mkdir dir="${addis.build.outputDirectory}"/>
-		<!-- copy resources to output dir -->
-		<copy includeemptydirs="false" todir="${addis.build.outputDirectory}">
-			<fileset dir="resource" />
-		</copy>
-		<!-- create properties file containing project name/version -->
-		<propertyfile file="${addis.build.outputDirectory}/org/drugis/addis/application.properties">
-			<entry key="application.name" value="${addis.name}" />
-			<entry key="application.version" value="${addis.version}" />
-		</propertyfile>
-	</target>
-
-	<target name="clean">
-		<delete dir="${addis.build.outputDirectory}"/>
-		<delete dir="junit"/>
-	</target>
-	<target depends="clean" name="cleanall"/>
-	<target depends="build-subprojects,build-project" name="build"/>
-	<target name="build-subprojects"/>
-	<target depends="compile-project" name="build-project">
-	</target>
-	<target depends="init" name="compile-project">
-		<echo message="${ant.project.name}: ${ant.file}"/>
-		<javac debug="true" debuglevel="${debuglevel}" destdir="${addis.build.outputDirectory}" source="${source}" target="${target}">
-			<src path="${addis.build.sourceDirectory}"/>
-			<classpath refid="ADDIS.classpath"/>
-		</javac>
-	</target>
-
-	<target name="test" depends="build">
-		<mkdir dir="${junit.output.dir}"/>
-		<junit fork="yes" printsummary="withOutAndErr" haltonfailure="false">
-			<formatter type="xml"/>
-			<classpath>
-				<path refid="ADDIS.classpath"/>
-			</classpath>
-			<batchtest todir="${junit.output.dir}">
-				<fileset dir="${addis.build.outputDirectory}/">
-					<include name="**/*test/*Test.class"/>
-				</fileset>
-			</batchtest>
-		</junit>
-	</target>
-
-	<target name="Main">
-		<java classname="org.drugis.gui.Main" failonerror="true" fork="yes">
-			<classpath refid="ADDIS.classpath"/>
-		</java>
-	</target>
-
-	<target name="junitreport">
-		<junitreport todir="${junit.output.dir}">
-			<fileset dir="${junit.output.dir}">
-				<include name="TEST-*.xml"/>
-			</fileset>
-			<report format="frames" todir="${junit.output.dir}"/>
-		</junitreport>
+<project basedir="." default="warn" name="ADDIS">
+	<target name="warn">
+		<echo>Please use Maven2!</echo>
 	</target>
 
 	<loadfile property="header" srcFile="HEADER" />
@@ -118,7 +10,7 @@
 		<replaceregexp flags="s"
 			match=".*package org.drugis.addis"
 			replace="${header}package org.drugis.addis">
-			<fileset dir="${addis.build.sourceDirectory}">
+			<fileset dir="src">
 				<include name="**/*.java" />
 			</fileset>
 		</replaceregexp>
