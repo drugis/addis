@@ -3,9 +3,7 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.StudyCharacteristic;
 
@@ -19,15 +17,15 @@ public class StudyCharTableModel extends AbstractTableModel {
 		d_pm = pm;
 		for (StudyCharacteristic c : StudyCharacteristic.values()) {
 			ValueModel vm = d_pm.getCharacteristicVisibleModel(c);
-			vm.addValueChangeListener(new ValueChangeListener(this));
+			vm.addValueChangeListener(new ValueChangeListener());
 		}
 	}
 		
 	public int getColumnCount() {
-		return getNoVisibleColumns() + 1;
+		return getNoVisibleCharacteristics() + 1;
 	}
 
-	private int getNoVisibleColumns() {
+	private int getNoVisibleCharacteristics() {
 		int visible = 0;
 		for (StudyCharacteristic c : StudyCharacteristic.values()) {
 			if (d_pm.getCharacteristicVisibleModel(c).booleanValue()) {
@@ -45,7 +43,7 @@ public class StudyCharTableModel extends AbstractTableModel {
 		if (columnIndex == 0) {
 			return d_pm.getIncludedStudies().get(rowIndex).getId();
 		}
-		StudyCharacteristic c = StudyCharacteristic.values()[columnIndex - 1];
+		StudyCharacteristic c = getCharacteristic(columnIndex);
 		return d_pm.getIncludedStudies().get(rowIndex).getCharacteristics().get(c);
 	}
 
@@ -54,16 +52,25 @@ public class StudyCharTableModel extends AbstractTableModel {
 		if (columnIndex == 0) {
 			return "Study ID";
 		}
-		return StudyCharacteristic.values()[columnIndex - 1].getDescription();
+		return getCharacteristic(columnIndex).getDescription();
+	}
+	
+	private StudyCharacteristic getCharacteristic(int columnIndex) {
+		int idx = 0;
+		for (StudyCharacteristic c: StudyCharacteristic.values()) {
+			if (d_pm.getCharacteristicVisibleModel(c).getValue().equals(Boolean.TRUE)) {
+				++idx;
+			}
+			if (idx == columnIndex) {
+				return c;
+			}
+		}
+		throw new IndexOutOfBoundsException();
 	}
 	
 	private class ValueChangeListener implements PropertyChangeListener {
-		private TableModel d_parent;
-		private ValueChangeListener(TableModel parent) {
-			d_parent = parent;
-		}
 		public void propertyChange(PropertyChangeEvent evt) {
-			fireTableChanged(new TableModelEvent(d_parent));
+			fireTableStructureChanged();
 		}		
 	}
 }

@@ -1,10 +1,7 @@
 package org.drugis.addis.presentation.test;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
@@ -20,6 +17,7 @@ import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.entities.test.TestData;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
 import org.drugis.addis.presentation.StudyCharTableModel;
+import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,6 +38,7 @@ public class StudyCharTableModelTest {
 		d_pm = new MetaStudyPresentationModel(d_study);
 		d_model = new StudyCharTableModel(d_pm);
 	}	
+	
 	@Test
 	public void testGetColumnCount() {
 		assertEquals(StudyCharacteristic.values().length + 1, d_model.getColumnCount());
@@ -67,29 +66,42 @@ public class StudyCharTableModelTest {
 	}
 	
 	@Test
+	public void testGetValueAtColumnRemoved() {
+		getFirstCharValueModel().setValue(false);
+		int row = 0;
+		for (Study s : d_pm.getIncludedStudies()) {
+			assertEquals(s.getId(), d_model.getValueAt(row, 0));
+			int column = 0;
+			for (StudyCharacteristic c : StudyCharacteristic.values()) {
+				if (column > 0) {
+					assertEquals(s.getCharacteristics().get(c), d_model.getValueAt(row, column));
+				}
+				++column;
+			}
+			++row;
+		}
+	}
+	
+	@Test
 	public void testHideColumnFires() {
 		ValueModel firstCharVisible = getFirstCharValueModel();
-		TableModelListener mock = createMock(TableModelListener.class);
+		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(d_model));
+		
 		d_model.addTableModelListener(mock);
-		mock.tableChanged(new TableModelEvent(d_model));
-		replay(mock);
 		firstCharVisible.setValue(Boolean.FALSE);
 		verify(mock);
 	}
+	
 	private ValueModel getFirstCharValueModel() {
 		ValueModel firstCharVisible = d_pm.getCharacteristicVisibleModel(StudyCharacteristic.values()[0]);
 		return firstCharVisible;
 	}
 	
 	@Test
-	public void testCorrectColumnsAreShown() {
-		getFirstCharValueModel().setValue(Boolean.FALSE);
-		fail();
-	}
-	
-	@Test
 	public void testCorrectColumnsAreShownAfterConstructor() {
-		fail();
+		getFirstCharValueModel().setValue(false);
+		d_model = new StudyCharTableModel(d_pm);
+		testGetColumnNameFirstMissingHelper();
 	}
 	
 	@Test
@@ -98,6 +110,23 @@ public class StudyCharTableModelTest {
 		int column = 1;
 		for (StudyCharacteristic c : StudyCharacteristic.values()) {
 			assertEquals(c.getDescription(), d_model.getColumnName(column));
+			++column;
+		}
+	}
+	
+	@Test
+	public void testGetColumnNameRemoved() {
+		getFirstCharValueModel().setValue(false);
+		testGetColumnNameFirstMissingHelper();
+	}
+
+	private void testGetColumnNameFirstMissingHelper() {
+		assertEquals("Study ID", d_model.getColumnName(0));
+		int column = 0;
+		for (StudyCharacteristic c : StudyCharacteristic.values()) {
+			if (column > 0) {
+				assertEquals(c.getDescription(), d_model.getColumnName(column));
+			}
 			++column;
 		}
 	}

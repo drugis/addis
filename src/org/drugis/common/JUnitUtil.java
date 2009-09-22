@@ -34,9 +34,13 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EventObject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 
 import com.jgoodies.binding.beans.Model;
@@ -64,13 +68,19 @@ public class JUnitUtil {
 		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
 		PropertyChangeEvent event = new PropertyChangeEvent(
 				source, propertyName, oldValue, newValue);
-		mock.propertyChange(eqEvent(event));
-		mock.propertyChange(not(eqEvent(event)));
+		mock.propertyChange(eqPropertyChangeEvent(event));
+		mock.propertyChange(not(eqPropertyChangeEvent(event)));
 		expectLastCall().anyTimes();
 		replay(mock);
 		return mock;
 	}
 	
+	public static TableModelListener mockTableModelListener(TableModelEvent expected) {
+		TableModelListener mock = createMock(TableModelListener.class);
+		mock.tableChanged((TableModelEvent)eqEventObject(expected));
+		replay(mock);
+		return mock;
+	}
 	
 	private static Method getGetterMethod(Model source, String propertyName)
 			throws NoSuchMethodException {
@@ -113,8 +123,13 @@ public class JUnitUtil {
 		return propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
 	}
 
-	public static PropertyChangeEvent eqEvent(PropertyChangeEvent in) {
+	public static PropertyChangeEvent eqPropertyChangeEvent(PropertyChangeEvent in) {
 	    reportMatcher(new PropertyChangeEventMatcher(in));
+	    return null;
+	}
+	
+	public static EventObject eqEventObject(EventObject in) {
+	    reportMatcher(new EventObjectMatcher(in));
 	    return null;
 	}
 
