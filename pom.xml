@@ -15,11 +15,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.6</version>
-		</dependency>
-		<dependency>
 			<groupId>com.jgoodies</groupId>
 			<artifactId>binding</artifactId>
 			<version>2.0.6</version>
@@ -35,14 +30,22 @@
 			<version>2.2.1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-			<version>2.4</version>
-		</dependency>
-		<dependency>
 			<groupId>commons-math</groupId>
 			<artifactId>commons-math</artifactId>
 			<version>1.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.6</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>2.4</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
