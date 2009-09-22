@@ -19,6 +19,8 @@
 
 package org.drugis.addis.entities;
 
+import java.util.Set;
+
 import com.jgoodies.binding.beans.Model;
 
 public class PooledPatientGroup extends Model implements PatientGroup {
@@ -51,6 +53,11 @@ public class PooledPatientGroup extends Model implements PatientGroup {
 
 	public Study getStudy() {
 		return d_study;
+	}
+
+	public Set<Entity> getDependencies() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

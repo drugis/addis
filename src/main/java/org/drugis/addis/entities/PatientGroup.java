@@ -19,9 +19,7 @@
 
 package org.drugis.addis.entities;
 
-import com.jgoodies.binding.beans.Observable;
-
-public interface PatientGroup extends Observable {
+public interface PatientGroup extends Entity {
 
 	public static final String PROPERTY_STUDY = "study";
 	public static final String PROPERTY_SIZE = "size";
