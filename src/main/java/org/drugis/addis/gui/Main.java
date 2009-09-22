@@ -77,8 +77,12 @@ public class Main extends JFrame {
 	private JTree d_leftPanelTree;
 	private JMenuItem d_editMenuDeleteItem;
 	
-	private PresentationModelManager pmManager = 
+	private PresentationModelManager d_pmManager = 
 		new PresentationModelManager();
+	
+	public PresentationModelManager getPresentationModelManager() {
+		return d_pmManager;
+	}
 
 	public Main() {
 		super(AppInfo.getAppName() + " v" + AppInfo.getAppVersion());
@@ -449,7 +453,7 @@ public class Main extends JFrame {
 	
 	@SuppressWarnings("unchecked")
 	private void studySelected(Study node) {
-		StudyView view = new StudyView(pmManager.getModel(node), getDomain(), this, d_imageLoader);
+		StudyView view = new StudyView(d_pmManager.getModel(node), getDomain(), this, d_imageLoader);
 		d_rightPanelBuilder = view;
 		d_rightPanel.setViewportView(view.buildPanel());
 		d_editMenuDeleteItem.setEnabled(true);		

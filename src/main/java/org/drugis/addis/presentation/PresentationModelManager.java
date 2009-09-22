@@ -22,28 +22,40 @@ package org.drugis.addis.presentation;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaStudy;
 
 import com.jgoodies.binding.PresentationModel;
 
 @SuppressWarnings("unchecked")
 public class PresentationModelManager {
-	private Map<Object, PresentationModel> cache = new
+	private Map<Object, PresentationModel> d_cache = new
 		HashMap<Object, PresentationModel>();
 	
+	public LabeledPresentationModel getLabeledModel(Object obj) {
+		try {
+			return (LabeledPresentationModel)getModel(obj);
+		} catch (ClassCastException e) {
+			return null;
+		}
+	}
+	
 	public PresentationModel getModel(Object obj) {
-		PresentationModel mod = cache.get(obj);
+		PresentationModel mod = d_cache.get(obj);
 		if (mod != null) {
 			return mod;
 		}
 		mod = createModel(obj);
-		cache.put(obj, mod);
+		d_cache.put(obj, mod);
 		return mod;
 	}
 
 	private PresentationModel createModel(Object obj) {
 		if (obj instanceof MetaStudy) {
 			return new MetaStudyPresentationModel((MetaStudy) obj);
+		}
+		if (obj instanceof Indication) {
+			return new IndicationPresentation((Indication)obj);
 		}
 		return new PresentationModel(obj);
 	}

@@ -29,6 +29,7 @@ import java.util.List;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.Study;
@@ -41,11 +42,11 @@ import com.jgoodies.binding.PresentationModel;
 
 public class PresentationModelManagerTest {
 	
-	private PresentationModelManager d_model;
+	private PresentationModelManager d_manager;
 
 	@Before
 	public void setUp() {
-		this.d_model = new PresentationModelManager();
+		this.d_manager = new PresentationModelManager();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -59,16 +60,27 @@ public class PresentationModelManagerTest {
 				studies);
 		MetaStudy s = new MetaStudy("ms", anal);
 		
-		PresentationModel m = d_model.getModel(s);
+		PresentationModel m = d_manager.getModel(s);
 		assertEquals(s, m.getBean());
-		PresentationModel m2 = d_model.getModel(s);
+		PresentationModel m2 = d_manager.getModel(s);
 		assertTrue(m == m2);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testGetIndicationModel() {
+		Indication indication = new Indication(0L, "");
+		PresentationModel m = d_manager.getModel(indication);
+		
+		assertEquals(indication, m.getBean());
+		assertEquals(m.getClass(), IndicationPresentation.class);
+		assertEquals(m, d_manager.getLabeledModel(indication));
 	}
 
 	@Test
 	public void testGetOtherModel() {
 		Domain d = new DomainImpl();
 		ExampleData.initDefaultData(d);
-		assertNotNull(d_model.getModel((BasicStudy) d.getStudies().first()));
+		assertNotNull(d_manager.getModel((BasicStudy) d.getStudies().first()));
 	}
 }

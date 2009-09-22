@@ -44,7 +44,7 @@ import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
-import org.drugis.addis.presentation.IndicationPresentation;
+import org.drugis.addis.presentation.LabeledPresentationModel;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.common.ImageLoader;
@@ -53,6 +53,8 @@ import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.beans.Model;
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -301,11 +303,14 @@ public class StudyView implements ViewBuilder {
 		
 		Indication indication =
 			(Indication)d_model.getBean().getCharacteristics().get(StudyCharacteristic.INDICATION);
-		IndicationPresentation p = new IndicationPresentation(indication);
-		builder.add(BasicComponentFactory.createLabel(p.getLabelModel()),
+		builder.add(BasicComponentFactory.createLabel(getLabelModel(indication)),
 				cc.xyw(3, 5, fullWidth - 2));
 		
 		return 7;
+	}
+
+	private AbstractValueModel getLabelModel(Model model) {
+		return d_mainWindow.getPresentationModelManager().getLabeledModel(model).getLabelModel();
 	}
 
 	private String getStudyLabel() {
