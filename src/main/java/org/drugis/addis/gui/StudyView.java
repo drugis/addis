@@ -44,7 +44,6 @@ import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
-import org.drugis.addis.presentation.LabeledPresentationModel;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.common.ImageLoader;
@@ -53,7 +52,6 @@ import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.beans.Model;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -194,8 +192,7 @@ public class StudyView implements ViewBuilder {
 		int col;
 		LayoutUtil.addRow(layout);
 		builder.add(
-				BasicComponentFactory.createLabel(
-						new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_LABEL)),
+				BasicComponentFactory.createLabel(getLabelModel(g)),
 				cc.xy(1, row));
 		
 		builder.add(
@@ -209,9 +206,8 @@ public class StudyView implements ViewBuilder {
 			Measurement m = d_model.getBean().getMeasurement(e, g);
 			if (m != null) {
 				builder.add(
-						BasicComponentFactory.createLabel(
-								new PresentationModel<Measurement>(m).getModel(Measurement.PROPERTY_LABEL)),
-								cc.xy(col, row));
+						BasicComponentFactory.createLabel(getLabelModel(m)),
+						cc.xy(col, row));
 			}
 			col += 2;
 		}
@@ -309,7 +305,7 @@ public class StudyView implements ViewBuilder {
 		return 7;
 	}
 
-	private AbstractValueModel getLabelModel(Model model) {
+	private AbstractValueModel getLabelModel(Object model) {
 		return d_mainWindow.getPresentationModelManager().getLabeledModel(model).getLabelModel();
 	}
 

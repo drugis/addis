@@ -23,7 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.MetaStudy;
+import org.drugis.addis.entities.PatientGroup;
 
 import com.jgoodies.binding.PresentationModel;
 
@@ -56,6 +58,12 @@ public class PresentationModelManager {
 		}
 		if (obj instanceof Indication) {
 			return new IndicationPresentation((Indication)obj);
+		}
+		if (obj instanceof Measurement) {
+			return new MeasurementPresentation((Measurement)obj);
+		}
+		if (obj instanceof PatientGroup) {
+			return new PatientGroupPresentation((PatientGroup)obj);
 		}
 		return new PresentationModel(obj);
 	}
