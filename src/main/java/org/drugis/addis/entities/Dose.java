@@ -19,11 +19,16 @@
 
 package org.drugis.addis.entities;
 
-import com.jgoodies.binding.beans.Model;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.Set;
+
+import org.drugis.common.ObserverManager;
 
 import static org.drugis.common.EqualsUtil.equal;
 
-public class Dose extends Model {
+public class Dose implements Entity {
 	private static final long serialVersionUID = -8789524312421940513L;
 	private SIUnit d_unit;
 	private Double d_quantity;
@@ -38,6 +43,7 @@ public class Dose extends Model {
 	public Dose(double quantity, SIUnit unit) {
 		d_quantity = quantity;
 		d_unit = unit;
+		init();
 	}
 	
 	public SIUnit getUnit() {
@@ -49,7 +55,7 @@ public class Dose extends Model {
 		d_unit = unit;
 		firePropertyChange(PROPERTY_UNIT, oldVal, d_unit);
 	}
-	
+
 	public Double getQuantity() {
 		return d_quantity;
 	}
@@ -83,5 +89,32 @@ public class Dose extends Model {
 		hash = hash * 31 + getQuantity().hashCode();
 		hash = hash * 31 + getUnit().hashCode();
 		return hash;
+	}
+
+	public Set<Entity> getDependencies() {
+		return null;
+	}
+	
+	transient private ObserverManager d_om;
+	
+	private void init() {
+		d_om = new ObserverManager(this);
+	}
+	
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
+		in.defaultReadObject();
+		init();
+	}
+
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		d_om.addPropertyChangeListener(listener);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		d_om.removePropertyChangeListener(listener);
+	}
+	
+	private void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		d_om.firePropertyChange(propertyName, oldValue, newValue);
 	}
 }

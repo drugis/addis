@@ -19,11 +19,14 @@
 
 package org.drugis.addis.entities;
 
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Set;
 
-import com.jgoodies.binding.beans.Model;
+import org.drugis.common.ObserverManager;
 
-public class PooledPatientGroup extends Model implements PatientGroup {
+public class PooledPatientGroup implements PatientGroup {
 	
 	private static final long serialVersionUID = 7548091994878904366L;
 	
@@ -33,6 +36,7 @@ public class PooledPatientGroup extends Model implements PatientGroup {
 	public PooledPatientGroup(MetaStudy study, Drug drug) {
 		d_study = study;
 		d_drug = drug;
+		init();
 	}
 
 	public Dose getDose() {
@@ -59,5 +63,23 @@ public class PooledPatientGroup extends Model implements PatientGroup {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	transient private ObserverManager d_om;
+	
+	private void init() {
+		d_om = new ObserverManager(this);
+	}
+	
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
+		in.defaultReadObject();
+		init();
+	}
 
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		d_om.addPropertyChangeListener(listener);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		d_om.removePropertyChangeListener(listener);
+	}
 }
