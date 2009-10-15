@@ -19,14 +19,9 @@
 
 package org.drugis.addis.entities;
 
-import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.Set;
 
-import org.drugis.common.ObserverManager;
-
-public class PooledPatientGroup implements PatientGroup {
+public class PooledPatientGroup extends AbstractEntity implements PatientGroup {
 	
 	private static final long serialVersionUID = 7548091994878904366L;
 	
@@ -62,24 +57,5 @@ public class PooledPatientGroup implements PatientGroup {
 	public Set<Entity> getDependencies() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-	
-	transient private ObserverManager d_om;
-	
-	private void init() {
-		d_om = new ObserverManager(this);
-	}
-	
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
-		in.defaultReadObject();
-		init();
-	}
-
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		d_om.addPropertyChangeListener(listener);
-	}
-
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		d_om.removePropertyChangeListener(listener);
 	}
 }

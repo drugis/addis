@@ -32,8 +32,6 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jgoodies.binding.beans.Model;
-
 public class CharacteristicHolderTest {
 	private BasicStudy d_study;
 	private CharacteristicHolder d_holder;
@@ -53,7 +51,7 @@ public class CharacteristicHolderTest {
 	
 	@Test
 	public void testSetValueTriggersCharacteristicsChanged() {
-		HashMap<StudyCharacteristic, Model> newVal = new HashMap<StudyCharacteristic, Model>();
+		HashMap<StudyCharacteristic, Object> newVal = new HashMap<StudyCharacteristic, Object>();
 		Indication indication = new Indication(1L, "Indication");
 		newVal.put(d_char, indication);
 		PropertyChangeListener l =

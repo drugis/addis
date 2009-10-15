@@ -19,12 +19,12 @@
 
 package org.drugis.addis.entities;
 
+import java.util.Set;
+
 import org.drugis.addis.entities.Endpoint.Type;
 
-import com.jgoodies.binding.beans.Model;
 
-
-public class RateContinuousAdapter extends Model implements ContinuousMeasurement {
+public class RateContinuousAdapter extends AbstractEntity implements ContinuousMeasurement {
 	private static final long serialVersionUID = 3646088897115931916L;
 	private RateMeasurement d_measurement;
 	
@@ -54,5 +54,11 @@ public class RateContinuousAdapter extends Model implements ContinuousMeasuremen
 
 	public boolean isOfType(Type type) {
 		return type.equals(Type.CONTINUOUS);
+	}
+
+	@Override
+	public Set<Entity> getDependencies() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

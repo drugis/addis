@@ -22,9 +22,7 @@ package org.drugis.addis.entities;
 import java.util.Collections;
 import java.util.Set;
 
-import com.jgoodies.binding.beans.Model;
-
-public class Endpoint extends Model implements Comparable<Endpoint>, Entity {
+public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 	private static final long serialVersionUID = -1182348850033782011L;
 
 	public enum Type {

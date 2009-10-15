@@ -48,12 +48,12 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 			g.addPropertyChangeListener(d_pgListener);
 		}
 	}
-
+	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
 		in.defaultReadObject();
 		initPatientGroupListener();
 	}
-
+	
 	public List<BasicPatientGroup> getPatientGroups() {
 		return d_patientGroups;
 	}

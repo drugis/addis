@@ -25,13 +25,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.drugis.addis.entities.Endpoint.Type;
 
-
-import com.jgoodies.binding.beans.Model;
-
-public class PooledRateMeasurement extends Model implements RateMeasurement {
+public class PooledRateMeasurement extends AbstractEntity implements RateMeasurement {
 	private static final long serialVersionUID = 5124815300626704289L;
 	private List<RateMeasurement> d_measurements;
 	private Integer d_rate;
@@ -174,5 +172,11 @@ public class PooledRateMeasurement extends Model implements RateMeasurement {
 
 	public boolean isOfType(Type type) {
 		return type.equals(Type.RATE);
+	}
+
+	@Override
+	public Set<Entity> getDependencies() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

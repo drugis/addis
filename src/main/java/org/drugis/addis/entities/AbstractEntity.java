@@ -16,7 +16,7 @@ public abstract class AbstractEntity implements Entity {
 		init();
 	}
 	
-	private void init() {
+	protected void init() {
 		d_om = new ObserverManager(this);
 	}
 	
