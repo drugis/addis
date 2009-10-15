@@ -70,9 +70,4 @@ public class PooledPatientGroupTest {
 	public void testGetStudy() {
 		assertEquals(d_study, d_pg.getStudy());
 	}
-	
-	@Test
-	public void testGetLabel() {
-		assertEquals("META " + d_pg.getDrug().toString(), d_pg.getLabel());
-	}
 }

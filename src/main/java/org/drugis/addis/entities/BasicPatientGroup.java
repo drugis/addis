@@ -51,11 +51,9 @@ public class BasicPatientGroup extends AbstractEntity implements MutablePatientG
 	}
 	
 	public void setDrug(Drug drug) {
-		String oldLabel = getLabel();
 		Drug oldVal = d_drug;
 		d_drug = drug;
 		firePropertyChange(PROPERTY_DRUG, oldVal, d_drug);
-		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
 	}
 	
 	public Dose getDose() {
@@ -63,18 +61,9 @@ public class BasicPatientGroup extends AbstractEntity implements MutablePatientG
 	}
 	
 	public void setDose(Dose dose) {
-		String oldLabel = getLabel();
 		Dose oldVal = d_dose;
 		d_dose = dose;
 		firePropertyChange(PROPERTY_DOSE, oldVal, d_dose);
-		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
-	}
-	
-	public String getLabel() {
-		if (d_drug == null || d_dose == null) {
-			return "INCOMPLETE";
-		}
-		return d_drug.toString() + " " + d_dose.toString();
 	}
 	
 	@Override

@@ -42,10 +42,6 @@ public class PooledPatientGroup extends AbstractEntity implements PatientGroup {
 		return d_drug;
 	}
 
-	public String getLabel() {
-		return "META " + d_drug.toString();
-	}
-
 	public Integer getSize() {
 		return d_study.getAnalysis().getPooledMeasurement(d_drug).getSampleSize();
 	}

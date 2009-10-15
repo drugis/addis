@@ -18,14 +18,16 @@ public class PooledPatientGroupPresentation extends LabeledPresentationModel<Poo
 		
 		@Override
 		public String getValue() {
-			return getBean().getLabel();
+			return calcLabel();
+		}
+		
+		private String calcLabel() {
+			return "META " + getBean().getDrug().toString();
 		}
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals(PooledPatientGroup.PROPERTY_LABEL)) {
-				firePropertyChange("value", evt.getOldValue(), evt.getNewValue());
-			}
+			// IMMUTABLE
 		}
 	}
 
