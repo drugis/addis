@@ -36,7 +36,7 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
 		in.defaultReadObject();
 		d_listener = new SampleSizeListener();
-		addPropertyChangeListener(PROPERTY_SAMPLESIZE, d_listener);
+		addPropertyChangeListener(d_listener);
 	}
 	
 	private void writeObject(ObjectOutputStream out) throws IOException {
@@ -45,13 +45,13 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 	
 	public BasicRateMeasurement(Endpoint e, int rate, int size) {
 		super(e, size);
-		addPropertyChangeListener(PROPERTY_SAMPLESIZE, d_listener);
+		addPropertyChangeListener(d_listener);
 		d_rate = rate;
 	}
 	
 	public BasicRateMeasurement(Endpoint e, int rate) {
 		super(e, 0);
-		addPropertyChangeListener(PROPERTY_SAMPLESIZE, d_listener);
+		addPropertyChangeListener(d_listener);
 		d_rate = rate;
 	}	
 

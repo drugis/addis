@@ -19,9 +19,10 @@
 
 package org.drugis.addis.entities;
 
-import com.jgoodies.binding.beans.Model;
+import java.util.Collections;
+import java.util.Set;
 
-public abstract class BasicMeasurement extends Model implements Measurement {
+public abstract class BasicMeasurement extends AbstractEntity implements Measurement {
 	private static final long serialVersionUID = 6892934487858770855L;
 	private Endpoint d_endpoint;
 	private Integer d_size;
@@ -54,5 +55,10 @@ public abstract class BasicMeasurement extends Model implements Measurement {
 		Integer oldVal = d_size;
 		d_size = size;
 		firePropertyChange(PROPERTY_SAMPLESIZE, oldVal, d_size);
+	}
+	
+	@Override
+	public Set<Entity> getDependencies() {
+		return Collections.emptySet();
 	}
 }
