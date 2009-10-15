@@ -19,6 +19,9 @@
 
 package org.drugis.addis.presentation;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
@@ -28,6 +31,11 @@ public abstract class LabeledPresentationModel<B> extends PresentationModel<B> {
 
 	public LabeledPresentationModel(B bean) {
 		super(bean);
+		getLabelModel().addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				firePropertyChange(PROPERTY_LABEL, evt.getOldValue(), evt.getNewValue());
+			}
+		});
 	}
 	
 	public abstract AbstractValueModel getLabelModel();
@@ -37,5 +45,9 @@ public abstract class LabeledPresentationModel<B> extends PresentationModel<B> {
 			return getLabelModel();
 		}
 		return super.getModel(name);
+	}
+	
+	public String getLabel() {
+		return getLabelModel().getValue().toString();
 	}
 }

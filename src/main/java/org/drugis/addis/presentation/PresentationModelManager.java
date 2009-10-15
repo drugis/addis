@@ -22,10 +22,11 @@ package org.drugis.addis.presentation;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.MetaStudy;
-import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.PooledPatientGroup;
 
 import com.jgoodies.binding.PresentationModel;
 
@@ -62,8 +63,11 @@ public class PresentationModelManager {
 		if (obj instanceof Measurement) {
 			return new MeasurementPresentation((Measurement)obj);
 		}
-		if (obj instanceof PatientGroup) {
-			return new PatientGroupPresentation((PatientGroup)obj);
+		if (obj instanceof BasicPatientGroup) {
+			return new BasicPatientGroupPresentation((BasicPatientGroup)obj);
+		}
+		if (obj instanceof PooledPatientGroup) {
+			return new PatientGroupPresentation((PooledPatientGroup)obj);
 		}
 		return new PresentationModel(obj);
 	}
