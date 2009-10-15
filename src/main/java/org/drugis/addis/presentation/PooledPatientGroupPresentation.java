@@ -2,7 +2,7 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 
-import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.PooledPatientGroup;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 
@@ -10,9 +10,9 @@ import com.jgoodies.binding.value.AbstractValueModel;
 //and these should implement the PROPERTY_LABEL, in stead of the PatientGroup itself.
 
 @SuppressWarnings("serial")
-public class PatientGroupPresentation extends LabeledPresentationModel<PatientGroup> {
-	public static class LabelModel extends AbstractLabelModel<PatientGroup> {
-		public LabelModel(PatientGroup bean) {
+public class PooledPatientGroupPresentation extends LabeledPresentationModel<PooledPatientGroup> {
+	public static class LabelModel extends AbstractLabelModel<PooledPatientGroup> {
+		public LabelModel(PooledPatientGroup bean) {
 			super(bean);
 		}
 		
@@ -23,13 +23,13 @@ public class PatientGroupPresentation extends LabeledPresentationModel<PatientGr
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals(PatientGroup.PROPERTY_LABEL)) {
+			if (evt.getPropertyName().equals(PooledPatientGroup.PROPERTY_LABEL)) {
 				firePropertyChange("value", evt.getOldValue(), evt.getNewValue());
 			}
 		}
 	}
 
-	public PatientGroupPresentation(PatientGroup bean) {
+	public PooledPatientGroupPresentation(PooledPatientGroup bean) {
 		super(bean);
 	}
 

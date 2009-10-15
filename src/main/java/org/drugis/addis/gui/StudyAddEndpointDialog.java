@@ -25,14 +25,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.swing.JFrame;
-
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.common.gui.OkCancelDialog;
-
 
 import com.jgoodies.binding.PresentationModel;
 
@@ -43,7 +40,7 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 	private EndpointHolder d_newEndpoint;
 	private Map<PatientGroup, BasicMeasurement> d_measurements;
 	
-	public StudyAddEndpointDialog(JFrame frame, Domain domain, MutableStudy study) {
+	public StudyAddEndpointDialog(Main frame, Domain domain, MutableStudy study) {
 		super(frame, "Add Endpoint to Study");
 		this.setModal(true);
 		d_domain = domain;
@@ -52,7 +49,7 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 		d_newEndpoint = new EndpointHolder();
 		final StudyAddEndpointView view = new StudyAddEndpointView(d_domain, d_study,
 				new PresentationModel<EndpointHolder>(d_newEndpoint), d_measurements,
-				d_okButton);
+				d_okButton, frame.getPresentationModelManager());
 		
 		
 		d_newEndpoint.addPropertyChangeListener(new PropertyChangeListener() {

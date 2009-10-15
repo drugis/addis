@@ -34,6 +34,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.presentation.PresentationModelManager;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -55,16 +56,18 @@ public class StudyAddEndpointView implements ViewBuilder {
 	private JComboBox d_endpointSelect;
 	private SelectionInList<Endpoint> d_endpointSelectionInList;
 	private NotEmptyValidator d_validator;
+	private PresentationModelManager d_presMan;
 	
 	public StudyAddEndpointView(Domain domain, MutableStudy study,
 			PresentationModel<EndpointHolder> endpointModel,
 			Map<PatientGroup,BasicMeasurement> measurements,
-			JButton okButton) {
+			JButton okButton, PresentationModelManager presModelMan) {
 		d_validator = new NotEmptyValidator(okButton);
 		d_domain = domain;
 		d_study = study;
 		d_endpointModel = endpointModel;
 		d_measurements = measurements;
+		d_presMan = presModelMan;
 	}
 
 	private void initializeMeasurements() {
@@ -156,9 +159,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 			PatientGroup g = e.getKey();
 			BasicMeasurement m = e.getValue();
 			LayoutUtil.addRow(layout);
-			PresentationModel<PatientGroup> gModel = 
-				new PresentationModel<PatientGroup>(g);
-			builder.add(BasicComponentFactory.createLabel(gModel.getModel(PatientGroup.PROPERTY_LABEL)),
+			builder.add(BasicComponentFactory.createLabel(d_presMan.getLabeledModel(g).getLabelModel()),
 					cc.xy(1, row));
 			int col = 3;
 			for (JTextField component : MeasurementInputHelper.getComponents(m)) {

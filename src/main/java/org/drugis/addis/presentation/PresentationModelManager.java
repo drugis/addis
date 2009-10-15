@@ -67,7 +67,7 @@ public class PresentationModelManager {
 			return new BasicPatientGroupPresentation((BasicPatientGroup)obj);
 		}
 		if (obj instanceof PooledPatientGroup) {
-			return new PatientGroupPresentation((PooledPatientGroup)obj);
+			return new PooledPatientGroupPresentation((PooledPatientGroup)obj);
 		}
 		return new PresentationModel(obj);
 	}
