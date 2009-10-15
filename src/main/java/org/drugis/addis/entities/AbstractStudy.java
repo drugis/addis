@@ -19,9 +19,6 @@
 
 package org.drugis.addis.entities;
 
-import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,11 +27,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.drugis.common.ObserverManager;
-
 import com.jgoodies.binding.beans.Model;
 
-public abstract class AbstractStudy implements Study {
+public abstract class AbstractStudy extends AbstractEntity implements Study {
 	private static final long serialVersionUID = 4275729141451329959L;
 	
 	private String d_id;
@@ -49,7 +44,6 @@ public abstract class AbstractStudy implements Study {
 	public AbstractStudy(String id, Indication i) {
 		d_id = id;
 		d_chars.put(StudyCharacteristic.INDICATION, i);
-		init();
 	}	
 	
 	public String getId() {
@@ -60,30 +54,6 @@ public abstract class AbstractStudy implements Study {
 		String oldVal = d_id;
 		d_id = id;
 		firePropertyChange(PROPERTY_ID, oldVal, d_id);
-	}
-	
-	transient private ObserverManager d_om;
-	
-	private void init() {
-		d_om = new ObserverManager(this);
-	}
-	
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
-		in.defaultReadObject();
-		init();
-	}
-	
-
-	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-		d_om.firePropertyChange(propertyName, oldValue, newValue);
-	}
-	
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		d_om.addPropertyChangeListener(listener);
-	}
-	
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		d_om.removePropertyChangeListener(listener);
 	}
 
 	@Override

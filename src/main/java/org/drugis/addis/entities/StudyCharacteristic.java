@@ -19,17 +19,81 @@
 
 package org.drugis.addis.entities;
 
+import java.util.Date;
+
 public enum StudyCharacteristic {
-		INDICATION("Intended Indication"),
-		DUMMY("For Testing Purposes");
+		ARMS("Number of study arms", ValueType.POSITIVE_INTEGER),
+		ALLOCATION("Group allocation", ValueType.ALLOCATION),
+		BLINDING("Blinding", ValueType.BLINDING),
+		CENTERS("Number of study centers", ValueType.POSITIVE_INTEGER),
+		OBJECTIVE("Study Objective", ValueType.TEXT),
+		INDICATION("Intended Indication", ValueType.INDICATION),
+		STUDY_START("Study start date", ValueType.DATE),
+		STUDY_END("Study end date", ValueType.DATE),
+		STATUS("Study status", ValueType.STATUS),
+		INCLUSION("Inclusion criteria", ValueType.TEXT),
+		EXCLUSION("Exclusion criteria", ValueType.TEXT);
+		
+		public enum ValueType {
+			TEXT(String.class),
+			POSITIVE_INTEGER(Integer.class),
+			DATE(Date.class),
+			INDICATION(Indication.class),
+			ALLOCATION(Allocation.class),
+			BLINDING(Blinding.class),
+			STATUS(Status.class);
+			
+			public final Class<?> valueClass;
+			
+			ValueType(Class<?> vclass) {
+				valueClass = vclass;
+			}
+			
+			public boolean validate(Object value) {
+				if (!valueClass.isInstance(value)) {
+					return false;
+				}
+				if (this.equals(POSITIVE_INTEGER)) {
+					Integer i = (Integer) value;
+					if (i < 1) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+		
+		public enum Allocation {
+			RANDOMIZED,
+			NONRANDOMIZED
+		}
+		
+		public enum Blinding {
+			OPEN,
+			SINGLE_BLIND,
+			DOUBLE_BLIND,
+			TRIPLE_BLIND
+		}
+		
+		public enum Status {
+			RECRUITING,
+			ONGOING,
+			FINISHED
+		}
 		
 		private String d_description;
+		private ValueType d_valueType;
 		
-		StudyCharacteristic(String description) { 
+		StudyCharacteristic(String description, ValueType valueType) { 
 			d_description = description;
+			d_valueType = valueType;
 		}
 		
 		public String getDescription() {
 			return d_description;
+		}
+		
+		public ValueType getValueType() {
+			return d_valueType;
 		}
 }

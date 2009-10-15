@@ -66,7 +66,7 @@ public class MainData {
 		BasicStudy study = new BasicStudy("De Wilde et al, 1993", buildIndication());
 		Map<StudyCharacteristic, Model> chars = 
 			new HashMap<StudyCharacteristic, Model>(study.getCharacteristics());
-		chars.put(StudyCharacteristic.DUMMY, new Indication(0L, "BLAH"));
+		chars.put(StudyCharacteristic.ARMS, new Indication(0L, ""));
 		study.setCharacteristics(chars);
 		study.setEndpoints(Collections.singleton(hamd));
 
