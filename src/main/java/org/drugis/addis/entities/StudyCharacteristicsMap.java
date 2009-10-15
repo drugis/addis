@@ -54,7 +54,8 @@ public class StudyCharacteristicsMap extends AbstractEntity implements Map<Study
 
 	public Object put(StudyCharacteristic key, Object value) {
 		if (!key.getValueType().validate(value)) {
-			throw new IllegalArgumentException("Illegal value for the type of characteristic");
+			throw new IllegalArgumentException("Illegal value " + value.getClass() + "(" + value 
+					+ ") for the type of characteristic: " + this);
 		}
 		Object old = d_map.put(key, value);
 		fireContentsChanged();

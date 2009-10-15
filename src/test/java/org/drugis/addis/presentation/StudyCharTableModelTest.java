@@ -77,7 +77,7 @@ public class StudyCharTableModelTest {
 			assertEquals(s.getId(), d_model.getValueAt(row, 0));
 			int column = 1;
 			for (StudyCharacteristic c : StudyCharacteristic.values()) {
-				assertEquals(s.getCharacteristics().get(c), d_model.getValueAt(row, column));
+				assertEquals(s.getCharacteristic(c), d_model.getValueAt(row, column));
 				++column;
 			}
 			++row;
@@ -93,7 +93,7 @@ public class StudyCharTableModelTest {
 			int column = 0;
 			for (StudyCharacteristic c : StudyCharacteristic.values()) {
 				if (column > 0) {
-					assertEquals(s.getCharacteristics().get(c), d_model.getValueAt(row, column));
+					assertEquals(s.getCharacteristic(c), d_model.getValueAt(row, column));
 				}
 				++column;
 			}

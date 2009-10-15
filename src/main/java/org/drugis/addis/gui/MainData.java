@@ -21,9 +21,7 @@ package org.drugis.addis.gui;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
@@ -38,8 +36,6 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.entities.Endpoint.Type;
-
-import com.jgoodies.binding.beans.Model;
 
 
 public class MainData {
@@ -64,10 +60,7 @@ public class MainData {
 		Drug paroxetine = buildDefaultDrugParoxetine();
 		Drug fluoxetine = buildDefaultDrugFluoxetine();
 		BasicStudy study = new BasicStudy("De Wilde et al, 1993", buildIndication());
-		Map<StudyCharacteristic, Model> chars = 
-			new HashMap<StudyCharacteristic, Model>(study.getCharacteristics());
-		chars.put(StudyCharacteristic.ARMS, new Indication(0L, ""));
-		study.setCharacteristics(chars);
+		study.setCharacteristic(StudyCharacteristic.ARMS, new Integer(2));
 		study.setEndpoints(Collections.singleton(hamd));
 
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);

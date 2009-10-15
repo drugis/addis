@@ -19,13 +19,9 @@
 
 package org.drugis.addis.gui;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.StudyCharacteristic;
 
-import com.jgoodies.binding.beans.Model;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
@@ -42,13 +38,9 @@ public class CharacteristicHolder extends AbstractValueModel {
 		return d_study.getCharacteristics().get(d_char);
 	}
 
-	public void setValue(Object o) {
-		Model newValue = (Model)o;
+	public void setValue(Object newValue) {
 		Object oldValue = d_study.getCharacteristics().get(d_char);
-		Map<StudyCharacteristic, Model> chars = new HashMap<StudyCharacteristic, Model>(
-				d_study.getCharacteristics());
-		chars.put(d_char, newValue);
-		d_study.setCharacteristics(chars);
+		d_study.setCharacteristic(d_char, newValue);
 		firePropertyChange("value", oldValue, newValue);
 	}
 }

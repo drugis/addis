@@ -19,35 +19,22 @@
 
 package org.drugis.addis.entities;
 
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.beans.PropertyChangeListener;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-
-import org.drugis.addis.entities.AbstractStudy;
-import org.drugis.addis.entities.BasicPatientGroup;
-import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.BasicStudy;
-import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Entity;
-import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.jgoodies.binding.beans.Model;
 
 public class BasicStudyTest {
 	
@@ -214,12 +201,14 @@ public class BasicStudyTest {
 	}
 	
 	@Test
-	public void testCharacteristics() {
+	public void testSetCharacteristic() {
 		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
-		Map<StudyCharacteristic, Model> oldVal = new HashMap<StudyCharacteristic, Model>();
-		oldVal.put(StudyCharacteristic.INDICATION, new Indication(0L, ""));
-		Map<StudyCharacteristic, Model> newVal = new HashMap<StudyCharacteristic, Model>();
-		newVal.put(StudyCharacteristic.INDICATION, new Indication(1L, "TEST"));
-		JUnitUtil.testSetter(study, Study.PROPERTY_CHARACTERISTICS, oldVal, newVal);
+		
+		PropertyChangeListener listener = JUnitUtil.mockStrictListener(study.getCharacteristics(), 
+				StudyCharacteristicsMap.PROPERTY_CONTENTS,null, null);		
+		study.getCharacteristics().addPropertyChangeListener(listener);
+
+		study.setCharacteristic(StudyCharacteristic.ARMS, new Integer(2));
+		verify(listener);
 	}
 }

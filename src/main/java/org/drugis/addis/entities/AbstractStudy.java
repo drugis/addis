@@ -27,8 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import com.jgoodies.binding.beans.Model;
-
 public abstract class AbstractStudy extends AbstractEntity implements Study {
 	private static final long serialVersionUID = 4275729141451329959L;
 	
@@ -38,8 +36,8 @@ public abstract class AbstractStudy extends AbstractEntity implements Study {
 
 	protected Set<Endpoint> d_endpoints = new HashSet<Endpoint>();
 	
-	protected Map<StudyCharacteristic, Model> d_chars
-		= new HashMap<StudyCharacteristic, Model>();
+	protected StudyCharacteristicsMap d_chars
+		= new StudyCharacteristicsMap();
 
 	public AbstractStudy(String id, Indication i) {
 		d_id = id;
@@ -158,7 +156,11 @@ public abstract class AbstractStudy extends AbstractEntity implements Study {
 		}
 	}		
 	
-	public Map<StudyCharacteristic, Model> getCharacteristics() {
+	public Object getCharacteristic(StudyCharacteristic c) {
+		return d_chars.get(c);
+	}
+	
+	public Map<StudyCharacteristic, Object> getCharacteristics() {
 		return Collections.unmodifiableMap(d_chars);
 	}
 

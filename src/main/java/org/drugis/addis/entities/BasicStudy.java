@@ -26,10 +26,7 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import com.jgoodies.binding.beans.Model;
 
 
 public class BasicStudy extends AbstractStudy implements MutableStudy {
@@ -102,9 +99,12 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 		}		
 	}
 
-	public void setCharacteristics(Map<StudyCharacteristic, Model> chars) {
-		Map<StudyCharacteristic, Model> oldVal = d_chars;
-		d_chars = chars;
-		firePropertyChange(PROPERTY_CHARACTERISTICS, oldVal, d_chars);
+	public void setCharacteristic(StudyCharacteristic c, Object val) {
+		d_chars.put(c, val);
+	}
+	
+	@Override
+	public StudyCharacteristicsMap getCharacteristics() {
+		return d_chars;
 	}
 }

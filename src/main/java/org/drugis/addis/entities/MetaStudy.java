@@ -100,5 +100,5 @@ public class MetaStudy extends AbstractStudy {
 		Set<Endpoint> newVal = new HashSet<Endpoint>(endpoints);
 		newVal.add(d_analysis.getEndpoint());
 		firePropertyChange(PROPERTY_ENDPOINTS, oldVal, newVal);
-	}	
+	}
 }

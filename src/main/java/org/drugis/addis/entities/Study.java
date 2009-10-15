@@ -23,13 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.jgoodies.binding.beans.Model;
-
 public interface Study extends Comparable<Study>, Entity {
 	public final static String PROPERTY_ID = "id";
 	public final static String PROPERTY_ENDPOINTS = "endpoints";
 	public final static String PROPERTY_PATIENTGROUPS = "patientGroups";
-	public final static String PROPERTY_CHARACTERISTICS = "characteristics";
 
 	public String getId();
 	public Set<Endpoint> getEndpoints();
@@ -37,9 +34,6 @@ public interface Study extends Comparable<Study>, Entity {
 	public Measurement getMeasurement(Endpoint e, PatientGroup g);
 	public Set<Drug> getDrugs();	
 	
-	/**
-	 * Get characteristics
-	 * @return An immutable map.
-	 */
-	public Map<StudyCharacteristic, Model> getCharacteristics();
+	public Map<StudyCharacteristic, Object> getCharacteristics();
+	public Object getCharacteristic(StudyCharacteristic c);
 }

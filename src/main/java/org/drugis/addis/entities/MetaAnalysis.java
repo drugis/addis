@@ -118,14 +118,14 @@ public class MetaAnalysis implements Serializable {
 			if (!s.getEndpoints().contains(endpoint)) {
 				throw new IllegalArgumentException("Study " + s + " does not measure " + endpoint);
 			}
-			if (!s0.getCharacteristics().get(StudyCharacteristic.INDICATION).equals(
-					s.getCharacteristics().get(StudyCharacteristic.INDICATION))) {
+			if (!s0.getCharacteristic(StudyCharacteristic.INDICATION).equals(
+					s.getCharacteristic(StudyCharacteristic.INDICATION))) {
 				throw new IllegalArgumentException("All studies should have same Indication");
 			}
 		}
 	}
 
 	public Indication getIndication() {
-		return (Indication)d_studies.get(0).getCharacteristics().get(StudyCharacteristic.INDICATION);
+		return (Indication)d_studies.get(0).getCharacteristic(StudyCharacteristic.INDICATION);
 	}
 }

@@ -19,9 +19,6 @@
 
 package org.drugis.addis.entities;
 
-import java.util.Map;
-
-import com.jgoodies.binding.beans.Model;
 
 public interface MutableStudy extends Study {
 	
@@ -29,5 +26,5 @@ public interface MutableStudy extends Study {
 	public void deleteEndpoint(Endpoint e);
 	public void setId(String id);
 	public void setMeasurement(Endpoint e, PatientGroup g, Measurement m);
-	public void setCharacteristics(Map<StudyCharacteristic, Model> chars);
+	public void setCharacteristic(StudyCharacteristic c, Object val);
 }
