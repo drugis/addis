@@ -299,13 +299,9 @@ public class StudyView implements ViewBuilder {
 		int row = 5;
 		for (StudyCharacteristic c : StudyCharacteristic.values()) {
 			LayoutUtil.addRow(layout);
-			builder.addLabel(c.getDescription(), cc.xy(1, row));
+			builder.addLabel(c.getDescription() + ":", cc.xy(1, row));
 			
 			ValueModel model = new CharacteristicHolder(d_model.getBean(), c);
-			/*
-			Indication indication =
-				(Indication)d_model.getBean().getCharacteristics().get(StudyCharacteristic.INDICATION);
-				*/
 			builder.add(BasicComponentFactory.createLabel(model, new OneWayObjectFormat()),
 					cc.xyw(3, row, fullWidth - 2));
 			

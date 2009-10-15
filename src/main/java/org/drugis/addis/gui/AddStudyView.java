@@ -21,7 +21,6 @@ package org.drugis.addis.gui;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -43,53 +42,61 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.beans.PropertyConnector;
-import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class AddStudyView implements ViewBuilder {
-	private JTextField d_id;
-	private JComboBox d_endpoint;
 	private PresentationModel<BasicStudy> d_model;
-	private PresentationModel<EndpointHolder> d_endpointModel;
+	private PresentationModel<EndpointHolder> d_endpointPresentation;
 	private Domain d_domain;
 	private NotEmptyValidator d_validator;
+	private JButton d_okButton;
 
 	public AddStudyView(PresentationModel<BasicStudy> presentationModel,
 			PresentationModel<EndpointHolder> presentationModel2, Domain domain,
 			JButton okButton) {
-		d_validator = new NotEmptyValidator(okButton);		
+		d_okButton = okButton;
 		d_model = presentationModel;
-		d_endpointModel = presentationModel2;
+		d_endpointPresentation = presentationModel2;
 		d_domain = domain;
 	}
 	
 	public void initComponents() {
-		d_id = BasicComponentFactory.createTextField(d_model.getModel(AbstractStudy.PROPERTY_ID));
-		d_id.setColumns(30);
-		AutoSelectFocusListener.add(d_id);
-		d_validator.add(d_id);
+		
+		createIdComponent();
 				
-		ArrayList<Endpoint> endpoints = new ArrayList<Endpoint>(d_domain.getEndpoints());
-		SelectionInList<Endpoint> endpointSelectionInList =
-			new SelectionInList<Endpoint>(
-					endpoints, 
-					d_endpointModel.getModel(EndpointHolder.PROPERTY_ENDPOINT));
-		d_endpoint = BasicComponentFactory.createComboBox(endpointSelectionInList);
-		d_validator.add(d_endpoint);
-		ComboBoxPopupOnFocusListener.add(d_endpoint);
+		createEndpointComponent();
+	}
+
+	private JComponent createEndpointComponent() {
+		AbstractValueModel valueModel = d_endpointPresentation.getModel(EndpointHolder.PROPERTY_ENDPOINT);
+		JComboBox endpoint = AuxComponentFactory.createBoundComboBox(d_domain.getEndpoints().toArray(), valueModel);
+		d_validator.add(endpoint);
+		
+		ComboBoxPopupOnFocusListener.add(endpoint);
+		return endpoint;
+	}
+
+	private JComponent createIdComponent() {
+		JTextField id = BasicComponentFactory.createTextField(d_model.getModel(AbstractStudy.PROPERTY_ID));
+		id.setColumns(30);
+		AutoSelectFocusListener.add(id);
+		d_validator.add(id);
+		return id;
 	}
 	
 	public JComponent buildPanel() {
-		initComponents();
+		d_validator = new NotEmptyValidator(d_okButton); // reset validator
 		
 		FormLayout layout = new FormLayout(
 				"pref, 3dlu, fill:pref:grow, 3dlu, center:pref",
@@ -110,13 +117,13 @@ public class AddStudyView implements ViewBuilder {
 		
 		builder.addSeparator("Study", cc.xyw(1, 1, fullWidth));
 		builder.addLabel("Identifier:", cc.xy(1, 3, "right, c"));
-		builder.add(d_id, cc.xyw(3, 3, fullWidth-2));
+		builder.add(createIdComponent(), cc.xyw(3, 3, fullWidth-2));
 
 		int row = 5;
 		row = buildCharacteristicsPart(fullWidth, builder, cc, row, layout);
 		
 		builder.addLabel("Endpoint:", cc.xy(1, row, "right, c"));
-		builder.add(d_endpoint, cc.xyw(3, row, fullWidth-2));
+		builder.add(createEndpointComponent(), cc.xyw(3, row, fullWidth-2));
 		
 		row += 2;
 		builder.addSeparator("Patient Groups", cc.xyw(1, row, fullWidth));
@@ -160,7 +167,7 @@ public class AddStudyView implements ViewBuilder {
 		JComponent component = null;
 		if (c.getValueType().equals(StudyCharacteristic.ValueType.INDICATION)) {
 			ArrayList<Indication> options = new ArrayList<Indication>(d_domain.getIndications());			
-			component = createOptionsComboBox(c, options);
+			component = createOptionsComboBox(c, options.toArray());
 		} else if (c.getValueType().equals(StudyCharacteristic.ValueType.TEXT)) {
 			ValueModel model = new MutableCharacteristicHolder(d_model.getBean(), c);
 			component = BasicComponentFactory.createTextField(model);
@@ -222,23 +229,17 @@ public class AddStudyView implements ViewBuilder {
 			throw new RuntimeException("Illegal study characteristic enum type");
 		}
 		
-		return createOptionsComboBox(c, Arrays.asList(options));
+		return createOptionsComboBox(c, options);
 	}
 
-	private <E> JComponent createOptionsComboBox(StudyCharacteristic c, List<E> options) {
-		JComponent component;
-		SelectionInList<E> optionsSelectionInList =
-			new SelectionInList<E>(
-					options,
-					new MutableCharacteristicHolder(
-							d_model.getBean(),
-							c));
-		component = BasicComponentFactory.createComboBox(optionsSelectionInList);
-		return component;
+	private <E> JComponent createOptionsComboBox(StudyCharacteristic c, E[] options) {
+		MutableCharacteristicHolder selectionHolder =
+			new MutableCharacteristicHolder(d_model.getBean(), c);
+		return AuxComponentFactory.createBoundComboBox(options, selectionHolder);
 	}
 
 	private Endpoint getEndpoint() {
-		return d_endpointModel.getBean().getEndpoint();
+		return d_endpointPresentation.getBean().getEndpoint();
 	}
 
 	private void buildPatientGroups(FormLayout layout, int fullWidth,
@@ -262,7 +263,7 @@ public class AddStudyView implements ViewBuilder {
 			builder.add(view.buildPanel(), cc.xy(5, row));
 
 			Measurement meas = d_model.getBean().getMeasurement(
-					d_endpointModel.getBean().getEndpoint(),g);
+					d_endpointPresentation.getBean().getEndpoint(),g);
 			int col = 7;
 			for (JTextField component : MeasurementInputHelper.getComponents((BasicMeasurement)meas)) {
 				d_validator.add(component);
