@@ -37,7 +37,6 @@ import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.MutableStudy;
@@ -48,11 +47,13 @@ import org.drugis.addis.presentation.MetaStudyPresentationModel;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
+import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.value.AbstractValueModel;
+import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -76,7 +77,7 @@ public class StudyView implements ViewBuilder {
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
 				"right:pref, 3dlu, pref:grow, 3dlu, center:pref",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		int fullWidth = 5;
 		int[] colGroup = new int[d_model.getBean().getEndpoints().size()];
@@ -94,7 +95,7 @@ public class StudyView implements ViewBuilder {
 		
 		CellConstraints cc = new CellConstraints();
 		
-		int row = buildStudyPart(fullWidth, builder, cc);
+		int row = buildStudyPart(fullWidth, builder, cc, layout);
 		
 		row = buildEndpointsPart(layout, fullWidth, builder, cc, row);
 		
@@ -288,21 +289,30 @@ public class StudyView implements ViewBuilder {
 	}
 
 	private int buildStudyPart(int fullWidth, PanelBuilder builder,
-			CellConstraints cc) {
+			CellConstraints cc, FormLayout layout) {
 		String studyLabel = getStudyLabel();
 		builder.addSeparator(studyLabel, cc.xyw(1,1,fullWidth));
 		builder.addLabel("ID:", cc.xy(1, 3));
 		builder.add(BasicComponentFactory.createLabel(d_model.getModel(AbstractStudy.PROPERTY_ID)),
 				cc.xyw(3, 3, fullWidth - 2));
 		
-		builder.addLabel("Intended Indication:", cc.xy(1, 5));
+		int row = 5;
+		for (StudyCharacteristic c : StudyCharacteristic.values()) {
+			LayoutUtil.addRow(layout);
+			builder.addLabel(c.getDescription(), cc.xy(1, row));
+			
+			ValueModel model = new CharacteristicHolder(d_model.getBean(), c);
+			/*
+			Indication indication =
+				(Indication)d_model.getBean().getCharacteristics().get(StudyCharacteristic.INDICATION);
+				*/
+			builder.add(BasicComponentFactory.createLabel(model, new OneWayObjectFormat()),
+					cc.xyw(3, row, fullWidth - 2));
+			
+			row += 2;
+		}
 		
-		Indication indication =
-			(Indication)d_model.getBean().getCharacteristics().get(StudyCharacteristic.INDICATION);
-		builder.add(BasicComponentFactory.createLabel(getLabelModel(indication)),
-				cc.xyw(3, 5, fullWidth - 2));
-		
-		return 7;
+		return row;
 	}
 
 	private AbstractValueModel getLabelModel(Object model) {

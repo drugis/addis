@@ -162,11 +162,11 @@ public class AddStudyView implements ViewBuilder {
 			ArrayList<Indication> options = new ArrayList<Indication>(d_domain.getIndications());			
 			component = createOptionsComboBox(c, options);
 		} else if (c.getValueType().equals(StudyCharacteristic.ValueType.TEXT)) {
-			ValueModel model = new CharacteristicHolder(d_model.getBean(), c);
+			ValueModel model = new MutableCharacteristicHolder(d_model.getBean(), c);
 			component = BasicComponentFactory.createTextField(model);
 			d_validator.add(component);
 		} else if (c.getValueType().equals(StudyCharacteristic.ValueType.POSITIVE_INTEGER)) {
-			ValueModel model = new CharacteristicHolder(d_model.getBean(), c);
+			ValueModel model = new MutableCharacteristicHolder(d_model.getBean(), c);
 			if (model.getValue() == null) {
 				model.setValue(1);
 			}
@@ -189,7 +189,7 @@ public class AddStudyView implements ViewBuilder {
 			PropertyConnector.connectAndUpdate(model, f, "value");
 			component = f;
 		} else if (c.getValueType().equals(StudyCharacteristic.ValueType.DATE)) {
-			ValueModel model = new CharacteristicHolder(d_model.getBean(), c);
+			ValueModel model = new MutableCharacteristicHolder(d_model.getBean(), c);
 			if (model.getValue() == null) {
 				model.setValue(new Date());
 			}
@@ -230,7 +230,7 @@ public class AddStudyView implements ViewBuilder {
 		SelectionInList<E> optionsSelectionInList =
 			new SelectionInList<E>(
 					options,
-					new CharacteristicHolder(
+					new MutableCharacteristicHolder(
 							d_model.getBean(),
 							c));
 		component = BasicComponentFactory.createComboBox(optionsSelectionInList);

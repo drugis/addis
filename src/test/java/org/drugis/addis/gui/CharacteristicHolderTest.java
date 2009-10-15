@@ -43,7 +43,7 @@ public class CharacteristicHolderTest {
 	public void setUp() {
 		d_char = StudyCharacteristic.INDICATION;
 		d_study = new BasicStudy("Test", new Indication(0L, ""));
-		d_holder = new CharacteristicHolder(d_study, d_char);
+		d_holder = new MutableCharacteristicHolder(d_study, d_char);
 	}
 	
 	@Test
