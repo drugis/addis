@@ -22,14 +22,13 @@ package org.drugis.addis.entities;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
+import java.util.Collections;
+import java.util.Set;
 
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
-
-import com.jgoodies.binding.beans.Model;
-
-public abstract class Ratio extends Model implements Measurement {
+public abstract class Ratio extends AbstractEntity implements Measurement {
 	private static final long serialVersionUID = 1647344976539753330L;
 
 	private class ChangeListener implements PropertyChangeListener {
@@ -115,5 +114,9 @@ public abstract class Ratio extends Model implements Measurement {
 		Interval<Double> ci = getConfidenceInterval();
 		return format.format(getRatio()) + " (" + format.format(ci.getLowerBound()) + "-" + 
 				format.format(ci.getUpperBound()) + ")";
+	}
+	
+	public Set<Entity> getDependencies() {
+		return Collections.emptySet();
 	}
 }
