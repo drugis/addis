@@ -19,13 +19,19 @@
 
 package org.drugis.addis.gui;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.text.DefaultFormatter;
 
 import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.BasicMeasurement;
@@ -42,7 +48,9 @@ import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -50,7 +58,6 @@ import com.jgoodies.forms.layout.FormLayout;
 public class AddStudyView implements ViewBuilder {
 	private JTextField d_id;
 	private JComboBox d_endpoint;
-	private JComboBox d_indication;
 	private PresentationModel<BasicStudy> d_model;
 	private PresentationModel<EndpointHolder> d_endpointModel;
 	private Domain d_domain;
@@ -70,19 +77,11 @@ public class AddStudyView implements ViewBuilder {
 		d_id.setColumns(30);
 		AutoSelectFocusListener.add(d_id);
 		d_validator.add(d_id);
-		
-		SelectionInList<Indication> indicationSelectionInList =
-			new SelectionInList<Indication>(
-					new ArrayList<Indication>(d_domain.getIndications()),
-					new CharacteristicHolder(
-						d_model.getBean(),
-						StudyCharacteristic.INDICATION));
-		d_indication = BasicComponentFactory.createComboBox(indicationSelectionInList);
-		d_validator.add(d_indication);
-		
+				
+		ArrayList<Endpoint> endpoints = new ArrayList<Endpoint>(d_domain.getEndpoints());
 		SelectionInList<Endpoint> endpointSelectionInList =
 			new SelectionInList<Endpoint>(
-					new ArrayList<Endpoint>(d_domain.getEndpoints()), 
+					endpoints, 
 					d_endpointModel.getModel(EndpointHolder.PROPERTY_ENDPOINT));
 		d_endpoint = BasicComponentFactory.createComboBox(endpointSelectionInList);
 		d_validator.add(d_endpoint);
@@ -94,7 +93,7 @@ public class AddStudyView implements ViewBuilder {
 		
 		FormLayout layout = new FormLayout(
 				"pref, 3dlu, fill:pref:grow, 3dlu, center:pref",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);	
 		int fullWidth = 5;
 		if (getEndpoint() != null) {
@@ -112,15 +111,16 @@ public class AddStudyView implements ViewBuilder {
 		builder.addSeparator("Study", cc.xyw(1, 1, fullWidth));
 		builder.addLabel("Identifier:", cc.xy(1, 3, "right, c"));
 		builder.add(d_id, cc.xyw(3, 3, fullWidth-2));
+
+		int row = 5;
+		row = buildCharacteristicsPart(fullWidth, builder, cc, row, layout);
 		
-		builder.addLabel("Intended indication:", cc.xy(1, 5, "right, c"));
-		builder.add(d_indication, cc.xyw(3, 5, fullWidth-2));
+		builder.addLabel("Endpoint:", cc.xy(1, row, "right, c"));
+		builder.add(d_endpoint, cc.xyw(3, row, fullWidth-2));
 		
-		builder.addLabel("Endpoint:", cc.xy(1, 7, "right, c"));
-		builder.add(d_endpoint, cc.xyw(3, 7, fullWidth-2));
-		
-		builder.addSeparator("Patient Groups", cc.xyw(1, 9, fullWidth));
-		int row = 11;
+		row += 2;
+		builder.addSeparator("Patient Groups", cc.xyw(1, row, fullWidth));
+		row += 2;
 		builder.addLabel("Size", cc.xy(1, row));
 		builder.addLabel("Drug", cc.xy(3, row));
 		builder.addLabel("Dose", cc.xy(5, row));
@@ -139,6 +139,102 @@ public class AddStudyView implements ViewBuilder {
 		}
 		
 		return builder.getPanel();	
+	}
+
+	private int buildCharacteristicsPart(int fullWidth, PanelBuilder builder,
+			CellConstraints cc, int row, FormLayout layout) {
+		
+		for (StudyCharacteristic c : StudyCharacteristic.values()) {
+			LayoutUtil.addRow(layout);
+			
+			builder.addLabel(c.getDescription() + ":", cc.xy(1, row, "right, c"));
+			builder.add(createCharacteristicComponent(c), cc.xyw(3, row, fullWidth-2));
+			
+			row += 2;
+		}
+
+		return row;
+	}
+	
+	private JComponent createCharacteristicComponent(StudyCharacteristic c) {
+		JComponent component = null;
+		if (c.getValueType().equals(StudyCharacteristic.ValueType.INDICATION)) {
+			ArrayList<Indication> options = new ArrayList<Indication>(d_domain.getIndications());			
+			component = createOptionsComboBox(c, options);
+		} else if (c.getValueType().equals(StudyCharacteristic.ValueType.TEXT)) {
+			ValueModel model = new CharacteristicHolder(d_model.getBean(), c);
+			component = BasicComponentFactory.createTextField(model);
+			d_validator.add(component);
+		} else if (c.getValueType().equals(StudyCharacteristic.ValueType.POSITIVE_INTEGER)) {
+			ValueModel model = new CharacteristicHolder(d_model.getBean(), c);
+			if (model.getValue() == null) {
+				model.setValue(1);
+			}
+			@SuppressWarnings("serial")
+			JFormattedTextField f = new JFormattedTextField(new DefaultFormatter() {
+				@Override
+				public Object stringToValue(String string) throws ParseException {
+					int val = 0;
+					try {
+						val = Integer.parseInt(string);
+					} catch (NumberFormatException e) {
+						
+					}
+					if (val < 1) {
+						throw new ParseException("Non-positive values not allowed", 0);
+					}
+					return val;
+				}
+			});
+			PropertyConnector.connectAndUpdate(model, f, "value");
+			component = f;
+		} else if (c.getValueType().equals(StudyCharacteristic.ValueType.DATE)) {
+			ValueModel model = new CharacteristicHolder(d_model.getBean(), c);
+			if (model.getValue() == null) {
+				model.setValue(new Date());
+			}
+			JFormattedTextField f = new JFormattedTextField(new DefaultFormatter());
+			PropertyConnector.connectAndUpdate(model, f, "value");
+			component = f;
+		} else if (c.getValueType().valueClass.isEnum()) {
+			try {
+				component = createOptionsComboBox(c, c.getValueType().valueClass);
+			} catch (Exception e) {
+				component = new JLabel("ILLEGAL CHARACTERISTIC ENUM TYPE");
+			}
+		} else {
+			component = new JLabel("NOT IMPLEMENTED");
+		}
+		d_validator.add(component);		
+		return component;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private JComponent createOptionsComboBox(StudyCharacteristic c, Class type) {
+		Object[] options = null;
+		if (type.equals(StudyCharacteristic.Allocation.class)) {
+			options = StudyCharacteristic.Allocation.values();
+		} else if (type.equals(StudyCharacteristic.Blinding.class)) {
+			options = StudyCharacteristic.Blinding.values();
+		} else if (type.equals(StudyCharacteristic.Status.class)) {
+			options = StudyCharacteristic.Status.values();
+		} else {
+			throw new RuntimeException("Illegal study characteristic enum type");
+		}
+		
+		return createOptionsComboBox(c, Arrays.asList(options));
+	}
+
+	private <E> JComponent createOptionsComboBox(StudyCharacteristic c, List<E> options) {
+		JComponent component;
+		SelectionInList<E> optionsSelectionInList =
+			new SelectionInList<E>(
+					options,
+					new CharacteristicHolder(
+							d_model.getBean(),
+							c));
+		component = BasicComponentFactory.createComboBox(optionsSelectionInList);
+		return component;
 	}
 
 	private Endpoint getEndpoint() {
