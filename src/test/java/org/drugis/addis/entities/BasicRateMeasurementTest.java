@@ -72,21 +72,4 @@ public class BasicRateMeasurementTest {
 	public void testToString() {
 		assertEquals("67/101", d_measurement.toString());
 	}
-	
-	@Test
-	public void testFireLabelChanged() {
-		PropertyChangeListener l = JUnitUtil.mockListener(
-				d_measurement, Measurement.PROPERTY_LABEL, "67/101", "68/101");
-		d_measurement.addPropertyChangeListener(l);
-		d_measurement.setRate(68);
-		verify(l);
-		
-		d_measurement.removePropertyChangeListener(l);
-		l = JUnitUtil.mockListener(
-				d_measurement, Measurement.PROPERTY_LABEL, "68/101", "68/102");
-		d_measurement.addPropertyChangeListener(l);
-		d_pg.setSize(102);
-		verify(l);
-	}	
-
 }
