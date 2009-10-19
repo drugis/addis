@@ -64,16 +64,16 @@ public class MainData {
 		study.setEndpoints(Collections.singleton(hamd));
 
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement();
+		BasicPatientGroup parox = new BasicPatientGroup(study, paroxetine, dose, 37);		
+		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
 		pHamd.setRate(23);
 		
-		BasicPatientGroup parox = new BasicPatientGroup(study, paroxetine, dose, 37);		
 		
 		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
-		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement();
+		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 41);		
+		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(26);
 		
-		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 41);		
 		
 		study.addPatientGroup(parox);
 		study.addPatientGroup(fluox);
@@ -92,21 +92,21 @@ public class MainData {
 		study.setEndpoints(new HashSet<Endpoint>(Arrays.asList(new Endpoint[]{hamd, cgi})));
 		
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement();
+		BasicPatientGroup parox = new BasicPatientGroup(study, paroxetine, dose, 102);
+		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
 		pHamd.setRate(67);
-		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)cgi.buildMeasurement();
+		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)cgi.buildMeasurement(parox);
 		pCgi.setMean(-1.69);
 		pCgi.setStdDev(0.16);
-		BasicPatientGroup parox = new BasicPatientGroup(study, paroxetine, dose, 102);
 		
 		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
-		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement();
+		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 101);
+		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(67);
 
-		BasicContinuousMeasurement fCgi = (BasicContinuousMeasurement)cgi.buildMeasurement();
+		BasicContinuousMeasurement fCgi = (BasicContinuousMeasurement)cgi.buildMeasurement(fluox);
 		fCgi.setMean(-1.8);
 		fCgi.setStdDev(0.16);
-		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 101);
 		
 		study.addPatientGroup(parox);
 		study.addPatientGroup(fluox);

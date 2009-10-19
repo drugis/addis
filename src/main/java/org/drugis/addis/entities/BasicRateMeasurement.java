@@ -43,16 +43,14 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 		out.defaultWriteObject();
 	}
 	
-	public BasicRateMeasurement(Endpoint e, int rate, int size) {
-		super(e, size);
+	public BasicRateMeasurement(Endpoint e, int rate, PatientGroup p) {
+		super(e, p);
 		addPropertyChangeListener(d_listener);
 		d_rate = rate;
 	}
 	
-	public BasicRateMeasurement(Endpoint e, int rate) {
-		super(e, 0);
-		addPropertyChangeListener(d_listener);
-		d_rate = rate;
+	public BasicRateMeasurement(Endpoint e, PatientGroup p) {
+		this(e, 0, p);
 	}	
 
 	public String getLabel() {

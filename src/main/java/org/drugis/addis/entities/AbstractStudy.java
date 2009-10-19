@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 public abstract class AbstractStudy extends AbstractEntity implements Study {
 	private static final long serialVersionUID = 4275729141451329959L;
@@ -104,20 +103,6 @@ public abstract class AbstractStudy extends AbstractEntity implements Study {
 			throw new IllegalArgumentException("Measurement does not conform with Endpoint");
 		}
 		d_measurements.put(new MeasurementKey(e, g), m);
-		if (m instanceof BasicRateMeasurement) {
-			((BasicRateMeasurement) m).setSampleSize(g.getSize());
-		}
-	}
-
-	public void changeMeasurements(PatientGroup source, int newValue) {
-		for (Entry<MeasurementKey, Measurement> entry : d_measurements.entrySet()) {
-			if (entry.getKey().getPatientGroup().equals(source)) {
-				Measurement m = entry.getValue();
-				if (m instanceof BasicRateMeasurement) {
-					((BasicRateMeasurement) m).setSampleSize(newValue);
-				}
-			}
-		}
 	}
 
 	public Set<Endpoint> getEndpoints() {
@@ -150,7 +135,7 @@ public abstract class AbstractStudy extends AbstractEntity implements Study {
 			for (PatientGroup g : getPatientGroups()) {
 				MeasurementKey key = new MeasurementKey(e, g);
 				if (d_measurements.get(key) == null) {
-					d_measurements.put(key, e.buildMeasurement());
+					d_measurements.put(key, e.buildMeasurement(g));
 				}
 			}
 		}

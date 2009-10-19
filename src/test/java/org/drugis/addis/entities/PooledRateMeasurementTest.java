@@ -51,7 +51,8 @@ public class PooledRateMeasurementTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testConstructWithDifferentEndpoints() {
-		d_m1 = new BasicRateMeasurement(new Endpoint("e1", Type.RATE), 12);
+		PatientGroup pg = new BasicPatientGroup(null,null,null,100);
+		d_m1 = new BasicRateMeasurement(new Endpoint("e1", Type.RATE), 12,pg);
 		new PooledRateMeasurement(Arrays.asList(
 				new RateMeasurement[] {d_m1, d_m2}));
 	}
@@ -67,9 +68,9 @@ public class PooledRateMeasurementTest {
 	public void setUp() {
 		d_e = new Endpoint("e0", Type.RATE);
 		d_g1 = new BasicPatientGroup(null, null, null, 100);
-		d_m1 = new BasicRateMeasurement(d_e, 12, d_g1.getSize());
+		d_m1 = new BasicRateMeasurement(d_e, 12, d_g1);
 		d_g2 = new BasicPatientGroup(null, null, null, 50);
-		d_m2 = new BasicRateMeasurement(d_e, 18, d_g2.getSize());
+		d_m2 = new BasicRateMeasurement(d_e, 18, d_g2);
 		d_m = new PooledRateMeasurement(Arrays.asList(new RateMeasurement[] {d_m1, d_m2}));
 	}
 	
@@ -88,7 +89,7 @@ public class PooledRateMeasurementTest {
 	@Test
 	public void testGetSampleSize() {
 		assertEquals(new Integer(d_m1.getSampleSize() + d_m2.getSampleSize()), d_m.getSampleSize());
-		d_m2.setSampleSize(1000);
+		d_g2.setSize(1000);
 		assertEquals(new Integer(d_m1.getSampleSize() + d_m2.getSampleSize()), d_m.getSampleSize());
 	}
 	
@@ -111,7 +112,8 @@ public class PooledRateMeasurementTest {
 		PropertyChangeListener l = JUnitUtil.mockListener(
 				d_m, RateMeasurement.PROPERTY_SAMPLESIZE, d_m.getSampleSize(), d_m.getSampleSize() + 10);
 		d_m.addPropertyChangeListener(l);
-		d_m1.setSampleSize(d_m1.getSampleSize() + 10);
+		d_g1.setSize(d_m1.getSampleSize() + 10);
+		
 		verify(l);
 	}
 	
@@ -129,7 +131,7 @@ public class PooledRateMeasurementTest {
 		PropertyChangeListener l = JUnitUtil.mockListener(
 				d_m, RateMeasurement.PROPERTY_LABEL, "30/150", "30/250");
 		d_m.addPropertyChangeListener(l);
-		d_m1.setSampleSize(d_m1.getSampleSize() + 100);
+		d_g1.setSize(d_m1.getSampleSize() + 100);
 		verify(l);
 	}
 	
@@ -141,8 +143,9 @@ public class PooledRateMeasurementTest {
 	@Test
 	public void testEquals() {
 		Endpoint e = new Endpoint("e", Type.RATE);
-		BasicRateMeasurement m1 = new BasicRateMeasurement(e, 0);
-		BasicRateMeasurement m2 = new BasicRateMeasurement(e, 0);
+		PatientGroup pg = new BasicPatientGroup(null,null,null,100);
+		BasicRateMeasurement m1 = new BasicRateMeasurement(e, 0, pg);
+		BasicRateMeasurement m2 = new BasicRateMeasurement(e, 0, pg);
 		List<RateMeasurement> l1 = new ArrayList<RateMeasurement>();
 		l1.add(m1);
 		l1.add(m2);

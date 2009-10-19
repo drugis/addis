@@ -84,7 +84,7 @@ public class AddStudyDialog extends OkCancelDialog {
 	protected void buildMeasurements() {
 		for (PatientGroup g : d_study.getPatientGroups()) {
 			Endpoint endpoint = d_primaryEndpoint.getEndpoint();
-			d_study.setMeasurement(endpoint, g, endpoint.buildMeasurement());
+			d_study.setMeasurement(endpoint, g, endpoint.buildMeasurement(g));
 		}
 	}
 
@@ -125,7 +125,7 @@ public class AddStudyDialog extends OkCancelDialog {
 				new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY), 0);
 		d_study.addPatientGroup(group);
 		if (d_primaryEndpoint.getEndpoint() != null) {
-			BasicMeasurement m = d_primaryEndpoint.getEndpoint().buildMeasurement();
+			BasicMeasurement m = d_primaryEndpoint.getEndpoint().buildMeasurement(group);
 			d_study.setMeasurement(d_primaryEndpoint.getEndpoint(), group, m);
 		}
 	}

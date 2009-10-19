@@ -46,12 +46,12 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 		d_type = type;
 	}
 	
-	public BasicMeasurement buildMeasurement() {
+	public BasicMeasurement buildMeasurement(PatientGroup pg) {
 		switch (getType()) {
 		case CONTINUOUS:
-			return new BasicContinuousMeasurement(this, 0);
+			return new BasicContinuousMeasurement(this, pg);
 		case RATE:
-			return new BasicRateMeasurement(this, 0);
+			return new BasicRateMeasurement(this, 0, pg);
 		default:
 			throw new IllegalStateException("Not all enum cases covered");
 		}

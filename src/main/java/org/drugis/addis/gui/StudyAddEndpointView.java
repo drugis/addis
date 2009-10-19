@@ -73,7 +73,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 	private void initializeMeasurements() {
 		for (PatientGroup g : d_study.getPatientGroups()) {
 			if (getEndpoint() != null) {
-				BasicMeasurement m = getEndpoint().buildMeasurement();
+				BasicMeasurement m = getEndpoint().buildMeasurement(g);
 				d_measurements.put(g, m);
 			}
 		}

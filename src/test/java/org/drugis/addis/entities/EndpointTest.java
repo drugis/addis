@@ -47,13 +47,14 @@ public class EndpointTest {
 	
 	@Test
 	public void testBuildMeasurement() {
+		PatientGroup pg = new BasicPatientGroup(null, null, null, 0);
 		Endpoint e = new Endpoint("e", Type.RATE);
 		e.setType(Endpoint.Type.RATE);
-		assertTrue(e.buildMeasurement() instanceof BasicRateMeasurement);
-		assertEquals(e, e.buildMeasurement().getEndpoint());
+		assertTrue(e.buildMeasurement(pg) instanceof BasicRateMeasurement);
+		assertEquals(e, e.buildMeasurement(pg).getEndpoint());
 		e.setType(Endpoint.Type.CONTINUOUS);
-		assertTrue(e.buildMeasurement() instanceof BasicContinuousMeasurement);
-		assertEquals(e, e.buildMeasurement().getEndpoint());
+		assertTrue(e.buildMeasurement(pg) instanceof BasicContinuousMeasurement);
+		assertEquals(e, e.buildMeasurement(pg).getEndpoint());
 	}
 	
 	@Test

@@ -28,10 +28,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-
-import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -39,10 +35,14 @@ import org.junit.Test;
 
 public class BasicRateMeasurementTest {
 	private BasicRateMeasurement d_measurement;
+	private Endpoint d_endpoint;
+	private BasicPatientGroup d_pg;
 	
 	@Before
 	public void setUp() {
-		d_measurement = new BasicRateMeasurement(new Endpoint("E", Type.RATE), 67, 101);
+		d_endpoint = new Endpoint("E", Type.RATE);
+		d_pg = new BasicPatientGroup(null, null, null, 101);
+		d_measurement = new BasicRateMeasurement(d_endpoint, 67, d_pg);
 	}
 	
 	@Test
@@ -54,18 +54,18 @@ public class BasicRateMeasurementTest {
 				new ByteArrayInputStream(bos.toByteArray()));
 		d_measurement = (BasicRateMeasurement) ois.readObject();
 		
-		String oldLabel = d_measurement.getLabel();
-		String newLabel = "67/105";
+		Endpoint newEndpoint = new Endpoint("X", Type.RATE);
 		PropertyChangeListener mock = JUnitUtil.mockListener(d_measurement, 
-				BasicRateMeasurement.PROPERTY_LABEL, oldLabel, newLabel);
+				BasicRateMeasurement.PROPERTY_ENDPOINT, d_endpoint, newEndpoint);
 		d_measurement.addPropertyChangeListener(mock);
-		d_measurement.setSampleSize(105);
+		d_measurement.setEndpoint(newEndpoint);
 		verify(mock);
 	}
 	
 	@Test
 	public void testSetRate() {
-		JUnitUtil.testSetter(new BasicRateMeasurement(new Endpoint("e", Type.RATE), 0, 0), BasicRateMeasurement.PROPERTY_RATE, 0, new Integer(67));
+		PatientGroup p = new BasicPatientGroup(null,null,null,0);
+		JUnitUtil.testSetter(new BasicRateMeasurement(new Endpoint("e", Type.RATE), 0, p ), BasicRateMeasurement.PROPERTY_RATE, 0, new Integer(67));
 	}
 	
 	@Test
@@ -85,7 +85,7 @@ public class BasicRateMeasurementTest {
 		l = JUnitUtil.mockListener(
 				d_measurement, Measurement.PROPERTY_LABEL, "68/101", "68/102");
 		d_measurement.addPropertyChangeListener(l);
-		d_measurement.setSampleSize(102);
+		d_pg.setSize(102);
 		verify(l);
 	}	
 

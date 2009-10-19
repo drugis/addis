@@ -129,7 +129,7 @@ public class StudyAddPatientGroupView implements ViewBuilder {
 					GUIFactory.createEndpointLabelWithIcon(d_loader, d_study, e),
 					cc.xy(1, row));
 			int col = 3;
-			BasicMeasurement m = e.buildMeasurement();
+			BasicMeasurement m = e.buildMeasurement(d_group);
 			d_measurements.put(e, m);
 			JComponent[] comps = MeasurementInputHelper.getComponents(m);
 			for (JComponent c : comps) {

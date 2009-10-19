@@ -109,8 +109,9 @@ public class BasicStudyTest {
 		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
 		Endpoint endpoint = new Endpoint("e", Type.RATE);
 		study.addEndpoint(endpoint);
-		study.addPatientGroup(new BasicPatientGroup(study, null, null, 100));
-		BasicRateMeasurement m = new BasicRateMeasurement(endpoint, 0, 100);
+		BasicPatientGroup group = new BasicPatientGroup(study, null, null, 100);
+		study.addPatientGroup(group);
+		BasicRateMeasurement m = new BasicRateMeasurement(endpoint, 0, group);
 		m.setEndpoint(study.getEndpoints().iterator().next());
 		m.setRate(12);
 		study.setMeasurement(study.getEndpoints().iterator().next(), study.getPatientGroups().get(0), m);
@@ -122,8 +123,9 @@ public class BasicStudyTest {
 	public void testSetMeasurementThrowsException1() {
 		AbstractStudy study = new BasicStudy("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("E", Type.RATE);
-		study.setMeasurement(e, new BasicPatientGroup(study, null, null, 100),
-				new BasicRateMeasurement(e, 0));
+		BasicPatientGroup pg = new BasicPatientGroup(study, null, null, 100);
+		study.setMeasurement(e, pg, 
+				new BasicRateMeasurement(e, pg));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -131,9 +133,10 @@ public class BasicStudyTest {
 		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("e", Type.RATE);
 		study.addEndpoint(e);
-		study.addPatientGroup(new BasicPatientGroup(study, null, null, 100));
+		BasicPatientGroup group = new BasicPatientGroup(study, null, null, 100);
+		study.addPatientGroup(group);
 		
-		BasicRateMeasurement m = new BasicRateMeasurement(e, 12);
+		BasicRateMeasurement m = new BasicRateMeasurement(e, 12, group);
 		m.setEndpoint(study.getEndpoints().iterator().next());
 		
 		study.getEndpoints().iterator().next().setType(Type.CONTINUOUS);
@@ -170,7 +173,7 @@ public class BasicStudyTest {
 		study.addEndpoint(endpoint);
 		BasicPatientGroup pg = new BasicPatientGroup(study, null, null, 100);
 		study.addPatientGroup(pg);
-		BasicRateMeasurement m = new BasicRateMeasurement(endpoint, 12);
+		BasicRateMeasurement m = new BasicRateMeasurement(endpoint, 12, pg);
 		m.setEndpoint(endpoint);
 		study.setMeasurement(endpoint, pg, m);
 		
@@ -185,7 +188,7 @@ public class BasicStudyTest {
 		study.addEndpoint(endpoint);
 		BasicPatientGroup pg = new BasicPatientGroup(study, null, null, 100);
 		study.addPatientGroup(pg);
-		BasicRateMeasurement m = new BasicRateMeasurement(endpoint, 0, 10);
+		BasicRateMeasurement m = new BasicRateMeasurement(endpoint, 0, pg);
 		m.setEndpoint(endpoint);
 		m.setRate(12);
 		study.setMeasurement(endpoint, pg, m);

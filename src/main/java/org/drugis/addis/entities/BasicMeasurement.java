@@ -19,22 +19,33 @@
 
 package org.drugis.addis.entities;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.Set;
 
 public abstract class BasicMeasurement extends AbstractEntity implements Measurement {
 	private static final long serialVersionUID = 6892934487858770855L;
 	private Endpoint d_endpoint;
-	private Integer d_size;
-
+	private PatientGroup d_patientGroup;
+	
 	public static final String PROPERTY_PATIENTGROUP = "patientGroup";
 	
-	protected BasicMeasurement() {
+	public PatientGroup getPatientGroup() {
+		return d_patientGroup;
 	}
-	
-	public BasicMeasurement(Endpoint e, Integer size) {
+
+	public BasicMeasurement(Endpoint e, PatientGroup p) {
 		d_endpoint = e;
-		d_size = size;
+		d_patientGroup = p;
+		d_patientGroup.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			public void propertyChange(PropertyChangeEvent event) {
+				if (event.getPropertyName().equals(PatientGroup.PROPERTY_SIZE)){
+					firePropertyChange(PROPERTY_SAMPLESIZE, event.getOldValue(), event.getNewValue());
+				}
+			}
+		});
 	}
 	
 	public Endpoint getEndpoint() {
@@ -48,13 +59,7 @@ public abstract class BasicMeasurement extends AbstractEntity implements Measure
 	}
 
 	public Integer getSampleSize() {
-		return d_size;
-	}
-	
-	public void setSampleSize(Integer size) {
-		Integer oldVal = d_size;
-		d_size = size;
-		firePropertyChange(PROPERTY_SAMPLESIZE, oldVal, d_size);
+		return d_patientGroup.getSize();
 	}
 	
 	@Override

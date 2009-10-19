@@ -44,10 +44,12 @@ public class LogOddsRatioTest {
 	@Before
 	public void setUp() {
 		Endpoint e = new Endpoint("E", Type.RATE);
+		PatientGroup pnum = new BasicPatientGroup(null,null,null,s_sizeNum);
+		PatientGroup pden = new BasicPatientGroup(null,null,null,s_sizeDen);
 		
-		d_numerator = new BasicRateMeasurement(e, s_effectNum, s_sizeNum);
+		d_numerator = new BasicRateMeasurement(e, s_effectNum, pnum);
 		
-		d_denominator = new BasicRateMeasurement(e, s_effectDen, s_sizeDen);
+		d_denominator = new BasicRateMeasurement(e, s_effectDen, pden);
 		
 		d_ratio = new LogOddsRatio(d_denominator, d_numerator);
 	}

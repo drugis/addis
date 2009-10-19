@@ -37,7 +37,8 @@ public class RateContinuousAdapterTest {
 	
 	@Before
 	public void setUp() {
-		d_rate = new BasicRateMeasurement(new Endpoint("e", Type.RATE), 50, 100);
+		PatientGroup pden = new BasicPatientGroup(null,null,null,100);
+		d_rate = new BasicRateMeasurement(new Endpoint("e", Type.RATE), 50, pden);
 		d_continuous = new RateContinuousAdapter(d_rate);
 	}
 	

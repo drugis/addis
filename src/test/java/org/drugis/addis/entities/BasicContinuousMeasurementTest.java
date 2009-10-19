@@ -35,38 +35,39 @@ import org.junit.Test;
 
 public class BasicContinuousMeasurementTest {
 	private Endpoint d_endpoint;
+	private BasicContinuousMeasurement d_basicContinuousMeasurement;
 	
 	@Before
 	public void setUp() {
 		d_endpoint = new Endpoint("X", Type.CONTINUOUS);
+		d_basicContinuousMeasurement = new BasicContinuousMeasurement(d_endpoint, new BasicPatientGroup(null, null, null, 1));
+		
+	}
+
+	private BasicContinuousMeasurement getMeasurement() {
+		return d_basicContinuousMeasurement;
 	}
 	
 	@Test
 	public void testSetMean() {
-		JUnitUtil.testSetter(new BasicContinuousMeasurement(d_endpoint, 1),
+		JUnitUtil.testSetter(getMeasurement(),
 				BasicContinuousMeasurement.PROPERTY_MEAN, 0.0, 25.91);
 	}
-	
-	@Test
-	public void testSetSampleSize() {
-		JUnitUtil.testSetter(new BasicContinuousMeasurement(d_endpoint, 1),
-				BasicContinuousMeasurement.PROPERTY_SAMPLESIZE, 1, 100);
-	}
-	
+
 	@Test
 	public void testSetStdDev() {
-		JUnitUtil.testSetter(new BasicContinuousMeasurement(d_endpoint, 1), BasicContinuousMeasurement.PROPERTY_STDDEV, 0.0, 0.46);
+		JUnitUtil.testSetter(getMeasurement(), BasicContinuousMeasurement.PROPERTY_STDDEV, 0.0, 0.46);
 	}
 	
 	@Test
 	public void testToString() {
-		BasicContinuousMeasurement m = new BasicContinuousMeasurement(d_endpoint, 1);
+		BasicContinuousMeasurement m = getMeasurement();
 		assertEquals("0.0 \u00B1 0.0", m.toString());
 	}
 	
 	@Test
 	public void testFireLabelChanged() {
-		BasicContinuousMeasurement measurement = new BasicContinuousMeasurement(d_endpoint, 1);
+		BasicContinuousMeasurement measurement = getMeasurement();
 		measurement.setMean(25.5);
 		PropertyChangeListener l = JUnitUtil.mockListener(
 				measurement, Measurement.PROPERTY_LABEL, "25.5 \u00B1 0.0", "25.5 \u00B1 1.1");

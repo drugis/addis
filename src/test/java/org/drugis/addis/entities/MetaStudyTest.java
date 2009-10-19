@@ -123,7 +123,7 @@ public class MetaStudyTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetMeasurementThrowsException() {
 		d_study.setMeasurement(d_analysis.getEndpoint(), d_study.getPatientGroups().get(0),
-				new BasicRateMeasurement(d_analysis.getEndpoint(), 10));
+				new BasicRateMeasurement(d_analysis.getEndpoint(), 10,d_study.getPatientGroups().get(0)));
 	}
 	
 	@Test

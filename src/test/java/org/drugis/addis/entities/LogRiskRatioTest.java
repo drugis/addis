@@ -37,8 +37,10 @@ public class LogRiskRatioTest {
 	@Before
 	public void setUp() {
 		Endpoint e = new Endpoint("e", Type.RATE);
-		BasicRateMeasurement r1 = new BasicRateMeasurement(e, 341, 595);
-		BasicRateMeasurement r2 = new BasicRateMeasurement(e, 377, 595);
+		
+		BasicPatientGroup pg = new BasicPatientGroup(null, null, null, 595);
+		BasicRateMeasurement r1 = new BasicRateMeasurement(e, 341, pg);
+		BasicRateMeasurement r2 = new BasicRateMeasurement(e, 377, pg);
 		d_ratio = new LogRiskRatio(r1, r2);
 	}
 	
