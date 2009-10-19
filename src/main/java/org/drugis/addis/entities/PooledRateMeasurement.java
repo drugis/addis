@@ -79,8 +79,6 @@ public class PooledRateMeasurement extends AbstractEntity implements RateMeasure
 		Integer oldValue = getSampleSize();
 		d_size += delta;
 		firePropertyChange(RateMeasurement.PROPERTY_SAMPLESIZE, oldValue, getSampleSize());
-		firePropertyChange(RateMeasurement.PROPERTY_LABEL, generateLabel(getRate(), oldValue),
-				getLabel());
 	}
 
 	private void registerListener() {
@@ -98,8 +96,6 @@ public class PooledRateMeasurement extends AbstractEntity implements RateMeasure
 		Integer oldValue = getRate();
 		d_rate += delta;
 		firePropertyChange(RateMeasurement.PROPERTY_RATE, oldValue, getRate());
-		firePropertyChange(RateMeasurement.PROPERTY_LABEL, generateLabel(oldValue, getSampleSize()),
-				getLabel());
 	}
 
 	public static boolean measureSameEndpoint(List<RateMeasurement> measurements) {
@@ -145,16 +141,12 @@ public class PooledRateMeasurement extends AbstractEntity implements RateMeasure
 	}
 
 	public String getLabel() {
-		return generateLabel(getRate(), getSampleSize());
+		return toString();
 	}
 
-	private String generateLabel(Integer rate, Integer sampleSize) {
-		return rate.toString() + "/" + sampleSize.toString();
-	}
-	
 	@Override
 	public String toString() {
-		return generateLabel(d_rate, d_size);
+		return d_rate.toString() + "/" + d_size.toString();
 	}
 	
 	public boolean equals(Object o) {
