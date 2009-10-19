@@ -44,7 +44,7 @@ public class MeasurementInputHelper {
 		case CONTINUOUS:
 			return new String[] {"Mean", "StdDev"};
 		case RATE:
-			return new String[] {"Rate"};
+			return new String[] {"Number"};
 		default:
 			throw new IllegalStateException("Unhandled enum value");
 		}

@@ -99,7 +99,7 @@ public class AddStudyView implements ViewBuilder {
 		d_validator = new NotEmptyValidator(d_okButton); // reset validator
 		
 		FormLayout layout = new FormLayout(
-				"pref, 3dlu, fill:pref:grow, 3dlu, center:pref",
+				"fill:pref, 3dlu, center:pref:grow, 3dlu, pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);	
 		int fullWidth = 5;
@@ -128,9 +128,9 @@ public class AddStudyView implements ViewBuilder {
 		row += 2;
 		builder.addSeparator("Patient Groups", cc.xyw(1, row, fullWidth));
 		row += 2;
-		builder.addLabel("Size", cc.xy(1, row));
-		builder.addLabel("Drug", cc.xy(3, row));
-		builder.addLabel("Dose", cc.xy(5, row));
+		builder.addLabel("Drug", cc.xy(1, row));
+		builder.addLabel("Dose", cc.xy(3, row));
+		builder.addLabel("Group Size", cc.xy(5, row));
 		if (getEndpoint() != null) {
 			int col = 7;
 			for (String header : MeasurementInputHelper.getHeaders(getEndpoint())) {
@@ -235,7 +235,9 @@ public class AddStudyView implements ViewBuilder {
 	private <E> JComponent createOptionsComboBox(StudyCharacteristic c, E[] options) {
 		MutableCharacteristicHolder selectionHolder =
 			new MutableCharacteristicHolder(d_model.getBean(), c);
-		return AuxComponentFactory.createBoundComboBox(options, selectionHolder);
+		JComboBox component = AuxComponentFactory.createBoundComboBox(options, selectionHolder);
+		ComboBoxPopupOnFocusListener.add(component);
+		return component;
 	}
 
 	private Endpoint getEndpoint() {
@@ -247,20 +249,22 @@ public class AddStudyView implements ViewBuilder {
 		List<BasicPatientGroup> groups = d_model.getBean().getPatientGroups();
 		for (BasicPatientGroup g : groups) {
 			LayoutUtil.addRow(layout);
+			
 			PresentationModel<BasicPatientGroup> model = new PresentationModel<BasicPatientGroup>(g);
-			JTextField field = MeasurementInputHelper.buildFormatted(model.getModel(BasicPatientGroup.PROPERTY_SIZE));
-			d_validator.add(field);
-			AutoSelectFocusListener.add(field);
-			builder.add(field, cc.xy(1, row));
 			
 			JComboBox selector = GUIFactory.createDrugSelector(model, d_domain);
 			d_validator.add(selector);
 			ComboBoxPopupOnFocusListener.add(selector);
-			builder.add(selector, cc.xy(3, row));
+			builder.add(selector, cc.xy(1, row));
 			
 			DoseView view = new DoseView(new PresentationModel<Dose>(g.getDose()),
 					d_validator);
-			builder.add(view.buildPanel(), cc.xy(5, row));
+			builder.add(view.buildPanel(), cc.xy(3, row));
+			
+			JTextField field = MeasurementInputHelper.buildFormatted(model.getModel(BasicPatientGroup.PROPERTY_SIZE));
+			d_validator.add(field);
+			AutoSelectFocusListener.add(field);
+			builder.add(field, cc.xy(5, row));
 
 			Measurement meas = d_model.getBean().getMeasurement(
 					d_endpointPresentation.getBean().getEndpoint(),g);
