@@ -116,25 +116,7 @@ public class PooledRateMeasurementTest {
 		
 		verify(l);
 	}
-	
-	@Test
-	public void testFireLabelChangedOnRate() {
-		PropertyChangeListener l = JUnitUtil.mockListener(
-				d_m, RateMeasurement.PROPERTY_LABEL, "30/150", "40/150");
-		d_m.addPropertyChangeListener(l);
-		d_m1.setRate(d_m1.getRate() + 10);
-		verify(l);
-	}
-	
-	@Test
-	public void testFireLabelChangedOnSampleSize() {
-		PropertyChangeListener l = JUnitUtil.mockListener(
-				d_m, RateMeasurement.PROPERTY_LABEL, "30/150", "30/250");
-		d_m.addPropertyChangeListener(l);
-		d_g1.setSize(d_m1.getSampleSize() + 100);
-		verify(l);
-	}
-	
+
 	@Test(expected=RuntimeException.class)
 	public void testFailEndpointChanged() {
 		d_m2.setEndpoint(new Endpoint("e", Type.RATE));
