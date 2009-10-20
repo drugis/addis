@@ -135,7 +135,8 @@ public class StudyAddPatientGroupView implements ViewBuilder {
 			for (JComponent c : comps) {
 				builder.add(c, cc.xy(col, row));
 				col += 2;				
-			}			
+			}		
+			row += 2;
 		}
 		
 		return builder.getPanel();
