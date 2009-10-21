@@ -34,7 +34,8 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class DrugView implements ViewBuilder {
-	private JTextField d_id;
+	private JTextField d_name;
+	private JTextField d_atcCode;
 	private PresentationModel<Drug> d_model;
 	private NotEmptyValidator d_validator; 
 
@@ -44,9 +45,11 @@ public class DrugView implements ViewBuilder {
 	}
 	
 	public void initComponents() {
-		d_id = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_NAME), false);
-		d_id.setColumns(15);
-		d_validator.add(d_id);
+		d_name = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_NAME), false);
+		d_name.setColumns(15);
+		d_validator.add(d_name);
+		d_atcCode = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_ATCCODE), false);
+		d_validator.add(d_atcCode);		
 	}
 
 	public JComponent buildPanel() {
@@ -54,7 +57,7 @@ public class DrugView implements ViewBuilder {
 		
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, pref",
-				"p, 3dlu, p"
+				"p, 3dlu, p, 3dlu, p"
 				);	
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -64,7 +67,9 @@ public class DrugView implements ViewBuilder {
 		
 		builder.addSeparator("Drug", cc.xyw(1, 1, 3));
 		builder.addLabel("Name:", cc.xy(1, 3));
-		builder.add(d_id, cc.xy(3,3));
+		builder.add(d_name, cc.xy(3,3));
+		builder.addLabel("ATC Code:", cc.xy(1, 5));
+		builder.add(d_atcCode, cc.xy(3, 5));
 		
 		return builder.getPanel();	
 	}

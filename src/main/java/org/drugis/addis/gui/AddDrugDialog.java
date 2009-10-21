@@ -36,7 +36,7 @@ public class AddDrugDialog extends OkCancelDialog {
 		this.d_main = frame;
 		this.setModal(true);
 		d_domain = domain;
-		d_drug = new Drug();
+		d_drug = new Drug("", "");
 		DrugView view = new DrugView(new PresentationModel<Drug>(d_drug), d_okButton);
 		getUserPanel().add(view.buildPanel());
 		pack();
@@ -53,6 +53,6 @@ public class AddDrugDialog extends OkCancelDialog {
 	protected void commit() {
 		d_domain.addDrug(d_drug);
 		setVisible(false);
-		d_main.leftTreeFocusOnDrug(d_drug);
+		d_main.leftTreeFocusOnDrug(d_drug);		
 	}
 }

@@ -26,14 +26,14 @@ public class Drug extends AbstractEntity implements Comparable<Drug> {
 	private static final long serialVersionUID = 5156008576438893074L;
 
 	private String d_name = "";
+	private String d_atcCode = "";
 	
 	public static final String PROPERTY_NAME = "name";
+	public static final String PROPERTY_ATCCODE = "atcCode";	
 	
-	public Drug() {
-	}
-
-	public Drug(String name) {
+	public Drug(String name, String atcCode) {
 		d_name = name;
+		d_atcCode = atcCode;
 	}
 
 	public String getName() {
@@ -45,6 +45,16 @@ public class Drug extends AbstractEntity implements Comparable<Drug> {
 		d_name = name;
 		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
 	}
+	
+	public String getAtcCode() {
+		return d_atcCode;
+	}
+
+	public void setAtcCode(String atcCode) {
+		String oldVal = d_atcCode;
+		d_atcCode = atcCode;
+		firePropertyChange(PROPERTY_ATCCODE, oldVal, d_atcCode);
+	}	
 
 	@Override
 	public String toString() {

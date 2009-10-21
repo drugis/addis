@@ -109,7 +109,7 @@ public class DomainTest {
 	
 	@Test
 	public void testAddDrug() {
-		Drug d = new Drug();
+		Drug d = new Drug("name", "atc");
 		assertEquals(0, d_domain.getDrugs().size());
 		d_domain.addDrug(d);
 		assertEquals(1, d_domain.getDrugs().size());
@@ -154,7 +154,7 @@ public class DomainTest {
 		replay(mockListener);
 		
 		d_domain.addListener(mockListener);
-		d_domain.addDrug(new Drug());
+		d_domain.addDrug(new Drug("name", "atc"));
 		verify(mockListener);
 	}
 	
@@ -217,7 +217,7 @@ public class DomainTest {
 		assertEquals(d1, d2);
 		assertEquals(d1.hashCode(), d2.hashCode());
 		
-		Drug d = new Drug("d1");
+		Drug d = new Drug("d1", "atc");
 		d1.addDrug(d);
 		JUnitUtil.assertNotEquals(d1, d2);
 		d2.addDrug(d);
@@ -280,7 +280,7 @@ public class DomainTest {
 
 	@Test
 	public void testDeleteDrug() throws DependentEntitiesException {
-		Drug d = new Drug("X");
+		Drug d = new Drug("X", "atc");
 		d_domain.addDrug(d);
 		d_domain.deleteDrug(d);
 		assertTrue(d_domain.getDrugs().isEmpty());
@@ -291,7 +291,7 @@ public class DomainTest {
 		BasicStudy s1 = new BasicStudy("X", new Indication(0L, ""));
 		d_domain.addStudy(s1);
 		
-		Drug d = new Drug("d");
+		Drug d = new Drug("d", "atc");
 		d_domain.addDrug(d);
 	
 		BasicPatientGroup g = new BasicPatientGroup(s1, d, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY), 10);
@@ -307,7 +307,7 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteDrugFires() throws DependentEntitiesException {
-		Drug d = new Drug("d");
+		Drug d = new Drug("d", "atc");
 		d_domain.addDrug(d);
 		
 		DomainListener mock = createMock(DomainListener.class);

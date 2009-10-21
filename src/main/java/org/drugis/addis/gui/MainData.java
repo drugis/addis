@@ -127,8 +127,7 @@ public class MainData {
 
 	private static Drug buildDefaultDrugParoxetine() {
 		if (s_parox == null) {
-			Drug paroxetine = new Drug();
-			paroxetine.setName("Paroxetine");
+			Drug paroxetine = new Drug("Paroxetine", "N06AB05");
 			s_parox = paroxetine;
 		}
 		return s_parox;
@@ -136,8 +135,7 @@ public class MainData {
 
 	private static Drug buildDefaultDrugFluoxetine() {
 		if (s_fluox == null) {
-			s_fluox = new Drug();
-			s_fluox.setName("Fluoxetine");
+			s_fluox = new Drug("Fluoxetine", "N06AB03");
 		}
 		return s_fluox;
 	}
