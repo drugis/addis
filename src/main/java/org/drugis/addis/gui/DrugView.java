@@ -1,63 +1,38 @@
-/*
- * This file is part of ADDIS (Aggregate Data Drug Information System).
- * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009  Gert van Valkenhoef and Tommi Tervonen.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package org.drugis.addis.gui;
 
-import javax.swing.JButton;
+import java.awt.Color;
+
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JTextField;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.presentation.DrugPresentationModel;
+import org.drugis.addis.presentation.StudyCharTableModel;
+import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.gui.ViewBuilder;
 
-
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class DrugView implements ViewBuilder {
-	private JTextField d_name;
-	private JTextField d_atcCode;
-	private PresentationModel<Drug> d_model;
-	private NotEmptyValidator d_validator; 
+public class DrugView implements ViewBuilder{
+	private DrugPresentationModel d_model;
 
-	public DrugView(PresentationModel<Drug> presentationModel, JButton okButton) {
-		d_validator = new NotEmptyValidator(okButton);
-		d_model = presentationModel;
+	public DrugView(DrugPresentationModel model) {
+		d_model = model;
 	}
 	
-	public void initComponents() {
-		d_name = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_NAME), false);
-		d_name.setColumns(15);
-		d_validator.add(d_name);
-		d_atcCode = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_ATCCODE), false);
-		d_validator.add(d_atcCode);		
-	}
-
 	public JComponent buildPanel() {
-		initComponents();
+
+		
 		
 		FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, pref",
-				"p, 3dlu, p, 3dlu, p"
+				"right:pref, 3dlu, left:pref:grow",
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);	
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -67,10 +42,34 @@ public class DrugView implements ViewBuilder {
 		
 		builder.addSeparator("Drug", cc.xyw(1, 1, 3));
 		builder.addLabel("Name:", cc.xy(1, 3));
-		builder.add(d_name, cc.xy(3,3));
+		JLabel nameComp =
+			BasicComponentFactory.createLabel(d_model.getModel(Drug.PROPERTY_NAME));
+		builder.add(nameComp, cc.xy(3,3));
 		builder.addLabel("ATC Code:", cc.xy(1, 5));
-		builder.add(d_atcCode, cc.xy(3, 5));
+		JLabel atcCodeComp =
+			BasicComponentFactory.createLabel(d_model.getModel(Drug.PROPERTY_ATCCODE));
+		builder.add(atcCodeComp, cc.xy(3, 5));
 		
+		builder.addSeparator("Studies measuring this drug", cc.xyw(1, 7, 3));
+		
+		StudyListPresentationModel studyListModel = d_model.getStudyListModel();
+			
+		JComponent studiesComp = null;
+		if(studyListModel.getIncludedStudies().isEmpty()) {
+			studiesComp = new JLabel("No studies found.");
+		} else {
+			StudyCharTableModel model = new StudyCharTableModel(studyListModel);
+			final JTable table = new JTable(model);
+			table.setPreferredScrollableViewportSize(table.getPreferredSize());
+			table.setBackground(Color.WHITE);
+			JScrollPane pane = new JScrollPane(table);
+			pane.setBorder(BorderFactory.createEmptyBorder());
+			pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+			pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			studiesComp = pane;
+		}
+		builder.add(studiesComp, cc.xyw(1, 9, 3));
+				
 		return builder.getPanel();	
 	}
 }

@@ -58,6 +58,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.presentation.DrugPresentationModel;
 import org.drugis.addis.presentation.PresentationModelManager;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
@@ -77,8 +78,7 @@ public class Main extends JFrame {
 	private JTree d_leftPanelTree;
 	private JMenuItem d_editMenuDeleteItem;
 	
-	private PresentationModelManager d_pmManager = 
-		new PresentationModelManager();
+	private PresentationModelManager d_pmManager;
 	
 	public PresentationModelManager getPresentationModelManager() {
 		return d_pmManager;
@@ -98,6 +98,7 @@ public class Main extends JFrame {
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		
 		initializeDomain();
+		d_pmManager = new PresentationModelManager(d_domain.getDomain());
 		
 	}
 	
@@ -427,6 +428,10 @@ public class Main extends JFrame {
 	}
 	
 	private void drugSelected(Drug drug) {
+		DrugView view = new DrugView((DrugPresentationModel) d_pmManager.getModel(drug));
+		
+		d_rightPanelBuilder = view;
+		d_rightPanel.setViewportView(view.buildPanel());
 		d_editMenuDeleteItem.setEnabled(true);		
 	}
 	

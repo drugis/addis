@@ -44,7 +44,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class StudyCharTableModelTest {
 	private Domain d_domain;
-	private MetaStudyPresentationModel d_pm;
+	private StudyListPresentationModel d_pm;
 	private StudyCharTableModel d_model;
 	private MetaStudy d_study;
 	

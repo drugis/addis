@@ -30,9 +30,9 @@ import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class StudyCharTableModel extends AbstractTableModel {
-	private MetaStudyPresentationModel d_pm;
+	private StudyListPresentationModel d_pm;
 	
-	public StudyCharTableModel(MetaStudyPresentationModel pm) {
+	public StudyCharTableModel(StudyListPresentationModel pm) {
 		d_pm = pm;
 		for (StudyCharacteristic c : StudyCharacteristic.values()) {
 			ValueModel vm = d_pm.getCharacteristicVisibleModel(c);

@@ -29,6 +29,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -198,6 +199,50 @@ public class DomainTest {
 		assertTrue(d_domain.getStudies(e1).contains(s1));
 		assertTrue(d_domain.getStudies(e1).contains(s2));
 		assertTrue(d_domain.getStudies(e2).contains(s2));
+	}
+	
+	@Test
+	public void testGetStudiesByDrug() {
+		Drug d1 = new Drug("drug1", "atccode1");
+		Drug d2 = new Drug("drug2", "atccode2");
+		Drug d3 = new Drug("drug3", "atccode3");
+		
+		Endpoint e = new Endpoint("Death", Endpoint.Type.RATE);
+		
+		BasicStudy s1 = new BasicStudy("s1", new Indication(0L, ""));
+		s1.setEndpoints(Collections.singleton(e));
+		BasicPatientGroup g1 = new BasicPatientGroup(s1, d1, 
+				new Dose(1.0, SIUnit.MILLIGRAMS_A_DAY), 100);
+		BasicRateMeasurement m1 = new BasicRateMeasurement(e, g1);
+		s1.setPatientGroups(Collections.singletonList(g1));
+		s1.setMeasurement(e, g1, m1);
+		
+		BasicStudy s2 = new BasicStudy("s2", new Indication(1L, ""));
+		s2.setEndpoints(Collections.singleton(e));
+		BasicPatientGroup g2 = new BasicPatientGroup(s2, d1, 
+				new Dose(5.0, SIUnit.MILLIGRAMS_A_DAY), 250);		
+		BasicPatientGroup g3 = new BasicPatientGroup(s2, d2, 
+				new Dose(5.0, SIUnit.MILLIGRAMS_A_DAY), 250);
+		List<BasicPatientGroup> l1 = new ArrayList<BasicPatientGroup>();
+		l1.add(g2);
+		l1.add(g3);
+		s2.setPatientGroups(l1);
+		BasicRateMeasurement m2 = new BasicRateMeasurement(e, g2);
+		BasicRateMeasurement m3 = new BasicRateMeasurement(e, g3);		
+		s2.setMeasurement(e, g2, m2);
+		s2.setMeasurement(e, g3, m3);
+		
+		
+		d_domain.addStudy(s1);
+		d_domain.addStudy(s2);
+		
+		assertEquals(2, d_domain.getStudies(d1).size());
+		assertEquals(1, d_domain.getStudies(d2).size());
+		assertEquals(0, d_domain.getStudies(d3).size());
+		
+		assertTrue(d_domain.getStudies(d1).contains(s1));
+		assertTrue(d_domain.getStudies(d1).contains(s2));
+		assertTrue(d_domain.getStudies(d2).contains(s2));
 	}
 	
 	@Test

@@ -29,6 +29,7 @@ import java.util.List;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.addis.entities.MetaStudy;
@@ -43,19 +44,20 @@ import com.jgoodies.binding.PresentationModel;
 public class PresentationModelManagerTest {
 	
 	private PresentationModelManager d_manager;
+	private Domain d_domain;
 
 	@Before
 	public void setUp() {
-		this.d_manager = new PresentationModelManager();
+		d_domain = new DomainImpl();
+		ExampleData.initDefaultData(d_domain);
+		this.d_manager = new PresentationModelManager(d_domain);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testMetaStudyGetModel() {
-		Domain d = new DomainImpl();
-		ExampleData.initDefaultData(d);
 		List<Study> studies = new ArrayList<Study>();
-		studies.addAll(d.getStudies());
+		studies.addAll(d_domain.getStudies());
 		MetaAnalysis anal = new MetaAnalysis(ExampleData.buildEndpointHamd(),
 				studies);
 		MetaStudy s = new MetaStudy("ms", anal);
@@ -76,11 +78,23 @@ public class PresentationModelManagerTest {
 		assertEquals(m.getClass(), IndicationPresentation.class);
 		assertEquals(m, d_manager.getLabeledModel(indication));
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testGetDrugModel(){
+		Drug d = ExampleData.buildDrugFluoxetine();
+		PresentationModel m = d_manager.getModel(d);
+		
+		assertEquals(d, m.getBean());
+		assertEquals(DrugPresentationModel.class, m.getClass());
+		assertEquals(d_domain.getStudies(d).size(),
+				((DrugPresentationModel) m).getStudyListModel().getIncludedStudies().size());
+		assertTrue(d_domain.getStudies(d).containsAll(
+				((DrugPresentationModel) m).getStudyListModel().getIncludedStudies()));		
+	}
 
 	@Test
 	public void testGetOtherModel() {
-		Domain d = new DomainImpl();
-		ExampleData.initDefaultData(d);
-		assertNotNull(d_manager.getModel((BasicStudy) d.getStudies().first()));
+		assertNotNull(d_manager.getModel((BasicStudy) d_domain.getStudies().first()));
 	}
 }
