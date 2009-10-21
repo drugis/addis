@@ -32,29 +32,30 @@ import org.drugis.addis.entities.Ratio;
 
 import com.jgoodies.binding.PresentationModel;
 
-@SuppressWarnings("unchecked")
 public class PresentationModelManager {
-	private Map<Object, PresentationModel> d_cache = new
-		HashMap<Object, PresentationModel>();
+	private Map<Object, PresentationModel<?>> d_cache = new
+		HashMap<Object, PresentationModel<?>>();
 	
-	public LabeledPresentationModel getLabeledModel(Object obj) {
+	public <T> LabeledPresentationModel<T> getLabeledModel(T obj) {
 		try {
-			return (LabeledPresentationModel)getModel(obj);
+			return (LabeledPresentationModel<T>)getModel(obj);
 		} catch (ClassCastException e) {
 			return null;
 		}
 	}
 	
-	public PresentationModel getModel(Object obj) {
+	@SuppressWarnings("unchecked")
+	public <T> PresentationModel<T> getModel(T obj) {
 		PresentationModel mod = d_cache.get(obj);
 		if (mod != null) {
 			return mod;
 		}
 		mod = createModel(obj);
 		d_cache.put(obj, mod);
-		return mod;
+		return (PresentationModel<T>)mod;
 	}
 
+	@SuppressWarnings("unchecked")
 	private PresentationModel createModel(Object obj) {
 		if (obj instanceof MetaStudy) {
 			return new MetaStudyPresentationModel((MetaStudy) obj);

@@ -454,15 +454,19 @@ public class Main extends JFrame {
 	}
 	
 	private void indicationSelected(Indication i) {
-		System.out.println(i);
+		IndicationView view = new IndicationView(d_pmManager.getModel(i), getDomain(), d_pmManager);
+		setRightPanelView(view);
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void studySelected(Study node) {
 		StudyView view = new StudyView(d_pmManager.getModel(node), getDomain(), this, d_imageLoader);
+		setRightPanelView(view);		
+	}
+
+	private void setRightPanelView(ViewBuilder view) {
 		d_rightPanelBuilder = view;
 		d_rightPanel.setViewportView(view.buildPanel());
-		d_editMenuDeleteItem.setEnabled(true);		
+		d_editMenuDeleteItem.setEnabled(true);
 	}
 	
 	private void initRightPanel() {
