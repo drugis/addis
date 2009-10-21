@@ -1,15 +1,15 @@
 package org.drugis.addis.gui;
 
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 
-import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.presentation.PresentationModelManager;
+import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.value.ConverterFactory;
+import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -17,14 +17,9 @@ import com.jgoodies.forms.layout.FormLayout;
 public class IndicationView implements ViewBuilder {
 	
 	private PresentationModel<Indication> d_pm;
-	private Domain d_domain;
-	private PresentationModelManager d_pmm;
 
-	public IndicationView(PresentationModel<Indication> pm, Domain domain, 
-			PresentationModelManager pmm) {
+	public IndicationView(PresentationModel<Indication> pm) {
 		d_pm = pm;
-		d_domain = domain;
-		d_pmm = pmm;
 	}
 	
 	public JComponent buildPanel() {
@@ -40,9 +35,10 @@ public class IndicationView implements ViewBuilder {
 		builder.addSeparator("Indication", cc.xyw(1, 1, 3));
 		builder.addLabel("Concept ID:", cc.xy(1, 3));
 		
-//		builder.add(BasicComponentFactory.createLabel(
-//				d_pm.getModel(Indication.PROPERTY_CODE)), cc.xy(3, 3));
-		
+		ValueModel codeModel = ConverterFactory.createStringConverter(
+				d_pm.getModel(Indication.PROPERTY_CODE),
+				new OneWayObjectFormat());
+		builder.add(BasicComponentFactory.createLabel(codeModel), cc.xy(3, 3));
 		
 		builder.addLabel("Fully Specified Name:", cc.xy(1, 5));
 		builder.add(BasicComponentFactory.createLabel(
@@ -50,8 +46,15 @@ public class IndicationView implements ViewBuilder {
 		
 		builder.addSeparator("Studies", cc.xyw(1, 7, 3));
 		
+		int row = 9;
+		row = buildStudiesPart(builder, cc, row);
+		
 		return builder.getPanel();
 	}
-	
 
+	private int buildStudiesPart(PanelBuilder builder, CellConstraints cc,
+			int row) {
+		builder.addLabel("NOT IMPLEMENTED", cc.xy(3, row));
+		return row + 2;
+	}
 }
