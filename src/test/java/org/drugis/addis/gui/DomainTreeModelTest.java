@@ -63,7 +63,7 @@ public class DomainTreeModelTest {
 		d_domain = new DomainImpl();
 		d_firstEndpoint = new Endpoint("Endpoint", Type.RATE);
 		d_firstStudy = new BasicStudy("First", new Indication(0L, ""));
-		d_firstDrug = new Drug("Drug");
+		d_firstDrug = new Drug("Drug", "atc");
 		d_firstIndication = new Indication(8L, "Indication");
 		d_domain.addIndication(d_firstIndication);
 		d_domain.addEndpoint(d_firstEndpoint);
@@ -220,7 +220,7 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addDrug(new Drug("X"));
+		d_domain.addDrug(new Drug("X", "atc"));
 		
 		verify(listener);
 	}	

@@ -29,7 +29,7 @@ public class DrugTest {
 	
 	@Test
 	public void testSetName() {
-		JUnitUtil.testSetter(new Drug("name"), Drug.PROPERTY_NAME, "name", "Paroxetine");
+		JUnitUtil.testSetter(new Drug("name", "atc"), Drug.PROPERTY_NAME, "name", "Paroxetine");
 	}
 	
 	@Test
@@ -44,25 +44,18 @@ public class DrugTest {
 		assertEquals("name", d.getName());
 		assertEquals("atc", d.getAtcCode());
 	}
-	
-	@Test
-	public void test1ArgConstructor() {
-		Drug d = new Drug("name");
-		assertEquals("name", d.getName());
-		assertEquals("", d.getAtcCode());
-	}	
-	
+		
 	@Test
 	public void testToString() {
-		Drug d = new Drug("Paroxetine");
+		Drug d = new Drug("Paroxetine", "atc");
 		assertEquals("Paroxetine", d.toString());
 	}
 	
 	@Test
 	public void testEquals() {
-		Drug d1 = new Drug("Paroxetine");
-		Drug d2 = new Drug("Paroxetine");
-		Drug d3 = new Drug("Fluoxetine");
+		Drug d1 = new Drug("Paroxetine", "atc");
+		Drug d2 = new Drug("Paroxetine", "atc");
+		Drug d3 = new Drug("Fluoxetine", "atc");
 		
 		assertTrue(d1.equals(d2));
 		assertFalse(d1.equals(d3));
@@ -70,8 +63,8 @@ public class DrugTest {
 	
 	@Test
 	public void testHashCode() {
-		Drug d1 = new Drug("Paroxetine");
-		Drug d2 = new Drug("Paroxetine");
+		Drug d1 = new Drug("Paroxetine", "atc");
+		Drug d2 = new Drug("Paroxetine", "atc");
 		assertEquals(d1.hashCode(), d2.hashCode());
 	}
 }

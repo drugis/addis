@@ -44,7 +44,7 @@ public class BasicPatientGroupTest {
 	
 	@Test
 	public void testSetDrug() {
-		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_DRUG, null, new Drug("D"));
+		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_DRUG, null, new Drug("D", "atc"));
 	}
 	
 	@Test

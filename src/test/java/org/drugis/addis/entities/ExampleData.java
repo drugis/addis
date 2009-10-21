@@ -125,7 +125,7 @@ public class ExampleData {
 
 	public static Drug buildDrugParoxetine() {
 		if (s_parox == null) {
-			Drug paroxetine = new Drug("Paroxetine");
+			Drug paroxetine = new Drug("Paroxetine", "atc");
 			s_parox = paroxetine;
 		}
 		return s_parox;
@@ -133,7 +133,7 @@ public class ExampleData {
 
 	public static Drug buildDrugFluoxetine() {
 		if (s_fluox == null) {
-			s_fluox = new Drug("Fluoxetine");
+			s_fluox = new Drug("Fluoxetine", "atc");
 		}
 		return s_fluox;
 	}
@@ -147,7 +147,7 @@ public class ExampleData {
 	
 	public static Drug buildDrugViagra() {
 		if (s_viagra == null) {
-			s_viagra = new Drug("Viagra");
+			s_viagra = new Drug("Viagra", "atc");
 		}
 		return s_viagra;
 	}
