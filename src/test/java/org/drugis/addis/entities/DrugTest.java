@@ -26,10 +26,31 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Test;
 
 public class DrugTest {
+	
 	@Test
 	public void testSetName() {
 		JUnitUtil.testSetter(new Drug("name"), Drug.PROPERTY_NAME, "name", "Paroxetine");
 	}
+	
+	@Test
+	public void testSetAtcCode() {
+		JUnitUtil.testSetter(new Drug("name", "G0101"), Drug.PROPERTY_ATCCODE,
+				"G0101", "C0101");
+	}	
+	
+	@Test
+	public void test2ArgConstructor() {
+		Drug d = new Drug("name", "atc");
+		assertEquals("name", d.getName());
+		assertEquals("atc", d.getAtcCode());
+	}
+	
+	@Test
+	public void test1ArgConstructor() {
+		Drug d = new Drug("name");
+		assertEquals("name", d.getName());
+		assertEquals("", d.getAtcCode());
+	}	
 	
 	@Test
 	public void testToString() {
