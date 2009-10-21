@@ -74,7 +74,6 @@ public class MainData {
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(26);
 		
-		
 		study.addPatientGroup(parox);
 		study.addPatientGroup(fluox);
 		study.setMeasurement(hamd, parox, pHamd);
