@@ -33,13 +33,13 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class DrugView implements ViewBuilder {
+public class AddDrugView implements ViewBuilder {
 	private JTextField d_name;
 	private JTextField d_atcCode;
 	private PresentationModel<Drug> d_model;
 	private NotEmptyValidator d_validator; 
 
-	public DrugView(PresentationModel<Drug> presentationModel, JButton okButton) {
+	public AddDrugView(PresentationModel<Drug> presentationModel, JButton okButton) {
 		d_validator = new NotEmptyValidator(okButton);
 		d_model = presentationModel;
 	}
