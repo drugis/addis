@@ -34,6 +34,7 @@ import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
@@ -54,9 +55,9 @@ public class AddStudyDialog extends OkCancelDialog {
 	private JButton d_addPatientGroupButton;
 	private Main d_main;
 	
-	public AddStudyDialog(Main frame, Domain domain) {
-		super(frame, "Add Study");
-		this.d_main = frame;
+	public AddStudyDialog(Main mainWindow, Domain domain) {
+		super(mainWindow, "Add Study");
+		this.d_main = mainWindow;
 		this.setModal(true);
 		d_domain = domain;
 		d_study = new BasicStudy("", new Indication(0L, ""));
@@ -68,9 +69,25 @@ public class AddStudyDialog extends OkCancelDialog {
 				initUserPanel();
 			}
 		});
+		d_domain.addListener(new DomainListener() {
+
+			public void drugsChanged() {
+				initUserPanel();
+			}
+
+			public void endpointsChanged() {
+				initUserPanel();
+			}
+
+			public void indicationsChanged() {
+				initUserPanel();
+			}
+
+			public void studiesChanged() {
+			}});
 		d_view = new AddStudyView(new PresentationModel<BasicStudy>(d_study),
 				new PresentationModel<EndpointHolder>(d_primaryEndpoint), domain,
-				d_okButton, frame.getImageLoader());
+				d_okButton, mainWindow);
 		initUserPanel();
 	}
 

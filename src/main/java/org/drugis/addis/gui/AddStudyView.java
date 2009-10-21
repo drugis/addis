@@ -65,15 +65,17 @@ public class AddStudyView implements ViewBuilder {
 	private NotEmptyValidator d_validator;
 	private JButton d_okButton;
 	private ImageLoader d_loader;
+	private Main d_mainWindow;
 
 	public AddStudyView(PresentationModel<BasicStudy> presentationModel,
 			PresentationModel<EndpointHolder> presentationModel2, Domain domain,
-			JButton okButton, ImageLoader imageLoader) {
+			JButton okButton, Main mainWindow) {
 		d_okButton = okButton;
 		d_model = presentationModel;
 		d_endpointPresentation = presentationModel2;
 		d_domain = domain;
-		d_loader = imageLoader;
+		d_loader = mainWindow.getImageLoader();
+		d_mainWindow = mainWindow;
 	}
 	
 	public void initComponents() {
@@ -175,26 +177,36 @@ public class AddStudyView implements ViewBuilder {
 	}
 
 	@SuppressWarnings("serial")
-	private JButton createAddButton(final String text) {
-		JButton btn = GUIFactory.createPlusButton(d_loader, text);
+	private JButton createNewIndicationButton() {
+		JButton btn = GUIFactory.createPlusButton(d_loader, "New Indication");
 		btn.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println(text);
+				d_mainWindow.showAddIndicationDialog();
 			}
 		});
 		return btn;
 	}
 	
-	private JButton createNewIndicationButton() {
-		return createAddButton("New Indication");
-	}
-	
+	@SuppressWarnings("serial")
 	private JButton createNewEndpointButton() {
-		return createAddButton("New Endpoint");
+		JButton btn = GUIFactory.createPlusButton(d_loader, "New Endpoint");
+		btn.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				d_mainWindow.showAddEndpointDialog();
+			}
+		});
+		return btn;
 	}
 	
+	@SuppressWarnings("serial")
 	private JButton createNewDrugButton() {
-		return createAddButton("New Drug");
+		JButton btn = GUIFactory.createPlusButton(d_loader, "New Drug");
+		btn.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				d_mainWindow.showAddDrugDialog();
+			}
+		});
+		return btn;
 	}
 
 	private JComponent createCharacteristicComponent(StudyCharacteristic c) {

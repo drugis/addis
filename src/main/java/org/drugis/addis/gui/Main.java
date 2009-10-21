@@ -313,12 +313,12 @@ public class Main extends JFrame {
 		return item;
 	}
 	
-	private void showAddIndicationDialog() {
+	public void showAddIndicationDialog() {
 		AddIndicationDialog dialog = new AddIndicationDialog(this, getDomain());
 		dialog.setVisible(true);
 	}
 	
-	private void showAddEndpointDialog() {
+	public void showAddEndpointDialog() {
 		AddEndpointDialog dialog = new AddEndpointDialog(this, getDomain());
 		dialog.setVisible(true);
 	}
@@ -328,7 +328,7 @@ public class Main extends JFrame {
 		dialog.setVisible(true);
 	}
 	
-	private void showAddDrugDialog() {
+	public void showAddDrugDialog() {
 		AddDrugDialog dialog = new AddDrugDialog(this, getDomain());
 		dialog.setVisible(true);
 	}
