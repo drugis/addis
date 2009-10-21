@@ -43,8 +43,8 @@ import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
-import org.drugis.addis.presentation.MetaStudyPresentationModel;
 import org.drugis.addis.presentation.StudyCharTableModel;
+import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OneWayObjectFormat;
@@ -117,8 +117,8 @@ public class StudyView implements ViewBuilder {
 		LayoutUtil.addRow(layout);
 		LayoutUtil.addRow(layout);
 		
-		final MetaStudyPresentationModel pm = 
-			(MetaStudyPresentationModel) d_model;
+		final StudyListPresentationModel pm = 
+			(StudyListPresentationModel) d_model;
 		
 		builder.addSeparator("Included Studies", cc.xyw(1, row, fullWidth));
 		row += 2;

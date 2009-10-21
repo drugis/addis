@@ -40,7 +40,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 public class MetaStudyPresentationModelTest {
 	private MetaStudy d_study;
 	private Domain d_domain;
-	private MetaStudyPresentationModel d_presentationModel;
+	private StudyListPresentationModel d_presentationModel;
 
 	@Before
 	public void setUp() {

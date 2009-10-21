@@ -24,6 +24,8 @@ import java.util.Map;
 
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.ContinuousMeasurement;
+import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.PooledPatientGroup;
@@ -35,6 +37,11 @@ import com.jgoodies.binding.PresentationModel;
 public class PresentationModelManager {
 	private Map<Object, PresentationModel<?>> d_cache = new
 		HashMap<Object, PresentationModel<?>>();
+	private Domain d_domain;
+	
+	public PresentationModelManager(Domain domain) {
+		d_domain = domain;
+	}
 	
 	public <T> LabeledPresentationModel<T> getLabeledModel(T obj) {
 		try {
@@ -80,6 +87,10 @@ public class PresentationModelManager {
 		}
 		if (obj instanceof PooledPatientGroup) {
 			return new PooledPatientGroupPresentation((PooledPatientGroup)obj);
+		}
+		if (obj instanceof Drug) {
+			Drug d = (Drug) obj;
+			return new DrugPresentationModel(d, d_domain.getStudies(d));
 		}
 		return new PresentationModel(obj);
 	}

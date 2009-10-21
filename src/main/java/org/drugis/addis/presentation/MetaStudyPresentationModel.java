@@ -32,7 +32,8 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueHolder;
 
 @SuppressWarnings("serial")
-public class MetaStudyPresentationModel extends PresentationModel<MetaStudy> {
+public class MetaStudyPresentationModel extends PresentationModel<MetaStudy> 
+										implements StudyListPresentationModel {
 	private Map<StudyCharacteristic, AbstractValueModel> d_characteristicVisibleMap;
 	
 	public MetaStudyPresentationModel(MetaStudy study) {
@@ -51,3 +52,4 @@ public class MetaStudyPresentationModel extends PresentationModel<MetaStudy> {
 		return d_characteristicVisibleMap.get(c);
 	}
 }
+
