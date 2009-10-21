@@ -423,6 +423,10 @@ public class Main extends JFrame {
 	}
 	
 	private void drugSelected(Drug drug) {
+		DrugView view = new DrugView(drug);
+		
+		d_rightPanelBuilder = view;
+		d_rightPanel.setViewportView(view.buildPanel());
 		d_editMenuDeleteItem.setEnabled(true);		
 	}
 	
