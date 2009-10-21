@@ -420,8 +420,10 @@ public class Main extends JFrame {
 	}
 	
 	protected void noneSelected() {
-		d_rightPanel.setViewportView(new JPanel());
-		d_editMenuDeleteItem.setEnabled(false);
+		setRightPanelView(new ViewBuilder() {
+			public JComponent buildPanel() {
+				return new JPanel();
+			}});
 	}
 	
 	private void drugSelected(Drug drug) {
@@ -443,9 +445,7 @@ public class Main extends JFrame {
 	public void endpointSelected(Endpoint e, Study selectedStudy) {
 		EndpointStudiesView view = new EndpointStudiesView(e, getDomain(), this);
 		view.setSelectedStudy(selectedStudy);
-		d_rightPanelBuilder = view;
-		d_rightPanel.setViewportView(view.buildPanel());
-		d_editMenuDeleteItem.setEnabled(true);		
+		setRightPanelView(view);
 	}
 	
 	public void endpointSelected(Endpoint node) {
