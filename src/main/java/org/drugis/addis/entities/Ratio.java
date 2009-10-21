@@ -31,6 +31,8 @@ import org.drugis.common.StudentTTable;
 public abstract class Ratio extends AbstractEntity implements Measurement {
 	private static final long serialVersionUID = 1647344976539753330L;
 
+	public static final String PROPERTY_LABEL = "label";
+	
 	private class ChangeListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equals(RateMeasurement.PROPERTY_RATE) ||
@@ -109,6 +111,7 @@ public abstract class Ratio extends AbstractEntity implements Measurement {
 		return getMean(d_numerator) / getMean(d_denominator);
 	}
 
+	@Deprecated
 	public String getLabel() {
 		DecimalFormat format = new DecimalFormat("0.00");
 		Interval<Double> ci = getConfidenceInterval();

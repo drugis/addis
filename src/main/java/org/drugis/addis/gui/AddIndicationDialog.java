@@ -37,7 +37,7 @@ public class AddIndicationDialog extends OkCancelDialog {
 		d_main = frame;
 		d_domain = domain;
 		d_indication = new Indication(0L, "");
-		IndicationView view = new IndicationView(new PresentationModel<Indication>(d_indication), d_okButton);
+		AddIndicationView view = new AddIndicationView(new PresentationModel<Indication>(d_indication), d_okButton);
 		getUserPanel().add(view.buildPanel());
 		pack();
 		d_okButton.setEnabled(false);

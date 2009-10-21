@@ -44,11 +44,9 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	}
 	
 	public void setMean(Double mean) {
-		String oldLabel = getLabel();
 		Double oldVal = d_mean;
 		d_mean = mean;
 		firePropertyChange(PROPERTY_MEAN, oldVal, d_mean);
-		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
 	}
 	
 	/**
@@ -59,15 +57,9 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	}
 	
 	public void setStdDev(Double stdDev) {
-		String oldLabel = getLabel();
 		Double oldVal = d_stdDev;
 		d_stdDev = stdDev;
 		firePropertyChange(PROPERTY_STDDEV, oldVal, d_stdDev);
-		firePropertyChange(PROPERTY_LABEL, oldLabel, getLabel());
-	}
-	
-	public String getLabel() {
-		return toString();
 	}
 	
 	@Override

@@ -410,6 +410,8 @@ public class Main extends JFrame {
 					endpointSelected((Endpoint)node);
 				} else if (node instanceof Drug) {
 					drugSelected((Drug) node);
+				} else if (node instanceof Indication) {
+					indicationSelected((Indication) node);
 				} else {
 					noneSelected();
 				}
@@ -418,8 +420,10 @@ public class Main extends JFrame {
 	}
 	
 	protected void noneSelected() {
-		d_rightPanel.setViewportView(new JPanel());
-		d_editMenuDeleteItem.setEnabled(false);
+		setRightPanelView(new ViewBuilder() {
+			public JComponent buildPanel() {
+				return new JPanel();
+			}});
 	}
 	
 	private void drugSelected(Drug drug) {
@@ -445,22 +449,28 @@ public class Main extends JFrame {
 	public void endpointSelected(Endpoint e, Study selectedStudy) {
 		EndpointStudiesView view = new EndpointStudiesView(e, getDomain(), this);
 		view.setSelectedStudy(selectedStudy);
-		d_rightPanelBuilder = view;
-		d_rightPanel.setViewportView(view.buildPanel());
-		d_editMenuDeleteItem.setEnabled(true);		
+		setRightPanelView(view);
 	}
-
+	
 	public void endpointSelected(Endpoint node) {
 		endpointSelected(node, null);
 		d_editMenuDeleteItem.setEnabled(true);		
 	}
 	
-	@SuppressWarnings("unchecked")
+	private void indicationSelected(Indication i) {
+		IndicationView view = new IndicationView(d_pmManager.getModel(i), getDomain(), d_pmManager);
+		setRightPanelView(view);
+	}
+	
 	private void studySelected(Study node) {
 		StudyView view = new StudyView(d_pmManager.getModel(node), getDomain(), this, d_imageLoader);
+		setRightPanelView(view);		
+	}
+
+	private void setRightPanelView(ViewBuilder view) {
 		d_rightPanelBuilder = view;
 		d_rightPanel.setViewportView(view.buildPanel());
-		d_editMenuDeleteItem.setEnabled(true);		
+		d_editMenuDeleteItem.setEnabled(true);
 	}
 	
 	private void initRightPanel() {
