@@ -35,13 +35,13 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class IndicationView implements ViewBuilder {
+public class AddIndicationView implements ViewBuilder {
 	private JFormattedTextField d_code;
 	private JTextField d_name;
 	private PresentationModel<Indication> d_model;
 	private NotEmptyValidator d_validator;
 	
-	public IndicationView(PresentationModel<Indication> model, JButton okButton) {
+	public AddIndicationView(PresentationModel<Indication> model, JButton okButton) {
 		d_validator = new NotEmptyValidator(okButton);
 		d_model = model;
 	}
