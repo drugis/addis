@@ -29,8 +29,7 @@ public class BasicPatientGroupPresentationTest {
 		
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		group.setDose(dose);
-		Drug drug = new Drug();
-		drug.setName("Fluoxetine");
+		Drug drug = new Drug("Fluoxetine");
 		group.setDrug(drug);
 		assertEquals("Fluoxetine " + dose.toString(), pres.getLabel());
 	}
@@ -39,8 +38,7 @@ public class BasicPatientGroupPresentationTest {
 	public void testFireLabelChanged() {
 		BasicPatientGroup group;
 		PropertyChangeListener l;
-		Drug drug = new Drug();
-		drug.setName("Fluoxetine");
+		Drug drug = new Drug("Fluoxetine");
 		
 		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(d_pg);
 		
@@ -59,8 +57,7 @@ public class BasicPatientGroupPresentationTest {
 		
 		group = d_pg;
 		group.setDose(dose);
-		Drug drug2 = new Drug();
-		drug2.setName("Paroxetine");
+		Drug drug2 = new Drug("Paroxetine");
 		group.setDrug(drug2);
 		l = JUnitUtil.mockListener(pres, BasicPatientGroupPresentation.PROPERTY_LABEL, pres.getLabel(), expect);
 		pres.addPropertyChangeListener(l);

@@ -28,13 +28,12 @@ import org.junit.Test;
 public class DrugTest {
 	@Test
 	public void testSetName() {
-		JUnitUtil.testSetter(new Drug(), Drug.PROPERTY_NAME, "", "Paroxetine");
+		JUnitUtil.testSetter(new Drug("name"), Drug.PROPERTY_NAME, "name", "Paroxetine");
 	}
 	
 	@Test
 	public void testToString() {
-		Drug d = new Drug();
-		d.setName("Paroxetine");
+		Drug d = new Drug("Paroxetine");
 		assertEquals("Paroxetine", d.toString());
 	}
 	

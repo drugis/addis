@@ -29,9 +29,6 @@ public class Drug extends AbstractEntity implements Comparable<Drug> {
 	
 	public static final String PROPERTY_NAME = "name";
 	
-	public Drug() {
-	}
-
 	public Drug(String name) {
 		d_name = name;
 	}

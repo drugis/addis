@@ -125,8 +125,7 @@ public class ExampleData {
 
 	public static Drug buildDrugParoxetine() {
 		if (s_parox == null) {
-			Drug paroxetine = new Drug();
-			paroxetine.setName("Paroxetine");
+			Drug paroxetine = new Drug("Paroxetine");
 			s_parox = paroxetine;
 		}
 		return s_parox;

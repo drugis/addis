@@ -109,7 +109,7 @@ public class DomainTest {
 	
 	@Test
 	public void testAddDrug() {
-		Drug d = new Drug();
+		Drug d = new Drug("name");
 		assertEquals(0, d_domain.getDrugs().size());
 		d_domain.addDrug(d);
 		assertEquals(1, d_domain.getDrugs().size());
@@ -154,7 +154,7 @@ public class DomainTest {
 		replay(mockListener);
 		
 		d_domain.addListener(mockListener);
-		d_domain.addDrug(new Drug());
+		d_domain.addDrug(new Drug("name"));
 		verify(mockListener);
 	}
 	
