@@ -410,6 +410,8 @@ public class Main extends JFrame {
 					endpointSelected((Endpoint)node);
 				} else if (node instanceof Drug) {
 					drugSelected((Drug) node);
+				} else if (node instanceof Indication) {
+					indicationSelected((Indication) node);
 				} else {
 					noneSelected();
 				}
@@ -445,10 +447,14 @@ public class Main extends JFrame {
 		d_rightPanel.setViewportView(view.buildPanel());
 		d_editMenuDeleteItem.setEnabled(true);		
 	}
-
+	
 	public void endpointSelected(Endpoint node) {
 		endpointSelected(node, null);
 		d_editMenuDeleteItem.setEnabled(true);		
+	}
+	
+	private void indicationSelected(Indication i) {
+		System.out.println(i);
 	}
 	
 	@SuppressWarnings("unchecked")
