@@ -530,5 +530,9 @@ public class Main extends JFrame {
 						d_domainTreeModel.getIndicationsNode(), indication
 				} ));
 		
+	}
+
+	public ImageLoader getImageLoader() {
+		return d_imageLoader;
 	}		
 }

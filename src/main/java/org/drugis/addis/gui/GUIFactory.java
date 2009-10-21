@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -42,6 +43,17 @@ import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.list.SelectionInList;
 
 public class GUIFactory {
+	public static JButton createPlusButton(ImageLoader loader, String toolTipText) {
+		JButton button = new JButton(toolTipText);
+		try {
+			Icon icon = loader.getIcon(FileNames.ICON_PLUS);
+			button = new JButton(icon);
+		} catch (FileNotFoundException ex) {
+			ex.printStackTrace();
+		}
+		button.setToolTipText(toolTipText);
+		return button;
+	}
 
 	public static JComponent createEndpointLabelWithIcon(ImageLoader loader, Study s, Endpoint e) {
 		String fname = FileNames.ICON_STUDY;

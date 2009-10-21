@@ -19,11 +19,13 @@
 
 package org.drugis.addis.gui;
 
+import java.awt.event.ActionEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -42,6 +44,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -61,14 +64,16 @@ public class AddStudyView implements ViewBuilder {
 	private Domain d_domain;
 	private NotEmptyValidator d_validator;
 	private JButton d_okButton;
+	private ImageLoader d_loader;
 
 	public AddStudyView(PresentationModel<BasicStudy> presentationModel,
 			PresentationModel<EndpointHolder> presentationModel2, Domain domain,
-			JButton okButton) {
+			JButton okButton, ImageLoader imageLoader) {
 		d_okButton = okButton;
 		d_model = presentationModel;
 		d_endpointPresentation = presentationModel2;
 		d_domain = domain;
+		d_loader = imageLoader;
 	}
 	
 	public void initComponents() {
@@ -99,10 +104,10 @@ public class AddStudyView implements ViewBuilder {
 		d_validator = new NotEmptyValidator(d_okButton); // reset validator
 		
 		FormLayout layout = new FormLayout(
-				"fill:pref, 3dlu, center:pref:grow, 3dlu, pref",
+				"fill:pref, 3dlu, center:pref:grow, 3dlu, pref, 3dlu, pref, 3dlu, pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);	
-		int fullWidth = 5;
+		int fullWidth = 9;
 		if (getEndpoint() != null) {
 			for (int i = 0; i < MeasurementInputHelper.numComponents(getEndpoint()); ++i) {
 				LayoutUtil.addColumn(layout);
@@ -117,22 +122,24 @@ public class AddStudyView implements ViewBuilder {
 		
 		builder.addSeparator("Study", cc.xyw(1, 1, fullWidth));
 		builder.addLabel("Identifier:", cc.xy(1, 3, "right, c"));
-		builder.add(createIdComponent(), cc.xyw(3, 3, fullWidth-2));
+		int componentWidth = fullWidth - 4;
+		builder.add(createIdComponent(), cc.xyw(3, 3, componentWidth));
 
 		int row = 5;
 		row = buildCharacteristicsPart(fullWidth, builder, cc, row, layout);
 		
 		builder.addLabel("Endpoint:", cc.xy(1, row, "right, c"));
-		builder.add(createEndpointComponent(), cc.xyw(3, row, fullWidth-2));
+		builder.add(createEndpointComponent(), cc.xyw(3, row, componentWidth));
+		builder.add(createNewEndpointButton(), cc.xy(fullWidth, row));
 		
 		row += 2;
 		builder.addSeparator("Patient Groups", cc.xyw(1, row, fullWidth));
 		row += 2;
-		builder.addLabel("Drug", cc.xy(1, row));
-		builder.addLabel("Dose", cc.xy(3, row));
-		builder.addLabel("Group Size", cc.xy(5, row));
+		builder.addLabel("Drug", cc.xyw(1, row, 3));
+		builder.addLabel("Dose", cc.xy(5, row));
+		builder.addLabel("Group Size", cc.xy(7, row));
 		if (getEndpoint() != null) {
-			int col = 7;
+			int col = 9;
 			for (String header : MeasurementInputHelper.getHeaders(getEndpoint())) {
 				builder.addLabel(header, cc.xy(col, row));
 				col += 2;
@@ -155,14 +162,41 @@ public class AddStudyView implements ViewBuilder {
 			LayoutUtil.addRow(layout);
 			
 			builder.addLabel(c.getDescription() + ":", cc.xy(1, row, "right, c"));
-			builder.add(createCharacteristicComponent(c), cc.xyw(3, row, fullWidth-2));
+			builder.add(createCharacteristicComponent(c), cc.xyw(3, row, fullWidth-4));
+			if (c.equals(StudyCharacteristic.INDICATION)) {
+				builder.add(createNewIndicationButton(), cc.xy(fullWidth, row));
+			}
+				
 			
 			row += 2;
 		}
 
 		return row;
 	}
+
+	@SuppressWarnings("serial")
+	private JButton createAddButton(final String text) {
+		JButton btn = GUIFactory.createPlusButton(d_loader, text);
+		btn.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println(text);
+			}
+		});
+		return btn;
+	}
 	
+	private JButton createNewIndicationButton() {
+		return createAddButton("New Indication");
+	}
+	
+	private JButton createNewEndpointButton() {
+		return createAddButton("New Endpoint");
+	}
+	
+	private JButton createNewDrugButton() {
+		return createAddButton("New Drug");
+	}
+
 	private JComponent createCharacteristicComponent(StudyCharacteristic c) {
 		JComponent component = null;
 		if (c.getValueType().equals(StudyCharacteristic.ValueType.INDICATION)) {
@@ -252,23 +286,30 @@ public class AddStudyView implements ViewBuilder {
 			
 			PresentationModel<BasicPatientGroup> model = new PresentationModel<BasicPatientGroup>(g);
 			
+			int col = 1;
+			
 			JComboBox selector = GUIFactory.createDrugSelector(model, d_domain);
 			d_validator.add(selector);
 			ComboBoxPopupOnFocusListener.add(selector);
-			builder.add(selector, cc.xy(1, row));
+			builder.add(selector, cc.xy(col, row));
+			col += 2;
+			
+			builder.add(createNewDrugButton(), cc.xy(col, row));
+			col += 2;
 			
 			DoseView view = new DoseView(new PresentationModel<Dose>(g.getDose()),
 					d_validator);
-			builder.add(view.buildPanel(), cc.xy(3, row));
+			builder.add(view.buildPanel(), cc.xy(col, row));
+			col += 2;
 			
 			JTextField field = MeasurementInputHelper.buildFormatted(model.getModel(BasicPatientGroup.PROPERTY_SIZE));
 			d_validator.add(field);
 			AutoSelectFocusListener.add(field);
-			builder.add(field, cc.xy(5, row));
+			builder.add(field, cc.xy(col, row));
+			col += 2;
 
 			Measurement meas = d_model.getBean().getMeasurement(
 					d_endpointPresentation.getBean().getEndpoint(),g);
-			int col = 7;
 			for (JTextField component : MeasurementInputHelper.getComponents((BasicMeasurement)meas)) {
 				d_validator.add(component);
 				builder.add(component, cc.xy(col, row));
