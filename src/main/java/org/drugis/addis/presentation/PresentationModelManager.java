@@ -23,11 +23,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.PooledPatientGroup;
 import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.Ratio;
 
 import com.jgoodies.binding.PresentationModel;
 
@@ -61,11 +62,17 @@ public class PresentationModelManager {
 		if (obj instanceof Indication) {
 			return new IndicationPresentation((Indication)obj);
 		}
+		if (obj instanceof Ratio) {
+			return new RatioPresentation((Ratio)obj);
+		}
 		if (obj instanceof RateMeasurement) {
 			return new RateMeasurementPresentation((RateMeasurement)obj);
 		}
-		if (obj instanceof Measurement) {
-			return new MeasurementPresentation((Measurement)obj);
+		if (obj instanceof ContinuousMeasurement) {
+			return new ContinuousMeasurementPresentation((ContinuousMeasurement)obj);
+		}
+		if (obj instanceof RateMeasurement) {
+			return new RateMeasurementPresentation((RateMeasurement)obj);
 		}
 		if (obj instanceof BasicPatientGroup) {
 			return new BasicPatientGroupPresentation((BasicPatientGroup)obj);

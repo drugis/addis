@@ -19,18 +19,10 @@
 
 package org.drugis.addis.entities;
 
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
-import java.beans.PropertyChangeListener;
-
-
-import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.Interval;
-import org.drugis.common.JUnitUtil;
 import org.drugis.common.StudentTTable;
 import org.junit.Before;
 import org.junit.Test;
@@ -91,28 +83,6 @@ public class OddsRatioTest {
 	
 	private double square(double d) {
 		return d * d;
-	}
-	
-	@Test
-	public void testGetLabel() {
-		assertEquals("1.36 (1.07-1.72)", d_ratio.getLabel());
-	}
-	
-	@Test
-	public void testPropertyChangeEvents() {
-		d_denominator.setRate(1);
-		PropertyChangeListener l = 
-			JUnitUtil.mockListener(d_ratio, OddsRatio.PROPERTY_LABEL, null, "1.36 (1.07-1.72)");
-		d_ratio.addPropertyChangeListener(l);
-		d_denominator.setRate(s_effectDen);
-		verify(l);
-		d_ratio.removePropertyChangeListener(l);
-		
-		d_numerator.setRate(1);
-		l = JUnitUtil.mockListener(d_ratio, OddsRatio.PROPERTY_LABEL, null, "1.36 (1.07-1.72)");
-		d_ratio.addPropertyChangeListener(l);
-		d_numerator.setRate(s_effectNum);
-		verify(l);
 	}
 	
 	@Test

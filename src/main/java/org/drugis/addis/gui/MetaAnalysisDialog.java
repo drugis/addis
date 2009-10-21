@@ -54,7 +54,7 @@ public class MetaAnalysisDialog extends JDialog {
 	}
 
 	private void initComponents() {
-		ViewBuilder view = new MetaAnalysisView(d_analysis);
+		ViewBuilder view = new MetaAnalysisView(d_analysis,d_main.getPresentationModelManager());
 		add(view.buildPanel(), BorderLayout.CENTER);
 		JButton closeButton = new JButton("Close");
 		closeButton.setMnemonic('c');

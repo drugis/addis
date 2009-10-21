@@ -24,12 +24,12 @@ import javax.swing.JComponent;
 import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.presentation.LabeledPresentationModel;
+import org.drugis.addis.presentation.PresentationModelManager;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
-
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -39,9 +39,11 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class MetaAnalysisView implements ViewBuilder {
 	MetaAnalysis d_analysis;
+	private PresentationModelManager d_pmm;
 	
-	public MetaAnalysisView(MetaAnalysis analysis) {
+	public MetaAnalysisView(MetaAnalysis analysis, PresentationModelManager pmm) {
 		d_analysis = analysis;
+		d_pmm = pmm;
 	}
 
 	public JComponent buildPanel() {
@@ -81,10 +83,10 @@ public class MetaAnalysisView implements ViewBuilder {
 			
 			col = 3;
 			for (Drug d : d_analysis.getDrugs()) {
-				builder.add(BasicComponentFactory.createLabel(
-						new PresentationModel<Measurement>(
-								d_analysis.getMeasurement(s, d)).getModel(Measurement.PROPERTY_LABEL)
-								),
+				@SuppressWarnings("unchecked")
+				LabeledPresentationModel pm = d_pmm.getLabeledModel(d_analysis.getMeasurement(s,d));
+				
+				builder.add(BasicComponentFactory.createLabel(pm.getLabelModel()),
 						cc.xy(col, row));
 				col += 2;
 			}
@@ -96,9 +98,9 @@ public class MetaAnalysisView implements ViewBuilder {
 		builder.addLabel("Combined", cc.xy(1, row));
 		col = 3;
 		for (Drug d : d_analysis.getDrugs()) {
-			builder.add(BasicComponentFactory.createLabel(
-					new PresentationModel<Measurement>(d_analysis.getPooledMeasurement(d)).getModel(Measurement.PROPERTY_LABEL)
-					),
+			@SuppressWarnings("unchecked")
+			LabeledPresentationModel pm = d_pmm.getLabeledModel(d_analysis.getPooledMeasurement(d));
+			builder.add(BasicComponentFactory.createLabel(pm.getLabelModel()),
 					cc.xy(col, row));
 			col += 2;
 		}

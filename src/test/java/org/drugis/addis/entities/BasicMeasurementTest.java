@@ -38,11 +38,6 @@ public class BasicMeasurementTest {
 	@SuppressWarnings("serial")
 	public BasicMeasurement instance() {
 		return new BasicMeasurement(d_endpoint, d_BasicPatientGroup) {
-			
-			public String getLabel() {
-				// TODO Auto-generated method stub
-				return null;
-			}
 			public boolean isOfType(Type type) {
 				return false;
 			}

@@ -19,15 +19,8 @@
 
 package org.drugis.addis.entities;
 
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
-import java.beans.PropertyChangeListener;
-
-
-import org.drugis.addis.entities.BasicContinuousMeasurement;
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -63,23 +56,5 @@ public class BasicContinuousMeasurementTest {
 	public void testToString() {
 		BasicContinuousMeasurement m = getMeasurement();
 		assertEquals("0.0 \u00B1 0.0", m.toString());
-	}
-	
-	@Test
-	public void testFireLabelChanged() {
-		BasicContinuousMeasurement measurement = getMeasurement();
-		measurement.setMean(25.5);
-		PropertyChangeListener l = JUnitUtil.mockListener(
-				measurement, Measurement.PROPERTY_LABEL, "25.5 \u00B1 0.0", "25.5 \u00B1 1.1");
-		measurement.addPropertyChangeListener(l);
-		measurement.setStdDev(1.1);
-		verify(l);
-		
-		measurement.removePropertyChangeListener(l);
-		l = JUnitUtil.mockListener(
-				measurement, Measurement.PROPERTY_LABEL, "25.5 \u00B1 1.1", "27.5 \u00B1 1.1");
-		measurement.addPropertyChangeListener(l);
-		measurement.setMean(27.5);
-		verify(l);
 	}
 }

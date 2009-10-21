@@ -2,7 +2,7 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 
-import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.Ratio;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 
@@ -10,26 +10,27 @@ import com.jgoodies.binding.value.AbstractValueModel;
 // and these should implement the PROPERTY_LABEL, in stead of the Measurement itself.
 
 @SuppressWarnings("serial")
-public class MeasurementPresentation extends LabeledPresentationModel<Measurement> {
-	public static class LabelModel extends AbstractLabelModel<Measurement> {
-		public LabelModel(Measurement bean) {
+public class RatioPresentation extends LabeledPresentationModel<Ratio> {
+	public static class LabelModel extends AbstractLabelModel<Ratio> {
+		public LabelModel(Ratio bean) {
 			super(bean);
 		}
 		
 		@Override
+		@SuppressWarnings("deprecation")
 		public String getValue() {
 			return getBean().getLabel();
 		}
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals(Measurement.PROPERTY_LABEL)) {
+			if (evt.getPropertyName().equals(Ratio.PROPERTY_LABEL)) {
 				firePropertyChange("value", evt.getOldValue(), evt.getNewValue());
 			}
 		}
 	}
 
-	public MeasurementPresentation(Measurement bean) {
+	public RatioPresentation(Ratio bean) {
 		super(bean);
 	}
 

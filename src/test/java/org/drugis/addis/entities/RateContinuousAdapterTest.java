@@ -57,11 +57,6 @@ public class RateContinuousAdapterTest {
 		assertEquals(100, (int)d_continuous.getSampleSize());
 	}
 	
-	@Test
-	public void testGetLabel() {
-		assertEquals("0.5 \u00B1 0.05", d_continuous.getLabel());
-	}
-	
 	@Test @Ignore
 	public void testChangeEvents() {
 		fail();
