@@ -63,7 +63,7 @@ public class MetaAnalysisDialog extends JDialog {
 				setVisible(false);
 			}
 		});
-		JButton saveButton = new JButton("Save as new study");
+		JButton saveButton = new JButton("Save");
 		saveButton.setMnemonic('s');
 		saveButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -80,8 +80,8 @@ public class MetaAnalysisDialog extends JDialog {
 	}
 
 	protected void saveAsStudy() {
-		String res = JOptionPane.showInputDialog(this, "Input name for new study", 
-				"Save meta-analysis as study", JOptionPane.QUESTION_MESSAGE);
+		String res = JOptionPane.showInputDialog(this, "Input name for new analysis", 
+				"Save meta-analysis", JOptionPane.QUESTION_MESSAGE);
 		if (res != null) {
 			MetaStudy study = new MetaStudy(res, d_analysis);
 			d_domain.addStudy(study);

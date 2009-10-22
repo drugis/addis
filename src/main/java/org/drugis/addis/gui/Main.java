@@ -60,6 +60,7 @@ import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.DrugPresentationModel;
+import org.drugis.addis.presentation.MetaStudyPresentationModel;
 import org.drugis.addis.presentation.PresentationModelManager;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
@@ -408,7 +409,7 @@ public class Main extends JFrame {
 			public void valueChanged(TreeSelectionEvent event) {
 				Object node = ((JTree)event.getSource()).getLastSelectedPathComponent();
 				if (node instanceof MetaStudy) {
-					studySelected((MetaStudy)node);
+					metaStudySelected((MetaStudy)node);
 				} else if (node instanceof Study) {
 					studySelected((Study)node);
 				} else if (node instanceof Endpoint) {
@@ -469,6 +470,11 @@ public class Main extends JFrame {
 	
 	private void studySelected(Study node) {
 		StudyView view = new StudyView(d_pmManager.getModel(node), getDomain(), this, d_imageLoader);
+		setRightPanelView(view);		
+	}
+	
+	private void metaStudySelected(MetaStudy node) {
+		MetaStudyView view = new MetaStudyView( (MetaStudyPresentationModel) d_pmManager.getModel(node), getDomain(), this, d_imageLoader);
 		setRightPanelView(view);		
 	}
 

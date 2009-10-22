@@ -1,42 +1,26 @@
-/*
- * This file is part of ADDIS (Aggregate Data Drug Information System).
- * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009  Gert van Valkenhoef and Tommi Tervonen.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package org.drugis.addis.gui;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.text.NumberFormat;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
+import javax.swing.JDialog;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.BasicPatientGroup;
-import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.PatientGroup;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.presentation.MetaStudyPresentationModel;
+import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OneWayObjectFormat;
@@ -52,14 +36,13 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 
-@SuppressWarnings("serial")
-public class StudyView implements ViewBuilder {
-	PresentationModel<? extends Study> d_model;
+public class MetaStudyView implements ViewBuilder {
+	MetaStudyPresentationModel d_model;
 	Domain d_domain;
 	Main d_mainWindow;
 	private ImageLoader d_loader;
 
-	public StudyView(PresentationModel<? extends Study> model, Domain domain, Main main, ImageLoader loader) {
+	public MetaStudyView(MetaStudyPresentationModel model, Domain domain, Main main, ImageLoader loader) {
 		d_loader = loader;
 		d_model = model;
 		d_mainWindow = main;
@@ -90,10 +73,48 @@ public class StudyView implements ViewBuilder {
 		int row = buildStudyPart(fullWidth, builder, cc, layout);
 		
 		row = buildEndpointsPart(layout, fullWidth, builder, cc, row);
-
+		
+		row = buildStudiesPart(layout, fullWidth, builder, cc, row);
+		
 		row = buildDataPart(layout, fullWidth, builder, cc, row);
 		
 		return builder.getPanel();
+	}
+
+	@SuppressWarnings("serial")
+	private int buildStudiesPart(FormLayout layout, int fullWidth,
+			PanelBuilder builder, CellConstraints cc, int row) {
+		LayoutUtil.addRow(layout);
+		LayoutUtil.addRow(layout);
+		LayoutUtil.addRow(layout);
+		
+		builder.addSeparator("Included Studies", cc.xyw(1, row, fullWidth));
+		row += 2;
+		
+		StudyCharTableModel model = new StudyCharTableModel(d_model);
+		final JTable table = new JTable(model);
+		table.setPreferredScrollableViewportSize(table.getPreferredSize());
+		table.setBackground(Color.WHITE);
+		JScrollPane pane = new JScrollPane(table);
+		pane.setBorder(BorderFactory.createEmptyBorder());
+		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				
+		builder.add(pane, cc.xyw(1, row, fullWidth));
+		row += 2;
+		
+		JButton customizeButton = new JButton("Customize Shown Characteristics");
+		customizeButton.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				JDialog dialog = new CharacteristicSelectDialog(d_mainWindow, d_model);
+				dialog.setVisible(true);
+			}
+		});
+		
+		builder.add(customizeButton, cc.xy(3, row));
+		row += 2;
+		
+		return row;
 	}
 
 	private int buildDataPart(FormLayout layout, int fullWidth,
@@ -115,17 +136,6 @@ public class StudyView implements ViewBuilder {
 			row = buildPatientGroup(layout, builder, cc, row, g);
 		}
 			
-		if (d_model.getBean() instanceof BasicStudy) {
-			LayoutUtil.addRow(layout);
-			JButton addGroupButton = new JButton("Add patient group");
-			addGroupButton.addActionListener(new AbstractAction() {
-				public void actionPerformed(ActionEvent arg0) {
-					addPatientGroup();
-				}			
-			});
-			builder.add(addGroupButton, cc.xy(1, row));
-			row += 2;			
-		}
 		return row;
 	}
 
@@ -158,12 +168,6 @@ public class StudyView implements ViewBuilder {
 		return row;
 	}
 
-	protected void addPatientGroup() {
-		StudyAddPatientGroupDialog dlg = new StudyAddPatientGroupDialog(d_loader, d_mainWindow, d_domain,
-				(BasicStudy)d_model.getBean());
-		dlg.setVisible(true);
-	}
-
 	private int buildEndpointsPart(FormLayout layout, int fullWidth, PanelBuilder builder,
 			CellConstraints cc, int row) {
 		builder.addSeparator("Endpoints", cc.xyw(1, row, fullWidth));
@@ -178,43 +182,11 @@ public class StudyView implements ViewBuilder {
 					buildFindStudiesButton(e), cc.xy(3, row));
 			row += 2;
 		}
-		if (d_model.getBean() instanceof BasicStudy) {
-			LayoutUtil.addRow(layout);
-			builder.add(buildAddEndpointButton(), cc.xy(1, row));
-			
-			row += 2;
-		}
 
 		return row;
 	}
 
-	private JPanel buildAddEndpointButton() {
-		JButton button = new JButton("Add Endpoint");
-		button.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				addEndpointClicked();
-			}			
-		});
-		ButtonBarBuilder2 bbarBuilder = new ButtonBarBuilder2();
-		bbarBuilder.addGlue();
-		bbarBuilder.addButton(button);
-		
-		if (studyHasAllEndpoints()) {
-			button.setEnabled(false);
-		}
-		
-		JPanel panel = bbarBuilder.getPanel();
-		return panel;
-	}
-
-	private boolean studyHasAllEndpoints() {
-		return d_model.getBean().getEndpoints().containsAll(d_domain.getEndpoints());
-	}
-
-	private void addEndpointClicked() {
-		d_mainWindow.showStudyAddEndpointDialog((MutableStudy)d_model.getBean());
-	}
-
+	@SuppressWarnings("serial")
 	private JComponent buildFindStudiesButton(final Endpoint endpoint) {
 		JButton button = new JButton("Find Studies");
 		button.addActionListener(new AbstractAction() {
@@ -239,14 +211,14 @@ public class StudyView implements ViewBuilder {
 		
 		int row = 5;
 		for (StudyCharacteristic c : StudyCharacteristic.values()) {
-			LayoutUtil.addRow(layout);
-			builder.addLabel(c.getDescription() + ":", cc.xy(1, row));
-			
 			ValueModel model = new CharacteristicHolder(d_model.getBean(), c);
-			builder.add(BasicComponentFactory.createLabel(model, new OneWayObjectFormat()),
-					cc.xyw(3, row, fullWidth - 2));
-			
-			row += 2;
+			if (model.getValue() != null) {
+				LayoutUtil.addRow(layout);
+				builder.addLabel(c.getDescription() + ":", cc.xy(1, row));			
+				builder.add(BasicComponentFactory.createLabel(model, new OneWayObjectFormat()),
+						cc.xyw(3, row, fullWidth - 2));
+				row += 2;				
+			}
 		}
 		
 		return row;
@@ -257,6 +229,7 @@ public class StudyView implements ViewBuilder {
 	}
 
 	private String getStudyLabel() {
-		return "Study";
+		return "Meta-analysis";			
 	}
+
 }
