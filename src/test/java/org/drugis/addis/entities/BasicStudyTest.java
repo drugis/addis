@@ -163,6 +163,7 @@ public class BasicStudyTest {
 		
 		Set<Entity> dep = new HashSet<Entity>(s.getEndpoints());
 		dep.addAll(s.getDrugs());
+		dep.add((Indication) s.getCharacteristic(StudyCharacteristic.INDICATION));
 		assertEquals(dep, s.getDependencies());
 	}
 	

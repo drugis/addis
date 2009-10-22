@@ -169,6 +169,16 @@ public class DomainImpl implements Domain, Serializable {
 		}
 		return list;
 	}
+	
+	public SortedSet<Study> getStudies(Indication i) {
+		SortedSet<Study> set = new TreeSet<Study>();
+		for (Study s : d_studies) {
+			if (s.getDependencies().contains(i)) {
+				set.add(s);
+			}
+		}
+		return set;
+	}
 
 	public boolean equals(Object o) {
 		if (o instanceof Domain) {

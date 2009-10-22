@@ -214,6 +214,42 @@ public class DomainTest {
 	}
 	
 	@Test
+	public void testGetStudiesByIndication() {
+		Endpoint e1 = new Endpoint("e1", Type.RATE);
+		Endpoint e2 = new Endpoint("e2", Type.RATE);
+			
+		Set<Endpoint> l1 = new HashSet<Endpoint>();
+		l1.add(e1);
+		Indication i1 = new Indication(0L, "");
+		d_domain.addIndication(i1);
+		AbstractStudy s1 = new BasicStudy("s1", i1);
+		s1.setEndpoints(l1);
+		
+		Set<Endpoint> l2 = new HashSet<Endpoint>();
+		l2.add(e2);
+		l2.add(e1);
+		AbstractStudy s2 = new BasicStudy("s2", i1);
+		s2.setEndpoints(l2);
+		
+		d_domain.addStudy(s1);
+		d_domain.addStudy(s2);
+		
+		Indication i2 = new Indication(007L,"This indication does not exists.");
+		d_domain.addIndication(i2);
+		
+		assertEquals(2, d_domain.getStudies(i1).size());
+		
+		assertEquals(0, d_domain.getStudies(i2).size());
+		
+		assertTrue(d_domain.getStudies(i1).contains(s1));
+		assertTrue(d_domain.getStudies(i1).contains(s2));
+		
+	}
+	
+	
+	
+	
+	@Test
 	public void testGetStudiesByDrug() {
 		Drug d1 = new Drug("drug1", "atccode1");
 		Drug d2 = new Drug("drug2", "atccode2");

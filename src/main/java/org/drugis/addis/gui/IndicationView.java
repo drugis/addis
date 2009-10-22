@@ -1,12 +1,20 @@
 package org.drugis.addis.gui;
 
+import java.awt.Color;
+
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.presentation.IndicationPresentation;
+import org.drugis.addis.presentation.StudyCharTableModel;
+import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.value.ConverterFactory;
 import com.jgoodies.binding.value.ValueModel;
@@ -16,15 +24,15 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class IndicationView implements ViewBuilder {
 	
-	private PresentationModel<Indication> d_pm;
+	private IndicationPresentation d_pm;
 
-	public IndicationView(PresentationModel<Indication> pm) {
+	public IndicationView(IndicationPresentation pm) {
 		d_pm = pm;
 	}
 	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, pref",
+				"right:pref, 3dlu, left:pref:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -54,7 +62,23 @@ public class IndicationView implements ViewBuilder {
 
 	private int buildStudiesPart(PanelBuilder builder, CellConstraints cc,
 			int row) {
-		builder.addLabel("NOT IMPLEMENTED", cc.xy(3, row));
+		StudyListPresentationModel studyListModel = d_pm.getStudyListModel();
+		
+		JComponent studiesComp = null;
+		if(studyListModel.getIncludedStudies().isEmpty()) {
+			studiesComp = new JLabel("No studies found.");
+		} else {
+			StudyCharTableModel model = new StudyCharTableModel(studyListModel);
+			final JTable table = new JTable(model);
+			table.setPreferredScrollableViewportSize(table.getPreferredSize());
+			table.setBackground(Color.WHITE);
+			JScrollPane pane = new JScrollPane(table);
+			pane.setBorder(BorderFactory.createEmptyBorder());
+			pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+			pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			studiesComp = pane;
+		}
+		builder.add(studiesComp, cc.xyw(1, row, 3));
 		return row + 2;
 	}
 }

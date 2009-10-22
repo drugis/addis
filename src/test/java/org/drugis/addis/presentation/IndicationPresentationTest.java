@@ -20,8 +20,10 @@
 package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeListener;
+import java.util.TreeSet;
 
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
@@ -34,7 +36,7 @@ public class IndicationPresentationTest {
 	@Test
 	public void testCodeFireLabelChanged() {
 		Indication i = new Indication(5L, "Some indication");
-		IndicationPresentation p = new IndicationPresentation(i);
+		IndicationPresentation p = new IndicationPresentation(i, new TreeSet<Study>());
 		AbstractValueModel model = p.getLabelModel();
 		PropertyChangeListener x = JUnitUtil.mockListener(model, "value", "5 Some indication", "6 Some indication");
 		model.addPropertyChangeListener(x);
@@ -45,7 +47,7 @@ public class IndicationPresentationTest {
 	@Test
 	public void testNameFireLabelChanged() {
 		Indication i = new Indication(5L, "Some indication");
-		IndicationPresentation p = new IndicationPresentation(i);
+		IndicationPresentation p = new IndicationPresentation(i, new TreeSet<Study>());
 		AbstractValueModel model = p.getLabelModel();
 		PropertyChangeListener x = JUnitUtil.mockListener(model, "value", "5 Some indication", "5 Other indication");
 		model.addPropertyChangeListener(x);

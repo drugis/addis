@@ -20,8 +20,11 @@
 package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
+import java.util.SortedSet;
 
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.Study;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 
@@ -41,8 +44,15 @@ public class IndicationPresentation extends LabeledPresentationModel<Indication>
 		}
 	}
 
-	public IndicationPresentation(Indication bean) {
+	private StudyListPresentationModelImpl d_studyListModel;
+
+	public IndicationPresentation(Indication bean, SortedSet<Study> studies) {
 		super(bean);
+		d_studyListModel = new StudyListPresentationModelImpl(new ArrayList<Study>(studies));
+	}
+
+	public StudyListPresentationModel getStudyListModel() {
+		return d_studyListModel;
 	}
 
 	@Override

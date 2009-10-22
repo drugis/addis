@@ -68,7 +68,7 @@ public class PresentationModelManager {
 			return new MetaStudyPresentationModel((MetaStudy) obj);
 		}
 		if (obj instanceof Indication) {
-			return new IndicationPresentation((Indication)obj);
+			return new IndicationPresentation((Indication)obj, d_domain.getStudies((Indication)obj));
 		}
 		if (obj instanceof Ratio) {
 			return new RatioPresentation((Ratio)obj);

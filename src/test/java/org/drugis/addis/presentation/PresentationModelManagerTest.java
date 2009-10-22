@@ -79,6 +79,18 @@ public class PresentationModelManagerTest {
 		assertEquals(m, d_manager.getLabeledModel(indication));
 	}
 	
+	@Test
+	public void testGetExistingIndicationModelHasCorrectStudies() {
+		IndicationPresentation m = (IndicationPresentation) d_manager.getModel(ExampleData.buildIndication());
+		
+		assertEquals(ExampleData.buildIndication(), m.getBean());
+		assertEquals(m.getClass(), IndicationPresentation.class);
+		
+		assertTrue(m.getStudyListModel().getIncludedStudies().containsAll(
+				d_domain.getStudies(ExampleData.buildIndication())));
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetDrugModel(){

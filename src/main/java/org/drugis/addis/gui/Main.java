@@ -60,6 +60,7 @@ import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.DrugPresentationModel;
+import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
 import org.drugis.addis.presentation.PresentationModelManager;
 import org.drugis.common.ImageLoader;
@@ -464,7 +465,7 @@ public class Main extends JFrame {
 	}
 	
 	private void indicationSelected(Indication i) {
-		IndicationView view = new IndicationView(d_pmManager.getModel(i));
+		IndicationView view = new IndicationView((IndicationPresentation) d_pmManager.getModel(i));
 		setRightPanelView(view);
 	}
 	

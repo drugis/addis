@@ -70,6 +70,7 @@ public class BasicStudy extends AbstractStudy implements MutableStudy {
 	public Set<Entity> getDependencies() {
 		HashSet<Entity> dep = new HashSet<Entity>(getDrugs());
 		dep.addAll(getEndpoints());
+		dep.add((Entity) getCharacteristic(StudyCharacteristic.INDICATION));
 		return dep;
 	}
 	

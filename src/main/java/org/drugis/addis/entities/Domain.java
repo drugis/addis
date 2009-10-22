@@ -84,6 +84,12 @@ public interface Domain {
 	public SortedSet<Study> getStudies(Drug d);
 	
 	/**
+	 * Get studies by Indication.
+	 * @return An unmodifiable sorted set of studies. Never null.
+	 */
+	public SortedSet<Study> getStudies(Indication i);
+	
+	/**
 	 * Adds an drug to the data model.
 	 * 
 	 * @param e the drug to add
