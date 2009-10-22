@@ -56,6 +56,7 @@ import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.DrugPresentationModel;
@@ -406,7 +407,9 @@ public class Main extends JFrame {
 		return new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent event) {
 				Object node = ((JTree)event.getSource()).getLastSelectedPathComponent();
-				if (node instanceof Study) {
+				if (node instanceof MetaStudy) {
+					studySelected((MetaStudy)node);
+				} else if (node instanceof Study) {
 					studySelected((Study)node);
 				} else if (node instanceof Endpoint) {
 					endpointSelected((Endpoint)node);
@@ -516,6 +519,12 @@ public class Main extends JFrame {
 		d_leftPanelTree.setSelectionPath(new TreePath(
 				new Object[] {d_domainTreeModel.getRoot(), 
 						d_domainTreeModel.getStudiesNode(), d_study }));		
+	}
+
+	public void leftTreeFocusOnMetaStudy(MetaStudy d_study) {
+		d_leftPanelTree.setSelectionPath(new TreePath(
+				new Object[] {d_domainTreeModel.getRoot(), 
+						d_domainTreeModel.getAnalysesNode(), d_study }));		
 	}
 	
 	public void leftTreeFocusOnEndpoint(Endpoint ep) {

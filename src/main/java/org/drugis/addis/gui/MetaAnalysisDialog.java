@@ -86,7 +86,7 @@ public class MetaAnalysisDialog extends JDialog {
 			MetaStudy study = new MetaStudy(res, d_analysis);
 			d_domain.addStudy(study);
 			setVisible(false);
-			d_main.leftTreeFocusOnStudy(study);			
+			d_main.leftTreeFocusOnMetaStudy(study);			
 		}
 	}
 
