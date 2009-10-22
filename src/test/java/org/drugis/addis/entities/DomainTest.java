@@ -23,6 +23,7 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -32,22 +33,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
-import org.drugis.addis.entities.AbstractStudy;
-import org.drugis.addis.entities.BasicPatientGroup;
-import org.drugis.addis.entities.BasicStudy;
-import org.drugis.addis.entities.DependentEntitiesException;
-import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.DomainListener;
-import org.drugis.addis.entities.Dose;
-import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.MetaAnalysis;
-import org.drugis.addis.entities.MetaStudy;
-import org.drugis.addis.entities.SIUnit;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -107,6 +92,33 @@ public class DomainTest {
 		assertEquals(1, d_domain.getStudies().size());
 		assertEquals(Collections.singleton(s), d_domain.getStudies());
 	}
+	
+	@Test
+	public void testAddMetaStudy() {
+		MetaStudy s = addMetaStudyToDomain();
+		
+		assertFalse(d_domain.getStudies().contains(s));
+		assertTrue(d_domain.getMetaStudies().contains(s));
+		assertEquals(1, d_domain.getMetaStudies().size());
+	}
+
+	private MetaStudy addMetaStudyToDomain() {
+		ExampleData.initDefaultData(d_domain);
+		ArrayList<Study> studies = new ArrayList<Study>(d_domain.getStudies());
+		MetaAnalysis ma = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies); 
+		MetaStudy s = new MetaStudy("meta", ma);
+		d_domain.addStudy(s);
+		return s;
+	}
+	
+	@Test
+	public void testDeleteMetaStudy() throws Exception {
+		MetaStudy s = addMetaStudyToDomain();
+		
+		assertTrue(d_domain.getMetaStudies().contains(s));
+		d_domain.deleteStudy(s);
+		assertFalse(d_domain.getMetaStudies().contains(s));
+	}		
 	
 	@Test
 	public void testAddDrug() {
@@ -399,5 +411,48 @@ public class DomainTest {
 		replay(mock);
 		d_domain.deleteEndpoint(d);
 		verify(mock);
+	}
+	
+	@Test
+	public void testSerializationBasicStudyChangeFires() throws Exception {
+		addMetaStudyToDomain();
+		Domain newDomain = JUnitUtil.serializeObject(d_domain);
+		// check connect of basic study listener
+		BasicStudy bs = (BasicStudy) newDomain.getStudies().first();
+		DomainListener mock2 = createMock(DomainListener.class);
+		newDomain.addListener(mock2);
+		mock2.studiesChanged();
+		replay(mock2);
+		bs.addPatientGroup(new BasicPatientGroup(bs, new Drug("viagra-2", "atc"), 
+				new Dose(100.0, SIUnit.MILLIGRAMS_A_DAY), 10));
+		verify(mock2);
+		
+	}
+	
+	@Test
+	public void testSerializationMetaStudyChangeFires() throws Exception {
+		addMetaStudyToDomain();
+		Domain newDomain = JUnitUtil.serializeObject(d_domain);
+		// check connect of meta-study-listener
+		MetaStudy s = (MetaStudy) newDomain.getMetaStudies().first();
+		DomainListener mock = createMock(DomainListener.class);
+		newDomain.addListener(mock);
+		mock.studiesChanged();
+		replay(mock);
+		s.setId("new meta-study");
+		verify(mock);
+	}
+	
+	@Test
+	public void testSerializationDeleteStudyFires() throws Exception {
+		ExampleData.initDefaultData(d_domain);
+		Domain newDomain = JUnitUtil.serializeObject(d_domain);		
+		DomainListener mock = createMock(DomainListener.class);
+		newDomain.addListener(mock);
+		mock.studiesChanged();
+		replay(mock);
+		newDomain.deleteStudy(newDomain.getStudies().last());
+		verify(mock);
 	}	
+	
 }

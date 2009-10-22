@@ -59,10 +59,16 @@ public interface Domain {
 	public void addStudy(Study s) throws NullPointerException;
 
 	/**
-	 * Get the studies stored in the data model.
+	 * Get the studies stored in the data model, EXCLUDING the meta-studies.
 	 * @return An unmodifiable sorted set of studies. Never a null.
 	 */
 	public SortedSet<Study> getStudies();
+	
+	/**
+	 * Get the meta-studies stored in the data model.
+	 * @return An unmodifiable sorted set of meta-studies. Never a null.
+	 */
+	public SortedSet<MetaStudy> getMetaStudies();	
 	
 	
 	/**

@@ -36,6 +36,7 @@ public class DomainImpl implements Domain, Serializable {
 	private static final long serialVersionUID = 3222342605059458693L;
 	private SortedSet<Endpoint> d_endpoints;
 	private SortedSet<Study> d_studies;
+	private SortedSet<MetaStudy> d_metaStudies;	
 	private SortedSet<Drug> d_drugs;
 	private SortedSet<Indication> d_indications;
 	private transient List<DomainListener> d_listeners;
@@ -49,6 +50,9 @@ public class DomainImpl implements Domain, Serializable {
 		for (Study s : d_studies) {
 			s.addPropertyChangeListener(d_studyListener);
 		}
+		for (MetaStudy s : d_metaStudies) {
+			s.addPropertyChangeListener(d_studyListener);
+		}		
 	}
 	
 	private class StudyChangeListener implements PropertyChangeListener {
@@ -62,6 +66,7 @@ public class DomainImpl implements Domain, Serializable {
 	public DomainImpl() {
 		d_endpoints = new TreeSet<Endpoint>();
 		d_studies = new TreeSet<Study>();
+		d_metaStudies = new TreeSet<MetaStudy>();		
 		d_drugs = new TreeSet<Drug>();
 		d_indications = new TreeSet<Indication>();
 		d_listeners = new ArrayList<DomainListener>();
@@ -106,7 +111,12 @@ public class DomainImpl implements Domain, Serializable {
 			throw new NullPointerException("Study may not be null");
 		}
 		s.addPropertyChangeListener(d_studyListener);
-		d_studies.add(s);
+		
+		if (s instanceof MetaStudy) {
+			d_metaStudies.add((MetaStudy)s);
+		} else {
+			d_studies.add(s);
+		}
 		
 		fireStudiesChanged();
 	}
@@ -181,17 +191,26 @@ public class DomainImpl implements Domain, Serializable {
 	
 	public Set<Entity> getDependents(Entity e) {
 		Set<Entity> deps = new HashSet<Entity>();
-		for (Study s : getStudies()) {
+		for (Study s : d_studies) {
 			if (s.getDependencies().contains(e)) {
 				deps.add(s);
 			}
 		}
+		for (MetaStudy s : d_metaStudies) {
+			if (s.getDependencies().contains(e)) {
+				deps.add(s);
+			}
+		}		
 		return deps;
 	}
 
 	public void deleteStudy(Study s) throws DependentEntitiesException {
 		checkDependents(s);
-		d_studies.remove(s);
+		if (s instanceof MetaStudy) {
+			d_metaStudies.remove(s);
+		} else {
+			d_studies.remove(s);
+		}
 		fireStudiesChanged();
 	}
 
@@ -230,5 +249,9 @@ public class DomainImpl implements Domain, Serializable {
 
 	public SortedSet<Indication> getIndications() {
 		return d_indications;
+	}
+
+	public SortedSet<MetaStudy> getMetaStudies() {
+		return Collections.unmodifiableSortedSet(d_metaStudies); 
 	}
 }

@@ -31,6 +31,10 @@ import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,7 +66,6 @@ public class JUnitUtil {
 		assertEquals(newValue, desc);
 		verify(mock);
 	}
-
 
 	public static PropertyChangeListener mockListener(Observable source,
 			String propertyName, Object oldValue, Object newValue) {
@@ -232,5 +235,17 @@ public class JUnitUtil {
 			assertFalse(expected.equals(actual));
 		}
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	public static <B> B serializeObject(B b) throws Exception {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(bos);
+		
+		oos.writeObject(b);
+		
+		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+		ObjectInputStream ois = new ObjectInputStream(bis);
+		
+		return (B) ois.readObject();
+	}	
 }

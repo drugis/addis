@@ -20,14 +20,12 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Set;
 
-
-import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Study;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,4 +50,16 @@ public class DomainImplTest {
 		Endpoint d1 = ExampleData.buildEndpointHamd();
 		assertEquals(d_domain.getStudies(), d_domain.getDependents(d1));
 	}	
+	
+	@Test
+	public void testDependentsIncludeMetaStudies() {
+		ExampleData.initDefaultData(d_domain);
+		ArrayList<Study> studies = new ArrayList<Study>(d_domain.getStudies());
+		MetaAnalysis ma = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies); 
+		MetaStudy metaStudy = new MetaStudy("meta", ma);
+		d_domain.addStudy(metaStudy);
+		
+		Set<Entity> deps = d_domain.getDependents(ExampleData.buildDrugFluoxetine());
+		assertTrue(deps.contains(metaStudy));
+	}
 }
