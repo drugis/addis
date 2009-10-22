@@ -48,7 +48,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 @SuppressWarnings("serial")
-public class EndpointStudiesView implements ViewBuilder {
+public class EndpointView implements ViewBuilder {
 	private Endpoint d_endpoint;
 	private Domain d_domain;
 	private List<JCheckBox> d_studySelect;
@@ -56,7 +56,7 @@ public class EndpointStudiesView implements ViewBuilder {
 	private Main d_frame;
 	private JButton d_metaAnalyzeButton;
 	
-	public EndpointStudiesView(Endpoint node, Domain domain, Main frame) {
+	public EndpointView(Endpoint node, Domain domain, Main frame) {
 		d_endpoint = node;
 		d_domain = domain;
 		d_studySelect = new ArrayList<JCheckBox>();

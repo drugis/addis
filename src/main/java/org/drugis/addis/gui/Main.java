@@ -453,7 +453,7 @@ public class Main extends JFrame {
 	}	
 	
 	public void endpointSelected(Endpoint e, Study selectedStudy) {
-		EndpointStudiesView view = new EndpointStudiesView(e, getDomain(), this);
+		EndpointView view = new EndpointView(e, getDomain(), this);
 		view.setSelectedStudy(selectedStudy);
 		setRightPanelView(view);
 	}
