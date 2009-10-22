@@ -32,6 +32,7 @@ import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.CollectionUtil;
 
@@ -41,11 +42,13 @@ public class DomainTreeModel implements TreeModel {
 	public static final int DRUGS = 1;	
 	public static final int ENDPOINTS = 2;
 	public static final int STUDIES = 3;
+	public static final int ANALYSES = 4;
 	private String d_root = "Database";
 	private String d_indicationsNode = "Indications";
 	private String d_endpointsNode = "Endpoints";
 	private String d_studiesNode = "Studies";
 	private String d_drugsNode = "Drugs";
+	private String d_analysesNode = "Analyses";
 	private Domain d_domain;
 	
 	private List<TreeModelListener> d_listeners;
@@ -85,6 +88,8 @@ public class DomainTreeModel implements TreeModel {
 			return d_studiesNode;
 		} else if (d_root == parent && childIndex == DRUGS) {
 			return d_drugsNode;
+		} else if (d_root == parent && childIndex == ANALYSES) {
+			return d_analysesNode;
 		} else if (isIndicationRequest(parent, childIndex)) {
 			return CollectionUtil.getElementAtIndex(d_domain.getIndications(), childIndex);
 		} else if (isEndpointRequest(parent, childIndex)) {
@@ -93,6 +98,8 @@ public class DomainTreeModel implements TreeModel {
 			return CollectionUtil.getElementAtIndex(d_domain.getDrugs(), childIndex);
 		} else if (isStudyRequest(parent, childIndex)) {
 			return CollectionUtil.getElementAtIndex(d_domain.getStudies(), childIndex);
+		} else if (isMetaStudyRequest(parent, childIndex)) {
+			return CollectionUtil.getElementAtIndex(d_domain.getMetaStudies(), childIndex);
 		}
 		return null;
 	}
@@ -112,10 +119,14 @@ public class DomainTreeModel implements TreeModel {
 	private boolean isEndpointRequest(Object parent, int childIndex) {
 		return d_endpointsNode == parent && childIndex >= 0 && childIndex < d_domain.getEndpoints().size();
 	}
+	
+	private boolean isMetaStudyRequest(Object parent, int childIndex) {
+		return d_analysesNode == parent && childIndex >= 0 && childIndex < d_domain.getMetaStudies().size();
+	}
 
 	public int getChildCount(Object parent) {
 		if (d_root == parent) {
-			return 4;
+			return 5;
 		} else if (d_indicationsNode == parent) {
 			return d_domain.getIndications().size();
 		} else if (d_endpointsNode == parent) {
@@ -124,6 +135,8 @@ public class DomainTreeModel implements TreeModel {
 			return d_domain.getStudies().size();
 		} else if (d_drugsNode == parent) {
 			return d_domain.getDrugs().size();
+		} else if (d_analysesNode == parent) {
+			return d_domain.getMetaStudies().size();
 		}
 		return 0;
 	}
@@ -141,6 +154,9 @@ public class DomainTreeModel implements TreeModel {
 		if (parent == d_root && child == d_drugsNode) {
 			return DRUGS;
 		}	
+		if (parent == d_root && child == d_analysesNode) {
+			return ANALYSES;
+		}	
 		if (parent == d_indicationsNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getIndications(), child);
 		}
@@ -152,6 +168,9 @@ public class DomainTreeModel implements TreeModel {
 		}
 		if (parent == d_drugsNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getDrugs(), child);			
+		}
+		if (parent == d_analysesNode) {
+			return CollectionUtil.getIndexOfElement(d_domain.getMetaStudies(), child);			
 		}
 		return -1;
 	}
@@ -166,6 +185,9 @@ public class DomainTreeModel implements TreeModel {
 		}
 		if (node instanceof Endpoint) {
 			return d_domain.getEndpoints().contains(node);
+		}
+		if (node instanceof MetaStudy) {
+			return d_domain.getMetaStudies().contains(node);
 		}
 		if (node instanceof Study) {
 			return d_domain.getStudies().contains(node);
@@ -209,5 +231,9 @@ public class DomainTreeModel implements TreeModel {
 	
 	public Object getDrugsNode() {
 		return getChild(getRoot(), DomainTreeModel.DRUGS);
+	}
+	
+	public Object getAnalysesNode() {
+		return getChild(getRoot(),DomainTreeModel.ANALYSES);
 	}
 }

@@ -35,14 +35,14 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class EndpointView implements ViewBuilder {
+public class AddEndpointView implements ViewBuilder {
 	private JTextField d_name;
 	private JTextField d_description;
 	private PresentationModel<Endpoint> d_model;
 	private JComboBox d_type;
 	private NotEmptyValidator d_validator;
 	
-	public EndpointView(PresentationModel<Endpoint> model, JButton okButton) {
+	public AddEndpointView(PresentationModel<Endpoint> model, JButton okButton) {
 		d_model = model;
 		d_validator = new NotEmptyValidator(okButton);
 	}
