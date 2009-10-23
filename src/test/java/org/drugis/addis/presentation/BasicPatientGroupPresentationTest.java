@@ -38,30 +38,27 @@ public class BasicPatientGroupPresentationTest {
 	
 	@Test
 	public void testFireLabelChanged() {
-		BasicPatientGroup group;
-		PropertyChangeListener l;
-		Drug drug = new Drug("Fluoxetine", "atc");
-		
 		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(d_pg);
-		AbstractValueModel lm = pres.getLabelModel();
 		
-		group = d_pg;
-		group.setDrug(drug);
+		d_pg.setDrug(new Drug("Fluoxetine", "atc"));
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		group.setDose(dose);
+	
+		d_pg.setDose(dose);
 		String expect = (String) pres.getLabelModel().getValue();
-		group.setDose(null);
+		
+		d_pg.setDose(null);
 		assertEquals("INCOMPLETE", pres.getLabelModel().getValue());
-		l = JUnitUtil.mockListener(lm, "value", "INCOMPLETE", expect);
+		
+		AbstractValueModel lm = pres.getLabelModel();
+		PropertyChangeListener l = JUnitUtil.mockListener(lm, "value", "INCOMPLETE", expect);
 		lm.addPropertyChangeListener(l);
-		group.setDose(dose);
+		d_pg.setDose(dose);
 		assertEquals(expect, pres.getLabelModel().getValue());
 		verify(l);
 	}
 		
 	@Test
 	public void testFireLabelChanged2() {
-		PropertyChangeListener l;
 		Drug drug = new Drug("Fluoxetine", "atc");
 		Drug drug2 = new Drug("Paroxetine", "atc");
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
@@ -70,11 +67,10 @@ public class BasicPatientGroupPresentationTest {
 		
 		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(d_pg);
 		AbstractValueModel lm = pres.getLabelModel();
-		
 		String expect = (String) lm.getValue();
-		d_pg.setDrug(drug2);
 		
-		l = JUnitUtil.mockListener(lm, "value", lm.getValue(), expect);
+		d_pg.setDrug(drug2);
+		PropertyChangeListener l = JUnitUtil.mockListener(lm, "value", lm.getValue(), expect);
 		lm.addPropertyChangeListener(l);
 		d_pg.setDrug(drug);
 		verify(l);
