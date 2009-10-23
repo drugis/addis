@@ -154,7 +154,7 @@ public class Main extends JFrame {
 
 	void showStudyAddEndpointDialog(MutableStudy study) {
 		StudyAddEndpointDialog dialog = new StudyAddEndpointDialog(this, getDomain(), study);
-		GUIHelper.centerWindow(dialog);		
+		GUIHelper.centerWindow(dialog, this);		
 		dialog.setVisible(true);
 	}
 
@@ -188,7 +188,7 @@ public class Main extends JFrame {
 
 	private void showAboutDialog() {
 		final AboutDialog dlg = new AboutDialog(this);
-		GUIHelper.centerWindow(dlg);
+		GUIHelper.centerWindow(dlg, this);
 		dlg.setVisible(true);
 	}	
 
@@ -321,25 +321,25 @@ public class Main extends JFrame {
 	
 	public void showAddIndicationDialog() {
 		AddIndicationDialog dialog = new AddIndicationDialog(this, getDomain());
-		GUIHelper.centerWindow(dialog);
+		GUIHelper.centerWindow(dialog, this);
 		dialog.setVisible(true);
 	}
 	
 	public void showAddEndpointDialog() {
 		AddEndpointDialog dialog = new AddEndpointDialog(this, getDomain());
-		GUIHelper.centerWindow(dialog);		
+		GUIHelper.centerWindow(dialog, this);		
 		dialog.setVisible(true);
 	}
 	
 	private void showAddStudyDialog() {
 		AddStudyDialog dialog = new AddStudyDialog(this, getDomain());
-		GUIHelper.centerWindow(dialog);		
+		GUIHelper.centerWindow(dialog, this);		
 		dialog.setVisible(true);
 	}
 	
 	public void showAddDrugDialog() {
 		AddDrugDialog dialog = new AddDrugDialog(this, getDomain());
-		GUIHelper.centerWindow(dialog);		
+		GUIHelper.centerWindow(dialog, this);		
 		dialog.setVisible(true);
 	}
 	

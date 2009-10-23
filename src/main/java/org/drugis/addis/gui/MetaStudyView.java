@@ -106,7 +106,7 @@ public class MetaStudyView implements ViewBuilder {
 		customizeButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				JDialog dialog = new CharacteristicSelectDialog(d_mainWindow, d_model);
-				GUIHelper.centerWindow(dialog);
+				GUIHelper.centerWindow(dialog, d_mainWindow);
 				dialog.setVisible(true);
 			}
 		});

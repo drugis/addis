@@ -150,7 +150,7 @@ public class EndpointView implements ViewBuilder {
 		} else {
 			MetaAnalysisDialog dialog = new MetaAnalysisDialog(d_frame, 
 					d_domain, new MetaAnalysis(d_endpoint, studies));
-			GUIHelper.centerWindow(dialog);
+			GUIHelper.centerWindow(dialog, d_frame);
 			dialog.setVisible(true);
 		}
 	}
