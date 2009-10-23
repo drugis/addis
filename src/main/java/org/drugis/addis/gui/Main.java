@@ -426,7 +426,7 @@ public class Main extends JFrame {
 		};
 	}
 	
-	protected void noneSelected() {
+	private void noneSelected() {
 		setRightPanelView(new ViewBuilder() {
 			public JComponent buildPanel() {
 				return new JPanel();
@@ -453,13 +453,13 @@ public class Main extends JFrame {
 						d_domainTreeModel.getEndpointsNode() }));
 	}	
 	
-	public void endpointSelected(Endpoint e, Study selectedStudy) {
+	private void endpointSelected(Endpoint e, Study selectedStudy) {
 		EndpointView view = new EndpointView(e, getDomain(), this);
 		view.setSelectedStudy(selectedStudy);
 		setRightPanelView(view);
 	}
 	
-	public void endpointSelected(Endpoint node) {
+	private void endpointSelected(Endpoint node) {
 		endpointSelected(node, null);
 		d_editMenuDeleteItem.setEnabled(true);		
 	}

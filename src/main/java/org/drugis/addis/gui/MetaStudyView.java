@@ -191,7 +191,7 @@ public class MetaStudyView implements ViewBuilder {
 		JButton button = new JButton("Find Studies");
 		button.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				d_mainWindow.endpointSelected(endpoint, d_model.getBean());
+				d_mainWindow.leftTreeFocusOnEndpoint(endpoint);
 			}
 		});
 		

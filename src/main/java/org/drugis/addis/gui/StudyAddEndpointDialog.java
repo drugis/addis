@@ -35,6 +35,7 @@ import com.jgoodies.binding.PresentationModel;
 
 @SuppressWarnings("serial")
 public class StudyAddEndpointDialog extends OkCancelDialog {
+	private Main d_main;
 	private Domain d_domain;
 	private MutableStudy d_study;
 	private EndpointHolder d_newEndpoint;
@@ -43,6 +44,7 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 	public StudyAddEndpointDialog(Main frame, Domain domain, MutableStudy study) {
 		super(frame, "Add Endpoint to Study");
 		this.setModal(true);
+		d_main = frame;
 		d_domain = domain;
 		d_study = study;
 		d_measurements = new HashMap<PatientGroup, BasicMeasurement>();
@@ -77,6 +79,7 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 		addEndpointToMeasurements();
 		addEndpointToStudy();
 		addMeasurementsToStudy();
+		d_main.leftTreeFocusOnStudy(d_study);
 	}
 
 	private void addMeasurementsToStudy() {
