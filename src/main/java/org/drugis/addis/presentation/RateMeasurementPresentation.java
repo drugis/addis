@@ -1,16 +1,19 @@
 package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.RateMeasurement;
 
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class RateMeasurementPresentation extends LabeledPresentationModel<RateMeasurement> {
-	public static class LabelModel extends AbstractLabelModel<RateMeasurement> {
-		public LabelModel(RateMeasurement bean) {
-			super(bean);
+public class RateMeasurementPresentation extends PresentationModel<RateMeasurement> implements LabeledPresentationModel {
+	public class LabelModel extends AbstractValueModel implements PropertyChangeListener {
+
+		public LabelModel() {
+			getBean().addPropertyChangeListener(this);
 		}
 
 		private Integer getSize() {
@@ -28,19 +31,21 @@ public class RateMeasurementPresentation extends LabeledPresentationModel<RateMe
 			return rate.toString() + "/" + size.toString();
 		}
 		
-		@Override
 		public String getValue() {
 			return generateLabel(getRate(), getSize());
 		}
 
-		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equals(RateMeasurement.PROPERTY_RATE)) {
-				firePropertyChange (generateLabel((Integer) evt.getOldValue(), getSize()), generateLabel((Integer) evt.getNewValue(), getSize()));
+				firePropertyChange("value", generateLabel((Integer) evt.getOldValue(), getSize()), generateLabel((Integer) evt.getNewValue(), getSize()));
 			}
 			else if (evt.getPropertyName().equals(RateMeasurement.PROPERTY_SAMPLESIZE)) {
-				firePropertyChange (generateLabel(getRate(), (Integer) evt.getOldValue()), generateLabel(getRate(), (Integer) evt.getNewValue()));
+				firePropertyChange("value", generateLabel(getRate(), (Integer) evt.getOldValue()), generateLabel(getRate(), (Integer) evt.getNewValue()));
 			}
+		}
+
+		public void setValue(Object newValue) {
+			throw new RuntimeException("Label is Read-Only");
 		}
 	}
 
@@ -48,8 +53,7 @@ public class RateMeasurementPresentation extends LabeledPresentationModel<RateMe
 		super(bean);
 	}
 
-	@Override
 	public AbstractValueModel getLabelModel() {
-		return new LabelModel(getBean());
+		return new LabelModel();
 	}
 }

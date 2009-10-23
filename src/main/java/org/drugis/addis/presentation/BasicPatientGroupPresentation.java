@@ -1,22 +1,24 @@
 package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.PatientGroup;
 
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class BasicPatientGroupPresentation extends LabeledPresentationModel<BasicPatientGroup> {
-	public static class LabelModel extends AbstractLabelModel<PatientGroup> {
+public class BasicPatientGroupPresentation extends PresentationModel<BasicPatientGroup> implements LabeledPresentationModel {
+	public class LabelModel extends AbstractValueModel implements PropertyChangeListener {
 		private String d_cachedLabel;
 		
-		public LabelModel(BasicPatientGroup bean) {
-			super(bean);
+		public LabelModel() {
 			d_cachedLabel = calcLabel(getDrug(), getDose());
+			getBean().addPropertyChangeListener(this);
 		}
 		
 		private String calcLabel(Drug drug, Dose dose) {
@@ -34,12 +36,10 @@ public class BasicPatientGroupPresentation extends LabeledPresentationModel<Basi
 			return getBean().getDrug();
 		}
 
-		@Override
 		public String getValue() {
 			return d_cachedLabel;
 		}
 
-		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equals(PatientGroup.PROPERTY_DRUG)) {
 				String oldVal = d_cachedLabel;
@@ -51,15 +51,17 @@ public class BasicPatientGroupPresentation extends LabeledPresentationModel<Basi
 				firePropertyChange("value", oldVal, d_cachedLabel);
 			}
 		}
+
+		public void setValue(Object newValue) {
+			throw new RuntimeException("Label is Read-Only");
+		}
 	}
 
 	public BasicPatientGroupPresentation(BasicPatientGroup bean) {
 		super(bean);
 	}
 
-	@Override
 	public AbstractValueModel getLabelModel() {
-		return new LabelModel(getBean());
+		return new LabelModel();
 	}
-
 }

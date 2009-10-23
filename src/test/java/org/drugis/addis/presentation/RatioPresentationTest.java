@@ -16,6 +16,8 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jgoodies.binding.value.AbstractValueModel;
+
 public class RatioPresentationTest {
 	
 	private static final int s_sizeNum = 142;
@@ -41,22 +43,27 @@ public class RatioPresentationTest {
 	
 	@Test
 	public void testGetLabel() {
-		assertEquals("1.36 (1.07-1.72)", d_presentation.getLabel());
+		assertEquals("1.36 (1.07-1.72)", d_presentation.getLabelModel().getValue());
 	}	
 	
 	@Test
 	public void testPropertyChangeEvents() {
 		d_denominator.setRate(1);
+		AbstractValueModel labelModel = d_presentation.getLabelModel();
 		PropertyChangeListener l = 
-			JUnitUtil.mockListener(d_presentation, LabeledPresentationModel.PROPERTY_LABEL, null, "1.36 (1.07-1.72)");
-		d_presentation.addPropertyChangeListener(l);
+			JUnitUtil.mockListener(labelModel, "value", null, "1.36 (1.07-1.72)");
+		labelModel.addPropertyChangeListener(l);
 		d_denominator.setRate(s_effectDen);
 		verify(l);
-		d_presentation.removePropertyChangeListener(l);
-		
+	}
+	
+	@Test
+	public void testLabelNumeratorChanged() {
 		d_numerator.setRate(1);
-		l = JUnitUtil.mockListener(d_presentation, LabeledPresentationModel.PROPERTY_LABEL, null, "1.36 (1.07-1.72)");
-		d_presentation.addPropertyChangeListener(l);
+		AbstractValueModel labelModel = d_presentation.getLabelModel();
+		PropertyChangeListener l = 
+			JUnitUtil.mockListener(labelModel, "value", null, "1.36 (1.07-1.72)");
+		labelModel.addPropertyChangeListener(l);
 		d_numerator.setRate(s_effectNum);
 		verify(l);
 	}

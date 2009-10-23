@@ -20,27 +20,37 @@
 package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.SortedSet;
 
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class IndicationPresentation extends LabeledPresentationModel<Indication> {
-	public static class LabelModel extends AbstractLabelModel<Indication> {
-		protected LabelModel(Indication bean) {
-			super(bean);
+public class IndicationPresentation extends PresentationModel<Indication> implements LabeledPresentationModel {
+	public class LabelModel extends AbstractValueModel implements PropertyChangeListener {
+		protected LabelModel() {
+			getBean().addPropertyChangeListener(this);
 		}
 
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equals(Indication.PROPERTY_CODE)) {
-				firePropertyChange(evt.getOldValue() + " " + getBean().getName(), getValue());
+				firePropertyChange("value", (evt.getOldValue() + " " + getBean().getName()), getValue());
 			} else if (evt.getPropertyName().equals(Indication.PROPERTY_NAME)) {
-				firePropertyChange(getBean().getCode() + " " + evt.getOldValue(), getValue());
+				firePropertyChange("value", (getBean().getCode() + " " + evt.getOldValue()), getValue());
 			}
+		}
+
+		public String getValue() {
+			return getBean().toString();
+		}
+
+		public void setValue(Object newValue) {
+			throw new RuntimeException("Label is Read-Only");
 		}
 	}
 
@@ -55,9 +65,7 @@ public class IndicationPresentation extends LabeledPresentationModel<Indication>
 		return d_studyListModel;
 	}
 
-	@Override
 	public AbstractValueModel getLabelModel() {
-		return new LabelModel(getBean());
+		return new LabelModel();
 	}
-
 }

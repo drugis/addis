@@ -83,7 +83,6 @@ public class MetaAnalysisView implements ViewBuilder {
 			
 			col = 3;
 			for (Drug d : d_analysis.getDrugs()) {
-				@SuppressWarnings("unchecked")
 				LabeledPresentationModel pm = d_pmm.getLabeledModel(d_analysis.getMeasurement(s,d));
 				
 				builder.add(BasicComponentFactory.createLabel(pm.getLabelModel()),
@@ -98,7 +97,6 @@ public class MetaAnalysisView implements ViewBuilder {
 		builder.addLabel("Combined", cc.xy(1, row));
 		col = 3;
 		for (Drug d : d_analysis.getDrugs()) {
-			@SuppressWarnings("unchecked")
 			LabeledPresentationModel pm = d_pmm.getLabeledModel(d_analysis.getPooledMeasurement(d));
 			builder.add(BasicComponentFactory.createLabel(pm.getLabelModel()),
 					cc.xy(col, row));

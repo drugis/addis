@@ -1,21 +1,23 @@
 package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.ContinuousMeasurement;
+
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 // FIXME: there should be separate implementations of this class for each concrete Measurement,
 // and these should implement the PROPERTY_LABEL, in stead of the Measurement itself.
 
 @SuppressWarnings("serial")
-public class ContinuousMeasurementPresentation extends LabeledPresentationModel<ContinuousMeasurement> {
-	public static class LabelModel extends AbstractLabelModel<ContinuousMeasurement> {
-		public LabelModel(ContinuousMeasurement bean) {
-			super(bean);
+public class ContinuousMeasurementPresentation extends PresentationModel<ContinuousMeasurement> implements LabeledPresentationModel {
+	public class LabelModel extends  AbstractValueModel implements PropertyChangeListener {
+		public LabelModel() {
+			getBean().addPropertyChangeListener(this);
 		}
 		
-		@Override
 		public String getValue() {
 			return generateLabel(getMean(), getStdDev());
 		}
@@ -35,27 +37,24 @@ public class ContinuousMeasurementPresentation extends LabeledPresentationModel<
 			return mean.toString() + " \u00B1 " + stdDev.toString();
 		}
 		
-		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equals(ContinuousMeasurement.PROPERTY_MEAN)) {
-				firePropertyChange(
-						generateLabel((Double) evt.getOldValue(), getStdDev()),
-						generateLabel((Double) evt.getNewValue(), getStdDev()));
+				firePropertyChange("value", generateLabel((Double) evt.getOldValue(), getStdDev()), generateLabel((Double) evt.getNewValue(), getStdDev()));
 			} else if (evt.getPropertyName().equals(ContinuousMeasurement.PROPERTY_STDDEV)) {
-				firePropertyChange(
-						generateLabel(getMean(), (Double) evt.getOldValue()),
-						generateLabel(getMean(), (Double) evt.getNewValue()));
+				firePropertyChange("value", generateLabel(getMean(), (Double) evt.getOldValue()), generateLabel(getMean(), (Double) evt.getNewValue()));
 			}
 		}
-	}
 
+		public void setValue(Object newValue) {
+			throw new RuntimeException("Label is Read-Only");
+		}
+	}
+	
 	public ContinuousMeasurementPresentation(ContinuousMeasurement bean) {
 		super(bean);
 	}
 
-	@Override
 	public AbstractValueModel getLabelModel() {
-		return new LabelModel(getBean());
+		return new LabelModel();
 	}
-
 }
