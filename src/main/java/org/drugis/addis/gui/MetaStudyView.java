@@ -30,7 +30,6 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
-import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -51,7 +50,7 @@ public class MetaStudyView implements ViewBuilder {
 	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
-				"right:pref, 3dlu, pref:grow, 3dlu, center:pref",
+				"left:pref, 3dlu, pref:grow, 3dlu, center:pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		int fullWidth = 5;
@@ -71,8 +70,6 @@ public class MetaStudyView implements ViewBuilder {
 		CellConstraints cc = new CellConstraints();
 		
 		int row = buildStudyPart(fullWidth, builder, cc, layout);
-		
-		row = buildEndpointsPart(layout, fullWidth, builder, cc, row);
 		
 		row = buildStudiesPart(layout, fullWidth, builder, cc, row);
 		
@@ -166,39 +163,6 @@ public class MetaStudyView implements ViewBuilder {
 		
 		row += 2;
 		return row;
-	}
-
-	private int buildEndpointsPart(FormLayout layout, int fullWidth, PanelBuilder builder,
-			CellConstraints cc, int row) {
-		builder.addSeparator("Endpoints", cc.xyw(1, row, fullWidth));
-		row += 2;
-		
-		for (Endpoint e : d_model.getBean().getEndpoints()) {
-			LayoutUtil.addRow(layout);
-			builder.add(
-					GUIFactory.createEndpointLabelWithIcon(d_loader, d_model.getBean(), e),
-					cc.xy(1, row));
-			builder.add(
-					buildFindStudiesButton(e), cc.xy(3, row));
-			row += 2;
-		}
-
-		return row;
-	}
-
-	@SuppressWarnings("serial")
-	private JComponent buildFindStudiesButton(final Endpoint endpoint) {
-		JButton button = new JButton("Find Studies");
-		button.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				d_mainWindow.leftTreeFocusOnEndpoint(endpoint);
-			}
-		});
-		
-		ButtonBarBuilder2 builder = new ButtonBarBuilder2();
-		builder.addButton(button);
-		
-		return builder.getPanel();
 	}
 
 	private int buildStudyPart(int fullWidth, PanelBuilder builder,
