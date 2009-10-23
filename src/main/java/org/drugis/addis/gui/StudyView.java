@@ -166,8 +166,9 @@ public class StudyView implements ViewBuilder {
 
 	private int buildEndpointsPart(FormLayout layout, int fullWidth, PanelBuilder builder,
 			CellConstraints cc, int row) {
-		builder.addSeparator("Endpoints", cc.xyw(1, row, fullWidth));
 		row += 2;
+		builder.addSeparator("Endpoints", cc.xyw(1, row, fullWidth));
+		row += 4;
 		
 		for (Endpoint e : d_model.getBean().getEndpoints()) {
 			LayoutUtil.addRow(layout);
