@@ -28,52 +28,23 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 
 import com.jgoodies.binding.PresentationModel;
+import com.jgoodies.binding.beans.PropertyNotFoundException;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class IndicationPresentation extends PresentationModel<Indication> implements LabeledPresentationModel {
-	public static class LabelModel extends AbstractValueModel implements PropertyChangeListener {
-		protected Indication d_bean;
-
-		protected LabelModel(Indication bean) {
-			d_bean = bean;
-			bean.addPropertyChangeListener(this);
-		}
-
-		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals(Indication.PROPERTY_CODE)) {
-				firePropertyChange(evt.getOldValue() + " " + getBean().getName(), getValue());
-			} else if (evt.getPropertyName().equals(Indication.PROPERTY_NAME)) {
-				firePropertyChange(getBean().getCode() + " " + evt.getOldValue(), getValue());
-			}
-		}
-
-		public String getValue() {
-			return getBean().toString();
-		}
-
-		public void setValue(Object newValue) {
-			throw new RuntimeException("Label is Read-Only");
-		}
-
-		protected void firePropertyChange(String oldVal, String newVal) {
-			firePropertyChange("value", oldVal, newVal);
-		}
-
-		protected Indication getBean() {
-			return d_bean;
-		}
-	}
-
 	private StudyListPresentationModelImpl d_studyListModel;
 	protected PresentationModelManager d_pmm;
 
 	public IndicationPresentation(Indication bean, SortedSet<Study> studies) {
 		super(bean);
-		//d_pmm = pmm;
-		getLabelModel().addPropertyChangeListener(new PropertyChangeListener() {
+		getBean().addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
-				firePropertyChange(PROPERTY_LABEL, evt.getOldValue(), evt.getNewValue());
+				if (evt.getPropertyName().equals(Indication.PROPERTY_CODE)) {
+					firePropertyChange(PROPERTY_LABEL, evt.getOldValue() + " " + getBean().getName(), getLabel());
+				} else if (evt.getPropertyName().equals(Indication.PROPERTY_NAME)) {
+					firePropertyChange(PROPERTY_LABEL, getBean().getCode() + " " + evt.getOldValue(), getLabel());
+				}
 			}
 		});
 		d_studyListModel = new StudyListPresentationModelImpl(new ArrayList<Study>(studies));
@@ -83,19 +54,20 @@ public class IndicationPresentation extends PresentationModel<Indication> implem
 		return d_studyListModel;
 	}
 
-	public AbstractValueModel getLabelModel() {
-		return new LabelModel(getBean());
-	}
-
-	public AbstractValueModel getModel(String name) { 
-		if (PROPERTY_LABEL.equals(name)) {
-			return getLabelModel();
-		}
-		return super.getModel(name);
-	}
-
 	public String getLabel() {
-		return getLabelModel().getValue().toString();
+		return getBean().toString();
+	}
+	
+	public AbstractValueModel getModel(String propertyName) {
+		try {
+			PresentationModel<IndicationPresentation> pm = new PresentationModel<IndicationPresentation>(this);
+			return (pm.getModel(propertyName));
+		} catch (PropertyNotFoundException e) {
+			return super.getModel(propertyName);
+		}
 	}
 
+	public AbstractValueModel getLabelModel() {
+		return getModel(PROPERTY_LABEL);
+	}
 }
