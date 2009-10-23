@@ -18,6 +18,7 @@ public class PooledPatientGroupPresentationTest {
 	private MetaAnalysis d_analysis;
 	private MetaStudy d_study;
 	private PooledPatientGroup d_pg;
+	
 	@Before
 	public void setUp() {
 		Domain d_domain = new DomainImpl();
@@ -27,9 +28,10 @@ public class PooledPatientGroupPresentationTest {
 		d_study = new MetaStudy("s", d_analysis);
 		d_pg = new PooledPatientGroup(d_study, ExampleData.buildDrugFluoxetine());
 	}
+	
 	@Test
 	public void testGetLabel() {
 		PooledPatientGroupPresentation pres = new PooledPatientGroupPresentation(d_pg);
-		assertEquals("META " + d_pg.getDrug().toString(), pres.getLabel());
+		assertEquals("META " + d_pg.getDrug().toString(), pres.getLabelModel().getValue());
 	}
 }
