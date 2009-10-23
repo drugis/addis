@@ -20,6 +20,7 @@
 package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.SortedSet;
 
@@ -31,8 +32,11 @@ import com.jgoodies.binding.value.AbstractValueModel;
 @SuppressWarnings("serial")
 public class IndicationPresentation extends LabeledPresentationModel<Indication> {
 	public static class LabelModel extends AbstractLabelModel<Indication> {
+		protected Indication d_bean;
+
 		protected LabelModel(Indication bean) {
-			super(bean);
+			d_bean = bean;
+			bean.addPropertyChangeListener(this);
 		}
 
 		public void propertyChange(PropertyChangeEvent evt) {
@@ -42,12 +46,34 @@ public class IndicationPresentation extends LabeledPresentationModel<Indication>
 				firePropertyChange(getBean().getCode() + " " + evt.getOldValue(), getValue());
 			}
 		}
+
+		public String getValue() {
+			return getBean().toString();
+		}
+
+		public void setValue(Object newValue) {
+			throw new RuntimeException("Label is Read-Only");
+		}
+
+		protected void firePropertyChange(String oldVal, String newVal) {
+			firePropertyChange("value", oldVal, newVal);
+		}
+
+		protected Indication getBean() {
+			return d_bean;
+		}
 	}
 
 	private StudyListPresentationModelImpl d_studyListModel;
 
 	public IndicationPresentation(Indication bean, SortedSet<Study> studies) {
 		super(bean);
+		//d_pmm = pmm;
+		getLabelModel().addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				firePropertyChange(PROPERTY_LABEL, evt.getOldValue(), evt.getNewValue());
+			}
+		});
 		d_studyListModel = new StudyListPresentationModelImpl(new ArrayList<Study>(studies));
 	}
 

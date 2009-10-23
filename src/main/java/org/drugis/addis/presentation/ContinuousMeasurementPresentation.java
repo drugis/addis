@@ -1,6 +1,7 @@
 package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.ContinuousMeasurement;
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -11,11 +12,13 @@ import com.jgoodies.binding.value.AbstractValueModel;
 @SuppressWarnings("serial")
 public class ContinuousMeasurementPresentation extends LabeledPresentationModel<ContinuousMeasurement> {
 	public static class LabelModel extends AbstractLabelModel<ContinuousMeasurement> {
+		protected ContinuousMeasurement d_bean;
+
 		public LabelModel(ContinuousMeasurement bean) {
-			super(bean);
+			d_bean = bean;
+			bean.addPropertyChangeListener(this);
 		}
 		
-		@Override
 		public String getValue() {
 			return generateLabel(getMean(), getStdDev());
 		}
@@ -35,7 +38,6 @@ public class ContinuousMeasurementPresentation extends LabeledPresentationModel<
 			return mean.toString() + " \u00B1 " + stdDev.toString();
 		}
 		
-		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equals(ContinuousMeasurement.PROPERTY_MEAN)) {
 				firePropertyChange(
@@ -47,10 +49,28 @@ public class ContinuousMeasurementPresentation extends LabeledPresentationModel<
 						generateLabel(getMean(), (Double) evt.getNewValue()));
 			}
 		}
+
+		public void setValue(Object newValue) {
+			throw new RuntimeException("Label is Read-Only");
+		}
+
+		protected void firePropertyChange(String oldVal, String newVal) {
+			firePropertyChange("value", oldVal, newVal);
+		}
+
+		protected ContinuousMeasurement getBean() {
+			return d_bean;
+		}
 	}
 
 	public ContinuousMeasurementPresentation(ContinuousMeasurement bean) {
 		super(bean);
+		//d_pmm = pmm;
+		getLabelModel().addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				firePropertyChange(PROPERTY_LABEL, evt.getOldValue(), evt.getNewValue());
+			}
+		});
 	}
 
 	@Override

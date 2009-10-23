@@ -30,6 +30,7 @@ public abstract class LabeledPresentationModel<B> extends PresentationModel<B> {
 	public static final String PROPERTY_LABEL = "label";
 	protected PresentationModelManager d_pmm;
 
+	/*
 	public LabeledPresentationModel(B bean, PresentationModelManager pmm) {
 		super(bean);
 		d_pmm = pmm;
@@ -38,10 +39,10 @@ public abstract class LabeledPresentationModel<B> extends PresentationModel<B> {
 				firePropertyChange(PROPERTY_LABEL, evt.getOldValue(), evt.getNewValue());
 			}
 		});
-	}
+	} */
 	
 	public LabeledPresentationModel(B bean) {
-		this(bean, null);
+		super(bean);
 	}
 	
 	public abstract AbstractValueModel getLabelModel();

@@ -53,7 +53,13 @@ public class RatioPresentation extends LabeledPresentationModel<Ratio> {
 	}
 
 	public RatioPresentation(Ratio bean, PresentationModelManager pmm) {
-		super(bean, pmm);
+		super(bean);
+		d_pmm = pmm;
+		getLabelModel().addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				firePropertyChange(PROPERTY_LABEL, evt.getOldValue(), evt.getNewValue());
+			}
+		});
 	}
 
 	@Override

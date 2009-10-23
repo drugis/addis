@@ -1,6 +1,7 @@
 package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.RateMeasurement;
 
@@ -9,8 +10,11 @@ import com.jgoodies.binding.value.AbstractValueModel;
 @SuppressWarnings("serial")
 public class RateMeasurementPresentation extends LabeledPresentationModel<RateMeasurement> {
 	public static class LabelModel extends AbstractLabelModel<RateMeasurement> {
+		protected RateMeasurement d_bean;
+
 		public LabelModel(RateMeasurement bean) {
-			super(bean);
+			d_bean = bean;
+			bean.addPropertyChangeListener(this);
 		}
 
 		private Integer getSize() {
@@ -28,12 +32,10 @@ public class RateMeasurementPresentation extends LabeledPresentationModel<RateMe
 			return rate.toString() + "/" + size.toString();
 		}
 		
-		@Override
 		public String getValue() {
 			return generateLabel(getRate(), getSize());
 		}
 
-		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equals(RateMeasurement.PROPERTY_RATE)) {
 				firePropertyChange (generateLabel((Integer) evt.getOldValue(), getSize()), generateLabel((Integer) evt.getNewValue(), getSize()));
@@ -42,10 +44,28 @@ public class RateMeasurementPresentation extends LabeledPresentationModel<RateMe
 				firePropertyChange (generateLabel(getRate(), (Integer) evt.getOldValue()), generateLabel(getRate(), (Integer) evt.getNewValue()));
 			}
 		}
+
+		public void setValue(Object newValue) {
+			throw new RuntimeException("Label is Read-Only");
+		}
+
+		protected void firePropertyChange(String oldVal, String newVal) {
+			firePropertyChange("value", oldVal, newVal);
+		}
+
+		protected RateMeasurement getBean() {
+			return d_bean;
+		}
 	}
 
 	public RateMeasurementPresentation(RateMeasurement bean) {
 		super(bean);
+		//d_pmm = pmm;
+		getLabelModel().addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				firePropertyChange(PROPERTY_LABEL, evt.getOldValue(), evt.getNewValue());
+			}
+		});
 	}
 
 	@Override

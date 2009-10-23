@@ -1,6 +1,7 @@
 package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.PooledPatientGroup;
 
@@ -12,11 +13,12 @@ import com.jgoodies.binding.value.AbstractValueModel;
 @SuppressWarnings("serial")
 public class PooledPatientGroupPresentation extends LabeledPresentationModel<PooledPatientGroup> {
 	public static class LabelModel extends AbstractLabelModel<PooledPatientGroup> {
+		protected PooledPatientGroup d_bean;
+
 		public LabelModel(PooledPatientGroup bean) {
-			super(bean);
+			d_bean = bean;
 		}
 		
-		@Override
 		public String getValue() {
 			return calcLabel();
 		}
@@ -25,14 +27,31 @@ public class PooledPatientGroupPresentation extends LabeledPresentationModel<Poo
 			return "META " + getBean().getDrug().toString();
 		}
 
-		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			// IMMUTABLE
+		}
+
+		public void setValue(Object newValue) {
+			throw new RuntimeException("Label is Read-Only");
+		}
+
+		protected void firePropertyChange(String oldVal, String newVal) {
+			firePropertyChange("value", oldVal, newVal);
+		}
+
+		protected PooledPatientGroup getBean() {
+			return d_bean;
 		}
 	}
 
 	public PooledPatientGroupPresentation(PooledPatientGroup bean) {
 		super(bean);
+		//d_pmm = pmm;
+		getLabelModel().addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				firePropertyChange(PROPERTY_LABEL, evt.getOldValue(), evt.getNewValue());
+			}
+		});
 	}
 
 	@Override
