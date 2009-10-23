@@ -12,6 +12,8 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jgoodies.binding.value.AbstractValueModel;
+
 public class RateMeasurementPresentationTest {
 	private BasicRateMeasurement d_measurement;
 	private Endpoint d_endpoint;
@@ -28,18 +30,20 @@ public class RateMeasurementPresentationTest {
 
 	@Test
 	public void testFireLabelRateChanged() {
+		AbstractValueModel lm = d_presentation.getLabelModel();
 		PropertyChangeListener l = JUnitUtil.mockListener(
-				d_presentation, RateMeasurementPresentation.PROPERTY_LABEL, "67/101", "68/101");
-		d_presentation.addPropertyChangeListener(l);
+				lm, "value", "67/101", "68/101");
+		lm.addPropertyChangeListener(l);
 		d_measurement.setRate(68);
 		verify(l);
 	}
 		
 	@Test
 	public void testFireLabelSizeChanged() {
+		AbstractValueModel lm = d_presentation.getLabelModel();
 		PropertyChangeListener l = JUnitUtil.mockListener(
-				d_presentation, RateMeasurementPresentation.PROPERTY_LABEL, "67/101", "67/102");
-		d_presentation.addPropertyChangeListener(l);
+				lm, "value", "67/101", "67/102");
+		lm.addPropertyChangeListener(l);
 		d_pg.setSize(102);
 		verify(l);
 	}	
@@ -47,6 +51,6 @@ public class RateMeasurementPresentationTest {
 	
 	@Test
 	public void testGetLabel() {
-		assertEquals("67/101", d_presentation.getLabel());
+		assertEquals("67/101", d_presentation.getLabelModel().getValue());
 	}
 }

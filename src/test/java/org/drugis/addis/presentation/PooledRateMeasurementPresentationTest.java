@@ -15,6 +15,8 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jgoodies.binding.value.AbstractValueModel;
+
 public class PooledRateMeasurementPresentationTest {
 	Endpoint d_e;
 	BasicRateMeasurement d_m1;
@@ -37,18 +39,20 @@ public class PooledRateMeasurementPresentationTest {
 	
 	@Test
 	public void testFireLabelChangedOnRate() {
+		AbstractValueModel lm = d_presentation.getLabelModel();
 		PropertyChangeListener l = JUnitUtil.mockListener(
-				d_presentation, RateMeasurementPresentation.PROPERTY_LABEL, "30/150", "40/150");
-		d_presentation.addPropertyChangeListener(l);
+				lm, "value", "30/150", "40/150");
+		lm.addPropertyChangeListener(l);
 		d_m1.setRate(d_m1.getRate() + 10);
 		verify(l);
 	}
 	
 	@Test
 	public void testFireLabelChangedOnSampleSize() {
+		AbstractValueModel lm = d_presentation.getLabelModel();
 		PropertyChangeListener l = JUnitUtil.mockListener(
-				d_presentation, RateMeasurementPresentation.PROPERTY_LABEL, "30/150", "30/250");
-		d_presentation.addPropertyChangeListener(l);
+				lm, "value", "30/150", "30/250");
+		lm.addPropertyChangeListener(l);
 		d_g1.setSize(d_m1.getSampleSize() + 100);
 		verify(l);
 	}
