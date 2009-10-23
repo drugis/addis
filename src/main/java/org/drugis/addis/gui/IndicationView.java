@@ -70,6 +70,7 @@ public class IndicationView implements ViewBuilder {
 		} else {
 			StudyCharTableModel model = new StudyCharTableModel(studyListModel);
 			final JTable table = new JTable(model);
+			table.getColumnModel().getColumn(0).setMinWidth(200);			
 			table.setPreferredScrollableViewportSize(table.getPreferredSize());
 			table.setBackground(Color.WHITE);
 			JScrollPane pane = new JScrollPane(table);

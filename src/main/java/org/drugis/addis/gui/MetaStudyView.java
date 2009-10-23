@@ -91,6 +91,7 @@ public class MetaStudyView implements ViewBuilder {
 		
 		StudyCharTableModel model = new StudyCharTableModel(d_model);
 		final JTable table = new JTable(model);
+		table.getColumnModel().getColumn(0).setMinWidth(200);
 		table.setPreferredScrollableViewportSize(table.getPreferredSize());
 		table.setBackground(Color.WHITE);
 		JScrollPane pane = new JScrollPane(table);
