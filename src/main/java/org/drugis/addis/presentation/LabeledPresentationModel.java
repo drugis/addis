@@ -28,14 +28,20 @@ import com.jgoodies.binding.value.AbstractValueModel;
 @SuppressWarnings("serial")
 public abstract class LabeledPresentationModel<B> extends PresentationModel<B> {
 	public static final String PROPERTY_LABEL = "label";
+	protected PresentationModelManager d_pmm;
 
-	public LabeledPresentationModel(B bean) {
+	public LabeledPresentationModel(B bean, PresentationModelManager pmm) {
 		super(bean);
+		d_pmm = pmm;
 		getLabelModel().addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				firePropertyChange(PROPERTY_LABEL, evt.getOldValue(), evt.getNewValue());
 			}
 		});
+	}
+	
+	public LabeledPresentationModel(B bean) {
+		this(bean, null);
 	}
 	
 	public abstract AbstractValueModel getLabelModel();

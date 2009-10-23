@@ -71,7 +71,7 @@ public class PresentationModelManager {
 			return new IndicationPresentation((Indication)obj, d_domain.getStudies((Indication)obj));
 		}
 		if (obj instanceof Ratio) {
-			return new RatioPresentation((Ratio)obj);
+			return new RatioPresentation((Ratio)obj, this);
 		}
 		if (obj instanceof RateMeasurement) {
 			return new RateMeasurementPresentation((RateMeasurement)obj);

@@ -19,9 +19,6 @@
 
 package org.drugis.addis.entities;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Set;
 
@@ -30,36 +27,28 @@ import org.drugis.common.StudentTTable;
 
 public abstract class Ratio extends AbstractEntity implements Measurement {
 	private static final long serialVersionUID = 1647344976539753330L;
-
-	public static final String PROPERTY_LABEL = "label";
 	
-	private class ChangeListener implements PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals(RateMeasurement.PROPERTY_RATE) ||
-					evt.getPropertyName().equals(RateMeasurement.PROPERTY_SAMPLESIZE)) {
-				firePropertyChange(PROPERTY_LABEL, null, getLabel());
-			}
-		}
+	protected RateMeasurement d_numerator;
+	protected RateMeasurement d_denominator;
+	
+	public RateMeasurement getNumerator() {
+		return d_numerator;
 	}
-	
+
+	public RateMeasurement getDenominator() {
+		return d_denominator;
+	}
+
 	protected Ratio(RateMeasurement denominator, RateMeasurement numerator) {
 		d_numerator = numerator;
 		d_denominator = denominator;
-		
-		PropertyChangeListener listener = new ChangeListener();
-		d_numerator.addPropertyChangeListener(listener);
-		d_denominator.addPropertyChangeListener(listener);
 	}
-
-	protected RateMeasurement d_numerator;
 
 	protected double getStdDev(RateMeasurement m) {
 		return getMean(m) / Math.sqrt(m.getSampleSize());
 	}
 
 	protected abstract double getMean(RateMeasurement m);
-
-	protected RateMeasurement d_denominator;
 
 	private static double sq(double d) {
 		return d * d;
@@ -111,13 +100,6 @@ public abstract class Ratio extends AbstractEntity implements Measurement {
 		return getMean(d_numerator) / getMean(d_denominator);
 	}
 
-	@Deprecated
-	public String getLabel() {
-		DecimalFormat format = new DecimalFormat("0.00");
-		Interval<Double> ci = getConfidenceInterval();
-		return format.format(getRatio()) + " (" + format.format(ci.getLowerBound()) + "-" + 
-				format.format(ci.getUpperBound()) + ")";
-	}
 	
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();
