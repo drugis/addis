@@ -16,56 +16,28 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class RatioPresentation extends PresentationModel<Ratio> implements LabeledPresentationModel {
-	
-	public static class LabelModel extends AbstractValueModel implements PropertyChangeListener {
-		private RatioPresentation d_bean;
-
-		public LabelModel(RatioPresentation bean) {
-			d_bean = bean;
-			getBean().getNumerator().getModel(RateMeasurement.PROPERTY_RATE).addPropertyChangeListener(this);
-			getBean().getNumerator().getModel(RateMeasurement.PROPERTY_SAMPLESIZE).addPropertyChangeListener(this);
-			getBean().getDenominator().getModel(RateMeasurement.PROPERTY_RATE).addPropertyChangeListener(this);
-			getBean().getDenominator().getModel(RateMeasurement.PROPERTY_SAMPLESIZE).addPropertyChangeListener(this);
-		}
-		
-		public RatioPresentation getBean() {
-			return d_bean;
-		}
-
-		public String getValue() {
-			return getLabel();
-		}
-		
-		public String getLabel() {
-			DecimalFormat format = new DecimalFormat("0.00");
-			Interval<Double> ci = getBean().getBean().getConfidenceInterval();
-			return format.format(getBean().getBean().getRatio()) + " (" + format.format(ci.getLowerBound()) + "-" + 
-					format.format(ci.getUpperBound()) + ")";
-		}
-
+	public class LabelModel implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
-				firePropertyChange("value", null, getValue());
-		}
-
-		public void setValue(Object arg0) {
-			throw new RuntimeException("Value read-only");
+			firePropertyChange(PROPERTY_LABEL, null, getLabel());
 		}
 	}
 
-	protected PresentationModelManager d_pmm;
+	private PresentationModelManager d_pmm;
+	private LabelModel d_labelModel;
 
 	public RatioPresentation(Ratio bean, PresentationModelManager pmm) {
 		super(bean);
 		d_pmm = pmm;
-		getLabelModel().addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				firePropertyChange(PROPERTY_LABEL, evt.getOldValue(), evt.getNewValue());
-			}
-		});
+		d_labelModel = new LabelModel();
+		
+		getNumerator().getModel(RateMeasurement.PROPERTY_RATE).addPropertyChangeListener(d_labelModel);
+		getNumerator().getModel(RateMeasurement.PROPERTY_SAMPLESIZE).addPropertyChangeListener(d_labelModel);
+		getDenominator().getModel(RateMeasurement.PROPERTY_RATE).addPropertyChangeListener(d_labelModel);
+		getDenominator().getModel(RateMeasurement.PROPERTY_SAMPLESIZE).addPropertyChangeListener(d_labelModel);
 	}
 
 	public AbstractValueModel getLabelModel() {
-		return new LabelModel(this);
+		return getModel(PROPERTY_LABEL);
 	}
 	
 	public PresentationModel<RateMeasurement> getNumerator() {
@@ -76,14 +48,10 @@ public class RatioPresentation extends PresentationModel<Ratio> implements Label
 		return d_pmm.getModel(getBean().getDenominator());
 	}
 
-	public AbstractValueModel getModel(String name) { 
-		if (PROPERTY_LABEL.equals(name)) {
-			return getLabelModel();
-		}
-		return super.getModel(name);
-	}
-
 	public String getLabel() {
-		return getLabelModel().getValue().toString();
+		DecimalFormat format = new DecimalFormat("0.00");
+		Interval<Double> ci = getBean().getConfidenceInterval();
+		return format.format(getBean().getRatio()) + " (" + format.format(ci.getLowerBound()) + "-" + 
+			format.format(ci.getUpperBound()) + ")";
 	}
 }
