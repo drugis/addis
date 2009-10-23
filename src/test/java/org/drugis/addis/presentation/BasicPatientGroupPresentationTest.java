@@ -13,6 +13,8 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jgoodies.binding.value.AbstractValueModel;
+
 public class BasicPatientGroupPresentationTest {
 	private BasicPatientGroup d_pg;
 
@@ -25,13 +27,13 @@ public class BasicPatientGroupPresentationTest {
 	public void testGetLabel() {
 		BasicPatientGroup group = d_pg;
 		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(group);
-		assertEquals("INCOMPLETE", pres.getLabel());
+		assertEquals("INCOMPLETE", pres.getLabelModel().getValue());
 		
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		group.setDose(dose);
 		Drug drug = new Drug("Fluoxetine", "atc");
 		group.setDrug(drug);
-		assertEquals("Fluoxetine " + dose.toString(), pres.getLabel());
+		assertEquals("Fluoxetine " + dose.toString(), pres.getLabelModel().getValue());
 	}
 	
 	@Test
@@ -41,27 +43,40 @@ public class BasicPatientGroupPresentationTest {
 		Drug drug = new Drug("Fluoxetine", "atc");
 		
 		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(d_pg);
+		AbstractValueModel lm = pres.getLabelModel();
 		
 		group = d_pg;
 		group.setDrug(drug);
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		group.setDose(dose);
-		String expect = pres.getLabel();
+		String expect = (String) pres.getLabelModel().getValue();
 		group.setDose(null);
-		assertEquals("INCOMPLETE", pres.getLabel());
-		l = JUnitUtil.mockListener(pres, BasicPatientGroupPresentation.PROPERTY_LABEL, "INCOMPLETE", expect);
-		pres.addPropertyChangeListener(l);
+		assertEquals("INCOMPLETE", pres.getLabelModel().getValue());
+		l = JUnitUtil.mockListener(lm, "value", "INCOMPLETE", expect);
+		lm.addPropertyChangeListener(l);
 		group.setDose(dose);
-		assertEquals(expect, pres.getLabel());
+		assertEquals(expect, pres.getLabelModel().getValue());
 		verify(l);
+	}
 		
-		group = d_pg;
-		group.setDose(dose);
+	@Test
+	public void testFireLabelChanged2() {
+		PropertyChangeListener l;
+		Drug drug = new Drug("Fluoxetine", "atc");
 		Drug drug2 = new Drug("Paroxetine", "atc");
-		group.setDrug(drug2);
-		l = JUnitUtil.mockListener(pres, BasicPatientGroupPresentation.PROPERTY_LABEL, pres.getLabel(), expect);
-		pres.addPropertyChangeListener(l);
-		group.setDrug(drug);
+		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
+		d_pg.setDrug(drug);
+		d_pg.setDose(dose);
+		
+		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(d_pg);
+		AbstractValueModel lm = pres.getLabelModel();
+		
+		String expect = (String) lm.getValue();
+		d_pg.setDrug(drug2);
+		
+		l = JUnitUtil.mockListener(lm, "value", lm.getValue(), expect);
+		lm.addPropertyChangeListener(l);
+		d_pg.setDrug(drug);
 		verify(l);
 	}
 }

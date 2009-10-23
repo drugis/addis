@@ -13,14 +13,12 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class BasicPatientGroupPresentation extends PresentationModel<BasicPatientGroup> implements LabeledPresentationModel {
-	public static class LabelModel extends AbstractValueModel implements PropertyChangeListener {
+	public class LabelModel extends AbstractValueModel implements PropertyChangeListener {
 		private String d_cachedLabel;
-		protected PatientGroup d_bean;
 		
-		public LabelModel(BasicPatientGroup bean) {
-			d_bean = bean;
+		public LabelModel() {
 			d_cachedLabel = calcLabel(getDrug(), getDose());
-			bean.addPropertyChangeListener(this);
+			getBean().addPropertyChangeListener(this);
 		}
 		
 		private String calcLabel(Drug drug, Dose dose) {
@@ -57,41 +55,13 @@ public class BasicPatientGroupPresentation extends PresentationModel<BasicPatien
 		public void setValue(Object newValue) {
 			throw new RuntimeException("Label is Read-Only");
 		}
-
-		protected void firePropertyChange(String oldVal, String newVal) {
-			firePropertyChange("value", oldVal, newVal);
-		}
-
-		protected PatientGroup getBean() {
-			return d_bean;
-		}
 	}
-
-	protected PresentationModelManager d_pmm;
 
 	public BasicPatientGroupPresentation(BasicPatientGroup bean) {
 		super(bean);
-		//d_pmm = pmm;
-		getLabelModel().addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				firePropertyChange(PROPERTY_LABEL, evt.getOldValue(), evt.getNewValue());
-			}
-		});
 	}
 
 	public AbstractValueModel getLabelModel() {
-		return new LabelModel(getBean());
+		return new LabelModel();
 	}
-
-	public AbstractValueModel getModel(String name) { 
-		if (PROPERTY_LABEL.equals(name)) {
-			return getLabelModel();
-		}
-		return super.getModel(name);
-	}
-
-	public String getLabel() {
-		return getLabelModel().getValue().toString();
-	}
-
 }
