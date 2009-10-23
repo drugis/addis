@@ -1,6 +1,5 @@
 package org.drugis.addis.gui;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.text.NumberFormat;
 
@@ -19,6 +18,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.common.ImageLoader;
@@ -90,15 +90,12 @@ public class MetaStudyView implements ViewBuilder {
 		row += 2;
 		
 		StudyCharTableModel model = new StudyCharTableModel(d_model);
-		final JTable table = new JTable(model);
-		table.getColumnModel().getColumn(0).setMinWidth(200);
-		table.setPreferredScrollableViewportSize(table.getPreferredSize());
-		table.setBackground(Color.WHITE);
+		final JTable table = new StudyTable(model);
 		JScrollPane pane = new JScrollPane(table);
 		pane.setBorder(BorderFactory.createEmptyBorder());
 		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-				
+		
 		builder.add(pane, cc.xyw(1, row, fullWidth));
 		row += 2;
 		

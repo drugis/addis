@@ -1,7 +1,5 @@
 package org.drugis.addis.gui;
 
-import java.awt.Color;
-
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -9,6 +7,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.addis.presentation.StudyListPresentationModel;
@@ -69,10 +68,7 @@ public class IndicationView implements ViewBuilder {
 			studiesComp = new JLabel("No studies found.");
 		} else {
 			StudyCharTableModel model = new StudyCharTableModel(studyListModel);
-			final JTable table = new JTable(model);
-			table.getColumnModel().getColumn(0).setMinWidth(200);			
-			table.setPreferredScrollableViewportSize(table.getPreferredSize());
-			table.setBackground(Color.WHITE);
+			final JTable table = new StudyTable(model);
 			JScrollPane pane = new JScrollPane(table);
 			pane.setBorder(BorderFactory.createEmptyBorder());
 			pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
