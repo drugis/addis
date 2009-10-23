@@ -22,6 +22,7 @@ import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.common.ImageLoader;
+import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
@@ -104,6 +105,7 @@ public class MetaStudyView implements ViewBuilder {
 		customizeButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				JDialog dialog = new CharacteristicSelectDialog(d_mainWindow, d_model);
+				GUIHelper.centerWindow(dialog);
 				dialog.setVisible(true);
 			}
 		});

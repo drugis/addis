@@ -1,5 +1,10 @@
 package org.drugis.common.gui;
 
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.Window;
+
 import javax.swing.UIManager;
 
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
@@ -25,6 +30,14 @@ public class GUIHelper {
 		} catch (Exception e) {
 			// Likely the Looks library is not in the class path; ignore.
 		}
+	}
+
+	public static void centerWindow(Window window) {
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension fsize = window.getSize();
+		int xLoc = (int) ((screenSize.getWidth() / 2) - (fsize.getWidth() / 2));
+		int yLoc = (int) ((screenSize.getHeight() / 2) - (fsize.getHeight() / 2));
+		window.setLocation(new Point(xLoc, yLoc));
 	}
 
 }

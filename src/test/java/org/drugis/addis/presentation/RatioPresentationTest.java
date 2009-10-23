@@ -7,6 +7,7 @@ import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicRateMeasurement;
+import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.PatientGroup;
@@ -35,7 +36,7 @@ public class RatioPresentationTest {
 		d_numerator = new BasicRateMeasurement(e, s_effectNum, pnum);		
 		d_denominator = new BasicRateMeasurement(e, s_effectDen, pden);
 		d_ratio = new OddsRatio(d_denominator, d_numerator);
-		d_presentation = new RatioPresentation(d_ratio);
+		d_presentation = new RatioPresentation(d_ratio, new PresentationModelManager(new DomainImpl()));
 	}
 	
 	@Test

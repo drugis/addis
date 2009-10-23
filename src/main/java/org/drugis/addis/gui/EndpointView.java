@@ -36,6 +36,7 @@ import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.CollectionUtil;
+import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
 
 
@@ -149,6 +150,7 @@ public class EndpointView implements ViewBuilder {
 		} else {
 			MetaAnalysisDialog dialog = new MetaAnalysisDialog(d_frame, 
 					d_domain, new MetaAnalysis(d_endpoint, studies));
+			GUIHelper.centerWindow(dialog);
 			dialog.setVisible(true);
 		}
 	}
