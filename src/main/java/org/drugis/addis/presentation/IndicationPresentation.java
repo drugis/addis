@@ -28,25 +28,36 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 
 import com.jgoodies.binding.PresentationModel;
-import com.jgoodies.binding.beans.PropertyNotFoundException;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class IndicationPresentation extends PresentationModel<Indication> implements LabeledPresentationModel {
+	public class LabelModel extends AbstractValueModel implements PropertyChangeListener {
+		protected LabelModel() {
+			getBean().addPropertyChangeListener(this);
+		}
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName().equals(Indication.PROPERTY_CODE)) {
+				firePropertyChange("value", (evt.getOldValue() + " " + getBean().getName()), getValue());
+			} else if (evt.getPropertyName().equals(Indication.PROPERTY_NAME)) {
+				firePropertyChange("value", (getBean().getCode() + " " + evt.getOldValue()), getValue());
+			}
+		}
+
+		public String getValue() {
+			return getBean().toString();
+		}
+
+		public void setValue(Object newValue) {
+			throw new RuntimeException("Label is Read-Only");
+		}
+	}
+
 	private StudyListPresentationModelImpl d_studyListModel;
-	protected PresentationModelManager d_pmm;
 
 	public IndicationPresentation(Indication bean, SortedSet<Study> studies) {
 		super(bean);
-		getBean().addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals(Indication.PROPERTY_CODE)) {
-					firePropertyChange(PROPERTY_LABEL, evt.getOldValue() + " " + getBean().getName(), getLabel());
-				} else if (evt.getPropertyName().equals(Indication.PROPERTY_NAME)) {
-					firePropertyChange(PROPERTY_LABEL, getBean().getCode() + " " + evt.getOldValue(), getLabel());
-				}
-			}
-		});
 		d_studyListModel = new StudyListPresentationModelImpl(new ArrayList<Study>(studies));
 	}
 
@@ -54,20 +65,7 @@ public class IndicationPresentation extends PresentationModel<Indication> implem
 		return d_studyListModel;
 	}
 
-	public String getLabel() {
-		return getBean().toString();
-	}
-	
-	public AbstractValueModel getModel(String propertyName) {
-		try {
-			PresentationModel<IndicationPresentation> pm = new PresentationModel<IndicationPresentation>(this);
-			return (pm.getModel(propertyName));
-		} catch (PropertyNotFoundException e) {
-			return super.getModel(propertyName);
-		}
-	}
-
 	public AbstractValueModel getLabelModel() {
-		return getModel(PROPERTY_LABEL);
+		return new LabelModel();
 	}
 }
