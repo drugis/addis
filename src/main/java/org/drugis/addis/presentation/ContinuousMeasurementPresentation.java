@@ -13,12 +13,9 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class ContinuousMeasurementPresentation extends PresentationModel<ContinuousMeasurement> implements LabeledPresentationModel {
-	public static class LabelModel extends  AbstractValueModel implements PropertyChangeListener {
-		protected ContinuousMeasurement d_bean;
-
-		public LabelModel(ContinuousMeasurement bean) {
-			d_bean = bean;
-			bean.addPropertyChangeListener(this);
+	public class LabelModel extends  AbstractValueModel implements PropertyChangeListener {
+		public LabelModel() {
+			getBean().addPropertyChangeListener(this);
 		}
 		
 		public String getValue() {
@@ -42,54 +39,22 @@ public class ContinuousMeasurementPresentation extends PresentationModel<Continu
 		
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equals(ContinuousMeasurement.PROPERTY_MEAN)) {
-				firePropertyChange(
-						generateLabel((Double) evt.getOldValue(), getStdDev()),
-						generateLabel((Double) evt.getNewValue(), getStdDev()));
+				firePropertyChange("value", generateLabel((Double) evt.getOldValue(), getStdDev()), generateLabel((Double) evt.getNewValue(), getStdDev()));
 			} else if (evt.getPropertyName().equals(ContinuousMeasurement.PROPERTY_STDDEV)) {
-				firePropertyChange(
-						generateLabel(getMean(), (Double) evt.getOldValue()),
-						generateLabel(getMean(), (Double) evt.getNewValue()));
+				firePropertyChange("value", generateLabel(getMean(), (Double) evt.getOldValue()), generateLabel(getMean(), (Double) evt.getNewValue()));
 			}
 		}
 
 		public void setValue(Object newValue) {
 			throw new RuntimeException("Label is Read-Only");
 		}
-
-		protected void firePropertyChange(String oldVal, String newVal) {
-			firePropertyChange("value", oldVal, newVal);
-		}
-
-		protected ContinuousMeasurement getBean() {
-			return d_bean;
-		}
 	}
-
-	protected PresentationModelManager d_pmm;
-
+	
 	public ContinuousMeasurementPresentation(ContinuousMeasurement bean) {
 		super(bean);
-		//d_pmm = pmm;
-		getLabelModel().addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				firePropertyChange(PROPERTY_LABEL, evt.getOldValue(), evt.getNewValue());
-			}
-		});
 	}
 
 	public AbstractValueModel getLabelModel() {
-		return new LabelModel(getBean());
+		return new LabelModel();
 	}
-
-	public AbstractValueModel getModel(String name) { 
-		if (PROPERTY_LABEL.equals(name)) {
-			return getLabelModel();
-		}
-		return super.getModel(name);
-	}
-
-	public String getLabel() {
-		return getLabelModel().getValue().toString();
-	}
-
 }
