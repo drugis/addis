@@ -5,14 +5,15 @@ import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.PooledPatientGroup;
 
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 //FIXME: there should be separate implementations of this class for each concrete PatientGroup,
 //and these should implement the PROPERTY_LABEL, in stead of the PatientGroup itself.
 
 @SuppressWarnings("serial")
-public class PooledPatientGroupPresentation extends LabeledPresentationModel<PooledPatientGroup> {
-	public static class LabelModel extends AbstractLabelModel<PooledPatientGroup> {
+public class PooledPatientGroupPresentation extends PresentationModel<PooledPatientGroup> implements LabeledPresentationModel {
+	public static class LabelModel extends AbstractValueModel implements PropertyChangeListener {
 		protected PooledPatientGroup d_bean;
 
 		public LabelModel(PooledPatientGroup bean) {
@@ -44,6 +45,8 @@ public class PooledPatientGroupPresentation extends LabeledPresentationModel<Poo
 		}
 	}
 
+	protected PresentationModelManager d_pmm;
+
 	public PooledPatientGroupPresentation(PooledPatientGroup bean) {
 		super(bean);
 		//d_pmm = pmm;
@@ -54,9 +57,19 @@ public class PooledPatientGroupPresentation extends LabeledPresentationModel<Poo
 		});
 	}
 
-	@Override
 	public AbstractValueModel getLabelModel() {
 		return new LabelModel(getBean());
+	}
+
+	public AbstractValueModel getModel(String name) { 
+		if (PROPERTY_LABEL.equals(name)) {
+			return getLabelModel();
+		}
+		return super.getModel(name);
+	}
+
+	public String getLabel() {
+		return getLabelModel().getValue().toString();
 	}
 
 }

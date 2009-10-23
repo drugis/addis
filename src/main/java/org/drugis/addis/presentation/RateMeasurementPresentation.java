@@ -5,11 +5,12 @@ import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.RateMeasurement;
 
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class RateMeasurementPresentation extends LabeledPresentationModel<RateMeasurement> {
-	public static class LabelModel extends AbstractLabelModel<RateMeasurement> {
+public class RateMeasurementPresentation extends PresentationModel<RateMeasurement> implements LabeledPresentationModel {
+	public static class LabelModel extends AbstractValueModel implements PropertyChangeListener {
 		protected RateMeasurement d_bean;
 
 		public LabelModel(RateMeasurement bean) {
@@ -58,6 +59,8 @@ public class RateMeasurementPresentation extends LabeledPresentationModel<RateMe
 		}
 	}
 
+	protected PresentationModelManager d_pmm;
+
 	public RateMeasurementPresentation(RateMeasurement bean) {
 		super(bean);
 		//d_pmm = pmm;
@@ -68,8 +71,18 @@ public class RateMeasurementPresentation extends LabeledPresentationModel<RateMe
 		});
 	}
 
-	@Override
 	public AbstractValueModel getLabelModel() {
 		return new LabelModel(getBean());
+	}
+
+	public AbstractValueModel getModel(String name) { 
+		if (PROPERTY_LABEL.equals(name)) {
+			return getLabelModel();
+		}
+		return super.getModel(name);
+	}
+
+	public String getLabel() {
+		return getLabelModel().getValue().toString();
 	}
 }

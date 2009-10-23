@@ -8,11 +8,12 @@ import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.PatientGroup;
 
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class BasicPatientGroupPresentation extends LabeledPresentationModel<BasicPatientGroup> {
-	public static class LabelModel extends AbstractLabelModel<PatientGroup> {
+public class BasicPatientGroupPresentation extends PresentationModel<BasicPatientGroup> implements LabeledPresentationModel {
+	public static class LabelModel extends AbstractValueModel implements PropertyChangeListener {
 		private String d_cachedLabel;
 		protected PatientGroup d_bean;
 		
@@ -66,6 +67,8 @@ public class BasicPatientGroupPresentation extends LabeledPresentationModel<Basi
 		}
 	}
 
+	protected PresentationModelManager d_pmm;
+
 	public BasicPatientGroupPresentation(BasicPatientGroup bean) {
 		super(bean);
 		//d_pmm = pmm;
@@ -76,9 +79,19 @@ public class BasicPatientGroupPresentation extends LabeledPresentationModel<Basi
 		});
 	}
 
-	@Override
 	public AbstractValueModel getLabelModel() {
 		return new LabelModel(getBean());
+	}
+
+	public AbstractValueModel getModel(String name) { 
+		if (PROPERTY_LABEL.equals(name)) {
+			return getLabelModel();
+		}
+		return super.getModel(name);
+	}
+
+	public String getLabel() {
+		return getLabelModel().getValue().toString();
 	}
 
 }

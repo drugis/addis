@@ -43,9 +43,9 @@ public class PresentationModelManager {
 		d_domain = domain;
 	}
 	
-	public <T> LabeledPresentationModel<T> getLabeledModel(T obj) {
+	public <T> LabeledPresentationModel getLabeledModel(T obj) {
 		try {
-			return (LabeledPresentationModel<T>)getModel(obj);
+			return (LabeledPresentationModel)getModel(obj);
 		} catch (ClassCastException e) {
 			return null;
 		}

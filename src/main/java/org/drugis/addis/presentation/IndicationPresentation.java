@@ -27,11 +27,12 @@ import java.util.SortedSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class IndicationPresentation extends LabeledPresentationModel<Indication> {
-	public static class LabelModel extends AbstractLabelModel<Indication> {
+public class IndicationPresentation extends PresentationModel<Indication> implements LabeledPresentationModel {
+	public static class LabelModel extends AbstractValueModel implements PropertyChangeListener {
 		protected Indication d_bean;
 
 		protected LabelModel(Indication bean) {
@@ -65,6 +66,7 @@ public class IndicationPresentation extends LabeledPresentationModel<Indication>
 	}
 
 	private StudyListPresentationModelImpl d_studyListModel;
+	protected PresentationModelManager d_pmm;
 
 	public IndicationPresentation(Indication bean, SortedSet<Study> studies) {
 		super(bean);
@@ -81,9 +83,19 @@ public class IndicationPresentation extends LabeledPresentationModel<Indication>
 		return d_studyListModel;
 	}
 
-	@Override
 	public AbstractValueModel getLabelModel() {
 		return new LabelModel(getBean());
+	}
+
+	public AbstractValueModel getModel(String name) { 
+		if (PROPERTY_LABEL.equals(name)) {
+			return getLabelModel();
+		}
+		return super.getModel(name);
+	}
+
+	public String getLabel() {
+		return getLabelModel().getValue().toString();
 	}
 
 }

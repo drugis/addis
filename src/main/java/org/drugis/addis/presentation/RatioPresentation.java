@@ -15,7 +15,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 // and these should implement the PROPERTY_LABEL, in stead of the Measurement itself.
 
 @SuppressWarnings("serial")
-public class RatioPresentation extends LabeledPresentationModel<Ratio> {
+public class RatioPresentation extends PresentationModel<Ratio> implements LabeledPresentationModel {
 	
 	public static class LabelModel extends AbstractValueModel implements PropertyChangeListener {
 		private RatioPresentation d_bean;
@@ -52,6 +52,8 @@ public class RatioPresentation extends LabeledPresentationModel<Ratio> {
 		}
 	}
 
+	protected PresentationModelManager d_pmm;
+
 	public RatioPresentation(Ratio bean, PresentationModelManager pmm) {
 		super(bean);
 		d_pmm = pmm;
@@ -62,7 +64,6 @@ public class RatioPresentation extends LabeledPresentationModel<Ratio> {
 		});
 	}
 
-	@Override
 	public AbstractValueModel getLabelModel() {
 		return new LabelModel(this);
 	}
@@ -73,5 +74,16 @@ public class RatioPresentation extends LabeledPresentationModel<Ratio> {
 
 	public PresentationModel<RateMeasurement> getDenominator() {
 		return d_pmm.getModel(getBean().getDenominator());
+	}
+
+	public AbstractValueModel getModel(String name) { 
+		if (PROPERTY_LABEL.equals(name)) {
+			return getLabelModel();
+		}
+		return super.getModel(name);
+	}
+
+	public String getLabel() {
+		return getLabelModel().getValue().toString();
 	}
 }

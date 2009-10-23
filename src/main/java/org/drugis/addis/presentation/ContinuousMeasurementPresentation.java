@@ -4,14 +4,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.ContinuousMeasurement;
+
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 // FIXME: there should be separate implementations of this class for each concrete Measurement,
 // and these should implement the PROPERTY_LABEL, in stead of the Measurement itself.
 
 @SuppressWarnings("serial")
-public class ContinuousMeasurementPresentation extends LabeledPresentationModel<ContinuousMeasurement> {
-	public static class LabelModel extends AbstractLabelModel<ContinuousMeasurement> {
+public class ContinuousMeasurementPresentation extends PresentationModel<ContinuousMeasurement> implements LabeledPresentationModel {
+	public static class LabelModel extends  AbstractValueModel implements PropertyChangeListener {
 		protected ContinuousMeasurement d_bean;
 
 		public LabelModel(ContinuousMeasurement bean) {
@@ -63,6 +65,8 @@ public class ContinuousMeasurementPresentation extends LabeledPresentationModel<
 		}
 	}
 
+	protected PresentationModelManager d_pmm;
+
 	public ContinuousMeasurementPresentation(ContinuousMeasurement bean) {
 		super(bean);
 		//d_pmm = pmm;
@@ -73,9 +77,19 @@ public class ContinuousMeasurementPresentation extends LabeledPresentationModel<
 		});
 	}
 
-	@Override
 	public AbstractValueModel getLabelModel() {
 		return new LabelModel(getBean());
+	}
+
+	public AbstractValueModel getModel(String name) { 
+		if (PROPERTY_LABEL.equals(name)) {
+			return getLabelModel();
+		}
+		return super.getModel(name);
+	}
+
+	public String getLabel() {
+		return getLabelModel().getValue().toString();
 	}
 
 }

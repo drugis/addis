@@ -19,42 +19,10 @@
 
 package org.drugis.addis.presentation;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
-@SuppressWarnings("serial")
-public abstract class LabeledPresentationModel<B> extends PresentationModel<B> {
+public interface LabeledPresentationModel {
 	public static final String PROPERTY_LABEL = "label";
-	protected PresentationModelManager d_pmm;
-
-	/*
-	public LabeledPresentationModel(B bean, PresentationModelManager pmm) {
-		super(bean);
-		d_pmm = pmm;
-		getLabelModel().addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				firePropertyChange(PROPERTY_LABEL, evt.getOldValue(), evt.getNewValue());
-			}
-		});
-	} */
-	
-	public LabeledPresentationModel(B bean) {
-		super(bean);
-	}
 	
 	public abstract AbstractValueModel getLabelModel();
-	
-	public AbstractValueModel getModel(String name) { 
-		if (PROPERTY_LABEL.equals(name)) {
-			return getLabelModel();
-		}
-		return super.getModel(name);
-	}
-	
-	public String getLabel() {
-		return getLabelModel().getValue().toString();
-	}
 }
