@@ -96,7 +96,7 @@ public class Main extends JFrame {
 			}
 		});
 
-		setPreferredSize(new Dimension(800, 500));
+		setPreferredSize(new Dimension(900, 700));
 		GUIHelper.initializeLookAndFeel();
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		
@@ -154,6 +154,7 @@ public class Main extends JFrame {
 
 	void showStudyAddEndpointDialog(MutableStudy study) {
 		StudyAddEndpointDialog dialog = new StudyAddEndpointDialog(this, getDomain(), study);
+		GUIHelper.centerWindow(dialog);		
 		dialog.setVisible(true);
 	}
 
@@ -187,6 +188,7 @@ public class Main extends JFrame {
 
 	private void showAboutDialog() {
 		final AboutDialog dlg = new AboutDialog(this);
+		GUIHelper.centerWindow(dlg);
 		dlg.setVisible(true);
 	}	
 
@@ -319,21 +321,25 @@ public class Main extends JFrame {
 	
 	public void showAddIndicationDialog() {
 		AddIndicationDialog dialog = new AddIndicationDialog(this, getDomain());
+		GUIHelper.centerWindow(dialog);
 		dialog.setVisible(true);
 	}
 	
 	public void showAddEndpointDialog() {
 		AddEndpointDialog dialog = new AddEndpointDialog(this, getDomain());
+		GUIHelper.centerWindow(dialog);		
 		dialog.setVisible(true);
 	}
 	
 	private void showAddStudyDialog() {
 		AddStudyDialog dialog = new AddStudyDialog(this, getDomain());
+		GUIHelper.centerWindow(dialog);		
 		dialog.setVisible(true);
 	}
 	
 	public void showAddDrugDialog() {
 		AddDrugDialog dialog = new AddDrugDialog(this, getDomain());
+		GUIHelper.centerWindow(dialog);		
 		dialog.setVisible(true);
 	}
 	
@@ -426,7 +432,7 @@ public class Main extends JFrame {
 		};
 	}
 	
-	protected void noneSelected() {
+	private void noneSelected() {
 		setRightPanelView(new ViewBuilder() {
 			public JComponent buildPanel() {
 				return new JPanel();
@@ -453,13 +459,13 @@ public class Main extends JFrame {
 						d_domainTreeModel.getEndpointsNode() }));
 	}	
 	
-	public void endpointSelected(Endpoint e, Study selectedStudy) {
+	private void endpointSelected(Endpoint e, Study selectedStudy) {
 		EndpointView view = new EndpointView(e, getDomain(), this);
 		view.setSelectedStudy(selectedStudy);
 		setRightPanelView(view);
 	}
 	
-	public void endpointSelected(Endpoint node) {
+	private void endpointSelected(Endpoint node) {
 		endpointSelected(node, null);
 		d_editMenuDeleteItem.setEnabled(true);		
 	}
@@ -492,10 +498,11 @@ public class Main extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		Main frame = new Main();
+		Main frame = new Main();			
 		frame.initComponents();
 		frame.pack();
-		frame.setVisible(true);
+		GUIHelper.centerWindow(frame);		
+		frame.setVisible(true);		
 	}
 	
 	private void dataModelChanged() {

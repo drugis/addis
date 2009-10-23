@@ -68,7 +68,7 @@ public class StudyView implements ViewBuilder {
 	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
-				"right:pref, 3dlu, pref:grow, 3dlu, center:pref",
+				"left:pref, 3dlu, pref:grow, 3dlu, center:pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		int fullWidth = 5;
@@ -166,16 +166,15 @@ public class StudyView implements ViewBuilder {
 
 	private int buildEndpointsPart(FormLayout layout, int fullWidth, PanelBuilder builder,
 			CellConstraints cc, int row) {
-		builder.addSeparator("Endpoints", cc.xyw(1, row, fullWidth));
 		row += 2;
+		builder.addSeparator("Endpoints", cc.xyw(1, row, fullWidth));
+		row += 4;
 		
 		for (Endpoint e : d_model.getBean().getEndpoints()) {
 			LayoutUtil.addRow(layout);
 			builder.add(
 					GUIFactory.createEndpointLabelWithIcon(d_loader, d_model.getBean(), e),
 					cc.xy(1, row));
-			builder.add(
-					buildFindStudiesButton(e), cc.xy(3, row));
 			row += 2;
 		}
 		if (d_model.getBean() instanceof BasicStudy) {
@@ -213,20 +212,6 @@ public class StudyView implements ViewBuilder {
 
 	private void addEndpointClicked() {
 		d_mainWindow.showStudyAddEndpointDialog((MutableStudy)d_model.getBean());
-	}
-
-	private JComponent buildFindStudiesButton(final Endpoint endpoint) {
-		JButton button = new JButton("Find Studies");
-		button.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				d_mainWindow.endpointSelected(endpoint, d_model.getBean());
-			}
-		});
-		
-		ButtonBarBuilder2 builder = new ButtonBarBuilder2();
-		builder.addButton(button);
-		
-		return builder.getPanel();
 	}
 
 	private int buildStudyPart(int fullWidth, PanelBuilder builder,
