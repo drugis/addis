@@ -15,7 +15,7 @@ public class StudyTable extends JTable {
 	public StudyTable(StudyCharTableModel model) {
 		super(model);
 		
-		d_tableHeader = new EnhancedTableHeader(getColumnModel(), this);
+		d_tableHeader = new StudyTableHeader(model, getColumnModel(), this);
 		setTableHeader(d_tableHeader);
 		setPreferredScrollableViewportSize(getPreferredSize());
 		setBackground(Color.WHITE);

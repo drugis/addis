@@ -13,7 +13,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 @SuppressWarnings("serial")
-public final class EnhancedTableHeader extends JTableHeader {
+public class EnhancedTableHeader extends JTableHeader {
 	private final JTable d_table;
 
 	public EnhancedTableHeader(TableColumnModel cm, JTable table) {
