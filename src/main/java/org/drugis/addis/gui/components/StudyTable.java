@@ -4,22 +4,25 @@ import java.awt.Color;
 
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
-
-import org.drugis.addis.presentation.StudyCharTableModel;
+import javax.swing.table.TableModel;
 
 @SuppressWarnings("serial")
 public class StudyTable extends JTable {
 	
 	private EnhancedTableHeader d_tableHeader;
 
-	public StudyTable(StudyCharTableModel model) {
+	public StudyTable(TableModel model) {
 		super(model);
 		
 		d_tableHeader = new StudyTableHeader(model, getColumnModel(), this);
 		setTableHeader(d_tableHeader);
 		setPreferredScrollableViewportSize(getPreferredSize());
 		setBackground(Color.WHITE);
-		d_tableHeader.autoSizeColumns();		
+		d_tableHeader.autoSizeColumns();
+		
+		TableSorter sort = new TableSorter(model);
+		sort.setTableHeader(getTableHeader());
+		setModel(sort);
 	}
 	
 	@Override

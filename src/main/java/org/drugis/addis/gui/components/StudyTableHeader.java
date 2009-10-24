@@ -4,15 +4,14 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JTable;
 import javax.swing.table.TableColumnModel;
-
-import org.drugis.addis.presentation.StudyCharTableModel;
+import javax.swing.table.TableModel;
 
 @SuppressWarnings("serial")
 public class StudyTableHeader extends EnhancedTableHeader {
 
-	private StudyCharTableModel d_model;
+	private TableModel d_model;
 
-	public StudyTableHeader(StudyCharTableModel model, TableColumnModel cm, JTable table) {
+	public StudyTableHeader(TableModel model, TableColumnModel cm, JTable table) {
 		super(cm, table);
 		
 		d_model = model;
