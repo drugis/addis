@@ -19,6 +19,7 @@
 
 package org.drugis.addis.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -30,8 +31,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -41,6 +44,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.event.TreeModelEvent;
@@ -71,6 +75,8 @@ import org.drugis.addis.presentation.PresentationModelManager;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
+
+import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame {
@@ -371,10 +377,41 @@ public class Main extends JFrame {
 	public void initComponents() {
 		initMenu();
 		initPanel();
+		initToolbar();
 	}
 	
+	private void initToolbar() {
+		JToolBar toolbar = new JToolBar();
+		toolbar.setFloatable(false);
+
+		JButton topAddStudyButton = new JButton("Add study", getIcon(FileNames.ICON_STUDY));
+		topAddStudyButton.setToolTipText("Add study");
+		topAddStudyButton.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				showAddStudyDialog();
+			}
+		});
+		
+		JButton topAddMetaStudyButton = new JButton("Create meta-analysis", getIcon(FileNames.ICON_METASTUDY));
+		topAddMetaStudyButton.setToolTipText("Create meta-analysis");
+		topAddMetaStudyButton.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, "Not yet implemented");
+			}
+		});	
+		
+		ButtonBarBuilder2 builder = new ButtonBarBuilder2();
+		builder.addButton(topAddStudyButton);
+		builder.addButton(topAddMetaStudyButton);
+		toolbar.add(topAddStudyButton);
+		toolbar.add(topAddMetaStudyButton);
+		toolbar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		add(toolbar, BorderLayout.NORTH);
+	}
+
 	private void initPanel() {
 		JSplitPane pane = new JSplitPane();
+		pane.setBorder(BorderFactory.createEmptyBorder());
 		
 		initLeftPanel();
 		pane.setLeftComponent(d_leftPanel);
