@@ -84,7 +84,7 @@ public class MetaStudyView implements ViewBuilder {
 		builder.addSeparator("Included Studies", cc.xyw(1, row, fullWidth));
 		row += 2;
 		
-		JPanel panel = createStudyTablePanel(d_model, d_mainWindow);
+		JPanel panel = createStudyTablePanel();
 		
 		builder.add(panel, cc.xyw(1, row, fullWidth));
 		row += 2;
@@ -96,8 +96,8 @@ public class MetaStudyView implements ViewBuilder {
 		return row;
 	}
 
-	private static JPanel createStudyTablePanel(final StudyListPresentationModel metamodel, final Main mainWindow) {
-		return StudyTablePanel.createStudyTablePanel(metamodel, mainWindow);
+	private JPanel createStudyTablePanel() {
+		return StudyTablePanel.createStudyTablePanel(d_model, d_mainWindow);
 	}
 
 	private int buildDataPart(FormLayout layout, int fullWidth,
