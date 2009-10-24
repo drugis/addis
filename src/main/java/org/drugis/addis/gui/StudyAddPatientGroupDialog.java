@@ -28,6 +28,7 @@ import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.gui.builder.StudyAddPatientGroupView;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.OkCancelDialog;
 

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui;
+package org.drugis.addis.gui.builder;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -27,6 +27,8 @@ import javax.swing.text.DefaultFormatter;
 
 import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.SIUnit;
+import org.drugis.addis.gui.ComboBoxPopupOnFocusListener;
+import org.drugis.addis.gui.NotEmptyValidator;
 import org.drugis.common.gui.ViewBuilder;
 
 

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui;
+package org.drugis.addis.gui.builder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +36,11 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.AutoSelectFocusListener;
+import org.drugis.addis.gui.ComboBoxPopupOnFocusListener;
+import org.drugis.addis.gui.GUIFactory;
+import org.drugis.addis.gui.MeasurementInputHelper;
+import org.drugis.addis.gui.NotEmptyValidator;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;

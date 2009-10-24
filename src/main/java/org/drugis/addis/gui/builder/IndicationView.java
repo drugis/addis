@@ -1,4 +1,4 @@
-package org.drugis.addis.gui;
+package org.drugis.addis.gui.builder;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;

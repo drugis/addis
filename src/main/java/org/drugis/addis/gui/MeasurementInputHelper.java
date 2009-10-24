@@ -69,7 +69,7 @@ public class MeasurementInputHelper {
 		throw new IllegalStateException("Unhandled Measurement sub-type");
 	}
 
-	static JFormattedTextField buildFormatted(ValueModel model) {
+	public static JFormattedTextField buildFormatted(ValueModel model) {
 		JFormattedTextField field = new JFormattedTextField(new DefaultFormatter());
 		PropertyConnector.connectAndUpdate(model, field, "value");
 		return field;

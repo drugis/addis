@@ -40,6 +40,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.SIUnit;
+import org.drugis.addis.gui.builder.AddStudyView;
 import org.drugis.common.gui.OkCancelDialog;
 
 

@@ -29,6 +29,7 @@ import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.gui.builder.StudyAddEndpointView;
 import org.drugis.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.PresentationModel;
