@@ -403,8 +403,7 @@ public class Main extends JFrame {
 		ButtonBarBuilder2 builder = new ButtonBarBuilder2();
 		builder.addButton(topAddStudyButton);
 		builder.addButton(topAddMetaStudyButton);
-		toolbar.add(topAddStudyButton);
-		toolbar.add(topAddMetaStudyButton);
+		toolbar.add(builder.getPanel());
 		toolbar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		add(toolbar, BorderLayout.NORTH);
 	}
