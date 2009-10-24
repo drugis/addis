@@ -1,5 +1,6 @@
 package org.drugis.addis.gui.builder;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.text.NumberFormat;
 
@@ -8,6 +9,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
@@ -25,6 +27,7 @@ import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
 import org.drugis.addis.presentation.StudyCharTableModel;
+import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
@@ -83,7 +86,6 @@ public class MetaStudyView implements ViewBuilder {
 		return builder.getPanel();
 	}
 
-	@SuppressWarnings("serial")
 	private int buildStudiesPart(FormLayout layout, int fullWidth,
 			PanelBuilder builder, CellConstraints cc, int row) {
 		LayoutUtil.addRow(layout);
@@ -93,29 +95,43 @@ public class MetaStudyView implements ViewBuilder {
 		builder.addSeparator("Included Studies", cc.xyw(1, row, fullWidth));
 		row += 2;
 		
-		StudyCharTableModel model = new StudyCharTableModel(d_model);
+		JPanel panel = createStudyTabelPanel(d_model, d_mainWindow);
+		
+		builder.add(panel, cc.xyw(1, row, fullWidth));
+		row += 2;
+		
+		
+		//builder.add(customizeButton, cc.xy(3, row));
+		//row += 2;
+		
+		return row;
+	}
+
+	@SuppressWarnings("serial")
+	private static JPanel createStudyTabelPanel(final StudyListPresentationModel metamodel, final Main mainWindow) {
+		JPanel panel = new JPanel(new BorderLayout());
+		
+		StudyCharTableModel model = new StudyCharTableModel(metamodel);
 		final JTable table = new StudyTable(model);
 		JScrollPane pane = new JScrollPane(table);
 		pane.setBorder(BorderFactory.createEmptyBorder());
 		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-		pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		
-		builder.add(pane, cc.xyw(1, row, fullWidth));
-		row += 2;
+		pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
 		JButton customizeButton = new JButton("Customize Shown Characteristics");
 		customizeButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				JDialog dialog = new CharacteristicSelectDialog(d_mainWindow, d_model);
-				GUIHelper.centerWindow(dialog, d_mainWindow);
+				JDialog dialog = new CharacteristicSelectDialog(mainWindow, metamodel);
+				GUIHelper.centerWindow(dialog, mainWindow);
 				dialog.setVisible(true);
 			}
 		});
 		
-		builder.add(customizeButton, cc.xy(3, row));
-		row += 2;
-		
-		return row;
+		panel.add(pane, BorderLayout.CENTER);
+		JPanel cbp = new JPanel();
+		cbp.add(customizeButton);
+		panel.add(cbp, BorderLayout.SOUTH);
+		return panel;
 	}
 
 	private int buildDataPart(FormLayout layout, int fullWidth,
