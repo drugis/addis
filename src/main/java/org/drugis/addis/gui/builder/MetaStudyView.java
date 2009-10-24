@@ -1,17 +1,9 @@
 package org.drugis.addis.gui.builder;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
 import java.text.NumberFormat;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.BasicPatientGroup;
@@ -21,15 +13,12 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.gui.CharacteristicHolder;
-import org.drugis.addis.gui.CharacteristicSelectDialog;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.components.StudyTable;
+import org.drugis.addis.gui.components.StudyTablePanel;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
-import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.ImageLoader;
-import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
@@ -95,7 +84,7 @@ public class MetaStudyView implements ViewBuilder {
 		builder.addSeparator("Included Studies", cc.xyw(1, row, fullWidth));
 		row += 2;
 		
-		JPanel panel = createStudyTabelPanel(d_model, d_mainWindow);
+		JPanel panel = createStudyTablePanel(d_model, d_mainWindow);
 		
 		builder.add(panel, cc.xyw(1, row, fullWidth));
 		row += 2;
@@ -107,31 +96,8 @@ public class MetaStudyView implements ViewBuilder {
 		return row;
 	}
 
-	@SuppressWarnings("serial")
-	private static JPanel createStudyTabelPanel(final StudyListPresentationModel metamodel, final Main mainWindow) {
-		JPanel panel = new JPanel(new BorderLayout());
-		
-		StudyCharTableModel model = new StudyCharTableModel(metamodel);
-		final JTable table = new StudyTable(model);
-		JScrollPane pane = new JScrollPane(table);
-		pane.setBorder(BorderFactory.createEmptyBorder());
-		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-		pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
-		JButton customizeButton = new JButton("Customize Shown Characteristics");
-		customizeButton.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				JDialog dialog = new CharacteristicSelectDialog(mainWindow, metamodel);
-				GUIHelper.centerWindow(dialog, mainWindow);
-				dialog.setVisible(true);
-			}
-		});
-		
-		panel.add(pane, BorderLayout.CENTER);
-		JPanel cbp = new JPanel();
-		cbp.add(customizeButton);
-		panel.add(cbp, BorderLayout.SOUTH);
-		return panel;
+	private static JPanel createStudyTablePanel(final StudyListPresentationModel metamodel, final Main mainWindow) {
+		return StudyTablePanel.createStudyTablePanel(metamodel, mainWindow);
 	}
 
 	private int buildDataPart(FormLayout layout, int fullWidth,
