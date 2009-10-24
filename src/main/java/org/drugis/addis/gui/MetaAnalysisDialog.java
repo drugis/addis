@@ -30,6 +30,7 @@ import javax.swing.JOptionPane;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.addis.entities.MetaStudy;
+import org.drugis.addis.gui.builder.MetaAnalysisView;
 import org.drugis.common.gui.ViewBuilder;
 
 

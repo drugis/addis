@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui;
+package org.drugis.addis.gui.builder;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -35,6 +35,8 @@ import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.MetaAnalysisDialog;
 import org.drugis.common.CollectionUtil;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;

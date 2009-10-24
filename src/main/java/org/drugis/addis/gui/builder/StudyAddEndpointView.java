@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui;
+package org.drugis.addis.gui.builder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +34,9 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.gui.EndpointHolder;
+import org.drugis.addis.gui.MeasurementInputHelper;
+import org.drugis.addis.gui.NotEmptyValidator;
 import org.drugis.addis.presentation.PresentationModelManager;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;

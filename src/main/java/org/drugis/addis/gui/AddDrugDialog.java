@@ -21,6 +21,7 @@ package org.drugis.addis.gui;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.gui.builder.AddDrugView;
 import org.drugis.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.PresentationModel;

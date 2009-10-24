@@ -17,39 +17,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui;
+package org.drugis.addis.gui.builder;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
+import javax.swing.text.DefaultFormatter;
 
-import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Indication;
+import org.drugis.addis.gui.NotEmptyValidator;
 import org.drugis.common.gui.ViewBuilder;
-
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class AddDrugView implements ViewBuilder {
+public class AddIndicationView implements ViewBuilder {
+	private JFormattedTextField d_code;
 	private JTextField d_name;
-	private JTextField d_atcCode;
-	private PresentationModel<Drug> d_model;
-	private NotEmptyValidator d_validator; 
-
-	public AddDrugView(PresentationModel<Drug> presentationModel, JButton okButton) {
+	private PresentationModel<Indication> d_model;
+	private NotEmptyValidator d_validator;
+	
+	public AddIndicationView(PresentationModel<Indication> model, JButton okButton) {
 		d_validator = new NotEmptyValidator(okButton);
-		d_model = presentationModel;
+		d_model = model;
 	}
 	
 	public void initComponents() {
-		d_name = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_NAME), false);
-		d_name.setColumns(15);
+		d_code = new JFormattedTextField(new DefaultFormatter());
+		d_code.setColumns(18);
+		PropertyConnector.connectAndUpdate(d_model.getModel(Indication.PROPERTY_CODE), d_code, "value");
+		d_name = BasicComponentFactory.createTextField(d_model.getModel(Indication.PROPERTY_NAME), false);
+		
+		d_validator.add(d_code);
 		d_validator.add(d_name);
-		d_atcCode = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_ATCCODE), false);
-		d_validator.add(d_atcCode);		
 	}
 
 	public JComponent buildPanel() {
@@ -65,12 +70,13 @@ public class AddDrugView implements ViewBuilder {
 		
 		CellConstraints cc = new CellConstraints();
 		
-		builder.addSeparator("Drug", cc.xyw(1, 1, 3));
-		builder.addLabel("Name:", cc.xy(1, 3));
-		builder.add(d_name, cc.xy(3,3));
-		builder.addLabel("ATC Code:", cc.xy(1, 5));
-		builder.add(d_atcCode, cc.xy(3, 5));
+		builder.addSeparator("Indication", cc.xyw(1, 1, 3));
+		builder.addLabel("Concept ID:", cc.xy(1, 3));
+		builder.add(d_code, cc.xy(3,3));
+		builder.addLabel("Fully Specified Name:", cc.xy(1, 5));
+		builder.add(d_name, cc.xy(3,5));
 		
 		return builder.getPanel();	
 	}
+
 }

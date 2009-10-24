@@ -59,6 +59,11 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.builder.DrugView;
+import org.drugis.addis.gui.builder.EndpointView;
+import org.drugis.addis.gui.builder.IndicationView;
+import org.drugis.addis.gui.builder.MetaStudyView;
+import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.presentation.DrugPresentationModel;
 import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
@@ -152,7 +157,7 @@ public class Main extends JFrame {
 		}
 	}
 
-	void showStudyAddEndpointDialog(MutableStudy study) {
+	public void showStudyAddEndpointDialog(MutableStudy study) {
 		StudyAddEndpointDialog dialog = new StudyAddEndpointDialog(this, getDomain(), study);
 		GUIHelper.centerWindow(dialog, this);		
 		dialog.setVisible(true);
