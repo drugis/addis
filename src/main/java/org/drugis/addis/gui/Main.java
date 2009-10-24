@@ -22,6 +22,7 @@ package org.drugis.addis.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -46,6 +47,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -225,7 +227,8 @@ public class Main extends JFrame {
 		JMenu editMenu = new JMenu("Edit");
 		editMenu.setMnemonic('e');
 		d_editMenuDeleteItem = createDeleteItem();
-		d_editMenuDeleteItem.setEnabled(false);		
+		d_editMenuDeleteItem.setEnabled(false);	
+		d_editMenuDeleteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 		editMenu.add(d_editMenuDeleteItem);		
 		return editMenu;
 	}
@@ -249,6 +252,8 @@ public class Main extends JFrame {
 			selectedType = "drug ";
 		} else if (selected instanceof Endpoint) {
 			selectedType = "endpoint ";
+		} else if (selected instanceof MetaStudy) {
+			selectedType = "meta-analysis ";
 		} else if (selected instanceof Study) {
 			selectedType = "study ";
 		}
