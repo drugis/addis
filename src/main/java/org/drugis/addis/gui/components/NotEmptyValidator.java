@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui;
+package org.drugis.addis.gui.components;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

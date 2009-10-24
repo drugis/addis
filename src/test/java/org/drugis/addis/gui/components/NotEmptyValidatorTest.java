@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui;
+package org.drugis.addis.gui.components;
 
 import static org.junit.Assert.*;
 
@@ -26,7 +26,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 
-import org.drugis.addis.gui.NotEmptyValidator;
+import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.junit.Before;
 import org.junit.Test;
 

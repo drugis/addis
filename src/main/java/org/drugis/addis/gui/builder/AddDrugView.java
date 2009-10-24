@@ -24,7 +24,7 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.gui.NotEmptyValidator;
+import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.common.gui.ViewBuilder;
 
 

@@ -25,9 +25,9 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.gui.AutoSelectFocusListener;
-import org.drugis.addis.gui.ComboBoxPopupOnFocusListener;
-import org.drugis.addis.gui.NotEmptyValidator;
+import org.drugis.addis.gui.components.AutoSelectFocusListener;
+import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
+import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ViewBuilder;
 

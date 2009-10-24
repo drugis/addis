@@ -26,7 +26,7 @@ import javax.swing.JTextField;
 import javax.swing.text.DefaultFormatter;
 
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.gui.NotEmptyValidator;
+import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
