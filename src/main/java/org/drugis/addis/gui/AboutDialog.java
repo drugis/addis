@@ -20,40 +20,50 @@
 package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
 
 import org.drugis.addis.AppInfo;
+
+import com.jidesoft.dialog.BannerPanel;
 
 @SuppressWarnings("serial")
 public class AboutDialog extends JDialog {
 
 	public AboutDialog(JFrame parent) {
 		super(parent);
-		setTitle("About " + AppInfo.getAppName());
-		initComponents();
+		setTitle("About " + AppInfo.getAppName());		
+		initComps();
+		setPreferredSize(new Dimension(450, 250));
 		pack();
 	}
 
-	private void initComponents() {
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-		panel.add(new JLabel(AppInfo.getAppName() + " v" + AppInfo.getAppVersion()),
-				BorderLayout.NORTH);
-		JPanel centerPanel = new JPanel();
-		String usStr = new String(AppInfo.getAppName() + " is open source and licensed under GPLv3.");
-		String usStr2 = "(c) 2009 Gert van Valkenhoef and Tommi Tervonen.";
-		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-		centerPanel.add(new JLabel(usStr));
-		centerPanel.add(new JLabel(usStr2));
-		panel.add(centerPanel, BorderLayout.CENTER);
+	private void initComps() {
+		String title = AppInfo.getAppName() + " v" + AppInfo.getAppVersion();		
+		String subTitle = AppInfo.getAppName() + " is open source and licensed under GPLv3.\n"
+			+"(c) 2009: \tGert van Valkenhoef\n\tTommi Tervonen\n\tTijs Zwinkels\n\tMaarten Jacobs";
+		
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		
+		JPanel lowPanel = new JPanel(new BorderLayout());
+		BannerPanel bpanel = new BannerPanel(title, subTitle);		
+		lowPanel.add(bpanel, BorderLayout.NORTH);
+		BannerPanel wwwPanel = new BannerPanel("Website", "http://www.drugis.org");
+		lowPanel.add(wwwPanel, BorderLayout.SOUTH);
+		
+		bpanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+		wwwPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+		
+		
 		JButton closeButton = new JButton("Close");
 		closeButton.setMnemonic('c');
 		closeButton.addActionListener(new AbstractAction() {
@@ -62,8 +72,9 @@ public class AboutDialog extends JDialog {
 				dispose();
 			}
 		});
-		panel.add(closeButton, BorderLayout.SOUTH);
 		
+		panel.add(lowPanel, BorderLayout.CENTER);		
+		panel.add(closeButton, BorderLayout.SOUTH);		
 		setContentPane(panel);
-	}	
+	}
 }
