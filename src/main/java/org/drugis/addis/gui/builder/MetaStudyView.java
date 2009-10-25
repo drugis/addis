@@ -1,19 +1,12 @@
 package org.drugis.addis.gui.builder;
 
-import java.text.NumberFormat;
-
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.AbstractStudy;
-import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.gui.CharacteristicHolder;
-import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
 import org.drugis.common.ImageLoader;
@@ -21,9 +14,7 @@ import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -68,7 +59,9 @@ public class MetaStudyView implements ViewBuilder {
 		
 		row = buildStudiesPart(layout, fullWidth, builder, cc, row);
 		
-		row = buildDataPart(layout, fullWidth, builder, cc, row);
+		row += 2;
+		
+		builder.add(new StudyDataView(d_model, d_loader, d_mainWindow.getPresentationModelManager()).buildPanel(), cc.xyw(1, row, fullWidth));		
 		
 		return builder.getPanel();
 	}
@@ -94,56 +87,6 @@ public class MetaStudyView implements ViewBuilder {
 		return new StudyTablePanelView(d_model, d_mainWindow).buildPanel();
 	}
 
-	private int buildDataPart(FormLayout layout, int fullWidth,
-			PanelBuilder builder, CellConstraints cc, int row) {
-		builder.addSeparator("Data", cc.xyw(1, row, fullWidth));
-		row += 2;
-		
-		builder.addLabel("Size", cc.xy(3, row, "center, center"));		
-		int col = 5;
-		for (Endpoint e : d_model.getBean().getEndpoints()) {
-			builder.add(
-					GUIFactory.createEndpointLabelWithIcon(d_loader, d_model.getBean(), e),
-							cc.xy(col, row));
-			col += 2;
-		}
-		row += 2;
-
-		for (PatientGroup g : d_model.getBean().getPatientGroups()) {
-			row = buildPatientGroup(layout, builder, cc, row, g);
-		}
-			
-		return row;
-	}
-
-	private int buildPatientGroup(FormLayout layout, PanelBuilder builder,
-			CellConstraints cc, int row, PatientGroup g) {
-		int col;
-		LayoutUtil.addRow(layout);
-		builder.add(
-				BasicComponentFactory.createLabel(getLabelModel(g)),
-				cc.xy(1, row));
-		
-		builder.add(
-				BasicComponentFactory.createLabel(
-						new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_SIZE),
-						NumberFormat.getInstance()),
-						cc.xy(3, row, "center, center"));
-		
-		col = 5;
-		for (Endpoint e : d_model.getBean().getEndpoints()) {
-			Measurement m = d_model.getBean().getMeasurement(e, g);
-			if (m != null) {
-				builder.add(
-						BasicComponentFactory.createLabel(getLabelModel(m)),
-						cc.xy(col, row));
-			}
-			col += 2;
-		}
-		
-		row += 2;
-		return row;
-	}
 
 	private int buildStudyPart(int fullWidth, PanelBuilder builder,
 			CellConstraints cc, FormLayout layout) {
@@ -166,10 +109,6 @@ public class MetaStudyView implements ViewBuilder {
 		}
 		
 		return row;
-	}
-
-	private AbstractValueModel getLabelModel(Object model) {
-		return d_mainWindow.getPresentationModelManager().getLabeledModel(model).getLabelModel();
 	}
 
 	private String getStudyLabel() {

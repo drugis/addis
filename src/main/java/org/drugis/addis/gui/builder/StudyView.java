@@ -93,7 +93,6 @@ public class StudyView implements ViewBuilder {
 		builder.addSeparator("Data", cc.xyw(1, row, fullWidth));
 		row += 2;
 		
-		
 		builder.add(new StudyDataView(d_model, d_loader, d_mainWindow.getPresentationModelManager()).buildPanel(), cc.xyw(1, row, fullWidth));
 		row += 2;
 		

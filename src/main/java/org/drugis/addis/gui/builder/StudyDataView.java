@@ -24,11 +24,11 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class StudyDataView implements ViewBuilder {
 	
-	private PresentationModel<Study> model;
+	private PresentationModel<? extends Study> model;
 	private ImageLoader loader;
 	private PresentationModelManager pm;
 
-	public StudyDataView(PresentationModel<Study> model, ImageLoader loader, PresentationModelManager pm) {
+	public StudyDataView(PresentationModel<? extends Study> model, ImageLoader loader, PresentationModelManager pm) {
 		this.model = model;
 		this.loader = loader;
 		this.pm = pm;
