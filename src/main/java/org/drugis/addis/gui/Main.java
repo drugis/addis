@@ -515,7 +515,7 @@ public class Main extends JFrame {
 	}
 	
 	private void indicationSelected(Indication i) {
-		IndicationView view = new IndicationView((IndicationPresentation) d_pmManager.getModel(i));
+		IndicationView view = new IndicationView((IndicationPresentation) d_pmManager.getModel(i), this);
 		setRightPanelView(view);
 	}
 	

@@ -1,15 +1,11 @@
 package org.drugis.addis.gui.builder;
 
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.IndicationPresentation;
-import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -23,9 +19,11 @@ import com.jgoodies.forms.layout.FormLayout;
 public class IndicationView implements ViewBuilder {
 	
 	private IndicationPresentation d_pm;
+	private JFrame d_parent;
 
-	public IndicationView(IndicationPresentation pm) {
+	public IndicationView(IndicationPresentation pm, JFrame parent) {
 		d_pm = pm;
+		this.d_parent = parent;
 	}
 	
 	public JComponent buildPanel() {
@@ -65,13 +63,7 @@ public class IndicationView implements ViewBuilder {
 		if(d_pm.getIncludedStudies().isEmpty()) {
 			studiesComp = new JLabel("No studies found.");
 		} else {
-			StudyCharTableModel model = new StudyCharTableModel(d_pm);
-			final JTable table = new StudyTable(model);
-			JScrollPane pane = new JScrollPane(table);
-			pane.setBorder(BorderFactory.createEmptyBorder());
-			pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-			pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-			studiesComp = pane;
+			studiesComp = new StudyTablePanelView(d_pm, d_parent).buildPanel();
 		}
 		builder.add(studiesComp, cc.xyw(1, row, 3));
 		return row + 2;
