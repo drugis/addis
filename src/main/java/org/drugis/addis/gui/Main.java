@@ -531,14 +531,16 @@ public class Main extends JFrame {
 
 	private void setRightPanelView(ViewBuilder view) {
 		d_rightPanelBuilder = view;
-		d_rightPanel.setViewportView(view.buildPanel());
+		setRightPanelContents(view.buildPanel());
 		d_editMenuDeleteItem.setEnabled(true);
 	}
 	
 	private void initRightPanel() {
 		JPanel panel = new JPanel();
 		d_rightPanel = new JScrollPane(panel);
+		d_rightPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		d_rightPanel.getVerticalScrollBar().setUnitIncrement(16);
+		
 	}
 
 	public static void main(String[] args) {
