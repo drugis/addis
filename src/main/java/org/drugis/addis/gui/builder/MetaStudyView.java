@@ -1,10 +1,8 @@
 package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 import org.drugis.addis.entities.AbstractStudy;
-import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.gui.CharacteristicHolder;
 import org.drugis.addis.gui.Main;
@@ -18,86 +16,33 @@ import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class MetaStudyView implements ViewBuilder {
-	MetaStudyPresentationModel d_model;
-	Domain d_domain;
-	Main d_mainWindow;
-	private ImageLoader d_loader;
+	private MetaStudyPresentationModel d_model;
+	private StudyTablePanelView d_studyView;
+	private StudyDataView d_dataView;
 
-	public MetaStudyView(MetaStudyPresentationModel model, Domain domain, Main main, ImageLoader loader) {
-		d_loader = loader;
+	public MetaStudyView(MetaStudyPresentationModel model, Main main, ImageLoader loader) {
 		d_model = model;
-		d_mainWindow = main;
-		d_domain = domain;
+		d_studyView = new StudyTablePanelView(model, main);
+		d_dataView = new StudyDataView(model, loader, main.getPresentationModelManager());
 	}
 	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
-				"left:pref, 3dlu, pref:grow, 3dlu, center:pref",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"right:pref, 3dlu, left:pref:grow",
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
-		int fullWidth = 5;
-		int[] colGroup = new int[d_model.getBean().getEndpoints().size()];
-		colGroup[0] = 5;	
-		for (int i = 1; i < d_model.getBean().getEndpoints().size(); ++i) {			
-			colGroup[i] = 5 + (i*2);
-			layout.appendColumn(ColumnSpec.decode("3dlu"));
-			layout.appendColumn(ColumnSpec.decode("center:pref"));			
-			fullWidth += 2;
-		}
-		
-		layout.setColumnGroups(new int[][]{new int[]{3}, colGroup});
+		int fullWidth = 3;
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
-		
 		CellConstraints cc = new CellConstraints();
 		
-		int row = buildStudyPart(fullWidth, builder, cc, layout);
-		
-		row = buildStudiesPart(layout, fullWidth, builder, cc, row);
-		
-		row += 2;
-		
-		builder.addSeparator("Data", cc.xyw(1, row, fullWidth));
-		
-		row +=2 ;
-		builder.add(new StudyDataView(d_model, d_loader, d_mainWindow.getPresentationModelManager()).buildPanel(), cc.xyw(1, row, fullWidth));		
-		
-		return builder.getPanel();
-	}
-
-	private int buildStudiesPart(FormLayout layout, int fullWidth,
-			PanelBuilder builder, CellConstraints cc, int row) {
-		LayoutUtil.addRow(layout);
-		LayoutUtil.addRow(layout);
-		LayoutUtil.addRow(layout);
-		
-		builder.addSeparator("Included Studies", cc.xyw(1, row, fullWidth));
-		row += 2;
-		
-		JPanel panel = createStudyTablePanel();
-		
-		builder.add(panel, cc.xyw(1, row, fullWidth));
-		row += 2;
-		
-		return row;
-	}
-
-	private JPanel createStudyTablePanel() {
-		return new StudyTablePanelView(d_model, d_mainWindow).buildPanel();
-	}
-
-
-	private int buildStudyPart(int fullWidth, PanelBuilder builder,
-			CellConstraints cc, FormLayout layout) {
-		String studyLabel = getStudyLabel();
-		builder.addSeparator(studyLabel, cc.xyw(1,1,fullWidth));
+		builder.addSeparator("Meta-analysis", cc.xyw(1,1,fullWidth));
 		builder.addLabel("ID:", cc.xy(1, 3));
-		builder.add(BasicComponentFactory.createLabel(d_model.getModel(AbstractStudy.PROPERTY_ID)),
-				cc.xyw(3, 3, fullWidth - 2));
+		builder.add(BasicComponentFactory.createLabel(
+				d_model.getModel(AbstractStudy.PROPERTY_ID)), cc.xy(3, 3));
 		
 		int row = 5;
 		for (StudyCharacteristic c : StudyCharacteristic.values()) {
@@ -106,16 +51,19 @@ public class MetaStudyView implements ViewBuilder {
 				LayoutUtil.addRow(layout);
 				builder.addLabel(c.getDescription() + ":", cc.xy(1, row));			
 				builder.add(BasicComponentFactory.createLabel(model, new OneWayObjectFormat()),
-						cc.xyw(3, row, fullWidth - 2));
+						cc.xy(3, row));
 				row += 2;				
 			}
 		}
 		
-		return row;
+		builder.addSeparator("Included Studies", cc.xyw(1, row, fullWidth));
+		row += 2;
+		builder.add(d_studyView.buildPanel(), cc.xyw(1, row, fullWidth));
+		row += 2;
+		builder.addSeparator("Data", cc.xyw(1, row, fullWidth));
+		row += 2;
+		builder.add(d_dataView.buildPanel(), cc.xyw(1, row, fullWidth));		
+		
+		return builder.getPanel();
 	}
-
-	private String getStudyLabel() {
-		return "Meta-analysis";			
-	}
-
 }

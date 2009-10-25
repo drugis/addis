@@ -527,7 +527,7 @@ public class Main extends JFrame {
 	}
 	
 	private void metaStudySelected(MetaStudy node) {
-		MetaStudyView view = new MetaStudyView( (MetaStudyPresentationModel) d_pmManager.getModel(node), getDomain(), this, d_imageLoader);
+		MetaStudyView view = new MetaStudyView( (MetaStudyPresentationModel) d_pmManager.getModel(node), this, d_imageLoader);
 		setRightPanelView(view);		
 	}
 
