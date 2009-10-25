@@ -487,9 +487,7 @@ public class Main extends JFrame {
 	
 	private void drugSelected(Drug drug) {
 		DrugView view = new DrugView((DrugPresentationModel) d_pmManager.getModel(drug));
-		
-		d_rightPanelBuilder = view;
-		d_rightPanel.setViewportView(view.buildPanel());
+		setRightPanelView(view);
 		d_editMenuDeleteItem.setEnabled(true);		
 	}
 	
@@ -540,7 +538,7 @@ public class Main extends JFrame {
 	private void initRightPanel() {
 		JPanel panel = new JPanel();
 		d_rightPanel = new JScrollPane(panel);
-		d_rightPanel.getVerticalScrollBar().setUnitIncrement(16);		
+		d_rightPanel.getVerticalScrollBar().setUnitIncrement(16);
 	}
 
 	public static void main(String[] args) {
@@ -553,8 +551,12 @@ public class Main extends JFrame {
 	
 	private void dataModelChanged() {
 		if (d_rightPanelBuilder != null) {
-			d_rightPanel.setViewportView(d_rightPanelBuilder.buildPanel());
+			setRightPanelContents(d_rightPanelBuilder.buildPanel());
 		}
+	}
+
+	private void setRightPanelContents(JComponent component) {
+		d_rightPanel.setViewportView(component);
 	}
 	
 	private class MainListener implements DomainListener {

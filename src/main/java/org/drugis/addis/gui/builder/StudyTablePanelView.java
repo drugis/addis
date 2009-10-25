@@ -19,6 +19,8 @@ import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
 
+import com.jgoodies.forms.builder.ButtonBarBuilder2;
+
 public class StudyTablePanelView implements ViewBuilder {
 	
 	private Main mainWindow;
@@ -29,7 +31,6 @@ public class StudyTablePanelView implements ViewBuilder {
 		this.metamodel = metamodel;
 	}
 
-	@SuppressWarnings("serial")
 	public JPanel buildPanel() {
 		JPanel panel = new JPanel(new BorderLayout());
 		
@@ -40,6 +41,19 @@ public class StudyTablePanelView implements ViewBuilder {
 		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
+		ButtonBarBuilder2 bb = new ButtonBarBuilder2();
+		bb.addButton(buildCustomizeButton());
+		bb.addGlue();
+		
+		panel.add(pane, BorderLayout.NORTH);
+		JPanel cbp = new JPanel();
+		cbp.add(bb.getPanel());
+		panel.add(cbp, BorderLayout.WEST);
+		return panel;
+	}
+
+	@SuppressWarnings("serial")
+	private JButton buildCustomizeButton() {
 		JButton customizeButton = new JButton("Customize Shown Characteristics");
 		customizeButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -48,12 +62,7 @@ public class StudyTablePanelView implements ViewBuilder {
 				dialog.setVisible(true);
 			}
 		});
-		
-		panel.add(pane, BorderLayout.CENTER);
-		JPanel cbp = new JPanel();
-		cbp.add(customizeButton);
-		panel.add(cbp, BorderLayout.SOUTH);
-		return panel;
+		return customizeButton;
 	}
 
 }
