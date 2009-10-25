@@ -21,8 +21,6 @@ package org.drugis.addis.gui;
 
 import java.util.Map;
 
-import javax.swing.JFrame;
-
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
@@ -38,9 +36,11 @@ public class StudyAddPatientGroupDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private BasicStudy d_study;
 	private StudyAddPatientGroupView d_view;
+	private Main d_main;
 
-	public StudyAddPatientGroupDialog(ImageLoader loader, JFrame frame, Domain domain, BasicStudy study) {
-		super(frame, "Add Patient Group to Study");
+	public StudyAddPatientGroupDialog(ImageLoader loader, Main main, Domain domain, BasicStudy study) {
+		super(main, "Add Patient Group to Study");
+		d_main = main;
 		this.setModal(true);
 		d_domain = domain;
 		d_study = study;
@@ -63,5 +63,6 @@ public class StudyAddPatientGroupDialog extends OkCancelDialog {
 			d_study.setMeasurement(entry.getKey(), pg, entry.getValue());
 		}
 		setVisible(false);
+		d_main.leftTreeFocusOnStudy(d_study);
 	}	
 }

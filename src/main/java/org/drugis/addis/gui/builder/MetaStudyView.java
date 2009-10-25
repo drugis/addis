@@ -15,9 +15,7 @@ import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.gui.CharacteristicHolder;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.components.StudyTablePanel;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
-import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OneWayObjectFormat;
@@ -89,15 +87,11 @@ public class MetaStudyView implements ViewBuilder {
 		builder.add(panel, cc.xyw(1, row, fullWidth));
 		row += 2;
 		
-		
-		//builder.add(customizeButton, cc.xy(3, row));
-		//row += 2;
-		
 		return row;
 	}
 
 	private JPanel createStudyTablePanel() {
-		return StudyTablePanel.createStudyTablePanel(d_model, d_mainWindow);
+		return new StudyTablePanelView(d_model, d_mainWindow).buildPanel();
 	}
 
 	private int buildDataPart(FormLayout layout, int fullWidth,

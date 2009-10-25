@@ -1,4 +1,4 @@
-package org.drugis.addis.gui.components;
+package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -13,15 +13,24 @@ import javax.swing.JTable;
 
 import org.drugis.addis.gui.CharacteristicSelectDialog;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.gui.GUIHelper;
+import org.drugis.common.gui.ViewBuilder;
 
-public class StudyTablePanel {
+public class StudyTablePanelView implements ViewBuilder {
+	
+	private Main mainWindow;
+	private StudyListPresentationModel metamodel;
+
+	public StudyTablePanelView(StudyListPresentationModel metamodel, final Main mainWindow) {
+		this.mainWindow = mainWindow;
+		this.metamodel = metamodel;
+	}
 
 	@SuppressWarnings("serial")
-	public
-	static JPanel createStudyTablePanel(final StudyListPresentationModel metamodel, final Main mainWindow) {
+	public JPanel buildPanel() {
 		JPanel panel = new JPanel(new BorderLayout());
 		
 		StudyCharTableModel model = new StudyCharTableModel(metamodel);

@@ -20,7 +20,6 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.event.ActionEvent;
-import java.text.NumberFormat;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -28,13 +27,10 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.AbstractStudy;
-import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.MutableStudy;
-import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.gui.CharacteristicHolder;
@@ -48,7 +44,6 @@ import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -58,12 +53,12 @@ import com.jgoodies.forms.layout.FormLayout;
 
 @SuppressWarnings("serial")
 public class StudyView implements ViewBuilder {
-	PresentationModel<? extends Study> d_model;
+	PresentationModel<Study> d_model;
 	Domain d_domain;
 	Main d_mainWindow;
 	private ImageLoader d_loader;
 
-	public StudyView(PresentationModel<? extends Study> model, Domain domain, Main main, ImageLoader loader) {
+	public StudyView(PresentationModel<Study> model, Domain domain, Main main, ImageLoader loader) {
 		d_loader = loader;
 		d_model = model;
 		d_mainWindow = main;
@@ -95,30 +90,13 @@ public class StudyView implements ViewBuilder {
 		
 		row = buildEndpointsPart(layout, fullWidth, builder, cc, row);
 
-		row = buildDataPart(layout, fullWidth, builder, cc, row);
-		
-		return builder.getPanel();
-	}
-
-	private int buildDataPart(FormLayout layout, int fullWidth,
-			PanelBuilder builder, CellConstraints cc, int row) {
 		builder.addSeparator("Data", cc.xyw(1, row, fullWidth));
 		row += 2;
 		
-		builder.addLabel("Size", cc.xy(3, row, "center, center"));		
-		int col = 5;
-		for (Endpoint e : d_model.getBean().getEndpoints()) {
-			builder.add(
-					GUIFactory.createEndpointLabelWithIcon(d_loader, d_model.getBean(), e),
-							cc.xy(col, row));
-			col += 2;
-		}
+		
+		builder.add(new StudyDataView(d_model, d_loader, d_mainWindow.getPresentationModelManager()).buildPanel(), cc.xyw(1, row, fullWidth));
 		row += 2;
-
-		for (PatientGroup g : d_model.getBean().getPatientGroups()) {
-			row = buildPatientGroup(layout, builder, cc, row, g);
-		}
-			
+		
 		if (d_model.getBean() instanceof BasicStudy) {
 			LayoutUtil.addRow(layout);
 			JButton addGroupButton = new JButton("Add patient group");
@@ -130,39 +108,13 @@ public class StudyView implements ViewBuilder {
 			builder.add(addGroupButton, cc.xy(1, row));
 			row += 2;			
 		}
-		return row;
-	}
-
-	private int buildPatientGroup(FormLayout layout, PanelBuilder builder,
-			CellConstraints cc, int row, PatientGroup g) {
-		int col;
-		LayoutUtil.addRow(layout);
-		builder.add(
-				BasicComponentFactory.createLabel(getLabelModel(g)),
-				cc.xy(1, row));
-		
-		builder.add(
-				BasicComponentFactory.createLabel(
-						new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_SIZE),
-						NumberFormat.getInstance()),
-						cc.xy(3, row, "center, center"));
-		
-		col = 5;
-		for (Endpoint e : d_model.getBean().getEndpoints()) {
-			Measurement m = d_model.getBean().getMeasurement(e, g);
-			if (m != null) {
-				builder.add(
-						BasicComponentFactory.createLabel(getLabelModel(m)),
-						cc.xy(col, row));
-			}
-			col += 2;
-		}
 		
 		row += 2;
-		return row;
+		
+		return builder.getPanel();
 	}
 
-	protected void addPatientGroup() {
+	private void addPatientGroup() {
 		StudyAddPatientGroupDialog dlg = new StudyAddPatientGroupDialog(d_loader, d_mainWindow, d_domain,
 				(BasicStudy)d_model.getBean());
 		dlg.setVisible(true);
@@ -237,12 +189,7 @@ public class StudyView implements ViewBuilder {
 			
 			row += 2;
 		}
-		
 		return row;
-	}
-
-	private AbstractValueModel getLabelModel(Object model) {
-		return d_mainWindow.getPresentationModelManager().getLabeledModel(model).getLabelModel();
 	}
 
 	private String getStudyLabel() {
