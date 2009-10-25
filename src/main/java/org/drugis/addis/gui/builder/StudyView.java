@@ -26,25 +26,19 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyCharacteristic;
-import org.drugis.addis.gui.CharacteristicHolder;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.StudyAddPatientGroupDialog;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
-import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
-import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -86,7 +80,12 @@ public class StudyView implements ViewBuilder {
 		
 		CellConstraints cc = new CellConstraints();
 		
-		int row = buildStudyPart(fullWidth, builder, cc, layout);
+		builder.addSeparator("Study", cc.xyw(1,1,fullWidth));	
+		int row = 3;
+		
+		builder.add(new StudyCharacteristicsView(d_model).buildPanel(), cc.xyw(1, 3, fullWidth));
+		
+		row += 2;
 		
 		row = buildEndpointsPart(layout, fullWidth, builder, cc, row);
 
@@ -167,31 +166,5 @@ public class StudyView implements ViewBuilder {
 
 	private void addEndpointClicked() {
 		d_mainWindow.showStudyAddEndpointDialog((MutableStudy)d_model.getBean());
-	}
-
-	private int buildStudyPart(int fullWidth, PanelBuilder builder,
-			CellConstraints cc, FormLayout layout) {
-		String studyLabel = getStudyLabel();
-		builder.addSeparator(studyLabel, cc.xyw(1,1,fullWidth));
-		builder.addLabel("ID:", cc.xy(1, 3));
-		builder.add(BasicComponentFactory.createLabel(d_model.getModel(AbstractStudy.PROPERTY_ID)),
-				cc.xyw(3, 3, fullWidth - 2));
-		
-		int row = 5;
-		for (StudyCharacteristic c : StudyCharacteristic.values()) {
-			LayoutUtil.addRow(layout);
-			builder.addLabel(c.getDescription() + ":", cc.xy(1, row));
-			
-			ValueModel model = new CharacteristicHolder(d_model.getBean(), c);
-			builder.add(BasicComponentFactory.createLabel(model, new OneWayObjectFormat()),
-					cc.xyw(3, row, fullWidth - 2));
-			
-			row += 2;
-		}
-		return row;
-	}
-
-	private String getStudyLabel() {
-		return "Study";
 	}
 }
