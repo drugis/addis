@@ -61,6 +61,9 @@ public class MetaStudyView implements ViewBuilder {
 		
 		row += 2;
 		
+		builder.addSeparator("Data", cc.xyw(1, row, fullWidth));
+		
+		row +=2 ;
 		builder.add(new StudyDataView(d_model, d_loader, d_mainWindow.getPresentationModelManager()).buildPanel(), cc.xyw(1, row, fullWidth));		
 		
 		return builder.getPanel();
