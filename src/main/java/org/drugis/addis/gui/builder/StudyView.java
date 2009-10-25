@@ -28,10 +28,8 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.StudyAddPatientGroupDialog;
 import org.drugis.common.ImageLoader;
@@ -42,103 +40,83 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 
 @SuppressWarnings("serial")
 public class StudyView implements ViewBuilder {
-	PresentationModel<Study> d_model;
-	Domain d_domain;
-	Main d_mainWindow;
+	private PresentationModel<Study> d_model;
+	private Domain d_domain;
+	private Main d_mainWindow;
 	private ImageLoader d_loader;
-
+	private StudyCharacteristicsView d_charView;
+	private StudyEndpointsView d_epView;
+	private StudyDataView d_dataView;
+	
+	
 	public StudyView(PresentationModel<Study> model, Domain domain, Main main, ImageLoader loader) {
 		d_loader = loader;
 		d_model = model;
 		d_mainWindow = main;
 		d_domain = domain;
+		d_charView = new StudyCharacteristicsView(model);
+		d_epView = new StudyEndpointsView(model, loader);
+		d_dataView = new StudyDataView(model, loader, main.getPresentationModelManager());
 	}
 	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
-				"left:pref, 3dlu, pref:grow, 3dlu, center:pref",
+				"pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
-		int fullWidth = 5;
-		int[] colGroup = new int[d_model.getBean().getEndpoints().size()];
-		colGroup[0] = 5;	
-		for (int i = 1; i < d_model.getBean().getEndpoints().size(); ++i) {			
-			colGroup[i] = 5 + (i*2);
-			layout.appendColumn(ColumnSpec.decode("3dlu"));
-			layout.appendColumn(ColumnSpec.decode("center:pref"));			
-			fullWidth += 2;
-		}
 		
-		layout.setColumnGroups(new int[][]{new int[]{3}, colGroup});
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
-		
 		CellConstraints cc = new CellConstraints();
 		
-		builder.addSeparator("Study", cc.xyw(1,1,fullWidth));	
-		int row = 3;
-		
-		builder.add(new StudyCharacteristicsView(d_model).buildPanel(), cc.xyw(1, 3, fullWidth));
-		
+		int row = 1;
+		builder.addSeparator("Study", cc.xy(1,row));
 		row += 2;
-		
-		row = buildEndpointsPart(layout, fullWidth, builder, cc, row);
-
-		builder.addSeparator("Data", cc.xyw(1, row, fullWidth));
+		builder.add(d_charView.buildPanel(), cc.xy(1, 3));
 		row += 2;
-		
-		builder.add(new StudyDataView(d_model, d_loader, d_mainWindow.getPresentationModelManager()).buildPanel(), cc.xyw(1, row, fullWidth));
+		builder.addSeparator("Endpoints", cc.xy(1, row));
+		row += 2;
+		builder.add(d_epView.buildPanel(), cc.xy(1, row));
 		row += 2;
 		
 		if (d_model.getBean() instanceof BasicStudy) {
 			LayoutUtil.addRow(layout);
-			JButton addGroupButton = new JButton("Add patient group");
-			addGroupButton.addActionListener(new AbstractAction() {
-				public void actionPerformed(ActionEvent arg0) {
-					addPatientGroup();
-				}			
-			});
-			builder.add(addGroupButton, cc.xy(1, row));
-			row += 2;			
-		}
-		
+			builder.add(buildAddEndpointButton(), cc.xy(1, row));
+			row += 2;
+		}		
+		builder.addSeparator("Data", cc.xy(1, row));
+		row += 2;
+		builder.add(d_dataView.buildPanel(), cc.xy(1, row));
 		row += 2;
 		
+		if (d_model.getBean() instanceof BasicStudy) {
+			LayoutUtil.addRow(layout);
+			builder.add(buildAddPatientGroupButton(), cc.xy(1, row));
+		}
 		return builder.getPanel();
+	}
+
+	private JComponent buildAddPatientGroupButton() {
+		ButtonBarBuilder2 bb = new ButtonBarBuilder2();
+		JButton addGroupButton = new JButton("Add patient group");
+		addGroupButton.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				addPatientGroup();
+			}			
+		});
+		bb.addButton(addGroupButton);
+		bb.addGlue();
+		return bb.getPanel();
 	}
 
 	private void addPatientGroup() {
 		StudyAddPatientGroupDialog dlg = new StudyAddPatientGroupDialog(d_loader, d_mainWindow, d_domain,
 				(BasicStudy)d_model.getBean());
 		dlg.setVisible(true);
-	}
-
-	private int buildEndpointsPart(FormLayout layout, int fullWidth, PanelBuilder builder,
-			CellConstraints cc, int row) {
-		row += 2;
-		builder.addSeparator("Endpoints", cc.xyw(1, row, fullWidth));
-		row += 4;
-		
-		for (Endpoint e : d_model.getBean().getEndpoints()) {
-			LayoutUtil.addRow(layout);
-			builder.add(
-					GUIFactory.createEndpointLabelWithIcon(d_loader, d_model.getBean(), e),
-					cc.xy(1, row));
-			row += 2;
-		}
-		if (d_model.getBean() instanceof BasicStudy) {
-			LayoutUtil.addRow(layout);
-			builder.add(buildAddEndpointButton(), cc.xy(1, row));
-			
-			row += 2;
-		}
-
-		return row;
 	}
 
 	private JPanel buildAddEndpointButton() {
@@ -149,13 +127,11 @@ public class StudyView implements ViewBuilder {
 			}			
 		});
 		ButtonBarBuilder2 bbarBuilder = new ButtonBarBuilder2();
-		bbarBuilder.addGlue();
 		bbarBuilder.addButton(button);
-		
+		bbarBuilder.addGlue();		
 		if (studyHasAllEndpoints()) {
 			button.setEnabled(false);
 		}
-		
 		JPanel panel = bbarBuilder.getPanel();
 		return panel;
 	}
