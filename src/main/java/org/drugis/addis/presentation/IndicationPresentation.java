@@ -22,16 +22,18 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedSet;
 
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyCharacteristic;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class IndicationPresentation extends PresentationModel<Indication> implements LabeledPresentationModel {
+public class IndicationPresentation extends PresentationModel<Indication> implements LabeledPresentationModel, StudyListPresentationModel {
 	public class LabelModel extends AbstractValueModel implements PropertyChangeListener {
 		protected LabelModel() {
 			getBean().addPropertyChangeListener(this);
@@ -54,18 +56,23 @@ public class IndicationPresentation extends PresentationModel<Indication> implem
 		}
 	}
 
-	private StudyListPresentationModelImpl d_studyListModel;
+	private CharacteristicVisibleMap d_charMap = new CharacteristicVisibleMap();
+	private ArrayList<Study> d_studies;
 
 	public IndicationPresentation(Indication bean, SortedSet<Study> studies) {
 		super(bean);
-		d_studyListModel = new StudyListPresentationModelImpl(new ArrayList<Study>(studies));
-	}
-
-	public StudyListPresentationModel getStudyListModel() {
-		return d_studyListModel;
+		d_studies = new ArrayList<Study>(studies);
 	}
 
 	public AbstractValueModel getLabelModel() {
 		return new LabelModel();
+	}
+
+	public AbstractValueModel getCharacteristicVisibleModel(StudyCharacteristic c) {
+		return d_charMap.get(c);
+	}
+
+	public List<Study> getIncludedStudies() {
+		return d_studies;
 	}
 }

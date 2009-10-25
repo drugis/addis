@@ -486,7 +486,7 @@ public class Main extends JFrame {
 	}
 	
 	private void drugSelected(Drug drug) {
-		DrugView view = new DrugView((DrugPresentationModel) d_pmManager.getModel(drug));
+		DrugView view = new DrugView((DrugPresentationModel) d_pmManager.getModel(drug), this);
 		setRightPanelView(view);
 		d_editMenuDeleteItem.setEnabled(true);		
 	}

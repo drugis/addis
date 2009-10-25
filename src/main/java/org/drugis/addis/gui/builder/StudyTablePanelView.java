@@ -7,12 +7,12 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import org.drugis.addis.gui.CharacteristicSelectDialog;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.addis.presentation.StudyListPresentationModel;
@@ -23,18 +23,18 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
 public class StudyTablePanelView implements ViewBuilder {
 	
-	private Main mainWindow;
-	private StudyListPresentationModel metamodel;
+	private StudyListPresentationModel d_metamodel;
+	private JFrame d_parent;
 
-	public StudyTablePanelView(StudyListPresentationModel metamodel, final Main mainWindow) {
-		this.mainWindow = mainWindow;
-		this.metamodel = metamodel;
+	public StudyTablePanelView(StudyListPresentationModel metamodel, JFrame parent) {
+		this.d_metamodel = metamodel;
+		this.d_parent = parent;
 	}
 
 	public JPanel buildPanel() {
 		JPanel panel = new JPanel(new BorderLayout());
 		
-		StudyCharTableModel model = new StudyCharTableModel(metamodel);
+		StudyCharTableModel model = new StudyCharTableModel(d_metamodel);
 		final JTable table = new StudyTable(model);
 		JScrollPane pane = new JScrollPane(table);
 		pane.setBorder(BorderFactory.createEmptyBorder());
@@ -57,8 +57,8 @@ public class StudyTablePanelView implements ViewBuilder {
 		JButton customizeButton = new JButton("Customize Shown Characteristics");
 		customizeButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				JDialog dialog = new CharacteristicSelectDialog(mainWindow, metamodel);
-				GUIHelper.centerWindow(dialog, mainWindow);
+				JDialog dialog = new CharacteristicSelectDialog(d_parent, d_metamodel);
+				GUIHelper.centerWindow(dialog, d_parent);
 				dialog.setVisible(true);
 			}
 		});

@@ -1,16 +1,11 @@
 package org.drugis.addis.gui.builder;
 
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.DrugPresentationModel;
-import org.drugis.addis.presentation.StudyCharTableModel;
-import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -20,9 +15,11 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class DrugView implements ViewBuilder{
 	private DrugPresentationModel d_model;
+	private JFrame d_parent;
 
-	public DrugView(DrugPresentationModel model) {
+	public DrugView(DrugPresentationModel model, JFrame parent) {
 		d_model = model;
+		d_parent = parent;
 	}
 	
 	public JComponent buildPanel() {
@@ -50,20 +47,13 @@ public class DrugView implements ViewBuilder{
 		builder.add(atcCodeComp, cc.xy(3, 5));
 		
 		builder.addSeparator("Studies measuring this drug", cc.xyw(1, 7, 3));
-		
-		StudyListPresentationModel studyListModel = d_model.getStudyListModel();
 			
 		JComponent studiesComp = null;
-		if(studyListModel.getIncludedStudies().isEmpty()) {
+		if(d_model.getIncludedStudies().isEmpty()) {
 			studiesComp = new JLabel("No studies found.");
 		} else {
-			StudyCharTableModel model = new StudyCharTableModel(studyListModel);
-			final JTable table = new StudyTable(model);
-			JScrollPane pane = new JScrollPane(table);
-			pane.setBorder(BorderFactory.createEmptyBorder());
-			pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-			pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-			studiesComp = pane;
+			StudyTablePanelView d_studyView = new StudyTablePanelView(d_model, d_parent);
+			studiesComp = d_studyView.buildPanel();
 		}
 		builder.add(studiesComp, cc.xyw(1, 9, 3));
 				

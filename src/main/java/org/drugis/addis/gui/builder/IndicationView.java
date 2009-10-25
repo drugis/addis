@@ -10,7 +10,6 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.addis.presentation.StudyCharTableModel;
-import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -61,13 +60,12 @@ public class IndicationView implements ViewBuilder {
 
 	private int buildStudiesPart(PanelBuilder builder, CellConstraints cc,
 			int row) {
-		StudyListPresentationModel studyListModel = d_pm.getStudyListModel();
-		
+
 		JComponent studiesComp = null;
-		if(studyListModel.getIncludedStudies().isEmpty()) {
+		if(d_pm.getIncludedStudies().isEmpty()) {
 			studiesComp = new JLabel("No studies found.");
 		} else {
-			StudyCharTableModel model = new StudyCharTableModel(studyListModel);
+			StudyCharTableModel model = new StudyCharTableModel(d_pm);
 			final JTable table = new StudyTable(model);
 			JScrollPane pane = new JScrollPane(table);
 			pane.setBorder(BorderFactory.createEmptyBorder());
