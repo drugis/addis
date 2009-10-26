@@ -22,6 +22,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation.AbstractListHolder;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -104,6 +105,7 @@ public class MetaAnalysisWizardPresentationTest {
 		verify(studiesLabelListener);
 	}
 		
+	@Ignore
 	@Test
 	public void testLabelIndicationEvents() {
 		d_wizard.getIndicationModel().setValue(d_wizard.getIndicationSet().first());
