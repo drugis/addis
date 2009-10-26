@@ -1,7 +1,6 @@
 package org.drugis.addis.presentation;
 
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -121,6 +120,15 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
 		assertNull(d_wizard.getEndpointModel().getValue());
 		verify(l);
+	}
+
+	@Test
+	public void testSameIndicationKeepEndpoint() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		assertNotNull(d_wizard.getEndpointModel().getValue());
 	}
 
 	@Test
@@ -293,6 +301,20 @@ public class MetaAnalysisWizardPresentationTest {
 		assertNull(d_wizard.getFirstDrugModel().getValue());
 		assertNull(d_wizard.getSecondDrugModel().getValue());
 	}
+
+	@Test
+	public void testSameEndpointChangeKeepDrugs() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
+
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		
+		assertNotNull(d_wizard.getFirstDrugModel().getValue());
+		assertNotNull(d_wizard.getSecondDrugModel().getValue());
+	}
+
 	
 	@Test
 	public void testGetStudySet() {
@@ -328,5 +350,18 @@ public class MetaAnalysisWizardPresentationTest {
 		assertNotNull(d_wizard.getStudySet());
 		
 		assertEquals(new TreeSet<Study>(), d_wizard.getStudySet());
+	}
+	
+	@Test
+	public void testCascadeOfIndicationEndpointDrugs() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
+
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
+		
+		assertNull(d_wizard.getFirstDrugModel().getValue());
+		assertNull(d_wizard.getSecondDrugModel().getValue());
 	}
 }

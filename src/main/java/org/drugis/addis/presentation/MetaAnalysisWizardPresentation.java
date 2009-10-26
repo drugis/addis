@@ -13,6 +13,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.addis.entities.Study;
+import org.drugis.common.EqualsUtil;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
@@ -34,14 +35,20 @@ public class MetaAnalysisWizardPresentation {
 			T oldValue = d_content;
 			d_content = (T) newValue;
 			fireValueChange(oldValue, d_content);
-			cascade();
+			conditionalCascade(newValue, oldValue);
+		}
+
+		private void conditionalCascade(Object newValue, T oldValue) {
+			if (!EqualsUtil.equal(oldValue, newValue)) {
+				cascade();
+			}
 		}
 		
 		public void unSet() {
 			T oldValue = d_content;
 			d_content = null;
 			fireValueChange(oldValue, d_content);
-			cascade();
+			conditionalCascade(null, oldValue);
 		}
 
 		protected abstract void cascade();
