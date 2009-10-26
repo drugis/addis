@@ -1,11 +1,10 @@
 package org.drugis.addis.presentation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+import static org.easymock.EasyMock.*;
 
+
+import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -106,9 +105,17 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testChangeIndicationUnsetEndpoint() {
-		fail();
-	}
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		PropertyChangeListener l = JUnitUtil.mockListener(
+				d_wizard.getEndpointModel(), "value", ExampleData.buildEndpointHamd(), null);
+		d_wizard.getEndpointModel().addValueChangeListener(l);
 		
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
+		assertNull(d_wizard.getEndpointModel().getValue());
+		verify(l);
+	}
+
 	@Test
 	public void testGetDrugSet() {
 		Indication ind = ExampleData.buildIndicationDepression();
@@ -133,4 +140,5 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		assertEquals(new TreeSet<Drug>(), d_wizard.getDrugSet());
 	}
+	
 }

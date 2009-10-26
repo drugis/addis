@@ -34,10 +34,20 @@ public class MetaAnalysisWizardPresentation {
 			fireValueChange(oldValue, d_content);
 		}
 		
+		public void unSet() {
+			T oldValue = d_content;
+			d_content = null;
+			fireValueChange(oldValue, d_content);
+		}
 	}
 	
 	@SuppressWarnings("serial")
-	class IndicationHolder extends AbstractHolder<Indication> {
+	private class IndicationHolder extends AbstractHolder<Indication> {
+		@Override
+		public void setValue(Object newValue) {
+			super.setValue(newValue);
+			d_endpointHolder.unSet();
+		}
 		@Override
 		protected void checkArgument(Object newValue) {
 			if (!getIndicationSet().contains(newValue))
@@ -46,7 +56,7 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	@SuppressWarnings("serial")
-	class EndpointHolder extends AbstractHolder<Endpoint> {
+	private class EndpointHolder extends AbstractHolder<Endpoint> {
 		@Override
 		protected void checkArgument(Object newValue) {
 			if (!getEndpointSet().contains(newValue))
