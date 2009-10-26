@@ -37,10 +37,27 @@ public class MetaAnalysisWizardPresentation {
 			fireValueChange(oldValue, d_content);
 		}
 		
+		public void unSet() {
+			T oldValue = d_content;
+			d_content = null;
+			fireValueChange(oldValue, d_content);
+		}
 	}
 	
 	@SuppressWarnings("serial")
-	class IndicationHolder extends AbstractHolder<Indication> {
+	private class IndicationHolder extends AbstractHolder<Indication> {
+		@Override
+		public void setValue(Object newValue) {
+			super.setValue(newValue);
+			d_endpointHolder.unSet();
+		}
+		
+		@Override
+		public void unSet() {
+			super.unSet();
+			d_endpointHolder.unSet();
+		}
+		
 		@Override
 		protected void checkArgument(Object newValue) {
 			if (!getIndicationSet().contains(newValue))
@@ -49,11 +66,20 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	@SuppressWarnings("serial")
-	class EndpointHolder extends AbstractHolder<Endpoint> {
+	private class EndpointHolder extends AbstractHolder<Endpoint> {
 		@Override
 		protected void checkArgument(Object newValue) {
 			if (!getEndpointSet().contains(newValue))
 				throw new IllegalArgumentException("Endpoint not in the actual set!");
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	private class DrugHolder extends AbstractHolder<Drug> {
+		@Override
+		protected void checkArgument(Object newValue) {
+			if (!getDrugSet().contains(newValue))
+				throw new IllegalArgumentException("Drug not in the actual set!");
 		}
 	}
 		
@@ -61,12 +87,22 @@ public class MetaAnalysisWizardPresentation {
 	private AbstractHolder<Indication> d_indicationHolder;
 	private AbstractHolder<Endpoint> d_endpointHolder;
 	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;	
+	private DrugHolder d_firstDrugHolder;
+	private DrugHolder d_secondDrugHolder;
 	
 	public MetaAnalysisWizardPresentation(Domain d) {
 		d_domain = d;
 		d_indicationHolder = new IndicationHolder();
 		d_endpointHolder = new EndpointHolder();
+		d_firstDrugHolder = new DrugHolder();
 		d_studiesMeasuringValueModel = new StudiesMeasuringValueModel();		
+		d_secondDrugHolder = new DrugHolder();
+	}
+	
+	public ValueModel getIndicationListModel() {
+		ValueHolder valueHolder = new ValueHolder(new ArrayList<Indication>(getIndicationSet()));
+		valueHolder.setIdentityCheckEnabled(true);
+		return valueHolder;
 	}
 	
 	public SortedSet<Indication> getIndicationSet() {
@@ -77,10 +113,16 @@ public class MetaAnalysisWizardPresentation {
 		return d_indicationHolder; 
 	}
 	
+	public ValueModel getEndpointListModel() {
+		ValueHolder valueHolder = new ValueHolder(new ArrayList<Endpoint>(d_domain.getEndpoints()));
+		valueHolder.setIdentityCheckEnabled(true);
+		return valueHolder;
+	}
+	
 	public SortedSet<Endpoint> getEndpointSet() {
 		TreeSet<Endpoint> endpoints = new TreeSet<Endpoint>();
-		if (d_indicationHolder.getValue() != null) {
-			for (Study s : d_domain.getStudies(d_indicationHolder.getValue())) {
+		if (getIndication() != null) {
+			for (Study s : d_domain.getStudies(getIndication())) {
 				endpoints.addAll(s.getEndpoints());
 			}			
 		}	
@@ -91,16 +133,38 @@ public class MetaAnalysisWizardPresentation {
 		return d_endpointHolder;
 	}
 	
+	public ValueModel getDrugListModel() {
+		ValueHolder valueHolder = new ValueHolder(new ArrayList<Drug>(d_domain.getDrugs()));
+		valueHolder.setIdentityCheckEnabled(true);
+		return valueHolder;
+	}
+	
 	public SortedSet<Drug> getDrugSet() {
-		return d_domain.getDrugs();
+		SortedSet<Drug> drugs = new TreeSet<Drug>();
+		if (getIndication() != null && getEndpoint() != null) {
+			SortedSet<Study> studies = new TreeSet<Study>(d_domain.getStudies(getEndpoint()));
+			studies.retainAll(d_domain.getStudies(getIndication()));
+			for (Study s : studies) {
+				drugs.addAll(s.getDrugs());
+			}
+		}
+		return drugs;
+	}
+
+	private Indication getIndication() {
+		return d_indicationHolder.getValue();
+	}
+
+	private Endpoint getEndpoint() {
+		return d_endpointHolder.getValue();
 	}
 	
 	public ValueModel getFirstDrugModel() {
-		return new ValueHolder();
+		return d_firstDrugHolder;
 	}
 	
 	public ValueModel getSecondDrugModel() {
-		return new ValueHolder();
+		return d_secondDrugHolder;
 	}
 	
 	public SortedSet<Study> getStudySet() {

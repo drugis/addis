@@ -1,7 +1,5 @@
 package org.drugis.common.gui;
 
-import java.util.Collection;
-
 import javax.swing.JComboBox;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;

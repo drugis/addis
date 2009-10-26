@@ -3,7 +3,9 @@ package org.drugis.addis.presentation;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
@@ -11,11 +13,13 @@ import java.util.TreeSet;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.ExampleData;
 import org.drugis.addis.entities.Indication;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -101,16 +105,14 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testLabelIndicationEvents() {
 		d_wizard.getIndicationModel().setValue(d_wizard.getIndicationSet().first());
-		d_wizard.getEndpointModel().setValue(d_wizard.getEndpointSet().first());
 		
-		Endpoint endp = d_wizard.getEndpointSet().first();	
 		Indication indic = d_wizard.getIndicationSet().first();	
-		Indication lastIndic = d_wizard.getIndicationSet().last();		
+		Indication lastIndic = d_wizard.getIndicationSet().last();
 		
 		ValueModel model = d_wizard.getStudiesMeasuringLabelModel();
 		
 		Object newValue = model.getValue();
-		d_wizard.getIndicationModel().setValue(lastIndic);
+		d_wizard.getIndicationModel().setValue(lastIndic);		
 		
 		PropertyChangeListener studiesLabelListener2 = JUnitUtil.mockListener(model, AbstractValueModel.PROPERTYNAME_VALUE, null, newValue);
 		model.addValueChangeListener(studiesLabelListener2);
@@ -161,5 +163,108 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		ValueModel vm = d_wizard.getEndpointModel();
 		vm.setValue(newValue);
+	}
+	
+	@Test
+	public void testChangeIndicationUnsetEndpoint() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		PropertyChangeListener l = JUnitUtil.mockListener(
+				d_wizard.getEndpointModel(), "value", ExampleData.buildEndpointHamd(), null);
+		d_wizard.getEndpointModel().addValueChangeListener(l);
+		
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
+		assertNull(d_wizard.getEndpointModel().getValue());
+		verify(l);
+	}
+
+	@Test
+	public void testGetDrugSet() {
+		Indication ind = ExampleData.buildIndicationDepression();
+		Endpoint ep = ExampleData.buildEndpointCgi();
+		
+		SortedSet<Drug> expected = new TreeSet<Drug>();
+		expected.addAll(ExampleData.buildDefaultStudy().getDrugs());
+		
+		d_wizard.getIndicationModel().setValue(ind);
+		d_wizard.getEndpointModel().setValue(ep);
+		
+		assertEquals(expected, d_wizard.getDrugSet());
+	}
+	
+	@Test
+	public void testGetDrugSetNoEndpoint() {
+		Indication ind = ExampleData.buildIndicationDepression();
+		
+		d_wizard.getIndicationModel().setValue(ind);
+		assertNull(d_wizard.getEndpointModel().getValue());
+		assertNotNull(d_wizard.getDrugSet());
+		
+		assertEquals(new TreeSet<Drug>(), d_wizard.getDrugSet());
+	}
+	
+	@Test
+	public void testGetFirstDrugModel() {
+		testDrugModelHelper(d_wizard.getFirstDrugModel());
+	}
+
+	@Test
+	public void testGetSecondDrugModel() {
+		testDrugModelHelper(d_wizard.getSecondDrugModel());
+	}
+	
+	private void testDrugModelHelper(ValueModel drugModel) {
+		assertNotNull(drugModel);
+		assertEquals(null, drugModel.getValue());
+	}
+
+	@Test
+	public void testSetFirstDrug(){
+		testSetDrugHelper(d_wizard.getFirstDrugModel());
+	}
+	
+	@Test
+	public void testSetSecondDrug(){
+		testSetDrugHelper(d_wizard.getSecondDrugModel());
+	}
+
+	private void testSetDrugHelper(ValueModel vm) {
+		Indication ind = ExampleData.buildIndicationDepression();
+		Endpoint ep = ExampleData.buildEndpointHamd();
+		Drug d = ExampleData.buildDrugFluoxetine();
+		d_wizard.getIndicationModel().setValue(ind);
+		d_wizard.getEndpointModel().setValue(ep);
+		
+		JUnitUtil.testSetter(vm, null, d);
+		
+		assertEquals(d, vm.getValue());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testSetInvalidFirstDrug(){
+		testSetInvalidDrugHelper(d_wizard.getFirstDrugModel());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testSetInvalidSecondDrug(){
+		testSetInvalidDrugHelper(d_wizard.getSecondDrugModel());
+	}
+
+	private void testSetInvalidDrugHelper(ValueModel vm) {
+		Indication ind = ExampleData.buildIndicationDepression();
+		Endpoint ep = ExampleData.buildEndpointHamd();
+		Drug d = ExampleData.buildDrugCandesartan();
+		d_wizard.getIndicationModel().setValue(ind);
+		d_wizard.getEndpointModel().setValue(ep);
+		
+		assertTrue(!d_wizard.getDrugSet().contains(d));
+		
+		vm.setValue(d);
+	}
+	
+	@Ignore
+	@Test
+	public void testDrugCoupling() {
+		fail();
 	}
 }
