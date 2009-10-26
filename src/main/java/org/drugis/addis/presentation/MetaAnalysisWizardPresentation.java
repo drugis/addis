@@ -1,6 +1,9 @@
 package org.drugis.addis.presentation;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -12,7 +15,6 @@ import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.addis.entities.Study;
 
 import com.jgoodies.binding.value.AbstractValueModel;
-import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
 
 public class MetaAnalysisWizardPresentation {
@@ -79,12 +81,54 @@ public class MetaAnalysisWizardPresentation {
 				throw new IllegalArgumentException("Drug not in the actual set!");
 		}
 	}
+	
+	@SuppressWarnings("serial")
+	public abstract class AbstractListHolder<E> extends AbstractValueModel {
+		public abstract List<E> getValue();
+
+		public void setValue(Object newValue) {
+			throw new UnsupportedOperationException("AbstractListModel is read-only");
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	private class IndicationListHolder extends AbstractListHolder<Indication> {
+		@Override
+		public List<Indication> getValue() {
+			return new ArrayList<Indication>(getIndicationSet());
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	private class EndpointListHolder extends AbstractListHolder<Endpoint> implements PropertyChangeListener {
+		public EndpointListHolder() {
+			getIndicationModel().addValueChangeListener(this);
+		}
+		
+		@Override
+		public List<Endpoint> getValue() {
+			return new ArrayList<Endpoint>(getEndpointSet());
+		}
+
+		public void propertyChange(PropertyChangeEvent event) {
+			fireValueChange(null, getValue());
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	private class DrugListHolder extends AbstractListHolder<Drug> {
+		@Override
+		public List<Drug> getValue() {
+			return new ArrayList<Drug>(getDrugSet());
+		}
+	}
 		
 	private Domain d_domain;
 	private AbstractHolder<Indication> d_indicationHolder;
 	private AbstractHolder<Endpoint> d_endpointHolder;
 	private DrugHolder d_firstDrugHolder;
 	private DrugHolder d_secondDrugHolder;
+	private EndpointListHolder d_endpointListHolder;
 	
 	public MetaAnalysisWizardPresentation(Domain d) {
 		d_domain = d;
@@ -92,10 +136,11 @@ public class MetaAnalysisWizardPresentation {
 		d_endpointHolder = new EndpointHolder();
 		d_firstDrugHolder = new DrugHolder();
 		d_secondDrugHolder = new DrugHolder();
+		d_endpointListHolder = new EndpointListHolder();
 	}
 	
-	public ValueModel getIndicationListModel() {
-		return new ValueHolder();
+	public AbstractListHolder<Indication> getIndicationListModel() {
+		return new IndicationListHolder();
 	}
 	
 	public SortedSet<Indication> getIndicationSet() {
@@ -106,8 +151,8 @@ public class MetaAnalysisWizardPresentation {
 		return d_indicationHolder; 
 	}
 	
-	public ValueModel getEndpointListModel() {
-		return new ValueHolder();
+	public AbstractListHolder<Endpoint> getEndpointListModel() {
+		return d_endpointListHolder;
 	}
 	
 	public SortedSet<Endpoint> getEndpointSet() {
@@ -124,8 +169,8 @@ public class MetaAnalysisWizardPresentation {
 		return d_endpointHolder;
 	}
 	
-	public ValueModel getDrugListModel() {
-		return new ValueHolder();
+	public AbstractListHolder<Drug> getDrugListModel() {
+		return new DrugListHolder();
 	}
 	
 	public SortedSet<Drug> getDrugSet() {

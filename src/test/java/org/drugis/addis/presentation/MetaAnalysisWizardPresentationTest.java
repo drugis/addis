@@ -1,10 +1,15 @@
 package org.drugis.addis.presentation;
 
-import static org.junit.Assert.*;
-import static org.easymock.EasyMock.*;
-
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -14,9 +19,9 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.ExampleData;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.presentation.MetaAnalysisWizardPresentation.AbstractListHolder;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jgoodies.binding.value.ValueModel;
@@ -201,9 +206,44 @@ public class MetaAnalysisWizardPresentationTest {
 		vm.setValue(d);
 	}
 	
-	@Ignore
 	@Test
 	public void testDrugCoupling() {
+		fail();
+	}
+	
+	@Test
+	public void testGetIndicationListModel() {
+		List<Indication> expected = new ArrayList<Indication>(d_wizard.getIndicationSet());
+		AbstractListHolder<Indication> indicationList = d_wizard.getIndicationListModel();
+		List<Indication> list = indicationList.getValue();
+		assertEquals(expected, list);
+	}
+	
+	@Test
+	public void testGetEndpointListModel() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		List<Endpoint> expected = new ArrayList<Endpoint>(d_wizard.getEndpointSet());
+		AbstractListHolder<Endpoint> endpointList = d_wizard.getEndpointListModel();
+		List<Endpoint> list = endpointList.getValue();
+		assertEquals(expected, list);
+	}
+	
+	@Test
+	public void testEndpointListModelEventOnIndicationChange() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
+		List<Endpoint> newValue = new ArrayList<Endpoint>(d_wizard.getEndpointSet());
+		
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		ValueModel endpointList = d_wizard.getEndpointListModel();
+		PropertyChangeListener l = JUnitUtil.mockListener(endpointList, "value", null, newValue);
+		
+		endpointList.addValueChangeListener(l);
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
+		verify(l);
+	}
+	
+	@Test
+	public void testGetDrugListModel() {
 		fail();
 	}
 }
