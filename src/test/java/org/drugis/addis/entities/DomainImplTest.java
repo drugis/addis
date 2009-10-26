@@ -41,7 +41,7 @@ public class DomainImplTest {
 	@Test
 	public void testGetDependents() {
 		ExampleData.initDefaultData(d_domain);
-		Indication ind = ExampleData.buildIndication();
+		Indication ind = ExampleData.buildIndicationDepression();
 		assertTrue(d_domain.getDependents(ind).containsAll(d_domain.getStudies()));
 		Drug fluox = ExampleData.buildDrugFluoxetine();
 		assertEquals(d_domain.getStudies(), d_domain.getDependents(fluox));

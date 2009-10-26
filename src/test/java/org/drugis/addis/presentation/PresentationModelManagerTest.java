@@ -81,13 +81,13 @@ public class PresentationModelManagerTest {
 	
 	@Test
 	public void testGetExistingIndicationModelHasCorrectStudies() {
-		IndicationPresentation m = (IndicationPresentation) d_manager.getModel(ExampleData.buildIndication());
+		IndicationPresentation m = (IndicationPresentation) d_manager.getModel(ExampleData.buildIndicationDepression());
 		
-		assertEquals(ExampleData.buildIndication(), m.getBean());
+		assertEquals(ExampleData.buildIndicationDepression(), m.getBean());
 		assertEquals(m.getClass(), IndicationPresentation.class);
 		
 		assertTrue(m.getIncludedStudies().containsAll(
-				d_domain.getStudies(ExampleData.buildIndication())));
+				d_domain.getStudies(ExampleData.buildIndicationDepression())));
 	}
 	
 	@SuppressWarnings("unchecked")

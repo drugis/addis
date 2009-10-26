@@ -1,8 +1,13 @@
 package org.drugis.addis.presentation;
 
 import static org.junit.Assert.*;
+
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.ExampleData;
 import org.drugis.addis.entities.Indication;
 import org.drugis.common.JUnitUtil;
@@ -50,5 +55,20 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		ValueModel vm = d_wizard.getIndicationModel();
 		vm.setValue(newValue);
+	}
+	
+	@Test
+	public void testGetEndpointSet() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		SortedSet<Endpoint> expected = new TreeSet<Endpoint>();
+		expected.add(ExampleData.buildEndpointCgi());
+		expected.add(ExampleData.buildEndpointHamd());
+		assertEquals(expected, d_wizard.getEndpointSet());
+	}
+	
+	@Test
+	public void testGetEndpointSetNoIndication() {
+		assertNotNull(d_wizard.getEndpointSet());
+		assertTrue(d_wizard.getEndpointSet().isEmpty());
 	}
 }

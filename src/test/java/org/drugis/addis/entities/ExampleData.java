@@ -44,21 +44,23 @@ public class ExampleData {
 	private static Drug s_parox;
 	private static Drug s_fluox;
 	private static Drug s_viagra;
+	private static Endpoint s_endpointUnused;
 
 	public static void initDefaultData(Domain domain) {
-		domain.addIndication(buildIndication());
+		domain.addIndication(buildIndicationDepression());
 		domain.addEndpoint(buildEndpointHamd());
 		domain.addEndpoint(buildEndpointCgi());
 		domain.addDrug(buildDrugFluoxetine());
 		domain.addDrug(buildDrugParoxetine());
 		domain.addStudy(buildDefaultStudy());
 		domain.addStudy(buildDefaultStudy2());
+		domain.addEndpoint(buildEndpointUnused());
 	}
 
 	public static AbstractStudy buildDefaultStudy2() {
 		Endpoint hamd = buildEndpointHamd();
 		Drug fluoxetine = buildDrugFluoxetine();
-		BasicStudy study = new BasicStudy("De Wilde et al, 1993", buildIndication());
+		BasicStudy study = new BasicStudy("De Wilde et al, 1993", buildIndicationDepression());
 		study.setEndpoints(Collections.singleton(hamd));
 		
 
@@ -91,7 +93,7 @@ public class ExampleData {
 		Endpoint hamd = buildEndpointHamd();
 		Endpoint cgi = buildEndpointCgi();
 		Drug fluoxetine = buildDrugFluoxetine();
-		BasicStudy study = new BasicStudy("Chouinard et al, 1999", buildIndication());
+		BasicStudy study = new BasicStudy("Chouinard et al, 1999", buildIndicationDepression());
 		study.setEndpoints(new HashSet<Endpoint>(Arrays.asList(new Endpoint[]{hamd, cgi})));
 		
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
@@ -138,7 +140,7 @@ public class ExampleData {
 		return s_fluox;
 	}
 	
-	public static Indication buildIndication() {
+	public static Indication buildIndicationDepression() {
 		if (s_indication == null) {
 			s_indication = new Indication(310497006L, "Severe depression");
 		}
@@ -168,4 +170,14 @@ public class ExampleData {
 		}
 		return s_endpointCgi;
 	}
+	
+	public static Endpoint buildEndpointUnused() {
+		if (s_endpointUnused == null) { 
+			Endpoint cgi = new Endpoint("Unused Endpoint", Type.RATE);
+			cgi.setDescription("");
+			s_endpointUnused = cgi;
+		}
+		return s_endpointUnused;
+	}	
+
 }

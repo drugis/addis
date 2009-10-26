@@ -81,7 +81,7 @@ public class MetaAnalysisTest {
 	
 	@Test
 	public void testGetIndication() {
-		assertEquals(ExampleData.buildIndication(), d_analysis.getIndication());
+		assertEquals(ExampleData.buildIndicationDepression(), d_analysis.getIndication());
 	}
 	
 	@Test

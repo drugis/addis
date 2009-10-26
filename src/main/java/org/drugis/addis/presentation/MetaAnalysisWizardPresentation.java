@@ -1,11 +1,17 @@
 package org.drugis.addis.presentation;
 
+import java.util.ArrayList;
 import java.util.SortedSet;
 
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.MetaAnalysis;
+import org.drugis.addis.entities.Study;
 
 import com.jgoodies.binding.value.AbstractValueModel;
+import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
 
 public class MetaAnalysisWizardPresentation {
@@ -46,4 +52,32 @@ public class MetaAnalysisWizardPresentation {
 		return d_valueHolder; 
 	}
 	
+	public SortedSet<Endpoint> getEndpointSet() {
+		return d_domain.getEndpoints();
+	}
+	
+	public ValueModel getEndpointModel() {
+		return new ValueHolder();
+	}
+	
+	public SortedSet<Drug> getDrugSet() {
+		return d_domain.getDrugs();
+	}
+	
+	public ValueModel getFirstDrugModel() {
+		return new ValueHolder();
+	}
+	
+	public ValueModel getSecondDrugModel() {
+		return new ValueHolder();
+	}
+	
+	public SortedSet<Study> getStudySet() {
+		return d_domain.getStudies();
+	}
+	
+	public MetaAnalysis getAnalysis() {
+		Endpoint e = d_domain.getEndpoints().first();
+		return new MetaAnalysis(e, new ArrayList<Study>(d_domain.getStudies(e)));
+	}
 }
