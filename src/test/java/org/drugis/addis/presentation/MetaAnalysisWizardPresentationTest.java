@@ -141,4 +141,62 @@ public class MetaAnalysisWizardPresentationTest {
 		assertEquals(new TreeSet<Drug>(), d_wizard.getDrugSet());
 	}
 	
+	@Test
+	public void testGetFirstDrugModel() {
+		testDrugModelHelper(d_wizard.getFirstDrugModel());
+	}
+
+	@Test
+	public void testGetSecondDrugModel() {
+		testDrugModelHelper(d_wizard.getSecondDrugModel());
+	}
+	
+	private void testDrugModelHelper(ValueModel drugModel) {
+		assertNotNull(drugModel);
+		assertEquals(null, drugModel.getValue());
+	}
+
+	@Test
+	public void testSetFirstDrug(){
+		testSetDrugHelper(d_wizard.getFirstDrugModel());
+	}
+	
+	@Test
+	public void testSetSecondDrug(){
+		testSetDrugHelper(d_wizard.getSecondDrugModel());
+	}
+
+	private void testSetDrugHelper(ValueModel vm) {
+		Indication ind = ExampleData.buildIndicationDepression();
+		Endpoint ep = ExampleData.buildEndpointHamd();
+		Drug d = ExampleData.buildDrugFluoxetine();
+		d_wizard.getIndicationModel().setValue(ind);
+		d_wizard.getEndpointModel().setValue(ep);
+		
+		JUnitUtil.testSetter(vm, null, d);
+		
+		assertEquals(d, vm.getValue());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testSetInvalidFirstDrug(){
+		testSetInvalidDrugHelper(d_wizard.getFirstDrugModel());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testSetInvalidSecondDrug(){
+		testSetInvalidDrugHelper(d_wizard.getSecondDrugModel());
+	}
+
+	private void testSetInvalidDrugHelper(ValueModel vm) {
+		Indication ind = ExampleData.buildIndicationDepression();
+		Endpoint ep = ExampleData.buildEndpointHamd();
+		Drug d = ExampleData.buildDrugCandesartan();
+		d_wizard.getIndicationModel().setValue(ind);
+		d_wizard.getEndpointModel().setValue(ep);
+		
+		assertTrue(!d_wizard.getDrugSet().contains(d));
+		
+		vm.setValue(d);
+	}
 }

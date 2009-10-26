@@ -12,7 +12,6 @@ import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.addis.entities.Study;
 
 import com.jgoodies.binding.value.AbstractValueModel;
-import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
 
 public class MetaAnalysisWizardPresentation {
@@ -48,6 +47,13 @@ public class MetaAnalysisWizardPresentation {
 			super.setValue(newValue);
 			d_endpointHolder.unSet();
 		}
+		
+		@Override
+		public void unSet() {
+			super.unSet();
+			d_endpointHolder.unSet();
+		}
+		
 		@Override
 		protected void checkArgument(Object newValue) {
 			if (!getIndicationSet().contains(newValue))
@@ -63,15 +69,28 @@ public class MetaAnalysisWizardPresentation {
 				throw new IllegalArgumentException("Endpoint not in the actual set!");
 		}
 	}
+	
+	@SuppressWarnings("serial")
+	private class DrugHolder extends AbstractHolder<Drug> {
+		@Override
+		protected void checkArgument(Object newValue) {
+			if (!getDrugSet().contains(newValue))
+				throw new IllegalArgumentException("Drug not in the actual set!");
+		}
+	}
 		
 	private Domain d_domain;
 	private AbstractHolder<Indication> d_indicationHolder;
 	private AbstractHolder<Endpoint> d_endpointHolder;
+	private DrugHolder d_firstDrugHolder;
+	private DrugHolder d_secondDrugHolder;
 	
 	public MetaAnalysisWizardPresentation(Domain d) {
 		d_domain = d;
 		d_indicationHolder = new IndicationHolder();
 		d_endpointHolder = new EndpointHolder();
+		d_firstDrugHolder = new DrugHolder();
+		d_secondDrugHolder = new DrugHolder();
 	}
 	
 	public SortedSet<Indication> getIndicationSet() {
@@ -117,11 +136,11 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	public ValueModel getFirstDrugModel() {
-		return new ValueHolder();
+		return d_firstDrugHolder;
 	}
 	
 	public ValueModel getSecondDrugModel() {
-		return new ValueHolder();
+		return d_secondDrugHolder;
 	}
 	
 	public SortedSet<Study> getStudySet() {
