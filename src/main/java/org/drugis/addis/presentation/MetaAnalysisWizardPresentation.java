@@ -2,12 +2,10 @@ package org.drugis.addis.presentation;
 
 import java.util.SortedSet;
 
-import org.apache.commons.math.random.ValueServer;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Indication;
 
 import com.jgoodies.binding.value.AbstractValueModel;
-import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
 
 public class MetaAnalysisWizardPresentation {
