@@ -74,8 +74,8 @@ public class MetaAnalysisWizardPresentation {
 	
 	public SortedSet<Endpoint> getEndpointSet() {
 		TreeSet<Endpoint> endpoints = new TreeSet<Endpoint>();
-		if (d_indicationHolder.getValue() != null) {
-			for (Study s : d_domain.getStudies(d_indicationHolder.getValue())) {
+		if (getIndication() != null) {
+			for (Study s : d_domain.getStudies(getIndication())) {
 				endpoints.addAll(s.getEndpoints());
 			}
 		}
@@ -87,7 +87,23 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	public SortedSet<Drug> getDrugSet() {
-		return d_domain.getDrugs();
+		SortedSet<Drug> drugs = new TreeSet<Drug>();
+		if (getIndication() != null && getEndpoint() != null) {
+			SortedSet<Study> studies = new TreeSet<Study>(d_domain.getStudies(getEndpoint()));
+			studies.retainAll(d_domain.getStudies(getIndication()));
+			for (Study s : studies) {
+				drugs.addAll(s.getDrugs());
+			}
+		}
+		return drugs;
+	}
+
+	private Indication getIndication() {
+		return d_indicationHolder.getValue();
+	}
+
+	private Endpoint getEndpoint() {
+		return d_endpointHolder.getValue();
 	}
 	
 	public ValueModel getFirstDrugModel() {

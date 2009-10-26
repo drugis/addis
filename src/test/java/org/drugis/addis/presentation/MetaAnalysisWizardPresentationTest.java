@@ -1,12 +1,17 @@
 package org.drugis.addis.presentation;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.ExampleData;
 import org.drugis.addis.entities.Indication;
@@ -97,5 +102,35 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		ValueModel vm = d_wizard.getEndpointModel();
 		vm.setValue(newValue);
+	}
+	
+	@Test
+	public void testChangeIndicationUnsetEndpoint() {
+		fail();
+	}
+		
+	@Test
+	public void testGetDrugSet() {
+		Indication ind = ExampleData.buildIndicationDepression();
+		Endpoint ep = ExampleData.buildEndpointCgi();
+		
+		SortedSet<Drug> expected = new TreeSet<Drug>();
+		expected.addAll(ExampleData.buildDefaultStudy().getDrugs());
+		
+		d_wizard.getIndicationModel().setValue(ind);
+		d_wizard.getEndpointModel().setValue(ep);
+		
+		assertEquals(expected, d_wizard.getDrugSet());
+	}
+	
+	@Test
+	public void testGetDrugSetNoEndpoint() {
+		Indication ind = ExampleData.buildIndicationDepression();
+		
+		d_wizard.getIndicationModel().setValue(ind);
+		assertNull(d_wizard.getEndpointModel().getValue());
+		assertNotNull(d_wizard.getDrugSet());
+		
+		assertEquals(new TreeSet<Drug>(), d_wizard.getDrugSet());
 	}
 }
