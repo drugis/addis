@@ -1,6 +1,7 @@
 package org.drugis.addis.presentation;
 
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -18,6 +19,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.ExampleData;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation.AbstractListHolder;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -124,10 +126,12 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testGetDrugSet() {
 		Indication ind = ExampleData.buildIndicationDepression();
-		Endpoint ep = ExampleData.buildEndpointCgi();
+		Endpoint ep = ExampleData.buildEndpointHamd();
 		
 		SortedSet<Drug> expected = new TreeSet<Drug>();
-		expected.addAll(ExampleData.buildDefaultStudy().getDrugs());
+		expected.add(ExampleData.buildDrugFluoxetine());
+		expected.add(ExampleData.buildDrugParoxetine());
+		expected.add(ExampleData.buildDrugViagra());
 		
 		d_wizard.getIndicationModel().setValue(ind);
 		d_wizard.getEndpointModel().setValue(ep);
@@ -275,5 +279,54 @@ public class MetaAnalysisWizardPresentationTest {
 		drugList.addValueChangeListener(l);
 		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
 		verify(l);
+	}
+	
+	@Test
+	public void testEndpointChangeUnsetDrugs() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
+
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		
+		assertNull(d_wizard.getFirstDrugModel().getValue());
+		assertNull(d_wizard.getSecondDrugModel().getValue());
+	}
+	
+	@Test
+	public void testGetStudySet() {
+		SortedSet<Study> expected = new TreeSet<Study>();
+		expected.add(ExampleData.buildDefaultStudy());
+		
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
+		
+		assertEquals(expected, d_wizard.getStudySet());
+	}
+	
+	@Test
+	public void testGetStudySetNoFirstDrug() {
+		testGetStudySetNoDrugHelper(d_wizard.getSecondDrugModel(), d_wizard.getFirstDrugModel());
+	}
+
+	@Test
+	public void testGetStudySetNoSecondDrug() {
+		testGetStudySetNoDrugHelper(d_wizard.getFirstDrugModel(), d_wizard.getSecondDrugModel());
+	}
+	
+	private void testGetStudySetNoDrugHelper(ValueModel setDrugModel,
+			ValueModel unsetDrugModel) {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		setDrugModel.setValue(ExampleData.buildDrugFluoxetine());
+		
+		// sanity checks
+		assertNull(unsetDrugModel.getValue());
+		assertNotNull(d_wizard.getStudySet());
+		
+		assertEquals(new TreeSet<Study>(), d_wizard.getStudySet());
 	}
 }

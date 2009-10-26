@@ -48,20 +48,28 @@ public class ExampleData {
 	private static Indication s_indicationHeartFailure;
 	private static Drug s_candesartan;
 	private static Endpoint s_endpointCVdeath;
+	private static Drug s_sertr;
 
 	public static void initDefaultData(Domain domain) {
+		// depression data
 		domain.addIndication(buildIndicationDepression());
 		domain.addEndpoint(buildEndpointHamd());
 		domain.addEndpoint(buildEndpointCgi());
 		domain.addDrug(buildDrugFluoxetine());
 		domain.addDrug(buildDrugParoxetine());
+		domain.addDrug(buildDrugSertraline());
 		domain.addStudy(buildDefaultStudy());
 		domain.addStudy(buildDefaultStudy2());
-		domain.addEndpoint(buildEndpointUnused());
+		domain.addStudy(buildDefaultStudy3());
+		
+		// heart failure data
 		domain.addIndication(buildIndicationChronicHeartFailure());
 		domain.addDrug(buildDrugCandesartan());
 		domain.addEndpoint(buildEndpointCVdeath());
 		domain.addStudy(buildHeartStudy());
+		
+		// unused stuff
+		domain.addEndpoint(buildEndpointUnused());
 	}
 
 	public static AbstractStudy buildDefaultStudy2() {
@@ -94,7 +102,33 @@ public class ExampleData {
 		study.setMeasurement(hamd, viagra, vHamd);
 		return study;
 	}
+
+	public static AbstractStudy buildDefaultStudy3() {
+		Endpoint cgi = buildEndpointCgi();
+		Drug sertraline = buildDrugSertraline();
+		BasicStudy study = new BasicStudy("Fictional et al, 2009", buildIndicationDepression());
+		study.setEndpoints(Collections.singleton(cgi));
+		
+
+		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroup parox = new BasicPatientGroup(study, buildDrugParoxetine(), dose, 37);
+		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)cgi.buildMeasurement(parox);
+		pCgi.setMean(3.0);
+		pCgi.setStdDev(0.5);
+
+		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroup sertr = new BasicPatientGroup(study, sertraline, dose, 41);
+		BasicContinuousMeasurement sCgi = (BasicContinuousMeasurement)cgi.buildMeasurement(sertr);
+		sCgi.setMean(2.5);
+		sCgi.setStdDev(1.0);
 	
+		study.addPatientGroup(parox);
+		study.addPatientGroup(sertr);
+		study.setMeasurement(cgi, parox, pCgi);
+		study.setMeasurement(cgi, sertr, sCgi);
+		return study;
+	}
+
 	public static AbstractStudy buildHeartStudy() {
 		Endpoint CVdeath = buildEndpointCVdeath();
 		BasicStudy study = new BasicStudy("McMurray et al, 2003", buildIndicationChronicHeartFailure());
@@ -145,7 +179,14 @@ public class ExampleData {
 		}
 		return s_parox;
 	}
-
+	
+	public static Drug buildDrugSertraline() {
+		if (s_sertr == null) {
+			s_sertr = new Drug("Sertraline", "XXXXXX");
+		}
+		return s_sertr;
+	}
+	
 	public static Drug buildDrugFluoxetine() {
 		if (s_fluox == null) {
 			s_fluox = new Drug("Fluoxetine", "N06AB03");

@@ -19,7 +19,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class MetaAnalysisWizardPresentation {
 	@SuppressWarnings("serial") 
-	abstract private class AbstractHolder<T> extends AbstractValueModel {
+	abstract class AbstractHolder<T> extends AbstractValueModel {
 		protected abstract void checkArgument(Object newValue);
 
 		private T d_content = null;
@@ -34,26 +34,22 @@ public class MetaAnalysisWizardPresentation {
 			T oldValue = d_content;
 			d_content = (T) newValue;
 			fireValueChange(oldValue, d_content);
+			cascade();
 		}
 		
 		public void unSet() {
 			T oldValue = d_content;
 			d_content = null;
 			fireValueChange(oldValue, d_content);
+			cascade();
 		}
+
+		protected abstract void cascade();
 	}
 	
-	@SuppressWarnings("serial")
-	private class IndicationHolder extends AbstractHolder<Indication> {
+	@SuppressWarnings("serial") class IndicationHolder extends AbstractHolder<Indication> {
 		@Override
-		public void setValue(Object newValue) {
-			super.setValue(newValue);
-			d_endpointHolder.unSet();
-		}
-		
-		@Override
-		public void unSet() {
-			super.unSet();
+		protected void cascade() {
 			d_endpointHolder.unSet();
 		}
 		
@@ -71,6 +67,12 @@ public class MetaAnalysisWizardPresentation {
 			if (!getEndpointSet().contains(newValue))
 				throw new IllegalArgumentException("Endpoint not in the actual set!");
 		}
+
+		@Override
+		protected void cascade() {
+			d_firstDrugHolder.unSet();
+			d_secondDrugHolder.unSet();
+		}
 	}
 	
 	@SuppressWarnings("serial")
@@ -79,6 +81,9 @@ public class MetaAnalysisWizardPresentation {
 		protected void checkArgument(Object newValue) {
 			if (!getDrugSet().contains(newValue))
 				throw new IllegalArgumentException("Drug not in the actual set!");
+		}
+
+		protected void cascade() {
 		}
 	}
 	
@@ -150,14 +155,14 @@ public class MetaAnalysisWizardPresentation {
 		d_drugListHolder = new DrugListHolder();
 		d_firstDrugHolder.addValueChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getNewValue() != null && evt.getNewValue().equals(d_secondDrugHolder.getValue())) {
+				if (evt.getNewValue() != null && evt.getNewValue().equals(getSecondDrug())) {
 					d_secondDrugHolder.unSet();
 				}					
 			}			
 		});
 		d_secondDrugHolder.addValueChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getNewValue() != null && evt.getNewValue().equals(d_firstDrugHolder.getValue())) {
+				if (evt.getNewValue() != null && evt.getNewValue().equals(getFirstDrug())) {
 					d_firstDrugHolder.unSet();
 				}					
 			}			
@@ -201,13 +206,18 @@ public class MetaAnalysisWizardPresentation {
 	public SortedSet<Drug> getDrugSet() {
 		SortedSet<Drug> drugs = new TreeSet<Drug>();
 		if (getIndication() != null && getEndpoint() != null) {
-			SortedSet<Study> studies = new TreeSet<Study>(d_domain.getStudies(getEndpoint()));
-			studies.retainAll(d_domain.getStudies(getIndication()));
+			SortedSet<Study> studies = getStudiesEndpointAndIndication();
 			for (Study s : studies) {
 				drugs.addAll(s.getDrugs());
 			}
 		}
 		return drugs;
+	}
+
+	private SortedSet<Study> getStudiesEndpointAndIndication() {
+		SortedSet<Study> studies = new TreeSet<Study>(d_domain.getStudies(getEndpoint()));
+		studies.retainAll(d_domain.getStudies(getIndication()));
+		return studies;
 	}
 
 	private Indication getIndication() {
@@ -227,7 +237,21 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	public SortedSet<Study> getStudySet() {
-		return d_domain.getStudies();
+		SortedSet<Study> studies = new TreeSet<Study>();
+		if (getSecondDrug() != null && getFirstDrug() != null) {
+			studies = getStudiesEndpointAndIndication();
+			studies.retainAll(d_domain.getStudies(getFirstDrug()));
+			studies.retainAll(d_domain.getStudies(getSecondDrug()));
+		}
+		return studies;
+	}
+
+	private Drug getFirstDrug() {
+		return d_firstDrugHolder.getValue();
+	}
+
+	private Drug getSecondDrug() {
+		return d_secondDrugHolder.getValue();
 	}
 	
 	public MetaAnalysis getAnalysis() {
