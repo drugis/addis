@@ -150,7 +150,11 @@ public class DomainImpl implements Domain, Serializable {
 		return Collections.unmodifiableSortedSet(d_drugs);
 	}
 
-	public SortedSet<Study> getStudies(Endpoint e) {
+	public SortedSet<Study> getStudies(Endpoint e) 
+	throws NullPointerException {
+		if (e == null) {
+			throw new NullPointerException("Endpoint must not be null");
+		}
 		SortedSet<Study> list = new TreeSet<Study>();
 		for (Study s : d_studies) {
 			if (s.getEndpoints().contains(e)) {
@@ -160,7 +164,11 @@ public class DomainImpl implements Domain, Serializable {
 		return list;
 	}
 	
-	public SortedSet<Study> getStudies(Drug d) {
+	public SortedSet<Study> getStudies(Drug d)
+	throws NullPointerException {
+			if (d == null) {
+				throw new NullPointerException("Drug must not be null");
+			}
 		SortedSet<Study> list = new TreeSet<Study>();
 		for (Study s : d_studies) {
 			if (s.getDrugs().contains(d)) {
@@ -170,7 +178,11 @@ public class DomainImpl implements Domain, Serializable {
 		return list;
 	}
 	
-	public SortedSet<Study> getStudies(Indication i) {
+	public SortedSet<Study> getStudies(Indication i)
+	throws NullPointerException {
+		if (i == null) {
+			throw new NullPointerException("Indication must not be null");
+		}
 		SortedSet<Study> set = new TreeSet<Study>();
 		for (Study s : d_studies) {
 			if (s.getDependencies().contains(i)) {

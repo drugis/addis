@@ -16,33 +16,52 @@ import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
 
 public class MetaAnalysisWizardPresentation {
-	
-	@SuppressWarnings("serial")
-	private class IndicationHolder extends AbstractValueModel {
+	@SuppressWarnings("serial") 
+	abstract private class AbstractHolder<T> extends AbstractValueModel {
+		protected abstract void checkArgument(Object newValue);
 
-		private Indication d_indication = null;
-		
-		public Object getValue() {
-			return d_indication;
+		private T d_content = null;
+
+		public T getValue() {
+			return d_content;
 		}
 
+		@SuppressWarnings("unchecked")
 		public void setValue(Object newValue) {
-			if (!getIndicationSet().contains(newValue))
-				throw new IllegalArgumentException("Indication not in the actual set!");
-			
-			Indication oldValue = d_indication;
-			d_indication = (Indication) newValue;
-				
-			fireValueChange(oldValue, d_indication);
+			checkArgument(newValue);
+			T oldValue = d_content;
+			d_content = (T) newValue;
+			fireValueChange(oldValue, d_content);
 		}
 		
 	}
+	
+	@SuppressWarnings("serial")
+	class IndicationHolder extends AbstractHolder<Indication> {
+		@Override
+		protected void checkArgument(Object newValue) {
+			if (!getIndicationSet().contains(newValue))
+				throw new IllegalArgumentException("Indication not in the actual set!");
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	class EndpointHolder extends AbstractHolder<Endpoint> {
+		@Override
+		protected void checkArgument(Object newValue) {
+			if (!getEndpointSet().contains(newValue))
+				throw new IllegalArgumentException("Endpoint not in the actual set!");
+		}
+	}
+		
 	private Domain d_domain;
-	private IndicationHolder d_valueHolder;
+	private AbstractHolder<Indication> d_indicationHolder;
+	private AbstractHolder<Endpoint> d_endpointHolder;
 	
 	public MetaAnalysisWizardPresentation(Domain d) {
 		d_domain = d;
-		d_valueHolder = new IndicationHolder();		
+		d_indicationHolder = new IndicationHolder();
+		d_endpointHolder = new EndpointHolder();
 	}
 	
 	public SortedSet<Indication> getIndicationSet() {
@@ -50,15 +69,21 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	public ValueModel getIndicationModel() {
-		return d_valueHolder; 
+		return d_indicationHolder; 
 	}
 	
 	public SortedSet<Endpoint> getEndpointSet() {
-		return new TreeSet<Endpoint>();
+		TreeSet<Endpoint> endpoints = new TreeSet<Endpoint>();
+		if (d_indicationHolder.getValue() != null) {
+			for (Study s : d_domain.getStudies(d_indicationHolder.getValue())) {
+				endpoints.addAll(s.getEndpoints());
+			}
+		}
+		return endpoints;
 	}
 	
 	public ValueModel getEndpointModel() {
-		return new ValueHolder();
+		return d_endpointHolder;
 	}
 	
 	public SortedSet<Drug> getDrugSet() {

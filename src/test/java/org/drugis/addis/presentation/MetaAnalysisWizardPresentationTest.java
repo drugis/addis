@@ -71,4 +71,31 @@ public class MetaAnalysisWizardPresentationTest {
 		assertNotNull(d_wizard.getEndpointSet());
 		assertTrue(d_wizard.getEndpointSet().isEmpty());
 	}
+	
+	@Test
+	public void testGetEndpointModel() {
+		assertNotNull(d_wizard.getEndpointModel());
+		assertEquals(null, d_wizard.getEndpointModel().getValue());
+	}
+	
+	@Test
+	public void testSetEndpoint() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		Endpoint newValue = ExampleData.buildEndpointHamd();
+		ValueModel vm = d_wizard.getEndpointModel();
+		JUnitUtil.testSetter(vm, null, newValue);
+		
+		assertEquals(newValue, d_wizard.getEndpointModel().getValue());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testSetInvalidEndpoint() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		Endpoint newValue = ExampleData.buildEndpointCVdeath();
+		
+		assertTrue(!d_wizard.getEndpointSet().contains(newValue));
+		
+		ValueModel vm = d_wizard.getEndpointModel();
+		vm.setValue(newValue);
+	}
 }
