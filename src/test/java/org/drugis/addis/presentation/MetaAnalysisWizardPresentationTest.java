@@ -224,8 +224,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		List<Endpoint> expected = new ArrayList<Endpoint>(d_wizard.getEndpointSet());
 		AbstractListHolder<Endpoint> endpointList = d_wizard.getEndpointListModel();
-		List<Endpoint> list = endpointList.getValue();
-		assertEquals(expected, list);
+		assertEquals(expected, endpointList.getValue());
 	}
 	
 	@Test
@@ -244,6 +243,25 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testGetDrugListModel() {
-		fail();
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		List<Drug> expected = new ArrayList<Drug>(d_wizard.getDrugSet());
+		AbstractListHolder<Drug> drugList = d_wizard.getDrugListModel();
+		assertEquals(expected, drugList.getValue());
+	}
+	
+	@Test
+	public void testDrugListModelEventOnEndpointChange() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		List<Drug> newValue = new ArrayList<Drug>(d_wizard.getDrugSet());
+		
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		ValueModel drugList = d_wizard.getDrugListModel();
+		PropertyChangeListener l = JUnitUtil.mockListener(drugList, "value", null, newValue);
+		
+		drugList.addValueChangeListener(l);
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		verify(l);
 	}
 }

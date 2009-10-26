@@ -116,10 +116,18 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	@SuppressWarnings("serial")
-	private class DrugListHolder extends AbstractListHolder<Drug> {
+	private class DrugListHolder extends AbstractListHolder<Drug> implements PropertyChangeListener {
+		public DrugListHolder() {
+			getEndpointModel().addValueChangeListener(this);
+		}
+		
 		@Override
 		public List<Drug> getValue() {
 			return new ArrayList<Drug>(getDrugSet());
+		}
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			fireValueChange(null, getValue());
 		}
 	}
 		
@@ -129,6 +137,8 @@ public class MetaAnalysisWizardPresentation {
 	private DrugHolder d_firstDrugHolder;
 	private DrugHolder d_secondDrugHolder;
 	private EndpointListHolder d_endpointListHolder;
+	private DrugListHolder d_drugListHolder;
+	
 	
 	public MetaAnalysisWizardPresentation(Domain d) {
 		d_domain = d;
@@ -137,6 +147,7 @@ public class MetaAnalysisWizardPresentation {
 		d_firstDrugHolder = new DrugHolder();
 		d_secondDrugHolder = new DrugHolder();
 		d_endpointListHolder = new EndpointListHolder();
+		d_drugListHolder = new DrugListHolder();
 	}
 	
 	public AbstractListHolder<Indication> getIndicationListModel() {
@@ -170,7 +181,7 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	public AbstractListHolder<Drug> getDrugListModel() {
-		return new DrugListHolder();
+		return d_drugListHolder;
 	}
 	
 	public SortedSet<Drug> getDrugSet() {
