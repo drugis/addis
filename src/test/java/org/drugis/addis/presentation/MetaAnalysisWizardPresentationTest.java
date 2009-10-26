@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -207,8 +206,21 @@ public class MetaAnalysisWizardPresentationTest {
 	}
 	
 	@Test
-	public void testDrugCoupling() {
-		fail();
+	public void testDrugCouplingFirst2Second() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		assertNull(d_wizard.getSecondDrugModel().getValue());
+	}
+	
+	@Test
+	public void testDrugCouplingSecond2First() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		assertNull(d_wizard.getFirstDrugModel().getValue());
 	}
 	
 	@Test

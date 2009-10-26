@@ -148,6 +148,20 @@ public class MetaAnalysisWizardPresentation {
 		d_secondDrugHolder = new DrugHolder();
 		d_endpointListHolder = new EndpointListHolder();
 		d_drugListHolder = new DrugListHolder();
+		d_firstDrugHolder.addValueChangeListener(new PropertyChangeListener(){
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getNewValue() != null && evt.getNewValue().equals(d_secondDrugHolder.getValue())) {
+					d_secondDrugHolder.unSet();
+				}					
+			}			
+		});
+		d_secondDrugHolder.addValueChangeListener(new PropertyChangeListener(){
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getNewValue() != null && evt.getNewValue().equals(d_firstDrugHolder.getValue())) {
+					d_firstDrugHolder.unSet();
+				}					
+			}			
+		});
 	}
 	
 	public AbstractListHolder<Indication> getIndicationListModel() {
