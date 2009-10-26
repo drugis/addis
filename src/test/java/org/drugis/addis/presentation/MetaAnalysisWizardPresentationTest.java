@@ -79,12 +79,13 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testLabelEndpointEvents() {
-		Endpoint endp = d_domain.getEndpoints().first();
-		Endpoint lastEndp = d_domain.getEndpoints().last();		
-		Indication indic = d_domain.getIndications().first();	
+		d_wizard.getIndicationModel().setValue(d_wizard.getIndicationSet().last());
 		
-		d_wizard.getEndpointModel().setValue(endp);
-		d_wizard.getIndicationModel().setValue(indic);		
+		Endpoint firstEndp = d_wizard.getEndpointSet().first();
+		Endpoint lastEndp = d_wizard.getEndpointSet().last();
+		
+		d_wizard.getEndpointModel().setValue(firstEndp);
+		
 		ValueModel model = d_wizard.getStudiesMeasuringLabelModel();
 
 		Object newValue = model.getValue();
@@ -93,19 +94,19 @@ public class MetaAnalysisWizardPresentationTest {
 		PropertyChangeListener studiesLabelListener = JUnitUtil.mockListener(model, AbstractValueModel.PROPERTYNAME_VALUE, null, newValue);
 		model.addValueChangeListener(studiesLabelListener);
 		
-		d_wizard.getEndpointModel().setValue(endp);
+		d_wizard.getEndpointModel().setValue(firstEndp);
 		verify(studiesLabelListener);
-		
 	}
 		
 	@Test
 	public void testLabelIndicationEvents() {
-		Endpoint endp = d_domain.getEndpoints().first();	
-		Indication indic = d_domain.getIndications().first();	
-		Indication lastIndic = d_domain.getIndications().last();		
+		d_wizard.getIndicationModel().setValue(d_wizard.getIndicationSet().first());
+		d_wizard.getEndpointModel().setValue(d_wizard.getEndpointSet().first());
 		
-		d_wizard.getEndpointModel().setValue(endp);
-		d_wizard.getIndicationModel().setValue(indic);		
+		Endpoint endp = d_wizard.getEndpointSet().first();	
+		Indication indic = d_wizard.getIndicationSet().first();	
+		Indication lastIndic = d_wizard.getIndicationSet().last();		
+		
 		ValueModel model = d_wizard.getStudiesMeasuringLabelModel();
 		
 		Object newValue = model.getValue();
@@ -120,15 +121,45 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testGetStudiesMeasuringLabelModel() {
-		Endpoint endp = d_domain.getEndpoints().first();
-		Indication indic = d_domain.getIndications().first();
+		d_wizard.getIndicationModel().setValue(d_wizard.getIndicationSet().first());
+		d_wizard.getEndpointModel().setValue(d_wizard.getEndpointSet().first());		
 		
-		d_wizard.getEndpointModel().setValue(endp);
+		Indication indic = d_wizard.getIndicationSet().first();
+		Endpoint endp = (Endpoint) d_wizard.getEndpointModel().getValue();
+		
 		d_wizard.getIndicationModel().setValue(indic);		
+		d_wizard.getEndpointModel().setValue(endp);		
 		ValueModel model = d_wizard.getStudiesMeasuringLabelModel();
 		String endpVal = endp.toString();
 		String indVal = indic.toString();
 		String correctString = "Studies measuring " + indVal  + " on " + endpVal;
 		assertEquals(correctString, model.getValue());
+	}
+	
+	@Test
+	public void testGetEndpointModel() {
+		assertNotNull(d_wizard.getEndpointModel());
+		assertEquals(null, d_wizard.getEndpointModel().getValue());
+	}
+	
+	@Test
+	public void testSetEndpoint() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		Endpoint newValue = ExampleData.buildEndpointHamd();
+		ValueModel vm = d_wizard.getEndpointModel();
+		JUnitUtil.testSetter(vm, null, newValue);
+		
+		assertEquals(newValue, d_wizard.getEndpointModel().getValue());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testSetInvalidEndpoint() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		Endpoint newValue = ExampleData.buildEndpointCVdeath();
+		
+		assertTrue(!d_wizard.getEndpointSet().contains(newValue));
+		
+		ValueModel vm = d_wizard.getEndpointModel();
+		vm.setValue(newValue);
 	}
 }

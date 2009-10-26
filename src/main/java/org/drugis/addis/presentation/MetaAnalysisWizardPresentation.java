@@ -5,6 +5,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
@@ -18,36 +19,53 @@ import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
 
 public class MetaAnalysisWizardPresentation {
-	
-	@SuppressWarnings("serial")
-	private class IndicationHolder extends AbstractValueModel {
+	@SuppressWarnings("serial") 
+	abstract private class AbstractHolder<T> extends AbstractValueModel {
+		protected abstract void checkArgument(Object newValue);
 
-		private Indication d_indication = null;
-		
-		public Object getValue() {
-			return d_indication;
+		private T d_content = null;
+
+		public T getValue() {
+			return d_content;
 		}
 
+		@SuppressWarnings("unchecked")
 		public void setValue(Object newValue) {
-			if (!getIndicationSet().contains(newValue))
-				throw new IllegalArgumentException("Indication not in the actual set!");
-			
-			Indication oldValue = d_indication;
-			d_indication = (Indication) newValue;
-				
-			fireValueChange(oldValue, d_indication);
+			checkArgument(newValue);
+			T oldValue = d_content;
+			d_content = (T) newValue;
+			fireValueChange(oldValue, d_content);
 		}
 		
 	}
+	
+	@SuppressWarnings("serial")
+	class IndicationHolder extends AbstractHolder<Indication> {
+		@Override
+		protected void checkArgument(Object newValue) {
+			if (!getIndicationSet().contains(newValue))
+				throw new IllegalArgumentException("Indication not in the actual set!");
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	class EndpointHolder extends AbstractHolder<Endpoint> {
+		@Override
+		protected void checkArgument(Object newValue) {
+			if (!getEndpointSet().contains(newValue))
+				throw new IllegalArgumentException("Endpoint not in the actual set!");
+		}
+	}
+		
 	private Domain d_domain;
-	private IndicationHolder d_valueHolder;
-	private ValueHolder d_endpointHolder;
+	private AbstractHolder<Indication> d_indicationHolder;
+	private AbstractHolder<Endpoint> d_endpointHolder;
 	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;	
 	
 	public MetaAnalysisWizardPresentation(Domain d) {
 		d_domain = d;
-		d_valueHolder = new IndicationHolder();
-		d_endpointHolder = new ValueHolder();		
+		d_indicationHolder = new IndicationHolder();
+		d_endpointHolder = new EndpointHolder();
 		d_studiesMeasuringValueModel = new StudiesMeasuringValueModel();		
 	}
 	
@@ -56,11 +74,17 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	public ValueModel getIndicationModel() {
-		return d_valueHolder; 
+		return d_indicationHolder; 
 	}
 	
 	public SortedSet<Endpoint> getEndpointSet() {
-		return d_domain.getEndpoints();
+		TreeSet<Endpoint> endpoints = new TreeSet<Endpoint>();
+		if (d_indicationHolder.getValue() != null) {
+			for (Study s : d_domain.getStudies(d_indicationHolder.getValue())) {
+				endpoints.addAll(s.getEndpoints());
+			}			
+		}	
+		return endpoints;
 	}
 	
 	public ValueModel getEndpointModel() {
@@ -97,7 +121,7 @@ public class MetaAnalysisWizardPresentation {
 		
 		public StudiesMeasuringValueModel() {
 			d_endpointHolder.addValueChangeListener(this);
-			d_valueHolder.addValueChangeListener(this);			
+			d_indicationHolder.addValueChangeListener(this);			
 		}
 
 		public Object getValue() {
@@ -105,7 +129,7 @@ public class MetaAnalysisWizardPresentation {
 		}
 
 		private Object constructString() {
-			String indVal = d_valueHolder.getValue() != null ? d_valueHolder.getValue().toString() : "";
+			String indVal = d_indicationHolder.getValue() != null ? d_indicationHolder.getValue().toString() : "";
 			String endpVal = d_endpointHolder.getValue() != null ? d_endpointHolder.getValue().toString() : "";
 			return "Studies measuring " + indVal + " on " + endpVal;
 		}

@@ -58,8 +58,10 @@ public class MetaStudyTest {
 	public void setUp() {
 		Domain d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		d_analysis = new MetaAnalysis(ExampleData.buildEndpointHamd(), 
-				new ArrayList<Study>(d_domain.getStudies()));		
+		List<Study> studies = new ArrayList<Study>();
+		studies.add(ExampleData.buildDefaultStudy());
+		studies.add(ExampleData.buildDefaultStudy2());
+		d_analysis = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies);		
 		d_study = new MetaStudy("s", d_analysis);
 	}
 	

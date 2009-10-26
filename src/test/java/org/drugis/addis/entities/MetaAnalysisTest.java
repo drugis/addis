@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 import org.drugis.addis.entities.AbstractStudy;
@@ -53,8 +54,10 @@ public class MetaAnalysisTest {
 	public void setUp() {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		d_analysis = new MetaAnalysis(ExampleData.buildEndpointHamd(), 
-				new ArrayList<Study>(d_domain.getStudies()));
+		List<Study> studies = new ArrayList<Study>();
+		studies.add(ExampleData.buildDefaultStudy());
+		studies.add(ExampleData.buildDefaultStudy2());
+		d_analysis = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -91,7 +94,10 @@ public class MetaAnalysisTest {
 	
 	@Test
 	public void testGetStudies() {
-		assertEquals(d_domain.getStudies(), new HashSet<Study>(d_analysis.getStudies()));
+		Set<Study> studies = new HashSet<Study>();
+		studies.add(ExampleData.buildDefaultStudy());
+		studies.add(ExampleData.buildDefaultStudy2());
+		assertEquals(studies, new HashSet<Study>(d_analysis.getStudies()));
 	}
 	
 	@Test

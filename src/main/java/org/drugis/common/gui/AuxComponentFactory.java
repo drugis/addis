@@ -1,5 +1,7 @@
 package org.drugis.common.gui;
 
+import java.util.Collection;
+
 import javax.swing.JComboBox;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -14,5 +16,12 @@ public class AuxComponentFactory {
 		JComboBox type = BasicComponentFactory.createComboBox(typeSelectionInList);
 		return type;
 	}
+	
+	public static <T> JComboBox createBoundComboBox(ValueModel listHolder, ValueModel model) {
+		SelectionInList<T> typeSelectionInList =
+			new SelectionInList<T>(listHolder, model);
+		JComboBox type = BasicComponentFactory.createComboBox(typeSelectionInList);
+		return type;
+	}	
 
 }

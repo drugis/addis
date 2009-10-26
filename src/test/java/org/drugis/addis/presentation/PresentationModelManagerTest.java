@@ -57,7 +57,8 @@ public class PresentationModelManagerTest {
 	@Test
 	public void testMetaStudyGetModel() {
 		List<Study> studies = new ArrayList<Study>();
-		studies.addAll(d_domain.getStudies());
+		studies.add(ExampleData.buildDefaultStudy());
+		studies.add(ExampleData.buildDefaultStudy2());
 		MetaAnalysis anal = new MetaAnalysis(ExampleData.buildEndpointHamd(),
 				studies);
 		MetaStudy s = new MetaStudy("ms", anal);

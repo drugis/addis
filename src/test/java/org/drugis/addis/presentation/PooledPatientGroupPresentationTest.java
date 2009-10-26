@@ -3,6 +3,7 @@ package org.drugis.addis.presentation;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
@@ -23,8 +24,10 @@ public class PooledPatientGroupPresentationTest {
 	public void setUp() {
 		Domain d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		d_analysis = new MetaAnalysis(ExampleData.buildEndpointHamd(), 
-				new ArrayList<Study>(d_domain.getStudies()));		
+		List<Study> studies = new ArrayList<Study>();
+		studies.add(ExampleData.buildDefaultStudy());
+		studies.add(ExampleData.buildDefaultStudy2());
+		d_analysis = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies);		
 		d_study = new MetaStudy("s", d_analysis);
 		d_pg = new PooledPatientGroup(d_study, ExampleData.buildDrugFluoxetine());
 	}
