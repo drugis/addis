@@ -68,10 +68,12 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.builder.DrugView;
 import org.drugis.addis.gui.builder.EndpointView;
 import org.drugis.addis.gui.builder.IndicationView;
+import org.drugis.addis.gui.builder.MetaAnalysisWizard;
 import org.drugis.addis.gui.builder.MetaStudyView;
 import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.presentation.DrugPresentationModel;
 import org.drugis.addis.presentation.IndicationPresentation;
+import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
 import org.drugis.addis.presentation.PresentationModelManager;
 import org.drugis.common.ImageLoader;
@@ -401,7 +403,7 @@ public class Main extends JFrame {
 		topAddMetaStudyButton.setToolTipText("Create meta-analysis");
 		topAddMetaStudyButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "Not yet implemented");
+				showMetaAnalysisWizard();
 			}
 		});	
 		
@@ -411,6 +413,12 @@ public class Main extends JFrame {
 		toolbar.add(builder.getPanel());
 		toolbar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		add(toolbar, BorderLayout.NORTH);
+	}
+
+	private void showMetaAnalysisWizard() {
+		// FIXME: Use PresentationModelManager to create presentation model
+		MetaAnalysisWizard wizard = new MetaAnalysisWizard(new MetaAnalysisWizardPresentation(d_domain.getDomain()));
+		wizard.buildPanel().showInDialog("Create meta-analysis", this, true);
 	}
 
 	private void initPanel() {

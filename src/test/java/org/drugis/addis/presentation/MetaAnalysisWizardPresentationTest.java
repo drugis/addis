@@ -1,7 +1,11 @@
 package org.drugis.addis.presentation;
 
-import static org.junit.Assert.*;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.beans.PropertyChangeListener;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -14,6 +18,7 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class MetaAnalysisWizardPresentationTest {
@@ -70,5 +75,60 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testGetEndpointSetNoIndication() {
 		assertNotNull(d_wizard.getEndpointSet());
 		assertTrue(d_wizard.getEndpointSet().isEmpty());
+	}
+	
+	@Test
+	public void testLabelEndpointEvents() {
+		Endpoint endp = d_domain.getEndpoints().first();
+		Endpoint lastEndp = d_domain.getEndpoints().last();		
+		Indication indic = d_domain.getIndications().first();	
+		
+		d_wizard.getEndpointModel().setValue(endp);
+		d_wizard.getIndicationModel().setValue(indic);		
+		ValueModel model = d_wizard.getStudiesMeasuringLabelModel();
+
+		Object newValue = model.getValue();
+		d_wizard.getEndpointModel().setValue(lastEndp);
+		
+		PropertyChangeListener studiesLabelListener = JUnitUtil.mockListener(model, AbstractValueModel.PROPERTYNAME_VALUE, null, newValue);
+		model.addValueChangeListener(studiesLabelListener);
+		
+		d_wizard.getEndpointModel().setValue(endp);
+		verify(studiesLabelListener);
+		
+	}
+		
+	@Test
+	public void testLabelIndicationEvents() {
+		Endpoint endp = d_domain.getEndpoints().first();	
+		Indication indic = d_domain.getIndications().first();	
+		Indication lastIndic = d_domain.getIndications().last();		
+		
+		d_wizard.getEndpointModel().setValue(endp);
+		d_wizard.getIndicationModel().setValue(indic);		
+		ValueModel model = d_wizard.getStudiesMeasuringLabelModel();
+		
+		Object newValue = model.getValue();
+		d_wizard.getIndicationModel().setValue(lastIndic);
+		
+		PropertyChangeListener studiesLabelListener2 = JUnitUtil.mockListener(model, AbstractValueModel.PROPERTYNAME_VALUE, null, newValue);
+		model.addValueChangeListener(studiesLabelListener2);
+		
+		d_wizard.getIndicationModel().setValue(indic);
+		verify(studiesLabelListener2);
+	}
+	
+	@Test
+	public void testGetStudiesMeasuringLabelModel() {
+		Endpoint endp = d_domain.getEndpoints().first();
+		Indication indic = d_domain.getIndications().first();
+		
+		d_wizard.getEndpointModel().setValue(endp);
+		d_wizard.getIndicationModel().setValue(indic);		
+		ValueModel model = d_wizard.getStudiesMeasuringLabelModel();
+		String endpVal = endp.toString();
+		String indVal = indic.toString();
+		String correctString = "Studies measuring " + indVal  + " on " + endpVal;
+		assertEquals(correctString, model.getValue());
 	}
 }
