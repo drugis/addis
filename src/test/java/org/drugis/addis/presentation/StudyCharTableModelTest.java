@@ -23,6 +23,7 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -52,7 +53,10 @@ public class StudyCharTableModelTest {
 	public void setUp() {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		MetaAnalysis ma = new MetaAnalysis(ExampleData.buildEndpointHamd(), new ArrayList<Study>(d_domain.getStudies()));
+		List<Study> studies = new ArrayList<Study>();
+		studies.add(ExampleData.buildDefaultStudy());
+		studies.add(ExampleData.buildDefaultStudy2());
+		MetaAnalysis ma = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies);
 		d_study = new MetaStudy("Meta", ma);
 		d_pm = new MetaStudyPresentationModel(d_study);
 		d_model = new StudyCharTableModel(d_pm);

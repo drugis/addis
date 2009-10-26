@@ -2,6 +2,7 @@ package org.drugis.addis.presentation;
 
 import java.util.ArrayList;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
@@ -53,7 +54,7 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	public SortedSet<Endpoint> getEndpointSet() {
-		return d_domain.getEndpoints();
+		return new TreeSet<Endpoint>();
 	}
 	
 	public ValueModel getEndpointModel() {

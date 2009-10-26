@@ -38,13 +38,16 @@ import org.drugis.addis.entities.Endpoint.Type;
 
 
 public class ExampleData {
-	private static Indication s_indication;
+	private static Indication s_indicationDepression;
 	private static Endpoint s_endpointHamd;
 	private static Endpoint s_endpointCgi;
 	private static Drug s_parox;
 	private static Drug s_fluox;
 	private static Drug s_viagra;
 	private static Endpoint s_endpointUnused;
+	private static Indication s_indicationHeartFailure;
+	private static Drug s_candesartan;
+	private static Endpoint s_endpointCVdeath;
 
 	public static void initDefaultData(Domain domain) {
 		domain.addIndication(buildIndicationDepression());
@@ -55,6 +58,10 @@ public class ExampleData {
 		domain.addStudy(buildDefaultStudy());
 		domain.addStudy(buildDefaultStudy2());
 		domain.addEndpoint(buildEndpointUnused());
+		domain.addIndication(buildIndicationChronicHeartFailure());
+		domain.addDrug(buildDrugCandesartan());
+		domain.addEndpoint(buildEndpointCVdeath());
+		domain.addStudy(buildHeartStudy());
 	}
 
 	public static AbstractStudy buildDefaultStudy2() {
@@ -85,6 +92,13 @@ public class ExampleData {
 		study.setMeasurement(hamd, parox, pHamd);
 		study.setMeasurement(hamd, fluox, fHamd);
 		study.setMeasurement(hamd, viagra, vHamd);
+		return study;
+	}
+	
+	public static AbstractStudy buildHeartStudy() {
+		Endpoint CVdeath = buildEndpointCVdeath();
+		BasicStudy study = new BasicStudy("McMurray et al, 2003", buildIndicationChronicHeartFailure());
+		study.setEndpoints(Collections.singleton(CVdeath));
 		return study;
 	}
 
@@ -127,24 +141,37 @@ public class ExampleData {
 
 	public static Drug buildDrugParoxetine() {
 		if (s_parox == null) {
-			Drug paroxetine = new Drug("Paroxetine", "atc");
-			s_parox = paroxetine;
+			s_parox = new Drug("Paroxetine", "A04AA01");
 		}
 		return s_parox;
 	}
 
 	public static Drug buildDrugFluoxetine() {
 		if (s_fluox == null) {
-			s_fluox = new Drug("Fluoxetine", "atc");
+			s_fluox = new Drug("Fluoxetine", "N06AB03");
 		}
 		return s_fluox;
 	}
+
+	public static Drug buildDrugCandesartan() {
+		if (s_candesartan == null) {
+			s_candesartan = new Drug("Candesartan", "C09CA06");
+		}
+		return s_candesartan;
+	}
 	
 	public static Indication buildIndicationDepression() {
-		if (s_indication == null) {
-			s_indication = new Indication(310497006L, "Severe depression");
+		if (s_indicationDepression == null) {
+			s_indicationDepression = new Indication(310497006L, "Severe depression");
 		}
-		return s_indication;
+		return s_indicationDepression;
+	}
+	
+	public static Indication buildIndicationChronicHeartFailure() {
+		if (s_indicationHeartFailure == null) {
+			s_indicationHeartFailure = new Indication(48447003L, "Chronic Heart Failure");
+		}
+		return s_indicationHeartFailure;
 	}
 	
 	public static Drug buildDrugViagra() {
@@ -173,11 +200,19 @@ public class ExampleData {
 	
 	public static Endpoint buildEndpointUnused() {
 		if (s_endpointUnused == null) { 
-			Endpoint cgi = new Endpoint("Unused Endpoint", Type.RATE);
-			cgi.setDescription("");
-			s_endpointUnused = cgi;
+			Endpoint unused = new Endpoint("Unused Endpoint", Type.RATE);
+			unused.setDescription("");
+			s_endpointUnused = unused;
 		}
 		return s_endpointUnused;
-	}	
+	}
+	
+	public static Endpoint buildEndpointCVdeath() {
+		if (s_endpointCVdeath == null) {
+			Endpoint e = new Endpoint("Cardiovascular Death", Type.RATE);
+			s_endpointCVdeath = e;
+		}
+		return s_endpointCVdeath;
+	}
 
 }

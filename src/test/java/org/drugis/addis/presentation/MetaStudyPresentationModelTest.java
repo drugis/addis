@@ -22,6 +22,7 @@ package org.drugis.addis.presentation;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
@@ -46,7 +47,10 @@ public class MetaStudyPresentationModelTest {
 	public void setUp() {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		MetaAnalysis ma = new MetaAnalysis(ExampleData.buildEndpointHamd(), new ArrayList<Study>(d_domain.getStudies()));
+		List<Study> studies = new ArrayList<Study>();
+		studies.add(ExampleData.buildDefaultStudy());
+		studies.add(ExampleData.buildDefaultStudy2());
+		MetaAnalysis ma = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies);
 		d_study = new MetaStudy("Meta", ma);
 		d_presentationModel = new MetaStudyPresentationModel(d_study);
 	}

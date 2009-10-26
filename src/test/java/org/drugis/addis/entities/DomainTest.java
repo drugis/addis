@@ -104,7 +104,9 @@ public class DomainTest {
 
 	private MetaStudy addMetaStudyToDomain() {
 		ExampleData.initDefaultData(d_domain);
-		ArrayList<Study> studies = new ArrayList<Study>(d_domain.getStudies());
+		List<Study> studies = new ArrayList<Study>();
+		studies.add(ExampleData.buildDefaultStudy());
+		studies.add(ExampleData.buildDefaultStudy2());
 		MetaAnalysis ma = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies); 
 		MetaStudy s = new MetaStudy("meta", ma);
 		d_domain.addStudy(s);
