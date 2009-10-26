@@ -46,9 +46,9 @@ import java.util.Set;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-
 import com.jgoodies.binding.beans.Model;
 import com.jgoodies.binding.beans.Observable;
+import com.jgoodies.binding.value.ValueModel;
 
 public class JUnitUtil {
 	public static void testSetter(Observable source, String propertyName, Object oldValue, Object newValue) {
@@ -67,7 +67,7 @@ public class JUnitUtil {
 		verify(mock);
 	}
 
-	public static PropertyChangeListener mockListener(Observable source,
+	public static PropertyChangeListener mockListener(Object source,
 			String propertyName, Object oldValue, Object newValue) {
 		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
 		PropertyChangeEvent event = new PropertyChangeEvent(
@@ -247,5 +247,15 @@ public class JUnitUtil {
 		ObjectInputStream ois = new ObjectInputStream(bis);
 		
 		return (B) ois.readObject();
+	}
+
+	public static void testSetter(ValueModel vm,
+			Object oldValue, Object newValue) {
+		PropertyChangeListener mock = mockListener(vm, "value", oldValue, newValue);
+		vm.addValueChangeListener(mock);
+		
+		vm.setValue(newValue);
+		assertEquals(newValue, vm.getValue());
+		verify(mock);
 	}	
 }
