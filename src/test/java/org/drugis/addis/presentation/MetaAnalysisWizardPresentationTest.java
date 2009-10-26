@@ -16,6 +16,7 @@ import org.drugis.addis.entities.ExampleData;
 import org.drugis.addis.entities.Indication;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jgoodies.binding.value.ValueModel;
@@ -198,5 +199,11 @@ public class MetaAnalysisWizardPresentationTest {
 		assertTrue(!d_wizard.getDrugSet().contains(d));
 		
 		vm.setValue(d);
+	}
+	
+	@Ignore
+	@Test
+	public void testDrugCoupling() {
+		fail();
 	}
 }

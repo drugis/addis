@@ -12,6 +12,7 @@ import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.addis.entities.Study;
 
 import com.jgoodies.binding.value.AbstractValueModel;
+import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
 
 public class MetaAnalysisWizardPresentation {
@@ -93,12 +94,20 @@ public class MetaAnalysisWizardPresentation {
 		d_secondDrugHolder = new DrugHolder();
 	}
 	
+	public ValueModel getIndicationListModel() {
+		return new ValueHolder();
+	}
+	
 	public SortedSet<Indication> getIndicationSet() {
 		return d_domain.getIndications();
 	}
 	
 	public ValueModel getIndicationModel() {
 		return d_indicationHolder; 
+	}
+	
+	public ValueModel getEndpointListModel() {
+		return new ValueHolder();
 	}
 	
 	public SortedSet<Endpoint> getEndpointSet() {
@@ -113,6 +122,10 @@ public class MetaAnalysisWizardPresentation {
 	
 	public ValueModel getEndpointModel() {
 		return d_endpointHolder;
+	}
+	
+	public ValueModel getDrugListModel() {
+		return new ValueHolder();
 	}
 	
 	public SortedSet<Drug> getDrugSet() {
