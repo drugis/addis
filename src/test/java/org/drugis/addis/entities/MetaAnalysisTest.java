@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
@@ -55,7 +56,7 @@ public class MetaAnalysisTest {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
 		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy());
+		studies.add(ExampleData.buildDefaultStudy1());
 		studies.add(ExampleData.buildDefaultStudy2());
 		d_analysis = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies);
 	}
@@ -95,7 +96,7 @@ public class MetaAnalysisTest {
 	@Test
 	public void testGetStudies() {
 		Set<Study> studies = new HashSet<Study>();
-		studies.add(ExampleData.buildDefaultStudy());
+		studies.add(ExampleData.buildDefaultStudy1());
 		studies.add(ExampleData.buildDefaultStudy2());
 		assertEquals(studies, new HashSet<Study>(d_analysis.getStudies()));
 	}

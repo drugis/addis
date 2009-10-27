@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -87,7 +88,6 @@ public class BasicStudyTest {
 		Set<Drug> expected = new HashSet<Drug>();
 		expected.add(ExampleData.buildDrugFluoxetine());
 		expected.add(ExampleData.buildDrugParoxetine());
-		expected.add(ExampleData.buildDrugViagra());
 		assertEquals(expected, s.getDrugs());
 	}
 	
