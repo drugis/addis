@@ -15,11 +15,10 @@ import com.jgoodies.binding.value.AbstractValueModel;
 public class DrugPresentationModel extends PresentationModel<Drug> implements StudyListPresentationModel {
 	
 	private CharacteristicVisibleMap d_charVisibleMap = new CharacteristicVisibleMap();
-	private List<Study> d_studies;
+	private ArrayList<Study> d_studies;
 
 	public DrugPresentationModel(Drug drug, SortedSet<Study> studies) {
 		super(drug);
-		
 		d_studies = new ArrayList<Study>(studies);		
 	}
 	
@@ -27,8 +26,14 @@ public class DrugPresentationModel extends PresentationModel<Drug> implements St
 		return d_charVisibleMap.get(c);
 	}
 
-	public List<Study> getIncludedStudies() {
-		return d_studies;
+	public ListHolder<Study> getIncludedStudies() {
+		return new StudyListHolder();
 	}
 
+	class StudyListHolder extends AbstractListHolder<Study> {
+		@Override
+		public List<Study> getValue() {
+			return new ArrayList<Study>(d_studies);
+		}
+	}
 }

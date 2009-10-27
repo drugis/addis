@@ -95,15 +95,6 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	@SuppressWarnings("serial")
-	public abstract class AbstractListHolder<E> extends AbstractValueModel {
-		public abstract List<E> getValue();
-
-		public void setValue(Object newValue) {
-			throw new UnsupportedOperationException("AbstractListModel is read-only");
-		}
-	}
-	
-	@SuppressWarnings("serial")
 	private class IndicationListHolder extends AbstractListHolder<Indication> {
 		@Override
 		public List<Indication> getValue() {
@@ -178,7 +169,7 @@ public class MetaAnalysisWizardPresentation {
 		});
 	}
 	
-	public AbstractListHolder<Indication> getIndicationListModel() {
+	public ListHolder<Indication> getIndicationListModel() {
 		return new IndicationListHolder();
 	}
 	
@@ -254,7 +245,7 @@ public class MetaAnalysisWizardPresentation {
 		}
 		return studies;
 	}
-
+	
 	private Drug getFirstDrug() {
 		return d_firstDrugHolder.getValue();
 	}

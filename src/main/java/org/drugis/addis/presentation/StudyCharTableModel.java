@@ -55,15 +55,15 @@ public class StudyCharTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		return d_pm.getIncludedStudies().size();
+		return d_pm.getIncludedStudies().getValue().size();
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		if (columnIndex == 0) {
-			return d_pm.getIncludedStudies().get(rowIndex).getId();
+			return d_pm.getIncludedStudies().getValue().get(rowIndex).getId();
 		}
 		StudyCharacteristic c = getCharacteristic(columnIndex);
-		return d_pm.getIncludedStudies().get(rowIndex).getCharacteristics().get(c);
+		return d_pm.getIncludedStudies().getValue().get(rowIndex).getCharacteristics().get(c);
 	}
 
 	@Override

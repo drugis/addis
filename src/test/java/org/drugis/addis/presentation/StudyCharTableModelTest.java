@@ -71,13 +71,13 @@ public class StudyCharTableModelTest {
 	
 	@Test
 	public void testGetRowCount() {
-		assertEquals(d_pm.getIncludedStudies().size(), d_model.getRowCount());
+		assertEquals(d_pm.getIncludedStudies().getValue().size(), d_model.getRowCount());
 	}
 	
 	@Test
 	public void testGetValueAt() {
 		int row = 0;
-		for (Study s : d_pm.getIncludedStudies()) {
+		for (Study s : d_pm.getIncludedStudies().getValue()) {
 			assertEquals(s.getId(), d_model.getValueAt(row, 0));
 			int column = 1;
 			for (StudyCharacteristic c : StudyCharacteristic.values()) {
@@ -92,7 +92,7 @@ public class StudyCharTableModelTest {
 	public void testGetValueAtColumnRemoved() {
 		getFirstCharValueModel().setValue(false);
 		int row = 0;
-		for (Study s : d_pm.getIncludedStudies()) {
+		for (Study s : d_pm.getIncludedStudies().getValue()) {
 			assertEquals(s.getId(), d_model.getValueAt(row, 0));
 			int column = 0;
 			for (StudyCharacteristic c : StudyCharacteristic.values()) {
