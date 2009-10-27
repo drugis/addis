@@ -12,12 +12,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.gui.components.StudyTable;
-import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
-import org.drugis.addis.presentation.StudyCharTableModel;
-import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ViewBuilder;
+import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.models.StaticModel;
@@ -64,24 +62,16 @@ public class MetaAnalysisWizard implements ViewBuilder {
 					
 			setLayout(new BorderLayout());
 			JComponent studiesComp;
-		//	if(d_pm.getStudySet().isEmpty()) {
-			//	studiesComp = new JLabel("No studies found.");
-		//	} else {
-		
-			    d_table = new StudyTable(d_pm.getStudyTableModel());
+	
+		    d_table = new StudyTable(d_pm.getStudyTableModel());
 			    
-			    //JPanel pane = new JPanel();
-			    //pane.setLayout(new BorderLayout());
-			    //pane.add(table);
-			    JScrollPane sPane = new JScrollPane(d_table);
-			    sPane.setBorder(BorderFactory.createEmptyBorder());
-			    //table.setPreferredScrollableViewportSize(new Dimension(400, 300));
+		    JScrollPane sPane = new JScrollPane(d_table);
+		    sPane.setBorder(BorderFactory.createEmptyBorder());
 			    
-			    JScrollPane sPane2 = new JScrollPane(sPane);
-			    sPane2.setPreferredSize(new Dimension(600,100));
+		    JScrollPane sPane2 = new JScrollPane(sPane);
+		    sPane2.setPreferredSize(new Dimension(600,100));
 			    
-				studiesComp = sPane2;
-		//	}
+			studiesComp = sPane2;
 
 			FormLayout layout = new FormLayout(
 					"center:pref",
@@ -116,7 +106,18 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			builder.addLabel("Second Drug",cc.xy(5, 1));
 						
 			JComboBox firstDrugBox = createDrugSelectionBox(d_pm.getFirstDrugModel());
+			firstDrugBox.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent e) {
+					getDrugSelectionComplete();
+				}
+			});
+			
 			JComboBox secondDrugBox = createDrugSelectionBox(d_pm.getSecondDrugModel());
+			secondDrugBox.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent e) {
+					getDrugSelectionComplete();
+				}
+			});
 			
 			builder.add(firstDrugBox,cc.xy(1, 3));
 			builder.add(secondDrugBox,cc.xy(5, 3));
@@ -130,12 +131,28 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(d_pm.getDrugListModel(), firstDrugModel);
 			endPointBox.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent arg0) {
-					// FIXME
-					setComplete(true);
-					//setComplete(d_pm.getEndpointModel().getValue() != null);					
+					setComplete(d_pm.getEndpointModel().getValue() != null);					
 				}
 			});
 			return endPointBox;
+		}
+
+		private void getDrugSelectionComplete() {
+			setComplete( (d_pm.getFirstDrugModel().getValue() != null)
+						&& (d_pm.getSecondDrugModel().getValue() != null) );
+		}
+		
+		public void applyState()
+		throws InvalidStateException {		 
+			if (!isComplete())
+				throw new InvalidStateException();
+			
+			//TODO something with meta analysis
+			/*	MetaAnalysisDialog dialog = new MetaAnalysisDialog(d_frame, 
+						d_domain, new MetaAnalysis(d_endpoint, studies));
+				GUIHelper.centerWindow(dialog, d_frame);
+				dialog.setVisible(true);*/
+
 		}
 	}
 	
@@ -147,9 +164,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			add(endPointBox);
 			endPointBox.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent arg0) {
-					// FIXME
-					setComplete(true);
-					//setComplete(d_pm.getEndpointModel().getValue() != null);					
+					setComplete(d_pm.getEndpointModel().getValue() != null);					
 				}
 			});			
 		}
@@ -166,6 +181,6 @@ public class MetaAnalysisWizard implements ViewBuilder {
 					setComplete(d_pm.getIndicationModel().getValue() != null);					
 				}
 			});
-		}
+		 }
 	}	
 }
