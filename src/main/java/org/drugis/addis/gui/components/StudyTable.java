@@ -32,5 +32,4 @@ public class StudyTable extends JTable {
 			d_tableHeader.autoSizeColumns();	
 		}
 	}
-
 }

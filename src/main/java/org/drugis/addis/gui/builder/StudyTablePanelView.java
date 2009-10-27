@@ -38,7 +38,7 @@ public class StudyTablePanelView implements ViewBuilder {
 		final JTable table = new StudyTable(model);
 		JScrollPane pane = new JScrollPane(table);
 		pane.setBorder(BorderFactory.createEmptyBorder());
-		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
 		ButtonBarBuilder2 bb = new ButtonBarBuilder2();
@@ -46,9 +46,7 @@ public class StudyTablePanelView implements ViewBuilder {
 		bb.addGlue();
 		
 		panel.add(pane, BorderLayout.NORTH);
-		JPanel cbp = new JPanel();
-		cbp.add(bb.getPanel());
-		panel.add(cbp, BorderLayout.WEST);
+		panel.add(bb.getPanel(), BorderLayout.WEST);
 		return panel;
 	}
 
