@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
-import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.PanelWizardStep;
@@ -56,7 +55,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 	public class SelectDrugsWizardStep extends PanelWizardStep {
 
 //		private StudyTable d_table;
-		private StudyListPresentationModel d_model;
+	//	private StudyListPresentationModel d_model;
 
 		public SelectDrugsWizardStep() {
 			super("Select two drugs","Select two drugs to be used for meta analysis.");

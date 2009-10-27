@@ -133,6 +133,23 @@ public class MetaAnalysisWizardPresentation {
 			fireValueChange(null, getValue());
 		}
 	}
+	
+	@SuppressWarnings("serial")
+	private class StudyListHolder extends AbstractListHolder<Study> implements PropertyChangeListener {
+		public StudyListHolder() {
+			getFirstDrugModel().addValueChangeListener(this);
+			getSecondDrugModel().addValueChangeListener(this);
+		}
+		
+		@Override
+		public List<Study> getValue() {
+			return new ArrayList<Study>(getStudySet());
+		}
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			fireValueChange(null, getValue());
+		}
+	}
 		
 	private Domain d_domain;
 	private AbstractHolder<Indication> d_indicationHolder;
@@ -142,6 +159,7 @@ public class MetaAnalysisWizardPresentation {
 	private DrugHolder d_secondDrugHolder;
 	private EndpointListHolder d_endpointListHolder;
 	private DrugListHolder d_drugListHolder;
+	private StudyListHolder d_studyListHolder;
 	
 	
 	public MetaAnalysisWizardPresentation(Domain d) {
@@ -167,6 +185,7 @@ public class MetaAnalysisWizardPresentation {
 				}					
 			}			
 		});
+		d_studyListHolder = new StudyListHolder();
 	}
 	
 	public ListHolder<Indication> getIndicationListModel() {
@@ -288,5 +307,9 @@ public class MetaAnalysisWizardPresentation {
 		public void propertyChange(PropertyChangeEvent arg0) {
 			fireValueChange(null, constructString());
 		}		
+	}
+
+	public StudyListHolder getStudyListModel() {
+		return d_studyListHolder;
 	}
 }
