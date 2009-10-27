@@ -17,9 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.entities;
+package org.drugis.addis;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -34,6 +35,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
+import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.entities.Endpoint.Type;
 
 
@@ -58,7 +60,7 @@ public class ExampleData {
 		domain.addDrug(buildDrugFluoxetine());
 		domain.addDrug(buildDrugParoxetine());
 		domain.addDrug(buildDrugSertraline());
-		domain.addStudy(buildDefaultStudy());
+		domain.addStudy(buildDefaultStudy1());
 		domain.addStudy(buildDefaultStudy2());
 		domain.addStudy(buildDefaultStudy3());
 		
@@ -71,6 +73,88 @@ public class ExampleData {
 		// unused stuff
 		domain.addEndpoint(buildEndpointUnused());
 	}
+	
+	public static AbstractStudy buildDefaultStudy1() {
+		BasicStudy study = new BasicStudy("Chouinard et al, 1999", buildIndicationDepression());
+		study.setEndpoints(new HashSet<Endpoint>(
+				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
+		
+		// Study characteristics
+		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(StudyCharacteristic.CENTERS, 8);
+		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(StudyCharacteristic.ARMS, 2);
+		study.setCharacteristic(StudyCharacteristic.INCLUSION,
+				"Patients were recruited " + 
+				"through newspaper ads and referrals. Patients were " +
+				"included if they had symptoms of depression for at " +
+				"least one month prior to the screening visit, a total " +
+				"score of 20 on the 21-item Hamilton Depression " +
+				"Rating Scale (HAM-D) (Hamilton, 1960), and a " +
+				"score of two on item one HAM-D at the screening " +
+				"visit (5–14 days prior to baseline) and at entry (Day " +
+				"0).");
+		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
+				"Patients were excluded if they had significant " + 
+				"coexisting illness, including renal, hepatic, gastroin" +
+				"testinal, cardiovascular or neurological disease; non-" +
+				"stabilized diabetes; other current Axis I psychiatric " +
+				"diagnosis; organic brain syndrome; past or present " +
+				"abuse of alcohol or illicit drugs; were at significant " +
+				"risk of suicide; or were pregnant or lactating. Other " +
+				"exclusion criteria included ECT or continuous " +
+				"lithium therapy in the preceding two months, mono" +
+				"amine oxidase inhibitor or oral neuroleptic use in the " +
+				"preceding 21 days, any antidepressant or sedative " +
+				"hypnotic (except chloral hydrate) in the previous " +
+				"seven days, fluoxetine in the previous 35 days, or " +
+				"current therapy with an anticoagulant or type 1C " +
+				"antiarrhythmic (e.g. flecainide, propafenone). Patients " +
+				"who had clinically significant abnormalities on the " +
+				"prestudy physical examination, ECG or laboratory " +
+				"tests (hematology, biochemistry and thyroid tests) " +
+				"were also excluded. The use of formal psychotherapy " +
+				"was not permitted for the duration of the study.");
+		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+				"The antidepressant and anxiolytic efficacy of the selective serotonin " +
+				"reuptake inhibitors paroxetine and fluoxetine was compared in patients " +
+				"with moderate to severe depression.");
+		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
+		Calendar startDate = Calendar.getInstance();
+		startDate.set(1991, Calendar.DECEMBER, 13, 0, 0, 0);
+		study.setCharacteristic(StudyCharacteristic.STUDY_START, startDate.getTime());
+//		Calendar endDate = Calendar.getInstance();
+//		endDate.set(1991, Calendar.DECEMBER, 13, 0, 0, 0);
+//		study.setCharacteristic(StudyCharacteristic.STUDY_END, endDate.getTime());
+		
+		// Paroxetine data
+		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroup parox = new BasicPatientGroup(study, buildDrugParoxetine(), dose, 102);
+		BasicRateMeasurement pHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(parox);
+		pHamd.setRate(67);
+		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(parox);
+		pCgi.setMean(-1.69);
+		pCgi.setStdDev(0.16);
+		
+		study.addPatientGroup(parox);
+		study.setMeasurement(buildEndpointHamd(), parox, pHamd);
+		study.setMeasurement(buildEndpointCgi(), parox, pCgi);
+		
+		// Fluoxetine data
+		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroup fluox = new BasicPatientGroup(study, buildDrugFluoxetine(), dose, 101);
+		BasicRateMeasurement fHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(fluox);
+		fHamd.setRate(67);
+		BasicContinuousMeasurement fCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(fluox);
+		fCgi.setMean(-1.8);
+		fCgi.setStdDev(0.16);
+		
+		study.addPatientGroup(fluox);
+		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);		
+		study.setMeasurement(buildEndpointCgi(), fluox, fCgi);
+		
+		return study;
+	}
 
 	public static AbstractStudy buildDefaultStudy2() {
 		Endpoint hamd = buildEndpointHamd();
@@ -78,7 +162,25 @@ public class ExampleData {
 		BasicStudy study = new BasicStudy("De Wilde et al, 1993", buildIndicationDepression());
 		study.setEndpoints(Collections.singleton(hamd));
 		
-
+		// Study characteristics
+		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
+		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(StudyCharacteristic.ARMS, 2);
+		study.setCharacteristic(StudyCharacteristic.INCLUSION,
+				"After a 1-week placebo wash-out, patients suffering from DSM-III " + 
+				"major depression and with a score of 18 or more on the 21-item " +
+				"Hamilton Rating Scale for Depression (HRSD) received either " +
+				"paroxetine or fluoxetine.");
+		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
+				"");
+		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+				"To compare the efficacy and tolerability of once or twice daily " +
+				"administration of the selective serotonin reuptake inhibitors " +
+				"paroxetine and fluoxetine.");
+		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
+		// STUDY_START, STUDY_END missing
+		
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup parox = new BasicPatientGroup(study, buildDrugParoxetine(), dose, 37);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
@@ -96,10 +198,8 @@ public class ExampleData {
 	
 		study.addPatientGroup(parox);
 		study.addPatientGroup(fluox);
-		study.addPatientGroup(viagra);
 		study.setMeasurement(hamd, parox, pHamd);
 		study.setMeasurement(hamd, fluox, fHamd);
-		study.setMeasurement(hamd, viagra, vHamd);
 		return study;
 	}
 
@@ -136,42 +236,6 @@ public class ExampleData {
 		return study;
 	}
 
-	public static AbstractStudy buildDefaultStudy() {
-		Drug paroxetine = buildDrugParoxetine();
-		Endpoint hamd = buildEndpointHamd();
-		Endpoint cgi = buildEndpointCgi();
-		Drug fluoxetine = buildDrugFluoxetine();
-		BasicStudy study = new BasicStudy("Chouinard et al, 1999", buildIndicationDepression());
-		study.setEndpoints(new HashSet<Endpoint>(Arrays.asList(new Endpoint[]{hamd, cgi})));
-		
-		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup parox = new BasicPatientGroup(study, paroxetine, dose, 102);
-		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
-		pHamd.setRate(67);
-
-		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)cgi.buildMeasurement(parox);
-		pCgi.setMean(-1.69);
-		pCgi.setStdDev(0.16);
-		
-
-		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 101);
-		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
-		fHamd.setRate(67);
-		BasicContinuousMeasurement fCgi = (BasicContinuousMeasurement)cgi.buildMeasurement(fluox);
-		fCgi.setMean(-1.8);
-		fCgi.setStdDev(0.16);
-		
-		
-		study.addPatientGroup(parox);
-		study.addPatientGroup(fluox);
-		study.setMeasurement(hamd, parox, pHamd);
-		study.setMeasurement(hamd, fluox, fHamd);		
-		study.setMeasurement(cgi, parox, pCgi);
-		study.setMeasurement(cgi, fluox, fCgi);
-		
-		return study;
-	}
 
 	public static Drug buildDrugParoxetine() {
 		if (s_parox == null) {
@@ -182,7 +246,7 @@ public class ExampleData {
 	
 	public static Drug buildDrugSertraline() {
 		if (s_sertr == null) {
-			s_sertr = new Drug("Sertraline", "XXXXXX");
+			s_sertr = new Drug("Sertraline", "N06AB06");
 		}
 		return s_sertr;
 	}

@@ -32,6 +32,7 @@ import java.util.Set;
 
 import static org.easymock.EasyMock.*;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
@@ -59,7 +60,7 @@ public class MetaStudyTest {
 		Domain d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
 		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy());
+		studies.add(ExampleData.buildDefaultStudy1());
 		studies.add(ExampleData.buildDefaultStudy2());
 		d_analysis = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies);		
 		d_study = new MetaStudy("s", d_analysis);
