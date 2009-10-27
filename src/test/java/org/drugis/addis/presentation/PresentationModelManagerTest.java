@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
@@ -34,7 +35,6 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.ExampleData;
 import org.drugis.addis.presentation.PresentationModelManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class PresentationModelManagerTest {
 	@Test
 	public void testMetaStudyGetModel() {
 		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy());
+		studies.add(ExampleData.buildDefaultStudy1());
 		studies.add(ExampleData.buildDefaultStudy2());
 		MetaAnalysis anal = new MetaAnalysis(ExampleData.buildEndpointHamd(),
 				studies);

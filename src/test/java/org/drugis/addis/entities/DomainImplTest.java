@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drugis.addis.ExampleData;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,14 +46,12 @@ public class DomainImplTest {
 		ExampleData.initDefaultData(d_domain);
 		Indication ind = ExampleData.buildIndicationDepression();
 		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy());
+		studies.add(ExampleData.buildDefaultStudy1());
 		studies.add(ExampleData.buildDefaultStudy2());
 		assertTrue(d_domain.getDependents(ind).containsAll(studies));
 		Drug fluox = ExampleData.buildDrugFluoxetine();
 		assertEquals(new HashSet<Study>(studies), d_domain.getDependents(fluox));
-		Drug viagra = ExampleData.buildDrugViagra();
-		assertEquals(Collections.singleton(ExampleData.buildDefaultStudy2()), d_domain.getDependents(viagra));
-		Study s = ExampleData.buildDefaultStudy();
+		Study s = ExampleData.buildDefaultStudy1();
 		assertEquals(Collections.emptySet(), d_domain.getDependents(s));
 		Endpoint d1 = ExampleData.buildEndpointHamd();
 		assertEquals(new HashSet<Study>(studies), d_domain.getDependents(d1));
@@ -62,7 +61,7 @@ public class DomainImplTest {
 	public void testDependentsIncludeMetaStudies() {
 		ExampleData.initDefaultData(d_domain);
 		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy());
+		studies.add(ExampleData.buildDefaultStudy1());
 		studies.add(ExampleData.buildDefaultStudy2());
 		MetaAnalysis ma = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies); 
 		MetaStudy metaStudy = new MetaStudy("meta", ma);

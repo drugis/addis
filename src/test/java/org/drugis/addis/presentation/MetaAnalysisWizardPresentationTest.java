@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.ExampleData;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.JUnitUtil;
@@ -198,7 +198,6 @@ public class MetaAnalysisWizardPresentationTest {
 		SortedSet<Drug> expected = new TreeSet<Drug>();
 		expected.add(ExampleData.buildDrugFluoxetine());
 		expected.add(ExampleData.buildDrugParoxetine());
-		expected.add(ExampleData.buildDrugViagra());
 		
 		d_wizard.getIndicationModel().setValue(ind);
 		d_wizard.getEndpointModel().setValue(ep);
@@ -378,7 +377,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testGetStudySet() {
 		SortedSet<Study> expected = new TreeSet<Study>();
-		expected.add(ExampleData.buildDefaultStudy());
+		expected.add(ExampleData.buildDefaultStudy1());
 		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());

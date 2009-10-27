@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -105,7 +106,7 @@ public class DomainTest {
 	private MetaStudy addMetaStudyToDomain() {
 		ExampleData.initDefaultData(d_domain);
 		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy());
+		studies.add(ExampleData.buildDefaultStudy1());
 		studies.add(ExampleData.buildDefaultStudy2());
 		MetaAnalysis ma = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies); 
 		MetaStudy s = new MetaStudy("meta", ma);
