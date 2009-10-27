@@ -58,8 +58,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 	public class SelectDrugsWizardStep extends PanelWizardStep {
 
 		private StudyTable d_table;
-		private StudyListPresentationModel d_model;
-
+		
 		public SelectDrugsWizardStep() {
 			super("Select two drugs","Select two drugs to be used for meta analysis.");
 					
@@ -68,8 +67,8 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		//	if(d_pm.getStudySet().isEmpty()) {
 			//	studiesComp = new JLabel("No studies found.");
 		//	} else {
-			    d_model = new DefaultStudyListPresentationModel(d_pm.getStudyListModel());
-			    d_table = new StudyTable(new StudyCharTableModel(d_model));
+		
+			    d_table = new StudyTable(d_pm.getStudyTableModel());
 			    
 			    //JPanel pane = new JPanel();
 			    //pane.setLayout(new BorderLayout());

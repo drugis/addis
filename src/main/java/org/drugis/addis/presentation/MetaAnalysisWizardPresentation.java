@@ -71,8 +71,9 @@ public class MetaAnalysisWizardPresentation {
 	private class EndpointHolder extends AbstractHolder<Endpoint> {
 		@Override
 		protected void checkArgument(Object newValue) {
-			if (!getEndpointSet().contains(newValue))
-				throw new IllegalArgumentException("Endpoint not in the actual set!");
+			if (newValue != null)
+				if (!getEndpointSet().contains(newValue))
+					throw new IllegalArgumentException("Endpoint not in the actual set!");
 		}
 
 		@Override
@@ -86,8 +87,9 @@ public class MetaAnalysisWizardPresentation {
 	private class DrugHolder extends AbstractHolder<Drug> {
 		@Override
 		protected void checkArgument(Object newValue) {
-			if (!getDrugSet().contains(newValue))
-				throw new IllegalArgumentException("Drug not in the actual set!");
+			if (newValue != null)
+				if (!getDrugSet().contains(newValue))
+					throw new IllegalArgumentException("Drug not in the actual set!");
 		}
 
 		protected void cascade() {
@@ -312,5 +314,9 @@ public class MetaAnalysisWizardPresentation {
 
 	public StudyListHolder getStudyListModel() {
 		return d_studyListHolder;
+	}
+	
+	public StudyCharTableModel getStudyTableModel() {
+		return new StudyCharTableModel(new DefaultStudyListPresentationModel(getStudyListModel()));
 	}
 }
