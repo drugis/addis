@@ -48,6 +48,8 @@ public class DomainImplTest {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(ExampleData.buildDefaultStudy1());
 		studies.add(ExampleData.buildDefaultStudy2());
+		studies.add(ExampleData.buildDefaultStudy3());
+		assertTrue(d_domain.getDependents(ind).containsAll(studies));
 		assertTrue(d_domain.getDependents(ind).containsAll(studies));
 		Drug fluox = ExampleData.buildDrugFluoxetine();
 		assertEquals(new HashSet<Study>(studies), d_domain.getDependents(fluox));
