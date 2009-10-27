@@ -18,6 +18,7 @@ public class StudyTable extends JTable {
 		setPreferredScrollableViewportSize(getPreferredSize());
 		setBackground(Color.WHITE);
 		d_tableHeader.autoSizeColumns();
+		setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
 		TableSorter sort = new TableSorter(model);
 		sort.setTableHeader(getTableHeader());
