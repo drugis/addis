@@ -38,6 +38,7 @@ public class StudyCharTableModel extends AbstractTableModel {
 			ValueModel vm = d_pm.getCharacteristicVisibleModel(c);
 			vm.addValueChangeListener(new ValueChangeListener());
 		}
+		d_pm.getIncludedStudies().addValueChangeListener(new ValueChangeListener());
 	}
 		
 	public int getColumnCount() {

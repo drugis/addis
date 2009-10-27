@@ -8,11 +8,17 @@ import java.awt.event.ItemListener;
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.gui.components.StudyTable;
+import org.drugis.addis.presentation.CharacteristicVisibleMap;
+import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
+import org.drugis.addis.presentation.StudyCharTableModel;
+import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.PanelWizardStep;
@@ -20,6 +26,7 @@ import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -54,8 +61,8 @@ public class MetaAnalysisWizard implements ViewBuilder {
 	@SuppressWarnings("serial")
 	public class SelectDrugsWizardStep extends PanelWizardStep {
 
-//		private StudyTable d_table;
-	//	private StudyListPresentationModel d_model;
+		private StudyTable d_table;
+		private StudyListPresentationModel d_model;
 
 		public SelectDrugsWizardStep() {
 			super("Select two drugs","Select two drugs to be used for meta analysis.");
@@ -63,21 +70,22 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			setLayout(new BorderLayout());
 			JComponent studiesComp;
 		//	if(d_pm.getStudySet().isEmpty()) {
-				studiesComp = new JLabel("No studies found.");
+			//	studiesComp = new JLabel("No studies found.");
 		//	} else {
-	//			d_model = new StudyListPresentationModel();
-	//		    d_table = new StudyTable(new StudyCharTableModel(d_model));
+			    d_model = new StudyListModel();
+			    d_table = new StudyTable(new StudyCharTableModel(d_model));
+			    
 			    //JPanel pane = new JPanel();
 			    //pane.setLayout(new BorderLayout());
 			    //pane.add(table);
-	//		    JScrollPane sPane = new JScrollPane(d_table);
-	//		    sPane.setBorder(BorderFactory.createEmptyBorder());
+			    JScrollPane sPane = new JScrollPane(d_table);
+			    sPane.setBorder(BorderFactory.createEmptyBorder());
 			    //table.setPreferredScrollableViewportSize(new Dimension(400, 300));
 			    
-	//		    JScrollPane sPane2 = new JScrollPane(sPane);
-	//		    sPane2.setPreferredSize(new Dimension(600,100));
+			    JScrollPane sPane2 = new JScrollPane(sPane);
+			    sPane2.setPreferredSize(new Dimension(600,100));
 			    
-	//			studiesComp = sPane2;
+				studiesComp = sPane2;
 		//	}
 
 			FormLayout layout = new FormLayout(
@@ -123,16 +131,18 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		}
 		
 		
-//		private class StudyListModel implements StudyListPresentationModel {
-//			public AbstractValueModel getCharacteristicVisibleModel(
-//					StudyCharacteristic c) {
-//				return new ValueHolder(true);
-//			}
-//
-//			public ListHolder<Study> getIncludedStudies() {
-//				return new ListHolder<Study>(d_pm.getStudySet());
-//			}
-//		}
+		private class StudyListModel implements StudyListPresentationModel {
+			private CharacteristicVisibleMap d_characteristicVisibleMap = new CharacteristicVisibleMap();
+			
+			public AbstractValueModel getCharacteristicVisibleModel(
+					StudyCharacteristic c) {
+				return d_characteristicVisibleMap.get(c);
+			}
+
+			public ListHolder<Study> getIncludedStudies() {
+				return d_pm.getStudyListModel();
+			}
+		}
 
 		private JComboBox createDrugSelectionBox(ValueModel firstDrugModel) {
 			JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(d_pm.getDrugListModel(), firstDrugModel);

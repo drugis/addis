@@ -186,6 +186,7 @@ public class MetaAnalysisWizardPresentation {
 			}			
 		});
 		d_studyListHolder = new StudyListHolder();
+
 	}
 	
 	public ListHolder<Indication> getIndicationListModel() {
