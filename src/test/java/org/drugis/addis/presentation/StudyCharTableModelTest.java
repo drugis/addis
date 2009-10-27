@@ -27,6 +27,7 @@ import java.util.List;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
@@ -37,7 +38,6 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jgoodies.binding.value.ValueModel;
@@ -141,14 +141,27 @@ public class StudyCharTableModelTest {
 		getFirstCharValueModel().setValue(false);
 		testGetColumnNameFirstMissingHelper();
 	}
-
+	
 	//It is not possible to change the contents of Valuemodel which contains the set of studies. 
-	@Ignore
+	@SuppressWarnings("serial")
 	@Test
 	public void testChangeContentsFiresTableChanged() {
-		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(d_model));
-		d_model.addTableModelListener(mock);
-		
+
+		AbstractListHolder<Study> list = new AbstractListHolder<Study>() {
+			@Override
+			public void setValue(Object newValue) {
+				fireValueChange(null, newValue);
+			}
+			@Override
+			public List<Study> getValue() {
+				return new ArrayList<Study>();
+			}
+		};
+		DefaultStudyListPresentationModel model = new DefaultStudyListPresentationModel(list);
+		TableModel tableModel = new StudyCharTableModel(model);
+		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(tableModel ));
+		tableModel.addTableModelListener(mock);
+		list.setValue(new ArrayList<Study>());
 		verify(mock);
 	}
 

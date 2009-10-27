@@ -11,11 +11,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.gui.components.StudyTable;
-import org.drugis.addis.presentation.CharacteristicVisibleMap;
-import org.drugis.addis.presentation.ListHolder;
+import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.addis.presentation.StudyListPresentationModel;
@@ -26,7 +23,6 @@ import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -72,7 +68,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		//	if(d_pm.getStudySet().isEmpty()) {
 			//	studiesComp = new JLabel("No studies found.");
 		//	} else {
-			    d_model = new StudyListModel();
+			    d_model = new DefaultStudyListPresentationModel(d_pm.getStudyListModel());
 			    d_table = new StudyTable(new StudyCharTableModel(d_model));
 			    
 			    //JPanel pane = new JPanel();
@@ -131,19 +127,6 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		}
 		
 		
-		private class StudyListModel implements StudyListPresentationModel {
-			private CharacteristicVisibleMap d_characteristicVisibleMap = new CharacteristicVisibleMap();
-			
-			public AbstractValueModel getCharacteristicVisibleModel(
-					StudyCharacteristic c) {
-				return d_characteristicVisibleMap.get(c);
-			}
-
-			public ListHolder<Study> getIncludedStudies() {
-				return d_pm.getStudyListModel();
-			}
-		}
-
 		private JComboBox createDrugSelectionBox(ValueModel firstDrugModel) {
 			JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(d_pm.getDrugListModel(), firstDrugModel);
 			endPointBox.addItemListener(new ItemListener() {
