@@ -22,6 +22,8 @@ package org.drugis.addis.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -86,7 +88,6 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 public class Main extends JFrame {
 	private JComponent d_leftPanel;
 	private JScrollPane d_rightPanel;
-	
 	private ViewBuilder d_rightPanelBuilder;
 	
 	private DomainManager d_domain;
@@ -108,6 +109,17 @@ public class Main extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent evt) {
 				quitApplication();
+			}
+		});
+		addComponentListener(new ComponentListener() {
+			public void componentHidden(ComponentEvent arg0) {
+			}
+			public void componentMoved(ComponentEvent arg0) {
+			}
+			public void componentResized(ComponentEvent arg0) {
+				setRightPanelViewSize();
+			}
+			public void componentShown(ComponentEvent arg0) {
 			}
 		});
 
@@ -424,6 +436,7 @@ public class Main extends JFrame {
 	private void initPanel() {
 		JSplitPane pane = new JSplitPane();
 		pane.setBorder(BorderFactory.createEmptyBorder());
+		pane.setEnabled(false);
 		
 		initLeftPanel();
 		pane.setLeftComponent(d_leftPanel);
@@ -545,15 +558,15 @@ public class Main extends JFrame {
 	
 	private void initRightPanel() {
 		JPanel panel = new JPanel();
-		d_rightPanel = new JScrollPane(panel);
-		d_rightPanel.getVerticalScrollBar().setUnitIncrement(16);		
+		JScrollPane scrollPane = new JScrollPane(panel);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16);		
+		d_rightPanel = scrollPane;
 	}
 
 	public static void main(String[] args) {
 		Main frame = new Main();			
 		frame.initComponents();
 		frame.pack();
-		GUIHelper.centerWindow(frame);		
 		frame.setVisible(true);		
 	}
 	
@@ -565,6 +578,17 @@ public class Main extends JFrame {
 
 	private void setRightPanelContents(JComponent component) {
 		d_rightPanel.setViewportView(component);
+		
+		setRightPanelViewSize();
+	}
+
+	private void setRightPanelViewSize() {
+		JComponent view = (JComponent) d_rightPanel.getViewport().getView();
+		Dimension dimension = new Dimension();
+		int prefWidth = getSize().width - d_leftPanel.getPreferredSize().width - 40;
+		dimension.width = Math.max(prefWidth, view.getMinimumSize().width);
+		dimension.height = view.getPreferredSize().height;
+		view.setPreferredSize(dimension);
 	}
 	
 	private class MainListener implements DomainListener {
