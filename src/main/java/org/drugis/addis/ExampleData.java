@@ -51,6 +51,7 @@ public class ExampleData {
 	private static Drug s_candesartan;
 	private static Endpoint s_endpointCVdeath;
 	private static Drug s_sertr;
+	private static Drug s_placebo;
 
 	public static void initDefaultData(Domain domain) {
 		// depression data
@@ -60,6 +61,7 @@ public class ExampleData {
 		domain.addDrug(buildDrugFluoxetine());
 		domain.addDrug(buildDrugParoxetine());
 		domain.addDrug(buildDrugSertraline());
+		domain.addDrug(buildPlacebo());
 		domain.addStudy(buildDefaultStudy1());
 		domain.addStudy(buildDefaultStudy2());
 		domain.addStudy(buildDefaultStudy3());
@@ -73,7 +75,7 @@ public class ExampleData {
 		// unused stuff
 		domain.addEndpoint(buildEndpointUnused());
 	}
-	
+
 	public static AbstractStudy buildDefaultStudy1() {
 		BasicStudy study = new BasicStudy("Chouinard et al, 1999", buildIndicationDepression());
 		study.setEndpoints(new HashSet<Endpoint>(
@@ -181,59 +183,129 @@ public class ExampleData {
 		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
 		// STUDY_START, STUDY_END missing
 		
+		// Paroxetine data
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup parox = new BasicPatientGroup(study, buildDrugParoxetine(), dose, 37);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
 		pHamd.setRate(23);
+		study.addPatientGroup(parox);
+		study.setMeasurement(hamd, parox, pHamd);
 
+		// Fluoxetine data
 		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 41);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(26);
-		
-		dose = new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup viagra = new BasicPatientGroup(study, buildDrugViagra(), dose, 100);
-		BasicRateMeasurement vHamd = (BasicRateMeasurement)hamd.buildMeasurement(viagra);
-		vHamd.setRate(100);
-	
-		study.addPatientGroup(parox);
 		study.addPatientGroup(fluox);
-		study.setMeasurement(hamd, parox, pHamd);
 		study.setMeasurement(hamd, fluox, fHamd);
+	
 		return study;
 	}
 
 	public static AbstractStudy buildDefaultStudy3() {
-		Endpoint cgi = buildEndpointCgi();
-		Drug sertraline = buildDrugSertraline();
-		BasicStudy study = new BasicStudy("Fictional et al, 2009", buildIndicationDepression());
-		study.setEndpoints(Collections.singleton(cgi));
+		BasicStudy study = new BasicStudy("Bennie et al, 1995", buildIndicationDepression());
+		study.setEndpoints(new HashSet<Endpoint>(
+				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
 		
+		// Study characteristics
+		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
+		//study.setCharacteristic(StudyCharacteristic.CENTERS, );
+		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(StudyCharacteristic.ARMS, 2);
+		study.setCharacteristic(StudyCharacteristic.INCLUSION,
+				"Psychiatric outpatients with DSM-III-R major depression or bipolar disorder (depressed).");
+		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
+				"");
+		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+				"Comparing the efficacy and safety of sertraline with those of fluoxetine.");
+		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
+		// STUDY_START, STUDY_END missing
+		
+		// Fluoxetine data
+		Dose dose = new Dose(20, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroup fluox = new BasicPatientGroup(study, buildDrugFluoxetine(), dose, 144);
+		BasicContinuousMeasurement fCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(fluox);
+		fCgi.setMean(0.67);
+		fCgi.setStdDev(0.5);
+		BasicRateMeasurement fHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(fluox);
+		fHamd.setRate(63);
+		study.addPatientGroup(fluox);
+		study.setMeasurement(buildEndpointCgi(), fluox, fCgi);
+		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);
 
-		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup parox = new BasicPatientGroup(study, buildDrugParoxetine(), dose, 37);
-		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)cgi.buildMeasurement(parox);
-		pCgi.setMean(3.0);
-		pCgi.setStdDev(0.5);
-
-		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup sertr = new BasicPatientGroup(study, sertraline, dose, 41);
-		BasicContinuousMeasurement sCgi = (BasicContinuousMeasurement)cgi.buildMeasurement(sertr);
-		sCgi.setMean(2.5);
-		sCgi.setStdDev(1.0);
-	
-		study.addPatientGroup(parox);
+		// Sertraline data
+		dose = new Dose(50, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroup sertr = new BasicPatientGroup(study, buildDrugSertraline(), dose, 142);
+		BasicContinuousMeasurement sCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(sertr);
+		sCgi.setMean(0.69);
+		sCgi.setStdDev(0.5);
+		BasicRateMeasurement sHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(sertr);
+		sHamd.setRate(73);
 		study.addPatientGroup(sertr);
-		study.setMeasurement(cgi, parox, pCgi);
-		study.setMeasurement(cgi, sertr, sCgi);
+		study.setMeasurement(buildEndpointCgi(), sertr, sCgi);
+		study.setMeasurement(buildEndpointHamd(), sertr, sHamd);
+		
 		return study;
 	}
 
 	public static AbstractStudy buildHeartStudy() {
-		Endpoint CVdeath = buildEndpointCVdeath();
 		BasicStudy study = new BasicStudy("McMurray et al, 2003", buildIndicationChronicHeartFailure());
-		study.setEndpoints(Collections.singleton(CVdeath));
+		study.setEndpoints(Collections.singleton(buildEndpointCVdeath()));
+		
+		// Study characteristics
+		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(StudyCharacteristic.CENTERS, 618);
+		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(StudyCharacteristic.ARMS, 2);
+		study.setCharacteristic(StudyCharacteristic.INCLUSION,
+				"Eligible patients were aged 18 years or older, had left-" +
+				"ventricular ejection fraction 40% or lower measured " +
+				"within the past 6 months, New York Heart Association " +
+				"functional class II–IV (if class II, patients had to have " +
+				"admission to hospital for a cardiac reason in the previous " +
+				"6 months), and treatment with an ACE inhibitor at a " +
+				"constant dose for 30 days or longer.");
+		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
+				"");
+		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+				"Angiotensin II type 1 receptor blockers have " + 
+				"favourable effects on heamodynamic measurements, " +
+				"neurohumoral activity and left-ventricular remodelling when " +
+				"added to angiotensin-converting-enzyme (ACE) inhibitors in " +
+				"patients with chronic heart failure (CHF). We aimed to find " +
+				"out whether these drugs improve clinical outcome.");
+		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
+		Calendar startDate = Calendar.getInstance();
+		startDate.set(1999, Calendar.MARCH, 1, 0, 0, 0);
+		study.setCharacteristic(StudyCharacteristic.STUDY_START, startDate.getTime());
+		Calendar endDate = Calendar.getInstance();
+		endDate.set(2003, Calendar.MARCH, 31, 0, 0, 0);
+		study.setCharacteristic(StudyCharacteristic.STUDY_END, endDate.getTime());
+		
+		// Candesartan data
+		Dose cDose = new Dose(32, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroup cand = new BasicPatientGroup(study, buildDrugCandesartan(), cDose , 1273);
+		BasicRateMeasurement cDeath = new BasicRateMeasurement(buildEndpointCVdeath(), cand);
+		cDeath.setRate(302);
+		study.addPatientGroup(cand);
+		study.setMeasurement(buildEndpointCVdeath(), cand, cDeath);
+		
+		// Placebo data
+		Dose pDose = new Dose(32, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroup placebo = new BasicPatientGroup(study, buildPlacebo(), pDose , 1271);
+		BasicRateMeasurement pDeath = new BasicRateMeasurement(buildEndpointCVdeath(), placebo);
+		pDeath.setRate(347);
+		study.addPatientGroup(placebo);
+		study.setMeasurement(buildEndpointCVdeath(), placebo, pDeath);
+		
 		return study;
+	}
+	
+	private static Drug buildPlacebo() {
+		if (s_placebo == null) {
+			s_placebo = new Drug("Placebo", "");
+		}
+		return s_placebo;
 	}
 
 

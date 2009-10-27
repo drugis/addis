@@ -198,6 +198,7 @@ public class MetaAnalysisWizardPresentationTest {
 		SortedSet<Drug> expected = new TreeSet<Drug>();
 		expected.add(ExampleData.buildDrugFluoxetine());
 		expected.add(ExampleData.buildDrugParoxetine());
+		expected.add(ExampleData.buildDrugSertraline());
 		
 		d_wizard.getIndicationModel().setValue(ind);
 		d_wizard.getEndpointModel().setValue(ep);
