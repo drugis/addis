@@ -312,7 +312,7 @@ public class MetaAnalysisWizardPresentation {
 		}		
 	}
 
-	public StudyListHolder getStudyListModel() {
+	public AbstractListHolder<Study> getStudyListModel() {
 		return d_studyListHolder;
 	}
 	
