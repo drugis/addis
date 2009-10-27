@@ -19,6 +19,7 @@
 
 package org.drugis.addis.presentation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.MetaStudy;
@@ -37,12 +38,19 @@ public class MetaStudyPresentationModel extends PresentationModel<MetaStudy>
 		super(study);
 	}
 	
-	public List<Study> getIncludedStudies() {
-		return getBean().getAnalysis().getStudies();
+	public ListHolder<Study> getIncludedStudies() {
+		return new StudyListHolder();
 	}
 	
 	public AbstractValueModel getCharacteristicVisibleModel(StudyCharacteristic c) {
 		return d_characteristicVisibleMap.get(c);
+	}
+	
+	class StudyListHolder extends AbstractListHolder<Study> {
+		@Override
+		public List<Study> getValue() {
+			return new ArrayList<Study>(getBean().getAnalysis().getStudies());
+		}
 	}
 }
 

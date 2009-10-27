@@ -60,7 +60,7 @@ public class IndicationView implements ViewBuilder {
 			int row) {
 
 		JComponent studiesComp = null;
-		if(d_pm.getIncludedStudies().isEmpty()) {
+		if(d_pm.getIncludedStudies().getValue().isEmpty()) {
 			studiesComp = new JLabel("No studies found.");
 		} else {
 			studiesComp = new StudyTablePanelView(d_pm, d_parent).buildPanel();

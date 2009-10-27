@@ -49,7 +49,7 @@ public class DrugView implements ViewBuilder{
 		builder.addSeparator("Studies measuring this drug", cc.xyw(1, 7, 3));
 			
 		JComponent studiesComp = null;
-		if(d_model.getIncludedStudies().isEmpty()) {
+		if(d_model.getIncludedStudies().getValue().isEmpty()) {
 			studiesComp = new JLabel("No studies found.");
 		} else {
 			StudyTablePanelView d_studyView = new StudyTablePanelView(d_model, d_parent);

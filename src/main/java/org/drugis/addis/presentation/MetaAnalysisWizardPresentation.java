@@ -95,15 +95,6 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	@SuppressWarnings("serial")
-	public abstract class AbstractListHolder<E> extends AbstractValueModel {
-		public abstract List<E> getValue();
-
-		public void setValue(Object newValue) {
-			throw new UnsupportedOperationException("AbstractListModel is read-only");
-		}
-	}
-	
-	@SuppressWarnings("serial")
 	private class IndicationListHolder extends AbstractListHolder<Indication> {
 		@Override
 		public List<Indication> getValue() {
@@ -142,6 +133,23 @@ public class MetaAnalysisWizardPresentation {
 			fireValueChange(null, getValue());
 		}
 	}
+	
+	@SuppressWarnings("serial")
+	private class StudyListHolder extends AbstractListHolder<Study> implements PropertyChangeListener {
+		public StudyListHolder() {
+			getFirstDrugModel().addValueChangeListener(this);
+			getSecondDrugModel().addValueChangeListener(this);
+		}
+		
+		@Override
+		public List<Study> getValue() {
+			return new ArrayList<Study>(getStudySet());
+		}
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			fireValueChange(null, getValue());
+		}
+	}
 		
 	private Domain d_domain;
 	private AbstractHolder<Indication> d_indicationHolder;
@@ -151,6 +159,7 @@ public class MetaAnalysisWizardPresentation {
 	private DrugHolder d_secondDrugHolder;
 	private EndpointListHolder d_endpointListHolder;
 	private DrugListHolder d_drugListHolder;
+	private StudyListHolder d_studyListHolder;
 	
 	
 	public MetaAnalysisWizardPresentation(Domain d) {
@@ -176,9 +185,11 @@ public class MetaAnalysisWizardPresentation {
 				}					
 			}			
 		});
+		d_studyListHolder = new StudyListHolder();
+
 	}
 	
-	public AbstractListHolder<Indication> getIndicationListModel() {
+	public ListHolder<Indication> getIndicationListModel() {
 		return new IndicationListHolder();
 	}
 	
@@ -254,7 +265,7 @@ public class MetaAnalysisWizardPresentation {
 		}
 		return studies;
 	}
-
+	
 	private Drug getFirstDrug() {
 		return d_firstDrugHolder.getValue();
 	}
@@ -297,5 +308,9 @@ public class MetaAnalysisWizardPresentation {
 		public void propertyChange(PropertyChangeEvent arg0) {
 			fireValueChange(null, constructString());
 		}		
+	}
+
+	public StudyListHolder getStudyListModel() {
+		return d_studyListHolder;
 	}
 }

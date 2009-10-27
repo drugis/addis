@@ -57,7 +57,7 @@ public class MetaStudyPresentationModelTest {
 	
 	@Test
 	public void testGetIncludedStudies() {
-		assertEquals(d_study.getAnalysis().getStudies(), d_presentationModel.getIncludedStudies());
+		assertEquals(d_study.getAnalysis().getStudies(), d_presentationModel.getIncludedStudies().getValue());
 	}
 	
 	@Test

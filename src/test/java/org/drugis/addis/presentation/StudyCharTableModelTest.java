@@ -35,10 +35,9 @@ import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
-import org.drugis.addis.presentation.MetaStudyPresentationModel;
-import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jgoodies.binding.value.ValueModel;
@@ -71,13 +70,13 @@ public class StudyCharTableModelTest {
 	
 	@Test
 	public void testGetRowCount() {
-		assertEquals(d_pm.getIncludedStudies().size(), d_model.getRowCount());
+		assertEquals(d_pm.getIncludedStudies().getValue().size(), d_model.getRowCount());
 	}
 	
 	@Test
 	public void testGetValueAt() {
 		int row = 0;
-		for (Study s : d_pm.getIncludedStudies()) {
+		for (Study s : d_pm.getIncludedStudies().getValue()) {
 			assertEquals(s.getId(), d_model.getValueAt(row, 0));
 			int column = 1;
 			for (StudyCharacteristic c : StudyCharacteristic.values()) {
@@ -92,7 +91,7 @@ public class StudyCharTableModelTest {
 	public void testGetValueAtColumnRemoved() {
 		getFirstCharValueModel().setValue(false);
 		int row = 0;
-		for (Study s : d_pm.getIncludedStudies()) {
+		for (Study s : d_pm.getIncludedStudies().getValue()) {
 			assertEquals(s.getId(), d_model.getValueAt(row, 0));
 			int column = 0;
 			for (StudyCharacteristic c : StudyCharacteristic.values()) {
@@ -141,6 +140,16 @@ public class StudyCharTableModelTest {
 	public void testGetColumnNameRemoved() {
 		getFirstCharValueModel().setValue(false);
 		testGetColumnNameFirstMissingHelper();
+	}
+
+	//It is not possible to change the contents of Valuemodel which contains the set of studies. 
+	@Ignore
+	@Test
+	public void testChangeContentsFiresTableChanged() {
+		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(d_model));
+		d_model.addTableModelListener(mock);
+		
+		verify(mock);
 	}
 
 	private void testGetColumnNameFirstMissingHelper() {

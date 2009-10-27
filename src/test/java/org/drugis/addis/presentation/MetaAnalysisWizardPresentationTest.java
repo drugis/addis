@@ -19,7 +19,6 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.presentation.MetaAnalysisWizardPresentation.AbstractListHolder;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -297,7 +296,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testGetIndicationListModel() {
 		List<Indication> expected = new ArrayList<Indication>(d_wizard.getIndicationSet());
-		AbstractListHolder<Indication> indicationList = d_wizard.getIndicationListModel();
+		ListHolder<Indication> indicationList = d_wizard.getIndicationListModel();
 		List<Indication> list = indicationList.getValue();
 		assertEquals(expected, list);
 	}
@@ -306,7 +305,7 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testGetEndpointListModel() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		List<Endpoint> expected = new ArrayList<Endpoint>(d_wizard.getEndpointSet());
-		AbstractListHolder<Endpoint> endpointList = d_wizard.getEndpointListModel();
+		ListHolder<Endpoint> endpointList = d_wizard.getEndpointListModel();
 		assertEquals(expected, endpointList.getValue());
 	}
 	
@@ -329,7 +328,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
 		List<Drug> expected = new ArrayList<Drug>(d_wizard.getDrugSet());
-		AbstractListHolder<Drug> drugList = d_wizard.getDrugListModel();
+		ListHolder<Drug> drugList = d_wizard.getDrugListModel();
 		assertEquals(expected, drugList.getValue());
 	}
 	
@@ -386,6 +385,18 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		
 		assertEquals(expected, d_wizard.getStudySet());
+	}
+	
+	@Test
+	public void testGetStudyListModel() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
+		
+		List<Study> expected = new ArrayList<Study>(d_wizard.getStudySet());
+		ListHolder<Study> studyList = d_wizard.getStudyListModel();
+		assertEquals(expected, studyList.getValue());
 	}
 	
 	@Test

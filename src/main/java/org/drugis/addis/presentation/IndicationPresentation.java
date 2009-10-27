@@ -72,7 +72,14 @@ public class IndicationPresentation extends PresentationModel<Indication> implem
 		return d_charMap.get(c);
 	}
 
-	public List<Study> getIncludedStudies() {
-		return d_studies;
+	public ListHolder<Study> getIncludedStudies() {
+		return new StudyListHolder();
+	}
+	
+	class StudyListHolder extends AbstractListHolder<Study> {
+		@Override
+		public List<Study> getValue() {
+			return new ArrayList<Study>(d_studies);
+		}
 	}
 }
