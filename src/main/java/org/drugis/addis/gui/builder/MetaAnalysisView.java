@@ -45,7 +45,7 @@ public class MetaAnalysisView implements ViewBuilder {
 		d_analysis = analysis;
 		d_pmm = pmm;
 	}
-
+	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
 				"pref, 3dlu, pref",

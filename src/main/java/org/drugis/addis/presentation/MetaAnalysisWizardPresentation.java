@@ -12,6 +12,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaAnalysis;
+import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.EqualsUtil;
 
@@ -318,5 +319,9 @@ public class MetaAnalysisWizardPresentation {
 	
 	public StudyCharTableModel getStudyTableModel() {
 		return new StudyCharTableModel(new DefaultStudyListPresentationModel(getStudyListModel()));
+	}
+	
+	public void saveMetaAnalysis(String name, MetaAnalysis ma) {
+		d_domain.addStudy(new MetaStudy(name,ma));
 	}
 }

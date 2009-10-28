@@ -429,7 +429,7 @@ public class Main extends JFrame {
 
 	private void showMetaAnalysisWizard() {
 		// FIXME: Use PresentationModelManager to create presentation model
-		MetaAnalysisWizard wizard = new MetaAnalysisWizard(new MetaAnalysisWizardPresentation(d_domain.getDomain()));
+		MetaAnalysisWizard wizard = new MetaAnalysisWizard(this, new MetaAnalysisWizardPresentation(d_domain.getDomain()));
 		wizard.buildPanel().showInDialog("Create meta-analysis", this, true);
 	}
 

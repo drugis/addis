@@ -2,15 +2,23 @@ package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.MetaAnalysis;
+import org.drugis.addis.entities.MetaStudy;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
@@ -29,8 +37,10 @@ import com.jgoodies.forms.layout.FormLayout;
 public class MetaAnalysisWizard implements ViewBuilder {
 
 	private MetaAnalysisWizardPresentation d_pm;
+	private Main d_frame;
 	
-	public MetaAnalysisWizard(MetaAnalysisWizardPresentation pm) {
+	public MetaAnalysisWizard(Main parent, MetaAnalysisWizardPresentation pm) {
+		d_frame = parent;
 		d_pm = pm;
 	}
 	
@@ -39,7 +49,10 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		wizardModel.add(new SelectIndicationWizardStep());
 		wizardModel.add(new SelectEndpointWizardStep());
 		wizardModel.add(new SelectDrugsWizardStep());
+		//TODO: Maybe add SelectStudiesStep with checkboxes?
+		wizardModel.add(new OverviewWizardStep());
 		Wizard wizard = new Wizard(wizardModel);
+		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 		wizard.setPreferredSize(new Dimension(800, 600));
 		return wizard;
 	}
@@ -47,10 +60,50 @@ public class MetaAnalysisWizard implements ViewBuilder {
 	@SuppressWarnings("serial")
 	public class SelectStudiesWizardStep extends PanelWizardStep {
 		public SelectStudiesWizardStep() {
-			super("Select Studies","Select an Endpoint that you want to use for this meta analysis.");
-	
+			super("Select Studies","Select the Studies that you want to use for this meta analysis.");
+				
 		}
 	}
+	
+	@SuppressWarnings("serial")
+	public class OverviewWizardStep extends PanelWizardStep {
+		private MetaAnalysis d_ma;
+		
+		public OverviewWizardStep() {
+			super("Overview","Overview of selected Meta-analysis.");
+		}
+		
+		public void prepare() {
+			d_ma = new MetaAnalysis((Endpoint) d_pm.getEndpointModel().getValue(), d_pm.getStudyListModel().getValue());
+			ViewBuilder mav = new MetaAnalysisView(d_ma, d_frame.getPresentationModelManager());
+			removeAll();
+			add(mav.buildPanel());
+			setComplete(true);
+			
+/*			JButton saveButton = new JButton("Save");
+			saveButton.setMnemonic('s');
+			saveButton.addActionListener(new AbstractAction() {
+				public void actionPerformed(ActionEvent arg0) {
+					saveAsStudy();
+				}			
+			});
+			add(saveButton);*/
+		}
+		
+		public void applyState()
+		throws InvalidStateException {
+			saveAsStudy();
+		}
+		
+		private void saveAsStudy() {
+			String res = JOptionPane.showInputDialog(this, "Input name for new analysis", 
+					"Save meta-analysis", JOptionPane.QUESTION_MESSAGE);
+			if (res != null) {
+				d_pm.saveMetaAnalysis(res, d_ma);		
+			}
+		}
+	}
+	
 	
 	@SuppressWarnings("serial")
 	public class SelectDrugsWizardStep extends PanelWizardStep {
@@ -103,18 +156,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			builder.addLabel("Second Drug",cc.xy(5, 1));
 						
 			JComboBox firstDrugBox = createDrugSelectionBox(d_pm.getFirstDrugModel());
-			firstDrugBox.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent e) {
-					getDrugSelectionComplete();
-				}
-			});
-			
 			JComboBox secondDrugBox = createDrugSelectionBox(d_pm.getSecondDrugModel());
-			secondDrugBox.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent e) {
-					getDrugSelectionComplete();
-				}
-			});
 			
 			builder.add(firstDrugBox,cc.xy(1, 3));
 			builder.add(secondDrugBox,cc.xy(5, 3));
@@ -128,7 +170,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(d_pm.getDrugListModel(), firstDrugModel);
 			endPointBox.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent arg0) {
-					setComplete(d_pm.getEndpointModel().getValue() != null);					
+					getDrugSelectionComplete();					
 				}
 			});
 			return endPointBox;
@@ -139,18 +181,6 @@ public class MetaAnalysisWizard implements ViewBuilder {
 						&& (d_pm.getSecondDrugModel().getValue() != null) );
 		}
 		
-		public void applyState()
-		throws InvalidStateException {		 
-			if (!isComplete())
-				throw new InvalidStateException();
-			
-			//TODO something with meta analysis
-			/*	MetaAnalysisDialog dialog = new MetaAnalysisDialog(d_frame, 
-						d_domain, new MetaAnalysis(d_endpoint, studies));
-				GUIHelper.centerWindow(dialog, d_frame);
-				dialog.setVisible(true);*/
-
-		}
 	}
 	
 	@SuppressWarnings("serial")
