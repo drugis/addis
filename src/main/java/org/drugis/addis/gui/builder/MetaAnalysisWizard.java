@@ -66,12 +66,9 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		    d_table = new StudyTable(d_pm.getStudyTableModel());
 			    
 		    JScrollPane sPane = new JScrollPane(d_table);
-		    sPane.setBorder(BorderFactory.createEmptyBorder());
+		    sPane.setPreferredSize(new Dimension(600,100));
 			    
-		    JScrollPane sPane2 = new JScrollPane(sPane);
-		    sPane2.setPreferredSize(new Dimension(600,100));
-			    
-			studiesComp = sPane2;
+			studiesComp = sPane;
 
 			FormLayout layout = new FormLayout(
 					"center:pref",
