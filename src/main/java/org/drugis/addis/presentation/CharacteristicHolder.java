@@ -1,4 +1,4 @@
-package org.drugis.addis.gui;
+package org.drugis.addis.presentation;
 
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
@@ -21,6 +21,10 @@ public class CharacteristicHolder extends AbstractValueModel {
 
 	public Object getValue() {
 		return d_study.getCharacteristics().get(d_char);
+	}
+	
+	public StudyCharacteristic getCharacteristic() {
+		return d_char;
 	}
 
 }

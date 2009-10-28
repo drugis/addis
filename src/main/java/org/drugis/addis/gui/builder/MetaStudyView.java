@@ -4,8 +4,8 @@ import javax.swing.JComponent;
 
 import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.StudyCharacteristic;
-import org.drugis.addis.gui.CharacteristicHolder;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.presentation.CharacteristicHolder;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
