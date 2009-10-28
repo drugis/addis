@@ -365,6 +365,11 @@ public class MetaAnalysisWizardPresentation {
 	public StudyCharTableModel getStudyTableModel() {
 		return new StudyCharTableModel(new DefaultStudyListPresentationModel(getStudyListModel()));
 	}
+
+	public MetaAnalysis createMetaAnalysis() {
+		return new MetaAnalysis((Endpoint)getEndpointModel().getValue(),
+				new ArrayList<Study>(getSelectedStudySet()));
+	}
 	
 	public void saveMetaAnalysis(String name, MetaAnalysis ma) {
 		d_domain.addStudy(new MetaStudy(name,ma));

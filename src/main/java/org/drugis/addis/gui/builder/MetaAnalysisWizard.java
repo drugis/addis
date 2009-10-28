@@ -79,7 +79,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 				add(new JLabel("Meta-Analyze Not Implemented for non-rate measurements"));
 			}
 			else {
-				d_ma = new MetaAnalysis((Endpoint) d_pm.getEndpointModel().getValue(), new ArrayList<Study>(d_pm.getSelectedStudySet()));
+				d_ma = d_pm.createMetaAnalysis();
 				ViewBuilder mav = new MetaAnalysisView(d_ma, d_frame.getPresentationModelManager());
 				add(mav.buildPanel());
 				setComplete(true);

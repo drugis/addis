@@ -19,6 +19,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -458,5 +459,28 @@ public class MetaAnalysisWizardPresentationTest {
 		set.remove(d_wizard.getStudySet().first());
 		assertTrue(!set.isEmpty());
 		assertEquals(set, d_wizard.getSelectedStudySet());	
+	}
+
+	@Ignore
+	@Test
+	public void testBuildMetaAnalysisThreeArm() {
+		d_domain.addStudy(ExampleData.buildAdditionalStudyThreeArm());
+
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
+		
+		for (Study s : d_wizard.getStudySet()) {
+			if (!s.equals(ExampleData.buildAdditionalStudyThreeArm())) {
+				d_wizard.getSelectedStudyBooleanModel(s).setValue(false);
+			}
+		}
+		SortedSet<Study> set = new TreeSet<Study>();
+		set.add(ExampleData.buildAdditionalStudyThreeArm());
+		assertEquals(set, d_wizard.getSelectedStudySet());	
+
+		MetaAnalysis ma = d_wizard.createMetaAnalysis();
+		assertEquals(2, ma.getDrugs().size());
 	}
 }

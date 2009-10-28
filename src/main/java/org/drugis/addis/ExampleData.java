@@ -248,6 +248,41 @@ public class ExampleData {
 		return study;
 	}
 
+	public static AbstractStudy buildAdditionalStudyThreeArm() {
+		BasicStudy study = new BasicStudy("Fictional et al, 2009", buildIndicationDepression());
+		study.setEndpoints(new HashSet<Endpoint>(
+				Arrays.asList(new Endpoint[]{buildEndpointHamd()})));
+		
+		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+				"This is a fictional study that I just created because I need a three-arm study.");
+
+		// Paroxetine data
+		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroup parox = new BasicPatientGroup(study, buildDrugParoxetine(), dose, 37);
+		BasicRateMeasurement pHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(parox);
+		pHamd.setRate(23);
+		study.addPatientGroup(parox);
+		study.setMeasurement(buildEndpointHamd(), parox, pHamd);
+		
+		// Fluoxetine data
+		dose = new Dose(20, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroup fluox = new BasicPatientGroup(study, buildDrugFluoxetine(), dose, 144);
+		BasicRateMeasurement fHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(fluox);
+		fHamd.setRate(63);
+		study.addPatientGroup(fluox);
+		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);
+
+		// Sertraline data
+		dose = new Dose(50, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroup sertr = new BasicPatientGroup(study, buildDrugSertraline(), dose, 142);
+		BasicRateMeasurement sHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(sertr);
+		sHamd.setRate(73);
+		study.addPatientGroup(sertr);
+		study.setMeasurement(buildEndpointHamd(), sertr, sHamd);
+		
+		return study;
+	}
+
 	public static AbstractStudy buildHeartStudy() {
 		BasicStudy study = new BasicStudy("McMurray et al, 2003", buildIndicationChronicHeartFailure());
 		study.setEndpoints(Collections.singleton(buildEndpointCVdeath()));
