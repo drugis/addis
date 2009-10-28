@@ -3,12 +3,13 @@ package org.drugis.addis.gui.builder;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -17,7 +18,7 @@ import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MetaAnalysis;
-import org.drugis.addis.entities.MetaStudy;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
@@ -33,6 +34,7 @@ import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
 
 public class MetaAnalysisWizard implements ViewBuilder {
 
@@ -49,7 +51,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		wizardModel.add(new SelectIndicationWizardStep());
 		wizardModel.add(new SelectEndpointWizardStep());
 		wizardModel.add(new SelectDrugsWizardStep());
-		//TODO: Maybe add SelectStudiesStep with checkboxes?
+		wizardModel.add(new SelectStudiesWizardStep());
 		wizardModel.add(new OverviewWizardStep());
 		Wizard wizard = new Wizard(wizardModel);
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
@@ -57,13 +59,6 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		return wizard;
 	}
 	
-	@SuppressWarnings("serial")
-	public class SelectStudiesWizardStep extends PanelWizardStep {
-		public SelectStudiesWizardStep() {
-			super("Select Studies","Select the Studies that you want to use for this meta analysis.");
-				
-		}
-	}
 	
 	@SuppressWarnings("serial")
 	public class OverviewWizardStep extends PanelWizardStep {
@@ -74,20 +69,12 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		}
 		
 		public void prepare() {
-			d_ma = new MetaAnalysis((Endpoint) d_pm.getEndpointModel().getValue(), d_pm.getStudyListModel().getValue());
+			// FIXME: Get studylist from selectedStudyList.
+			d_ma = new MetaAnalysis((Endpoint) d_pm.getEndpointModel().getValue(), new ArrayList<Study>(d_pm.getSelectedStudySet()));
 			ViewBuilder mav = new MetaAnalysisView(d_ma, d_frame.getPresentationModelManager());
 			removeAll();
 			add(mav.buildPanel());
 			setComplete(true);
-			
-/*			JButton saveButton = new JButton("Save");
-			saveButton.setMnemonic('s');
-			saveButton.addActionListener(new AbstractAction() {
-				public void actionPerformed(ActionEvent arg0) {
-					saveAsStudy();
-				}			
-			});
-			add(saveButton);*/
 		}
 		
 		public void applyState()
@@ -101,6 +88,51 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			if (res != null) {
 				d_pm.saveMetaAnalysis(res, d_ma);		
 			}
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	public class SelectStudiesWizardStep extends PanelWizardStep {
+
+		public SelectStudiesWizardStep() {
+			super("Select Studies","Select the studies to be used in the meta analysis");
+	
+	}
+		
+		public void prepare() {
+
+			d_pm.fillSelectedStudySet();
+			setComplete(true);
+			
+			removeAll();
+			FormLayout layout = new FormLayout(
+					"left:pref, 3dlu, left:pref",
+					"p, 3dlu, p");
+
+			PanelBuilder builder = new PanelBuilder(layout);
+			CellConstraints cc =  new CellConstraints();
+			builder.addSeparator("Studies", cc.xyw(1, 1, 3));
+
+			int row = 3;
+			for (Study s : d_pm.getStudySet()) {
+				layout.appendRow(RowSpec.decode("3dlu"));
+				layout.appendRow(RowSpec.decode("p"));
+
+				JCheckBox box = BasicComponentFactory.createCheckBox(d_pm.getSelectedStudyBooleanModel(s), s.getId());
+				box.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						setComplete(!d_pm.getSelectedStudySet().isEmpty());						
+					}
+				});
+				
+
+				builder.add(box, cc.xy(1, row));
+
+				row += 2;
+			}
+			
+			JScrollPane sp = new JScrollPane(builder.getPanel());
+			add(sp);
 		}
 	}
 	

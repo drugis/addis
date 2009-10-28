@@ -3,6 +3,7 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -65,6 +66,25 @@ public class MetaAnalysisWizardPresentation {
 		protected void checkArgument(Object newValue) {
 			if (!getIndicationSet().contains(newValue))
 				throw new IllegalArgumentException("Indication not in the actual set!");
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	private class BooleanHolder extends AbstractHolder<Boolean> {
+		public BooleanHolder() {
+			setValue(true);
+		}
+		
+		@Override
+		protected void cascade() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		protected void checkArgument(Object newValue) {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 	
@@ -163,6 +183,7 @@ public class MetaAnalysisWizardPresentation {
 	private EndpointListHolder d_endpointListHolder;
 	private DrugListHolder d_drugListHolder;
 	private StudyListHolder d_studyListHolder;
+	private HashMap<Study,AbstractHolder<Boolean>> d_selectedStudies;
 	
 	
 	public MetaAnalysisWizardPresentation(Domain d) {
@@ -189,7 +210,28 @@ public class MetaAnalysisWizardPresentation {
 			}			
 		});
 		d_studyListHolder = new StudyListHolder();
-
+		d_selectedStudies = new HashMap<Study,AbstractHolder<Boolean>>();
+	}
+	
+	public SortedSet<Study> getSelectedStudySet() {
+		SortedSet<Study> set = new TreeSet<Study>();
+		for (Study s : d_selectedStudies.keySet()) {
+			if (d_selectedStudies.get(s).getValue()) {
+				set.add(s);
+			}
+		}
+		return set;
+	}
+	
+	public void fillSelectedStudySet() {
+		d_selectedStudies.clear();
+		for (Study s : getStudySet()) {
+			d_selectedStudies.put(s, new BooleanHolder()) ;
+		}
+	}
+	
+	public AbstractHolder<Boolean> getSelectedStudyBooleanModel(Study study) {
+		return d_selectedStudies.get(study);
 	}
 	
 	public ListHolder<Indication> getIndicationListModel() {

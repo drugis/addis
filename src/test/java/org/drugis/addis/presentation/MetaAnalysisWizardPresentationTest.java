@@ -435,4 +435,30 @@ public class MetaAnalysisWizardPresentationTest {
 		assertNull(d_wizard.getFirstDrugModel().getValue());
 		assertNull(d_wizard.getSecondDrugModel().getValue());
 	}
+	
+	@Test
+	public void testGetSelectedStudiesWithoutChange() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
+		
+		d_wizard.fillSelectedStudySet();
+		assertEquals(d_wizard.getStudySet(), d_wizard.getSelectedStudySet());
+	}
+	
+	@Test
+	public void testGetSelectedStudiesWithChange() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
+		
+		d_wizard.fillSelectedStudySet();
+		d_wizard.getSelectedStudyBooleanModel(d_wizard.getStudySet().first()).setValue(false);
+		SortedSet<Study> set = d_wizard.getStudySet();
+		set.remove(d_wizard.getStudySet().first());
+		assertTrue(!set.isEmpty());
+		assertEquals(set, d_wizard.getSelectedStudySet());	
+	}
 }
