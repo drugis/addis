@@ -443,7 +443,6 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		
-		d_wizard.fillSelectedStudySet();
 		assertEquals(d_wizard.getStudySet(), d_wizard.getSelectedStudySet());
 	}
 	
@@ -454,7 +453,6 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		
-		d_wizard.fillSelectedStudySet();
 		d_wizard.getSelectedStudyBooleanModel(d_wizard.getStudySet().first()).setValue(false);
 		SortedSet<Study> set = d_wizard.getStudySet();
 		set.remove(d_wizard.getStudySet().first());

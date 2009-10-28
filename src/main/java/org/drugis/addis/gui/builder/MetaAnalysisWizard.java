@@ -127,8 +127,6 @@ public class MetaAnalysisWizard implements ViewBuilder {
 	}
 		
 		public void prepare() {
-
-			d_pm.fillSelectedStudySet();
 			setComplete(true);
 			
 			removeAll();

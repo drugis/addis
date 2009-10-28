@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -86,6 +87,7 @@ public class MetaAnalysisWizardPresentation {
 			// TODO Auto-generated method stub
 			
 		}
+
 	}
 	
 	@SuppressWarnings("serial")
@@ -171,6 +173,7 @@ public class MetaAnalysisWizardPresentation {
 
 		public void propertyChange(PropertyChangeEvent evt) {
 			fireValueChange(null, getValue());
+			fillSelectedStudySet();
 		}
 	}
 		
@@ -215,15 +218,15 @@ public class MetaAnalysisWizardPresentation {
 	
 	public SortedSet<Study> getSelectedStudySet() {
 		SortedSet<Study> set = new TreeSet<Study>();
-		for (Study s : d_selectedStudies.keySet()) {
-			if (d_selectedStudies.get(s).getValue()) {
-				set.add(s);
+		for (Map.Entry<Study, AbstractHolder<Boolean>> e : d_selectedStudies.entrySet()) {
+			if (e.getValue().getValue().equals(Boolean.TRUE)) {
+				set.add(e.getKey());
 			}
 		}
 		return set;
 	}
 	
-	public void fillSelectedStudySet() {
+	private void fillSelectedStudySet() {
 		d_selectedStudies.clear();
 		for (Study s : getStudySet()) {
 			d_selectedStudies.put(s, new BooleanHolder()) ;
