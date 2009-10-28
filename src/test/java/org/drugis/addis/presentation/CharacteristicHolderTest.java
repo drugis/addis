@@ -17,9 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui;
+package org.drugis.addis.presentation;
 
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.*;
 
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
@@ -28,6 +29,8 @@ import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.entities.StudyCharacteristicsMap;
+import org.drugis.addis.gui.MutableCharacteristicHolder;
+import org.drugis.addis.presentation.CharacteristicHolder;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,5 +62,10 @@ public class CharacteristicHolderTest {
 		d_study.getCharacteristics().addPropertyChangeListener(l);
 		d_holder.setValue(indication);
 		verify(l);
+	}
+	
+	@Test
+	public void testGetCharacteristic() {
+		assertEquals(d_char, d_holder.getCharacteristic());
 	}
 }

@@ -21,6 +21,7 @@ package org.drugis.addis.gui;
 
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.presentation.CharacteristicHolder;
 
 @SuppressWarnings("serial")
 public class MutableCharacteristicHolder extends CharacteristicHolder {
