@@ -7,17 +7,21 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.SortedSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MetaAnalysis;
+import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudyTable;
@@ -69,12 +73,17 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		}
 		
 		public void prepare() {
-			// FIXME: Get studylist from selectedStudyList.
-			d_ma = new MetaAnalysis((Endpoint) d_pm.getEndpointModel().getValue(), new ArrayList<Study>(d_pm.getSelectedStudySet()));
-			ViewBuilder mav = new MetaAnalysisView(d_ma, d_frame.getPresentationModelManager());
 			removeAll();
-			add(mav.buildPanel());
-			setComplete(true);
+			
+			if (haveNonRateMeasurements(d_pm.getSelectedStudySet())) {
+				add(new JLabel("Meta-Analyze Not Implemented for non-rate measurements"));
+			}
+			else {
+				d_ma = new MetaAnalysis((Endpoint) d_pm.getEndpointModel().getValue(), new ArrayList<Study>(d_pm.getSelectedStudySet()));
+				ViewBuilder mav = new MetaAnalysisView(d_ma, d_frame.getPresentationModelManager());
+				add(mav.buildPanel());
+				setComplete(true);
+			}
 		}
 		
 		public void applyState()
@@ -88,6 +97,24 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			if (res != null) {
 				d_pm.saveMetaAnalysis(res, d_ma);		
 			}
+		}
+		
+		private boolean haveNonRateMeasurements(SortedSet<Study> studies) {
+			for (Study s : studies) {
+				if (hasNonRateMeasurements(s)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		private boolean hasNonRateMeasurements(Study s) {
+			for (PatientGroup g : s.getPatientGroups()) {
+				if (!(s.getMeasurement((Endpoint) d_pm.getEndpointModel().getValue(), g) instanceof RateMeasurement)) {
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 	
