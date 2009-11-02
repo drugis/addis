@@ -160,6 +160,7 @@ public class Main extends JFrame {
 			loadDomainFromFile();
 		} catch (Exception e) {
 			MainData.initDefaultData(d_domain.getDomain());
+			d_domain.getDomain().addStudy(MainData.buildAdditionalStudyThreeArm());
 		}
 		
 		d_domain.getDomain().addListener(new MainListener());
