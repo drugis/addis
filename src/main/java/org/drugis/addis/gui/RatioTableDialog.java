@@ -26,12 +26,10 @@ import com.jgoodies.binding.adapter.BasicComponentFactory;
 @SuppressWarnings("serial")
 public class RatioTableDialog extends JDialog {
 	private RatioTableModel d_tableModel;
-	private String d_description;
 
-	public RatioTableDialog(JFrame parent, RatioTableModel model, String title, String description) {
-		super(parent, title);
+	public RatioTableDialog(JFrame parent, RatioTableModel model) {
+		super(parent, model.getTitle());
 		d_tableModel = model;
-		d_description = description;
 		initComps();
 		setModal(true);
 		pack();
@@ -64,7 +62,7 @@ public class RatioTableDialog extends JDialog {
 		table.setDefaultRenderer(Object.class, new RatioTableCellRenderer());
 		EnhancedTableHeader.autoSizeColumns(table);
 		
-		JLabel description = new JLabel(d_description);
+		JLabel description = new JLabel(d_tableModel.getDescription());
 		
 		JPanel tablePanel = new JPanel(new BorderLayout());
 		tablePanel.add(table, BorderLayout.CENTER);

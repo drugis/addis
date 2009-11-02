@@ -113,4 +113,18 @@ public class OddsRatioTableModelTest {
 				pg0.getLabelModel().getValue() + "\"";
 		assertEquals(expected, d_threeArmModel.getDescriptionAt(0, 1));
 	}
+	
+	@Test
+	public void testGetTitle() {
+		String title = "Odds-Ratio Table";
+		assertEquals(title, d_threeArmModel.getTitle());
+		
+	}
+	
+	@Test
+	public void testGetDescription() {
+		String description = d_threeArmModel.getTitle() + " for \"" + d_threeArmStudy.getId()
+				+ "\" on Endpoint \"" + d_endpoint.getName() + "\"";
+		assertEquals(description, d_threeArmModel.getDescription());
+	}
 }

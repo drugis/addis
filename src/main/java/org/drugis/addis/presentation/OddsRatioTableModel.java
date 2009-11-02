@@ -57,4 +57,13 @@ public class OddsRatioTableModel extends AbstractTableModel implements RatioTabl
 	private String getPatientGroupLabel(int index) {
 		return d_pmf.getLabeledModel(d_study.getPatientGroups().get(index)).getLabelModel().getString();
 	}
+	
+	public String getTitle() {
+		return "Odds-Ratio Table";
+	}
+	
+	public String getDescription() {
+		return getTitle() + " for \"" + d_study.getId() 
+				+ "\" on Endpoint \"" + d_endpoint.getName() + "\"";
+	}
 }

@@ -73,20 +73,15 @@ public class StudyEndpointsView implements ViewBuilder {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				OddsRatioTableModel tableModel = new OddsRatioTableModel(d_model.getBean(), e, d_pmf);
-				String title = "Odds-Ratio Table";
-				String description = title + " for \"" + d_model.getBean()
-					+ "\" on Endpoint \"" + e + "\"";
-
-				
-				createRatioDialog(tableModel, title, description).setVisible(true);
+				createRatioDialog(tableModel).setVisible(true);
 			}
 
 		});
 		return button;
 	}
 	
-	private JDialog createRatioDialog(RatioTableModel tableModel, String title, String description) {
-		return new RatioTableDialog(d_mainWindow, tableModel, title, description);
+	private JDialog createRatioDialog(RatioTableModel tableModel) {
+		return new RatioTableDialog(d_mainWindow, tableModel);
 	}
 	
 	private JButton createRiskRatioButton(Endpoint e) {

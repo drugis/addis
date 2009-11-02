@@ -12,4 +12,8 @@ public interface RatioTableModel extends TableModel {
 	 */
 	public abstract String getDescriptionAt(int row, int col);
 
+	public String getTitle();
+
+	public String getDescription();
+
 }
