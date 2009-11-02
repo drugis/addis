@@ -15,6 +15,8 @@ import org.drugis.addis.gui.RatioTableDialog;
 import org.drugis.addis.presentation.OddsRatioTableModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.RatioTableModel;
+import org.drugis.addis.presentation.RiskDifferenceTableModel;
+import org.drugis.addis.presentation.RiskRatioTableModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -73,12 +75,12 @@ public class StudyEndpointsView implements ViewBuilder {
 	}
 
 	private JButton createRiskRatioButton(Endpoint e) {
-		final RatioTableModel tableModel = new OddsRatioTableModel(d_model.getBean(), e, d_pmf);
+		final RatioTableModel tableModel = new RiskRatioTableModel(d_model.getBean(), e, d_pmf);
 		return createRatioButton(tableModel);
 	}
 	
 	private JButton createRiskDifferenceButton(Endpoint e) {
-		final RatioTableModel tableModel = new OddsRatioTableModel(d_model.getBean(), e, d_pmf);
+		final RatioTableModel tableModel = new RiskDifferenceTableModel(d_model.getBean(), e, d_pmf);
 		return createRatioButton(tableModel);
 	}
 	

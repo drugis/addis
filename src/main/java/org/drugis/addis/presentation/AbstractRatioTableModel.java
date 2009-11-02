@@ -8,7 +8,7 @@ import org.drugis.addis.entities.Ratio;
 import org.drugis.addis.entities.Study;
 
 @SuppressWarnings("serial")
-public abstract class AbstractRatioTableModel extends AbstractTableModel {
+public abstract class AbstractRatioTableModel extends AbstractTableModel implements RatioTableModel {
 	protected Study d_study;
 	protected Endpoint d_endpoint;
 	protected PresentationModelFactory d_pmf;
