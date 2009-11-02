@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.RatioTableDialog;
@@ -59,9 +60,11 @@ public class StudyEndpointsView implements ViewBuilder {
 				builder.add(
 						GUIFactory.createEndpointLabelWithIcon(d_loader, d_model.getBean(), e),
 						cc.xy(1, row));
-				builder.add(createOddsRatioButton(e), cc.xy(3, row));
-				builder.add(createRiskRatioButton(e), cc.xy(5, row));
-				builder.add(createRiskDifferenceButton(e), cc.xy(7, row));
+				if (e.getType().equals(Type.RATE)) {
+					builder.add(createOddsRatioButton(e), cc.xy(3, row));
+					builder.add(createRiskRatioButton(e), cc.xy(5, row));
+					builder.add(createRiskDifferenceButton(e), cc.xy(7, row));
+				}
 				row += 2;
 				addRow = true;
 			}

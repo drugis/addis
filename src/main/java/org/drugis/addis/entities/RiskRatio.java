@@ -21,7 +21,7 @@ package org.drugis.addis.entities;
 
 import org.drugis.addis.entities.Endpoint.Type;
 
-public class RiskRatio extends Ratio implements ContinuousMeasurement {
+public class RiskRatio extends Ratio {
 	private static final long serialVersionUID = 3178825436484450721L;
 
 	public RiskRatio(RateMeasurement denominator, RateMeasurement numerator) {
@@ -31,14 +31,6 @@ public class RiskRatio extends Ratio implements ContinuousMeasurement {
 	@Override
 	protected double getMean(RateMeasurement m) {
 		return (double)m.getRate() / m.getSampleSize();
-	}
-
-	public Double getMean() {
-		return getRatio();
-	}
-
-	public Double getStdDev() {
-		return getConfidenceInterval().getLength() / (2 * 1.96);
 	}
 
 	public boolean isOfType(Type type) {

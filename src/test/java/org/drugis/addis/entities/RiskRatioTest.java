@@ -65,8 +65,8 @@ public class RiskRatioTest {
 	}
 	
 	@Test
-	public void testGetMean() {
-		assertEquals(s_meanNum / s_meanDen, (double)d_ratio.getMean(), 0.00001);
+	public void testGetRatio() {
+		assertEquals(s_meanNum / s_meanDen, (double)d_ratio.getRatio(), 0.00001);
 	}
 	
 	@Test
@@ -86,11 +86,5 @@ public class RiskRatioTest {
 	
 	private double square(double d) {
 		return d * d;
-	}
-	
-	@Test
-	public void testStdDev() {
-		double sd = d_ratio.getConfidenceInterval().getLength() / (2 * 1.96);
-		assertEquals(sd, d_ratio.getStdDev(), 0.00001);
 	}
 }
