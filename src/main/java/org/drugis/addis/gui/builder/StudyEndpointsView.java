@@ -7,7 +7,6 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Study;
@@ -16,6 +15,7 @@ import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.RatioTableDialog;
 import org.drugis.addis.presentation.OddsRatioTableModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
+import org.drugis.addis.presentation.RatioTableModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -85,7 +85,7 @@ public class StudyEndpointsView implements ViewBuilder {
 		return button;
 	}
 	
-	private JDialog createRatioDialog(TableModel tableModel, String title, String description) {
+	private JDialog createRatioDialog(RatioTableModel tableModel, String title, String description) {
 		return new RatioTableDialog(d_mainWindow, tableModel, title, description);
 	}
 	

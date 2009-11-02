@@ -9,15 +9,15 @@ import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 
 @SuppressWarnings("serial")
-public class OddsRatioTableModel extends AbstractTableModel {
+public class OddsRatioTableModel extends AbstractTableModel implements RatioTableModel {
 	private Study d_study;
 	private Endpoint d_endpoint;
-	private PresentationModelFactory d_pmm;
+	private PresentationModelFactory d_pmf;
 	
-	public OddsRatioTableModel(Study s, Endpoint e, PresentationModelFactory pmm) {
+	public OddsRatioTableModel(Study s, Endpoint e, PresentationModelFactory pmf) {
 		d_study = s;
 		d_endpoint = e;
-		d_pmm = pmm;
+		d_pmf = pmf;
 	}
 
 	private OddsRatio getOddsRatio(Measurement denominator, Measurement numerator) {
@@ -35,11 +35,26 @@ public class OddsRatioTableModel extends AbstractTableModel {
 
 	public Object getValueAt(int row, int col) {
 		if (row == col) {
-			return d_pmm.getModel(d_study.getPatientGroups().get(row));
+			return d_pmf.getModel(d_study.getPatientGroups().get(row));
 		}
 		
 		Measurement denominator = d_study.getMeasurement(d_endpoint, d_study.getPatientGroups().get(row));
 		Measurement numerator = d_study.getMeasurement(d_endpoint, d_study.getPatientGroups().get(col));
-		return d_pmm.getModel(getOddsRatio(denominator, numerator));
+		return d_pmf.getModel(getOddsRatio(denominator, numerator));
+	}
+	
+	/**
+	 * @see org.drugis.addis.presentation.RatioTableModel#getDescriptionAt(int, int)
+	 */
+	public String getDescriptionAt(int row, int col) {
+		if (row == col) {
+			return null;
+		}
+		return "\"" + getPatientGroupLabel(col) +
+			"\" relative to \"" + getPatientGroupLabel(row) + "\"";
+	}
+
+	private String getPatientGroupLabel(int index) {
+		return d_pmf.getLabeledModel(d_study.getPatientGroups().get(index)).getLabelModel().getString();
 	}
 }

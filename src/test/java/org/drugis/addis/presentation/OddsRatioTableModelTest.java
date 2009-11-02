@@ -1,6 +1,7 @@
 package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.drugis.addis.ExampleData;
@@ -21,6 +22,7 @@ public class OddsRatioTableModelTest {
 	OddsRatioTableModel d_stdModel;
 	OddsRatioTableModel d_threeArmModel;
 	Endpoint d_endpoint;
+	private PresentationModelFactory d_pmf;
 	
 	@Before
 	public void setUp() {
@@ -28,9 +30,9 @@ public class OddsRatioTableModelTest {
 		d_threeArmStudy = ExampleData.buildAdditionalStudyThreeArm();
 		d_endpoint = ExampleData.buildEndpointHamd();
 		DomainImpl domain = new DomainImpl();
-		PresentationModelFactory manager = new PresentationModelFactory(domain);	
-		d_stdModel = new OddsRatioTableModel(d_standardStudy, d_endpoint, manager);
-		d_threeArmModel = new OddsRatioTableModel(d_threeArmStudy, d_endpoint, manager);
+		d_pmf = new PresentationModelFactory(domain);	
+		d_stdModel = new OddsRatioTableModel(d_standardStudy, d_endpoint, d_pmf);
+		d_threeArmModel = new OddsRatioTableModel(d_threeArmStudy, d_endpoint, d_pmf);
 	}
 	
 	@Test
@@ -96,5 +98,19 @@ public class OddsRatioTableModelTest {
 			assertTrue("Instance of PresentationModel", val instanceof PresentationModel);
 			assertEquals(((PresentationModel) val).getBean(), d_threeArmStudy.getPatientGroups().get(i));
 		}
+	}
+	
+	@Test
+	public void testGetDescriptionAtDiagonal() {
+		assertNull(d_threeArmModel.getDescriptionAt(1, 1));
+	}
+	
+	@Test
+	public void testGetDescriptionAt() {
+		LabeledPresentationModel pg0 = d_pmf.getLabeledModel(d_threeArmStudy.getPatientGroups().get(0));
+		LabeledPresentationModel pg1 = d_pmf.getLabeledModel(d_threeArmStudy.getPatientGroups().get(1));
+		String expected = "\"" + pg1.getLabelModel().getValue() + "\" relative to \"" +
+				pg0.getLabelModel().getValue() + "\"";
+		assertEquals(expected, d_threeArmModel.getDescriptionAt(0, 1));
 	}
 }

@@ -14,21 +14,21 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.gui.components.EnhancedTableHeader;
 import org.drugis.addis.presentation.LabeledPresentationModel;
+import org.drugis.addis.presentation.RatioTableModel;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 
 @SuppressWarnings("serial")
 public class RatioTableDialog extends JDialog {
-	private TableModel d_tableModel;
+	private RatioTableModel d_tableModel;
 	private String d_description;
 
-	public RatioTableDialog(JFrame parent, TableModel model, String title, String description) {
+	public RatioTableDialog(JFrame parent, RatioTableModel model, String title, String description) {
 		super(parent, title);
 		d_tableModel = model;
 		d_description = description;
@@ -50,6 +50,10 @@ public class RatioTableDialog extends JDialog {
 				label.setBackground(Color.white);
 			}
 			label.setOpaque(true);
+			
+			if (d_tableModel.getDescriptionAt(row, col) != null) {
+				label.setToolTipText(d_tableModel.getDescriptionAt(row, col));
+			}
 			
 			return label;
 		}
