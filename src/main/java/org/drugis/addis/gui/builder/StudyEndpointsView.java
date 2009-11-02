@@ -1,11 +1,14 @@
 package org.drugis.addis.gui.builder;
 
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Study;
@@ -43,7 +46,7 @@ public class StudyEndpointsView implements ViewBuilder {
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"left:pref, 3dlu, pref, 3dlu, pref, 3dlu, pref",
+				"left:pref, 3dlu, left:pref",
 				"p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
@@ -60,11 +63,16 @@ public class StudyEndpointsView implements ViewBuilder {
 				builder.add(
 						GUIFactory.createEndpointLabelWithIcon(d_loader, d_model.getBean(), e),
 						cc.xy(1, row));
+				JPanel panel = new JPanel(new FlowLayout());
 				if (e.getType().equals(Type.RATE)) {
-					builder.add(createOddsRatioButton(e), cc.xy(3, row));
-					builder.add(createRiskRatioButton(e), cc.xy(5, row));
-					builder.add(createRiskDifferenceButton(e), cc.xy(7, row));
+					panel.add(createOddsRatioButton(e));
+					panel.add(createRiskRatioButton(e));
+					panel.add(createRiskDifferenceButton(e));
+				} else if (e.getType().equals(Type.CONTINUOUS)) {
+					panel.add(createWMDButton(e));
+					panel.add(createSMDButton(e));
 				}
+				builder.add(panel, cc.xy(3, row));
 				row += 2;
 				addRow = true;
 			}
@@ -85,6 +93,26 @@ public class StudyEndpointsView implements ViewBuilder {
 	private JButton createRiskDifferenceButton(Endpoint e) {
 		final RatioTableModel tableModel = new RiskDifferenceTableModel(d_model.getBean(), e, d_pmf);
 		return createRatioButton(tableModel);
+	}
+	
+	private JButton createWMDButton(Endpoint e) {
+		JButton button = new JButton("Weighted Mean Difference Table");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(d_mainWindow, "Not Implemented");
+			}
+		});
+		return button;
+	}
+	
+	private JButton createSMDButton(Endpoint e) {
+		JButton button = new JButton("Standardized Mean Difference Table");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(d_mainWindow, "Not Implemented");
+			}
+		});
+		return button;
 	}
 	
 	private JButton createRatioButton(final RatioTableModel tableModel) {
