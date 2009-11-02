@@ -1,5 +1,9 @@
 package org.drugis.addis.gui.builder;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
 import javax.swing.JComponent;
 
 import org.drugis.addis.entities.Endpoint;
@@ -26,7 +30,7 @@ public class StudyEndpointsView implements ViewBuilder {
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"left:pref",
+				"left:pref, 3dlu, pref, 3dlu, pref, 3dlu, pref",
 				"p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
@@ -43,6 +47,9 @@ public class StudyEndpointsView implements ViewBuilder {
 				builder.add(
 						GUIFactory.createEndpointLabelWithIcon(d_loader, d_model.getBean(), e),
 						cc.xy(1, row));
+				builder.add(createOddsRatioButton(e), cc.xy(3, row));
+				builder.add(createRiskRatioButton(e), cc.xy(5, row));
+				builder.add(createRiskDifferenceButton(e), cc.xy(7, row));
 				row += 2;
 				addRow = true;
 			}
@@ -50,4 +57,21 @@ public class StudyEndpointsView implements ViewBuilder {
 		return builder.getPanel();
 	}
 
+	private JButton createOddsRatioButton(final Endpoint e) {
+		JButton button = new JButton("Odds-Ratio Table");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Odds-Ratio Table for \"" + d_model.getBean() + "\" on Endpoint \"" + e + "\"");
+			}
+		});
+		return button;
+	}
+	
+	private JButton createRiskRatioButton(Endpoint e) {
+		return new JButton("Risk-Ratio Table");
+	}
+	
+	private JButton createRiskDifferenceButton(Endpoint e) {
+		return new JButton("Risk-Difference Table");
+	}
 }
