@@ -5,10 +5,17 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.GUIFactory;
+import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.RatioTableDialog;
+import org.drugis.addis.presentation.OddsRatioTableModel;
+import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -22,10 +29,14 @@ public class StudyEndpointsView implements ViewBuilder {
 	
 	private PresentationModel<? extends Study> d_model;
 	private ImageLoader d_loader;
+	private PresentationModelFactory d_pmf;
+	private JFrame d_mainWindow;
 
-	public StudyEndpointsView(PresentationModel<? extends Study> model, ImageLoader loader) {
+	public StudyEndpointsView(PresentationModel<? extends Study> model, Main main) {
 		d_model = model;
-		d_loader = loader;
+		d_loader = main.getImageLoader();
+		d_pmf = main.getPresentationModelManager();
+		d_mainWindow = main;
 	}
 
 	public JComponent buildPanel() {
@@ -61,10 +72,16 @@ public class StudyEndpointsView implements ViewBuilder {
 		JButton button = new JButton("Odds-Ratio Table");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("Odds-Ratio Table for \"" + d_model.getBean() + "\" on Endpoint \"" + e + "\"");
+				OddsRatioTableModel tableModel = new OddsRatioTableModel(d_model.getBean(), e, d_pmf);
+				createRatioDialog(tableModel).setVisible(true);
 			}
+
 		});
 		return button;
+	}
+	
+	private JDialog createRatioDialog(TableModel tableModel) {
+		return new RatioTableDialog(d_mainWindow, tableModel);
 	}
 	
 	private JButton createRiskRatioButton(Endpoint e) {

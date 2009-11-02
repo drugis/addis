@@ -59,7 +59,7 @@ public class StudyView implements ViewBuilder {
 		d_mainWindow = main;
 		d_domain = domain;
 		d_charView = new StudyCharacteristicsView(model);
-		d_epView = new StudyEndpointsView(model, loader);
+		d_epView = new StudyEndpointsView(model, main);
 		d_dataView = new StudyDataView(model, loader, main.getPresentationModelManager());
 	}
 	
