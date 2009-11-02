@@ -26,16 +26,16 @@ public class EnhancedTableHeader extends JTableHeader {
 		});
 	}
 
-	public int getRequiredColumnWidth(TableColumn column) {
+	public static int getRequiredColumnWidth(JTable table, TableColumn column) {
 		int modelIndex = column.getModelIndex();
 		TableCellRenderer renderer;
 		Component component;
 		int requiredWidth = 0;
-		int rows = d_table.getRowCount();
+		int rows = table.getRowCount();
 		for (int i = 0; i < rows; i++) {
-			renderer = d_table.getCellRenderer(i, modelIndex);
-			Object valueAt = d_table.getValueAt(i, modelIndex);
-			component = renderer.getTableCellRendererComponent(d_table, valueAt, false, false, i, modelIndex);
+			renderer = table.getCellRenderer(i, modelIndex);
+			Object valueAt = table.getValueAt(i, modelIndex);
+			component = renderer.getTableCellRendererComponent(table, valueAt, false, false, i, modelIndex);
 			requiredWidth = Math.max(requiredWidth, component.getPreferredSize().width + 2);
 		}
 		return requiredWidth;
@@ -45,14 +45,18 @@ public class EnhancedTableHeader extends JTableHeader {
 	 * Autosizes all columns to fit to width of their data.
 	 */
 	 public void autoSizeColumns() {
-		TableColumnModel tableColumnModel = d_table.getColumnModel();
+		autoSizeColumns(d_table);
+	 }
+
+	public static void autoSizeColumns(JTable table) {
+		TableColumnModel tableColumnModel = table.getColumnModel();
 		int col_count = tableColumnModel.getColumnCount();
 
 		for (int i = 0; i < col_count; i++) {
 			TableColumn col = tableColumnModel.getColumn(i);
-			col.setMinWidth(this.getRequiredColumnWidth(col));
+			col.setMinWidth(getRequiredColumnWidth(table, col));
 		}
-	 }
+	}
 
 	 public void doMouseClicked(MouseEvent e) {
 		 if (!getResizingAllowed()) {
@@ -66,7 +70,7 @@ public class EnhancedTableHeader extends JTableHeader {
 			 return;
 		 }
 		 int oldMinWidth = column.getMinWidth();
-		 column.setMinWidth(getRequiredColumnWidth(column));
+		 column.setMinWidth(getRequiredColumnWidth(d_table, column));
 		 setResizingColumn(column);
 		 d_table.doLayout();
 		 column.setMinWidth(oldMinWidth);
