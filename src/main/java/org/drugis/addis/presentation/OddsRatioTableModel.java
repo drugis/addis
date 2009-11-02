@@ -10,9 +10,9 @@ import org.drugis.addis.entities.Study;
 
 @SuppressWarnings("serial")
 public class OddsRatioTableModel extends AbstractTableModel {
-	Study d_study;
-	Endpoint d_endpoint;
-	PresentationModelManager d_pmm;
+	private Study d_study;
+	private Endpoint d_endpoint;
+	private PresentationModelManager d_pmm;
 	
 	public OddsRatioTableModel(Study s, Endpoint e, PresentationModelManager pmm) {
 		d_study = s;
@@ -34,14 +34,12 @@ public class OddsRatioTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row, int col) {
-		// TODO Auto-generated method stub
 		if (row == col) {
 			return d_pmm.getModel(d_study.getPatientGroups().get(row));
 		}
 		
-		//Measurement denominator = s.getMeasurement(e, s.getPatientGroups().get(0));
-		//Measurement numerator = s.getMeasurement(e, s.getPatientGroups().get(1));
-		//getOddsRatio(denominator, numerator);
-		return null;
+		Measurement denominator = d_study.getMeasurement(d_endpoint, d_study.getPatientGroups().get(row));
+		Measurement numerator = d_study.getMeasurement(d_endpoint, d_study.getPatientGroups().get(col));
+		return d_pmm.getModel(getOddsRatio(denominator, numerator));
 	}
 }

@@ -1,12 +1,15 @@
 package org.drugis.addis.presentation;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.OddsRatio;
+import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.Ratio;
 import org.drugis.addis.entities.Study;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,14 +45,42 @@ public class OddsRatioTableModelTest {
 		assertEquals(d_threeArmStudy.getPatientGroups().size(), d_threeArmModel.getRowCount());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetValueAtUpperRightPart() {
-		fail();
+		assertEquals(3, d_threeArmStudy.getPatientGroups().size());
+		PatientGroup pg0 = d_threeArmStudy.getPatientGroups().get(0);
+		PatientGroup pg1 = d_threeArmStudy.getPatientGroups().get(1);
+		PatientGroup pg2 = d_threeArmStudy.getPatientGroups().get(2);
+		
+		PresentationModel<Ratio> val01 = (PresentationModel<Ratio>)d_threeArmModel.getValueAt(0, 1);
+		assertTrue(val01.getBean() instanceof OddsRatio);
+		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg0), val01.getBean().getDenominator());
+		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val01.getBean().getNumerator());
+		
+		PresentationModel<Ratio> val12 = (PresentationModel<Ratio>)d_threeArmModel.getValueAt(1, 2);
+		assertTrue(val12.getBean() instanceof OddsRatio);
+		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val12.getBean().getDenominator());
+		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val12.getBean().getNumerator());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetValueAtLowerLeftPart() {
-		fail();
+		assertEquals(3, d_threeArmStudy.getPatientGroups().size());
+		PatientGroup pg0 = d_threeArmStudy.getPatientGroups().get(0);
+		PatientGroup pg1 = d_threeArmStudy.getPatientGroups().get(1);
+		PatientGroup pg2 = d_threeArmStudy.getPatientGroups().get(2);
+		
+		PresentationModel<Ratio> val20 = (PresentationModel<Ratio>)d_threeArmModel.getValueAt(2, 0);
+		assertTrue(val20.getBean() instanceof OddsRatio);
+		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val20.getBean().getDenominator());
+		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg0), val20.getBean().getNumerator());
+		
+		PresentationModel<Ratio> val21 = (PresentationModel<Ratio>)d_threeArmModel.getValueAt(2, 1);
+		assertTrue(val21.getBean() instanceof OddsRatio);
+		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val21.getBean().getDenominator());
+		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val21.getBean().getNumerator());
 	}
 	
 	@SuppressWarnings("unchecked")
