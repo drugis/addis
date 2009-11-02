@@ -368,7 +368,7 @@ public class MetaAnalysisWizardPresentation {
 
 	public MetaAnalysis createMetaAnalysis() {
 		return new MetaAnalysis((Endpoint)getEndpointModel().getValue(),
-				new ArrayList<Study>(getSelectedStudySet()));
+				new ArrayList<Study>(getSelectedStudySet()), getFirstDrug(), getSecondDrug());
 	}
 	
 	public void saveMetaAnalysis(String name, MetaAnalysis ma) {

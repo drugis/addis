@@ -460,8 +460,9 @@ public class MetaAnalysisWizardPresentationTest {
 		assertTrue(!set.isEmpty());
 		assertEquals(set, d_wizard.getSelectedStudySet());	
 	}
+	
+	// FIXME: createMetaAnalysis should have more tests
 
-	@Ignore
 	@Test
 	public void testBuildMetaAnalysisThreeArm() {
 		d_domain.addStudy(ExampleData.buildAdditionalStudyThreeArm());

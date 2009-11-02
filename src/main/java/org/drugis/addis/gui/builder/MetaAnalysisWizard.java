@@ -6,8 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.SortedSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -20,8 +18,6 @@ import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MetaAnalysis;
-import org.drugis.addis.entities.PatientGroup;
-import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudyTable;
@@ -75,15 +71,18 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		public void prepare() {
 			removeAll();
 			
-			if (haveNonRateMeasurements(d_pm.getSelectedStudySet())) {
+			if (!endpointIsRate()) {
 				add(new JLabel("Meta-Analyze Not Implemented for non-rate measurements"));
-			}
-			else {
+			} else {
 				d_ma = d_pm.createMetaAnalysis();
 				ViewBuilder mav = new MetaAnalysisView(d_ma, d_frame.getPresentationModelManager());
 				add(mav.buildPanel());
 				setComplete(true);
 			}
+		}
+
+		private boolean endpointIsRate() {
+			return ((Endpoint)d_pm.getEndpointModel().getValue()).getType().equals(Endpoint.Type.RATE);
 		}
 		
 		public void applyState()
@@ -97,24 +96,6 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			if (res != null) {
 				d_pm.saveMetaAnalysis(res, d_ma);		
 			}
-		}
-		
-		private boolean haveNonRateMeasurements(SortedSet<Study> studies) {
-			for (Study s : studies) {
-				if (hasNonRateMeasurements(s)) {
-					return true;
-				}
-			}
-			return false;
-		}
-		
-		private boolean hasNonRateMeasurements(Study s) {
-			for (PatientGroup g : s.getPatientGroups()) {
-				if (!(s.getMeasurement((Endpoint) d_pm.getEndpointModel().getValue(), g) instanceof RateMeasurement)) {
-					return true;
-				}
-			}
-			return false;
 		}
 	}
 	

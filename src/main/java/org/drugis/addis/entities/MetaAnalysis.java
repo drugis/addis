@@ -43,7 +43,21 @@ public class MetaAnalysis implements Serializable {
 		d_studies = studies;
 		d_drugs = findCommonDrugs();
 	}
+	
+	public MetaAnalysis(Endpoint endpoint, List<Study> studies, Drug firstDrug, Drug secondDrug)
+	throws IllegalArgumentException {
+		validate(endpoint, studies);
 		
+		d_endpoint = endpoint;
+		d_studies = studies;
+		
+		Set<Drug> drugs = new HashSet<Drug>();
+		drugs.add(firstDrug);
+		drugs.add(secondDrug);
+		validate(studies, drugs);
+		d_drugs = drugs;
+	}
+
 	public Set<Drug> getDrugs() {
 		return d_drugs;
 	}
@@ -121,6 +135,14 @@ public class MetaAnalysis implements Serializable {
 			if (!s0.getCharacteristic(StudyCharacteristic.INDICATION).equals(
 					s.getCharacteristic(StudyCharacteristic.INDICATION))) {
 				throw new IllegalArgumentException("All studies should have same Indication");
+			}
+		}
+	}
+		
+	private void validate(List<Study> studies, Set<Drug> drugs) {
+		for (Study s : studies) {
+			if (!s.getDrugs().containsAll(drugs)) {
+				throw new IllegalArgumentException("Study " + s + " does not measure all requested drugs");
 			}
 		}
 	}
