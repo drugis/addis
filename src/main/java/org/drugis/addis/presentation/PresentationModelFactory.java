@@ -34,12 +34,12 @@ import org.drugis.addis.entities.Ratio;
 
 import com.jgoodies.binding.PresentationModel;
 
-public class PresentationModelManager {
+public class PresentationModelFactory {
 	private Map<Object, PresentationModel<?>> d_cache = new
 		HashMap<Object, PresentationModel<?>>();
 	private Domain d_domain;
 	
-	public PresentationModelManager(Domain domain) {
+	public PresentationModelFactory(Domain domain) {
 		d_domain = domain;
 	}
 	

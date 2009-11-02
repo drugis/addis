@@ -37,9 +37,9 @@ public class RatioPresentation extends PresentationModel<Ratio> implements Label
 		}
 	}
 
-	private PresentationModelManager d_pmm;
+	private PresentationModelFactory d_pmm;
 
-	public RatioPresentation(Ratio bean, PresentationModelManager pmm) {
+	public RatioPresentation(Ratio bean, PresentationModelFactory pmm) {
 		super(bean);
 		d_pmm = pmm;
 	}

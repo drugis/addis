@@ -37,7 +37,7 @@ import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.gui.EndpointHolder;
 import org.drugis.addis.gui.MeasurementInputHelper;
 import org.drugis.addis.gui.components.NotEmptyValidator;
-import org.drugis.addis.presentation.PresentationModelManager;
+import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -59,12 +59,12 @@ public class StudyAddEndpointView implements ViewBuilder {
 	private JComboBox d_endpointSelect;
 	private SelectionInList<Endpoint> d_endpointSelectionInList;
 	private NotEmptyValidator d_validator;
-	private PresentationModelManager d_presMan;
+	private PresentationModelFactory d_presMan;
 	
 	public StudyAddEndpointView(Domain domain, MutableStudy study,
 			PresentationModel<EndpointHolder> endpointModel,
 			Map<PatientGroup,BasicMeasurement> measurements,
-			JButton okButton, PresentationModelManager presModelMan) {
+			JButton okButton, PresentationModelFactory presModelMan) {
 		d_validator = new NotEmptyValidator(okButton);
 		d_domain = domain;
 		d_study = study;

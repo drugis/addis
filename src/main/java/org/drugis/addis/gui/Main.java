@@ -77,7 +77,7 @@ import org.drugis.addis.presentation.DrugPresentationModel;
 import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
-import org.drugis.addis.presentation.PresentationModelManager;
+import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
@@ -97,9 +97,9 @@ public class Main extends JFrame {
 	private JTree d_leftPanelTree;
 	private JMenuItem d_editMenuDeleteItem;
 	
-	private PresentationModelManager d_pmManager;
+	private PresentationModelFactory d_pmManager;
 	
-	public PresentationModelManager getPresentationModelManager() {
+	public PresentationModelFactory getPresentationModelManager() {
 		return d_pmManager;
 	}
 
@@ -128,7 +128,7 @@ public class Main extends JFrame {
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		
 		initializeDomain();
-		d_pmManager = new PresentationModelManager(d_domain.getDomain());
+		d_pmManager = new PresentationModelFactory(d_domain.getDomain());
 		
 	}
 	

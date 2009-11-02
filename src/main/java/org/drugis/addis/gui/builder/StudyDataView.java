@@ -10,7 +10,7 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.GUIFactory;
-import org.drugis.addis.presentation.PresentationModelManager;
+import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -26,9 +26,9 @@ public class StudyDataView implements ViewBuilder {
 	
 	private PresentationModel<? extends Study> model;
 	private ImageLoader loader;
-	private PresentationModelManager pm;
+	private PresentationModelFactory pm;
 
-	public StudyDataView(PresentationModel<? extends Study> model, ImageLoader loader, PresentationModelManager pm) {
+	public StudyDataView(PresentationModel<? extends Study> model, ImageLoader loader, PresentationModelFactory pm) {
 		this.model = model;
 		this.loader = loader;
 		this.pm = pm;

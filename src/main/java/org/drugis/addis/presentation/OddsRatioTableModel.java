@@ -12,9 +12,9 @@ import org.drugis.addis.entities.Study;
 public class OddsRatioTableModel extends AbstractTableModel {
 	private Study d_study;
 	private Endpoint d_endpoint;
-	private PresentationModelManager d_pmm;
+	private PresentationModelFactory d_pmm;
 	
-	public OddsRatioTableModel(Study s, Endpoint e, PresentationModelManager pmm) {
+	public OddsRatioTableModel(Study s, Endpoint e, PresentationModelFactory pmm) {
 		d_study = s;
 		d_endpoint = e;
 		d_pmm = pmm;

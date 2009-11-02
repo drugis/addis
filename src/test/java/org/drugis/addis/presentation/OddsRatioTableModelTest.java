@@ -28,7 +28,7 @@ public class OddsRatioTableModelTest {
 		d_threeArmStudy = ExampleData.buildAdditionalStudyThreeArm();
 		d_endpoint = ExampleData.buildEndpointHamd();
 		DomainImpl domain = new DomainImpl();
-		PresentationModelManager manager = new PresentationModelManager(domain);	
+		PresentationModelFactory manager = new PresentationModelFactory(domain);	
 		d_stdModel = new OddsRatioTableModel(d_standardStudy, d_endpoint, manager);
 		d_threeArmModel = new OddsRatioTableModel(d_threeArmStudy, d_endpoint, manager);
 	}

@@ -27,7 +27,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.LabeledPresentationModel;
-import org.drugis.addis.presentation.PresentationModelManager;
+import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -39,9 +39,9 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class MetaAnalysisView implements ViewBuilder {
 	MetaAnalysis d_analysis;
-	private PresentationModelManager d_pmm;
+	private PresentationModelFactory d_pmm;
 	
-	public MetaAnalysisView(MetaAnalysis analysis, PresentationModelManager pmm) {
+	public MetaAnalysisView(MetaAnalysis analysis, PresentationModelFactory pmm) {
 		d_analysis = analysis;
 		d_pmm = pmm;
 	}

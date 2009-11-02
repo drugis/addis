@@ -35,7 +35,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaAnalysis;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.presentation.PresentationModelManager;
+import org.drugis.addis.presentation.PresentationModelFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,14 +43,14 @@ import com.jgoodies.binding.PresentationModel;
 
 public class PresentationModelManagerTest {
 	
-	private PresentationModelManager d_manager;
+	private PresentationModelFactory d_manager;
 	private Domain d_domain;
 
 	@Before
 	public void setUp() {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		this.d_manager = new PresentationModelManager(d_domain);
+		this.d_manager = new PresentationModelFactory(d_domain);
 	}
 
 	@SuppressWarnings("unchecked")
