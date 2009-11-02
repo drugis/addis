@@ -1,7 +1,6 @@
 package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import org.drugis.addis.entities.RiskDifference;
 import org.junit.Before;
@@ -21,10 +20,5 @@ public class RiskDifferenceTableModelTest extends RatioTableModelBase {
 		String title = "Risk-Difference Table";
 		assertEquals(title, d_threeArmModel.getTitle());
 		
-	}
-	
-	@Test
-	public void riskDifferenceImplementedTest() {
-		fail();
 	}
 }
