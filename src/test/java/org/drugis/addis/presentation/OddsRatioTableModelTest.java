@@ -19,7 +19,7 @@ import com.jgoodies.binding.PresentationModel;
 public class OddsRatioTableModelTest {
 	Study d_standardStudy;
 	Study d_threeArmStudy;
-	OddsRatioTableModel d_stdModel;
+	AbstractRatioTableModel d_stdModel;
 	OddsRatioTableModel d_threeArmModel;
 	Endpoint d_endpoint;
 	private PresentationModelFactory d_pmf;

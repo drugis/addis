@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import org.drugis.addis.entities.Endpoint;
@@ -69,26 +68,28 @@ public class StudyEndpointsView implements ViewBuilder {
 	}
 
 	private JButton createOddsRatioButton(final Endpoint e) {
-		JButton button = new JButton("Odds-Ratio Table");
+		final RatioTableModel tableModel = new OddsRatioTableModel(d_model.getBean(), e, d_pmf);
+		return createRatioButton(tableModel);
+	}
+
+	private JButton createRiskRatioButton(Endpoint e) {
+		final RatioTableModel tableModel = new OddsRatioTableModel(d_model.getBean(), e, d_pmf);
+		return createRatioButton(tableModel);
+	}
+	
+	private JButton createRiskDifferenceButton(Endpoint e) {
+		final RatioTableModel tableModel = new OddsRatioTableModel(d_model.getBean(), e, d_pmf);
+		return createRatioButton(tableModel);
+	}
+	
+	private JButton createRatioButton(final RatioTableModel tableModel) {
+		JButton button = new JButton(tableModel.getTitle());
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				OddsRatioTableModel tableModel = new OddsRatioTableModel(d_model.getBean(), e, d_pmf);
-				createRatioDialog(tableModel).setVisible(true);
+				new RatioTableDialog(d_mainWindow, tableModel).setVisible(true);
 			}
 
 		});
 		return button;
-	}
-	
-	private JDialog createRatioDialog(RatioTableModel tableModel) {
-		return new RatioTableDialog(d_mainWindow, tableModel);
-	}
-	
-	private JButton createRiskRatioButton(Endpoint e) {
-		return new JButton("Risk-Ratio Table");
-	}
-	
-	private JButton createRiskDifferenceButton(Endpoint e) {
-		return new JButton("Risk-Difference Table");
 	}
 }
