@@ -2,6 +2,7 @@ package org.drugis.addis.entities;
 
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.Interval;
+import org.drugis.common.StudentTTable;
 
 public class RiskDifference extends Ratio {
 	private static final long serialVersionUID = -6459490310869138478L;
@@ -16,7 +17,12 @@ public class RiskDifference extends Ratio {
 	 */
 	@Override
 	public Double getRatio() {
-		return 0.0;
+		double a = getNumerator().getRate();
+		double n1 = getNumerator().getSampleSize();
+		double c = getDenominator().getRate();
+		double n2 = getDenominator().getSampleSize();
+		
+		return (a/n1 - c/n2);
 	}
 	
 	/**
@@ -24,7 +30,11 @@ public class RiskDifference extends Ratio {
 	 */
 	@Override
 	public Interval<Double> getConfidenceInterval() {
-		return new Interval<Double>(0.0, 0.0);
+		double t = StudentTTable.getT(getSampleSize() - 2);
+		double upper = getRatio() + t*getError();
+		double lower = getRatio() - t*getError();
+		
+		return new Interval<Double>(lower, upper);
 	}
 
 	@Override
@@ -32,6 +42,20 @@ public class RiskDifference extends Ratio {
 		return 0;
 	}
 
+	@Override
+	// Here: gets the STANDARD ERROR of the RISK DIFFERENCE
+	public Double getError() {
+		double a = getNumerator().getRate();
+		double n1 = getNumerator().getSampleSize();
+		double b = n1 - a;
+		double c = getDenominator().getRate();
+		double n2 = getDenominator().getSampleSize();
+		double d = n2 - c;
+		
+		return new Double(Math.sqrt(a*b/Math.pow(n1,3) + c*d/Math.pow(n2,3)));
+	}
+	
+	
 	public boolean isOfType(Type type) {
 		return type.equals(Type.CONTINUOUS);
 	}
