@@ -14,7 +14,7 @@ public class RiskDifferenceTest {
 	private static final int s_effectNum = 73;
 	private static final int s_effectDen = 63;
 
-	// Paper data:
+	// Paper data [Warn2002]:
 	private static final int s_cooper1977rT = 15;
 	private static final int s_cooper1977nT = 38;
 	private static final int s_cooper1977rC = 6;
@@ -39,7 +39,7 @@ public class RiskDifferenceTest {
 		d_denominator = new BasicRateMeasurement(e, s_effectDen, pden);
 		d_riskDif = new RiskDifference(d_denominator, d_numerator);
 		
-		//cooper 1991a from Warn2002
+		//cooper 1977 from Warn2002
 		PatientGroup fnum = new BasicPatientGroup(null, null, null, s_cooper1977nT);
 		PatientGroup fden = new BasicPatientGroup(null, null, null, s_cooper1977nC);
 		d_cooper1977Num = new BasicRateMeasurement(e, s_cooper1977rT, fnum);
@@ -60,7 +60,11 @@ public class RiskDifferenceTest {
 	@Test
 	public void testGetRatio() {
 		assertEquals(RiskDifference(),	(double)d_riskDif.getRatio(), 0.00001);
-		assertEquals(s_cooper1977RD, d_cooperRD.getRatio(), 0.001);
+	}
+	
+	@Test
+	public void testGetRatiovsCooper1977() {
+		assertEquals(s_cooper1977RD, d_cooperRD.getRatio(), 0.001);	
 	}
 	
 	@Test
