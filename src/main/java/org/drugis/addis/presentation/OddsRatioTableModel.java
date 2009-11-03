@@ -4,7 +4,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.addis.entities.Ratio;
+import org.drugis.addis.entities.AbstractRatio;
 import org.drugis.addis.entities.Study;
 
 @SuppressWarnings("serial")
@@ -14,7 +14,7 @@ public class OddsRatioTableModel extends AbstractRatioTableModel {
 	}
 
 	@Override
-	protected Ratio getRatio(Measurement denominator, Measurement numerator) {
+	protected AbstractRatio getRatio(Measurement denominator, Measurement numerator) {
 		return new OddsRatio((RateMeasurement)denominator,
 		(RateMeasurement)numerator);
 	}

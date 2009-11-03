@@ -2,7 +2,7 @@ package org.drugis.addis.presentation;
 
 import javax.swing.table.TableModel;
 
-public interface RatioTableModel extends TableModel {
+public interface RelativeEffectTableModel extends TableModel {
 
 	/**
 	 * Return description for cell (row, col). Null if no tooltip should be displayed.

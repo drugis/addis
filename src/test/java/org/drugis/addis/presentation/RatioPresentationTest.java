@@ -28,7 +28,7 @@ public class RatioPresentationTest {
 	BasicRateMeasurement d_numerator;
 	BasicRateMeasurement d_denominator;
 	OddsRatio d_ratio;
-	RatioPresentation d_presentation;
+	RelativeEffectRatePresentation d_presentation;
 	
 	@Before
 	public void setUp() {
@@ -38,7 +38,7 @@ public class RatioPresentationTest {
 		d_numerator = new BasicRateMeasurement(e, s_effectNum, pnum);		
 		d_denominator = new BasicRateMeasurement(e, s_effectDen, pden);
 		d_ratio = new OddsRatio(d_denominator, d_numerator);
-		d_presentation = new RatioPresentation(d_ratio, new PresentationModelFactory(new DomainImpl()));
+		d_presentation = new RelativeEffectRatePresentation(d_ratio, new PresentationModelFactory(new DomainImpl()));
 	}
 	
 	@Test

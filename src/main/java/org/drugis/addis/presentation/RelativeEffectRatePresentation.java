@@ -5,14 +5,14 @@ import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
 import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.addis.entities.Ratio;
+import org.drugis.addis.entities.RelativeEffectRate;
 import org.drugis.common.Interval;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class RatioPresentation extends PresentationModel<Ratio> implements LabeledPresentationModel {
+public class RelativeEffectRatePresentation extends PresentationModel<RelativeEffectRate> implements LabeledPresentationModel {
 	public class LabelModel extends AbstractValueModel implements PropertyChangeListener {
 		public LabelModel() {
 			getNumerator().getModel(RateMeasurement.PROPERTY_RATE).addPropertyChangeListener(this);
@@ -39,7 +39,7 @@ public class RatioPresentation extends PresentationModel<Ratio> implements Label
 
 	private PresentationModelFactory d_pmm;
 
-	public RatioPresentation(Ratio bean, PresentationModelFactory pmm) {
+	public RelativeEffectRatePresentation(RelativeEffectRate bean, PresentationModelFactory pmm) {
 		super(bean);
 		d_pmm = pmm;
 	}

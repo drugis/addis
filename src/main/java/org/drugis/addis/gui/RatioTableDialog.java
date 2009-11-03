@@ -18,16 +18,16 @@ import javax.swing.table.TableCellRenderer;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.gui.components.EnhancedTableHeader;
 import org.drugis.addis.presentation.LabeledPresentationModel;
-import org.drugis.addis.presentation.RatioTableModel;
+import org.drugis.addis.presentation.RelativeEffectTableModel;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 
 @SuppressWarnings("serial")
 public class RatioTableDialog extends JDialog {
-	private RatioTableModel d_tableModel;
+	private RelativeEffectTableModel d_tableModel;
 
-	public RatioTableDialog(JFrame parent, RatioTableModel model) {
+	public RatioTableDialog(JFrame parent, RelativeEffectTableModel model) {
 		super(parent, model.getTitle());
 		d_tableModel = model;
 		initComps();

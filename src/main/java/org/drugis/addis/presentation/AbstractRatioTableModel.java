@@ -4,11 +4,11 @@ import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.Ratio;
+import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 
 @SuppressWarnings("serial")
-public abstract class AbstractRatioTableModel extends AbstractTableModel implements RatioTableModel {
+public abstract class AbstractRatioTableModel extends AbstractTableModel implements RelativeEffectTableModel {
 	protected Study d_study;
 	protected Endpoint d_endpoint;
 	protected PresentationModelFactory d_pmf;
@@ -21,7 +21,7 @@ public abstract class AbstractRatioTableModel extends AbstractTableModel impleme
 	
 	public abstract String getTitle();
 
-	protected abstract Ratio getRatio(Measurement denominator, Measurement numerator);
+	protected abstract RelativeEffect<?> getRatio(Measurement denominator, Measurement numerator);
 
 
 	public int getColumnCount() {
@@ -43,7 +43,7 @@ public abstract class AbstractRatioTableModel extends AbstractTableModel impleme
 	}
 
 	/**
-	 * @see org.drugis.addis.presentation.RatioTableModel#getDescriptionAt(int, int)
+	 * @see org.drugis.addis.presentation.RelativeEffectTableModel#getDescriptionAt(int, int)
 	 */
 	public String getDescriptionAt(int row, int col) {
 		if (row == col) {

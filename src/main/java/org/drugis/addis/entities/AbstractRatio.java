@@ -25,11 +25,11 @@ import java.util.Set;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
-public abstract class Ratio extends AbstractEntity implements Measurement {
+public abstract class AbstractRatio extends AbstractEntity implements RelativeEffectRate {
 	private static final long serialVersionUID = 1647344976539753330L;
 	
-	protected RateMeasurement d_numerator;
-	protected RateMeasurement d_denominator;
+	public RateMeasurement d_numerator;
+	public RateMeasurement d_denominator;
 	
 	public RateMeasurement getNumerator() {
 		return d_numerator;
@@ -39,7 +39,7 @@ public abstract class Ratio extends AbstractEntity implements Measurement {
 		return d_denominator;
 	}
 
-	protected Ratio(RateMeasurement denominator, RateMeasurement numerator) {
+	protected AbstractRatio(RateMeasurement denominator, RateMeasurement numerator) {
 		d_numerator = numerator;
 		d_denominator = denominator;
 	}
@@ -74,20 +74,20 @@ public abstract class Ratio extends AbstractEntity implements Measurement {
 		return new Interval<Double>((qx - getCriticalValue() * sd), (qx + getCriticalValue() * sd));
 	}
 
-	private double getStdDev(double g, double qx) {
+	double getStdDev(double g, double qx) {
 		return qx * Math.sqrt((1 - g) * sq(getStdDev(d_numerator)) / sq(getMean(d_numerator)) +
 				sq(getStdDev(d_denominator)) / sq(getMean(d_denominator)));
 	}
 
-	private double getAssymmetricalMean(double g) {
+	double getAssymmetricalMean(double g) {
 		return getRatio() / (1 - g);
 	}
 
-	private double getG(double t) {
+	double getG(double t) {
 		return sq(t * getStdDev(d_denominator) / getMean(d_denominator));
 	}
 
-	private double getCriticalValue() {
+	double getCriticalValue() {
 		return StudentTTable.getT(getSampleSize() - 2);
 	}
 

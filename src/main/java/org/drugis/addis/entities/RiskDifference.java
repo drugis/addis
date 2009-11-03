@@ -4,7 +4,7 @@ import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
-public class RiskDifference extends Ratio {
+public class RiskDifference extends AbstractRatio {
 	private static final long serialVersionUID = -6459490310869138478L;
 
 	public RiskDifference(RateMeasurement denominator,

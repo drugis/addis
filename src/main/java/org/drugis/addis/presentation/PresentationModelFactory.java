@@ -30,7 +30,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.PooledPatientGroup;
 import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.addis.entities.Ratio;
+import org.drugis.addis.entities.RelativeEffectRate;
 
 import com.jgoodies.binding.PresentationModel;
 
@@ -70,8 +70,8 @@ public class PresentationModelFactory {
 		if (obj instanceof Indication) {
 			return new IndicationPresentation((Indication)obj, d_domain.getStudies((Indication)obj));
 		}
-		if (obj instanceof Ratio) {
-			return new RatioPresentation((Ratio)obj, this);
+		if (obj instanceof RelativeEffectRate) {
+			return new RelativeEffectRatePresentation((RelativeEffectRate)obj, this);
 		}
 		if (obj instanceof RateMeasurement) {
 			return new RateMeasurementPresentation((RateMeasurement)obj);

@@ -8,7 +8,7 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.PatientGroup;
-import org.drugis.addis.entities.Ratio;
+import org.drugis.addis.entities.AbstractRatio;
 import org.drugis.addis.entities.Study;
 import org.junit.Test;
 
@@ -18,10 +18,10 @@ public abstract class RatioTableModelBase {
 	protected Study d_standardStudy;
 	protected Study d_threeArmStudy;
 	protected AbstractRatioTableModel d_stdModel;
-	protected RatioTableModel d_threeArmModel;
+	protected RelativeEffectTableModel d_threeArmModel;
 	protected Endpoint d_endpoint;
 	protected PresentationModelFactory d_pmf;
-	protected Class<? extends Ratio> d_ratioClass;
+	protected Class<? extends AbstractRatio> d_ratioClass;
 
 	@Test
 	public void testGetColumnCount() {
@@ -43,12 +43,12 @@ public abstract class RatioTableModelBase {
 		PatientGroup pg1 = d_threeArmStudy.getPatientGroups().get(1);
 		PatientGroup pg2 = d_threeArmStudy.getPatientGroups().get(2);
 		
-		PresentationModel<Ratio> val01 = (PresentationModel<Ratio>)d_threeArmModel.getValueAt(0, 1);
+		PresentationModel<AbstractRatio> val01 = (PresentationModel<AbstractRatio>)d_threeArmModel.getValueAt(0, 1);
 		assertTrue(d_ratioClass.isInstance(val01.getBean()));
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg0), val01.getBean().getDenominator());
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val01.getBean().getNumerator());
 		
-		PresentationModel<Ratio> val12 = (PresentationModel<Ratio>)d_threeArmModel.getValueAt(1, 2);
+		PresentationModel<AbstractRatio> val12 = (PresentationModel<AbstractRatio>)d_threeArmModel.getValueAt(1, 2);
 		assertTrue(d_ratioClass.isInstance(val12.getBean()));
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val12.getBean().getDenominator());
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val12.getBean().getNumerator());
@@ -62,12 +62,12 @@ public abstract class RatioTableModelBase {
 		PatientGroup pg1 = d_threeArmStudy.getPatientGroups().get(1);
 		PatientGroup pg2 = d_threeArmStudy.getPatientGroups().get(2);
 		
-		PresentationModel<Ratio> val20 = (PresentationModel<Ratio>)d_threeArmModel.getValueAt(2, 0);
+		PresentationModel<AbstractRatio> val20 = (PresentationModel<AbstractRatio>)d_threeArmModel.getValueAt(2, 0);
 		assertTrue(d_ratioClass.isInstance(val20.getBean()));
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val20.getBean().getDenominator());
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg0), val20.getBean().getNumerator());
 		
-		PresentationModel<Ratio> val21 = (PresentationModel<Ratio>)d_threeArmModel.getValueAt(2, 1);
+		PresentationModel<AbstractRatio> val21 = (PresentationModel<AbstractRatio>)d_threeArmModel.getValueAt(2, 1);
 		assertTrue(d_ratioClass.isInstance(val21.getBean()));
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val21.getBean().getDenominator());
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val21.getBean().getNumerator());

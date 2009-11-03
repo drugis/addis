@@ -22,7 +22,7 @@ package org.drugis.addis.entities;
 import org.drugis.addis.entities.Endpoint.Type;
 
 
-public class OddsRatio extends Ratio {
+public class OddsRatio extends AbstractRatio {
 	private static final long serialVersionUID = -6897859558867350347L;
 
 	/**
