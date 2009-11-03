@@ -6,7 +6,6 @@ import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class RiskDifferenceTest {
@@ -14,15 +13,23 @@ public class RiskDifferenceTest {
 	private static final int s_sizeDen = 144;
 	private static final int s_effectNum = 73;
 	private static final int s_effectDen = 63;
-	private static final double s_meanNum = (double)s_effectNum / (double)(s_sizeNum - s_effectNum); 
-	private static final double s_meanDen = (double)s_effectDen / (double)(s_sizeDen - s_effectDen);
-	private static final double s_stdDevNum = s_meanNum / Math.sqrt(s_sizeNum);
-	private static final double s_stdDevDen = s_meanDen / Math.sqrt(s_sizeDen);
+
+	// Paper data:
+	private static final int s_cooper1977rT = 15;
+	private static final int s_cooper1977nT = 38;
+	private static final int s_cooper1977rC = 6;
+	private static final int s_cooper1977nC = 40;
+	private static final double s_cooper1977RD = 0.245;
+	private static final double s_cooper1977RDvar = 0.009;
+		
+	BasicRateMeasurement d_cooper1977Num;
+	BasicRateMeasurement d_cooper1977Den;
+	RiskDifference d_cooperRD;
 	
 	BasicRateMeasurement d_numerator;
 	BasicRateMeasurement d_denominator;
 	RiskDifference d_riskDif;
-	
+			
 	@Before
 	public void setUp() {
 		Endpoint e = new Endpoint("E", Type.RATE);
@@ -31,6 +38,13 @@ public class RiskDifferenceTest {
 		d_numerator = new BasicRateMeasurement(e, s_effectNum, pnum);		
 		d_denominator = new BasicRateMeasurement(e, s_effectDen, pden);
 		d_riskDif = new RiskDifference(d_denominator, d_numerator);
+		
+		//cooper 1991a from Warn2002
+		PatientGroup fnum = new BasicPatientGroup(null, null, null, s_cooper1977nT);
+		PatientGroup fden = new BasicPatientGroup(null, null, null, s_cooper1977nC);
+		d_cooper1977Num = new BasicRateMeasurement(e, s_cooper1977rT, fnum);
+		d_cooper1977Den = new BasicRateMeasurement(e, s_cooper1977rC, fden);
+		d_cooperRD = new RiskDifference(d_cooper1977Den, d_cooper1977Num);
 	}
 	
 	@Test
@@ -46,6 +60,7 @@ public class RiskDifferenceTest {
 	@Test
 	public void testGetRatio() {
 		assertEquals(RiskDifference(),	(double)d_riskDif.getRatio(), 0.00001);
+		assertEquals(s_cooper1977RD, d_cooperRD.getRatio(), 0.001);
 	}
 	
 	@Test
@@ -60,7 +75,7 @@ public class RiskDifferenceTest {
 		
 		Interval<Double> ci = d_riskDif.getConfidenceInterval();
 		assertEquals(lower, ci.getLowerBound(), 0.00001);
-		assertEquals(upper, ci.getUpperBound(), 0.00001);
+		assertEquals(upper, ci.getUpperBound(), 0.00001);		
 	}
 
 	private double RiskDifference() {
@@ -72,16 +87,8 @@ public class RiskDifferenceTest {
 		return d * d;
 	}
 
-	@Ignore
 	@Test
-	//We do not need to specifically test for the SE as it does so already in testGetCI() because of symmetrical confidence interval
-	public void testGetError() {
-		double t = StudentTTable.getT(d_riskDif.getSampleSize() - 2);
-		double g = square(t * s_stdDevDen / s_meanDen);
-		double q = d_riskDif.getRatio();
-		double sd = q / (1 - g) * Math.sqrt((1 - g) * square(s_stdDevNum) / square(s_meanNum) + 
-				square(s_stdDevDen) / square(s_meanDen));
-		
-		assertEquals(sd, d_riskDif.getError(), 0.00001);
+	public void testGetErrorvsCooper() {
+		assertEquals(s_cooper1977RDvar,square(d_cooperRD.getError()),0.001);
 	}
 }
