@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Endpoint;
@@ -22,6 +21,7 @@ import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.RelativeEffectTableModel;
 import org.drugis.addis.presentation.RiskDifferenceTableModel;
 import org.drugis.addis.presentation.RiskRatioTableModel;
+import org.drugis.addis.presentation.StandardisedMeanDifferenceTableModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -97,25 +97,13 @@ public class StudyEndpointsView implements ViewBuilder {
 	}
 	
 	private JButton createWMDButton(Endpoint e) {
-/*		JButton button = new JButton("Weighted Mean Difference Table");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(d_mainWindow, "Not Implemented");
-			}
-		});
-		return button;*/
 		final RelativeEffectTableModel tableModel = new MeanDifferenceTableModel(d_model.getBean(), e, d_pmf);
 		return createRatioButton(tableModel);
 	}
 	
 	private JButton createSMDButton(Endpoint e) {
-		JButton button = new JButton("Standardized Mean Difference Table");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(d_mainWindow, "Not Implemented");
-			}
-		});
-		return button;
+		final RelativeEffectTableModel tableModel = new StandardisedMeanDifferenceTableModel(d_model.getBean(), e, d_pmf);
+		return createRatioButton(tableModel);
 	}
 	
 	private JButton createRatioButton(final RelativeEffectTableModel tableModel) {
@@ -124,7 +112,6 @@ public class StudyEndpointsView implements ViewBuilder {
 			public void actionPerformed(ActionEvent arg0) {
 				new RatioTableDialog(d_mainWindow, tableModel).setVisible(true);
 			}
-
 		});
 		return button;
 	}

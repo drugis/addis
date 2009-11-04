@@ -16,8 +16,8 @@ public class StandardisedMeanDifference extends AbstractEntity implements Relati
 	private ContinuousMeasurement d_subject;
 	private ContinuousMeasurement d_baseline;
 
-	public StandardisedMeanDifference(BasicContinuousMeasurement baseline,
-			BasicContinuousMeasurement subject) {
+	public StandardisedMeanDifference(ContinuousMeasurement baseline,
+			ContinuousMeasurement subject) {
 			d_subject = subject;
 			d_baseline = baseline;
 	}
