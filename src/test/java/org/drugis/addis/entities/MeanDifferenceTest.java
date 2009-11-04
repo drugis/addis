@@ -54,6 +54,12 @@ public class MeanDifferenceTest {
 		assertEquals(d_baseline.getEndpoint(),d_md.getEndpoint());
 	}
 	
+	@Test
+	public void testGetSampleSize() {
+		int expected = s_subjSize + s_baslSize;
+		assertEquals(expected, (int) d_md.getSampleSize());
+	}
+	
 	private double square(double x) {
 		return x*x;
 	}

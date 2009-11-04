@@ -60,7 +60,6 @@ public class MeanDifference extends AbstractEntity implements RelativeEffectCont
 
 	@Override
 	public Set<Entity> getDependencies() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
