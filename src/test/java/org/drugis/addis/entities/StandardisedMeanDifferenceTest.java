@@ -9,12 +9,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class StandardisedMeanDifferenceTest {
-	private static final double s_subjMean = 0.2342;
-	private static final double s_baselMean = 4.7811;
-	private static final double s_subjStdDev = 0.2;
-	private static final double s_baslStdDev = 2.5;
-	private static final int s_subjSize = 35;
-	private static final int s_baslSize = 41;
+	//Exampledata from The Handbook of Research Synthesis and Meta-Analysis page 226-227
+	private static final double s_subjMean = 103;
+	private static final double s_baselMean = 100;
+	private static final double s_subjStdDev = 5.5;
+	private static final double s_baslStdDev = 4.5;
+	private static final int s_subjSize = 50;
+	private static final int s_baslSize = 50;
 	int d_sampleSize = s_subjSize + s_baslSize;
 	
 	private StandardisedMeanDifference d_smd;
@@ -39,8 +40,8 @@ public class StandardisedMeanDifferenceTest {
 
 	@Test
 	public void testGetError() {
-		double firstFactor = d_sampleSize / (s_subjSize * s_baslSize);
-		double secondFactor = square(getSMD()) / (2 * (d_sampleSize - 3.94));
+		double firstFactor = (double) d_sampleSize / ((double) s_subjSize * (double) s_baslSize);
+		double secondFactor = square(getSMD()) / (2 * ((double) d_sampleSize - 3.94));
 		double expected = Math.sqrt(firstFactor + secondFactor);
 		assertEquals(expected, d_smd.getError(), 0.01);
 	}
@@ -69,14 +70,24 @@ public class StandardisedMeanDifferenceTest {
 	
 	@Test
 	public void testGetCohenVariance() {
-		double expected = d_sampleSize/(s_subjSize*s_baslSize) + square(d_smd.getCohenD())/(2*d_sampleSize);
+		double expected = (double) d_sampleSize/((double) s_subjSize * (double) s_baslSize) 
+							+ square(d_smd.getCohenD()) / (2 * (double) d_sampleSize);
 		assertEquals(expected, d_smd.getCohenVariance(), 0.0001);
 	}
 	
 	@Test
 	public void testGetCorrectionJ() {
-		double expected = 1 - (3 / (4*(d_sampleSize - 2) - 1));
+		double expected = 1 - (3 / (4 * ((double) d_sampleSize - 2) - 1));
 		assertEquals(expected, d_smd.getCorrectionJ(), 0.0001);
+	}
+	
+	@Test
+	public void testOutcomesEqualToBook() {
+		assertEquals(0.5970D, d_smd.getCohenD(), 0.0001);
+		assertEquals(0.0418D, d_smd.getCohenVariance(), 0.0001);
+		assertEquals(0.9923D, d_smd.getCorrectionJ(), 0.0001);
+		assertEquals(0.5924D, d_smd.getRatio(), 0.0001);
+		assertEquals(Math.sqrt(0.04114D), d_smd.getError(), 0.0001);
 	}
 	
 	private double square(double x) {
@@ -88,14 +99,14 @@ public class StandardisedMeanDifferenceTest {
 		
 		double firstFactor = (s_subjMean - s_baselMean) / pooledStdDev;
 		
-		double secondFactor = 1 - (3 / (4 * d_sampleSize - 9));
+		double secondFactor = 1 - (3 / (4 * (double) d_sampleSize - 9));
 		double expected = firstFactor * secondFactor;
 		return expected;
 	}
 
 	private double getPooledStdDev() {
-		double numerator = (s_subjSize - 1) * square(s_subjStdDev) + (s_baslSize - 1) * square(s_baslStdDev);
-		double pooledStdDev = Math.sqrt(numerator / (s_subjSize + s_baslSize - 2));
+		double numerator = ( (double) s_subjSize - 1) * square(s_subjStdDev) + ((double) s_baslSize - 1) * square(s_baslStdDev);
+		double pooledStdDev = Math.sqrt(numerator / (double) (s_subjSize + s_baslSize - 2));
 		return pooledStdDev;
 	}
 }

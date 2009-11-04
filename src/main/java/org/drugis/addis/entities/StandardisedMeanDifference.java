@@ -52,7 +52,7 @@ public class StandardisedMeanDifference extends AbstractEntity implements Relati
 		return d_subject.getSampleSize() + d_baseline.getSampleSize();
 	}
 	
-	private Double square(double x) {
+	private double square(double x) {
 		return x*x;
 	}
 
@@ -67,18 +67,18 @@ public class StandardisedMeanDifference extends AbstractEntity implements Relati
 	}
 
 	double getCohenVariance() {
-		double frac1 = getSampleSize() / (d_subject.getSampleSize() * d_baseline.getSampleSize());
-		double frac2 = square(getCohenD()) / (2 * getSampleSize());
-		return frac1 + frac2;
+		double frac1 = (double) getSampleSize() / ((double) d_subject.getSampleSize() * (double) d_baseline.getSampleSize());
+		double frac2 = square(getCohenD()) / (2D * (double) getSampleSize());
+		return (frac1 + frac2);
 	}
 	
 	double getCorrectionJ() {
-		return (1 - (3 / (4 * getDegreesOfFreedom() - 1)));
+		return (1 - (3 / (4 * (double) getDegreesOfFreedom() - 1)));
 	}
 	
 	private double getPooledStdDev() {
-		double numerator = (d_subject.getSampleSize() - 1) * square(d_subject.getStdDev()) 
-							+ (d_baseline.getSampleSize() - 1) * square(d_baseline.getStdDev());
+		double numerator = ((double) d_subject.getSampleSize() - 1) * square(d_subject.getStdDev()) 
+							+ ((double) d_baseline.getSampleSize() - 1) * square(d_baseline.getStdDev());
 		return Math.sqrt(numerator/(double) getDegreesOfFreedom());
 	}
 	

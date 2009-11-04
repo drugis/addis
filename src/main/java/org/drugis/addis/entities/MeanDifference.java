@@ -46,8 +46,8 @@ public class MeanDifference extends AbstractEntity implements RelativeEffectCont
 	}
 	
 	public Double getError() {
-		return Math.sqrt(square(d_subject.getStdDev())/(double)d_subject.getSampleSize() 
-						+ square(d_baseline.getStdDev())/(double)d_baseline.getSampleSize());
+		return Math.sqrt(square(d_subject.getStdDev()) / (double) d_subject.getSampleSize() 
+						+ square(d_baseline.getStdDev()) / (double) d_baseline.getSampleSize());
 	}
 
 	public Integer getSampleSize() {

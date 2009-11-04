@@ -35,7 +35,7 @@ public class MeanDifferenceTest {
 	
 	@Test
 	public void testGetError() {
-		double expected = Math.sqrt(square(s_stdDev1)/(double)s_subjSize + square(s_stdDev2)/(double)s_baslSize);
+		double expected = Math.sqrt(square(s_stdDev1) / (double) s_subjSize + square(s_stdDev2) / (double) s_baslSize);
 		assertEquals(expected, d_md.getError(),0.0001);
 	}
 
