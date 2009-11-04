@@ -19,7 +19,10 @@ public class MeanDifference extends AbstractEntity implements RelativeEffectCont
 	 * @param subject
 	 */
 	
-	public MeanDifference(ContinuousMeasurement baseline, ContinuousMeasurement subject) {
+	public MeanDifference(ContinuousMeasurement baseline, ContinuousMeasurement subject) throws IllegalArgumentException {
+		if (!subject.getEndpoint().equals(baseline.getEndpoint())) {
+			throw new IllegalArgumentException();
+		}
 		d_subject = subject;
 		d_baseline = baseline;
 	}

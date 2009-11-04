@@ -17,9 +17,13 @@ public class StandardisedMeanDifference extends AbstractEntity implements Relati
 	private ContinuousMeasurement d_baseline;
 
 	public StandardisedMeanDifference(ContinuousMeasurement baseline,
-			ContinuousMeasurement subject) {
-			d_subject = subject;
-			d_baseline = baseline;
+			ContinuousMeasurement subject) throws IllegalArgumentException {
+		if (!subject.getEndpoint().equals(baseline.getEndpoint())) {
+			throw new IllegalArgumentException();
+		}
+		
+		d_subject = subject;
+		d_baseline = baseline;
 	}
 
 	public Interval<Double> getConfidenceInterval() {

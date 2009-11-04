@@ -39,7 +39,11 @@ public abstract class AbstractRatio extends AbstractEntity implements RelativeEf
 		return d_denominator;
 	}
 
-	protected AbstractRatio(RateMeasurement denominator, RateMeasurement numerator) {
+	protected AbstractRatio(RateMeasurement denominator, RateMeasurement numerator) throws IllegalArgumentException {
+		if (!denominator.getEndpoint().equals(numerator.getEndpoint())) {
+			throw new IllegalArgumentException();
+		}
+		
 		d_numerator = numerator;
 		d_denominator = denominator;
 	}

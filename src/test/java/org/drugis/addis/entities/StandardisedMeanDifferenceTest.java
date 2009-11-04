@@ -1,6 +1,7 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.Interval;
@@ -88,6 +89,22 @@ public class StandardisedMeanDifferenceTest {
 		assertEquals(0.9923D, d_smd.getCorrectionJ(), 0.0001);
 		assertEquals(0.5924D, d_smd.getRelativeEffect(), 0.0001);
 		assertEquals(Math.sqrt(0.04114D), d_smd.getError(), 0.0001);
+	}
+	
+	@Test
+	public void testConstructorThrowsException() {
+		// FIXME
+		boolean exception = false;
+		try {
+			Endpoint e2 = new Endpoint("E2", Type.CONTINUOUS);
+			PatientGroup subjs = new BasicPatientGroup(null, null, null, s_subjSize);
+			ContinuousMeasurement subject = new BasicContinuousMeasurement(e2, s_subjMean, s_subjStdDev, subjs);
+			new StandardisedMeanDifference(d_baseline, subject);
+		} 
+		catch (IllegalArgumentException e) {
+			exception = true;
+		}
+		assertTrue(exception);
 	}
 	
 	private double square(double x) {
