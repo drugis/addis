@@ -26,7 +26,7 @@ public class MeanDifference extends AbstractEntity implements RelativeEffectCont
 	
 	public Interval<Double> getConfidenceInterval() {
 		double t = StudentTTable.getT(d_subject.getSampleSize() + d_baseline.getSampleSize() - 2);
-		return new Interval<Double>(getRatio() - t*getError(),getRatio() + t*getError());
+		return new Interval<Double>(getRelativeEffect() - t*getError(),getRelativeEffect() + t*getError());
 	}
 
 	public ContinuousMeasurement getDenominator() {
@@ -41,7 +41,7 @@ public class MeanDifference extends AbstractEntity implements RelativeEffectCont
 		return d_subject;
 	}
 
-	public Double getRatio() {
+	public Double getRelativeEffect() {
 		return d_subject.getMean() - d_baseline.getMean();
 	}
 	

@@ -16,7 +16,7 @@ public class RiskDifference extends AbstractRatio {
 	 * The mean difference.
 	 */
 	@Override
-	public Double getRatio() {
+	public Double getRelativeEffect() {
 		double a = getNumerator().getRate();
 		double n1 = getNumerator().getSampleSize();
 		double c = getDenominator().getRate();
@@ -31,8 +31,8 @@ public class RiskDifference extends AbstractRatio {
 	@Override
 	public Interval<Double> getConfidenceInterval() {
 		double t = StudentTTable.getT(getSampleSize() - 2);
-		double upper = getRatio() + t*getError();
-		double lower = getRatio() - t*getError();
+		double upper = getRelativeEffect() + t*getError();
+		double lower = getRelativeEffect() - t*getError();
 		
 		return new Interval<Double>(lower, upper);
 	}

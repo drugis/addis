@@ -25,7 +25,7 @@ public class StandardisedMeanDifference extends AbstractEntity implements Relati
 	public Interval<Double> getConfidenceInterval() {
 		double t = StudentTTable.getT(getDegreesOfFreedom());
 
-		return new Interval<Double>(getRatio() - t * getError(), getRatio() + t * getError());
+		return new Interval<Double>(getRelativeEffect() - t * getError(), getRelativeEffect() + t * getError());
 	}
 
 	public ContinuousMeasurement getDenominator() {
@@ -40,7 +40,7 @@ public class StandardisedMeanDifference extends AbstractEntity implements Relati
 		return d_subject;
 	}
 
-	public Double getRatio() {
+	public Double getRelativeEffect() {
 		return getCorrectionJ() * getCohenD();
 	}
 	

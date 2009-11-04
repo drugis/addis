@@ -8,7 +8,7 @@ import org.drugis.addis.entities.RiskDifference;
 import org.drugis.addis.entities.Study;
 
 @SuppressWarnings("serial")
-public class RiskDifferenceTableModel extends AbstractRatioTableModel {
+public class RiskDifferenceTableModel extends AbstractRelativeEffectTableModel {
 	public RiskDifferenceTableModel(Study study, Endpoint endpoint,
 			PresentationModelFactory pmf) {
 		super(study, endpoint, pmf);
@@ -16,7 +16,7 @@ public class RiskDifferenceTableModel extends AbstractRatioTableModel {
 
 	
 	@Override
-	protected RelativeEffect<RateMeasurement> getRatio(Measurement denominator, Measurement numerator) {
+	protected RelativeEffect<RateMeasurement> getRelativeEffect(Measurement denominator, Measurement numerator) {
 		return new RiskDifference((RateMeasurement) denominator, (RateMeasurement) numerator);
 	}
 

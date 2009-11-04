@@ -8,7 +8,7 @@ import org.drugis.addis.entities.StandardisedMeanDifference;
 import org.drugis.addis.entities.Study;
 
 @SuppressWarnings("serial")
-public class StandardisedMeanDifferenceTableModel extends AbstractRatioTableModel{
+public class StandardisedMeanDifferenceTableModel extends AbstractRelativeEffectTableModel{
 
 	public StandardisedMeanDifferenceTableModel(Study study, Endpoint endpoint,
 			PresentationModelFactory pmf) {
@@ -16,7 +16,7 @@ public class StandardisedMeanDifferenceTableModel extends AbstractRatioTableMode
 	}
 
 	@Override
-	protected RelativeEffect<ContinuousMeasurement> getRatio(Measurement baseline,
+	protected RelativeEffect<ContinuousMeasurement> getRelativeEffect(Measurement baseline,
 			Measurement subject) {
 		return new StandardisedMeanDifference((ContinuousMeasurement) baseline, (ContinuousMeasurement) subject);
 	}

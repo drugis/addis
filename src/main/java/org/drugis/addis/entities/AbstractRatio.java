@@ -80,7 +80,7 @@ public abstract class AbstractRatio extends AbstractEntity implements RelativeEf
 	}
 
 	double getAssymmetricalMean(double g) {
-		return getRatio() / (1 - g);
+		return getRelativeEffect() / (1 - g);
 	}
 
 	double getG(double t) {
@@ -96,7 +96,7 @@ public abstract class AbstractRatio extends AbstractEntity implements RelativeEf
 		return getStdDev(g, getAssymmetricalMean(g));
 	}
 
-	public Double getRatio() {
+	public Double getRelativeEffect() {
 		return getMean(d_numerator) / getMean(d_denominator);
 	}
 

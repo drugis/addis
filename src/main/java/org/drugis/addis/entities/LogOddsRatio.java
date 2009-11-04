@@ -29,7 +29,7 @@ public class LogOddsRatio extends OddsRatio implements ContinuousMeasurement {
 	}
 
 	public Double getMean() {
-		return Math.log(getRatio());
+		return Math.log(getRelativeEffect());
 	}
 
 	public Double getStdDev() {

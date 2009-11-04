@@ -8,7 +8,7 @@ import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 
 @SuppressWarnings("serial")
-public class MeanDifferenceTableModel extends AbstractRatioTableModel{
+public class MeanDifferenceTableModel extends AbstractRelativeEffectTableModel{
 
 	public MeanDifferenceTableModel(Study study, Endpoint endpoint,
 			PresentationModelFactory pmf) {
@@ -16,7 +16,7 @@ public class MeanDifferenceTableModel extends AbstractRatioTableModel{
 	}
 
 	@Override
-	protected RelativeEffect<ContinuousMeasurement> getRatio(Measurement baseline,
+	protected RelativeEffect<ContinuousMeasurement> getRelativeEffect(Measurement baseline,
 			Measurement subject) {
 		return new MeanDifference((ContinuousMeasurement) baseline, (ContinuousMeasurement) subject);
 	}

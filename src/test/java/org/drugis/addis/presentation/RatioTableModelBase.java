@@ -17,7 +17,7 @@ import com.jgoodies.binding.PresentationModel;
 public abstract class RatioTableModelBase {
 	protected Study d_standardStudy;
 	protected Study d_threeArmStudy;
-	protected AbstractRatioTableModel d_stdModel;
+	protected AbstractRelativeEffectTableModel d_stdModel;
 	protected RelativeEffectTableModel d_threeArmModel;
 	protected Endpoint d_endpoint;
 	protected PresentationModelFactory d_pmf;

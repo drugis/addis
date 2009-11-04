@@ -58,13 +58,13 @@ public class RiskDifferenceTest {
 	}
 	
 	@Test
-	public void testGetRatio() {
-		assertEquals(RiskDifference(),	(double)d_riskDif.getRatio(), 0.00001);
+	public void testGetRelativeEffect() {
+		assertEquals(RiskDifference(),	(double)d_riskDif.getRelativeEffect(), 0.00001);
 	}
 	
 	@Test
-	public void testGetRatiovsCooper1977() {
-		assertEquals(s_cooper1977RD, d_cooperRD.getRatio(), 0.001);	
+	public void testGetRelativeEffectvsCooper1977() {
+		assertEquals(s_cooper1977RD, d_cooperRD.getRelativeEffect(), 0.001);	
 	}
 	
 	@Test

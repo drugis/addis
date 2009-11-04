@@ -30,7 +30,7 @@ public class MeanDifferenceTest {
 	
 	@Test
 	public void testGetMean() {
-		assertEquals(s_mean1 - s_mean2, d_md.getRatio(),0.0001);
+		assertEquals(s_mean1 - s_mean2, d_md.getRelativeEffect(),0.0001);
 	}
 	
 	@Test
@@ -42,8 +42,8 @@ public class MeanDifferenceTest {
 	@Test
 	public void testGetCI() {
 		double t = StudentTTable.getT(s_subjSize + s_baslSize - 2);
-		double upper = d_md.getRatio() + t*d_md.getError();
-		double lower = d_md.getRatio() - t*d_md.getError();
+		double upper = d_md.getRelativeEffect() + t*d_md.getError();
+		double lower = d_md.getRelativeEffect() - t*d_md.getError();
 		assertEquals(upper, d_md.getConfidenceInterval().getUpperBound(), 0.0001);
 		assertEquals(lower, d_md.getConfidenceInterval().getLowerBound(), 0.0001);
 	}

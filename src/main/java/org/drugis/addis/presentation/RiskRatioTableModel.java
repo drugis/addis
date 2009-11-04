@@ -3,12 +3,12 @@ package org.drugis.addis.presentation;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.addis.entities.AbstractRatio;
+import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.RiskRatio;
 import org.drugis.addis.entities.Study;
 
 @SuppressWarnings("serial")
-public class RiskRatioTableModel extends AbstractRatioTableModel {
+public class RiskRatioTableModel extends AbstractRelativeEffectTableModel {
 
 	public RiskRatioTableModel(Study study, Endpoint endpoint,
 			PresentationModelFactory pmf) {
@@ -16,7 +16,7 @@ public class RiskRatioTableModel extends AbstractRatioTableModel {
 	}
 
 	@Override
-	protected AbstractRatio getRatio(Measurement denominator, Measurement numerator) {
+	protected RelativeEffect<RateMeasurement> getRelativeEffect(Measurement denominator, Measurement numerator) {
 		return new RiskRatio((RateMeasurement)denominator, (RateMeasurement)numerator);
 	}
 

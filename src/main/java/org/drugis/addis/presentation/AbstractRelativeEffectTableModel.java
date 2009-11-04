@@ -8,12 +8,12 @@ import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 
 @SuppressWarnings("serial")
-public abstract class AbstractRatioTableModel extends AbstractTableModel implements RelativeEffectTableModel {
+public abstract class AbstractRelativeEffectTableModel extends AbstractTableModel implements RelativeEffectTableModel {
 	protected Study d_study;
 	protected Endpoint d_endpoint;
 	protected PresentationModelFactory d_pmf;
 	
-	protected AbstractRatioTableModel(Study study, Endpoint endpoint, PresentationModelFactory pmf) {
+	protected AbstractRelativeEffectTableModel(Study study, Endpoint endpoint, PresentationModelFactory pmf) {
 		d_study = study;
 		d_endpoint = endpoint;
 		d_pmf = pmf;
@@ -21,7 +21,7 @@ public abstract class AbstractRatioTableModel extends AbstractTableModel impleme
 	
 	public abstract String getTitle();
 
-	protected abstract RelativeEffect<?> getRatio(Measurement denominator, Measurement numerator);
+	protected abstract RelativeEffect<?> getRelativeEffect(Measurement denominator, Measurement numerator);
 
 
 	public int getColumnCount() {
@@ -39,7 +39,7 @@ public abstract class AbstractRatioTableModel extends AbstractTableModel impleme
 		
 		Measurement denominator = d_study.getMeasurement(d_endpoint, d_study.getPatientGroups().get(row));
 		Measurement numerator = d_study.getMeasurement(d_endpoint, d_study.getPatientGroups().get(col));
-		return d_pmf.getModel(getRatio(denominator, numerator));
+		return d_pmf.getModel(getRelativeEffect(denominator, numerator));
 	}
 
 	/**

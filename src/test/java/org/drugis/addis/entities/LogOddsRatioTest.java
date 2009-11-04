@@ -57,7 +57,7 @@ public class LogOddsRatioTest {
 	@Test
 	public void testMean() {
 		OddsRatio ratio = new OddsRatio(d_denominator, d_numerator);
-		assertEquals(Math.log(ratio.getRatio()), d_ratio.getMean(), 0.00001);
+		assertEquals(Math.log(ratio.getRelativeEffect()), d_ratio.getMean(), 0.00001);
 	}
 	
 	@Test

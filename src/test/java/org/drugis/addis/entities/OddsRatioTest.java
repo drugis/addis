@@ -62,15 +62,15 @@ public class OddsRatioTest {
 	}
 	
 	@Test
-	public void testGetRatio() {
-		assertEquals(s_meanNum / s_meanDen, (double)d_ratio.getRatio(), 0.00001);
+	public void testGetRelativeEffect() {
+		assertEquals(s_meanNum / s_meanDen, (double)d_ratio.getRelativeEffect(), 0.00001);
 	}
 	
 	@Test
 	public void testGetCI() {
 		double t = StudentTTable.getT(d_ratio.getSampleSize() - 2);
 		double g = square(t * s_stdDevDen / s_meanDen);
-		double q = d_ratio.getRatio();
+		double q = d_ratio.getRelativeEffect();
 		double sd = q / (1 - g) * Math.sqrt((1 - g) * square(s_stdDevNum) / square(s_meanNum) + 
 				square(s_stdDevDen) / square(s_meanDen));
 		double lower = q / (1 - g) - t * sd;
@@ -89,7 +89,7 @@ public class OddsRatioTest {
 	public void testGetError() {
 		double t = StudentTTable.getT(d_ratio.getSampleSize() - 2);
 		double g = square(t * s_stdDevDen / s_meanDen);
-		double q = d_ratio.getRatio();
+		double q = d_ratio.getRelativeEffect();
 		double sd = q / (1 - g) * Math.sqrt((1 - g) * square(s_stdDevNum) / square(s_meanNum) + 
 				square(s_stdDevDen) / square(s_meanDen));
 		

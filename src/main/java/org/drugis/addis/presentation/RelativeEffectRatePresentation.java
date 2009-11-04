@@ -28,7 +28,7 @@ public class RelativeEffectRatePresentation extends PresentationModel<RelativeEf
 		public Object getValue() {
 			DecimalFormat format = new DecimalFormat("0.00");
 			Interval<Double> ci = getBean().getConfidenceInterval();
-			return format.format(getBean().getRatio()) + " (" + format.format(ci.getLowerBound()) + ", " + 
+			return format.format(getBean().getRelativeEffect()) + " (" + format.format(ci.getLowerBound()) + ", " + 
 				format.format(ci.getUpperBound()) + ")";
 		}
 

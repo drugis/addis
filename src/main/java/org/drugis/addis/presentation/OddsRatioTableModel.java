@@ -8,13 +8,13 @@ import org.drugis.addis.entities.AbstractRatio;
 import org.drugis.addis.entities.Study;
 
 @SuppressWarnings("serial")
-public class OddsRatioTableModel extends AbstractRatioTableModel {
+public class OddsRatioTableModel extends AbstractRelativeEffectTableModel {
 	public OddsRatioTableModel(Study s, Endpoint e, PresentationModelFactory pmf) {
 		super(s, e, pmf);
 	}
 
 	@Override
-	protected AbstractRatio getRatio(Measurement denominator, Measurement numerator) {
+	protected AbstractRatio getRelativeEffect(Measurement denominator, Measurement numerator) {
 		return new OddsRatio((RateMeasurement)denominator,
 		(RateMeasurement)numerator);
 	}

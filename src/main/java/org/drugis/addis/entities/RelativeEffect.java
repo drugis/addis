@@ -18,6 +18,6 @@ public interface RelativeEffect<T extends Measurement> {
 	 */
 	public Interval<Double> getConfidenceInterval();
 
-	public Double getRatio();
+	public Double getRelativeEffect();
 
 }
