@@ -20,15 +20,9 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
-import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.RateContinuousAdapter;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class RateContinuousAdapterTest {
@@ -57,8 +51,4 @@ public class RateContinuousAdapterTest {
 		assertEquals(100, (int)d_continuous.getSampleSize());
 	}
 	
-	@Test @Ignore
-	public void testChangeEvents() {
-		fail();
-	}
 }
