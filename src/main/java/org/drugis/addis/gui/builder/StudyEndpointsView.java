@@ -16,6 +16,7 @@ import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.RatioTableDialog;
+import org.drugis.addis.presentation.MeanDifferenceTableModel;
 import org.drugis.addis.presentation.OddsRatioTableModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.RelativeEffectTableModel;
@@ -96,13 +97,15 @@ public class StudyEndpointsView implements ViewBuilder {
 	}
 	
 	private JButton createWMDButton(Endpoint e) {
-		JButton button = new JButton("Weighted Mean Difference Table");
+/*		JButton button = new JButton("Weighted Mean Difference Table");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(d_mainWindow, "Not Implemented");
 			}
 		});
-		return button;
+		return button;*/
+		final RelativeEffectTableModel tableModel = new MeanDifferenceTableModel(d_model.getBean(), e, d_pmf);
+		return createRatioButton(tableModel);
 	}
 	
 	private JButton createSMDButton(Endpoint e) {

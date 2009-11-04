@@ -1,10 +1,13 @@
 package org.drugis.addis.entities;
 
+import java.util.Set;
+
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
 
-public class MeanDifference implements RelativeEffectContinuous{
+public class MeanDifference extends AbstractEntity implements RelativeEffectContinuous{
+	private static final long serialVersionUID = 5993936352514545950L;
 
 	private ContinuousMeasurement d_subject;
 	private ContinuousMeasurement d_baseline;
@@ -16,7 +19,7 @@ public class MeanDifference implements RelativeEffectContinuous{
 	 * @param subject
 	 */
 	
-	public MeanDifference(ContinuousMeasurement subject, ContinuousMeasurement baseline) {
+	public MeanDifference(ContinuousMeasurement baseline, ContinuousMeasurement subject) {
 		d_subject = subject;
 		d_baseline = baseline;
 	}
@@ -53,5 +56,11 @@ public class MeanDifference implements RelativeEffectContinuous{
 	
 	private Double square(double x) {
 		return x*x;
+	}
+
+	@Override
+	public Set<Entity> getDependencies() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

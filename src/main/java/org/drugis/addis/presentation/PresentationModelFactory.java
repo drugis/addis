@@ -30,6 +30,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.PooledPatientGroup;
 import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.RelativeEffectContinuous;
 import org.drugis.addis.entities.RelativeEffectRate;
 
 import com.jgoodies.binding.PresentationModel;
@@ -73,7 +74,9 @@ public class PresentationModelFactory {
 		if (obj instanceof RelativeEffectRate) {
 			return new RelativeEffectRatePresentation((RelativeEffectRate)obj, this);
 		}
-		//TODO: RelativeEffectContinuous?
+		if (obj instanceof RelativeEffectContinuous) {
+			return new RelativeEffectContinuousPresentation((RelativeEffectContinuous)obj, this);
+		}
 		if (obj instanceof RateMeasurement) {
 			return new RateMeasurementPresentation((RateMeasurement)obj);
 		}

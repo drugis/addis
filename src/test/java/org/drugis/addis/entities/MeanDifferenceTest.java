@@ -25,7 +25,7 @@ public class MeanDifferenceTest {
 		PatientGroup basels = new BasicPatientGroup(null, null, null, s_baslSize);
 		d_subject = new BasicContinuousMeasurement(e, s_mean1, s_stdDev1, subjs);
 		d_baseline = new BasicContinuousMeasurement(e, s_mean2, s_stdDev2, basels);
-		d_md = new MeanDifference(d_subject, d_baseline);
+		d_md = new MeanDifference(d_baseline, d_subject);
 	}
 	
 	@Test
