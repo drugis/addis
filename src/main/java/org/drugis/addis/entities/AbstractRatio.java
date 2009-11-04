@@ -28,8 +28,8 @@ import org.drugis.common.StudentTTable;
 public abstract class AbstractRatio extends AbstractEntity implements RelativeEffectRate {
 	private static final long serialVersionUID = 1647344976539753330L;
 	
-	public RateMeasurement d_numerator;
-	public RateMeasurement d_denominator;
+	protected RateMeasurement d_numerator;
+	protected RateMeasurement d_denominator;
 	
 	public RateMeasurement getNumerator() {
 		return d_numerator;

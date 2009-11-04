@@ -73,6 +73,7 @@ public class PresentationModelFactory {
 		if (obj instanceof RelativeEffectRate) {
 			return new RelativeEffectRatePresentation((RelativeEffectRate)obj, this);
 		}
+		//TODO: RelativeEffectContinuous?
 		if (obj instanceof RateMeasurement) {
 			return new RateMeasurementPresentation((RateMeasurement)obj);
 		}
