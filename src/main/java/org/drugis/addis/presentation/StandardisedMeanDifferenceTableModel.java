@@ -9,7 +9,6 @@ import org.drugis.addis.entities.Study;
 
 @SuppressWarnings("serial")
 public class StandardisedMeanDifferenceTableModel extends AbstractRelativeEffectTableModel{
-
 	public StandardisedMeanDifferenceTableModel(Study study, Endpoint endpoint,
 			PresentationModelFactory pmf) {
 		super(study, endpoint, pmf);

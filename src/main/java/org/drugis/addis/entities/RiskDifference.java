@@ -1,6 +1,5 @@
 package org.drugis.addis.entities;
 
-import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
@@ -55,8 +54,4 @@ public class RiskDifference extends AbstractRatio {
 		return new Double(Math.sqrt(a*b/Math.pow(n1,3) + c*d/Math.pow(n2,3)));
 	}
 	
-	
-	public boolean isOfType(Type type) {
-		return type.equals(Type.CONTINUOUS);
-	}
 }
