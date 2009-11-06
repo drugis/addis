@@ -27,10 +27,10 @@ import org.drugis.common.JUnitUtil;
  * verify() then check whether all (and only) expected shapes have been drawn. 
  */
 public class MockGraphics2D extends AbstractGraphics2D {
-	private Collection<Shape> d_expected;
+	private Collection<? extends Shape> d_expected;
 	private Collection<Shape> d_actual;
 	
-	public MockGraphics2D(Collection<Shape> expected) {
+	public MockGraphics2D(Collection<? extends Shape> expected) {
 		super(true);
 		gc = new GraphicContext();
 		d_expected = expected;
