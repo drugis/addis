@@ -49,10 +49,10 @@ public class RelativeEffectRatePresentation extends PresentationModel<RelativeEf
 	}
 	
 	public PresentationModel<RateMeasurement> getNumerator() {
-		return d_pmm.getModel(getBean().getNumerator());
+		return d_pmm.getModel(getBean().getSubject());
 	}
 
 	public PresentationModel<RateMeasurement> getDenominator() {
-		return d_pmm.getModel(getBean().getDenominator());
+		return d_pmm.getModel(getBean().getBaseline());
 	}
 }

@@ -32,7 +32,7 @@ public class StandardisedMeanDifference extends AbstractEntity implements Relati
 		return new Interval<Double>(getRelativeEffect() - t * getError(), getRelativeEffect() + t * getError());
 	}
 
-	public ContinuousMeasurement getDenominator() {
+	public ContinuousMeasurement getBaseline() {
 		return d_baseline;
 	}
 
@@ -40,7 +40,7 @@ public class StandardisedMeanDifference extends AbstractEntity implements Relati
 		return d_subject.getEndpoint();
 	}
 
-	public ContinuousMeasurement getNumerator() {
+	public ContinuousMeasurement getSubject() {
 		return d_subject;
 	}
 

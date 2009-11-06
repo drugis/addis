@@ -31,11 +31,11 @@ public abstract class AbstractRatio extends AbstractEntity implements RelativeEf
 	protected RateMeasurement d_numerator;
 	protected RateMeasurement d_denominator;
 	
-	public RateMeasurement getNumerator() {
+	public RateMeasurement getSubject() {
 		return d_numerator;
 	}
 
-	public RateMeasurement getDenominator() {
+	public RateMeasurement getBaseline() {
 		return d_denominator;
 	}
 

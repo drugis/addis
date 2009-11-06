@@ -4,9 +4,9 @@ import org.drugis.common.Interval;
 
 public interface RelativeEffect<T extends Measurement> {
 
-	public T getNumerator();
+	public T getSubject();
 
-	public T getDenominator();
+	public T getBaseline();
 
 	public Endpoint getEndpoint();
 

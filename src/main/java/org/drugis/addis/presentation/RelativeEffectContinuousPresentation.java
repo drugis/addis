@@ -50,10 +50,10 @@ public class RelativeEffectContinuousPresentation extends PresentationModel<Rela
 	}
 	
 	public PresentationModel<ContinuousMeasurement> getNumerator() {
-		return d_pmm.getModel(getBean().getNumerator());
+		return d_pmm.getModel(getBean().getSubject());
 	}
 
 	public PresentationModel<ContinuousMeasurement> getDenominator() {
-		return d_pmm.getModel(getBean().getDenominator());
+		return d_pmm.getModel(getBean().getBaseline());
 	}
 }

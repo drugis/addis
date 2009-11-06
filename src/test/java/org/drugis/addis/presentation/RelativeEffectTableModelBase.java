@@ -45,13 +45,13 @@ public abstract class RelativeEffectTableModelBase {
 		
 		PresentationModel<RelativeEffect<?>> val01 = (PresentationModel<RelativeEffect<?>>)d_threeArmModel.getValueAt(0, 1);
 		assertTrue(d_relativeEffectClass.isInstance(val01.getBean()));
-		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg0), val01.getBean().getDenominator());
-		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val01.getBean().getNumerator());
+		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg0), val01.getBean().getBaseline());
+		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val01.getBean().getSubject());
 		
 		PresentationModel<RelativeEffect<?>> val12 = (PresentationModel<RelativeEffect<?>>)d_threeArmModel.getValueAt(1, 2);
 		assertTrue(d_relativeEffectClass.isInstance(val12.getBean()));
-		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val12.getBean().getDenominator());
-		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val12.getBean().getNumerator());
+		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val12.getBean().getBaseline());
+		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val12.getBean().getSubject());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -64,13 +64,13 @@ public abstract class RelativeEffectTableModelBase {
 		
 		PresentationModel<RelativeEffect<?>> val20 = (PresentationModel<RelativeEffect<?>>)d_threeArmModel.getValueAt(2, 0);
 		assertTrue(d_relativeEffectClass.isInstance(val20.getBean()));
-		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val20.getBean().getDenominator());
-		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg0), val20.getBean().getNumerator());
+		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val20.getBean().getBaseline());
+		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg0), val20.getBean().getSubject());
 		
 		PresentationModel<RelativeEffect<?>> val21 = (PresentationModel<RelativeEffect<?>>)d_threeArmModel.getValueAt(2, 1);
 		assertTrue(d_relativeEffectClass.isInstance(val21.getBean()));
-		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val21.getBean().getDenominator());
-		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val21.getBean().getNumerator());
+		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val21.getBean().getBaseline());
+		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val21.getBean().getSubject());
 	}
 
 	@SuppressWarnings("unchecked")
