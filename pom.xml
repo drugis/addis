@@ -41,6 +41,18 @@
 			<artifactId>jide-oss</artifactId>
 			<version>2.7.2</version>
 		</dependency>		
+		<dependency>
+			<groupId>org.pietschy</groupId>
+			<artifactId>wizard</artifactId>
+			<version>0.1.12</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-svggen</artifactId>
+			<version>1.7</version>
+			<scope>test</scope>
+		</dependency> 
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -53,11 +65,6 @@
 			<artifactId>easymock</artifactId>
 			<version>2.4</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.pietschy</groupId>
-			<artifactId>wizard</artifactId>
-			<version>0.1.12</version>
 		</dependency>
 	</dependencies>
 
