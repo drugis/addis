@@ -335,8 +335,8 @@ public class MetaAnalysisWizardPresentation {
 	public class StudiesMeasuringValueModel extends AbstractValueModel implements PropertyChangeListener {
 		
 		public StudiesMeasuringValueModel() {
-			d_endpointHolder.addValueChangeListener(this);
-			d_indicationHolder.addValueChangeListener(this);			
+			// NB indication listening automatically via endpoint cascade
+			d_endpointHolder.addValueChangeListener(this);			
 		}
 
 		public Object getValue() {

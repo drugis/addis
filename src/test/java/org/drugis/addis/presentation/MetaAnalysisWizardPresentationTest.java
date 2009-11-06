@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -18,11 +19,10 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.MetaAnalysis;
+import org.drugis.addis.entities.Study;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -105,7 +105,6 @@ public class MetaAnalysisWizardPresentationTest {
 		verify(studiesLabelListener);
 	}
 		
-	@Ignore
 	@Test
 	public void testLabelIndicationEvents() {
 		d_wizard.getIndicationModel().setValue(d_wizard.getIndicationSet().first());
@@ -116,7 +115,7 @@ public class MetaAnalysisWizardPresentationTest {
 		ValueModel model = d_wizard.getStudiesMeasuringLabelModel();
 		
 		Object newValue = model.getValue();
-		d_wizard.getIndicationModel().setValue(lastIndic);		
+		d_wizard.getIndicationModel().setValue(lastIndic);
 		
 		PropertyChangeListener studiesLabelListener2 = JUnitUtil.mockListener(model, AbstractValueModel.PROPERTYNAME_VALUE, null, newValue);
 		model.addValueChangeListener(studiesLabelListener2);
@@ -461,7 +460,21 @@ public class MetaAnalysisWizardPresentationTest {
 		assertEquals(set, d_wizard.getSelectedStudySet());	
 	}
 	
-	// FIXME: createMetaAnalysis should have more tests
+	@Test
+	public void testCreateMetaAnalysis() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
+		
+		MetaAnalysis ma = d_wizard.createMetaAnalysis();
+		assertTrue(ma.getDrugs().contains(d_wizard.getFirstDrugModel().getValue()));
+		assertTrue(ma.getDrugs().contains(d_wizard.getSecondDrugModel().getValue()));
+		assertEquals(2, ma.getDrugs().size());
+		JUnitUtil.assertAllAndOnly((Collection<?>) d_wizard.getSelectedStudySet(), (Collection<?>) ma.getStudies());
+		assertEquals(d_wizard.getEndpointModel().getValue(), ma.getEndpoint());
+		assertEquals(d_wizard.getIndicationModel().getValue(), ma.getIndication());
+	}
 
 	@Test
 	public void testBuildMetaAnalysisThreeArm() {

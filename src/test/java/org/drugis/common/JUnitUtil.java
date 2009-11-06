@@ -257,5 +257,16 @@ public class JUnitUtil {
 		vm.setValue(newValue);
 		assertEquals(newValue, vm.getValue());
 		verify(mock);
+	}
+
+	public static void assertAllAndOnly(Collection<?> expected, Collection<?> actual) {
+		if (!expected.containsAll(actual)) {
+			throw new AssertionError("AllAndOnly: expected does not contain the actual.\n" +
+					"expected = " + expected + " actual = " + actual);
+		}
+		if (!actual.containsAll(expected)) {
+			throw new AssertionError("AllAndOnly: actual does not contain the expected.\n" +
+					"expected = " + expected + " actual = " + actual);
+		}
 	}	
 }
