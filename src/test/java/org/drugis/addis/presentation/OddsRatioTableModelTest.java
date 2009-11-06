@@ -10,10 +10,10 @@ import org.junit.Test;
 public class OddsRatioTableModelTest extends RatioTableModelBase {
 	@Before
 	public void setUp() {
-		baseSetUp();	
+		baseSetUpRate();	
 		d_stdModel = new OddsRatioTableModel(d_standardStudy, d_endpoint, d_pmf);
 		d_threeArmModel = new OddsRatioTableModel(d_threeArmStudy, d_endpoint, d_pmf);
-		d_ratioClass = OddsRatio.class;
+		d_relativeEffectClass = OddsRatio.class;
 	}
 
 	@Test

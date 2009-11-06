@@ -9,10 +9,10 @@ import org.junit.Test;
 public class RiskRatioTableModelTest extends RatioTableModelBase {
 	@Before
 	public void setUp() {
-		baseSetUp();	
+		baseSetUpRate();	
 		d_stdModel = new RiskRatioTableModel(d_standardStudy, d_endpoint, d_pmf);
 		d_threeArmModel = new RiskRatioTableModel(d_threeArmStudy, d_endpoint, d_pmf);
-		d_ratioClass = RiskRatio.class;
+		d_relativeEffectClass = RiskRatio.class;
 	}
 
 	@Test

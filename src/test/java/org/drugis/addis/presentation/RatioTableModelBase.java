@@ -8,7 +8,7 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.PatientGroup;
-import org.drugis.addis.entities.AbstractRatio;
+import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 import org.junit.Test;
 
@@ -21,7 +21,7 @@ public abstract class RatioTableModelBase {
 	protected RelativeEffectTableModel d_threeArmModel;
 	protected Endpoint d_endpoint;
 	protected PresentationModelFactory d_pmf;
-	protected Class<? extends AbstractRatio> d_ratioClass;
+	protected Class<? extends RelativeEffect<?>> d_relativeEffectClass;
 
 	@Test
 	public void testGetColumnCount() {
@@ -43,13 +43,13 @@ public abstract class RatioTableModelBase {
 		PatientGroup pg1 = d_threeArmStudy.getPatientGroups().get(1);
 		PatientGroup pg2 = d_threeArmStudy.getPatientGroups().get(2);
 		
-		PresentationModel<AbstractRatio> val01 = (PresentationModel<AbstractRatio>)d_threeArmModel.getValueAt(0, 1);
-		assertTrue(d_ratioClass.isInstance(val01.getBean()));
+		PresentationModel<RelativeEffect<?>> val01 = (PresentationModel<RelativeEffect<?>>)d_threeArmModel.getValueAt(0, 1);
+		assertTrue(d_relativeEffectClass.isInstance(val01.getBean()));
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg0), val01.getBean().getDenominator());
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val01.getBean().getNumerator());
 		
-		PresentationModel<AbstractRatio> val12 = (PresentationModel<AbstractRatio>)d_threeArmModel.getValueAt(1, 2);
-		assertTrue(d_ratioClass.isInstance(val12.getBean()));
+		PresentationModel<RelativeEffect<?>> val12 = (PresentationModel<RelativeEffect<?>>)d_threeArmModel.getValueAt(1, 2);
+		assertTrue(d_relativeEffectClass.isInstance(val12.getBean()));
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val12.getBean().getDenominator());
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val12.getBean().getNumerator());
 	}
@@ -62,13 +62,13 @@ public abstract class RatioTableModelBase {
 		PatientGroup pg1 = d_threeArmStudy.getPatientGroups().get(1);
 		PatientGroup pg2 = d_threeArmStudy.getPatientGroups().get(2);
 		
-		PresentationModel<AbstractRatio> val20 = (PresentationModel<AbstractRatio>)d_threeArmModel.getValueAt(2, 0);
-		assertTrue(d_ratioClass.isInstance(val20.getBean()));
+		PresentationModel<RelativeEffect<?>> val20 = (PresentationModel<RelativeEffect<?>>)d_threeArmModel.getValueAt(2, 0);
+		assertTrue(d_relativeEffectClass.isInstance(val20.getBean()));
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val20.getBean().getDenominator());
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg0), val20.getBean().getNumerator());
 		
-		PresentationModel<AbstractRatio> val21 = (PresentationModel<AbstractRatio>)d_threeArmModel.getValueAt(2, 1);
-		assertTrue(d_ratioClass.isInstance(val21.getBean()));
+		PresentationModel<RelativeEffect<?>> val21 = (PresentationModel<RelativeEffect<?>>)d_threeArmModel.getValueAt(2, 1);
+		assertTrue(d_relativeEffectClass.isInstance(val21.getBean()));
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val21.getBean().getDenominator());
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val21.getBean().getNumerator());
 	}
@@ -109,10 +109,18 @@ public abstract class RatioTableModelBase {
 		assertEquals(description, d_threeArmModel.getDescription());
 	}
 
-	protected void baseSetUp() {
+	protected void baseSetUpRate() {
 		d_standardStudy = ExampleData.buildDefaultStudy2();
 		d_threeArmStudy = ExampleData.buildAdditionalStudyThreeArm();
 		d_endpoint = ExampleData.buildEndpointHamd();
+		DomainImpl domain = new DomainImpl();
+		d_pmf = new PresentationModelFactory(domain);
+	}
+	
+	protected void baseSetUpContinuous() {
+		d_standardStudy = ExampleData.buildDefaultStudy1();
+		d_threeArmStudy = ExampleData.buildAdditionalStudyThreeArm();
+		d_endpoint = ExampleData.buildEndpointCgi();
 		DomainImpl domain = new DomainImpl();
 		d_pmf = new PresentationModelFactory(domain);
 	}
