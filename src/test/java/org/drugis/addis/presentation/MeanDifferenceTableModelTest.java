@@ -6,7 +6,7 @@ import org.drugis.addis.entities.MeanDifference;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MeanDifferenceTableModelTest extends RatioTableModelBase {
+public class MeanDifferenceTableModelTest extends RelativeEffectTableModelBase {
 	@Before
 	public void setUp() {
 		baseSetUpContinuous();	

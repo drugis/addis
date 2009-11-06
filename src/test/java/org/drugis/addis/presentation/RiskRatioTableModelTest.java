@@ -6,7 +6,7 @@ import org.drugis.addis.entities.RiskRatio;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RiskRatioTableModelTest extends RatioTableModelBase {
+public class RiskRatioTableModelTest extends RelativeEffectTableModelBase {
 	@Before
 	public void setUp() {
 		baseSetUpRate();	

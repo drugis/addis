@@ -6,7 +6,7 @@ import org.drugis.addis.entities.StandardisedMeanDifference;
 import org.junit.Before;
 import org.junit.Test;
 
-public class StandardisedMeanDifferencedTableModelTest extends RatioTableModelBase {
+public class StandardisedMeanDifferencedTableModelTest extends RelativeEffectTableModelBase {
 	@Before
 	public void setUp() {
 		baseSetUpContinuous();	

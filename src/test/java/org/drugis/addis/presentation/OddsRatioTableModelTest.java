@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class OddsRatioTableModelTest extends RatioTableModelBase {
+public class OddsRatioTableModelTest extends RelativeEffectTableModelBase {
 	@Before
 	public void setUp() {
 		baseSetUpRate();	
