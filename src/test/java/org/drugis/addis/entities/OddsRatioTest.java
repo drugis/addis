@@ -51,6 +51,14 @@ public class OddsRatioTest {
 		d_ratio = new OddsRatio(d_denominator, d_numerator);
 	}
 	
+	@Test(expected=IllegalArgumentException.class)
+	public void testConstructorThrowsException() {
+		Endpoint e2 = new Endpoint("E2", Type.RATE);
+		PatientGroup pnum = new BasicPatientGroup(null, null, null, s_sizeNum);
+		RateMeasurement subject = new BasicRateMeasurement(e2, s_effectNum, pnum);
+		new OddsRatio(d_denominator, subject);
+	}
+	
 	@Test
 	public void testGetEndpoint() {
 		assertEquals(new Endpoint("E", Type.RATE), d_ratio.getEndpoint());
