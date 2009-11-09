@@ -12,7 +12,6 @@ public class RelativeEffectPlot implements Plot {
 	private int d_yCentre;
 
 	public RelativeEffectPlot(BinnedScale scale, int yCentre, RelativeEffect<?> effect) {
-		
 		d_yCentre = yCentre;
 		
 		// Calculate parameters of confidence interval line.
@@ -21,7 +20,7 @@ public class RelativeEffectPlot implements Plot {
 		
 		// Calculate parameters of mean-diamond.
 		d_diamondCenter = scale.getBin(effect.getRelativeEffect()).bin;
-		d_diamondSize = 5;
+		d_diamondSize = 5; // FIXME: calculate weight
 	}
 	
 	public void paint(Graphics2D g2d) {
