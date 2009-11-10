@@ -42,4 +42,8 @@ public class RiskRatio extends AbstractRatio {
 		return "[" + d_denominator.toString() + "] / [" 
 		+ d_numerator.toString() + "]";
 	}
+
+	public String getName() {
+		return null;
+	}
 }

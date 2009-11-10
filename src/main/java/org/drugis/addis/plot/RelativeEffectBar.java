@@ -28,6 +28,8 @@ public class RelativeEffectBar implements Plot {
 		g2d.drawLine( d_confStart, d_yCentre, d_confEnd, d_yCentre);
 		
 		// Draw the mean-diamond
-		g2d.fillRect(d_diamondCenter - (d_diamondSize - 1)/2, d_yCentre - (d_diamondSize - 1)/2, d_diamondSize, d_diamondSize);
+		int x = d_diamondCenter - (d_diamondSize - 1)/2;
+		int y = d_yCentre - (d_diamondSize - 1)/2;
+		g2d.fillRect(x, y, d_diamondSize, d_diamondSize);
 	}
 }

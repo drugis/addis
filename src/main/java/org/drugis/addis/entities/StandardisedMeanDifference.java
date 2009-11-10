@@ -89,4 +89,8 @@ public class StandardisedMeanDifference extends AbstractEntity implements Relati
 	private int getDegreesOfFreedom() {
 		return getSampleSize() - 2;
 	}
+
+	public String getName() {
+		return "Standardised Mean Difference";
+	}
 }

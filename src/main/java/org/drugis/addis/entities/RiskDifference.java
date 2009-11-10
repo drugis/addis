@@ -52,5 +52,9 @@ public class RiskDifference extends AbstractRatio {
 		
 		return new Double(Math.sqrt(a*b/Math.pow(n1,3) + c*d/Math.pow(n2,3)));
 	}
+
+	public String getName() {
+		return "Risk Difference";
+	}
 	
 }

@@ -43,4 +43,8 @@ public class OddsRatio extends AbstractRatio {
 	public boolean isOfType(Type type) {
 		return false;
 	}
+
+	public String getName() {
+		return "OddsRatio";
+	}
 }

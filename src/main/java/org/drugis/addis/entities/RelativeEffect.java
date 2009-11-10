@@ -20,4 +20,6 @@ public interface RelativeEffect<T extends Measurement> {
 
 	public Double getRelativeEffect();
 
+	public String getName();
+
 }
