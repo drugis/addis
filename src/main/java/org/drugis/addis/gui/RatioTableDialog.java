@@ -73,6 +73,8 @@ public class RatioTableDialog extends JDialog {
 	
 	private class RatioTableCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
 		JDialog dialog;
+		int d_row;
+		int d_column;
 		
 		public RatioTableCellEditor(Dialog parent) {
 			//construct dialog
@@ -80,8 +82,11 @@ public class RatioTableDialog extends JDialog {
 		}
 		
 		public Component getTableCellEditorComponent(JTable arg0, Object arg1,
-				boolean arg2, int arg3, int arg4) {
+				boolean arg2, int row, int column) {
+		
 			JButton button = new JButton();
+			d_row = row;
+			d_column = column;
 			button.addActionListener(this);
 			return button;
 		}
@@ -94,10 +99,11 @@ public class RatioTableDialog extends JDialog {
 			// FIXME: THIS DOESN'T do anything at all yet
 			Canvas canvas = new Canvas() {
 				public void paint (Graphics g) {
-					RelativeEffectPlot plot = new RelativeEffectPlot(new BinnedScale(new IdentityScale(), 0, 200), 11, ((RelativeEffectRatePresentation)d_tableModel.getValueAt(1, 0)).getBean());
+					RelativeEffectPlot plot = new RelativeEffectPlot(new BinnedScale(new IdentityScale(), 0, 200), 11, ((RelativeEffectRatePresentation)d_tableModel.getValueAt(d_row, d_column)).getBean());
 					plot.paint((Graphics2D) g);
 				}
 			};
+
 			canvas.setPreferredSize(new Dimension(201, 21));
 			dialog.add(canvas);
 			dialog.pack();

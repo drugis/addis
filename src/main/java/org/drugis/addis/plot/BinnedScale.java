@@ -25,10 +25,14 @@ public class BinnedScale {
 		Bin b = new Bin();
 		b.bin = (int) Math.round(d_scale.getNormalized(x) * (d_max - d_min) + d_min);
 		
-		if (b.bin > d_max)
+		if (b.bin > d_max) {
+			b.bin = d_max;
 			b.outOfBoundsMax = true;
-		if (b.bin < d_min)
+		}
+		if (b.bin < d_min) {
+			b.bin = d_min;
 			b.outOfBoundsMin = true;
+		}
 		
 		return b;
 	}

@@ -47,5 +47,7 @@ public class ScaleTest {
 		BinnedScale bs = new BinnedScale(new IdentityScale(), 1, 201);
 		assertTrue(bs.getBin(1.1).outOfBoundsMax);
 		assertTrue(bs.getBin(-0.1).outOfBoundsMin);
+		assertEquals(1,(int) bs.getBin(-0.1).bin);
+		assertEquals(201,(int) bs.getBin(1.1).bin);
 	}
 }
