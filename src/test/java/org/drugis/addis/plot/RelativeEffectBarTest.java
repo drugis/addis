@@ -13,7 +13,7 @@ import org.drugis.addis.entities.RelativeEffectContinuous;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.junit.Test;
 
-public class RelativeEffectPlotTest {
+public class RelativeEffectBarTest {
 	
 	@Test
 	public void testNormalPlot() {
@@ -38,7 +38,7 @@ public class RelativeEffectPlotTest {
 		shapeSet.add(new FilledRectangle( bsl.getBin(effect.getRelativeEffect()).bin - 2, 11 - 2, 5, 5) );
 	
 		MockGraphics2D g2d = new MockGraphics2D(shapeSet);
-		RelativeEffectPlot plot = new RelativeEffectPlot(bsl, 11, effect);
+		RelativeEffectBar plot = new RelativeEffectBar(bsl, 11, effect);
 		plot.paint(g2d);
 		
 		g2d.verify();

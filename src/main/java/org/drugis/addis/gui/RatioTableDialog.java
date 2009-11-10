@@ -1,15 +1,12 @@
 package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
@@ -26,12 +23,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.gui.components.EnhancedTableHeader;
-import org.drugis.addis.plot.BinnedScale;
-import org.drugis.addis.plot.IdentityScale;
-import org.drugis.addis.plot.RelativeEffectPlot;
 import org.drugis.addis.presentation.LabeledPresentationModel;
-import org.drugis.addis.presentation.RelativeEffectRatePresentation;
 import org.drugis.addis.presentation.RelativeEffectTableModel;
 
 import com.jgoodies.binding.PresentationModel;
@@ -71,23 +65,34 @@ public class RatioTableDialog extends JDialog {
 		}
 	}
 	
-	private class RatioTableCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
-		JDialog dialog;
-		int d_row;
-		int d_column;
+	private class RatioTableCellEditor extends AbstractCellEditor implements TableCellEditor {
+		private RelativeEffectPlotDialog d_dialog;
+		private JDialog d_parent;
 		
-		public RatioTableCellEditor(Dialog parent) {
-			//construct dialog
-			dialog = new JDialog(parent, "Relative Effect plot");
+		public RatioTableCellEditor(JDialog parent) {
+			d_parent = parent;
 		}
 		
 		public Component getTableCellEditorComponent(JTable arg0, Object arg1,
-				boolean arg2, int row, int column) {
+				boolean arg2, final int row, final int column) {
 		
 			JButton button = new JButton();
-			d_row = row;
-			d_column = column;
-			button.addActionListener(this);
+			button.addActionListener(new ActionListener(){
+
+				@SuppressWarnings("unchecked")
+				public void actionPerformed(ActionEvent e) {
+					List<RelativeEffect<?>> effectList = new ArrayList<RelativeEffect<?>>();
+					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(row, column)).getBean());
+					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(1,0)).getBean());
+
+					d_dialog = new RelativeEffectPlotDialog(d_parent,
+															effectList,
+															"Relative Effect plot");
+					d_dialog.setVisible(true);
+					fireEditingStopped();
+				}
+			});
+
 			return button;
 		}
 
@@ -95,21 +100,6 @@ public class RatioTableDialog extends JDialog {
 			return null;
 		}
 
-		public void actionPerformed(ActionEvent arg0) {
-			// FIXME: THIS DOESN'T do anything at all yet
-			Canvas canvas = new Canvas() {
-				public void paint (Graphics g) {
-					RelativeEffectPlot plot = new RelativeEffectPlot(new BinnedScale(new IdentityScale(), 0, 200), 11, ((RelativeEffectRatePresentation)d_tableModel.getValueAt(d_row, d_column)).getBean());
-					plot.paint((Graphics2D) g);
-				}
-			};
-
-			canvas.setPreferredSize(new Dimension(201, 21));
-			dialog.add(canvas);
-			dialog.pack();
-			dialog.setVisible(true);
-			fireEditingStopped();
-		}
 	}
 	
 	private class EditableTableModel extends AbstractTableModel {

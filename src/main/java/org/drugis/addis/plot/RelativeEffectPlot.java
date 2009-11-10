@@ -1,33 +1,52 @@
 package org.drugis.addis.plot;
 
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.drugis.addis.entities.RelativeEffect;
+import org.drugis.common.Interval;
 
 public class RelativeEffectPlot implements Plot {
-	private int d_confStart;
-	private int d_confEnd;
-	private int d_diamondCenter;
-	private int d_diamondSize;
-	private int d_yCentre;
+	List<RelativeEffectBar> d_bars;
+	
+	// TODO: Own presentation model.
+	List<RelativeEffect<?>> d_relEffects;
 
-	public RelativeEffectPlot(BinnedScale scale, int yCentre, RelativeEffect<?> effect) {
-		d_yCentre = yCentre;
+	public RelativeEffectPlot (List<RelativeEffect<?>> relEffects) {
+		d_relEffects = relEffects;
+		d_bars = new ArrayList<RelativeEffectBar>();
 		
-		// Calculate parameters of confidence interval line.
-		d_confStart = scale.getBin(effect.getConfidenceInterval().getLowerBound()).bin;
-		d_confEnd = scale.getBin(effect.getConfidenceInterval().getUpperBound()).bin;
+		int yPos = 11;
+		for (int i=0; i < d_relEffects.size(); ++i) {
+			d_bars.add(new RelativeEffectBar(new BinnedScale(new LinearScale(getRange()), 1, 201), yPos, (RelativeEffect<?>) d_relEffects.get(i)));
+			yPos += 21;
+		}
+	}
+	
+	public Interval<Double> getRange() {
+		double min = Double.MAX_VALUE;
+		double max = Double.MIN_VALUE;
 		
-		// Calculate parameters of mean-diamond.
-		d_diamondCenter = scale.getBin(effect.getRelativeEffect()).bin;
-		d_diamondSize = 5; // FIXME: calculate weight
+		for (int i = 0; i < d_relEffects.size(); ++i) {
+			double lowerBound = d_relEffects.get(i).getConfidenceInterval().getLowerBound();
+			min = (lowerBound < min) ? lowerBound : min;
+			double upperBound = d_relEffects.get(i).getConfidenceInterval().getUpperBound();
+			max = (upperBound > max) ? upperBound : max;
+		}
+		
+		return d_relEffects.size() != 0 ? new Interval<Double>(min, max) : new Interval<Double>(-1D,1D);
 	}
 	
 	public void paint(Graphics2D g2d) {
-		// Draw the confidence interval line.
-		g2d.drawLine( d_confStart, d_yCentre, d_confEnd, d_yCentre);
-		
-		// Draw the mean-diamond
-		g2d.fillRect(d_diamondCenter - (d_diamondSize - 1)/2, d_yCentre - (d_diamondSize - 1)/2, d_diamondSize, d_diamondSize);
+		for (int i=0; i < d_bars.size(); ++i) {
+			d_bars.get(i).paint(g2d);
+		}
+		paintAxis(g2d);
 	}
+	
+	public void paintAxis(Graphics2D g2d) {
+	}
+
+	
 }
