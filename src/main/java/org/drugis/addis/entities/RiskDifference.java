@@ -57,4 +57,7 @@ public class RiskDifference extends AbstractRatio {
 		return "Risk Difference";
 	}
 	
+	public AxisType getAxisType() {
+		return AxisType.LINEAR;
+	}
 }

@@ -4,6 +4,11 @@ import org.drugis.common.Interval;
 
 public interface RelativeEffect<T extends Measurement> {
 
+	public enum AxisType {
+		LINEAR,
+		LOGARITHMIC;
+	}
+	
 	public T getSubject();
 
 	public T getBaseline();
@@ -21,5 +26,7 @@ public interface RelativeEffect<T extends Measurement> {
 	public Double getRelativeEffect();
 
 	public String getName();
+	
+	public AxisType getAxisType();
 
 }

@@ -46,4 +46,8 @@ public class RiskRatio extends AbstractRatio {
 	public String getName() {
 		return null;
 	}
+	
+	public AxisType getAxisType() {
+		return AxisType.LOGARITHMIC;
+	}
 }

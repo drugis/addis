@@ -69,4 +69,8 @@ public class MeanDifference extends AbstractEntity implements RelativeEffectCont
 	public String getName() {
 		return "Mean Difference";
 	}
+
+	public AxisType getAxisType() {
+		return AxisType.LINEAR;
+	}
 }

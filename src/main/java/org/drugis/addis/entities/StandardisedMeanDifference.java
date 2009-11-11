@@ -93,4 +93,8 @@ public class StandardisedMeanDifference extends AbstractEntity implements Relati
 	public String getName() {
 		return "Standardised Mean Difference";
 	}
+	
+	public AxisType getAxisType() {
+		return AxisType.LINEAR;
+	}
 }

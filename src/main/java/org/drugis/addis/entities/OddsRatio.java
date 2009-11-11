@@ -47,4 +47,8 @@ public class OddsRatio extends AbstractRatio {
 	public String getName() {
 		return "OddsRatio";
 	}
+	
+	public AxisType getAxisType() {
+		return AxisType.LOGARITHMIC;
+	}
 }
