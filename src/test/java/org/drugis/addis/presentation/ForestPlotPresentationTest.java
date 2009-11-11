@@ -18,6 +18,7 @@ import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.StandardisedMeanDifference;
 import org.drugis.addis.entities.Endpoint.Type;
+import org.drugis.addis.plot.ForestPlot;
 import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -94,11 +95,11 @@ public class ForestPlotPresentationTest {
 	
 	@Test
 	public void testGetScale() {
-		assertEquals(101, (int) d_pm.getScale().getBin(0.0).bin);
-		int expectedBin = (int) Math.round( (2 - 1.09) / (4.0 / 200) ); 
+		assertEquals( (int) Math.round(ForestPlot.BARWIDTH  / 2.0), (int) d_pm.getScale().getBin(0.0).bin);
+		int expectedBin = (int) Math.round( (2 - 1.09) / (4.0 / (ForestPlot.BARWIDTH - 1)) ); 
 		assertEquals(expectedBin + 1, (int) d_pm.getScale().getBin(-1.09).bin);
 		assertTrue(!d_pm.getScale().getBin(-1.09).outOfBoundsMin);
-		assertEquals(201 - expectedBin, (int) d_pm.getScale().getBin(1.09).bin);
+		assertEquals(ForestPlot.BARWIDTH - expectedBin, (int) d_pm.getScale().getBin(1.09).bin);
 		assertTrue(!d_pm.getScale().getBin(1.09).outOfBoundsMax);
 	}
 	

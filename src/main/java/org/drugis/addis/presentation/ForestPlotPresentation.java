@@ -1,11 +1,13 @@
 package org.drugis.addis.presentation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.plot.BinnedScale;
+import org.drugis.addis.plot.ForestPlot;
 import org.drugis.addis.plot.LinearScale;
 import org.drugis.common.Interval;
 
@@ -37,7 +39,7 @@ public class ForestPlotPresentation {
 		}		
 		
 		d_relEffects = relEffects;
-		d_scale = new BinnedScale(new LinearScale(getRange()), 1, 201);
+		d_scale = new BinnedScale(new LinearScale(getRange()), 1, ForestPlot.BARWIDTH);
 	}
 	
 	public int getNumRelativeEffects() {
@@ -63,9 +65,7 @@ public class ForestPlotPresentation {
 			max = (upperBound > max) ? upperBound : max;
 		}
 		
-		Interval<Double> ret = d_relEffects.size() != 0 ? niceInterval(min,max) : new Interval<Double>(-1D,1D);
-		
-		return ret;
+		return niceInterval(min,max);
 	}
 	
 	public String getBaselineDrugLabel() {
@@ -82,25 +82,49 @@ public class ForestPlotPresentation {
 	
 	
 	private Interval<Double> niceInterval(double min, double max) {
-		double signMax = Math.floor(Math.log10(Math.abs(max)));
-		double signMin = Math.floor(Math.log10(Math.abs(min)));
-		
-		double sign = Math.max(signMax, signMin);
+		int sign = getSignificanceLevel(min, max);
 		
 		double minM = Math.floor(min / Math.pow(10, sign)) * Math.pow(10, sign);
 		double maxM = Math.ceil(max / Math.pow(10, sign)) * Math.pow(10, sign);
 		
-		return new Interval<Double>(Math.min(0, minM), Math.max(0, maxM));
+		double smallest = Math.pow(10, sign);
+		return new Interval<Double>(Math.min(-smallest, minM), Math.max(smallest, maxM));
+	}
+
+	private int getSignificanceLevel(double min, double max) {
+		int signMax = (int) Math.floor(Math.log10(Math.abs(max)));
+		int signMin = (int) Math.floor(Math.log10(Math.abs(min)));
+		
+		int sign = Math.max(signMax, signMin);
+		return sign;
 	}
 
 	public String getCIlabelAt(int i) {
 		RelativeEffect<?> e = d_relEffects.get(i);
-		return e.getRelativeEffect() + " (" + round2D(e.getConfidenceInterval().getLowerBound()) 
+		return round2D(e.getRelativeEffect()) + " (" + round2D(e.getConfidenceInterval().getLowerBound()) 
 									 + ", " + round2D(e.getConfidenceInterval().getUpperBound()) + ")";
+	}
+	
+	public List<Integer> getTicks() {
+		Interval<Double> range = getRange();
+		ArrayList<Integer> tickList = new ArrayList<Integer>();
+		tickList.add(d_scale.getBin(range.getLowerBound()).bin);
+		tickList.add(d_scale.getBin(0).bin); //FIXME: Also for logarithmic Scales
+		tickList.add(d_scale.getBin(range.getUpperBound()).bin);
+		return tickList;
 	}
 	
 	private double round2D(double x) {
 		return Math.round(x * 100.0) / 100.0;
+	}
+
+	public List<Double> getTickVals() {
+		Interval<Double> range = getRange();
+		ArrayList<Double> tickVals = new ArrayList<Double>();
+		tickVals.add(range.getLowerBound());
+		tickVals.add(0D); //FIXME: Also for logarithmic Scales
+		tickVals.add(range.getUpperBound());
+		return tickVals;
 	}
 	
 	
