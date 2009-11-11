@@ -171,4 +171,8 @@ public class PooledRateMeasurement extends AbstractEntity implements RateMeasure
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public PatientGroup getPatientGroup() {
+		throw new NoSuchMethodError("This method is not implemented for Pooled Measurements as the Patientgroups might differ.");
+	}
 }

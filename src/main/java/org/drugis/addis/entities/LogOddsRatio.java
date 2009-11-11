@@ -53,4 +53,8 @@ public class LogOddsRatio extends OddsRatio implements ContinuousMeasurement {
 	private double invNoEffect(RateMeasurement m) {
 		return 1.0 / (m.getSampleSize() - m.getRate());
 	}
+
+	public PatientGroup getPatientGroup() {
+		return d_numerator.getPatientGroup();
+	}
 }

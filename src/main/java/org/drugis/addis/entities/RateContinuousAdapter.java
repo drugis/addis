@@ -61,4 +61,8 @@ public class RateContinuousAdapter extends AbstractEntity implements ContinuousM
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public PatientGroup getPatientGroup() {
+		return d_measurement.getPatientGroup();
+	}
 }

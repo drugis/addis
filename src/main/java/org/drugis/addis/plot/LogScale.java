@@ -21,10 +21,10 @@ public class LogScale implements Scale {
 	}
 
 	public double getNormalized(double x) {
-		return (Math.log(x) - Math.log(d_min)) / (Math.log(d_max) - Math.log(d_min));
+		return Math.log(x / d_min) / Math.log(d_max / d_min); 
 	}
 	
 	public double getNormalizedLog10(double x) {
-		return (Math.log10(x) - Math.log10(d_min)) / (Math.log10(d_max) - Math.log10(d_min));
+		return Math.log10(x / d_min) / Math.log10(d_max / d_min); 
 	}
 }
