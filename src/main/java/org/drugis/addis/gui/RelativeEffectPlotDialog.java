@@ -10,7 +10,8 @@ import java.util.List;
 import javax.swing.JDialog;
 
 import org.drugis.addis.entities.RelativeEffect;
-import org.drugis.addis.plot.RelativeEffectPlot;
+import org.drugis.addis.plot.ForestPlot;
+import org.drugis.addis.presentation.ForestPlotPresentation;
 
 @SuppressWarnings("serial")
 public class RelativeEffectPlotDialog extends JDialog {
@@ -26,7 +27,7 @@ public class RelativeEffectPlotDialog extends JDialog {
 	private void initComps() {
 		Canvas canvas = new Canvas() {
 			public void paint (Graphics g) {
-				RelativeEffectPlot plot = new RelativeEffectPlot(d_effects);
+				ForestPlot plot = new ForestPlot(new ForestPlotPresentation(d_effects));
 				plot.paint((Graphics2D) g);
 			}
 		};
