@@ -26,6 +26,7 @@ import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.PooledPatientGroup;
@@ -66,6 +67,10 @@ public class PresentationModelFactory {
 
 	@SuppressWarnings("unchecked")
 	private PresentationModel createModel(Object obj) {
+		if (obj instanceof Endpoint) {
+			return new EndpointPresentationModel((Endpoint)obj,
+					d_domain.getStudies((Endpoint)obj));
+		}
 		if (obj instanceof MetaStudy) {
 			return new MetaStudyPresentationModel((MetaStudy) obj);
 		}
