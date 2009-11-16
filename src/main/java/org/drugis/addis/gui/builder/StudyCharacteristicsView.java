@@ -4,14 +4,13 @@ package org.drugis.addis.gui.builder;
 import javax.swing.JComponent;
 
 import org.drugis.addis.entities.AbstractStudy;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.presentation.CharacteristicHolder;
+import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -19,9 +18,9 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class StudyCharacteristicsView implements ViewBuilder {
 	
-	private PresentationModel<? extends Study> d_model;
+	private StudyPresentationModel d_model;
 
-	public StudyCharacteristicsView(PresentationModel<? extends Study> model) {
+	public StudyCharacteristicsView(StudyPresentationModel model) {
 		d_model = model;
 	}
 
@@ -40,16 +39,25 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		
 		int row = 3;
 		for (StudyCharacteristic c : StudyCharacteristic.values()) {
-			LayoutUtil.addRow(layout);
-			builder.addLabel(c.getDescription() + ":", cc.xy(1, row));
-			
-			// FIXME: should get CharacteristicHolder from d_model.getCharacteristic(c)
-			CharacteristicHolder model = new CharacteristicHolder(d_model.getBean(), c);
-			builder.add(AuxComponentFactory.createCharacteristicView(model),
-					cc.xyw(3, row, fullWidth - 2));
-			
-			row += 2;
+			if (isCharacteristicShown(c)) {
+				LayoutUtil.addRow(layout);
+				builder.addLabel(c.getDescription() + ":", cc.xy(1, row));
+
+				// FIXME: should get CharacteristicHolder from d_model.getCharacteristic(c)
+				CharacteristicHolder model = new CharacteristicHolder(d_model.getBean(), c);
+				builder.add(AuxComponentFactory.createCharacteristicView(model),
+						cc.xyw(3, row, fullWidth - 2));
+
+				row += 2;
+			}
 		}
 		return builder.getPanel();
+	}
+
+	private boolean isCharacteristicShown(StudyCharacteristic c) {
+		if (c.equals(StudyCharacteristic.STUDY_END)) {
+			return (d_model.isStudyFinished());
+		}
+		return true;
 	}
 }

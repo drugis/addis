@@ -78,6 +78,7 @@ import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
+import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
@@ -542,7 +543,7 @@ public class Main extends JFrame {
 	}
 	
 	private void studySelected(Study node) {
-		StudyView view = new StudyView(d_pmManager.getModel(node), getDomain(), this, d_imageLoader);
+		StudyView view = new StudyView((StudyPresentationModel)d_pmManager.getModel(node), getDomain(), this, d_imageLoader);
 		setRightPanelView(view);		
 	}
 	
