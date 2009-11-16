@@ -38,7 +38,7 @@ public class RelativeEffectBarTest {
 		shapeSet.add(new FilledRectangle( bsl.getBin(effect.getRelativeEffect()).bin - 2, 11 - 2, 5, 5) );
 	
 		MockGraphics2D g2d = new MockGraphics2D(shapeSet);
-		RelativeEffectBar plot = new RelativeEffectBar(bsl, 11, effect);
+		RelativeEffectBar plot = new RelativeEffectBar(bsl, 11, effect, 5);
 		plot.paint(g2d);
 		
 		g2d.verify();

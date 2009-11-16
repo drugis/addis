@@ -83,13 +83,8 @@ public class RatioTableDialog extends JDialog {
 				@SuppressWarnings("unchecked")
 				public void actionPerformed(ActionEvent e) {
 					List<RelativeEffect<?>> effectList = new ArrayList<RelativeEffect<?>>();
-					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(row, column)).getBean());
-					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(1,0)).getBean());
-					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(1,0)).getBean());
-					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(1,0)).getBean());
-					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(1,0)).getBean());
-					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(1,0)).getBean());
-					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(1,0)).getBean());
+					for (int i = 0; i < 6; ++i)
+						effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(row, column)).getBean());
 					
 					d_dialog = new RelativeEffectPlotDialog(d_parent,
 															effectList,

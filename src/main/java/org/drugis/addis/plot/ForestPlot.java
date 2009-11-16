@@ -39,7 +39,7 @@ public class ForestPlot implements Plot {
 		int yPos = ROWVCENTER;
 		
 		for (int i=0; i < d_pm.getNumRelativeEffects(); ++i) {		
-			d_bars.add(new RelativeEffectBar(d_pm.getScale(), yPos, (RelativeEffect<?>) d_pm.getRelativeEffectAt(i)));
+			d_bars.add(new RelativeEffectBar(d_pm.getScale(), yPos, (RelativeEffect<?>) d_pm.getRelativeEffectAt(i), d_pm.getDiamondSize(i)));
 			yPos += FULLROW;
 		}
 	}
@@ -49,9 +49,6 @@ public class ForestPlot implements Plot {
 		
 		//BACKGROUND COLORING:
 		Color c = g2d.getColor();
-		/*g2d.setColor(Color.lightGray);
-		g2d.fillRect(0, FULLROW, STUDYWIDTH - ROWPAD, FULLROW * (d_bars.size()));
-		g2d.fillRect(TOTALWIDTH - (CIWIDTH - ROWPAD) , FULLROW, CIWIDTH - ROWPAD, FULLROW * (d_bars.size()));*/
 		g2d.setColor(Color.white);
 		g2d.fillRect(0, ROWHEIGHT, FULLWIDTH, FULLROW * (d_bars.size() + 4));
 		g2d.setColor(c);

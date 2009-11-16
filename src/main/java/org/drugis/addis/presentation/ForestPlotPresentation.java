@@ -6,9 +6,12 @@ import java.util.List;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.RelativeEffect;
+import org.drugis.addis.entities.RelativeEffect.AxisType;
 import org.drugis.addis.plot.BinnedScale;
 import org.drugis.addis.plot.ForestPlot;
+import org.drugis.addis.plot.IdentityScale;
 import org.drugis.addis.plot.LinearScale;
+import org.drugis.addis.plot.LogScale;
 import org.drugis.common.Interval;
 
 
@@ -16,6 +19,9 @@ public class ForestPlotPresentation {
 
 	private List<RelativeEffect<?>> d_relEffects;
 	private BinnedScale d_scale;
+	private double d_max = 0.0;
+	private AxisType d_scaleType;
+	
 
 	@SuppressWarnings("unchecked")
 	public ForestPlotPresentation(List<RelativeEffect<?>> relEffects) throws IllegalArgumentException {
@@ -36,10 +42,21 @@ public class ForestPlotPresentation {
 				throw new IllegalArgumentException("Relative Effects do not have same Drugs.");
 			if (!r.getClass().equals(a))
 				throw new IllegalArgumentException("Relative Effects of different Type.");
-		}		
+		}
+		
+		for (RelativeEffect<?> i : relEffects) {
+			d_max = Math.max(i.getSampleSize(), d_max);
+		}
 		
 		d_relEffects = relEffects;
-		d_scale = new BinnedScale(new LinearScale(getRange()), 1, ForestPlot.BARWIDTH);
+		if (relEffects.get(0).getAxisType() == AxisType.LINEAR) {
+			d_scaleType = AxisType.LINEAR;
+			d_scale = new BinnedScale(new LinearScale(getRange()), 1, ForestPlot.BARWIDTH);
+		}
+		if (relEffects.get(0).getAxisType() == AxisType.LOGARITHMIC) {
+			d_scaleType = AxisType.LOGARITHMIC;
+			d_scale = new BinnedScale(new LogScale(getRange()), 1, ForestPlot.BARWIDTH);
+		}
 	}
 	
 	public int getNumRelativeEffects() {
@@ -65,7 +82,12 @@ public class ForestPlotPresentation {
 			max = (upperBound > max) ? upperBound : max;
 		}
 		
-		return niceInterval(min,max);
+		if (d_scaleType == AxisType.LINEAR)
+			return niceIntervalLinear(min,max);
+		if (d_scaleType == AxisType.LOGARITHMIC)
+			return niceIntervalLog(min, max);
+		
+		return new Interval<Double>(min, max);
 	}
 	
 	public String getBaselineDrugLabel() {
@@ -80,8 +102,14 @@ public class ForestPlotPresentation {
 		return d_relEffects.size() > i ? d_relEffects.get(i).getBaseline().getPatientGroup().getStudy().toString() : "";
 	}
 	
+	private Interval<Double> niceIntervalLog(double min, double max) {
+		double lowersign = Math.floor(anylog(min, 2));
+		double uppersign = Math.ceil(anylog(max, 2));
+		
+		return new Interval<Double>(Math.pow(2,lowersign),Math.pow(2, uppersign));	
+	}
 	
-	private Interval<Double> niceInterval(double min, double max) {
+	private Interval<Double> niceIntervalLinear(double min, double max) {
 		int sign = getSignificanceLevel(min, max);
 		
 		double minM = Math.floor(min / Math.pow(10, sign)) * Math.pow(10, sign);
@@ -98,6 +126,10 @@ public class ForestPlotPresentation {
 		int sign = Math.max(signMax, signMin);
 		return sign;
 	}
+	
+	private double anylog(double x, double base) {
+		return Math.log(x) / Math.log(base);
+	}
 
 	public String getCIlabelAt(int i) {
 		RelativeEffect<?> e = d_relEffects.get(i);
@@ -109,7 +141,7 @@ public class ForestPlotPresentation {
 		Interval<Double> range = getRange();
 		ArrayList<Integer> tickList = new ArrayList<Integer>();
 		tickList.add(d_scale.getBin(range.getLowerBound()).bin);
-		tickList.add(d_scale.getBin(0).bin); //FIXME: Also for logarithmic Scales
+		tickList.add(d_scale.getBin(d_scaleType == AxisType.LOGARITHMIC ? 1 : 0).bin);
 		tickList.add(d_scale.getBin(range.getUpperBound()).bin);
 		return tickList;
 	}
@@ -122,11 +154,22 @@ public class ForestPlotPresentation {
 		Interval<Double> range = getRange();
 		ArrayList<Double> tickVals = new ArrayList<Double>();
 		tickVals.add(range.getLowerBound());
-		tickVals.add(0D); //FIXME: Also for logarithmic Scales
+		tickVals.add(d_scaleType == AxisType.LOGARITHMIC ? 1D : 0D);
 		tickVals.add(range.getUpperBound());
 		return tickVals;
 	}
 	
-	
+	private double getWeightAt(int index) {
+		return (double) (d_relEffects.get(index).getSampleSize()) / d_max;
+	}
 
+	public int getDiamondSize(int index) {
+		double weight = getWeightAt(index);
+		BinnedScale tempbin = new BinnedScale(new IdentityScale(), 1, 10);
+		return tempbin.getBin(weight).bin * 2 + 1;
+	}
+	
+	Interval<Double> testHelper() {
+		return niceIntervalLog(0.79, 1.50);
+	}
 }

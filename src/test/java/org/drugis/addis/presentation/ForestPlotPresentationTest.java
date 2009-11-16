@@ -2,7 +2,6 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,6 +10,7 @@ import java.util.List;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MeanDifference;
@@ -21,7 +21,6 @@ import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.addis.plot.ForestPlot;
 import org.drugis.common.Interval;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ForestPlotPresentationTest {
@@ -42,16 +41,17 @@ public class ForestPlotPresentationTest {
 	ForestPlotPresentation d_pm;
 	private PatientGroup d_pnum;
 	private PatientGroup d_pden;
+	private Endpoint d_e;
 	
 	@Before
 	public void setUp() {
-		Endpoint e = new Endpoint("E", Type.CONTINUOUS);
+		d_e = new Endpoint("E", Type.CONTINUOUS);
 		d_pnum = new BasicPatientGroup(ExampleData.buildDefaultStudy1(),new Drug("DrugA", "01"),null,s_baslSize);
 		d_pden = new BasicPatientGroup(ExampleData.buildDefaultStudy1(),new Drug("DrugB", "02"),null,s_subjSize);
-		d_subj1 = new BasicContinuousMeasurement(e, s_mean1, s_stdDev1, d_pnum);		
-		d_basel1 = new BasicContinuousMeasurement(e, s_mean2, s_stdDev2, d_pden);
-		d_subj2 = new BasicContinuousMeasurement(e, s_mean2, s_stdDev2, d_pnum);		
-		d_basel2 = new BasicContinuousMeasurement(e, s_mean1, s_stdDev1, d_pden);
+		d_subj1 = new BasicContinuousMeasurement(d_e, s_mean1, s_stdDev1, d_pnum);		
+		d_basel1 = new BasicContinuousMeasurement(d_e, s_mean2, s_stdDev2, d_pden);
+		d_subj2 = new BasicContinuousMeasurement(d_e, s_mean2, s_stdDev2, d_pnum);		
+		d_basel2 = new BasicContinuousMeasurement(d_e, s_mean1, s_stdDev1, d_pden);
 		d_relEffect = new MeanDifference(d_basel1, d_subj1);
 		d_relEffectInv = new MeanDifference(d_basel2, d_subj2);
 		List<RelativeEffect<?>> list = new ArrayList<RelativeEffect<?>>(Collections.singleton(d_relEffect));
@@ -135,15 +135,22 @@ public class ForestPlotPresentationTest {
 		assertEquals(interval2, d_pm.getCIlabelAt(1));
 	}
 	
-	@Ignore
 	@Test
-	public void testLogarithmic() {
-		fail();
+	public void testGetWeightAt() {
+		List<RelativeEffect<?>> list = new ArrayList<RelativeEffect<?>>(Collections.singleton(d_relEffect));
+		ContinuousMeasurement baseline = new BasicContinuousMeasurement(d_e, new BasicPatientGroup(ExampleData.buildDefaultStudy1(),new Drug("DrugB", "02"),null,s_baslSize * 10));
+		ContinuousMeasurement subject = new BasicContinuousMeasurement(d_e, new BasicPatientGroup(ExampleData.buildDefaultStudy1(),new Drug("DrugA", "01"),null,s_subjSize * 10));
+		MeanDifference md = new MeanDifference(baseline, subject);
+		list.add(md);
+		ForestPlotPresentation fpp = new ForestPlotPresentation(list);
+		
+		assertEquals(5, fpp.getDiamondSize(0));
+		assertEquals(21, fpp.getDiamondSize(1));
 	}
 	
-	@Ignore
 	@Test
-	public void testRelativeBoxSizes() {
-		fail();
+	public void testLogarithmic() {
+		Interval<Double> logint = d_pm.testHelper();
+		System.out.println(logint.getLowerBound() + "-" + logint.getUpperBound());
 	}
 }
