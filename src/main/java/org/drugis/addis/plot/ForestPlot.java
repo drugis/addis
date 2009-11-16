@@ -1,5 +1,6 @@
 package org.drugis.addis.plot;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -11,6 +12,12 @@ import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.presentation.ForestPlotPresentation;
 
 public class ForestPlot implements Plot {
+	enum Align {
+		LEFT,
+		CENTER,
+		RIGHT
+	};
+	
 	public static final int ROWHEIGHT = 21;
 	public static final int ROWPAD = 10;
 	private static final int FULLROW = ROWHEIGHT + ROWPAD;
@@ -37,13 +44,20 @@ public class ForestPlot implements Plot {
 	public void paint(Graphics2D g2d) {
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		
+		//BACKGROUND COLORING:
+		Color c = g2d.getColor();
+		g2d.setColor(Color.lightGray);
+		g2d.fillRect(0, FULLROW, STUDYWIDTH - ROWPAD, FULLROW * (d_bars.size()));
+		g2d.fillRect(TOTALWIDTH - (CIWIDTH - ROWPAD) , FULLROW, CIWIDTH - ROWPAD, FULLROW * (d_bars.size()));
+		g2d.setColor(c);
+		
 		//HEADER ROW:
-		String headerL = "Study";
-		g2d.drawString(headerL, 1, ROWHEIGHT / 2);
-		String headerR = "Relative Effect (95% CI)";
-		Rectangle2D boundsR = g2d.getFontMetrics().getStringBounds(headerR, g2d);
-		g2d.drawString(headerR, (int) (TOTALWIDTH - boundsR.getWidth()), ROWHEIGHT / 2);
-
+		drawVCentrString(g2d, "Study", 0, 1, Align.LEFT);
+		drawVCentrString(g2d, "Relative Effect (95% CI)", 0, TOTALWIDTH, Align.RIGHT);
+		
+		g2d.drawLine(1, ROWHEIGHT, TOTALWIDTH, ROWHEIGHT);
+		g2d.drawLine(1, ROWHEIGHT + 1, TOTALWIDTH, ROWHEIGHT + 1);
+		
 		//STUDY COLUMN & CI COLUMN:
 		int yPos = 2 * FULLROW - ROWHEIGHT / 2;
 		for (int i = 0; i < d_pm.getNumRelativeEffects(); ++i) {
@@ -85,6 +99,27 @@ public class ForestPlot implements Plot {
 	
 	public Dimension getPlotSize() {
 		return new Dimension(TOTALWIDTH, FULLROW * (d_bars.size() + 2));
+	}
+	
+	
+	private void drawVCentrString(Graphics2D g2d, String text, int rownr, int xpos, Align a) {
+		//rownr for the header == 0
+		Rectangle2D textBounds = g2d.getFontMetrics().getStringBounds(text, g2d);
+		int y = (int) ((ROWHEIGHT / 2) * (rownr + 1) + textBounds.getHeight() / 2);
+		int x = 1;
+		
+		switch(a) {
+			case LEFT:
+				x = xpos;
+				break;
+			case CENTER:
+				x = (int) (xpos - textBounds.getWidth() / 2);
+				break;
+			case RIGHT:
+				x = (int) (xpos - textBounds.getWidth());
+				break;
+		}
+		g2d.drawString(text, x, y);
 	}
 
 }
