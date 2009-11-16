@@ -1,7 +1,6 @@
 package org.drugis.addis.gui;
 
 import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.List;
@@ -31,8 +30,7 @@ public class RelativeEffectPlotDialog extends JDialog {
 				d_plot.paint((Graphics2D) g);
 			}
 		};
-		canvas.setPreferredSize(d_plot.getPlotSize());//new Dimension(201, 21 * (d_effects.size() + 1)));
-		canvas.setBackground(Color.WHITE);
+		canvas.setPreferredSize(d_plot.getPlotSize());
 		add(canvas);
 	}
 }

@@ -108,4 +108,8 @@ public abstract class AbstractRatio extends AbstractEntity implements RelativeEf
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();
 	}
+
+	public String getName() {
+		return "NOT IMPLEMENTED IN ABSTRACT-CLASS";
+	}
 }

@@ -19,13 +19,16 @@ public class ForestPlot implements Plot {
 	};
 	
 	public static final int ROWHEIGHT = 21;
+	public static final int ROWVCENTER = ROWHEIGHT / 2 + 1;
 	public static final int ROWPAD = 10;
-	private static final int FULLROW = ROWHEIGHT + ROWPAD;
+	public static final int FULLROW = ROWHEIGHT + ROWPAD;
 	public static final int BARWIDTH = 301;
 	public static final int STUDYWIDTH = 201;
 	public static final int CIWIDTH = 201;
-	private static final int TOTALWIDTH = BARWIDTH + STUDYWIDTH + CIWIDTH;
-		
+	public static final int FULLWIDTH = BARWIDTH + STUDYWIDTH + CIWIDTH;
+	public static final int TICKLENGTH = 4;
+	public static final int HORPAD = 20;
+	
 	private List<RelativeEffectBar> d_bars;
 	private ForestPlotPresentation d_pm;
 	
@@ -33,7 +36,7 @@ public class ForestPlot implements Plot {
 		d_pm = pm;
 		d_bars = new ArrayList<RelativeEffectBar>();
 		
-		int yPos = ROWHEIGHT / 2 + ROWPAD;
+		int yPos = ROWVCENTER;
 		
 		for (int i=0; i < d_pm.getNumRelativeEffects(); ++i) {		
 			d_bars.add(new RelativeEffectBar(d_pm.getScale(), yPos, (RelativeEffect<?>) d_pm.getRelativeEffectAt(i)));
@@ -46,26 +49,24 @@ public class ForestPlot implements Plot {
 		
 		//BACKGROUND COLORING:
 		Color c = g2d.getColor();
-		g2d.setColor(Color.lightGray);
+		/*g2d.setColor(Color.lightGray);
 		g2d.fillRect(0, FULLROW, STUDYWIDTH - ROWPAD, FULLROW * (d_bars.size()));
-		g2d.fillRect(TOTALWIDTH - (CIWIDTH - ROWPAD) , FULLROW, CIWIDTH - ROWPAD, FULLROW * (d_bars.size()));
+		g2d.fillRect(TOTALWIDTH - (CIWIDTH - ROWPAD) , FULLROW, CIWIDTH - ROWPAD, FULLROW * (d_bars.size()));*/
+		g2d.setColor(Color.white);
+		g2d.fillRect(0, ROWHEIGHT, FULLWIDTH, FULLROW * (d_bars.size() + 4));
 		g2d.setColor(c);
 		
 		//HEADER ROW:
 		drawVCentrString(g2d, "Study", 0, 1, Align.LEFT);
-		drawVCentrString(g2d, "Relative Effect (95% CI)", 0, TOTALWIDTH, Align.RIGHT);
+		drawVCentrString(g2d, "Relative Effect (95% CI)", 0, FULLWIDTH, Align.RIGHT);
 		
-		g2d.drawLine(1, ROWHEIGHT, TOTALWIDTH, ROWHEIGHT);
-		g2d.drawLine(1, ROWHEIGHT + 1, TOTALWIDTH, ROWHEIGHT + 1);
-		
+		g2d.drawRect(1, ROWHEIGHT, FULLWIDTH, 1);
+				
 		//STUDY COLUMN & CI COLUMN:
-		int yPos = 2 * FULLROW - ROWHEIGHT / 2;
+		int yPos = 2 * FULLROW - ROWVCENTER;
 		for (int i = 0; i < d_pm.getNumRelativeEffects(); ++i) {
-			g2d.drawString(d_pm.getStudyLabelAt(i), 1, yPos);
-						
-			String CI = d_pm.getCIlabelAt(i);
-			Rectangle2D boundsCIR = g2d.getFontMetrics().getStringBounds(CI, g2d);
-			g2d.drawString(CI, (int) (TOTALWIDTH - boundsCIR.getWidth()), yPos);
+			drawVCentrString(g2d, d_pm.getStudyLabelAt(i), i + 1, 1, Align.LEFT);
+			drawVCentrString(g2d, d_pm.getCIlabelAt(i), i + 1, FULLWIDTH, Align.RIGHT);
 			yPos += FULLROW;
 		}
 		
@@ -80,32 +81,31 @@ public class ForestPlot implements Plot {
 		//Horizontal axis:
 		g2d.drawLine(1, FULLROW * d_bars.size(), BARWIDTH, FULLROW * d_bars.size());
 		//Vertical axis:
-		g2d.drawLine(d_pm.getScale().getBin(0.0).bin, 1, d_pm.getScale().getBin(0.0).bin, FULLROW * d_bars.size());
+		int originX = d_pm.getScale().getBin(0.0).bin;
+		g2d.drawLine(originX, 1, originX, FULLROW * d_bars.size());
 		
 		//Tickmarks:
 		int index = 0;
 		for (Integer i : d_pm.getTicks()) {
-			g2d.drawLine(i, FULLROW * d_bars.size(), i, FULLROW * d_bars.size() + 4);
-			g2d.drawString(d_pm.getTickVals().get(index).toString(), i, FULLROW * d_bars.size() + 4 + ROWPAD);
+			g2d.drawLine(i, FULLROW * d_bars.size(), i, FULLROW * d_bars.size() + TICKLENGTH);
+			drawVCentrString(g2d, d_pm.getTickVals().get(index).toString(), d_bars.size(), i, Align.CENTER);
 			++index;
 		}
 		
-		String bottomText = d_pm.getRelativeEffectAt(0).getName();
-		
-		Rectangle2D stringBounds = g2d.getFontMetrics().getStringBounds(bottomText, g2d);
-		
-		g2d.drawString(bottomText, (int) (d_pm.getScale().getBin(0).bin - stringBounds.getWidth() / 2), (int) (FULLROW * (d_bars.size() + 1)));
+		drawVCentrString(g2d, d_pm.getRelativeEffectAt(0).getName(), d_bars.size() + 1, originX, Align.CENTER);
+		drawVCentrString(g2d, "Favours " + d_pm.getBaselineDrugLabel(), d_bars.size() + 2, originX - HORPAD, Align.RIGHT);
+		drawVCentrString(g2d, "Favours " + d_pm.getSubjectDrugLabel(), d_bars.size() + 2, originX + HORPAD, Align.LEFT);
 	}
 	
 	public Dimension getPlotSize() {
-		return new Dimension(TOTALWIDTH, FULLROW * (d_bars.size() + 2));
+		return new Dimension(FULLWIDTH, FULLROW * (d_bars.size() + 4));
 	}
 	
 	
 	private void drawVCentrString(Graphics2D g2d, String text, int rownr, int xpos, Align a) {
 		//rownr for the header == 0
 		Rectangle2D textBounds = g2d.getFontMetrics().getStringBounds(text, g2d);
-		int y = (int) ((ROWHEIGHT / 2) * (rownr + 1) + textBounds.getHeight() / 2);
+		int y = (int) ((FULLROW * rownr) + ROWVCENTER + (textBounds.getHeight() / 2.0));
 		int x = 1;
 		
 		switch(a) {

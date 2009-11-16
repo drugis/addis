@@ -84,7 +84,12 @@ public class RatioTableDialog extends JDialog {
 					List<RelativeEffect<?>> effectList = new ArrayList<RelativeEffect<?>>();
 					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(row, column)).getBean());
 					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(1,0)).getBean());
-
+					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(1,0)).getBean());
+					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(1,0)).getBean());
+					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(1,0)).getBean());
+					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(1,0)).getBean());
+					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(1,0)).getBean());
+					
 					d_dialog = new RelativeEffectPlotDialog(d_parent,
 															effectList,
 															"Relative Effect plot");

@@ -44,6 +44,7 @@ public class OddsRatio extends AbstractRatio {
 		return false;
 	}
 
+	@Override
 	public String getName() {
 		return "OddsRatio";
 	}

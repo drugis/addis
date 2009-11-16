@@ -43,8 +43,9 @@ public class RiskRatio extends AbstractRatio {
 		+ d_numerator.toString() + "]";
 	}
 
+	@Override
 	public String getName() {
-		return null;
+		return "Risk Ratio";
 	}
 	
 	public AxisType getAxisType() {
