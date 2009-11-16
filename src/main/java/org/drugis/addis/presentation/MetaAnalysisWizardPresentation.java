@@ -371,7 +371,9 @@ public class MetaAnalysisWizardPresentation {
 				new ArrayList<Study>(getSelectedStudySet()), getFirstDrug(), getSecondDrug());
 	}
 	
-	public void saveMetaAnalysis(String name, MetaAnalysis ma) {
-		d_domain.addStudy(new MetaStudy(name,ma));
+	public MetaStudy saveMetaAnalysis(String name, MetaAnalysis ma) {
+		MetaStudy study = new MetaStudy(name,ma);
+		d_domain.addStudy(study);
+		return study;
 	}
 }
