@@ -41,6 +41,7 @@ public class RatioTableDialog extends JDialog {
 		d_tableModel = model;
 		initComps();
 		setModal(true);
+		setResizable(false);
 		pack();
 	}
 	
