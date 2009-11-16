@@ -55,8 +55,9 @@ public interface Domain {
 	 * 
 	 * @param e the study to add
 	 * @throws NullPointerException if e is null
+	 * @throws IllegalArgumentException if indication of the study is not included in the domain yet
 	 */
-	public void addStudy(Study s) throws NullPointerException;
+	public void addStudy(Study s) throws NullPointerException, IllegalArgumentException;
 
 	/**
 	 * Get the studies stored in the data model, EXCLUDING the meta-studies.

@@ -58,6 +58,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
 import org.drugis.addis.AppInfo;
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainListener;
@@ -74,6 +75,7 @@ import org.drugis.addis.gui.builder.MetaAnalysisWizard;
 import org.drugis.addis.gui.builder.MetaStudyView;
 import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.presentation.DrugPresentationModel;
+import org.drugis.addis.presentation.EndpointPresentationModel;
 import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
@@ -160,8 +162,8 @@ public class Main extends JFrame {
 		try {
 			loadDomainFromFile();
 		} catch (Exception e) {
-			MainData.initDefaultData(d_domain.getDomain());
-			d_domain.getDomain().addStudy(MainData.buildAdditionalStudyThreeArm());
+			ExampleData.initDefaultData(d_domain.getDomain());
+			d_domain.getDomain().addStudy(ExampleData.buildAdditionalStudyThreeArm());
 		}
 		
 		d_domain.getDomain().addListener(new MainListener());
@@ -526,14 +528,9 @@ public class Main extends JFrame {
 						d_domainTreeModel.getEndpointsNode() }));
 	}	
 	
-	private void endpointSelected(Endpoint e, Study selectedStudy) {
-		EndpointView view = new EndpointView(e, getDomain(), this);
-		view.setSelectedStudy(selectedStudy);
+	private void endpointSelected(Endpoint e) {
+		EndpointView view = new EndpointView((EndpointPresentationModel) d_pmManager.getModel(e), this);
 		setRightPanelView(view);
-	}
-	
-	private void endpointSelected(Endpoint node) {
-		endpointSelected(node, null);
 		d_editMenuDeleteItem.setEnabled(true);		
 	}
 	

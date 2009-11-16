@@ -112,6 +112,9 @@ public class DomainImpl implements Domain, Serializable {
 		}
 		s.addPropertyChangeListener(d_studyListener);
 		
+		if (!getIndications().contains(s.getCharacteristics().get(StudyCharacteristic.INDICATION))) {
+			throw new IllegalArgumentException("indication of this study not in the domain");
+		}
 		if (s instanceof MetaStudy) {
 			d_metaStudies.add((MetaStudy)s);
 		} else {

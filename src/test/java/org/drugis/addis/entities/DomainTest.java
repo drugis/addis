@@ -42,10 +42,12 @@ import org.junit.Test;
 public class DomainTest {
 
 	private Domain d_domain;
+	private Indication d_indication;
 	
 	@Before
 	public void setUp() {
 		d_domain = new DomainImpl();
+		d_indication = new Indication(0L, "ind");
 	}
 	
 	@Test
@@ -85,9 +87,16 @@ public class DomainTest {
 		assertEquals(Collections.singleton(e), d_domain.getEndpoints());
 	}
 	
+	@Test(expected=IllegalArgumentException.class)
+	public void testAddStudyThrowsOnUnknownIndication() {
+		BasicStudy s = new BasicStudy("X", new Indication(2L, ""));
+		d_domain.addStudy(s);
+	}	
+	
 	@Test
 	public void testAddStudy() {
-		BasicStudy s = new BasicStudy("X", new Indication(0L, ""));
+		d_domain.addIndication(d_indication);
+		BasicStudy s = new BasicStudy("X", d_indication);
 		assertEquals(0, d_domain.getStudies().size());
 		d_domain.addStudy(s);
 		assertEquals(1, d_domain.getStudies().size());
@@ -158,8 +167,10 @@ public class DomainTest {
 		mockListener.studiesChanged();
 		replay(mockListener);
 		
+		d_domain.addIndication(d_indication);
 		d_domain.addListener(mockListener);
-		d_domain.addStudy(new BasicStudy("X", new Indication(0L, "")));
+		d_indication = new Indication(0L, "");
+		d_domain.addStudy(new BasicStudy("X", d_indication));
 		verify(mockListener);
 	}
 	
@@ -193,17 +204,18 @@ public class DomainTest {
 		
 		Set<Endpoint> l1 = new HashSet<Endpoint>();
 		l1.add(e1);
-		AbstractStudy s1 = new BasicStudy("X", new Indication(0L, ""));
+		AbstractStudy s1 = new BasicStudy("X", d_indication);
 		s1.setId("s1");
 		s1.setEndpoints(l1);
 		
 		Set<Endpoint> l2 = new HashSet<Endpoint>();
 		l2.add(e2);
 		l2.add(e1);
-		AbstractStudy s2 = new BasicStudy("X", new Indication(0L, ""));
+		AbstractStudy s2 = new BasicStudy("X", d_indication);
 		s2.setId("s2");
 		s2.setEndpoints(l2);
 		
+		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s1);
 		d_domain.addStudy(s2);
 		
@@ -260,15 +272,18 @@ public class DomainTest {
 		
 		Endpoint e = new Endpoint("Death", Endpoint.Type.RATE);
 		
-		BasicStudy s1 = new BasicStudy("s1", new Indication(0L, ""));
+		BasicStudy s1 = new BasicStudy("s1", d_indication);
 		s1.setEndpoints(Collections.singleton(e));
 		BasicPatientGroup g1 = new BasicPatientGroup(s1, d1, 
 				new Dose(1.0, SIUnit.MILLIGRAMS_A_DAY), 100);
 		BasicRateMeasurement m1 = new BasicRateMeasurement(e, g1);
 		s1.setPatientGroups(Collections.singletonList(g1));
 		s1.setMeasurement(e, g1, m1);
+		d_domain.addIndication(d_indication);
 		
-		BasicStudy s2 = new BasicStudy("s2", new Indication(1L, ""));
+		Indication indic2 = new Indication(1L, "");
+		d_domain.addIndication(indic2);
+		BasicStudy s2 = new BasicStudy("s2", indic2);
 		s2.setEndpoints(Collections.singleton(e));
 		BasicPatientGroup g2 = new BasicPatientGroup(s2, d1, 
 				new Dose(5.0, SIUnit.MILLIGRAMS_A_DAY), 250);		
@@ -320,9 +335,11 @@ public class DomainTest {
 		assertEquals(d1, d2);
 		assertEquals(d1.hashCode(), d2.hashCode());
 		
-		AbstractStudy s = new BasicStudy("s1", new Indication(0L, ""));
+		d1.addIndication(d_indication);
+		AbstractStudy s = new BasicStudy("s1", d_indication);
 		d1.addStudy(s);
 		JUnitUtil.assertNotEquals(d1, d2);
+		d2.addIndication(d_indication);
 		d2.addStudy(s);
 		assertEquals(d1, d2);
 		assertEquals(d1.hashCode(), d2.hashCode());
@@ -330,7 +347,8 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteStudy() throws DependentEntitiesException {
-		AbstractStudy s = new BasicStudy("X", new Indication(0L, ""));
+		AbstractStudy s = new BasicStudy("X", d_indication);
+		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s);
 		d_domain.deleteStudy(s);
 		assertTrue(d_domain.getStudies().isEmpty());
@@ -338,8 +356,9 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteStudyThrowsCorrectException() {
-		AbstractStudy s1 = new BasicStudy("X", new Indication(0L, ""));
-		AbstractStudy s2 = new BasicStudy("Y", new Indication(0L, ""));
+		AbstractStudy s1 = new BasicStudy("X", d_indication);
+		AbstractStudy s2 = new BasicStudy("Y", d_indication);
+		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s1);
 		d_domain.addStudy(s2);
 		
@@ -363,7 +382,8 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteStudyFires() throws DependentEntitiesException {
-		AbstractStudy s1 = new BasicStudy("X", new Indication(0L, ""));
+		AbstractStudy s1 = new BasicStudy("X", d_indication);
+		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s1);
 		
 		DomainListener mock = createMock(DomainListener.class);
@@ -384,7 +404,8 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteDrugThrowsCorrectException() {
-		BasicStudy s1 = new BasicStudy("X", new Indication(0L, ""));
+		BasicStudy s1 = new BasicStudy("X", d_indication);
+		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s1);
 		
 		Drug d = new Drug("d", "atc");
@@ -424,7 +445,8 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteEndpointThrowsCorrectException() {
-		BasicStudy s1 = new BasicStudy("X", new Indication(0L, ""));
+		BasicStudy s1 = new BasicStudy("X", d_indication);
+		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s1);
 		
 		Endpoint e = new Endpoint("e", Type.RATE);

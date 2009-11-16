@@ -255,6 +255,8 @@ public class ExampleData {
 		
 		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
 				"This is a fictional study that I just created because I need a three-arm study.");
+		study.setCharacteristic(StudyCharacteristic.STATUS,
+				StudyCharacteristic.Status.FINISHED);
 
 		// Paroxetine data
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);

@@ -4,6 +4,7 @@ import java.awt.Dimension;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -48,6 +49,9 @@ public class AuxComponentFactory {
 	public static JComponent createCharacteristicView(CharacteristicHolder model) {
 		JComponent component = null;
 		ValueType valueType = model.getCharacteristic().getValueType();
+		if (model.getValue() == null) {
+			return new JLabel("UNKNOWN");
+		}
 		if (valueType.equals(StudyCharacteristic.ValueType.TEXT)) {
 			component = createTextArea(model, false);
 		} else if (valueType.equals(StudyCharacteristic.ValueType.DATE)) {

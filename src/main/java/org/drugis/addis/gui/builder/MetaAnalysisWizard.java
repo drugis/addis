@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MetaAnalysis;
+import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudyTable;
@@ -90,11 +91,14 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			saveAsStudy();
 		}
 		
-		private void saveAsStudy() {
+		private void saveAsStudy() throws InvalidStateException {
 			String res = JOptionPane.showInputDialog(this, "Input name for new analysis", 
 					"Save meta-analysis", JOptionPane.QUESTION_MESSAGE);
 			if (res != null) {
-				d_pm.saveMetaAnalysis(res, d_ma);		
+				MetaStudy study = d_pm.saveMetaAnalysis(res, d_ma);	
+				d_frame.leftTreeFocusOnMetaStudy(study);
+			} else {
+				throw new InvalidStateException();
 			}
 		}
 	}
