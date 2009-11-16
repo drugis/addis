@@ -90,11 +90,13 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			saveAsStudy();
 		}
 		
-		private void saveAsStudy() {
+		private void saveAsStudy() throws InvalidStateException {
 			String res = JOptionPane.showInputDialog(this, "Input name for new analysis", 
 					"Save meta-analysis", JOptionPane.QUESTION_MESSAGE);
 			if (res != null) {
 				d_pm.saveMetaAnalysis(res, d_ma);		
+			} else {
+				throw new InvalidStateException();
 			}
 		}
 	}
