@@ -2,6 +2,7 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +22,7 @@ import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.addis.plot.ForestPlot;
 import org.drugis.common.Interval;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ForestPlotPresentationTest {
@@ -148,9 +150,10 @@ public class ForestPlotPresentationTest {
 		assertEquals(21, fpp.getDiamondSize(1));
 	}
 	
+	@Ignore
 	@Test
 	public void testLogarithmic() {
-		Interval<Double> logint = d_pm.testHelper();
-		System.out.println(logint.getLowerBound() + "-" + logint.getUpperBound());
+		//Interval<Double> logint = d_pm.testHelper();
+		fail(); //System.out.println(logint.getLowerBound() + "-" + logint.getUpperBound());
 	}
 }
