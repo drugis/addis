@@ -59,7 +59,17 @@ public class StudyCharTableModel extends AbstractTableModel {
 		return d_pm.getIncludedStudies().getValue().size();
 	}
 
+	/**
+	 * @throws IndexOutOfBoundsException if row- or columnindex doesn't exist in the model
+	 */
 	public Object getValueAt(int rowIndex, int columnIndex) {
+		if (columnIndex < 0 || columnIndex >= getColumnCount()) {
+			throw new IndexOutOfBoundsException("column index (" + columnIndex + ") out of bounds");
+		}
+		if (rowIndex < 0 || rowIndex >= getRowCount()) {
+			throw new IndexOutOfBoundsException("row index (" + rowIndex + ") out of bounds");
+		}
+		
 		if (columnIndex == 0) {
 			return d_pm.getIncludedStudies().getValue().get(rowIndex).getId();
 		}
