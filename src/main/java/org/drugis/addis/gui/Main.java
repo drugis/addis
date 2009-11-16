@@ -58,6 +58,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
 import org.drugis.addis.AppInfo;
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainListener;
@@ -160,8 +161,8 @@ public class Main extends JFrame {
 		try {
 			loadDomainFromFile();
 		} catch (Exception e) {
-			MainData.initDefaultData(d_domain.getDomain());
-			d_domain.getDomain().addStudy(MainData.buildAdditionalStudyThreeArm());
+			ExampleData.initDefaultData(d_domain.getDomain());
+			d_domain.getDomain().addStudy(ExampleData.buildAdditionalStudyThreeArm());
 		}
 		
 		d_domain.getDomain().addListener(new MainListener());
