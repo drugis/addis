@@ -6,6 +6,7 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
+@SuppressWarnings("serial")
 public class DayDateFormat extends Format {
 	SimpleDateFormat d_format;
 	public DayDateFormat() {

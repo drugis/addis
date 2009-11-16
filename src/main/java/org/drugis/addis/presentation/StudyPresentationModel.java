@@ -5,6 +5,7 @@ import org.drugis.addis.entities.StudyCharacteristic;
 
 import com.jgoodies.binding.PresentationModel;
 
+@SuppressWarnings("serial")
 public class StudyPresentationModel extends PresentationModel<Study> {
 	
 	public StudyPresentationModel(Study s) {
