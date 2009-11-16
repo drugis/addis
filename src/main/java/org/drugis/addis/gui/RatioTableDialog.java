@@ -27,6 +27,7 @@ import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.gui.components.EnhancedTableHeader;
 import org.drugis.addis.presentation.LabeledPresentationModel;
 import org.drugis.addis.presentation.RelativeEffectTableModel;
+import org.drugis.common.gui.GUIHelper;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -88,6 +89,7 @@ public class RatioTableDialog extends JDialog {
 					d_dialog = new RelativeEffectPlotDialog(d_parent,
 															effectList,
 															"Relative Effect plot");
+					GUIHelper.centerWindow(d_dialog, d_parent);					
 					d_dialog.setVisible(true);
 					fireEditingStopped();
 				}
