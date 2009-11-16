@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.RelativeEffect;
+import org.drugis.addis.entities.RelativeEffect.AxisType;
 import org.drugis.addis.presentation.ForestPlotPresentation;
 
 public class ForestPlot implements Plot {
@@ -78,7 +79,7 @@ public class ForestPlot implements Plot {
 		//Horizontal axis:
 		g2d.drawLine(1, FULLROW * d_bars.size(), BARWIDTH, FULLROW * d_bars.size());
 		//Vertical axis:
-		int originX = d_pm.getScale().getBin(0.0).bin;
+		int originX = d_pm.getScale().getBin(d_pm.getScaleType() == AxisType.LOGARITHMIC ? 1D : 0D).bin;
 		g2d.drawLine(originX, 1, originX, FULLROW * d_bars.size());
 		
 		//Tickmarks:

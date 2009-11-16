@@ -70,6 +70,10 @@ public class ForestPlotPresentation {
 	public BinnedScale getScale() {
 		return d_scale;
 	}
+	
+	public AxisType getScaleType() {
+		return d_scaleType;
+	}
 
 	public Interval<Double> getRange() {
 		double min = Double.MAX_VALUE;
@@ -106,7 +110,12 @@ public class ForestPlotPresentation {
 		double lowersign = Math.floor(anylog(min, 2));
 		double uppersign = Math.ceil(anylog(max, 2));
 		
-		return new Interval<Double>(Math.pow(2,lowersign),Math.pow(2, uppersign));	
+		double minM = Math.pow(2,lowersign);
+		double maxM = Math.pow(2, uppersign);
+		
+		double smallest = 1D;
+		
+		return new Interval<Double>(Math.min(smallest,minM), Math.max(smallest,maxM));	
 	}
 	
 	private Interval<Double> niceIntervalLinear(double min, double max) {
