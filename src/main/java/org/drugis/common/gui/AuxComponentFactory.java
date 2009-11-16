@@ -8,6 +8,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.entities.StudyCharacteristic.ValueType;
 import org.drugis.addis.presentation.CharacteristicHolder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -46,8 +47,11 @@ public class AuxComponentFactory {
 
 	public static JComponent createCharacteristicView(CharacteristicHolder model) {
 		JComponent component = null;
-		if (model.getCharacteristic().getValueType().equals(StudyCharacteristic.ValueType.TEXT)) {
+		ValueType valueType = model.getCharacteristic().getValueType();
+		if (valueType.equals(StudyCharacteristic.ValueType.TEXT)) {
 			component = createTextArea(model, false);
+		} else if (valueType.equals(StudyCharacteristic.ValueType.DATE)) {
+			component = BasicComponentFactory.createLabel(model, new DayDateFormat());
 		} else {
 			component = BasicComponentFactory.createLabel(model, new OneWayObjectFormat());
 		}
