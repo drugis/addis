@@ -23,6 +23,7 @@ import org.drugis.addis.presentation.RiskDifferenceTableModel;
 import org.drugis.addis.presentation.RiskRatioTableModel;
 import org.drugis.addis.presentation.StandardisedMeanDifferenceTableModel;
 import org.drugis.common.ImageLoader;
+import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -110,7 +111,9 @@ public class StudyEndpointsView implements ViewBuilder {
 		JButton button = new JButton(tableModel.getTitle());
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				new RatioTableDialog(d_mainWindow, tableModel).setVisible(true);
+				RatioTableDialog dlg = new RatioTableDialog(d_mainWindow, tableModel);
+				GUIHelper.centerWindow(dlg, d_mainWindow);
+				dlg.setVisible(true);
 			}
 		});
 		return button;

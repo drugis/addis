@@ -32,6 +32,7 @@ import org.drugis.addis.entities.PooledPatientGroup;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RelativeEffectContinuous;
 import org.drugis.addis.entities.RelativeEffectRate;
+import org.drugis.addis.entities.Study;
 
 import com.jgoodies.binding.PresentationModel;
 
@@ -68,6 +69,9 @@ public class PresentationModelFactory {
 		if (obj instanceof MetaStudy) {
 			return new MetaStudyPresentationModel((MetaStudy) obj);
 		}
+		if (obj instanceof Study) {
+			return new StudyPresentationModel((Study) obj);
+		}		
 		if (obj instanceof Indication) {
 			return new IndicationPresentation((Indication)obj, d_domain.getStudies((Indication)obj));
 		}

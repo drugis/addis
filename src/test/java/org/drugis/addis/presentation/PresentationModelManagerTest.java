@@ -71,6 +71,15 @@ public class PresentationModelManagerTest {
 	
 	@SuppressWarnings("unchecked")
 	@Test
+	public void testStudyGetModel() {
+		Study s = new BasicStudy("Study", new Indication(666L, "evil"));
+		PresentationModel m = d_manager.getModel(s);
+		assertEquals(s, m.getBean());
+		assertTrue(m instanceof StudyPresentationModel);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
 	public void testGetIndicationModel() {
 		Indication indication = new Indication(0L, "");
 		PresentationModel m = d_manager.getModel(indication);

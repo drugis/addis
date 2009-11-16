@@ -32,7 +32,9 @@ import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.StudyAddPatientGroupDialog;
+import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.common.ImageLoader;
+import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -53,7 +55,7 @@ public class StudyView implements ViewBuilder {
 	private StudyDataView d_dataView;
 	
 	
-	public StudyView(PresentationModel<Study> model, Domain domain, Main main, ImageLoader loader) {
+	public StudyView(StudyPresentationModel model, Domain domain, Main main, ImageLoader loader) {
 		d_loader = loader;
 		d_model = model;
 		d_mainWindow = main;
@@ -116,6 +118,7 @@ public class StudyView implements ViewBuilder {
 	private void addPatientGroup() {
 		StudyAddPatientGroupDialog dlg = new StudyAddPatientGroupDialog(d_loader, d_mainWindow, d_domain,
 				(BasicStudy)d_model.getBean());
+		GUIHelper.centerWindow(dlg, d_mainWindow);
 		dlg.setVisible(true);
 	}
 

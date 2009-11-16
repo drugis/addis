@@ -65,6 +65,7 @@ import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.toedter.calendar.JDateChooser;
 
 public class AddStudyView implements ViewBuilder {
 	private PresentationModel<BasicStudy> d_model;
@@ -254,9 +255,9 @@ public class AddStudyView implements ViewBuilder {
 			if (model.getValue() == null) {
 				model.setValue(new Date());
 			}
-			JFormattedTextField f = new JFormattedTextField(new DefaultFormatter());
-			PropertyConnector.connectAndUpdate(model, f, "value");
-			component = f;
+			JDateChooser chooser = new JDateChooser();
+			PropertyConnector.connectAndUpdate(model, chooser, "date");
+			component = chooser;
 		} else if (c.getValueType().valueClass.isEnum()) {
 			try {
 				component = createOptionsComboBox(c, c.getValueType().valueClass);
