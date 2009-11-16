@@ -22,17 +22,19 @@ public class MetaStudyView implements ViewBuilder {
 	private MetaStudyPresentationModel d_model;
 	private StudyTablePanelView d_studyView;
 	private StudyDataView d_dataView;
+	private StudyEndpointsView d_epView;
 
 	public MetaStudyView(MetaStudyPresentationModel model, Main main, ImageLoader loader) {
 		d_model = model;
 		d_studyView = new StudyTablePanelView(model, main);
 		d_dataView = new StudyDataView(model, loader, main.getPresentationModelManager());
+		d_epView = new StudyEndpointsView(model, main);
 	}
 	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
 				"right:pref, 3dlu, left:pref:grow",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		int fullWidth = 3;
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -60,6 +62,10 @@ public class MetaStudyView implements ViewBuilder {
 		row += 2;
 		builder.add(d_studyView.buildPanel(), cc.xyw(1, row, fullWidth));
 		row += 2;
+		builder.addSeparator("Endpoints", cc.xyw(1, row, fullWidth));
+		row += 2;
+		builder.add(d_epView.buildPanel(), cc.xyw(1, row, fullWidth));
+		row += 2;		
 		builder.addSeparator("Data", cc.xyw(1, row, fullWidth));
 		row += 2;
 		builder.add(d_dataView.buildPanel(), cc.xyw(1, row, fullWidth));		
