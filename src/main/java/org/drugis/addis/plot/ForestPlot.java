@@ -61,11 +61,9 @@ public class ForestPlot implements Plot {
 		g2d.drawRect(1, ROWHEIGHT, FULLWIDTH, 1);
 				
 		//STUDY COLUMN & CI COLUMN:
-		int yPos = 2 * FULLROW - ROWVCENTER;
 		for (int i = 0; i < d_pm.getNumRelativeEffects(); ++i) {
 			drawVCentrString(g2d, d_pm.getStudyLabelAt(i), i + 1, 1, Align.LEFT);
 			drawVCentrString(g2d, d_pm.getCIlabelAt(i), i + 1, FULLWIDTH, Align.RIGHT);
-			yPos += FULLROW;
 		}
 		
 		g2d.translate(STUDYWIDTH, FULLROW);
@@ -80,7 +78,7 @@ public class ForestPlot implements Plot {
 		g2d.drawLine(1, FULLROW * d_bars.size(), BARWIDTH, FULLROW * d_bars.size());
 		//Vertical axis:
 		int originX = d_pm.getScale().getBin(d_pm.getScaleType() == AxisType.LOGARITHMIC ? 1D : 0D).bin;
-		g2d.drawLine(originX, 1, originX, FULLROW * d_bars.size());
+		g2d.drawLine(originX, 1 - ROWPAD, originX, FULLROW * d_bars.size());
 		
 		//Tickmarks:
 		int index = 0;
@@ -96,7 +94,7 @@ public class ForestPlot implements Plot {
 	}
 	
 	public Dimension getPlotSize() {
-		return new Dimension(FULLWIDTH, FULLROW * (d_bars.size() + 4));
+		return new Dimension(FULLWIDTH, FULLROW * (d_bars.size() + 4) + ROWPAD);
 	}
 	
 	
@@ -104,6 +102,10 @@ public class ForestPlot implements Plot {
 		//rownr for the header == 0
 		Rectangle2D textBounds = g2d.getFontMetrics().getStringBounds(text, g2d);
 		int y = (int) ((FULLROW * rownr) + ROWVCENTER + (textBounds.getHeight() / 2.0));
+		
+		/*if (rownr > 0)
+			y += ROWPAD;*/
+				
 		int x = 1;
 		
 		switch(a) {

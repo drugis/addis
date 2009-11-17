@@ -1,5 +1,6 @@
 package org.drugis.addis.presentation;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,18 +114,17 @@ public class ForestPlotPresentation {
 		double minM = Math.pow(2,lowersign);
 		double maxM = Math.pow(2, uppersign);
 		
-		double smallest = 1D;
-		
-		return new Interval<Double>(Math.min(smallest,minM), Math.max(smallest,maxM));	
+		return new Interval<Double>(Math.min(0.5, minM), Math.max(2, maxM));	
 	}
 	
 	private Interval<Double> niceIntervalLinear(double min, double max) {
 		int sign = getSignificanceLevel(min, max);
-		
+
 		double minM = Math.floor(min / Math.pow(10, sign)) * Math.pow(10, sign);
 		double maxM = Math.ceil(max / Math.pow(10, sign)) * Math.pow(10, sign);
-		
+
 		double smallest = Math.pow(10, sign);
+
 		return new Interval<Double>(Math.min(-smallest, minM), Math.max(smallest, maxM));
 	}
 
@@ -142,8 +142,8 @@ public class ForestPlotPresentation {
 
 	public String getCIlabelAt(int i) {
 		RelativeEffect<?> e = d_relEffects.get(i);
-		return round2D(e.getRelativeEffect()) + " (" + round2D(e.getConfidenceInterval().getLowerBound()) 
-									 + ", " + round2D(e.getConfidenceInterval().getUpperBound()) + ")";
+		return formatNumber2D(e.getRelativeEffect()) + " (" + formatNumber2D(e.getConfidenceInterval().getLowerBound()) 
+									 + ", " + formatNumber2D(e.getConfidenceInterval().getUpperBound()) + ")";
 	}
 	
 	public List<Integer> getTicks() {
@@ -155,16 +155,18 @@ public class ForestPlotPresentation {
 		return tickList;
 	}
 	
-	private double round2D(double x) {
-		return Math.round(x * 100.0) / 100.0;
+	private String formatNumber2D(double x) {
+		DecimalFormat df = new DecimalFormat("###0.00");
+		return df.format(x);
 	}
 
-	public List<Double> getTickVals() {
+	public List<String> getTickVals() {
 		Interval<Double> range = getRange();
-		ArrayList<Double> tickVals = new ArrayList<Double>();
-		tickVals.add(range.getLowerBound());
-		tickVals.add(d_scaleType == AxisType.LOGARITHMIC ? 1D : 0D);
-		tickVals.add(range.getUpperBound());
+		ArrayList<String> tickVals = new ArrayList<String>();
+		DecimalFormat df = new DecimalFormat("####.####");
+		tickVals.add(df.format(range.getLowerBound()));
+		tickVals.add(d_scaleType == AxisType.LOGARITHMIC ? df.format(1D) : df.format(0D));
+		tickVals.add(df.format(range.getUpperBound()));
 		return tickVals;
 	}
 	
@@ -179,6 +181,6 @@ public class ForestPlotPresentation {
 	}
 	
 	Interval<Double> testHelper() {
-		return niceIntervalLog(0.79, 1.50);
+		return niceIntervalLog(0.0624, 4.1);
 	}
 }
