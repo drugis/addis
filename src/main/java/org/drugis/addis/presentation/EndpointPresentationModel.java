@@ -11,6 +11,7 @@ import org.drugis.addis.entities.StudyCharacteristic;
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
+@SuppressWarnings("serial")
 public class EndpointPresentationModel extends PresentationModel<Endpoint> implements StudyListPresentationModel{
 
 	private ListHolder<Study> d_studies;

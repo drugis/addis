@@ -95,19 +95,19 @@ public class ForestPlotPresentation {
 		return new Interval<Double>(min, max);
 	}
 	
-	public String getBaselineDrugLabel() {
-		return d_relEffects.size() != 0 ? d_relEffects.get(0).getBaseline().getPatientGroup().getDrug().toString() : "";
+	public Drug getLowValueFavorsDrug() {
+		return d_relEffects.get(0).getBaseline().getPatientGroup().getDrug();
 	}
 	
-	public String getSubjectDrugLabel() {
-		return d_relEffects.size() != 0 ? d_relEffects.get(0).getSubject().getPatientGroup().getDrug().toString() : "";
+	public Drug getHighValueFavorsDrug() {
+		return d_relEffects.get(0).getSubject().getPatientGroup().getDrug();
 	}
 	
 	public String getStudyLabelAt(int i) {
-		return d_relEffects.size() > i ? d_relEffects.get(i).getBaseline().getPatientGroup().getStudy().toString() : "";
+		return d_relEffects.get(i).getBaseline().getPatientGroup().getStudy().toString();
 	}
 	
-	private Interval<Double> niceIntervalLog(double min, double max) {
+	Interval<Double> niceIntervalLog(double min, double max) {
 		double lowersign = Math.floor(anylog(min, 2));
 		double uppersign = Math.ceil(anylog(max, 2));
 		
@@ -178,9 +178,5 @@ public class ForestPlotPresentation {
 		double weight = getWeightAt(index);
 		BinnedScale tempbin = new BinnedScale(new IdentityScale(), 1, 10);
 		return tempbin.getBin(weight).bin * 2 + 1;
-	}
-	
-	Interval<Double> testHelper() {
-		return niceIntervalLog(0.0624, 4.1);
 	}
 }

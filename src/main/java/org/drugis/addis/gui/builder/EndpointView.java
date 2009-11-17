@@ -32,7 +32,6 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-@SuppressWarnings("serial")
 public class EndpointView implements ViewBuilder {
 	private EndpointPresentationModel d_model;
 	private Main d_frame;

@@ -113,10 +113,8 @@ public class ForestPlotPresentationTest {
 	
 	@Test
 	public void testGetDrugsLabel() {
-		String baseLabel = d_pm.getBaselineDrugLabel();
-		String subjLabel = d_pm.getSubjectDrugLabel();
-		assertEquals("DrugB", baseLabel);
-		assertEquals("DrugA", subjLabel);
+		assertEquals("DrugB", d_pm.getLowValueFavorsDrug().toString());
+		assertEquals("DrugA", d_pm.getHighValueFavorsDrug().toString());
 	}
 	
 	@Test
@@ -150,8 +148,28 @@ public class ForestPlotPresentationTest {
 	
 	@Test
 	public void testLogarithmic() {
-		Interval<Double> logint = d_pm.testHelper();
+		Interval<Double> logint = d_pm.niceIntervalLog(0.0624, 4.1);
 		assertEquals(logint.getLowerBound(), 1D/32D, 0.001);
 		assertEquals(logint.getUpperBound(), 8D, 0.001);
+	}
+	
+	@Test
+	public void testGetTickVals() {
+		// known intervals: "0.25 (-0.59, 1.09)" & "-0.25 (-1.03, 0.53)"
+		List<String> tickVals = d_pm.getTickVals();
+		assertEquals(3, tickVals.size());
+		assertEquals("-2", tickVals.get(0));
+		assertEquals("0", tickVals.get(1));
+		assertEquals("2", tickVals.get(2));
+	}
+	
+	@Test
+	public void testGetTicks() {
+		// known intervals: "0.25 (-0.59, 1.09)" & "-0.25 (-1.03, 0.53)"
+		List<Integer> ticks = d_pm.getTicks();
+		assertEquals(3, ticks.size());
+		assertEquals(1, (int)ticks.get(0));
+		assertEquals(151, (int)ticks.get(1));
+		assertEquals(301, (int)ticks.get(2));
 	}
 }

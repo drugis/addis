@@ -89,8 +89,8 @@ public class ForestPlot implements Plot {
 		}
 		
 		drawVCentrString(g2d, d_pm.getRelativeEffectAt(0).getName(), d_bars.size() + 1, originX, Align.CENTER);
-		drawVCentrString(g2d, "Favours " + d_pm.getBaselineDrugLabel(), d_bars.size() + 2, originX - HORPAD, Align.RIGHT);
-		drawVCentrString(g2d, "Favours " + d_pm.getSubjectDrugLabel(), d_bars.size() + 2, originX + HORPAD, Align.LEFT);
+		drawVCentrString(g2d, "Favours " + d_pm.getLowValueFavorsDrug().toString(), d_bars.size() + 2, originX - HORPAD, Align.RIGHT);
+		drawVCentrString(g2d, "Favours " + d_pm.getHighValueFavorsDrug().toString(), d_bars.size() + 2, originX + HORPAD, Align.LEFT);
 	}
 	
 	public Dimension getPlotSize() {
