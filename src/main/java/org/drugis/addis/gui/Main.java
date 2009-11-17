@@ -50,6 +50,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
+import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -129,6 +130,7 @@ public class Main extends JFrame {
 		setPreferredSize(new Dimension(900, 700));
 		GUIHelper.initializeLookAndFeel();
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
+		ToolTipManager.sharedInstance().setInitialDelay(0);
 		
 		initializeDomain();
 		d_pmManager = new PresentationModelFactory(d_domain.getDomain());
