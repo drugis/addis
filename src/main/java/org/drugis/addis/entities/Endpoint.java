@@ -33,17 +33,40 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 			return this.name().toLowerCase();
 		}
 	}
+	
+	public enum Direction {
+		HIGHER_IS_BETTER("Higher is better"),
+		LOWER_IS_BETTER("Lower is better");
+		
+		
+		String d_string;
+		Direction(String s) {
+			d_string = s;
+		}
+		
+		public String toString() {
+			return d_string;
+		}
+	}
+	
 	private String d_name;
 	private String d_description = "";
 	private Type d_type;
+	private Direction d_direction;
 	
 	public final static String PROPERTY_NAME = "name";
 	public final static String PROPERTY_DESCRIPTION = "description";
 	public final static String PROPERTY_TYPE = "type";
+	public final static String PROPERTY_DIRECTION = "direction";
+	
+	public Endpoint(String name, Type type, Direction direction) {
+		d_name = name;
+		d_type = type;
+		d_direction = direction;
+	}
 	
 	public Endpoint(String string, Type type) {
-		d_name = string;
-		d_type = type;
+		this(string, type, Direction.HIGHER_IS_BETTER);
 	}
 	
 	public BasicMeasurement buildMeasurement(PatientGroup pg) {
@@ -107,6 +130,16 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 
 	public Type getType() {
 		return d_type;
+	}
+	
+	public void setDirection(Direction dir) {
+		Direction oldVal = d_direction;
+		d_direction = dir;
+		firePropertyChange(PROPERTY_DIRECTION, oldVal, d_direction);
+	}
+	
+	public Direction getDirection() {
+		return d_direction;
 	}
 
 	public int compareTo(Endpoint other) {

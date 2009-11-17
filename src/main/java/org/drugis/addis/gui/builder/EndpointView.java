@@ -25,9 +25,12 @@ import javax.swing.JLabel;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.EndpointPresentationModel;
+import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.value.ConverterFactory;
+import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -45,7 +48,7 @@ public class EndpointView implements ViewBuilder {
 
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, pref:grow",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
@@ -61,7 +64,18 @@ public class EndpointView implements ViewBuilder {
 		builder.add(BasicComponentFactory.createLabel(
 				d_model.getModel(Endpoint.PROPERTY_DESCRIPTION)), cc.xy(3, 5));
 		
-		builder.addSeparator("Studies measuring this endpoint", cc.xyw(1, 7, 3));		
+		int row = 7;
+		builder.addLabel("Direction:", cc.xy(1, row));
+		ValueModel directionModel = ConverterFactory.createStringConverter(
+				d_model.getModel(Endpoint.PROPERTY_DIRECTION),
+				new OneWayObjectFormat());
+		builder.add(BasicComponentFactory.createLabel(
+				directionModel), cc.xy(3, row));
+		
+		row += 2;
+		builder.addSeparator("Studies measuring this endpoint", cc.xyw(1, row, 3));		
+		
+		row += 2;
 		JComponent studiesComp = null;
 		if(d_model.getIncludedStudies().getValue().isEmpty()) {
 			studiesComp = new JLabel("No studies found.");
@@ -69,7 +83,7 @@ public class EndpointView implements ViewBuilder {
 			StudyTablePanelView d_studyView = new StudyTablePanelView(d_model, d_frame);
 			studiesComp = d_studyView.buildPanel();
 		}
-		builder.add(studiesComp, cc.xyw(1, 9, 3));
+		builder.add(studiesComp, cc.xyw(1, row, 3));
 		
 		return builder.getPanel();
 	}	

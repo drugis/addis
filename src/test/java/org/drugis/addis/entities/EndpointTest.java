@@ -46,6 +46,12 @@ public class EndpointTest {
 	}
 	
 	@Test
+	public void testSetDirection() {
+		JUnitUtil.testSetter(new Endpoint("e", Type.RATE), Endpoint.PROPERTY_DIRECTION,
+				Endpoint.Direction.HIGHER_IS_BETTER, Endpoint.Direction.LOWER_IS_BETTER);
+	}
+	
+	@Test
 	public void testBuildMeasurement() {
 		PatientGroup pg = new BasicPatientGroup(null, null, null, 0);
 		Endpoint e = new Endpoint("e", Type.RATE);

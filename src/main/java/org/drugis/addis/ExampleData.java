@@ -36,6 +36,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.entities.Endpoint.Direction;
 import org.drugis.addis.entities.Endpoint.Type;
 
 
@@ -434,7 +435,7 @@ public class ExampleData {
 	
 	public static Endpoint buildEndpointCVdeath() {
 		if (s_endpointCVdeath == null) {
-			Endpoint e = new Endpoint("Cardiovascular Death", Type.RATE);
+			Endpoint e = new Endpoint("Cardiovascular Death", Type.RATE, Direction.LOWER_IS_BETTER);
 			s_endpointCVdeath = e;
 		}
 		return s_endpointCVdeath;

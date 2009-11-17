@@ -1,6 +1,7 @@
 package org.drugis.addis.presentation;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Endpoint.Direction;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.addis.entities.RelativeEffect.AxisType;
 import org.drugis.addis.plot.ForestPlot;
@@ -178,6 +180,13 @@ public class ForestPlotPresentationTest {
 		assertEquals(1, (int)ticks.get(0));
 		assertEquals(151, (int)ticks.get(1));
 		assertEquals(301, (int)ticks.get(2));
+	}
+	
+	@Test
+	public void testLabelsForLowerIsBetter() {
+		d_endpoint.setDirection(Direction.LOWER_IS_BETTER);
+		assertEquals("DrugB", d_pm.getLowValueFavorsDrug().toString());
+		assertEquals("DrugA", d_pm.getHighValueFavorsDrug().toString());
 	}
 	
 	private static void assertRelativeEffectEqual(RelativeEffect<?> expected,

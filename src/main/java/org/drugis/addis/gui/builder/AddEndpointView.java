@@ -43,6 +43,7 @@ public class AddEndpointView implements ViewBuilder {
 	private JTextField d_description;
 	private PresentationModel<Endpoint> d_model;
 	private JComboBox d_type;
+	private JComboBox d_direction;
 	private NotEmptyValidator d_validator;
 	
 	public AddEndpointView(PresentationModel<Endpoint> model, JButton okButton) {
@@ -62,6 +63,8 @@ public class AddEndpointView implements ViewBuilder {
 		d_validator.add(d_description);
 		d_type = AuxComponentFactory.createBoundComboBox(
 				Endpoint.Type.values(), d_model.getModel(Endpoint.PROPERTY_TYPE));
+		d_direction = AuxComponentFactory.createBoundComboBox(
+				Endpoint.Direction.values(), d_model.getModel(Endpoint.PROPERTY_DIRECTION));
 		ComboBoxPopupOnFocusListener.add(d_type);
 		d_validator.add(d_type);
 	}
@@ -74,7 +77,7 @@ public class AddEndpointView implements ViewBuilder {
 
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, pref",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -89,6 +92,8 @@ public class AddEndpointView implements ViewBuilder {
 		builder.add(d_description, cc.xy(3, 5));
 		builder.addLabel("Type:", cc.xy(1, 7));
 		builder.add(d_type, cc.xy(3, 7));
+		builder.addLabel("Direction:", cc.xy(1, 9));
+		builder.add(d_direction, cc.xy(3, 9));
 		
 		return builder.getPanel();
 	}

@@ -12,6 +12,7 @@ import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.RelativeEffectFactory;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Endpoint.Direction;
 import org.drugis.addis.entities.RelativeEffect.AxisType;
 import org.drugis.addis.plot.BinnedScale;
 import org.drugis.addis.plot.ForestPlot;
@@ -121,11 +122,11 @@ public class ForestPlotPresentation {
 	}
 	
 	public Drug getLowValueFavorsDrug() {
-		return d_baseline;
+		return d_endpoint.getDirection().equals(Direction.HIGHER_IS_BETTER) ? d_baseline : d_subject;
 	}
 	
 	public Drug getHighValueFavorsDrug() {
-		return d_subject;
+		return d_endpoint.getDirection().equals(Direction.HIGHER_IS_BETTER) ? d_subject : d_baseline;
 	}
 	
 	public String getStudyLabelAt(int i) {
