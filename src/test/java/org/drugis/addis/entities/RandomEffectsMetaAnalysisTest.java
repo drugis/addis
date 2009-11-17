@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class RandomEffectsMetaAnalysisTest {
@@ -42,6 +43,7 @@ public class RandomEffectsMetaAnalysisTest {
 		d_ma = new RandomEffectsMetaAnalysis(d_ep, studyList, d_fluox, d_parox);
 	}
 		
+	@Ignore
 	@Test
 	public void testGetRiskRatio() {
 		RelativeEffectRate riskRatio = d_ma.getRiskRatio();
