@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.RelativeEffectFactory;
 import org.drugis.addis.entities.Study;
@@ -45,9 +47,20 @@ public class ForestPlotPresentation {
 		initScales();
 	}
 	
-	public ForestPlotPresentation(Study s, Endpoint e, Drug baseline, Drug subject,
+	public ForestPlotPresentation(MetaStudy s, Endpoint e, Drug baseline, Drug subject,
 			Class<? extends RelativeEffect<?>> type) {
-		this(Collections.singletonList(s), e, baseline, subject, type);
+		this(createStudies(s), e, baseline, subject, type);
+	}
+	
+	private static List<Study> createStudies(MetaStudy s) {
+		ArrayList<Study> list = new ArrayList<Study>(s.getAnalysis().getStudies());
+		list.add(s);
+		return list;
+	}
+
+	public ForestPlotPresentation(BasicStudy s, Endpoint e, Drug baseline, Drug subject,
+			Class<? extends RelativeEffect<?>> type) {
+		this(Collections.singletonList((Study)s), e, baseline, subject, type);
 	}
 
 	private void addRelativeEffect(Study s, Drug subject) {
@@ -56,8 +69,10 @@ public class ForestPlotPresentation {
 	}
 
 	private void initScales() {
-		for (RelativeEffect<?> i : d_relEffects) {
-			d_max = Math.max(i.getSampleSize(), d_max);
+		for (int i = 0; i < getNumRelativeEffects(); ++i) {
+			if (!isCombined(i)) {
+				d_max = Math.max(d_relEffects.get(i).getSampleSize(), d_max);
+			}
 		}
 		
 		if (d_relEffects.get(0).getAxisType() == AxisType.LINEAR) {
@@ -114,7 +129,7 @@ public class ForestPlotPresentation {
 	}
 	
 	public String getStudyLabelAt(int i) {
-		return d_studies.get(i).toString();
+		return isCombined(i) ? "Combined" : d_studies.get(i).toString();
 	}
 	
 	Interval<Double> niceIntervalLog(double min, double max) {
@@ -187,10 +202,14 @@ public class ForestPlotPresentation {
 	public int getDiamondSize(int index) {
 		double weight = getWeightAt(index);
 		BinnedScale tempbin = new BinnedScale(new IdentityScale(), 1, 10);
-		return tempbin.getBin(weight).bin * 2 + 1;
+		return isCombined(index) ? 0 : tempbin.getBin(weight).bin * 2 + 1;
 	}
 
 	public Endpoint getEndpoint() {
 		return d_endpoint;
+	}
+	
+	public boolean isCombined(int i) {
+		return d_studies.get(i) instanceof MetaStudy;
 	}
 }

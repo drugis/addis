@@ -2,8 +2,10 @@ package org.drugis.addis.presentation;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 
@@ -66,7 +68,11 @@ implements RelativeEffectTableModel {
 	}
 
 	public ForestPlotPresentation getPlotPresentation(int row, int column) {
-		return new ForestPlotPresentation(d_study, d_endpoint, d_study.getPatientGroups().get(row).getDrug(),
+		if (d_study instanceof MetaStudy) {
+			return new ForestPlotPresentation((MetaStudy)d_study, d_endpoint, d_study.getPatientGroups().get(row).getDrug(),
+					d_study.getPatientGroups().get(column).getDrug(), getRelativeEffectType());
+		}
+		return new ForestPlotPresentation((BasicStudy)d_study, d_endpoint, d_study.getPatientGroups().get(row).getDrug(),
 				d_study.getPatientGroups().get(column).getDrug(), getRelativeEffectType());
 	}
 }
