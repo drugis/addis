@@ -91,7 +91,7 @@ public class RiskRatioTest {
 		assertEquals(lower, ci.getLowerBound(), 0.0001);
 		assertEquals(upper, ci.getUpperBound(), 0.0001);
 	}
-	
+		
 	private double square(double d) {
 		return d * d;
 	}

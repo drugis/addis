@@ -6,7 +6,7 @@ import org.drugis.addis.entities.RiskDifference;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RiskDifferenceTableModelTest extends RelativeEffectTableModelBase {
+public class RiskDifferenceTableModelTest extends RelativeEffectTableModelBaseTest {
 	@Before
 	public void setUp() {
 		baseSetUpRate();	

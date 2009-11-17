@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import com.jgoodies.binding.PresentationModel;
 
-public abstract class RelativeEffectTableModelBase {
+public abstract class RelativeEffectTableModelBaseTest {
 	protected Study d_standardStudy;
 	protected Study d_threeArmStudy;
 	protected AbstractRelativeEffectTableModel d_stdModel;
