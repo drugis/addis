@@ -26,4 +26,9 @@ public class MeanDifferenceTableModel extends AbstractRelativeEffectTableModel{
 		return "Mean-Difference Table";
 	}
 
+	@Override
+	protected Class<? extends RelativeEffect<?>> getRelativeEffectType() {
+		return MeanDifference.class;
+	}
+
 }

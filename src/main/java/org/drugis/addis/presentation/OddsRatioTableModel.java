@@ -5,6 +5,7 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.AbstractRatio;
+import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 
 @SuppressWarnings("serial")
@@ -22,5 +23,10 @@ public class OddsRatioTableModel extends AbstractRelativeEffectTableModel {
 	@Override
 	public String getTitle() {
 		return "Odds-Ratio Table";
+	}
+
+	@Override
+	protected Class<? extends RelativeEffect<?>> getRelativeEffectType() {
+		return OddsRatio.class;
 	}
 }

@@ -25,4 +25,9 @@ public class StandardisedMeanDifferenceTableModel extends AbstractRelativeEffect
 		return "Standardised Mean Difference Table";
 	}
 
+	@Override
+	protected Class<? extends RelativeEffect<?>> getRelativeEffectType() {
+		return StandardisedMeanDifference.class;
+	}
+
 }

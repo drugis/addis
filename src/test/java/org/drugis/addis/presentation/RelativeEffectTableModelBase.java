@@ -108,6 +108,19 @@ public abstract class RelativeEffectTableModelBase {
 				+ "\" on Endpoint \"" + d_endpoint.getName() + "\"";
 		assertEquals(description, d_threeArmModel.getDescription());
 	}
+	
+	@Test
+	public void testGetPlotPresentation() {
+		ForestPlotPresentation pm = d_stdModel.getPlotPresentation(1, 0);
+		assertEquals(d_relativeEffectClass, pm.getRelativeEffectAt(0).getClass());
+		assertEquals(d_standardStudy.toString(), pm.getStudyLabelAt(0));
+		assertEquals(1, pm.getNumRelativeEffects());
+		assertEquals(d_standardStudy.getPatientGroups().get(1),
+				pm.getRelativeEffectAt(0).getBaseline().getPatientGroup());
+		assertEquals(d_standardStudy.getPatientGroups().get(0),
+				pm.getRelativeEffectAt(0).getSubject().getPatientGroup());
+		assertEquals(d_endpoint, pm.getEndpoint());
+	}
 
 	protected void baseSetUpRate() {
 		d_standardStudy = ExampleData.buildDefaultStudy2();
@@ -124,5 +137,4 @@ public abstract class RelativeEffectTableModelBase {
 		DomainImpl domain = new DomainImpl();
 		d_pmf = new PresentationModelFactory(domain);
 	}
-
 }

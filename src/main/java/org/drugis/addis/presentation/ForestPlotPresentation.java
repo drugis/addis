@@ -2,11 +2,14 @@ package org.drugis.addis.presentation;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.RelativeEffect;
+import org.drugis.addis.entities.RelativeEffectFactory;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.RelativeEffect.AxisType;
 import org.drugis.addis.plot.BinnedScale;
 import org.drugis.addis.plot.ForestPlot;
@@ -17,44 +20,51 @@ import org.drugis.common.Interval;
 
 
 public class ForestPlotPresentation {
-
+	private List<Study> d_studies;
 	private List<RelativeEffect<?>> d_relEffects;
+	private Endpoint d_endpoint;
+	private Drug d_baseline;
+	private Drug d_subject;
+	private Class<? extends RelativeEffect<?>> d_type;
 	private BinnedScale d_scale;
 	private double d_max = 0.0;
 	private AxisType d_scaleType;
 	
-
-	@SuppressWarnings("unchecked")
-	public ForestPlotPresentation(List<RelativeEffect<?>> relEffects) throws IllegalArgumentException {
-		//Checks for consistent list of Relative Effects
-		if (relEffects.isEmpty())
-			throw new IllegalArgumentException("List of Relative Effects is Empty upon Constructing a ForestPlotPresentation.");
-		
-		Endpoint uniqueE = relEffects.get(0).getEndpoint(); 
-		Drug base = relEffects.get(0).getBaseline().getPatientGroup().getDrug();
-		Drug subject = relEffects.get(0).getSubject().getPatientGroup().getDrug();
-		Class<RelativeEffect<?>> a = (Class<RelativeEffect<?>>) relEffects.get(0).getClass();
-		for(RelativeEffect<?> r : relEffects) {
-			if (!uniqueE.equals(r.getEndpoint()))
-				throw new IllegalArgumentException("Relative Effects do not have same Endpoints.");
-			if (!base.equals(r.getBaseline().getPatientGroup().getDrug()))
-				throw new IllegalArgumentException("Relative Effects do not have same Drugs.");
-			if (!subject.equals(r.getSubject().getPatientGroup().getDrug()))
-				throw new IllegalArgumentException("Relative Effects do not have same Drugs.");
-			if (!r.getClass().equals(a))
-				throw new IllegalArgumentException("Relative Effects of different Type.");
+	
+	public ForestPlotPresentation(List<Study> studies, Endpoint e, Drug baseline, Drug subject,
+			Class<? extends RelativeEffect<?>> type) {
+		d_studies = new ArrayList<Study>();
+		d_endpoint = e;
+		d_baseline = baseline;
+		d_subject = subject;
+		d_type = type;
+		d_relEffects = new ArrayList<RelativeEffect<?>>();
+		for (Study s : studies) {
+			addRelativeEffect(s, subject);
 		}
-		
-		for (RelativeEffect<?> i : relEffects) {
+		initScales();
+	}
+	
+	public ForestPlotPresentation(Study s, Endpoint e, Drug baseline, Drug subject,
+			Class<? extends RelativeEffect<?>> type) {
+		this(Collections.singletonList(s), e, baseline, subject, type);
+	}
+
+	private void addRelativeEffect(Study s, Drug subject) {
+		d_studies.add(s);
+		d_relEffects.add(RelativeEffectFactory.buildRelativeEffect(s, d_endpoint, d_baseline, subject, d_type));
+	}
+
+	private void initScales() {
+		for (RelativeEffect<?> i : d_relEffects) {
 			d_max = Math.max(i.getSampleSize(), d_max);
 		}
 		
-		d_relEffects = relEffects;
-		if (relEffects.get(0).getAxisType() == AxisType.LINEAR) {
+		if (d_relEffects.get(0).getAxisType() == AxisType.LINEAR) {
 			d_scaleType = AxisType.LINEAR;
 			d_scale = new BinnedScale(new LinearScale(getRange()), 1, ForestPlot.BARWIDTH);
 		}
-		if (relEffects.get(0).getAxisType() == AxisType.LOGARITHMIC) {
+		if (d_relEffects.get(0).getAxisType() == AxisType.LOGARITHMIC) {
 			d_scaleType = AxisType.LOGARITHMIC;
 			d_scale = new BinnedScale(new LogScale(getRange()), 1, ForestPlot.BARWIDTH);
 		}
@@ -96,15 +106,15 @@ public class ForestPlotPresentation {
 	}
 	
 	public Drug getLowValueFavorsDrug() {
-		return d_relEffects.get(0).getBaseline().getPatientGroup().getDrug();
+		return d_baseline;
 	}
 	
 	public Drug getHighValueFavorsDrug() {
-		return d_relEffects.get(0).getSubject().getPatientGroup().getDrug();
+		return d_subject;
 	}
 	
 	public String getStudyLabelAt(int i) {
-		return d_relEffects.get(i).getBaseline().getPatientGroup().getStudy().toString();
+		return d_studies.get(i).toString();
 	}
 	
 	Interval<Double> niceIntervalLog(double min, double max) {
@@ -178,5 +188,9 @@ public class ForestPlotPresentation {
 		double weight = getWeightAt(index);
 		BinnedScale tempbin = new BinnedScale(new IdentityScale(), 1, 10);
 		return tempbin.getBin(weight).bin * 2 + 1;
+	}
+
+	public Endpoint getEndpoint() {
+		return d_endpoint;
 	}
 }

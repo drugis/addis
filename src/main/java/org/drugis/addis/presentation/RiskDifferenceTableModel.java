@@ -24,4 +24,10 @@ public class RiskDifferenceTableModel extends AbstractRelativeEffectTableModel {
 	public String getTitle() {
 		return "Risk-Difference Table";
 	}
+
+
+	@Override
+	protected Class<? extends RelativeEffect<?>> getRelativeEffectType() {
+		return RiskDifference.class;
+	}
 }

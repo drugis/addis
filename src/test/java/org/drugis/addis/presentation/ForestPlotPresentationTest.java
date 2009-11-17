@@ -1,23 +1,23 @@
 package org.drugis.addis.presentation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.RelativeEffect;
-import org.drugis.addis.entities.StandardisedMeanDifference;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Endpoint.Type;
+import org.drugis.addis.entities.RelativeEffect.AxisType;
 import org.drugis.addis.plot.ForestPlot;
 import org.drugis.common.Interval;
 import org.junit.Before;
@@ -30,66 +30,61 @@ public class ForestPlotPresentationTest {
 	private static final double s_stdDev1 = 0.2;
 	private static final double s_stdDev2 = 2.5;
 	private static final int s_subjSize = 35;
-	private static final int s_baslSize = 41;
+	private static final int s_baseSize = 41;
 	
-	BasicContinuousMeasurement d_subj1;
-	BasicContinuousMeasurement d_basel1;
-	BasicContinuousMeasurement d_subj2;
-	BasicContinuousMeasurement d_basel2;
-	MeanDifference d_relEffect;
-	MeanDifference d_relEffectInv;
-	ForestPlotPresentation d_pm;
-	private PatientGroup d_pnum;
-	private PatientGroup d_pden;
-	private Endpoint d_e;
+	private ForestPlotPresentation d_pm;
+	private ContinuousMeasurement d_mBase1;
+	private ContinuousMeasurement d_mSubj1;
+	private BasicContinuousMeasurement d_mBase2;
+	private BasicContinuousMeasurement d_mSubj2;
+	private BasicStudy d_s2;
+	private BasicStudy d_s1;
+	private Endpoint d_endpoint;
+	private Drug d_subject;
+	private Drug d_baseline;
 	
 	@Before
 	public void setUp() {
-		d_e = new Endpoint("E", Type.CONTINUOUS);
-		d_pnum = new BasicPatientGroup(ExampleData.buildDefaultStudy1(),new Drug("DrugA", "01"),null,s_baslSize);
-		d_pden = new BasicPatientGroup(ExampleData.buildDefaultStudy1(),new Drug("DrugB", "02"),null,s_subjSize);
-		d_subj1 = new BasicContinuousMeasurement(d_e, s_mean1, s_stdDev1, d_pnum);		
-		d_basel1 = new BasicContinuousMeasurement(d_e, s_mean2, s_stdDev2, d_pden);
-		d_subj2 = new BasicContinuousMeasurement(d_e, s_mean2, s_stdDev2, d_pnum);		
-		d_basel2 = new BasicContinuousMeasurement(d_e, s_mean1, s_stdDev1, d_pden);
-		d_relEffect = new MeanDifference(d_basel1, d_subj1);
-		d_relEffectInv = new MeanDifference(d_basel2, d_subj2);
-		List<RelativeEffect<?>> list = new ArrayList<RelativeEffect<?>>(Collections.singleton(d_relEffect));
-		list.add(d_relEffectInv);
-		d_pm = new ForestPlotPresentation(list);
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void testDifferentMeasurementsException() {
-		StandardisedMeanDifference smd = new StandardisedMeanDifference(d_basel2, d_subj2);
-		List<RelativeEffect<?>> list = new ArrayList<RelativeEffect<?>>(Collections.singleton(d_relEffect));
-		list.add(smd);
-		new ForestPlotPresentation(list);
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void testDifferentEndpointsException() {
-		Endpoint e2 = new Endpoint("Eprime", Type.CONTINUOUS);
-		MeanDifference smd = new MeanDifference(new BasicContinuousMeasurement(e2, d_pden), new BasicContinuousMeasurement(e2, d_pnum));
-		List<RelativeEffect<?>> list = new ArrayList<RelativeEffect<?>>(Collections.singleton(d_relEffect));
-		list.add(smd);
-		new ForestPlotPresentation(list);
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void testDifferentDrugsException() {
-		PatientGroup alt = new BasicPatientGroup(ExampleData.buildDefaultStudy1(), new Drug("DrugC", "03"),null, s_baslSize);
-		MeanDifference smd = new MeanDifference(new BasicContinuousMeasurement(new Endpoint("E", Type.CONTINUOUS), alt), d_subj2);
-		List<RelativeEffect<?>> list = new ArrayList<RelativeEffect<?>>(Collections.singleton(d_relEffect));
-		list.add(smd);
-		new ForestPlotPresentation(list);
+		d_s1 = new BasicStudy("X", new Indication(0L, ""));
+		d_endpoint = new Endpoint("E", Type.CONTINUOUS);
+		d_s1.addEndpoint(d_endpoint);
+		d_baseline = new Drug("DrugA", null);
+		d_subject = new Drug("DrugB", null);
+		BasicPatientGroup pBase = new BasicPatientGroup(d_s1, d_baseline, null, s_baseSize);
+		BasicPatientGroup pSubj = new BasicPatientGroup(d_s1, d_subject, null, s_subjSize);
+		d_s1.addPatientGroup(pBase);
+		d_s1.addPatientGroup(pSubj);
+		d_mBase1 = new BasicContinuousMeasurement(d_endpoint, s_mean1, s_stdDev1, pBase);
+		d_mSubj1 = new BasicContinuousMeasurement(d_endpoint, s_mean2, s_stdDev2, pSubj);
+		d_s1.setMeasurement(d_endpoint, pBase, d_mBase1);
+		d_s1.setMeasurement(d_endpoint, pSubj, d_mSubj1);
+		
+		d_s2 = new BasicStudy("Y", new Indication(0L, ""));
+		d_s2.addEndpoint(d_endpoint);
+		BasicPatientGroup pBase2 = new BasicPatientGroup(d_s2, d_baseline, null, s_baseSize);
+		BasicPatientGroup pSubj2 = new BasicPatientGroup(d_s2, d_subject, null, s_subjSize);
+		d_s2.addPatientGroup(pBase2);
+		d_s2.addPatientGroup(pSubj2);
+		d_mBase2 = new BasicContinuousMeasurement(d_endpoint, s_mean2, s_stdDev2, pBase2);
+		d_mSubj2 = new BasicContinuousMeasurement(d_endpoint, s_mean1, s_stdDev1, pSubj2);
+		d_s2.setMeasurement(d_endpoint, pBase2, d_mBase2);
+		d_s2.setMeasurement(d_endpoint, pSubj2, d_mSubj2);
+		
+		List<Study> studies = new ArrayList<Study>();
+		studies.add(d_s1);
+		studies.add(d_s2);
+		d_pm = new ForestPlotPresentation(studies, d_endpoint, d_baseline, d_subject, MeanDifference.class);
 	}
 	
 	@Test
 	public void testGetListedRelativeEffects() {
 		assertEquals(2, d_pm.getNumRelativeEffects());
-		assertEquals(d_relEffect, d_pm.getRelativeEffectAt(0));
-		assertEquals(d_relEffectInv, d_pm.getRelativeEffectAt(1));
+		assertRelativeEffectEqual(
+				new MeanDifference(d_mBase1, d_mSubj1),
+				d_pm.getRelativeEffectAt(0));
+		assertRelativeEffectEqual(
+				new MeanDifference(d_mBase2, d_mSubj2),
+				d_pm.getRelativeEffectAt(1));
 	}
 	
 	
@@ -105,7 +100,7 @@ public class ForestPlotPresentationTest {
 	
 	@Test
 	public void testGetRange() {
-		// known intervals: "0.25 (-0.59, 1.09)" & "-0.25 (-1.03, 0.53)"
+		// known intervals: "0.25 (-0.53, 1.03)" & "-0.25 (-1.09, 0.59)"
 		Interval<Double> interval = d_pm.getRange();
 		assertEquals(-2.0, interval.getLowerBound(), 0.01);
 		assertEquals(2.0, interval.getUpperBound(), 0.01);	
@@ -113,37 +108,49 @@ public class ForestPlotPresentationTest {
 	
 	@Test
 	public void testGetDrugsLabel() {
-		assertEquals("DrugB", d_pm.getLowValueFavorsDrug().toString());
-		assertEquals("DrugA", d_pm.getHighValueFavorsDrug().toString());
+		assertEquals("DrugA", d_pm.getLowValueFavorsDrug().toString());
+		assertEquals("DrugB", d_pm.getHighValueFavorsDrug().toString());
 	}
 	
 	@Test
 	public void testGetStudiesLabel() {
-		String studyA = d_pm.getStudyLabelAt(0);
-		String studyB = d_pm.getStudyLabelAt(1);
-		assertEquals("Chouinard et al, 1999", studyA);
-		assertEquals("Chouinard et al, 1999", studyB);
+		assertEquals("X", d_pm.getStudyLabelAt(0));
+		assertEquals("Y", d_pm.getStudyLabelAt(1));
 	}
 	
 	@Test
 	public void testGetCIlabel() {
-		String interval1 = "0.25 (-0.59, 1.09)";
-		String interval2 = "-0.25 (-1.03, 0.53)";
-		assertEquals(interval1, d_pm.getCIlabelAt(0));
-		assertEquals(interval2, d_pm.getCIlabelAt(1));
+		// known intervals: "0.25 (-0.53, 1.03)" & "-0.25 (-1.09, 0.59)"
+		String interval1 = "0.25 (-0.53, 1.03)";
+		String interval2 = "-0.25 (-1.09, 0.59)";
+		assertEquals(interval1, d_pm.getCIlabelAt(1));
+		assertEquals(interval2, d_pm.getCIlabelAt(0));
 	}
 	
 	@Test
-	public void testGetWeightAt() {
-		List<RelativeEffect<?>> list = new ArrayList<RelativeEffect<?>>(Collections.singleton(d_relEffect));
-		ContinuousMeasurement baseline = new BasicContinuousMeasurement(d_e, new BasicPatientGroup(ExampleData.buildDefaultStudy1(),new Drug("DrugB", "02"),null,s_baslSize * 10));
-		ContinuousMeasurement subject = new BasicContinuousMeasurement(d_e, new BasicPatientGroup(ExampleData.buildDefaultStudy1(),new Drug("DrugA", "01"),null,s_subjSize * 10));
-		MeanDifference md = new MeanDifference(baseline, subject);
-		list.add(md);
-		ForestPlotPresentation fpp = new ForestPlotPresentation(list);
+	public void testGetScaleType() {
+		assertEquals(AxisType.LINEAR, d_pm.getScaleType());
+	}
+	
+	@Test
+	public void testGetScaleZero() {
+		assertEquals(151, (int)d_pm.getScale().getBin(0.0).bin);
+	}
+	
+	@Test
+	public void testGetDiamondSize() {
+		for (PatientGroup pg : d_s2.getPatientGroups()) {
+			((BasicPatientGroup)pg).setSize(((BasicPatientGroup)pg).getSize() * 10);
+		}
+		List<Study> studies = new ArrayList<Study>();
+		studies.add(d_s1);
+		studies.add(d_s2);
 		
-		assertEquals(5, fpp.getDiamondSize(0));
-		assertEquals(21, fpp.getDiamondSize(1));
+		ForestPlotPresentation pm = new ForestPlotPresentation(studies, d_endpoint,
+				d_baseline, d_subject,
+				MeanDifference.class);
+		assertEquals(5, pm.getDiamondSize(0));
+		assertEquals(21, pm.getDiamondSize(1));
 	}
 	
 	@Test
@@ -155,7 +162,7 @@ public class ForestPlotPresentationTest {
 	
 	@Test
 	public void testGetTickVals() {
-		// known intervals: "0.25 (-0.59, 1.09)" & "-0.25 (-1.03, 0.53)"
+		// known intervals: "0.25 (-0.53, 1.03)" & "-0.25 (-1.09, 0.59)"		
 		List<String> tickVals = d_pm.getTickVals();
 		assertEquals(3, tickVals.size());
 		assertEquals("-2", tickVals.get(0));
@@ -165,11 +172,18 @@ public class ForestPlotPresentationTest {
 	
 	@Test
 	public void testGetTicks() {
-		// known intervals: "0.25 (-0.59, 1.09)" & "-0.25 (-1.03, 0.53)"
+		// known intervals: "0.25 (-0.53, 1.03)" & "-0.25 (-1.09, 0.59)"
 		List<Integer> ticks = d_pm.getTicks();
 		assertEquals(3, ticks.size());
 		assertEquals(1, (int)ticks.get(0));
 		assertEquals(151, (int)ticks.get(1));
 		assertEquals(301, (int)ticks.get(2));
+	}
+	
+	private static void assertRelativeEffectEqual(RelativeEffect<?> expected,
+			RelativeEffect<?> actual) {
+		assertEquals(expected.getBaseline(), actual.getBaseline());
+		assertEquals(expected.getSubject(), actual.getSubject());
+		assertEquals(expected.getClass(), actual.getClass());
 	}
 }

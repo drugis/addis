@@ -25,4 +25,9 @@ public class RiskRatioTableModel extends AbstractRelativeEffectTableModel {
 		return "Risk-Ratio Table";
 	}
 
+	@Override
+	protected Class<? extends RelativeEffect<?>> getRelativeEffectType() {
+		return RiskRatio.class;
+	}
+
 }

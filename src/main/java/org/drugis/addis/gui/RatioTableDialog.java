@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
@@ -23,7 +21,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.PatientGroup;
-import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.gui.components.EnhancedTableHeader;
 import org.drugis.addis.presentation.LabeledPresentationModel;
 import org.drugis.addis.presentation.RelativeEffectTableModel;
@@ -80,14 +77,9 @@ public class RatioTableDialog extends JDialog {
 		
 			JButton button = new JButton();
 			button.addActionListener(new ActionListener(){
-
-				@SuppressWarnings("unchecked")
 				public void actionPerformed(ActionEvent e) {
-					List<RelativeEffect<?>> effectList = new ArrayList<RelativeEffect<?>>();
-					effectList.add(((PresentationModel<RelativeEffect<?>>) d_tableModel.getValueAt(row, column)).getBean());
-					
 					d_dialog = new RelativeEffectPlotDialog(d_parent,
-															effectList,
+															d_tableModel.getPlotPresentation(row, column),
 															"Relative Effect plot");
 					GUIHelper.centerWindow(d_dialog, d_parent);					
 					d_dialog.setVisible(true);

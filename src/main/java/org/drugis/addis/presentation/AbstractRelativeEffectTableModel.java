@@ -8,7 +8,8 @@ import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 
 @SuppressWarnings("serial")
-public abstract class AbstractRelativeEffectTableModel extends AbstractTableModel implements RelativeEffectTableModel {
+public abstract class AbstractRelativeEffectTableModel extends AbstractTableModel
+implements RelativeEffectTableModel {
 	protected Study d_study;
 	protected Endpoint d_endpoint;
 	protected PresentationModelFactory d_pmf;
@@ -22,6 +23,8 @@ public abstract class AbstractRelativeEffectTableModel extends AbstractTableMode
 	public abstract String getTitle();
 
 	protected abstract RelativeEffect<?> getRelativeEffect(Measurement denominator, Measurement numerator);
+	
+	protected abstract Class<? extends RelativeEffect<?>> getRelativeEffectType();
 
 
 	public int getColumnCount() {
@@ -60,5 +63,10 @@ public abstract class AbstractRelativeEffectTableModel extends AbstractTableMode
 	public String getDescription() {
 		return getTitle() + " for \"" + d_study.getId() 
 				+ "\" on Endpoint \"" + d_endpoint.getName() + "\"";
+	}
+
+	public ForestPlotPresentation getPlotPresentation(int row, int column) {
+		return new ForestPlotPresentation(d_study, d_endpoint, d_study.getPatientGroups().get(row).getDrug(),
+				d_study.getPatientGroups().get(column).getDrug(), getRelativeEffectType());
 	}
 }

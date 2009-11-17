@@ -16,10 +16,9 @@ public class RelativeEffectPlotDialog extends JDialog {
 	List<RelativeEffect<?>> d_effects;
 	private ForestPlot d_plot;
 	
-	public RelativeEffectPlotDialog(JDialog parent, List<RelativeEffect<?>> cellModels, String title) { 
+	public RelativeEffectPlotDialog(JDialog parent, ForestPlotPresentation pres, String title) { 
 		super(parent, title);
-		d_effects = cellModels;
-		d_plot = new ForestPlot(new ForestPlotPresentation(d_effects));
+		d_plot = new ForestPlot(pres);
 		initComps();
 		setResizable(false);		
 		pack();

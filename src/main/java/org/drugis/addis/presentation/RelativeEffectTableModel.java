@@ -16,4 +16,6 @@ public interface RelativeEffectTableModel extends TableModel {
 
 	public String getDescription();
 
+	public abstract ForestPlotPresentation getPlotPresentation(int row, int column);
+
 }
