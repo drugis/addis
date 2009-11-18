@@ -28,51 +28,100 @@ import org.junit.Test;
 
 public class LogRiskRatioTest {
 
-	Drug d_fluox;
-	Drug d_parox;
+	/* 
+	 * Test data from Figure 2 in "Efficacy and Safety of Second-Generation 
+	 * Antidepressants in the Treatment of Major Depressive Disorder" 
+	 * by Hansen et al. 2005
+	 * 
+	 */
 	
-	Indication d_ind;
-	Endpoint d_ep;
+	private Drug d_fluox;
+	private Drug d_sertra;
 	
-	Study d_choulinard;
+	private Indication d_ind;
+	private Endpoint d_ep;
 	
-	private LogRiskRatio d_ratio;
+	private Study d_bennie, d_boyer, d_fava, d_newhouse, d_sechter;
+	
+	private LogRiskRatio d_ratioBennie, d_ratioBoyer, d_ratioFava, d_ratioNewhouse, d_ratioSechter;
 
 	@Before
 	public void setUp() {
 		d_ind = new Indication(001L, "Impression");
 		d_fluox = new Drug("Fluoxetine","01");
-		d_parox = new Drug("Paroxetine","02");
+		d_sertra = new Drug("Sertraline","02");
 		d_ep = new Endpoint("ep", Endpoint.Type.RATE);
 		
-		d_choulinard = createStudy("Choulinard et al (1999)",67,101,67,102);
-		d_ratio = (LogRiskRatio) RelativeEffectFactory.buildRelativeEffect(d_choulinard, d_ep, d_fluox, d_parox, LogRiskRatio.class);
+		d_bennie = createStudy("Bennie 1995",63,144,73,142);
+		d_boyer = createStudy("Boyer 1998", 61,120, 63,122);
+		d_fava = createStudy("Fava 2002", 57, 92, 70, 96);
+		d_newhouse = createStudy("Newhouse 2000", 84,119, 85,117);
+		d_sechter = createStudy("Sechter 1999", 76,120, 86,118);
+				
+		
+		d_ratioBennie = (LogRiskRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, d_fluox, d_sertra, LogRiskRatio.class);
+		d_ratioBoyer = (LogRiskRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, d_fluox, d_sertra, LogRiskRatio.class);
+		d_ratioFava = (LogRiskRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, d_fluox, d_sertra, LogRiskRatio.class);
+		d_ratioNewhouse = (LogRiskRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, d_fluox, d_sertra, LogRiskRatio.class);
+		d_ratioSechter = (LogRiskRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, d_fluox, d_sertra, LogRiskRatio.class);
 	}
 	
 	@Test
 	public void testGetMean() {
-		assertEquals(Math.log(0.99), d_ratio.getRelativeEffect(), 0.01);
+		assertEquals(1.18, Math.exp(d_ratioBennie.getRelativeEffect()), 0.01);
+		assertEquals(1.02, Math.exp(d_ratioBoyer.getRelativeEffect()), 0.01); 
+		assertEquals(1.18, Math.exp(d_ratioFava.getRelativeEffect()), 0.01);
+		assertEquals(1.03, Math.exp(d_ratioNewhouse.getRelativeEffect()), 0.01);
+		assertEquals(1.15, Math.exp(d_ratioSechter.getRelativeEffect()), 0.01); 
 	}
 	
 	@Test
 	public void testGetError() {
-		double expected = Math.sqrt(1/67D + 1/67D - 1/101D - 1/102D);
-		assertEquals(expected, d_ratio.getError(), 0.001);
+		double expected = Math.sqrt(1/63D + 1/73D - 1/144D - 1/142D);
+		assertEquals(expected, d_ratioBennie.getError(), 0.001);
 	}
 	
 	@Test
-	public void testGetConfidenceInterval() {
-		Interval<Double> ival = d_ratio.getConfidenceInterval();
-		assertEquals(Math.log(0.81), ival.getLowerBound(), 0.01);
-		assertEquals(Math.log(1.21), ival.getUpperBound(), 0.01);
+	public void testGetConfidenceIntervalBennie() {
+		Interval<Double> ival = d_ratioBennie.getConfidenceInterval();
+		assertEquals(0.92, Math.exp(ival.getLowerBound()), 0.01);
+		assertEquals(1.50, Math.exp(ival.getUpperBound()), 0.01);
 	}
 	
-	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int paroxResp, int paroxSize)
+	@Test
+	public void testGetConfidenceIntervalBoyer() {
+		Interval<Double> ival = d_ratioBoyer.getConfidenceInterval();
+		assertEquals(0.79, Math.exp(ival.getLowerBound()), 0.01); 
+		assertEquals(1.30, Math.exp(ival.getUpperBound()), 0.01); 
+	}
+	
+	@Test
+	public void testGetConfidenceIntervalFava() {
+		Interval<Double> ival = d_ratioFava.getConfidenceInterval();
+		assertEquals(0.96, Math.exp(ival.getLowerBound()), 0.01); 
+		assertEquals(1.45, Math.exp(ival.getUpperBound()), 0.01); 
+	}
+	
+	@Test
+	public void testGetConfidenceIntervalNewhouse() {
+		Interval<Double> ival = d_ratioNewhouse.getConfidenceInterval();
+		assertEquals(0.87, Math.exp(ival.getLowerBound()), 0.01); 
+		assertEquals(1.21, Math.exp(ival.getUpperBound()), 0.01); 
+	}
+	
+	@Test
+	public void testGetConfidenceIntervalSechter() {
+		Interval<Double> ival = d_ratioSechter.getConfidenceInterval();
+		assertEquals(0.97, Math.exp(ival.getLowerBound()), 0.01); 
+		assertEquals(1.38, Math.exp(ival.getUpperBound()), 0.01); 
+	}
+		
+	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize)
 	{
 		BasicStudy s = new BasicStudy(studyName, d_ind);
 		s.addEndpoint(d_ep);
 		BasicPatientGroup g_fluox = new BasicPatientGroup(s, d_fluox, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY),fluoxSize);
-		BasicPatientGroup g_parox = new BasicPatientGroup(s, d_parox, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY),paroxSize);		
+		BasicPatientGroup g_parox = new BasicPatientGroup(s, d_sertra, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY),sertraSize);		
 		
 		s.addPatientGroup(g_parox);
 		s.addPatientGroup(g_fluox);
@@ -80,7 +129,7 @@ public class LogRiskRatioTest {
 		BasicRateMeasurement m_parox = (BasicRateMeasurement) d_ep.buildMeasurement(g_parox);
 		BasicRateMeasurement m_fluox = (BasicRateMeasurement) d_ep.buildMeasurement(g_fluox);
 		
-		m_parox.setRate(paroxResp);
+		m_parox.setRate(sertraResp);
 		m_fluox.setRate(fluoxResp);
 		
 		s.setMeasurement(d_ep, g_parox, m_parox);

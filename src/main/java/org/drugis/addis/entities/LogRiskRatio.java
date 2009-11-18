@@ -43,6 +43,11 @@ public class LogRiskRatio extends RiskRatio {
 	}
 	
 	@Override
+	public double getCriticalValue() {
+		return super.getCriticalValue();
+	}
+	
+	@Override
 	public Interval<Double> getConfidenceInterval() {
 		double lBound = getRelativeEffect();
 		lBound -= getCriticalValue() * getError();
