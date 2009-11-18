@@ -15,6 +15,9 @@ public class RelativeEffectFactory {
 		if (type.equals(RiskRatio.class)) {
 			return buildRiskRatio(s, e, base, subj);
 		}
+		if (type.equals(LogRiskRatio.class)) {
+			return buildLogRiskRatio(s, e, base, subj);
+		}
 		if (type.equals(RiskDifference.class)) {
 			return buildRiskDifference(s, e, base, subj);
 		}
@@ -35,6 +38,13 @@ public class RelativeEffectFactory {
 				findRateMeasurement(s, e, subj));
 	}
 
+	private static RelativeEffect<?> buildLogRiskRatio(Study s, Endpoint e,
+			Drug base, Drug subj) {
+		return new LogRiskRatio(
+				findRateMeasurement(s, e, base),
+				findRateMeasurement(s, e, subj));
+	}
+	
 	private static RelativeEffect<?> buildOddsRatio(Study s, Endpoint e,
 			Drug base, Drug subj) {
 		return new OddsRatio(

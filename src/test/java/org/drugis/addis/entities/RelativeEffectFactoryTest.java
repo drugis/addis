@@ -171,6 +171,39 @@ public class RelativeEffectFactoryTest {
 				RiskDifference.class);
 	}
 	
+	@Test
+	public void testGetLogRiskRatio() {
+		Study s = ExampleData.buildDefaultStudy1();
+		Endpoint e = ExampleData.buildEndpointHamd();
+		Drug base = ExampleData.buildDrugParoxetine();
+		Drug subj = ExampleData.buildDrugFluoxetine();
+		PatientGroup pBase = s.getPatientGroups().get(0);
+		PatientGroup pSubj = s.getPatientGroups().get(1);
+		// sanity check:
+		assertEquals(base, pBase.getDrug());
+		assertEquals(subj, pSubj.getDrug());
+		
+		RelativeEffect<?> expected = new LogRiskRatio(
+				(RateMeasurement)s.getMeasurement(e, pBase),
+				(RateMeasurement)s.getMeasurement(e, pSubj));
+		
+		RelativeEffect<?> actual =
+				RelativeEffectFactory.buildRelativeEffect(s, e, base, subj,
+						LogRiskRatio.class);
+		
+		assertRelativeEffectEqual(expected, actual);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testGetLogRiskRatioCont() {
+		RelativeEffectFactory.buildRelativeEffect(
+				ExampleData.buildDefaultStudy1(),
+				ExampleData.buildEndpointCgi(),
+				ExampleData.buildDrugParoxetine(),
+				ExampleData.buildDrugFluoxetine(),
+				RiskDifference.class);
+	}
+	
 	private static void assertRelativeEffectEqual(RelativeEffect<?> expected,
 			RelativeEffect<?> actual) {
 		assertEquals(expected.getBaseline(), actual.getBaseline());
