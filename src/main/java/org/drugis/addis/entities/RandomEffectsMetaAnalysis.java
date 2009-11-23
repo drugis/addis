@@ -76,7 +76,6 @@ public class RandomEffectsMetaAnalysis implements Serializable {
 		List<Double> adjweights = new ArrayList<Double>();
 		List<RelativeEffect<? extends Measurement>> relEffects = new ArrayList<RelativeEffect<? extends Measurement>>();
 		
-		// Fill the riskRatios list
 		for (Study s : d_studies) {
 			RelativeEffect<? extends Measurement> re = RelativeEffectFactory.buildRelativeEffect(s, d_ep, d_drug1, d_drug2, relEffClass);
 			d_totalSampleSize += re.getSampleSize();
@@ -165,27 +164,27 @@ public class RandomEffectsMetaAnalysis implements Serializable {
 		return weightSum;
 	}	
 	
-	public RelativeEffect<Measurement> getRiskRatio() {
+	public RelativeEffectMetaAnalysis<Measurement> getRiskRatio() {
 		compute(LogRiskRatio.class);
 		return new RandomEffects();
     }
 	
-	public RelativeEffect<Measurement> getOddsRatio() {
+	public RelativeEffectMetaAnalysis<Measurement> getOddsRatio() {
 		compute(LogOddsRatio.class);
 		return new RandomEffects();
     }
 	
-	public RelativeEffect<Measurement> getRiskDifference() {
+	public RelativeEffectMetaAnalysis<Measurement> getRiskDifference() {
 		compute(RiskDifference.class);
 		return new RandomEffects();
     }
 	
-	public RelativeEffect<Measurement> getMeanDifference() {
+	public RelativeEffectMetaAnalysis<Measurement> getMeanDifference() {
 		compute(MeanDifference.class);
 		return new RandomEffects();
     }
 	
-	public RelativeEffect<Measurement> getStandardisedMeanDifference() {
+	public RelativeEffectMetaAnalysis<Measurement> getStandardisedMeanDifference() {
 		compute(StandardisedMeanDifference.class);
 		return new RandomEffects();
     }
