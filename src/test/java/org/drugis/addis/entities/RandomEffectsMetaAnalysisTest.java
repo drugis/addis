@@ -50,7 +50,7 @@ public class RandomEffectsMetaAnalysisTest {
 		
 	@Test
 	public void testGetRiskRatio() {
-		RelativeEffectRate riskRatio = d_rema.getRiskRatio();
+		RelativeEffect<Measurement> riskRatio = d_rema.getRiskRatio();
 		assertEquals(1.10, Math.exp(riskRatio.getRelativeEffect()), 0.01); 
 		assertEquals(1.01, Math.exp(riskRatio.getConfidenceInterval().getLowerBound()), 0.01);
 		assertEquals(1.20, Math.exp(riskRatio.getConfidenceInterval().getUpperBound()), 0.01);		
