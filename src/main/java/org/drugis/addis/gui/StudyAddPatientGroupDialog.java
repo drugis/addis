@@ -27,7 +27,6 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.gui.builder.StudyAddPatientGroupView;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.OkCancelDialog;
 
 @SuppressWarnings("serial")
@@ -38,13 +37,13 @@ public class StudyAddPatientGroupDialog extends OkCancelDialog {
 	private StudyAddPatientGroupView d_view;
 	private Main d_main;
 
-	public StudyAddPatientGroupDialog(ImageLoader loader, Main main, Domain domain, BasicStudy study) {
+	public StudyAddPatientGroupDialog(Main main, Domain domain, BasicStudy study) {
 		super(main, "Add Patient Group to Study");
 		d_main = main;
 		this.setModal(true);
 		d_domain = domain;
 		d_study = study;
-		d_view = new StudyAddPatientGroupView(loader, d_domain, d_study, d_okButton);
+		d_view = new StudyAddPatientGroupView(d_domain, d_study, d_okButton);
 		getUserPanel().removeAll();
 		getUserPanel().add(d_view.buildPanel());		
 		pack();

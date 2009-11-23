@@ -52,7 +52,6 @@ import org.drugis.addis.gui.MutableCharacteristicHolder;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -73,7 +72,6 @@ public class AddStudyView implements ViewBuilder {
 	private Domain d_domain;
 	private NotEmptyValidator d_validator;
 	private JButton d_okButton;
-	private ImageLoader d_loader;
 	private Main d_mainWindow;
 
 	public AddStudyView(PresentationModel<BasicStudy> presentationModel,
@@ -83,7 +81,6 @@ public class AddStudyView implements ViewBuilder {
 		d_model = presentationModel;
 		d_endpointPresentation = presentationModel2;
 		d_domain = domain;
-		d_loader = mainWindow.getImageLoader();
 		d_mainWindow = mainWindow;
 	}
 	
@@ -187,7 +184,7 @@ public class AddStudyView implements ViewBuilder {
 
 	@SuppressWarnings("serial")
 	private JButton createNewIndicationButton() {
-		JButton btn = GUIFactory.createPlusButton(d_loader, "New Indication");
+		JButton btn = GUIFactory.createPlusButton("New Indication");
 		btn.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				d_mainWindow.showAddIndicationDialog();
@@ -198,7 +195,7 @@ public class AddStudyView implements ViewBuilder {
 	
 	@SuppressWarnings("serial")
 	private JButton createNewEndpointButton() {
-		JButton btn = GUIFactory.createPlusButton(d_loader, "New Endpoint");
+		JButton btn = GUIFactory.createPlusButton("New Endpoint");
 		btn.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				d_mainWindow.showAddEndpointDialog();
@@ -209,7 +206,7 @@ public class AddStudyView implements ViewBuilder {
 	
 	@SuppressWarnings("serial")
 	private JButton createNewDrugButton() {
-		JButton btn = GUIFactory.createPlusButton(d_loader, "New Drug");
+		JButton btn = GUIFactory.createPlusButton("New Drug");
 		btn.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				d_mainWindow.showAddDrugDialog();

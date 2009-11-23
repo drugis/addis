@@ -19,6 +19,7 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -30,12 +31,11 @@ import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.StudyAddPatientGroupDialog;
 import org.drugis.addis.presentation.StudyPresentationModel;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
-import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
@@ -49,26 +49,24 @@ public class StudyView implements ViewBuilder {
 	private PresentationModel<Study> d_model;
 	private Domain d_domain;
 	private Main d_mainWindow;
-	private ImageLoader d_loader;
 	private StudyCharacteristicsView d_charView;
 	private StudyEndpointsView d_epView;
 	private StudyDataView d_dataView;
 	
 	
-	public StudyView(StudyPresentationModel model, Domain domain, Main main, ImageLoader loader) {
-		d_loader = loader;
+	public StudyView(StudyPresentationModel model, Domain domain, Main main) {
 		d_model = model;
 		d_mainWindow = main;
 		d_domain = domain;
 		d_charView = new StudyCharacteristicsView(model);
 		d_epView = new StudyEndpointsView(model, main);
-		d_dataView = new StudyDataView(model, loader, main.getPresentationModelManager());
+		d_dataView = new StudyDataView(model, main.getPresentationModelManager());
 	}
 	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
-				"pref",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"pref:grow:fill",
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -78,28 +76,31 @@ public class StudyView implements ViewBuilder {
 		int row = 1;
 		builder.addSeparator("Study", cc.xy(1,row));
 		row += 2;
-		builder.add(d_charView.buildPanel(), cc.xy(1, 3));
+		builder.add(GUIFactory.createCollapsiblePanel(d_charView.buildPanel()),	cc.xy(1, 3));
 		row += 2;
 		builder.addSeparator("Endpoints", cc.xy(1, row));
 		row += 2;
-		builder.add(d_epView.buildPanel(), cc.xy(1, row));
+		builder.add(buildEndpointPart(), cc.xy(1, row));
 		row += 2;
-		
-		if (d_model.getBean() instanceof BasicStudy) {
-			LayoutUtil.addRow(layout);
-			builder.add(buildAddEndpointButton(), cc.xy(1, row));
-			row += 2;
-		}		
 		builder.addSeparator("Data", cc.xy(1, row));
 		row += 2;
-		builder.add(d_dataView.buildPanel(), cc.xy(1, row));
-		row += 2;
+		builder.add(buildDataPart(),cc.xy(1, row));
 		
-		if (d_model.getBean() instanceof BasicStudy) {
-			LayoutUtil.addRow(layout);
-			builder.add(buildAddPatientGroupButton(), cc.xy(1, row));
-		}
 		return builder.getPanel();
+	}
+
+	private JPanel buildDataPart() {
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(d_dataView.buildPanel(), BorderLayout.CENTER);
+		panel.add(buildAddPatientGroupButton(), BorderLayout.SOUTH);
+		return GUIFactory.createCollapsiblePanel(panel);
+	}
+
+	private JPanel buildEndpointPart() {
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(d_epView.buildPanel(), BorderLayout.CENTER);
+		panel.add(buildAddEndpointButton(), BorderLayout.SOUTH);
+		return GUIFactory.createCollapsiblePanel(panel);
 	}
 
 	private JComponent buildAddPatientGroupButton() {
@@ -116,7 +117,7 @@ public class StudyView implements ViewBuilder {
 	}
 
 	private void addPatientGroup() {
-		StudyAddPatientGroupDialog dlg = new StudyAddPatientGroupDialog(d_loader, d_mainWindow, d_domain,
+		StudyAddPatientGroupDialog dlg = new StudyAddPatientGroupDialog(d_mainWindow, d_domain,
 				(BasicStudy)d_model.getBean());
 		GUIHelper.centerWindow(dlg, d_mainWindow);
 		dlg.setVisible(true);

@@ -36,7 +36,6 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -95,8 +94,6 @@ public class Main extends JFrame {
 	private ViewBuilder d_rightPanelBuilder;
 	
 	private DomainManager d_domain;
-	
-	private ImageLoader d_imageLoader = new ImageLoader("/org/drugis/addis/gfx/");
 	private DomainTreeModel d_domainTreeModel;
 	private JTree d_leftPanelTree;
 	private JMenuItem d_editMenuDeleteItem;
@@ -109,6 +106,7 @@ public class Main extends JFrame {
 
 	public Main() {
 		super(AppInfo.getAppName() + " v" + AppInfo.getAppVersion());
+		ImageLoader.setImagepath("/org/drugis/addis/gfx/");		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent evt) {
@@ -254,7 +252,7 @@ public class Main extends JFrame {
 	}
 
 	private JMenuItem createDeleteItem() {
-		JMenuItem item = new JMenuItem("Delete", getIcon(FileNames.ICON_DELETE));
+		JMenuItem item = new JMenuItem("Delete", ImageLoader.getIcon(FileNames.ICON_DELETE));
 		item.setMnemonic('d');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -282,7 +280,7 @@ public class Main extends JFrame {
 				"Do you really want to delete " + selectedType + selected + " ?",
 				"Confirm deletion",					
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-				getIcon(FileNames.ICON_DELETE));
+				ImageLoader.getIcon(FileNames.ICON_DELETE));
 		if (conf != JOptionPane.YES_OPTION) {
 			return;
 		}
@@ -306,7 +304,7 @@ public class Main extends JFrame {
 	}
 
 	private JMenuItem createAddEndpointMenuItem() {
-		JMenuItem item = new JMenuItem("Endpoint", getIcon(FileNames.ICON_ENDPOINT));
+		JMenuItem item = new JMenuItem("Endpoint", ImageLoader.getIcon(FileNames.ICON_ENDPOINT));
 		item.setMnemonic('e');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -318,7 +316,7 @@ public class Main extends JFrame {
 	}
 	
 	private JMenuItem createAddStudyMenuItem() {
-		JMenuItem item = new JMenuItem("Study", getIcon(FileNames.ICON_STUDY));
+		JMenuItem item = new JMenuItem("Study", ImageLoader.getIcon(FileNames.ICON_STUDY));
 		item.setMnemonic('s');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -330,7 +328,7 @@ public class Main extends JFrame {
 	}
 	
 	private JMenuItem createAddIndicationMenuItem() {
-		JMenuItem item = new JMenuItem("Indication", getIcon(FileNames.ICON_INDICATION));
+		JMenuItem item = new JMenuItem("Indication", ImageLoader.getIcon(FileNames.ICON_INDICATION));
 		item.setMnemonic('i');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -343,7 +341,7 @@ public class Main extends JFrame {
 	}
 	
 	private JMenuItem createAddDrugMenuItem() {
-		JMenuItem item = new JMenuItem("Drug", getIcon(FileNames.ICON_DRUG));
+		JMenuItem item = new JMenuItem("Drug", ImageLoader.getIcon(FileNames.ICON_DRUG));
 		item.setMnemonic('d');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -379,17 +377,8 @@ public class Main extends JFrame {
 		dialog.setVisible(true);
 	}
 	
-	public Icon getIcon(String name) {
-		try {
-			return d_imageLoader.getIcon(name);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
 	private JMenuItem createExitItem() {
-		JMenuItem exitItem = new JMenuItem("Exit", getIcon(FileNames.ICON_STOP));
+		JMenuItem exitItem = new JMenuItem("Exit", ImageLoader.getIcon(FileNames.ICON_STOP));
 		exitItem.setMnemonic('e');		
 		exitItem.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -409,7 +398,7 @@ public class Main extends JFrame {
 		JToolBar toolbar = new JToolBar();
 		toolbar.setFloatable(false);
 
-		JButton topAddStudyButton = new JButton("Add study", getIcon(FileNames.ICON_STUDY));
+		JButton topAddStudyButton = new JButton("Add study", ImageLoader.getIcon(FileNames.ICON_STUDY));
 		topAddStudyButton.setToolTipText("Add study");
 		topAddStudyButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
@@ -417,7 +406,7 @@ public class Main extends JFrame {
 			}
 		});
 		
-		JButton topAddMetaStudyButton = new JButton("Create meta-analysis", getIcon(FileNames.ICON_METASTUDY));
+		JButton topAddMetaStudyButton = new JButton("Create meta-analysis", ImageLoader.getIcon(FileNames.ICON_METASTUDY));
 		topAddMetaStudyButton.setToolTipText("Create meta-analysis");
 		topAddMetaStudyButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
@@ -456,7 +445,7 @@ public class Main extends JFrame {
 	private void initLeftPanel() {
 		d_domainTreeModel = new DomainTreeModel(getDomain());
 		d_leftPanelTree = new JTree(d_domainTreeModel);
-		d_leftPanelTree.setCellRenderer(new DomainTreeCellRenderer(d_imageLoader));
+		d_leftPanelTree.setCellRenderer(new DomainTreeCellRenderer());
 		d_leftPanelTree.setRootVisible(false);
 		expandLeftPanelTree();
 		
@@ -542,12 +531,12 @@ public class Main extends JFrame {
 	}
 	
 	private void studySelected(Study node) {
-		StudyView view = new StudyView((StudyPresentationModel)d_pmManager.getModel(node), getDomain(), this, d_imageLoader);
+		StudyView view = new StudyView((StudyPresentationModel)d_pmManager.getModel(node), getDomain(), this);
 		setRightPanelView(view);		
 	}
 	
 	private void metaStudySelected(MetaStudy node) {
-		MetaStudyView view = new MetaStudyView( (MetaStudyPresentationModel) d_pmManager.getModel(node), this, d_imageLoader);
+		MetaStudyView view = new MetaStudyView( (MetaStudyPresentationModel) d_pmManager.getModel(node), this);
 		setRightPanelView(view);		
 	}
 
@@ -640,9 +629,5 @@ public class Main extends JFrame {
 						d_domainTreeModel.getIndicationsNode(), indication
 				} ));
 		
-	}
-
-	public ImageLoader getImageLoader() {
-		return d_imageLoader;
-	}		
+	}	
 }

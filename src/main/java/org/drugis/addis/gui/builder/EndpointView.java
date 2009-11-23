@@ -21,8 +21,10 @@ package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.EndpointPresentationModel;
 import org.drugis.common.gui.OneWayObjectFormat;
@@ -47,35 +49,51 @@ public class EndpointView implements ViewBuilder {
 	public JComponent buildPanel() {
 
 		FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, pref:grow",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"pref:grow:fill",
+				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		
 		CellConstraints cc =  new CellConstraints();
 		
-		builder.addSeparator("Endpoint", cc.xyw(1, 1, 3));
-		builder.addLabel("Name:", cc.xy(1, 3));
-		builder.add(BasicComponentFactory.createLabel(
-				d_model.getModel(Endpoint.PROPERTY_NAME)), cc.xy(3, 3));
+		builder.addSeparator("Endpoint", cc.xy(1, 1));
+		builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()),
+				cc.xy(1, 3));
+		builder.addSeparator("Studies measuring this endpoint", 
+				cc.xy(1, 5));		
+		builder.add(GUIFactory.createCollapsiblePanel(getStudiesComp()), 
+				cc.xy(1, 7));
 		
-		builder.addLabel("Description:", cc.xy(1, 5));
-		builder.add(BasicComponentFactory.createLabel(
-				d_model.getModel(Endpoint.PROPERTY_DESCRIPTION)), cc.xy(3, 5));
+		return builder.getPanel();
+	}
+
+	private JPanel buildOverviewPart() {
+		FormLayout layout = new FormLayout(
+				"right:pref, 3dlu, pref:grow",
+				"p, 3dlu, p, 3dlu, p");
+		PanelBuilder builder = new PanelBuilder(layout);
+		CellConstraints cc =  new CellConstraints();
 		
-		int row = 7;
-		builder.addLabel("Direction:", cc.xy(1, row));
+		builder.addLabel("Name:", cc.xy(1, 1));
+		builder.add(BasicComponentFactory.createLabel(
+				d_model.getModel(Endpoint.PROPERTY_NAME)), cc.xy(3, 1));
+		
+		builder.addLabel("Description:", cc.xy(1, 3));
+		builder.add(BasicComponentFactory.createLabel(
+				d_model.getModel(Endpoint.PROPERTY_DESCRIPTION)), cc.xy(3, 3));
+		
+		builder.addLabel("Direction:", cc.xy(1, 5));
 		ValueModel directionModel = ConverterFactory.createStringConverter(
 				d_model.getModel(Endpoint.PROPERTY_DIRECTION),
 				new OneWayObjectFormat());
 		builder.add(BasicComponentFactory.createLabel(
-				directionModel), cc.xy(3, row));
-		
-		row += 2;
-		builder.addSeparator("Studies measuring this endpoint", cc.xyw(1, row, 3));		
-		
-		row += 2;
+				directionModel), cc.xy(3, 5));
+
+		return builder.getPanel();
+	}
+
+	private JComponent getStudiesComp() {
 		JComponent studiesComp = null;
 		if(d_model.getIncludedStudies().getValue().isEmpty()) {
 			studiesComp = new JLabel("No studies found.");
@@ -83,8 +101,6 @@ public class EndpointView implements ViewBuilder {
 			StudyTablePanelView d_studyView = new StudyTablePanelView(d_model, d_frame);
 			studiesComp = d_studyView.buildPanel();
 		}
-		builder.add(studiesComp, cc.xyw(1, row, 3));
-		
-		return builder.getPanel();
+		return studiesComp;
 	}	
 }

@@ -1,6 +1,5 @@
 package org.drugis.common;
 
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,21 +8,21 @@ import javax.swing.ImageIcon;
 
 public class ImageLoader {
 	
-	private Map<String, Icon> icons;
-	private String imagePath;
+	static private Map<String, Icon> icons;
+	static private String imagePath;
 	
-	public ImageLoader(String imagePath) {
-		this.imagePath = imagePath;
+	public static void setImagepath(String _imagePath) {
+		imagePath = _imagePath;
 		icons = new HashMap<String, Icon>();
 	}
 	
-	public Icon getIcon(String name) throws FileNotFoundException {
+	public static Icon getIcon(String name) {
 		if (icons.containsKey(name)) {
 			return icons.get(name);
 		} else {
-		    java.net.URL imgURL = getClass().getResource(deriveGfxPath(name));
+		    java.net.URL imgURL = ImageLoader.class.getResource(deriveGfxPath(name));
 		    if (imgURL == null) {
-		    	throw new FileNotFoundException("File not found for icon " + deriveGfxPath(name));
+		    	return null;
 		    }
 		    ImageIcon icon = new ImageIcon(imgURL);
 	        icons.put(name, icon);
@@ -31,7 +30,7 @@ public class ImageLoader {
 		}
 	}
 
-	private String deriveGfxPath(String name) {
+	private static String deriveGfxPath(String name) {
 		return imagePath + name;
 	}
 }
