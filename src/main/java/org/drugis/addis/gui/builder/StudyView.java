@@ -19,6 +19,7 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -35,7 +36,6 @@ import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.StudyAddPatientGroupDialog;
 import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.common.gui.GUIHelper;
-import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
@@ -66,7 +66,7 @@ public class StudyView implements ViewBuilder {
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
 				"pref",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -76,34 +76,31 @@ public class StudyView implements ViewBuilder {
 		int row = 1;
 		builder.addSeparator("Study", cc.xy(1,row));
 		row += 2;
-		builder.add(d_charView.buildPanel(), cc.xy(1, 3));
+		builder.add(GUIFactory.createCollapsiblePanel(d_charView.buildPanel()),	cc.xy(1, 3));
 		row += 2;
-		
 		builder.addSeparator("Endpoints", cc.xy(1, row));
 		row += 2;
-		
-		JComponent inPanel = d_epView.buildPanel();
-		
-		JPanel topPane = GUIFactory.createCollapsiblePanel(inPanel);
-		
-		builder.add(topPane, cc.xy(1, row));
+		builder.add(buildEndpointPart(), cc.xy(1, row));
 		row += 2;
-		
-		if (d_model.getBean() instanceof BasicStudy) {
-			LayoutUtil.addRow(layout);
-			builder.add(buildAddEndpointButton(), cc.xy(1, row));
-			row += 2;
-		}		
 		builder.addSeparator("Data", cc.xy(1, row));
 		row += 2;
-		builder.add(d_dataView.buildPanel(), cc.xy(1, row));
-		row += 2;
+		builder.add(buildDataPart(),cc.xy(1, row));
 		
-		if (d_model.getBean() instanceof BasicStudy) {
-			LayoutUtil.addRow(layout);
-			builder.add(buildAddPatientGroupButton(), cc.xy(1, row));
-		}
 		return builder.getPanel();
+	}
+
+	private JPanel buildDataPart() {
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(d_dataView.buildPanel(), BorderLayout.CENTER);
+		panel.add(buildAddPatientGroupButton(), BorderLayout.SOUTH);
+		return GUIFactory.createCollapsiblePanel(panel);
+	}
+
+	private JPanel buildEndpointPart() {
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(d_epView.buildPanel(), BorderLayout.CENTER);
+		panel.add(buildAddEndpointButton(), BorderLayout.SOUTH);
+		return GUIFactory.createCollapsiblePanel(panel);
 	}
 
 	private JComponent buildAddPatientGroupButton() {
