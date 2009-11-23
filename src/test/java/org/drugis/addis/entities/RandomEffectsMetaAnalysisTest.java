@@ -50,10 +50,20 @@ public class RandomEffectsMetaAnalysisTest {
 		
 	@Test
 	public void testGetRiskRatio() {
-		RelativeEffectRate riskRatio = d_rema.getRiskRatio();
+		RelativeEffectMetaAnalysis<Measurement> riskRatio = d_rema.getRiskRatio();
+		assertEquals(2.03, riskRatio.getHeterogeneity(), 0.01);
 		assertEquals(1.10, Math.exp(riskRatio.getRelativeEffect()), 0.01); 
 		assertEquals(1.01, Math.exp(riskRatio.getConfidenceInterval().getLowerBound()), 0.01);
 		assertEquals(1.20, Math.exp(riskRatio.getConfidenceInterval().getUpperBound()), 0.01);		
+	}
+	
+	@Test
+	public void testGetOddsRatio() {
+		RelativeEffectMetaAnalysis<Measurement> oddsRatio = d_rema.getOddsRatio();
+		assertEquals(2.14, oddsRatio.getHeterogeneity(), 0.01);
+		assertEquals(1.30, Math.exp(oddsRatio.getRelativeEffect()), 0.01); 
+		assertEquals(1.03, Math.exp(oddsRatio.getConfidenceInterval().getLowerBound()), 0.01);
+		assertEquals(1.65, Math.exp(oddsRatio.getConfidenceInterval().getUpperBound()), 0.01);		
 	}
 	
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize)

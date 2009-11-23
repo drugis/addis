@@ -9,7 +9,7 @@ import org.drugis.common.StudentTTable;
 
 public class RandomEffectsMetaAnalysis implements Serializable {
 
-	private class LogRiskRatioRandomEffects implements RelativeEffectRate {
+	private class RandomEffects implements RelativeEffectMetaAnalysis<Measurement> {
 		public RelativeEffect.AxisType getAxisType() {
 			return AxisType.LOGARITHMIC;
 		}
@@ -40,6 +40,14 @@ public class RandomEffectsMetaAnalysis implements Serializable {
 		
 		public RateMeasurement getBaseline() {
 			throw new RuntimeException("Cannot get a Baseline Measurement from Random Effects (Meta-Analysis)");
+		}
+
+		public Double getError() {
+			return d_SEThetaDSL;
+		}
+
+		public double getHeterogeneity() {
+			return d_qIV;
 		}		
 	}
 	private static final long serialVersionUID = 4587185353339731347L;
@@ -52,6 +60,7 @@ public class RandomEffectsMetaAnalysis implements Serializable {
 	private double d_thetaDSL;
 	private double d_SEThetaDSL;
 	private Interval<Double> d_confidenceInterval;
+	private double d_qIV;
 
 	public RandomEffectsMetaAnalysis(List<Study> studies, Endpoint endpoint, Drug drug1, Drug drug2) {
 		d_studies = studies;
@@ -60,38 +69,35 @@ public class RandomEffectsMetaAnalysis implements Serializable {
 		d_drug2 = drug2;
 		
 		d_totalSampleSize = 0;
-		
-		compute();
 	}
 	
-	private void compute() {
+	private void compute(Class<? extends RelativeEffect<?>> relEffClass) {
 		List<Double> weights = new ArrayList<Double>();
 		List<Double> adjweights = new ArrayList<Double>();
-		List<LogRiskRatio> logRiskRatios = new ArrayList<LogRiskRatio>();
+		List<RelativeEffect<? extends Measurement>> relEffects = new ArrayList<RelativeEffect<? extends Measurement>>();
 		
-		// Fill the riskRatios list
 		for (Study s : d_studies) {
-			LogRiskRatio re = (LogRiskRatio) RelativeEffectFactory.buildRelativeEffect(s, d_ep, d_drug1, d_drug2, LogRiskRatio.class);
+			RelativeEffect<? extends Measurement> re = RelativeEffectFactory.buildRelativeEffect(s, d_ep, d_drug1, d_drug2, relEffClass);
 			d_totalSampleSize += re.getSampleSize();
-			logRiskRatios.add(re);
+			relEffects.add(re);
 		}
 		
 		// Calculate the weights.
-		for (LogRiskRatio re : logRiskRatios) {
+		for (RelativeEffect<? extends Measurement> re : relEffects) {
 			weights.add(1D / Math.pow(re.getError(),2));
 		}
 		
 		// Calculate needed variables.
-		double thetaIV = getThetaIV(weights, logRiskRatios);
-		double QIV = getQIV(weights, logRiskRatios, thetaIV);
-		double tauSquared = getTauSquared(QIV, weights);
+		double thetaIV = getThetaIV(weights, relEffects);
+		d_qIV = getQIV(weights, relEffects, thetaIV);
+		double tauSquared = getTauSquared(d_qIV, weights);
 		
 		// Calculated the adjusted Weights.
-		for (LogRiskRatio re : logRiskRatios) {
+		for (RelativeEffect<? extends Measurement> re : relEffects) {
 			adjweights.add(1 / (Math.pow(re.getError(),2) + tauSquared) );
 		}
 		
-		d_thetaDSL = getThetaDL(adjweights, logRiskRatios);
+		d_thetaDSL = getThetaDL(adjweights, relEffects);
 		
 		d_SEThetaDSL = getSE_ThetaDL(adjweights);
 		d_confidenceInterval = getConfidenceInterval();
@@ -102,17 +108,16 @@ public class RandomEffectsMetaAnalysis implements Serializable {
 		double lower = d_thetaDSL - Z95percent * d_SEThetaDSL;
 		double upper = d_thetaDSL + Z95percent * d_SEThetaDSL;
 		return new Interval<Double>(lower, upper);
-		
 	}
 	
 	private double getSE_ThetaDL(List<Double> adjweights) {
 		return 1.0 / (Math.sqrt(computeSum(adjweights)));
 	}
 
-	private double getThetaDL(List<Double> adjweights, List<LogRiskRatio> logRiskRatios) {
+	private double getThetaDL(List<Double> adjweights, List<RelativeEffect<? extends Measurement>> relEffects) {
 		double numerator = 0;
 		for (int i=0; i < adjweights.size(); ++i) {
-			numerator += adjweights.get(i) * logRiskRatios.get(i).getRelativeEffect();
+			numerator += adjweights.get(i) * relEffects.get(i).getRelativeEffect();
 		}
 		
 		return numerator / computeSum(adjweights);
@@ -130,37 +135,60 @@ public class RandomEffectsMetaAnalysis implements Serializable {
 		return Math.max(num / denum, 0);
 	}
 	
-	private double getQIV(List<Double> weights, List<LogRiskRatio> logRiskRatios, double thetaIV) {
+	private double getQIV(List<Double> weights, List<RelativeEffect<? extends Measurement>> relEffects, double thetaIV) {
 		double sum = 0;
 		for (int i=0; i < weights.size(); ++i) {
-			sum += weights.get(i) * Math.pow(logRiskRatios.get(i).getRelativeEffect() - thetaIV,2);
+			sum += weights.get(i) * Math.pow(relEffects.get(i).getRelativeEffect() - thetaIV,2);
 		}
 		return sum;
 	}
 	
-	private double getThetaIV(List<Double> weights, List<LogRiskRatio> logRiskRatios) {
-		assert(weights.size() == logRiskRatios.size());
+	private double getThetaIV(List<Double> weights, List<RelativeEffect<? extends Measurement>> relEffects) {
+		assert(weights.size() == relEffects.size());
 		
 		// Calculate the sums
 		double sumWeightRatio = 0D;
 			
 		for (int i=0; i < weights.size(); ++i) {
-			sumWeightRatio += weights.get(i) * logRiskRatios.get(i).getRelativeEffect();
+			sumWeightRatio += weights.get(i) * relEffects.get(i).getRelativeEffect();
 		}
 		
 		return sumWeightRatio / computeSum(weights);
 	}	
 	
-	public RelativeEffectRate getRiskRatio() {
-		return new LogRiskRatioRandomEffects();
-    }
-	
-	public double computeSum(List<Double> weights) {
+	protected double computeSum(List<Double> weights) {
 		double weightSum = 0;
 		for (int i=0; i < weights.size(); ++i) {
 			weightSum += weights.get(i);
 		}
 		return weightSum;
 	}	
+	
+	public RelativeEffectMetaAnalysis<Measurement> getRiskRatio() {
+		compute(LogRiskRatio.class);
+		return new RandomEffects();
+    }
+	
+	public RelativeEffectMetaAnalysis<Measurement> getOddsRatio() {
+		compute(LogOddsRatio.class);
+		return new RandomEffects();
+    }
+	
+	public RelativeEffectMetaAnalysis<Measurement> getRiskDifference() {
+		compute(RiskDifference.class);
+		return new RandomEffects();
+    }
+	
+	public RelativeEffectMetaAnalysis<Measurement> getMeanDifference() {
+		compute(MeanDifference.class);
+		return new RandomEffects();
+    }
+	
+	public RelativeEffectMetaAnalysis<Measurement> getStandardisedMeanDifference() {
+		compute(StandardisedMeanDifference.class);
+		return new RandomEffects();
+    }
+	
+
 }
 

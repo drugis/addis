@@ -201,7 +201,40 @@ public class RelativeEffectFactoryTest {
 				ExampleData.buildEndpointCgi(),
 				ExampleData.buildDrugParoxetine(),
 				ExampleData.buildDrugFluoxetine(),
-				RiskDifference.class);
+				LogRiskRatio.class);
+	}
+	
+	@Test
+	public void testGetLogOddsRatio() {
+		Study s = ExampleData.buildDefaultStudy1();
+		Endpoint e = ExampleData.buildEndpointHamd();
+		Drug base = ExampleData.buildDrugParoxetine();
+		Drug subj = ExampleData.buildDrugFluoxetine();
+		PatientGroup pBase = s.getPatientGroups().get(0);
+		PatientGroup pSubj = s.getPatientGroups().get(1);
+		// sanity check:
+		assertEquals(base, pBase.getDrug());
+		assertEquals(subj, pSubj.getDrug());
+		
+		RelativeEffect<?> expected = new LogOddsRatio(
+				(RateMeasurement)s.getMeasurement(e, pBase),
+				(RateMeasurement)s.getMeasurement(e, pSubj));
+		
+		RelativeEffect<?> actual =
+				RelativeEffectFactory.buildRelativeEffect(s, e, base, subj,
+						LogOddsRatio.class);
+		
+		assertRelativeEffectEqual(expected, actual);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testGetLogOddsRatioCont() {
+		RelativeEffectFactory.buildRelativeEffect(
+				ExampleData.buildDefaultStudy1(),
+				ExampleData.buildEndpointCgi(),
+				ExampleData.buildDrugParoxetine(),
+				ExampleData.buildDrugFluoxetine(),
+				LogOddsRatio.class);
 	}
 	
 	private static void assertRelativeEffectEqual(RelativeEffect<?> expected,

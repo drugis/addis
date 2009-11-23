@@ -21,6 +21,8 @@ package org.drugis.addis.entities;
 
 import java.text.DecimalFormat;
 
+import org.drugis.common.Interval;
+
 public class LogOddsRatio extends OddsRatio implements ContinuousMeasurement {
 	private static final long serialVersionUID = -9012075635937781733L;
 	
@@ -29,12 +31,30 @@ public class LogOddsRatio extends OddsRatio implements ContinuousMeasurement {
 	}
 
 	public Double getMean() {
-		return Math.log(getRelativeEffect());
+		return getRelativeEffect();
+	}
+	
+	public Double getRelativeEffect() {
+		return Math.log(super.getRelativeEffect());
 	}
 
 	public Double getStdDev() {
 		return Math.sqrt(invEffect(d_denominator) + invNoEffect(d_denominator) +
 				invEffect(d_numerator) + invNoEffect(d_numerator));
+	}
+	
+	@Override
+	public Double getError() {
+		return getStdDev();
+	}
+	
+	@Override
+	public Interval<Double> getConfidenceInterval() {
+		double lBound = getRelativeEffect();
+		lBound -= getCriticalValue() * getError();
+		double uBound = getRelativeEffect();
+		uBound += getCriticalValue() * getError();
+		return new Interval<Double>(lBound, uBound);
 	}
 	
 	public String getLabel() {

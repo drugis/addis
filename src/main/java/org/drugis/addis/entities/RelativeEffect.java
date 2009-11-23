@@ -25,8 +25,9 @@ public interface RelativeEffect<T extends Measurement> {
 
 	public Double getRelativeEffect();
 
+	public Double getError();
+	
 	public String getName();
 	
 	public AxisType getAxisType();
-
 }
