@@ -65,7 +65,7 @@ public class StudyView implements ViewBuilder {
 	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
-				"pref",
+				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		
