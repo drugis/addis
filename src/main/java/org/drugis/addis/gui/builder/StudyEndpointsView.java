@@ -22,7 +22,6 @@ import org.drugis.addis.presentation.RelativeEffectTableModel;
 import org.drugis.addis.presentation.RiskDifferenceTableModel;
 import org.drugis.addis.presentation.RiskRatioTableModel;
 import org.drugis.addis.presentation.StandardisedMeanDifferenceTableModel;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -35,13 +34,11 @@ import com.jgoodies.forms.layout.FormLayout;
 public class StudyEndpointsView implements ViewBuilder {
 	
 	private PresentationModel<? extends Study> d_model;
-	private ImageLoader d_loader;
 	private PresentationModelFactory d_pmf;
 	private JFrame d_mainWindow;
 
 	public StudyEndpointsView(PresentationModel<? extends Study> model, Main main) {
 		d_model = model;
-		d_loader = main.getImageLoader();
 		d_pmf = main.getPresentationModelManager();
 		d_mainWindow = main;
 	}
@@ -63,7 +60,7 @@ public class StudyEndpointsView implements ViewBuilder {
 					LayoutUtil.addRow(layout);
 				}
 				builder.add(
-						GUIFactory.createEndpointLabelWithIcon(d_loader, d_model.getBean(), e),
+						GUIFactory.createEndpointLabelWithIcon(d_model.getBean(), e),
 						cc.xy(1, row));
 				JPanel panel = new JPanel(new FlowLayout());
 				if (e.getType().equals(Type.RATE)) {

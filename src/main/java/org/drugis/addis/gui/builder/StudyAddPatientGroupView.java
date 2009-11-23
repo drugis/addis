@@ -41,10 +41,8 @@ import org.drugis.addis.gui.MeasurementInputHelper;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
-
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -57,15 +55,13 @@ public class StudyAddPatientGroupView implements ViewBuilder {
 	private Study d_study;
 	private Domain d_domain;
 	private Map<Endpoint, Measurement> d_measurements = new HashMap<Endpoint,Measurement>();
-	private ImageLoader d_loader;
 	private NotEmptyValidator d_validator;
 	private BasicPatientGroup d_group;
 	private Set<Endpoint> d_endpoints;
 
-	public StudyAddPatientGroupView(ImageLoader loader, Domain domain, Study study, JButton okButton) {
+	public StudyAddPatientGroupView(Domain domain, Study study, JButton okButton) {
 		d_domain = domain;
 		d_study = study;
-		d_loader = loader;
 		d_group = new BasicPatientGroup(study, null, new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY), 0);
 		d_validator = new NotEmptyValidator(okButton);
 		d_endpoints = d_study.getEndpoints();
@@ -131,7 +127,7 @@ public class StudyAddPatientGroupView implements ViewBuilder {
 		for (Endpoint e : d_study.getEndpoints()) {
 			LayoutUtil.addRow(layout);
 			builder.add(
-					GUIFactory.createEndpointLabelWithIcon(d_loader, d_study, e),
+					GUIFactory.createEndpointLabelWithIcon(d_study, e),
 					cc.xy(1, row));
 			int col = 3;
 			BasicMeasurement m = e.buildMeasurement(d_group);

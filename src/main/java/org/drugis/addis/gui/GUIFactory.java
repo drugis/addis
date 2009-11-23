@@ -19,14 +19,16 @@
 
 package org.drugis.addis.gui;
 
-import java.io.FileNotFoundException;
+import java.awt.BorderLayout;
 import java.util.ArrayList;
 
+import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.Domain;
@@ -35,26 +37,48 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.ImageLoader;
+import org.jdesktop.swingx.JXCollapsiblePane;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.list.SelectionInList;
+import com.jidesoft.swing.JideButton;
 
 public class GUIFactory {
-	public static JButton createPlusButton(ImageLoader loader, String toolTipText) {
+	public static JButton createPlusButton(String toolTipText) {
 		JButton button = new JButton(toolTipText);
-		try {
-			Icon icon = loader.getIcon(FileNames.ICON_PLUS);
-			button = new JButton(icon);
-		} catch (FileNotFoundException ex) {
-			ex.printStackTrace();
-		}
+		Icon icon = ImageLoader.getIcon(FileNames.ICON_PLUS);
+		button = new JButton(icon);
 		button.setToolTipText(toolTipText);
 		return button;
 	}
+	
+	public static JPanel createCollapsiblePanel(JComponent innerComp) {
+		JPanel topPane = new JPanel(new BorderLayout());
+		JXCollapsiblePane pane = new JXCollapsiblePane();
+		pane.setLayout(new BorderLayout());
+		pane.setAnimated(true);
+		pane.add(innerComp);
+		
+		 // get the built-in toggle action
+		 Action toggleAction = pane.getActionMap().
+		   get(JXCollapsiblePane.TOGGLE_ACTION);
 
-	public static JComponent createEndpointLabelWithIcon(ImageLoader loader, Study s, Endpoint e) {
+		 // use the collapse/expand icons from the JTree UI
+		 toggleAction.putValue(JXCollapsiblePane.COLLAPSE_ICON,
+				 ImageLoader.getIcon(FileNames.ICON_COLLAPSE));
+		 toggleAction.putValue(JXCollapsiblePane.EXPAND_ICON,
+				 ImageLoader.getIcon(FileNames.ICON_EXPAND));
+		
+		topPane.add(pane, BorderLayout.CENTER);
+		JideButton button = new JideButton(pane.getActionMap().get(JXCollapsiblePane.TOGGLE_ACTION));
+		button.setText("");
+		topPane.add(button, BorderLayout.SOUTH);
+		return topPane;
+	}	
+
+	public static JComponent createEndpointLabelWithIcon(Study s, Endpoint e) {
 		String fname = FileNames.ICON_STUDY;
 		if (s instanceof MetaStudy) {
 			MetaStudy ms = (MetaStudy) s;
@@ -63,13 +87,9 @@ public class GUIFactory {
 			}
 		}
 		JLabel textLabel = null;
-		try {
-			Icon icon = loader.getIcon(fname);
-			textLabel = new JLabel(e.getName(), icon, JLabel.CENTER);			
-		} catch (FileNotFoundException ex) {
-			textLabel = new JLabel(e.getName());			
-			ex.printStackTrace();
-		}
+		Icon icon = ImageLoader.getIcon(fname);
+		textLabel = new JLabel(e.getName(), icon, JLabel.CENTER);			
+		
 		Bindings.bind(textLabel, "text", 
 				new PresentationModel<Endpoint>(e).getModel(Endpoint.PROPERTY_NAME));
 		return textLabel;

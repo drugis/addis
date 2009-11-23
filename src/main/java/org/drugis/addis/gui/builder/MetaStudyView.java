@@ -7,7 +7,6 @@ import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.CharacteristicHolder;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
@@ -24,10 +23,10 @@ public class MetaStudyView implements ViewBuilder {
 	private StudyDataView d_dataView;
 	private StudyEndpointsView d_epView;
 
-	public MetaStudyView(MetaStudyPresentationModel model, Main main, ImageLoader loader) {
+	public MetaStudyView(MetaStudyPresentationModel model, Main main) {
 		d_model = model;
 		d_studyView = new StudyTablePanelView(model, main);
-		d_dataView = new StudyDataView(model, loader, main.getPresentationModelManager());
+		d_dataView = new StudyDataView(model, main.getPresentationModelManager());
 		d_epView = new StudyEndpointsView(model, main);
 	}
 	

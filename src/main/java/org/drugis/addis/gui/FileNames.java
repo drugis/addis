@@ -28,4 +28,6 @@ public class FileNames {
 	public static final String ICON_DELETE = "delete.gif";
 	public static final String ICON_INDICATION = "indication.gif";
 	public static final String ICON_PLUS = "add.gif";
+	public static final String ICON_COLLAPSE = "collapse.gif";
+	public static final String ICON_EXPAND = "expand.gif";
 }
