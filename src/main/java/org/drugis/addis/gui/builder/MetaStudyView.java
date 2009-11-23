@@ -1,9 +1,11 @@
 package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.CharacteristicHolder;
 import org.drugis.addis.presentation.MetaStudyPresentationModel;
@@ -20,32 +22,48 @@ import com.jgoodies.forms.layout.FormLayout;
 public class MetaStudyView implements ViewBuilder {
 	private MetaStudyPresentationModel d_model;
 	private StudyTablePanelView d_studyView;
-	private StudyDataView d_dataView;
 	private StudyEndpointsView d_epView;
 
 	public MetaStudyView(MetaStudyPresentationModel model, Main main) {
 		d_model = model;
 		d_studyView = new StudyTablePanelView(model, main);
-		d_dataView = new StudyDataView(model, main.getPresentationModelManager());
 		d_epView = new StudyEndpointsView(model, main);
 	}
 	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
-				"right:pref, 3dlu, left:pref:grow",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"pref:grow:fill",
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
-		int fullWidth = 3;
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
 		
-		builder.addSeparator("Meta-analysis", cc.xyw(1,1,fullWidth));
-		builder.addLabel("ID:", cc.xy(1, 3));
-		builder.add(BasicComponentFactory.createLabel(
-				d_model.getModel(AbstractStudy.PROPERTY_ID)), cc.xy(3, 3));
+		builder.addSeparator("Meta-analysis", cc.xy(1,1));
+		builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
 		
-		int row = 5;
+		builder.addSeparator("Included Studies", cc.xy(1, 5));
+		builder.add(GUIFactory.createCollapsiblePanel(d_studyView.buildPanel()), cc.xy(1, 7));
+		
+		builder.addSeparator("Endpoints", cc.xy(1, 9));
+		builder.add(GUIFactory.createCollapsiblePanel(d_epView.buildPanel()), cc.xy(1, 11));
+		
+		return builder.getPanel();
+	}
+
+	private JPanel buildOverviewPart() {
+		FormLayout layout = new FormLayout( 
+				"right:pref, 3dlu, pref:grow",
+				"p"
+				);
+		PanelBuilder builder = new PanelBuilder(layout);
+		CellConstraints cc = new CellConstraints();
+		
+		builder.addLabel("ID:", cc.xy(1, 1));
+		builder.add(BasicComponentFactory.createLabel(
+				d_model.getModel(AbstractStudy.PROPERTY_ID)), cc.xy(3, 1));
+		
+		int row = 3;
 		for (StudyCharacteristic c : StudyCharacteristic.values()) {
 			ValueModel model = new CharacteristicHolder(d_model.getBean(), c);
 			if (model.getValue() != null) {
@@ -56,19 +74,6 @@ public class MetaStudyView implements ViewBuilder {
 				row += 2;				
 			}
 		}
-		
-		builder.addSeparator("Included Studies", cc.xyw(1, row, fullWidth));
-		row += 2;
-		builder.add(d_studyView.buildPanel(), cc.xyw(1, row, fullWidth));
-		row += 2;
-		builder.addSeparator("Endpoints", cc.xyw(1, row, fullWidth));
-		row += 2;
-		builder.add(d_epView.buildPanel(), cc.xyw(1, row, fullWidth));
-		row += 2;		
-		builder.addSeparator("Data", cc.xyw(1, row, fullWidth));
-		row += 2;
-		builder.add(d_dataView.buildPanel(), cc.xyw(1, row, fullWidth));		
-		
 		return builder.getPanel();
 	}
 }
