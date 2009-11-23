@@ -24,7 +24,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 
-import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicRateMeasurement;
@@ -77,7 +76,7 @@ public class ExampleData {
 		domain.addEndpoint(buildEndpointUnused());
 	}
 
-	public static AbstractStudy buildDefaultStudy1() {
+	public static BasicStudy buildDefaultStudy1() {
 		BasicStudy study = new BasicStudy("Chouinard et al, 1999", buildIndicationDepression());
 		study.setEndpoints(new HashSet<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
@@ -159,7 +158,7 @@ public class ExampleData {
 		return study;
 	}
 
-	public static AbstractStudy buildDefaultStudy2() {
+	public static BasicStudy buildDefaultStudy2() {
 		Endpoint hamd = buildEndpointHamd();
 		Drug fluoxetine = buildDrugFluoxetine();
 		BasicStudy study = new BasicStudy("De Wilde et al, 1993", buildIndicationDepression());
@@ -203,7 +202,7 @@ public class ExampleData {
 		return study;
 	}
 
-	public static AbstractStudy buildDefaultStudy3() {
+	public static BasicStudy buildDefaultStudy3() {
 		BasicStudy study = new BasicStudy("Bennie et al, 1995", buildIndicationDepression());
 		study.setEndpoints(new HashSet<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
@@ -249,7 +248,7 @@ public class ExampleData {
 		return study;
 	}
 
-	public static AbstractStudy buildAdditionalStudyThreeArm() {
+	public static BasicStudy buildAdditionalStudyThreeArm() {
 		BasicStudy study = new BasicStudy("SciFictional et al, 2359", buildIndicationDepression());
 		study.setEndpoints(new HashSet<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
@@ -297,7 +296,7 @@ public class ExampleData {
 		return study;
 	}
 
-	public static AbstractStudy buildHeartStudy() {
+	public static BasicStudy buildHeartStudy() {
 		BasicStudy study = new BasicStudy("McMurray et al, 2003", buildIndicationChronicHeartFailure());
 		study.setEndpoints(Collections.singleton(buildEndpointCVdeath()));
 		

@@ -30,12 +30,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 
-import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
@@ -85,7 +83,7 @@ public class DomainTreeModelTest {
 		d_domain.addStudy(d_firstStudy);
 		d_domain.addDrug(d_firstDrug);
 		
-		d_domain.addStudy(d_firstMetaStudy);
+		d_domain.addMetaStudy(d_firstMetaStudy);
 		
 		d_treeModel = new DomainTreeModel(d_domain);
 	}
@@ -266,13 +264,9 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testMetaStudyIsLeaf() {
-		List<Study> l = new ArrayList<Study>();
-		AbstractStudy basicStudy = new BasicStudy("X", d_firstIndication);
-		basicStudy.addEndpoint(new Endpoint("E", Type.RATE));
-		l.add(basicStudy);
 		MetaStudy study = new MetaStudy("meta",
-				new MetaAnalysis(new Endpoint("E", Type.RATE), l));
-		d_domain.addStudy(study);
+				new MetaAnalysis(d_firstEndpoint, new ArrayList<Study>(Collections.singleton(d_firstStudy))));
+		d_domain.addMetaStudy(study);
 		assertTrue(d_treeModel.isLeaf(study));
 	}
 }

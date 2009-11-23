@@ -67,7 +67,7 @@ public class DomainImplTest {
 		studies.add(ExampleData.buildDefaultStudy2());
 		MetaAnalysis ma = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies); 
 		MetaStudy metaStudy = new MetaStudy("meta", ma);
-		d_domain.addStudy(metaStudy);
+		d_domain.addMetaStudy(metaStudy);
 		
 		Set<Entity> deps = d_domain.getDependents(ExampleData.buildDrugFluoxetine());
 		assertTrue(deps.contains(metaStudy));

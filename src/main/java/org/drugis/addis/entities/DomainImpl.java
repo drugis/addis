@@ -106,7 +106,7 @@ public class DomainImpl implements Domain, Serializable {
 		return Collections.unmodifiableList(d_listeners);
 	}
 
-	public void addStudy(Study s) throws NullPointerException {
+	public void addStudy(BasicStudy s) throws NullPointerException {
 		if (s == null) {
 			throw new NullPointerException("Study may not be null");
 		}
@@ -115,11 +115,21 @@ public class DomainImpl implements Domain, Serializable {
 		if (!getIndications().contains(s.getCharacteristics().get(StudyCharacteristic.INDICATION))) {
 			throw new IllegalArgumentException("indication of this study not in the domain");
 		}
-		if (s instanceof MetaStudy) {
-			d_metaStudies.add((MetaStudy)s);
-		} else {
-			d_studies.add(s);
+		d_studies.add(s);
+		
+		fireStudiesChanged();
+	}
+	
+	public void addMetaStudy(MetaStudy ms) throws NullPointerException {
+		if (ms == null) {
+			throw new NullPointerException("Meta-Study may not be null");
 		}
+		ms.addPropertyChangeListener(d_studyListener);
+		
+		if (!getStudies().containsAll(ms.getAnalysis().getStudies()))
+			throw new IllegalArgumentException("Not All studies in this Meta-Study are in the domain");
+		
+		d_metaStudies.add(ms);
 		
 		fireStudiesChanged();
 	}

@@ -57,8 +57,17 @@ public interface Domain {
 	 * @throws NullPointerException if e is null
 	 * @throws IllegalArgumentException if indication of the study is not included in the domain yet
 	 */
-	public void addStudy(Study s) throws NullPointerException, IllegalArgumentException;
+	public void addStudy(BasicStudy s) throws NullPointerException, IllegalArgumentException;
 
+	/**
+	 * Adds a MetaStudy to the data model.
+	 * 
+	 * @param ms the meta-study to add
+	 * @throws NullPointerException if ma is null
+	 * @throws IllegalArgumentException if list of the studies is not included in the domain yet
+	 */
+	public void addMetaStudy(MetaStudy ms) throws NullPointerException;
+	
 	/**
 	 * Get the studies stored in the data model, EXCLUDING the meta-studies.
 	 * @return An unmodifiable sorted set of studies. Never a null.

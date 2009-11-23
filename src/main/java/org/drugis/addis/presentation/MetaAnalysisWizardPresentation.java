@@ -373,7 +373,7 @@ public class MetaAnalysisWizardPresentation {
 	
 	public MetaStudy saveMetaAnalysis(String name, MetaAnalysis ma) {
 		MetaStudy study = new MetaStudy(name,ma);
-		d_domain.addStudy(study);
+		d_domain.addMetaStudy(study);
 		return study;
 	}
 }

@@ -119,7 +119,7 @@ public class DomainTest {
 		studies.add(ExampleData.buildDefaultStudy2());
 		MetaAnalysis ma = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies); 
 		MetaStudy s = new MetaStudy("meta", ma);
-		d_domain.addStudy(s);
+		d_domain.addMetaStudy(s);
 		return s;
 	}
 	
@@ -204,14 +204,14 @@ public class DomainTest {
 		
 		Set<Endpoint> l1 = new HashSet<Endpoint>();
 		l1.add(e1);
-		AbstractStudy s1 = new BasicStudy("X", d_indication);
+		BasicStudy s1 = new BasicStudy("X", d_indication);
 		s1.setId("s1");
 		s1.setEndpoints(l1);
 		
 		Set<Endpoint> l2 = new HashSet<Endpoint>();
 		l2.add(e2);
 		l2.add(e1);
-		AbstractStudy s2 = new BasicStudy("X", d_indication);
+		BasicStudy s2 = new BasicStudy("X", d_indication);
 		s2.setId("s2");
 		s2.setEndpoints(l2);
 		
@@ -237,13 +237,13 @@ public class DomainTest {
 		l1.add(e1);
 		Indication i1 = new Indication(0L, "");
 		d_domain.addIndication(i1);
-		AbstractStudy s1 = new BasicStudy("s1", i1);
+		BasicStudy s1 = new BasicStudy("s1", i1);
 		s1.setEndpoints(l1);
 		
 		Set<Endpoint> l2 = new HashSet<Endpoint>();
 		l2.add(e2);
 		l2.add(e1);
-		AbstractStudy s2 = new BasicStudy("s2", i1);
+		BasicStudy s2 = new BasicStudy("s2", i1);
 		s2.setEndpoints(l2);
 		
 		d_domain.addStudy(s1);
@@ -336,7 +336,7 @@ public class DomainTest {
 		assertEquals(d1.hashCode(), d2.hashCode());
 		
 		d1.addIndication(d_indication);
-		AbstractStudy s = new BasicStudy("s1", d_indication);
+		BasicStudy s = new BasicStudy("s1", d_indication);
 		d1.addStudy(s);
 		JUnitUtil.assertNotEquals(d1, d2);
 		d2.addIndication(d_indication);
@@ -347,7 +347,7 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteStudy() throws DependentEntitiesException {
-		AbstractStudy s = new BasicStudy("X", d_indication);
+		BasicStudy s = new BasicStudy("X", d_indication);
 		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s);
 		d_domain.deleteStudy(s);
@@ -356,8 +356,8 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteStudyThrowsCorrectException() {
-		AbstractStudy s1 = new BasicStudy("X", d_indication);
-		AbstractStudy s2 = new BasicStudy("Y", d_indication);
+		BasicStudy s1 = new BasicStudy("X", d_indication);
+		BasicStudy s2 = new BasicStudy("Y", d_indication);
 		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s1);
 		d_domain.addStudy(s2);
@@ -370,7 +370,7 @@ public class DomainTest {
 		ArrayList<Study> studies = new ArrayList<Study>(d_domain.getStudies());
 		MetaAnalysis ma = new MetaAnalysis(e, studies); 
 		MetaStudy s = new MetaStudy("meta", ma);
-		d_domain.addStudy(s);
+		d_domain.addMetaStudy(s);
 
 		try {
 			d_domain.deleteStudy(s1);
@@ -382,7 +382,7 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteStudyFires() throws DependentEntitiesException {
-		AbstractStudy s1 = new BasicStudy("X", d_indication);
+		BasicStudy s1 = new BasicStudy("X", d_indication);
 		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s1);
 		
