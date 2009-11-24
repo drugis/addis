@@ -4,11 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.drugis.addis.entities.metaanalysis.LogOddsRatio;
 import org.drugis.addis.entities.metaanalysis.RelativeEffectFactory;
-import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Test;
 
-public class NewLogOddsRatioTest {
+public class LogOddsRatioTest {
 	/* 
 	 * Test data from Figure 2 in "Efficacy and Safety of Second-Generation 
 	 * Antidepressants in the Treatment of Major Depressive Disorder" 
@@ -38,7 +37,7 @@ public class NewLogOddsRatioTest {
 	
 	private Study d_bennie, d_boyer, d_fava, d_newhouse, d_sechter;
 	
-	private LogOddsRatio d_ratioBennie, d_ratioBoyer, d_ratioFava, d_ratioNewhouse, d_ratioSechter;
+	private OddsRatio d_ratioBennie, d_ratioBoyer, d_ratioFava, d_ratioNewhouse, d_ratioSechter;
 
 	@Before
 	public void setUp() {
@@ -54,11 +53,11 @@ public class NewLogOddsRatioTest {
 		d_sechter = createStudy("Sechter 1999", 76,120, 86,118);
 				
 		
-		d_ratioBennie = (LogOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
-		d_ratioBoyer = (LogOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
-		d_ratioFava = (LogOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
-		d_ratioNewhouse = (LogOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
-		d_ratioSechter = (LogOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
+		d_ratioBennie = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
+		d_ratioBoyer = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
+		d_ratioFava = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
+		d_ratioNewhouse = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
+		d_ratioSechter = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
 	}
 	
 	@Test
@@ -75,42 +74,7 @@ public class NewLogOddsRatioTest {
 		double expected = Math.sqrt(1/63D + 1/73D + 1/(144D-63D) + 1/(142D-73D));
 		assertEquals(expected, d_ratioBennie.getError(), 0.001);
 	}
-	
-	@Test
-	public void testGetConfidenceIntervalBennie() {
-		Interval<Double> ival = d_ratioBennie.getConfidenceInterval();
-		assertEquals(0.85, Math.exp(ival.getLowerBound()), 0.01);
-		assertEquals(2.17, Math.exp(ival.getUpperBound()), 0.01);
-	}
-	
-	@Test
-	public void testGetConfidenceIntervalBoyer() {
-		Interval<Double> ival = d_ratioBoyer.getConfidenceInterval();
-		assertEquals(0.62, Math.exp(ival.getLowerBound()), 0.01); 
-		assertEquals(1.71, Math.exp(ival.getUpperBound()), 0.01); 
-	}
-	
-	@Test
-	public void testGetConfidenceIntervalFava() {
-		Interval<Double> ival = d_ratioFava.getConfidenceInterval();
-		assertEquals(0.89, Math.exp(ival.getLowerBound()), 0.01); 
-		assertEquals(3.06, Math.exp(ival.getUpperBound()), 0.015); 
-	}
-	
-	@Test
-	public void testGetConfidenceIntervalNewhouse() {
-		Interval<Double> ival = d_ratioNewhouse.getConfidenceInterval();
-		assertEquals(0.63, Math.exp(ival.getLowerBound()), 0.01); 
-		assertEquals(1.95, Math.exp(ival.getUpperBound()), 0.01); 
-	}
-	
-	@Test
-	public void testGetConfidenceIntervalSechter() {
-		Interval<Double> ival = d_ratioSechter.getConfidenceInterval();
-		assertEquals(0.90, Math.exp(ival.getLowerBound()), 0.01); 
-		assertEquals(2.70, Math.exp(ival.getUpperBound()), 0.01); 
-	}
-		
+			
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize)
 	{
 		BasicStudy s = new BasicStudy(studyName, d_ind);

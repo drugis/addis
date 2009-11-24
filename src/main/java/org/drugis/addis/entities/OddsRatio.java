@@ -19,8 +19,6 @@
 
 package org.drugis.addis.entities;
 
-import org.drugis.addis.entities.Endpoint.Type;
-
 
 public class OddsRatio extends AbstractRatio {
 	private static final long serialVersionUID = -6897859558867350347L;
@@ -35,21 +33,30 @@ public class OddsRatio extends AbstractRatio {
 		super(denominator, numerator);
 	}
 
-	@Override
-	protected double getMean(RateMeasurement m) {
-		return (double)m.getRate() / (double)(m.getSampleSize() - m.getRate());
-	}
-
-	public boolean isOfType(Type type) {
-		return false;
-	}
-
-	@Override
 	public String getName() {
-		return "OddsRatio";
+		return "Odds ratio";
 	}
 	
 	public AxisType getAxisType() {
 		return AxisType.LOGARITHMIC;
+	}
+
+	public Double getRelativeEffect() {
+		int d = d_denominator.getSampleSize() - d_denominator.getRate();
+		int c = d_numerator.getSampleSize() - d_numerator.getRate();
+		return ((double) d_numerator.getRate() * (double) d) / ((double) d_denominator.getRate() * (double) c); 
+	}
+
+	public Double getError() {
+		return Math.sqrt(invEffect(d_denominator) + invNoEffect(d_denominator) +
+		invEffect(d_numerator) + invNoEffect(d_numerator));
+	}
+
+	private double invEffect(RateMeasurement m) {
+		return 1.0 / m.getRate();
+	}
+
+	private double invNoEffect(RateMeasurement m) {
+		return 1.0 / (m.getSampleSize() - m.getRate());
 	}
 }

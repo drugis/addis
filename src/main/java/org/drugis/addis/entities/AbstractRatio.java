@@ -29,15 +29,7 @@ public abstract class AbstractRatio extends AbstractEntity implements RelativeEf
 	private static final long serialVersionUID = 1647344976539753330L;
 	
 	protected RateMeasurement d_numerator;
-	protected RateMeasurement d_denominator;
-	
-	public RateMeasurement getSubject() {
-		return d_numerator;
-	}
-
-	public RateMeasurement getBaseline() {
-		return d_denominator;
-	}
+	protected RateMeasurement d_denominator;		
 
 	protected AbstractRatio(RateMeasurement denominator, RateMeasurement numerator) throws IllegalArgumentException {
 		if (!denominator.getEndpoint().equals(numerator.getEndpoint())) {
@@ -47,12 +39,14 @@ public abstract class AbstractRatio extends AbstractEntity implements RelativeEf
 		d_numerator = numerator;
 		d_denominator = denominator;
 	}
-
-	protected double getStdDev(RateMeasurement m) {
-		return getMean(m) / Math.sqrt(m.getSampleSize());
+	
+	public RateMeasurement getSubject() {
+		return d_numerator;
 	}
 
-	protected abstract double getMean(RateMeasurement m);
+	public RateMeasurement getBaseline() {
+		return d_denominator;
+	}	
 
 	public Endpoint getEndpoint() {
 		return d_numerator.getEndpoint();
@@ -62,49 +56,20 @@ public abstract class AbstractRatio extends AbstractEntity implements RelativeEf
 		return d_numerator.getSampleSize() + d_denominator.getSampleSize();
 	}
 
-	public Interval<Double> getConfidenceInterval() {
-		double g = getG(getCriticalValue());
-		double qx = getAssymmetricalMean(g);
-		double sd = getStdDev(g, qx);
-		
-		return new Interval<Double>((qx - getCriticalValue() * sd), (qx + getCriticalValue() * sd));
-	}
-	
-	private static double sq(double d) {
-		return d * d;
-	}	
-
-	private double getStdDev(double g, double qx) {
-		return qx * Math.sqrt((1 - g) * sq(getStdDev(d_numerator)) / sq(getMean(d_numerator)) +
-				sq(getStdDev(d_denominator)) / sq(getMean(d_denominator)));
-	}
-
-	private double getAssymmetricalMean(double g) {
-		return getRelativeEffect() / (1 - g);
-	}
-
-	private double getG(double t) {
-		return sq(t * getStdDev(d_denominator) / getMean(d_denominator));
-	}
-
 	protected double getCriticalValue() {
 		return StudentTTable.getT(getSampleSize() - 2);
 	}
 
-	public Double getError() {
-		double g = getG(getCriticalValue());
-		return getStdDev(g, getAssymmetricalMean(g));
-	}
-
-	public Double getRelativeEffect() {
-		return getMean(d_numerator) / getMean(d_denominator);
-	}
-
+	
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();
 	}
 
-	public String getName() {
-		return "NOT IMPLEMENTED IN ABSTRACT-CLASS";
+	public Interval<Double> getConfidenceInterval() {
+		double lBound = Math.log(getRelativeEffect());
+		lBound -= getCriticalValue() * getError();
+		double uBound = Math.log(getRelativeEffect());
+		uBound += getCriticalValue() * getError();
+		return new Interval<Double>(Math.exp(lBound), Math.exp(uBound));
 	}
 }

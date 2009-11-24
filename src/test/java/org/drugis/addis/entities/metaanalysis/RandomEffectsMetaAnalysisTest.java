@@ -15,9 +15,10 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.LogRiskRatio;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.RelativeEffectMetaAnalysis;
+import org.drugis.addis.entities.RiskRatio;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.JUnitUtil;
@@ -110,7 +111,7 @@ public class RandomEffectsMetaAnalysisTest {
 		
 	@Test
 	public void testGetRiskRatioRelativeEffect() {
-		RelativeEffectMetaAnalysis<Measurement> riskRatio = d_rema.getRelativeEffect(LogRiskRatio.class);
+		RelativeEffectMetaAnalysis<Measurement> riskRatio = d_rema.getRelativeEffect(RiskRatio.class);
 		assertEquals(2.03, riskRatio.getHeterogeneity(), 0.01);
 		assertEquals(1.10, (riskRatio.getRelativeEffect()), 0.01); 
 		assertEquals(1.01, (riskRatio.getConfidenceInterval().getLowerBound()), 0.01);
@@ -119,7 +120,7 @@ public class RandomEffectsMetaAnalysisTest {
 	
 	@Test
 	public void testGetOddsRatioRelativeEffect() {
-		RelativeEffectMetaAnalysis<Measurement> oddsRatio = d_rema.getRelativeEffect(LogOddsRatio.class);
+		RelativeEffectMetaAnalysis<Measurement> oddsRatio = d_rema.getRelativeEffect(OddsRatio.class);
 		assertEquals(2.14, oddsRatio.getHeterogeneity(), 0.01);
 		assertEquals(1.30, (oddsRatio.getRelativeEffect()), 0.01); 
 		assertEquals(1.03, (oddsRatio.getConfidenceInterval().getLowerBound()), 0.01);

@@ -30,29 +30,12 @@ public class LogRiskRatio extends RiskRatio {
 	}
 	
 	@Override
-	public Double getError() {
-		return Math.sqrt((1.0 / this.d_numerator.getRate()) +
-		(1.0 / this.d_denominator.getRate()) -
-		(1.0 / this.d_numerator.getSampleSize()) -
-		(1.0 / this.d_denominator.getSampleSize()));
-	}
-	
-	@Override
 	public Double getRelativeEffect() {
 		return Math.log(super.getRelativeEffect());
 	}
 	
 	@Override
-	public double getCriticalValue() {
-		return super.getCriticalValue();
-	}
-	
-	@Override
 	public Interval<Double> getConfidenceInterval() {
-		double lBound = getRelativeEffect();
-		lBound -= getCriticalValue() * getError();
-		double uBound = getRelativeEffect();
-		uBound += getCriticalValue() * getError();
-		return new Interval<Double>(lBound, uBound);
+		throw new RuntimeException("log risk ratio doesn't have confidence interval");
 	}
 }

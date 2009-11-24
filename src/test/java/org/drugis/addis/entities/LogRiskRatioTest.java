@@ -22,10 +22,8 @@ package org.drugis.addis.entities;
 import static org.junit.Assert.assertEquals;
 
 import org.drugis.addis.entities.metaanalysis.RelativeEffectFactory;
-import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Test;
-
 
 public class LogRiskRatioTest {
 
@@ -81,44 +79,8 @@ public class LogRiskRatioTest {
 		double expected = Math.sqrt(1/63D + 1/73D - 1/144D - 1/142D);
 		assertEquals(expected, d_ratioBennie.getError(), 0.001);
 	}
-	
-	@Test
-	public void testGetConfidenceIntervalBennie() {
-		Interval<Double> ival = d_ratioBennie.getConfidenceInterval();
-		assertEquals(0.92, Math.exp(ival.getLowerBound()), 0.01);
-		assertEquals(1.50, Math.exp(ival.getUpperBound()), 0.01);
-	}
-	
-	@Test
-	public void testGetConfidenceIntervalBoyer() {
-		Interval<Double> ival = d_ratioBoyer.getConfidenceInterval();
-		assertEquals(0.79, Math.exp(ival.getLowerBound()), 0.01); 
-		assertEquals(1.30, Math.exp(ival.getUpperBound()), 0.01); 
-	}
-	
-	@Test
-	public void testGetConfidenceIntervalFava() {
-		Interval<Double> ival = d_ratioFava.getConfidenceInterval();
-		assertEquals(0.96, Math.exp(ival.getLowerBound()), 0.01); 
-		assertEquals(1.45, Math.exp(ival.getUpperBound()), 0.01); 
-	}
-	
-	@Test
-	public void testGetConfidenceIntervalNewhouse() {
-		Interval<Double> ival = d_ratioNewhouse.getConfidenceInterval();
-		assertEquals(0.87, Math.exp(ival.getLowerBound()), 0.01); 
-		assertEquals(1.21, Math.exp(ival.getUpperBound()), 0.01); 
-	}
-	
-	@Test
-	public void testGetConfidenceIntervalSechter() {
-		Interval<Double> ival = d_ratioSechter.getConfidenceInterval();
-		assertEquals(0.97, Math.exp(ival.getLowerBound()), 0.01); 
-		assertEquals(1.38, Math.exp(ival.getUpperBound()), 0.01); 
-	}
-		
-	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize)
-	{
+			
+	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize) {
 		BasicStudy s = new BasicStudy(studyName, d_ind);
 		s.addEndpoint(d_ep);
 		BasicPatientGroup g_fluox = new BasicPatientGroup(s, d_fluox, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY),fluoxSize);

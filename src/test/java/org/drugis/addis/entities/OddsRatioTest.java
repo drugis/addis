@@ -21,86 +21,113 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
 
-import org.drugis.addis.entities.Endpoint.Type;
+import org.drugis.addis.entities.metaanalysis.RelativeEffectFactory;
 import org.drugis.common.Interval;
-import org.drugis.common.StudentTTable;
 import org.junit.Before;
 import org.junit.Test;
 
 public class OddsRatioTest {
-	private static final int s_sizeNum = 142;
-	private static final int s_sizeDen = 144;
-	private static final int s_effectNum = 73;
-	private static final int s_effectDen = 63;
-	private static final double s_meanNum = (double)s_effectNum / (double)(s_sizeNum - s_effectNum); 
-	private static final double s_meanDen = (double)s_effectDen / (double)(s_sizeDen - s_effectDen);
-	private static final double s_stdDevNum = s_meanNum / Math.sqrt(s_sizeNum);
-	private static final double s_stdDevDen = s_meanDen / Math.sqrt(s_sizeDen);
+	private Drug d_fluox;
+	private Drug d_sertra;
 	
-	BasicRateMeasurement d_numerator;
-	BasicRateMeasurement d_denominator;
-	OddsRatio d_ratio;
+	private Indication d_ind;
+	private Endpoint d_ep;
 	
+	private Study d_bennie, d_boyer, d_fava, d_newhouse, d_sechter;
+	
+	private OddsRatio d_ratioBennie, d_ratioBoyer, d_ratioFava, d_ratioNewhouse, d_ratioSechter;
+
 	@Before
 	public void setUp() {
-		Endpoint e = new Endpoint("E", Type.RATE);
-		PatientGroup pnum = new BasicPatientGroup(null,null,null,s_sizeNum);
-		PatientGroup pden = new BasicPatientGroup(null,null,null,s_sizeDen);
-		d_numerator = new BasicRateMeasurement(e, s_effectNum, pnum);		
-		d_denominator = new BasicRateMeasurement(e, s_effectDen, pden);
-		d_ratio = new OddsRatio(d_denominator, d_numerator);
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void testConstructorThrowsException() {
-		Endpoint e2 = new Endpoint("E2", Type.RATE);
-		PatientGroup pnum = new BasicPatientGroup(null, null, null, s_sizeNum);
-		RateMeasurement subject = new BasicRateMeasurement(e2, s_effectNum, pnum);
-		new OddsRatio(d_denominator, subject);
-	}
-	
-	@Test
-	public void testGetEndpoint() {
-		assertEquals(new Endpoint("E", Type.RATE), d_ratio.getEndpoint());
-	}
-	
-	@Test
-	public void testGetSampleSize() {
-		assertEquals(s_sizeNum + s_sizeDen, (int)d_ratio.getSampleSize());
-	}
-	
-	@Test
-	public void testGetRelativeEffect() {
-		assertEquals(s_meanNum / s_meanDen, (double)d_ratio.getRelativeEffect(), 0.00001);
-	}
-	
-	@Test
-	public void testGetCI() {
-		double t = StudentTTable.getT(d_ratio.getSampleSize() - 2);
-		double g = square(t * s_stdDevDen / s_meanDen);
-		double q = d_ratio.getRelativeEffect();
-		double sd = q / (1 - g) * Math.sqrt((1 - g) * square(s_stdDevNum) / square(s_meanNum) + 
-				square(s_stdDevDen) / square(s_meanDen));
-		double lower = q / (1 - g) - t * sd;
-		double upper = q / (1 - g) + t * sd;
+		d_ind = new Indication(001L, "Impression");
+		d_fluox = new Drug("Fluoxetine","01");
+		d_sertra = new Drug("Sertraline","02");
+		d_ep = new Endpoint("ep", Endpoint.Type.RATE);
 		
-		Interval<Double> ci = d_ratio.getConfidenceInterval();
-		assertEquals(lower, ci.getLowerBound(), 0.0001);
-		assertEquals(upper, ci.getUpperBound(), 0.0001);
+		d_bennie = createStudy("Bennie 1995",63,144,73,142);
+		d_boyer = createStudy("Boyer 1998", 61,120, 63,122);
+		d_fava = createStudy("Fava 2002", 57, 92, 70, 96);
+		d_newhouse = createStudy("Newhouse 2000", 84,119, 85,117);
+		d_sechter = createStudy("Sechter 1999", 76,120, 86,118);
+				
+		
+		d_ratioBennie = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, d_fluox, d_sertra, OddsRatio.class);
+		d_ratioBoyer = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, d_fluox, d_sertra, OddsRatio.class);
+		d_ratioFava = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, d_fluox, d_sertra, OddsRatio.class);
+		d_ratioNewhouse = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, d_fluox, d_sertra, OddsRatio.class);
+		d_ratioSechter = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, d_fluox, d_sertra, OddsRatio.class);
 	}
 	
-	private double square(double d) {
-		return d * d;
+	@Test
+	public void testGetMean() {
+		assertEquals(1.36, (d_ratioBennie.getRelativeEffect()), 0.01);
+		assertEquals(1.03, (d_ratioBoyer.getRelativeEffect()), 0.01); 
+		assertEquals(1.65, (d_ratioFava.getRelativeEffect()), 0.01);
+		assertEquals(1.11, (d_ratioNewhouse.getRelativeEffect()), 0.01);
+		assertEquals(1.56, (d_ratioSechter.getRelativeEffect()), 0.01); 
 	}
 	
 	@Test
 	public void testGetError() {
-		double t = StudentTTable.getT(d_ratio.getSampleSize() - 2);
-		double g = square(t * s_stdDevDen / s_meanDen);
-		double q = d_ratio.getRelativeEffect();
-		double sd = q / (1 - g) * Math.sqrt((1 - g) * square(s_stdDevNum) / square(s_meanNum) + 
-				square(s_stdDevDen) / square(s_meanDen));
-		
-		assertEquals(sd, d_ratio.getError(), 0.00001);
+		double expected = Math.sqrt(1/63D + 1/73D + 1/(144D-63D) + 1/(142D-73D));
+		assertEquals(expected, d_ratioBennie.getError(), 0.001);
 	}
+	
+	@Test
+	public void testGetConfidenceIntervalBennie() {
+		Interval<Double> ival = d_ratioBennie.getConfidenceInterval();
+		assertEquals(0.85, (ival.getLowerBound()), 0.01);
+		assertEquals(2.17, (ival.getUpperBound()), 0.01);
+	}
+	
+	@Test
+	public void testGetConfidenceIntervalBoyer() {
+		Interval<Double> ival = d_ratioBoyer.getConfidenceInterval();
+		assertEquals(0.62, (ival.getLowerBound()), 0.01); 
+		assertEquals(1.71, (ival.getUpperBound()), 0.01); 
+	}
+	
+	@Test
+	public void testGetConfidenceIntervalFava() {
+		Interval<Double> ival = d_ratioFava.getConfidenceInterval();
+		assertEquals(0.89, (ival.getLowerBound()), 0.01); 
+		assertEquals(3.06, (ival.getUpperBound()), 0.015); 
+	}
+	
+	@Test
+	public void testGetConfidenceIntervalNewhouse() {
+		Interval<Double> ival = d_ratioNewhouse.getConfidenceInterval();
+		assertEquals(0.63, (ival.getLowerBound()), 0.01); 
+		assertEquals(1.95, (ival.getUpperBound()), 0.01); 
+	}
+	
+	@Test
+	public void testGetConfidenceIntervalSechter() {
+		Interval<Double> ival = d_ratioSechter.getConfidenceInterval();
+		assertEquals(0.90, (ival.getLowerBound()), 0.01); 
+		assertEquals(2.70, (ival.getUpperBound()), 0.01); 
+	}
+		
+	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize)
+	{
+		BasicStudy s = new BasicStudy(studyName, d_ind);
+		s.addEndpoint(d_ep);
+		BasicPatientGroup g_fluox = new BasicPatientGroup(s, d_fluox, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY),fluoxSize);
+		BasicPatientGroup g_parox = new BasicPatientGroup(s, d_sertra, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY),sertraSize);		
+		
+		s.addPatientGroup(g_parox);
+		s.addPatientGroup(g_fluox);
+		
+		BasicRateMeasurement m_parox = (BasicRateMeasurement) d_ep.buildMeasurement(g_parox);
+		BasicRateMeasurement m_fluox = (BasicRateMeasurement) d_ep.buildMeasurement(g_fluox);
+		
+		m_parox.setRate(sertraResp);
+		m_fluox.setRate(fluoxResp);
+		
+		s.setMeasurement(d_ep, g_parox, m_parox);
+		s.setMeasurement(d_ep, g_fluox, m_fluox);		
+		
+		return s;
+	}
+
 }

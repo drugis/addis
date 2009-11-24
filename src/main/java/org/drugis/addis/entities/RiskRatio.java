@@ -28,11 +28,6 @@ public class RiskRatio extends AbstractRatio {
 		super(denominator, numerator);
 	}
 
-	@Override
-	protected double getMean(RateMeasurement m) {
-		return (double)m.getRate() / m.getSampleSize();
-	}
-
 	public boolean isOfType(Type type) {
 		return type.equals(Type.CONTINUOUS);
 	}
@@ -42,13 +37,23 @@ public class RiskRatio extends AbstractRatio {
 		return "[" + d_denominator.toString() + "] / [" 
 		+ d_numerator.toString() + "]";
 	}
-
-	@Override
-	public String getName() {
-		return "Risk Ratio";
-	}
 	
 	public AxisType getAxisType() {
 		return AxisType.LOGARITHMIC;
+	}
+
+	public Double getError() {
+		return Math.sqrt((1.0 / this.d_numerator.getRate()) +
+				(1.0 / this.d_denominator.getRate()) -
+				(1.0 / this.d_numerator.getSampleSize()) -
+				(1.0 / this.d_denominator.getSampleSize()));		
+	}
+
+	public String getName() {
+		return "Risk ratio";
+	}
+	
+	public Double getRelativeEffect() {
+		return ((double) d_numerator.getRate() / (double) d_numerator.getSampleSize()) / ((double) d_denominator.getRate() / (double) d_denominator.getSampleSize());  
 	}
 }

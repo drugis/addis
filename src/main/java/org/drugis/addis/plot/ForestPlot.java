@@ -91,10 +91,15 @@ public class ForestPlot implements Plot {
 		drawVCentrString(g2d, d_pm.getRelativeEffectAt(0).getName(), d_bars.size() + 1, originX, Align.CENTER);
 		drawVCentrString(g2d, "Favours " + d_pm.getLowValueFavorsDrug().toString(), d_bars.size() + 2, originX - HORPAD, Align.RIGHT);
 		drawVCentrString(g2d, "Favours " + d_pm.getHighValueFavorsDrug().toString(), d_bars.size() + 2, originX + HORPAD, Align.LEFT);
+		
+		// Draw the Heterogeneity
+		if (d_pm.isMetaAnalysis()) {
+			drawVCentrString(g2d, "Heterogeneity: " + d_pm.getHeterogeneity(), d_bars.size() + 3, FULLWIDTH / 4, Align.CENTER);
+		}
 	}
 	
 	public Dimension getPlotSize() {
-		return new Dimension(FULLWIDTH, FULLROW * (d_bars.size() + 4) + ROWPAD);
+		return new Dimension(FULLWIDTH, FULLROW * (d_bars.size() + 5) + ROWPAD);
 	}
 	
 	

@@ -20,7 +20,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 public class RelativeEffectRatePresentationTest {
 	
-	private static final String LABELCONTENTS = "1.36 (1.07, 1.72)";
+	private static final String LABELCONTENTS = "1.36 (0.85, 2.17)";
 	private static final int s_sizeNum = 142;
 	private static final int s_sizeDen = 144;
 	private static final int s_effectNum = 73;

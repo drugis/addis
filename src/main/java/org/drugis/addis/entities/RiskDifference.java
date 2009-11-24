@@ -10,10 +10,6 @@ public class RiskDifference extends AbstractRatio {
 		super(denominator, numerator);
 	}
 
-	/**
-	 * The mean difference.
-	 */
-	@Override
 	public Double getRelativeEffect() {
 		double a = getSubject().getRate();
 		double n1 = getSubject().getSampleSize();
@@ -35,12 +31,7 @@ public class RiskDifference extends AbstractRatio {
 		return new Interval<Double>(lower, upper);
 	}
 
-	@Override
-	protected double getMean(RateMeasurement m) {
-		return 0;
-	}
 
-	@Override
 	// Here: gets the STANDARD ERROR of the RISK DIFFERENCE
 	public Double getError() {
 		double a = getSubject().getRate();

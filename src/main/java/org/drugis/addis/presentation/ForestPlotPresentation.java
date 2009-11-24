@@ -220,4 +220,12 @@ public class ForestPlotPresentation {
 	public boolean isCombined(int i) {
 		return i >= d_studies.size();
 	}
+
+	public Double getHeterogeneity() {
+		return d_analysis.getRelativeEffect(d_type).getHeterogeneity();
+	}
+
+	public boolean isMetaAnalysis() {
+		return d_analysis != null;
+	}
 }
