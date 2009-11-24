@@ -1,5 +1,7 @@
 package org.drugis.addis.entities;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,13 +19,13 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 	private List<Study> d_studies;
 	private Drug d_drug1;
 	private Drug d_drug2;	
+	private String d_name;	
 
-	private int d_totalSampleSize;
-	private double d_thetaDSL;
-	private double d_SEThetaDSL;
-	private Interval<Double> d_confidenceInterval;
-	private double d_qIV;
-	private String d_name;
+	transient private int d_totalSampleSize;
+	transient private double d_thetaDSL;
+	transient private double d_SEThetaDSL;
+	transient private Interval<Double> d_confidenceInterval;
+	transient private double d_qIV;
 	
 	public static final String PROPERTY_NAME = "name";
 
@@ -49,8 +51,13 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		d_drug2 = drug2;
 		d_name = name;
 		
-		d_totalSampleSize = 0;
+		d_totalSampleSize = 0;		
 	}
+	
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
+		in.defaultReadObject();
+		d_totalSampleSize = 0;
+	}	
 	
 	@Override
 	public String toString() {
@@ -192,24 +199,39 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		
 	public RelativeEffectMetaAnalysis<Measurement> getRelativeEffect(Class<? extends RelativeEffect<?>> type) {
 		compute(type);
-		return new RandomEffects();
+		return new RandomEffects(d_confidenceInterval, d_thetaDSL, d_totalSampleSize, d_SEThetaDSL, d_qIV);		
 	}
 	
 	private class RandomEffects implements RelativeEffectMetaAnalysis<Measurement> {
+		
+		private Interval<Double> t_confidenceInterval;
+		private double t_thetaDSL;
+		private int t_totalSampleSize;
+		private double t_qIV;
+		private Double t_SEThetaDSL;
+
+		public RandomEffects(Interval<Double> confidenceInterval, double thetaDSL, 
+				int totalSampleSize, double SEThetaDSL, double qIV) {
+			t_confidenceInterval = confidenceInterval;
+			t_thetaDSL = thetaDSL;
+			t_totalSampleSize = totalSampleSize;
+			t_SEThetaDSL = SEThetaDSL;
+			t_qIV = qIV;
+		}
 		public RelativeEffect.AxisType getAxisType() {
 			return AxisType.LOGARITHMIC;
 		}
 
 		public Interval<Double> getConfidenceInterval() {
-			return d_confidenceInterval;
+			return t_confidenceInterval;
 		}
 
 		public Double getRelativeEffect() {
-			return d_thetaDSL;
+			return t_thetaDSL;
 		}
 		
 		public Integer getSampleSize() {
-			return d_totalSampleSize;
+			return t_totalSampleSize;
 		}
 		
 		public Endpoint getEndpoint() {
@@ -229,11 +251,11 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		}
 
 		public Double getError() {
-			return d_SEThetaDSL;
+			return t_SEThetaDSL;
 		}
 
 		public double getHeterogeneity() {
-			return d_qIV;
+			return t_qIV;
 		}		
 	}
 

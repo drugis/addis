@@ -140,6 +140,7 @@ public class Main extends JFrame {
 			saveDomainToFile();
 			System.exit(0);			
 		} catch (Exception e) {
+			System.out.println(e);
 			JOptionPane.showMessageDialog(this,
 					"Error saving domain", "Error saving domain",
 					JOptionPane.ERROR_MESSAGE);

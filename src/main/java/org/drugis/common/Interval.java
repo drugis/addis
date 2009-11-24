@@ -1,6 +1,10 @@
 package org.drugis.common;
 
-public class Interval<N extends Number> {
+import java.io.Serializable;
+
+public class Interval<N extends Number> implements Serializable {
+	private static final long serialVersionUID = 1816274850902350090L;
+	
 	private N d_lowerBound;
 	private N d_upperBound;
 	
