@@ -10,9 +10,10 @@ import org.drugis.addis.entities.StudyCharacteristic;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
+import com.jgoodies.binding.value.ValueHolder;
 
 @SuppressWarnings("serial")
-public class DrugPresentationModel extends PresentationModel<Drug> implements StudyListPresentationModel {
+public class DrugPresentationModel extends PresentationModel<Drug> implements StudyListPresentationModel, LabeledPresentationModel {
 	
 	private CharacteristicVisibleMap d_charVisibleMap = new CharacteristicVisibleMap();
 	private ArrayList<Study> d_studies;
@@ -35,5 +36,9 @@ public class DrugPresentationModel extends PresentationModel<Drug> implements St
 		public List<Study> getValue() {
 			return new ArrayList<Study>(d_studies);
 		}
+	}
+
+	public AbstractValueModel getLabelModel() {
+		return new ValueHolder(getBean().getName());
 	}
 }

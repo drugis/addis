@@ -2,7 +2,6 @@ package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Indication;
@@ -41,7 +40,7 @@ public class IndicationView implements ViewBuilder {
 		builder.addSeparator("Indication", cc.xy(1, 1));
 		builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
 		builder.addSeparator("Studies", cc.xy(1, 5));
-		builder.add(GUIFactory.createCollapsiblePanel(buildStudiesPart()), cc.xy(1, 7));		
+		builder.add(GUIFactory.createCollapsiblePanel(GUIFactory.buildStudyPanel(d_pm, d_parent)), cc.xy(1, 7));		
 		
 		return builder.getPanel();
 	}
@@ -61,15 +60,5 @@ public class IndicationView implements ViewBuilder {
 		builder.add(BasicComponentFactory.createLabel(
 				d_pm.getModel(Indication.PROPERTY_NAME)), cc.xy(3, 3));
 		return builder.getPanel();
-	}
-
-	private JComponent buildStudiesPart() {
-		JComponent studiesComp = null;
-		if(d_pm.getIncludedStudies().getValue().isEmpty()) {
-			studiesComp = new JLabel("No studies found.");
-		} else {
-			studiesComp = new StudyTablePanelView(d_pm, d_parent).buildPanel();
-		}
-		return studiesComp;
 	}
 }

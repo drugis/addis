@@ -65,21 +65,21 @@ import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.MutableStudy;
+import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.builder.DrugView;
 import org.drugis.addis.gui.builder.EndpointView;
 import org.drugis.addis.gui.builder.IndicationView;
+import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
 import org.drugis.addis.gui.builder.MetaAnalysisWizard;
-import org.drugis.addis.gui.builder.MetaStudyView;
 import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.presentation.DrugPresentationModel;
 import org.drugis.addis.presentation.EndpointPresentationModel;
 import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
-import org.drugis.addis.presentation.MetaStudyPresentationModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
+import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
@@ -270,7 +270,7 @@ public class Main extends JFrame {
 			selectedType = "drug ";
 		} else if (selected instanceof Endpoint) {
 			selectedType = "endpoint ";
-		} else if (selected instanceof MetaStudy) {
+		} else if (selected instanceof RandomEffectsMetaAnalysis) {
 			selectedType = "meta-analysis ";
 		} else if (selected instanceof Study) {
 			selectedType = "study ";
@@ -477,8 +477,8 @@ public class Main extends JFrame {
 		return new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent event) {
 				Object node = ((JTree)event.getSource()).getLastSelectedPathComponent();
-				if (node instanceof MetaStudy) {
-					metaStudySelected((MetaStudy)node);
+				if (node instanceof RandomEffectsMetaAnalysis) {
+					metaAnalysisSelected((RandomEffectsMetaAnalysis)node);
 				} else if (node instanceof Study) {
 					studySelected((Study)node);
 				} else if (node instanceof Endpoint) {
@@ -535,8 +535,8 @@ public class Main extends JFrame {
 		setRightPanelView(view);		
 	}
 	
-	private void metaStudySelected(MetaStudy node) {
-		MetaStudyView view = new MetaStudyView( (MetaStudyPresentationModel) d_pmManager.getModel(node), this);
+	private void metaAnalysisSelected(RandomEffectsMetaAnalysis node) {
+		RandomEffectsMetaAnalysisView view = new RandomEffectsMetaAnalysisView((RandomEffectsMetaAnalysisPresentation) d_pmManager.getModel(node), this);
 		setRightPanelView(view);		
 	}
 
@@ -597,6 +597,10 @@ public class Main extends JFrame {
 		public void indicationsChanged() {
 			dataModelChanged();
 		}
+
+		public void analysesChanged() {
+			dataModelChanged();
+		}
 	}
 
 	public void leftTreeFocusOnStudy(Study d_study) {
@@ -605,7 +609,7 @@ public class Main extends JFrame {
 						d_domainTreeModel.getStudiesNode(), d_study }));		
 	}
 
-	public void leftTreeFocusOnMetaStudy(MetaStudy d_study) {
+	public void leftTreeFocusOnMetaStudy(RandomEffectsMetaAnalysis d_study) {
 		d_leftPanelTree.setSelectionPath(new TreePath(
 				new Object[] {d_domainTreeModel.getRoot(), 
 						d_domainTreeModel.getAnalysesNode(), d_study }));		

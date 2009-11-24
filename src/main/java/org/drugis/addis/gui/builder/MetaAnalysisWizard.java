@@ -17,8 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.MetaAnalysis;
-import org.drugis.addis.entities.MetaStudy;
+import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudyTable;
@@ -63,7 +62,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 	
 	@SuppressWarnings("serial")
 	public class OverviewWizardStep extends PanelWizardStep {
-		private MetaAnalysis d_ma;
+		private RandomEffectsMetaAnalysis d_ma;
 		
 		public OverviewWizardStep() {
 			super("Overview","Overview of selected Meta-analysis.");
@@ -76,7 +75,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 				add(new JLabel("Meta-Analyze Not Implemented for non-rate measurements"));
 			} else {
 				d_ma = d_pm.createMetaAnalysis();
-				ViewBuilder mav = new MetaAnalysisView(d_ma, d_frame.getPresentationModelManager());
+				ViewBuilder mav = new MetaAnalysisOverviewView(d_ma, d_frame.getPresentationModelManager());
 				add(mav.buildPanel());
 				setComplete(true);
 			}
@@ -95,7 +94,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			String res = JOptionPane.showInputDialog(this, "Input name for new analysis", 
 					"Save meta-analysis", JOptionPane.QUESTION_MESSAGE);
 			if (res != null) {
-				MetaStudy study = d_pm.saveMetaAnalysis(res, d_ma);	
+				RandomEffectsMetaAnalysis study = d_pm.saveMetaAnalysis(res, d_ma);	
 				d_frame.leftTreeFocusOnMetaStudy(study);
 			} else {
 				throw new InvalidStateException();

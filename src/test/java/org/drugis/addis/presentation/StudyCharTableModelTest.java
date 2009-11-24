@@ -24,6 +24,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -32,8 +34,7 @@ import javax.swing.table.TableModel;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.MetaAnalysis;
-import org.drugis.addis.entities.MetaStudy;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.common.JUnitUtil;
@@ -44,9 +45,9 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class StudyCharTableModelTest {
 	private Domain d_domain;
-	private StudyListPresentationModel d_pm;
 	private StudyCharTableModel d_model;
-	private MetaStudy d_study;
+	private Indication d_ind;
+	private IndicationPresentation d_pm;
 	
 	@Before
 	public void setUp() {
@@ -55,9 +56,10 @@ public class StudyCharTableModelTest {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(ExampleData.buildDefaultStudy1());
 		studies.add(ExampleData.buildDefaultStudy2());
-		MetaAnalysis ma = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies);
-		d_study = new MetaStudy("Meta", ma);
-		d_pm = new MetaStudyPresentationModel(d_study);
+		d_ind = d_domain.getIndications().first();
+		SortedSet<Study> sortedStudies = new TreeSet<Study>();
+		sortedStudies.addAll(studies);
+		d_pm = new IndicationPresentation(d_ind,sortedStudies);
 		d_model = new StudyCharTableModel(d_pm);
 	}	
 	

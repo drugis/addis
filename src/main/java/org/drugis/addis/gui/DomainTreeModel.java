@@ -32,7 +32,7 @@ import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.MetaStudy;
+import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.CollectionUtil;
 
@@ -70,6 +70,10 @@ public class DomainTreeModel implements TreeModel {
 		public void indicationsChanged() {
 			fireTreeStructureChanged();
 		}
+
+		public void analysesChanged() {
+			fireTreeStructureChanged();
+		}
 	}
 	
 	public DomainTreeModel(Domain domain) {
@@ -99,7 +103,7 @@ public class DomainTreeModel implements TreeModel {
 		} else if (isStudyRequest(parent, childIndex)) {
 			return CollectionUtil.getElementAtIndex(d_domain.getStudies(), childIndex);
 		} else if (isMetaStudyRequest(parent, childIndex)) {
-			return CollectionUtil.getElementAtIndex(d_domain.getMetaStudies(), childIndex);
+			return CollectionUtil.getElementAtIndex(d_domain.getMetaAnalyses(), childIndex);
 		}
 		return null;
 	}
@@ -121,7 +125,7 @@ public class DomainTreeModel implements TreeModel {
 	}
 	
 	private boolean isMetaStudyRequest(Object parent, int childIndex) {
-		return d_analysesNode == parent && childIndex >= 0 && childIndex < d_domain.getMetaStudies().size();
+		return d_analysesNode == parent && childIndex >= 0 && childIndex < d_domain.getMetaAnalyses().size();
 	}
 
 	public int getChildCount(Object parent) {
@@ -136,7 +140,7 @@ public class DomainTreeModel implements TreeModel {
 		} else if (d_drugsNode == parent) {
 			return d_domain.getDrugs().size();
 		} else if (d_analysesNode == parent) {
-			return d_domain.getMetaStudies().size();
+			return d_domain.getMetaAnalyses().size();
 		}
 		return 0;
 	}
@@ -170,7 +174,7 @@ public class DomainTreeModel implements TreeModel {
 			return CollectionUtil.getIndexOfElement(d_domain.getDrugs(), child);			
 		}
 		if (parent == d_analysesNode) {
-			return CollectionUtil.getIndexOfElement(d_domain.getMetaStudies(), child);			
+			return CollectionUtil.getIndexOfElement(d_domain.getMetaAnalyses(), child);			
 		}
 		return -1;
 	}
@@ -186,8 +190,8 @@ public class DomainTreeModel implements TreeModel {
 		if (node instanceof Endpoint) {
 			return d_domain.getEndpoints().contains(node);
 		}
-		if (node instanceof MetaStudy) {
-			return d_domain.getMetaStudies().contains(node);
+		if (node instanceof RandomEffectsMetaAnalysis) {
+			return d_domain.getMetaAnalyses().contains(node);
 		}
 		if (node instanceof Study) {
 			return d_domain.getStudies().contains(node);

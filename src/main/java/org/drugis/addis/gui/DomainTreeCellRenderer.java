@@ -28,7 +28,7 @@ import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.MetaStudy;
+import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
 import org.drugis.common.ImageLoader;
 
 @SuppressWarnings("serial")
@@ -40,9 +40,9 @@ public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 		if (value instanceof Endpoint) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_ENDPOINT));
 			setToolTipText("Endpoint");
-		} else if (value instanceof MetaStudy) {
+		} else if (value instanceof RandomEffectsMetaAnalysis) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_METASTUDY));
-			setToolTipText("Study from meta-analysis");
+			setToolTipText("Meta-analysis");
 		} else if (value instanceof BasicStudy) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_STUDY));
 			setToolTipText("Study");				

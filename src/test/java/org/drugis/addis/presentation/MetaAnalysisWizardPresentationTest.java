@@ -19,7 +19,7 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.MetaAnalysis;
+import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -467,13 +467,12 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		
-		MetaAnalysis ma = d_wizard.createMetaAnalysis();
-		assertTrue(ma.getDrugs().contains(d_wizard.getFirstDrugModel().getValue()));
-		assertTrue(ma.getDrugs().contains(d_wizard.getSecondDrugModel().getValue()));
-		assertEquals(2, ma.getDrugs().size());
+		RandomEffectsMetaAnalysis ma = d_wizard.createMetaAnalysis();
+		assertEquals(ma.getFirstDrug(), d_wizard.getFirstDrugModel().getValue());
+		assertEquals(ma.getSecondDrug(), d_wizard.getSecondDrugModel().getValue());
 		JUnitUtil.assertAllAndOnly((Collection<?>) d_wizard.getSelectedStudySet(), (Collection<?>) ma.getStudies());
-		assertEquals(d_wizard.getEndpointModel().getValue(), ma.getEndpoint());
-		assertEquals(d_wizard.getIndicationModel().getValue(), ma.getIndication());
+		assertEquals(ma.getEndpoint(), d_wizard.getEndpointModel().getValue());
+		assertEquals(ma.getIndication(), d_wizard.getIndicationModel().getValue());
 	}
 
 	@Test
@@ -493,8 +492,5 @@ public class MetaAnalysisWizardPresentationTest {
 		SortedSet<Study> set = new TreeSet<Study>();
 		set.add(ExampleData.buildAdditionalStudyThreeArm());
 		assertEquals(set, d_wizard.getSelectedStudySet());	
-
-		MetaAnalysis ma = d_wizard.createMetaAnalysis();
-		assertEquals(2, ma.getDrugs().size());
 	}
 }

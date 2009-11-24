@@ -8,7 +8,7 @@ import java.util.List;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.MetaStudy;
+import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.RelativeEffectFactory;
 import org.drugis.addis.entities.Study;
@@ -32,7 +32,7 @@ public class ForestPlotPresentation {
 	private BinnedScale d_scale;
 	private double d_max = 0.0;
 	private AxisType d_scaleType;
-	
+	private RandomEffectsMetaAnalysis d_analysis;
 	
 	public ForestPlotPresentation(List<Study> studies, Endpoint e, Drug baseline, Drug subject,
 			Class<? extends RelativeEffect<?>> type) {
@@ -48,17 +48,11 @@ public class ForestPlotPresentation {
 		initScales();
 	}
 	
-	public ForestPlotPresentation(MetaStudy s, Endpoint e, Drug baseline, Drug subject,
-			Class<? extends RelativeEffect<?>> type) {
-		this(createStudies(s), e, baseline, subject, type);
+	public ForestPlotPresentation(RandomEffectsMetaAnalysis analysis, Class<? extends RelativeEffect<?>> type) {
+		this(analysis.getStudies(), analysis.getEndpoint(), analysis.getFirstDrug(), analysis.getSecondDrug(), type);
+		d_analysis = analysis;
 	}
-	
-	private static List<Study> createStudies(MetaStudy s) {
-		ArrayList<Study> list = new ArrayList<Study>(s.getAnalysis().getStudies());
-		list.add(s);
-		return list;
-	}
-
+		
 	public ForestPlotPresentation(BasicStudy s, Endpoint e, Drug baseline, Drug subject,
 			Class<? extends RelativeEffect<?>> type) {
 		this(Collections.singletonList((Study)s), e, baseline, subject, type);
@@ -68,30 +62,42 @@ public class ForestPlotPresentation {
 		d_studies.add(s);
 		d_relEffects.add(RelativeEffectFactory.buildRelativeEffect(s, d_endpoint, d_baseline, subject, d_type));
 	}
+	
+	public RelativeEffect<?> getMetaAnalysisEffect() {
+		if (d_analysis == null) {
+			return null;
+		}
+		return d_analysis.getRelativeEffect(d_type); 
+	}
 
 	private void initScales() {
 		for (int i = 0; i < getNumRelativeEffects(); ++i) {
 			if (!isCombined(i)) {
-				d_max = Math.max(d_relEffects.get(i).getSampleSize(), d_max);
+				d_max = Math.max(getRelativeEffectAt(i).getSampleSize(), d_max);
 			}
 		}
 		
-		if (d_relEffects.get(0).getAxisType() == AxisType.LINEAR) {
+		if (getRelativeEffectAt(0).getAxisType() == AxisType.LINEAR) {
 			d_scaleType = AxisType.LINEAR;
 			d_scale = new BinnedScale(new LinearScale(getRange()), 1, ForestPlot.BARWIDTH);
 		}
-		if (d_relEffects.get(0).getAxisType() == AxisType.LOGARITHMIC) {
+		if (getRelativeEffectAt(0).getAxisType() == AxisType.LOGARITHMIC) {
 			d_scaleType = AxisType.LOGARITHMIC;
 			d_scale = new BinnedScale(new LogScale(getRange()), 1, ForestPlot.BARWIDTH);
 		}
 	}
 	
 	public int getNumRelativeEffects() {
-		return d_relEffects.size();
+		return d_relEffects.size() + (d_analysis != null ? 1 : 0);
 	}
 	
 	public RelativeEffect<?> getRelativeEffectAt(int i) {
-		return d_relEffects.get(i);
+		if (i < d_studies.size()) {
+			return d_relEffects.get(i);
+		} else if (i == d_studies.size()) {
+			return getMetaAnalysisEffect();
+		}
+		throw new IndexOutOfBoundsException();
 	}
 	
 	public BinnedScale getScale() {
@@ -106,10 +112,10 @@ public class ForestPlotPresentation {
 		double min = Double.MAX_VALUE;
 		double max = Double.MIN_VALUE;
 		
-		for (int i = 0; i < d_relEffects.size(); ++i) {
-			double lowerBound = d_relEffects.get(i).getConfidenceInterval().getLowerBound();
+		for (int i = 0; i < getNumRelativeEffects(); ++i) {
+			double lowerBound = getRelativeEffectAt(i).getConfidenceInterval().getLowerBound();
 			min = (lowerBound < min) ? lowerBound : min;
-			double upperBound = d_relEffects.get(i).getConfidenceInterval().getUpperBound();
+			double upperBound = getRelativeEffectAt(i).getConfidenceInterval().getUpperBound();
 			max = (upperBound > max) ? upperBound : max;
 		}
 		
@@ -167,7 +173,7 @@ public class ForestPlotPresentation {
 	}
 
 	public String getCIlabelAt(int i) {
-		RelativeEffect<?> e = d_relEffects.get(i);
+		RelativeEffect<?> e = getRelativeEffectAt(i);
 		return formatNumber2D(e.getRelativeEffect()) + " (" + formatNumber2D(e.getConfidenceInterval().getLowerBound()) 
 									 + ", " + formatNumber2D(e.getConfidenceInterval().getUpperBound()) + ")";
 	}
@@ -197,7 +203,7 @@ public class ForestPlotPresentation {
 	}
 	
 	private double getWeightAt(int index) {
-		return (double) (d_relEffects.get(index).getSampleSize()) / d_max;
+		return (double) (getRelativeEffectAt(index).getSampleSize()) / d_max;
 	}
 
 	public int getDiamondSize(int index) {
@@ -211,6 +217,6 @@ public class ForestPlotPresentation {
 	}
 	
 	public boolean isCombined(int i) {
-		return d_studies.get(i) instanceof MetaStudy;
+		return i >= d_studies.size();
 	}
 }

@@ -65,11 +65,11 @@ public class DomainImplTest {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(ExampleData.buildDefaultStudy1());
 		studies.add(ExampleData.buildDefaultStudy2());
-		MetaAnalysis ma = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies); 
-		MetaStudy metaStudy = new MetaStudy("meta", ma);
-		d_domain.addMetaStudy(metaStudy);
+		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), studies,
+				ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine()); 
+		d_domain.addMetaAnalysis(ma);
 		
 		Set<Entity> deps = d_domain.getDependents(ExampleData.buildDrugFluoxetine());
-		assertTrue(deps.contains(metaStudy));
+		assertTrue(deps.contains(ma));
 	}
 }

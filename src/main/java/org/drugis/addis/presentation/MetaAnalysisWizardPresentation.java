@@ -13,8 +13,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.MetaAnalysis;
-import org.drugis.addis.entities.MetaStudy;
+import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.EqualsUtil;
 
@@ -322,9 +321,9 @@ public class MetaAnalysisWizardPresentation {
 		return d_secondDrugHolder.getValue();
 	}
 	
-	public MetaAnalysis getAnalysis() {
+	public RandomEffectsMetaAnalysis getAnalysis() {
 		Endpoint e = d_domain.getEndpoints().first();
-		return new MetaAnalysis(e, new ArrayList<Study>(d_domain.getStudies(e)));
+		return new RandomEffectsMetaAnalysis("", e, new ArrayList<Study>(d_domain.getStudies(e)), getFirstDrug(), getSecondDrug());
 	}
 	
 	public ValueModel getStudiesMeasuringLabelModel() {
@@ -366,14 +365,14 @@ public class MetaAnalysisWizardPresentation {
 		return new StudyCharTableModel(new DefaultStudyListPresentationModel(getStudyListModel()));
 	}
 
-	public MetaAnalysis createMetaAnalysis() {
-		return new MetaAnalysis((Endpoint)getEndpointModel().getValue(),
+	public RandomEffectsMetaAnalysis createMetaAnalysis() {
+		return new RandomEffectsMetaAnalysis("", (Endpoint)getEndpointModel().getValue(),
 				new ArrayList<Study>(getSelectedStudySet()), getFirstDrug(), getSecondDrug());
 	}
 	
-	public MetaStudy saveMetaAnalysis(String name, MetaAnalysis ma) {
-		MetaStudy study = new MetaStudy(name,ma);
-		d_domain.addMetaStudy(study);
-		return study;
+	public RandomEffectsMetaAnalysis saveMetaAnalysis(String name, RandomEffectsMetaAnalysis ma) {
+		ma.setName(name);
+		d_domain.addMetaAnalysis(ma);
+		return ma;
 	}
 }

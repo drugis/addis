@@ -39,4 +39,9 @@ public interface DomainListener {
 	 * Called when the list of indications has changed.
 	 */
 	public void indicationsChanged();
+
+	/**
+	 * Called when the list of analyses has changed.
+	 */
+	public void analysesChanged();
 }

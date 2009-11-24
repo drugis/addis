@@ -36,7 +36,7 @@ public class DomainImpl implements Domain, Serializable {
 	private static final long serialVersionUID = 3222342605059458693L;
 	private SortedSet<Endpoint> d_endpoints;
 	private SortedSet<Study> d_studies;
-	private SortedSet<MetaStudy> d_metaStudies;	
+	private SortedSet<RandomEffectsMetaAnalysis> d_metaAnalyses;	
 	private SortedSet<Drug> d_drugs;
 	private SortedSet<Indication> d_indications;
 	private transient List<DomainListener> d_listeners;
@@ -50,9 +50,6 @@ public class DomainImpl implements Domain, Serializable {
 		for (Study s : d_studies) {
 			s.addPropertyChangeListener(d_studyListener);
 		}
-		for (MetaStudy s : d_metaStudies) {
-			s.addPropertyChangeListener(d_studyListener);
-		}		
 	}
 	
 	private class StudyChangeListener implements PropertyChangeListener {
@@ -66,7 +63,7 @@ public class DomainImpl implements Domain, Serializable {
 	public DomainImpl() {
 		d_endpoints = new TreeSet<Endpoint>();
 		d_studies = new TreeSet<Study>();
-		d_metaStudies = new TreeSet<MetaStudy>();		
+		d_metaAnalyses = new TreeSet<RandomEffectsMetaAnalysis>();		
 		d_drugs = new TreeSet<Drug>();
 		d_indications = new TreeSet<Indication>();
 		d_listeners = new ArrayList<DomainListener>();
@@ -120,18 +117,23 @@ public class DomainImpl implements Domain, Serializable {
 		fireStudiesChanged();
 	}
 	
-	public void addMetaStudy(MetaStudy ms) throws NullPointerException {
-		if (ms == null) {
+	public void addMetaAnalysis(RandomEffectsMetaAnalysis ma) throws NullPointerException {
+		if (ma == null) {
 			throw new NullPointerException("Meta-Study may not be null");
 		}
-		ms.addPropertyChangeListener(d_studyListener);
 		
-		if (!getStudies().containsAll(ms.getAnalysis().getStudies()))
+		if (!getStudies().containsAll(ma.getStudies()))
 			throw new IllegalArgumentException("Not All studies in this Meta-Study are in the domain");
 		
-		d_metaStudies.add(ms);
+		d_metaAnalyses.add(ma);
 		
-		fireStudiesChanged();
+		fireAnalysesChanged();
+	}
+	
+	private void fireAnalysesChanged() {
+		for (DomainListener l : d_listeners) {
+			l.analysesChanged();
+		}
 	}
 
 	private void fireStudiesChanged() {
@@ -231,7 +233,7 @@ public class DomainImpl implements Domain, Serializable {
 				deps.add(s);
 			}
 		}
-		for (MetaStudy s : d_metaStudies) {
+		for (RandomEffectsMetaAnalysis s : d_metaAnalyses) {
 			if (s.getDependencies().contains(e)) {
 				deps.add(s);
 			}
@@ -241,11 +243,7 @@ public class DomainImpl implements Domain, Serializable {
 
 	public void deleteStudy(Study s) throws DependentEntitiesException {
 		checkDependents(s);
-		if (s instanceof MetaStudy) {
-			d_metaStudies.remove(s);
-		} else {
-			d_studies.remove(s);
-		}
+		d_studies.remove(s);
 		fireStudiesChanged();
 	}
 
@@ -286,7 +284,14 @@ public class DomainImpl implements Domain, Serializable {
 		return d_indications;
 	}
 
-	public SortedSet<MetaStudy> getMetaStudies() {
-		return Collections.unmodifiableSortedSet(d_metaStudies); 
+	public SortedSet<RandomEffectsMetaAnalysis> getMetaAnalyses() {
+		return Collections.unmodifiableSortedSet(d_metaAnalyses); 
+	}
+
+	public void deleteMetaAnalysis(RandomEffectsMetaAnalysis ma)
+			throws DependentEntitiesException {
+		checkDependents(ma);
+		d_metaAnalyses.remove(ma);
+		fireAnalysesChanged();
 	}
 }

@@ -32,10 +32,8 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.MetaAnalysis;
-import org.drugis.addis.entities.MetaStudy;
+import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.presentation.PresentationModelFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -55,18 +53,18 @@ public class PresentationModelManagerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMetaStudyGetModel() {
+	public void testMetaAnalysisGetModel() {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(ExampleData.buildDefaultStudy1());
 		studies.add(ExampleData.buildDefaultStudy2());
-		MetaAnalysis anal = new MetaAnalysis(ExampleData.buildEndpointHamd(),
-				studies);
-		MetaStudy s = new MetaStudy("ms", anal);
+		RandomEffectsMetaAnalysis anal = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
+				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());
 		
-		PresentationModel m = d_manager.getModel(s);
-		assertEquals(s, m.getBean());
-		PresentationModel m2 = d_manager.getModel(s);
+		PresentationModel m = d_manager.getModel(anal);
+		assertEquals(anal, m.getBean());
+		PresentationModel m2 = d_manager.getModel(anal);
 		assertTrue(m == m2);
+		assertTrue(m instanceof RandomEffectsMetaAnalysisPresentation);
 	}
 	
 	@SuppressWarnings("unchecked")

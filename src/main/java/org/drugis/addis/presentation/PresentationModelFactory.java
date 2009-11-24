@@ -28,8 +28,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.MetaStudy;
-import org.drugis.addis.entities.PooledPatientGroup;
+import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RelativeEffectContinuous;
 import org.drugis.addis.entities.RelativeEffectRate;
@@ -71,9 +70,6 @@ public class PresentationModelFactory {
 			return new EndpointPresentationModel((Endpoint)obj,
 					d_domain.getStudies((Endpoint)obj));
 		}
-		if (obj instanceof MetaStudy) {
-			return new MetaStudyPresentationModel((MetaStudy) obj);
-		}
 		if (obj instanceof Study) {
 			return new StudyPresentationModel((Study) obj);
 		}		
@@ -98,12 +94,12 @@ public class PresentationModelFactory {
 		if (obj instanceof BasicPatientGroup) {
 			return new BasicPatientGroupPresentation((BasicPatientGroup)obj);
 		}
-		if (obj instanceof PooledPatientGroup) {
-			return new PooledPatientGroupPresentation((PooledPatientGroup)obj);
-		}
 		if (obj instanceof Drug) {
 			Drug d = (Drug) obj;
 			return new DrugPresentationModel(d, d_domain.getStudies(d));
+		}
+		if (obj instanceof RandomEffectsMetaAnalysis) {
+			return new RandomEffectsMetaAnalysisPresentation((RandomEffectsMetaAnalysis) obj, this);
 		}
 		return new PresentationModel(obj);
 	}

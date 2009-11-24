@@ -42,8 +42,7 @@ import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.MetaAnalysis;
-import org.drugis.addis.entities.MetaStudy;
+import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Endpoint.Type;
@@ -57,7 +56,7 @@ public class DomainTreeModelTest {
 	private Endpoint d_firstEndpoint;
 	private BasicStudy d_firstStudy;
 	private Drug d_firstDrug;
-	private MetaStudy d_firstMetaStudy;
+	private RandomEffectsMetaAnalysis d_firstMetaAnalysis;
 	
 	@Before
 	public void setUp() {
@@ -75,15 +74,15 @@ public class DomainTreeModelTest {
 		d_firstStudy.setMeasurement(d_firstEndpoint, pg, 
 				d_firstEndpoint.buildMeasurement(pg));
 		
-		MetaAnalysis anal = new MetaAnalysis(d_firstEndpoint, Collections.singletonList((Study)d_firstStudy));
-		d_firstMetaStudy = new MetaStudy("meta-study", anal);
+		d_firstMetaAnalysis = new RandomEffectsMetaAnalysis("meta", d_firstEndpoint, 
+				Collections.singletonList((Study)d_firstStudy), d_firstDrug, d_firstDrug);
 		
 		d_domain.addIndication(d_firstIndication);
 		d_domain.addEndpoint(d_firstEndpoint);
 		d_domain.addStudy(d_firstStudy);
 		d_domain.addDrug(d_firstDrug);
 		
-		d_domain.addMetaStudy(d_firstMetaStudy);
+		d_domain.addMetaAnalysis(d_firstMetaAnalysis);
 		
 		d_treeModel = new DomainTreeModel(d_domain);
 	}
@@ -154,7 +153,7 @@ public class DomainTreeModelTest {
 
 	@Test
 	public void testGetAnalysis() {
-		assertEquals(d_firstMetaStudy, d_treeModel.getChild(getAnalysesNode(), 0));
+		assertEquals(d_firstMetaAnalysis, d_treeModel.getChild(getAnalysesNode(), 0));
 		assertEquals(null, d_treeModel.getChild(getAnalysesNode(), 1));		
 	}
 
@@ -196,7 +195,7 @@ public class DomainTreeModelTest {
 		assertEquals(1, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), getDrugsNode()));		
 		assertEquals(0, d_treeModel.getIndexOfChild(getStudiesNode(), d_firstStudy));
 		assertEquals(0, d_treeModel.getIndexOfChild(getDrugsNode(), d_firstDrug));
-		assertEquals(0, d_treeModel.getIndexOfChild(getAnalysesNode(), d_firstMetaStudy));
+		assertEquals(0, d_treeModel.getIndexOfChild(getAnalysesNode(), d_firstMetaAnalysis));
 	}
 	
 	@Test
@@ -211,7 +210,7 @@ public class DomainTreeModelTest {
 		assertTrue(d_treeModel.isLeaf(d_firstEndpoint));
 		assertTrue(d_treeModel.isLeaf(d_firstStudy));
 		assertTrue(d_treeModel.isLeaf(d_firstDrug));		
-		assertTrue(d_treeModel.isLeaf(d_firstMetaStudy));		
+		assertTrue(d_treeModel.isLeaf(d_firstMetaAnalysis));		
 	}
 	
 	@Test
@@ -264,9 +263,9 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testMetaStudyIsLeaf() {
-		MetaStudy study = new MetaStudy("meta",
-				new MetaAnalysis(d_firstEndpoint, new ArrayList<Study>(Collections.singleton(d_firstStudy))));
-		d_domain.addMetaStudy(study);
+		RandomEffectsMetaAnalysis study = new RandomEffectsMetaAnalysis("meta", d_firstEndpoint, new ArrayList<Study>(Collections.singleton(d_firstStudy)),
+				d_firstDrug, d_firstDrug);
+		d_domain.addMetaAnalysis(study);
 		assertTrue(d_treeModel.isLeaf(study));
 	}
 }

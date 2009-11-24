@@ -27,6 +27,7 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -34,8 +35,9 @@ import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.MetaStudy;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.builder.StudyTablePanelView;
+import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.ImageLoader;
 import org.jdesktop.swingx.JXCollapsiblePane;
 
@@ -80,12 +82,6 @@ public class GUIFactory {
 
 	public static JComponent createEndpointLabelWithIcon(Study s, Endpoint e) {
 		String fname = FileNames.ICON_STUDY;
-		if (s instanceof MetaStudy) {
-			MetaStudy ms = (MetaStudy) s;
-			if (ms.getAnalysis().getEndpoint().equals(e)) {
-				fname = FileNames.ICON_METASTUDY;
-			}
-		}
 		JLabel textLabel = null;
 		Icon icon = ImageLoader.getIcon(fname);
 		textLabel = new JLabel(e.getName(), icon, JLabel.CENTER);			
@@ -101,5 +97,15 @@ public class GUIFactory {
 					new ArrayList<Drug>(domain.getDrugs()),
 					model.getModel(BasicPatientGroup.PROPERTY_DRUG));
 		return BasicComponentFactory.createComboBox(drugSelectionInList);
+	}
+
+	public static JComponent buildStudyPanel(StudyListPresentationModel studies, JFrame parent) {
+		JComponent studiesComp = null;
+		if(studies.getIncludedStudies().getValue().isEmpty()) {
+			studiesComp = new JLabel("No studies found.");
+		} else {
+			studiesComp = new StudyTablePanelView(studies, parent).buildPanel();
+		}
+		return studiesComp;
 	}	
 }

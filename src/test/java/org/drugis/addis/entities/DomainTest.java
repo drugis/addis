@@ -77,6 +77,12 @@ public class DomainTest {
 	public void testAddIndicationNull() {
 		d_domain.addIndication(null);
 	}
+	
+	@Test(expected=NullPointerException.class)
+	public void testAddMetaAnalysisNull() {
+		d_domain.addMetaAnalysis(null);
+	}
+	
 
 	@Test
 	public void testAddEndpoint() {
@@ -104,32 +110,37 @@ public class DomainTest {
 	}
 	
 	@Test
-	public void testAddMetaStudy() {
-		MetaStudy s = addMetaStudyToDomain();
+	public void testAddMetaAnalysis() {
+		assertEquals(0, d_domain.getMetaAnalyses().size());
+		RandomEffectsMetaAnalysis s = addMetaAnalysisToDomain();
 		
-		assertFalse(d_domain.getStudies().contains(s));
-		assertTrue(d_domain.getMetaStudies().contains(s));
-		assertEquals(1, d_domain.getMetaStudies().size());
+		assertTrue(d_domain.getMetaAnalyses().contains(s));
+		assertEquals(1, d_domain.getMetaAnalyses().size());
 	}
 
-	private MetaStudy addMetaStudyToDomain() {
+	private RandomEffectsMetaAnalysis addMetaAnalysisToDomain() {
 		ExampleData.initDefaultData(d_domain);
+		RandomEffectsMetaAnalysis ma = generateMetaAnalysis();
+		d_domain.addMetaAnalysis(ma);
+		return ma;
+	}
+
+	private RandomEffectsMetaAnalysis generateMetaAnalysis() {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(ExampleData.buildDefaultStudy1());
 		studies.add(ExampleData.buildDefaultStudy2());
-		MetaAnalysis ma = new MetaAnalysis(ExampleData.buildEndpointHamd(), studies); 
-		MetaStudy s = new MetaStudy("meta", ma);
-		d_domain.addMetaStudy(s);
-		return s;
+		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
+				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());
+		return ma;
 	}
 	
 	@Test
-	public void testDeleteMetaStudy() throws Exception {
-		MetaStudy s = addMetaStudyToDomain();
+	public void testDeleteMetaAnalysis() throws Exception {
+		RandomEffectsMetaAnalysis s = addMetaAnalysisToDomain();
 		
-		assertTrue(d_domain.getMetaStudies().contains(s));
-		d_domain.deleteStudy(s);
-		assertFalse(d_domain.getMetaStudies().contains(s));
+		assertTrue(d_domain.getMetaAnalyses().contains(s));
+		d_domain.deleteMetaAnalysis(s);
+		assertFalse(d_domain.getMetaAnalyses().contains(s));
 	}		
 	
 	@Test
@@ -172,6 +183,18 @@ public class DomainTest {
 		d_indication = new Indication(0L, "");
 		d_domain.addStudy(new BasicStudy("X", d_indication));
 		verify(mockListener);
+	}
+	
+	@Test
+	public void testAddAnalysisListener() {
+		ExampleData.initDefaultData(d_domain);
+		DomainListener mockListener = createMock(DomainListener.class);
+		mockListener.analysesChanged();
+		d_domain.addListener(mockListener);
+		
+		replay(mockListener);
+		d_domain.addMetaAnalysis(generateMetaAnalysis());
+		verify(mockListener);		
 	}
 	
 	@Test
@@ -354,8 +377,8 @@ public class DomainTest {
 		assertTrue(d_domain.getStudies().isEmpty());
 	}
 	
-	@Test
-	public void testDeleteStudyThrowsCorrectException() {
+	@Test(expected=DependentEntitiesException.class)
+	public void testDeleteStudyThrowsCorrectException() throws DependentEntitiesException {
 		BasicStudy s1 = new BasicStudy("X", d_indication);
 		BasicStudy s2 = new BasicStudy("Y", d_indication);
 		d_domain.addIndication(d_indication);
@@ -368,16 +391,9 @@ public class DomainTest {
 		s2.addEndpoint(e);
 		
 		ArrayList<Study> studies = new ArrayList<Study>(d_domain.getStudies());
-		MetaAnalysis ma = new MetaAnalysis(e, studies); 
-		MetaStudy s = new MetaStudy("meta", ma);
-		d_domain.addMetaStudy(s);
-
-		try {
-			d_domain.deleteStudy(s1);
-			fail();
-		} catch (DependentEntitiesException e1) {
-			assertEquals(Collections.singleton(s), e1.getDependents());
-		}
+		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", e, studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine()); 
+		d_domain.addMetaAnalysis(ma);
+		d_domain.deleteStudy(s1);
 	}
 	
 	@Test
@@ -476,7 +492,7 @@ public class DomainTest {
 	
 	@Test
 	public void testSerializationBasicStudyChangeFires() throws Exception {
-		addMetaStudyToDomain();
+		addMetaAnalysisToDomain();
 		Domain newDomain = JUnitUtil.serializeObject(d_domain);
 		// check connect of basic study listener
 		BasicStudy bs = (BasicStudy) newDomain.getStudies().first();
@@ -489,21 +505,7 @@ public class DomainTest {
 		verify(mock2);
 		
 	}
-	
-	@Test
-	public void testSerializationMetaStudyChangeFires() throws Exception {
-		addMetaStudyToDomain();
-		Domain newDomain = JUnitUtil.serializeObject(d_domain);
-		// check connect of meta-study-listener
-		MetaStudy s = (MetaStudy) newDomain.getMetaStudies().first();
-		DomainListener mock = createMock(DomainListener.class);
-		newDomain.addListener(mock);
-		mock.studiesChanged();
-		replay(mock);
-		s.setId("new meta-study");
-		verify(mock);
-	}
-	
+		
 	@Test
 	public void testSerializationDeleteStudyFires() throws Exception {
 		ExampleData.initDefaultData(d_domain);

@@ -66,7 +66,7 @@ public interface Domain {
 	 * @throws NullPointerException if ma is null
 	 * @throws IllegalArgumentException if list of the studies is not included in the domain yet
 	 */
-	public void addMetaStudy(MetaStudy ms) throws NullPointerException;
+	public void addMetaAnalysis(RandomEffectsMetaAnalysis ma) throws NullPointerException;
 	
 	/**
 	 * Get the studies stored in the data model, EXCLUDING the meta-studies.
@@ -78,7 +78,7 @@ public interface Domain {
 	 * Get the meta-studies stored in the data model.
 	 * @return An unmodifiable sorted set of meta-studies. Never a null.
 	 */
-	public SortedSet<MetaStudy> getMetaStudies();	
+	public SortedSet<RandomEffectsMetaAnalysis> getMetaAnalyses();	
 	
 	
 	/**
@@ -130,6 +130,14 @@ public interface Domain {
 	 * @throws DependentEntitiesException if some entities depend on the study
 	 */
 	public void deleteStudy(Study s) throws DependentEntitiesException;
+	
+	/**
+	 * Deletes a meta-analysis from the domain.
+	 * 
+	 * @param ma the meta-analysis to delete 
+	 * @throws DependentEntitiesException if some entities depend on the meta-analysis
+	 */
+	public void deleteMetaAnalysis(RandomEffectsMetaAnalysis ma) throws DependentEntitiesException;
 	
 	/**
 	 * Deletes a drug from the domain.
