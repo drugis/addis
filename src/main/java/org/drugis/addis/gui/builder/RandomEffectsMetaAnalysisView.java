@@ -49,7 +49,11 @@ public class RandomEffectsMetaAnalysisView implements ViewBuilder {
 		}
 
 		builder.addSeparator("Odds ratio", cc.xy(1, 9));
-		builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(OddsRatio.class)), cc.xy(1, 11));
+		if (d_overView) {
+			builder.add(buildRelativeEffectPart(OddsRatio.class), cc.xy(1, 11));			
+		} else {
+			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(OddsRatio.class)), cc.xy(1, 11));
+		}
 		
 		if (!d_overView) {
 			builder.addSeparator("Risk ratio", cc.xy(1, 13));
