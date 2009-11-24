@@ -3,7 +3,6 @@ package org.drugis.addis.entities.metaanalysis;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.LogRiskRatio;
 import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OddsRatio;

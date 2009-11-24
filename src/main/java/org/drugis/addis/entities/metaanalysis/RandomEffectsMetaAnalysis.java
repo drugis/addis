@@ -14,7 +14,6 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.LogRiskRatio;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.RateMeasurement;
@@ -282,7 +281,12 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 
 		public double getHeterogeneity() {
 			return t_qIV;
-		}		
+		}
+		
+		public double getHeterogeneityI2() {
+			int k = getStudies().size();
+			return Math.max(0, 100* ((t_qIV - (k-1)) / t_qIV ) );
+		}	
 	}
 
 	@Override

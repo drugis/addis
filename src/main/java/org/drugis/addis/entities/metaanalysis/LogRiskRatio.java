@@ -17,8 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.entities;
+package org.drugis.addis.entities.metaanalysis;
 
+import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.RiskRatio;
 import org.drugis.common.Interval;
 
 public class LogRiskRatio extends RiskRatio {

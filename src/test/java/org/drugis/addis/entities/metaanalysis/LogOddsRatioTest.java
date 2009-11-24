@@ -1,9 +1,17 @@
-package org.drugis.addis.entities;
+package org.drugis.addis.entities.metaanalysis;
 
 import static org.junit.Assert.assertEquals;
 
-import org.drugis.addis.entities.metaanalysis.LogOddsRatio;
-import org.drugis.addis.entities.metaanalysis.RelativeEffectFactory;
+import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicRateMeasurement;
+import org.drugis.addis.entities.BasicStudy;
+import org.drugis.addis.entities.Dose;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.OddsRatio;
+import org.drugis.addis.entities.SIUnit;
+import org.drugis.addis.entities.Study;
 import org.junit.Before;
 import org.junit.Test;
 

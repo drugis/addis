@@ -108,11 +108,16 @@ public class RandomEffectsMetaAnalysisTest {
 	public void testGetIndication() {
 		assertEquals(d_ind, d_rema.getIndication());
 	}	
-		
+	
+	public double calculateI2(double hetr, int k) {
+		return Math.max(0, 100 * ((hetr-(k-1)) / hetr ));
+	}
+	
 	@Test
 	public void testGetRiskRatioRelativeEffect() {
 		RelativeEffectMetaAnalysis<Measurement> riskRatio = d_rema.getRelativeEffect(RiskRatio.class);
 		assertEquals(2.03, riskRatio.getHeterogeneity(), 0.01);
+		assertEquals(calculateI2(2.03,d_rema.getStudies().size()), riskRatio.getHeterogeneityI2(), 0.01);
 		assertEquals(1.10, (riskRatio.getRelativeEffect()), 0.01); 
 		assertEquals(1.01, (riskRatio.getConfidenceInterval().getLowerBound()), 0.01);
 		assertEquals(1.20, (riskRatio.getConfidenceInterval().getUpperBound()), 0.01);		
