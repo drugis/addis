@@ -32,8 +32,8 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.junit.Before;
 import org.junit.Test;
 

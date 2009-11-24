@@ -21,6 +21,8 @@ package org.drugis.addis.entities;
 
 import java.util.SortedSet;
 
+import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+
 public interface Domain {
 	/**
 	 * Adds an indication to the data model.

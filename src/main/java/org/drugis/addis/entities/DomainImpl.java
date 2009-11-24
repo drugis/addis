@@ -32,6 +32,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+
 public class DomainImpl implements Domain, Serializable {
 	private static final long serialVersionUID = 3222342605059458693L;
 	private SortedSet<Endpoint> d_endpoints;

@@ -1,4 +1,4 @@
-package org.drugis.addis.entities;
+package org.drugis.addis.entities.metaanalysis;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,6 +7,19 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicRateMeasurement;
+import org.drugis.addis.entities.BasicStudy;
+import org.drugis.addis.entities.Dose;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.LogRiskRatio;
+import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.RelativeEffectMetaAnalysis;
+import org.drugis.addis.entities.SIUnit;
+import org.drugis.addis.entities.Study;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -99,18 +112,18 @@ public class RandomEffectsMetaAnalysisTest {
 	public void testGetRiskRatioRelativeEffect() {
 		RelativeEffectMetaAnalysis<Measurement> riskRatio = d_rema.getRelativeEffect(LogRiskRatio.class);
 		assertEquals(2.03, riskRatio.getHeterogeneity(), 0.01);
-		assertEquals(1.10, Math.exp(riskRatio.getRelativeEffect()), 0.01); 
-		assertEquals(1.01, Math.exp(riskRatio.getConfidenceInterval().getLowerBound()), 0.01);
-		assertEquals(1.20, Math.exp(riskRatio.getConfidenceInterval().getUpperBound()), 0.01);		
+		assertEquals(1.10, (riskRatio.getRelativeEffect()), 0.01); 
+		assertEquals(1.01, (riskRatio.getConfidenceInterval().getLowerBound()), 0.01);
+		assertEquals(1.20, (riskRatio.getConfidenceInterval().getUpperBound()), 0.01);		
 	}
 	
 	@Test
 	public void testGetOddsRatioRelativeEffect() {
 		RelativeEffectMetaAnalysis<Measurement> oddsRatio = d_rema.getRelativeEffect(LogOddsRatio.class);
 		assertEquals(2.14, oddsRatio.getHeterogeneity(), 0.01);
-		assertEquals(1.30, Math.exp(oddsRatio.getRelativeEffect()), 0.01); 
-		assertEquals(1.03, Math.exp(oddsRatio.getConfidenceInterval().getLowerBound()), 0.01);
-		assertEquals(1.65, Math.exp(oddsRatio.getConfidenceInterval().getUpperBound()), 0.01);		
+		assertEquals(1.30, (oddsRatio.getRelativeEffect()), 0.01); 
+		assertEquals(1.03, (oddsRatio.getConfidenceInterval().getLowerBound()), 0.01);
+		assertEquals(1.65, (oddsRatio.getConfidenceInterval().getUpperBound()), 0.01);		
 	}
 		
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize, Indication ind)

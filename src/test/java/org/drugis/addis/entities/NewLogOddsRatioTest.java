@@ -2,6 +2,8 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
 
+import org.drugis.addis.entities.metaanalysis.LogOddsRatio;
+import org.drugis.addis.entities.metaanalysis.RelativeEffectFactory;
 import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Test;

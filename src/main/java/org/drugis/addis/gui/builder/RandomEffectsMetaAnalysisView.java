@@ -3,9 +3,11 @@ package org.drugis.addis.gui.builder;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
-import org.drugis.addis.entities.LogOddsRatio;
-import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.RelativeEffect;
+import org.drugis.addis.entities.RiskDifference;
+import org.drugis.addis.entities.RiskRatio;
+import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
@@ -20,30 +22,42 @@ public class RandomEffectsMetaAnalysisView implements ViewBuilder {
 	
 	private RandomEffectsMetaAnalysisPresentation d_pm;
 	private JFrame d_parent;
+	private boolean d_overView;
 
-	public RandomEffectsMetaAnalysisView(RandomEffectsMetaAnalysisPresentation pm, JFrame parent) {
+	public RandomEffectsMetaAnalysisView(RandomEffectsMetaAnalysisPresentation pm, JFrame parent, boolean overView) {
 		d_pm = pm;
 		d_parent = parent;
+		d_overView = overView;
 	}
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		
 		CellConstraints cc =  new CellConstraints();		
 
-		builder.addSeparator("Meta-analysis", cc.xy(1, 1));
-		builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
-		
-		builder.addSeparator("Included studies", cc.xy(1, 5));
-		builder.add(GUIFactory.createCollapsiblePanel(buildStudiesPart()), cc.xy(1, 7));
+		if (!d_overView) {
+			builder.addSeparator("Meta-analysis", cc.xy(1, 1));
+			builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
+
+			builder.addSeparator("Included studies", cc.xy(1, 5));
+			builder.add(GUIFactory.createCollapsiblePanel(buildStudiesPart()), cc.xy(1, 7));
+		}
 
 		builder.addSeparator("Odds ratio", cc.xy(1, 9));
-		builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(LogOddsRatio.class)), cc.xy(1, 11));
+		builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(OddsRatio.class)), cc.xy(1, 11));
+		
+		if (!d_overView) {
+			builder.addSeparator("Risk ratio", cc.xy(1, 13));
+			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(RiskRatio.class)), cc.xy(1, 15));
+		
+			builder.addSeparator("Risk difference", cc.xy(1, 17));
+			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(RiskDifference.class)), cc.xy(1, 19));
+		}
 
 		return builder.getPanel();
 	}

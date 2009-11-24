@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.BasicStudy;
-import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;

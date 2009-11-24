@@ -17,11 +17,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
+import org.drugis.addis.presentation.PresentationModelFactory;
+import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.InvalidStateException;
@@ -40,10 +42,12 @@ public class MetaAnalysisWizard implements ViewBuilder {
 
 	private MetaAnalysisWizardPresentation d_pm;
 	private Main d_frame;
+	private PresentationModelFactory d_pmm;
 	
-	public MetaAnalysisWizard(Main parent, MetaAnalysisWizardPresentation pm) {
+	public MetaAnalysisWizard(Main parent, MetaAnalysisWizardPresentation pm, PresentationModelFactory pmm) {
 		d_frame = parent;
 		d_pm = pm;
+		d_pmm = pmm;
 	}
 	
 	public Wizard buildPanel() {
@@ -55,7 +59,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		wizardModel.add(new OverviewWizardStep());
 		Wizard wizard = new Wizard(wizardModel);
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
-		wizard.setPreferredSize(new Dimension(800, 600));
+		wizard.setPreferredSize(new Dimension(1000, 500));
 		return wizard;
 	}
 	
@@ -75,7 +79,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 				add(new JLabel("Meta-Analyze Not Implemented for non-rate measurements"));
 			} else {
 				d_ma = d_pm.createMetaAnalysis();
-				ViewBuilder mav = new MetaAnalysisOverviewView(d_ma, d_frame.getPresentationModelManager());
+				ViewBuilder mav = new RandomEffectsMetaAnalysisView((RandomEffectsMetaAnalysisPresentation) d_pmm.getModel(d_ma), d_frame, true);
 				add(mav.buildPanel());
 				setComplete(true);
 			}
@@ -160,7 +164,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		    d_table = new StudyTable(d_pm.getStudyTableModel());
 			    
 		    JScrollPane sPane = new JScrollPane(d_table);
-		    sPane.setPreferredSize(new Dimension(600,100));
+		    sPane.setPreferredSize(new Dimension(800,200));
 			    
 			studiesComp = sPane;
 

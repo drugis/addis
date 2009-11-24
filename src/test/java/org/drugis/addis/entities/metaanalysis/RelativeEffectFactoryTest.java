@@ -1,8 +1,23 @@
-package org.drugis.addis.entities;
+package org.drugis.addis.entities.metaanalysis;
 
 import static org.junit.Assert.*;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.ContinuousMeasurement;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.LogRiskRatio;
+import org.drugis.addis.entities.MeanDifference;
+import org.drugis.addis.entities.OddsRatio;
+import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.RelativeEffect;
+import org.drugis.addis.entities.RiskDifference;
+import org.drugis.addis.entities.RiskRatio;
+import org.drugis.addis.entities.StandardisedMeanDifference;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.metaanalysis.LogOddsRatio;
+import org.drugis.addis.entities.metaanalysis.RelativeEffectFactory;
 import org.junit.Test;
 
 public class RelativeEffectFactoryTest {

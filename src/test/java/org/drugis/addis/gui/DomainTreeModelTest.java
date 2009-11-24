@@ -42,10 +42,10 @@ import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Endpoint.Type;
+import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.junit.Before;
 import org.junit.Test;
 

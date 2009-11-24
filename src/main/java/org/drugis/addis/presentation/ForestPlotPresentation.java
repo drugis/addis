@@ -8,12 +8,12 @@ import java.util.List;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.RelativeEffect;
-import org.drugis.addis.entities.RelativeEffectFactory;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Endpoint.Direction;
 import org.drugis.addis.entities.RelativeEffect.AxisType;
+import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.metaanalysis.RelativeEffectFactory;
 import org.drugis.addis.plot.BinnedScale;
 import org.drugis.addis.plot.ForestPlot;
 import org.drugis.addis.plot.IdentityScale;
@@ -67,6 +67,7 @@ public class ForestPlotPresentation {
 		if (d_analysis == null) {
 			return null;
 		}
+		
 		return d_analysis.getRelativeEffect(d_type); 
 	}
 

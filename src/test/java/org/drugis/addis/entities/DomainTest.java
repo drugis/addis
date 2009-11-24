@@ -35,6 +35,7 @@ import java.util.Set;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Endpoint.Type;
+import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;

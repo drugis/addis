@@ -17,15 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.entities;
+package org.drugis.addis.entities.metaanalysis;
 
 import static org.junit.Assert.assertEquals;
 
+import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.LogOddsRatio;
 import org.drugis.addis.entities.OddsRatio;
+import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.Endpoint.Type;
+import org.drugis.addis.entities.metaanalysis.LogOddsRatio;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,7 +59,7 @@ public class LogOddsRatioTest {
 	@Test
 	public void testMean() {
 		OddsRatio ratio = new OddsRatio(d_denominator, d_numerator);
-		assertEquals(Math.log(ratio.getRelativeEffect()), d_ratio.getMean(), 0.00001);
+		assertEquals(Math.log(ratio.getRelativeEffect()), d_ratio.getRelativeEffect(), 0.00001);
 	}
 	
 	@Test

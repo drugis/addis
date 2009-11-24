@@ -54,10 +54,6 @@ public abstract class AbstractRatio extends AbstractEntity implements RelativeEf
 
 	protected abstract double getMean(RateMeasurement m);
 
-	private static double sq(double d) {
-		return d * d;
-	}
-
 	public Endpoint getEndpoint() {
 		return d_numerator.getEndpoint();
 	}
@@ -66,10 +62,6 @@ public abstract class AbstractRatio extends AbstractEntity implements RelativeEf
 		return d_numerator.getSampleSize() + d_denominator.getSampleSize();
 	}
 
-	/**
-	 * Get the 95% confidence interval.
-	 * @return The confidence interval.
-	 */
 	public Interval<Double> getConfidenceInterval() {
 		double g = getG(getCriticalValue());
 		double qx = getAssymmetricalMean(g);
@@ -77,21 +69,25 @@ public abstract class AbstractRatio extends AbstractEntity implements RelativeEf
 		
 		return new Interval<Double>((qx - getCriticalValue() * sd), (qx + getCriticalValue() * sd));
 	}
+	
+	private static double sq(double d) {
+		return d * d;
+	}	
 
-	double getStdDev(double g, double qx) {
+	private double getStdDev(double g, double qx) {
 		return qx * Math.sqrt((1 - g) * sq(getStdDev(d_numerator)) / sq(getMean(d_numerator)) +
 				sq(getStdDev(d_denominator)) / sq(getMean(d_denominator)));
 	}
 
-	double getAssymmetricalMean(double g) {
+	private double getAssymmetricalMean(double g) {
 		return getRelativeEffect() / (1 - g);
 	}
 
-	double getG(double t) {
+	private double getG(double t) {
 		return sq(t * getStdDev(d_denominator) / getMean(d_denominator));
 	}
 
-	double getCriticalValue() {
+	protected double getCriticalValue() {
 		return StudentTTable.getT(getSampleSize() - 2);
 	}
 
@@ -104,7 +100,6 @@ public abstract class AbstractRatio extends AbstractEntity implements RelativeEf
 		return getMean(d_numerator) / getMean(d_denominator);
 	}
 
-	
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();
 	}

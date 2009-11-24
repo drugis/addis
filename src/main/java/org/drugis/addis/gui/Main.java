@@ -66,8 +66,8 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MutableStudy;
-import org.drugis.addis.entities.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.builder.DrugView;
 import org.drugis.addis.gui.builder.EndpointView;
 import org.drugis.addis.gui.builder.IndicationView;
@@ -125,7 +125,7 @@ public class Main extends JFrame {
 			}
 		});
 
-		setPreferredSize(new Dimension(900, 700));
+		setPreferredSize(new Dimension(1015, 700));
 		GUIHelper.initializeLookAndFeel();
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		ToolTipManager.sharedInstance().setInitialDelay(0);
@@ -140,7 +140,6 @@ public class Main extends JFrame {
 			saveDomainToFile();
 			System.exit(0);			
 		} catch (Exception e) {
-			System.out.println(e);
 			JOptionPane.showMessageDialog(this,
 					"Error saving domain", "Error saving domain",
 					JOptionPane.ERROR_MESSAGE);
@@ -425,7 +424,7 @@ public class Main extends JFrame {
 
 	private void showMetaAnalysisWizard() {
 		// FIXME: Use PresentationModelManager to create presentation model
-		MetaAnalysisWizard wizard = new MetaAnalysisWizard(this, new MetaAnalysisWizardPresentation(d_domain.getDomain()));
+		MetaAnalysisWizard wizard = new MetaAnalysisWizard(this, new MetaAnalysisWizardPresentation(d_domain.getDomain()), d_pmManager);
 		wizard.buildPanel().showInDialog("Create meta-analysis", this, true);
 	}
 
@@ -537,7 +536,7 @@ public class Main extends JFrame {
 	}
 	
 	private void metaAnalysisSelected(RandomEffectsMetaAnalysis node) {
-		RandomEffectsMetaAnalysisView view = new RandomEffectsMetaAnalysisView((RandomEffectsMetaAnalysisPresentation) d_pmManager.getModel(node), this);
+		RandomEffectsMetaAnalysisView view = new RandomEffectsMetaAnalysisView((RandomEffectsMetaAnalysisPresentation) d_pmManager.getModel(node), this, false);
 		setRightPanelView(view);		
 	}
 

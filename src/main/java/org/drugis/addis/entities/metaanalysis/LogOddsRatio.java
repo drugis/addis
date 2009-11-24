@@ -17,16 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.entities;
+package org.drugis.addis.entities.metaanalysis;
 
 import java.text.DecimalFormat;
 
+import org.drugis.addis.entities.ContinuousMeasurement;
+import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.OddsRatio;
+import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.common.Interval;
 
 public class LogOddsRatio extends OddsRatio implements ContinuousMeasurement {
 	private static final long serialVersionUID = -9012075635937781733L;
 	
-	public LogOddsRatio(RateMeasurement denominator, RateMeasurement numerator) {
+	LogOddsRatio(RateMeasurement denominator, RateMeasurement numerator) {
 		super(denominator, numerator);
 	}
 

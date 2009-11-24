@@ -1,4 +1,4 @@
-package org.drugis.addis.entities;
+package org.drugis.addis.entities.metaanalysis;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -9,6 +9,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drugis.addis.entities.AbstractEntity;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.LogRiskRatio;
+import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.OddsRatio;
+import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.RelativeEffect;
+import org.drugis.addis.entities.RelativeEffectMetaAnalysis;
+import org.drugis.addis.entities.RiskRatio;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
@@ -105,12 +119,19 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 	}
 	
 	private void compute(Class<? extends RelativeEffect<?>> relEffClass) {
+		
+		Class<? extends RelativeEffect<? extends Measurement>> type = relEffClass; 
+		if (relEffClass == RiskRatio.class)
+			type = LogRiskRatio.class;
+		if (relEffClass == OddsRatio.class)
+			type = LogOddsRatio.class;
+		
 		List<Double> weights = new ArrayList<Double>();
 		List<Double> adjweights = new ArrayList<Double>();
 		List<RelativeEffect<? extends Measurement>> relEffects = new ArrayList<RelativeEffect<? extends Measurement>>();
-		
+			
 		for (Study s : d_studies) {
-			RelativeEffect<? extends Measurement> re = RelativeEffectFactory.buildRelativeEffect(s, d_ep, d_drug1, d_drug2, relEffClass);
+			RelativeEffect<? extends Measurement> re = RelativeEffectFactory.buildRelativeEffect(s, d_ep, d_drug1, d_drug2, type);
 			d_totalSampleSize += re.getSampleSize();
 			relEffects.add(re);
 		}
@@ -131,9 +152,14 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		}
 		
 		d_thetaDSL = getThetaDL(adjweights, relEffects);
-		
 		d_SEThetaDSL = getSE_ThetaDL(adjweights);
+			
 		d_confidenceInterval = getConfidenceInterval();
+		
+		if ((type == LogRiskRatio.class) || (type == LogOddsRatio.class)) {
+			d_thetaDSL = Math.exp(d_thetaDSL);
+			d_confidenceInterval = new Interval<Double>(Math.exp(d_confidenceInterval.getLowerBound()),Math.exp(d_confidenceInterval.getUpperBound()));
+		}
 	}
 	
 	private Interval<Double> getConfidenceInterval() {	
