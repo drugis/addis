@@ -47,7 +47,7 @@ public class OddsRatio extends AbstractRatio {
 		return ((double) d_numerator.getRate() * (double) d) / ((double) d_denominator.getRate() * (double) c); 
 	}
 
-	public Double getError() {
+	public Double getError() { //NB: this is the LOG error
 		return Math.sqrt(invEffect(d_denominator) + invNoEffect(d_denominator) +
 		invEffect(d_numerator) + invNoEffect(d_numerator));
 	}

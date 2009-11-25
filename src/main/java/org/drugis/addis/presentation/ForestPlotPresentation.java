@@ -89,7 +89,8 @@ public class ForestPlotPresentation {
 	}
 	
 	public int getNumRelativeEffects() {
-		return d_relEffects.size() + (d_analysis != null ? 1 : 0);
+		int size = d_relEffects.size();
+		return size + (((d_analysis != null) && (size > 1)) ? 1 : 0);
 	}
 	
 	public RelativeEffect<?> getRelativeEffectAt(int i) {
@@ -227,6 +228,6 @@ public class ForestPlotPresentation {
 	}
 
 	public boolean isMetaAnalysis() {
-		return d_analysis != null;
+		return (d_analysis != null && d_relEffects.size() > 1);
 	}
 }

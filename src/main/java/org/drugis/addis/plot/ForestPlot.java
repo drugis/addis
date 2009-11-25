@@ -24,8 +24,8 @@ public class ForestPlot implements Plot {
 	public static final int ROWPAD = 10;
 	public static final int FULLROW = ROWHEIGHT + ROWPAD;
 	public static final int BARWIDTH = 301;
-	public static final int STUDYWIDTH = 201;
-	public static final int CIWIDTH = 201;
+	public static final int STUDYWIDTH = 196;
+	public static final int CIWIDTH = 196;
 	public static final int FULLWIDTH = BARWIDTH + STUDYWIDTH + CIWIDTH;
 	public static final int TICKLENGTH = 4;
 	public static final int HORPAD = 20;
@@ -107,9 +107,6 @@ public class ForestPlot implements Plot {
 		//rownr for the header == 0
 		Rectangle2D textBounds = g2d.getFontMetrics().getStringBounds(text, g2d);
 		int y = (int) ((FULLROW * rownr) + ROWVCENTER + (textBounds.getHeight() / 2.0));
-		
-		/*if (rownr > 0)
-			y += ROWPAD;*/
 				
 		int x = 1;
 		

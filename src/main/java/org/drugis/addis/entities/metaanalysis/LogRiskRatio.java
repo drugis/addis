@@ -24,10 +24,9 @@ import org.drugis.addis.entities.RiskRatio;
 import org.drugis.common.Interval;
 
 public class LogRiskRatio extends RiskRatio {
-
 	private static final long serialVersionUID = 5344954293964132074L;
 
-	public LogRiskRatio(RateMeasurement denominator, RateMeasurement numerator) {
+	LogRiskRatio(RateMeasurement denominator, RateMeasurement numerator) {
 		super(denominator, numerator);
 	}
 	

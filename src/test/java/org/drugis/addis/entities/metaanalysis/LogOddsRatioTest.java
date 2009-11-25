@@ -9,7 +9,6 @@ import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.junit.Before;
@@ -45,7 +44,7 @@ public class LogOddsRatioTest {
 	
 	private Study d_bennie, d_boyer, d_fava, d_newhouse, d_sechter;
 	
-	private OddsRatio d_ratioBennie, d_ratioBoyer, d_ratioFava, d_ratioNewhouse, d_ratioSechter;
+	private LogOddsRatio d_ratioBennie, d_ratioBoyer, d_ratioFava, d_ratioNewhouse, d_ratioSechter;
 
 	@Before
 	public void setUp() {
@@ -61,11 +60,11 @@ public class LogOddsRatioTest {
 		d_sechter = createStudy("Sechter 1999", 76,120, 86,118);
 				
 		
-		d_ratioBennie = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
-		d_ratioBoyer = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
-		d_ratioFava = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
-		d_ratioNewhouse = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
-		d_ratioSechter = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
+		d_ratioBennie = (LogOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
+		d_ratioBoyer = (LogOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
+		d_ratioFava = (LogOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
+		d_ratioNewhouse = (LogOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
+		d_ratioSechter = (LogOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, d_fluox, d_sertra, LogOddsRatio.class);
 	}
 	
 	@Test

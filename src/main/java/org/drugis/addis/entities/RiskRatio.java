@@ -42,7 +42,7 @@ public class RiskRatio extends AbstractRatio {
 		return AxisType.LOGARITHMIC;
 	}
 
-	public Double getError() {
+	public Double getError() { //NB: this is the LOG error
 		return Math.sqrt((1.0 / this.d_numerator.getRate()) +
 				(1.0 / this.d_denominator.getRate()) -
 				(1.0 / this.d_numerator.getSampleSize()) -
