@@ -16,7 +16,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 	public void testGetAnalysisTypeRate() {
 		RandomEffectsMetaAnalysis meta = new RandomEffectsMetaAnalysis("meta",
 				ExampleData.buildEndpointHamd(),
-				Collections.singletonList(ExampleData.buildDefaultStudy1()),
+				Collections.singletonList(ExampleData.buildStudyChouinard()),
 				ExampleData.buildDrugFluoxetine(),
 				ExampleData.buildDrugParoxetine());
 		Domain domain = new DomainImpl();
@@ -30,7 +30,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 	public void testGetAnalysisTypeContinuous() {
 		RandomEffectsMetaAnalysis meta = new RandomEffectsMetaAnalysis("meta",
 				ExampleData.buildEndpointCgi(),
-				Collections.singletonList(ExampleData.buildDefaultStudy1()),
+				Collections.singletonList(ExampleData.buildStudyChouinard()),
 				ExampleData.buildDrugFluoxetine(),
 				ExampleData.buildDrugParoxetine());
 		Domain domain = new DomainImpl();
