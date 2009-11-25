@@ -21,6 +21,9 @@ public class StudyTableHeader extends EnhancedTableHeader {
     public String getToolTipText(MouseEvent e) {
         java.awt.Point p = e.getPoint();
         int index = columnModel.getColumnIndexAtX(p.x);
+        if (index < 0) {
+        	return "";
+        }
         int realIndex = columnModel.getColumn(index).getModelIndex();
         return d_model.getColumnName(realIndex); 
     }
