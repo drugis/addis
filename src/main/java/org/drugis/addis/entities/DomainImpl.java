@@ -109,12 +109,12 @@ public class DomainImpl implements Domain, Serializable {
 		if (s == null) {
 			throw new NullPointerException("Study may not be null");
 		}
-		s.addPropertyChangeListener(d_studyListener);
 		
 		if (!getIndications().contains(s.getCharacteristics().get(StudyCharacteristic.INDICATION))) {
 			throw new IllegalArgumentException("indication of this study not in the domain");
 		}
 		d_studies.add(s);
+		s.addPropertyChangeListener(d_studyListener);		
 		
 		fireStudiesChanged();
 	}

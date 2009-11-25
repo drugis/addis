@@ -11,6 +11,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
@@ -31,7 +32,18 @@ public class MainData extends ExampleData {
 		domain.addStudy(buildStudyNewhouse2000());
 		domain.addStudy(buildStudySechter1999());
 		
-		domain.addMetaAnalysis(buildMetaHansen2005());		
+		try {
+			domain.addMetaAnalysis(buildMetaHansen2005());
+		} catch (NullPointerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (EntityIdExistsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 	}
 
 	public static RandomEffectsMetaAnalysis buildMetaHansen2005() {

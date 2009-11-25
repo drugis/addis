@@ -1,6 +1,8 @@
 package org.drugis.addis.gui.components;
 
 import java.awt.Color;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
@@ -38,6 +40,10 @@ public class StudyTable extends JTable {
 	private class MyRenderer extends DefaultTableCellRenderer {
 		
 		public void setValue(Object value) {
+			if (value instanceof Date) {
+				SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
+				value = sdf.format((Date)value);
+			}
 			if (value == null) {
 				setToolTipText(null);
 			} else {
