@@ -44,7 +44,7 @@ public class StudyTable extends JTable {
 				if (value.toString().length() == 0) {
 					setToolTipText(null);
 				}
-				setToolTipText(value.toString());
+				setToolTipText(HtmlWordWrapper.wordWrap(value.toString()));
 			}
 			super.setValue(value);			
 		}
