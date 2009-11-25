@@ -221,9 +221,9 @@ public class ForestPlotPresentation {
 		return i >= d_studies.size();
 	}
 
-	public String getHeterogeneity() {
+	public String getHeterogeneityI2() {
 		DecimalFormat df = new DecimalFormat("##0.0");
-		return df.format(d_analysis.getRelativeEffect(d_type).getHeterogeneityI2());
+		return df.format(d_analysis.getRelativeEffect(d_type).getHeterogeneityI2()) + "%";
 	}
 
 	public boolean isMetaAnalysis() {

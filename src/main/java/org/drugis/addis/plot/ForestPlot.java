@@ -94,7 +94,7 @@ public class ForestPlot implements Plot {
 		
 		// Draw the Heterogeneity
 		if (d_pm.isMetaAnalysis()) {
-			drawVCentrString(g2d, "Heterogeneity: " + d_pm.getHeterogeneity(), d_bars.size() + 3, FULLWIDTH / 4, Align.CENTER);
+			drawVCentrString(g2d, "Heterogeneity (I\u00B2 statistic): " + d_pm.getHeterogeneityI2(), d_bars.size() + 3, FULLWIDTH / 4, Align.CENTER);
 		}
 	}
 	
