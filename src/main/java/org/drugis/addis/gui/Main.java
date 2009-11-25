@@ -125,7 +125,7 @@ public class Main extends JFrame {
 			}
 		});
 
-		setPreferredSize(new Dimension(1050, 700));
+		setPreferredSize(new Dimension(1020, 764));
 		GUIHelper.initializeLookAndFeel();
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		ToolTipManager.sharedInstance().setInitialDelay(0);
