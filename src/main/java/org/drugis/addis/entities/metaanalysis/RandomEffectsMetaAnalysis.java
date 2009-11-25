@@ -29,7 +29,7 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 
 	private static final long serialVersionUID = -4351415410739040259L;
 	private Endpoint d_ep;
-	private List<Study> d_studies;
+	private List<? extends Study> d_studies;
 	private Drug d_drug1;
 	private Drug d_drug2;	
 	private String d_name;	
@@ -52,7 +52,8 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 	 * @throws IllegalArgumentException if all studies don't measure the same indication OR
 	 * if the list of studies is empty
 	 */
-	public RandomEffectsMetaAnalysis(String name, Endpoint endpoint, List<Study> studies, Drug drug1, Drug drug2) 
+	public RandomEffectsMetaAnalysis(String name, Endpoint endpoint, List<? extends Study> studies,
+			Drug drug1, Drug drug2) 
 		throws IllegalArgumentException {
 		if (studies.isEmpty()) {
 			throw new IllegalArgumentException("studylist empty");
@@ -86,7 +87,7 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		firePropertyChange(PROPERTY_NAME, oldName, d_name);
 	}
 	
-	private void checkSameIndication(List<Study> studies) throws IllegalArgumentException {
+	private void checkSameIndication(List<? extends Study> studies) throws IllegalArgumentException {
 		Indication ind = getIndicationFromStudy(studies.get(0));
 		for (int i=1;i<studies.size();i++) {
 			Indication ind2 = getIndicationFromStudy(studies.get(i));

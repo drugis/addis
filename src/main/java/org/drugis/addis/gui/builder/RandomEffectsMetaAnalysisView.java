@@ -6,10 +6,12 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
+import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.RiskDifference;
 import org.drugis.addis.entities.RiskRatio;
+import org.drugis.addis.entities.StandardisedMeanDifference;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;
@@ -51,6 +53,38 @@ public class RandomEffectsMetaAnalysisView implements ViewBuilder {
 			builder.add(GUIFactory.createCollapsiblePanel(buildStudiesPart()), cc.xy(1, 7));
 		}
 
+		switch (d_pm.getAnalysisType()) {
+		case RATE:
+			buildRatePlotsPart(builder, cc);
+			break;
+		case CONTINUOUS:
+			buildContinuousPlotsPart(builder, cc);
+			break;
+		default:
+			throw new RuntimeException("Unexpected case: " +
+					d_pm.getAnalysisType() + " is not a supported type of endpoint");
+		}
+
+		return builder.getPanel();
+	}
+
+	private void buildContinuousPlotsPart(PanelBuilder builder,
+			CellConstraints cc) {
+		builder.addSeparator("Mean difference", cc.xy(1, 9));
+		
+		if (d_overView) {
+			builder.add(buildRelativeEffectPart(MeanDifference.class), cc.xy(1, 11));			
+		} else {
+			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(MeanDifference.class)), cc.xy(1, 11));
+		}
+		
+		if (!d_overView) {
+			builder.addSeparator("Standardised mean difference", cc.xy(1, 17));
+			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(StandardisedMeanDifference.class)), cc.xy(1, 19));
+		}
+	}
+
+	private void buildRatePlotsPart(PanelBuilder builder, CellConstraints cc) {
 		builder.addSeparator("Odds ratio", cc.xy(1, 9));
 		if (d_overView) {
 			builder.add(buildRelativeEffectPart(OddsRatio.class), cc.xy(1, 11));			
@@ -65,8 +99,6 @@ public class RandomEffectsMetaAnalysisView implements ViewBuilder {
 			builder.addSeparator("Risk difference", cc.xy(1, 17));
 			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(RiskDifference.class)), cc.xy(1, 19));
 		}
-
-		return builder.getPanel();
 	}
 
 	private JComponent buildRelativeEffectPart(Class<? extends RelativeEffect<?>> type) {

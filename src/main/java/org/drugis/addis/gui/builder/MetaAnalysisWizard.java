@@ -11,12 +11,10 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
@@ -76,20 +74,12 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		public void prepare() {
 			removeAll();
 			
-			if (!endpointIsRate()) {
-				add(new JLabel("Meta-Analyze Not Implemented for non-rate measurements"));
-			} else {
-				d_ma = d_pm.createMetaAnalysis();
-				ViewBuilder mav = new RandomEffectsMetaAnalysisView((RandomEffectsMetaAnalysisPresentation) d_pmm.getModel(d_ma), d_frame, true);
-				add(mav.buildPanel());
-				setComplete(true);
-			}
+			d_ma = d_pm.createMetaAnalysis();
+			ViewBuilder mav = new RandomEffectsMetaAnalysisView((RandomEffectsMetaAnalysisPresentation) d_pmm.getModel(d_ma), d_frame, true);
+			add(mav.buildPanel());
+			setComplete(true);
 		}
 
-		private boolean endpointIsRate() {
-			return ((Endpoint)d_pm.getEndpointModel().getValue()).getType().equals(Endpoint.Type.RATE);
-		}
-		
 		public void applyState()
 		throws InvalidStateException {
 			saveAsStudy();

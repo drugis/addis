@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
@@ -15,6 +16,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.RelativeEffectMetaAnalysis;
@@ -34,10 +36,11 @@ public class RandomEffectsMetaAnalysisTest {
 	 */
 	
 	private Drug d_fluox;
-	private Drug d_sertra;
+	private Drug d_sertr;
 	
 	private Indication d_ind;
-	private Endpoint d_ep;
+	private Endpoint d_rateEndpoint;
+	private Endpoint d_contEndpoint;
 	
 	private Study d_bennie, d_boyer, d_fava, d_newhouse, d_sechter;
 	
@@ -48,14 +51,15 @@ public class RandomEffectsMetaAnalysisTest {
 	public void setUp() {
 		d_ind = new Indication(001L, "Impression");
 		d_fluox = new Drug("Fluoxetine","01");
-		d_sertra = new Drug("Sertraline","02");
-		d_ep = new Endpoint("ep", Endpoint.Type.RATE);
+		d_sertr = new Drug("Sertraline","02");
+		d_rateEndpoint = new Endpoint("rate", Endpoint.Type.RATE);
+		d_contEndpoint = new Endpoint("continuous", Endpoint.Type.CONTINUOUS);
 		
-		d_bennie = createStudy("Bennie 1995",63,144,73,142, d_ind);
-		d_boyer = createStudy("Boyer 1998", 61,120, 63,122, d_ind);
-		d_fava = createStudy("Fava 2002", 57, 92, 70, 96, d_ind);
-		d_newhouse = createStudy("Newhouse 2000", 84,119, 85,117, d_ind);
-		d_sechter = createStudy("Sechter 1999", 76,120, 86,118, d_ind);
+		d_bennie = createRateStudy("Bennie 1995",63,144,73,142, d_ind);
+		d_boyer = createRateStudy("Boyer 1998", 61,120, 63,122, d_ind);
+		d_fava = createRateStudy("Fava 2002", 57, 92, 70, 96, d_ind);
+		d_newhouse = createRateStudy("Newhouse 2000", 84,119, 85,117, d_ind);
+		d_sechter = createRateStudy("Sechter 1999", 76,120, 86,118, d_ind);
 		
 		d_studyList = new ArrayList<Study>();
 		d_studyList.add(d_bennie);
@@ -63,15 +67,15 @@ public class RandomEffectsMetaAnalysisTest {
 		d_studyList.add(d_fava);
 		d_studyList.add(d_newhouse);
 		d_studyList.add(d_sechter);
-		d_rema = new RandomEffectsMetaAnalysis("meta", d_ep, d_studyList, d_fluox, d_sertra);
+		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, d_fluox, d_sertr);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testDifferentIndicationsThrows() {
 		Indication newInd = new Indication(666L, "bad");
-		Study newStudy = createStudy("name", 0, 10, 0, 20, newInd);
+		Study newStudy = createRateStudy("name", 0, 10, 0, 20, newInd);
 		d_studyList.add(newStudy);
-		d_rema = new RandomEffectsMetaAnalysis("meta", d_ep, d_studyList, d_fluox, d_sertra);
+		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, d_fluox, d_sertr);
 	}
 	
 	@Test
@@ -86,7 +90,7 @@ public class RandomEffectsMetaAnalysisTest {
 	
 	@Test
 	public void testGetSecondDrug() {
-		assertEquals(d_sertra, d_rema.getSecondDrug());
+		assertEquals(d_sertr, d_rema.getSecondDrug());
 	}
 	
 	@Test
@@ -101,7 +105,7 @@ public class RandomEffectsMetaAnalysisTest {
 	
 	@Test
 	public void testGetEndpoint() {
-		assertEquals(d_ep, d_rema.getEndpoint());
+		assertEquals(d_rateEndpoint, d_rema.getEndpoint());
 	}
 	
 	@Test
@@ -131,36 +135,78 @@ public class RandomEffectsMetaAnalysisTest {
 		assertEquals(1.03, (oddsRatio.getConfidenceInterval().getLowerBound()), 0.01);
 		assertEquals(1.65, (oddsRatio.getConfidenceInterval().getUpperBound()), 0.01);		
 	}
+	
+	@Test
+	public void testContinuousMetaAnalysis() {
+		Study s1 = createContStudy("s1", 50, 4, 2, 50, 6, 2, d_ind);
+		Study s2 = createContStudy("s2", 50, 4, 2, 50, 7, 2, d_ind);
+		List<Study> studies = new ArrayList<Study>();
+		studies.add(s1);
+		studies.add(s2);
 		
-	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize, Indication ind)
-	{
+		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta",
+				d_contEndpoint, studies, d_fluox, d_sertr);
+		RelativeEffectMetaAnalysis<Measurement> relativeEffect = ma.getRelativeEffect(MeanDifference.class);
+		assertEquals(2.5, relativeEffect.getRelativeEffect(), 0.01);
+	}
+		
+	private Study createRateStudy(String studyName,
+			int fluoxResp, int fluoxSize,
+			int sertraResp, int sertraSize,
+			Indication ind) {
 		BasicStudy s = new BasicStudy(studyName, ind);
-		s.addEndpoint(d_ep);
-		BasicPatientGroup g_fluox = new BasicPatientGroup(s, d_fluox, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY),fluoxSize);
-		BasicPatientGroup g_parox = new BasicPatientGroup(s, d_sertra, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY),sertraSize);		
+		s.addEndpoint(d_rateEndpoint);
 		
-		s.addPatientGroup(g_parox);
-		s.addPatientGroup(g_fluox);
-		
-		BasicRateMeasurement m_parox = (BasicRateMeasurement) d_ep.buildMeasurement(g_parox);
-		BasicRateMeasurement m_fluox = (BasicRateMeasurement) d_ep.buildMeasurement(g_fluox);
-		
-		m_parox.setRate(sertraResp);
-		m_fluox.setRate(fluoxResp);
-		
-		s.setMeasurement(d_ep, g_parox, m_parox);
-		s.setMeasurement(d_ep, g_fluox, m_fluox);		
+		addRateMeasurement(s, d_fluox, fluoxSize, fluoxResp);		
+		addRateMeasurement(s, d_sertr, sertraSize, sertraResp);
 		
 		return s;
+	}
+	
+	private Study createContStudy(String studyName,
+			int fluoxSize, double fluoxMean, double fluoxDev,
+			int sertrSize, double sertrMean, double sertrDev,
+			Indication ind) {
+		BasicStudy s = new BasicStudy(studyName, ind);
+		s.addEndpoint(d_contEndpoint);
+		
+		addContinuousMeasurement(s, d_fluox, fluoxSize, fluoxMean, fluoxDev);
+		addContinuousMeasurement(s, d_sertr, sertrSize, sertrMean, sertrDev);
+		
+		return s ;
+	}
+
+	private void addRateMeasurement(BasicStudy study, Drug drug, int nSubjects, int nResponders) {
+		BasicPatientGroup group = addPatientGroup(study, drug, nSubjects);
+		BasicRateMeasurement measurement = (BasicRateMeasurement) d_rateEndpoint.buildMeasurement(group);
+		measurement.setRate(nResponders);
+		study.setMeasurement(d_rateEndpoint, group, measurement);
+	}
+
+	private void addContinuousMeasurement(BasicStudy study, Drug drug,
+			int nSubjects, double mean, double stdDev) {
+		BasicPatientGroup group = addPatientGroup(study, drug, nSubjects);
+		BasicContinuousMeasurement measurement =
+			(BasicContinuousMeasurement) d_contEndpoint.buildMeasurement(group);
+		measurement.setMean(mean);
+		measurement.setStdDev(stdDev);
+		study.setMeasurement(d_contEndpoint, group, measurement);
+	}
+	
+	private BasicPatientGroup addPatientGroup(BasicStudy study, Drug drug, int nSubjects) {
+		Dose dose = new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroup group = new BasicPatientGroup(study, drug, dose, nSubjects);
+		study.addPatientGroup(group);
+		return group;
 	}
 	
 	@Test
 	public void testGetDependencies() {
 		HashSet<Entity> deps = new HashSet<Entity>();
 		deps.add(d_fluox);
-		deps.add(d_sertra);
+		deps.add(d_sertr);
 		deps.add(d_ind);
-		deps.add(d_ep);
+		deps.add(d_rateEndpoint);
 		deps.addAll(Arrays.asList(new Study[]{d_bennie, d_boyer, d_fava, d_newhouse, d_sechter}));
 		
 		assertEquals(deps, d_rema.getDependencies());

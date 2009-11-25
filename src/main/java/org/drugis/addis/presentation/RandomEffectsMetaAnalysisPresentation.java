@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.BasicStudy;
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
@@ -67,4 +68,7 @@ public class RandomEffectsMetaAnalysisPresentation extends PresentationModel<Ran
 		}		
 	}
 	
+	public Endpoint.Type getAnalysisType() {
+		return getBean().getEndpoint().getType();
+	}
 }
