@@ -63,7 +63,7 @@ public class DomainImplTest {
 	}	
 	
 	@Test
-	public void testDependentsIncludeMetaStudies() {
+	public void testDependentsIncludeMetaStudies() throws Exception {
 		ExampleData.initDefaultData(d_domain);
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(ExampleData.buildStudyChouinard());

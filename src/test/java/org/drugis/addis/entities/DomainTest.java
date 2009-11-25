@@ -80,7 +80,7 @@ public class DomainTest {
 	}
 	
 	@Test(expected=NullPointerException.class)
-	public void testAddMetaAnalysisNull() {
+	public void testAddMetaAnalysisNull() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		d_domain.addMetaAnalysis(null);
 	}
 	
@@ -98,7 +98,47 @@ public class DomainTest {
 	public void testAddStudyThrowsOnUnknownIndication() {
 		BasicStudy s = new BasicStudy("X", new Indication(2L, ""));
 		d_domain.addStudy(s);
-	}	
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testAddMetaAnalysisThrowsOnUnknownStudy() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
+		List<Study> studies = new ArrayList<Study>();
+		studies.add(ExampleData.buildDefaultStudy1());
+		studies.add(ExampleData.buildDefaultStudy2());
+		studies.add(new BasicStudy("iiidddd", ExampleData.buildIndicationDepression()));
+		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
+				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());
+		d_domain.addMetaAnalysis(ma);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testAddMetaAnalysisThrowsOnDifferentIndication() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
+		List<Study> studies = new ArrayList<Study>();
+		studies.add(ExampleData.buildDefaultStudy1());
+		BasicStudy study2 = ExampleData.buildDefaultStudy2();
+		study2.setCharacteristic(StudyCharacteristic.INDICATION, ExampleData.buildIndicationChronicHeartFailure());
+		studies.add(study2);
+		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
+				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());
+		d_domain.addMetaAnalysis(ma);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testAddMetaAnalysisThrowsOnUnknownIndication() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
+		List<Study> studies = new ArrayList<Study>();
+		BasicStudy study2 = ExampleData.buildDefaultStudy2();
+		study2.setCharacteristic(StudyCharacteristic.INDICATION, new Indication(4356346L, "notExisting"));
+		studies.add(study2);
+		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
+				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());
+		d_domain.addMetaAnalysis(ma);
+	}		
+	
+	@Test(expected=EntityIdExistsException.class)
+	public void testAddMetaAnalysisThrowsOnExistingName() throws Exception {
+		addMetaAnalysisToDomain();
+		addMetaAnalysisToDomain();
+	}
 	
 	@Test
 	public void testAddStudy() {
@@ -111,7 +151,7 @@ public class DomainTest {
 	}
 	
 	@Test
-	public void testAddMetaAnalysis() {
+	public void testAddMetaAnalysis() throws Exception {
 		assertEquals(0, d_domain.getMetaAnalyses().size());
 		RandomEffectsMetaAnalysis s = addMetaAnalysisToDomain();
 		
@@ -119,7 +159,7 @@ public class DomainTest {
 		assertEquals(1, d_domain.getMetaAnalyses().size());
 	}
 
-	private RandomEffectsMetaAnalysis addMetaAnalysisToDomain() {
+	private RandomEffectsMetaAnalysis addMetaAnalysisToDomain() throws Exception {
 		ExampleData.initDefaultData(d_domain);
 		RandomEffectsMetaAnalysis ma = generateMetaAnalysis();
 		d_domain.addMetaAnalysis(ma);
@@ -187,7 +227,7 @@ public class DomainTest {
 	}
 	
 	@Test
-	public void testAddAnalysisListener() {
+	public void testAddAnalysisListener() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		ExampleData.initDefaultData(d_domain);
 		DomainListener mockListener = createMock(DomainListener.class);
 		mockListener.analysesChanged();
@@ -379,7 +419,7 @@ public class DomainTest {
 	}
 	
 	@Test(expected=DependentEntitiesException.class)
-	public void testDeleteStudyThrowsCorrectException() throws DependentEntitiesException {
+	public void testDeleteStudyThrowsCorrectException() throws DependentEntitiesException, NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		BasicStudy s1 = new BasicStudy("X", d_indication);
 		BasicStudy s2 = new BasicStudy("Y", d_indication);
 		d_domain.addIndication(d_indication);
