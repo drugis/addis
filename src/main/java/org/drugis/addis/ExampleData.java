@@ -60,6 +60,7 @@ public class ExampleData {
 	private static BasicStudy s_studyChouinard;
 
 	public static void initDefaultData(Domain domain) {
+		clearAll();
 		// depression data
 		domain.addIndication(buildIndicationDepression());
 		domain.addEndpoint(buildEndpointHamd());
@@ -69,8 +70,8 @@ public class ExampleData {
 		domain.addDrug(buildDrugSertraline());
 		domain.addDrug(buildPlacebo());
 		domain.addStudy(buildStudyChouinard());
-		domain.addStudy(buildStudyDeWilde());
-		domain.addStudy(buildStudyBennie());
+		domain.addStudy(buildStudyDeWilde());		
+		domain.addStudy(buildStudyBennie());		
 		
 
 				
@@ -82,6 +83,27 @@ public class ExampleData {
 		
 		// unused stuff
 		domain.addEndpoint(buildEndpointUnused());
+	}
+
+	private static void clearAll() {
+		s_indicationDepression = null;
+		s_endpointHamd = null;
+		s_endpointCgi = null;
+		s_parox = null;
+		s_fluox = null;
+		s_viagra = null;
+		s_endpointUnused = null;
+		s_indicationHeartFailure = null;
+		s_candesartan = null;
+		s_endpointCVdeath = null;
+		s_sertr = null;
+		s_placebo = null;
+		s_studyMcMurray = null;
+		s_study3Arm = null;
+
+		s_studyBennie = null;
+		s_studyDeWilde = null;
+		s_studyChouinard = null;
 	}
 
 	public static BasicStudy buildStudyChouinard() {

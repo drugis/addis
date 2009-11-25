@@ -103,8 +103,8 @@ public class DomainTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testAddMetaAnalysisThrowsOnUnknownStudy() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy1());
-		studies.add(ExampleData.buildDefaultStudy2());
+		studies.add(ExampleData.buildStudyChouinard());
+		studies.add(ExampleData.buildStudyDeWilde());
 		studies.add(new BasicStudy("iiidddd", ExampleData.buildIndicationDepression()));
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
 				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());
@@ -114,8 +114,8 @@ public class DomainTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testAddMetaAnalysisThrowsOnDifferentIndication() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy1());
-		BasicStudy study2 = ExampleData.buildDefaultStudy2();
+		studies.add(ExampleData.buildStudyChouinard());
+		BasicStudy study2 = ExampleData.buildStudyDeWilde();
 		study2.setCharacteristic(StudyCharacteristic.INDICATION, ExampleData.buildIndicationChronicHeartFailure());
 		studies.add(study2);
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
@@ -126,7 +126,7 @@ public class DomainTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testAddMetaAnalysisThrowsOnUnknownIndication() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		List<Study> studies = new ArrayList<Study>();
-		BasicStudy study2 = ExampleData.buildDefaultStudy2();
+		BasicStudy study2 = ExampleData.buildStudyDeWilde();
 		study2.setCharacteristic(StudyCharacteristic.INDICATION, new Indication(4356346L, "notExisting"));
 		studies.add(study2);
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
@@ -136,8 +136,11 @@ public class DomainTest {
 	
 	@Test(expected=EntityIdExistsException.class)
 	public void testAddMetaAnalysisThrowsOnExistingName() throws Exception {
-		addMetaAnalysisToDomain();
-		addMetaAnalysisToDomain();
+		ExampleData.initDefaultData(d_domain);
+		RandomEffectsMetaAnalysis ma = generateMetaAnalysis();
+		d_domain.addMetaAnalysis(ma);
+		RandomEffectsMetaAnalysis ma1 = generateMetaAnalysis();
+		d_domain.addMetaAnalysis(ma1);
 	}
 	
 	@Test
