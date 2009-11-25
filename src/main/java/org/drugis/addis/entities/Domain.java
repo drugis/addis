@@ -66,9 +66,12 @@ public interface Domain {
 	 * 
 	 * @param ms the meta-study to add
 	 * @throws NullPointerException if ma is null
-	 * @throws IllegalArgumentException if list of the studies is not included in the domain yet
+	 * @throws IllegalArgumentException if some study within the meta-analysis is not included in the domain yet
+	 * OR the indication isn't in the domain yet.
+	 * @throws EntityIdExistsException if there is already an entity registered within the domain with the same ID. 
 	 */
-	public void addMetaAnalysis(RandomEffectsMetaAnalysis ma) throws NullPointerException;
+	public void addMetaAnalysis(RandomEffectsMetaAnalysis ma) 
+		throws NullPointerException, IllegalArgumentException, EntityIdExistsException;
 	
 	/**
 	 * Get the studies stored in the data model, EXCLUDING the meta-studies.

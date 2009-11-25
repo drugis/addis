@@ -119,13 +119,25 @@ public class DomainImpl implements Domain, Serializable {
 		fireStudiesChanged();
 	}
 	
-	public void addMetaAnalysis(RandomEffectsMetaAnalysis ma) throws NullPointerException {
+	public void addMetaAnalysis(RandomEffectsMetaAnalysis ma) 
+	throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		if (ma == null) {
 			throw new NullPointerException("Meta-Study may not be null");
 		}
 		
 		if (!getStudies().containsAll(ma.getStudies()))
 			throw new IllegalArgumentException("Not All studies in this Meta-Study are in the domain");
+		
+		Indication firstInd = (Indication) ma.getStudies().get(0).getCharacteristic(StudyCharacteristic.INDICATION);
+		if (!getIndications().contains(firstInd)) {
+			throw new IllegalArgumentException("Indication not in domain");
+		}
+		
+		for (RandomEffectsMetaAnalysis m : d_metaAnalyses) {
+			if (m.getName().equals(ma.getName())) {
+				throw new EntityIdExistsException("There already exists a meta-analysis with the given name");
+			}
+		}
 		
 		d_metaAnalyses.add(ma);
 		
