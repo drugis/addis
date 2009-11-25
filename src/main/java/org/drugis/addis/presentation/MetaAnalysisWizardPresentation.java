@@ -12,6 +12,7 @@ import java.util.TreeSet;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
@@ -370,7 +371,7 @@ public class MetaAnalysisWizardPresentation {
 				new ArrayList<Study>(getSelectedStudySet()), getFirstDrug(), getSecondDrug());
 	}
 	
-	public RandomEffectsMetaAnalysis saveMetaAnalysis(String name, RandomEffectsMetaAnalysis ma) {
+	public RandomEffectsMetaAnalysis saveMetaAnalysis(String name, RandomEffectsMetaAnalysis ma) throws EntityIdExistsException {
 		ma.setName(name);
 		d_domain.addMetaAnalysis(ma);
 		return ma;

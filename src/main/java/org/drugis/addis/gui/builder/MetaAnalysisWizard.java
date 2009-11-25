@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.Main;
@@ -98,8 +99,14 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			String res = JOptionPane.showInputDialog(this, "Input name for new analysis", 
 					"Save meta-analysis", JOptionPane.QUESTION_MESSAGE);
 			if (res != null) {
-				RandomEffectsMetaAnalysis study = d_pm.saveMetaAnalysis(res, d_ma);	
-				d_frame.leftTreeFocusOnMetaStudy(study);
+				try {
+					RandomEffectsMetaAnalysis study = d_pm.saveMetaAnalysis(res, d_ma);	
+					d_frame.leftTreeFocusOnMetaStudy(study);
+				} catch (EntityIdExistsException e) {
+					JOptionPane.showMessageDialog(this, "There already exists a meta-analysis with the given name, input another name",
+							"Unable to save meta-analysis", JOptionPane.ERROR_MESSAGE);
+					saveAsStudy();
+				}
 			} else {
 				throw new InvalidStateException();
 			}

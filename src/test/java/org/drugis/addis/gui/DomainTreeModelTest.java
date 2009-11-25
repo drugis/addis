@@ -41,6 +41,7 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
@@ -59,7 +60,7 @@ public class DomainTreeModelTest {
 	private RandomEffectsMetaAnalysis d_firstMetaAnalysis;
 	
 	@Before
-	public void setUp() {
+	public void setUp() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		d_domain = new DomainImpl();
 		d_firstIndication = new Indication(8L, "Indication");		
 		d_firstEndpoint = new Endpoint("Endpoint", Type.RATE);
@@ -262,8 +263,8 @@ public class DomainTreeModelTest {
 	}	
 	
 	@Test
-	public void testMetaStudyIsLeaf() {
-		RandomEffectsMetaAnalysis study = new RandomEffectsMetaAnalysis("meta", d_firstEndpoint, new ArrayList<Study>(Collections.singleton(d_firstStudy)),
+	public void testMetaStudyIsLeaf() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
+		RandomEffectsMetaAnalysis study = new RandomEffectsMetaAnalysis("meta2", d_firstEndpoint, new ArrayList<Study>(Collections.singleton(d_firstStudy)),
 				d_firstDrug, d_firstDrug);
 		d_domain.addMetaAnalysis(study);
 		assertTrue(d_treeModel.isLeaf(study));
