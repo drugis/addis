@@ -440,7 +440,8 @@ public class Main extends JFrame {
 	private void initPanel() {
 		JSplitPane pane = new JSplitPane();
 		pane.setBorder(BorderFactory.createEmptyBorder());
-		pane.setEnabled(false);
+		pane.setEnabled(true);
+		pane.setOneTouchExpandable(true);
 		
 		initLeftPanel();
 		pane.setLeftComponent(d_leftPanel);
