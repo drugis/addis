@@ -28,12 +28,12 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
-import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.EndpointHolder;
 import org.drugis.addis.gui.MeasurementInputHelper;
 import org.drugis.addis.gui.components.NotEmptyValidator;
@@ -122,7 +122,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 		builder.addSeparator("Study", cc.xyw(1, 1, fullWidth));
 		builder.addLabel("ID:", cc.xy(1, 3));
 		builder.add(BasicComponentFactory.createLabel(
-				new PresentationModel<MutableStudy>(d_study).getModel(AbstractStudy.PROPERTY_ID)
+				new PresentationModel<MutableStudy>(d_study).getModel(Study.PROPERTY_ID)
 				), cc.xyw(3, 3, fullWidth - 2));
 		
 		builder.addSeparator("Endpoint", cc.xyw(1, 5, fullWidth));

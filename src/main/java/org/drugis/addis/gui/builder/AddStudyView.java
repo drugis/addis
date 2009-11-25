@@ -34,7 +34,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultFormatter;
 
-import org.drugis.addis.entities.AbstractStudy;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicStudy;
@@ -43,6 +42,7 @@ import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.gui.EndpointHolder;
 import org.drugis.addis.gui.GUIFactory;
@@ -101,7 +101,7 @@ public class AddStudyView implements ViewBuilder {
 	}
 
 	private JComponent createIdComponent() {
-		JTextField id = BasicComponentFactory.createTextField(d_model.getModel(AbstractStudy.PROPERTY_ID));
+		JTextField id = BasicComponentFactory.createTextField(d_model.getModel(Study.PROPERTY_ID));
 		id.setColumns(30);
 		AutoSelectFocusListener.add(id);
 		d_validator.add(id);

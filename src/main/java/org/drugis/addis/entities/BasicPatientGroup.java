@@ -40,7 +40,7 @@ public class BasicPatientGroup extends AbstractEntity implements MutablePatientG
 		return d_study;
 	}
 	
-	public void setStudy(AbstractStudy study) {
+	public void setStudy(Study study) {
 		Study oldVal = d_study;
 		d_study = study;
 		firePropertyChange(PROPERTY_STUDY, oldVal, d_study);

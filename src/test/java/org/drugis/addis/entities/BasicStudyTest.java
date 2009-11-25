@@ -48,43 +48,43 @@ public class BasicStudyTest {
 	
 	@Test
 	public void testSetId() {
-		JUnitUtil.testSetter(new BasicStudy("X", new Indication(0L, "")), AbstractStudy.PROPERTY_ID, "X", "NCT00351273");
+		JUnitUtil.testSetter(new BasicStudy("X", new Indication(0L, "")), Study.PROPERTY_ID, "X", "NCT00351273");
 	}
 	
 	@Test
 	public void testSetEndpoints() {
 		Set<Endpoint> list = Collections.singleton(new Endpoint("e", Type.RATE));
-		JUnitUtil.testSetter(new BasicStudy("X", new Indication(0L, "")), AbstractStudy.PROPERTY_ENDPOINTS, Collections.EMPTY_SET, 
+		JUnitUtil.testSetter(new BasicStudy("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, Collections.EMPTY_SET, 
 				list);
 	}
 	
 	@Test
 	public void testAddEndpoint() {
-		JUnitUtil.testAdderSet(new BasicStudy("X", new Indication(0L, "")), AbstractStudy.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Type.RATE));
+		JUnitUtil.testAdderSet(new BasicStudy("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Type.RATE));
 	}
 	
 	@Test
 	public void testSetPatientGroups() {
 		List<BasicPatientGroup> list = Collections.singletonList(d_pg);
-		JUnitUtil.testSetter(new BasicStudy("X", new Indication(0L, "")), AbstractStudy.PROPERTY_PATIENTGROUPS, Collections.EMPTY_LIST, 
+		JUnitUtil.testSetter(new BasicStudy("X", new Indication(0L, "")), Study.PROPERTY_PATIENTGROUPS, Collections.EMPTY_LIST, 
 				list);
 	}
 	
 	@Test
 	public void testInitialPatientGroups() {
-		AbstractStudy study = new BasicStudy("X", new Indication(0L, ""));
+		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
 		assertNotNull(study.getPatientGroups());
 		assertTrue(study.getPatientGroups().isEmpty());
 	}
 	
 	@Test
 	public void testAddPatientGroup() {
-		JUnitUtil.testAdder(new BasicStudy("X", new Indication(0L, "")), AbstractStudy.PROPERTY_PATIENTGROUPS, "addPatientGroup", d_pg);
+		JUnitUtil.testAdder(new BasicStudy("X", new Indication(0L, "")), Study.PROPERTY_PATIENTGROUPS, "addPatientGroup", d_pg);
 	}
 	
 	@Test
 	public void testGetDrugs() {
-		AbstractStudy s = ExampleData.buildStudyDeWilde();
+		BasicStudy s = ExampleData.buildStudyDeWilde();
 		Set<Drug> expected = new HashSet<Drug>();
 		expected.add(ExampleData.buildDrugFluoxetine());
 		expected.add(ExampleData.buildDrugParoxetine());
@@ -94,13 +94,13 @@ public class BasicStudyTest {
 	@Test
 	public void testToString() {
 		String id = "NCT00351273";
-		AbstractStudy study = new BasicStudy(id, new Indication(0L, ""));
+		BasicStudy study = new BasicStudy(id, new Indication(0L, ""));
 		assertEquals(id, study.toString());
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetMeasurementThrowsException1() {
-		AbstractStudy study = new BasicStudy("X", new Indication(0L, ""));
+		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
 		study.getMeasurement(new Endpoint("E", Type.RATE), new BasicPatientGroup(study, null, null, 100));
 	}
 	
@@ -121,7 +121,7 @@ public class BasicStudyTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetMeasurementThrowsException1() {
-		AbstractStudy study = new BasicStudy("X", new Indication(0L, ""));
+		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("E", Type.RATE);
 		BasicPatientGroup pg = new BasicPatientGroup(study, null, null, 100);
 		study.setMeasurement(e, pg, 
@@ -157,7 +157,7 @@ public class BasicStudyTest {
 	
 	@Test
 	public void testGetDependencies() {
-		AbstractStudy s = ExampleData.buildStudyDeWilde();
+		BasicStudy s = ExampleData.buildStudyDeWilde();
 		assertFalse(s.getEndpoints().isEmpty());
 		assertFalse(s.getDrugs().isEmpty());
 		

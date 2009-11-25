@@ -3,7 +3,7 @@ package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
 
-import org.drugis.addis.entities.AbstractStudy;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.presentation.CharacteristicHolder;
 import org.drugis.addis.presentation.StudyPresentationModel;
@@ -34,7 +34,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		int fullWidth = 3;
 		
 		builder.addLabel("ID:", cc.xy(1, 1));
-		builder.add(BasicComponentFactory.createLabel(d_model.getModel(AbstractStudy.PROPERTY_ID)),
+		builder.add(BasicComponentFactory.createLabel(d_model.getModel(Study.PROPERTY_ID)),
 				cc.xyw(3, 1, fullWidth - 2));
 		
 		int row = 3;

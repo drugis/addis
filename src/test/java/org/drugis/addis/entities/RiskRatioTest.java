@@ -112,6 +112,10 @@ public class RiskRatioTest {
 		assertEquals(1.38, (ival.getUpperBound()), 0.01); 
 	}
 	
+	@Test
+	public void testGetName() {
+		assertEquals("Risk ratio", d_ratioSechter.getName());
+	}
 	
 	
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize) {
