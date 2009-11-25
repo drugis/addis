@@ -24,10 +24,12 @@ public class UnknownDose extends Dose {
 	
 	@Override
 	public void setQuantity(Double q) {
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public void setUnit(SIUnit u) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
