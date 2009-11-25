@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,18 +47,23 @@ public class DomainImplTest {
 	public void testGetDependents() {
 		ExampleData.initDefaultData(d_domain);
 		Indication ind = ExampleData.buildIndicationDepression();
-		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy1());
-		studies.add(ExampleData.buildDefaultStudy2());
-		studies.add(ExampleData.buildDefaultStudy3());
-		assertTrue(d_domain.getDependents(ind).containsAll(studies));
-		assertTrue(d_domain.getDependents(ind).containsAll(studies));
+		List<Entity> entities = new ArrayList<Entity>();
+		entities.add(ExampleData.buildDefaultStudy1());
+		entities.add(ExampleData.buildDefaultStudy2());
+		entities.add(ExampleData.buildDefaultStudy3());
+		entities.add(ExampleData.buildStudyBoyer1998());
+		entities.add(ExampleData.buildStudyFava2002());
+		entities.add(ExampleData.buildStudyNewhouse2000());
+		entities.add(ExampleData.buildStudySechter1999());
+		entities.add(ExampleData.buildMetaHansen2005());
+		JUnitUtil.assertAllAndOnly(entities, d_domain.getDependents(ind));
+		
 		Drug fluox = ExampleData.buildDrugFluoxetine();
-		assertEquals(new HashSet<Study>(studies), d_domain.getDependents(fluox));
+		JUnitUtil.assertAllAndOnly(new HashSet<Entity>(entities), d_domain.getDependents(fluox));
 		Study s = ExampleData.buildDefaultStudy1();
 		assertEquals(Collections.emptySet(), d_domain.getDependents(s));
 		Endpoint d1 = ExampleData.buildEndpointHamd();
-		assertEquals(new HashSet<Study>(studies), d_domain.getDependents(d1));
+		assertEquals(new HashSet<Entity>(entities), d_domain.getDependents(d1));
 	}	
 	
 	@Test
