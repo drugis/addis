@@ -59,7 +59,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		wizardModel.add(new OverviewWizardStep());
 		Wizard wizard = new Wizard(wizardModel);
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
-		wizard.setPreferredSize(new Dimension(1000, 500));
+		wizard.setPreferredSize(new Dimension(900, 600));
 		return wizard;
 	}
 	
@@ -164,12 +164,12 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		    d_table = new StudyTable(d_pm.getStudyTableModel());
 			    
 		    JScrollPane sPane = new JScrollPane(d_table);
-		    sPane.setPreferredSize(new Dimension(800,200));
+		    sPane.setPreferredSize(new Dimension(700,300));
 			    
 			studiesComp = sPane;
 
 			FormLayout layout = new FormLayout(
-					"center:pref",
+					"center:pref:grow",
 					"p, 3dlu, p, 3dlu, fill:p"
 					);	
 			
