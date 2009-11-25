@@ -1,6 +1,7 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -37,6 +38,7 @@ public class StudyTablePanelView implements ViewBuilder {
 		StudyCharTableModel model = new StudyCharTableModel(d_metamodel);
 		final JTable table = new StudyTable(model);
 		JScrollPane pane = new JScrollPane(table);
+		pane.setPreferredSize(new Dimension(200, 250));
 		pane.setBorder(BorderFactory.createEmptyBorder());
 		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
