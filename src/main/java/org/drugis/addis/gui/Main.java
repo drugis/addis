@@ -293,6 +293,9 @@ public class Main extends JFrame {
 			} else if (selected instanceof Study) {
 				d_domain.getDomain().deleteStudy((Study) selected);
 				leftTreeFocusStudies();
+			} else if (selected instanceof RandomEffectsMetaAnalysis) {
+				d_domain.getDomain().deleteMetaAnalysis((RandomEffectsMetaAnalysis) selected);
+				leftTreeFocusAnalyses();
 			}
 		} catch (DependentEntitiesException e) {
 			JOptionPane.showMessageDialog(this,
@@ -301,6 +304,12 @@ public class Main extends JFrame {
 					"Error deleting " + selected,					
 					JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	private void leftTreeFocusAnalyses() {
+		d_leftPanelTree.setSelectionPath(new TreePath(
+				new Object[] {d_domainTreeModel.getRoot(), 
+						d_domainTreeModel.getAnalysesNode() }));
 	}
 
 	private JMenuItem createAddEndpointMenuItem() {
