@@ -1,5 +1,8 @@
 package org.drugis.addis.gui.builder;
 
+import java.awt.Color;
+
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
@@ -76,6 +79,7 @@ public class RandomEffectsMetaAnalysisView implements ViewBuilder {
 		
 		RelativeEffectCanvas canvas = new RelativeEffectCanvas(d_pm.getForestPlotPresentation(type));
 		builder.add(canvas, cc.xy(1, 1));
+		builder.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.black, 1), BorderFactory.createEmptyBorder(1, 1, 1, 1)));
 		
 		return builder.getPanel();	
 	}
