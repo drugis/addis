@@ -228,7 +228,8 @@ public class Main extends JFrame {
 		addMenu.add(createAddIndicationMenuItem());
 		addMenu.add(createAddDrugMenuItem());		
 		addMenu.add(createAddEndpointMenuItem());
-		addMenu.add(createAddStudyMenuItem());		
+		addMenu.add(createAddStudyMenuItem());
+		addMenu.add(createAddMetaAnalysisMenuItem());
 		return addMenu;
 	}
 
@@ -329,6 +330,18 @@ public class Main extends JFrame {
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				showAddStudyDialog();
+			}
+		});
+		
+		return item;
+	}
+	
+	private JMenuItem createAddMetaAnalysisMenuItem() {
+		JMenuItem item = new JMenuItem("Meta-Analysis", ImageLoader.getIcon(FileNames.ICON_METASTUDY));
+		item.setMnemonic('m');
+		item.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				showMetaAnalysisWizard();
 			}
 		});
 		
