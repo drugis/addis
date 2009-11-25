@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
 @SuppressWarnings("serial")
@@ -13,6 +14,7 @@ public class StudyTable extends JTable {
 
 	public StudyTable(TableModel model) {
 		super(model);
+		setDefaultRenderer(Object.class, new MyRenderer());		
 		d_tableHeader = new StudyTableHeader(model, getColumnModel(), this);
 		setTableHeader(d_tableHeader);
 		setPreferredScrollableViewportSize(getPreferredSize());
@@ -32,4 +34,19 @@ public class StudyTable extends JTable {
 			d_tableHeader.autoSizeColumns();	
 		}
 	}
+	
+	private class MyRenderer extends DefaultTableCellRenderer {
+		
+		public void setValue(Object value) {
+			if (value == null) {
+				setToolTipText(null);
+			} else {
+				if (value.toString().length() == 0) {
+					setToolTipText(null);
+				}
+				setToolTipText(value.toString());
+			}
+			super.setValue(value);			
+		}
+	}	
 }
