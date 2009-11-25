@@ -51,7 +51,7 @@ public class ForestPlot implements Plot {
 		//BACKGROUND COLORING:
 		Color c = g2d.getColor();
 		g2d.setColor(Color.white);
-		g2d.fillRect(0, ROWHEIGHT, FULLWIDTH, FULLROW * (d_bars.size() + 4));
+		g2d.fillRect(0, ROWHEIGHT, FULLWIDTH, FULLROW * getNumRows());
 		g2d.setColor(c);
 		
 		//HEADER ROW:
@@ -71,6 +71,10 @@ public class ForestPlot implements Plot {
 			d_bars.get(i).paint(g2d);
 		}
 		paintAxis(g2d);
+	}
+
+	private int getNumRows() {
+		return (d_bars.size() + 5);
 	}
 	
 	public void paintAxis(Graphics2D g2d) {
@@ -99,7 +103,7 @@ public class ForestPlot implements Plot {
 	}
 	
 	public Dimension getPlotSize() {
-		return new Dimension(FULLWIDTH, FULLROW * (d_bars.size() + 5) + ROWPAD);
+		return new Dimension(FULLWIDTH, FULLROW * getNumRows() + ROWPAD);
 	}
 	
 	

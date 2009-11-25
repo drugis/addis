@@ -125,7 +125,7 @@ public class Main extends JFrame {
 			}
 		});
 
-		setPreferredSize(new Dimension(1015, 700));
+		setPreferredSize(new Dimension(1020, 764));
 		GUIHelper.initializeLookAndFeel();
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		ToolTipManager.sharedInstance().setInitialDelay(0);
@@ -440,7 +440,8 @@ public class Main extends JFrame {
 	private void initPanel() {
 		JSplitPane pane = new JSplitPane();
 		pane.setBorder(BorderFactory.createEmptyBorder());
-		pane.setEnabled(false);
+		pane.setEnabled(true);
+		pane.setOneTouchExpandable(true);
 		
 		initLeftPanel();
 		pane.setLeftComponent(d_leftPanel);
