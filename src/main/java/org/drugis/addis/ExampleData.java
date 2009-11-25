@@ -415,7 +415,7 @@ public class ExampleData {
 		return study;
 	}
 	
-	private static Drug buildPlacebo() {
+	public static Drug buildPlacebo() {
 		if (s_placebo == null) {
 			s_placebo = new Drug("Placebo", "");
 		}
