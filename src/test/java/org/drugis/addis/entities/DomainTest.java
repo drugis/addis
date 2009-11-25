@@ -116,7 +116,7 @@ public class DomainTest {
 		RandomEffectsMetaAnalysis s = addMetaAnalysisToDomain();
 		
 		assertTrue(d_domain.getMetaAnalyses().contains(s));
-		assertEquals(2, d_domain.getMetaAnalyses().size());
+		assertEquals(1, d_domain.getMetaAnalyses().size());
 	}
 
 	private RandomEffectsMetaAnalysis addMetaAnalysisToDomain() {
@@ -128,8 +128,8 @@ public class DomainTest {
 
 	private RandomEffectsMetaAnalysis generateMetaAnalysis() {
 		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy1());
-		studies.add(ExampleData.buildDefaultStudy2());
+		studies.add(ExampleData.buildStudyChouinard());
+		studies.add(ExampleData.buildStudyDeWilde());
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
 				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());
 		return ma;
@@ -511,7 +511,6 @@ public class DomainTest {
 	public void testSerializationDeleteStudyFires() throws Exception {
 		ExampleData.initDefaultData(d_domain);
 		Domain newDomain = JUnitUtil.serializeObject(d_domain);
-		newDomain.deleteMetaAnalysis(newDomain.getMetaAnalyses().last());
 		DomainListener mock = createMock(DomainListener.class);
 		newDomain.addListener(mock);
 		mock.studiesChanged();

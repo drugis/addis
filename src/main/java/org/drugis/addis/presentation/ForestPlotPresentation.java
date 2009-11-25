@@ -226,6 +226,11 @@ public class ForestPlotPresentation {
 		DecimalFormat df = new DecimalFormat("##0.0");
 		return df.format(d_analysis.getRelativeEffect(d_type).getHeterogeneityI2()) + "%";
 	}
+	
+	public String getHeterogeneity() {
+		DecimalFormat df = new DecimalFormat("##0.00");
+		return df.format(d_analysis.getRelativeEffect(d_type).getHeterogeneity());
+	}
 
 	public boolean isMetaAnalysis() {
 		return (d_analysis != null && d_relEffects.size() > 1);

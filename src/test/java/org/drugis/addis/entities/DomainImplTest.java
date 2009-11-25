@@ -48,19 +48,15 @@ public class DomainImplTest {
 		ExampleData.initDefaultData(d_domain);
 		Indication ind = ExampleData.buildIndicationDepression();
 		List<Entity> entities = new ArrayList<Entity>();
-		entities.add(ExampleData.buildDefaultStudy1());
-		entities.add(ExampleData.buildDefaultStudy2());
-		entities.add(ExampleData.buildDefaultStudy3());
-		entities.add(ExampleData.buildStudyBoyer1998());
-		entities.add(ExampleData.buildStudyFava2002());
-		entities.add(ExampleData.buildStudyNewhouse2000());
-		entities.add(ExampleData.buildStudySechter1999());
-		entities.add(ExampleData.buildMetaHansen2005());
+		entities.add(ExampleData.buildStudyChouinard());
+		entities.add(ExampleData.buildStudyDeWilde());
+		entities.add(ExampleData.buildStudyBennie());
+
 		JUnitUtil.assertAllAndOnly(entities, d_domain.getDependents(ind));
 		
 		Drug fluox = ExampleData.buildDrugFluoxetine();
 		JUnitUtil.assertAllAndOnly(new HashSet<Entity>(entities), d_domain.getDependents(fluox));
-		Study s = ExampleData.buildDefaultStudy1();
+		Study s = ExampleData.buildStudyChouinard();
 		assertEquals(Collections.emptySet(), d_domain.getDependents(s));
 		Endpoint d1 = ExampleData.buildEndpointHamd();
 		assertEquals(new HashSet<Entity>(entities), d_domain.getDependents(d1));
@@ -70,8 +66,8 @@ public class DomainImplTest {
 	public void testDependentsIncludeMetaStudies() {
 		ExampleData.initDefaultData(d_domain);
 		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy1());
-		studies.add(ExampleData.buildDefaultStudy2());
+		studies.add(ExampleData.buildStudyChouinard());
+		studies.add(ExampleData.buildStudyDeWilde());
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), studies,
 				ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine()); 
 		d_domain.addMetaAnalysis(ma);

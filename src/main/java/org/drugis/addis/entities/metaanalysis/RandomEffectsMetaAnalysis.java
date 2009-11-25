@@ -293,18 +293,6 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 	}
 	
 	@Override
-	public boolean equals(Object o) {
-		if (o instanceof RandomEffectsMetaAnalysis) {
-			RandomEffectsMetaAnalysis other = (RandomEffectsMetaAnalysis) o;
-			if (other.getName() == null) {
-				return getName() == null;
-			}
-			return other.getName().equals(getName());
-		}
-		return false;
-	}
-	
-	@Override
 	public Set<Entity> getDependencies() {
 		HashSet<Entity> deps = new HashSet<Entity>();
 		deps.add(getFirstDrug());
@@ -315,11 +303,6 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		return deps;
 	}
 	
-	@Override
-	public int hashCode() {
-		return getName() == null ? 0 : getName().hashCode();
-	}
-
 	public Indication getIndication() {
 		return getIndicationFromStudy(d_studies.get(0));
 	}

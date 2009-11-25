@@ -99,7 +99,7 @@ public class ForestPlot implements Plot {
 		
 		// Draw the Heterogeneity
 		if (d_pm.isMetaAnalysis()) {
-			drawVCentrString(g2d, "Heterogeneity (I\u00B2 statistic): " + d_pm.getHeterogeneityI2(), d_bars.size() + 3, FULLWIDTH / 4, Align.CENTER);
+			drawVCentrString(g2d, "Heterogeneity = " + d_pm.getHeterogeneity() + " (I\u00B2 = " + d_pm.getHeterogeneityI2() + ")", d_bars.size() + 3, FULLWIDTH / 4, Align.CENTER);
 			//draw dashed line from the combined diamond:
 			float[] dash = { 1f, 1f, 1f };
 			g2d.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, 

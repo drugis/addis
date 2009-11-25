@@ -55,8 +55,8 @@ public class PresentationModelManagerTest {
 	@Test
 	public void testMetaAnalysisGetModel() {
 		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy1());
-		studies.add(ExampleData.buildDefaultStudy2());
+		studies.add(ExampleData.buildStudyChouinard());
+		studies.add(ExampleData.buildStudyDeWilde());
 		RandomEffectsMetaAnalysis anal = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
 				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());
 		

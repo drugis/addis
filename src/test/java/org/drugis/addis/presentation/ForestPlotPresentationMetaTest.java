@@ -18,8 +18,8 @@ public class ForestPlotPresentationMetaTest {
 	@Before
 	public void setUp() {
 		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy1());
-		studies.add(ExampleData.buildDefaultStudy2());
+		studies.add(ExampleData.buildStudyChouinard());
+		studies.add(ExampleData.buildStudyDeWilde());
 		RandomEffectsMetaAnalysis analysis = new RandomEffectsMetaAnalysis("TestMetaAnalysis",ExampleData.buildEndpointHamd(),
 				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());
 		d_pm = new ForestPlotPresentation(analysis, OddsRatio.class);
@@ -32,9 +32,9 @@ public class ForestPlotPresentationMetaTest {
 	
 	@Test
 	public void testStudyLabels() {
-		assertEquals(ExampleData.buildDefaultStudy1().toString(),
+		assertEquals(ExampleData.buildStudyChouinard().toString(),
 				d_pm.getStudyLabelAt(0));
-		assertEquals(ExampleData.buildDefaultStudy2().toString(),
+		assertEquals(ExampleData.buildStudyDeWilde().toString(),
 				d_pm.getStudyLabelAt(1));
 	}
 	
