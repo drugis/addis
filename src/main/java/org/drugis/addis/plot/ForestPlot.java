@@ -1,7 +1,6 @@
 package org.drugis.addis.plot;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -20,13 +19,14 @@ public class ForestPlot implements Plot {
 		RIGHT
 	};
 	
+	public static final int PADDING = 4;
 	public static final int ROWHEIGHT = 21;
 	public static final int ROWVCENTER = ROWHEIGHT / 2 + 1;
 	public static final int ROWPAD = 10;
 	public static final int FULLROW = ROWHEIGHT + ROWPAD;
 	public static final int BARWIDTH = 301;
-	public static final int STUDYWIDTH = 196;
-	public static final int CIWIDTH = 196;
+	public static final int STUDYWIDTH = 192;
+	public static final int CIWIDTH = 192;
 	public static final int FULLWIDTH = BARWIDTH + STUDYWIDTH + CIWIDTH;
 	public static final int TICKLENGTH = 4;
 	public static final int HORPAD = 20;
@@ -47,13 +47,9 @@ public class ForestPlot implements Plot {
 	}
 	
 	public void paint(Graphics2D g2d) {
-		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g2d.translate(PADDING, PADDING);
 		
-		//BACKGROUND COLORING:
-		Color c = g2d.getColor();
-		g2d.setColor(Color.white);
-		g2d.fillRect(0, ROWHEIGHT, FULLWIDTH, FULLROW * getNumRows());
-		g2d.setColor(c);
+		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		
 		//HEADER ROW:
 		drawVCentrString(g2d, "Study", 0, 1, Align.LEFT);
@@ -112,7 +108,7 @@ public class ForestPlot implements Plot {
 	}
 	
 	public Dimension getPlotSize() {
-		return new Dimension(FULLWIDTH, FULLROW * getNumRows() + ROWPAD);
+		return new Dimension(2 * PADDING + FULLWIDTH, FULLROW * getNumRows() + ROWPAD + 2 * PADDING);
 	}
 	
 	
