@@ -378,7 +378,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testGetStudySet() {
 		SortedSet<Study> expected = new TreeSet<Study>();
-		expected.add(ExampleData.buildDefaultStudy1());
+		expected.add(ExampleData.buildStudyChouinard());
 		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());

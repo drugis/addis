@@ -19,6 +19,7 @@
 
 package org.drugis.addis;
 
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -38,7 +39,6 @@ import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.entities.Endpoint.Direction;
 import org.drugis.addis.entities.Endpoint.Type;
 
-
 public class ExampleData {
 	private static Indication s_indicationDepression;
 	private static Endpoint s_endpointHamd;
@@ -52,6 +52,12 @@ public class ExampleData {
 	private static Endpoint s_endpointCVdeath;
 	private static Drug s_sertr;
 	private static Drug s_placebo;
+	private static BasicStudy s_studyMcMurray;
+	private static BasicStudy s_study3Arm;
+
+	private static BasicStudy s_studyBennie;
+	private static BasicStudy s_studyDeWilde;
+	private static BasicStudy s_studyChouinard;
 
 	public static void initDefaultData(Domain domain) {
 		// depression data
@@ -62,21 +68,31 @@ public class ExampleData {
 		domain.addDrug(buildDrugParoxetine());
 		domain.addDrug(buildDrugSertraline());
 		domain.addDrug(buildPlacebo());
-		domain.addStudy(buildDefaultStudy1());
-		domain.addStudy(buildDefaultStudy2());
-		domain.addStudy(buildDefaultStudy3());
+		domain.addStudy(buildStudyChouinard());
+		domain.addStudy(buildStudyDeWilde());
+		domain.addStudy(buildStudyBennie());
 		
+
+				
 		// heart failure data
 		domain.addIndication(buildIndicationChronicHeartFailure());
 		domain.addDrug(buildDrugCandesartan());
 		domain.addEndpoint(buildEndpointCVdeath());
-		domain.addStudy(buildHeartStudy());
+		domain.addStudy(buildStudyMcMurray());
 		
 		// unused stuff
 		domain.addEndpoint(buildEndpointUnused());
 	}
 
-	public static BasicStudy buildDefaultStudy1() {
+	public static BasicStudy buildStudyChouinard() {
+		if (s_studyChouinard == null) {
+			s_studyChouinard = realBuildStudyChouinard();
+		}
+		
+		return s_studyChouinard;
+	}
+
+	private static BasicStudy realBuildStudyChouinard() {
 		BasicStudy study = new BasicStudy("Chouinard et al, 1999", buildIndicationDepression());
 		study.setEndpoints(new HashSet<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
@@ -154,11 +170,18 @@ public class ExampleData {
 		study.addPatientGroup(fluox);
 		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);		
 		study.setMeasurement(buildEndpointCgi(), fluox, fCgi);
-		
 		return study;
 	}
 
-	public static BasicStudy buildDefaultStudy2() {
+	public static BasicStudy buildStudyDeWilde() {
+		if (s_studyDeWilde == null) {
+			s_studyDeWilde = realBuildStudyDeWilde();
+		}
+		
+		return s_studyDeWilde;
+	}
+
+	private static BasicStudy realBuildStudyDeWilde() {
 		Endpoint hamd = buildEndpointHamd();
 		Drug fluoxetine = buildDrugFluoxetine();
 		BasicStudy study = new BasicStudy("De Wilde et al, 1993", buildIndicationDepression());
@@ -198,11 +221,18 @@ public class ExampleData {
 		fHamd.setRate(26);
 		study.addPatientGroup(fluox);
 		study.setMeasurement(hamd, fluox, fHamd);
-	
 		return study;
 	}
 
-	public static BasicStudy buildDefaultStudy3() {
+	public static BasicStudy buildStudyBennie() {
+		if (s_studyBennie == null) {
+			s_studyBennie = realBuildStudyBennie();
+		}
+		
+		return s_studyBennie;
+	}
+
+	private static BasicStudy realBuildStudyBennie() {
 		BasicStudy study = new BasicStudy("Bennie et al, 1995", buildIndicationDepression());
 		study.setEndpoints(new HashSet<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
@@ -244,11 +274,18 @@ public class ExampleData {
 		study.addPatientGroup(sertr);
 		study.setMeasurement(buildEndpointCgi(), sertr, sCgi);
 		study.setMeasurement(buildEndpointHamd(), sertr, sHamd);
-		
 		return study;
 	}
 
 	public static BasicStudy buildAdditionalStudyThreeArm() {
+		if (s_study3Arm == null) {
+			s_study3Arm = realBuildStudyThreeArm(); 
+		}
+		
+		return s_study3Arm;
+	}
+
+	private static BasicStudy realBuildStudyThreeArm() {
 		BasicStudy study = new BasicStudy("SciFictional et al, 2359", buildIndicationDepression());
 		study.setEndpoints(new HashSet<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
@@ -296,7 +333,15 @@ public class ExampleData {
 		return study;
 	}
 
-	public static BasicStudy buildHeartStudy() {
+	public static BasicStudy buildStudyMcMurray() {
+		if (s_studyMcMurray == null) {
+			s_studyMcMurray = realBuildStudyMcMurray();
+		}
+		
+		return s_studyMcMurray;
+	}
+
+	private static BasicStudy realBuildStudyMcMurray() {
 		BasicStudy study = new BasicStudy("McMurray et al, 2003", buildIndicationChronicHeartFailure());
 		study.setEndpoints(Collections.singleton(buildEndpointCVdeath()));
 		
@@ -345,7 +390,6 @@ public class ExampleData {
 		pDeath.setRate(347);
 		study.addPatientGroup(placebo);
 		study.setMeasurement(buildEndpointCVdeath(), placebo, pDeath);
-		
 		return study;
 	}
 	

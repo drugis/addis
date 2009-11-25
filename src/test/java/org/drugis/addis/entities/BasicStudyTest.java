@@ -84,7 +84,7 @@ public class BasicStudyTest {
 	
 	@Test
 	public void testGetDrugs() {
-		AbstractStudy s = ExampleData.buildDefaultStudy2();
+		AbstractStudy s = ExampleData.buildStudyDeWilde();
 		Set<Drug> expected = new HashSet<Drug>();
 		expected.add(ExampleData.buildDrugFluoxetine());
 		expected.add(ExampleData.buildDrugParoxetine());
@@ -157,7 +157,7 @@ public class BasicStudyTest {
 	
 	@Test
 	public void testGetDependencies() {
-		AbstractStudy s = ExampleData.buildDefaultStudy2();
+		AbstractStudy s = ExampleData.buildStudyDeWilde();
 		assertFalse(s.getEndpoints().isEmpty());
 		assertFalse(s.getDrugs().isEmpty());
 		

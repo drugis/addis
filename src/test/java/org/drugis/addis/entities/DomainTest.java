@@ -168,8 +168,8 @@ public class DomainTest {
 
 	private RandomEffectsMetaAnalysis generateMetaAnalysis() {
 		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy1());
-		studies.add(ExampleData.buildDefaultStudy2());
+		studies.add(ExampleData.buildStudyChouinard());
+		studies.add(ExampleData.buildStudyDeWilde());
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
 				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());
 		return ma;
@@ -550,7 +550,7 @@ public class DomainTest {
 	@Test
 	public void testSerializationDeleteStudyFires() throws Exception {
 		ExampleData.initDefaultData(d_domain);
-		Domain newDomain = JUnitUtil.serializeObject(d_domain);		
+		Domain newDomain = JUnitUtil.serializeObject(d_domain);
 		DomainListener mock = createMock(DomainListener.class);
 		newDomain.addListener(mock);
 		mock.studiesChanged();

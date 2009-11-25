@@ -292,7 +292,7 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 			return Math.max(0, 100* ((t_qIV - (k-1)) / t_qIV ) );
 		}	
 	}
-
+	
 	@Override
 	public Set<Entity> getDependencies() {
 		HashSet<Entity> deps = new HashSet<Entity>();
@@ -303,7 +303,7 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		deps.addAll(getStudies());
 		return deps;
 	}
-
+	
 	public Indication getIndication() {
 		return getIndicationFromStudy(d_studies.get(0));
 	}

@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,26 +47,27 @@ public class DomainImplTest {
 	public void testGetDependents() {
 		ExampleData.initDefaultData(d_domain);
 		Indication ind = ExampleData.buildIndicationDepression();
-		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy1());
-		studies.add(ExampleData.buildDefaultStudy2());
-		studies.add(ExampleData.buildDefaultStudy3());
-		assertTrue(d_domain.getDependents(ind).containsAll(studies));
-		assertTrue(d_domain.getDependents(ind).containsAll(studies));
+		List<Entity> entities = new ArrayList<Entity>();
+		entities.add(ExampleData.buildStudyChouinard());
+		entities.add(ExampleData.buildStudyDeWilde());
+		entities.add(ExampleData.buildStudyBennie());
+
+		JUnitUtil.assertAllAndOnly(entities, d_domain.getDependents(ind));
+		
 		Drug fluox = ExampleData.buildDrugFluoxetine();
-		assertEquals(new HashSet<Study>(studies), d_domain.getDependents(fluox));
-		Study s = ExampleData.buildDefaultStudy1();
+		JUnitUtil.assertAllAndOnly(new HashSet<Entity>(entities), d_domain.getDependents(fluox));
+		Study s = ExampleData.buildStudyChouinard();
 		assertEquals(Collections.emptySet(), d_domain.getDependents(s));
 		Endpoint d1 = ExampleData.buildEndpointHamd();
-		assertEquals(new HashSet<Study>(studies), d_domain.getDependents(d1));
+		assertEquals(new HashSet<Entity>(entities), d_domain.getDependents(d1));
 	}	
 	
 	@Test
 	public void testDependentsIncludeMetaStudies() throws Exception {
 		ExampleData.initDefaultData(d_domain);
 		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy1());
-		studies.add(ExampleData.buildDefaultStudy2());
+		studies.add(ExampleData.buildStudyChouinard());
+		studies.add(ExampleData.buildStudyDeWilde());
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), studies,
 				ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine()); 
 		d_domain.addMetaAnalysis(ma);

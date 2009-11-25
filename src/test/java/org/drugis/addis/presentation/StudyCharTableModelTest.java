@@ -54,8 +54,8 @@ public class StudyCharTableModelTest {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
 		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildDefaultStudy1());
-		studies.add(ExampleData.buildDefaultStudy2());
+		studies.add(ExampleData.buildStudyChouinard());
+		studies.add(ExampleData.buildStudyDeWilde());
 		d_ind = d_domain.getIndications().first();
 		SortedSet<Study> sortedStudies = new TreeSet<Study>();
 		sortedStudies.addAll(studies);

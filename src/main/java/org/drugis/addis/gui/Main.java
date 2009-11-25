@@ -58,7 +58,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
 import org.drugis.addis.AppInfo;
-import org.drugis.addis.ExampleData;
+import org.drugis.addis.MainData;
 import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainListener;
@@ -71,8 +71,8 @@ import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.builder.DrugView;
 import org.drugis.addis.gui.builder.EndpointView;
 import org.drugis.addis.gui.builder.IndicationView;
-import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
 import org.drugis.addis.gui.builder.MetaAnalysisWizard;
+import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
 import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.presentation.DrugPresentationModel;
 import org.drugis.addis.presentation.EndpointPresentationModel;
@@ -163,7 +163,6 @@ public class Main extends JFrame {
 			loadDomainFromFile();
 		} catch (Exception e) {
 			MainData.initDefaultData(d_domain.getDomain());
-			d_domain.getDomain().addStudy(ExampleData.buildAdditionalStudyThreeArm());
 		}
 		
 		d_domain.getDomain().addListener(new MainListener());

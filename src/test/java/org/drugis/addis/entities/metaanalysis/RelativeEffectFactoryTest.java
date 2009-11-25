@@ -22,7 +22,7 @@ import org.junit.Test;
 public class RelativeEffectFactoryTest {
 	@Test
 	public void testGetStandardizedMeanDifference() {
-		Study s = ExampleData.buildDefaultStudy1();
+		Study s = ExampleData.buildStudyChouinard();
 		Endpoint e = ExampleData.buildEndpointCgi();
 		Drug base = ExampleData.buildDrugParoxetine();
 		Drug subj = ExampleData.buildDrugFluoxetine();
@@ -46,7 +46,7 @@ public class RelativeEffectFactoryTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetStandardizedMeanDifferenceRate() {
 		RelativeEffectFactory.buildRelativeEffect(
-				ExampleData.buildDefaultStudy1(),
+				ExampleData.buildStudyChouinard(),
 				ExampleData.buildEndpointHamd(),
 				ExampleData.buildDrugParoxetine(),
 				ExampleData.buildDrugFluoxetine(),
@@ -55,7 +55,7 @@ public class RelativeEffectFactoryTest {
 	
 	@Test
 	public void testGetMeanDifference() {
-		Study s = ExampleData.buildDefaultStudy1();
+		Study s = ExampleData.buildStudyChouinard();
 		Endpoint e = ExampleData.buildEndpointCgi();
 		Drug base = ExampleData.buildDrugParoxetine();
 		Drug subj = ExampleData.buildDrugFluoxetine();
@@ -79,7 +79,7 @@ public class RelativeEffectFactoryTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetMeanDifferenceRate() {
 		RelativeEffectFactory.buildRelativeEffect(
-				ExampleData.buildDefaultStudy1(),
+				ExampleData.buildStudyChouinard(),
 				ExampleData.buildEndpointHamd(),
 				ExampleData.buildDrugParoxetine(),
 				ExampleData.buildDrugFluoxetine(),
@@ -88,7 +88,7 @@ public class RelativeEffectFactoryTest {
 	
 	@Test
 	public void testGetOddsRatio() {
-		Study s = ExampleData.buildDefaultStudy1();
+		Study s = ExampleData.buildStudyChouinard();
 		Endpoint e = ExampleData.buildEndpointHamd();
 		Drug base = ExampleData.buildDrugParoxetine();
 		Drug subj = ExampleData.buildDrugFluoxetine();
@@ -112,7 +112,7 @@ public class RelativeEffectFactoryTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetOddsRatioCont() {
 		RelativeEffectFactory.buildRelativeEffect(
-				ExampleData.buildDefaultStudy1(),
+				ExampleData.buildStudyChouinard(),
 				ExampleData.buildEndpointCgi(),
 				ExampleData.buildDrugParoxetine(),
 				ExampleData.buildDrugFluoxetine(),
@@ -121,7 +121,7 @@ public class RelativeEffectFactoryTest {
 	
 	@Test
 	public void testGetRiskRatio() {
-		Study s = ExampleData.buildDefaultStudy1();
+		Study s = ExampleData.buildStudyChouinard();
 		Endpoint e = ExampleData.buildEndpointHamd();
 		Drug base = ExampleData.buildDrugParoxetine();
 		Drug subj = ExampleData.buildDrugFluoxetine();
@@ -145,7 +145,7 @@ public class RelativeEffectFactoryTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetRiskRatioCont() {
 		RelativeEffectFactory.buildRelativeEffect(
-				ExampleData.buildDefaultStudy1(),
+				ExampleData.buildStudyChouinard(),
 				ExampleData.buildEndpointCgi(),
 				ExampleData.buildDrugParoxetine(),
 				ExampleData.buildDrugFluoxetine(),
@@ -154,7 +154,7 @@ public class RelativeEffectFactoryTest {
 	
 	@Test
 	public void testGetRiskDifference() {
-		Study s = ExampleData.buildDefaultStudy1();
+		Study s = ExampleData.buildStudyChouinard();
 		Endpoint e = ExampleData.buildEndpointHamd();
 		Drug base = ExampleData.buildDrugParoxetine();
 		Drug subj = ExampleData.buildDrugFluoxetine();
@@ -178,7 +178,7 @@ public class RelativeEffectFactoryTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetRiskDifferenceCont() {
 		RelativeEffectFactory.buildRelativeEffect(
-				ExampleData.buildDefaultStudy1(),
+				ExampleData.buildStudyChouinard(),
 				ExampleData.buildEndpointCgi(),
 				ExampleData.buildDrugParoxetine(),
 				ExampleData.buildDrugFluoxetine(),
@@ -187,7 +187,7 @@ public class RelativeEffectFactoryTest {
 	
 	@Test
 	public void testGetLogRiskRatio() {
-		Study s = ExampleData.buildDefaultStudy1();
+		Study s = ExampleData.buildStudyChouinard();
 		Endpoint e = ExampleData.buildEndpointHamd();
 		Drug base = ExampleData.buildDrugParoxetine();
 		Drug subj = ExampleData.buildDrugFluoxetine();
@@ -211,7 +211,7 @@ public class RelativeEffectFactoryTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetLogRiskRatioCont() {
 		RelativeEffectFactory.buildRelativeEffect(
-				ExampleData.buildDefaultStudy1(),
+				ExampleData.buildStudyChouinard(),
 				ExampleData.buildEndpointCgi(),
 				ExampleData.buildDrugParoxetine(),
 				ExampleData.buildDrugFluoxetine(),
@@ -220,7 +220,7 @@ public class RelativeEffectFactoryTest {
 	
 	@Test
 	public void testGetLogOddsRatio() {
-		Study s = ExampleData.buildDefaultStudy1();
+		Study s = ExampleData.buildStudyChouinard();
 		Endpoint e = ExampleData.buildEndpointHamd();
 		Drug base = ExampleData.buildDrugParoxetine();
 		Drug subj = ExampleData.buildDrugFluoxetine();
@@ -244,7 +244,7 @@ public class RelativeEffectFactoryTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetLogOddsRatioCont() {
 		RelativeEffectFactory.buildRelativeEffect(
-				ExampleData.buildDefaultStudy1(),
+				ExampleData.buildStudyChouinard(),
 				ExampleData.buildEndpointCgi(),
 				ExampleData.buildDrugParoxetine(),
 				ExampleData.buildDrugFluoxetine(),
