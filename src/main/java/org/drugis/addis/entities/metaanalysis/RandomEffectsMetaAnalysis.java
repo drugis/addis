@@ -57,6 +57,9 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		if (studies.isEmpty()) {
 			throw new IllegalArgumentException("studylist empty");
 		}
+//FIXME	if (studies.size() <= 1) {
+//			throw new IllegalArgumentException("Cannot calculate Random Effects for just one study");
+//		}
 		checkSameIndication(studies);
 		d_studies = studies;
 		d_ep = endpoint;
