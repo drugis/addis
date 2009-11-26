@@ -133,7 +133,7 @@ public class RandomEffectsMetaAnalysisView implements ViewBuilder {
 	private JComponent buildOverviewPart() {
 		FormLayout layout = new FormLayout(
 				"pref, 3dlu, pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();
@@ -142,21 +142,24 @@ public class RandomEffectsMetaAnalysisView implements ViewBuilder {
 		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(RandomEffectsMetaAnalysis.PROPERTY_NAME)),
 				cc.xy(3, 1));
 		
-		builder.addLabel("Indication:", cc.xy(1, 3));
+		builder.addLabel("Type:", cc.xy(1, 3));
+		builder.addLabel("DerSimonian-Laird random effects inverse variance model", cc.xy(3, 3));
+				
+		builder.addLabel("Indication:", cc.xy(1, 5));
 		builder.add(BasicComponentFactory.createLabel(d_pm.getIndicationModel().getLabelModel()),
-				cc.xy(3, 3));
-
-		builder.addLabel("Endpoint:", cc.xy(1, 5));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getEndpointModel().getLabelModel()),
 				cc.xy(3, 5));
-		
-		builder.addLabel("First drug:", cc.xy(1, 7));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getFirstDrugModel().getLabelModel()),
+
+		builder.addLabel("Endpoint:", cc.xy(1, 7));
+		builder.add(BasicComponentFactory.createLabel(d_pm.getEndpointModel().getLabelModel()),
 				cc.xy(3, 7));
 		
-		builder.addLabel("Second drug:", cc.xy(1, 9));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getSecondDrugModel().getLabelModel()),
+		builder.addLabel("First drug:", cc.xy(1, 9));
+		builder.add(BasicComponentFactory.createLabel(d_pm.getFirstDrugModel().getLabelModel()),
 				cc.xy(3, 9));
+		
+		builder.addLabel("Second drug:", cc.xy(1,11));
+		builder.add(BasicComponentFactory.createLabel(d_pm.getSecondDrugModel().getLabelModel()),
+				cc.xy(3,11));
 		
 		return builder.getPanel();
 	}
