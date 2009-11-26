@@ -20,7 +20,7 @@ public class BasicPatientGroupPresentationTest {
 
 	@Before
 	public void setUp() {
-		d_pg = new BasicPatientGroup(null, null, null, 0);
+		d_pg = new BasicPatientGroup(null, null, 0);
 	}
 	
 	@Test

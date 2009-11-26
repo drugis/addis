@@ -23,29 +23,17 @@ import java.util.Set;
 
 public class BasicPatientGroup extends AbstractEntity implements MutablePatientGroup {
 	private static final long serialVersionUID = -2092185548220089471L;
-	private Study d_study;
 	private Integer d_size;
 	private Drug d_drug;
 	private Dose d_dose;
 	
-	public BasicPatientGroup(Study study, Drug drug, Dose dose, int size) {
-		d_study = study;
+	public BasicPatientGroup(Drug drug, Dose dose, int size) {
 		d_drug = drug;
 		d_dose = dose;
 		d_size = size;
 		init();
 	}
 		
-	public Study getStudy() {
-		return d_study;
-	}
-	
-	public void setStudy(Study study) {
-		Study oldVal = d_study;
-		d_study = study;
-		firePropertyChange(PROPERTY_STUDY, oldVal, d_study);
-	}
-	
 	public Drug getDrug() {
 		return d_drug;
 	}

@@ -41,7 +41,7 @@ public class BasicRateMeasurementTest {
 	@Before
 	public void setUp() {
 		d_endpoint = new Endpoint("E", Type.RATE);
-		d_pg = new BasicPatientGroup(null, null, null, 101);
+		d_pg = new BasicPatientGroup(null, null, 101);
 		d_measurement = new BasicRateMeasurement(d_endpoint, 67, d_pg);
 	}
 	
@@ -64,7 +64,7 @@ public class BasicRateMeasurementTest {
 	
 	@Test
 	public void testSetRate() {
-		PatientGroup p = new BasicPatientGroup(null,null,null,0);
+		PatientGroup p = new BasicPatientGroup(null,null,0);
 		JUnitUtil.testSetter(new BasicRateMeasurement(new Endpoint("e", Type.RATE), 0, p ), BasicRateMeasurement.PROPERTY_RATE, 0, new Integer(67));
 	}
 	

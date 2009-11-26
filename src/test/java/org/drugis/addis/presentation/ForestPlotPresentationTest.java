@@ -52,8 +52,8 @@ public class ForestPlotPresentationTest {
 		d_s1.addEndpoint(d_endpoint);
 		d_baseline = new Drug("DrugA", null);
 		d_subject = new Drug("DrugB", null);
-		BasicPatientGroup pBase = new BasicPatientGroup(d_s1, d_baseline, null, s_baseSize);
-		BasicPatientGroup pSubj = new BasicPatientGroup(d_s1, d_subject, null, s_subjSize);
+		BasicPatientGroup pBase = new BasicPatientGroup(d_baseline, null, s_baseSize);
+		BasicPatientGroup pSubj = new BasicPatientGroup(d_subject, null, s_subjSize);
 		d_s1.addPatientGroup(pBase);
 		d_s1.addPatientGroup(pSubj);
 		d_mBase1 = new BasicContinuousMeasurement(d_endpoint, s_mean1, s_stdDev1, pBase);
@@ -63,8 +63,8 @@ public class ForestPlotPresentationTest {
 		
 		d_s2 = new BasicStudy("Y", new Indication(0L, ""));
 		d_s2.addEndpoint(d_endpoint);
-		BasicPatientGroup pBase2 = new BasicPatientGroup(d_s2, d_baseline, null, s_baseSize);
-		BasicPatientGroup pSubj2 = new BasicPatientGroup(d_s2, d_subject, null, s_subjSize);
+		BasicPatientGroup pBase2 = new BasicPatientGroup(d_baseline, null, s_baseSize);
+		BasicPatientGroup pSubj2 = new BasicPatientGroup(d_subject, null, s_subjSize);
 		d_s2.addPatientGroup(pBase2);
 		d_s2.addPatientGroup(pSubj2);
 		d_mBase2 = new BasicContinuousMeasurement(d_endpoint, s_mean2, s_stdDev2, pBase2);

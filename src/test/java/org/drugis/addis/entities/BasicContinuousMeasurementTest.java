@@ -33,7 +33,7 @@ public class BasicContinuousMeasurementTest {
 	@Before
 	public void setUp() {
 		d_endpoint = new Endpoint("X", Type.CONTINUOUS);
-		d_basicContinuousMeasurement = new BasicContinuousMeasurement(d_endpoint, new BasicPatientGroup(null, null, null, 1));
+		d_basicContinuousMeasurement = new BasicContinuousMeasurement(d_endpoint, new BasicPatientGroup(null, null, 1));
 		
 	}
 

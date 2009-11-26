@@ -62,7 +62,7 @@ public class StudyAddPatientGroupView implements ViewBuilder {
 	public StudyAddPatientGroupView(Domain domain, Study study, JButton okButton) {
 		d_domain = domain;
 		d_study = study;
-		d_group = new BasicPatientGroup(study, null, new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY), 0);
+		d_group = new BasicPatientGroup(null, new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY), 0);
 		d_validator = new NotEmptyValidator(okButton);
 		d_endpoints = d_study.getEndpoints();
 	}

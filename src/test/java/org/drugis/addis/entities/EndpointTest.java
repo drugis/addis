@@ -53,7 +53,7 @@ public class EndpointTest {
 	
 	@Test
 	public void testBuildMeasurement() {
-		PatientGroup pg = new BasicPatientGroup(null, null, null, 0);
+		PatientGroup pg = new BasicPatientGroup(null, null, 0);
 		Endpoint e = new Endpoint("e", Type.RATE);
 		e.setType(Endpoint.Type.RATE);
 		assertTrue(e.buildMeasurement(pg) instanceof BasicRateMeasurement);

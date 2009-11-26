@@ -35,8 +35,8 @@ public class RelativeEffectContinuousPresentationTest {
 	@Before
 	public void setUp() {
 		Endpoint e = new Endpoint("E", Type.CONTINUOUS);
-		PatientGroup pnum = new BasicPatientGroup(null,null,null,s_baslSize);
-		PatientGroup pden = new BasicPatientGroup(null,null,null,s_subjSize);
+		PatientGroup pnum = new BasicPatientGroup(null,null,s_baslSize);
+		PatientGroup pden = new BasicPatientGroup(null,null,s_subjSize);
 		d_subj = new BasicContinuousMeasurement(e, s_mean1, s_stdDev1, pnum);		
 		d_basel = new BasicContinuousMeasurement(e, s_mean2, s_stdDev2, pden);
 		d_ratio = new MeanDifference(d_basel, d_subj);

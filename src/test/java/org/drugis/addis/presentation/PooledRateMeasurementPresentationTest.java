@@ -29,9 +29,9 @@ public class PooledRateMeasurementPresentationTest {
 	@Before
 	public void setUp() {
 		d_e = new Endpoint("e0", Type.RATE);
-		d_g1 = new BasicPatientGroup(null, null, null, 100);
+		d_g1 = new BasicPatientGroup(null, null, 100);
 		d_m1 = new BasicRateMeasurement(d_e, 12, d_g1);
-		d_g2 = new BasicPatientGroup(null, null, null, 50);
+		d_g2 = new BasicPatientGroup(null, null, 50);
 		d_m2 = new BasicRateMeasurement(d_e, 18, d_g2);
 		d_m = new PooledRateMeasurement(Arrays.asList(new RateMeasurement[] {d_m1, d_m2}));
 		d_presentation = new RateMeasurementPresentation(d_m);

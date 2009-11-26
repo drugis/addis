@@ -93,7 +93,7 @@ public class MainData extends ExampleData {
 		
 		// Sertraline data
 		Dose dose = new Dose(75.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup sertr = new BasicPatientGroup(study, sertraline, dose, 96);
+		BasicPatientGroup sertr = new BasicPatientGroup(sertraline, dose, 96);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
 		pHamd.setRate(70);
 		study.addPatientGroup(sertr);
@@ -101,7 +101,7 @@ public class MainData extends ExampleData {
 
 		// Fluoxetine data
 		dose = new Dose(30.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 92);
+		BasicPatientGroup fluox = new BasicPatientGroup(fluoxetine, dose, 92);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(57);
 		study.addPatientGroup(fluox);
@@ -139,7 +139,7 @@ public class MainData extends ExampleData {
 		
 		// Sertraline data
 		Dose dose = new Dose(75.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup sertr = new BasicPatientGroup(study, sertraline, dose, 117);
+		BasicPatientGroup sertr = new BasicPatientGroup(sertraline, dose, 117);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
 		pHamd.setRate(85);
 		study.addPatientGroup(sertr);
@@ -147,7 +147,7 @@ public class MainData extends ExampleData {
 
 		// Fluoxetine data
 		dose = new Dose(30.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 119);
+		BasicPatientGroup fluox = new BasicPatientGroup(fluoxetine, dose, 119);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(84);
 		study.addPatientGroup(fluox);
@@ -185,7 +185,7 @@ public class MainData extends ExampleData {
 		
 		// Sertraline data
 		Dose dose = new Dose(75.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup sertr = new BasicPatientGroup(study, sertraline, dose, 118);
+		BasicPatientGroup sertr = new BasicPatientGroup(sertraline, dose, 118);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
 		pHamd.setRate(86);
 		study.addPatientGroup(sertr);
@@ -193,7 +193,7 @@ public class MainData extends ExampleData {
 
 		// Fluoxetine data
 		dose = new Dose(30.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 120);
+		BasicPatientGroup fluox = new BasicPatientGroup(fluoxetine, dose, 120);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(76);
 		study.addPatientGroup(fluox);
@@ -231,7 +231,7 @@ public class MainData extends ExampleData {
 		
 		// Sertraline data
 		Dose dose = new Dose(75.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup sertr = new BasicPatientGroup(study, sertraline, dose, 122);
+		BasicPatientGroup sertr = new BasicPatientGroup(sertraline, dose, 122);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
 		pHamd.setRate(63);
 		study.addPatientGroup(sertr);
@@ -239,7 +239,7 @@ public class MainData extends ExampleData {
 
 		// Fluoxetine data
 		dose = new Dose(30.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 120);
+		BasicPatientGroup fluox = new BasicPatientGroup(fluoxetine, dose, 120);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(61);
 		study.addPatientGroup(fluox);
@@ -280,7 +280,7 @@ public class MainData extends ExampleData {
 		
 		// Remeron data
 		Dose dose = new Dose(20.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup remr = new BasicPatientGroup(study, remeron, dose, 47);
+		BasicPatientGroup remr = new BasicPatientGroup(remeron, dose, 47);
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(remr);
 		pCgi.setMean(1.94);
 		pCgi.setStdDev(0.23);
@@ -289,7 +289,7 @@ public class MainData extends ExampleData {
 
 		// Amitriptyline data
 		dose = new Dose(150.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup amit = new BasicPatientGroup(study, amitriptyline, dose, 47);
+		BasicPatientGroup amit = new BasicPatientGroup(amitriptyline, dose, 47);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(amit);
 		pCgi.setMean(1.57);
 		pCgi.setStdDev(0.19);
@@ -298,7 +298,7 @@ public class MainData extends ExampleData {
 		
 		// Placebo data
 		dose = new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup plac = new BasicPatientGroup(study, placebo, dose, 48);
+		BasicPatientGroup plac = new BasicPatientGroup(placebo, dose, 48);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(plac);
 		pCgi.setMean(.85);
 		pCgi.setStdDev(.19);
@@ -341,7 +341,7 @@ public class MainData extends ExampleData {
 		
 		// Remeron data
 		Dose dose = new Dose(20.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup remr = new BasicPatientGroup(study, remeron, dose, 49);
+		BasicPatientGroup remr = new BasicPatientGroup(remeron, dose, 49);
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(remr);
 		pCgi.setMean(.8);
 		pCgi.setStdDev(0.18);
@@ -350,7 +350,7 @@ public class MainData extends ExampleData {
 
 		// Trazodone data
 		dose = new Dose(160.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup traz = new BasicPatientGroup(study, trazodone, dose, 48);
+		BasicPatientGroup traz = new BasicPatientGroup(trazodone, dose, 48);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(traz);
 		pCgi.setMean(.62);
 		pCgi.setStdDev(0.16);
@@ -359,7 +359,7 @@ public class MainData extends ExampleData {
 		
 		// Placebo data
 		dose = new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup plac = new BasicPatientGroup(study, placebo, dose, 49);
+		BasicPatientGroup plac = new BasicPatientGroup(placebo, dose, 49);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(plac);
 		pCgi.setMean(.59);
 		pCgi.setStdDev(.16);

@@ -86,8 +86,8 @@ public class LogOddsRatioTest {
 	{
 		BasicStudy s = new BasicStudy(studyName, d_ind);
 		s.addEndpoint(d_ep);
-		BasicPatientGroup g_fluox = new BasicPatientGroup(s, d_fluox, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY),fluoxSize);
-		BasicPatientGroup g_parox = new BasicPatientGroup(s, d_sertra, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY),sertraSize);		
+		BasicPatientGroup g_fluox = new BasicPatientGroup(d_fluox, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY), fluoxSize);
+		BasicPatientGroup g_parox = new BasicPatientGroup(d_sertra, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY), sertraSize);		
 		
 		s.addPatientGroup(g_parox);
 		s.addPatientGroup(g_fluox);

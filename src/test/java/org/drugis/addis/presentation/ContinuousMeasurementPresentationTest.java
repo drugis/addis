@@ -24,7 +24,7 @@ public class ContinuousMeasurementPresentationTest {
 	@Before
 	public void setUp() {
 		d_endpoint = new Endpoint("X", Type.CONTINUOUS);
-		d_pg = new BasicPatientGroup(null, null, null, 1);
+		d_pg = new BasicPatientGroup(null, null, 1);
 		d_basicContinuousMeasurement = new BasicContinuousMeasurement(d_endpoint, d_pg);
 		d_pres = new ContinuousMeasurementPresentation(d_basicContinuousMeasurement);
 	}

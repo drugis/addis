@@ -25,8 +25,8 @@ public class StandardisedMeanDifferenceTest {
 	@Before
 	public void setUp() {
 		Endpoint e = new Endpoint("E", Type.CONTINUOUS);
-		PatientGroup subjs = new BasicPatientGroup(null, null, null, s_subjSize);
-		PatientGroup basels = new BasicPatientGroup(null, null, null, s_baslSize);
+		PatientGroup subjs = new BasicPatientGroup(null, null, s_subjSize);
+		PatientGroup basels = new BasicPatientGroup(null, null, s_baslSize);
 		d_subject = new BasicContinuousMeasurement(e, s_subjMean, s_subjStdDev, subjs);
 		d_baseline = new BasicContinuousMeasurement(e, s_baselMean, s_baslStdDev, basels);
 		d_smd = new StandardisedMeanDifference(d_baseline, d_subject);
@@ -93,7 +93,7 @@ public class StandardisedMeanDifferenceTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testConstructorThrowsException() {
 		Endpoint e2 = new Endpoint("E2", Type.CONTINUOUS);
-		PatientGroup subjs = new BasicPatientGroup(null, null, null, s_subjSize);
+		PatientGroup subjs = new BasicPatientGroup(null, null, s_subjSize);
 		ContinuousMeasurement subject = new BasicContinuousMeasurement(e2, s_subjMean, s_subjStdDev, subjs);
 		new StandardisedMeanDifference(d_baseline, subject);
 	}

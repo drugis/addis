@@ -195,7 +195,7 @@ public class RandomEffectsMetaAnalysisTest {
 	
 	private BasicPatientGroup addPatientGroup(BasicStudy study, Drug drug, int nSubjects) {
 		Dose dose = new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup group = new BasicPatientGroup(study, drug, dose, nSubjects);
+		BasicPatientGroup group = new BasicPatientGroup(drug, dose, nSubjects);
 		study.addPatientGroup(group);
 		return group;
 	}

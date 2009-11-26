@@ -163,7 +163,7 @@ public class ExampleData {
 		
 		// Paroxetine data
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup parox = new BasicPatientGroup(study, buildDrugParoxetine(), dose, 102);
+		BasicPatientGroup parox = new BasicPatientGroup(buildDrugParoxetine(), dose, 102);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(parox);
 		pHamd.setRate(67);
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(parox);
@@ -176,7 +176,7 @@ public class ExampleData {
 		
 		// Fluoxetine data
 		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup fluox = new BasicPatientGroup(study, buildDrugFluoxetine(), dose, 101);
+		BasicPatientGroup fluox = new BasicPatientGroup(buildDrugFluoxetine(), dose, 101);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(fluox);
 		fHamd.setRate(67);
 		BasicContinuousMeasurement fCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(fluox);
@@ -224,7 +224,7 @@ public class ExampleData {
 		
 		// Paroxetine data
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup parox = new BasicPatientGroup(study, buildDrugParoxetine(), dose, 37);
+		BasicPatientGroup parox = new BasicPatientGroup(buildDrugParoxetine(), dose, 37);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
 		pHamd.setRate(23);
 		study.addPatientGroup(parox);
@@ -232,7 +232,7 @@ public class ExampleData {
 
 		// Fluoxetine data
 		dose = new Dose(27.5, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup fluox = new BasicPatientGroup(study, fluoxetine, dose, 41);
+		BasicPatientGroup fluox = new BasicPatientGroup(fluoxetine, dose, 41);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(26);
 		study.addPatientGroup(fluox);
@@ -268,7 +268,7 @@ public class ExampleData {
 		
 		// Fluoxetine data
 		Dose dose = new Dose(20, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup fluox = new BasicPatientGroup(study, buildDrugFluoxetine(), dose, 144);
+		BasicPatientGroup fluox = new BasicPatientGroup(buildDrugFluoxetine(), dose, 144);
 		BasicContinuousMeasurement fCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(fluox);
 		fCgi.setMean(0.67);
 		fCgi.setStdDev(0.5);
@@ -280,7 +280,7 @@ public class ExampleData {
 
 		// Sertraline data
 		dose = new Dose(50, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup sertr = new BasicPatientGroup(study, buildDrugSertraline(), dose, 142);
+		BasicPatientGroup sertr = new BasicPatientGroup(buildDrugSertraline(), dose, 142);
 		BasicContinuousMeasurement sCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(sertr);
 		sCgi.setMean(0.69);
 		sCgi.setStdDev(0.5);
@@ -312,7 +312,7 @@ public class ExampleData {
 
 		// Paroxetine data
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup parox = new BasicPatientGroup(study, buildDrugParoxetine(), dose, 37);
+		BasicPatientGroup parox = new BasicPatientGroup(buildDrugParoxetine(), dose, 37);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(parox);
 		pHamd.setRate(23);
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(parox);
@@ -324,7 +324,7 @@ public class ExampleData {
 		
 		// Fluoxetine data
 		dose = new Dose(20, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup fluox = new BasicPatientGroup(study, buildDrugFluoxetine(), dose, 144);
+		BasicPatientGroup fluox = new BasicPatientGroup(buildDrugFluoxetine(), dose, 144);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(fluox);
 		fHamd.setRate(63);
 		BasicContinuousMeasurement fCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(fluox);
@@ -336,7 +336,7 @@ public class ExampleData {
 
 		// Sertraline data
 		dose = new Dose(50, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup sertr = new BasicPatientGroup(study, buildDrugSertraline(), dose, 142);
+		BasicPatientGroup sertr = new BasicPatientGroup(buildDrugSertraline(), dose, 142);
 		BasicRateMeasurement sHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(sertr);
 		sHamd.setRate(73);
 		BasicContinuousMeasurement sCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(sertr);
@@ -392,7 +392,7 @@ public class ExampleData {
 		
 		// Candesartan data
 		Dose cDose = new Dose(32, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup cand = new BasicPatientGroup(study, buildDrugCandesartan(), cDose , 1273);
+		BasicPatientGroup cand = new BasicPatientGroup(buildDrugCandesartan(), cDose, 1273);
 		BasicRateMeasurement cDeath = new BasicRateMeasurement(buildEndpointCVdeath(), cand);
 		cDeath.setRate(302);
 		study.addPatientGroup(cand);
@@ -400,7 +400,7 @@ public class ExampleData {
 		
 		// Placebo data
 		Dose pDose = new Dose(32, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup placebo = new BasicPatientGroup(study, buildPlacebo(), pDose , 1271);
+		BasicPatientGroup placebo = new BasicPatientGroup(buildPlacebo(), pDose, 1271);
 		BasicRateMeasurement pDeath = new BasicRateMeasurement(buildEndpointCVdeath(), placebo);
 		pDeath.setRate(347);
 		study.addPatientGroup(placebo);

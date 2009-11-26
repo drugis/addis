@@ -142,8 +142,8 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	private void addNewPatientGroup() {
-		BasicPatientGroup group = new BasicPatientGroup(d_study, null,
-				new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY), 0);
+		BasicPatientGroup group = new BasicPatientGroup(null, new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY),
+				0);
 		d_study.addPatientGroup(group);
 		if (d_primaryEndpoint.getEndpoint() != null) {
 			BasicMeasurement m = d_primaryEndpoint.getEndpoint().buildMeasurement(group);

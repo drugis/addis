@@ -33,7 +33,7 @@ import static org.easymock.EasyMock.*;
 
 public class BasicMeasurementTest {
 	private Endpoint d_endpoint = new Endpoint("E", Type.RATE);
-	private BasicPatientGroup d_BasicPatientGroup = new BasicPatientGroup(null, null, null, 0);;
+	private BasicPatientGroup d_BasicPatientGroup = new BasicPatientGroup(null, null, 0);;
 
 	@SuppressWarnings("serial")
 	public BasicMeasurement instance() {

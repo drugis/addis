@@ -382,8 +382,8 @@ public class DomainTest {
 		
 		BasicStudy s1 = new BasicStudy("s1", d_indication);
 		s1.setEndpoints(Collections.singleton(e));
-		BasicPatientGroup g1 = new BasicPatientGroup(s1, d1, 
-				new Dose(1.0, SIUnit.MILLIGRAMS_A_DAY), 100);
+		BasicPatientGroup g1 = new BasicPatientGroup(d1, new Dose(1.0, SIUnit.MILLIGRAMS_A_DAY), 
+				100);
 		BasicRateMeasurement m1 = new BasicRateMeasurement(e, g1);
 		s1.setPatientGroups(Collections.singletonList(g1));
 		s1.setMeasurement(e, g1, m1);
@@ -393,10 +393,10 @@ public class DomainTest {
 		d_domain.addIndication(indic2);
 		BasicStudy s2 = new BasicStudy("s2", indic2);
 		s2.setEndpoints(Collections.singleton(e));
-		BasicPatientGroup g2 = new BasicPatientGroup(s2, d1, 
-				new Dose(5.0, SIUnit.MILLIGRAMS_A_DAY), 250);		
-		BasicPatientGroup g3 = new BasicPatientGroup(s2, d2, 
-				new Dose(5.0, SIUnit.MILLIGRAMS_A_DAY), 250);
+		BasicPatientGroup g2 = new BasicPatientGroup(d1, new Dose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
+				250);		
+		BasicPatientGroup g3 = new BasicPatientGroup(d2, new Dose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
+				250);
 		List<BasicPatientGroup> l1 = new ArrayList<BasicPatientGroup>();
 		l1.add(g2);
 		l1.add(g3);
@@ -516,7 +516,7 @@ public class DomainTest {
 		Drug d = new Drug("d", "atc");
 		d_domain.addDrug(d);
 	
-		BasicPatientGroup g = new BasicPatientGroup(s1, d, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY), 10);
+		BasicPatientGroup g = new BasicPatientGroup(d, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY), 10);
 		s1.addPatientGroup(g);
 		
 		try {
@@ -589,8 +589,8 @@ public class DomainTest {
 		newDomain.addListener(mock2);
 		mock2.studiesChanged();
 		replay(mock2);
-		bs.addPatientGroup(new BasicPatientGroup(bs, new Drug("viagra-2", "atc"), 
-				new Dose(100.0, SIUnit.MILLIGRAMS_A_DAY), 10));
+		bs.addPatientGroup(new BasicPatientGroup(new Drug("viagra-2", "atc"), new Dose(100.0, SIUnit.MILLIGRAMS_A_DAY), 
+				10));
 		verify(mock2);
 		
 	}

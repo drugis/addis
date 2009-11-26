@@ -23,7 +23,7 @@ public class RateMeasurementPresentationTest {
 	@Before
 	public void setUp() {
 		d_endpoint = new Endpoint("E", Endpoint.Type.RATE);
-		d_pg = new BasicPatientGroup(null, null, null, 101);
+		d_pg = new BasicPatientGroup(null, null, 101);
 		d_measurement = new BasicRateMeasurement(d_endpoint, 67, d_pg);
 		d_presentation = new RateMeasurementPresentation(d_measurement);
 	}

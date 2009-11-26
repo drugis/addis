@@ -19,8 +19,8 @@ public class RelativeEffectBarTest {
 	public void testNormalPlot() {
 		// Create relative effect.
 		Endpoint e = new Endpoint("e", Type.CONTINUOUS);
-		PatientGroup p1 = new BasicPatientGroup(null, null, null, 100);
-		PatientGroup p2 = new BasicPatientGroup(null, null, null, 100);
+		PatientGroup p1 = new BasicPatientGroup(null, null, 100);
+		PatientGroup p2 = new BasicPatientGroup(null, null, 100);
 		RelativeEffectContinuous effect = new MeanDifference(new BasicContinuousMeasurement(e, 0.25, 1.26 / Math.sqrt(2), p1), 
 											new BasicContinuousMeasurement(e, 0.5, 1.26 / Math.sqrt(2), p2));
 	
@@ -47,8 +47,8 @@ public class RelativeEffectBarTest {
 	@Test
 	public void testCombinedPlot() {
 		Endpoint e = new Endpoint("e", Type.CONTINUOUS);
-		PatientGroup p1 = new BasicPatientGroup(null, null, null, 100);
-		PatientGroup p2 = new BasicPatientGroup(null, null, null, 100);
+		PatientGroup p1 = new BasicPatientGroup(null, null, 100);
+		PatientGroup p2 = new BasicPatientGroup(null, null, 100);
 		RelativeEffectContinuous effect = new MeanDifference(new BasicContinuousMeasurement(e, 0.25, 1.26 / Math.sqrt(2), p1), 
 											new BasicContinuousMeasurement(e, 0.5, 1.26 / Math.sqrt(2), p2));
 	

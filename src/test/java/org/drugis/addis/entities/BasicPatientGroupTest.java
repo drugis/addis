@@ -29,12 +29,7 @@ public class BasicPatientGroupTest {
 
 	@Before
 	public void setUp() {
-		d_pg = new BasicPatientGroup(null, null, null, 0);
-	}
-	
-	@Test
-	public void testSetStudy() {
-		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_STUDY, null, new BasicStudy("X", new Indication(0L, "")));
+		d_pg = new BasicPatientGroup(null, null, 0);
 	}
 	
 	@Test

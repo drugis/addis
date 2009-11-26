@@ -21,8 +21,8 @@ public class MeanDifferenceTest {
 	@Before
 	public void setUp() {
 		Endpoint e = new Endpoint("E", Type.CONTINUOUS);
-		PatientGroup subjs = new BasicPatientGroup(null, null, null, s_subjSize);
-		PatientGroup basels = new BasicPatientGroup(null, null, null, s_baslSize);
+		PatientGroup subjs = new BasicPatientGroup(null, null, s_subjSize);
+		PatientGroup basels = new BasicPatientGroup(null, null, s_baslSize);
 		d_subject = new BasicContinuousMeasurement(e, s_mean1, s_stdDev1, subjs);
 		d_baseline = new BasicContinuousMeasurement(e, s_mean2, s_stdDev2, basels);
 		d_md = new MeanDifference(d_baseline, d_subject);
@@ -31,7 +31,7 @@ public class MeanDifferenceTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testConstructorThrowsException() {
 		Endpoint e2 = new Endpoint("E2", Type.CONTINUOUS);
-		PatientGroup subjs = new BasicPatientGroup(null, null, null, s_subjSize);
+		PatientGroup subjs = new BasicPatientGroup(null, null, s_subjSize);
 		ContinuousMeasurement subject = new BasicContinuousMeasurement(e2, s_mean1, s_stdDev1, subjs);
 		new MeanDifference(d_baseline, subject);
 	}

@@ -33,15 +33,15 @@ public class RiskDifferenceTest {
 	@Before
 	public void setUp() {
 		Endpoint e = new Endpoint("E", Type.RATE);
-		PatientGroup pnum = new BasicPatientGroup(null,null,null,s_sizeNum);
-		PatientGroup pden = new BasicPatientGroup(null,null,null,s_sizeDen);
+		PatientGroup pnum = new BasicPatientGroup(null,null,s_sizeNum);
+		PatientGroup pden = new BasicPatientGroup(null,null,s_sizeDen);
 		d_numerator = new BasicRateMeasurement(e, s_effectNum, pnum);		
 		d_denominator = new BasicRateMeasurement(e, s_effectDen, pden);
 		d_riskDif = new RiskDifference(d_denominator, d_numerator);
 		
 		//cooper 1977 from Warn2002
-		PatientGroup fnum = new BasicPatientGroup(null, null, null, s_cooper1977nT);
-		PatientGroup fden = new BasicPatientGroup(null, null, null, s_cooper1977nC);
+		PatientGroup fnum = new BasicPatientGroup(null, null, s_cooper1977nT);
+		PatientGroup fden = new BasicPatientGroup(null, null, s_cooper1977nC);
 		d_cooper1977Num = new BasicRateMeasurement(e, s_cooper1977rT, fnum);
 		d_cooper1977Den = new BasicRateMeasurement(e, s_cooper1977rC, fden);
 		d_cooperRD = new RiskDifference(d_cooper1977Den, d_cooper1977Num);
@@ -50,7 +50,7 @@ public class RiskDifferenceTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testConstructorThrowsException() {
 		Endpoint e2 = new Endpoint("E2", Type.RATE);
-		PatientGroup pnum = new BasicPatientGroup(null, null, null, s_sizeNum);
+		PatientGroup pnum = new BasicPatientGroup(null, null, s_sizeNum);
 		RateMeasurement subject = new BasicRateMeasurement(e2, s_effectNum, pnum);
 		new RiskDifference(d_denominator, subject);
 	}

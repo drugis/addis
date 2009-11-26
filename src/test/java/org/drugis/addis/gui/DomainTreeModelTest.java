@@ -67,8 +67,8 @@ public class DomainTreeModelTest {
 		d_firstStudy = new BasicStudy("First", d_firstIndication);
 		d_firstDrug = new Drug("Drug", "atc");
 		
-		BasicPatientGroup pg = new BasicPatientGroup(d_firstStudy,
-				d_firstDrug, new Dose(100.0, SIUnit.MILLIGRAMS_A_DAY), 100);
+		BasicPatientGroup pg = new BasicPatientGroup(d_firstDrug,
+				new Dose(100.0, SIUnit.MILLIGRAMS_A_DAY), 100);
 		d_firstStudy.addPatientGroup(pg);
 		d_firstStudy.addEndpoint(d_firstEndpoint);
 		
