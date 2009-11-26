@@ -46,7 +46,6 @@ public class ExampleData {
 	private static Drug s_parox;
 	private static Drug s_fluox;
 	private static Drug s_viagra;
-	private static Endpoint s_endpointUnused;
 	private static Indication s_indicationHeartFailure;
 	private static Drug s_candesartan;
 	private static Endpoint s_endpointCVdeath;
@@ -82,7 +81,6 @@ public class ExampleData {
 		domain.addStudy(buildStudyMcMurray());
 		
 		// unused stuff
-		domain.addEndpoint(buildEndpointUnused());
 	}
 
 	private static void clearAll() {
@@ -92,7 +90,6 @@ public class ExampleData {
 		s_parox = null;
 		s_fluox = null;
 		s_viagra = null;
-		s_endpointUnused = null;
 		s_indicationHeartFailure = null;
 		s_candesartan = null;
 		s_endpointCVdeath = null;
@@ -163,9 +160,6 @@ public class ExampleData {
 		Calendar startDate = Calendar.getInstance();
 		startDate.set(1991, Calendar.DECEMBER, 13, 0, 0, 0);
 		study.setCharacteristic(StudyCharacteristic.STUDY_START, startDate.getTime());
-//		Calendar endDate = Calendar.getInstance();
-//		endDate.set(1991, Calendar.DECEMBER, 13, 0, 0, 0);
-//		study.setCharacteristic(StudyCharacteristic.STUDY_END, endDate.getTime());
 		
 		// Paroxetine data
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
@@ -261,7 +255,6 @@ public class ExampleData {
 		
 		// Study characteristics
 		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
-		//study.setCharacteristic(StudyCharacteristic.CENTERS, );
 		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
 		study.setCharacteristic(StudyCharacteristic.ARMS, 2);
 		study.setCharacteristic(StudyCharacteristic.INCLUSION,
@@ -487,15 +480,6 @@ public class ExampleData {
 			s_endpointCgi = cgi;
 		}
 		return s_endpointCgi;
-	}
-	
-	public static Endpoint buildEndpointUnused() {
-		if (s_endpointUnused == null) { 
-			Endpoint unused = new Endpoint("Unused Endpoint", Type.RATE);
-			unused.setDescription("");
-			s_endpointUnused = unused;
-		}
-		return s_endpointUnused;
 	}
 	
 	public static Endpoint buildEndpointCVdeath() {
