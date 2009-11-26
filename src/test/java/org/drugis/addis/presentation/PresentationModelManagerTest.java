@@ -95,7 +95,7 @@ public class PresentationModelManagerTest {
 		assertEquals(m.getClass(), IndicationPresentation.class);
 		
 		assertTrue(m.getIncludedStudies().getValue().containsAll(
-				d_domain.getStudies(ExampleData.buildIndicationDepression())));
+				d_domain.getStudies(ExampleData.buildIndicationDepression()).getValue()));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -106,9 +106,9 @@ public class PresentationModelManagerTest {
 		
 		assertEquals(d, m.getBean());
 		assertEquals(DrugPresentationModel.class, m.getClass());
-		assertEquals(d_domain.getStudies(d).size(),
+		assertEquals(d_domain.getStudies(d).getValue().size(),
 				((DrugPresentationModel) m).getIncludedStudies().getValue().size());
-		assertTrue(d_domain.getStudies(d).containsAll(
+		assertTrue(d_domain.getStudies(d).getValue().containsAll(
 				((DrugPresentationModel) m).getIncludedStudies().getValue()));		
 	}
 

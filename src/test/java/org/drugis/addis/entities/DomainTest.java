@@ -27,6 +27,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -36,6 +37,7 @@ import java.util.Set;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.presentation.ListHolder;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -282,17 +284,21 @@ public class DomainTest {
 		s2.setId("s2");
 		s2.setEndpoints(l2);
 		
+		ListHolder<Study> e1Studies = d_domain.getStudies(e1);
+		ListHolder<Study> e2Studies = d_domain.getStudies(e2);
+		ListHolder<Study> e3Studies = d_domain.getStudies(e3);
+		
 		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s1);
 		d_domain.addStudy(s2);
 		
-		assertEquals(2, d_domain.getStudies(e1).size());
-		assertEquals(1, d_domain.getStudies(e2).size());
-		assertEquals(0, d_domain.getStudies(e3).size());
+		assertEquals(2, e1Studies.getValue().size());
+		assertEquals(1, e2Studies.getValue().size());
+		assertEquals(0, e3Studies.getValue().size());
 		
-		assertTrue(d_domain.getStudies(e1).contains(s1));
-		assertTrue(d_domain.getStudies(e1).contains(s2));
-		assertTrue(d_domain.getStudies(e2).contains(s2));
+		assertTrue(e1Studies.getValue().contains(s1));
+		assertTrue(e1Studies.getValue().contains(s2));
+		assertTrue(e2Studies.getValue().contains(s2));
 	}
 	
 	@Test
@@ -319,17 +325,52 @@ public class DomainTest {
 		Indication i2 = new Indication(007L,"This indication does not exists.");
 		d_domain.addIndication(i2);
 		
-		assertEquals(2, d_domain.getStudies(i1).size());
+		ListHolder<Study> studies = d_domain.getStudies(i1);
+		assertEquals(2, studies.getValue().size());
 		
-		assertEquals(0, d_domain.getStudies(i2).size());
+		assertEquals(0, d_domain.getStudies(i2).getValue().size());
 		
-		assertTrue(d_domain.getStudies(i1).contains(s1));
-		assertTrue(d_domain.getStudies(i1).contains(s2));
+		assertTrue(studies.getValue().contains(s1));
+		assertTrue(studies.getValue().contains(s2));
 		
+		BasicStudy s3 = new BasicStudy("s3", i1);
+		s3.setEndpoints(l2);
+		
+		d_domain.addStudy(s3);
+		assertTrue(studies.getValue().contains(s3));
 	}
 	
-	
-	
+	@Test
+	public void testGetStudiesByIndicationListFiresOnChange() {
+		Endpoint e1 = new Endpoint("e1", Type.RATE);
+
+		Set<Endpoint> l1 = new HashSet<Endpoint>();
+		l1.add(e1);
+		Indication i1 = new Indication(0L, "");
+		d_domain.addIndication(i1);
+		BasicStudy s1 = new BasicStudy("s1", i1);
+		s1.setEndpoints(l1);
+
+		d_domain.addStudy(s1);
+		
+		ListHolder<Study> studies = d_domain.getStudies(i1);
+		
+		assertTrue(studies.getValue().contains(s1));
+		
+		BasicStudy s3 = new BasicStudy("s3", i1);
+		s3.setEndpoints(l1);
+
+		List<Study> oldValue = studies.getValue();
+				
+		List<Study> newValue = new ArrayList<Study>(oldValue);
+		newValue.add(s3);
+				
+		PropertyChangeListener mock = JUnitUtil.mockListener(studies, "value", oldValue, newValue);
+		studies.addValueChangeListener(mock);
+		d_domain.addStudy(s3);
+		verify(mock);
+		assertTrue(studies.getValue().contains(s3));		
+	}
 	
 	@Test
 	public void testGetStudiesByDrug() {
@@ -366,18 +407,22 @@ public class DomainTest {
 		s2.setMeasurement(e, g3, m3);
 		
 		
+		ListHolder<Study> d1Studies = d_domain.getStudies(d1);
+		ListHolder<Study> d2Studies = d_domain.getStudies(d2);
+		ListHolder<Study> d3Studies = d_domain.getStudies(d3);		
+		
 		d_domain.addStudy(s1);
 		d_domain.addStudy(s2);
 		
-		assertEquals(2, d_domain.getStudies(d1).size());
-		assertEquals(1, d_domain.getStudies(d2).size());
-		assertEquals(0, d_domain.getStudies(d3).size());
+		assertEquals(2, d1Studies.getValue().size());
+		assertEquals(1, d2Studies.getValue().size());
+		assertEquals(0, d3Studies.getValue().size());
 		
-		assertTrue(d_domain.getStudies(d1).contains(s1));
-		assertTrue(d_domain.getStudies(d1).contains(s2));
-		assertTrue(d_domain.getStudies(d2).contains(s2));
+		assertTrue(d1Studies.getValue().contains(s1));
+		assertTrue(d1Studies.getValue().contains(s2));
+		assertTrue(d2Studies.getValue().contains(s2));
 	}
-	
+		
 	@Test
 	public void testEquals() {
 		Domain d1 = new DomainImpl();

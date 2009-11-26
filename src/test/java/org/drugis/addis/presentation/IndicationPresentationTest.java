@@ -19,24 +19,29 @@
 
 package org.drugis.addis.presentation;
 
+import static org.easymock.EasyMock.verify;
+
 import java.beans.PropertyChangeListener;
-import java.util.TreeSet;
+import java.util.List;
 
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 
-import static org.easymock.EasyMock.*;
-
 public class IndicationPresentationTest {
+	@SuppressWarnings("serial")
 	@Test
 	public void testCodeFireLabelChanged() {
 		Indication i = new Indication(5L, "Some indication");
-		IndicationPresentation p = new IndicationPresentation(i, new TreeSet<Study>());
+		IndicationPresentation p = new IndicationPresentation(i, new AbstractListHolder<Study>() {
+			@Override
+			public List<Study> getValue() {
+				return null;
+			}
+		});
 		AbstractValueModel model = p.getLabelModel();
 		PropertyChangeListener x = JUnitUtil.mockListener(model, "value", "5 Some indication", "6 Some indication");
 		model.addPropertyChangeListener(x);
@@ -44,10 +49,16 @@ public class IndicationPresentationTest {
 		verify(x);
 	}
 	
+	@SuppressWarnings("serial")
 	@Test
 	public void testNameFireLabelChanged() {
 		Indication i = new Indication(5L, "Some indication");
-		IndicationPresentation p = new IndicationPresentation(i, new TreeSet<Study>());
+		IndicationPresentation p = new IndicationPresentation(i, new AbstractListHolder<Study>() {
+			@Override
+			public List<Study> getValue() {
+				return null;
+			}			
+		});
 		AbstractValueModel model = p.getLabelModel();
 		PropertyChangeListener x = JUnitUtil.mockListener(model, "value", "5 Some indication", "5 Other indication");
 		model.addPropertyChangeListener(x);

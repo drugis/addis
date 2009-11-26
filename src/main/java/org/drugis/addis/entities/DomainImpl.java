@@ -33,6 +33,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.presentation.AbstractListHolder;
+import org.drugis.addis.presentation.ListHolder;
 
 public class DomainImpl implements Domain, Serializable {
 	private static final long serialVersionUID = 3222342605059458693L;
@@ -179,46 +181,28 @@ public class DomainImpl implements Domain, Serializable {
 		return Collections.unmodifiableSortedSet(d_drugs);
 	}
 
-	public SortedSet<Study> getStudies(Endpoint e) 
+	public ListHolder<Study> getStudies(Endpoint e) 
 	throws NullPointerException {
 		if (e == null) {
 			throw new NullPointerException("Endpoint must not be null");
 		}
-		SortedSet<Study> list = new TreeSet<Study>();
-		for (Study s : d_studies) {
-			if (s.getEndpoints().contains(e)) {
-				list.add(s);
-			}
-		}
-		return list;
+		return new StudiesForEntityListHolder(e);
 	}
 	
-	public SortedSet<Study> getStudies(Drug d)
+	public ListHolder<Study> getStudies(Drug d)
 	throws NullPointerException {
-			if (d == null) {
-				throw new NullPointerException("Drug must not be null");
-			}
-		SortedSet<Study> list = new TreeSet<Study>();
-		for (Study s : d_studies) {
-			if (s.getDrugs().contains(d)) {
-				list.add(s);
-			}
+		if (d == null) {
+			throw new NullPointerException("Drug must not be null");
 		}
-		return list;
+		return new StudiesForEntityListHolder(d);
 	}
 	
-	public SortedSet<Study> getStudies(Indication i)
+	public ListHolder<Study> getStudies(Indication i)
 	throws NullPointerException {
 		if (i == null) {
 			throw new NullPointerException("Indication must not be null");
 		}
-		SortedSet<Study> set = new TreeSet<Study>();
-		for (Study s : d_studies) {
-			if (s.getDependencies().contains(i)) {
-				set.add(s);
-			}
-		}
-		return set;
+		return new StudiesForEntityListHolder(i);
 	}
 
 	public boolean equals(Object o) {
@@ -307,5 +291,54 @@ public class DomainImpl implements Domain, Serializable {
 		checkDependents(ma);
 		d_metaAnalyses.remove(ma);
 		fireAnalysesChanged();
+	}
+	
+	@SuppressWarnings("serial")
+	private class StudiesForEntityListHolder extends AbstractListHolder<Study> implements DomainListener {
+		
+		private Entity d_holderEntity;
+		private List<Study> d_holderStudies;
+		
+		public StudiesForEntityListHolder(Entity i) {
+			d_holderEntity = i;
+			updateHolderStudies(i);
+			addListener(this);
+		}
+		
+		private void updateHolderStudies(Entity i) {
+			List<Study> oldStudies = d_holderStudies;
+			d_holderStudies = new ArrayList<Study>();
+			for (Study s : d_studies) {
+				if (s.getDependencies().contains(i)) {
+					d_holderStudies.add(s);
+				}
+			}
+			firePropertyChange("value", oldStudies, d_holderStudies);
+		}
+		
+		@Override
+		public List<Study> getValue() {
+			return d_holderStudies;
+		}
+
+		public void analysesChanged() {
+			updateHolderStudies(d_holderEntity);			
+		}
+
+		public void drugsChanged() {
+			updateHolderStudies(d_holderEntity);			
+		}
+
+		public void endpointsChanged() {
+			updateHolderStudies(d_holderEntity);
+		}
+
+		public void indicationsChanged() {
+			updateHolderStudies(d_holderEntity);
+		}
+
+		public void studiesChanged() {
+			updateHolderStudies(d_holderEntity);
+		}
 	}
 }

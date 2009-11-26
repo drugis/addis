@@ -21,9 +21,6 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
 
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
@@ -57,11 +54,11 @@ public class IndicationPresentation extends PresentationModel<Indication> implem
 	}
 
 	private CharacteristicVisibleMap d_charMap = new CharacteristicVisibleMap();
-	private ArrayList<Study> d_studies;
+	private ListHolder<Study> d_studies;
 
-	public IndicationPresentation(Indication bean, SortedSet<Study> studies) {
+	public IndicationPresentation(Indication bean, ListHolder<Study> studies) {
 		super(bean);
-		d_studies = new ArrayList<Study>(studies);
+		d_studies = studies;
 	}
 
 	public AbstractValueModel getLabelModel() {
@@ -73,13 +70,6 @@ public class IndicationPresentation extends PresentationModel<Indication> implem
 	}
 
 	public ListHolder<Study> getIncludedStudies() {
-		return new StudyListHolder();
-	}
-	
-	class StudyListHolder extends AbstractListHolder<Study> {
-		@Override
-		public List<Study> getValue() {
-			return new ArrayList<Study>(d_studies);
-		}
-	}
+		return d_studies;
+	}	
 }

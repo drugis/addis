@@ -168,7 +168,7 @@ public class MetaAnalysisWizardPresentation {
 		
 		@Override
 		public List<Study> getValue() {
-			return new ArrayList<Study>(getStudySet());
+			return new ArrayList<Study>(getStudyList());
 		}
 
 		public void propertyChange(PropertyChangeEvent evt) {
@@ -216,19 +216,19 @@ public class MetaAnalysisWizardPresentation {
 		d_selectedStudies = new HashMap<Study,AbstractHolder<Boolean>>();
 	}
 	
-	public SortedSet<Study> getSelectedStudySet() {
-		SortedSet<Study> set = new TreeSet<Study>();
+	public List<Study> getSelectedStudyList() {
+		List<Study> list = new ArrayList<Study>();
 		for (Map.Entry<Study, AbstractHolder<Boolean>> e : d_selectedStudies.entrySet()) {
 			if (e.getValue().getValue().equals(Boolean.TRUE)) {
-				set.add(e.getKey());
+				list.add(e.getKey());
 			}
 		}
-		return set;
+		return list;
 	}
 	
 	private void fillSelectedStudySet() {
 		d_selectedStudies.clear();
-		for (Study s : getStudySet()) {
+		for (Study s : getStudyList()) {
 			d_selectedStudies.put(s, new BooleanHolder()) ;
 		}
 	}
@@ -256,7 +256,7 @@ public class MetaAnalysisWizardPresentation {
 	public SortedSet<Endpoint> getEndpointSet() {
 		TreeSet<Endpoint> endpoints = new TreeSet<Endpoint>();
 		if (getIndication() != null) {
-			for (Study s : d_domain.getStudies(getIndication())) {
+			for (Study s : d_domain.getStudies(getIndication()).getValue()) {
 				endpoints.addAll(s.getEndpoints());
 			}			
 		}	
@@ -274,7 +274,7 @@ public class MetaAnalysisWizardPresentation {
 	public SortedSet<Drug> getDrugSet() {
 		SortedSet<Drug> drugs = new TreeSet<Drug>();
 		if (getIndication() != null && getEndpoint() != null) {
-			SortedSet<Study> studies = getStudiesEndpointAndIndication();
+			List<Study> studies = getStudiesEndpointAndIndication();
 			for (Study s : studies) {
 				drugs.addAll(s.getDrugs());
 			}
@@ -282,9 +282,9 @@ public class MetaAnalysisWizardPresentation {
 		return drugs;
 	}
 
-	private SortedSet<Study> getStudiesEndpointAndIndication() {
-		SortedSet<Study> studies = new TreeSet<Study>(d_domain.getStudies(getEndpoint()));
-		studies.retainAll(d_domain.getStudies(getIndication()));
+	private List<Study> getStudiesEndpointAndIndication() {
+		List<Study> studies = new ArrayList<Study>(d_domain.getStudies(getEndpoint()).getValue());
+		studies.retainAll(d_domain.getStudies(getIndication()).getValue());
 		return studies;
 	}
 
@@ -304,12 +304,12 @@ public class MetaAnalysisWizardPresentation {
 		return d_secondDrugHolder;
 	}
 	
-	public SortedSet<Study> getStudySet() {
-		SortedSet<Study> studies = new TreeSet<Study>();
+	public List<Study> getStudyList() {
+		List<Study> studies = new ArrayList<Study>();
 		if (getSecondDrug() != null && getFirstDrug() != null) {
 			studies = getStudiesEndpointAndIndication();
-			studies.retainAll(d_domain.getStudies(getFirstDrug()));
-			studies.retainAll(d_domain.getStudies(getSecondDrug()));
+			studies.retainAll(d_domain.getStudies(getFirstDrug()).getValue());
+			studies.retainAll(d_domain.getStudies(getSecondDrug()).getValue());
 		}
 		return studies;
 	}
@@ -324,7 +324,7 @@ public class MetaAnalysisWizardPresentation {
 	
 	public RandomEffectsMetaAnalysis getAnalysis() {
 		Endpoint e = d_domain.getEndpoints().first();
-		return new RandomEffectsMetaAnalysis("", e, new ArrayList<Study>(d_domain.getStudies(e)), getFirstDrug(), getSecondDrug());
+		return new RandomEffectsMetaAnalysis("", e, d_domain.getStudies(e).getValue(), getFirstDrug(), getSecondDrug());
 	}
 	
 	public ValueModel getStudiesMeasuringLabelModel() {
@@ -368,7 +368,7 @@ public class MetaAnalysisWizardPresentation {
 
 	public RandomEffectsMetaAnalysis createMetaAnalysis() {
 		return new RandomEffectsMetaAnalysis("", (Endpoint)getEndpointModel().getValue(),
-				new ArrayList<Study>(getSelectedStudySet()), getFirstDrug(), getSecondDrug());
+				new ArrayList<Study>(getSelectedStudyList()), getFirstDrug(), getSecondDrug());
 	}
 	
 	public RandomEffectsMetaAnalysis saveMetaAnalysis(String name, RandomEffectsMetaAnalysis ma) throws EntityIdExistsException {

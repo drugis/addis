@@ -24,8 +24,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -57,9 +55,7 @@ public class StudyCharTableModelTest {
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
 		d_ind = d_domain.getIndications().first();
-		SortedSet<Study> sortedStudies = new TreeSet<Study>();
-		sortedStudies.addAll(studies);
-		d_pm = new IndicationPresentation(d_ind,sortedStudies);
+		d_pm = new IndicationPresentation(d_ind,d_domain.getStudies(d_ind));
 		d_model = new StudyCharTableModel(d_pm);
 	}	
 	

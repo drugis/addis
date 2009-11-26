@@ -1,9 +1,5 @@
 package org.drugis.addis.presentation;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
@@ -16,11 +12,11 @@ import com.jgoodies.binding.value.ValueHolder;
 public class DrugPresentationModel extends PresentationModel<Drug> implements StudyListPresentationModel, LabeledPresentationModel {
 	
 	private CharacteristicVisibleMap d_charVisibleMap = new CharacteristicVisibleMap();
-	private ArrayList<Study> d_studies;
+	private ListHolder<Study> d_studies;
 
-	public DrugPresentationModel(Drug drug, SortedSet<Study> studies) {
+	public DrugPresentationModel(Drug drug, ListHolder<Study> studies) {
 		super(drug);
-		d_studies = new ArrayList<Study>(studies);		
+		d_studies = studies;		
 	}
 	
 	public AbstractValueModel getCharacteristicVisibleModel(StudyCharacteristic c) {
@@ -28,14 +24,7 @@ public class DrugPresentationModel extends PresentationModel<Drug> implements St
 	}
 
 	public ListHolder<Study> getIncludedStudies() {
-		return new StudyListHolder();
-	}
-
-	class StudyListHolder extends AbstractListHolder<Study> {
-		@Override
-		public List<Study> getValue() {
-			return new ArrayList<Study>(d_studies);
-		}
+		return d_studies;
 	}
 
 	public AbstractValueModel getLabelModel() {

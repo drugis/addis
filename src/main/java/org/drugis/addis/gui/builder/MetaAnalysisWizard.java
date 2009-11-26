@@ -124,14 +124,14 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			builder.addSeparator("Studies", cc.xyw(1, 1, 3));
 
 			int row = 3;
-			for (Study s : d_pm.getStudySet()) {
+			for (Study s : d_pm.getStudyList()) {
 				layout.appendRow(RowSpec.decode("3dlu"));
 				layout.appendRow(RowSpec.decode("p"));
 
 				JCheckBox box = BasicComponentFactory.createCheckBox(d_pm.getSelectedStudyBooleanModel(s), s.getId());
 				box.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						setComplete(!d_pm.getSelectedStudySet().isEmpty());						
+						setComplete(!d_pm.getSelectedStudyList().isEmpty());						
 					}
 				});
 				

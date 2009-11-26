@@ -22,6 +22,7 @@ package org.drugis.addis.entities;
 import java.util.SortedSet;
 
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.presentation.ListHolder;
 
 public interface Domain {
 	/**
@@ -90,19 +91,19 @@ public interface Domain {
 	 * Get studies by Endpoint.
 	 * @return An unmodifiable sorted set of studies. Never null.
 	 */
-	public SortedSet<Study> getStudies(Endpoint e);
+	public ListHolder<Study> getStudies(Endpoint e);
 	
 	/**
 	 * Get studies by Drug.
 	 * @return An unmodifiable sorted set of studies. Never null.
 	 */
-	public SortedSet<Study> getStudies(Drug d);
+	public ListHolder<Study> getStudies(Drug d);
 	
 	/**
 	 * Get studies by Indication.
 	 * @return An unmodifiable sorted set of studies. Never null.
 	 */
-	public SortedSet<Study> getStudies(Indication i);
+	public ListHolder<Study> getStudies(Indication i);
 	
 	/**
 	 * Adds an drug to the data model.

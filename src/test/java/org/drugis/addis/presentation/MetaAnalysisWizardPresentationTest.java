@@ -377,7 +377,7 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testGetStudySet() {
-		SortedSet<Study> expected = new TreeSet<Study>();
+		List<Study> expected = new ArrayList<Study>();
 		expected.add(ExampleData.buildStudyChouinard());
 		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
@@ -385,7 +385,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		
-		assertEquals(expected, d_wizard.getStudySet());
+		assertEquals(expected, d_wizard.getStudyList());
 	}
 	
 	@Test
@@ -395,7 +395,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		
-		List<Study> expected = new ArrayList<Study>(d_wizard.getStudySet());
+		List<Study> expected = new ArrayList<Study>(d_wizard.getStudyList());
 		ListHolder<Study> studyList = d_wizard.getStudyListModel();
 		assertEquals(expected, studyList.getValue());
 	}
@@ -418,9 +418,9 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		// sanity checks
 		assertNull(unsetDrugModel.getValue());
-		assertNotNull(d_wizard.getStudySet());
+		assertNotNull(d_wizard.getStudyList());
 		
-		assertEquals(new TreeSet<Study>(), d_wizard.getStudySet());
+		assertEquals(new ArrayList<Study>(), d_wizard.getStudyList());
 	}
 	
 	@Test
@@ -443,7 +443,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		
-		assertEquals(d_wizard.getStudySet(), d_wizard.getSelectedStudySet());
+		assertEquals(d_wizard.getStudyList(), d_wizard.getSelectedStudyList());
 	}
 	
 	@Test
@@ -453,11 +453,11 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		
-		d_wizard.getSelectedStudyBooleanModel(d_wizard.getStudySet().first()).setValue(false);
-		SortedSet<Study> set = d_wizard.getStudySet();
-		set.remove(d_wizard.getStudySet().first());
+		d_wizard.getSelectedStudyBooleanModel(d_wizard.getStudyList().get(0)).setValue(false);
+		List<Study> set = d_wizard.getStudyList();
+		set.remove(d_wizard.getStudyList().get(0));
 		assertTrue(!set.isEmpty());
-		assertEquals(set, d_wizard.getSelectedStudySet());	
+		assertEquals(set, d_wizard.getSelectedStudyList());	
 	}
 	
 	@Test
@@ -470,7 +470,7 @@ public class MetaAnalysisWizardPresentationTest {
 		RandomEffectsMetaAnalysis ma = d_wizard.createMetaAnalysis();
 		assertEquals(ma.getFirstDrug(), d_wizard.getFirstDrugModel().getValue());
 		assertEquals(ma.getSecondDrug(), d_wizard.getSecondDrugModel().getValue());
-		JUnitUtil.assertAllAndOnly((Collection<?>) d_wizard.getSelectedStudySet(), (Collection<?>) ma.getStudies());
+		JUnitUtil.assertAllAndOnly((Collection<?>) d_wizard.getSelectedStudyList(), (Collection<?>) ma.getStudies());
 		assertEquals(ma.getEndpoint(), d_wizard.getEndpointModel().getValue());
 		assertEquals(ma.getIndication(), d_wizard.getIndicationModel().getValue());
 	}
@@ -484,13 +484,13 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		
-		for (Study s : d_wizard.getStudySet()) {
+		for (Study s : d_wizard.getStudyList()) {
 			if (!s.equals(ExampleData.buildAdditionalStudyThreeArm())) {
 				d_wizard.getSelectedStudyBooleanModel(s).setValue(false);
 			}
 		}
-		SortedSet<Study> set = new TreeSet<Study>();
-		set.add(ExampleData.buildAdditionalStudyThreeArm());
-		assertEquals(set, d_wizard.getSelectedStudySet());	
+		List<Study> list = new ArrayList<Study>();
+		list.add(ExampleData.buildAdditionalStudyThreeArm());
+		assertEquals(list, d_wizard.getSelectedStudyList());	
 	}
 }
