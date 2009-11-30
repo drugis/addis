@@ -19,7 +19,7 @@ public class EntityTableModel<T extends Entity> extends AbstractTableModel {
 	Domain d_domain;
 	List<String> d_props;
 
-	EntityTableModel(SortedSet<T> entities, Domain domain, List<String> properties) {
+	public EntityTableModel(SortedSet<T> entities, Domain domain, List<String> properties) {
 		d_entities = entities;
 		d_domain = domain;
 		d_props = properties;

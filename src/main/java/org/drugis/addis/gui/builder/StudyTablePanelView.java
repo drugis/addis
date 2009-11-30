@@ -32,8 +32,8 @@ public class StudyTablePanelView implements ViewBuilder {
 	private JFrame d_parent;
 
 	public StudyTablePanelView(StudyListPresentationModel metamodel, JFrame parent) {
-		this.d_metamodel = metamodel;
-		this.d_parent = parent;
+		d_metamodel = metamodel;
+		d_parent = parent;
 	}
 
 	public JPanel buildPanel() {

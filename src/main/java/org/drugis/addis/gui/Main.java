@@ -32,6 +32,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -70,11 +72,13 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.builder.DrugView;
 import org.drugis.addis.gui.builder.EndpointView;
+import org.drugis.addis.gui.builder.EntitiesTableView;
 import org.drugis.addis.gui.builder.IndicationView;
 import org.drugis.addis.gui.builder.MetaAnalysisWizard;
 import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
-import org.drugis.addis.gui.builder.StudiesView;
+import org.drugis.addis.gui.builder.StudyTablePanelView;
 import org.drugis.addis.gui.builder.StudyView;
+import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
 import org.drugis.addis.presentation.DrugPresentationModel;
 import org.drugis.addis.presentation.EndpointPresentationModel;
 import org.drugis.addis.presentation.IndicationPresentation;
@@ -512,7 +516,9 @@ public class Main extends JFrame {
 					indicationSelected((Indication) node);
 				} else if (node.equals(d_domainTreeModel.getStudiesNode())) {
 					studyLabelSelected();
-				} else {
+				} else if (node.equals(d_domainTreeModel.getDrugsNode())) {
+					drugLabelSelected();
+				}else {
 					noneSelected();
 				}
 			}
@@ -530,6 +536,14 @@ public class Main extends JFrame {
 		DrugView view = new DrugView((DrugPresentationModel) d_pmManager.getModel(drug), this);
 		setRightPanelView(view);
 		d_editMenuDeleteItem.setEnabled(true);		
+	}
+	
+	private void drugLabelSelected() {
+		List<String> formatter = new ArrayList<String>();
+		formatter.add("name");
+		formatter.add("atcCode");
+		EntitiesTableView<Drug> view = new EntitiesTableView<Drug>(formatter, d_domain.getDomain().getDrugs(), d_domain.getDomain());
+		setRightPanelView(view);
 	}
 	
 	private void leftTreeFocusStudies() {
@@ -556,7 +570,7 @@ public class Main extends JFrame {
 	}
 	
 	private void studyLabelSelected() {
-		StudiesView view = new StudiesView(this, d_domain.getDomain());
+		StudyTablePanelView view = new StudyTablePanelView(new DefaultStudyListPresentationModel(d_domain.getDomain().getStudiesHolder()), this);
 		setRightPanelView(view);		
 	}
 	
