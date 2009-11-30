@@ -491,7 +491,7 @@ public class Main extends JFrame {
 	private void expandLeftPanelTree() {
 		d_leftPanelTree.expandPath(new TreePath(new Object[]{d_domainTreeModel.getRoot(), d_domainTreeModel.getIndicationsNode()}));
 		d_leftPanelTree.expandPath(new TreePath(new Object[]{d_domainTreeModel.getRoot(), d_domainTreeModel.getEndpointsNode()}));
-		d_leftPanelTree.expandPath(new TreePath(new Object[]{d_domainTreeModel.getRoot(), d_domainTreeModel.getStudiesNode()}));
+		//d_leftPanelTree.expandPath(new TreePath(new Object[]{d_domainTreeModel.getRoot(), d_domainTreeModel.getStudiesNode()}));
 		d_leftPanelTree.expandPath(new TreePath(new Object[]{d_domainTreeModel.getRoot(), d_domainTreeModel.getDrugsNode()}));
 		d_leftPanelTree.expandPath(new TreePath(new Object[]{d_domainTreeModel.getRoot(), d_domainTreeModel.getAnalysesNode()}));		
 	}
@@ -510,13 +510,9 @@ public class Main extends JFrame {
 					drugSelected((Drug) node);
 				} else if (node instanceof Indication) {
 					indicationSelected((Indication) node);
-				} else if (node instanceof String){
-					if (node.equals("Studies"))
-						studyLabelSelected();
-					else
-						noneSelected();
+				} else if (node.equals(d_domainTreeModel.getStudiesNode())) {
+					studyLabelSelected();
 				} else {
-					System.out.println("We never get here.");
 					noneSelected();
 				}
 			}
@@ -637,16 +633,15 @@ public class Main extends JFrame {
 		}
 	}
 
-	public void leftTreeFocusOnStudy(Study d_study) {
-		d_leftPanelTree.setSelectionPath(new TreePath(
-				new Object[] {d_domainTreeModel.getRoot(), 
-						d_domainTreeModel.getStudiesNode(), d_study }));		
+	public void leftTreeFocusOnStudy(Study study) {
+		d_leftPanelTree.setSelectionPath(new TreePath(d_domainTreeModel.getRoot()));
+		studySelected(study);
 	}
 
-	public void leftTreeFocusOnMetaStudy(RandomEffectsMetaAnalysis d_study) {
+	public void leftTreeFocusOnMetaStudy(RandomEffectsMetaAnalysis study) {
 		d_leftPanelTree.setSelectionPath(new TreePath(
 				new Object[] {d_domainTreeModel.getRoot(), 
-						d_domainTreeModel.getAnalysesNode(), d_study }));		
+						d_domainTreeModel.getAnalysesNode(), study }));		
 	}
 	
 	public void leftTreeFocusOnEndpoint(Endpoint ep) {

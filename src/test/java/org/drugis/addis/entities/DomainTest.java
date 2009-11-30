@@ -422,6 +422,51 @@ public class DomainTest {
 		assertTrue(d1Studies.getValue().contains(s2));
 		assertTrue(d2Studies.getValue().contains(s2));
 	}
+	
+	@Test
+	public void testGetStudies() {
+		Drug d1 = new Drug("drug1", "atccode1");
+		Drug d2 = new Drug("drug2", "atccode2");
+		
+		Endpoint e = new Endpoint("Death", Endpoint.Type.RATE);
+		
+		BasicStudy s1 = new BasicStudy("s1", d_indication);
+		s1.setEndpoints(Collections.singleton(e));
+		BasicPatientGroup g1 = new BasicPatientGroup(d1, new Dose(1.0, SIUnit.MILLIGRAMS_A_DAY), 
+				100);
+		BasicRateMeasurement m1 = new BasicRateMeasurement(e, g1);
+		s1.setPatientGroups(Collections.singletonList(g1));
+		s1.setMeasurement(e, g1, m1);
+		d_domain.addIndication(d_indication);
+		
+		Indication indic2 = new Indication(1L, "");
+		d_domain.addIndication(indic2);
+		BasicStudy s2 = new BasicStudy("s2", indic2);
+		s2.setEndpoints(Collections.singleton(e));
+		BasicPatientGroup g2 = new BasicPatientGroup(d1, new Dose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
+				250);		
+		BasicPatientGroup g3 = new BasicPatientGroup(d2, new Dose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
+				250);
+		List<BasicPatientGroup> l1 = new ArrayList<BasicPatientGroup>();
+		l1.add(g2);
+		l1.add(g3);
+		s2.setPatientGroups(l1);
+		BasicRateMeasurement m2 = new BasicRateMeasurement(e, g2);
+		BasicRateMeasurement m3 = new BasicRateMeasurement(e, g3);		
+		s2.setMeasurement(e, g2, m2);
+		s2.setMeasurement(e, g3, m3);
+		
+		
+		ListHolder<Study> Studies = d_domain.getStudiesHolder();
+		
+		d_domain.addStudy(s1);
+		d_domain.addStudy(s2);
+		
+		assertEquals(2, Studies.getValue().size());
+		
+		assertTrue(Studies.getValue().contains(s1));
+		assertTrue(Studies.getValue().contains(s2));
+	}
 		
 	@Test
 	public void testEquals() {

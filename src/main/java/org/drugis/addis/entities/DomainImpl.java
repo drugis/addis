@@ -204,6 +204,10 @@ public class DomainImpl implements Domain, Serializable {
 		}
 		return new StudiesForEntityListHolder(i);
 	}
+	
+	public ListHolder<Study> getStudiesHolder() {
+		return new StudiesForEntityListHolder(null);
+	}
 
 	public boolean equals(Object o) {
 		if (o instanceof Domain) {
@@ -308,9 +312,13 @@ public class DomainImpl implements Domain, Serializable {
 		private void updateHolderStudies(Entity i) {
 			List<Study> oldStudies = d_holderStudies;
 			d_holderStudies = new ArrayList<Study>();
-			for (Study s : d_studies) {
-				if (s.getDependencies().contains(i)) {
-					d_holderStudies.add(s);
+			if (i == null) {
+				d_holderStudies.addAll(d_studies);
+			} else {
+				for (Study s : d_studies) {
+					if (s.getDependencies().contains(i)) {
+						d_holderStudies.add(s);
+					}
 				}
 			}
 			firePropertyChange("value", oldStudies, d_holderStudies);

@@ -105,6 +105,12 @@ public interface Domain {
 	 */
 	public ListHolder<Study> getStudies(Indication i);
 	
+	/** 
+	 * Get all studies
+	 * @return A ListHolder of studies.
+	 */
+	public ListHolder<Study> getStudiesHolder();
+	
 	/**
 	 * Adds an drug to the data model.
 	 * 
