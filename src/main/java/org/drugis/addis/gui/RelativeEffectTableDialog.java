@@ -30,10 +30,10 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 
 @SuppressWarnings("serial")
-public class RatioTableDialog extends JDialog {
+public class RelativeEffectTableDialog extends JDialog {
 	private RelativeEffectTableModel d_tableModel;
 
-	public RatioTableDialog(JFrame parent, RelativeEffectTableModel model) {
+	public RelativeEffectTableDialog(JFrame parent, RelativeEffectTableModel model) {
 		super(parent, model.getTitle());
 		d_tableModel = model;
 		initComps();

@@ -14,7 +14,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.RatioTableDialog;
+import org.drugis.addis.gui.RelativeEffectTableDialog;
 import org.drugis.addis.presentation.MeanDifferenceTableModel;
 import org.drugis.addis.presentation.OddsRatioTableModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -108,7 +108,7 @@ public class StudyEndpointsView implements ViewBuilder {
 		JButton button = new JButton(tableModel.getTitle());
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				RatioTableDialog dlg = new RatioTableDialog(d_mainWindow, tableModel);
+				RelativeEffectTableDialog dlg = new RelativeEffectTableDialog(d_mainWindow, tableModel);
 				GUIHelper.centerWindow(dlg, d_mainWindow);
 				dlg.setVisible(true);
 			}

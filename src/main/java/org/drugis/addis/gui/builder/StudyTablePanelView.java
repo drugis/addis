@@ -3,6 +3,8 @@ package org.drugis.addis.gui.builder;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -13,7 +15,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.CharacteristicSelectDialog;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.addis.presentation.StudyListPresentationModel;
@@ -37,6 +41,35 @@ public class StudyTablePanelView implements ViewBuilder {
 		
 		StudyCharTableModel model = new StudyCharTableModel(d_metamodel);
 		final JTable table = new StudyTable(model);
+		table.addMouseListener(new MouseListener() {
+			
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+			}
+			
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+			}
+			
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+			}
+			
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+			}
+			
+			public void mouseClicked(MouseEvent e) {
+				int row = ((StudyTable)e.getComponent()).rowAtPoint(e.getPoint());
+				int col = ((StudyTable)e.getComponent()).columnAtPoint(e.getPoint());
+				if (col == 0) {
+					Study s = d_metamodel.getIncludedStudies().getValue().get(row);
+					if (d_parent instanceof Main) {
+						((Main)d_parent).leftTreeFocusOnStudy(s);
+					}
+				}
+			}
+		});
 		JScrollPane pane = new JScrollPane(table);
 		pane.setPreferredSize(new Dimension(200, 250));
 		pane.setBorder(BorderFactory.createEmptyBorder());
@@ -49,6 +82,7 @@ public class StudyTablePanelView implements ViewBuilder {
 		
 		panel.add(pane, BorderLayout.NORTH);
 		panel.add(bb.getPanel(), BorderLayout.WEST);
+		
 		return panel;
 	}
 
