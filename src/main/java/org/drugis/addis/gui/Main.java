@@ -73,6 +73,7 @@ import org.drugis.addis.gui.builder.EndpointView;
 import org.drugis.addis.gui.builder.IndicationView;
 import org.drugis.addis.gui.builder.MetaAnalysisWizard;
 import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
+import org.drugis.addis.gui.builder.StudiesView;
 import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.presentation.DrugPresentationModel;
 import org.drugis.addis.presentation.EndpointPresentationModel;
@@ -509,7 +510,13 @@ public class Main extends JFrame {
 					drugSelected((Drug) node);
 				} else if (node instanceof Indication) {
 					indicationSelected((Indication) node);
+				} else if (node instanceof String){
+					if (node.equals("Studies"))
+						studyLabelSelected();
+					else
+						noneSelected();
 				} else {
+					System.out.println("We never get here.");
 					noneSelected();
 				}
 			}
@@ -550,6 +557,11 @@ public class Main extends JFrame {
 	private void indicationSelected(Indication i) {
 		IndicationView view = new IndicationView((IndicationPresentation) d_pmManager.getModel(i), this);
 		setRightPanelView(view);
+	}
+	
+	private void studyLabelSelected() {
+		StudiesView view = new StudiesView(this, d_domain.getDomain());
+		setRightPanelView(view);		
 	}
 	
 	private void studySelected(Study node) {

@@ -60,12 +60,14 @@ public class StudyTablePanelView implements ViewBuilder {
 			}
 			
 			public void mouseClicked(MouseEvent e) {
-				int row = ((StudyTable)e.getComponent()).rowAtPoint(e.getPoint());
-				int col = ((StudyTable)e.getComponent()).columnAtPoint(e.getPoint());
-				if (col == 0) {
-					Study s = d_metamodel.getIncludedStudies().getValue().get(row);
-					if (d_parent instanceof Main) {
-						((Main)d_parent).leftTreeFocusOnStudy(s);
+				if (e.getClickCount() > 1) {
+					int row = ((StudyTable)e.getComponent()).rowAtPoint(e.getPoint());
+					int col = ((StudyTable)e.getComponent()).columnAtPoint(e.getPoint());
+					if (col == 0) {
+						Study s = d_metamodel.getIncludedStudies().getValue().get(row);
+						if (d_parent instanceof Main) {
+							((Main)d_parent).leftTreeFocusOnStudy(s);
+						}
 					}
 				}
 			}
