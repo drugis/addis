@@ -11,5 +11,4 @@ public interface StudyListPresentationModel {
 	
 	public AbstractValueModel getCharacteristicVisibleModel(
 			StudyCharacteristic c);
-
 }

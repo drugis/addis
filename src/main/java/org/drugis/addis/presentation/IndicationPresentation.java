@@ -71,5 +71,5 @@ public class IndicationPresentation extends PresentationModel<Indication> implem
 
 	public ListHolder<Study> getIncludedStudies() {
 		return d_studies;
-	}	
+	}
 }

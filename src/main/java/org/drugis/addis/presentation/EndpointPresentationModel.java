@@ -30,5 +30,5 @@ public class EndpointPresentationModel extends PresentationModel<Endpoint> imple
 
 	public AbstractValueModel getLabelModel() {
 		return new ValueHolder(getBean().getName());
-	}	
+	}
 }
