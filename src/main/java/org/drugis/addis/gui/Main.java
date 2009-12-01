@@ -41,6 +41,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -64,6 +65,7 @@ import org.drugis.addis.AppInfo;
 import org.drugis.addis.MainData;
 import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
@@ -145,7 +147,7 @@ public class Main extends JFrame {
 	
 	protected void quitApplication() {
 		try {
-			saveDomainToFile();
+			saveDomainToFile("domain.dat");
 			System.exit(0);			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this,
@@ -154,8 +156,8 @@ public class Main extends JFrame {
 		}
 	}
 
-	private void saveDomainToFile() throws IOException {
-		File f = new File("domain.dat");
+	private void saveDomainToFile(String fileName) throws IOException {
+		File f = new File(fileName);
 		if (f.exists()) {
 			f.delete();
 		}
@@ -168,7 +170,7 @@ public class Main extends JFrame {
 		d_domain = new DomainManager();
 		
 		try {
-			loadDomainFromFile();
+			loadDomainFromFile("domain.dat");
 		} catch (Exception e) {
 			MainData.initDefaultData(d_domain.getDomain());
 		}
@@ -180,13 +182,13 @@ public class Main extends JFrame {
 		return d_domain.getDomain();
 	}
 
-	private void loadDomainFromFile() throws IOException, ClassNotFoundException {
-		File f = new File("domain.dat");
+	private void loadDomainFromFile(String fileName) throws IOException, ClassNotFoundException {
+		File f = new File(fileName);
 		if (f.exists() && f.isFile()) {
 			FileInputStream fis = new FileInputStream(f);
 			d_domain.loadDomain(fis);
 		} else {
-			throw new FileNotFoundException("domain.dat not found");
+			throw new FileNotFoundException(fileName + " not found");
 		}
 	}
 
@@ -245,7 +247,10 @@ public class Main extends JFrame {
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic('f');
 		
+		fileMenu.add(createOpenItem());
+		fileMenu.add(createSaveItem());
 		fileMenu.add(createExitItem());
+	
 		return fileMenu;
 	}
 	
@@ -404,6 +409,53 @@ public class Main extends JFrame {
 		AddDrugDialog dialog = new AddDrugDialog(this, getDomain());
 		GUIHelper.centerWindow(dialog, this);		
 		dialog.setVisible(true);
+	}
+	
+	private JMenuItem createOpenItem() { 
+		JMenuItem openItem = new JMenuItem("Open");
+		openItem.setMnemonic('o');
+		openItem.addActionListener(new AbstractAction() {
+			
+			public void actionPerformed(ActionEvent e){
+				final JFileChooser fileChooser = new JFileChooser();
+				int returnVal = fileChooser.showOpenDialog(Main.this);
+				
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					try {
+						List<DomainListener> listeners = ((DomainImpl)d_domain.getDomain()).getListeners();
+						System.out.println(listeners);
+						loadDomainFromFile(fileChooser.getSelectedFile().getAbsolutePath());
+						for (DomainListener listener : listeners)
+							((DomainImpl)d_domain.getDomain()).addListener(listener);
+						System.out.println(((DomainImpl)d_domain.getDomain()).getListeners());
+					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(Main.this, "Couldn't open file " + fileChooser.getSelectedFile().getAbsolutePath() +" .");
+					}
+				}
+			}	
+		});
+		return openItem;
+	}
+	
+	private JMenuItem createSaveItem() {
+		JMenuItem saveItem = new JMenuItem("Save");
+		saveItem.setMnemonic('s');
+		saveItem.addActionListener(new AbstractAction() {
+			
+			public void actionPerformed(ActionEvent e){
+				final JFileChooser fileChooser = new JFileChooser();
+				int returnVal = fileChooser.showSaveDialog(Main.this);
+				
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					try {
+						saveDomainToFile(fileChooser.getSelectedFile().getAbsolutePath());
+					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(Main.this, "Couldn't save file " + fileChooser.getSelectedFile().getAbsolutePath() +" .");
+					}
+				}
+			}	
+		});
+		return saveItem;
 	}
 	
 	private JMenuItem createExitItem() {
