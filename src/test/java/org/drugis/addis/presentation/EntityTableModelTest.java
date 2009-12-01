@@ -15,7 +15,10 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import com.jgoodies.binding.PresentationModel;
 
 public class EntityTableModelTest {
 	Domain d_domain;
@@ -29,7 +32,11 @@ public class EntityTableModelTest {
 		d_properties = new ArrayList<String>();
 		d_properties.add("name");
 		d_properties.add("atcCode");
-		d_tableModel = new EntityTableModel<Drug>(d_domain.getDrugs(), d_domain, d_properties);
+		List<PresentationModel<Drug>> pm = new ArrayList<PresentationModel<Drug>>();
+		PresentationModelFactory pmf = new PresentationModelFactory(d_domain);
+		for (Drug d : d_domain.getDrugs())
+			pm.add(pmf.getModel(d));
+		d_tableModel = new EntityTableModel<Drug>(pm, d_properties);
 	}
 	
 	@Test
@@ -47,7 +54,14 @@ public class EntityTableModelTest {
 		assertEquals(d_domain.getDrugs().first().getName(), d_tableModel.getValueAt(0, 0));
 		assertEquals(d_domain.getDrugs().first().getAtcCode(), d_tableModel.getValueAt(0, 1));
 	}
+	
+	@Test
+	public void testGetColumnNames() {
+		assertEquals("Name", d_tableModel.getColumnName(0));
+		assertEquals("Atc Code", d_tableModel.getColumnName(1));
+	}
 
+	@Ignore //We don't have a listholder for the list of drugs from domain
 	@Test
 	public void testDrugAddedUpdatesTable() {
 		int prevSize = d_tableModel.getRowCount();

@@ -230,4 +230,11 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 	public Object getCharacteristic(StudyCharacteristic c) {
 		return d_chars.get(c);
 	}
+
+	public int getSampleSize() {
+		int s = 0;
+		for (PatientGroup pg : d_patientGroups)
+			s += pg.getSize();
+		return s;
+	}
 }

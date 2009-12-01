@@ -84,6 +84,11 @@ public class RandomEffectsMetaAnalysisTest {
 	}
 	
 	@Test
+	public void testGetSampleSize() {
+		assertEquals(144+142+120+122+92+96+119+117+120+118, d_rema.getSampleSize());
+	}
+	
+	@Test
 	public void testGetFirstDrug() {
 		assertEquals(d_fluox, d_rema.getFirstDrug());
 	}

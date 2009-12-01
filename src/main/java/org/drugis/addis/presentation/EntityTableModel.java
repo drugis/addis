@@ -1,13 +1,11 @@
 package org.drugis.addis.presentation;
 
-import java.util.ArrayList;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
-import java.util.SortedSet;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Entity;
 
 import com.jgoodies.binding.PresentationModel;
@@ -15,15 +13,14 @@ import com.jgoodies.binding.PresentationModel;
 
 @SuppressWarnings("serial")
 public class EntityTableModel<T extends Entity> extends AbstractTableModel {
-	SortedSet<T> d_entities;
-	Domain d_domain;
+	List<PresentationModel<T>> d_entities;
 	List<String> d_props;
 
-	public EntityTableModel(SortedSet<T> entities, Domain domain, List<String> properties) {
+	public EntityTableModel(List<PresentationModel<T>> entities, List<String> properties) {
 		d_entities = entities;
-		d_domain = domain;
+		for (PresentationModel<T> pm : d_entities)
+			pm.addPropertyChangeListener(new ValueChangeListener());
 		d_props = properties;
-		d_domain.addListener(new ValueChangeListener());		
 	}
 	
 	public int getColumnCount() {
@@ -35,30 +32,25 @@ public class EntityTableModel<T extends Entity> extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row, int column) {
-		List<T> lists = new ArrayList<T>(d_entities); 
-		PresentationModel<T> pm = new PresentationModelFactory(d_domain).getModel(lists.get(row));
-		return pm.getModel(d_props.get(column)).getValue();
+		return d_entities.get(row).getModel(d_props.get(column)).getValue();
 	}
 
-	private class ValueChangeListener implements DomainListener {
-		public void analysesChanged() {
-			// TODO Auto-generated method stub
+	@Override
+	public String getColumnName(int columnIndex) {
+		String name = d_props.get(columnIndex);
+		for (int i = 0; i < name.length(); ++i) {
+			if (Character.isUpperCase(name.charAt(i))) {
+				name = name.substring(0,i) + " " + name.substring(i);
+				++i;
+			}
 		}
-
-		public void drugsChanged() {
+			
+		return name.substring(0, 1).toUpperCase() + name.substring(1);
+	}
+	
+	private class ValueChangeListener implements PropertyChangeListener {
+		public void propertyChange(PropertyChangeEvent evt) {
 			fireTableStructureChanged();
-		}
-
-		public void endpointsChanged() {
-			fireTableStructureChanged();	
-		}
-
-		public void indicationsChanged() {
-			fireTableStructureChanged();	
-		}
-
-		public void studiesChanged() {
-			// TODO Auto-generated method stub		
 		}		
 	}
 }

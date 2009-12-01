@@ -33,6 +33,7 @@ public interface Study extends Comparable<Study>, Entity {
 	public List<? extends PatientGroup> getPatientGroups();
 	public Measurement getMeasurement(Endpoint e, PatientGroup g);
 	public Set<Drug> getDrugs();	
+	public int getSampleSize();
 	
 	public Map<StudyCharacteristic, Object> getCharacteristics();
 	public Object getCharacteristic(StudyCharacteristic c);

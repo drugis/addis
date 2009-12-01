@@ -34,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -66,6 +67,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.Study;
@@ -90,6 +92,7 @@ import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
 
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
 @SuppressWarnings("serial")
@@ -504,7 +507,9 @@ public class Main extends JFrame {
 		return new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent event) {
 				Object node = ((JTree)event.getSource()).getLastSelectedPathComponent();
-				if (node instanceof RandomEffectsMetaAnalysis) {
+				if (node == null) {
+					noneSelected();
+				} else if (node instanceof RandomEffectsMetaAnalysis) {
 					metaAnalysisSelected((RandomEffectsMetaAnalysis)node);
 				} else if (node instanceof Study) {
 					studySelected((Study)node);
@@ -518,7 +523,13 @@ public class Main extends JFrame {
 					studyLabelSelected();
 				} else if (node.equals(d_domainTreeModel.getDrugsNode())) {
 					drugLabelSelected();
-				}else {
+				} else if (node.equals(d_domainTreeModel.getIndicationsNode())) {
+					indicationLabelSelected();
+				} else if (node.equals(d_domainTreeModel.getEndpointsNode())) {
+					endpointLabelSelected();
+				} else if (node.equals(d_domainTreeModel.getAnalysesNode())) {
+					analysesLabelSelected();
+				} else {
 					noneSelected();
 				}
 			}
@@ -542,8 +553,7 @@ public class Main extends JFrame {
 		List<String> formatter = new ArrayList<String>();
 		formatter.add("name");
 		formatter.add("atcCode");
-		EntitiesTableView<Drug> view = new EntitiesTableView<Drug>(formatter, d_domain.getDomain().getDrugs(), d_domain.getDomain());
-		setRightPanelView(view);
+		buildEntityTable(d_domain.getDomain().getDrugs(), formatter);
 	}
 	
 	private void leftTreeFocusStudies() {
@@ -564,9 +574,33 @@ public class Main extends JFrame {
 		d_editMenuDeleteItem.setEnabled(true);		
 	}
 	
+	private void endpointLabelSelected() {
+		List<String> formatter = new ArrayList<String>();
+		formatter.add("name");
+		formatter.add("description");
+		formatter.add("type");
+		formatter.add("direction");
+		buildEntityTable(d_domain.getDomain().getEndpoints(), formatter);
+	}
+	
 	private void indicationSelected(Indication i) {
 		IndicationView view = new IndicationView((IndicationPresentation) d_pmManager.getModel(i), this);
 		setRightPanelView(view);
+	}
+	
+	private <T extends Entity> void buildEntityTable(SortedSet<T> allX, List<String> formatter) {
+		List<PresentationModel<T>> dpms = new ArrayList<PresentationModel<T>>();
+		for (T i : allX)
+			dpms.add(d_pmManager.getModel(i));
+		EntitiesTableView<T> view = new EntitiesTableView<T>(formatter, dpms);
+		setRightPanelView(view);
+	}
+	
+	private void indicationLabelSelected() {
+		List<String> formatter = new ArrayList<String>();
+		formatter.add("name");
+		formatter.add("code");
+		buildEntityTable(d_domain.getDomain().getIndications(), formatter);
 	}
 	
 	private void studyLabelSelected() {
@@ -582,6 +616,18 @@ public class Main extends JFrame {
 	private void metaAnalysisSelected(RandomEffectsMetaAnalysis node) {
 		RandomEffectsMetaAnalysisView view = new RandomEffectsMetaAnalysisView((RandomEffectsMetaAnalysisPresentation) d_pmManager.getModel(node), this, false);
 		setRightPanelView(view);		
+	}
+	
+	private void analysesLabelSelected() {
+		List<String> formatter = new ArrayList<String>();
+		formatter.add("name");
+		formatter.add("type");
+		formatter.add("indication");
+		formatter.add("endpoint");
+		formatter.add("firstDrug");
+		formatter.add("secondDrug");
+		formatter.add("sampleSize");
+		buildEntityTable(d_domain.getDomain().getMetaAnalyses(), formatter);
 	}
 
 	private void setRightPanelView(ViewBuilder view) {
@@ -667,7 +713,7 @@ public class Main extends JFrame {
 	public void leftTreeFocusOnDrug(Drug d) {
 		d_leftPanelTree.setSelectionPath(new TreePath(
 				new Object[] {d_domainTreeModel.getRoot(), 
-						d_domainTreeModel.getDrugsNode(), d }));		
+						d_domainTreeModel.getDrugsNode(), d }));	
 	}
 
 	public void leftTreeFocusOnIndication(Indication indication) {

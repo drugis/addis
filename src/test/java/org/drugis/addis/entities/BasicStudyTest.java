@@ -215,4 +215,14 @@ public class BasicStudyTest {
 		study.setCharacteristic(StudyCharacteristic.ARMS, new Integer(2));
 		verify(listener);
 	}
+	
+	@Test
+	public void testGetSampleSize() {
+		BasicPatientGroup pg1 = new BasicPatientGroup(null, null, 25);
+		BasicPatientGroup pg2 = new BasicPatientGroup(null, null, 35);
+		BasicStudy s = new BasicStudy("s1", new Indication(01L, "i"));
+		s.addPatientGroup(pg1);
+		s.addPatientGroup(pg2);
+		assertEquals(60, s.getSampleSize());
+	}
 }

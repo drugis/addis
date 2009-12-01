@@ -33,14 +33,20 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 	private Drug d_drug1;
 	private Drug d_drug2;	
 	private String d_name;	
+	private int d_totalSampleSize;
 
-	transient private int d_totalSampleSize;
 	transient private double d_thetaDSL;
 	transient private double d_SEThetaDSL;
 	transient private Interval<Double> d_confidenceInterval;
 	transient private double d_qIV;
 	
 	public static final String PROPERTY_NAME = "name";
+	public static final String PROPERTY_TYPE = "type";
+	public static final String PROPERTY_INDICATION = "indication";
+	public static final String PROPERTY_ENDPOINT = "endpoint";
+	public static final String PROPERTY_FIRST_DRUG = "firstDrug";
+	public static final String PROPERTY_SECOND_DRUG = "secondDrug";
+	public static final String PROPERTY_SAMPLE_SIZE = "sampleSize";
 
 	/**
 	 * 
@@ -67,13 +73,13 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		d_drug1 = drug1;
 		d_drug2 = drug2;
 		d_name = name;
-		
-		d_totalSampleSize = 0;		
+
+		for (Study s : d_studies)
+			d_totalSampleSize += s.getSampleSize();	
 	}
 	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
 		in.defaultReadObject();
-		d_totalSampleSize = 0;
 	}	
 	
 	@Override
@@ -113,6 +119,14 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		return d_name;
 	}
 	
+	public String getType() {
+		return "DerSimonian-Laird Random Effects";
+	}
+	
+	public int getSampleSize() {
+		return d_totalSampleSize;
+	}
+	
 	public List<Study> getStudies() {
 		return Collections.unmodifiableList(d_studies);
 	}
@@ -135,7 +149,6 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 			
 		for (Study s : d_studies) {
 			RelativeEffect<? extends Measurement> re = RelativeEffectFactory.buildRelativeEffect(s, d_ep, d_drug1, d_drug2, type);
-			d_totalSampleSize += re.getSampleSize();
 			relEffects.add(re);
 		}
 		
