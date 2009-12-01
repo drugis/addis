@@ -626,6 +626,7 @@ public class Main extends JFrame {
 		formatter.add("endpoint");
 		formatter.add("firstDrug");
 		formatter.add("secondDrug");
+		formatter.add("studiesIncluded");
 		formatter.add("sampleSize");
 		buildEntityTable(d_domain.getDomain().getMetaAnalyses(), formatter);
 	}

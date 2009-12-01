@@ -96,8 +96,12 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 	public void setPatientGroups(List<BasicPatientGroup> patientGroups) {
 		List<BasicPatientGroup> oldVal = d_patientGroups;
 		d_patientGroups = patientGroups;
-		updateMeasurements();		
-		firePropertyChange(PROPERTY_PATIENTGROUPS, oldVal, d_patientGroups);	
+		updateMeasurements();
+		
+		if (getSampleSize() != 0)
+			d_chars.put(StudyCharacteristic.STUDYSIZE, getSampleSize());
+		
+		firePropertyChange(PROPERTY_PATIENTGROUPS, oldVal, d_patientGroups);
 	}
 	
 	public void addPatientGroup(BasicPatientGroup group) {

@@ -47,7 +47,8 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 	public static final String PROPERTY_FIRST_DRUG = "firstDrug";
 	public static final String PROPERTY_SECOND_DRUG = "secondDrug";
 	public static final String PROPERTY_SAMPLE_SIZE = "sampleSize";
-
+	public static final String PROPERTY_STUDIES_INCLUDED = "studiesIncluded";
+	
 	/**
 	 * 
 	 * @param name
@@ -133,6 +134,10 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 	
 	public Endpoint getEndpoint() {
 		return d_ep;
+	}
+	
+	public int getStudiesIncluded() {
+		return d_studies.size();
 	}
 	
 	private void compute(Class<? extends RelativeEffect<?>> relEffClass) {

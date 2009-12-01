@@ -23,6 +23,7 @@ import java.util.Date;
 
 public enum StudyCharacteristic {
 		ARMS("Number of study arms", ValueType.POSITIVE_INTEGER),
+		STUDYSIZE("Total number of subjects", ValueType.POSITIVE_INTEGER),
 		ALLOCATION("Group allocation", ValueType.ALLOCATION),
 		BLINDING("Blinding", ValueType.BLINDING),
 		CENTERS("Number of study centers", ValueType.POSITIVE_INTEGER),
