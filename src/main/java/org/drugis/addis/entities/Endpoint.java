@@ -50,19 +50,24 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 	}
 	
 	private String d_name;
-	private String d_description = "";
+	//private String d_description = "";
+	private String d_unitOfMeasurement = "";
 	private Type d_type;
 	private Direction d_direction;
 	
 	public final static String PROPERTY_NAME = "name";
-	public final static String PROPERTY_DESCRIPTION = "description";
+	//TODO: deprecated? public final static String PROPERTY_DESCRIPTION = "description";
 	public final static String PROPERTY_TYPE = "type";
 	public final static String PROPERTY_DIRECTION = "direction";
+	public final static String PROPERTY_UNIT_OF_MEASUREMENT = "unitOfMeasurement";
 	
 	public Endpoint(String name, Type type, Direction direction) {
 		d_name = name;
 		d_type = type;
 		d_direction = direction;
+		
+		if (d_type == Type.RATE)
+			d_unitOfMeasurement = "Ratio of Patients";
 	}
 	
 	public Endpoint(String string, Type type) {
@@ -98,7 +103,8 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 		return 0;
 	}
 	
-	public void setDescription(String description) {
+//TODO: deprecated?
+	/*public void setDescription(String description) {
 		String oldVal = d_description;
 		d_description = description;
 		firePropertyChange(PROPERTY_DESCRIPTION, oldVal, d_description);
@@ -106,6 +112,19 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 	
 	public String getDescription() {
 		return d_description;
+	}
+	*/
+	
+	public void setUnitOfMeasurement(String um) {
+		if (d_type == Type.CONTINUOUS) {
+			String oldVal = d_unitOfMeasurement;
+			d_unitOfMeasurement = um;
+			firePropertyChange(PROPERTY_UNIT_OF_MEASUREMENT, oldVal, d_unitOfMeasurement);
+		}
+	}
+
+	public String getUnitOfMeasurement() {
+		return d_unitOfMeasurement;
 	}
 	
 	public void setName(String name) {

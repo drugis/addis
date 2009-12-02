@@ -40,7 +40,8 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class AddEndpointView implements ViewBuilder {
 	private JTextField d_name;
-	private JTextField d_description;
+//	private JTextField d_description;
+	private JTextField d_unitOfMeasurement;
 	private PresentationModel<Endpoint> d_model;
 	private JComboBox d_type;
 	private JComboBox d_direction;
@@ -54,13 +55,25 @@ public class AddEndpointView implements ViewBuilder {
 	private void initComponents() {
 		d_name = BasicComponentFactory.createTextField(d_model.getModel(Endpoint.PROPERTY_NAME), false);
 		AutoSelectFocusListener.add(d_name);
-		d_description = BasicComponentFactory.createTextField(
+//TODO: Deprecated?
+		/*d_description = BasicComponentFactory.createTextField(
 				d_model.getModel(Endpoint.PROPERTY_DESCRIPTION), false);
+		
 		AutoSelectFocusListener.add(d_description);
-		d_name.setColumns(30);
 		d_description.setColumns(30);
-		d_validator.add(d_name);
 		d_validator.add(d_description);
+				*/
+		
+		d_unitOfMeasurement = BasicComponentFactory.createTextField(
+				d_model.getModel(Endpoint.PROPERTY_UNIT_OF_MEASUREMENT), false);
+		
+		AutoSelectFocusListener.add(d_unitOfMeasurement);
+		d_unitOfMeasurement.setColumns(30);
+				
+		d_name.setColumns(30);
+	
+		d_validator.add(d_name);
+	
 		d_type = AuxComponentFactory.createBoundComboBox(
 				Endpoint.Type.values(), d_model.getModel(Endpoint.PROPERTY_TYPE));
 		d_direction = AuxComponentFactory.createBoundComboBox(
@@ -88,8 +101,14 @@ public class AddEndpointView implements ViewBuilder {
 		builder.addSeparator("Endpoint", cc.xyw(1, 1, 3));
 		builder.addLabel("Name:", cc.xy(1, 3));
 		builder.add(d_name, cc.xy(3,3));
-		builder.addLabel("Description:", cc.xy(1, 5));
-		builder.add(d_description, cc.xy(3, 5));
+		
+		//TODO: Deprecated?
+	/*	builder.addLabel("Description:", cc.xy(1, 5));
+		builder.add(d_description, cc.xy(3, 5));*/
+		
+		builder.addLabel("Unit of Measurement:", cc.xy(1, 5));
+		builder.add(d_unitOfMeasurement, cc.xy(3, 5));
+		
 		builder.addLabel("Type:", cc.xy(1, 7));
 		builder.add(d_type, cc.xy(3, 7));
 		builder.addLabel("Direction:", cc.xy(1, 9));

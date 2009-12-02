@@ -30,9 +30,15 @@ import org.junit.Test;
 
 public class EndpointTest {
 
-	@Test
+	//TODO: deprecated?
+/*	@Test
 	public void testSetDescription() {
 		JUnitUtil.testSetter(new Endpoint("e", Type.RATE), Endpoint.PROPERTY_DESCRIPTION, "", "My Description");
+	}*/
+	
+	@Test
+	public void testSetUnitOfMeasurement() {
+		JUnitUtil.testSetter(new Endpoint("e", Type.CONTINUOUS), Endpoint.PROPERTY_UNIT_OF_MEASUREMENT, "", "kg per day");
 	}
 
 	@Test

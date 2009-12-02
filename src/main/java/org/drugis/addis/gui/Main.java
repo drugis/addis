@@ -623,7 +623,9 @@ public class Main extends JFrame {
 	private void endpointLabelSelected() {
 		List<String> formatter = new ArrayList<String>();
 		formatter.add("name");
-		formatter.add("description");
+//TODO: deprecated?
+		//formatter.add("description");
+		formatter.add("unitOfMeasurement");
 		formatter.add("type");
 		formatter.add("direction");
 		buildEntityTable(getDomain().getEndpoints(), formatter);

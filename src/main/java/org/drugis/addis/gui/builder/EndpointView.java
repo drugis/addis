@@ -79,9 +79,14 @@ public class EndpointView implements ViewBuilder {
 		builder.add(BasicComponentFactory.createLabel(
 				d_model.getModel(Endpoint.PROPERTY_NAME)), cc.xy(3, 1));
 		
-		builder.addLabel("Description:", cc.xy(1, 3));
+		//TODO: deprecated?
+/*		builder.addLabel("Description:", cc.xy(1, 3));
+ 		builder.add(BasicComponentFactory.createLabel(
+				d_model.getModel(Endpoint.PROPERTY_DESCRIPTION)), cc.xy(3, 3));*/
+
+		builder.addLabel("Unit of Measurement:", cc.xy(1, 3));
 		builder.add(BasicComponentFactory.createLabel(
-				d_model.getModel(Endpoint.PROPERTY_DESCRIPTION)), cc.xy(3, 3));
+				d_model.getModel(Endpoint.PROPERTY_UNIT_OF_MEASUREMENT)), cc.xy(3, 3));
 		
 		builder.addLabel("Direction:", cc.xy(1, 5));
 		ValueModel directionModel = ConverterFactory.createStringConverter(
