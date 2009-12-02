@@ -22,39 +22,63 @@ package org.drugis.addis.entities;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.Serializable;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.ListHolder;
 
-public class DomainImpl implements Domain, Serializable {
-	private static final long serialVersionUID = 3222342605059458693L;
-	private SortedSet<Endpoint> d_endpoints;
-	private SortedSet<Study> d_studies;
-	private SortedSet<RandomEffectsMetaAnalysis> d_metaAnalyses;	
-	private SortedSet<Drug> d_drugs;
-	private SortedSet<Indication> d_indications;
-	private transient List<DomainListener> d_listeners;
+public class DomainImpl implements Domain {
+	private DomainData d_domainData;
 	
-	private void readObject(ObjectInputStream in)
+	private transient List<DomainListener> d_listeners;
+	private transient PropertyChangeListener d_studyListener;
+	
+	/**
+	 * Replace the DomainData by a new instance loaded from a stream.
+	 * @param is Stream to read objects from.
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void loadDomainData(InputStream is)
 	throws IOException, ClassNotFoundException {
-		in.defaultReadObject();
-		d_listeners = new ArrayList<DomainListener>();
-		d_studyListener = new StudyChangeListener();
-		
-		for (Study s : d_studies) {
+		ObjectInputStream ois = new ObjectInputStream(is);
+		d_domainData = (DomainData)ois.readObject();
+		domainDataReinit();
+	}
+	
+	/**
+	 * Save the Domain to a stream.
+	 * @param os Stream to write objects to.
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void saveDomainData(OutputStream os)
+	throws IOException {
+		ObjectOutputStream oos = new ObjectOutputStream(os);
+		oos.writeObject(d_domainData);
+	}
+	
+	private void domainDataReinit() {
+		for (Study s : d_domainData.getStudies()) {
 			s.addPropertyChangeListener(d_studyListener);
 		}
+		fireStudiesChanged();
+		fireEndpointsChanged();
+		fireIndicationsChanged();
+		fireDrugsChanged();
+		fireAnalysesChanged();
 	}
+	
 	
 	private class StudyChangeListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
@@ -62,15 +86,12 @@ public class DomainImpl implements Domain, Serializable {
 		}
 	}
 	
-	private transient PropertyChangeListener d_studyListener = new StudyChangeListener();
+	
 	
 	public DomainImpl() {
-		d_endpoints = new TreeSet<Endpoint>();
-		d_studies = new TreeSet<Study>();
-		d_metaAnalyses = new TreeSet<RandomEffectsMetaAnalysis>();		
-		d_drugs = new TreeSet<Drug>();
-		d_indications = new TreeSet<Indication>();
+		d_domainData = new DomainData();
 		d_listeners = new ArrayList<DomainListener>();
+		d_studyListener = new StudyChangeListener();
 	}
 
 	public void addEndpoint(Endpoint e) {
@@ -78,7 +99,7 @@ public class DomainImpl implements Domain, Serializable {
 			throw new NullPointerException("Endpoint may not be null");
 		}
 		
-		d_endpoints.add(e);
+		d_domainData.addEnpoint(e);
 		
 		fireEndpointsChanged();
 	}
@@ -90,7 +111,7 @@ public class DomainImpl implements Domain, Serializable {
 	}
 
 	public SortedSet<Endpoint> getEndpoints() {
-		return Collections.unmodifiableSortedSet(d_endpoints);
+		return Collections.unmodifiableSortedSet(d_domainData.getEndpoints());
 	}
 
 	public void addListener(DomainListener listener) {
@@ -115,7 +136,7 @@ public class DomainImpl implements Domain, Serializable {
 		if (!getIndications().contains(s.getCharacteristics().get(StudyCharacteristic.INDICATION))) {
 			throw new IllegalArgumentException("indication of this study not in the domain");
 		}
-		d_studies.add(s);
+		d_domainData.addStudy(s);
 		s.addPropertyChangeListener(d_studyListener);		
 		
 		fireStudiesChanged();
@@ -135,13 +156,13 @@ public class DomainImpl implements Domain, Serializable {
 			throw new IllegalArgumentException("Indication not in domain");
 		}
 		
-		for (RandomEffectsMetaAnalysis m : d_metaAnalyses) {
+		for (RandomEffectsMetaAnalysis m : d_domainData.getMetaAnalyses()) {
 			if (m.getName().equals(ma.getName())) {
 				throw new EntityIdExistsException("There already exists a meta-analysis with the given name");
 			}
 		}
 		
-		d_metaAnalyses.add(ma);
+		d_domainData.addMetaAnalysis(ma);
 		
 		fireAnalysesChanged();
 	}
@@ -159,14 +180,14 @@ public class DomainImpl implements Domain, Serializable {
 	}
 
 	public SortedSet<Study> getStudies() {
-		return Collections.unmodifiableSortedSet(d_studies);
+		return Collections.unmodifiableSortedSet(d_domainData.getStudies());
 	}
 
 	public void addDrug(Drug d) throws NullPointerException {
 		if (d == null) {
 			throw new NullPointerException("Drug may not be null");
 		}
-		d_drugs.add(d);
+		d_domainData.addDrug(d);
 		
 		fireDrugsChanged();
 	}
@@ -178,7 +199,7 @@ public class DomainImpl implements Domain, Serializable {
 	}
 
 	public SortedSet<Drug> getDrugs() {
-		return Collections.unmodifiableSortedSet(d_drugs);
+		return Collections.unmodifiableSortedSet(d_domainData.getDrugs());
 	}
 
 	public ListHolder<Study> getStudies(Endpoint e) 
@@ -230,12 +251,12 @@ public class DomainImpl implements Domain, Serializable {
 	
 	public Set<Entity> getDependents(Entity e) {
 		Set<Entity> deps = new HashSet<Entity>();
-		for (Study s : d_studies) {
+		for (Study s : d_domainData.getStudies()) {
 			if (s.getDependencies().contains(e)) {
 				deps.add(s);
 			}
 		}
-		for (RandomEffectsMetaAnalysis s : d_metaAnalyses) {
+		for (RandomEffectsMetaAnalysis s : d_domainData.getMetaAnalyses()) {
 			if (s.getDependencies().contains(e)) {
 				deps.add(s);
 			}
@@ -245,13 +266,13 @@ public class DomainImpl implements Domain, Serializable {
 
 	public void deleteStudy(Study s) throws DependentEntitiesException {
 		checkDependents(s);
-		d_studies.remove(s);
+		d_domainData.removeStudy(s);
 		fireStudiesChanged();
 	}
 
 	public void deleteDrug(Drug d) throws DependentEntitiesException {
 		checkDependents(d);
-		d_drugs.remove(d);
+		d_domainData.removeDrug(d);
 		fireDrugsChanged();		
 	}
 
@@ -264,7 +285,7 @@ public class DomainImpl implements Domain, Serializable {
 
 	public void deleteEndpoint(Endpoint e) throws DependentEntitiesException {
 		checkDependents(e);
-		d_endpoints.remove(e);
+		d_domainData.removeEndpoint(e);
 		fireEndpointsChanged();				
 	}
 
@@ -272,7 +293,7 @@ public class DomainImpl implements Domain, Serializable {
 		if (i == null) {
 			throw new NullPointerException();
 		}
-		d_indications.add(i);
+		d_domainData.addIndication(i);
 		fireIndicationsChanged();
 	}
 
@@ -283,17 +304,17 @@ public class DomainImpl implements Domain, Serializable {
 	}
 
 	public SortedSet<Indication> getIndications() {
-		return d_indications;
+		return Collections.unmodifiableSortedSet(d_domainData.getIndications());
 	}
 
 	public SortedSet<RandomEffectsMetaAnalysis> getMetaAnalyses() {
-		return Collections.unmodifiableSortedSet(d_metaAnalyses); 
+		return Collections.unmodifiableSortedSet(d_domainData.getMetaAnalyses()); 
 	}
 
 	public void deleteMetaAnalysis(RandomEffectsMetaAnalysis ma)
 			throws DependentEntitiesException {
 		checkDependents(ma);
-		d_metaAnalyses.remove(ma);
+		d_domainData.removeMetaAnalysis(ma);
 		fireAnalysesChanged();
 	}
 	
@@ -313,9 +334,9 @@ public class DomainImpl implements Domain, Serializable {
 			List<Study> oldStudies = d_holderStudies;
 			d_holderStudies = new ArrayList<Study>();
 			if (i == null) {
-				d_holderStudies.addAll(d_studies);
+				d_holderStudies.addAll(d_domainData.getStudies());
 			} else {
-				for (Study s : d_studies) {
+				for (Study s : d_domainData.getStudies()) {
 					if (s.getDependencies().contains(i)) {
 						d_holderStudies.add(s);
 					}

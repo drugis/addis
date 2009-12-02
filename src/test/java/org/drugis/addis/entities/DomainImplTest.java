@@ -19,9 +19,14 @@
 
 package org.drugis.addis.entities;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -75,4 +80,49 @@ public class DomainImplTest {
 		Set<Entity> deps = d_domain.getDependents(ExampleData.buildDrugFluoxetine());
 		assertTrue(deps.contains(ma));
 	}
+	
+	@Test
+	public void testReloadingDomainFiresListeners() throws Exception {
+		ExampleData.initDefaultData(d_domain);
+		
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		d_domain.saveDomainData(bos);
+
+		DomainListener mock2 = createMock(DomainListener.class);
+		d_domain.addListener(mock2);
+		mock2.studiesChanged();
+		mock2.endpointsChanged();
+		mock2.analysesChanged();
+		mock2.indicationsChanged();
+		mock2.drugsChanged();
+		replay(mock2);
+		
+		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+		d_domain.loadDomainData(bis);
+
+		verify(mock2);	
+	}
+	
+	@Test
+	public void testReloadingDomainKeepsStudyListener() throws Exception {
+		ExampleData.initDefaultData(d_domain);
+		
+			
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		d_domain.saveDomainData(bos);
+		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+		d_domain.loadDomainData(bis);
+		
+		BasicStudy s = (BasicStudy) d_domain.getStudies().first();
+		
+		DomainListener mock3 = createMock(DomainListener.class);
+		d_domain.addListener(mock3);
+		mock3.studiesChanged();
+		replay(mock3);
+		
+		s.addPatientGroup(new BasicPatientGroup(new Drug("viagra-2", "atc"), new Dose(100.0, SIUnit.MILLIGRAMS_A_DAY), 
+				10));
+		verify(mock3);
+	}
+	
 }

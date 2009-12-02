@@ -65,7 +65,6 @@ import org.drugis.addis.AppInfo;
 import org.drugis.addis.MainData;
 import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
@@ -141,7 +140,7 @@ public class Main extends JFrame {
 		ToolTipManager.sharedInstance().setInitialDelay(0);
 		
 		initializeDomain();
-		d_pmManager = new PresentationModelFactory(d_domain.getDomain());
+		d_pmManager = new PresentationModelFactory(getDomain());
 		
 	}
 	
@@ -172,10 +171,10 @@ public class Main extends JFrame {
 		try {
 			loadDomainFromFile("domain.dat");
 		} catch (Exception e) {
-			MainData.initDefaultData(d_domain.getDomain());
+			MainData.initDefaultData(getDomain());
 		}
 		
-		d_domain.getDomain().addListener(new MainListener());
+		getDomain().addListener(new MainListener());
 	}
 	
 	private Domain getDomain() {
@@ -299,15 +298,15 @@ public class Main extends JFrame {
 		}
 		try {
 			if (selected instanceof Drug) {
-				d_domain.getDomain().deleteDrug((Drug) selected);
+				getDomain().deleteDrug((Drug) selected);
 			} else if (selected instanceof Endpoint) {
-				d_domain.getDomain().deleteEndpoint((Endpoint) selected);
+				getDomain().deleteEndpoint((Endpoint) selected);
 				leftTreeFocusEndpoints();
 			} else if (selected instanceof Study) {
-				d_domain.getDomain().deleteStudy((Study) selected);
+				getDomain().deleteStudy((Study) selected);
 				leftTreeFocusStudies();
 			} else if (selected instanceof RandomEffectsMetaAnalysis) {
-				d_domain.getDomain().deleteMetaAnalysis((RandomEffectsMetaAnalysis) selected);
+				getDomain().deleteMetaAnalysis((RandomEffectsMetaAnalysis) selected);
 				leftTreeFocusAnalyses();
 			}
 		} catch (DependentEntitiesException e) {
@@ -422,12 +421,7 @@ public class Main extends JFrame {
 				
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					try {
-						List<DomainListener> listeners = ((DomainImpl)d_domain.getDomain()).getListeners();
-						System.out.println(listeners);
 						loadDomainFromFile(fileChooser.getSelectedFile().getAbsolutePath());
-						for (DomainListener listener : listeners)
-							((DomainImpl)d_domain.getDomain()).addListener(listener);
-						System.out.println(((DomainImpl)d_domain.getDomain()).getListeners());
 					} catch (Exception e1) {
 						JOptionPane.showMessageDialog(Main.this, "Couldn't open file " + fileChooser.getSelectedFile().getAbsolutePath() +" .");
 					}
@@ -505,7 +499,7 @@ public class Main extends JFrame {
 
 	private void showMetaAnalysisWizard() {
 		// FIXME: Use PresentationModelManager to create presentation model
-		MetaAnalysisWizard wizard = new MetaAnalysisWizard(this, new MetaAnalysisWizardPresentation(d_domain.getDomain()), d_pmManager);
+		MetaAnalysisWizard wizard = new MetaAnalysisWizard(this, new MetaAnalysisWizardPresentation(getDomain()), d_pmManager);
 		wizard.buildPanel().showInDialog("Create DerSimonian-Laird random effects meta-analysis", this, true);
 	}
 
@@ -605,7 +599,7 @@ public class Main extends JFrame {
 		List<String> formatter = new ArrayList<String>();
 		formatter.add("name");
 		formatter.add("atcCode");
-		buildEntityTable(d_domain.getDomain().getDrugs(), formatter);
+		buildEntityTable(getDomain().getDrugs(), formatter);
 	}
 	
 	private void leftTreeFocusStudies() {
@@ -632,7 +626,7 @@ public class Main extends JFrame {
 		formatter.add("description");
 		formatter.add("type");
 		formatter.add("direction");
-		buildEntityTable(d_domain.getDomain().getEndpoints(), formatter);
+		buildEntityTable(getDomain().getEndpoints(), formatter);
 	}
 	
 	private void indicationSelected(Indication i) {
@@ -652,11 +646,11 @@ public class Main extends JFrame {
 		List<String> formatter = new ArrayList<String>();
 		formatter.add("name");
 		formatter.add("code");
-		buildEntityTable(d_domain.getDomain().getIndications(), formatter);
+		buildEntityTable(getDomain().getIndications(), formatter);
 	}
 	
 	private void studyLabelSelected() {
-		StudyTablePanelView view = new StudyTablePanelView(new DefaultStudyListPresentationModel(d_domain.getDomain().getStudiesHolder()), this);
+		StudyTablePanelView view = new StudyTablePanelView(new DefaultStudyListPresentationModel(getDomain().getStudiesHolder()), this);
 		setRightPanelView(view);		
 	}
 	
@@ -680,7 +674,7 @@ public class Main extends JFrame {
 		formatter.add("secondDrug");
 		formatter.add("studiesIncluded");
 		formatter.add("sampleSize");
-		buildEntityTable(d_domain.getDomain().getMetaAnalyses(), formatter);
+		buildEntityTable(getDomain().getMetaAnalyses(), formatter);
 	}
 
 	private void setRightPanelView(ViewBuilder view) {

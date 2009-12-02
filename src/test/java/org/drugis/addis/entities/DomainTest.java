@@ -623,33 +623,5 @@ public class DomainTest {
 		d_domain.deleteEndpoint(d);
 		verify(mock);
 	}
-	
-	@Test
-	public void testSerializationBasicStudyChangeFires() throws Exception {
-		addMetaAnalysisToDomain();
-		Domain newDomain = JUnitUtil.serializeObject(d_domain);
-		// check connect of basic study listener
-		BasicStudy bs = (BasicStudy) newDomain.getStudies().first();
-		DomainListener mock2 = createMock(DomainListener.class);
-		newDomain.addListener(mock2);
-		mock2.studiesChanged();
-		replay(mock2);
-		bs.addPatientGroup(new BasicPatientGroup(new Drug("viagra-2", "atc"), new Dose(100.0, SIUnit.MILLIGRAMS_A_DAY), 
-				10));
-		verify(mock2);
-		
-	}
-		
-	@Test
-	public void testSerializationDeleteStudyFires() throws Exception {
-		ExampleData.initDefaultData(d_domain);
-		Domain newDomain = JUnitUtil.serializeObject(d_domain);
-		DomainListener mock = createMock(DomainListener.class);
-		newDomain.addListener(mock);
-		mock.studiesChanged();
-		replay(mock);
-		newDomain.deleteStudy(newDomain.getStudies().last());
-		verify(mock);
-	}	
-	
+
 }
