@@ -14,7 +14,7 @@ public class StudyCharacteristicTest {
 
 	@Test
 	public void testGetDescription() {
-		assertEquals("Number of study arms", StudyCharacteristic.ARMS.getDescription());
+		assertEquals("Study Arms", StudyCharacteristic.ARMS.getDescription());
 		for (StudyCharacteristic c : StudyCharacteristic.values()) {
 			assertTrue(c.getDescription().length() > 0);
 		}

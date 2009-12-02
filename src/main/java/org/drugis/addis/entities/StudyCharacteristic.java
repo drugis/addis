@@ -20,10 +20,12 @@
 package org.drugis.addis.entities;
 
 import java.util.Date;
+import java.util.SortedSet;
 
 public enum StudyCharacteristic {
-		ARMS("Number of study arms", ValueType.POSITIVE_INTEGER),
+		ARMS("Study Arms", ValueType.POSITIVE_INTEGER),
 		STUDYSIZE("Total number of subjects", ValueType.POSITIVE_INTEGER),
+		DRUGS("Investigational Drugs", ValueType.DRUGS),
 		ALLOCATION("Group allocation", ValueType.ALLOCATION),
 		BLINDING("Blinding", ValueType.BLINDING),
 		CENTERS("Number of study centers", ValueType.POSITIVE_INTEGER),
@@ -39,6 +41,7 @@ public enum StudyCharacteristic {
 			TEXT(String.class),
 			POSITIVE_INTEGER(Integer.class),
 			DATE(Date.class),
+			DRUGS(SortedSet.class),
 			INDICATION(Indication.class),
 			ALLOCATION(Allocation.class),
 			BLINDING(Blinding.class),
