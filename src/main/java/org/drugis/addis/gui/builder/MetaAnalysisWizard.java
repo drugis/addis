@@ -2,13 +2,10 @@ package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -16,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.EntityIdExistsException;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudyTable;
@@ -31,11 +27,11 @@ import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.RowSpec;
 
 public class MetaAnalysisWizard implements ViewBuilder {
 
@@ -54,11 +50,10 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		wizardModel.add(new SelectIndicationWizardStep());
 		wizardModel.add(new SelectEndpointWizardStep());
 		wizardModel.add(new SelectDrugsWizardStep());
-		wizardModel.add(new SelectStudiesWizardStep());
 		wizardModel.add(new OverviewWizardStep());
 		Wizard wizard = new Wizard(wizardModel);
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
-		wizard.setPreferredSize(new Dimension(900, 600));
+		wizard.setPreferredSize(new Dimension(950, 650));
 		return wizard;
 	}
 	
@@ -103,49 +98,6 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		}
 	}
 	
-	@SuppressWarnings("serial")
-	public class SelectStudiesWizardStep extends PanelWizardStep {
-
-		public SelectStudiesWizardStep() {
-			super("Select Studies","Select the studies to be used in the meta analysis");
-	
-	}
-		
-		public void prepare() {
-			setComplete(true);
-			
-			removeAll();
-			FormLayout layout = new FormLayout(
-					"left:pref, 3dlu, left:pref",
-					"p, 3dlu, p");
-
-			PanelBuilder builder = new PanelBuilder(layout);
-			CellConstraints cc =  new CellConstraints();
-			builder.addSeparator("Studies", cc.xyw(1, 1, 3));
-
-			int row = 3;
-			for (Study s : d_pm.getStudyList()) {
-				layout.appendRow(RowSpec.decode("3dlu"));
-				layout.appendRow(RowSpec.decode("p"));
-
-				JCheckBox box = BasicComponentFactory.createCheckBox(d_pm.getSelectedStudyBooleanModel(s), s.getId());
-				box.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						setComplete(!d_pm.getSelectedStudyList().isEmpty());						
-					}
-				});
-				
-
-				builder.add(box, cc.xy(1, row));
-
-				row += 2;
-			}
-			
-			JScrollPane sp = new JScrollPane(builder.getPanel());
-			add(sp);
-		}
-	}
-	
 	
 	@SuppressWarnings("serial")
 	public class SelectDrugsWizardStep extends PanelWizardStep {
@@ -153,7 +105,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		private StudyTable d_table;
 		
 		public SelectDrugsWizardStep() {
-			super("Select two drugs","Select two drugs to be used for meta analysis.");
+			super("Select Drugs & Studies","Select the drugs and studies to be used for meta analysis.");
 					
 			setLayout(new BorderLayout());
 			JComponent studiesComp;
@@ -204,6 +156,8 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			builder.add(secondDrugBox,cc.xy(5, 3));
 			builder.addLabel("VS",cc.xy(3, 3));
 			JPanel panel = builder.getPanel();
+			
+			Bindings.bind(this, "complete", d_pm.getMetaAnalysisCompleteModel());
 			return panel;
 		}
 		
@@ -219,8 +173,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		}
 
 		private void getDrugSelectionComplete() {
-			setComplete( (d_pm.getFirstDrugModel().getValue() != null)
-						&& (d_pm.getSecondDrugModel().getValue() != null) );
+			setComplete(d_pm.getSelectedStudyList().size() > 0);
 		}
 		
 	}

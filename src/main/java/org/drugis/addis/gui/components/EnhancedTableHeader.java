@@ -34,17 +34,10 @@ public class EnhancedTableHeader extends JTableHeader {
 		int requiredWidth = 0;
 		int rows = table.getRowCount();
 		
-		for (int i = -1; i < rows; i++) {
-			if (i == -1) {
-				renderer = table.getCellRenderer(i, modelIndex);
-				Object valueAt = table.getColumnName(modelIndex);
-				component = renderer.getTableCellRendererComponent(table, valueAt, false, false, i, modelIndex);
-			}
-			else {
-				renderer = table.getCellRenderer(i, modelIndex);
-				Object valueAt = table.getValueAt(i, modelIndex);
-				component = renderer.getTableCellRendererComponent(table, valueAt, false, false, i, modelIndex);
-			}
+		for (int i = 0; i < rows; i++) {
+			renderer = table.getCellRenderer(i, modelIndex);
+			Object valueAt = table.getValueAt(i, modelIndex);
+			component = renderer.getTableCellRendererComponent(table, valueAt, false, false, i, modelIndex);
 			
 			requiredWidth = Math.max(requiredWidth, component.getPreferredSize().width + 25);
 		}

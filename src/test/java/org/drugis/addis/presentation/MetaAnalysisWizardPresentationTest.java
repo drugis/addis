@@ -389,18 +389,6 @@ public class MetaAnalysisWizardPresentationTest {
 	}
 	
 	@Test
-	public void testGetStudyListModel() {
-		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
-		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
-		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
-		
-		List<Study> expected = new ArrayList<Study>(d_wizard.getStudyList());
-		ListHolder<Study> studyList = d_wizard.getStudyListModel();
-		assertEquals(expected, studyList.getValue());
-	}
-	
-	@Test
 	public void testGetStudySetNoFirstDrug() {
 		testGetStudySetNoDrugHelper(d_wizard.getSecondDrugModel(), d_wizard.getFirstDrugModel());
 	}
@@ -447,20 +435,6 @@ public class MetaAnalysisWizardPresentationTest {
 	}
 	
 	@Test
-	public void testGetSelectedStudiesWithChange() {
-		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
-		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
-		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
-		
-		d_wizard.getSelectedStudyBooleanModel(d_wizard.getStudyList().get(0)).setValue(false);
-		List<Study> set = d_wizard.getStudyList();
-		set.remove(d_wizard.getStudyList().get(0));
-		assertTrue(!set.isEmpty());
-		assertEquals(set, d_wizard.getSelectedStudyList());	
-	}
-	
-	@Test
 	public void testCreateMetaAnalysis() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
@@ -473,24 +447,5 @@ public class MetaAnalysisWizardPresentationTest {
 		JUnitUtil.assertAllAndOnly((Collection<?>) d_wizard.getSelectedStudyList(), (Collection<?>) ma.getStudies());
 		assertEquals(ma.getEndpoint(), d_wizard.getEndpointModel().getValue());
 		assertEquals(ma.getIndication(), d_wizard.getIndicationModel().getValue());
-	}
-
-	@Test
-	public void testBuildMetaAnalysisThreeArm() {
-		d_domain.addStudy(ExampleData.buildAdditionalStudyThreeArm());
-
-		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
-		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
-		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
-		
-		for (Study s : d_wizard.getStudyList()) {
-			if (!s.equals(ExampleData.buildAdditionalStudyThreeArm())) {
-				d_wizard.getSelectedStudyBooleanModel(s).setValue(false);
-			}
-		}
-		List<Study> list = new ArrayList<Study>();
-		list.add(ExampleData.buildAdditionalStudyThreeArm());
-		assertEquals(list, d_wizard.getSelectedStudyList());	
 	}
 }

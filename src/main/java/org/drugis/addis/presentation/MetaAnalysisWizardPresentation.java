@@ -3,9 +3,7 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -16,46 +14,11 @@ import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
-import org.drugis.common.EqualsUtil;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class MetaAnalysisWizardPresentation {
-	@SuppressWarnings("serial") 
-	abstract class AbstractHolder<T> extends AbstractValueModel {
-		protected abstract void checkArgument(Object newValue);
-		
-		private T d_content = null;
-
-		public T getValue() {
-			return d_content;
-		}
-
-		@SuppressWarnings("unchecked")
-		public void setValue(Object newValue) {
-			checkArgument(newValue);
-			T oldValue = d_content;
-			d_content = (T) newValue;
-			fireValueChange(oldValue, d_content);
-			conditionalCascade(newValue, oldValue);
-		}
-
-		private void conditionalCascade(Object newValue, T oldValue) {
-			if (!EqualsUtil.equal(oldValue, newValue)) {
-				cascade();
-			}
-		}
-		
-		public void unSet() {
-			T oldValue = d_content;
-			d_content = null;
-			fireValueChange(oldValue, d_content);
-			conditionalCascade(null, oldValue);
-		}
-
-		protected abstract void cascade();
-	}
 	
 	@SuppressWarnings("serial") class IndicationHolder extends AbstractHolder<Indication> {
 		@Override
@@ -68,26 +31,6 @@ public class MetaAnalysisWizardPresentation {
 			if (!getIndicationSet().contains(newValue))
 				throw new IllegalArgumentException("Indication not in the actual set!");
 		}
-	}
-	
-	@SuppressWarnings("serial")
-	private class BooleanHolder extends AbstractHolder<Boolean> {
-		public BooleanHolder() {
-			setValue(true);
-		}
-		
-		@Override
-		protected void cascade() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		protected void checkArgument(Object newValue) {
-			// TODO Auto-generated method stub
-			
-		}
-
 	}
 	
 	@SuppressWarnings("serial")
@@ -168,12 +111,12 @@ public class MetaAnalysisWizardPresentation {
 		
 		@Override
 		public List<Study> getValue() {
-			return new ArrayList<Study>(getStudyList());
+			return getStudyList();
 		}
 
 		public void propertyChange(PropertyChangeEvent evt) {
+			updateStudyList();
 			fireValueChange(null, getValue());
-			fillSelectedStudySet();
 		}
 	}
 		
@@ -185,8 +128,9 @@ public class MetaAnalysisWizardPresentation {
 	private DrugHolder d_secondDrugHolder;
 	private EndpointListHolder d_endpointListHolder;
 	private DrugListHolder d_drugListHolder;
-	private StudyListHolder d_studyListHolder;
-	private HashMap<Study,AbstractHolder<Boolean>> d_selectedStudies;
+	private DefaultSelectableStudyListPresentationModel d_studyListPm;
+	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
+	private List<Study> d_studyList = new ArrayList<Study>();
 	
 	
 	public MetaAnalysisWizardPresentation(Domain d) {
@@ -202,41 +146,23 @@ public class MetaAnalysisWizardPresentation {
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getNewValue() != null && evt.getNewValue().equals(getSecondDrug())) {
 					d_secondDrugHolder.unSet();
-				}					
-			}			
+				}									
+			}
 		});
 		d_secondDrugHolder.addValueChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getNewValue() != null && evt.getNewValue().equals(getFirstDrug())) {
 					d_firstDrugHolder.unSet();
-				}					
+				}									
 			}			
 		});
-		d_studyListHolder = new StudyListHolder();
-		d_selectedStudies = new HashMap<Study,AbstractHolder<Boolean>>();
+		d_studyListPm = new DefaultSelectableStudyListPresentationModel(new StudyListHolder());
+		d_metaAnalysisCompleteListener = new MetaAnalysisCompleteListener();		
+		d_studyListPm.addSelectionListener(d_metaAnalysisCompleteListener);
+		d_firstDrugHolder.addPropertyChangeListener(d_metaAnalysisCompleteListener);
+		d_secondDrugHolder.addPropertyChangeListener(d_metaAnalysisCompleteListener);		
 	}
-	
-	public List<Study> getSelectedStudyList() {
-		List<Study> list = new ArrayList<Study>();
-		for (Map.Entry<Study, AbstractHolder<Boolean>> e : d_selectedStudies.entrySet()) {
-			if (e.getValue().getValue().equals(Boolean.TRUE)) {
-				list.add(e.getKey());
-			}
-		}
-		return list;
-	}
-	
-	private void fillSelectedStudySet() {
-		d_selectedStudies.clear();
-		for (Study s : getStudyList()) {
-			d_selectedStudies.put(s, new BooleanHolder()) ;
-		}
-	}
-	
-	public AbstractHolder<Boolean> getSelectedStudyBooleanModel(Study study) {
-		return d_selectedStudies.get(study);
-	}
-	
+		
 	public ListHolder<Indication> getIndicationListModel() {
 		return new IndicationListHolder();
 	}
@@ -305,13 +231,17 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	public List<Study> getStudyList() {
+		return d_studyList;
+	}
+	
+	private void updateStudyList() {
 		List<Study> studies = new ArrayList<Study>();
 		if (getSecondDrug() != null && getFirstDrug() != null) {
 			studies = getStudiesEndpointAndIndication();
 			studies.retainAll(d_domain.getStudies(getFirstDrug()).getValue());
 			studies.retainAll(d_domain.getStudies(getSecondDrug()).getValue());
 		}
-		return studies;
+		d_studyList = studies;
 	}
 	
 	private Drug getFirstDrug() {
@@ -358,12 +288,8 @@ public class MetaAnalysisWizardPresentation {
 		}		
 	}
 
-	public AbstractListHolder<Study> getStudyListModel() {
-		return d_studyListHolder;
-	}
-	
 	public StudyCharTableModel getStudyTableModel() {
-		return new StudyCharTableModel(new DefaultStudyListPresentationModel(getStudyListModel()));
+		return new SelectableStudyCharTableModel(d_studyListPm);
 	}
 
 	public RandomEffectsMetaAnalysis createMetaAnalysis() {
@@ -371,9 +297,32 @@ public class MetaAnalysisWizardPresentation {
 				new ArrayList<Study>(getSelectedStudyList()), getFirstDrug(), getSecondDrug());
 	}
 	
+	public List<Study> getSelectedStudyList() {
+		return d_studyListPm.getSelectedStudies();
+	}
+
 	public RandomEffectsMetaAnalysis saveMetaAnalysis(String name, RandomEffectsMetaAnalysis ma) throws EntityIdExistsException {
 		ma.setName(name);
 		d_domain.addMetaAnalysis(ma);
 		return ma;
+	}
+	
+	public ValueModel getMetaAnalysisCompleteModel() {
+		return d_metaAnalysisCompleteListener;
+	}
+	
+	@SuppressWarnings("serial")
+	public class MetaAnalysisCompleteListener extends AbstractValueModel implements PropertyChangeListener {
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			firePropertyChange(PROPERTYNAME_VALUE, null, getValue());
+		}
+
+		public Object getValue() {
+			return new Boolean(!getSelectedStudyList().isEmpty());
+		}
+
+		public void setValue(Object newValue) {			
+		}		
 	}
 }

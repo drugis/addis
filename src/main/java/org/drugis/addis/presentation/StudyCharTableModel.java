@@ -30,7 +30,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class StudyCharTableModel extends AbstractTableModel {
-	private StudyListPresentationModel d_pm;
+	protected StudyListPresentationModel d_pm;
 	
 	public StudyCharTableModel(StudyListPresentationModel pm) {
 		d_pm = pm;
