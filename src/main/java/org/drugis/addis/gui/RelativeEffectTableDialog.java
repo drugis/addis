@@ -46,6 +46,10 @@ public class RelativeEffectTableDialog extends JDialog {
 		public Component getTableCellRendererComponent(JTable table,
 				Object val, boolean isSelected, boolean hasFocus, int row, int col) {
 			
+			if (row < 0) {
+				return new JLabel("");
+			}
+			
 			JLabel label = BasicComponentFactory.createLabel(((LabeledPresentationModel)val).getLabelModel());
 			label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 			
