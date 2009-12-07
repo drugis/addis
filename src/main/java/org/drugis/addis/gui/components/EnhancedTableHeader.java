@@ -14,7 +14,7 @@ import javax.swing.table.TableColumnModel;
 
 @SuppressWarnings("serial")
 public class EnhancedTableHeader extends JTableHeader {
-	private static final int MAX_COL_WIDTH = Integer.MAX_VALUE;
+	private static final int MAX_COL_WIDTH = 150;
 	private final JTable d_table;
 
 	public EnhancedTableHeader(TableColumnModel cm, JTable table) {
@@ -67,9 +67,7 @@ public class EnhancedTableHeader extends JTableHeader {
 			if (requiredColumnWidth > MAX_COL_WIDTH) {
 				requiredColumnWidth = MAX_COL_WIDTH;
 			}
-			col.setMaxWidth(MAX_COL_WIDTH);
 			col.setMinWidth(requiredColumnWidth);
-			
 		}
 	}
 
