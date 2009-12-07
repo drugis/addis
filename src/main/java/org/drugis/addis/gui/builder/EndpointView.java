@@ -71,7 +71,7 @@ public class EndpointView implements ViewBuilder {
 	private JPanel buildOverviewPart() {
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, pref:grow",
-				"p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();
 		
@@ -79,21 +79,20 @@ public class EndpointView implements ViewBuilder {
 		builder.add(BasicComponentFactory.createLabel(
 				d_model.getModel(Endpoint.PROPERTY_NAME)), cc.xy(3, 1));
 		
-		//TODO: deprecated?
-/*		builder.addLabel("Description:", cc.xy(1, 3));
+		builder.addLabel("Description:", cc.xy(1, 3));
  		builder.add(BasicComponentFactory.createLabel(
-				d_model.getModel(Endpoint.PROPERTY_DESCRIPTION)), cc.xy(3, 3));*/
+				d_model.getModel(Endpoint.PROPERTY_DESCRIPTION)), cc.xy(3, 3));
 
-		builder.addLabel("Unit of Measurement:", cc.xy(1, 3));
+		builder.addLabel("Unit of Measurement:", cc.xy(1, 5));
 		builder.add(BasicComponentFactory.createLabel(
-				d_model.getModel(Endpoint.PROPERTY_UNIT_OF_MEASUREMENT)), cc.xy(3, 3));
+				d_model.getModel(Endpoint.PROPERTY_UNIT_OF_MEASUREMENT)), cc.xy(3, 5));
 		
-		builder.addLabel("Direction:", cc.xy(1, 5));
+		builder.addLabel("Direction:", cc.xy(1, 7));
 		ValueModel directionModel = ConverterFactory.createStringConverter(
 				d_model.getModel(Endpoint.PROPERTY_DIRECTION),
 				new OneWayObjectFormat());
 		builder.add(BasicComponentFactory.createLabel(
-				directionModel), cc.xy(3, 5));
+				directionModel), cc.xy(3, 7));
 
 		return builder.getPanel();
 	}

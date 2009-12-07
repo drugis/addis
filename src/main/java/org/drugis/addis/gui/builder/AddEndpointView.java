@@ -40,7 +40,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class AddEndpointView implements ViewBuilder {
 	private JTextField d_name;
-//	private JTextField d_description;
+	private JTextField d_description;
 	private JTextField d_unitOfMeasurement;
 	private PresentationModel<Endpoint> d_model;
 	private JComboBox d_type;
@@ -55,14 +55,13 @@ public class AddEndpointView implements ViewBuilder {
 	private void initComponents() {
 		d_name = BasicComponentFactory.createTextField(d_model.getModel(Endpoint.PROPERTY_NAME), false);
 		AutoSelectFocusListener.add(d_name);
-//TODO: Deprecated?
-		/*d_description = BasicComponentFactory.createTextField(
+
+		d_description = BasicComponentFactory.createTextField(
 				d_model.getModel(Endpoint.PROPERTY_DESCRIPTION), false);
 		
 		AutoSelectFocusListener.add(d_description);
 		d_description.setColumns(30);
 		d_validator.add(d_description);
-				*/
 		
 		d_unitOfMeasurement = BasicComponentFactory.createTextField(
 				d_model.getModel(Endpoint.PROPERTY_UNIT_OF_MEASUREMENT), false);
@@ -90,7 +89,7 @@ public class AddEndpointView implements ViewBuilder {
 
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, pref",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -102,17 +101,16 @@ public class AddEndpointView implements ViewBuilder {
 		builder.addLabel("Name:", cc.xy(1, 3));
 		builder.add(d_name, cc.xy(3,3));
 		
-		//TODO: Deprecated?
-	/*	builder.addLabel("Description:", cc.xy(1, 5));
-		builder.add(d_description, cc.xy(3, 5));*/
+		builder.addLabel("Description:", cc.xy(1, 5));
+		builder.add(d_description, cc.xy(3, 5));
 		
-		builder.addLabel("Unit of Measurement:", cc.xy(1, 5));
-		builder.add(d_unitOfMeasurement, cc.xy(3, 5));
+		builder.addLabel("Unit of Measurement:", cc.xy(1, 7));
+		builder.add(d_unitOfMeasurement, cc.xy(3, 7));
 		
-		builder.addLabel("Type:", cc.xy(1, 7));
-		builder.add(d_type, cc.xy(3, 7));
-		builder.addLabel("Direction:", cc.xy(1, 9));
-		builder.add(d_direction, cc.xy(3, 9));
+		builder.addLabel("Type:", cc.xy(1, 9));
+		builder.add(d_type, cc.xy(3, 9));
+		builder.addLabel("Direction:", cc.xy(1, 11));
+		builder.add(d_direction, cc.xy(3, 11));
 		
 		return builder.getPanel();
 	}

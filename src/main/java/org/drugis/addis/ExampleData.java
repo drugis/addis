@@ -476,7 +476,7 @@ public class ExampleData {
 	public static Endpoint buildEndpointCgi() {
 		if (s_endpointCgi == null) { 
 			Endpoint cgi = new Endpoint("CGI Severity", Type.CONTINUOUS);
-//TODO: deprecated?			cgi.setDescription("Change from baseline CGI Severity of Illness score");
+			cgi.setDescription("Change from baseline CGI Severity of Illness score");
 			cgi.setUnitOfMeasurement("Deviation from the baseline of CGI Severity of Illness score");
 			s_endpointCgi = cgi;
 		}

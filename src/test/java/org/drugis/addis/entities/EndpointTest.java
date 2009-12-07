@@ -30,11 +30,11 @@ import org.junit.Test;
 
 public class EndpointTest {
 
-	//TODO: deprecated?
-/*	@Test
+
+	@Test
 	public void testSetDescription() {
 		JUnitUtil.testSetter(new Endpoint("e", Type.RATE), Endpoint.PROPERTY_DESCRIPTION, "", "My Description");
-	}*/
+	}
 	
 	@Test
 	public void testSetUnitOfMeasurement() {

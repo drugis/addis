@@ -623,8 +623,7 @@ public class Main extends JFrame {
 	private void endpointLabelSelected() {
 		List<String> formatter = new ArrayList<String>();
 		formatter.add("name");
-//TODO: deprecated?
-		//formatter.add("description");
+		formatter.add("description");
 		formatter.add("unitOfMeasurement");
 		formatter.add("type");
 		formatter.add("direction");

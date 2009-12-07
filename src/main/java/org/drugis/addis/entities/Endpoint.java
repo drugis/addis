@@ -50,13 +50,13 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 	}
 	
 	private String d_name;
-	//private String d_description = "";
+	String d_description = "";
 	private String d_unitOfMeasurement = "";
 	private Type d_type;
 	private Direction d_direction;
 	
 	public final static String PROPERTY_NAME = "name";
-	//TODO: deprecated? public final static String PROPERTY_DESCRIPTION = "description";
+	 public final static String PROPERTY_DESCRIPTION = "description";
 	public final static String PROPERTY_TYPE = "type";
 	public final static String PROPERTY_DIRECTION = "direction";
 	public final static String PROPERTY_UNIT_OF_MEASUREMENT = "unitOfMeasurement";
@@ -103,8 +103,7 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 		return 0;
 	}
 	
-//TODO: deprecated?
-	/*public void setDescription(String description) {
+	public void setDescription(String description) {
 		String oldVal = d_description;
 		d_description = description;
 		firePropertyChange(PROPERTY_DESCRIPTION, oldVal, d_description);
@@ -113,7 +112,6 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 	public String getDescription() {
 		return d_description;
 	}
-	*/
 	
 	public void setUnitOfMeasurement(String um) {
 		if (d_type == Type.CONTINUOUS) {
