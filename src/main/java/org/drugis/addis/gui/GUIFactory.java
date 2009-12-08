@@ -31,6 +31,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;

@@ -17,14 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui;
+package org.drugis.addis.entities;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.DomainImpl;
 
 
 public class DomainManager {

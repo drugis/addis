@@ -1,10 +1,12 @@
-package org.drugis.addis.gui;
+package org.drugis.addis.gui.components;
 
 import java.awt.Cursor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JLabel;
+
+import org.drugis.addis.gui.BrowserLaunch;
 
 @SuppressWarnings("serial")
 public class LinkLabel extends JLabel{

@@ -24,6 +24,7 @@ import java.awt.Component;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
+import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
