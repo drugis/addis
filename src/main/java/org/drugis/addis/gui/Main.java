@@ -473,6 +473,7 @@ public class Main extends JFrame {
 	private void initToolbar() {
 		JToolBar toolbar = new JToolBar();
 		toolbar.setFloatable(false);
+		toolbar.setLayout(new BorderLayout());
 
 		JButton topAddStudyButton = new JButton("Add study", ImageLoader.getIcon(FileNames.ICON_STUDY));
 		topAddStudyButton.setToolTipText("Add study");
@@ -493,7 +494,9 @@ public class Main extends JFrame {
 		ButtonBarBuilder2 builder = new ButtonBarBuilder2();
 		builder.addButton(topAddStudyButton);
 		builder.addButton(topAddMetaStudyButton);
-		toolbar.add(builder.getPanel());
+		builder.addGlue();
+		builder.addButton(new LinkLabel("www.drugis.org", "http://www.drugis.org"));
+		toolbar.add(builder.getPanel(), BorderLayout.CENTER);
 		toolbar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		add(toolbar, BorderLayout.NORTH);
 	}
