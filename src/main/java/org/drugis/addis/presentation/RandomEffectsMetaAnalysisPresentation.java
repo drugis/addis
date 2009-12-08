@@ -51,7 +51,7 @@ public class RandomEffectsMetaAnalysisPresentation extends PresentationModel<Ran
 	}
 	
 	public ForestPlotPresentation getForestPlotPresentation(Class<? extends RelativeEffect<?>> type) {
-		ForestPlotPresentation pm = new ForestPlotPresentation(getBean(), type);
+		ForestPlotPresentation pm = new ForestPlotPresentation(getBean(), type, d_mgr);
 		return pm;
 	}
 	

@@ -1,10 +1,10 @@
 package org.drugis.addis.presentation;
 
+import org.drugis.addis.entities.AbstractRelativeEffect;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.addis.entities.AbstractRatio;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 
@@ -15,7 +15,7 @@ public class OddsRatioTableModel extends AbstractRelativeEffectTableModel {
 	}
 
 	@Override
-	protected AbstractRatio getRelativeEffect(Measurement denominator, Measurement numerator) {
+	protected AbstractRelativeEffect<RateMeasurement> getRelativeEffect(Measurement denominator, Measurement numerator) {
 		return new OddsRatio((RateMeasurement)denominator,
 		(RateMeasurement)numerator);
 	}

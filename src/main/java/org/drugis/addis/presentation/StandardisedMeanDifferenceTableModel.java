@@ -17,7 +17,7 @@ public class StandardisedMeanDifferenceTableModel extends AbstractRelativeEffect
 	@Override
 	protected RelativeEffect<ContinuousMeasurement> getRelativeEffect(Measurement baseline,
 			Measurement subject) {
-		return new StandardisedMeanDifference((ContinuousMeasurement) baseline, (ContinuousMeasurement) subject);
+		return new StandardisedMeanDifference((ContinuousMeasurement) subject, (ContinuousMeasurement) baseline);
 	}
 
 	@Override

@@ -60,7 +60,7 @@ public class ForestPlot implements Plot {
 		//STUDY COLUMN & CI COLUMN:
 		for (int i = 0; i < d_pm.getNumRelativeEffects(); ++i) {
 			drawVCentrString(g2d, d_pm.getStudyLabelAt(i), i + 1, 1, Align.LEFT);
-			drawVCentrString(g2d, d_pm.getCIlabelAt(i), i + 1, FULLWIDTH, Align.RIGHT);
+			drawVCentrString(g2d, d_pm.getCIlabelAt(i).getLabelModel().getString(), i + 1, FULLWIDTH, Align.RIGHT);
 		}
 		
 		g2d.translate(STUDYWIDTH, FULLROW);

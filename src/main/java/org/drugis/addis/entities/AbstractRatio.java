@@ -25,35 +25,18 @@ import java.util.Set;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
-public abstract class AbstractRatio extends AbstractEntity implements RelativeEffect<RateMeasurement> {
+public abstract class AbstractRatio extends AbstractRelativeEffect<RateMeasurement> {
 	private static final long serialVersionUID = 1647344976539753330L;
 	
-	protected RateMeasurement d_numerator;
-	protected RateMeasurement d_denominator;		
-
-	protected AbstractRatio(RateMeasurement denominator, RateMeasurement numerator) throws IllegalArgumentException {
+	protected AbstractRatio(RateMeasurement numerator, RateMeasurement denominator) throws IllegalArgumentException {
+		super(numerator, denominator);
 		if (!denominator.getEndpoint().equals(numerator.getEndpoint())) {
 			throw new IllegalArgumentException();
 		}
-		
-		d_numerator = numerator;
-		d_denominator = denominator;
 	}
 	
-	public RateMeasurement getSubject() {
-		return d_numerator;
-	}
-
-	public RateMeasurement getBaseline() {
-		return d_denominator;
-	}	
-
 	public Endpoint getEndpoint() {
-		return d_numerator.getEndpoint();
-	}
-
-	public Integer getSampleSize() {
-		return d_numerator.getPatientGroup().getSize() + d_denominator.getPatientGroup().getSize();
+		return d_subject.getEndpoint();
 	}
 
 	protected double getCriticalValue() {

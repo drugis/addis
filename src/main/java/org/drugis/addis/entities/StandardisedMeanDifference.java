@@ -5,7 +5,7 @@ import java.util.Set;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
-public class StandardisedMeanDifference extends AbstractEntity implements RelativeEffect<ContinuousMeasurement> {
+public class StandardisedMeanDifference extends AbstractRelativeEffect<ContinuousMeasurement> {
 	private static final long serialVersionUID = -8753337320258281527L;
 	/*
 	 * The Standardised Mean Difference is calculated through Cohen's d and adjusted with J(degrees of freedom)
@@ -13,17 +13,12 @@ public class StandardisedMeanDifference extends AbstractEntity implements Relati
 	 * by Cooper et al. 2nd Edition pages 225-230
 	 */
 	
-	private ContinuousMeasurement d_subject;
-	private ContinuousMeasurement d_baseline;
-
-	public StandardisedMeanDifference(ContinuousMeasurement baseline,
-			ContinuousMeasurement subject) throws IllegalArgumentException {
+	public StandardisedMeanDifference(ContinuousMeasurement subject,
+			ContinuousMeasurement baseline) throws IllegalArgumentException {
+		super(subject, baseline);
 		if (!subject.getEndpoint().equals(baseline.getEndpoint())) {
 			throw new IllegalArgumentException();
 		}
-		
-		d_subject = subject;
-		d_baseline = baseline;
 	}
 
 	public Interval<Double> getConfidenceInterval() {
@@ -32,16 +27,8 @@ public class StandardisedMeanDifference extends AbstractEntity implements Relati
 		return new Interval<Double>(getRelativeEffect() - t * getError(), getRelativeEffect() + t * getError());
 	}
 
-	public ContinuousMeasurement getBaseline() {
-		return d_baseline;
-	}
-
 	public Endpoint getEndpoint() {
 		return d_subject.getEndpoint();
-	}
-
-	public ContinuousMeasurement getSubject() {
-		return d_subject;
 	}
 
 	public Double getRelativeEffect() {
@@ -50,10 +37,6 @@ public class StandardisedMeanDifference extends AbstractEntity implements Relati
 	
 	public Double getError() {
 		return Math.sqrt(square(getCorrectionJ()) * getCohenVariance());
-	}
-
-	public Integer getSampleSize() {
-		return d_subject.getPatientGroup().getSize() + d_baseline.getPatientGroup().getSize();
 	}
 	
 	private double square(double x) {

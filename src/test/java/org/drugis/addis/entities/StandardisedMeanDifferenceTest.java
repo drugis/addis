@@ -29,7 +29,7 @@ public class StandardisedMeanDifferenceTest {
 		PatientGroup basels = new BasicPatientGroup(null, null, s_baslSize);
 		d_subject = new BasicContinuousMeasurement(e, s_subjMean, s_subjStdDev, subjs);
 		d_baseline = new BasicContinuousMeasurement(e, s_baselMean, s_baslStdDev, basels);
-		d_smd = new StandardisedMeanDifference(d_baseline, d_subject);
+		d_smd = new StandardisedMeanDifference(d_subject, d_baseline);
 	}
 	
 	@Test
@@ -95,7 +95,7 @@ public class StandardisedMeanDifferenceTest {
 		Endpoint e2 = new Endpoint("E2", Type.CONTINUOUS);
 		PatientGroup subjs = new BasicPatientGroup(null, null, s_subjSize);
 		ContinuousMeasurement subject = new BasicContinuousMeasurement(e2, s_subjMean, s_subjStdDev, subjs);
-		new StandardisedMeanDifference(d_baseline, subject);
+		new StandardisedMeanDifference(subject, d_baseline);
 	}
 	
 	private double square(double x) {

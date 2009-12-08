@@ -30,7 +30,7 @@ public class OddsRatio extends AbstractRatio {
 	 * @param numerator
 	 */
 	public OddsRatio(RateMeasurement denominator, RateMeasurement numerator) { 
-		super(denominator, numerator);
+		super(numerator, denominator);
 	}
 
 	public String getName() {
@@ -42,14 +42,14 @@ public class OddsRatio extends AbstractRatio {
 	}
 
 	public Double getRelativeEffect() {
-		int d = d_denominator.getPatientGroup().getSize() - d_denominator.getRate();
-		int c = d_numerator.getPatientGroup().getSize() - d_numerator.getRate();
-		return ((double) d_numerator.getRate() * (double) d) / ((double) d_denominator.getRate() * (double) c); 
+		int d = d_baseline.getPatientGroup().getSize() - d_baseline.getRate();
+		int c = d_subject.getPatientGroup().getSize() - d_subject.getRate();
+		return ((double) d_subject.getRate() * (double) d) / ((double) d_baseline.getRate() * (double) c); 
 	}
 
 	public Double getError() { //NB: this is the LOG error
-		return Math.sqrt(invEffect(d_denominator) + invNoEffect(d_denominator) +
-		invEffect(d_numerator) + invNoEffect(d_numerator));
+		return Math.sqrt(invEffect(d_baseline) + invNoEffect(d_baseline) +
+		invEffect(d_subject) + invNoEffect(d_subject));
 	}
 
 	private double invEffect(RateMeasurement m) {

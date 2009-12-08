@@ -16,8 +16,7 @@ public class RelativeEffectPresentation extends PresentationModel<RelativeEffect
 	
 	public class LabelModel extends AbstractValueModel implements PropertyChangeListener {
 		public LabelModel() {
-			getBean().getSubject().addPropertyChangeListener(this);
-			getBean().getBaseline().addPropertyChangeListener(this);
+			getBean().addPropertyChangeListener(this);
 		}
 		
 		public void propertyChange(PropertyChangeEvent evt) {
@@ -25,7 +24,7 @@ public class RelativeEffectPresentation extends PresentationModel<RelativeEffect
 		}
 
 		public Object getValue() {
-			DecimalFormat format = new DecimalFormat("0.00");
+			DecimalFormat format = new DecimalFormat("###0.00");
 			Interval<Double> ci = getBean().getConfidenceInterval();
 			return format.format(getBean().getRelativeEffect()) + " (" + format.format(ci.getLowerBound()) + ", " + 
 				format.format(ci.getUpperBound()) + ")";

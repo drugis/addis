@@ -74,7 +74,8 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
 		RandomEffectsMetaAnalysisPresentation pres = (RandomEffectsMetaAnalysisPresentation) fact.getModel(meta);
 		
-		ForestPlotPresentation expected = new ForestPlotPresentation(meta, MeanDifference.class);
+		ForestPlotPresentation expected = new ForestPlotPresentation(meta, MeanDifference.class, 
+				new PresentationModelFactory(new DomainImpl()));
 		ForestPlotPresentation actual = pres.getForestPlotPresentation(MeanDifference.class);
 		assertEquals(expected.getRelativeEffectAt(0).getRelativeEffect(), actual.getRelativeEffectAt(0).getRelativeEffect(), 0.001);
 		assertEquals(expected.getHeterogeneity(), actual.getHeterogeneity());

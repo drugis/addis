@@ -10,6 +10,7 @@ import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.ContinuousMeasurement;
+import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
@@ -75,7 +76,8 @@ public class ForestPlotPresentationTest {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(d_s1);
 		studies.add(d_s2);
-		d_pm = new ForestPlotPresentation(studies, d_endpoint, d_baseline, d_subject, MeanDifference.class);
+		d_pm = new ForestPlotPresentation(studies, d_endpoint, d_baseline, d_subject, MeanDifference.class, 
+				new PresentationModelFactory(new DomainImpl()));
 	}
 	
 	@Test
@@ -125,8 +127,8 @@ public class ForestPlotPresentationTest {
 		// known intervals: "0.25 (-0.53, 1.03)" & "-0.25 (-1.09, 0.59)"
 		String interval1 = "0.25 (-0.53, 1.03)";
 		String interval2 = "-0.25 (-1.09, 0.59)";
-		assertEquals(interval1, d_pm.getCIlabelAt(1));
-		assertEquals(interval2, d_pm.getCIlabelAt(0));
+		assertEquals(interval1, d_pm.getCIlabelAt(1).getLabelModel().getValue());
+		assertEquals(interval2, d_pm.getCIlabelAt(0).getLabelModel().getValue());
 	}
 	
 	@Test
@@ -150,7 +152,7 @@ public class ForestPlotPresentationTest {
 		
 		ForestPlotPresentation pm = new ForestPlotPresentation(studies, d_endpoint,
 				d_baseline, d_subject,
-				MeanDifference.class);
+				MeanDifference.class, new PresentationModelFactory(new DomainImpl()));
 		assertEquals(5, pm.getDiamondSize(0));
 		assertEquals(21, pm.getDiamondSize(1));
 	}

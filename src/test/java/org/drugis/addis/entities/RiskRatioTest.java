@@ -29,7 +29,7 @@ import org.junit.Test;
 public class RiskRatioTest {
 	BasicRateMeasurement d_numerator;
 	BasicRateMeasurement d_denominator;
-	AbstractRatio d_ratio;
+	RelativeEffect<RateMeasurement> d_ratio;
 	
 	
 	private Drug d_fluox;
@@ -40,11 +40,11 @@ public class RiskRatioTest {
 	
 	private Study d_bennie, d_boyer, d_fava, d_newhouse, d_sechter;
 	
-	private AbstractRatio d_ratioBennie;
-	AbstractRatio d_ratioBoyer;
-	AbstractRatio d_ratioFava;
-	AbstractRatio d_ratioNewhouse;
-	AbstractRatio d_ratioSechter;
+	private RelativeEffect<?> d_ratioBennie;
+	private RelativeEffect<?> d_ratioBoyer;
+	private RelativeEffect<?> d_ratioFava;
+	private RelativeEffect<?> d_ratioNewhouse;
+	private RelativeEffect<?> d_ratioSechter;
 	
 	@Before
 	public void setUp() {
@@ -60,11 +60,11 @@ public class RiskRatioTest {
 		d_sechter = createStudy("Sechter 1999", 76,120, 86,118);
 				
 		
-		d_ratioBennie = (AbstractRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, d_fluox, d_sertra, RiskRatio.class);
-		d_ratioBoyer = (AbstractRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, d_fluox, d_sertra, RiskRatio.class);
-		d_ratioFava = (AbstractRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, d_fluox, d_sertra, RiskRatio.class);
-		d_ratioNewhouse = (AbstractRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, d_fluox, d_sertra, RiskRatio.class);
-		d_ratioSechter = (AbstractRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, d_fluox, d_sertra, RiskRatio.class);		
+		d_ratioBennie = RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, d_fluox, d_sertra, RiskRatio.class);
+		d_ratioBoyer = RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, d_fluox, d_sertra, RiskRatio.class);
+		d_ratioFava = RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, d_fluox, d_sertra, RiskRatio.class);
+		d_ratioNewhouse = RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, d_fluox, d_sertra, RiskRatio.class);
+		d_ratioSechter = RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, d_fluox, d_sertra, RiskRatio.class);		
 	}
 	
 

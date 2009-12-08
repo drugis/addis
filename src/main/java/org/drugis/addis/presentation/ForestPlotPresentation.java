@@ -33,9 +33,10 @@ public class ForestPlotPresentation {
 	private double d_max = 0.0;
 	private AxisType d_scaleType;
 	private RandomEffectsMetaAnalysis d_analysis;
+	private PresentationModelFactory d_pmf;
 	
 	public ForestPlotPresentation(List<Study> studies, Endpoint e, Drug baseline, Drug subject,
-			Class<? extends RelativeEffect<?>> type) {
+			Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
 		d_studies = new ArrayList<Study>();
 		d_endpoint = e;
 		d_baseline = baseline;
@@ -46,16 +47,17 @@ public class ForestPlotPresentation {
 			addRelativeEffect(s, subject);
 		}
 		initScales();
+		d_pmf = pmf;
 	}
 	
-	public ForestPlotPresentation(RandomEffectsMetaAnalysis analysis, Class<? extends RelativeEffect<?>> type) {
-		this(analysis.getStudies(), analysis.getEndpoint(), analysis.getFirstDrug(), analysis.getSecondDrug(), type);
+	public ForestPlotPresentation(RandomEffectsMetaAnalysis analysis, Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
+		this(analysis.getStudies(), analysis.getEndpoint(), analysis.getFirstDrug(), analysis.getSecondDrug(), type, pmf);
 		d_analysis = analysis;
 	}
 		
 	public ForestPlotPresentation(BasicStudy s, Endpoint e, Drug baseline, Drug subject,
-			Class<? extends RelativeEffect<?>> type) {
-		this(Collections.singletonList((Study)s), e, baseline, subject, type);
+			Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
+		this(Collections.singletonList((Study)s), e, baseline, subject, type, pmf);
 	}
 
 	private void addRelativeEffect(Study s, Drug subject) {
@@ -174,10 +176,8 @@ public class ForestPlotPresentation {
 		return Math.log(x) / Math.log(base);
 	}
 
-	public String getCIlabelAt(int i) {
-		RelativeEffect<?> e = getRelativeEffectAt(i);
-		return formatNumber2D(e.getRelativeEffect()) + " (" + formatNumber2D(e.getConfidenceInterval().getLowerBound()) 
-									 + ", " + formatNumber2D(e.getConfidenceInterval().getUpperBound()) + ")";
+	public LabeledPresentationModel getCIlabelAt(int i) {
+		return d_pmf.getLabeledModel(getRelativeEffectAt(i));
 	}
 	
 	public List<Integer> getTicks() {
@@ -187,11 +187,6 @@ public class ForestPlotPresentation {
 		tickList.add(d_scale.getBin(d_scaleType == AxisType.LOGARITHMIC ? 1 : 0).bin);
 		tickList.add(d_scale.getBin(range.getUpperBound()).bin);
 		return tickList;
-	}
-	
-	private String formatNumber2D(double x) {
-		DecimalFormat df = new DecimalFormat("###0.00");
-		return df.format(x);
 	}
 
 	public List<String> getTickVals() {

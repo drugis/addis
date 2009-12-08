@@ -249,7 +249,8 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		return new RandomEffects(d_confidenceInterval, d_thetaDSL, d_totalSampleSize, d_SEThetaDSL, d_qIV);		
 	}
 	
-	private class RandomEffects implements RelativeEffectMetaAnalysis<Measurement> {
+	private class RandomEffects extends AbstractEntity implements RelativeEffectMetaAnalysis<Measurement> {
+		private static final long serialVersionUID = 6195228866106906214L;
 		
 		private Interval<Double> t_confidenceInterval;
 		private double t_thetaDSL;
@@ -308,6 +309,10 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		public double getHeterogeneityI2() {
 			int k = getStudies().size();
 			return Math.max(0, 100* ((t_qIV - (k-1)) / t_qIV ) );
+		}
+		@Override
+		public Set<Entity> getDependencies() {
+			return Collections.emptySet();
 		}	
 	}
 	
