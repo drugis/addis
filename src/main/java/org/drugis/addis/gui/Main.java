@@ -147,13 +147,17 @@ public class Main extends JFrame {
 	}
 
 	private void saveDomainToFile() throws IOException {
-		File f = new File("domain-"+AppInfo.getAppVersion()+".dat");
+		File f = new File(getDomainFileName());
 		if (f.exists()) {
 			f.delete();
 		}
 		
 		FileOutputStream fos = new FileOutputStream(f);
 		d_domain.saveDomain(fos);
+	}
+
+	private String getDomainFileName() {
+		return "domain-"+AppInfo.getAppVersion()+".dat";
 	}
 
 	private void initializeDomain() {
@@ -173,12 +177,12 @@ public class Main extends JFrame {
 	}
 
 	private void loadDomainFromFile() throws IOException, ClassNotFoundException {
-		File f = new File("domain.dat");
+		File f = new File(getDomainFileName());
 		if (f.exists() && f.isFile()) {
 			FileInputStream fis = new FileInputStream(f);
 			d_domain.loadDomain(fis);
 		} else {
-			throw new FileNotFoundException("domain.dat not found");
+			throw new FileNotFoundException(getDomainFileName() + " not found");
 		}
 	}
 
