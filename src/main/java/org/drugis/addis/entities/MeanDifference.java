@@ -18,9 +18,6 @@ public class MeanDifference extends AbstractRelativeEffect<ContinuousMeasurement
 	
 	public MeanDifference(ContinuousMeasurement baseline, ContinuousMeasurement subject) throws IllegalArgumentException {
 		super(subject, baseline);
-		if (!subject.getEndpoint().equals(baseline.getEndpoint())) {
-			throw new IllegalArgumentException();
-		}
 	}
 	
 	public Interval<Double> getConfidenceInterval() {

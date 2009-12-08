@@ -12,7 +12,10 @@ public abstract class AbstractRelativeEffect<T extends Measurement> extends Abst
 	protected T d_baseline; 
 
 	protected AbstractRelativeEffect(T subject, T baseline) {
-		super();
+		if (!subject.getEndpoint().equals(baseline.getEndpoint())) {
+			throw new IllegalArgumentException();
+		}
+		
 		d_subject = subject;
 		d_baseline = baseline;
 		connectListeners();

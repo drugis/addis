@@ -16,9 +16,6 @@ public class StandardisedMeanDifference extends AbstractRelativeEffect<Continuou
 	public StandardisedMeanDifference(ContinuousMeasurement subject,
 			ContinuousMeasurement baseline) throws IllegalArgumentException {
 		super(subject, baseline);
-		if (!subject.getEndpoint().equals(baseline.getEndpoint())) {
-			throw new IllegalArgumentException();
-		}
 	}
 
 	public Interval<Double> getConfidenceInterval() {

@@ -30,9 +30,6 @@ public abstract class AbstractRatio extends AbstractRelativeEffect<RateMeasureme
 	
 	protected AbstractRatio(RateMeasurement numerator, RateMeasurement denominator) throws IllegalArgumentException {
 		super(numerator, denominator);
-		if (!denominator.getEndpoint().equals(numerator.getEndpoint())) {
-			throw new IllegalArgumentException();
-		}
 	}
 	
 	public Endpoint getEndpoint() {
