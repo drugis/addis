@@ -131,10 +131,11 @@ public class MetaAnalysisWizardPresentation {
 	private DefaultSelectableStudyListPresentationModel d_studyListPm;
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
 	private List<Study> d_studyList = new ArrayList<Study>();
+	private PresentationModelFactory d_pmm;
 	
-	
-	public MetaAnalysisWizardPresentation(Domain d) {
+	public MetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
 		d_domain = d;
+		d_pmm = pmm;
 		d_indicationHolder = new IndicationHolder();
 		d_endpointHolder = new EndpointHolder();
 		d_firstDrugHolder = new DrugHolder();
@@ -242,11 +243,6 @@ public class MetaAnalysisWizardPresentation {
 		return d_secondDrugHolder.getValue();
 	}
 	
-	public RandomEffectsMetaAnalysis getAnalysis() {
-		Endpoint e = d_domain.getEndpoints().first();
-		return new RandomEffectsMetaAnalysis("", e, d_domain.getStudies(e).getValue(), getFirstDrug(), getSecondDrug());
-	}
-	
 	public ValueModel getStudiesMeasuringLabelModel() {
 		return d_studiesMeasuringValueModel;
 	}
@@ -282,15 +278,16 @@ public class MetaAnalysisWizardPresentation {
 		return d_studyListPm;
 	}
 	
-	public RandomEffectsMetaAnalysis createMetaAnalysis() {
+	private RandomEffectsMetaAnalysis createMetaAnalysis() {
 		return new RandomEffectsMetaAnalysis("", (Endpoint)getEndpointModel().getValue(),
 				new ArrayList<Study>(d_studyListPm.getSelectedStudiesModel().getValue()), getFirstDrug(), getSecondDrug());
 	}
 	
-	public RandomEffectsMetaAnalysis saveMetaAnalysis(String name, RandomEffectsMetaAnalysis ma) throws EntityIdExistsException {
+	public RandomEffectsMetaAnalysisPresentation saveMetaAnalysis(String name) throws EntityIdExistsException {
+		RandomEffectsMetaAnalysis ma = createMetaAnalysis();		
 		ma.setName(name);
 		d_domain.addMetaAnalysis(ma);
-		return ma;
+		return (RandomEffectsMetaAnalysisPresentation) d_pmm.getModel(ma);
 	}
 	
 	public ValueModel getMetaAnalysisCompleteModel() {
@@ -310,5 +307,9 @@ public class MetaAnalysisWizardPresentation {
 
 		public void setValue(Object newValue) {			
 		}		
+	}
+
+	public RandomEffectsMetaAnalysisPresentation getMetaAnalysisModel() {
+		return (RandomEffectsMetaAnalysisPresentation) d_pmm.getModel(createMetaAnalysis());
 	}
 }

@@ -35,7 +35,7 @@ public class MetaAnalysisWizardPresentationTest {
 	public void setUp() {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		d_wizard = new MetaAnalysisWizardPresentation(d_domain);
+		d_wizard = new MetaAnalysisWizardPresentation(d_domain, new PresentationModelFactory(d_domain));
 	}
 	
 	@Test
@@ -433,7 +433,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		
-		RandomEffectsMetaAnalysis ma = d_wizard.createMetaAnalysis();
+		RandomEffectsMetaAnalysis ma = d_wizard.getMetaAnalysisModel().getBean();
 		assertEquals(ma.getFirstDrug(), d_wizard.getFirstDrugModel().getValue());
 		assertEquals(ma.getSecondDrug(), d_wizard.getSecondDrugModel().getValue());
 		JUnitUtil.assertAllAndOnly((Collection<?>) d_wizard.getStudyListModel().getSelectedStudiesModel().getValue(), (Collection<?>) ma.getStudies());

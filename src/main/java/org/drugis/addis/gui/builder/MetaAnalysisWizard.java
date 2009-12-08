@@ -13,11 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.EntityIdExistsException;
-import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
-import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.SelectableStudyCharTableModel;
 import org.drugis.common.gui.AuxComponentFactory;
@@ -37,12 +35,10 @@ public class MetaAnalysisWizard implements ViewBuilder {
 
 	private MetaAnalysisWizardPresentation d_pm;
 	private Main d_frame;
-	private PresentationModelFactory d_pmm;
 	
-	public MetaAnalysisWizard(Main parent, MetaAnalysisWizardPresentation pm, PresentationModelFactory pmm) {
+	public MetaAnalysisWizard(Main parent, MetaAnalysisWizardPresentation pm) {
 		d_frame = parent;
 		d_pm = pm;
-		d_pmm = pmm;
 	}
 	
 	public Wizard buildPanel() {
@@ -60,7 +56,6 @@ public class MetaAnalysisWizard implements ViewBuilder {
 	
 	@SuppressWarnings("serial")
 	public class OverviewWizardStep extends PanelWizardStep {
-		private RandomEffectsMetaAnalysis d_ma;
 		
 		public OverviewWizardStep() {
 			super("Overview","Overview of selected Meta-analysis.");
@@ -69,28 +64,27 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		public void prepare() {
 			removeAll();
 			
-			d_ma = d_pm.createMetaAnalysis();
-			ViewBuilder mav = new RandomEffectsMetaAnalysisView((RandomEffectsMetaAnalysisPresentation) d_pmm.getModel(d_ma), d_frame, true);
+			ViewBuilder mav = new RandomEffectsMetaAnalysisView(d_pm.getMetaAnalysisModel(), d_frame, true);
 			add(mav.buildPanel());
 			setComplete(true);
 		}
 
 		public void applyState()
 		throws InvalidStateException {
-			saveAsStudy();
+			saveAsAnalysis();
 		}
 		
-		private void saveAsStudy() throws InvalidStateException {
+		private void saveAsAnalysis() throws InvalidStateException {
 			String res = JOptionPane.showInputDialog(this, "Input name for new analysis", 
 					"Save meta-analysis", JOptionPane.QUESTION_MESSAGE);
 			if (res != null) {
 				try {
-					RandomEffectsMetaAnalysis study = d_pm.saveMetaAnalysis(res, d_ma);	
-					d_frame.leftTreeFocusOnMetaStudy(study);
+					RandomEffectsMetaAnalysisPresentation study = d_pm.saveMetaAnalysis(res);	
+					d_frame.leftTreeFocusOnMetaStudy(study.getBean());
 				} catch (EntityIdExistsException e) {
 					JOptionPane.showMessageDialog(this, "There already exists a meta-analysis with the given name, input another name",
 							"Unable to save meta-analysis", JOptionPane.ERROR_MESSAGE);
-					saveAsStudy();
+					saveAsAnalysis();
 				}
 			} else {
 				throw new InvalidStateException();

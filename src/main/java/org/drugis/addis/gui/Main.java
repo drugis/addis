@@ -24,7 +24,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -498,8 +497,7 @@ public class Main extends JFrame {
 	}
 
 	private void showMetaAnalysisWizard() {
-		// FIXME: Use PresentationModelManager to create presentation model
-		MetaAnalysisWizard wizard = new MetaAnalysisWizard(this, new MetaAnalysisWizardPresentation(getDomain()), d_pmManager);
+		MetaAnalysisWizard wizard = new MetaAnalysisWizard(this, new MetaAnalysisWizardPresentation(getDomain(), d_pmManager));
 		wizard.buildPanel().showInDialog("Create DerSimonian-Laird random effects meta-analysis", this, true);
 	}
 
