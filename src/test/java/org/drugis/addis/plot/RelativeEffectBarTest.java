@@ -6,10 +6,11 @@ import java.util.Collection;
 
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.PatientGroup;
-import org.drugis.addis.entities.RelativeEffectContinuous;
+import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.junit.Test;
 
@@ -21,7 +22,7 @@ public class RelativeEffectBarTest {
 		Endpoint e = new Endpoint("e", Type.CONTINUOUS);
 		PatientGroup p1 = new BasicPatientGroup(null, null, 100);
 		PatientGroup p2 = new BasicPatientGroup(null, null, 100);
-		RelativeEffectContinuous effect = new MeanDifference(new BasicContinuousMeasurement(e, 0.25, 1.26 / Math.sqrt(2), p1), 
+		RelativeEffect<ContinuousMeasurement> effect = new MeanDifference(new BasicContinuousMeasurement(e, 0.25, 1.26 / Math.sqrt(2), p1), 
 											new BasicContinuousMeasurement(e, 0.5, 1.26 / Math.sqrt(2), p2));
 	
 		// Make some BinnedScale that maps [0, 1] -> [0, 200]
@@ -49,7 +50,7 @@ public class RelativeEffectBarTest {
 		Endpoint e = new Endpoint("e", Type.CONTINUOUS);
 		PatientGroup p1 = new BasicPatientGroup(null, null, 100);
 		PatientGroup p2 = new BasicPatientGroup(null, null, 100);
-		RelativeEffectContinuous effect = new MeanDifference(new BasicContinuousMeasurement(e, 0.25, 1.26 / Math.sqrt(2), p1), 
+		RelativeEffect<ContinuousMeasurement> effect = new MeanDifference(new BasicContinuousMeasurement(e, 0.25, 1.26 / Math.sqrt(2), p1), 
 											new BasicContinuousMeasurement(e, 0.5, 1.26 / Math.sqrt(2), p2));
 	
 		// Make some BinnedScale that maps [0, 1] -> [0, 200]

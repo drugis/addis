@@ -5,7 +5,7 @@ import java.util.Set;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
-public class StandardisedMeanDifference extends AbstractEntity implements RelativeEffectContinuous {
+public class StandardisedMeanDifference extends AbstractEntity implements RelativeEffect<ContinuousMeasurement> {
 	private static final long serialVersionUID = -8753337320258281527L;
 	/*
 	 * The Standardised Mean Difference is calculated through Cohen's d and adjusted with J(degrees of freedom)

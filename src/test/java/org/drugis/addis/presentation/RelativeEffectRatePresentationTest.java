@@ -7,7 +7,6 @@ import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.PatientGroup;
@@ -29,7 +28,7 @@ public class RelativeEffectRatePresentationTest {
 	BasicRateMeasurement d_numerator;
 	BasicRateMeasurement d_denominator;
 	OddsRatio d_ratio;
-	RelativeEffectRatePresentation d_presentation;
+	RelativeEffectPresentation d_presentation;
 	
 	@Before
 	public void setUp() {
@@ -39,7 +38,7 @@ public class RelativeEffectRatePresentationTest {
 		d_numerator = new BasicRateMeasurement(e, s_effectNum, pnum);		
 		d_denominator = new BasicRateMeasurement(e, s_effectDen, pden);
 		d_ratio = new OddsRatio(d_denominator, d_numerator);
-		d_presentation = new RelativeEffectRatePresentation(d_ratio, new PresentationModelFactory(new DomainImpl()));
+		d_presentation = new RelativeEffectPresentation(d_ratio);
 	}
 	
 	@Test

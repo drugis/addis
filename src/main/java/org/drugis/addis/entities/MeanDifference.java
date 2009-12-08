@@ -6,7 +6,7 @@ import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
 
-public class MeanDifference extends AbstractEntity implements RelativeEffectContinuous{
+public class MeanDifference extends AbstractEntity implements RelativeEffect<ContinuousMeasurement>{
 	private static final long serialVersionUID = 5993936352514545950L;
 
 	private ContinuousMeasurement d_subject;

@@ -4,19 +4,20 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
-import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.addis.entities.RelativeEffectRate;
+import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.common.Interval;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class RelativeEffectRatePresentation extends PresentationModel<RelativeEffectRate> implements LabeledPresentationModel {
+public class RelativeEffectPresentation extends PresentationModel<RelativeEffect<? extends Measurement>> implements LabeledPresentationModel {
+	
 	public class LabelModel extends AbstractValueModel implements PropertyChangeListener {
 		public LabelModel() {
-			getNumerator().getModel(RateMeasurement.PROPERTY_RATE).addPropertyChangeListener(this);
-			getDenominator().getModel(RateMeasurement.PROPERTY_RATE).addPropertyChangeListener(this);
+			getBean().getSubject().addPropertyChangeListener(this);
+			getBean().getBaseline().addPropertyChangeListener(this);
 		}
 		
 		public void propertyChange(PropertyChangeEvent evt) {
@@ -35,22 +36,11 @@ public class RelativeEffectRatePresentation extends PresentationModel<RelativeEf
 		}
 	}
 
-	private PresentationModelFactory d_pmm;
-
-	public RelativeEffectRatePresentation(RelativeEffectRate bean, PresentationModelFactory pmm) {
+	public RelativeEffectPresentation(RelativeEffect<? extends Measurement> bean) {
 		super(bean);
-		d_pmm = pmm;
 	}
 	
 	public AbstractValueModel getLabelModel() {
 		return new LabelModel();
-	}
-	
-	public PresentationModel<RateMeasurement> getNumerator() {
-		return d_pmm.getModel(getBean().getSubject());
-	}
-
-	public PresentationModel<RateMeasurement> getDenominator() {
-		return d_pmm.getModel(getBean().getBaseline());
 	}
 }

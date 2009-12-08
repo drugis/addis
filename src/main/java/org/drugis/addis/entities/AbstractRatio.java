@@ -25,7 +25,7 @@ import java.util.Set;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
-public abstract class AbstractRatio extends AbstractEntity implements RelativeEffectRate {
+public abstract class AbstractRatio extends AbstractEntity implements RelativeEffect<RateMeasurement> {
 	private static final long serialVersionUID = 1647344976539753330L;
 	
 	protected RateMeasurement d_numerator;

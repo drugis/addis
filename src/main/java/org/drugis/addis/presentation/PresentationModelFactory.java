@@ -29,8 +29,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.addis.entities.RelativeEffectContinuous;
-import org.drugis.addis.entities.RelativeEffectRate;
+import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 
@@ -76,11 +75,8 @@ public class PresentationModelFactory {
 		if (obj instanceof Indication) {
 			return new IndicationPresentation((Indication)obj, d_domain.getStudies((Indication)obj));
 		}
-		if (obj instanceof RelativeEffectRate) {
-			return new RelativeEffectRatePresentation((RelativeEffectRate)obj, this);
-		}
-		if (obj instanceof RelativeEffectContinuous) {
-			return new RelativeEffectContinuousPresentation((RelativeEffectContinuous)obj, this);
+		if (obj instanceof RelativeEffect) {
+			return new RelativeEffectPresentation((RelativeEffect)obj);
 		}
 		if (obj instanceof RateMeasurement) {
 			return new RateMeasurementPresentation((RateMeasurement)obj);
