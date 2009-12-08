@@ -147,7 +147,7 @@ public class Main extends JFrame {
 	}
 
 	private void saveDomainToFile() throws IOException {
-		File f = new File("domain.dat");
+		File f = new File("domain"+AppInfo.getAppVersion()+".dat");
 		if (f.exists()) {
 			f.delete();
 		}
