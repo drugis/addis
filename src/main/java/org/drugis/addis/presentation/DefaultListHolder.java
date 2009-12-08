@@ -1,5 +1,6 @@
 package org.drugis.addis.presentation;
 
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -21,6 +22,6 @@ public class DefaultListHolder<E> extends AbstractListHolder<E> {
 
 	@Override
 	public List<E> getValue() {
-		return d_list;
+		return Collections.unmodifiableList(d_list);
 	}
 }

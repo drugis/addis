@@ -25,4 +25,9 @@ public class DefaultListHolderTest {
 		list.add("sss");
 		JUnitUtil.testSetter(d_holder, AbstractValueModel.PROPERTYNAME_VALUE, d_holder.getValue(), list);
 	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testListIsImmutable() {
+		d_holder.getValue().add("hmm");
+	}
 }
