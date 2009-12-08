@@ -11,7 +11,8 @@ public class HtmlWordWrapper {
 		String[] arr = makeParts(input);
 		String resStr = "";
 		for (String s : arr) {
-			if (s.isEmpty()) {
+			s.isEmpty();
+			if (s.length() < 1) {
 				continue;
 			}
 			if(!resStr.equals("")) {
