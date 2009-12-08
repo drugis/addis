@@ -3,8 +3,8 @@ package org.drugis.addis.gui.builder;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -41,24 +41,9 @@ public class StudyTablePanelView implements ViewBuilder {
 		
 		StudyCharTableModel model = new StudyCharTableModel(d_metamodel);
 		final JTable table = new StudyTable(model);
-		table.addMouseListener(new MouseListener() {
+		table.addMouseListener(new MouseAdapter() {
 			
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-			}
-			
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-			}
-			
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-			}
-			
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-			}
-			
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() > 1) {
 					int row = ((StudyTable)e.getComponent()).rowAtPoint(e.getPoint());

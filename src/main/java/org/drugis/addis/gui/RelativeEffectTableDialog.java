@@ -4,8 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -71,12 +71,9 @@ public class RelativeEffectTableDialog extends JDialog {
 	}
 	
 	
-	private class cellClickedMouseListener implements MouseListener {
-		public void mouseReleased(MouseEvent e) {}
-		public void mousePressed(MouseEvent e) {}
-		public void mouseExited(MouseEvent e) {}
-		public void mouseEntered(MouseEvent e) {}
-		
+	private class CellClickedMouseListener extends MouseAdapter {
+
+		@Override
 		public void mouseClicked(MouseEvent e) {
 			int row = ((JTable)e.getComponent()).rowAtPoint(e.getPoint());
 			int col = ((JTable)e.getComponent()).columnAtPoint(e.getPoint());
@@ -117,7 +114,7 @@ public class RelativeEffectTableDialog extends JDialog {
 			}
 		});
 		
-		table.addMouseListener(new cellClickedMouseListener());
+		table.addMouseListener(new CellClickedMouseListener());
 		
 		panel.add(description, BorderLayout.NORTH);
 		panel.add(tablePanel, BorderLayout.CENTER);		
