@@ -28,7 +28,7 @@ public class MetaAnalysisWizardPresentation {
 		
 		@Override
 		protected void checkArgument(Object newValue) {
-			if (!getIndicationSet().contains(newValue))
+			if (!d_domain.getIndications().contains(newValue))
 				throw new IllegalArgumentException("Indication not in the actual set!");
 		}
 	}
@@ -66,7 +66,7 @@ public class MetaAnalysisWizardPresentation {
 	private class IndicationListHolder extends AbstractListHolder<Indication> {
 		@Override
 		public List<Indication> getValue() {
-			return new ArrayList<Indication>(getIndicationSet());
+			return new ArrayList<Indication>(d_domain.getIndications());
 		}
 	}
 	
@@ -111,7 +111,7 @@ public class MetaAnalysisWizardPresentation {
 		
 		@Override
 		public List<Study> getValue() {
-			return getStudyList();
+			return d_studyList;
 		}
 
 		public void propertyChange(PropertyChangeEvent evt) {
@@ -158,17 +158,11 @@ public class MetaAnalysisWizardPresentation {
 		});
 		d_studyListPm = new DefaultSelectableStudyListPresentationModel(new StudyListHolder());
 		d_metaAnalysisCompleteListener = new MetaAnalysisCompleteListener();		
-		d_studyListPm.addSelectionListener(d_metaAnalysisCompleteListener);
-		d_firstDrugHolder.addPropertyChangeListener(d_metaAnalysisCompleteListener);
-		d_secondDrugHolder.addPropertyChangeListener(d_metaAnalysisCompleteListener);		
+		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(d_metaAnalysisCompleteListener);
 	}
 		
 	public ListHolder<Indication> getIndicationListModel() {
 		return new IndicationListHolder();
-	}
-	
-	public SortedSet<Indication> getIndicationSet() {
-		return d_domain.getIndications();
 	}
 	
 	public ValueModel getIndicationModel() {
@@ -179,7 +173,7 @@ public class MetaAnalysisWizardPresentation {
 		return d_endpointListHolder;
 	}
 	
-	public SortedSet<Endpoint> getEndpointSet() {
+	private SortedSet<Endpoint> getEndpointSet() {
 		TreeSet<Endpoint> endpoints = new TreeSet<Endpoint>();
 		if (getIndication() != null) {
 			for (Study s : d_domain.getStudies(getIndication()).getValue()) {
@@ -197,7 +191,7 @@ public class MetaAnalysisWizardPresentation {
 		return d_drugListHolder;
 	}
 	
-	public SortedSet<Drug> getDrugSet() {
+	private SortedSet<Drug> getDrugSet() {
 		SortedSet<Drug> drugs = new TreeSet<Drug>();
 		if (getIndication() != null && getEndpoint() != null) {
 			List<Study> studies = getStudiesEndpointAndIndication();
@@ -228,10 +222,6 @@ public class MetaAnalysisWizardPresentation {
 	
 	public ValueModel getSecondDrugModel() {
 		return d_secondDrugHolder;
-	}
-	
-	public List<Study> getStudyList() {
-		return d_studyList;
 	}
 	
 	private void updateStudyList() {
@@ -288,19 +278,15 @@ public class MetaAnalysisWizardPresentation {
 		}		
 	}
 
-	public StudyCharTableModel getStudyTableModel() {
-		return new SelectableStudyCharTableModel(d_studyListPm);
-	}
-
-	public RandomEffectsMetaAnalysis createMetaAnalysis() {
-		return new RandomEffectsMetaAnalysis("", (Endpoint)getEndpointModel().getValue(),
-				new ArrayList<Study>(getSelectedStudyList()), getFirstDrug(), getSecondDrug());
+	public SelectableStudyListPresentationModel getStudyListModel() {
+		return d_studyListPm;
 	}
 	
-	public List<Study> getSelectedStudyList() {
-		return d_studyListPm.getSelectedStudies();
+	public RandomEffectsMetaAnalysis createMetaAnalysis() {
+		return new RandomEffectsMetaAnalysis("", (Endpoint)getEndpointModel().getValue(),
+				new ArrayList<Study>(d_studyListPm.getSelectedStudiesModel().getValue()), getFirstDrug(), getSecondDrug());
 	}
-
+	
 	public RandomEffectsMetaAnalysis saveMetaAnalysis(String name, RandomEffectsMetaAnalysis ma) throws EntityIdExistsException {
 		ma.setName(name);
 		d_domain.addMetaAnalysis(ma);
@@ -319,7 +305,7 @@ public class MetaAnalysisWizardPresentation {
 		}
 
 		public Object getValue() {
-			return new Boolean(!getSelectedStudyList().isEmpty());
+			return new Boolean(!d_studyListPm.getSelectedStudiesModel().getValue().isEmpty());
 		}
 
 		public void setValue(Object newValue) {			

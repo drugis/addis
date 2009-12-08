@@ -19,6 +19,7 @@ import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
+import org.drugis.addis.presentation.SelectableStudyCharTableModel;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.InvalidStateException;
@@ -28,7 +29,6 @@ import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
-import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -110,7 +110,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			setLayout(new BorderLayout());
 			JComponent studiesComp;
 	
-		    d_table = new StudyTable(d_pm.getStudyTableModel());
+		    d_table = new StudyTable(new SelectableStudyCharTableModel(d_pm.getStudyListModel()));
 			    
 		    JScrollPane sPane = new JScrollPane(d_table);
 		    sPane.setPreferredSize(new Dimension(700,300));
@@ -149,8 +149,8 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			builder.addLabel("First Drug",cc.xy(1, 1));
 			builder.addLabel("Second Drug",cc.xy(5, 1));
 						
-			JComboBox firstDrugBox = createDrugSelectionBox(d_pm.getFirstDrugModel());
-			JComboBox secondDrugBox = createDrugSelectionBox(d_pm.getSecondDrugModel());
+			JComboBox firstDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getDrugListModel(), d_pm.getFirstDrugModel());
+			JComboBox secondDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getDrugListModel(), d_pm.getSecondDrugModel());
 			
 			builder.add(firstDrugBox,cc.xy(1, 3));
 			builder.add(secondDrugBox,cc.xy(5, 3));
@@ -160,22 +160,6 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			Bindings.bind(this, "complete", d_pm.getMetaAnalysisCompleteModel());
 			return panel;
 		}
-		
-		
-		private JComboBox createDrugSelectionBox(ValueModel firstDrugModel) {
-			JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(d_pm.getDrugListModel(), firstDrugModel);
-			endPointBox.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent arg0) {
-					getDrugSelectionComplete();					
-				}
-			});
-			return endPointBox;
-		}
-
-		private void getDrugSelectionComplete() {
-			setComplete(d_pm.getSelectedStudyList().size() > 0);
-		}
-		
 	}
 	
 	@SuppressWarnings("serial")

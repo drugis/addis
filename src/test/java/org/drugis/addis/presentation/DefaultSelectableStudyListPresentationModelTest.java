@@ -1,9 +1,11 @@
 package org.drugis.addis.presentation;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.entities.BasicStudy;
@@ -59,4 +61,10 @@ public class DefaultSelectableStudyListPresentationModelTest {
 		assertTrue(d_model.getSelectedStudyBooleanModel(newStudy).getValue());
 	}
 	
+	@Test
+	public void testGetSelectedStudiesModel() {
+		assertEquals(d_studies, d_model.getSelectedStudiesModel().getValue());
+		d_model.getSelectedStudyBooleanModel(d_s1).setValue(false);
+		assertEquals(Collections.singletonList(d_s2), d_model.getSelectedStudiesModel().getValue());	
+	}
 }

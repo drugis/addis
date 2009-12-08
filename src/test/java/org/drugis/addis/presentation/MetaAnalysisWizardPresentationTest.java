@@ -10,8 +10,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
@@ -42,7 +40,8 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testGetIndicationSet() {
-		assertEquals(d_domain.getIndications(), d_wizard.getIndicationSet());
+		assertTrue(d_domain.getIndications().containsAll(d_wizard.getIndicationListModel().getValue()));
+		assertEquals(d_domain.getIndications().size(), d_wizard.getIndicationListModel().getValue().size());
 	}
 	
 	@Test
@@ -72,24 +71,26 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testGetEndpointSet() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		SortedSet<Endpoint> expected = new TreeSet<Endpoint>();
+		List<Endpoint> expected = new ArrayList<Endpoint>();
 		expected.add(ExampleData.buildEndpointCgi());
 		expected.add(ExampleData.buildEndpointHamd());
-		assertEquals(expected, d_wizard.getEndpointSet());
+		assertEquals(expected, d_wizard.getEndpointListModel().getValue());
 	}
 	
 	@Test
 	public void testGetEndpointSetNoIndication() {
-		assertNotNull(d_wizard.getEndpointSet());
-		assertTrue(d_wizard.getEndpointSet().isEmpty());
+		assertNotNull(d_wizard.getEndpointListModel().getValue());
+		assertTrue(d_wizard.getEndpointListModel().getValue().isEmpty());
 	}
 	
 	@Test
 	public void testLabelEndpointEvents() {
-		d_wizard.getIndicationModel().setValue(d_wizard.getIndicationSet().last());
+		List<Indication> indList = d_wizard.getIndicationListModel().getValue();
+		d_wizard.getIndicationModel().setValue(indList.get(indList.size()-1));
 		
-		Endpoint firstEndp = d_wizard.getEndpointSet().first();
-		Endpoint lastEndp = d_wizard.getEndpointSet().last();
+		List<Endpoint> endpointList = d_wizard.getEndpointListModel().getValue();
+		Endpoint firstEndp = endpointList.get(0);
+		Endpoint lastEndp = endpointList.get(endpointList.size() - 1);
 		
 		d_wizard.getEndpointModel().setValue(firstEndp);
 		
@@ -107,10 +108,11 @@ public class MetaAnalysisWizardPresentationTest {
 		
 	@Test
 	public void testLabelIndicationEvents() {
-		d_wizard.getIndicationModel().setValue(d_wizard.getIndicationSet().first());
+		List<Indication> indListModel = d_wizard.getIndicationListModel().getValue();
+		d_wizard.getIndicationModel().setValue(indListModel.get(0));
 		
-		Indication indic = d_wizard.getIndicationSet().first();	
-		Indication lastIndic = d_wizard.getIndicationSet().last();
+		Indication indic = indListModel.get(0);	
+		Indication lastIndic = indListModel.get(indListModel.size()-1);
 		
 		ValueModel model = d_wizard.getStudiesMeasuringLabelModel();
 		
@@ -126,10 +128,10 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testGetStudiesMeasuringLabelModel() {
-		d_wizard.getIndicationModel().setValue(d_wizard.getIndicationSet().first());
-		d_wizard.getEndpointModel().setValue(d_wizard.getEndpointSet().first());		
+		d_wizard.getIndicationModel().setValue(d_wizard.getIndicationListModel().getValue().get(0));
+		d_wizard.getEndpointModel().setValue(d_wizard.getEndpointListModel().getValue().get(0));		
 		
-		Indication indic = d_wizard.getIndicationSet().first();
+		Indication indic = d_wizard.getIndicationListModel().getValue().get(0);
 		Endpoint endp = (Endpoint) d_wizard.getEndpointModel().getValue();
 		
 		d_wizard.getIndicationModel().setValue(indic);		
@@ -162,7 +164,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		Endpoint newValue = ExampleData.buildEndpointCVdeath();
 		
-		assertTrue(!d_wizard.getEndpointSet().contains(newValue));
+		assertTrue(!d_wizard.getEndpointListModel().getValue().contains(newValue));
 		
 		ValueModel vm = d_wizard.getEndpointModel();
 		vm.setValue(newValue);
@@ -195,7 +197,7 @@ public class MetaAnalysisWizardPresentationTest {
 		Indication ind = ExampleData.buildIndicationDepression();
 		Endpoint ep = ExampleData.buildEndpointHamd();
 		
-		SortedSet<Drug> expected = new TreeSet<Drug>();
+		List<Drug> expected = new ArrayList<Drug>();
 		expected.add(ExampleData.buildDrugFluoxetine());
 		expected.add(ExampleData.buildDrugParoxetine());
 		expected.add(ExampleData.buildDrugSertraline());
@@ -203,7 +205,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getIndicationModel().setValue(ind);
 		d_wizard.getEndpointModel().setValue(ep);
 		
-		assertEquals(expected, d_wizard.getDrugSet());
+		assertEquals(expected, d_wizard.getDrugListModel().getValue());
 	}
 	
 	@Test
@@ -212,9 +214,9 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		d_wizard.getIndicationModel().setValue(ind);
 		assertNull(d_wizard.getEndpointModel().getValue());
-		assertNotNull(d_wizard.getDrugSet());
+		assertNotNull(d_wizard.getDrugListModel().getValue());
 		
-		assertEquals(new TreeSet<Drug>(), d_wizard.getDrugSet());
+		assertTrue(d_wizard.getDrugListModel().getValue().isEmpty());
 	}
 	
 	@Test
@@ -271,7 +273,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getIndicationModel().setValue(ind);
 		d_wizard.getEndpointModel().setValue(ep);
 		
-		assertTrue(!d_wizard.getDrugSet().contains(d));
+		assertTrue(!d_wizard.getDrugListModel().getValue().contains(d));
 		
 		vm.setValue(d);
 	}
@@ -295,17 +297,9 @@ public class MetaAnalysisWizardPresentationTest {
 	}
 	
 	@Test
-	public void testGetIndicationListModel() {
-		List<Indication> expected = new ArrayList<Indication>(d_wizard.getIndicationSet());
-		ListHolder<Indication> indicationList = d_wizard.getIndicationListModel();
-		List<Indication> list = indicationList.getValue();
-		assertEquals(expected, list);
-	}
-	
-	@Test
 	public void testGetEndpointListModel() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		List<Endpoint> expected = new ArrayList<Endpoint>(d_wizard.getEndpointSet());
+		List<Endpoint> expected = d_wizard.getEndpointListModel().getValue();
 		ListHolder<Endpoint> endpointList = d_wizard.getEndpointListModel();
 		assertEquals(expected, endpointList.getValue());
 	}
@@ -313,7 +307,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testEndpointListModelEventOnIndicationChange() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
-		List<Endpoint> newValue = new ArrayList<Endpoint>(d_wizard.getEndpointSet());
+		List<Endpoint> newValue = d_wizard.getEndpointListModel().getValue();
 		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		ValueModel endpointList = d_wizard.getEndpointListModel();
@@ -328,7 +322,7 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testGetDrugListModel() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
-		List<Drug> expected = new ArrayList<Drug>(d_wizard.getDrugSet());
+		List<Drug> expected = d_wizard.getDrugListModel().getValue();
 		ListHolder<Drug> drugList = d_wizard.getDrugListModel();
 		assertEquals(expected, drugList.getValue());
 	}
@@ -337,7 +331,7 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testDrugListModelEventOnEndpointChange() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
-		List<Drug> newValue = new ArrayList<Drug>(d_wizard.getDrugSet());
+		List<Drug> newValue = d_wizard.getDrugListModel().getValue();
 		
 		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
 		ValueModel drugList = d_wizard.getDrugListModel();
@@ -385,7 +379,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		
-		assertEquals(expected, d_wizard.getStudyList());
+		assertEquals(expected, d_wizard.getStudyListModel().getIncludedStudies().getValue());
 	}
 	
 	@Test
@@ -406,9 +400,7 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		// sanity checks
 		assertNull(unsetDrugModel.getValue());
-		assertNotNull(d_wizard.getStudyList());
-		
-		assertEquals(new ArrayList<Study>(), d_wizard.getStudyList());
+		assertTrue(d_wizard.getStudyListModel().getIncludedStudies().getValue().isEmpty());
 	}
 	
 	@Test
@@ -431,7 +423,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		
-		assertEquals(d_wizard.getStudyList(), d_wizard.getSelectedStudyList());
+		assertEquals(d_wizard.getStudyListModel().getIncludedStudies().getValue(), d_wizard.getStudyListModel().getSelectedStudiesModel().getValue());
 	}
 	
 	@Test
@@ -444,7 +436,7 @@ public class MetaAnalysisWizardPresentationTest {
 		RandomEffectsMetaAnalysis ma = d_wizard.createMetaAnalysis();
 		assertEquals(ma.getFirstDrug(), d_wizard.getFirstDrugModel().getValue());
 		assertEquals(ma.getSecondDrug(), d_wizard.getSecondDrugModel().getValue());
-		JUnitUtil.assertAllAndOnly((Collection<?>) d_wizard.getSelectedStudyList(), (Collection<?>) ma.getStudies());
+		JUnitUtil.assertAllAndOnly((Collection<?>) d_wizard.getStudyListModel().getSelectedStudiesModel().getValue(), (Collection<?>) ma.getStudies());
 		assertEquals(ma.getEndpoint(), d_wizard.getEndpointModel().getValue());
 		assertEquals(ma.getIndication(), d_wizard.getIndicationModel().getValue());
 	}

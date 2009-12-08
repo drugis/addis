@@ -11,9 +11,11 @@ public class DefaultListHolder<E> extends AbstractListHolder<E> {
 		d_list = list;
 	}
 	
-	public void setValue(List<E> newValue) {
+	@SuppressWarnings("unchecked")
+	@Override
+	public void setValue(Object newValue) {
 		List<E> oldValue = d_list;
-		d_list = newValue;
+		d_list = (List<E>) newValue;
 		fireValueChange(oldValue, newValue);
 	}
 
@@ -21,5 +23,4 @@ public class DefaultListHolder<E> extends AbstractListHolder<E> {
 	public List<E> getValue() {
 		return d_list;
 	}
-
 }
