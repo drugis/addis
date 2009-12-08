@@ -116,10 +116,10 @@ public abstract class RelativeEffectTableModelBaseTest {
 		assertEquals(d_relativeEffectClass, pm.getRelativeEffectAt(0).getClass());
 		assertEquals(d_standardStudy.toString(), pm.getStudyLabelAt(0));
 		assertEquals(1, pm.getNumRelativeEffects());
-		Measurement bl = pm.getRelativeEffectAt(0).getBaseline();
+		Measurement bl = (Measurement) pm.getRelativeEffectAt(0).getBaseline();
 		assertEquals(d_standardStudy.getPatientGroups().get(1),
 				bl.getPatientGroup());
-		Measurement subj = pm.getRelativeEffectAt(0).getSubject();
+		Measurement subj = (Measurement) pm.getRelativeEffectAt(0).getSubject();
 		assertEquals(d_standardStudy.getPatientGroups().get(0),
 				subj.getPatientGroup());
 		assertEquals(d_endpoint, pm.getEndpoint());
