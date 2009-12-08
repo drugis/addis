@@ -3,7 +3,7 @@ package org.drugis.addis.entities;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
-public class RiskDifference extends AbstractRatio {
+public class RiskDifference extends AbstractRelativeEffect<RateMeasurement> {
 	private static final long serialVersionUID = -6459490310869138478L;
 
 	public RiskDifference(RateMeasurement denominator, RateMeasurement numerator) {
@@ -22,7 +22,6 @@ public class RiskDifference extends AbstractRatio {
 	/**
 	 * Confidence interval for the mean difference.
 	 */
-	@Override
 	public Interval<Double> getConfidenceInterval() {
 		double t = StudentTTable.getT(getSampleSize() - 2);
 		double upper = getRelativeEffect() + t*getError();

@@ -4,6 +4,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Collections;
+import java.util.Set;
 
 public abstract class AbstractRelativeEffect<T extends Measurement> extends AbstractEntity implements RelativeEffect<T>{
 
@@ -44,6 +46,14 @@ public abstract class AbstractRelativeEffect<T extends Measurement> extends Abst
 
 	public T getBaseline() {
 		return d_baseline;
+	}
+
+	public Endpoint getEndpoint() {
+		return d_subject.getEndpoint();
+	}
+
+	public Set<Entity> getDependencies() {
+		return Collections.emptySet();
 	}
 
 	private class MemberListener implements PropertyChangeListener {

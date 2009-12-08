@@ -1,7 +1,5 @@
 package org.drugis.addis.entities;
 
-import java.util.Set;
-
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
@@ -25,10 +23,6 @@ public class MeanDifference extends AbstractRelativeEffect<ContinuousMeasurement
 		return new Interval<Double>(getRelativeEffect() - t*getError(),getRelativeEffect() + t*getError());
 	}
 
-	public Endpoint getEndpoint() {
-		return d_subject.getEndpoint();
-	}
-
 	public Double getRelativeEffect() {
 		return d_subject.getMean() - d_baseline.getMean();
 	}
@@ -40,11 +34,6 @@ public class MeanDifference extends AbstractRelativeEffect<ContinuousMeasurement
 	
 	private Double square(double x) {
 		return x*x;
-	}
-
-	@Override
-	public Set<Entity> getDependencies() {
-		return null;
 	}
 
 	public String getName() {

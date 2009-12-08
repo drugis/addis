@@ -19,8 +19,6 @@
 
 package org.drugis.addis.entities;
 
-import java.util.Collections;
-import java.util.Set;
 
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
@@ -32,19 +30,11 @@ public abstract class AbstractRatio extends AbstractRelativeEffect<RateMeasureme
 		super(numerator, denominator);
 	}
 	
-	public Endpoint getEndpoint() {
-		return d_subject.getEndpoint();
-	}
-
-	protected double getCriticalValue() {
+	private double getCriticalValue() {
 		return StudentTTable.getT(getSampleSize() - 2);
 	}
 
 	
-	public Set<Entity> getDependencies() {
-		return Collections.emptySet();
-	}
-
 	public Interval<Double> getConfidenceInterval() {
 		double lBound = Math.log(getRelativeEffect());
 		lBound -= getCriticalValue() * getError();
