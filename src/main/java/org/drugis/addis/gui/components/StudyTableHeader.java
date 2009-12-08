@@ -25,6 +25,10 @@ public class StudyTableHeader extends EnhancedTableHeader {
         	return "";
         }
         int realIndex = columnModel.getColumn(index).getModelIndex();
-        return d_model.getColumnName(realIndex); 
+        String columnName = d_model.getColumnName(realIndex);
+        if (columnName != null && columnName.length() == 0) {
+        	return null;
+        }
+		return columnName; 
     }
 }
