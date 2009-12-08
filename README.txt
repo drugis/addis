@@ -10,6 +10,8 @@ operating systems ship with a suitable JRE.
 
 Versions
 ========
+0.4.1 : Fixed example data (studies Org 022 and 023), changed domain
+	to be version-specific.
 0.4 : Added meta-analysis, removed combined studies and MCDA-hookup.
       Lots of minor changes.
 0.2 : Initial release.

@@ -98,6 +98,7 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame {
+	private static final String DOMAIN_DEFAULT_FILENAME = "domain-"+AppInfo.getAppVersion()+".dat";
 	private JComponent d_leftPanel;
 	private JScrollPane d_rightPanel;
 	private ViewBuilder d_rightPanelBuilder;
@@ -146,7 +147,7 @@ public class Main extends JFrame {
 	
 	protected void quitApplication() {
 		try {
-			saveDomainToFile("domain.dat");
+			saveDomainToFile(DOMAIN_DEFAULT_FILENAME);
 			System.exit(0);			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this,
@@ -169,7 +170,7 @@ public class Main extends JFrame {
 		d_domain = new DomainManager();
 		
 		try {
-			loadDomainFromFile("domain.dat");
+			loadDomainFromFile(DOMAIN_DEFAULT_FILENAME);
 		} catch (Exception e) {
 			MainData.initDefaultData(getDomain());
 		}

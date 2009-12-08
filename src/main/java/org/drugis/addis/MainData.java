@@ -283,7 +283,9 @@ public class MainData extends ExampleData {
 		BasicPatientGroup remr = new BasicPatientGroup(remeron, dose, 47);
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(remr);
 		pCgi.setMean(1.94);
-		pCgi.setStdDev(0.23);
+		// 0.23 is the SE of mean
+		//pCgi.setStdDev(0.23);
+		pCgi.setStdDev(1.577);		
 		study.addPatientGroup(remr);
 		study.setMeasurement(cgis, remr, pCgi);
 
@@ -292,7 +294,9 @@ public class MainData extends ExampleData {
 		BasicPatientGroup amit = new BasicPatientGroup(amitriptyline, dose, 47);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(amit);
 		pCgi.setMean(1.57);
-		pCgi.setStdDev(0.19);
+		//0.19 is the SE of mean
+		//pCgi.setStdDev(0.19);
+		pCgi.setStdDev(1.303);
 		study.addPatientGroup(amit);
 		study.setMeasurement(cgis, amit, pCgi);
 		
@@ -300,8 +304,10 @@ public class MainData extends ExampleData {
 		dose = new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup plac = new BasicPatientGroup(placebo, dose, 48);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(plac);
-		pCgi.setMean(.85);
-		pCgi.setStdDev(.19);
+		pCgi.setMean(0.85);
+		// 0.19 is the SE of mean
+		//pCgi.setStdDev(0.19);
+		pCgi.setStdDev(1.316);		
 		study.addPatientGroup(plac);
 		study.setMeasurement(cgis, plac, pCgi);
 		
@@ -344,7 +350,9 @@ public class MainData extends ExampleData {
 		BasicPatientGroup remr = new BasicPatientGroup(remeron, dose, 49);
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(remr);
 		pCgi.setMean(.8);
-		pCgi.setStdDev(0.18);
+		// 0.18 is the SE of the mean
+		//pCgi.setStdDev(0.18);
+		pCgi.setStdDev(1.260);		
 		study.addPatientGroup(remr);
 		study.setMeasurement(cgis, remr, pCgi);
 
@@ -353,7 +361,9 @@ public class MainData extends ExampleData {
 		BasicPatientGroup traz = new BasicPatientGroup(trazodone, dose, 48);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(traz);
 		pCgi.setMean(.62);
-		pCgi.setStdDev(0.16);
+		// 0.16 is the SE of the mean
+		//pCgi.setStdDev(0.16);
+		pCgi.setStdDev(1.109);		
 		study.addPatientGroup(traz);
 		study.setMeasurement(cgis, traz, pCgi);
 		
@@ -361,8 +371,10 @@ public class MainData extends ExampleData {
 		dose = new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup plac = new BasicPatientGroup(placebo, dose, 49);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(plac);
-		pCgi.setMean(.59);
-		pCgi.setStdDev(.16);
+		pCgi.setMean(0.59);
+		// 0.16 is the SE of the mean
+		//pCgi.setStdDev(0.16);
+		pCgi.setStdDev(1.120);		
 		study.addPatientGroup(plac);
 		study.setMeasurement(cgis, plac, pCgi);
 		
