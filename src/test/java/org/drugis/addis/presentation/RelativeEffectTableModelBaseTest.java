@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
@@ -115,10 +116,12 @@ public abstract class RelativeEffectTableModelBaseTest {
 		assertEquals(d_relativeEffectClass, pm.getRelativeEffectAt(0).getClass());
 		assertEquals(d_standardStudy.toString(), pm.getStudyLabelAt(0));
 		assertEquals(1, pm.getNumRelativeEffects());
+		Measurement bl = pm.getRelativeEffectAt(0).getBaseline();
 		assertEquals(d_standardStudy.getPatientGroups().get(1),
-				pm.getRelativeEffectAt(0).getBaseline().getPatientGroup());
+				bl.getPatientGroup());
+		Measurement subj = pm.getRelativeEffectAt(0).getSubject();
 		assertEquals(d_standardStudy.getPatientGroups().get(0),
-				pm.getRelativeEffectAt(0).getSubject().getPatientGroup());
+				subj.getPatientGroup());
 		assertEquals(d_endpoint, pm.getEndpoint());
 	}
 
