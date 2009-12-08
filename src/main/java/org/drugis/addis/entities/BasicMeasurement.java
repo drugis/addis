@@ -19,8 +19,6 @@
 
 package org.drugis.addis.entities;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.Set;
 
@@ -38,14 +36,6 @@ public abstract class BasicMeasurement extends AbstractEntity implements Measure
 	public BasicMeasurement(Endpoint e, PatientGroup p) {
 		d_endpoint = e;
 		d_patientGroup = p;
-		d_patientGroup.addPropertyChangeListener(new PropertyChangeListener() {
-			
-			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getPropertyName().equals(PatientGroup.PROPERTY_SIZE)){
-					firePropertyChange(PROPERTY_SAMPLESIZE, event.getOldValue(), event.getNewValue());
-				}
-			}
-		});
 	}
 	
 	public Endpoint getEndpoint() {
@@ -58,10 +48,6 @@ public abstract class BasicMeasurement extends AbstractEntity implements Measure
 		firePropertyChange(PROPERTY_ENDPOINT, oldVal, d_endpoint);
 	}
 
-	public Integer getSampleSize() {
-		return d_patientGroup.getSize();
-	}
-	
 	@Override
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();

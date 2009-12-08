@@ -39,8 +39,8 @@ public class RiskRatio extends AbstractRatio {
 	public Double getError() { //NB: this is the LOG error
 		return Math.sqrt((1.0 / this.d_numerator.getRate()) +
 				(1.0 / this.d_denominator.getRate()) -
-				(1.0 / this.d_numerator.getSampleSize()) -
-				(1.0 / this.d_denominator.getSampleSize()));		
+				(1.0 / this.d_numerator.getPatientGroup().getSize()) -
+				(1.0 / this.d_denominator.getPatientGroup().getSize()));		
 	}
 
 	public String getName() {
@@ -48,6 +48,7 @@ public class RiskRatio extends AbstractRatio {
 	}
 	
 	public Double getRelativeEffect() {
-		return ((double) d_numerator.getRate() / (double) d_numerator.getSampleSize()) / ((double) d_denominator.getRate() / (double) d_denominator.getSampleSize());  
+		return ((double) d_numerator.getRate() / (double) d_numerator.getPatientGroup().getSize()) 
+			/ ((double) d_denominator.getRate() / (double) d_denominator.getPatientGroup().getSize());  
 	}
 }

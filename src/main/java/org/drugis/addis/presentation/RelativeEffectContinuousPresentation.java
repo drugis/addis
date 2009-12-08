@@ -17,10 +17,8 @@ public class RelativeEffectContinuousPresentation extends PresentationModel<Rela
 		public LabelModel() {
 			getNumerator().getModel(ContinuousMeasurement.PROPERTY_MEAN).addPropertyChangeListener(this);
 			getNumerator().getModel(ContinuousMeasurement.PROPERTY_STDDEV).addPropertyChangeListener(this);
-			getNumerator().getModel(ContinuousMeasurement.PROPERTY_SAMPLESIZE).addPropertyChangeListener(this);
 			getDenominator().getModel(ContinuousMeasurement.PROPERTY_MEAN).addPropertyChangeListener(this);
 			getDenominator().getModel(ContinuousMeasurement.PROPERTY_STDDEV).addPropertyChangeListener(this);
-			getDenominator().getModel(ContinuousMeasurement.PROPERTY_SAMPLESIZE).addPropertyChangeListener(this);
 		}
 		
 		public void propertyChange(PropertyChangeEvent evt) {

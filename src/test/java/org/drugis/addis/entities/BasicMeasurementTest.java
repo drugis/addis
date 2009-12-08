@@ -20,16 +20,9 @@
 package org.drugis.addis.entities;
 
 
-import java.beans.PropertyChangeListener;
-
-
-import org.drugis.addis.entities.BasicMeasurement;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
-
-import static org.easymock.EasyMock.*;
 
 public class BasicMeasurementTest {
 	private Endpoint d_endpoint = new Endpoint("E", Type.RATE);
@@ -47,16 +40,5 @@ public class BasicMeasurementTest {
 	@Test
 	public void testSetEndpoint() {
 		JUnitUtil.testSetter(instance(), BasicMeasurement.PROPERTY_ENDPOINT, d_endpoint, new Endpoint("x", Type.RATE));
-	}
-	
-	@Test
-	public void testSizeEvent() {
-		int newVal = 100;
-		BasicMeasurement instance = instance();
-		PropertyChangeListener l = JUnitUtil.mockStrictListener(instance,
-				BasicMeasurement.PROPERTY_SAMPLESIZE, 0, newVal);
-		instance.addPropertyChangeListener(l);
-		d_BasicPatientGroup.setSize(100);
-		verify(l);
 	}
 }

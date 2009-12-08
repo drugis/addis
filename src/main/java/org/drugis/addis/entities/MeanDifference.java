@@ -28,7 +28,7 @@ public class MeanDifference extends AbstractEntity implements RelativeEffectCont
 	}
 	
 	public Interval<Double> getConfidenceInterval() {
-		double t = StudentTTable.getT(d_subject.getSampleSize() + d_baseline.getSampleSize() - 2);
+		double t = StudentTTable.getT(d_subject.getPatientGroup().getSize() + d_baseline.getPatientGroup().getSize() - 2);
 		return new Interval<Double>(getRelativeEffect() - t*getError(),getRelativeEffect() + t*getError());
 	}
 
@@ -49,12 +49,12 @@ public class MeanDifference extends AbstractEntity implements RelativeEffectCont
 	}
 	
 	public Double getError() {
-		return Math.sqrt(square(d_subject.getStdDev()) / (double) d_subject.getSampleSize() 
-						+ square(d_baseline.getStdDev()) / (double) d_baseline.getSampleSize());
+		return Math.sqrt(square(d_subject.getStdDev()) / (double) d_subject.getPatientGroup().getSize() 
+						+ square(d_baseline.getStdDev()) / (double) d_baseline.getPatientGroup().getSize());
 	}
 
 	public Integer getSampleSize() {
-		return d_subject.getSampleSize() + d_baseline.getSampleSize();
+		return d_subject.getPatientGroup().getSize() + d_baseline.getPatientGroup().getSize();
 	}
 	
 	private Double square(double x) {

@@ -21,7 +21,7 @@ package org.drugis.addis.entities;
 
 import java.util.Set;
 
-public class BasicPatientGroup extends AbstractEntity implements MutablePatientGroup {
+public class BasicPatientGroup extends AbstractEntity implements PatientGroup {
 	private static final long serialVersionUID = -2092185548220089471L;
 	private Integer d_size;
 	private Drug d_drug;

@@ -165,38 +165,7 @@ public class BasicStudyTest {
 		dep.addAll(s.getDrugs());
 		dep.add((Indication) s.getCharacteristic(StudyCharacteristic.INDICATION));
 		assertEquals(dep, s.getDependencies());
-	}
-	
-	@Test
-	public void testSetMeasurementSetsSampleSize() {
-		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
-		Endpoint endpoint = new Endpoint("e", Type.RATE);
-		study.addEndpoint(endpoint);
-		BasicPatientGroup pg = new BasicPatientGroup(null, null, 100);
-		study.addPatientGroup(pg);
-		BasicRateMeasurement m = new BasicRateMeasurement(endpoint, 12, pg);
-		m.setEndpoint(endpoint);
-		study.setMeasurement(endpoint, pg, m);
-		
-		assertEquals(100, (int)study.getMeasurement(endpoint, pg).getSampleSize());		
-	}
-		
-	
-	@Test
-	public void testPatientGroupSizeChangeChangesMeasurement() {
-		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
-		Endpoint endpoint = new Endpoint("e", Type.RATE);
-		study.addEndpoint(endpoint);
-		BasicPatientGroup pg = new BasicPatientGroup(null, null, 100);
-		study.addPatientGroup(pg);
-		BasicRateMeasurement m = new BasicRateMeasurement(endpoint, 0, pg);
-		m.setEndpoint(endpoint);
-		m.setRate(12);
-		study.setMeasurement(endpoint, pg, m);
-		
-		pg.setSize(50);
-		assertEquals(50, (int)study.getMeasurement(endpoint, pg).getSampleSize());		
-	}
+	}	
 	
 	@Test
 	public void testDeleteEndpoint() throws Exception {

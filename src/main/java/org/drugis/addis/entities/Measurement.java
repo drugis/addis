@@ -28,13 +28,10 @@ import com.jgoodies.binding.beans.Observable;
 
 public interface Measurement extends Observable, Serializable {
 	public static final String PROPERTY_ENDPOINT = "endpoint";
-	public static final String PROPERTY_SAMPLESIZE = "sampleSize";
 
 	public Endpoint getEndpoint();
 	
 	public PatientGroup getPatientGroup();
-
-	public Integer getSampleSize();
 	
 	public boolean isOfType(Type type);
 }

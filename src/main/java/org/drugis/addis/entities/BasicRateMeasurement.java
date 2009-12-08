@@ -40,7 +40,7 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 
 	@Override
 	public String toString() {
-		Integer size = getSampleSize();
+		Integer size = getPatientGroup().getSize();
 		if (d_rate == null || size == null) {
 			return "INCOMPLETE";
 		}

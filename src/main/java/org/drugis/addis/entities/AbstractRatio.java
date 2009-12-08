@@ -53,7 +53,7 @@ public abstract class AbstractRatio extends AbstractEntity implements RelativeEf
 	}
 
 	public Integer getSampleSize() {
-		return d_numerator.getSampleSize() + d_denominator.getSampleSize();
+		return d_numerator.getPatientGroup().getSize() + d_denominator.getPatientGroup().getSize();
 	}
 
 	protected double getCriticalValue() {

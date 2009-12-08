@@ -16,9 +16,7 @@ public class RelativeEffectRatePresentation extends PresentationModel<RelativeEf
 	public class LabelModel extends AbstractValueModel implements PropertyChangeListener {
 		public LabelModel() {
 			getNumerator().getModel(RateMeasurement.PROPERTY_RATE).addPropertyChangeListener(this);
-			getNumerator().getModel(RateMeasurement.PROPERTY_SAMPLESIZE).addPropertyChangeListener(this);
 			getDenominator().getModel(RateMeasurement.PROPERTY_RATE).addPropertyChangeListener(this);
-			getDenominator().getModel(RateMeasurement.PROPERTY_SAMPLESIZE).addPropertyChangeListener(this);
 		}
 		
 		public void propertyChange(PropertyChangeEvent evt) {

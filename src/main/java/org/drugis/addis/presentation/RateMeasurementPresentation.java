@@ -3,6 +3,7 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.RateMeasurement;
 
 import com.jgoodies.binding.PresentationModel;
@@ -14,10 +15,11 @@ public class RateMeasurementPresentation extends PresentationModel<RateMeasureme
 
 		public LabelModel() {
 			getBean().addPropertyChangeListener(this);
+			getBean().getPatientGroup().addPropertyChangeListener(this);
 		}
 
 		private Integer getSize() {
-			return getBean().getSampleSize();
+			return getBean().getPatientGroup().getSize();
 		}
 		
 		private Integer getRate() {
@@ -39,7 +41,7 @@ public class RateMeasurementPresentation extends PresentationModel<RateMeasureme
 			if (evt.getPropertyName().equals(RateMeasurement.PROPERTY_RATE)) {
 				firePropertyChange("value", generateLabel((Integer) evt.getOldValue(), getSize()), generateLabel((Integer) evt.getNewValue(), getSize()));
 			}
-			else if (evt.getPropertyName().equals(RateMeasurement.PROPERTY_SAMPLESIZE)) {
+			else if (evt.getPropertyName().equals(PatientGroup.PROPERTY_SIZE)) {
 				firePropertyChange("value", generateLabel(getRate(), (Integer) evt.getOldValue()), generateLabel(getRate(), (Integer) evt.getNewValue()));
 			}
 		}
