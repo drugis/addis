@@ -22,6 +22,7 @@ package org.drugis.addis.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
@@ -123,15 +124,10 @@ public class Main extends JFrame {
 				quitApplication();
 			}
 		});
-		addComponentListener(new ComponentListener() {
-			public void componentHidden(ComponentEvent arg0) {
-			}
-			public void componentMoved(ComponentEvent arg0) {
-			}
+		addComponentListener(new ComponentAdapter() {
+			@Override
 			public void componentResized(ComponentEvent arg0) {
 				setRightPanelViewSize();
-			}
-			public void componentShown(ComponentEvent arg0) {
 			}
 		});
 
