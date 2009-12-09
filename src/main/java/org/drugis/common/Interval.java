@@ -24,4 +24,22 @@ public class Interval<N extends Number> implements Serializable {
 	public double getLength() {
 		return d_upperBound.doubleValue() - d_lowerBound.doubleValue();
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Interval<?>) {
+			Interval<?> in = (Interval<?>) o;
+			if (in.getLowerBound().getClass().equals(getLowerBound().getClass())) {
+				return ((getLowerBound().equals(in.getLowerBound())) && (getUpperBound().equals(in.getUpperBound())));
+			}
+		} 
+		
+		return false;
+		
+	}
+	
+	@Override
+	public String toString() {
+		return getLowerBound().toString() + " - " + getUpperBound().toString();
+	}
 }

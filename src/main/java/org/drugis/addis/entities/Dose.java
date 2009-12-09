@@ -23,23 +23,35 @@ import static org.drugis.common.EqualsUtil.equal;
 
 import java.util.Set;
 
+import org.drugis.common.Interval;
+
 public class Dose extends AbstractEntity {
 	private static final long serialVersionUID = -8789524312421940513L;
 	private SIUnit d_unit;
 	private Double d_quantity;
+	private Interval<Double> d_flexDose;
+	private final boolean d_isFlexibleDose;
 	
 	public static final String PROPERTY_UNIT = "unit";
 	public static final String PROPERTY_QUANTITY = "quantity";
+	public static final String PROPERTY_FLEXIBLEDOSE = "flexibleDose";
 	
 	protected Dose() {
-		
+		d_isFlexibleDose = false;
 	}
 	
 	public Dose(double quantity, SIUnit unit) {
 		d_quantity = quantity;
 		d_unit = unit;
+		d_isFlexibleDose = false;
 	}
 	
+	public Dose(Interval<Double> flexDose, SIUnit unit) {
+		d_flexDose = flexDose;
+		d_unit = unit;
+		d_isFlexibleDose = true;
+	}
+
 	public SIUnit getUnit() {
 		return d_unit;
 	}
@@ -51,28 +63,53 @@ public class Dose extends AbstractEntity {
 	}
 
 	public Double getQuantity() {
+		if (isFlexible())
+			throw new IllegalArgumentException("Current dose is flexible");
 		return d_quantity;
 	}
 	
 	public void setQuantity(Double quantity) {
+		if (isFlexible())
+			throw new IllegalArgumentException("Current dose is flexible");
 		Double oldVal = d_quantity;
 		d_quantity = quantity;
 		firePropertyChange(PROPERTY_QUANTITY, oldVal, d_quantity);
 	}
 	
+	public Interval<Double> getFlexibleDose() {
+		if (!isFlexible())
+			throw new IllegalArgumentException("Current dose is not flexible");
+		return d_flexDose;
+	}
+	
+	public void setFlexibleDose(Interval<Double> flexdose) {
+		if (!isFlexible())
+			throw new IllegalArgumentException("Current dose is not flexible");
+		Interval<Double> oldVal = d_flexDose;
+		d_flexDose = flexdose;
+		firePropertyChange(PROPERTY_FLEXIBLEDOSE, oldVal, d_flexDose);
+	}
+
+	public boolean isFlexible() {
+		return d_isFlexibleDose;
+	}
+	
 	public String toString() {
-		if (d_quantity == null || d_unit == null) {
+		if ((d_quantity == null && d_flexDose == null) || d_unit == null) {
 			return "INCOMPLETE";
 		}
-		return d_quantity.toString() + " " + d_unit.toString();
+		return isFlexible() ? d_flexDose.toString() + " " + d_unit.toString() : d_quantity.toString() + " " + d_unit.toString();
 	}
 	
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Dose) {
 			Dose other = (Dose)o;
-			return equal(other.getQuantity(), getQuantity()) &&
-				equal(other.getUnit(), getUnit());
+			if (isFlexible())
+				return equal(other.getFlexibleDose(), getFlexibleDose()) && equal(other.getUnit(), getUnit());
+			else
+				return equal(other.getQuantity(), getQuantity()) &&
+					equal(other.getUnit(), getUnit());
 		}
 		return false;
 	}
@@ -80,7 +117,8 @@ public class Dose extends AbstractEntity {
 	@Override
 	public int hashCode() {
 		int hash = 1;
-		hash = hash * 31 + getQuantity().hashCode();
+		hash *= 31; 
+		hash += isFlexible() ? getFlexibleDose().hashCode() : getQuantity().hashCode();
 		hash = hash * 31 + getUnit().hashCode();
 		return hash;
 	}
