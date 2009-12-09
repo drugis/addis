@@ -19,8 +19,13 @@
 
 package org.drugis.addis;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 
 public class AppInfo {
@@ -33,6 +38,49 @@ public class AppInfo {
 
 	public static String getAppName() {
 		return getProperty("name", APPNAMEFALLBACK);
+	}
+	
+	public static String getLatestVersion() {
+		URL updateWebService;
+		try {
+			updateWebService = new URL("http://drugis.org/service/currentVersion");
+			URLConnection conn = updateWebService.openConnection();
+			String line =  (new BufferedReader(new InputStreamReader(conn.getInputStream()))).readLine();
+			
+			StringTokenizer st = new StringTokenizer(line);
+			
+			String latestversion = st.nextToken(); 
+			
+			boolean newversion = compareVersion(latestversion, getAppVersion());
+			
+			return !newversion ? null : latestversion;
+		} catch (Exception e) {
+			System.err.println("Warning: Couldn't check for new versions. Connection issue?");
+		}
+		
+		return null;
+	}
+
+	private static boolean compareVersion(String latestversion, String appVersion) {
+		if (appVersion.equals(APPVERSIONFALLBACK))
+			return false;		
+		
+		StringTokenizer latestT = new StringTokenizer(latestversion, ".-");
+		StringTokenizer currentT = new StringTokenizer(appVersion, ".-");
+		
+		while (latestT.hasMoreElements()) {
+			try {
+				Integer latest = Integer.parseInt(latestT.nextToken());
+				Integer current = Integer.parseInt(currentT.nextToken());
+				if (latest > current)
+					return true;
+			} catch (NumberFormatException e) {
+				System.err.println("Couldn't compare versions:" + appVersion + " to " + latestversion);
+				return false;
+			}
+		}
+		
+		return false;
 	}
 
 	private static String getProperty(String property, String fallback) {
