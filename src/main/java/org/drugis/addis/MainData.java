@@ -18,6 +18,7 @@ import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.common.Interval;
 
 public class MainData extends ExampleData {
 	
@@ -279,7 +280,7 @@ public class MainData extends ExampleData {
 		study.setCharacteristic(StudyCharacteristic.STUDY_END, new GregorianCalendar(1990, 1, 26).getTime());
 		
 		// Remeron data
-		Dose dose = new Dose(20.0, SIUnit.MILLIGRAMS_A_DAY);
+		Dose dose = new Dose(new Interval<Double>(5.0, 35.0), SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup remr = new BasicPatientGroup(remeron, dose, 47);
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(remr);
 		pCgi.setMean(1.94);
@@ -290,7 +291,7 @@ public class MainData extends ExampleData {
 		study.setMeasurement(cgis, remr, pCgi);
 
 		// Amitriptyline data
-		dose = new Dose(150.0, SIUnit.MILLIGRAMS_A_DAY);
+		dose = new Dose(new Interval<Double>(40.0, 280.0), SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup amit = new BasicPatientGroup(amitriptyline, dose, 47);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(amit);
 		pCgi.setMean(1.57);
@@ -346,7 +347,7 @@ public class MainData extends ExampleData {
 		study.setCharacteristic(StudyCharacteristic.STUDY_END, new GregorianCalendar(1992, 4, 1).getTime());
 		
 		// Remeron data
-		Dose dose = new Dose(20.0, SIUnit.MILLIGRAMS_A_DAY);
+		Dose dose = new Dose(new Interval<Double>(5.0, 35.0), SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup remr = new BasicPatientGroup(remeron, dose, 49);
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(remr);
 		pCgi.setMean(.8);
@@ -357,7 +358,7 @@ public class MainData extends ExampleData {
 		study.setMeasurement(cgis, remr, pCgi);
 
 		// Trazodone data
-		dose = new Dose(160.0, SIUnit.MILLIGRAMS_A_DAY);
+		dose = new Dose(new Interval<Double>(40.0, 280.0), SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup traz = new BasicPatientGroup(trazodone, dose, 48);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(traz);
 		pCgi.setMean(.62);

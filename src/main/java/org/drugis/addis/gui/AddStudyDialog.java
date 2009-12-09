@@ -41,6 +41,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.gui.builder.AddStudyView;
+import org.drugis.common.Interval;
 import org.drugis.common.gui.OkCancelDialog;
 
 
@@ -142,7 +143,7 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	private void addNewPatientGroup() {
-		BasicPatientGroup group = new BasicPatientGroup(null, new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY),
+		BasicPatientGroup group = new BasicPatientGroup(null, new Dose(new Interval<Double>(0.0,0.0), SIUnit.MILLIGRAMS_A_DAY),
 				0);
 		d_study.addPatientGroup(group);
 		if (d_primaryEndpoint.getEndpoint() != null) {
@@ -158,12 +159,23 @@ public class AddStudyDialog extends OkCancelDialog {
 
 	@Override
 	protected void commit() {
+		for (BasicPatientGroup pg : d_study.getPatientGroups()) {
+			validateFlexibleDose(pg);
+		}
+			
 		bindEndpoint();
 		d_domain.addStudy(d_study);
 		setVisible(false);
 		d_main.leftTreeFocusOnStudy(d_study);
 	}
 
+	private void validateFlexibleDose(BasicPatientGroup pg) {
+		Dose oldDose = pg.getDose();
+		
+		if (oldDose.getMinDose() >= oldDose.getMaxDose())
+			pg.setDose(new Dose(oldDose.getMinDose(), oldDose.getUnit()));
+	}
+	
 	private void bindEndpoint() {
 		d_study.setEndpoints(new HashSet<Endpoint>(d_primaryEndpoint.asList()));
 		for (PatientGroup g : d_study.getPatientGroups()) {

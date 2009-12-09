@@ -40,6 +40,6 @@ public class Interval<N extends Number> implements Serializable {
 	
 	@Override
 	public String toString() {
-		return getLowerBound().toString() + " - " + getUpperBound().toString();
+		return getLowerBound().toString() + "-" + getUpperBound().toString();
 	}
 }

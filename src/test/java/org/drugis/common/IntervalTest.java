@@ -46,6 +46,6 @@ public class IntervalTest {
 	@Test
 	public void testToString() {
 		Interval<Double> in = new Interval<Double>(1.0, 6.0);
-		assertEquals("1.0 - 6.0", in.toString());
+		assertEquals("1.0-6.0", in.toString());
 	}
 }

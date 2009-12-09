@@ -24,6 +24,7 @@ import java.util.Map;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.gui.builder.StudyAddPatientGroupView;
@@ -57,11 +58,21 @@ public class StudyAddPatientGroupDialog extends OkCancelDialog {
 	@Override
 	protected void commit() {
 		BasicPatientGroup pg = d_view.getPatientGroup();
+		
+		validateFlexibleDose();
+				
 		d_study.addPatientGroup(pg);
 		for (Map.Entry<Endpoint, Measurement> entry : d_view.getMeasurements().entrySet()) {
 			d_study.setMeasurement(entry.getKey(), pg, entry.getValue());
 		}
 		setVisible(false);
 		d_main.leftTreeFocusOnStudy(d_study);
+	}
+
+	private void validateFlexibleDose() {
+		Dose oldDose = d_view.getPatientGroup().getDose();
+		
+		if (oldDose.getMinDose() >= oldDose.getMaxDose())
+			d_view.getPatientGroup().setDose(new Dose(oldDose.getMinDose(), oldDose.getUnit()));
 	}	
 }

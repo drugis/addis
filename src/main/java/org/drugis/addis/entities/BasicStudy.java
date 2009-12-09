@@ -108,10 +108,16 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 	private void updateCharateristics() {
 		if (getSampleSize() != 0)
 			d_chars.put(StudyCharacteristic.STUDYSIZE, getSampleSize());
+		
+		d_chars.put(StudyCharacteristic.FLEXIBLE_DOSE, StudyCharacteristic.YesNo.NO);
 		SortedSet<Drug> drugs = new TreeSet<Drug>();		
 		for (PatientGroup pg : d_patientGroups) {
-			if (pg.getDrug() != null)
+			if (pg.getDrug() != null) {
 				drugs.add(pg.getDrug());
+				if (pg.getDose() != null)
+					if (pg.getDose().isFlexible())
+						d_chars.put(StudyCharacteristic.FLEXIBLE_DOSE, StudyCharacteristic.YesNo.YES);
+			}
 		}
 		d_chars.put(StudyCharacteristic.DRUGS, drugs);
 	}

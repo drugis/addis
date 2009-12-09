@@ -35,6 +35,8 @@ public class Dose extends AbstractEntity {
 	public static final String PROPERTY_UNIT = "unit";
 	public static final String PROPERTY_QUANTITY = "quantity";
 	public static final String PROPERTY_FLEXIBLEDOSE = "flexibleDose";
+	public static final String PROPERTY_MIN_DOSE = "minDose";
+	public static final String PROPERTY_MAX_DOSE = "maxDose";
 	
 	protected Dose() {
 		d_isFlexibleDose = false;
@@ -82,12 +84,44 @@ public class Dose extends AbstractEntity {
 		return d_flexDose;
 	}
 	
+	public Double getMinDose() {
+		if (!isFlexible())
+			throw new IllegalArgumentException("Current dose is not flexible");
+		return d_flexDose.getLowerBound();
+	}
+	
+	public Double getMaxDose() {
+		if (!isFlexible())
+			throw new IllegalArgumentException("Current dose is not flexible");
+		return d_flexDose.getUpperBound();
+	}
+	
 	public void setFlexibleDose(Interval<Double> flexdose) {
 		if (!isFlexible())
 			throw new IllegalArgumentException("Current dose is not flexible");
 		Interval<Double> oldVal = d_flexDose;
 		d_flexDose = flexdose;
 		firePropertyChange(PROPERTY_FLEXIBLEDOSE, oldVal, d_flexDose);
+	}
+	
+	public void setMinDose(Double d) {
+		if (!isFlexible())
+			throw new IllegalArgumentException("Current dose is not flexible");
+		Interval<Double> oldVal = d_flexDose;
+		d_flexDose = new Interval<Double>(d, d > oldVal.getUpperBound() ? d : oldVal.getUpperBound());
+		firePropertyChange(PROPERTY_FLEXIBLEDOSE, oldVal, d_flexDose);
+		firePropertyChange(PROPERTY_MIN_DOSE, oldVal.getLowerBound(), d_flexDose.getLowerBound());
+		firePropertyChange(PROPERTY_MAX_DOSE, oldVal.getUpperBound(), d_flexDose.getUpperBound());
+	}
+	
+	public void setMaxDose(Double d) {
+		if (!isFlexible())
+			throw new IllegalArgumentException("Current dose is not flexible");
+		Interval<Double> oldVal = d_flexDose;
+		d_flexDose = new Interval<Double>(d < oldVal.getLowerBound() ? d : oldVal.getLowerBound(), d);
+		firePropertyChange(PROPERTY_FLEXIBLEDOSE, oldVal, d_flexDose);
+		firePropertyChange(PROPERTY_MIN_DOSE, oldVal.getLowerBound(), d_flexDose.getLowerBound());
+		firePropertyChange(PROPERTY_MAX_DOSE, oldVal.getUpperBound(), d_flexDose.getUpperBound());
 	}
 
 	public boolean isFlexible() {

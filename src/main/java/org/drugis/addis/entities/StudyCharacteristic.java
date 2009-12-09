@@ -43,7 +43,7 @@ public enum StudyCharacteristic {
 			POSITIVE_INTEGER(Integer.class),
 			DATE(Date.class),
 			DRUGS(SortedSet.class),
-			FLEXIBLE_DOSE(Boolean.class),
+			FLEXIBLE_DOSE(YesNo.class),
 			INDICATION(Indication.class),
 			ALLOCATION(Allocation.class),
 			BLINDING(Blinding.class),
@@ -67,6 +67,11 @@ public enum StudyCharacteristic {
 				}
 				return true;
 			}
+		}
+		
+		public enum YesNo {
+			YES,
+			NO
 		}
 		
 		public enum Allocation {

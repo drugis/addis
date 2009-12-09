@@ -33,32 +33,11 @@ public class BasicPatientGroupPresentationTest {
 		group.setDose(dose);
 		Drug drug = new Drug("Fluoxetine", "atc");
 		group.setDrug(drug);
-		assertEquals("Fluoxetine " + dose.toString(), pres.getLabelModel().getValue());
+		assertEquals("Fluoxetine", pres.getLabelModel().getValue());
 	}
-	
+		
 	@Test
 	public void testFireLabelChanged() {
-		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(d_pg);
-		
-		d_pg.setDrug(new Drug("Fluoxetine", "atc"));
-		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-	
-		d_pg.setDose(dose);
-		String expect = (String) pres.getLabelModel().getValue();
-		
-		d_pg.setDose(null);
-		assertEquals("INCOMPLETE", pres.getLabelModel().getValue());
-		
-		AbstractValueModel lm = pres.getLabelModel();
-		PropertyChangeListener l = JUnitUtil.mockListener(lm, "value", "INCOMPLETE", expect);
-		lm.addPropertyChangeListener(l);
-		d_pg.setDose(dose);
-		assertEquals(expect, pres.getLabelModel().getValue());
-		verify(l);
-	}
-		
-	@Test
-	public void testFireLabelChanged2() {
 		Drug drug = new Drug("Fluoxetine", "atc");
 		Drug drug2 = new Drug("Paroxetine", "atc");
 		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);

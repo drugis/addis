@@ -4,7 +4,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.BasicPatientGroup;
-import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.PatientGroup;
 
@@ -17,19 +16,15 @@ public class BasicPatientGroupPresentation extends PresentationModel<BasicPatien
 		private String d_cachedLabel;
 		
 		public LabelModel() {
-			d_cachedLabel = calcLabel(getDrug(), getDose());
+			d_cachedLabel = calcLabel(getDrug());
 			getBean().addPropertyChangeListener(this);
 		}
 		
-		private String calcLabel(Drug drug, Dose dose) {
-			if (drug == null || dose == null) {
+		private String calcLabel(Drug drug) {
+			if (drug == null) {
 				return "INCOMPLETE";
 			}
-			return drug.toString() + " " + dose.toString();
-		}
-
-		private Dose getDose() {
-			return getBean().getDose();
+			return drug.toString();
 		}
 
 		private Drug getDrug() {
@@ -43,11 +38,7 @@ public class BasicPatientGroupPresentation extends PresentationModel<BasicPatien
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equals(PatientGroup.PROPERTY_DRUG)) {
 				String oldVal = d_cachedLabel;
-				d_cachedLabel = calcLabel((Drug)evt.getNewValue(), getDose());
-				firePropertyChange("value", oldVal, d_cachedLabel);
-			} else if (evt.getPropertyName().equals(PatientGroup.PROPERTY_DOSE)) {
-				String oldVal = d_cachedLabel;
-				d_cachedLabel = calcLabel(getDrug(), (Dose)evt.getNewValue());
+				d_cachedLabel = calcLabel((Drug)evt.getNewValue());
 				firePropertyChange("value", oldVal, d_cachedLabel);
 			}
 		}

@@ -1,6 +1,9 @@
 package org.drugis.addis.gui.builder;
 
+import java.text.FieldPosition;
+import java.text.Format;
 import java.text.NumberFormat;
+import java.text.ParsePosition;
 
 import javax.swing.JPanel;
 
@@ -23,23 +26,23 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class StudyDataView implements ViewBuilder {
 	
-	private PresentationModel<? extends Study> model;
-	private PresentationModelFactory pm;
+	private PresentationModel<? extends Study> d_model;
+	private PresentationModelFactory d_pm;
 
 	public StudyDataView(PresentationModel<? extends Study> model, PresentationModelFactory pm) {
-		this.model = model;
-		this.pm = pm;
+		this.d_model = model;
+		this.d_pm = pm;
 	}
 
 	public JPanel buildPanel() {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = new FormLayout( 
-				"left:pref, 5dlu, center:pref, 5dlu, center:pref",
+				"left:pref, 5dlu, left:pref, 5dlu, center:pref, 5dlu, center:pref",
 				"p"
 				);
 		
 		int fullWidth = 5;
-		for (int i = 1; i < model.getBean().getEndpoints().size(); ++i) {			
+		for (int i = 1; i < d_model.getBean().getEndpoints().size(); ++i) {			
 			layout.appendColumn(ColumnSpec.decode("3dlu"));
 			layout.appendColumn(ColumnSpec.decode("center:pref"));			
 			fullWidth += 2;
@@ -47,41 +50,62 @@ public class StudyDataView implements ViewBuilder {
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		int row = 1;
-		builder.addLabel("Size", cc.xy(3, row, "center, center"));		
-		int col = 5;
-		for (Endpoint e : model.getBean().getEndpoints()) {
+
+		builder.addLabel("Size", cc.xy(5, row, "center, center"));		
+		int col = 7;
+		for (Endpoint e : d_model.getBean().getEndpoints()) {
 			builder.add(
-					GUIFactory.createEndpointLabelWithIcon(model.getBean(), e),
+					GUIFactory.createEndpointLabelWithIcon(d_model.getBean(), e),
 							cc.xy(col, row));
 			col += 2;
 		}
 		row += 2;
 	
-		for (PatientGroup g : model.getBean().getPatientGroups()) {
+		for (PatientGroup g : d_model.getBean().getPatientGroups()) {
 			row = buildPatientGroup(layout, builder, cc, row, g);
 		}
 		return builder.getPanel();
 	}
 
+	@SuppressWarnings("serial")
 	private int buildPatientGroup(FormLayout layout, PanelBuilder builder, CellConstraints cc, int row, PatientGroup g) {
 		int col;
 		LayoutUtil.addRow(layout);
 		builder.add(
-				BasicComponentFactory.createLabel(pm.getLabeledModel(g).getLabelModel()),
+				BasicComponentFactory.createLabel(d_pm.getLabeledModel(g).getLabelModel()),
 				cc.xy(1, row));
+		
+		builder.add(
+				BasicComponentFactory.createLabel(
+						new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_DOSE),
+						new Format() {
+							
+							@Override
+							public Object parseObject(String source, ParsePosition pos) {
+								// TODO Auto-generated method stub
+								return null;
+							}
+							
+							@Override
+							public StringBuffer format(Object obj, StringBuffer toAppendTo,
+									FieldPosition pos) {
+								return toAppendTo.append(obj.toString());
+							}
+						}),
+						cc.xy(3, row, "right, center"));
 		
 		builder.add(
 				BasicComponentFactory.createLabel(
 						new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_SIZE),
 						NumberFormat.getInstance()),
-						cc.xy(3, row, "center, center"));
+						cc.xy(5, row, "center, center"));
 		
-		col = 5;
-		for (Endpoint e : model.getBean().getEndpoints()) {
-			Measurement m = model.getBean().getMeasurement(e, g);
+		col = 7;
+		for (Endpoint e : d_model.getBean().getEndpoints()) {
+			Measurement m = d_model.getBean().getMeasurement(e, g);
 			if (m != null) {
 				builder.add(
-						BasicComponentFactory.createLabel(pm.getLabeledModel(m).getLabelModel()),
+						BasicComponentFactory.createLabel(d_pm.getLabeledModel(m).getLabelModel()),
 						cc.xy(col, row));
 			}
 			col += 2;

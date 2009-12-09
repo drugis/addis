@@ -41,6 +41,7 @@ import org.drugis.addis.gui.MeasurementInputHelper;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
+import org.drugis.common.Interval;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -62,7 +63,7 @@ public class StudyAddPatientGroupView implements ViewBuilder {
 	public StudyAddPatientGroupView(Domain domain, Study study, JButton okButton) {
 		d_domain = domain;
 		d_study = study;
-		d_group = new BasicPatientGroup(null, new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY), 0);
+		d_group = new BasicPatientGroup(null, new Dose(new Interval<Double>(0.0, 0.0), SIUnit.MILLIGRAMS_A_DAY), 0);
 		d_validator = new NotEmptyValidator(okButton);
 		d_endpoints = d_study.getEndpoints();
 	}

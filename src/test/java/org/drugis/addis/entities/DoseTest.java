@@ -35,12 +35,38 @@ public class DoseTest {
 	
 	@Test
 	public void testSetFlexibleDose() {
-		JUnitUtil.testSetter(new Dose(new Interval<Double>(0.0,1.0), null), Dose.PROPERTY_FLEXIBLEDOSE, new Interval<Double>(0.0,1.0), new Interval<Double>(1.0,2.0));
+		JUnitUtil.testSetter(new Dose(new Interval<Double>(0.0,1.0), SIUnit.MILLIGRAMS_A_DAY), Dose.PROPERTY_FLEXIBLEDOSE, new Interval<Double>(0.0,1.0), new Interval<Double>(1.0,2.0));
+	}
+	
+	@Test
+	public void testSetMinDose() {
+		JUnitUtil.testSetter(new Dose(new Interval<Double>(0.0,1.0), SIUnit.MILLIGRAMS_A_DAY), Dose.PROPERTY_MIN_DOSE, 0d, 10d);
+	}
+	
+	@Test
+	public void testSetMaxDose() {
+		JUnitUtil.testSetter(new Dose(new Interval<Double>(0.0,1.0), SIUnit.MILLIGRAMS_A_DAY), Dose.PROPERTY_MAX_DOSE, 1d, 12d);
+	}
+	
+	@Test
+	public void testSetMaxLowerThanMinDose() {
+		Dose dose = new Dose(new Interval<Double>(10.0,20.0), SIUnit.MILLIGRAMS_A_DAY);
+		dose.setMaxDose(8d);
+		assertEquals(8d,dose.getMinDose(),0.001);
+		assertEquals(8d,dose.getMaxDose(),0.001);
+	}
+	
+	@Test
+	public void testSetMinHigherThanMaxDose() {
+		Dose dose = new Dose(new Interval<Double>(10.0,20.0), SIUnit.MILLIGRAMS_A_DAY);
+		dose.setMinDose(25d);
+		assertEquals(25d,dose.getMaxDose(),0.001);
+		assertEquals(25d,dose.getMinDose(),0.001);	
 	}
 	
 	@Test
 	public void testSetQuantity() {
-		JUnitUtil.testSetter(new Dose(0.0, null), Dose.PROPERTY_QUANTITY, 0.0, 40.0);
+		JUnitUtil.testSetter(new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY), Dose.PROPERTY_QUANTITY, 0.0, 40.0);
 	}
 	
 	@Test
@@ -58,7 +84,7 @@ public class DoseTest {
 		assertEquals("INCOMPLETE", d.toString());
 		d.setFlexibleDose(new Interval<Double>(25D, 40D));
 		d.setUnit(SIUnit.MILLIGRAMS_A_DAY);
-		assertEquals("25.0 - 40.0 " + SIUnit.MILLIGRAMS_A_DAY.toString(), d.toString());
+		assertEquals("25.0-40.0 " + SIUnit.MILLIGRAMS_A_DAY.toString(), d.toString());
 	}
 	
 	@Test
