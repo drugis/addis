@@ -27,6 +27,9 @@ import java.net.URLConnection;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.apache.myfaces.trinidad.context.Version;
+
+
 
 public class AppInfo {
 	private static final String APPNAMEFALLBACK = "ADDIS";
@@ -65,6 +68,10 @@ public class AppInfo {
 		if (appVersion.equals(APPVERSIONFALLBACK))
 			return false;		
 		
+		Version latest = new Version(latestversion);
+		Version app	= new Version(appVersion);
+		
+		/*
 		StringTokenizer latestT = new StringTokenizer(latestversion, ".-");
 		StringTokenizer currentT = new StringTokenizer(appVersion, ".-");
 		
@@ -79,8 +86,9 @@ public class AppInfo {
 				return false;
 			}
 		}
-		
-		return false;
+				
+		return false;*/
+		return latest.compareTo(app) > 0 ? true : false;
 	}
 
 	private static String getProperty(String property, String fallback) {

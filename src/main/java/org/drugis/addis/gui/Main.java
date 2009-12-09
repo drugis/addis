@@ -496,7 +496,8 @@ public class Main extends JFrame {
 		builder.addButton(new LinkLabel("www.drugis.org", "http://www.drugis.org"));
 		String latestVersion = AppInfo.getLatestVersion();
 		if (latestVersion != null) {
-				builder.addButton(new LinkLabel("<b>new version available</b>", "http://drugis.org/files/addis-"+latestVersion+".zip"));
+			builder.addRelatedGap();
+			builder.addButton(new LinkLabel("<b>new version available</b>", "http://drugis.org/files/addis-"+latestVersion+".zip"));
 		}
 		toolbar.add(builder.getPanel(), BorderLayout.CENTER);
 		toolbar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));

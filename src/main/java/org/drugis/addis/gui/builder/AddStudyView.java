@@ -167,16 +167,18 @@ public class AddStudyView implements ViewBuilder {
 			CellConstraints cc, int row, FormLayout layout) {
 		
 		for (StudyCharacteristic c : StudyCharacteristic.values()) {
-			LayoutUtil.addRow(layout);
-			
-			builder.addLabel(c.getDescription() + ":", cc.xy(1, row, "right, c"));
-			builder.add(createCharacteristicComponent(c), cc.xyw(3, row, fullWidth-4));
-			if (c.equals(StudyCharacteristic.INDICATION)) {
-				builder.add(createNewIndicationButton(), cc.xy(fullWidth, row));
-			}
+			if ( !c.isDerived() ) { 
+				LayoutUtil.addRow(layout);
 				
-			
-			row += 2;
+				builder.addLabel(c.getDescription() + ":", cc.xy(1, row, "right, c"));
+				builder.add(createCharacteristicComponent(c), cc.xyw(3, row, fullWidth-4));
+				if (c.equals(StudyCharacteristic.INDICATION)) {
+					builder.add(createNewIndicationButton(), cc.xy(fullWidth, row));
+				}
+					
+				
+				row += 2;
+			}
 		}
 
 		return row;

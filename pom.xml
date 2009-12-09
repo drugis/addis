@@ -19,6 +19,12 @@
   			<url>http://www.ibiblio.org/maven/</url>
   			<layout>default</layout>
 		</repository>		
+		<repository>
+  			<id>apache-snapshots</id>
+	  		<name>Apache Snapshot repository for Maven</name>
+  			<url>http://people.apache.org/repo/m2-snapshot-repository</url>
+  			<layout>default</layout>
+		</repository>		
 				
 	</repositories>
 
@@ -27,6 +33,11 @@
 			<groupId>com.jgoodies</groupId>
 			<artifactId>binding</artifactId>
 			<version>2.0.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.myfaces.trinidad</groupId>
+			<artifactId>trinidad-impl</artifactId>
+			<version>1.2.13-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jgoodies</groupId>

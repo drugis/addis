@@ -24,9 +24,9 @@ import java.util.SortedSet;
 
 public enum StudyCharacteristic {
 		ARMS("Study Arms", ValueType.POSITIVE_INTEGER),
-		STUDYSIZE("Total number of subjects", ValueType.POSITIVE_INTEGER),
-		DRUGS("Investigational Drugs", ValueType.DRUGS),
-		FLEXIBLE_DOSE("Flexible Dose", ValueType.FLEXIBLE_DOSE),
+		STUDYSIZE("Total number of subjects", ValueType.POSITIVE_INTEGER, true),
+		DRUGS("Investigational Drugs", ValueType.DRUGS, true),
+		FLEXIBLE_DOSE("Flexible Dose", ValueType.FLEXIBLE_DOSE, true),
 		ALLOCATION("Group allocation", ValueType.ALLOCATION),
 		BLINDING("Blinding", ValueType.BLINDING),
 		CENTERS("Number of study centers", ValueType.POSITIVE_INTEGER),
@@ -94,10 +94,16 @@ public enum StudyCharacteristic {
 		
 		private String d_description;
 		private ValueType d_valueType;
+		private boolean d_derived;
 		
-		StudyCharacteristic(String description, ValueType valueType) { 
+		StudyCharacteristic(String description, ValueType valueType, boolean derived) {
 			d_description = description;
 			d_valueType = valueType;
+			d_derived = derived;
+		}
+		
+		StudyCharacteristic(String description, ValueType valueType) { 
+			this(description, valueType, false);
 		}
 		
 		public String getDescription() {
@@ -106,5 +112,9 @@ public enum StudyCharacteristic {
 		
 		public ValueType getValueType() {
 			return d_valueType;
+		}
+
+		public boolean isDerived() {
+			return d_derived;
 		}
 }
