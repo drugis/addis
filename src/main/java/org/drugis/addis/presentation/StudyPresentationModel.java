@@ -12,6 +12,10 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		super(s);
 	}
 	
+	public CharacteristicHolder getCharacteristicModel(StudyCharacteristic c) {
+		return new CharacteristicHolder(getBean(), c);
+	}
+	
 	public boolean isStudyFinished() {
 		Object status = getBean().getCharacteristics().get(StudyCharacteristic.STATUS);
 		if (status != null) {

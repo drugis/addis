@@ -43,8 +43,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 				LayoutUtil.addRow(layout);
 				builder.addLabel(c.getDescription() + ":", cc.xy(1, row));
 
-				// FIXME: should get CharacteristicHolder from d_model.getCharacteristic(c)
-				CharacteristicHolder model = new CharacteristicHolder(d_model.getBean(), c);
+				CharacteristicHolder model = d_model.getCharacteristicModel(c);
 				builder.add(AuxComponentFactory.createCharacteristicView(model),
 						cc.xyw(3, row, fullWidth - 2));
 
