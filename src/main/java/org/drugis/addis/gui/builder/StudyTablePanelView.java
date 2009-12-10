@@ -42,7 +42,6 @@ public class StudyTablePanelView implements ViewBuilder {
 		StudyCharTableModel model = new StudyCharTableModel(d_metamodel);
 		final JTable table = new StudyTable(model);
 		table.addMouseListener(new MouseAdapter() {
-			
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() > 1) {
@@ -57,6 +56,7 @@ public class StudyTablePanelView implements ViewBuilder {
 				}
 			}
 		});
+		
 		JScrollPane pane = new JScrollPane(table);
 		pane.setPreferredSize(new Dimension(200, 250));
 		pane.setBorder(BorderFactory.createEmptyBorder());

@@ -81,12 +81,12 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.builder.DrugView;
 import org.drugis.addis.gui.builder.EndpointView;
-import org.drugis.addis.gui.builder.EntitiesTableView;
 import org.drugis.addis.gui.builder.IndicationView;
 import org.drugis.addis.gui.builder.MetaAnalysisWizard;
 import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
 import org.drugis.addis.gui.builder.StudyTablePanelView;
 import org.drugis.addis.gui.builder.StudyView;
+import org.drugis.addis.gui.components.EntitiesTablePanel;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
 import org.drugis.addis.presentation.DrugPresentationModel;
@@ -280,6 +280,13 @@ public class Main extends JFrame {
 
 	protected void deleteMenuAction() {
 		Object selected = d_leftPanelTree.getSelectionPath().getLastPathComponent();
+		
+		if (selected instanceof Entity && d_leftPanelTree.hasFocus()) {
+			deleteEntity((Entity)selected);
+		}
+	}
+
+	public void deleteEntity(Entity selected) {
 		String selectedType = "";
 		if (selected instanceof Drug) {
 			selectedType = "drug";
@@ -291,7 +298,7 @@ public class Main extends JFrame {
 			selectedType = "study";
 		} else if (selected instanceof Indication) {
 			selectedType = "indication";
-		}
+		}	
 		
 		int conf = JOptionPane.showConfirmDialog(this, 
 				"Do you really want to delete " + selectedType + " " + selected + " ?",
@@ -672,8 +679,12 @@ public class Main extends JFrame {
 		List<PresentationModel<T>> dpms = new ArrayList<PresentationModel<T>>();
 		for (T i : allX)
 			dpms.add(d_pmManager.getModel(i));
-		EntitiesTableView<T> view = new EntitiesTableView<T>(formatter, dpms);
-		setRightPanelView(view);
+		final EntitiesTablePanel<T> view = new EntitiesTablePanel<T>(formatter, dpms, this);
+		setRightPanelView(new ViewBuilder() {
+			public JComponent buildPanel() {
+				return view;
+			}
+		});
 	}
 	
 	private void indicationLabelSelected() {
