@@ -34,6 +34,7 @@ import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Endpoint;
@@ -72,24 +73,10 @@ public class AddStudyDialog extends OkCancelDialog {
 			}
 		});
 		d_domain.addListener(new DomainListener() {
-
-			public void drugsChanged() {
-				initUserPanel();
+			public void domainChanged(DomainEvent evt) {
+				initUserPanel();	
 			}
-
-			public void endpointsChanged() {
-				initUserPanel();
-			}
-
-			public void indicationsChanged() {
-				initUserPanel();
-			}
-
-			public void studiesChanged() {
-			}
-
-			public void analysesChanged() {
-			}});
+		});
 		d_view = new AddStudyView(new PresentationModel<BasicStudy>(d_study),
 				new PresentationModel<EndpointHolder>(d_primaryEndpoint), domain,
 				d_okButton, mainWindow);

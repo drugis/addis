@@ -210,7 +210,7 @@ public class DomainTest {
 	@Test
 	public void testAddEndpointListener() {
 		DomainListener mockListener = createMock(DomainListener.class);
-		mockListener.endpointsChanged();
+		mockListener.domainChanged(new DomainEvent(DomainEvent.Type.ENDPOINTS));		
 		replay(mockListener);
 		
 		d_domain.addListener(mockListener);
@@ -221,7 +221,7 @@ public class DomainTest {
 	@Test
 	public void testAddStudyListener() {
 		DomainListener mockListener = createMock(DomainListener.class);
-		mockListener.studiesChanged();
+		mockListener.domainChanged(new DomainEvent(DomainEvent.Type.STUDIES));		
 		replay(mockListener);
 		
 		d_domain.addIndication(d_indication);
@@ -235,7 +235,7 @@ public class DomainTest {
 	public void testAddAnalysisListener() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		ExampleData.initDefaultData(d_domain);
 		DomainListener mockListener = createMock(DomainListener.class);
-		mockListener.analysesChanged();
+		mockListener.domainChanged(new DomainEvent(DomainEvent.Type.ANALYSES));
 		d_domain.addListener(mockListener);
 		
 		replay(mockListener);
@@ -246,7 +246,7 @@ public class DomainTest {
 	@Test
 	public void testAddDrugListener() {
 		DomainListener mockListener = createMock(DomainListener.class);
-		mockListener.drugsChanged();
+		mockListener.domainChanged(new DomainEvent(DomainEvent.Type.DRUGS));		
 		replay(mockListener);
 		
 		d_domain.addListener(mockListener);
@@ -257,7 +257,7 @@ public class DomainTest {
 	@Test
 	public void testAddIndicationListener() {
 		DomainListener mockListener = createMock(DomainListener.class);
-		mockListener.indicationsChanged();
+		mockListener.domainChanged(new DomainEvent(DomainEvent.Type.INDICATIONS));		
 		replay(mockListener);
 		
 		d_domain.addListener(mockListener);
@@ -538,7 +538,7 @@ public class DomainTest {
 		
 		DomainListener mock = createMock(DomainListener.class);
 		d_domain.addListener(mock);
-		mock.studiesChanged();
+		mock.domainChanged(new DomainEvent(DomainEvent.Type.STUDIES));		
 		replay(mock);
 		d_domain.deleteStudy(s1);
 		verify(mock);
@@ -579,7 +579,7 @@ public class DomainTest {
 		
 		DomainListener mock = createMock(DomainListener.class);
 		d_domain.addListener(mock);
-		mock.drugsChanged();
+		mock.domainChanged(new DomainEvent(DomainEvent.Type.DRUGS));		
 		replay(mock);
 		d_domain.deleteDrug(d);
 		verify(mock);
@@ -618,7 +618,7 @@ public class DomainTest {
 		
 		DomainListener mock = createMock(DomainListener.class);
 		d_domain.addListener(mock);
-		mock.endpointsChanged();
+		mock.domainChanged(new DomainEvent(DomainEvent.Type.ENDPOINTS));		
 		replay(mock);
 		d_domain.deleteEndpoint(d);
 		verify(mock);

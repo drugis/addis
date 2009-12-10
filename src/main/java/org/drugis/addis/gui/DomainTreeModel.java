@@ -28,6 +28,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
@@ -55,24 +56,8 @@ public class DomainTreeModel implements TreeModel {
 	
 	
 	private class DomainListenerImpl implements DomainListener {
-		public void endpointsChanged() {
-			fireTreeStructureChanged();
-		}
-
-		public void studiesChanged() {
-			fireTreeStructureChanged();
-		}
-
-		public void drugsChanged() {
-			fireTreeStructureChanged();
-		}
-
-		public void indicationsChanged() {
-			fireTreeStructureChanged();
-		}
-
-		public void analysesChanged() {
-			fireTreeStructureChanged();
+		public void domainChanged(DomainEvent evt) {
+			fireTreeStructureChanged();	
 		}
 	}
 	

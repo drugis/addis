@@ -67,6 +67,7 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.MainData;
 import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.DomainManager;
 import org.drugis.addis.entities.Drug;
@@ -731,23 +732,7 @@ public class Main extends JFrame {
 	}
 	
 	private class MainListener implements DomainListener {
-		public void drugsChanged() {
-			dataModelChanged();
-		}
-
-		public void endpointsChanged() {
-			dataModelChanged();
-		}
-
-		public void studiesChanged() {
-			dataModelChanged();
-		}
-
-		public void indicationsChanged() {
-			dataModelChanged();
-		}
-
-		public void analysesChanged() {
+		public void domainChanged(DomainEvent evt) {
 			dataModelChanged();
 		}
 	}

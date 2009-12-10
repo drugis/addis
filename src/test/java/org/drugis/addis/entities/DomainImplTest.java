@@ -90,11 +90,9 @@ public class DomainImplTest {
 
 		DomainListener mock2 = createMock(DomainListener.class);
 		d_domain.addListener(mock2);
-		mock2.studiesChanged();
-		mock2.endpointsChanged();
-		mock2.analysesChanged();
-		mock2.indicationsChanged();
-		mock2.drugsChanged();
+		for (DomainEvent.Type t : DomainEvent.Type.values()) {
+			mock2.domainChanged(new DomainEvent(t));
+		}
 		replay(mock2);
 		
 		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
@@ -117,7 +115,7 @@ public class DomainImplTest {
 		
 		DomainListener mock3 = createMock(DomainListener.class);
 		d_domain.addListener(mock3);
-		mock3.studiesChanged();
+		mock3.domainChanged(new DomainEvent(DomainEvent.Type.STUDIES));
 		replay(mock3);
 		
 		s.addPatientGroup(new BasicPatientGroup(new Drug("viagra-2", "atc"), new Dose(100.0, SIUnit.MILLIGRAMS_A_DAY), 

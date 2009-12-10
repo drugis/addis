@@ -40,8 +40,8 @@ import org.drugis.addis.presentation.ListHolder;
 public class DomainImpl implements Domain {
 	private DomainData d_domainData;
 	
-	private transient List<DomainListener> d_listeners;
-	private transient PropertyChangeListener d_studyListener;
+	private List<DomainListener> d_listeners;
+	private PropertyChangeListener d_studyListener;
 	
 	/**
 	 * Replace the DomainData by a new instance loaded from a stream.
@@ -72,26 +72,21 @@ public class DomainImpl implements Domain {
 		for (Study s : d_domainData.getStudies()) {
 			s.addPropertyChangeListener(d_studyListener);
 		}
-		fireStudiesChanged();
-		fireEndpointsChanged();
-		fireIndicationsChanged();
-		fireDrugsChanged();
-		fireAnalysesChanged();
-	}
-	
-	
-	private class StudyChangeListener implements PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent evt) {
-			fireStudiesChanged();
+		for (DomainEvent.Type t : DomainEvent.Type.values()) {
+			fireDomainChanged(t);
 		}
 	}
-	
-	
-	
+		
 	public DomainImpl() {
 		d_domainData = new DomainData();
 		d_listeners = new ArrayList<DomainListener>();
 		d_studyListener = new StudyChangeListener();
+	}
+	
+	private class StudyChangeListener implements PropertyChangeListener {
+		public void propertyChange(PropertyChangeEvent evt) {
+			fireDomainChanged(DomainEvent.Type.STUDIES);
+		}		
 	}
 
 	public void addEndpoint(Endpoint e) {
@@ -100,14 +95,8 @@ public class DomainImpl implements Domain {
 		}
 		
 		d_domainData.addEnpoint(e);
-		
-		fireEndpointsChanged();
-	}
 
-	private void fireEndpointsChanged() {
-		for (DomainListener l : d_listeners) {
-			l.endpointsChanged();
-		}
+		fireDomainChanged(DomainEvent.Type.ENDPOINTS);
 	}
 
 	public SortedSet<Endpoint> getEndpoints() {
@@ -139,7 +128,7 @@ public class DomainImpl implements Domain {
 		d_domainData.addStudy(s);
 		s.addPropertyChangeListener(d_studyListener);		
 		
-		fireStudiesChanged();
+		fireDomainChanged(DomainEvent.Type.STUDIES);
 	}
 	
 	public void addMetaAnalysis(RandomEffectsMetaAnalysis ma) 
@@ -163,22 +152,10 @@ public class DomainImpl implements Domain {
 		}
 		
 		d_domainData.addMetaAnalysis(ma);
-		
-		fireAnalysesChanged();
+	
+		fireDomainChanged(DomainEvent.Type.ANALYSES);
 	}
 	
-	private void fireAnalysesChanged() {
-		for (DomainListener l : d_listeners) {
-			l.analysesChanged();
-		}
-	}
-
-	private void fireStudiesChanged() {
-		for (DomainListener l : d_listeners) {
-			l.studiesChanged();
-		}
-	}
-
 	public SortedSet<Study> getStudies() {
 		return Collections.unmodifiableSortedSet(d_domainData.getStudies());
 	}
@@ -188,14 +165,8 @@ public class DomainImpl implements Domain {
 			throw new NullPointerException("Drug may not be null");
 		}
 		d_domainData.addDrug(d);
-		
-		fireDrugsChanged();
-	}
-
-	private void fireDrugsChanged() {
-		for (DomainListener l : d_listeners) {
-			l.drugsChanged();
-		}
+	
+		fireDomainChanged(DomainEvent.Type.DRUGS);
 	}
 
 	public SortedSet<Drug> getDrugs() {
@@ -267,13 +238,13 @@ public class DomainImpl implements Domain {
 	public void deleteStudy(Study s) throws DependentEntitiesException {
 		checkDependents(s);
 		d_domainData.removeStudy(s);
-		fireStudiesChanged();
+		fireDomainChanged(DomainEvent.Type.STUDIES);
 	}
 
 	public void deleteDrug(Drug d) throws DependentEntitiesException {
 		checkDependents(d);
 		d_domainData.removeDrug(d);
-		fireDrugsChanged();		
+		fireDomainChanged(DomainEvent.Type.DRUGS);
 	}
 
 	private void checkDependents(Entity d) throws DependentEntitiesException {
@@ -286,7 +257,7 @@ public class DomainImpl implements Domain {
 	public void deleteEndpoint(Endpoint e) throws DependentEntitiesException {
 		checkDependents(e);
 		d_domainData.removeEndpoint(e);
-		fireEndpointsChanged();				
+		fireDomainChanged(DomainEvent.Type.ENDPOINTS);		
 	}
 
 	public void addIndication(Indication i) throws NullPointerException {
@@ -294,12 +265,12 @@ public class DomainImpl implements Domain {
 			throw new NullPointerException();
 		}
 		d_domainData.addIndication(i);
-		fireIndicationsChanged();
+		fireDomainChanged(DomainEvent.Type.INDICATIONS);
 	}
 
-	private void fireIndicationsChanged() {
+	private void fireDomainChanged(DomainEvent.Type type) {
 		for (DomainListener l : d_listeners) {
-			l.indicationsChanged();
+			l.domainChanged(new DomainEvent(type));
 		}
 	}
 
@@ -315,7 +286,7 @@ public class DomainImpl implements Domain {
 			throws DependentEntitiesException {
 		checkDependents(ma);
 		d_domainData.removeMetaAnalysis(ma);
-		fireAnalysesChanged();
+		fireDomainChanged(DomainEvent.Type.ANALYSES);
 	}
 	
 	@SuppressWarnings("serial")
@@ -350,24 +321,9 @@ public class DomainImpl implements Domain {
 			return d_holderStudies;
 		}
 
-		public void analysesChanged() {
+		public void domainChanged(DomainEvent evt) {
+			// FIXME: make this more intelligent, to update only when needed						
 			updateHolderStudies(d_holderEntity);			
-		}
-
-		public void drugsChanged() {
-			updateHolderStudies(d_holderEntity);			
-		}
-
-		public void endpointsChanged() {
-			updateHolderStudies(d_holderEntity);
-		}
-
-		public void indicationsChanged() {
-			updateHolderStudies(d_holderEntity);
-		}
-
-		public void studiesChanged() {
-			updateHolderStudies(d_holderEntity);
 		}
 	}
 }
