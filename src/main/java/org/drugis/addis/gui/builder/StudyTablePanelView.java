@@ -18,6 +18,7 @@ import javax.swing.JTable;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.CharacteristicSelectDialog;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.components.EntityTableDeleteListener;
 import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.addis.presentation.StudyListPresentationModel;
@@ -56,6 +57,7 @@ public class StudyTablePanelView implements ViewBuilder {
 				}
 			}
 		});
+		table.addKeyListener(new EntityTableDeleteListener((Main) d_parent));
 		
 		JScrollPane pane = new JScrollPane(table);
 		pane.setPreferredSize(new Dimension(200, 250));

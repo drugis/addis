@@ -45,7 +45,7 @@ public class SelectableStudyCharTableModelTest {
 		int row = 0;
 		for (Study s : d_pm.getIncludedStudies().getValue()) {
 			assertTrue((Boolean)d_model.getValueAt(row, 0));			
-			assertEquals(s.getId(), d_model.getValueAt(row, 1));
+			assertEquals(s, d_model.getValueAt(row, 1));
 			int column = 2;
 			for (StudyCharacteristic c : StudyCharacteristic.values()) {
 				assertEquals(s.getCharacteristic(c), d_model.getValueAt(row, column));

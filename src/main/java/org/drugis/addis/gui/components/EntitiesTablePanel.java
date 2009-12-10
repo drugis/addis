@@ -1,9 +1,6 @@
 package org.drugis.addis.gui.components;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -33,25 +30,16 @@ public class EntitiesTablePanel<T extends Entity> extends JPanel {
 	}
 	
 	private void createComponents() {
-		EntityTableModel<T> etm = new EntityTableModel<T>(d_entities, d_characteristics);
+		final EntityTableModel<T> etm = new EntityTableModel<T>(d_entities, d_characteristics);
 		final JTable table = new StudyTable(etm);
-		table.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-					int row = table.getSelectedRow();
-					Entity en = d_entities.get(row).getBean();
-					d_main.deleteEntity(en);
-				}
-			}
-		});
+		table.addKeyListener(new EntityTableDeleteListener(d_main));
 
-		JScrollPane sp = new JScrollPane(table);
-		sp.setPreferredSize(new Dimension(200, 250));		
+		JScrollPane sp = new JScrollPane(table);		
 		sp.setBorder(BorderFactory.createEmptyBorder());
 		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
+		table.setFillsViewportHeight(true);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		setLayout(new BorderLayout());
 		add(sp, BorderLayout.NORTH);
 	}

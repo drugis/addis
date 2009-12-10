@@ -51,7 +51,7 @@ public class EntityTableModelTest {
 	
 	@Test
 	public void testGetValueAt() {
-		assertEquals(d_domain.getDrugs().first().getName(), d_tableModel.getValueAt(0, 0));
+		assertEquals(d_domain.getDrugs().first(), d_tableModel.getValueAt(0, 0));
 		assertEquals(d_domain.getDrugs().first().getAtcCode(), d_tableModel.getValueAt(0, 1));
 	}
 	

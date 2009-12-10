@@ -71,7 +71,7 @@ public class StudyCharTableModel extends AbstractTableModel {
 		}
 		
 		if (columnIndex == 0) {
-			return d_pm.getIncludedStudies().getValue().get(rowIndex).getId();
+			return d_pm.getIncludedStudies().getValue().get(rowIndex);
 		}
 		StudyCharacteristic c = getCharacteristic(columnIndex);
 		return d_pm.getIncludedStudies().getValue().get(rowIndex).getCharacteristics().get(c);

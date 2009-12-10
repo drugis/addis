@@ -81,12 +81,13 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.builder.DrugView;
 import org.drugis.addis.gui.builder.EndpointView;
+import org.drugis.addis.gui.builder.EntitiesNodeView;
 import org.drugis.addis.gui.builder.IndicationView;
 import org.drugis.addis.gui.builder.MetaAnalysisWizard;
 import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
+import org.drugis.addis.gui.builder.StudiesNodeView;
 import org.drugis.addis.gui.builder.StudyTablePanelView;
 import org.drugis.addis.gui.builder.StudyView;
-import org.drugis.addis.gui.components.EntitiesTablePanel;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
 import org.drugis.addis.presentation.DrugPresentationModel;
@@ -639,7 +640,7 @@ public class Main extends JFrame {
 		List<String> formatter = new ArrayList<String>();
 		formatter.add("name");
 		formatter.add("atcCode");
-		buildEntityTable(getDomain().getDrugs(), formatter);
+		buildEntityTable(getDomain().getDrugs(), formatter, "Drugs");
 	}
 	
 	private void leftTreeFocusStudies() {
@@ -667,7 +668,7 @@ public class Main extends JFrame {
 		formatter.add("unitOfMeasurement");
 		formatter.add("type");
 		formatter.add("direction");
-		buildEntityTable(getDomain().getEndpoints(), formatter);
+		buildEntityTable(getDomain().getEndpoints(), formatter, "Endpoints");
 	}
 	
 	private void indicationSelected(Indication i) {
@@ -675,27 +676,23 @@ public class Main extends JFrame {
 		setRightPanelView(view);
 	}
 	
-	private <T extends Entity> void buildEntityTable(SortedSet<T> allX, List<String> formatter) {
+	private <T extends Entity> void buildEntityTable(SortedSet<T> allX, List<String> formatter, String title) {
 		List<PresentationModel<T>> dpms = new ArrayList<PresentationModel<T>>();
 		for (T i : allX)
 			dpms.add(d_pmManager.getModel(i));
-		final EntitiesTablePanel<T> view = new EntitiesTablePanel<T>(formatter, dpms, this);
-		setRightPanelView(new ViewBuilder() {
-			public JComponent buildPanel() {
-				return view;
-			}
-		});
+		EntitiesNodeView<T> view = new EntitiesNodeView<T>(formatter, dpms, this, title);
+		setRightPanelView(view);
 	}
 	
 	private void indicationLabelSelected() {
 		List<String> formatter = new ArrayList<String>();
 		formatter.add("name");
 		formatter.add("code");
-		buildEntityTable(getDomain().getIndications(), formatter);
+		buildEntityTable(getDomain().getIndications(), formatter, "Indications");
 	}
 	
 	private void studyLabelSelected() {
-		StudyTablePanelView view = new StudyTablePanelView(new DefaultStudyListPresentationModel(getDomain().getStudiesHolder()), this);
+		StudiesNodeView view = new StudiesNodeView(new StudyTablePanelView(new DefaultStudyListPresentationModel(getDomain().getStudiesHolder()), this).buildPanel());
 		setRightPanelView(view);		
 	}
 	
@@ -719,7 +716,7 @@ public class Main extends JFrame {
 		formatter.add("secondDrug");
 		formatter.add("studiesIncluded");
 		formatter.add("sampleSize");
-		buildEntityTable(getDomain().getMetaAnalyses(), formatter);
+		buildEntityTable(getDomain().getMetaAnalyses(), formatter, "Meta-Analyses");
 	}
 
 	private void setRightPanelView(ViewBuilder view) {

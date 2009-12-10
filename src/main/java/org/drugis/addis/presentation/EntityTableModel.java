@@ -32,6 +32,9 @@ public class EntityTableModel<T extends Entity> extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row, int column) {
+		if (column == 0)
+			return d_entities.get(row).getBean();
+		
 		return d_entities.get(row).getModel(d_props.get(column)).getValue();
 	}
 
