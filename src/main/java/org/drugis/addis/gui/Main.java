@@ -20,6 +20,7 @@
 package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
@@ -493,12 +494,16 @@ public class Main extends JFrame {
 		builder.addButton(topAddStudyButton);
 		builder.addButton(topAddMetaStudyButton);
 		builder.addGlue();
-		builder.addButton(new LinkLabel("www.drugis.org", "http://www.drugis.org"));
+		
 		String latestVersion = AppInfo.getLatestVersion();
 		if (latestVersion != null) {
-			builder.addRelatedGap();
-			builder.addButton(new LinkLabel("<b>new version available</b>", "http://drugis.org/files/addis-"+latestVersion+".zip"));
+			LinkLabel linkLabel = new LinkLabel("<font color=\"red\">new version available</font>", "http://drugis.org/files/addis-"+latestVersion+".zip");
+			linkLabel.setForeground(Color.RED);
+			builder.addButton(linkLabel);
+			builder.addRelatedGap();			
 		}
+		builder.addButton(new LinkLabel("www.drugis.org", "http://www.drugis.org"));
+		
 		toolbar.add(builder.getPanel(), BorderLayout.CENTER);
 		toolbar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		add(toolbar, BorderLayout.NORTH);

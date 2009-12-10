@@ -62,28 +62,11 @@ public class AppInfo {
 
 	private static boolean compareVersion(String latestversion, String appVersion) {
 		if (appVersion.equals(APPVERSIONFALLBACK))
-			return false;		
+			return true;		
 		
 		Version latest = new Version(latestversion);
 		Version app	= new Version(appVersion);
 		
-		/*
-		StringTokenizer latestT = new StringTokenizer(latestversion, ".-");
-		StringTokenizer currentT = new StringTokenizer(appVersion, ".-");
-		
-		while (latestT.hasMoreElements()) {
-			try {
-				Integer latest = Integer.parseInt(latestT.nextToken());
-				Integer current = Integer.parseInt(currentT.nextToken());
-				if (latest > current)
-					return true;
-			} catch (NumberFormatException e) {
-				System.err.println("Couldn't compare versions:" + appVersion + " to " + latestversion);
-				return false;
-			}
-		}
-				
-		return false;*/
 		return latest.compareTo(app) > 0 ? true : false;
 	}
 
