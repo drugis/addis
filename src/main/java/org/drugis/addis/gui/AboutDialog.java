@@ -21,6 +21,8 @@ package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -28,12 +30,16 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
 import org.drugis.addis.AppInfo;
-
-import com.jidesoft.dialog.BannerPanel;
+import org.drugis.addis.FileNames;
+import org.drugis.addis.gui.components.LinkLabel;
+import org.drugis.common.ImageLoader;
 
 @SuppressWarnings("serial")
 public class AboutDialog extends JDialog {
@@ -49,20 +55,42 @@ public class AboutDialog extends JDialog {
 	private void initComps() {
 		String title = AppInfo.getAppName() + " v" + AppInfo.getAppVersion();		
 		String subTitle = AppInfo.getAppName() + " is open source and licensed under GPLv3.\n"
-			+"(c) 2009: \tGert van Valkenhoef\n\tTommi Tervonen\n\tTijs Zwinkels\n\tMaarten Jacobs";
-		
+			+"\u00A9 2009: \tGert van Valkenhoef\n\tTommi Tervonen\n\tTijs Zwinkels\n\tMaarten Jacobs";
+
 		JPanel panel = new JPanel(new BorderLayout());
-		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		
-		JPanel lowPanel = new JPanel(new BorderLayout());
-		BannerPanel bpanel = new BannerPanel(title, subTitle);		
-		lowPanel.add(bpanel, BorderLayout.NORTH);
-		BannerPanel wwwPanel = new BannerPanel("Website", "http://www.drugis.org");
-		lowPanel.add(wwwPanel, BorderLayout.SOUTH);
+		JLabel titleLabel = new JLabel(title);
+		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		titleLabel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+		Font font = titleLabel.getFont();
+		font = font.deriveFont(Font.BOLD, 14F);
+		titleLabel.setFont(font);
+		panel.add(titleLabel, BorderLayout.NORTH);
 		
-		bpanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-		wwwPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 		
+		JPanel licPanel = new JPanel(new BorderLayout());
+		JTextArea licArea = new JTextArea(subTitle) {
+			@Override
+			public Insets getInsets() {
+				return new Insets(5, 5, 5, 5);
+			}
+		};
+		licArea.setWrapStyleWord(true);
+		licArea.setLineWrap(true);
+		licArea.setEditable(false);
+		licArea.setOpaque(false);
+		
+		licPanel.add(licArea, BorderLayout.CENTER);
+		LinkLabel linkLabel = new LinkLabel("www.drugis.org", "http://www.drugis.org");
+		linkLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		licPanel.add(linkLabel, BorderLayout.SOUTH);
+		licPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+		panel.add(licPanel, BorderLayout.CENTER);
+		JLabel label = new JLabel();
+		label.setIcon(ImageLoader.getIcon(FileNames.ICON_ICON));
+		label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		panel.add(label, BorderLayout.EAST);
 		
 		JButton closeButton = new JButton("Close");
 		closeButton.setMnemonic('c');
@@ -73,8 +101,9 @@ public class AboutDialog extends JDialog {
 			}
 		});
 		
-		panel.add(lowPanel, BorderLayout.CENTER);		
+		panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		panel.add(closeButton, BorderLayout.SOUTH);		
+		
 		setContentPane(panel);
 	}
 }
