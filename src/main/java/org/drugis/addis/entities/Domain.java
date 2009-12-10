@@ -166,4 +166,12 @@ public interface Domain {
 	 * @throws DependentEntitiesException if some entities depend on this endpoint
 	 */
 	public void deleteEndpoint(Endpoint e) throws DependentEntitiesException;
+	
+	/**
+	 * Deletes an Indication from the domain.
+	 * 
+	 * @param i the Indication to delete
+	 * @throws DependentEntitiesException if some entities depend on this endpoint
+	 */
+	public void deleteIndication(Indication i) throws DependentEntitiesException;
 }

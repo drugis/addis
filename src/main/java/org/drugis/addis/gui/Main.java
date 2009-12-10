@@ -22,6 +22,7 @@ package org.drugis.addis.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -51,6 +52,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
@@ -280,17 +282,19 @@ public class Main extends JFrame {
 		Object selected = d_leftPanelTree.getSelectionPath().getLastPathComponent();
 		String selectedType = "";
 		if (selected instanceof Drug) {
-			selectedType = "drug ";
+			selectedType = "drug";
 		} else if (selected instanceof Endpoint) {
-			selectedType = "endpoint ";
+			selectedType = "endpoint";
 		} else if (selected instanceof RandomEffectsMetaAnalysis) {
-			selectedType = "meta-analysis ";
+			selectedType = "meta-analysis";
 		} else if (selected instanceof Study) {
-			selectedType = "study ";
+			selectedType = "study";
+		} else if (selected instanceof Indication) {
+			selectedType = "indication";
 		}
 		
 		int conf = JOptionPane.showConfirmDialog(this, 
-				"Do you really want to delete " + selectedType + selected + " ?",
+				"Do you really want to delete " + selectedType + " " + selected + " ?",
 				"Confirm deletion",					
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
 				ImageLoader.getIcon(FileNames.ICON_DELETE));
@@ -309,12 +313,23 @@ public class Main extends JFrame {
 			} else if (selected instanceof RandomEffectsMetaAnalysis) {
 				getDomain().deleteMetaAnalysis((RandomEffectsMetaAnalysis) selected);
 				leftTreeFocusAnalyses();
+			} else if (selected instanceof Indication) {
+				getDomain().deleteIndication((Indication) selected);
+				leftTreeFocusIndications();
 			}
 		} catch (DependentEntitiesException e) {
-			JOptionPane.showMessageDialog(this,
-					selected + " is used by " + e.getDependents()
-					+ " - delete these first.",
-					"Error deleting " + selected,					
+			String str = new String(selected + " is used by: ");
+			for (Entity en : e.getDependents()) {
+				str += "\n\t" + en;
+			}
+			str += "\n - delete these first.";
+			JTextArea text = new JTextArea(str);
+			text.setWrapStyleWord(true);
+			text.setLineWrap(true);
+			text.setMargin(new Insets(5, 5, 5, 5));
+			JScrollPane sp = new JScrollPane(text);
+			sp.setPreferredSize(new Dimension(300, 200));
+			JOptionPane.showMessageDialog(this, sp, "Error deleting " + selected,					
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -323,6 +338,12 @@ public class Main extends JFrame {
 		d_leftPanelTree.setSelectionPath(new TreePath(
 				new Object[] {d_domainTreeModel.getRoot(), 
 						d_domainTreeModel.getAnalysesNode() }));
+	}
+	
+	private void leftTreeFocusIndications() {
+		d_leftPanelTree.setSelectionPath(new TreePath(
+				new Object[] {d_domainTreeModel.getRoot(), 
+						d_domainTreeModel.getIndicationsNode() }));
 	}
 
 	private JMenuItem createAddEndpointMenuItem() {

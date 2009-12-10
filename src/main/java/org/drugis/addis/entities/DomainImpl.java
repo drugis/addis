@@ -260,6 +260,13 @@ public class DomainImpl implements Domain {
 		fireDomainChanged(DomainEvent.Type.ENDPOINTS);		
 	}
 
+	public void deleteIndication(Indication i) throws DependentEntitiesException {
+		checkDependents(i);
+		d_domainData.removeIndication(i);
+		fireDomainChanged(DomainEvent.Type.INDICATIONS);
+	}
+
+	
 	public void addIndication(Indication i) throws NullPointerException {
 		if (i == null) {
 			throw new NullPointerException();

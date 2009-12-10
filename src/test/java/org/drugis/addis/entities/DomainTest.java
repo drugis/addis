@@ -25,7 +25,6 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -552,8 +551,8 @@ public class DomainTest {
 		assertTrue(d_domain.getDrugs().isEmpty());
 	}
 	
-	@Test
-	public void testDeleteDrugThrowsCorrectException() {
+	@Test(expected=DependentEntitiesException.class)
+	public void testDeleteDrugThrowsCorrectException() throws DependentEntitiesException {
 		BasicStudy s1 = new BasicStudy("X", d_indication);
 		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s1);
@@ -564,12 +563,8 @@ public class DomainTest {
 		BasicPatientGroup g = new BasicPatientGroup(d, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY), 10);
 		s1.addPatientGroup(g);
 		
-		try {
-			d_domain.deleteDrug(d);
-			fail();
-		} catch (DependentEntitiesException e1) {
-			assertEquals(Collections.singleton(s1), e1.getDependents());
-		}
+
+		d_domain.deleteDrug(d);
 	}
 	
 	@Test
@@ -593,8 +588,8 @@ public class DomainTest {
 		assertTrue(d_domain.getEndpoints().isEmpty());
 	}
 	
-	@Test
-	public void testDeleteEndpointThrowsCorrectException() {
+	@Test(expected=DependentEntitiesException.class)
+	public void testDeleteEndpointThrowsCorrectException() throws DependentEntitiesException {
 		BasicStudy s1 = new BasicStudy("X", d_indication);
 		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s1);
@@ -603,12 +598,7 @@ public class DomainTest {
 		d_domain.addEndpoint(e);
 		s1.addEndpoint(e);
 			
-		try {
-			d_domain.deleteEndpoint(e);
-			fail();
-		} catch (DependentEntitiesException e1) {
-			assertEquals(Collections.singleton(s1), e1.getDependents());
-		}
+		d_domain.deleteEndpoint(e);
 	}
 	
 	@Test
@@ -621,6 +611,37 @@ public class DomainTest {
 		mock.domainChanged(new DomainEvent(DomainEvent.Type.ENDPOINTS));		
 		replay(mock);
 		d_domain.deleteEndpoint(d);
+		verify(mock);
+	}
+	
+	@Test
+	public void testDeleteIndication() throws DependentEntitiesException {
+		Indication i = new Indication(01L, "i");
+		d_domain.addIndication(i);
+		d_domain.deleteIndication(i);
+		assertTrue(d_domain.getIndications().isEmpty());
+	}
+	
+	@Test(expected=DependentEntitiesException.class)
+	public void testDeleteIndicationThrowsCorrectException() throws DependentEntitiesException {
+		Indication indication = new Indication(5L, "");
+		BasicStudy s1 = new BasicStudy("X", indication);
+		d_domain.addIndication(indication);
+		d_domain.addStudy(s1);
+			
+		d_domain.deleteIndication(indication);
+	}
+	
+	@Test
+	public void testDeleteIndicationFires() throws DependentEntitiesException {
+		Indication i = new Indication(5L, "");
+		d_domain.addIndication(i);
+		
+		DomainListener mock = createMock(DomainListener.class);
+		d_domain.addListener(mock);
+		mock.domainChanged(new DomainEvent(DomainEvent.Type.INDICATIONS));		
+		replay(mock);
+		d_domain.deleteIndication(i);
 		verify(mock);
 	}
 
