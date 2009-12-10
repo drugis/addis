@@ -88,7 +88,7 @@ public class AboutDialog extends JDialog {
 
 		panel.add(licPanel, BorderLayout.CENTER);
 		JLabel label = new JLabel();
-		label.setIcon(ImageLoader.getIcon(FileNames.ICON_ICON));
+		label.setIcon(ImageLoader.getIcon(FileNames.ICON_DOCTOR));
 		label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		panel.add(label, BorderLayout.EAST);
 		
