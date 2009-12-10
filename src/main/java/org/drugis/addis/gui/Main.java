@@ -410,7 +410,7 @@ public class Main extends JFrame {
 	}
 	
 	private JMenuItem createOpenItem() { 
-		JMenuItem openItem = new JMenuItem("Open");
+		JMenuItem openItem = new JMenuItem("Open", ImageLoader.getIcon(FileNames.ICON_OPENFILE));
 		openItem.setMnemonic('o');
 		openItem.addActionListener(new AbstractAction() {
 			
@@ -431,7 +431,7 @@ public class Main extends JFrame {
 	}
 	
 	private JMenuItem createSaveItem() {
-		JMenuItem saveItem = new JMenuItem("Save");
+		JMenuItem saveItem = new JMenuItem("Save", ImageLoader.getIcon(FileNames.ICON_SAVEFILE));
 		saveItem.setMnemonic('s');
 		saveItem.addActionListener(new AbstractAction() {
 			

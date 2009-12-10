@@ -30,4 +30,7 @@ public class FileNames {
 	public static final String ICON_PLUS = "add.gif";
 	public static final String ICON_COLLAPSE = "collapse.gif";
 	public static final String ICON_EXPAND = "expand.gif";
+	public static final String ICON_SAVEFILE = "savefile.gif";
+	public static final String ICON_SAVEFILEAS = "saveas.gif";	
+	public static final String ICON_OPENFILE = "openfile.gif";
 }
