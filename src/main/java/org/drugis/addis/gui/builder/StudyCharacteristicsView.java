@@ -5,7 +5,6 @@ import javax.swing.JComponent;
 
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
-import org.drugis.addis.presentation.CharacteristicHolder;
 import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
@@ -43,8 +42,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 				LayoutUtil.addRow(layout);
 				builder.addLabel(c.getDescription() + ":", cc.xy(1, row));
 
-				CharacteristicHolder model = d_model.getCharacteristicModel(c);
-				builder.add(AuxComponentFactory.createCharacteristicView(model),
+				builder.add(AuxComponentFactory.createCharacteristicView(d_model.getCharacteristicModel(c)),
 						cc.xyw(3, row, fullWidth - 2));
 
 				row += 2;
