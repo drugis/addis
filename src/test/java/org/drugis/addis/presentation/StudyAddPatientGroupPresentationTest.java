@@ -9,13 +9,14 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collections;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.Dose;
+import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
@@ -24,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class StudyAddPatientGroupPresentationTest {
-	private static final Dose INITIAL_DOSE = new Dose(new Interval<Double>(0.0, 0.0), SIUnit.MILLIGRAMS_A_DAY);
+	private static final AbstractDose INITIAL_DOSE = new FlexibleDose(new Interval<Double>(0.0, 0.0), SIUnit.MILLIGRAMS_A_DAY);
 	private StudyAddPatientGroupPresentation d_pm;
 	private PresentationModelFactory d_pmf;
 	private Domain d_domain;
@@ -50,8 +51,8 @@ public class StudyAddPatientGroupPresentationTest {
 	public void testGetDoseModel() {
 		assertEquals(INITIAL_DOSE, d_pm.getDoseModel().getBean());
 		double newValue = 25.4;
-		d_pm.getDoseModel().setValue(Dose.PROPERTY_MAX_DOSE, newValue);
-		assertEquals(d_pm.getDoseModel().getValue(Dose.PROPERTY_MAX_DOSE), new Double(newValue));
+		d_pm.getDoseModel().setValue(FlexibleDose.PROPERTY_MAX_DOSE, newValue);
+		assertEquals(d_pm.getDoseModel().getValue(FlexibleDose.PROPERTY_MAX_DOSE), new Double(newValue));
 	}
 	
 	@Test

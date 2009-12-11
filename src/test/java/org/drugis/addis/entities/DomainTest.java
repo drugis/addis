@@ -381,7 +381,7 @@ public class DomainTest {
 		
 		BasicStudy s1 = new BasicStudy("s1", d_indication);
 		s1.setEndpoints(Collections.singleton(e));
-		BasicPatientGroup g1 = new BasicPatientGroup(d1, new Dose(1.0, SIUnit.MILLIGRAMS_A_DAY), 
+		BasicPatientGroup g1 = new BasicPatientGroup(d1, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY), 
 				100);
 		BasicRateMeasurement m1 = new BasicRateMeasurement(e, g1);
 		s1.setPatientGroups(Collections.singletonList(g1));
@@ -392,9 +392,9 @@ public class DomainTest {
 		d_domain.addIndication(indic2);
 		BasicStudy s2 = new BasicStudy("s2", indic2);
 		s2.setEndpoints(Collections.singleton(e));
-		BasicPatientGroup g2 = new BasicPatientGroup(d1, new Dose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
+		BasicPatientGroup g2 = new BasicPatientGroup(d1, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
 				250);		
-		BasicPatientGroup g3 = new BasicPatientGroup(d2, new Dose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
+		BasicPatientGroup g3 = new BasicPatientGroup(d2, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
 				250);
 		List<BasicPatientGroup> l1 = new ArrayList<BasicPatientGroup>();
 		l1.add(g2);
@@ -431,7 +431,7 @@ public class DomainTest {
 		
 		BasicStudy s1 = new BasicStudy("s1", d_indication);
 		s1.setEndpoints(Collections.singleton(e));
-		BasicPatientGroup g1 = new BasicPatientGroup(d1, new Dose(1.0, SIUnit.MILLIGRAMS_A_DAY), 
+		BasicPatientGroup g1 = new BasicPatientGroup(d1, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY), 
 				100);
 		BasicRateMeasurement m1 = new BasicRateMeasurement(e, g1);
 		s1.setPatientGroups(Collections.singletonList(g1));
@@ -442,9 +442,9 @@ public class DomainTest {
 		d_domain.addIndication(indic2);
 		BasicStudy s2 = new BasicStudy("s2", indic2);
 		s2.setEndpoints(Collections.singleton(e));
-		BasicPatientGroup g2 = new BasicPatientGroup(d1, new Dose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
+		BasicPatientGroup g2 = new BasicPatientGroup(d1, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
 				250);		
-		BasicPatientGroup g3 = new BasicPatientGroup(d2, new Dose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
+		BasicPatientGroup g3 = new BasicPatientGroup(d2, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
 				250);
 		List<BasicPatientGroup> l1 = new ArrayList<BasicPatientGroup>();
 		l1.add(g2);
@@ -560,7 +560,7 @@ public class DomainTest {
 		Drug d = new Drug("d", "atc");
 		d_domain.addDrug(d);
 	
-		BasicPatientGroup g = new BasicPatientGroup(d, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY), 10);
+		BasicPatientGroup g = new BasicPatientGroup(d, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), 10);
 		s1.addPatientGroup(g);
 		
 

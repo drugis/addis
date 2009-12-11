@@ -26,6 +26,6 @@ public interface PatientGroup extends Entity {
 	public static final String PROPERTY_DOSE = "dose";
 
 	public Drug getDrug();
-	public Dose getDose();
+	public AbstractDose getDose();
 	public Integer getSize();
 }

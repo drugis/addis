@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
-import org.drugis.addis.entities.Dose;
+import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
@@ -91,8 +91,8 @@ public class LogRiskRatioTest {
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize) {
 		BasicStudy s = new BasicStudy(studyName, d_ind);
 		s.addEndpoint(d_ep);
-		BasicPatientGroup g_fluox = new BasicPatientGroup(d_fluox, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY), fluoxSize);
-		BasicPatientGroup g_parox = new BasicPatientGroup(d_sertra, new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY), sertraSize);		
+		BasicPatientGroup g_fluox = new BasicPatientGroup(d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), fluoxSize);
+		BasicPatientGroup g_parox = new BasicPatientGroup(d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), sertraSize);		
 		
 		s.addPatientGroup(g_parox);
 		s.addPatientGroup(g_fluox);

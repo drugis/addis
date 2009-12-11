@@ -11,7 +11,7 @@ import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
-import org.drugis.addis.entities.Dose;
+import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.SIUnit;
@@ -29,7 +29,7 @@ public class StudyAddPatientGroupPresentation {
 	public StudyAddPatientGroupPresentation(BasicStudy study, PresentationModelFactory pmf) {
 		d_pmf = pmf;
 		d_study = study;
-		BasicPatientGroup pg = new BasicPatientGroup(null, new Dose(new Interval<Double>(0.0, 0.0), SIUnit.MILLIGRAMS_A_DAY), 0);
+		BasicPatientGroup pg = new BasicPatientGroup(null, new FlexibleDose(new Interval<Double>(0.0, 0.0), SIUnit.MILLIGRAMS_A_DAY), 0);
 		d_pg = d_pmf.getModel(pg);
 		
 		for (Endpoint e : d_study.getEndpoints()) {
@@ -52,8 +52,8 @@ public class StudyAddPatientGroupPresentation {
 		return d_pg.getBean();
 	}
 	
-	public PresentationModel<Dose> getDoseModel() {
-		return d_pmf.getModel(d_pg.getBean().getDose());
+	public PresentationModel<FlexibleDose> getDoseModel() {
+		return d_pmf.getModel((FlexibleDose)d_pg.getBean().getDose());
 	}
 	
 	public List<Endpoint> getEndpoints(Endpoint.Type type) {

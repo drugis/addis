@@ -11,10 +11,10 @@ import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
-import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.Measurement;
@@ -199,7 +199,7 @@ public class RandomEffectsMetaAnalysisTest {
 	}
 	
 	private BasicPatientGroup addPatientGroup(BasicStudy study, Drug drug, int nSubjects) {
-		Dose dose = new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup group = new BasicPatientGroup(drug, dose, nSubjects);
 		study.addPatientGroup(group);
 		return group;

@@ -10,7 +10,8 @@ import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.Dose;
+import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
@@ -93,7 +94,7 @@ public class MainData extends ExampleData {
 		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
 		
 		// Sertraline data
-		Dose dose = new Dose(75.0, SIUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup sertr = new BasicPatientGroup(sertraline, dose, 96);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
 		pHamd.setRate(70);
@@ -101,7 +102,7 @@ public class MainData extends ExampleData {
 		study.setMeasurement(hamd, sertr, pHamd);
 
 		// Fluoxetine data
-		dose = new Dose(30.0, SIUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(30.0, SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup fluox = new BasicPatientGroup(fluoxetine, dose, 92);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(57);
@@ -139,7 +140,7 @@ public class MainData extends ExampleData {
 		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
 		
 		// Sertraline data
-		Dose dose = new Dose(75.0, SIUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup sertr = new BasicPatientGroup(sertraline, dose, 117);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
 		pHamd.setRate(85);
@@ -147,7 +148,7 @@ public class MainData extends ExampleData {
 		study.setMeasurement(hamd, sertr, pHamd);
 
 		// Fluoxetine data
-		dose = new Dose(30.0, SIUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(30.0, SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup fluox = new BasicPatientGroup(fluoxetine, dose, 119);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(84);
@@ -185,7 +186,7 @@ public class MainData extends ExampleData {
 		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
 		
 		// Sertraline data
-		Dose dose = new Dose(75.0, SIUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup sertr = new BasicPatientGroup(sertraline, dose, 118);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
 		pHamd.setRate(86);
@@ -193,7 +194,7 @@ public class MainData extends ExampleData {
 		study.setMeasurement(hamd, sertr, pHamd);
 
 		// Fluoxetine data
-		dose = new Dose(30.0, SIUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(30.0, SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup fluox = new BasicPatientGroup(fluoxetine, dose, 120);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(76);
@@ -231,7 +232,7 @@ public class MainData extends ExampleData {
 		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
 		
 		// Sertraline data
-		Dose dose = new Dose(75.0, SIUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup sertr = new BasicPatientGroup(sertraline, dose, 122);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
 		pHamd.setRate(63);
@@ -239,7 +240,7 @@ public class MainData extends ExampleData {
 		study.setMeasurement(hamd, sertr, pHamd);
 
 		// Fluoxetine data
-		dose = new Dose(30.0, SIUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(30.0, SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup fluox = new BasicPatientGroup(fluoxetine, dose, 120);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(61);
@@ -280,7 +281,7 @@ public class MainData extends ExampleData {
 		study.setCharacteristic(StudyCharacteristic.STUDY_END, new GregorianCalendar(1990, 1, 26).getTime());
 		
 		// Remeron data
-		Dose dose = new Dose(new Interval<Double>(5.0, 35.0), SIUnit.MILLIGRAMS_A_DAY);
+		FlexibleDose dose = new FlexibleDose(new Interval<Double>(5.0, 35.0), SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup remr = new BasicPatientGroup(remeron, dose, 47);
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(remr);
 		pCgi.setMean(1.94);
@@ -291,7 +292,7 @@ public class MainData extends ExampleData {
 		study.setMeasurement(cgis, remr, pCgi);
 
 		// Amitriptyline data
-		dose = new Dose(new Interval<Double>(40.0, 280.0), SIUnit.MILLIGRAMS_A_DAY);
+		dose = new FlexibleDose(new Interval<Double>(40.0, 280.0), SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup amit = new BasicPatientGroup(amitriptyline, dose, 47);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(amit);
 		pCgi.setMean(1.57);
@@ -302,8 +303,8 @@ public class MainData extends ExampleData {
 		study.setMeasurement(cgis, amit, pCgi);
 		
 		// Placebo data
-		dose = new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup plac = new BasicPatientGroup(placebo, dose, 48);
+		FixedDose fixedDose = new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroup plac = new BasicPatientGroup(placebo, fixedDose, 48);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(plac);
 		pCgi.setMean(0.85);
 		// 0.19 is the SE of mean
@@ -347,7 +348,7 @@ public class MainData extends ExampleData {
 		study.setCharacteristic(StudyCharacteristic.STUDY_END, new GregorianCalendar(1992, 4, 1).getTime());
 		
 		// Remeron data
-		Dose dose = new Dose(new Interval<Double>(5.0, 35.0), SIUnit.MILLIGRAMS_A_DAY);
+		FlexibleDose dose = new FlexibleDose(new Interval<Double>(5.0, 35.0), SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup remr = new BasicPatientGroup(remeron, dose, 49);
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(remr);
 		pCgi.setMean(.8);
@@ -358,7 +359,7 @@ public class MainData extends ExampleData {
 		study.setMeasurement(cgis, remr, pCgi);
 
 		// Trazodone data
-		dose = new Dose(new Interval<Double>(40.0, 280.0), SIUnit.MILLIGRAMS_A_DAY);
+		dose = new FlexibleDose(new Interval<Double>(40.0, 280.0), SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup traz = new BasicPatientGroup(trazodone, dose, 48);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(traz);
 		pCgi.setMean(.62);
@@ -369,8 +370,8 @@ public class MainData extends ExampleData {
 		study.setMeasurement(cgis, traz, pCgi);
 		
 		// Placebo data
-		dose = new Dose(0.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicPatientGroup plac = new BasicPatientGroup(placebo, dose, 49);
+		FixedDose fixedDose = new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroup plac = new BasicPatientGroup(placebo, fixedDose, 49);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(plac);
 		pCgi.setMean(0.59);
 		// 0.16 is the SE of the mean

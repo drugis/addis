@@ -25,9 +25,9 @@ public class BasicPatientGroup extends AbstractEntity implements PatientGroup {
 	private static final long serialVersionUID = -2092185548220089471L;
 	private Integer d_size;
 	private Drug d_drug;
-	private Dose d_dose;
+	private AbstractDose d_dose;
 	
-	public BasicPatientGroup(Drug drug, Dose dose, int size) {
+	public BasicPatientGroup(Drug drug, AbstractDose dose, int size) {
 		d_drug = drug;
 		d_dose = dose;
 		d_size = size;
@@ -44,12 +44,12 @@ public class BasicPatientGroup extends AbstractEntity implements PatientGroup {
 		firePropertyChange(PROPERTY_DRUG, oldVal, d_drug);
 	}
 	
-	public Dose getDose() {
+	public AbstractDose getDose() {
 		return d_dose;
 	}
 	
-	public void setDose(Dose dose) {
-		Dose oldVal = d_dose;
+	public void setDose(AbstractDose dose) {
+		AbstractDose oldVal = d_dose;
 		d_dose = dose;
 		firePropertyChange(PROPERTY_DOSE, oldVal, d_dose);
 	}

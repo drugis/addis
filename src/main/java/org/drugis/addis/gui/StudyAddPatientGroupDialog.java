@@ -21,7 +21,8 @@ package org.drugis.addis.gui;
 
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.Dose;
+import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.gui.builder.StudyAddPatientGroupView;
 import org.drugis.addis.presentation.StudyAddPatientGroupPresentation;
 import org.drugis.common.gui.OkCancelDialog;
@@ -63,9 +64,9 @@ public class StudyAddPatientGroupDialog extends OkCancelDialog {
 	}
 
 	private void validateFlexibleDose() {
-		Dose oldDose = d_pm.getPatientGroup().getDose();
+		FlexibleDose oldDose = (FlexibleDose)d_pm.getPatientGroup().getDose();
 		
 		if (oldDose.getMinDose() >= oldDose.getMaxDose())
-			d_pm.getPatientGroup().setDose(new Dose(oldDose.getMinDose(), oldDose.getUnit()));
+			d_pm.getPatientGroup().setDose(new FixedDose(oldDose.getMinDose(), oldDose.getUnit()));
 	}	
 }

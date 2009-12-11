@@ -44,6 +44,6 @@ public class BasicPatientGroupTest {
 	
 	@Test
 	public void testSetDose() {
-		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_DOSE, null, new Dose(1.0, SIUnit.MILLIGRAMS_A_DAY));
+		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_DOSE, null, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY));
 	}
 }

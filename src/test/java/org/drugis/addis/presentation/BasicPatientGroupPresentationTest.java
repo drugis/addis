@@ -1,14 +1,18 @@
 package org.drugis.addis.presentation;
 
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
 
+import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.BasicPatientGroup;
-import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.SIUnit;
+import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +33,7 @@ public class BasicPatientGroupPresentationTest {
 		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(group);
 		assertEquals("INCOMPLETE", pres.getLabelModel().getValue());
 		
-		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		group.setDose(dose);
 		Drug drug = new Drug("Fluoxetine", "atc");
 		group.setDrug(drug);
@@ -40,7 +44,7 @@ public class BasicPatientGroupPresentationTest {
 	public void testFireLabelChanged() {
 		Drug drug = new Drug("Fluoxetine", "atc");
 		Drug drug2 = new Drug("Paroxetine", "atc");
-		Dose dose = new Dose(25.5, SIUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		d_pg.setDrug(drug);
 		d_pg.setDose(dose);
 		
@@ -53,5 +57,61 @@ public class BasicPatientGroupPresentationTest {
 		lm.addPropertyChangeListener(l);
 		d_pg.setDrug(drug);
 		verify(l);
+	}
+	
+	@Test
+	public void testFixedDoseModelInitialValues() {
+		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(
+				new BasicPatientGroup(new Drug("", ""), dose, 100));
+		assertEquals(dose.getQuantity(), pres.getDoseModel().getMinModel().getValue());
+		assertEquals(dose.getQuantity(), pres.getDoseModel().getMaxModel().getValue());
+	}
+		
+	@Test
+	public void testFlexibleDoseModelInitialValues() {
+		FlexibleDose dose = new FlexibleDose(new Interval<Double>(25.5, 30.2), SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(
+				new BasicPatientGroup(new Drug("", ""), dose, 100));
+		assertEquals(dose.getFlexibleDose().getLowerBound(), pres.getDoseModel().getMinModel().getValue());
+		assertEquals(dose.getFlexibleDose().getUpperBound(), pres.getDoseModel().getMaxModel().getValue());
+	}
+	
+	@Test
+	public void testFixedToFlexible() {
+		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(
+				new BasicPatientGroup(new Drug("", ""), dose, 100));
+		pres.getDoseModel().getMaxModel().setValue(dose.getQuantity() + 2);
+		assertTrue(pres.getBean().getDose() instanceof FlexibleDose);
+	}
+	
+	@Test
+	public void testFlexibleToFixed() {
+		FlexibleDose dose = new FlexibleDose(new Interval<Double>(25.5, 30.2), SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(
+				new BasicPatientGroup(new Drug("", ""), dose, 100));
+		pres.getDoseModel().getMaxModel().setValue(dose.getFlexibleDose().getLowerBound());
+		assertTrue(pres.getBean().getDose() instanceof FixedDose);
+	}
+	
+	@Test
+	public void testSetMaxLowerThanMinDose() {
+		FlexibleDose dose = new FlexibleDose(new Interval<Double>(10.0,20.0), SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(
+				new BasicPatientGroup(new Drug("", ""), dose, 100));
+		pres.getDoseModel().getMaxModel().setValue(8d);
+		assertEquals(8d,dose.getMinDose(),0.001);
+		assertEquals(8d,dose.getMaxDose(),0.001);
+	}
+	
+	@Test
+	public void testSetMinHigherThanMaxDose() {
+		FlexibleDose dose = new FlexibleDose(new Interval<Double>(10.0,20.0), SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(
+				new BasicPatientGroup(new Drug("", ""), dose, 100));
+		pres.getDoseModel().getMinModel().setValue(25d);
+		assertEquals(25d,dose.getMaxDose(),0.001);
+		assertEquals(25d,dose.getMinDose(),0.001);	
 	}
 }

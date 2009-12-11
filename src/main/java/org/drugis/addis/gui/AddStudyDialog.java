@@ -36,7 +36,8 @@ import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
-import org.drugis.addis.entities.Dose;
+import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PatientGroup;
@@ -130,7 +131,7 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	private void addNewPatientGroup() {
-		BasicPatientGroup group = new BasicPatientGroup(null, new Dose(new Interval<Double>(0.0,0.0), SIUnit.MILLIGRAMS_A_DAY),
+		BasicPatientGroup group = new BasicPatientGroup(null, new FlexibleDose(new Interval<Double>(0.0,0.0), SIUnit.MILLIGRAMS_A_DAY),
 				0);
 		d_study.addPatientGroup(group);
 		if (d_primaryEndpoint.getEndpoint() != null) {
@@ -157,10 +158,10 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	private void validateFlexibleDose(BasicPatientGroup pg) {
-		Dose oldDose = pg.getDose();
+		FlexibleDose oldDose = (FlexibleDose)pg.getDose();
 		
 		if (oldDose.getMinDose() >= oldDose.getMaxDose())
-			pg.setDose(new Dose(oldDose.getMinDose(), oldDose.getUnit()));
+			pg.setDose(new FixedDose(oldDose.getMinDose(), oldDose.getUnit()));
 	}
 	
 	private void bindEndpoint() {

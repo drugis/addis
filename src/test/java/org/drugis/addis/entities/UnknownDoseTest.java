@@ -12,12 +12,7 @@ public class UnknownDoseTest {
 	
 	@Test
 	public void testNotEqualsKnown() {
-		assertNotSame(new Dose(10.0, SIUnit.MILLIGRAMS_A_DAY), new UnknownDose());
-	}
-	
-	@Test
-	public void testGetQuantity() {
-		assertEquals(null, new UnknownDose().getQuantity());
+		assertNotSame(new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), new UnknownDose());
 	}
 	
 	@Test
@@ -28,11 +23,6 @@ public class UnknownDoseTest {
 	@Test(expected=UnsupportedOperationException.class)
 	public void testSetUnit() {
 		new UnknownDose().setUnit(SIUnit.MILLIGRAMS_A_DAY);
-	}
-	
-	@Test(expected=UnsupportedOperationException.class)
-	public void testSetQuantity() {
-		new UnknownDose().setQuantity(10.0);
 	}
 	
 	@Test

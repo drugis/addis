@@ -38,10 +38,10 @@ import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
+import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
@@ -68,7 +68,7 @@ public class DomainTreeModelTest {
 		d_firstDrug = new Drug("Drug", "atc");
 		
 		BasicPatientGroup pg = new BasicPatientGroup(d_firstDrug,
-				new Dose(100.0, SIUnit.MILLIGRAMS_A_DAY), 100);
+				new FixedDose(100.0, SIUnit.MILLIGRAMS_A_DAY), 100);
 		d_firstStudy.addPatientGroup(pg);
 		d_firstStudy.addEndpoint(d_firstEndpoint);
 		

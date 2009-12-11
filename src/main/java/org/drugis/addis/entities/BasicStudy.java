@@ -115,7 +115,7 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 			if (pg.getDrug() != null) {
 				drugs.add(pg.getDrug());
 				if (pg.getDose() != null)
-					if (pg.getDose().isFlexible())
+					if (pg.getDose() instanceof FlexibleDose)
 						d_chars.put(StudyCharacteristic.DOSING, StudyCharacteristic.Dosing.FLEXIBLE);
 			}
 		}

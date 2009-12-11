@@ -55,4 +55,8 @@ public class BasicPatientGroupPresentation extends PresentationModel<BasicPatien
 	public AbstractValueModel getLabelModel() {
 		return new LabelModel();
 	}
+	
+	public DosePresentationModel getDoseModel() {
+		return new DosePresentationImpl(this);
+	}
 }

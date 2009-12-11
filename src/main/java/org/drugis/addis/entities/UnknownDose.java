@@ -19,13 +19,8 @@
 
 package org.drugis.addis.entities;
 
-public class UnknownDose extends Dose {
+public class UnknownDose extends AbstractDose {
 	private static final long serialVersionUID = -1264950512657687181L;
-	
-	@Override
-	public void setQuantity(Double q) {
-		throw new UnsupportedOperationException();
-	}
 	
 	@Override
 	public void setUnit(SIUnit u) {
