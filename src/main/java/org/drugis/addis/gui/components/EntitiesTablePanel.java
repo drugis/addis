@@ -38,7 +38,7 @@ public class EntitiesTablePanel<T extends Entity> extends JPanel {
 		sp.setBorder(BorderFactory.createEmptyBorder());
 		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		table.setFillsViewportHeight(true);
+		//table.setFillsViewportHeight(true);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		setLayout(new BorderLayout());
 		add(sp, BorderLayout.NORTH);
