@@ -41,7 +41,6 @@ import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;

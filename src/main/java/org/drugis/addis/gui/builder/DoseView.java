@@ -26,16 +26,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.text.DefaultFormatter;
 
-import org.drugis.addis.entities.AbstractDose;
-import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.DosePresentationModel;
 import org.drugis.common.gui.ViewBuilder;
 
-
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.list.SelectionInList;
