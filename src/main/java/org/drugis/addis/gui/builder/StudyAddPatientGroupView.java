@@ -66,7 +66,7 @@ public class StudyAddPatientGroupView implements ViewBuilder {
 			}
 		}
 		for (int i=1;i<maxEpComponents;i++) {
-			LayoutUtil.addColumn(layout);
+			LayoutUtil.addColumn(layout, "fill:pref:grow");
 			fullWidth += 2;
 		}
 		

@@ -6,9 +6,9 @@ import com.jgoodies.forms.layout.RowSpec;
 
 public class LayoutUtil {
 
-	public static void addColumn(FormLayout layout) {
+	public static void addColumn(FormLayout layout, String spec) {
 		layout.appendColumn(ColumnSpec.decode("3dlu"));
-		layout.appendColumn(ColumnSpec.decode("pref"));
+		layout.appendColumn(ColumnSpec.decode(spec));
 	}
 
 	public static void addRow(FormLayout layout) {

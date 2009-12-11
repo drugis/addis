@@ -121,7 +121,7 @@ public class AddStudyView implements ViewBuilder {
 		int fullWidth = 9;
 		if (getEndpoint() != null) {
 			for (int i = 0; i < MeasurementInputHelper.numComponents(getEndpoint()); ++i) {
-				LayoutUtil.addColumn(layout);
+				LayoutUtil.addColumn(layout, "pref");
 				fullWidth += 2;
 			}
 		}
