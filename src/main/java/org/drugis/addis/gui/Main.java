@@ -532,7 +532,7 @@ public class Main extends JFrame {
 			builder.addButton(linkLabel);
 			builder.addRelatedGap();			
 		}
-		builder.addButton(new LinkLabel("www.drugis.org", "http://www.drugis.org"));
+		builder.addButton(GUIFactory.buildSiteLink());
 		
 		toolbar.add(builder.getPanel(), BorderLayout.CENTER);
 		toolbar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));

@@ -38,6 +38,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.builder.StudyTablePanelView;
+import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.ImageLoader;
 import org.jdesktop.swingx.JXCollapsiblePane;
@@ -109,4 +110,8 @@ public class GUIFactory {
 		}
 		return studiesComp;
 	}	
+	
+	public static JLabel buildSiteLink() {
+		return new LinkLabel("www.drugis.org", "http://drugis.org/");
+	}
 }

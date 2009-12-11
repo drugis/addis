@@ -34,11 +34,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
-import javax.swing.border.BevelBorder;
 
 import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
-import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.common.ImageLoader;
 
 @SuppressWarnings("serial")
@@ -61,7 +59,6 @@ public class AboutDialog extends JDialog {
 		
 		JLabel titleLabel = new JLabel(title);
 		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		titleLabel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 		Font font = titleLabel.getFont();
 		font = font.deriveFont(Font.BOLD, 14F);
 		titleLabel.setFont(font);
@@ -81,7 +78,7 @@ public class AboutDialog extends JDialog {
 		licArea.setOpaque(false);
 		
 		licPanel.add(licArea, BorderLayout.CENTER);
-		LinkLabel linkLabel = new LinkLabel("www.drugis.org", "http://www.drugis.org");
+		JLabel linkLabel = GUIFactory.buildSiteLink();
 		linkLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		licPanel.add(linkLabel, BorderLayout.SOUTH);
 		licPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
