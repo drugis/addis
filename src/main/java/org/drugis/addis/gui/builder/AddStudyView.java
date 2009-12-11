@@ -20,6 +20,8 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,6 +38,7 @@ import javax.swing.text.DefaultFormatter;
 
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Dose;
@@ -335,9 +338,29 @@ public class AddStudyView implements ViewBuilder {
 				builder.add(component, cc.xy(col, row));
 				col += 2;
 			}
+			
+			if (meas instanceof BasicRateMeasurement) {
+				wireSampleSize(model, d_mainWindow.getPresentationModelManager().getModel((BasicRateMeasurement)meas));
+			}
 
 			row += 2;
 		}
+	}
+
+	private void wireSampleSize(PresentationModel<BasicPatientGroup> pg,
+			final PresentationModel<BasicRateMeasurement> m) {
+		pg.getModel(BasicPatientGroup.PROPERTY_SIZE).addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (getSampleSize(m).getValue().equals(new Integer(0))) {
+					getSampleSize(m).setValue(evt.getNewValue());
+				}
+			}
+
+			private AbstractValueModel getSampleSize(
+					final PresentationModel<BasicRateMeasurement> m) {
+				return m.getModel(BasicRateMeasurement.PROPERTY_SAMPLESIZE);
+			}
+		});
 	}
 
 	private boolean patientGroupsPresent() {
