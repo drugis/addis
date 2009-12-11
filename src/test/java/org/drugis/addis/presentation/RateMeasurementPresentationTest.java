@@ -44,9 +44,18 @@ public class RateMeasurementPresentationTest {
 		PropertyChangeListener l = JUnitUtil.mockListener(
 				lm, "value", "67/101", "67/102");
 		lm.addPropertyChangeListener(l);
-		d_pg.setSize(102);
+		d_measurement.setSampleSize(102);
 		verify(l);
 	}	
+	
+	@Test
+	public void testGetSize() {
+		assertEquals(d_measurement.getSampleSize(),
+				d_presentation.getModel(BasicRateMeasurement.PROPERTY_SAMPLESIZE).getValue());
+		d_measurement.setSampleSize(104);
+		assertEquals(d_measurement.getSampleSize(),
+				d_presentation.getModel(BasicRateMeasurement.PROPERTY_SAMPLESIZE).getValue());
+	}
 	
 	
 	@Test

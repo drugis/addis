@@ -44,7 +44,7 @@ public class MeasurementInputHelper {
 		case CONTINUOUS:
 			return new String[] {"Mean", "StdDev"};
 		case RATE:
-			return new String[] {"Number"};
+			return new String[] {"Occurence", "Subjects"};
 		default:
 			throw new IllegalStateException("Unhandled enum value");
 		}
@@ -62,7 +62,8 @@ public class MeasurementInputHelper {
 			PresentationModel<BasicRateMeasurement> model = 
 				new PresentationModel<BasicRateMeasurement>((BasicRateMeasurement)m);
 			return new JTextField[] {
-				MeasurementInputHelper.buildFormatted(model.getModel(BasicRateMeasurement.PROPERTY_RATE))
+				MeasurementInputHelper.buildFormatted(model.getModel(BasicRateMeasurement.PROPERTY_RATE)),
+				MeasurementInputHelper.buildFormatted(model.getModel(BasicRateMeasurement.PROPERTY_SAMPLESIZE))
 			};
 			
 		}

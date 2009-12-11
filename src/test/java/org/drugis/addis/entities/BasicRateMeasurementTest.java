@@ -64,8 +64,13 @@ public class BasicRateMeasurementTest {
 	
 	@Test
 	public void testSetRate() {
-		PatientGroup p = new BasicPatientGroup(null,null,0);
-		JUnitUtil.testSetter(new BasicRateMeasurement(new Endpoint("e", Type.RATE), 0, p ), BasicRateMeasurement.PROPERTY_RATE, 0, new Integer(67));
+		JUnitUtil.testSetter(d_measurement, BasicRateMeasurement.PROPERTY_RATE, new Integer(67), new Integer(68));
+	}
+	
+	@Test
+	public void testSetSampleSize() {
+		JUnitUtil.testSetter(d_measurement, BasicRateMeasurement.PROPERTY_SAMPLESIZE,
+				new Integer(101), new Integer(111));
 	}
 	
 	@Test
