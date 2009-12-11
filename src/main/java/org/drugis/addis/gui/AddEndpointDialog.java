@@ -26,8 +26,6 @@ import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.addis.gui.builder.AddEndpointView;
 import org.drugis.common.gui.OkCancelDialog;
 
-import com.jgoodies.binding.PresentationModel;
-
 @SuppressWarnings("serial")
 public class AddEndpointDialog extends OkCancelDialog {
 	private Domain d_domain;
@@ -40,7 +38,8 @@ public class AddEndpointDialog extends OkCancelDialog {
 		this.setModal(true);
 		d_domain = domain;
 		d_endpoint = new Endpoint("", Type.RATE);
-		AddEndpointView view = new AddEndpointView(new PresentationModel<Endpoint>(d_endpoint), d_okButton);
+		AddEndpointView view = new AddEndpointView(
+				frame.getPresentationModelManager().getCreationModel(d_endpoint), d_okButton);
 		getUserPanel().add(view.buildPanel());
 		pack();
 		getRootPane().setDefaultButton(d_okButton);

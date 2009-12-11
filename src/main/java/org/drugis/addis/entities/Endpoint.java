@@ -24,6 +24,9 @@ import java.util.Set;
 
 public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 	private static final long serialVersionUID = -1182348850033782011L;
+	
+	public static final String UOM_DEFAULT_RATE = "Ratio of Patients";
+	public static final String UOM_DEFAULT_CONTINUOUS = "";
 
 	public enum Type {
 		CONTINUOUS,
@@ -51,15 +54,16 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 	
 	private String d_name;
 	String d_description = "";
-	private String d_unitOfMeasurement = "";
+	private String d_unitOfMeasurement;
 	private Type d_type;
 	private Direction d_direction;
 	
 	public final static String PROPERTY_NAME = "name";
-	 public final static String PROPERTY_DESCRIPTION = "description";
+	public final static String PROPERTY_DESCRIPTION = "description";
 	public final static String PROPERTY_TYPE = "type";
 	public final static String PROPERTY_DIRECTION = "direction";
 	public final static String PROPERTY_UNIT_OF_MEASUREMENT = "unitOfMeasurement";
+	
 	
 	public Endpoint(String name, Type type, Direction direction) {
 		d_name = name;
@@ -67,7 +71,9 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 		d_direction = direction;
 		
 		if (d_type == Type.RATE)
-			d_unitOfMeasurement = "Ratio of Patients";
+			d_unitOfMeasurement = UOM_DEFAULT_RATE;
+		else
+			d_unitOfMeasurement = UOM_DEFAULT_CONTINUOUS;
 	}
 	
 	public Endpoint(String string, Type type) {
@@ -114,11 +120,9 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 	}
 	
 	public void setUnitOfMeasurement(String um) {
-		if (d_type == Type.CONTINUOUS) {
-			String oldVal = d_unitOfMeasurement;
-			d_unitOfMeasurement = um;
-			firePropertyChange(PROPERTY_UNIT_OF_MEASUREMENT, oldVal, d_unitOfMeasurement);
-		}
+		String oldVal = d_unitOfMeasurement;
+		d_unitOfMeasurement = um;
+		firePropertyChange(PROPERTY_UNIT_OF_MEASUREMENT, oldVal, d_unitOfMeasurement);
 	}
 
 	public String getUnitOfMeasurement() {

@@ -62,6 +62,23 @@ public class PresentationModelFactory {
 		d_cache.put(obj, mod);
 		return (PresentationModel<T>)mod;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> PresentationModel<T> getCreationModel(T obj) {
+		PresentationModel model = createCreationModel(obj);
+		if (model != null) {
+			return (PresentationModel<T>)model;
+		}
+		return getModel(obj);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private PresentationModel createCreationModel(Object obj) {
+		if (obj instanceof Endpoint) {
+			return new EndpointCreationModel((Endpoint)obj);
+		}
+		return null;
+	}
 
 	@SuppressWarnings("unchecked")
 	private PresentationModel createModel(Object obj) {

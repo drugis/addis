@@ -115,7 +115,7 @@ public class PresentationModelFactoryTest {
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testGetEndpointModel(){
+	public void testGetEndpointModel() {
 		Endpoint e = ExampleData.buildEndpointHamd();
 		PresentationModel m = d_manager.getModel(e);
 		
@@ -124,11 +124,21 @@ public class PresentationModelFactoryTest {
 		assertEquals(d_domain.getStudies(e).getValue().size(),
 				((EndpointPresentationModel) m).getIncludedStudies().getValue().size());
 		assertTrue(d_domain.getStudies(e).getValue().containsAll(
-				((EndpointPresentationModel) m).getIncludedStudies().getValue()));		
+				((EndpointPresentationModel) m).getIncludedStudies().getValue()));
 	}
 
 	@Test
 	public void testGetOtherModel() {
 		assertNotNull(d_manager.getModel((BasicStudy) d_domain.getStudies().first()));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testGetEndpointCreationModel() {
+		Endpoint e = ExampleData.buildEndpointHamd();
+		PresentationModel m = d_manager.getCreationModel(e);
+		
+		assertEquals(e, m.getBean());
+		assertEquals(EndpointCreationModel.class, m.getClass());
 	}
 }
