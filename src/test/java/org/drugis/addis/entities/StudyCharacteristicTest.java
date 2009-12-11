@@ -50,6 +50,9 @@ public class StudyCharacteristicTest {
 
 		assertTrue(ValueType.STATUS.validate(StudyCharacteristic.Status.FINISHED));
 		assertFalse(ValueType.STATUS.validate(new Date()));
+		
+		assertTrue(ValueType.DOSING.validate(StudyCharacteristic.Dosing.FIXED));
+		assertFalse(ValueType.DOSING.validate(new String()));
 	}
 
 }
