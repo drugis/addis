@@ -60,7 +60,7 @@ public class StudyEndpointsView implements ViewBuilder {
 					LayoutUtil.addRow(layout);
 				}
 				builder.add(
-						GUIFactory.createEndpointLabelWithIcon(d_model.getBean(), e),
+						GUIFactory.createEndpointLabelWithIcon(e),
 						cc.xy(1, row));
 				JPanel panel = new JPanel(new FlowLayout());
 				if (e.getType().equals(Type.RATE)) {

@@ -24,7 +24,6 @@ public interface PatientGroup extends Entity {
 	public static final String PROPERTY_SIZE = "size";
 	public static final String PROPERTY_DRUG = "drug";
 	public static final String PROPERTY_DOSE = "dose";
-	public static final String PROPERTY_MEASUREMENTS = "measurements";
 
 	public Drug getDrug();
 	public Dose getDose();

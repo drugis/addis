@@ -29,11 +29,17 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 	public static final String UOM_DEFAULT_CONTINUOUS = "";
 
 	public enum Type {
-		CONTINUOUS,
-		RATE;
+		CONTINUOUS("Continuous"),
+		RATE("Rate");
+		
+		private String d_name;
+		
+		Type(String name) {
+			d_name = name;
+		}
 		
 		public String toString() {
-			return this.name().toLowerCase();
+			return d_name;
 		}
 	}
 	

@@ -110,6 +110,12 @@ public class ExampleData {
 		
 		return s_studyChouinard;
 	}
+	
+	public static BasicStudy buildStudyChouinardNoHamd() {
+		BasicStudy s = realBuildStudyChouinard();
+		s.deleteEndpoint(buildEndpointHamd());
+		return s;
+	}
 
 	private static BasicStudy realBuildStudyChouinard() {
 		BasicStudy study = new BasicStudy("Chouinard et al, 1999", buildIndicationDepression());

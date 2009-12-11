@@ -55,7 +55,7 @@ public class StudyDataView implements ViewBuilder {
 		int col = 7;
 		for (Endpoint e : d_model.getBean().getEndpoints()) {
 			builder.add(
-					GUIFactory.createEndpointLabelWithIcon(d_model.getBean(), e),
+					GUIFactory.createEndpointLabelWithIcon(e),
 							cc.xy(col, row));
 			col += 2;
 		}

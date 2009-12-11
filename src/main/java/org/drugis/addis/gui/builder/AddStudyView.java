@@ -311,7 +311,7 @@ public class AddStudyView implements ViewBuilder {
 			
 			int col = 1;
 			
-			JComboBox selector = GUIFactory.createDrugSelector(model, d_domain);
+			JComboBox selector = GUIFactory.createDrugSelector(model.getModel(BasicPatientGroup.PROPERTY_DRUG), d_domain);
 			d_validator.add(selector);
 			ComboBoxPopupOnFocusListener.add(selector);
 			builder.add(selector, cc.xy(col, row));

@@ -32,11 +32,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.FileNames;
-import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.builder.StudyTablePanelView;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.StudyListPresentationModel;
@@ -47,6 +45,7 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jidesoft.swing.JideButton;
 
 public class GUIFactory {
@@ -82,7 +81,7 @@ public class GUIFactory {
 		return topPane;
 	}	
 
-	public static JComponent createEndpointLabelWithIcon(Study s, Endpoint e) {
+	public static JComponent createEndpointLabelWithIcon(Endpoint e) {
 		String fname = FileNames.ICON_STUDY;
 		JLabel textLabel = null;
 		Icon icon = ImageLoader.getIcon(fname);
@@ -91,14 +90,6 @@ public class GUIFactory {
 		Bindings.bind(textLabel, "text", 
 				new PresentationModel<Endpoint>(e).getModel(Endpoint.PROPERTY_NAME));
 		return textLabel;
-	}
-
-	public static JComboBox createDrugSelector(PresentationModel<BasicPatientGroup> model, Domain domain) {
-		SelectionInList<Drug> drugSelectionInList =
-			new SelectionInList<Drug>(
-					new ArrayList<Drug>(domain.getDrugs()),
-					model.getModel(BasicPatientGroup.PROPERTY_DRUG));
-		return BasicComponentFactory.createComboBox(drugSelectionInList);
 	}
 
 	public static JComponent buildStudyPanel(StudyListPresentationModel studies, JFrame parent) {
@@ -113,5 +104,14 @@ public class GUIFactory {
 	
 	public static JLabel buildSiteLink() {
 		return new LinkLabel("www.drugis.org", "http://drugis.org/");
+	}
+
+	public static JComboBox createDrugSelector(AbstractValueModel drugModel,
+			Domain domain) {
+		SelectionInList<Drug> drugSelectionInList =
+			new SelectionInList<Drug>(
+					new ArrayList<Drug>(domain.getDrugs()),
+					drugModel);
+		return BasicComponentFactory.createComboBox(drugSelectionInList);
 	}
 }

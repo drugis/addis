@@ -19,53 +19,38 @@
 
 package org.drugis.addis.gui.builder;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
 import org.drugis.addis.entities.BasicMeasurement;
-import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.Dose;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.SIUnit;
-import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.MeasurementInputHelper;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
-import org.drugis.common.Interval;
+import org.drugis.addis.presentation.StudyAddPatientGroupPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class StudyAddPatientGroupView implements ViewBuilder {
-
-	private Study d_study;
 	private Domain d_domain;
-	private Map<Endpoint, Measurement> d_measurements = new HashMap<Endpoint,Measurement>();
 	private NotEmptyValidator d_validator;
-	private BasicPatientGroup d_group;
-	private Set<Endpoint> d_endpoints;
+	private StudyAddPatientGroupPresentation d_pm;
+	
 
-	public StudyAddPatientGroupView(Domain domain, Study study, JButton okButton) {
+	public StudyAddPatientGroupView(StudyAddPatientGroupPresentation pm, Domain domain, JButton okButton) {
 		d_domain = domain;
-		d_study = study;
-		d_group = new BasicPatientGroup(null, new Dose(new Interval<Double>(0.0, 0.0), SIUnit.MILLIGRAMS_A_DAY), 0);
 		d_validator = new NotEmptyValidator(okButton);
-		d_endpoints = d_study.getEndpoints();
+		d_pm = pm;
 	}
 
 	public JComponent buildPanel() {
@@ -75,17 +60,14 @@ public class StudyAddPatientGroupView implements ViewBuilder {
 				);	
 		int fullWidth = 3;
 		int maxEpComponents = 0;
-		for (Endpoint e : d_endpoints) {
-			if (maxEpComponents < MeasurementInputHelper.numComponents(e)) {
-				maxEpComponents = MeasurementInputHelper.numComponents(e);
+		for (Endpoint.Type type : Endpoint.Type.values()) {
+			if (d_pm.hasEndpoints(type)) {
+				maxEpComponents = Math.max(maxEpComponents, numComponents(type));
 			}
 		}
-		if (maxEpComponents > 1) {
-			for (int i=1;i<maxEpComponents;i++) {
-				layout.appendColumn(ColumnSpec.decode("3dlu"));
-				layout.appendColumn(ColumnSpec.decode("fill:pref:grow"));
-				fullWidth += 2;
-			}
+		for (int i=1;i<maxEpComponents;i++) {
+			LayoutUtil.addColumn(layout);
+			fullWidth += 2;
 		}
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -93,62 +75,70 @@ public class StudyAddPatientGroupView implements ViewBuilder {
 		CellConstraints cc = new CellConstraints();
 		int row = 1;
 		
-		PresentationModel<BasicPatientGroup> gmodel = new PresentationModel<BasicPatientGroup>(d_group);
-		
 		builder.addSeparator("Patient Group", cc.xyw(1, 1, fullWidth));
 	
 		row = 3;
 		builder.addLabel("Size", cc.xy(1, row));
-		JTextField field = MeasurementInputHelper.buildFormatted(gmodel.getModel(BasicPatientGroup.PROPERTY_SIZE));
+		JTextField field = MeasurementInputHelper.buildFormatted(d_pm.getSizeModel());
 		d_validator.add(field);
 		AutoSelectFocusListener.add(field);
 		builder.add(field, cc.xyw(3, row, fullWidth-2));
 		
 		row += 2;
 		builder.addLabel("Drug", cc.xy(1, row));
-		JComboBox selector = GUIFactory.createDrugSelector(gmodel, d_domain);
+		JComboBox selector = GUIFactory.createDrugSelector(d_pm.getDrugModel(), d_domain);
 		d_validator.add(selector);
 		ComboBoxPopupOnFocusListener.add(selector);
 		builder.add(selector, cc.xyw(3, row, fullWidth-2));
 		
 		row += 2;
 		builder.addLabel("Dose", cc.xy(1, row));
-		DoseView view = new DoseView(new PresentationModel<Dose>(d_group.getDose()),
-				d_validator);
+		DoseView view = new DoseView(d_pm.getDoseModel(), d_validator);
 		builder.add(view.buildPanel(), cc.xyw(3, row, fullWidth-2));
+		
+		for (Type type : Endpoint.Type.values()) {
+			if (d_pm.hasEndpoints(type)) {
+				row = buildMeasurementsPart(type, row, layout, fullWidth, builder);
+			}
+		}
+		
+		return builder.getPanel();
+	}
 
+	private int buildMeasurementsPart(Type type, int row, FormLayout layout,
+			int fullWidth, PanelBuilder builder) {
+		CellConstraints cc = new CellConstraints();
 		row += 2;
-		builder.addSeparator("Measurements", cc.xyw(1, row, fullWidth));
+		LayoutUtil.addRow(layout);
+		builder.addSeparator(type + " Measurements", cc.xyw(1, row, fullWidth));
 		
 		row +=2;
+		LayoutUtil.addRow(layout);
 		builder.addLabel("Endpoint", cc.xy(1, row));
-		builder.addLabel("Measurement", cc.xyw(3, row, fullWidth-2));
+		int column = 3;
+		for (String header: MeasurementInputHelper.getHeaders(d_pm.getEndpoints(type).get(0))) {
+			builder.addLabel(header, cc.xy(column, row));
+			column += 2;
+		}
 		
-		row +=2;		
-		for (Endpoint e : d_study.getEndpoints()) {
+		row +=2;
+		for (Endpoint e : d_pm.getEndpoints(type)) {
 			LayoutUtil.addRow(layout);
 			builder.add(
-					GUIFactory.createEndpointLabelWithIcon(d_study, e),
+					GUIFactory.createEndpointLabelWithIcon(e),
 					cc.xy(1, row));
 			int col = 3;
-			BasicMeasurement m = e.buildMeasurement(d_group);
-			d_measurements.put(e, m);
-			JComponent[] comps = MeasurementInputHelper.getComponents(m);
+			JComponent[] comps = MeasurementInputHelper.getComponents((BasicMeasurement)d_pm.getMeasurementModel(e).getBean());
 			for (JComponent c : comps) {
 				builder.add(c, cc.xy(col, row));
 				col += 2;				
 			}		
 			row += 2;
 		}
-		
-		return builder.getPanel();
+		return row;
 	}
-	
-	public Map<Endpoint, Measurement> getMeasurements() {
-		return d_measurements;
-	}
-	
-	public BasicPatientGroup getPatientGroup() {
-		return d_group;
+
+	private int numComponents(Endpoint.Type type) {
+		return MeasurementInputHelper.numComponents(d_pm.getEndpoints(type).get(0));
 	}
 }
