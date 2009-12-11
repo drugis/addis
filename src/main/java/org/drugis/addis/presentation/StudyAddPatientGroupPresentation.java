@@ -23,14 +23,14 @@ import com.jgoodies.binding.value.AbstractValueModel;
 public class StudyAddPatientGroupPresentation {
 	private PresentationModelFactory d_pmf;
 	private BasicStudy d_study;
-	private PresentationModel<BasicPatientGroup> d_pg;
+	private BasicPatientGroupPresentation d_pg;
 	private Map<Endpoint, Measurement> d_measurements = new HashMap<Endpoint,Measurement>();
 	
 	public StudyAddPatientGroupPresentation(BasicStudy study, PresentationModelFactory pmf) {
 		d_pmf = pmf;
 		d_study = study;
 		BasicPatientGroup pg = new BasicPatientGroup(null, new FlexibleDose(new Interval<Double>(0.0, 0.0), SIUnit.MILLIGRAMS_A_DAY), 0);
-		d_pg = d_pmf.getModel(pg);
+		d_pg = (BasicPatientGroupPresentation)d_pmf.getModel(pg);
 		
 		for (Endpoint e : d_study.getEndpoints()) {
 			BasicMeasurement m = e.buildMeasurement(pg);
@@ -52,8 +52,8 @@ public class StudyAddPatientGroupPresentation {
 		return d_pg.getBean();
 	}
 	
-	public PresentationModel<FlexibleDose> getDoseModel() {
-		return d_pmf.getModel((FlexibleDose)d_pg.getBean().getDose());
+	public DosePresentationModel getDoseModel() {
+		return d_pg.getDoseModel();
 	}
 	
 	public List<Endpoint> getEndpoints(Endpoint.Type type) {

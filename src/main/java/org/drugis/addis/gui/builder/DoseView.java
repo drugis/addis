@@ -31,6 +31,7 @@ import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
+import org.drugis.addis.presentation.DosePresentationModel;
 import org.drugis.common.gui.ViewBuilder;
 
 
@@ -40,17 +41,17 @@ import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.list.SelectionInList;
 
 public class DoseView implements ViewBuilder {
-	PresentationModel<FlexibleDose> d_model;
+	private DosePresentationModel d_model;
 	private JComboBox d_unit;
 	private NotEmptyValidator d_validator;
 	private JFormattedTextField d_quantityMin;
 	private JFormattedTextField d_quantityMax;
 	
-	public DoseView(PresentationModel<FlexibleDose> dose) {
+	public DoseView(DosePresentationModel dose) {
 		d_model = dose;
 	}
 	
-	public DoseView(PresentationModel<FlexibleDose> dose, NotEmptyValidator validator) {
+	public DoseView(DosePresentationModel dose, NotEmptyValidator validator) {
 		d_model = dose;
 		d_validator = validator;
 	}	
@@ -58,14 +59,14 @@ public class DoseView implements ViewBuilder {
 	public void initComponents() {
 		d_quantityMin = new JFormattedTextField(new DefaultFormatter());
 		d_quantityMax = new JFormattedTextField(new DefaultFormatter());
-		PropertyConnector.connectAndUpdate(d_model.getModel(FlexibleDose.PROPERTY_MIN_DOSE), d_quantityMin, "value");
-		PropertyConnector.connectAndUpdate(d_model.getModel(FlexibleDose.PROPERTY_MAX_DOSE), d_quantityMax, "value");
+		PropertyConnector.connectAndUpdate(d_model.getMinModel(), d_quantityMin, "value");
+		PropertyConnector.connectAndUpdate(d_model.getMaxModel(), d_quantityMax, "value");
 		d_quantityMin.setColumns(8);
 		d_quantityMax.setColumns(8);
 		
 		SelectionInList<SIUnit> unitSelectionInList = new SelectionInList<SIUnit>(
 				SIUnit.values(),
-				d_model.getModel(AbstractDose.PROPERTY_UNIT));
+				d_model.getUnitModel());
 		d_unit = BasicComponentFactory.createComboBox(unitSelectionInList);
 		ComboBoxPopupOnFocusListener.add(d_unit);
 		

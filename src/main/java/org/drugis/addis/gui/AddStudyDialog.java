@@ -36,16 +36,14 @@ import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
-import org.drugis.addis.entities.FixedDose;
-import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.gui.builder.AddStudyView;
 import org.drugis.common.Interval;
 import org.drugis.common.gui.OkCancelDialog;
-
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
@@ -147,23 +145,12 @@ public class AddStudyDialog extends OkCancelDialog {
 
 	@Override
 	protected void commit() {
-		for (BasicPatientGroup pg : d_study.getPatientGroups()) {
-			validateFlexibleDose(pg);
-		}
-			
 		bindEndpoint();
 		d_domain.addStudy(d_study);
 		setVisible(false);
 		d_main.leftTreeFocusOnStudy(d_study);
 	}
 
-	private void validateFlexibleDose(BasicPatientGroup pg) {
-		FlexibleDose oldDose = (FlexibleDose)pg.getDose();
-		
-		if (oldDose.getMinDose() >= oldDose.getMaxDose())
-			pg.setDose(new FixedDose(oldDose.getMinDose(), oldDose.getUnit()));
-	}
-	
 	private void bindEndpoint() {
 		d_study.setEndpoints(new HashSet<Endpoint>(d_primaryEndpoint.asList()));
 		for (PatientGroup g : d_study.getPatientGroups()) {

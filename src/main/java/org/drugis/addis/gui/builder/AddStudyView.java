@@ -55,6 +55,7 @@ import org.drugis.addis.gui.MutableCharacteristicHolder;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
+import org.drugis.addis.presentation.BasicPatientGroupPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -307,7 +308,7 @@ public class AddStudyView implements ViewBuilder {
 		for (BasicPatientGroup g : groups) {
 			LayoutUtil.addRow(layout);
 			
-			PresentationModel<BasicPatientGroup> model = new PresentationModel<BasicPatientGroup>(g);
+			BasicPatientGroupPresentation model = (BasicPatientGroupPresentation) d_mainWindow.getPresentationModelManager().getModel(g);
 			
 			int col = 1;
 			
@@ -320,8 +321,7 @@ public class AddStudyView implements ViewBuilder {
 			builder.add(createNewDrugButton(), cc.xy(col, row));
 			col += 2;
 			
-			DoseView view = new DoseView(d_mainWindow.getPresentationModelManager().getModel((FlexibleDose)g.getDose()),
-					d_validator);
+			DoseView view = new DoseView(model.getDoseModel(), d_validator);
 			builder.add(view.buildPanel(), cc.xy(col, row));
 			col += 2;
 			

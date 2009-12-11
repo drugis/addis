@@ -2,11 +2,9 @@ package org.drugis.addis.presentation;
 
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
 
-import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.FixedDose;
@@ -101,8 +99,9 @@ public class BasicPatientGroupPresentationTest {
 		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(
 				new BasicPatientGroup(new Drug("", ""), dose, 100));
 		pres.getDoseModel().getMaxModel().setValue(8d);
-		assertEquals(8d,dose.getMinDose(),0.001);
-		assertEquals(8d,dose.getMaxDose(),0.001);
+		assertEquals(8d, pres.getDoseModel().getMaxModel().doubleValue(), 0.001);
+		assertEquals(8d, pres.getDoseModel().getMinModel().doubleValue(), 0.001);
+		assertTrue(pres.getBean().getDose() instanceof FixedDose);
 	}
 	
 	@Test
@@ -111,7 +110,17 @@ public class BasicPatientGroupPresentationTest {
 		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(
 				new BasicPatientGroup(new Drug("", ""), dose, 100));
 		pres.getDoseModel().getMinModel().setValue(25d);
-		assertEquals(25d,dose.getMaxDose(),0.001);
-		assertEquals(25d,dose.getMinDose(),0.001);	
+		assertEquals(25d, pres.getDoseModel().getMaxModel().doubleValue(), 0.001);
+		assertEquals(25d, pres.getDoseModel().getMinModel().doubleValue(), 0.001);
+		assertTrue(pres.getBean().getDose() instanceof FixedDose);
+	}
+	
+	@Test
+	public void testSetUnit() {
+		FlexibleDose dose = new FlexibleDose(new Interval<Double>(10.0,20.0), null);
+		BasicPatientGroupPresentation pres = new BasicPatientGroupPresentation(
+				new BasicPatientGroup(new Drug("", ""), dose, 100));
+		pres.getDoseModel().getUnitModel().setValue(SIUnit.MILLIGRAMS_A_DAY);
+		assertEquals(SIUnit.MILLIGRAMS_A_DAY, pres.getBean().getDose().getUnit());
 	}
 }

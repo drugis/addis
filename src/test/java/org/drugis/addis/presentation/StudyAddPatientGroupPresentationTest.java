@@ -49,10 +49,10 @@ public class StudyAddPatientGroupPresentationTest {
 	
 	@Test
 	public void testGetDoseModel() {
-		assertEquals(INITIAL_DOSE, d_pm.getDoseModel().getBean());
+		assertEquals(INITIAL_DOSE, d_pm.getPatientGroup().getDose());
 		double newValue = 25.4;
-		d_pm.getDoseModel().setValue(FlexibleDose.PROPERTY_MAX_DOSE, newValue);
-		assertEquals(d_pm.getDoseModel().getValue(FlexibleDose.PROPERTY_MAX_DOSE), new Double(newValue));
+		d_pm.getDoseModel().getMaxModel().setValue(newValue);
+		assertEquals(d_pm.getDoseModel().getMaxModel().doubleValue(), newValue, 0.001);
 	}
 	
 	@Test
