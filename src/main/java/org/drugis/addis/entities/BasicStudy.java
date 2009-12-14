@@ -28,8 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+
 
 
 
@@ -100,26 +99,7 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 		d_patientGroups = patientGroups;
 		updateMeasurements();
 		
-		updateCharateristics();
-		
 		firePropertyChange(PROPERTY_PATIENTGROUPS, oldVal, d_patientGroups);
-	}
-
-	private void updateCharateristics() {
-		if (getSampleSize() != 0)
-			d_chars.put(StudyCharacteristic.STUDYSIZE, getSampleSize());
-		
-		d_chars.put(StudyCharacteristic.DOSING, StudyCharacteristic.Dosing.FIXED);
-		SortedSet<Drug> drugs = new TreeSet<Drug>();
-		for (PatientGroup pg : d_patientGroups) {
-			if (pg.getDrug() != null) {
-				drugs.add(pg.getDrug());
-				if (pg.getDose() != null)
-					if (pg.getDose() instanceof FlexibleDose)
-						d_chars.put(StudyCharacteristic.DOSING, StudyCharacteristic.Dosing.FLEXIBLE);
-			}
-		}
-		d_chars.put(StudyCharacteristic.DRUGS, drugs);
 	}
 	
 	public void addPatientGroup(BasicPatientGroup group) {

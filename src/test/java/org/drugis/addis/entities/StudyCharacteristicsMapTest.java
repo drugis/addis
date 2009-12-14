@@ -4,7 +4,6 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +23,7 @@ public class StudyCharacteristicsMapTest {
 	@Test
 	public void testKeySet() {
 		Set<StudyCharacteristic> keys = new HashSet<StudyCharacteristic>();
-		keys.addAll(Arrays.asList(StudyCharacteristic.values()));
+		keys.addAll(StudyCharacteristic.values());
 		assertEquals(keys, d_map.keySet());
 	}
 	
@@ -55,15 +54,5 @@ public class StudyCharacteristicsMapTest {
 		d_map.put(StudyCharacteristic.OBJECTIVE, "Obj");
 		d_map.put(StudyCharacteristic.STUDY_END, new Date());
 		d_map.put(StudyCharacteristic.STATUS, StudyCharacteristic.Status.ONGOING);
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void testPutIncorrectType() {
-		d_map.put(StudyCharacteristic.ARMS, StudyCharacteristic.Allocation.RANDOMIZED);
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void testPutNonpositiveInteger() {
-		d_map.put(StudyCharacteristic.ARMS, new Integer(0));
 	}
 }

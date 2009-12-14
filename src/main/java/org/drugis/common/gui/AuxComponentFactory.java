@@ -1,6 +1,7 @@
 package org.drugis.common.gui;
 
 import java.awt.Dimension;
+import java.util.Date;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -8,8 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import org.drugis.addis.entities.StudyCharacteristic;
-import org.drugis.addis.entities.StudyCharacteristic.ValueType;
 import org.drugis.addis.presentation.CharacteristicHolder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -48,13 +47,13 @@ public class AuxComponentFactory {
 
 	public static JComponent createCharacteristicView(CharacteristicHolder model) {
 		JComponent component = null;
-		ValueType valueType = model.getCharacteristic().getValueType();
+		Class<?> valueType = model.getCharacteristic().getValueType();
 		if (model.getValue() == null) {
 			return new JLabel("UNKNOWN");
 		}
-		if (valueType.equals(StudyCharacteristic.ValueType.TEXT)) {
+		if (valueType.equals(String.class)) {
 			component = createTextArea(model, false);
-		} else if (valueType.equals(StudyCharacteristic.ValueType.DATE)) {
+		} else if (valueType.equals(Date.class)) {
 			component = BasicComponentFactory.createLabel(model, new DayDateFormat());
 		} else {
 			component = BasicComponentFactory.createLabel(model, new OneWayObjectFormat());

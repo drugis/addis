@@ -191,9 +191,7 @@ public class BasicStudyTest {
 		BasicPatientGroup pg2 = new BasicPatientGroup(null, null, 35);
 		BasicStudy s = new BasicStudy("s1", new Indication(01L, "i"));
 		s.addPatientGroup(pg1);
-		assertEquals(25, s.getCharacteristic(StudyCharacteristic.STUDYSIZE));
 		s.addPatientGroup(pg2);
-		assertEquals(60, s.getCharacteristic(StudyCharacteristic.STUDYSIZE));
 		assertEquals(60, s.getSampleSize());
 	}
 }

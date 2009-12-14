@@ -19,103 +19,122 @@
 
 package org.drugis.addis.entities;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.SortedSet;
+import java.util.List;
 
-public enum StudyCharacteristic {
-		ARMS("Study Arms", ValueType.POSITIVE_INTEGER),
-		STUDYSIZE("Total number of subjects", ValueType.POSITIVE_INTEGER, true),
-		DRUGS("Investigational Drugs", ValueType.DRUGS, true),
-		DOSING("Dosing", ValueType.DOSING, true),
-		ALLOCATION("Group allocation", ValueType.ALLOCATION),
-		BLINDING("Blinding", ValueType.BLINDING),
-		CENTERS("Number of study centers", ValueType.POSITIVE_INTEGER),
-		OBJECTIVE("Study Objective", ValueType.TEXT),
-		INDICATION("Intended Indication", ValueType.INDICATION),
-		STUDY_START("Study start date", ValueType.DATE),
-		STUDY_END("Study end date", ValueType.DATE),
-		STATUS("Study status", ValueType.STATUS),
-		INCLUSION("Inclusion criteria", ValueType.TEXT),
-		EXCLUSION("Exclusion criteria", ValueType.TEXT);
+public class StudyCharacteristic implements Serializable {
+	
+	private static final long serialVersionUID = 2363977004179177407L;
+	
+	private String d_description;
+	private Class<?> d_type;
+	
+	public static final StudyCharacteristic ARMS = addStudyChar("Study Arms", Integer.class);
+	public static final StudyCharacteristic ALLOCATION = addStudyChar("Group allocation", Allocation.class);
+	public static final StudyCharacteristic BLINDING = addStudyChar("Blinding", Blinding.class);
+	public static final StudyCharacteristic CENTERS = addStudyChar("Number of study centers", Integer.class);
+	public static final StudyCharacteristic OBJECTIVE = addStudyChar("Study Objective", String.class);
+	public static final StudyCharacteristic INDICATION = addStudyChar("Intended Indication", Indication.class);
+	public static final StudyCharacteristic STUDY_START = addStudyChar("Study start date", Date.class);
+	public static final StudyCharacteristic STUDY_END = addStudyChar("Study end date", Date.class);
+	public static final StudyCharacteristic STATUS = addStudyChar("Study status", Status.class);
+	public static final StudyCharacteristic INCLUSION = addStudyChar("Inclusion criteria", String.class);
+	public static final StudyCharacteristic EXCLUSION = addStudyChar("Exclusion criteria", String.class);
 		
-		public enum ValueType {
-			TEXT(String.class),
-			POSITIVE_INTEGER(Integer.class),
-			DATE(Date.class),
-			DRUGS(SortedSet.class),
-			DOSING(Dosing.class),
-			INDICATION(Indication.class),
-			ALLOCATION(Allocation.class),
-			BLINDING(Blinding.class),
-			STATUS(Status.class);
-			
-			public final Class<?> valueClass;
-			
-			ValueType(Class<?> vclass) {
-				valueClass = vclass;
-			}
-			
-			public boolean validate(Object value) {
-				if (!valueClass.isInstance(value)) {
+	public enum Allocation {
+		RANDOMIZED,
+		NONRANDOMIZED
+	}
+	
+	public enum Blinding {
+		OPEN,
+		SINGLE_BLIND,
+		DOUBLE_BLIND,
+		TRIPLE_BLIND
+	}
+	
+	public enum Status {
+		RECRUITING,
+		ONGOING,
+		FINISHED
+	}
+	
+	public enum ValueType {
+		TEXT(String.class),
+		POSITIVE_INTEGER(Integer.class),
+		DATE(Date.class),
+		ENUM(Enum.class),
+		OBJECT(Object.class);
+		
+		public final Class<?> valueClass;
+		
+		ValueType(Class<?> vclass) {
+			valueClass = vclass;
+		}
+				
+		public boolean validate(Object value) {
+			if (valueClass.equals(Object.class)) {
+				return true;
+			}			
+			if (!valueClass.isInstance(value)) {
+				return false;
+			}				
+			if (this.equals(POSITIVE_INTEGER)) {
+				Integer i = (Integer) value;
+				if (i < 1) {
 					return false;
 				}
-				if (this.equals(POSITIVE_INTEGER)) {
-					Integer i = (Integer) value;
-					if (i < 1) {
-						return false;
-					}
-				}
-				return true;
 			}
+			return true;
 		}
-		
-		public enum Dosing {
-			FIXED,
-			FLEXIBLE,
-			MIXED
-		}
-		
-		public enum Allocation {
-			RANDOMIZED,
-			NONRANDOMIZED
-		}
-		
-		public enum Blinding {
-			OPEN,
-			SINGLE_BLIND,
-			DOUBLE_BLIND,
-			TRIPLE_BLIND
-		}
-		
-		public enum Status {
-			RECRUITING,
-			ONGOING,
-			FINISHED
-		}
-		
-		private String d_description;
-		private ValueType d_valueType;
-		private boolean d_derived;
-		
-		StudyCharacteristic(String description, ValueType valueType, boolean derived) {
-			d_description = description;
-			d_valueType = valueType;
-			d_derived = derived;
-		}
-		
-		StudyCharacteristic(String description, ValueType valueType) { 
-			this(description, valueType, false);
-		}
-		
-		public String getDescription() {
-			return d_description;
-		}
-		
-		public ValueType getValueType() {
-			return d_valueType;
-		}
+	}
 
-		public boolean isDerived() {
-			return d_derived;
+
+	
+	protected StudyCharacteristic(String name, Class<?> type) {
+		d_description = name;
+		d_type = type;
+	}
+		
+	protected static List<StudyCharacteristic> s_allCharacteristics;
+	
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof StudyCharacteristic)) {
+			return false;
 		}
+		StudyCharacteristic c = (StudyCharacteristic) other;
+		return getDescription().equals(c.getDescription());
+	}
+	
+	@Override
+	public int hashCode() {
+		return getDescription().hashCode();
+	}
+	
+	public static List<StudyCharacteristic> values() {
+		return s_allCharacteristics;
+	}
+	
+	protected static StudyCharacteristic addStudyChar(String name, Class<?> type) {
+		if (s_allCharacteristics == null) {
+			s_allCharacteristics = new ArrayList<StudyCharacteristic>();
+		}
+		
+		StudyCharacteristic c = new StudyCharacteristic(name, type);
+		s_allCharacteristics.add(c);
+		return c;
+	}
+	
+
+	public String getDescription() {
+		return d_description;
+	}
+
+	public Class<?> getValueType() {
+		return d_type;
+	}
+	
 }

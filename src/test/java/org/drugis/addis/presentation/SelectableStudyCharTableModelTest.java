@@ -37,7 +37,7 @@ public class SelectableStudyCharTableModelTest {
 	
 	@Test
 	public void testGetColumnCount() {
-		assertEquals(StudyCharacteristic.values().length + 2, d_model.getColumnCount());
+		assertEquals(StudyCharacteristic.values().size() + 2, d_model.getColumnCount());
 	}
 	
 	@Test

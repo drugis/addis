@@ -61,9 +61,9 @@ public class StudyCharTableModelTest {
 	
 	@Test
 	public void testGetColumnCount() {
-		assertEquals(StudyCharacteristic.values().length + 1, d_model.getColumnCount());
-		d_pm.getCharacteristicVisibleModel(StudyCharacteristic.values()[0]).setValue(Boolean.FALSE);
-		assertEquals(StudyCharacteristic.values().length, d_model.getColumnCount());
+		assertEquals(StudyCharacteristic.values().size() + 1, d_model.getColumnCount());
+		d_pm.getCharacteristicVisibleModel(StudyCharacteristic.values().get(0)).setValue(Boolean.FALSE);
+		assertEquals(StudyCharacteristic.values().size(), d_model.getColumnCount());
 	}
 	
 	@Test
@@ -113,7 +113,7 @@ public class StudyCharTableModelTest {
 	}
 	
 	private ValueModel getFirstCharValueModel() {
-		ValueModel firstCharVisible = d_pm.getCharacteristicVisibleModel(StudyCharacteristic.values()[0]);
+		ValueModel firstCharVisible = d_pm.getCharacteristicVisibleModel(StudyCharacteristic.values().get(0));
 		return firstCharVisible;
 	}
 	

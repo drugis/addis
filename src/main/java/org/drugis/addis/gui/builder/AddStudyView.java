@@ -40,6 +40,7 @@ import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
+import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
@@ -170,9 +171,8 @@ public class AddStudyView implements ViewBuilder {
 			CellConstraints cc, int row, FormLayout layout) {
 		
 		for (StudyCharacteristic c : StudyCharacteristic.values()) {
-			if ( !c.isDerived() ) { 
+			if ( !(c instanceof DerivedStudyCharacteristic)) { 
 				LayoutUtil.addRow(layout);
-				
 				builder.addLabel(c.getDescription() + ":", cc.xy(1, row, "right, c"));
 				builder.add(createCharacteristicComponent(c), cc.xyw(3, row, fullWidth-4));
 				if (c.equals(StudyCharacteristic.INDICATION)) {
@@ -222,54 +222,58 @@ public class AddStudyView implements ViewBuilder {
 
 	private JComponent createCharacteristicComponent(StudyCharacteristic c) {
 		JComponent component = null;
-		if (c.getValueType().equals(StudyCharacteristic.ValueType.INDICATION)) {
+		if (c.equals(StudyCharacteristic.INDICATION)) {
 			ArrayList<Indication> options = new ArrayList<Indication>(d_domain.getIndications());			
 			component = createOptionsComboBox(c, options.toArray());
-		} else if (c.getValueType().equals(StudyCharacteristic.ValueType.TEXT)) {
-			ValueModel model = new MutableCharacteristicHolder(d_model.getBean(), c);
-			component = BasicComponentFactory.createTextField(model);
-			d_validator.add(component);
-		} else if (c.getValueType().equals(StudyCharacteristic.ValueType.POSITIVE_INTEGER)) {
-			ValueModel model = new MutableCharacteristicHolder(d_model.getBean(), c);
-			if (model.getValue() == null) {
-				model.setValue(1);
-			}
-			@SuppressWarnings("serial")
-			JFormattedTextField f = new JFormattedTextField(new DefaultFormatter() {
-				@Override
-				public Object stringToValue(String string) throws ParseException {
-					int val = 0;
-					try {
-						val = Integer.parseInt(string);
-					} catch (NumberFormatException e) {
-						
-					}
-					if (val < 1) {
-						throw new ParseException("Non-positive values not allowed", 0);
-					}
-					return val;
+		} else if (c.getValueType() != null) {
+			if (c.getValueType().equals(String.class)) {
+				ValueModel model = new MutableCharacteristicHolder(d_model.getBean(), c);
+				component = BasicComponentFactory.createTextField(model);
+				d_validator.add(component);
+			} else if (c.getValueType().equals(Integer.class)) {
+				ValueModel vmodel = new MutableCharacteristicHolder(d_model.getBean(), c);
+				if (vmodel.getValue() == null) {
+					vmodel.setValue(1);
 				}
-			});
-			PropertyConnector.connectAndUpdate(model, f, "value");
-			component = f;
-		} else if (c.getValueType().equals(StudyCharacteristic.ValueType.DATE)) {
-			ValueModel model = new MutableCharacteristicHolder(d_model.getBean(), c);
-			if (model.getValue() == null) {
-				model.setValue(new Date());
-			}
-			JDateChooser chooser = new JDateChooser();
-			PropertyConnector.connectAndUpdate(model, chooser, "date");
-			component = chooser;
-		} else if (c.getValueType().valueClass.isEnum()) {
-			try {
-				component = createOptionsComboBox(c, c.getValueType().valueClass);
-			} catch (Exception e) {
-				component = new JLabel("ILLEGAL CHARACTERISTIC ENUM TYPE");
+				@SuppressWarnings("serial")
+				JFormattedTextField f = new JFormattedTextField(new DefaultFormatter() {
+					@Override
+					public Object stringToValue(String string) throws ParseException {
+						int val = 0;
+						try {
+							val = Integer.parseInt(string);
+						} catch (NumberFormatException e) {
+
+						}
+						if (val < 1) {
+							throw new ParseException("Non-positive values not allowed", 0);
+						}
+						return val;
+					}
+				});
+				PropertyConnector.connectAndUpdate(vmodel, f, "value");
+				component = f;
+			} else if (c.getValueType().equals(Date.class)) {
+				ValueModel mvmodel = new MutableCharacteristicHolder(d_model.getBean(), c);
+				if (mvmodel.getValue() == null) {
+					mvmodel.setValue(new Date());
+				}
+				JDateChooser chooser = new JDateChooser();
+				PropertyConnector.connectAndUpdate(mvmodel, chooser, "date");
+				component = chooser;
+			} else {
+				if (c.getValueType().isEnum()) {
+					try {
+						component = createOptionsComboBox(c, c.getValueType());
+					} catch (Exception e) {
+						component = new JLabel("ILLEGAL CHARACTERISTIC ENUM TYPE");
+					}
+				}
 			}
 		} else {
-			component = new JLabel("NOT IMPLEMENTED");
+			throw new RuntimeException("unknown characteristic type");
 		}
-		d_validator.add(component);		
+		d_validator.add(component);
 		return component;
 	}
 	
