@@ -2,6 +2,7 @@ package org.drugis.addis.presentation;
 
 import java.util.HashMap;
 
+import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.StudyCharacteristic;
 
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -16,7 +17,7 @@ public class CharacteristicVisibleMap extends HashMap<StudyCharacteristic, Abstr
 		}		
 	}
 	
-	public AbstractValueModel getCharacteristicVisibleModel(StudyCharacteristic c) {
+	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c) {
 		return get(c);
 	}	
 

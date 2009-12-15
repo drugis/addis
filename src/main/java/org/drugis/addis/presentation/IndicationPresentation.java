@@ -22,9 +22,9 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyCharacteristic;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -65,7 +65,7 @@ public class IndicationPresentation extends PresentationModel<Indication> implem
 		return new LabelModel();
 	}
 
-	public AbstractValueModel getCharacteristicVisibleModel(StudyCharacteristic c) {
+	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c) {
 		return d_charMap.get(c);
 	}
 

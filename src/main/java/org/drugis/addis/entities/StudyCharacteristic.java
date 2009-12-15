@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class StudyCharacteristic implements Serializable {
+public class StudyCharacteristic implements Serializable, Characteristic {
 	
 	private static final long serialVersionUID = 2363977004179177407L;
 	
@@ -73,7 +73,7 @@ public class StudyCharacteristic implements Serializable {
 		if (!(other instanceof StudyCharacteristic)) {
 			return false;
 		}
-		StudyCharacteristic c = (StudyCharacteristic) other;
+		Characteristic c = (Characteristic) other;
 		return getDescription().equals(c.getDescription());
 	}
 	

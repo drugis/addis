@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.BasicStudy;
+import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 
 import com.jgoodies.binding.PresentationModel;
@@ -42,7 +42,7 @@ public class RandomEffectsMetaAnalysisPresentation extends PresentationModel<Ran
 	}
 
 	public AbstractValueModel getCharacteristicVisibleModel(
-			StudyCharacteristic c) {
+			Characteristic c) {
 		return d_studyModel.getCharacteristicVisibleModel(c);
 	}
 

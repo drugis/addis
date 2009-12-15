@@ -1,8 +1,8 @@
 package org.drugis.addis.presentation;
 
+import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyCharacteristic;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -24,7 +24,7 @@ public class EndpointPresentationModel extends PresentationModel<Endpoint> imple
 		return d_studies;
 	}
 	
-	public AbstractValueModel getCharacteristicVisibleModel(StudyCharacteristic c) {
+	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c) {
 		return d_characteristicVisibleMap.get(c);
 	}
 

@@ -226,7 +226,7 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 		}
 	}
 
-	public Object getCharacteristic(StudyCharacteristic c) {
+	public Object getCharacteristic(Characteristic c) {
 		return d_chars.get(c);
 	}
 

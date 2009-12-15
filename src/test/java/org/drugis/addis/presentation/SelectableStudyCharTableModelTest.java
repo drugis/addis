@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
@@ -47,7 +48,7 @@ public class SelectableStudyCharTableModelTest {
 			assertTrue((Boolean)d_model.getValueAt(row, 0));			
 			assertEquals(s, d_model.getValueAt(row, 1));
 			int column = 2;
-			for (StudyCharacteristic c : StudyCharacteristic.values()) {
+			for (Characteristic c : StudyCharacteristic.values()) {
 				assertEquals(s.getCharacteristic(c), d_model.getValueAt(row, column));
 				++column;
 			}
@@ -60,7 +61,7 @@ public class SelectableStudyCharTableModelTest {
 		assertEquals("Study ID", d_model.getColumnName(1));
 		assertEquals("", d_model.getColumnName(0));
 		int column = 2;
-		for (StudyCharacteristic c : StudyCharacteristic.values()) {
+		for (Characteristic c : StudyCharacteristic.values()) {
 			assertEquals(c.getDescription(), d_model.getColumnName(column));
 			++column;
 		}

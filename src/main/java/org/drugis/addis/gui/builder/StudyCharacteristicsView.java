@@ -3,6 +3,7 @@ package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
 
+import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.presentation.StudyPresentationModel;
@@ -51,7 +52,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		return builder.getPanel();
 	}
 
-	private boolean isCharacteristicShown(StudyCharacteristic c) {
+	private boolean isCharacteristicShown(Characteristic c) {
 		if (c.equals(StudyCharacteristic.STUDY_END)) {
 			return (d_model.isStudyFinished());
 		}

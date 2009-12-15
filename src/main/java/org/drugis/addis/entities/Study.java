@@ -36,5 +36,5 @@ public interface Study extends Comparable<Study>, Entity {
 	public int getSampleSize();
 	
 	public Map<StudyCharacteristic, Object> getCharacteristics();
-	public Object getCharacteristic(StudyCharacteristic c);
+	public Object getCharacteristic(Characteristic c);
 }

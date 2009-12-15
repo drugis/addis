@@ -30,6 +30,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
@@ -77,7 +78,7 @@ public class StudyCharTableModelTest {
 		for (Study s : d_pm.getIncludedStudies().getValue()) {
 			assertEquals(s, d_model.getValueAt(row, 0));
 			int column = 1;
-			for (StudyCharacteristic c : StudyCharacteristic.values()) {
+			for (Characteristic c : StudyCharacteristic.values()) {
 				assertEquals(s.getCharacteristic(c), d_model.getValueAt(row, column));
 				++column;
 			}
@@ -92,7 +93,7 @@ public class StudyCharTableModelTest {
 		for (Study s : d_pm.getIncludedStudies().getValue()) {
 			assertEquals(s, d_model.getValueAt(row, 0));
 			int column = 0;
-			for (StudyCharacteristic c : StudyCharacteristic.values()) {
+			for (Characteristic c : StudyCharacteristic.values()) {
 				if (column > 0) {
 					assertEquals(s.getCharacteristic(c), d_model.getValueAt(row, column));
 				}
@@ -128,7 +129,7 @@ public class StudyCharTableModelTest {
 	public void testGetColumnName() {
 		assertEquals("Study ID", d_model.getColumnName(0));
 		int column = 1;
-		for (StudyCharacteristic c : StudyCharacteristic.values()) {
+		for (Characteristic c : StudyCharacteristic.values()) {
 			assertEquals(c.getDescription(), d_model.getColumnName(column));
 			++column;
 		}
@@ -166,7 +167,7 @@ public class StudyCharTableModelTest {
 	private void testGetColumnNameFirstMissingHelper() {
 		assertEquals("Study ID", d_model.getColumnName(0));
 		int column = 0;
-		for (StudyCharacteristic c : StudyCharacteristic.values()) {
+		for (Characteristic c : StudyCharacteristic.values()) {
 			if (column > 0) {
 				assertEquals(c.getDescription(), d_model.getColumnName(column));
 			}

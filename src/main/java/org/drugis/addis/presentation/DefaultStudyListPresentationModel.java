@@ -3,8 +3,8 @@
  */
 package org.drugis.addis.presentation;
 
+import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyCharacteristic;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 
@@ -17,7 +17,7 @@ public class DefaultStudyListPresentationModel implements StudyListPresentationM
 	}
 	
 	public AbstractValueModel getCharacteristicVisibleModel(
-			StudyCharacteristic c) {
+			Characteristic c) {
 		return d_characteristicVisibleMap.get(c);
 	}
 
