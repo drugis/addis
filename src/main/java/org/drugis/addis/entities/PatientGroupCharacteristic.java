@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drugis.common.Gauss;
+
 public class PatientGroupCharacteristic implements Serializable, Characteristic {
 	private static final long serialVersionUID = -6603955376389773878L;
 
@@ -12,8 +14,7 @@ public class PatientGroupCharacteristic implements Serializable, Characteristic 
 	
 	public static final PatientGroupCharacteristic MALE = addPGChar("Male subjects", Integer.class);
 	public static final PatientGroupCharacteristic FEMALE = addPGChar("Female subjects", Integer.class);
-	public static final PatientGroupCharacteristic AGE_MEAN = addPGChar("Average age", Double.class);
-	public static final PatientGroupCharacteristic AGE_STD = addPGChar("Standard deviation in age", Double.class);
+	public static final PatientGroupCharacteristic AGE = addPGChar("Age", Gauss.class);
 	
 	protected static List<PatientGroupCharacteristic> s_allCharacteristics;
 

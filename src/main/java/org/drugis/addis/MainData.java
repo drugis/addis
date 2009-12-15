@@ -15,10 +15,12 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.PatientGroupCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.common.Gauss;
 import org.drugis.common.Interval;
 
 public class MainData extends ExampleData {
@@ -30,9 +32,13 @@ public class MainData extends ExampleData {
 	
 	private static BasicStudy s_studyOrg022;
 	private static BasicStudy s_studyOrg023;
+	
+	private static BasicStudy s_studyClinGovExmpl;
+	
 	private static Drug s_remeron;
 	private static Drug s_amitriptyline;
 	private static Drug s_trazodone;
+	private static Drug s_bupropion;
 	
 	public static void initDefaultData(Domain domain) {
 		ExampleData.initDefaultData(domain);
@@ -43,6 +49,12 @@ public class MainData extends ExampleData {
 		domain.addStudy(buildStudySechter1999());
 		domain.addStudy(buildStudyOrg022());
 		domain.addStudy(buildStudyOrg023());
+		domain.addStudy(buildStudyClinGovExmpl());
+		domain.addDrug(buildDrugBupropion());
+		domain.addDrug(buildDrugAmitriptyline());
+		domain.addDrug(buildDrugRemeron());
+		domain.addDrug(buildDrugTrazodone());
+		
 		
 		try {
 			domain.addMetaAnalysis(buildMetaHansen2005());
@@ -381,6 +393,70 @@ public class MainData extends ExampleData {
 		study.setMeasurement(cgis, plac, pCgi);
 		
 		return study;
+	}
+	
+	public static BasicStudy buildStudyClinGovExmpl() {
+		if (s_studyClinGovExmpl == null){ 
+			s_studyClinGovExmpl = realbuildClinGovExmpl();
+		}
+	
+		return s_studyClinGovExmpl;
+	}
+
+	public static BasicStudy realbuildClinGovExmpl() {
+		Endpoint hamd = buildEndpointHamd();
+		Drug Bupropion = buildDrugBupropion();
+		Drug placebo = buildPlacebo();
+		
+		BasicStudy study = new BasicStudy("ClinicalTrials.gov Example Study", buildIndicationDepression());
+		study.setEndpoints(Collections.singleton(hamd));
+		
+		// Study characteristics
+		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
+		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(StudyCharacteristic.ARMS, 2);
+		study.setCharacteristic(StudyCharacteristic.INCLUSION,
+				"");
+		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
+				"");
+		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+				"");
+		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(StudyCharacteristic.STUDY_END, new GregorianCalendar(2006, 2, 23).getTime());
+		
+		// Bupropion data
+		FlexibleDose dose = new FlexibleDose(new Interval<Double>(100.0, 300.0), SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroup bupr = new BasicPatientGroup(Bupropion, dose, 165);
+		bupr.setCharacteristic(PatientGroupCharacteristic.MALE, 88);
+		bupr.setCharacteristic(PatientGroupCharacteristic.FEMALE, 77);
+		bupr.setCharacteristic(PatientGroupCharacteristic.AGE, new Gauss(36.8, 9.28));
+		
+		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(bupr);
+		pHamd.setRate((int) Math.round(166D*.59D));
+		study.addPatientGroup(bupr);
+		study.setMeasurement(hamd, bupr, pHamd);
+
+		// Placebo data
+		FixedDose fixedDose = new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY);
+		BasicPatientGroup plac = new BasicPatientGroup(placebo, fixedDose, 157);
+		plac.setCharacteristic(PatientGroupCharacteristic.MALE, 88);
+		plac.setCharacteristic(PatientGroupCharacteristic.FEMALE, 69);
+		plac.setCharacteristic(PatientGroupCharacteristic.AGE, new Gauss(36.0, 8.91));
+		
+		pHamd = (BasicRateMeasurement)hamd.buildMeasurement(plac);
+		pHamd.setRate((int) Math.round(157*.5));		
+		study.addPatientGroup(plac);
+		study.setMeasurement(hamd, plac, pHamd);
+		
+		return study;
+	}
+
+	private static Drug buildDrugBupropion() {
+		if (s_bupropion == null)
+			s_bupropion = new Drug("Bupropion", "N07BA02");
+		
+		return s_bupropion;
 	}
 
 	public static Drug buildDrugRemeron() {

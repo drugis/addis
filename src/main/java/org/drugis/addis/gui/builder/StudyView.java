@@ -51,7 +51,7 @@ public class StudyView implements ViewBuilder {
 	private Main d_mainWindow;
 	private StudyCharacteristicsView d_charView;
 	private StudyEndpointsView d_epView;
-	private StudyDataView d_dataView;
+	private StudyArmsView d_armsView;
 	
 	
 	public StudyView(StudyPresentationModel model, Domain domain, Main main) {
@@ -60,7 +60,7 @@ public class StudyView implements ViewBuilder {
 		d_domain = domain;
 		d_charView = new StudyCharacteristicsView(model);
 		d_epView = new StudyEndpointsView(model, main);
-		d_dataView = new StudyDataView(model, main.getPresentationModelManager());
+		d_armsView = new StudyArmsView(model, main.getPresentationModelManager());
 	}
 	
 	public JComponent buildPanel() {
@@ -82,16 +82,16 @@ public class StudyView implements ViewBuilder {
 		row += 2;
 		builder.add(buildEndpointPart(), cc.xy(1, row));
 		row += 2;
-		builder.addSeparator("Data", cc.xy(1, row));
+		builder.addSeparator("Arms", cc.xy(1, row));
 		row += 2;
-		builder.add(buildDataPart(),cc.xy(1, row));
+		builder.add(buildArmsPart(),cc.xy(1, row));
 		
 		return builder.getPanel();
 	}
 
-	private JPanel buildDataPart() {
+	private JPanel buildArmsPart() {
 		JPanel panel = new JPanel(new BorderLayout());
-		panel.add(d_dataView.buildPanel(), BorderLayout.CENTER);
+		panel.add(d_armsView.buildPanel(), BorderLayout.CENTER);
 		panel.add(buildAddPatientGroupButton(), BorderLayout.SOUTH);
 		return GUIFactory.createCollapsiblePanel(panel);
 	}

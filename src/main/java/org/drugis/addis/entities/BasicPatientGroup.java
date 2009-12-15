@@ -27,6 +27,8 @@ public class BasicPatientGroup extends AbstractEntity implements PatientGroup {
 	private Drug d_drug;
 	private AbstractDose d_dose;
 	
+	protected CharacteristicsMap d_chars = new CharacteristicsMap();
+	
 	public BasicPatientGroup(Drug drug, AbstractDose dose, int size) {
 		d_drug = drug;
 		d_dose = dose;
@@ -72,5 +74,17 @@ public class BasicPatientGroup extends AbstractEntity implements PatientGroup {
 	public Set<Entity> getDependencies() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public void setCharacteristic(PatientGroupCharacteristic c, Object val) {
+		d_chars.put(c, val);
+	}
+
+	public Object getCharacteristic(Characteristic c) {
+		return d_chars.get(c);
+	}
+
+	public CharacteristicsMap getCharacteristics() {
+		return d_chars;
 	}
 }

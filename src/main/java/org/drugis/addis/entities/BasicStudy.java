@@ -35,6 +35,7 @@ import java.util.Set;
 public class BasicStudy extends AbstractEntity implements MutableStudy {
 	protected static class MeasurementKey implements Serializable {
 		private static final long serialVersionUID = 6310789667384578005L;
+		
 		private Endpoint d_endpoint;
 		private PatientGroup d_patientGroup;
 		

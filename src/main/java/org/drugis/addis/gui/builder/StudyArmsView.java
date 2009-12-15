@@ -5,12 +5,14 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.PatientGroupCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -24,12 +26,12 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class StudyDataView implements ViewBuilder {
+public class StudyArmsView implements ViewBuilder {
 	
 	private PresentationModel<? extends Study> d_model;
 	private PresentationModelFactory d_pm;
 
-	public StudyDataView(PresentationModel<? extends Study> model, PresentationModelFactory pm) {
+	public StudyArmsView(PresentationModel<? extends Study> model, PresentationModelFactory pm) {
 		this.d_model = model;
 		this.d_pm = pm;
 	}
@@ -94,10 +96,14 @@ public class StudyDataView implements ViewBuilder {
 						}),
 						cc.xy(3, row, "right, center"));
 		
+		final JLabel patientGroupSizeLabel = BasicComponentFactory.createLabel(
+				new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_SIZE),
+				NumberFormat.getInstance());
+		final String pgCharacteristicTooltip = buildCharacteristicTooltip(g);
+		if (!pgCharacteristicTooltip.isEmpty())
+			patientGroupSizeLabel.setToolTipText(pgCharacteristicTooltip);
 		builder.add(
-				BasicComponentFactory.createLabel(
-						new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_SIZE),
-						NumberFormat.getInstance()),
+				patientGroupSizeLabel,
 						cc.xy(5, row, "center, center"));
 		
 		col = 7;
@@ -113,6 +119,20 @@ public class StudyDataView implements ViewBuilder {
 		
 		row += 2;
 		return row;
+	}
+
+	private String buildCharacteristicTooltip(PatientGroup g) {
+		if (g.getCharacteristics().isEmpty())
+			return "";
+		
+		String ret = new String("<html>");
+		for (PatientGroupCharacteristic c : PatientGroupCharacteristic.values()) {
+			Object val = g.getCharacteristic(c);
+			if (val != null)
+				ret += c.getDescription() + "=" + val + "<br>";			
+		}
+		ret += "</html>";
+		return ret;
 	}
 
 }

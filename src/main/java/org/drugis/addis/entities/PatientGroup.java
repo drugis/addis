@@ -28,4 +28,7 @@ public interface PatientGroup extends Entity {
 	public Drug getDrug();
 	public AbstractDose getDose();
 	public Integer getSize();
+	
+	public CharacteristicsMap getCharacteristics();
+	public Object getCharacteristic(Characteristic c);
 }

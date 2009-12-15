@@ -19,6 +19,8 @@
 
 package org.drugis.addis.entities;
 
+import static org.junit.Assert.assertEquals;
+
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,5 +47,12 @@ public class BasicPatientGroupTest {
 	@Test
 	public void testSetDose() {
 		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_DOSE, null, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY));
+	}
+	
+	@Test
+	public void testSetCharacteristic() {
+		d_pg.setCharacteristic(PatientGroupCharacteristic.MALE, 20);
+		d_pg.getCharacteristics().containsKey(PatientGroupCharacteristic.MALE);
+		assertEquals(20, d_pg.getCharacteristic(PatientGroupCharacteristic.MALE));
 	}
 }
