@@ -281,10 +281,6 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		public Integer getSampleSize() {
 			return t_totalSampleSize;
 		}
-		
-		public Endpoint getEndpoint() {
-			return d_ep;
-		}
 
 		public String getName() {
 			return "Random Effects";

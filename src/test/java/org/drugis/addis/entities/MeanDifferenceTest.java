@@ -28,14 +28,6 @@ public class MeanDifferenceTest {
 		d_md = new MeanDifference(d_baseline, d_subject);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
-	public void testConstructorThrowsException() {
-		Endpoint e2 = new Endpoint("E2", Type.CONTINUOUS);
-		PatientGroup subjs = new BasicPatientGroup(null, null, s_subjSize);
-		ContinuousMeasurement subject = new BasicContinuousMeasurement(e2, s_mean1, s_stdDev1, subjs);
-		new MeanDifference(d_baseline, subject);
-	}
-	
 	@Test
 	public void testGetMean() {
 		assertEquals(s_mean1 - s_mean2, d_md.getRelativeEffect(),0.0001);
@@ -54,12 +46,6 @@ public class MeanDifferenceTest {
 		double lower = d_md.getRelativeEffect() - t*d_md.getError();
 		assertEquals(upper, d_md.getConfidenceInterval().getUpperBound(), 0.0001);
 		assertEquals(lower, d_md.getConfidenceInterval().getLowerBound(), 0.0001);
-	}
-	
-	@Test
-	public void testGetEndpoint() {
-		assertEquals(d_subject.getEndpoint(),d_md.getEndpoint());
-		assertEquals(d_baseline.getEndpoint(),d_md.getEndpoint());
 	}
 	
 	@Test

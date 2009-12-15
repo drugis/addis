@@ -14,10 +14,6 @@ public abstract class AbstractRelativeEffect<T extends Measurement> extends Abst
 	protected T d_baseline; 
 
 	protected AbstractRelativeEffect(T subject, T baseline) {
-		if (!subject.getEndpoint().equals(baseline.getEndpoint())) {
-			throw new IllegalArgumentException();
-		}
-		
 		d_subject = subject;
 		d_baseline = baseline;
 		connectListeners();
@@ -44,10 +40,6 @@ public abstract class AbstractRelativeEffect<T extends Measurement> extends Abst
 
 	public T getBaseline() {
 		return d_baseline;
-	}
-
-	public Endpoint getEndpoint() {
-		return d_subject.getEndpoint();
 	}
 
 	public Set<Entity> getDependencies() {

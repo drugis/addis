@@ -57,12 +57,6 @@ public class StandardisedMeanDifferenceTest {
 	}
 	
 	@Test
-	public void testGetEndpoint() {
-		assertEquals(d_subject.getEndpoint(),d_smd.getEndpoint());
-		assertEquals(d_baseline.getEndpoint(), d_smd.getEndpoint());
-	}
-	
-	@Test
 	public void testGetCohend() {
 		double expected = (s_subjMean - s_baselMean)/getPooledStdDev();
 		assertEquals(expected, d_smd.getCohenD(), 0.0001);
@@ -88,14 +82,6 @@ public class StandardisedMeanDifferenceTest {
 		assertEquals(0.9923D, d_smd.getCorrectionJ(), 0.0001);
 		assertEquals(0.5924D, d_smd.getRelativeEffect(), 0.0001);
 		assertEquals(Math.sqrt(0.04114D), d_smd.getError(), 0.0001);
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void testConstructorThrowsException() {
-		Endpoint e2 = new Endpoint("E2", Type.CONTINUOUS);
-		PatientGroup subjs = new BasicPatientGroup(null, null, s_subjSize);
-		ContinuousMeasurement subject = new BasicContinuousMeasurement(e2, s_subjMean, s_subjStdDev, subjs);
-		new StandardisedMeanDifference(subject, d_baseline);
 	}
 	
 	private double square(double x) {

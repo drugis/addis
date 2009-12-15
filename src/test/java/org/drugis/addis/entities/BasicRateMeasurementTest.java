@@ -19,10 +19,9 @@
 
 package org.drugis.addis.entities;
 
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -53,13 +52,7 @@ public class BasicRateMeasurementTest {
 		ObjectInputStream ois = new ObjectInputStream(
 				new ByteArrayInputStream(bos.toByteArray()));
 		d_measurement = (BasicMeasurement) ois.readObject();
-		
-		Endpoint newEndpoint = new Endpoint("X", Type.RATE);
-		PropertyChangeListener mock = JUnitUtil.mockListener(d_measurement, 
-				BasicRateMeasurement.PROPERTY_ENDPOINT, d_endpoint, newEndpoint);
-		d_measurement.addPropertyChangeListener(mock);
-		d_measurement.setEndpoint(newEndpoint);
-		verify(mock);
+		assertNotNull(d_measurement);
 	}
 	
 	@Test

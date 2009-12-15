@@ -63,10 +63,8 @@ public class EndpointTest {
 		Endpoint e = new Endpoint("e", Type.RATE);
 		e.setType(Endpoint.Type.RATE);
 		assertTrue(e.buildMeasurement(pg) instanceof BasicRateMeasurement);
-		assertEquals(e, e.buildMeasurement(pg).getEndpoint());
 		e.setType(Endpoint.Type.CONTINUOUS);
 		assertTrue(e.buildMeasurement(pg) instanceof BasicContinuousMeasurement);
-		assertEquals(e, e.buildMeasurement(pg).getEndpoint());
 	}
 	
 	@Test

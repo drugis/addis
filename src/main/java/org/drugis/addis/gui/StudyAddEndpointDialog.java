@@ -77,7 +77,6 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 	protected void commit() {
 		setVisible(false);
 		
-		addEndpointToMeasurements();
 		addEndpointToStudy();
 		addMeasurementsToStudy();
 		d_main.leftTreeFocusOnStudy(d_study);
@@ -91,11 +90,5 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 
 	private void addEndpointToStudy() {
 		d_study.addEndpoint(d_newEndpoint.getEndpoint());
-	}
-
-	private void addEndpointToMeasurements() {
-		for (BasicMeasurement m : d_measurements.values()) {
-			m.setEndpoint(d_newEndpoint.getEndpoint());
-		}
 	}
 }

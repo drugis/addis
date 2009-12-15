@@ -15,8 +15,6 @@ public interface RelativeEffect<T extends Measurement> extends Entity{
 
 	public T getBaseline();
 
-	public Endpoint getEndpoint();
-
 	public Integer getSampleSize();
 
 	/**

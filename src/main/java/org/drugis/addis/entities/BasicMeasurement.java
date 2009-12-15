@@ -24,28 +24,10 @@ import java.util.Set;
 
 public abstract class BasicMeasurement extends AbstractEntity implements Measurement {
 	private static final long serialVersionUID = 6892934487858770855L;
-	private Endpoint d_endpoint;
-	private PatientGroup d_patientGroup;
 	protected Integer d_sampleSize;
 
-	protected PatientGroup getPatientGroup() {
-		return d_patientGroup;
-	}
-
 	public BasicMeasurement(Endpoint e, PatientGroup p) {
-		d_endpoint = e;
-		d_patientGroup = p;
 		d_sampleSize = p.getSize() != null ? p.getSize() : 0;
-	}
-	
-	public Endpoint getEndpoint() {
-		return d_endpoint;
-	}
-
-	public void setEndpoint(Endpoint endpoint) {
-		Endpoint oldVal = d_endpoint;
-		d_endpoint = endpoint;
-		firePropertyChange(PROPERTY_ENDPOINT, oldVal, d_endpoint);
 	}
 
 	@Override

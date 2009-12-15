@@ -153,9 +153,5 @@ public class AddStudyDialog extends OkCancelDialog {
 
 	private void bindEndpoint() {
 		d_study.setEndpoints(new HashSet<Endpoint>(d_primaryEndpoint.asList()));
-		for (PatientGroup g : d_study.getPatientGroups()) {
-			((BasicMeasurement)d_study.getMeasurement(d_primaryEndpoint.getEndpoint(), g))
-				.setEndpoint(d_primaryEndpoint.getEndpoint());
-		}
 	}
 }

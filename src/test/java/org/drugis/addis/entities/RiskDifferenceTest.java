@@ -47,19 +47,6 @@ public class RiskDifferenceTest {
 		d_cooperRD = new RiskDifference(d_cooper1977Den, d_cooper1977Num);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
-	public void testConstructorThrowsException() {
-		Endpoint e2 = new Endpoint("E2", Type.RATE);
-		PatientGroup pnum = new BasicPatientGroup(null, null, s_sizeNum);
-		RateMeasurement subject = new BasicRateMeasurement(e2, s_effectNum, pnum);
-		new RiskDifference(d_denominator, subject);
-	}
-	
-	@Test
-	public void testGetEndpoint() {
-		assertEquals(new Endpoint("E", Type.RATE), d_riskDif.getEndpoint());
-	}
-	
 	@Test
 	public void testGetSampleSize() {
 		assertEquals(s_sizeNum + s_sizeDen, (int)d_riskDif.getSampleSize());
