@@ -33,15 +33,15 @@ public class RiskDifferenceTest {
 	public void setUp() {
 		PatientGroup pnum = new BasicPatientGroup(null,null,s_sizeNum);
 		PatientGroup pden = new BasicPatientGroup(null,null,s_sizeDen);
-		d_numerator = new BasicRateMeasurement(s_effectNum, pnum);		
-		d_denominator = new BasicRateMeasurement(s_effectDen, pden);
+		d_numerator = new BasicRateMeasurement(s_effectNum, pnum.getSize());		
+		d_denominator = new BasicRateMeasurement(s_effectDen, pden.getSize());
 		d_riskDif = new RiskDifference(d_denominator, d_numerator);
 		
 		//cooper 1977 from Warn2002
 		PatientGroup fnum = new BasicPatientGroup(null, null, s_cooper1977nT);
 		PatientGroup fden = new BasicPatientGroup(null, null, s_cooper1977nC);
-		d_cooper1977Num = new BasicRateMeasurement(s_cooper1977rT, fnum);
-		d_cooper1977Den = new BasicRateMeasurement(s_cooper1977rC, fden);
+		d_cooper1977Num = new BasicRateMeasurement(s_cooper1977rT, fnum.getSize());
+		d_cooper1977Den = new BasicRateMeasurement(s_cooper1977rC, fden.getSize());
 		d_cooperRD = new RiskDifference(d_cooper1977Den, d_cooper1977Num);
 	}
 	

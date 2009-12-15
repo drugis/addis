@@ -38,7 +38,7 @@ public class BasicRateMeasurementTest {
 	@Before
 	public void setUp() {
 		d_pg = new BasicPatientGroup(null, null, 101);
-		d_measurement = new BasicRateMeasurement(67, d_pg);
+		d_measurement = new BasicRateMeasurement(67, d_pg.getSize());
 	}
 	
 	@Test

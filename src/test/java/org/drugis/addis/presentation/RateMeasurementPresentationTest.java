@@ -21,7 +21,7 @@ public class RateMeasurementPresentationTest {
 	@Before
 	public void setUp() {
 		d_pg = new BasicPatientGroup(null, null, 101);
-		d_measurement = new BasicRateMeasurement(67, d_pg);
+		d_measurement = new BasicRateMeasurement(67, d_pg.getSize());
 		d_presentation = new RateMeasurementPresentation(d_measurement);
 	}
 

@@ -32,8 +32,8 @@ public class RelativeEffectPresentationTest {
 	public void setUp() {
 		PatientGroup pnum = new BasicPatientGroup(null,null,s_sizeNum);
 		PatientGroup pden = new BasicPatientGroup(null,null,s_sizeDen);
-		d_numerator = new BasicRateMeasurement(s_effectNum, pnum);		
-		d_denominator = new BasicRateMeasurement(s_effectDen, pden);
+		d_numerator = new BasicRateMeasurement(s_effectNum, pnum.getSize());		
+		d_denominator = new BasicRateMeasurement(s_effectDen, pden.getSize());
 		d_ratio = new OddsRatio(d_denominator, d_numerator);
 		d_presentation = new RelativeEffectPresentation(d_ratio);
 	}

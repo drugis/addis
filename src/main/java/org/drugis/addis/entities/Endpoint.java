@@ -91,7 +91,7 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 		case CONTINUOUS:
 			return new BasicContinuousMeasurement(pg);
 		case RATE:
-			return new BasicRateMeasurement(0, pg);
+			return new BasicRateMeasurement(0, pg.getSize());
 		default:
 			throw new IllegalStateException("Not all enum cases covered");
 		}
