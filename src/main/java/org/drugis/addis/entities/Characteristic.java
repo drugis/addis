@@ -3,12 +3,13 @@ package org.drugis.addis.entities;
 
 public interface Characteristic {
 
-	public abstract boolean equals(Object other);
+	public String getDescription();
 
-	public abstract int hashCode();
-
-	public abstract String getDescription();
-
-	public abstract Class<?> getValueType();
+	public Class<?> getValueType();
 	
+	@Override
+	public boolean equals(Object other);
+	
+	@Override
+	public int hashCode();
 }
