@@ -15,9 +15,9 @@ import com.jgoodies.binding.PresentationModel;
 @SuppressWarnings("serial")
 public class StudyPresentationModel extends PresentationModel<Study> {
 	
-	private CharacteristicHolder d_doseHolder;
-	private CharacteristicHolder d_drugHolder;
-	private CharacteristicHolder d_sizeHolder;
+	private StudyCharacteristicHolder d_doseHolder;
+	private StudyCharacteristicHolder d_drugHolder;
+	private StudyCharacteristicHolder d_sizeHolder;
 	
 	public StudyPresentationModel(Study s) {
 		super(s);
@@ -48,7 +48,7 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		};
 	}
 	
-	public CharacteristicHolder getCharacteristicModel(StudyCharacteristic c) {
+	public StudyCharacteristicHolder getCharacteristicModel(StudyCharacteristic c) {
 		if (c.equals(DerivedStudyCharacteristic.DOSING)) {
 			return d_doseHolder;
 		} else if (c.equals(DerivedStudyCharacteristic.DRUGS)) {
@@ -56,7 +56,7 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		} else if (c.equals(DerivedStudyCharacteristic.STUDYSIZE)) {
 			return d_sizeHolder;
 		} else {
-			return new CharacteristicHolder(getBean(), c);
+			return new StudyCharacteristicHolder(getBean(), c);
 		}
 	}
 	
@@ -68,7 +68,7 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		return false;
 	}
 	
-	private abstract class ListeningCharacteristicHolder extends CharacteristicHolder implements PropertyChangeListener {
+	private abstract class ListeningCharacteristicHolder extends StudyCharacteristicHolder implements PropertyChangeListener {
 
 		public ListeningCharacteristicHolder(Study study, StudyCharacteristic characteristic) {
 			super(study, characteristic);

@@ -43,7 +43,7 @@ public class StudyPresentationModelTest {
 	
 	@Test
 	public void testStudySizeUpdatesIfChanged() {
-		CharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.STUDYSIZE);
+		StudyCharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.STUDYSIZE);
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, new Integer(100));
 		model.addPropertyChangeListener(mock);
 		d_study.addPatientGroup(new BasicPatientGroup(null, null, 100));
@@ -54,7 +54,7 @@ public class StudyPresentationModelTest {
 	
 	@Test
 	public void testDrugsUpdatesIfChanged() {
-		CharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.DRUGS);
+		StudyCharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.DRUGS);
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, "[testDrug]");
 		model.addPropertyChangeListener(mock);
 		d_study.addPatientGroup(new BasicPatientGroup(new Drug("testDrug","0A"), null, 0));
@@ -65,7 +65,7 @@ public class StudyPresentationModelTest {
 	
 	@Test
 	public void testDoseUpdatesIfChanged() {
-		CharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.DOSING);
+		StudyCharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.DOSING);
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, DerivedStudyCharacteristic.Dosing.FLEXIBLE);
 		model.addPropertyChangeListener(mock);
 		d_study.addPatientGroup(new BasicPatientGroup(null, new FlexibleDose(new Interval<Double>(1d,10d), SIUnit.MILLIGRAMS_A_DAY), 0));

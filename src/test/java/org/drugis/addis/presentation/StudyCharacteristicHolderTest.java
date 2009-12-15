@@ -30,14 +30,14 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.entities.CharacteristicsMap;
 import org.drugis.addis.gui.MutableCharacteristicHolder;
-import org.drugis.addis.presentation.CharacteristicHolder;
+import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CharacteristicHolderTest {
+public class StudyCharacteristicHolderTest {
 	private BasicStudy d_study;
-	private CharacteristicHolder d_holder;
+	private StudyCharacteristicHolder d_holder;
 	private StudyCharacteristic d_char;
 	
 	@Before

@@ -21,10 +21,10 @@ package org.drugis.addis.gui;
 
 import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.StudyCharacteristic;
-import org.drugis.addis.presentation.CharacteristicHolder;
+import org.drugis.addis.presentation.StudyCharacteristicHolder;
 
 @SuppressWarnings("serial")
-public class MutableCharacteristicHolder extends CharacteristicHolder {
+public class MutableCharacteristicHolder extends StudyCharacteristicHolder {
 	public MutableCharacteristicHolder(MutableStudy bean, StudyCharacteristic characteristic) {
 		super(bean, characteristic);
 	}

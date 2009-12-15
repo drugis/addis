@@ -1,17 +1,16 @@
 package org.drugis.addis.presentation;
 
-import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class CharacteristicHolder extends AbstractValueModel {
+public class StudyCharacteristicHolder extends AbstractValueModel {
 	protected Study d_study;
 	protected StudyCharacteristic d_char;
 	
-	public CharacteristicHolder(Study study, StudyCharacteristic characteristic) {
+	public StudyCharacteristicHolder(Study study, StudyCharacteristic characteristic) {
 		d_study = study;
 		d_char = characteristic; 
 	}
@@ -24,7 +23,7 @@ public class CharacteristicHolder extends AbstractValueModel {
 		return d_study.getCharacteristics().get(d_char);
 	}
 	
-	public Characteristic getCharacteristic() {
+	public StudyCharacteristic getCharacteristic() {
 		return d_char;
 	}
 

@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import org.drugis.addis.presentation.CharacteristicHolder;
+import org.drugis.addis.presentation.StudyCharacteristicHolder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.list.SelectionInList;
@@ -45,7 +45,7 @@ public class AuxComponentFactory {
 		return pane;
 	}
 
-	public static JComponent createCharacteristicView(CharacteristicHolder model) {
+	public static JComponent createCharacteristicView(StudyCharacteristicHolder model) {
 		JComponent component = null;
 		Class<?> valueType = model.getCharacteristic().getValueType();
 		if (model.getValue() == null) {
