@@ -24,13 +24,13 @@ import org.drugis.addis.entities.Endpoint.Type;
 public class BasicRateMeasurement extends BasicMeasurement implements RateMeasurement {
 	private static final long serialVersionUID = -1004559723622385992L;
 	private Integer d_rate;
-	public BasicRateMeasurement(Endpoint e, int rate, PatientGroup p) {
-		super(e, p);
+	public BasicRateMeasurement(int rate, PatientGroup p) {
+		super(p.getSize() != null ? p.getSize() : 0);
 		d_rate = rate;
 	}
 	
-	public BasicRateMeasurement(Endpoint e, PatientGroup p) {
-		this(e, 0, p);
+	public BasicRateMeasurement(PatientGroup p) {
+		this(0, p);
 	}	
 
 	public String getLabel() {

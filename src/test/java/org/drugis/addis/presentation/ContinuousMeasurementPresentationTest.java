@@ -7,8 +7,6 @@ import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,16 +14,14 @@ import org.junit.Test;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 public class ContinuousMeasurementPresentationTest {
-	private Endpoint d_endpoint;
 	private BasicContinuousMeasurement d_basicContinuousMeasurement;
 	private BasicPatientGroup d_pg;
 	private ContinuousMeasurementPresentation d_pres;
 	
 	@Before
 	public void setUp() {
-		d_endpoint = new Endpoint("X", Type.CONTINUOUS);
 		d_pg = new BasicPatientGroup(null, null, 1);
-		d_basicContinuousMeasurement = new BasicContinuousMeasurement(d_endpoint, d_pg);
+		d_basicContinuousMeasurement = new BasicContinuousMeasurement(d_pg);
 		d_pres = new ContinuousMeasurementPresentation(d_basicContinuousMeasurement);
 	}
 	

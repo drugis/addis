@@ -58,8 +58,8 @@ public class ForestPlotPresentationTest {
 		BasicPatientGroup pSubj = new BasicPatientGroup(d_subject, null, s_subjSize);
 		d_s1.addPatientGroup(pBase);
 		d_s1.addPatientGroup(pSubj);
-		d_mBase1 = new BasicContinuousMeasurement(d_endpoint, s_mean1, s_stdDev1, pBase);
-		d_mSubj1 = new BasicContinuousMeasurement(d_endpoint, s_mean2, s_stdDev2, pSubj);
+		d_mBase1 = new BasicContinuousMeasurement(s_mean1, s_stdDev1, pBase);
+		d_mSubj1 = new BasicContinuousMeasurement(s_mean2, s_stdDev2, pSubj);
 		d_s1.setMeasurement(d_endpoint, pBase, d_mBase1);
 		d_s1.setMeasurement(d_endpoint, pSubj, d_mSubj1);
 		
@@ -69,8 +69,8 @@ public class ForestPlotPresentationTest {
 		BasicPatientGroup pSubj2 = new BasicPatientGroup(d_subject, null, s_subjSize);
 		d_s2.addPatientGroup(pBase2);
 		d_s2.addPatientGroup(pSubj2);
-		d_mBase2 = new BasicContinuousMeasurement(d_endpoint, s_mean2, s_stdDev2, pBase2);
-		d_mSubj2 = new BasicContinuousMeasurement(d_endpoint, s_mean1, s_stdDev1, pSubj2);
+		d_mBase2 = new BasicContinuousMeasurement(s_mean2, s_stdDev2, pBase2);
+		d_mSubj2 = new BasicContinuousMeasurement(s_mean1, s_stdDev1, pSubj2);
 		d_s2.setMeasurement(d_endpoint, pBase2, d_mBase2);
 		d_s2.setMeasurement(d_endpoint, pSubj2, d_mSubj2);
 		

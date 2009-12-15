@@ -399,7 +399,7 @@ public class ExampleData {
 		// Candesartan data
 		FixedDose cDose = new FixedDose(32, SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup cand = new BasicPatientGroup(buildDrugCandesartan(), cDose, 1273);
-		BasicRateMeasurement cDeath = new BasicRateMeasurement(buildEndpointCVdeath(), cand);
+		BasicRateMeasurement cDeath = new BasicRateMeasurement(cand);
 		cDeath.setRate(302);
 		study.addPatientGroup(cand);
 		study.setMeasurement(buildEndpointCVdeath(), cand, cDeath);
@@ -407,7 +407,7 @@ public class ExampleData {
 		// Placebo data
 		FixedDose pDose = new FixedDose(32, SIUnit.MILLIGRAMS_A_DAY);
 		BasicPatientGroup placebo = new BasicPatientGroup(buildPlacebo(), pDose, 1271);
-		BasicRateMeasurement pDeath = new BasicRateMeasurement(buildEndpointCVdeath(), placebo);
+		BasicRateMeasurement pDeath = new BasicRateMeasurement(placebo);
 		pDeath.setRate(347);
 		study.addPatientGroup(placebo);
 		study.setMeasurement(buildEndpointCVdeath(), placebo, pDeath);

@@ -2,7 +2,6 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
 
-import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.StudentTTable;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,11 +19,10 @@ public class MeanDifferenceTest {
 	
 	@Before
 	public void setUp() {
-		Endpoint e = new Endpoint("E", Type.CONTINUOUS);
 		PatientGroup subjs = new BasicPatientGroup(null, null, s_subjSize);
 		PatientGroup basels = new BasicPatientGroup(null, null, s_baslSize);
-		d_subject = new BasicContinuousMeasurement(e, s_mean1, s_stdDev1, subjs);
-		d_baseline = new BasicContinuousMeasurement(e, s_mean2, s_stdDev2, basels);
+		d_subject = new BasicContinuousMeasurement(s_mean1, s_stdDev1, subjs);
+		d_baseline = new BasicContinuousMeasurement(s_mean2, s_stdDev2, basels);
 		d_md = new MeanDifference(d_baseline, d_subject);
 	}
 	

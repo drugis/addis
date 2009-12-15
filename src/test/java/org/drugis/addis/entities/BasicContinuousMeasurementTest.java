@@ -21,20 +21,16 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
 
-import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
 public class BasicContinuousMeasurementTest {
-	private Endpoint d_endpoint;
 	private BasicContinuousMeasurement d_basicContinuousMeasurement;
 	
 	@Before
 	public void setUp() {
-		d_endpoint = new Endpoint("X", Type.CONTINUOUS);
-		d_basicContinuousMeasurement = new BasicContinuousMeasurement(d_endpoint, new BasicPatientGroup(null, null, 1));
-		
+		d_basicContinuousMeasurement = new BasicContinuousMeasurement(new BasicPatientGroup(null, null, 1));
 	}
 
 	private BasicContinuousMeasurement getMeasurement() {

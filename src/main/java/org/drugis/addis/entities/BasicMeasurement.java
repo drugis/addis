@@ -26,8 +26,8 @@ public abstract class BasicMeasurement extends AbstractEntity implements Measure
 	private static final long serialVersionUID = 6892934487858770855L;
 	protected Integer d_sampleSize;
 
-	public BasicMeasurement(Endpoint e, PatientGroup p) {
-		d_sampleSize = p.getSize() != null ? p.getSize() : 0;
+	public BasicMeasurement(int size) {
+		d_sampleSize = size;
 	}
 
 	@Override

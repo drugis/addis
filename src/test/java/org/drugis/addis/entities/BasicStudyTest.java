@@ -111,7 +111,7 @@ public class BasicStudyTest {
 		study.addEndpoint(endpoint);
 		BasicPatientGroup group = new BasicPatientGroup(null, null, 100);
 		study.addPatientGroup(group);
-		BasicRateMeasurement m = new BasicRateMeasurement(endpoint, 0, group);
+		BasicRateMeasurement m = new BasicRateMeasurement(0, group);
 		m.setRate(12);
 		study.setMeasurement(study.getEndpoints().iterator().next(), study.getPatientGroups().get(0), m);
 		
@@ -124,7 +124,7 @@ public class BasicStudyTest {
 		Endpoint e = new Endpoint("E", Type.RATE);
 		BasicPatientGroup pg = new BasicPatientGroup(null, null, 100);
 		study.setMeasurement(e, pg, 
-				new BasicRateMeasurement(e, pg));
+				new BasicRateMeasurement(pg));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -135,7 +135,7 @@ public class BasicStudyTest {
 		BasicPatientGroup group = new BasicPatientGroup(null, null, 100);
 		study.addPatientGroup(group);
 		
-		BasicMeasurement m = new BasicRateMeasurement(e, 12, group);
+		BasicMeasurement m = new BasicRateMeasurement(12, group);
 		
 		study.getEndpoints().iterator().next().setType(Type.CONTINUOUS);
 		study.setMeasurement(study.getEndpoints().iterator().next(), study.getPatientGroups().get(0), m);

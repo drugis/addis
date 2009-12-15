@@ -27,21 +27,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
 public class BasicRateMeasurementTest {
 	private BasicMeasurement d_measurement;
-	private Endpoint d_endpoint;
 	private BasicPatientGroup d_pg;
 	
 	@Before
 	public void setUp() {
-		d_endpoint = new Endpoint("E", Type.RATE);
 		d_pg = new BasicPatientGroup(null, null, 101);
-		d_measurement = new BasicRateMeasurement(d_endpoint, 67, d_pg);
+		d_measurement = new BasicRateMeasurement(67, d_pg);
 	}
 	
 	@Test
