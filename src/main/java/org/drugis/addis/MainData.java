@@ -20,7 +20,6 @@ import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
-import org.drugis.common.Gauss;
 import org.drugis.common.Interval;
 
 public class MainData extends ExampleData {
@@ -430,7 +429,7 @@ public class MainData extends ExampleData {
 		BasicPatientGroup bupr = new BasicPatientGroup(Bupropion, dose, 165);
 		bupr.setCharacteristic(PatientGroupCharacteristic.MALE, 88);
 		bupr.setCharacteristic(PatientGroupCharacteristic.FEMALE, 77);
-		bupr.setCharacteristic(PatientGroupCharacteristic.AGE, new Gauss(36.8, 9.28));
+		bupr.setCharacteristic(PatientGroupCharacteristic.AGE, new BasicContinuousMeasurement(36.8, 9.28, 165));
 		
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(bupr);
 		pHamd.setRate((int) Math.round(166D*.59D));
@@ -442,7 +441,7 @@ public class MainData extends ExampleData {
 		BasicPatientGroup plac = new BasicPatientGroup(placebo, fixedDose, 157);
 		plac.setCharacteristic(PatientGroupCharacteristic.MALE, 88);
 		plac.setCharacteristic(PatientGroupCharacteristic.FEMALE, 69);
-		plac.setCharacteristic(PatientGroupCharacteristic.AGE, new Gauss(36.0, 8.91));
+		plac.setCharacteristic(PatientGroupCharacteristic.AGE, new BasicContinuousMeasurement(36.0, 8.91, 157));
 		
 		pHamd = (BasicRateMeasurement)hamd.buildMeasurement(plac);
 		pHamd.setRate((int) Math.round(157*.5));		
