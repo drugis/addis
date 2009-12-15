@@ -136,7 +136,7 @@ public class BasicStudyTest {
 		BasicPatientGroup group = new BasicPatientGroup(null, null, 100);
 		study.addPatientGroup(group);
 		
-		BasicRateMeasurement m = new BasicRateMeasurement(e, 12, group);
+		BasicMeasurement m = new BasicRateMeasurement(e, 12, group);
 		m.setEndpoint(study.getEndpoints().iterator().next());
 		
 		study.getEndpoints().iterator().next().setType(Type.CONTINUOUS);

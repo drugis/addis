@@ -34,7 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class BasicRateMeasurementTest {
-	private BasicRateMeasurement d_measurement;
+	private BasicMeasurement d_measurement;
 	private Endpoint d_endpoint;
 	private BasicPatientGroup d_pg;
 	
@@ -52,7 +52,7 @@ public class BasicRateMeasurementTest {
 		oos.writeObject(d_measurement);
 		ObjectInputStream ois = new ObjectInputStream(
 				new ByteArrayInputStream(bos.toByteArray()));
-		d_measurement = (BasicRateMeasurement) ois.readObject();
+		d_measurement = (BasicMeasurement) ois.readObject();
 		
 		Endpoint newEndpoint = new Endpoint("X", Type.RATE);
 		PropertyChangeListener mock = JUnitUtil.mockListener(d_measurement, 

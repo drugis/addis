@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.BasicContinuousMeasurement;
+import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.ContinuousMeasurement;
@@ -144,7 +145,8 @@ public class ForestPlotPresentationTest {
 	@Test
 	public void testGetDiamondSize() {
 		for (PatientGroup pg : d_s2.getPatientGroups()) {
-			((BasicPatientGroup)pg).setSize(((BasicPatientGroup)pg).getSize() * 10);
+			BasicMeasurement m = (BasicMeasurement)d_s2.getMeasurement(d_endpoint, pg);
+			m.setSampleSize(m.getSampleSize() * 10);
 		}
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(d_s1);

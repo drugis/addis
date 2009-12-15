@@ -24,12 +24,9 @@ import org.drugis.addis.entities.Endpoint.Type;
 public class BasicRateMeasurement extends BasicMeasurement implements RateMeasurement {
 	private static final long serialVersionUID = -1004559723622385992L;
 	private Integer d_rate;
-	private Integer d_sampleSize;
-	
 	public BasicRateMeasurement(Endpoint e, int rate, PatientGroup p) {
 		super(e, p);
 		d_rate = rate;
-		d_sampleSize = p.getSize() != null ? p.getSize() : 0;
 	}
 	
 	public BasicRateMeasurement(Endpoint e, PatientGroup p) {
@@ -58,16 +55,6 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 		return d_rate;
 	}
 	
-	public void setSampleSize(Integer size) {
-		Integer oldVal = d_sampleSize;
-		d_sampleSize = size;
-		firePropertyChange(PROPERTY_SAMPLESIZE, oldVal, d_sampleSize);
-	}
-	
-	public Integer getSampleSize() {
-		return d_sampleSize;
-	}
-
 	public boolean isOfType(Type type) {
 		return type.equals(Type.RATE);
 	}

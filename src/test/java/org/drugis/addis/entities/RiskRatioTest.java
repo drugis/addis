@@ -27,8 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class RiskRatioTest {
-	BasicRateMeasurement d_numerator;
-	BasicRateMeasurement d_denominator;
+	BasicMeasurement d_numerator;
+	BasicMeasurement d_denominator;
 	RelativeEffect<RateMeasurement> d_ratio;
 	
 	

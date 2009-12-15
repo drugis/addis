@@ -34,9 +34,6 @@ public class BasicMeasurementTest {
 			public boolean isOfType(Type type) {
 				return false;
 			}
-			public Integer getSampleSize() {
-				return null;
-			}
 		};
 	}
 	

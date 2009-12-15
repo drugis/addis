@@ -26,6 +26,7 @@ public abstract class BasicMeasurement extends AbstractEntity implements Measure
 	private static final long serialVersionUID = 6892934487858770855L;
 	private Endpoint d_endpoint;
 	private PatientGroup d_patientGroup;
+	protected Integer d_sampleSize;
 
 	protected PatientGroup getPatientGroup() {
 		return d_patientGroup;
@@ -34,6 +35,7 @@ public abstract class BasicMeasurement extends AbstractEntity implements Measure
 	public BasicMeasurement(Endpoint e, PatientGroup p) {
 		d_endpoint = e;
 		d_patientGroup = p;
+		d_sampleSize = p.getSize() != null ? p.getSize() : 0;
 	}
 	
 	public Endpoint getEndpoint() {
@@ -49,5 +51,15 @@ public abstract class BasicMeasurement extends AbstractEntity implements Measure
 	@Override
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();
+	}
+
+	public void setSampleSize(Integer size) {
+		Integer oldVal = d_sampleSize;
+		d_sampleSize = size;
+		firePropertyChange(PROPERTY_SAMPLESIZE, oldVal, d_sampleSize);
+	}
+
+	public Integer getSampleSize() {
+		return d_sampleSize;
 	}
 }

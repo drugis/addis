@@ -73,8 +73,4 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	public boolean isOfType(Type type) {
 		return type.equals(Type.CONTINUOUS);
 	}
-
-	public Integer getSampleSize() {
-		return getPatientGroup().getSize();
-	}
 }
