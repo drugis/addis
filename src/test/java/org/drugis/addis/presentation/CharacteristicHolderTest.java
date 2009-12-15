@@ -28,7 +28,7 @@ import java.util.HashMap;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.StudyCharacteristic;
-import org.drugis.addis.entities.StudyCharacteristicsMap;
+import org.drugis.addis.entities.CharacteristicsMap;
 import org.drugis.addis.gui.MutableCharacteristicHolder;
 import org.drugis.addis.presentation.CharacteristicHolder;
 import org.drugis.common.JUnitUtil;
@@ -58,7 +58,7 @@ public class CharacteristicHolderTest {
 		Indication indication = new Indication(1L, "Indication");
 		newVal.put(d_char, indication);
 		PropertyChangeListener l =
-			JUnitUtil.mockListener(d_study.getCharacteristics(), StudyCharacteristicsMap.PROPERTY_CONTENTS, null, null);
+			JUnitUtil.mockListener(d_study.getCharacteristics(), CharacteristicsMap.PROPERTY_CONTENTS, null, null);
 		d_study.getCharacteristics().addPropertyChangeListener(l);
 		d_holder.setValue(indication);
 		verify(l);

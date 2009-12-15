@@ -6,17 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class StudyCharacteristicsMap extends AbstractEntity implements Map<StudyCharacteristic, Object>  {
+public class CharacteristicsMap extends AbstractEntity implements Map<Characteristic, Object>  {
 	private static final long serialVersionUID = -8733867872254497765L;
 
 	public static final String PROPERTY_CONTENTS = "contents";
 	
-	private Map<StudyCharacteristic, Object> d_map = new HashMap<StudyCharacteristic, Object>();
+	private Map<Characteristic, Object> d_map = new HashMap<Characteristic, Object>();
 	
-	public StudyCharacteristicsMap() {
-		for (StudyCharacteristic c : StudyCharacteristic.values()) {
-			d_map.put(c, null);
-		}
+	public CharacteristicsMap() {
 	}
 
 	@Override
@@ -36,7 +33,7 @@ public class StudyCharacteristicsMap extends AbstractEntity implements Map<Study
 		return d_map.containsValue(value);
 	}
 
-	public Set<java.util.Map.Entry<StudyCharacteristic, Object>> entrySet() {
+	public Set<java.util.Map.Entry<Characteristic, Object>> entrySet() {
 		return d_map.entrySet();
 	}
 
@@ -48,11 +45,11 @@ public class StudyCharacteristicsMap extends AbstractEntity implements Map<Study
 		return d_map.isEmpty();
 	}
 
-	public Set<StudyCharacteristic> keySet() {
+	public Set<Characteristic> keySet() {
 		return d_map.keySet();
 	}
 
-	public Object put(StudyCharacteristic key, Object value) {
+	public Object put(Characteristic key, Object value) {
 		Object old = d_map.put(key, value);
 		fireContentsChanged();
 		return old;
@@ -63,7 +60,7 @@ public class StudyCharacteristicsMap extends AbstractEntity implements Map<Study
 	}
 
 	public void putAll(
-			Map<? extends StudyCharacteristic, ? extends Object> m) {
+			Map<? extends Characteristic, ? extends Object> m) {
 		throw new RuntimeException("Not implemented");
 	}
 

@@ -20,7 +20,6 @@
 package org.drugis.addis.entities;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface Study extends Comparable<Study>, Entity {
@@ -35,6 +34,6 @@ public interface Study extends Comparable<Study>, Entity {
 	public Set<Drug> getDrugs();	
 	public int getSampleSize();
 	
-	public Map<StudyCharacteristic, Object> getCharacteristics();
+	public CharacteristicsMap getCharacteristics();
 	public Object getCharacteristic(Characteristic c);
 }

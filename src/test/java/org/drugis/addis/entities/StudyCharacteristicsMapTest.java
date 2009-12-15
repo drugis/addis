@@ -1,30 +1,20 @@
 package org.drugis.addis.entities;
 
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
 public class StudyCharacteristicsMapTest {
-	StudyCharacteristicsMap d_map;
+	CharacteristicsMap d_map;
 	
 	@Before
 	public void setUp() {
-		 d_map = new StudyCharacteristicsMap();
-	}
-	
-	@Test
-	public void testKeySet() {
-		Set<StudyCharacteristic> keys = new HashSet<StudyCharacteristic>();
-		keys.addAll(StudyCharacteristic.values());
-		assertEquals(keys, d_map.keySet());
+		 d_map = new CharacteristicsMap();
 	}
 	
 	@Test(expected=RuntimeException.class)
@@ -40,7 +30,7 @@ public class StudyCharacteristicsMapTest {
 	@Test
 	public void testPutEmits() {
 		PropertyChangeListener listener =
-			JUnitUtil.mockStrictListener(d_map, StudyCharacteristicsMap.PROPERTY_CONTENTS, null, null);
+			JUnitUtil.mockStrictListener(d_map, CharacteristicsMap.PROPERTY_CONTENTS, null, null);
 		d_map.addPropertyChangeListener(listener);
 		d_map.put(StudyCharacteristic.INDICATION, new Indication(0L, "Test"));
 		verify(listener);

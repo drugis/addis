@@ -77,7 +77,7 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 
 	protected Set<Endpoint> d_endpoints = new HashSet<Endpoint>();
 
-	protected StudyCharacteristicsMap d_chars = new StudyCharacteristicsMap();
+	protected CharacteristicsMap d_chars = new CharacteristicsMap();
 
 	public BasicStudy(String id, Indication i) {
 		d_id = id;
@@ -127,7 +127,7 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 		d_chars.put(c, val);
 	}
 	
-	public StudyCharacteristicsMap getCharacteristics() {
+	public CharacteristicsMap getCharacteristics() {
 		return d_chars;
 	}
 

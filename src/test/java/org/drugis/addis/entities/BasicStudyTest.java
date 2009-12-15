@@ -178,7 +178,7 @@ public class BasicStudyTest {
 		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
 		
 		PropertyChangeListener listener = JUnitUtil.mockStrictListener(study.getCharacteristics(), 
-				StudyCharacteristicsMap.PROPERTY_CONTENTS,null, null);		
+				CharacteristicsMap.PROPERTY_CONTENTS,null, null);		
 		study.getCharacteristics().addPropertyChangeListener(listener);
 
 		study.setCharacteristic(StudyCharacteristic.ARMS, new Integer(2));
