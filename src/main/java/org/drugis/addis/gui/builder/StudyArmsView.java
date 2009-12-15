@@ -100,7 +100,7 @@ public class StudyArmsView implements ViewBuilder {
 				new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_SIZE),
 				NumberFormat.getInstance());
 		final String pgCharacteristicTooltip = buildCharacteristicTooltip(g);
-		if (!pgCharacteristicTooltip.isEmpty())
+		if (!pgCharacteristicTooltip.equals(""))
 			patientGroupSizeLabel.setToolTipText(pgCharacteristicTooltip);
 		builder.add(
 				patientGroupSizeLabel,
