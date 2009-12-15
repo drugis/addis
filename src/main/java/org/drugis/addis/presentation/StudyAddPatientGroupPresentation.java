@@ -9,10 +9,9 @@ import java.util.Map;
 
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
-import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
-import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.common.Interval;
@@ -34,8 +33,8 @@ public class StudyAddPatientGroupPresentation {
 		
 		for (Endpoint e : d_study.getEndpoints()) {
 			BasicMeasurement m = e.buildMeasurement(pg);
-			if (m instanceof BasicRateMeasurement) {
-				final BasicRateMeasurement rm = (BasicRateMeasurement)m;
+			if (m instanceof BasicMeasurement) {
+				final BasicMeasurement rm = (BasicMeasurement)m;
 				getSizeModel().addValueChangeListener(new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent evt) {
 						if (rm.getSampleSize().equals(0)) {

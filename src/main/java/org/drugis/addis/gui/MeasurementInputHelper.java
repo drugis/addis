@@ -42,7 +42,7 @@ public class MeasurementInputHelper {
 	public static String[] getHeaders(Endpoint e) {
 		switch (e.getType()) {
 		case CONTINUOUS:
-			return new String[] {"Mean", "StdDev"};
+			return new String[] {"Mean", "StdDev", "Subjects"};
 		case RATE:
 			return new String[] {"Occurence", "Subjects"};
 		default:
@@ -56,7 +56,8 @@ public class MeasurementInputHelper {
 				new PresentationModel<BasicContinuousMeasurement>((BasicContinuousMeasurement)m);
 			return new JTextField[] {
 				MeasurementInputHelper.buildFormatted(model.getModel(BasicContinuousMeasurement.PROPERTY_MEAN)),
-				MeasurementInputHelper.buildFormatted(model.getModel(BasicContinuousMeasurement.PROPERTY_STDDEV))
+				MeasurementInputHelper.buildFormatted(model.getModel(BasicContinuousMeasurement.PROPERTY_STDDEV)),
+				MeasurementInputHelper.buildFormatted(model.getModel(BasicContinuousMeasurement.PROPERTY_SAMPLESIZE))
 			};
 		} else if (m instanceof BasicRateMeasurement) {
 			PresentationModel<BasicRateMeasurement> model = 

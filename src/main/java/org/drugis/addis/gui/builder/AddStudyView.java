@@ -342,8 +342,8 @@ public class AddStudyView implements ViewBuilder {
 				col += 2;
 			}
 			
-			if (meas instanceof BasicRateMeasurement) {
-				wireSampleSize(model, d_mainWindow.getPresentationModelManager().getModel((BasicRateMeasurement)meas));
+			if (meas instanceof BasicMeasurement) {
+				wireSampleSize(model, d_mainWindow.getPresentationModelManager().getModel((BasicMeasurement)meas));
 			}
 
 			row += 2;
@@ -351,7 +351,7 @@ public class AddStudyView implements ViewBuilder {
 	}
 
 	private void wireSampleSize(PresentationModel<BasicPatientGroup> pg,
-			final PresentationModel<BasicRateMeasurement> m) {
+			final PresentationModel<BasicMeasurement> m) {
 		pg.getModel(BasicPatientGroup.PROPERTY_SIZE).addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (getSampleSize(m).getValue().equals(new Integer(0))) {
@@ -360,7 +360,7 @@ public class AddStudyView implements ViewBuilder {
 			}
 
 			private AbstractValueModel getSampleSize(
-					final PresentationModel<BasicRateMeasurement> m) {
+					final PresentationModel<BasicMeasurement> m) {
 				return m.getModel(BasicRateMeasurement.PROPERTY_SAMPLESIZE);
 			}
 		});
