@@ -61,38 +61,6 @@ public class StudyCharacteristic implements Serializable {
 		FINISHED
 	}
 	
-	public enum ValueType {
-		TEXT(String.class),
-		POSITIVE_INTEGER(Integer.class),
-		DATE(Date.class),
-		ENUM(Enum.class),
-		OBJECT(Object.class);
-		
-		public final Class<?> valueClass;
-		
-		ValueType(Class<?> vclass) {
-			valueClass = vclass;
-		}
-				
-		public boolean validate(Object value) {
-			if (valueClass.equals(Object.class)) {
-				return true;
-			}			
-			if (!valueClass.isInstance(value)) {
-				return false;
-			}				
-			if (this.equals(POSITIVE_INTEGER)) {
-				Integer i = (Integer) value;
-				if (i < 1) {
-					return false;
-				}
-			}
-			return true;
-		}
-	}
-
-
-	
 	protected StudyCharacteristic(String name, Class<?> type) {
 		d_description = name;
 		d_type = type;
