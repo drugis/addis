@@ -30,14 +30,12 @@ public abstract class AbstractRelativeEffect<T extends Measurement> extends Abst
 	
 	private void connectListeners() {
 		MemberListener listener = new MemberListener();
-		getSubject().getPatientGroup().addPropertyChangeListener(listener);
 		getSubject().addPropertyChangeListener(listener);
-		getBaseline().getPatientGroup().addPropertyChangeListener(listener);
 		getBaseline().addPropertyChangeListener(listener);
 	}
 
 	public Integer getSampleSize() {
-		return getSubject().getPatientGroup().getSize() + getBaseline().getPatientGroup().getSize();
+		return getSubject().getSampleSize() + getBaseline().getSampleSize();
 	}
 	
 	public T getSubject() {

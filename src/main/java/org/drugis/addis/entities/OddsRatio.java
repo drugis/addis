@@ -42,8 +42,8 @@ public class OddsRatio extends AbstractRatio {
 	}
 
 	public Double getRelativeEffect() {
-		int d = d_baseline.getPatientGroup().getSize() - d_baseline.getRate();
-		int c = d_subject.getPatientGroup().getSize() - d_subject.getRate();
+		int d = d_baseline.getSampleSize() - d_baseline.getRate();
+		int c = d_subject.getSampleSize() - d_subject.getRate();
 		return ((double) d_subject.getRate() * (double) d) / ((double) d_baseline.getRate() * (double) c); 
 	}
 
@@ -57,6 +57,6 @@ public class OddsRatio extends AbstractRatio {
 	}
 
 	private double invNoEffect(RateMeasurement m) {
-		return 1.0 / (m.getPatientGroup().getSize() - m.getRate());
+		return 1.0 / (m.getSampleSize() - m.getRate());
 	}
 }

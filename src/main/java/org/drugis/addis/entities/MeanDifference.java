@@ -19,7 +19,7 @@ public class MeanDifference extends AbstractRelativeEffect<ContinuousMeasurement
 	}
 	
 	public Interval<Double> getConfidenceInterval() {
-		double t = StudentTTable.getT(d_subject.getPatientGroup().getSize() + d_baseline.getPatientGroup().getSize() - 2);
+		double t = StudentTTable.getT(d_subject.getSampleSize() + d_baseline.getSampleSize() - 2);
 		return new Interval<Double>(getRelativeEffect() - t*getError(),getRelativeEffect() + t*getError());
 	}
 
@@ -28,8 +28,8 @@ public class MeanDifference extends AbstractRelativeEffect<ContinuousMeasurement
 	}
 	
 	public Double getError() {
-		return Math.sqrt(square(d_subject.getStdDev()) / (double) d_subject.getPatientGroup().getSize() 
-						+ square(d_baseline.getStdDev()) / (double) d_baseline.getPatientGroup().getSize());
+		return Math.sqrt(square(d_subject.getStdDev()) / (double) d_subject.getSampleSize() 
+						+ square(d_baseline.getStdDev()) / (double) d_baseline.getSampleSize());
 	}
 	
 	private Double square(double x) {

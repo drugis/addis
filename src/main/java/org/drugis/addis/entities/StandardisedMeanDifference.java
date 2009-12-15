@@ -40,8 +40,8 @@ public class StandardisedMeanDifference extends AbstractRelativeEffect<Continuou
 	}
 
 	double getCohenVariance() {
-		double frac1 = (double) getSampleSize() / ((double) d_subject.getPatientGroup().getSize() *
-				(double) d_baseline.getPatientGroup().getSize());
+		double frac1 = (double) getSampleSize() / ((double) d_subject.getSampleSize() *
+				(double) d_baseline.getSampleSize());
 		double frac2 = square(getCohenD()) / (2D * (double) getSampleSize());
 		return (frac1 + frac2);
 	}
@@ -51,8 +51,8 @@ public class StandardisedMeanDifference extends AbstractRelativeEffect<Continuou
 	}
 	
 	private double getPooledStdDev() {
-		double numerator = ((double) d_subject.getPatientGroup().getSize() - 1) * square(d_subject.getStdDev()) 
-							+ ((double) d_baseline.getPatientGroup().getSize() - 1) * square(d_baseline.getStdDev());
+		double numerator = ((double) d_subject.getSampleSize() - 1) * square(d_subject.getStdDev()) 
+							+ ((double) d_baseline.getSampleSize() - 1) * square(d_baseline.getStdDev());
 		return Math.sqrt(numerator/(double) getDegreesOfFreedom());
 	}
 	

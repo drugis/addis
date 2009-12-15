@@ -26,10 +26,8 @@ public abstract class BasicMeasurement extends AbstractEntity implements Measure
 	private static final long serialVersionUID = 6892934487858770855L;
 	private Endpoint d_endpoint;
 	private PatientGroup d_patientGroup;
-	
-	public static final String PROPERTY_PATIENTGROUP = "patientGroup";
-	
-	public PatientGroup getPatientGroup() {
+
+	protected PatientGroup getPatientGroup() {
 		return d_patientGroup;
 	}
 

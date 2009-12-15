@@ -20,10 +20,7 @@
 package org.drugis.addis.entities;
 
 public interface RateMeasurement extends Measurement {
-	
-	public static final String PROPERTY_SAMPLESIZE = "sampleSize";
 	public static final String PROPERTY_RATE = "rate";
 
 	public Integer getRate();
-	public Integer getSampleSize();
 }

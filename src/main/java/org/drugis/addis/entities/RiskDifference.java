@@ -12,9 +12,9 @@ public class RiskDifference extends AbstractRelativeEffect<RateMeasurement> {
 
 	public Double getRelativeEffect() {
 		double a = getSubject().getRate();
-		double n1 = getSubject().getPatientGroup().getSize();
+		double n1 = getSubject().getSampleSize();
 		double c = getBaseline().getRate();
-		double n2 = getBaseline().getPatientGroup().getSize();
+		double n2 = getBaseline().getSampleSize();
 		
 		return (a/n1 - c/n2);
 	}
@@ -34,10 +34,10 @@ public class RiskDifference extends AbstractRelativeEffect<RateMeasurement> {
 	// Here: gets the STANDARD ERROR of the RISK DIFFERENCE
 	public Double getError() {
 		double a = getSubject().getRate();
-		double n1 = getSubject().getPatientGroup().getSize();
+		double n1 = getSubject().getSampleSize();
 		double b = n1 - a;
 		double c = getBaseline().getRate();
-		double n2 = getBaseline().getPatientGroup().getSize();
+		double n2 = getBaseline().getSampleSize();
 		double d = n2 - c;
 		
 		return new Double(Math.sqrt(a*b/Math.pow(n1,3) + c*d/Math.pow(n2,3)));
