@@ -26,12 +26,8 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	private Double d_mean;
 	private Double d_stdDev;
 		
-	public BasicContinuousMeasurement(PatientGroup p) {
-		this(0.0, 0.0, p);
-	}
-	
-	public BasicContinuousMeasurement(double mean, double stdDev, PatientGroup p) {
-		super(p.getSize() != null ? p.getSize() : 0);
+	public BasicContinuousMeasurement(double mean, double stdDev, int size) {
+		super(size);
 		d_mean = mean;
 		d_stdDev = stdDev;
 	}

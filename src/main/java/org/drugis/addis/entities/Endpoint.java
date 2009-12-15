@@ -89,7 +89,7 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 	public BasicMeasurement buildMeasurement(PatientGroup pg) {
 		switch (getType()) {
 		case CONTINUOUS:
-			return new BasicContinuousMeasurement(pg);
+			return new BasicContinuousMeasurement(0.0, 0.0, pg.getSize());
 		case RATE:
 			return new BasicRateMeasurement(0, pg.getSize());
 		default:

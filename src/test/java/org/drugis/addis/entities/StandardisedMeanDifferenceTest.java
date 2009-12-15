@@ -25,8 +25,8 @@ public class StandardisedMeanDifferenceTest {
 	public void setUp() {
 		PatientGroup subjs = new BasicPatientGroup(null, null, s_subjSize);
 		PatientGroup basels = new BasicPatientGroup(null, null, s_baslSize);
-		d_subject = new BasicContinuousMeasurement(s_subjMean, s_subjStdDev, subjs);
-		d_baseline = new BasicContinuousMeasurement(s_baselMean, s_baslStdDev, basels);
+		d_subject = new BasicContinuousMeasurement(s_subjMean, s_subjStdDev, subjs.getSize());
+		d_baseline = new BasicContinuousMeasurement(s_baselMean, s_baslStdDev, basels.getSize());
 		d_smd = new StandardisedMeanDifference(d_subject, d_baseline);
 	}
 	

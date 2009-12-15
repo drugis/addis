@@ -21,8 +21,8 @@ public class MeanDifferenceTest {
 	public void setUp() {
 		PatientGroup subjs = new BasicPatientGroup(null, null, s_subjSize);
 		PatientGroup basels = new BasicPatientGroup(null, null, s_baslSize);
-		d_subject = new BasicContinuousMeasurement(s_mean1, s_stdDev1, subjs);
-		d_baseline = new BasicContinuousMeasurement(s_mean2, s_stdDev2, basels);
+		d_subject = new BasicContinuousMeasurement(s_mean1, s_stdDev1, subjs.getSize());
+		d_baseline = new BasicContinuousMeasurement(s_mean2, s_stdDev2, basels.getSize());
 		d_md = new MeanDifference(d_baseline, d_subject);
 	}
 	

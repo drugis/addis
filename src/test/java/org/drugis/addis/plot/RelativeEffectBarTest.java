@@ -19,8 +19,8 @@ public class RelativeEffectBarTest {
 		// Create relative effect.
 		PatientGroup p1 = new BasicPatientGroup(null, null, 100);
 		PatientGroup p2 = new BasicPatientGroup(null, null, 100);
-		RelativeEffect<ContinuousMeasurement> effect = new MeanDifference(new BasicContinuousMeasurement(0.25, 1.26 / Math.sqrt(2), p1), 
-											new BasicContinuousMeasurement(0.5, 1.26 / Math.sqrt(2), p2));
+		RelativeEffect<ContinuousMeasurement> effect = new MeanDifference(new BasicContinuousMeasurement(0.25, 1.26 / Math.sqrt(2), p1.getSize()), 
+											new BasicContinuousMeasurement(0.5, 1.26 / Math.sqrt(2), p2.getSize()));
 	
 		// Make some BinnedScale that maps [0, 1] -> [0, 200]
 		BinnedScale bsl = new BinnedScale(new IdentityScale(), 0, 200);
@@ -46,8 +46,8 @@ public class RelativeEffectBarTest {
 	public void testCombinedPlot() {
 		PatientGroup p1 = new BasicPatientGroup(null, null, 100);
 		PatientGroup p2 = new BasicPatientGroup(null, null, 100);
-		RelativeEffect<ContinuousMeasurement> effect = new MeanDifference(new BasicContinuousMeasurement(0.25, 1.26 / Math.sqrt(2), p1), 
-											new BasicContinuousMeasurement(0.5, 1.26 / Math.sqrt(2), p2));
+		RelativeEffect<ContinuousMeasurement> effect = new MeanDifference(new BasicContinuousMeasurement(0.25, 1.26 / Math.sqrt(2), p1.getSize()), 
+											new BasicContinuousMeasurement(0.5, 1.26 / Math.sqrt(2), p2.getSize()));
 	
 		// Make some BinnedScale that maps [0, 1] -> [0, 200]
 		BinnedScale bsl = new BinnedScale(new IdentityScale(), 0, 200);

@@ -30,7 +30,7 @@ public class BasicContinuousMeasurementTest {
 	
 	@Before
 	public void setUp() {
-		d_basicContinuousMeasurement = new BasicContinuousMeasurement(new BasicPatientGroup(null, null, 1));
+		d_basicContinuousMeasurement = new BasicContinuousMeasurement(0.0, 0.0, 1);
 	}
 
 	private BasicContinuousMeasurement getMeasurement() {

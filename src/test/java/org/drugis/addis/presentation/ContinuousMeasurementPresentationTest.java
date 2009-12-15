@@ -21,7 +21,7 @@ public class ContinuousMeasurementPresentationTest {
 	@Before
 	public void setUp() {
 		d_pg = new BasicPatientGroup(null, null, 1);
-		d_basicContinuousMeasurement = new BasicContinuousMeasurement(d_pg);
+		d_basicContinuousMeasurement = new BasicContinuousMeasurement(0.0, 0.0, d_pg.getSize());
 		d_pres = new ContinuousMeasurementPresentation(d_basicContinuousMeasurement);
 	}
 	
