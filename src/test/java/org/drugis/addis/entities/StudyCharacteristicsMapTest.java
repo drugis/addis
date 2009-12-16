@@ -38,7 +38,6 @@ public class StudyCharacteristicsMapTest {
 		
 	@Test
 	public void testPutCorrectTypes() {
-		d_map.put(StudyCharacteristic.ARMS, new Integer(2));
 		d_map.put(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
 		d_map.put(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
 		d_map.put(StudyCharacteristic.OBJECTIVE, "Obj");

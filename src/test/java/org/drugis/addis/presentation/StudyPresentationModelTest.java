@@ -42,6 +42,18 @@ public class StudyPresentationModelTest {
 	}
 	
 	@Test
+	public void testStudyArmsUpdatesIfChanged() {
+		StudyCharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.ARMS);
+		assertEquals(new Integer(0), model.getValue());
+		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, new Integer(1));
+		model.addPropertyChangeListener(mock);
+		d_study.addPatientGroup(new BasicPatientGroup(null, null, 1));
+
+		verify(mock);
+		assertEquals(new Integer(1), model.getValue());
+	}
+	
+	@Test
 	public void testStudySizeUpdatesIfChanged() {
 		StudyCharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.STUDYSIZE);
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, new Integer(100));

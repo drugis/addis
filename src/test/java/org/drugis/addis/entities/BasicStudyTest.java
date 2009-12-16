@@ -179,7 +179,7 @@ public class BasicStudyTest {
 				CharacteristicsMap.PROPERTY_CONTENTS,null, null);		
 		study.getCharacteristics().addPropertyChangeListener(listener);
 
-		study.setCharacteristic(StudyCharacteristic.ARMS, new Integer(2));
+		study.setCharacteristic(StudyCharacteristic.CENTERS, new Integer(2));
 		verify(listener);
 	}
 	

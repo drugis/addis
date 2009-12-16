@@ -95,7 +95,6 @@ public class MainData extends ExampleData {
 		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
 		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
 		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.ARMS, 2);
 		study.setCharacteristic(StudyCharacteristic.INCLUSION,
 				"");
 		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
@@ -141,7 +140,6 @@ public class MainData extends ExampleData {
 		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
 		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
 		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.ARMS, 2);
 		study.setCharacteristic(StudyCharacteristic.INCLUSION,
 				"");
 		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
@@ -187,7 +185,6 @@ public class MainData extends ExampleData {
 		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
 		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
 		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.ARMS, 2);
 		study.setCharacteristic(StudyCharacteristic.INCLUSION,
 				"");
 		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
@@ -233,7 +230,6 @@ public class MainData extends ExampleData {
 		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
 		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
 		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.ARMS, 2);
 		study.setCharacteristic(StudyCharacteristic.INCLUSION,
 				"");
 		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
@@ -281,7 +277,6 @@ public class MainData extends ExampleData {
 		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
 		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
 		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.ARMS, 3);
 		study.setCharacteristic(StudyCharacteristic.INCLUSION,
 				"");
 		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
@@ -348,7 +343,6 @@ public class MainData extends ExampleData {
 		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
 		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
 		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.ARMS, 3);
 		study.setCharacteristic(StudyCharacteristic.INCLUSION,
 				"");
 		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
@@ -414,7 +408,6 @@ public class MainData extends ExampleData {
 		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
 		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
 		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.ARMS, 2);
 		study.setCharacteristic(StudyCharacteristic.INCLUSION,
 				"");
 		study.setCharacteristic(StudyCharacteristic.EXCLUSION,

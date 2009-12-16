@@ -126,7 +126,6 @@ public class ExampleData {
 		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
 		study.setCharacteristic(StudyCharacteristic.CENTERS, 8);
 		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.ARMS, 2);
 		study.setCharacteristic(StudyCharacteristic.INCLUSION,
 				"Patients were recruited " + 
 				"through newspaper ads and referrals. Patients were " +
@@ -213,7 +212,6 @@ public class ExampleData {
 		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
 		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
 		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.ARMS, 2);
 		study.setCharacteristic(StudyCharacteristic.INCLUSION,
 				"After a 1-week placebo wash-out, patients suffering from DSM-III " + 
 				"major depression and with a score of 18 or more on the 21-item " +
@@ -262,7 +260,6 @@ public class ExampleData {
 		// Study characteristics
 		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
 		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.ARMS, 2);
 		study.setCharacteristic(StudyCharacteristic.INCLUSION,
 				"Psychiatric outpatients with DSM-III-R major depression or bipolar disorder (depressed).");
 		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
@@ -370,7 +367,6 @@ public class ExampleData {
 		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
 		study.setCharacteristic(StudyCharacteristic.CENTERS, 618);
 		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.ARMS, 2);
 		study.setCharacteristic(StudyCharacteristic.INCLUSION,
 				"Eligible patients were aged 18 years or older, had left-" +
 				"ventricular ejection fraction 40% or lower measured " +

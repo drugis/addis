@@ -24,4 +24,5 @@ public class DerivedStudyCharacteristic extends StudyCharacteristic {
 	public static final DerivedStudyCharacteristic DOSING = addDerivedStudyChar("Dosing", Dosing.class);
 	public static final DerivedStudyCharacteristic DRUGS = addDerivedStudyChar("Investigational drugs", Object.class);
 	public static final DerivedStudyCharacteristic STUDYSIZE = addDerivedStudyChar("Study size", Integer.class);
+	public static final DerivedStudyCharacteristic ARMS = addDerivedStudyChar("Study Arms", Integer.class);
 }

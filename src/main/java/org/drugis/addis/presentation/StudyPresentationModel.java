@@ -14,13 +14,20 @@ import com.jgoodies.binding.PresentationModel;
 
 @SuppressWarnings("serial")
 public class StudyPresentationModel extends PresentationModel<Study> {
-	
+	private StudyCharacteristicHolder d_armsHolder;
 	private StudyCharacteristicHolder d_doseHolder;
 	private StudyCharacteristicHolder d_drugHolder;
 	private StudyCharacteristicHolder d_sizeHolder;
 	
 	public StudyPresentationModel(Study s) {
 		super(s);
+		
+		d_armsHolder = new ListeningCharacteristicHolder(s, DerivedStudyCharacteristic.ARMS) {
+			@Override
+			protected Object getNewValue() {
+				return getBean().getPatientGroups().size();
+			}
+		};
 		
 		d_doseHolder = new ListeningCharacteristicHolder(s, DerivedStudyCharacteristic.DOSING) {
 			@Override
@@ -55,6 +62,8 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 			return d_drugHolder;
 		} else if (c.equals(DerivedStudyCharacteristic.STUDYSIZE)) {
 			return d_sizeHolder;
+		} else if (c.equals(DerivedStudyCharacteristic.ARMS)) {
+			return d_armsHolder;
 		} else {
 			return new StudyCharacteristicHolder(getBean(), c);
 		}

@@ -31,7 +31,6 @@ public class StudyCharacteristic implements Serializable, Characteristic {
 	private String d_description;
 	private Class<?> d_type;
 	
-	public static final StudyCharacteristic ARMS = addStudyChar("Study Arms", Integer.class);
 	public static final StudyCharacteristic ALLOCATION = addStudyChar("Group allocation", Allocation.class);
 	public static final StudyCharacteristic BLINDING = addStudyChar("Blinding", Blinding.class);
 	public static final StudyCharacteristic CENTERS = addStudyChar("Number of study centers", Integer.class);
