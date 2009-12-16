@@ -118,7 +118,7 @@ public class Main extends JFrame {
 	
 	private PresentationModelFactory d_pmManager;
 	
-	public PresentationModelFactory getPresentationModelManager() {
+	public PresentationModelFactory getPresentationModelFactory() {
 		return d_pmManager;
 	}
 

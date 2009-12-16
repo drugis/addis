@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.PatientGroup;
@@ -55,7 +56,7 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		};
 	}
 	
-	public StudyCharacteristicHolder getCharacteristicModel(DerivedStudyCharacteristic c) {
+	public StudyCharacteristicHolder getCharacteristicModel(Characteristic c) {
 		if (c.equals(DerivedStudyCharacteristic.DOSING)) {
 			return d_doseHolder;
 		} else if (c.equals(DerivedStudyCharacteristic.DRUGS)) {
@@ -65,15 +66,10 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		} else if (c.equals(DerivedStudyCharacteristic.ARMS)) {
 			return d_armsHolder;
 		} else {
-			throw new RuntimeException("unknown derived study characteristic");
+			return new StudyCharacteristicHolder(getBean(), c);
 		}
 	}
-	
-	public StudyCharacteristicHolder getCharacteristicModel(BasicStudyCharacteristic c) {
-		return new StudyCharacteristicHolder(getBean(), c);
-	}
-	
-	
+		
 	public boolean isStudyFinished() {
 		Object status = getBean().getCharacteristics().get(BasicStudyCharacteristic.STATUS);
 		if (status != null) {

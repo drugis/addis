@@ -104,7 +104,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			setLayout(new BorderLayout());
 			JComponent studiesComp;
 	
-		    d_table = new StudyTable(new SelectableStudyCharTableModel(d_pm.getStudyListModel()));
+		    d_table = new StudyTable(new SelectableStudyCharTableModel(d_pm.getStudyListModel(), d_frame.getPresentationModelFactory()));
 			    
 		    JScrollPane sPane = new JScrollPane(d_table);
 		    sPane.setPreferredSize(new Dimension(700,300));

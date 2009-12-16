@@ -34,7 +34,7 @@ public class SelectableStudyCharTableModelTest {
 		studies.add(ExampleData.buildStudyDeWilde());
 		d_ind = d_domain.getIndications().first();
 		d_pm = new DefaultSelectableStudyListPresentationModel(d_domain.getStudies(d_ind));
-		d_model = new SelectableStudyCharTableModel(d_pm);
+		d_model = new SelectableStudyCharTableModel(d_pm, new PresentationModelFactory(d_domain));
 	}	
 	
 	@Test

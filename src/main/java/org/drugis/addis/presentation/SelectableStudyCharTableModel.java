@@ -3,8 +3,8 @@ package org.drugis.addis.presentation;
 @SuppressWarnings("serial")
 public class SelectableStudyCharTableModel extends StudyCharTableModel {
 
-	public SelectableStudyCharTableModel(SelectableStudyListPresentationModel pm) {
-		super(pm);
+	public SelectableStudyCharTableModel(SelectableStudyListPresentationModel pm, PresentationModelFactory pmf) {
+		super(pm, pmf);
 	}
 	
 	@Override

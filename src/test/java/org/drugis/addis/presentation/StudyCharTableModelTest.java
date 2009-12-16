@@ -30,12 +30,12 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.StudyCharacteristics;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -48,6 +48,7 @@ public class StudyCharTableModelTest {
 	private StudyCharTableModel d_model;
 	private Indication d_ind;
 	private IndicationPresentation d_pm;
+	private PresentationModelFactory d_pmf;
 	
 	@Before
 	public void setUp() {
@@ -58,7 +59,8 @@ public class StudyCharTableModelTest {
 		studies.add(ExampleData.buildStudyDeWilde());
 		d_ind = d_domain.getIndications().first();
 		d_pm = new IndicationPresentation(d_ind,d_domain.getStudies(d_ind));
-		d_model = new StudyCharTableModel(d_pm);
+		d_pmf = new PresentationModelFactory(d_domain);
+		d_model = new StudyCharTableModel(d_pm, d_pmf);
 	}	
 	
 	@Test
@@ -80,7 +82,8 @@ public class StudyCharTableModelTest {
 			assertEquals(s, d_model.getValueAt(row, 0));
 			int column = 1;
 			for (Characteristic c : StudyCharacteristics.values()) {
-				assertEquals(s.getCharacteristic(c), d_model.getValueAt(row, column));
+				StudyPresentationModel model = (StudyPresentationModel) d_pmf.getModel(s);
+				assertEquals(model.getCharacteristicModel(c).getValue(), d_model.getValueAt(row, column));
 				++column;
 			}
 			++row;
@@ -96,7 +99,8 @@ public class StudyCharTableModelTest {
 			int column = 0;
 			for (Characteristic c : StudyCharacteristics.values()) {
 				if (column > 0) {
-					assertEquals(s.getCharacteristic(c), d_model.getValueAt(row, column));
+					StudyPresentationModel model = (StudyPresentationModel) d_pmf.getModel(s);
+					assertEquals(model.getCharacteristicModel(c).getValue(), d_model.getValueAt(row, column));
 				}
 				++column;
 			}
@@ -122,7 +126,7 @@ public class StudyCharTableModelTest {
 	@Test
 	public void testCorrectColumnsAreShownAfterConstructor() {
 		getFirstCharValueModel().setValue(false);
-		d_model = new StudyCharTableModel(d_pm);
+		d_model = new StudyCharTableModel(d_pm, new PresentationModelFactory(d_domain));
 		testGetColumnNameFirstMissingHelper();
 	}
 	
@@ -158,7 +162,7 @@ public class StudyCharTableModelTest {
 			}
 		};
 		DefaultStudyListPresentationModel model = new DefaultStudyListPresentationModel(list);
-		TableModel tableModel = new StudyCharTableModel(model);
+		TableModel tableModel = new StudyCharTableModel(model, new PresentationModelFactory(d_domain));
 		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(tableModel ));
 		tableModel.addTableModelListener(mock);
 		list.setValue(new ArrayList<Study>());

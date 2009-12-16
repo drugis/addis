@@ -40,7 +40,7 @@ public class StudyAddPatientGroupDialog extends OkCancelDialog {
 		this.setModal(true);
 		d_domain = domain;
 		d_study = study;
-		d_pm = new StudyAddPatientGroupPresentation(d_study, main.getPresentationModelManager());
+		d_pm = new StudyAddPatientGroupPresentation(d_study, main.getPresentationModelFactory());
 		d_view = new StudyAddPatientGroupView(d_pm, d_domain, d_okButton);
 		getUserPanel().removeAll();
 		getUserPanel().add(d_view.buildPanel());

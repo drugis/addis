@@ -60,7 +60,7 @@ public class StudyView implements ViewBuilder {
 		d_domain = domain;
 		d_charView = new StudyCharacteristicsView(model);
 		d_epView = new StudyEndpointsView(model, main);
-		d_armsView = new StudyArmsView(model, main.getPresentationModelManager());
+		d_armsView = new StudyArmsView(model, main.getPresentationModelFactory());
 	}
 	
 	public JComponent buildPanel() {

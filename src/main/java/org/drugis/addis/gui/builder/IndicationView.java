@@ -1,11 +1,11 @@
 package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.gui.GUIFactory;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
@@ -20,9 +20,9 @@ import com.jgoodies.forms.layout.FormLayout;
 public class IndicationView implements ViewBuilder {
 	
 	private IndicationPresentation d_pm;
-	private JFrame d_parent;
+	private Main d_parent;
 
-	public IndicationView(IndicationPresentation pm, JFrame parent) {
+	public IndicationView(IndicationPresentation pm, Main parent) {
 		d_pm = pm;
 		this.d_parent = parent;
 	}

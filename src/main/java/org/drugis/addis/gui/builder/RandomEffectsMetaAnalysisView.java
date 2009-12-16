@@ -4,7 +4,6 @@ import java.awt.Color;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 
 import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.OddsRatio;
@@ -14,6 +13,7 @@ import org.drugis.addis.entities.RiskRatio;
 import org.drugis.addis.entities.StandardisedMeanDifference;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.GUIFactory;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.common.gui.ViewBuilder;
@@ -26,10 +26,10 @@ import com.jgoodies.forms.layout.FormLayout;
 public class RandomEffectsMetaAnalysisView implements ViewBuilder {
 	
 	private RandomEffectsMetaAnalysisPresentation d_pm;
-	private JFrame d_parent;
+	private Main d_parent;
 	private boolean d_overView;
 
-	public RandomEffectsMetaAnalysisView(RandomEffectsMetaAnalysisPresentation pm, JFrame parent, boolean overView) {
+	public RandomEffectsMetaAnalysisView(RandomEffectsMetaAnalysisPresentation pm, Main parent, boolean overView) {
 		d_pm = pm;
 		d_parent = parent;
 		d_overView = overView;

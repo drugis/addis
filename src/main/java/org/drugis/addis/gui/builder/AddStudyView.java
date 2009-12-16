@@ -306,7 +306,7 @@ public class AddStudyView implements ViewBuilder {
 		for (BasicPatientGroup g : groups) {
 			LayoutUtil.addRow(layout);
 			
-			BasicPatientGroupPresentation model = (BasicPatientGroupPresentation) d_mainWindow.getPresentationModelManager().getModel(g);
+			BasicPatientGroupPresentation model = (BasicPatientGroupPresentation) d_mainWindow.getPresentationModelFactory().getModel(g);
 			
 			int col = 1;
 			
@@ -338,7 +338,7 @@ public class AddStudyView implements ViewBuilder {
 			}
 			
 			if (meas instanceof BasicMeasurement) {
-				wireSampleSize(model, d_mainWindow.getPresentationModelManager().getModel((BasicMeasurement)meas));
+				wireSampleSize(model, d_mainWindow.getPresentationModelFactory().getModel((BasicMeasurement)meas));
 			}
 
 			row += 2;

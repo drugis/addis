@@ -9,6 +9,5 @@ public interface StudyListPresentationModel {
 
 	public ListHolder<Study> getIncludedStudies();
 	
-	public AbstractValueModel getCharacteristicVisibleModel(
-			Characteristic c);
+	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c);
 }

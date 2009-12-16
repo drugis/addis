@@ -39,7 +39,7 @@ public class StudyEndpointsView implements ViewBuilder {
 
 	public StudyEndpointsView(PresentationModel<? extends Study> model, Main main) {
 		d_model = model;
-		d_pmf = main.getPresentationModelManager();
+		d_pmf = main.getPresentationModelFactory();
 		d_mainWindow = main;
 	}
 

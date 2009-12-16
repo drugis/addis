@@ -27,7 +27,6 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -92,7 +91,7 @@ public class GUIFactory {
 		return textLabel;
 	}
 
-	public static JComponent buildStudyPanel(StudyListPresentationModel studies, JFrame parent) {
+	public static JComponent buildStudyPanel(StudyListPresentationModel studies, Main parent) {
 		JComponent studiesComp = null;
 		if(studies.getIncludedStudies().getValue().isEmpty()) {
 			studiesComp = new JLabel("No studies found.");

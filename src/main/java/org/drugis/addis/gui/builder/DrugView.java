@@ -1,12 +1,12 @@
 package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.gui.GUIFactory;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.DrugPresentationModel;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -17,9 +17,9 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class DrugView implements ViewBuilder{
 	private DrugPresentationModel d_model;
-	private JFrame d_parent;
+	private Main d_parent;
 
-	public DrugView(DrugPresentationModel model, JFrame parent) {
+	public DrugView(DrugPresentationModel model, Main parent) {
 		d_model = model;
 		d_parent = parent;
 	}

@@ -10,7 +10,6 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -30,9 +29,9 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 public class StudyTablePanelView implements ViewBuilder {
 	
 	private StudyListPresentationModel d_metamodel;
-	private JFrame d_parent;
+	private Main d_parent;
 
-	public StudyTablePanelView(StudyListPresentationModel metamodel, JFrame parent) {
+	public StudyTablePanelView(StudyListPresentationModel metamodel, Main parent) {
 		d_metamodel = metamodel;
 		d_parent = parent;
 	}
@@ -40,7 +39,7 @@ public class StudyTablePanelView implements ViewBuilder {
 	public JPanel buildPanel() {
 		JPanel panel = new JPanel(new BorderLayout());
 		
-		StudyCharTableModel model = new StudyCharTableModel(d_metamodel);
+		StudyCharTableModel model = new StudyCharTableModel(d_metamodel, d_parent.getPresentationModelFactory());
 		final JTable table = new StudyTable(model);
 		table.addMouseListener(new MouseAdapter() {
 			@Override

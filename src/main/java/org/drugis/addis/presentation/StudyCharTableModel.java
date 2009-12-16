@@ -32,9 +32,11 @@ import com.jgoodies.binding.value.ValueModel;
 @SuppressWarnings("serial")
 public class StudyCharTableModel extends AbstractTableModel {
 	protected StudyListPresentationModel d_pm;
+	private PresentationModelFactory d_pmf;
 	
-	public StudyCharTableModel(StudyListPresentationModel pm) {
+	public StudyCharTableModel(StudyListPresentationModel pm, PresentationModelFactory pmf) {
 		d_pm = pm;
+		d_pmf = pmf;
 		for (Characteristic c : StudyCharacteristics.values()) {
 			ValueModel vm = d_pm.getCharacteristicVisibleModel(c);
 			vm.addValueChangeListener(new ValueChangeListener());
@@ -75,7 +77,8 @@ public class StudyCharTableModel extends AbstractTableModel {
 			return d_pm.getIncludedStudies().getValue().get(rowIndex);
 		}
 		Characteristic c = getCharacteristic(columnIndex);
-		return d_pm.getIncludedStudies().getValue().get(rowIndex).getCharacteristics().get(c);
+		StudyPresentationModel spm = (StudyPresentationModel) d_pmf.getModel(d_pm.getIncludedStudies().getValue().get(rowIndex));
+		return spm.getCharacteristicModel(c).getValue();
 	}
 
 	@Override
