@@ -86,7 +86,7 @@ public class ExampleData {
 		domain.addCategoricalVariable(buildGenderVariable());
 	}
 
-	private static CategoricalVariable buildGenderVariable() {
+	public static CategoricalVariable buildGenderVariable() {
 		if (s_gender == null) {
 			s_gender = new CategoricalVariable("Gender", new String[]{"Male", "Female"});
 		}
