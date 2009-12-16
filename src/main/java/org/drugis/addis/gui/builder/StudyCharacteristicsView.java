@@ -5,7 +5,7 @@ import javax.swing.JComponent;
 
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
@@ -38,7 +38,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 				cc.xyw(3, 1, fullWidth - 2));
 		
 		int row = 3;
-		for (StudyCharacteristic c : StudyCharacteristic.values()) {
+		for (BasicStudyCharacteristic c : BasicStudyCharacteristic.values()) {
 			if (isCharacteristicShown(c)) {
 				LayoutUtil.addRow(layout);
 				builder.addLabel(c.getDescription() + ":", cc.xy(1, row));
@@ -53,7 +53,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 	}
 
 	private boolean isCharacteristicShown(Characteristic c) {
-		if (c.equals(StudyCharacteristic.STUDY_END)) {
+		if (c.equals(BasicStudyCharacteristic.STUDY_END)) {
 			return (d_model.isStudyFinished());
 		}
 		return true;

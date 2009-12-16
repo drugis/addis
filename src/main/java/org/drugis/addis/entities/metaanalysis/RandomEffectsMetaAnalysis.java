@@ -21,7 +21,7 @@ import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.RelativeEffectMetaAnalysis;
 import org.drugis.addis.entities.RiskRatio;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
@@ -105,7 +105,7 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 	}
 
 	private Indication getIndicationFromStudy(Study study) {
-		return (Indication) study.getCharacteristic(StudyCharacteristic.INDICATION);
+		return (Indication) study.getCharacteristic(BasicStudyCharacteristic.INDICATION);
 	}
 
 	public Drug getFirstDrug() {

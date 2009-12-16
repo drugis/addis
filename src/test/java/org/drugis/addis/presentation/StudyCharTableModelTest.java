@@ -35,7 +35,8 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.StudyCharacteristics;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,23 +63,23 @@ public class StudyCharTableModelTest {
 	
 	@Test
 	public void testGetColumnCount() {
-		assertEquals(StudyCharacteristic.values().size() + 1, d_model.getColumnCount());
-		d_pm.getCharacteristicVisibleModel(StudyCharacteristic.values().get(0)).setValue(Boolean.FALSE);
-		assertEquals(StudyCharacteristic.values().size(), d_model.getColumnCount());
+		assertEquals(StudyCharacteristics.values().size() + 1, d_model.getColumnCount());
+		d_pm.getCharacteristicVisibleModel(StudyCharacteristics.values().get(0)).setValue(Boolean.FALSE);
+		assertEquals(StudyCharacteristics.values().size(), d_model.getColumnCount());
 	}
 	
 	@Test
 	public void testGetRowCount() {
 		assertEquals(d_pm.getIncludedStudies().getValue().size(), d_model.getRowCount());
 	}
-	
+		
 	@Test
 	public void testGetValueAt() {
 		int row = 0;
 		for (Study s : d_pm.getIncludedStudies().getValue()) {
 			assertEquals(s, d_model.getValueAt(row, 0));
 			int column = 1;
-			for (Characteristic c : StudyCharacteristic.values()) {
+			for (Characteristic c : StudyCharacteristics.values()) {
 				assertEquals(s.getCharacteristic(c), d_model.getValueAt(row, column));
 				++column;
 			}
@@ -93,7 +94,7 @@ public class StudyCharTableModelTest {
 		for (Study s : d_pm.getIncludedStudies().getValue()) {
 			assertEquals(s, d_model.getValueAt(row, 0));
 			int column = 0;
-			for (Characteristic c : StudyCharacteristic.values()) {
+			for (Characteristic c : StudyCharacteristics.values()) {
 				if (column > 0) {
 					assertEquals(s.getCharacteristic(c), d_model.getValueAt(row, column));
 				}
@@ -114,7 +115,7 @@ public class StudyCharTableModelTest {
 	}
 	
 	private ValueModel getFirstCharValueModel() {
-		ValueModel firstCharVisible = d_pm.getCharacteristicVisibleModel(StudyCharacteristic.values().get(0));
+		ValueModel firstCharVisible = d_pm.getCharacteristicVisibleModel(StudyCharacteristics.values().get(0));
 		return firstCharVisible;
 	}
 	
@@ -129,7 +130,7 @@ public class StudyCharTableModelTest {
 	public void testGetColumnName() {
 		assertEquals("Study ID", d_model.getColumnName(0));
 		int column = 1;
-		for (Characteristic c : StudyCharacteristic.values()) {
+		for (Characteristic c : StudyCharacteristics.values()) {
 			assertEquals(c.getDescription(), d_model.getColumnName(column));
 			++column;
 		}
@@ -167,7 +168,7 @@ public class StudyCharTableModelTest {
 	private void testGetColumnNameFirstMissingHelper() {
 		assertEquals("Study ID", d_model.getColumnName(0));
 		int column = 0;
-		for (Characteristic c : StudyCharacteristic.values()) {
+		for (Characteristic c : BasicStudyCharacteristic.values()) {
 			if (column > 0) {
 				assertEquals(c.getDescription(), d_model.getColumnName(column));
 			}

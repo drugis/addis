@@ -3,16 +3,16 @@ package org.drugis.addis.presentation;
 import java.util.HashMap;
 
 import org.drugis.addis.entities.Characteristic;
-import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.entities.StudyCharacteristics;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueHolder;
 
 @SuppressWarnings("serial")
-public class CharacteristicVisibleMap extends HashMap<StudyCharacteristic, AbstractValueModel> {
+public class CharacteristicVisibleMap extends HashMap<Characteristic, AbstractValueModel> {
 	
 	public CharacteristicVisibleMap() {
-		for (StudyCharacteristic c : StudyCharacteristic.values()) {
+		for (Characteristic c : StudyCharacteristics.values()) {
 			put(c, new ValueHolder(true));
 		}		
 	}

@@ -19,7 +19,7 @@ public class StudyCharacteristicsMapTest {
 	
 	@Test(expected=RuntimeException.class)
 	public void testRemove() {
-		d_map.remove(StudyCharacteristic.INDICATION);
+		d_map.remove(BasicStudyCharacteristic.INDICATION);
 	}
 	
 	@Test(expected=RuntimeException.class)
@@ -32,16 +32,16 @@ public class StudyCharacteristicsMapTest {
 		PropertyChangeListener listener =
 			JUnitUtil.mockStrictListener(d_map, CharacteristicsMap.PROPERTY_CONTENTS, null, null);
 		d_map.addPropertyChangeListener(listener);
-		d_map.put(StudyCharacteristic.INDICATION, new Indication(0L, "Test"));
+		d_map.put(BasicStudyCharacteristic.INDICATION, new Indication(0L, "Test"));
 		verify(listener);
 	}
 		
 	@Test
 	public void testPutCorrectTypes() {
-		d_map.put(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		d_map.put(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
-		d_map.put(StudyCharacteristic.OBJECTIVE, "Obj");
-		d_map.put(StudyCharacteristic.STUDY_END, new Date());
-		d_map.put(StudyCharacteristic.STATUS, StudyCharacteristic.Status.ONGOING);
+		d_map.put(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
+		d_map.put(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
+		d_map.put(BasicStudyCharacteristic.OBJECTIVE, "Obj");
+		d_map.put(BasicStudyCharacteristic.STUDY_END, new Date());
+		d_map.put(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.ONGOING);
 	}
 }

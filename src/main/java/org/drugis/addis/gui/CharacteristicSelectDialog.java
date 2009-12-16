@@ -30,7 +30,7 @@ import javax.swing.JFrame;
 import javax.swing.JSeparator;
 
 import org.drugis.addis.entities.Characteristic;
-import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.presentation.StudyListPresentationModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -50,7 +50,7 @@ public class CharacteristicSelectDialog extends JDialog {
 	}
 
 	private void initComponents() {
-		for (Characteristic c : StudyCharacteristic.values()) {
+		for (Characteristic c : BasicStudyCharacteristic.values()) {
 			JCheckBox b = BasicComponentFactory.createCheckBox(d_pm.getCharacteristicVisibleModel(c),
 					c.getDescription());
 			getContentPane().add(b);

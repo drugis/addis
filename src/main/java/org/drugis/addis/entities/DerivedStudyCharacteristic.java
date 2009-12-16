@@ -1,18 +1,19 @@
 package org.drugis.addis.entities;
 
 
-public class DerivedStudyCharacteristic extends StudyCharacteristic {
+public enum DerivedStudyCharacteristic implements Characteristic {
 
-	private static final long serialVersionUID = 4902739766450418848L;
-	
-	protected DerivedStudyCharacteristic(String name, Class<?> type) {
-		super(name, type);
-	}
-	
-	protected static DerivedStudyCharacteristic addDerivedStudyChar(String name, Class<?> type) {
-		DerivedStudyCharacteristic c = new DerivedStudyCharacteristic(name, type);
-		s_allCharacteristics.add(c);
-		return c;
+	DOSING("Dosing", Dosing.class),
+	DRUGS("Investigational drugs", Object.class),
+	STUDYSIZE("Study size", Integer.class),
+	ARMS("Study Arms", Integer.class);
+
+	private Class<?> d_type;
+	private String d_description;
+
+	DerivedStudyCharacteristic(String description, Class<?> type) {
+		d_description = description;
+		d_type = type;
 	}
 	
 	public enum Dosing {
@@ -20,9 +21,12 @@ public class DerivedStudyCharacteristic extends StudyCharacteristic {
 		FLEXIBLE,
 		MIXED
 	}
-	
-	public static final DerivedStudyCharacteristic DOSING = addDerivedStudyChar("Dosing", Dosing.class);
-	public static final DerivedStudyCharacteristic DRUGS = addDerivedStudyChar("Investigational drugs", Object.class);
-	public static final DerivedStudyCharacteristic STUDYSIZE = addDerivedStudyChar("Study size", Integer.class);
-	public static final DerivedStudyCharacteristic ARMS = addDerivedStudyChar("Study Arms", Integer.class);
+
+	public String getDescription() {
+		return d_description;
+	}
+
+	public Class<?> getValueType() {
+		return d_type;
+	}	
 }

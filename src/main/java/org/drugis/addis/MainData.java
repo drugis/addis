@@ -18,7 +18,7 @@ import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.PatientGroupCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.Interval;
 
@@ -92,16 +92,16 @@ public class MainData extends ExampleData {
 		study.setEndpoints(Collections.singleton(hamd));
 		
 		// Study characteristics
-		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
-		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
-		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.INCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, 1);
+		study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"");
-		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
 		
 		// Sertraline data
 		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
@@ -137,16 +137,16 @@ public class MainData extends ExampleData {
 		study.setEndpoints(Collections.singleton(hamd));
 		
 		// Study characteristics
-		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
-		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
-		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.INCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, 1);
+		study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"");
-		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
 		
 		// Sertraline data
 		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
@@ -182,16 +182,16 @@ public class MainData extends ExampleData {
 		study.setEndpoints(Collections.singleton(hamd));
 		
 		// Study characteristics
-		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
-		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
-		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.INCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, 1);
+		study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"");
-		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
 		
 		// Sertraline data
 		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
@@ -227,16 +227,16 @@ public class MainData extends ExampleData {
 		study.setEndpoints(Collections.singleton(hamd));
 		
 		// Study characteristics
-		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
-		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
-		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.INCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, 1);
+		study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"");
-		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
 		
 		// Sertraline data
 		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
@@ -274,17 +274,17 @@ public class MainData extends ExampleData {
 		study.setEndpoints(Collections.singleton(cgis));
 		
 		// Study characteristics
-		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
-		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
-		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.INCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, 1);
+		study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"");
-		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
-		study.setCharacteristic(StudyCharacteristic.STUDY_END, new GregorianCalendar(1990, 1, 26).getTime());
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STUDY_END, new GregorianCalendar(1990, 1, 26).getTime());
 		
 		// Remeron data
 		FlexibleDose dose = new FlexibleDose(new Interval<Double>(5.0, 35.0), SIUnit.MILLIGRAMS_A_DAY);
@@ -340,17 +340,17 @@ public class MainData extends ExampleData {
 		study.setEndpoints(Collections.singleton(cgis));
 		
 		// Study characteristics
-		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
-		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
-		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.INCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, 1);
+		study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"");
-		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
-		study.setCharacteristic(StudyCharacteristic.STUDY_END, new GregorianCalendar(1992, 4, 1).getTime());
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STUDY_END, new GregorianCalendar(1992, 4, 1).getTime());
 		
 		// Remeron data
 		FlexibleDose dose = new FlexibleDose(new Interval<Double>(5.0, 35.0), SIUnit.MILLIGRAMS_A_DAY);
@@ -405,17 +405,17 @@ public class MainData extends ExampleData {
 		study.setEndpoints(Collections.singleton(hamd));
 		
 		// Study characteristics
-		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
-		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
-		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.INCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, 1);
+		study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"");
-		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
-		study.setCharacteristic(StudyCharacteristic.STUDY_END, new GregorianCalendar(2006, 2, 23).getTime());
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STUDY_END, new GregorianCalendar(2006, 2, 23).getTime());
 		
 		// Bupropion data
 		FlexibleDose dose = new FlexibleDose(new Interval<Double>(100.0, 300.0), SIUnit.MILLIGRAMS_A_DAY);

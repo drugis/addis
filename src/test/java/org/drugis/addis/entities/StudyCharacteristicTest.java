@@ -10,15 +10,15 @@ public class StudyCharacteristicTest {
 
 	@Test
 	public void testGetDescription() {
-		assertEquals("Number of study centers", StudyCharacteristic.CENTERS.getDescription());
-		for (Characteristic c : StudyCharacteristic.values()) {
+		assertEquals("Number of study centers", BasicStudyCharacteristic.CENTERS.getDescription());
+		for (Characteristic c : BasicStudyCharacteristic.values()) {
 			assertTrue(c.getDescription().length() > 0);
 		}
 	}
 	
 	@Test
 	public void testGetValueType() {
-		for (Characteristic c : StudyCharacteristic.values()) {
+		for (Characteristic c : BasicStudyCharacteristic.values()) {
 			assertNotNull(c.getValueType());
 		}
 	}

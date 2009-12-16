@@ -25,7 +25,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Characteristic;
-import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.entities.StudyCharacteristics;
 
 import com.jgoodies.binding.value.ValueModel;
 
@@ -35,7 +35,7 @@ public class StudyCharTableModel extends AbstractTableModel {
 	
 	public StudyCharTableModel(StudyListPresentationModel pm) {
 		d_pm = pm;
-		for (Characteristic c : StudyCharacteristic.values()) {
+		for (Characteristic c : StudyCharacteristics.values()) {
 			ValueModel vm = d_pm.getCharacteristicVisibleModel(c);
 			vm.addValueChangeListener(new ValueChangeListener());
 		}
@@ -48,7 +48,7 @@ public class StudyCharTableModel extends AbstractTableModel {
 
 	private int getNoVisibleCharacteristics() {
 		int visible = 0;
-		for (Characteristic c : StudyCharacteristic.values()) {
+		for (Characteristic c : StudyCharacteristics.values()) {
 			if (d_pm.getCharacteristicVisibleModel(c).booleanValue()) {
 				visible++;
 			}
@@ -88,7 +88,7 @@ public class StudyCharTableModel extends AbstractTableModel {
 	
 	private Characteristic getCharacteristic(int columnIndex) {
 		int idx = 0;
-		for (Characteristic c: StudyCharacteristic.values()) {
+		for (Characteristic c: StudyCharacteristics.values()) {
 			if (d_pm.getCharacteristicVisibleModel(c).getValue().equals(Boolean.TRUE)) {
 				++idx;
 			}

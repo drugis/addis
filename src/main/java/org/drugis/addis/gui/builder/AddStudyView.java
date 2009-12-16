@@ -40,13 +40,12 @@ import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicPatientGroup;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
-import org.drugis.addis.entities.DerivedStudyCharacteristic;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.gui.EndpointHolder;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
@@ -170,18 +169,14 @@ public class AddStudyView implements ViewBuilder {
 	private int buildCharacteristicsPart(int fullWidth, PanelBuilder builder,
 			CellConstraints cc, int row, FormLayout layout) {
 		
-		for (StudyCharacteristic c : StudyCharacteristic.values()) {
-			if ( !(c instanceof DerivedStudyCharacteristic)) { 
-				LayoutUtil.addRow(layout);
-				builder.addLabel(c.getDescription() + ":", cc.xy(1, row, "right, c"));
-				builder.add(createCharacteristicComponent(c), cc.xyw(3, row, fullWidth-4));
-				if (c.equals(StudyCharacteristic.INDICATION)) {
-					builder.add(createNewIndicationButton(), cc.xy(fullWidth, row));
-				}
-					
-				
-				row += 2;
+		for (BasicStudyCharacteristic c : BasicStudyCharacteristic.values()) {
+			LayoutUtil.addRow(layout);
+			builder.addLabel(c.getDescription() + ":", cc.xy(1, row, "right, c"));
+			builder.add(createCharacteristicComponent(c), cc.xyw(3, row, fullWidth-4));
+			if (c.equals(BasicStudyCharacteristic.INDICATION)) {
+				builder.add(createNewIndicationButton(), cc.xy(fullWidth, row));
 			}
+			row += 2;
 		}
 
 		return row;
@@ -220,9 +215,9 @@ public class AddStudyView implements ViewBuilder {
 		return btn;
 	}
 
-	private JComponent createCharacteristicComponent(StudyCharacteristic c) {
+	private JComponent createCharacteristicComponent(BasicStudyCharacteristic c) {
 		JComponent component = null;
-		if (c.equals(StudyCharacteristic.INDICATION)) {
+		if (c.equals(BasicStudyCharacteristic.INDICATION)) {
 			ArrayList<Indication> options = new ArrayList<Indication>(d_domain.getIndications());			
 			component = createOptionsComboBox(c, options.toArray());
 		} else if (c.getValueType() != null) {
@@ -278,14 +273,14 @@ public class AddStudyView implements ViewBuilder {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private JComponent createOptionsComboBox(StudyCharacteristic c, Class type) {
+	private JComponent createOptionsComboBox(BasicStudyCharacteristic c, Class type) {
 		Object[] options = null;
-		if (type.equals(StudyCharacteristic.Allocation.class)) {
-			options = StudyCharacteristic.Allocation.values();
-		} else if (type.equals(StudyCharacteristic.Blinding.class)) {
-			options = StudyCharacteristic.Blinding.values();
-		} else if (type.equals(StudyCharacteristic.Status.class)) {
-			options = StudyCharacteristic.Status.values();
+		if (type.equals(BasicStudyCharacteristic.Allocation.class)) {
+			options = BasicStudyCharacteristic.Allocation.values();
+		} else if (type.equals(BasicStudyCharacteristic.Blinding.class)) {
+			options = BasicStudyCharacteristic.Blinding.values();
+		} else if (type.equals(BasicStudyCharacteristic.Status.class)) {
+			options = BasicStudyCharacteristic.Status.values();
 		} else {
 			throw new RuntimeException("Illegal study characteristic enum type");
 		}
@@ -293,7 +288,7 @@ public class AddStudyView implements ViewBuilder {
 		return createOptionsComboBox(c, options);
 	}
 
-	private <E> JComponent createOptionsComboBox(StudyCharacteristic c, E[] options) {
+	private <E> JComponent createOptionsComboBox(BasicStudyCharacteristic c, E[] options) {
 		MutableCharacteristicHolder selectionHolder =
 			new MutableCharacteristicHolder(d_model.getBean(), c);
 		JComboBox component = AuxComponentFactory.createBoundComboBox(options, selectionHolder);

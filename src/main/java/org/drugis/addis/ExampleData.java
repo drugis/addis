@@ -35,7 +35,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
-import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Endpoint.Direction;
 import org.drugis.addis.entities.Endpoint.Type;
 
@@ -123,10 +123,10 @@ public class ExampleData {
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
 		
 		// Study characteristics
-		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
-		study.setCharacteristic(StudyCharacteristic.CENTERS, 8);
-		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.INCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, 8);
+		study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,
 				"Patients were recruited " + 
 				"through newspaper ads and referrals. Patients were " +
 				"included if they had symptoms of depression for at " +
@@ -136,7 +136,7 @@ public class ExampleData {
 				"score of two on item one HAM-D at the screening " +
 				"visit (5–14 days prior to baseline) and at entry (Day " +
 				"0).");
-		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,
 				"Patients were excluded if they had significant " + 
 				"coexisting illness, including renal, hepatic, gastroin" +
 				"testinal, cardiovascular or neurological disease; non-" +
@@ -157,14 +157,14 @@ public class ExampleData {
 				"tests (hematology, biochemistry and thyroid tests) " +
 				"were also excluded. The use of formal psychotherapy " +
 				"was not permitted for the duration of the study.");
-		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"The antidepressant and anxiolytic efficacy of the selective serotonin " +
 				"reuptake inhibitors paroxetine and fluoxetine was compared in patients " +
 				"with moderate to severe depression.");
-		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
 		Calendar startDate = Calendar.getInstance();
 		startDate.set(1991, Calendar.DECEMBER, 13, 0, 0, 0);
-		study.setCharacteristic(StudyCharacteristic.STUDY_START, startDate.getTime());
+		study.setCharacteristic(BasicStudyCharacteristic.STUDY_START, startDate.getTime());
 		
 		// Paroxetine data
 		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
@@ -209,21 +209,21 @@ public class ExampleData {
 		study.setEndpoints(Collections.singleton(hamd));
 		
 		// Study characteristics
-		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
-		study.setCharacteristic(StudyCharacteristic.CENTERS, 1);
-		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.INCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, 1);
+		study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,
 				"After a 1-week placebo wash-out, patients suffering from DSM-III " + 
 				"major depression and with a score of 18 or more on the 21-item " +
 				"Hamilton Rating Scale for Depression (HRSD) received either " +
 				"paroxetine or fluoxetine.");
-		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"To compare the efficacy and tolerability of once or twice daily " +
 				"administration of the selective serotonin reuptake inhibitors " +
 				"paroxetine and fluoxetine.");
-		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
 		// STUDY_START, STUDY_END missing
 		
 		// Paroxetine data
@@ -258,15 +258,15 @@ public class ExampleData {
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
 		
 		// Study characteristics
-		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
-		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.INCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,
 				"Psychiatric outpatients with DSM-III-R major depression or bipolar disorder (depressed).");
-		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"Comparing the efficacy and safety of sertraline with those of fluoxetine.");
-		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
 		// STUDY_START, STUDY_END missing
 		
 		// Fluoxetine data
@@ -308,10 +308,10 @@ public class ExampleData {
 		study.setEndpoints(new HashSet<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
 		
-		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"This is a fictional study that I just created because I need a three-arm study.");
-		study.setCharacteristic(StudyCharacteristic.STATUS,
-				StudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS,
+				BasicStudyCharacteristic.Status.FINISHED);
 
 		// Paroxetine data
 		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
@@ -364,10 +364,10 @@ public class ExampleData {
 		study.setEndpoints(Collections.singleton(buildEndpointCVdeath()));
 		
 		// Study characteristics
-		study.setCharacteristic(StudyCharacteristic.BLINDING, StudyCharacteristic.Blinding.DOUBLE_BLIND);
-		study.setCharacteristic(StudyCharacteristic.CENTERS, 618);
-		study.setCharacteristic(StudyCharacteristic.ALLOCATION, StudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(StudyCharacteristic.INCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, 618);
+		study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,
 				"Eligible patients were aged 18 years or older, had left-" +
 				"ventricular ejection fraction 40% or lower measured " +
 				"within the past 6 months, New York Heart Association " +
@@ -375,22 +375,22 @@ public class ExampleData {
 				"admission to hospital for a cardiac reason in the previous " +
 				"6 months), and treatment with an ACE inhibitor at a " +
 				"constant dose for 30 days or longer.");
-		study.setCharacteristic(StudyCharacteristic.EXCLUSION,
+		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,
 				"");
-		study.setCharacteristic(StudyCharacteristic.OBJECTIVE, 
+		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"Angiotensin II type 1 receptor blockers have " + 
 				"favourable effects on heamodynamic measurements, " +
 				"neurohumoral activity and left-ventricular remodelling when " +
 				"added to angiotensin-converting-enzyme (ACE) inhibitors in " +
 				"patients with chronic heart failure (CHF). We aimed to find " +
 				"out whether these drugs improve clinical outcome.");
-		study.setCharacteristic(StudyCharacteristic.STATUS, StudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
 		Calendar startDate = Calendar.getInstance();
 		startDate.set(1999, Calendar.MARCH, 1, 0, 0, 0);
-		study.setCharacteristic(StudyCharacteristic.STUDY_START, startDate.getTime());
+		study.setCharacteristic(BasicStudyCharacteristic.STUDY_START, startDate.getTime());
 		Calendar endDate = Calendar.getInstance();
 		endDate.set(2003, Calendar.MARCH, 31, 0, 0, 0);
-		study.setCharacteristic(StudyCharacteristic.STUDY_END, endDate.getTime());
+		study.setCharacteristic(BasicStudyCharacteristic.STUDY_END, endDate.getTime());
 		
 		// Candesartan data
 		FixedDose cDose = new FixedDose(32, SIUnit.MILLIGRAMS_A_DAY);

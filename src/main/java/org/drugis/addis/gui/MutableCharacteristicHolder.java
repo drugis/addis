@@ -20,18 +20,18 @@
 package org.drugis.addis.gui;
 
 import org.drugis.addis.entities.MutableStudy;
-import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 
 @SuppressWarnings("serial")
 public class MutableCharacteristicHolder extends StudyCharacteristicHolder {
-	public MutableCharacteristicHolder(MutableStudy bean, StudyCharacteristic characteristic) {
+	public MutableCharacteristicHolder(MutableStudy bean, BasicStudyCharacteristic characteristic) {
 		super(bean, characteristic);
 	}
 
 	public void setValue(Object newValue) {
 		Object oldValue = d_study.getCharacteristics().get(d_char);
-		((MutableStudy)d_study).setCharacteristic(d_char, newValue);
+		((MutableStudy)d_study).setCharacteristic((BasicStudyCharacteristic) d_char, newValue);
 		firePropertyChange("value", oldValue, newValue);
 	}
 }

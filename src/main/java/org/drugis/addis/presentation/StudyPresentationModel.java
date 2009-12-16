@@ -3,11 +3,11 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.PatientGroup;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyCharacteristic;
 import org.drugis.addis.entities.DerivedStudyCharacteristic.Dosing;
 
 import com.jgoodies.binding.PresentationModel;
@@ -55,7 +55,7 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		};
 	}
 	
-	public StudyCharacteristicHolder getCharacteristicModel(StudyCharacteristic c) {
+	public StudyCharacteristicHolder getCharacteristicModel(DerivedStudyCharacteristic c) {
 		if (c.equals(DerivedStudyCharacteristic.DOSING)) {
 			return d_doseHolder;
 		} else if (c.equals(DerivedStudyCharacteristic.DRUGS)) {
@@ -65,21 +65,26 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		} else if (c.equals(DerivedStudyCharacteristic.ARMS)) {
 			return d_armsHolder;
 		} else {
-			return new StudyCharacteristicHolder(getBean(), c);
+			throw new RuntimeException("unknown derived study characteristic");
 		}
 	}
 	
+	public StudyCharacteristicHolder getCharacteristicModel(BasicStudyCharacteristic c) {
+		return new StudyCharacteristicHolder(getBean(), c);
+	}
+	
+	
 	public boolean isStudyFinished() {
-		Object status = getBean().getCharacteristics().get(StudyCharacteristic.STATUS);
+		Object status = getBean().getCharacteristics().get(BasicStudyCharacteristic.STATUS);
 		if (status != null) {
-			return status.equals(StudyCharacteristic.Status.FINISHED);
+			return status.equals(BasicStudyCharacteristic.Status.FINISHED);
 		}
 		return false;
 	}
 	
 	private abstract class ListeningCharacteristicHolder extends StudyCharacteristicHolder implements PropertyChangeListener {
 
-		public ListeningCharacteristicHolder(Study study, StudyCharacteristic characteristic) {
+		public ListeningCharacteristicHolder(Study study, DerivedStudyCharacteristic characteristic) {
 			super(study, characteristic);
 			study.addPropertyChangeListener(this);
 			for (PatientGroup p : study.getPatientGroups()) {

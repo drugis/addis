@@ -13,7 +13,8 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.StudyCharacteristics;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,7 +39,7 @@ public class SelectableStudyCharTableModelTest {
 	
 	@Test
 	public void testGetColumnCount() {
-		assertEquals(StudyCharacteristic.values().size() + 2, d_model.getColumnCount());
+		assertEquals(StudyCharacteristics.values().size() + 2, d_model.getColumnCount());
 	}
 	
 	@Test
@@ -48,7 +49,7 @@ public class SelectableStudyCharTableModelTest {
 			assertTrue((Boolean)d_model.getValueAt(row, 0));			
 			assertEquals(s, d_model.getValueAt(row, 1));
 			int column = 2;
-			for (Characteristic c : StudyCharacteristic.values()) {
+			for (Characteristic c : BasicStudyCharacteristic.values()) {
 				assertEquals(s.getCharacteristic(c), d_model.getValueAt(row, column));
 				++column;
 			}
@@ -61,7 +62,7 @@ public class SelectableStudyCharTableModelTest {
 		assertEquals("Study ID", d_model.getColumnName(1));
 		assertEquals("", d_model.getColumnName(0));
 		int column = 2;
-		for (Characteristic c : StudyCharacteristic.values()) {
+		for (Characteristic c : BasicStudyCharacteristic.values()) {
 			assertEquals(c.getDescription(), d_model.getColumnName(column));
 			++column;
 		}

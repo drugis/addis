@@ -82,7 +82,7 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 
 	public BasicStudy(String id, Indication i) {
 		d_id = id;
-		d_chars.put(StudyCharacteristic.INDICATION, i);
+		d_chars.put(BasicStudyCharacteristic.INDICATION, i);
 		setEndpoints(new HashSet<Endpoint>());
 		setPatientGroups(new ArrayList<BasicPatientGroup>());
 	}
@@ -120,11 +120,11 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 	public Set<Entity> getDependencies() {
 		HashSet<Entity> dep = new HashSet<Entity>(getDrugs());
 		dep.addAll(getEndpoints());
-		dep.add((Entity) getCharacteristic(StudyCharacteristic.INDICATION));
+		dep.add((Entity) getCharacteristic(BasicStudyCharacteristic.INDICATION));
 		return dep;
 	}
 	
-	public void setCharacteristic(StudyCharacteristic c, Object val) {
+	public void setCharacteristic(BasicStudyCharacteristic c, Object val) {
 		d_chars.put(c, val);
 	}
 	

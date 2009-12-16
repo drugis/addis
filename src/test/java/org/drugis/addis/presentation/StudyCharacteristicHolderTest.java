@@ -27,7 +27,7 @@ import java.util.HashMap;
 
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CharacteristicsMap;
 import org.drugis.addis.gui.MutableCharacteristicHolder;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
@@ -38,11 +38,11 @@ import org.junit.Test;
 public class StudyCharacteristicHolderTest {
 	private BasicStudy d_study;
 	private StudyCharacteristicHolder d_holder;
-	private StudyCharacteristic d_char;
+	private BasicStudyCharacteristic d_char;
 	
 	@Before
 	public void setUp() {
-		d_char = StudyCharacteristic.INDICATION;
+		d_char = BasicStudyCharacteristic.INDICATION;
 		d_study = new BasicStudy("Test", new Indication(0L, ""));
 		d_holder = new MutableCharacteristicHolder(d_study, d_char);
 	}
@@ -54,7 +54,7 @@ public class StudyCharacteristicHolderTest {
 	
 	@Test
 	public void testSetValueTriggersCharacteristicsChanged() {
-		HashMap<StudyCharacteristic, Object> newVal = new HashMap<StudyCharacteristic, Object>();
+		HashMap<BasicStudyCharacteristic, Object> newVal = new HashMap<BasicStudyCharacteristic, Object>();
 		Indication indication = new Indication(1L, "Indication");
 		newVal.put(d_char, indication);
 		PropertyChangeListener l =

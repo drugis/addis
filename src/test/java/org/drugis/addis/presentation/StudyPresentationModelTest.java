@@ -13,7 +13,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
-import org.drugis.addis.entities.StudyCharacteristic;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -32,12 +32,12 @@ public class StudyPresentationModelTest {
 	
 	@Test
 	public void testIsStudyCompleted() {
-		d_study.getCharacteristics().put(StudyCharacteristic.STATUS,
-				StudyCharacteristic.Status.FINISHED);		
+		d_study.getCharacteristics().put(BasicStudyCharacteristic.STATUS,
+				BasicStudyCharacteristic.Status.FINISHED);		
 		assertEquals(true, d_model.isStudyFinished());
 		
-		d_study.getCharacteristics().put(StudyCharacteristic.STATUS,
-				StudyCharacteristic.Status.ONGOING);
+		d_study.getCharacteristics().put(BasicStudyCharacteristic.STATUS,
+				BasicStudyCharacteristic.Status.ONGOING);
 		assertEquals(false, d_model.isStudyFinished());
 	}
 	

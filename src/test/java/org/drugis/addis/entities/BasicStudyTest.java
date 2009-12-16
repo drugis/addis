@@ -161,7 +161,7 @@ public class BasicStudyTest {
 		
 		Set<Entity> dep = new HashSet<Entity>(s.getEndpoints());
 		dep.addAll(s.getDrugs());
-		dep.add((Indication) s.getCharacteristic(StudyCharacteristic.INDICATION));
+		dep.add((Indication) s.getCharacteristic(BasicStudyCharacteristic.INDICATION));
 		assertEquals(dep, s.getDependencies());
 	}	
 	
@@ -179,7 +179,7 @@ public class BasicStudyTest {
 				CharacteristicsMap.PROPERTY_CONTENTS,null, null);		
 		study.getCharacteristics().addPropertyChangeListener(listener);
 
-		study.setCharacteristic(StudyCharacteristic.CENTERS, new Integer(2));
+		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, new Integer(2));
 		verify(listener);
 	}
 	
