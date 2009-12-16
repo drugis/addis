@@ -58,7 +58,7 @@ public class FrequencyMeasurementTest {
 	public void testToString() {
 		d_meas.setFrequency(d_cv.getCategories()[0], 25);
 		d_meas.setFrequency(d_cv.getCategories()[1], 50);
-		String expected = "Female = 50 / Male = 25";
+		String expected = "Male = 25 / Female = 50";
 		assertEquals(expected, d_meas.toString());
 	}
 	

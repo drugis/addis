@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.drugis.addis.entities.Endpoint.Type;
 
@@ -78,11 +77,11 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	@Override
 	public String toString() {
 		String ret = new String();
-		for (Entry<String, Integer> entry : d_frequencies.entrySet()) {
+		for (String cat : d_cv.getCategories()) {
 			if (!ret.equals("")) {
 				ret += " / ";
 			}
-			ret += entry.getKey() + " = " + entry.getValue();
+			ret += cat + " = " + d_frequencies.get(cat);
 		}
 		return ret;
 	}
