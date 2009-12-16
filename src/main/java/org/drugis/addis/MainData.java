@@ -15,6 +15,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
@@ -420,8 +421,10 @@ public class MainData extends ExampleData {
 		// Bupropion data
 		FlexibleDose dose = new FlexibleDose(new Interval<Double>(100.0, 300.0), SIUnit.MILLIGRAMS_A_DAY);
 		BasicArm bupr = new BasicArm(Bupropion, dose, 165);
-		bupr.setCharacteristic(PopulationCharacteristic.MALE, 88);
-		bupr.setCharacteristic(PopulationCharacteristic.FEMALE, 77);
+		FrequencyMeasurement frequencyMeasurement = new FrequencyMeasurement(buildGenderVariable());
+		frequencyMeasurement.setFrequency("Male", 88);
+		frequencyMeasurement.setFrequency("Female", 77);
+		bupr.setCharacteristic(PopulationCharacteristic.GENDER, frequencyMeasurement);
 		bupr.setCharacteristic(PopulationCharacteristic.AGE, new BasicContinuousMeasurement(36.8, 9.28, 165));
 		
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(bupr);
@@ -432,8 +435,10 @@ public class MainData extends ExampleData {
 		// Placebo data
 		FixedDose fixedDose = new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY);
 		BasicArm plac = new BasicArm(placebo, fixedDose, 157);
-		plac.setCharacteristic(PopulationCharacteristic.MALE, 88);
-		plac.setCharacteristic(PopulationCharacteristic.FEMALE, 69);
+		frequencyMeasurement = new FrequencyMeasurement(buildGenderVariable());
+		frequencyMeasurement.setFrequency("Male", 88);
+		frequencyMeasurement.setFrequency("Female", 69);
+		plac.setCharacteristic(PopulationCharacteristic.GENDER, frequencyMeasurement);
 		plac.setCharacteristic(PopulationCharacteristic.AGE, new BasicContinuousMeasurement(36.0, 8.91, 157));
 		
 		pHamd = (BasicRateMeasurement)hamd.buildMeasurement(plac);

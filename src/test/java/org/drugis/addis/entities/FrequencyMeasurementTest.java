@@ -53,4 +53,59 @@ public class FrequencyMeasurementTest {
 	public void testGetDependencies() {
 		assertEquals(Collections.singleton(d_cv), d_meas.getDependencies());
 	}
+	
+	@Test
+	public void testToString() {
+		d_meas.setFrequency(d_cv.getCategories()[0], 25);
+		d_meas.setFrequency(d_cv.getCategories()[1], 50);
+		String expected = "Female = 50 / Male = 25";
+		assertEquals(expected, d_meas.toString());
+	}
+	
+	@Test
+	public void testDeepCopy() {
+		d_meas.setFrequency(d_cv.getCategories()[0], 25);		
+		FrequencyMeasurement m = d_meas.deepCopy();
+		assertTrue(d_meas.getCategoricalVariable() == m.getCategoricalVariable());
+		assertEquals(new Integer(25), m.getFrequency(d_cv.getCategories()[0]));
+		assertEquals(new Integer(0), m.getFrequency(d_cv.getCategories()[1]));		
+		
+		d_meas.setFrequency(d_cv.getCategories()[0], 50);
+		assertEquals(new Integer(25), m.getFrequency(d_cv.getCategories()[0]));		
+	}
+	
+	@Test
+	public void testEquals() {
+		FrequencyMeasurement m = d_meas.deepCopy();
+		d_meas.setFrequency(d_cv.getCategories()[0], 25);
+		d_meas.setFrequency(d_cv.getCategories()[1], 50);
+		
+		assertFalse(d_meas.equals(m));
+		m = d_meas.deepCopy();
+		assertEquals(d_meas, m);
+		
+		assertFalse(d_meas.equals(null));
+		assertFalse(d_meas.equals(""));
+	}
+	
+	@Test
+	public void testGetCategoricalVariable() {
+		assertEquals(d_cv, d_meas.getCategoricalVariable());
+	}
+	
+	@Test
+	public void testAdd() {
+		FrequencyMeasurement m = d_meas.deepCopy();
+		d_meas.setFrequency(d_cv.getCategories()[0], 25);
+		d_meas.setFrequency(d_cv.getCategories()[1], 20);
+	
+		m.add(d_meas);
+		assertEquals(new Integer(25), m.getFrequency(d_cv.getCategories()[0]));
+		assertEquals(new Integer(20), m.getFrequency(d_cv.getCategories()[1]));
+		
+		m.add(d_meas);
+		assertEquals(new Integer(50), m.getFrequency(d_cv.getCategories()[0]));
+		assertEquals(new Integer(40), m.getFrequency(d_cv.getCategories()[1]));
+		
+	}
 }

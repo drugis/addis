@@ -5,13 +5,17 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
+import java.util.Collections;
 
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicStudy;
+import org.drugis.addis.entities.CategoricalVariable;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.common.Interval;
@@ -66,13 +70,15 @@ public class StudyPresentationModelTest {
 	
 	@Test
 	public void testDrugsUpdatesIfChanged() {
+		Drug d = new Drug("testDrug","0A");
 		StudyCharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.DRUGS);
-		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, "[testDrug]");
+		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, Collections.singleton(d));
 		model.addPropertyChangeListener(mock);
-		d_study.addArm(new BasicArm(new Drug("testDrug","0A"), null, 0));
+		
+		d_study.addArm(new BasicArm(d, null, 0));
 
 		verify(mock);
-		assertEquals("[testDrug]", model.getValue());	
+		assertEquals(Collections.singleton(d), model.getValue());	
 	}
 	
 	@Test
@@ -84,5 +90,21 @@ public class StudyPresentationModelTest {
 		
 		verify(mock);
 		assertEquals(DerivedStudyCharacteristic.Dosing.FLEXIBLE, model.getValue());
+	}
+	
+	@Test
+	public void testPopulationCharacteristicUpdatesOnArmAdd() {
+		FrequencyMeasurement freqMeas = new FrequencyMeasurement(new CategoricalVariable("Gender", new String[]{"Male", "Female"}));
+		freqMeas.setFrequency("Male", 55);
+		freqMeas.setFrequency("Female", 50);
+		
+		StudyCharacteristicHolder model = d_model.getCharacteristicModel(PopulationCharacteristic.GENDER);
+		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, freqMeas);
+		model.addPropertyChangeListener(mock);
+		BasicArm arm = new BasicArm(null, null, 105);
+		arm.setCharacteristic(PopulationCharacteristic.GENDER, freqMeas);
+		d_study.addArm(arm);
+		verify(mock);
+		assertEquals(freqMeas, model.getValue());
 	}	
 }

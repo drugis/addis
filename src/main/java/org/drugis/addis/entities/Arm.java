@@ -30,5 +30,12 @@ public interface Arm extends Entity {
 	public Integer getSize();
 	
 	public CharacteristicsMap getCharacteristics();
+	
+	/**
+	 * Gets the characteristic.
+	 * 
+	 * @param c
+	 * @return A characteristic, or null if its not set.
+	 */
 	public Object getCharacteristic(Characteristic c);
 }

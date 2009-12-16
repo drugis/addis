@@ -129,7 +129,7 @@ public class StudyArmsView implements ViewBuilder {
 		for (PopulationCharacteristic c : PopulationCharacteristic.values()) {
 			Object val = g.getCharacteristic(c);
 			if (val != null)
-				ret += c.getDescription() + "=" + val + "<br>";			
+				ret += c.getDescription() + ": " + val + "<br>";			
 		}
 		ret += "</html>";
 		return ret;

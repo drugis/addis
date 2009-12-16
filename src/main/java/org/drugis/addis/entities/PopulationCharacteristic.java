@@ -3,10 +3,8 @@ package org.drugis.addis.entities;
 
 public enum PopulationCharacteristic implements Characteristic {
 
-	MALE("Male subjects", Integer.class),
-	FEMALE("Female subjects", Integer.class),
-//	GENDER("", Gender.class)
-	AGE("Age", BasicContinuousMeasurement.class);
+	GENDER("Genders", FrequencyMeasurement.class),
+	AGE("Age distribution", BasicContinuousMeasurement.class);
 
 	private String d_description;
 	private Class<?> d_type;

@@ -20,6 +20,7 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -51,8 +52,8 @@ public class BasicArmTest {
 	
 	@Test
 	public void testSetCharacteristic() {
-		d_pg.setCharacteristic(PopulationCharacteristic.MALE, 20);
-		d_pg.getCharacteristics().containsKey(PopulationCharacteristic.MALE);
-		assertEquals(20, d_pg.getCharacteristic(PopulationCharacteristic.MALE));
+		d_pg.setCharacteristic(PopulationCharacteristic.AGE, new BasicContinuousMeasurement(0.0, 1.0, 5));
+		assertTrue(d_pg.getCharacteristics().containsKey(PopulationCharacteristic.AGE));
+		assertEquals((new BasicContinuousMeasurement(0.0, 1.0, 5)).toString(), d_pg.getCharacteristic(PopulationCharacteristic.AGE).toString());
 	}
 }
