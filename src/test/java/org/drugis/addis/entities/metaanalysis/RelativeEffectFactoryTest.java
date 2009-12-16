@@ -8,7 +8,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.OddsRatio;
-import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.RiskDifference;
@@ -26,8 +26,8 @@ public class RelativeEffectFactoryTest {
 		Endpoint e = ExampleData.buildEndpointCgi();
 		Drug base = ExampleData.buildDrugParoxetine();
 		Drug subj = ExampleData.buildDrugFluoxetine();
-		PatientGroup pBase = s.getPatientGroups().get(0);
-		PatientGroup pSubj = s.getPatientGroups().get(1);
+		Arm pBase = s.getArms().get(0);
+		Arm pSubj = s.getArms().get(1);
 		// sanity check:
 		assertEquals(base, pBase.getDrug());
 		assertEquals(subj, pSubj.getDrug());
@@ -59,8 +59,8 @@ public class RelativeEffectFactoryTest {
 		Endpoint e = ExampleData.buildEndpointCgi();
 		Drug base = ExampleData.buildDrugParoxetine();
 		Drug subj = ExampleData.buildDrugFluoxetine();
-		PatientGroup pBase = s.getPatientGroups().get(0);
-		PatientGroup pSubj = s.getPatientGroups().get(1);
+		Arm pBase = s.getArms().get(0);
+		Arm pSubj = s.getArms().get(1);
 		// sanity check:
 		assertEquals(base, pBase.getDrug());
 		assertEquals(subj, pSubj.getDrug());
@@ -92,8 +92,8 @@ public class RelativeEffectFactoryTest {
 		Endpoint e = ExampleData.buildEndpointHamd();
 		Drug base = ExampleData.buildDrugParoxetine();
 		Drug subj = ExampleData.buildDrugFluoxetine();
-		PatientGroup pBase = s.getPatientGroups().get(0);
-		PatientGroup pSubj = s.getPatientGroups().get(1);
+		Arm pBase = s.getArms().get(0);
+		Arm pSubj = s.getArms().get(1);
 		// sanity check:
 		assertEquals(base, pBase.getDrug());
 		assertEquals(subj, pSubj.getDrug());
@@ -125,8 +125,8 @@ public class RelativeEffectFactoryTest {
 		Endpoint e = ExampleData.buildEndpointHamd();
 		Drug base = ExampleData.buildDrugParoxetine();
 		Drug subj = ExampleData.buildDrugFluoxetine();
-		PatientGroup pBase = s.getPatientGroups().get(0);
-		PatientGroup pSubj = s.getPatientGroups().get(1);
+		Arm pBase = s.getArms().get(0);
+		Arm pSubj = s.getArms().get(1);
 		// sanity check:
 		assertEquals(base, pBase.getDrug());
 		assertEquals(subj, pSubj.getDrug());
@@ -158,8 +158,8 @@ public class RelativeEffectFactoryTest {
 		Endpoint e = ExampleData.buildEndpointHamd();
 		Drug base = ExampleData.buildDrugParoxetine();
 		Drug subj = ExampleData.buildDrugFluoxetine();
-		PatientGroup pBase = s.getPatientGroups().get(0);
-		PatientGroup pSubj = s.getPatientGroups().get(1);
+		Arm pBase = s.getArms().get(0);
+		Arm pSubj = s.getArms().get(1);
 		// sanity check:
 		assertEquals(base, pBase.getDrug());
 		assertEquals(subj, pSubj.getDrug());
@@ -191,8 +191,8 @@ public class RelativeEffectFactoryTest {
 		Endpoint e = ExampleData.buildEndpointHamd();
 		Drug base = ExampleData.buildDrugParoxetine();
 		Drug subj = ExampleData.buildDrugFluoxetine();
-		PatientGroup pBase = s.getPatientGroups().get(0);
-		PatientGroup pSubj = s.getPatientGroups().get(1);
+		Arm pBase = s.getArms().get(0);
+		Arm pSubj = s.getArms().get(1);
 		// sanity check:
 		assertEquals(base, pBase.getDrug());
 		assertEquals(subj, pSubj.getDrug());
@@ -224,8 +224,8 @@ public class RelativeEffectFactoryTest {
 		Endpoint e = ExampleData.buildEndpointHamd();
 		Drug base = ExampleData.buildDrugParoxetine();
 		Drug subj = ExampleData.buildDrugFluoxetine();
-		PatientGroup pBase = s.getPatientGroups().get(0);
-		PatientGroup pSubj = s.getPatientGroups().get(1);
+		Arm pBase = s.getArms().get(0);
+		Arm pSubj = s.getArms().get(1);
 		// sanity check:
 		assertEquals(base, pBase.getDrug());
 		assertEquals(subj, pSubj.getDrug());

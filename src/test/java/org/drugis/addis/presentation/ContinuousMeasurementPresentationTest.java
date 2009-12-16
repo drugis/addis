@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.BasicContinuousMeasurement;
-import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicArm;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,12 +15,12 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 public class ContinuousMeasurementPresentationTest {
 	private BasicContinuousMeasurement d_basicContinuousMeasurement;
-	private BasicPatientGroup d_pg;
+	private BasicArm d_pg;
 	private ContinuousMeasurementPresentation d_pres;
 	
 	@Before
 	public void setUp() {
-		d_pg = new BasicPatientGroup(null, null, 1);
+		d_pg = new BasicArm(null, null, 1);
 		d_basicContinuousMeasurement = new BasicContinuousMeasurement(0.0, 0.0, d_pg.getSize());
 		d_pres = new ContinuousMeasurementPresentation(d_basicContinuousMeasurement);
 	}

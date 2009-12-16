@@ -39,11 +39,11 @@ import org.junit.Test;
 
 public class BasicStudyTest {
 	
-	private BasicPatientGroup d_pg;
+	private BasicArm d_pg;
 
 	@Before
 	public void setUp() {
-		d_pg = new BasicPatientGroup(null, null, 0);
+		d_pg = new BasicArm(null, null, 0);
 	}
 	
 	@Test
@@ -64,22 +64,22 @@ public class BasicStudyTest {
 	}
 	
 	@Test
-	public void testSetPatientGroups() {
-		List<BasicPatientGroup> list = Collections.singletonList(d_pg);
-		JUnitUtil.testSetter(new BasicStudy("X", new Indication(0L, "")), Study.PROPERTY_PATIENTGROUPS, Collections.EMPTY_LIST, 
+	public void testSetArms() {
+		List<BasicArm> list = Collections.singletonList(d_pg);
+		JUnitUtil.testSetter(new BasicStudy("X", new Indication(0L, "")), Study.PROPERTY_ARMS, Collections.EMPTY_LIST, 
 				list);
 	}
 	
 	@Test
-	public void testInitialPatientGroups() {
+	public void testInitialArms() {
 		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
-		assertNotNull(study.getPatientGroups());
-		assertTrue(study.getPatientGroups().isEmpty());
+		assertNotNull(study.getArms());
+		assertTrue(study.getArms().isEmpty());
 	}
 	
 	@Test
-	public void testAddPatientGroup() {
-		JUnitUtil.testAdder(new BasicStudy("X", new Indication(0L, "")), Study.PROPERTY_PATIENTGROUPS, "addPatientGroup", d_pg);
+	public void testAddArm() {
+		JUnitUtil.testAdder(new BasicStudy("X", new Indication(0L, "")), Study.PROPERTY_ARMS, "addArm", d_pg);
 	}
 	
 	@Test
@@ -101,7 +101,7 @@ public class BasicStudyTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetMeasurementThrowsException1() {
 		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
-		study.getMeasurement(new Endpoint("E", Type.RATE), new BasicPatientGroup(null, null, 100));
+		study.getMeasurement(new Endpoint("E", Type.RATE), new BasicArm(null, null, 100));
 	}
 	
 	@Test
@@ -109,20 +109,20 @@ public class BasicStudyTest {
 		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
 		Endpoint endpoint = new Endpoint("e", Type.RATE);
 		study.addEndpoint(endpoint);
-		BasicPatientGroup group = new BasicPatientGroup(null, null, 100);
-		study.addPatientGroup(group);
+		BasicArm group = new BasicArm(null, null, 100);
+		study.addArm(group);
 		BasicRateMeasurement m = new BasicRateMeasurement(0, group.getSize());
 		m.setRate(12);
-		study.setMeasurement(study.getEndpoints().iterator().next(), study.getPatientGroups().get(0), m);
+		study.setMeasurement(study.getEndpoints().iterator().next(), study.getArms().get(0), m);
 		
-		assertEquals(m, study.getMeasurement(study.getEndpoints().iterator().next(), study.getPatientGroups().get(0)));
+		assertEquals(m, study.getMeasurement(study.getEndpoints().iterator().next(), study.getArms().get(0)));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetMeasurementThrowsException1() {
 		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("E", Type.RATE);
-		BasicPatientGroup pg = new BasicPatientGroup(null, null, 100);
+		BasicArm pg = new BasicArm(null, null, 100);
 		study.setMeasurement(e, pg, 
 				new BasicRateMeasurement(100, pg.getSize()));
 	}
@@ -132,13 +132,13 @@ public class BasicStudyTest {
 		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("e", Type.RATE);
 		study.addEndpoint(e);
-		BasicPatientGroup group = new BasicPatientGroup(null, null, 100);
-		study.addPatientGroup(group);
+		BasicArm group = new BasicArm(null, null, 100);
+		study.addArm(group);
 		
 		BasicMeasurement m = new BasicRateMeasurement(12, group.getSize());
 		
 		study.getEndpoints().iterator().next().setType(Type.CONTINUOUS);
-		study.setMeasurement(study.getEndpoints().iterator().next(), study.getPatientGroups().get(0), m);
+		study.setMeasurement(study.getEndpoints().iterator().next(), study.getArms().get(0), m);
 	}
 	
 	
@@ -185,11 +185,11 @@ public class BasicStudyTest {
 	
 	@Test
 	public void testGetSampleSize() {
-		BasicPatientGroup pg1 = new BasicPatientGroup(null, null, 25);
-		BasicPatientGroup pg2 = new BasicPatientGroup(null, null, 35);
+		BasicArm pg1 = new BasicArm(null, null, 25);
+		BasicArm pg2 = new BasicArm(null, null, 35);
 		BasicStudy s = new BasicStudy("s1", new Indication(01L, "i"));
-		s.addPatientGroup(pg1);
-		s.addPatientGroup(pg2);
+		s.addArm(pg1);
+		s.addArm(pg2);
 		assertEquals(60, s.getSampleSize());
 	}
 }

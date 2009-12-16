@@ -121,11 +121,11 @@ public class RiskRatioTest {
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize) {
 		BasicStudy s = new BasicStudy(studyName, d_ind);
 		s.addEndpoint(d_ep);
-		BasicPatientGroup g_fluox = new BasicPatientGroup(d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), fluoxSize);
-		BasicPatientGroup g_parox = new BasicPatientGroup(d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), sertraSize);		
+		BasicArm g_fluox = new BasicArm(d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), fluoxSize);
+		BasicArm g_parox = new BasicArm(d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), sertraSize);		
 		
-		s.addPatientGroup(g_parox);
-		s.addPatientGroup(g_fluox);
+		s.addArm(g_parox);
+		s.addArm(g_fluox);
 		
 		BasicRateMeasurement m_parox = (BasicRateMeasurement) d_ep.buildMeasurement(g_parox);
 		BasicRateMeasurement m_fluox = (BasicRateMeasurement) d_ep.buildMeasurement(g_fluox);

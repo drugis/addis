@@ -21,27 +21,27 @@ package org.drugis.addis.gui;
 
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.gui.builder.StudyAddPatientGroupView;
-import org.drugis.addis.presentation.StudyAddPatientGroupPresentation;
+import org.drugis.addis.gui.builder.StudyAddArmView;
+import org.drugis.addis.presentation.StudyAddArmPresentation;
 import org.drugis.common.gui.OkCancelDialog;
 
 @SuppressWarnings("serial")
-public class StudyAddPatientGroupDialog extends OkCancelDialog {
+public class StudyAddArmDialog extends OkCancelDialog {
 
 	private Domain d_domain;
 	private BasicStudy d_study;
-	private StudyAddPatientGroupView d_view;
+	private StudyAddArmView d_view;
 	private Main d_main;
-	private StudyAddPatientGroupPresentation d_pm;
+	private StudyAddArmPresentation d_pm;
 
-	public StudyAddPatientGroupDialog(Main main, Domain domain, BasicStudy study) {
+	public StudyAddArmDialog(Main main, Domain domain, BasicStudy study) {
 		super(main, "Add Patient Group to Study");
 		d_main = main;
 		this.setModal(true);
 		d_domain = domain;
 		d_study = study;
-		d_pm = new StudyAddPatientGroupPresentation(d_study, main.getPresentationModelFactory());
-		d_view = new StudyAddPatientGroupView(d_pm, d_domain, d_okButton);
+		d_pm = new StudyAddArmPresentation(d_study, main.getPresentationModelFactory());
+		d_view = new StudyAddArmView(d_pm, d_domain, d_okButton);
 		getUserPanel().removeAll();
 		getUserPanel().add(d_view.buildPanel());
 		pack();

@@ -37,17 +37,17 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 		private static final long serialVersionUID = 6310789667384578005L;
 		
 		private Endpoint d_endpoint;
-		private PatientGroup d_patientGroup;
+		private Arm d_arm;
 		
-		public MeasurementKey(Endpoint e, PatientGroup g) {
+		public MeasurementKey(Endpoint e, Arm g) {
 			d_endpoint = e;
-			d_patientGroup = g;
+			d_arm = g;
 		}
 		
 		public boolean equals(Object o) {
 			if (o instanceof MeasurementKey) { 
 				MeasurementKey other = (MeasurementKey)o;
-				return d_endpoint.equals(other.d_endpoint) && d_patientGroup.equals(other.d_patientGroup);
+				return d_endpoint.equals(other.d_endpoint) && d_arm.equals(other.d_arm);
 			}
 			return false;
 		}
@@ -55,7 +55,7 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 		public int hashCode() {
 			int code = 1;
 			code = code * 31 + d_endpoint.hashCode();
-			code = code * 31 + d_patientGroup.hashCode();
+			code = code * 31 + d_arm.hashCode();
 			return code;
 		}
 		
@@ -63,14 +63,14 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 			return d_endpoint;
 		}
 		
-		public PatientGroup getPatientGroup() {
-			return d_patientGroup;
+		public Arm getArm() {
+			return d_arm;
 		}
 	}
 
 	private static final long serialVersionUID = 532314508658928979L;
 	
-	private List<BasicPatientGroup> d_patientGroups = new ArrayList<BasicPatientGroup>();
+	private List<BasicArm> d_arms = new ArrayList<BasicArm>();
 
 	private String d_id;
 
@@ -84,34 +84,34 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 		d_id = id;
 		d_chars.put(BasicStudyCharacteristic.INDICATION, i);
 		setEndpoints(new HashSet<Endpoint>());
-		setPatientGroups(new ArrayList<BasicPatientGroup>());
+		setArms(new ArrayList<BasicArm>());
 	}
 
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
 		in.defaultReadObject();
 	}
 	
-	public List<BasicPatientGroup> getPatientGroups() {
-		return d_patientGroups;
+	public List<BasicArm> getArms() {
+		return d_arms;
 	}
 
-	public void setPatientGroups(List<BasicPatientGroup> patientGroups) {
-		List<BasicPatientGroup> oldVal = d_patientGroups;
-		d_patientGroups = patientGroups;
+	public void setArms(List<BasicArm> arms) {
+		List<BasicArm> oldVal = d_arms;
+		d_arms = arms;
 		updateMeasurements();
 		
-		firePropertyChange(PROPERTY_PATIENTGROUPS, oldVal, d_patientGroups);
+		firePropertyChange(PROPERTY_ARMS, oldVal, d_arms);
 	}
 	
-	public void addPatientGroup(BasicPatientGroup group) {
-		List<BasicPatientGroup> newVal = new ArrayList<BasicPatientGroup>(d_patientGroups);
+	public void addArm(BasicArm group) {
+		List<BasicArm> newVal = new ArrayList<BasicArm>(d_arms);
 		newVal.add(group);
-		setPatientGroups(newVal);
+		setArms(newVal);
 	}
 	
 	public Set<Drug> getDrugs() {
 		Set<Drug> drugs = new HashSet<Drug>();
-		for (BasicPatientGroup g : getPatientGroups()) {
+		for (BasicArm g : getArms()) {
 			drugs.add(g.getDrug());
 		}
 		return drugs;
@@ -168,22 +168,22 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 		return getId().compareTo(other.getId());
 	}
 
-	public Measurement getMeasurement(Endpoint e, PatientGroup g) {
+	public Measurement getMeasurement(Endpoint e, Arm g) {
 			forceLegalArguments(e, g);
 			Measurement measurement = d_measurements.get(new BasicStudy.MeasurementKey(e, g));
 			return measurement;
 		}
 
-	protected void forceLegalArguments(Endpoint e, PatientGroup g) {
-		if (!getPatientGroups().contains(g)) {
-			throw new IllegalArgumentException("PatientGroup " + g + " not part of this study.");
+	protected void forceLegalArguments(Endpoint e, Arm g) {
+		if (!getArms().contains(g)) {
+			throw new IllegalArgumentException("Arm " + g + " not part of this study.");
 		}
 		if (!getEndpoints().contains(e)) {
 			throw new IllegalArgumentException("Endpoint " + e + " not measured by this study.");
 		}
 	}
 
-	public void setMeasurement(Endpoint e, PatientGroup g, Measurement m) {
+	public void setMeasurement(Endpoint e, Arm g, Measurement m) {
 		forceLegalArguments(e, g);
 		if (!m.isOfType(e.getType())) {
 			throw new IllegalArgumentException("Measurement does not conform with Endpoint");
@@ -218,7 +218,7 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 
 	protected void updateMeasurements() {
 		for (Endpoint e : d_endpoints) {
-			for (PatientGroup g : getPatientGroups()) {
+			for (Arm g : getArms()) {
 				BasicStudy.MeasurementKey key = new BasicStudy.MeasurementKey(e, g);
 				if (d_measurements.get(key) == null) {
 					d_measurements.put(key, e.buildMeasurement(g));
@@ -233,7 +233,7 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 
 	public int getSampleSize() {
 		int s = 0;
-		for (PatientGroup pg : d_patientGroups)
+		for (Arm pg : d_arms)
 			s += pg.getSize();
 		return s;
 	}

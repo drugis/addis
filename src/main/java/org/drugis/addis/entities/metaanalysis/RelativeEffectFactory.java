@@ -6,7 +6,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OddsRatio;
-import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.RiskDifference;
@@ -105,7 +105,7 @@ public class RelativeEffectFactory {
 	}
 
 	private static Measurement findMeasurement(Study s, Endpoint e, Drug drug) {
-		for (PatientGroup g : s.getPatientGroups()) {
+		for (Arm g : s.getArms()) {
 			if (g.getDrug().equals(drug)) {
 				return s.getMeasurement(e, g);
 			}

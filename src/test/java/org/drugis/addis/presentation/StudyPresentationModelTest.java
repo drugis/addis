@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
 
-import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.Drug;
@@ -47,7 +47,7 @@ public class StudyPresentationModelTest {
 		assertEquals(new Integer(0), model.getValue());
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, new Integer(1));
 		model.addPropertyChangeListener(mock);
-		d_study.addPatientGroup(new BasicPatientGroup(null, null, 1));
+		d_study.addArm(new BasicArm(null, null, 1));
 
 		verify(mock);
 		assertEquals(new Integer(1), model.getValue());
@@ -58,7 +58,7 @@ public class StudyPresentationModelTest {
 		StudyCharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.STUDYSIZE);
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, new Integer(100));
 		model.addPropertyChangeListener(mock);
-		d_study.addPatientGroup(new BasicPatientGroup(null, null, 100));
+		d_study.addArm(new BasicArm(null, null, 100));
 
 		verify(mock);
 		assertEquals(new Integer(100), model.getValue());		
@@ -69,7 +69,7 @@ public class StudyPresentationModelTest {
 		StudyCharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.DRUGS);
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, "[testDrug]");
 		model.addPropertyChangeListener(mock);
-		d_study.addPatientGroup(new BasicPatientGroup(new Drug("testDrug","0A"), null, 0));
+		d_study.addArm(new BasicArm(new Drug("testDrug","0A"), null, 0));
 
 		verify(mock);
 		assertEquals("[testDrug]", model.getValue());	
@@ -80,7 +80,7 @@ public class StudyPresentationModelTest {
 		StudyCharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.DOSING);
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, DerivedStudyCharacteristic.Dosing.FLEXIBLE);
 		model.addPropertyChangeListener(mock);
-		d_study.addPatientGroup(new BasicPatientGroup(null, new FlexibleDose(new Interval<Double>(1d,10d), SIUnit.MILLIGRAMS_A_DAY), 0));
+		d_study.addArm(new BasicArm(null, new FlexibleDose(new Interval<Double>(1d,10d), SIUnit.MILLIGRAMS_A_DAY), 0));
 		
 		verify(mock);
 		assertEquals(DerivedStudyCharacteristic.Dosing.FLEXIBLE, model.getValue());

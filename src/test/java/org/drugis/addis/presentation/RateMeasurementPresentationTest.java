@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
 
-import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -15,12 +15,12 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 public class RateMeasurementPresentationTest {
 	private BasicRateMeasurement d_measurement;
-	private BasicPatientGroup d_pg;
+	private BasicArm d_pg;
 	private RateMeasurementPresentation d_presentation;
 	
 	@Before
 	public void setUp() {
-		d_pg = new BasicPatientGroup(null, null, 101);
+		d_pg = new BasicArm(null, null, 101);
 		d_measurement = new BasicRateMeasurement(67, d_pg.getSize());
 		d_presentation = new RateMeasurementPresentation(d_measurement);
 	}

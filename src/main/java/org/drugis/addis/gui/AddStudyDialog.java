@@ -31,7 +31,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 
 import org.drugis.addis.entities.BasicMeasurement;
-import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
@@ -39,7 +39,7 @@ import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.gui.builder.AddStudyView;
 import org.drugis.common.Interval;
@@ -54,7 +54,7 @@ public class AddStudyDialog extends OkCancelDialog {
 	private BasicStudy d_study;
 	private EndpointHolder d_primaryEndpoint;
 	private AddStudyView d_view;
-	private JButton d_addPatientGroupButton;
+	private JButton d_addArmButton;
 	private Main d_main;
 	
 	public AddStudyDialog(Main mainWindow, Domain domain) {
@@ -85,12 +85,12 @@ public class AddStudyDialog extends OkCancelDialog {
 	protected void setEndpoint() {
 		d_study.setEndpoints(Collections.singleton(d_primaryEndpoint.getEndpoint()));
 		if (d_primaryEndpoint.getEndpoint() != null) {			
-			d_addPatientGroupButton.setEnabled(true);
+			d_addArmButton.setEnabled(true);
 		}
 	}
 
 	protected void buildMeasurements() {
-		for (PatientGroup g : d_study.getPatientGroups()) {
+		for (Arm g : d_study.getArms()) {
 			Endpoint endpoint = d_primaryEndpoint.getEndpoint();
 			d_study.setMeasurement(endpoint, g, endpoint.buildMeasurement(g));
 		}
@@ -106,32 +106,32 @@ public class AddStudyDialog extends OkCancelDialog {
 
 	private JComponent buildButtonBar() {
 		ButtonBarBuilder2 builder = new ButtonBarBuilder2();
-		builder.addButton(createAddPatientGroupButton());
+		builder.addButton(createAddArmButton());
 		return builder.getPanel();
 	}
 
-	private JComponent createAddPatientGroupButton() {
-		if (d_addPatientGroupButton == null) {
-			d_addPatientGroupButton = new JButton("Add Patient Group");
-			d_addPatientGroupButton.addActionListener(new AbstractAction() {
+	private JComponent createAddArmButton() {
+		if (d_addArmButton == null) {
+			d_addArmButton = new JButton("Add Arm");
+			d_addArmButton.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent arg0) {
-					addPatientGroup();
+					addArm();
 				}
 			});
-			d_addPatientGroupButton.setEnabled(false);
+			d_addArmButton.setEnabled(false);
 		}
-		return d_addPatientGroupButton;
+		return d_addArmButton;
 	}
 
-	protected void addPatientGroup() {
-		addNewPatientGroup();
+	protected void addArm() {
+		addNewArm();
 		initUserPanel();
 	}
 
-	private void addNewPatientGroup() {
-		BasicPatientGroup group = new BasicPatientGroup(null, new FlexibleDose(new Interval<Double>(0.0,0.0), SIUnit.MILLIGRAMS_A_DAY),
+	private void addNewArm() {
+		BasicArm group = new BasicArm(null, new FlexibleDose(new Interval<Double>(0.0,0.0), SIUnit.MILLIGRAMS_A_DAY),
 				0);
-		d_study.addPatientGroup(group);
+		d_study.addArm(group);
 		if (d_primaryEndpoint.getEndpoint() != null) {
 			BasicMeasurement m = d_primaryEndpoint.getEndpoint().buildMeasurement(group);
 			d_study.setMeasurement(d_primaryEndpoint.getEndpoint(), group, m);

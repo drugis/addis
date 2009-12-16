@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
-import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.DomainImpl;
@@ -16,7 +16,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MeanDifference;
-import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Endpoint.Direction;
@@ -54,10 +54,10 @@ public class ForestPlotPresentationTest {
 		d_s1.addEndpoint(d_endpoint);
 		d_baseline = new Drug("DrugA", null);
 		d_subject = new Drug("DrugB", null);
-		BasicPatientGroup pBase = new BasicPatientGroup(d_baseline, null, s_baseSize);
-		BasicPatientGroup pSubj = new BasicPatientGroup(d_subject, null, s_subjSize);
-		d_s1.addPatientGroup(pBase);
-		d_s1.addPatientGroup(pSubj);
+		BasicArm pBase = new BasicArm(d_baseline, null, s_baseSize);
+		BasicArm pSubj = new BasicArm(d_subject, null, s_subjSize);
+		d_s1.addArm(pBase);
+		d_s1.addArm(pSubj);
 		d_mBase1 = new BasicContinuousMeasurement(s_mean1, s_stdDev1, pBase.getSize());
 		d_mSubj1 = new BasicContinuousMeasurement(s_mean2, s_stdDev2, pSubj.getSize());
 		d_s1.setMeasurement(d_endpoint, pBase, d_mBase1);
@@ -65,10 +65,10 @@ public class ForestPlotPresentationTest {
 		
 		d_s2 = new BasicStudy("Y", new Indication(0L, ""));
 		d_s2.addEndpoint(d_endpoint);
-		BasicPatientGroup pBase2 = new BasicPatientGroup(d_baseline, null, s_baseSize);
-		BasicPatientGroup pSubj2 = new BasicPatientGroup(d_subject, null, s_subjSize);
-		d_s2.addPatientGroup(pBase2);
-		d_s2.addPatientGroup(pSubj2);
+		BasicArm pBase2 = new BasicArm(d_baseline, null, s_baseSize);
+		BasicArm pSubj2 = new BasicArm(d_subject, null, s_subjSize);
+		d_s2.addArm(pBase2);
+		d_s2.addArm(pSubj2);
 		d_mBase2 = new BasicContinuousMeasurement(s_mean2, s_stdDev2, pBase2.getSize());
 		d_mSubj2 = new BasicContinuousMeasurement(s_mean1, s_stdDev1, pSubj2.getSize());
 		d_s2.setMeasurement(d_endpoint, pBase2, d_mBase2);
@@ -144,7 +144,7 @@ public class ForestPlotPresentationTest {
 	
 	@Test
 	public void testGetDiamondSize() {
-		for (PatientGroup pg : d_s2.getPatientGroups()) {
+		for (Arm pg : d_s2.getArms()) {
 			BasicMeasurement m = (BasicMeasurement)d_s2.getMeasurement(d_endpoint, pg);
 			m.setSampleSize(m.getSampleSize() * 10);
 		}

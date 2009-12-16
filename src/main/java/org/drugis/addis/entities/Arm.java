@@ -19,7 +19,7 @@
 
 package org.drugis.addis.entities;
 
-public interface PatientGroup extends Entity {
+public interface Arm extends Entity {
 
 	public static final String PROPERTY_SIZE = "size";
 	public static final String PROPERTY_DRUG = "drug";

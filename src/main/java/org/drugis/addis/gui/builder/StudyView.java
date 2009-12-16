@@ -33,7 +33,7 @@ import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.StudyAddPatientGroupDialog;
+import org.drugis.addis.gui.StudyAddArmDialog;
 import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
@@ -92,7 +92,7 @@ public class StudyView implements ViewBuilder {
 	private JPanel buildArmsPart() {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(d_armsView.buildPanel(), BorderLayout.CENTER);
-		panel.add(buildAddPatientGroupButton(), BorderLayout.SOUTH);
+		panel.add(buildAddArmButton(), BorderLayout.SOUTH);
 		return GUIFactory.createCollapsiblePanel(panel);
 	}
 
@@ -103,12 +103,12 @@ public class StudyView implements ViewBuilder {
 		return GUIFactory.createCollapsiblePanel(panel);
 	}
 
-	private JComponent buildAddPatientGroupButton() {
+	private JComponent buildAddArmButton() {
 		ButtonBarBuilder2 bb = new ButtonBarBuilder2();
 		JButton addGroupButton = new JButton("Add patient group");
 		addGroupButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				addPatientGroup();
+				addArm();
 			}			
 		});
 		bb.addButton(addGroupButton);
@@ -116,8 +116,8 @@ public class StudyView implements ViewBuilder {
 		return bb.getPanel();
 	}
 
-	private void addPatientGroup() {
-		StudyAddPatientGroupDialog dlg = new StudyAddPatientGroupDialog(d_mainWindow, d_domain,
+	private void addArm() {
+		StudyAddArmDialog dlg = new StudyAddArmDialog(d_mainWindow, d_domain,
 				(BasicStudy)d_model.getBean());
 		GUIHelper.centerWindow(dlg, d_mainWindow);
 		dlg.setVisible(true);

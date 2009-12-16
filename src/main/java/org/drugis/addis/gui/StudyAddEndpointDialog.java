@@ -28,7 +28,7 @@ import java.util.Map.Entry;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.MutableStudy;
-import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.gui.builder.StudyAddEndpointView;
 import org.drugis.common.gui.OkCancelDialog;
 
@@ -40,7 +40,7 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private MutableStudy d_study;
 	private EndpointHolder d_newEndpoint;
-	private Map<PatientGroup, BasicMeasurement> d_measurements;
+	private Map<Arm, BasicMeasurement> d_measurements;
 	
 	public StudyAddEndpointDialog(Main frame, Domain domain, MutableStudy study) {
 		super(frame, "Add Endpoint to Study");
@@ -48,7 +48,7 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 		d_main = frame;
 		d_domain = domain;
 		d_study = study;
-		d_measurements = new HashMap<PatientGroup, BasicMeasurement>();
+		d_measurements = new HashMap<Arm, BasicMeasurement>();
 		d_newEndpoint = new EndpointHolder();
 		final StudyAddEndpointView view = new StudyAddEndpointView(d_domain, d_study,
 				new PresentationModel<EndpointHolder>(d_newEndpoint), d_measurements,
@@ -83,7 +83,7 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 	}
 
 	private void addMeasurementsToStudy() {
-		for (Entry<PatientGroup, BasicMeasurement> entry : d_measurements.entrySet()) {
+		for (Entry<Arm, BasicMeasurement> entry : d_measurements.entrySet()) {
 			d_study.setMeasurement(d_newEndpoint.getEndpoint(), entry.getKey(), entry.getValue());
 		}
 	}

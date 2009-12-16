@@ -37,7 +37,7 @@ import javax.swing.JTextField;
 import javax.swing.text.DefaultFormatter;
 
 import org.drugis.addis.entities.BasicMeasurement;
-import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -54,7 +54,7 @@ import org.drugis.addis.gui.MutableCharacteristicHolder;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
-import org.drugis.addis.presentation.BasicPatientGroupPresentation;
+import org.drugis.addis.presentation.BasicArmPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -156,8 +156,8 @@ public class AddStudyView implements ViewBuilder {
 				col += 2;
 			}
 		}
-		if (patientGroupsPresent()) {
-			buildPatientGroups(layout, fullWidth, builder, cc, row + 2);
+		if (armsPresent()) {
+			buildArms(layout, fullWidth, builder, cc, row + 2);
 		} else {
 			LayoutUtil.addRow(layout);
 			builder.addLabel("No patient groups present", cc.xyw(1, row + 2, fullWidth));
@@ -300,17 +300,17 @@ public class AddStudyView implements ViewBuilder {
 		return d_endpointPresentation.getBean().getEndpoint();
 	}
 
-	private void buildPatientGroups(FormLayout layout, int fullWidth,
+	private void buildArms(FormLayout layout, int fullWidth,
 			PanelBuilder builder, CellConstraints cc, int row) {
-		List<BasicPatientGroup> groups = d_model.getBean().getPatientGroups();
-		for (BasicPatientGroup g : groups) {
+		List<BasicArm> groups = d_model.getBean().getArms();
+		for (BasicArm g : groups) {
 			LayoutUtil.addRow(layout);
 			
-			BasicPatientGroupPresentation model = (BasicPatientGroupPresentation) d_mainWindow.getPresentationModelFactory().getModel(g);
+			BasicArmPresentation model = (BasicArmPresentation) d_mainWindow.getPresentationModelFactory().getModel(g);
 			
 			int col = 1;
 			
-			JComboBox selector = GUIFactory.createDrugSelector(model.getModel(BasicPatientGroup.PROPERTY_DRUG), d_domain);
+			JComboBox selector = GUIFactory.createDrugSelector(model.getModel(BasicArm.PROPERTY_DRUG), d_domain);
 			d_validator.add(selector);
 			ComboBoxPopupOnFocusListener.add(selector);
 			builder.add(selector, cc.xy(col, row));
@@ -323,7 +323,7 @@ public class AddStudyView implements ViewBuilder {
 			builder.add(view.buildPanel(), cc.xy(col, row));
 			col += 2;
 			
-			JTextField field = MeasurementInputHelper.buildFormatted(model.getModel(BasicPatientGroup.PROPERTY_SIZE));
+			JTextField field = MeasurementInputHelper.buildFormatted(model.getModel(BasicArm.PROPERTY_SIZE));
 			d_validator.add(field);
 			AutoSelectFocusListener.add(field);
 			builder.add(field, cc.xy(col, row));
@@ -345,9 +345,9 @@ public class AddStudyView implements ViewBuilder {
 		}
 	}
 
-	private void wireSampleSize(PresentationModel<BasicPatientGroup> pg,
+	private void wireSampleSize(PresentationModel<BasicArm> pg,
 			final PresentationModel<BasicMeasurement> m) {
-		pg.getModel(BasicPatientGroup.PROPERTY_SIZE).addValueChangeListener(new PropertyChangeListener() {
+		pg.getModel(BasicArm.PROPERTY_SIZE).addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (getSampleSize(m).getValue().equals(new Integer(0))) {
 					getSampleSize(m).setValue(evt.getNewValue());
@@ -361,7 +361,7 @@ public class AddStudyView implements ViewBuilder {
 		});
 	}
 
-	private boolean patientGroupsPresent() {
-		return !d_model.getBean().getPatientGroups().isEmpty();
+	private boolean armsPresent() {
+		return !d_model.getBean().getArms().isEmpty();
 	}
 }

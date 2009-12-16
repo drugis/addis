@@ -3,15 +3,15 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.Arm;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class BasicPatientGroupPresentation extends PresentationModel<BasicPatientGroup> implements LabeledPresentationModel {
+public class BasicArmPresentation extends PresentationModel<BasicArm> implements LabeledPresentationModel {
 	public class LabelModel extends AbstractValueModel implements PropertyChangeListener {
 		private String d_cachedLabel;
 		
@@ -36,7 +36,7 @@ public class BasicPatientGroupPresentation extends PresentationModel<BasicPatien
 		}
 
 		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals(PatientGroup.PROPERTY_DRUG)) {
+			if (evt.getPropertyName().equals(Arm.PROPERTY_DRUG)) {
 				String oldVal = d_cachedLabel;
 				d_cachedLabel = calcLabel((Drug)evt.getNewValue());
 				firePropertyChange("value", oldVal, d_cachedLabel);
@@ -48,7 +48,7 @@ public class BasicPatientGroupPresentation extends PresentationModel<BasicPatien
 		}
 	}
 
-	public BasicPatientGroupPresentation(BasicPatientGroup bean) {
+	public BasicArmPresentation(BasicArm bean) {
 		super(bean);
 	}
 

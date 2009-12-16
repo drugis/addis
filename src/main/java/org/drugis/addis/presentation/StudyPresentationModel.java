@@ -7,7 +7,7 @@ import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.FlexibleDose;
-import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.DerivedStudyCharacteristic.Dosing;
 
@@ -26,7 +26,7 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		d_armsHolder = new ListeningCharacteristicHolder(s, DerivedStudyCharacteristic.ARMS) {
 			@Override
 			protected Object getNewValue() {
-				return getBean().getPatientGroups().size();
+				return getBean().getArms().size();
 			}
 		};
 		
@@ -34,7 +34,7 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 			@Override
 			protected Object getNewValue() {
 				Dosing dose = DerivedStudyCharacteristic.Dosing.FIXED;
-				for (PatientGroup pg : getBean().getPatientGroups()) {
+				for (Arm pg : getBean().getArms()) {
 					if (pg.getDose() != null)
 						if (pg.getDose() instanceof FlexibleDose)
 							dose = DerivedStudyCharacteristic.Dosing.FLEXIBLE; 
@@ -83,7 +83,7 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		public ListeningCharacteristicHolder(Study study, DerivedStudyCharacteristic characteristic) {
 			super(study, characteristic);
 			study.addPropertyChangeListener(this);
-			for (PatientGroup p : study.getPatientGroups()) {
+			for (Arm p : study.getArms()) {
 				p.addPropertyChangeListener(this);
 			}
 		}
@@ -97,8 +97,8 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getSource() == d_study) {
-				if (evt.getPropertyName().equals(Study.PROPERTY_PATIENTGROUPS)) {
-					for (PatientGroup p : d_study.getPatientGroups()) {
+				if (evt.getPropertyName().equals(Study.PROPERTY_ARMS)) {
+					for (Arm p : d_study.getArms()) {
 						p.addPropertyChangeListener(this);
 					}
 				} else {

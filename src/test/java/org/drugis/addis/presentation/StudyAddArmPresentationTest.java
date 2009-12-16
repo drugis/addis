@@ -11,7 +11,7 @@ import java.util.Collections;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
-import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
@@ -24,9 +24,9 @@ import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Test;
 
-public class StudyAddPatientGroupPresentationTest {
+public class StudyAddArmPresentationTest {
 	private static final AbstractDose INITIAL_DOSE = new FlexibleDose(new Interval<Double>(0.0, 0.0), SIUnit.MILLIGRAMS_A_DAY);
-	private StudyAddPatientGroupPresentation d_pm;
+	private StudyAddArmPresentation d_pm;
 	private PresentationModelFactory d_pmf;
 	private Domain d_domain;
 
@@ -35,12 +35,12 @@ public class StudyAddPatientGroupPresentationTest {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
 		d_pmf = new PresentationModelFactory(d_domain);
-		d_pm = new StudyAddPatientGroupPresentation(ExampleData.buildStudyChouinard(), d_pmf);
+		d_pm = new StudyAddArmPresentation(ExampleData.buildStudyChouinard(), d_pmf);
 	}
 	
 	@Test
-	public void testGetPatientGroup() {
-		BasicPatientGroup pg = d_pm.getPatientGroup();
+	public void testGetArm() {
+		BasicArm pg = d_pm.getArm();
 		assertNotNull(pg);
 		assertEquals(new Integer(0), pg.getSize());
 		assertEquals(null, pg.getDrug());
@@ -49,7 +49,7 @@ public class StudyAddPatientGroupPresentationTest {
 	
 	@Test
 	public void testGetDoseModel() {
-		assertEquals(INITIAL_DOSE, d_pm.getPatientGroup().getDose());
+		assertEquals(INITIAL_DOSE, d_pm.getArm().getDose());
 		double newValue = 25.4;
 		d_pm.getDoseModel().getMaxModel().setValue(newValue);
 		assertEquals(d_pm.getDoseModel().getMaxModel().doubleValue(), newValue, 0.001);
@@ -83,7 +83,7 @@ public class StudyAddPatientGroupPresentationTest {
 	@Test
 	public void testHasRateEndpoints() {
 		assertTrue(d_pm.hasEndpoints(Endpoint.Type.RATE));
-		StudyAddPatientGroupPresentation p = new StudyAddPatientGroupPresentation(
+		StudyAddArmPresentation p = new StudyAddArmPresentation(
 				ExampleData.buildStudyChouinardNoHamd(), d_pmf);
 		assertFalse(p.hasEndpoints(Endpoint.Type.RATE));
 	}
@@ -91,7 +91,7 @@ public class StudyAddPatientGroupPresentationTest {
 	@Test
 	public void testHasContinuousEndpoints() {
 		assertTrue(d_pm.hasEndpoints(Endpoint.Type.CONTINUOUS));
-		StudyAddPatientGroupPresentation p = new StudyAddPatientGroupPresentation(
+		StudyAddArmPresentation p = new StudyAddArmPresentation(
 				ExampleData.buildStudyMcMurray(), d_pmf);
 		assertFalse(p.hasEndpoints(Endpoint.Type.CONTINUOUS));
 	}
@@ -127,11 +127,11 @@ public class StudyAddPatientGroupPresentationTest {
 	public void testAddToStudy() {
 		BasicStudy study = new BasicStudy("Some Study", new Indication(0L, ""));
 		study.addEndpoint(ExampleData.buildEndpointHamd());
-		StudyAddPatientGroupPresentation pres = new StudyAddPatientGroupPresentation(study, d_pmf);
+		StudyAddArmPresentation pres = new StudyAddArmPresentation(study, d_pmf);
 		pres.getDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		pres.addToStudy();
-		assertEquals(1, study.getPatientGroups().size());
-		assertEquals(pres.getPatientGroup(), study.getPatientGroups().get(0));
-		assertNotNull(study.getMeasurement(ExampleData.buildEndpointHamd(), pres.getPatientGroup()));
+		assertEquals(1, study.getArms().size());
+		assertEquals(pres.getArm(), study.getArms().get(0));
+		assertNotNull(study.getMeasurement(ExampleData.buildEndpointHamd(), pres.getArm()));
 	}
 }

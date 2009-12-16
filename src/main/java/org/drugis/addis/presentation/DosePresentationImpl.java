@@ -6,7 +6,7 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.SIUnit;
@@ -16,14 +16,14 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueHolder;
 
 class DosePresentationImpl implements DosePresentationModel {
-	private BasicPatientGroup d_pg;
+	private BasicArm d_pg;
 	private ValueHolder d_min;
 	private ValueHolder d_max;
 	private ValueHolder d_unit;
 	
 	public DosePresentationImpl(
-			BasicPatientGroupPresentation basicPatientGroupPresentation) {
-		d_pg = basicPatientGroupPresentation.getBean();
+			BasicArmPresentation basicArmPresentation) {
+		d_pg = basicArmPresentation.getBean();
 		d_min = new ValueHolder(getMinDose(d_pg));
 		d_max = new ValueHolder(getMaxDose(d_pg));
 		d_unit = new ValueHolder(d_pg.getDose().getUnit());
@@ -37,7 +37,7 @@ class DosePresentationImpl implements DosePresentationModel {
 		});
 	}
 
-	private double getMaxDose(BasicPatientGroup pg) {
+	private double getMaxDose(BasicArm pg) {
 		if (d_pg.getDose() instanceof FlexibleDose) {
 			return ((FlexibleDose)d_pg.getDose()).getFlexibleDose().getUpperBound();
 		} else if (d_pg.getDose() instanceof FixedDose) {
@@ -46,7 +46,7 @@ class DosePresentationImpl implements DosePresentationModel {
 		return 0.0;
 	}
 
-	private double getMinDose(BasicPatientGroup pg) {
+	private double getMinDose(BasicArm pg) {
 		if (d_pg.getDose() instanceof FlexibleDose) {
 			return ((FlexibleDose)d_pg.getDose()).getFlexibleDose().getLowerBound();
 		} else if (d_pg.getDose() instanceof FixedDose) {

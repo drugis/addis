@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
-import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.gui.components.EnhancedTableHeader;
 import org.drugis.addis.presentation.LabeledPresentationModel;
 import org.drugis.addis.presentation.RelativeEffectTableModel;
@@ -55,7 +55,7 @@ public class RelativeEffectTableDialog extends JDialog {
 			JLabel label = BasicComponentFactory.createLabel(((LabeledPresentationModel)val).getLabelModel());
 			label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 			
-			if (((PresentationModel<?>)val).getBean() instanceof PatientGroup) {
+			if (((PresentationModel<?>)val).getBean() instanceof Arm) {
 				label.setBackground(Color.lightGray);
 			} else {
 				label.setBackground(Color.white);

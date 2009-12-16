@@ -8,7 +8,7 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 import org.junit.Test;
@@ -26,23 +26,23 @@ public abstract class RelativeEffectTableModelBaseTest {
 
 	@Test
 	public void testGetColumnCount() {
-		assertEquals(d_standardStudy.getPatientGroups().size(), d_stdModel.getColumnCount());
-		assertEquals(d_threeArmStudy.getPatientGroups().size(), d_threeArmModel.getColumnCount());
+		assertEquals(d_standardStudy.getArms().size(), d_stdModel.getColumnCount());
+		assertEquals(d_threeArmStudy.getArms().size(), d_threeArmModel.getColumnCount());
 	}
 
 	@Test
 	public void testGetRowCount() {
-		assertEquals(d_standardStudy.getPatientGroups().size(), d_stdModel.getRowCount());
-		assertEquals(d_threeArmStudy.getPatientGroups().size(), d_threeArmModel.getRowCount());
+		assertEquals(d_standardStudy.getArms().size(), d_stdModel.getRowCount());
+		assertEquals(d_threeArmStudy.getArms().size(), d_threeArmModel.getRowCount());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetValueAtUpperRightPart() {
-		assertEquals(3, d_threeArmStudy.getPatientGroups().size());
-		PatientGroup pg0 = d_threeArmStudy.getPatientGroups().get(0);
-		PatientGroup pg1 = d_threeArmStudy.getPatientGroups().get(1);
-		PatientGroup pg2 = d_threeArmStudy.getPatientGroups().get(2);
+		assertEquals(3, d_threeArmStudy.getArms().size());
+		Arm pg0 = d_threeArmStudy.getArms().get(0);
+		Arm pg1 = d_threeArmStudy.getArms().get(1);
+		Arm pg2 = d_threeArmStudy.getArms().get(2);
 		
 		PresentationModel<RelativeEffect<?>> val01 = (PresentationModel<RelativeEffect<?>>)d_threeArmModel.getValueAt(0, 1);
 		assertTrue(d_relativeEffectClass.isInstance(val01.getBean()));
@@ -58,10 +58,10 @@ public abstract class RelativeEffectTableModelBaseTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetValueAtLowerLeftPart() {
-		assertEquals(3, d_threeArmStudy.getPatientGroups().size());
-		PatientGroup pg0 = d_threeArmStudy.getPatientGroups().get(0);
-		PatientGroup pg1 = d_threeArmStudy.getPatientGroups().get(1);
-		PatientGroup pg2 = d_threeArmStudy.getPatientGroups().get(2);
+		assertEquals(3, d_threeArmStudy.getArms().size());
+		Arm pg0 = d_threeArmStudy.getArms().get(0);
+		Arm pg1 = d_threeArmStudy.getArms().get(1);
+		Arm pg2 = d_threeArmStudy.getArms().get(2);
 		
 		PresentationModel<RelativeEffect<?>> val20 = (PresentationModel<RelativeEffect<?>>)d_threeArmModel.getValueAt(2, 0);
 		assertTrue(d_relativeEffectClass.isInstance(val20.getBean()));
@@ -77,15 +77,15 @@ public abstract class RelativeEffectTableModelBaseTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetValueAtDiagonal() {
-		for (int i = 0; i < d_standardStudy.getPatientGroups().size(); ++i) {
+		for (int i = 0; i < d_standardStudy.getArms().size(); ++i) {
 			Object val = d_stdModel.getValueAt(i, i);
 			assertTrue("Instance of PresentationModel", val instanceof PresentationModel);
-			assertEquals(((PresentationModel) val).getBean(), d_standardStudy.getPatientGroups().get(i));
+			assertEquals(((PresentationModel) val).getBean(), d_standardStudy.getArms().get(i));
 		}
-		for (int i = 0; i < d_threeArmStudy.getPatientGroups().size(); ++i) {
+		for (int i = 0; i < d_threeArmStudy.getArms().size(); ++i) {
 			Object val = d_threeArmModel.getValueAt(i, i);
 			assertTrue("Instance of PresentationModel", val instanceof PresentationModel);
-			assertEquals(((PresentationModel) val).getBean(), d_threeArmStudy.getPatientGroups().get(i));
+			assertEquals(((PresentationModel) val).getBean(), d_threeArmStudy.getArms().get(i));
 		}
 	}
 
@@ -96,8 +96,8 @@ public abstract class RelativeEffectTableModelBaseTest {
 
 	@Test
 	public void testGetDescriptionAt() {
-		LabeledPresentationModel pg0 = d_pmf.getLabeledModel(d_threeArmStudy.getPatientGroups().get(0));
-		LabeledPresentationModel pg1 = d_pmf.getLabeledModel(d_threeArmStudy.getPatientGroups().get(1));
+		LabeledPresentationModel pg0 = d_pmf.getLabeledModel(d_threeArmStudy.getArms().get(0));
+		LabeledPresentationModel pg1 = d_pmf.getLabeledModel(d_threeArmStudy.getArms().get(1));
 		String expected = "\"" + pg1.getLabelModel().getValue() + "\" relative to \"" +
 				pg0.getLabelModel().getValue() + "\"";
 		assertEquals(expected, d_threeArmModel.getDescriptionAt(0, 1));
@@ -117,10 +117,10 @@ public abstract class RelativeEffectTableModelBaseTest {
 		assertEquals(d_standardStudy.toString(), pm.getStudyLabelAt(0));
 		assertEquals(1, pm.getNumRelativeEffects());
 		Measurement bl = (Measurement) pm.getRelativeEffectAt(0).getBaseline();
-		assertEquals(d_standardStudy.getPatientGroups().get(1).getSize(),
+		assertEquals(d_standardStudy.getArms().get(1).getSize(),
 				bl.getSampleSize());
 		Measurement subj = (Measurement) pm.getRelativeEffectAt(0).getSubject();
-		assertEquals(d_standardStudy.getPatientGroups().get(0).getSize(),
+		assertEquals(d_standardStudy.getArms().get(0).getSize(),
 				subj.getSampleSize());
 		assertEquals(d_endpoint, pm.getEndpoint());
 	}

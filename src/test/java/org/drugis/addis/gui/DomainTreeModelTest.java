@@ -34,7 +34,7 @@ import java.util.Collections;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 
-import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
@@ -67,9 +67,9 @@ public class DomainTreeModelTest {
 		d_firstStudy = new BasicStudy("First", d_firstIndication);
 		d_firstDrug = new Drug("Drug", "atc");
 		
-		BasicPatientGroup pg = new BasicPatientGroup(d_firstDrug,
+		BasicArm pg = new BasicArm(d_firstDrug,
 				new FixedDose(100.0, SIUnit.MILLIGRAMS_A_DAY), 100);
-		d_firstStudy.addPatientGroup(pg);
+		d_firstStudy.addArm(pg);
 		d_firstStudy.addEndpoint(d_firstEndpoint);
 		
 		d_firstStudy.setMeasurement(d_firstEndpoint, pg, 

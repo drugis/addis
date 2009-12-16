@@ -21,7 +21,7 @@ package org.drugis.addis.entities;
 
 import java.util.Set;
 
-public class BasicPatientGroup extends AbstractEntity implements PatientGroup {
+public class BasicArm extends AbstractEntity implements Arm {
 	private static final long serialVersionUID = -2092185548220089471L;
 	private Integer d_size;
 	private Drug d_drug;
@@ -29,7 +29,7 @@ public class BasicPatientGroup extends AbstractEntity implements PatientGroup {
 	
 	protected CharacteristicsMap d_chars = new CharacteristicsMap();
 	
-	public BasicPatientGroup(Drug drug, AbstractDose dose, int size) {
+	public BasicArm(Drug drug, AbstractDose dose, int size) {
 		d_drug = drug;
 		d_dose = dose;
 		d_size = size;
@@ -58,7 +58,7 @@ public class BasicPatientGroup extends AbstractEntity implements PatientGroup {
 	
 	@Override
 	public String toString() {
-		return "PatientGroup(" + d_drug + ", " + d_dose + ", " + d_size + ")";
+		return "Arm(" + d_drug + ", " + d_dose + ", " + d_size + ")";
 	}
 
 	public Integer getSize() {
@@ -76,7 +76,7 @@ public class BasicPatientGroup extends AbstractEntity implements PatientGroup {
 		return null;
 	}
 	
-	public void setCharacteristic(PatientGroupCharacteristic c, Object val) {
+	public void setCharacteristic(PopulationCharacteristic c, Object val) {
 		d_chars.put(c, val);
 	}
 

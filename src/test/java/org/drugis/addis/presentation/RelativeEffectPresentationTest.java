@@ -5,10 +5,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
 
-import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.OddsRatio;
-import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.Arm;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,8 +30,8 @@ public class RelativeEffectPresentationTest {
 	
 	@Before
 	public void setUp() {
-		PatientGroup pnum = new BasicPatientGroup(null,null,s_sizeNum);
-		PatientGroup pden = new BasicPatientGroup(null,null,s_sizeDen);
+		Arm pnum = new BasicArm(null,null,s_sizeNum);
+		Arm pden = new BasicArm(null,null,s_sizeDen);
 		d_numerator = new BasicRateMeasurement(s_effectNum, pnum.getSize());		
 		d_denominator = new BasicRateMeasurement(s_effectDen, pden.getSize());
 		d_ratio = new OddsRatio(d_denominator, d_numerator);

@@ -22,7 +22,7 @@ package org.drugis.addis.presentation;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
@@ -104,8 +104,8 @@ public class PresentationModelFactory {
 		if (obj instanceof RateMeasurement) {
 			return new RateMeasurementPresentation((RateMeasurement)obj);
 		}
-		if (obj instanceof BasicPatientGroup) {
-			return new BasicPatientGroupPresentation((BasicPatientGroup)obj);
+		if (obj instanceof BasicArm) {
+			return new BasicArmPresentation((BasicArm)obj);
 		}
 		if (obj instanceof Drug) {
 			Drug d = (Drug) obj;

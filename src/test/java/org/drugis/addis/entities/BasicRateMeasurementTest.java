@@ -33,11 +33,11 @@ import org.junit.Test;
 
 public class BasicRateMeasurementTest {
 	private BasicMeasurement d_measurement;
-	private BasicPatientGroup d_pg;
+	private BasicArm d_pg;
 	
 	@Before
 	public void setUp() {
-		d_pg = new BasicPatientGroup(null, null, 101);
+		d_pg = new BasicArm(null, null, 101);
 		d_measurement = new BasicRateMeasurement(67, d_pg.getSize());
 	}
 	

@@ -32,7 +32,7 @@ import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MutableStudy;
-import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.EndpointHolder;
 import org.drugis.addis.gui.MeasurementInputHelper;
@@ -54,7 +54,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 	private Domain d_domain;
 	private MutableStudy d_study;
 	private PresentationModel<EndpointHolder> d_endpointModel;
-	private Map<PatientGroup, BasicMeasurement> d_measurements;
+	private Map<Arm, BasicMeasurement> d_measurements;
 	
 	private JComboBox d_endpointSelect;
 	private SelectionInList<Endpoint> d_endpointSelectionInList;
@@ -63,7 +63,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 	
 	public StudyAddEndpointView(Domain domain, MutableStudy study,
 			PresentationModel<EndpointHolder> endpointModel,
-			Map<PatientGroup,BasicMeasurement> measurements,
+			Map<Arm,BasicMeasurement> measurements,
 			JButton okButton, PresentationModelFactory presModelMan) {
 		d_validator = new NotEmptyValidator(okButton);
 		d_domain = domain;
@@ -74,7 +74,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 	}
 
 	private void initializeMeasurements() {
-		for (PatientGroup g : d_study.getPatientGroups()) {
+		for (Arm g : d_study.getArms()) {
 			if (getEndpoint() != null) {
 				BasicMeasurement m = getEndpoint().buildMeasurement(g);
 				d_measurements.put(g, m);
@@ -158,8 +158,8 @@ public class StudyAddEndpointView implements ViewBuilder {
 
 	private void buildMeasurementsPart(PanelBuilder builder,
 			CellConstraints cc, int row, FormLayout layout) {
-		for (Map.Entry<PatientGroup, BasicMeasurement> e: d_measurements.entrySet()) {
-			PatientGroup g = e.getKey();
+		for (Map.Entry<Arm, BasicMeasurement> e: d_measurements.entrySet()) {
+			Arm g = e.getKey();
 			BasicMeasurement m = e.getValue();
 			LayoutUtil.addRow(layout);
 			builder.add(BasicComponentFactory.createLabel(d_presMan.getLabeledModel(g).getLabelModel()),

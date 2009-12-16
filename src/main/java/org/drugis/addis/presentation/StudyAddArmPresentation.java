@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.BasicMeasurement;
-import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FlexibleDose;
@@ -19,17 +19,17 @@ import org.drugis.common.Interval;
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
-public class StudyAddPatientGroupPresentation {
+public class StudyAddArmPresentation {
 	private PresentationModelFactory d_pmf;
 	private BasicStudy d_study;
-	private BasicPatientGroupPresentation d_pg;
+	private BasicArmPresentation d_pg;
 	private Map<Endpoint, Measurement> d_measurements = new HashMap<Endpoint,Measurement>();
 	
-	public StudyAddPatientGroupPresentation(BasicStudy study, PresentationModelFactory pmf) {
+	public StudyAddArmPresentation(BasicStudy study, PresentationModelFactory pmf) {
 		d_pmf = pmf;
 		d_study = study;
-		BasicPatientGroup pg = new BasicPatientGroup(null, new FlexibleDose(new Interval<Double>(0.0, 0.0), SIUnit.MILLIGRAMS_A_DAY), 0);
-		d_pg = (BasicPatientGroupPresentation)d_pmf.getModel(pg);
+		BasicArm pg = new BasicArm(null, new FlexibleDose(new Interval<Double>(0.0, 0.0), SIUnit.MILLIGRAMS_A_DAY), 0);
+		d_pg = (BasicArmPresentation)d_pmf.getModel(pg);
 		
 		for (Endpoint e : d_study.getEndpoints()) {
 			BasicMeasurement m = e.buildMeasurement(pg);
@@ -47,7 +47,7 @@ public class StudyAddPatientGroupPresentation {
 		}
 	}
 	
-	public BasicPatientGroup getPatientGroup() {
+	public BasicArm getArm() {
 		return d_pg.getBean();
 	}
 	
@@ -74,17 +74,17 @@ public class StudyAddPatientGroupPresentation {
 	}
 	
 	public AbstractValueModel getDrugModel() {
-		return d_pg.getModel(BasicPatientGroup.PROPERTY_DRUG);
+		return d_pg.getModel(BasicArm.PROPERTY_DRUG);
 	}
 	
 	public AbstractValueModel getSizeModel() {
-		return d_pg.getModel(BasicPatientGroup.PROPERTY_SIZE);
+		return d_pg.getModel(BasicArm.PROPERTY_SIZE);
 	}
 	
 	public void addToStudy() {
-		d_study.addPatientGroup(getPatientGroup());
+		d_study.addArm(getArm());
 		for (Endpoint e: d_study.getEndpoints()) {
-			d_study.setMeasurement(e, getPatientGroup(), d_measurements.get(e));
+			d_study.setMeasurement(e, getArm(), d_measurements.get(e));
 		}
 	}
 }

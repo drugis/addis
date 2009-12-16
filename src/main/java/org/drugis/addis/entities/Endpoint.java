@@ -86,7 +86,7 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 		this(string, type, Direction.HIGHER_IS_BETTER);
 	}
 	
-	public BasicMeasurement buildMeasurement(PatientGroup pg) {
+	public BasicMeasurement buildMeasurement(Arm pg) {
 		switch (getType()) {
 		case CONTINUOUS:
 			return new BasicContinuousMeasurement(0.0, 0.0, pg.getSize());

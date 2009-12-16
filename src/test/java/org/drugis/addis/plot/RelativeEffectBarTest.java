@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.drugis.addis.entities.BasicContinuousMeasurement;
-import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.MeanDifference;
-import org.drugis.addis.entities.PatientGroup;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.RelativeEffect;
 import org.junit.Test;
 
@@ -17,8 +17,8 @@ public class RelativeEffectBarTest {
 	@Test
 	public void testNormalPlot() {
 		// Create relative effect.
-		PatientGroup p1 = new BasicPatientGroup(null, null, 100);
-		PatientGroup p2 = new BasicPatientGroup(null, null, 100);
+		Arm p1 = new BasicArm(null, null, 100);
+		Arm p2 = new BasicArm(null, null, 100);
 		RelativeEffect<ContinuousMeasurement> effect = new MeanDifference(new BasicContinuousMeasurement(0.25, 1.26 / Math.sqrt(2), p1.getSize()), 
 											new BasicContinuousMeasurement(0.5, 1.26 / Math.sqrt(2), p2.getSize()));
 	
@@ -44,8 +44,8 @@ public class RelativeEffectBarTest {
 	
 	@Test
 	public void testCombinedPlot() {
-		PatientGroup p1 = new BasicPatientGroup(null, null, 100);
-		PatientGroup p2 = new BasicPatientGroup(null, null, 100);
+		Arm p1 = new BasicArm(null, null, 100);
+		Arm p2 = new BasicArm(null, null, 100);
 		RelativeEffect<ContinuousMeasurement> effect = new MeanDifference(new BasicContinuousMeasurement(0.25, 1.26 / Math.sqrt(2), p1.getSize()), 
 											new BasicContinuousMeasurement(0.5, 1.26 / Math.sqrt(2), p2.getSize()));
 	

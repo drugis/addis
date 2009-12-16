@@ -8,11 +8,11 @@ import java.text.ParsePosition;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.drugis.addis.entities.BasicPatientGroup;
+import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.PatientGroup;
-import org.drugis.addis.entities.PatientGroupCharacteristic;
+import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -63,14 +63,14 @@ public class StudyArmsView implements ViewBuilder {
 		}
 		row += 2;
 	
-		for (PatientGroup g : d_model.getBean().getPatientGroups()) {
-			row = buildPatientGroup(layout, builder, cc, row, g);
+		for (Arm g : d_model.getBean().getArms()) {
+			row = buildArm(layout, builder, cc, row, g);
 		}
 		return builder.getPanel();
 	}
 
 	@SuppressWarnings("serial")
-	private int buildPatientGroup(FormLayout layout, PanelBuilder builder, CellConstraints cc, int row, PatientGroup g) {
+	private int buildArm(FormLayout layout, PanelBuilder builder, CellConstraints cc, int row, Arm g) {
 		int col;
 		LayoutUtil.addRow(layout);
 		builder.add(
@@ -79,7 +79,7 @@ public class StudyArmsView implements ViewBuilder {
 		
 		builder.add(
 				BasicComponentFactory.createLabel(
-						new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_DOSE),
+						new PresentationModel<Arm>(g).getModel(BasicArm.PROPERTY_DOSE),
 						new Format() {
 							
 							@Override
@@ -96,14 +96,14 @@ public class StudyArmsView implements ViewBuilder {
 						}),
 						cc.xy(3, row, "right, center"));
 		
-		final JLabel patientGroupSizeLabel = BasicComponentFactory.createLabel(
-				new PresentationModel<PatientGroup>(g).getModel(BasicPatientGroup.PROPERTY_SIZE),
+		final JLabel armSizeLabel = BasicComponentFactory.createLabel(
+				new PresentationModel<Arm>(g).getModel(BasicArm.PROPERTY_SIZE),
 				NumberFormat.getInstance());
 		final String pgCharacteristicTooltip = buildCharacteristicTooltip(g);
 		if (!pgCharacteristicTooltip.equals(""))
-			patientGroupSizeLabel.setToolTipText(pgCharacteristicTooltip);
+			armSizeLabel.setToolTipText(pgCharacteristicTooltip);
 		builder.add(
-				patientGroupSizeLabel,
+				armSizeLabel,
 						cc.xy(5, row, "center, center"));
 		
 		col = 7;
@@ -121,12 +121,12 @@ public class StudyArmsView implements ViewBuilder {
 		return row;
 	}
 
-	private String buildCharacteristicTooltip(PatientGroup g) {
+	private String buildCharacteristicTooltip(Arm g) {
 		if (g.getCharacteristics().isEmpty())
 			return "";
 		
 		String ret = new String("<html>");
-		for (PatientGroupCharacteristic c : PatientGroupCharacteristic.values()) {
+		for (PopulationCharacteristic c : PopulationCharacteristic.values()) {
 			Object val = g.getCharacteristic(c);
 			if (val != null)
 				ret += c.getDescription() + "=" + val + "<br>";			

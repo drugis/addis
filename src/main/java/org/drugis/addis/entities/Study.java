@@ -25,12 +25,12 @@ import java.util.Set;
 public interface Study extends Comparable<Study>, Entity {
 	public final static String PROPERTY_ID = "id";
 	public final static String PROPERTY_ENDPOINTS = "endpoints";
-	public final static String PROPERTY_PATIENTGROUPS = "patientGroups";
+	public final static String PROPERTY_ARMS = "arms";
 
 	public String getId();
 	public Set<Endpoint> getEndpoints();
-	public List<? extends PatientGroup> getPatientGroups();
-	public Measurement getMeasurement(Endpoint e, PatientGroup g);
+	public List<? extends Arm> getArms();
+	public Measurement getMeasurement(Endpoint e, Arm g);
 	public Set<Drug> getDrugs();	
 	public int getSampleSize();
 	

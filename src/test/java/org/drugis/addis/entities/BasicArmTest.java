@@ -25,34 +25,34 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BasicPatientGroupTest {
+public class BasicArmTest {
 	
-	private BasicPatientGroup d_pg;
+	private BasicArm d_pg;
 
 	@Before
 	public void setUp() {
-		d_pg = new BasicPatientGroup(null, null, 0);
+		d_pg = new BasicArm(null, null, 0);
 	}
 	
 	@Test
 	public void testSetSize() {
-		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_SIZE, 0, 1);
+		JUnitUtil.testSetter(d_pg, BasicArm.PROPERTY_SIZE, 0, 1);
 	}
 	
 	@Test
 	public void testSetDrug() {
-		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_DRUG, null, new Drug("D", "atc"));
+		JUnitUtil.testSetter(d_pg, BasicArm.PROPERTY_DRUG, null, new Drug("D", "atc"));
 	}
 	
 	@Test
 	public void testSetDose() {
-		JUnitUtil.testSetter(d_pg, BasicPatientGroup.PROPERTY_DOSE, null, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY));
+		JUnitUtil.testSetter(d_pg, BasicArm.PROPERTY_DOSE, null, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY));
 	}
 	
 	@Test
 	public void testSetCharacteristic() {
-		d_pg.setCharacteristic(PatientGroupCharacteristic.MALE, 20);
-		d_pg.getCharacteristics().containsKey(PatientGroupCharacteristic.MALE);
-		assertEquals(20, d_pg.getCharacteristic(PatientGroupCharacteristic.MALE));
+		d_pg.setCharacteristic(PopulationCharacteristic.MALE, 20);
+		d_pg.getCharacteristics().containsKey(PopulationCharacteristic.MALE);
+		assertEquals(20, d_pg.getCharacteristic(PopulationCharacteristic.MALE));
 	}
 }

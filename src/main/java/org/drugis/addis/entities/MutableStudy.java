@@ -25,6 +25,6 @@ public interface MutableStudy extends Study {
 	public void addEndpoint(Endpoint e);
 	public void deleteEndpoint(Endpoint e);
 	public void setId(String id);
-	public void setMeasurement(Endpoint e, PatientGroup g, Measurement m);
+	public void setMeasurement(Endpoint e, Arm g, Measurement m);
 	public void setCharacteristic(BasicStudyCharacteristic c, Object val);
 }

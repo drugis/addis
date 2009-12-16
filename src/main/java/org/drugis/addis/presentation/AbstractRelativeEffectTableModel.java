@@ -29,20 +29,20 @@ implements RelativeEffectTableModel {
 
 
 	public int getColumnCount() {
-		return d_study.getPatientGroups().size();
+		return d_study.getArms().size();
 	}
 
 	public int getRowCount() {
-		return d_study.getPatientGroups().size();
+		return d_study.getArms().size();
 	}
 
 	public Object getValueAt(int row, int col) {
 		if (row == col) {
-			return d_pmf.getModel(d_study.getPatientGroups().get(row));
+			return d_pmf.getModel(d_study.getArms().get(row));
 		}
 		
-		Measurement denominator = d_study.getMeasurement(d_endpoint, d_study.getPatientGroups().get(row));
-		Measurement numerator = d_study.getMeasurement(d_endpoint, d_study.getPatientGroups().get(col));
+		Measurement denominator = d_study.getMeasurement(d_endpoint, d_study.getArms().get(row));
+		Measurement numerator = d_study.getMeasurement(d_endpoint, d_study.getArms().get(col));
 		return d_pmf.getModel(getRelativeEffect(denominator, numerator));
 	}
 
@@ -53,12 +53,12 @@ implements RelativeEffectTableModel {
 		if (row == col) {
 			return null;
 		}
-		return "\"" + getPatientGroupLabel(col) +
-			"\" relative to \"" + getPatientGroupLabel(row) + "\"";
+		return "\"" + getArmLabel(col) +
+			"\" relative to \"" + getArmLabel(row) + "\"";
 	}
 
-	private String getPatientGroupLabel(int index) {
-		return d_pmf.getLabeledModel(d_study.getPatientGroups().get(index)).getLabelModel().getString();
+	private String getArmLabel(int index) {
+		return d_pmf.getLabeledModel(d_study.getArms().get(index)).getLabelModel().getString();
 	}
 
 	public String getDescription() {
@@ -67,7 +67,7 @@ implements RelativeEffectTableModel {
 	}
 
 	public ForestPlotPresentation getPlotPresentation(int row, int column) {
-		return new ForestPlotPresentation((BasicStudy)d_study, d_endpoint, d_study.getPatientGroups().get(row).getDrug(),
-				d_study.getPatientGroups().get(column).getDrug(), getRelativeEffectType(), d_pmf);
+		return new ForestPlotPresentation((BasicStudy)d_study, d_endpoint, d_study.getArms().get(row).getDrug(),
+				d_study.getArms().get(column).getDrug(), getRelativeEffectType(), d_pmf);
 	}
 }

@@ -33,7 +33,7 @@ import org.drugis.addis.gui.MeasurementInputHelper;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
-import org.drugis.addis.presentation.StudyAddPatientGroupPresentation;
+import org.drugis.addis.presentation.StudyAddArmPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -41,13 +41,13 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class StudyAddPatientGroupView implements ViewBuilder {
+public class StudyAddArmView implements ViewBuilder {
 	private Domain d_domain;
 	private NotEmptyValidator d_validator;
-	private StudyAddPatientGroupPresentation d_pm;
+	private StudyAddArmPresentation d_pm;
 	
 
-	public StudyAddPatientGroupView(StudyAddPatientGroupPresentation pm, Domain domain, JButton okButton) {
+	public StudyAddArmView(StudyAddArmPresentation pm, Domain domain, JButton okButton) {
 		d_domain = domain;
 		d_validator = new NotEmptyValidator(okButton);
 		d_pm = pm;
