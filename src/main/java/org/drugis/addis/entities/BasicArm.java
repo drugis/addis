@@ -27,7 +27,7 @@ public class BasicArm extends AbstractEntity implements Arm {
 	private Drug d_drug;
 	private AbstractDose d_dose;
 	
-	protected CharacteristicsMap d_chars = new CharacteristicsMap();
+	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	
 	public BasicArm(Drug drug, AbstractDose dose, int size) {
 		d_drug = drug;

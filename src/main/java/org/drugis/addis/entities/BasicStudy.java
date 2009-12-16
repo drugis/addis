@@ -29,11 +29,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
-
-
 public class BasicStudy extends AbstractEntity implements MutableStudy {
-	protected static class MeasurementKey implements Serializable {
+	private static final long serialVersionUID = 532314508658928979L;
+	
+	private static class MeasurementKey implements Serializable {
 		private static final long serialVersionUID = 6310789667384578005L;
 		
 		private Endpoint d_endpoint;
@@ -58,27 +57,15 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 			code = code * 31 + d_arm.hashCode();
 			return code;
 		}
-		
-		public Endpoint getEndpoint() {
-			return d_endpoint;
-		}
-		
-		public Arm getArm() {
-			return d_arm;
-		}
 	}
 
-	private static final long serialVersionUID = 532314508658928979L;
+	
 	
 	private List<BasicArm> d_arms = new ArrayList<BasicArm>();
-
 	private String d_id;
-
-	protected Map<BasicStudy.MeasurementKey, Measurement> d_measurements = new HashMap<BasicStudy.MeasurementKey, Measurement>();
-
-	protected Set<Endpoint> d_endpoints = new HashSet<Endpoint>();
-
-	protected CharacteristicsMap d_chars = new CharacteristicsMap();
+	private Map<BasicStudy.MeasurementKey, Measurement> d_measurements = new HashMap<BasicStudy.MeasurementKey, Measurement>();
+	private Set<Endpoint> d_endpoints = new HashSet<Endpoint>();
+	private CharacteristicsMap d_chars = new CharacteristicsMap();
 
 	public BasicStudy(String id, Indication i) {
 		d_id = id;
