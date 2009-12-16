@@ -29,6 +29,7 @@ import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
+import org.drugis.addis.entities.CategoricalVariable;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
@@ -57,6 +58,7 @@ public class ExampleData {
 	private static BasicStudy s_studyBennie;
 	private static BasicStudy s_studyDeWilde;
 	private static BasicStudy s_studyChouinard;
+	private static CategoricalVariable s_gender;
 
 	public static void initDefaultData(Domain domain) {
 		clearAll();
@@ -81,6 +83,14 @@ public class ExampleData {
 		domain.addStudy(buildStudyMcMurray());
 		
 		// unused stuff
+		domain.addCategoricalVariable(buildGenderVariable());
+	}
+
+	private static CategoricalVariable buildGenderVariable() {
+		if (s_gender == null) {
+			s_gender = new CategoricalVariable("Gender", new String[]{"Male", "Female"});
+		}
+		return s_gender;
 	}
 
 	private static void clearAll() {
