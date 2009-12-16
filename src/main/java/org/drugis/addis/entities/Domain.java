@@ -174,4 +174,8 @@ public interface Domain {
 	 * @throws DependentEntitiesException if some entities depend on this endpoint
 	 */
 	public void deleteIndication(Indication i) throws DependentEntitiesException;
+	
+	public SortedSet<CategoricalVariable> getCategoricalVariables();
+	
+	public void addCategoricalVariable(CategoricalVariable c);
 }

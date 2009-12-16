@@ -85,6 +85,11 @@ public class DomainTest {
 		d_domain.addMetaAnalysis(null);
 	}
 	
+	@Test(expected=NullPointerException.class)
+	public void testAddCategoricalVariableNull() {
+		d_domain.addCategoricalVariable(null);
+	}	
+	
 
 	@Test
 	public void testAddEndpoint() {
@@ -642,6 +647,24 @@ public class DomainTest {
 		mock.domainChanged(new DomainEvent(DomainEvent.Type.INDICATIONS));		
 		replay(mock);
 		d_domain.deleteIndication(i);
+		verify(mock);
+	}
+	
+	@Test
+	public void testGetCategoricalVariables() {
+		CategoricalVariable c = new CategoricalVariable("x", new String[]{"x", "y", "z"});
+		d_domain.addCategoricalVariable(c);
+		
+		assertEquals(Collections.singleton(c), d_domain.getCategoricalVariables());
+	}
+	
+	@Test
+	public void testAddCategoricalVariableFires() {
+		DomainListener mock = createMock(DomainListener.class);
+		d_domain.addListener(mock);
+		mock.domainChanged(new DomainEvent(DomainEvent.Type.VARIABLES));
+		replay(mock);
+		d_domain.addCategoricalVariable(new CategoricalVariable("x", new String[]{"x"}));
 		verify(mock);
 	}
 

@@ -10,7 +10,8 @@ public class DomainEvent {
 		DRUGS,
 		ENDPOINTS,
 		INDICATIONS,
-		ANALYSES
+		ANALYSES,
+		VARIABLES
 	}
 
 	public DomainEvent(Type type) {

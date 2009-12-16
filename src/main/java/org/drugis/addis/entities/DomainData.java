@@ -15,12 +15,15 @@ public class DomainData implements Serializable {
 	private SortedSet<Drug> d_drugs;
 	private SortedSet<Indication> d_indications;
 	
+	private SortedSet<CategoricalVariable> d_categoricals;
+	
 	public DomainData() {
 		d_endpoints = new TreeSet<Endpoint>();
 		d_studies = new TreeSet<Study>();
 		d_metaAnalyses = new TreeSet<RandomEffectsMetaAnalysis>();		
 		d_drugs = new TreeSet<Drug>();
 		d_indications = new TreeSet<Indication>();	
+		d_categoricals = new TreeSet<CategoricalVariable>();
 	}
 	
 	public SortedSet<Endpoint> getEndpoints() {
@@ -43,6 +46,10 @@ public class DomainData implements Serializable {
 		return d_indications;
 	}
 	
+	public SortedSet<CategoricalVariable> getCategoricalVariables() {
+		return d_categoricals;
+	}
+	
 	public void addEnpoint(Endpoint e) {
 		d_endpoints.add(e);
 	}
@@ -63,6 +70,10 @@ public class DomainData implements Serializable {
 		d_indications.add(i);
 	}
 	
+	public void addCategoricalVariable(CategoricalVariable cv) {
+		d_categoricals.add(cv);
+	}
+	
 	public void removeEndpoint(Endpoint e) {
 		d_endpoints.remove(e);
 	}
@@ -81,5 +92,9 @@ public class DomainData implements Serializable {
 		
 	public void removeIndication(Indication i) {
 		d_indications.remove(i);
+	}
+	
+	public void removeCategoricalVariable(CategoricalVariable cv) {
+		d_categoricals.remove(cv);
 	}
 }

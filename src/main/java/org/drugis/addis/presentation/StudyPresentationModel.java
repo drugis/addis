@@ -29,7 +29,6 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 				return getBean().getArms().size();
 			}
 		};
-		
 		d_doseHolder = new ListeningCharacteristicHolder(s, DerivedStudyCharacteristic.DOSING) {
 			@Override
 			protected Object getNewValue() {

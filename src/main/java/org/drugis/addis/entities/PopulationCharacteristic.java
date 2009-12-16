@@ -5,6 +5,7 @@ public enum PopulationCharacteristic implements Characteristic {
 
 	MALE("Male subjects", Integer.class),
 	FEMALE("Female subjects", Integer.class),
+//	GENDER("", Gender.class)
 	AGE("Age", BasicContinuousMeasurement.class);
 
 	private String d_description;

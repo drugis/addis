@@ -333,4 +333,17 @@ public class DomainImpl implements Domain {
 			updateHolderStudies(d_holderEntity);			
 		}
 	}
+
+	public SortedSet<CategoricalVariable> getCategoricalVariables() {
+		return Collections.unmodifiableSortedSet(d_domainData.getCategoricalVariables());
+	}
+
+	public void addCategoricalVariable(CategoricalVariable c) {
+		if (c == null) {
+			throw new NullPointerException("Categorical Variable may not be null");
+		}
+		d_domainData.addCategoricalVariable(c);
+	
+		fireDomainChanged(DomainEvent.Type.VARIABLES);
+	}
 }
