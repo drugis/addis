@@ -1,5 +1,8 @@
 package org.drugis.addis.entities;
 
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,20 +11,57 @@ import java.util.Set;
 import org.drugis.addis.entities.Endpoint.Type;
 
 import com.jgoodies.binding.value.AbstractValueModel;
-import com.jgoodies.binding.value.ValueHolder;
 
 public class FrequencyMeasurement extends BasicMeasurement {
 
 	private static final long serialVersionUID = -6601562604420073113L;
 	private CategoricalVariable d_cv;
 	
-	private Map<String, ValueHolder> d_frequencies = new HashMap<String, ValueHolder>();
+	private Map<String, AbstractValueModel> d_frequencies = new HashMap<String, AbstractValueModel>();
+
+	private void writeObject(ObjectOutputStream oos) throws IOException {
+		// FIXME: Holders should be on presentation layer due to serialization issues
+		System.err.println("serialize freqmeas");
+		oos.defaultWriteObject();
+		System.err.println("done");
+	}
+	
+	public class TransientListenerValueHolder extends AbstractValueModel {
+		private static final long serialVersionUID = -8344718537084761274L;
+		Object d_val;
+		
+		public TransientListenerValueHolder(Object val) {
+			d_val = val;
+		}
+		
+		private void writeObject(ObjectOutputStream oos) throws IOException {
+			System.err.println("Remove listeners");
+			removeListeners();
+			oos.defaultWriteObject();
+		}
+
+		private void removeListeners() {
+			for (PropertyChangeListener l : getPropertyChangeListeners()) {
+				removePropertyChangeListener(l);
+			}
+		}
+
+		public Object getValue() {
+			return d_val;
+		}
+
+		public void setValue(Object newValue) {
+			Object old = d_val;
+			d_val = newValue;
+			fireValueChange(old, d_val);
+		}
+	}
 
 	public FrequencyMeasurement(CategoricalVariable cv) {
 		super(0);
 		d_cv = cv;
 		for (String cat : d_cv.getCategories()) {
-			d_frequencies.put(cat, new ValueHolder(0));
+			d_frequencies.put(cat, new TransientListenerValueHolder(new Integer(0)));
 		}
 	}
 	
@@ -101,8 +141,8 @@ public class FrequencyMeasurement extends BasicMeasurement {
 		return false;
 	}
 	
-	private boolean frequenciesEqual(Map<String, ValueHolder> frequencies,
-			Map<String, ValueHolder> frequencies2) {
+	private boolean frequenciesEqual(Map<String, AbstractValueModel> frequencies,
+			Map<String, AbstractValueModel> frequencies2) {
 		if (!frequencies.keySet().equals(frequencies2.keySet())) {
 			return false;
 		}

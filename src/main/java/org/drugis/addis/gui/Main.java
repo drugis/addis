@@ -156,6 +156,7 @@ public class Main extends JFrame {
 			JOptionPane.showMessageDialog(this,
 					"Error saving domain", "Error saving domain",
 					JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
 		}
 	}
 

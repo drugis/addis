@@ -13,7 +13,9 @@ public class FrequencyMeasurementPresentation extends PresentationModel<Frequenc
 		implements LabeledPresentationModel {
 	public class LabelModel extends  AbstractValueModel implements PropertyChangeListener {
 		public LabelModel() {
-			getBean().addPropertyChangeListener(this);
+			for (String cat : getBean().getCategoricalVariable().getCategories()) {
+				getBean().getFrequencyModel(cat).addValueChangeListener(this);
+			}
 		}
 		
 		public String getValue() {
@@ -21,7 +23,7 @@ public class FrequencyMeasurementPresentation extends PresentationModel<Frequenc
 		}
 
 		public void propertyChange(PropertyChangeEvent evt) {
-			
+			fireValueChange(null, getValue());
 		}
 
 		public void setValue(Object newValue) {
