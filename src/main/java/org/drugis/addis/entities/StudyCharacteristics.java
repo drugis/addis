@@ -21,9 +21,6 @@ public class StudyCharacteristics {
 		for (Characteristic c : DerivedStudyCharacteristic.values()) {
 			values.add(c);
 		}
-		for (Characteristic c : PopulationCharacteristic.values()) {
-			values.add(c);
-		}
 		return values;
 	}
 }

@@ -1,6 +1,6 @@
 package org.drugis.addis.entities;
 
-public interface Variable extends Entity {
+public interface Variable extends Entity, Comparable<Variable> {
 	
 	public static final String PROPERTY_NAME = "name";
 

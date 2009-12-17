@@ -8,12 +8,12 @@ import java.text.ParsePosition;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.gui.LayoutUtil;
@@ -126,13 +126,12 @@ public class StudyArmsView implements ViewBuilder {
 			return "";
 		
 		String ret = new String("<html>");
-		for (PopulationCharacteristic c : PopulationCharacteristic.values()) {
+		for (Variable c : g.getCharacteristics().keySet()) {
 			Object val = g.getCharacteristic(c);
 			if (val != null)
-				ret += c.getDescription() + ": " + val + "<br>";			
+				ret += c.getName() + ": " + val + "<br>";			
 		}
 		ret += "</html>";
 		return ret;
 	}
-
 }

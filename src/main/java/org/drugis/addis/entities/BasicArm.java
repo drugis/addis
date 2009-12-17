@@ -27,7 +27,7 @@ public class BasicArm extends AbstractEntity implements Arm {
 	private Drug d_drug;
 	private AbstractDose d_dose;
 	
-	private CharacteristicsMap d_chars = new CharacteristicsMap();
+	private VariableMap d_chars = new VariableMap();
 	
 	public BasicArm(Drug drug, AbstractDose dose, int size) {
 		d_drug = drug;
@@ -76,15 +76,15 @@ public class BasicArm extends AbstractEntity implements Arm {
 		return null;
 	}
 	
-	public void setCharacteristic(PopulationCharacteristic c, Object val) {
-		d_chars.put(c, val);
+	public void setCharacteristic(Variable v, Measurement val) {
+		d_chars.put(v, val);
 	}
 
-	public Object getCharacteristic(Characteristic c) {
-		return d_chars.get(c);
+	public Object getCharacteristic(Variable v) {
+		return d_chars.get(v);
 	}
 
-	public CharacteristicsMap getCharacteristics() {
+	public VariableMap getCharacteristics() {
 		return d_chars;
 	}
 }

@@ -29,7 +29,7 @@ public interface Arm extends Entity {
 	public AbstractDose getDose();
 	public Integer getSize();
 	
-	public CharacteristicsMap getCharacteristics();
+	public VariableMap getCharacteristics();
 	
 	/**
 	 * Gets the characteristic.
@@ -37,5 +37,5 @@ public interface Arm extends Entity {
 	 * @param c
 	 * @return A characteristic, or null if its not set.
 	 */
-	public Object getCharacteristic(Characteristic c);
+	public Object getCharacteristic(Variable v);
 }

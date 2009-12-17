@@ -30,6 +30,7 @@ import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.CategoricalVariable;
+import org.drugis.addis.entities.ContinuousVariable;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
@@ -59,6 +60,7 @@ public class ExampleData {
 	private static BasicStudy s_studyDeWilde;
 	private static BasicStudy s_studyChouinard;
 	private static CategoricalVariable s_gender;
+	private static ContinuousVariable s_age;
 
 	public static void initDefaultData(Domain domain) {
 		clearAll();
@@ -84,6 +86,7 @@ public class ExampleData {
 		
 		// unused stuff
 		domain.addVariable(buildGenderVariable());
+		domain.addVariable(buildAgeVariable());
 	}
 
 	public static CategoricalVariable buildGenderVariable() {
@@ -91,6 +94,13 @@ public class ExampleData {
 			s_gender = new CategoricalVariable("Gender", new String[]{"Male", "Female"});
 		}
 		return s_gender;
+	}
+	
+	public static ContinuousVariable buildAgeVariable() {
+		if (s_age == null) {
+			s_age = new ContinuousVariable("Age");
+		}
+		return s_age;
 	}
 
 	private static void clearAll() {

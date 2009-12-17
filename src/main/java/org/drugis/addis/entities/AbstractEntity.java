@@ -38,5 +38,5 @@ public abstract class AbstractEntity implements Entity {
 		d_om.removePropertyChangeListener(listener);
 	}
 	
-	public abstract Set<Entity> getDependencies();
+	public abstract Set<? extends Entity> getDependencies();
 }

@@ -5,10 +5,11 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicArm;
+import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
@@ -16,10 +17,8 @@ import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.FrequencyMeasurement;
-import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.Interval;
 
@@ -421,11 +420,11 @@ public class MainData extends ExampleData {
 		// Bupropion data
 		FlexibleDose dose = new FlexibleDose(new Interval<Double>(100.0, 300.0), SIUnit.MILLIGRAMS_A_DAY);
 		BasicArm bupr = new BasicArm(Bupropion, dose, 165);
-		FrequencyMeasurement frequencyMeasurement = new FrequencyMeasurement(buildGenderVariable());
+		FrequencyMeasurement frequencyMeasurement = buildGenderVariable().buildMeasurement();
 		frequencyMeasurement.setFrequency("Male", 88);
 		frequencyMeasurement.setFrequency("Female", 77);
-		bupr.setCharacteristic(PopulationCharacteristic.GENDER, frequencyMeasurement);
-		bupr.setCharacteristic(PopulationCharacteristic.AGE, new BasicContinuousMeasurement(36.8, 9.28, 165));
+		bupr.setCharacteristic(buildGenderVariable(), frequencyMeasurement);
+		bupr.setCharacteristic(buildAgeVariable(), new BasicContinuousMeasurement(36.8, 9.28, 165));
 		
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(bupr);
 		pHamd.setRate((int) Math.round(166D*.59D));
@@ -435,11 +434,11 @@ public class MainData extends ExampleData {
 		// Placebo data
 		FixedDose fixedDose = new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY);
 		BasicArm plac = new BasicArm(placebo, fixedDose, 157);
-		frequencyMeasurement = new FrequencyMeasurement(buildGenderVariable());
+		frequencyMeasurement = buildGenderVariable().buildMeasurement();
 		frequencyMeasurement.setFrequency("Male", 88);
 		frequencyMeasurement.setFrequency("Female", 69);
-		plac.setCharacteristic(PopulationCharacteristic.GENDER, frequencyMeasurement);
-		plac.setCharacteristic(PopulationCharacteristic.AGE, new BasicContinuousMeasurement(36.0, 8.91, 157));
+		plac.setCharacteristic(buildGenderVariable(), frequencyMeasurement);
+		plac.setCharacteristic(buildAgeVariable(), new BasicContinuousMeasurement(36.0, 8.91, 157));
 		
 		pHamd = (BasicRateMeasurement)hamd.buildMeasurement(plac);
 		pHamd.setRate((int) Math.round(157*.5));		

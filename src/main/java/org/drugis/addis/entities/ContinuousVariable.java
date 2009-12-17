@@ -17,11 +17,15 @@ public class ContinuousVariable extends AbstractEntity implements Variable {
 		return Collections.emptySet();
 	}
 
-	public Measurement buildMeasurement() {
+	public ContinuousMeasurement buildMeasurement() {
 		return new BasicContinuousMeasurement(0, 0, 0);
 	}
 
 	public String getName() {
 		return d_name;
+	}
+
+	public int compareTo(Variable other) {
+		return getName().compareTo(other.getName()); 
 	}
 }

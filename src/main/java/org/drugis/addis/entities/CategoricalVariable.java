@@ -29,7 +29,11 @@ public class CategoricalVariable extends AbstractEntity implements Variable {
 		return Collections.emptySet();
 	}
 
-	public Measurement buildMeasurement() {
+	public FrequencyMeasurement buildMeasurement() {
 		return new FrequencyMeasurement(this);
+	}
+
+	public int compareTo(Variable other) {
+		return getName().compareTo(other.getName());
 	}
 }

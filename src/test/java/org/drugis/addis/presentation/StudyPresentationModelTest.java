@@ -9,15 +9,12 @@ import java.util.Collections;
 
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicStudy;
-import org.drugis.addis.entities.CategoricalVariable;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.FlexibleDose;
-import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
-import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -91,20 +88,4 @@ public class StudyPresentationModelTest {
 		verify(mock);
 		assertEquals(DerivedStudyCharacteristic.Dosing.FLEXIBLE, model.getValue());
 	}
-	
-	@Test
-	public void testPopulationCharacteristicUpdatesOnArmAdd() {
-		FrequencyMeasurement freqMeas = new FrequencyMeasurement(new CategoricalVariable("Gender", new String[]{"Male", "Female"}));
-		freqMeas.setFrequency("Male", 55);
-		freqMeas.setFrequency("Female", 50);
-		
-		StudyCharacteristicHolder model = d_model.getCharacteristicModel(PopulationCharacteristic.GENDER);
-		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, freqMeas);
-		model.addPropertyChangeListener(mock);
-		BasicArm arm = new BasicArm(null, null, 105);
-		arm.setCharacteristic(PopulationCharacteristic.GENDER, freqMeas);
-		d_study.addArm(arm);
-		verify(mock);
-		assertEquals(freqMeas, model.getValue());
-	}	
 }

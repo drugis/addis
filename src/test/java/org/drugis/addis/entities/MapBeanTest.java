@@ -9,7 +9,7 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
-public class StudyCharacteristicsMapTest {
+public class MapBeanTest {
 	CharacteristicsMap d_map;
 	
 	@Before
@@ -30,7 +30,7 @@ public class StudyCharacteristicsMapTest {
 	@Test
 	public void testPutEmits() {
 		PropertyChangeListener listener =
-			JUnitUtil.mockStrictListener(d_map, CharacteristicsMap.PROPERTY_CONTENTS, null, null);
+			JUnitUtil.mockStrictListener(d_map, MapBean.PROPERTY_CONTENTS, null, null);
 		d_map.addPropertyChangeListener(listener);
 		d_map.put(BasicStudyCharacteristic.INDICATION, new Indication(0L, "Test"));
 		verify(listener);
