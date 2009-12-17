@@ -10,14 +10,14 @@ import java.util.Collections;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AbstractDose;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
-import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.common.Interval;
@@ -40,7 +40,7 @@ public class StudyAddArmPresentationTest {
 	
 	@Test
 	public void testGetArm() {
-		BasicArm pg = d_pm.getArm();
+		Arm pg = d_pm.getArm();
 		assertNotNull(pg);
 		assertEquals(new Integer(0), pg.getSize());
 		assertEquals(null, pg.getDrug());

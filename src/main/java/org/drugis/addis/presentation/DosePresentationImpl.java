@@ -6,6 +6,7 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
@@ -16,7 +17,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueHolder;
 
 class DosePresentationImpl implements DosePresentationModel {
-	private BasicArm d_pg;
+	private Arm d_pg;
 	private ValueHolder d_min;
 	private ValueHolder d_max;
 	private ValueHolder d_unit;
@@ -37,7 +38,7 @@ class DosePresentationImpl implements DosePresentationModel {
 		});
 	}
 
-	private double getMaxDose(BasicArm pg) {
+	private double getMaxDose(Arm pg) {
 		if (d_pg.getDose() instanceof FlexibleDose) {
 			return ((FlexibleDose)d_pg.getDose()).getFlexibleDose().getUpperBound();
 		} else if (d_pg.getDose() instanceof FixedDose) {
@@ -46,7 +47,7 @@ class DosePresentationImpl implements DosePresentationModel {
 		return 0.0;
 	}
 
-	private double getMinDose(BasicArm pg) {
+	private double getMinDose(Arm pg) {
 		if (d_pg.getDose() instanceof FlexibleDose) {
 			return ((FlexibleDose)d_pg.getDose()).getFlexibleDose().getLowerBound();
 		} else if (d_pg.getDose() instanceof FixedDose) {
@@ -84,10 +85,10 @@ class DosePresentationImpl implements DosePresentationModel {
 				}
 			}
 			if (d_min.doubleValue() == d_max.doubleValue()) {
-				d_pg.setDose(new FixedDose(d_min.doubleValue(), d_pg.getDose().getUnit()));
+				((BasicArm)d_pg).setDose(new FixedDose(d_min.doubleValue(), d_pg.getDose().getUnit()));
 			} else if (d_min.doubleValue() < d_max.doubleValue()) {
 				Interval<Double> interval = new Interval<Double>(d_min.doubleValue(), d_max.doubleValue());
-				d_pg.setDose(new FlexibleDose(interval , d_pg.getDose().getUnit()));
+				((BasicArm)d_pg).setDose(new FlexibleDose(interval , d_pg.getDose().getUnit()));
 			} else {
 				throw new RuntimeException("Should not be reached");
 			}

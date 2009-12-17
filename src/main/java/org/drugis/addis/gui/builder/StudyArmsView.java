@@ -13,8 +13,8 @@ import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.GUIFactory;
+import org.drugis.addis.presentation.BasicArmPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -72,6 +72,7 @@ public class StudyArmsView implements ViewBuilder {
 	@SuppressWarnings("serial")
 	private int buildArm(FormLayout layout, PanelBuilder builder, CellConstraints cc, int row, Arm g) {
 		int col;
+		BasicArmPresentation armModel = (BasicArmPresentation)d_pm.getModel(g);
 		LayoutUtil.addRow(layout);
 		builder.add(
 				BasicComponentFactory.createLabel(d_pm.getLabeledModel(g).getLabelModel()),
@@ -79,7 +80,7 @@ public class StudyArmsView implements ViewBuilder {
 		
 		builder.add(
 				BasicComponentFactory.createLabel(
-						new PresentationModel<Arm>(g).getModel(BasicArm.PROPERTY_DOSE),
+						armModel.getModel(BasicArm.PROPERTY_DOSE),
 						new Format() {
 							
 							@Override
@@ -97,9 +98,9 @@ public class StudyArmsView implements ViewBuilder {
 						cc.xy(3, row, "right, center"));
 		
 		final JLabel armSizeLabel = BasicComponentFactory.createLabel(
-				new PresentationModel<Arm>(g).getModel(BasicArm.PROPERTY_SIZE),
+				armModel.getModel(BasicArm.PROPERTY_SIZE),
 				NumberFormat.getInstance());
-		final String pgCharacteristicTooltip = buildCharacteristicTooltip(g);
+		final String pgCharacteristicTooltip = armModel.getCharacteristicTooltip();
 		if (!pgCharacteristicTooltip.equals(""))
 			armSizeLabel.setToolTipText(pgCharacteristicTooltip);
 		builder.add(
@@ -119,19 +120,5 @@ public class StudyArmsView implements ViewBuilder {
 		
 		row += 2;
 		return row;
-	}
-
-	private String buildCharacteristicTooltip(Arm g) {
-		if (g.getCharacteristics().isEmpty())
-			return "";
-		
-		String ret = new String("<html>");
-		for (Variable c : g.getCharacteristics().keySet()) {
-			Object val = g.getCharacteristic(c);
-			if (val != null)
-				ret += c.getName() + ": " + val + "<br>";			
-		}
-		ret += "</html>";
-		return ret;
 	}
 }

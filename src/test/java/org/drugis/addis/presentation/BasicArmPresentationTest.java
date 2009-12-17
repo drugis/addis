@@ -6,6 +6,10 @@ import static org.junit.Assert.*;
 import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.BasicArm;
+import org.drugis.addis.entities.CategoricalVariable;
+import org.drugis.addis.entities.ContinuousMeasurement;
+import org.drugis.addis.entities.ContinuousVariable;
+import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
@@ -19,23 +23,27 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 public class BasicArmPresentationTest {
 	private BasicArm d_pg;
+	private PresentationModelFactory d_pmf;
+	private BasicArmPresentation d_pres;
 
 	@Before
 	public void setUp() {
+		d_pmf = new PresentationModelFactory(new DomainImpl());
 		d_pg = new BasicArm(null, null, 0);
+		d_pres = new BasicArmPresentation(d_pg, d_pmf);
 	}
+	
 	
 	@Test
 	public void testGetLabel() {
 		BasicArm group = d_pg;
-		BasicArmPresentation pres = new BasicArmPresentation(group);
-		assertEquals("INCOMPLETE", pres.getLabelModel().getValue());
+		assertEquals("INCOMPLETE", d_pres.getLabelModel().getValue());
 		
 		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		group.setDose(dose);
 		Drug drug = new Drug("Fluoxetine", "atc");
 		group.setDrug(drug);
-		assertEquals("Fluoxetine", pres.getLabelModel().getValue());
+		assertEquals("Fluoxetine", d_pres.getLabelModel().getValue());
 	}
 		
 	@Test
@@ -46,8 +54,7 @@ public class BasicArmPresentationTest {
 		d_pg.setDrug(drug);
 		d_pg.setDose(dose);
 		
-		BasicArmPresentation pres = new BasicArmPresentation(d_pg);
-		AbstractValueModel lm = pres.getLabelModel();
+		AbstractValueModel lm = d_pres.getLabelModel();
 		String expect = (String) lm.getValue();
 		
 		d_pg.setDrug(drug2);
@@ -60,67 +67,79 @@ public class BasicArmPresentationTest {
 	@Test
 	public void testFixedDoseModelInitialValues() {
 		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		BasicArmPresentation pres = new BasicArmPresentation(
-				new BasicArm(new Drug("", ""), dose, 100));
-		assertEquals(dose.getQuantity(), pres.getDoseModel().getMinModel().getValue());
-		assertEquals(dose.getQuantity(), pres.getDoseModel().getMaxModel().getValue());
+		d_pg.setDose(dose);
+		assertEquals(dose.getQuantity(), d_pres.getDoseModel().getMinModel().getValue());
+		assertEquals(dose.getQuantity(), d_pres.getDoseModel().getMaxModel().getValue());
 	}
 		
 	@Test
 	public void testFlexibleDoseModelInitialValues() {
 		FlexibleDose dose = new FlexibleDose(new Interval<Double>(25.5, 30.2), SIUnit.MILLIGRAMS_A_DAY);
-		BasicArmPresentation pres = new BasicArmPresentation(
-				new BasicArm(new Drug("", ""), dose, 100));
-		assertEquals(dose.getFlexibleDose().getLowerBound(), pres.getDoseModel().getMinModel().getValue());
-		assertEquals(dose.getFlexibleDose().getUpperBound(), pres.getDoseModel().getMaxModel().getValue());
+		d_pg.setDose(dose);
+		assertEquals(dose.getFlexibleDose().getLowerBound(), d_pres.getDoseModel().getMinModel().getValue());
+		assertEquals(dose.getFlexibleDose().getUpperBound(), d_pres.getDoseModel().getMaxModel().getValue());
 	}
 	
 	@Test
 	public void testFixedToFlexible() {
 		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		BasicArmPresentation pres = new BasicArmPresentation(
-				new BasicArm(new Drug("", ""), dose, 100));
-		pres.getDoseModel().getMaxModel().setValue(dose.getQuantity() + 2);
-		assertTrue(pres.getBean().getDose() instanceof FlexibleDose);
+		d_pg.setDose(dose);
+		d_pres.getDoseModel().getMaxModel().setValue(dose.getQuantity() + 2);
+		assertTrue(d_pres.getBean().getDose() instanceof FlexibleDose);
 	}
 	
 	@Test
 	public void testFlexibleToFixed() {
 		FlexibleDose dose = new FlexibleDose(new Interval<Double>(25.5, 30.2), SIUnit.MILLIGRAMS_A_DAY);
-		BasicArmPresentation pres = new BasicArmPresentation(
-				new BasicArm(new Drug("", ""), dose, 100));
-		pres.getDoseModel().getMaxModel().setValue(dose.getFlexibleDose().getLowerBound());
-		assertTrue(pres.getBean().getDose() instanceof FixedDose);
+		d_pg.setDose(dose);
+		d_pres.getDoseModel().getMaxModel().setValue(dose.getFlexibleDose().getLowerBound());
+		assertTrue(d_pres.getBean().getDose() instanceof FixedDose);
 	}
 	
 	@Test
 	public void testSetMaxLowerThanMinDose() {
 		FlexibleDose dose = new FlexibleDose(new Interval<Double>(10.0,20.0), SIUnit.MILLIGRAMS_A_DAY);
-		BasicArmPresentation pres = new BasicArmPresentation(
-				new BasicArm(new Drug("", ""), dose, 100));
-		pres.getDoseModel().getMaxModel().setValue(8d);
-		assertEquals(8d, pres.getDoseModel().getMaxModel().doubleValue(), 0.001);
-		assertEquals(8d, pres.getDoseModel().getMinModel().doubleValue(), 0.001);
-		assertTrue(pres.getBean().getDose() instanceof FixedDose);
+		d_pg.setDose(dose);
+		d_pres.getDoseModel().getMaxModel().setValue(8d);
+		assertEquals(8d, d_pres.getDoseModel().getMaxModel().doubleValue(), 0.001);
+		assertEquals(8d, d_pres.getDoseModel().getMinModel().doubleValue(), 0.001);
+		assertTrue(d_pres.getBean().getDose() instanceof FixedDose);
 	}
 	
 	@Test
 	public void testSetMinHigherThanMaxDose() {
 		FlexibleDose dose = new FlexibleDose(new Interval<Double>(10.0,20.0), SIUnit.MILLIGRAMS_A_DAY);
-		BasicArmPresentation pres = new BasicArmPresentation(
-				new BasicArm(new Drug("", ""), dose, 100));
-		pres.getDoseModel().getMinModel().setValue(25d);
-		assertEquals(25d, pres.getDoseModel().getMaxModel().doubleValue(), 0.001);
-		assertEquals(25d, pres.getDoseModel().getMinModel().doubleValue(), 0.001);
-		assertTrue(pres.getBean().getDose() instanceof FixedDose);
+		d_pg.setDose(dose);
+		d_pres.getDoseModel().getMinModel().setValue(25d);
+		assertEquals(25d, d_pres.getDoseModel().getMaxModel().doubleValue(), 0.001);
+		assertEquals(25d, d_pres.getDoseModel().getMinModel().doubleValue(), 0.001);
+		assertTrue(d_pres.getBean().getDose() instanceof FixedDose);
 	}
 	
 	@Test
 	public void testSetUnit() {
 		FlexibleDose dose = new FlexibleDose(new Interval<Double>(10.0,20.0), null);
-		BasicArmPresentation pres = new BasicArmPresentation(
-				new BasicArm(new Drug("", ""), dose, 100));
-		pres.getDoseModel().getUnitModel().setValue(SIUnit.MILLIGRAMS_A_DAY);
-		assertEquals(SIUnit.MILLIGRAMS_A_DAY, pres.getBean().getDose().getUnit());
+		d_pg.setDose(dose);
+		d_pres.getDoseModel().getUnitModel().setValue(SIUnit.MILLIGRAMS_A_DAY);
+		assertEquals(SIUnit.MILLIGRAMS_A_DAY, d_pres.getBean().getDose().getUnit());
+	}
+	
+	@Test
+	public void testGetTooltip() {
+		ContinuousVariable age = new ContinuousVariable("Age");
+		d_pg.setCharacteristic(age, age.buildMeasurement());
+		CategoricalVariable gender = new CategoricalVariable("Gender", new String[]{"Male", "Female"});
+		d_pg.setCharacteristic(gender, gender.buildMeasurement());
+		assertEquals("<html>Age: " + age.buildMeasurement().toString() + "<br>" +
+				"Gender: Male = 0 / Female = 0<br></html>", d_pres.getCharacteristicTooltip());
+	}
+	
+	@Test
+	public void testGetCharacteristicModel() {
+		ContinuousVariable age = new ContinuousVariable("Age");
+		ContinuousMeasurement m = age.buildMeasurement();
+		d_pg.setCharacteristic(age, m);
+		assertEquals(d_pmf.getLabeledModel(m), d_pres.getCharacteristicModel(age));
+		assertEquals(null, d_pres.getCharacteristicModel(new ContinuousVariable("X")));
 	}
 }

@@ -5,6 +5,9 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 public class LayoutUtil {
+	public static void addColumn(FormLayout layout) {
+		addColumn(layout, "left:pref");
+	}
 
 	public static void addColumn(FormLayout layout, String spec) {
 		layout.appendColumn(ColumnSpec.decode("3dlu"));

@@ -2,16 +2,18 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.TreeSet;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.Variable;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class BasicArmPresentation extends PresentationModel<BasicArm> implements LabeledPresentationModel {
+public class BasicArmPresentation extends PresentationModel<Arm> implements LabeledPresentationModel {
 	public class LabelModel extends AbstractValueModel implements PropertyChangeListener {
 		private String d_cachedLabel;
 		
@@ -48,8 +50,11 @@ public class BasicArmPresentation extends PresentationModel<BasicArm> implements
 		}
 	}
 
-	public BasicArmPresentation(BasicArm bean) {
+	private PresentationModelFactory d_pmf;
+
+	public BasicArmPresentation(BasicArm bean, PresentationModelFactory pmf) {
 		super(bean);
+		d_pmf = pmf;
 	}
 
 	public AbstractValueModel getLabelModel() {
@@ -58,5 +63,27 @@ public class BasicArmPresentation extends PresentationModel<BasicArm> implements
 	
 	public DosePresentationModel getDoseModel() {
 		return new DosePresentationImpl(this);
+	}
+	
+	public String getCharacteristicTooltip() {
+		if (getBean().getCharacteristics().isEmpty())
+			return "";
+		
+		String ret = new String("<html>");
+		for (Variable c : new TreeSet<Variable>(getBean().getCharacteristics().keySet())) {
+			Object val = getBean().getCharacteristic(c);
+			if (val != null)
+				ret += c.getName() + ": " + val + "<br>";			
+		}
+		ret += "</html>";
+		return ret;
+		
+	}
+
+	public LabeledPresentationModel getCharacteristicModel(Variable v) {
+		if (getBean().getCharacteristic(v) != null) {
+			return d_pmf.getLabeledModel(getBean().getCharacteristic(v));
+		}
+		return null;
 	}
 }

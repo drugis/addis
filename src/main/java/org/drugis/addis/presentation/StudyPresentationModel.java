@@ -2,6 +2,10 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -9,6 +13,7 @@ import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.DerivedStudyCharacteristic.Dosing;
 
 import com.jgoodies.binding.PresentationModel;
@@ -19,9 +24,12 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 	private StudyCharacteristicHolder d_doseHolder;
 	private StudyCharacteristicHolder d_drugHolder;
 	private StudyCharacteristicHolder d_sizeHolder;
+	private PresentationModelFactory d_pmf;
 	
-	public StudyPresentationModel(Study s) {
+	public StudyPresentationModel(Study s, PresentationModelFactory pmf) {
 		super(s);
+		
+		d_pmf = pmf;
 		
 		d_armsHolder = new ListeningCharacteristicHolder(s, DerivedStudyCharacteristic.ARMS) {
 			@Override
@@ -106,5 +114,29 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 			} 
 			firePropertyChange("value", null, getNewValue());
 		}
+	}
+
+	public int getArmCount() {
+		return getBean().getArms().size();
+	}
+	
+	public List<BasicArmPresentation> getArms() {
+		List<BasicArmPresentation> list = new ArrayList<BasicArmPresentation>();
+		for (Arm arm : getBean().getArms()) {
+			list.add((BasicArmPresentation) d_pmf.getModel(arm));
+		}
+		return list;
+	}
+
+	public int getPopulationCharacteristicCount() {
+		return getPopulationCharacteristics().size();
+	}
+
+	public Set<Variable> getPopulationCharacteristics() {
+		Set<Variable> vars = new HashSet<Variable>();
+		for (Arm a : getBean().getArms()) {
+			vars.addAll(a.getCharacteristics().keySet());
+		}
+		return vars;
 	}
 }

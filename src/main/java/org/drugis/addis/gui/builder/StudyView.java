@@ -20,6 +20,7 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -52,6 +53,7 @@ public class StudyView implements ViewBuilder {
 	private StudyCharacteristicsView d_charView;
 	private StudyEndpointsView d_epView;
 	private StudyArmsView d_armsView;
+	private StudyPopulationView d_popView;
 	
 	
 	public StudyView(StudyPresentationModel model, Domain domain, Main main) {
@@ -59,6 +61,7 @@ public class StudyView implements ViewBuilder {
 		d_mainWindow = main;
 		d_domain = domain;
 		d_charView = new StudyCharacteristicsView(model);
+		d_popView = new StudyPopulationView(model);
 		d_epView = new StudyEndpointsView(model, main);
 		d_armsView = new StudyArmsView(model, main.getPresentationModelFactory());
 	}
@@ -66,7 +69,7 @@ public class StudyView implements ViewBuilder {
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -78,6 +81,10 @@ public class StudyView implements ViewBuilder {
 		row += 2;
 		builder.add(GUIFactory.createCollapsiblePanel(d_charView.buildPanel()),	cc.xy(1, 3));
 		row += 2;
+		builder.addSeparator("Baseline Characteristics", cc.xy(1, row));
+		row += 2;
+		builder.add(buildPopulationPart(), cc.xy(1, row));
+		row += 2;
 		builder.addSeparator("Endpoints", cc.xy(1, row));
 		row += 2;
 		builder.add(buildEndpointPart(), cc.xy(1, row));
@@ -87,6 +94,13 @@ public class StudyView implements ViewBuilder {
 		builder.add(buildArmsPart(),cc.xy(1, row));
 		
 		return builder.getPanel();
+	}
+
+	private Component buildPopulationPart() {
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(d_popView.buildPanel(), BorderLayout.CENTER);
+		panel.add(buildAddCharButton(), BorderLayout.SOUTH);
+		return GUIFactory.createCollapsiblePanel(panel);
 	}
 
 	private JPanel buildArmsPart() {
@@ -102,16 +116,36 @@ public class StudyView implements ViewBuilder {
 		panel.add(buildAddEndpointButton(), BorderLayout.SOUTH);
 		return GUIFactory.createCollapsiblePanel(panel);
 	}
+	
+	private JComponent buildAddCharButton() {
+		String text = "Input baseline characteristic";
+		AbstractAction action = new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				addBaselineCharacteristic();
+			}
+		};
+		return buildOneButtonBar(text, action);
+	}
+
+	private void addBaselineCharacteristic() {
+		System.out.println("ADD BASELINE CHARACTERISTIC");
+	}
 
 	private JComponent buildAddArmButton() {
-		ButtonBarBuilder2 bb = new ButtonBarBuilder2();
-		JButton addGroupButton = new JButton("Add patient group");
-		addGroupButton.addActionListener(new AbstractAction() {
+		String text = "Add study arm";
+		AbstractAction action = new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				addArm();
 			}			
-		});
-		bb.addButton(addGroupButton);
+		};
+		return buildOneButtonBar(text, action);
+	}
+
+	private JComponent buildOneButtonBar(String text, AbstractAction action) {
+		ButtonBarBuilder2 bb = new ButtonBarBuilder2();
+		JButton button = new JButton(text);
+		button.addActionListener(action);
+		bb.addButton(button);
 		bb.addGlue();
 		return bb.getPanel();
 	}
@@ -123,25 +157,14 @@ public class StudyView implements ViewBuilder {
 		dlg.setVisible(true);
 	}
 
-	private JPanel buildAddEndpointButton() {
-		JButton button = new JButton("Add Endpoint");
-		button.addActionListener(new AbstractAction() {
+	private JComponent buildAddEndpointButton() {
+		String text = "Add Endpoint";
+		AbstractAction action = new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				addEndpointClicked();
 			}			
-		});
-		ButtonBarBuilder2 bbarBuilder = new ButtonBarBuilder2();
-		bbarBuilder.addButton(button);
-		bbarBuilder.addGlue();		
-		if (studyHasAllEndpoints()) {
-			button.setEnabled(false);
-		}
-		JPanel panel = bbarBuilder.getPanel();
-		return panel;
-	}
-
-	private boolean studyHasAllEndpoints() {
-		return d_model.getBean().getEndpoints().containsAll(d_domain.getEndpoints());
+		};
+		return buildOneButtonBar(text, action);
 	}
 
 	private void addEndpointClicked() {

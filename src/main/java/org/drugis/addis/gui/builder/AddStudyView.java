@@ -36,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultFormatter;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicRateMeasurement;
@@ -303,7 +304,7 @@ public class AddStudyView implements ViewBuilder {
 	private void buildArms(FormLayout layout, int fullWidth,
 			PanelBuilder builder, CellConstraints cc, int row) {
 		List<BasicArm> groups = d_model.getBean().getArms();
-		for (BasicArm g : groups) {
+		for (Arm g : groups) {
 			LayoutUtil.addRow(layout);
 			
 			BasicArmPresentation model = (BasicArmPresentation) d_mainWindow.getPresentationModelFactory().getModel(g);
@@ -345,7 +346,7 @@ public class AddStudyView implements ViewBuilder {
 		}
 	}
 
-	private void wireSampleSize(PresentationModel<BasicArm> pg,
+	private void wireSampleSize(BasicArmPresentation pg,
 			final PresentationModel<BasicMeasurement> m) {
 		pg.getModel(BasicArm.PROPERTY_SIZE).addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {

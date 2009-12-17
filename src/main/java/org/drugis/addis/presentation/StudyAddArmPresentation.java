@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicStudy;
@@ -28,7 +29,7 @@ public class StudyAddArmPresentation {
 	public StudyAddArmPresentation(BasicStudy study, PresentationModelFactory pmf) {
 		d_pmf = pmf;
 		d_study = study;
-		BasicArm pg = new BasicArm(null, new FlexibleDose(new Interval<Double>(0.0, 0.0), SIUnit.MILLIGRAMS_A_DAY), 0);
+		Arm pg = new BasicArm(null, new FlexibleDose(new Interval<Double>(0.0, 0.0), SIUnit.MILLIGRAMS_A_DAY), 0);
 		d_pg = (BasicArmPresentation)d_pmf.getModel(pg);
 		
 		for (Endpoint e : d_study.getEndpoints()) {
@@ -47,7 +48,7 @@ public class StudyAddArmPresentation {
 		}
 	}
 	
-	public BasicArm getArm() {
+	public Arm getArm() {
 		return d_pg.getBean();
 	}
 	
@@ -82,7 +83,7 @@ public class StudyAddArmPresentation {
 	}
 	
 	public void addToStudy() {
-		d_study.addArm(getArm());
+		d_study.addArm((BasicArm)getArm());
 		for (Endpoint e: d_study.getEndpoints()) {
 			d_study.setMeasurement(e, getArm(), d_measurements.get(e));
 		}

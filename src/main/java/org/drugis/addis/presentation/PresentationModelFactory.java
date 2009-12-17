@@ -27,6 +27,7 @@ import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RelativeEffect;
@@ -87,7 +88,7 @@ public class PresentationModelFactory {
 					d_domain.getStudies((Endpoint)obj));
 		}
 		if (obj instanceof Study) {
-			return new StudyPresentationModel((Study) obj);
+			return new StudyPresentationModel((Study) obj, this);
 		}		
 		if (obj instanceof Indication) {
 			return new IndicationPresentation((Indication)obj, d_domain.getStudies((Indication)obj));
@@ -101,11 +102,11 @@ public class PresentationModelFactory {
 		if (obj instanceof ContinuousMeasurement) {
 			return new ContinuousMeasurementPresentation((ContinuousMeasurement)obj);
 		}
-		if (obj instanceof RateMeasurement) {
-			return new RateMeasurementPresentation((RateMeasurement)obj);
+		if (obj instanceof FrequencyMeasurement) {
+			return new FrequencyMeasurementPresentation((FrequencyMeasurement)obj);
 		}
 		if (obj instanceof BasicArm) {
-			return new BasicArmPresentation((BasicArm)obj);
+			return new BasicArmPresentation((BasicArm)obj, this);
 		}
 		if (obj instanceof Drug) {
 			Drug d = (Drug) obj;
