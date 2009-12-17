@@ -2,6 +2,8 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.*;
 
+import java.util.Collections;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,5 +26,18 @@ public class CategoricalVariableTest {
 	@Test
 	public void testGetName() {
 		assertEquals("Gender", d_gender.getName());
+	}
+	
+	@Test
+	public void testBuildMeasurement() {
+		Measurement m = d_gender.buildMeasurement();
+		assertTrue(m instanceof FrequencyMeasurement);
+		assertEquals(d_gender, ((FrequencyMeasurement)m).getCategoricalVariable());
+		assertEquals(new Integer(0), m.getSampleSize());
+	}
+	
+	@Test
+	public void testGetDependencies() {
+		assertEquals(Collections.emptySet(), d_gender.getDependencies());
 	}
 }

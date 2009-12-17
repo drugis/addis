@@ -86,8 +86,8 @@ public class DomainTest {
 	}
 	
 	@Test(expected=NullPointerException.class)
-	public void testAddCategoricalVariableNull() {
-		d_domain.addCategoricalVariable(null);
+	public void testAddVariableNull() {
+		d_domain.addVariable(null);
 	}	
 	
 
@@ -651,20 +651,20 @@ public class DomainTest {
 	}
 	
 	@Test
-	public void testGetCategoricalVariables() {
+	public void testGetVariables() {
 		CategoricalVariable c = new CategoricalVariable("x", new String[]{"x", "y", "z"});
-		d_domain.addCategoricalVariable(c);
+		d_domain.addVariable(c);
 		
-		assertEquals(Collections.singleton(c), d_domain.getCategoricalVariables());
+		assertEquals(Collections.singleton(c), d_domain.getVariables());
 	}
 	
 	@Test
-	public void testAddCategoricalVariableFires() {
+	public void testAddVariableFires() {
 		DomainListener mock = createMock(DomainListener.class);
 		d_domain.addListener(mock);
 		mock.domainChanged(new DomainEvent(DomainEvent.Type.VARIABLES));
 		replay(mock);
-		d_domain.addCategoricalVariable(new CategoricalVariable("x", new String[]{"x"}));
+		d_domain.addVariable(new CategoricalVariable("x", new String[]{"x"}));
 		verify(mock);
 	}
 

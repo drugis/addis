@@ -1,8 +1,9 @@
 package org.drugis.addis.entities;
 
+import java.util.Collections;
 import java.util.Set;
 
-public class CategoricalVariable extends AbstractEntity {
+public class CategoricalVariable extends AbstractEntity implements Variable {
 	private static final long serialVersionUID = 8700874872019027607L;
 	private String[] d_categories;
 	private String d_name;
@@ -16,13 +17,19 @@ public class CategoricalVariable extends AbstractEntity {
 		return d_categories;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.drugis.addis.entities.Variable#getName()
+	 */
 	public String getName() {
 		return d_name;
 	}
 
 	@Override
 	public Set<Entity> getDependencies() {
-		return null;
+		return Collections.emptySet();
 	}
 
+	public Measurement buildMeasurement() {
+		return new FrequencyMeasurement(this);
+	}
 }

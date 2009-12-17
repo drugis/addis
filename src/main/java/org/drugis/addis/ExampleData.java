@@ -83,7 +83,7 @@ public class ExampleData {
 		domain.addStudy(buildStudyMcMurray());
 		
 		// unused stuff
-		domain.addCategoricalVariable(buildGenderVariable());
+		domain.addVariable(buildGenderVariable());
 	}
 
 	public static CategoricalVariable buildGenderVariable() {

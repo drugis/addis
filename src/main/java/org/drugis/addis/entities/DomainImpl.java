@@ -334,15 +334,15 @@ public class DomainImpl implements Domain {
 		}
 	}
 
-	public SortedSet<CategoricalVariable> getCategoricalVariables() {
-		return Collections.unmodifiableSortedSet(d_domainData.getCategoricalVariables());
+	public SortedSet<Variable> getVariables() {
+		return Collections.unmodifiableSortedSet(d_domainData.getVariables());
 	}
 
-	public void addCategoricalVariable(CategoricalVariable c) {
+	public void addVariable(Variable c) {
 		if (c == null) {
 			throw new NullPointerException("Categorical Variable may not be null");
 		}
-		d_domainData.addCategoricalVariable(c);
+		d_domainData.addVariable(c);
 	
 		fireDomainChanged(DomainEvent.Type.VARIABLES);
 	}

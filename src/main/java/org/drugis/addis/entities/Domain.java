@@ -175,7 +175,7 @@ public interface Domain {
 	 */
 	public void deleteIndication(Indication i) throws DependentEntitiesException;
 	
-	public SortedSet<CategoricalVariable> getCategoricalVariables();
+	public SortedSet<Variable> getVariables();
 	
-	public void addCategoricalVariable(CategoricalVariable c);
+	public void addVariable(Variable c);
 }
