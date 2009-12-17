@@ -12,6 +12,8 @@ import org.drugis.common.gui.OkCancelDialog;
 public class StudyAddPopulationCharacteristicDialog extends OkCancelDialog {
 	private StudyAddPopulationCharacteristicPresentation d_pm;
 	private StudyAddPopulationCharacteristicView d_view;
+	private Main d_main;
+	private StudyPresentationModel d_studyModel;
 	
 
 	public StudyAddPopulationCharacteristicDialog(Main mainWindow,
@@ -21,6 +23,8 @@ public class StudyAddPopulationCharacteristicDialog extends OkCancelDialog {
 		
 		d_pm = new StudyAddPopulationCharacteristicPresentation(model, domain);
 		d_view = new StudyAddPopulationCharacteristicView(d_pm);
+		d_main = mainWindow;
+		d_studyModel = model;
 		
 		setPreferredSize(new Dimension(300, 200));
 		
@@ -38,5 +42,6 @@ public class StudyAddPopulationCharacteristicDialog extends OkCancelDialog {
 	protected void commit() {
 		d_pm.addToStudy();
 		setVisible(false);
+		d_main.leftTreeFocusOnStudy(d_studyModel.getBean());
 	}
 }

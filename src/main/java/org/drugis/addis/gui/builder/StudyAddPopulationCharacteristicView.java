@@ -15,7 +15,6 @@ import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
-import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -69,7 +68,7 @@ public class StudyAddPopulationCharacteristicView implements ViewBuilder {
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		for (int i = 1; i < MeasurementInputHelper.numComponents(m); ++i) {
-			LayoutUtil.addColumn(layout);
+			LayoutUtil.addColumn(layout, "pref:grow");
 		}
 		
 		int col = 1;
