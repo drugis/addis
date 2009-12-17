@@ -30,4 +30,9 @@ public class ContinuousVariableTest {
 		Measurement m = d_age.buildMeasurement();
 		assertTrue(m instanceof ContinuousMeasurement);
 	}
+	
+	@Test
+	public void testToString() {
+		assertEquals(d_age.getName(), d_age.toString());
+	}
 }

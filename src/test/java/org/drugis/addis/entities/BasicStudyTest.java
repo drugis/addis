@@ -192,4 +192,13 @@ public class BasicStudyTest {
 		s.addArm(pg2);
 		assertEquals(60, s.getSampleSize());
 	}
+	
+	@Test
+	public void testSetPopulationChar() {
+		Variable v = new ContinuousVariable("Age");
+		Study s = new BasicStudy("X", new Indication(0L, "Y"));
+		s.setPopulationCharacteristic(v, new BasicContinuousMeasurement(0.0, 1.0, 5));
+		assertTrue(s.getPopulationCharacteristics().containsKey(v));
+		assertEquals((new BasicContinuousMeasurement(0.0, 1.0, 5)).toString(), s.getPopulationCharacteristic(v).toString());
+	}
 }

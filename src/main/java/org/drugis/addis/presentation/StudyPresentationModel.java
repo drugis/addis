@@ -133,10 +133,17 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 	}
 
 	public Set<Variable> getPopulationCharacteristics() {
-		Set<Variable> vars = new HashSet<Variable>();
+		Set<Variable> vars = new HashSet<Variable>(getBean().getPopulationCharacteristics().keySet());
 		for (Arm a : getBean().getArms()) {
-			vars.addAll(a.getCharacteristics().keySet());
+			vars.addAll(a.getPopulationCharacteristics().keySet());
 		}
 		return vars;
+	}
+	
+	public LabeledPresentationModel getCharacteristicModel(Variable v) {
+		if (getBean().getPopulationCharacteristic(v) != null) {
+			return d_pmf.getLabeledModel(getBean().getPopulationCharacteristic(v));
+		}
+		return null;
 	}
 }

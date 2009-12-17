@@ -66,12 +66,14 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 	private Map<BasicStudy.MeasurementKey, Measurement> d_measurements = new HashMap<BasicStudy.MeasurementKey, Measurement>();
 	private Set<Endpoint> d_endpoints = new HashSet<Endpoint>();
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
+	private VariableMap d_popChars;
 
 	public BasicStudy(String id, Indication i) {
 		d_id = id;
 		d_chars.put(BasicStudyCharacteristic.INDICATION, i);
 		setEndpoints(new HashSet<Endpoint>());
 		setArms(new ArrayList<BasicArm>());
+		d_popChars = new VariableMap();
 	}
 
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
@@ -223,5 +225,17 @@ public class BasicStudy extends AbstractEntity implements MutableStudy {
 		for (Arm pg : d_arms)
 			s += pg.getSize();
 		return s;
+	}
+
+	public Measurement getPopulationCharacteristic(Variable v) {
+		return d_popChars.get(v);
+	}
+
+	public VariableMap getPopulationCharacteristics() {
+		return d_popChars; 
+	}
+
+	public void setPopulationCharacteristic(Variable v, Measurement m) {
+		d_popChars.put(v, m);
 	}
 }

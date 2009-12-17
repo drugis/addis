@@ -24,6 +24,10 @@ public class ContinuousVariable extends AbstractEntity implements Variable {
 	public String getName() {
 		return d_name;
 	}
+	
+	public String toString() {
+		return getName();
+	}
 
 	public int compareTo(Variable other) {
 		return getName().compareTo(other.getName()); 

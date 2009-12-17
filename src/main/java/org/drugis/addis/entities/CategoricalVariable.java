@@ -23,6 +23,10 @@ public class CategoricalVariable extends AbstractEntity implements Variable {
 	public String getName() {
 		return d_name;
 	}
+	
+	public String toString() {
+		return getName();
+	}
 
 	@Override
 	public Set<Entity> getDependencies() {

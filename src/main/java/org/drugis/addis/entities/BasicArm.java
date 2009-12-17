@@ -76,15 +76,15 @@ public class BasicArm extends AbstractEntity implements Arm {
 		return null;
 	}
 	
-	public void setCharacteristic(Variable v, Measurement val) {
+	public void setPopulationCharacteristic(Variable v, Measurement val) {
 		d_chars.put(v, val);
 	}
 
-	public Object getCharacteristic(Variable v) {
+	public Measurement getPopulationCharacteristic(Variable v) {
 		return d_chars.get(v);
 	}
 
-	public VariableMap getCharacteristics() {
+	public VariableMap getPopulationCharacteristics() {
 		return d_chars;
 	}
 }

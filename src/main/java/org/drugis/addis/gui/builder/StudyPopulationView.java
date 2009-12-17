@@ -61,6 +61,14 @@ public class StudyPopulationView implements ViewBuilder {
 				}
 				col += 2;
 			}
+			LabeledPresentationModel model = d_pm.getCharacteristicModel(v);
+			if (model != null) {
+				builder.add(BasicComponentFactory.createLabel(model.getLabelModel()),
+						cc.xy(col, row));
+			} else {
+				builder.addLabel("UNKNOWN", cc.xy(col, row));
+			}
+			
 			row += 2;
 		}
 		

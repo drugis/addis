@@ -40,4 +40,9 @@ public class CategoricalVariableTest {
 	public void testGetDependencies() {
 		assertEquals(Collections.emptySet(), d_gender.getDependencies());
 	}
+	
+	@Test
+	public void testToString() {
+		assertEquals(d_gender.getName(), d_gender.toString());
+	}
 }

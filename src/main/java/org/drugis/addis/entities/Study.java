@@ -22,7 +22,7 @@ package org.drugis.addis.entities;
 import java.util.List;
 import java.util.Set;
 
-public interface Study extends Comparable<Study>, Entity {
+public interface Study extends Comparable<Study>, Entity, Population {
 	public final static String PROPERTY_ID = "id";
 	public final static String PROPERTY_ENDPOINTS = "endpoints";
 	public final static String PROPERTY_ARMS = "arms";
@@ -36,4 +36,5 @@ public interface Study extends Comparable<Study>, Entity {
 	
 	public CharacteristicsMap getCharacteristics();
 	public Object getCharacteristic(Characteristic c);
+	public void setPopulationCharacteristic(Variable v, Measurement m);
 }

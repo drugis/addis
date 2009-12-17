@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.BasicStudy;
@@ -35,6 +36,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.StudyAddArmDialog;
+import org.drugis.addis.gui.StudyAddPopulationCharacteristicDialog;
 import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
@@ -121,14 +123,17 @@ public class StudyView implements ViewBuilder {
 		String text = "Input baseline characteristic";
 		AbstractAction action = new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				addBaselineCharacteristic();
+				addPopulationCharacteristic();
 			}
 		};
 		return buildOneButtonBar(text, action);
 	}
 
-	private void addBaselineCharacteristic() {
-		System.out.println("ADD BASELINE CHARACTERISTIC");
+	private void addPopulationCharacteristic() {
+		JDialog dlg = new StudyAddPopulationCharacteristicDialog(d_mainWindow, d_domain,
+				(StudyPresentationModel)d_model);
+		GUIHelper.centerWindow(dlg, d_mainWindow);
+		dlg.setVisible(true);
 	}
 
 	private JComponent buildAddArmButton() {

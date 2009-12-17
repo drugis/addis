@@ -127,9 +127,9 @@ public class BasicArmPresentationTest {
 	@Test
 	public void testGetTooltip() {
 		ContinuousVariable age = new ContinuousVariable("Age");
-		d_pg.setCharacteristic(age, age.buildMeasurement());
+		d_pg.setPopulationCharacteristic(age, age.buildMeasurement());
 		CategoricalVariable gender = new CategoricalVariable("Gender", new String[]{"Male", "Female"});
-		d_pg.setCharacteristic(gender, gender.buildMeasurement());
+		d_pg.setPopulationCharacteristic(gender, gender.buildMeasurement());
 		assertEquals("<html>Age: " + age.buildMeasurement().toString() + "<br>" +
 				"Gender: Male = 0 / Female = 0<br></html>", d_pres.getCharacteristicTooltip());
 	}
@@ -138,7 +138,7 @@ public class BasicArmPresentationTest {
 	public void testGetCharacteristicModel() {
 		ContinuousVariable age = new ContinuousVariable("Age");
 		ContinuousMeasurement m = age.buildMeasurement();
-		d_pg.setCharacteristic(age, m);
+		d_pg.setPopulationCharacteristic(age, m);
 		assertEquals(d_pmf.getLabeledModel(m), d_pres.getCharacteristicModel(age));
 		assertEquals(null, d_pres.getCharacteristicModel(new ContinuousVariable("X")));
 	}

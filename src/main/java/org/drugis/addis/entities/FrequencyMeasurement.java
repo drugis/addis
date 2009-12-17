@@ -7,38 +7,41 @@ import java.util.Set;
 
 import org.drugis.addis.entities.Endpoint.Type;
 
+import com.jgoodies.binding.value.AbstractValueModel;
+import com.jgoodies.binding.value.ValueHolder;
+
 public class FrequencyMeasurement extends BasicMeasurement {
 
 	private static final long serialVersionUID = -6601562604420073113L;
 	private CategoricalVariable d_cv;
 	
-	private Map<String, Integer> d_frequencies = new HashMap<String, Integer>();
+	private Map<String, ValueHolder> d_frequencies = new HashMap<String, ValueHolder>();
 
 	public FrequencyMeasurement(CategoricalVariable cv) {
 		super(0);
 		d_cv = cv;
 		for (String cat : d_cv.getCategories()) {
-			d_frequencies.put(cat, 0);
+			d_frequencies.put(cat, new ValueHolder(0));
 		}
 	}
 	
 	private void updateSampleSize() {
 		int size = 0;
 		for (String cat : d_cv.getCategories()) {
-			size += d_frequencies.get(cat);
+			size += d_frequencies.get(cat).intValue();
 		}
 		setSampleSize(size);
 	}
 
-	public void setFrequency(String category, Integer freq) throws IllegalArgumentException {
+	public void setFrequency(String category, int freq) throws IllegalArgumentException {
 		checkCategory(category);
-		d_frequencies.put(category, freq);
+		d_frequencies.get(category).setValue(freq);
 		updateSampleSize();
 	}
 	
-	public Integer getFrequency(String category) throws IllegalArgumentException {
+	public int getFrequency(String category) throws IllegalArgumentException {
 		checkCategory(category);
-		return d_frequencies.get(category);
+		return d_frequencies.get(category).intValue();
 	}
 
 	private void checkCategory(String category) {
@@ -81,7 +84,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 			if (!ret.equals("")) {
 				ret += " / ";
 			}
-			ret += cat + " = " + d_frequencies.get(cat);
+			ret += cat + " = " + d_frequencies.get(cat).intValue();
 		}
 		return ret;
 	}
@@ -93,9 +96,25 @@ public class FrequencyMeasurement extends BasicMeasurement {
 			if (!m.getCategoricalVariable().equals(getCategoricalVariable())) {
 				return false;
 			}
-			return d_frequencies.equals(m.d_frequencies);
+			return frequenciesEqual(d_frequencies, m.d_frequencies);
 		}
 		return false;
 	}
+	
+	private boolean frequenciesEqual(Map<String, ValueHolder> frequencies,
+			Map<String, ValueHolder> frequencies2) {
+		if (!frequencies.keySet().equals(frequencies2.keySet())) {
+			return false;
+		}
+		for (String key : frequencies.keySet()) {
+			if (frequencies.get(key).intValue() != frequencies2.get(key).intValue()) {
+				return false;
+			}
+		}
+		return true;
+	}
 
+	public AbstractValueModel getFrequencyModel(String category) {
+		return d_frequencies.get(category);
+	}
 }

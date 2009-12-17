@@ -346,4 +346,35 @@ public class DomainImpl implements Domain {
 	
 		fireDomainChanged(DomainEvent.Type.VARIABLES);
 	}
+
+	public ListHolder<Variable> getVariablesHolder() {
+		return new VariablesHolder();
+	}
+	
+	@SuppressWarnings("serial")
+	private class VariablesHolder extends AbstractListHolder<Variable> implements DomainListener {
+		private List<Variable> d_vars;
+		
+		public VariablesHolder() {
+			d_vars = getVars();
+			addListener(this);
+		}
+
+		private ArrayList<Variable> getVars() {
+			return new ArrayList<Variable>(getVariables());
+		}
+		
+		@Override
+		public List<Variable> getValue() {
+			return d_vars;
+		}
+
+		public void domainChanged(DomainEvent evt) {
+			if (evt.getType().equals(DomainEvent.Type.VARIABLES)) {
+				d_vars = getVars();
+				fireValueChange(null, d_vars);
+			}
+		}
+		
+	}
 }

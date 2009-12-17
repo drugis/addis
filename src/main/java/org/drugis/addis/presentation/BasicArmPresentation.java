@@ -66,12 +66,12 @@ public class BasicArmPresentation extends PresentationModel<Arm> implements Labe
 	}
 	
 	public String getCharacteristicTooltip() {
-		if (getBean().getCharacteristics().isEmpty())
+		if (getBean().getPopulationCharacteristics().isEmpty())
 			return "";
 		
 		String ret = new String("<html>");
-		for (Variable c : new TreeSet<Variable>(getBean().getCharacteristics().keySet())) {
-			Object val = getBean().getCharacteristic(c);
+		for (Variable c : new TreeSet<Variable>(getBean().getPopulationCharacteristics().keySet())) {
+			Object val = getBean().getPopulationCharacteristic(c);
 			if (val != null)
 				ret += c.getName() + ": " + val + "<br>";			
 		}
@@ -81,8 +81,8 @@ public class BasicArmPresentation extends PresentationModel<Arm> implements Labe
 	}
 
 	public LabeledPresentationModel getCharacteristicModel(Variable v) {
-		if (getBean().getCharacteristic(v) != null) {
-			return d_pmf.getLabeledModel(getBean().getCharacteristic(v));
+		if (getBean().getPopulationCharacteristic(v) != null) {
+			return d_pmf.getLabeledModel(getBean().getPopulationCharacteristic(v));
 		}
 		return null;
 	}

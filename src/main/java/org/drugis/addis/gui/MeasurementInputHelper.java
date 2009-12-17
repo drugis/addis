@@ -19,14 +19,22 @@
 
 package org.drugis.addis.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultFormatter;
 
+import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
+import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.FrequencyMeasurement;
+import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.RateMeasurement;
 
 
 import com.jgoodies.binding.PresentationModel;
@@ -34,20 +42,27 @@ import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.value.ValueModel;
 
 public class MeasurementInputHelper {
+	public static int numComponents(Measurement m) {
+		return getHeaders(m).length;
+	}
 
 	public static int numComponents(Endpoint e) {
 		return getHeaders(e).length;
 	}
 
 	public static String[] getHeaders(Endpoint e) {
-		switch (e.getType()) {
-		case CONTINUOUS:
+		return getHeaders(e.buildMeasurement(new BasicArm(null, null, 0)));
+	}
+	
+	public static String[] getHeaders(Measurement m) {
+		if (m instanceof ContinuousMeasurement) {
 			return new String[] {"Mean", "StdDev", "Subjects"};
-		case RATE:
+		} else if (m instanceof RateMeasurement) {
 			return new String[] {"Occurence", "Subjects"};
-		default:
-			throw new IllegalStateException("Unhandled enum value");
+		} else if (m instanceof FrequencyMeasurement) {
+			return ((FrequencyMeasurement)m).getCategoricalVariable().getCategories();
 		}
+		throw new IllegalStateException("Unhandled measurement type");
 	}
 
 	public static JTextField[] getComponents(BasicMeasurement m) {
@@ -67,6 +82,13 @@ public class MeasurementInputHelper {
 				MeasurementInputHelper.buildFormatted(model.getModel(BasicRateMeasurement.PROPERTY_SAMPLESIZE))
 			};
 			
+		} else if (m instanceof FrequencyMeasurement) {
+			List<JTextField> comps = new ArrayList<JTextField>();
+			FrequencyMeasurement fm = (FrequencyMeasurement) m;
+			for (String cat : fm.getCategoricalVariable().getCategories()) {
+				comps.add(MeasurementInputHelper.buildFormatted(fm.getFrequencyModel(cat)));
+			}
+			return comps.toArray(new JTextField[]{});
 		}
 		throw new IllegalStateException("Unhandled Measurement sub-type");
 	}

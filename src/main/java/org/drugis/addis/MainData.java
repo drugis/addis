@@ -417,14 +417,20 @@ public class MainData extends ExampleData {
 		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
 		study.setCharacteristic(BasicStudyCharacteristic.STUDY_END, new GregorianCalendar(2006, 2, 23).getTime());
 		
+		FrequencyMeasurement frequencyMeasurement = buildGenderVariable().buildMeasurement();
+		frequencyMeasurement.setFrequency("Male", 176);
+		frequencyMeasurement.setFrequency("Female", 146);
+		study.setPopulationCharacteristic(buildGenderVariable(), frequencyMeasurement);
+		study.setPopulationCharacteristic(buildAgeVariable(), new BasicContinuousMeasurement(36.4, 9.10, 322));
+		
 		// Bupropion data
 		FlexibleDose dose = new FlexibleDose(new Interval<Double>(100.0, 300.0), SIUnit.MILLIGRAMS_A_DAY);
 		BasicArm bupr = new BasicArm(Bupropion, dose, 165);
-		FrequencyMeasurement frequencyMeasurement = buildGenderVariable().buildMeasurement();
+		frequencyMeasurement = buildGenderVariable().buildMeasurement();
 		frequencyMeasurement.setFrequency("Male", 88);
 		frequencyMeasurement.setFrequency("Female", 77);
-		bupr.setCharacteristic(buildGenderVariable(), frequencyMeasurement);
-		bupr.setCharacteristic(buildAgeVariable(), new BasicContinuousMeasurement(36.8, 9.28, 165));
+		bupr.setPopulationCharacteristic(buildGenderVariable(), frequencyMeasurement);
+		bupr.setPopulationCharacteristic(buildAgeVariable(), new BasicContinuousMeasurement(36.8, 9.28, 165));
 		
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(bupr);
 		pHamd.setRate((int) Math.round(166D*.59D));
@@ -437,8 +443,8 @@ public class MainData extends ExampleData {
 		frequencyMeasurement = buildGenderVariable().buildMeasurement();
 		frequencyMeasurement.setFrequency("Male", 88);
 		frequencyMeasurement.setFrequency("Female", 69);
-		plac.setCharacteristic(buildGenderVariable(), frequencyMeasurement);
-		plac.setCharacteristic(buildAgeVariable(), new BasicContinuousMeasurement(36.0, 8.91, 157));
+		plac.setPopulationCharacteristic(buildGenderVariable(), frequencyMeasurement);
+		plac.setPopulationCharacteristic(buildAgeVariable(), new BasicContinuousMeasurement(36.0, 8.91, 157));
 		
 		pHamd = (BasicRateMeasurement)hamd.buildMeasurement(plac);
 		pHamd.setRate((int) Math.round(157*.5));		

@@ -667,5 +667,29 @@ public class DomainTest {
 		d_domain.addVariable(new CategoricalVariable("x", new String[]{"x"}));
 		verify(mock);
 	}
-
+	
+	@Test
+	public void testVariablesHolder() {
+		ListHolder<Variable> vars = d_domain.getVariablesHolder();
+		
+		Variable v1 = new ContinuousVariable("Age");
+		d_domain.addVariable(v1);
+		
+		assertEquals(1, vars.getValue().size());
+		assertTrue(vars.getValue().contains(v1));
+		
+		Variable v2 = new ContinuousVariable("Blood Pressure");
+		List<Variable> expected = new ArrayList<Variable>();
+		expected.add(v1);
+		expected.add(v2);
+		PropertyChangeListener mock = JUnitUtil.mockListener(vars, "value", null, expected);
+		vars.addValueChangeListener(mock);
+		d_domain.addVariable(v2);
+		verify(mock);
+		
+		assertEquals(2, vars.getValue().size());
+		
+		assertTrue(vars.getValue().contains(v1));
+		assertTrue(vars.getValue().contains(v2));
+	}
 }

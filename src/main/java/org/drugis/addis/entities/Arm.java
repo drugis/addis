@@ -19,7 +19,7 @@
 
 package org.drugis.addis.entities;
 
-public interface Arm extends Entity {
+public interface Arm extends Entity, Population {
 
 	public static final String PROPERTY_SIZE = "size";
 	public static final String PROPERTY_DRUG = "drug";
@@ -28,14 +28,4 @@ public interface Arm extends Entity {
 	public Drug getDrug();
 	public AbstractDose getDose();
 	public Integer getSize();
-	
-	public VariableMap getCharacteristics();
-	
-	/**
-	 * Gets the characteristic.
-	 * 
-	 * @param c
-	 * @return A characteristic, or null if its not set.
-	 */
-	public Object getCharacteristic(Variable v);
 }

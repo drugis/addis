@@ -178,4 +178,6 @@ public interface Domain {
 	public SortedSet<Variable> getVariables();
 	
 	public void addVariable(Variable c);
+
+	public ListHolder<Variable> getVariablesHolder();
 }

@@ -53,8 +53,8 @@ public class BasicArmTest {
 	@Test
 	public void testSetCharacteristic() {
 		Variable v = new ContinuousVariable("Age");
-		d_pg.setCharacteristic(v, new BasicContinuousMeasurement(0.0, 1.0, 5));
-		assertTrue(d_pg.getCharacteristics().containsKey(v));
-		assertEquals((new BasicContinuousMeasurement(0.0, 1.0, 5)).toString(), d_pg.getCharacteristic(v).toString());
+		d_pg.setPopulationCharacteristic(v, new BasicContinuousMeasurement(0.0, 1.0, 5));
+		assertTrue(d_pg.getPopulationCharacteristics().containsKey(v));
+		assertEquals((new BasicContinuousMeasurement(0.0, 1.0, 5)).toString(), d_pg.getPopulationCharacteristic(v).toString());
 	}
 }
