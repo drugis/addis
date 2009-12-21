@@ -1,16 +1,20 @@
 package org.drugis.addis.entities;
 
-import static org.junit.Assert.*;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.beans.PropertyChangeListener;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Endpoint.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.jgoodies.binding.value.AbstractValueModel;
 
 public class FrequencyMeasurementTest {
 
@@ -33,6 +37,19 @@ public class FrequencyMeasurementTest {
 	public void testSetFrequency() {
 		d_meas.setFrequency(d_cv.getCategories()[0], 5);
 		assertEquals(5, d_meas.getFrequency(d_cv.getCategories()[0]));
+	}
+	
+	@Test
+	public void testSetFrequencyFires() {
+		d_meas.setFrequency(d_cv.getCategories()[0], 5);
+		Map<String, Integer> map = new HashMap<String, Integer>(d_meas.getFrequencies());
+		Map<String, Integer> newMap = new HashMap<String, Integer>(d_meas.getFrequencies());		
+		newMap.put("Male", 25);
+		PropertyChangeListener l = JUnitUtil.mockListener(d_meas, FrequencyMeasurement.PROPERTY_FREQUENCIES,
+				map, newMap);
+		d_meas.addPropertyChangeListener(l);
+		d_meas.setFrequency(d_cv.getCategories()[0], 25);
+		verify(l);
 	}
 		
 	@Test(expected=IllegalArgumentException.class)
@@ -112,19 +129,11 @@ public class FrequencyMeasurementTest {
 	}
 	
 	@Test
-	public void testGetFrequencyModel() {
-		AbstractValueModel model = d_meas.getFrequencyModel(d_cv.getCategories()[0]);
+	public void testSerialization() throws Exception {
 		d_meas.setFrequency(d_cv.getCategories()[0], 25);
+
+		FrequencyMeasurement newMeas = JUnitUtil.serializeObject(d_meas);
 		
-		assertNotNull(model);
-		assertEquals(25, model.getValue());
-	}
-	
-	@Test
-	public void testSetThroughFrequencyModel() {
-		AbstractValueModel model = d_meas.getFrequencyModel(d_cv.getCategories()[0]);
-		d_meas.setFrequency(d_cv.getCategories()[0], 25);
-		JUnitUtil.testSetter(model, 25, 30);
-		assertEquals(30, d_meas.getFrequency(d_cv.getCategories()[0]));
+		assertEquals(d_meas, newMeas);
 	}
 }

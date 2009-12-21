@@ -35,7 +35,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.RateMeasurement;
-
+import org.drugis.addis.presentation.FrequencyMeasurementPresentation;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.beans.PropertyConnector;
@@ -85,8 +85,9 @@ public class MeasurementInputHelper {
 		} else if (m instanceof FrequencyMeasurement) {
 			List<JTextField> comps = new ArrayList<JTextField>();
 			FrequencyMeasurement fm = (FrequencyMeasurement) m;
+			FrequencyMeasurementPresentation model = new FrequencyMeasurementPresentation(fm);
 			for (String cat : fm.getCategoricalVariable().getCategories()) {
-				comps.add(MeasurementInputHelper.buildFormatted(fm.getFrequencyModel(cat)));
+				comps.add(MeasurementInputHelper.buildFormatted(model.getFrequencyModel(cat)));
 			}
 			return comps.toArray(new JTextField[]{});
 		}

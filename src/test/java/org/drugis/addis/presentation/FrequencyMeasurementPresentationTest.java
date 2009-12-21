@@ -3,6 +3,7 @@ package org.drugis.addis.presentation;
 import static org.junit.Assert.*;
 import static org.easymock.EasyMock.*;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.CategoricalVariable;
@@ -33,8 +34,13 @@ public class FrequencyMeasurementPresentationTest {
 	@Test
 	public void testFireLabelMaleChanged() {
 		AbstractValueModel lm = d_pm.getLabelModel();
-		PropertyChangeListener l = JUnitUtil.mockListener(
+		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
+		PropertyChangeEvent event = new PropertyChangeEvent(
 				lm, "value", null, "Male = 1 / Female = 0");
+		mock.propertyChange(JUnitUtil.eqPropertyChangeEvent(event));
+		expectLastCall().anyTimes();
+		replay(mock);
+		PropertyChangeListener l = mock;
 		lm.addPropertyChangeListener(l);
 		d_measurement.setFrequency("Male", 1);
 		verify(l);
@@ -43,10 +49,25 @@ public class FrequencyMeasurementPresentationTest {
 	@Test
 	public void testFireLabelFemaleChanged() {
 		AbstractValueModel lm = d_pm.getLabelModel();
-		PropertyChangeListener l = JUnitUtil.mockListener(
+		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
+		PropertyChangeEvent event = new PropertyChangeEvent(
 				lm, "value", null, "Male = 0 / Female = 100");
+		mock.propertyChange(JUnitUtil.eqPropertyChangeEvent(event));
+		expectLastCall().anyTimes();
+		replay(mock);
+		PropertyChangeListener l = mock;
 		lm.addPropertyChangeListener(l);
 		d_measurement.setFrequency("Female", 100);
 		verify(l);
 	}
+	
+	@Test
+	public void testGetFrequencyModel() {
+		AbstractValueModel vm = d_pm.getFrequencyModel("Male");
+		PropertyChangeListener l = JUnitUtil.mockListener(vm, "value", null, 50);
+		vm.addPropertyChangeListener(l);
+		d_measurement.setFrequency("Male", 50);
+		verify(l);
+	}
+
 }

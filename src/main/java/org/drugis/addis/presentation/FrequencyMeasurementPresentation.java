@@ -13,9 +13,7 @@ public class FrequencyMeasurementPresentation extends PresentationModel<Frequenc
 		implements LabeledPresentationModel {
 	public class LabelModel extends  AbstractValueModel implements PropertyChangeListener {
 		public LabelModel() {
-			for (String cat : getBean().getCategoricalVariable().getCategories()) {
-				getBean().getFrequencyModel(cat).addValueChangeListener(this);
-			}
+			getBean().addPropertyChangeListener(this);			
 		}
 		
 		public String getValue() {
@@ -31,8 +29,38 @@ public class FrequencyMeasurementPresentation extends PresentationModel<Frequenc
 		}
 	}
 	
+	public class FrequencyModel extends AbstractValueModel implements PropertyChangeListener {
+		private String d_cat;
+
+		public FrequencyModel(String category) {
+			d_cat = category;
+			getBean().addPropertyChangeListener(this);
+		}
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName().equals(FrequencyMeasurement.PROPERTY_FREQUENCIES)) {
+				fireValueChange(null, getValue());
+			}
+		}
+
+		public Object getValue() {
+			return getBean().getFrequency(d_cat);
+		}
+
+		public void setValue(Object newValue) {
+			if (newValue instanceof Integer)
+				getBean().setFrequency(d_cat, (Integer)newValue);
+			else
+				throw new IllegalArgumentException("Can only set frequencies with an Integer");
+		}
+	}
+	
 	public FrequencyMeasurementPresentation(FrequencyMeasurement bean) {
 		super(bean);
+	}
+	
+	public AbstractValueModel getFrequencyModel(String category) {
+		return new FrequencyModel(category);
 	}
 
 	public AbstractValueModel getLabelModel() {

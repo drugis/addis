@@ -1,5 +1,6 @@
 package org.drugis.addis.entities;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
@@ -33,6 +34,17 @@ public class CategoricalVariable extends AbstractEntity implements Variable {
 		return Collections.emptySet();
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof CategoricalVariable) {
+			CategoricalVariable cv = (CategoricalVariable) o;
+			if (cv.getName().equals(getName())) {
+				return Arrays.equals(cv.getCategories(), getCategories());
+			}
+		}
+		return false;
+	}
+	
 	public FrequencyMeasurement buildMeasurement() {
 		return new FrequencyMeasurement(this);
 	}

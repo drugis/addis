@@ -1,8 +1,5 @@
 package org.drugis.addis.entities;
 
-import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,58 +7,20 @@ import java.util.Set;
 
 import org.drugis.addis.entities.Endpoint.Type;
 
-import com.jgoodies.binding.value.AbstractValueModel;
-
 public class FrequencyMeasurement extends BasicMeasurement {
 
 	private static final long serialVersionUID = -6601562604420073113L;
 	private CategoricalVariable d_cv;
 	
-	private Map<String, AbstractValueModel> d_frequencies = new HashMap<String, AbstractValueModel>();
-
-	private void writeObject(ObjectOutputStream oos) throws IOException {
-		// FIXME: Holders should be on presentation layer due to serialization issues
-		System.err.println("serialize freqmeas");
-		oos.defaultWriteObject();
-		System.err.println("done");
-	}
-	
-	public class TransientListenerValueHolder extends AbstractValueModel {
-		private static final long serialVersionUID = -8344718537084761274L;
-		Object d_val;
-		
-		public TransientListenerValueHolder(Object val) {
-			d_val = val;
-		}
-		
-		private void writeObject(ObjectOutputStream oos) throws IOException {
-			System.err.println("Remove listeners");
-			removeListeners();
-			oos.defaultWriteObject();
-		}
-
-		private void removeListeners() {
-			for (PropertyChangeListener l : getPropertyChangeListeners()) {
-				removePropertyChangeListener(l);
-			}
-		}
-
-		public Object getValue() {
-			return d_val;
-		}
-
-		public void setValue(Object newValue) {
-			Object old = d_val;
-			d_val = newValue;
-			fireValueChange(old, d_val);
-		}
-	}
+	private Map<String, Integer> d_frequencies = new HashMap<String, Integer>();
+	 
+	public static final String PROPERTY_FREQUENCIES = "frequencies";
 
 	public FrequencyMeasurement(CategoricalVariable cv) {
 		super(0);
 		d_cv = cv;
 		for (String cat : d_cv.getCategories()) {
-			d_frequencies.put(cat, new TransientListenerValueHolder(new Integer(0)));
+			d_frequencies.put(cat, new Integer(0));
 		}
 	}
 	
@@ -75,8 +34,10 @@ public class FrequencyMeasurement extends BasicMeasurement {
 
 	public void setFrequency(String category, int freq) throws IllegalArgumentException {
 		checkCategory(category);
-		d_frequencies.get(category).setValue(freq);
+		Map<String, Integer> oldfreq = new HashMap<String,Integer>(d_frequencies);
+		d_frequencies.put(category, freq);
 		updateSampleSize();
+		firePropertyChange(PROPERTY_FREQUENCIES, oldfreq, d_frequencies);
 	}
 	
 	public int getFrequency(String category) throws IllegalArgumentException {
@@ -141,8 +102,8 @@ public class FrequencyMeasurement extends BasicMeasurement {
 		return false;
 	}
 	
-	private boolean frequenciesEqual(Map<String, AbstractValueModel> frequencies,
-			Map<String, AbstractValueModel> frequencies2) {
+	private boolean frequenciesEqual(Map<String, Integer> frequencies,
+			Map<String, Integer> frequencies2) {
 		if (!frequencies.keySet().equals(frequencies2.keySet())) {
 			return false;
 		}
@@ -154,7 +115,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 		return true;
 	}
 
-	public AbstractValueModel getFrequencyModel(String category) {
-		return d_frequencies.get(category);
+	public Map<String, Integer> getFrequencies() {
+		return Collections.unmodifiableMap(d_frequencies);
 	}
 }

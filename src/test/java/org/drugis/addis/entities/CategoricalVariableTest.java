@@ -45,4 +45,21 @@ public class CategoricalVariableTest {
 	public void testToString() {
 		assertEquals(d_gender.getName(), d_gender.toString());
 	}
+	
+	@Test
+	public void testEquals() {
+		CategoricalVariable gender2 = new CategoricalVariable("Gender", new String[]{"Male", "Female"});
+		assertTrue(gender2.equals(d_gender));
+		
+		gender2 = new CategoricalVariable("Gender", new String[]{"Male"});
+		assertFalse(gender2.equals(d_gender));
+
+		gender2 = new CategoricalVariable("Gender2", new String[]{"Male", "Female"});
+		assertFalse(gender2.equals(d_gender));
+
+		gender2 = new CategoricalVariable(null, new String[]{"Male", "Female"});
+		assertFalse(gender2.equals(d_gender));
+
+		assertFalse(gender2.equals(new Integer(2)));
+	}
 }
