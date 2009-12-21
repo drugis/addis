@@ -3,6 +3,7 @@ package org.drugis.addis.gui.builder;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -10,6 +11,7 @@ import javax.swing.JPanel;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.gui.MeasurementInputHelper;
+import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.StudyAddPopulationCharacteristicPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
@@ -22,10 +24,12 @@ import com.jgoodies.forms.layout.FormLayout;
 public class StudyAddPopulationCharacteristicView implements ViewBuilder {
 
 	private StudyAddPopulationCharacteristicPresentation d_pm;
+	private NotEmptyValidator d_validator;
 
 	public StudyAddPopulationCharacteristicView(
-			StudyAddPopulationCharacteristicPresentation pm) {
+			StudyAddPopulationCharacteristicPresentation pm, NotEmptyValidator validator) {
 		d_pm = pm;
+		d_validator = validator;
 	}
 
 	public JComponent buildPanel() {
@@ -37,7 +41,9 @@ public class StudyAddPopulationCharacteristicView implements ViewBuilder {
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		
-		builder.add(AuxComponentFactory.createBoundComboBox(d_pm.getVariableList().toArray(), d_pm.getVariableModel()),
+		JComboBox chooserBox = AuxComponentFactory.createBoundComboBox(d_pm.getVariableList().toArray(), d_pm.getVariableModel());
+		d_validator.add(chooserBox);
+		builder.add(chooserBox,
 				cc.xy(3, 1));
 		
 		final JPanel measurementPanel = new JPanel();
@@ -79,6 +85,7 @@ public class StudyAddPopulationCharacteristicView implements ViewBuilder {
 		
 		col = 1;
 		for (JComponent comp : MeasurementInputHelper.getComponents((BasicMeasurement)m)) {
+			d_validator.add(comp);
 			builder.add(comp, cc.xy(col, 3));
 			col += 2;
 		}
