@@ -27,7 +27,7 @@ import javax.swing.JTextField;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Endpoint.Type;
+import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.MeasurementInputHelper;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;

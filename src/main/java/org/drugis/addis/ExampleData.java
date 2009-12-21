@@ -25,10 +25,11 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 
-import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicArm;
+import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudy;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalVariable;
 import org.drugis.addis.entities.ContinuousVariable;
 import org.drugis.addis.entities.Domain;
@@ -37,9 +38,8 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
-import org.drugis.addis.entities.BasicStudyCharacteristic;
-import org.drugis.addis.entities.Endpoint.Direction;
-import org.drugis.addis.entities.Endpoint.Type;
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import org.drugis.addis.entities.OutcomeMeasure.Type;
 
 public class ExampleData {
 	private static Indication s_indicationDepression;

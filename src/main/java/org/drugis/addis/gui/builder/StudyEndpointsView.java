@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Endpoint.Type;
+import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.RelativeEffectTableDialog;

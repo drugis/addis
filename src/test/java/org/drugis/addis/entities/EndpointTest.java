@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Endpoint.Type;
+import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
 

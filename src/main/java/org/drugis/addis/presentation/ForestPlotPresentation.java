@@ -10,7 +10,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Endpoint.Direction;
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.RelativeEffect.AxisType;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.RelativeEffectFactory;

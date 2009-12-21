@@ -22,7 +22,7 @@ package org.drugis.addis.gui;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Endpoint.Type;
+import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.addis.gui.builder.AddEndpointView;
 import org.drugis.common.gui.OkCancelDialog;
 

@@ -180,4 +180,10 @@ public interface Domain {
 	public void addVariable(Variable c);
 
 	public ListHolder<Variable> getVariablesHolder();
+	
+	public SortedSet<AdverseDrugEvent> getAdes();
+	
+	public void addAde(AdverseDrugEvent ade);
+	
+	public void deleteAde(AdverseDrugEvent ade) throws DependentEntitiesException;
 }

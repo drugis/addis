@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
@@ -19,6 +20,7 @@ import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.Interval;
 
@@ -38,6 +40,8 @@ public class MainData extends ExampleData {
 	private static Drug s_amitriptyline;
 	private static Drug s_trazodone;
 	private static Drug s_bupropion;
+	
+	private static AdverseDrugEvent s_headache;
 	
 	public static void initDefaultData(Domain domain) {
 		ExampleData.initDefaultData(domain);
@@ -480,5 +484,12 @@ public class MainData extends ExampleData {
 			s_trazodone = new Drug("Trazodone", "N06AX05");
 		
 		return s_trazodone;
+	}
+	
+	public static AdverseDrugEvent buildAdeHeadache() {
+		if (s_headache == null)
+			s_headache = new AdverseDrugEvent("Headache", Type.RATE);
+		
+		return s_headache;
 	}
 }

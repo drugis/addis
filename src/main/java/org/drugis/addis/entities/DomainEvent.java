@@ -11,7 +11,8 @@ public class DomainEvent {
 		ENDPOINTS,
 		INDICATIONS,
 		ANALYSES,
-		VARIABLES
+		VARIABLES,
+		ADES
 	}
 
 	public DomainEvent(Type type) {

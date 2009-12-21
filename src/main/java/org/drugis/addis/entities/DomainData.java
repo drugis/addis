@@ -14,6 +14,7 @@ public class DomainData implements Serializable {
 	private SortedSet<RandomEffectsMetaAnalysis> d_metaAnalyses;	
 	private SortedSet<Drug> d_drugs;
 	private SortedSet<Indication> d_indications;
+	private SortedSet<AdverseDrugEvent> d_ades;
 	
 	private SortedSet<Variable> d_variables;
 	
@@ -24,6 +25,7 @@ public class DomainData implements Serializable {
 		d_drugs = new TreeSet<Drug>();
 		d_indications = new TreeSet<Indication>();	
 		d_variables = new TreeSet<Variable>();
+		d_ades = new TreeSet<AdverseDrugEvent>();
 	}
 	
 	public SortedSet<Endpoint> getEndpoints() {
@@ -50,6 +52,10 @@ public class DomainData implements Serializable {
 		return d_variables;
 	}
 	
+	public SortedSet<AdverseDrugEvent> getAdes() {
+		return d_ades;
+	}
+	
 	public void addEnpoint(Endpoint e) {
 		d_endpoints.add(e);
 	}
@@ -74,6 +80,10 @@ public class DomainData implements Serializable {
 		d_variables.add(cv);
 	}
 	
+	public void addAde(AdverseDrugEvent ade) {
+		d_ades.add(ade);
+	}
+	
 	public void removeEndpoint(Endpoint e) {
 		d_endpoints.remove(e);
 	}
@@ -96,5 +106,9 @@ public class DomainData implements Serializable {
 	
 	public void removeCategoricalVariable(Variable cv) {
 		d_variables.remove(cv);
+	}
+	
+	public void removeAde(AdverseDrugEvent ade) {
+		d_ades.remove(ade);
 	}
 }

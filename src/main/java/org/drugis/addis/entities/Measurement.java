@@ -21,7 +21,7 @@ package org.drugis.addis.entities;
 
 import java.io.Serializable;
 
-import org.drugis.addis.entities.Endpoint.Type;
+import org.drugis.addis.entities.OutcomeMeasure.Type;
 
 
 import com.jgoodies.binding.beans.Observable;

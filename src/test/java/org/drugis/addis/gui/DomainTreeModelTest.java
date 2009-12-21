@@ -45,7 +45,7 @@ import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Endpoint.Type;
+import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.junit.Before;
 import org.junit.Test;

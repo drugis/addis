@@ -19,7 +19,7 @@
 
 package org.drugis.addis.entities;
 
-import org.drugis.addis.entities.Endpoint.Type;
+import org.drugis.addis.entities.OutcomeMeasure.Type;
 
 public class BasicContinuousMeasurement extends BasicMeasurement implements ContinuousMeasurement {
 	private static final long serialVersionUID = 6086085465347586428L;

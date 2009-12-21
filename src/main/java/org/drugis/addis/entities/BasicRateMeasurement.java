@@ -19,7 +19,7 @@
 
 package org.drugis.addis.entities;
 
-import org.drugis.addis.entities.Endpoint.Type;
+import org.drugis.addis.entities.OutcomeMeasure.Type;
 
 public class BasicRateMeasurement extends BasicMeasurement implements RateMeasurement {
 	private static final long serialVersionUID = -1004559723622385992L;

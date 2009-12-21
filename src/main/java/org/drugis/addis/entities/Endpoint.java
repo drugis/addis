@@ -19,67 +19,15 @@
 
 package org.drugis.addis.entities;
 
-import java.util.Collections;
-import java.util.Set;
 
-public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
+public class Endpoint extends AbstractOutcomeMeasure {
 	private static final long serialVersionUID = -1182348850033782011L;
 	
-	public static final String UOM_DEFAULT_RATE = "Ratio of Patients";
-	public static final String UOM_DEFAULT_CONTINUOUS = "";
-
-	public enum Type {
-		CONTINUOUS("Continuous"),
-		RATE("Rate");
-		
-		private String d_name;
-		
-		Type(String name) {
-			d_name = name;
-		}
-		
-		public String toString() {
-			return d_name;
-		}
-	}
-	
-	public enum Direction {
-		HIGHER_IS_BETTER("Higher is better"),
-		LOWER_IS_BETTER("Lower is better");
-		
-		
-		String d_string;
-		Direction(String s) {
-			d_string = s;
-		}
-		
-		public String toString() {
-			return d_string;
-		}
-	}
-	
-	private String d_name;
-	String d_description = "";
-	private String d_unitOfMeasurement;
-	private Type d_type;
 	private Direction d_direction;
 	
-	public final static String PROPERTY_NAME = "name";
-	public final static String PROPERTY_DESCRIPTION = "description";
-	public final static String PROPERTY_TYPE = "type";
-	public final static String PROPERTY_DIRECTION = "direction";
-	public final static String PROPERTY_UNIT_OF_MEASUREMENT = "unitOfMeasurement";
-	
-	
 	public Endpoint(String name, Type type, Direction direction) {
-		d_name = name;
-		d_type = type;
+		super(name, type);
 		d_direction = direction;
-		
-		if (d_type == Type.RATE)
-			d_unitOfMeasurement = UOM_DEFAULT_RATE;
-		else
-			d_unitOfMeasurement = UOM_DEFAULT_CONTINUOUS;
 	}
 	
 	public Endpoint(String string, Type type) {
@@ -97,66 +45,20 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 		}
 	}
 	
+	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Endpoint) {
-			Endpoint other = (Endpoint)o;
-			if (other.getName() == null && getName() == null) {
-				return true;
-			}
-			return other.getName().equals(getName());
+			return super.equals(o);
 		}
 		return false;
 	}
 	
+	@Override
 	public int hashCode() {
 		if (d_name != null) {
 			return d_name.hashCode();
 		}
 		return 0;
-	}
-	
-	public void setDescription(String description) {
-		String oldVal = d_description;
-		d_description = description;
-		firePropertyChange(PROPERTY_DESCRIPTION, oldVal, d_description);
-	}
-	
-	public String getDescription() {
-		return d_description;
-	}
-	
-	public void setUnitOfMeasurement(String um) {
-		String oldVal = d_unitOfMeasurement;
-		d_unitOfMeasurement = um;
-		firePropertyChange(PROPERTY_UNIT_OF_MEASUREMENT, oldVal, d_unitOfMeasurement);
-	}
-
-	public String getUnitOfMeasurement() {
-		return d_unitOfMeasurement;
-	}
-	
-	public void setName(String name) {
-		String oldVal = d_name;
-		d_name = name;
-		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
-	}
-	
-	public String getName() {
-		return d_name;
-	}
-	
-	public String toString() {
-		return getName();
-	}
-
-	public void setType(Type type) {
-		Type oldVal = d_type;
-		d_type = type;
-		firePropertyChange(PROPERTY_TYPE, oldVal, d_type);
-	}
-
-	public Type getType() {
-		return d_type;
 	}
 	
 	public void setDirection(Direction dir) {
@@ -167,13 +69,5 @@ public class Endpoint extends AbstractEntity implements Comparable<Endpoint> {
 	
 	public Direction getDirection() {
 		return d_direction;
-	}
-
-	public int compareTo(Endpoint other) {
-		return getName().compareTo(other.getName());
-	}
-
-	public Set<Entity> getDependencies() {
-		return Collections.emptySet();
 	}
 }

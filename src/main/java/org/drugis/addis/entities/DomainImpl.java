@@ -377,4 +377,24 @@ public class DomainImpl implements Domain {
 		}
 		
 	}
+
+	public void addAde(AdverseDrugEvent ade) {
+		if (ade == null) {
+			throw new NullPointerException();
+		}
+		d_domainData.addAde(ade);
+		fireDomainChanged(DomainEvent.Type.ADES);
+		
+	}
+
+	public void deleteAde(AdverseDrugEvent ade)
+			throws DependentEntitiesException {
+		checkDependents(ade);
+		d_domainData.removeAde(ade);
+		fireDomainChanged(DomainEvent.Type.ADES);		
+	}
+
+	public SortedSet<AdverseDrugEvent> getAdes() {
+		return Collections.unmodifiableSortedSet(d_domainData.getAdes());
+	}
 }
