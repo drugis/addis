@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalVariable;
@@ -16,12 +17,14 @@ import org.drugis.addis.entities.ContinuousVariable;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -161,5 +164,25 @@ public class StudyPresentationModelTest {
 		d_study.setPopulationCharacteristic(age, m);
 		assertEquals(d_pmf.getLabeledModel(m), d_model.getCharacteristicModel(age));
 		assertEquals(null, d_model.getCharacteristicModel(new ContinuousVariable("X")));
+	}
+	
+	@Test
+	public void testGetEndpoints() {
+		Endpoint ep = new Endpoint("ep", Type.RATE);
+		d_study.addOutcomeMeasure(ep);
+		AdverseDrugEvent ade = new AdverseDrugEvent("ade1", Type.RATE);
+		d_study.addOutcomeMeasure(ade);
+		
+		assertEquals(Collections.singleton(ep), d_model.getEndpoints());
+	}
+	
+	@Test
+	public void testGetAdes() {
+		Endpoint ep = new Endpoint("ep", Type.RATE);
+		d_study.addOutcomeMeasure(ep);
+		AdverseDrugEvent ade = new AdverseDrugEvent("ade1", Type.RATE);
+		d_study.addOutcomeMeasure(ade);
+		
+		assertEquals(Collections.singleton(ade), d_model.getAdes());
 	}
 }

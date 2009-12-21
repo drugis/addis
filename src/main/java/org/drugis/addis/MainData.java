@@ -41,6 +41,7 @@ public class MainData extends ExampleData {
 	private static Drug s_bupropion;
 	
 	private static AdverseDrugEvent s_headache;
+	private static AdverseDrugEvent s_convulsion;
 	
 	public static void initDefaultData(Domain domain) {
 		ExampleData.initDefaultData(domain);
@@ -57,6 +58,8 @@ public class MainData extends ExampleData {
 		domain.addDrug(buildDrugRemeron());
 		domain.addDrug(buildDrugTrazodone());
 		
+		domain.addAde(buildAdeHeadache());
+		domain.addAde(buildAdeConvulsion());
 		
 		try {
 			domain.addMetaAnalysis(buildMetaHansen2005());
@@ -406,6 +409,7 @@ public class MainData extends ExampleData {
 		
 		Study study = new Study("ClinicalTrials.gov Example Study", buildIndicationDepression());
 		study.setOutcomeMeasures(Collections.singleton(hamd));
+		study.addOutcomeMeasure(buildAdeConvulsion());
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -439,6 +443,7 @@ public class MainData extends ExampleData {
 		pHamd.setRate((int) Math.round(166D*.59D));
 		study.addArm(bupr);
 		study.setMeasurement(hamd, bupr, pHamd);
+		study.setMeasurement(s_convulsion, bupr, new BasicRateMeasurement(1, 166));
 
 		// Placebo data
 		FixedDose fixedDose = new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY);
@@ -490,5 +495,12 @@ public class MainData extends ExampleData {
 			s_headache = new AdverseDrugEvent("Headache", Type.RATE);
 		
 		return s_headache;
+	}
+	
+	public static AdverseDrugEvent buildAdeConvulsion() {
+		if (s_convulsion == null)
+			s_convulsion = new AdverseDrugEvent("Convulsion", Type.RATE);
+		
+		return s_convulsion;
 	}
 }

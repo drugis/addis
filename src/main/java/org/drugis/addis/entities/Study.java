@@ -35,25 +35,27 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private static class MeasurementKey implements Serializable {
 		private static final long serialVersionUID = 6310789667384578005L;
 		
-		private OutcomeMeasure d_endpoint;
+		private OutcomeMeasure d_outcomeM;
 		private Arm d_arm;
 		
 		public MeasurementKey(OutcomeMeasure e, Arm g) {
-			d_endpoint = e;
+			if (e == null || g == null) 
+				throw new NullPointerException("OM=" + e + "\tArm=" + g);
+			d_outcomeM = e;
 			d_arm = g;
 		}
 		
 		public boolean equals(Object o) {
 			if (o instanceof MeasurementKey) { 
 				MeasurementKey other = (MeasurementKey)o;
-				return d_endpoint.equals(other.d_endpoint) && d_arm.equals(other.d_arm);
+				return d_outcomeM.equals(other.d_outcomeM) && d_arm.equals(other.d_arm);
 			}
 			return false;
 		}
 		
 		public int hashCode() {
 			int code = 1;
-			code = code * 31 + d_endpoint.hashCode();
+			code = code * 31 + d_outcomeM.hashCode();
 			code = code * 31 + d_arm.hashCode();
 			return code;
 		}
@@ -195,6 +197,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 	
 	public void addOutcomeMeasure(OutcomeMeasure om) {
+		if (om == null) 
+			throw new NullPointerException("Cannot add a NULL outcome measure");
+		
 		Set<OutcomeMeasure> newVal = new HashSet<OutcomeMeasure>(d_outcomeMeasures);
 		newVal.add(om);
 		setOutcomeMeasures(newVal);
@@ -218,21 +223,26 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 			}
 		}
 	}
+	
 	public Object getCharacteristic(Characteristic c) {
 		return d_chars.get(c);
 	}
+	
 	public int getSampleSize() {
 		int s = 0;
 		for (Arm pg : d_arms)
 			s += pg.getSize();
 		return s;
 	}
+	
 	public Measurement getPopulationCharacteristic(Variable v) {
 		return d_popChars.get(v);
 	}
+	
 	public VariableMap getPopulationCharacteristics() {
 		return d_popChars; 
 	}
+	
 	public void setPopulationCharacteristic(Variable v, Measurement m) {
 		d_popChars.put(v, m);
 	}

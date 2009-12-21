@@ -7,11 +7,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.DerivedStudyCharacteristic.Dosing;
@@ -146,4 +149,25 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		}
 		return null;
 	}
+	
+	public Set<OutcomeMeasure> getEndpoints() {
+		Set<OutcomeMeasure> s = new HashSet<OutcomeMeasure>();
+		for (OutcomeMeasure m : getBean().getOutcomeMeasures()) {
+			if (m instanceof Endpoint) {
+				s.add(m);
+			}
+		}
+		return s;
+	}
+	
+	public Set<OutcomeMeasure> getAdes() {
+		Set<OutcomeMeasure> s = new HashSet<OutcomeMeasure>();
+		for (OutcomeMeasure m : getBean().getOutcomeMeasures()) {
+			if (m instanceof AdverseDrugEvent) {
+				s.add(m);
+			}
+		}
+		return s;
+	}
+	
 }

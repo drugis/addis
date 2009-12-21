@@ -37,7 +37,7 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BasicStudyTest {
+public class StudyTest {
 	
 	private BasicArm d_pg;
 
@@ -59,8 +59,14 @@ public class BasicStudyTest {
 	}
 	
 	@Test
-	public void testAddEndpoint() {
+	public void testAddOutcomeMeasure() {
 		JUnitUtil.testAdderSet(new Study("X", new Indication(0L, "")), Study.PROPERTY_OUTCOME_MEASURES, "addOutcomeMeasure", new Endpoint("e", Type.RATE));
+	}
+	
+	@Test(expected=NullPointerException.class)
+	public void testAddOutcomeMeasureNULLthrows() {
+		Study s = new Study("s", new Indication(0L, ""));
+		s.addOutcomeMeasure(null);
 	}
 	
 	@Test

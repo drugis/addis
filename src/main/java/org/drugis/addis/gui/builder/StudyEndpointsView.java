@@ -3,6 +3,7 @@ package org.drugis.addis.gui.builder;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -11,7 +12,6 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
@@ -23,25 +23,27 @@ import org.drugis.addis.presentation.RelativeEffectTableModel;
 import org.drugis.addis.presentation.RiskDifferenceTableModel;
 import org.drugis.addis.presentation.RiskRatioTableModel;
 import org.drugis.addis.presentation.StandardisedMeanDifferenceTableModel;
+import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class StudyEndpointsView implements ViewBuilder {
 	
-	private PresentationModel<? extends Study> d_model;
+	private StudyPresentationModel d_model;
 	private PresentationModelFactory d_pmf;
 	private JFrame d_mainWindow;
+	private boolean d_isEndpoints;
 
-	public StudyEndpointsView(PresentationModel<? extends Study> model, Main main) {
+	public StudyEndpointsView(StudyPresentationModel model, Main main, boolean endpoints) {
 		d_model = model;
 		d_pmf = main.getPresentationModelFactory();
 		d_mainWindow = main;
+		d_isEndpoints = endpoints;
 	}
 
 	public JComponent buildPanel() {
@@ -56,18 +58,20 @@ public class StudyEndpointsView implements ViewBuilder {
 		} else {
 			int row = 1;
 			boolean addRow = false;
-			for (OutcomeMeasure om : d_model.getBean().getOutcomeMeasures()) {
-				//FIX
-				if (!(om instanceof Endpoint))
-					continue;
-				Endpoint e = (Endpoint) om;
-				
+			Set<OutcomeMeasure> outcomeMeasures = d_isEndpoints ? d_model.getEndpoints() : d_model.getAdes();
+			for (OutcomeMeasure om : outcomeMeasures) {
 				if (addRow) {
 					LayoutUtil.addRow(layout);
 				}
 				builder.add(
-						GUIFactory.createOutcomeMeasureLabelWithIcon(e),
+						GUIFactory.createOutcomeMeasureLabelWithIcon(om),
 						cc.xy(1, row));
+				
+				if (!(om instanceof Endpoint))
+					continue;
+				
+				Endpoint e = (Endpoint) om;							
+				
 				JPanel panel = new JPanel(new FlowLayout());
 				if (e.getType().equals(Type.RATE)) {
 					panel.add(createOddsRatioButton(e));

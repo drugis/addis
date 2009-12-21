@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicArm;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
@@ -56,13 +55,10 @@ public class StudyArmsView implements ViewBuilder {
 
 		builder.addLabel("Size", cc.xy(5, row, "center, center"));		
 		int col = 7;
-		//FIXME
+
 		for (OutcomeMeasure om : d_model.getBean().getOutcomeMeasures()) {
-			if (!(om instanceof Endpoint)) {
-				continue;
-			}
 			builder.add(
-					GUIFactory.createOutcomeMeasureLabelWithIcon((Endpoint) om),
+					GUIFactory.createOutcomeMeasureLabelWithIcon(om),
 							cc.xy(col, row));
 			col += 2;
 		}

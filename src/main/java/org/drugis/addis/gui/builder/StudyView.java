@@ -52,6 +52,7 @@ public class StudyView implements ViewBuilder {
 	private Main d_mainWindow;
 	private StudyCharacteristicsView d_charView;
 	private StudyEndpointsView d_epView;
+	private StudyEndpointsView d_adeView;	
 	private StudyArmsView d_armsView;
 	private StudyPopulationView d_popView;
 	
@@ -62,14 +63,15 @@ public class StudyView implements ViewBuilder {
 		d_domain = domain;
 		d_charView = new StudyCharacteristicsView(model);
 		d_popView = new StudyPopulationView(model);
-		d_epView = new StudyEndpointsView(model, main);
+		d_epView = new StudyEndpointsView(model, main, true);
+		d_adeView = new StudyEndpointsView(model, main, false);		
 		d_armsView = new StudyArmsView(model, main.getPresentationModelFactory());
 	}
 	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -85,9 +87,13 @@ public class StudyView implements ViewBuilder {
 		row += 2;
 		builder.add(buildPopulationPart(), cc.xy(1, row));
 		row += 2;
-		builder.addSeparator("Endpoints", cc.xy(1, row));
+		builder.addSeparator("Outcomes - Endpoints", cc.xy(1, row));
 		row += 2;
 		builder.add(buildEndpointPart(), cc.xy(1, row));
+		row += 2;
+		builder.addSeparator("Outcomes - Adverse Drug Events", cc.xy(1, row));		
+		row += 2;
+		builder.add(buildAdePart(), cc.xy(1, row));
 		row += 2;
 		builder.addSeparator("Arms", cc.xy(1, row));
 		row += 2;
@@ -116,6 +122,13 @@ public class StudyView implements ViewBuilder {
 		panel.add(buildAddEndpointButton(), BorderLayout.SOUTH);
 		return GUIFactory.createCollapsiblePanel(panel);
 	}
+	
+	private JPanel buildAdePart() {
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(d_adeView.buildPanel(), BorderLayout.CENTER);
+		return GUIFactory.createCollapsiblePanel(panel);
+	}
+	
 	
 	private JComponent buildAddCharButton() {
 		String text = "Input baseline characteristic";
