@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
@@ -71,7 +70,7 @@ public class PresentationModelFactoryTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testStudyGetModel() {
-		Study s = new BasicStudy("Study", new Indication(666L, "evil"));
+		Study s = new Study("Study", new Indication(666L, "evil"));
 		PresentationModel m = d_manager.getModel(s);
 		assertEquals(s, m.getBean());
 		assertTrue(m instanceof StudyPresentationModel);
@@ -129,7 +128,7 @@ public class PresentationModelFactoryTest {
 
 	@Test
 	public void testGetOtherModel() {
-		assertNotNull(d_manager.getModel((BasicStudy) d_domain.getStudies().first()));
+		assertNotNull(d_manager.getModel((Study) d_domain.getStudies().first()));
 	}
 	
 	@SuppressWarnings("unchecked")

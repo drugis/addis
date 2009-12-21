@@ -9,7 +9,6 @@ import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
@@ -26,15 +25,15 @@ import org.drugis.common.Interval;
 
 public class MainData extends ExampleData {
 	
-	private static BasicStudy s_studySechter;
-	private static BasicStudy s_studyNewhouse;
-	private static BasicStudy s_studyFava02;
-	private static BasicStudy s_studyBoyer;
+	private static Study s_studySechter;
+	private static Study s_studyNewhouse;
+	private static Study s_studyFava02;
+	private static Study s_studyBoyer;
 	
-	private static BasicStudy s_studyOrg022;
-	private static BasicStudy s_studyOrg023;
+	private static Study s_studyOrg022;
+	private static Study s_studyOrg023;
 	
-	private static BasicStudy s_studyClinGovExmpl;
+	private static Study s_studyClinGovExmpl;
 	
 	private static Drug s_remeron;
 	private static Drug s_amitriptyline;
@@ -80,7 +79,7 @@ public class MainData extends ExampleData {
 		return new RandomEffectsMetaAnalysis("Hansen et al, 2005", buildEndpointHamd(), studylist, buildDrugFluoxetine(), buildDrugSertraline());
 	}
 	
-	public static BasicStudy buildStudyFava2002() {
+	public static Study buildStudyFava2002() {
 		if (s_studyFava02 == null) {
 			s_studyFava02 = realBuildStudyFava02();
 		}
@@ -88,11 +87,11 @@ public class MainData extends ExampleData {
 		return s_studyFava02;
 	}
 
-	private static BasicStudy realBuildStudyFava02() {
+	private static Study realBuildStudyFava02() {
 		Endpoint hamd = buildEndpointHamd();
 		Drug fluoxetine = buildDrugFluoxetine();
 		Drug sertraline = buildDrugSertraline();
-		BasicStudy study = new BasicStudy("Fava et al, 2002", buildIndicationDepression());
+		Study study = new Study("Fava et al, 2002", buildIndicationDepression());
 		study.setEndpoints(Collections.singleton(hamd));
 		
 		// Study characteristics
@@ -125,7 +124,7 @@ public class MainData extends ExampleData {
 		return study;
 	}
 	
-	public static BasicStudy buildStudyNewhouse2000() {
+	public static Study buildStudyNewhouse2000() {
 		if (s_studyNewhouse == null) {
 			s_studyNewhouse = realBuildStudyNewhouse();
 		}
@@ -133,11 +132,11 @@ public class MainData extends ExampleData {
 		return s_studyNewhouse;
 	}
 
-	private static BasicStudy realBuildStudyNewhouse() {
+	private static Study realBuildStudyNewhouse() {
 		Endpoint hamd = buildEndpointHamd();
 		Drug fluoxetine = buildDrugFluoxetine();
 		Drug sertraline = buildDrugSertraline();
-		BasicStudy study = new BasicStudy("Newhouse et al, 2000", buildIndicationDepression());
+		Study study = new Study("Newhouse et al, 2000", buildIndicationDepression());
 		study.setEndpoints(Collections.singleton(hamd));
 		
 		// Study characteristics
@@ -170,7 +169,7 @@ public class MainData extends ExampleData {
 		return study;
 	}
 	
-	public static BasicStudy buildStudySechter1999() {
+	public static Study buildStudySechter1999() {
 		if (s_studySechter == null) {
 			s_studySechter = realBuildStudySechter();
 		}
@@ -178,11 +177,11 @@ public class MainData extends ExampleData {
 		return s_studySechter;
 	}
 
-	private static BasicStudy realBuildStudySechter() {
+	private static Study realBuildStudySechter() {
 		Endpoint hamd = buildEndpointHamd();
 		Drug fluoxetine = buildDrugFluoxetine();
 		Drug sertraline = buildDrugSertraline();
-		BasicStudy study = new BasicStudy("Sechter et al, 1999", buildIndicationDepression());
+		Study study = new Study("Sechter et al, 1999", buildIndicationDepression());
 		study.setEndpoints(Collections.singleton(hamd));
 		
 		// Study characteristics
@@ -215,7 +214,7 @@ public class MainData extends ExampleData {
 		return study;
 	}
 	
-	public static BasicStudy buildStudyBoyer1998() {
+	public static Study buildStudyBoyer1998() {
 		if (s_studyBoyer == null){ 
 			s_studyBoyer = realBuildStudyBoyer();
 		}
@@ -223,11 +222,11 @@ public class MainData extends ExampleData {
 		return s_studyBoyer;
 	}
 
-	private static BasicStudy realBuildStudyBoyer() {
+	private static Study realBuildStudyBoyer() {
 		Endpoint hamd = buildEndpointHamd();
 		Drug fluoxetine = buildDrugFluoxetine();
 		Drug sertraline = buildDrugSertraline();
-		BasicStudy study = new BasicStudy("Boyer et al, 1998", buildIndicationDepression());
+		Study study = new Study("Boyer et al, 1998", buildIndicationDepression());
 		study.setEndpoints(Collections.singleton(hamd));
 		
 		// Study characteristics
@@ -260,7 +259,7 @@ public class MainData extends ExampleData {
 		return study;
 	}
 	
-	public static BasicStudy buildStudyOrg022() {
+	public static Study buildStudyOrg022() {
 		if (s_studyOrg022 == null){ 
 			s_studyOrg022 = realbuildStudyOrg022();
 		}
@@ -268,13 +267,13 @@ public class MainData extends ExampleData {
 		return s_studyOrg022;
 	}
 
-	public static BasicStudy realbuildStudyOrg022() {
+	public static Study realbuildStudyOrg022() {
 		Endpoint cgis = buildEndpointCgi();
 		Drug amitriptyline = buildDrugAmitriptyline();
 		Drug remeron = buildDrugRemeron();
 		Drug placebo = buildPlacebo();
 		
-		BasicStudy study = new BasicStudy("Organon 003-022, 1990", buildIndicationDepression());
+		Study study = new Study("Organon 003-022, 1990", buildIndicationDepression());
 		study.setEndpoints(Collections.singleton(cgis));
 		
 		// Study characteristics
@@ -326,7 +325,7 @@ public class MainData extends ExampleData {
 		return study;
 	}
 	
-	public static BasicStudy buildStudyOrg023() {
+	public static Study buildStudyOrg023() {
 		if (s_studyOrg023 == null){ 
 			s_studyOrg023 = realbuildStudyOrg023();
 		}
@@ -334,13 +333,13 @@ public class MainData extends ExampleData {
 		return s_studyOrg023;
 	}
 
-	public static BasicStudy realbuildStudyOrg023() {
+	public static Study realbuildStudyOrg023() {
 		Endpoint cgis = buildEndpointCgi();
 		Drug trazodone = buildDrugTrazodone();
 		Drug remeron = buildDrugRemeron();
 		Drug placebo = buildPlacebo();
 		
-		BasicStudy study = new BasicStudy("Organon 003-023, 1992", buildIndicationDepression());
+		Study study = new Study("Organon 003-023, 1992", buildIndicationDepression());
 		study.setEndpoints(Collections.singleton(cgis));
 		
 		// Study characteristics
@@ -392,7 +391,7 @@ public class MainData extends ExampleData {
 		return study;
 	}
 	
-	public static BasicStudy buildStudyClinGovExmpl() {
+	public static Study buildStudyClinGovExmpl() {
 		if (s_studyClinGovExmpl == null){ 
 			s_studyClinGovExmpl = realbuildClinGovExmpl();
 		}
@@ -400,12 +399,12 @@ public class MainData extends ExampleData {
 		return s_studyClinGovExmpl;
 	}
 
-	public static BasicStudy realbuildClinGovExmpl() {
+	public static Study realbuildClinGovExmpl() {
 		Endpoint hamd = buildEndpointHamd();
 		Drug Bupropion = buildDrugBupropion();
 		Drug placebo = buildPlacebo();
 		
-		BasicStudy study = new BasicStudy("ClinicalTrials.gov Example Study", buildIndicationDepression());
+		Study study = new Study("ClinicalTrials.gov Example Study", buildIndicationDepression());
 		study.setEndpoints(Collections.singleton(hamd));
 		
 		// Study characteristics

@@ -19,8 +19,8 @@
 
 package org.drugis.addis.gui;
 
-import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.builder.StudyAddArmView;
 import org.drugis.addis.presentation.StudyAddArmPresentation;
 import org.drugis.common.gui.OkCancelDialog;
@@ -29,12 +29,12 @@ import org.drugis.common.gui.OkCancelDialog;
 public class StudyAddArmDialog extends OkCancelDialog {
 
 	private Domain d_domain;
-	private BasicStudy d_study;
+	private Study d_study;
 	private StudyAddArmView d_view;
 	private Main d_main;
 	private StudyAddArmPresentation d_pm;
 
-	public StudyAddArmDialog(Main main, Domain domain, BasicStudy study) {
+	public StudyAddArmDialog(Main main, Domain domain, Study study) {
 		super(main, "Add Patient Group to Study");
 		d_main = main;
 		this.setModal(true);

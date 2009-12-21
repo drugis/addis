@@ -117,7 +117,7 @@ public class DomainImpl implements Domain {
 		return Collections.unmodifiableList(d_listeners);
 	}
 
-	public void addStudy(BasicStudy s) throws NullPointerException {
+	public void addStudy(Study s) throws NullPointerException {
 		if (s == null) {
 			throw new NullPointerException("Study may not be null");
 		}

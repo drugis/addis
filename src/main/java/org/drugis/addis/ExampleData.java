@@ -28,7 +28,6 @@ import java.util.HashSet;
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalVariable;
 import org.drugis.addis.entities.ContinuousVariable;
@@ -38,6 +37,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.OutcomeMeasure.Type;
 
@@ -53,12 +53,12 @@ public class ExampleData {
 	private static Endpoint s_endpointCVdeath;
 	private static Drug s_sertr;
 	private static Drug s_placebo;
-	private static BasicStudy s_studyMcMurray;
-	private static BasicStudy s_study3Arm;
+	private static Study s_studyMcMurray;
+	private static Study s_study3Arm;
 
-	private static BasicStudy s_studyBennie;
-	private static BasicStudy s_studyDeWilde;
-	private static BasicStudy s_studyChouinard;
+	private static Study s_studyBennie;
+	private static Study s_studyDeWilde;
+	private static Study s_studyChouinard;
 	private static CategoricalVariable s_gender;
 	private static ContinuousVariable s_age;
 
@@ -123,7 +123,7 @@ public class ExampleData {
 		s_studyChouinard = null;
 	}
 
-	public static BasicStudy buildStudyChouinard() {
+	public static Study buildStudyChouinard() {
 		if (s_studyChouinard == null) {
 			s_studyChouinard = realBuildStudyChouinard();
 		}
@@ -131,14 +131,14 @@ public class ExampleData {
 		return s_studyChouinard;
 	}
 	
-	public static BasicStudy buildStudyChouinardNoHamd() {
-		BasicStudy s = realBuildStudyChouinard();
+	public static Study buildStudyChouinardNoHamd() {
+		Study s = realBuildStudyChouinard();
 		s.deleteEndpoint(buildEndpointHamd());
 		return s;
 	}
 
-	private static BasicStudy realBuildStudyChouinard() {
-		BasicStudy study = new BasicStudy("Chouinard et al, 1999", buildIndicationDepression());
+	private static Study realBuildStudyChouinard() {
+		Study study = new Study("Chouinard et al, 1999", buildIndicationDepression());
 		study.setEndpoints(new HashSet<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
 		
@@ -214,7 +214,7 @@ public class ExampleData {
 		return study;
 	}
 
-	public static BasicStudy buildStudyDeWilde() {
+	public static Study buildStudyDeWilde() {
 		if (s_studyDeWilde == null) {
 			s_studyDeWilde = realBuildStudyDeWilde();
 		}
@@ -222,10 +222,10 @@ public class ExampleData {
 		return s_studyDeWilde;
 	}
 
-	private static BasicStudy realBuildStudyDeWilde() {
+	private static Study realBuildStudyDeWilde() {
 		Endpoint hamd = buildEndpointHamd();
 		Drug fluoxetine = buildDrugFluoxetine();
-		BasicStudy study = new BasicStudy("De Wilde et al, 1993", buildIndicationDepression());
+		Study study = new Study("De Wilde et al, 1993", buildIndicationDepression());
 		study.setEndpoints(Collections.singleton(hamd));
 		
 		// Study characteristics
@@ -264,7 +264,7 @@ public class ExampleData {
 		return study;
 	}
 
-	public static BasicStudy buildStudyBennie() {
+	public static Study buildStudyBennie() {
 		if (s_studyBennie == null) {
 			s_studyBennie = realBuildStudyBennie();
 		}
@@ -272,8 +272,8 @@ public class ExampleData {
 		return s_studyBennie;
 	}
 
-	private static BasicStudy realBuildStudyBennie() {
-		BasicStudy study = new BasicStudy("Bennie et al, 1995", buildIndicationDepression());
+	private static Study realBuildStudyBennie() {
+		Study study = new Study("Bennie et al, 1995", buildIndicationDepression());
 		study.setEndpoints(new HashSet<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
 		
@@ -315,7 +315,7 @@ public class ExampleData {
 		return study;
 	}
 
-	public static BasicStudy buildAdditionalStudyThreeArm() {
+	public static Study buildAdditionalStudyThreeArm() {
 		if (s_study3Arm == null) {
 			s_study3Arm = realBuildStudyThreeArm(); 
 		}
@@ -323,8 +323,8 @@ public class ExampleData {
 		return s_study3Arm;
 	}
 
-	private static BasicStudy realBuildStudyThreeArm() {
-		BasicStudy study = new BasicStudy("SciFictional et al, 2359", buildIndicationDepression());
+	private static Study realBuildStudyThreeArm() {
+		Study study = new Study("SciFictional et al, 2359", buildIndicationDepression());
 		study.setEndpoints(new HashSet<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
 		
@@ -371,7 +371,7 @@ public class ExampleData {
 		return study;
 	}
 
-	public static BasicStudy buildStudyMcMurray() {
+	public static Study buildStudyMcMurray() {
 		if (s_studyMcMurray == null) {
 			s_studyMcMurray = realBuildStudyMcMurray();
 		}
@@ -379,8 +379,8 @@ public class ExampleData {
 		return s_studyMcMurray;
 	}
 
-	private static BasicStudy realBuildStudyMcMurray() {
-		BasicStudy study = new BasicStudy("McMurray et al, 2003", buildIndicationChronicHeartFailure());
+	private static Study realBuildStudyMcMurray() {
+		Study study = new Study("McMurray et al, 2003", buildIndicationChronicHeartFailure());
 		study.setEndpoints(Collections.singleton(buildEndpointCVdeath()));
 		
 		// Study characteristics

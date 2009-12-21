@@ -60,7 +60,7 @@ public interface Domain {
 	 * @throws NullPointerException if e is null
 	 * @throws IllegalArgumentException if indication of the study is not included in the domain yet
 	 */
-	public void addStudy(BasicStudy s) throws NullPointerException, IllegalArgumentException;
+	public void addStudy(Study s) throws NullPointerException, IllegalArgumentException;
 
 	/**
 	 * Adds a MetaStudy to the data model.

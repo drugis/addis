@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 
-import org.drugis.addis.entities.BasicStudy;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.MapBean;
@@ -36,14 +36,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class StudyCharacteristicHolderTest {
-	private BasicStudy d_study;
+	private Study d_study;
 	private StudyCharacteristicHolder d_holder;
 	private BasicStudyCharacteristic d_char;
 	
 	@Before
 	public void setUp() {
 		d_char = BasicStudyCharacteristic.INDICATION;
-		d_study = new BasicStudy("Test", new Indication(0L, ""));
+		d_study = new Study("Test", new Indication(0L, ""));
 		d_holder = new MutableCharacteristicHolder(d_study, d_char);
 	}
 	

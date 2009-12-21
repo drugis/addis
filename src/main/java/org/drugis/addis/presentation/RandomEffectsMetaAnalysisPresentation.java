@@ -3,7 +3,6 @@ package org.drugis.addis.presentation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.RelativeEffect;
@@ -60,7 +59,7 @@ public class RandomEffectsMetaAnalysisPresentation extends PresentationModel<Ran
 		public List<Study> getValue() {
 			List<Study> studies = new ArrayList<Study>(getBean().getStudies());
 			for (Study s : studies) {
-				if (!(s instanceof BasicStudy)) {
+				if (!(s instanceof Study)) {
 					studies.remove(s);
 				}
 			}

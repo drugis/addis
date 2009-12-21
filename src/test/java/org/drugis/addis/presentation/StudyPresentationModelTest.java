@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drugis.addis.entities.BasicArm;
-import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalVariable;
 import org.drugis.addis.entities.ContinuousVariable;
@@ -21,6 +20,7 @@ import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.SIUnit;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
@@ -30,12 +30,12 @@ import org.junit.Test;
 public class StudyPresentationModelTest {
 	
 	private StudyPresentationModel d_model;
-	private BasicStudy d_study;
+	private Study d_study;
 	private PresentationModelFactory d_pmf;
 
 	@Before
 	public void setUp() {
-		d_study = new BasicStudy("study", new Indication(0L, "ind"));
+		d_study = new Study("study", new Indication(0L, "ind"));
 		d_pmf = new PresentationModelFactory(new DomainImpl());
 		d_model = new StudyPresentationModel(d_study, d_pmf);
 	}

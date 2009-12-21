@@ -48,43 +48,43 @@ public class BasicStudyTest {
 	
 	@Test
 	public void testSetId() {
-		JUnitUtil.testSetter(new BasicStudy("X", new Indication(0L, "")), Study.PROPERTY_ID, "X", "NCT00351273");
+		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_ID, "X", "NCT00351273");
 	}
 	
 	@Test
 	public void testSetEndpoints() {
 		Set<Endpoint> list = Collections.singleton(new Endpoint("e", Type.RATE));
-		JUnitUtil.testSetter(new BasicStudy("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, Collections.EMPTY_SET, 
+		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, Collections.EMPTY_SET, 
 				list);
 	}
 	
 	@Test
 	public void testAddEndpoint() {
-		JUnitUtil.testAdderSet(new BasicStudy("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Type.RATE));
+		JUnitUtil.testAdderSet(new Study("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Type.RATE));
 	}
 	
 	@Test
 	public void testSetArms() {
 		List<BasicArm> list = Collections.singletonList(d_pg);
-		JUnitUtil.testSetter(new BasicStudy("X", new Indication(0L, "")), Study.PROPERTY_ARMS, Collections.EMPTY_LIST, 
+		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_ARMS, Collections.EMPTY_LIST, 
 				list);
 	}
 	
 	@Test
 	public void testInitialArms() {
-		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
+		Study study = new Study("X", new Indication(0L, ""));
 		assertNotNull(study.getArms());
 		assertTrue(study.getArms().isEmpty());
 	}
 	
 	@Test
 	public void testAddArm() {
-		JUnitUtil.testAdder(new BasicStudy("X", new Indication(0L, "")), Study.PROPERTY_ARMS, "addArm", d_pg);
+		JUnitUtil.testAdder(new Study("X", new Indication(0L, "")), Study.PROPERTY_ARMS, "addArm", d_pg);
 	}
 	
 	@Test
 	public void testGetDrugs() {
-		BasicStudy s = ExampleData.buildStudyDeWilde();
+		Study s = ExampleData.buildStudyDeWilde();
 		Set<Drug> expected = new HashSet<Drug>();
 		expected.add(ExampleData.buildDrugFluoxetine());
 		expected.add(ExampleData.buildDrugParoxetine());
@@ -94,19 +94,19 @@ public class BasicStudyTest {
 	@Test
 	public void testToString() {
 		String id = "NCT00351273";
-		BasicStudy study = new BasicStudy(id, new Indication(0L, ""));
+		Study study = new Study(id, new Indication(0L, ""));
 		assertEquals(id, study.toString());
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetMeasurementThrowsException1() {
-		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
+		Study study = new Study("X", new Indication(0L, ""));
 		study.getMeasurement(new Endpoint("E", Type.RATE), new BasicArm(null, null, 100));
 	}
 	
 	@Test
 	public void testSetMeasurement() {
-		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
+		Study study = new Study("X", new Indication(0L, ""));
 		Endpoint endpoint = new Endpoint("e", Type.RATE);
 		study.addEndpoint(endpoint);
 		BasicArm group = new BasicArm(null, null, 100);
@@ -120,7 +120,7 @@ public class BasicStudyTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetMeasurementThrowsException1() {
-		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
+		Study study = new Study("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("E", Type.RATE);
 		BasicArm pg = new BasicArm(null, null, 100);
 		study.setMeasurement(e, pg, 
@@ -129,7 +129,7 @@ public class BasicStudyTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetMeasurementThrowsException2() {
-		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
+		Study study = new Study("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("e", Type.RATE);
 		study.addEndpoint(e);
 		BasicArm group = new BasicArm(null, null, 100);
@@ -148,14 +148,14 @@ public class BasicStudyTest {
 		String name2 = "Study B";
 		Indication i = new Indication(0L, "");
 		
-		assertEquals(new BasicStudy(name1, i), new BasicStudy(name1, i));
-		JUnitUtil.assertNotEquals(new BasicStudy(name1, i), new BasicStudy(name2, i));
-		assertEquals(new BasicStudy(name1, i).hashCode(), new BasicStudy(name1, i).hashCode());
+		assertEquals(new Study(name1, i), new Study(name1, i));
+		JUnitUtil.assertNotEquals(new Study(name1, i), new Study(name2, i));
+		assertEquals(new Study(name1, i).hashCode(), new Study(name1, i).hashCode());
 	}
 	
 	@Test
 	public void testGetDependencies() {
-		BasicStudy s = ExampleData.buildStudyDeWilde();
+		Study s = ExampleData.buildStudyDeWilde();
 		assertFalse(s.getEndpoints().isEmpty());
 		assertFalse(s.getDrugs().isEmpty());
 		
@@ -167,13 +167,13 @@ public class BasicStudyTest {
 	
 	@Test
 	public void testDeleteEndpoint() throws Exception {
-		JUnitUtil.testDeleterSet(new BasicStudy("study", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "deleteEndpoint",
+		JUnitUtil.testDeleterSet(new Study("study", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "deleteEndpoint",
 				new Endpoint("e", Endpoint.Type.CONTINUOUS));
 	}
 	
 	@Test
 	public void testSetCharacteristic() {
-		BasicStudy study = new BasicStudy("X", new Indication(0L, ""));
+		Study study = new Study("X", new Indication(0L, ""));
 		
 		PropertyChangeListener listener = JUnitUtil.mockStrictListener(study.getCharacteristics(), 
 				MapBean.PROPERTY_CONTENTS,null, null);		
@@ -187,7 +187,7 @@ public class BasicStudyTest {
 	public void testGetSampleSize() {
 		BasicArm pg1 = new BasicArm(null, null, 25);
 		BasicArm pg2 = new BasicArm(null, null, 35);
-		BasicStudy s = new BasicStudy("s1", new Indication(01L, "i"));
+		Study s = new Study("s1", new Indication(01L, "i"));
 		s.addArm(pg1);
 		s.addArm(pg2);
 		assertEquals(60, s.getSampleSize());
@@ -196,7 +196,7 @@ public class BasicStudyTest {
 	@Test
 	public void testSetPopulationChar() {
 		Variable v = new ContinuousVariable("Age");
-		Study s = new BasicStudy("X", new Indication(0L, "Y"));
+		Study s = new Study("X", new Indication(0L, "Y"));
 		s.setPopulationCharacteristic(v, new BasicContinuousMeasurement(0.0, 1.0, 5));
 		assertTrue(s.getPopulationCharacteristics().containsKey(v));
 		assertEquals((new BasicContinuousMeasurement(0.0, 1.0, 5)).toString(), s.getPopulationCharacteristic(v).toString());

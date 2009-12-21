@@ -1,7 +1,7 @@
 package org.drugis.addis.entities;
 
 
-public interface OutcomeMeasure extends Comparable<OutcomeMeasure> {
+public interface OutcomeMeasure extends Comparable<OutcomeMeasure>, Entity {
 
 	public final static String PROPERTY_NAME = "name";
 	public final static String PROPERTY_DESCRIPTION = "description";

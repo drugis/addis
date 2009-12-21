@@ -111,7 +111,7 @@ public class DomainImplTest {
 		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
 		d_domain.loadDomainData(bis);
 		
-		BasicStudy s = (BasicStudy) d_domain.getStudies().first();
+		Study s = (Study) d_domain.getStudies().first();
 		
 		DomainListener mock3 = createMock(DomainListener.class);
 		d_domain.addListener(mock3);

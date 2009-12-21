@@ -25,10 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.MutableStudy;
-import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.builder.StudyAddEndpointView;
 import org.drugis.common.gui.OkCancelDialog;
 
@@ -38,11 +38,11 @@ import com.jgoodies.binding.PresentationModel;
 public class StudyAddEndpointDialog extends OkCancelDialog {
 	private Main d_main;
 	private Domain d_domain;
-	private MutableStudy d_study;
+	private Study d_study;
 	private EndpointHolder d_newEndpoint;
 	private Map<Arm, BasicMeasurement> d_measurements;
 	
-	public StudyAddEndpointDialog(Main frame, Domain domain, MutableStudy study) {
+	public StudyAddEndpointDialog(Main frame, Domain domain, Study study) {
 		super(frame, "Add Endpoint to Study");
 		this.setModal(true);
 		d_main = frame;

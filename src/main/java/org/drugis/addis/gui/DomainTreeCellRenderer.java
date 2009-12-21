@@ -25,10 +25,10 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 import org.drugis.addis.FileNames;
-import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.ImageLoader;
 
@@ -44,7 +44,7 @@ public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 		} else if (value instanceof RandomEffectsMetaAnalysis) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_METASTUDY));
 			setToolTipText("Meta-analysis");
-		} else if (value instanceof BasicStudy) {
+		} else if (value instanceof Study) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_STUDY));
 			setToolTipText("Study");				
 		} else if (value instanceof Drug) {

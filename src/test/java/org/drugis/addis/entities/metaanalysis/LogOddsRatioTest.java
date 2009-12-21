@@ -4,10 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.BasicStudy;
-import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
@@ -84,7 +83,7 @@ public class LogOddsRatioTest {
 			
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize)
 	{
-		BasicStudy s = new BasicStudy(studyName, d_ind);
+		Study s = new Study(studyName, d_ind);
 		s.addEndpoint(d_ep);
 		BasicArm g_fluox = new BasicArm(d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), fluoxSize);
 		BasicArm g_parox = new BasicArm(d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), sertraSize);		

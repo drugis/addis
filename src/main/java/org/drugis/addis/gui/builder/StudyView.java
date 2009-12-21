@@ -29,9 +29,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
-import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.MutableStudy;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
@@ -157,7 +155,7 @@ public class StudyView implements ViewBuilder {
 
 	private void addArm() {
 		StudyAddArmDialog dlg = new StudyAddArmDialog(d_mainWindow, d_domain,
-				(BasicStudy)d_model.getBean());
+				(Study)d_model.getBean());
 		GUIHelper.centerWindow(dlg, d_mainWindow);
 		dlg.setVisible(true);
 	}
@@ -173,6 +171,6 @@ public class StudyView implements ViewBuilder {
 	}
 
 	private void addEndpointClicked() {
-		d_mainWindow.showStudyAddEndpointDialog((MutableStudy)d_model.getBean());
+		d_mainWindow.showStudyAddEndpointDialog((Study)d_model.getBean());
 	}
 }

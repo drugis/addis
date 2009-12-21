@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.RelativeEffect;
@@ -55,7 +54,7 @@ public class ForestPlotPresentation {
 		d_analysis = analysis;
 	}
 		
-	public ForestPlotPresentation(BasicStudy s, Endpoint e, Drug baseline, Drug subject,
+	public ForestPlotPresentation(Study s, Endpoint e, Drug baseline, Drug subject,
 			Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
 		this(Collections.singletonList((Study)s), e, baseline, subject, type, pmf);
 	}

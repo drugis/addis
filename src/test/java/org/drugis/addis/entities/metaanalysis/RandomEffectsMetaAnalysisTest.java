@@ -7,10 +7,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicArm;
+import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
@@ -159,7 +158,7 @@ public class RandomEffectsMetaAnalysisTest {
 			int fluoxResp, int fluoxSize,
 			int sertraResp, int sertraSize,
 			Indication ind) {
-		BasicStudy s = new BasicStudy(studyName, ind);
+		Study s = new Study(studyName, ind);
 		s.addEndpoint(d_rateEndpoint);
 		
 		addRateMeasurement(s, d_fluox, fluoxSize, fluoxResp);		
@@ -172,7 +171,7 @@ public class RandomEffectsMetaAnalysisTest {
 			int fluoxSize, double fluoxMean, double fluoxDev,
 			int sertrSize, double sertrMean, double sertrDev,
 			Indication ind) {
-		BasicStudy s = new BasicStudy(studyName, ind);
+		Study s = new Study(studyName, ind);
 		s.addEndpoint(d_contEndpoint);
 		
 		addContinuousMeasurement(s, d_fluox, fluoxSize, fluoxMean, fluoxDev);
@@ -181,14 +180,14 @@ public class RandomEffectsMetaAnalysisTest {
 		return s ;
 	}
 
-	private void addRateMeasurement(BasicStudy study, Drug drug, int nSubjects, int nResponders) {
+	private void addRateMeasurement(Study study, Drug drug, int nSubjects, int nResponders) {
 		BasicArm group = addArm(study, drug, nSubjects);
 		BasicRateMeasurement measurement = (BasicRateMeasurement) d_rateEndpoint.buildMeasurement(group);
 		measurement.setRate(nResponders);
 		study.setMeasurement(d_rateEndpoint, group, measurement);
 	}
 
-	private void addContinuousMeasurement(BasicStudy study, Drug drug,
+	private void addContinuousMeasurement(Study study, Drug drug,
 			int nSubjects, double mean, double stdDev) {
 		BasicArm group = addArm(study, drug, nSubjects);
 		BasicContinuousMeasurement measurement =
@@ -198,7 +197,7 @@ public class RandomEffectsMetaAnalysisTest {
 		study.setMeasurement(d_contEndpoint, group, measurement);
 	}
 	
-	private BasicArm addArm(BasicStudy study, Drug drug, int nSubjects) {
+	private BasicArm addArm(Study study, Drug drug, int nSubjects) {
 		FixedDose dose = new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY);
 		BasicArm group = new BasicArm(drug, dose, nSubjects);
 		study.addArm(group);

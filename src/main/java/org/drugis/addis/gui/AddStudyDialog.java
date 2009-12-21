@@ -32,7 +32,7 @@ import javax.swing.JComponent;
 
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicArm;
-import org.drugis.addis.entities.BasicStudy;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
@@ -51,7 +51,7 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 @SuppressWarnings("serial")
 public class AddStudyDialog extends OkCancelDialog {
 	private Domain d_domain;
-	private BasicStudy d_study;
+	private Study d_study;
 	private EndpointHolder d_primaryEndpoint;
 	private AddStudyView d_view;
 	private JButton d_addArmButton;
@@ -62,7 +62,7 @@ public class AddStudyDialog extends OkCancelDialog {
 		this.d_main = mainWindow;
 		this.setModal(true);
 		d_domain = domain;
-		d_study = new BasicStudy("", new Indication(0L, ""));
+		d_study = new Study("", new Indication(0L, ""));
 		d_primaryEndpoint = new EndpointHolder();
 		d_primaryEndpoint.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
@@ -76,7 +76,7 @@ public class AddStudyDialog extends OkCancelDialog {
 				initUserPanel();	
 			}
 		});
-		d_view = new AddStudyView(new PresentationModel<BasicStudy>(d_study),
+		d_view = new AddStudyView(new PresentationModel<Study>(d_study),
 				new PresentationModel<EndpointHolder>(d_primaryEndpoint), domain,
 				d_okButton, mainWindow);
 		initUserPanel();

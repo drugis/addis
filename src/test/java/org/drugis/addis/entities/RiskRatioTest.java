@@ -119,7 +119,7 @@ public class RiskRatioTest {
 	
 	
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize) {
-		BasicStudy s = new BasicStudy(studyName, d_ind);
+		Study s = new Study(studyName, d_ind);
 		s.addEndpoint(d_ep);
 		BasicArm g_fluox = new BasicArm(d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), fluoxSize);
 		BasicArm g_parox = new BasicArm(d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), sertraSize);		

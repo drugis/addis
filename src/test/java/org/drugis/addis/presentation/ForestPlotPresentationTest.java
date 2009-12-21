@@ -10,7 +10,6 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
-import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
@@ -41,15 +40,15 @@ public class ForestPlotPresentationTest {
 	private ContinuousMeasurement d_mSubj1;
 	private BasicContinuousMeasurement d_mBase2;
 	private BasicContinuousMeasurement d_mSubj2;
-	private BasicStudy d_s2;
-	private BasicStudy d_s1;
+	private Study d_s2;
+	private Study d_s1;
 	private Endpoint d_endpoint;
 	private Drug d_subject;
 	private Drug d_baseline;
 	
 	@Before
 	public void setUp() {
-		d_s1 = new BasicStudy("X", new Indication(0L, ""));
+		d_s1 = new Study("X", new Indication(0L, ""));
 		d_endpoint = new Endpoint("E", Type.CONTINUOUS);
 		d_s1.addEndpoint(d_endpoint);
 		d_baseline = new Drug("DrugA", null);
@@ -63,7 +62,7 @@ public class ForestPlotPresentationTest {
 		d_s1.setMeasurement(d_endpoint, pBase, d_mBase1);
 		d_s1.setMeasurement(d_endpoint, pSubj, d_mSubj1);
 		
-		d_s2 = new BasicStudy("Y", new Indication(0L, ""));
+		d_s2 = new Study("Y", new Indication(0L, ""));
 		d_s2.addEndpoint(d_endpoint);
 		BasicArm pBase2 = new BasicArm(d_baseline, null, s_baseSize);
 		BasicArm pSubj2 = new BasicArm(d_subject, null, s_subjSize);

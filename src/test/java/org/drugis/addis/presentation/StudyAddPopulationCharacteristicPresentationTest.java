@@ -7,11 +7,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 
-import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.ContinuousVariable;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.Study;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ public class StudyAddPopulationCharacteristicPresentationTest {
 	public void setUp() {
 		d_domain = new DomainImpl();
 		PresentationModelFactory pmf = new PresentationModelFactory(d_domain);
-		d_studyModel = new StudyPresentationModel(new BasicStudy("X", new Indication(0L, "Y")), pmf );
+		d_studyModel = new StudyPresentationModel(new Study("X", new Indication(0L, "Y")), pmf );
 		d_model = new StudyAddPopulationCharacteristicPresentation(d_studyModel, d_domain);
 	}
 	

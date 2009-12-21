@@ -28,11 +28,10 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.MutableStudy;
-import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.EndpointHolder;
 import org.drugis.addis.gui.MeasurementInputHelper;
@@ -40,7 +39,6 @@ import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
-
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -52,7 +50,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class StudyAddEndpointView implements ViewBuilder {
 	private Domain d_domain;
-	private MutableStudy d_study;
+	private Study d_study;
 	private PresentationModel<EndpointHolder> d_endpointModel;
 	private Map<Arm, BasicMeasurement> d_measurements;
 	
@@ -61,7 +59,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 	private NotEmptyValidator d_validator;
 	private PresentationModelFactory d_presMan;
 	
-	public StudyAddEndpointView(Domain domain, MutableStudy study,
+	public StudyAddEndpointView(Domain domain, Study study,
 			PresentationModel<EndpointHolder> endpointModel,
 			Map<Arm,BasicMeasurement> measurements,
 			JButton okButton, PresentationModelFactory presModelMan) {
@@ -121,8 +119,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 		
 		builder.addSeparator("Study", cc.xyw(1, 1, fullWidth));
 		builder.addLabel("ID:", cc.xy(1, 3));
-		builder.add(BasicComponentFactory.createLabel(
-				new PresentationModel<MutableStudy>(d_study).getModel(Study.PROPERTY_ID)
+		builder.add(BasicComponentFactory.createLabel(d_presMan.getModel(d_study).getModel(Study.PROPERTY_ID)
 				), cc.xyw(3, 3, fullWidth - 2));
 		
 		builder.addSeparator("Endpoint", cc.xyw(1, 5, fullWidth));

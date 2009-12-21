@@ -37,10 +37,9 @@ import javax.swing.JTextField;
 import javax.swing.text.DefaultFormatter;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicArm;
+import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
@@ -71,14 +70,14 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.toedter.calendar.JDateChooser;
 
 public class AddStudyView implements ViewBuilder {
-	private PresentationModel<BasicStudy> d_model;
+	private PresentationModel<Study> d_model;
 	private PresentationModel<EndpointHolder> d_endpointPresentation;
 	private Domain d_domain;
 	private NotEmptyValidator d_validator;
 	private JButton d_okButton;
 	private Main d_mainWindow;
 
-	public AddStudyView(PresentationModel<BasicStudy> presentationModel,
+	public AddStudyView(PresentationModel<Study> presentationModel,
 			PresentationModel<EndpointHolder> presentationModel2, Domain domain,
 			JButton okButton, Main mainWindow) {
 		d_okButton = okButton;

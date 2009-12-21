@@ -13,13 +13,13 @@ import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
+import org.drugis.addis.entities.Study;
 import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Test;
@@ -125,7 +125,7 @@ public class StudyAddArmPresentationTest {
 	
 	@Test
 	public void testAddToStudy() {
-		BasicStudy study = new BasicStudy("Some Study", new Indication(0L, ""));
+		Study study = new Study("Some Study", new Indication(0L, ""));
 		study.addEndpoint(ExampleData.buildEndpointHamd());
 		StudyAddArmPresentation pres = new StudyAddArmPresentation(study, d_pmf);
 		pres.getDrugModel().setValue(ExampleData.buildDrugFluoxetine());

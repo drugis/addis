@@ -35,7 +35,6 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 
 import org.drugis.addis.entities.BasicArm;
-import org.drugis.addis.entities.BasicStudy;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
@@ -55,7 +54,7 @@ public class DomainTreeModelTest {
 	private Domain d_domain;
 	private Indication d_firstIndication;
 	private Endpoint d_firstEndpoint;
-	private BasicStudy d_firstStudy;
+	private Study d_firstStudy;
 	private Drug d_firstDrug;
 	private RandomEffectsMetaAnalysis d_firstMetaAnalysis;
 	
@@ -64,7 +63,7 @@ public class DomainTreeModelTest {
 		d_domain = new DomainImpl();
 		d_firstIndication = new Indication(8L, "Indication");		
 		d_firstEndpoint = new Endpoint("Endpoint", Type.RATE);
-		d_firstStudy = new BasicStudy("First", d_firstIndication);
+		d_firstStudy = new Study("First", d_firstIndication);
 		d_firstDrug = new Drug("Drug", "atc");
 		
 		BasicArm pg = new BasicArm(d_firstDrug,
@@ -245,7 +244,7 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addStudy(new BasicStudy("X", d_firstIndication));
+		d_domain.addStudy(new Study("X", d_firstIndication));
 		
 		verify(listener);
 	}
