@@ -1,5 +1,6 @@
 package org.drugis.addis.entities.metaanalysis;
 
+import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
@@ -91,20 +92,20 @@ public class RelativeEffectFactory {
 	}
 	
 	private static ContinuousMeasurement findContinuousMeasurement(Study s, Endpoint e, Drug d) {
-		if (!e.getType().equals(Endpoint.Type.CONTINUOUS)) {
+		if (!e.getType().equals(AbstractOutcomeMeasure.Type.CONTINUOUS)) {
 			throw new IllegalArgumentException("Endpoint should be Continuous");
 		}
 		return (ContinuousMeasurement)findMeasurement(s, e, d);
 	}
 	
 	private static RateMeasurement findRateMeasurement(Study s, Endpoint e, Drug d) {
-		if (!e.getType().equals(Endpoint.Type.RATE)) {
+		if (!e.getType().equals(AbstractOutcomeMeasure.Type.RATE)) {
 			throw new IllegalArgumentException("Endpoint should be Rate");
 		}
 		return (RateMeasurement)findMeasurement(s, e, d);
 	}
 
-	private static Measurement findMeasurement(Study s, Endpoint e, Drug drug) {
+	private static Measurement findMeasurement(Study s, AbstractOutcomeMeasure e, Drug drug) {
 		for (Arm g : s.getArms()) {
 			if (g.getDrug().equals(drug)) {
 				return s.getMeasurement(e, g);

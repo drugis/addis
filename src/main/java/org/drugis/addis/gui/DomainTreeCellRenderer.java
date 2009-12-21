@@ -25,8 +25,8 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 import org.drugis.addis.FileNames;
+import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
@@ -38,7 +38,7 @@ public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 	public Component getTreeCellRendererComponent(JTree tree, Object value,	boolean sel,
 			boolean expanded, boolean leaf, int row, boolean hasFocus) {
 		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-		if (value instanceof Endpoint) {
+		if (value instanceof AbstractOutcomeMeasure) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_ENDPOINT));
 			setToolTipText("Endpoint");
 		} else if (value instanceof RandomEffectsMetaAnalysis) {

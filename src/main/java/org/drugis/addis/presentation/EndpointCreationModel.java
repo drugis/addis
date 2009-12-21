@@ -3,6 +3,7 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Endpoint;
 
 @SuppressWarnings("serial")
@@ -12,12 +13,12 @@ public class EndpointCreationModel extends EndpointPresentationModel {
 		
 		getModel(Endpoint.PROPERTY_TYPE).addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent event) {
-				if (fromTo(event, Endpoint.Type.RATE, Endpoint.Type.CONTINUOUS) &&
-						getUOM().equals(Endpoint.UOM_DEFAULT_RATE)) {
-					setUOM(Endpoint.UOM_DEFAULT_CONTINUOUS);
-				} else if (fromTo(event, Endpoint.Type.CONTINUOUS, Endpoint.Type.RATE) &&
-						getUOM().equals(Endpoint.UOM_DEFAULT_CONTINUOUS)) {
-					setUOM(Endpoint.UOM_DEFAULT_RATE);
+				if (fromTo(event, AbstractOutcomeMeasure.Type.RATE, AbstractOutcomeMeasure.Type.CONTINUOUS) &&
+						getUOM().equals(AbstractOutcomeMeasure.UOM_DEFAULT_RATE)) {
+					setUOM(AbstractOutcomeMeasure.UOM_DEFAULT_CONTINUOUS);
+				} else if (fromTo(event, AbstractOutcomeMeasure.Type.CONTINUOUS, AbstractOutcomeMeasure.Type.RATE) &&
+						getUOM().equals(AbstractOutcomeMeasure.UOM_DEFAULT_CONTINUOUS)) {
+					setUOM(AbstractOutcomeMeasure.UOM_DEFAULT_RATE);
 				}
 			}
 			
@@ -26,11 +27,11 @@ public class EndpointCreationModel extends EndpointPresentationModel {
 			}
 
 			private void setUOM(String val) {
-				getModel(Endpoint.PROPERTY_UNIT_OF_MEASUREMENT).setValue(val);
+				getModel(AbstractOutcomeMeasure.PROPERTY_UNIT_OF_MEASUREMENT).setValue(val);
 			}
 
 			private Object getUOM() {
-				return getModel(Endpoint.PROPERTY_UNIT_OF_MEASUREMENT).getValue();
+				return getModel(AbstractOutcomeMeasure.PROPERTY_UNIT_OF_MEASUREMENT).getValue();
 			}});
 	}
 }

@@ -36,13 +36,13 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultFormatter;
 
+import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.Study;
@@ -296,7 +296,7 @@ public class AddStudyView implements ViewBuilder {
 		return component;
 	}
 
-	private Endpoint getEndpoint() {
+	private AbstractOutcomeMeasure getEndpoint() {
 		return d_endpointPresentation.getBean().getEndpoint();
 	}
 

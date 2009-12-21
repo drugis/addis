@@ -8,11 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicArm;
+import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.Interval;
@@ -24,7 +25,7 @@ public class StudyAddArmPresentation {
 	private PresentationModelFactory d_pmf;
 	private Study d_study;
 	private BasicArmPresentation d_pg;
-	private Map<Endpoint, Measurement> d_measurements = new HashMap<Endpoint,Measurement>();
+	private Map<OutcomeMeasure, Measurement> d_measurements = new HashMap<OutcomeMeasure,Measurement>();
 	
 	public StudyAddArmPresentation(Study study, PresentationModelFactory pmf) {
 		d_pmf = pmf;
@@ -32,7 +33,7 @@ public class StudyAddArmPresentation {
 		Arm pg = new BasicArm(null, new FlexibleDose(new Interval<Double>(0.0, 0.0), SIUnit.MILLIGRAMS_A_DAY), 0);
 		d_pg = (BasicArmPresentation)d_pmf.getModel(pg);
 		
-		for (Endpoint e : d_study.getEndpoints()) {
+		for (OutcomeMeasure e : d_study.getOutcomeMeasures()) {
 			BasicMeasurement m = e.buildMeasurement(pg);
 			if (m instanceof BasicMeasurement) {
 				final BasicMeasurement rm = (BasicMeasurement)m;
@@ -56,9 +57,9 @@ public class StudyAddArmPresentation {
 		return d_pg.getDoseModel();
 	}
 	
-	public List<Endpoint> getEndpoints(Endpoint.Type type) {
-		List<Endpoint> result = new ArrayList<Endpoint>();
-		for (Endpoint e : d_study.getEndpoints()) {
+	public List<OutcomeMeasure> getOutcomeMeasures(Endpoint.Type type) {
+		List<OutcomeMeasure> result = new ArrayList<OutcomeMeasure>();
+		for (OutcomeMeasure e : d_study.getOutcomeMeasures()) {
 			if (e.getType().equals(type)) {
 				result.add(e);
 			}
@@ -67,10 +68,10 @@ public class StudyAddArmPresentation {
 	}
 	
 	public boolean hasEndpoints(Endpoint.Type type) {
-		return !getEndpoints(type).isEmpty();
+		return !getOutcomeMeasures(type).isEmpty();
 	}
 	
-	public PresentationModel<Measurement> getMeasurementModel(Endpoint e) {
+	public PresentationModel<Measurement> getMeasurementModel(OutcomeMeasure e) {
 		return d_pmf.getModel(d_measurements.get(e));
 	}
 	
@@ -84,7 +85,7 @@ public class StudyAddArmPresentation {
 	
 	public void addToStudy() {
 		d_study.addArm((BasicArm)getArm());
-		for (Endpoint e: d_study.getEndpoints()) {
+		for (OutcomeMeasure e: d_study.getOutcomeMeasures()) {
 			d_study.setMeasurement(e, getArm(), d_measurements.get(e));
 		}
 	}

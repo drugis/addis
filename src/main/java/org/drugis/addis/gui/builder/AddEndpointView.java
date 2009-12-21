@@ -24,6 +24,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
+import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
@@ -64,7 +65,7 @@ public class AddEndpointView implements ViewBuilder {
 		d_validator.add(d_description);
 		
 		d_unitOfMeasurement = BasicComponentFactory.createTextField(
-				d_model.getModel(Endpoint.PROPERTY_UNIT_OF_MEASUREMENT), false);
+				d_model.getModel(AbstractOutcomeMeasure.PROPERTY_UNIT_OF_MEASUREMENT), false);
 		
 		AutoSelectFocusListener.add(d_unitOfMeasurement);
 		d_unitOfMeasurement.setColumns(30);
@@ -74,9 +75,9 @@ public class AddEndpointView implements ViewBuilder {
 		d_validator.add(d_name);
 	
 		d_type = AuxComponentFactory.createBoundComboBox(
-				Endpoint.Type.values(), d_model.getModel(Endpoint.PROPERTY_TYPE));
+				AbstractOutcomeMeasure.Type.values(), d_model.getModel(Endpoint.PROPERTY_TYPE));
 		d_direction = AuxComponentFactory.createBoundComboBox(
-				Endpoint.Direction.values(), d_model.getModel(Endpoint.PROPERTY_DIRECTION));
+				AbstractOutcomeMeasure.Direction.values(), d_model.getModel(Endpoint.PROPERTY_DIRECTION));
 		ComboBoxPopupOnFocusListener.add(d_type);
 		d_validator.add(d_type);
 	}

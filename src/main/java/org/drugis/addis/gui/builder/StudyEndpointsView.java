@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.addis.gui.GUIFactory;
@@ -50,17 +51,22 @@ public class StudyEndpointsView implements ViewBuilder {
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 	
-		if (d_model.getBean().getEndpoints().isEmpty()) {
+		if (d_model.getBean().getOutcomeMeasures().isEmpty()) {
 			builder.addLabel("No endpoints", cc.xy(1, 1));
 		} else {
 			int row = 1;
 			boolean addRow = false;
-			for (Endpoint e : d_model.getBean().getEndpoints()) {
+			for (OutcomeMeasure om : d_model.getBean().getOutcomeMeasures()) {
+				//FIX
+				if (!(om instanceof Endpoint))
+					continue;
+				Endpoint e = (Endpoint) om;
+				
 				if (addRow) {
 					LayoutUtil.addRow(layout);
 				}
 				builder.add(
-						GUIFactory.createEndpointLabelWithIcon(e),
+						GUIFactory.createOutcomeMeasureLabelWithIcon(e),
 						cc.xy(1, row));
 				JPanel panel = new JPanel(new FlowLayout());
 				if (e.getType().equals(Type.RATE)) {

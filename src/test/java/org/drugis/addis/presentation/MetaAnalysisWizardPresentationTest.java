@@ -12,11 +12,13 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.JUnitUtil;
@@ -74,13 +76,13 @@ public class MetaAnalysisWizardPresentationTest {
 		List<Endpoint> expected = new ArrayList<Endpoint>();
 		expected.add(ExampleData.buildEndpointCgi());
 		expected.add(ExampleData.buildEndpointHamd());
-		assertEquals(expected, d_wizard.getEndpointListModel().getValue());
+		assertEquals(expected, d_wizard.getOutcomeMeasureListModel().getValue());
 	}
 	
 	@Test
 	public void testGetEndpointSetNoIndication() {
-		assertNotNull(d_wizard.getEndpointListModel().getValue());
-		assertTrue(d_wizard.getEndpointListModel().getValue().isEmpty());
+		assertNotNull(d_wizard.getOutcomeMeasureListModel().getValue());
+		assertTrue(d_wizard.getOutcomeMeasureListModel().getValue().isEmpty());
 	}
 	
 	@Test
@@ -88,9 +90,9 @@ public class MetaAnalysisWizardPresentationTest {
 		List<Indication> indList = d_wizard.getIndicationListModel().getValue();
 		d_wizard.getIndicationModel().setValue(indList.get(indList.size()-1));
 		
-		List<Endpoint> endpointList = d_wizard.getEndpointListModel().getValue();
-		Endpoint firstEndp = endpointList.get(0);
-		Endpoint lastEndp = endpointList.get(endpointList.size() - 1);
+		List<OutcomeMeasure> outcomeList = d_wizard.getOutcomeMeasureListModel().getValue();
+		OutcomeMeasure firstEndp = outcomeList.get(0);
+		OutcomeMeasure lastEndp = outcomeList.get(outcomeList.size() - 1);
 		
 		d_wizard.getEndpointModel().setValue(firstEndp);
 		
@@ -129,10 +131,10 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testGetStudiesMeasuringLabelModel() {
 		d_wizard.getIndicationModel().setValue(d_wizard.getIndicationListModel().getValue().get(0));
-		d_wizard.getEndpointModel().setValue(d_wizard.getEndpointListModel().getValue().get(0));		
+		d_wizard.getEndpointModel().setValue(d_wizard.getOutcomeMeasureListModel().getValue().get(0));		
 		
 		Indication indic = d_wizard.getIndicationListModel().getValue().get(0);
-		Endpoint endp = (Endpoint) d_wizard.getEndpointModel().getValue();
+		AbstractOutcomeMeasure endp = (AbstractOutcomeMeasure) d_wizard.getEndpointModel().getValue();
 		
 		d_wizard.getIndicationModel().setValue(indic);		
 		d_wizard.getEndpointModel().setValue(endp);		
@@ -152,7 +154,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testSetEndpoint() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		Endpoint newValue = ExampleData.buildEndpointHamd();
+		AbstractOutcomeMeasure newValue = ExampleData.buildEndpointHamd();
 		ValueModel vm = d_wizard.getEndpointModel();
 		JUnitUtil.testSetter(vm, null, newValue);
 		
@@ -162,9 +164,9 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetInvalidEndpoint() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		Endpoint newValue = ExampleData.buildEndpointCVdeath();
+		AbstractOutcomeMeasure newValue = ExampleData.buildEndpointCVdeath();
 		
-		assertTrue(!d_wizard.getEndpointListModel().getValue().contains(newValue));
+		assertTrue(!d_wizard.getOutcomeMeasureListModel().getValue().contains(newValue));
 		
 		ValueModel vm = d_wizard.getEndpointModel();
 		vm.setValue(newValue);
@@ -195,7 +197,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testGetDrugSet() {
 		Indication ind = ExampleData.buildIndicationDepression();
-		Endpoint ep = ExampleData.buildEndpointHamd();
+		AbstractOutcomeMeasure ep = ExampleData.buildEndpointHamd();
 		
 		List<Drug> expected = new ArrayList<Drug>();
 		expected.add(ExampleData.buildDrugFluoxetine());
@@ -246,7 +248,7 @@ public class MetaAnalysisWizardPresentationTest {
 
 	private void testSetDrugHelper(ValueModel vm) {
 		Indication ind = ExampleData.buildIndicationDepression();
-		Endpoint ep = ExampleData.buildEndpointHamd();
+		AbstractOutcomeMeasure ep = ExampleData.buildEndpointHamd();
 		Drug d = ExampleData.buildDrugFluoxetine();
 		d_wizard.getIndicationModel().setValue(ind);
 		d_wizard.getEndpointModel().setValue(ep);
@@ -268,7 +270,7 @@ public class MetaAnalysisWizardPresentationTest {
 
 	private void testSetInvalidDrugHelper(ValueModel vm) {
 		Indication ind = ExampleData.buildIndicationDepression();
-		Endpoint ep = ExampleData.buildEndpointHamd();
+		AbstractOutcomeMeasure ep = ExampleData.buildEndpointHamd();
 		Drug d = ExampleData.buildDrugCandesartan();
 		d_wizard.getIndicationModel().setValue(ind);
 		d_wizard.getEndpointModel().setValue(ep);
@@ -297,20 +299,20 @@ public class MetaAnalysisWizardPresentationTest {
 	}
 	
 	@Test
-	public void testGetEndpointListModel() {
+	public void testGetOutcomeMeasureListModel() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		List<Endpoint> expected = d_wizard.getEndpointListModel().getValue();
-		ListHolder<Endpoint> endpointList = d_wizard.getEndpointListModel();
-		assertEquals(expected, endpointList.getValue());
+		List<OutcomeMeasure> expected = d_wizard.getOutcomeMeasureListModel().getValue();
+		ListHolder<OutcomeMeasure> omList = d_wizard.getOutcomeMeasureListModel();
+		assertEquals(expected, omList.getValue());
 	}
 	
 	@Test
 	public void testEndpointListModelEventOnIndicationChange() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
-		List<Endpoint> newValue = d_wizard.getEndpointListModel().getValue();
+		List<OutcomeMeasure> newValue = d_wizard.getOutcomeMeasureListModel().getValue();
 		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		ValueModel endpointList = d_wizard.getEndpointListModel();
+		ValueModel endpointList = d_wizard.getOutcomeMeasureListModel();
 		PropertyChangeListener l = JUnitUtil.mockListener(endpointList, "value", null, newValue);
 		
 		endpointList.addValueChangeListener(l);

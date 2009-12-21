@@ -33,7 +33,7 @@ import javax.swing.JPanel;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.gui.builder.StudyTablePanelView;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.StudyListPresentationModel;
@@ -80,14 +80,14 @@ public class GUIFactory {
 		return topPane;
 	}	
 
-	public static JComponent createEndpointLabelWithIcon(Endpoint e) {
+	public static JComponent createOutcomeMeasureLabelWithIcon(OutcomeMeasure e) {
 		String fname = FileNames.ICON_STUDY;
 		JLabel textLabel = null;
 		Icon icon = ImageLoader.getIcon(fname);
 		textLabel = new JLabel(e.getName(), icon, JLabel.CENTER);			
 		
 		Bindings.bind(textLabel, "text", 
-				new PresentationModel<Endpoint>(e).getModel(Endpoint.PROPERTY_NAME));
+				new PresentationModel<OutcomeMeasure>(e).getModel(OutcomeMeasure.PROPERTY_NAME));
 		return textLabel;
 	}
 

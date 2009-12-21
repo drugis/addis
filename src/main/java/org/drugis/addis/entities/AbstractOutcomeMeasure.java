@@ -87,4 +87,15 @@ public abstract class AbstractOutcomeMeasure extends AbstractEntity implements O
 		}
 		return false;		
 	}
+
+	public BasicMeasurement buildMeasurement(Arm a) {
+		switch (getType()) {
+		case CONTINUOUS:
+			return new BasicContinuousMeasurement(0.0, 0.0, a.getSize());
+		case RATE:
+			return new BasicRateMeasurement(0, a.getSize());
+		default:
+			throw new IllegalStateException("Not all enum cases covered");
+		}
+	}
 }

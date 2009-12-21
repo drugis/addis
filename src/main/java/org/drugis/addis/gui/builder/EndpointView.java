@@ -23,6 +23,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
@@ -85,7 +86,7 @@ public class EndpointView implements ViewBuilder {
 
 		builder.addLabel("Unit of Measurement:", cc.xy(1, 5));
 		builder.add(BasicComponentFactory.createLabel(
-				d_model.getModel(Endpoint.PROPERTY_UNIT_OF_MEASUREMENT)), cc.xy(3, 5));
+				d_model.getModel(AbstractOutcomeMeasure.PROPERTY_UNIT_OF_MEASUREMENT)), cc.xy(3, 5));
 		
 		builder.addLabel("Direction:", cc.xy(1, 7));
 		ValueModel directionModel = ConverterFactory.createStringConverter(

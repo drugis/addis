@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
@@ -51,8 +52,8 @@ public class RandomEffectsMetaAnalysisTest {
 		d_ind = new Indication(001L, "Impression");
 		d_fluox = new Drug("Fluoxetine","01");
 		d_sertr = new Drug("Sertraline","02");
-		d_rateEndpoint = new Endpoint("rate", Endpoint.Type.RATE);
-		d_contEndpoint = new Endpoint("continuous", Endpoint.Type.CONTINUOUS);
+		d_rateEndpoint = new Endpoint("rate", AbstractOutcomeMeasure.Type.RATE);
+		d_contEndpoint = new Endpoint("continuous", AbstractOutcomeMeasure.Type.CONTINUOUS);
 		
 		d_bennie = createRateStudy("Bennie 1995",63,144,73,142, d_ind);
 		d_boyer = createRateStudy("Boyer 1998", 61,120, 63,122, d_ind);
@@ -159,7 +160,7 @@ public class RandomEffectsMetaAnalysisTest {
 			int sertraResp, int sertraSize,
 			Indication ind) {
 		Study s = new Study(studyName, ind);
-		s.addEndpoint(d_rateEndpoint);
+		s.addOutcomeMeasure(d_rateEndpoint);
 		
 		addRateMeasurement(s, d_fluox, fluoxSize, fluoxResp);		
 		addRateMeasurement(s, d_sertr, sertraSize, sertraResp);
@@ -172,7 +173,7 @@ public class RandomEffectsMetaAnalysisTest {
 			int sertrSize, double sertrMean, double sertrDev,
 			Indication ind) {
 		Study s = new Study(studyName, ind);
-		s.addEndpoint(d_contEndpoint);
+		s.addOutcomeMeasure(d_contEndpoint);
 		
 		addContinuousMeasurement(s, d_fluox, fluoxSize, fluoxMean, fluoxDev);
 		addContinuousMeasurement(s, d_sertr, sertrSize, sertrMean, sertrDev);

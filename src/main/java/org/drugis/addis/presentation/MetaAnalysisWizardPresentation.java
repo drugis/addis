@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 
@@ -71,14 +73,14 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	@SuppressWarnings("serial")
-	private class EndpointListHolder extends AbstractListHolder<Endpoint> implements PropertyChangeListener {
-		public EndpointListHolder() {
+	private class OutcomeListHolder extends AbstractListHolder<OutcomeMeasure> implements PropertyChangeListener {
+		public OutcomeListHolder() {
 			getIndicationModel().addValueChangeListener(this);
 		}
 		
 		@Override
-		public List<Endpoint> getValue() {
-			return new ArrayList<Endpoint>(getEndpointSet());
+		public List<OutcomeMeasure> getValue() {
+			return new ArrayList<OutcomeMeasure>(getEndpointSet());
 		}
 
 		public void propertyChange(PropertyChangeEvent event) {
@@ -126,7 +128,7 @@ public class MetaAnalysisWizardPresentation {
 	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;	
 	private DrugHolder d_firstDrugHolder;
 	private DrugHolder d_secondDrugHolder;
-	private EndpointListHolder d_endpointListHolder;
+	private OutcomeListHolder d_outcomeListHolder;
 	private DrugListHolder d_drugListHolder;
 	private DefaultSelectableStudyListPresentationModel d_studyListPm;
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
@@ -141,7 +143,7 @@ public class MetaAnalysisWizardPresentation {
 		d_firstDrugHolder = new DrugHolder();
 		d_studiesMeasuringValueModel = new StudiesMeasuringValueModel();		
 		d_secondDrugHolder = new DrugHolder();
-		d_endpointListHolder = new EndpointListHolder();
+		d_outcomeListHolder = new OutcomeListHolder();
 		d_drugListHolder = new DrugListHolder();
 		d_firstDrugHolder.addValueChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -170,15 +172,15 @@ public class MetaAnalysisWizardPresentation {
 		return d_indicationHolder; 
 	}
 	
-	public AbstractListHolder<Endpoint> getEndpointListModel() {
-		return d_endpointListHolder;
+	public AbstractListHolder<OutcomeMeasure> getOutcomeMeasureListModel() {
+		return d_outcomeListHolder;
 	}
 	
-	private SortedSet<Endpoint> getEndpointSet() {
-		TreeSet<Endpoint> endpoints = new TreeSet<Endpoint>();
+	private SortedSet<OutcomeMeasure> getEndpointSet() {
+		TreeSet<OutcomeMeasure> endpoints = new TreeSet<OutcomeMeasure>();
 		if (getIndication() != null) {
 			for (Study s : d_domain.getStudies(getIndication()).getValue()) {
-				endpoints.addAll(s.getEndpoints());
+				endpoints.addAll(s.getOutcomeMeasures());
 			}			
 		}	
 		return endpoints;
@@ -213,7 +215,7 @@ public class MetaAnalysisWizardPresentation {
 		return d_indicationHolder.getValue();
 	}
 
-	private Endpoint getEndpoint() {
+	private AbstractOutcomeMeasure getEndpoint() {
 		return d_endpointHolder.getValue();
 	}
 	

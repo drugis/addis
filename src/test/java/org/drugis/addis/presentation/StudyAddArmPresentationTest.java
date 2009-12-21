@@ -72,12 +72,12 @@ public class StudyAddArmPresentationTest {
 	
 	@Test
 	public void testGetRateEndpoints() {
-		assertEquals(Collections.singletonList(ExampleData.buildEndpointHamd()), d_pm.getEndpoints(Endpoint.Type.RATE));
+		assertEquals(Collections.singletonList(ExampleData.buildEndpointHamd()), d_pm.getOutcomeMeasures(Endpoint.Type.RATE));
 	}
 	
 	@Test
 	public void testGetContinuousEndpoints() {
-		assertEquals(Collections.singletonList(ExampleData.buildEndpointCgi()), d_pm.getEndpoints(Endpoint.Type.CONTINUOUS));
+		assertEquals(Collections.singletonList(ExampleData.buildEndpointCgi()), d_pm.getOutcomeMeasures(Endpoint.Type.CONTINUOUS));
 	}
 	
 	@Test
@@ -126,7 +126,7 @@ public class StudyAddArmPresentationTest {
 	@Test
 	public void testAddToStudy() {
 		Study study = new Study("Some Study", new Indication(0L, ""));
-		study.addEndpoint(ExampleData.buildEndpointHamd());
+		study.addOutcomeMeasure(ExampleData.buildEndpointHamd());
 		StudyAddArmPresentation pres = new StudyAddArmPresentation(study, d_pmf);
 		pres.getDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		pres.addToStudy();

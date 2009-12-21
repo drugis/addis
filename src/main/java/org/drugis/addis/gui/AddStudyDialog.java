@@ -83,7 +83,7 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	protected void setEndpoint() {
-		d_study.setEndpoints(Collections.singleton(d_primaryEndpoint.getEndpoint()));
+		d_study.setOutcomeMeasures(Collections.singleton(d_primaryEndpoint.getEndpoint()));
 		if (d_primaryEndpoint.getEndpoint() != null) {			
 			d_addArmButton.setEnabled(true);
 		}
@@ -152,6 +152,6 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	private void bindEndpoint() {
-		d_study.setEndpoints(new HashSet<Endpoint>(d_primaryEndpoint.asList()));
+		d_study.setOutcomeMeasures(new HashSet<Endpoint>(d_primaryEndpoint.asList()));
 	}
 }

@@ -12,6 +12,7 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.presentation.BasicArmPresentation;
@@ -44,7 +45,7 @@ public class StudyArmsView implements ViewBuilder {
 				);
 		
 		int fullWidth = 5;
-		for (int i = 1; i < d_model.getBean().getEndpoints().size(); ++i) {			
+		for (int i = 1; i < d_model.getBean().getOutcomeMeasures().size(); ++i) {			
 			layout.appendColumn(ColumnSpec.decode("3dlu"));
 			layout.appendColumn(ColumnSpec.decode("center:pref"));			
 			fullWidth += 2;
@@ -55,9 +56,13 @@ public class StudyArmsView implements ViewBuilder {
 
 		builder.addLabel("Size", cc.xy(5, row, "center, center"));		
 		int col = 7;
-		for (Endpoint e : d_model.getBean().getEndpoints()) {
+		//FIXME
+		for (OutcomeMeasure om : d_model.getBean().getOutcomeMeasures()) {
+			if (!(om instanceof Endpoint)) {
+				continue;
+			}
 			builder.add(
-					GUIFactory.createEndpointLabelWithIcon(e),
+					GUIFactory.createOutcomeMeasureLabelWithIcon((Endpoint) om),
 							cc.xy(col, row));
 			col += 2;
 		}
@@ -85,7 +90,6 @@ public class StudyArmsView implements ViewBuilder {
 							
 							@Override
 							public Object parseObject(String source, ParsePosition pos) {
-								// TODO Auto-generated method stub
 								return null;
 							}
 							
@@ -108,7 +112,7 @@ public class StudyArmsView implements ViewBuilder {
 						cc.xy(5, row, "center, center"));
 		
 		col = 7;
-		for (Endpoint e : d_model.getBean().getEndpoints()) {
+		for (OutcomeMeasure e : d_model.getBean().getOutcomeMeasures()) {
 			Measurement m = d_model.getBean().getMeasurement(e, g);
 			if (m != null) {
 				builder.add(

@@ -34,17 +34,6 @@ public class Endpoint extends AbstractOutcomeMeasure {
 		this(string, type, Direction.HIGHER_IS_BETTER);
 	}
 	
-	public BasicMeasurement buildMeasurement(Arm pg) {
-		switch (getType()) {
-		case CONTINUOUS:
-			return new BasicContinuousMeasurement(0.0, 0.0, pg.getSize());
-		case RATE:
-			return new BasicRateMeasurement(0, pg.getSize());
-		default:
-			throw new IllegalStateException("Not all enum cases covered");
-		}
-	}
-	
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Endpoint) {

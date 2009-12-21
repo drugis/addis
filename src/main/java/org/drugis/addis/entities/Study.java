@@ -35,10 +35,10 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private static class MeasurementKey implements Serializable {
 		private static final long serialVersionUID = 6310789667384578005L;
 		
-		private Endpoint d_endpoint;
+		private OutcomeMeasure d_endpoint;
 		private Arm d_arm;
 		
-		public MeasurementKey(Endpoint e, Arm g) {
+		public MeasurementKey(OutcomeMeasure e, Arm g) {
 			d_endpoint = e;
 			d_arm = g;
 		}
@@ -60,20 +60,20 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 	
 	public final static String PROPERTY_ID = "id";
-	public final static String PROPERTY_ENDPOINTS = "endpoints";
-
+	public final static String PROPERTY_OUTCOME_MEASURES = "outcomeMeasures";
 	public final static String PROPERTY_ARMS = "arms";
+
 	private List<BasicArm> d_arms = new ArrayList<BasicArm>();
 	private String d_id;
 	private Map<MeasurementKey, Measurement> d_measurements = new HashMap<MeasurementKey, Measurement>();
-	private Set<Endpoint> d_endpoints = new HashSet<Endpoint>();
+	private Set<OutcomeMeasure> d_outcomeMeasures = new HashSet<OutcomeMeasure>();
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	private VariableMap d_popChars;
 	
 	public Study(String id, Indication i) {
 		d_id = id;
 		d_chars.put(BasicStudyCharacteristic.INDICATION, i);
-		setEndpoints(new HashSet<Endpoint>());
+		setOutcomeMeasures(new HashSet<OutcomeMeasure>());
 		setArms(new ArrayList<BasicArm>());
 		d_popChars = new VariableMap();
 	}
@@ -111,7 +111,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	
 	public Set<Entity> getDependencies() {
 		HashSet<Entity> dep = new HashSet<Entity>(getDrugs());
-		dep.addAll(getEndpoints());
+		dep.addAll(getOutcomeMeasures());
 		dep.add((Entity) getCharacteristic(BasicStudyCharacteristic.INDICATION));
 		return dep;
 	}
@@ -160,57 +160,60 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return getId().compareTo(other.getId());
 	}
 	
-	public Measurement getMeasurement(Endpoint e, Arm g) {
+	public Measurement getMeasurement(OutcomeMeasure e, Arm g) {
 		forceLegalArguments(e, g);
 		Measurement measurement = d_measurements.get(new MeasurementKey(e, g));
 		return measurement;
 	}
 	
-	private void forceLegalArguments(Endpoint e, Arm g) {
+	private void forceLegalArguments(OutcomeMeasure e, Arm g) {
 		if (!getArms().contains(g)) {
 			throw new IllegalArgumentException("Arm " + g + " not part of this study.");
 		}
-		if (!getEndpoints().contains(e)) {
-			throw new IllegalArgumentException("Endpoint " + e + " not measured by this study.");
+		if (!getOutcomeMeasures().contains(e)) {
+			throw new IllegalArgumentException("Outcome " + e + " not measured by this study.");
 		}
 	}
 	
-	public void setMeasurement(Endpoint e, Arm g, Measurement m) {
+	public void setMeasurement(OutcomeMeasure e, Arm g, Measurement m) {
 		forceLegalArguments(e, g);
 		if (!m.isOfType(e.getType())) {
-			throw new IllegalArgumentException("Measurement does not conform with Endpoint");
+			throw new IllegalArgumentException("Measurement does not conform with outcome");
 		}
 		d_measurements.put(new MeasurementKey(e, g), m);
 	}
 	
-	public Set<Endpoint> getEndpoints() {
-		return d_endpoints;
+	public Set<OutcomeMeasure> getOutcomeMeasures() {
+		return d_outcomeMeasures;
 	}
-	public void setEndpoints(Set<Endpoint> endpoints) {
-		Set<Endpoint> oldVal = d_endpoints;
-		d_endpoints = endpoints;
+	
+	public void setOutcomeMeasures(Set<? extends OutcomeMeasure> outcomeMeasures) {
+		Set<OutcomeMeasure> oldVal = d_outcomeMeasures;
+		d_outcomeMeasures = new HashSet<OutcomeMeasure>(outcomeMeasures);
 		updateMeasurements();
-		firePropertyChange(PROPERTY_ENDPOINTS, oldVal, d_endpoints);
+		firePropertyChange(PROPERTY_OUTCOME_MEASURES, oldVal, d_outcomeMeasures);
 	}
-	public void addEndpoint(Endpoint endpoint) {
-		Set<Endpoint> newVal = new HashSet<Endpoint>(d_endpoints);
-		newVal.add(endpoint);
-		setEndpoints(newVal);
+	
+	public void addOutcomeMeasure(OutcomeMeasure om) {
+		Set<OutcomeMeasure> newVal = new HashSet<OutcomeMeasure>(d_outcomeMeasures);
+		newVal.add(om);
+		setOutcomeMeasures(newVal);
 	}
-	public void deleteEndpoint(Endpoint e) {
-		if (d_endpoints.contains(e)) {
-			Set<Endpoint> newVal = new HashSet<Endpoint>(d_endpoints);
-			newVal.remove(e);
-			setEndpoints(newVal);
+		
+	public void deleteOutcomeMeasure(OutcomeMeasure om) {
+		if (d_outcomeMeasures.contains(om)) {
+			Set<OutcomeMeasure> newVal = new HashSet<OutcomeMeasure>(d_outcomeMeasures);
+			newVal.remove(om);
+			setOutcomeMeasures(newVal);
 		}
 	}
 	
 	private void updateMeasurements() {
-		for (Endpoint e : d_endpoints) {
+		for (OutcomeMeasure om : d_outcomeMeasures) {
 			for (Arm g : getArms()) {
-				MeasurementKey key = new MeasurementKey(e, g);
+				MeasurementKey key = new MeasurementKey(om, g);
 				if (d_measurements.get(key) == null) {
-					d_measurements.put(key, e.buildMeasurement(g));
+					d_measurements.put(key, om.buildMeasurement(g));
 				}
 			}
 		}

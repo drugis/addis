@@ -54,13 +54,13 @@ public class BasicStudyTest {
 	@Test
 	public void testSetEndpoints() {
 		Set<Endpoint> list = Collections.singleton(new Endpoint("e", Type.RATE));
-		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, Collections.EMPTY_SET, 
+		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_OUTCOME_MEASURES, Collections.EMPTY_SET, 
 				list);
 	}
 	
 	@Test
 	public void testAddEndpoint() {
-		JUnitUtil.testAdderSet(new Study("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Type.RATE));
+		JUnitUtil.testAdderSet(new Study("X", new Indication(0L, "")), Study.PROPERTY_OUTCOME_MEASURES, "addOutcomeMeasure", new Endpoint("e", Type.RATE));
 	}
 	
 	@Test
@@ -108,14 +108,14 @@ public class BasicStudyTest {
 	public void testSetMeasurement() {
 		Study study = new Study("X", new Indication(0L, ""));
 		Endpoint endpoint = new Endpoint("e", Type.RATE);
-		study.addEndpoint(endpoint);
+		study.addOutcomeMeasure(endpoint);
 		BasicArm group = new BasicArm(null, null, 100);
 		study.addArm(group);
 		BasicRateMeasurement m = new BasicRateMeasurement(0, group.getSize());
 		m.setRate(12);
-		study.setMeasurement(study.getEndpoints().iterator().next(), study.getArms().get(0), m);
+		study.setMeasurement(study.getOutcomeMeasures().iterator().next(), study.getArms().get(0), m);
 		
-		assertEquals(m, study.getMeasurement(study.getEndpoints().iterator().next(), study.getArms().get(0)));
+		assertEquals(m, study.getMeasurement(study.getOutcomeMeasures().iterator().next(), study.getArms().get(0)));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -131,14 +131,14 @@ public class BasicStudyTest {
 	public void testSetMeasurementThrowsException2() {
 		Study study = new Study("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("e", Type.RATE);
-		study.addEndpoint(e);
+		study.addOutcomeMeasure(e);
 		BasicArm group = new BasicArm(null, null, 100);
 		study.addArm(group);
 		
 		BasicMeasurement m = new BasicRateMeasurement(12, group.getSize());
 		
-		study.getEndpoints().iterator().next().setType(Type.CONTINUOUS);
-		study.setMeasurement(study.getEndpoints().iterator().next(), study.getArms().get(0), m);
+		study.getOutcomeMeasures().iterator().next().setType(Type.CONTINUOUS);
+		study.setMeasurement(study.getOutcomeMeasures().iterator().next(), study.getArms().get(0), m);
 	}
 	
 	
@@ -156,10 +156,10 @@ public class BasicStudyTest {
 	@Test
 	public void testGetDependencies() {
 		Study s = ExampleData.buildStudyDeWilde();
-		assertFalse(s.getEndpoints().isEmpty());
+		assertFalse(s.getOutcomeMeasures().isEmpty());
 		assertFalse(s.getDrugs().isEmpty());
 		
-		Set<Entity> dep = new HashSet<Entity>(s.getEndpoints());
+		Set<Entity> dep = new HashSet<Entity>(s.getOutcomeMeasures());
 		dep.addAll(s.getDrugs());
 		dep.add((Indication) s.getCharacteristic(BasicStudyCharacteristic.INDICATION));
 		assertEquals(dep, s.getDependencies());
@@ -167,8 +167,8 @@ public class BasicStudyTest {
 	
 	@Test
 	public void testDeleteEndpoint() throws Exception {
-		JUnitUtil.testDeleterSet(new Study("study", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "deleteEndpoint",
-				new Endpoint("e", Endpoint.Type.CONTINUOUS));
+		JUnitUtil.testDeleterSet(new Study("study", new Indication(0L, "")), Study.PROPERTY_OUTCOME_MEASURES, "deleteOutcomeMeasure",
+				new Endpoint("e", AbstractOutcomeMeasure.Type.CONTINUOUS));
 	}
 	
 	@Test

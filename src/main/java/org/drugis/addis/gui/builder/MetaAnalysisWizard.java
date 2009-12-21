@@ -160,7 +160,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 	public class SelectEndpointWizardStep extends PanelWizardStep {
 		public SelectEndpointWizardStep() {
 			super("Select Endpoint","Select an Endpoint that you want to use for this meta analysis.");
-			JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(d_pm.getEndpointListModel(), d_pm.getEndpointModel());
+			JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(d_pm.getOutcomeMeasureListModel(), d_pm.getEndpointModel());
 			add(endPointBox);
 			endPointBox.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent arg0) {

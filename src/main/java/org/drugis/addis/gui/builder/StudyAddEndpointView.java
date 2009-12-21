@@ -28,6 +28,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
+import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
@@ -89,7 +90,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 
 	private List<Endpoint> getEndpoints() {
 		List<Endpoint> list = new ArrayList<Endpoint>(d_domain.getEndpoints());
-		list.removeAll(d_study.getEndpoints());
+		list.removeAll(d_study.getOutcomeMeasures());
 		return list;
 	}
 
@@ -142,14 +143,14 @@ public class StudyAddEndpointView implements ViewBuilder {
 	}
 
 	private int getNumComponents() {
-		Endpoint e = getEndpoint();
+		AbstractOutcomeMeasure e = getEndpoint();
 		if (e == null) {
 			return 0;
 		}
 		return MeasurementInputHelper.numComponents(e);
 	}
 
-	private Endpoint getEndpoint() {
+	private AbstractOutcomeMeasure getEndpoint() {
 		return d_endpointModel.getBean().getEndpoint();
 	}
 

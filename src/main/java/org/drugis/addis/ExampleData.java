@@ -133,13 +133,13 @@ public class ExampleData {
 	
 	public static Study buildStudyChouinardNoHamd() {
 		Study s = realBuildStudyChouinard();
-		s.deleteEndpoint(buildEndpointHamd());
+		s.deleteOutcomeMeasure(buildEndpointHamd());
 		return s;
 	}
 
 	private static Study realBuildStudyChouinard() {
 		Study study = new Study("Chouinard et al, 1999", buildIndicationDepression());
-		study.setEndpoints(new HashSet<Endpoint>(
+		study.setOutcomeMeasures(new HashSet<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
 		
 		// Study characteristics
@@ -226,7 +226,7 @@ public class ExampleData {
 		Endpoint hamd = buildEndpointHamd();
 		Drug fluoxetine = buildDrugFluoxetine();
 		Study study = new Study("De Wilde et al, 1993", buildIndicationDepression());
-		study.setEndpoints(Collections.singleton(hamd));
+		study.setOutcomeMeasures(Collections.singleton(hamd));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -274,7 +274,7 @@ public class ExampleData {
 
 	private static Study realBuildStudyBennie() {
 		Study study = new Study("Bennie et al, 1995", buildIndicationDepression());
-		study.setEndpoints(new HashSet<Endpoint>(
+		study.setOutcomeMeasures(new HashSet<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
 		
 		// Study characteristics
@@ -325,7 +325,7 @@ public class ExampleData {
 
 	private static Study realBuildStudyThreeArm() {
 		Study study = new Study("SciFictional et al, 2359", buildIndicationDepression());
-		study.setEndpoints(new HashSet<Endpoint>(
+		study.setOutcomeMeasures(new HashSet<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
 		
 		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
@@ -381,7 +381,7 @@ public class ExampleData {
 
 	private static Study realBuildStudyMcMurray() {
 		Study study = new Study("McMurray et al, 2003", buildIndicationChronicHeartFailure());
-		study.setEndpoints(Collections.singleton(buildEndpointCVdeath()));
+		study.setOutcomeMeasures(Collections.singleton(buildEndpointCVdeath()));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);

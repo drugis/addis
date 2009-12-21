@@ -51,7 +51,7 @@ public class RiskRatioTest {
 		d_ind = new Indication(001L, "Impression");
 		d_fluox = new Drug("Fluoxetine","01");
 		d_sertra = new Drug("Sertraline","02");
-		d_ep = new Endpoint("ep", Endpoint.Type.RATE);
+		d_ep = new Endpoint("ep", AbstractOutcomeMeasure.Type.RATE);
 		
 		d_bennie = createStudy("Bennie 1995",63,144,73,142);
 		d_boyer = createStudy("Boyer 1998", 61,120, 63,122);
@@ -120,7 +120,7 @@ public class RiskRatioTest {
 	
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize) {
 		Study s = new Study(studyName, d_ind);
-		s.addEndpoint(d_ep);
+		s.addOutcomeMeasure(d_ep);
 		BasicArm g_fluox = new BasicArm(d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), fluoxSize);
 		BasicArm g_parox = new BasicArm(d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), sertraSize);		
 		

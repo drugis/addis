@@ -25,7 +25,6 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -274,20 +273,20 @@ public class DomainTest {
 	public void testGetStudiesByEndpoint() {
 		Endpoint e1 = new Endpoint("e1", Type.RATE);
 		Endpoint e2 = new Endpoint("e2", Type.RATE);
-		Endpoint e3 = new Endpoint("e3", Type.RATE);
+		AbstractOutcomeMeasure e3 = new Endpoint("e3", Type.RATE);
 		
 		Set<Endpoint> l1 = new HashSet<Endpoint>();
 		l1.add(e1);
 		Study s1 = new Study("X", d_indication);
 		s1.setId("s1");
-		s1.setEndpoints(l1);
+		s1.setOutcomeMeasures(l1);
 		
 		Set<Endpoint> l2 = new HashSet<Endpoint>();
 		l2.add(e2);
 		l2.add(e1);
 		Study s2 = new Study("X", d_indication);
 		s2.setId("s2");
-		s2.setEndpoints(l2);
+		s2.setOutcomeMeasures(l2);
 		
 		ListHolder<Study> e1Studies = d_domain.getStudies(e1);
 		ListHolder<Study> e2Studies = d_domain.getStudies(e2);
@@ -316,13 +315,13 @@ public class DomainTest {
 		Indication i1 = new Indication(0L, "");
 		d_domain.addIndication(i1);
 		Study s1 = new Study("s1", i1);
-		s1.setEndpoints(l1);
+		s1.setOutcomeMeasures(l1);
 		
 		Set<Endpoint> l2 = new HashSet<Endpoint>();
 		l2.add(e2);
 		l2.add(e1);
 		Study s2 = new Study("s2", i1);
-		s2.setEndpoints(l2);
+		s2.setOutcomeMeasures(l2);
 		
 		d_domain.addStudy(s1);
 		d_domain.addStudy(s2);
@@ -339,7 +338,7 @@ public class DomainTest {
 		assertTrue(studies.getValue().contains(s2));
 		
 		Study s3 = new Study("s3", i1);
-		s3.setEndpoints(l2);
+		s3.setOutcomeMeasures(l2);
 		
 		d_domain.addStudy(s3);
 		assertTrue(studies.getValue().contains(s3));
@@ -354,7 +353,7 @@ public class DomainTest {
 		Indication i1 = new Indication(0L, "");
 		d_domain.addIndication(i1);
 		Study s1 = new Study("s1", i1);
-		s1.setEndpoints(l1);
+		s1.setOutcomeMeasures(l1);
 
 		d_domain.addStudy(s1);
 		
@@ -363,7 +362,7 @@ public class DomainTest {
 		assertTrue(studies.getValue().contains(s1));
 		
 		Study s3 = new Study("s3", i1);
-		s3.setEndpoints(l1);
+		s3.setOutcomeMeasures(l1);
 
 		List<Study> oldValue = studies.getValue();
 				
@@ -383,10 +382,10 @@ public class DomainTest {
 		Drug d2 = new Drug("drug2", "atccode2");
 		Drug d3 = new Drug("drug3", "atccode3");
 		
-		Endpoint e = new Endpoint("Death", Endpoint.Type.RATE);
+		Endpoint e = new Endpoint("Death", AbstractOutcomeMeasure.Type.RATE);
 		
 		Study s1 = new Study("s1", d_indication);
-		s1.setEndpoints(Collections.singleton(e));
+		s1.setOutcomeMeasures(Collections.singleton(e));
 		BasicArm g1 = new BasicArm(d1, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY), 
 				100);
 		BasicMeasurement m1 = new BasicRateMeasurement(10, g1.getSize());
@@ -397,7 +396,7 @@ public class DomainTest {
 		Indication indic2 = new Indication(1L, "");
 		d_domain.addIndication(indic2);
 		Study s2 = new Study("s2", indic2);
-		s2.setEndpoints(Collections.singleton(e));
+		s2.setOutcomeMeasures(Collections.singleton(e));
 		BasicArm g2 = new BasicArm(d1, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
 				250);		
 		BasicArm g3 = new BasicArm(d2, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
@@ -433,10 +432,10 @@ public class DomainTest {
 		Drug d1 = new Drug("drug1", "atccode1");
 		Drug d2 = new Drug("drug2", "atccode2");
 		
-		Endpoint e = new Endpoint("Death", Endpoint.Type.RATE);
+		Endpoint e = new Endpoint("Death", AbstractOutcomeMeasure.Type.RATE);
 		
 		Study s1 = new Study("s1", d_indication);
-		s1.setEndpoints(Collections.singleton(e));
+		s1.setOutcomeMeasures(Collections.singleton(e));
 		BasicArm g1 = new BasicArm(d1, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY), 
 				100);
 		BasicMeasurement m1 = new BasicRateMeasurement(10, g1.getSize());
@@ -447,7 +446,7 @@ public class DomainTest {
 		Indication indic2 = new Indication(1L, "");
 		d_domain.addIndication(indic2);
 		Study s2 = new Study("s2", indic2);
-		s2.setEndpoints(Collections.singleton(e));
+		s2.setOutcomeMeasures(Collections.singleton(e));
 		BasicArm g2 = new BasicArm(d1, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
 				250);		
 		BasicArm g3 = new BasicArm(d2, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
@@ -526,8 +525,8 @@ public class DomainTest {
 		
 		Endpoint e = new Endpoint("e", Type.RATE);
 		d_domain.addEndpoint(e);
-		s1.addEndpoint(e);
-		s2.addEndpoint(e);
+		s1.addOutcomeMeasure(e);
+		s2.addOutcomeMeasure(e);
 		
 		ArrayList<Study> studies = new ArrayList<Study>(d_domain.getStudies());
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", e, studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine()); 
@@ -602,7 +601,7 @@ public class DomainTest {
 		
 		Endpoint e = new Endpoint("e", Type.RATE);
 		d_domain.addEndpoint(e);
-		s1.addEndpoint(e);
+		s1.addOutcomeMeasure(e);
 			
 		d_domain.deleteEndpoint(e);
 	}
@@ -735,11 +734,9 @@ public class DomainTest {
 		
 		AdverseDrugEvent a = new AdverseDrugEvent("e", Type.RATE);
 		d_domain.addAde(a);
-		//s1.addEndpoint(a);
+		s1.addOutcomeMeasure(a);
 			
 		d_domain.deleteAde(a);
-		
-		fail();
 	}
 	
 	@Test

@@ -173,7 +173,7 @@ public class DomainImpl implements Domain {
 		return Collections.unmodifiableSortedSet(d_domainData.getDrugs());
 	}
 
-	public ListHolder<Study> getStudies(Endpoint e) 
+	public ListHolder<Study> getStudies(AbstractOutcomeMeasure e) 
 	throws NullPointerException {
 		if (e == null) {
 			throw new NullPointerException("Endpoint must not be null");
@@ -254,7 +254,7 @@ public class DomainImpl implements Domain {
 		}
 	}
 
-	public void deleteEndpoint(Endpoint e) throws DependentEntitiesException {
+	public void deleteEndpoint(AbstractOutcomeMeasure e) throws DependentEntitiesException {
 		checkDependents(e);
 		d_domainData.removeEndpoint(e);
 		fireDomainChanged(DomainEvent.Type.ENDPOINTS);		

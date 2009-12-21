@@ -91,7 +91,7 @@ public interface Domain {
 	 * Get studies by Endpoint.
 	 * @return An unmodifiable sorted set of studies. Never null.
 	 */
-	public ListHolder<Study> getStudies(Endpoint e);
+	public ListHolder<Study> getStudies(AbstractOutcomeMeasure e);
 	
 	/**
 	 * Get studies by Drug.
@@ -165,7 +165,7 @@ public interface Domain {
 	 * @param e the endpoint to delete
 	 * @throws DependentEntitiesException if some entities depend on this endpoint
 	 */
-	public void deleteEndpoint(Endpoint e) throws DependentEntitiesException;
+	public void deleteEndpoint(AbstractOutcomeMeasure e) throws DependentEntitiesException;
 	
 	/**
 	 * Deletes an Indication from the domain.

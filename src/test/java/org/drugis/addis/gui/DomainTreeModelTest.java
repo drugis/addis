@@ -69,7 +69,7 @@ public class DomainTreeModelTest {
 		BasicArm pg = new BasicArm(d_firstDrug,
 				new FixedDose(100.0, SIUnit.MILLIGRAMS_A_DAY), 100);
 		d_firstStudy.addArm(pg);
-		d_firstStudy.addEndpoint(d_firstEndpoint);
+		d_firstStudy.addOutcomeMeasure(d_firstEndpoint);
 		
 		d_firstStudy.setMeasurement(d_firstEndpoint, pg, 
 				d_firstEndpoint.buildMeasurement(pg));

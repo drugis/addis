@@ -22,6 +22,7 @@ package org.drugis.addis.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Endpoint;
 
 
@@ -32,7 +33,7 @@ public class EndpointHolder extends Model { // TODO: implement as adapter or som
 	private Endpoint d_endpoint;
 	public static final String PROPERTY_ENDPOINT = "endpoint";
 	public void setEndpoint(Endpoint e) {
-		Endpoint oldVal = d_endpoint;
+		AbstractOutcomeMeasure oldVal = d_endpoint;
 		d_endpoint = e;
 		firePropertyChange(PROPERTY_ENDPOINT, oldVal, d_endpoint);
 	}

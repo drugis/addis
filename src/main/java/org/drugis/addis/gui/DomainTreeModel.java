@@ -27,11 +27,11 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
+import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
@@ -172,7 +172,7 @@ public class DomainTreeModel implements TreeModel {
 		if (node instanceof Indication) {
 			return d_domain.getIndications().contains(node);
 		}
-		if (node instanceof Endpoint) {
+		if (node instanceof AbstractOutcomeMeasure) {
 			return d_domain.getEndpoints().contains(node);
 		}
 		if (node instanceof RandomEffectsMetaAnalysis) {

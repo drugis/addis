@@ -24,9 +24,11 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
+import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.MeasurementInputHelper;
@@ -60,7 +62,7 @@ public class StudyAddArmView implements ViewBuilder {
 				);	
 		int fullWidth = 3;
 		int maxEpComponents = 0;
-		for (Endpoint.Type type : Endpoint.Type.values()) {
+		for (Endpoint.Type type : AbstractOutcomeMeasure.Type.values()) {
 			if (d_pm.hasEndpoints(type)) {
 				maxEpComponents = Math.max(maxEpComponents, numComponents(type));
 			}
@@ -96,7 +98,7 @@ public class StudyAddArmView implements ViewBuilder {
 		DoseView view = new DoseView(d_pm.getDoseModel(), d_validator);
 		builder.add(view.buildPanel(), cc.xyw(3, row, fullWidth-2));
 		
-		for (Type type : Endpoint.Type.values()) {
+		for (Type type : AbstractOutcomeMeasure.Type.values()) {
 			if (d_pm.hasEndpoints(type)) {
 				row = buildMeasurementsPart(type, row, layout, fullWidth, builder);
 			}
@@ -116,16 +118,16 @@ public class StudyAddArmView implements ViewBuilder {
 		LayoutUtil.addRow(layout);
 		builder.addLabel("Endpoint", cc.xy(1, row));
 		int column = 3;
-		for (String header: MeasurementInputHelper.getHeaders(d_pm.getEndpoints(type).get(0))) {
+		for (String header: MeasurementInputHelper.getHeaders(d_pm.getOutcomeMeasures(type).get(0))) {
 			builder.addLabel(header, cc.xy(column, row));
 			column += 2;
 		}
 		
 		row +=2;
-		for (Endpoint e : d_pm.getEndpoints(type)) {
+		for (OutcomeMeasure e : d_pm.getOutcomeMeasures(type)) {
 			LayoutUtil.addRow(layout);
 			builder.add(
-					GUIFactory.createEndpointLabelWithIcon(e),
+					GUIFactory.createOutcomeMeasureLabelWithIcon(e),
 					cc.xy(1, row));
 			int col = 3;
 			JComponent[] comps = MeasurementInputHelper.getComponents((BasicMeasurement)d_pm.getMeasurementModel(e).getBean());
@@ -139,6 +141,6 @@ public class StudyAddArmView implements ViewBuilder {
 	}
 
 	private int numComponents(Endpoint.Type type) {
-		return MeasurementInputHelper.numComponents(d_pm.getEndpoints(type).get(0));
+		return MeasurementInputHelper.numComponents(d_pm.getOutcomeMeasures(type).get(0));
 	}
 }

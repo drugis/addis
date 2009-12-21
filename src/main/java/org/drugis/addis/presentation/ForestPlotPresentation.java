@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.RelativeEffect;
@@ -208,7 +209,7 @@ public class ForestPlotPresentation {
 		return isCombined(index) ? 0 : tempbin.getBin(weight).bin * 2 + 1;
 	}
 
-	public Endpoint getEndpoint() {
+	public AbstractOutcomeMeasure getEndpoint() {
 		return d_endpoint;
 	}
 	

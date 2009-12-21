@@ -22,6 +22,7 @@ package org.drugis.addis.presentation;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
@@ -75,7 +76,7 @@ public class PresentationModelFactory {
 	
 	@SuppressWarnings("unchecked")
 	private PresentationModel createCreationModel(Object obj) {
-		if (obj instanceof Endpoint) {
+		if (obj instanceof AbstractOutcomeMeasure) {
 			return new EndpointCreationModel((Endpoint)obj);
 		}
 		return null;
@@ -83,9 +84,9 @@ public class PresentationModelFactory {
 
 	@SuppressWarnings("unchecked")
 	private PresentationModel createModel(Object obj) {
-		if (obj instanceof Endpoint) {
+		if (obj instanceof AbstractOutcomeMeasure) {
 			return new EndpointPresentationModel((Endpoint)obj,
-					d_domain.getStudies((Endpoint)obj));
+					d_domain.getStudies((AbstractOutcomeMeasure)obj));
 		}
 		if (obj instanceof Study) {
 			return new StudyPresentationModel((Study) obj, this);

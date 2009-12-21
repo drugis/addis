@@ -38,7 +38,7 @@ public class EndpointTest {
 	
 	@Test
 	public void testSetUnitOfMeasurement() {
-		JUnitUtil.testSetter(new Endpoint("e", Type.CONTINUOUS), Endpoint.PROPERTY_UNIT_OF_MEASUREMENT, "", "kg per day");
+		JUnitUtil.testSetter(new Endpoint("e", Type.CONTINUOUS), AbstractOutcomeMeasure.PROPERTY_UNIT_OF_MEASUREMENT, "", "kg per day");
 	}
 
 	@Test
@@ -48,22 +48,22 @@ public class EndpointTest {
 	
 	@Test
 	public void testSetType() {
-		JUnitUtil.testSetter(new Endpoint("e", Type.RATE), Endpoint.PROPERTY_TYPE, Type.RATE, Endpoint.Type.CONTINUOUS);
+		JUnitUtil.testSetter(new Endpoint("e", Type.RATE), Endpoint.PROPERTY_TYPE, Type.RATE, AbstractOutcomeMeasure.Type.CONTINUOUS);
 	}
 	
 	@Test
 	public void testSetDirection() {
 		JUnitUtil.testSetter(new Endpoint("e", Type.RATE), Endpoint.PROPERTY_DIRECTION,
-				Endpoint.Direction.HIGHER_IS_BETTER, Endpoint.Direction.LOWER_IS_BETTER);
+				AbstractOutcomeMeasure.Direction.HIGHER_IS_BETTER, AbstractOutcomeMeasure.Direction.LOWER_IS_BETTER);
 	}
 	
 	@Test
 	public void testBuildMeasurement() {
 		Arm pg = new BasicArm(null, null, 0);
 		Endpoint e = new Endpoint("e", Type.RATE);
-		e.setType(Endpoint.Type.RATE);
+		e.setType(AbstractOutcomeMeasure.Type.RATE);
 		assertTrue(e.buildMeasurement(pg) instanceof BasicRateMeasurement);
-		e.setType(Endpoint.Type.CONTINUOUS);
+		e.setType(AbstractOutcomeMeasure.Type.CONTINUOUS);
 		assertTrue(e.buildMeasurement(pg) instanceof BasicContinuousMeasurement);
 	}
 	

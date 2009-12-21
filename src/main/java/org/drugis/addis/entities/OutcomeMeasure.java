@@ -55,4 +55,6 @@ public interface OutcomeMeasure extends Comparable<OutcomeMeasure>, Entity {
 	public Type getType();
 
 	public Direction getDirection();
+	
+	public BasicMeasurement buildMeasurement(Arm a);
 }

@@ -31,9 +31,9 @@ import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.presentation.FrequencyMeasurementPresentation;
 
@@ -46,11 +46,11 @@ public class MeasurementInputHelper {
 		return getHeaders(m).length;
 	}
 
-	public static int numComponents(Endpoint e) {
+	public static int numComponents(OutcomeMeasure e) {
 		return getHeaders(e).length;
 	}
 
-	public static String[] getHeaders(Endpoint e) {
+	public static String[] getHeaders(OutcomeMeasure e) {
 		return getHeaders(e.buildMeasurement(new BasicArm(null, null, 0)));
 	}
 	
