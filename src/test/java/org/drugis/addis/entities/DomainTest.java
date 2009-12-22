@@ -273,7 +273,7 @@ public class DomainTest {
 	public void testGetStudiesByEndpoint() {
 		Endpoint e1 = new Endpoint("e1", Type.RATE);
 		Endpoint e2 = new Endpoint("e2", Type.RATE);
-		AbstractOutcomeMeasure e3 = new Endpoint("e3", Type.RATE);
+		OutcomeMeasure e3 = new Endpoint("e3", Type.RATE);
 		
 		Set<Endpoint> l1 = new HashSet<Endpoint>();
 		l1.add(e1);
@@ -382,7 +382,7 @@ public class DomainTest {
 		Drug d2 = new Drug("drug2", "atccode2");
 		Drug d3 = new Drug("drug3", "atccode3");
 		
-		Endpoint e = new Endpoint("Death", AbstractOutcomeMeasure.Type.RATE);
+		Endpoint e = new Endpoint("Death", OutcomeMeasure.Type.RATE);
 		
 		Study s1 = new Study("s1", d_indication);
 		s1.setOutcomeMeasures(Collections.singleton(e));
@@ -432,7 +432,7 @@ public class DomainTest {
 		Drug d1 = new Drug("drug1", "atccode1");
 		Drug d2 = new Drug("drug2", "atccode2");
 		
-		Endpoint e = new Endpoint("Death", AbstractOutcomeMeasure.Type.RATE);
+		Endpoint e = new Endpoint("Death", OutcomeMeasure.Type.RATE);
 		
 		Study s1 = new Study("s1", d_indication);
 		s1.setOutcomeMeasures(Collections.singleton(e));

@@ -51,8 +51,8 @@ public class StudyView implements ViewBuilder {
 	private Domain d_domain;
 	private Main d_mainWindow;
 	private StudyCharacteristicsView d_charView;
-	private StudyEndpointsView d_epView;
-	private StudyEndpointsView d_adeView;	
+	private StudyOutcomeMeasuresView d_epView;
+	private StudyOutcomeMeasuresView d_adeView;	
 	private StudyArmsView d_armsView;
 	private StudyPopulationView d_popView;
 	
@@ -63,8 +63,8 @@ public class StudyView implements ViewBuilder {
 		d_domain = domain;
 		d_charView = new StudyCharacteristicsView(model);
 		d_popView = new StudyPopulationView(model);
-		d_epView = new StudyEndpointsView(model, main, true);
-		d_adeView = new StudyEndpointsView(model, main, false);		
+		d_epView = new StudyOutcomeMeasuresView(model, main, true);
+		d_adeView = new StudyOutcomeMeasuresView(model, main, false);		
 		d_armsView = new StudyArmsView(model, main.getPresentationModelFactory());
 	}
 	

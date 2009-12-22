@@ -35,9 +35,9 @@ import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.builder.AddStudyView;
@@ -51,7 +51,7 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 public class AddStudyDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private Study d_study;
-	private EndpointHolder d_primaryEndpoint;
+	private OutcomeMeasureHolder d_primaryOutcomeMeasure;
 	private AddStudyView d_view;
 	private JButton d_addArmButton;
 	private Main d_main;
@@ -62,8 +62,8 @@ public class AddStudyDialog extends OkCancelDialog {
 		this.setModal(true);
 		d_domain = domain;
 		d_study = new Study("", new Indication(0L, ""));
-		d_primaryEndpoint = new EndpointHolder();
-		d_primaryEndpoint.addPropertyChangeListener(new PropertyChangeListener() {
+		d_primaryOutcomeMeasure = new OutcomeMeasureHolder();
+		d_primaryOutcomeMeasure.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
 				setEndpoint();
 				buildMeasurements();
@@ -76,21 +76,21 @@ public class AddStudyDialog extends OkCancelDialog {
 			}
 		});
 		d_view = new AddStudyView(new PresentationModel<Study>(d_study),
-				new PresentationModel<EndpointHolder>(d_primaryEndpoint), domain,
+				new PresentationModel<OutcomeMeasureHolder>(d_primaryOutcomeMeasure), domain,
 				d_okButton, mainWindow);
 		initUserPanel();
 	}
 
 	protected void setEndpoint() {
-		d_study.setOutcomeMeasures(Collections.singleton(d_primaryEndpoint.getEndpoint()));
-		if (d_primaryEndpoint.getEndpoint() != null) {			
+		d_study.setOutcomeMeasures(Collections.singleton(d_primaryOutcomeMeasure.getEndpoint()));
+		if (d_primaryOutcomeMeasure.getEndpoint() != null) {			
 			d_addArmButton.setEnabled(true);
 		}
 	}
 
 	protected void buildMeasurements() {
 		for (Arm g : d_study.getArms()) {
-			Endpoint endpoint = d_primaryEndpoint.getEndpoint();
+			OutcomeMeasure endpoint = d_primaryOutcomeMeasure.getEndpoint();
 			d_study.setMeasurement(endpoint, g, endpoint.buildMeasurement(g));
 		}
 	}
@@ -131,9 +131,9 @@ public class AddStudyDialog extends OkCancelDialog {
 		Arm group = new Arm(null, new FlexibleDose(new Interval<Double>(0.0,0.0), SIUnit.MILLIGRAMS_A_DAY),
 				0);
 		d_study.addArm(group);
-		if (d_primaryEndpoint.getEndpoint() != null) {
-			BasicMeasurement m = d_primaryEndpoint.getEndpoint().buildMeasurement(group);
-			d_study.setMeasurement(d_primaryEndpoint.getEndpoint(), group, m);
+		if (d_primaryOutcomeMeasure.getEndpoint() != null) {
+			BasicMeasurement m = d_primaryOutcomeMeasure.getEndpoint().buildMeasurement(group);
+			d_study.setMeasurement(d_primaryOutcomeMeasure.getEndpoint(), group, m);
 		}
 	}
 
@@ -144,13 +144,13 @@ public class AddStudyDialog extends OkCancelDialog {
 
 	@Override
 	protected void commit() {
-		bindEndpoint();
+		bindOutcomeMeasure();
 		d_domain.addStudy(d_study);
 		setVisible(false);
 		d_main.leftTreeFocusOnStudy(d_study);
 	}
 
-	private void bindEndpoint() {
-		d_study.setOutcomeMeasures(new HashSet<Endpoint>(d_primaryEndpoint.asList()));
+	private void bindOutcomeMeasure() {
+		d_study.setOutcomeMeasures(new HashSet<OutcomeMeasure>(d_primaryOutcomeMeasure.asList()));
 	}
 }

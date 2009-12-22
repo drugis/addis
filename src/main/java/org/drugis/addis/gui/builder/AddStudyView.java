@@ -36,7 +36,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultFormatter;
 
-import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
@@ -44,8 +43,9 @@ import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.gui.EndpointHolder;
+import org.drugis.addis.gui.OutcomeMeasureHolder;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.MeasurementInputHelper;
@@ -70,14 +70,14 @@ import com.toedter.calendar.JDateChooser;
 
 public class AddStudyView implements ViewBuilder {
 	private PresentationModel<Study> d_model;
-	private PresentationModel<EndpointHolder> d_endpointPresentation;
+	private PresentationModel<OutcomeMeasureHolder> d_endpointPresentation;
 	private Domain d_domain;
 	private NotEmptyValidator d_validator;
 	private JButton d_okButton;
 	private Main d_mainWindow;
 
 	public AddStudyView(PresentationModel<Study> presentationModel,
-			PresentationModel<EndpointHolder> presentationModel2, Domain domain,
+			PresentationModel<OutcomeMeasureHolder> presentationModel2, Domain domain,
 			JButton okButton, Main mainWindow) {
 		d_okButton = okButton;
 		d_model = presentationModel;
@@ -94,7 +94,7 @@ public class AddStudyView implements ViewBuilder {
 	}
 
 	private JComponent createEndpointComponent() {
-		AbstractValueModel valueModel = d_endpointPresentation.getModel(EndpointHolder.PROPERTY_ENDPOINT);
+		AbstractValueModel valueModel = d_endpointPresentation.getModel(OutcomeMeasureHolder.PROPERTY_OUTCOME_MEASURE);
 		JComboBox endpoint = AuxComponentFactory.createBoundComboBox(d_domain.getEndpoints().toArray(), valueModel);
 		d_validator.add(endpoint);
 		
@@ -295,7 +295,7 @@ public class AddStudyView implements ViewBuilder {
 		return component;
 	}
 
-	private AbstractOutcomeMeasure getEndpoint() {
+	private OutcomeMeasure getEndpoint() {
 		return d_endpointPresentation.getBean().getEndpoint();
 	}
 

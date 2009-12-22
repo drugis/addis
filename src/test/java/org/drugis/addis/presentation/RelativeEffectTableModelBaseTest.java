@@ -122,7 +122,7 @@ public abstract class RelativeEffectTableModelBaseTest {
 		Measurement subj = (Measurement) pm.getRelativeEffectAt(0).getSubject();
 		assertEquals(d_standardStudy.getArms().get(0).getSize(),
 				subj.getSampleSize());
-		assertEquals(d_endpoint, pm.getEndpoint());
+		assertEquals(d_endpoint, pm.getOutcomeMeasure());
 	}
 
 	protected void baseSetUpRate() {

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
@@ -215,7 +214,7 @@ public class MetaAnalysisWizardPresentation {
 		return d_indicationHolder.getValue();
 	}
 
-	private AbstractOutcomeMeasure getEndpoint() {
+	private OutcomeMeasure getEndpoint() {
 		return d_endpointHolder.getValue();
 	}
 	

@@ -107,6 +107,31 @@ public class OddsRatioTest {
 		assertEquals(0.90, (ival.getLowerBound()), 0.01); 
 		assertEquals(2.70, (ival.getUpperBound()), 0.01); 
 	}
+	
+	@Test
+	public void testUndefined() {
+		RateMeasurement rmA1 = new BasicRateMeasurement(0, 100);
+		RateMeasurement rmC1 = new BasicRateMeasurement(0, 100);
+		OddsRatio or = new OddsRatio(rmA1, rmC1);
+		assertEquals(Double.NaN, or.getError(), 0.001);
+		assertEquals(Double.NaN, or.getRelativeEffect(), 0.001);
+		RateMeasurement rmB1 = new BasicRateMeasurement(100, 100);
+		RateMeasurement rmD1 = new BasicRateMeasurement(100, 100);
+		or = new OddsRatio(rmB1, rmD1);
+		assertEquals(Double.NaN, or.getError(), 0.001);
+		assertEquals(Double.NaN, or.getRelativeEffect(), 0.001);
+	}
+	
+	@Test
+	public void testDefinedButWithAZero() {
+		RateMeasurement rm1 = new BasicRateMeasurement(0, 1);
+		RateMeasurement rm2 = new BasicRateMeasurement(1, 2);
+	
+		OddsRatio or1 = new OddsRatio(rm1, rm2);
+		
+		assertEquals(Math.sqrt(4.0), or1.getError(), 0.001);
+		assertEquals(3.0, or1.getRelativeEffect(), 0.001);
+	}
 		
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize)
 	{

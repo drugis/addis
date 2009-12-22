@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
@@ -134,7 +133,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getEndpointModel().setValue(d_wizard.getOutcomeMeasureListModel().getValue().get(0));		
 		
 		Indication indic = d_wizard.getIndicationListModel().getValue().get(0);
-		AbstractOutcomeMeasure endp = (AbstractOutcomeMeasure) d_wizard.getEndpointModel().getValue();
+		OutcomeMeasure endp = (OutcomeMeasure) d_wizard.getEndpointModel().getValue();
 		
 		d_wizard.getIndicationModel().setValue(indic);		
 		d_wizard.getEndpointModel().setValue(endp);		
@@ -154,7 +153,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testSetEndpoint() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		AbstractOutcomeMeasure newValue = ExampleData.buildEndpointHamd();
+		OutcomeMeasure newValue = ExampleData.buildEndpointHamd();
 		ValueModel vm = d_wizard.getEndpointModel();
 		JUnitUtil.testSetter(vm, null, newValue);
 		
@@ -164,7 +163,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetInvalidEndpoint() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		AbstractOutcomeMeasure newValue = ExampleData.buildEndpointCVdeath();
+		OutcomeMeasure newValue = ExampleData.buildEndpointCVdeath();
 		
 		assertTrue(!d_wizard.getOutcomeMeasureListModel().getValue().contains(newValue));
 		
@@ -197,7 +196,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testGetDrugSet() {
 		Indication ind = ExampleData.buildIndicationDepression();
-		AbstractOutcomeMeasure ep = ExampleData.buildEndpointHamd();
+		OutcomeMeasure ep = ExampleData.buildEndpointHamd();
 		
 		List<Drug> expected = new ArrayList<Drug>();
 		expected.add(ExampleData.buildDrugFluoxetine());
@@ -248,7 +247,7 @@ public class MetaAnalysisWizardPresentationTest {
 
 	private void testSetDrugHelper(ValueModel vm) {
 		Indication ind = ExampleData.buildIndicationDepression();
-		AbstractOutcomeMeasure ep = ExampleData.buildEndpointHamd();
+		OutcomeMeasure ep = ExampleData.buildEndpointHamd();
 		Drug d = ExampleData.buildDrugFluoxetine();
 		d_wizard.getIndicationModel().setValue(ind);
 		d_wizard.getEndpointModel().setValue(ep);
@@ -270,7 +269,7 @@ public class MetaAnalysisWizardPresentationTest {
 
 	private void testSetInvalidDrugHelper(ValueModel vm) {
 		Indication ind = ExampleData.buildIndicationDepression();
-		AbstractOutcomeMeasure ep = ExampleData.buildEndpointHamd();
+		OutcomeMeasure ep = ExampleData.buildEndpointHamd();
 		Drug d = ExampleData.buildDrugCandesartan();
 		d_wizard.getIndicationModel().setValue(ind);
 		d_wizard.getEndpointModel().setValue(ep);
@@ -439,7 +438,7 @@ public class MetaAnalysisWizardPresentationTest {
 		assertEquals(ma.getFirstDrug(), d_wizard.getFirstDrugModel().getValue());
 		assertEquals(ma.getSecondDrug(), d_wizard.getSecondDrugModel().getValue());
 		JUnitUtil.assertAllAndOnly((Collection<?>) d_wizard.getStudyListModel().getSelectedStudiesModel().getValue(), (Collection<?>) ma.getStudies());
-		assertEquals(ma.getEndpoint(), d_wizard.getEndpointModel().getValue());
+		assertEquals(ma.getOutcomeMeasure(), d_wizard.getEndpointModel().getValue());
 		assertEquals(ma.getIndication(), d_wizard.getIndicationModel().getValue());
 	}
 }

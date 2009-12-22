@@ -42,21 +42,25 @@ public class OddsRatio extends AbstractRatio {
 	}
 
 	public Double getRelativeEffect() {
-		int d = d_baseline.getSampleSize() - d_baseline.getRate();
-		int c = d_subject.getSampleSize() - d_subject.getRate();
-		return ((double) d_subject.getRate() * (double) d) / ((double) d_baseline.getRate() * (double) c); 
+		if (checkUndefined())
+			return Double.NaN;
+		
+		double a = d_subject.getRate() + d_correction;
+		double b = d_baseline.getRate() + d_correction;
+		double d = d_baseline.getSampleSize() - d_baseline.getRate() + d_correction;
+		double c = d_subject.getSampleSize() - d_subject.getRate() + d_correction;
+		return (a * d) / (b * c); 
 	}
 
 	public Double getError() { //NB: this is the LOG error
-		return Math.sqrt(invEffect(d_baseline) + invNoEffect(d_baseline) +
-		invEffect(d_subject) + invNoEffect(d_subject));
-	}
-
-	private double invEffect(RateMeasurement m) {
-		return 1.0 / m.getRate();
-	}
-
-	private double invNoEffect(RateMeasurement m) {
-		return 1.0 / (m.getSampleSize() - m.getRate());
+		if (checkUndefined())
+			return Double.NaN;
+		
+		double a = d_subject.getRate() + d_correction;
+		double b = d_baseline.getRate() + d_correction;
+		double d = d_baseline.getSampleSize() - d_baseline.getRate() + d_correction;
+		double c = d_subject.getSampleSize() - d_subject.getRate() + d_correction;
+		
+		return Math.sqrt(1.0/a + 1.0/b + 1.0/c + 1.0/d);
 	}
 }

@@ -1,7 +1,7 @@
 package org.drugis.addis.presentation;
 
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.RiskDifference;
@@ -9,9 +9,10 @@ import org.drugis.addis.entities.Study;
 
 @SuppressWarnings("serial")
 public class RiskDifferenceTableModel extends AbstractRelativeEffectTableModel {
-	public RiskDifferenceTableModel(Study study, Endpoint endpoint,
+	
+	public RiskDifferenceTableModel(Study study, OutcomeMeasure om,
 			PresentationModelFactory pmf) {
-		super(study, endpoint, pmf);
+		super(study, om, pmf);
 	}
 
 	

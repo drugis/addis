@@ -63,7 +63,7 @@ public class DomainImplTest {
 		JUnitUtil.assertAllAndOnly(new HashSet<Entity>(entities), d_domain.getDependents(fluox));
 		Study s = ExampleData.buildStudyChouinard();
 		assertEquals(Collections.emptySet(), d_domain.getDependents(s));
-		AbstractOutcomeMeasure d1 = ExampleData.buildEndpointHamd();
+		OutcomeMeasure d1 = ExampleData.buildEndpointHamd();
 		assertEquals(new HashSet<Entity>(entities), d_domain.getDependents(d1));
 	}	
 	

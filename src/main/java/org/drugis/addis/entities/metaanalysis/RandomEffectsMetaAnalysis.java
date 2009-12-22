@@ -11,11 +11,11 @@ import java.util.Set;
 
 import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OddsRatio;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.RelativeEffectMetaAnalysis;
@@ -28,7 +28,7 @@ import org.drugis.common.StudentTTable;
 public class RandomEffectsMetaAnalysis extends AbstractEntity implements Serializable, Comparable<RandomEffectsMetaAnalysis> {
 
 	private static final long serialVersionUID = -4351415410739040259L;
-	private Endpoint d_ep;
+	private OutcomeMeasure d_om;
 	private List<? extends Study> d_studies;
 	private Drug d_drug1;
 	private Drug d_drug2;	
@@ -43,7 +43,7 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 	public static final String PROPERTY_NAME = "name";
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_INDICATION = "indication";
-	public static final String PROPERTY_ENDPOINT = "endpoint";
+	public static final String PROPERTY_OUTCOME_MEASURE = "outcomeMeasure";
 	public static final String PROPERTY_FIRST_DRUG = "firstDrug";
 	public static final String PROPERTY_SECOND_DRUG = "secondDrug";
 	public static final String PROPERTY_SAMPLE_SIZE = "sampleSize";
@@ -52,14 +52,14 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 	/**
 	 * 
 	 * @param name
-	 * @param endpoint
+	 * @param om
 	 * @param studies
 	 * @param drug1
 	 * @param drug2
 	 * @throws IllegalArgumentException if all studies don't measure the same indication OR
 	 * if the list of studies is empty
 	 */
-	public RandomEffectsMetaAnalysis(String name, Endpoint endpoint, List<? extends Study> studies,
+	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<? extends Study> studies,
 			Drug drug1, Drug drug2) 
 		throws IllegalArgumentException {
 		if (studies.isEmpty()) {
@@ -70,7 +70,7 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 //		}
 		checkSameIndication(studies);
 		d_studies = studies;
-		d_ep = endpoint;
+		d_om = om;
 		d_drug1 = drug1;
 		d_drug2 = drug2;
 		d_name = name;
@@ -132,8 +132,8 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		return Collections.unmodifiableList(d_studies);
 	}
 	
-	public Endpoint getEndpoint() {
-		return d_ep;
+	public OutcomeMeasure getOutcomeMeasure() {
+		return d_om;
 	}
 	
 	public int getStudiesIncluded() {
@@ -153,7 +153,7 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		List<RelativeEffect<? extends Measurement>> relEffects = new ArrayList<RelativeEffect<? extends Measurement>>();
 			
 		for (Study s : d_studies) {
-			RelativeEffect<? extends Measurement> re = RelativeEffectFactory.buildRelativeEffect(s, d_ep, d_drug1, d_drug2, type);
+			RelativeEffect<? extends Measurement> re = RelativeEffectFactory.buildRelativeEffect(s, d_om, d_drug1, d_drug2, type);
 			relEffects.add(re);
 		}
 		
@@ -318,7 +318,7 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		deps.add(getFirstDrug());
 		deps.add(getSecondDrug());
 		deps.add(getIndication());
-		deps.add(getEndpoint());
+		deps.add(getOutcomeMeasure());
 		deps.addAll(getStudies());
 		return deps;
 	}

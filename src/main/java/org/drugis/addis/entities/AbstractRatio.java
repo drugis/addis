@@ -25,9 +25,12 @@ import org.drugis.common.StudentTTable;
 
 public abstract class AbstractRatio extends AbstractRelativeEffect<RateMeasurement> {
 	private static final long serialVersionUID = 1647344976539753330L;
+	protected double d_correction;
 	
 	protected AbstractRatio(RateMeasurement numerator, RateMeasurement denominator) throws IllegalArgumentException {
 		super(numerator, denominator);
+		//undefined if no events happen or events happen for all subjects
+		calculateCorrection();
 	}
 	
 	private double getCriticalValue() {
@@ -41,5 +44,26 @@ public abstract class AbstractRatio extends AbstractRelativeEffect<RateMeasureme
 		double uBound = Math.log(getRelativeEffect());
 		uBound += getCriticalValue() * getError();
 		return new Interval<Double>(Math.exp(lBound), Math.exp(uBound));
+	}
+
+	protected void calculateCorrection() {
+		if (checkForZeros())
+			d_correction = 0.5D;
+		else
+			d_correction = 0.0;
+	}
+
+	private boolean checkForZeros() {
+		return (d_subject.getRate() == 0 || 
+				d_baseline.getRate() == 0 || 
+				d_subject.getRate() == d_subject.getSampleSize() || 
+				d_baseline.getRate() == d_baseline.getSampleSize());
+	}
+
+	protected boolean checkUndefined() {
+		return (d_subject.getRate() == 0 && 
+				d_baseline.getRate() == 0 ) || 
+				(d_subject.getRate() == d_subject.getSampleSize() && 
+				d_baseline.getRate() == d_baseline.getSampleSize());
 	}
 }

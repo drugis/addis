@@ -1,9 +1,8 @@
 package org.drugis.addis.entities.metaanalysis;
 
-import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OddsRatio;
@@ -17,98 +16,98 @@ import org.drugis.addis.entities.Study;
 
 public class RelativeEffectFactory {
 	public static <T extends RelativeEffect<?>> RelativeEffect<?> buildRelativeEffect(
-			Study s, Endpoint e, Drug base, Drug subj, Class<T> type) {
+			Study s, OutcomeMeasure om, Drug base, Drug subj, Class<T> type) {
 		if (type.equals(StandardisedMeanDifference.class)) {
-			return buildStandardisedMeanDifference(s, e, base, subj);
+			return buildStandardisedMeanDifference(s, om, base, subj);
 		}
 		if (type.equals(MeanDifference.class)) {
-			return buildMeanDifference(s, e, base, subj);
+			return buildMeanDifference(s, om, base, subj);
 		}
 		if (type.equals(OddsRatio.class)) {
-			return buildOddsRatio(s, e, base, subj);
+			return buildOddsRatio(s, om, base, subj);
 		}
 		if (type.equals(LogOddsRatio.class)) {
-			return buildLogOddsRatio(s, e, base, subj);
+			return buildLogOddsRatio(s, om, base, subj);
 		}
 		if (type.equals(RiskRatio.class)) {
-			return buildRiskRatio(s, e, base, subj);
+			return buildRiskRatio(s, om, base, subj);
 		}
 		if (type.equals(LogRiskRatio.class)) {
-			return buildLogRiskRatio(s, e, base, subj);
+			return buildLogRiskRatio(s, om, base, subj);
 		}
 		if (type.equals(RiskDifference.class)) {
-			return buildRiskDifference(s, e, base, subj);
+			return buildRiskDifference(s, om, base, subj);
 		}
 		return null;
 	}
 	
-	private static RelativeEffect<?> buildRiskDifference(Study s, Endpoint e,
+	private static RelativeEffect<?> buildRiskDifference(Study s, OutcomeMeasure om,
 			Drug base, Drug subj) {
 		return new RiskDifference(
-				findRateMeasurement(s, e, base),
-				findRateMeasurement(s, e, subj));
+				findRateMeasurement(s, om, base),
+				findRateMeasurement(s, om, subj));
 	}
 
-	private static RelativeEffect<?> buildRiskRatio(Study s, Endpoint e,
+	private static RelativeEffect<?> buildRiskRatio(Study s, OutcomeMeasure om,
 			Drug base, Drug subj) {
 		return new RiskRatio(
-				findRateMeasurement(s, e, base),
-				findRateMeasurement(s, e, subj));
+				findRateMeasurement(s, om, base),
+				findRateMeasurement(s, om, subj));
 	}
 
-	private static RelativeEffect<?> buildLogRiskRatio(Study s, Endpoint e,
+	private static RelativeEffect<?> buildLogRiskRatio(Study s, OutcomeMeasure om,
 			Drug base, Drug subj) {
 		return new LogRiskRatio(
-				findRateMeasurement(s, e, base),
-				findRateMeasurement(s, e, subj));
+				findRateMeasurement(s, om, base),
+				findRateMeasurement(s, om, subj));
 	}
 	
-	private static RelativeEffect<?> buildOddsRatio(Study s, Endpoint e,
+	private static RelativeEffect<?> buildOddsRatio(Study s, OutcomeMeasure om,
 			Drug base, Drug subj) {
 		return new OddsRatio(
-				findRateMeasurement(s, e, base),
-				findRateMeasurement(s, e, subj));
+				findRateMeasurement(s, om, base),
+				findRateMeasurement(s, om, subj));
 	}
 	
-	private static RelativeEffect<?> buildLogOddsRatio(Study s, Endpoint e,
+	private static RelativeEffect<?> buildLogOddsRatio(Study s, OutcomeMeasure om,
 			Drug base, Drug subj) {
 		return new LogOddsRatio(
-				findRateMeasurement(s, e, base),
-				findRateMeasurement(s, e, subj));
+				findRateMeasurement(s, om, base),
+				findRateMeasurement(s, om, subj));
 	}
 
-	private static RelativeEffect<?> buildMeanDifference(Study s, Endpoint e,
+	private static RelativeEffect<?> buildMeanDifference(Study s, OutcomeMeasure om,
 			Drug base, Drug subj) {
 		return new MeanDifference(
-				findContinuousMeasurement(s, e, base),
-				findContinuousMeasurement(s, e, subj));
+				findContinuousMeasurement(s, om, base),
+				findContinuousMeasurement(s, om, subj));
 	}
 
 	private static RelativeEffect<?> buildStandardisedMeanDifference(Study s,
-			Endpoint e, Drug base, Drug subj) {
+			OutcomeMeasure e, Drug base, Drug subj) {
 		return new StandardisedMeanDifference(
 				findContinuousMeasurement(s, e, subj),
 				findContinuousMeasurement(s, e, base));
 	}
 	
-	private static ContinuousMeasurement findContinuousMeasurement(Study s, Endpoint e, Drug d) {
-		if (!e.getType().equals(AbstractOutcomeMeasure.Type.CONTINUOUS)) {
-			throw new IllegalArgumentException("Endpoint should be Continuous");
+	private static ContinuousMeasurement findContinuousMeasurement(Study s, OutcomeMeasure om, Drug d) {
+		if (!om.getType().equals(OutcomeMeasure.Type.CONTINUOUS)) {
+			throw new IllegalArgumentException("OutcomeMeasure should be Continuous");
 		}
-		return (ContinuousMeasurement)findMeasurement(s, e, d);
+		return (ContinuousMeasurement)findMeasurement(s, om, d);
 	}
 	
-	private static RateMeasurement findRateMeasurement(Study s, Endpoint e, Drug d) {
-		if (!e.getType().equals(AbstractOutcomeMeasure.Type.RATE)) {
-			throw new IllegalArgumentException("Endpoint should be Rate");
+	private static RateMeasurement findRateMeasurement(Study s, OutcomeMeasure om, Drug d) {
+		if (!om.getType().equals(OutcomeMeasure.Type.RATE)) {
+			throw new IllegalArgumentException("OutcomeMeasure should be Rate");
 		}
-		return (RateMeasurement)findMeasurement(s, e, d);
+		return (RateMeasurement)findMeasurement(s, om, d);
 	}
 
-	private static Measurement findMeasurement(Study s, AbstractOutcomeMeasure e, Drug drug) {
+	private static Measurement findMeasurement(Study s, OutcomeMeasure om, Drug drug) {
 		for (Arm g : s.getArms()) {
 			if (g.getDrug().equals(drug)) {
-				return s.getMeasurement(e, g);
+				return s.getMeasurement(om, g);
 			}
 		}
 		return null;

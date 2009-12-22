@@ -6,14 +6,11 @@ import java.util.Set;
 public abstract class AbstractOutcomeMeasure extends AbstractEntity implements OutcomeMeasure {
 	private static final long serialVersionUID = 5902516465466960966L;
 
-	public static final String UOM_DEFAULT_RATE = "Ratio of Patients";
-	public static final String UOM_DEFAULT_CONTINUOUS = "";
 	protected String d_name;
 	String d_description = "";
 	protected String d_unitOfMeasurement;
 	protected Type d_type;
-	public static final String PROPERTY_UNIT_OF_MEASUREMENT = "unitOfMeasurement";
-
+	
 	protected AbstractOutcomeMeasure(String name, Type type) {
 		d_name = name;
 		d_type = type;
@@ -79,7 +76,7 @@ public abstract class AbstractOutcomeMeasure extends AbstractEntity implements O
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof AbstractOutcomeMeasure) {
-			AbstractOutcomeMeasure other = (AbstractOutcomeMeasure)o;
+			OutcomeMeasure other = (OutcomeMeasure)o;
 			if (other.getName() == null && getName() == null) {
 				return true;
 			}

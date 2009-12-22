@@ -22,28 +22,31 @@ package org.drugis.addis.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.OutcomeMeasure;
 
 
 import com.jgoodies.binding.beans.Model;
 
 @SuppressWarnings("serial")
-public class EndpointHolder extends Model { // TODO: implement as adapter or something?
-	private Endpoint d_endpoint;
-	public static final String PROPERTY_ENDPOINT = "endpoint";
+public class OutcomeMeasureHolder extends Model { // TODO: implement as adapter or something?
+	
+	private OutcomeMeasure d_om;
+	
+	public static final String PROPERTY_OUTCOME_MEASURE = "outcomeMeasure";
+	
 	public void setEndpoint(Endpoint e) {
-		AbstractOutcomeMeasure oldVal = d_endpoint;
-		d_endpoint = e;
-		firePropertyChange(PROPERTY_ENDPOINT, oldVal, d_endpoint);
+		OutcomeMeasure oldVal = d_om;
+		d_om = e;
+		firePropertyChange(PROPERTY_OUTCOME_MEASURE, oldVal, d_om);
 	}
-	public Endpoint getEndpoint() {
-		return d_endpoint;
+	public OutcomeMeasure getEndpoint() {
+		return d_om;
 	}
-	public List<Endpoint> asList() {
-		List<Endpoint> list = new ArrayList<Endpoint>();
-		if (d_endpoint != null) {
-			list.add(d_endpoint);
+	public List<OutcomeMeasure> asList() {
+		List<OutcomeMeasure> list = new ArrayList<OutcomeMeasure>();
+		if (d_om != null) {
+			list.add(d_om);
 		}
 		return list;
 	}

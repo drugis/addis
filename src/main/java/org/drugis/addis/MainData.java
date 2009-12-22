@@ -407,7 +407,7 @@ public class MainData extends ExampleData {
 		Drug Bupropion = buildDrugBupropion();
 		Drug placebo = buildPlacebo();
 		
-		Study study = new Study("ClinicalTrials.gov Example Study", buildIndicationDepression());
+		Study study = new Study("ClinicalTrials.gov Example", buildIndicationDepression());
 		study.setOutcomeMeasures(Collections.singleton(hamd));
 		study.addOutcomeMeasure(buildAdeConvulsion());
 		

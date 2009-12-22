@@ -39,7 +39,7 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 	private Main d_main;
 	private Domain d_domain;
 	private Study d_study;
-	private EndpointHolder d_newEndpoint;
+	private OutcomeMeasureHolder d_newEndpoint;
 	private Map<Arm, BasicMeasurement> d_measurements;
 	
 	public StudyAddEndpointDialog(Main frame, Domain domain, Study study) {
@@ -49,9 +49,9 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 		d_domain = domain;
 		d_study = study;
 		d_measurements = new HashMap<Arm, BasicMeasurement>();
-		d_newEndpoint = new EndpointHolder();
+		d_newEndpoint = new OutcomeMeasureHolder();
 		final StudyAddEndpointView view = new StudyAddEndpointView(d_domain, d_study,
-				new PresentationModel<EndpointHolder>(d_newEndpoint), d_measurements,
+				new PresentationModel<OutcomeMeasureHolder>(d_newEndpoint), d_measurements,
 				d_okButton, frame.getPresentationModelFactory());
 		
 		

@@ -24,7 +24,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
-import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
@@ -62,7 +61,7 @@ public class StudyAddArmView implements ViewBuilder {
 				);	
 		int fullWidth = 3;
 		int maxEpComponents = 0;
-		for (Endpoint.Type type : AbstractOutcomeMeasure.Type.values()) {
+		for (Endpoint.Type type : OutcomeMeasure.Type.values()) {
 			if (d_pm.hasEndpoints(type)) {
 				maxEpComponents = Math.max(maxEpComponents, numComponents(type));
 			}
@@ -98,7 +97,7 @@ public class StudyAddArmView implements ViewBuilder {
 		DoseView view = new DoseView(d_pm.getDoseModel(), d_validator);
 		builder.add(view.buildPanel(), cc.xyw(3, row, fullWidth-2));
 		
-		for (Type type : AbstractOutcomeMeasure.Type.values()) {
+		for (Type type : OutcomeMeasure.Type.values()) {
 			if (d_pm.hasEndpoints(type)) {
 				row = buildMeasurementsPart(type, row, layout, fullWidth, builder);
 			}

@@ -22,7 +22,6 @@ package org.drugis.addis.presentation;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
@@ -30,6 +29,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
@@ -76,7 +76,7 @@ public class PresentationModelFactory {
 	
 	@SuppressWarnings("unchecked")
 	private PresentationModel createCreationModel(Object obj) {
-		if (obj instanceof AbstractOutcomeMeasure) {
+		if (obj instanceof OutcomeMeasure) {
 			return new EndpointCreationModel((Endpoint)obj);
 		}
 		return null;
@@ -84,9 +84,9 @@ public class PresentationModelFactory {
 
 	@SuppressWarnings("unchecked")
 	private PresentationModel createModel(Object obj) {
-		if (obj instanceof AbstractOutcomeMeasure) {
+		if (obj instanceof OutcomeMeasure) {
 			return new EndpointPresentationModel((Endpoint)obj,
-					d_domain.getStudies((AbstractOutcomeMeasure)obj));
+					d_domain.getStudies((OutcomeMeasure)obj));
 		}
 		if (obj instanceof Study) {
 			return new StudyPresentationModel((Study) obj, this);

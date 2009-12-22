@@ -29,7 +29,7 @@ public class RandomEffectsMetaAnalysisPresentation extends PresentationModel<Ran
 	}
 	
 	public LabeledPresentationModel getEndpointModel() {
-		return d_mgr.getLabeledModel(getBean().getEndpoint());
+		return d_mgr.getLabeledModel(getBean().getOutcomeMeasure());
 	}
 	
 	public LabeledPresentationModel getFirstDrugModel() {
@@ -68,6 +68,6 @@ public class RandomEffectsMetaAnalysisPresentation extends PresentationModel<Ran
 	}
 	
 	public Endpoint.Type getAnalysisType() {
-		return getBean().getEndpoint().getType();
+		return getBean().getOutcomeMeasure().getType();
 	}
 }

@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
@@ -25,7 +24,7 @@ import org.drugis.common.Interval;
 public class ForestPlotPresentation {
 	private List<Study> d_studies;
 	private List<RelativeEffect<?>> d_relEffects;
-	private Endpoint d_endpoint;
+	private OutcomeMeasure d_outMeas;
 	private Drug d_baseline;
 	private Drug d_subject;
 	private Class<? extends RelativeEffect<?>> d_type;
@@ -35,10 +34,10 @@ public class ForestPlotPresentation {
 	private RandomEffectsMetaAnalysis d_analysis;
 	private PresentationModelFactory d_pmf;
 	
-	public ForestPlotPresentation(List<Study> studies, Endpoint e, Drug baseline, Drug subject,
+	public ForestPlotPresentation(List<Study> studies, OutcomeMeasure om, Drug baseline, Drug subject,
 			Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
 		d_studies = new ArrayList<Study>();
-		d_endpoint = e;
+		d_outMeas = om;
 		d_baseline = baseline;
 		d_subject = subject;
 		d_type = type;
@@ -51,18 +50,18 @@ public class ForestPlotPresentation {
 	}
 	
 	public ForestPlotPresentation(RandomEffectsMetaAnalysis analysis, Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
-		this(analysis.getStudies(), analysis.getEndpoint(), analysis.getFirstDrug(), analysis.getSecondDrug(), type, pmf);
+		this(analysis.getStudies(), analysis.getOutcomeMeasure(), analysis.getFirstDrug(), analysis.getSecondDrug(), type, pmf);
 		d_analysis = analysis;
 	}
 		
-	public ForestPlotPresentation(Study s, Endpoint e, Drug baseline, Drug subject,
+	public ForestPlotPresentation(Study s, OutcomeMeasure om, Drug baseline, Drug subject,
 			Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
-		this(Collections.singletonList((Study)s), e, baseline, subject, type, pmf);
+		this(Collections.singletonList((Study)s), om, baseline, subject, type, pmf);
 	}
 
 	private void addRelativeEffect(Study s, Drug subject) {
 		d_studies.add(s);
-		d_relEffects.add(RelativeEffectFactory.buildRelativeEffect(s, d_endpoint, d_baseline, subject, d_type));
+		d_relEffects.add(RelativeEffectFactory.buildRelativeEffect(s, d_outMeas, d_baseline, subject, d_type));
 	}
 	
 	public RelativeEffect<?> getMetaAnalysisEffect() {
@@ -132,11 +131,11 @@ public class ForestPlotPresentation {
 	}
 	
 	public Drug getLowValueFavorsDrug() {
-		return d_endpoint.getDirection().equals(Direction.HIGHER_IS_BETTER) ? d_baseline : d_subject;
+		return d_outMeas.getDirection().equals(Direction.HIGHER_IS_BETTER) ? d_baseline : d_subject;
 	}
 	
 	public Drug getHighValueFavorsDrug() {
-		return d_endpoint.getDirection().equals(Direction.HIGHER_IS_BETTER) ? d_subject : d_baseline;
+		return d_outMeas.getDirection().equals(Direction.HIGHER_IS_BETTER) ? d_subject : d_baseline;
 	}
 	
 	public String getStudyLabelAt(int i) {
@@ -209,8 +208,8 @@ public class ForestPlotPresentation {
 		return isCombined(index) ? 0 : tempbin.getBin(weight).bin * 2 + 1;
 	}
 
-	public AbstractOutcomeMeasure getEndpoint() {
-		return d_endpoint;
+	public OutcomeMeasure getOutcomeMeasure() {
+		return d_outMeas;
 	}
 	
 	public boolean isCombined(int i) {

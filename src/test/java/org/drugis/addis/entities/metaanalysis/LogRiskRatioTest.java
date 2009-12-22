@@ -21,7 +21,7 @@ package org.drugis.addis.entities.metaanalysis;
 
 import static org.junit.Assert.assertEquals;
 
-import org.drugis.addis.entities.AbstractOutcomeMeasure;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.Drug;
@@ -57,7 +57,7 @@ public class LogRiskRatioTest {
 		d_ind = new Indication(001L, "Impression");
 		d_fluox = new Drug("Fluoxetine","01");
 		d_sertra = new Drug("Sertraline","02");
-		d_ep = new Endpoint("ep", AbstractOutcomeMeasure.Type.RATE);
+		d_ep = new Endpoint("ep", OutcomeMeasure.Type.RATE);
 		
 		d_bennie = createStudy("Bennie 1995",63,144,73,142);
 		d_boyer = createStudy("Boyer 1998", 61,120, 63,122);

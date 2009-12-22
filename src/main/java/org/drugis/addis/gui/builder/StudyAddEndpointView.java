@@ -28,13 +28,13 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
-import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.gui.EndpointHolder;
+import org.drugis.addis.gui.OutcomeMeasureHolder;
 import org.drugis.addis.gui.MeasurementInputHelper;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -52,7 +52,7 @@ import com.jgoodies.forms.layout.FormLayout;
 public class StudyAddEndpointView implements ViewBuilder {
 	private Domain d_domain;
 	private Study d_study;
-	private PresentationModel<EndpointHolder> d_endpointModel;
+	private PresentationModel<OutcomeMeasureHolder> d_endpointModel;
 	private Map<Arm, BasicMeasurement> d_measurements;
 	
 	private JComboBox d_endpointSelect;
@@ -61,7 +61,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 	private PresentationModelFactory d_presMan;
 	
 	public StudyAddEndpointView(Domain domain, Study study,
-			PresentationModel<EndpointHolder> endpointModel,
+			PresentationModel<OutcomeMeasureHolder> endpointModel,
 			Map<Arm,BasicMeasurement> measurements,
 			JButton okButton, PresentationModelFactory presModelMan) {
 		d_validator = new NotEmptyValidator(okButton);
@@ -83,7 +83,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 	
 	private void initComponents() {
 		d_endpointSelectionInList = new SelectionInList<Endpoint>(getEndpoints(), 
-				d_endpointModel.getModel(EndpointHolder.PROPERTY_ENDPOINT));
+				d_endpointModel.getModel(OutcomeMeasureHolder.PROPERTY_OUTCOME_MEASURE));
 		d_endpointSelect = BasicComponentFactory.createComboBox(d_endpointSelectionInList);
 		d_validator.add(d_endpointSelect);
 	}
@@ -143,14 +143,14 @@ public class StudyAddEndpointView implements ViewBuilder {
 	}
 
 	private int getNumComponents() {
-		AbstractOutcomeMeasure e = getEndpoint();
+		OutcomeMeasure e = getEndpoint();
 		if (e == null) {
 			return 0;
 		}
 		return MeasurementInputHelper.numComponents(e);
 	}
 
-	private AbstractOutcomeMeasure getEndpoint() {
+	private OutcomeMeasure getEndpoint() {
 		return d_endpointModel.getBean().getEndpoint();
 	}
 

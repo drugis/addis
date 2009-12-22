@@ -84,7 +84,7 @@ public class DomainData implements Serializable {
 		d_ades.add(ade);
 	}
 	
-	public void removeEndpoint(AbstractOutcomeMeasure e) {
+	public void removeEndpoint(OutcomeMeasure e) {
 		d_endpoints.remove(e);
 	}
 	

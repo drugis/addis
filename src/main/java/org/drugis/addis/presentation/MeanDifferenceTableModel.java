@@ -1,18 +1,18 @@
 package org.drugis.addis.presentation;
 
 import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 
 @SuppressWarnings("serial")
 public class MeanDifferenceTableModel extends AbstractRelativeEffectTableModel{
 
-	public MeanDifferenceTableModel(Study study, Endpoint endpoint,
+	public MeanDifferenceTableModel(Study study, OutcomeMeasure om,
 			PresentationModelFactory pmf) {
-		super(study, endpoint, pmf);
+		super(study, om, pmf);
 	}
 
 	@Override

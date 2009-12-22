@@ -131,8 +131,8 @@ public class DomainImpl implements Domain {
 		fireDomainChanged(DomainEvent.Type.STUDIES);
 	}
 	
-	public void addMetaAnalysis(RandomEffectsMetaAnalysis ma) 
-	throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
+	public void addMetaAnalysis(RandomEffectsMetaAnalysis ma) throws 
+			NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		if (ma == null) {
 			throw new NullPointerException("Meta-Study may not be null");
 		}
@@ -173,7 +173,7 @@ public class DomainImpl implements Domain {
 		return Collections.unmodifiableSortedSet(d_domainData.getDrugs());
 	}
 
-	public ListHolder<Study> getStudies(AbstractOutcomeMeasure e) 
+	public ListHolder<Study> getStudies(OutcomeMeasure e) 
 	throws NullPointerException {
 		if (e == null) {
 			throw new NullPointerException("Endpoint must not be null");
@@ -254,7 +254,7 @@ public class DomainImpl implements Domain {
 		}
 	}
 
-	public void deleteEndpoint(AbstractOutcomeMeasure e) throws DependentEntitiesException {
+	public void deleteEndpoint(Endpoint e) throws DependentEntitiesException {
 		checkDependents(e);
 		d_domainData.removeEndpoint(e);
 		fireDomainChanged(DomainEvent.Type.ENDPOINTS);		

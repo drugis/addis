@@ -27,11 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.junit.Before;
@@ -115,7 +115,7 @@ public class PresentationModelFactoryTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetEndpointModel() {
-		AbstractOutcomeMeasure e = ExampleData.buildEndpointHamd();
+		OutcomeMeasure e = ExampleData.buildEndpointHamd();
 		PresentationModel m = d_manager.getModel(e);
 		
 		assertEquals(e, m.getBean());
@@ -134,7 +134,7 @@ public class PresentationModelFactoryTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetEndpointCreationModel() {
-		AbstractOutcomeMeasure e = ExampleData.buildEndpointHamd();
+		OutcomeMeasure e = ExampleData.buildEndpointHamd();
 		PresentationModel m = d_manager.getCreationModel(e);
 		
 		assertEquals(e, m.getBean());

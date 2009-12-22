@@ -2,8 +2,8 @@ package org.drugis.addis.presentation;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 
@@ -11,12 +11,12 @@ import org.drugis.addis.entities.Study;
 public abstract class AbstractRelativeEffectTableModel extends AbstractTableModel
 implements RelativeEffectTableModel {
 	protected Study d_study;
-	protected Endpoint d_endpoint;
+	protected OutcomeMeasure d_outMeas;
 	protected PresentationModelFactory d_pmf;
 	
-	protected AbstractRelativeEffectTableModel(Study study, Endpoint endpoint, PresentationModelFactory pmf) {
+	protected AbstractRelativeEffectTableModel(Study study, OutcomeMeasure om, PresentationModelFactory pmf) {
 		d_study = study;
-		d_endpoint = endpoint;
+		d_outMeas = om;
 		d_pmf = pmf;
 	}
 	
@@ -40,8 +40,8 @@ implements RelativeEffectTableModel {
 			return d_pmf.getModel(d_study.getArms().get(row));
 		}
 		
-		Measurement denominator = d_study.getMeasurement(d_endpoint, d_study.getArms().get(row));
-		Measurement numerator = d_study.getMeasurement(d_endpoint, d_study.getArms().get(col));
+		Measurement denominator = d_study.getMeasurement(d_outMeas, d_study.getArms().get(row));
+		Measurement numerator = d_study.getMeasurement(d_outMeas, d_study.getArms().get(col));
 		return d_pmf.getModel(getRelativeEffect(denominator, numerator));
 	}
 
@@ -62,11 +62,11 @@ implements RelativeEffectTableModel {
 
 	public String getDescription() {
 		return getTitle() + " for \"" + d_study.getId() 
-				+ "\" on Endpoint \"" + d_endpoint.getName() + "\"";
+				+ "\" on Endpoint \"" + d_outMeas.getName() + "\"";
 	}
 
 	public ForestPlotPresentation getPlotPresentation(int row, int column) {
-		return new ForestPlotPresentation((Study)d_study, d_endpoint, d_study.getArms().get(row).getDrug(),
+		return new ForestPlotPresentation((Study)d_study, d_outMeas, d_study.getArms().get(row).getDrug(),
 				d_study.getArms().get(column).getDrug(), getRelativeEffectType(), d_pmf);
 	}
 }

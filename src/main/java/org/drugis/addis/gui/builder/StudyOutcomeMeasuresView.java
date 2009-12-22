@@ -10,7 +10,6 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.addis.gui.GUIFactory;
@@ -32,14 +31,14 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class StudyEndpointsView implements ViewBuilder {
+public class StudyOutcomeMeasuresView implements ViewBuilder {
 	
 	private StudyPresentationModel d_model;
 	private PresentationModelFactory d_pmf;
 	private JFrame d_mainWindow;
 	private boolean d_isEndpoints;
 
-	public StudyEndpointsView(StudyPresentationModel model, Main main, boolean endpoints) {
+	public StudyOutcomeMeasuresView(StudyPresentationModel model, Main main, boolean endpoints) {
 		d_model = model;
 		d_pmf = main.getPresentationModelFactory();
 		d_mainWindow = main;
@@ -54,7 +53,7 @@ public class StudyEndpointsView implements ViewBuilder {
 		CellConstraints cc = new CellConstraints();
 	
 		if (d_model.getBean().getOutcomeMeasures().isEmpty()) {
-			builder.addLabel("No endpoints", cc.xy(1, 1));
+			builder.addLabel("No OutcomeMeasures", cc.xy(1, 1));
 		} else {
 			int row = 1;
 			boolean addRow = false;
@@ -67,19 +66,14 @@ public class StudyEndpointsView implements ViewBuilder {
 						GUIFactory.createOutcomeMeasureLabelWithIcon(om),
 						cc.xy(1, row));
 				
-				if (!(om instanceof Endpoint))
-					continue;
-				
-				Endpoint e = (Endpoint) om;							
-				
 				JPanel panel = new JPanel(new FlowLayout());
-				if (e.getType().equals(Type.RATE)) {
-					panel.add(createOddsRatioButton(e));
-					panel.add(createRiskRatioButton(e));
-					panel.add(createRiskDifferenceButton(e));
-				} else if (e.getType().equals(Type.CONTINUOUS)) {
-					panel.add(createWMDButton(e));
-					panel.add(createSMDButton(e));
+				if (om.getType().equals(Type.RATE)) {
+					panel.add(createOddsRatioButton(om));
+					panel.add(createRiskRatioButton(om));
+					panel.add(createRiskDifferenceButton(om));
+				} else if (om.getType().equals(Type.CONTINUOUS)) {
+					panel.add(createWMDButton(om));
+					panel.add(createSMDButton(om));
 				}
 				builder.add(panel, cc.xy(3, row));
 				row += 2;
@@ -89,28 +83,28 @@ public class StudyEndpointsView implements ViewBuilder {
 		return builder.getPanel();
 	}
 
-	private JButton createOddsRatioButton(final Endpoint e) {
-		final RelativeEffectTableModel tableModel = new OddsRatioTableModel(d_model.getBean(), e, d_pmf);
+	private JButton createOddsRatioButton(OutcomeMeasure om) {
+		final RelativeEffectTableModel tableModel = new OddsRatioTableModel(d_model.getBean(), om, d_pmf);
 		return createRatioButton(tableModel);
 	}
 
-	private JButton createRiskRatioButton(Endpoint e) {
-		final RelativeEffectTableModel tableModel = new RiskRatioTableModel(d_model.getBean(), e, d_pmf);
+	private JButton createRiskRatioButton(OutcomeMeasure om) {
+		final RelativeEffectTableModel tableModel = new RiskRatioTableModel(d_model.getBean(), om, d_pmf);
 		return createRatioButton(tableModel);
 	}
 	
-	private JButton createRiskDifferenceButton(Endpoint e) {
-		final RelativeEffectTableModel tableModel = new RiskDifferenceTableModel(d_model.getBean(), e, d_pmf);
+	private JButton createRiskDifferenceButton(OutcomeMeasure om) {
+		final RelativeEffectTableModel tableModel = new RiskDifferenceTableModel(d_model.getBean(), om, d_pmf);
 		return createRatioButton(tableModel);
 	}
 	
-	private JButton createWMDButton(Endpoint e) {
-		final RelativeEffectTableModel tableModel = new MeanDifferenceTableModel(d_model.getBean(), e, d_pmf);
+	private JButton createWMDButton(OutcomeMeasure om) {
+		final RelativeEffectTableModel tableModel = new MeanDifferenceTableModel(d_model.getBean(), om, d_pmf);
 		return createRatioButton(tableModel);
 	}
 	
-	private JButton createSMDButton(Endpoint e) {
-		final RelativeEffectTableModel tableModel = new StandardisedMeanDifferenceTableModel(d_model.getBean(), e, d_pmf);
+	private JButton createSMDButton(OutcomeMeasure om) {
+		final RelativeEffectTableModel tableModel = new StandardisedMeanDifferenceTableModel(d_model.getBean(), om, d_pmf);
 		return createRatioButton(tableModel);
 	}
 	

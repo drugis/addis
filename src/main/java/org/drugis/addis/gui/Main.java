@@ -67,7 +67,6 @@ import javax.swing.tree.TreePath;
 import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.MainData;
-import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
@@ -77,6 +76,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.builder.DrugView;
@@ -292,7 +292,7 @@ public class Main extends JFrame {
 		String selectedType = "";
 		if (selected instanceof Drug) {
 			selectedType = "drug";
-		} else if (selected instanceof AbstractOutcomeMeasure) {
+		} else if (selected instanceof OutcomeMeasure) {
 			selectedType = "endpoint";
 		} else if (selected instanceof RandomEffectsMetaAnalysis) {
 			selectedType = "meta-analysis";
@@ -313,8 +313,8 @@ public class Main extends JFrame {
 		try {
 			if (selected instanceof Drug) {
 				getDomain().deleteDrug((Drug) selected);
-			} else if (selected instanceof AbstractOutcomeMeasure) {
-				getDomain().deleteEndpoint((AbstractOutcomeMeasure) selected);
+			} else if (selected instanceof Endpoint) {
+				getDomain().deleteEndpoint((Endpoint) selected);
 				leftTreeFocusEndpoints();
 			} else if (selected instanceof Study) {
 				getDomain().deleteStudy((Study) selected);
@@ -778,7 +778,7 @@ public class Main extends JFrame {
 						d_domainTreeModel.getAnalysesNode(), study }));		
 	}
 	
-	public void leftTreeFocusOnEndpoint(AbstractOutcomeMeasure ep) {
+	public void leftTreeFocusOnEndpoint(OutcomeMeasure ep) {
 		d_leftPanelTree.setSelectionPath(new TreePath(
 				new Object[] {d_domainTreeModel.getRoot(), 
 						d_domainTreeModel.getEndpointsNode(), ep }));		
