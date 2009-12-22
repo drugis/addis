@@ -313,18 +313,19 @@ public class Main extends JFrame {
 		try {
 			if (selected instanceof Drug) {
 				getDomain().deleteDrug((Drug) selected);
+				leftTreeFocus(d_domainTreeModel.getDrugsNode());
 			} else if (selected instanceof Endpoint) {
 				getDomain().deleteEndpoint((Endpoint) selected);
-				leftTreeFocusEndpoints();
+				leftTreeFocus(d_domainTreeModel.getEndpointsNode());
 			} else if (selected instanceof Study) {
 				getDomain().deleteStudy((Study) selected);
-				leftTreeFocusStudies();
+				leftTreeFocus(d_domainTreeModel.getStudiesNode());
 			} else if (selected instanceof RandomEffectsMetaAnalysis) {
 				getDomain().deleteMetaAnalysis((RandomEffectsMetaAnalysis) selected);
-				leftTreeFocusAnalyses();
+				leftTreeFocus(d_domainTreeModel.getAnalysesNode());
 			} else if (selected instanceof Indication) {
 				getDomain().deleteIndication((Indication) selected);
-				leftTreeFocusIndications();
+				leftTreeFocus(d_domainTreeModel.getIndicationsNode());
 			}
 		} catch (DependentEntitiesException e) {
 			String str = new String(selected + " is used by: ");
@@ -343,17 +344,7 @@ public class Main extends JFrame {
 		}
 	}
 
-	private void leftTreeFocusAnalyses() {
-		d_leftPanelTree.setSelectionPath(new TreePath(
-				new Object[] {d_domainTreeModel.getRoot(), 
-						d_domainTreeModel.getAnalysesNode() }));
-	}
 	
-	private void leftTreeFocusIndications() {
-		d_leftPanelTree.setSelectionPath(new TreePath(
-				new Object[] {d_domainTreeModel.getRoot(), 
-						d_domainTreeModel.getIndicationsNode() }));
-	}
 
 	private JMenuItem createAddEndpointMenuItem() {
 		JMenuItem item = new JMenuItem("Endpoint", ImageLoader.getIcon(FileNames.ICON_ENDPOINT));
@@ -607,15 +598,15 @@ public class Main extends JFrame {
 					drugSelected((Drug) node);
 				} else if (node instanceof Indication) {
 					indicationSelected((Indication) node);
-				} else if (node.equals(d_domainTreeModel.getStudiesNode())) {
+				} else if (node == d_domainTreeModel.getStudiesNode()) {
 					studyLabelSelected();
-				} else if (node.equals(d_domainTreeModel.getDrugsNode())) {
+				} else if (node == d_domainTreeModel.getDrugsNode()) {
 					drugLabelSelected();
-				} else if (node.equals(d_domainTreeModel.getIndicationsNode())) {
+				} else if (node == d_domainTreeModel.getIndicationsNode()) {
 					indicationLabelSelected();
-				} else if (node.equals(d_domainTreeModel.getEndpointsNode())) {
+				} else if (node == d_domainTreeModel.getEndpointsNode()) {
 					endpointLabelSelected();
-				} else if (node.equals(d_domainTreeModel.getAnalysesNode())) {
+				} else if (node == d_domainTreeModel.getAnalysesNode()) {
 					analysesLabelSelected();
 				} else {
 					noneSelected();
@@ -643,18 +634,6 @@ public class Main extends JFrame {
 		formatter.add("atcCode");
 		buildEntityTable(getDomain().getDrugs(), formatter, "Drugs");
 	}
-	
-	private void leftTreeFocusStudies() {
-		d_leftPanelTree.setSelectionPath(new TreePath(
-				new Object[] {d_domainTreeModel.getRoot(), 
-						d_domainTreeModel.getStudiesNode() }));
-	}
-	
-	private void leftTreeFocusEndpoints() {
-		d_leftPanelTree.setSelectionPath(new TreePath(
-				new Object[] {d_domainTreeModel.getRoot(), 
-						d_domainTreeModel.getEndpointsNode() }));
-	}	
 	
 	private void endpointSelected(Endpoint e) {
 		EndpointView view = new EndpointView((EndpointPresentationModel) d_pmManager.getModel(e), this);
@@ -712,7 +691,7 @@ public class Main extends JFrame {
 		formatter.add("name");
 		formatter.add("type");
 		formatter.add("indication");
-		formatter.add("endpoint");
+		formatter.add("outcomeMeasure");
 		formatter.add("firstDrug");
 		formatter.add("secondDrug");
 		formatter.add("studiesIncluded");
@@ -767,30 +746,35 @@ public class Main extends JFrame {
 		}
 	}
 	
-	public void leftTreeFocus(Entity e) {
-		if (e instanceof Study) {
+	public void leftTreeFocus(Object node) {
+		if (d_domainTreeModel.getIndexOfChild(d_domainTreeModel.getRoot(), node) != -1) {
+			d_leftPanelTree.setSelectionPath(new TreePath(
+					new Object[] {d_domainTreeModel.getRoot(), 
+							node }));
+		}
+		else if (node instanceof Study) {
 			d_leftPanelTree.setSelectionPath(null);
-			studySelected((Study)e);
-		}
-		else if (e instanceof RandomEffectsMetaAnalysis) {
+			studySelected((Study)node);
+		} 	
+		else if (node instanceof RandomEffectsMetaAnalysis) {
 			d_leftPanelTree.setSelectionPath(new TreePath(
 					new Object[] {d_domainTreeModel.getRoot(), 
-							d_domainTreeModel.getAnalysesNode(), e}));
+							d_domainTreeModel.getAnalysesNode(), node}));
 		}
-		else if (e instanceof Drug) {
+		else if (node instanceof Drug) {
 			d_leftPanelTree.setSelectionPath(new TreePath(
 					new Object[] {d_domainTreeModel.getRoot(), 
-							d_domainTreeModel.getDrugsNode(), e}));
+							d_domainTreeModel.getDrugsNode(), node}));
 		}
-		else if (e instanceof Indication) {
+		else if (node instanceof Indication) {
 			d_leftPanelTree.setSelectionPath(new TreePath(
 					new Object[] {d_domainTreeModel.getRoot(),
-							d_domainTreeModel.getIndicationsNode(), e}));
+							d_domainTreeModel.getIndicationsNode(), node}));
 		}
-		else if (e instanceof Endpoint) {
+		else if (node instanceof Endpoint) {
 			d_leftPanelTree.setSelectionPath(new TreePath(
 					new Object[] {d_domainTreeModel.getRoot(), 
-							d_domainTreeModel.getEndpointsNode(), e}));
+							d_domainTreeModel.getEndpointsNode(), node}));
 		}
 	}	
 }
