@@ -3,11 +3,12 @@ package org.drugis.addis.entities;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.Set;
 
 import org.drugis.common.ObserverManager;
 
-public abstract class AbstractEntity implements Entity {
+public abstract class AbstractEntity implements Entity, Serializable {
 	private static final long serialVersionUID = -3889001536692466540L;
 	
 	transient private ObserverManager d_om;
