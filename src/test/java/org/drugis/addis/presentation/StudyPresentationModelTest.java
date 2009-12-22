@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drugis.addis.entities.AdverseDrugEvent;
-import org.drugis.addis.entities.BasicArm;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalVariable;
 import org.drugis.addis.entities.ContinuousVariable;
@@ -60,7 +60,7 @@ public class StudyPresentationModelTest {
 		assertEquals(new Integer(0), model.getValue());
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, new Integer(1));
 		model.addPropertyChangeListener(mock);
-		d_study.addArm(new BasicArm(null, null, 1));
+		d_study.addArm(new Arm(null, null, 1));
 
 		verify(mock);
 		assertEquals(new Integer(1), model.getValue());
@@ -71,7 +71,7 @@ public class StudyPresentationModelTest {
 		StudyCharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.STUDYSIZE);
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, new Integer(100));
 		model.addPropertyChangeListener(mock);
-		d_study.addArm(new BasicArm(null, null, 100));
+		d_study.addArm(new Arm(null, null, 100));
 
 		verify(mock);
 		assertEquals(new Integer(100), model.getValue());		
@@ -84,7 +84,7 @@ public class StudyPresentationModelTest {
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, Collections.singleton(d));
 		model.addPropertyChangeListener(mock);
 		
-		d_study.addArm(new BasicArm(d, null, 0));
+		d_study.addArm(new Arm(d, null, 0));
 
 		verify(mock);
 		assertEquals(Collections.singleton(d), model.getValue());	
@@ -95,7 +95,7 @@ public class StudyPresentationModelTest {
 		StudyCharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.DOSING);
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, DerivedStudyCharacteristic.Dosing.FLEXIBLE);
 		model.addPropertyChangeListener(mock);
-		d_study.addArm(new BasicArm(null, new FlexibleDose(new Interval<Double>(1d,10d), SIUnit.MILLIGRAMS_A_DAY), 0));
+		d_study.addArm(new Arm(null, new FlexibleDose(new Interval<Double>(1d,10d), SIUnit.MILLIGRAMS_A_DAY), 0));
 		
 		verify(mock);
 		assertEquals(DerivedStudyCharacteristic.Dosing.FLEXIBLE, model.getValue());
@@ -104,22 +104,22 @@ public class StudyPresentationModelTest {
 	@Test
 	public void testGetArmCount() {
 		assertEquals(d_study.getArms().size(), d_model.getArmCount());
-		d_study.addArm(new BasicArm(new Drug("X", "Y"), null, 0));
+		d_study.addArm(new Arm(new Drug("X", "Y"), null, 0));
 		assertEquals(d_study.getArms().size(), d_model.getArmCount());
 	}
 	
 	@Test
 	public void testGetArms() {
-		BasicArm arm = new BasicArm(new Drug("X", "Y"), null, 0);
+		Arm arm = new Arm(new Drug("X", "Y"), null, 0);
 		d_study.addArm(arm);
 		assertEquals(Collections.singletonList(d_pmf.getModel(arm)), d_model.getArms());
 	}
 	
 	@Test
 	public void testGetPopulationCharacteristicCount() {
-		BasicArm arm1 = new BasicArm(new Drug("X", "Y"), null, 0);
+		Arm arm1 = new Arm(new Drug("X", "Y"), null, 0);
 		d_study.addArm(arm1);
-		BasicArm arm2 = new BasicArm(new Drug("X", "Y"), null, 0);
+		Arm arm2 = new Arm(new Drug("X", "Y"), null, 0);
 		d_study.addArm(arm2);
 		ContinuousVariable age = new ContinuousVariable("Age");
 		CategoricalVariable gender = new CategoricalVariable("Gender", new String[]{"Male", "Female"});
@@ -134,9 +134,9 @@ public class StudyPresentationModelTest {
 	
 	@Test
 	public void testGetPopulationCharacteristics() {
-		BasicArm arm1 = new BasicArm(new Drug("X", "Y"), null, 0);
+		Arm arm1 = new Arm(new Drug("X", "Y"), null, 0);
 		d_study.addArm(arm1);
-		BasicArm arm2 = new BasicArm(new Drug("X", "Y"), null, 0);
+		Arm arm2 = new Arm(new Drug("X", "Y"), null, 0);
 		d_study.addArm(arm2);
 		ContinuousVariable age = new ContinuousVariable("Age");
 		CategoricalVariable gender = new CategoricalVariable("Gender", new String[]{"Male", "Female"});

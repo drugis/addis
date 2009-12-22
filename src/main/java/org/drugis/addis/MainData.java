@@ -6,7 +6,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.drugis.addis.entities.AdverseDrugEvent;
-import org.drugis.addis.entities.BasicArm;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -111,7 +111,7 @@ public class MainData extends ExampleData {
 		
 		// Sertraline data
 		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicArm sertr = new BasicArm(sertraline, dose, 96);
+		Arm sertr = new Arm(sertraline, dose, 96);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
 		pHamd.setRate(70);
 		study.addArm(sertr);
@@ -119,7 +119,7 @@ public class MainData extends ExampleData {
 
 		// Fluoxetine data
 		dose = new FixedDose(30.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicArm fluox = new BasicArm(fluoxetine, dose, 92);
+		Arm fluox = new Arm(fluoxetine, dose, 92);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(57);
 		study.addArm(fluox);
@@ -156,7 +156,7 @@ public class MainData extends ExampleData {
 		
 		// Sertraline data
 		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicArm sertr = new BasicArm(sertraline, dose, 117);
+		Arm sertr = new Arm(sertraline, dose, 117);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
 		pHamd.setRate(85);
 		study.addArm(sertr);
@@ -164,7 +164,7 @@ public class MainData extends ExampleData {
 
 		// Fluoxetine data
 		dose = new FixedDose(30.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicArm fluox = new BasicArm(fluoxetine, dose, 119);
+		Arm fluox = new Arm(fluoxetine, dose, 119);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(84);
 		study.addArm(fluox);
@@ -201,7 +201,7 @@ public class MainData extends ExampleData {
 		
 		// Sertraline data
 		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicArm sertr = new BasicArm(sertraline, dose, 118);
+		Arm sertr = new Arm(sertraline, dose, 118);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
 		pHamd.setRate(86);
 		study.addArm(sertr);
@@ -209,7 +209,7 @@ public class MainData extends ExampleData {
 
 		// Fluoxetine data
 		dose = new FixedDose(30.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicArm fluox = new BasicArm(fluoxetine, dose, 120);
+		Arm fluox = new Arm(fluoxetine, dose, 120);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(76);
 		study.addArm(fluox);
@@ -246,7 +246,7 @@ public class MainData extends ExampleData {
 		
 		// Sertraline data
 		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicArm sertr = new BasicArm(sertraline, dose, 122);
+		Arm sertr = new Arm(sertraline, dose, 122);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
 		pHamd.setRate(63);
 		study.addArm(sertr);
@@ -254,7 +254,7 @@ public class MainData extends ExampleData {
 
 		// Fluoxetine data
 		dose = new FixedDose(30.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicArm fluox = new BasicArm(fluoxetine, dose, 120);
+		Arm fluox = new Arm(fluoxetine, dose, 120);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(61);
 		study.addArm(fluox);
@@ -294,7 +294,7 @@ public class MainData extends ExampleData {
 		
 		// Remeron data
 		FlexibleDose dose = new FlexibleDose(new Interval<Double>(5.0, 35.0), SIUnit.MILLIGRAMS_A_DAY);
-		BasicArm remr = new BasicArm(remeron, dose, 47);
+		Arm remr = new Arm(remeron, dose, 47);
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(remr);
 		pCgi.setMean(1.94);
 		// 0.23 is the SE of mean
@@ -305,7 +305,7 @@ public class MainData extends ExampleData {
 
 		// Amitriptyline data
 		dose = new FlexibleDose(new Interval<Double>(40.0, 280.0), SIUnit.MILLIGRAMS_A_DAY);
-		BasicArm amit = new BasicArm(amitriptyline, dose, 47);
+		Arm amit = new Arm(amitriptyline, dose, 47);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(amit);
 		pCgi.setMean(1.57);
 		//0.19 is the SE of mean
@@ -316,7 +316,7 @@ public class MainData extends ExampleData {
 		
 		// Placebo data
 		FixedDose fixedDose = new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicArm plac = new BasicArm(placebo, fixedDose, 48);
+		Arm plac = new Arm(placebo, fixedDose, 48);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(plac);
 		pCgi.setMean(0.85);
 		// 0.19 is the SE of mean
@@ -360,7 +360,7 @@ public class MainData extends ExampleData {
 		
 		// Remeron data
 		FlexibleDose dose = new FlexibleDose(new Interval<Double>(5.0, 35.0), SIUnit.MILLIGRAMS_A_DAY);
-		BasicArm remr = new BasicArm(remeron, dose, 49);
+		Arm remr = new Arm(remeron, dose, 49);
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(remr);
 		pCgi.setMean(.8);
 		// 0.18 is the SE of the mean
@@ -371,7 +371,7 @@ public class MainData extends ExampleData {
 
 		// Trazodone data
 		dose = new FlexibleDose(new Interval<Double>(40.0, 280.0), SIUnit.MILLIGRAMS_A_DAY);
-		BasicArm traz = new BasicArm(trazodone, dose, 48);
+		Arm traz = new Arm(trazodone, dose, 48);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(traz);
 		pCgi.setMean(.62);
 		// 0.16 is the SE of the mean
@@ -382,7 +382,7 @@ public class MainData extends ExampleData {
 		
 		// Placebo data
 		FixedDose fixedDose = new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicArm plac = new BasicArm(placebo, fixedDose, 49);
+		Arm plac = new Arm(placebo, fixedDose, 49);
 		pCgi = (BasicContinuousMeasurement)cgis.buildMeasurement(plac);
 		pCgi.setMean(0.59);
 		// 0.16 is the SE of the mean
@@ -432,7 +432,7 @@ public class MainData extends ExampleData {
 		
 		// Bupropion data
 		FlexibleDose dose = new FlexibleDose(new Interval<Double>(100.0, 300.0), SIUnit.MILLIGRAMS_A_DAY);
-		BasicArm bupr = new BasicArm(Bupropion, dose, 165);
+		Arm bupr = new Arm(Bupropion, dose, 165);
 		frequencyMeasurement = buildGenderVariable().buildMeasurement();
 		frequencyMeasurement.setFrequency("Male", 88);
 		frequencyMeasurement.setFrequency("Female", 77);
@@ -447,7 +447,7 @@ public class MainData extends ExampleData {
 
 		// Placebo data
 		FixedDose fixedDose = new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY);
-		BasicArm plac = new BasicArm(placebo, fixedDose, 157);
+		Arm plac = new Arm(placebo, fixedDose, 157);
 		frequencyMeasurement = buildGenderVariable().buildMeasurement();
 		frequencyMeasurement.setFrequency("Male", 88);
 		frequencyMeasurement.setFrequency("Female", 69);

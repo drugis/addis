@@ -26,7 +26,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultFormatter;
 
-import org.drugis.addis.entities.BasicArm;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
@@ -51,7 +51,7 @@ public class MeasurementInputHelper {
 	}
 
 	public static String[] getHeaders(OutcomeMeasure e) {
-		return getHeaders(e.buildMeasurement(new BasicArm(null, null, 0)));
+		return getHeaders(e.buildMeasurement(new Arm(null, null, 0)));
 	}
 	
 	public static String[] getHeaders(Measurement m) {

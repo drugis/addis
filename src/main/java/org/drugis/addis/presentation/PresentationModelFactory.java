@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drugis.addis.entities.AbstractOutcomeMeasure;
-import org.drugis.addis.entities.BasicArm;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
@@ -106,8 +106,8 @@ public class PresentationModelFactory {
 		if (obj instanceof FrequencyMeasurement) {
 			return new FrequencyMeasurementPresentation((FrequencyMeasurement)obj);
 		}
-		if (obj instanceof BasicArm) {
-			return new BasicArmPresentation((BasicArm)obj, this);
+		if (obj instanceof Arm) {
+			return new BasicArmPresentation((Arm)obj, this);
 		}
 		if (obj instanceof Drug) {
 			Drug d = (Drug) obj;

@@ -9,7 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
@@ -81,7 +80,7 @@ public class StudyArmsView implements ViewBuilder {
 		
 		builder.add(
 				BasicComponentFactory.createLabel(
-						armModel.getModel(BasicArm.PROPERTY_DOSE),
+						armModel.getModel(Arm.PROPERTY_DOSE),
 						new Format() {
 							
 							@Override
@@ -98,7 +97,7 @@ public class StudyArmsView implements ViewBuilder {
 						cc.xy(3, row, "right, center"));
 		
 		final JLabel armSizeLabel = BasicComponentFactory.createLabel(
-				armModel.getModel(BasicArm.PROPERTY_SIZE),
+				armModel.getModel(Arm.PROPERTY_SIZE),
 				NumberFormat.getInstance());
 		final String pgCharacteristicTooltip = armModel.getCharacteristicTooltip();
 		if (!pgCharacteristicTooltip.equals(""))

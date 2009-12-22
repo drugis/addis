@@ -7,7 +7,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.SIUnit;
@@ -85,10 +84,10 @@ class DosePresentationImpl implements DosePresentationModel {
 				}
 			}
 			if (d_min.doubleValue() == d_max.doubleValue()) {
-				((BasicArm)d_pg).setDose(new FixedDose(d_min.doubleValue(), d_pg.getDose().getUnit()));
+				((Arm)d_pg).setDose(new FixedDose(d_min.doubleValue(), d_pg.getDose().getUnit()));
 			} else if (d_min.doubleValue() < d_max.doubleValue()) {
 				Interval<Double> interval = new Interval<Double>(d_min.doubleValue(), d_max.doubleValue());
-				((BasicArm)d_pg).setDose(new FlexibleDose(interval , d_pg.getDose().getUnit()));
+				((Arm)d_pg).setDose(new FlexibleDose(interval , d_pg.getDose().getUnit()));
 			} else {
 				throw new RuntimeException("Should not be reached");
 			}

@@ -30,17 +30,16 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
-import org.drugis.addis.entities.BasicArm;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.SIUnit;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.builder.AddStudyView;
 import org.drugis.common.Interval;
 import org.drugis.common.gui.OkCancelDialog;
@@ -129,7 +128,7 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	private void addNewArm() {
-		BasicArm group = new BasicArm(null, new FlexibleDose(new Interval<Double>(0.0,0.0), SIUnit.MILLIGRAMS_A_DAY),
+		Arm group = new Arm(null, new FlexibleDose(new Interval<Double>(0.0,0.0), SIUnit.MILLIGRAMS_A_DAY),
 				0);
 		d_study.addArm(group);
 		if (d_primaryEndpoint.getEndpoint() != null) {

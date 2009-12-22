@@ -386,7 +386,7 @@ public class DomainTest {
 		
 		Study s1 = new Study("s1", d_indication);
 		s1.setOutcomeMeasures(Collections.singleton(e));
-		BasicArm g1 = new BasicArm(d1, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY), 
+		Arm g1 = new Arm(d1, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY), 
 				100);
 		BasicMeasurement m1 = new BasicRateMeasurement(10, g1.getSize());
 		s1.setArms(Collections.singletonList(g1));
@@ -397,11 +397,11 @@ public class DomainTest {
 		d_domain.addIndication(indic2);
 		Study s2 = new Study("s2", indic2);
 		s2.setOutcomeMeasures(Collections.singleton(e));
-		BasicArm g2 = new BasicArm(d1, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
+		Arm g2 = new Arm(d1, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
 				250);		
-		BasicArm g3 = new BasicArm(d2, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
+		Arm g3 = new Arm(d2, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
 				250);
-		List<BasicArm> l1 = new ArrayList<BasicArm>();
+		List<Arm> l1 = new ArrayList<Arm>();
 		l1.add(g2);
 		l1.add(g3);
 		s2.setArms(l1);
@@ -436,7 +436,7 @@ public class DomainTest {
 		
 		Study s1 = new Study("s1", d_indication);
 		s1.setOutcomeMeasures(Collections.singleton(e));
-		BasicArm g1 = new BasicArm(d1, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY), 
+		Arm g1 = new Arm(d1, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY), 
 				100);
 		BasicMeasurement m1 = new BasicRateMeasurement(10, g1.getSize());
 		s1.setArms(Collections.singletonList(g1));
@@ -447,11 +447,11 @@ public class DomainTest {
 		d_domain.addIndication(indic2);
 		Study s2 = new Study("s2", indic2);
 		s2.setOutcomeMeasures(Collections.singleton(e));
-		BasicArm g2 = new BasicArm(d1, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
+		Arm g2 = new Arm(d1, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
 				250);		
-		BasicArm g3 = new BasicArm(d2, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
+		Arm g3 = new Arm(d2, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
 				250);
-		List<BasicArm> l1 = new ArrayList<BasicArm>();
+		List<Arm> l1 = new ArrayList<Arm>();
 		l1.add(g2);
 		l1.add(g3);
 		s2.setArms(l1);
@@ -565,7 +565,7 @@ public class DomainTest {
 		Drug d = new Drug("d", "atc");
 		d_domain.addDrug(d);
 	
-		BasicArm g = new BasicArm(d, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), 10);
+		Arm g = new Arm(d, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), 10);
 		s1.addArm(g);
 		
 

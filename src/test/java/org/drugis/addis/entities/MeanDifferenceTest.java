@@ -19,8 +19,8 @@ public class MeanDifferenceTest {
 	
 	@Before
 	public void setUp() {
-		Arm subjs = new BasicArm(null, null, s_subjSize);
-		Arm basels = new BasicArm(null, null, s_baslSize);
+		Arm subjs = new Arm(null, null, s_subjSize);
+		Arm basels = new Arm(null, null, s_baslSize);
 		d_subject = new BasicContinuousMeasurement(s_mean1, s_stdDev1, subjs.getSize());
 		d_baseline = new BasicContinuousMeasurement(s_mean2, s_stdDev2, basels.getSize());
 		d_md = new MeanDifference(d_baseline, d_subject);

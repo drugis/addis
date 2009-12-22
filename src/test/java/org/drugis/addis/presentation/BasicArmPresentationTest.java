@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 
 import java.beans.PropertyChangeListener;
 
-import org.drugis.addis.entities.BasicArm;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.CategoricalVariable;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.ContinuousVariable;
@@ -22,21 +22,21 @@ import org.junit.Test;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 public class BasicArmPresentationTest {
-	private BasicArm d_pg;
+	private Arm d_pg;
 	private PresentationModelFactory d_pmf;
 	private BasicArmPresentation d_pres;
 
 	@Before
 	public void setUp() {
 		d_pmf = new PresentationModelFactory(new DomainImpl());
-		d_pg = new BasicArm(null, null, 0);
+		d_pg = new Arm(null, null, 0);
 		d_pres = new BasicArmPresentation(d_pg, d_pmf);
 	}
 	
 	
 	@Test
 	public void testGetLabel() {
-		BasicArm group = d_pg;
+		Arm group = d_pg;
 		assertEquals("INCOMPLETE", d_pres.getLabelModel().getValue());
 		
 		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);

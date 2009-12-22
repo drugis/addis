@@ -5,7 +5,6 @@ import java.beans.PropertyChangeListener;
 import java.util.TreeSet;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Variable;
 
@@ -52,7 +51,7 @@ public class BasicArmPresentation extends PresentationModel<Arm> implements Labe
 
 	private PresentationModelFactory d_pmf;
 
-	public BasicArmPresentation(BasicArm bean, PresentationModelFactory pmf) {
+	public BasicArmPresentation(Arm bean, PresentationModelFactory pmf) {
 		super(bean);
 		d_pmf = pmf;
 	}

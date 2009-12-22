@@ -39,11 +39,11 @@ import org.junit.Test;
 
 public class StudyTest {
 	
-	private BasicArm d_pg;
+	private Arm d_pg;
 
 	@Before
 	public void setUp() {
-		d_pg = new BasicArm(null, null, 0);
+		d_pg = new Arm(null, null, 0);
 	}
 	
 	@Test
@@ -71,7 +71,7 @@ public class StudyTest {
 	
 	@Test
 	public void testSetArms() {
-		List<BasicArm> list = Collections.singletonList(d_pg);
+		List<Arm> list = Collections.singletonList(d_pg);
 		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_ARMS, Collections.EMPTY_LIST, 
 				list);
 	}
@@ -107,7 +107,7 @@ public class StudyTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetMeasurementThrowsException1() {
 		Study study = new Study("X", new Indication(0L, ""));
-		study.getMeasurement(new Endpoint("E", Type.RATE), new BasicArm(null, null, 100));
+		study.getMeasurement(new Endpoint("E", Type.RATE), new Arm(null, null, 100));
 	}
 	
 	@Test
@@ -115,7 +115,7 @@ public class StudyTest {
 		Study study = new Study("X", new Indication(0L, ""));
 		Endpoint endpoint = new Endpoint("e", Type.RATE);
 		study.addOutcomeMeasure(endpoint);
-		BasicArm group = new BasicArm(null, null, 100);
+		Arm group = new Arm(null, null, 100);
 		study.addArm(group);
 		BasicRateMeasurement m = new BasicRateMeasurement(0, group.getSize());
 		m.setRate(12);
@@ -128,7 +128,7 @@ public class StudyTest {
 	public void testSetMeasurementThrowsException1() {
 		Study study = new Study("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("E", Type.RATE);
-		BasicArm pg = new BasicArm(null, null, 100);
+		Arm pg = new Arm(null, null, 100);
 		study.setMeasurement(e, pg, 
 				new BasicRateMeasurement(100, pg.getSize()));
 	}
@@ -138,7 +138,7 @@ public class StudyTest {
 		Study study = new Study("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("e", Type.RATE);
 		study.addOutcomeMeasure(e);
-		BasicArm group = new BasicArm(null, null, 100);
+		Arm group = new Arm(null, null, 100);
 		study.addArm(group);
 		
 		BasicMeasurement m = new BasicRateMeasurement(12, group.getSize());
@@ -191,8 +191,8 @@ public class StudyTest {
 	
 	@Test
 	public void testGetSampleSize() {
-		BasicArm pg1 = new BasicArm(null, null, 25);
-		BasicArm pg2 = new BasicArm(null, null, 35);
+		Arm pg1 = new Arm(null, null, 25);
+		Arm pg2 = new Arm(null, null, 35);
 		Study s = new Study("s1", new Indication(01L, "i"));
 		s.addArm(pg1);
 		s.addArm(pg2);

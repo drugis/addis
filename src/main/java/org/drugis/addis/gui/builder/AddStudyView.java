@@ -38,7 +38,6 @@ import javax.swing.text.DefaultFormatter;
 
 import org.drugis.addis.entities.AbstractOutcomeMeasure;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -302,7 +301,7 @@ public class AddStudyView implements ViewBuilder {
 
 	private void buildArms(FormLayout layout, int fullWidth,
 			PanelBuilder builder, CellConstraints cc, int row) {
-		List<BasicArm> groups = d_model.getBean().getArms();
+		List<Arm> groups = d_model.getBean().getArms();
 		for (Arm g : groups) {
 			LayoutUtil.addRow(layout);
 			
@@ -310,7 +309,7 @@ public class AddStudyView implements ViewBuilder {
 			
 			int col = 1;
 			
-			JComboBox selector = GUIFactory.createDrugSelector(model.getModel(BasicArm.PROPERTY_DRUG), d_domain);
+			JComboBox selector = GUIFactory.createDrugSelector(model.getModel(Arm.PROPERTY_DRUG), d_domain);
 			d_validator.add(selector);
 			ComboBoxPopupOnFocusListener.add(selector);
 			builder.add(selector, cc.xy(col, row));
@@ -323,7 +322,7 @@ public class AddStudyView implements ViewBuilder {
 			builder.add(view.buildPanel(), cc.xy(col, row));
 			col += 2;
 			
-			JTextField field = MeasurementInputHelper.buildFormatted(model.getModel(BasicArm.PROPERTY_SIZE));
+			JTextField field = MeasurementInputHelper.buildFormatted(model.getModel(Arm.PROPERTY_SIZE));
 			d_validator.add(field);
 			AutoSelectFocusListener.add(field);
 			builder.add(field, cc.xy(col, row));
@@ -347,7 +346,7 @@ public class AddStudyView implements ViewBuilder {
 
 	private void wireSampleSize(BasicArmPresentation pg,
 			final PresentationModel<BasicMeasurement> m) {
-		pg.getModel(BasicArm.PROPERTY_SIZE).addValueChangeListener(new PropertyChangeListener() {
+		pg.getModel(Arm.PROPERTY_SIZE).addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (getSampleSize(m).getValue().equals(new Integer(0))) {
 					getSampleSize(m).setValue(evt.getNewValue());

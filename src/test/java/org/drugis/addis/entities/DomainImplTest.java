@@ -118,7 +118,7 @@ public class DomainImplTest {
 		mock3.domainChanged(new DomainEvent(DomainEvent.Type.STUDIES));
 		replay(mock3);
 		
-		s.addArm(new BasicArm(new Drug("viagra-2", "atc"), new FixedDose(100.0, SIUnit.MILLIGRAMS_A_DAY), 
+		s.addArm(new Arm(new Drug("viagra-2", "atc"), new FixedDose(100.0, SIUnit.MILLIGRAMS_A_DAY), 
 				10));
 		verify(mock3);
 	}

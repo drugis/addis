@@ -3,7 +3,7 @@ package org.drugis.addis.entities.metaanalysis;
 import static org.junit.Assert.assertEquals;
 
 import org.drugis.addis.entities.AbstractOutcomeMeasure;
-import org.drugis.addis.entities.BasicArm;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
@@ -86,8 +86,8 @@ public class LogOddsRatioTest {
 	{
 		Study s = new Study(studyName, d_ind);
 		s.addOutcomeMeasure(d_ep);
-		BasicArm g_fluox = new BasicArm(d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), fluoxSize);
-		BasicArm g_parox = new BasicArm(d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), sertraSize);		
+		Arm g_fluox = new Arm(d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), fluoxSize);
+		Arm g_parox = new Arm(d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), sertraSize);		
 		
 		s.addArm(g_parox);
 		s.addArm(g_fluox);

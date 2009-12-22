@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FlexibleDose;
@@ -30,7 +29,7 @@ public class StudyAddArmPresentation {
 	public StudyAddArmPresentation(Study study, PresentationModelFactory pmf) {
 		d_pmf = pmf;
 		d_study = study;
-		Arm pg = new BasicArm(null, new FlexibleDose(new Interval<Double>(0.0, 0.0), SIUnit.MILLIGRAMS_A_DAY), 0);
+		Arm pg = new Arm(null, new FlexibleDose(new Interval<Double>(0.0, 0.0), SIUnit.MILLIGRAMS_A_DAY), 0);
 		d_pg = (BasicArmPresentation)d_pmf.getModel(pg);
 		
 		for (OutcomeMeasure e : d_study.getOutcomeMeasures()) {
@@ -76,15 +75,15 @@ public class StudyAddArmPresentation {
 	}
 	
 	public AbstractValueModel getDrugModel() {
-		return d_pg.getModel(BasicArm.PROPERTY_DRUG);
+		return d_pg.getModel(Arm.PROPERTY_DRUG);
 	}
 	
 	public AbstractValueModel getSizeModel() {
-		return d_pg.getModel(BasicArm.PROPERTY_SIZE);
+		return d_pg.getModel(Arm.PROPERTY_SIZE);
 	}
 	
 	public void addToStudy() {
-		d_study.addArm((BasicArm)getArm());
+		d_study.addArm((Arm)getArm());
 		for (OutcomeMeasure e: d_study.getOutcomeMeasures()) {
 			d_study.setMeasurement(e, getArm(), d_measurements.get(e));
 		}

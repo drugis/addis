@@ -65,7 +65,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	public final static String PROPERTY_OUTCOME_MEASURES = "outcomeMeasures";
 	public final static String PROPERTY_ARMS = "arms";
 
-	private List<BasicArm> d_arms = new ArrayList<BasicArm>();
+	private List<Arm> d_arms = new ArrayList<Arm>();
 	private String d_id;
 	private Map<MeasurementKey, Measurement> d_measurements = new HashMap<MeasurementKey, Measurement>();
 	private Set<OutcomeMeasure> d_outcomeMeasures = new HashSet<OutcomeMeasure>();
@@ -76,7 +76,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		d_id = id;
 		d_chars.put(BasicStudyCharacteristic.INDICATION, i);
 		setOutcomeMeasures(new HashSet<OutcomeMeasure>());
-		setArms(new ArrayList<BasicArm>());
+		setArms(new ArrayList<Arm>());
 		d_popChars = new VariableMap();
 	}
 
@@ -85,27 +85,27 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 				in.defaultReadObject();
 	}
 	
-	public List<BasicArm> getArms() {
+	public List<Arm> getArms() {
 		return d_arms;
 	}
 	
-	public void setArms(List<BasicArm> arms) {
-		List<BasicArm> oldVal = d_arms;
+	public void setArms(List<Arm> arms) {
+		List<Arm> oldVal = d_arms;
 		d_arms = arms;
 		updateMeasurements();
 		
 		firePropertyChange(PROPERTY_ARMS, oldVal, d_arms);
 	}
 	
-	public void addArm(BasicArm group) {
-		List<BasicArm> newVal = new ArrayList<BasicArm>(d_arms);
+	public void addArm(Arm group) {
+		List<Arm> newVal = new ArrayList<Arm>(d_arms);
 		newVal.add(group);
 		setArms(newVal);
 	}
 	
 	public Set<Drug> getDrugs() {
 		Set<Drug> drugs = new HashSet<Drug>();
-		for (BasicArm g : getArms()) {
+		for (Arm g : getArms()) {
 			drugs.add(g.getDrug());
 		}
 		return drugs;

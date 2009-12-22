@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.BasicArm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.ContinuousMeasurement;
@@ -53,8 +52,8 @@ public class ForestPlotPresentationTest {
 		d_s1.addOutcomeMeasure(d_endpoint);
 		d_baseline = new Drug("DrugA", null);
 		d_subject = new Drug("DrugB", null);
-		BasicArm pBase = new BasicArm(d_baseline, null, s_baseSize);
-		BasicArm pSubj = new BasicArm(d_subject, null, s_subjSize);
+		Arm pBase = new Arm(d_baseline, null, s_baseSize);
+		Arm pSubj = new Arm(d_subject, null, s_subjSize);
 		d_s1.addArm(pBase);
 		d_s1.addArm(pSubj);
 		d_mBase1 = new BasicContinuousMeasurement(s_mean1, s_stdDev1, pBase.getSize());
@@ -64,8 +63,8 @@ public class ForestPlotPresentationTest {
 		
 		d_s2 = new Study("Y", new Indication(0L, ""));
 		d_s2.addOutcomeMeasure(d_endpoint);
-		BasicArm pBase2 = new BasicArm(d_baseline, null, s_baseSize);
-		BasicArm pSubj2 = new BasicArm(d_subject, null, s_subjSize);
+		Arm pBase2 = new Arm(d_baseline, null, s_baseSize);
+		Arm pSubj2 = new Arm(d_subject, null, s_subjSize);
 		d_s2.addArm(pBase2);
 		d_s2.addArm(pSubj2);
 		d_mBase2 = new BasicContinuousMeasurement(s_mean2, s_stdDev2, pBase2.getSize());

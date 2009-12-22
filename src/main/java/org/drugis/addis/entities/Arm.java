@@ -19,13 +19,76 @@
 
 package org.drugis.addis.entities;
 
-public interface Arm extends Entity, Population {
+import java.util.Set;
 
+public class Arm extends AbstractEntity implements Population {
+	private static final long serialVersionUID = -2092185548220089471L;
+	private Integer d_size;
+	private Drug d_drug;
+	private AbstractDose d_dose;
+	
 	public static final String PROPERTY_SIZE = "size";
 	public static final String PROPERTY_DRUG = "drug";
-	public static final String PROPERTY_DOSE = "dose";
+	public static final String PROPERTY_DOSE = "dose";	
+	
+	private VariableMap d_chars = new VariableMap();
+	
+	public Arm(Drug drug, AbstractDose dose, int size) {
+		d_drug = drug;
+		d_dose = dose;
+		d_size = size;
+		init();
+	}
+		
+	public Drug getDrug() {
+		return d_drug;
+	}
+	
+	public void setDrug(Drug drug) {
+		Drug oldVal = d_drug;
+		d_drug = drug;
+		firePropertyChange(PROPERTY_DRUG, oldVal, d_drug);
+	}
+	
+	public AbstractDose getDose() {
+		return d_dose;
+	}
+	
+	public void setDose(AbstractDose dose) {
+		AbstractDose oldVal = d_dose;
+		d_dose = dose;
+		firePropertyChange(PROPERTY_DOSE, oldVal, d_dose);
+	}
+	
+	@Override
+	public String toString() {
+		return "Arm(" + d_drug + ", " + d_dose + ", " + d_size + ")";
+	}
 
-	public Drug getDrug();
-	public AbstractDose getDose();
-	public Integer getSize();
+	public Integer getSize() {
+		return d_size;
+	}
+
+	public void setSize(Integer size) {
+		Integer oldVal = d_size;
+		d_size = size;
+		firePropertyChange(PROPERTY_SIZE, oldVal, d_size);
+	}
+	
+	public Set<Entity> getDependencies() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public void setPopulationCharacteristic(Variable v, Measurement val) {
+		d_chars.put(v, val);
+	}
+
+	public Measurement getPopulationCharacteristic(Variable v) {
+		return d_chars.get(v);
+	}
+
+	public VariableMap getPopulationCharacteristics() {
+		return d_chars;
+	}
 }

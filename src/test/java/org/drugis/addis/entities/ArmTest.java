@@ -26,28 +26,28 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BasicArmTest {
+public class ArmTest {
 	
-	private BasicArm d_pg;
+	private Arm d_pg;
 
 	@Before
 	public void setUp() {
-		d_pg = new BasicArm(null, null, 0);
+		d_pg = new Arm(null, null, 0);
 	}
 	
 	@Test
 	public void testSetSize() {
-		JUnitUtil.testSetter(d_pg, BasicArm.PROPERTY_SIZE, 0, 1);
+		JUnitUtil.testSetter(d_pg, Arm.PROPERTY_SIZE, 0, 1);
 	}
 	
 	@Test
 	public void testSetDrug() {
-		JUnitUtil.testSetter(d_pg, BasicArm.PROPERTY_DRUG, null, new Drug("D", "atc"));
+		JUnitUtil.testSetter(d_pg, Arm.PROPERTY_DRUG, null, new Drug("D", "atc"));
 	}
 	
 	@Test
 	public void testSetDose() {
-		JUnitUtil.testSetter(d_pg, BasicArm.PROPERTY_DOSE, null, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY));
+		JUnitUtil.testSetter(d_pg, Arm.PROPERTY_DOSE, null, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY));
 	}
 	
 	@Test
