@@ -77,6 +77,10 @@ public class RelativeEffectTableDialog extends JDialog {
 		public void mouseClicked(MouseEvent e) {
 			int row = ((JTable)e.getComponent()).rowAtPoint(e.getPoint());
 			int col = ((JTable)e.getComponent()).columnAtPoint(e.getPoint());
+			
+			if (row == col)
+				return;
+			
 			d_dialog = new RelativeEffectPlotDialog(d_parentDialog,
 					d_tableModel.getPlotPresentation(row, col),
 					"Relative Effect plot");
