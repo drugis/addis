@@ -50,7 +50,7 @@ public class StudyTablePanelView implements ViewBuilder {
 					if (col == 0) {
 						Study s = d_metamodel.getIncludedStudies().getValue().get(row);
 						if (d_parent instanceof Main) {
-							((Main)d_parent).leftTreeFocusOnStudy(s);
+							((Main)d_parent).leftTreeFocus(s);
 						}
 					}
 				}

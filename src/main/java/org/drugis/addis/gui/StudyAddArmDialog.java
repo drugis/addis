@@ -57,6 +57,6 @@ public class StudyAddArmDialog extends OkCancelDialog {
 		d_pm.addToStudy();
 		
 		setVisible(false);
-		d_main.leftTreeFocusOnStudy(d_study);
+		d_main.leftTreeFocus(d_study);
 	}
 }

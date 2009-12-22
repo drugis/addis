@@ -54,6 +54,6 @@ public class AddIndicationDialog extends OkCancelDialog {
 	protected void commit() {
 		d_domain.addIndication(d_indication);
 		setVisible(false);
-		d_main.leftTreeFocusOnIndication(d_indication);
+		d_main.leftTreeFocus(d_indication);
 	}
 }

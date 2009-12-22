@@ -80,7 +80,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			if (res != null) {
 				try {
 					RandomEffectsMetaAnalysisPresentation study = d_pm.saveMetaAnalysis(res);	
-					d_frame.leftTreeFocusOnMetaStudy(study.getBean());
+					d_frame.leftTreeFocus(study.getBean());
 				} catch (EntityIdExistsException e) {
 					JOptionPane.showMessageDialog(this, "There already exists a meta-analysis with the given name, input another name",
 							"Unable to save meta-analysis", JOptionPane.ERROR_MESSAGE);

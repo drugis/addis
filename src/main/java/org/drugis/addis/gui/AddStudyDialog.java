@@ -147,7 +147,7 @@ public class AddStudyDialog extends OkCancelDialog {
 		bindOutcomeMeasure();
 		d_domain.addStudy(d_study);
 		setVisible(false);
-		d_main.leftTreeFocusOnStudy(d_study);
+		d_main.leftTreeFocus(d_study);
 	}
 
 	private void bindOutcomeMeasure() {

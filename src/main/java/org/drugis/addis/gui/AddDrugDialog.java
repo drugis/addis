@@ -54,6 +54,6 @@ public class AddDrugDialog extends OkCancelDialog {
 	protected void commit() {
 		d_domain.addDrug(d_drug);
 		setVisible(false);
-		d_main.leftTreeFocusOnDrug(d_drug);		
+		d_main.leftTreeFocus(d_drug);		
 	}
 }

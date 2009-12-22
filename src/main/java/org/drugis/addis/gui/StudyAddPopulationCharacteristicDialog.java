@@ -46,6 +46,6 @@ public class StudyAddPopulationCharacteristicDialog extends OkCancelDialog {
 	protected void commit() {
 		d_pm.addToStudy();
 		setVisible(false);
-		d_main.leftTreeFocusOnStudy(d_studyModel.getBean());
+		d_main.leftTreeFocus(d_studyModel.getBean());
 	}
 }

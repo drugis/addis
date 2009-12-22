@@ -52,6 +52,6 @@ public class AddEndpointDialog extends OkCancelDialog {
 	protected void commit() {
 		d_domain.addEndpoint(d_endpoint);
 		setVisible(false);
-		d_main.leftTreeFocusOnEndpoint(d_endpoint);
+		d_main.leftTreeFocus(d_endpoint);
 	}
 }

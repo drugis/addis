@@ -79,7 +79,7 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 		
 		addEndpointToStudy();
 		addMeasurementsToStudy();
-		d_main.leftTreeFocusOnStudy(d_study);
+		d_main.leftTreeFocus(d_study);
 	}
 
 	private void addMeasurementsToStudy() {

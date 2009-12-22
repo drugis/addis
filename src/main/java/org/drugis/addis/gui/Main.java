@@ -766,35 +766,31 @@ public class Main extends JFrame {
 			dataModelChanged();
 		}
 	}
-
-	public void leftTreeFocusOnStudy(Study study) {
-		d_leftPanelTree.setSelectionPath(new TreePath(d_domainTreeModel.getRoot()));
-		studySelected(study);
-	}
-
-	public void leftTreeFocusOnMetaStudy(RandomEffectsMetaAnalysis study) {
-		d_leftPanelTree.setSelectionPath(new TreePath(
-				new Object[] {d_domainTreeModel.getRoot(), 
-						d_domainTreeModel.getAnalysesNode(), study }));		
-	}
 	
-	public void leftTreeFocusOnEndpoint(OutcomeMeasure ep) {
-		d_leftPanelTree.setSelectionPath(new TreePath(
-				new Object[] {d_domainTreeModel.getRoot(), 
-						d_domainTreeModel.getEndpointsNode(), ep }));		
-	}	
-	
-	public void leftTreeFocusOnDrug(Drug d) {
-		d_leftPanelTree.setSelectionPath(new TreePath(
-				new Object[] {d_domainTreeModel.getRoot(), 
-						d_domainTreeModel.getDrugsNode(), d }));	
-	}
-
-	public void leftTreeFocusOnIndication(Indication indication) {
-		d_leftPanelTree.setSelectionPath(new TreePath(
-				new Object[] {d_domainTreeModel.getRoot(),
-						d_domainTreeModel.getIndicationsNode(), indication
-				} ));
-		
+	public void leftTreeFocus(Entity e) {
+		if (e instanceof Study) {
+			d_leftPanelTree.setSelectionPath(null);
+			studySelected((Study)e);
+		}
+		else if (e instanceof RandomEffectsMetaAnalysis) {
+			d_leftPanelTree.setSelectionPath(new TreePath(
+					new Object[] {d_domainTreeModel.getRoot(), 
+							d_domainTreeModel.getAnalysesNode(), e}));
+		}
+		else if (e instanceof Drug) {
+			d_leftPanelTree.setSelectionPath(new TreePath(
+					new Object[] {d_domainTreeModel.getRoot(), 
+							d_domainTreeModel.getDrugsNode(), e}));
+		}
+		else if (e instanceof Indication) {
+			d_leftPanelTree.setSelectionPath(new TreePath(
+					new Object[] {d_domainTreeModel.getRoot(),
+							d_domainTreeModel.getIndicationsNode(), e}));
+		}
+		else if (e instanceof Endpoint) {
+			d_leftPanelTree.setSelectionPath(new TreePath(
+					new Object[] {d_domainTreeModel.getRoot(), 
+							d_domainTreeModel.getEndpointsNode(), e}));
+		}
 	}	
 }
