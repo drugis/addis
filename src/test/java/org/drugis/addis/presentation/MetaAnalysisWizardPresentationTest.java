@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.MainData;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
@@ -21,6 +22,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.JUnitUtil;
+import org.easymock.internal.matchers.Contains;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -76,6 +78,17 @@ public class MetaAnalysisWizardPresentationTest {
 		expected.add(ExampleData.buildEndpointCgi());
 		expected.add(ExampleData.buildEndpointHamd());
 		assertEquals(expected, d_wizard.getOutcomeMeasureListModel().getValue());
+	}
+	
+	@Test
+	public void testGetEndpointSetForAdverseEvent() {
+		d_domain.addStudy(MainData.buildStudyClinGovExmpl());
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		List<OutcomeMeasure> expected = new ArrayList<OutcomeMeasure>();
+		expected.add(ExampleData.buildEndpointCgi());
+		expected.add(MainData.buildAdeConvulsion());
+		expected.add(ExampleData.buildEndpointHamd());
+		JUnitUtil.assertAllAndOnly(expected, d_wizard.getOutcomeMeasureListModel().getValue());
 	}
 	
 	@Test
