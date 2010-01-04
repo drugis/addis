@@ -35,7 +35,7 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	@SuppressWarnings("serial")
-	private class EndpointHolder extends AbstractHolder<Endpoint> {
+	private class OutcomeMeasureHolder extends AbstractHolder<OutcomeMeasure> {
 		@Override
 		protected void checkArgument(Object newValue) {
 			if (newValue != null)
@@ -123,7 +123,7 @@ public class MetaAnalysisWizardPresentation {
 		
 	private Domain d_domain;
 	private AbstractHolder<Indication> d_indicationHolder;
-	private AbstractHolder<Endpoint> d_endpointHolder;
+	private AbstractHolder<OutcomeMeasure> d_endpointHolder;
 	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;	
 	private DrugHolder d_firstDrugHolder;
 	private DrugHolder d_secondDrugHolder;
@@ -138,7 +138,7 @@ public class MetaAnalysisWizardPresentation {
 		d_domain = d;
 		d_pmm = pmm;
 		d_indicationHolder = new IndicationHolder();
-		d_endpointHolder = new EndpointHolder();
+		d_endpointHolder = new OutcomeMeasureHolder();
 		d_firstDrugHolder = new DrugHolder();
 		d_studiesMeasuringValueModel = new StudiesMeasuringValueModel();		
 		d_secondDrugHolder = new DrugHolder();
@@ -280,7 +280,7 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	private RandomEffectsMetaAnalysis createMetaAnalysis() {
-		return new RandomEffectsMetaAnalysis("", (Endpoint)getEndpointModel().getValue(),
+		return new RandomEffectsMetaAnalysis("", (OutcomeMeasure) getEndpointModel().getValue(),
 				new ArrayList<Study>(d_studyListPm.getSelectedStudiesModel().getValue()), getFirstDrug(), getSecondDrug());
 	}
 	
