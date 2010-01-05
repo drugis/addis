@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -64,6 +65,37 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	@SuppressWarnings("serial")
+	class ArmHolder extends AbstractHolder<Arm> {
+
+		public ArmHolder(Arm arm) {
+			setValue(arm);
+		}
+		
+		@Override
+		protected void cascade() {
+		}
+
+		@Override
+		protected void checkArgument(Object newValue) {
+		}
+		
+		/*@Override
+		public boolean equals (Object o) {
+			if (o instanceof ArmHolder) {
+				ArmHolder other = (ArmHolder) o;
+				return getValue().equals(other.getValue());
+			}
+			return false;
+		}*/
+		
+		@Override
+		public String toString() {
+			return getValue().toString();
+		}
+		
+	}
+	
+	@SuppressWarnings("serial")
 	private class IndicationListHolder extends AbstractListHolder<Indication> {
 		@Override
 		public List<Indication> getValue() {
@@ -103,6 +135,7 @@ public class MetaAnalysisWizardPresentation {
 		}
 	}
 	
+	@SuppressWarnings("serial")
 	private class ArmListHolder extends AbstractListHolder<Arm> implements PropertyChangeListener {
 		Study d_study;
 		Drug d_drug;
@@ -155,6 +188,7 @@ public class MetaAnalysisWizardPresentation {
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
 	private List<Study> d_studyList = new ArrayList<Study>();
 	private PresentationModelFactory d_pmm;
+	private Set<ArmHolder> d_selectedArms;
 	
 	public MetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
 		d_domain = d;
@@ -348,7 +382,15 @@ public class MetaAnalysisWizardPresentation {
 		return armList;
 	}
 	
-	public ValueModel getArmsPerStudyPerDrug(Study study, Drug drug) {
+	public ListHolder<Arm> getArmsPerStudyPerDrug(Study study, Drug drug) {
 		return new ArmListHolder(study, drug);
+	}
+
+	public ValueModel getArmPerStudyPerDrug(Study study, Drug drug) {
+		ArmHolder holder = new ArmHolder(getArmsPerStudyPerDrug(study,drug).getValue().get(0));
+		d_selectedArms.add(holder);
+		
+		System.out.println(d_selectedArms);
+		return holder;
 	}
 }

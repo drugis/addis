@@ -18,15 +18,12 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jgoodies.binding.value.AbstractValueModel;

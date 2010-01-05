@@ -12,13 +12,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.EntityIdExistsException;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudyTable;
+import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.SelectableStudyCharTableModel;
 import org.drugis.common.gui.AuxComponentFactory;
+import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
@@ -27,6 +31,7 @@ import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -46,6 +51,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		wizardModel.add(new SelectIndicationWizardStep());
 		wizardModel.add(new SelectEndpointWizardStep());
 		wizardModel.add(new SelectDrugsWizardStep());
+		wizardModel.add(new SelectArmsWizardStep());
 		wizardModel.add(new OverviewWizardStep());
 		Wizard wizard = new Wizard(wizardModel);
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
@@ -92,6 +98,58 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		}
 	}
 	
+	
+	public class SelectArmsWizardStep extends PanelWizardStep {
+		
+		private PanelBuilder d_builder;
+		private FormLayout d_layout;
+
+		public SelectArmsWizardStep (){
+			super ("Select Arms","Select the specific arms to be used for the meta-analysis");
+			
+			d_layout = new FormLayout(
+					"center:pref, 3dlu, center:pref, 3dlu, center:pref, 3dlu, center:pref, 3dlu, center:pref",
+					"p, 3dlu, p"
+					);	
+			
+			d_builder = new PanelBuilder(d_layout);
+			d_builder.setDefaultDialogBorder();
+			
+			
+		}
+
+		@Override
+		public void prepare() {
+			
+			remove(d_builder.getPanel());
+			
+			CellConstraints cc = new CellConstraints();
+			
+			d_builder = new PanelBuilder(d_layout);
+			d_builder.setDefaultDialogBorder();
+			d_builder.addLabel(d_pm.getFirstDrugModel().getValue().toString(),cc.xy(3, 1));
+			d_builder.addLabel(d_pm.getSecondDrugModel().getValue().toString(),cc.xy(7, 1));
+			
+			
+			int row = 3;
+
+			for( Study curStudy : d_pm.getStudyListModel().getIncludedStudies().getValue() ){
+
+				JComboBox firstDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getArmsPerStudyPerDrug( curStudy, (Drug) d_pm.getFirstDrugModel().getValue()), d_pm.getArmPerStudyPerDrug( curStudy, (Drug) d_pm.getFirstDrugModel().getValue()) );
+				JComboBox secondDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getArmsPerStudyPerDrug( curStudy, (Drug) d_pm.getSecondDrugModel().getValue()), d_pm.getArmPerStudyPerDrug( curStudy, (Drug) d_pm.getSecondDrugModel().getValue()) );
+				
+				LayoutUtil.addRow(d_layout);
+				d_builder.addLabel(curStudy.toString(), cc.xy(1, row));
+				d_builder.add(firstDrugBox, cc.xy(3, row));
+				d_builder.addLabel("VS", cc.xy(5, row));
+				d_builder.add(secondDrugBox, cc.xy(7, row));
+				row += 2;
+			}
+			
+			add(d_builder.getPanel());
+		}
+		
+	}
 	
 	@SuppressWarnings("serial")
 	public class SelectDrugsWizardStep extends PanelWizardStep {

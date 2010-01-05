@@ -104,6 +104,7 @@ public class RelativeEffectFactory {
 		return (RateMeasurement)findMeasurement(s, om, d);
 	}
 
+	// FIXME: Use the selected arm, not just any arm.
 	private static Measurement findMeasurement(Study s, OutcomeMeasure om, Drug drug) {
 		for (Arm g : s.getArms()) {
 			if (g.getDrug().equals(drug)) {
