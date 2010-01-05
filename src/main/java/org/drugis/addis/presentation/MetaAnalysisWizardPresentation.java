@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.EntityIdExistsException;
@@ -99,6 +100,28 @@ public class MetaAnalysisWizardPresentation {
 
 		public void propertyChange(PropertyChangeEvent evt) {
 			fireValueChange(null, getValue());
+		}
+	}
+	
+	private class ArmListHolder extends AbstractListHolder<Arm> implements PropertyChangeListener {
+		Study d_study;
+		Drug d_drug;
+		
+		public ArmListHolder(Study s, Drug d) {
+			d_study = s;
+			d_drug = d;
+			
+			d_study.addPropertyChangeListener(this);
+			d_drug.addPropertyChangeListener(this);
+		}
+
+		@Override
+		public List<Arm> getValue() {
+			return getArmPerStudyDrug(d_study,d_drug);
+		}
+
+		public void propertyChange(PropertyChangeEvent arg0) {
+			fireValueChange(null,getValue());			
 		}
 	}
 	
@@ -202,6 +225,8 @@ public class MetaAnalysisWizardPresentation {
 		}
 		return drugs;
 	}
+	
+
 
 	private List<Study> getStudiesEndpointAndIndication() {
 		List<Study> studies = new ArrayList<Study>(d_domain.getStudies(getEndpoint()).getValue());
@@ -311,5 +336,19 @@ public class MetaAnalysisWizardPresentation {
 
 	public RandomEffectsMetaAnalysisPresentation getMetaAnalysisModel() {
 		return (RandomEffectsMetaAnalysisPresentation) d_pmm.getModel(createMetaAnalysis());
+	}
+
+	private List<Arm> getArmPerStudyDrug(Study study, Drug drug) {
+		ArrayList<Arm> armList = new ArrayList<Arm>();
+		for (Arm curArm : study.getArms()) {
+			if (curArm.getDrug().equals(drug)) {
+				armList.add(curArm);
+			}
+		}
+		return armList;
+	}
+	
+	public ValueModel getArmsPerStudyPerDrug(Study study, Drug drug) {
+		return new ArmListHolder(study, drug);
 	}
 }

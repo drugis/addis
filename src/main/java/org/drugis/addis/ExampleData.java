@@ -59,8 +59,11 @@ public class ExampleData {
 	private static Study s_studyBennie;
 	private static Study s_studyDeWilde;
 	private static Study s_studyChouinard;
+	private static Study s_MultipleArmsperDrugStudy;
+	
 	private static CategoricalVariable s_gender;
 	private static ContinuousVariable s_age;
+	
 
 	public static void initDefaultData(Domain domain) {
 		clearAll();
@@ -74,7 +77,8 @@ public class ExampleData {
 		domain.addDrug(buildPlacebo());
 		domain.addStudy(buildStudyChouinard());
 		domain.addStudy(buildStudyDeWilde());		
-		domain.addStudy(buildStudyBennie());		
+		domain.addStudy(buildStudyBennie());	
+		domain.addStudy(buildMultipleArmsperDrugStudy());
 		
 
 				
@@ -186,7 +190,7 @@ public class ExampleData {
 		startDate.set(1991, Calendar.DECEMBER, 13, 0, 0, 0);
 		study.setCharacteristic(BasicStudyCharacteristic.STUDY_START, startDate.getTime());
 		
-		// Paroxetine data
+		// Paroxetine data 1
 		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		Arm parox = new Arm(buildDrugParoxetine(), dose, 102);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(parox);
@@ -198,6 +202,8 @@ public class ExampleData {
 		study.addArm(parox);
 		study.setMeasurement(buildEndpointHamd(), parox, pHamd);
 		study.setMeasurement(buildEndpointCgi(), parox, pCgi);
+		
+	
 		
 		// Fluoxetine data
 		dose = new FixedDose(27.5, SIUnit.MILLIGRAMS_A_DAY);
@@ -264,6 +270,64 @@ public class ExampleData {
 		return study;
 	}
 
+	public static Study buildMultipleArmsperDrugStudy() {
+		if (s_MultipleArmsperDrugStudy == null) {
+			s_MultipleArmsperDrugStudy = realBuildMultipleArmsperDrugStudy();
+		}
+		
+		return s_MultipleArmsperDrugStudy;
+	}
+	
+	private static Study realBuildMultipleArmsperDrugStudy() {
+		Endpoint hamd = buildEndpointHamd();
+		Drug fluoxetine = buildDrugFluoxetine();
+		Study study = new Study("MultipleArms, 1993", buildIndicationDepression());
+		study.setOutcomeMeasures(Collections.singleton(hamd));
+		
+		// Study characteristics
+		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, 1);
+		study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,
+				"After a 1-week placebo wash-out, patients suffering from DSM-III " + 
+				"major depression and with a score of 18 or more on the 21-item " +
+				"Hamilton Rating Scale for Depression (HRSD) received either " +
+				"paroxetine or fluoxetine.");
+		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,
+				"");
+		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
+				"To compare the efficacy and tolerability of once or twice daily " +
+				"administration of the selective serotonin reuptake inhibitors " +
+				"paroxetine and fluoxetine.");
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+		// STUDY_START, STUDY_END missing
+		
+		// Paroxetine data 1
+		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
+		Arm parox = new Arm(buildDrugParoxetine(), dose, 37);
+		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
+		pHamd.setRate(23);
+		study.addArm(parox);
+		study.setMeasurement(hamd, parox, pHamd);
+		
+		// Paroxetine data 2
+		dose = new FixedDose(5.5, SIUnit.MILLIGRAMS_A_DAY);
+		parox = new Arm(buildDrugParoxetine(), dose, 54);
+		pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
+		pHamd.setRate(23);
+		study.addArm(parox);
+		study.setMeasurement(hamd, parox, pHamd);
+
+		// Fluoxetine data
+		dose = new FixedDose(27.5, SIUnit.MILLIGRAMS_A_DAY);
+		Arm fluox = new Arm(fluoxetine, dose, 41);
+		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
+		fHamd.setRate(26);
+		study.addArm(fluox);
+		study.setMeasurement(hamd, fluox, fHamd);
+		return study;
+	}
+	
 	public static Study buildStudyBennie() {
 		if (s_studyBennie == null) {
 			s_studyBennie = realBuildStudyBennie();

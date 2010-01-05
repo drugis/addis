@@ -13,17 +13,20 @@ import java.util.List;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.MainData;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.JUnitUtil;
-import org.easymock.internal.matchers.Contains;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -453,5 +456,43 @@ public class MetaAnalysisWizardPresentationTest {
 		JUnitUtil.assertAllAndOnly((Collection<?>) d_wizard.getStudyListModel().getSelectedStudiesModel().getValue(), (Collection<?>) ma.getStudies());
 		assertEquals(ma.getOutcomeMeasure(), d_wizard.getEndpointModel().getValue());
 		assertEquals(ma.getIndication(), d_wizard.getIndicationModel().getValue());
+	}
+	
+	@Test
+	public void testGetSelectedStudyBooleanModel() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
+		assertTrue((Boolean) d_wizard.getMetaAnalysisCompleteModel().getValue());
+		d_wizard.getStudyListModel().getSelectedStudyBooleanModel(ExampleData.buildStudyChouinard()).setValue(false);
+		assertTrue(!(Boolean) d_wizard.getMetaAnalysisCompleteModel().getValue());
+	}
+	
+	@Test
+	public void testGetArmsPerStudyPerDrug(){
+		
+		Study multipleArmsPerStudyPerDrug = ExampleData.buildMultipleArmsperDrugStudy();
+		Drug  parox  					  = ExampleData.buildDrugParoxetine();
+		
+		// Paroxetine data 1
+		Arm parox1 = multipleArmsPerStudyPerDrug.getArms().get(0);
+		
+		// Paroxetine data 2
+		Arm parox2 = multipleArmsPerStudyPerDrug.getArms().get(1);
+
+		List <Arm> expected = new ArrayList <Arm> ();
+		expected.add(parox1);
+		expected.add(parox2);		
+		
+		/* Select only the MultipleArmsperDrugStudy */
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
+		d_wizard.getStudyListModel().getSelectedStudyBooleanModel(ExampleData.buildStudyChouinard()).setValue(false);
+		d_wizard.getStudyListModel().getSelectedStudyBooleanModel(ExampleData.buildStudyDeWilde()).setValue(false);
+		
+		assertEquals(expected, d_wizard.getArmsPerStudyPerDrug(multipleArmsPerStudyPerDrug, parox).getValue() );
 	}
 }

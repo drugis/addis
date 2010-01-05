@@ -56,6 +56,7 @@ public class DomainImplTest {
 		entities.add(ExampleData.buildStudyChouinard());
 		entities.add(ExampleData.buildStudyDeWilde());
 		entities.add(ExampleData.buildStudyBennie());
+		entities.add(ExampleData.buildMultipleArmsperDrugStudy());
 
 		JUnitUtil.assertAllAndOnly(entities, d_domain.getDependents(ind));
 		

@@ -21,6 +21,7 @@ package org.drugis.addis.entities;
 
 import java.util.Set;
 
+
 public class Arm extends AbstractEntity implements Population {
 	private static final long serialVersionUID = -2092185548220089471L;
 	private Integer d_size;
