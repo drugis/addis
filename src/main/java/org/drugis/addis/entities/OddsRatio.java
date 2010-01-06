@@ -63,4 +63,9 @@ public class OddsRatio extends AbstractRatio {
 		
 		return Math.sqrt(1.0/a + 1.0/b + 1.0/c + 1.0/d);
 	}
+
+	@Override
+	protected Integer getDegreesOfFreedom() {
+		return getSampleSize() -2;
+	}
 }

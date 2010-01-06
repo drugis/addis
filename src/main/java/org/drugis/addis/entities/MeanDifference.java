@@ -1,7 +1,6 @@
 package org.drugis.addis.entities;
 
 import org.drugis.common.Interval;
-import org.drugis.common.StudentTTable;
 
 
 public class MeanDifference extends AbstractRelativeEffect<ContinuousMeasurement> {
@@ -19,8 +18,7 @@ public class MeanDifference extends AbstractRelativeEffect<ContinuousMeasurement
 	}
 	
 	public Interval<Double> getConfidenceInterval() {
-		double t = StudentTTable.getT(d_subject.getSampleSize() + d_baseline.getSampleSize() - 2);
-		return new Interval<Double>(getRelativeEffect() - t*getError(),getRelativeEffect() + t*getError());
+		return getDefaultConfidenceInterval();
 	}
 
 	public Double getRelativeEffect() {
@@ -42,5 +40,10 @@ public class MeanDifference extends AbstractRelativeEffect<ContinuousMeasurement
 
 	public AxisType getAxisType() {
 		return AxisType.LINEAR;
+	}
+
+	@Override
+	protected Integer getDegreesOfFreedom() {
+		return getSampleSize() - 2;
 	}
 }

@@ -197,7 +197,6 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		List<RelativeEffect<? extends Measurement>> relEffects = new ArrayList<RelativeEffect<? extends Measurement>>();
 			
 		for (int i=0; i<d_studies.size(); ++i ){
-			Study s = d_studies.get(i);
 			RelativeEffect<? extends Measurement> re;
 			re = RelativeEffectFactory.buildRelativeEffect(d_studyArms.get(i), d_om, type);
 			relEffects.add(re);

@@ -7,6 +7,9 @@ import java.io.ObjectInputStream;
 import java.util.Collections;
 import java.util.Set;
 
+import org.drugis.common.Interval;
+import org.drugis.common.StudentTTable;
+
 public abstract class AbstractRelativeEffect<T extends Measurement> extends AbstractEntity implements RelativeEffect<T>{
 
 	private static final long serialVersionUID = 1863294156273299358L;
@@ -14,7 +17,7 @@ public abstract class AbstractRelativeEffect<T extends Measurement> extends Abst
 	protected T d_baseline; 
 
 	protected AbstractRelativeEffect(T subject, T baseline) {
-		d_subject = subject;
+		d_subject  = subject;
 		d_baseline = baseline;
 		connectListeners();
 	}
@@ -50,5 +53,13 @@ public abstract class AbstractRelativeEffect<T extends Measurement> extends Abst
 		public void propertyChange(PropertyChangeEvent evt) {
 			firePropertyChange(PROPERTY_SAMPLESIZE, null, getSampleSize());
 		}		
+	}
+	
+	protected abstract Integer getDegreesOfFreedom();
+	
+	public Interval<Double> getDefaultConfidenceInterval() {
+		double t = StudentTTable.getT(getDegreesOfFreedom());
+
+		return new Interval<Double>(getRelativeEffect() - t * getError(), getRelativeEffect() + t * getError());
 	}
 }

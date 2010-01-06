@@ -34,7 +34,7 @@ public abstract class AbstractRatio extends AbstractRelativeEffect<RateMeasureme
 	}
 	
 	private double getCriticalValue() {
-		return StudentTTable.getT(getSampleSize() - 2);
+		return StudentTTable.getT(getDegreesOfFreedom());
 	}
 
 	

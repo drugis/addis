@@ -1,7 +1,6 @@
 package org.drugis.addis.entities;
 
 import org.drugis.common.Interval;
-import org.drugis.common.StudentTTable;
 
 public class RiskDifference extends AbstractRelativeEffect<RateMeasurement> {
 	private static final long serialVersionUID = -6459490310869138478L;
@@ -23,11 +22,7 @@ public class RiskDifference extends AbstractRelativeEffect<RateMeasurement> {
 	 * Confidence interval for the mean difference.
 	 */
 	public Interval<Double> getConfidenceInterval() {
-		double t = StudentTTable.getT(getSampleSize() - 2);
-		double upper = getRelativeEffect() + t*getError();
-		double lower = getRelativeEffect() - t*getError();
-		
-		return new Interval<Double>(lower, upper);
+		return getDefaultConfidenceInterval();
 	}
 
 
@@ -49,5 +44,10 @@ public class RiskDifference extends AbstractRelativeEffect<RateMeasurement> {
 	
 	public AxisType getAxisType() {
 		return AxisType.LINEAR;
+	}
+
+	@Override
+	protected Integer getDegreesOfFreedom() {
+		return getSampleSize() - 2;
 	}
 }

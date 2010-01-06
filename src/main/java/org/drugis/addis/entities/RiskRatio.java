@@ -57,4 +57,9 @@ public class RiskRatio extends AbstractRatio {
 		return ( (d_subject.getRate() + d_correction) / (d_subject.getSampleSize()) ) 
 			/ ( (d_baseline.getRate() + d_correction) / (d_baseline.getSampleSize()) );  
 	}
+
+	@Override
+	protected Integer getDegreesOfFreedom() {
+		return getSampleSize() - 2;
+	}
 }
