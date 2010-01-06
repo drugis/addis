@@ -63,7 +63,7 @@ public class Arm extends AbstractEntity implements Population {
 	
 	@Override
 	public String toString() {
-		return "Arm(" + d_drug + ", " + d_dose + ", " + d_size + ")";
+		return  d_drug + ", " + d_dose + ", size: " + d_size;
 	}
 
 	public Integer getSize() {

@@ -1,7 +1,12 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -12,11 +17,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudyTable;
+import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.SelectableStudyCharTableModel;
@@ -134,9 +141,17 @@ public class MetaAnalysisWizard implements ViewBuilder {
 
 			for( Study curStudy : d_pm.getStudyListModel().getIncludedStudies().getValue() ){
 
-				JComboBox firstDrugBox  = AuxComponentFactory.createBoundComboBox(d_pm.getArmsPerStudyPerDrug( curStudy, (Drug) d_pm.getFirstDrugModel().getValue() ), d_pm.getLeftArmPerStudyPerDrug( curStudy)  );
-				JComboBox secondDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getArmsPerStudyPerDrug( curStudy, (Drug) d_pm.getSecondDrugModel().getValue()), d_pm.getRightArmPerStudyPerDrug( curStudy) );
+				ListHolder<Arm> leftArms = d_pm.getArmsPerStudyPerDrug( curStudy, (Drug) d_pm.getFirstDrugModel().getValue() );
+				ListHolder<Arm> rightArms = d_pm.getArmsPerStudyPerDrug( curStudy, (Drug) d_pm.getSecondDrugModel().getValue());
+				JComboBox firstDrugBox  = AuxComponentFactory.createBoundComboBox(leftArms, d_pm.getLeftArmPerStudyPerDrug( curStudy)  );
+				JComboBox secondDrugBox = AuxComponentFactory.createBoundComboBox(rightArms, d_pm.getRightArmPerStudyPerDrug( curStudy) );
 				
+				/* Disable combo-boxes if there's only one option */
+				if (leftArms.getValue().size() == 1)
+					firstDrugBox.setEnabled(false);
+				if (rightArms.getValue().size() == 1)
+					secondDrugBox.setEnabled(false);
+
 				LayoutUtil.addRow(d_layout);
 				d_builder.addLabel(curStudy.toString(), cc.xy(1, row));
 				d_builder.add(firstDrugBox, cc.xy(3, row));

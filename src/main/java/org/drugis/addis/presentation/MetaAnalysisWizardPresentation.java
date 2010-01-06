@@ -81,21 +81,7 @@ public class MetaAnalysisWizardPresentation {
 		@Override
 		protected void checkArgument(Object newValue) {
 		}
-		
-		/*@Override
-		public boolean equals (Object o) {
-			if (o instanceof ArmHolder) {
-				ArmHolder other = (ArmHolder) o;
-				return getValue().equals(other.getValue());
-			}
-			return false;
-		}*/
-		
-		@Override
-		public String toString() {
-			return getValue().toString();
-		}
-		
+			
 	}
 	
 	@SuppressWarnings("serial")
