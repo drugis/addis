@@ -9,6 +9,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.RelativeEffect.AxisType;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
@@ -35,33 +36,49 @@ public class ForestPlotPresentation {
 	private PresentationModelFactory d_pmf;
 	
 	public ForestPlotPresentation(List<Study> studies, OutcomeMeasure om, Drug baseline, Drug subject,
-			Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
+			Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf, RandomEffectsMetaAnalysis analysis) {
 		d_studies = new ArrayList<Study>();
 		d_outMeas = om;
 		d_baseline = baseline;
 		d_subject = subject;
 		d_type = type;
 		d_relEffects = new ArrayList<RelativeEffect<?>>();
-		for (Study s : studies) {
-			addRelativeEffect(s, subject);
-		}
+		d_analysis = analysis;
+		
+		fillRelativeEffectList(studies);
 		initScales();
 		d_pmf = pmf;
 	}
+
+	private void fillRelativeEffectList(List<Study> studies) {
+		if (d_analysis != null) {
+			for (StudyArmsEntry entry : d_analysis.getStudyArms()) {
+				addRelativeEffect(entry);
+			}
+		} else {
+			for (Study s : studies) {
+				addRelativeEffect(s);
+			}
+		}
+	}
 	
 	public ForestPlotPresentation(RandomEffectsMetaAnalysis analysis, Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
-		this(analysis.getStudies(), analysis.getOutcomeMeasure(), analysis.getFirstDrug(), analysis.getSecondDrug(), type, pmf);
-		d_analysis = analysis;
+		this(analysis.getStudies(), analysis.getOutcomeMeasure(), analysis.getFirstDrug(), analysis.getSecondDrug(), type, pmf, analysis);
 	}
 		
 	public ForestPlotPresentation(Study s, OutcomeMeasure om, Drug baseline, Drug subject,
 			Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
-		this(Collections.singletonList((Study)s), om, baseline, subject, type, pmf);
+		this(Collections.singletonList((Study)s), om, baseline, subject, type, pmf, null);
 	}
 
-	private void addRelativeEffect(Study s, Drug subject) {
+	private void addRelativeEffect(Study s) {
 		d_studies.add(s);
-		d_relEffects.add(RelativeEffectFactory.buildRelativeEffect(s, d_outMeas, d_baseline, subject, d_type));
+		d_relEffects.add(RelativeEffectFactory.buildRelativeEffect(s, d_outMeas, d_baseline, d_subject, d_type));
+	}
+	
+	private void addRelativeEffect(StudyArmsEntry entry) {
+		d_studies.add(entry.getStudy());
+		d_relEffects.add(RelativeEffectFactory.buildRelativeEffect(entry, d_outMeas, d_type));
 	}
 	
 	public RelativeEffect<?> getMetaAnalysisEffect() {

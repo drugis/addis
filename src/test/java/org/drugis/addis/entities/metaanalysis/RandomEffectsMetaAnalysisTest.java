@@ -23,6 +23,7 @@ import org.drugis.addis.entities.RelativeEffectMetaAnalysis;
 import org.drugis.addis.entities.RiskRatio;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,6 +78,19 @@ public class RandomEffectsMetaAnalysisTest {
 		d_studyList.add(newStudy);
 		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, d_fluox, d_sertr);
 	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testDifferentDrugs() {
+		Indication newInd = new Indication(666L, "bad");
+		Study newStudy = createRateStudy("name", 0, 10, 0, 20, newInd);
+		
+		List<StudyArmsEntry> armsList = new ArrayList<StudyArmsEntry>();
+		armsList.add(new StudyArmsEntry(newStudy,newStudy.getArms().get(0),newStudy.getArms().get(1)));
+		armsList.add(new StudyArmsEntry(newStudy,newStudy.getArms().get(1),newStudy.getArms().get(0)));
+		
+		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, armsList);
+	}	
+	
 	
 	@Test
 	public void testGetToString() {

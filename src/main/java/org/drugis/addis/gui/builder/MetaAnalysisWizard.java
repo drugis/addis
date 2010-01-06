@@ -17,7 +17,6 @@ import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudyTable;
-import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.SelectableStudyCharTableModel;
@@ -31,7 +30,6 @@ import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
-import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -99,6 +97,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 	}
 	
 	
+	@SuppressWarnings("serial")
 	public class SelectArmsWizardStep extends PanelWizardStep {
 		
 		private PanelBuilder d_builder;
@@ -135,8 +134,8 @@ public class MetaAnalysisWizard implements ViewBuilder {
 
 			for( Study curStudy : d_pm.getStudyListModel().getIncludedStudies().getValue() ){
 
-				JComboBox firstDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getArmsPerStudyPerDrug( curStudy, (Drug) d_pm.getFirstDrugModel().getValue()), d_pm.getArmPerStudyPerDrug( curStudy, (Drug) d_pm.getFirstDrugModel().getValue()) );
-				JComboBox secondDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getArmsPerStudyPerDrug( curStudy, (Drug) d_pm.getSecondDrugModel().getValue()), d_pm.getArmPerStudyPerDrug( curStudy, (Drug) d_pm.getSecondDrugModel().getValue()) );
+				JComboBox firstDrugBox  = AuxComponentFactory.createBoundComboBox(d_pm.getArmsPerStudyPerDrug( curStudy, (Drug) d_pm.getFirstDrugModel().getValue() ), d_pm.getLeftArmPerStudyPerDrug( curStudy)  );
+				JComboBox secondDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getArmsPerStudyPerDrug( curStudy, (Drug) d_pm.getSecondDrugModel().getValue()), d_pm.getRightArmPerStudyPerDrug( curStudy) );
 				
 				LayoutUtil.addRow(d_layout);
 				d_builder.addLabel(curStudy.toString(), cc.xy(1, row));
@@ -147,6 +146,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			}
 			
 			add(d_builder.getPanel());
+			setComplete(true);
 		}
 		
 	}

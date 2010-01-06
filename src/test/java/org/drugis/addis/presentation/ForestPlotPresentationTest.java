@@ -78,7 +78,7 @@ public class ForestPlotPresentationTest {
 		studies.add(d_s1);
 		studies.add(d_s2);
 		d_pm = new ForestPlotPresentation(studies, d_endpoint, d_baseline, d_subject, MeanDifference.class, 
-				new PresentationModelFactory(new DomainImpl()));
+				new PresentationModelFactory(new DomainImpl()), null);
 	}
 	
 	@Test
@@ -154,7 +154,7 @@ public class ForestPlotPresentationTest {
 		
 		ForestPlotPresentation pm = new ForestPlotPresentation(studies, d_endpoint,
 				d_baseline, d_subject,
-				MeanDifference.class, new PresentationModelFactory(new DomainImpl()));
+				MeanDifference.class, new PresentationModelFactory(new DomainImpl()), null);
 		assertEquals(5, pm.getDiamondSize(0));
 		assertEquals(21, pm.getDiamondSize(1));
 	}

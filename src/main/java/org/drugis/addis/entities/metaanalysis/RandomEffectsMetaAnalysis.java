@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.drugis.addis.entities.AbstractEntity;
+import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
@@ -21,7 +23,7 @@ import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.RelativeEffectMetaAnalysis;
 import org.drugis.addis.entities.RiskRatio;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
@@ -32,6 +34,7 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 	private List<? extends Study> d_studies;
 	private Drug d_drug1;
 	private Drug d_drug2;	
+	
 	private String d_name;	
 	private int d_totalSampleSize;
 
@@ -39,6 +42,7 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 	transient private double d_SEThetaDSL;
 	transient private Interval<Double> d_confidenceInterval;
 	transient private double d_qIV;
+	private List<StudyArmsEntry> d_studyArms;
 	
 	public static final String PROPERTY_NAME = "name";
 	public static final String PROPERTY_TYPE = "type";
@@ -74,11 +78,47 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		d_drug1 = drug1;
 		d_drug2 = drug2;
 		d_name = name;
+		d_studyArms = new ArrayList<StudyArmsEntry>();
 
-		for (Study s : d_studies)
-			d_totalSampleSize += s.getSampleSize();	
+		for (Study s : d_studies) {
+			d_totalSampleSize += s.getSampleSize();
+			
+			/* Fill the studyArms list for forward compatibility */
+			Arm arm1 = RelativeEffectFactory.findFirstArm(s, drug1);
+			Arm arm2 = RelativeEffectFactory.findFirstArm(s, drug2);
+			d_studyArms.add(new StudyArmsEntry(s, arm1, arm2));
+		}
+		
+		
 	}
 	
+	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms) throws IllegalArgumentException {
+		if(studyArms.isEmpty()){
+			throw new IllegalArgumentException("studylist empty");
+		}
+		d_studies = StudyArmsEntry.getStudyList(studyArms);
+		checkSameIndication(d_studies);
+		
+		d_name = name;
+		d_om = om;
+		d_studyArms = studyArms;
+		d_drug1 = d_studyArms.get(0).getBase().getDrug();
+		d_drug2 = d_studyArms.get(0).getSubject().getDrug();
+		
+		for (StudyArmsEntry s : studyArms){
+			if(!s.getBase().getDrug().equals(d_drug1)){
+				throw new IllegalArgumentException("Left drug not consistent over all studies");
+			}
+			if(!s.getSubject().getDrug().equals(d_drug2)){
+				throw new IllegalArgumentException("Right drug not consistent over all studies");
+			}
+		}
+		
+		for (Study s : d_studies) {
+			d_totalSampleSize += s.getSampleSize();
+		}
+	}
+
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
 		in.defaultReadObject();
 	}	
@@ -114,6 +154,10 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 	
 	public Drug getSecondDrug() {
 		return d_drug2;
+	}
+	
+	public List<StudyArmsEntry> getStudyArms() {
+		return d_studyArms;
 	}
 	
 	public String getName() {
@@ -152,8 +196,10 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		List<Double> adjweights = new ArrayList<Double>();
 		List<RelativeEffect<? extends Measurement>> relEffects = new ArrayList<RelativeEffect<? extends Measurement>>();
 			
-		for (Study s : d_studies) {
-			RelativeEffect<? extends Measurement> re = RelativeEffectFactory.buildRelativeEffect(s, d_om, d_drug1, d_drug2, type);
+		for (int i=0; i<d_studies.size(); ++i ){
+			Study s = d_studies.get(i);
+			RelativeEffect<? extends Measurement> re;
+			re = RelativeEffectFactory.buildRelativeEffect(d_studyArms.get(i), d_om, type);
 			relEffects.add(re);
 		}
 		

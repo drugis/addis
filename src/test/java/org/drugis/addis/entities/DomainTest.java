@@ -517,8 +517,17 @@ public class DomainTest {
 	
 	@Test(expected=DependentEntitiesException.class)
 	public void testDeleteStudyThrowsCorrectException() throws DependentEntitiesException, NullPointerException, IllegalArgumentException, EntityIdExistsException {
+		Drug fluox = ExampleData.buildDrugFluoxetine();
+		Drug parox = ExampleData.buildDrugParoxetine();
+		
 		Study s1 = new Study("X", d_indication);
+		s1.addArm(new Arm(fluox,new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY),23));
+		s1.addArm(new Arm(parox,new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY),23));
+	
 		Study s2 = new Study("Y", d_indication);
+		s2.addArm(new Arm(fluox,new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY),23));
+		s2.addArm(new Arm(parox,new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY),23));
+		
 		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s1);
 		d_domain.addStudy(s2);
@@ -529,7 +538,7 @@ public class DomainTest {
 		s2.addOutcomeMeasure(e);
 		
 		ArrayList<Study> studies = new ArrayList<Study>(d_domain.getStudies());
-		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", e, studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine()); 
+		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", e, studies, fluox, parox); 
 		d_domain.addMetaAnalysis(ma);
 		d_domain.deleteStudy(s1);
 	}

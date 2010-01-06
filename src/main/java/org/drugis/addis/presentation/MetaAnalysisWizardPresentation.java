@@ -3,10 +3,12 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
@@ -15,6 +17,7 @@ import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -172,6 +175,7 @@ public class MetaAnalysisWizardPresentation {
 
 		public void propertyChange(PropertyChangeEvent evt) {
 			updateStudyList();
+			updateArmHolders();
 			fireValueChange(null, getValue());
 		}
 	}
@@ -188,7 +192,8 @@ public class MetaAnalysisWizardPresentation {
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
 	private List<Study> d_studyList = new ArrayList<Study>();
 	private PresentationModelFactory d_pmm;
-	private Set<ArmHolder> d_selectedArms;
+	private Map<Study, ArmHolder> d_firstArms;
+	private Map<Study, ArmHolder> d_secondArms;
 	
 	public MetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
 		d_domain = d;
@@ -217,6 +222,8 @@ public class MetaAnalysisWizardPresentation {
 		d_studyListPm = new DefaultSelectableStudyListPresentationModel(new StudyListHolder());
 		d_metaAnalysisCompleteListener = new MetaAnalysisCompleteListener();		
 		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(d_metaAnalysisCompleteListener);
+		d_firstArms = new HashMap <Study, ArmHolder>() ;
+		d_secondArms = new HashMap <Study, ArmHolder>() ;
 	}
 		
 	public ListHolder<Indication> getIndicationListModel() {
@@ -294,6 +301,15 @@ public class MetaAnalysisWizardPresentation {
 		d_studyList = studies;
 	}
 	
+	private void updateArmHolders() {
+		d_firstArms.clear();
+		d_secondArms.clear();
+		for (Study s : getStudyListModel().getIncludedStudies().getValue() ) {
+			d_firstArms.put(s, new ArmHolder(getArmsPerStudyPerDrug(s, getFirstDrug()).getValue().get(0)));
+			d_secondArms.put(s, new ArmHolder(getArmsPerStudyPerDrug(s, getSecondDrug()).getValue().get(0)));
+		}
+	}
+	
 	private Drug getFirstDrug() {
 		return d_firstDrugHolder.getValue();
 	}
@@ -338,8 +354,13 @@ public class MetaAnalysisWizardPresentation {
 	}
 	
 	private RandomEffectsMetaAnalysis createMetaAnalysis() {
-		return new RandomEffectsMetaAnalysis("", (OutcomeMeasure) getEndpointModel().getValue(),
-				new ArrayList<Study>(d_studyListPm.getSelectedStudiesModel().getValue()), getFirstDrug(), getSecondDrug());
+		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
+		
+		for(Entry<Study,ArmHolder> entry : d_firstArms.entrySet()) {
+			studyArms.add(new StudyArmsEntry(entry.getKey(), entry.getValue().getValue(), d_secondArms.get(entry.getKey()).getValue() ) );
+		}
+		
+		return new RandomEffectsMetaAnalysis("", (OutcomeMeasure) getEndpointModel().getValue(), studyArms);
 	}
 	
 	public RandomEffectsMetaAnalysisPresentation saveMetaAnalysis(String name) throws EntityIdExistsException {
@@ -385,12 +406,12 @@ public class MetaAnalysisWizardPresentation {
 	public ListHolder<Arm> getArmsPerStudyPerDrug(Study study, Drug drug) {
 		return new ArmListHolder(study, drug);
 	}
-
-	public ValueModel getArmPerStudyPerDrug(Study study, Drug drug) {
-		ArmHolder holder = new ArmHolder(getArmsPerStudyPerDrug(study,drug).getValue().get(0));
-		d_selectedArms.add(holder);
-		
-		System.out.println(d_selectedArms);
-		return holder;
+	
+	public ValueModel getLeftArmPerStudyPerDrug(Study study) {
+		return d_firstArms.get(study);
+	}
+	
+	public ValueModel getRightArmPerStudyPerDrug(Study study) {
+		return d_secondArms.get(study);
 	}
 }
