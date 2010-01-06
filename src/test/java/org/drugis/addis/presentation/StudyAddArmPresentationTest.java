@@ -114,13 +114,13 @@ public class StudyAddArmPresentationTest {
 	}
 	
 	@Test
-	public void testSetGroupSizeNotOverrideSampleSize() {
+	public void testSetSampleSizeNotOverrideGroupSize() {
 		BasicRateMeasurement m =
 			(BasicRateMeasurement) d_pm.getMeasurementModel(ExampleData.buildEndpointHamd()).getBean();
 		m.setSampleSize(50);
-		assertEquals(new Integer(50), m.getSampleSize());
+		assertEquals(new Integer(0), d_pm.getSizeModel().getValue());
 		d_pm.getSizeModel().setValue(100);
-		assertEquals(new Integer(50), m.getSampleSize());
+		assertEquals(new Integer(100), m.getSampleSize());
 	}
 	
 	@Test

@@ -71,7 +71,8 @@ public class StudyAddArmPresentation {
 	}
 	
 	public PresentationModel<Measurement> getMeasurementModel(OutcomeMeasure e) {
-		return d_pmf.getModel(d_measurements.get(e));
+		//return d_pmf.getModel(d_measurements.get(e));
+		return new MeasurementPresentationModel(d_measurements.get(e), getSizeModel());
 	}
 	
 	public AbstractValueModel getDrugModel() {
