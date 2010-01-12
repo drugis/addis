@@ -82,15 +82,15 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	protected void setEndpoint() {
-		d_study.setOutcomeMeasures(Collections.singleton(d_primaryOutcomeMeasure.getEndpoint()));
-		if (d_primaryOutcomeMeasure.getEndpoint() != null) {			
+		d_study.setOutcomeMeasures(Collections.singleton(d_primaryOutcomeMeasure.getOutcomeMeasure()));
+		if (d_primaryOutcomeMeasure.getOutcomeMeasure() != null) {			
 			d_addArmButton.setEnabled(true);
 		}
 	}
 
 	protected void buildMeasurements() {
 		for (Arm g : d_study.getArms()) {
-			OutcomeMeasure endpoint = d_primaryOutcomeMeasure.getEndpoint();
+			OutcomeMeasure endpoint = d_primaryOutcomeMeasure.getOutcomeMeasure();
 			d_study.setMeasurement(endpoint, g, endpoint.buildMeasurement(g));
 		}
 	}
@@ -131,9 +131,9 @@ public class AddStudyDialog extends OkCancelDialog {
 		Arm group = new Arm(null, new FlexibleDose(new Interval<Double>(0.0,0.0), SIUnit.MILLIGRAMS_A_DAY),
 				0);
 		d_study.addArm(group);
-		if (d_primaryOutcomeMeasure.getEndpoint() != null) {
-			BasicMeasurement m = d_primaryOutcomeMeasure.getEndpoint().buildMeasurement(group);
-			d_study.setMeasurement(d_primaryOutcomeMeasure.getEndpoint(), group, m);
+		if (d_primaryOutcomeMeasure.getOutcomeMeasure() != null) {
+			BasicMeasurement m = d_primaryOutcomeMeasure.getOutcomeMeasure().buildMeasurement(group);
+			d_study.setMeasurement(d_primaryOutcomeMeasure.getOutcomeMeasure(), group, m);
 		}
 	}
 

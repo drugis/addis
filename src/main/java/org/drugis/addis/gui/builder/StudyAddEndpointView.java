@@ -151,7 +151,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 	}
 
 	private OutcomeMeasure getEndpoint() {
-		return d_endpointModel.getBean().getEndpoint();
+		return d_endpointModel.getBean().getOutcomeMeasure();
 	}
 
 	private void buildMeasurementsPart(PanelBuilder builder,

@@ -84,11 +84,11 @@ public class StudyAddEndpointDialog extends OkCancelDialog {
 
 	private void addMeasurementsToStudy() {
 		for (Entry<Arm, BasicMeasurement> entry : d_measurements.entrySet()) {
-			d_study.setMeasurement(d_newEndpoint.getEndpoint(), entry.getKey(), entry.getValue());
+			d_study.setMeasurement(d_newEndpoint.getOutcomeMeasure(), entry.getKey(), entry.getValue());
 		}
 	}
 
 	private void addEndpointToStudy() {
-		d_study.addOutcomeMeasure(d_newEndpoint.getEndpoint());
+		d_study.addOutcomeMeasure(d_newEndpoint.getOutcomeMeasure());
 	}
 }

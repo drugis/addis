@@ -296,7 +296,7 @@ public class AddStudyView implements ViewBuilder {
 	}
 
 	private OutcomeMeasure getEndpoint() {
-		return d_endpointPresentation.getBean().getEndpoint();
+		return d_endpointPresentation.getBean().getOutcomeMeasure();
 	}
 
 	private void buildArms(FormLayout layout, int fullWidth,
@@ -329,7 +329,7 @@ public class AddStudyView implements ViewBuilder {
 			col += 2;
 
 			Measurement meas = d_model.getBean().getMeasurement(
-					d_endpointPresentation.getBean().getEndpoint(),g);
+					d_endpointPresentation.getBean().getOutcomeMeasure(),g);
 			for (JTextField component : MeasurementInputHelper.getComponents((BasicMeasurement)meas)) {
 				d_validator.add(component);
 				builder.add(component, cc.xy(col, row));
