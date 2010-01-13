@@ -22,6 +22,8 @@ package org.drugis.addis.gui.builder;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +35,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultFormatter;
 
@@ -45,14 +48,15 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.gui.OutcomeMeasureHolder;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.MeasurementInputHelper;
 import org.drugis.addis.gui.MutableCharacteristicHolder;
+import org.drugis.addis.gui.OutcomeMeasureHolder;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
+import org.drugis.addis.imports.ClinicaltrialsImporter;
 import org.drugis.addis.presentation.BasicArmPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
@@ -104,7 +108,7 @@ public class AddStudyView implements ViewBuilder {
 
 	private JComponent createIdComponent() {
 		JTextField id = BasicComponentFactory.createTextField(d_model.getModel(Study.PROPERTY_ID));
-		id.setColumns(30);
+		id.setColumns(30); // Sets width of the ID field, and due to auto-resize of every other field as well. 
 		AutoSelectFocusListener.add(id);
 		d_validator.add(id);
 		return id;
@@ -134,6 +138,9 @@ public class AddStudyView implements ViewBuilder {
 		builder.addLabel("Identifier:", cc.xy(1, 3, "right, c"));
 		int componentWidth = fullWidth - 4;
 		builder.add(createIdComponent(), cc.xyw(3, 3, componentWidth));
+		
+		// Button to retrieve study data from clinicaltrials.gov
+		builder.add(createImportStudyButton(),cc.xy(fullWidth, 3));
 
 		int row = 5;
 		row = buildCharacteristicsPart(fullWidth, builder, cc, row, layout);
@@ -181,6 +188,27 @@ public class AddStudyView implements ViewBuilder {
 		return row;
 	}
 
+	@SuppressWarnings("serial")
+	private JButton createImportStudyButton() {
+		JButton btn = GUIFactory.createPlusButton("enter NCT id to retrieve study data from ClinicalTrials.gov");
+		btn.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				String studyId = d_model.getModel(Study.PROPERTY_ID).getString();
+				if (studyId.contains("NCT")) {
+					String url = "http://clinicaltrials.gov/show/"+studyId+"?displayxml=true";
+					try {
+						ClinicaltrialsImporter.getClinicaltrialsData(d_model.getBean(),url);
+					} catch (MalformedURLException e) {
+						JOptionPane.showMessageDialog(d_mainWindow, "Invalid NCT ID: "+ d_model.getBean());
+					} catch (IOException e) {
+						JOptionPane.showMessageDialog(d_mainWindow, "Couldn't find ID " + d_model.getBean() + " on ClinicalTrials.gov");
+					}
+				}
+			}
+		});
+		return btn;
+	}
+	
 	@SuppressWarnings("serial")
 	private JButton createNewIndicationButton() {
 		JButton btn = GUIFactory.createPlusButton("New Indication");
@@ -249,9 +277,6 @@ public class AddStudyView implements ViewBuilder {
 				component = f;
 			} else if (c.getValueType().equals(Date.class)) {
 				ValueModel mvmodel = new MutableCharacteristicHolder(d_model.getBean(), c);
-				if (mvmodel.getValue() == null) {
-					mvmodel.setValue(new Date());
-				}
 				JDateChooser chooser = new JDateChooser();
 				PropertyConnector.connectAndUpdate(mvmodel, chooser, "date");
 				component = chooser;

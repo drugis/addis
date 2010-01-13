@@ -1,5 +1,8 @@
 package org.drugis.addis.presentation;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
 
@@ -13,6 +16,7 @@ public class StudyCharacteristicHolder extends AbstractValueModel {
 	public StudyCharacteristicHolder(Study study, Characteristic characteristic) {
 		d_study = study;
 		d_char = characteristic; 
+		d_study.addPropertyChangeListener(new CharChangedListener());
 	}
 
 	public void setValue(Object newValue) {
@@ -26,5 +30,14 @@ public class StudyCharacteristicHolder extends AbstractValueModel {
 	public Characteristic getCharacteristic() {
 		return d_char;
 	}
+	
+	private class CharChangedListener implements PropertyChangeListener {
 
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName().equals(Study.PROPERTY_CHARACTERISTIC)) {
+				if (evt.getNewValue().equals(d_char))
+					firePropertyChange("value", null, d_study.getCharacteristic(d_char));
+			}
+		}
+	}
 }

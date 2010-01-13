@@ -26,6 +26,7 @@ import org.drugis.addis.presentation.StudyCharacteristicHolder;
 @SuppressWarnings("serial")
 public class MutableCharacteristicHolder extends StudyCharacteristicHolder {
 	public MutableCharacteristicHolder(Study bean, BasicStudyCharacteristic characteristic) {
+		
 		super(bean, characteristic);
 	}
 

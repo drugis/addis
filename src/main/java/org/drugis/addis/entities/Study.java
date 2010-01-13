@@ -64,6 +64,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	public final static String PROPERTY_ID = "id";
 	public final static String PROPERTY_OUTCOME_MEASURES = "outcomeMeasures";
 	public final static String PROPERTY_ARMS = "arms";
+	public final static String PROPERTY_CHARACTERISTIC = "Characteristics";
 
 	private List<Arm> d_arms = new ArrayList<Arm>();
 	private String d_id;
@@ -120,6 +121,12 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	
 	public void setCharacteristic(BasicStudyCharacteristic c, Object val) {
 		d_chars.put(c, val);
+		/* Beware: Every characteristicHolder attached to this study will receive this event, even though only one characteristic has changed*/
+		firePropertyChange(PROPERTY_CHARACTERISTIC, c, c);
+	}
+	
+	public CharacteristicsMap setCharacteristics() {
+		throw new IllegalAccessError("Can't set characteristics map directly.");
 	}
 	
 	public CharacteristicsMap getCharacteristics() {

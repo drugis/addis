@@ -85,6 +85,10 @@ public class DomainImpl implements Domain {
 	
 	private class StudyChangeListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
+			
+			if (evt.getPropertyName().equals(Study.PROPERTY_CHARACTERISTIC))
+				return; // FIXME: Why is this necessary?
+			
 			fireDomainChanged(DomainEvent.Type.STUDIES);
 		}		
 	}
