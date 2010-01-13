@@ -103,7 +103,6 @@ public class AddStudyView implements ViewBuilder {
 		d_validator.add(endpoint);
 		
 		ComboBoxPopupOnFocusListener.add(endpoint);
-		endpoint.setPreferredSize(endpoint.getPreferredSize());
 		return endpoint;
 	}
 
