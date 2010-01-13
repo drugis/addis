@@ -6,7 +6,6 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Test;
 
 import com.jgoodies.binding.PresentationModel;
-import com.jgoodies.binding.value.ValueModel;
 
 
 public class OutcomeMeasureHolderTest {

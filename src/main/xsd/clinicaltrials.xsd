@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ================================================================= -->
+<!-- XML DTD, ClinicalTrials.gov, -->
+<!-- National Library of Medicine, National Institutes of Health -->
+<!-- DTD Version: 2009.12.01 -->
+<!---->
+<!-- This DTD is subject to change without notice. -->
+<!-- Any data displayed to the public must include attribution -->
+<!-- to http://ClinicalTrials.gov and contain the information -->
+<!-- in the <required_header> from each trial record. -->
+<!---->
+<!-- 02/22/06 Fixed error indicating citation contained textblock -->
+<!-- 05/19/06 Added withdrawn status -->
+<!-- 12/12/06 Added oversight_info -->
+<!-- 01/10/07 Added nct_alias -->
+<!-- 03/02/07 Added has_dmc, why_stopped -->
+<!-- 03/15/07 Removed last_follow_up, last_data_entry dates -->
+<!-- (end_date contains last_follow_up) -->
+<!-- 04/11/07 added acronym, removed erroneous abbrev -->
+<!-- 04/16/07 added expanded access status values to overall_status -->
+<!-- 04/19/07 added measure, time_frame, and number_of_arms -->
+<!-- Moved and renamed expected_enrollment to enrollment -->
+<!-- 07/18/07 added tags related to arms and more intervention details -->
+<!-- <arm_group> and child nodes -->
+<!-- intervention /description, /arm_group_label, /other_name -->
+<!-- 07/21/07 removed redundant tags (description, arm_group_label) -->
+<!-- 09/20/07 changed possible values for overall_status -->
+<!-- 10/08/07 added new elements related to observational studies -->
+<!-- (number_of_groups, biospec_retention, biospec_descr, -->
+<!-- study_pop, sampling_method) -->
+<!-- 10/11/07 added optional rank attribute to clinical_study -->
+<!-- 01/10/08 added study_type -->
+<!-- 05/20/08 added healthy_volunteers to eligibility -->
+<!-- 06/19/08 added primary_completion_date -->
+<!-- Date when measurement of the primary outcome measure -->
+<!-- will be complete -->
+<!-- 06/19/08 added safety_issue to outcomes -->
+<!-- 02/20/09 updated comment on phase to match reality -->
+<!-- 05/12/09 added tag <completion_date> -->
+<!-- This field is the last followup date, when available, -->
+<!-- otherwise, end date.  <end_date> tag is now obsolete. -->
+<!-- 05/12/09 added optional type attribute to <enrollment>, -->
+<!-- <completion_date>, and <primary_completion_date>. -->
+<!-- Attribute will be type="Actual" or type="Anticipated" -->
+<!-- when available. -->
+<!-- 06/04/09 moved comment which caused validation failure -->
+<!-- 10/15/09 added responsible party when available -->
+<!-- 12/01/09 corrected format for a couple of dates that include day -->
+<!---->
+<!-- ================================================================= -->
+<!-- OBSOLETE: end_date tag is obsolete and will go away soon -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="clinical_study">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="required_header"/>
+        <xs:element ref="id_info"/>
+        <xs:element ref="brief_title"/>
+        <xs:element minOccurs="0" ref="acronym"/>
+        <xs:element minOccurs="0" ref="official_title"/>
+        <xs:element ref="sponsors"/>
+        <xs:element ref="source"/>
+        <xs:element minOccurs="0" ref="oversight_info"/>
+        <xs:element ref="brief_summary"/>
+        <xs:element minOccurs="0" ref="detailed_description"/>
+        <xs:element ref="overall_status"/>
+        <xs:element minOccurs="0" ref="why_stopped"/>
+        <xs:element minOccurs="0" ref="start_date"/>
+        <xs:element minOccurs="0" ref="end_date"/>
+        <xs:element minOccurs="0" ref="completion_date"/>
+        <xs:element minOccurs="0" ref="primary_completion_date"/>
+        <xs:element ref="phase"/>
+        <xs:element ref="study_type"/>
+        <xs:element ref="study_design"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="primary_outcome"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="secondary_outcome"/>
+        <xs:element minOccurs="0" ref="number_of_arms"/>
+        <xs:element minOccurs="0" ref="number_of_groups"/>
+        <xs:element minOccurs="0" ref="enrollment"/>
+        <xs:element maxOccurs="unbounded" ref="condition"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="arm_group"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="intervention"/>
+        <xs:element minOccurs="0" ref="biospec_retention"/>
+        <xs:element minOccurs="0" ref="biospec_descr"/>
+        <xs:element minOccurs="0" ref="eligibility"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="overall_official"/>
+        <xs:element minOccurs="0" ref="overall_contact"/>
+        <xs:element minOccurs="0" ref="overall_contact_backup"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="location"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="link"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="reference"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="results_reference"/>
+        <xs:element ref="verification_date"/>
+        <xs:element minOccurs="0" ref="lastchanged_date"/>
+        <xs:element ref="firstreceived_date"/>
+        <xs:element minOccurs="0" ref="responsible_party"/>
+      </xs:sequence>
+      <xs:attribute name="rank" default="0"/>
+    </xs:complexType>
+  </xs:element>
+  <!-- === Required Header ============================================= -->
+  <xs:element name="required_header">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="download_date"/>
+        <xs:element ref="link_text"/>
+        <xs:element ref="url"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="download_date" type="xs:string"/>
+  <xs:element name="link_text" type="xs:string"/>
+  <xs:element name="url" type="xs:string"/>
+  <!-- === Id Info ===================================================== -->
+  <xs:element name="id_info">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="org_study_id"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="secondary_id"/>
+        <xs:element ref="nct_id"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="nct_alias"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="org_study_id" type="xs:string"/>
+  <xs:element name="secondary_id" type="xs:string"/>
+  <xs:element name="nct_id" type="xs:string"/>
+  <xs:element name="nct_alias" type="xs:string"/>
+  <!-- === Titles ====================================================== -->
+  <xs:element name="brief_title" type="xs:string"/>
+  <xs:element name="acronym" type="xs:string"/>
+  <xs:element name="official_title" type="xs:string"/>
+  <!-- === Sponsors ==================================================== -->
+  <xs:element name="sponsors">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="lead_sponsor"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="collaborator"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="lead_sponsor" type="agency"/>
+  <xs:element name="collaborator" type="agency"/>
+  <xs:complexType name="agency">
+    <xs:sequence>
+      <xs:element ref="agency"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="agency" type="xs:string"/>
+  <xs:element name="source" type="xs:string"/>
+  <!-- === Oversight =================================================== -->
+  <xs:element name="oversight_info">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="authority"/>
+        <xs:element minOccurs="0" ref="has_dmc"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="authority" type="xs:string"/>
+  <xs:element name="has_dmc" type="xs:string"/>
+  <!-- data monitoring committee: Yes | No -->
+  <!-- === Description ================================================= -->
+  <xs:element name="brief_summary" type="textblock"/>
+  <xs:element name="detailed_description" type="textblock"/>
+  <xs:complexType name="textblock">
+    <xs:sequence>
+      <xs:element ref="textblock"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="textblock" type="xs:string"/>
+  <!-- === Status ====================================================== -->
+  <xs:element name="overall_status" type="xs:string"/>
+  <!--
+    Possible values:
+    Not yet recruiting | Recruiting | Enrolling by invitation |
+    Active, not recruiting | Completed | Suspended | Terminated | 
+    Withdrawn | Available | No Longer Available
+  -->
+  <!-- last two are for expanded access records -->
+  <xs:element name="why_stopped" type="xs:string"/>
+  <!-- brief explanation -->
+  <!-- === Misc ======================================================== -->
+  <xs:element name="phase" type="xs:string"/>
+  <!-- Phase [1,2,3,4] [/ Phase [1,2,3,4]] | N/A -->
+  <xs:element name="study_type" type="xs:string"/>
+  <!-- Interventional | Observational | Expanded Access -->
+  <xs:element name="study_design" type="xs:string"/>
+  <xs:element name="number_of_arms" type="xs:string"/>
+  <!-- integer -->
+  <xs:element name="number_of_groups" type="xs:string"/>
+  <!-- integer -->
+  <xs:element name="enrollment">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type"/>
+    </xs:complexType>
+  </xs:element>
+  <!-- integer -->
+  <!-- Can be missing.  Possible values: Actual | Anticipated -->
+  <!-- === Outcomes ==================================================== -->
+  <xs:element name="primary_outcome">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="measure"/>
+        <xs:element minOccurs="0" ref="time_frame"/>
+        <xs:element minOccurs="0" ref="safety_issue"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="secondary_outcome">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="measure"/>
+        <xs:element minOccurs="0" ref="time_frame"/>
+        <xs:element minOccurs="0" ref="safety_issue"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="measure" type="xs:string"/>
+  <xs:element name="time_frame" type="xs:string"/>
+  <xs:element name="safety_issue" type="xs:string"/>
+  <!-- === Conditions ================================================== -->
+  <xs:element name="condition" type="xs:string"/>
+  <!-- === Arms ======================================================== -->
+  <xs:element name="arm_group">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="arm_group_label"/>
+        <xs:element ref="arm_group_type"/>
+        <xs:element minOccurs="0" ref="description"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="description" type="xs:string"/>
+  <!-- used in several contexts -->
+  <xs:element name="arm_group_label" type="xs:string"/>
+  <!-- join key with intervention field -->
+  <xs:element name="arm_group_type" type="xs:string"/>
+  <!--
+    Possible values:
+    Experimental | Active Comparator | Placebo Comparator | 
+    Sham Comparator | No Intervention | Other | Case | 
+    Control | Treatment Comparison | Exposure Comparison
+  -->
+  <!-- === Interventions =============================================== -->
+  <xs:element name="intervention">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="intervention_type"/>
+        <xs:element ref="intervention_name"/>
+        <xs:element minOccurs="0" ref="description"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="arm_group_label"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="other_name"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="intervention_type" type="xs:string"/>
+  <!--
+    Possible values:
+    Drug | Device | Biological/Vaccine | Genetic | Behavioral | 
+    Radiation | Procedure/Surgery Dietary Supplement | Other
+  -->
+  <xs:element name="intervention_name" type="xs:string"/>
+  <xs:element name="other_name" type="xs:string"/>
+  <!-- synonyms for intervention_name -->
+  <!-- === Bio Specimen ================================================ -->
+  <xs:element name="biospec_retention" type="xs:string"/>
+  <!-- None Retained | Samples With DNA | Samples Without DNA -->
+  <xs:element name="biospec_descr" type="textblock"/>
+  <!-- describes nature of specifimen -->
+  <!-- === Eligibility ================================================= -->
+  <xs:element name="eligibility">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="study_pop"/>
+        <xs:element minOccurs="0" ref="sampling_method"/>
+        <xs:element ref="criteria"/>
+        <xs:element ref="gender"/>
+        <xs:element ref="minimum_age"/>
+        <xs:element ref="maximum_age"/>
+        <xs:element minOccurs="0" ref="healthy_volunteers"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="study_pop" type="textblock"/>
+  <xs:element name="sampling_method" type="xs:string"/>
+  <!-- Probability Sample | Non-Probability Sample -->
+  <xs:element name="criteria" type="textblock"/>
+  <xs:element name="gender" type="xs:string"/>
+  <!-- Both | Female | Male -->
+  <!-- Ages are a WholeNumber followed by units: eg. "12 Years" -->
+  <!-- Units may be one of: years, months, weeks, days, hours, minutes -->
+  <xs:element name="minimum_age" type="xs:string"/>
+  <!-- 12 years -->
+  <xs:element name="maximum_age" type="xs:string"/>
+  <!-- N/A -->
+  <xs:element name="healthy_volunteers" type="xs:string"/>
+  <!-- === Contacts ==================================================== -->
+  <xs:element name="overall_official">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="first_name"/>
+        <xs:element minOccurs="0" ref="middle_name"/>
+        <xs:element ref="last_name"/>
+        <xs:element minOccurs="0" ref="degrees"/>
+        <xs:element minOccurs="0" ref="role"/>
+        <xs:element minOccurs="0" ref="affiliation"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="first_name" type="xs:string"/>
+  <xs:element name="middle_name" type="xs:string"/>
+  <xs:element name="last_name" type="xs:string"/>
+  <xs:element name="degrees" type="xs:string"/>
+  <xs:element name="role" type="xs:string"/>
+  <!-- Principal Investigator | Sub-Investigator -->
+  <xs:element name="affiliation" type="xs:string"/>
+  <xs:element name="overall_contact">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="first_name"/>
+        <xs:element minOccurs="0" ref="middle_name"/>
+        <xs:element ref="last_name"/>
+        <xs:element minOccurs="0" ref="degrees"/>
+        <xs:element minOccurs="0" ref="phone"/>
+        <xs:element minOccurs="0" ref="phone_ext"/>
+        <xs:element minOccurs="0" ref="email"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="phone" type="xs:string"/>
+  <xs:element name="phone_ext" type="xs:string"/>
+  <xs:element name="email" type="xs:string"/>
+  <xs:element name="overall_contact_backup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="first_name"/>
+        <xs:element minOccurs="0" ref="middle_name"/>
+        <xs:element ref="last_name"/>
+        <xs:element minOccurs="0" ref="degrees"/>
+        <xs:element minOccurs="0" ref="phone"/>
+        <xs:element minOccurs="0" ref="phone_ext"/>
+        <xs:element minOccurs="0" ref="email"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <!-- === Locations =================================================== -->
+  <xs:element name="location">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="facility"/>
+        <xs:element ref="status"/>
+        <xs:element minOccurs="0" ref="contact"/>
+        <xs:element minOccurs="0" ref="contact_backup"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="investigator"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="facility">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="name"/>
+        <xs:element ref="address"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="name" type="xs:string"/>
+  <xs:element name="address">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="city"/>
+        <xs:element minOccurs="0" ref="state"/>
+        <xs:element minOccurs="0" ref="zip"/>
+        <xs:element ref="country"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="city" type="xs:string"/>
+  <xs:element name="state" type="xs:string"/>
+  <xs:element name="zip" type="xs:string"/>
+  <xs:element name="country" type="xs:string"/>
+  <xs:element name="status" type="xs:string"/>
+  <!--
+    Possible values:
+    Not yet recruiting | Recruiting | Enrolling by invitation |
+    Active, not recruiting | Completed | Suspended | Terminated
+  -->
+  <xs:element name="contact">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="first_name"/>
+        <xs:element minOccurs="0" ref="middle_name"/>
+        <xs:element ref="last_name"/>
+        <xs:element minOccurs="0" ref="degrees"/>
+        <xs:element minOccurs="0" ref="phone"/>
+        <xs:element minOccurs="0" ref="phone_ext"/>
+        <xs:element minOccurs="0" ref="email"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="contact_backup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="first_name"/>
+        <xs:element minOccurs="0" ref="middle_name"/>
+        <xs:element ref="last_name"/>
+        <xs:element minOccurs="0" ref="degrees"/>
+        <xs:element minOccurs="0" ref="phone"/>
+        <xs:element minOccurs="0" ref="phone_ext"/>
+        <xs:element minOccurs="0" ref="email"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="investigator">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="first_name"/>
+        <xs:element minOccurs="0" ref="middle_name"/>
+        <xs:element ref="last_name"/>
+        <xs:element minOccurs="0" ref="degrees"/>
+        <xs:element minOccurs="0" ref="role"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <!-- === Links ======================================================= -->
+  <xs:element name="link">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="url"/>
+        <xs:element minOccurs="0" ref="description"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <!-- === References ================================================== -->
+  <xs:element name="reference">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="citation"/>
+        <xs:element minOccurs="0" ref="PMID"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="citation" type="xs:string"/>
+  <!-- full bibliographic citation -->
+  <xs:element name="PMID" type="xs:string"/>
+  <!-- pubmed identifier -->
+  <xs:element name="results_reference">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="citation"/>
+        <xs:element minOccurs="0" ref="PMID"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <!-- === Dates ======================================================= -->
+  <xs:element name="start_date" type="xs:string"/>
+  <!-- Month Year (e.g. January 2008) -->
+  <xs:element name="end_date" type="xs:string"/>
+  <!-- OBSOLETE: will go away soon -->
+  <xs:element name="completion_date">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type"/>
+    </xs:complexType>
+  </xs:element>
+  <!-- Month Year (e.g. January 2008) -->
+  <!-- Can be missing.  Possible values: Actual | Anticipated -->
+  <xs:element name="primary_completion_date">
+    <xs:complexType mixed="true">
+      <xs:attribute name="type"/>
+    </xs:complexType>
+  </xs:element>
+  <!-- Month Year (e.g. January 2008) -->
+  <!-- Can be missing.  Possible values: Actual | Anticipated -->
+  <xs:element name="verification_date" type="xs:string"/>
+  <!-- Month Year (e.g. January 2008) -->
+  <xs:element name="lastchanged_date" type="xs:string"/>
+  <!-- Month Day, Year (e.g. April 1, 2008) -->
+  <xs:element name="firstreceived_date" type="xs:string"/>
+  <!-- Month Day, Year (e.g. April 1, 2008) -->
+  <!-- === Responsible Party =========================================== -->
+  <xs:element name="responsible_party">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="name_title"/>
+        <xs:element minOccurs="0" ref="organization"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="name_title" type="xs:string"/>
+  <xs:element name="organization" type="xs:string"/>
+</xs:schema>
