@@ -81,7 +81,7 @@ public class StudyView implements ViewBuilder {
 		int row = 1;
 		builder.addSeparator("Study", cc.xy(1,row));
 		row += 2;
-		builder.add(GUIFactory.createCollapsiblePanel(d_charView.buildPanel()),	cc.xy(1, 3));
+		builder.add(GUIFactory.createCollapsiblePanel(d_charView.buildPanel()),	cc.xy(1, row));
 		row += 2;
 		builder.addSeparator("Baseline Characteristics", cc.xy(1, row));
 		row += 2;

@@ -62,7 +62,6 @@ public class AddStudyDialog extends OkCancelDialog {
 		this.setModal(true);
 		d_domain = domain;
 		d_study = new Study("", new Indication(0L, ""));
-		//ClinicaltrialsImporter.getClinicaltrialsData(d_study,"http://clinicaltrials.gov/show/NCT00644527?displayxml=true"); // FIXME
 		d_primaryOutcomeMeasure = new OutcomeMeasureHolder();
 		d_primaryOutcomeMeasure.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {

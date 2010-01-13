@@ -111,10 +111,16 @@ public class ClinicaltrialsImporter {
 		int inclusionStart 	= criteria.toLowerCase().indexOf(INCLUSION_CRITERIA) + INCLUSION_CRITERIA.length()+1;
 		int inclusionEnd 	= criteria.toLowerCase().indexOf(EXCLUSION_CRITERIA);
 		int exclusionStart 	= criteria.toLowerCase().indexOf(EXCLUSION_CRITERIA) + EXCLUSION_CRITERIA.length()+1;
-	
-		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,criteria.substring(inclusionStart, inclusionEnd));
-		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,criteria.substring(exclusionStart));
-	
+		
+		if(inclusionEnd == -1)
+			inclusionEnd = criteria.length()-1; 
+		
+		if(criteria.toLowerCase().indexOf(INCLUSION_CRITERIA) != -1)
+			study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,criteria.substring(inclusionStart, inclusionEnd));
+
+		if(criteria.toLowerCase().indexOf(EXCLUSION_CRITERIA) != -1)
+			study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,criteria.substring(exclusionStart));
+
 	}
 
 	private static boolean designContains(ClinicalStudy studyImport, String contains) {

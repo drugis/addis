@@ -103,6 +103,7 @@ public class AddStudyView implements ViewBuilder {
 		d_validator.add(endpoint);
 		
 		ComboBoxPopupOnFocusListener.add(endpoint);
+		endpoint.setPreferredSize(endpoint.getPreferredSize());
 		return endpoint;
 	}
 
@@ -194,7 +195,7 @@ public class AddStudyView implements ViewBuilder {
 		btn.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				String studyId = d_model.getModel(Study.PROPERTY_ID).getString();
-				if (studyId.contains("NCT")) {
+				if (!studyId.isEmpty()) {
 					String url = "http://clinicaltrials.gov/show/"+studyId+"?displayxml=true";
 					try {
 						ClinicaltrialsImporter.getClinicaltrialsData(d_model.getBean(),url);

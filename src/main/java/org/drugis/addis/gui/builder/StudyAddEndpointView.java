@@ -80,6 +80,7 @@ public class StudyAddEndpointView implements ViewBuilder {
 			}
 		}
 	}
+
 	
 	private void initComponents() {
 		d_endpointSelectionInList = new SelectionInList<Endpoint>(getEndpoints(), 
