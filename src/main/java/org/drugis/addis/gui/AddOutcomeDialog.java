@@ -20,26 +20,29 @@
 package org.drugis.addis.gui;
 
 
+import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.OutcomeMeasure.Type;
-import org.drugis.addis.gui.builder.AddEndpointView;
+import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.gui.builder.AddOutcomeMeasureView;
+import org.drugis.addis.presentation.OutcomePresentationModel;
 import org.drugis.common.gui.OkCancelDialog;
 
 @SuppressWarnings("serial")
-public class AddEndpointDialog extends OkCancelDialog {
+public class AddOutcomeDialog extends OkCancelDialog {
 	private Domain d_domain;
-	private Endpoint d_endpoint;
+	private OutcomeMeasure d_om;
 	private Main d_main;
 	
-	public AddEndpointDialog(Main frame, Domain domain) {
-		super(frame, "Add Endpoint");
+	public AddOutcomeDialog(Main frame, Domain domain, OutcomeMeasure om) {
+		super(frame, "Add " + OutcomePresentationModel.getCategoryName(om) );
 		this.d_main = frame;
 		this.setModal(true);
 		d_domain = domain;
-		d_endpoint = new Endpoint("", Type.RATE);
-		AddEndpointView view = new AddEndpointView(
-				frame.getPresentationModelFactory().getCreationModel(d_endpoint), d_okButton);
+		d_om = om;
+		
+		AddOutcomeMeasureView view = new AddOutcomeMeasureView(
+				frame.getPresentationModelFactory().getCreationModel(d_om), d_okButton);
 		getUserPanel().add(view.buildPanel());
 		pack();
 		getRootPane().setDefaultButton(d_okButton);
@@ -50,8 +53,15 @@ public class AddEndpointDialog extends OkCancelDialog {
 	}
 
 	protected void commit() {
-		d_domain.addEndpoint(d_endpoint);
+		
+		if (d_om instanceof Endpoint)
+			d_domain.addEndpoint((Endpoint) d_om);
+		else if (d_om instanceof AdverseDrugEvent)
+			d_domain.addAde((AdverseDrugEvent) d_om);
+		else 
+			throw new IllegalArgumentException("Unknown type of OutcomeMeasure.");
+		
 		setVisible(false);
-		d_main.leftTreeFocus(d_endpoint);
+		d_main.leftTreeFocus(d_om);
 	}
 }

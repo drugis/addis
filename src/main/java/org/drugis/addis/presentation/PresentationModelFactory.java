@@ -26,7 +26,6 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -77,7 +76,7 @@ public class PresentationModelFactory {
 	@SuppressWarnings("unchecked")
 	private PresentationModel createCreationModel(Object obj) {
 		if (obj instanceof OutcomeMeasure) {
-			return new EndpointCreationModel((Endpoint)obj);
+			return new OutcomeMeasureCreationModel((OutcomeMeasure)obj);
 		}
 		return null;
 	}
@@ -85,7 +84,7 @@ public class PresentationModelFactory {
 	@SuppressWarnings("unchecked")
 	private PresentationModel createModel(Object obj) {
 		if (obj instanceof OutcomeMeasure) {
-			return new EndpointPresentationModel((Endpoint)obj,
+			return new OutcomePresentationModel((OutcomeMeasure)obj,
 					d_domain.getStudies((OutcomeMeasure)obj));
 		}
 		if (obj instanceof Study) {

@@ -67,6 +67,7 @@ import javax.swing.tree.TreePath;
 import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.MainData;
+import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
@@ -78,12 +79,13 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.builder.DrugView;
-import org.drugis.addis.gui.builder.EndpointView;
 import org.drugis.addis.gui.builder.EntitiesNodeView;
 import org.drugis.addis.gui.builder.IndicationView;
 import org.drugis.addis.gui.builder.MetaAnalysisWizard;
+import org.drugis.addis.gui.builder.OutcomeMeasureView;
 import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
 import org.drugis.addis.gui.builder.StudiesNodeView;
 import org.drugis.addis.gui.builder.StudyTablePanelView;
@@ -91,9 +93,9 @@ import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
 import org.drugis.addis.presentation.DrugPresentationModel;
-import org.drugis.addis.presentation.EndpointPresentationModel;
 import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
+import org.drugis.addis.presentation.OutcomePresentationModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.StudyPresentationModel;
@@ -242,6 +244,8 @@ public class Main extends JFrame {
 		addMenu.add(createAddIndicationMenuItem());
 		addMenu.add(createAddDrugMenuItem());		
 		addMenu.add(createAddEndpointMenuItem());
+		addMenu.add(createAddAverseDrugEventMenuItem());
+
 		addMenu.add(createAddStudyMenuItem());
 		addMenu.add(createAddMetaAnalysisMenuItem());
 		return addMenu;
@@ -276,6 +280,7 @@ public class Main extends JFrame {
 				deleteMenuAction();
 			}			
 		});
+		
 
 		return item;
 	}
@@ -283,7 +288,7 @@ public class Main extends JFrame {
 	protected void deleteMenuAction() {
 		Object selected = d_leftPanelTree.getSelectionPath().getLastPathComponent();
 		
-		if (selected instanceof Entity && d_leftPanelTree.hasFocus()) {
+		if (selected instanceof Entity) {
 			deleteEntity((Entity)selected);
 		}
 	}
@@ -316,6 +321,9 @@ public class Main extends JFrame {
 				leftTreeFocus(d_domainTreeModel.getDrugsNode());
 			} else if (selected instanceof Endpoint) {
 				getDomain().deleteEndpoint((Endpoint) selected);
+				leftTreeFocus(d_domainTreeModel.getEndpointsNode());
+			} else if (selected instanceof AdverseDrugEvent) {
+				getDomain().deleteAde((AdverseDrugEvent) selected);
 				leftTreeFocus(d_domainTreeModel.getEndpointsNode());
 			} else if (selected instanceof Study) {
 				getDomain().deleteStudy((Study) selected);
@@ -352,6 +360,18 @@ public class Main extends JFrame {
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				showAddEndpointDialog();
+			}
+		});
+		
+		return item;
+	}
+	
+	private JMenuItem createAddAverseDrugEventMenuItem() {
+		JMenuItem item = new JMenuItem("Adverse drug event", ImageLoader.getIcon(FileNames.ICON_ADE));
+		item.setMnemonic('e');
+		item.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				showAddAdeDialog();
 			}
 		});
 		
@@ -415,7 +435,13 @@ public class Main extends JFrame {
 	}
 	
 	public void showAddEndpointDialog() {
-		AddEndpointDialog dialog = new AddEndpointDialog(this, getDomain());
+		AddOutcomeDialog dialog = new AddOutcomeDialog(this, getDomain(), new Endpoint("", Type.RATE));
+		GUIHelper.centerWindow(dialog, this);		
+		dialog.setVisible(true);
+	}
+	
+	public void showAddAdeDialog() {
+		AddOutcomeDialog dialog = new AddOutcomeDialog(this, getDomain(), new AdverseDrugEvent("", Type.RATE));
 		GUIHelper.centerWindow(dialog, this);		
 		dialog.setVisible(true);
 	}
@@ -593,9 +619,9 @@ public class Main extends JFrame {
 					metaAnalysisSelected((RandomEffectsMetaAnalysis)node);
 				} else if (node instanceof Study) {
 					studySelected((Study)node);
-				} else if (node instanceof Endpoint) {
-					endpointSelected((Endpoint)node);
-				} else if (node instanceof Drug) {
+				} else if (node instanceof OutcomeMeasure) {
+					outcomeSelected((OutcomeMeasure)node); // this fires for for both Endpoints and Adverse drug effects
+				}  else if (node instanceof Drug) {
 					drugSelected((Drug) node);
 				} else if (node instanceof Indication) {
 					indicationSelected((Indication) node);
@@ -607,6 +633,8 @@ public class Main extends JFrame {
 					indicationLabelSelected();
 				} else if (node == d_domainTreeModel.getEndpointsNode()) {
 					endpointLabelSelected();
+				} else if (node == d_domainTreeModel.getAdeNode()) {
+					adeLabelSelected();
 				} else if (node == d_domainTreeModel.getAnalysesNode()) {
 					analysesLabelSelected();
 				} else {
@@ -636,8 +664,8 @@ public class Main extends JFrame {
 		buildEntityTable(getDomain().getDrugs(), formatter, "Drugs");
 	}
 	
-	private void endpointSelected(Endpoint e) {
-		EndpointView view = new EndpointView((EndpointPresentationModel) d_pmManager.getModel(e), this);
+	private void outcomeSelected(OutcomeMeasure e) {
+		OutcomeMeasureView view = new OutcomeMeasureView((OutcomePresentationModel) d_pmManager.getModel(e), this);
 		setRightPanelView(view);
 		d_editMenuDeleteItem.setEnabled(true);		
 	}
@@ -650,6 +678,16 @@ public class Main extends JFrame {
 		formatter.add("type");
 		formatter.add("direction");
 		buildEntityTable(getDomain().getEndpoints(), formatter, "Endpoints");
+	}
+	
+	private void adeLabelSelected() {
+		List<String> formatter = new ArrayList<String>();
+		formatter.add("name");
+		formatter.add("description");
+		formatter.add("unitOfMeasurement");
+		formatter.add("type");
+		formatter.add("direction");
+		buildEntityTable(getDomain().getAdes(), formatter, "Adverse drug events");
 	}
 	
 	private void indicationSelected(Indication i) {
@@ -753,6 +791,22 @@ public class Main extends JFrame {
 					new Object[] {d_domainTreeModel.getRoot(), 
 							node }));
 		}
+		else if (node instanceof Indication) {
+			d_leftPanelTree.setSelectionPath(new TreePath(
+					new Object[] {d_domainTreeModel.getRoot(),
+							d_domainTreeModel.getIndicationsNode(), node}));
+		}
+		else if (node instanceof Drug) {
+			d_leftPanelTree.setSelectionPath(new TreePath(
+					new Object[] {d_domainTreeModel.getRoot(), 
+							d_domainTreeModel.getDrugsNode(), node}));
+		}
+
+		else if (node instanceof Endpoint) {
+			d_leftPanelTree.setSelectionPath(new TreePath(
+					new Object[] {d_domainTreeModel.getRoot(), 
+							d_domainTreeModel.getEndpointsNode(), node}));
+		}
 		else if (node instanceof Study) {
 			d_leftPanelTree.setSelectionPath(null);
 			studySelected((Study)node);
@@ -761,21 +815,6 @@ public class Main extends JFrame {
 			d_leftPanelTree.setSelectionPath(new TreePath(
 					new Object[] {d_domainTreeModel.getRoot(), 
 							d_domainTreeModel.getAnalysesNode(), node}));
-		}
-		else if (node instanceof Drug) {
-			d_leftPanelTree.setSelectionPath(new TreePath(
-					new Object[] {d_domainTreeModel.getRoot(), 
-							d_domainTreeModel.getDrugsNode(), node}));
-		}
-		else if (node instanceof Indication) {
-			d_leftPanelTree.setSelectionPath(new TreePath(
-					new Object[] {d_domainTreeModel.getRoot(),
-							d_domainTreeModel.getIndicationsNode(), node}));
-		}
-		else if (node instanceof Endpoint) {
-			d_leftPanelTree.setSelectionPath(new TreePath(
-					new Object[] {d_domainTreeModel.getRoot(), 
-							d_domainTreeModel.getEndpointsNode(), node}));
 		}
 	}	
 }

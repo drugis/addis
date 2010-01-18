@@ -119,11 +119,11 @@ public class PresentationModelFactoryTest {
 		PresentationModel m = d_manager.getModel(e);
 		
 		assertEquals(e, m.getBean());
-		assertEquals(EndpointPresentationModel.class, m.getClass());
+		assertEquals(OutcomePresentationModel.class, m.getClass());
 		assertEquals(d_domain.getStudies(e).getValue().size(),
-				((EndpointPresentationModel) m).getIncludedStudies().getValue().size());
+				((OutcomePresentationModel) m).getIncludedStudies().getValue().size());
 		assertTrue(d_domain.getStudies(e).getValue().containsAll(
-				((EndpointPresentationModel) m).getIncludedStudies().getValue()));
+				((OutcomePresentationModel) m).getIncludedStudies().getValue()));
 	}
 
 	@Test
@@ -138,6 +138,6 @@ public class PresentationModelFactoryTest {
 		PresentationModel m = d_manager.getCreationModel(e);
 		
 		assertEquals(e, m.getBean());
-		assertEquals(EndpointCreationModel.class, m.getClass());
+		assertEquals(OutcomeMeasureCreationModel.class, m.getClass());
 	}
 }

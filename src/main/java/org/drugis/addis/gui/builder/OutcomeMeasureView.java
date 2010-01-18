@@ -27,7 +27,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.presentation.EndpointPresentationModel;
+import org.drugis.addis.presentation.OutcomePresentationModel;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -38,11 +38,11 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class EndpointView implements ViewBuilder {
-	private EndpointPresentationModel d_model;
+public class OutcomeMeasureView implements ViewBuilder {
+	private OutcomePresentationModel d_model;
 	private Main d_frame;
 	
-	public EndpointView(EndpointPresentationModel model, Main frame) {
+	public OutcomeMeasureView(OutcomePresentationModel model, Main frame) {
 		d_model = model;
 		d_frame = frame;
 	}
@@ -58,13 +58,10 @@ public class EndpointView implements ViewBuilder {
 		
 		CellConstraints cc =  new CellConstraints();
 		
-		builder.addSeparator("Endpoint", cc.xy(1, 1));
-		builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()),
-				cc.xy(1, 3));
-		builder.addSeparator("Studies measuring this endpoint", 
-				cc.xy(1, 5));		
-		builder.add(GUIFactory.createCollapsiblePanel(getStudiesComp()), 
-				cc.xy(1, 7));
+		builder.addSeparator(d_model.getCategoryName(), cc.xy(1, 1));
+		builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()),	cc.xy(1, 3));
+		builder.addSeparator("Studies measuring this "+ d_model.getCategoryName(), cc.xy(1, 5));		
+		builder.add(GUIFactory.createCollapsiblePanel(getStudiesComp()), cc.xy(1, 7));
 		
 		return builder.getPanel();
 	}

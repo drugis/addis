@@ -7,8 +7,8 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
 
 @SuppressWarnings("serial")
-public class EndpointCreationModel extends EndpointPresentationModel {
-	public EndpointCreationModel(Endpoint bean) {
+public class OutcomeMeasureCreationModel extends OutcomePresentationModel {
+	public OutcomeMeasureCreationModel(OutcomeMeasure bean) {
 		super(bean, null);
 		
 		getModel(Endpoint.PROPERTY_TYPE).addValueChangeListener(new PropertyChangeListener() {

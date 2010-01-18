@@ -24,14 +24,13 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
+import org.drugis.addis.presentation.OutcomePresentationModel;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ViewBuilder;
-
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -39,26 +38,26 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class AddEndpointView implements ViewBuilder {
+public class AddOutcomeMeasureView implements ViewBuilder {
 	private JTextField d_name;
 	private JTextField d_description;
 	private JTextField d_unitOfMeasurement;
-	private PresentationModel<Endpoint> d_model;
+	private PresentationModel<OutcomeMeasure> d_model;
 	private JComboBox d_type;
 	private JComboBox d_direction;
 	private NotEmptyValidator d_validator;
 	
-	public AddEndpointView(PresentationModel<Endpoint> model, JButton okButton) {
+	public AddOutcomeMeasureView(PresentationModel<OutcomeMeasure> model, JButton okButton) {
 		d_model = model;
 		d_validator = new NotEmptyValidator(okButton);
 	}
 	
 	private void initComponents() {
-		d_name = BasicComponentFactory.createTextField(d_model.getModel(Endpoint.PROPERTY_NAME), false);
+		d_name = BasicComponentFactory.createTextField(d_model.getModel(OutcomeMeasure.PROPERTY_NAME), false);
 		AutoSelectFocusListener.add(d_name);
 
 		d_description = BasicComponentFactory.createTextField(
-				d_model.getModel(Endpoint.PROPERTY_DESCRIPTION), false);
+				d_model.getModel(OutcomeMeasure.PROPERTY_DESCRIPTION), false);
 		
 		AutoSelectFocusListener.add(d_description);
 		d_description.setColumns(30);
@@ -75,9 +74,9 @@ public class AddEndpointView implements ViewBuilder {
 		d_validator.add(d_name);
 	
 		d_type = AuxComponentFactory.createBoundComboBox(
-				OutcomeMeasure.Type.values(), d_model.getModel(Endpoint.PROPERTY_TYPE));
+				OutcomeMeasure.Type.values(), d_model.getModel(OutcomeMeasure.PROPERTY_TYPE));
 		d_direction = AuxComponentFactory.createBoundComboBox(
-				OutcomeMeasure.Direction.values(), d_model.getModel(Endpoint.PROPERTY_DIRECTION));
+				OutcomeMeasure.Direction.values(), d_model.getModel(OutcomeMeasure.PROPERTY_DIRECTION));
 		ComboBoxPopupOnFocusListener.add(d_type);
 		d_validator.add(d_type);
 	}
@@ -97,8 +96,8 @@ public class AddEndpointView implements ViewBuilder {
 		builder.setDefaultDialogBorder();
 		
 		CellConstraints cc = new CellConstraints();
-		
-		builder.addSeparator("Endpoint", cc.xyw(1, 1, 3));
+		String categoryName = OutcomePresentationModel.getCategoryName(d_model.getBean());
+		builder.addSeparator(categoryName , cc.xyw(1, 1, 3));
 		builder.addLabel("Name:", cc.xy(1, 3));
 		builder.add(d_name, cc.xy(3,3));
 		

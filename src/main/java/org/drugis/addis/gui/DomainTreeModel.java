@@ -40,6 +40,8 @@ import org.drugis.common.CollectionUtil;
 
 
 public class DomainTreeModel implements TreeModel {
+	public static final int numOfBranches = 6;
+	
 	public static final int INDICATIONS = 0;
 	public static final int DRUGS = 1;	
 	public static final int ENDPOINTS = 2;
@@ -127,7 +129,7 @@ public class DomainTreeModel implements TreeModel {
 
 	public int getChildCount(Object parent) {
 		if (d_root == parent) {
-			return 5;
+			return numOfBranches;
 		} else if (d_indicationsNode == parent) {
 			return d_domain.getIndications().size();
 		} else if (d_endpointsNode == parent) {
