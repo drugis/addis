@@ -25,9 +25,10 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 import org.drugis.addis.FileNames;
+import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.ImageLoader;
@@ -38,9 +39,13 @@ public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 	public Component getTreeCellRendererComponent(JTree tree, Object value,	boolean sel,
 			boolean expanded, boolean leaf, int row, boolean hasFocus) {
 		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-		if (value instanceof OutcomeMeasure) {
+		if (value instanceof Endpoint) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_ENDPOINT));
 			setToolTipText("Endpoint");
+		}if (value instanceof AdverseDrugEvent) {
+			setIcon(ImageLoader.getIcon(FileNames.ICON_ADE));
+			setToolTipText("Adverse drug effect");
+			System.out.println(FileNames.ICON_ADE);
 		} else if (value instanceof RandomEffectsMetaAnalysis) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_METASTUDY));
 			setToolTipText("Meta-analysis");

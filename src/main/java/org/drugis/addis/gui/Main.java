@@ -297,8 +297,10 @@ public class Main extends JFrame {
 		String selectedType = "";
 		if (selected instanceof Drug) {
 			selectedType = "drug";
-		} else if (selected instanceof OutcomeMeasure) {
+		} else if (selected instanceof Endpoint) {
 			selectedType = "endpoint";
+		} else if (selected instanceof AdverseDrugEvent) {
+			selectedType = "Adverse drug event";
 		} else if (selected instanceof RandomEffectsMetaAnalysis) {
 			selectedType = "meta-analysis";
 		} else if (selected instanceof Study) {
@@ -324,7 +326,7 @@ public class Main extends JFrame {
 				leftTreeFocus(d_domainTreeModel.getEndpointsNode());
 			} else if (selected instanceof AdverseDrugEvent) {
 				getDomain().deleteAde((AdverseDrugEvent) selected);
-				leftTreeFocus(d_domainTreeModel.getEndpointsNode());
+				leftTreeFocus(d_domainTreeModel.getAdeNode());
 			} else if (selected instanceof Study) {
 				getDomain().deleteStudy((Study) selected);
 				leftTreeFocus(d_domainTreeModel.getStudiesNode());
@@ -806,6 +808,11 @@ public class Main extends JFrame {
 			d_leftPanelTree.setSelectionPath(new TreePath(
 					new Object[] {d_domainTreeModel.getRoot(), 
 							d_domainTreeModel.getEndpointsNode(), node}));
+			
+		} else if (node instanceof AdverseDrugEvent) {
+			d_leftPanelTree.setSelectionPath(new TreePath(
+					new Object[] {d_domainTreeModel.getRoot(), 
+							d_domainTreeModel.getAdeNode(), node}));
 		}
 		else if (node instanceof Study) {
 			d_leftPanelTree.setSelectionPath(null);
