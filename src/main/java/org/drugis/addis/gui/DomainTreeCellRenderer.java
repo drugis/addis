@@ -45,7 +45,6 @@ public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 		}if (value instanceof AdverseDrugEvent) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_ADE));
 			setToolTipText("Adverse drug effect");
-			System.out.println(FileNames.ICON_ADE);
 		} else if (value instanceof RandomEffectsMetaAnalysis) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_METASTUDY));
 			setToolTipText("Meta-analysis");
