@@ -42,14 +42,15 @@ public class StudyCharacteristicHolderTest {
 	
 	@Before
 	public void setUp() {
-		d_char = BasicStudyCharacteristic.INDICATION;
+		d_char = BasicStudyCharacteristic.BLINDING;
 		d_study = new Study("Test", new Indication(0L, ""));
+		d_study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.OPEN);
 		d_holder = new MutableCharacteristicHolder(d_study, d_char);
 	}
 	
 	@Test
 	public void testSetValue() {
-		JUnitUtil.testSetter(d_holder, "value", new Indication(0L, ""), new Indication(1L, "Indication"));
+		JUnitUtil.testSetter(d_holder, "value", d_study.getCharacteristic(d_char), BasicStudyCharacteristic.Blinding.TRIPLE_BLIND);
 	}
 	
 	@Test

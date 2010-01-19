@@ -57,7 +57,9 @@ import org.drugis.addis.gui.components.AutoSelectFocusListener;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
+import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.BasicArmPresentation;
+import org.drugis.addis.presentation.ListHolder;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -119,7 +121,7 @@ public class AddStudyView implements ViewBuilder {
 		
 		FormLayout layout = new FormLayout(
 				"fill:pref, 3dlu, center:pref:grow, 3dlu, pref, 3dlu, pref, 3dlu, pref",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);	
 		int fullWidth = 9;
 		if (getEndpoint() != null) {
@@ -141,8 +143,30 @@ public class AddStudyView implements ViewBuilder {
 		
 		// Button to retrieve study data from clinicaltrials.gov
 		builder.add(createImportStudyButton(),cc.xy(fullWidth, 3));
-
-		int row = 5;
+		
+		// Indication part
+		builder.addLabel("Indication:", cc.xy(1, 5, "right, c"));			
+		ListHolder<Indication> indicationsHolder = new AbstractListHolder<Indication>() {
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public List<Indication> getValue() {
+				List <Indication> indicationList = new ArrayList<Indication>();
+				indicationList.addAll(d_domain.getIndications());
+				return indicationList;
+			}
+			
+			@Override
+			public void setValue(Object item) {
+				d_model.getBean().setIndication((Indication) item);
+			}
+		};
+		JComboBox component = AuxComponentFactory.createBoundComboBox(d_domain.getIndications().toArray(), indicationsHolder);
+		ComboBoxPopupOnFocusListener.add(component);
+		builder.add(component, cc.xyw(3, 5, fullWidth-4));
+		builder.add(createNewIndicationButton(), cc.xy(fullWidth, 5));
+		
+		int row = 7;
 		row = buildCharacteristicsPart(fullWidth, builder, cc, row, layout);
 		
 		builder.addLabel("Endpoint:", cc.xy(1, row, "right, c"));
@@ -179,9 +203,6 @@ public class AddStudyView implements ViewBuilder {
 			LayoutUtil.addRow(layout);
 			builder.addLabel(c.getDescription() + ":", cc.xy(1, row, "right, c"));
 			builder.add(createCharacteristicComponent(c), cc.xyw(3, row, fullWidth-4));
-			if (c.equals(BasicStudyCharacteristic.INDICATION)) {
-				builder.add(createNewIndicationButton(), cc.xy(fullWidth, row));
-			}
 			row += 2;
 		}
 
@@ -244,10 +265,10 @@ public class AddStudyView implements ViewBuilder {
 
 	private JComponent createCharacteristicComponent(BasicStudyCharacteristic c) {
 		JComponent component = null;
-		if (c.equals(BasicStudyCharacteristic.INDICATION)) {
+		/*if (c.equals(BasicStudyCharacteristic.INDICATION)) {
 			ArrayList<Indication> options = new ArrayList<Indication>(d_domain.getIndications());			
 			component = createOptionsComboBox(c, options.toArray());
-		} else if (c.getValueType() != null) {
+		} else*/ if (c.getValueType() != null) {
 			if (c.getValueType().equals(String.class)) {
 				ValueModel model = new MutableCharacteristicHolder(d_model.getBean(), c);
 				component = BasicComponentFactory.createTextField(model);

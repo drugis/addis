@@ -167,7 +167,7 @@ public class StudyTest {
 		
 		Set<Entity> dep = new HashSet<Entity>(s.getOutcomeMeasures());
 		dep.addAll(s.getDrugs());
-		dep.add((Indication) s.getCharacteristic(BasicStudyCharacteristic.INDICATION));
+		dep.add(s.getIndication());
 		assertEquals(dep, s.getDependencies());
 	}	
 	

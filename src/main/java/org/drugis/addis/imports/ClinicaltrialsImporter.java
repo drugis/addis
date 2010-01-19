@@ -78,7 +78,7 @@ public class ClinicaltrialsImporter {
 		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, studyImport.getBriefSummary().getTextblock());
 		
 		// Indication // FIXME: Print label instead of setting it.
-		study.setCharacteristic(BasicStudyCharacteristic.INDICATION, new Indication(0l, studyImport.getCondition().get(0)) ) ;
+		study.setIndication(new Indication(0l, studyImport.getCondition().get(0)) ) ;
 
 		// Dates
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");

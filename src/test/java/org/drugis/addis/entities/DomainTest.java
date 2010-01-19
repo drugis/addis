@@ -122,7 +122,7 @@ public class DomainTest {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(ExampleData.buildStudyChouinard());
 		Study study2 = ExampleData.buildStudyDeWilde();
-		study2.setCharacteristic(BasicStudyCharacteristic.INDICATION, ExampleData.buildIndicationChronicHeartFailure());
+		study2.setIndication(ExampleData.buildIndicationChronicHeartFailure());
 		studies.add(study2);
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
 				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());
@@ -133,7 +133,7 @@ public class DomainTest {
 	public void testAddMetaAnalysisThrowsOnUnknownIndication() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		List<Study> studies = new ArrayList<Study>();
 		Study study2 = ExampleData.buildStudyDeWilde();
-		study2.setCharacteristic(BasicStudyCharacteristic.INDICATION, new Indication(4356346L, "notExisting"));
+		study2.setIndication(new Indication(4356346L, "notExisting"));
 		studies.add(study2);
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
 				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());

@@ -3,8 +3,10 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drugis.addis.entities.AdverseDrugEvent;
@@ -27,11 +29,15 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 	private StudyCharacteristicHolder d_doseHolder;
 	private StudyCharacteristicHolder d_drugHolder;
 	private StudyCharacteristicHolder d_sizeHolder;
+	private StudyCharacteristicHolder d_indicationHolder;
 	private PresentationModelFactory d_pmf;
+	
+	private Map<Characteristic, StudyCharacteristicHolder> d_characteristicModelMap;
 	
 	public StudyPresentationModel(Study s, PresentationModelFactory pmf) {
 		super(s);
 		
+		d_characteristicModelMap = new HashMap<Characteristic, StudyCharacteristicHolder>();
 		d_pmf = pmf;
 		
 		d_armsHolder = new ListeningCharacteristicHolder(s, DerivedStudyCharacteristic.ARMS) {
@@ -40,6 +46,8 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 				return getBean().getArms().size();
 			}
 		};
+		addToCharMap(d_armsHolder);
+		
 		d_doseHolder = new ListeningCharacteristicHolder(s, DerivedStudyCharacteristic.DOSING) {
 			@Override
 			protected Object getNewValue() {
@@ -52,32 +60,40 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 				return dose;
 			}			
 		};
+		addToCharMap(d_doseHolder);
+		
 		d_drugHolder = new ListeningCharacteristicHolder(s, DerivedStudyCharacteristic.DRUGS) {
 			@Override
 			protected Object getNewValue() {
 				return getBean().getDrugs();				
 			}
 		};
+		addToCharMap(d_drugHolder);
+		
 		d_sizeHolder = new ListeningCharacteristicHolder(s, DerivedStudyCharacteristic.STUDYSIZE) {
 			@Override
 			protected Object getNewValue() {
 				return getBean().getSampleSize();				
 			}
 		};
+		addToCharMap(d_sizeHolder);
+		
+		d_indicationHolder = new ListeningCharacteristicHolder(s, DerivedStudyCharacteristic.INDICATION) {
+			@Override
+			protected Object getNewValue() {
+				return getBean().getIndication();				
+			}
+		};
+		addToCharMap(d_indicationHolder);
+	}
+
+	private void addToCharMap(StudyCharacteristicHolder holder) {
+		d_characteristicModelMap.put(holder.getCharacteristic(), holder);
 	}
 	
 	public StudyCharacteristicHolder getCharacteristicModel(Characteristic c) {
-		if (c.equals(DerivedStudyCharacteristic.DOSING)) {
-			return d_doseHolder;
-		} else if (c.equals(DerivedStudyCharacteristic.DRUGS)) {
-			return d_drugHolder;
-		} else if (c.equals(DerivedStudyCharacteristic.STUDYSIZE)) {
-			return d_sizeHolder;
-		} else if (c.equals(DerivedStudyCharacteristic.ARMS)) {
-			return d_armsHolder;
-		} else {
-			return new StudyCharacteristicHolder(getBean(), c);
-		}
+		StudyCharacteristicHolder holder = d_characteristicModelMap.get(c);
+		return holder != null ? holder : new StudyCharacteristicHolder(getBean(), c);
 	}
 		
 	public boolean isStudyFinished() {

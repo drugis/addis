@@ -6,7 +6,8 @@ public enum DerivedStudyCharacteristic implements Characteristic {
 	DOSING("Dosing", Dosing.class),
 	DRUGS("Investigational drugs", Object.class),
 	STUDYSIZE("Study size", Integer.class),
-	ARMS("Study Arms", Integer.class);
+	ARMS("Study Arms", Integer.class),
+	INDICATION("Intended Indication", Indication.class);
 
 	private Class<?> d_type;
 	private String d_description;

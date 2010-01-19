@@ -65,6 +65,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	public final static String PROPERTY_OUTCOME_MEASURES = "outcomeMeasures";
 	public final static String PROPERTY_ARMS = "arms";
 	public final static String PROPERTY_CHARACTERISTIC = "Characteristics";
+	public final static String PROPERTY_INDICATION = "indication";
 
 	private List<Arm> d_arms = new ArrayList<Arm>();
 	private String d_id;
@@ -72,10 +73,14 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private Set<OutcomeMeasure> d_outcomeMeasures = new HashSet<OutcomeMeasure>();
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	private VariableMap d_popChars;
+	private Indication d_indication;
 	
+
+
 	public Study(String id, Indication i) {
 		d_id = id;
-		d_chars.put(BasicStudyCharacteristic.INDICATION, i);
+		//d_chars.put(BasicStudyCharacteristic.INDICATION, i);
+		d_indication = i;
 		setOutcomeMeasures(new HashSet<OutcomeMeasure>());
 		setArms(new ArrayList<Arm>());
 		d_popChars = new VariableMap();
@@ -112,10 +117,18 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return drugs;
 	}
 	
+	public Indication getIndication() {
+		return d_indication;
+	}
+
+	public void setIndication(Indication indication) {
+		d_indication = indication;
+	}
+	
 	public Set<Entity> getDependencies() {
 		HashSet<Entity> dep = new HashSet<Entity>(getDrugs());
 		dep.addAll(getOutcomeMeasures());
-		dep.add((Entity) getCharacteristic(BasicStudyCharacteristic.INDICATION));
+		dep.add(d_indication);
 		return dep;
 	}
 	

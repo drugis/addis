@@ -51,7 +51,7 @@ public class ClinicaltrialImporterTest {
 		assertEquals(BasicStudyCharacteristic.Blinding.DOUBLE_BLIND, d_testStudy.getCharacteristic( BasicStudyCharacteristic.BLINDING));
 		//assertEquals(1, d_testStudy.getCharacteristic(BasicStudyCharacteristic.CENTERS)); // FIXME: default 1?
 		assertTrue(((String)d_testStudy.getCharacteristic(BasicStudyCharacteristic.OBJECTIVE)).contains("specific interest is the use of music in the evening") );
-		assertEquals("Depression", ((Indication) d_testStudy.getCharacteristic(BasicStudyCharacteristic.INDICATION)).getName()); // FIXME: code?
+		assertEquals("Depression", d_testStudy.getIndication().getName()); // FIXME: code?
 
 		Date expectedStartDate = null, expectedEndDate = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");

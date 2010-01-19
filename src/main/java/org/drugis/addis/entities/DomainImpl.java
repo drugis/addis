@@ -126,7 +126,7 @@ public class DomainImpl implements Domain {
 			throw new NullPointerException("Study may not be null");
 		}
 		
-		if (!getIndications().contains(s.getCharacteristics().get(BasicStudyCharacteristic.INDICATION))) {
+		if (!getIndications().contains(s.getIndication())) {
 			throw new IllegalArgumentException("indication of this study not in the domain");
 		}
 		d_domainData.addStudy(s);
@@ -144,7 +144,7 @@ public class DomainImpl implements Domain {
 		if (!getStudies().containsAll(ma.getStudies()))
 			throw new IllegalArgumentException("Not All studies in this Meta-Study are in the domain");
 		
-		Indication firstInd = (Indication) ma.getStudies().get(0).getCharacteristic(BasicStudyCharacteristic.INDICATION);
+		Indication firstInd = (Indication) ma.getStudies().get(0).getIndication();
 		if (!getIndications().contains(firstInd)) {
 			throw new IllegalArgumentException("Indication not in domain");
 		}

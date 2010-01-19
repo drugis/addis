@@ -28,17 +28,17 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 	BLINDING("Blinding", Blinding.class),
 	CENTERS("Number of study centers", Integer.class),
 	OBJECTIVE("Study Objective", String.class),
-	INDICATION("Intended Indication", Indication.class),
 	STUDY_START("Study start date", Date.class),
 	STUDY_END("Study end date", Date.class),
 	STATUS("Study status", Status.class),
 	INCLUSION("Inclusion criteria", String.class),
-	EXCLUSION("Exclusion criteria", String.class);
+	EXCLUSION("Exclusion criteria", String.class),
+	SOURCE("Source of the data", Source.class),
+	CREATION_DATE("Date the study was created or extracted", Date.class);
 
-	
 	private String d_description;
 	private Class<?> d_type;
-		
+	
 	public enum Allocation {
 		RANDOMIZED,
 		NONRANDOMIZED
@@ -55,6 +55,11 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 		RECRUITING,
 		ONGOING,
 		FINISHED
+	}
+	
+	public enum Source {
+		MANUAL, 
+		CLINICALTRIALS
 	}
 	
 	BasicStudyCharacteristic(String name, Class<?> type) {

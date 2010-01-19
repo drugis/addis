@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
@@ -145,7 +144,7 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 	}
 
 	private Indication getIndicationFromStudy(Study study) {
-		return (Indication) study.getCharacteristic(BasicStudyCharacteristic.INDICATION);
+		return study.getIndication();
 	}
 
 	public Drug getFirstDrug() {

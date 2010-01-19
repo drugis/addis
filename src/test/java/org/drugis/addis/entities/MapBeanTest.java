@@ -19,7 +19,7 @@ public class MapBeanTest {
 	
 	@Test(expected=RuntimeException.class)
 	public void testRemove() {
-		d_map.remove(BasicStudyCharacteristic.INDICATION);
+		d_map.remove(BasicStudyCharacteristic.ALLOCATION);
 	}
 	
 	@Test(expected=RuntimeException.class)
@@ -32,7 +32,7 @@ public class MapBeanTest {
 		PropertyChangeListener listener =
 			JUnitUtil.mockStrictListener(d_map, MapBean.PROPERTY_CONTENTS, null, null);
 		d_map.addPropertyChangeListener(listener);
-		d_map.put(BasicStudyCharacteristic.INDICATION, new Indication(0L, "Test"));
+		d_map.put(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.SINGLE_BLIND);
 		verify(listener);
 	}
 		
