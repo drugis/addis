@@ -265,10 +265,7 @@ public class AddStudyView implements ViewBuilder {
 
 	private JComponent createCharacteristicComponent(BasicStudyCharacteristic c) {
 		JComponent component = null;
-		/*if (c.equals(BasicStudyCharacteristic.INDICATION)) {
-			ArrayList<Indication> options = new ArrayList<Indication>(d_domain.getIndications());			
-			component = createOptionsComboBox(c, options.toArray());
-		} else*/ if (c.getValueType() != null) {
+		if (c.getValueType() != null) {
 			if (c.getValueType().equals(String.class)) {
 				ValueModel model = new MutableCharacteristicHolder(d_model.getBean(), c);
 				component = BasicComponentFactory.createTextField(model);

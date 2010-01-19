@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -90,6 +91,10 @@ public class ClinicaltrialsImporter {
 		} catch (ParseException e) {
 			System.err.println("ClinicalTrialsImporter:: Couldn't parse date. Left empty.");
 		}
+		
+		// Import date & Source.
+		study.setCharacteristic(BasicStudyCharacteristic.CREATION_DATE,new Date());
+		study.setCharacteristic(BasicStudyCharacteristic.SOURCE, BasicStudyCharacteristic.Source.CLINICALTRIALS);
 
 		// Status
 		if (studyImport.getOverallStatus().toLowerCase().contains("recruiting"))

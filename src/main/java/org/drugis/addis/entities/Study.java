@@ -79,7 +79,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 
 	public Study(String id, Indication i) {
 		d_id = id;
-		//d_chars.put(BasicStudyCharacteristic.INDICATION, i);
 		d_indication = i;
 		setOutcomeMeasures(new HashSet<OutcomeMeasure>());
 		setArms(new ArrayList<Arm>());
