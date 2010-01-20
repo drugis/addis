@@ -207,4 +207,24 @@ public class StudyTest {
 		assertTrue(s.getPopulationCharacteristics().containsKey(v));
 		assertEquals((new BasicContinuousMeasurement(0.0, 1.0, 5)).toString(), s.getPopulationCharacteristic(v).toString());
 	}
+	
+	@Test
+	public void testPutGetNote(){
+		String key = "sleutel";
+		Note note = new Note();
+		Study s = new Study("X", new Indication(0L, "Y"));
+		s.putNote(key, note);
+		assertEquals(note, s.getNote(key));
+	}
+	
+	@Test
+	public void testRemoveNote(){
+		String key = "sleutel";
+		Note note = new Note();
+		Study s = new Study("X", new Indication(0L, "Y"));
+		s.putNote(key, note);
+		assertEquals(note, s.getNote(key));
+		s.removeNote(key);
+		assertEquals("", s.getNote(key).getText());
+	}
 }

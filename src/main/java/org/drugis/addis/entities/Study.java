@@ -74,8 +74,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	private VariableMap d_popChars;
 	private Indication d_indication;
-
-
+	private Map<Object, Note> d_notes = new HashMap<Object, Note>();
+	
 	public Study(String id, Indication i) {
 		d_id = id;
 		d_indication = i;
@@ -265,5 +265,19 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	
 	public void setPopulationCharacteristic(Variable v, Measurement m) {
 		d_popChars.put(v, m);
+	}
+	
+
+	public void putNote(Object key, Note note){
+		d_notes.put(key, note);
+	}
+	
+	public Note getNote(Object key){
+		Note note = d_notes.get(key);
+		return note != null ? note : new Note();
+	}
+	
+	public void removeNote (Object key){
+		d_notes.remove(key);
 	}
 }

@@ -70,6 +70,12 @@ public class ClinicaltrialImporterTest {
 		assertEquals(BasicStudyCharacteristic.Status.FINISHED, d_testStudy.getCharacteristic(BasicStudyCharacteristic.STATUS));
 		assertTrue(((String)d_testStudy.getCharacteristic(BasicStudyCharacteristic.INCLUSION)).contains("Patients aged 18 to 70 years with a Goldberg Depression Test Score of 15 to 65"));
 		assertTrue(((String)d_testStudy.getCharacteristic(BasicStudyCharacteristic.EXCLUSION)).contains("Patients under psychiatric treatment because of psychoses"));
+		
+		/*
+		assertTrue(d_testStudy.getOutcomeMeasures().size() > 0);
+		Note note = d_testStudy.getNote(new ArrayList<OutcomeMeasure>(d_testStudy.getOutcomeMeasures()).get(0));
+		assertTrue(note.getText().contains("the HADS-D-scale (single weighted) between study entry and 5 / 10 and 15-week-follow-up"));*/
+		// these tests should be solved for story 1, point 8
 	}
 	
 }

@@ -36,6 +36,8 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.Note;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
@@ -488,7 +490,13 @@ public class ExampleData {
 		Arm placebo = new Arm(buildPlacebo(), pDose, 1271);
 		BasicRateMeasurement pDeath = new BasicRateMeasurement(347, placebo.getSize());
 		study.addArm(placebo);
-		study.setMeasurement(buildEndpointCVdeath(), placebo, pDeath);
+		OutcomeMeasure om = buildEndpointCVdeath();
+		study.setMeasurement(om, placebo, pDeath);
+		
+		// add Note
+		Note note = new Note("note about cardiovascular death: \"It's not a very nice thing\"");
+		study.putNote(om, note);
+		
 		return study;
 	}
 	

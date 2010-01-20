@@ -47,7 +47,7 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"left:pref, 3dlu, left:pref",
+				"left:pref, 3dlu, left:pref", 
 				"p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
@@ -56,14 +56,13 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 			builder.addLabel("No OutcomeMeasures", cc.xy(1, 1));
 		} else {
 			int row = 1;
-			boolean addRow = false;
 			Set<OutcomeMeasure> outcomeMeasures = d_isEndpoints ? d_model.getEndpoints() : d_model.getAdes();
 			for (OutcomeMeasure om : outcomeMeasures) {
-				if (addRow) {
-					LayoutUtil.addRow(layout);
-				}
+				JComponent outcomeMeasureLabelWithIcon = GUIFactory.createOutcomeMeasureLabelWithIcon(om);
+				
+				outcomeMeasureLabelWithIcon.setToolTipText(d_model.getBean().getNote(om).getText());
 				builder.add(
-						GUIFactory.createOutcomeMeasureLabelWithIcon(om),
+						outcomeMeasureLabelWithIcon,
 						cc.xy(1, row));
 				
 				JPanel panel = new JPanel(new FlowLayout());
@@ -77,8 +76,10 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 				}
 				builder.add(panel, cc.xy(3, row));
 				row += 2;
-				addRow = true;
+
+				LayoutUtil.addRow(layout);
 			}
+			
 		}
 		return builder.getPanel();
 	}
