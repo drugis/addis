@@ -85,12 +85,14 @@ public class DomainImpl implements Domain {
 	
 	private class StudyChangeListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
-			
-			if (evt.getPropertyName().equals(Study.PROPERTY_CHARACTERISTIC))
-				return; // FIXME: Why is this necessary?
-			
 			fireDomainChanged(DomainEvent.Type.STUDIES);
 		}		
+/*
+ NOTE: 	Found an error "expected IllegalArgumentException but found AssertionException" from 
+ 		multiple sources trailing through here to Mock.
+ 		This was solved by moving these tests around within their classes. Suspecting bug in 
+ 		JUnit. 
+*/
 	}
 
 	public void addEndpoint(Endpoint e) {

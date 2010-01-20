@@ -74,7 +74,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	private VariableMap d_popChars;
 	private Indication d_indication;
-	
 
 
 	public Study(String id, Indication i) {
@@ -121,7 +120,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 
 	public void setIndication(Indication indication) {
+		Indication oldInd = d_indication;
 		d_indication = indication;
+		firePropertyChange(PROPERTY_INDICATION, oldInd, indication);
 	}
 	
 	public Set<Entity> getDependencies() {
