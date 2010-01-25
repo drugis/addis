@@ -65,6 +65,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	public final static String PROPERTY_OUTCOME_MEASURES = "outcomeMeasures";
 	public final static String PROPERTY_ARMS = "arms";
 	public final static String PROPERTY_CHARACTERISTIC = "Characteristics";
+	public final static String PROPERTY_NOTE = "Note";
 	public final static String PROPERTY_INDICATION = "indication";
 
 	private List<Arm> d_arms = new ArrayList<Arm>();
@@ -270,6 +271,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 
 	public void putNote(Object key, Note note){
 		d_notes.put(key, note);
+		firePropertyChange(PROPERTY_NOTE, key, key);
 	}
 	
 	public Note getNote(Object key){

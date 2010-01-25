@@ -162,8 +162,8 @@ public class StudyPresentationModelTest {
 		ContinuousVariable age = new ContinuousVariable("Age");
 		Measurement m = age.buildMeasurement();
 		d_study.setPopulationCharacteristic(age, m);
-		assertEquals(d_pmf.getLabeledModel(m), d_model.getCharacteristicModel(age));
-		assertEquals(null, d_model.getCharacteristicModel(new ContinuousVariable("X")));
+		assertEquals(d_pmf.getLabeledModel(m), d_model.getPopulationCharacteristicModel(age));
+		assertEquals(null, d_model.getPopulationCharacteristicModel(new ContinuousVariable("X")));
 	}
 	
 	@Test

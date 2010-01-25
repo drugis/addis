@@ -14,13 +14,26 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.Note;
+import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.OutcomeMeasure.Type;
 
 
 
 public class ClinicaltrialsImporter {
+	
+	public static Study getClinicaltrialsData(String url) throws MalformedURLException, IOException {
+		Study study = new Study("", new Indication(0l, ""));
+		getClinicaltrialsData(study ,url);
+		return study;
+	}
 	
 	public static void getClinicaltrialsData(Study study, String url) throws IOException, MalformedURLException{
 		URL updateWebService;
@@ -54,15 +67,28 @@ public class ClinicaltrialsImporter {
 	}
 	
 	private static void getClinicalTrialsData(Study study, ClinicalStudy studyImport) {
-		// ID
+		// ID  (& ID note =study url)
 		study.setId(studyImport.getIdInfo().getNctId());
+		study.putNote(Study.PROPERTY_ID, new Note(studyImport.getIdInfo().getOrgStudyId()));
+		
+		// Title
+		study.setCharacteristic(BasicStudyCharacteristic.TITLE, studyImport.getBriefTitle());
+		study.putNote(BasicStudyCharacteristic.TITLE, new Note(studyImport.getOfficialTitle()));
+		
+		// Study Centers
+		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, studyImport.getLocation().size());
+		String noteStr = "";
+		for (Location l : studyImport.getLocation()) {
+			noteStr += l.getFacility().getName()+"\n";
+		}
+		study.putNote(BasicStudyCharacteristic.CENTERS, new Note());
 		
 		// Randomization
 		if (designContains(studyImport, "non-randomized")) 
 			study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.NONRANDOMIZED);
 		else if (designContains(studyImport, "randomized"))
 			study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
-		
+		study.putNote(BasicStudyCharacteristic.ALLOCATION, new Note(studyImport.getStudyDesign()));
 		
 		// Blinding
 		if (designContains(studyImport, "open label"))
@@ -73,13 +99,20 @@ public class ClinicaltrialsImporter {
 			study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
 		else if (designContains(studyImport, "triple blind"))
 			study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.TRIPLE_BLIND);
-		
+		study.putNote(BasicStudyCharacteristic.BLINDING, new Note(studyImport.getStudyDesign()));
 		
 		// Objective
 		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, studyImport.getBriefSummary().getTextblock());
+		study.putNote(BasicStudyCharacteristic.OBJECTIVE, new Note(studyImport.getBriefSummary().getTextblock()));
 		
 		// Indication // FIXME: Print label instead of setting it.
 		study.setIndication(new Indication(0l, studyImport.getCondition().get(0)) ) ;
+		
+		String out = "";
+		for(String s : studyImport.getCondition()){
+			out = out+s+"\n";
+		}
+		study.putNote((Object)study.getIndication(), new Note(out));
 
 		// Dates
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");
@@ -91,10 +124,14 @@ public class ClinicaltrialsImporter {
 		} catch (ParseException e) {
 			System.err.println("ClinicalTrialsImporter:: Couldn't parse date. Left empty.");
 		}
+		study.putNote((Object)BasicStudyCharacteristic.STUDY_START, new Note(studyImport.startDate));
+		study.putNote((Object)BasicStudyCharacteristic.STUDY_END,   new Note(studyImport.endDate));
 		
 		// Import date & Source.
 		study.setCharacteristic(BasicStudyCharacteristic.CREATION_DATE,new Date());
 		study.setCharacteristic(BasicStudyCharacteristic.SOURCE, BasicStudyCharacteristic.Source.CLINICALTRIALS);
+		study.putNote((Object)BasicStudyCharacteristic.CREATION_DATE, new Note(studyImport.getRequiredHeader().getDownloadDate()));
+		study.putNote((Object)BasicStudyCharacteristic.SOURCE, new Note(studyImport.getRequiredHeader().getUrl()));
 
 		// Status
 		if (studyImport.getOverallStatus().toLowerCase().contains("recruiting"))
@@ -107,6 +144,7 @@ public class ClinicaltrialsImporter {
 			study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
 		else if (studyImport.getOverallStatus().contains("Available"))
 			study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+		study.putNote((Object)BasicStudyCharacteristic.STATUS, new Note(studyImport.getOverallStatus()));
 		
 		
 		// Inclusion + Exclusion criteria
@@ -125,7 +163,44 @@ public class ClinicaltrialsImporter {
 
 		if(criteria.toLowerCase().indexOf(EXCLUSION_CRITERIA) != -1)
 			study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,criteria.substring(exclusionStart));
+		study.putNote((Object)BasicStudyCharacteristic.INCLUSION, new Note(criteria));
+		study.putNote((Object)BasicStudyCharacteristic.EXCLUSION, new Note(criteria));
+		
+		// Add note to the study-arms.
+		for(ArmGroup ag : studyImport.getArmGroup()){
 
+			Arm arm = new Arm(new Drug("",""), new FixedDose(0,SIUnit.MILLIGRAMS_A_DAY),0);
+			study.addArm(arm);
+			noteStr = ag.getArmGroupType()+"\n"+ag.getDescription();
+			study.putNote(arm, new Note(noteStr));
+		}
+		
+		// Add a separate arm for all dangling interventions.
+		Arm danglingInterventionsArm = new Arm(new Drug("",""), new FixedDose(0,SIUnit.MILLIGRAMS_A_DAY),0);
+		study.addArm(danglingInterventionsArm);
+
+		// Add note to the drugs within the study-arm.
+		for(Intervention i : studyImport.getIntervention()){
+			noteStr = i.getInterventionName()+"\n"+i.getInterventionType()+"\n"+i.getDescription()+"\n";
+			for (String label : i.getArmGroupLabel()) {
+				Arm arm = study.getArms().get(Integer.parseInt(label) -1 );
+				study.putNote(arm.getDrug(), new Note(noteStr));
+			}
+			if (i.getArmGroupLabel().size() == 0)
+				study.putNote(danglingInterventionsArm, new Note(noteStr));
+		}
+
+		// Outcome Measures
+		for (PrimaryOutcome endp : studyImport.getPrimaryOutcome()) {
+			Endpoint e = new Endpoint("", Type.RATE);
+			study.addOutcomeMeasure(e);
+			study.putNote(e, new Note(endp.getMeasure()));
+		}
+		for (SecondaryOutcome endp : studyImport.getSecondaryOutcome()) {
+			Endpoint e = new Endpoint("", Type.RATE);
+			study.addOutcomeMeasure(e);
+			study.putNote(e, new Note(endp.getMeasure()));
+		}
 	}
 
 	private static boolean designContains(ClinicalStudy studyImport, String contains) {

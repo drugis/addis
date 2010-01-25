@@ -24,6 +24,7 @@ import java.util.Date;
 
 public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 
+	TITLE("Title", String.class),
 	ALLOCATION("Group allocation", Allocation.class),
 	BLINDING("Blinding", Blinding.class),
 	CENTERS("Number of study centers", Integer.class),

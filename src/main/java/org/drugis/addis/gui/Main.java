@@ -81,6 +81,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.gui.builder.AddStudyWizard;
 import org.drugis.addis.gui.builder.DrugView;
 import org.drugis.addis.gui.builder.EntitiesNodeView;
 import org.drugis.addis.gui.builder.IndicationView;
@@ -91,6 +92,7 @@ import org.drugis.addis.gui.builder.StudiesNodeView;
 import org.drugis.addis.gui.builder.StudyTablePanelView;
 import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.components.LinkLabel;
+import org.drugis.addis.presentation.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
 import org.drugis.addis.presentation.DrugPresentationModel;
 import org.drugis.addis.presentation.IndicationPresentation;
@@ -385,7 +387,7 @@ public class Main extends JFrame {
 		item.setMnemonic('s');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				showAddStudyDialog();
+				showAddStudyWizard();
 			}
 		});
 		
@@ -448,10 +450,9 @@ public class Main extends JFrame {
 		dialog.setVisible(true);
 	}
 	
-	private void showAddStudyDialog() {
-		AddStudyDialog dialog = new AddStudyDialog(this, getDomain());
-		GUIHelper.centerWindow(dialog, this);		
-		dialog.setVisible(true);
+	private void showAddStudyWizard() {
+		AddStudyWizard wizard = new AddStudyWizard(new AddStudyWizardPresentation(getDomain(), getPresentationModelFactory()));
+		wizard.buildPanel().showInDialog("Add Study", this, true);
 	}
 	
 	public void showAddDrugDialog() {
@@ -528,7 +529,7 @@ public class Main extends JFrame {
 		topAddStudyButton.setToolTipText("Add study");
 		topAddStudyButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
-				showAddStudyDialog();
+				showAddStudyWizard();
 			}
 		});
 		

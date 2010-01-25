@@ -22,6 +22,7 @@ import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.DerivedStudyCharacteristic.Dosing;
 
 import com.jgoodies.binding.PresentationModel;
+import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class StudyPresentationModel extends PresentationModel<Study> {
@@ -159,9 +160,16 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		return vars;
 	}
 	
-	public LabeledPresentationModel getCharacteristicModel(Variable v) {
+	public LabeledPresentationModel getPopulationCharacteristicModel(Variable v) {
 		if (getBean().getPopulationCharacteristic(v) != null) {
 			return d_pmf.getLabeledModel(getBean().getPopulationCharacteristic(v));
+		}
+		return null;
+	}
+	
+	public LabeledPresentationModel getCharacteristicModel(BasicStudyCharacteristic c) {
+		if (getBean().getCharacteristic(c) != null) {
+			return d_pmf.getLabeledModel(getBean().getCharacteristic(c));
 		}
 		return null;
 	}
@@ -184,6 +192,5 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 			}
 		}
 		return s;
-	}
-	
+	}	
 }

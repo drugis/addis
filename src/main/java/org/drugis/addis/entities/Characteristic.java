@@ -1,7 +1,7 @@
 package org.drugis.addis.entities;
 
 
-public interface Characteristic {
+public interface Characteristic{
 
 	public String getDescription();
 
