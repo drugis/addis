@@ -112,7 +112,7 @@ public class ClinicaltrialsImporter {
 		for(String s : studyImport.getCondition()){
 			out = out+s+"\n";
 		}
-		study.putNote((Object)study.getIndication(), new Note(out));
+		study.putNote(Study.PROPERTY_INDICATION, new Note(out));
 
 		// Dates
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");

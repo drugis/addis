@@ -29,7 +29,6 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.MapBean;
-import org.drugis.addis.gui.MutableCharacteristicHolder;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;

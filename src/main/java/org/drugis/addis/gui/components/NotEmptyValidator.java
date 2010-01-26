@@ -32,15 +32,23 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 
-public class NotEmptyValidator {
+import com.jgoodies.binding.value.AbstractValueModel;
+import com.toedter.calendar.JDateChooser;
+
+@SuppressWarnings("serial")
+public class NotEmptyValidator extends AbstractValueModel{
 	
 	private List<JComponent> d_fields = new ArrayList<JComponent>();
 	private DocumentListener d_myTextListener = new MyTextListener();
 	private ActionListener d_myActionListener = new ComboBoxListener();
-	private JButton button;
+	private JButton button = new JButton();
 	
 	public NotEmptyValidator(JButton button) {
 		this.button = button;
+	}
+	
+	public NotEmptyValidator() {
+		
 	}
 	
 	public void add(JComponent field) {
@@ -49,11 +57,15 @@ public class NotEmptyValidator {
 			((JTextComponent) field).getDocument().addDocumentListener(d_myTextListener);
 		} else if (field instanceof JComboBox) {
 			((JComboBox) field).addActionListener(d_myActionListener);
-		}
-		checkFieldsEmpty();
+		} 
+		checkFieldsEmptyForButton();
 	}
 	
-	private void checkFieldsEmpty() {
+	private void checkFieldsEmptyForButton() {
+		button.setEnabled(!checkFieldsEmpty());
+	}
+
+	private boolean checkFieldsEmpty() {
 		boolean empty = false;
 		for (JComponent f : d_fields) {
 			if (f instanceof JTextComponent){
@@ -67,29 +79,43 @@ public class NotEmptyValidator {
 					empty = true;
 					break;
 				}
+			} else if (f instanceof JDateChooser) {
+				if (((JDateChooser)f).getDate() == null){
+					empty = true;
+					break;
+				}
+					
 			}
 		}
-		button.setEnabled(!empty);
+		fireValueChange(null, !empty);
+		return empty;
 	}	
 	
-	@SuppressWarnings("serial")
 	private class ComboBoxListener extends AbstractAction {
 		public void actionPerformed(ActionEvent arg0) {
-			checkFieldsEmpty();
+			checkFieldsEmptyForButton();
 		}		
 	}
 	
 	private class MyTextListener implements DocumentListener {
 		public void changedUpdate(DocumentEvent arg0) {
-			checkFieldsEmpty();			
+			checkFieldsEmptyForButton();			
 		}
 
 		public void insertUpdate(DocumentEvent arg0) {
-			checkFieldsEmpty();
+			checkFieldsEmptyForButton();
 		}
 
 		public void removeUpdate(DocumentEvent arg0) {
-			checkFieldsEmpty();
+			checkFieldsEmptyForButton();
 		}
 	}
+	
+	public void setValue(Object newValue) {
+	}
+	
+	public Boolean getValue() {
+		return checkFieldsEmpty();
+	}
+	
 }

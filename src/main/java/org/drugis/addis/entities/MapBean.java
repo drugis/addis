@@ -55,7 +55,8 @@ abstract public class MapBean<K, V> extends AbstractEntity implements Map<K, V> 
 
 	public void putAll(
 			Map<? extends K, ? extends V> m) {
-		throw new RuntimeException("Not implemented");
+		d_map.putAll(m);
+		fireContentsChanged();
 	}
 
 	public V remove(Object key) {

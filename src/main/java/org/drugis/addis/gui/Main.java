@@ -451,7 +451,7 @@ public class Main extends JFrame {
 	}
 	
 	private void showAddStudyWizard() {
-		AddStudyWizard wizard = new AddStudyWizard(new AddStudyWizardPresentation(getDomain(), getPresentationModelFactory()));
+		AddStudyWizard wizard = new AddStudyWizard(new AddStudyWizardPresentation(getDomain(), getPresentationModelFactory()), this);
 		wizard.buildPanel().showInDialog("Add Study", this, true);
 	}
 	
