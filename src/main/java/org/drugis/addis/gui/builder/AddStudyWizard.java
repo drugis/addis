@@ -16,11 +16,13 @@ import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.DefaultFormatter;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
@@ -56,10 +58,10 @@ public class AddStudyWizard implements ViewBuilder{
 	public Wizard buildPanel() {
 		StaticModel wizardModel = new StaticModel();
 		wizardModel.add(new EnterIdTitleWizardStep());
-		wizardModel.add(new SelectIndicationWizardStep());
-		wizardModel.add(new EnterCharacteristicsWizardStep());
-		wizardModel.add(new SelectEndpointWizardStep());
-		//wizardModel.add(new OverviewWizardStep());
+		//wizardModel.add(new SelectIndicationWizardStep());
+		//wizardModel.add(new EnterCharacteristicsWizardStep());
+		//wizardModel.add(new SelectEndpointWizardStep());
+		wizardModel.add(new SetArmsWizardStep());
 		Wizard wizard = new Wizard(wizardModel);
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 		wizard.setPreferredSize(new Dimension(950, 950));
@@ -67,36 +69,200 @@ public class AddStudyWizard implements ViewBuilder{
 	}
 	
 	@SuppressWarnings("serial")
-	public class SelectEndpointWizardStep extends PanelWizardStep{
-		private PanelBuilder d_builder;
+	public class SetArmsWizardStep extends PanelWizardStep {
 		
-		public SelectEndpointWizardStep(){
-			super("Select Endpoints","Please select the appropriate endpoints");
+		private PanelBuilder d_builder;
+		private NotEmptyValidator d_validator;
+		
+		public SetArmsWizardStep(){
+			super("Select Arms","Please select the appropriate arms");			
 		}
 		
 		 public void prepare() {
+			d_validator = new NotEmptyValidator();
+			Bindings.bind(this, "complete", d_validator);
+			 
 			 if (d_builder != null)
 				 remove(d_builder.getPanel());
+			 
 			 buildWizardStep();
+			 repaint();
 		 }
 		 
 		private void buildWizardStep() {
 			FormLayout layout = new FormLayout(
-					"fill:pref, 3dlu, center:pref:grow, 3dlu, pref",
+					"fill:pref, 3dlu, center:pref:grow, 3dlu, pref, 3dlu, pref",
 					"p, 3dlu, p"
 					);	
 			d_builder = new PanelBuilder(layout);
 			d_builder.setDefaultDialogBorder();
 			CellConstraints cc = new CellConstraints();
 			
-			buildEndpointsPart(3, d_builder, cc, 1, layout);
+			int row = buildArmsPart(1, d_builder, cc, 1, layout);
+			
+			// add 'Add endpoint button' 
+			JButton btn = new JButton("Add Arm");
+			d_builder.add(btn, cc.xy(1, row+=2));
+			btn.addActionListener(new AbstractAction() {
+				public void actionPerformed(ActionEvent e) {
+					d_pm.addEndpointModels(1);
+					prepare();
+				}
+			});
+			
 			add(d_builder.getPanel());
 		}
 
-		private void buildEndpointsPart(int i, PanelBuilder builder, CellConstraints cc, int row, FormLayout layout) {
-			// TODO Auto-generated method stub
+		private int buildArmsPart(int fullwidth, PanelBuilder builder,	CellConstraints cc, int row, FormLayout layout) {
+			// For all the arms found in the imported study
+			for(int curArmNumber = 0; curArmNumber < d_pm.getArms(); ++curArmNumber){
+				LayoutUtil.addRow(layout);
+				row+=2;
+				
+				// add 'remove arm button' 
+				JButton btn = new JButton("Remove Arm");
+				builder.add(btn, cc.xy(1, row));
+				//btn.addActionListener(new RemoveArmListener(i));
+				
+				// add label
+				// builder.addLabel("endpoint: ", cc.xy(3, row));
+				
+				// Set the drug of this arm
+				JComboBox drugsBox = AuxComponentFactory.createBoundComboBox(d_pm.getDrugsModel(), d_pm.getDrugModel(curArmNumber));
+				d_validator.add(drugsBox);
+				builder.add(drugsBox, cc.xy(5, row));
+				
+				// add 'add drug button' 
+				btn = GUIFactory.createPlusButton("add new drug");
+				builder.add(btn, cc.xy(7, row));
+				btn.addActionListener(new AbstractAction() {
+					public void actionPerformed(ActionEvent arg0) {
+						d_main.showAddDrugDialog();
+					}
+				});
+				
+				// add size of arm
+				
+				// add dose
+				
+				// add measurement type
+				
+				
+				
+				
+				// Show the notes from the imported study for the drug
+				//row = addNoteField(builder, cc, 5, row, layout, d_pm.getEndpointNoteModel(i));
+				
+				// show note for size
+				
+				// show note for dose
+				
+				// show note for measurement type
+			}
+			return row;
+		}
+		
+		
+	}
+	
+	@SuppressWarnings("serial")
+	public class SelectEndpointWizardStep extends PanelWizardStep{
+		private class RemoveEndpointListener extends AbstractAction {
+			int d_index;
+			
+			public RemoveEndpointListener(int index) {
+				d_index = index;
+			}
+			
+			public void actionPerformed(ActionEvent e) {
+				d_pm.removeEndpoint(d_index);
+				prepare();
+			}	
+		}
+		
+		private PanelBuilder d_builder;
+		private NotEmptyValidator d_validator;
+		
+		public SelectEndpointWizardStep(){
+			super("Select Endpoints","Please select the appropriate endpoints");
+			
 			
 		}
+		
+		 public void prepare() {
+			d_validator = new NotEmptyValidator();
+			Bindings.bind(this, "complete", d_validator);
+			 
+			 if (d_builder != null)
+				 remove(d_builder.getPanel());
+			 
+			 buildWizardStep();
+			 repaint();
+		 }
+		 
+		private void buildWizardStep() {
+			FormLayout layout = new FormLayout(
+					"fill:pref, 3dlu, center:pref:grow, 3dlu, pref, 3dlu, pref",
+					"p, 3dlu, p"
+					);	
+			d_builder = new PanelBuilder(layout);
+			d_builder.setDefaultDialogBorder();
+			CellConstraints cc = new CellConstraints();
+			
+			int row = buildEndpointsPart(1, d_builder, cc, 1, layout);
+			
+			// add 'Add endpoint button' 
+			JButton btn = new JButton("Add Endpoint");
+			d_builder.add(btn, cc.xy(1, row+=2));
+			btn.addActionListener(new AbstractAction() {
+				
+				public void actionPerformed(ActionEvent e) {
+					d_pm.addEndpointModels(1);
+					prepare();
+				}
+			});
+			
+			add(d_builder.getPanel());
+		}
+
+		private int buildEndpointsPart(int fullWidth, PanelBuilder builder, CellConstraints cc, int row, FormLayout layout) {
+			
+			// For all the endpoints found in the imported study
+			for(int i = 0; i < d_pm.getNumberEndpoints(); ++i){
+				LayoutUtil.addRow(layout);
+				row+=2;
+				
+				// add 'remove endpoint button' 
+				JButton btn = new JButton("Remove Endpoint");
+				builder.add(btn, cc.xy(1, row));
+				btn.addActionListener(new RemoveEndpointListener(i));
+				
+				// add label
+				builder.addLabel("endpoint: ", cc.xy(3, row));
+				
+				// Set the endoints from a list of options
+				JComboBox endpoints = AuxComponentFactory.createBoundComboBox(d_pm.getOutcomeListModel(), d_pm.getEndpointModel(i));
+				d_validator.add(endpoints);
+				builder.add(endpoints, cc.xy(5, row));
+				
+				// add 'add endpoint button' 
+				btn = GUIFactory.createPlusButton("add new endpoint");
+				builder.add(btn, cc.xy(7, row));
+				btn.addActionListener(new AbstractAction() {
+					public void actionPerformed(ActionEvent arg0) {
+						d_main.showAddEndpointDialog();
+					}
+				});
+				
+				
+				// Show the notes from the imported study
+				row = addNoteField(builder, cc, 5, row, layout, d_pm.getEndpointNoteModel(i));
+			}
+			return row;
+			
+		}
+
+
 	}
 	
 	
@@ -111,8 +277,6 @@ public class AddStudyWizard implements ViewBuilder{
 		
 		public EnterCharacteristicsWizardStep () {
 			super("Enter additional information", "Enter additional information for this study");
-			d_validator = new NotEmptyValidator();
-			Bindings.bind(this, "complete", d_validator);
 			
 			excludedChars.add(BasicStudyCharacteristic.TITLE);
 			excludedChars.add(BasicStudyCharacteristic.CREATION_DATE);
@@ -120,9 +284,14 @@ public class AddStudyWizard implements ViewBuilder{
 		}
 		
 		 public void prepare() {
+			d_validator = new NotEmptyValidator();
+			Bindings.bind(this, "complete", d_validator);
+			 
 			 if (d_builder != null)
 				 remove(d_builder.getPanel());
+			 
 			 buildWizardStep();
+			 repaint();
 		 }
 
 		private void buildWizardStep() {
@@ -143,20 +312,15 @@ public class AddStudyWizard implements ViewBuilder{
 			for (BasicStudyCharacteristic c : BasicStudyCharacteristic.values()) {
 				if (!excludedChars.contains(c)) {
 					// add characteristic field
-					LayoutUtil.addRow(layout);
 					builder.addLabel(c.getDescription() + ":", cc.xy(1, row, "right, c"));
 					builder.add(createCharacteristicComponent(c), cc.xyw(3, row,fullWidth));
-					row += 2;
 					
 					// add note field
+					row = addNoteField(builder, cc, 3, row, layout, d_pm.getCharacteristicNoteModel(c));
+
 					LayoutUtil.addRow(layout);
-					JTextField noteField = BasicComponentFactory.createTextField(d_pm.getCharacteristicNoteModel(c));
-					noteField.setColumns(30);
-					noteField.setEditable(false);
-
-					builder.add(noteField, cc.xyw(3, row, fullWidth));
-
 					row += 2;
+
 				}
 			}
 			return row;
@@ -169,7 +333,6 @@ public class AddStudyWizard implements ViewBuilder{
 					ValueModel model = d_pm.getCharacteristicModel(c);
 					component = BasicComponentFactory.createTextField(model);
 					((JTextField) component).setColumns(30);
-					//d_validator.add(component);
 				} else if (c.getValueType().equals(Integer.class)) {
 					JFormattedTextField f = new JFormattedTextField(new DefaultFormatter() {
 						@Override
@@ -232,11 +395,12 @@ public class AddStudyWizard implements ViewBuilder{
 			 if (d_builder != null)
 				 remove(d_builder.getPanel());
 			 buildWizardStep();
+			 //repaint();
 		 }
 		 
 		 public void buildWizardStep(){
 			FormLayout layout = new FormLayout(
-					"center:pref, 3dlu, center:pref, 3dlu, center:pref",
+					"center:pref, 3dlu, center:pref:grow, 3dlu, center:pref",
 					"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 					);	
 			d_builder = new PanelBuilder(layout);
@@ -245,6 +409,7 @@ public class AddStudyWizard implements ViewBuilder{
 			
 			d_builder.addLabel("Indication",cc.xy(1, 3));	
 			
+			// add set indication box
 			JComboBox indBox = AuxComponentFactory.createBoundComboBox(d_pm.getIndicationListModel(), d_pm.getIndicationModel());
 			d_builder.add(indBox, cc.xyw(3, 3, 2));
 			indBox.addItemListener(new ItemListener() {
@@ -253,19 +418,17 @@ public class AddStudyWizard implements ViewBuilder{
 				}
 			});		
 			
+			// add 'add indication' button
 			JButton btn = GUIFactory.createPlusButton("add new indication");
 			d_builder.add(btn, cc.xy(5, 3));
-			
 			btn.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent arg0) {
 					d_main.showAddIndicationDialog();
 				}
 			});
 			
-			JComponent noteArea = AuxComponentFactory.createTextArea(d_pm.getIndicationNoteModel(), false);
-			noteArea.setEnabled(false);
-			d_builder.add(noteArea, cc.xy(3, 5));
-			
+			// add note
+			addNoteField(d_builder, cc, 3, 3, layout, d_pm.getIndicationNoteModel());
 
 			add(d_builder.getPanel());
 		}
@@ -288,6 +451,7 @@ public class AddStudyWizard implements ViewBuilder{
 				 remove(d_builder.getPanel());
 			 buildWizardStep();
 			 checkComplete();
+			 repaint();
 		 }
 		 
 		 private void buildWizardStep() {
@@ -299,17 +463,20 @@ public class AddStudyWizard implements ViewBuilder{
 				d_builder.setDefaultDialogBorder();
 				CellConstraints cc = new CellConstraints();
 				
+				// add source fields
 				d_builder.addLabel("Source",cc.xy(1, 1));	
 				JComponent sourceSelecter = AuxComponentFactory.createBoundComboBox(BasicStudyCharacteristic.Source.values(), d_pm.getSourceModel());
 				sourceSelecter.setEnabled(false);
 				d_builder.add(sourceSelecter, cc.xyw(3, 1, 2));
 				
+				// add ID fields
 				d_builder.addLabel("ID",cc.xy(1, 3));
 				d_idField = BasicComponentFactory.createTextField(d_pm.getIdModel(), false);
 				d_idField.setColumns(30);
 				d_builder.add(d_idField, cc.xy(3, 3));
 				d_idField.addCaretListener(new CompleteListener());
 				
+				// add import button
 				d_importButton = GUIFactory.createPlusButton("enter NCT id to retrieve study data from ClinicalTrials.gov");
 				d_importButton.setEnabled(false);
 				d_importButton.addActionListener(new AbstractAction() {
@@ -320,22 +487,20 @@ public class AddStudyWizard implements ViewBuilder{
 				});
 				d_builder.add(d_importButton, cc.xy(5, 3));	
 				
-				JTextField idNote = BasicComponentFactory.createTextField(d_pm.getIdNoteModel(), true);
-				idNote.setColumns(30);
-				d_builder.add(idNote, cc.xy(3, 5));
-				idNote.setEnabled(false);
-				
+				// add note to ID field
+				addNoteField(d_builder, cc, 3, 3, layout, d_pm.getIdNoteModel());
+
+				// add title label
 				d_builder.addLabel("Title",cc.xy(1, 7));
 				d_titleField = BasicComponentFactory.createTextField(d_pm.getTitleModel(), false);
 				d_titleField.setColumns(30);
 				d_builder.add(d_titleField, cc.xy(3, 7));
 				d_titleField.addCaretListener(new CompleteListener());
 				
-				JTextField titleNote = BasicComponentFactory.createTextField(d_pm.getTitleNoteModel(), true);
-				titleNote.setColumns(30);
-				d_builder.add(titleNote, cc.xy(3, 9));
-				titleNote.setEnabled(false);
+				// add title note
+				addNoteField(d_builder, cc, 3, 7, layout, d_pm.getTitleNoteModel());
 				
+				// add clear button
 				JButton clearButton = new JButton("clear");
 				clearButton.addActionListener(new AbstractAction() {
 					public void actionPerformed(ActionEvent arg0) {
@@ -345,6 +510,7 @@ public class AddStudyWizard implements ViewBuilder{
 				});
 				d_builder.add(clearButton, cc.xy(5, 11));				
 				
+				// add panel to d_builder
 				add(d_builder.getPanel());
 		 }
 		 
@@ -361,4 +527,15 @@ public class AddStudyWizard implements ViewBuilder{
 		}
 	}	
 	
+	private int addNoteField(PanelBuilder builder, CellConstraints cc,	int col, int row, FormLayout layout, ValueModel model) {
+		if(model != null && model.getValue() != null && model.getValue() != ""){
+			LayoutUtil.addRow(layout);
+			row+=2;
+			JScrollPane notePane = AuxComponentFactory.createTextArea(model, false);
+			
+			notePane.setWheelScrollingEnabled(true);
+			builder.add(notePane, cc.xy(col, row));
+		}
+		return row;
+	}
 }

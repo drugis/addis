@@ -168,7 +168,6 @@ public class ClinicaltrialsImporter {
 		
 		// Add note to the study-arms.
 		for(ArmGroup ag : studyImport.getArmGroup()){
-
 			Arm arm = new Arm(new Drug("",""), new FixedDose(0,SIUnit.MILLIGRAMS_A_DAY),0);
 			study.addArm(arm);
 			noteStr = ag.getArmGroupType()+"\n"+ag.getDescription();
@@ -192,15 +191,16 @@ public class ClinicaltrialsImporter {
 
 		// Outcome Measures
 		for (PrimaryOutcome endp : studyImport.getPrimaryOutcome()) {
-			Endpoint e = new Endpoint("", Type.RATE);
+			Endpoint e = new Endpoint(endp.getMeasure(), Type.RATE);
 			study.addOutcomeMeasure(e);
 			study.putNote(e, new Note(endp.getMeasure()));
 		}
+		
 		for (SecondaryOutcome endp : studyImport.getSecondaryOutcome()) {
-			Endpoint e = new Endpoint("", Type.RATE);
+			Endpoint e = new Endpoint(endp.getMeasure(), Type.RATE);
 			study.addOutcomeMeasure(e);
 			study.putNote(e, new Note(endp.getMeasure()));
-		}
+		}	
 	}
 
 	private static boolean designContains(ClinicalStudy studyImport, String contains) {

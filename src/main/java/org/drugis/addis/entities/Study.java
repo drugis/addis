@@ -222,6 +222,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 			throw new NullPointerException("Cannot add a NULL outcome measure");
 		
 		Set<OutcomeMeasure> newVal = new HashSet<OutcomeMeasure>(d_outcomeMeasures);
+		newVal.addAll(d_outcomeMeasures);
 		newVal.add(om);
 		setOutcomeMeasures(newVal);
 	}

@@ -49,7 +49,6 @@ public class ClinicaltrialImporterTest {
  	}
 
 	private void testRetrievedStudy() {
-		
 		assertEquals("NCT00644527",d_testStudy.getId());
 		assertEquals("Receptive Music Therapy for the Treatment of Depression", d_testStudy.getCharacteristic(BasicStudyCharacteristic.TITLE));
 		assertEquals(BasicStudyCharacteristic.Allocation.RANDOMIZED, d_testStudy.getCharacteristic( BasicStudyCharacteristic.ALLOCATION));
@@ -78,8 +77,9 @@ public class ClinicaltrialImporterTest {
 		
 		
 		assertTrue(d_testStudy.getOutcomeMeasures().size() > 0);
-		Note note = d_testStudy.getNote(new ArrayList<OutcomeMeasure>(d_testStudy.getOutcomeMeasures()).get(0));
-
+		Note note = d_testStudy.getNote(new ArrayList<OutcomeMeasure>(d_testStudy.getOutcomeMeasures()).get(1));
+		
+		
 		Boolean checkNote = note.getText().contains("the HADS-D-scale (single weighted) between study entry and 5 / 10 and 15-week-follow-up") 
 		                 || note.getText().contains("Quality of life (SF 36), Vital Exhaustion Brief Questionnaire, Primary outcome measure at 5 and 10 weeks.");
 		assertTrue(checkNote);

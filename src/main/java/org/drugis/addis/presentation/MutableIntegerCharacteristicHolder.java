@@ -18,6 +18,8 @@ import org.drugis.addis.entities.Study;
 		
 		@Override
 		public String getValue() {
+			if (super.getValue () == null)
+				return "0";
 			return super.getValue().toString();
 		}
 		
