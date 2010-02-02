@@ -10,8 +10,7 @@ import org.drugis.addis.entities.Study;
 @SuppressWarnings("serial")
 public class RiskRatioTableModel extends AbstractRelativeEffectTableModel {
 
-	public RiskRatioTableModel(Study study, OutcomeMeasure om,
-			PresentationModelFactory pmf) {
+	public RiskRatioTableModel(Study study, OutcomeMeasure om, PresentationModelFactory pmf) {
 		super(study, om, pmf);
 	}
 

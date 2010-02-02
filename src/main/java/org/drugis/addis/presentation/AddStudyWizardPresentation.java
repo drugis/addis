@@ -1,17 +1,20 @@
 package org.drugis.addis.presentation;
 
+import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -26,20 +29,11 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
+import org.pietschy.wizard.InvalidStateException;
 
 import com.jgoodies.binding.value.ValueModel;
 
 public class AddStudyWizardPresentation {
-	
-	@SuppressWarnings("serial")
-	private class DrugHolder extends AbstractHolder<Drug> {
-		@Override
-		protected void checkArgument(Object newValue) {
-		}
-
-		protected void cascade() {
-		}
-	}
 	
 	@SuppressWarnings("serial")
 	private class DrugListHolder extends AbstractListHolder<Drug> implements PropertyChangeListener {
@@ -74,6 +68,11 @@ public class AddStudyWizardPresentation {
 	
 	@SuppressWarnings("serial")
 	private class OutcomeMeasureHolder extends AbstractHolder<OutcomeMeasure> {
+
+		public OutcomeMeasureHolder() {
+			
+		}
+		
 		@Override
 		protected void checkArgument(Object newValue) {
 			if (newValue != null)
@@ -109,8 +108,7 @@ public class AddStudyWizardPresentation {
 	private StudyPresentationModel d_oldStudyPM;
 	
 	List<AbstractHolder<OutcomeMeasure>> d_selectedOutcomesList;
-	//List<Arm> d_armHoldersList;
-	List<DrugHolder> d_selectedDrugMap;
+	List<BasicArmPresentation> d_selectedArmList;
 	
 	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf) {
 		d_domain = d;
@@ -146,8 +144,8 @@ public class AddStudyWizardPresentation {
 		Object studyID = getIdModel().getValue();
 		String url = "http://clinicaltrials.gov/show/"+studyID+"?displayxml=true";
 		try {
-			d_oldStudyPM = (StudyPresentationModel) d_pmf.getModel(ClinicaltrialsImporter.getClinicaltrialsData(url));
-			d_newStudyPM = (StudyPresentationModel) d_pmf.getModel(new Study("", new Indication(0l,"")));
+			d_oldStudyPM = (StudyPresentationModel) new StudyPresentationModel(ClinicaltrialsImporter.getClinicaltrialsData(url),d_pmf);
+			d_newStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
 			migrateImportToNew(studyID);
 			
 		} catch (MalformedURLException e) {
@@ -171,12 +169,11 @@ public class AddStudyWizardPresentation {
 		d_selectedOutcomesList = new ArrayList<AbstractHolder<OutcomeMeasure>>();
 		addEndpointModels(d_oldStudyPM.getBean().getOutcomeMeasures().size());
 		
-		// Arms.
-		d_selectedDrugMap = new ArrayList<DrugHolder>();
+		// Arms & Dosage
+		d_selectedArmList = new ArrayList<BasicArmPresentation>();
 		addArms(d_oldStudyPM.getBean().getArms().size());
-		
-	}
 
+	}
 
 	public ListHolder<Indication> getIndicationListModel() {
 		return new IndicationListHolder();
@@ -191,22 +188,18 @@ public class AddStudyWizardPresentation {
 	}
 	
 	public void clearStudies() {
-		d_oldStudyPM = (StudyPresentationModel) d_pmf.getModel(new Study("", new Indication(0l,"")));
-		d_newStudyPM = (StudyPresentationModel) d_pmf.getModel(new Study("", new Indication(0l,"")));
+		d_oldStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
+		d_newStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
 		getSourceModel().setValue(BasicStudyCharacteristic.Source.MANUAL);
 		d_selectedOutcomesList = new ArrayList<AbstractHolder<OutcomeMeasure>>();
 		addEndpointModels(1);
 		
-		d_selectedDrugMap = new ArrayList<DrugHolder>();
+		d_selectedArmList = new ArrayList<BasicArmPresentation>();
 	}
 	
 	
 	public ValueModel getCharacteristicModel(BasicStudyCharacteristic c) {
 		return new MutableCharacteristicHolder(d_newStudyPM.getBean(),c);
-	}
-	
-	public ValueModel getCharacteristicModelAsString(BasicStudyCharacteristic c) {
-		return new MutableIntegerCharacteristicHolder(d_newStudyPM.getBean(),c);
 	}
 
 	public ValueModel getCharacteristicNoteModel(BasicStudyCharacteristic c) {
@@ -250,25 +243,64 @@ public class AddStudyWizardPresentation {
 	}
 
 	
-	private void addArms(int numArms) {
-		for(int i = 0; i<numArms; ++i)
-			d_selectedDrugMap.add(new DrugHolder());
+	public void addArms(int numArms) {
+		for(int i = 0; i<numArms; ++i){
+			d_selectedArmList.add(new BasicArmPresentation(new Arm(new Drug("", ""), new FixedDose(0l, SIUnit.MILLIGRAMS_A_DAY),0), d_pmf));
+		}
 	}
 	
 	public int getArms(){
-		return d_selectedDrugMap.size();
+		return d_selectedArmList.size();
+	}
+	
+	public void removeArm(int armNum){
+		d_selectedArmList.remove(armNum);
+		
+		if( d_oldStudyPM.getBean().getArms().size() > armNum )
+			d_oldStudyPM.getBean().getArms().remove(d_oldStudyPM.getBean().getArms().get(armNum));	
 	}
 	
 	public DrugListHolder getDrugsModel(){
 		return new DrugListHolder();
 	}
 	
-	public DrugHolder getDrugModel(int armNumber){
-		return d_selectedDrugMap.get(armNumber);
+	public BasicArmPresentation getArmModel(int armNumber){
+		return d_selectedArmList.get(armNumber);
 	}
 	
-	/*
-	public List<AbstractHolder<Arm>> getArmModels() {
-		return d_armHoldersList;
-	}*/
+	public ValueModel getArmNoteModel(int curArmNumber) {
+		if(d_oldStudyPM.getArms().size() <= curArmNumber)
+			return null;
+		return new StudyNoteHolder(d_oldStudyPM.getBean(),d_oldStudyPM.getBean().getArms().get(curArmNumber));
+	}
+
+	public JTable getMeasurementTableModel(JDialog frame) {
+		commitOutcomesArmsToNew();
+		return new MeasurementTable(d_newStudyPM.getBean(), d_pmf, (Window)frame);
+	}
+	
+	
+	private void commitOutcomesArmsToNew(){
+		Set<OutcomeMeasure> outcomeMeasures = new HashSet<OutcomeMeasure>();
+		for(AbstractHolder<OutcomeMeasure> outcomeHolder : d_selectedOutcomesList) {
+			outcomeMeasures.add(outcomeHolder.getValue());
+		}	
+		d_newStudyPM.getBean().setOutcomeMeasures(outcomeMeasures);
+		
+		List<Arm> arms = new ArrayList<Arm>();
+		for(BasicArmPresentation arm : d_selectedArmList) { 
+			arms.add(arm.getBean());
+		}
+		d_newStudyPM.getBean().setArms(arms);
+	}
+
+	public void saveStudy() throws InvalidStateException {
+		if (d_selectedArmList.isEmpty()) 
+			throw new InvalidStateException("No arms selected in study.");
+		if (d_selectedOutcomesList.isEmpty()) 
+			throw new InvalidStateException("No outcomes selected in study.");
+		
+		// Add the study to the domain.
+		d_domain.addStudy(d_newStudyPM.getBean());
+	}
 }

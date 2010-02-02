@@ -57,4 +57,8 @@ public class ContinuousMeasurementPresentation extends PresentationModel<Continu
 	public AbstractValueModel getLabelModel() {
 		return new LabelModel();
 	}
+	
+	public String toString() {
+		return (String) getLabelModel().getValue(); 
+	}
 }

@@ -108,7 +108,7 @@ public class RelativeEffectTableDialog extends JDialog {
 		
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		
+
 		JButton closeButton = new JButton("Close");
 		closeButton.setMnemonic('c');
 		closeButton.addActionListener(new AbstractAction() {

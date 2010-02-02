@@ -22,6 +22,7 @@ package org.drugis.addis.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
@@ -43,6 +44,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -104,6 +106,8 @@ import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
+import org.pietschy.wizard.Wizard;
+import org.pietschy.wizard.WizardFrameCloser;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
@@ -451,8 +455,14 @@ public class Main extends JFrame {
 	}
 	
 	private void showAddStudyWizard() {
-		AddStudyWizard wizard = new AddStudyWizard(new AddStudyWizardPresentation(getDomain(), getPresentationModelFactory()), this);
-		wizard.buildPanel().showInDialog("Add Study", this, true);
+		JDialog dialog = new JDialog((Frame) this, "Add Study", true);
+		AddStudyWizard wizardBuilder = new AddStudyWizard(new AddStudyWizardPresentation(getDomain(), getPresentationModelFactory()), this, dialog);
+		Wizard wizard = wizardBuilder.buildPanel();
+		dialog.getContentPane().add(wizard);
+		dialog.pack();
+		WizardFrameCloser.bind(wizard, dialog);
+		dialog.setVisible(true);
+		
 	}
 	
 	public void showAddDrugDialog() {

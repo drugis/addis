@@ -56,4 +56,8 @@ public class RateMeasurementPresentation extends PresentationModel<RateMeasureme
 	public AbstractValueModel getLabelModel() {
 		return new LabelModel();
 	}
+	
+	public String toString() {
+		return (String) getLabelModel().getValue(); 
+	}
 }

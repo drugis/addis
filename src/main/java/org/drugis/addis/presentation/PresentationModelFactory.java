@@ -37,8 +37,7 @@ import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import com.jgoodies.binding.PresentationModel;
 
 public class PresentationModelFactory {
-	private Map<Object, PresentationModel<?>> d_cache = new
-		HashMap<Object, PresentationModel<?>>();
+	private Map<Object, PresentationModel<?>> d_cache = new	HashMap<Object, PresentationModel<?>>();
 	private Domain d_domain;
 	
 	public PresentationModelFactory(Domain domain) {

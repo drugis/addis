@@ -9,6 +9,8 @@ import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -167,26 +169,34 @@ public class ClinicaltrialsImporter {
 		study.putNote((Object)BasicStudyCharacteristic.EXCLUSION, new Note(criteria));
 		
 		// Add note to the study-arms.
+		Map<String,Arm> armLabels = new HashMap<String,Arm>();
 		for(ArmGroup ag : studyImport.getArmGroup()){
 			Arm arm = new Arm(new Drug("",""), new FixedDose(0,SIUnit.MILLIGRAMS_A_DAY),0);
 			study.addArm(arm);
-			noteStr = ag.getArmGroupType()+"\n"+ag.getDescription();
+			noteStr = "Arm Type: " + ag.getArmGroupType()+"\nArm Description: "+ag.getDescription();
 			study.putNote(arm, new Note(noteStr));
+			armLabels.put(ag.getArmGroupLabel(),arm);
 		}
 		
-		// Add a separate arm for all dangling interventions.
-		Arm danglingInterventionsArm = new Arm(new Drug("",""), new FixedDose(0,SIUnit.MILLIGRAMS_A_DAY),0);
-		study.addArm(danglingInterventionsArm);
-
 		// Add note to the drugs within the study-arm.
 		for(Intervention i : studyImport.getIntervention()){
-			noteStr = i.getInterventionName()+"\n"+i.getInterventionType()+"\n"+i.getDescription()+"\n";
+			noteStr = "\n\nIntervention Name: "+i.getInterventionName()+"\nIntervention Type: "+i.getInterventionType()+"\nIntervention Description: "+i.getDescription();
+			boolean notAssigned = true;
 			for (String label : i.getArmGroupLabel()) {
-				Arm arm = study.getArms().get(Integer.parseInt(label) -1 );
-				study.putNote(arm.getDrug(), new Note(noteStr));
+				Arm arm = armLabels.get(label);
+				if (arm != null) {
+					notAssigned = false;
+					Note note = study.getNote(arm);
+					note.setText(note.getText() + noteStr);
+				}
 			}
-			if (i.getArmGroupLabel().size() == 0)
-				study.putNote(danglingInterventionsArm, new Note(noteStr));
+			/* Add the intervention note to all arms if it can't be mapped to any single arm */
+			if (notAssigned) {
+				for (Arm arm : study.getArms()) {
+					Note note = study.getNote(arm);
+					note.setText(note.getText() + noteStr);
+				}
+			}
 		}
 
 		// Outcome Measures

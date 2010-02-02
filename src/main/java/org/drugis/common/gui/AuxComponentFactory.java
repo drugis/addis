@@ -1,17 +1,23 @@
 package org.drugis.common.gui;
 
 import java.awt.Dimension;
+import java.text.NumberFormat;
 import java.util.Date;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.text.NumberFormatter;
 
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.formatter.EmptyNumberFormatter;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.util.DefaultUnitConverter;
@@ -61,4 +67,25 @@ public class AuxComponentFactory {
 		}
 		return component;
 	}	
+	
+	public static JTextField createNonNegativeIntegerTextField(ValueModel model) {
+	    NumberFormatter numberFormatter = new EmptyNumberFormatter(NumberFormat.getIntegerInstance(),0);
+        numberFormatter.setValueClass(Integer.class);
+        numberFormatter.setMinimum(0);
+		
+		JFormattedTextField field = new JFormattedTextField(numberFormatter);
+		field.setColumns(3);
+		Bindings.bind(field, model);
+		return field;
+	}
+	
+	public static JTextField createDoubleTextField(ValueModel model) {
+	    NumberFormatter numberFormatter = new EmptyNumberFormatter(NumberFormat.getNumberInstance(),0);
+        numberFormatter.setValueClass(Double.class);
+		
+		JFormattedTextField field = new JFormattedTextField(numberFormatter);
+		field.setColumns(3);
+		Bindings.bind(field, model);
+		return field;
+	}
 }

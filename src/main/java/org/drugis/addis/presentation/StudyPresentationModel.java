@@ -26,6 +26,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class StudyPresentationModel extends PresentationModel<Study> {
+	
 	private StudyCharacteristicHolder d_armsHolder;
 	private StudyCharacteristicHolder d_doseHolder;
 	private StudyCharacteristicHolder d_drugHolder;
