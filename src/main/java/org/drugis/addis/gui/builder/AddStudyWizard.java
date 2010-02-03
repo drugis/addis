@@ -1,9 +1,15 @@
 package org.drugis.addis.gui.builder;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +21,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -38,7 +45,6 @@ import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
-import org.pietschy.wizard.WizardFrameCloser;
 import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -60,7 +66,6 @@ public class AddStudyWizard implements ViewBuilder{
 		d_pm = pm;
 		d_main = main;
 		d_dialog = frame;
-		//WizardFrameCloser.bind(this, frame);
 	}
 	
 	public Wizard buildPanel() {
@@ -80,22 +85,18 @@ public class AddStudyWizard implements ViewBuilder{
 	@SuppressWarnings("serial")
 	public class SetMeasurementsWizardStep extends PanelWizardStep {
 		private PanelBuilder d_builder;
-		private NotEmptyValidator d_validator;
 		
 		public SetMeasurementsWizardStep(){
 			super("Set Measurements","Please enter the measurements for all arm-endpoint combinations.");			
 		} 
 		
 		public void prepare() {
-				d_validator = new NotEmptyValidator();
-				Bindings.bind(this, "complete", d_validator);
-				 
-				 if (d_builder != null)
-					 remove(d_builder.getPanel());
-				 
-				 buildWizardStep();
-				 repaint();
-				 setComplete(true);
+			if (d_builder != null)
+				 remove(d_builder.getPanel());
+			 
+			 buildWizardStep();
+			 repaint();
+			 setComplete(true);
 		}
 		
 		public void applyState()
@@ -117,7 +118,7 @@ public class AddStudyWizard implements ViewBuilder{
 			int width;
 			for(width = 0; width < d_pm.getArms(); ++width){
 				LayoutUtil.addColumn(layout);
-				d_builder.addLabel(d_pm.getArmModel(width).getBean().toString(), cc.xy(3+2*width, 1));
+				d_builder.addLabel("<html>"+d_pm.getArmModel(width).getBean().toString().replace(", ", "<br>")+"</html>", cc.xy(3+2*width, 1));
 			}
 			
 			// add endpoint labels
@@ -164,8 +165,8 @@ public class AddStudyWizard implements ViewBuilder{
 		}
 		
 		 public void prepare() {
-			d_validator = new NotEmptyValidator();
-			Bindings.bind(this, "complete", d_validator);
+			 d_validator = new NotEmptyValidator();
+			 d_validator.addValueChangeListener(new CompleteListener(this));
 			 
 			 if (d_builder != null)
 				 remove(d_builder.getPanel());
@@ -174,9 +175,9 @@ public class AddStudyWizard implements ViewBuilder{
 			 repaint();
 		 }
 		 
-		private void buildWizardStep() {
+		private void buildWizardStep() {// 300px
 			FormLayout layout = new FormLayout(
-					"fill:pref, 3dlu, 400px, 3dlu,  right:pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref",
+					"fill:pref, 3dlu, 300px, 3dlu,  right:pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref",
 					"p, 3dlu, p, 3dlu, p"
 					);	
 			d_builder = new PanelBuilder(layout);
@@ -289,8 +290,8 @@ public class AddStudyWizard implements ViewBuilder{
 		}
 		
 		 public void prepare() {
-			d_validator = new NotEmptyValidator();
-			Bindings.bind(this, "complete", d_validator);
+ 			 d_validator = new NotEmptyValidator();
+			 d_validator.addValueChangeListener(new CompleteListener(this));
 			 
 			 if (d_builder != null)
 				 remove(d_builder.getPanel());
@@ -370,9 +371,9 @@ public class AddStudyWizard implements ViewBuilder{
 		
 		private PanelBuilder d_builder;
 		private NotEmptyValidator d_validator;
+		private JScrollPane d_scrollPane;
 
-		
-		private Set<BasicStudyCharacteristic> excludedChars = new HashSet<BasicStudyCharacteristic>();
+		private Set<BasicStudyCharacteristic> excludedChars = new HashSet<BasicStudyCharacteristic>();		
 		
 		public EnterCharacteristicsWizardStep () {
 			super("Enter additional information", "Enter additional information for this study");
@@ -382,20 +383,21 @@ public class AddStudyWizard implements ViewBuilder{
 			excludedChars.add(BasicStudyCharacteristic.SOURCE);
 		}
 		
-		 public void prepare() {
-			d_validator = new NotEmptyValidator();
-			Bindings.bind(this, "complete", d_validator);
+		public void prepare() {
+			 d_validator = new NotEmptyValidator();
+			 d_validator.addValueChangeListener(new CompleteListener(this));
 			 
-			 if (d_builder != null)
-				 remove(d_builder.getPanel());
+			 if (d_scrollPane != null)
+				 remove(d_scrollPane);
 			 
 			 buildWizardStep();
 			 repaint();
-		 }
+			 
+		}
 
 		private void buildWizardStep() {
 			FormLayout layout = new FormLayout(
-					"fill:pref, 3dlu, center:pref:grow, 3dlu, pref",
+					"fill:pref, 3dlu, fill:pref, 3dlu, pref",
 					"p, 3dlu, p"
 					);	
 			d_builder = new PanelBuilder(layout);
@@ -403,7 +405,13 @@ public class AddStudyWizard implements ViewBuilder{
 			CellConstraints cc = new CellConstraints();
 			
 			buildCharacteristicsPart(3, d_builder, cc, 1, layout);
-			add(d_builder.getPanel());
+			
+			
+			JPanel panel = d_builder.getPanel();
+			this.setLayout(new BorderLayout());
+			d_scrollPane = new JScrollPane(panel);
+		
+			add(d_scrollPane, BorderLayout.CENTER);
 		}
 		
 		private int buildCharacteristicsPart(int fullWidth, PanelBuilder builder, CellConstraints cc, int row, FormLayout layout) {
@@ -469,12 +477,16 @@ public class AddStudyWizard implements ViewBuilder{
 	@SuppressWarnings("serial")
 	public class SelectIndicationWizardStep extends PanelWizardStep {
 		private PanelBuilder d_builder;
+		private NotEmptyValidator d_validator;
 
 		public SelectIndicationWizardStep () {
 			super("Select Indications", "Select the indications for this study");
 		}
 		
 		 public void prepare() {
+			 d_validator = new NotEmptyValidator();
+			 d_validator.addValueChangeListener(new CompleteListener(this));
+			 
 			 if (d_builder != null)
 				 remove(d_builder.getPanel());
 			 buildWizardStep();
@@ -495,11 +507,7 @@ public class AddStudyWizard implements ViewBuilder{
 			// add set indication box
 			JComboBox indBox = AuxComponentFactory.createBoundComboBox(d_pm.getIndicationListModel(), d_pm.getIndicationModel());
 			d_builder.add(indBox, cc.xyw(3, 3, 2));
-			indBox.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent arg0) {
-					setComplete(d_pm.getIndicationModel().getValue() != null);					
-				}
-			});		
+			d_validator.add(indBox);
 			
 			// add 'add indication' button
 			JButton btn = GUIFactory.createPlusButton("add new indication");
@@ -524,16 +532,20 @@ public class AddStudyWizard implements ViewBuilder{
 		private JTextField d_titleField;
 		private PanelBuilder d_builder;
 		private JButton d_importButton;
+		private NotEmptyValidator d_validator;
 		
 		 public EnterIdTitleWizardStep() {
 			super("Select ID and Title","Set the ID and title of the study. Studies can also be extracted from Clinicaltrials.gov using the NCT-id.");
 		 }
-		 
+
 		 public void prepare() {
+			 d_validator = new NotEmptyValidator();
+			 d_validator.addValueChangeListener(new CompleteListener(this));
+			 
 			 if (d_builder != null)
 				 remove(d_builder.getPanel());
 			 buildWizardStep();
-			 checkComplete();
+
 			 repaint();
 		 }
 		 
@@ -556,8 +568,21 @@ public class AddStudyWizard implements ViewBuilder{
 				d_builder.addLabel("ID",cc.xy(1, 3));
 				d_idField = BasicComponentFactory.createTextField(d_pm.getIdModel(), false);
 				d_idField.setColumns(30);
+				d_validator.add(d_idField);
 				d_builder.add(d_idField, cc.xy(3, 3));
-				d_idField.addCaretListener(new CompleteListener());
+				d_idField.addCaretListener(new ImportButtonEnableListener());
+				d_idField.addFocusListener(new FocusListener() {
+					
+					public void focusLost(FocusEvent e) {
+						if (!d_pm.checkID()){
+							JOptionPane.showMessageDialog(d_main, "WARNING: There is already a study with this ID in the domain."+ d_pm.getIdModel().getValue());
+							setComplete(false);
+						}
+					}
+					
+					public void focusGained(FocusEvent e) {
+					}
+				});
 				
 				// add import button
 				d_importButton = GUIFactory.createPlusButton("enter NCT id to retrieve study data from ClinicalTrials.gov");
@@ -577,8 +602,8 @@ public class AddStudyWizard implements ViewBuilder{
 				d_builder.addLabel("Title",cc.xy(1, 7));
 				d_titleField = BasicComponentFactory.createTextField(d_pm.getTitleModel(), false);
 				d_titleField.setColumns(30);
-				d_builder.add(d_titleField, cc.xy(3, 7));
-				d_titleField.addCaretListener(new CompleteListener());
+				d_validator.add(d_titleField);
+				d_builder.add(d_titleField, cc.xy(3, 7));		
 				
 				// add title note
 				addNoteField(d_builder, cc, 7, 3, 1, layout, d_pm.getTitleNoteModel());
@@ -597,17 +622,11 @@ public class AddStudyWizard implements ViewBuilder{
 				add(d_builder.getPanel());
 		 }
 		 
-		 private class CompleteListener implements CaretListener{
+		 private class ImportButtonEnableListener implements CaretListener{
 			public void caretUpdate(CaretEvent arg0) {
-				checkComplete();
+				d_importButton.setEnabled(!d_idField.getText().equals(""));
 			}
 		 }
-		 
-		private void checkComplete() {
-			setComplete( (!d_idField.getText().equals("")) && 
-						 (!d_titleField.getText().equals("")   ));
-			d_importButton.setEnabled(!d_idField.getText().equals(""));
-		}
 	}	
 	
 	private int addNoteField(PanelBuilder builder, CellConstraints cc,	int row, int col, int width, FormLayout layout, ValueModel model) {
@@ -621,4 +640,16 @@ public class AddStudyWizard implements ViewBuilder{
 		}
 		return row;
 	}
+	
+	class CompleteListener implements PropertyChangeListener {
+		 PanelWizardStep d_curStep;
+		
+		 public CompleteListener(PanelWizardStep currentStep){
+			 d_curStep = currentStep;
+		 }
+		
+		 public void propertyChange(PropertyChangeEvent evt) {
+		 	 d_curStep.setComplete((Boolean) evt.getNewValue());
+		 }
+	 }
 }

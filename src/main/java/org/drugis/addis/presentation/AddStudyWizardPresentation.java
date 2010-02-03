@@ -36,8 +36,9 @@ import com.jgoodies.binding.value.ValueModel;
 public class AddStudyWizardPresentation {
 	
 	@SuppressWarnings("serial")
-	private class DrugListHolder extends AbstractListHolder<Drug> implements PropertyChangeListener {
+	private class DrugListHolder extends AbstractListHolder<Drug> implements PropertyChangeListener, DomainListener {
 		public DrugListHolder() {
+			d_domain.addListener(this);
 		}
 		
 		@Override
@@ -48,21 +49,30 @@ public class AddStudyWizardPresentation {
 		public void propertyChange(PropertyChangeEvent evt) {
 			fireValueChange(null, getValue());
 		}
+
+		public void domainChanged(DomainEvent evt) {
+			fireValueChange(null, getValue());
+		}
 	}
 	
 	@SuppressWarnings("serial")
-	private class OutcomeListHolder extends AbstractListHolder<OutcomeMeasure> implements PropertyChangeListener {
+	private class OutcomeListHolder extends AbstractListHolder<OutcomeMeasure> implements PropertyChangeListener, DomainListener {
 		public OutcomeListHolder() {
-			getIndicationModel().addValueChangeListener(this);
+			d_domain.addListener(this);
 		}
 		
 		@Override
 		public List<OutcomeMeasure> getValue() {
-			return new ArrayList<OutcomeMeasure>(getEndpoints());
+			ArrayList<OutcomeMeasure> outcomeMeasures = new ArrayList<OutcomeMeasure>(getEndpoints());
+			return outcomeMeasures;
 		}
-
+		
 		public void propertyChange(PropertyChangeEvent event) {
 			fireValueChange(null, getValue());
+		}
+
+		public void domainChanged(DomainEvent evt) {
+			fireValueChange(null,getValue());
 		}
 	}
 	
@@ -82,6 +92,12 @@ public class AddStudyWizardPresentation {
 
 		@Override
 		protected void cascade() {
+			/* If the endpoint that was selected is already selected somewhere else, reset the other selection */
+			for (AbstractHolder<OutcomeMeasure> omHolder : d_selectedOutcomesList) {
+				if ((!omHolder.equals(this)) && (omHolder.getValue() != null))
+					if (omHolder.getValue().equals(getValue()))
+						omHolder.setValue(null);
+			}
 		}
 	}
 	
@@ -302,5 +318,12 @@ public class AddStudyWizardPresentation {
 		
 		// Add the study to the domain.
 		d_domain.addStudy(d_newStudyPM.getBean());
+	}
+
+	public boolean checkID() {
+		if (d_domain.getStudies().contains(d_newStudyPM.getBean())) {
+				return false;
+		}
+		return true;
 	}
 }
