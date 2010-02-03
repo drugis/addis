@@ -126,6 +126,7 @@ public class StudyView implements ViewBuilder {
 	private JPanel buildAdePart() {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(d_adeView.buildPanel(), BorderLayout.CENTER);
+		panel.add(buildAddADEButton(), BorderLayout.SOUTH);
 		return GUIFactory.createCollapsiblePanel(panel);
 	}
 	
@@ -182,8 +183,22 @@ public class StudyView implements ViewBuilder {
 		};
 		return buildOneButtonBar(text, action);
 	}
+	
+	private JComponent buildAddADEButton() {
+		String text = "Add Adverse Event";
+		AbstractAction action = new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				addADEClicked();
+			}			
+		};
+		return buildOneButtonBar(text, action);
+	}
 
 	private void addEndpointClicked() {
 		d_mainWindow.showStudyAddEndpointDialog((Study)d_model.getBean());
+	}
+	
+	private void addADEClicked() {
+		d_mainWindow.showStudyAddADEDialog((Study)d_model.getBean());
 	}
 }

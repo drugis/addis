@@ -209,6 +209,12 @@ public class Main extends JFrame {
 		GUIHelper.centerWindow(dialog, this);		
 		dialog.setVisible(true);
 	}
+	
+	public void showStudyAddADEDialog(Study study) {
+		StudyAddADEDialog dialog = new StudyAddADEDialog(this, getDomain(), study);
+		GUIHelper.centerWindow(dialog, this);		
+		dialog.setVisible(true);
+	}
 
 	private void initMenu() {
 		JMenuBar menuBar = new JMenuBar();
