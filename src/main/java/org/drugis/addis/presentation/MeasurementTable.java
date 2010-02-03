@@ -8,6 +8,8 @@ import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,126 +29,15 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.FocusTransferrer;
+import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.common.gui.AuxComponentFactory;
 
 import com.jgoodies.binding.PresentationModel;
 
 public class MeasurementTable extends JTable{
 	private static final long serialVersionUID = -5815104084298298455L;
-
-	@SuppressWarnings("serial")
-	public class MeasurementsTableCellEditor extends AbstractCellEditor implements TableCellEditor {
-		
-	
-		private NothingFocussedListener d_nothingFocussedListener;
-		//private JTextField d_rateField;
-
-		private class NothingFocussedListener implements FocusListener {
-			List<Component> d_components = new ArrayList<Component>();
-			JWindow d_window;
-			
-			public NothingFocussedListener(JWindow window) {
-				d_window = window;
-			}
-			
-			public void focusGained(FocusEvent arg0) {
-				// TODO Auto-generated method stub
-				System.out.println("gained focus");
-				d_window.setVisible(true);
-			}
-
-			public void focusLost(FocusEvent arg0) {
-				System.out.println("disposing JWindow beging");
-				for(Component c : d_components)
-					if(c.isFocusOwner())
-						return;
-				d_window.dispose();
-				
-				System.out.println("disposing JWindow end");
-			}
-			
-			public void addComponent(Component c){
-				c.addFocusListener(this);
-				d_components.add(c);
-			}
-
-		}
-
-		@SuppressWarnings("unchecked")
-		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-			System.out.println("getTableCellEditorComponent called with: "+row+" "+column);
-			JPanel importPanel = new JPanel();
-			JWindow d_window = new JWindow(d_frame);
-			d_nothingFocussedListener = new NothingFocussedListener(d_window);
-			
-			PresentationModel<Measurement> cellModel = ((PresentationModel<Measurement>)table.getModel().getValueAt(row, column));
-			if(cellModel.getBean() instanceof ContinuousMeasurement)
-				makeContinuousInputfield(importPanel, cellModel);
-			else if (cellModel.getBean() instanceof RateMeasurement)
-				makeRateInputfield(importPanel, cellModel);
-
-			d_window.getContentPane().add(importPanel, BorderLayout.CENTER);
-			d_window.setVisible(true);
-			d_window.pack();
-			
-			Rectangle cellLocation = d_table.getCellRect(row, column, false);
-			Point l = d_table.getComponentAt(column, row).getLocationOnScreen();
-			l.translate(cellLocation.x, cellLocation.y);
-			System.out.println("Location: "+l);
-			d_window.setLocation(l);
-
-//			System.out.println("d_window focus: "+d_window.hasFocus());
-//			System.out.println("d_rateField focus: "+d_rateField.hasFocus());
-//			d_window.requestFocus();
-//			System.out.println("focusOwner: "+d_frame.getFocusOwner());
-//			d_rateField.setRequestFocusEnabled(true);
-//			d_rateField.requestFocusInWindow();
-//			System.out.println("d_window focus: "+d_window.hasFocus());
-//			System.out.println("d_rateField focus: "+d_rateField.hasFocus());
-			
-//			d_window.setFocusCycleRoot(true);
-//			d_rateField.requestFocus();
-			
-			
-			return new JPanel();
-		}
-
-		private void makeRateInputfield(JPanel importPanel, PresentationModel<?> cellModel) {
-			importPanel.setLayout(new FlowLayout());
-			importPanel.add(new JLabel("Rate: "));
-			JTextField d_rateField = AuxComponentFactory.createNonNegativeIntegerTextField(cellModel.getModel(RateMeasurement.PROPERTY_RATE));
-			
-			d_nothingFocussedListener.addComponent(d_rateField);
-			importPanel.add(d_rateField);
-			importPanel.add(new JLabel("Size: "));
-			JTextField sizeField = AuxComponentFactory.createNonNegativeIntegerTextField(cellModel.getModel(RateMeasurement.PROPERTY_SAMPLESIZE));
-			d_nothingFocussedListener.addComponent(sizeField);
-
-			importPanel.add(sizeField);
-		}
-
-		private void makeContinuousInputfield(JPanel importPanel, PresentationModel<?> cellModel) {
-			importPanel.setLayout(new FlowLayout());
-			importPanel.add(new JLabel("Mean: "));
-			JTextField meanField = AuxComponentFactory.createDoubleTextField(cellModel.getModel(ContinuousMeasurement.PROPERTY_MEAN));
-			d_nothingFocussedListener.addComponent(meanField);
-			importPanel.add(meanField);
-			importPanel.add(new JLabel("Std dev: "));
-			JTextField stddevField = AuxComponentFactory.createDoubleTextField(cellModel.getModel(ContinuousMeasurement.PROPERTY_STDDEV));
-			d_nothingFocussedListener.addComponent(stddevField);
-			importPanel.add(stddevField);
-			importPanel.add(new JLabel("Size: "));
-			JTextField sizeField = AuxComponentFactory.createNonNegativeIntegerTextField(cellModel.getModel(ContinuousMeasurement.PROPERTY_SAMPLESIZE));
-			d_nothingFocussedListener.addComponent(sizeField);
-			importPanel.add(sizeField);
-		}
-
-		public Object getCellEditorValue() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-	}
 	
 	private class MeasurementTableModel extends AbstractTableModel {		
 		private static final long serialVersionUID = 5331596469882184969L;
@@ -185,7 +76,7 @@ public class MeasurementTable extends JTable{
 	
 	public MeasurementTable(Study study, PresentationModelFactory pmf, Window parent) {
 		this.setModel(new MeasurementTableModel(study,pmf));
-		this.setDefaultEditor(Object.class, new MeasurementsTableCellEditor());
+		//this.setDefaultEditor(Object.class, new MeasurementsTableCellEditor());
 		d_frame = parent;
 		setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
 		TableColumn column = null;
@@ -195,8 +86,117 @@ public class MeasurementTable extends JTable{
 		}
 		d_table = this;
 
+		d_table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = ((JTable)e.getComponent()).rowAtPoint(e.getPoint());
+				int col = ((JTable)e.getComponent()).columnAtPoint(e.getPoint());
+				
+				new EnterMeasurementWindow(d_frame,row,col);
+			}
+		});
 	}
 	
 	
-	
+	@SuppressWarnings("serial")
+	public class EnterMeasurementWindow extends JWindow{
+		
+		private class NothingFocussedListener implements FocusListener {
+			List<Component> d_components = new ArrayList<Component>();
+			JWindow d_window;
+			
+			public NothingFocussedListener(JWindow window) {
+				d_window = window;
+			}
+			
+			public void focusGained(FocusEvent arg0) {
+				// TODO Auto-generated method stub
+				System.out.println("gained focus");
+				d_window.setVisible(true);
+			}
+
+			public void focusLost(FocusEvent arg0) {
+				System.out.println("disposing JWindow beging");
+				for(Component c : d_components)
+					if(c.isFocusOwner())
+						return;
+				d_window.dispose();
+				
+				System.out.println("disposing JWindow end");
+			}
+			
+			public void addComponent(Component c){
+				c.addFocusListener(this);
+				d_components.add(c);
+			}
+
+		}
+
+		private NothingFocussedListener d_nothingFocussedListener;
+		
+		@SuppressWarnings("unchecked")
+		public EnterMeasurementWindow(Window parent, int row, int col) {
+			super(parent);
+			
+			d_nothingFocussedListener = new NothingFocussedListener(this);
+			
+			// Retrieve value-model
+			PresentationModel<Measurement> cellModel = ((PresentationModel<Measurement>)d_table.getModel().getValueAt(row, col));
+			
+			// Create Panel with input components.
+			JPanel importPanel = new JPanel();
+			if(cellModel.getBean() instanceof ContinuousMeasurement)
+				makeContinuousInputfield(importPanel, cellModel);
+			else if (cellModel.getBean() instanceof RateMeasurement)
+				makeRateInputfield(importPanel, cellModel);
+
+			// Calculate the location of the window, and move it there.
+			Rectangle cellLocation = d_table.getCellRect(row, col, false);
+			Point l = d_table.getComponentAt(col, row).getLocationOnScreen();
+			l.translate(cellLocation.x, cellLocation.y);
+			System.out.println("Location: "+l);
+			setLocation(l);
+			
+			// Add the panel to the window, and make the window visible.
+			getContentPane().add(importPanel, BorderLayout.CENTER);
+			setVisible(true);
+			pack();
+			
+			requestFocus();
+			
+		}
+		
+		private void makeRateInputfield(JPanel importPanel, PresentationModel<?> cellModel) {
+			importPanel.setLayout(new FlowLayout());
+			importPanel.add(new JLabel("Rate: "));
+			JTextField d_rateField = AuxComponentFactory.createNonNegativeIntegerTextField(cellModel.getModel(RateMeasurement.PROPERTY_RATE));
+			
+			d_nothingFocussedListener.addComponent(d_rateField);
+			importPanel.add(d_rateField);
+			importPanel.add(new JLabel("Size: "));
+			JTextField sizeField = AuxComponentFactory.createNonNegativeIntegerTextField(cellModel.getModel(RateMeasurement.PROPERTY_SAMPLESIZE));
+			d_nothingFocussedListener.addComponent(sizeField);
+
+			importPanel.add(sizeField);
+		}
+
+		private void makeContinuousInputfield(JPanel importPanel, PresentationModel<?> cellModel) {
+			importPanel.setLayout(new FlowLayout());
+			importPanel.add(new JLabel("Mean: "));
+			JTextField meanField = AuxComponentFactory.createDoubleTextField(cellModel.getModel(ContinuousMeasurement.PROPERTY_MEAN));
+			d_nothingFocussedListener.addComponent(meanField);
+			importPanel.add(meanField);
+			importPanel.add(new JLabel("Std dev: "));
+			JTextField stddevField = AuxComponentFactory.createDoubleTextField(cellModel.getModel(ContinuousMeasurement.PROPERTY_STDDEV));
+			d_nothingFocussedListener.addComponent(stddevField);
+			importPanel.add(stddevField);
+			importPanel.add(new JLabel("Size: "));
+			JTextField sizeField = AuxComponentFactory.createNonNegativeIntegerTextField(cellModel.getModel(ContinuousMeasurement.PROPERTY_SAMPLESIZE));
+			d_nothingFocussedListener.addComponent(sizeField);
+			importPanel.add(sizeField);
+		}
+
+		
+		
+	}
 }
