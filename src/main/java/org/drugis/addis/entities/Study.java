@@ -71,7 +71,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private List<Arm> d_arms = new ArrayList<Arm>();
 	private String d_id;
 	private Map<MeasurementKey, Measurement> d_measurements = new HashMap<MeasurementKey, Measurement>();
-	private Set<OutcomeMeasure> d_outcomeMeasures = new HashSet<OutcomeMeasure>();
+	private List<OutcomeMeasure> d_outcomeMeasures = new ArrayList<OutcomeMeasure>();
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	private VariableMap d_popChars;
 	private Indication d_indication;
@@ -206,13 +206,20 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		d_measurements.put(new MeasurementKey(e, g), m);
 	}
 	
-	public Set<OutcomeMeasure> getOutcomeMeasures() {
+	public List<OutcomeMeasure> getOutcomeMeasures() {
 		return d_outcomeMeasures;
 	}
 	
+	public void setOutcomeMeasures(List<? extends OutcomeMeasure> outcomeMeasures) {
+		List<OutcomeMeasure> oldVal = d_outcomeMeasures;
+		d_outcomeMeasures = new ArrayList<OutcomeMeasure>(outcomeMeasures);
+		updateMeasurements();
+		firePropertyChange(PROPERTY_OUTCOME_MEASURES, oldVal, d_outcomeMeasures);
+	}
+	
 	public void setOutcomeMeasures(Set<? extends OutcomeMeasure> outcomeMeasures) {
-		Set<OutcomeMeasure> oldVal = d_outcomeMeasures;
-		d_outcomeMeasures = new HashSet<OutcomeMeasure>(outcomeMeasures);
+		List<OutcomeMeasure> oldVal = d_outcomeMeasures;
+		d_outcomeMeasures = new ArrayList<OutcomeMeasure>(outcomeMeasures);
 		updateMeasurements();
 		firePropertyChange(PROPERTY_OUTCOME_MEASURES, oldVal, d_outcomeMeasures);
 	}

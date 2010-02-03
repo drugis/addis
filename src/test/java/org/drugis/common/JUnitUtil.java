@@ -191,7 +191,7 @@ public class JUnitUtil {
 	
 
 	@SuppressWarnings("unchecked")
-	public static void testDeleter(Model source, String propertyName, String deleteMethodName, Object toDelete) throws Exception {
+	public static void testDeleter(Observable source, String propertyName, String deleteMethodName, Object toDelete) throws Exception {
 		List list1 = new ArrayList();
 		List list2 = new ArrayList();
 		list1.add(toDelete);

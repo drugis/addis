@@ -53,14 +53,14 @@ public class StudyTest {
 	
 	@Test
 	public void testSetEndpoints() {
-		Set<Endpoint> list = Collections.singleton(new Endpoint("e", Type.RATE));
-		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_OUTCOME_MEASURES, Collections.EMPTY_SET, 
+		List<Endpoint> list = Collections.singletonList(new Endpoint("e", Type.RATE));
+		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_OUTCOME_MEASURES, Collections.EMPTY_LIST, 
 				list);
 	}
 	
 	@Test
 	public void testAddOutcomeMeasure() {
-		JUnitUtil.testAdderSet(new Study("X", new Indication(0L, "")), Study.PROPERTY_OUTCOME_MEASURES, "addOutcomeMeasure", new Endpoint("e", Type.RATE));
+		JUnitUtil.testAdder(new Study("X", new Indication(0L, "")), Study.PROPERTY_OUTCOME_MEASURES, "addOutcomeMeasure", new Endpoint("e", Type.RATE));
 	}
 	
 	@Test(expected=NullPointerException.class)
@@ -173,7 +173,7 @@ public class StudyTest {
 	
 	@Test
 	public void testDeleteEndpoint() throws Exception {
-		JUnitUtil.testDeleterSet(new Study("study", new Indication(0L, "")), Study.PROPERTY_OUTCOME_MEASURES, "deleteOutcomeMeasure",
+		JUnitUtil.testDeleter(new Study("study", new Indication(0L, "")), Study.PROPERTY_OUTCOME_MEASURES, "deleteOutcomeMeasure",
 				new Endpoint("e", AbstractOutcomeMeasure.Type.CONTINUOUS));
 	}
 	
