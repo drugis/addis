@@ -92,7 +92,9 @@ public class MeasurementTable extends JTable{
 				int row = ((JTable)e.getComponent()).rowAtPoint(e.getPoint());
 				int col = ((JTable)e.getComponent()).columnAtPoint(e.getPoint());
 				
-				new EnterMeasurementWindow(d_frame,row,col);
+				JWindow measurement = new EnterMeasurementWindow(d_frame,row,col);
+				measurement.requestFocusInWindow();
+				//measurement.requestFocus();
 			}
 		});
 	}
@@ -120,7 +122,7 @@ public class MeasurementTable extends JTable{
 				for(Component c : d_components)
 					if(c.isFocusOwner())
 						return;
-				d_window.dispose();
+				d_window.setVisible(false);
 				
 				System.out.println("disposing JWindow end");
 			}
@@ -163,7 +165,6 @@ public class MeasurementTable extends JTable{
 			pack();
 			
 			requestFocus();
-			
 		}
 		
 		private void makeRateInputfield(JPanel importPanel, PresentationModel<?> cellModel) {

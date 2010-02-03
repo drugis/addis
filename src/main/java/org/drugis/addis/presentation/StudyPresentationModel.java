@@ -22,7 +22,6 @@ import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.DerivedStudyCharacteristic.Dosing;
 
 import com.jgoodies.binding.PresentationModel;
-import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class StudyPresentationModel extends PresentationModel<Study> {
@@ -175,8 +174,8 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		return null;
 	}
 	
-	public Set<OutcomeMeasure> getEndpoints() {
-		Set<OutcomeMeasure> s = new HashSet<OutcomeMeasure>();
+	public List<OutcomeMeasure> getEndpoints() {
+		List<OutcomeMeasure> s = new ArrayList<OutcomeMeasure>();
 		for (OutcomeMeasure m : getBean().getOutcomeMeasures()) {
 			if (m instanceof Endpoint) {
 				s.add(m);
@@ -185,8 +184,8 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		return s;
 	}
 	
-	public Set<OutcomeMeasure> getAdes() {
-		Set<OutcomeMeasure> s = new HashSet<OutcomeMeasure>();
+	public List<OutcomeMeasure> getAdes() {
+		List<OutcomeMeasure> s = new ArrayList<OutcomeMeasure>();
 		for (OutcomeMeasure m : getBean().getOutcomeMeasures()) {
 			if (m instanceof AdverseDrugEvent) {
 				s.add(m);

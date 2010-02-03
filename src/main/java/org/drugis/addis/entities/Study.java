@@ -80,7 +80,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	public Study(String id, Indication i) {
 		d_id = id;
 		d_indication = i;
-		setOutcomeMeasures(new HashSet<OutcomeMeasure>());
+		setOutcomeMeasures(new ArrayList<OutcomeMeasure>());
 		setArms(new ArrayList<Arm>());
 		d_popChars = new VariableMap();
 	}
@@ -217,26 +217,25 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		firePropertyChange(PROPERTY_OUTCOME_MEASURES, oldVal, d_outcomeMeasures);
 	}
 	
-	public void setOutcomeMeasures(Set<? extends OutcomeMeasure> outcomeMeasures) {
+	/*public void setOutcomeMeasures(Set<? extends OutcomeMeasure> outcomeMeasures) {
 		List<OutcomeMeasure> oldVal = d_outcomeMeasures;
 		d_outcomeMeasures = new ArrayList<OutcomeMeasure>(outcomeMeasures);
 		updateMeasurements();
 		firePropertyChange(PROPERTY_OUTCOME_MEASURES, oldVal, d_outcomeMeasures);
-	}
+	}*/
 	
 	public void addOutcomeMeasure(OutcomeMeasure om) {
 		if (om == null) 
 			throw new NullPointerException("Cannot add a NULL outcome measure");
 		
-		Set<OutcomeMeasure> newVal = new HashSet<OutcomeMeasure>(d_outcomeMeasures);
-		newVal.addAll(d_outcomeMeasures);
+		List<OutcomeMeasure> newVal = new ArrayList<OutcomeMeasure>(d_outcomeMeasures);
 		newVal.add(om);
 		setOutcomeMeasures(newVal);
 	}
 		
 	public void deleteOutcomeMeasure(OutcomeMeasure om) {
 		if (d_outcomeMeasures.contains(om)) {
-			Set<OutcomeMeasure> newVal = new HashSet<OutcomeMeasure>(d_outcomeMeasures);
+			List<OutcomeMeasure> newVal = new ArrayList<OutcomeMeasure>(d_outcomeMeasures);
 			newVal.remove(om);
 			setOutcomeMeasures(newVal);
 		}

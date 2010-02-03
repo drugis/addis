@@ -6,9 +6,7 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 
 import javax.swing.JDialog;
@@ -255,7 +253,7 @@ public class AddStudyWizardPresentation {
 	public void removeEndpoint(int i) {
 		d_selectedOutcomesList.remove(i);
 		if ( d_oldStudyPM.getBean().getOutcomeMeasures().size() > i)
-			d_oldStudyPM.getBean().getOutcomeMeasures().remove(new ArrayList<OutcomeMeasure>(d_oldStudyPM.getEndpoints()).get(i));
+			d_oldStudyPM.getBean().getOutcomeMeasures().remove(d_oldStudyPM.getEndpoints().get(i));
 	}
 
 	
@@ -297,7 +295,7 @@ public class AddStudyWizardPresentation {
 	
 	
 	private void commitOutcomesArmsToNew(){
-		Set<OutcomeMeasure> outcomeMeasures = new HashSet<OutcomeMeasure>();
+		List<OutcomeMeasure> outcomeMeasures = new ArrayList<OutcomeMeasure>();
 		for(AbstractHolder<OutcomeMeasure> outcomeHolder : d_selectedOutcomesList) {
 			outcomeMeasures.add(outcomeHolder.getValue());
 		}	

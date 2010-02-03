@@ -23,8 +23,8 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -82,7 +82,7 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	protected void setEndpoint() {
-		d_study.setOutcomeMeasures(Collections.singleton(d_primaryOutcomeMeasure.getOutcomeMeasure()));
+		d_study.setOutcomeMeasures(Collections.singletonList(d_primaryOutcomeMeasure.getOutcomeMeasure()));
 		if (d_primaryOutcomeMeasure.getOutcomeMeasure() != null) {			
 			d_addArmButton.setEnabled(true);
 		}
@@ -151,6 +151,6 @@ public class AddStudyDialog extends OkCancelDialog {
 	}
 
 	private void bindOutcomeMeasure() {
-		d_study.setOutcomeMeasures(new HashSet<OutcomeMeasure>(d_primaryOutcomeMeasure.asList()));
+		d_study.setOutcomeMeasures(new ArrayList<OutcomeMeasure>(d_primaryOutcomeMeasure.asList()));
 	}
 }

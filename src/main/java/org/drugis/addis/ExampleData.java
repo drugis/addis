@@ -20,6 +20,7 @@
 package org.drugis.addis;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -145,7 +146,7 @@ public class ExampleData {
 
 	private static Study realBuildStudyChouinard() {
 		Study study = new Study("Chouinard et al, 1999", buildIndicationDepression());
-		study.setOutcomeMeasures(new HashSet<Endpoint>(
+		study.setOutcomeMeasures(new ArrayList<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
 		
 		// Study characteristics
@@ -234,7 +235,7 @@ public class ExampleData {
 		Endpoint hamd = buildEndpointHamd();
 		Drug fluoxetine = buildDrugFluoxetine();
 		Study study = new Study("De Wilde et al, 1993", buildIndicationDepression());
-		study.setOutcomeMeasures(Collections.singleton(hamd));
+		study.setOutcomeMeasures(Collections.singletonList(hamd));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -284,7 +285,7 @@ public class ExampleData {
 		Endpoint hamd = buildEndpointHamd();
 		Drug fluoxetine = buildDrugFluoxetine();
 		Study study = new Study("MultipleArms, 1993", buildIndicationDepression());
-		study.setOutcomeMeasures(Collections.singleton(hamd));
+		study.setOutcomeMeasures(Collections.singletonList(hamd));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -340,7 +341,7 @@ public class ExampleData {
 
 	private static Study realBuildStudyBennie() {
 		Study study = new Study("Bennie et al, 1995", buildIndicationDepression());
-		study.setOutcomeMeasures(new HashSet<Endpoint>(
+		study.setOutcomeMeasures(new ArrayList<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
 		
 		// Study characteristics
@@ -391,7 +392,7 @@ public class ExampleData {
 
 	private static Study realBuildStudyThreeArm() {
 		Study study = new Study("SciFictional et al, 2359", buildIndicationDepression());
-		study.setOutcomeMeasures(new HashSet<Endpoint>(
+		study.setOutcomeMeasures(new ArrayList<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
 		
 		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
@@ -447,7 +448,7 @@ public class ExampleData {
 
 	private static Study realBuildStudyMcMurray() {
 		Study study = new Study("McMurray et al, 2003", buildIndicationChronicHeartFailure());
-		study.setOutcomeMeasures(Collections.singleton(buildEndpointCVdeath()));
+		study.setOutcomeMeasures(Collections.singletonList(buildEndpointCVdeath()));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);

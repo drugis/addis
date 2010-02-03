@@ -3,7 +3,7 @@ package org.drugis.addis.gui.builder;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Set;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -56,7 +56,7 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 			builder.addLabel("No OutcomeMeasures", cc.xy(1, 1));
 		} else {
 			int row = 1;
-			Set<OutcomeMeasure> outcomeMeasures = d_isEndpoints ? d_model.getEndpoints() : d_model.getAdes();
+			List<OutcomeMeasure> outcomeMeasures = d_isEndpoints ? d_model.getEndpoints() : d_model.getAdes();
 			for (OutcomeMeasure om : outcomeMeasures) {
 				JComponent outcomeMeasureLabelWithIcon = GUIFactory.createOutcomeMeasureLabelWithIcon(om);
 				

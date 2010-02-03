@@ -1,13 +1,10 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Date;
@@ -48,7 +45,6 @@ import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -85,16 +81,19 @@ public class AddStudyWizard implements ViewBuilder{
 	@SuppressWarnings("serial")
 	public class SetMeasurementsWizardStep extends PanelWizardStep {
 		private PanelBuilder d_builder;
+		private JScrollPane d_scrollPane;
 		
 		public SetMeasurementsWizardStep(){
 			super("Set Measurements","Please enter the measurements for all arm-endpoint combinations.");			
 		} 
 		
 		public void prepare() {
-			if (d_builder != null)
-				 remove(d_builder.getPanel());
+			this.setVisible(false);
+			if (d_scrollPane != null)
+				 remove(d_scrollPane);
 			 
 			 buildWizardStep();
+			 this.setVisible(true);
 			 repaint();
 			 setComplete(true);
 		}
@@ -134,11 +133,12 @@ public class AddStudyWizard implements ViewBuilder{
 			//measurementsTable.
 			
 			d_builder.add(measurementsTable,cc.xywh(3, 3, width*2+1, height*2+1));
-			
-			//JScrollPane scrollPane = new JScrollPane(d_builder.getPanel());
-			//scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-			//scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-			add(d_builder.getPanel());
+
+			JPanel panel = d_builder.getPanel();
+			this.setLayout(new BorderLayout());
+			d_scrollPane = new JScrollPane(panel);
+		
+			add(d_scrollPane, BorderLayout.CENTER);
 		}
 	}
 	
@@ -159,19 +159,22 @@ public class AddStudyWizard implements ViewBuilder{
 		
 		private PanelBuilder d_builder;
 		private NotEmptyValidator d_validator;
+		private JScrollPane d_scrollPane;
 		
 		public SetArmsWizardStep(){
 			super("Select Arms","Please select the appropriate arms");			
 		}
 		
 		 public void prepare() {
+			 this.setVisible(false);
 			 d_validator = new NotEmptyValidator();
 			 d_validator.addValueChangeListener(new CompleteListener(this));
 			 
-			 if (d_builder != null)
-				 remove(d_builder.getPanel());
+			 if (d_scrollPane != null)
+				 remove(d_scrollPane);
 			 
 			 buildWizardStep();
+			 this.setVisible(true);
 			 repaint();
 		 }
 		 
@@ -201,7 +204,11 @@ public class AddStudyWizard implements ViewBuilder{
 				}
 			});
 			
-			add(d_builder.getPanel());
+			JPanel panel = d_builder.getPanel();
+			this.setLayout(new BorderLayout());
+			d_scrollPane = new JScrollPane(panel);
+		
+			add(d_scrollPane, BorderLayout.CENTER);
 		}
 
 		private int buildArmsPart(int fullwidth, PanelBuilder builder,	CellConstraints cc, int row, FormLayout layout) {
@@ -282,21 +289,23 @@ public class AddStudyWizard implements ViewBuilder{
 		
 		private PanelBuilder d_builder;
 		private NotEmptyValidator d_validator;
+		private JScrollPane d_scrollPane;
 		
 		public SelectEndpointWizardStep(){
 			super("Select Endpoints","Please select the appropriate endpoints");
-			
-			
+			this.setLayout(new BorderLayout());
 		}
 		
 		 public void prepare() {
+			 this.setVisible(false);
  			 d_validator = new NotEmptyValidator();
 			 d_validator.addValueChangeListener(new CompleteListener(this));
 			 
-			 if (d_builder != null)
-				 remove(d_builder.getPanel());
+			 if (d_scrollPane != null)
+				 remove(d_scrollPane);
 			 
 			 buildWizardStep();
+			 this.setVisible(true);
 			 repaint();
 		 }
 		 
@@ -321,8 +330,11 @@ public class AddStudyWizard implements ViewBuilder{
 					prepare();
 				}
 			});
-			
-			add(d_builder.getPanel());
+		
+			JPanel panel = d_builder.getPanel();
+			d_scrollPane = new JScrollPane(panel);
+		
+			add(d_scrollPane, BorderLayout.CENTER);
 		}
 
 		private int buildEndpointsPart(int fullWidth, PanelBuilder builder, CellConstraints cc, int row, FormLayout layout) {
@@ -391,8 +403,7 @@ public class AddStudyWizard implements ViewBuilder{
 				 remove(d_scrollPane);
 			 
 			 buildWizardStep();
-			 repaint();
-			 
+			 repaint(); 
 		}
 
 		private void buildWizardStep() {
@@ -405,7 +416,6 @@ public class AddStudyWizard implements ViewBuilder{
 			CellConstraints cc = new CellConstraints();
 			
 			buildCharacteristicsPart(3, d_builder, cc, 1, layout);
-			
 			
 			JPanel panel = d_builder.getPanel();
 			this.setLayout(new BorderLayout());
@@ -478,19 +488,22 @@ public class AddStudyWizard implements ViewBuilder{
 	public class SelectIndicationWizardStep extends PanelWizardStep {
 		private PanelBuilder d_builder;
 		private NotEmptyValidator d_validator;
+		private JScrollPane d_scrollPane;
 
 		public SelectIndicationWizardStep () {
 			super("Select Indications", "Select the indications for this study");
 		}
 		
 		 public void prepare() {
+			 this.setVisible(false);
 			 d_validator = new NotEmptyValidator();
 			 d_validator.addValueChangeListener(new CompleteListener(this));
 			 
-			 if (d_builder != null)
-				 remove(d_builder.getPanel());
+			 if (d_scrollPane != null)
+				 remove(d_scrollPane);
 			 buildWizardStep();
-			 //repaint();
+			 this.setVisible(true);
+			 repaint();
 		 }
 		 
 		 public void buildWizardStep(){
@@ -521,7 +534,10 @@ public class AddStudyWizard implements ViewBuilder{
 			// add note
 			addNoteField(d_builder, cc, 3, 3, 1, layout, d_pm.getIndicationNoteModel());
 
-			add(d_builder.getPanel());
+			this.setLayout(new BorderLayout());
+			d_scrollPane = new JScrollPane(d_builder.getPanel());
+		
+			add(d_scrollPane, BorderLayout.CENTER);
 		}
 	}
 	
@@ -533,19 +549,22 @@ public class AddStudyWizard implements ViewBuilder{
 		private PanelBuilder d_builder;
 		private JButton d_importButton;
 		private NotEmptyValidator d_validator;
+		private JScrollPane d_scrollPane;
 		
 		 public EnterIdTitleWizardStep() {
 			super("Select ID and Title","Set the ID and title of the study. Studies can also be extracted from Clinicaltrials.gov using the NCT-id.");
 		 }
 
 		 public void prepare() {
+			 this.setVisible(false);
 			 d_validator = new NotEmptyValidator();
 			 d_validator.addValueChangeListener(new CompleteListener(this));
 			 
-			 if (d_builder != null)
-				 remove(d_builder.getPanel());
+			 if (d_scrollPane != null)
+				 remove(d_scrollPane);
+			 
 			 buildWizardStep();
-
+			 this.setVisible(true);
 			 repaint();
 		 }
 		 
@@ -618,8 +637,9 @@ public class AddStudyWizard implements ViewBuilder{
 				});
 				d_builder.add(clearButton, cc.xy(5, 11));				
 				
-				// add panel to d_builder
-				add(d_builder.getPanel());
+				this.setLayout(new BorderLayout());
+				d_scrollPane = new JScrollPane(d_builder.getPanel());
+				add(d_scrollPane, BorderLayout.CENTER);
 		 }
 		 
 		 private class ImportButtonEnableListener implements CaretListener{

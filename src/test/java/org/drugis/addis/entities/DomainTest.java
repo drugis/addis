@@ -276,13 +276,13 @@ public class DomainTest {
 		Endpoint e2 = new Endpoint("e2", Type.RATE);
 		OutcomeMeasure e3 = new Endpoint("e3", Type.RATE);
 		
-		Set<Endpoint> l1 = new HashSet<Endpoint>();
+		List<Endpoint> l1 = new ArrayList<Endpoint>();
 		l1.add(e1);
 		Study s1 = new Study("X", d_indication);
 		s1.setId("s1");
 		s1.setOutcomeMeasures(l1);
 		
-		Set<Endpoint> l2 = new HashSet<Endpoint>();
+		ArrayList<Endpoint> l2 = new ArrayList<Endpoint>();
 		l2.add(e2);
 		l2.add(e1);
 		Study s2 = new Study("X", d_indication);
@@ -311,14 +311,14 @@ public class DomainTest {
 		Endpoint e1 = new Endpoint("e1", Type.RATE);
 		Endpoint e2 = new Endpoint("e2", Type.RATE);
 			
-		Set<Endpoint> l1 = new HashSet<Endpoint>();
+		ArrayList<Endpoint> l1 = new ArrayList<Endpoint>();
 		l1.add(e1);
 		Indication i1 = new Indication(0L, "");
 		d_domain.addIndication(i1);
 		Study s1 = new Study("s1", i1);
 		s1.setOutcomeMeasures(l1);
 		
-		Set<Endpoint> l2 = new HashSet<Endpoint>();
+		ArrayList<Endpoint> l2 = new ArrayList<Endpoint>();
 		l2.add(e2);
 		l2.add(e1);
 		Study s2 = new Study("s2", i1);
@@ -349,7 +349,7 @@ public class DomainTest {
 	public void testGetStudiesByIndicationListFiresOnChange() {
 		Endpoint e1 = new Endpoint("e1", Type.RATE);
 
-		Set<Endpoint> l1 = new HashSet<Endpoint>();
+		ArrayList<Endpoint> l1 = new ArrayList<Endpoint>();
 		l1.add(e1);
 		Indication i1 = new Indication(0L, "");
 		d_domain.addIndication(i1);
@@ -386,7 +386,7 @@ public class DomainTest {
 		Endpoint e = new Endpoint("Death", OutcomeMeasure.Type.RATE);
 		
 		Study s1 = new Study("s1", d_indication);
-		s1.setOutcomeMeasures(Collections.singleton(e));
+		s1.setOutcomeMeasures(Collections.singletonList(e));
 		Arm g1 = new Arm(d1, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY), 
 				100);
 		BasicMeasurement m1 = new BasicRateMeasurement(10, g1.getSize());
@@ -397,7 +397,7 @@ public class DomainTest {
 		Indication indic2 = new Indication(1L, "");
 		d_domain.addIndication(indic2);
 		Study s2 = new Study("s2", indic2);
-		s2.setOutcomeMeasures(Collections.singleton(e));
+		s2.setOutcomeMeasures(Collections.singletonList(e));
 		Arm g2 = new Arm(d1, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
 				250);		
 		Arm g3 = new Arm(d2, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
@@ -436,7 +436,7 @@ public class DomainTest {
 		Endpoint e = new Endpoint("Death", OutcomeMeasure.Type.RATE);
 		
 		Study s1 = new Study("s1", d_indication);
-		s1.setOutcomeMeasures(Collections.singleton(e));
+		s1.setOutcomeMeasures(Collections.singletonList(e));
 		Arm g1 = new Arm(d1, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY), 
 				100);
 		BasicMeasurement m1 = new BasicRateMeasurement(10, g1.getSize());
@@ -447,7 +447,7 @@ public class DomainTest {
 		Indication indic2 = new Indication(1L, "");
 		d_domain.addIndication(indic2);
 		Study s2 = new Study("s2", indic2);
-		s2.setOutcomeMeasures(Collections.singleton(e));
+		s2.setOutcomeMeasures(Collections.singletonList(e));
 		Arm g2 = new Arm(d1, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 
 				250);		
 		Arm g3 = new Arm(d2, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY), 

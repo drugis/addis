@@ -173,7 +173,7 @@ public class StudyPresentationModelTest {
 		AdverseDrugEvent ade = new AdverseDrugEvent("ade1", Type.RATE);
 		d_study.addOutcomeMeasure(ade);
 		
-		assertEquals(Collections.singleton(ep), d_model.getEndpoints());
+		assertEquals(Collections.singletonList(ep), d_model.getEndpoints());
 	}
 	
 	@Test
@@ -183,6 +183,6 @@ public class StudyPresentationModelTest {
 		AdverseDrugEvent ade = new AdverseDrugEvent("ade1", Type.RATE);
 		d_study.addOutcomeMeasure(ade);
 		
-		assertEquals(Collections.singleton(ade), d_model.getAdes());
+		assertEquals(Collections.singletonList(ade), d_model.getAdes());
 	}
 }
