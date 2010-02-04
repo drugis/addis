@@ -199,7 +199,7 @@ public class AddStudyWizardPresentation {
 	}
 	
 	
-	public ValueModel getCharacteristicModel(BasicStudyCharacteristic c) {
+	public MutableCharacteristicHolder getCharacteristicModel(BasicStudyCharacteristic c) {
 		return new MutableCharacteristicHolder(d_newStudyPM.getBean(),c);
 	}
 

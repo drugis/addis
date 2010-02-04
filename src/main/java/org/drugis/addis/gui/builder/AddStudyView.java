@@ -235,7 +235,7 @@ public class AddStudyView implements ViewBuilder {
 		JButton btn = GUIFactory.createPlusButton("New Indication");
 		btn.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				d_mainWindow.showAddIndicationDialog();
+				d_mainWindow.showAddIndicationDialog(null);
 			}
 		});
 		return btn;
@@ -246,7 +246,7 @@ public class AddStudyView implements ViewBuilder {
 		JButton btn = GUIFactory.createPlusButton("New Endpoint");
 		btn.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				d_mainWindow.showAddEndpointDialog();
+				d_mainWindow.showAddEndpointDialog(null);
 			}
 		});
 		return btn;
@@ -257,7 +257,7 @@ public class AddStudyView implements ViewBuilder {
 		JButton btn = GUIFactory.createPlusButton("New Drug");
 		btn.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				d_mainWindow.showAddDrugDialog();
+				d_mainWindow.showAddDrugDialog(null);
 			}
 		});
 		return btn;

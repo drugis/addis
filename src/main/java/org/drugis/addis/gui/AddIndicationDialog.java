@@ -25,14 +25,16 @@ import org.drugis.addis.gui.builder.AddIndicationView;
 import org.drugis.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.PresentationModel;
+import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class AddIndicationDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private Indication d_indication;
 	private Main d_main;
+	private ValueModel d_selectionModel;
 	
-	public AddIndicationDialog(Main frame, Domain domain) {
+	public AddIndicationDialog(Main frame, Domain domain, ValueModel selection) {
 		super(frame, "Add Indication");
 		setModal(true);
 		d_main = frame;
@@ -43,6 +45,7 @@ public class AddIndicationDialog extends OkCancelDialog {
 		pack();
 		d_okButton.setEnabled(false);
 		getRootPane().setDefaultButton(d_okButton);
+		d_selectionModel = selection;
 	}
 
 	@Override
@@ -55,5 +58,7 @@ public class AddIndicationDialog extends OkCancelDialog {
 		d_domain.addIndication(d_indication);
 		setVisible(false);
 		d_main.leftTreeFocus(d_indication);
+		if (d_selectionModel != null)
+			d_selectionModel.setValue(d_indication);
 	}
 }

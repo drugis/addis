@@ -110,6 +110,7 @@ import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardFrameCloser;
 
 import com.jgoodies.binding.PresentationModel;
+import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
 @SuppressWarnings("serial")
@@ -373,7 +374,7 @@ public class Main extends JFrame {
 		item.setMnemonic('e');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				showAddEndpointDialog();
+				showAddEndpointDialog(null);
 			}
 		});
 		
@@ -385,7 +386,7 @@ public class Main extends JFrame {
 		item.setMnemonic('e');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				showAddAdeDialog();
+				showAddAdeDialog(null);
 			}
 		});
 		
@@ -421,7 +422,7 @@ public class Main extends JFrame {
 		item.setMnemonic('i');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				showAddIndicationDialog();
+				showAddIndicationDialog(null);
 			}
 
 		});
@@ -434,7 +435,7 @@ public class Main extends JFrame {
 		item.setMnemonic('d');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				showAddDrugDialog();
+				showAddDrugDialog(null);
 			}
 
 		});
@@ -442,20 +443,20 @@ public class Main extends JFrame {
 		return item;
 	}
 	
-	public void showAddIndicationDialog() {
-		AddIndicationDialog dialog = new AddIndicationDialog(this, getDomain());
+	public void showAddIndicationDialog(ValueModel selectionModel) {
+		AddIndicationDialog dialog = new AddIndicationDialog(this, getDomain(), selectionModel);
 		GUIHelper.centerWindow(dialog, this);
 		dialog.setVisible(true);
 	}
 	
-	public void showAddEndpointDialog() {
-		AddOutcomeDialog dialog = new AddOutcomeDialog(this, getDomain(), new Endpoint("", Type.RATE));
+	public void showAddEndpointDialog(ValueModel selectionModel) {
+		AddOutcomeDialog dialog = new AddOutcomeDialog(this, getDomain(), new Endpoint("", Type.RATE), selectionModel);
 		GUIHelper.centerWindow(dialog, this);		
 		dialog.setVisible(true);
 	}
 	
-	public void showAddAdeDialog() {
-		AddOutcomeDialog dialog = new AddOutcomeDialog(this, getDomain(), new AdverseDrugEvent("", Type.RATE));
+	public void showAddAdeDialog(ValueModel selectionModel) {
+		AddOutcomeDialog dialog = new AddOutcomeDialog(this, getDomain(), new AdverseDrugEvent("", Type.RATE), selectionModel);
 		GUIHelper.centerWindow(dialog, this);		
 		dialog.setVisible(true);
 	}
@@ -471,8 +472,8 @@ public class Main extends JFrame {
 		
 	}
 	
-	public void showAddDrugDialog() {
-		AddDrugDialog dialog = new AddDrugDialog(this, getDomain());
+	public void showAddDrugDialog(ValueModel selectionModel) {
+		AddDrugDialog dialog = new AddDrugDialog(this, getDomain(), selectionModel);
 		GUIHelper.centerWindow(dialog, this);		
 		dialog.setVisible(true);
 	}

@@ -19,12 +19,15 @@
 
 package org.drugis.addis.gui.components;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -40,7 +43,7 @@ public class NotEmptyValidator extends AbstractValueModel{
 	
 	private List<JComponent> d_fields = new ArrayList<JComponent>();
 	private DocumentListener d_myTextListener = new MyTextListener();
-	private ActionListener d_myActionListener = new ComboBoxListener();
+	private ComboBoxListener d_myActionListener = new ComboBoxListener();
 	private JButton button = new JButton();
 	
 	public NotEmptyValidator(JButton button) {
@@ -52,12 +55,23 @@ public class NotEmptyValidator extends AbstractValueModel{
 	}
 	
 	public void add(JComponent field) {
-		d_fields.add(field);
+		
 		if (field instanceof JTextComponent) {
 			((JTextComponent) field).getDocument().addDocumentListener(d_myTextListener);
+			d_fields.add(field);
 		} else if (field instanceof JComboBox) {
 			((JComboBox) field).addActionListener(d_myActionListener);
-		} 
+			((JComboBox) field).addItemListener(d_myActionListener);
+			d_fields.add(field);
+		} else if (field instanceof JDateChooser) {
+			d_fields.add(field);
+		}
+		/* If we are dealing with a container component, add all components recursively */
+		else if (field instanceof Container){
+			Container pane = (Container) field;
+			for (Component component : pane.getComponents())
+				add((JComponent) component);
+		}
 		checkFieldsEmptyForButton();
 	}
 	
@@ -91,10 +105,14 @@ public class NotEmptyValidator extends AbstractValueModel{
 		return empty;
 	}	
 	
-	private class ComboBoxListener extends AbstractAction {
+	private class ComboBoxListener implements ActionListener, ItemListener{
 		public void actionPerformed(ActionEvent arg0) {
 			checkFieldsEmptyForButton();
-		}		
+		}
+
+		public void itemStateChanged(ItemEvent arg0) {
+			checkFieldsEmptyForButton();
+		}
 	}
 	
 	private class MyTextListener implements DocumentListener {

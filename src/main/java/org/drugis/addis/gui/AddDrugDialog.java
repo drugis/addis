@@ -25,14 +25,16 @@ import org.drugis.addis.gui.builder.AddDrugView;
 import org.drugis.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.PresentationModel;
+import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class AddDrugDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private Drug d_drug;
 	private Main d_main;
+	private ValueModel d_selectionModel;
 	
-	public AddDrugDialog(Main frame, Domain domain) {
+	public AddDrugDialog(Main frame, Domain domain, ValueModel selectionModel) {
 		super(frame, "Add Drug");
 		this.d_main = frame;
 		this.setModal(true);
@@ -43,6 +45,7 @@ public class AddDrugDialog extends OkCancelDialog {
 		pack();
 		d_okButton.setEnabled(false);
 		getRootPane().setDefaultButton(d_okButton);
+		d_selectionModel = selectionModel;
 	}
 	
 	@Override
@@ -54,6 +57,8 @@ public class AddDrugDialog extends OkCancelDialog {
 	protected void commit() {
 		d_domain.addDrug(d_drug);
 		setVisible(false);
-		d_main.leftTreeFocus(d_drug);		
+		d_main.leftTreeFocus(d_drug);
+		if (d_selectionModel != null)
+			d_selectionModel.setValue(d_drug);
 	}
 }

@@ -60,7 +60,7 @@ public class AddStudyWizardPresentationTest {
 	@Test
 	public void testGetIndicationNoteModel() throws MalformedURLException, IOException {
 		importStudy();
-		assertEquals("Depression\n",d_wizardImported.getIndicationNoteModel().getValue());
+		assertEquals("Depression",d_wizardImported.getIndicationNoteModel().getValue());
 	}
 	
 	@Test

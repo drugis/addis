@@ -28,13 +28,16 @@ import org.drugis.addis.gui.builder.AddOutcomeMeasureView;
 import org.drugis.addis.presentation.OutcomePresentationModel;
 import org.drugis.common.gui.OkCancelDialog;
 
+import com.jgoodies.binding.value.ValueModel;
+
 @SuppressWarnings("serial")
 public class AddOutcomeDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private OutcomeMeasure d_om;
 	private Main d_main;
+	private ValueModel d_selectionModel;
 	
-	public AddOutcomeDialog(Main frame, Domain domain, OutcomeMeasure om) {
+	public AddOutcomeDialog(Main frame, Domain domain, OutcomeMeasure om, ValueModel selectionModel) {
 		super(frame, "Add " + OutcomePresentationModel.getCategoryName(om) );
 		this.d_main = frame;
 		this.setModal(true);
@@ -46,6 +49,7 @@ public class AddOutcomeDialog extends OkCancelDialog {
 		getUserPanel().add(view.buildPanel());
 		pack();
 		getRootPane().setDefaultButton(d_okButton);
+		d_selectionModel = selectionModel;
 	}
 
 	protected void cancel() {
@@ -62,6 +66,8 @@ public class AddOutcomeDialog extends OkCancelDialog {
 			throw new IllegalArgumentException("Unknown type of OutcomeMeasure.");
 		
 		setVisible(false);
+		if (d_selectionModel != null)
+			d_selectionModel.setValue(d_om);
 		d_main.leftTreeFocus(d_om);
 	}
 }

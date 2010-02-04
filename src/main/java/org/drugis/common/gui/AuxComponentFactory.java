@@ -13,7 +13,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.NumberFormatter;
 
+import org.drugis.addis.presentation.MutableCharacteristicHolder;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
+import org.drugis.addis.presentation.StudyNoteHolder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
@@ -43,7 +45,8 @@ public class AuxComponentFactory {
 		area.setEditable(editable);
 		area.setLineWrap(true);
 		area.setWrapStyleWord(true);
-		area.setUI(new javax.swing.plaf.basic.BasicTextAreaUI());
+		if (!editable)
+			area.setUI(new javax.swing.plaf.basic.BasicTextAreaUI());
 		JScrollPane pane = new JScrollPane(area);
 		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		pane.setPreferredSize(new Dimension(
@@ -59,14 +62,14 @@ public class AuxComponentFactory {
 			return new JLabel("UNKNOWN");
 		}
 		if (valueType.equals(String.class)) {
-			component = createTextArea(model, false);
+			component = createTextArea(model,false);
 		} else if (valueType.equals(Date.class)) {
 			component = BasicComponentFactory.createLabel(model, new DayDateFormat());
 		} else {
 			component = BasicComponentFactory.createLabel(model, new OneWayObjectFormat());
 		}
 		return component;
-	}	
+	}
 	
 	public static JTextField createNonNegativeIntegerTextField(ValueModel model) {
 	    NumberFormatter numberFormatter = new EmptyNumberFormatter(NumberFormat.getIntegerInstance(),0);
