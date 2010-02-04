@@ -49,7 +49,7 @@ public class StudyTable extends JTable {
 			if (value == null) {
 				setToolTipText(null);
 			} else {
-				setToolTipText(GUIHelper.createTooltip(value.toString()));
+				setToolTipText(GUIHelper.createToolTip(value.toString()));
 			}
 			super.setValue(value);			
 		}

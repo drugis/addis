@@ -59,7 +59,7 @@ public class GUIHelper {
 		window.setLocation(new Point(xLoc, yLoc));
 	}
 
-	public static String createTooltip(String text) {
+	public static String createToolTip(String text) {
 		if (text != null && text.trim().length() > 0) {
 			return HtmlWordWrapper.wordWrap(text);
 		}

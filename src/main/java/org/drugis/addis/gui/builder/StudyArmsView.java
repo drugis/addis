@@ -76,7 +76,7 @@ public class StudyArmsView implements ViewBuilder {
 		BasicArmPresentation armModel = (BasicArmPresentation)d_pm.getModel(g);
 		LayoutUtil.addRow(layout);
 		final JLabel armLabel = BasicComponentFactory.createLabel(d_pm.getLabeledModel(g).getLabelModel()); 
-		armLabel.setToolTipText(GUIHelper.createTooltip(d_model.getBean().getNote(armModel.getBean()).getText()));
+		armLabel.setToolTipText(GUIHelper.createToolTip(d_model.getBean().getNote(armModel.getBean()).getText()));
 		builder.add(
 				armLabel,
 				cc.xy(1, row));

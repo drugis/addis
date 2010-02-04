@@ -2,6 +2,8 @@ package org.drugis.addis.gui.builder;
 
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
@@ -9,6 +11,7 @@ import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.StudyCharacteristics;
 import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.common.gui.AuxComponentFactory;
+import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -35,7 +38,9 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		int fullWidth = 3;
 		
 		builder.addLabel("ID:", cc.xy(1, 1));
-		builder.add(BasicComponentFactory.createLabel(d_model.getModel(Study.PROPERTY_ID)),
+		JLabel idLabel = BasicComponentFactory.createLabel(d_model.getModel(Study.PROPERTY_ID));
+		idLabel.setToolTipText(GUIHelper.createToolTip(d_model.getNoteText(Study.PROPERTY_ID)));
+		builder.add(idLabel,
 				cc.xyw(3, 1, fullWidth - 2));
 		
 		int row = 3;
@@ -44,7 +49,16 @@ public class StudyCharacteristicsView implements ViewBuilder {
 				LayoutUtil.addRow(layout);
 				builder.addLabel(c.getDescription() + ":", cc.xy(1, row));
 
-				builder.add(AuxComponentFactory.createCharacteristicView(d_model.getCharacteristicModel(c)),
+				JComponent charView = 
+					AuxComponentFactory.createCharacteristicView(d_model.getCharacteristicModel(c));
+				if (charView instanceof JScrollPane) {
+					JScrollPane pane = (JScrollPane)charView;
+					((JComponent)pane.getViewport().getView()).setToolTipText(
+							GUIHelper.createToolTip(d_model.getNoteText(c)));
+				} else {
+					charView.setToolTipText(GUIHelper.createToolTip(d_model.getNoteText(c)));
+				}
+				builder.add(charView,
 						cc.xyw(3, row, fullWidth - 2));
 
 				row += 2;

@@ -193,4 +193,8 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		}
 		return s;
 	}	
+	
+	public String getNoteText(Object key) {
+		return getBean().getNote(key).getText();
+	}
 }
