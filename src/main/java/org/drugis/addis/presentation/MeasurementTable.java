@@ -13,14 +13,12 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.AbstractCellEditor;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
 import org.drugis.addis.entities.Arm;
@@ -29,9 +27,6 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.gui.FocusTransferrer;
-import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.common.gui.AuxComponentFactory;
 
 import com.jgoodies.binding.PresentationModel;

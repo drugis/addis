@@ -75,7 +75,7 @@ public class ClinicaltrialsImporter {
 		
 		// Title
 		study.setCharacteristic(BasicStudyCharacteristic.TITLE, studyImport.getBriefTitle().trim());
-		study.putNote(BasicStudyCharacteristic.TITLE, new Note(studyImport.getOfficialTitle().trim()));
+		study.putNote(BasicStudyCharacteristic.TITLE, new Note(createTitleNote(studyImport)));
 		
 		// Study Centers
 		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, studyImport.getLocation().size());
@@ -107,7 +107,6 @@ public class ClinicaltrialsImporter {
 		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, studyImport.getBriefSummary().getTextblock().trim());
 		study.putNote(BasicStudyCharacteristic.OBJECTIVE, new Note(studyImport.getBriefSummary().getTextblock().trim()));
 		
-		// Indication // FIXME: Print label instead of setting it.
 		study.setIndication(new Indication(0l, studyImport.getCondition().get(0)) ) ;
 		
 		String out = "";
@@ -211,6 +210,10 @@ public class ClinicaltrialsImporter {
 			study.addOutcomeMeasure(e);
 			study.putNote(e, new Note(endp.getMeasure()));
 		}	
+	}
+
+	private static String createTitleNote(ClinicalStudy studyImport) {
+		return "Brief title: " + studyImport.getBriefTitle().trim() + "\n\nOfficial title: " + studyImport.getOfficialTitle().trim();
 	}
 
 	private static boolean designContains(ClinicalStudy studyImport, String contains) {

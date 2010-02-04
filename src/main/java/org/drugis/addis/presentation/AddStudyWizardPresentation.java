@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.Map.Entry;
 
 import javax.swing.JDialog;
 import javax.swing.JTable;
@@ -21,11 +22,11 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
-import org.pietschy.wizard.InvalidStateException;
 
 import com.jgoodies.binding.value.ValueModel;
 
@@ -129,11 +130,11 @@ public class AddStudyWizardPresentation {
 	}
 	
 	public ValueModel getSourceModel() {
-		return new MutableCharacteristicHolder(d_newStudyPM.getBean(), BasicStudyCharacteristic.SOURCE);
+		return new MutableCharacteristicHolder(getNewStudy(), BasicStudyCharacteristic.SOURCE);
 	}
 	
 	public ValueModel getSourceNoteModel() {
-		return new StudyNoteHolder(d_oldStudyPM.getBean(), BasicStudyCharacteristic.SOURCE);
+		return new StudyNoteHolder(getOldStudy(), BasicStudyCharacteristic.SOURCE);
 	}
 	
 	public ValueModel getIdModel() {
@@ -141,11 +142,11 @@ public class AddStudyWizardPresentation {
 	}
 	
 	public ValueModel getIdNoteModel() {
-		return new StudyNoteHolder(d_oldStudyPM.getBean(), Study.PROPERTY_ID);
+		return new StudyNoteHolder(getOldStudy(), Study.PROPERTY_ID);
 	}
 	
 	public ValueModel getTitleModel() {
-		return new MutableCharacteristicHolder(d_newStudyPM.getBean(), BasicStudyCharacteristic.TITLE);
+		return new MutableCharacteristicHolder(getNewStudy(), BasicStudyCharacteristic.TITLE);
 	}
 
 	public void importCT() throws MalformedURLException, IOException{
@@ -158,20 +159,20 @@ public class AddStudyWizardPresentation {
 
 	private void migrateImportToNew(Object studyID) {
 		// Characteristics
-		d_newStudyPM.getBean().getCharacteristics().putAll(d_oldStudyPM.getBean().getCharacteristics());
+		getNewStudy().getCharacteristics().putAll(getOldStudy().getCharacteristics());
 		// Source
 		getSourceModel().setValue(BasicStudyCharacteristic.Source.CLINICALTRIALS);
 		// Id & Title
 		getIdModel().setValue(studyID);
-		getTitleModel().setValue(d_oldStudyPM.getBean().getCharacteristic(BasicStudyCharacteristic.TITLE));
+		getTitleModel().setValue(getOldStudy().getCharacteristic(BasicStudyCharacteristic.TITLE));
 		
 		// Endpoints.
 		d_selectedOutcomesList = new ArrayList<AbstractHolder<OutcomeMeasure>>();
-		addEndpointModels(d_oldStudyPM.getBean().getOutcomeMeasures().size());
+		addEndpointModels(getOldStudy().getOutcomeMeasures().size());
 		
 		// Arms & Dosage
 		d_selectedArmList = new ArrayList<BasicArmPresentation>();
-		addArmModels(d_oldStudyPM.getBean().getArms().size());
+		addArmModels(getOldStudy().getArms().size());
 
 	}
 
@@ -184,7 +185,7 @@ public class AddStudyWizardPresentation {
 	}
 
 	public ValueModel getIndicationNoteModel() {
-		return new StudyNoteHolder(d_oldStudyPM.getBean(), Study.PROPERTY_INDICATION);
+		return new StudyNoteHolder(getOldStudy(), Study.PROPERTY_INDICATION);
 	}
 	
 	public void clearStudies() {
@@ -200,11 +201,11 @@ public class AddStudyWizardPresentation {
 	
 	
 	public MutableCharacteristicHolder getCharacteristicModel(BasicStudyCharacteristic c) {
-		return new MutableCharacteristicHolder(d_newStudyPM.getBean(),c);
+		return new MutableCharacteristicHolder(getNewStudy(),c);
 	}
 
 	public ValueModel getCharacteristicNoteModel(BasicStudyCharacteristic c) {
-		return new StudyNoteHolder(d_oldStudyPM.getBean(), c);
+		return new StudyNoteHolder(getOldStudy(), c);
 	}
 
 	private SortedSet<Endpoint> getEndpoints() {
@@ -218,7 +219,7 @@ public class AddStudyWizardPresentation {
 	public ValueModel getEndpointNoteModel(int i) {
 		if(d_oldStudyPM.getEndpoints().size() <= i)
 			return null;
-		return new StudyNoteHolder(d_oldStudyPM.getBean(),new ArrayList<OutcomeMeasure>(d_oldStudyPM.getEndpoints()).get(i));
+		return new StudyNoteHolder(getOldStudy(),new ArrayList<OutcomeMeasure>(d_oldStudyPM.getEndpoints()).get(i));
 	}
 	
 	public int getNumberEndpoints() {
@@ -239,8 +240,8 @@ public class AddStudyWizardPresentation {
 
 	public void removeEndpoint(int i) {
 		d_selectedOutcomesList.remove(i);
-		if ( d_oldStudyPM.getBean().getOutcomeMeasures().size() > i)
-			d_oldStudyPM.getBean().getOutcomeMeasures().remove(d_oldStudyPM.getEndpoints().get(i));
+		if ( getOldStudy().getOutcomeMeasures().size() > i)
+			getOldStudy().getOutcomeMeasures().remove(d_oldStudyPM.getEndpoints().get(i));
 	}
 
 	
@@ -257,8 +258,8 @@ public class AddStudyWizardPresentation {
 	public void removeArm(int armNum){
 		d_selectedArmList.remove(armNum);
 		
-		if( d_oldStudyPM.getBean().getArms().size() > armNum )
-			d_oldStudyPM.getBean().getArms().remove(d_oldStudyPM.getBean().getArms().get(armNum));	
+		if( getOldStudy().getArms().size() > armNum )
+			getOldStudy().getArms().remove(getOldStudy().getArms().get(armNum));	
 	}
 	
 	public DrugListHolder getDrugsModel(){
@@ -272,29 +273,15 @@ public class AddStudyWizardPresentation {
 	public ValueModel getArmNoteModel(int curArmNumber) {
 		if(d_oldStudyPM.getArms().size() <= curArmNumber)
 			return null;
-		return new StudyNoteHolder(d_oldStudyPM.getBean(),d_oldStudyPM.getBean().getArms().get(curArmNumber));
+		return new StudyNoteHolder(getOldStudy(),getOldStudy().getArms().get(curArmNumber));
 	}
 
 	public JTable getMeasurementTableModel(JDialog frame) {
 		commitOutcomesArmsToNew();
-		return new MeasurementTable(d_newStudyPM.getBean(), d_pmf, (Window)frame);
+		return new MeasurementTable(getNewStudy(), d_pmf, (Window)frame);
 	}
 	
 	
-	private void commitOutcomesArmsToNew(){
-		List<OutcomeMeasure> outcomeMeasures = new ArrayList<OutcomeMeasure>();
-		for(AbstractHolder<OutcomeMeasure> outcomeHolder : d_selectedOutcomesList) {
-			outcomeMeasures.add(outcomeHolder.getValue());
-		}	
-		d_newStudyPM.getBean().setOutcomeMeasures(outcomeMeasures);
-		
-		List<Arm> arms = new ArrayList<Arm>();
-		for(BasicArmPresentation arm : d_selectedArmList) { 
-			arms.add(arm.getBean());
-		}
-		d_newStudyPM.getBean().setArms(arms);
-	}
-
 	public void saveStudy() {
 		if (d_selectedArmList.isEmpty()) 
 			throw new IllegalStateException("No arms selected in study.");
@@ -303,18 +290,64 @@ public class AddStudyWizardPresentation {
 		if (!checkID())
 			throw new IllegalStateException("Study with this ID already exists in domain");
 		
+		// transfer the notes from the imported study to the new one.
+		if (d_oldStudyPM != null)
+			transferNotes();
+		
 		// Add the study to the domain.
-		d_domain.addStudy(d_newStudyPM.getBean());
+		d_domain.addStudy(getNewStudy());
 	}
 
 	public boolean checkID() {
-		if (d_domain.getStudies().contains(d_newStudyPM.getBean())) {
+		if (d_domain.getStudies().contains(getNewStudy())) {
 				return false;
 		}
 		return true;
 	}
 	
 	Study getStudy() {
+		return getNewStudy();
+	}
+	
+	void commitOutcomesArmsToNew(){
+		List<OutcomeMeasure> outcomeMeasures = new ArrayList<OutcomeMeasure>();
+		for(AbstractHolder<OutcomeMeasure> outcomeHolder : d_selectedOutcomesList) {
+			outcomeMeasures.add(outcomeHolder.getValue());
+		}	
+		getNewStudy().setOutcomeMeasures(outcomeMeasures);
+		
+		List<Arm> arms = new ArrayList<Arm>();
+		for(BasicArmPresentation arm : d_selectedArmList) { 
+			arms.add(arm.getBean());
+		}
+		
+		getNewStudy().setArms(arms);
+	}
+	
+	private void transferNotes() {
+		for (Entry<Object,Note> noteEntry : getOldStudy().getNotes().entrySet()) {
+			Object key = noteEntry.getKey();
+			Note value = noteEntry.getValue();
+			/* If notes are keyed by either Characteristic or Property (String), we can just copy them */
+			if ((key instanceof BasicStudyCharacteristic) || (key instanceof String)) {
+				getNewStudy().putNote(key,value);
+			} else if (key instanceof OutcomeMeasure) {
+				int outcomeIndex = getOldStudy().getOutcomeMeasures().indexOf(key);
+				Object newKey =  getNewStudy().getOutcomeMeasures().get(outcomeIndex);
+				getNewStudy().putNote(newKey,value);
+			} else if (key instanceof Arm) {
+				int armIndex = getOldStudy().getArms().indexOf(key);
+				Object newKey =  getNewStudy().getArms().get(armIndex);
+				getNewStudy().putNote(newKey,value);
+			}
+		}
+	}
+
+	private Study getNewStudy() {
 		return d_newStudyPM.getBean();
+	}
+
+	private Study getOldStudy() {
+		return d_oldStudyPM.getBean();
 	}
 }

@@ -10,7 +10,9 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.Study;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.pietschy.wizard.InvalidStateException;
 
@@ -126,13 +128,13 @@ public class AddStudyWizardPresentationTest {
 		assertTrue(d_domain.getStudies().contains(d_wizard.getStudy()));
 	}
 	
-	/*
+	@Ignore
 	@Test(expected=IllegalStateException.class)
 	public void testSaveNoEndpoint() throws InvalidStateException {
 		d_wizard.getIndicationModel().setValue(d_domain.getIndications().first());
 		d_wizard.saveStudy();
 		assertTrue(d_domain.getStudies().contains(d_wizard.getStudy()));
-	}*/
+	}
 	
 	@Test(expected=IllegalStateException.class)
 	public void testSaveIllegalID() throws InvalidStateException {
@@ -141,5 +143,19 @@ public class AddStudyWizardPresentationTest {
 		d_wizard.getIndicationModel().setValue(d_domain.getIndications().first());
 		d_wizard.saveStudy();
 		assertTrue(d_domain.getStudies().contains(d_wizard.getStudy()));
+	}
+	
+	@Test
+	public void testTransferNotes() throws MalformedURLException, IOException {
+		importStudy();
+		d_wizardImported.getIndicationModel().setValue(d_domain.getIndications().first());
+		d_wizardImported.getEndpointModel(0).setValue(d_domain.getEndpoints().first());
+		d_wizardImported.getEndpointModel(1).setValue(d_domain.getEndpoints().last());
+		d_wizardImported.commitOutcomesArmsToNew();
+		d_wizardImported.saveStudy();
+		assertEquals("NCT00644527",d_wizardImported.getStudy().getNote(Study.PROPERTY_ID).getText());
+		assertTrue(d_wizardImported.getStudy().getNote(BasicStudyCharacteristic.TITLE).getText().contains("Rezeptive Musiktherapie Bei Depression"));
+		assertTrue(d_wizardImported.getStudy().getNote(d_wizardImported.getEndpointModel(0).getValue()).getText().contains("the Beck Depression Inventory (single weighted)"));
+		assertTrue(d_wizardImported.getStudy().getNote(d_wizardImported.getArmModel(3).getBean()).getText().contains("Each 50% of the subjects will be assigned randomly"));
 	}
 }

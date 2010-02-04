@@ -286,6 +286,10 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return note != null ? note : new Note();
 	}
 	
+	public Map<Object,Note> getNotes() {
+		return d_notes;
+	}
+	
 	public void removeNote (Object key){
 		d_notes.remove(key);
 	}
