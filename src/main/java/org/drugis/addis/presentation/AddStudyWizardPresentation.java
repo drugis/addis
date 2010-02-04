@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.SortedSet;
 
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTable;
 
 import org.drugis.addis.entities.Arm;
@@ -54,8 +52,8 @@ public class AddStudyWizardPresentation {
 	}
 	
 	@SuppressWarnings("serial")
-	private class OutcomeListHolder extends AbstractListHolder<OutcomeMeasure> implements PropertyChangeListener, DomainListener {
-		public OutcomeListHolder() {
+	private class EndpointListHolder extends AbstractListHolder<OutcomeMeasure> implements PropertyChangeListener, DomainListener {
+		public EndpointListHolder() {
 			d_domain.addListener(this);
 		}
 		
@@ -149,25 +147,13 @@ public class AddStudyWizardPresentation {
 	public ValueModel getTitleModel() {
 		return new MutableCharacteristicHolder(d_newStudyPM.getBean(), BasicStudyCharacteristic.TITLE);
 	}
-	
-	public ValueModel getTitleNoteModel() {
-		return new StudyNoteHolder(d_oldStudyPM.getBean(), BasicStudyCharacteristic.TITLE);
-	}
 
-	public void importCT(JPanel frame) {
+	public void importCT() throws MalformedURLException, IOException{
 		Object studyID = getIdModel().getValue();
 		String url = "http://clinicaltrials.gov/show/"+studyID+"?displayxml=true";
-		try {
-			d_oldStudyPM = (StudyPresentationModel) new StudyPresentationModel(ClinicaltrialsImporter.getClinicaltrialsData(url),d_pmf);
-			d_newStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
-			migrateImportToNew(studyID);
-			
-		} catch (MalformedURLException e) {
-			JOptionPane.showMessageDialog(frame, "Invalid NCT ID: "+ d_newStudyPM.getBean());
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(frame, "Couldn't find ID " + d_newStudyPM.getBean() + " on ClinicalTrials.gov");
-		}
-
+		d_oldStudyPM = (StudyPresentationModel) new StudyPresentationModel(ClinicaltrialsImporter.getClinicaltrialsData(url),d_pmf);
+		d_newStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
+		migrateImportToNew(studyID);
 	}
 
 	private void migrateImportToNew(Object studyID) {
@@ -185,7 +171,7 @@ public class AddStudyWizardPresentation {
 		
 		// Arms & Dosage
 		d_selectedArmList = new ArrayList<BasicArmPresentation>();
-		addArms(d_oldStudyPM.getBean().getArms().size());
+		addArmModels(d_oldStudyPM.getBean().getArms().size());
 
 	}
 
@@ -206,9 +192,10 @@ public class AddStudyWizardPresentation {
 		d_newStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
 		getSourceModel().setValue(BasicStudyCharacteristic.Source.MANUAL);
 		d_selectedOutcomesList = new ArrayList<AbstractHolder<OutcomeMeasure>>();
-		addEndpointModels(1);
-		
 		d_selectedArmList = new ArrayList<BasicArmPresentation>();
+		addEndpointModels(1);
+		addArmModels(2);
+		
 	}
 	
 	
@@ -224,8 +211,8 @@ public class AddStudyWizardPresentation {
 		return d_domain.getEndpoints();
 	}
 	
-	public OutcomeListHolder getOutcomeListModel() {
-		return new OutcomeListHolder();
+	public ListHolder<OutcomeMeasure> getEndpointListModel() {
+		return new EndpointListHolder();
 	}
 
 	public ValueModel getEndpointNoteModel(int i) {
@@ -257,13 +244,13 @@ public class AddStudyWizardPresentation {
 	}
 
 	
-	public void addArms(int numArms) {
+	public void addArmModels(int numArms) {
 		for(int i = 0; i<numArms; ++i){
 			d_selectedArmList.add(new BasicArmPresentation(new Arm(new Drug("", ""), new FixedDose(0l, SIUnit.MILLIGRAMS_A_DAY),0), d_pmf));
 		}
 	}
 	
-	public int getArms(){
+	public int getNumberArms(){
 		return d_selectedArmList.size();
 	}
 	
@@ -308,11 +295,13 @@ public class AddStudyWizardPresentation {
 		d_newStudyPM.getBean().setArms(arms);
 	}
 
-	public void saveStudy() throws InvalidStateException {
+	public void saveStudy() {
 		if (d_selectedArmList.isEmpty()) 
-			throw new InvalidStateException("No arms selected in study.");
+			throw new IllegalStateException("No arms selected in study.");
 		if (d_selectedOutcomesList.isEmpty()) 
-			throw new InvalidStateException("No outcomes selected in study.");
+			throw new IllegalStateException("No outcomes selected in study.");
+		if (!checkID())
+			throw new IllegalStateException("Study with this ID already exists in domain");
 		
 		// Add the study to the domain.
 		d_domain.addStudy(d_newStudyPM.getBean());
@@ -323,5 +312,9 @@ public class AddStudyWizardPresentation {
 				return false;
 		}
 		return true;
+	}
+	
+	Study getStudy() {
+		return d_newStudyPM.getBean();
 	}
 }

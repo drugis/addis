@@ -7,6 +7,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -115,7 +117,7 @@ public class AddStudyWizard implements ViewBuilder{
 			
 			// add arm labels
 			int width;
-			for(width = 0; width < d_pm.getArms(); ++width){
+			for(width = 0; width < d_pm.getNumberArms(); ++width){
 				LayoutUtil.addColumn(layout);
 				d_builder.addLabel("<html>"+d_pm.getArmModel(width).getBean().toString().replace(", ", "<br>")+"</html>", cc.xy(3+2*width, 1));
 			}
@@ -199,7 +201,7 @@ public class AddStudyWizard implements ViewBuilder{
 			d_builder.add(btn, cc.xy(1, row+=2));
 			btn.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
-					d_pm.addArms(1);
+					d_pm.addArmModels(1);
 					prepare();
 				}
 			});
@@ -213,7 +215,7 @@ public class AddStudyWizard implements ViewBuilder{
 
 		private int buildArmsPart(int fullwidth, PanelBuilder builder,	CellConstraints cc, int row, FormLayout layout) {
 			// For all the arms found in the imported study
-			for(int curArmNumber = 0; curArmNumber < d_pm.getArms(); ++curArmNumber){
+			for(int curArmNumber = 0; curArmNumber < d_pm.getNumberArms(); ++curArmNumber){
 				LayoutUtil.addRow(layout);
 				row+=2;
 				
@@ -353,7 +355,7 @@ public class AddStudyWizard implements ViewBuilder{
 				builder.addLabel("endpoint: ", cc.xy(3, row));
 				
 				// Set the endoints from a list of options
-				JComboBox endpoints = AuxComponentFactory.createBoundComboBox(d_pm.getOutcomeListModel(), d_pm.getEndpointModel(i));
+				JComboBox endpoints = AuxComponentFactory.createBoundComboBox(d_pm.getEndpointListModel(), d_pm.getEndpointModel(i));
 				d_validator.add(endpoints);
 				builder.add(endpoints, cc.xy(5, row));
 				
@@ -608,10 +610,16 @@ public class AddStudyWizard implements ViewBuilder{
 				d_importButton.setEnabled(false);
 				d_importButton.addActionListener(new AbstractAction() {
 					public void actionPerformed(ActionEvent arg0) {
-						d_pm.importCT(d_me);
+						try {
+							d_pm.importCT();
+						} catch (MalformedURLException e) {
+							JOptionPane.showMessageDialog(d_me, "Invalid NCT ID: "+ d_pm.getIdModel().getValue());
+						} catch (IOException e) {
+							JOptionPane.showMessageDialog(d_me, "Couldn't find ID " + d_pm.getIdModel().getValue() + " on ClinicalTrials.gov");
+						}
 						prepare();
-					}
-				});
+
+					}});
 				d_builder.add(d_importButton, cc.xy(5, 3));	
 				
 				// add note to ID field
@@ -625,7 +633,7 @@ public class AddStudyWizard implements ViewBuilder{
 				d_builder.add(d_titleField, cc.xy(3, 7));		
 				
 				// add title note
-				addNoteField(d_builder, cc, 7, 3, 1, layout, d_pm.getTitleNoteModel());
+				addNoteField(d_builder, cc, 7, 3, 1, layout, d_pm.getCharacteristicNoteModel(BasicStudyCharacteristic.TITLE));
 				
 				// add clear button
 				JButton clearButton = new JButton("clear");
