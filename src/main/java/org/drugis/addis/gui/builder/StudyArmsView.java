@@ -75,8 +75,10 @@ public class StudyArmsView implements ViewBuilder {
 		int col;
 		BasicArmPresentation armModel = (BasicArmPresentation)d_pm.getModel(g);
 		LayoutUtil.addRow(layout);
+		final JLabel armLabel = BasicComponentFactory.createLabel(d_pm.getLabeledModel(g).getLabelModel()); 
+		armLabel.setToolTipText(GUIHelper.createTooltip(d_model.getBean().getNote(armModel.getBean()).getText()));
 		builder.add(
-				BasicComponentFactory.createLabel(d_pm.getLabeledModel(g).getLabelModel()),
+				armLabel,
 				cc.xy(1, row));
 		
 		builder.add(
@@ -97,15 +99,11 @@ public class StudyArmsView implements ViewBuilder {
 						}),
 						cc.xy(3, row, "right, center"));
 		
-		final JLabel armSizeLabel = BasicComponentFactory.createLabel(
-				armModel.getModel(Arm.PROPERTY_SIZE),
-				NumberFormat.getInstance());
-		final String pgCharacteristicTooltip = armModel.getCharacteristicTooltip();
-		if (!pgCharacteristicTooltip.equals(""))
-			armSizeLabel.setToolTipText(GUIHelper.createTooltip(pgCharacteristicTooltip));
 		builder.add(
-				armSizeLabel,
-						cc.xy(5, row, "center, center"));
+				BasicComponentFactory.createLabel(
+						armModel.getModel(Arm.PROPERTY_SIZE),
+						NumberFormat.getInstance()),
+				cc.xy(5, row, "center, center"));
 		
 		col = 7;
 		for (OutcomeMeasure e : d_model.getBean().getOutcomeMeasures()) {

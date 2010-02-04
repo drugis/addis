@@ -63,21 +63,6 @@ public class BasicArmPresentation extends PresentationModel<Arm> implements Labe
 	public DosePresentationModel getDoseModel() {
 		return new DosePresentationImpl(this);
 	}
-	
-	public String getCharacteristicTooltip() {
-		if (getBean().getPopulationCharacteristics().isEmpty())
-			return "";
-		
-		String ret = new String("<html>");
-		for (Variable c : new TreeSet<Variable>(getBean().getPopulationCharacteristics().keySet())) {
-			Object val = getBean().getPopulationCharacteristic(c);
-			if (val != null)
-				ret += c.getName() + ": " + val + "<br>";			
-		}
-		ret += "</html>";
-		return ret;
-		
-	}
 
 	public LabeledPresentationModel getCharacteristicModel(Variable v) {
 		if (getBean().getPopulationCharacteristic(v) != null) {
