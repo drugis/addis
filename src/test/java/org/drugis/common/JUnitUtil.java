@@ -46,7 +46,6 @@ import java.util.Set;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-import com.jgoodies.binding.beans.Model;
 import com.jgoodies.binding.beans.Observable;
 import com.jgoodies.binding.value.ValueModel;
 

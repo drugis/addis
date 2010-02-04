@@ -1,12 +1,12 @@
 package org.drugis.addis.presentation;
 
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.CategoricalVariable;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.ContinuousVariable;
 import org.drugis.addis.entities.DomainImpl;

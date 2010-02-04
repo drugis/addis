@@ -2,7 +2,6 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.TreeSet;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;

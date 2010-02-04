@@ -8,7 +8,6 @@ import javax.swing.JDialog;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.junit.Test;
@@ -17,7 +16,6 @@ public class MeasurementTableModelTest {
 
 	private Study d_standardStudy;
 	private Study d_threeArmStudy;
-	private Endpoint d_endpoint;
 	private PresentationModelFactory d_pmf;
 	
 	@Test
@@ -50,7 +48,6 @@ public class MeasurementTableModelTest {
 	protected void baseSetUpRate() {
 		d_standardStudy = ExampleData.buildStudyDeWilde();
 		d_threeArmStudy = ExampleData.buildAdditionalStudyThreeArm();
-		d_endpoint = ExampleData.buildEndpointHamd();
 		DomainImpl domain = new DomainImpl();
 		d_pmf = new PresentationModelFactory(domain);
 	}
@@ -58,7 +55,6 @@ public class MeasurementTableModelTest {
 	protected void baseSetUpContinuous() {
 		d_standardStudy = ExampleData.buildStudyChouinard();
 		d_threeArmStudy = ExampleData.buildAdditionalStudyThreeArm();
-		d_endpoint = ExampleData.buildEndpointCgi();
 		DomainImpl domain = new DomainImpl();
 		d_pmf = new PresentationModelFactory(domain);
 	}

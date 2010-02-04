@@ -13,9 +13,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.NumberFormatter;
 
-import org.drugis.addis.presentation.MutableCharacteristicHolder;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
-import org.drugis.addis.presentation.StudyNoteHolder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
