@@ -24,7 +24,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -84,7 +83,6 @@ public class AddStudyWizard implements ViewBuilder{
 	
 	@SuppressWarnings("serial")
 	public class SetMeasurementsWizardStep extends PanelWizardStep {
-		private PanelBuilder d_builder;
 		private JScrollPane d_scrollPane;
 		
 		public SetMeasurementsWizardStep(){
@@ -108,40 +106,8 @@ public class AddStudyWizard implements ViewBuilder{
 		}
 		
 		private void buildWizardStep() {
-			FormLayout layout = new FormLayout(
-					"center:pref, 3dlu, center:pref, 3dlu,  right:pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref",
-					"p, 3dlu, p, 3dlu, p"
-					);	
-			d_builder = new PanelBuilder(layout);
-			d_builder.setDefaultDialogBorder();
-			CellConstraints cc = new CellConstraints();
-			
-			
-			// add arm labels
-			int width;
-			for(width = 0; width < d_pm.getNumberArms(); ++width){
-				LayoutUtil.addColumn(layout);
-				d_builder.addLabel("<html>"+d_pm.getArmModel(width).getBean().toString().replace(", ", "<br>")+"</html>", cc.xy(3+2*width, 1));
-			}
-			
-			// add endpoint labels
-			int height;
-			for(height = 0; height < d_pm.getNumberEndpoints(); ++height){
-				LayoutUtil.addRow(layout);
-				d_builder.addLabel(d_pm.getEndpointModel(height).getValue().toString(), cc.xy(1, 3+2*height));
-			}
-			
-			// add measurements table
-			JTable measurementsTable = d_pm.getMeasurementTableModel(d_dialog);
-			
-			//measurementsTable.
-			
-			d_builder.add(measurementsTable,cc.xywh(3, 3, width*2+1, height*2+1));
-
-			JPanel panel = d_builder.getPanel();
 			this.setLayout(new BorderLayout());
-			d_scrollPane = new JScrollPane(panel);
-		
+			d_scrollPane = new JScrollPane(d_pm.getMeasurementTableModel(d_dialog));
 			add(d_scrollPane, BorderLayout.CENTER);
 		}
 	}
@@ -334,7 +300,7 @@ public class AddStudyWizard implements ViewBuilder{
 		 
 		private void buildWizardStep() {
 			FormLayout layout = new FormLayout(
-					"fill:pref, 3dlu, center:pref:grow, 3dlu, pref, 3dlu, pref",
+					"center:pref, 3dlu, right:pref, 3dlu, fill:pref:grow, 3dlu, left:pref",
 					"p, 3dlu, p"
 					);	
 			d_builder = new PanelBuilder(layout);
@@ -424,7 +390,7 @@ public class AddStudyWizard implements ViewBuilder{
 
 		private void buildWizardStep() {
 			FormLayout layout = new FormLayout(
-					"fill:pref, 3dlu, fill:pref, 3dlu, pref",
+					"right:pref, 3dlu, fill:pref:grow, 3dlu, pref",
 					"p, 3dlu, p"
 					);	
 			d_builder = new PanelBuilder(layout);
@@ -523,7 +489,7 @@ public class AddStudyWizard implements ViewBuilder{
 		 
 		 public void buildWizardStep(){
 			FormLayout layout = new FormLayout(
-					"center:pref, 3dlu, center:pref, 3dlu, center:pref",
+					"right:pref, 3dlu, left:pref:grow, 3dlu, left:pref",
 					"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 					);	
 			d_builder = new PanelBuilder(layout);
@@ -585,7 +551,7 @@ public class AddStudyWizard implements ViewBuilder{
 		 
 		 private void buildWizardStep() {
 			 FormLayout layout = new FormLayout(
-						"center:pref, 3dlu, center:pref, 3dlu, center:pref",
+						"right:pref, 3dlu, left:pref:grow, 3dlu, left:pref",
 						"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 						);	
 				d_builder = new PanelBuilder(layout);

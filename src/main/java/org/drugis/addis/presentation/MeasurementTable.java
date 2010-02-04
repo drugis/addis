@@ -18,13 +18,10 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 
-import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.gui.AuxComponentFactory;
@@ -33,38 +30,6 @@ import com.jgoodies.binding.PresentationModel;
 
 public class MeasurementTable extends JTable{
 	private static final long serialVersionUID = -5815104084298298455L;
-	
-	private class MeasurementTableModel extends AbstractTableModel {		
-		private static final long serialVersionUID = 5331596469882184969L;
-	
-		private Study d_study;
-		private PresentationModelFactory d_pmf;
-		
-	
-		public MeasurementTableModel(Study study, PresentationModelFactory pmf) {
-			d_study = study;
-			d_pmf = pmf;
-		}
-	
-		public int getColumnCount() {
-			return d_study.getArms().size();
-		}
-	
-		public int getRowCount() {
-			return d_study.getOutcomeMeasures().size();
-		}
-		
-		  public boolean isCellEditable(int row, int col)
-	       { return true; }
-
-	
-		public Object getValueAt(int rowIndex, int columnIndex) {
-			OutcomeMeasure om = new ArrayList<OutcomeMeasure>(d_study.getOutcomeMeasures()).get(rowIndex);
-			Arm arm = d_study.getArms().get(columnIndex);
-			return d_pmf.getLabeledModel(d_study.getMeasurement(om, arm));
-		}
-	}
-	
 	
 	private Window d_frame;
 	protected JTable d_table;

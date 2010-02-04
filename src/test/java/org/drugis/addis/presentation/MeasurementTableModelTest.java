@@ -4,59 +4,55 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
-import javax.swing.JDialog;
-
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.junit.Before;
 import org.junit.Test;
 
 public class MeasurementTableModelTest {
 
 	private Study d_standardStudy;
-	private Study d_threeArmStudy;
 	private PresentationModelFactory d_pmf;
+	private MeasurementTableModel model;
+	
+	@Before
+	public void setUp() {
+		DomainImpl domain = new DomainImpl();
+		ExampleData.initDefaultData(domain);
+		d_pmf = new PresentationModelFactory(domain);
+		d_standardStudy = ExampleData.buildStudyDeWilde();
+		model = new MeasurementTableModel(d_standardStudy, d_pmf);
+	}
 	
 	@Test
 	public void testGetColumnCount() {
-		baseSetUpRate();
-		MeasurementTable tm = new MeasurementTable(d_standardStudy,d_pmf, new JDialog());
-		assertEquals(d_standardStudy.getArms().size(), tm.getColumnCount());
+		assertEquals(d_standardStudy.getArms().size(), model.getColumnCount());
 	}
 
 	@Test
 	public void testGetRowCount() {
-		baseSetUpRate();
-		MeasurementTable tm = new MeasurementTable(d_standardStudy,d_pmf, new JDialog());
-		assertEquals(d_standardStudy.getOutcomeMeasures().size(), tm.getRowCount());
-
+		assertEquals(d_standardStudy.getOutcomeMeasures().size(), model.getRowCount());
 	}
 
 	@Test
 	public void testGetValueAt() {
-		baseSetUpRate();
-		final int col = 1;
-		final int row = 1;
+		final int col = 0;
+		final int row = 0;
 		
-		MeasurementTable tm = new MeasurementTable(d_threeArmStudy,d_pmf, new JDialog());
-		String expected = d_pmf.getLabeledModel(d_threeArmStudy.getMeasurement (new ArrayList<OutcomeMeasure>(d_threeArmStudy.getOutcomeMeasures()).get(row),d_threeArmStudy.getArms().get(col))).getLabelModel().getString();
-		String actual = ((LabeledPresentationModel) tm.getValueAt(row, col)).getLabelModel().getString();
+		String expected = d_pmf.getLabeledModel(d_standardStudy.getMeasurement (
+						new ArrayList<OutcomeMeasure>(d_standardStudy.getOutcomeMeasures()).get(row),d_standardStudy.getArms().get(col))).getLabelModel().getString();
+		String actual = ((LabeledPresentationModel) model.getValueAt(row, col)).getLabelModel().getString();
 		assertEquals(expected, actual);
 	}
-
-	protected void baseSetUpRate() {
-		d_standardStudy = ExampleData.buildStudyDeWilde();
-		d_threeArmStudy = ExampleData.buildAdditionalStudyThreeArm();
-		DomainImpl domain = new DomainImpl();
-		d_pmf = new PresentationModelFactory(domain);
-	}
 	
-	protected void baseSetUpContinuous() {
-		d_standardStudy = ExampleData.buildStudyChouinard();
-		d_threeArmStudy = ExampleData.buildAdditionalStudyThreeArm();
-		DomainImpl domain = new DomainImpl();
-		d_pmf = new PresentationModelFactory(domain);
+	@Test
+	public void testGetColumnName() {
+		for (int i=0;i<d_standardStudy.getArms().size();i++) {
+			String exp = d_pmf.getLabeledModel(d_standardStudy.getArms().get(i)).getLabelModel().getString();
+			String cname = model.getColumnName(i);
+			assertEquals(exp, cname);
+		}
 	}
-	
 }
