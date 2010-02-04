@@ -523,7 +523,7 @@ public class AddStudyWizard implements ViewBuilder{
 		 
 		 public void buildWizardStep(){
 			FormLayout layout = new FormLayout(
-					"center:pref, 3dlu, center:pref:grow, 3dlu, center:pref",
+					"center:pref, 3dlu, center:pref, 3dlu, center:pref",
 					"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 					);	
 			d_builder = new PanelBuilder(layout);
