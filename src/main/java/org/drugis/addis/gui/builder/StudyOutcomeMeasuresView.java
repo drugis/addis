@@ -60,7 +60,8 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 			for (OutcomeMeasure om : outcomeMeasures) {
 				JComponent outcomeMeasureLabelWithIcon = GUIFactory.createOutcomeMeasureLabelWithIcon(om);
 				
-				outcomeMeasureLabelWithIcon.setToolTipText(d_model.getBean().getNote(om).getText());
+				outcomeMeasureLabelWithIcon.setToolTipText(GUIHelper.createTooltip(
+						d_model.getBean().getNote(om).getText()));
 				builder.add(
 						outcomeMeasureLabelWithIcon,
 						cc.xy(1, row));

@@ -7,6 +7,8 @@ import java.awt.Window;
 
 import javax.swing.UIManager;
 
+import org.drugis.addis.gui.components.HtmlWordWrapper;
+
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.windows.WindowsLookAndFeel;
 
@@ -55,6 +57,13 @@ public class GUIHelper {
 		int xLoc = (int) parentLocation.getX() + (int) ((parentDim.getWidth() / 2) - (fsize.getWidth() / 2));
 		int yLoc = (int) parentLocation.getY() + (int) ((parentDim.getHeight() / 2) - (fsize.getHeight() / 2));
 		window.setLocation(new Point(xLoc, yLoc));
+	}
+
+	public static String createTooltip(String text) {
+		if (text != null && text.trim().length() > 0) {
+			return HtmlWordWrapper.wordWrap(text);
+		}
+		return null;
 	}
 	
 }

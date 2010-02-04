@@ -9,6 +9,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
+import org.drugis.common.gui.GUIHelper;
+
 @SuppressWarnings("serial")
 public class StudyTable extends JTable {
 	
@@ -47,10 +49,7 @@ public class StudyTable extends JTable {
 			if (value == null) {
 				setToolTipText(null);
 			} else {
-				if (value.toString().length() == 0) {
-					setToolTipText(null);
-				}
-				setToolTipText(HtmlWordWrapper.wordWrap(value.toString()));
+				setToolTipText(GUIHelper.createTooltip(value.toString()));
 			}
 			super.setValue(value);			
 		}

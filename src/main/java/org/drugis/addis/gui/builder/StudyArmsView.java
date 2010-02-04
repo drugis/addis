@@ -15,6 +15,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.presentation.BasicArmPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
+import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -101,7 +102,7 @@ public class StudyArmsView implements ViewBuilder {
 				NumberFormat.getInstance());
 		final String pgCharacteristicTooltip = armModel.getCharacteristicTooltip();
 		if (!pgCharacteristicTooltip.equals(""))
-			armSizeLabel.setToolTipText(pgCharacteristicTooltip);
+			armSizeLabel.setToolTipText(GUIHelper.createTooltip(pgCharacteristicTooltip));
 		builder.add(
 				armSizeLabel,
 						cc.xy(5, row, "center, center"));
