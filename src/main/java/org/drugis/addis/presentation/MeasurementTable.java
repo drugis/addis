@@ -94,40 +94,40 @@ public class MeasurementTable extends JTable{
 		});
 	}
 	
+	public static class NothingFocussedListener implements FocusListener {
+		List<Component> d_components = new ArrayList<Component>();
+		JWindow d_window;
+		
+		public NothingFocussedListener(JWindow window) {
+			d_window = window;
+		}
+		
+		public void focusGained(FocusEvent arg0) {
+			// TODO Auto-generated method stub
+			System.out.println("gained focus");
+			d_window.setVisible(true);
+		}
+
+		public void focusLost(FocusEvent arg0) {
+			System.out.println("disposing JWindow beging");
+			for(Component c : d_components)
+				if(c.isFocusOwner())
+					return;
+			d_window.setVisible(false);
+			
+			System.out.println("disposing JWindow end");
+		}
+		
+		public void addComponent(Component c){
+			c.addFocusListener(this);
+			d_components.add(c);
+		}
+
+	}
 	
 	@SuppressWarnings("serial")
 	public class EnterMeasurementWindow extends JWindow{
 		
-		private class NothingFocussedListener implements FocusListener {
-			List<Component> d_components = new ArrayList<Component>();
-			JWindow d_window;
-			
-			public NothingFocussedListener(JWindow window) {
-				d_window = window;
-			}
-			
-			public void focusGained(FocusEvent arg0) {
-				// TODO Auto-generated method stub
-				System.out.println("gained focus");
-				d_window.setVisible(true);
-			}
-
-			public void focusLost(FocusEvent arg0) {
-				System.out.println("disposing JWindow beging");
-				for(Component c : d_components)
-					if(c.isFocusOwner())
-						return;
-				d_window.setVisible(false);
-				
-				System.out.println("disposing JWindow end");
-			}
-			
-			public void addComponent(Component c){
-				c.addFocusListener(this);
-				d_components.add(c);
-			}
-
-		}
 
 		private NothingFocussedListener d_nothingFocussedListener;
 		
