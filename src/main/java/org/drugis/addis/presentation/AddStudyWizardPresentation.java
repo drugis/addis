@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 import javax.swing.JDialog;
 import javax.swing.JTable;
+import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -276,9 +277,9 @@ public class AddStudyWizardPresentation {
 		return new StudyNoteHolder(getOldStudy(),getOldStudy().getArms().get(curArmNumber));
 	}
 
-	public JTable getMeasurementTableModel(JDialog frame) {
+	public TableModel getMeasurementTableModel() {
 		commitOutcomesArmsToNew();
-		return new MeasurementTable(getNewStudy(), d_pmf, (Window)frame);
+		return new MeasurementTableModel(getNewStudy(),d_pmf);
 	}
 	
 	
