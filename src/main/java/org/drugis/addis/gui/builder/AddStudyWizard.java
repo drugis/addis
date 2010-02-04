@@ -2,6 +2,7 @@ package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -24,9 +25,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.table.TableModel;
 import javax.swing.text.DefaultFormatter;
 
 import org.drugis.addis.entities.Arm;
@@ -38,6 +41,7 @@ import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.DosePresentationModel;
+import org.drugis.addis.presentation.MeasurementTable;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -107,7 +111,9 @@ public class AddStudyWizard implements ViewBuilder{
 		
 		private void buildWizardStep() {
 			this.setLayout(new BorderLayout());
-			d_scrollPane = new JScrollPane(d_pm.getMeasurementTableModel(d_dialog));
+			TableModel tableModel = d_pm.getMeasurementTableModel();
+			JTable table = new MeasurementTable(tableModel,(Window) d_dialog);
+			d_scrollPane = new JScrollPane(table);
 			add(d_scrollPane, BorderLayout.CENTER);
 		}
 	}
