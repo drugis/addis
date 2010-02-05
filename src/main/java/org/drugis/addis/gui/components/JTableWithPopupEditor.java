@@ -1,13 +1,20 @@
 package org.drugis.addis.gui.components;
 
+import java.awt.AWTKeyStroke;
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,11 +42,26 @@ abstract public class JTableWithPopupEditor extends JTable {
 			}
 		});
 		
+		addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER) {
+					int col = getSelectedColumn();
+					int row = getSelectedRow();
+					if (row >= 0 && col >= 0) {
+						e.consume();						
+						startCellEditor(row, col);
+					}
+				}
+			}			
+		});		
+		
 		// Make sure the window closes when our hidden field gains focus
 		d_hidden = new JLabel();
 		d_hidden.setFocusable(true);
 		d_hidden.addFocusListener(new FocusAdapter() {
-			public void focusGained(FocusEvent arg0) {
+			@Override
+			public void focusGained(FocusEvent ev) {
 				destroyWindow();
 			}
 		});
@@ -57,6 +79,15 @@ abstract public class JTableWithPopupEditor extends JTable {
 			return null;
 		}
 		
+		ComponentKeyListener componentKeyListener = new ComponentKeyListener();		
+		for (Component c : panel.getComponents()) {
+			c.addKeyListener(componentKeyListener);
+			Set<AWTKeyStroke> keys = new HashSet<AWTKeyStroke>(c.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS));
+			keys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ENTER, 0));
+			c.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, keys);
+		}
+			
+		
 		panel.add(d_hidden);
 
 		// create the window
@@ -70,6 +101,7 @@ abstract public class JTableWithPopupEditor extends JTable {
 
 		// Make sure the window closes when we click in the frame containing the table
 		getTopLevelAncestor().addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				destroyWindow();
 			}
@@ -97,4 +129,13 @@ abstract public class JTableWithPopupEditor extends JTable {
 			d_window = null;
 		}
 	}
+	
+	private class ComponentKeyListener extends KeyAdapter {
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				destroyWindow();
+			}
+		}			
+	};
 }
