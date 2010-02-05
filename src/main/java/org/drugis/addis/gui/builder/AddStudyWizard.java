@@ -38,10 +38,10 @@ import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
+import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.DosePresentationModel;
-import org.drugis.addis.presentation.MeasurementTable;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -370,7 +370,6 @@ public class AddStudyWizard implements ViewBuilder{
 	public class EnterCharacteristicsWizardStep extends PanelWizardStep{
 		
 		private PanelBuilder d_builder;
-		private NotEmptyValidator d_validator;
 		private JScrollPane d_scrollPane;
 
 		private Set<BasicStudyCharacteristic> excludedChars = new HashSet<BasicStudyCharacteristic>();		
@@ -384,11 +383,10 @@ public class AddStudyWizard implements ViewBuilder{
 		}
 		
 		public void prepare() {
-			 d_validator = new NotEmptyValidator();
-			 d_validator.addValueChangeListener(new CompleteListener(this));
-			 
 			 if (d_scrollPane != null)
 				 remove(d_scrollPane);
+			 
+			 setComplete(true); // Don't require fields to be filled
 			 
 			 buildWizardStep();
 			 repaint(); 
@@ -457,7 +455,7 @@ public class AddStudyWizard implements ViewBuilder{
 			} else {
 				throw new RuntimeException("unknown characteristic type");
 			}
-			d_validator.add(component);
+			
 			return component;
 		}
 		

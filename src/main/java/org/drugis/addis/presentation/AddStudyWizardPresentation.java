@@ -1,6 +1,5 @@
 package org.drugis.addis.presentation;
 
-import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -10,8 +9,6 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.Map.Entry;
 
-import javax.swing.JDialog;
-import javax.swing.JTable;
 import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.Arm;
