@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import javax.swing.table.TableModel;
-
 import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -322,7 +320,7 @@ public class AddStudyWizardPresentation {
 		return new StudyNoteHolder(getOldStudy(),getOldStudy().getArms().get(curArmNumber));
 	}
 
-	public TableModel getMeasurementTableModel() {
+	public MeasurementTableModel getMeasurementTableModel() {
 		commitOutcomesArmsToNew();
 		return new MeasurementTableModel(getNewStudy(),d_pmf, Endpoint.class);
 	}
@@ -428,7 +426,7 @@ public class AddStudyWizardPresentation {
 		return d_selectedADEsList.get(i);
 	}
 
-	public TableModel getAdverseEventMeasurementTableModel() {
+	public MeasurementTableModel getAdverseEventMeasurementTableModel() {
 		commitADEsToStudy();
 		return new MeasurementTableModel(getNewStudy(),d_pmf, AdverseDrugEvent.class);
 	}

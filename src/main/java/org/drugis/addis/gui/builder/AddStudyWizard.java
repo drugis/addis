@@ -2,7 +2,6 @@ package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -42,6 +41,7 @@ import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.DosePresentationModel;
+import org.drugis.addis.presentation.MeasurementTableModel;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -94,12 +94,21 @@ public class AddStudyWizard implements ViewBuilder{
 		return wizard;
 	}
 	
+	public interface OutcomeMeasurementsModel {
+		MeasurementTableModel getMeasurementTableModel();
+	}
+	
 	@SuppressWarnings("serial")
-	public class SetEndpointMeasurementsWizardStep extends PanelWizardStep {
+	public static class SetMeasurementsWizardStep extends PanelWizardStep {
 		private JScrollPane d_scrollPane;
+		private OutcomeMeasurementsModel d_model;
+		private JDialog d_dialog;
 		
-		public SetEndpointMeasurementsWizardStep(){
-			super("Set Measurements","Please enter the measurements for all arm-endpoint combinations.");			
+		public SetMeasurementsWizardStep(String title, String description,
+				OutcomeMeasurementsModel model, JDialog dialog) {
+			super();
+			d_model = model;
+			d_dialog = dialog;
 		} 
 		
 		public void prepare() {
@@ -113,49 +122,40 @@ public class AddStudyWizard implements ViewBuilder{
 			 setComplete(true);
 		}
 		
-		public void applyState()
-		throws InvalidStateException {
+		public void applyState() throws InvalidStateException {
 		}
 		
 		private void buildWizardStep() {
 			this.setLayout(new BorderLayout());
-			TableModel tableModel = d_pm.getMeasurementTableModel();
-			JTable table = new MeasurementTable(tableModel,(Window) d_dialog);
+			TableModel tableModel = d_model.getMeasurementTableModel();
+			JTable table = new MeasurementTable(tableModel, d_dialog);
 			d_scrollPane = new JScrollPane(table);
 			add(d_scrollPane, BorderLayout.CENTER);
 		}
 	}
 	
 	@SuppressWarnings("serial")
-	public class SetAdverseEventMeasurementsWizardStep extends PanelWizardStep {
-		private JScrollPane d_scrollPane;
-		
+	public class SetEndpointMeasurementsWizardStep extends SetMeasurementsWizardStep {
+		public SetEndpointMeasurementsWizardStep(){
+			super("Set Measurements", "Please enter the measurements for all arm-endpoint combinations.",
+					new OutcomeMeasurementsModel() {
+						public MeasurementTableModel getMeasurementTableModel() {
+							return d_pm.getMeasurementTableModel();
+						}
+					}, d_dialog);
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	public class SetAdverseEventMeasurementsWizardStep extends SetMeasurementsWizardStep {
 		public SetAdverseEventMeasurementsWizardStep(){
-			super("Input adverse event data","Please enter the measurements for all arm-event combinations.");			
+			super("Input adverse event data", "Please enter the measurements for all arm-event combinations.",
+					new OutcomeMeasurementsModel() {
+						public MeasurementTableModel getMeasurementTableModel() {
+							return d_pm.getAdverseEventMeasurementTableModel();
+						}
+					}, d_dialog);
 		} 
-		
-		public void prepare() {
-			this.setVisible(false);
-			if (d_scrollPane != null)
-				 remove(d_scrollPane);
-			 
-			 buildWizardStep();
-			 this.setVisible(true);
-			 repaint();
-			 setComplete(true);
-		}
-		
-		public void applyState()
-		throws InvalidStateException {
-		}
-		
-		private void buildWizardStep() {
-			this.setLayout(new BorderLayout());
-			TableModel tableModel = d_pm.getAdverseEventMeasurementTableModel();
-			JTable table = new MeasurementTable(tableModel,(Window) d_dialog);
-			d_scrollPane = new JScrollPane(table);
-			add(d_scrollPane, BorderLayout.CENTER);
-		}
 	}
 	
 	@SuppressWarnings("serial")
