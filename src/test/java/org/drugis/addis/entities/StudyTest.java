@@ -54,19 +54,19 @@ public class StudyTest {
 	@Test
 	public void testSetEndpoints() {
 		List<Endpoint> list = Collections.singletonList(new Endpoint("e", Type.RATE));
-		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_OUTCOME_MEASURES, Collections.EMPTY_LIST, 
+		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, Collections.EMPTY_LIST, 
 				list);
 	}
 	
 	@Test
 	public void testAddOutcomeMeasure() {
-		JUnitUtil.testAdder(new Study("X", new Indication(0L, "")), Study.PROPERTY_OUTCOME_MEASURES, "addOutcomeMeasure", new Endpoint("e", Type.RATE));
+		JUnitUtil.testAdder(new Study("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Type.RATE));
 	}
 	
 	@Test(expected=NullPointerException.class)
 	public void testAddOutcomeMeasureNULLthrows() {
 		Study s = new Study("s", new Indication(0L, ""));
-		s.addOutcomeMeasure(null);
+		s.addEndpoint(null);
 	}
 	
 	@Test
@@ -114,7 +114,7 @@ public class StudyTest {
 	public void testSetMeasurement() {
 		Study study = new Study("X", new Indication(0L, ""));
 		Endpoint endpoint = new Endpoint("e", Type.RATE);
-		study.addOutcomeMeasure(endpoint);
+		study.addEndpoint(endpoint);
 		Arm group = new Arm(null, null, 100);
 		study.addArm(group);
 		BasicRateMeasurement m = new BasicRateMeasurement(0, group.getSize());
@@ -137,7 +137,7 @@ public class StudyTest {
 	public void testSetMeasurementThrowsException2() {
 		Study study = new Study("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("e", Type.RATE);
-		study.addOutcomeMeasure(e);
+		study.addEndpoint(e);
 		Arm group = new Arm(null, null, 100);
 		study.addArm(group);
 		
@@ -173,7 +173,7 @@ public class StudyTest {
 	
 	@Test
 	public void testDeleteEndpoint() throws Exception {
-		JUnitUtil.testDeleter(new Study("study", new Indication(0L, "")), Study.PROPERTY_OUTCOME_MEASURES, "deleteOutcomeMeasure",
+		JUnitUtil.testDeleter(new Study("study", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "deleteEndpoint",
 				new Endpoint("e", AbstractOutcomeMeasure.Type.CONTINUOUS));
 	}
 	

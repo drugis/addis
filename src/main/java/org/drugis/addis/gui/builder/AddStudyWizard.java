@@ -102,7 +102,7 @@ public class AddStudyWizard implements ViewBuilder{
 		
 		public SetMeasurementsWizardStep(String title, String description,
 				OutcomeMeasurementsModel model, JDialog dialog) {
-			super();
+			super(title, description);
 			d_model = model;
 			d_dialog = dialog;
 		} 

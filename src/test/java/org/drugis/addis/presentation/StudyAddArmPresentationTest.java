@@ -126,7 +126,7 @@ public class StudyAddArmPresentationTest {
 	@Test
 	public void testAddToStudy() {
 		Study study = new Study("Some Study", new Indication(0L, ""));
-		study.addOutcomeMeasure(ExampleData.buildEndpointHamd());
+		study.addEndpoint(ExampleData.buildEndpointHamd());
 		StudyAddArmPresentation pres = new StudyAddArmPresentation(study, d_pmf);
 		pres.getDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		pres.addToStudy();

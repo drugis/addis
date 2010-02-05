@@ -205,18 +205,6 @@ public class Main extends JFrame {
 		}
 	}
 
-	public void showStudyAddEndpointDialog(Study study) {
-		StudyAddEndpointDialog dialog = new StudyAddEndpointDialog(this, getDomain(), study);
-		GUIHelper.centerWindow(dialog, this);		
-		dialog.setVisible(true);
-	}
-	
-	public void showStudyAddADEDialog(Study study) {
-		StudyAddADEDialog dialog = new StudyAddADEDialog(this, getDomain(), study);
-		GUIHelper.centerWindow(dialog, this);		
-		dialog.setVisible(true);
-	}
-
 	private void initMenu() {
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(createFileMenu());

@@ -174,7 +174,7 @@ public class RandomEffectsMetaAnalysisTest {
 			int sertraResp, int sertraSize,
 			Indication ind) {
 		Study s = new Study(studyName, ind);
-		s.addOutcomeMeasure(d_rateEndpoint);
+		s.addEndpoint(d_rateEndpoint);
 		
 		addRateMeasurement(s, d_fluox, fluoxSize, fluoxResp);		
 		addRateMeasurement(s, d_sertr, sertraSize, sertraResp);
@@ -187,7 +187,7 @@ public class RandomEffectsMetaAnalysisTest {
 			int sertrSize, double sertrMean, double sertrDev,
 			Indication ind) {
 		Study s = new Study(studyName, ind);
-		s.addOutcomeMeasure(d_contEndpoint);
+		s.addEndpoint(d_contEndpoint);
 		
 		addContinuousMeasurement(s, d_fluox, fluoxSize, fluoxMean, fluoxDev);
 		addContinuousMeasurement(s, d_sertr, sertrSize, sertrMean, sertrDev);

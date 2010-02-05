@@ -33,7 +33,6 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.StudyAddArmDialog;
 import org.drugis.addis.gui.StudyAddPopulationCharacteristicDialog;
 import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.common.gui.GUIHelper;
@@ -110,24 +109,15 @@ public class StudyView implements ViewBuilder {
 	}
 
 	private JPanel buildArmsPart() {
-		JPanel panel = new JPanel(new BorderLayout());
-		panel.add(d_armsView.buildPanel(), BorderLayout.CENTER);
-		panel.add(buildAddArmButton(), BorderLayout.SOUTH);
-		return GUIFactory.createCollapsiblePanel(panel);
+		return GUIFactory.createCollapsiblePanel(d_armsView.buildPanel());
 	}
 
 	private JPanel buildEndpointPart() {
-		JPanel panel = new JPanel(new BorderLayout());
-		panel.add(d_epView.buildPanel(), BorderLayout.CENTER);
-		panel.add(buildAddEndpointButton(), BorderLayout.SOUTH);
-		return GUIFactory.createCollapsiblePanel(panel);
+		return GUIFactory.createCollapsiblePanel(d_epView.buildPanel());
 	}
 	
 	private JPanel buildAdePart() {
-		JPanel panel = new JPanel(new BorderLayout());
-		panel.add(d_adeView.buildPanel(), BorderLayout.CENTER);
-		panel.add(buildAddADEButton(), BorderLayout.SOUTH);
-		return GUIFactory.createCollapsiblePanel(panel);
+		return GUIFactory.createCollapsiblePanel(d_adeView.buildPanel());
 	}
 	
 	
@@ -148,16 +138,6 @@ public class StudyView implements ViewBuilder {
 		dlg.setVisible(true);
 	}
 
-	private JComponent buildAddArmButton() {
-		String text = "Add study arm";
-		AbstractAction action = new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				addArm();
-			}			
-		};
-		return buildOneButtonBar(text, action);
-	}
-
 	private JComponent buildOneButtonBar(String text, AbstractAction action) {
 		ButtonBarBuilder2 bb = new ButtonBarBuilder2();
 		JButton button = new JButton(text);
@@ -165,40 +145,5 @@ public class StudyView implements ViewBuilder {
 		bb.addButton(button);
 		bb.addGlue();
 		return bb.getPanel();
-	}
-
-	private void addArm() {
-		StudyAddArmDialog dlg = new StudyAddArmDialog(d_mainWindow, d_domain,
-				(Study)d_model.getBean());
-		GUIHelper.centerWindow(dlg, d_mainWindow);
-		dlg.setVisible(true);
-	}
-
-	private JComponent buildAddEndpointButton() {
-		String text = "Add Endpoint";
-		AbstractAction action = new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				addEndpointClicked();
-			}			
-		};
-		return buildOneButtonBar(text, action);
-	}
-	
-	private JComponent buildAddADEButton() {
-		String text = "Add Adverse Event";
-		AbstractAction action = new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				addADEClicked();
-			}			
-		};
-		return buildOneButtonBar(text, action);
-	}
-
-	private void addEndpointClicked() {
-		d_mainWindow.showStudyAddEndpointDialog((Study)d_model.getBean());
-	}
-	
-	private void addADEClicked() {
-		d_mainWindow.showStudyAddADEDialog((Study)d_model.getBean());
 	}
 }

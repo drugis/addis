@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -62,7 +63,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 	
 	public final static String PROPERTY_ID = "id";
-	public final static String PROPERTY_OUTCOME_MEASURES = "outcomeMeasures";
+	public final static String PROPERTY_ENDPOINTS = "endpoints";
+	public final static String PROPERTY_ADVERSE_EVENTS = "adverseEvents";
 	public final static String PROPERTY_ARMS = "arms";
 	public final static String PROPERTY_CHARACTERISTIC = "Characteristics";
 	public final static String PROPERTY_NOTE = "Note";
@@ -71,7 +73,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private List<Arm> d_arms = new ArrayList<Arm>();
 	private String d_id;
 	private Map<MeasurementKey, Measurement> d_measurements = new HashMap<MeasurementKey, Measurement>();
-	private List<OutcomeMeasure> d_outcomeMeasures = new ArrayList<OutcomeMeasure>();
+	private List<Endpoint> d_endpoints = new ArrayList<Endpoint>();
+	private List<AdverseDrugEvent> d_adverseEvents = new ArrayList<AdverseDrugEvent>();
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	private VariableMap d_popChars;
 	private Indication d_indication;
@@ -80,7 +83,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	public Study(String id, Indication i) {
 		d_id = id;
 		d_indication = i;
-		setOutcomeMeasures(new ArrayList<OutcomeMeasure>());
 		setArms(new ArrayList<Arm>());
 		d_popChars = new VariableMap();
 	}
@@ -207,61 +209,79 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 	
 	public List<OutcomeMeasure> getOutcomeMeasures() {
-		return d_outcomeMeasures;
-	}
-	
-	public List<OutcomeMeasure> getOutcomeMeasures(Class<? extends OutcomeMeasure> type) {
 		List<OutcomeMeasure> l = new ArrayList<OutcomeMeasure>();
-		for (OutcomeMeasure o : getOutcomeMeasures()) {
-			if (isOfType(o, type)) {
-				l.add(o);
-			}
-		}
+		l.addAll(d_endpoints);
+		l.addAll(d_adverseEvents);
 		return l;
 	}
 	
-	private boolean isOfType(OutcomeMeasure o, Class<? extends OutcomeMeasure> type) {
-		try {
-			o.getClass().asSubclass(type);
-		} catch (ClassCastException e) {
-			return false;
+	public List<Endpoint> getEndpoints() {
+		return d_endpoints;
+	}
+	
+	public List<AdverseDrugEvent> getAdverseEvents() {
+		return d_adverseEvents;
+	}
+	
+	public List<? extends OutcomeMeasure> getOutcomeMeasures(Class<? extends OutcomeMeasure> type) {
+		if (type == Endpoint.class) {
+			return Collections.unmodifiableList(d_endpoints);
+		} else if (type == AdverseDrugEvent.class){
+			return Collections.unmodifiableList(d_adverseEvents);
 		}
-		return true;
+		throw new IllegalArgumentException(type + " is not a recognized type of Outcome for studies");
 	}
 	
-	public void setOutcomeMeasures(List<? extends OutcomeMeasure> outcomeMeasures) {
-		List<OutcomeMeasure> oldVal = d_outcomeMeasures;
-		d_outcomeMeasures = new ArrayList<OutcomeMeasure>(outcomeMeasures);
+	public void setEndpoints(List<Endpoint> endpoints) {
+		List<Endpoint> oldVal = getEndpoints();
+		d_endpoints = new ArrayList<Endpoint>(endpoints);
 		updateMeasurements();
-		firePropertyChange(PROPERTY_OUTCOME_MEASURES, oldVal, d_outcomeMeasures);
+		firePropertyChange(PROPERTY_ENDPOINTS, oldVal, getEndpoints());
 	}
 	
-	/*public void setOutcomeMeasures(Set<? extends OutcomeMeasure> outcomeMeasures) {
-		List<OutcomeMeasure> oldVal = d_outcomeMeasures;
-		d_outcomeMeasures = new ArrayList<OutcomeMeasure>(outcomeMeasures);
+	public void setAdverseEvents(List<AdverseDrugEvent> ade) {
+		List<AdverseDrugEvent> oldVal = getAdverseEvents();
+		d_adverseEvents = new ArrayList<AdverseDrugEvent>(ade);
 		updateMeasurements();
-		firePropertyChange(PROPERTY_OUTCOME_MEASURES, oldVal, d_outcomeMeasures);
-	}*/
+		firePropertyChange(PROPERTY_ADVERSE_EVENTS, oldVal, getAdverseEvents());
+	}
 	
-	public void addOutcomeMeasure(OutcomeMeasure om) {
+	public void addAdverseEvent(AdverseDrugEvent ade) {
+		if (ade == null) 
+			throw new NullPointerException("Cannot add a NULL outcome measure");
+		
+		List<AdverseDrugEvent> newList = new ArrayList<AdverseDrugEvent>(d_adverseEvents);
+		newList.add(ade);
+		setAdverseEvents(newList);
+	}
+	
+	public void addOutcomeMeasure(Endpoint om) {
+		addEndpoint(om);
+	}
+
+	public void addEndpoint(Endpoint om) {
 		if (om == null) 
 			throw new NullPointerException("Cannot add a NULL outcome measure");
 		
-		List<OutcomeMeasure> newVal = new ArrayList<OutcomeMeasure>(d_outcomeMeasures);
+		List<Endpoint> newVal = new ArrayList<Endpoint>(d_endpoints);
 		newVal.add(om);
-		setOutcomeMeasures(newVal);
+		setEndpoints(newVal);
 	}
 		
-	public void deleteOutcomeMeasure(OutcomeMeasure om) {
-		if (d_outcomeMeasures.contains(om)) {
-			List<OutcomeMeasure> newVal = new ArrayList<OutcomeMeasure>(d_outcomeMeasures);
+	public void deleteOutcomeMeasure(Endpoint om) {
+		deleteEndpoint(om);
+	}
+
+	public void deleteEndpoint(Endpoint om) {
+		if (d_endpoints.contains(om)) {
+			List<Endpoint> newVal = new ArrayList<Endpoint>(d_endpoints);
 			newVal.remove(om);
-			setOutcomeMeasures(newVal);
+			setEndpoints(newVal);
 		}
 	}
 	
 	private void updateMeasurements() {
-		for (OutcomeMeasure om : d_outcomeMeasures) {
+		for (OutcomeMeasure om : getOutcomeMeasures()) {
 			for (Arm g : getArms()) {
 				MeasurementKey key = new MeasurementKey(om, g);
 				if (d_measurements.get(key) == null) {
@@ -311,5 +331,11 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	
 	public void removeNote (Object key){
 		d_notes.remove(key);
+	}
+
+	public void removeEndpoint(int i) {
+		List<Endpoint> newVal = new ArrayList<Endpoint>(d_endpoints);
+		newVal.remove(i);
+		setEndpoints(newVal);
 	}
 }

@@ -95,7 +95,7 @@ public class MainData extends ExampleData {
 		Drug fluoxetine = buildDrugFluoxetine();
 		Drug sertraline = buildDrugSertraline();
 		Study study = new Study("Fava et al, 2002", buildIndicationDepression());
-		study.setOutcomeMeasures(Collections.singletonList(hamd));
+		study.setEndpoints(Collections.singletonList(hamd));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -140,7 +140,7 @@ public class MainData extends ExampleData {
 		Drug fluoxetine = buildDrugFluoxetine();
 		Drug sertraline = buildDrugSertraline();
 		Study study = new Study("Newhouse et al, 2000", buildIndicationDepression());
-		study.setOutcomeMeasures(Collections.singletonList(hamd));
+		study.setEndpoints(Collections.singletonList(hamd));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -185,7 +185,7 @@ public class MainData extends ExampleData {
 		Drug fluoxetine = buildDrugFluoxetine();
 		Drug sertraline = buildDrugSertraline();
 		Study study = new Study("Sechter et al, 1999", buildIndicationDepression());
-		study.setOutcomeMeasures(Collections.singletonList(hamd));
+		study.setEndpoints(Collections.singletonList(hamd));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -230,7 +230,7 @@ public class MainData extends ExampleData {
 		Drug fluoxetine = buildDrugFluoxetine();
 		Drug sertraline = buildDrugSertraline();
 		Study study = new Study("Boyer et al, 1998", buildIndicationDepression());
-		study.setOutcomeMeasures(Collections.singletonList(hamd));
+		study.setEndpoints(Collections.singletonList(hamd));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -277,7 +277,7 @@ public class MainData extends ExampleData {
 		Drug placebo = buildPlacebo();
 		
 		Study study = new Study("Organon 003-022, 1990", buildIndicationDepression());
-		study.setOutcomeMeasures(Collections.singletonList(cgis));
+		study.setEndpoints(Collections.singletonList(cgis));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -343,7 +343,7 @@ public class MainData extends ExampleData {
 		Drug placebo = buildPlacebo();
 		
 		Study study = new Study("Organon 003-023, 1992", buildIndicationDepression());
-		study.setOutcomeMeasures(Collections.singletonList(cgis));
+		study.setEndpoints(Collections.singletonList(cgis));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -407,9 +407,9 @@ public class MainData extends ExampleData {
 		Drug Bupropion = buildDrugBupropion();
 		Drug placebo = buildPlacebo();
 		
-		Study study = new Study("ClinicalTrials.gov Example", buildIndicationDepression());
-		study.setOutcomeMeasures(Collections.singletonList(hamd));
-		study.addOutcomeMeasure(buildAdeConvulsion());
+		Study study = new Study("Example with Baseline Characteristics", buildIndicationDepression());
+		study.setEndpoints(Collections.singletonList(hamd));
+		study.addAdverseEvent(buildAdeConvulsion());
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
