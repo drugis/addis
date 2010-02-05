@@ -48,6 +48,9 @@ import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
+import org.pietschy.wizard.WizardAdapter;
+import org.pietschy.wizard.WizardEvent;
+import org.pietschy.wizard.WizardListener;
 import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -79,8 +82,14 @@ public class AddStudyWizard implements ViewBuilder{
 		wizardModel.add(new SelectEndpointWizardStep());
 		wizardModel.add(new SetArmsWizardStep());
 		wizardModel.add(new SetMeasurementsWizardStep());
+		//wizardModel.add(new SelectADEWizardStep());
 		Wizard wizard = new Wizard(wizardModel);
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
+		wizard.addWizardListener(new WizardAdapter() {
+			public void wizardClosed(WizardEvent e) {
+				d_pm.saveStudy();
+			}
+		});
 		wizard.setPreferredSize(new Dimension(950, 950));
 		return wizard;
 	}
@@ -106,7 +115,6 @@ public class AddStudyWizard implements ViewBuilder{
 		
 		public void applyState()
 		throws InvalidStateException {
-			d_pm.saveStudy();
 		}
 		
 		private void buildWizardStep() {
@@ -345,7 +353,7 @@ public class AddStudyWizard implements ViewBuilder{
 				btn.addActionListener(new RemoveEndpointListener(i));
 				
 				// add label
-				builder.addLabel("endpoint: ", cc.xy(3, row));
+				builder.addLabel("Endpoint: ", cc.xy(3, row));
 				
 				// Set the endoints from a list of options
 				JComboBox endpoints = AuxComponentFactory.createBoundComboBox(d_pm.getEndpointListModel(), d_pm.getEndpointModel(i));
@@ -353,13 +361,119 @@ public class AddStudyWizard implements ViewBuilder{
 				builder.add(endpoints, cc.xy(5, row));
 				
 				// add 'add endpoint button' 
-				btn = GUIFactory.createPlusButton("add new endpoint");
+				btn = GUIFactory.createPlusButton("Add new endpoint");
 				builder.add(btn, cc.xy(7, row));
 				btn.addActionListener(new NewEndpointButtonListener(i));
 				
 				
 				// Show the notes from the imported study
 				row = addNoteField(builder, cc, row, 5, 1, layout, d_pm.getEndpointNoteModel(i), DEFAULT_NOTETITLE);
+			}
+			return row;	
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	public class SelectADEWizardStep extends PanelWizardStep{
+		private class RemoveADEListener extends AbstractAction {
+			int d_index;
+			
+			public RemoveADEListener(int index) {
+				d_index = index;
+			}
+			
+			public void actionPerformed(ActionEvent e) {
+				d_pm.removeADE(d_index);
+				prepare();
+			}	
+		} 
+		
+		private class NewADEButtonListener implements ActionListener{
+			int d_index;
+
+			public NewADEButtonListener(int index) {
+				d_index = index;
+			}
+			
+			public void actionPerformed(ActionEvent e) {
+				d_main.showAddAdeDialog(d_pm.getADEModel(d_index));
+			}
+		}
+		
+		private PanelBuilder d_builder;
+		private NotEmptyValidator d_validator;
+		private JScrollPane d_scrollPane;
+		
+		public SelectADEWizardStep(){
+			super("Select Adverse Events","Please select the appropriate adverse events");
+			this.setLayout(new BorderLayout());
+		}
+		
+		 public void prepare() {
+			 this.setVisible(false);
+ 			 d_validator = new NotEmptyValidator();
+			 d_validator.addValueChangeListener(new CompleteListener(this));
+			 
+			 if (d_scrollPane != null)
+				 remove(d_scrollPane);
+			 
+			 buildWizardStep();
+			 this.setVisible(true);
+			 repaint();
+		 }
+		 
+		private void buildWizardStep() {
+			FormLayout layout = new FormLayout(
+					"center:pref, 3dlu, right:pref, 3dlu, fill:pref:grow, 3dlu, left:pref",
+					"p, 3dlu, p"
+					);	
+			d_builder = new PanelBuilder(layout);
+			d_builder.setDefaultDialogBorder();
+			CellConstraints cc = new CellConstraints();
+			
+			int row = buildADEsPart(1, d_builder, cc, 1, layout);
+			
+			// add 'Add ADE button' 
+			JButton btn = new JButton("Add Adverse Event");
+			d_builder.add(btn, cc.xy(1, row+=2));
+			btn.addActionListener(new AbstractAction() {
+				
+				public void actionPerformed(ActionEvent e) {
+					d_pm.addADEModels(1);
+					prepare();
+				}
+			});
+		
+			JPanel panel = d_builder.getPanel();
+			d_scrollPane = new JScrollPane(panel);
+		
+			add(d_scrollPane, BorderLayout.CENTER);
+		}
+
+		private int buildADEsPart(int fullWidth, PanelBuilder builder, CellConstraints cc, int row, FormLayout layout) {
+			
+			// For all the endpoints found in the imported study
+			for(int i = 0; i < d_pm.getNumberADEs(); ++i){
+				LayoutUtil.addRow(layout);
+				row+=2;
+				
+				// add 'remove endpoint' button
+				JButton btn = new JButton("Remove Adverse Event");
+				builder.add(btn, cc.xy(1, row));
+				btn.addActionListener(new RemoveADEListener(i));
+				
+				// add label
+				builder.addLabel("Adverse Event: ", cc.xy(3, row));
+				
+				// Set the endoints from a list of options
+				JComboBox endpoints = AuxComponentFactory.createBoundComboBox(d_pm.getADEListModel(), d_pm.getADEModel(i));
+				d_validator.add(endpoints);
+				builder.add(endpoints, cc.xy(5, row));
+				
+				// add 'add endpoint button' 
+				btn = GUIFactory.createPlusButton("Add new adverse event");
+				builder.add(btn, cc.xy(7, row));
+				btn.addActionListener(new NewADEButtonListener(i));
 			}
 			return row;	
 		}
