@@ -28,6 +28,10 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class AddStudyWizardPresentation {
 	
+	public interface OutcomeMeasurementsModel {
+		MeasurementTableModel getMeasurementTableModel();
+	}
+	
 	@SuppressWarnings("serial")
 	private class DrugListHolder extends AbstractListHolder<Drug> implements PropertyChangeListener, DomainListener {
 		public DrugListHolder() {
@@ -320,7 +324,7 @@ public class AddStudyWizardPresentation {
 		return new StudyNoteHolder(getOldStudy(),getOldStudy().getArms().get(curArmNumber));
 	}
 
-	public MeasurementTableModel getMeasurementTableModel() {
+	public MeasurementTableModel getEndpointMeasurementTableModel() {
 		commitOutcomesArmsToNew();
 		return new MeasurementTableModel(getNewStudy(),d_pmf, Endpoint.class);
 	}
@@ -426,8 +430,24 @@ public class AddStudyWizardPresentation {
 		return d_selectedADEsList.get(i);
 	}
 
-	public MeasurementTableModel getAdverseEventMeasurementTableModel() {
+	private MeasurementTableModel getAdverseEventMeasurementTableModel() {
 		commitADEsToStudy();
 		return new MeasurementTableModel(getNewStudy(),d_pmf, AdverseDrugEvent.class);
 	}
+	
+	public OutcomeMeasurementsModel getAdverseEventsModel() {
+		return new OutcomeMeasurementsModel() {
+			public MeasurementTableModel getMeasurementTableModel() {
+				return getAdverseEventMeasurementTableModel();
+			}
+		};
+	} 
+	
+	public OutcomeMeasurementsModel getEndpointsModel() {
+		return new OutcomeMeasurementsModel() {
+			public MeasurementTableModel getMeasurementTableModel() {
+				return getMeasurementTableModel();
+			}
+		};
+	} 
 }

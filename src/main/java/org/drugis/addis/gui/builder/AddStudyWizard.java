@@ -41,7 +41,7 @@ import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.DosePresentationModel;
-import org.drugis.addis.presentation.MeasurementTableModel;
+import org.drugis.addis.presentation.AddStudyWizardPresentation.OutcomeMeasurementsModel;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -94,10 +94,6 @@ public class AddStudyWizard implements ViewBuilder{
 		return wizard;
 	}
 	
-	public interface OutcomeMeasurementsModel {
-		MeasurementTableModel getMeasurementTableModel();
-	}
-	
 	@SuppressWarnings("serial")
 	public static class SetMeasurementsWizardStep extends PanelWizardStep {
 		private JScrollPane d_scrollPane;
@@ -138,11 +134,7 @@ public class AddStudyWizard implements ViewBuilder{
 	public class SetEndpointMeasurementsWizardStep extends SetMeasurementsWizardStep {
 		public SetEndpointMeasurementsWizardStep(){
 			super("Set Measurements", "Please enter the measurements for all arm-endpoint combinations.",
-					new OutcomeMeasurementsModel() {
-						public MeasurementTableModel getMeasurementTableModel() {
-							return d_pm.getMeasurementTableModel();
-						}
-					}, d_dialog);
+					d_pm.getEndpointsModel(), d_dialog);
 		}
 	}
 	
@@ -150,12 +142,9 @@ public class AddStudyWizard implements ViewBuilder{
 	public class SetAdverseEventMeasurementsWizardStep extends SetMeasurementsWizardStep {
 		public SetAdverseEventMeasurementsWizardStep(){
 			super("Input adverse event data", "Please enter the measurements for all arm-event combinations.",
-					new OutcomeMeasurementsModel() {
-						public MeasurementTableModel getMeasurementTableModel() {
-							return d_pm.getAdverseEventMeasurementTableModel();
-						}
-					}, d_dialog);
-		} 
+					d_pm.getAdverseEventsModel(), d_dialog);
+		}
+
 	}
 	
 	@SuppressWarnings("serial")
