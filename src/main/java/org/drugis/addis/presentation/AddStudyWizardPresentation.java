@@ -22,6 +22,7 @@ import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
 
@@ -164,7 +165,9 @@ public class AddStudyWizardPresentation {
 	List<BasicArmPresentation> d_selectedArmList;
 	private ListHolder<Endpoint> d_endpointListHolder;
 	private ListHolder<AdverseDrugEvent> d_adverseEventListHolder;
+	private ListHolder<Variable> d_populationCharsListHolder;
 	private SelectAdverseEventsPresentation d_adverseEventSelect;
+	private SelectFromFiniteListPresentationModel<Variable> d_populationCharsSelect;
 	
 	
 	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, Main main) {
@@ -173,6 +176,7 @@ public class AddStudyWizardPresentation {
 		d_endpointListHolder = new EndpointListHolder(d_domain);
 		d_adverseEventListHolder = new ADEListHolder(d_domain);
 		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_adverseEventListHolder, main);
+		d_populationCharsSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder);
 		clearStudies();
 	}
 	
@@ -432,5 +436,9 @@ public class AddStudyWizardPresentation {
 
 	public SelectFromFiniteListPresentationModel<AdverseDrugEvent> getAdverseEventSelectModel() {
 		return d_adverseEventSelect;
+	}
+
+	public SelectFromFiniteListPresentationModel<Variable> getPopulationCharsSelectModel() {
+		return d_populationCharsSelect;
 	} 
 }

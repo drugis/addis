@@ -33,6 +33,7 @@ import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.SIUnit;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
@@ -40,7 +41,6 @@ import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.DosePresentationModel;
-import org.drugis.addis.presentation.SelectAdverseEventsPresentation;
 import org.drugis.addis.presentation.AddStudyWizardPresentation.OutcomeMeasurementsModel;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
@@ -396,7 +396,10 @@ public class AddStudyWizard implements ViewBuilder{
 	}
 	
 	@SuppressWarnings("serial")
-	public class SelectPopulationCharsWizardStep extends PanelWizardStep {
+	public class SelectPopulationCharsWizardStep extends SelectFromFiniteListWizardStep<Variable> {
+		public SelectPopulationCharsWizardStep() {
+			super(d_pm.getPopulationCharsSelectModel());
+		}
 		
 	}
 	
