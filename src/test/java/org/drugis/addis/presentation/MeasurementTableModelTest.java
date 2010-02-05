@@ -24,7 +24,7 @@ public class MeasurementTableModelTest {
 		ExampleData.initDefaultData(domain);
 		d_pmf = new PresentationModelFactory(domain);
 		d_standardStudy = ExampleData.buildStudyDeWilde();
-		model = new MeasurementTableModel(d_standardStudy, d_pmf);
+		model = new MeasurementTableModel(d_standardStudy, d_pmf, Endpoint.class);
 	}
 	
 	@Test

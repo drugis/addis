@@ -210,6 +210,25 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return d_outcomeMeasures;
 	}
 	
+	public List<OutcomeMeasure> getOutcomeMeasures(Class<? extends OutcomeMeasure> type) {
+		List<OutcomeMeasure> l = new ArrayList<OutcomeMeasure>();
+		for (OutcomeMeasure o : getOutcomeMeasures()) {
+			if (isOfType(o, type)) {
+				l.add(o);
+			}
+		}
+		return l;
+	}
+	
+	private boolean isOfType(OutcomeMeasure o, Class<? extends OutcomeMeasure> type) {
+		try {
+			o.getClass().asSubclass(type);
+		} catch (ClassCastException e) {
+			return false;
+		}
+		return true;
+	}
+	
 	public void setOutcomeMeasures(List<? extends OutcomeMeasure> outcomeMeasures) {
 		List<OutcomeMeasure> oldVal = d_outcomeMeasures;
 		d_outcomeMeasures = new ArrayList<OutcomeMeasure>(outcomeMeasures);

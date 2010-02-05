@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
 import java.util.Map.Entry;
 
 import javax.swing.table.TableModel;
 
+import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
@@ -324,7 +324,7 @@ public class AddStudyWizardPresentation {
 
 	public TableModel getMeasurementTableModel() {
 		commitOutcomesArmsToNew();
-		return new MeasurementTableModel(getNewStudy(),d_pmf);
+		return new MeasurementTableModel(getNewStudy(),d_pmf, Endpoint.class);
 	}
 	
 	
@@ -368,6 +368,15 @@ public class AddStudyWizardPresentation {
 		}
 		
 		getNewStudy().setArms(arms);
+	}
+	
+	private void commitADEsToStudy() {
+		List<OutcomeMeasure> outcomeMeasures = new ArrayList<OutcomeMeasure>();
+		outcomeMeasures.addAll(getNewStudy().getOutcomeMeasures(Endpoint.class));
+		for(AbstractHolder<OutcomeMeasure> outcomeHolder : d_selectedADEsList) {
+			outcomeMeasures.add(outcomeHolder.getValue());
+		}	
+		getNewStudy().setOutcomeMeasures(outcomeMeasures);
 	}
 	
 	private void transferNotes() {
@@ -417,5 +426,10 @@ public class AddStudyWizardPresentation {
 
 	public ValueModel getADEModel(int i) {
 		return d_selectedADEsList.get(i);
+	}
+
+	public TableModel getAdverseEventMeasurementTableModel() {
+		commitADEsToStudy();
+		return new MeasurementTableModel(getNewStudy(),d_pmf, AdverseDrugEvent.class);
 	}
 }

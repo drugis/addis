@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 
@@ -17,10 +16,13 @@ public class MeasurementTableModel extends AbstractTableModel {
 
 	private Study d_study;
 	private PresentationModelFactory d_pmf;
+	private Class<? extends OutcomeMeasure> d_type;
 	
-	public MeasurementTableModel(Study study, PresentationModelFactory pmf) {
+	public MeasurementTableModel(Study study, PresentationModelFactory pmf, 
+			Class<? extends OutcomeMeasure> type) {
 		d_study = study;
 		d_pmf = pmf;
+		d_type = type;
 	}
 
 	public int getColumnCount() {
@@ -28,7 +30,7 @@ public class MeasurementTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		return d_study.getOutcomeMeasures().size();
+		return d_study.getOutcomeMeasures(d_type).size();
 	}
 	
 	public boolean isCellEditable(int row, int col) {
@@ -47,20 +49,18 @@ public class MeasurementTableModel extends AbstractTableModel {
 		if (columnIndex == 0) {
 			return getEndpointAtIndex(rowIndex).getName();
 		}
-		OutcomeMeasure om = new ArrayList<OutcomeMeasure>(d_study.getOutcomeMeasures()).get(rowIndex);
+		OutcomeMeasure om = new ArrayList<OutcomeMeasure>(d_study.getOutcomeMeasures(d_type)).get(rowIndex);
 		Arm arm = d_study.getArms().get(columnIndex - 1);
 		return d_pmf.getLabeledModel(d_study.getMeasurement(om, arm));
 	}
 
 	private OutcomeMeasure getEndpointAtIndex(int rowIndex) {
 		int index = 0;
-		for (OutcomeMeasure m : d_study.getOutcomeMeasures()) {
-			if (m instanceof Endpoint) {
-				if (index == rowIndex) {
-					return m;
-				} else {
-					index++;
-				}
+		for (OutcomeMeasure m : d_study.getOutcomeMeasures(d_type)) {
+			if (index == rowIndex) {
+				return m;
+			} else {
+				index++;
 			}
 		}
 		throw new IllegalStateException("no endpoint of index " + rowIndex);

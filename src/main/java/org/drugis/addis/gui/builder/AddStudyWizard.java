@@ -50,7 +50,6 @@ import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardAdapter;
 import org.pietschy.wizard.WizardEvent;
-import org.pietschy.wizard.WizardListener;
 import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -81,8 +80,9 @@ public class AddStudyWizard implements ViewBuilder{
 		wizardModel.add(new EnterCharacteristicsWizardStep());
 		wizardModel.add(new SelectEndpointWizardStep());
 		wizardModel.add(new SetArmsWizardStep());
-		wizardModel.add(new SetMeasurementsWizardStep());
-		//wizardModel.add(new SelectADEWizardStep());
+		wizardModel.add(new SetEndpointMeasurementsWizardStep());
+		wizardModel.add(new SelectADEWizardStep());
+		wizardModel.add(new SetAdverseEventMeasurementsWizardStep());
 		Wizard wizard = new Wizard(wizardModel);
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 		wizard.addWizardListener(new WizardAdapter() {
@@ -95,10 +95,10 @@ public class AddStudyWizard implements ViewBuilder{
 	}
 	
 	@SuppressWarnings("serial")
-	public class SetMeasurementsWizardStep extends PanelWizardStep {
+	public class SetEndpointMeasurementsWizardStep extends PanelWizardStep {
 		private JScrollPane d_scrollPane;
 		
-		public SetMeasurementsWizardStep(){
+		public SetEndpointMeasurementsWizardStep(){
 			super("Set Measurements","Please enter the measurements for all arm-endpoint combinations.");			
 		} 
 		
@@ -120,6 +120,38 @@ public class AddStudyWizard implements ViewBuilder{
 		private void buildWizardStep() {
 			this.setLayout(new BorderLayout());
 			TableModel tableModel = d_pm.getMeasurementTableModel();
+			JTable table = new MeasurementTable(tableModel,(Window) d_dialog);
+			d_scrollPane = new JScrollPane(table);
+			add(d_scrollPane, BorderLayout.CENTER);
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	public class SetAdverseEventMeasurementsWizardStep extends PanelWizardStep {
+		private JScrollPane d_scrollPane;
+		
+		public SetAdverseEventMeasurementsWizardStep(){
+			super("Input adverse event data","Please enter the measurements for all arm-event combinations.");			
+		} 
+		
+		public void prepare() {
+			this.setVisible(false);
+			if (d_scrollPane != null)
+				 remove(d_scrollPane);
+			 
+			 buildWizardStep();
+			 this.setVisible(true);
+			 repaint();
+			 setComplete(true);
+		}
+		
+		public void applyState()
+		throws InvalidStateException {
+		}
+		
+		private void buildWizardStep() {
+			this.setLayout(new BorderLayout());
+			TableModel tableModel = d_pm.getAdverseEventMeasurementTableModel();
 			JTable table = new MeasurementTable(tableModel,(Window) d_dialog);
 			d_scrollPane = new JScrollPane(table);
 			add(d_scrollPane, BorderLayout.CENTER);
