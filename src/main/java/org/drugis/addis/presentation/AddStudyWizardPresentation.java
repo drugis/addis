@@ -22,6 +22,7 @@ import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
 
 import com.jgoodies.binding.value.ValueModel;
@@ -139,13 +140,6 @@ public class AddStudyWizardPresentation {
 	}
 	
 	@SuppressWarnings("serial")
-	private class AdverseEventHolder extends OutcomeMeasureHolder<AdverseDrugEvent> {
-		public AdverseEventHolder() {
-			super(d_selectedADEsList, getADEListModel());
-		}
-	}
-	
-	@SuppressWarnings("serial")
 	private class IndicationListHolder extends AbstractListHolder<Indication> {
 		public IndicationListHolder() {
 			d_domain.addListener(new DomainListener() {
@@ -167,16 +161,18 @@ public class AddStudyWizardPresentation {
 	private StudyPresentationModel d_oldStudyPM;
 	
 	List<AbstractHolder<Endpoint>> d_selectedEndpointsList;
-	List<AbstractHolder<AdverseDrugEvent>> d_selectedADEsList;
 	List<BasicArmPresentation> d_selectedArmList;
 	private ListHolder<Endpoint> d_endpointListHolder;
 	private ListHolder<AdverseDrugEvent> d_adverseEventListHolder;
+	private SelectAdverseEventsPresentation d_adverseEventSelect;
 	
-	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf) {
+	
+	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, Main main) {
 		d_domain = d;
 		d_pmf = pmf;
 		d_endpointListHolder = new EndpointListHolder(d_domain);
 		d_adverseEventListHolder = new ADEListHolder(d_domain);
+		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_adverseEventListHolder, main);
 		clearStudies();
 	}
 	
@@ -244,7 +240,9 @@ public class AddStudyWizardPresentation {
 		d_newStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
 		getSourceModel().setValue(BasicStudyCharacteristic.Source.MANUAL);
 		d_selectedEndpointsList = new ArrayList<AbstractHolder<Endpoint>>();
-		d_selectedADEsList = new ArrayList<AbstractHolder<AdverseDrugEvent>>();
+		while (d_adverseEventSelect.countSlots() > 0) {
+			d_adverseEventSelect.removeSlot(0);
+		}
 		d_selectedArmList = new ArrayList<BasicArmPresentation>();
 		addEndpointModels(1);
 		addArmModels(2);
@@ -374,7 +372,7 @@ public class AddStudyWizardPresentation {
 	
 	private void commitADEsToStudy() {
 		List<AdverseDrugEvent> outcomeMeasures = new ArrayList<AdverseDrugEvent>();
-		for(AbstractHolder<AdverseDrugEvent> outcomeHolder : d_selectedADEsList) {
+		for(AbstractHolder<AdverseDrugEvent> outcomeHolder : d_adverseEventSelect.getSlots()) {
 			outcomeMeasures.add(outcomeHolder.getValue());
 		}	
 		getNewStudy().setAdverseEvents(outcomeMeasures);
@@ -407,26 +405,8 @@ public class AddStudyWizardPresentation {
 		return d_oldStudyPM.getBean();
 	}
 
-	public int getNumberADEs() {
-		return d_selectedADEsList.size();
-	}
-
-	public void addADEModels(int n) {
-		for (int i = 0; i < n; ++i) {
-			d_selectedADEsList.add(new AdverseEventHolder());
-		}
-	}
-
 	public ListHolder<AdverseDrugEvent> getADEListModel() {
 		return d_adverseEventListHolder;
-	}
-
-	public void removeADE(int i) {
-		d_selectedADEsList.remove(i);
-	}
-
-	public ValueModel getADEModel(int i) {
-		return d_selectedADEsList.get(i);
 	}
 
 	private MeasurementTableModel getAdverseEventMeasurementTableModel() {
@@ -448,5 +428,9 @@ public class AddStudyWizardPresentation {
 				return getEndpointMeasurementTableModel();
 			}
 		};
+	}
+
+	public SelectFromFiniteListPresentationModel<AdverseDrugEvent> getAdverseEventSelectModel() {
+		return d_adverseEventSelect;
 	} 
 }

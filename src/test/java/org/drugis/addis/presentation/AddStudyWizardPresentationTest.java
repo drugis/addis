@@ -26,11 +26,11 @@ public class AddStudyWizardPresentationTest {
 	public void setUp(){
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		d_wizard = new AddStudyWizardPresentation(d_domain, new PresentationModelFactory(d_domain));
+		d_wizard = new AddStudyWizardPresentation(d_domain, new PresentationModelFactory(d_domain), null);
 	}
 	
 	private void importStudy() throws MalformedURLException, IOException {
-		d_wizardImported = new AddStudyWizardPresentation(d_domain, new PresentationModelFactory(d_domain));
+		d_wizardImported = new AddStudyWizardPresentation(d_domain, new PresentationModelFactory(d_domain), null);
 		d_wizardImported.getIdModel().setValue("NCT00644527");
 		d_wizardImported.importCT();
 	}
@@ -113,13 +113,6 @@ public class AddStudyWizardPresentationTest {
 		assertEquals(numArms + 1,d_wizard.getNumberArms());
 	}
 
-	@Test
-	public void testgetNumberADEs() {
-		assertEquals(0, d_wizard.getNumberADEs());
-		d_wizard.addADEModels(2);
-		assertEquals(2, d_wizard.getNumberADEs());
-	}
-	
 	@Test
 	public void testGetADEListModel() {
 		JUnitUtil.assertAllAndOnly(d_domain.getAdes(), d_wizard.getADEListModel().getValue());

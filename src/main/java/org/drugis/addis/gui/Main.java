@@ -451,7 +451,7 @@ public class Main extends JFrame {
 	
 	private void showAddStudyWizard() {
 		JDialog dialog = new JDialog((Frame) this, "Add Study", true);
-		AddStudyWizard wizardBuilder = new AddStudyWizard(new AddStudyWizardPresentation(getDomain(), getPresentationModelFactory()), this, dialog);
+		AddStudyWizard wizardBuilder = new AddStudyWizard(new AddStudyWizardPresentation(getDomain(), getPresentationModelFactory(), this), this, dialog);
 		Wizard wizard = wizardBuilder.buildPanel();
 		dialog.getContentPane().add(wizard);
 		dialog.pack();

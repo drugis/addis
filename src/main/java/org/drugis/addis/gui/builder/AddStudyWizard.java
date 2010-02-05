@@ -6,8 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Date;
@@ -31,6 +29,7 @@ import javax.swing.event.CaretListener;
 import javax.swing.table.TableModel;
 import javax.swing.text.DefaultFormatter;
 
+import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.SIUnit;
@@ -41,6 +40,7 @@ import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.DosePresentationModel;
+import org.drugis.addis.presentation.SelectAdverseEventsPresentation;
 import org.drugis.addis.presentation.AddStudyWizardPresentation.OutcomeMeasurementsModel;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
@@ -83,6 +83,7 @@ public class AddStudyWizard implements ViewBuilder{
 		wizardModel.add(new SetEndpointMeasurementsWizardStep());
 		wizardModel.add(new SelectADEWizardStep());
 		wizardModel.add(new SetAdverseEventMeasurementsWizardStep());
+		wizardModel.add(new SelectPopulationCharsWizardStep());
 		Wizard wizard = new Wizard(wizardModel);
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 		wizard.addWizardListener(new WizardAdapter() {
@@ -395,108 +396,14 @@ public class AddStudyWizard implements ViewBuilder{
 	}
 	
 	@SuppressWarnings("serial")
-	public class SelectADEWizardStep extends PanelWizardStep{
-		private class RemoveADEListener extends AbstractAction {
-			int d_index;
-			
-			public RemoveADEListener(int index) {
-				d_index = index;
-			}
-			
-			public void actionPerformed(ActionEvent e) {
-				d_pm.removeADE(d_index);
-				prepare();
-			}	
-		} 
+	public class SelectPopulationCharsWizardStep extends PanelWizardStep {
 		
-		private class NewADEButtonListener implements ActionListener{
-			int d_index;
-
-			public NewADEButtonListener(int index) {
-				d_index = index;
-			}
-			
-			public void actionPerformed(ActionEvent e) {
-				d_main.showAddAdeDialog(d_pm.getADEModel(d_index));
-			}
-		}
-		
-		private PanelBuilder d_builder;
-		private NotEmptyValidator d_validator;
-		private JScrollPane d_scrollPane;
-		
-		public SelectADEWizardStep(){
-			super("Select Adverse Events","Please select the appropriate adverse events");
-			this.setLayout(new BorderLayout());
-		}
-		
-		 public void prepare() {
-			 this.setVisible(false);
- 			 d_validator = new NotEmptyValidator();
-			 d_validator.addValueChangeListener(new CompleteListener(this));
-			 
-			 if (d_scrollPane != null)
-				 remove(d_scrollPane);
-			 
-			 buildWizardStep();
-			 this.setVisible(true);
-			 repaint();
-		 }
-		 
-		private void buildWizardStep() {
-			FormLayout layout = new FormLayout(
-					"center:pref, 3dlu, right:pref, 3dlu, fill:pref:grow, 3dlu, left:pref",
-					"p, 3dlu, p"
-					);	
-			d_builder = new PanelBuilder(layout);
-			d_builder.setDefaultDialogBorder();
-			CellConstraints cc = new CellConstraints();
-			
-			int row = buildADEsPart(1, d_builder, cc, 1, layout);
-			
-			// add 'Add ADE button' 
-			JButton btn = new JButton("Add Adverse Event");
-			d_builder.add(btn, cc.xy(1, row+=2));
-			btn.addActionListener(new AbstractAction() {
-				
-				public void actionPerformed(ActionEvent e) {
-					d_pm.addADEModels(1);
-					prepare();
-				}
-			});
-		
-			JPanel panel = d_builder.getPanel();
-			d_scrollPane = new JScrollPane(panel);
-		
-			add(d_scrollPane, BorderLayout.CENTER);
-		}
-
-		private int buildADEsPart(int fullWidth, PanelBuilder builder, CellConstraints cc, int row, FormLayout layout) {
-			
-			// For all the endpoints found in the imported study
-			for(int i = 0; i < d_pm.getNumberADEs(); ++i){
-				LayoutUtil.addRow(layout);
-				row+=2;
-				
-				// add 'remove endpoint' button
-				JButton btn = new JButton("Remove Adverse Event");
-				builder.add(btn, cc.xy(1, row));
-				btn.addActionListener(new RemoveADEListener(i));
-				
-				// add label
-				builder.addLabel("Adverse Event: ", cc.xy(3, row));
-				
-				// Set the endoints from a list of options
-				JComboBox endpoints = AuxComponentFactory.createBoundComboBox(d_pm.getADEListModel(), d_pm.getADEModel(i));
-				d_validator.add(endpoints);
-				builder.add(endpoints, cc.xy(5, row));
-				
-				// add 'add endpoint button' 
-				btn = GUIFactory.createPlusButton("Add new adverse event");
-				builder.add(btn, cc.xy(7, row));
-				btn.addActionListener(new NewADEButtonListener(i));
-			}
-			return row;	
+	}
+	
+	@SuppressWarnings("serial")
+	public class SelectADEWizardStep extends SelectFromFiniteListWizardStep<AdverseDrugEvent> {
+		public SelectADEWizardStep() {
+			super(d_pm.getAdverseEventSelectModel());
 		}
 	}
 	
@@ -786,16 +693,4 @@ public class AddStudyWizard implements ViewBuilder{
 		}
 		return row;
 	}
-	
-	class CompleteListener implements PropertyChangeListener {
-		 PanelWizardStep d_curStep;
-		
-		 public CompleteListener(PanelWizardStep currentStep){
-			 d_curStep = currentStep;
-		 }
-		
-		 public void propertyChange(PropertyChangeEvent evt) {
-		 	 d_curStep.setComplete((Boolean) evt.getNewValue());
-		 }
-	 }
 }
