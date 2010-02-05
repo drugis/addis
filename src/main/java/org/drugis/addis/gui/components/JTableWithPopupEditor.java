@@ -125,6 +125,7 @@ abstract public class JTableWithPopupEditor extends JTable {
 
 	private void destroyWindow() {
 		if (d_window != null) {
+			repaint(); // FIXME: HACK for tableModel not updating itself on events
 			d_window.setVisible(false);
 			d_window = null;
 		}
