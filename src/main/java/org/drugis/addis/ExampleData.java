@@ -493,10 +493,6 @@ public class ExampleData {
 		OutcomeMeasure om = buildEndpointCVdeath();
 		study.setMeasurement(om, placebo, pDeath);
 		
-		// add Note
-		Note note = new Note("note about cardiovascular death: \"It's not a very nice thing\"");
-		study.putNote(om, note);
-		
 		return study;
 	}
 	
