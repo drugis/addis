@@ -36,7 +36,6 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
