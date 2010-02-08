@@ -382,7 +382,7 @@ public class Main extends JFrame {
 	}
 	
 	private JMenuItem createAddStudyMenuItem() {
-		JMenuItem item = new JMenuItem("Study", ImageLoader.getIcon(FileNames.ICON_STUDY));
+		JMenuItem item = new JMenuItem("Study", ImageLoader.getIcon(FileNames.ICON_STUDY_NEW));
 		item.setMnemonic('s');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -394,7 +394,7 @@ public class Main extends JFrame {
 	}
 	
 	private JMenuItem createAddMetaAnalysisMenuItem() {
-		JMenuItem item = new JMenuItem("Meta-Analysis", ImageLoader.getIcon(FileNames.ICON_METASTUDY));
+		JMenuItem item = new JMenuItem("Meta-Analysis", ImageLoader.getIcon(FileNames.ICON_METASTUDY_NEW));
 		item.setMnemonic('m');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -530,7 +530,7 @@ public class Main extends JFrame {
 		toolbar.setFloatable(false);
 		toolbar.setLayout(new BorderLayout());
 
-		JButton topAddStudyButton = new JButton("Add study", ImageLoader.getIcon(FileNames.ICON_STUDY));
+		JButton topAddStudyButton = new JButton("Add study", ImageLoader.getIcon(FileNames.ICON_STUDY_NEW));
 		topAddStudyButton.setToolTipText("Add study");
 		topAddStudyButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
@@ -538,7 +538,7 @@ public class Main extends JFrame {
 			}
 		});
 		
-		JButton topAddMetaStudyButton = new JButton("Create meta-analysis", ImageLoader.getIcon(FileNames.ICON_METASTUDY));
+		JButton topAddMetaStudyButton = new JButton("Create meta-analysis", ImageLoader.getIcon(FileNames.ICON_METASTUDY_NEW));
 		topAddMetaStudyButton.setToolTipText("Create meta-analysis");
 		topAddMetaStudyButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {

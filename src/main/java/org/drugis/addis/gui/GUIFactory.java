@@ -31,8 +31,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.FileNames;
+import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.gui.builder.StudyTablePanelView;
 import org.drugis.addis.gui.components.LinkLabel;
@@ -49,9 +51,13 @@ import com.jidesoft.swing.JideButton;
 
 public class GUIFactory {
 	public static JButton createPlusButton(String toolTipText) {
-		JButton button = new JButton(toolTipText);
-		Icon icon = ImageLoader.getIcon(FileNames.ICON_PLUS);
-		button = new JButton(icon);
+		String iconName = FileNames.ICON_PLUS;
+		return createIconButton(iconName, toolTipText);
+	}
+
+	public static JButton createIconButton(String iconName, String toolTipText) {
+		Icon icon = ImageLoader.getIcon(iconName);
+		JButton button = new JButton(icon);
 		button.setToolTipText(toolTipText);
 		return button;
 	}
@@ -82,6 +88,11 @@ public class GUIFactory {
 
 	public static JComponent createOutcomeMeasureLabelWithIcon(OutcomeMeasure e) {
 		String fname = FileNames.ICON_STUDY;
+		if (e instanceof Endpoint) {
+			fname = FileNames.ICON_ENDPOINT;
+		} if (e instanceof AdverseDrugEvent) {
+			fname = FileNames.ICON_ADE;
+		}
 		JLabel textLabel = null;
 		Icon icon = ImageLoader.getIcon(fname);
 		textLabel = new JLabel(e.getName(), icon, JLabel.CENTER);			

@@ -36,6 +36,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
+import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -642,7 +643,8 @@ public class AddStudyWizard implements ViewBuilder{
 				});
 				
 				// add import button
-				d_importButton = GUIFactory.createPlusButton("enter NCT id to retrieve study data from ClinicalTrials.gov");
+				d_importButton = GUIFactory.createIconButton(FileNames.ICON_IMPORT,
+						"Enter NCT id to retrieve study data from ClinicalTrials.gov");
 				d_importButton.setEnabled(false);
 				d_importButton.addActionListener(new AbstractAction() {
 					public void actionPerformed(ActionEvent arg0) {

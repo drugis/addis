@@ -23,12 +23,15 @@ public class FileNames {
 	public static final String ICON_STOP = "stop.gif";
 	public static final String ICON_DRUG = "drug.gif";
 	public static final String ICON_STUDY = "study.gif";
+	public static final String ICON_STUDY_NEW = "study_new.gif";
 	public static final String ICON_ENDPOINT = "endpoint.gif";
 	public static final String ICON_ADE = "ade.gif";
 	public static final String ICON_METASTUDY = "metastudy.gif";
+	public static final String ICON_METASTUDY_NEW = "metastudy_new.gif";
 	public static final String ICON_DELETE = "delete.gif";
 	public static final String ICON_INDICATION = "indication.gif";
 	public static final String ICON_PLUS = "add.gif";
+	public static final String ICON_IMPORT = "import.gif";
 	public static final String ICON_COLLAPSE = "collapse.gif";
 	public static final String ICON_EXPAND = "expand.gif";
 	public static final String ICON_SAVEFILE = "savefile.gif";
@@ -36,4 +39,5 @@ public class FileNames {
 	public static final String ICON_OPENFILE = "openfile.gif";
 	public static final String ICON_DOCTOR = "legodoctor.png";
 	public static final String ICON_PILLS = "handandpills.png";
+	public static final String ICON_TIP = "tip.png";
 }
