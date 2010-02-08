@@ -133,7 +133,7 @@ public class NotEmptyValidator extends AbstractValueModel{
 	}
 	
 	public Boolean getValue() {
-		return checkFieldsEmpty();
+		return !checkFieldsEmpty();
 	}
 	
 }

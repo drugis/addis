@@ -201,13 +201,13 @@ public class ClinicaltrialsImporter {
 		// Outcome Measures
 		for (PrimaryOutcome endp : studyImport.getPrimaryOutcome()) {
 			Endpoint e = new Endpoint(endp.getMeasure(), Type.RATE);
-			study.addOutcomeMeasure(e);
+			study.addEndpoint(e);
 			study.putNote(e, new Note(endp.getMeasure()));
 		}
 		
 		for (SecondaryOutcome endp : studyImport.getSecondaryOutcome()) {
 			Endpoint e = new Endpoint(endp.getMeasure(), Type.RATE);
-			study.addOutcomeMeasure(e);
+			study.addEndpoint(e);
 			study.putNote(e, new Note(endp.getMeasure()));
 		}	
 	}

@@ -79,14 +79,4 @@ public class AuxComponentFactory {
 		Bindings.bind(field, model);
 		return field;
 	}
-	
-	public static JTextField createDoubleTextField(ValueModel model) {
-	    NumberFormatter numberFormatter = new EmptyNumberFormatter(NumberFormat.getNumberInstance(),0);
-        numberFormatter.setValueClass(Double.class);
-		
-		JFormattedTextField field = new JFormattedTextField(numberFormatter);
-		field.setColumns(3);
-		Bindings.bind(field, model);
-		return field;
-	}
 }

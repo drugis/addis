@@ -51,7 +51,7 @@ public class ForestPlotPresentationTest {
 	public void setUp() {
 		d_s1 = new Study("X", new Indication(0L, ""));
 		d_endpoint = new Endpoint("E", Type.CONTINUOUS);
-		d_s1.addOutcomeMeasure(d_endpoint);
+		d_s1.addEndpoint(d_endpoint);
 		d_baseline = new Drug("DrugA", "");
 		d_subject = new Drug("DrugB", "");
 		Arm pBase = new Arm(d_baseline, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY), s_baseSize);
@@ -64,7 +64,7 @@ public class ForestPlotPresentationTest {
 		d_s1.setMeasurement(d_endpoint, pSubj, d_mSubj1);
 		
 		d_s2 = new Study("Y", new Indication(0L, ""));
-		d_s2.addOutcomeMeasure(d_endpoint);
+		d_s2.addEndpoint(d_endpoint);
 		Arm pBase2 = new Arm(d_baseline, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY), s_baseSize);
 		Arm pSubj2 = new Arm(d_subject, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY), s_subjSize);
 		d_s2.addArm(pBase2);

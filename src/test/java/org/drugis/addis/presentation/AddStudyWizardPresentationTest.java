@@ -11,8 +11,8 @@ import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Study;
+import org.drugis.common.JUnitUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.pietschy.wizard.InvalidStateException;
 
@@ -26,11 +26,11 @@ public class AddStudyWizardPresentationTest {
 	public void setUp(){
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		d_wizard = new AddStudyWizardPresentation(d_domain, new PresentationModelFactory(d_domain));
+		d_wizard = new AddStudyWizardPresentation(d_domain, new PresentationModelFactory(d_domain), null);
 	}
 	
 	private void importStudy() throws MalformedURLException, IOException {
-		d_wizardImported = new AddStudyWizardPresentation(d_domain, new PresentationModelFactory(d_domain));
+		d_wizardImported = new AddStudyWizardPresentation(d_domain, new PresentationModelFactory(d_domain), null);
 		d_wizardImported.getIdModel().setValue("NCT00644527");
 		d_wizardImported.importCT();
 	}
@@ -84,7 +84,7 @@ public class AddStudyWizardPresentationTest {
 	
 	@Test
 	public void testGetEndpointListModel() {
-		assertTrue(d_domain.getEndpoints().containsAll(d_wizard.getEndpointListModel().getValue()));
+		JUnitUtil.assertAllAndOnly(d_domain.getEndpoints(), d_wizard.getEndpointListModel().getValue());
 	}
 	
 	@Test 
@@ -101,7 +101,7 @@ public class AddStudyWizardPresentationTest {
 	public void testgetNumberEndpoints() {
 		int numEndpoints = d_wizard.getNumberEndpoints();
 		d_wizard.addEndpointModels(2);
-		assertEquals(numEndpoints + 2,d_wizard.getNumberEndpoints());
+		assertEquals(numEndpoints + 2, d_wizard.getNumberEndpoints());
 	}
 	
 	@Test
@@ -112,6 +112,11 @@ public class AddStudyWizardPresentationTest {
 		d_wizard.removeArm(0);
 		assertEquals(numArms + 1,d_wizard.getNumberArms());
 	}
+
+	@Test
+	public void testGetADEListModel() {
+		JUnitUtil.assertAllAndOnly(d_domain.getAdes(), d_wizard.getADEListModel().getValue());
+	}
 	
 	@Test
 	public void testCheckID() {
@@ -121,19 +126,19 @@ public class AddStudyWizardPresentationTest {
 	}
 	
 	@Test
-	public void testSaveStudy() throws InvalidStateException {
+	public void testSaveStudy() {
 		d_wizard.getEndpointModel(0).setValue(d_domain.getEndpoints().first());
 		d_wizard.getIndicationModel().setValue(d_domain.getIndications().first());
 		d_wizard.saveStudy();
 		assertTrue(d_domain.getStudies().contains(d_wizard.getStudy()));
 	}
 	
-	@Ignore
 	@Test(expected=IllegalStateException.class)
-	public void testSaveNoEndpoint() throws InvalidStateException {
+	public void testSaveNoEndpoint() {
 		d_wizard.getIndicationModel().setValue(d_domain.getIndications().first());
+		assertEquals(1, d_wizard.getNumberEndpoints());
+		d_wizard.removeEndpoint(0);
 		d_wizard.saveStudy();
-		assertTrue(d_domain.getStudies().contains(d_wizard.getStudy()));
 	}
 	
 	@Test(expected=IllegalStateException.class)
@@ -142,7 +147,6 @@ public class AddStudyWizardPresentationTest {
 		d_wizard.getEndpointModel(0).setValue(d_domain.getEndpoints().first());
 		d_wizard.getIndicationModel().setValue(d_domain.getIndications().first());
 		d_wizard.saveStudy();
-		assertTrue(d_domain.getStudies().contains(d_wizard.getStudy()));
 	}
 	
 	@Test

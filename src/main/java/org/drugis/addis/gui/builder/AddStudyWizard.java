@@ -1,14 +1,12 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Date;
@@ -27,27 +25,38 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.table.TableModel;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultFormatter;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
 
+import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.SIUnit;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
+import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.DosePresentationModel;
-import org.drugis.addis.presentation.MeasurementTable;
+import org.drugis.addis.presentation.AddStudyWizardPresentation.OutcomeMeasurementsModel;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
+import org.pietschy.wizard.WizardAdapter;
+import org.pietschy.wizard.WizardEvent;
 import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -56,11 +65,12 @@ import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.util.DefaultUnitConverter;
 import com.toedter.calendar.JDateChooser;
 
 public class AddStudyWizard implements ViewBuilder{
 	
-	public static final String DEFAULT_NOTETITLE = "CT.gov description:";
+	public static final String DEFAULT_NOTETITLE = "Source Text (ClinicalTrials.gov):";
 	AddStudyWizardPresentation d_pm;
 	Main d_main;
 	private JDialog d_dialog;
@@ -78,19 +88,32 @@ public class AddStudyWizard implements ViewBuilder{
 		wizardModel.add(new EnterCharacteristicsWizardStep());
 		wizardModel.add(new SelectEndpointWizardStep());
 		wizardModel.add(new SetArmsWizardStep());
-		wizardModel.add(new SetMeasurementsWizardStep());
+		wizardModel.add(new SetEndpointMeasurementsWizardStep());
+		wizardModel.add(new SelectADEWizardStep());
+		wizardModel.add(new SetAdverseEventMeasurementsWizardStep());
+		wizardModel.add(new SelectPopulationCharsWizardStep());
 		Wizard wizard = new Wizard(wizardModel);
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
+		wizard.addWizardListener(new WizardAdapter() {
+			public void wizardClosed(WizardEvent e) {
+				d_pm.saveStudy();
+			}
+		});
 		wizard.setPreferredSize(new Dimension(950, 950));
 		return wizard;
 	}
 	
 	@SuppressWarnings("serial")
-	public class SetMeasurementsWizardStep extends PanelWizardStep {
+	public static class SetMeasurementsWizardStep extends PanelWizardStep {
 		private JScrollPane d_scrollPane;
+		private OutcomeMeasurementsModel d_model;
+		private JDialog d_dialog;
 		
-		public SetMeasurementsWizardStep(){
-			super("Set Measurements","Please enter the measurements for all arm-endpoint combinations.");			
+		public SetMeasurementsWizardStep(String title, String description,
+				OutcomeMeasurementsModel model, JDialog dialog) {
+			super(title, description);
+			d_model = model;
+			d_dialog = dialog;
 		} 
 		
 		public void prepare() {
@@ -104,18 +127,33 @@ public class AddStudyWizard implements ViewBuilder{
 			 setComplete(true);
 		}
 		
-		public void applyState()
-		throws InvalidStateException {
-			d_pm.saveStudy();
+		public void applyState() throws InvalidStateException {
 		}
 		
 		private void buildWizardStep() {
 			this.setLayout(new BorderLayout());
-			TableModel tableModel = d_pm.getMeasurementTableModel();
-			JTable table = new MeasurementTable(tableModel,(Window) d_dialog);
+			TableModel tableModel = d_model.getMeasurementTableModel();
+			JTable table = new MeasurementTable(tableModel, d_dialog);
 			d_scrollPane = new JScrollPane(table);
 			add(d_scrollPane, BorderLayout.CENTER);
 		}
+	}
+	
+	@SuppressWarnings("serial")
+	public class SetEndpointMeasurementsWizardStep extends SetMeasurementsWizardStep {
+		public SetEndpointMeasurementsWizardStep(){
+			super("Set Measurements", "Please enter the measurements for all arm-endpoint combinations.",
+					d_pm.getEndpointsModel(), d_dialog);
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	public class SetAdverseEventMeasurementsWizardStep extends SetMeasurementsWizardStep {
+		public SetAdverseEventMeasurementsWizardStep(){
+			super("Input adverse event data", "Please enter the measurements for all arm-event combinations.",
+					d_pm.getAdverseEventsModel(), d_dialog);
+		}
+
 	}
 	
 	@SuppressWarnings("serial")
@@ -247,7 +285,7 @@ public class AddStudyWizard implements ViewBuilder{
 				builder.add(sizeField, cc.xy(13, row));
 				
 				// Show the notes from the imported study for the drug
-				row = addNoteField(builder, cc, row, 3, 11, layout, d_pm.getArmNoteModel(curArmNumber), DEFAULT_NOTETITLE);
+				row = addNoteField(builder, cc, row, 3, 11, layout, d_pm.getArmNoteModel(curArmNumber));
 			}
 			return row;
 		}
@@ -345,7 +383,7 @@ public class AddStudyWizard implements ViewBuilder{
 				btn.addActionListener(new RemoveEndpointListener(i));
 				
 				// add label
-				builder.addLabel("endpoint: ", cc.xy(3, row));
+				builder.addLabel("Endpoint: ", cc.xy(3, row));
 				
 				// Set the endoints from a list of options
 				JComboBox endpoints = AuxComponentFactory.createBoundComboBox(d_pm.getEndpointListModel(), d_pm.getEndpointModel(i));
@@ -353,15 +391,30 @@ public class AddStudyWizard implements ViewBuilder{
 				builder.add(endpoints, cc.xy(5, row));
 				
 				// add 'add endpoint button' 
-				btn = GUIFactory.createPlusButton("add new endpoint");
+				btn = GUIFactory.createPlusButton("Add new endpoint");
 				builder.add(btn, cc.xy(7, row));
 				btn.addActionListener(new NewEndpointButtonListener(i));
 				
 				
 				// Show the notes from the imported study
-				row = addNoteField(builder, cc, row, 5, 1, layout, d_pm.getEndpointNoteModel(i), DEFAULT_NOTETITLE);
+				row = addNoteField(builder, cc, row, 3, 3, layout, d_pm.getEndpointNoteModel(i));
 			}
 			return row;	
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	public class SelectPopulationCharsWizardStep extends SelectFromFiniteListWizardStep<Variable> {
+		public SelectPopulationCharsWizardStep() {
+			super(d_pm.getPopulationCharsSelectModel());
+		}
+		
+	}
+	
+	@SuppressWarnings("serial")
+	public class SelectADEWizardStep extends SelectFromFiniteListWizardStep<AdverseDrugEvent> {
+		public SelectADEWizardStep() {
+			super(d_pm.getAdverseEventSelectModel());
 		}
 	}
 	
@@ -370,7 +423,6 @@ public class AddStudyWizard implements ViewBuilder{
 	public class EnterCharacteristicsWizardStep extends PanelWizardStep{
 		
 		private PanelBuilder d_builder;
-		private NotEmptyValidator d_validator;
 		private JScrollPane d_scrollPane;
 
 		private Set<BasicStudyCharacteristic> excludedChars = new HashSet<BasicStudyCharacteristic>();		
@@ -384,11 +436,10 @@ public class AddStudyWizard implements ViewBuilder{
 		}
 		
 		public void prepare() {
-			 d_validator = new NotEmptyValidator();
-			 d_validator.addValueChangeListener(new CompleteListener(this));
-			 
 			 if (d_scrollPane != null)
 				 remove(d_scrollPane);
+			 
+			 setComplete(true); // Don't require fields to be filled
 			 
 			 buildWizardStep();
 			 repaint(); 
@@ -421,7 +472,7 @@ public class AddStudyWizard implements ViewBuilder{
 					builder.add(createCharacteristicComponent(c), cc.xyw(3, row,fullWidth));
 					
 					// add note field
-					row = addNoteField(builder, cc, row, 3, 1, layout, d_pm.getCharacteristicNoteModel(c), DEFAULT_NOTETITLE);
+					row = addNoteField(builder, cc, row, 3, 1, layout, d_pm.getCharacteristicNoteModel(c));
 
 					LayoutUtil.addRow(layout);
 					row += 2;
@@ -457,7 +508,7 @@ public class AddStudyWizard implements ViewBuilder{
 			} else {
 				throw new RuntimeException("unknown characteristic type");
 			}
-			d_validator.add(component);
+			
 			return component;
 		}
 		
@@ -519,7 +570,7 @@ public class AddStudyWizard implements ViewBuilder{
 			});
 			
 			// add note
-			addNoteField(d_builder, cc, 3, 3, 1, layout, d_pm.getIndicationNoteModel(), DEFAULT_NOTETITLE);
+			addNoteField(d_builder, cc, 3, 3, 1, layout, d_pm.getIndicationNoteModel());
 
 			this.setLayout(new BorderLayout());
 			d_scrollPane = new JScrollPane(d_builder.getPanel());
@@ -608,7 +659,7 @@ public class AddStudyWizard implements ViewBuilder{
 				d_builder.add(d_importButton, cc.xy(5, 3));	
 				
 				// add note to ID field
-				addNoteField(d_builder, cc, 3, 3, 1, layout, d_pm.getIdNoteModel(), DEFAULT_NOTETITLE);
+				addNoteField(d_builder, cc, 3, 3, 1, layout, d_pm.getIdNoteModel());
 
 				// add title label
 				d_builder.addLabel("Title:",cc.xy(1, 7));
@@ -617,7 +668,7 @@ public class AddStudyWizard implements ViewBuilder{
 				d_builder.add(d_titleField, cc.xy(3, 7));		
 				
 				// add title note
-				addNoteField(d_builder, cc, 7, 3, 1, layout, d_pm.getCharacteristicNoteModel(BasicStudyCharacteristic.TITLE), "CT.gov description");
+				addNoteField(d_builder, cc, 7, 3, 1, layout, d_pm.getCharacteristicNoteModel(BasicStudyCharacteristic.TITLE));
 				
 				// add clear button
 				JButton clearButton = new JButton("clear");
@@ -641,28 +692,47 @@ public class AddStudyWizard implements ViewBuilder{
 		 }
 	}	
 	
-	private int addNoteField(PanelBuilder builder, CellConstraints cc,	int row, int col, int width, FormLayout layout, ValueModel model, String title) {
+	private int addNoteField(PanelBuilder builder, CellConstraints cc,	int row, int col, int width, FormLayout layout, ValueModel model) {
 		if(model != null && model.getValue() != null && model.getValue() != ""){
 			LayoutUtil.addRow(layout);
 			row+=2;
-			JScrollPane notePane = AuxComponentFactory.createTextArea(model, false);
 			
-			notePane.setWheelScrollingEnabled(true);
-			builder.add(notePane, cc.xyw(col, row, width));
-			builder.add(new JLabel(title),cc.xy(col-2, row));
+			JTextPane area = new JTextPane();
+			StyledDocument doc = area.getStyledDocument();
+			addStylesToDoc(doc);
+			
+			area.setBackground(new Color(255, 255, 180));
+			
+			try {
+				doc.insertString(doc.getLength(), DEFAULT_NOTETITLE + "\n", doc.getStyle("bold"));
+				doc.insertString(doc.getLength(), (String)model.getValue(), doc.getStyle("regular"));
+			} catch (BadLocationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			JScrollPane pane = new JScrollPane(area);
+			pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			pane.setPreferredSize(new Dimension(
+					DefaultUnitConverter.getInstance().dialogUnitXAsPixel(230, area), 
+					DefaultUnitConverter.getInstance().dialogUnitYAsPixel(50, area)));
+			
+			pane.setWheelScrollingEnabled(true);
+			pane.getVerticalScrollBar().setValue(0);
+			builder.add(pane, cc.xyw(col, row, width));
 		}
 		return row;
 	}
 	
-	class CompleteListener implements PropertyChangeListener {
-		 PanelWizardStep d_curStep;
-		
-		 public CompleteListener(PanelWizardStep currentStep){
-			 d_curStep = currentStep;
-		 }
-		
-		 public void propertyChange(PropertyChangeEvent evt) {
-		 	 d_curStep.setComplete((Boolean) evt.getNewValue());
-		 }
-	 }
+	private static void addStylesToDoc(StyledDocument doc) {
+        //Initialize some styles.
+        Style def = StyleContext.getDefaultStyleContext().
+                        getStyle(StyleContext.DEFAULT_STYLE);
+
+        Style regular = doc.addStyle("regular", def);
+
+        Style bold = doc.addStyle("bold", regular);
+        StyleConstants.setBold(bold, true);
+
+	}
 }

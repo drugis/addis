@@ -169,9 +169,9 @@ public class StudyPresentationModelTest {
 	@Test
 	public void testGetEndpoints() {
 		Endpoint ep = new Endpoint("ep", Type.RATE);
-		d_study.addOutcomeMeasure(ep);
+		d_study.addEndpoint(ep);
 		AdverseDrugEvent ade = new AdverseDrugEvent("ade1", Type.RATE);
-		d_study.addOutcomeMeasure(ade);
+		d_study.addAdverseEvent(ade);
 		
 		assertEquals(Collections.singletonList(ep), d_model.getEndpoints());
 	}
@@ -179,9 +179,9 @@ public class StudyPresentationModelTest {
 	@Test
 	public void testGetAdes() {
 		Endpoint ep = new Endpoint("ep", Type.RATE);
-		d_study.addOutcomeMeasure(ep);
+		d_study.addEndpoint(ep);
 		AdverseDrugEvent ade = new AdverseDrugEvent("ade1", Type.RATE);
-		d_study.addOutcomeMeasure(ade);
+		d_study.addAdverseEvent(ade);
 		
 		assertEquals(Collections.singletonList(ade), d_model.getAdes());
 	}

@@ -1,6 +1,7 @@
 package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 
@@ -24,7 +25,7 @@ public class MeasurementTableModelTest {
 		ExampleData.initDefaultData(domain);
 		d_pmf = new PresentationModelFactory(domain);
 		d_standardStudy = ExampleData.buildStudyDeWilde();
-		model = new MeasurementTableModel(d_standardStudy, d_pmf);
+		model = new MeasurementTableModel(d_standardStudy, d_pmf, Endpoint.class);
 	}
 	
 	@Test
@@ -62,6 +63,15 @@ public class MeasurementTableModelTest {
 			String exp = d_pmf.getLabeledModel(d_standardStudy.getArms().get(i)).getLabelModel().getString();
 			String cname = model.getColumnName(i+1);
 			assertEquals(exp, cname);
+		}
+	}
+	
+	@Test
+	public void testIsCellEditable() {
+		for (int i=0;i<model.getRowCount();i++) {
+			for (int j=0;j<model.getColumnCount();j++) {
+				assertFalse(model.isCellEditable(i, j));				
+			}
 		}
 	}
 }

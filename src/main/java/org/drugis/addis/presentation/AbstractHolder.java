@@ -5,7 +5,7 @@ import org.drugis.common.EqualsUtil;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-abstract class AbstractHolder<T> extends AbstractValueModel {
+public abstract class AbstractHolder<T> extends AbstractValueModel {
 	protected abstract void checkArgument(Object newValue);
 	
 	private T d_content = null;

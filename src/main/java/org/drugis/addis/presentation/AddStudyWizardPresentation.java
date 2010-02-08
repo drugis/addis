@@ -1,19 +1,14 @@
 package org.drugis.addis.presentation;
 
-import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
 import java.util.Map.Entry;
 
-import javax.swing.JDialog;
-import javax.swing.JTable;
-import javax.swing.table.TableModel;
-
+import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
@@ -27,11 +22,17 @@ import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Variable;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
 
 import com.jgoodies.binding.value.ValueModel;
 
 public class AddStudyWizardPresentation {
+	
+	public interface OutcomeMeasurementsModel {
+		MeasurementTableModel getMeasurementTableModel();
+	}
 	
 	@SuppressWarnings("serial")
 	private class DrugListHolder extends AbstractListHolder<Drug> implements PropertyChangeListener, DomainListener {
@@ -54,44 +55,77 @@ public class AddStudyWizardPresentation {
 	}
 	
 	@SuppressWarnings("serial")
-	private class EndpointListHolder extends AbstractListHolder<OutcomeMeasure> implements PropertyChangeListener, DomainListener {
-		public EndpointListHolder() {
-			d_domain.addListener(this);
-		}
+	private abstract static class OutcomeListHolder<T extends OutcomeMeasure>
+	extends AbstractListHolder<T> 
+	implements PropertyChangeListener, DomainListener {
+		protected Domain d_domain;
 		
-		@Override
-		public List<OutcomeMeasure> getValue() {
-			ArrayList<OutcomeMeasure> outcomeMeasures = new ArrayList<OutcomeMeasure>(getEndpoints());
-			return outcomeMeasures;
+		public OutcomeListHolder(Domain domain) {
+			domain.addListener(this);
+			d_domain = domain;
 		}
-		
-		public void propertyChange(PropertyChangeEvent event) {
-			fireValueChange(null, getValue());
+
+		public void propertyChange(PropertyChangeEvent arg0) {
+			fireValueChange(null, getValue());			
 		}
 
 		public void domainChanged(DomainEvent evt) {
-			fireValueChange(null,getValue());
+			fireValueChange(null, getValue());			
 		}
 	}
 	
 	@SuppressWarnings("serial")
-	private class OutcomeMeasureHolder extends AbstractHolder<OutcomeMeasure> {
+	private static class EndpointListHolder extends OutcomeListHolder<Endpoint> {
+		public EndpointListHolder(Domain domain) {
+			super(domain);
+		}
+		
+		@Override
+		public List<Endpoint> getValue() {
+			return new ArrayList<Endpoint>(d_domain.getEndpoints());
+		}
+	}
 
-		public OutcomeMeasureHolder() {
-			
+	@SuppressWarnings("serial")
+	private static class ADEListHolder extends OutcomeListHolder<AdverseDrugEvent> {
+		public ADEListHolder(Domain domain) {
+			super(domain);
+		}
+		
+		@Override
+		public List<AdverseDrugEvent> getValue() {
+			return new ArrayList<AdverseDrugEvent>(d_domain.getAdes());
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	private static class OutcomeMeasureHolder<T extends OutcomeMeasure> extends AbstractHolder<T> {
+		private List<AbstractHolder<T>> d_selectionModelList;
+		private ListHolder<T> d_validValues;
+		
+		/**
+		 * OutcomeMeasureHolder that validates it's values against a list of outcomes and
+		 * that makes sure each outcome is selected only once.
+		 * @param modelList
+		 * @param validValues
+		 */
+		public OutcomeMeasureHolder(List<AbstractHolder<T>> modelList,
+				ListHolder<T> validValues) {
+			d_selectionModelList = modelList;
+			d_validValues = validValues;
 		}
 		
 		@Override
 		protected void checkArgument(Object newValue) {
 			if (newValue != null)
-				if (!getEndpoints().contains(newValue))
-					throw new IllegalArgumentException("Endpoint not in the actual set!");
+				if (!d_validValues.getValue().contains(newValue))
+					throw new IllegalArgumentException(newValue + " is not in the set of allowed values.");
 		}
-
+		
 		@Override
 		protected void cascade() {
-			/* If the endpoint that was selected is already selected somewhere else, reset the other selection */
-			for (AbstractHolder<OutcomeMeasure> omHolder : d_selectedOutcomesList) {
+			// If the outcome that was selected is already selected somewhere else, reset the other selection
+			for (AbstractHolder<T> omHolder : d_selectionModelList) {
 				if ((!omHolder.equals(this)) && (omHolder.getValue() != null))
 					if (omHolder.getValue().equals(getValue()))
 						omHolder.setValue(null);
@@ -100,8 +134,14 @@ public class AddStudyWizardPresentation {
 	}
 	
 	@SuppressWarnings("serial")
+	private class EndpointHolder extends OutcomeMeasureHolder<Endpoint> {
+		public EndpointHolder() {
+			super(d_selectedEndpointsList, getEndpointListModel());
+		}
+	}
+	
+	@SuppressWarnings("serial")
 	private class IndicationListHolder extends AbstractListHolder<Indication> {
-		
 		public IndicationListHolder() {
 			d_domain.addListener(new DomainListener() {
 				public void domainChanged(DomainEvent evt) {
@@ -121,12 +161,22 @@ public class AddStudyWizardPresentation {
 	private StudyPresentationModel d_newStudyPM;
 	private StudyPresentationModel d_oldStudyPM;
 	
-	List<AbstractHolder<OutcomeMeasure>> d_selectedOutcomesList;
+	List<AbstractHolder<Endpoint>> d_selectedEndpointsList;
 	List<BasicArmPresentation> d_selectedArmList;
+	private ListHolder<Endpoint> d_endpointListHolder;
+	private ListHolder<AdverseDrugEvent> d_adverseEventListHolder;
+	private ListHolder<Variable> d_populationCharsListHolder;
+	private SelectAdverseEventsPresentation d_adverseEventSelect;
+	private SelectFromFiniteListPresentationModel<Variable> d_populationCharsSelect;
 	
-	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf) {
+	
+	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, Main main) {
 		d_domain = d;
 		d_pmf = pmf;
+		d_endpointListHolder = new EndpointListHolder(d_domain);
+		d_adverseEventListHolder = new ADEListHolder(d_domain);
+		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_adverseEventListHolder, main);
+		d_populationCharsSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder);
 		clearStudies();
 	}
 	
@@ -168,7 +218,7 @@ public class AddStudyWizardPresentation {
 		getTitleModel().setValue(getOldStudy().getCharacteristic(BasicStudyCharacteristic.TITLE));
 		
 		// Endpoints.
-		d_selectedOutcomesList = new ArrayList<AbstractHolder<OutcomeMeasure>>();
+		d_selectedEndpointsList = new ArrayList<AbstractHolder<Endpoint>>();
 		addEndpointModels(getOldStudy().getOutcomeMeasures().size());
 		
 		// Arms & Dosage
@@ -193,7 +243,10 @@ public class AddStudyWizardPresentation {
 		d_oldStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
 		d_newStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
 		getSourceModel().setValue(BasicStudyCharacteristic.Source.MANUAL);
-		d_selectedOutcomesList = new ArrayList<AbstractHolder<OutcomeMeasure>>();
+		d_selectedEndpointsList = new ArrayList<AbstractHolder<Endpoint>>();
+		while (d_adverseEventSelect.countSlots() > 0) {
+			d_adverseEventSelect.removeSlot(0);
+		}
 		d_selectedArmList = new ArrayList<BasicArmPresentation>();
 		addEndpointModels(1);
 		addArmModels(2);
@@ -208,13 +261,9 @@ public class AddStudyWizardPresentation {
 	public ValueModel getCharacteristicNoteModel(BasicStudyCharacteristic c) {
 		return new StudyNoteHolder(getOldStudy(), c);
 	}
-
-	private SortedSet<Endpoint> getEndpoints() {
-		return d_domain.getEndpoints();
-	}
 	
-	public ListHolder<OutcomeMeasure> getEndpointListModel() {
-		return new EndpointListHolder();
+	public ListHolder<Endpoint> getEndpointListModel() {
+		return d_endpointListHolder;
 	}
 
 	public ValueModel getEndpointNoteModel(int i) {
@@ -224,25 +273,25 @@ public class AddStudyWizardPresentation {
 	}
 	
 	public int getNumberEndpoints() {
-		return d_selectedOutcomesList.size();
+		return d_selectedEndpointsList.size();
 	}
 	
 	public void addEndpointModels(int numEndpoints){
 		for (int i=0; i<numEndpoints; ++i)
-			d_selectedOutcomesList.add(new OutcomeMeasureHolder());
+			d_selectedEndpointsList.add(new EndpointHolder());
 	}
 	
 	public ValueModel getEndpointModel(int i) {
-		if (i >= d_selectedOutcomesList.size())
+		if (i >= d_selectedEndpointsList.size())
 			throw new IndexOutOfBoundsException("no endpoint at index: "+i);
 		
-		return d_selectedOutcomesList.get(i);
+		return d_selectedEndpointsList.get(i);
 	}
 
 	public void removeEndpoint(int i) {
-		d_selectedOutcomesList.remove(i);
-		if ( getOldStudy().getOutcomeMeasures().size() > i)
-			getOldStudy().getOutcomeMeasures().remove(d_oldStudyPM.getEndpoints().get(i));
+		d_selectedEndpointsList.remove(i);
+		if ( getOldStudy().getEndpoints().size() > i)
+			getOldStudy().removeEndpoint(i);
 	}
 
 	
@@ -277,16 +326,16 @@ public class AddStudyWizardPresentation {
 		return new StudyNoteHolder(getOldStudy(),getOldStudy().getArms().get(curArmNumber));
 	}
 
-	public TableModel getMeasurementTableModel() {
+	public MeasurementTableModel getEndpointMeasurementTableModel() {
 		commitOutcomesArmsToNew();
-		return new MeasurementTableModel(getNewStudy(),d_pmf);
+		return new MeasurementTableModel(getNewStudy(),d_pmf, Endpoint.class);
 	}
 	
 	
 	public void saveStudy() {
 		if (d_selectedArmList.isEmpty()) 
 			throw new IllegalStateException("No arms selected in study.");
-		if (d_selectedOutcomesList.isEmpty()) 
+		if (d_selectedEndpointsList.isEmpty()) 
 			throw new IllegalStateException("No outcomes selected in study.");
 		if (!checkID())
 			throw new IllegalStateException("Study with this ID already exists in domain");
@@ -311,11 +360,11 @@ public class AddStudyWizardPresentation {
 	}
 	
 	void commitOutcomesArmsToNew(){
-		List<OutcomeMeasure> outcomeMeasures = new ArrayList<OutcomeMeasure>();
-		for(AbstractHolder<OutcomeMeasure> outcomeHolder : d_selectedOutcomesList) {
+		List<Endpoint> outcomeMeasures = new ArrayList<Endpoint>();
+		for(AbstractHolder<Endpoint> outcomeHolder : d_selectedEndpointsList) {
 			outcomeMeasures.add(outcomeHolder.getValue());
 		}	
-		getNewStudy().setOutcomeMeasures(outcomeMeasures);
+		getNewStudy().setEndpoints(outcomeMeasures);
 		
 		List<Arm> arms = new ArrayList<Arm>();
 		for(BasicArmPresentation arm : d_selectedArmList) { 
@@ -323,6 +372,14 @@ public class AddStudyWizardPresentation {
 		}
 		
 		getNewStudy().setArms(arms);
+	}
+	
+	private void commitADEsToStudy() {
+		List<AdverseDrugEvent> outcomeMeasures = new ArrayList<AdverseDrugEvent>();
+		for(AbstractHolder<AdverseDrugEvent> outcomeHolder : d_adverseEventSelect.getSlots()) {
+			outcomeMeasures.add(outcomeHolder.getValue());
+		}	
+		getNewStudy().setAdverseEvents(outcomeMeasures);
 	}
 	
 	private void transferNotes() {
@@ -351,4 +408,37 @@ public class AddStudyWizardPresentation {
 	private Study getOldStudy() {
 		return d_oldStudyPM.getBean();
 	}
+
+	public ListHolder<AdverseDrugEvent> getADEListModel() {
+		return d_adverseEventListHolder;
+	}
+
+	private MeasurementTableModel getAdverseEventMeasurementTableModel() {
+		commitADEsToStudy();
+		return new MeasurementTableModel(getNewStudy(),d_pmf, AdverseDrugEvent.class);
+	}
+	
+	public OutcomeMeasurementsModel getAdverseEventsModel() {
+		return new OutcomeMeasurementsModel() {
+			public MeasurementTableModel getMeasurementTableModel() {
+				return getAdverseEventMeasurementTableModel();
+			}
+		};
+	} 
+	
+	public OutcomeMeasurementsModel getEndpointsModel() {
+		return new OutcomeMeasurementsModel() {
+			public MeasurementTableModel getMeasurementTableModel() {
+				return getEndpointMeasurementTableModel();
+			}
+		};
+	}
+
+	public SelectFromFiniteListPresentationModel<AdverseDrugEvent> getAdverseEventSelectModel() {
+		return d_adverseEventSelect;
+	}
+
+	public SelectFromFiniteListPresentationModel<Variable> getPopulationCharsSelectModel() {
+		return d_populationCharsSelect;
+	} 
 }
