@@ -15,6 +15,7 @@ import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
 
+import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -85,7 +86,7 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 		row += 2;
 		JButton btn = new JButton("Add " + d_pm.getTypeName());
 		d_builder.add(btn, cc.xy(1, row));
-		// FIXME: bind d_pm.getAddSlotsEnabledButton to this button
+		Bindings.bind(btn, "enabled", d_pm.getAddSlotsEnabledModel());
 		btn.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 				d_pm.addSlot();

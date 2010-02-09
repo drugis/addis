@@ -175,6 +175,7 @@ public class AddStudyWizardPresentation {
 		d_pmf = pmf;
 		d_endpointListHolder = new EndpointListHolder(d_domain);
 		d_adverseEventListHolder = new ADEListHolder(d_domain);
+		d_populationCharsListHolder = d_domain.getVariablesHolder();
 		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_adverseEventListHolder, main);
 		d_populationCharsSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder);
 		clearStudies();

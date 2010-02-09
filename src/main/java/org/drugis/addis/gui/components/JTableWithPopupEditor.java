@@ -79,9 +79,14 @@ abstract public class JTableWithPopupEditor extends JTable {
 			return null;
 		}
 		
-		ComponentKeyListener componentKeyListener = new ComponentKeyListener();		
 		for (Component c : panel.getComponents()) {
-			c.addKeyListener(componentKeyListener);
+			c.addKeyListener(new KeyAdapter() {
+				@Override public void keyPressed(KeyEvent e) {
+					if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+						destroyWindow();
+					}
+				}			
+			});
 			Set<AWTKeyStroke> keys = new HashSet<AWTKeyStroke>(c.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS));
 			keys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ENTER, 0));
 			c.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, keys);
@@ -131,12 +136,4 @@ abstract public class JTableWithPopupEditor extends JTable {
 		}
 	}
 	
-	private class ComponentKeyListener extends KeyAdapter {
-		@Override
-		public void keyPressed(KeyEvent e) {
-			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-				destroyWindow();
-			}
-		}			
-	};
 }

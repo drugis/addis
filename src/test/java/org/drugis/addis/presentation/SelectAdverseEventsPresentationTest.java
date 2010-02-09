@@ -50,7 +50,7 @@ public class SelectAdverseEventsPresentationTest {
 	@Test
 	public void testGetTitle() {
 		assertEquals("Select Adverse Events", d_pm.getTitle());
-		assertEquals("Please select the appropriate adverse events", d_pm.getDescription());
+		assertEquals("Please select the appropriate adverse events.", d_pm.getDescription());
 	}
 	
 	@Test
@@ -88,32 +88,6 @@ public class SelectAdverseEventsPresentationTest {
 		d_pm.removeSlot(0);
 		assertEquals(d_pm.getSlot(0).getValue(), d_ade2);
 	}
-
-	// This test is really not applicable, because we can add ADEs dynamically.
-	// However, keep it for reference with PopulationChars
-	/*
-	@Test
-	public void testAddSlotsEnabledModel() {
-		assertEquals(d_pm.getAddSlotsEnabledModel().getValue(), Boolean.TRUE);
-		
-		d_pm.addSlot();
-		
-		// Make sure adding is disabled when we have as many slots as options
-		PropertyChangeListener mock = JUnitUtil.mockListener(d_pm.getAddSlotsEnabledModel(), "value",
-				Boolean.TRUE, Boolean.FALSE);
-		d_pm.getAddSlotsEnabledModel().addValueChangeListener(mock);
-		d_pm.addSlot();
-		assertEquals(d_pm.getAddSlotsEnabledModel().getValue(), Boolean.FALSE);
-		verify(mock);
-		
-		// Make sure removing slots gets it back to normal
-		mock = JUnitUtil.mockListener(d_pm.getAddSlotsEnabledModel(), "value",
-				Boolean.FALSE, Boolean.TRUE);
-		d_pm.getAddSlotsEnabledModel().addValueChangeListener(mock);
-		d_pm.removeSlot(1);
-		assertEquals(d_pm.getAddSlotsEnabledModel().getValue(), Boolean.TRUE);
-		verify(mock);
-	} */
 	
 	@Test
 	public void testAddSlotsEnabledModel() {
