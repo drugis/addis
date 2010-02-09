@@ -50,6 +50,7 @@ import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.DosePresentationModel;
 import org.drugis.addis.presentation.AddStudyWizardPresentation.OutcomeMeasurementsModel;
+import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -71,6 +72,7 @@ import com.toedter.calendar.JDateChooser;
 
 public class AddStudyWizard implements ViewBuilder{
 	
+	private static final String EXAMPLE_NCT_ID = "NCT00296517";
 	public static final String DEFAULT_NOTETITLE = "Source Text (ClinicalTrials.gov):";
 	AddStudyWizardPresentation d_pm;
 	Main d_main;
@@ -715,11 +717,12 @@ public class AddStudyWizard implements ViewBuilder{
 		area.setBackground(new Color(255, 180, 180));
 
 		try {
-			doc.insertString(doc.getLength(), "Tip: \n", doc.getStyle("bold"));
+			doc.insertString(0, "x", doc.getStyle("tip"));
+			doc.insertString(doc.getLength(), " Tip: \n", doc.getStyle("bold"));
 			doc.insertString(doc.getLength(),
 					"You can import studies from ClinicalTrials.gov by entering their NCT-ID, " +
 					"and then pressing the import button next to the ID field. " +
-					"For example, try NCT00644527.\n\n" +
+					"For example, try " + EXAMPLE_NCT_ID + ".\n\n" +
 					"Unfortunately, due to limitations of ClinicalTrials.gov, it is currently not possible to import adverse events or study results.",
 					doc.getStyle("regular"));
 		} catch (BadLocationException e) {
@@ -729,7 +732,7 @@ public class AddStudyWizard implements ViewBuilder{
 		
 		JScrollPane pane = new JScrollPane(area);
 		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		pane.setPreferredSize(textPaneDimension(area, 300, 60));
+		pane.setPreferredSize(textPaneDimension(area, 300, 70));
 		
 		pane.setWheelScrollingEnabled(true);
 		pane.getVerticalScrollBar().setValue(0);
@@ -787,6 +790,9 @@ public class AddStudyWizard implements ViewBuilder{
 
         Style bold = doc.addStyle("bold", regular);
         StyleConstants.setBold(bold, true);
-
+        
+        // The image must first be wrapped in a style
+        Style style = doc.addStyle("tip", null);
+        StyleConstants.setIcon(style, ImageLoader.getIcon(FileNames.ICON_TIP)); 
 	}
 }

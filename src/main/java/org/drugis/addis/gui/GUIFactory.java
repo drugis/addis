@@ -51,8 +51,7 @@ import com.jidesoft.swing.JideButton;
 
 public class GUIFactory {
 	public static JButton createPlusButton(String toolTipText) {
-		String iconName = FileNames.ICON_PLUS;
-		return createIconButton(iconName, toolTipText);
+		return createIconButton(FileNames.ICON_PLUS, toolTipText);
 	}
 
 	public static JButton createIconButton(String iconName, String toolTipText) {
