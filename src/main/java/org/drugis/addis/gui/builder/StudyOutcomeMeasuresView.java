@@ -15,6 +15,7 @@ import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.RelativeEffectTableDialog;
+import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.presentation.MeanDifferenceTableModel;
 import org.drugis.addis.presentation.OddsRatioTableModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -23,6 +24,7 @@ import org.drugis.addis.presentation.RiskDifferenceTableModel;
 import org.drugis.addis.presentation.RiskRatioTableModel;
 import org.drugis.addis.presentation.StandardisedMeanDifferenceTableModel;
 import org.drugis.addis.presentation.StudyPresentationModel;
+import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -47,16 +49,16 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"left:pref, 3dlu, left:pref", 
+				"left:pref, 3dlu, left:pref, 3dlu, pref:grow", 
 				"p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 	
-		if (d_model.getBean().getOutcomeMeasures().isEmpty()) {
-			builder.addLabel("No OutcomeMeasures", cc.xy(1, 1));
+		List<OutcomeMeasure> outcomeMeasures = d_isEndpoints ? d_model.getEndpoints() : d_model.getAdes();
+		if (outcomeMeasures.isEmpty()) {
+			builder.addLabel("No " + (d_isEndpoints ? "Endpoints" : "Adverse Events"), cc.xy(1, 1));
 		} else {
 			int row = 1;
-			List<OutcomeMeasure> outcomeMeasures = d_isEndpoints ? d_model.getEndpoints() : d_model.getAdes();
 			for (OutcomeMeasure om : outcomeMeasures) {
 				JComponent outcomeMeasureLabelWithIcon = GUIFactory.createOutcomeMeasureLabelWithIcon(om);
 				
@@ -80,8 +82,17 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 
 				LayoutUtil.addRow(layout);
 			}
-			
+		
+			MeasurementTable measurementTable = null;
+			if (d_isEndpoints) {
+				measurementTable = new MeasurementTable(d_model.getEndpointTableModel());
+			} else {
+				measurementTable = new MeasurementTable(d_model.getAdverseEventTableModel());
+			}
+			builder.add(AuxComponentFactory.createUnscrollableTablePanel(measurementTable),
+					cc.xyw(1, row, 5));
 		}
+		
 		return builder.getPanel();
 	}
 

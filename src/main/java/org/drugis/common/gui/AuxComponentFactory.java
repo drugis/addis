@@ -1,5 +1,7 @@
 package org.drugis.common.gui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.text.NumberFormat;
 import java.util.Date;
@@ -8,11 +10,13 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.NumberFormatter;
 
+import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -78,5 +82,16 @@ public class AuxComponentFactory {
 		field.setColumns(3);
 		Bindings.bind(field, model);
 		return field;
+	}
+
+	public static JComponent createUnscrollableTablePanel(
+			MeasurementTable measurementTable) {
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(measurementTable, BorderLayout.CENTER);
+		panel.add(measurementTable.getTableHeader(), BorderLayout.PAGE_START);
+		
+		measurementTable.setBackground(Color.WHITE);
+		measurementTable.setBorder(new JScrollPane().getBorder());
+		return panel;
 	}
 }

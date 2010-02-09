@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.table.TableModel;
+
 import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -200,5 +202,13 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 
 	public PopulationCharTableModel getPopulationCharTableModel() {
 		return new PopulationCharTableModel(getBean(), d_pmf);
+	}
+
+	public TableModel getEndpointTableModel() {
+		return new MeasurementTableModel(getBean(), d_pmf, Endpoint.class);
+	}
+	
+	public TableModel getAdverseEventTableModel() {
+		return new MeasurementTableModel(getBean(), d_pmf, AdverseDrugEvent.class);
 	}
 }

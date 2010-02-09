@@ -18,5 +18,4 @@ public class LayoutUtil {
 		layout.appendRow(RowSpec.decode("3dlu"));
 		layout.appendRow(RowSpec.decode("p"));
 	}
-
 }

@@ -19,48 +19,32 @@
 
 package org.drugis.addis.gui.builder;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.StudyAddPopulationCharacteristicDialog;
+import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.presentation.StudyPresentationModel;
-import org.drugis.common.gui.GUIHelper;
+import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ViewBuilder;
 
-import com.jgoodies.binding.PresentationModel;
-import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-@SuppressWarnings("serial")
 public class StudyView implements ViewBuilder {
-	private PresentationModel<Study> d_model;
-	private Domain d_domain;
-	private Main d_mainWindow;
+	private StudyPresentationModel d_model;
 	private StudyCharacteristicsView d_charView;
 	private StudyOutcomeMeasuresView d_epView;
 	private StudyOutcomeMeasuresView d_adeView;	
 	private StudyArmsView d_armsView;
-	private StudyPopulationView d_popView;
 	
 	
 	public StudyView(StudyPresentationModel model, Domain domain, Main main) {
 		d_model = model;
-		d_mainWindow = main;
-		d_domain = domain;
 		d_charView = new StudyCharacteristicsView(model);
-		d_popView = new StudyPopulationView(model);
 		d_epView = new StudyOutcomeMeasuresView(model, main, true);
 		d_adeView = new StudyOutcomeMeasuresView(model, main, false);		
 		d_armsView = new StudyArmsView(model, main.getPresentationModelFactory());
@@ -100,46 +84,20 @@ public class StudyView implements ViewBuilder {
 		return builder.getPanel();
 	}
 
-	private Component buildPopulationPart() {
-		return GUIFactory.createCollapsiblePanel(d_popView.buildPanel());
+	private JComponent buildPopulationPart() {
+		MeasurementTable measurementTable = new MeasurementTable(d_model.getPopulationCharTableModel());
+		return AuxComponentFactory.createUnscrollableTablePanel(measurementTable);
 	}
 
 	private JPanel buildArmsPart() {
 		return GUIFactory.createCollapsiblePanel(d_armsView.buildPanel());
 	}
 
-	private JPanel buildEndpointPart() {
+	private JComponent buildEndpointPart() {
 		return GUIFactory.createCollapsiblePanel(d_epView.buildPanel());
 	}
 	
-	private JPanel buildAdePart() {
+	private JComponent buildAdePart() {
 		return GUIFactory.createCollapsiblePanel(d_adeView.buildPanel());
-	}
-	
-	
-	private JComponent buildAddCharButton() {
-		String text = "Input baseline characteristic";
-		AbstractAction action = new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				addPopulationCharacteristic();
-			}
-		};
-		return buildOneButtonBar(text, action);
-	}
-
-	private void addPopulationCharacteristic() {
-		JDialog dlg = new StudyAddPopulationCharacteristicDialog(d_mainWindow, d_domain,
-				(StudyPresentationModel)d_model);
-		GUIHelper.centerWindow(dlg, d_mainWindow);
-		dlg.setVisible(true);
-	}
-
-	private JComponent buildOneButtonBar(String text, AbstractAction action) {
-		ButtonBarBuilder2 bb = new ButtonBarBuilder2();
-		JButton button = new JButton(text);
-		button.addActionListener(action);
-		bb.addButton(button);
-		bb.addGlue();
-		return bb.getPanel();
 	}
 }
