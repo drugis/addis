@@ -1,9 +1,5 @@
 package org.drugis.addis.presentation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Measurement;
@@ -25,7 +21,7 @@ public class PopulationCharTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		return d_study.getPopulationCharacteristicMap().size();
+		return d_study.getPopulationCharacteristics().size();
 	}
 
 	public Object getValueAt(int row, int col) {
@@ -39,17 +35,15 @@ public class PopulationCharTableModel extends AbstractTableModel {
 	}
 
 	private Measurement getArmChar(int armIdx, int charIdx) {
-		return d_study.getArms().get(armIdx).getPopulationCharacteristic(getCharAt(charIdx));
+		return d_study.getMeasurement(getCharAt(charIdx), d_study.getArms().get(armIdx));
 	}
 
 	private Measurement getStudyChar(int charIdx) {
-		return d_study.getPopulationCharacteristic(getCharAt(charIdx));
+		return d_study.getMeasurement(getCharAt(charIdx));
 	}
 
 	private Variable getCharAt(int charIdx) {
-		List<Variable> vars = new ArrayList<Variable>(d_study.getPopulationCharacteristicMap().keySet());
-		Collections.sort(vars);
-		return vars.get(charIdx);
+		return d_study.getPopulationCharacteristics().get(charIdx);
 	}
 	
 	@Override

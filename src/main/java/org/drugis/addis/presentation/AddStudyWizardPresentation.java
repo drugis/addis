@@ -386,13 +386,11 @@ public class AddStudyWizardPresentation {
 	}
 	
 	private void commitPopulationCharsToStudy() {
+		List<Variable> outcomeMeasures = new ArrayList<Variable>();
 		for(AbstractHolder<Variable> outcomeHolder : d_populationCharsSelect.getSlots()) {
-			Variable v = outcomeHolder.getValue();
-			getNewStudy().setPopulationCharacteristic(v, v.buildMeasurement());
-			for (Arm a : getNewStudy().getArms()) {
-				a.setPopulationCharacteristic(v, v.buildMeasurement());
-			}
+			outcomeMeasures.add(outcomeHolder.getValue());
 		}	
+		getNewStudy().setPopulationCharacteristics(outcomeMeasures);
 	}
 	
 	private void transferNotes() {
