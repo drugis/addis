@@ -400,14 +400,18 @@ public class AddStudyWizardPresentation {
 			/* If notes are keyed by either Characteristic or Property (String), we can just copy them */
 			if ((key instanceof BasicStudyCharacteristic) || (key instanceof String)) {
 				getNewStudy().putNote(key,value);
-			} else if (key instanceof OutcomeMeasure) {
-				int outcomeIndex = getOldStudy().getOutcomeMeasures().indexOf(key);
-				Object newKey =  getNewStudy().getOutcomeMeasures().get(outcomeIndex);
-				getNewStudy().putNote(newKey,value);
+			} else if (key instanceof Endpoint) {
+				int outcomeIndex = getOldStudy().getEndpoints().indexOf(key);
+				if (outcomeIndex > -1) {
+					Object newKey =  getNewStudy().getEndpoints().get(outcomeIndex);
+					getNewStudy().putNote(newKey,value);
+				}
 			} else if (key instanceof Arm) {
 				int armIndex = getOldStudy().getArms().indexOf(key);
-				Object newKey =  getNewStudy().getArms().get(armIndex);
-				getNewStudy().putNote(newKey,value);
+				if (armIndex > -1) {
+					Object newKey =  getNewStudy().getArms().get(armIndex);
+					getNewStudy().putNote(newKey,value);
+				}
 			}
 		}
 	}
