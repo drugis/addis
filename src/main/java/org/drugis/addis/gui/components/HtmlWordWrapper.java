@@ -6,8 +6,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class HtmlWordWrapper {
-	
 	public static String wordWrap(String input) {
+		return wordWrap(input, true);
+	}
+	
+	public static String wordWrap(String input, boolean surround) {
 		String[] arr = makeParts(input);
 		String resStr = "";
 		for (String s : arr) {
@@ -19,7 +22,10 @@ public class HtmlWordWrapper {
 			}
 			resStr += s;
 		}
-		return "<html>"+resStr+"</html>";
+		if (surround) {
+			return "<html>"+resStr+"</html>";
+		}
+		return resStr;
 	}
 
 	private static final Pattern wrapRE = Pattern.compile(".{0,79}(?:\\S(?:-| |$)|$)");
