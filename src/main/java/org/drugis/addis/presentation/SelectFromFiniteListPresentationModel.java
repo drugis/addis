@@ -1,5 +1,7 @@
 package org.drugis.addis.presentation;
 
+import java.util.List;
+
 import com.jgoodies.binding.value.ValueModel;
 
 public interface SelectFromFiniteListPresentationModel<T> {
@@ -63,4 +65,6 @@ public interface SelectFromFiniteListPresentationModel<T> {
 	 * A list of options to select from.
 	 */
 	ListHolder<T> getOptions();
+
+	public List<AbstractHolder<T>> getSlots();
 }

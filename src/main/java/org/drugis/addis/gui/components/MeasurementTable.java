@@ -12,8 +12,6 @@ import javax.swing.table.TableModel;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.gui.MeasurementInputHelper;
 
-import com.jgoodies.binding.PresentationModel;
-
 @SuppressWarnings("serial")
 public class MeasurementTable extends JTableWithPopupEditor {
 	public MeasurementTable(TableModel tableModel, Window parent) {
@@ -27,15 +25,13 @@ public class MeasurementTable extends JTableWithPopupEditor {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected JPanel createEditorPanel(int row, int col) {
 		if (col < 1) {
 			return null;
 		}
 		
-		PresentationModel<BasicMeasurement> pm = (PresentationModel<BasicMeasurement>)getModel().getValueAt(row, col);
-		return createPanel(pm.getBean());
+		return createPanel((BasicMeasurement)getModel().getValueAt(row, col));
 	}
 
 	private JPanel createPanel(BasicMeasurement m) {

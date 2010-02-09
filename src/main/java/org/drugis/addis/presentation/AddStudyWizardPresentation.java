@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.swing.table.TableModel;
+
 import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -31,7 +33,7 @@ import com.jgoodies.binding.value.ValueModel;
 public class AddStudyWizardPresentation {
 	
 	public interface OutcomeMeasurementsModel {
-		MeasurementTableModel getMeasurementTableModel();
+		TableModel getMeasurementTableModel();
 	}
 	
 	@SuppressWarnings("serial")
@@ -383,6 +385,16 @@ public class AddStudyWizardPresentation {
 		getNewStudy().setAdverseEvents(outcomeMeasures);
 	}
 	
+	private void commitPopulationCharsToStudy() {
+		for(AbstractHolder<Variable> outcomeHolder : d_populationCharsSelect.getSlots()) {
+			Variable v = outcomeHolder.getValue();
+			getNewStudy().setPopulationCharacteristic(v, v.buildMeasurement());
+			for (Arm a : getNewStudy().getArms()) {
+				a.setPopulationCharacteristic(v, v.buildMeasurement());
+			}
+		}	
+	}
+	
 	private void transferNotes() {
 		for (Entry<Object,Note> noteEntry : getOldStudy().getNotes().entrySet()) {
 			Object key = noteEntry.getKey();
@@ -419,6 +431,11 @@ public class AddStudyWizardPresentation {
 		return new MeasurementTableModel(getNewStudy(),d_pmf, AdverseDrugEvent.class);
 	}
 	
+	private PopulationCharTableModel getPopulationCharMeasurementTableModel() {
+		commitPopulationCharsToStudy();
+		return new PopulationCharTableModel(getNewStudy(), d_pmf);
+	}
+
 	public OutcomeMeasurementsModel getAdverseEventsModel() {
 		return new OutcomeMeasurementsModel() {
 			public MeasurementTableModel getMeasurementTableModel() {
@@ -434,6 +451,14 @@ public class AddStudyWizardPresentation {
 			}
 		};
 	}
+	
+	public OutcomeMeasurementsModel getPopulationCharsModel() {
+		return new OutcomeMeasurementsModel() {
+			public TableModel getMeasurementTableModel() {
+				return getPopulationCharMeasurementTableModel();
+			}
+		};
+	} 
 
 	public SelectFromFiniteListPresentationModel<AdverseDrugEvent> getAdverseEventSelectModel() {
 		return d_adverseEventSelect;

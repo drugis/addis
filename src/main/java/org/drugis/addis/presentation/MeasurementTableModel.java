@@ -51,7 +51,7 @@ public class MeasurementTableModel extends AbstractTableModel {
 		}
 		OutcomeMeasure om = new ArrayList<OutcomeMeasure>(d_study.getOutcomeMeasures(d_type)).get(rowIndex);
 		Arm arm = d_study.getArms().get(columnIndex - 1);
-		return d_pmf.getLabeledModel(d_study.getMeasurement(om, arm));
+		return d_study.getMeasurement(om, arm);
 	}
 
 	private OutcomeMeasure getEndpointAtIndex(int rowIndex) {

@@ -93,6 +93,7 @@ public class AddStudyWizard implements ViewBuilder{
 		wizardModel.add(new SelectADEWizardStep());
 		wizardModel.add(new SetAdverseEventMeasurementsWizardStep());
 		wizardModel.add(new SelectPopulationCharsWizardStep());
+		wizardModel.add(new SetPopulationCharMeasurementsWizardStep());
 		Wizard wizard = new Wizard(wizardModel);
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 		wizard.addWizardListener(new WizardAdapter() {
@@ -153,6 +154,15 @@ public class AddStudyWizard implements ViewBuilder{
 		public SetAdverseEventMeasurementsWizardStep(){
 			super("Input adverse event data", "Please enter the measurements for all arm-event combinations.",
 					d_pm.getAdverseEventsModel(), d_dialog);
+		}
+
+	}
+	
+	@SuppressWarnings("serial")
+	public class SetPopulationCharMeasurementsWizardStep extends SetMeasurementsWizardStep {
+		public SetPopulationCharMeasurementsWizardStep(){
+			super("Input population data", "Please enter the measurements for all population characteristics.",
+					d_pm.getPopulationCharsModel(), d_dialog);
 		}
 
 	}

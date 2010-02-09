@@ -39,6 +39,7 @@ extends SelectFromFiniteListPresentationImpl<Variable> {
 			throw new RuntimeException("AddSlotsEnabledModel is read-only");
 		}
 
+		@SuppressWarnings("unchecked")
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getSource() == d_options) {
 				boolean oldVal = addSlotsEnabled(d_slots.size(), ((List)evt.getOldValue()).size());
