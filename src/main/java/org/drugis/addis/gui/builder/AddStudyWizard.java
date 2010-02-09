@@ -620,7 +620,7 @@ public class AddStudyWizard implements ViewBuilder{
 		 private void buildWizardStep() {
 			 FormLayout layout = new FormLayout(
 						"right:pref, 3dlu, left:pref:grow, 3dlu, left:pref",
-						"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+						"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 						);	
 				d_builder = new PanelBuilder(layout);
 				d_builder.setDefaultDialogBorder();
@@ -690,19 +690,52 @@ public class AddStudyWizard implements ViewBuilder{
 						prepare();	
 					}
 				});
-				d_builder.add(clearButton, cc.xy(5, 11));				
+				d_builder.add(clearButton, cc.xy(5, 11));
+				
+				d_builder.add(buildTip(), cc.xy(3, 13));
 				
 				this.setLayout(new BorderLayout());
 				d_scrollPane = new JScrollPane(d_builder.getPanel());
 				add(d_scrollPane, BorderLayout.CENTER);
 		 }
 		 
-		 private class ImportButtonEnableListener implements CaretListener{
+
+		private class ImportButtonEnableListener implements CaretListener{
 			public void caretUpdate(CaretEvent arg0) {
 				d_importButton.setEnabled(!d_idField.getText().equals(""));
 			}
 		 }
 	}	
+	
+	private static JComponent buildTip() {
+		JTextPane area = new JTextPane();
+		StyledDocument doc = area.getStyledDocument();
+		addStylesToDoc(doc);
+
+		area.setBackground(new Color(255, 180, 180));
+
+		try {
+			doc.insertString(doc.getLength(), "Tip: \n", doc.getStyle("bold"));
+			doc.insertString(doc.getLength(),
+					"You can import studies from ClinicalTrials.gov by entering their NCT-ID, " +
+					"and then pressing the import button next to the ID field. " +
+					"For example, try NCT00644527.\n\n" +
+					"Unfortunately, due to limitations of ClinicalTrials.gov, it is currently not possible to import adverse events or study results.",
+					doc.getStyle("regular"));
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		JScrollPane pane = new JScrollPane(area);
+		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		pane.setPreferredSize(textPaneDimension(area, 300, 60));
+		
+		pane.setWheelScrollingEnabled(true);
+		pane.getVerticalScrollBar().setValue(0);
+		
+		return pane;
+	}
 	
 	private int addNoteField(PanelBuilder builder, CellConstraints cc,	int row, int col, int width, FormLayout layout, ValueModel model) {
 		if(model != null && model.getValue() != null && model.getValue() != ""){
@@ -725,15 +758,24 @@ public class AddStudyWizard implements ViewBuilder{
 			
 			JScrollPane pane = new JScrollPane(area);
 			pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-			pane.setPreferredSize(new Dimension(
-					DefaultUnitConverter.getInstance().dialogUnitXAsPixel(230, area), 
-					DefaultUnitConverter.getInstance().dialogUnitYAsPixel(50, area)));
+			pane.setPreferredSize(defaultTextPaneDimension(area));
 			
 			pane.setWheelScrollingEnabled(true);
 			pane.getVerticalScrollBar().setValue(0);
 			builder.add(pane, cc.xyw(col, row, width));
 		}
 		return row;
+	}
+
+	private static Dimension defaultTextPaneDimension(JTextPane area) {
+		return textPaneDimension(area, 230, 50);
+	}
+
+	private static Dimension textPaneDimension(JTextPane area, int dluX,
+			int dluY) {
+		return new Dimension(
+				DefaultUnitConverter.getInstance().dialogUnitXAsPixel(dluX, area), 
+				DefaultUnitConverter.getInstance().dialogUnitYAsPixel(dluY, area));
 	}
 	
 	private static void addStylesToDoc(StyledDocument doc) {

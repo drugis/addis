@@ -9,10 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.presentation.BasicArmPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.gui.GUIHelper;
