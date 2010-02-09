@@ -15,6 +15,7 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +68,7 @@ public class ClinicaltrialImporterTest {
 		}
 		
 		assertEquals(new Date().toString(), d_testStudy.getCharacteristic(BasicStudyCharacteristic.CREATION_DATE).toString());
-		assertEquals(BasicStudyCharacteristic.Source.CLINICALTRIALS, d_testStudy.getCharacteristic(BasicStudyCharacteristic.SOURCE));
+		assertEquals(Source.CLINICALTRIALS, d_testStudy.getCharacteristic(BasicStudyCharacteristic.SOURCE));
 		
 		assertEquals(expectedStartDate , d_testStudy.getCharacteristic(BasicStudyCharacteristic.STUDY_START));
 		assertEquals(expectedEndDate, d_testStudy.getCharacteristic(BasicStudyCharacteristic.STUDY_END));

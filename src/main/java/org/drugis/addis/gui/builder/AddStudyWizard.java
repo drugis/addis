@@ -41,6 +41,7 @@ import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.SIUnit;
+import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
@@ -630,7 +631,7 @@ public class AddStudyWizard implements ViewBuilder{
 				
 				// add source fields
 				d_builder.addLabel("Source:",cc.xy(1, 1));	
-				JComponent sourceSelecter = AuxComponentFactory.createBoundComboBox(BasicStudyCharacteristic.Source.values(), d_pm.getSourceModel());
+				JComponent sourceSelecter = AuxComponentFactory.createBoundComboBox(Source.values(), d_pm.getSourceModel());
 				sourceSelecter.setEnabled(false);
 				d_builder.add(sourceSelecter, cc.xyw(3, 1, 2));
 				

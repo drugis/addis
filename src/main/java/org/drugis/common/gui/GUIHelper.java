@@ -7,6 +7,7 @@ import java.awt.Window;
 
 import javax.swing.UIManager;
 
+import org.drugis.addis.entities.Note;
 import org.drugis.addis.gui.components.HtmlWordWrapper;
 
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
@@ -59,6 +60,10 @@ public class GUIHelper {
 		window.setLocation(new Point(xLoc, yLoc));
 	}
 
+	public static String createToolTip(Note note) {
+		return createToolTip(note.getText());
+	}
+	
 	public static String createToolTip(String text) {
 		if (text != null && text.trim().length() > 0) {
 			return HtmlWordWrapper.wordWrap(text);

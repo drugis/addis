@@ -7,14 +7,17 @@ public class Note extends AbstractEntity {
 	private static final long serialVersionUID = -7168275781000353799L;
 	
 	public static final String PROPERTY_TEXT = "text";
+	public static final String PROPERTY_SOURCE = "source";
 	
 	private String d_text;
+	private Source d_source;
 
-	public Note(){
-		d_text = "";
+	public Note(Source source){
+		this(source, "");		
 	}
 	
-	public Note(String text) {
+	public Note(Source source, String text) {
+		d_source = source;
 		d_text = text;
 	}
 
@@ -35,6 +38,10 @@ public class Note extends AbstractEntity {
 	
 	public String toString() {
 		return getText();
+	}
+	
+	public Source getSource(){
+		return d_source;
 	}
 
 }

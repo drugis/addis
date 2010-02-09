@@ -281,7 +281,7 @@ public class StudyTest {
 	@Test
 	public void testPutGetNote(){
 		String key = "sleutel";
-		Note note = new Note();
+		Note note = new Note(Source.CLINICALTRIALS);
 		Study s = new Study("X", new Indication(0L, "Y"));
 		s.putNote(key, note);
 		assertEquals(note, s.getNote(key));
@@ -290,7 +290,7 @@ public class StudyTest {
 	@Test
 	public void testRemoveNote(){
 		String key = "sleutel";
-		Note note = new Note();
+		Note note = new Note(Source.CLINICALTRIALS);
 		Study s = new Study("X", new Indication(0L, "Y"));
 		s.putNote(key, note);
 		assertEquals(note, s.getNote(key));

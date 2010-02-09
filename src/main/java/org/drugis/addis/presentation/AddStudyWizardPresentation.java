@@ -23,6 +23,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.SIUnit;
+import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.Main;
@@ -215,7 +216,7 @@ public class AddStudyWizardPresentation {
 		// Characteristics
 		getNewStudy().getCharacteristics().putAll(getOldStudy().getCharacteristics());
 		// Source
-		getSourceModel().setValue(BasicStudyCharacteristic.Source.CLINICALTRIALS);
+		getSourceModel().setValue(Source.CLINICALTRIALS);
 		// Id & Title
 		getIdModel().setValue(studyID);
 		getTitleModel().setValue(getOldStudy().getCharacteristic(BasicStudyCharacteristic.TITLE));
@@ -245,7 +246,7 @@ public class AddStudyWizardPresentation {
 	public void clearStudies() {
 		d_oldStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
 		d_newStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
-		getSourceModel().setValue(BasicStudyCharacteristic.Source.MANUAL);
+		getSourceModel().setValue(Source.MANUAL);
 		d_selectedEndpointsList = new ArrayList<AbstractHolder<Endpoint>>();
 		while (d_adverseEventSelect.countSlots() > 0) {
 			d_adverseEventSelect.removeSlot(0);

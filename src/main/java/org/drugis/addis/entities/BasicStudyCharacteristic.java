@@ -58,21 +58,6 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 		FINISHED
 	}
 	
-	public enum Source {
-		MANUAL("Manual Input"), 
-		CLINICALTRIALS("ClinicalTrials.gov");
-		
-		private String d_description;
-		Source(String description) {
-			d_description = description;
-		}
-		
-		@Override
-		public String toString() {
-			return d_description;
-		}
-	}
-	
 	BasicStudyCharacteristic(String name, Class<?> type) {
 		d_description = name;
 		d_type = type;

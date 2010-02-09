@@ -10,6 +10,7 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -38,7 +39,7 @@ public class AddStudyWizardPresentationTest {
 	@Test
 	public void testSetIdGetSourceModel() throws MalformedURLException, IOException{
 		importStudy();
-		assertEquals(BasicStudyCharacteristic.Source.CLINICALTRIALS, d_wizardImported.getSourceModel().getValue());
+		assertEquals(Source.CLINICALTRIALS, d_wizardImported.getSourceModel().getValue());
 	}
 	
 	@Test
@@ -69,7 +70,7 @@ public class AddStudyWizardPresentationTest {
 	public void testClearStudies() throws MalformedURLException, IOException {
 		importStudy();
 		d_wizardImported.clearStudies();
-		assertEquals(BasicStudyCharacteristic.Source.MANUAL, d_wizardImported.getSourceModel().getValue());
+		assertEquals(Source.MANUAL, d_wizardImported.getSourceModel().getValue());
 		assertEquals(null, d_wizardImported.getTitleModel().getValue());
 		assertEquals("",d_wizardImported.getIndicationNoteModel().getValue());
 		assertEquals(1,d_wizardImported.getNumberEndpoints());

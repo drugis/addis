@@ -7,6 +7,7 @@ import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
+import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -19,7 +20,7 @@ public class StudyNoteHolderTest {
 	@Before
 	public void setUp() {
 		d_study = new Study("", new Indication(0l, ""));
-		d_study.putNote("key", new Note("testNote"));
+		d_study.putNote("key", new Note(Source.CLINICALTRIALS, "testNote"));
 		d_noteHolder = new StudyNoteHolder(d_study,"key");
 	}
 	
@@ -30,12 +31,12 @@ public class StudyNoteHolderTest {
 	
 	@Test(expected = RuntimeException.class)
 	public void testSetValue() {
-		d_noteHolder.setValue(new Note());
+		d_noteHolder.setValue(new Note(Source.CLINICALTRIALS));
 	}
 	
 	@Test
 	public void testValueChanged() {
-		Note n = new Note("newNote");
+		Note n = new Note(Source.CLINICALTRIALS, "newNote");
 		PropertyChangeListener l = JUnitUtil.mockListener(d_noteHolder, "value", null, n.getText());
 		d_noteHolder.addPropertyChangeListener(l);
 		d_study.putNote("key",n);

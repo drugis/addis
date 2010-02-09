@@ -24,6 +24,7 @@ import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.SIUnit;
+import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Type;
 
@@ -71,11 +72,11 @@ public class ClinicaltrialsImporter {
 	private static void getClinicalTrialsData(Study study, ClinicalStudy studyImport) {
 		// ID  (& ID note =study url)
 		study.setId(studyImport.getIdInfo().getNctId());
-		study.putNote(Study.PROPERTY_ID, new Note(studyImport.getIdInfo().getNctId().trim()));
+		study.putNote(Study.PROPERTY_ID, new Note(Source.CLINICALTRIALS, studyImport.getIdInfo().getNctId().trim()));
 		
 		// Title
 		study.setCharacteristic(BasicStudyCharacteristic.TITLE, studyImport.getBriefTitle().trim());
-		study.putNote(BasicStudyCharacteristic.TITLE, new Note(createTitleNote(studyImport)));
+		study.putNote(BasicStudyCharacteristic.TITLE, new Note(Source.CLINICALTRIALS, createTitleNote(studyImport)));
 		
 		// Study Centers
 		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, studyImport.getLocation().size());
@@ -83,14 +84,14 @@ public class ClinicaltrialsImporter {
 		for (Location l : studyImport.getLocation()) {
 			noteStr += l.getFacility().getName()+"\n";
 		}
-		study.putNote(BasicStudyCharacteristic.CENTERS, new Note());
+		study.putNote(BasicStudyCharacteristic.CENTERS, new Note(Source.CLINICALTRIALS));
 		
 		// Randomization
 		if (designContains(studyImport, "non-randomized")) 
 			study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.NONRANDOMIZED);
 		else if (designContains(studyImport, "randomized"))
 			study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
-		study.putNote(BasicStudyCharacteristic.ALLOCATION, new Note(studyImport.getStudyDesign().trim()));
+		study.putNote(BasicStudyCharacteristic.ALLOCATION, new Note(Source.CLINICALTRIALS, studyImport.getStudyDesign().trim()));
 		
 		// Blinding
 		if (designContains(studyImport, "open label"))
@@ -101,11 +102,11 @@ public class ClinicaltrialsImporter {
 			study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
 		else if (designContains(studyImport, "triple blind"))
 			study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.TRIPLE_BLIND);
-		study.putNote(BasicStudyCharacteristic.BLINDING, new Note(studyImport.getStudyDesign().trim()));
+		study.putNote(BasicStudyCharacteristic.BLINDING, new Note(Source.CLINICALTRIALS, studyImport.getStudyDesign().trim()));
 		
 		// Objective
 		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, studyImport.getBriefSummary().getTextblock().trim());
-		study.putNote(BasicStudyCharacteristic.OBJECTIVE, new Note(studyImport.getBriefSummary().getTextblock().trim()));
+		study.putNote(BasicStudyCharacteristic.OBJECTIVE, new Note(Source.CLINICALTRIALS, studyImport.getBriefSummary().getTextblock().trim()));
 		
 		study.setIndication(new Indication(0l, studyImport.getCondition().get(0)) ) ;
 		
@@ -113,7 +114,7 @@ public class ClinicaltrialsImporter {
 		for(String s : studyImport.getCondition()){
 			out = out+s+"\n";
 		}
-		study.putNote(Study.PROPERTY_INDICATION, new Note(out.trim()));
+		study.putNote(Study.PROPERTY_INDICATION, new Note(Source.CLINICALTRIALS, out.trim()));
 
 		// Dates
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");
@@ -125,14 +126,14 @@ public class ClinicaltrialsImporter {
 		} catch (ParseException e) {
 			System.err.println("ClinicalTrialsImporter:: Couldn't parse date. Left empty.");
 		}
-		study.putNote((Object)BasicStudyCharacteristic.STUDY_START, new Note(studyImport.startDate));
-		study.putNote((Object)BasicStudyCharacteristic.STUDY_END,   new Note(studyImport.endDate));
+		study.putNote((Object)BasicStudyCharacteristic.STUDY_START, new Note(Source.CLINICALTRIALS, studyImport.startDate));
+		study.putNote((Object)BasicStudyCharacteristic.STUDY_END,   new Note(Source.CLINICALTRIALS, studyImport.endDate));
 		
 		// Import date & Source.
 		study.setCharacteristic(BasicStudyCharacteristic.CREATION_DATE,new Date());
-		study.setCharacteristic(BasicStudyCharacteristic.SOURCE, BasicStudyCharacteristic.Source.CLINICALTRIALS);
-		study.putNote((Object)BasicStudyCharacteristic.CREATION_DATE, new Note(studyImport.getRequiredHeader().getDownloadDate().trim()));
-		study.putNote((Object)BasicStudyCharacteristic.SOURCE, new Note(studyImport.getRequiredHeader().getUrl().trim()));
+		study.setCharacteristic(BasicStudyCharacteristic.SOURCE, Source.CLINICALTRIALS);
+		study.putNote((Object)BasicStudyCharacteristic.CREATION_DATE, new Note(Source.CLINICALTRIALS, studyImport.getRequiredHeader().getDownloadDate().trim()));
+		study.putNote((Object)BasicStudyCharacteristic.SOURCE, new Note(Source.CLINICALTRIALS, studyImport.getRequiredHeader().getUrl().trim()));
 
 		// Status
 		if (studyImport.getOverallStatus().toLowerCase().contains("recruiting"))
@@ -145,7 +146,7 @@ public class ClinicaltrialsImporter {
 			study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
 		else if (studyImport.getOverallStatus().contains("Available"))
 			study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
-		study.putNote((Object)BasicStudyCharacteristic.STATUS, new Note(studyImport.getOverallStatus().trim()));
+		study.putNote((Object)BasicStudyCharacteristic.STATUS, new Note(Source.CLINICALTRIALS, studyImport.getOverallStatus().trim()));
 		
 		
 		// Inclusion + Exclusion criteria
@@ -164,8 +165,8 @@ public class ClinicaltrialsImporter {
 
 		if(criteria.toLowerCase().indexOf(EXCLUSION_CRITERIA) != -1)
 			study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,criteria.substring(exclusionStart).trim());
-		study.putNote((Object)BasicStudyCharacteristic.INCLUSION, new Note(criteria.trim()));
-		study.putNote((Object)BasicStudyCharacteristic.EXCLUSION, new Note(criteria.trim()));
+		study.putNote((Object)BasicStudyCharacteristic.INCLUSION, new Note(Source.CLINICALTRIALS, criteria.trim()));
+		study.putNote((Object)BasicStudyCharacteristic.EXCLUSION, new Note(Source.CLINICALTRIALS, criteria.trim()));
 		
 		// Add note to the study-arms.
 		Map<String,Arm> armLabels = new HashMap<String,Arm>();
@@ -173,7 +174,7 @@ public class ClinicaltrialsImporter {
 			Arm arm = new Arm(new Drug("",""), new FixedDose(0,SIUnit.MILLIGRAMS_A_DAY),0);
 			study.addArm(arm);
 			noteStr = "Arm Type: " + ag.getArmGroupType()+"\nArm Description: "+ag.getDescription();
-			study.putNote(arm, new Note(noteStr.trim()));
+			study.putNote(arm, new Note(Source.CLINICALTRIALS, noteStr.trim()));
 			armLabels.put(ag.getArmGroupLabel(),arm);
 		}
 		
@@ -202,13 +203,13 @@ public class ClinicaltrialsImporter {
 		for (PrimaryOutcome endp : studyImport.getPrimaryOutcome()) {
 			Endpoint e = new Endpoint(endp.getMeasure(), Type.RATE);
 			study.addEndpoint(e);
-			study.putNote(e, new Note(endp.getMeasure()));
+			study.putNote(e, new Note(Source.CLINICALTRIALS, endp.getMeasure()));
 		}
 		
 		for (SecondaryOutcome endp : studyImport.getSecondaryOutcome()) {
 			Endpoint e = new Endpoint(endp.getMeasure(), Type.RATE);
 			study.addEndpoint(e);
-			study.putNote(e, new Note(endp.getMeasure()));
+			study.putNote(e, new Note(Source.CLINICALTRIALS, endp.getMeasure()));
 		}	
 	}
 

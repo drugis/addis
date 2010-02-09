@@ -39,7 +39,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		
 		builder.addLabel("ID:", cc.xy(1, 1));
 		JLabel idLabel = BasicComponentFactory.createLabel(d_model.getModel(Study.PROPERTY_ID));
-		idLabel.setToolTipText(GUIHelper.createToolTip(d_model.getNoteText(Study.PROPERTY_ID)));
+		idLabel.setToolTipText(GUIHelper.createToolTip(d_model.getNote(Study.PROPERTY_ID)));
 		builder.add(idLabel,
 				cc.xyw(3, 1, fullWidth - 2));
 		
@@ -54,9 +54,9 @@ public class StudyCharacteristicsView implements ViewBuilder {
 				if (charView instanceof JScrollPane) {
 					JScrollPane pane = (JScrollPane)charView;
 					((JComponent)pane.getViewport().getView()).setToolTipText(
-							GUIHelper.createToolTip(d_model.getNoteText(c)));
+							GUIHelper.createToolTip(d_model.getNote(c)));
 				} else {
-					charView.setToolTipText(GUIHelper.createToolTip(d_model.getNoteText(c)));
+					charView.setToolTipText(GUIHelper.createToolTip(d_model.getNote(c)));
 				}
 				builder.add(charView,
 						cc.xyw(3, row, fullWidth - 2));
