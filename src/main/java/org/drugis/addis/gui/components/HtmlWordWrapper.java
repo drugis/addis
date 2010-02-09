@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 public class HtmlWordWrapper {
 	public static String wordWrap(String input) {
 		return wordWrap(input, true);
@@ -22,8 +24,10 @@ public class HtmlWordWrapper {
 			}
 			resStr += s;
 		}
+		resStr = StringEscapeUtils.escapeHtml(resStr);
+		
 		if (surround) {
-			return "<html>"+resStr+"</html>";
+			return "<html>" + resStr + "</html>";
 		}
 		return resStr;
 	}

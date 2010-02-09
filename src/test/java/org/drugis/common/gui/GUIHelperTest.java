@@ -20,4 +20,11 @@ public class GUIHelperTest {
 				"<html><b>From ClinicalTrials.gov</b><br>\ntest</html>",
 				GUIHelper.createToolTip(new Note(Source.CLINICALTRIALS, "test")));
 	}
+	
+	@Test
+	public void testCreateToolTipHTMLEntities() {
+		assertEquals(
+				"<html><b>From ClinicalTrials.gov</b><br>\ntest &gt; you</html>",
+				GUIHelper.createToolTip(new Note(Source.CLINICALTRIALS, "test > you")));
+	}
 }
