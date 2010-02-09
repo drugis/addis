@@ -54,7 +54,7 @@ public class ArmTest {
 	public void testSetCharacteristic() {
 		Variable v = new ContinuousVariable("Age");
 		d_pg.setPopulationCharacteristic(v, new BasicContinuousMeasurement(0.0, 1.0, 5));
-		assertTrue(d_pg.getPopulationCharacteristics().containsKey(v));
+		assertTrue(d_pg.getPopulationCharacteristicMap().containsKey(v));
 		assertEquals((new BasicContinuousMeasurement(0.0, 1.0, 5)).toString(), d_pg.getPopulationCharacteristic(v).toString());
 	}
 }

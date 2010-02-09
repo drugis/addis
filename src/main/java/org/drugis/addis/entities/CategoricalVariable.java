@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
+import org.drugis.addis.entities.OutcomeMeasure.Type;
+
 public class CategoricalVariable extends AbstractEntity implements Variable {
 	private static final long serialVersionUID = 8700874872019027607L;
 	private String[] d_categories;
@@ -51,5 +53,9 @@ public class CategoricalVariable extends AbstractEntity implements Variable {
 
 	public int compareTo(Variable other) {
 		return getName().compareTo(other.getName());
+	}
+
+	public Type getType() {
+		return Type.CATEGORICAL;
 	}
 }

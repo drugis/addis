@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
@@ -55,6 +56,14 @@ public class StudyTest {
 	public void testSetEndpoints() {
 		List<Endpoint> list = Collections.singletonList(new Endpoint("e", Type.RATE));
 		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, Collections.EMPTY_LIST, 
+				list);
+	}
+	
+	@Test
+	public void testSetPopulationCharacteristics() {
+		List<Variable> list = Collections.<Variable>singletonList(new ContinuousVariable("e"));
+		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")),
+				Study.PROPERTY_POPULATION_CHARACTERISTICS, Collections.EMPTY_LIST, 
 				list);
 	}
 	
@@ -102,12 +111,6 @@ public class StudyTest {
 		String id = "NCT00351273";
 		Study study = new Study(id, new Indication(0L, ""));
 		assertEquals(id, study.toString());
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void testGetMeasurementThrowsException1() {
-		Study study = new Study("X", new Indication(0L, ""));
-		study.getMeasurement(new Endpoint("E", Type.RATE), new Arm(null, null, 100));
 	}
 	
 	@Test
@@ -199,13 +202,36 @@ public class StudyTest {
 		assertEquals(60, s.getSampleSize());
 	}
 	
+	@Test(expected=IllegalArgumentException.class)
+	public void testSetPopulationCharNotPresent() {
+		Variable v = new ContinuousVariable("Age");
+		Study s = new Study("X", new Indication(0L, "Y"));
+		s.setMeasurement(v, new BasicContinuousMeasurement(0.0, 1.0, 5));
+	}
+	
 	@Test
 	public void testSetPopulationChar() {
 		Variable v = new ContinuousVariable("Age");
 		Study s = new Study("X", new Indication(0L, "Y"));
-		s.setPopulationCharacteristic(v, new BasicContinuousMeasurement(0.0, 1.0, 5));
-		assertTrue(s.getPopulationCharacteristics().containsKey(v));
-		assertEquals((new BasicContinuousMeasurement(0.0, 1.0, 5)).toString(), s.getPopulationCharacteristic(v).toString());
+		s.addArm(new Arm(new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY), 200));
+		s.setPopulationCharacteristics(Collections.singletonList(v));
+		BasicContinuousMeasurement m = new BasicContinuousMeasurement(0.0, 1.0, 5);
+		
+		s.setMeasurement(v, m);
+		assertEquals(m, s.getMeasurement(v));
+		
+		s.setMeasurement(v, s.getArms().get(0), m);
+		assertEquals(m, s.getMeasurement(v, s.getArms().get(0)));
+	}
+	
+	@Test
+	public void testAddPopulationCharDefaultMeasurements() {
+		fail();
+	}
+	
+	@Test
+	public void testChangePopulationCharRetainMeasurements() {
+		fail();
 	}
 	
 	@Test

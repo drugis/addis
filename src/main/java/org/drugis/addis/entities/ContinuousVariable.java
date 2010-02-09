@@ -3,6 +3,8 @@ package org.drugis.addis.entities;
 import java.util.Collections;
 import java.util.Set;
 
+import org.drugis.addis.entities.OutcomeMeasure.Type;
+
 public class ContinuousVariable extends AbstractEntity implements Variable {
 	private static final long serialVersionUID = -7658488761002395117L;
 	
@@ -31,5 +33,9 @@ public class ContinuousVariable extends AbstractEntity implements Variable {
 
 	public int compareTo(Variable other) {
 		return getName().compareTo(other.getName()); 
+	}
+
+	public Type getType() {
+		return Type.CONTINUOUS;
 	}
 }

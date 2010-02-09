@@ -30,18 +30,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drugis.common.EqualsUtil;
+
 public class Study extends AbstractEntity implements Comparable<Study>, Entity, Population {
 	private static final long serialVersionUID = 532314508658928979L;
 	
 	private static class MeasurementKey implements Serializable {
 		private static final long serialVersionUID = 6310789667384578005L;
 		
-		private OutcomeMeasure d_outcomeM;
+		private Entity d_outcomeM;
 		private Arm d_arm;
 		
-		public MeasurementKey(OutcomeMeasure e, Arm g) {
-			if (e == null || g == null) 
-				throw new NullPointerException("OM=" + e + "\tArm=" + g);
+		public MeasurementKey(Entity e, Arm g) {
+			if (e == null) {
+				throw new NullPointerException("Variable/Outcome = " + e + " may not be null");
+			}
+			if (!(e instanceof Variable) && g == null) {
+				throw new NullPointerException("Arm = " + g + " may not be null for Endpoints/ADEs");
+			}
 			d_outcomeM = e;
 			d_arm = g;
 		}
@@ -49,7 +55,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		public boolean equals(Object o) {
 			if (o instanceof MeasurementKey) { 
 				MeasurementKey other = (MeasurementKey)o;
-				return d_outcomeM.equals(other.d_outcomeM) && d_arm.equals(other.d_arm);
+				return d_outcomeM.equals(other.d_outcomeM) && EqualsUtil.equal(d_arm, other.d_arm);
 			}
 			return false;
 		}
@@ -57,7 +63,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		public int hashCode() {
 			int code = 1;
 			code = code * 31 + d_outcomeM.hashCode();
-			code = code * 31 + d_arm.hashCode();
+			code = code * 31 + (d_arm == null ? 0 : d_arm.hashCode());
 			return code;
 		}
 	}
@@ -65,6 +71,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	public final static String PROPERTY_ID = "id";
 	public final static String PROPERTY_ENDPOINTS = "endpoints";
 	public final static String PROPERTY_ADVERSE_EVENTS = "adverseEvents";
+	public final static String PROPERTY_POPULATION_CHARACTERISTICS = "populationCharacteristics";
 	public final static String PROPERTY_ARMS = "arms";
 	public final static String PROPERTY_CHARACTERISTIC = "Characteristics";
 	public final static String PROPERTY_NOTE = "Note";
@@ -75,6 +82,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private Map<MeasurementKey, Measurement> d_measurements = new HashMap<MeasurementKey, Measurement>();
 	private List<Endpoint> d_endpoints = new ArrayList<Endpoint>();
 	private List<AdverseDrugEvent> d_adverseEvents = new ArrayList<AdverseDrugEvent>();
+	private List<Variable> d_populationChars = new ArrayList<Variable>();
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	private VariableMap d_popChars;
 	private Indication d_indication;
@@ -186,28 +194,68 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 	
 	public Measurement getMeasurement(OutcomeMeasure e, Arm g) {
-		forceLegalArguments(e, g);
 		Measurement measurement = d_measurements.get(new MeasurementKey(e, g));
 		return measurement;
 	}
 	
-	private void forceLegalArguments(OutcomeMeasure e, Arm g) {
+	public Measurement getMeasurement(Variable v, Arm g) {
+		return d_measurements.get(new MeasurementKey(v, g));
+	}
+	
+	public Measurement getMeasurement(Variable v) {
+		return getMeasurement(v, null);
+	}
+	
+	private void forceLegalArguments(OutcomeMeasure e, Arm g, Measurement m) {
 		if (!getArms().contains(g)) {
 			throw new IllegalArgumentException("Arm " + g + " not part of this study.");
 		}
 		if (!getOutcomeMeasures().contains(e)) {
 			throw new IllegalArgumentException("Outcome " + e + " not measured by this study.");
 		}
-	}
-	
-	public void setMeasurement(OutcomeMeasure e, Arm g, Measurement m) {
-		forceLegalArguments(e, g);
 		if (!m.isOfType(e.getType())) {
 			throw new IllegalArgumentException("Measurement does not conform with outcome");
 		}
+	}
+	
+	public void setMeasurement(OutcomeMeasure e, Arm g, Measurement m) {
+		forceLegalArguments(e, g, m);
 		d_measurements.put(new MeasurementKey(e, g), m);
 	}
 	
+	/**
+	 * Set population characteristic measurement on arm.
+	 * @param v
+	 * @param g
+	 * @param m
+	 */
+	public void setMeasurement(Variable v, Arm g, Measurement m) {
+		forceLegalArguments(v, g, m);
+		d_measurements.put(new MeasurementKey(v, g), m);
+	}
+	
+	/**
+	 * Set population characteristic measurement on study.
+	 * @param v
+	 * @param g
+	 * @param m
+	 */
+	public void setMeasurement(Variable v, Measurement m) {
+		setMeasurement(v, null, m);
+	}
+	
+	private void forceLegalArguments(Variable v, Arm g, Measurement m) {
+		if (!d_populationChars.contains(v)) {
+			throw new IllegalArgumentException("Variable " + v + " not in study");
+		}
+		if (g != null && !d_arms.contains(g)) {
+			throw new IllegalArgumentException("Arm " + g + " not in study");
+		}
+		if (!m.isOfType(v.getType())) {
+			throw new IllegalArgumentException("Measurement does not conform with outcome");
+		}
+	}
+
 	public List<OutcomeMeasure> getOutcomeMeasures() {
 		List<OutcomeMeasure> l = new ArrayList<OutcomeMeasure>();
 		l.addAll(d_endpoints);
@@ -216,11 +264,15 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 	
 	public List<Endpoint> getEndpoints() {
-		return d_endpoints;
+		return Collections.unmodifiableList(d_endpoints);
 	}
 	
 	public List<AdverseDrugEvent> getAdverseEvents() {
-		return d_adverseEvents;
+		return Collections.unmodifiableList(d_adverseEvents);
+	}
+	
+	public List<Variable> getPopulationCharacteristics() {
+		return Collections.unmodifiableList(d_populationChars);
 	}
 	
 	public List<? extends OutcomeMeasure> getOutcomeMeasures(Class<? extends OutcomeMeasure> type) {
@@ -244,6 +296,13 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		d_adverseEvents = new ArrayList<AdverseDrugEvent>(ade);
 		updateMeasurements();
 		firePropertyChange(PROPERTY_ADVERSE_EVENTS, oldVal, getAdverseEvents());
+	}
+	
+	public void setPopulationCharacteristics(List<Variable> chars) {
+		List<Variable> oldVal = getPopulationCharacteristics();
+		d_populationChars = new ArrayList<Variable>(chars);
+		updateMeasurements();
+		firePropertyChange(PROPERTY_POPULATION_CHARACTERISTICS, oldVal, getPopulationCharacteristics());
 	}
 	
 	public void addAdverseEvent(AdverseDrugEvent ade) {
@@ -306,7 +365,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return d_popChars.get(v);
 	}
 	
-	public VariableMap getPopulationCharacteristics() {
+	public VariableMap getPopulationCharacteristicMap() {
 		return d_popChars; 
 	}
 	

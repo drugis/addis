@@ -25,7 +25,7 @@ public class PopulationCharTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		return d_study.getPopulationCharacteristics().size();
+		return d_study.getPopulationCharacteristicMap().size();
 	}
 
 	public Object getValueAt(int row, int col) {
@@ -47,7 +47,7 @@ public class PopulationCharTableModel extends AbstractTableModel {
 	}
 
 	private Variable getCharAt(int charIdx) {
-		List<Variable> vars = new ArrayList<Variable>(d_study.getPopulationCharacteristics().keySet());
+		List<Variable> vars = new ArrayList<Variable>(d_study.getPopulationCharacteristicMap().keySet());
 		Collections.sort(vars);
 		return vars.get(charIdx);
 	}

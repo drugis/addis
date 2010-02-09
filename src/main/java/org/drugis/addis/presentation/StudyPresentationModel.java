@@ -153,9 +153,9 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 	}
 
 	public Set<Variable> getPopulationCharacteristics() {
-		Set<Variable> vars = new HashSet<Variable>(getBean().getPopulationCharacteristics().keySet());
+		Set<Variable> vars = new HashSet<Variable>(getBean().getPopulationCharacteristicMap().keySet());
 		for (Arm a : getBean().getArms()) {
-			vars.addAll(a.getPopulationCharacteristics().keySet());
+			vars.addAll(a.getPopulationCharacteristicMap().keySet());
 		}
 		return vars;
 	}

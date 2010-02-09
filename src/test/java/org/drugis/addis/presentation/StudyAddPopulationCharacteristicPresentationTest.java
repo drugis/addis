@@ -61,6 +61,6 @@ public class StudyAddPopulationCharacteristicPresentationTest {
 		d_domain.addVariable(v);
 		d_model.getVariableModel().setValue(v);
 		d_model.addToStudy();
-		assertTrue(d_studyModel.getBean().getPopulationCharacteristics().keySet().contains(v));
+		assertTrue(d_studyModel.getBean().getPopulationCharacteristicMap().keySet().contains(v));
 	}
 }

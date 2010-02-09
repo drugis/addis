@@ -13,7 +13,9 @@ public interface OutcomeMeasure extends Comparable<OutcomeMeasure>, Entity {
 
 	public enum Type {
 		CONTINUOUS("Continuous"),
-		RATE("Rate");
+		RATE("Rate"),
+		CATEGORICAL("Categorical");
+		
 		
 		private String d_name;
 		

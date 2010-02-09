@@ -1,5 +1,7 @@
 package org.drugis.addis.entities;
 
+import org.drugis.addis.entities.OutcomeMeasure.Type;
+
 public interface Variable extends Entity, Comparable<Variable> {
 	
 	public static final String PROPERTY_NAME = "name";
@@ -15,4 +17,6 @@ public interface Variable extends Entity, Comparable<Variable> {
 	 * @return An appropriate type of Measurement.
 	 */
 	public Measurement buildMeasurement();
+
+	public Type getType();
 }

@@ -40,14 +40,14 @@ public class PopulationCharTableModelTest {
 
 	@Test
 	public void testGetRowCount() {
-		assertEquals(d_study.getPopulationCharacteristics().size(), model.getRowCount());
+		assertEquals(d_study.getPopulationCharacteristicMap().size(), model.getRowCount());
 	}
 
 	@Test
 	public void testGetValueAt() {
 		
 		int index = 0;
-		for (Variable v : new TreeSet<Variable>(d_study.getPopulationCharacteristics().keySet())) {
+		for (Variable v : new TreeSet<Variable>(d_study.getPopulationCharacteristicMap().keySet())) {
 			assertEquals(v.getName(), model.getValueAt(index, 0));
 			assertEquals(d_study.getArms().get(0).getPopulationCharacteristic(v), model.getValueAt(index, 1));
 			assertEquals(d_study.getArms().get(1).getPopulationCharacteristic(v), model.getValueAt(index, 2));

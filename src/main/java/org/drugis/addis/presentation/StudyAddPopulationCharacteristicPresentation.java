@@ -46,7 +46,7 @@ public class StudyAddPopulationCharacteristicPresentation {
 	
 	public List<Variable> getVariableList() {
 		ArrayList<Variable> list = new ArrayList<Variable>(d_domain.getVariables());
-		list.removeAll(d_studyModel.getBean().getPopulationCharacteristics().keySet());
+		list.removeAll(d_studyModel.getBean().getPopulationCharacteristicMap().keySet());
 		return list;
 	}
 	

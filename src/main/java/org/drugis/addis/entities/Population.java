@@ -2,7 +2,7 @@ package org.drugis.addis.entities;
 
 public interface Population {
 
-	public VariableMap getPopulationCharacteristics();
+	public VariableMap getPopulationCharacteristicMap();
 
 	/**
 	 * Gets the characteristic.

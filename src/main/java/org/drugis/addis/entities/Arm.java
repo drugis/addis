@@ -89,7 +89,7 @@ public class Arm extends AbstractEntity implements Population {
 		return d_chars.get(v);
 	}
 
-	public VariableMap getPopulationCharacteristics() {
+	public VariableMap getPopulationCharacteristicMap() {
 		return d_chars;
 	}
 }

@@ -3,8 +3,6 @@ package org.drugis.addis.presentation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import java.util.ArrayList;
-
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Endpoint;
@@ -50,10 +48,11 @@ public class MeasurementTableModelTest {
 			}
 		}
 		
-		String expected = d_pmf.getLabeledModel(d_standardStudy.getMeasurement (
-						new ArrayList<OutcomeMeasure>(d_standardStudy.getOutcomeMeasures()).get(0),d_standardStudy.getArms().get(0))).getLabelModel().getString();
-		String actual = ((LabeledPresentationModel) model.getValueAt(0, 1)).getLabelModel().getString();
-		assertEquals(expected, actual);
+		assertEquals(
+				d_standardStudy.getMeasurement(
+					d_standardStudy.getOutcomeMeasures().get(0),
+					d_standardStudy.getArms().get(0)),
+				model.getValueAt(0, 1));
 	}
 	
 	@Test
