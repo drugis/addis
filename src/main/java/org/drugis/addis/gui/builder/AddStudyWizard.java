@@ -730,10 +730,12 @@ public class AddStudyWizard implements ViewBuilder{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		area.setEditable(false);
 		
 		JScrollPane pane = new JScrollPane(area);
 		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		pane.setPreferredSize(textPaneDimension(area, 300, 70));
+		pane.setPreferredSize(textPaneDimension(area, 270, 70));
 		
 		pane.setWheelScrollingEnabled(true);
 		pane.getVerticalScrollBar().setValue(0);
@@ -759,6 +761,8 @@ public class AddStudyWizard implements ViewBuilder{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
+			area.setEditable(false);
 			
 			JScrollPane pane = new JScrollPane(area);
 			pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);

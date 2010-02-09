@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.BorderFactory;
 import javax.swing.text.NumberFormatter;
 
 import org.drugis.addis.gui.components.MeasurementTable;
@@ -91,7 +92,7 @@ public class AuxComponentFactory {
 		panel.add(measurementTable.getTableHeader(), BorderLayout.PAGE_START);
 		
 		measurementTable.setBackground(Color.WHITE);
-		measurementTable.setBorder(new JScrollPane().getBorder());
+		measurementTable.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 		return panel;
 	}
 }
