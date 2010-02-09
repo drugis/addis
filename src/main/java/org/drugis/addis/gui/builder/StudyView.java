@@ -20,6 +20,7 @@
 package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Domain;
@@ -65,6 +66,10 @@ public class StudyView implements ViewBuilder {
 		row += 2;
 		builder.add(GUIFactory.createCollapsiblePanel(d_charView.buildPanel()),	cc.xy(1, row));
 		row += 2;
+		builder.addSeparator("Arms", cc.xy(1, row));
+		row += 2;
+		builder.add(buildArmsPart(),cc.xy(1, row));
+		row += 2;
 		builder.addSeparator("Baseline Characteristics", cc.xy(1, row));
 		row += 2;
 		builder.add(buildPopulationPart(), cc.xy(1, row));
@@ -76,15 +81,18 @@ public class StudyView implements ViewBuilder {
 		builder.addSeparator("Outcomes - Adverse Drug Events", cc.xy(1, row));		
 		row += 2;
 		builder.add(buildAdePart(), cc.xy(1, row));
-		row += 2;
-		builder.addSeparator("Arms", cc.xy(1, row));
-		row += 2;
-		builder.add(buildArmsPart(),cc.xy(1, row));
 		
 		return builder.getPanel();
 	}
 
 	private JComponent buildPopulationPart() {
+		return GUIFactory.createCollapsiblePanel(createPopulationPanel());
+	}
+
+	private JComponent createPopulationPanel() {
+		if (d_model.getPopulationCharacteristicCount() < 1) {
+			return new JLabel("No Population Characteristics");
+		}
 		MeasurementTable measurementTable = new MeasurementTable(d_model.getPopulationCharTableModel());
 		return AuxComponentFactory.createUnscrollableTablePanel(measurementTable);
 	}

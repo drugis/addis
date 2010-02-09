@@ -54,16 +54,8 @@ public class StudyArmsView implements ViewBuilder {
 		int row = 1;
 
 		builder.addLabel("Size", cc.xy(5, row, "center, center"));		
-		int col = 7;
-
-		for (OutcomeMeasure om : d_model.getBean().getOutcomeMeasures()) {
-			builder.add(
-					GUIFactory.createOutcomeMeasureLabelWithIcon(om),
-							cc.xy(col, row));
-			col += 2;
-		}
 		row += 2;
-	
+
 		for (Arm g : d_model.getBean().getArms()) {
 			row = buildArm(layout, builder, cc, row, g);
 		}
@@ -72,7 +64,6 @@ public class StudyArmsView implements ViewBuilder {
 
 	@SuppressWarnings("serial")
 	private int buildArm(FormLayout layout, PanelBuilder builder, CellConstraints cc, int row, Arm g) {
-		int col;
 		BasicArmPresentation armModel = (BasicArmPresentation)d_pm.getModel(g);
 		LayoutUtil.addRow(layout);
 		final JLabel armLabel = BasicComponentFactory.createLabel(d_pm.getLabeledModel(g).getLabelModel()); 
@@ -104,17 +95,6 @@ public class StudyArmsView implements ViewBuilder {
 						armModel.getModel(Arm.PROPERTY_SIZE),
 						NumberFormat.getInstance()),
 				cc.xy(5, row, "center, center"));
-		
-		col = 7;
-		for (OutcomeMeasure e : d_model.getBean().getOutcomeMeasures()) {
-			Measurement m = d_model.getBean().getMeasurement(e, g);
-			if (m != null) {
-				builder.add(
-						BasicComponentFactory.createLabel(d_pm.getLabeledModel(m).getLabelModel()),
-						cc.xy(col, row));
-			}
-			col += 2;
-		}
 		
 		row += 2;
 		return row;
