@@ -19,7 +19,6 @@
 
 package org.drugis.addis.gui.builder;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 
@@ -102,10 +101,7 @@ public class StudyView implements ViewBuilder {
 	}
 
 	private Component buildPopulationPart() {
-		JPanel panel = new JPanel(new BorderLayout());
-		panel.add(d_popView.buildPanel(), BorderLayout.CENTER);
-		panel.add(buildAddCharButton(), BorderLayout.SOUTH);
-		return GUIFactory.createCollapsiblePanel(panel);
+		return GUIFactory.createCollapsiblePanel(d_popView.buildPanel());
 	}
 
 	private JPanel buildArmsPart() {

@@ -197,4 +197,8 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 	public String getNoteText(Object key) {
 		return getBean().getNote(key).getText();
 	}
+
+	public PopulationCharTableModel getPopulationCharTableModel() {
+		return new PopulationCharTableModel(getBean(), d_pmf);
+	}
 }

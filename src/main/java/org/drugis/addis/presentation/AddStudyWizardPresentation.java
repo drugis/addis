@@ -431,7 +431,7 @@ public class AddStudyWizardPresentation {
 	
 	private PopulationCharTableModel getPopulationCharMeasurementTableModel() {
 		commitPopulationCharsToStudy();
-		return new PopulationCharTableModel(getNewStudy(), d_pmf);
+		return d_newStudyPM.getPopulationCharTableModel();
 	}
 
 	public OutcomeMeasurementsModel getAdverseEventsModel() {

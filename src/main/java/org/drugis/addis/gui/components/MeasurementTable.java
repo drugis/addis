@@ -14,6 +14,19 @@ import org.drugis.addis.gui.MeasurementInputHelper;
 
 @SuppressWarnings("serial")
 public class MeasurementTable extends JTableWithPopupEditor {
+	/**
+	 * Uneditable measurement table.
+	 * @param tableModel
+	 */
+	public MeasurementTable(TableModel tableModel) {
+		this(tableModel, null);
+	}
+	
+	/**
+	 * Editable measurement table.
+	 * @param tableModel
+	 * @param parent
+	 */
 	public MeasurementTable(TableModel tableModel, Window parent) {
 		super(tableModel, parent);
 

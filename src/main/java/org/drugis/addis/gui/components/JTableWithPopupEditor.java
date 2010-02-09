@@ -32,6 +32,12 @@ abstract public class JTableWithPopupEditor extends JTable {
 		super(model);
 		d_parent = frame;
 		
+		setCellSelectionEnabled(true);
+		
+		if (d_parent == null) {
+			return;
+		}
+		
 		// Mouse listener to start editing cell
 		addMouseListener(new MouseAdapter() {
 			@Override
@@ -65,8 +71,6 @@ abstract public class JTableWithPopupEditor extends JTable {
 				destroyWindow();
 			}
 		});
-		
-		setCellSelectionEnabled(true);
 	}
 	
 	abstract protected JPanel createEditorPanel(int row, int col);
