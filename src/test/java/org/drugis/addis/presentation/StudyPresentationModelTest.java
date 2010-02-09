@@ -6,13 +6,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.drugis.addis.entities.AdverseDrugEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
-import org.drugis.addis.entities.CategoricalVariable;
 import org.drugis.addis.entities.ContinuousVariable;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.DomainImpl;
@@ -20,7 +17,6 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
@@ -122,48 +118,16 @@ public class StudyPresentationModelTest {
 		Arm arm2 = new Arm(new Drug("X", "Y"), null, 0);
 		d_study.addArm(arm2);
 		ContinuousVariable age = new ContinuousVariable("Age");
-		CategoricalVariable gender = new CategoricalVariable("Gender", new String[]{"Male", "Female"});
 		assertEquals(0, d_model.getPopulationCharacteristicCount());
-		arm2.setPopulationCharacteristic(age, age.buildMeasurement());
+		d_study.setPopulationCharacteristics(Collections.<Variable>singletonList(age));
 		assertEquals(1, d_model.getPopulationCharacteristicCount());
-		arm1.setPopulationCharacteristic(gender, gender.buildMeasurement());
-		assertEquals(2, d_model.getPopulationCharacteristicCount());
-		arm1.setPopulationCharacteristic(age, age.buildMeasurement());
-		assertEquals(2, d_model.getPopulationCharacteristicCount());
-	}
-	
-	@Test
-	public void testGetPopulationCharacteristics() {
-		Arm arm1 = new Arm(new Drug("X", "Y"), null, 0);
-		d_study.addArm(arm1);
-		Arm arm2 = new Arm(new Drug("X", "Y"), null, 0);
-		d_study.addArm(arm2);
-		ContinuousVariable age = new ContinuousVariable("Age");
-		CategoricalVariable gender = new CategoricalVariable("Gender", new String[]{"Male", "Female"});
-		assertEquals(Collections.emptySet(), d_model.getPopulationCharacteristics());
-		arm2.setPopulationCharacteristic(age, age.buildMeasurement());
-		assertEquals(Collections.singleton(age), d_model.getPopulationCharacteristics());
-		arm1.setPopulationCharacteristic(gender, gender.buildMeasurement());
-		Set<Variable> set = new HashSet<Variable>();
-		set.add(age);
-		set.add(gender);
-		assertEquals(set, d_model.getPopulationCharacteristics());
 	}
 	
 	@Test
 	public void testGetPopulationCharacteristicsOverall() {
 		ContinuousVariable age = new ContinuousVariable("Age");
-		d_study.setPopulationCharacteristic(age, age.buildMeasurement());
-		assertEquals(Collections.singleton(age), d_model.getPopulationCharacteristics());
-	}
-	
-	@Test
-	public void testGetCharacteristicModel() {
-		ContinuousVariable age = new ContinuousVariable("Age");
-		Measurement m = age.buildMeasurement();
-		d_study.setPopulationCharacteristic(age, m);
-		assertEquals(d_pmf.getLabeledModel(m), d_model.getPopulationCharacteristicModel(age));
-		assertEquals(null, d_model.getPopulationCharacteristicModel(new ContinuousVariable("X")));
+		d_study.setPopulationCharacteristics(Collections.<Variable>singletonList(age));
+		assertEquals(Collections.singletonList(age), d_model.getPopulationCharacteristics());
 	}
 	
 	@Test

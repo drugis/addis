@@ -16,7 +16,6 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
-import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Type;
@@ -32,8 +31,6 @@ public class MainData extends ExampleData {
 	
 	private static Study s_studyOrg022;
 	private static Study s_studyOrg023;
-	
-	private static Study s_studyClinGovExmpl;
 	
 	private static Drug s_remeron;
 	private static Drug s_amitriptyline;
@@ -52,7 +49,6 @@ public class MainData extends ExampleData {
 		domain.addStudy(buildStudySechter1999());
 		domain.addStudy(buildStudyOrg022());
 		domain.addStudy(buildStudyOrg023());
-		domain.addStudy(buildStudyClinGovExmpl());
 		domain.addDrug(buildDrugBupropion());
 		domain.addDrug(buildDrugAmitriptyline());
 		domain.addDrug(buildDrugRemeron());
@@ -390,74 +386,6 @@ public class MainData extends ExampleData {
 		pCgi.setStdDev(1.120);		
 		study.addArm(plac);
 		study.setMeasurement(cgis, plac, pCgi);
-		
-		return study;
-	}
-	
-	public static Study buildStudyClinGovExmpl() {
-		if (s_studyClinGovExmpl == null){ 
-			s_studyClinGovExmpl = realbuildClinGovExmpl();
-		}
-	
-		return s_studyClinGovExmpl;
-	}
-
-	public static Study realbuildClinGovExmpl() {
-		Endpoint hamd = buildEndpointHamd();
-		Drug Bupropion = buildDrugBupropion();
-		Drug placebo = buildPlacebo();
-		
-		Study study = new Study("Example with Baseline Characteristics", buildIndicationDepression());
-		study.setEndpoints(Collections.singletonList(hamd));
-		study.addAdverseEvent(buildAdeConvulsion());
-		
-		// Study characteristics
-		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
-		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, 1);
-		study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,
-				"");
-		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,
-				"");
-		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
-				"");
-		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
-		study.setCharacteristic(BasicStudyCharacteristic.STUDY_END, new GregorianCalendar(2006, 2, 23).getTime());
-		
-		FrequencyMeasurement frequencyMeasurement = buildGenderVariable().buildMeasurement();
-		frequencyMeasurement.setFrequency("Male", 176);
-		frequencyMeasurement.setFrequency("Female", 146);
-		study.setPopulationCharacteristic(buildGenderVariable(), frequencyMeasurement);
-		study.setPopulationCharacteristic(buildAgeVariable(), new BasicContinuousMeasurement(36.4, 9.10, 322));
-		
-		// Bupropion data
-		FlexibleDose dose = new FlexibleDose(new Interval<Double>(100.0, 300.0), SIUnit.MILLIGRAMS_A_DAY);
-		Arm bupr = new Arm(Bupropion, dose, 165);
-		frequencyMeasurement = buildGenderVariable().buildMeasurement();
-		frequencyMeasurement.setFrequency("Male", 88);
-		frequencyMeasurement.setFrequency("Female", 77);
-		bupr.setPopulationCharacteristic(buildGenderVariable(), frequencyMeasurement);
-		bupr.setPopulationCharacteristic(buildAgeVariable(), new BasicContinuousMeasurement(36.8, 9.28, 165));
-		
-		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(bupr);
-		pHamd.setRate((int) Math.round(166D*.59D));
-		study.addArm(bupr);
-		study.setMeasurement(hamd, bupr, pHamd);
-		study.setMeasurement(s_convulsion, bupr, new BasicRateMeasurement(1, 166));
-
-		// Placebo data
-		FixedDose fixedDose = new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY);
-		Arm plac = new Arm(placebo, fixedDose, 157);
-		frequencyMeasurement = buildGenderVariable().buildMeasurement();
-		frequencyMeasurement.setFrequency("Male", 88);
-		frequencyMeasurement.setFrequency("Female", 69);
-		plac.setPopulationCharacteristic(buildGenderVariable(), frequencyMeasurement);
-		plac.setPopulationCharacteristic(buildAgeVariable(), new BasicContinuousMeasurement(36.0, 8.91, 157));
-		
-		pHamd = (BasicRateMeasurement)hamd.buildMeasurement(plac);
-		pHamd.setRate((int) Math.round(157*.5));		
-		study.addArm(plac);
-		study.setMeasurement(hamd, plac, pHamd);
 		
 		return study;
 	}

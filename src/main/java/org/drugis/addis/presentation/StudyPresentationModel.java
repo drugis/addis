@@ -4,10 +4,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.table.TableModel;
 
@@ -154,19 +152,8 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		return getPopulationCharacteristics().size();
 	}
 
-	public Set<Variable> getPopulationCharacteristics() {
-		Set<Variable> vars = new HashSet<Variable>(getBean().getPopulationCharacteristicMap().keySet());
-		for (Arm a : getBean().getArms()) {
-			vars.addAll(a.getPopulationCharacteristicMap().keySet());
-		}
-		return vars;
-	}
-	
-	public LabeledPresentationModel getPopulationCharacteristicModel(Variable v) {
-		if (getBean().getPopulationCharacteristic(v) != null) {
-			return d_pmf.getLabeledModel(getBean().getPopulationCharacteristic(v));
-		}
-		return null;
+	public List<Variable> getPopulationCharacteristics() {
+		return getBean().getPopulationCharacteristics();
 	}
 	
 	public LabeledPresentationModel getCharacteristicModel(BasicStudyCharacteristic c) {

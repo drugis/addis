@@ -7,8 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.addis.entities.ContinuousVariable;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.FixedDose;
@@ -122,14 +120,5 @@ public class BasicArmPresentationTest {
 		d_pg.setDose(dose);
 		d_pres.getDoseModel().getUnitModel().setValue(SIUnit.MILLIGRAMS_A_DAY);
 		assertEquals(SIUnit.MILLIGRAMS_A_DAY, d_pres.getBean().getDose().getUnit());
-	}
-	
-	@Test
-	public void testGetCharacteristicModel() {
-		ContinuousVariable age = new ContinuousVariable("Age");
-		ContinuousMeasurement m = age.buildMeasurement();
-		d_pg.setPopulationCharacteristic(age, m);
-		assertEquals(d_pmf.getLabeledModel(m), d_pres.getCharacteristicModel(age));
-		assertEquals(null, d_pres.getCharacteristicModel(new ContinuousVariable("X")));
 	}
 }

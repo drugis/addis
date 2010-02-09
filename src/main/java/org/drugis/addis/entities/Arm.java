@@ -22,7 +22,7 @@ package org.drugis.addis.entities;
 import java.util.Set;
 
 
-public class Arm extends AbstractEntity implements Population {
+public class Arm extends AbstractEntity {
 	private static final long serialVersionUID = -2092185548220089471L;
 	private Integer d_size;
 	private Drug d_drug;
@@ -31,8 +31,6 @@ public class Arm extends AbstractEntity implements Population {
 	public static final String PROPERTY_SIZE = "size";
 	public static final String PROPERTY_DRUG = "drug";
 	public static final String PROPERTY_DOSE = "dose";	
-	
-	private VariableMap d_chars = new VariableMap();
 	
 	public Arm(Drug drug, AbstractDose dose, int size) {
 		d_drug = drug;
@@ -79,17 +77,5 @@ public class Arm extends AbstractEntity implements Population {
 	public Set<Entity> getDependencies() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-	
-	public void setPopulationCharacteristic(Variable v, Measurement val) {
-		d_chars.put(v, val);
-	}
-
-	public Measurement getPopulationCharacteristic(Variable v) {
-		return d_chars.get(v);
-	}
-
-	public VariableMap getPopulationCharacteristicMap() {
-		return d_chars;
 	}
 }

@@ -5,7 +5,6 @@ import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Variable;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -48,11 +47,8 @@ public class BasicArmPresentation extends PresentationModel<Arm> implements Labe
 		}
 	}
 
-	private PresentationModelFactory d_pmf;
-
 	public BasicArmPresentation(Arm bean, PresentationModelFactory pmf) {
 		super(bean);
-		d_pmf = pmf;
 	}
 
 	public AbstractValueModel getLabelModel() {
@@ -61,12 +57,5 @@ public class BasicArmPresentation extends PresentationModel<Arm> implements Labe
 	
 	public DosePresentationModel getDoseModel() {
 		return new DosePresentationImpl(this);
-	}
-
-	public LabeledPresentationModel getCharacteristicModel(Variable v) {
-		if (getBean().getPopulationCharacteristic(v) != null) {
-			return d_pmf.getLabeledModel(getBean().getPopulationCharacteristic(v));
-		}
-		return null;
 	}
 }

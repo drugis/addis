@@ -19,9 +19,6 @@
 
 package org.drugis.addis.entities;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,13 +45,5 @@ public class ArmTest {
 	@Test
 	public void testSetDose() {
 		JUnitUtil.testSetter(d_pg, Arm.PROPERTY_DOSE, null, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY));
-	}
-	
-	@Test
-	public void testSetCharacteristic() {
-		Variable v = new ContinuousVariable("Age");
-		d_pg.setPopulationCharacteristic(v, new BasicContinuousMeasurement(0.0, 1.0, 5));
-		assertTrue(d_pg.getPopulationCharacteristicMap().containsKey(v));
-		assertEquals((new BasicContinuousMeasurement(0.0, 1.0, 5)).toString(), d_pg.getPopulationCharacteristic(v).toString());
 	}
 }

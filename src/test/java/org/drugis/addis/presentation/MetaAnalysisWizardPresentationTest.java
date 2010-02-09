@@ -82,7 +82,7 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testGetEndpointSetForAdverseEvent() {
-		d_domain.addStudy(MainData.buildStudyClinGovExmpl());
+		d_domain.getStudies().first().addAdverseEvent(MainData.buildAdeConvulsion());
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		List<OutcomeMeasure> expected = new ArrayList<OutcomeMeasure>();
 		expected.add(ExampleData.buildEndpointCgi());

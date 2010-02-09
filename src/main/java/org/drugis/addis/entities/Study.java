@@ -32,7 +32,7 @@ import java.util.Set;
 
 import org.drugis.common.EqualsUtil;
 
-public class Study extends AbstractEntity implements Comparable<Study>, Entity, Population {
+public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private static final long serialVersionUID = 532314508658928979L;
 	
 	private static class MeasurementKey implements Serializable {
@@ -84,7 +84,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private List<AdverseDrugEvent> d_adverseEvents = new ArrayList<AdverseDrugEvent>();
 	private List<Variable> d_populationChars = new ArrayList<Variable>();
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
-	private VariableMap d_popChars;
 	private Indication d_indication;
 	private Map<Object, Note> d_notes = new HashMap<Object, Note>();
 	
@@ -92,7 +91,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		d_id = id;
 		d_indication = i;
 		setArms(new ArrayList<Arm>());
-		d_popChars = new VariableMap();
 	}
 
 	private void readObject(ObjectInputStream in) 
@@ -406,19 +404,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return s;
 	}
 	
-	public Measurement getPopulationCharacteristic(Variable v) {
-		return d_popChars.get(v);
-	}
-	
-	public VariableMap getPopulationCharacteristicMap() {
-		return d_popChars; 
-	}
-	
-	public void setPopulationCharacteristic(Variable v, Measurement m) {
-		d_popChars.put(v, m);
-	}
-	
-
 	public void putNote(Object key, Note note){
 		d_notes.put(key, note);
 		firePropertyChange(PROPERTY_NOTE, key, key);
