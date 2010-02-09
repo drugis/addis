@@ -13,7 +13,7 @@ public class HtmlWordWrapper {
 	}
 	
 	public static String wordWrap(String input, boolean surround) {
-		String[] arr = makeParts(input);
+		String[] arr = makeParts(StringEscapeUtils.escapeHtml(input));
 		String resStr = "";
 		for (String s : arr) {
 			if (s.length() < 1) {
@@ -24,7 +24,6 @@ public class HtmlWordWrapper {
 			}
 			resStr += s;
 		}
-		resStr = StringEscapeUtils.escapeHtml(resStr);
 		
 		if (surround) {
 			return "<html>" + resStr + "</html>";
