@@ -340,6 +340,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 	
 	private void updateMeasurements() {
+		// Add default measurements for all outcomes
 		for (OutcomeMeasure om : getOutcomeMeasures()) {
 			for (Arm g : getArms()) {
 				MeasurementKey key = new MeasurementKey(om, g);
@@ -348,8 +349,52 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 				}
 			}
 		}
+		// Add measurements for all population characteristics
+		for (Variable v : getPopulationCharacteristics()) {
+			MeasurementKey key = new MeasurementKey(v, null);
+			if (d_measurements.get(key) == null) {
+				d_measurements.put(key, v.buildMeasurement(getSampleSize()));
+			}
+			for (Arm g : getArms()) {
+				key = new MeasurementKey(v, g);
+				if (d_measurements.get(key) == null) {
+					d_measurements.put(key, v.buildMeasurement(g.getSize()));
+				}
+			}
+		}
+		// Remove orphan measurements
+		for (MeasurementKey k : new HashSet<MeasurementKey>(d_measurements.keySet())) {
+			if (orphanKey(k)) {
+				d_measurements.remove(k);
+			}
+		}
 	}
 	
+	private boolean orphanKey(MeasurementKey k) {
+		// OutcomeMeasure measurements
+		if (k.d_outcomeM instanceof OutcomeMeasure) {
+			if (!getOutcomeMeasures().contains(k.d_outcomeM)) {
+				return true;
+			}
+			if (!d_arms.contains(k.d_arm)){
+				return true;
+			}
+			return false;
+		}
+		// PopulationChar measurements
+		if (k.d_outcomeM instanceof Variable) {
+			if (!getPopulationCharacteristics().contains(k.d_outcomeM)) {
+				return true;
+			}
+			if (k.d_arm != null && !d_arms.contains(k.d_arm)) {
+				return true;
+			}
+			return false;
+		}
+		
+		throw new IllegalStateException(k + " is not a valid measurement key");
+	}
+
 	public Object getCharacteristic(Characteristic c) {
 		return d_chars.get(c);
 	}

@@ -17,6 +17,13 @@ public interface Variable extends Entity, Comparable<Variable> {
 	 * @return An appropriate type of Measurement.
 	 */
 	public Measurement buildMeasurement();
+	
+	/**
+	 * Build a Measurement on this variable.
+	 * @param size Default group size
+	 * @return An appropriate type of Measurement.
+	 */
+	public Measurement buildMeasurement(int size);
 
 	public Type getType();
 }

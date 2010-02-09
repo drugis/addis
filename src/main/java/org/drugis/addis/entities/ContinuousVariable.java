@@ -38,4 +38,8 @@ public class ContinuousVariable extends AbstractEntity implements Variable {
 	public Type getType() {
 		return Type.CONTINUOUS;
 	}
+
+	public Measurement buildMeasurement(int size) {
+		return new BasicContinuousMeasurement(0, 0, size);
+	}
 }

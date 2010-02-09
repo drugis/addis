@@ -24,9 +24,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -226,12 +226,56 @@ public class StudyTest {
 	
 	@Test
 	public void testAddPopulationCharDefaultMeasurements() {
-		fail();
+		Variable v = new ContinuousVariable("Age");
+		Study s = new Study("X", new Indication(0L, "Y"));
+		Arm arm1 = new Arm(new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY), 200);
+		s.addArm(arm1);
+		Arm arm2 = new Arm(new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY), 100);
+		s.addArm(arm2);
+		s.setPopulationCharacteristics(Collections.singletonList(v));
+		
+		assertEquals(300, (int)s.getMeasurement(v).getSampleSize());
+		assertEquals(200, (int)s.getMeasurement(v, arm1).getSampleSize());
+		assertEquals(100, (int)s.getMeasurement(v, arm2).getSampleSize());
 	}
 	
 	@Test
 	public void testChangePopulationCharRetainMeasurements() {
-		fail();
+		Study s = new Study("X", new Indication(0L, "Y"));
+		Arm arm1 = new Arm(new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY), 200);
+		s.addArm(arm1);
+		
+		Variable v1 = new ContinuousVariable("Age1");
+		Variable v2 = new ContinuousVariable("Age2");
+		Variable v3 = new ContinuousVariable("Age3");
+		
+		ArrayList<Variable> vars1 = new ArrayList<Variable>();
+		vars1.add(v1);
+		vars1.add(v2);
+		s.setPopulationCharacteristics(vars1);
+		
+		Measurement m10 = new BasicContinuousMeasurement(3.0, 2.0, 150);
+		Measurement m11 = new BasicContinuousMeasurement(3.0, 2.0, 150);
+		Measurement m20 = new BasicContinuousMeasurement(3.0, 2.0, 150);
+		Measurement m21 = new BasicContinuousMeasurement(3.0, 2.0, 150);
+		s.setMeasurement(v1, m10);
+		s.setMeasurement(v1, arm1, m11);
+		s.setMeasurement(v2, m20);
+		s.setMeasurement(v2, arm1, m21);
+		
+		ArrayList<Variable> vars2 = new ArrayList<Variable>();
+		vars2.add(v2);
+		vars2.add(v3);
+		s.setPopulationCharacteristics(vars2);
+		
+		assertEquals(m20, s.getMeasurement(v2));
+		assertEquals(m21, s.getMeasurement(v2, arm1));
+		assertEquals(200, (int)s.getMeasurement(v3).getSampleSize());
+		assertEquals(200, (int)s.getMeasurement(v3, arm1).getSampleSize());
+		
+		s.setPopulationCharacteristics(vars1);
+		assertEquals(200, (int)s.getMeasurement(v1).getSampleSize());
+		assertEquals(200, (int)s.getMeasurement(v1, arm1).getSampleSize());
 	}
 	
 	@Test

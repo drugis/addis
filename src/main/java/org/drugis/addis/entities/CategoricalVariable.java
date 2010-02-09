@@ -58,4 +58,10 @@ public class CategoricalVariable extends AbstractEntity implements Variable {
 	public Type getType() {
 		return Type.CATEGORICAL;
 	}
+
+	public Measurement buildMeasurement(int size) {
+		FrequencyMeasurement m = new FrequencyMeasurement(this);
+		m.setSampleSize(size);
+		return m;
+	}
 }
