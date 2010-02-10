@@ -53,7 +53,7 @@ public class AboutDialog extends JDialog {
 	private void initComps() {
 		String title = AppInfo.getAppName() + " v" + AppInfo.getAppVersion();		
 		String subTitle = AppInfo.getAppName() + " is open source and licensed under GPLv3.\n"
-			+"\u00A9 2009: \tGert van Valkenhoef\n\tTommi Tervonen\n\tTijs Zwinkels\n\tMaarten Jacobs";
+			+"\u00A9 2009: \tGert van Valkenhoef\n\tTommi Tervonen\n\tTijs Zwinkels\n\tMaarten Jacobs\n\tHanno Koeslag";
 
 		JPanel panel = new JPanel(new BorderLayout());
 		
