@@ -425,10 +425,6 @@ public class AddStudyWizardPresentation {
 		return d_oldStudyPM.getBean();
 	}
 
-	public ListHolder<AdverseEvent> getAdverseEventListModel() {
-		return d_adverseEventListHolder;
-	}
-
 	private MeasurementTableModel getAdverseEventMeasurementTableModel() {
 		commitAdverseEventsToStudy();
 		return new MeasurementTableModel(getNewStudy(),d_pmf, AdverseEvent.class);

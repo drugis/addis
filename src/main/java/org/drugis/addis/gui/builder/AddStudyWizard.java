@@ -60,7 +60,9 @@ import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardAdapter;
 import org.pietschy.wizard.WizardEvent;
-import org.pietschy.wizard.models.StaticModel;
+import org.pietschy.wizard.WizardModel;
+import org.pietschy.wizard.models.Condition;
+import org.pietschy.wizard.models.DynamicModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.beans.PropertyConnector;
@@ -86,7 +88,7 @@ public class AddStudyWizard implements ViewBuilder{
 	}
 	
 	public Wizard buildPanel() {
-		StaticModel wizardModel = new StaticModel();
+		DynamicModel wizardModel = new DynamicModel();
 		wizardModel.add(new EnterIdTitleWizardStep());
 		wizardModel.add(new SelectIndicationWizardStep());
 		wizardModel.add(new EnterCharacteristicsWizardStep());
@@ -94,9 +96,17 @@ public class AddStudyWizard implements ViewBuilder{
 		wizardModel.add(new SetArmsWizardStep());
 		wizardModel.add(new SetEndpointMeasurementsWizardStep());
 		wizardModel.add(new SelectAdverseEventWizardStep());
-		wizardModel.add(new SetAdverseEventMeasurementsWizardStep());
+		wizardModel.add(new SetAdverseEventMeasurementsWizardStep(), new Condition() {
+			public boolean evaluate(WizardModel model) {
+				return d_pm.getAdverseEventSelectModel().getSlots().size() > 0;
+			}
+		});
 		wizardModel.add(new SelectPopulationCharsWizardStep());
-		wizardModel.add(new SetPopulationCharMeasurementsWizardStep());
+		wizardModel.add(new SetPopulationCharMeasurementsWizardStep(), new Condition() {
+			public boolean evaluate(WizardModel model) {
+				return d_pm.getPopulationCharSelectModel().getSlots().size() > 0;
+			}			
+		});
 		Wizard wizard = new Wizard(wizardModel);
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 		wizard.addWizardListener(new WizardAdapter() {
@@ -104,7 +114,7 @@ public class AddStudyWizard implements ViewBuilder{
 				d_pm.saveStudy();
 			}
 		});
-		wizard.setPreferredSize(new Dimension(950, 950));
+		wizard.setPreferredSize(new Dimension(750, 750));
 		return wizard;
 	}
 	
@@ -433,7 +443,7 @@ public class AddStudyWizard implements ViewBuilder{
 	public class SelectAdverseEventWizardStep extends SelectFromFiniteListWizardStep<AdverseEvent> {
 		public SelectAdverseEventWizardStep() {
 			super(d_pm.getAdverseEventSelectModel());
-		}
+		}		
 	}
 	
 	
@@ -465,7 +475,7 @@ public class AddStudyWizard implements ViewBuilder{
 
 		private void buildWizardStep() {
 			FormLayout layout = new FormLayout(
-					"right:pref, 3dlu, fill:pref:grow, 3dlu, pref",
+					"right:pref, 3dlu, fill:pref:grow, 3dlu, fill:pref",
 					"p, 3dlu, p"
 					);	
 			d_builder = new PanelBuilder(layout);
@@ -565,7 +575,7 @@ public class AddStudyWizard implements ViewBuilder{
 		 
 		 public void buildWizardStep(){
 			FormLayout layout = new FormLayout(
-					"right:pref, 3dlu, left:pref:grow, 3dlu, left:pref",
+					"right:pref, 3dlu, pref:grow:fill, 3dlu, left:pref",
 					"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 					);	
 			d_builder = new PanelBuilder(layout);
@@ -628,7 +638,7 @@ public class AddStudyWizard implements ViewBuilder{
 		 
 		 private void buildWizardStep() {
 			 FormLayout layout = new FormLayout(
-						"right:pref, 3dlu, left:pref:grow, 3dlu, left:pref",
+						"right:pref, 3dlu, pref:grow:fill, 3dlu, left:pref",
 						"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 						);	
 				d_builder = new PanelBuilder(layout);

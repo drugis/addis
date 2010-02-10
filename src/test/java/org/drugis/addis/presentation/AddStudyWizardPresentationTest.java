@@ -113,11 +113,6 @@ public class AddStudyWizardPresentationTest {
 		d_wizard.removeArm(0);
 		assertEquals(numArms + 1,d_wizard.getNumberArms());
 	}
-
-	@Test
-	public void testGetADEListModel() {
-		JUnitUtil.assertAllAndOnly(d_domain.getAdverseEvents(), d_wizard.getAdverseEventListModel().getValue());
-	}
 	
 	@Test
 	public void testCheckID() {
