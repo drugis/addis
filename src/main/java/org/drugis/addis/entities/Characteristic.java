@@ -10,6 +10,8 @@ public interface Characteristic{
 	@Override
 	public boolean equals(Object other);
 	
+	public boolean getDefaultVisible();
+	
 	@Override
 	public int hashCode();
 }

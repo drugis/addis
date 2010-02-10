@@ -13,7 +13,8 @@ public class CharacteristicVisibleMap extends HashMap<Characteristic, AbstractVa
 	
 	public CharacteristicVisibleMap() {
 		for (Characteristic c : StudyCharacteristics.values()) {
-			put(c, new ValueHolder(true));
+			
+			put(c, new ValueHolder(c.getDefaultVisible()));
 		}		
 	}
 	

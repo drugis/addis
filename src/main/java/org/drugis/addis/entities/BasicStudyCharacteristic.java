@@ -24,48 +24,83 @@ import java.util.Date;
 
 public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 
-	TITLE("Title", String.class),
-	ALLOCATION("Group allocation", Allocation.class),
-	BLINDING("Blinding", Blinding.class),
-	CENTERS("Number of study centers", Integer.class),
-	OBJECTIVE("Study Objective", String.class),
-	STUDY_START("Study start date", Date.class),
-	STUDY_END("Study end date", Date.class),
-	STATUS("Study status", Status.class),
-	INCLUSION("Inclusion criteria", String.class),
-	EXCLUSION("Exclusion criteria", String.class),
-	SOURCE("Source of the data", Source.class),
-	CREATION_DATE("Creation/extraction date", Date.class);
+	TITLE("Title", String.class, true),
+	ALLOCATION("Group allocation", Allocation.class, true),
+	BLINDING("Blinding", Blinding.class, true),
+	CENTERS("Number of study centers", Integer.class, false),
+	OBJECTIVE("Study Objective", String.class, false),
+	STUDY_START("Study start date", Date.class, false),
+	STUDY_END("Study end date", Date.class, false),
+	STATUS("Study status", Status.class, false),
+	INCLUSION("Inclusion criteria", String.class, false),
+	EXCLUSION("Exclusion criteria", String.class, false),
+	SOURCE("Source of the data", Source.class, false),
+	CREATION_DATE("Creation/extraction date", Date.class, false);
 
 	private String d_description;
 	private Class<?> d_type;
+	private boolean d_defaultVisible;
 	
 	public enum Allocation {
-		RANDOMIZED,
-		NONRANDOMIZED
+		RANDOMIZED("Randomized"),
+		NONRANDOMIZED("Non-randomized");
+		
+		private String d_title;
+
+		Allocation(String title) {
+			d_title = title;
+		}
+		
+		@Override
+		public String toString() {
+			return d_title;
+		}
 	}
 	
 	public enum Blinding {
-		OPEN,
-		SINGLE_BLIND,
-		DOUBLE_BLIND,
-		TRIPLE_BLIND
+		OPEN("Open"),
+		SINGLE_BLIND("Single blind"),
+		DOUBLE_BLIND("Double blind"),
+		TRIPLE_BLIND("Triple blind");
+		
+		Blinding(String title) {
+			d_title = title;
+		}
+		
+		private String d_title;
+		
+		@Override
+		public String toString() {
+			return d_title;
+		}
 	}
 	
 	public enum Status {
-		NOT_YET_RECRUITING,
-		RECRUITING,
-		ENROLLING,
-		ACTIVE,
-		COMPLETED,
-		SUSPENDED,
-		TERMINATED,
-		WITHDRAWN
+		NOT_YET_RECRUITING("NHot yet recruiting"),
+		RECRUITING("Recruiting"),
+		ENROLLING("Enrolling"),
+		ACTIVE("Active"),
+		COMPLETED("Completed"),
+		SUSPENDED("Suspended"),
+		TERMINATED("Terminated"),
+		WITHDRAWN("Withdrawn");
+		
+		private String d_title;
+
+		Status(String title) {
+			d_title = title;
+		}
+		
+		@Override
+		public String toString() {
+			return d_title;
+		}		
 	}
 	
-	BasicStudyCharacteristic(String name, Class<?> type) {
+	BasicStudyCharacteristic(String name, Class<?> type, boolean defaultVisible) {
 		d_description = name;
 		d_type = type;
+		d_defaultVisible = defaultVisible;
 	}	
 
 	public String getDescription() {
@@ -75,5 +110,8 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 	public Class<?> getValueType() {
 		return d_type;
 	}
-	
+
+	public boolean getDefaultVisible() {
+		return d_defaultVisible;
+	}
 }
