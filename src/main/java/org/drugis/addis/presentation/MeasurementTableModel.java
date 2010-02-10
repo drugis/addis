@@ -3,6 +3,8 @@
  */
 package org.drugis.addis.presentation;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
@@ -17,12 +19,25 @@ public class MeasurementTableModel extends AbstractTableModel {
 	private Study d_study;
 	private PresentationModelFactory d_pmf;
 	private Class<? extends OutcomeMeasure> d_type;
+	private MyMeasurementListener d_measListener = new MyMeasurementListener();
 	
 	public MeasurementTableModel(Study study, PresentationModelFactory pmf, 
 			Class<? extends OutcomeMeasure> type) {
 		d_study = study;
 		d_pmf = pmf;
 		d_type = type;
+		
+		connectMeasurementListeners();
+	}
+
+	private void connectMeasurementListeners() {
+		for (Arm a : d_study.getArms()) {
+			for (OutcomeMeasure m : d_study.getOutcomeMeasures()) {
+				if (m.getClass().equals(d_type)) {
+					d_study.getMeasurement(m, a).addPropertyChangeListener(d_measListener);
+				}
+			}
+		}
 	}
 
 	public int getColumnCount() {
@@ -64,5 +79,11 @@ public class MeasurementTableModel extends AbstractTableModel {
 			}
 		}
 		throw new IllegalStateException("no endpoint of index " + rowIndex);
+	}
+	
+	private class MyMeasurementListener implements PropertyChangeListener {
+		public void propertyChange(PropertyChangeEvent ev) {
+			fireTableDataChanged();
+		}		
 	}
 }

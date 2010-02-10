@@ -25,7 +25,6 @@ public abstract class AbstractEntity implements Entity, Serializable {
 		in.defaultReadObject();
 		init();
 	}
-	
 
 	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
 		d_om.firePropertyChange(propertyName, oldValue, newValue);

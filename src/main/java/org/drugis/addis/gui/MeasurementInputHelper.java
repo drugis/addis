@@ -95,7 +95,9 @@ public class MeasurementInputHelper {
 	}
 
 	public static JFormattedTextField buildFormatted(ValueModel model) {
-		JFormattedTextField field = new JFormattedTextField(new DefaultFormatter());
+		DefaultFormatter formatter = new DefaultFormatter();
+		formatter.setCommitsOnValidEdit(true);
+		JFormattedTextField field = new JFormattedTextField(formatter);
 		PropertyConnector.connectAndUpdate(model, field, "value");
 		field.setColumns(5);
 		return field;
