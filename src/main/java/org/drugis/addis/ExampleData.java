@@ -555,6 +555,7 @@ public class ExampleData {
 	public static Endpoint buildEndpointHamd() {
 		if (s_endpointHamd == null) {
 			Endpoint e = new Endpoint("HAM-D", Type.RATE);
+			e.setDescription("Responders with a 50% increase in HAM-D score at 8 weeks");
 			s_endpointHamd = e;
 		}
 		return s_endpointHamd;
@@ -573,6 +574,7 @@ public class ExampleData {
 	public static Endpoint buildEndpointCVdeath() {
 		if (s_endpointCVdeath == null) {
 			Endpoint e = new Endpoint("Cardiovascular Death", Type.RATE, Direction.LOWER_IS_BETTER);
+			e.setDescription("Rate of mortality due to cardiovascular causes");
 			s_endpointCVdeath = e;
 		}
 		return s_endpointCVdeath;

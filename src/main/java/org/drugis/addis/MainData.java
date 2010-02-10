@@ -419,16 +419,18 @@ public class MainData extends ExampleData {
 	}
 	
 	public static AdverseEvent buildAdverseEventHeadache() {
-		if (s_headache == null)
+		if (s_headache == null) {
 			s_headache = new AdverseEvent("Headache", Type.RATE);
-		
+			s_headache.setDescription("Rate of patients reporting severe headache due to excessive alcohol consumption");
+		}
 		return s_headache;
 	}
 	
 	public static AdverseEvent buildAdverseEventConvulsion() {
-		if (s_convulsion == null)
+		if (s_convulsion == null) {
 			s_convulsion = new AdverseEvent("Convulsion", Type.RATE);
-		
+			s_convulsion.setDescription("Rate of convulsion during study");
+		}
 		return s_convulsion;
 	}
 }
