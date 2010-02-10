@@ -60,10 +60,10 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	
 	@Override
 	public String toString() {
-		if (d_mean == null || d_stdDev == null) {
+		if (d_mean == null || d_stdDev == null || d_sampleSize == null) {
 			return "INCOMPLETE"; 
 		}
-		return d_mean.toString() + " \u00B1 " + d_stdDev.toString();
+		return d_mean.toString() + " \u00B1 " + d_stdDev.toString() + " (" + d_sampleSize + ")";
 	}
 
 	public boolean isOfType(Type type) {

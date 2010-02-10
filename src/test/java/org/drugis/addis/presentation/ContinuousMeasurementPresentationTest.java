@@ -27,7 +27,7 @@ public class ContinuousMeasurementPresentationTest {
 	
 	@Test
 	public void testGetLabel() {
-		assertEquals("0.0 \u00B1 0.0", d_pres.getLabelModel().getValue());
+		assertEquals("0.0 \u00B1 0.0 (" + d_pg.getSize() +")", d_pres.getLabelModel().getValue());
 	}
 	
 	@Test
@@ -35,7 +35,7 @@ public class ContinuousMeasurementPresentationTest {
 		getMeasurement().setMean(25.5);
 		AbstractValueModel lm = d_pres.getLabelModel();
 		PropertyChangeListener l = JUnitUtil.mockStrictListener(
-				lm, "value", "25.5 \u00B1 0.0", "25.5 \u00B1 1.1");
+				lm, "value", "25.5 \u00B1 0.0 (1)", "25.5 \u00B1 1.1 (1)");
 		lm.addPropertyChangeListener(l);
 		getMeasurement().setStdDev(1.1);
 		verify(l);
@@ -47,7 +47,7 @@ public class ContinuousMeasurementPresentationTest {
 		getMeasurement().setStdDev(1.1);
 		AbstractValueModel lm = d_pres.getLabelModel();
 		PropertyChangeListener l = JUnitUtil.mockStrictListener(
-				lm, "value", "25.5 \u00B1 1.1", "27.5 \u00B1 1.1");
+				lm, "value", "25.5 \u00B1 1.1 (1)", "27.5 \u00B1 1.1 (1)");
 		lm.addPropertyChangeListener(l);
 		getMeasurement().setMean(27.5);
 		verify(l);
