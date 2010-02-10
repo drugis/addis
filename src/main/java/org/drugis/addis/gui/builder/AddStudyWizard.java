@@ -23,7 +23,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.event.CaretEvent;
@@ -123,6 +122,7 @@ public class AddStudyWizard implements ViewBuilder{
 		private JScrollPane d_scrollPane;
 		private OutcomeMeasurementsModel d_model;
 		private JDialog d_dialog;
+		private MeasurementTable d_table;
 		
 		public SetMeasurementsWizardStep(String title, String description,
 				OutcomeMeasurementsModel model, JDialog dialog) {
@@ -143,13 +143,14 @@ public class AddStudyWizard implements ViewBuilder{
 		}
 		
 		public void applyState() throws InvalidStateException {
+			d_table.destroyInputWindow();
 		}
 		
 		private void buildWizardStep() {
 			this.setLayout(new BorderLayout());
 			TableModel tableModel = d_model.getMeasurementTableModel();
-			JTable table = new MeasurementTable(tableModel, d_dialog);
-			d_scrollPane = new JScrollPane(table);
+			d_table = new MeasurementTable(tableModel, d_dialog);
+			d_scrollPane = new JScrollPane(d_table);
 			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 			
 			add(d_scrollPane, BorderLayout.CENTER);

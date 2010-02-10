@@ -68,7 +68,7 @@ abstract public class JTableWithPopupEditor extends JTable {
 		d_hidden.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent ev) {
-				destroyWindow();
+				destroyInputWindow();
 			}
 		});
 	}
@@ -76,7 +76,7 @@ abstract public class JTableWithPopupEditor extends JTable {
 	abstract protected JPanel createEditorPanel(int row, int col);
 	
 	private JWindow startCellEditor(int row, int col) {
-		destroyWindow();
+		destroyInputWindow();
 		
 		JPanel panel = createEditorPanel(row, col);
 		if (panel == null) {
@@ -87,7 +87,7 @@ abstract public class JTableWithPopupEditor extends JTable {
 			c.addKeyListener(new KeyAdapter() {
 				@Override public void keyPressed(KeyEvent e) {
 					if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-						destroyWindow();
+						destroyInputWindow();
 					}
 				}			
 			});
@@ -112,7 +112,7 @@ abstract public class JTableWithPopupEditor extends JTable {
 		getTopLevelAncestor().addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				destroyWindow();
+				destroyInputWindow();
 			}
 		});
 
@@ -132,7 +132,7 @@ abstract public class JTableWithPopupEditor extends JTable {
 		d_window.setLocation(l);
 	}
 
-	private void destroyWindow() {
+	public void destroyInputWindow() {
 		if (d_window != null) {		
 			d_window.setVisible(false);
 			d_window = null;
