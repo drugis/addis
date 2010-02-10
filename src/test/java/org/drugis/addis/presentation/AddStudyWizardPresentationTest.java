@@ -72,7 +72,7 @@ public class AddStudyWizardPresentationTest {
 		d_wizardImported.clearStudies();
 		assertEquals(Source.MANUAL, d_wizardImported.getSourceModel().getValue());
 		assertEquals(null, d_wizardImported.getTitleModel().getValue());
-		assertEquals("",d_wizardImported.getIndicationNoteModel().getValue());
+		assertEquals(null,d_wizardImported.getIndicationNoteModel().getValue());
 		assertEquals(1,d_wizardImported.getNumberEndpoints());
 		assertEquals(2,d_wizardImported.getNumberArms());
 	}

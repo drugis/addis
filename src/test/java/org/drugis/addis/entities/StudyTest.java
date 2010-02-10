@@ -295,6 +295,6 @@ public class StudyTest {
 		s.putNote(key, note);
 		assertEquals(note, s.getNote(key));
 		s.removeNote(key);
-		assertEquals("", s.getNote(key).getText());
+		assertTrue(s.getNote(key) == null);
 	}
 }

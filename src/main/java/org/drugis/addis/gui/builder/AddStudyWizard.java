@@ -111,7 +111,7 @@ public class AddStudyWizard implements ViewBuilder{
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 		wizard.addWizardListener(new WizardAdapter() {
 			public void wizardClosed(WizardEvent e) {
-				d_pm.saveStudy();
+				d_main.leftTreeFocus(d_pm.saveStudy());
 			}
 		});
 		wizard.setPreferredSize(new Dimension(750, 750));
@@ -475,7 +475,7 @@ public class AddStudyWizard implements ViewBuilder{
 
 		private void buildWizardStep() {
 			FormLayout layout = new FormLayout(
-					"right:pref, 3dlu, fill:pref:grow, 3dlu, fill:pref",
+					"right:pref, 3dlu, fill:pref:grow, 3dlu, pref",
 					"p, 3dlu, p"
 					);	
 			d_builder = new PanelBuilder(layout);

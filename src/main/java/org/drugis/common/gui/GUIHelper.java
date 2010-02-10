@@ -61,6 +61,9 @@ public class GUIHelper {
 	}
 
 	public static String createToolTip(Note note) {
+		if (note == null) {
+			return null;
+		}
 		return "<html><b>From " + note.getSource().toString() + "</b><br>\n" + 
 			HtmlWordWrapper.wordWrap(note.getText(), false) + "</html>";
 	}

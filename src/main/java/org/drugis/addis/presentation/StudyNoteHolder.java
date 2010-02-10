@@ -20,6 +20,9 @@ public class StudyNoteHolder extends AbstractValueModel {
 	}
 	
 	public String getValue() {
+		if (d_study.getNote(d_key) == null) {
+			return null;
+		}
 		return d_study.getNote(d_key).getText();
 	}
 

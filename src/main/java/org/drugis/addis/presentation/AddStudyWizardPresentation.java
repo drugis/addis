@@ -172,7 +172,6 @@ public class AddStudyWizardPresentation {
 	private SelectAdverseEventsPresentation d_adverseEventSelect;
 	private SelectFromFiniteListPresentationModel<Variable> d_populationCharSelect;
 	
-	
 	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, Main main) {
 		d_domain = d;
 		d_pmf = pmf;
@@ -336,7 +335,7 @@ public class AddStudyWizardPresentation {
 	}
 	
 	
-	public void saveStudy() {
+	public Study saveStudy() {
 		if (d_selectedArmList.isEmpty()) 
 			throw new IllegalStateException("No arms selected in study.");
 		if (d_selectedEndpointsList.isEmpty()) 
@@ -349,7 +348,9 @@ public class AddStudyWizardPresentation {
 			transferNotes();
 		
 		// Add the study to the domain.
-		d_domain.addStudy(getNewStudy());
+		Study study = getNewStudy();
+		d_domain.addStudy(study);
+		return study;
 	}
 
 	public boolean checkID() {

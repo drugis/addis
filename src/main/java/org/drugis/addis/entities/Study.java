@@ -405,8 +405,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 	
 	public Note getNote(Object key){
-		Note note = d_notes.get(key);
-		return note != null ? note : new Note(Source.CLINICALTRIALS);
+		return d_notes.get(key);
 	}
 	
 	public Map<Object,Note> getNotes() {
