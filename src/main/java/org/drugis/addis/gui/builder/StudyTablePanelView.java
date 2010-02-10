@@ -59,7 +59,7 @@ public class StudyTablePanelView implements ViewBuilder {
 		table.addKeyListener(new EntityTableDeleteListener((Main) d_parent));
 		
 		JScrollPane pane = new JScrollPane(table);
-		pane.setPreferredSize(new Dimension(200, 250));
+		pane.setPreferredSize(new Dimension(200, 450));
 		pane.setBorder(BorderFactory.createEmptyBorder());
 		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
