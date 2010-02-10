@@ -115,8 +115,6 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			
 			d_builder = new PanelBuilder(d_layout);
 			d_builder.setDefaultDialogBorder();
-			
-			
 		}
 
 		@Override
@@ -208,7 +206,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			builder.setDefaultDialogBorder();
 			
 			CellConstraints cc = new CellConstraints();
-			builder.addLabel("First Drug",cc.xy(2, 1));
+			builder.addLabel("First Drug",cc.xy(1, 1));
 			builder.addLabel("Second Drug",cc.xy(5, 1));
 						
 			JComboBox firstDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getDrugListModel(), d_pm.getFirstDrugModel());

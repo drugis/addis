@@ -79,8 +79,9 @@ public class DefaultSelectableStudyListPresentationModel extends DefaultStudyLis
 	}
 
 	private class ChangeListener implements PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent arg0) {
+		public void propertyChange(PropertyChangeEvent evt) {
 			updateSelectedStudies();
+			System.out.println(evt.toString());
 		}		
 	}
 }
