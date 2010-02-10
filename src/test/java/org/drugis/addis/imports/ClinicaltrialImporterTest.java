@@ -72,7 +72,7 @@ public class ClinicaltrialImporterTest {
 		
 		assertEquals(expectedStartDate , d_testStudy.getCharacteristic(BasicStudyCharacteristic.STUDY_START));
 		assertEquals(expectedEndDate, d_testStudy.getCharacteristic(BasicStudyCharacteristic.STUDY_END));
-		assertEquals(BasicStudyCharacteristic.Status.FINISHED, d_testStudy.getCharacteristic(BasicStudyCharacteristic.STATUS));
+		assertEquals(BasicStudyCharacteristic.Status.COMPLETED, d_testStudy.getCharacteristic(BasicStudyCharacteristic.STATUS));
 		assertTrue(((String)d_testStudy.getCharacteristic(BasicStudyCharacteristic.INCLUSION)).contains("Patients aged 18 to 70 years with a Goldberg Depression Test Score of 15 to 65"));
 		assertTrue(((String)d_testStudy.getCharacteristic(BasicStudyCharacteristic.EXCLUSION)).contains("Patients under psychiatric treatment because of psychoses"));
 		

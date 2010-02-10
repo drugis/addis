@@ -42,6 +42,6 @@ public class MapBeanTest {
 		d_map.put(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
 		d_map.put(BasicStudyCharacteristic.OBJECTIVE, "Obj");
 		d_map.put(BasicStudyCharacteristic.STUDY_END, new Date());
-		d_map.put(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.ONGOING);
+		d_map.put(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.ACTIVE);
 	}
 }

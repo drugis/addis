@@ -53,9 +53,14 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 	}
 	
 	public enum Status {
+		NOT_YET_RECRUITING,
 		RECRUITING,
-		ONGOING,
-		FINISHED
+		ENROLLING,
+		ACTIVE,
+		COMPLETED,
+		SUSPENDED,
+		TERMINATED,
+		WITHDRAWN
 	}
 	
 	BasicStudyCharacteristic(String name, Class<?> type) {

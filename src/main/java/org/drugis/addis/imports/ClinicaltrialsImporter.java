@@ -141,11 +141,11 @@ public class ClinicaltrialsImporter {
 		else if (studyImport.getOverallStatus().contains("Enrolling"))
 			study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.RECRUITING);
 		else if (studyImport.getOverallStatus().contains("Active"))
-			study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.ONGOING);
+			study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.ACTIVE);
 		else if (studyImport.getOverallStatus().contains("Completed"))
-			study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+			study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		else if (studyImport.getOverallStatus().contains("Available"))
-			study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+			study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		study.putNote((Object)BasicStudyCharacteristic.STATUS, new Note(Source.CLINICALTRIALS, studyImport.getOverallStatus().trim()));
 		
 		

@@ -186,7 +186,7 @@ public class ExampleData {
 				"The antidepressant and anxiolytic efficacy of the selective serotonin " +
 				"reuptake inhibitors paroxetine and fluoxetine was compared in patients " +
 				"with moderate to severe depression.");
-		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		Calendar startDate = Calendar.getInstance();
 		startDate.set(1991, Calendar.DECEMBER, 13, 0, 0, 0);
 		study.setCharacteristic(BasicStudyCharacteristic.STUDY_START, startDate.getTime());
@@ -250,7 +250,7 @@ public class ExampleData {
 				"To compare the efficacy and tolerability of once or twice daily " +
 				"administration of the selective serotonin reuptake inhibitors " +
 				"paroxetine and fluoxetine.");
-		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		// STUDY_START, STUDY_END missing
 		
 		// Paroxetine data
@@ -300,7 +300,7 @@ public class ExampleData {
 				"To compare the efficacy and tolerability of once or twice daily " +
 				"administration of the selective serotonin reuptake inhibitors " +
 				"paroxetine and fluoxetine.");
-		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		// STUDY_START, STUDY_END missing
 		
 		// Paroxetine data 1
@@ -351,7 +351,7 @@ public class ExampleData {
 				"");
 		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"Comparing the efficacy and safety of sertraline with those of fluoxetine.");
-		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		// STUDY_START, STUDY_END missing
 		
 		// Fluoxetine data
@@ -396,7 +396,7 @@ public class ExampleData {
 		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"This is a fictional study that I just created because I need a three-arm study.");
 		study.setCharacteristic(BasicStudyCharacteristic.STATUS,
-				BasicStudyCharacteristic.Status.FINISHED);
+				BasicStudyCharacteristic.Status.COMPLETED);
 
 		// Paroxetine data
 		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
@@ -469,7 +469,7 @@ public class ExampleData {
 				"added to angiotensin-converting-enzyme (ACE) inhibitors in " +
 				"patients with chronic heart failure (CHF). We aimed to find " +
 				"out whether these drugs improve clinical outcome.");
-		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		Calendar startDate = Calendar.getInstance();
 		startDate.set(1999, Calendar.MARCH, 1, 0, 0, 0);
 		study.setCharacteristic(BasicStudyCharacteristic.STUDY_START, startDate.getTime());

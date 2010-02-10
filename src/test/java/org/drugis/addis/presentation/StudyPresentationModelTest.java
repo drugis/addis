@@ -42,11 +42,11 @@ public class StudyPresentationModelTest {
 	@Test
 	public void testIsStudyCompleted() {
 		d_study.getCharacteristics().put(BasicStudyCharacteristic.STATUS,
-				BasicStudyCharacteristic.Status.FINISHED);		
+				BasicStudyCharacteristic.Status.COMPLETED);		
 		assertEquals(true, d_model.isStudyFinished());
 		
 		d_study.getCharacteristics().put(BasicStudyCharacteristic.STATUS,
-				BasicStudyCharacteristic.Status.ONGOING);
+				BasicStudyCharacteristic.Status.ACTIVE);
 		assertEquals(false, d_model.isStudyFinished());
 	}
 	

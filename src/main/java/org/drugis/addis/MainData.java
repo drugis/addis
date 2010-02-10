@@ -103,7 +103,7 @@ public class MainData extends ExampleData {
 				"");
 		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"");
-		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		
 		// Sertraline data
 		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
@@ -148,7 +148,7 @@ public class MainData extends ExampleData {
 				"");
 		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"");
-		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		
 		// Sertraline data
 		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
@@ -193,7 +193,7 @@ public class MainData extends ExampleData {
 				"");
 		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"");
-		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		
 		// Sertraline data
 		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
@@ -238,7 +238,7 @@ public class MainData extends ExampleData {
 				"");
 		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"");
-		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		
 		// Sertraline data
 		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
@@ -285,7 +285,7 @@ public class MainData extends ExampleData {
 				"");
 		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"");
-		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		study.setCharacteristic(BasicStudyCharacteristic.STUDY_END, new GregorianCalendar(1990, 1, 26).getTime());
 		
 		// Remeron data
@@ -351,7 +351,7 @@ public class MainData extends ExampleData {
 				"");
 		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"");
-		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.FINISHED);
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		study.setCharacteristic(BasicStudyCharacteristic.STUDY_END, new GregorianCalendar(1992, 4, 1).getTime());
 		
 		// Remeron data
