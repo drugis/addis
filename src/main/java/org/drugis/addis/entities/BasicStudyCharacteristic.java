@@ -35,7 +35,7 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 	INCLUSION("Inclusion criteria", String.class),
 	EXCLUSION("Exclusion criteria", String.class),
 	SOURCE("Source of the data", Source.class),
-	CREATION_DATE("Date the study was created or extracted", Date.class);
+	CREATION_DATE("Creation/extraction date", Date.class);
 
 	private String d_description;
 	private Class<?> d_type;
