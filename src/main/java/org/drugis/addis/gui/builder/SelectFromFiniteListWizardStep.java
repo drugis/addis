@@ -96,6 +96,7 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 	
 		JPanel panel = d_builder.getPanel();
 		d_scrollPane = new JScrollPane(panel);
+		d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 	
 		add(d_scrollPane, BorderLayout.CENTER);
 	}

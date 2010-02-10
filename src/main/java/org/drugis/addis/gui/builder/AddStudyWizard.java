@@ -140,6 +140,8 @@ public class AddStudyWizard implements ViewBuilder{
 			TableModel tableModel = d_model.getMeasurementTableModel();
 			JTable table = new MeasurementTable(tableModel, d_dialog);
 			d_scrollPane = new JScrollPane(table);
+			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+			
 			add(d_scrollPane, BorderLayout.CENTER);
 		}
 	}
@@ -246,6 +248,7 @@ public class AddStudyWizard implements ViewBuilder{
 			JPanel panel = d_builder.getPanel();
 			this.setLayout(new BorderLayout());
 			d_scrollPane = new JScrollPane(panel);
+			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		
 			add(d_scrollPane, BorderLayout.CENTER);
 		}
@@ -380,6 +383,7 @@ public class AddStudyWizard implements ViewBuilder{
 		
 			JPanel panel = d_builder.getPanel();
 			d_scrollPane = new JScrollPane(panel);
+			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		
 			add(d_scrollPane, BorderLayout.CENTER);
 		}
@@ -473,6 +477,7 @@ public class AddStudyWizard implements ViewBuilder{
 			JPanel panel = d_builder.getPanel();
 			this.setLayout(new BorderLayout());
 			d_scrollPane = new JScrollPane(panel);
+			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		
 			add(d_scrollPane, BorderLayout.CENTER);
 		}
@@ -588,6 +593,7 @@ public class AddStudyWizard implements ViewBuilder{
 
 			this.setLayout(new BorderLayout());
 			d_scrollPane = new JScrollPane(d_builder.getPanel());
+			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		
 			add(d_scrollPane, BorderLayout.CENTER);
 		}
@@ -699,6 +705,8 @@ public class AddStudyWizard implements ViewBuilder{
 				
 				this.setLayout(new BorderLayout());
 				d_scrollPane = new JScrollPane(d_builder.getPanel());
+				d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+				
 				add(d_scrollPane, BorderLayout.CENTER);
 		 }
 		 
