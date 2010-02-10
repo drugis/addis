@@ -61,6 +61,10 @@ public class StudyCharTableModelTest {
 		d_pm = new IndicationPresentation(d_ind,d_domain.getStudies(d_ind));
 		d_pmf = new PresentationModelFactory(d_domain);
 		d_model = new StudyCharTableModel(d_pm, d_pmf);
+		
+		for (Characteristic c : StudyCharacteristics.values()) {
+			d_pm.getCharacteristicVisibleModel(c).setValue(true);
+		}
 	}	
 	
 	@Test

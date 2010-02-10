@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.StudyCharacteristics;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +35,9 @@ public class SelectableStudyCharTableModelTest {
 		d_ind = d_domain.getIndications().first();
 		d_pm = new DefaultSelectableStudyListPresentationModel(d_domain.getStudies(d_ind));
 		d_model = new SelectableStudyCharTableModel(d_pm, new PresentationModelFactory(d_domain));
+		for (Characteristic c : StudyCharacteristics.values()) {
+			d_pm.getCharacteristicVisibleModel(c).setValue(true);
+		}
 	}	
 	
 	@Test
