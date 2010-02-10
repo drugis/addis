@@ -27,7 +27,7 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import org.drugis.addis.entities.AdverseDrugEvent;
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
@@ -45,14 +45,14 @@ public class DomainTreeModel implements TreeModel {
 	public static final int INDICATIONS = 0;
 	public static final int DRUGS = 1;	
 	public static final int ENDPOINTS = 2;
-	public static final int ADES = 3;
+	public static final int ADVERSE_EVENTS = 3;
 	public static final int STUDIES = 4;
 	public static final int ANALYSES = 5;
 
 	private String d_root = "Database";
 	private String d_indicationsNode = "Indications";
 	private String d_endpointsNode = "Endpoints";
-	private String d_adeNode = "Adverse drug events";
+	private String d_adverseEventNode = "Adverse drug events";
 	private String d_studiesNode = "Studies";
 	private String d_drugsNode = "Drugs";
 	private String d_analysesNode = "Analyses";
@@ -79,8 +79,8 @@ public class DomainTreeModel implements TreeModel {
 			return d_indicationsNode;
 		} else if (d_root == parent && childIndex == ENDPOINTS) {
 			return d_endpointsNode;
-		} else if (d_root == parent && childIndex == ADES) {
-			return d_adeNode;
+		} else if (d_root == parent && childIndex == ADVERSE_EVENTS) {
+			return d_adverseEventNode;
 		} else if (d_root == parent && childIndex == STUDIES) {
 			return d_studiesNode;
 		} else if (d_root == parent && childIndex == DRUGS) {
@@ -91,8 +91,8 @@ public class DomainTreeModel implements TreeModel {
 			return CollectionUtil.getElementAtIndex(d_domain.getIndications(), childIndex);
 		} else if (isEndpointRequest(parent, childIndex)) {
 			return CollectionUtil.getElementAtIndex(d_domain.getEndpoints(), childIndex);
-		} else if (isAdeRequest(parent, childIndex)) {
-			return CollectionUtil.getElementAtIndex(d_domain.getAdes(), childIndex);
+		} else if (isAdverseEventRequest(parent, childIndex)) {
+			return CollectionUtil.getElementAtIndex(d_domain.getAdverseEvents(), childIndex);
 		} else if (isDrugsRequest(parent, childIndex)) {
 			return CollectionUtil.getElementAtIndex(d_domain.getDrugs(), childIndex);
 		} else if (isStudyRequest(parent, childIndex)) {
@@ -119,8 +119,8 @@ public class DomainTreeModel implements TreeModel {
 		return d_endpointsNode == parent && childIndex >= 0 && childIndex < d_domain.getEndpoints().size();
 	}
 	
-	private boolean isAdeRequest(Object parent, int childIndex) {
-		return d_adeNode == parent && childIndex >= 0 && childIndex < d_domain.getAdes().size();
+	private boolean isAdverseEventRequest(Object parent, int childIndex) {
+		return d_adverseEventNode == parent && childIndex >= 0 && childIndex < d_domain.getAdverseEvents().size();
 	}
 	
 	private boolean isMetaStudyRequest(Object parent, int childIndex) {
@@ -134,8 +134,8 @@ public class DomainTreeModel implements TreeModel {
 			return d_domain.getIndications().size();
 		} else if (d_endpointsNode == parent) {
 			return d_domain.getEndpoints().size();
-		} else if (d_adeNode == parent) {
-			return d_domain.getAdes().size();
+		} else if (d_adverseEventNode == parent) {
+			return d_domain.getAdverseEvents().size();
 		} else if (d_studiesNode == parent) {
 			return d_domain.getStudies().size();
 		} else if (d_drugsNode == parent) {
@@ -153,8 +153,8 @@ public class DomainTreeModel implements TreeModel {
 		if (parent == d_root && child == d_endpointsNode) {
 			return ENDPOINTS;
 		}
-		if (parent == d_root && child == d_adeNode) {
-			return ADES;
+		if (parent == d_root && child == d_adverseEventNode) {
+			return ADVERSE_EVENTS;
 		}
 		if (parent == d_root && child == d_studiesNode) {
 			return STUDIES;
@@ -171,8 +171,8 @@ public class DomainTreeModel implements TreeModel {
 		if (parent == d_endpointsNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getEndpoints(), child);
 		}
-		if (parent == d_adeNode) {
-			return CollectionUtil.getIndexOfElement(d_domain.getAdes(), child);
+		if (parent == d_adverseEventNode) {
+			return CollectionUtil.getIndexOfElement(d_domain.getAdverseEvents(), child);
 		}
 		if (parent == d_studiesNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getStudies(), child);
@@ -197,8 +197,8 @@ public class DomainTreeModel implements TreeModel {
 		if (node instanceof Endpoint) {
 			return d_domain.getEndpoints().contains(node);
 		}
-		if (node instanceof AdverseDrugEvent) {
-			return d_domain.getAdes().contains(node);
+		if (node instanceof AdverseEvent) {
+			return d_domain.getAdverseEvents().contains(node);
 		}		
 		if (node instanceof RandomEffectsMetaAnalysis) {
 			return d_domain.getMetaAnalyses().contains(node);
@@ -243,8 +243,8 @@ public class DomainTreeModel implements TreeModel {
 		return getChild(getRoot(), DomainTreeModel.ENDPOINTS);
 	}
 	
-	public Object getAdeNode() {
-		return getChild(getRoot(), DomainTreeModel.ADES);
+	public Object getAdverseEventNode() {
+		return getChild(getRoot(), DomainTreeModel.ADVERSE_EVENTS);
 	}
 	
 	public Object getDrugsNode() {

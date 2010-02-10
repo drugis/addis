@@ -116,7 +116,7 @@ public class AddStudyWizardPresentationTest {
 
 	@Test
 	public void testGetADEListModel() {
-		JUnitUtil.assertAllAndOnly(d_domain.getAdes(), d_wizard.getADEListModel().getValue());
+		JUnitUtil.assertAllAndOnly(d_domain.getAdverseEvents(), d_wizard.getAdverseEventListModel().getValue());
 	}
 	
 	@Test

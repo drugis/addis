@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 
 import javax.swing.table.TableModel;
 
-import org.drugis.addis.entities.AdverseDrugEvent;
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
@@ -90,14 +90,14 @@ public class AddStudyWizardPresentation {
 	}
 
 	@SuppressWarnings("serial")
-	private static class ADEListHolder extends OutcomeListHolder<AdverseDrugEvent> {
-		public ADEListHolder(Domain domain) {
+	private static class AdverseEventListHolder extends OutcomeListHolder<AdverseEvent> {
+		public AdverseEventListHolder(Domain domain) {
 			super(domain);
 		}
 		
 		@Override
-		public List<AdverseDrugEvent> getValue() {
-			return new ArrayList<AdverseDrugEvent>(d_domain.getAdes());
+		public List<AdverseEvent> getValue() {
+			return new ArrayList<AdverseEvent>(d_domain.getAdverseEvents());
 		}
 	}
 	
@@ -167,20 +167,20 @@ public class AddStudyWizardPresentation {
 	List<AbstractHolder<Endpoint>> d_selectedEndpointsList;
 	List<BasicArmPresentation> d_selectedArmList;
 	private ListHolder<Endpoint> d_endpointListHolder;
-	private ListHolder<AdverseDrugEvent> d_adverseEventListHolder;
+	private ListHolder<AdverseEvent> d_adverseEventListHolder;
 	private ListHolder<Variable> d_populationCharsListHolder;
 	private SelectAdverseEventsPresentation d_adverseEventSelect;
-	private SelectFromFiniteListPresentationModel<Variable> d_populationCharsSelect;
+	private SelectFromFiniteListPresentationModel<Variable> d_populationCharSelect;
 	
 	
 	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, Main main) {
 		d_domain = d;
 		d_pmf = pmf;
 		d_endpointListHolder = new EndpointListHolder(d_domain);
-		d_adverseEventListHolder = new ADEListHolder(d_domain);
+		d_adverseEventListHolder = new AdverseEventListHolder(d_domain);
 		d_populationCharsListHolder = d_domain.getVariablesHolder();
 		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_adverseEventListHolder, main);
-		d_populationCharsSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder);
+		d_populationCharSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder);
 		clearStudies();
 	}
 	
@@ -378,9 +378,9 @@ public class AddStudyWizardPresentation {
 		getNewStudy().setArms(arms);
 	}
 	
-	private void commitADEsToStudy() {
-		List<AdverseDrugEvent> outcomeMeasures = new ArrayList<AdverseDrugEvent>();
-		for(AbstractHolder<AdverseDrugEvent> outcomeHolder : d_adverseEventSelect.getSlots()) {
+	private void commitAdverseEventsToStudy() {
+		List<AdverseEvent> outcomeMeasures = new ArrayList<AdverseEvent>();
+		for(AbstractHolder<AdverseEvent> outcomeHolder : d_adverseEventSelect.getSlots()) {
 			outcomeMeasures.add(outcomeHolder.getValue());
 		}	
 		getNewStudy().setAdverseEvents(outcomeMeasures);
@@ -388,7 +388,7 @@ public class AddStudyWizardPresentation {
 	
 	private void commitPopulationCharsToStudy() {
 		List<Variable> outcomeMeasures = new ArrayList<Variable>();
-		for(AbstractHolder<Variable> outcomeHolder : d_populationCharsSelect.getSlots()) {
+		for(AbstractHolder<Variable> outcomeHolder : d_populationCharSelect.getSlots()) {
 			outcomeMeasures.add(outcomeHolder.getValue());
 		}	
 		getNewStudy().setPopulationCharacteristics(outcomeMeasures);
@@ -425,13 +425,13 @@ public class AddStudyWizardPresentation {
 		return d_oldStudyPM.getBean();
 	}
 
-	public ListHolder<AdverseDrugEvent> getADEListModel() {
+	public ListHolder<AdverseEvent> getAdverseEventListModel() {
 		return d_adverseEventListHolder;
 	}
 
 	private MeasurementTableModel getAdverseEventMeasurementTableModel() {
-		commitADEsToStudy();
-		return new MeasurementTableModel(getNewStudy(),d_pmf, AdverseDrugEvent.class);
+		commitAdverseEventsToStudy();
+		return new MeasurementTableModel(getNewStudy(),d_pmf, AdverseEvent.class);
 	}
 	
 	private PopulationCharTableModel getPopulationCharMeasurementTableModel() {
@@ -463,11 +463,11 @@ public class AddStudyWizardPresentation {
 		};
 	} 
 
-	public SelectFromFiniteListPresentationModel<AdverseDrugEvent> getAdverseEventSelectModel() {
+	public SelectFromFiniteListPresentationModel<AdverseEvent> getAdverseEventSelectModel() {
 		return d_adverseEventSelect;
 	}
 
-	public SelectFromFiniteListPresentationModel<Variable> getPopulationCharsSelectModel() {
-		return d_populationCharsSelect;
+	public SelectFromFiniteListPresentationModel<Variable> getPopulationCharSelectModel() {
+		return d_populationCharSelect;
 	} 
 }

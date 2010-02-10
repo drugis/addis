@@ -82,11 +82,11 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testGetEndpointSetForAdverseEvent() {
-		d_domain.getStudies().first().addAdverseEvent(MainData.buildAdeConvulsion());
+		d_domain.getStudies().first().addAdverseEvent(MainData.buildAdverseEventConvulsion());
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		List<OutcomeMeasure> expected = new ArrayList<OutcomeMeasure>();
 		expected.add(ExampleData.buildEndpointCgi());
-		expected.add(MainData.buildAdeConvulsion());
+		expected.add(MainData.buildAdverseEventConvulsion());
 		expected.add(ExampleData.buildEndpointHamd());
 		JUnitUtil.assertAllAndOnly(expected, d_wizard.getOutcomeMeasureListModel().getValue());
 	}

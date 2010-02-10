@@ -25,7 +25,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 import org.drugis.addis.FileNames;
-import org.drugis.addis.entities.AdverseDrugEvent;
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
@@ -42,8 +42,8 @@ public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 		if (value instanceof Endpoint) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_ENDPOINT));
 			setToolTipText("Endpoint");
-		}if (value instanceof AdverseDrugEvent) {
-			setIcon(ImageLoader.getIcon(FileNames.ICON_ADE));
+		}if (value instanceof AdverseEvent) {
+			setIcon(ImageLoader.getIcon(FileNames.ICON_ADVERSE_EVENT));
 			setToolTipText("Adverse drug effect");
 		} else if (value instanceof RandomEffectsMetaAnalysis) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_METASTUDY));

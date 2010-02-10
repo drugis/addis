@@ -181,9 +181,9 @@ public interface Domain {
 
 	public ListHolder<Variable> getVariablesHolder();
 	
-	public SortedSet<AdverseDrugEvent> getAdes();
+	public SortedSet<AdverseEvent> getAdverseEvents();
 	
-	public void addAde(AdverseDrugEvent ade);
+	public void addAdverseEvent(AdverseEvent ade);
 	
-	public void deleteAde(AdverseDrugEvent ade) throws DependentEntitiesException;
+	public void deleteAdverseEvent(AdverseEvent ade) throws DependentEntitiesException;
 }

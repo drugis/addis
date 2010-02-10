@@ -54,7 +54,7 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 	
-		List<OutcomeMeasure> outcomeMeasures = d_isEndpoints ? d_model.getEndpoints() : d_model.getAdes();
+		List<OutcomeMeasure> outcomeMeasures = d_isEndpoints ? d_model.getEndpoints() : d_model.getAdverseEvents();
 		if (outcomeMeasures.isEmpty()) {
 			builder.addLabel("No " + (d_isEndpoints ? "Endpoints" : "Adverse Events"), cc.xy(1, 1));
 		} else {

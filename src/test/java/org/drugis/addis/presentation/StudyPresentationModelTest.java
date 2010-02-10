@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
 
-import org.drugis.addis.entities.AdverseDrugEvent;
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.ContinuousVariable;
@@ -134,7 +134,7 @@ public class StudyPresentationModelTest {
 	public void testGetEndpoints() {
 		Endpoint ep = new Endpoint("ep", Type.RATE);
 		d_study.addEndpoint(ep);
-		AdverseDrugEvent ade = new AdverseDrugEvent("ade1", Type.RATE);
+		AdverseEvent ade = new AdverseEvent("ade1", Type.RATE);
 		d_study.addAdverseEvent(ade);
 		
 		assertEquals(Collections.singletonList(ep), d_model.getEndpoints());
@@ -144,9 +144,9 @@ public class StudyPresentationModelTest {
 	public void testGetAdes() {
 		Endpoint ep = new Endpoint("ep", Type.RATE);
 		d_study.addEndpoint(ep);
-		AdverseDrugEvent ade = new AdverseDrugEvent("ade1", Type.RATE);
+		AdverseEvent ade = new AdverseEvent("ade1", Type.RATE);
 		d_study.addAdverseEvent(ade);
 		
-		assertEquals(Collections.singletonList(ade), d_model.getAdes());
+		assertEquals(Collections.singletonList(ade), d_model.getAdverseEvents());
 	}
 }

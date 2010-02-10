@@ -31,7 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.FileNames;
-import org.drugis.addis.entities.AdverseDrugEvent;
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
@@ -89,8 +89,8 @@ public class GUIFactory {
 		String fname = FileNames.ICON_STUDY;
 		if (e instanceof Endpoint) {
 			fname = FileNames.ICON_ENDPOINT;
-		} if (e instanceof AdverseDrugEvent) {
-			fname = FileNames.ICON_ADE;
+		} if (e instanceof AdverseEvent) {
+			fname = FileNames.ICON_ADVERSE_EVENT;
 		}
 		JLabel textLabel = null;
 		Icon icon = ImageLoader.getIcon(fname);

@@ -384,23 +384,23 @@ public class DomainImpl implements Domain {
 		
 	}
 
-	public void addAde(AdverseDrugEvent ade) {
+	public void addAdverseEvent(AdverseEvent ade) {
 		if (ade == null) {
 			throw new NullPointerException();
 		}
-		d_domainData.addAde(ade);
-		fireDomainChanged(DomainEvent.Type.ADES);
+		d_domainData.addAdverseEvent(ade);
+		fireDomainChanged(DomainEvent.Type.ADVERSE_EVENTS);
 		
 	}
 
-	public void deleteAde(AdverseDrugEvent ade)
+	public void deleteAdverseEvent(AdverseEvent ade)
 			throws DependentEntitiesException {
 		checkDependents(ade);
-		d_domainData.removeAde(ade);
-		fireDomainChanged(DomainEvent.Type.ADES);		
+		d_domainData.removeAdverseEvent(ade);
+		fireDomainChanged(DomainEvent.Type.ADVERSE_EVENTS);		
 	}
 
-	public SortedSet<AdverseDrugEvent> getAdes() {
-		return Collections.unmodifiableSortedSet(d_domainData.getAdes());
+	public SortedSet<AdverseEvent> getAdverseEvents() {
+		return Collections.unmodifiableSortedSet(d_domainData.getAdverseEvents());
 	}
 }

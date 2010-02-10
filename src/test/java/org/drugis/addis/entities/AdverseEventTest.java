@@ -7,18 +7,18 @@ import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AdverseDrugEventTest {
+public class AdverseEventTest {
 
-	private AdverseDrugEvent ade;
+	private AdverseEvent d_ade;
 
 	@Before
 	public void setUp() {
-		ade = new AdverseDrugEvent("name", Type.RATE);
+		d_ade = new AdverseEvent("name", Type.RATE);
 	}
 	
 	@Test
 	public void testEquals() {
-		assertFalse(ade.equals(new Endpoint("name", Type.RATE)));
-		assertTrue(ade.equals(new AdverseDrugEvent("name", Type.RATE)));
+		assertFalse(d_ade.equals(new Endpoint("name", Type.RATE)));
+		assertTrue(d_ade.equals(new AdverseEvent("name", Type.RATE)));
 	}
 }

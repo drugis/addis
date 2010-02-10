@@ -37,7 +37,7 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
 import org.drugis.addis.FileNames;
-import org.drugis.addis.entities.AdverseDrugEvent;
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.SIUnit;
@@ -93,7 +93,7 @@ public class AddStudyWizard implements ViewBuilder{
 		wizardModel.add(new SelectEndpointWizardStep());
 		wizardModel.add(new SetArmsWizardStep());
 		wizardModel.add(new SetEndpointMeasurementsWizardStep());
-		wizardModel.add(new SelectADEWizardStep());
+		wizardModel.add(new SelectAdverseEventWizardStep());
 		wizardModel.add(new SetAdverseEventMeasurementsWizardStep());
 		wizardModel.add(new SelectPopulationCharsWizardStep());
 		wizardModel.add(new SetPopulationCharMeasurementsWizardStep());
@@ -420,14 +420,14 @@ public class AddStudyWizard implements ViewBuilder{
 	@SuppressWarnings("serial")
 	public class SelectPopulationCharsWizardStep extends SelectFromFiniteListWizardStep<Variable> {
 		public SelectPopulationCharsWizardStep() {
-			super(d_pm.getPopulationCharsSelectModel());
+			super(d_pm.getPopulationCharSelectModel());
 		}
 		
 	}
 	
 	@SuppressWarnings("serial")
-	public class SelectADEWizardStep extends SelectFromFiniteListWizardStep<AdverseDrugEvent> {
-		public SelectADEWizardStep() {
+	public class SelectAdverseEventWizardStep extends SelectFromFiniteListWizardStep<AdverseEvent> {
+		public SelectAdverseEventWizardStep() {
 			super(d_pm.getAdverseEventSelectModel());
 		}
 	}

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collections;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.AdverseDrugEvent;
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Endpoint;
@@ -41,7 +41,7 @@ public class OutcomePresentationModelTest {
 	public void testGetNameEndpoint() {
 		assertEquals ("Endpoint", d_pmEndpoint.getCategoryName());
 		
-		OutcomeMeasure omAde = new AdverseDrugEvent("testade", Type.CONTINUOUS);
+		OutcomeMeasure omAde = new AdverseEvent("testade", Type.CONTINUOUS);
 		OutcomePresentationModel pm_ade = (OutcomePresentationModel) d_pmf.getModel(omAde);
 		assertEquals ("Adverse drug event", pm_ade.getCategoryName());
 	}

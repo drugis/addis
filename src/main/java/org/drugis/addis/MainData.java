@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.drugis.addis.entities.AdverseDrugEvent;
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
@@ -37,8 +37,8 @@ public class MainData extends ExampleData {
 	private static Drug s_trazodone;
 	private static Drug s_bupropion;
 	
-	private static AdverseDrugEvent s_headache;
-	private static AdverseDrugEvent s_convulsion;
+	private static AdverseEvent s_headache;
+	private static AdverseEvent s_convulsion;
 	
 	public static void initDefaultData(Domain domain) {
 		ExampleData.initDefaultData(domain);
@@ -54,8 +54,8 @@ public class MainData extends ExampleData {
 		domain.addDrug(buildDrugRemeron());
 		domain.addDrug(buildDrugTrazodone());
 		
-		domain.addAde(buildAdeHeadache());
-		domain.addAde(buildAdeConvulsion());
+		domain.addAdverseEvent(buildAdverseEventHeadache());
+		domain.addAdverseEvent(buildAdverseEventConvulsion());
 		
 		try {
 			domain.addMetaAnalysis(buildMetaHansen2005());
@@ -418,16 +418,16 @@ public class MainData extends ExampleData {
 		return s_trazodone;
 	}
 	
-	public static AdverseDrugEvent buildAdeHeadache() {
+	public static AdverseEvent buildAdverseEventHeadache() {
 		if (s_headache == null)
-			s_headache = new AdverseDrugEvent("Headache", Type.RATE);
+			s_headache = new AdverseEvent("Headache", Type.RATE);
 		
 		return s_headache;
 	}
 	
-	public static AdverseDrugEvent buildAdeConvulsion() {
+	public static AdverseEvent buildAdverseEventConvulsion() {
 		if (s_convulsion == null)
-			s_convulsion = new AdverseDrugEvent("Convulsion", Type.RATE);
+			s_convulsion = new AdverseEvent("Convulsion", Type.RATE);
 		
 		return s_convulsion;
 	}

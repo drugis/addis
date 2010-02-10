@@ -1,9 +1,9 @@
 package org.drugis.addis.entities;
 
-public class AdverseDrugEvent extends AbstractOutcomeMeasure {
+public class AdverseEvent extends AbstractOutcomeMeasure {
 	private static final long serialVersionUID = -1026622949185265860L;
 
-	public AdverseDrugEvent(String name, Type type) {
+	public AdverseEvent(String name, Type type) {
 		super(name, type);
 	}
 
@@ -13,7 +13,7 @@ public class AdverseDrugEvent extends AbstractOutcomeMeasure {
 	
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof AdverseDrugEvent) {
+		if (o instanceof AdverseEvent) {
 			return super.equals(o);
 		}
 		return false;

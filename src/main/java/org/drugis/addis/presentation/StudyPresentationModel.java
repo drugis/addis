@@ -9,7 +9,7 @@ import java.util.Map;
 
 import javax.swing.table.TableModel;
 
-import org.drugis.addis.entities.AdverseDrugEvent;
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Characteristic;
@@ -174,10 +174,10 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		return s;
 	}
 	
-	public List<OutcomeMeasure> getAdes() {
+	public List<OutcomeMeasure> getAdverseEvents() {
 		List<OutcomeMeasure> s = new ArrayList<OutcomeMeasure>();
 		for (OutcomeMeasure m : getBean().getOutcomeMeasures()) {
-			if (m instanceof AdverseDrugEvent) {
+			if (m instanceof AdverseEvent) {
 				s.add(m);
 			}
 		}
@@ -197,7 +197,7 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 	}
 	
 	public TableModel getAdverseEventTableModel() {
-		return new MeasurementTableModel(getBean(), d_pmf, AdverseDrugEvent.class);
+		return new MeasurementTableModel(getBean(), d_pmf, AdverseEvent.class);
 	}
 
 	public Note getNote(Object key) {

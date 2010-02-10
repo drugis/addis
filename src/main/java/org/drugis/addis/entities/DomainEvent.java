@@ -12,7 +12,7 @@ public class DomainEvent {
 		INDICATIONS,
 		ANALYSES,
 		VARIABLES,
-		ADES
+		ADVERSE_EVENTS
 	}
 
 	public DomainEvent(Type type) {

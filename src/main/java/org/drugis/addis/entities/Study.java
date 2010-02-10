@@ -81,7 +81,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private String d_id;
 	private Map<MeasurementKey, Measurement> d_measurements = new HashMap<MeasurementKey, Measurement>();
 	private List<Endpoint> d_endpoints = new ArrayList<Endpoint>();
-	private List<AdverseDrugEvent> d_adverseEvents = new ArrayList<AdverseDrugEvent>();
+	private List<AdverseEvent> d_adverseEvents = new ArrayList<AdverseEvent>();
 	private List<Variable> d_populationChars = new ArrayList<Variable>();
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	private Indication d_indication;
@@ -265,7 +265,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return Collections.unmodifiableList(d_endpoints);
 	}
 	
-	public List<AdverseDrugEvent> getAdverseEvents() {
+	public List<AdverseEvent> getAdverseEvents() {
 		return Collections.unmodifiableList(d_adverseEvents);
 	}
 	
@@ -276,7 +276,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public List<? extends OutcomeMeasure> getOutcomeMeasures(Class<? extends OutcomeMeasure> type) {
 		if (type == Endpoint.class) {
 			return Collections.unmodifiableList(d_endpoints);
-		} else if (type == AdverseDrugEvent.class){
+		} else if (type == AdverseEvent.class){
 			return Collections.unmodifiableList(d_adverseEvents);
 		}
 		throw new IllegalArgumentException(type + " is not a recognized type of Outcome for studies");
@@ -289,9 +289,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		firePropertyChange(PROPERTY_ENDPOINTS, oldVal, getEndpoints());
 	}
 	
-	public void setAdverseEvents(List<AdverseDrugEvent> ade) {
-		List<AdverseDrugEvent> oldVal = getAdverseEvents();
-		d_adverseEvents = new ArrayList<AdverseDrugEvent>(ade);
+	public void setAdverseEvents(List<AdverseEvent> ade) {
+		List<AdverseEvent> oldVal = getAdverseEvents();
+		d_adverseEvents = new ArrayList<AdverseEvent>(ade);
 		updateMeasurements();
 		firePropertyChange(PROPERTY_ADVERSE_EVENTS, oldVal, getAdverseEvents());
 	}
@@ -303,11 +303,11 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		firePropertyChange(PROPERTY_POPULATION_CHARACTERISTICS, oldVal, getPopulationCharacteristics());
 	}
 	
-	public void addAdverseEvent(AdverseDrugEvent ade) {
+	public void addAdverseEvent(AdverseEvent ade) {
 		if (ade == null) 
 			throw new NullPointerException("Cannot add a NULL outcome measure");
 		
-		List<AdverseDrugEvent> newList = new ArrayList<AdverseDrugEvent>(d_adverseEvents);
+		List<AdverseEvent> newList = new ArrayList<AdverseEvent>(d_adverseEvents);
 		newList.add(ade);
 		setAdverseEvents(newList);
 	}

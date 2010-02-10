@@ -703,35 +703,35 @@ public class DomainTest {
 	
 	@Test(expected=NullPointerException.class)
 	public void testAddAdeNull() {
-		d_domain.addAde(null);
+		d_domain.addAdverseEvent(null);
 	}
 	
 	@Test
 	public void testAddAde() {
-		AdverseDrugEvent ade = new AdverseDrugEvent("a", Type.RATE);
-		assertEquals(0, d_domain.getAdes().size());
-		d_domain.addAde(ade);
-		assertEquals(1, d_domain.getAdes().size());
-		assertEquals(Collections.singleton(ade), d_domain.getAdes());
+		AdverseEvent ade = new AdverseEvent("a", Type.RATE);
+		assertEquals(0, d_domain.getAdverseEvents().size());
+		d_domain.addAdverseEvent(ade);
+		assertEquals(1, d_domain.getAdverseEvents().size());
+		assertEquals(Collections.singleton(ade), d_domain.getAdverseEvents());
 	}
 	
 	@Test
 	public void testAddAdeListener() {
 		DomainListener mockListener = createMock(DomainListener.class);
-		mockListener.domainChanged(new DomainEvent(DomainEvent.Type.ADES));		
+		mockListener.domainChanged(new DomainEvent(DomainEvent.Type.ADVERSE_EVENTS));		
 		replay(mockListener);
 		
 		d_domain.addListener(mockListener);
-		d_domain.addAde(new AdverseDrugEvent("e", Type.RATE));
+		d_domain.addAdverseEvent(new AdverseEvent("e", Type.RATE));
 		verify(mockListener);
 	}
 	
 	@Test
 	public void testDeleteAde() throws DependentEntitiesException {
-		AdverseDrugEvent e = new AdverseDrugEvent("e", Type.RATE);
-		d_domain.addAde(e);
-		d_domain.deleteAde(e);
-		assertTrue(d_domain.getAdes().isEmpty());
+		AdverseEvent e = new AdverseEvent("e", Type.RATE);
+		d_domain.addAdverseEvent(e);
+		d_domain.deleteAdverseEvent(e);
+		assertTrue(d_domain.getAdverseEvents().isEmpty());
 	}
 	
 	@Test(expected=DependentEntitiesException.class)
@@ -740,23 +740,23 @@ public class DomainTest {
 		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s1);
 		
-		AdverseDrugEvent a = new AdverseDrugEvent("e", Type.RATE);
-		d_domain.addAde(a);
+		AdverseEvent a = new AdverseEvent("e", Type.RATE);
+		d_domain.addAdverseEvent(a);
 		s1.addAdverseEvent(a);
 			
-		d_domain.deleteAde(a);
+		d_domain.deleteAdverseEvent(a);
 	}
 	
 	@Test
 	public void testDeleteAdeFires() throws DependentEntitiesException {
-		AdverseDrugEvent d = new AdverseDrugEvent("d", Type.RATE);
-		d_domain.addAde(d);
+		AdverseEvent d = new AdverseEvent("d", Type.RATE);
+		d_domain.addAdverseEvent(d);
 		
 		DomainListener mock = createMock(DomainListener.class);
 		d_domain.addListener(mock);
-		mock.domainChanged(new DomainEvent(DomainEvent.Type.ADES));		
+		mock.domainChanged(new DomainEvent(DomainEvent.Type.ADVERSE_EVENTS));		
 		replay(mock);
-		d_domain.deleteAde(d);
+		d_domain.deleteAdverseEvent(d);
 		verify(mock);
 	}
 

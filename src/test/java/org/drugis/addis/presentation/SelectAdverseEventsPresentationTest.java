@@ -8,7 +8,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drugis.addis.entities.AdverseDrugEvent;
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -16,18 +16,18 @@ import org.junit.Test;
 
 @SuppressWarnings("serial")
 public class SelectAdverseEventsPresentationTest {
-	private AdverseDrugEvent d_ade1 = new AdverseDrugEvent("ADE 1", Type.RATE);
-	private AdverseDrugEvent d_ade2 = new AdverseDrugEvent("ADE 2", Type.RATE);
-	private AdverseDrugEvent d_ade3 = new AdverseDrugEvent("ADE 3", Type.RATE);
-	private ListHolder<AdverseDrugEvent> d_list;
+	private AdverseEvent d_ade1 = new AdverseEvent("ADE 1", Type.RATE);
+	private AdverseEvent d_ade2 = new AdverseEvent("ADE 2", Type.RATE);
+	private AdverseEvent d_ade3 = new AdverseEvent("ADE 3", Type.RATE);
+	private ListHolder<AdverseEvent> d_list;
 	private SelectAdverseEventsPresentation d_pm;
 	
 	@Before
 	public void setUp() {
-		d_list = new AbstractListHolder<AdverseDrugEvent>() {
+		d_list = new AbstractListHolder<AdverseEvent>() {
 			@Override
-			public List<AdverseDrugEvent> getValue() {
-				List<AdverseDrugEvent> l = new ArrayList<AdverseDrugEvent>();
+			public List<AdverseEvent> getValue() {
+				List<AdverseEvent> l = new ArrayList<AdverseEvent>();
 				l.add(d_ade1);
 				l.add(d_ade2);
 				return l;

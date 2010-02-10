@@ -20,7 +20,7 @@
 package org.drugis.addis.gui;
 
 
-import org.drugis.addis.entities.AdverseDrugEvent;
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -60,8 +60,8 @@ public class AddOutcomeDialog extends OkCancelDialog {
 		
 		if (d_om instanceof Endpoint)
 			d_domain.addEndpoint((Endpoint) d_om);
-		else if (d_om instanceof AdverseDrugEvent)
-			d_domain.addAde((AdverseDrugEvent) d_om);
+		else if (d_om instanceof AdverseEvent)
+			d_domain.addAdverseEvent((AdverseEvent) d_om);
 		else 
 			throw new IllegalArgumentException("Unknown type of OutcomeMeasure.");
 		

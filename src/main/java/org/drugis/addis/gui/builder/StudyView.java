@@ -80,7 +80,7 @@ public class StudyView implements ViewBuilder {
 		row += 2;
 		builder.addSeparator("Outcomes - Adverse Drug Events", cc.xy(1, row));		
 		row += 2;
-		builder.add(buildAdePart(), cc.xy(1, row));
+		builder.add(buildAdverseEventPart(), cc.xy(1, row));
 		
 		return builder.getPanel();
 	}
@@ -105,7 +105,7 @@ public class StudyView implements ViewBuilder {
 		return GUIFactory.createCollapsiblePanel(d_epView.buildPanel());
 	}
 	
-	private JComponent buildAdePart() {
+	private JComponent buildAdverseEventPart() {
 		return GUIFactory.createCollapsiblePanel(d_adeView.buildPanel());
 	}
 }
