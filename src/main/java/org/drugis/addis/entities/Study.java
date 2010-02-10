@@ -191,11 +191,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return getId().compareTo(other.getId());
 	}
 	
-	public Measurement getMeasurement(OutcomeMeasure e, Arm g) {
-		Measurement measurement = d_measurements.get(new MeasurementKey(e, g));
-		return measurement;
-	}
-	
 	public Measurement getMeasurement(Variable v, Arm g) {
 		return d_measurements.get(new MeasurementKey(v, g));
 	}
@@ -273,13 +268,13 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return Collections.unmodifiableList(d_populationChars);
 	}
 	
-	public List<? extends OutcomeMeasure> getOutcomeMeasures(Class<? extends OutcomeMeasure> type) {
+	public List<? extends Variable> getVariables(Class<? extends Variable> type) {
 		if (type == Endpoint.class) {
 			return Collections.unmodifiableList(d_endpoints);
 		} else if (type == AdverseEvent.class){
 			return Collections.unmodifiableList(d_adverseEvents);
-		}
-		throw new IllegalArgumentException(type + " is not a recognized type of Outcome for studies");
+		}		
+		return Collections.unmodifiableList(d_populationChars); 
 	}
 	
 	public void setEndpoints(List<Endpoint> endpoints) {
@@ -297,10 +292,10 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 	
 	public void setPopulationCharacteristics(List<Variable> chars) {
-		List<Variable> oldVal = getPopulationCharacteristics();
+		List<? extends Variable> oldVal = getVariables(Variable.class);
 		d_populationChars = new ArrayList<Variable>(chars);
 		updateMeasurements();
-		firePropertyChange(PROPERTY_POPULATION_CHARACTERISTICS, oldVal, getPopulationCharacteristics());
+		firePropertyChange(PROPERTY_POPULATION_CHARACTERISTICS, oldVal, getVariables(Variable.class));
 	}
 	
 	public void addAdverseEvent(AdverseEvent ade) {
@@ -343,12 +338,12 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			for (Arm g : getArms()) {
 				MeasurementKey key = new MeasurementKey(om, g);
 				if (d_measurements.get(key) == null) {
-					d_measurements.put(key, om.buildMeasurement(g));
+					d_measurements.put(key, om.buildMeasurement(g.getSize()));
 				}
 			}
 		}
 		// Add measurements for all population characteristics
-		for (Variable v : getPopulationCharacteristics()) {
+		for (Variable v : getVariables(Variable.class)) {
 			MeasurementKey key = new MeasurementKey(v, null);
 			if (d_measurements.get(key) == null) {
 				d_measurements.put(key, v.buildMeasurement(getSampleSize()));
@@ -381,7 +376,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		}
 		// PopulationChar measurements
 		if (k.d_outcomeM instanceof Variable) {
-			if (!getPopulationCharacteristics().contains(k.d_outcomeM)) {
+			if (!getVariables(Variable.class).contains(k.d_outcomeM)) {
 				return true;
 			}
 			if (k.d_arm != null && !d_arms.contains(k.d_arm)) {

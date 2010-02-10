@@ -65,7 +65,7 @@ public abstract class AbstractOutcomeMeasure extends AbstractEntity implements O
 		return d_type;
 	}
 
-	public int compareTo(OutcomeMeasure other) {
+	public int compareTo(Variable other) {
 		return getName().compareTo(other.getName());
 	}
 
@@ -86,13 +86,21 @@ public abstract class AbstractOutcomeMeasure extends AbstractEntity implements O
 	}
 
 	public BasicMeasurement buildMeasurement(Arm a) {
+		return buildMeasurement(a.getSize());
+	}
+
+	public BasicMeasurement buildMeasurement(int size) {
 		switch (getType()) {
 		case CONTINUOUS:
-			return new BasicContinuousMeasurement(0.0, 0.0, a.getSize());
+			return new BasicContinuousMeasurement(0.0, 0.0, size);
 		case RATE:
-			return new BasicRateMeasurement(0, a.getSize());
+			return new BasicRateMeasurement(0, size);
 		default:
 			throw new IllegalStateException("Not all enum cases covered");
 		}
+	}
+	
+	public BasicMeasurement buildMeasurement() {
+		return buildMeasurement(0);
 	}
 }

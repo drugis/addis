@@ -1,11 +1,9 @@
 package org.drugis.addis.entities;
 
 
-public interface OutcomeMeasure extends Comparable<OutcomeMeasure>, Entity {
+public interface OutcomeMeasure extends Variable {
 
-	public final static String PROPERTY_NAME = "name";
 	public final static String PROPERTY_DESCRIPTION = "description";
-	public final static String PROPERTY_TYPE = "type";
 	public final static String PROPERTY_DIRECTION = "direction";
 	public static final String PROPERTY_UNIT_OF_MEASUREMENT = "unitOfMeasurement";
 	public static final String UOM_DEFAULT_RATE = "Ratio of Patients";
@@ -61,5 +59,7 @@ public interface OutcomeMeasure extends Comparable<OutcomeMeasure>, Entity {
 
 	public Direction getDirection();
 	
-	public BasicMeasurement buildMeasurement(Arm a);
+	public BasicMeasurement buildMeasurement();
+	
+	public BasicMeasurement buildMeasurement(int size);
 }

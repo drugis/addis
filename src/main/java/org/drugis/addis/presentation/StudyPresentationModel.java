@@ -153,8 +153,8 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		return getPopulationCharacteristics().size();
 	}
 
-	public List<Variable> getPopulationCharacteristics() {
-		return getBean().getPopulationCharacteristics();
+	public List<? extends Variable> getPopulationCharacteristics() {
+		return getBean().getVariables(Variable.class);
 	}
 	
 	public LabeledPresentationModel getCharacteristicModel(BasicStudyCharacteristic c) {

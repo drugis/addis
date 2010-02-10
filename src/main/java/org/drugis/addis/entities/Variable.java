@@ -5,6 +5,7 @@ import org.drugis.addis.entities.OutcomeMeasure.Type;
 public interface Variable extends Entity, Comparable<Variable> {
 	
 	public static final String PROPERTY_NAME = "name";
+	public final static String PROPERTY_TYPE = "type";	
 
 	/**
 	 * The name of this variable.
