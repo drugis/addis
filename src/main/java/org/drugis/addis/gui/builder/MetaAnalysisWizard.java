@@ -132,7 +132,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			
 			int row = 3;
 
-			for( Study curStudy : d_pm.getStudyListModel().getIncludedStudies().getValue() ){
+			for( Study curStudy : d_pm.getStudyListModel().getSelectedStudiesModel().getValue() ){
 
 				ListHolder<Arm> leftArms = d_pm.getArmsPerStudyPerDrug( curStudy, (Drug) d_pm.getFirstDrugModel().getValue() );
 				ListHolder<Arm> rightArms = d_pm.getArmsPerStudyPerDrug( curStudy, (Drug) d_pm.getSecondDrugModel().getValue());
