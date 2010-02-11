@@ -69,7 +69,7 @@ public class OutcomeMeasureView implements ViewBuilder {
 	private JPanel buildOverviewPart() {
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, pref:grow",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();
 		
@@ -84,13 +84,19 @@ public class OutcomeMeasureView implements ViewBuilder {
 		builder.addLabel("Unit of Measurement:", cc.xy(1, 5));
 		builder.add(BasicComponentFactory.createLabel(
 				d_model.getModel(OutcomeMeasure.PROPERTY_UNIT_OF_MEASUREMENT)), cc.xy(3, 5));
+
+		ValueModel typeModel = ConverterFactory.createStringConverter(
+				d_model.getModel(Endpoint.PROPERTY_TYPE),
+				new OneWayObjectFormat());
+		builder.addLabel("Type:", cc.xy(1, 7));
+		builder.add(BasicComponentFactory.createLabel(typeModel), cc.xy(3, 7));
 		
-		builder.addLabel("Direction:", cc.xy(1, 7));
+		builder.addLabel("Direction:", cc.xy(1, 9));
 		ValueModel directionModel = ConverterFactory.createStringConverter(
 				d_model.getModel(Endpoint.PROPERTY_DIRECTION),
 				new OneWayObjectFormat());
 		builder.add(BasicComponentFactory.createLabel(
-				directionModel), cc.xy(3, 7));
+				directionModel), cc.xy(3, 9));
 
 		return builder.getPanel();
 	}

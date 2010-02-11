@@ -18,7 +18,6 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.gui.components.EnhancedTableHeader;
 import org.drugis.addis.presentation.LabeledPresentationModel;
 import org.drugis.addis.presentation.RelativeEffectPresentation;
