@@ -27,6 +27,13 @@ import java.net.URLConnection;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.apache.myfaces.trinidad.context.Version;
+
+//import java.version.*;
+
+
+//import java.org.apache.myfaces.trinidad.context.Version;
+
 public class AppInfo {
 	private static final String APPNAMEFALLBACK = "ADDIS";
 	private static final String APPVERSIONFALLBACK = "UNKNOWN";

@@ -1,4 +1,4 @@
-package org.drugis.addis;
+package org.apache.myfaces.trinidad.context;
 
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one
