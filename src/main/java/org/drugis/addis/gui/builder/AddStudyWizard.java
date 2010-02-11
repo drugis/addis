@@ -310,14 +310,14 @@ public class AddStudyWizard implements ViewBuilder{
 				DosePresentationModel doseModel = d_pm.getArmModel(curArmNumber).getDoseModel();
 				JTextField minDoseField =  new JFormattedTextField(new DefaultFormatter());
 				PropertyConnector.connectAndUpdate(doseModel.getMinModel(), minDoseField, "value");
-				minDoseField.setColumns(2);
+				minDoseField.setColumns(4);
 				d_validator.add(minDoseField);
 				builder.add(minDoseField, cc.xy(7, row));
 				
 				// add max dose
 				JTextField maxDoseField = new JFormattedTextField(new DefaultFormatter());
 				PropertyConnector.connectAndUpdate(doseModel.getMaxModel(), maxDoseField, "value");
-				maxDoseField.setColumns(2);
+				maxDoseField.setColumns(4);
 				d_validator.add(maxDoseField);
 				builder.add(maxDoseField, cc.xy(9, row));
 				
@@ -329,7 +329,7 @@ public class AddStudyWizard implements ViewBuilder{
 				// add group size
 				JTextField sizeField =  new JFormattedTextField(new DefaultFormatter());
 				PropertyConnector.connectAndUpdate(d_pm.getArmModel(curArmNumber).getModel(Arm.PROPERTY_SIZE), sizeField, "value");
-				sizeField.setColumns(2);
+				sizeField.setColumns(4);
 				d_validator.add(sizeField);
 				builder.add(sizeField, cc.xy(13, row));
 				
