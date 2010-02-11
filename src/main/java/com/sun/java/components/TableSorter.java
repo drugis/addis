@@ -29,7 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */ 
 
-package org.drugis.addis.gui.components;
+package com.sun.java.components;
 
 import java.awt.*;
 import java.awt.event.*;

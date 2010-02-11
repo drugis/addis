@@ -11,6 +11,8 @@ import javax.swing.table.TableModel;
 
 import org.drugis.common.gui.GUIHelper;
 
+import com.sun.java.components.TableSorter;
+
 @SuppressWarnings("serial")
 public class StudyTable extends JTable {
 	
