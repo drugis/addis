@@ -41,10 +41,15 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 	private boolean d_isEndpoints;
 
 	public StudyOutcomeMeasuresView(StudyPresentationModel model, Main main, boolean endpoints) {
+		this(model, main, main.getPresentationModelFactory(), endpoints);
+	}
+	
+	public StudyOutcomeMeasuresView(StudyPresentationModel model, JFrame parent, 
+			PresentationModelFactory pmf, boolean endpoints) {
 		d_model = model;
-		d_pmf = main.getPresentationModelFactory();
-		d_mainWindow = main;
-		d_isEndpoints = endpoints;
+		d_pmf = pmf;
+		d_mainWindow = parent;
+		d_isEndpoints = endpoints;		
 	}
 
 	public JComponent buildPanel() {

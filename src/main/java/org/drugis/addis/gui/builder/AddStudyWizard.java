@@ -106,6 +106,7 @@ public class AddStudyWizard implements ViewBuilder{
 				return d_pm.getPopulationCharSelectModel().getSlots().size() > 0;
 			}			
 		});
+		wizardModel.add(new ReviewStudyStep());
 		Wizard wizard = new Wizard(wizardModel);
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 		wizard.addWizardListener(new WizardAdapter() {
@@ -116,6 +117,26 @@ public class AddStudyWizard implements ViewBuilder{
 		wizard.setPreferredSize(new Dimension(750, 750));
 		return wizard;
 	}
+	
+	 @SuppressWarnings("serial")
+	private class ReviewStudyStep extends PanelWizardStep {
+		 public ReviewStudyStep() {
+			 super("Review study", "Review study to add");
+			 setLayout(new BorderLayout());
+			 setComplete(true);
+		 }
+		 
+		 @Override
+		 public void prepare() {
+			 StudyView view = new StudyView(d_pm.getNewStudyPM(), d_pm.getDomain(), 
+					 d_main, d_main.getPresentationModelFactory());
+			 removeAll();
+			 JScrollPane pane = new JScrollPane(view.buildPanel());
+			 pane.getVerticalScrollBar().setUnitIncrement(16);
+			 add(pane, BorderLayout.CENTER);
+			 this.setVisible(true);			 
+		 }
+	 }
 	
 	@SuppressWarnings("serial")
 	public static class SetMeasurementsWizardStep extends PanelWizardStep {

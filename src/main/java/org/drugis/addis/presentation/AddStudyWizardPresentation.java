@@ -202,6 +202,10 @@ public class AddStudyWizardPresentation {
 	public ValueModel getTitleModel() {
 		return new MutableCharacteristicHolder(getNewStudy(), BasicStudyCharacteristic.TITLE);
 	}
+	
+	public Domain getDomain() {
+		return d_domain;
+	}
 
 	public void importCT() throws MalformedURLException, IOException{
 		Object studyID = getIdModel().getValue();
@@ -420,6 +424,10 @@ public class AddStudyWizardPresentation {
 
 	private Study getNewStudy() {
 		return d_newStudyPM.getBean();
+	}
+	
+	public StudyPresentationModel getNewStudyPM() {
+		return d_newStudyPM;
 	}
 
 	private Study getOldStudy() {

@@ -20,6 +20,7 @@
 package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -27,6 +28,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.MeasurementTable;
+import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ViewBuilder;
@@ -42,13 +44,16 @@ public class StudyView implements ViewBuilder {
 	private StudyOutcomeMeasuresView d_adeView;	
 	private StudyArmsView d_armsView;
 	
-	
-	public StudyView(StudyPresentationModel model, Domain domain, Main main) {
+	public StudyView(StudyPresentationModel model, Domain domain, JFrame parent, PresentationModelFactory pmf) {
 		d_model = model;
 		d_charView = new StudyCharacteristicsView(model);
-		d_epView = new StudyOutcomeMeasuresView(model, main, true);
-		d_adeView = new StudyOutcomeMeasuresView(model, main, false);		
-		d_armsView = new StudyArmsView(model, main.getPresentationModelFactory());
+		d_epView = new StudyOutcomeMeasuresView(model, parent, pmf, true);
+		d_adeView = new StudyOutcomeMeasuresView(model, parent, pmf, false);		
+		d_armsView = new StudyArmsView(model, pmf);			
+	}
+	
+	public StudyView(StudyPresentationModel model, Domain domain, Main main) {
+		this(model, domain, main, main.getPresentationModelFactory());
 	}
 	
 	public JComponent buildPanel() {
