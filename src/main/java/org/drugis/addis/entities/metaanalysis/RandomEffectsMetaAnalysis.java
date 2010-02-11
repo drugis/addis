@@ -354,6 +354,10 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		public Set<Entity> getDependencies() {
 			return Collections.emptySet();
 		}	
+		
+		public boolean isDefined() {
+			return true;
+		}
 	}
 	
 	@Override

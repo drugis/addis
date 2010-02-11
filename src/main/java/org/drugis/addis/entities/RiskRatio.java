@@ -37,7 +37,7 @@ public class RiskRatio extends AbstractRatio {
 	}
 
 	public Double getError() { //NB: this is the LOG error
-		if (checkUndefined())
+		if (!isDefined())
 			return Double.NaN;
 
 		return Math.sqrt((1.0 / (d_subject.getRate() + d_correction)) +
@@ -51,7 +51,7 @@ public class RiskRatio extends AbstractRatio {
 	}
 	
 	public Double getRelativeEffect() {
-		if (checkUndefined())
+		if (!isDefined())
 			return Double.NaN;
 		
 		return ( (d_subject.getRate() + d_correction) / (d_subject.getSampleSize()) ) 

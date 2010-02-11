@@ -30,4 +30,6 @@ public interface RelativeEffect<T extends Measurement> extends Entity{
 	public String getName();
 	
 	public AxisType getAxisType();
+	
+	public boolean isDefined();
 }

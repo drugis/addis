@@ -42,7 +42,7 @@ public class OddsRatio extends AbstractRatio {
 	}
 
 	public Double getRelativeEffect() {
-		if (checkUndefined())
+		if (!isDefined())
 			return Double.NaN;
 		
 		double a = d_subject.getRate() + d_correction;
@@ -53,7 +53,7 @@ public class OddsRatio extends AbstractRatio {
 	}
 
 	public Double getError() { //NB: this is the LOG error
-		if (checkUndefined())
+		if (!isDefined())
 			return Double.NaN;
 		
 		double a = d_subject.getRate() + d_correction;

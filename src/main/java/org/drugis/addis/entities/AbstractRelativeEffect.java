@@ -57,8 +57,12 @@ public abstract class AbstractRelativeEffect<T extends Measurement> extends Abst
 	
 	protected abstract Integer getDegreesOfFreedom();
 	
+	public boolean isDefined() {
+		return getDegreesOfFreedom() > 0;
+	}
+	
 	public Interval<Double> getDefaultConfidenceInterval() {
-		if (getDegreesOfFreedom() < 1) {
+		if (!isDefined()) {
 			return new Interval<Double>(Double.NaN, Double.NaN);
 		}
 		double t = StudentTTable.getT(getDegreesOfFreedom());

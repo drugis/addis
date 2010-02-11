@@ -18,8 +18,10 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.gui.components.EnhancedTableHeader;
 import org.drugis.addis.presentation.LabeledPresentationModel;
+import org.drugis.addis.presentation.RelativeEffectPresentation;
 import org.drugis.addis.presentation.RelativeEffectTableModel;
 import org.drugis.common.gui.GUIHelper;
 
@@ -78,8 +80,10 @@ public class RelativeEffectTableDialog extends JDialog {
 			int row = ((JTable)e.getComponent()).rowAtPoint(e.getPoint());
 			int col = ((JTable)e.getComponent()).columnAtPoint(e.getPoint());
 			
-			if (row == col)
+			if (row == col ||
+					!((RelativeEffectPresentation) d_tableModel.getValueAt(row, col)).getBean().isDefined()) {
 				return;
+			}
 			
 			d_dialog = new RelativeEffectPlotDialog(d_parentDialog,
 					d_tableModel.getPlotPresentation(row, col),

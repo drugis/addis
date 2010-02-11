@@ -62,6 +62,11 @@ public abstract class AbstractRatio extends AbstractRelativeEffect<RateMeasureme
 				d_subject.getRate() == d_subject.getSampleSize() || 
 				d_baseline.getRate() == d_baseline.getSampleSize());
 	}
+	
+	@Override
+	public boolean isDefined() {
+		return super.isDefined() && !checkUndefined();
+	}
 
 	protected boolean checkUndefined() {
 		return (d_subject.getRate() == 0 && 
