@@ -39,6 +39,9 @@ public abstract class AbstractRatio extends AbstractRelativeEffect<RateMeasureme
 
 	
 	public Interval<Double> getConfidenceInterval() {
+		if (getDegreesOfFreedom() < 1) {
+			return new Interval<Double>(Double.NaN, Double.NaN);
+		}
 		double lBound = Math.log(getRelativeEffect());
 		lBound -= getCriticalValue() * getError();
 		double uBound = Math.log(getRelativeEffect());
