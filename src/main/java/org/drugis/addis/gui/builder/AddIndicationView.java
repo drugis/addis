@@ -71,7 +71,7 @@ public class AddIndicationView implements ViewBuilder {
 		CellConstraints cc = new CellConstraints();
 		
 		builder.addSeparator("Indication", cc.xyw(1, 1, 3));
-		builder.addLabel("Concept ID:", cc.xy(1, 3));
+		builder.addLabel("SNOMED Concept ID:", cc.xy(1, 3));
 		builder.add(d_code, cc.xy(3,3));
 		builder.addLabel("Fully Specified Name:", cc.xy(1, 5));
 		builder.add(d_name, cc.xy(3,5));

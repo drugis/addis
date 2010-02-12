@@ -50,7 +50,7 @@ public class IndicationView implements ViewBuilder {
 		FormLayout layout = new FormLayout("right:pref, 3dlu, left:pref:grow",
 				"p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
-		builder.addLabel("Concept ID:", cc.xy(1, 1));
+		builder.addLabel("SNOMED Concept ID:", cc.xy(1, 1));
 		ValueModel codeModel = ConverterFactory.createStringConverter(
 				d_pm.getModel(Indication.PROPERTY_CODE),
 				new OneWayObjectFormat());
