@@ -120,7 +120,9 @@ public class AddStudyWizard implements ViewBuilder{
 	 @SuppressWarnings("serial")
 	private class ReviewStudyStep extends PanelWizardStep {
 		 public ReviewStudyStep() {
-			 super("Review study", "Review study to add");
+			 super("Review study", "Please review the study to be created. " +
+					 "You can go back through the wizard to correct any mistakes, " +
+					 "but after the study has been added it cannot be changed.");
 			 setLayout(new BorderLayout());
 			 setComplete(true);
 		 }
@@ -230,7 +232,8 @@ public class AddStudyWizard implements ViewBuilder{
 		private JScrollPane d_scrollPane;
 		
 		public SetArmsWizardStep(){
-			super("Select Arms","Please select the appropriate arms");			
+			super("Select Arms", "Please input the appropriate arms. " +
+					"The drug field of every arm must be filled in order to continue. At least one arm must be included.");
 		}
 		
 		 public void prepare() {
@@ -369,7 +372,9 @@ public class AddStudyWizard implements ViewBuilder{
 		private JScrollPane d_scrollPane;
 		
 		public SelectEndpointWizardStep(){
-			super("Select Endpoints","Please select the appropriate endpoints");
+			super("Select Endpoints","Please select the appropriate endpoints. " +
+					"All endpoints must be assigned a unique value, or removed from the study. " +
+					"At least one endpoint must be selected.");
 			this.setLayout(new BorderLayout());
 		}
 		
@@ -473,7 +478,8 @@ public class AddStudyWizard implements ViewBuilder{
 		private Set<BasicStudyCharacteristic> excludedChars = new HashSet<BasicStudyCharacteristic>();		
 		
 		public EnterCharacteristicsWizardStep () {
-			super("Enter additional information", "Enter additional information for this study");
+			super("Enter additional information", "Enter additional information for this study. " +
+					"Fields may be left empty if unknown.");
 			
 			excludedChars.add(BasicStudyCharacteristic.TITLE);
 			excludedChars.add(BasicStudyCharacteristic.CREATION_DATE);
@@ -575,7 +581,8 @@ public class AddStudyWizard implements ViewBuilder{
 		private JScrollPane d_scrollPane;
 
 		public SelectIndicationWizardStep () {
-			super("Select Indications", "Select the indications for this study");
+			super("Select Indication", "Select the indication for this study. " +
+					"An indication must be selected to continue.");
 		}
 		
 		 public void prepare() {
