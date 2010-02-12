@@ -554,8 +554,8 @@ public class ExampleData {
 
 	public static Endpoint buildEndpointHamd() {
 		if (s_endpointHamd == null) {
-			Endpoint e = new Endpoint("HAM-D", Type.RATE);
-			e.setDescription("Responders with a 50% increase in HAM-D score at 8 weeks");
+			Endpoint e = new Endpoint("HAM-D Responders", Type.RATE);
+			e.setDescription("Responders with a 50% increase in HAM-D score");
 			s_endpointHamd = e;
 		}
 		return s_endpointHamd;
@@ -563,7 +563,7 @@ public class ExampleData {
 
 	public static Endpoint buildEndpointCgi() {
 		if (s_endpointCgi == null) { 
-			Endpoint cgi = new Endpoint("CGI Severity", Type.CONTINUOUS);
+			Endpoint cgi = new Endpoint("CGI Severity Change", Type.CONTINUOUS);
 			cgi.setDescription("Change from baseline CGI Severity of Illness score");
 			cgi.setUnitOfMeasurement("Deviation from the baseline of CGI Severity of Illness score");
 			s_endpointCgi = cgi;
@@ -573,7 +573,7 @@ public class ExampleData {
 	
 	public static Endpoint buildEndpointCVdeath() {
 		if (s_endpointCVdeath == null) {
-			Endpoint e = new Endpoint("Cardiovascular Death", Type.RATE, Direction.LOWER_IS_BETTER);
+			Endpoint e = new Endpoint("Cardiovascular Death Incidence", Type.RATE, Direction.LOWER_IS_BETTER);
 			e.setDescription("Rate of mortality due to cardiovascular causes");
 			s_endpointCVdeath = e;
 		}
