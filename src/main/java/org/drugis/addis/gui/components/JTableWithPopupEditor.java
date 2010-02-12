@@ -29,6 +29,8 @@ abstract public class JTableWithPopupEditor extends JTable {
 	protected Window d_parent;
 	private JWindow d_window;
 	private JLabel d_hidden;
+	private int d_row = 0;
+	private int d_col = 0;
 	
 	public JTableWithPopupEditor(TableModel model, Window frame) {
 		super(model);
@@ -80,6 +82,7 @@ abstract public class JTableWithPopupEditor extends JTable {
 			}
 			
 			public void ancestorMoved(AncestorEvent event) {
+				positionWindow();
 			}
 			
 			public void ancestorAdded(AncestorEvent event) {
@@ -87,6 +90,12 @@ abstract public class JTableWithPopupEditor extends JTable {
 		});
 	}
 	
+	private void positionWindow() {
+		if (d_window != null) {
+			setWindowLocation();
+		}
+	}
+
 	abstract protected JPanel createEditorPanel(int row, int col);
 	
 	private JWindow startCellEditor(int row, int col) {
@@ -120,7 +129,9 @@ abstract public class JTableWithPopupEditor extends JTable {
 		window.getContentPane().add(panel, BorderLayout.CENTER);
 		window.pack();
 		
-		setWindowLocation(col, row);
+		d_col = col;
+		d_row = row;
+		setWindowLocation();
 
 		// Make sure the window closes when we click in the frame containing the table
 		getTopLevelAncestor().addMouseListener(new MouseAdapter() {
@@ -139,9 +150,9 @@ abstract public class JTableWithPopupEditor extends JTable {
 		return window;
 	}
 
-	private void setWindowLocation(int col, int row) {
-		Rectangle cellLocation = getCellRect(row, col, false);
-		Point l = getComponentAt(col, row).getLocationOnScreen();
+	private void setWindowLocation() {
+		Rectangle cellLocation = getCellRect(d_row, d_col, false);
+		Point l = getComponentAt(d_col, d_row).getLocationOnScreen();
 		l.translate(cellLocation.x + cellLocation.width / 2, cellLocation.y + cellLocation.height / 2);
 		d_window.setLocation(l);
 	}
