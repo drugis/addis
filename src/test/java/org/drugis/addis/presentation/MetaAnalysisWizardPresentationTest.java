@@ -1,10 +1,12 @@
 package org.drugis.addis.presentation;
 
 import static org.easymock.EasyMock.verify;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -468,7 +470,6 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testGetArmsPerStudyPerDrug(){
-		
 		Study multipleArmsPerStudyPerDrug = ExampleData.buildMultipleArmsperDrugStudy();
 		Drug  parox  					  = ExampleData.buildDrugParoxetine();
 		
@@ -491,5 +492,23 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getStudyListModel().getSelectedStudyBooleanModel(ExampleData.buildStudyDeWilde()).setValue(false);
 		
 		assertEquals(expected, d_wizard.getArmsPerStudyPerDrug(multipleArmsPerStudyPerDrug, parox).getValue() );
+	}
+	
+	@Test
+	public void testSelectedStudiesPropagate() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
+		
+		List<Study> studies =
+			new ArrayList<Study>(d_wizard.getStudyListModel().getSelectedStudiesModel().getValue());
+		assertAllAndOnly(studies, d_wizard.getMetaAnalysisModel().getIncludedStudies().getValue());
+		
+		d_wizard.getStudyListModel().getSelectedStudyBooleanModel(
+				ExampleData.buildStudyChouinard()).setValue(false);
+		studies.remove(ExampleData.buildStudyChouinard());
+		
+		assertAllAndOnly(studies, d_wizard.getMetaAnalysisModel().getIncludedStudies().getValue());
 	}
 }

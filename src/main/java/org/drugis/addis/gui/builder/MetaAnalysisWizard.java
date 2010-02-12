@@ -2,8 +2,8 @@ package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
@@ -134,10 +134,10 @@ public class MetaAnalysisWizard implements ViewBuilder {
 
 			for( Study curStudy : d_pm.getStudyListModel().getSelectedStudiesModel().getValue() ){
 
-				ListHolder<Arm> leftArms = d_pm.getArmsPerStudyPerDrug( curStudy, (Drug) d_pm.getFirstDrugModel().getValue() );
-				ListHolder<Arm> rightArms = d_pm.getArmsPerStudyPerDrug( curStudy, (Drug) d_pm.getSecondDrugModel().getValue());
-				JComboBox firstDrugBox  = AuxComponentFactory.createBoundComboBox(leftArms, d_pm.getLeftArmPerStudyPerDrug( curStudy)  );
-				JComboBox secondDrugBox = AuxComponentFactory.createBoundComboBox(rightArms, d_pm.getRightArmPerStudyPerDrug( curStudy) );
+				ListHolder<Arm> leftArms = d_pm.getArmsPerStudyPerDrug(curStudy, (Drug) d_pm.getFirstDrugModel().getValue());
+				ListHolder<Arm> rightArms = d_pm.getArmsPerStudyPerDrug(curStudy, (Drug) d_pm.getSecondDrugModel().getValue());
+				JComboBox firstDrugBox  = AuxComponentFactory.createBoundComboBox(leftArms, d_pm.getLeftArmPerStudyPerDrug(curStudy));
+				JComboBox secondDrugBox = AuxComponentFactory.createBoundComboBox(rightArms, d_pm.getRightArmPerStudyPerDrug(curStudy));
 				
 				/* Disable combo-boxes if there's only one option */
 				if (leftArms.getValue().size() == 1)
@@ -228,11 +228,11 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			super("Select Endpoint","Select an Endpoint that you want to use for this meta analysis.");
 			JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(d_pm.getOutcomeMeasureListModel(), d_pm.getEndpointModel());
 			add(endPointBox);
-			endPointBox.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent arg0) {
-					setComplete(d_pm.getEndpointModel().getValue() != null);					
+			d_pm.getEndpointModel().addValueChangeListener(new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					setComplete(evt.getNewValue() != null);
 				}
-			});			
+			});
 		}
 	}
 	
@@ -242,9 +242,9 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			 super("Select Indication","Select an Indication that you want to use for this meta analysis.");
 			JComboBox indBox = AuxComponentFactory.createBoundComboBox(d_pm.getIndicationListModel(), d_pm.getIndicationModel());
 			add(indBox);
-			indBox.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent arg0) {
-					setComplete(d_pm.getIndicationModel().getValue() != null);					
+			d_pm.getIndicationModel().addValueChangeListener(new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					setComplete(evt.getNewValue() != null);
 				}
 			});
 		 }

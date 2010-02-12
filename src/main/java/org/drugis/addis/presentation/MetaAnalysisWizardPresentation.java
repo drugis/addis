@@ -161,7 +161,6 @@ public class MetaAnalysisWizardPresentation {
 
 		public void propertyChange(PropertyChangeEvent evt) {
 			updateStudyList();
-			updateArmHolders();
 			fireValueChange(null, getValue());
 		}
 	}
@@ -208,6 +207,11 @@ public class MetaAnalysisWizardPresentation {
 		d_studyListPm = new DefaultSelectableStudyListPresentationModel(new StudyListHolder());
 		d_metaAnalysisCompleteListener = new MetaAnalysisCompleteListener();		
 		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(d_metaAnalysisCompleteListener);
+		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent arg0) {
+				updateArmHolders();
+			}
+		});
 		d_firstArms = new HashMap <Study, ArmHolder>() ;
 		d_secondArms = new HashMap <Study, ArmHolder>() ;
 	}
@@ -290,7 +294,7 @@ public class MetaAnalysisWizardPresentation {
 	private void updateArmHolders() {
 		d_firstArms.clear();
 		d_secondArms.clear();
-		for (Study s : getStudyListModel().getIncludedStudies().getValue() ) {
+		for (Study s : getStudyListModel().getSelectedStudiesModel().getValue()) {
 			d_firstArms.put(s, new ArmHolder(getArmsPerStudyPerDrug(s, getFirstDrug()).getValue().get(0)));
 			d_secondArms.put(s, new ArmHolder(getArmsPerStudyPerDrug(s, getSecondDrug()).getValue().get(0)));
 		}
