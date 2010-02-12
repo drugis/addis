@@ -54,7 +54,6 @@ import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
-import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardAdapter;
@@ -157,14 +156,10 @@ public class AddStudyWizard implements ViewBuilder{
 			if (d_scrollPane != null)
 				 remove(d_scrollPane);
 			 
-			 buildWizardStep();
-			 this.setVisible(true);
-			 repaint();
-			 setComplete(true);
-		}
-		
-		public void applyState() throws InvalidStateException {
-			d_table.destroyInputWindow();
+			buildWizardStep();
+			this.setVisible(true);
+			repaint();
+			setComplete(true);
 		}
 		
 		private void buildWizardStep() {

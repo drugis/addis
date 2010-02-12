@@ -20,6 +20,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JWindow;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.table.TableModel;
 
 @SuppressWarnings("serial")
@@ -69,6 +71,18 @@ abstract public class JTableWithPopupEditor extends JTable {
 			@Override
 			public void focusGained(FocusEvent ev) {
 				destroyInputWindow();
+			}
+		});
+		
+		this.addAncestorListener(new AncestorListener() {
+			public void ancestorRemoved(AncestorEvent event) {
+				destroyInputWindow();
+			}
+			
+			public void ancestorMoved(AncestorEvent event) {
+			}
+			
+			public void ancestorAdded(AncestorEvent event) {
 			}
 		});
 	}
