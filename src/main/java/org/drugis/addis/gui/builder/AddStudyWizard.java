@@ -195,7 +195,7 @@ public class AddStudyWizard implements ViewBuilder{
 	@SuppressWarnings("serial")
 	public class SetPopulationCharMeasurementsWizardStep extends SetMeasurementsWizardStep {
 		public SetPopulationCharMeasurementsWizardStep(){
-			super("Input population data", "Please enter the measurements for all population characteristics.",
+			super("Input population data", "Please enter the measurements for all population baseline characteristics.",
 					d_pm.getPopulationCharsModel(), d_dialog);
 		}
 

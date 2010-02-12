@@ -12,8 +12,8 @@ import com.jgoodies.binding.value.AbstractValueModel;
 public class SelectPopulationCharsPresentation
 extends SelectFromFiniteListPresentationImpl<Variable> {
 	public SelectPopulationCharsPresentation(ListHolder<Variable> options) {
-		super(options, "Population Characteristic", "Select Population Characteristics",
-			"Please select the appropriate population characteristics.");
+		super(options, "Population Baseline Characteristics", "Select Population Baseline Characteristics",
+			"Please select the appropriate population baseline characteristics.");
 		d_addSlotsEnabled = new AddSlotsEnabledModel();
 	}
 	
