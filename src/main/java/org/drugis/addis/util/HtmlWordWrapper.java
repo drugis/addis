@@ -1,4 +1,4 @@
-package org.drugis.addis.gui.components;
+package org.drugis.addis.util;
 
 import java.util.LinkedList;
 import java.util.List;

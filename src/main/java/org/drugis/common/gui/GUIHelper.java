@@ -8,7 +8,7 @@ import java.awt.Window;
 import javax.swing.UIManager;
 
 import org.drugis.addis.entities.Note;
-import org.drugis.addis.gui.components.HtmlWordWrapper;
+import org.drugis.addis.util.HtmlWordWrapper;
 
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.windows.WindowsLookAndFeel;

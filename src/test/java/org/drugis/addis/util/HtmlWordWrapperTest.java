@@ -1,7 +1,8 @@
-package org.drugis.addis.gui.components;
+package org.drugis.addis.util;
 
 import static org.junit.Assert.*;
 
+import org.drugis.addis.util.HtmlWordWrapper;
 import org.junit.Test;
 
 public class HtmlWordWrapperTest {
