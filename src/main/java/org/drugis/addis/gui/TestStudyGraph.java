@@ -1,10 +1,7 @@
 package org.drugis.addis.gui;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,21 +18,12 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.StudyGraphPresentation;
 import org.drugis.addis.presentation.UnmodifiableHolder;
-import org.drugis.addis.presentation.StudyGraphPresentation.Edge;
-import org.drugis.addis.presentation.StudyGraphPresentation.Vertex;
 import org.jgraph.JGraph;
-import org.jgraph.event.GraphModelEvent;
-import org.jgraph.event.GraphModelListener;
 import org.jgraph.graph.AttributeMap;
-import org.jgraph.graph.CellView;
 import org.jgraph.graph.DefaultCellViewFactory;
 import org.jgraph.graph.DefaultGraphCell;
-import org.jgraph.graph.GraphConstants;
 import org.jgraph.graph.GraphLayoutCache;
 import org.jgraph.graph.VertexView;
-import org.jgrapht.event.GraphEdgeChangeEvent;
-import org.jgrapht.event.GraphListener;
-import org.jgrapht.event.GraphVertexChangeEvent;
 import org.jgrapht.ext.JGraphModelAdapter;
 
 import com.jgraph.components.labels.CellConstants;
