@@ -5,7 +5,8 @@ package org.drugis.addis.presentation;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 
-@SuppressWarnings("serial") class UnmodifiableHolder<T> extends AbstractValueModel implements ValueHolder<T> {
+@SuppressWarnings("serial")
+public class UnmodifiableHolder<T> extends AbstractValueModel implements ValueHolder<T> {
 	private T d_obj;
 	
 	public UnmodifiableHolder(T obj) {
