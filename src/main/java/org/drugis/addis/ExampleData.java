@@ -79,7 +79,7 @@ public class ExampleData {
 		domain.addStudy(buildStudyChouinard());
 		domain.addStudy(buildStudyDeWilde());		
 		domain.addStudy(buildStudyBennie());	
-		domain.addStudy(buildMultipleArmsperDrugStudy());
+		domain.addStudy(buildStudyMultipleArmsperDrug());
 		
 
 				
@@ -271,7 +271,7 @@ public class ExampleData {
 		return study;
 	}
 
-	public static Study buildMultipleArmsperDrugStudy() {
+	public static Study buildStudyMultipleArmsperDrug() {
 		if (s_MultipleArmsperDrugStudy == null) {
 			s_MultipleArmsperDrugStudy = realBuildMultipleArmsperDrugStudy();
 		}
@@ -380,7 +380,7 @@ public class ExampleData {
 		return study;
 	}
 
-	public static Study buildAdditionalStudyThreeArm() {
+	public static Study buildStudyAdditionalThreeArm() {
 		if (s_study3Arm == null) {
 			s_study3Arm = realBuildStudyThreeArm(); 
 		}

@@ -127,7 +127,7 @@ public abstract class RelativeEffectTableModelBaseTest {
 
 	protected void baseSetUpRate() {
 		d_standardStudy = ExampleData.buildStudyDeWilde();
-		d_threeArmStudy = ExampleData.buildAdditionalStudyThreeArm();
+		d_threeArmStudy = ExampleData.buildStudyAdditionalThreeArm();
 		d_endpoint = ExampleData.buildEndpointHamd();
 		DomainImpl domain = new DomainImpl();
 		d_pmf = new PresentationModelFactory(domain);
@@ -135,7 +135,7 @@ public abstract class RelativeEffectTableModelBaseTest {
 	
 	protected void baseSetUpContinuous() {
 		d_standardStudy = ExampleData.buildStudyChouinard();
-		d_threeArmStudy = ExampleData.buildAdditionalStudyThreeArm();
+		d_threeArmStudy = ExampleData.buildStudyAdditionalThreeArm();
 		d_endpoint = ExampleData.buildEndpointCgi();
 		DomainImpl domain = new DomainImpl();
 		d_pmf = new PresentationModelFactory(domain);

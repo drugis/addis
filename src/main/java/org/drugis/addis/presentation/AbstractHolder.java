@@ -5,15 +5,21 @@ import org.drugis.common.EqualsUtil;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public abstract class AbstractHolder<T> extends AbstractValueModel {
+public abstract class AbstractHolder<T> extends AbstractValueModel implements ValueHolder<T> {
 	protected abstract void checkArgument(Object newValue);
 	
 	private T d_content = null;
 
+	/* (non-Javadoc)
+	 * @see org.drugis.addis.presentation.ValueHolder#getValue()
+	 */
 	public T getValue() {
 		return d_content;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.drugis.addis.presentation.ValueHolder#setValue(java.lang.Object)
+	 */
 	@SuppressWarnings("unchecked")
 	public void setValue(Object newValue) {
 		checkArgument(newValue);

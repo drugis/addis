@@ -470,7 +470,7 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testGetArmsPerStudyPerDrug(){
-		Study multipleArmsPerStudyPerDrug = ExampleData.buildMultipleArmsperDrugStudy();
+		Study multipleArmsPerStudyPerDrug = ExampleData.buildStudyMultipleArmsperDrug();
 		Drug  parox  					  = ExampleData.buildDrugParoxetine();
 		
 		// Paroxetine data 1
