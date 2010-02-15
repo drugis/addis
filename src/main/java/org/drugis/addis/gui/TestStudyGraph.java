@@ -17,12 +17,17 @@ import org.drugis.addis.presentation.StudyGraphPresentation;
 import org.drugis.addis.presentation.UnmodifiableHolder;
 import org.drugis.addis.presentation.StudyGraphPresentation.Vertex;
 import org.jgraph.JGraph;
+import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.DefaultCellViewFactory;
 import org.jgraph.graph.DefaultGraphCell;
+import org.jgraph.graph.GraphConstants;
 import org.jgraph.graph.GraphLayoutCache;
 import org.jgraph.graph.VertexView;
 import org.jgrapht.ext.JGraphModelAdapter;
 
+import com.jgraph.components.labels.CellConstants;
+import com.jgraph.components.labels.MultiLineVertexRenderer;
+import com.jgraph.components.labels.MultiLineVertexView;
 import com.jgraph.layout.JGraphFacade;
 import com.jgraph.layout.graph.JGraphSimpleLayout;
 
@@ -37,8 +42,14 @@ public class TestStudyGraph extends JFrame {
 		d_pm = pm;
 		
 		d_model = new JGraphModelAdapter(d_pm);
-		GraphLayoutCache cache = new GraphLayoutCache(d_model, new MyFactory());
-		JGraph jgraph = new JGraph(d_model, cache);
+		AttributeMap vertexAttributes = new AttributeMap();
+		CellConstants.setVertexShape(vertexAttributes, MultiLineVertexRenderer.SHAPE_CIRCLE);
+		d_model.setDefaultVertexAttributes(vertexAttributes);
+		GraphLayoutCache layoutCache = new GraphLayoutCache(d_model, new MyFactory());
+		JGraph jgraph = new JGraph(d_model, layoutCache);
+		jgraph.setEditable(false);
+		jgraph.setAntiAliased(true);
+		jgraph.setAutoResizeGraph(false);
 		getContentPane().add(jgraph);
 		
 		
@@ -81,8 +92,9 @@ public class TestStudyGraph extends JFrame {
 	public class MyFactory extends DefaultCellViewFactory {
 		protected VertexView createVertexView(Object cell) {
 			if (cell instanceof DefaultGraphCell) {
-				DefaultGraphCell dCell = (DefaultGraphCell)cell;
-				return new DrugVertexView((Vertex)dCell.getUserObject(), dCell);
+				MultiLineVertexView multiLineVertexView = new MultiLineVertexView(cell);
+				multiLineVertexView.setAttributes(d_model.getDefaultVertexAttributes());
+				return multiLineVertexView;
 			}
 			return super.createVertexView(cell);
 		}
