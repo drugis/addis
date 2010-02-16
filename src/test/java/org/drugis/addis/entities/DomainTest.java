@@ -659,7 +659,7 @@ public class DomainTest {
 	
 	@Test
 	public void testGetVariables() {
-		CategoricalVariable c = new CategoricalVariable("x", new String[]{"x", "y", "z"});
+		CategoricalPopulationCharacteristic c = new CategoricalPopulationCharacteristic("x", new String[]{"x", "y", "z"});
 		d_domain.addVariable(c);
 		
 		assertEquals(Collections.singleton(c), d_domain.getVariables());
@@ -671,7 +671,7 @@ public class DomainTest {
 		d_domain.addListener(mock);
 		mock.domainChanged(new DomainEvent(DomainEvent.Type.VARIABLES));
 		replay(mock);
-		d_domain.addVariable(new CategoricalVariable("x", new String[]{"x"}));
+		d_domain.addVariable(new CategoricalPopulationCharacteristic("x", new String[]{"x"}));
 		verify(mock);
 	}
 	
@@ -679,13 +679,13 @@ public class DomainTest {
 	public void testVariablesHolder() {
 		ListHolder<PopulationCharacteristic> vars = d_domain.getVariablesHolder();
 		
-		PopulationCharacteristic v1 = new ContinuousVariable("Age");
+		PopulationCharacteristic v1 = new ContinuousPopulationCharacteristic("Age");
 		d_domain.addVariable(v1);
 		
 		assertEquals(1, vars.getValue().size());
 		assertTrue(vars.getValue().contains(v1));
 		
-		PopulationCharacteristic v2 = new ContinuousVariable("Blood Pressure");
+		PopulationCharacteristic v2 = new ContinuousPopulationCharacteristic("Blood Pressure");
 		List<Variable> expected = new ArrayList<Variable>();
 		expected.add(v1);
 		expected.add(v2);

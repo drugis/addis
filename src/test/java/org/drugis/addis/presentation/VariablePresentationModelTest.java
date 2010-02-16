@@ -6,7 +6,7 @@ import java.util.Collections;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AdverseEvent;
-import org.drugis.addis.entities.ContinuousVariable;
+import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Endpoint;
@@ -51,7 +51,7 @@ public class VariablePresentationModelTest {
 	
 	@Test
 	public void testGetNamePopChar() {
-		Variable omAde = new ContinuousVariable("testvar");
+		Variable omAde = new ContinuousPopulationCharacteristic("testvar");
 		VariablePresentationModel pm = (VariablePresentationModel) d_pmf.getModel(omAde);
 		assertEquals ("Population characteristic", pm.getCategoryName());
 	}

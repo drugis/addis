@@ -20,7 +20,7 @@
 package org.drugis.addis.entities;
 
 
-public class Endpoint extends AbstractOutcomeMeasure implements OutcomeMeasure {
+public class Endpoint extends AbstractVariable implements OutcomeMeasure {
 	private static final long serialVersionUID = -1182348850033782011L;
 	
 	private Direction d_direction;

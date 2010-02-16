@@ -6,7 +6,7 @@ import static org.easymock.EasyMock.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.drugis.addis.entities.CategoricalVariable;
+import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -15,13 +15,13 @@ import org.junit.Test;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 public class FrequencyMeasurementPresentationTest {
-	private CategoricalVariable d_variable;
+	private CategoricalPopulationCharacteristic d_variable;
 	private FrequencyMeasurement d_measurement;
 	private FrequencyMeasurementPresentation d_pm;
 	
 	@Before
 	public void setUp() {
-		d_variable = new CategoricalVariable("Gender", new String[] {"Male", "Female"});
+		d_variable = new CategoricalPopulationCharacteristic("Gender", new String[] {"Male", "Female"});
 		d_measurement = d_variable.buildMeasurement();
 		d_pm = new FrequencyMeasurementPresentation(d_measurement);
 	}
