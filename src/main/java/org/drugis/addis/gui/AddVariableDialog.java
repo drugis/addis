@@ -23,30 +23,29 @@ package org.drugis.addis.gui;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.gui.builder.AddOutcomeMeasureView;
+import org.drugis.addis.gui.builder.AddVariableView;
 import org.drugis.addis.presentation.VariablePresentationModel;
 import org.drugis.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
-public class AddOutcomeDialog extends OkCancelDialog {
+public class AddVariableDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private Variable d_om;
 	private Main d_main;
 	private ValueModel d_selectionModel;
 	
-	public AddOutcomeDialog(Main frame, Domain domain, Variable om, ValueModel selectionModel) {
+	public AddVariableDialog(Main frame, Domain domain, Variable om, ValueModel selectionModel) {
 		super(frame, "Add " + VariablePresentationModel.getCategoryName(om) );
 		this.d_main = frame;
 		this.setModal(true);
 		d_domain = domain;
 		d_om = om;
 		
-		AddOutcomeMeasureView view = new AddOutcomeMeasureView(
+		AddVariableView view = new AddVariableView(
 				frame.getPresentationModelFactory().getCreationModel(d_om), d_okButton);
 		getUserPanel().add(view.buildPanel());
 		pack();

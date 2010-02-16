@@ -43,7 +43,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class AddOutcomeMeasureView implements ViewBuilder {
+public class AddVariableView implements ViewBuilder {
 	private JTextField d_name;
 	private JTextField d_description;
 	private JTextField d_unitOfMeasurement;
@@ -52,7 +52,7 @@ public class AddOutcomeMeasureView implements ViewBuilder {
 	private JComboBox d_direction;
 	private NotEmptyValidator d_validator;
 	
-	public AddOutcomeMeasureView(PresentationModel<Variable> model, JButton okButton) {
+	public AddVariableView(PresentationModel<Variable> model, JButton okButton) {
 		d_model = model;
 		d_validator = new NotEmptyValidator(okButton);
 	}
