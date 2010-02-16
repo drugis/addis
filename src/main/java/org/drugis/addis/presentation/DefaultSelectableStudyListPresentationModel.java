@@ -12,7 +12,7 @@ import org.drugis.addis.entities.Study;
 
 public class DefaultSelectableStudyListPresentationModel extends DefaultStudyListPresentationModel implements SelectableStudyListPresentationModel{
 
-	private HashMap<Study, AbstractHolder<Boolean>> d_selectedStudiesMap;
+	private HashMap<Study, TypedHolder<Boolean>> d_selectedStudiesMap;
 	
 	private ChangeListener d_listener = new ChangeListener();
 	private ListHolder<Study> d_selectedStudiesList = new DefaultListHolder<Study>(new ArrayList<Study>());
@@ -21,7 +21,7 @@ public class DefaultSelectableStudyListPresentationModel extends DefaultStudyLis
 		super(list);
 		
 		getIncludedStudies().addValueChangeListener(d_listener);
-		d_selectedStudiesMap = new HashMap<Study, AbstractHolder<Boolean>>();
+		d_selectedStudiesMap = new HashMap<Study, TypedHolder<Boolean>>();
 		updateSelectedStudies();
 	}
 	
@@ -48,8 +48,9 @@ public class DefaultSelectableStudyListPresentationModel extends DefaultStudyLis
 		return d_selectedStudiesList;
 	}
 
-	private BooleanHolder getBooleanHolder() {
-		BooleanHolder holder = new BooleanHolder();
+	private TypedHolder<Boolean> getBooleanHolder() {
+		TypedHolder<Boolean> holder = new TypedHolder<Boolean>();
+		holder.setValue(true);
 		holder.addPropertyChangeListener(d_listener);
 		return holder;
 	}
@@ -71,7 +72,7 @@ public class DefaultSelectableStudyListPresentationModel extends DefaultStudyLis
 	 * @see org.drugis.addis.presentation.SelectableStudyListPresentationModel#getSelectedStudyBooleanModel(org.drugis.addis.entities.Study)
 	 * @throws IllegalArgumentException if !getIncludedStudies().getValue().contains(s)
 	 */
-	public AbstractHolder<Boolean> getSelectedStudyBooleanModel(Study s) throws IllegalArgumentException{
+	public TypedHolder<Boolean> getSelectedStudyBooleanModel(Study s) throws IllegalArgumentException{
 		if (!getIncludedStudies().getValue().contains(s)) {
 			throw new IllegalArgumentException();
 		}

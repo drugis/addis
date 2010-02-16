@@ -1,4 +1,4 @@
-package org.drugis.addis.presentation;
+package org.drugis.addis.presentation.wizard;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -12,6 +12,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;

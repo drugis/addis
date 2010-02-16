@@ -1,4 +1,4 @@
-package org.drugis.addis.presentation;
+package org.drugis.addis.presentation.wizard;
 
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 import static org.easymock.EasyMock.verify;
@@ -23,6 +23,10 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.presentation.ListHolder;
+import org.drugis.addis.presentation.PresentationModelFactory;
+import org.drugis.addis.presentation.StudyGraphPresentation;
+import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,21 +67,12 @@ public class MetaAnalysisWizardPresentationTest {
 		assertEquals(newValue, d_wizard.getIndicationModel().getValue());
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
-	public void testSetInvalidIndication() {
-		Indication newValue = new Indication(0L, "");
-		assertTrue(!d_domain.getIndications().contains(newValue));
-		
-		ValueModel vm = d_wizard.getIndicationModel();
-		vm.setValue(newValue);
-	}
-	
 	@Test
 	public void testGetEndpointSet() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		List<Endpoint> expected = new ArrayList<Endpoint>();
-		expected.add(ExampleData.buildEndpointCgi());
-		expected.add(ExampleData.buildEndpointHamd());
+		expected.add(ExampleData.buildEndpointCgi());		
+		expected.add(ExampleData.buildEndpointHamd());		
 		assertEquals(expected, d_wizard.getOutcomeMeasureListModel().getValue());
 	}
 	
@@ -173,18 +168,7 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		assertEquals(newValue, d_wizard.getEndpointModel().getValue());
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void testSetInvalidEndpoint() {
-		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		OutcomeMeasure newValue = ExampleData.buildEndpointCVdeath();
-		
-		assertTrue(!d_wizard.getOutcomeMeasureListModel().getValue().contains(newValue));
-		
-		ValueModel vm = d_wizard.getEndpointModel();
-		vm.setValue(newValue);
-	}
-	
+
 	@Test
 	public void testChangeIndicationUnsetEndpoint() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
@@ -270,29 +254,7 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		assertEquals(d, vm.getValue());
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void testSetInvalidFirstDrug(){
-		testSetInvalidDrugHelper(d_wizard.getFirstDrugModel());
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void testSetInvalidSecondDrug(){
-		testSetInvalidDrugHelper(d_wizard.getSecondDrugModel());
-	}
 
-	private void testSetInvalidDrugHelper(ValueModel vm) {
-		Indication ind = ExampleData.buildIndicationDepression();
-		OutcomeMeasure ep = ExampleData.buildEndpointHamd();
-		Drug d = ExampleData.buildDrugCandesartan();
-		d_wizard.getIndicationModel().setValue(ind);
-		d_wizard.getEndpointModel().setValue(ep);
-		
-		assertTrue(!d_wizard.getDrugListModel().getValue().contains(d));
-		
-		vm.setValue(d);
-	}
-	
 	@Test
 	public void testDrugCouplingFirst2Second() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());

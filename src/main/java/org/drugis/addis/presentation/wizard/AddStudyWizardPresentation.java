@@ -1,4 +1,4 @@
-package org.drugis.addis.presentation;
+package org.drugis.addis.presentation.wizard;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -28,6 +28,19 @@ import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
+import org.drugis.addis.presentation.AbstractListHolder;
+import org.drugis.addis.presentation.BasicArmPresentation;
+import org.drugis.addis.presentation.ListHolder;
+import org.drugis.addis.presentation.MeasurementTableModel;
+import org.drugis.addis.presentation.MutableCharacteristicHolder;
+import org.drugis.addis.presentation.PopulationCharTableModel;
+import org.drugis.addis.presentation.PresentationModelFactory;
+import org.drugis.addis.presentation.SelectAdverseEventsPresentation;
+import org.drugis.addis.presentation.SelectFromFiniteListPresentationModel;
+import org.drugis.addis.presentation.SelectPopulationCharsPresentation;
+import org.drugis.addis.presentation.StudyNoteHolder;
+import org.drugis.addis.presentation.StudyPresentationModel;
+import org.drugis.addis.presentation.TypedHolder;
 
 import com.jgoodies.binding.value.ValueModel;
 
@@ -102,44 +115,34 @@ public class AddStudyWizardPresentation {
 	}
 	
 	@SuppressWarnings("serial")
-	private static class OutcomeMeasureHolder<T extends OutcomeMeasure> extends AbstractHolder<T> {
-		private List<AbstractHolder<T>> d_selectionModelList;
-		private ListHolder<T> d_validValues;
+	private static class OutcomeMeasureHolder<T extends OutcomeMeasure> extends TypedHolder<T> {
+		private List<TypedHolder<T>> d_selectionModelList;
 		
 		/**
 		 * OutcomeMeasureHolder that validates it's values against a list of outcomes and
 		 * that makes sure each outcome is selected only once.
 		 * @param modelList
-		 * @param validValues
 		 */
-		public OutcomeMeasureHolder(List<AbstractHolder<T>> modelList,
-				ListHolder<T> validValues) {
+		public OutcomeMeasureHolder(List<TypedHolder<T>> modelList) {
 			d_selectionModelList = modelList;
-			d_validValues = validValues;
 		}
 		
 		@Override
-		protected void checkArgument(Object newValue) {
-			if (newValue != null)
-				if (!d_validValues.getValue().contains(newValue))
-					throw new IllegalArgumentException(newValue + " is not in the set of allowed values.");
-		}
-		
-		@Override
-		protected void cascade() {
+		public void setValue(Object newValue) {
 			// If the outcome that was selected is already selected somewhere else, reset the other selection
-			for (AbstractHolder<T> omHolder : d_selectionModelList) {
+			for (TypedHolder<T> omHolder : d_selectionModelList) {
 				if ((!omHolder.equals(this)) && (omHolder.getValue() != null))
 					if (omHolder.getValue().equals(getValue()))
 						omHolder.setValue(null);
 			}
+			super.setValue(newValue);
 		}
 	}
 	
 	@SuppressWarnings("serial")
 	private class EndpointHolder extends OutcomeMeasureHolder<Endpoint> {
 		public EndpointHolder() {
-			super(d_selectedEndpointsList, getEndpointListModel());
+			super(d_selectedEndpointsList);
 		}
 	}
 	
@@ -164,7 +167,7 @@ public class AddStudyWizardPresentation {
 	private StudyPresentationModel d_newStudyPM;
 	private StudyPresentationModel d_oldStudyPM;
 	
-	List<AbstractHolder<Endpoint>> d_selectedEndpointsList;
+	List<TypedHolder<Endpoint>> d_selectedEndpointsList;
 	List<BasicArmPresentation> d_selectedArmList;
 	private ListHolder<Endpoint> d_endpointListHolder;
 	private ListHolder<AdverseEvent> d_adverseEventListHolder;
@@ -225,7 +228,7 @@ public class AddStudyWizardPresentation {
 		getTitleModel().setValue(getOldStudy().getCharacteristic(BasicStudyCharacteristic.TITLE));
 		
 		// Endpoints.
-		d_selectedEndpointsList = new ArrayList<AbstractHolder<Endpoint>>();
+		d_selectedEndpointsList = new ArrayList<TypedHolder<Endpoint>>();
 		addEndpointModels(getOldStudy().getOutcomeMeasures().size());
 		
 		// Arms & Dosage
@@ -250,7 +253,7 @@ public class AddStudyWizardPresentation {
 		d_oldStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
 		d_newStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
 		getSourceModel().setValue(Source.MANUAL);
-		d_selectedEndpointsList = new ArrayList<AbstractHolder<Endpoint>>();
+		d_selectedEndpointsList = new ArrayList<TypedHolder<Endpoint>>();
 		while (d_adverseEventSelect.countSlots() > 0) {
 			d_adverseEventSelect.removeSlot(0);
 		}
@@ -370,7 +373,7 @@ public class AddStudyWizardPresentation {
 	
 	void commitOutcomesArmsToNew(){
 		List<Endpoint> outcomeMeasures = new ArrayList<Endpoint>();
-		for(AbstractHolder<Endpoint> outcomeHolder : d_selectedEndpointsList) {
+		for(TypedHolder<Endpoint> outcomeHolder : d_selectedEndpointsList) {
 			outcomeMeasures.add(outcomeHolder.getValue());
 		}	
 		getNewStudy().setEndpoints(outcomeMeasures);
@@ -385,7 +388,7 @@ public class AddStudyWizardPresentation {
 	
 	private void commitAdverseEventsToStudy() {
 		List<AdverseEvent> outcomeMeasures = new ArrayList<AdverseEvent>();
-		for(AbstractHolder<AdverseEvent> outcomeHolder : d_adverseEventSelect.getSlots()) {
+		for(TypedHolder<AdverseEvent> outcomeHolder : d_adverseEventSelect.getSlots()) {
 			outcomeMeasures.add(outcomeHolder.getValue());
 		}	
 		getNewStudy().setAdverseEvents(outcomeMeasures);
@@ -393,7 +396,7 @@ public class AddStudyWizardPresentation {
 	
 	private void commitPopulationCharsToStudy() {
 		List<PopulationCharacteristic> outcomeMeasures = new ArrayList<PopulationCharacteristic>();
-		for(AbstractHolder<PopulationCharacteristic> outcomeHolder : d_populationCharSelect.getSlots()) {
+		for(TypedHolder<PopulationCharacteristic> outcomeHolder : d_populationCharSelect.getSlots()) {
 			outcomeMeasures.add(outcomeHolder.getValue());
 		}	
 		getNewStudy().setPopulationCharacteristics(outcomeMeasures);

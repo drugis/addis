@@ -1,8 +1,9 @@
-package org.drugis.addis.presentation;
+package org.drugis.addis.presentation.wizard;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,95 +20,20 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.presentation.AbstractListHolder;
+import org.drugis.addis.presentation.DefaultSelectableStudyListPresentationModel;
+import org.drugis.addis.presentation.ListHolder;
+import org.drugis.addis.presentation.PresentationModelFactory;
+import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
+import org.drugis.addis.presentation.SelectableStudyListPresentationModel;
+import org.drugis.addis.presentation.StudyGraphPresentation;
+import org.drugis.addis.presentation.TypedHolder;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class MetaAnalysisWizardPresentation {
-	
-	@SuppressWarnings("serial") class IndicationHolder extends AbstractHolder<Indication> {
-		@Override
-		protected void cascade() {
-			d_endpointHolder.unSet();
-		}
 		
-		@Override
-		protected void checkArgument(Object newValue) {
-			if (!d_domain.getIndications().contains(newValue))
-				throw new IllegalArgumentException("Indication not in the actual set!");
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	private class OutcomeMeasureHolder extends AbstractHolder<OutcomeMeasure> {
-		@Override
-		protected void checkArgument(Object newValue) {
-			if (newValue != null)
-				if (!getEndpointSet().contains(newValue))
-					throw new IllegalArgumentException("Endpoint not in the actual set!");
-		}
-
-		@Override
-		protected void cascade() {
-			d_firstDrugHolder.unSet();
-			d_secondDrugHolder.unSet();
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	private class DrugHolder extends AbstractHolder<Drug> {
-		@Override
-		protected void checkArgument(Object newValue) {
-			if (newValue != null)
-				if (!getDrugSet().contains(newValue))
-					throw new IllegalArgumentException("Drug not in the actual set!");
-		}
-
-		protected void cascade() {
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	class ArmHolder extends AbstractHolder<Arm> {
-
-		public ArmHolder(Arm arm) {
-			setValue(arm);
-		}
-		
-		@Override
-		protected void cascade() {
-		}
-
-		@Override
-		protected void checkArgument(Object newValue) {
-		}
-			
-	}
-	
-	@SuppressWarnings("serial")
-	private class IndicationListHolder extends AbstractListHolder<Indication> {
-		@Override
-		public List<Indication> getValue() {
-			return new ArrayList<Indication>(d_domain.getIndications());
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	private class OutcomeListHolder extends AbstractListHolder<OutcomeMeasure> implements PropertyChangeListener {
-		public OutcomeListHolder() {
-			getIndicationModel().addValueChangeListener(this);
-		}
-		
-		@Override
-		public List<OutcomeMeasure> getValue() {
-			return new ArrayList<OutcomeMeasure>(getEndpointSet());
-		}
-
-		public void propertyChange(PropertyChangeEvent event) {
-			fireValueChange(null, getValue());
-		}
-	}
-	
 	@SuppressWarnings("serial")
 	private class DrugListHolder extends AbstractListHolder<Drug> implements PropertyChangeListener {
 		public DrugListHolder() {
@@ -116,34 +42,18 @@ public class MetaAnalysisWizardPresentation {
 		
 		@Override
 		public List<Drug> getValue() {
-			return new ArrayList<Drug>(getDrugSet());
+			SortedSet<Drug> drugs = new TreeSet<Drug>();
+			if (getIndication() != null && getEndpoint() != null) {
+				List<Study> studies = getStudiesEndpointAndIndication();
+				for (Study s : studies) {
+					drugs.addAll(s.getDrugs());
+				}
+			}			
+			return new ArrayList<Drug>(drugs);
 		}
-
+		
 		public void propertyChange(PropertyChangeEvent evt) {
 			fireValueChange(null, getValue());
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	private class ArmListHolder extends AbstractListHolder<Arm> implements PropertyChangeListener {
-		Study d_study;
-		Drug d_drug;
-		
-		public ArmListHolder(Study s, Drug d) {
-			d_study = s;
-			d_drug = d;
-			
-			d_study.addPropertyChangeListener(this);
-			d_drug.addPropertyChangeListener(this);
-		}
-
-		@Override
-		public List<Arm> getValue() {
-			return getArmPerStudyDrug(d_study,d_drug);
-		}
-
-		public void propertyChange(PropertyChangeEvent arg0) {
-			fireValueChange(null,getValue());			
 		}
 	}
 	
@@ -182,44 +92,49 @@ public class MetaAnalysisWizardPresentation {
 	}
 		
 	private Domain d_domain;
-	private AbstractHolder<Indication> d_indicationHolder;
-	private AbstractHolder<OutcomeMeasure> d_endpointHolder;
+	private TypedHolder<Indication> d_indicationHolder;
+	private TypedHolder<OutcomeMeasure> d_endpointHolder;
 	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;	
-	private DrugHolder d_firstDrugHolder;
-	private DrugHolder d_secondDrugHolder;
+	private TypedHolder<Drug> d_firstDrugHolder;
+	private TypedHolder<Drug> d_secondDrugHolder;
 	private OutcomeListHolder d_outcomeListHolder;
 	private DrugListHolder d_drugListHolder;
 	private DefaultSelectableStudyListPresentationModel d_studyListPm;
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
 	private List<Study> d_studyList = new ArrayList<Study>();
 	private PresentationModelFactory d_pmm;
-	private Map<Study, ArmHolder> d_firstArms;
-	private Map<Study, ArmHolder> d_secondArms;
+	private Map<Study, TypedHolder<Arm>> d_firstArms;
+	private Map<Study, TypedHolder<Arm>> d_secondArms;
 	private DrugsSelectedCompleteListener d_drugsSelectedCompleteModel;
 	private StudyGraphPresentation d_studyGraphPresentationModel;
 	
 	public MetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
 		d_domain = d;
 		d_pmm = pmm;
-		d_indicationHolder = new IndicationHolder();
-		d_endpointHolder = new OutcomeMeasureHolder();
-		d_firstDrugHolder = new DrugHolder();
+		d_indicationHolder = new TypedHolder<Indication>();
+		d_endpointHolder = new TypedHolder<OutcomeMeasure>();
+		d_indicationHolder.addPropertyChangeListener(new SetEmptyListener(d_endpointHolder));
+		
+		d_firstDrugHolder = new TypedHolder<Drug>();
 		d_studiesMeasuringValueModel = new StudiesMeasuringValueModel();		
-		d_secondDrugHolder = new DrugHolder();
-		d_outcomeListHolder = new OutcomeListHolder();
+		d_secondDrugHolder = new TypedHolder<Drug>();
+		d_outcomeListHolder = new OutcomeListHolder(d_indicationHolder, d_domain);
 		d_drugListHolder = new DrugListHolder();
+		
+		d_endpointHolder.addPropertyChangeListener(
+				new SetEmptyListener(new TypedHolder[]{d_firstDrugHolder, d_secondDrugHolder}));
 		
 		d_firstDrugHolder.addValueChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getNewValue() != null && evt.getNewValue().equals(getSecondDrug())) {
-					d_secondDrugHolder.unSet();
+					d_secondDrugHolder.setValue(null);
 				}									
 			}
 		});
 		d_secondDrugHolder.addValueChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getNewValue() != null && evt.getNewValue().equals(getFirstDrug())) {
-					d_firstDrugHolder.unSet();
+					d_firstDrugHolder.setValue(null);
 				}									
 			}			
 		});
@@ -237,15 +152,21 @@ public class MetaAnalysisWizardPresentation {
 				updateArmHolders();
 			}
 		});
-		d_firstArms = new HashMap <Study, ArmHolder>() ;
-		d_secondArms = new HashMap <Study, ArmHolder>() ;
+		d_firstArms = new HashMap <Study, TypedHolder<Arm>>() ;
+		d_secondArms = new HashMap <Study, TypedHolder<Arm>>() ;
 		
 		d_studyGraphPresentationModel = new StudyGraphPresentation(d_indicationHolder,
 				d_endpointHolder, d_drugListHolder, d_domain);		
 	}
 		
+	@SuppressWarnings("serial")
 	public ListHolder<Indication> getIndicationListModel() {
-		return new IndicationListHolder();
+		return new AbstractListHolder<Indication>() {
+			@Override
+			public List<Indication> getValue() {
+				return new ArrayList<Indication>(d_domain.getIndications());
+			}
+		};
 	}
 	
 	public ValueModel getIndicationModel() {
@@ -255,17 +176,7 @@ public class MetaAnalysisWizardPresentation {
 	public AbstractListHolder<OutcomeMeasure> getOutcomeMeasureListModel() {
 		return d_outcomeListHolder;
 	}
-	
-	private SortedSet<OutcomeMeasure> getEndpointSet() {
-		TreeSet<OutcomeMeasure> endpoints = new TreeSet<OutcomeMeasure>();
-		if (getIndication() != null) {
-			for (Study s : d_domain.getStudies(getIndication()).getValue()) {
-				endpoints.addAll(s.getOutcomeMeasures());
-			}			
-		}	
-		return endpoints;
-	}
-	
+		
 	public ValueModel getEndpointModel() {
 		return d_endpointHolder;
 	}
@@ -274,19 +185,6 @@ public class MetaAnalysisWizardPresentation {
 		return d_drugListHolder;
 	}
 	
-	private SortedSet<Drug> getDrugSet() {
-		SortedSet<Drug> drugs = new TreeSet<Drug>();
-		if (getIndication() != null && getEndpoint() != null) {
-			List<Study> studies = getStudiesEndpointAndIndication();
-			for (Study s : studies) {
-				drugs.addAll(s.getDrugs());
-			}
-		}
-		return drugs;
-	}
-	
-
-
 	private List<Study> getStudiesEndpointAndIndication() {
 		List<Study> studies = new ArrayList<Study>(d_domain.getStudies(getEndpoint()).getValue());
 		studies.retainAll(d_domain.getStudies(getIndication()).getValue());
@@ -323,8 +221,8 @@ public class MetaAnalysisWizardPresentation {
 		d_firstArms.clear();
 		d_secondArms.clear();
 		for (Study s : getStudyListModel().getSelectedStudiesModel().getValue()) {
-			d_firstArms.put(s, new ArmHolder(getArmsPerStudyPerDrug(s, getFirstDrug()).getValue().get(0)));
-			d_secondArms.put(s, new ArmHolder(getArmsPerStudyPerDrug(s, getSecondDrug()).getValue().get(0)));
+			d_firstArms.put(s, new TypedHolder<Arm>(getArmsPerStudyPerDrug(s, getFirstDrug()).getValue().get(0)));
+			d_secondArms.put(s, new TypedHolder<Arm>(getArmsPerStudyPerDrug(s, getSecondDrug()).getValue().get(0)));
 		}
 	}
 	
@@ -374,7 +272,7 @@ public class MetaAnalysisWizardPresentation {
 	private RandomEffectsMetaAnalysis createMetaAnalysis() {
 		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
 		
-		for(Entry<Study,ArmHolder> entry : d_firstArms.entrySet()) {
+		for(Entry<Study,TypedHolder<Arm>> entry : d_firstArms.entrySet()) {
 			studyArms.add(new StudyArmsEntry(entry.getKey(), entry.getValue().getValue(), d_secondArms.get(entry.getKey()).getValue() ) );
 		}
 		
@@ -410,16 +308,6 @@ public class MetaAnalysisWizardPresentation {
 	public RandomEffectsMetaAnalysisPresentation getMetaAnalysisModel() {
 		return (RandomEffectsMetaAnalysisPresentation) d_pmm.getModel(createMetaAnalysis());
 	}
-
-	private List<Arm> getArmPerStudyDrug(Study study, Drug drug) {
-		ArrayList<Arm> armList = new ArrayList<Arm>();
-		for (Arm curArm : study.getArms()) {
-			if (curArm.getDrug().equals(drug)) {
-				armList.add(curArm);
-			}
-		}
-		return armList;
-	}
 	
 	public ListHolder<Arm> getArmsPerStudyPerDrug(Study study, Drug drug) {
 		return new ArmListHolder(study, drug);
@@ -439,5 +327,25 @@ public class MetaAnalysisWizardPresentation {
 
 	public StudyGraphPresentation getStudyGraphModel() {
 		return d_studyGraphPresentationModel;
+	}
+	
+	@SuppressWarnings("unchecked")	
+	private class SetEmptyListener implements PropertyChangeListener {
+		private List<TypedHolder> holders;
+		
+		public SetEmptyListener(TypedHolder h) {
+			holders = new ArrayList<TypedHolder>();
+			holders.add(h);
+		}
+		
+		public SetEmptyListener(TypedHolder[] holders) {
+			this.holders = Arrays.asList(holders);
+		}
+		
+		public void propertyChange(PropertyChangeEvent arg0) {
+			for (TypedHolder h : holders) {
+				h.setValue(null);
+			}
+		}
 	}
 }

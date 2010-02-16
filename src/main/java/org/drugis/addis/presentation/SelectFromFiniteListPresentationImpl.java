@@ -17,7 +17,7 @@ import com.jgoodies.binding.value.ValueModel;
 abstract public class SelectFromFiniteListPresentationImpl<T> extends Model
 implements SelectFromFiniteListPresentationModel<T> {
 
-	protected List<AbstractHolder<T>> d_slots;
+	protected List<TypedHolder<T>> d_slots;
 	protected ListHolder<T> d_options;
 	protected ValueModel d_addSlotsEnabled;
 	protected InputCompleteModel d_inputCompleteModel;
@@ -32,7 +32,7 @@ implements SelectFromFiniteListPresentationModel<T> {
 		d_typeName = typeName;
 		d_title = title;
 		d_description = description;
-		d_slots = new ArrayList<AbstractHolder<T>>();
+		d_slots = new ArrayList<TypedHolder<T>>();
 		d_options = options;
 		d_addSlotsEnabled = new AddSlotsAlwaysEnabledModel();
 		d_inputCompleteModel = new InputCompleteModel();
@@ -54,13 +54,13 @@ implements SelectFromFiniteListPresentationModel<T> {
 	}
 
 	public void removeSlot(int idx) {
-		AbstractHolder<T> s = d_slots.get(idx);
+		TypedHolder<T> s = d_slots.get(idx);
 		d_slots.remove(idx);
 		firePropertyChange(PROPERTY_NSLOTS, d_slots.size() + 1, d_slots.size());
 		d_inputCompleteModel.removeSlot(s);
 	}
 
-	public AbstractHolder<T> getSlot(int idx) {
+	public TypedHolder<T> getSlot(int idx) {
 		return d_slots.get(idx);
 	}
 
@@ -92,35 +92,33 @@ implements SelectFromFiniteListPresentationModel<T> {
 		return d_description;
 	}
 
-	public List<AbstractHolder<T>> getSlots() { 
+	public List<TypedHolder<T>> getSlots() { 
 		return Collections.unmodifiableList(d_slots);
 	}
 
-	class Slot<E> extends AbstractHolder<E> {
-		private List<AbstractHolder<E>> d_slots;
-		public Slot(List<AbstractHolder<E>> slots) {
+	class Slot<E> extends TypedHolder<E> {
+		private List<TypedHolder<E>> d_slots;
+		public Slot(List<TypedHolder<E>> slots) {
 			d_slots = slots;
 		}
 		@Override
-		protected void cascade() {
+		public void setValue(Object obj) {
+			super.setValue(obj);			
 			// Make sure each option is selected only once
-			for (AbstractHolder<E> s : d_slots) {
+			for (TypedHolder<E> s : d_slots) {
 				if (s != this && EqualsUtil.equal(s.getValue(), getValue())) {
 					s.setValue(null);
 				}
 			}
 		}
-
-		@Override
-		protected void checkArgument(Object newValue) {
-		}
+		
 	}
 	
 	class InputCompleteModel extends AbstractValueModel implements PropertyChangeListener {
 		private Boolean d_oldValue;
 		
 		public InputCompleteModel() {
-			for (AbstractHolder<T> s : d_slots) {
+			for (TypedHolder<T> s : d_slots) {
 				s.addValueChangeListener(this);
 			}
 			d_oldValue = getValue();
@@ -139,7 +137,7 @@ implements SelectFromFiniteListPresentationModel<T> {
 
 		public Boolean getValue() {
 			boolean r = true;
-			for (AbstractHolder<T> s: d_slots) {
+			for (TypedHolder<T> s: d_slots) {
 				if (s.getValue() == null) {
 					r = false;
 					break;
@@ -148,12 +146,12 @@ implements SelectFromFiniteListPresentationModel<T> {
 			return r;
 		}
 		
-		public void addSlot(AbstractHolder<T> s) {
+		public void addSlot(TypedHolder<T> s) {
 			s.addValueChangeListener(this);
 			evaluate();
 		}
 		
-		public void removeSlot(AbstractHolder<T> s) {
+		public void removeSlot(TypedHolder<T> s) {
 			s.removeValueChangeListener(this);
 			evaluate();
 		}
