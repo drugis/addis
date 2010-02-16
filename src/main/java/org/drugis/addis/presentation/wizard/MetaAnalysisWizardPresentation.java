@@ -3,12 +3,9 @@ package org.drugis.addis.presentation.wizard;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.Map.Entry;
 
 import org.drugis.addis.entities.Arm;
@@ -32,98 +29,45 @@ import org.drugis.addis.presentation.TypedHolder;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
-public class MetaAnalysisWizardPresentation {
-		
-	@SuppressWarnings("serial")
-	private class DrugListHolder extends AbstractListHolder<Drug> implements PropertyChangeListener {
-		public DrugListHolder() {
-			getEndpointModel().addValueChangeListener(this);
-		}
-		
-		@Override
-		public List<Drug> getValue() {
-			SortedSet<Drug> drugs = new TreeSet<Drug>();
-			if (getIndication() != null && getEndpoint() != null) {
-				List<Study> studies = getStudiesEndpointAndIndication();
-				for (Study s : studies) {
-					drugs.addAll(s.getDrugs());
-				}
-			}			
-			return new ArrayList<Drug>(drugs);
-		}
-		
-		public void propertyChange(PropertyChangeEvent evt) {
-			fireValueChange(null, getValue());
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	private class StudyListHolder extends AbstractListHolder<Study> implements PropertyChangeListener {
-		public StudyListHolder() {
-			getFirstDrugModel().addValueChangeListener(this);
-			getSecondDrugModel().addValueChangeListener(this);
-		}
-		
-		@Override
-		public List<Study> getValue() {
-			return d_studyList;
-		}
-
-		public void propertyChange(PropertyChangeEvent evt) {
-			updateStudyList();
-			fireValueChange(null, getValue());
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	public class DrugsSelectedCompleteListener extends AbstractValueModel implements PropertyChangeListener {
-
-		public void propertyChange(PropertyChangeEvent evt) {
-			firePropertyChange(PROPERTYNAME_VALUE, null, getValue());
-		}
-
-		public Object getValue() {
-			boolean val = d_firstDrugHolder.getValue() != null && d_secondDrugHolder.getValue() != null;
-			return new Boolean(val);
-		}
-
-		public void setValue(Object newValue) {			
-		}		
-	}
-		
-	private Domain d_domain;
-	private TypedHolder<Indication> d_indicationHolder;
-	private TypedHolder<OutcomeMeasure> d_endpointHolder;
+public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM {
+				
 	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;	
 	private TypedHolder<Drug> d_firstDrugHolder;
 	private TypedHolder<Drug> d_secondDrugHolder;
-	private OutcomeListHolder d_outcomeListHolder;
-	private DrugListHolder d_drugListHolder;
 	private DefaultSelectableStudyListPresentationModel d_studyListPm;
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
 	private List<Study> d_studyList = new ArrayList<Study>();
-	private PresentationModelFactory d_pmm;
 	private Map<Study, TypedHolder<Arm>> d_firstArms;
 	private Map<Study, TypedHolder<Arm>> d_secondArms;
-	private DrugsSelectedCompleteListener d_drugsSelectedCompleteModel;
 	private StudyGraphPresentation d_studyGraphPresentationModel;
 	
 	public MetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
-		d_domain = d;
-		d_pmm = pmm;
-		d_indicationHolder = new TypedHolder<Indication>();
-		d_endpointHolder = new TypedHolder<OutcomeMeasure>();
-		d_indicationHolder.addPropertyChangeListener(new SetEmptyListener(d_endpointHolder));
+		super(d, pmm);
 		
-		d_firstDrugHolder = new TypedHolder<Drug>();
-		d_studiesMeasuringValueModel = new StudiesMeasuringValueModel();		
+		d_studiesMeasuringValueModel = new StudiesMeasuringValueModel();
+		
+		buildDrugHolders();
+		
+		d_studyListPm = new DefaultSelectableStudyListPresentationModel(new StudyListHolder());
+				
+		d_metaAnalysisCompleteListener = new MetaAnalysisCompleteListener();		
+		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(d_metaAnalysisCompleteListener);
+		
+		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent ev) {
+				updateArmHolders();
+			}
+		});
+		d_firstArms = new HashMap <Study, TypedHolder<Arm>>() ;
+		d_secondArms = new HashMap <Study, TypedHolder<Arm>>() ;
+		
+		d_studyGraphPresentationModel = new StudyGraphPresentation(d_indicationHolder,
+				d_endpointHolder, d_drugListHolder, d_domain);		
+	}
+
+	private void buildDrugHolders() {
+		d_firstDrugHolder = new TypedHolder<Drug>();		
 		d_secondDrugHolder = new TypedHolder<Drug>();
-		d_outcomeListHolder = new OutcomeListHolder(d_indicationHolder, d_domain);
-		d_drugListHolder = new DrugListHolder();
-		
-		d_endpointHolder.addPropertyChangeListener(
-				new SetEmptyListener(new TypedHolder[]{d_firstDrugHolder, d_secondDrugHolder}));
-		
 		d_firstDrugHolder.addValueChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getNewValue() != null && evt.getNewValue().equals(getSecondDrug())) {
@@ -138,25 +82,9 @@ public class MetaAnalysisWizardPresentation {
 				}									
 			}			
 		});
-		d_studyListPm = new DefaultSelectableStudyListPresentationModel(new StudyListHolder());
-				
-		d_metaAnalysisCompleteListener = new MetaAnalysisCompleteListener();		
-		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(d_metaAnalysisCompleteListener);
 		
-		d_drugsSelectedCompleteModel = new DrugsSelectedCompleteListener();
-		d_firstDrugHolder.addValueChangeListener(d_drugsSelectedCompleteModel);
-		d_secondDrugHolder.addValueChangeListener(d_drugsSelectedCompleteModel);		
-				
-		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent arg0) {
-				updateArmHolders();
-			}
-		});
-		d_firstArms = new HashMap <Study, TypedHolder<Arm>>() ;
-		d_secondArms = new HashMap <Study, TypedHolder<Arm>>() ;
-		
-		d_studyGraphPresentationModel = new StudyGraphPresentation(d_indicationHolder,
-				d_endpointHolder, d_drugListHolder, d_domain);		
+		d_endpointHolder.addPropertyChangeListener(
+				new SetEmptyListener(new TypedHolder[]{d_firstDrugHolder, d_secondDrugHolder}));
 	}
 		
 	@SuppressWarnings("serial")
@@ -169,36 +97,10 @@ public class MetaAnalysisWizardPresentation {
 		};
 	}
 	
-	public ValueModel getIndicationModel() {
-		return d_indicationHolder; 
-	}
-	
 	public AbstractListHolder<OutcomeMeasure> getOutcomeMeasureListModel() {
 		return d_outcomeListHolder;
 	}
 		
-	public ValueModel getEndpointModel() {
-		return d_endpointHolder;
-	}
-	
-	public AbstractListHolder<Drug> getDrugListModel() {
-		return d_drugListHolder;
-	}
-	
-	private List<Study> getStudiesEndpointAndIndication() {
-		List<Study> studies = new ArrayList<Study>(d_domain.getStudies(getEndpoint()).getValue());
-		studies.retainAll(d_domain.getStudies(getIndication()).getValue());
-		return studies;
-	}
-
-	private Indication getIndication() {
-		return d_indicationHolder.getValue();
-	}
-
-	private OutcomeMeasure getEndpoint() {
-		return d_endpointHolder.getValue();
-	}
-	
 	public ValueModel getFirstDrugModel() {
 		return d_firstDrugHolder;
 	}
@@ -242,7 +144,6 @@ public class MetaAnalysisWizardPresentation {
 	public class StudiesMeasuringValueModel extends AbstractValueModel implements PropertyChangeListener {
 		
 		public StudiesMeasuringValueModel() {
-			// NB indication listening automatically via endpoint cascade
 			d_endpointHolder.addValueChangeListener(this);			
 		}
 
@@ -321,31 +222,25 @@ public class MetaAnalysisWizardPresentation {
 		return d_secondArms.get(study);
 	}
 
-	public ValueModel getDrugsSelectedCompleteModel() {
-		return d_drugsSelectedCompleteModel;
-	}
-
 	public StudyGraphPresentation getStudyGraphModel() {
 		return d_studyGraphPresentationModel;
 	}
-	
-	@SuppressWarnings("unchecked")	
-	private class SetEmptyListener implements PropertyChangeListener {
-		private List<TypedHolder> holders;
 		
-		public SetEmptyListener(TypedHolder h) {
-			holders = new ArrayList<TypedHolder>();
-			holders.add(h);
+	@SuppressWarnings("serial")
+	private class StudyListHolder extends AbstractListHolder<Study> implements PropertyChangeListener {
+		public StudyListHolder() {
+			getFirstDrugModel().addValueChangeListener(this);
+			getSecondDrugModel().addValueChangeListener(this);
 		}
 		
-		public SetEmptyListener(TypedHolder[] holders) {
-			this.holders = Arrays.asList(holders);
+		@Override
+		public List<Study> getValue() {
+			return d_studyList;
 		}
-		
-		public void propertyChange(PropertyChangeEvent arg0) {
-			for (TypedHolder h : holders) {
-				h.setValue(null);
-			}
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			updateStudyList();
+			fireValueChange(null, getValue());
 		}
-	}
+	}	
 }

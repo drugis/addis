@@ -274,24 +274,6 @@ public class MetaAnalysisWizardPresentationTest {
 	}
 	
 	@Test
-	public void testDrugSelectedCompleteModel() {
-		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
-		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
-		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
-		ValueModel model = d_wizard.getDrugsSelectedCompleteModel();
-		assertEquals(true, model.getValue());
-		
-		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, false);
-		model.addValueChangeListener(mock);
-		d_wizard.getFirstDrugModel().setValue(null);
-		
-		assertEquals(false, model.getValue());		
-		
-		verify(mock);
-	}	
-	
-	@Test
 	public void testStudyGraphPresentationModel() {
 		StudyGraphPresentation model = d_wizard.getStudyGraphModel();
 		

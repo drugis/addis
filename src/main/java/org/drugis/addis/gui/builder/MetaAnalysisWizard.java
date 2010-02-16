@@ -190,7 +190,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			
 			builder.add(buildStudiesGraph(), cc.xy(1, 5));
 			
-			Bindings.bind(this, "complete", d_pm.getDrugsSelectedCompleteModel());
+			Bindings.bind(this, "complete", d_pm.getMetaAnalysisCompleteModel());
 		}
 		
 		private Component buildStudiesGraph() {
