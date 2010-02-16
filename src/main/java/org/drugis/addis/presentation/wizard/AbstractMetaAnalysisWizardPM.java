@@ -14,18 +14,20 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
+import org.drugis.addis.presentation.StudyGraphPresentation;
 import org.drugis.addis.presentation.TypedHolder;
 
 import com.jgoodies.binding.value.ValueModel;
 
-public abstract class AbstractMetaAnalysisWizardPM {
+public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphPresentation> {
 
 	protected Domain d_domain;
 	protected PresentationModelFactory d_pmm;
 	protected TypedHolder<Indication> d_indicationHolder;
 	protected TypedHolder<OutcomeMeasure> d_endpointHolder;
 	protected OutcomeListHolder d_outcomeListHolder;
-	protected DrugListHolder d_drugListHolder;	
+	protected DrugListHolder d_drugListHolder;
+	protected G d_studyGraphPresentationModel;	
 
 	public AbstractMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmm) {
 		d_domain = d;
@@ -35,8 +37,11 @@ public abstract class AbstractMetaAnalysisWizardPM {
 		d_endpointHolder = new TypedHolder<OutcomeMeasure>();
 		d_indicationHolder.addPropertyChangeListener(new SetEmptyListener(d_endpointHolder));
 		d_outcomeListHolder = new OutcomeListHolder(d_indicationHolder, d_domain);		
-		d_drugListHolder = new DrugListHolder();		
+		d_drugListHolder = new DrugListHolder();
+		d_studyGraphPresentationModel = buildStudyGraphPresentation();
 	}
+	
+	abstract protected G buildStudyGraphPresentation();
 	
 	public ValueModel getIndicationModel() {
 		return d_indicationHolder; 

@@ -15,10 +15,14 @@ import org.drugis.addis.presentation.StudyGraphPresentation;
 import org.drugis.addis.presentation.StudyGraphPresentation.Edge;
 import org.drugis.addis.presentation.StudyGraphPresentation.Vertex;
 import org.jgraph.JGraph;
+import org.jgraph.event.GraphSelectionEvent;
+import org.jgraph.event.GraphSelectionListener;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.DefaultCellViewFactory;
+import org.jgraph.graph.DefaultEdge;
 import org.jgraph.graph.DefaultGraphCell;
 import org.jgraph.graph.GraphLayoutCache;
+import org.jgraph.graph.GraphSelectionModel;
 import org.jgraph.graph.VertexView;
 import org.jgrapht.event.GraphEdgeChangeEvent;
 import org.jgrapht.event.GraphListener;
@@ -67,6 +71,7 @@ public class StudyGraph extends JPanel {
 				layoutGraph();
 			}
 		}); 
+		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -85,6 +90,17 @@ public class StudyGraph extends JPanel {
 		JGraph jgraph = new JGraph(d_model, layoutCache);
 		jgraph.setAntiAliased(true);
 		jgraph.setEnabled(false);
+		/*
+		jgraph.getSelectionModel().addGraphSelectionListener(new GraphSelectionListener() {
+			
+			public void valueChanged(GraphSelectionEvent e) {
+				if (!(e.getCell() instanceof DefaultEdge)) {
+					System.out.println(e.getCell());
+//					((DefaultGraphCell)e.getCell()).
+				}
+			}
+		});	
+		*/	
 		add(jgraph, BorderLayout.CENTER);
 		
 		// add a circle layout to the graph
@@ -93,7 +109,7 @@ public class StudyGraph extends JPanel {
 		layout.run(facade);
 		Map nested = facade.createNestedMap(true, true);
 		jgraph.getGraphLayoutCache().edit(nested);
-		
+	
 		jgraph.repaint();
 	}
 	

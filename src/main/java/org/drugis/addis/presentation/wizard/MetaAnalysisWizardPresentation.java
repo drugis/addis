@@ -29,7 +29,7 @@ import org.drugis.addis.presentation.TypedHolder;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
-public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM {
+public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM<StudyGraphPresentation> {
 				
 	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;	
 	private TypedHolder<Drug> d_firstDrugHolder;
@@ -39,8 +39,6 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	private List<Study> d_studyList = new ArrayList<Study>();
 	private Map<Study, TypedHolder<Arm>> d_firstArms;
 	private Map<Study, TypedHolder<Arm>> d_secondArms;
-	private StudyGraphPresentation d_studyGraphPresentationModel;
-	
 	public MetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
 		super(d, pmm);
 		
@@ -59,10 +57,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 			}
 		});
 		d_firstArms = new HashMap <Study, TypedHolder<Arm>>() ;
-		d_secondArms = new HashMap <Study, TypedHolder<Arm>>() ;
-		
-		d_studyGraphPresentationModel = new StudyGraphPresentation(d_indicationHolder,
-				d_endpointHolder, d_drugListHolder, d_domain);		
+		d_secondArms = new HashMap <Study, TypedHolder<Arm>>() ;		
 	}
 
 	private void buildDrugHolders() {
@@ -242,5 +237,10 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 			updateStudyList();
 			fireValueChange(null, getValue());
 		}
+	}
+
+	@Override
+	protected StudyGraphPresentation buildStudyGraphPresentation() {
+		return new StudyGraphPresentation(d_indicationHolder, d_endpointHolder, d_drugListHolder, d_domain);				
 	}	
 }

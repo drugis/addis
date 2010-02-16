@@ -15,7 +15,7 @@ import org.jgrapht.graph.ListenableUndirectedGraph;
 @SuppressWarnings("serial")
 public class StudyGraphPresentation
 extends ListenableUndirectedGraph<StudyGraphPresentation.Vertex, StudyGraphPresentation.Edge> {
-	public class Vertex {
+	public static class Vertex {
 		private Drug d_drug;
 		private int d_sampleSize;
 		
@@ -37,7 +37,7 @@ extends ListenableUndirectedGraph<StudyGraphPresentation.Vertex, StudyGraphPrese
 		}
 	}
 	
-	public class Edge {
+	public static class Edge {
 		private int d_studies;
 		
 		public Edge(int studies) {
@@ -56,7 +56,7 @@ extends ListenableUndirectedGraph<StudyGraphPresentation.Vertex, StudyGraphPrese
 	private ValueHolder<Indication> d_indication;
 	private ValueHolder<OutcomeMeasure> d_outcome;
 	private Domain d_domain;
-	private ListHolder<Drug> d_drugs;
+	protected ListHolder<Drug> d_drugs;
 
 	public StudyGraphPresentation(ValueHolder<Indication> indication, ValueHolder<OutcomeMeasure> outcome, 
 			ListHolder<Drug> drugs, Domain domain) {
