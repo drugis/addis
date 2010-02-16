@@ -7,19 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.StudyGraphPresentation;
-import org.drugis.addis.presentation.UnmodifiableHolder;
 import org.drugis.addis.presentation.StudyGraphPresentation.Edge;
 import org.drugis.addis.presentation.StudyGraphPresentation.Vertex;
 import org.jgraph.JGraph;
@@ -40,14 +32,14 @@ import com.jgraph.layout.JGraphFacade;
 import com.jgraph.layout.graph.JGraphSimpleLayout;
 
 @SuppressWarnings("serial")
-public class TestStudyGraph extends JPanel {
+public class StudyGraph extends JPanel {
 	private StudyGraphPresentation d_pm;
 	
 	@SuppressWarnings("unchecked")
 	private JGraphModelAdapter d_model;
 	private AttributeMap d_vertexAttributes;
 	
-	public TestStudyGraph(StudyGraphPresentation pm) {
+	public StudyGraph(StudyGraphPresentation pm) {
 		super(new BorderLayout());
 		d_pm = pm;
 
@@ -61,13 +53,15 @@ public class TestStudyGraph extends JPanel {
 
 		d_pm.addGraphListener(new GraphListener<Vertex, Edge>() {
 			public void vertexRemoved(GraphVertexChangeEvent<Vertex> e) {
-				layoutGraph();
+				// CANNOT call layoutGraph() here, because of bug in JGraph/JGraphT
+				// HOWEVER, it is neither needed due to order of adding/removing in the PM.
+				// Hanno + Tommi, 16.2.2010
 			}
 			public void vertexAdded(GraphVertexChangeEvent<Vertex> e) {
 				layoutGraph();
 			}
 			public void edgeRemoved(GraphEdgeChangeEvent<Vertex, Edge> e) {
-				layoutGraph();
+				layoutGraph();				
 			}
 			public void edgeAdded(GraphEdgeChangeEvent<Vertex, Edge> e) {
 				layoutGraph();
@@ -101,31 +95,6 @@ public class TestStudyGraph extends JPanel {
 		jgraph.getGraphLayoutCache().edit(nested);
 		
 		jgraph.repaint();
-	}
-
-	public static void main(String[] args) {
-		Domain domain = new DomainImpl();
-		ExampleData.initDefaultData(domain);
-		final ArrayList<Drug> d_drugs = new ArrayList<Drug>();
-		d_drugs.add(ExampleData.buildDrugFluoxetine());
-		d_drugs.add(ExampleData.buildDrugParoxetine());
-		d_drugs.add(ExampleData.buildDrugSertraline());
-		MutableDrugListHolder drugs = new MutableDrugListHolder(new ArrayList<Drug>());
-
-		StudyGraphPresentation pm =
-			new StudyGraphPresentation(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
-				new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()),
-					drugs, domain);
-	
-		TestStudyGraph panel = new TestStudyGraph(pm);
-		JFrame frame = new JFrame("Test for Drug/Study graph");
-		frame.setSize(500, 500);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().add(panel);
-		frame.pack();	
-		frame.setVisible(true);
-
-		drugs.setValue(d_drugs);
 	}
 	
 	public class MyFactory extends DefaultCellViewFactory {

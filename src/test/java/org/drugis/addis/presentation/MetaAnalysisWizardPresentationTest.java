@@ -154,7 +154,7 @@ public class MetaAnalysisWizardPresentationTest {
 		ValueModel model = d_wizard.getStudiesMeasuringLabelModel();
 		String endpVal = endp.toString();
 		String indVal = indic.toString();
-		String correctString = "Studies measuring " + indVal  + " on " + endpVal;
+		String correctString = "Graph of studies measuring " + indVal  + " on " + endpVal;
 		assertEquals(correctString, model.getValue());
 	}
 	

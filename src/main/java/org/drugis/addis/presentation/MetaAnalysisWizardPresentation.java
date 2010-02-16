@@ -355,7 +355,7 @@ public class MetaAnalysisWizardPresentation {
 		private Object constructString() {
 			String indVal = d_indicationHolder.getValue() != null ? d_indicationHolder.getValue().toString() : "";
 			String endpVal = d_endpointHolder.getValue() != null ? d_endpointHolder.getValue().toString() : "";
-			return "Studies measuring " + indVal + " on " + endpVal;
+			return "Graph of studies measuring " + indVal + " on " + endpVal;
 		}
 		
 		public void setValue(Object newValue) {

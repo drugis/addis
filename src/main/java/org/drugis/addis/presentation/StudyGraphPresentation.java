@@ -2,7 +2,7 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.Domain;
@@ -75,8 +75,11 @@ extends ListenableUndirectedGraph<StudyGraphPresentation.Vertex, StudyGraphPrese
 	}
 	
 	private void updateGraph() {
-		removeAllEdges(new HashSet<Edge>(edgeSet()));
-		removeAllVertices(new HashSet<Vertex>(vertexSet()));
+		ArrayList<Edge> edges = new ArrayList<Edge>(edgeSet());
+		ArrayList<Vertex> verts = new ArrayList<Vertex>(vertexSet());
+		
+		removeAllEdges(edges);
+		removeAllVertices(verts);
 		
 		List<Drug> drugs = d_drugs.getValue();
 		

@@ -9,27 +9,22 @@ import java.beans.PropertyChangeListener;
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
-import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.TestStudyGraph;
+import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.SelectableStudyCharTableModel;
 import org.drugis.addis.presentation.StudyGraphPresentation;
-import org.drugis.addis.presentation.UnmodifiableHolder;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -191,6 +186,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			builder.setBorder(BorderFactory.createEmptyBorder());
 			JScrollPane sp = new JScrollPane(builder.getPanel());
 			add(sp);
+			sp.getVerticalScrollBar().setUnitIncrement(16);
 			
 			builder.add(buildStudiesGraph(), cc.xy(1, 5));
 			
@@ -199,7 +195,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		
 		private Component buildStudiesGraph() {
 			StudyGraphPresentation pm = d_pm.getStudyGraphModel();
-			TestStudyGraph panel = new TestStudyGraph(pm);
+			StudyGraph panel = new StudyGraph(pm);
 			return panel;
 		}
 
@@ -242,6 +238,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			d_table = new StudyTable(new SelectableStudyCharTableModel(d_pm.getStudyListModel(), d_frame.getPresentationModelFactory()));
 
 			JScrollPane sPane = new JScrollPane(d_table);
+			sPane.getVerticalScrollBar().setUnitIncrement(16);			
 			sPane.setPreferredSize(new Dimension(700,300));
 
 			studiesComp = sPane;
@@ -259,7 +256,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 					cc.xy(1, 1));
 			builder.add(studiesComp, cc.xy(1, 3));
 			JScrollPane sp = new JScrollPane(builder.getPanel());
-
+			sp.getVerticalScrollBar().setUnitIncrement(16);
 			add(sp);
 			
 			Bindings.bind(this, "complete", d_pm.getMetaAnalysisCompleteModel());			
