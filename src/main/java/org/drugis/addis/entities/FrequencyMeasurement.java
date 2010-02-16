@@ -5,18 +5,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.drugis.addis.entities.OutcomeMeasure.Type;
-
 public class FrequencyMeasurement extends BasicMeasurement {
 
 	private static final long serialVersionUID = -6601562604420073113L;
-	private CategoricalVariable d_cv;
+	private CategoricalPopulationCharacteristic d_cv;
 	
 	private Map<String, Integer> d_frequencies = new HashMap<String, Integer>();
 	 
 	public static final String PROPERTY_FREQUENCIES = "frequencies";
 
-	public FrequencyMeasurement(CategoricalVariable cv) {
+	public FrequencyMeasurement(CategoricalPopulationCharacteristic cv) {
 		super(0);
 		d_cv = cv;
 		for (String cat : d_cv.getCategories()) {
@@ -51,7 +49,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 		}
 	}
 	
-	public CategoricalVariable getCategoricalVariable() {
+	public CategoricalPopulationCharacteristic getCategoricalVariable() {
 		return d_cv;
 	}
 	
@@ -69,7 +67,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 		}
 	}
 		
-	public boolean isOfType(Type type) {
+	public boolean isOfType(Variable.Type type) {
 		return false;
 	}
 

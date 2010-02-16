@@ -14,6 +14,7 @@ import org.drugis.addis.entities.RiskRatio;
 import org.drugis.addis.entities.StandardisedMeanDifference;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
+import org.drugis.addis.entities.Variable;
 
 public class RelativeEffectFactory {
 	public static <T extends RelativeEffect<?>> RelativeEffect<?> buildRelativeEffect(
@@ -140,14 +141,14 @@ public class RelativeEffectFactory {
 	}
 	
 	private static ContinuousMeasurement findContinuousMeasurement(Study s, OutcomeMeasure om, Arm arm) {
-		if (!om.getType().equals(OutcomeMeasure.Type.CONTINUOUS)) {
+		if (!om.getType().equals(Variable.Type.CONTINUOUS)) {
 			throw new IllegalArgumentException("OutcomeMeasure should be Continuous");
 		}
 		return (ContinuousMeasurement)s.getMeasurement(om, arm);
 	}
 	
 	private static RateMeasurement findRateMeasurement(Study s, OutcomeMeasure om, Arm arm) {
-		if (!om.getType().equals(OutcomeMeasure.Type.RATE)) {
+		if (!om.getType().equals(Variable.Type.RATE)) {
 			throw new IllegalArgumentException("OutcomeMeasure should be Rate");
 		}
 		return (RateMeasurement)s.getMeasurement(om, arm);

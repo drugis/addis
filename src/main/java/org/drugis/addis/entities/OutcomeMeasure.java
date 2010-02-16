@@ -3,29 +3,8 @@ package org.drugis.addis.entities;
 
 public interface OutcomeMeasure extends Variable {
 
-	public final static String PROPERTY_DESCRIPTION = "description";
 	public final static String PROPERTY_DIRECTION = "direction";
-	public static final String PROPERTY_UNIT_OF_MEASUREMENT = "unitOfMeasurement";
-	public static final String UOM_DEFAULT_RATE = "Ratio of Patients";
-	public static final String UOM_DEFAULT_CONTINUOUS = "";
-
-	public enum Type {
-		CONTINUOUS("Continuous"),
-		RATE("Rate"),
-		CATEGORICAL("Categorical");
-		
-		
-		private String d_name;
-		
-		Type(String name) {
-			d_name = name;
-		}
-		
-		public String toString() {
-			return d_name;
-		}
-	}
-
+	
 	public enum Direction {
 		HIGHER_IS_BETTER("Higher is better"),
 		LOWER_IS_BETTER("Lower is better");
@@ -41,21 +20,10 @@ public interface OutcomeMeasure extends Variable {
 		}
 	}
 
-	public void setDescription(String description);
 
-	public String getDescription();
+	public void setType(Variable.Type type);
 
-	public void setUnitOfMeasurement(String um);
-
-	public String getUnitOfMeasurement();
-
-	public void setName(String name);
-
-	public String getName();
-
-	public void setType(Type type);
-
-	public Type getType();
+	public Variable.Type getType();
 
 	public Direction getDirection();
 	

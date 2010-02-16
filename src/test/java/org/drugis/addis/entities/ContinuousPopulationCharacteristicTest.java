@@ -7,12 +7,12 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ContinuousVariableTest {
-	private ContinuousVariable d_age;
+public class ContinuousPopulationCharacteristicTest {
+	private ContinuousPopulationCharacteristic d_age;
 	
 	@Before
 	public void setUp() {
-		d_age = new ContinuousVariable("Age");
+		d_age = new ContinuousPopulationCharacteristic("Age");
 	}
 	
 	@Test

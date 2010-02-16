@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,14 +53,14 @@ public class StudyTest {
 	
 	@Test
 	public void testSetEndpoints() {
-		List<Endpoint> list = Collections.singletonList(new Endpoint("e", Type.RATE));
+		List<Endpoint> list = Collections.singletonList(new Endpoint("e", Variable.Type.RATE));
 		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, Collections.EMPTY_LIST, 
 				list);
 	}
 	
 	@Test
 	public void testSetPopulationCharacteristics() {
-		List<Variable> list = Collections.<Variable>singletonList(new ContinuousVariable("e"));
+		List<Variable> list = Collections.<Variable>singletonList(new ContinuousPopulationCharacteristic("e"));
 		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")),
 				Study.PROPERTY_POPULATION_CHARACTERISTICS, Collections.EMPTY_LIST, 
 				list);
@@ -69,7 +68,7 @@ public class StudyTest {
 	
 	@Test
 	public void testAddOutcomeMeasure() {
-		JUnitUtil.testAdder(new Study("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Type.RATE));
+		JUnitUtil.testAdder(new Study("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Variable.Type.RATE));
 	}
 	
 	@Test(expected=NullPointerException.class)
@@ -116,7 +115,7 @@ public class StudyTest {
 	@Test
 	public void testSetMeasurement() {
 		Study study = new Study("X", new Indication(0L, ""));
-		Endpoint endpoint = new Endpoint("e", Type.RATE);
+		Endpoint endpoint = new Endpoint("e", Variable.Type.RATE);
 		study.addEndpoint(endpoint);
 		Arm group = new Arm(null, null, 100);
 		study.addArm(group);
@@ -130,7 +129,7 @@ public class StudyTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetMeasurementThrowsException1() {
 		Study study = new Study("X", new Indication(0L, ""));
-		Endpoint e = new Endpoint("E", Type.RATE);
+		Endpoint e = new Endpoint("E", Variable.Type.RATE);
 		Arm pg = new Arm(null, null, 100);
 		study.setMeasurement(e, pg, 
 				new BasicRateMeasurement(100, pg.getSize()));
@@ -139,14 +138,14 @@ public class StudyTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetMeasurementThrowsException2() {
 		Study study = new Study("X", new Indication(0L, ""));
-		Endpoint e = new Endpoint("e", Type.RATE);
+		Endpoint e = new Endpoint("e", Variable.Type.RATE);
 		study.addEndpoint(e);
 		Arm group = new Arm(null, null, 100);
 		study.addArm(group);
 		
 		BasicMeasurement m = new BasicRateMeasurement(12, group.getSize());
 		
-		study.getOutcomeMeasures().iterator().next().setType(Type.CONTINUOUS);
+		study.getOutcomeMeasures().iterator().next().setType(Variable.Type.CONTINUOUS);
 		study.setMeasurement(study.getOutcomeMeasures().iterator().next(), study.getArms().get(0), m);
 	}
 	
@@ -177,7 +176,7 @@ public class StudyTest {
 	@Test
 	public void testDeleteEndpoint() throws Exception {
 		JUnitUtil.testDeleter(new Study("study", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "deleteEndpoint",
-				new Endpoint("e", AbstractOutcomeMeasure.Type.CONTINUOUS));
+				new Endpoint("e", Variable.Type.CONTINUOUS));
 	}
 	
 	@Test
@@ -204,14 +203,14 @@ public class StudyTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetPopulationCharNotPresent() {
-		Variable v = new ContinuousVariable("Age");
+		Variable v = new ContinuousPopulationCharacteristic("Age");
 		Study s = new Study("X", new Indication(0L, "Y"));
 		s.setMeasurement(v, new BasicContinuousMeasurement(0.0, 1.0, 5));
 	}
 	
 	@Test
 	public void testSetPopulationChar() {
-		Variable v = new ContinuousVariable("Age");
+		PopulationCharacteristic v = new ContinuousPopulationCharacteristic("Age");
 		Study s = new Study("X", new Indication(0L, "Y"));
 		s.addArm(new Arm(new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY), 200));
 		s.setPopulationCharacteristics(Collections.singletonList(v));
@@ -226,7 +225,7 @@ public class StudyTest {
 	
 	@Test
 	public void testAddPopulationCharDefaultMeasurements() {
-		Variable v = new ContinuousVariable("Age");
+		PopulationCharacteristic v = new ContinuousPopulationCharacteristic("Age");
 		Study s = new Study("X", new Indication(0L, "Y"));
 		Arm arm1 = new Arm(new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY), 200);
 		s.addArm(arm1);
@@ -245,11 +244,11 @@ public class StudyTest {
 		Arm arm1 = new Arm(new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY), 200);
 		s.addArm(arm1);
 		
-		Variable v1 = new ContinuousVariable("Age1");
-		Variable v2 = new ContinuousVariable("Age2");
-		Variable v3 = new ContinuousVariable("Age3");
+		PopulationCharacteristic v1 = new ContinuousPopulationCharacteristic("Age1");
+		PopulationCharacteristic v2 = new ContinuousPopulationCharacteristic("Age2");
+		PopulationCharacteristic v3 = new ContinuousPopulationCharacteristic("Age3");
 		
-		ArrayList<Variable> vars1 = new ArrayList<Variable>();
+		ArrayList<PopulationCharacteristic> vars1 = new ArrayList<PopulationCharacteristic>();
 		vars1.add(v1);
 		vars1.add(v2);
 		s.setPopulationCharacteristics(vars1);
@@ -263,7 +262,7 @@ public class StudyTest {
 		s.setMeasurement(v2, m20);
 		s.setMeasurement(v2, arm1, m21);
 		
-		ArrayList<Variable> vars2 = new ArrayList<Variable>();
+		ArrayList<PopulationCharacteristic> vars2 = new ArrayList<PopulationCharacteristic>();
 		vars2.add(v2);
 		vars2.add(v3);
 		s.setPopulationCharacteristics(vars2);

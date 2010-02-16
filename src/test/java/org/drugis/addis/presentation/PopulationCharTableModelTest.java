@@ -16,6 +16,7 @@ import javax.swing.event.TableModelListener;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.FrequencyMeasurement;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.common.JUnitUtil;
@@ -33,7 +34,7 @@ public class PopulationCharTableModelTest {
 		ExampleData.initDefaultData(domain);
 		d_pmf = new PresentationModelFactory(domain);
 		d_study = ExampleData.buildStudyDeWilde();
-		List<Variable> chars = new ArrayList<Variable>();
+		List<PopulationCharacteristic> chars = new ArrayList<PopulationCharacteristic>();
 		chars.add(ExampleData.buildGenderVariable());
 		chars.add(ExampleData.buildAgeVariable());
 		d_study.setPopulationCharacteristics(chars);

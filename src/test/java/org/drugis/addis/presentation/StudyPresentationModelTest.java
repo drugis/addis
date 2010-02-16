@@ -10,17 +10,17 @@ import java.util.Collections;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
-import org.drugis.addis.entities.ContinuousVariable;
+import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -117,24 +117,24 @@ public class StudyPresentationModelTest {
 		d_study.addArm(arm1);
 		Arm arm2 = new Arm(new Drug("X", "Y"), null, 0);
 		d_study.addArm(arm2);
-		ContinuousVariable age = new ContinuousVariable("Age");
+		ContinuousPopulationCharacteristic age = new ContinuousPopulationCharacteristic("Age");
 		assertEquals(0, d_model.getPopulationCharacteristicCount());
-		d_study.setPopulationCharacteristics(Collections.<Variable>singletonList(age));
+		d_study.setPopulationCharacteristics(Collections.<PopulationCharacteristic>singletonList(age));
 		assertEquals(1, d_model.getPopulationCharacteristicCount());
 	}
 	
 	@Test
 	public void testGetPopulationCharacteristicsOverall() {
-		ContinuousVariable age = new ContinuousVariable("Age");
-		d_study.setPopulationCharacteristics(Collections.<Variable>singletonList(age));
+		ContinuousPopulationCharacteristic age = new ContinuousPopulationCharacteristic("Age");
+		d_study.setPopulationCharacteristics(Collections.<PopulationCharacteristic>singletonList(age));
 		assertEquals(Collections.singletonList(age), d_model.getPopulationCharacteristics());
 	}
 	
 	@Test
 	public void testGetEndpoints() {
-		Endpoint ep = new Endpoint("ep", Type.RATE);
+		Endpoint ep = new Endpoint("ep", Variable.Type.RATE);
 		d_study.addEndpoint(ep);
-		AdverseEvent ade = new AdverseEvent("ade1", Type.RATE);
+		AdverseEvent ade = new AdverseEvent("ade1", Variable.Type.RATE);
 		d_study.addAdverseEvent(ade);
 		
 		assertEquals(Collections.singletonList(ep), d_model.getEndpoints());
@@ -142,9 +142,9 @@ public class StudyPresentationModelTest {
 	
 	@Test
 	public void testGetAdes() {
-		Endpoint ep = new Endpoint("ep", Type.RATE);
+		Endpoint ep = new Endpoint("ep", Variable.Type.RATE);
 		d_study.addEndpoint(ep);
-		AdverseEvent ade = new AdverseEvent("ade1", Type.RATE);
+		AdverseEvent ade = new AdverseEvent("ade1", Variable.Type.RATE);
 		d_study.addAdverseEvent(ade);
 		
 		assertEquals(Collections.singletonList(ade), d_model.getAdverseEvents());

@@ -21,9 +21,6 @@ package org.drugis.addis.entities;
 
 import java.io.Serializable;
 
-import org.drugis.addis.entities.OutcomeMeasure.Type;
-
-
 import com.jgoodies.binding.beans.Observable;
 
 public interface Measurement extends Observable, Serializable {
@@ -32,5 +29,5 @@ public interface Measurement extends Observable, Serializable {
 
 	public Integer getSampleSize();
 	
-	public boolean isOfType(Type type);
+	public boolean isOfType(Variable.Type type);
 }

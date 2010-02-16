@@ -32,6 +32,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 
 import com.jgoodies.binding.PresentationModel;
@@ -82,9 +83,9 @@ public class PresentationModelFactory {
 
 	@SuppressWarnings("unchecked")
 	private PresentationModel createModel(Object obj) {
-		if (obj instanceof OutcomeMeasure) {
-			return new OutcomePresentationModel((OutcomeMeasure)obj,
-					d_domain.getStudies((OutcomeMeasure)obj));
+		if (obj instanceof Variable) {
+			return new VariablePresentationModel((Variable)obj,
+					d_domain.getStudies((Variable)obj));
 		}
 		if (obj instanceof Study) {
 			return new StudyPresentationModel((Study) obj, this);

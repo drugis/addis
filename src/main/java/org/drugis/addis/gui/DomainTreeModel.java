@@ -35,24 +35,27 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.CollectionUtil;
 
 
 public class DomainTreeModel implements TreeModel {
-	public static final int numOfBranches = 6;
+	public static final int numOfBranches = 7;
 	
 	public static final int INDICATIONS = 0;
 	public static final int DRUGS = 1;	
 	public static final int ENDPOINTS = 2;
 	public static final int ADVERSE_EVENTS = 3;
-	public static final int STUDIES = 4;
-	public static final int ANALYSES = 5;
+	public static final int POPULATION_CHARACTERISTICS = 4;
+	public static final int STUDIES = 5;
+	public static final int ANALYSES = 6;
 
 	private String d_root = "Database";
 	private String d_indicationsNode = "Indications";
 	private String d_endpointsNode = "Endpoints";
 	private String d_adverseEventNode = "Adverse drug events";
+	private String d_popcharsNode = "Population characteristics";
 	private String d_studiesNode = "Studies";
 	private String d_drugsNode = "Drugs";
 	private String d_analysesNode = "Analyses";
@@ -81,6 +84,8 @@ public class DomainTreeModel implements TreeModel {
 			return d_endpointsNode;
 		} else if (d_root == parent && childIndex == ADVERSE_EVENTS) {
 			return d_adverseEventNode;
+		} else if (d_root == parent && childIndex == POPULATION_CHARACTERISTICS) {
+			return d_popcharsNode;
 		} else if (d_root == parent && childIndex == STUDIES) {
 			return d_studiesNode;
 		} else if (d_root == parent && childIndex == DRUGS) {
@@ -93,6 +98,8 @@ public class DomainTreeModel implements TreeModel {
 			return CollectionUtil.getElementAtIndex(d_domain.getEndpoints(), childIndex);
 		} else if (isAdverseEventRequest(parent, childIndex)) {
 			return CollectionUtil.getElementAtIndex(d_domain.getAdverseEvents(), childIndex);
+		} else if (isPopulationCharacteristicRequest(parent, childIndex)) {
+			return CollectionUtil.getElementAtIndex(d_domain.getVariables(), childIndex);
 		} else if (isDrugsRequest(parent, childIndex)) {
 			return CollectionUtil.getElementAtIndex(d_domain.getDrugs(), childIndex);
 		} else if (isStudyRequest(parent, childIndex)) {
@@ -123,6 +130,10 @@ public class DomainTreeModel implements TreeModel {
 		return d_adverseEventNode == parent && childIndex >= 0 && childIndex < d_domain.getAdverseEvents().size();
 	}
 	
+	private boolean isPopulationCharacteristicRequest(Object parent, int childIndex) {
+		return d_popcharsNode == parent && childIndex >= 0 && childIndex < d_domain.getVariables().size();
+	}
+	
 	private boolean isMetaStudyRequest(Object parent, int childIndex) {
 		return d_analysesNode == parent && childIndex >= 0 && childIndex < d_domain.getMetaAnalyses().size();
 	}
@@ -136,6 +147,8 @@ public class DomainTreeModel implements TreeModel {
 			return d_domain.getEndpoints().size();
 		} else if (d_adverseEventNode == parent) {
 			return d_domain.getAdverseEvents().size();
+		} else if (d_popcharsNode == parent) {
+			return d_domain.getVariables().size();
 		} else if (d_studiesNode == parent) {
 			return d_domain.getStudies().size();
 		} else if (d_drugsNode == parent) {
@@ -156,6 +169,9 @@ public class DomainTreeModel implements TreeModel {
 		if (parent == d_root && child == d_adverseEventNode) {
 			return ADVERSE_EVENTS;
 		}
+		if (parent == d_root && child == d_popcharsNode) {
+			return POPULATION_CHARACTERISTICS;
+		}
 		if (parent == d_root && child == d_studiesNode) {
 			return STUDIES;
 		}
@@ -173,6 +189,9 @@ public class DomainTreeModel implements TreeModel {
 		}
 		if (parent == d_adverseEventNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getAdverseEvents(), child);
+		}
+		if (parent == d_popcharsNode) {
+			return CollectionUtil.getIndexOfElement(d_domain.getVariables(), child);
 		}
 		if (parent == d_studiesNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getStudies(), child);
@@ -199,6 +218,9 @@ public class DomainTreeModel implements TreeModel {
 		}
 		if (node instanceof AdverseEvent) {
 			return d_domain.getAdverseEvents().contains(node);
+		}		
+		if (node instanceof Variable) {
+			return d_domain.getVariables().contains(node);
 		}		
 		if (node instanceof RandomEffectsMetaAnalysis) {
 			return d_domain.getMetaAnalyses().contains(node);
@@ -243,7 +265,7 @@ public class DomainTreeModel implements TreeModel {
 		return getChild(getRoot(), DomainTreeModel.ENDPOINTS);
 	}
 	
-	public Object getAdverseEventNode() {
+	public Object getAdverseEventsNode() {
 		return getChild(getRoot(), DomainTreeModel.ADVERSE_EVENTS);
 	}
 	
@@ -252,6 +274,10 @@ public class DomainTreeModel implements TreeModel {
 	}
 	
 	public Object getAnalysesNode() {
-		return getChild(getRoot(),DomainTreeModel.ANALYSES);
+		return getChild(getRoot(), DomainTreeModel.ANALYSES);
+	}
+	
+	public Object getPopulationCharacteristicsNode() {
+		return getChild(getRoot(), DomainTreeModel.POPULATION_CHARACTERISTICS);
 	}
 }

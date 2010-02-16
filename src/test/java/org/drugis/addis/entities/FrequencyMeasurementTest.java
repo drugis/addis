@@ -11,14 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
 public class FrequencyMeasurementTest {
 
-	private CategoricalVariable d_cv;
+	private CategoricalPopulationCharacteristic d_cv;
 	private FrequencyMeasurement d_meas;
 
 	@Before
@@ -64,7 +63,7 @@ public class FrequencyMeasurementTest {
 	
 	@Test
 	public void testIsOfType() {
-		for (Type t : Endpoint.Type.values()) {
+		for (Variable.Type t : Variable.Type.values()) {
 			assertFalse(d_meas.isOfType(t));
 		}
 	}

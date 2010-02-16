@@ -30,6 +30,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.ImageLoader;
 
@@ -42,9 +43,12 @@ public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 		if (value instanceof Endpoint) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_ENDPOINT));
 			setToolTipText("Endpoint");
-		}if (value instanceof AdverseEvent) {
+		} else if (value instanceof AdverseEvent) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_ADVERSE_EVENT));
-			setToolTipText("Adverse drug effect");
+			setToolTipText("Adverse drug event");
+		} else if (value instanceof Variable) {
+			setIcon(ImageLoader.getIcon(FileNames.ICON_POPULATION_CHAR));
+			setToolTipText("Population baseline characteristic");
 		} else if (value instanceof RandomEffectsMetaAnalysis) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_METASTUDY));
 			setToolTipText("Meta-analysis");

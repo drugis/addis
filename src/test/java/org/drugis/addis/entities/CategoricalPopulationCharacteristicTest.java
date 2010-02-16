@@ -7,12 +7,12 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CategoricalVariableTest {
-	CategoricalVariable d_gender;
+public class CategoricalPopulationCharacteristicTest {
+	CategoricalPopulationCharacteristic d_gender;
 	
 	@Before
 	public void setUp() {
-		d_gender = new CategoricalVariable("Gender", new String[]{"Male", "Female"});
+		d_gender = new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
 	}
 	
 	@Test
@@ -48,16 +48,13 @@ public class CategoricalVariableTest {
 	
 	@Test
 	public void testEquals() {
-		CategoricalVariable gender2 = new CategoricalVariable("Gender", new String[]{"Male", "Female"});
+		CategoricalPopulationCharacteristic gender2 = new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
 		assertTrue(gender2.equals(d_gender));
 		
-		gender2 = new CategoricalVariable("Gender", new String[]{"Male"});
+		gender2 = new CategoricalPopulationCharacteristic("Gender2", new String[]{"Male", "Female"});
 		assertFalse(gender2.equals(d_gender));
 
-		gender2 = new CategoricalVariable("Gender2", new String[]{"Male", "Female"});
-		assertFalse(gender2.equals(d_gender));
-
-		gender2 = new CategoricalVariable(null, new String[]{"Male", "Female"});
+		gender2 = new CategoricalPopulationCharacteristic(null, new String[]{"Male", "Female"});
 		assertFalse(gender2.equals(d_gender));
 
 		assertFalse(gender2.equals(new Integer(2)));
