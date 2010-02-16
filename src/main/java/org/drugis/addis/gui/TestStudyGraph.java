@@ -1,13 +1,14 @@
 package org.drugis.addis.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
@@ -38,98 +39,66 @@ import com.jgraph.layout.JGraphFacade;
 import com.jgraph.layout.graph.JGraphSimpleLayout;
 
 @SuppressWarnings("serial")
-public class TestStudyGraph extends JFrame {
+public class TestStudyGraph extends JPanel {
 	private StudyGraphPresentation d_pm;
 	
 	@SuppressWarnings("unchecked")
 	private JGraphModelAdapter d_model;
+	private AttributeMap d_vertexAttributes;
 	
 	public TestStudyGraph(StudyGraphPresentation pm) {
-		super("Test for Drug/Study graph");
+		super(new BorderLayout());
 		d_pm = pm;
+
+		d_vertexAttributes = new AttributeMap();
+		CellConstants.setVertexShape(d_vertexAttributes, MultiLineVertexRenderer.SHAPE_CIRCLE);
+		CellConstants.setBackground(d_vertexAttributes, Color.WHITE);
+		CellConstants.setForeground(d_vertexAttributes, Color.BLACK);
+		CellConstants.setBorder(d_vertexAttributes, BorderFactory.createLineBorder(Color.BLACK, 2));
 		
-//		
-//		d_model = new JGraphModelAdapter<Vertex, Edge>(d_pm); // if the pm changes, a new model adapter must be made!!
-//
-//		// create attribute map defining cell view behaviour
-//		AttributeMap vertexAttributes = new AttributeMap();
-//		CellConstants.setVertexShape(vertexAttributes, MultiLineVertexRenderer.SHAPE_CIRCLE);
-//		CellConstants.setBackground(vertexAttributes, Color.WHITE);
-//		CellConstants.setForeground(vertexAttributes, Color.BLACK);
-//		CellConstants.setBorder(vertexAttributes, BorderFactory.createLineBorder(Color.BLACK, 2));
-//		d_model.setDefaultVertexAttributes(vertexAttributes);
-//		
-//		// the graph layout cache 
-//		GraphLayoutCache layoutCache = new GraphLayoutCache(d_model, new MyFactory());
-//		jgraph = new JGraph(d_model, layoutCache);
-//		jgraph.setAntiAliased(true);
-////		jgraph.setAutoResizeGraph(true);
-//		jgraph.setPreferredSize(new Dimension(450, 450));
-//		jgraph.setSize(new Dimension(450, 450));
-//		jgraph.setEnabled(false);
-//		jgraph.setEditable(false);
-//		getContentPane().add(jgraph);
-//		
 		layoutGraph();
-	
+
 		d_pm.addGraphListener(new GraphListener<Vertex, Edge>() {
 			public void vertexRemoved(GraphVertexChangeEvent<Vertex> e) {
-				System.out.println("Vertex removed");
 				layoutGraph();
 			}
 			public void vertexAdded(GraphVertexChangeEvent<Vertex> e) {
-				System.out.println("Vertex added");
 				layoutGraph();
 			}
 			public void edgeRemoved(GraphEdgeChangeEvent<Vertex, Edge> e) {
-				System.out.println("Edge removed");
 				layoutGraph();
 			}
 			public void edgeAdded(GraphEdgeChangeEvent<Vertex, Edge> e) {
-				System.out.println("Edge added");
 				layoutGraph();
 			}
 		}); 
 	}
-	
-	JGraph jgraph;
 
-
+	@SuppressWarnings("unchecked")
 	public void layoutGraph() {
-		d_model = new JGraphModelAdapter<Vertex, Edge>(d_pm); // if the pm changes, a new model adapter must be made!!	
+		// in the JGraphModelAdapter, the Vertex size is set. Therefore, this must be done every time the graph is redrawn
+		d_model = new JGraphModelAdapter<Vertex, Edge>(d_pm);
 		
-		// create attribute map defining cell view behaviour
-		AttributeMap vertexAttributes = new AttributeMap();
-		CellConstants.setVertexShape(vertexAttributes, MultiLineVertexRenderer.SHAPE_CIRCLE);
-		CellConstants.setBackground(vertexAttributes, Color.WHITE);
-		CellConstants.setForeground(vertexAttributes, Color.BLACK);
-		CellConstants.setBorder(vertexAttributes, BorderFactory.createLineBorder(Color.BLACK, 2));
-		d_model.setDefaultVertexAttributes(vertexAttributes);
+		// set out vertex (layout) attributes
+		d_model.setDefaultVertexAttributes(d_vertexAttributes);
 		
 		// the graph layout cache 
 		GraphLayoutCache layoutCache = new GraphLayoutCache(d_model, new MyFactory());
-		if(jgraph != null){
-			System.out.println("jgraph not null");
-			remove(jgraph);
-		}
-		jgraph = new JGraph(d_model, layoutCache);
-		jgraph.setAntiAliased(true);
-//		jgraph.setAutoResizeGraph(true);
-//		jgraph.setPreferredSize(new Dimension(450, 450));
-//		jgraph.setSize(new Dimension(450, 450));
-		jgraph.setEnabled(false);
-		jgraph.setEditable(false);
-		getContentPane().add(jgraph);
 		
-		System.out.println(jgraph.getSize());
+		// create graph
+		removeAll();
+		JGraph jgraph = new JGraph(d_model, layoutCache);
+		jgraph.setAntiAliased(true);
+		jgraph.setEnabled(false);
+		add(jgraph, BorderLayout.CENTER);
+		
+		// add a circle layout to the graph
 		final JGraphSimpleLayout layout = new JGraphSimpleLayout(JGraphSimpleLayout.TYPE_CIRCLE);
 		final JGraphFacade facade = new JGraphFacade(jgraph);
 		layout.run(facade);
-		
-		// Obtain a map of the resulting attribute changes from the facade
 		Map nested = facade.createNestedMap(true, true);
-		// Apply the results to the actual graph
 		jgraph.getGraphLayoutCache().edit(nested);
+		
 		jgraph.repaint();
 	}
 
@@ -141,28 +110,21 @@ public class TestStudyGraph extends JFrame {
 		d_drugs.add(ExampleData.buildDrugParoxetine());
 		d_drugs.add(ExampleData.buildDrugSertraline());
 		MutableDrugListHolder drugs = new MutableDrugListHolder(new ArrayList<Drug>());
-		//MutableDrugListHolder drugs = new MutableDrugListHolder(d_drugs);
+
 		StudyGraphPresentation pm =
 			new StudyGraphPresentation(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
 				new UnmodifiableHolder<Endpoint>(ExampleData.buildEndpointHamd()),
 					drugs, domain);
-		
-
-		TestStudyGraph frame = new TestStudyGraph(pm);
+	
+		TestStudyGraph panel = new TestStudyGraph(pm);
+		JFrame frame = new JFrame("Test for Drug/Study graph");
 		frame.setSize(500, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().add(panel);
 		frame.pack();	
 		frame.setVisible(true);
-//		drugs.setValue(d_drugs);
-		
-//		jgraph.setEnabled(false);
-//		drugs.setValue(d_drugs);
-		frame.getContentPane().add(frame.jgraph);
-		drugs.setValue(d_drugs);
 
-//		((TestStudyGraph)frame).jgraph.getGraphLayoutCache().reload();
-//		((TestStudyGraph)frame).jgraph.repaint();
-//		((TestStudyGraph)frame).layoutGraph();
+		drugs.setValue(d_drugs);
 	}
 	
 	public class MyFactory extends DefaultCellViewFactory {

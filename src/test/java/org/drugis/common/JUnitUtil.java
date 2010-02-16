@@ -78,7 +78,7 @@ public class JUnitUtil {
 		return mock;
 	}
 	
-	public static PropertyChangeListener mockStrictListener(Observable source,
+	public static PropertyChangeListener mockStrictListener(Object source,
 			String propertyName, Object oldValue, Object newValue) {
 		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
 		PropertyChangeEvent event = new PropertyChangeEvent(

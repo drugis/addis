@@ -164,6 +164,22 @@ public class MetaAnalysisWizardPresentation {
 			fireValueChange(null, getValue());
 		}
 	}
+	
+	@SuppressWarnings("serial")
+	public class DrugsSelectedCompleteListener extends AbstractValueModel implements PropertyChangeListener {
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			firePropertyChange(PROPERTYNAME_VALUE, null, getValue());
+		}
+
+		public Object getValue() {
+			boolean val = d_firstDrugHolder.getValue() != null && d_secondDrugHolder.getValue() != null;
+			return new Boolean(val);
+		}
+
+		public void setValue(Object newValue) {			
+		}		
+	}
 		
 	private Domain d_domain;
 	private AbstractHolder<Indication> d_indicationHolder;
@@ -179,6 +195,7 @@ public class MetaAnalysisWizardPresentation {
 	private PresentationModelFactory d_pmm;
 	private Map<Study, ArmHolder> d_firstArms;
 	private Map<Study, ArmHolder> d_secondArms;
+	private DrugsSelectedCompleteListener d_drugsSelectedCompleteModel;
 	
 	public MetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
 		d_domain = d;
@@ -207,6 +224,12 @@ public class MetaAnalysisWizardPresentation {
 		d_studyListPm = new DefaultSelectableStudyListPresentationModel(new StudyListHolder());
 		d_metaAnalysisCompleteListener = new MetaAnalysisCompleteListener();		
 		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(d_metaAnalysisCompleteListener);
+		
+		d_drugsSelectedCompleteModel = new DrugsSelectedCompleteListener();
+		d_firstDrugHolder.addValueChangeListener(d_drugsSelectedCompleteModel);
+		d_secondDrugHolder.addValueChangeListener(d_drugsSelectedCompleteModel);		
+		
+		
 		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
 				updateArmHolders();
@@ -403,5 +426,9 @@ public class MetaAnalysisWizardPresentation {
 	
 	public ValueModel getRightArmPerStudyPerDrug(Study study) {
 		return d_secondArms.get(study);
+	}
+
+	public ValueModel getDrugsSelectedCompleteModel() {
+		return d_drugsSelectedCompleteModel;
 	}
 }

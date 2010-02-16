@@ -51,6 +51,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		wizardModel.add(new SelectIndicationWizardStep());
 		wizardModel.add(new SelectEndpointWizardStep());
 		wizardModel.add(new SelectDrugsWizardStep());
+		wizardModel.add(new SelectStudiesWizardStep());		
 		wizardModel.add(new SelectArmsWizardStep());
 		wizardModel.add(new OverviewWizardStep());
 		Wizard wizard = new Wizard(wizardModel);
@@ -162,24 +163,14 @@ public class MetaAnalysisWizard implements ViewBuilder {
 	@SuppressWarnings("serial")
 	public class SelectDrugsWizardStep extends PanelWizardStep {
 
-		private StudyTable d_table;
-		
 		public SelectDrugsWizardStep() {
-			super("Select Drugs & Studies","Select the drugs and studies to be used for meta analysis.");
+			super("Select Drugs","Select the drugs to be used for meta analysis.");
 					
 			setLayout(new BorderLayout());
-			JComponent studiesComp;
-	
-		    d_table = new StudyTable(new SelectableStudyCharTableModel(d_pm.getStudyListModel(), d_frame.getPresentationModelFactory()));
 			    
-		    JScrollPane sPane = new JScrollPane(d_table);
-		    sPane.setPreferredSize(new Dimension(700,300));
-			    
-			studiesComp = sPane;
-
 			FormLayout layout = new FormLayout(
 					"center:pref:grow",
-					"p, 3dlu, p, 3dlu, fill:p"
+					"p, 3dlu, p"
 					);	
 			
 			PanelBuilder builder = new PanelBuilder(layout);
@@ -189,11 +180,11 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			builder.add(buildSelectDrugsPanel(), cc.xy(1, 1));			
 			builder.add(BasicComponentFactory.createLabel(d_pm.getStudiesMeasuringLabelModel()),
 					cc.xy(1, 3));
-			builder.add(studiesComp, cc.xy(1, 5));
 			builder.setBorder(BorderFactory.createEmptyBorder());
 			JScrollPane sp = new JScrollPane(builder.getPanel());
-		
 			add(sp);
+			
+			Bindings.bind(this, "complete", d_pm.getDrugsSelectedCompleteModel());
 		}
 		
 		private JPanel buildSelectDrugsPanel() {
@@ -215,12 +206,49 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			builder.add(firstDrugBox,cc.xy(1, 3));
 			builder.add(secondDrugBox,cc.xy(5, 3));
 			builder.addLabel("VS",cc.xy(3, 3));
-			JPanel panel = builder.getPanel();
+			JPanel panel = builder.getPanel();			
 			
-			Bindings.bind(this, "complete", d_pm.getMetaAnalysisCompleteModel());
 			return panel;
 		}
 	}
+
+	@SuppressWarnings("serial")
+	public class SelectStudiesWizardStep extends PanelWizardStep {
+
+		private StudyTable d_table;
+
+		public SelectStudiesWizardStep() {
+			super("Select Studies","Select the studies to be used for meta analysis. At least one study must be selected to continue.");
+
+			setLayout(new BorderLayout());
+			JComponent studiesComp;			
+
+			d_table = new StudyTable(new SelectableStudyCharTableModel(d_pm.getStudyListModel(), d_frame.getPresentationModelFactory()));
+
+			JScrollPane sPane = new JScrollPane(d_table);
+			sPane.setPreferredSize(new Dimension(700,300));
+
+			studiesComp = sPane;
+
+			FormLayout layout = new FormLayout(
+					"center:pref:grow",
+					"p, 3dlu, p"
+			);	
+
+			PanelBuilder builder = new PanelBuilder(layout);
+			builder.setDefaultDialogBorder();
+			CellConstraints cc = new CellConstraints();
+	
+			builder.add(BasicComponentFactory.createLabel(d_pm.getStudiesMeasuringLabelModel()),
+					cc.xy(1, 1));
+			builder.add(studiesComp, cc.xy(1, 3));
+			JScrollPane sp = new JScrollPane(builder.getPanel());
+
+			add(sp);
+			
+			Bindings.bind(this, "complete", d_pm.getMetaAnalysisCompleteModel());			
+		}
+	}	
 	
 	@SuppressWarnings("serial")
 	public class SelectEndpointWizardStep extends PanelWizardStep {

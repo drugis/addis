@@ -1,12 +1,11 @@
 package org.drugis.addis.presentation;
 
+import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 import static org.easymock.EasyMock.verify;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -311,6 +310,24 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		assertNull(d_wizard.getFirstDrugModel().getValue());
 	}
+	
+	@Test
+	public void testDrugSelectedCompleteModel() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
+		ValueModel model = d_wizard.getDrugsSelectedCompleteModel();
+		assertEquals(true, model.getValue());
+		
+		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, false);
+		model.addValueChangeListener(mock);
+		d_wizard.getFirstDrugModel().setValue(null);
+		
+		assertEquals(false, model.getValue());		
+		
+		verify(mock);
+	}	
 	
 	@Test
 	public void testGetOutcomeMeasureListModel() {
