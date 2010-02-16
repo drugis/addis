@@ -463,21 +463,21 @@ public class Main extends JFrame {
 	}
 
 	public void showAddEndpointDialog(ValueModel selectionModel) {
-		AddOutcomeDialog dialog = new AddOutcomeDialog(this, getDomain(),
+		AddVariableDialog dialog = new AddVariableDialog(this, getDomain(),
 				new Endpoint("", Variable.Type.RATE), selectionModel);
 		GUIHelper.centerWindow(dialog, this);
 		dialog.setVisible(true);
 	}
 
 	public void showAddAdverseEventDialog(ValueModel selectionModel) {
-		AddOutcomeDialog dialog = new AddOutcomeDialog(this, getDomain(),
+		AddVariableDialog dialog = new AddVariableDialog(this, getDomain(),
 				new AdverseEvent("", Variable.Type.RATE), selectionModel);
 		GUIHelper.centerWindow(dialog, this);
 		dialog.setVisible(true);
 	}
 	
 	public void showAddPopulationCharacteristicDialog(ValueModel selectionModel) {
-		AddOutcomeDialog dialog = new AddOutcomeDialog(this, getDomain(),
+		AddVariableDialog dialog = new AddVariableDialog(this, getDomain(),
 				new ContinuousPopulationCharacteristic(""), selectionModel);
 		GUIHelper.centerWindow(dialog, this);
 		dialog.setVisible(true);
@@ -765,6 +765,13 @@ public class Main extends JFrame {
 	}
 
 	private void populationCharacteristicsLabelSelected() {
+		List<String> formatter = new ArrayList<String>();
+		formatter.add("name");
+		formatter.add("description");
+		formatter.add("unitOfMeasurement");
+		formatter.add("type");
+		buildEntityTable(getDomain().getVariables(), formatter,
+				"Population characteristics");
 	}
 	
 	private void adverseEventLabelSelected() {
