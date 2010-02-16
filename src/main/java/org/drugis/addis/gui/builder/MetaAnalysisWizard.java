@@ -1,6 +1,7 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -8,20 +9,27 @@ import java.beans.PropertyChangeListener;
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.TestStudyGraph;
 import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.MetaAnalysisWizardPresentation;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.SelectableStudyCharTableModel;
+import org.drugis.addis.presentation.StudyGraphPresentation;
+import org.drugis.addis.presentation.UnmodifiableHolder;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -170,7 +178,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			    
 			FormLayout layout = new FormLayout(
 					"center:pref:grow",
-					"p, 3dlu, p"
+					"p, 3dlu, p, 3dlu, p"
 					);	
 			
 			PanelBuilder builder = new PanelBuilder(layout);
@@ -184,9 +192,17 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			JScrollPane sp = new JScrollPane(builder.getPanel());
 			add(sp);
 			
+			builder.add(buildStudiesGraph(), cc.xy(1, 5));
+			
 			Bindings.bind(this, "complete", d_pm.getDrugsSelectedCompleteModel());
 		}
 		
+		private Component buildStudiesGraph() {
+			StudyGraphPresentation pm = d_pm.getStudyGraphModel();
+			TestStudyGraph panel = new TestStudyGraph(pm);
+			return panel;
+		}
+
 		private JPanel buildSelectDrugsPanel() {
 			FormLayout layout = new FormLayout(
 					"center:pref, 3dlu, center:pref, 3dlu, center:pref",

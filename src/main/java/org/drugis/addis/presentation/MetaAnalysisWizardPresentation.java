@@ -196,6 +196,7 @@ public class MetaAnalysisWizardPresentation {
 	private Map<Study, ArmHolder> d_firstArms;
 	private Map<Study, ArmHolder> d_secondArms;
 	private DrugsSelectedCompleteListener d_drugsSelectedCompleteModel;
+	private StudyGraphPresentation d_studyGraphPresentationModel;
 	
 	public MetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
 		d_domain = d;
@@ -207,6 +208,7 @@ public class MetaAnalysisWizardPresentation {
 		d_secondDrugHolder = new DrugHolder();
 		d_outcomeListHolder = new OutcomeListHolder();
 		d_drugListHolder = new DrugListHolder();
+		
 		d_firstDrugHolder.addValueChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getNewValue() != null && evt.getNewValue().equals(getSecondDrug())) {
@@ -222,14 +224,14 @@ public class MetaAnalysisWizardPresentation {
 			}			
 		});
 		d_studyListPm = new DefaultSelectableStudyListPresentationModel(new StudyListHolder());
+				
 		d_metaAnalysisCompleteListener = new MetaAnalysisCompleteListener();		
 		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(d_metaAnalysisCompleteListener);
 		
 		d_drugsSelectedCompleteModel = new DrugsSelectedCompleteListener();
 		d_firstDrugHolder.addValueChangeListener(d_drugsSelectedCompleteModel);
 		d_secondDrugHolder.addValueChangeListener(d_drugsSelectedCompleteModel);		
-		
-		
+				
 		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
 				updateArmHolders();
@@ -237,6 +239,9 @@ public class MetaAnalysisWizardPresentation {
 		});
 		d_firstArms = new HashMap <Study, ArmHolder>() ;
 		d_secondArms = new HashMap <Study, ArmHolder>() ;
+		
+		d_studyGraphPresentationModel = new StudyGraphPresentation(d_indicationHolder,
+				d_endpointHolder, d_drugListHolder, d_domain);		
 	}
 		
 	public ListHolder<Indication> getIndicationListModel() {
@@ -430,5 +435,9 @@ public class MetaAnalysisWizardPresentation {
 
 	public ValueModel getDrugsSelectedCompleteModel() {
 		return d_drugsSelectedCompleteModel;
+	}
+
+	public StudyGraphPresentation getStudyGraphModel() {
+		return d_studyGraphPresentationModel;
 	}
 }

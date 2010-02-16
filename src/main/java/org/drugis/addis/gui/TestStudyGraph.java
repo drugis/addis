@@ -16,6 +16,7 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.StudyGraphPresentation;
 import org.drugis.addis.presentation.UnmodifiableHolder;
@@ -113,7 +114,7 @@ public class TestStudyGraph extends JPanel {
 
 		StudyGraphPresentation pm =
 			new StudyGraphPresentation(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
-				new UnmodifiableHolder<Endpoint>(ExampleData.buildEndpointHamd()),
+				new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()),
 					drugs, domain);
 	
 		TestStudyGraph panel = new TestStudyGraph(pm);

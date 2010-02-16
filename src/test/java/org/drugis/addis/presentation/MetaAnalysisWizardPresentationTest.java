@@ -330,6 +330,21 @@ public class MetaAnalysisWizardPresentationTest {
 	}	
 	
 	@Test
+	public void testStudyGraphPresentationModel() {
+		StudyGraphPresentation model = d_wizard.getStudyGraphModel();
+		
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		
+		List<Drug> drugs = new ArrayList<Drug>();
+		drugs.add(ExampleData.buildDrugFluoxetine());
+		drugs.add(ExampleData.buildDrugParoxetine());
+		drugs.add(ExampleData.buildDrugSertraline());		
+		
+		assertEquals(drugs, model.getDrugs());
+	}
+	
+	@Test
 	public void testGetOutcomeMeasureListModel() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		List<OutcomeMeasure> expected = d_wizard.getOutcomeMeasureListModel().getValue();

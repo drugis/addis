@@ -2,11 +2,11 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.HashSet;
 import java.util.List;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
@@ -54,29 +54,29 @@ extends ListenableUndirectedGraph<StudyGraphPresentation.Vertex, StudyGraphPrese
 	}
 	
 	private ValueHolder<Indication> d_indication;
-	private ValueHolder<Endpoint> d_endpoint;
+	private ValueHolder<OutcomeMeasure> d_outcome;
 	private Domain d_domain;
 	private ListHolder<Drug> d_drugs;
 
-	public StudyGraphPresentation(ValueHolder<Indication> indication, ValueHolder<Endpoint> endpoint, 
+	public StudyGraphPresentation(ValueHolder<Indication> indication, ValueHolder<OutcomeMeasure> outcome, 
 			ListHolder<Drug> drugs, Domain domain) {
 		super(Edge.class);
 		d_indication = indication;
-		d_endpoint = endpoint;
+		d_outcome = outcome;
 		d_drugs = drugs;
 		d_domain = domain;
 		updateGraph();
 		
 		d_drugs.addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent arg0) {
+			public void propertyChange(PropertyChangeEvent ev) {
 				updateGraph();
 			}
 		});
 	}
 	
 	private void updateGraph() {
-		removeAllEdges(edgeSet());
-		removeAllVertices(vertexSet());
+		removeAllEdges(new HashSet<Edge>(edgeSet()));
+		removeAllVertices(new HashSet<Vertex>(vertexSet()));
 		
 		List<Drug> drugs = d_drugs.getValue();
 		
@@ -113,14 +113,14 @@ extends ListenableUndirectedGraph<StudyGraphPresentation.Vertex, StudyGraphPrese
 
 	/**
 	 * Return the list of drugs that are included in at least one of the studies having the correct indication
-	 * and endpoint.
+	 * and outcome.
 	 */
 	public List<Drug> getDrugs() {
 		return d_drugs.getValue();
 	}
 	
 	/**
-	 * Return the studies with the correct indication and endpoint that compare the given drugs.
+	 * Return the studies with the correct indication and outcome that compare the given drugs.
 	 */
 	public List<Study> getStudies(Drug a, Drug b) {
 		List<Study> studies = getStudies(a);
@@ -129,17 +129,17 @@ extends ListenableUndirectedGraph<StudyGraphPresentation.Vertex, StudyGraphPrese
 	}
 	
 	/**
-	 * Return the studies with the correct indication and endpoint that include the given drug.
+	 * Return the studies with the correct indication and outcome that include the given drug.
 	 */
 	public List<Study> getStudies(Drug a) {
 		List<Study> studies = d_domain.getStudies(a).getValue();
 		studies.retainAll(d_domain.getStudies(getIndication()).getValue());
-		studies.retainAll(d_domain.getStudies(getEndpoint()).getValue());
+		studies.retainAll(d_domain.getStudies(getOutcomeMeasure()).getValue());
 		return studies;
 	}
 
-	private OutcomeMeasure getEndpoint() {
-		return d_endpoint.getValue();
+	private OutcomeMeasure getOutcomeMeasure() {
+		return d_outcome.getValue();
 	}
 
 	private Indication getIndication() {
