@@ -19,8 +19,8 @@ import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
-import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.addis.entities.RelativeEffect.AxisType;
 import org.drugis.addis.plot.ForestPlot;
 import org.drugis.common.Interval;
@@ -50,7 +50,7 @@ public class ForestPlotPresentationTest {
 	@Before
 	public void setUp() {
 		d_s1 = new Study("X", new Indication(0L, ""));
-		d_endpoint = new Endpoint("E", Type.CONTINUOUS);
+		d_endpoint = new Endpoint("E", Variable.Type.CONTINUOUS);
 		d_s1.addEndpoint(d_endpoint);
 		d_baseline = new Drug("DrugA", "");
 		d_subject = new Drug("DrugB", "");

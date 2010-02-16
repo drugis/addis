@@ -18,7 +18,7 @@ import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.OutcomeMeasure.Type;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.Interval;
 
@@ -420,7 +420,7 @@ public class MainData extends ExampleData {
 	
 	public static AdverseEvent buildAdverseEventHeadache() {
 		if (s_headache == null) {
-			s_headache = new AdverseEvent("Headache", Type.RATE);
+			s_headache = new AdverseEvent("Headache", Variable.Type.RATE);
 			s_headache.setDescription("Rate of patients reporting severe headache due to excessive alcohol consumption");
 		}
 		return s_headache;
@@ -428,7 +428,7 @@ public class MainData extends ExampleData {
 	
 	public static AdverseEvent buildAdverseEventConvulsion() {
 		if (s_convulsion == null) {
-			s_convulsion = new AdverseEvent("Convulsion", Type.RATE);
+			s_convulsion = new AdverseEvent("Convulsion", Variable.Type.RATE);
 			s_convulsion.setDescription("Rate of convulsion during study");
 		}
 		return s_convulsion;

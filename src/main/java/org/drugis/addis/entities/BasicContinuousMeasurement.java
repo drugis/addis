@@ -19,7 +19,6 @@
 
 package org.drugis.addis.entities;
 
-import org.drugis.addis.entities.OutcomeMeasure.Type;
 
 public class BasicContinuousMeasurement extends BasicMeasurement implements ContinuousMeasurement {
 	private static final long serialVersionUID = 6086085465347586428L;
@@ -66,7 +65,7 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 		return d_mean.toString() + " \u00B1 " + d_stdDev.toString() + " (" + d_sampleSize + ")";
 	}
 
-	public boolean isOfType(Type type) {
-		return type.equals(Type.CONTINUOUS);
+	public boolean isOfType(Variable.Type type) {
+		return type.equals(Variable.Type.CONTINUOUS);
 	}
 }

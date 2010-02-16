@@ -39,8 +39,8 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
-import org.drugis.addis.entities.OutcomeMeasure.Type;
 
 public class ExampleData {
 	private static Indication s_indicationDepression;
@@ -554,7 +554,7 @@ public class ExampleData {
 
 	public static Endpoint buildEndpointHamd() {
 		if (s_endpointHamd == null) {
-			Endpoint e = new Endpoint("HAM-D Responders", Type.RATE);
+			Endpoint e = new Endpoint("HAM-D Responders", Variable.Type.RATE);
 			e.setDescription("Responders with a 50% increase in HAM-D score");
 			s_endpointHamd = e;
 		}
@@ -563,7 +563,7 @@ public class ExampleData {
 
 	public static Endpoint buildEndpointCgi() {
 		if (s_endpointCgi == null) { 
-			Endpoint cgi = new Endpoint("CGI Severity Change", Type.CONTINUOUS);
+			Endpoint cgi = new Endpoint("CGI Severity Change", Variable.Type.CONTINUOUS);
 			cgi.setDescription("Change from baseline CGI Severity of Illness score");
 			cgi.setUnitOfMeasurement("Deviation from the baseline of CGI Severity of Illness score");
 			s_endpointCgi = cgi;
@@ -573,7 +573,7 @@ public class ExampleData {
 	
 	public static Endpoint buildEndpointCVdeath() {
 		if (s_endpointCVdeath == null) {
-			Endpoint e = new Endpoint("Cardiovascular Death Incidence", Type.RATE, Direction.LOWER_IS_BETTER);
+			Endpoint e = new Endpoint("Cardiovascular Death Incidence", Variable.Type.RATE, Direction.LOWER_IS_BETTER);
 			e.setDescription("Rate of mortality due to cardiovascular causes");
 			s_endpointCVdeath = e;
 		}

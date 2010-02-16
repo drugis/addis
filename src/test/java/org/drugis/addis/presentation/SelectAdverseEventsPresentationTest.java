@@ -1,24 +1,24 @@
 package org.drugis.addis.presentation;
 
-import static org.easymock.EasyMock.*;
-
-import static org.junit.Assert.*;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.AdverseEvent;
-import org.drugis.addis.entities.OutcomeMeasure.Type;
+import org.drugis.addis.entities.Variable;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
 @SuppressWarnings("serial")
 public class SelectAdverseEventsPresentationTest {
-	private AdverseEvent d_ade1 = new AdverseEvent("ADE 1", Type.RATE);
-	private AdverseEvent d_ade2 = new AdverseEvent("ADE 2", Type.RATE);
-	private AdverseEvent d_ade3 = new AdverseEvent("ADE 3", Type.RATE);
+	private AdverseEvent d_ade1 = new AdverseEvent("ADE 1", Variable.Type.RATE);
+	private AdverseEvent d_ade2 = new AdverseEvent("ADE 2", Variable.Type.RATE);
+	private AdverseEvent d_ade3 = new AdverseEvent("ADE 3", Variable.Type.RATE);
 	private ListHolder<AdverseEvent> d_list;
 	private SelectAdverseEventsPresentation d_pm;
 	

@@ -25,10 +25,11 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
-import org.drugis.addis.presentation.OutcomePresentationModel;
+import org.drugis.addis.presentation.VariablePresentationModel;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -64,7 +65,7 @@ public class AddOutcomeMeasureView implements ViewBuilder {
 		d_validator.add(d_description);
 		
 		d_unitOfMeasurement = BasicComponentFactory.createTextField(
-				d_model.getModel(OutcomeMeasure.PROPERTY_UNIT_OF_MEASUREMENT), false);
+				d_model.getModel(Variable.PROPERTY_UNIT_OF_MEASUREMENT), false);
 		
 		AutoSelectFocusListener.add(d_unitOfMeasurement);
 		d_unitOfMeasurement.setColumns(30);
@@ -74,7 +75,7 @@ public class AddOutcomeMeasureView implements ViewBuilder {
 		d_validator.add(d_name);
 	
 		d_type = AuxComponentFactory.createBoundComboBox(
-				OutcomeMeasure.Type.values(), d_model.getModel(OutcomeMeasure.PROPERTY_TYPE));
+				Variable.Type.values(), d_model.getModel(OutcomeMeasure.PROPERTY_TYPE));
 		d_direction = AuxComponentFactory.createBoundComboBox(
 				OutcomeMeasure.Direction.values(), d_model.getModel(OutcomeMeasure.PROPERTY_DIRECTION));
 		ComboBoxPopupOnFocusListener.add(d_type);
@@ -96,7 +97,7 @@ public class AddOutcomeMeasureView implements ViewBuilder {
 		builder.setDefaultDialogBorder();
 		
 		CellConstraints cc = new CellConstraints();
-		String categoryName = OutcomePresentationModel.getCategoryName(d_model.getBean());
+		String categoryName = VariablePresentationModel.getCategoryName(d_model.getBean());
 		builder.addSeparator(categoryName , cc.xyw(1, 1, 3));
 		builder.addLabel("Name:", cc.xy(1, 3));
 		builder.add(d_name, cc.xy(3,3));

@@ -4,27 +4,18 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
-import org.drugis.addis.entities.OutcomeMeasure.Type;
-
-public class CategoricalVariable extends AbstractEntity implements Variable {
+public class CategoricalVariable extends AbstractOutcomeMeasure implements PopulationCharacteristic {
 	private static final long serialVersionUID = 8700874872019027607L;
 	private String[] d_categories;
-	private String d_name;
 	
 	public CategoricalVariable(String name, String[] categories) {
-		d_name = name;
+		super(name, Type.CATEGORICAL);
 		d_categories = categories;
+		d_description = "";
 	}
 
 	public String[] getCategories() {
 		return d_categories;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.drugis.addis.entities.Variable#getName()
-	 */
-	public String getName() {
-		return d_name;
 	}
 	
 	public String toString() {
@@ -55,11 +46,7 @@ public class CategoricalVariable extends AbstractEntity implements Variable {
 		return getName().compareTo(other.getName());
 	}
 
-	public Type getType() {
-		return Type.CATEGORICAL;
-	}
-
-	public Measurement buildMeasurement(int size) {
+	public FrequencyMeasurement buildMeasurement(int size) {
 		FrequencyMeasurement m = new FrequencyMeasurement(this);
 		m.setSampleSize(size);
 		return m;

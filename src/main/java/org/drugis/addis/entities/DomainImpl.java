@@ -179,7 +179,7 @@ public class DomainImpl implements Domain {
 		return Collections.unmodifiableSortedSet(d_domainData.getDrugs());
 	}
 
-	public ListHolder<Study> getStudies(OutcomeMeasure e) 
+	public ListHolder<Study> getStudies(Variable e) 
 	throws NullPointerException {
 		if (e == null) {
 			throw new NullPointerException("Endpoint must not be null");
@@ -340,11 +340,11 @@ public class DomainImpl implements Domain {
 		}
 	}
 
-	public SortedSet<Variable> getVariables() {
+	public SortedSet<PopulationCharacteristic> getVariables() {
 		return Collections.unmodifiableSortedSet(d_domainData.getVariables());
 	}
 
-	public void addVariable(Variable c) {
+	public void addVariable(PopulationCharacteristic c) {
 		if (c == null) {
 			throw new NullPointerException("Categorical Variable may not be null");
 		}
@@ -353,25 +353,25 @@ public class DomainImpl implements Domain {
 		fireDomainChanged(DomainEvent.Type.VARIABLES);
 	}
 
-	public ListHolder<Variable> getVariablesHolder() {
+	public ListHolder<PopulationCharacteristic> getVariablesHolder() {
 		return new VariablesHolder();
 	}
 	
 	@SuppressWarnings("serial")
-	private class VariablesHolder extends AbstractListHolder<Variable> implements DomainListener {
-		private List<Variable> d_vars;
+	private class VariablesHolder extends AbstractListHolder<PopulationCharacteristic> implements DomainListener {
+		private List<PopulationCharacteristic> d_vars;
 		
 		public VariablesHolder() {
 			d_vars = getVars();
 			addListener(this);
 		}
 
-		private ArrayList<Variable> getVars() {
-			return new ArrayList<Variable>(getVariables());
+		private ArrayList<PopulationCharacteristic> getVars() {
+			return new ArrayList<PopulationCharacteristic>(getVariables());
 		}
 		
 		@Override
-		public List<Variable> getValue() {
+		public List<PopulationCharacteristic> getValue() {
 			return d_vars;
 		}
 

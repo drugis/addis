@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.OutcomeMeasure.Type;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.RelativeEffectTableDialog;
@@ -74,11 +74,11 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 						cc.xy(1, row));
 				
 				JPanel panel = new JPanel(new FlowLayout());
-				if (om.getType().equals(Type.RATE)) {
+				if (om.getType().equals(Variable.Type.RATE)) {
 					panel.add(createOddsRatioButton(om));
 					panel.add(createRiskRatioButton(om));
 					panel.add(createRiskDifferenceButton(om));
-				} else if (om.getType().equals(Type.CONTINUOUS)) {
+				} else if (om.getType().equals(Variable.Type.CONTINUOUS)) {
 					panel.add(createWMDButton(om));
 					panel.add(createSMDButton(om));
 				}

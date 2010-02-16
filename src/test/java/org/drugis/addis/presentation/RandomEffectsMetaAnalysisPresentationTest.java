@@ -9,9 +9,9 @@ import java.util.List;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
@@ -28,7 +28,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
 		RandomEffectsMetaAnalysisPresentation pres = (RandomEffectsMetaAnalysisPresentation) fact.getModel(meta);
-		assertEquals(Endpoint.Type.RATE, pres.getAnalysisType());
+		assertEquals(Variable.Type.RATE, pres.getAnalysisType());
 	}
 	
 	@Test
@@ -42,7 +42,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
 		RandomEffectsMetaAnalysisPresentation pres = (RandomEffectsMetaAnalysisPresentation) fact.getModel(meta);
-		assertEquals(Endpoint.Type.CONTINUOUS, pres.getAnalysisType());
+		assertEquals(Variable.Type.CONTINUOUS, pres.getAnalysisType());
 	}
 	
 	@Test

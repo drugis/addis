@@ -3,19 +3,21 @@ package org.drugis.addis.entities;
 import java.util.Collections;
 import java.util.Set;
 
-public abstract class AbstractOutcomeMeasure extends AbstractEntity implements OutcomeMeasure {
+import org.drugis.common.EqualsUtil;
+
+public abstract class AbstractOutcomeMeasure extends AbstractEntity implements Variable {
 	private static final long serialVersionUID = 5902516465466960966L;
 
 	protected String d_name;
 	String d_description = "";
 	protected String d_unitOfMeasurement;
-	protected Type d_type;
+	protected Variable.Type d_type;
 	
-	protected AbstractOutcomeMeasure(String name, Type type) {
+	protected AbstractOutcomeMeasure(String name, Variable.Type type) {
 		d_name = name;
 		d_type = type;
 				
-		if (d_type == Type.RATE)
+		if (d_type == Variable.Type.RATE)
 			d_unitOfMeasurement = UOM_DEFAULT_RATE;
 		else
 			d_unitOfMeasurement = UOM_DEFAULT_CONTINUOUS;
@@ -55,13 +57,13 @@ public abstract class AbstractOutcomeMeasure extends AbstractEntity implements O
 		return getName();
 	}
 
-	public void setType(Type type) {
-		Type oldVal = d_type;
+	public void setType(Variable.Type type) {
+		Variable.Type oldVal = d_type;
 		d_type = type;
 		firePropertyChange(PROPERTY_TYPE, oldVal, d_type);
 	}
 
-	public Type getType() {
+	public Variable.Type getType() {
 		return d_type;
 	}
 
@@ -75,12 +77,19 @@ public abstract class AbstractOutcomeMeasure extends AbstractEntity implements O
 	
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof AbstractOutcomeMeasure) {
-			OutcomeMeasure other = (OutcomeMeasure)o;
-			if (other.getName() == null && getName() == null) {
-				return true;
+		if (o instanceof OutcomeMeasure) {
+			if (!(this instanceof OutcomeMeasure)) {
+				return false;
 			}
-			return other.getName().equals(getName());
+			OutcomeMeasure other = (OutcomeMeasure)o;
+			return EqualsUtil.equal(other.getName(), getName()); 
+		}
+		if (o instanceof PopulationCharacteristic) {
+			if (!(this instanceof PopulationCharacteristic)) {
+				return false;
+			}
+			PopulationCharacteristic other = (PopulationCharacteristic)o;
+			return EqualsUtil.equal(other.getName(), getName()); 
 		}
 		return false;		
 	}

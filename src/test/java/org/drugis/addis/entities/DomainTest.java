@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.common.JUnitUtil;
@@ -91,7 +90,7 @@ public class DomainTest {
 
 	@Test
 	public void testAddEndpoint() {
-		Endpoint e = new Endpoint("e", Type.RATE);
+		Endpoint e = new Endpoint("e", Variable.Type.RATE);
 		assertEquals(0, d_domain.getEndpoints().size());
 		d_domain.addEndpoint(e);
 		assertEquals(1, d_domain.getEndpoints().size());
@@ -217,7 +216,7 @@ public class DomainTest {
 		replay(mockListener);
 		
 		d_domain.addListener(mockListener);
-		d_domain.addEndpoint(new Endpoint("e", Type.RATE));
+		d_domain.addEndpoint(new Endpoint("e", Variable.Type.RATE));
 		verify(mockListener);
 	}
 	
@@ -270,9 +269,9 @@ public class DomainTest {
 	
 	@Test
 	public void testGetStudiesByEndpoint() {
-		Endpoint e1 = new Endpoint("e1", Type.RATE);
-		Endpoint e2 = new Endpoint("e2", Type.RATE);
-		OutcomeMeasure e3 = new Endpoint("e3", Type.RATE);
+		Endpoint e1 = new Endpoint("e1", Variable.Type.RATE);
+		Endpoint e2 = new Endpoint("e2", Variable.Type.RATE);
+		OutcomeMeasure e3 = new Endpoint("e3", Variable.Type.RATE);
 		
 		List<Endpoint> l1 = new ArrayList<Endpoint>();
 		l1.add(e1);
@@ -306,8 +305,8 @@ public class DomainTest {
 	
 	@Test
 	public void testGetStudiesByIndication() {
-		Endpoint e1 = new Endpoint("e1", Type.RATE);
-		Endpoint e2 = new Endpoint("e2", Type.RATE);
+		Endpoint e1 = new Endpoint("e1", Variable.Type.RATE);
+		Endpoint e2 = new Endpoint("e2", Variable.Type.RATE);
 			
 		ArrayList<Endpoint> l1 = new ArrayList<Endpoint>();
 		l1.add(e1);
@@ -345,7 +344,7 @@ public class DomainTest {
 	
 	@Test
 	public void testGetStudiesByIndicationListFiresOnChange() {
-		Endpoint e1 = new Endpoint("e1", Type.RATE);
+		Endpoint e1 = new Endpoint("e1", Variable.Type.RATE);
 
 		ArrayList<Endpoint> l1 = new ArrayList<Endpoint>();
 		l1.add(e1);
@@ -381,7 +380,7 @@ public class DomainTest {
 		Drug d2 = new Drug("drug2", "atccode2");
 		Drug d3 = new Drug("drug3", "atccode3");
 		
-		Endpoint e = new Endpoint("Death", OutcomeMeasure.Type.RATE);
+		Endpoint e = new Endpoint("Death", Variable.Type.RATE);
 		
 		Study s1 = new Study("s1", d_indication);
 		s1.setEndpoints(Collections.singletonList(e));
@@ -431,7 +430,7 @@ public class DomainTest {
 		Drug d1 = new Drug("drug1", "atccode1");
 		Drug d2 = new Drug("drug2", "atccode2");
 		
-		Endpoint e = new Endpoint("Death", OutcomeMeasure.Type.RATE);
+		Endpoint e = new Endpoint("Death", Variable.Type.RATE);
 		
 		Study s1 = new Study("s1", d_indication);
 		s1.setEndpoints(Collections.singletonList(e));
@@ -478,8 +477,8 @@ public class DomainTest {
 		assertEquals(d1, d2);
 		assertEquals(d1.hashCode(), d2.hashCode());
 		
-		Endpoint e1 = new Endpoint("e1", Type.RATE);
-		Endpoint e2 = new Endpoint("e2", Type.RATE);
+		Endpoint e1 = new Endpoint("e1", Variable.Type.RATE);
+		Endpoint e2 = new Endpoint("e2", Variable.Type.RATE);
 		d1.addEndpoint(e1);
 		d1.addEndpoint(e2);
 		d2.addEndpoint(e1);
@@ -531,7 +530,7 @@ public class DomainTest {
 		d_domain.addStudy(s1);
 		d_domain.addStudy(s2);
 		
-		Endpoint e = new Endpoint("e", Type.RATE);
+		Endpoint e = new Endpoint("e", Variable.Type.RATE);
 		d_domain.addEndpoint(e);
 		s1.addEndpoint(e);
 		s2.addEndpoint(e);
@@ -595,7 +594,7 @@ public class DomainTest {
 
 	@Test
 	public void testDeleteEndpoint() throws DependentEntitiesException {
-		Endpoint e = new Endpoint("e", Type.RATE);
+		Endpoint e = new Endpoint("e", Variable.Type.RATE);
 		d_domain.addEndpoint(e);
 		d_domain.deleteEndpoint(e);
 		assertTrue(d_domain.getEndpoints().isEmpty());
@@ -607,7 +606,7 @@ public class DomainTest {
 		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s1);
 		
-		Endpoint e = new Endpoint("e", Type.RATE);
+		Endpoint e = new Endpoint("e", Variable.Type.RATE);
 		d_domain.addEndpoint(e);
 		s1.addEndpoint(e);
 			
@@ -616,7 +615,7 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteEndpointFires() throws DependentEntitiesException {
-		Endpoint d = new Endpoint("d", Type.RATE);
+		Endpoint d = new Endpoint("d", Variable.Type.RATE);
 		d_domain.addEndpoint(d);
 		
 		DomainListener mock = createMock(DomainListener.class);
@@ -678,15 +677,15 @@ public class DomainTest {
 	
 	@Test
 	public void testVariablesHolder() {
-		ListHolder<Variable> vars = d_domain.getVariablesHolder();
+		ListHolder<PopulationCharacteristic> vars = d_domain.getVariablesHolder();
 		
-		Variable v1 = new ContinuousVariable("Age");
+		PopulationCharacteristic v1 = new ContinuousVariable("Age");
 		d_domain.addVariable(v1);
 		
 		assertEquals(1, vars.getValue().size());
 		assertTrue(vars.getValue().contains(v1));
 		
-		Variable v2 = new ContinuousVariable("Blood Pressure");
+		PopulationCharacteristic v2 = new ContinuousVariable("Blood Pressure");
 		List<Variable> expected = new ArrayList<Variable>();
 		expected.add(v1);
 		expected.add(v2);
@@ -708,7 +707,7 @@ public class DomainTest {
 	
 	@Test
 	public void testAddAde() {
-		AdverseEvent ade = new AdverseEvent("a", Type.RATE);
+		AdverseEvent ade = new AdverseEvent("a", Variable.Type.RATE);
 		assertEquals(0, d_domain.getAdverseEvents().size());
 		d_domain.addAdverseEvent(ade);
 		assertEquals(1, d_domain.getAdverseEvents().size());
@@ -722,13 +721,13 @@ public class DomainTest {
 		replay(mockListener);
 		
 		d_domain.addListener(mockListener);
-		d_domain.addAdverseEvent(new AdverseEvent("e", Type.RATE));
+		d_domain.addAdverseEvent(new AdverseEvent("e", Variable.Type.RATE));
 		verify(mockListener);
 	}
 	
 	@Test
 	public void testDeleteAde() throws DependentEntitiesException {
-		AdverseEvent e = new AdverseEvent("e", Type.RATE);
+		AdverseEvent e = new AdverseEvent("e", Variable.Type.RATE);
 		d_domain.addAdverseEvent(e);
 		d_domain.deleteAdverseEvent(e);
 		assertTrue(d_domain.getAdverseEvents().isEmpty());
@@ -740,7 +739,7 @@ public class DomainTest {
 		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s1);
 		
-		AdverseEvent a = new AdverseEvent("e", Type.RATE);
+		AdverseEvent a = new AdverseEvent("e", Variable.Type.RATE);
 		d_domain.addAdverseEvent(a);
 		s1.addAdverseEvent(a);
 			
@@ -749,7 +748,7 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteAdeFires() throws DependentEntitiesException {
-		AdverseEvent d = new AdverseEvent("d", Type.RATE);
+		AdverseEvent d = new AdverseEvent("d", Variable.Type.RATE);
 		d_domain.addAdverseEvent(d);
 		
 		DomainListener mock = createMock(DomainListener.class);

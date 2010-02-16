@@ -39,9 +39,9 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
-import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
@@ -454,7 +454,7 @@ public class AddStudyWizard implements ViewBuilder{
 	}
 	
 	@SuppressWarnings("serial")
-	public class SelectPopulationCharsWizardStep extends SelectFromFiniteListWizardStep<Variable> {
+	public class SelectPopulationCharsWizardStep extends SelectFromFiniteListWizardStep<PopulationCharacteristic> {
 		public SelectPopulationCharsWizardStep() {
 			super(d_pm.getPopulationCharSelectModel());
 		}
