@@ -22,10 +22,10 @@ import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
 
@@ -168,9 +168,9 @@ public class AddStudyWizardPresentation {
 	List<BasicArmPresentation> d_selectedArmList;
 	private ListHolder<Endpoint> d_endpointListHolder;
 	private ListHolder<AdverseEvent> d_adverseEventListHolder;
-	private ListHolder<Variable> d_populationCharsListHolder;
+	private ListHolder<PopulationCharacteristic> d_populationCharsListHolder;
 	private SelectAdverseEventsPresentation d_adverseEventSelect;
-	private SelectFromFiniteListPresentationModel<Variable> d_populationCharSelect;
+	private SelectFromFiniteListPresentationModel<PopulationCharacteristic> d_populationCharSelect;
 	
 	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, Main main) {
 		d_domain = d;
@@ -392,8 +392,8 @@ public class AddStudyWizardPresentation {
 	}
 	
 	private void commitPopulationCharsToStudy() {
-		List<Variable> outcomeMeasures = new ArrayList<Variable>();
-		for(AbstractHolder<Variable> outcomeHolder : d_populationCharSelect.getSlots()) {
+		List<PopulationCharacteristic> outcomeMeasures = new ArrayList<PopulationCharacteristic>();
+		for(AbstractHolder<PopulationCharacteristic> outcomeHolder : d_populationCharSelect.getSlots()) {
 			outcomeMeasures.add(outcomeHolder.getValue());
 		}	
 		getNewStudy().setPopulationCharacteristics(outcomeMeasures);
@@ -472,7 +472,7 @@ public class AddStudyWizardPresentation {
 		return d_adverseEventSelect;
 	}
 
-	public SelectFromFiniteListPresentationModel<Variable> getPopulationCharSelectModel() {
+	public SelectFromFiniteListPresentationModel<PopulationCharacteristic> getPopulationCharSelectModel() {
 		return d_populationCharSelect;
 	} 
 }

@@ -25,7 +25,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.gui.builder.AddOutcomeMeasureView;
-import org.drugis.addis.presentation.OutcomePresentationModel;
+import org.drugis.addis.presentation.VariablePresentationModel;
 import org.drugis.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.value.ValueModel;
@@ -38,7 +38,7 @@ public class AddOutcomeDialog extends OkCancelDialog {
 	private ValueModel d_selectionModel;
 	
 	public AddOutcomeDialog(Main frame, Domain domain, OutcomeMeasure om, ValueModel selectionModel) {
-		super(frame, "Add " + OutcomePresentationModel.getCategoryName(om) );
+		super(frame, "Add " + VariablePresentationModel.getCategoryName(om) );
 		this.d_main = frame;
 		this.setModal(true);
 		d_domain = domain;

@@ -3,15 +3,11 @@ package org.drugis.addis.entities;
 import java.util.Collections;
 import java.util.Set;
 
-import org.drugis.addis.entities.OutcomeMeasure.Type;
+public class ContinuousVariable extends AbstractOutcomeMeasure implements PopulationCharacteristic {
+	private static final long serialVersionUID = -1047329092617146770L;
 
-public class ContinuousVariable extends AbstractEntity implements Variable {
-	private static final long serialVersionUID = -7658488761002395117L;
-	
-	private String d_name;
-	
 	public ContinuousVariable(String name) {
-		d_name = name;
+		super(name, Type.CONTINUOUS);
 	}
 
 	@Override
@@ -19,14 +15,10 @@ public class ContinuousVariable extends AbstractEntity implements Variable {
 		return Collections.emptySet();
 	}
 
-	public ContinuousMeasurement buildMeasurement() {
+	public BasicContinuousMeasurement buildMeasurement() {
 		return new BasicContinuousMeasurement(0, 0, 0);
 	}
 
-	public String getName() {
-		return d_name;
-	}
-	
 	public String toString() {
 		return getName();
 	}
@@ -35,11 +27,7 @@ public class ContinuousVariable extends AbstractEntity implements Variable {
 		return getName().compareTo(other.getName()); 
 	}
 
-	public Type getType() {
-		return Type.CONTINUOUS;
-	}
-
-	public Measurement buildMeasurement(int size) {
+	public BasicContinuousMeasurement buildMeasurement(int size) {
 		return new BasicContinuousMeasurement(0, 0, size);
 	}
 }

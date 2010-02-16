@@ -91,7 +91,7 @@ public interface Domain {
 	 * Get studies by Endpoint.
 	 * @return An unmodifiable sorted set of studies. Never null.
 	 */
-	public ListHolder<Study> getStudies(OutcomeMeasure e);
+	public ListHolder<Study> getStudies(Variable e);
 	
 	/**
 	 * Get studies by Drug.
@@ -175,11 +175,11 @@ public interface Domain {
 	 */
 	public void deleteIndication(Indication i) throws DependentEntitiesException;
 	
-	public SortedSet<Variable> getVariables();
+	public SortedSet<PopulationCharacteristic> getVariables();
 	
-	public void addVariable(Variable c);
+	public void addVariable(PopulationCharacteristic c);
 
-	public ListHolder<Variable> getVariablesHolder();
+	public ListHolder<PopulationCharacteristic> getVariablesHolder();
 	
 	public SortedSet<AdverseEvent> getAdverseEvents();
 	

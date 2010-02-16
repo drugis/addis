@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
@@ -24,6 +23,7 @@ import org.drugis.addis.entities.RiskRatio;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
+import org.drugis.addis.entities.Variable;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,8 +53,8 @@ public class RandomEffectsMetaAnalysisTest {
 		d_ind = new Indication(001L, "Impression");
 		d_fluox = new Drug("Fluoxetine","01");
 		d_sertr = new Drug("Sertraline","02");
-		d_rateEndpoint = new Endpoint("rate", OutcomeMeasure.Type.RATE);
-		d_contEndpoint = new Endpoint("continuous", OutcomeMeasure.Type.CONTINUOUS);
+		d_rateEndpoint = new Endpoint("rate", Variable.Type.RATE);
+		d_contEndpoint = new Endpoint("continuous", Variable.Type.CONTINUOUS);
 		
 		d_bennie = createRateStudy("Bennie 1995",63,144,73,142, d_ind);
 		d_boyer = createRateStudy("Boyer 1998", 61,120, 63,122, d_ind);

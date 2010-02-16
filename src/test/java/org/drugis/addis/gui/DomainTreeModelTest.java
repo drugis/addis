@@ -36,6 +36,7 @@ import javax.swing.event.TreeModelListener;
 
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.ContinuousVariable;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
@@ -43,9 +44,10 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.OutcomeMeasure.Type;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +58,7 @@ public class DomainTreeModelTest {
 	private Indication d_firstIndication;
 	private Endpoint d_firstEndpoint;
 	private AdverseEvent d_firstADE;
+	private PopulationCharacteristic d_firstPopChar;
 	private Study d_firstStudy;
 	private Drug d_firstDrug;
 	private RandomEffectsMetaAnalysis d_firstMetaAnalysis;
@@ -64,8 +67,8 @@ public class DomainTreeModelTest {
 	public void setUp() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		d_domain = new DomainImpl();
 		d_firstIndication = new Indication(8L, "Indication");		
-		d_firstEndpoint = new Endpoint("Endpoint", Type.RATE);
-		d_firstADE = new AdverseEvent("firstADE", Type.CONTINUOUS);
+		d_firstEndpoint = new Endpoint("Endpoint", Variable.Type.RATE);
+		d_firstADE = new AdverseEvent("firstADE", Variable.Type.CONTINUOUS);
 		d_firstStudy = new Study("First", d_firstIndication);
 		d_firstDrug = new Drug("Drug", "atc");
 		
@@ -81,11 +84,14 @@ public class DomainTreeModelTest {
 		d_firstMetaAnalysis = new RandomEffectsMetaAnalysis("meta", d_firstEndpoint, 
 				Collections.singletonList((Study)d_firstStudy), d_firstDrug, d_firstDrug);
 		
+		d_firstPopChar = new ContinuousVariable("Age");
+		
 		d_domain.addIndication(d_firstIndication);
 		d_domain.addEndpoint(d_firstEndpoint);
 		d_domain.addAdverseEvent(d_firstADE);
 		d_domain.addStudy(d_firstStudy);
 		d_domain.addDrug(d_firstDrug);
+		d_domain.addVariable(d_firstPopChar);
 		
 		d_domain.addMetaAnalysis(d_firstMetaAnalysis);
 		
@@ -112,8 +118,14 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testGetAdeNode() {
-		assertNotNull(d_treeModel.getAdverseEventNode());
-		assertEquals("Adverse drug events", d_treeModel.getAdverseEventNode().toString());
+		assertNotNull(d_treeModel.getAdverseEventsNode());
+		assertEquals("Adverse drug events", d_treeModel.getAdverseEventsNode().toString());
+	}
+	
+	@Test
+	public void testGetPopCharNode() {
+		assertNotNull(d_treeModel.getPopulationCharacteristicsNode());
+		assertEquals("Population characteristics", d_treeModel.getPopulationCharacteristicsNode().toString());
 	}
 	
 	@Test
@@ -146,8 +158,14 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testGetADE() {
-		assertEquals(d_firstADE, d_treeModel.getChild(d_treeModel.getAdverseEventNode(), 0));
-		assertEquals(null, d_treeModel.getChild(d_treeModel.getAdverseEventNode(), 1));
+		assertEquals(d_firstADE, d_treeModel.getChild(d_treeModel.getAdverseEventsNode(), 0));
+		assertEquals(null, d_treeModel.getChild(d_treeModel.getAdverseEventsNode(), 1));
+	}
+	
+	@Test
+	public void testGetPopChar() {
+		assertEquals(d_firstPopChar, d_treeModel.getChild(d_treeModel.getPopulationCharacteristicsNode(), 0));
+		assertEquals(null, d_treeModel.getChild(d_treeModel.getAdverseEventsNode(), 1));
 	}
 	
 	@Test
@@ -170,12 +188,13 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testGetChildCount() {
-		assertEquals(DomainTreeModel.numOfBranches, d_treeModel.getChildCount(d_treeModel.getRoot()));
+		assertEquals(7, d_treeModel.getChildCount(d_treeModel.getRoot()));
 		
 		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getAnalysesNode()));
 		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getIndicationsNode()));
 		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getEndpointsNode()));
-		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getAdverseEventNode()));	
+		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getAdverseEventsNode()));	
+		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getPopulationCharacteristicsNode()));	
 		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getDrugsNode()));		
 		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getStudiesNode()));
 		assertEquals(0, d_treeModel.getChildCount(d_firstEndpoint));
@@ -189,15 +208,17 @@ public class DomainTreeModelTest {
 		// test categories
 		assertEquals(DomainTreeModel.INDICATIONS, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), d_treeModel.getIndicationsNode()));
 		assertEquals(DomainTreeModel.ENDPOINTS, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), d_treeModel.getEndpointsNode()));
-		assertEquals(DomainTreeModel.ADVERSE_EVENTS, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), d_treeModel.getAdverseEventNode()));
+		assertEquals(DomainTreeModel.ADVERSE_EVENTS, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), d_treeModel.getAdverseEventsNode()));
 		assertEquals(DomainTreeModel.ANALYSES, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), d_treeModel.getAnalysesNode()));
 		assertEquals(DomainTreeModel.STUDIES, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), d_treeModel.getStudiesNode()));
 		assertEquals(DomainTreeModel.DRUGS, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), d_treeModel.getDrugsNode()));
+		assertEquals(DomainTreeModel.POPULATION_CHARACTERISTICS, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), d_treeModel.getPopulationCharacteristicsNode()));
 		
 		// test first element of every category
 		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getIndicationsNode(), d_firstIndication));
 		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getEndpointsNode(), d_firstEndpoint));	
-		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getAdverseEventNode(), d_firstADE));			
+		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getAdverseEventsNode(), d_firstADE));			
+		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getPopulationCharacteristicsNode(), d_firstPopChar));			
 		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getStudiesNode(), d_firstStudy));
 		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getDrugsNode(), d_firstDrug));
 		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getAnalysesNode(), d_firstMetaAnalysis));
@@ -212,7 +233,7 @@ public class DomainTreeModelTest {
 		
 		assertFalse(d_treeModel.isLeaf(d_treeModel.getIndicationsNode()));		
 		assertFalse(d_treeModel.isLeaf(d_treeModel.getEndpointsNode()));
-		assertFalse(d_treeModel.isLeaf(d_treeModel.getAdverseEventNode()));		
+		assertFalse(d_treeModel.isLeaf(d_treeModel.getAdverseEventsNode()));		
 		assertFalse(d_treeModel.isLeaf(d_treeModel.getStudiesNode()));
 		assertFalse(d_treeModel.isLeaf(d_treeModel.getDrugsNode()));		
 		assertFalse(d_treeModel.isLeaf(d_treeModel.getAnalysesNode()));	
@@ -220,9 +241,10 @@ public class DomainTreeModelTest {
 		assertTrue(d_treeModel.isLeaf(d_firstIndication));
 		assertTrue(d_treeModel.isLeaf(d_firstEndpoint));
 		assertTrue(d_treeModel.isLeaf(d_firstADE));	
+		assertTrue(d_treeModel.isLeaf(d_firstPopChar));	
 		assertTrue(d_treeModel.isLeaf(d_firstStudy));
 		assertTrue(d_treeModel.isLeaf(d_firstDrug));		
-		assertTrue(d_treeModel.isLeaf(d_firstMetaAnalysis));		
+		assertTrue(d_treeModel.isLeaf(d_firstMetaAnalysis));
 	}
 	
 	@Test
@@ -244,7 +266,7 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addEndpoint(new Endpoint("E", Type.RATE));
+		d_domain.addEndpoint(new Endpoint("E", Variable.Type.RATE));
 		
 		verify(listener);
 	}
@@ -282,6 +304,18 @@ public class DomainTreeModelTest {
 		
 		d_treeModel.addTreeModelListener(listener);
 		d_domain.addDrug(new Drug("X", "atc"));
+		
+		verify(listener);
+	}	
+	
+	@Test
+	public void testAddPopCharFires() {
+		TreeModelListener listener = createMock(TreeModelListener.class);
+		listener.treeStructureChanged((TreeModelEvent)notNull());
+		replay(listener);
+		
+		d_treeModel.addTreeModelListener(listener);
+		d_domain.addVariable(new ContinuousVariable("X"));
 		
 		verify(listener);
 	}	

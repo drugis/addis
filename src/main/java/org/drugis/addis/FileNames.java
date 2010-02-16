@@ -26,6 +26,7 @@ public class FileNames {
 	public static final String ICON_STUDY_NEW = "study_new.gif";
 	public static final String ICON_ENDPOINT = "endpoint.gif";
 	public static final String ICON_ADVERSE_EVENT = "ade.gif";
+	public static final String ICON_POPULATION_CHAR = "popchar.gif";
 	public static final String ICON_METASTUDY = "metastudy.gif";
 	public static final String ICON_METASTUDY_NEW = "metastudy_new.gif";
 	public static final String ICON_DELETE = "delete.gif";

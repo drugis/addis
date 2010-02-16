@@ -11,25 +11,25 @@ import java.util.List;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.ContinuousVariable;
-import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
 @SuppressWarnings("serial")
 public class SelectPopulationCharsPresentationTest {
-	private Variable d_var1 = ExampleData.buildAgeVariable();
-	private Variable d_var2 = ExampleData.buildGenderVariable();
-	private Variable d_var3 = new ContinuousVariable("Blood Pressure");
-	private ListHolder<Variable> d_list;
+	private PopulationCharacteristic d_var1 = ExampleData.buildAgeVariable();
+	private PopulationCharacteristic d_var2 = ExampleData.buildGenderVariable();
+	private PopulationCharacteristic d_var3 = new ContinuousVariable("Blood Pressure");
+	private AbstractListHolder<PopulationCharacteristic> d_list;
 	private SelectPopulationCharsPresentation d_pm;
 	
 	@Before
 	public void setUp() {
-		d_list = new AbstractListHolder<Variable>() {
+		d_list = new AbstractListHolder<PopulationCharacteristic>() {
 			@Override
-			public List<Variable> getValue() {
-				List<Variable> l = new ArrayList<Variable>();
+			public List<PopulationCharacteristic> getValue() {
+				List<PopulationCharacteristic> l = new ArrayList<PopulationCharacteristic>();
 				l.add(d_var1);
 				l.add(d_var2);
 				return l;

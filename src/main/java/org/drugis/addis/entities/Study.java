@@ -82,7 +82,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private Map<MeasurementKey, Measurement> d_measurements = new HashMap<MeasurementKey, Measurement>();
 	private List<Endpoint> d_endpoints = new ArrayList<Endpoint>();
 	private List<AdverseEvent> d_adverseEvents = new ArrayList<AdverseEvent>();
-	private List<Variable> d_populationChars = new ArrayList<Variable>();
+	private List<PopulationCharacteristic> d_populationChars = new ArrayList<PopulationCharacteristic>();
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	private Indication d_indication;
 	private Map<Object, Note> d_notes = new HashMap<Object, Note>();
@@ -137,6 +137,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public Set<Entity> getDependencies() {
 		HashSet<Entity> dep = new HashSet<Entity>(getDrugs());
 		dep.addAll(getOutcomeMeasures());
+		dep.addAll(getPopulationCharacteristics());
 		dep.add(d_indication);
 		return dep;
 	}
@@ -264,7 +265,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return Collections.unmodifiableList(d_adverseEvents);
 	}
 	
-	public List<Variable> getPopulationCharacteristics() {
+	public List<PopulationCharacteristic> getPopulationCharacteristics() {
 		return Collections.unmodifiableList(d_populationChars);
 	}
 	
@@ -291,11 +292,11 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		firePropertyChange(PROPERTY_ADVERSE_EVENTS, oldVal, getAdverseEvents());
 	}
 	
-	public void setPopulationCharacteristics(List<Variable> chars) {
-		List<? extends Variable> oldVal = getVariables(Variable.class);
-		d_populationChars = new ArrayList<Variable>(chars);
+	public void setPopulationCharacteristics(List<PopulationCharacteristic> chars) {
+		List<? extends Variable> oldVal = getVariables(PopulationCharacteristic.class);
+		d_populationChars = new ArrayList<PopulationCharacteristic>(chars);
 		updateMeasurements();
-		firePropertyChange(PROPERTY_POPULATION_CHARACTERISTICS, oldVal, getVariables(Variable.class));
+		firePropertyChange(PROPERTY_POPULATION_CHARACTERISTICS, oldVal, getVariables(PopulationCharacteristic.class));
 	}
 	
 	public void addAdverseEvent(AdverseEvent ade) {

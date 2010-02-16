@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.drugis.addis.entities.OutcomeMeasure.Type;
-
 public class FrequencyMeasurement extends BasicMeasurement {
 
 	private static final long serialVersionUID = -6601562604420073113L;
@@ -69,7 +67,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 		}
 	}
 		
-	public boolean isOfType(Type type) {
+	public boolean isOfType(Variable.Type type) {
 		return false;
 	}
 

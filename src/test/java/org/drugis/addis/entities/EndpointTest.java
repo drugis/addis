@@ -19,12 +19,9 @@
 
 package org.drugis.addis.entities;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.drugis.addis.entities.BasicContinuousMeasurement;
-import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.OutcomeMeasure.Type;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
 
@@ -33,44 +30,44 @@ public class EndpointTest {
 
 	@Test
 	public void testSetDescription() {
-		JUnitUtil.testSetter(new Endpoint("e", Type.RATE), Endpoint.PROPERTY_DESCRIPTION, "", "My Description");
+		JUnitUtil.testSetter(new Endpoint("e", Variable.Type.RATE), Endpoint.PROPERTY_DESCRIPTION, "", "My Description");
 	}
 	
 	@Test
 	public void testSetUnitOfMeasurement() {
-		JUnitUtil.testSetter(new Endpoint("e", Type.CONTINUOUS), OutcomeMeasure.PROPERTY_UNIT_OF_MEASUREMENT, "", "kg per day");
+		JUnitUtil.testSetter(new Endpoint("e", Variable.Type.CONTINUOUS), Variable.PROPERTY_UNIT_OF_MEASUREMENT, "", "kg per day");
 	}
 
 	@Test
 	public void testSetName() {
-		JUnitUtil.testSetter(new Endpoint("e", Type.RATE), Endpoint.PROPERTY_NAME, "e", "My Name");
+		JUnitUtil.testSetter(new Endpoint("e", Variable.Type.RATE), Endpoint.PROPERTY_NAME, "e", "My Name");
 	}
 	
 	@Test
 	public void testSetType() {
-		JUnitUtil.testSetter(new Endpoint("e", Type.RATE), Endpoint.PROPERTY_TYPE, Type.RATE, OutcomeMeasure.Type.CONTINUOUS);
+		JUnitUtil.testSetter(new Endpoint("e", Variable.Type.RATE), Endpoint.PROPERTY_TYPE, Variable.Type.RATE, Variable.Type.CONTINUOUS);
 	}
 	
 	@Test
 	public void testSetDirection() {
-		JUnitUtil.testSetter(new Endpoint("e", Type.RATE), Endpoint.PROPERTY_DIRECTION,
+		JUnitUtil.testSetter(new Endpoint("e", Variable.Type.RATE), Endpoint.PROPERTY_DIRECTION,
 				OutcomeMeasure.Direction.HIGHER_IS_BETTER, OutcomeMeasure.Direction.LOWER_IS_BETTER);
 	}
 	
 	@Test
 	public void testBuildMeasurement() {
 		Arm pg = new Arm(null, null, 0);
-		Endpoint e = new Endpoint("e", Type.RATE);
-		e.setType(OutcomeMeasure.Type.RATE);
+		Endpoint e = new Endpoint("e", Variable.Type.RATE);
+		e.setType(Variable.Type.RATE);
 		assertTrue(e.buildMeasurement(pg) instanceof BasicRateMeasurement);
-		e.setType(OutcomeMeasure.Type.CONTINUOUS);
+		e.setType(Variable.Type.CONTINUOUS);
 		assertTrue(e.buildMeasurement(pg) instanceof BasicContinuousMeasurement);
 	}
 	
 	@Test
 	public void testToString() {
 		String name = "TestName";
-		Endpoint e = new Endpoint("e", Type.RATE);
+		Endpoint e = new Endpoint("e", Variable.Type.RATE);
 		e.setName(name);
 		assertEquals(name, e.toString());
 	}
@@ -81,8 +78,8 @@ public class EndpointTest {
 		String name1 = "Endpoint A";
 		String name2 = "Endpoint B";
 		
-		assertEquals(new Endpoint(name1, Type.RATE), new Endpoint(name1, Type.RATE));
-		JUnitUtil.assertNotEquals(new Endpoint(name1, Type.RATE), new Endpoint(name2, Type.RATE));
-		assertEquals(new Endpoint(name1, Type.RATE).hashCode(), new Endpoint(name1, Type.RATE).hashCode());
+		assertEquals(new Endpoint(name1, Variable.Type.RATE), new Endpoint(name1, Variable.Type.RATE));
+		JUnitUtil.assertNotEquals(new Endpoint(name1, Variable.Type.RATE), new Endpoint(name2, Variable.Type.RATE));
+		assertEquals(new Endpoint(name1, Variable.Type.RATE).hashCode(), new Endpoint(name1, Variable.Type.RATE).hashCode());
 	}
 }

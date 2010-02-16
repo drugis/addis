@@ -25,9 +25,10 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.presentation.OutcomePresentationModel;
+import org.drugis.addis.presentation.VariablePresentationModel;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -39,10 +40,10 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class OutcomeMeasureView implements ViewBuilder {
-	private OutcomePresentationModel d_model;
+	private VariablePresentationModel d_model;
 	private Main d_frame;
 	
-	public OutcomeMeasureView(OutcomePresentationModel model, Main frame) {
+	public OutcomeMeasureView(VariablePresentationModel model, Main frame) {
 		d_model = model;
 		d_frame = frame;
 	}
@@ -75,28 +76,30 @@ public class OutcomeMeasureView implements ViewBuilder {
 		
 		builder.addLabel("Name:", cc.xy(1, 1));
 		builder.add(BasicComponentFactory.createLabel(
-				d_model.getModel(Endpoint.PROPERTY_NAME)), cc.xy(3, 1));
+				d_model.getModel(Variable.PROPERTY_NAME)), cc.xy(3, 1));
 		
 		builder.addLabel("Description:", cc.xy(1, 3));
  		builder.add(BasicComponentFactory.createLabel(
-				d_model.getModel(Endpoint.PROPERTY_DESCRIPTION)), cc.xy(3, 3));
+				d_model.getModel(Variable.PROPERTY_DESCRIPTION)), cc.xy(3, 3));
 
 		builder.addLabel("Unit of Measurement:", cc.xy(1, 5));
 		builder.add(BasicComponentFactory.createLabel(
-				d_model.getModel(OutcomeMeasure.PROPERTY_UNIT_OF_MEASUREMENT)), cc.xy(3, 5));
+				d_model.getModel(Variable.PROPERTY_UNIT_OF_MEASUREMENT)), cc.xy(3, 5));
 
 		ValueModel typeModel = ConverterFactory.createStringConverter(
-				d_model.getModel(Endpoint.PROPERTY_TYPE),
+				d_model.getModel(Variable.PROPERTY_TYPE),
 				new OneWayObjectFormat());
 		builder.addLabel("Type:", cc.xy(1, 7));
 		builder.add(BasicComponentFactory.createLabel(typeModel), cc.xy(3, 7));
 		
-		builder.addLabel("Direction:", cc.xy(1, 9));
-		ValueModel directionModel = ConverterFactory.createStringConverter(
-				d_model.getModel(Endpoint.PROPERTY_DIRECTION),
-				new OneWayObjectFormat());
-		builder.add(BasicComponentFactory.createLabel(
-				directionModel), cc.xy(3, 9));
+		if (d_model.getBean() instanceof OutcomeMeasure) {
+			builder.addLabel("Direction:", cc.xy(1, 9));
+			ValueModel directionModel = ConverterFactory.createStringConverter(
+					d_model.getModel(OutcomeMeasure.PROPERTY_DIRECTION),
+					new OneWayObjectFormat());
+			builder.add(BasicComponentFactory.createLabel(
+					directionModel), cc.xy(3, 9));
+		}
 
 		return builder.getPanel();
 	}
