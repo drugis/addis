@@ -17,7 +17,7 @@ import org.junit.Test;
 
 public class FrequencyMeasurementTest {
 
-	private CategoricalVariable d_cv;
+	private CategoricalPopulationCharacteristic d_cv;
 	private FrequencyMeasurement d_meas;
 
 	@Before

@@ -60,7 +60,7 @@ public class StudyTest {
 	
 	@Test
 	public void testSetPopulationCharacteristics() {
-		List<Variable> list = Collections.<Variable>singletonList(new ContinuousVariable("e"));
+		List<Variable> list = Collections.<Variable>singletonList(new ContinuousPopulationCharacteristic("e"));
 		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")),
 				Study.PROPERTY_POPULATION_CHARACTERISTICS, Collections.EMPTY_LIST, 
 				list);
@@ -203,14 +203,14 @@ public class StudyTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetPopulationCharNotPresent() {
-		Variable v = new ContinuousVariable("Age");
+		Variable v = new ContinuousPopulationCharacteristic("Age");
 		Study s = new Study("X", new Indication(0L, "Y"));
 		s.setMeasurement(v, new BasicContinuousMeasurement(0.0, 1.0, 5));
 	}
 	
 	@Test
 	public void testSetPopulationChar() {
-		PopulationCharacteristic v = new ContinuousVariable("Age");
+		PopulationCharacteristic v = new ContinuousPopulationCharacteristic("Age");
 		Study s = new Study("X", new Indication(0L, "Y"));
 		s.addArm(new Arm(new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY), 200));
 		s.setPopulationCharacteristics(Collections.singletonList(v));
@@ -225,7 +225,7 @@ public class StudyTest {
 	
 	@Test
 	public void testAddPopulationCharDefaultMeasurements() {
-		PopulationCharacteristic v = new ContinuousVariable("Age");
+		PopulationCharacteristic v = new ContinuousPopulationCharacteristic("Age");
 		Study s = new Study("X", new Indication(0L, "Y"));
 		Arm arm1 = new Arm(new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY), 200);
 		s.addArm(arm1);
@@ -244,9 +244,9 @@ public class StudyTest {
 		Arm arm1 = new Arm(new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY), 200);
 		s.addArm(arm1);
 		
-		PopulationCharacteristic v1 = new ContinuousVariable("Age1");
-		PopulationCharacteristic v2 = new ContinuousVariable("Age2");
-		PopulationCharacteristic v3 = new ContinuousVariable("Age3");
+		PopulationCharacteristic v1 = new ContinuousPopulationCharacteristic("Age1");
+		PopulationCharacteristic v2 = new ContinuousPopulationCharacteristic("Age2");
+		PopulationCharacteristic v3 = new ContinuousPopulationCharacteristic("Age3");
 		
 		ArrayList<PopulationCharacteristic> vars1 = new ArrayList<PopulationCharacteristic>();
 		vars1.add(v1);

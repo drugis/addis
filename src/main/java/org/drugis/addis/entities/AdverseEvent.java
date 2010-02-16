@@ -1,6 +1,6 @@
 package org.drugis.addis.entities;
 
-public class AdverseEvent extends AbstractOutcomeMeasure implements OutcomeMeasure {
+public class AdverseEvent extends AbstractVariable implements OutcomeMeasure {
 	private static final long serialVersionUID = -1026622949185265860L;
 
 	public AdverseEvent(String name, Variable.Type type) {

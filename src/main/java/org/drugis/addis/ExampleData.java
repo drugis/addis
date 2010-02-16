@@ -29,8 +29,8 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
-import org.drugis.addis.entities.CategoricalVariable;
-import org.drugis.addis.entities.ContinuousVariable;
+import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
+import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
@@ -62,8 +62,8 @@ public class ExampleData {
 	private static Study s_studyChouinard;
 	private static Study s_MultipleArmsperDrugStudy;
 	
-	private static CategoricalVariable s_gender;
-	private static ContinuousVariable s_age;
+	private static CategoricalPopulationCharacteristic s_gender;
+	private static ContinuousPopulationCharacteristic s_age;
 	
 
 	public static void initDefaultData(Domain domain) {
@@ -94,16 +94,16 @@ public class ExampleData {
 		domain.addVariable(buildAgeVariable());
 	}
 
-	public static CategoricalVariable buildGenderVariable() {
+	public static CategoricalPopulationCharacteristic buildGenderVariable() {
 		if (s_gender == null) {
-			s_gender = new CategoricalVariable("Gender", new String[]{"Male", "Female"});
+			s_gender = new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
 		}
 		return s_gender;
 	}
 	
-	public static ContinuousVariable buildAgeVariable() {
+	public static ContinuousPopulationCharacteristic buildAgeVariable() {
 		if (s_age == null) {
-			s_age = new ContinuousVariable("Age");
+			s_age = new ContinuousPopulationCharacteristic("Age");
 		}
 		return s_age;
 	}

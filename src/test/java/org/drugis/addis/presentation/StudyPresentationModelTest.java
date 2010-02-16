@@ -10,7 +10,7 @@ import java.util.Collections;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
-import org.drugis.addis.entities.ContinuousVariable;
+import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
@@ -117,7 +117,7 @@ public class StudyPresentationModelTest {
 		d_study.addArm(arm1);
 		Arm arm2 = new Arm(new Drug("X", "Y"), null, 0);
 		d_study.addArm(arm2);
-		ContinuousVariable age = new ContinuousVariable("Age");
+		ContinuousPopulationCharacteristic age = new ContinuousPopulationCharacteristic("Age");
 		assertEquals(0, d_model.getPopulationCharacteristicCount());
 		d_study.setPopulationCharacteristics(Collections.<PopulationCharacteristic>singletonList(age));
 		assertEquals(1, d_model.getPopulationCharacteristicCount());
@@ -125,7 +125,7 @@ public class StudyPresentationModelTest {
 	
 	@Test
 	public void testGetPopulationCharacteristicsOverall() {
-		ContinuousVariable age = new ContinuousVariable("Age");
+		ContinuousPopulationCharacteristic age = new ContinuousPopulationCharacteristic("Age");
 		d_study.setPopulationCharacteristics(Collections.<PopulationCharacteristic>singletonList(age));
 		assertEquals(Collections.singletonList(age), d_model.getPopulationCharacteristics());
 	}

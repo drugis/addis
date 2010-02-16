@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.ContinuousVariable;
+import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -20,7 +20,7 @@ import org.junit.Test;
 public class SelectPopulationCharsPresentationTest {
 	private PopulationCharacteristic d_var1 = ExampleData.buildAgeVariable();
 	private PopulationCharacteristic d_var2 = ExampleData.buildGenderVariable();
-	private PopulationCharacteristic d_var3 = new ContinuousVariable("Blood Pressure");
+	private PopulationCharacteristic d_var3 = new ContinuousPopulationCharacteristic("Blood Pressure");
 	private AbstractListHolder<PopulationCharacteristic> d_list;
 	private SelectPopulationCharsPresentation d_pm;
 	
