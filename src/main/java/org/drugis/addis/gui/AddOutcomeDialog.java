@@ -24,6 +24,8 @@ import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.PopulationCharacteristic;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.builder.AddOutcomeMeasureView;
 import org.drugis.addis.presentation.VariablePresentationModel;
 import org.drugis.common.gui.OkCancelDialog;
@@ -33,11 +35,11 @@ import com.jgoodies.binding.value.ValueModel;
 @SuppressWarnings("serial")
 public class AddOutcomeDialog extends OkCancelDialog {
 	private Domain d_domain;
-	private OutcomeMeasure d_om;
+	private Variable d_om;
 	private Main d_main;
 	private ValueModel d_selectionModel;
 	
-	public AddOutcomeDialog(Main frame, Domain domain, OutcomeMeasure om, ValueModel selectionModel) {
+	public AddOutcomeDialog(Main frame, Domain domain, Variable om, ValueModel selectionModel) {
 		super(frame, "Add " + VariablePresentationModel.getCategoryName(om) );
 		this.d_main = frame;
 		this.setModal(true);
@@ -62,6 +64,9 @@ public class AddOutcomeDialog extends OkCancelDialog {
 			d_domain.addEndpoint((Endpoint) d_om);
 		else if (d_om instanceof AdverseEvent)
 			d_domain.addAdverseEvent((AdverseEvent) d_om);
+		else if (d_om instanceof PopulationCharacteristic) {
+			d_domain.addVariable((PopulationCharacteristic) d_om);
+		}
 		else 
 			throw new IllegalArgumentException("Unknown type of OutcomeMeasure.");
 		

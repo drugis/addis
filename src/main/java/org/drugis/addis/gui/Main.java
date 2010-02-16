@@ -70,6 +70,7 @@ import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.MainData;
 import org.drugis.addis.entities.AdverseEvent;
+import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
@@ -476,12 +477,10 @@ public class Main extends JFrame {
 	}
 	
 	public void showAddPopulationCharacteristicDialog(ValueModel selectionModel) {
-		/*
 		AddOutcomeDialog dialog = new AddOutcomeDialog(this, getDomain(),
-				new AdverseEvent("", Type.RATE), selectionModel);
+				new ContinuousPopulationCharacteristic(""), selectionModel);
 		GUIHelper.centerWindow(dialog, this);
 		dialog.setVisible(true);
-		*/
 	}
 
 	private void showAddStudyWizard() {

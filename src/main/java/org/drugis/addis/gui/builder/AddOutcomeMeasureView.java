@@ -19,6 +19,9 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -26,6 +29,7 @@ import javax.swing.JTextField;
 
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
@@ -43,12 +47,12 @@ public class AddOutcomeMeasureView implements ViewBuilder {
 	private JTextField d_name;
 	private JTextField d_description;
 	private JTextField d_unitOfMeasurement;
-	private PresentationModel<OutcomeMeasure> d_model;
+	private PresentationModel<Variable> d_model;
 	private JComboBox d_type;
 	private JComboBox d_direction;
 	private NotEmptyValidator d_validator;
 	
-	public AddOutcomeMeasureView(PresentationModel<OutcomeMeasure> model, JButton okButton) {
+	public AddOutcomeMeasureView(PresentationModel<Variable> model, JButton okButton) {
 		d_model = model;
 		d_validator = new NotEmptyValidator(okButton);
 	}
@@ -73,11 +77,17 @@ public class AddOutcomeMeasureView implements ViewBuilder {
 		d_name.setColumns(30);
 	
 		d_validator.add(d_name);
-	
+		
+		ArrayList<Type> values = new ArrayList<Type>(Arrays.asList(Variable.Type.values()));
+		values.remove(Variable.Type.CATEGORICAL);
 		d_type = AuxComponentFactory.createBoundComboBox(
-				Variable.Type.values(), d_model.getModel(OutcomeMeasure.PROPERTY_TYPE));
-		d_direction = AuxComponentFactory.createBoundComboBox(
-				OutcomeMeasure.Direction.values(), d_model.getModel(OutcomeMeasure.PROPERTY_DIRECTION));
+				values.toArray(), d_model.getModel(OutcomeMeasure.PROPERTY_TYPE));
+		
+		if (d_model.getBean() instanceof OutcomeMeasure) {
+			d_direction = AuxComponentFactory.createBoundComboBox(
+					OutcomeMeasure.Direction.values(), d_model.getModel(OutcomeMeasure.PROPERTY_DIRECTION));
+		}
+		
 		ComboBoxPopupOnFocusListener.add(d_type);
 		d_validator.add(d_type);
 	}
@@ -110,8 +120,11 @@ public class AddOutcomeMeasureView implements ViewBuilder {
 		
 		builder.addLabel("Type:", cc.xy(1, 9));
 		builder.add(d_type, cc.xy(3, 9));
-		builder.addLabel("Direction:", cc.xy(1, 11));
-		builder.add(d_direction, cc.xy(3, 11));
+		
+		if (d_direction != null) {
+			builder.addLabel("Direction:", cc.xy(1, 11));
+			builder.add(d_direction, cc.xy(3, 11));
+		}
 		
 		return builder.getPanel();
 	}
