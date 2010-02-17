@@ -15,12 +15,12 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.addis.presentation.StudyGraphPresentation;
+import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.TypedHolder;
 
 import com.jgoodies.binding.value.ValueModel;
 
-public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphPresentation> {
+public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 
 	protected Domain d_domain;
 	protected PresentationModelFactory d_pmm;
@@ -74,6 +74,10 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphPresentat
 
 	public AbstractListHolder<OutcomeMeasure> getOutcomeMeasureListModel() {
 		return d_outcomeListHolder;
+	}
+
+	public G getStudyGraphModel() {
+		return d_studyGraphPresentationModel;
 	}
 
 	@SuppressWarnings("serial")

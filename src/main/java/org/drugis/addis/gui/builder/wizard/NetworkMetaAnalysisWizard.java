@@ -1,12 +1,23 @@
 package org.drugis.addis.gui.builder.wizard;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 
+import javax.swing.BorderFactory;
+import javax.swing.JScrollPane;
+
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.SelectableStudyGraph;
 import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 import org.drugis.common.gui.ViewBuilder;
+import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.models.StaticModel;
+
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 public class NetworkMetaAnalysisWizard implements ViewBuilder {
 	
@@ -22,10 +33,44 @@ public class NetworkMetaAnalysisWizard implements ViewBuilder {
 		StaticModel wizardModel = new StaticModel();
 		wizardModel.add(new SelectIndicationWizardStep(d_pm));
 		wizardModel.add(new SelectEndpointWizardStep(d_pm));
+		wizardModel.add(new SelectDrugsWizardStep());
 		
 		Wizard wizard = new Wizard(wizardModel);		
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 		wizard.setPreferredSize(new Dimension(950, 650));
 		return wizard;
+	}
+	
+	@SuppressWarnings("serial")
+	public class SelectDrugsWizardStep extends PanelWizardStep {
+
+		public SelectDrugsWizardStep() {
+			super("Select Drugs","Select the drugs to be used for the network meta-analysis.");
+					
+			setLayout(new BorderLayout());
+			    
+			FormLayout layout = new FormLayout(
+					"center:pref:grow",
+					"p"
+					);	
+			
+			PanelBuilder builder = new PanelBuilder(layout);
+			CellConstraints cc = new CellConstraints();
+			
+			//builder.setBorder(BorderFactory.createEmptyBorder());
+			builder.add(buildStudiesGraph(), cc.xy(1, 1));
+			
+			JScrollPane sp = new JScrollPane(builder.getPanel());
+			add(sp);
+			sp.getVerticalScrollBar().setUnitIncrement(16);
+			
+			//Bindings.bind(this, "complete", d_pm.getMetaAnalysisCompleteModel());
+		}
+		
+		private Component buildStudiesGraph() {
+			SelectableStudyGraph panel = new SelectableStudyGraph(d_pm.getStudyGraphModel());
+			panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+			return panel;
+		}
 	}
 }

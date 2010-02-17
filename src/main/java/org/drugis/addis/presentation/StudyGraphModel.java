@@ -13,8 +13,8 @@ import org.drugis.addis.entities.Study;
 import org.jgrapht.graph.ListenableUndirectedGraph;
 
 @SuppressWarnings("serial")
-public class StudyGraphPresentation
-extends ListenableUndirectedGraph<StudyGraphPresentation.Vertex, StudyGraphPresentation.Edge> {
+public class StudyGraphModel
+extends ListenableUndirectedGraph<StudyGraphModel.Vertex, StudyGraphModel.Edge> {
 	public static class Vertex {
 		private Drug d_drug;
 		private int d_sampleSize;
@@ -58,7 +58,7 @@ extends ListenableUndirectedGraph<StudyGraphPresentation.Vertex, StudyGraphPrese
 	private Domain d_domain;
 	protected ListHolder<Drug> d_drugs;
 
-	public StudyGraphPresentation(ValueHolder<Indication> indication, ValueHolder<OutcomeMeasure> outcome, 
+	public StudyGraphModel(ValueHolder<Indication> indication, ValueHolder<OutcomeMeasure> outcome, 
 			ListHolder<Drug> drugs, Domain domain) {
 		super(Edge.class);
 		d_indication = indication;

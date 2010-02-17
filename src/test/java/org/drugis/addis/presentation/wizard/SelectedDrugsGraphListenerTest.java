@@ -10,7 +10,7 @@ import java.util.List;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.presentation.DefaultListHolder;
 import org.drugis.addis.presentation.ListHolder;
-import org.drugis.addis.presentation.StudyGraphPresentation.Vertex;
+import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.drugis.common.JUnitUtil;
 import org.jgraph.event.GraphSelectionEvent;
 import org.junit.Before;

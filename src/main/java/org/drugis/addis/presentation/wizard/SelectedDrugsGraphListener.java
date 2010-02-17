@@ -1,13 +1,15 @@
 package org.drugis.addis.presentation.wizard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.presentation.ListHolder;
-import org.drugis.addis.presentation.StudyGraphPresentation.Vertex;
+import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.jgraph.event.GraphSelectionEvent;
 import org.jgraph.event.GraphSelectionListener;
 import org.jgraph.graph.DefaultEdge;
+import org.jgraph.graph.DefaultGraphCell;
 
 public class SelectedDrugsGraphListener implements GraphSelectionListener {
 	
@@ -19,10 +21,12 @@ public class SelectedDrugsGraphListener implements GraphSelectionListener {
 
 	public void valueChanged(GraphSelectionEvent e) {
 		if (!(e.getCell() instanceof DefaultEdge)) {
-			Vertex vert = (Vertex) e.getCell();
-			selectUnselectDrug(vert.getDrug());
+			DefaultGraphCell cell = (DefaultGraphCell) e.getCell();
+			Object obj = cell.getUserObject();
+			if (obj instanceof Vertex) {
+				selectUnselectDrug(((Vertex) obj).getDrug());
+			}
 		}
-		
 	}
 
 	private void selectUnselectDrug(Drug drug) {

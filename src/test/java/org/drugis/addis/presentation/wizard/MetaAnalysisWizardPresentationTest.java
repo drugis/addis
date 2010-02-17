@@ -25,7 +25,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.addis.presentation.StudyGraphPresentation;
+import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -275,7 +275,7 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testStudyGraphPresentationModel() {
-		StudyGraphPresentation model = d_wizard.getStudyGraphModel();
+		StudyGraphModel model = d_wizard.getStudyGraphModel();
 		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());

@@ -11,9 +11,9 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.presentation.AbstractListHolder;
-import org.drugis.addis.presentation.StudyGraphPresentation;
-import org.drugis.addis.presentation.StudyGraphPresentation.Edge;
-import org.drugis.addis.presentation.StudyGraphPresentation.Vertex;
+import org.drugis.addis.presentation.StudyGraphModel;
+import org.drugis.addis.presentation.StudyGraphModel.Edge;
+import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.jgraph.JGraph;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.DefaultCellViewFactory;
@@ -33,13 +33,13 @@ import com.jgraph.layout.graph.JGraphSimpleLayout;
 
 @SuppressWarnings("serial")
 public class StudyGraph extends JPanel {
-	private StudyGraphPresentation d_pm;
+	protected StudyGraphModel d_pm;
 	
 	@SuppressWarnings("unchecked")
 	private JGraphModelAdapter d_model;
 	private AttributeMap d_vertexAttributes;
 	
-	public StudyGraph(StudyGraphPresentation pm) {
+	public StudyGraph(StudyGraphModel pm) {
 		super(new BorderLayout());
 		d_pm = pm;
 
@@ -83,20 +83,7 @@ public class StudyGraph extends JPanel {
 		
 		// create graph
 		removeAll();
-		JGraph jgraph = new JGraph(d_model, layoutCache);
-		jgraph.setAntiAliased(true);
-		jgraph.setEnabled(false);
-		/*
-		jgraph.getSelectionModel().addGraphSelectionListener(new GraphSelectionListener() {
-			
-			public void valueChanged(GraphSelectionEvent e) {
-				if (!(e.getCell() instanceof DefaultEdge)) {
-					System.out.println(e.getCell());
-//					((DefaultGraphCell)e.getCell()).
-				}
-			}
-		});	
-		*/	
+		JGraph jgraph = createGraph(layoutCache);
 		add(jgraph, BorderLayout.CENTER);
 		
 		// add a circle layout to the graph
@@ -107,6 +94,15 @@ public class StudyGraph extends JPanel {
 		jgraph.getGraphLayoutCache().edit(nested);
 	
 		jgraph.repaint();
+	}
+
+	protected JGraph createGraph(GraphLayoutCache layoutCache) {
+		JGraph jgraph = new JGraph(d_model, layoutCache);
+		jgraph.setAntiAliased(true);
+		jgraph.setEditable(false);
+		jgraph.setEnabled(false);
+		
+		return jgraph;
 	}
 	
 	public class MyFactory extends DefaultCellViewFactory {

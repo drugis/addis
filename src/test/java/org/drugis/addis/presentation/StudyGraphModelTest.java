@@ -19,15 +19,15 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.presentation.StudyGraphPresentation.Edge;
-import org.drugis.addis.presentation.StudyGraphPresentation.Vertex;
+import org.drugis.addis.presentation.StudyGraphModel.Edge;
+import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
 
-public class StudyGraphPresentationTest {
-	private StudyGraphPresentation d_pm;
+public class StudyGraphModelTest {
+	private StudyGraphModel d_pm;
 	private List<Drug> d_drugs;
 	private Domain d_domain;
 	
@@ -39,7 +39,7 @@ public class StudyGraphPresentationTest {
 		d_drugs.add(ExampleData.buildDrugFluoxetine());
 		d_drugs.add(ExampleData.buildDrugParoxetine());
 		d_drugs.add(ExampleData.buildDrugSertraline());
-		d_pm = new StudyGraphPresentation(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
+		d_pm = new StudyGraphModel(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
 				new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()),
 				new AbstractListHolder<Drug>() {
 					private static final long serialVersionUID = 1L;
@@ -132,7 +132,7 @@ public class StudyGraphPresentationTest {
 	
 	@Test
 	public void testNullIndication() {
-		d_pm = new StudyGraphPresentation(new UnmodifiableHolder<Indication>(null),
+		d_pm = new StudyGraphModel(new UnmodifiableHolder<Indication>(null),
 				new UnmodifiableHolder<OutcomeMeasure>(null),
 				new AbstractListHolder<Drug>() {
 					private static final long serialVersionUID = 1L;
@@ -146,7 +146,7 @@ public class StudyGraphPresentationTest {
 	
 	@Test
 	public void testNullEndpoint() {
-		d_pm = new StudyGraphPresentation(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
+		d_pm = new StudyGraphModel(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
 				new UnmodifiableHolder<OutcomeMeasure>(null),
 				new AbstractListHolder<Drug>() {
 					private static final long serialVersionUID = 1L;
@@ -193,7 +193,7 @@ public class StudyGraphPresentationTest {
 				new ArrayList<Drug>(), new ArrayList<Drug>(d_drugs));
 		drugListHolder.addValueChangeListener(l);
 	
-		d_pm = new StudyGraphPresentation(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
+		d_pm = new StudyGraphModel(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
 				new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()),
 				drugListHolder, d_domain);
 		assertTrue(d_pm.vertexSet().isEmpty());

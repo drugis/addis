@@ -9,11 +9,11 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 
 @SuppressWarnings("serial")
-public class SelectableStudyGraphPresentation extends StudyGraphPresentation {
+public class SelectableStudyGraphModel extends StudyGraphModel {
 	
 	private ListHolder<Drug> d_selectedDrugs;
 
-	public SelectableStudyGraphPresentation(ValueHolder<Indication> indication,
+	public SelectableStudyGraphModel(ValueHolder<Indication> indication,
 			ValueHolder<OutcomeMeasure> outcome, ListHolder<Drug> drugs,
 			Domain domain) {
 		super(indication, outcome, drugs, domain);

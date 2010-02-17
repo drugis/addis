@@ -22,7 +22,7 @@ import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.SelectableStudyCharTableModel;
-import org.drugis.addis.presentation.StudyGraphPresentation;
+import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
@@ -183,17 +183,17 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			builder.add(BasicComponentFactory.createLabel(d_pm.getStudiesMeasuringLabelModel()),
 					cc.xy(1, 3));
 			builder.setBorder(BorderFactory.createEmptyBorder());
+			builder.add(buildStudiesGraph(), cc.xy(1, 5));
+			
 			JScrollPane sp = new JScrollPane(builder.getPanel());
 			add(sp);
-			sp.getVerticalScrollBar().setUnitIncrement(16);
-			
-			builder.add(buildStudiesGraph(), cc.xy(1, 5));
+			sp.getVerticalScrollBar().setUnitIncrement(16);			
 			
 			Bindings.bind(this, "complete", d_pm.getMetaAnalysisCompleteModel());
 		}
 		
 		private Component buildStudiesGraph() {
-			StudyGraphPresentation pm = d_pm.getStudyGraphModel();
+			StudyGraphModel pm = d_pm.getStudyGraphModel();
 			StudyGraph panel = new StudyGraph(pm);
 			return panel;
 		}

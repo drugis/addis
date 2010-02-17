@@ -22,13 +22,13 @@ import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.SelectableStudyListPresentationModel;
-import org.drugis.addis.presentation.StudyGraphPresentation;
+import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.TypedHolder;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
-public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM<StudyGraphPresentation> {
+public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM<StudyGraphModel> {
 				
 	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;	
 	private TypedHolder<Drug> d_firstDrugHolder;
@@ -202,10 +202,6 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		return d_secondArms.get(study);
 	}
 
-	public StudyGraphPresentation getStudyGraphModel() {
-		return d_studyGraphPresentationModel;
-	}
-		
 	@SuppressWarnings("serial")
 	private class StudyListHolder extends AbstractListHolder<Study> implements PropertyChangeListener {
 		public StudyListHolder() {
@@ -225,7 +221,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 
 	@Override
-	protected StudyGraphPresentation buildStudyGraphPresentation() {
-		return new StudyGraphPresentation(d_indicationHolder, d_endpointHolder, d_drugListHolder, d_domain);				
+	protected StudyGraphModel buildStudyGraphPresentation() {
+		return new StudyGraphModel(d_indicationHolder, d_endpointHolder, d_drugListHolder, d_domain);				
 	}	
 }
