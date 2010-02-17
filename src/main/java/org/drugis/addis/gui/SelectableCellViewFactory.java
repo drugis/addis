@@ -28,7 +28,7 @@ public class SelectableCellViewFactory extends MyDefaultCellViewFactory {
 		if (d_selectedDrugs.getValue().contains(v.getDrug())) {
 			col = Color.green;
 		} else {
-			col = Color.DARK_GRAY;
+			col = Color.lightGray;
 		}
 		map.put(GraphConstants.BACKGROUND, col);
 	}
