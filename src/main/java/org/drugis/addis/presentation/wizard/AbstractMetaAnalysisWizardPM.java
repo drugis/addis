@@ -13,6 +13,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.AbstractListHolder;
+import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyGraphPresentation;
 import org.drugis.addis.presentation.TypedHolder;
@@ -59,6 +60,20 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphPresentat
 
 	public AbstractListHolder<Drug> getDrugListModel() {
 		return d_drugListHolder;
+	}
+
+	@SuppressWarnings("serial")
+	public ListHolder<Indication> getIndicationListModel() {
+		return new AbstractListHolder<Indication>() {
+			@Override
+			public List<Indication> getValue() {
+				return new ArrayList<Indication>(d_domain.getIndications());
+			}
+		};
+	}
+
+	public AbstractListHolder<OutcomeMeasure> getOutcomeMeasureListModel() {
+		return d_outcomeListHolder;
 	}
 
 	@SuppressWarnings("serial")

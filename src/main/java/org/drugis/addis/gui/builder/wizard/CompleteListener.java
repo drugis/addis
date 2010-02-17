@@ -1,14 +1,14 @@
 /**
  * 
  */
-package org.drugis.addis.gui.builder;
+package org.drugis.addis.gui.builder.wizard;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.pietschy.wizard.PanelWizardStep;
 
-class CompleteListener implements PropertyChangeListener {
+public class CompleteListener implements PropertyChangeListener {
 	 PanelWizardStep d_curStep;
 	
 	 public CompleteListener(PanelWizardStep currentStep){

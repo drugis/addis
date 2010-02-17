@@ -83,16 +83,17 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
-import org.drugis.addis.gui.builder.AddStudyWizard;
 import org.drugis.addis.gui.builder.DrugView;
 import org.drugis.addis.gui.builder.EntitiesNodeView;
 import org.drugis.addis.gui.builder.IndicationView;
-import org.drugis.addis.gui.builder.MetaAnalysisWizard;
 import org.drugis.addis.gui.builder.OutcomeMeasureView;
 import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
 import org.drugis.addis.gui.builder.StudiesNodeView;
 import org.drugis.addis.gui.builder.StudyTablePanelView;
 import org.drugis.addis.gui.builder.StudyView;
+import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
+import org.drugis.addis.gui.builder.wizard.MetaAnalysisWizard;
+import org.drugis.addis.gui.builder.wizard.NetworkMetaAnalysisWizard;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
 import org.drugis.addis.presentation.DrugPresentationModel;
@@ -103,6 +104,7 @@ import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.addis.presentation.VariablePresentationModel;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
+import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
@@ -595,10 +597,20 @@ public class Main extends JFrame {
 				showMetaAnalysisWizard();
 			}
 		});
+		
+		JButton topAddNetworkMetaStudyButton = new JButton("Create network meta-analysis",
+				ImageLoader.getIcon(FileNames.ICON_METASTUDY_NEW));
+		topAddNetworkMetaStudyButton.setToolTipText("Create network meta-analysis");
+		topAddNetworkMetaStudyButton.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				showNetworkMetaAnalysisWizard();
+			}
+		});		
 
 		ButtonBarBuilder2 builder = new ButtonBarBuilder2();
 		builder.addButton(topAddStudyButton);
 		builder.addButton(topAddMetaStudyButton);
+		builder.addButton(topAddNetworkMetaStudyButton);
 		builder.addGlue();
 
 		String latestVersion = AppInfo.getLatestVersion();
@@ -620,10 +632,14 @@ public class Main extends JFrame {
 	private void showMetaAnalysisWizard() {
 		MetaAnalysisWizard wizard = new MetaAnalysisWizard(this,
 				new MetaAnalysisWizardPresentation(getDomain(), d_pmManager));
-		wizard.buildPanel().showInDialog(
-				"Create DerSimonian-Laird random effects meta-analysis", this,
-				true);
+		wizard.buildPanel().showInDialog("Create DerSimonian-Laird random effects meta-analysis", this,	true);
 	}
+	
+	private void showNetworkMetaAnalysisWizard() {
+		NetworkMetaAnalysisWizard wizard = new NetworkMetaAnalysisWizard(this,
+				new NetworkMetaAnalysisWizardPM(getDomain(), d_pmManager));
+		wizard.buildPanel().showInDialog("Create network meta-analysis", this, true);
+	}	
 
 	private void initPanel() {
 		JSplitPane pane = new JSplitPane();

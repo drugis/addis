@@ -1,10 +1,8 @@
-package org.drugis.addis.gui.builder;
+package org.drugis.addis.gui.builder.wizard;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
@@ -19,6 +17,7 @@ import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.StudyGraph;
+import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
 import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
@@ -51,8 +50,8 @@ public class MetaAnalysisWizard implements ViewBuilder {
 	
 	public Wizard buildPanel() {
 		StaticModel wizardModel = new StaticModel();
-		wizardModel.add(new SelectIndicationWizardStep());
-		wizardModel.add(new SelectEndpointWizardStep());
+		wizardModel.add(new SelectIndicationWizardStep(d_pm));
+		wizardModel.add(new SelectEndpointWizardStep(d_pm));
 		wizardModel.add(new SelectDrugsWizardStep());
 		wizardModel.add(new SelectStudiesWizardStep());		
 		wizardModel.add(new SelectArmsWizardStep());
@@ -261,33 +260,5 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			
 			Bindings.bind(this, "complete", d_pm.getMetaAnalysisCompleteModel());			
 		}
-	}	
-	
-	@SuppressWarnings("serial")
-	public class SelectEndpointWizardStep extends PanelWizardStep {
-		public SelectEndpointWizardStep() {
-			super("Select Endpoint","Select an Endpoint that you want to use for this meta analysis.");
-			JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(d_pm.getOutcomeMeasureListModel(), d_pm.getEndpointModel());
-			add(endPointBox);
-			d_pm.getEndpointModel().addValueChangeListener(new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent evt) {
-					setComplete(evt.getNewValue() != null);
-				}
-			});
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	public class SelectIndicationWizardStep extends PanelWizardStep {
-		 public SelectIndicationWizardStep() {
-			 super("Select Indication","Select an Indication that you want to use for this meta analysis.");
-			JComboBox indBox = AuxComponentFactory.createBoundComboBox(d_pm.getIndicationListModel(), d_pm.getIndicationModel());
-			add(indBox);
-			d_pm.getIndicationModel().addValueChangeListener(new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent evt) {
-					setComplete(evt.getNewValue() != null);
-				}
-			});
-		 }
 	}	
 }

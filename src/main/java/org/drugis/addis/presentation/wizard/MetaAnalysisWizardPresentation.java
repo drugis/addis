@@ -12,7 +12,6 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.EntityIdExistsException;
-import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
@@ -80,20 +79,6 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		
 		d_endpointHolder.addPropertyChangeListener(
 				new SetEmptyListener(new TypedHolder[]{d_firstDrugHolder, d_secondDrugHolder}));
-	}
-		
-	@SuppressWarnings("serial")
-	public ListHolder<Indication> getIndicationListModel() {
-		return new AbstractListHolder<Indication>() {
-			@Override
-			public List<Indication> getValue() {
-				return new ArrayList<Indication>(d_domain.getIndications());
-			}
-		};
-	}
-	
-	public AbstractListHolder<OutcomeMeasure> getOutcomeMeasureListModel() {
-		return d_outcomeListHolder;
 	}
 		
 	public ValueModel getFirstDrugModel() {

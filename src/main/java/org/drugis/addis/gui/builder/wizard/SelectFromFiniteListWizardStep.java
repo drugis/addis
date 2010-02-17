@@ -1,4 +1,4 @@
-package org.drugis.addis.gui.builder;
+package org.drugis.addis.gui.builder.wizard;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;

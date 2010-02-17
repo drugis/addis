@@ -1,4 +1,4 @@
-package org.drugis.addis.gui.builder;
+package org.drugis.addis.gui.builder.wizard;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -44,6 +44,7 @@ import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
