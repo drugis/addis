@@ -15,6 +15,12 @@ public class SelectableStudyGraph extends StudyGraph {
 
 	public SelectableStudyGraph(SelectableStudyGraphModel pm) {
 		super(pm);
+		
+		pm.getSelectedDrugsModel().addValueChangeListener(new PropertyChangeListener() {			
+			public void propertyChange(PropertyChangeEvent evt) {
+				layoutGraph();
+			}
+		});
 	}
 	
 	@Override
@@ -22,14 +28,14 @@ public class SelectableStudyGraph extends StudyGraph {
 		final JGraph graph = super.createGraph(cache);
 		ListHolder<Drug> selectedDrugs = ((SelectableStudyGraphModel)d_pm).getSelectedDrugsModel();
 		SelectedDrugsGraphListener listener =
-			new SelectedDrugsGraphListener(graph, selectedDrugs);
+			new SelectedDrugsGraphListener(this, graph, selectedDrugs);
 		graph.addMouseListener(listener);
-		selectedDrugs.addValueChangeListener(new PropertyChangeListener() {			
-			public void propertyChange(PropertyChangeEvent ev) {
-				System.out.println(ev.getNewValue()); 
-			}
-		});
 		return graph;
 	}
+	
+	@Override
+	protected MyDefaultCellViewFactory getCellFactory() {
+		return new SelectableCellViewFactory(d_model, ((SelectableStudyGraphModel)d_pm).getSelectedDrugsModel());
+	}	
 
 }

@@ -16,10 +16,7 @@ import org.drugis.addis.presentation.StudyGraphModel.Edge;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.jgraph.JGraph;
 import org.jgraph.graph.AttributeMap;
-import org.jgraph.graph.DefaultCellViewFactory;
-import org.jgraph.graph.DefaultGraphCell;
 import org.jgraph.graph.GraphLayoutCache;
-import org.jgraph.graph.VertexView;
 import org.jgrapht.event.GraphEdgeChangeEvent;
 import org.jgrapht.event.GraphListener;
 import org.jgrapht.event.GraphVertexChangeEvent;
@@ -27,7 +24,6 @@ import org.jgrapht.ext.JGraphModelAdapter;
 
 import com.jgraph.components.labels.CellConstants;
 import com.jgraph.components.labels.MultiLineVertexRenderer;
-import com.jgraph.components.labels.MultiLineVertexView;
 import com.jgraph.layout.JGraphFacade;
 import com.jgraph.layout.graph.JGraphSimpleLayout;
 
@@ -36,7 +32,7 @@ public class StudyGraph extends JPanel {
 	protected StudyGraphModel d_pm;
 	
 	@SuppressWarnings("unchecked")
-	private JGraphModelAdapter d_model;
+	protected JGraphModelAdapter d_model;
 	private AttributeMap d_vertexAttributes;
 	
 	public StudyGraph(StudyGraphModel pm) {
@@ -79,7 +75,7 @@ public class StudyGraph extends JPanel {
 		d_model.setDefaultVertexAttributes(d_vertexAttributes);
 		
 		// the graph layout cache 
-		GraphLayoutCache layoutCache = new GraphLayoutCache(d_model, new MyFactory());
+		GraphLayoutCache layoutCache = new GraphLayoutCache(d_model, getCellFactory());
 		
 		// create graph
 		removeAll();
@@ -96,6 +92,10 @@ public class StudyGraph extends JPanel {
 		jgraph.repaint();
 	}
 
+	protected MyDefaultCellViewFactory getCellFactory() {
+		return new MyDefaultCellViewFactory(d_model);
+	}
+
 	protected JGraph createGraph(GraphLayoutCache layoutCache) {
 		JGraph jgraph = new JGraph(d_model, layoutCache);
 		jgraph.setAntiAliased(true);
@@ -103,18 +103,6 @@ public class StudyGraph extends JPanel {
 		jgraph.setEnabled(false);
 		
 		return jgraph;
-	}
-	
-	public class MyFactory extends DefaultCellViewFactory {
-		protected VertexView createVertexView(Object cell) {
-			if (cell instanceof DefaultGraphCell) {
-				MultiLineVertexView multiLineVertexView = new MultiLineVertexView(cell);
-				AttributeMap map = new AttributeMap(d_model.getDefaultVertexAttributes());
-				multiLineVertexView.setAttributes(map);
-				return multiLineVertexView;
-			}
-			return super.createVertexView(cell);
-		}
 	}
 	
 	public static class MutableDrugListHolder extends AbstractListHolder<Drug> {

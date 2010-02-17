@@ -2,6 +2,7 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
@@ -18,8 +19,8 @@ public class SelectableStudyGraphModel extends StudyGraphModel {
 			Domain domain) {
 		super(indication, outcome, drugs, domain);
 		
-		d_selectedDrugs = new DefaultListHolder<Drug>(d_drugs.getValue());
-		d_drugs.addValueChangeListener(new DrugsChangedListener());
+		d_selectedDrugs = new DefaultListHolder<Drug>(new ArrayList<Drug>(d_drugs.getValue()));
+		d_drugs.addValueChangeListener(new DrugsChangedListener());		
 	}
 	
 	public ListHolder<Drug> getSelectedDrugsModel() {

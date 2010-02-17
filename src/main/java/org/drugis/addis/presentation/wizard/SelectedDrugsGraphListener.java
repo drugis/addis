@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.gui.SelectableStudyGraph;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.jgraph.JGraph;
@@ -13,15 +14,17 @@ import org.jgraph.graph.DefaultGraphCell;
 public class SelectedDrugsGraphListener extends MouseAdapter {
 	
 	private ListHolder<Drug> d_drugList;
-	private JGraph d_graph;
+	private JGraph d_jgraph;
+	private SelectableStudyGraph d_studyGraph;
 
-	public SelectedDrugsGraphListener(JGraph graph, ListHolder<Drug> drugsList) {
+	public SelectedDrugsGraphListener(SelectableStudyGraph selectableStudyGraph, JGraph graph, ListHolder<Drug> drugsList) {
 		this.d_drugList = drugsList;
-		this.d_graph = graph;
+		this.d_studyGraph = selectableStudyGraph;
+		this.d_jgraph = graph;
 	}
 	
 	public void mousePressed(MouseEvent e) {
-		Object cell = d_graph.getFirstCellForLocation(e.getX(), e.getY());
+		Object cell = d_jgraph.getFirstCellForLocation(e.getX(), e.getY());		
 		
 		if (cell instanceof DefaultGraphCell) {
 			DefaultGraphCell realcell = (DefaultGraphCell) cell;
@@ -40,6 +43,9 @@ public class SelectedDrugsGraphListener extends MouseAdapter {
 			drugs.add(drug);
 		}
 		d_drugList.setValue(drugs);
+		d_studyGraph.layoutGraph();
+		
+		
 	}
 
 }
