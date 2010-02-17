@@ -6,7 +6,6 @@ import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -18,10 +17,8 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
-import org.drugis.addis.gui.components.StudyTable;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
-import org.drugis.addis.presentation.SelectableStudyCharTableModel;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
@@ -53,7 +50,9 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		wizardModel.add(new SelectIndicationWizardStep(d_pm));
 		wizardModel.add(new SelectEndpointWizardStep(d_pm));
 		wizardModel.add(new SelectDrugsWizardStep());
-		wizardModel.add(new SelectStudiesWizardStep());		
+		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(d_pm, d_frame);
+		wizardModel.add(selectStudiesStep);
+		Bindings.bind(selectStudiesStep, "complete", d_pm.getMetaAnalysisCompleteModel());
 		wizardModel.add(new SelectArmsWizardStep());
 		wizardModel.add(new OverviewWizardStep());
 		Wizard wizard = new Wizard(wizardModel);
@@ -220,45 +219,6 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			JPanel panel = builder.getPanel();			
 			
 			return panel;
-		}
-	}
-
-	@SuppressWarnings("serial")
-	public class SelectStudiesWizardStep extends PanelWizardStep {
-
-		private StudyTable d_table;
-
-		public SelectStudiesWizardStep() {
-			super("Select Studies","Select the studies to be used for meta analysis. At least one study must be selected to continue.");
-
-			setLayout(new BorderLayout());
-			JComponent studiesComp;			
-
-			d_table = new StudyTable(new SelectableStudyCharTableModel(d_pm.getStudyListModel(), d_frame.getPresentationModelFactory()));
-
-			JScrollPane sPane = new JScrollPane(d_table);
-			sPane.getVerticalScrollBar().setUnitIncrement(16);			
-			sPane.setPreferredSize(new Dimension(700,300));
-
-			studiesComp = sPane;
-
-			FormLayout layout = new FormLayout(
-					"center:pref:grow",
-					"p, 3dlu, p"
-			);	
-
-			PanelBuilder builder = new PanelBuilder(layout);
-			builder.setDefaultDialogBorder();
-			CellConstraints cc = new CellConstraints();
-	
-			builder.add(BasicComponentFactory.createLabel(d_pm.getStudiesMeasuringLabelModel()),
-					cc.xy(1, 1));
-			builder.add(studiesComp, cc.xy(1, 3));
-			JScrollPane sp = new JScrollPane(builder.getPanel());
-			sp.getVerticalScrollBar().setUnitIncrement(16);
-			add(sp);
-			
-			Bindings.bind(this, "complete", d_pm.getMetaAnalysisCompleteModel());			
 		}
 	}	
 }

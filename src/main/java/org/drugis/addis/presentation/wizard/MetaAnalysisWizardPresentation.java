@@ -29,19 +29,15 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM<StudyGraphModel> {
-				
-	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;	
+					
 	private TypedHolder<Drug> d_firstDrugHolder;
 	private TypedHolder<Drug> d_secondDrugHolder;
 	private DefaultSelectableStudyListPresentationModel d_studyListPm;
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
-	private List<Study> d_studyList = new ArrayList<Study>();
 	private Map<Study, TypedHolder<Arm>> d_firstArms;
 	private Map<Study, TypedHolder<Arm>> d_secondArms;
 	public MetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
 		super(d, pmm);
-		
-		d_studiesMeasuringValueModel = new StudiesMeasuringValueModel();
 		
 		buildDrugHolders();
 		
@@ -88,17 +84,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	public ValueModel getSecondDrugModel() {
 		return d_secondDrugHolder;
 	}
-	
-	private void updateStudyList() {
-		List<Study> studies = new ArrayList<Study>();
-		if (getSecondDrug() != null && getFirstDrug() != null) {
-			studies = getStudiesEndpointAndIndication();
-			studies.retainAll(d_domain.getStudies(getFirstDrug()).getValue());
-			studies.retainAll(d_domain.getStudies(getSecondDrug()).getValue());
-		}
-		d_studyList = studies;
-	}
-	
+		
 	private void updateArmHolders() {
 		d_firstArms.clear();
 		d_secondArms.clear();
@@ -115,37 +101,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	private Drug getSecondDrug() {
 		return d_secondDrugHolder.getValue();
 	}
-	
-	public ValueModel getStudiesMeasuringLabelModel() {
-		return d_studiesMeasuringValueModel;
-	}
-	
-	@SuppressWarnings("serial")
-	public class StudiesMeasuringValueModel extends AbstractValueModel implements PropertyChangeListener {
 		
-		public StudiesMeasuringValueModel() {
-			d_endpointHolder.addValueChangeListener(this);			
-		}
-
-		public Object getValue() {
-			return constructString();
-		}
-
-		private Object constructString() {
-			String indVal = d_indicationHolder.getValue() != null ? d_indicationHolder.getValue().toString() : "";
-			String endpVal = d_endpointHolder.getValue() != null ? d_endpointHolder.getValue().toString() : "";
-			return "Graph of studies measuring " + indVal + " on " + endpVal;
-		}
-		
-		public void setValue(Object newValue) {
-			throw new RuntimeException("value set not allowed");
-		}
-
-		public void propertyChange(PropertyChangeEvent arg0) {
-			fireValueChange(null, constructString());
-		}		
-	}
-
 	public SelectableStudyListPresentationModel getStudyListModel() {
 		return d_studyListPm;
 	}
@@ -204,6 +160,8 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 
 	@SuppressWarnings("serial")
 	private class StudyListHolder extends AbstractListHolder<Study> implements PropertyChangeListener {
+		private List<Study> d_studyList = new ArrayList<Study>();
+		
 		public StudyListHolder() {
 			getFirstDrugModel().addValueChangeListener(this);
 			getSecondDrugModel().addValueChangeListener(this);
@@ -218,6 +176,16 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 			updateStudyList();
 			fireValueChange(null, getValue());
 		}
+		
+		private void updateStudyList() {
+			List<Study> studies = new ArrayList<Study>();
+			if (getSecondDrug() != null && getFirstDrug() != null) {
+				studies = getStudiesEndpointAndIndication();
+				studies.retainAll(d_domain.getStudies(getFirstDrug()).getValue());
+				studies.retainAll(d_domain.getStudies(getSecondDrug()).getValue());
+			}
+			d_studyList = studies;
+		}		
 	}
 
 	@Override

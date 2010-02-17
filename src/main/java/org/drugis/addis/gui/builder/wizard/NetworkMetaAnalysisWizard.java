@@ -35,6 +35,7 @@ public class NetworkMetaAnalysisWizard implements ViewBuilder {
 		wizardModel.add(new SelectIndicationWizardStep(d_pm));
 		wizardModel.add(new SelectEndpointWizardStep(d_pm));
 		wizardModel.add(new SelectDrugsWizardStep());
+		wizardModel.add(new SelectStudiesWizardStep(d_pm, d_frame));
 		
 		Wizard wizard = new Wizard(wizardModel);		
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);

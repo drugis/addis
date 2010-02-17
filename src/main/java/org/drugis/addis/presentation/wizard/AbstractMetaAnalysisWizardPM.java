@@ -15,9 +15,11 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
+import org.drugis.addis.presentation.SelectableStudyListPresentationModel;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.TypedHolder;
 
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
@@ -29,17 +31,19 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 	protected OutcomeListHolder d_outcomeListHolder;
 	protected DrugListHolder d_drugListHolder;
 	protected G d_studyGraphPresentationModel;	
+	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;	
 
 	public AbstractMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmm) {
 		d_domain = d;
 		d_pmm = pmm;
-		
+	
 		d_indicationHolder = new TypedHolder<Indication>();
 		d_endpointHolder = new TypedHolder<OutcomeMeasure>();
 		d_indicationHolder.addPropertyChangeListener(new SetEmptyListener(d_endpointHolder));
 		d_outcomeListHolder = new OutcomeListHolder(d_indicationHolder, d_domain);		
 		d_drugListHolder = new DrugListHolder();
 		d_studyGraphPresentationModel = buildStudyGraphPresentation();
+		d_studiesMeasuringValueModel = new StudiesMeasuringValueModel();		
 	}
 	
 	abstract protected G buildStudyGraphPresentation();
@@ -52,6 +56,10 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 		List<Study> studies = new ArrayList<Study>(d_domain.getStudies(d_endpointHolder.getValue()).getValue());
 		studies.retainAll(d_domain.getStudies(d_indicationHolder.getValue()).getValue());
 		return studies;
+	}	
+	
+	public ValueModel getStudiesMeasuringLabelModel() {
+		return d_studiesMeasuringValueModel;
 	}	
 	
 	public ValueModel getEndpointModel() {
@@ -71,6 +79,8 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 			}
 		};
 	}
+	
+	public abstract SelectableStudyListPresentationModel getStudyListModel();	
 
 	public AbstractListHolder<OutcomeMeasure> getOutcomeMeasureListModel() {
 		return d_outcomeListHolder;
@@ -101,5 +111,31 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 		public void propertyChange(PropertyChangeEvent evt) {
 			fireValueChange(null, getValue());
 		}
-	}		
+	}
+	
+	@SuppressWarnings("serial")
+	public class StudiesMeasuringValueModel extends AbstractValueModel implements PropertyChangeListener {
+		
+		public StudiesMeasuringValueModel() {
+			d_endpointHolder.addValueChangeListener(this);			
+		}
+
+		public Object getValue() {
+			return constructString();
+		}
+
+		private Object constructString() {
+			String indVal = d_indicationHolder.getValue() != null ? d_indicationHolder.getValue().toString() : "";
+			String endpVal = d_endpointHolder.getValue() != null ? d_endpointHolder.getValue().toString() : "";
+			return "Studies measuring " + indVal + " on " + endpVal;
+		}
+		
+		public void setValue(Object newValue) {
+			throw new RuntimeException("value set not allowed");
+		}
+
+		public void propertyChange(PropertyChangeEvent arg0) {
+			fireValueChange(null, constructString());
+		}		
+	}	
 }
