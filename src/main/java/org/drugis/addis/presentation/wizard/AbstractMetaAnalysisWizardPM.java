@@ -3,6 +3,7 @@ package org.drugis.addis.presentation.wizard;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -53,6 +54,9 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 	}
 	
 	protected List<Study> getStudiesEndpointAndIndication() {
+		if (d_endpointHolder.getValue() == null || d_indicationHolder.getValue() == null) {
+			return Collections.emptyList();
+		}
 		List<Study> studies = new ArrayList<Study>(d_domain.getStudies(d_endpointHolder.getValue()).getValue());
 		studies.retainAll(d_domain.getStudies(d_indicationHolder.getValue()).getValue());
 		return studies;
