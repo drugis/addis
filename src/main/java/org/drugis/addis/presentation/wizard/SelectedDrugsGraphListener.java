@@ -1,33 +1,36 @@
 package org.drugis.addis.presentation.wizard;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
-import org.jgraph.event.GraphSelectionEvent;
-import org.jgraph.event.GraphSelectionListener;
-import org.jgraph.graph.DefaultEdge;
+import org.jgraph.JGraph;
 import org.jgraph.graph.DefaultGraphCell;
 
-public class SelectedDrugsGraphListener implements GraphSelectionListener {
+public class SelectedDrugsGraphListener extends MouseAdapter {
 	
 	private ListHolder<Drug> d_drugList;
+	private JGraph d_graph;
 
-	public SelectedDrugsGraphListener(ListHolder<Drug> drugsList) {
+	public SelectedDrugsGraphListener(JGraph graph, ListHolder<Drug> drugsList) {
 		this.d_drugList = drugsList;
+		this.d_graph = graph;
 	}
-
-	public void valueChanged(GraphSelectionEvent e) {
-		if (!(e.getCell() instanceof DefaultEdge)) {
-			DefaultGraphCell cell = (DefaultGraphCell) e.getCell();
-			Object obj = cell.getUserObject();
+	
+	public void mousePressed(MouseEvent e) {
+		Object cell = d_graph.getFirstCellForLocation(e.getX(), e.getY());
+		
+		if (cell instanceof DefaultGraphCell) {
+			DefaultGraphCell realcell = (DefaultGraphCell) cell;
+			Object obj = realcell.getUserObject();
 			if (obj instanceof Vertex) {
 				selectUnselectDrug(((Vertex) obj).getDrug());
 			}
 		}
-	}
+	}	
 
 	private void selectUnselectDrug(Drug drug) {
 		ArrayList<Drug> drugs = new ArrayList<Drug>(d_drugList.getValue());
