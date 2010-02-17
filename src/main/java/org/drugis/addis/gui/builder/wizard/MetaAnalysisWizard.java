@@ -111,7 +111,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			super ("Select Arms","Select the specific arms to be used for the meta-analysis");
 			
 			d_layout = new FormLayout(
-					"center:pref, 3dlu, center:pref, 3dlu, center:pref, 3dlu, center:pref, 3dlu, center:pref",
+					"left:pref, 3dlu, pref:grow:fill, 3dlu, center:pref, 3dlu, pref:grow:fill",
 					"p, 3dlu, p"
 					);	
 			
@@ -128,8 +128,8 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			
 			d_builder = new PanelBuilder(d_layout);
 			d_builder.setDefaultDialogBorder();
-			d_builder.addLabel(d_pm.getFirstDrugModel().getValue().toString(),cc.xy(3, 1));
-			d_builder.addLabel(d_pm.getSecondDrugModel().getValue().toString(),cc.xy(7, 1));
+			d_builder.addLabel(d_pm.getFirstDrugModel().getValue().toString(),cc.xy(3, 1, "center, center"));
+			d_builder.addLabel(d_pm.getSecondDrugModel().getValue().toString(),cc.xy(7, 1, "center, center"));
 			
 			
 			int row = 3;
