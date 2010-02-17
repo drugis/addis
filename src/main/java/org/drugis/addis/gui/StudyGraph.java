@@ -84,6 +84,7 @@ public class StudyGraph extends JPanel {
 		
 		// add a circle layout to the graph
 		final JGraphSimpleLayout layout = new JGraphSimpleLayout(JGraphSimpleLayout.TYPE_CIRCLE);
+		//final JGraphOrganicLayout layout = new JGraphOrganicLayout(new Rectangle2D.Double(0.0, 0.0, 500, 500));
 		final JGraphFacade facade = new JGraphFacade(jgraph);
 		layout.run(facade);
 		Map nested = facade.createNestedMap(true, true);

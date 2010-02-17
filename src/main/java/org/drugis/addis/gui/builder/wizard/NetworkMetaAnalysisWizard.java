@@ -15,6 +15,7 @@ import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.models.StaticModel;
 
+import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -45,7 +46,7 @@ public class NetworkMetaAnalysisWizard implements ViewBuilder {
 	public class SelectDrugsWizardStep extends PanelWizardStep {
 
 		public SelectDrugsWizardStep() {
-			super("Select Drugs","Select the drugs to be used for the network meta-analysis.");
+			super("Select Drugs","Select the drugs to be used for the network meta-analysis. To continue, (1) at least two drugs must be selected, and (2) all selected drugs must be connected.");
 					
 			setLayout(new BorderLayout());
 			    
@@ -64,7 +65,7 @@ public class NetworkMetaAnalysisWizard implements ViewBuilder {
 			add(sp);
 			sp.getVerticalScrollBar().setUnitIncrement(16);
 			
-			//Bindings.bind(this, "complete", d_pm.getMetaAnalysisCompleteModel());
+			Bindings.bind(this, "complete", d_pm.getConnectedDrugsSelectedModel());
 		}
 		
 		private Component buildStudiesGraph() {

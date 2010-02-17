@@ -31,7 +31,7 @@ extends ListenableUndirectedGraph<StudyGraphModel.Vertex, StudyGraphModel.Edge> 
 		public int getSampleSize() {
 			return d_sampleSize;
 		}
-		
+				
 		public String toString() {
 			return d_drug.getName();
 		}

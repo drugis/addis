@@ -14,6 +14,7 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
 public class SelectableStudyGraphModelTest {
 
@@ -45,7 +46,19 @@ public class SelectableStudyGraphModelTest {
 		selDrugs.addValueChangeListener(mock);
 		
 		d_drugListHolder.setValue(list);
-		verify(mock);
+		verify(mock);	
+	}
+	
+	@Test
+	public void testIsSelectionCollected() {
+		assertTrue(d_pm.isSelectionConnected());
 		
+		d_drugs.remove(ExampleData.buildDrugFluoxetine());
+		d_drugListHolder = new DefaultListHolder<Drug>(d_drugs);
+		d_pm = new SelectableStudyGraphModel(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
+				new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()),
+				d_drugListHolder, d_domain);
+		
+		assertFalse(d_pm.isSelectionConnected());
 	}
 }
