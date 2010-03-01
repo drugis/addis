@@ -48,6 +48,7 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +63,7 @@ public class DomainTreeModelTest {
 	private Study d_firstStudy;
 	private Drug d_firstDrug;
 	private RandomEffectsMetaAnalysis d_firstMetaAnalysis;
+	private NetworkMetaAnalysis d_networkAnalysis;
 	
 	@Before
 	public void setUp() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
@@ -84,6 +86,8 @@ public class DomainTreeModelTest {
 		d_firstMetaAnalysis = new RandomEffectsMetaAnalysis("meta", d_firstEndpoint, 
 				Collections.singletonList((Study)d_firstStudy), d_firstDrug, d_firstDrug);
 		
+		d_networkAnalysis = new NetworkMetaAnalysis("network");
+		
 		d_firstPopChar = new ContinuousPopulationCharacteristic("Age");
 		
 		d_domain.addIndication(d_firstIndication);
@@ -94,6 +98,7 @@ public class DomainTreeModelTest {
 		d_domain.addVariable(d_firstPopChar);
 		
 		d_domain.addMetaAnalysis(d_firstMetaAnalysis);
+		d_domain.addMetaAnalysis(d_networkAnalysis);
 		
 		d_treeModel = new DomainTreeModel(d_domain);
 	}
@@ -177,7 +182,8 @@ public class DomainTreeModelTest {
 	@Test
 	public void testGetAnalysis() {
 		assertEquals(d_firstMetaAnalysis, d_treeModel.getChild(d_treeModel.getAnalysesNode(), 0));
-		assertEquals(null, d_treeModel.getChild(d_treeModel.getAnalysesNode(), 1));		
+		assertEquals(d_networkAnalysis, d_treeModel.getChild(d_treeModel.getAnalysesNode(), 1));
+		assertEquals(null, d_treeModel.getChild(d_treeModel.getAnalysesNode(), 2));		
 	}
 	
 	@Test
@@ -190,7 +196,7 @@ public class DomainTreeModelTest {
 	public void testGetChildCount() {
 		assertEquals(7, d_treeModel.getChildCount(d_treeModel.getRoot()));
 		
-		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getAnalysesNode()));
+		assertEquals(2, d_treeModel.getChildCount(d_treeModel.getAnalysesNode()));
 		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getIndicationsNode()));
 		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getEndpointsNode()));
 		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getAdverseEventsNode()));	
@@ -326,5 +332,6 @@ public class DomainTreeModelTest {
 				d_firstDrug, d_firstDrug);
 		d_domain.addMetaAnalysis(study);
 		assertTrue(d_treeModel.isLeaf(study));
+		assertTrue(d_treeModel.isLeaf(d_networkAnalysis));
 	}
 }

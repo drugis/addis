@@ -28,4 +28,12 @@ public class NetworkMetaAnalysis extends AbstractEntity implements MetaAnalysis 
 		d_name = newValue;
 		firePropertyChange(PROPERTY_NAME, oldValue, newValue);
 	}
+	
+	public String toString(){
+		return d_name;
+	}
+
+	public int compareTo(MetaAnalysis arg0) {
+		return d_name.compareTo(arg0.getName());
+	}
 }

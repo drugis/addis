@@ -36,6 +36,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.CollectionUtil;
 
@@ -222,7 +223,7 @@ public class DomainTreeModel implements TreeModel {
 		if (node instanceof Variable) {
 			return d_domain.getVariables().contains(node);
 		}		
-		if (node instanceof RandomEffectsMetaAnalysis) {
+		if (node instanceof MetaAnalysis) {
 			return d_domain.getMetaAnalyses().contains(node);
 		}
 		if (node instanceof Study) {
