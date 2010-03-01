@@ -3,14 +3,14 @@ package org.drugis.addis.presentation;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class TypedHolder<T> extends AbstractValueModel implements ValueHolder<T> {
+public class ModifiableHolder<T> extends AbstractValueModel implements ValueHolder<T> {
 	private T d_content = null;
 	
-	public TypedHolder(T content) {
+	public ModifiableHolder(T content) {
 		d_content = content;
 	}
 	
-	public TypedHolder() {
+	public ModifiableHolder() {
 	}
 
 	/* (non-Javadoc)

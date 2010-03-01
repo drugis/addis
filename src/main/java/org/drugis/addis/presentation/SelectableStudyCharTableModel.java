@@ -37,7 +37,7 @@ public class SelectableStudyCharTableModel extends StudyCharTableModel {
 		return super.getValueAt(rowIndex, columnIndex - 1);
 	}
 
-	private TypedHolder<Boolean> getVisibleModelByRow(int rowIndex) {
+	private ModifiableHolder<Boolean> getVisibleModelByRow(int rowIndex) {
 		return ((SelectableStudyListPresentationModel)d_pm).getSelectedStudyBooleanModel(d_pm.getIncludedStudies().getValue().get(rowIndex));
 	}
 	

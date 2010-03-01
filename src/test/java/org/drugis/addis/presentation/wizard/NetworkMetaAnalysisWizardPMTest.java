@@ -12,6 +12,8 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyListPresentationModel;
+import org.drugis.addis.presentation.StudyGraphModel;
+import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -105,7 +107,67 @@ public class NetworkMetaAnalysisWizardPMTest {
 	}
 	
 	@Test
-	public void testGetSelectedStudyGraph() {
+	public void testGetSelectedStudyGraphUpdateDrugs() {
+		StudyGraphModel graphModel = d_pm.getSelectedStudyGraphModel();
+
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		assertEquals(3, graphModel.vertexSet().size());
+		assertEquals(2, graphModel.edgeSet().size());
 		
+		ArrayList<Drug> selectionList = new ArrayList<Drug>();
+		selectionList.add(ExampleData.buildDrugSertraline());
+		selectionList.add(ExampleData.buildDrugParoxetine());
+		d_pm.getSelectedDrugsModel().setValue(selectionList);
+
+		assertEquals(2, graphModel.vertexSet().size());
+		assertEquals(0, graphModel.edgeSet().size());
 	}
+	
+	@Test
+	public void testGetSelectedStudyGraphUpdateStudies() {
+		StudyGraphModel graphModel = d_pm.getSelectedStudyGraphModel();
+
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		
+		// Remove Parox studies
+		ArrayList<Study> studyList = new ArrayList<Study>();
+		studyList.add(ExampleData.buildStudyBennie());
+		d_pm.getStudyListModel().getSelectedStudyBooleanModel(
+				ExampleData.buildStudyMultipleArmsperDrug()).setValue(false);
+		d_pm.getStudyListModel().getSelectedStudyBooleanModel(
+				ExampleData.buildStudyDeWilde()).setValue(false);
+		d_pm.getStudyListModel().getSelectedStudyBooleanModel(
+				ExampleData.buildStudyChouinard()).setValue(false);
+		
+		assertEquals(3, graphModel.vertexSet().size());
+		assertEquals(1, graphModel.edgeSet().size());
+	}
+	
+	@Test
+	public void testStudySelectionCompleteModel() {
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+
+		ValueHolder<Boolean> completeModel = d_pm.getStudySelectionCompleteModel();
+		assertTrue(completeModel.getValue());
+		
+		PropertyChangeListener mock = JUnitUtil.mockAnyTimesListener(completeModel, "value", true, false);
+		completeModel.addValueChangeListener(mock);
+		
+		// Remove Parox studies
+		ArrayList<Study> studyList = new ArrayList<Study>();
+		studyList.add(ExampleData.buildStudyBennie());
+		d_pm.getStudyListModel().getSelectedStudyBooleanModel(
+				ExampleData.buildStudyMultipleArmsperDrug()).setValue(false);
+		d_pm.getStudyListModel().getSelectedStudyBooleanModel(
+				ExampleData.buildStudyDeWilde()).setValue(false);
+		d_pm.getStudyListModel().getSelectedStudyBooleanModel(
+				ExampleData.buildStudyChouinard()).setValue(false);
+		
+		verify(mock);
+		assertFalse(completeModel.getValue());
+	}
+
 }

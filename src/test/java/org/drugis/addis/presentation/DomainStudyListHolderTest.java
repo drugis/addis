@@ -20,16 +20,16 @@ import org.junit.Test;
 public class DomainStudyListHolderTest {
 	private DomainImpl d_domain;
 	private DomainStudyListHolder d_pm;
-	private TypedHolder<Indication> d_indication;
-	private TypedHolder<OutcomeMeasure> d_outcome;
+	private ModifiableHolder<Indication> d_indication;
+	private ModifiableHolder<OutcomeMeasure> d_outcome;
 
 	@Before
 	public void setUp() {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
 		
-		d_indication = new TypedHolder<Indication>(ExampleData.buildIndicationDepression());
-		d_outcome = new TypedHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd());
+		d_indication = new ModifiableHolder<Indication>(ExampleData.buildIndicationDepression());
+		d_outcome = new ModifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd());
 		d_pm = new DomainStudyListHolder(d_domain,
 				d_indication,
 				d_outcome);

@@ -17,7 +17,7 @@ import com.jgoodies.binding.value.ValueModel;
 abstract public class SelectFromFiniteListPresentationImpl<T> extends Model
 implements SelectFromFiniteListPresentationModel<T> {
 
-	protected List<TypedHolder<T>> d_slots;
+	protected List<ModifiableHolder<T>> d_slots;
 	protected ListHolder<T> d_options;
 	protected ValueModel d_addSlotsEnabled;
 	protected InputCompleteModel d_inputCompleteModel;
@@ -32,7 +32,7 @@ implements SelectFromFiniteListPresentationModel<T> {
 		d_typeName = typeName;
 		d_title = title;
 		d_description = description;
-		d_slots = new ArrayList<TypedHolder<T>>();
+		d_slots = new ArrayList<ModifiableHolder<T>>();
 		d_options = options;
 		d_addSlotsEnabled = new AddSlotsAlwaysEnabledModel();
 		d_inputCompleteModel = new InputCompleteModel();
@@ -54,13 +54,13 @@ implements SelectFromFiniteListPresentationModel<T> {
 	}
 
 	public void removeSlot(int idx) {
-		TypedHolder<T> s = d_slots.get(idx);
+		ModifiableHolder<T> s = d_slots.get(idx);
 		d_slots.remove(idx);
 		firePropertyChange(PROPERTY_NSLOTS, d_slots.size() + 1, d_slots.size());
 		d_inputCompleteModel.removeSlot(s);
 	}
 
-	public TypedHolder<T> getSlot(int idx) {
+	public ModifiableHolder<T> getSlot(int idx) {
 		return d_slots.get(idx);
 	}
 
@@ -92,20 +92,20 @@ implements SelectFromFiniteListPresentationModel<T> {
 		return d_description;
 	}
 
-	public List<TypedHolder<T>> getSlots() { 
+	public List<ModifiableHolder<T>> getSlots() { 
 		return Collections.unmodifiableList(d_slots);
 	}
 
-	class Slot<E> extends TypedHolder<E> {
-		private List<TypedHolder<E>> d_slots;
-		public Slot(List<TypedHolder<E>> slots) {
+	class Slot<E> extends ModifiableHolder<E> {
+		private List<ModifiableHolder<E>> d_slots;
+		public Slot(List<ModifiableHolder<E>> slots) {
 			d_slots = slots;
 		}
 		@Override
 		public void setValue(Object obj) {
 			super.setValue(obj);			
 			// Make sure each option is selected only once
-			for (TypedHolder<E> s : d_slots) {
+			for (ModifiableHolder<E> s : d_slots) {
 				if (s != this && EqualsUtil.equal(s.getValue(), getValue())) {
 					s.setValue(null);
 				}
@@ -118,7 +118,7 @@ implements SelectFromFiniteListPresentationModel<T> {
 		private Boolean d_oldValue;
 		
 		public InputCompleteModel() {
-			for (TypedHolder<T> s : d_slots) {
+			for (ModifiableHolder<T> s : d_slots) {
 				s.addValueChangeListener(this);
 			}
 			d_oldValue = getValue();
@@ -137,7 +137,7 @@ implements SelectFromFiniteListPresentationModel<T> {
 
 		public Boolean getValue() {
 			boolean r = true;
-			for (TypedHolder<T> s: d_slots) {
+			for (ModifiableHolder<T> s: d_slots) {
 				if (s.getValue() == null) {
 					r = false;
 					break;
@@ -146,12 +146,12 @@ implements SelectFromFiniteListPresentationModel<T> {
 			return r;
 		}
 		
-		public void addSlot(TypedHolder<T> s) {
+		public void addSlot(ModifiableHolder<T> s) {
 			s.addValueChangeListener(this);
 			evaluate();
 		}
 		
-		public void removeSlot(TypedHolder<T> s) {
+		public void removeSlot(ModifiableHolder<T> s) {
 			s.removeValueChangeListener(this);
 			evaluate();
 		}

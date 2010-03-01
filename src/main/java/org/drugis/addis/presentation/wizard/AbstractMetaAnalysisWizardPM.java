@@ -23,7 +23,7 @@ import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyListPresentationModel;
 import org.drugis.addis.presentation.StudyGraphModel;
-import org.drugis.addis.presentation.TypedHolder;
+import org.drugis.addis.presentation.ModifiableHolder;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
@@ -32,21 +32,21 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 
 	protected Domain d_domain;
 	protected PresentationModelFactory d_pmm;
-	protected TypedHolder<Indication> d_indicationHolder;
-	protected TypedHolder<OutcomeMeasure> d_endpointHolder;
+	protected ModifiableHolder<Indication> d_indicationHolder;
+	protected ModifiableHolder<OutcomeMeasure> d_endpointHolder;
 	protected OutcomeListHolder d_outcomeListHolder;
 	protected DrugListHolder d_drugListHolder;
 	protected G d_studyGraphPresentationModel;	
 	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;
-	protected Map<Study, Map<Drug, TypedHolder<Arm>>> d_selectedArms;
+	protected Map<Study, Map<Drug, ModifiableHolder<Arm>>> d_selectedArms;
 	protected DefaultSelectableStudyListPresentationModel d_studyListPm;	
 
 	public AbstractMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmm) {
 		d_domain = d;
 		d_pmm = pmm;
 	
-		d_indicationHolder = new TypedHolder<Indication>();
-		d_endpointHolder = new TypedHolder<OutcomeMeasure>();
+		d_indicationHolder = new ModifiableHolder<Indication>();
+		d_endpointHolder = new ModifiableHolder<OutcomeMeasure>();
 		d_indicationHolder.addPropertyChangeListener(new SetEmptyListener(d_endpointHolder));
 		d_outcomeListHolder = new OutcomeListHolder(d_indicationHolder, d_domain);		
 		d_drugListHolder = new DrugListHolder();
@@ -56,7 +56,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 
 		d_studiesMeasuringValueModel = new StudiesMeasuringValueModel();
 		
-		d_selectedArms = new HashMap<Study, Map<Drug, TypedHolder<Arm>>>();
+		d_selectedArms = new HashMap<Study, Map<Drug, ModifiableHolder<Arm>>>();
 		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent ev) {
 				updateArmHolders();
@@ -117,10 +117,10 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 		d_selectedArms.clear();
 		
 		for(Study s : getStudyListModel().getSelectedStudiesModel().getValue()) {
-			d_selectedArms.put(s, new HashMap<Drug, TypedHolder<Arm>>());
+			d_selectedArms.put(s, new HashMap<Drug, ModifiableHolder<Arm>>());
 			for(Drug d : getSelectedDrugsModel().getValue()){
 				if(s.getDrugs().contains(d)){
-					d_selectedArms.get(s).put(d, new TypedHolder<Arm>(getDefaultArm(s, d)));
+					d_selectedArms.get(s).put(d, new ModifiableHolder<Arm>(getDefaultArm(s, d)));
 				}
 			}
 		}
@@ -134,7 +134,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 		return new ArmListHolder(study, drug);
 	}
 
-	public TypedHolder<Arm> getSelectedArmModel(Study study, Drug drug) {
+	public ModifiableHolder<Arm> getSelectedArmModel(Study study, Drug drug) {
 		return d_selectedArms.get(study).get(drug);
 	}
 

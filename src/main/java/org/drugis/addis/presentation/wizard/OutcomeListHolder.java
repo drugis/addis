@@ -14,14 +14,14 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.AbstractListHolder;
-import org.drugis.addis.presentation.TypedHolder;
+import org.drugis.addis.presentation.ModifiableHolder;
 
 @SuppressWarnings("serial")
 public class OutcomeListHolder extends AbstractListHolder<OutcomeMeasure> implements PropertyChangeListener {
-	private TypedHolder<Indication> d_indication;
+	private ModifiableHolder<Indication> d_indication;
 	private Domain d_domain;
 
-	public OutcomeListHolder(TypedHolder<Indication> indication, Domain domain) {
+	public OutcomeListHolder(ModifiableHolder<Indication> indication, Domain domain) {
 		this.d_indication = indication;
 		this.d_domain = domain;
 		d_indication.addValueChangeListener(this);

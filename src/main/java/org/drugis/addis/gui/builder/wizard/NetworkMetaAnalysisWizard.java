@@ -36,9 +36,9 @@ public class NetworkMetaAnalysisWizard implements ViewBuilder {
 		wizardModel.add(new SelectIndicationWizardStep(d_pm));
 		wizardModel.add(new SelectEndpointWizardStep(d_pm));
 		wizardModel.add(new SelectDrugsWizardStep());
-		SelectStudiesWizardStep step = new SelectStudiesWizardStep(d_pm, d_frame);
-		wizardModel.add(step);
-
+		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(d_pm, d_frame);
+		wizardModel.add(selectStudiesStep);
+		Bindings.bind(selectStudiesStep, "complete", d_pm.getStudySelectionCompleteModel());
 		wizardModel.add(new SelectArmsWizardStep(d_pm));
 		wizardModel.add(new OverviewWizardStep());
 
@@ -46,7 +46,6 @@ public class NetworkMetaAnalysisWizard implements ViewBuilder {
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 		wizard.setPreferredSize(new Dimension(950, 650));
 
-		step.setComplete(true);
 		return wizard;
 	}
 	

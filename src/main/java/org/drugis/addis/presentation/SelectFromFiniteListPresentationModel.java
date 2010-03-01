@@ -24,7 +24,7 @@ public interface SelectFromFiniteListPresentationModel<T> {
 	/**
 	 * The slot at index idx
 	 */
-	public TypedHolder<T> getSlot(int idx);
+	public ModifiableHolder<T> getSlot(int idx);
 
 	/**
 	 * Whether or not it is possible to add more options to the list.
@@ -66,5 +66,5 @@ public interface SelectFromFiniteListPresentationModel<T> {
 	 */
 	ListHolder<T> getOptions();
 
-	public List<TypedHolder<T>> getSlots();
+	public List<ModifiableHolder<T>> getSlots();
 }

@@ -40,7 +40,7 @@ import org.drugis.addis.presentation.SelectFromFiniteListPresentationModel;
 import org.drugis.addis.presentation.SelectPopulationCharsPresentation;
 import org.drugis.addis.presentation.StudyNoteHolder;
 import org.drugis.addis.presentation.StudyPresentationModel;
-import org.drugis.addis.presentation.TypedHolder;
+import org.drugis.addis.presentation.ModifiableHolder;
 
 import com.jgoodies.binding.value.ValueModel;
 
@@ -115,22 +115,22 @@ public class AddStudyWizardPresentation {
 	}
 	
 	@SuppressWarnings("serial")
-	private static class OutcomeMeasureHolder<T extends OutcomeMeasure> extends TypedHolder<T> {
-		private List<TypedHolder<T>> d_selectionModelList;
+	private static class OutcomeMeasureHolder<T extends OutcomeMeasure> extends ModifiableHolder<T> {
+		private List<ModifiableHolder<T>> d_selectionModelList;
 		
 		/**
 		 * OutcomeMeasureHolder that validates it's values against a list of outcomes and
 		 * that makes sure each outcome is selected only once.
 		 * @param modelList
 		 */
-		public OutcomeMeasureHolder(List<TypedHolder<T>> modelList) {
+		public OutcomeMeasureHolder(List<ModifiableHolder<T>> modelList) {
 			d_selectionModelList = modelList;
 		}
 		
 		@Override
 		public void setValue(Object newValue) {
 			// If the outcome that was selected is already selected somewhere else, reset the other selection
-			for (TypedHolder<T> omHolder : d_selectionModelList) {
+			for (ModifiableHolder<T> omHolder : d_selectionModelList) {
 				if ((!omHolder.equals(this)) && (omHolder.getValue() != null))
 					if (omHolder.getValue().equals(getValue()))
 						omHolder.setValue(null);
@@ -167,7 +167,7 @@ public class AddStudyWizardPresentation {
 	private StudyPresentationModel d_newStudyPM;
 	private StudyPresentationModel d_oldStudyPM;
 	
-	List<TypedHolder<Endpoint>> d_selectedEndpointsList;
+	List<ModifiableHolder<Endpoint>> d_selectedEndpointsList;
 	List<BasicArmPresentation> d_selectedArmList;
 	private ListHolder<Endpoint> d_endpointListHolder;
 	private ListHolder<AdverseEvent> d_adverseEventListHolder;
@@ -228,7 +228,7 @@ public class AddStudyWizardPresentation {
 		getTitleModel().setValue(getOldStudy().getCharacteristic(BasicStudyCharacteristic.TITLE));
 		
 		// Endpoints.
-		d_selectedEndpointsList = new ArrayList<TypedHolder<Endpoint>>();
+		d_selectedEndpointsList = new ArrayList<ModifiableHolder<Endpoint>>();
 		addEndpointModels(getOldStudy().getOutcomeMeasures().size());
 		
 		// Arms & Dosage
@@ -253,7 +253,7 @@ public class AddStudyWizardPresentation {
 		d_oldStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
 		d_newStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
 		getSourceModel().setValue(Source.MANUAL);
-		d_selectedEndpointsList = new ArrayList<TypedHolder<Endpoint>>();
+		d_selectedEndpointsList = new ArrayList<ModifiableHolder<Endpoint>>();
 		while (d_adverseEventSelect.countSlots() > 0) {
 			d_adverseEventSelect.removeSlot(0);
 		}
@@ -373,7 +373,7 @@ public class AddStudyWizardPresentation {
 	
 	void commitOutcomesArmsToNew(){
 		List<Endpoint> outcomeMeasures = new ArrayList<Endpoint>();
-		for(TypedHolder<Endpoint> outcomeHolder : d_selectedEndpointsList) {
+		for(ModifiableHolder<Endpoint> outcomeHolder : d_selectedEndpointsList) {
 			outcomeMeasures.add(outcomeHolder.getValue());
 		}	
 		getNewStudy().setEndpoints(outcomeMeasures);
@@ -388,7 +388,7 @@ public class AddStudyWizardPresentation {
 	
 	private void commitAdverseEventsToStudy() {
 		List<AdverseEvent> outcomeMeasures = new ArrayList<AdverseEvent>();
-		for(TypedHolder<AdverseEvent> outcomeHolder : d_adverseEventSelect.getSlots()) {
+		for(ModifiableHolder<AdverseEvent> outcomeHolder : d_adverseEventSelect.getSlots()) {
 			outcomeMeasures.add(outcomeHolder.getValue());
 		}	
 		getNewStudy().setAdverseEvents(outcomeMeasures);
@@ -396,7 +396,7 @@ public class AddStudyWizardPresentation {
 	
 	private void commitPopulationCharsToStudy() {
 		List<PopulationCharacteristic> outcomeMeasures = new ArrayList<PopulationCharacteristic>();
-		for(TypedHolder<PopulationCharacteristic> outcomeHolder : d_populationCharSelect.getSlots()) {
+		for(ModifiableHolder<PopulationCharacteristic> outcomeHolder : d_populationCharSelect.getSlots()) {
 			outcomeMeasures.add(outcomeHolder.getValue());
 		}	
 		getNewStudy().setPopulationCharacteristics(outcomeMeasures);
