@@ -53,18 +53,14 @@ extends ListenableUndirectedGraph<StudyGraphModel.Vertex, StudyGraphModel.Edge> 
 		}
 	}
 	
-	private ValueHolder<Indication> d_indication;
-	private ValueHolder<OutcomeMeasure> d_outcome;
-	private Domain d_domain;
 	protected ListHolder<Drug> d_drugs;
+	private ListHolder<Study> d_studies;
 
 	public StudyGraphModel(ValueHolder<Indication> indication, ValueHolder<OutcomeMeasure> outcome, 
 			ListHolder<Drug> drugs, Domain domain) {
 		super(Edge.class);
-		d_indication = indication;
-		d_outcome = outcome;
 		d_drugs = drugs;
-		d_domain = domain;
+		d_studies = new DomainStudyListHolder(domain, indication, outcome);
 		updateGraph();
 		
 		d_drugs.addValueChangeListener(new PropertyChangeListener() {
@@ -126,26 +122,23 @@ extends ListenableUndirectedGraph<StudyGraphModel.Vertex, StudyGraphModel.Edge> 
 	 * Return the studies with the correct indication and outcome that compare the given drugs.
 	 */
 	public List<Study> getStudies(Drug a, Drug b) {
-		List<Study> studies = getStudies(a);
-		studies.retainAll(d_domain.getStudies(b).getValue());
-		return studies;
+		return filter(b, getStudies(a));
 	}
 	
 	/**
 	 * Return the studies with the correct indication and outcome that include the given drug.
 	 */
 	public List<Study> getStudies(Drug a) {
-		List<Study> studies = d_domain.getStudies(a).getValue();
-		studies.retainAll(d_domain.getStudies(getIndication()).getValue());
-		studies.retainAll(d_domain.getStudies(getOutcomeMeasure()).getValue());
+		return filter(a, d_studies.getValue());
+	}
+
+	private List<Study> filter(Drug a, List<Study> allStudies) {
+		List<Study> studies = new ArrayList<Study>();
+		for (Study s : allStudies) {
+			if (s.getDrugs().contains(a)) {
+				studies.add(s);
+			}
+		}
 		return studies;
-	}
-
-	private OutcomeMeasure getOutcomeMeasure() {
-		return d_outcome.getValue();
-	}
-
-	private Indication getIndication() {
-		return d_indication.getValue();
 	}
 }

@@ -104,5 +104,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 		verify(mock);
 	}
 	
-	
+	@Test
+	public void testGetSelectedStudyGraph() {
+		
+	}
 }

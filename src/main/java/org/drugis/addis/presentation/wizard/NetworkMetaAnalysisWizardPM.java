@@ -9,6 +9,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyGraphModel;
+import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.TypedHolder;
 
 import com.jgoodies.binding.value.ValueModel;
@@ -28,6 +29,10 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 
 	public ListHolder<Drug> getSelectedDrugsModel() {
 		return d_studyGraphPresentationModel.getSelectedDrugsModel();
+	}
+	
+	public StudyGraphModel getSelectedStudyGraphModel(){
+		return getStudyGraphModel();
 	}
 
 	@Override

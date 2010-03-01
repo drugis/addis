@@ -282,7 +282,7 @@ public class DomainImpl implements Domain {
 	}
 
 	private void fireDomainChanged(DomainEvent.Type type) {
-		for (DomainListener l : d_listeners) {
+		for (DomainListener l : new ArrayList<DomainListener>(d_listeners)) {
 			l.domainChanged(new DomainEvent(type));
 		}
 	}
