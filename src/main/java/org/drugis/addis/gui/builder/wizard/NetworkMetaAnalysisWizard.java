@@ -5,6 +5,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.gui.Main;
@@ -104,6 +106,12 @@ public class NetworkMetaAnalysisWizard implements ViewBuilder {
 			sp.getVerticalScrollBar().setUnitIncrement(16);
 			
 			setComplete(true);
+		}
+		
+		public void applyState() {
+			JOptionPane.showMessageDialog(d_frame, 
+					"Sorry, we are not yet able to save Network Meta-Analyses", 
+					"Not Implemented", JOptionPane.WARNING_MESSAGE);
 		}
 		
 		private Component buildStudiesGraph() {
