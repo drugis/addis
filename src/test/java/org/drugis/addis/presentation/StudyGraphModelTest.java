@@ -157,37 +157,10 @@ public class StudyGraphModelTest {
 					}}, d_domain);
 		assertTrue(d_pm.vertexSet().isEmpty());
 	}
-	
-	@SuppressWarnings("serial")
-	public static class MutableDrugListHolder extends AbstractListHolder<Drug> {
-		private List<Drug> d_drugs;
 		
-		public MutableDrugListHolder(List<Drug> drugs) {
-			d_drugs = new ArrayList<Drug>(drugs);
-		}
-
-		@Override
-		public List<Drug> getValue() {
-			return d_drugs;
-		}
-		
-		@SuppressWarnings("unchecked")
-		@Override 
-		public void setValue(Object o) {
-			setValue((List<Drug>)o);
-		}
-		
-		public void setValue(List<Drug> drugs) {
-			List<Drug> oldValue = d_drugs;
-			d_drugs = new ArrayList<Drug>(drugs);
-			fireValueChange(oldValue, d_drugs);
-		}
-		
-	}
-	
 	@Test
 	public void testChangeDrugList() {
-		AbstractListHolder<Drug> drugListHolder = new MutableDrugListHolder(new ArrayList<Drug>());
+		AbstractListHolder<Drug> drugListHolder = new DefaultListHolder<Drug>(new ArrayList<Drug>());
 		
 		PropertyChangeListener l = JUnitUtil.mockListener(drugListHolder, "value",
 				new ArrayList<Drug>(), new ArrayList<Drug>(d_drugs));
@@ -200,6 +173,20 @@ public class StudyGraphModelTest {
 		
 		drugListHolder.setValue(d_drugs);
 		verify(l);
+		assertEquals(3, d_pm.vertexSet().size());
+		assertEquals(2, d_pm.edgeSet().size());
+	}
+	
+	@Test
+	public void testChangeStudyList() {
+		AbstractListHolder<Drug> drugListHolder = new DefaultListHolder<Drug>(d_drugs);
+		AbstractListHolder<Study> studyListHolder = new DefaultListHolder<Study>(new ArrayList<Study>());
+		
+		d_pm = new StudyGraphModel(studyListHolder, drugListHolder);
+		assertEquals(3, d_pm.vertexSet().size());
+		assertTrue(d_pm.edgeSet().isEmpty());
+		
+		studyListHolder.setValue(d_domain.getStudies(ExampleData.buildEndpointHamd()).getValue());
 		assertEquals(3, d_pm.vertexSet().size());
 		assertEquals(2, d_pm.edgeSet().size());
 	}

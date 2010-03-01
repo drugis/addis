@@ -2,7 +2,6 @@ package org.drugis.addis.presentation;
 
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;

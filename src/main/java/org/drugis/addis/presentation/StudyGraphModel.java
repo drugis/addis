@@ -56,18 +56,24 @@ extends ListenableUndirectedGraph<StudyGraphModel.Vertex, StudyGraphModel.Edge> 
 	protected ListHolder<Drug> d_drugs;
 	private ListHolder<Study> d_studies;
 
-	public StudyGraphModel(ValueHolder<Indication> indication, ValueHolder<OutcomeMeasure> outcome, 
-			ListHolder<Drug> drugs, Domain domain) {
+	public StudyGraphModel(ListHolder<Study> studies, ListHolder<Drug> drugs){
 		super(Edge.class);
 		d_drugs = drugs;
-		d_studies = new DomainStudyListHolder(domain, indication, outcome);
+		d_studies = studies;
 		updateGraph();
 		
-		d_drugs.addValueChangeListener(new PropertyChangeListener() {
+		PropertyChangeListener listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent ev) {
 				updateGraph();
 			}
-		});
+		};
+		d_drugs.addValueChangeListener(listener);
+		d_studies.addValueChangeListener(listener);
+	}
+	
+	public StudyGraphModel(ValueHolder<Indication> indication, ValueHolder<OutcomeMeasure> outcome, 
+			ListHolder<Drug> drugs, Domain domain) {
+		this(new DomainStudyListHolder(domain, indication, outcome), drugs);
 	}
 	
 	private void updateGraph() {
