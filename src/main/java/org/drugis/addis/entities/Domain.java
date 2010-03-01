@@ -21,7 +21,7 @@ package org.drugis.addis.entities;
 
 import java.util.SortedSet;
 
-import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 
 public interface Domain {
@@ -71,7 +71,7 @@ public interface Domain {
 	 * OR the indication isn't in the domain yet.
 	 * @throws EntityIdExistsException if there is already an entity registered within the domain with the same ID. 
 	 */
-	public void addMetaAnalysis(RandomEffectsMetaAnalysis ma) 
+	public void addMetaAnalysis(MetaAnalysis ma) 
 		throws NullPointerException, IllegalArgumentException, EntityIdExistsException;
 	
 	/**
@@ -84,7 +84,7 @@ public interface Domain {
 	 * Get the meta-studies stored in the data model.
 	 * @return An unmodifiable sorted set of meta-studies. Never a null.
 	 */
-	public SortedSet<RandomEffectsMetaAnalysis> getMetaAnalyses();	
+	public SortedSet<MetaAnalysis> getMetaAnalyses();	
 	
 	
 	/**
@@ -149,7 +149,7 @@ public interface Domain {
 	 * @param ma the meta-analysis to delete 
 	 * @throws DependentEntitiesException if some entities depend on the meta-analysis
 	 */
-	public void deleteMetaAnalysis(RandomEffectsMetaAnalysis ma) throws DependentEntitiesException;
+	public void deleteMetaAnalysis(MetaAnalysis ma) throws DependentEntitiesException;
 	
 	/**
 	 * Deletes a drug from the domain.

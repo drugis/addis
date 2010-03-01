@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.ListHolder;
 
@@ -137,21 +137,21 @@ public class DomainImpl implements Domain {
 		fireDomainChanged(DomainEvent.Type.STUDIES);
 	}
 	
-	public void addMetaAnalysis(RandomEffectsMetaAnalysis ma) throws 
+	public void addMetaAnalysis(MetaAnalysis ma) throws 
 			NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		if (ma == null) {
 			throw new NullPointerException("Meta-Study may not be null");
 		}
-		
+		/*
 		if (!getStudies().containsAll(ma.getStudies()))
 			throw new IllegalArgumentException("Not All studies in this Meta-Study are in the domain");
 		
 		Indication firstInd = (Indication) ma.getStudies().get(0).getIndication();
 		if (!getIndications().contains(firstInd)) {
 			throw new IllegalArgumentException("Indication not in domain");
-		}
+		}*/
 		
-		for (RandomEffectsMetaAnalysis m : d_domainData.getMetaAnalyses()) {
+		for (MetaAnalysis m : d_domainData.getMetaAnalyses()) {
 			if (m.getName().equals(ma.getName())) {
 				throw new EntityIdExistsException("There already exists a meta-analysis with the given name");
 			}
@@ -233,7 +233,7 @@ public class DomainImpl implements Domain {
 				deps.add(s);
 			}
 		}
-		for (RandomEffectsMetaAnalysis s : d_domainData.getMetaAnalyses()) {
+		for (MetaAnalysis s : d_domainData.getMetaAnalyses()) {
 			if (s.getDependencies().contains(e)) {
 				deps.add(s);
 			}
@@ -291,11 +291,11 @@ public class DomainImpl implements Domain {
 		return Collections.unmodifiableSortedSet(d_domainData.getIndications());
 	}
 
-	public SortedSet<RandomEffectsMetaAnalysis> getMetaAnalyses() {
+	public SortedSet<MetaAnalysis> getMetaAnalyses() {
 		return Collections.unmodifiableSortedSet(d_domainData.getMetaAnalyses()); 
 	}
 
-	public void deleteMetaAnalysis(RandomEffectsMetaAnalysis ma)
+	public void deleteMetaAnalysis(MetaAnalysis ma)
 			throws DependentEntitiesException {
 		checkDependents(ma);
 		d_domainData.removeMetaAnalysis(ma);

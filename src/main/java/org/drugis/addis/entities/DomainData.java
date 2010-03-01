@@ -4,14 +4,14 @@ import java.io.Serializable;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 
 public class DomainData implements Serializable {
 	private static final long serialVersionUID = 8470783311348971598L;
 
 	private SortedSet<Endpoint> d_endpoints;
 	private SortedSet<Study> d_studies;
-	private SortedSet<RandomEffectsMetaAnalysis> d_metaAnalyses;	
+	private SortedSet<MetaAnalysis> d_metaAnalyses;	
 	private SortedSet<Drug> d_drugs;
 	private SortedSet<Indication> d_indications;
 	private SortedSet<AdverseEvent> d_ades;
@@ -21,7 +21,7 @@ public class DomainData implements Serializable {
 	public DomainData() {
 		d_endpoints = new TreeSet<Endpoint>();
 		d_studies = new TreeSet<Study>();
-		d_metaAnalyses = new TreeSet<RandomEffectsMetaAnalysis>();		
+		d_metaAnalyses = new TreeSet<MetaAnalysis>();		
 		d_drugs = new TreeSet<Drug>();
 		d_indications = new TreeSet<Indication>();	
 		d_variables = new TreeSet<PopulationCharacteristic>();
@@ -36,7 +36,7 @@ public class DomainData implements Serializable {
 		return d_studies;
 	}
 
-	public SortedSet<RandomEffectsMetaAnalysis> getMetaAnalyses() {
+	public SortedSet<MetaAnalysis> getMetaAnalyses() {
 		return d_metaAnalyses;
 	}
 
@@ -64,7 +64,7 @@ public class DomainData implements Serializable {
 		d_studies.add(s);
 	}
 	
-	public void addMetaAnalysis(RandomEffectsMetaAnalysis ma) {
+	public void addMetaAnalysis(MetaAnalysis ma) {
 		d_metaAnalyses.add(ma);
 	}
 	
@@ -92,7 +92,7 @@ public class DomainData implements Serializable {
 		d_studies.remove(s);
 	}
 	
-	public void removeMetaAnalysis(RandomEffectsMetaAnalysis ma) {
+	public void removeMetaAnalysis(MetaAnalysis ma) {
 		d_metaAnalyses.remove(ma);
 	}
 	

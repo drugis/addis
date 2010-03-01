@@ -144,16 +144,6 @@ public class DomainTest {
 		assertEquals(1, d_domain.getMetaAnalyses().size());
 	}
 
-	@Test(expected=IllegalArgumentException.class)
-	public void testAddMetaAnalysisThrowsOnUnknownIndication() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
-		List<Study> studies = new ArrayList<Study>();
-		Study study2 = ExampleData.buildStudyDeWilde();
-		study2.setIndication(new Indication(4356346L, "notExisting"));
-		studies.add(study2);
-		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
-				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());
-		d_domain.addMetaAnalysis(ma);
-	}	
 	private RandomEffectsMetaAnalysis addMetaAnalysisToDomain() throws Exception {
 		ExampleData.initDefaultData(d_domain);
 		RandomEffectsMetaAnalysis ma = generateMetaAnalysis();

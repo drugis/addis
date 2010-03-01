@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
@@ -14,6 +13,7 @@ import org.drugis.addis.gui.SelectableStudyGraph;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 import org.drugis.common.gui.ViewBuilder;
+import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.models.StaticModel;
@@ -108,7 +108,7 @@ public class NetworkMetaAnalysisWizard implements ViewBuilder {
 			setComplete(true);
 		}
 		
-		public void applyState() {
+		public void applyState() throws InvalidStateException {
 			JOptionPane.showMessageDialog(d_frame, 
 					"Sorry, we are not yet able to save Network Meta-Analyses", 
 					"Not Implemented", JOptionPane.WARNING_MESSAGE);

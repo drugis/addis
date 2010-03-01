@@ -2,7 +2,6 @@ package org.drugis.addis.entities.metaanalysis;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -26,7 +25,8 @@ import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
-public class RandomEffectsMetaAnalysis extends AbstractEntity implements Serializable, Comparable<RandomEffectsMetaAnalysis> {
+public class RandomEffectsMetaAnalysis extends AbstractEntity implements
+Comparable<MetaAnalysis>, MetaAnalysis {
 
 	private static final long serialVersionUID = -4351415410739040259L;
 	private OutcomeMeasure d_om;
@@ -43,7 +43,7 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 	transient private double d_qIV;
 	private List<StudyArmsEntry> d_studyArms;
 	
-	public static final String PROPERTY_NAME = "name";
+
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_INDICATION = "indication";
 	public static final String PROPERTY_OUTCOME_MEASURE = "outcomeMeasure";
@@ -375,7 +375,7 @@ public class RandomEffectsMetaAnalysis extends AbstractEntity implements Seriali
 		return getIndicationFromStudy(d_studies.get(0));
 	}
 
-	public int compareTo(RandomEffectsMetaAnalysis o) {
+	public int compareTo(MetaAnalysis o) {
 		return getName().compareTo(o.getName());
 	}
 }
