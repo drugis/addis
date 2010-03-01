@@ -51,6 +51,6 @@ public class SelectStudiesWizardStep extends PanelWizardStep {
 		builder.add(studiesComp, cc.xy(1, 3));
 		JScrollPane sp = new JScrollPane(builder.getPanel());
 		sp.getVerticalScrollBar().setUnitIncrement(16);
-		add(sp);			
+		add(sp);
 	}
 }
