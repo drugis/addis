@@ -4,16 +4,21 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.AbstractListHolder;
+import org.drugis.addis.presentation.DefaultListHolder;
+import org.drugis.addis.presentation.DefaultSelectableStudyListPresentationModel;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyListPresentationModel;
@@ -32,7 +37,9 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 	protected OutcomeListHolder d_outcomeListHolder;
 	protected DrugListHolder d_drugListHolder;
 	protected G d_studyGraphPresentationModel;	
-	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;	
+	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;
+	protected Map<Study, Map<Drug, TypedHolder<Arm>>> d_selectedArms;
+	protected DefaultSelectableStudyListPresentationModel d_studyListPm;	
 
 	public AbstractMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmm) {
 		d_domain = d;
@@ -44,8 +51,20 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 		d_outcomeListHolder = new OutcomeListHolder(d_indicationHolder, d_domain);		
 		d_drugListHolder = new DrugListHolder();
 		d_studyGraphPresentationModel = buildStudyGraphPresentation();
-		d_studiesMeasuringValueModel = new StudiesMeasuringValueModel();		
+		buildDrugHolders();
+		d_studyListPm = new DefaultSelectableStudyListPresentationModel(new StudyListHolder());
+
+		d_studiesMeasuringValueModel = new StudiesMeasuringValueModel();
+		
+		d_selectedArms = new HashMap<Study, Map<Drug, TypedHolder<Arm>>>();
+		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent ev) {
+				updateArmHolders();
+			}
+		});
 	}
+	
+	protected abstract void buildDrugHolders();
 	
 	abstract protected G buildStudyGraphPresentation();
 	
@@ -84,14 +103,43 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 		};
 	}
 	
-	public abstract SelectableStudyListPresentationModel getStudyListModel();	
-
 	public AbstractListHolder<OutcomeMeasure> getOutcomeMeasureListModel() {
 		return d_outcomeListHolder;
 	}
 
+	public abstract ListHolder<Drug> getSelectedDrugsModel();
+
 	public G getStudyGraphModel() {
 		return d_studyGraphPresentationModel;
+	}
+
+	protected void updateArmHolders() {
+		d_selectedArms.clear();
+		
+		for(Study s : getStudyListModel().getSelectedStudiesModel().getValue()) {
+			d_selectedArms.put(s, new HashMap<Drug, TypedHolder<Arm>>());
+			for(Drug d : getSelectedDrugsModel().getValue()){
+				if(s.getDrugs().contains(d)){
+					d_selectedArms.get(s).put(d, new TypedHolder<Arm>(getDefaultArm(s, d)));
+				}
+			}
+		}
+	}
+
+	private Arm getDefaultArm(Study s, Drug d) {
+		return getArmsPerStudyPerDrug(s, d).getValue().get(0);
+	}
+
+	public ListHolder<Arm> getArmsPerStudyPerDrug(Study study, Drug drug) {
+		return new ArmListHolder(study, drug);
+	}
+
+	public TypedHolder<Arm> getSelectedArmModel(Study study, Drug drug) {
+		return d_selectedArms.get(study).get(drug);
+	}
+
+	public SelectableStudyListPresentationModel getStudyListModel() {
+		return d_studyListPm;
 	}
 
 	@SuppressWarnings("serial")
@@ -140,6 +188,27 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 
 		public void propertyChange(PropertyChangeEvent arg0) {
 			fireValueChange(null, constructString());
+		}		
+	}
+
+	@SuppressWarnings("serial")
+	protected class StudyListHolder extends DefaultListHolder<Study> implements PropertyChangeListener {
+		public StudyListHolder() {
+			super(new ArrayList<Study>());
+			getSelectedDrugsModel().addValueChangeListener(this);
+		}
+	
+		public void propertyChange(PropertyChangeEvent ev) {
+			List<Study> allStudies = getStudiesEndpointAndIndication();
+			List<Study> okStudies = new ArrayList<Study>();
+			for (Study s : allStudies) {
+				List<Drug> drugs = new ArrayList<Drug>(s.getDrugs());
+				drugs.retainAll(getSelectedDrugsModel().getValue());
+				if (drugs.size() >= 2) {
+					okStudies.add(s);
+				}
+			}
+			setValue(okStudies);
 		}		
 	}	
 }
