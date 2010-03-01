@@ -110,10 +110,7 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		public SelectArmsWizardStep (){
 			super ("Select Arms","Select the specific arms to be used for the meta-analysis");
 			
-			d_layout = new FormLayout(
-					"left:pref, 3dlu, pref:grow:fill, 3dlu, center:pref, 3dlu, pref:grow:fill",
-					"p, 3dlu, p"
-					);	
+			d_layout = new FormLayout("3dlu, left:pref, 3dlu, pref:grow:fill", "p");	
 			
 			d_builder = new PanelBuilder(d_layout);
 			d_builder.setDefaultDialogBorder();
@@ -128,37 +125,38 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			
 			d_builder = new PanelBuilder(d_layout);
 			d_builder.setDefaultDialogBorder();
-			Drug firstDrug = d_pm.getFirstDrugModel().getValue();
-			d_builder.addLabel(firstDrug.toString(),cc.xy(3, 1, "center, center"));
-			Drug secondDrug = d_pm.getSecondDrugModel().getValue();
-			d_builder.addLabel(secondDrug.toString(),cc.xy(7, 1, "center, center"));
 			
-			
-			int row = 3;
-
-			for( Study curStudy : d_pm.getStudyListModel().getSelectedStudiesModel().getValue() ){
-
-				ListHolder<Arm> leftArms = d_pm.getArmsPerStudyPerDrug(curStudy, firstDrug);
-				ListHolder<Arm> rightArms = d_pm.getArmsPerStudyPerDrug(curStudy, secondDrug);
-				JComboBox firstDrugBox  = AuxComponentFactory.createBoundComboBox(leftArms, d_pm.getSelectedArmModel(curStudy, firstDrug));
-				JComboBox secondDrugBox = AuxComponentFactory.createBoundComboBox(rightArms, d_pm.getSelectedArmModel(curStudy, secondDrug));
-				
-				/* Disable combo-boxes if there's only one option */
-				if (leftArms.getValue().size() == 1)
-					firstDrugBox.setEnabled(false);
-				if (rightArms.getValue().size() == 1)
-					secondDrugBox.setEnabled(false);
-
+			int row = 1;
+			for (Study curStudy : d_pm.getStudyListModel().getSelectedStudiesModel().getValue()) {
+				d_builder.addSeparator(curStudy.toString(), cc.xyw(1, row, 4));
 				LayoutUtil.addRow(d_layout);
-				d_builder.addLabel(curStudy.toString(), cc.xy(1, row));
-				d_builder.add(firstDrugBox, cc.xy(3, row));
-				d_builder.addLabel("VS", cc.xy(5, row));
-				d_builder.add(secondDrugBox, cc.xy(7, row));
 				row += 2;
+				
+				for (Drug drug: d_pm.getSelectedDrugsModel().getValue()) {
+					if (curStudy.getDrugs().contains(drug)) {
+						row = createArmSelect(row, curStudy, drug, cc);
+					}
+				}
 			}
 			
 			add(d_builder.getPanel());
 			setComplete(true);
+		}
+
+		private int createArmSelect(int row, Study curStudy, Drug drug, CellConstraints cc) {
+			d_builder.addLabel(drug.toString(), cc.xy(2, row));
+			
+			ListHolder<Arm> arms = d_pm.getArmsPerStudyPerDrug(curStudy, drug);
+
+			JComboBox drugBox  = AuxComponentFactory.createBoundComboBox(arms,
+					d_pm.getSelectedArmModel(curStudy, drug));
+			if (arms.getValue().size() == 1)
+				drugBox.setEnabled(false);
+
+			d_builder.add(drugBox, cc.xy(4, row));
+			LayoutUtil.addRow(d_layout);
+			
+			return row + 2;
 		}
 		
 	}
