@@ -3,10 +3,10 @@ package org.drugis.addis.presentation.wizard;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
@@ -28,14 +28,14 @@ import org.drugis.addis.presentation.TypedHolder;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
-public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM<StudyGraphModel> {
-					
+public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM<StudyGraphModel> {				
 	private TypedHolder<Drug> d_firstDrugHolder;
 	private TypedHolder<Drug> d_secondDrugHolder;
 	private DefaultSelectableStudyListPresentationModel d_studyListPm;
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
-	private Map<Study, TypedHolder<Arm>> d_firstArms;
-	private Map<Study, TypedHolder<Arm>> d_secondArms;
+	private ListHolder<Drug> d_selectedDrugs;
+	private Map<Study, Map<Drug, TypedHolder<Arm>>> d_selectedArms;
+	
 	public MetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
 		super(d, pmm);
 		
@@ -51,13 +51,14 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 				updateArmHolders();
 			}
 		});
-		d_firstArms = new HashMap <Study, TypedHolder<Arm>>() ;
-		d_secondArms = new HashMap <Study, TypedHolder<Arm>>() ;		
+		
+		d_selectedArms = new HashMap<Study, Map<Drug, TypedHolder<Arm>>>();
 	}
 
 	private void buildDrugHolders() {
 		d_firstDrugHolder = new TypedHolder<Drug>();		
 		d_secondDrugHolder = new TypedHolder<Drug>();
+
 		d_firstDrugHolder.addValueChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getNewValue() != null && evt.getNewValue().equals(getSecondDrug())) {
@@ -65,6 +66,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 				}									
 			}
 		});
+
 		d_secondDrugHolder.addValueChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getNewValue() != null && evt.getNewValue().equals(getFirstDrug())) {
@@ -75,23 +77,72 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		
 		d_endpointHolder.addPropertyChangeListener(
 				new SetEmptyListener(new TypedHolder[]{d_firstDrugHolder, d_secondDrugHolder}));
+		
+		d_selectedDrugs = new SelectedDrugsHolder(d_firstDrugHolder, d_secondDrugHolder);
+	}
+	
+	@SuppressWarnings("serial")
+	private static class SelectedDrugsHolder extends AbstractListHolder<Drug> {
+		private ArrayList<Drug> d_list;
+		private TypedHolder<Drug> d_firstDrugHolder;
+		private TypedHolder<Drug> d_secondDrugHolder;
+
+		public SelectedDrugsHolder(TypedHolder<Drug> firstDrugHolder,
+				TypedHolder<Drug> secondDrugHolder) {
+			d_list = new ArrayList<Drug>();
+			d_firstDrugHolder = firstDrugHolder;
+			d_secondDrugHolder = secondDrugHolder;
+			updated();
+			PropertyChangeListener listener = new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					updated();
+				}
+			};
+			d_firstDrugHolder.addValueChangeListener(listener);
+			d_secondDrugHolder.addValueChangeListener(listener);
+		}
+		
+		private void updated() {
+			d_list.clear();
+			if (d_firstDrugHolder.getValue() != null) {
+				d_list.add(d_firstDrugHolder.getValue());
+			}
+			if (d_secondDrugHolder.getValue() != null) {
+				d_list.add(d_secondDrugHolder.getValue());
+			}
+			fireValueChange(null, Collections.unmodifiableList(d_list));
+		}
+
+		@Override
+		public List<Drug> getValue() {
+			return Collections.unmodifiableList(d_list);
+		}
+		
 	}
 		
-	public ValueModel getFirstDrugModel() {
+	public TypedHolder<Drug> getFirstDrugModel() {
 		return d_firstDrugHolder;
 	}
 	
-	public ValueModel getSecondDrugModel() {
+	public TypedHolder<Drug> getSecondDrugModel() {
 		return d_secondDrugHolder;
 	}
-		
+	
 	private void updateArmHolders() {
-		d_firstArms.clear();
-		d_secondArms.clear();
-		for (Study s : getStudyListModel().getSelectedStudiesModel().getValue()) {
-			d_firstArms.put(s, new TypedHolder<Arm>(getArmsPerStudyPerDrug(s, getFirstDrug()).getValue().get(0)));
-			d_secondArms.put(s, new TypedHolder<Arm>(getArmsPerStudyPerDrug(s, getSecondDrug()).getValue().get(0)));
+		d_selectedArms.clear();
+		
+		for(Study s : getStudyListModel().getSelectedStudiesModel().getValue()) {
+			d_selectedArms.put(s, new HashMap<Drug, TypedHolder<Arm>>());
+			for(Drug d : getSelectedDrugsModel().getValue()){
+				if(s.getDrugs().contains(d)){
+					d_selectedArms.get(s).put(d, new TypedHolder<Arm>(getDefaultArm(s, d)));
+				}
+			}
 		}
+	}
+
+	private Arm getDefaultArm(Study s, Drug d) {
+		return getArmsPerStudyPerDrug(s, d).getValue().get(0);
 	}
 	
 	private Drug getFirstDrug() {
@@ -101,7 +152,11 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	private Drug getSecondDrug() {
 		return d_secondDrugHolder.getValue();
 	}
-		
+	
+	public ListHolder<Drug> getSelectedDrugsModel() {
+		return d_selectedDrugs;
+	}
+	
 	public SelectableStudyListPresentationModel getStudyListModel() {
 		return d_studyListPm;
 	}
@@ -109,8 +164,10 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	private RandomEffectsMetaAnalysis createMetaAnalysis() {
 		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
 		
-		for(Entry<Study,TypedHolder<Arm>> entry : d_firstArms.entrySet()) {
-			studyArms.add(new StudyArmsEntry(entry.getKey(), entry.getValue().getValue(), d_secondArms.get(entry.getKey()).getValue() ) );
+		for (Study s : getStudyListModel().getSelectedStudiesModel().getValue()) {
+			Arm left = d_selectedArms.get(s).get(d_firstDrugHolder.getValue()).getValue();
+			Arm right = d_selectedArms.get(s).get(d_secondDrugHolder.getValue()).getValue();
+			studyArms.add(new StudyArmsEntry(s, left, right));
 		}
 		
 		return new RandomEffectsMetaAnalysis("", (OutcomeMeasure) getEndpointModel().getValue(), studyArms);
@@ -150,12 +207,8 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		return new ArmListHolder(study, drug);
 	}
 	
-	public ValueModel getLeftArmPerStudyPerDrug(Study study) {
-		return d_firstArms.get(study);
-	}
-	
-	public ValueModel getRightArmPerStudyPerDrug(Study study) {
-		return d_secondArms.get(study);
+	public TypedHolder<Arm> getSelectedArmModel(Study study, Drug drug) {
+		return d_selectedArms.get(study).get(drug);
 	}
 
 	@SuppressWarnings("serial")

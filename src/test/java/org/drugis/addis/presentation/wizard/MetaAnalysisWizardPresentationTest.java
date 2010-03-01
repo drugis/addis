@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
@@ -271,6 +272,31 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		assertNull(d_wizard.getFirstDrugModel().getValue());
+	}
+	
+	@Test
+	public void testSelectedDrugList() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getSelectedDrugsModel().getValue().equals(Collections.<Drug>emptyList());
+		
+		PropertyChangeListener mock = JUnitUtil.mockListener(d_wizard.getSelectedDrugsModel(), "value", null, 
+				Collections.<Drug>singletonList(ExampleData.buildDrugFluoxetine()));
+		d_wizard.getSelectedDrugsModel().addValueChangeListener(mock);
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
+		assertEquals(Collections.<Drug>singletonList(ExampleData.buildDrugFluoxetine()),
+				d_wizard.getSelectedDrugsModel().getValue());
+		verify(mock);
+		
+		List<Drug> drugs = new ArrayList<Drug>();
+		drugs.add(ExampleData.buildDrugFluoxetine());
+		drugs.add(ExampleData.buildDrugSertraline());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugSertraline());
+		assertEquals(drugs, d_wizard.getSelectedDrugsModel().getValue());
+		
+		d_wizard.getFirstDrugModel().setValue(null);
+		assertEquals(Collections.<Drug>singletonList(ExampleData.buildDrugSertraline()),
+				d_wizard.getSelectedDrugsModel().getValue());
 	}
 	
 	@Test

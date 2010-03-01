@@ -128,18 +128,20 @@ public class MetaAnalysisWizard implements ViewBuilder {
 			
 			d_builder = new PanelBuilder(d_layout);
 			d_builder.setDefaultDialogBorder();
-			d_builder.addLabel(d_pm.getFirstDrugModel().getValue().toString(),cc.xy(3, 1, "center, center"));
-			d_builder.addLabel(d_pm.getSecondDrugModel().getValue().toString(),cc.xy(7, 1, "center, center"));
+			Drug firstDrug = d_pm.getFirstDrugModel().getValue();
+			d_builder.addLabel(firstDrug.toString(),cc.xy(3, 1, "center, center"));
+			Drug secondDrug = d_pm.getSecondDrugModel().getValue();
+			d_builder.addLabel(secondDrug.toString(),cc.xy(7, 1, "center, center"));
 			
 			
 			int row = 3;
 
 			for( Study curStudy : d_pm.getStudyListModel().getSelectedStudiesModel().getValue() ){
 
-				ListHolder<Arm> leftArms = d_pm.getArmsPerStudyPerDrug(curStudy, (Drug) d_pm.getFirstDrugModel().getValue());
-				ListHolder<Arm> rightArms = d_pm.getArmsPerStudyPerDrug(curStudy, (Drug) d_pm.getSecondDrugModel().getValue());
-				JComboBox firstDrugBox  = AuxComponentFactory.createBoundComboBox(leftArms, d_pm.getLeftArmPerStudyPerDrug(curStudy));
-				JComboBox secondDrugBox = AuxComponentFactory.createBoundComboBox(rightArms, d_pm.getRightArmPerStudyPerDrug(curStudy));
+				ListHolder<Arm> leftArms = d_pm.getArmsPerStudyPerDrug(curStudy, firstDrug);
+				ListHolder<Arm> rightArms = d_pm.getArmsPerStudyPerDrug(curStudy, secondDrug);
+				JComboBox firstDrugBox  = AuxComponentFactory.createBoundComboBox(leftArms, d_pm.getSelectedArmModel(curStudy, firstDrug));
+				JComboBox secondDrugBox = AuxComponentFactory.createBoundComboBox(rightArms, d_pm.getSelectedArmModel(curStudy, secondDrug));
 				
 				/* Disable combo-boxes if there's only one option */
 				if (leftArms.getValue().size() == 1)
