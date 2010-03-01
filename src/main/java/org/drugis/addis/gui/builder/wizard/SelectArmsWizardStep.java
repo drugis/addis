@@ -3,7 +3,10 @@
  */
 package org.drugis.addis.gui.builder.wizard;
 
+import java.awt.BorderLayout;
+
 import javax.swing.JComboBox;
+import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
@@ -28,9 +31,10 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 
 	public SelectArmsWizardStep (AbstractMetaAnalysisWizardPM<? extends StudyGraphModel> pm) {
 		super ("Select Arms","Select the specific arms to be used for the meta-analysis");
+		setLayout(new BorderLayout());
 		d_pm = pm;
 		
-		d_layout = new FormLayout("3dlu, left:pref, 3dlu, pref:grow:fill", "p");	
+		d_layout = new FormLayout("3dlu, left:pref, 3dlu, pref:grow", "p");	
 		
 		d_builder = new PanelBuilder(d_layout);
 		d_builder.setDefaultDialogBorder();
@@ -38,8 +42,7 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 
 	@Override
 	public void prepare() {
-		
-		remove(d_builder.getPanel());
+		removeAll();
 		
 		CellConstraints cc = new CellConstraints();
 		
@@ -59,7 +62,10 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 			}
 		}
 		
-		add(d_builder.getPanel());
+		JScrollPane sp = new JScrollPane(d_builder.getPanel());
+		add(sp, BorderLayout.CENTER);
+		sp.getVerticalScrollBar().setUnitIncrement(16);
+
 		setComplete(true);
 	}
 
