@@ -117,7 +117,7 @@ public class PresentationModelFactory {
 			return new RandomEffectsMetaAnalysisPresentation((RandomEffectsMetaAnalysis) obj, this);
 		}
 		if (obj instanceof NetworkMetaAnalysis) {
-			return new NetworkMetaAnalysisPresentation((NetworkMetaAnalysis) obj);
+			return new NetworkMetaAnalysisPresentation((NetworkMetaAnalysis) obj, this);
 		}
 		return new PresentationModel(obj);
 	}

@@ -150,7 +150,7 @@ public class RandomEffectsMetaAnalysisView implements ViewBuilder {
 				cc.xy(3, 5));
 
 		builder.addLabel("Endpoint:", cc.xy(1, 7));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getEndpointModel().getLabelModel()),
+		builder.add(BasicComponentFactory.createLabel(d_pm.getOutcomeMeasureModel().getLabelModel()),
 				cc.xy(3, 7));
 		
 		builder.addLabel("First drug:", cc.xy(1, 9));

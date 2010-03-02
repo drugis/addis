@@ -2,13 +2,11 @@ package org.drugis.addis.presentation;
 
 import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
 
-import com.jgoodies.binding.PresentationModel;
-
 @SuppressWarnings("serial")
-public class NetworkMetaAnalysisPresentation extends PresentationModel<NetworkMetaAnalysis> {
+public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<NetworkMetaAnalysis> {
 
-	public NetworkMetaAnalysisPresentation(NetworkMetaAnalysis bean) {
-		super(bean);
+	public NetworkMetaAnalysisPresentation(NetworkMetaAnalysis bean, PresentationModelFactory mgr) {
+		super(bean, mgr);
 		// TODO Auto-generated constructor stub
 	}
 
