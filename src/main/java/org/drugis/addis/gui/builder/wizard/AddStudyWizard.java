@@ -48,8 +48,10 @@ import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
+import org.drugis.addis.gui.wizard.SelectFromFiniteListWizardStep;
 import org.drugis.addis.presentation.DosePresentationModel;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
+import org.drugis.addis.presentation.wizard.CompleteListener;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.OutcomeMeasurementsModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.AuxComponentFactory;
@@ -87,6 +89,19 @@ public class AddStudyWizard implements ViewBuilder{
 	}
 	
 	public Wizard buildPanel() {
+		DynamicModel wizardModel = buildModel(d_pm);
+		Wizard wizard = new Wizard(wizardModel);
+		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
+		wizard.addWizardListener(new WizardAdapter() {
+			public void wizardClosed(WizardEvent e) {
+				d_main.leftTreeFocus(d_pm.saveStudy());
+			}
+		});
+		wizard.setPreferredSize(new Dimension(750, 750));
+		return wizard;
+	}
+
+	private DynamicModel buildModel(final AddStudyWizardPresentation pm) {
 		DynamicModel wizardModel = new DynamicModel();
 		wizardModel.add(new EnterIdTitleWizardStep());
 		wizardModel.add(new SelectIndicationWizardStep());
@@ -97,7 +112,7 @@ public class AddStudyWizard implements ViewBuilder{
 		wizardModel.add(new SelectAdverseEventWizardStep());
 		wizardModel.add(new SetAdverseEventMeasurementsWizardStep(), new Condition() {
 			public boolean evaluate(WizardModel model) {
-				return d_pm.getAdverseEventSelectModel().getSlots().size() > 0;
+				return pm.getAdverseEventSelectModel().getSlots().size() > 0;
 			}
 		});
 		wizardModel.add(new SelectPopulationCharsWizardStep());
@@ -107,15 +122,7 @@ public class AddStudyWizard implements ViewBuilder{
 			}			
 		});
 		wizardModel.add(new ReviewStudyStep());
-		Wizard wizard = new Wizard(wizardModel);
-		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
-		wizard.addWizardListener(new WizardAdapter() {
-			public void wizardClosed(WizardEvent e) {
-				d_main.leftTreeFocus(d_pm.saveStudy());
-			}
-		});
-		wizard.setPreferredSize(new Dimension(750, 750));
-		return wizard;
+		return wizardModel;
 	}
 	
 	 @SuppressWarnings("serial")

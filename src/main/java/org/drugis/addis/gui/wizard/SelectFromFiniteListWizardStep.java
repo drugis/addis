@@ -1,4 +1,4 @@
-package org.drugis.addis.gui.builder.wizard;
+package org.drugis.addis.gui.wizard;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -11,6 +11,7 @@ import javax.swing.JScrollPane;
 
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.presentation.SelectFromFiniteListPresentationModel;
+import org.drugis.addis.presentation.wizard.CompleteListener;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;

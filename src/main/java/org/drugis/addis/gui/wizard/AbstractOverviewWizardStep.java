@@ -1,4 +1,4 @@
-package org.drugis.addis.gui.builder.wizard;
+package org.drugis.addis.gui.wizard;
 
 import javax.swing.JOptionPane;
 
