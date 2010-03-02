@@ -83,29 +83,19 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
-import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
-import org.drugis.addis.gui.builder.DrugView;
 import org.drugis.addis.gui.builder.EntitiesNodeView;
-import org.drugis.addis.gui.builder.IndicationView;
-import org.drugis.addis.gui.builder.NetworkMetaAnalysisView;
-import org.drugis.addis.gui.builder.OutcomeMeasureView;
-import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
 import org.drugis.addis.gui.builder.StudiesNodeView;
 import org.drugis.addis.gui.builder.StudyTablePanelView;
 import org.drugis.addis.gui.builder.StudyView;
+import org.drugis.addis.gui.builder.ViewFactory;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.builder.wizard.MetaAnalysisWizard;
 import org.drugis.addis.gui.builder.wizard.NetworkMetaAnalysisWizard;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
-import org.drugis.addis.presentation.DrugPresentationModel;
-import org.drugis.addis.presentation.IndicationPresentation;
-import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.StudyPresentationModel;
-import org.drugis.addis.presentation.VariablePresentationModel;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
 import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
@@ -197,7 +187,7 @@ public class Main extends JFrame {
 		getDomain().addListener(new MainListener());
 	}
 
-	private Domain getDomain() {
+	public Domain getDomain() {
 		return d_domain.getDomain();
 	}
 
@@ -728,18 +718,8 @@ public class Main extends JFrame {
 						.getLastSelectedPathComponent();
 				if (node == null) {
 					noneSelected();
-				} else if (node instanceof RandomEffectsMetaAnalysis) {
-					randomEffectsMetaAnalysisSelected((RandomEffectsMetaAnalysis) node);
-				} else if (node instanceof NetworkMetaAnalysis) {
-					networkMetaAnalysisSelected((NetworkMetaAnalysis) node);
-				} else if (node instanceof Study) {
-					studySelected((Study) node);
-				} else if (node instanceof Variable) {
-					outcomeSelected((Variable) node);
-				} else if (node instanceof Drug) {
-					drugSelected((Drug) node);
-				} else if (node instanceof Indication) {
-					indicationSelected((Indication) node);
+				} else if (node instanceof Entity) {
+					entitySelected((Entity)node);
 				} else if (node == d_domainTreeModel.getStudiesNode()) {
 					studyLabelSelected();
 				} else if (node == d_domainTreeModel.getDrugsNode()) {
@@ -760,6 +740,12 @@ public class Main extends JFrame {
 			}
 		};
 	}
+	
+	private void entitySelected(Entity node) {
+		ViewBuilder view = ViewFactory.createView(node, d_pmManager, this);
+		setRightPanelView(view);
+		d_editMenuDeleteItem.setEnabled(true);
+	}
 
 	private void noneSelected() {
 		setRightPanelView(new ViewBuilder() {
@@ -769,25 +755,11 @@ public class Main extends JFrame {
 		});
 	}
 
-	private void drugSelected(Drug drug) {
-		DrugView view = new DrugView((DrugPresentationModel) d_pmManager
-				.getModel(drug), this);
-		setRightPanelView(view);
-		d_editMenuDeleteItem.setEnabled(true);
-	}
-
 	private void drugLabelSelected() {
 		List<String> formatter = new ArrayList<String>();
 		formatter.add("name");
 		formatter.add("atcCode");
 		buildEntityTable(getDomain().getDrugs(), formatter, "Drugs");
-	}
-
-	private void outcomeSelected(Variable e) {
-		OutcomeMeasureView view = new OutcomeMeasureView(
-				(VariablePresentationModel) d_pmManager.getModel(e), this);
-		setRightPanelView(view);
-		d_editMenuDeleteItem.setEnabled(true);
 	}
 
 	private void endpointLabelSelected() {
@@ -821,12 +793,6 @@ public class Main extends JFrame {
 				"Adverse drug events");
 	}
 
-	private void indicationSelected(Indication i) {
-		IndicationView view = new IndicationView(
-				(IndicationPresentation) d_pmManager.getModel(i), this);
-		setRightPanelView(view);
-	}
-
 	private <T extends Entity> void buildEntityTable(SortedSet<T> allX,
 			List<String> formatter, String title) {
 		List<PresentationModel<T>> dpms = new ArrayList<PresentationModel<T>>();
@@ -851,25 +817,6 @@ public class Main extends JFrame {
 		setRightPanelView(view);
 	}
 
-	private void studySelected(Study node) {
-		StudyView view = new StudyView((StudyPresentationModel) d_pmManager
-				.getModel(node), getDomain(), this);
-		setRightPanelView(view);
-	}
-
-	private void randomEffectsMetaAnalysisSelected(RandomEffectsMetaAnalysis node) {
-		RandomEffectsMetaAnalysisView view = new RandomEffectsMetaAnalysisView(
-				(RandomEffectsMetaAnalysisPresentation) d_pmManager.getModel(node), 
-				this, false);
-		setRightPanelView(view);
-	}
-	
-	private void networkMetaAnalysisSelected(NetworkMetaAnalysis node) {
-		NetworkMetaAnalysisView view = new NetworkMetaAnalysisView(
-				(NetworkMetaAnalysisPresentation) d_pmManager.getModel(node));
-		setRightPanelView(view);
-	}
-	
 	private void analysesLabelSelected() {
 		List<String> formatter = new ArrayList<String>();
 		formatter.add("name");
@@ -959,7 +906,9 @@ public class Main extends JFrame {
 					d_domainTreeModel.getPopulationCharacteristicsNode(), node }));
 		} else if (node instanceof Study) {
 			d_leftPanelTree.setSelectionPath(null);
-			studySelected((Study) node);
+			StudyView view = new StudyView((StudyPresentationModel) d_pmManager
+					.getModel(((Study) node)), getDomain(), this);
+			setRightPanelView(view);
 		} else if (node instanceof RandomEffectsMetaAnalysis) {
 			d_leftPanelTree.setSelectionPath(new TreePath(new Object[] {
 					d_domainTreeModel.getRoot(),
