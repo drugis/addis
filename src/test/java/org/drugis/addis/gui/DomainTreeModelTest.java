@@ -34,6 +34,7 @@ import java.util.Collections;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
@@ -86,7 +87,7 @@ public class DomainTreeModelTest {
 		d_firstMetaAnalysis = new RandomEffectsMetaAnalysis("meta", d_firstEndpoint, 
 				Collections.singletonList((Study)d_firstStudy), d_firstDrug, d_firstDrug);
 		
-		d_networkAnalysis = new NetworkMetaAnalysis("network");
+		d_networkAnalysis = ExampleData.buildNetworkMetaAnalysis();
 		
 		d_firstPopChar = new ContinuousPopulationCharacteristic("Age");
 		
@@ -181,8 +182,8 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testGetAnalysis() {
-		assertEquals(d_firstMetaAnalysis, d_treeModel.getChild(d_treeModel.getAnalysesNode(), 0));
-		assertEquals(d_networkAnalysis, d_treeModel.getChild(d_treeModel.getAnalysesNode(), 1));
+		assertEquals(d_networkAnalysis, d_treeModel.getChild(d_treeModel.getAnalysesNode(), 0));
+		assertEquals(d_firstMetaAnalysis, d_treeModel.getChild(d_treeModel.getAnalysesNode(), 1));
 		assertEquals(null, d_treeModel.getChild(d_treeModel.getAnalysesNode(), 2));		
 	}
 	
@@ -227,7 +228,7 @@ public class DomainTreeModelTest {
 		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getPopulationCharacteristicsNode(), d_firstPopChar));			
 		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getStudiesNode(), d_firstStudy));
 		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getDrugsNode(), d_firstDrug));
-		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getAnalysesNode(), d_firstMetaAnalysis));
+		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getAnalysesNode(), d_networkAnalysis));
 		
 		// test non element of tree
 		assertEquals(-1, d_treeModel.getIndexOfChild(d_treeModel.getEndpointsNode(), new Object()));

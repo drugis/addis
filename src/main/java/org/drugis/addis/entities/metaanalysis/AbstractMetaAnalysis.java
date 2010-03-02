@@ -3,9 +3,11 @@ package org.drugis.addis.entities.metaanalysis;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drugis.addis.entities.AbstractEntity;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
@@ -14,13 +16,6 @@ import org.drugis.addis.entities.Study;
 
 public abstract class AbstractMetaAnalysis extends AbstractEntity implements MetaAnalysis {
 	private static final long serialVersionUID = 6504073155207712299L;
-
-	public static final String PROPERTY_TYPE = "type";
-	public static final String PROPERTY_INDICATION = "indication";
-	public static final String PROPERTY_OUTCOME_MEASURE = "outcomeMeasure";
-	public static final String PROPERTY_SAMPLE_SIZE = "sampleSize";
-	public static final String PROPERTY_INCLUDED_STUDIES_COUNT = "studiesIncluded";
-	public static final String PROPERTY_INCLUDED_DRUGS = "includedDrugs";
 	
 	protected OutcomeMeasure d_outcome;
 	protected Indication d_indication;
@@ -28,10 +23,11 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	protected List<Drug> d_drugs;
 	protected String d_name;
 	protected int d_totalSampleSize;
+	private final Map<Study, Map<Drug, Arm>> d_armMap;
 
 	public AbstractMetaAnalysis(String name, 
 			Indication indication, OutcomeMeasure om,
-			List<? extends Study> studies, List<Drug> drugs) 
+			List<? extends Study> studies, List<Drug> drugs, Map<Study, Map<Drug, Arm>> armMap) 
 	throws IllegalArgumentException {
 		if (studies.isEmpty()) {
 			throw new IllegalArgumentException("studylist empty");
@@ -43,7 +39,8 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		d_indication = indication;
 		d_outcome = om;
 		d_name = name;
-
+		d_armMap = armMap;
+		
 		for (Study s : d_studies) {
 			d_totalSampleSize += s.getSampleSize();
 		}
@@ -74,15 +71,11 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		return d_name;
 	}
 
-	public String getType() {
-		return "DerSimonian-Laird Random Effects";
-	}
-
 	public int getSampleSize() {
 		return d_totalSampleSize;
 	}
 
-	public List<Study> getStudies() {
+	public List<Study> getIncludedStudies() {
 		return Collections.unmodifiableList(d_studies);
 	}
 
@@ -100,7 +93,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		deps.addAll(getIncludedDrugs());
 		deps.add(getIndication());
 		deps.add(getOutcomeMeasure());
-		deps.addAll(getStudies());
+		deps.addAll(getIncludedStudies());
 		return deps;
 	}
 
@@ -114,5 +107,9 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	
 	public List<Drug> getIncludedDrugs() {
 		return Collections.unmodifiableList(d_drugs);
+	}
+	
+	public Arm getArm(Study s, Drug d) {
+		return d_armMap.get(s).get(d);
 	}
 }

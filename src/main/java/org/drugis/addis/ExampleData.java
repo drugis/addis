@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
@@ -41,6 +44,8 @@ import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.metaanalysis.RelativeEffectFactory;
 
 public class ExampleData {
 	private static Indication s_indicationDepression;
@@ -580,4 +585,28 @@ public class ExampleData {
 		return s_endpointCVdeath;
 	}
 
+	public static NetworkMetaAnalysis buildNetworkMetaAnalysis() {
+		List<Study> studies = Arrays.asList(new Study[] {
+				buildStudyBennie(), buildStudyChouinard(), buildStudyDeWilde()});
+		List<Drug> drugs = Arrays.asList(new Drug[] {buildDrugFluoxetine(), buildDrugParoxetine(), 
+				buildDrugSertraline()});
+		return new NetworkMetaAnalysis("Test Network", 
+				buildIndicationDepression(), buildEndpointHamd(),
+				studies, drugs, buildMap(studies, drugs));
+	}
+
+	private static Map<Study, Map<Drug, Arm>> buildMap(List<Study> studies,
+			List<Drug> drugs) {
+		Map<Study, Map<Drug, Arm>> map = new HashMap<Study, Map<Drug,Arm>>();
+		for (Study s : studies) {
+			Map<Drug, Arm> drugMap = new HashMap<Drug, Arm>();
+			for (Drug d : drugs) {
+				if (s.getDrugs().contains(d)) {
+					drugMap.put(d, RelativeEffectFactory.findFirstArm(s, d));
+				}
+			}
+			map.put(s, drugMap);
+		}
+		return map;
+	}
 }

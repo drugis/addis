@@ -19,7 +19,6 @@ import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.Interval;
 
@@ -60,7 +59,7 @@ public class MainData extends ExampleData {
 		
 		try {
 			domain.addMetaAnalysis(buildMetaHansen2005());
-			domain.addMetaAnalysis(new NetworkMetaAnalysis("Empty Network"));
+			domain.addMetaAnalysis(buildNetworkMetaAnalysis());
 		}catch (EntityIdExistsException e) {
 			e.printStackTrace();
 		}

@@ -454,7 +454,7 @@ public class MetaAnalysisWizardPresentationTest {
 		RandomEffectsMetaAnalysis ma = d_wizard.getMetaAnalysisModel().getBean();
 		assertEquals(ma.getFirstDrug(), d_wizard.getFirstDrugModel().getValue());
 		assertEquals(ma.getSecondDrug(), d_wizard.getSecondDrugModel().getValue());
-		JUnitUtil.assertAllAndOnly((Collection<?>) d_wizard.getStudyListModel().getSelectedStudiesModel().getValue(), (Collection<?>) ma.getStudies());
+		JUnitUtil.assertAllAndOnly((Collection<?>) d_wizard.getStudyListModel().getSelectedStudiesModel().getValue(), (Collection<?>) ma.getIncludedStudies());
 		assertEquals(ma.getOutcomeMeasure(), d_wizard.getEndpointModel().getValue());
 		assertEquals(ma.getIndication(), d_wizard.getIndicationModel().getValue());
 	}

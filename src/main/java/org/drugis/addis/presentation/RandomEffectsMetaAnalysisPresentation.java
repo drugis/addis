@@ -57,7 +57,7 @@ public class RandomEffectsMetaAnalysisPresentation extends PresentationModel<Ran
 	private class MyListHolder extends AbstractListHolder<Study> {
 		@Override
 		public List<Study> getValue() {
-			List<Study> studies = new ArrayList<Study>(getBean().getStudies());
+			List<Study> studies = new ArrayList<Study>(getBean().getIncludedStudies());
 			for (Study s : studies) {
 				if (!(s instanceof Study)) {
 					studies.remove(s);

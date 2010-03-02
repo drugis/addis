@@ -5,7 +5,9 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drugis.addis.entities.AbstractEntity;
@@ -32,8 +34,8 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	transient private double d_SEThetaDSL;
 	transient private Interval<Double> d_confidenceInterval;
 	transient private double d_qIV;
-	private List<StudyArmsEntry> d_studyArms;
-
+	
+	public static final String PROPERTY_INCLUDED_STUDIES_COUNT = "studiesIncluded";
 	public static final String PROPERTY_FIRST_DRUG = "firstDrug";
 	public static final String PROPERTY_SECOND_DRUG = "secondDrug";
 	/**
@@ -49,22 +51,13 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<? extends Study> studies,
 			Drug drug1, Drug drug2) 
 	throws IllegalArgumentException {
-		super(name, studies.get(0).getIndication(), om, studies, Arrays.asList(new Drug[] {drug1, drug2}));
-
-		d_studyArms = new ArrayList<StudyArmsEntry>();
-
-		for (Study s : d_studies) {
-			Arm arm1 = RelativeEffectFactory.findFirstArm(s, drug1);
-			Arm arm2 = RelativeEffectFactory.findFirstArm(s, drug2);
-			d_studyArms.add(new StudyArmsEntry(s, arm1, arm2));
-		}
+		super(name, studies.get(0).getIndication(), om, studies, 
+				Arrays.asList(new Drug[] {drug1, drug2}), getArmMap(studies, drug1, drug2));
 	}
-	
+
 	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms)
 	throws IllegalArgumentException {
-		super(name, getIndication(studyArms), om, getStudies(studyArms), getDrugs(studyArms));
-
-		d_studyArms = studyArms;
+		super(name, getIndication(studyArms), om, getStudies(studyArms), getDrugs(studyArms), getArmMap(studyArms));
 		
 		for (StudyArmsEntry s : studyArms){
 			if(!s.getBase().getDrug().equals(getFirstDrug())){
@@ -74,6 +67,35 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 				throw new IllegalArgumentException("Right drug not consistent over all studies");
 			}
 		}
+	}
+	
+
+	public String getType() {
+		return "DerSimonian-Laird Random Effects";
+	}
+
+	private static Map<Study, Map<Drug, Arm>> getArmMap(
+			List<? extends Study> studies, Drug drug1, Drug drug2) {
+		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
+
+		for (Study s : studies) {
+			Arm arm1 = RelativeEffectFactory.findFirstArm(s, drug1);
+			Arm arm2 = RelativeEffectFactory.findFirstArm(s, drug2);
+			studyArms.add(new StudyArmsEntry(s, arm1, arm2));
+		}
+		
+		return getArmMap(studyArms);
+	}
+	
+	private static Map<Study, Map<Drug, Arm>> getArmMap(List<StudyArmsEntry> studyArms) {
+		Map<Study, Map<Drug, Arm>> armMap = new HashMap<Study, Map<Drug, Arm>>();
+		for (StudyArmsEntry sae : studyArms) {
+			Map<Drug, Arm> drugMap = new HashMap<Drug, Arm>();
+			drugMap.put(sae.getBase().getDrug(), sae.getBase());
+			drugMap.put(sae.getSubject().getDrug(), sae.getSubject());
+			armMap.put(sae.getStudy(), drugMap);
+		}
+		return armMap;
 	}
 
 	private static List<Drug> getDrugs(List<StudyArmsEntry> studyArms) {
@@ -110,7 +132,11 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	}
 	
 	public List<StudyArmsEntry> getStudyArms() {
-		return d_studyArms;
+		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
+		for (Study s : getIncludedStudies()) {
+			studyArms.add(new StudyArmsEntry(s, getArm(s, getFirstDrug()), getArm(s, getSecondDrug())));
+		}
+		return studyArms;
 	}
 	
 	private void compute(Class<? extends RelativeEffect<?>> relEffClass) {
@@ -127,7 +153,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 			
 		for (int i=0; i<d_studies.size(); ++i ){
 			RelativeEffect<? extends Measurement> re;
-			re = RelativeEffectFactory.buildRelativeEffect(d_studyArms.get(i), d_outcome, type);
+			re = RelativeEffectFactory.buildRelativeEffect(getStudyArms().get(i), d_outcome, type);
 			relEffects.add(re);
 		}
 		
@@ -222,7 +248,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		compute(type);
 		return new RandomEffects(d_confidenceInterval, d_thetaDSL, d_totalSampleSize, d_SEThetaDSL, d_qIV);		
 	}
-	
+
 	private class RandomEffects extends AbstractEntity implements RelativeEffectMetaAnalysis<Measurement> {
 		private static final long serialVersionUID = 6195228866106906214L;
 		
@@ -277,7 +303,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		}
 		
 		public double getHeterogeneityI2() {
-			int k = getStudies().size();
+			int k = getIncludedStudies().size();
 			return Math.max(0, 100* ((t_qIV - (k-1)) / t_qIV ) );
 		}
 		@Override
