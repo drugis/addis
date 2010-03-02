@@ -51,9 +51,7 @@ public class MetaAnalysisWizard extends Wizard {
 		wizardModel.add(new OverviewWizardStep(pm, frame));
 		return wizardModel;
 	}
-	
-	
-	@SuppressWarnings("serial")
+
 	public static class OverviewWizardStep extends PanelWizardStep {
 		
 		private final MetaAnalysisWizardPresentation d_pm;
@@ -96,9 +94,7 @@ public class MetaAnalysisWizard extends Wizard {
 			}
 		}
 	}
-	
-	
-	@SuppressWarnings("serial")
+
 	public static class SelectDrugsWizardStep extends PanelWizardStep {
 		MetaAnalysisWizardPresentation d_pm;
 		Main d_frame;

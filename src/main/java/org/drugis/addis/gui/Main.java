@@ -647,7 +647,7 @@ public class Main extends JFrame {
 	private void showNetworkMetaAnalysisWizard() {
 		NetworkMetaAnalysisWizard wizard = new NetworkMetaAnalysisWizard(this,
 				new NetworkMetaAnalysisWizardPM(getDomain(), d_pmManager));
-		wizard.buildPanel().showInDialog("Create network meta-analysis", this, true);
+		wizard.showInDialog("Create network meta-analysis", this, true);
 	}	
 
 	private void initPanel() {
