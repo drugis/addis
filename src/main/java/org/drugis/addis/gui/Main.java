@@ -36,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -756,58 +757,42 @@ public class Main extends JFrame {
 	}
 
 	private void drugLabelSelected() {
-		List<String> formatter = new ArrayList<String>();
-		formatter.add("name");
-		formatter.add("atcCode");
-		buildEntityTable(getDomain().getDrugs(), formatter, "Drugs");
+		String [] properties = {"name", "atcCode"};
+		buildEntityTable(getDomain().getDrugs(), properties, "Drugs");
 	}
 
 	private void endpointLabelSelected() {
-		List<String> formatter = new ArrayList<String>();
-		formatter.add("name");
-		formatter.add("description");
-		formatter.add("unitOfMeasurement");
-		formatter.add("type");
-		formatter.add("direction");
-		buildEntityTable(getDomain().getEndpoints(), formatter, "Endpoints");
+		String [] properties = {"name", "description", "unitOfMeasurement",
+				"type", "direction"};
+		buildEntityTable(getDomain().getEndpoints(), properties, "Endpoints");
 	}
 
 	private void populationCharacteristicsLabelSelected() {
-		List<String> formatter = new ArrayList<String>();
-		formatter.add("name");
-		formatter.add("description");
-		formatter.add("unitOfMeasurement");
-		formatter.add("type");
-		buildEntityTable(getDomain().getVariables(), formatter,
-				"Population characteristics");
+		String [] properties = {"name", "description", "unitOfMeasurement", "type"};
+		buildEntityTable(getDomain().getVariables(), properties, "Population characteristics");
 	}
 	
 	private void adverseEventLabelSelected() {
-		List<String> formatter = new ArrayList<String>();
-		formatter.add("name");
-		formatter.add("description");
-		formatter.add("unitOfMeasurement");
-		formatter.add("type");
-		formatter.add("direction");
-		buildEntityTable(getDomain().getAdverseEvents(), formatter,
+		String [] properties = {"name", "description", "unitOfMeasurement",
+				"type", "direction"};
+		buildEntityTable(getDomain().getAdverseEvents(), properties,
 				"Adverse drug events");
 	}
-
+	
 	private <T extends Entity> void buildEntityTable(SortedSet<T> allX,
-			List<String> formatter, String title) {
+			String[] formatter, String title) {
 		List<PresentationModel<T>> dpms = new ArrayList<PresentationModel<T>>();
-		for (T i : allX)
+		for (T i : allX) {
 			dpms.add(d_pmManager.getModel(i));
-		EntitiesNodeView<T> view = new EntitiesNodeView<T>(formatter, dpms,
-				this, title);
+		}
+		EntitiesNodeView<T> view = 
+			new EntitiesNodeView<T>(Arrays.asList(formatter), dpms, this, title);
 		setRightPanelView(view);
 	}
 
 	private void indicationLabelSelected() {
-		List<String> formatter = new ArrayList<String>();
-		formatter.add("name");
-		formatter.add("code");
-		buildEntityTable(getDomain().getIndications(), formatter, "Indications");
+		String [] properties = {"name", "code"};
+		buildEntityTable(getDomain().getIndications(), properties, "Indications");
 	}
 
 	private void studyLabelSelected() {
@@ -818,16 +803,9 @@ public class Main extends JFrame {
 	}
 
 	private void analysesLabelSelected() {
-		List<String> formatter = new ArrayList<String>();
-		formatter.add("name");
-		formatter.add("type");
-		formatter.add("indication");
-		formatter.add("outcomeMeasure");
-		formatter.add("firstDrug");
-		formatter.add("secondDrug");
-		formatter.add("studiesIncluded");
-		formatter.add("sampleSize");
-		buildEntityTable(getDomain().getMetaAnalyses(), formatter,
+		String [] properties = {"name", "type", "indication", "outcomeMeasure", 
+				"firstDrug", "secondDrug", "studiesIncluded", "sampleSize"};
+		buildEntityTable(getDomain().getMetaAnalyses(), properties,
 				"Meta-Analyses");
 	}
 
