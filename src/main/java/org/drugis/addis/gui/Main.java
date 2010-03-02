@@ -804,7 +804,7 @@ public class Main extends JFrame {
 
 	private void analysesLabelSelected() {
 		String [] properties = {"name", "type", "indication", "outcomeMeasure", 
-				"firstDrug", "secondDrug", "studiesIncluded", "sampleSize"};
+				"includedDrugs", "studiesIncluded", "sampleSize"};
 		buildEntityTable(getDomain().getMetaAnalyses(), properties,
 				"Meta-Analyses");
 	}
