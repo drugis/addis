@@ -1,7 +1,6 @@
 package org.drugis.addis.gui.components;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -38,9 +37,9 @@ public class EntitiesTablePanel<T extends Entity> extends JPanel {
 			
 		JScrollPane sp = new JScrollPane(table);		
 		sp.setBorder(BorderFactory.createEmptyBorder());
-		sp.setPreferredSize(new Dimension(200, 450));
 		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		sp.getVerticalScrollBar().setUnitIncrement(16);
 
 		add(sp, BorderLayout.NORTH);
 	}
