@@ -10,7 +10,7 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.components.StudyTable;
+import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.presentation.SelectableStudyCharTableModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
 import org.pietschy.wizard.PanelWizardStep;
@@ -29,7 +29,7 @@ public class SelectStudiesWizardStep extends PanelWizardStep {
 		setLayout(new BorderLayout());
 		JComponent studiesComp;			
 
-		StudyTable table = new StudyTable(new SelectableStudyCharTableModel(pm.getStudyListModel(), frame.getPresentationModelFactory()));
+		EnhancedTable table = new EnhancedTable(new SelectableStudyCharTableModel(pm.getStudyListModel(), frame.getPresentationModelFactory()));
 
 		JScrollPane sPane = new JScrollPane(table);
 		sPane.getVerticalScrollBar().setUnitIncrement(16);			

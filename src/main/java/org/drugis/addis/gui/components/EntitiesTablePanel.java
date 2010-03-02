@@ -33,7 +33,7 @@ public class EntitiesTablePanel<T extends Entity> extends JPanel {
 	
 	private void createComponents() {
 		final EntityTableModel<T> etm = new EntityTableModel<T>(d_entities, d_characteristics);
-		final JTable table = new StudyTable(etm);
+		final JTable table = new EnhancedTable(etm);
 		table.addKeyListener(new EntityTableDeleteListener(d_main));
 			
 		JScrollPane sp = new JScrollPane(table);		

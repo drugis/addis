@@ -18,7 +18,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.CharacteristicSelectDialog;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.EntityTableDeleteListener;
-import org.drugis.addis.gui.components.StudyTable;
+import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.gui.GUIHelper;
@@ -40,12 +40,12 @@ public class StudyTablePanelView implements ViewBuilder {
 		JPanel panel = new JPanel(new BorderLayout());
 		
 		StudyCharTableModel model = new StudyCharTableModel(d_metamodel, d_parent.getPresentationModelFactory());
-		final JTable table = new StudyTable(model);
+		final JTable table = new EnhancedTable(model);
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() > 1) {
-					int row = ((StudyTable)e.getComponent()).rowAtPoint(e.getPoint());
+					int row = ((EnhancedTable)e.getComponent()).rowAtPoint(e.getPoint());
 					Study s = d_metamodel.getIncludedStudies().getValue().get(row);
 					if (d_parent instanceof Main) {
 						((Main)d_parent).leftTreeFocus(s);

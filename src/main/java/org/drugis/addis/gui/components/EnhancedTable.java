@@ -14,14 +14,14 @@ import org.drugis.common.gui.GUIHelper;
 import com.sun.java.components.TableSorter;
 
 @SuppressWarnings("serial")
-public class StudyTable extends JTable {
+public class EnhancedTable extends JTable {
 	
 	private EnhancedTableHeader d_tableHeader;
 
-	public StudyTable(TableModel model) {
+	public EnhancedTable(TableModel model) {
 		super(model);
 		setDefaultRenderer(Object.class, new MyRenderer());		
-		d_tableHeader = new StudyTableHeader(model, getColumnModel(), this);
+		d_tableHeader = new TooltipTableHeader(model, getColumnModel(), this);
 		setTableHeader(d_tableHeader);
 		setPreferredScrollableViewportSize(getPreferredSize());
 		setBackground(Color.WHITE);

@@ -7,11 +7,11 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 @SuppressWarnings("serial")
-public class StudyTableHeader extends EnhancedTableHeader {
+public class TooltipTableHeader extends EnhancedTableHeader {
 
 	private TableModel d_model;
 
-	public StudyTableHeader(TableModel model, TableColumnModel cm, JTable table) {
+	public TooltipTableHeader(TableModel model, TableColumnModel cm, JTable table) {
 		super(cm, table);
 		
 		d_model = model;

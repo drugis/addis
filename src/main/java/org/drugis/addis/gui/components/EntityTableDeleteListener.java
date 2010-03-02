@@ -17,7 +17,7 @@ public class EntityTableDeleteListener extends KeyAdapter {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-			StudyTable studyTable = (StudyTable)e.getComponent();
+			EnhancedTable studyTable = (EnhancedTable)e.getComponent();
 			int row = studyTable.getSelectedRow();
 
 			Entity en = (Entity) studyTable.getModel().getValueAt(row, 0);
