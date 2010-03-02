@@ -2,10 +2,17 @@ package org.drugis.addis.presentation.wizard;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -29,7 +36,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 
 	public NetworkMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmm) {
 		super(d, pmm);
-		d_selectedStudyGraph = new StudyGraphModel(getStudyListModel().getSelectedStudiesModel(), 
+		d_selectedStudyGraph = new StudyGraphModel(getSelectedStudiesModel(), 
 				getSelectedDrugsModel());
 		d_studyGraphPresentationModel.getSelectedDrugsModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
@@ -128,5 +135,29 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 			List<Drug> selectedDrugs = (List<Drug>) evt.getNewValue();	
 			setValue(selectedDrugs.size() > 1 && d_studyGraphPresentationModel.isSelectionConnected());			
 		}
+	}
+
+	public NetworkMetaAnalysis createMetaAnalysis(String name) {
+		Indication indication = getIndicationModel().getValue();
+		OutcomeMeasure om = getOutcomeMeasureModel().getValue();
+		List<? extends Study> studies = getSelectedStudiesModel().getValue();
+		List<Drug> drugs = getSelectedDrugsModel().getValue();
+		Map<Study, Map<Drug, Arm>> armMap = getArmMap();
+		return new NetworkMetaAnalysis(name, indication, om, studies, drugs, armMap);
+	}
+
+	private Map<Study, Map<Drug, Arm>> getArmMap() {
+		Map<Study, Map<Drug, Arm>> map = new HashMap<Study, Map<Drug,Arm>>();
+		for (Study s : d_selectedArms.keySet()) {
+			map.put(s, new HashMap<Drug, Arm>());
+			for (Drug d : d_selectedArms.get(s).keySet()) {
+				map.get(s).put(d, d_selectedArms.get(s).get(d).getValue());
+			}
+		}
+		return map;
+	}
+
+	public ListHolder<Study> getSelectedStudiesModel() {
+		return getStudyListModel().getSelectedStudiesModel();
 	}
 }

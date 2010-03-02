@@ -16,9 +16,9 @@ import org.pietschy.wizard.PanelWizardStep;
 public class SelectEndpointWizardStep extends PanelWizardStep {
 	public SelectEndpointWizardStep(AbstractMetaAnalysisWizardPM<?> pm) {
 		super("Select Endpoint","Select an Endpoint that you want to use for this meta analysis.");
-		JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(pm.getOutcomeMeasureListModel(), pm.getEndpointModel());
+		JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(pm.getOutcomeMeasureListModel(), pm.getOutcomeMeasureModel());
 		add(endPointBox);
-		pm.getEndpointModel().addValueChangeListener(new PropertyChangeListener() {
+		pm.getOutcomeMeasureModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				setComplete(evt.getNewValue() != null);
 			}

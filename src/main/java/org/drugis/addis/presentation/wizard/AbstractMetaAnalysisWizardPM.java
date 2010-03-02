@@ -24,6 +24,7 @@ import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyListPresentationModel;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.ModifiableHolder;
+import org.drugis.addis.presentation.ValueHolder;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
@@ -70,7 +71,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 	
 	abstract protected G buildStudyGraphPresentation();
 	
-	public ValueModel getIndicationModel() {
+	public ValueHolder<Indication> getIndicationModel() {
 		return d_indicationHolder; 
 	}
 	
@@ -87,7 +88,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 		return d_studiesMeasuringValueModel;
 	}	
 	
-	public ValueModel getEndpointModel() {
+	public ValueHolder<OutcomeMeasure> getOutcomeMeasureModel() {
 		return d_endpointHolder;
 	}
 

@@ -122,7 +122,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		return d_selectedDrugs;
 	}
 	
-	private RandomEffectsMetaAnalysis createMetaAnalysis() {
+	public RandomEffectsMetaAnalysis createMetaAnalysis(String name) {
 		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
 		
 		for (Study s : getStudyListModel().getSelectedStudiesModel().getValue()) {
@@ -131,12 +131,11 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 			studyArms.add(new StudyArmsEntry(s, left, right));
 		}
 		
-		return new RandomEffectsMetaAnalysis("", (OutcomeMeasure) getEndpointModel().getValue(), studyArms);
+		return new RandomEffectsMetaAnalysis(name, (OutcomeMeasure) getOutcomeMeasureModel().getValue(), studyArms);
 	}
 	
 	public RandomEffectsMetaAnalysisPresentation saveMetaAnalysis(String name) throws EntityIdExistsException {
-		RandomEffectsMetaAnalysis ma = createMetaAnalysis();		
-		ma.setName(name);
+		RandomEffectsMetaAnalysis ma = createMetaAnalysis(name);		
 		d_domain.addMetaAnalysis(ma);
 		return (RandomEffectsMetaAnalysisPresentation) d_pmm.getModel(ma);
 	}
@@ -161,7 +160,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 
 	public RandomEffectsMetaAnalysisPresentation getMetaAnalysisModel() {
-		return (RandomEffectsMetaAnalysisPresentation) d_pmm.getModel(createMetaAnalysis());
+		return (RandomEffectsMetaAnalysisPresentation) d_pmm.getModel(createMetaAnalysis(""));
 	}
 
 	@Override

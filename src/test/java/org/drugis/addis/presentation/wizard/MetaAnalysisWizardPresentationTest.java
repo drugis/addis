@@ -103,17 +103,17 @@ public class MetaAnalysisWizardPresentationTest {
 		OutcomeMeasure firstEndp = outcomeList.get(0);
 		OutcomeMeasure lastEndp = outcomeList.get(outcomeList.size() - 1);
 		
-		d_wizard.getEndpointModel().setValue(firstEndp);
+		d_wizard.getOutcomeMeasureModel().setValue(firstEndp);
 		
 		ValueModel model = d_wizard.getStudiesMeasuringLabelModel();
 
 		Object newValue = model.getValue();
-		d_wizard.getEndpointModel().setValue(lastEndp);
+		d_wizard.getOutcomeMeasureModel().setValue(lastEndp);
 		
 		PropertyChangeListener studiesLabelListener = JUnitUtil.mockListener(model, AbstractValueModel.PROPERTYNAME_VALUE, null, newValue);
 		model.addValueChangeListener(studiesLabelListener);
 		
-		d_wizard.getEndpointModel().setValue(firstEndp);
+		d_wizard.getOutcomeMeasureModel().setValue(firstEndp);
 		verify(studiesLabelListener);
 	}
 		
@@ -140,13 +140,13 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testGetStudiesMeasuringLabelModel() {
 		d_wizard.getIndicationModel().setValue(d_wizard.getIndicationListModel().getValue().get(0));
-		d_wizard.getEndpointModel().setValue(d_wizard.getOutcomeMeasureListModel().getValue().get(0));		
+		d_wizard.getOutcomeMeasureModel().setValue(d_wizard.getOutcomeMeasureListModel().getValue().get(0));		
 		
 		Indication indic = d_wizard.getIndicationListModel().getValue().get(0);
-		OutcomeMeasure endp = (OutcomeMeasure) d_wizard.getEndpointModel().getValue();
+		OutcomeMeasure endp = (OutcomeMeasure) d_wizard.getOutcomeMeasureModel().getValue();
 		
 		d_wizard.getIndicationModel().setValue(indic);		
-		d_wizard.getEndpointModel().setValue(endp);		
+		d_wizard.getOutcomeMeasureModel().setValue(endp);		
 		ValueModel model = d_wizard.getStudiesMeasuringLabelModel();
 		String endpVal = endp.toString();
 		String indVal = indic.toString();
@@ -156,40 +156,40 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testGetEndpointModel() {
-		assertNotNull(d_wizard.getEndpointModel());
-		assertEquals(null, d_wizard.getEndpointModel().getValue());
+		assertNotNull(d_wizard.getOutcomeMeasureModel());
+		assertEquals(null, d_wizard.getOutcomeMeasureModel().getValue());
 	}
 	
 	@Test
 	public void testSetEndpoint() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		OutcomeMeasure newValue = ExampleData.buildEndpointHamd();
-		ValueModel vm = d_wizard.getEndpointModel();
+		ValueModel vm = d_wizard.getOutcomeMeasureModel();
 		JUnitUtil.testSetter(vm, null, newValue);
 		
-		assertEquals(newValue, d_wizard.getEndpointModel().getValue());
+		assertEquals(newValue, d_wizard.getOutcomeMeasureModel().getValue());
 	}
 
 	@Test
 	public void testChangeIndicationUnsetEndpoint() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		PropertyChangeListener l = JUnitUtil.mockListener(
-				d_wizard.getEndpointModel(), "value", ExampleData.buildEndpointHamd(), null);
-		d_wizard.getEndpointModel().addValueChangeListener(l);
+				d_wizard.getOutcomeMeasureModel(), "value", ExampleData.buildEndpointHamd(), null);
+		d_wizard.getOutcomeMeasureModel().addValueChangeListener(l);
 		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
-		assertNull(d_wizard.getEndpointModel().getValue());
+		assertNull(d_wizard.getOutcomeMeasureModel().getValue());
 		verify(l);
 	}
 
 	@Test
 	public void testSameIndicationKeepEndpoint() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		assertNotNull(d_wizard.getEndpointModel().getValue());
+		assertNotNull(d_wizard.getOutcomeMeasureModel().getValue());
 	}
 
 	@Test
@@ -203,7 +203,7 @@ public class MetaAnalysisWizardPresentationTest {
 		expected.add(ExampleData.buildDrugSertraline());
 		
 		d_wizard.getIndicationModel().setValue(ind);
-		d_wizard.getEndpointModel().setValue(ep);
+		d_wizard.getOutcomeMeasureModel().setValue(ep);
 		
 		assertEquals(expected, d_wizard.getDrugListModel().getValue());
 	}
@@ -213,7 +213,7 @@ public class MetaAnalysisWizardPresentationTest {
 		Indication ind = ExampleData.buildIndicationDepression();
 		
 		d_wizard.getIndicationModel().setValue(ind);
-		assertNull(d_wizard.getEndpointModel().getValue());
+		assertNull(d_wizard.getOutcomeMeasureModel().getValue());
 		assertNotNull(d_wizard.getDrugListModel().getValue());
 		
 		assertTrue(d_wizard.getDrugListModel().getValue().isEmpty());
@@ -249,7 +249,7 @@ public class MetaAnalysisWizardPresentationTest {
 		OutcomeMeasure ep = ExampleData.buildEndpointHamd();
 		Drug d = ExampleData.buildDrugFluoxetine();
 		d_wizard.getIndicationModel().setValue(ind);
-		d_wizard.getEndpointModel().setValue(ep);
+		d_wizard.getOutcomeMeasureModel().setValue(ep);
 		
 		JUnitUtil.testSetter(vm, null, d);
 		
@@ -259,7 +259,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testDrugCouplingFirst2Second() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		assertNull(d_wizard.getSecondDrugModel().getValue());
@@ -268,7 +268,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testDrugCouplingSecond2First() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		assertNull(d_wizard.getFirstDrugModel().getValue());
@@ -277,7 +277,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testSelectedDrugList() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		d_wizard.getSelectedDrugsModel().getValue().equals(Collections.<Drug>emptyList());
 		
 		PropertyChangeListener mock = JUnitUtil.mockListener(d_wizard.getSelectedDrugsModel(), "value", null, 
@@ -304,7 +304,7 @@ public class MetaAnalysisWizardPresentationTest {
 		StudyGraphModel model = d_wizard.getStudyGraphModel();
 		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		
 		List<Drug> drugs = new ArrayList<Drug>();
 		drugs.add(ExampleData.buildDrugFluoxetine());
@@ -339,7 +339,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testGetDrugListModel() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		List<Drug> expected = d_wizard.getDrugListModel().getValue();
 		ListHolder<Drug> drugList = d_wizard.getDrugListModel();
 		assertEquals(expected, drugList.getValue());
@@ -348,26 +348,26 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testDrugListModelEventOnEndpointChange() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
 		List<Drug> newValue = d_wizard.getDrugListModel().getValue();
 		
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		ValueModel drugList = d_wizard.getDrugListModel();
 		PropertyChangeListener l = JUnitUtil.mockListener(drugList, "value", null, newValue);
 		
 		drugList.addValueChangeListener(l);
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
 		verify(l);
 	}
 	
 	@Test
 	public void testEndpointChangeUnsetDrugs() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		
 		assertNull(d_wizard.getFirstDrugModel().getValue());
 		assertNull(d_wizard.getSecondDrugModel().getValue());
@@ -376,11 +376,11 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testSameEndpointChangeKeepDrugs() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
 		
 		assertNotNull(d_wizard.getFirstDrugModel().getValue());
 		assertNotNull(d_wizard.getSecondDrugModel().getValue());
@@ -393,7 +393,7 @@ public class MetaAnalysisWizardPresentationTest {
 		expected.add(ExampleData.buildStudyChouinard());
 		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		
@@ -413,7 +413,7 @@ public class MetaAnalysisWizardPresentationTest {
 	private void testGetStudySetNoDrugHelper(ValueModel setDrugModel,
 			ValueModel unsetDrugModel) {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		setDrugModel.setValue(ExampleData.buildDrugFluoxetine());
 		
 		// sanity checks
@@ -424,7 +424,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testCascadeOfIndicationEndpointDrugs() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 
@@ -437,7 +437,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testGetSelectedStudiesWithoutChange() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		
@@ -447,22 +447,22 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testCreateMetaAnalysis() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		
-		RandomEffectsMetaAnalysis ma = d_wizard.getMetaAnalysisModel().getBean();
+		RandomEffectsMetaAnalysis ma = d_wizard.createMetaAnalysis("name");
 		assertEquals(ma.getFirstDrug(), d_wizard.getFirstDrugModel().getValue());
 		assertEquals(ma.getSecondDrug(), d_wizard.getSecondDrugModel().getValue());
 		JUnitUtil.assertAllAndOnly((Collection<?>) d_wizard.getStudyListModel().getSelectedStudiesModel().getValue(), (Collection<?>) ma.getIncludedStudies());
-		assertEquals(ma.getOutcomeMeasure(), d_wizard.getEndpointModel().getValue());
+		assertEquals(ma.getOutcomeMeasure(), d_wizard.getOutcomeMeasureModel().getValue());
 		assertEquals(ma.getIndication(), d_wizard.getIndicationModel().getValue());
 	}
 	
 	@Test
 	public void testGetSelectedStudyBooleanModel() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		assertTrue((Boolean) d_wizard.getMetaAnalysisCompleteModel().getValue());
@@ -487,7 +487,7 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		/* Select only the MultipleArmsperDrugStudy */
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		d_wizard.getStudyListModel().getSelectedStudyBooleanModel(ExampleData.buildStudyChouinard()).setValue(false);
@@ -499,7 +499,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testSelectedStudiesPropagate() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getEndpointModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugFluoxetine());
 		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugParoxetine());
 		
