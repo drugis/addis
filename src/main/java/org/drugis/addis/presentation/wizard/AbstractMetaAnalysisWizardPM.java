@@ -13,17 +13,19 @@ import java.util.TreeSet;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.DefaultListHolder;
 import org.drugis.addis.presentation.DefaultSelectableStudyListPresentationModel;
 import org.drugis.addis.presentation.ListHolder;
+import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyListPresentationModel;
 import org.drugis.addis.presentation.StudyGraphModel;
-import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -144,6 +146,14 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 	public SelectableStudyListPresentationModel getStudyListModel() {
 		return d_studyListPm;
 	}
+
+	public MetaAnalysis saveMetaAnalysis(String name) throws EntityIdExistsException {
+		MetaAnalysis ma = createMetaAnalysis(name);		
+		d_domain.addMetaAnalysis(ma);
+		return ma;
+	}
+
+	public abstract MetaAnalysis createMetaAnalysis(String name);
 
 	@SuppressWarnings("serial")
 	protected class DrugListHolder extends AbstractListHolder<Drug> implements PropertyChangeListener {

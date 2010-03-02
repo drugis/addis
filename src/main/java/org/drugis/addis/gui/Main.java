@@ -641,7 +641,7 @@ public class Main extends JFrame {
 	private void showMetaAnalysisWizard() {
 		MetaAnalysisWizard wizard = new MetaAnalysisWizard(this,
 				new MetaAnalysisWizardPresentation(getDomain(), d_pmManager));
-		wizard.buildPanel().showInDialog("Create DerSimonian-Laird random effects meta-analysis", this,	true);
+		wizard.showInDialog("Create DerSimonian-Laird random effects meta-analysis", this,	true);
 	}
 	
 	private void showNetworkMetaAnalysisWizard() {

@@ -14,7 +14,6 @@ import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
-import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
@@ -22,6 +21,7 @@ import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
+import org.pietschy.wizard.WizardModel;
 import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -30,38 +30,39 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class MetaAnalysisWizard implements ViewBuilder {
-
-	private MetaAnalysisWizardPresentation d_pm;
-	private Main d_frame;
+@SuppressWarnings("serial")
+public class MetaAnalysisWizard extends Wizard {
 	
 	public MetaAnalysisWizard(Main parent, MetaAnalysisWizardPresentation pm) {
-		d_frame = parent;
-		d_pm = pm;
+		super(buildModel(pm, parent));
+		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
+		setPreferredSize(new Dimension(950, 650));
 	}
 	
-	public Wizard buildPanel() {
+	private static WizardModel buildModel(MetaAnalysisWizardPresentation pm, Main frame) {
 		StaticModel wizardModel = new StaticModel();
-		wizardModel.add(new SelectIndicationWizardStep(d_pm));
-		wizardModel.add(new SelectEndpointWizardStep(d_pm));
-		wizardModel.add(new SelectDrugsWizardStep());
-		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(d_pm, d_frame);
+		wizardModel.add(new SelectIndicationWizardStep(pm));
+		wizardModel.add(new SelectEndpointWizardStep(pm));
+		wizardModel.add(new SelectDrugsWizardStep(pm, frame));
+		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm, frame);
 		wizardModel.add(selectStudiesStep);
-		Bindings.bind(selectStudiesStep, "complete", d_pm.getMetaAnalysisCompleteModel());
-		wizardModel.add(new SelectArmsWizardStep(d_pm));
-		wizardModel.add(new OverviewWizardStep());
-		Wizard wizard = new Wizard(wizardModel);
-		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
-		wizard.setPreferredSize(new Dimension(950, 650));
-		return wizard;
+		Bindings.bind(selectStudiesStep, "complete", pm.getMetaAnalysisCompleteModel());
+		wizardModel.add(new SelectArmsWizardStep(pm));
+		wizardModel.add(new OverviewWizardStep(pm, frame));
+		return wizardModel;
 	}
 	
 	
 	@SuppressWarnings("serial")
-	public class OverviewWizardStep extends PanelWizardStep {
+	public static class OverviewWizardStep extends PanelWizardStep {
 		
-		public OverviewWizardStep() {
+		private final MetaAnalysisWizardPresentation d_pm;
+		private final Main d_frame;
+
+		public OverviewWizardStep(MetaAnalysisWizardPresentation pm, Main frame) {
 			super("Overview","Overview of selected Meta-analysis.");
+			d_pm = pm;
+			d_frame = frame;
 		}
 		
 		public void prepare() {
@@ -76,16 +77,17 @@ public class MetaAnalysisWizard implements ViewBuilder {
 		throws InvalidStateException {
 			saveAsAnalysis();
 		}
-		
+
 		private void saveAsAnalysis() throws InvalidStateException {
-			String res = JOptionPane.showInputDialog(this, "Input name for new analysis", 
+			String res = JOptionPane.showInputDialog(this.getTopLevelAncestor(),
+					"Input name for new analysis", 
 					"Save meta-analysis", JOptionPane.QUESTION_MESSAGE);
 			if (res != null) {
 				try {
-					RandomEffectsMetaAnalysisPresentation study = d_pm.saveMetaAnalysis(res);	
-					d_frame.leftTreeFocus(study.getBean());
+					d_frame.leftTreeFocus(d_pm.saveMetaAnalysis(res));
 				} catch (EntityIdExistsException e) {
-					JOptionPane.showMessageDialog(this, "There already exists a meta-analysis with the given name, input another name",
+					JOptionPane.showMessageDialog(this.getTopLevelAncestor(), 
+							"There already exists a meta-analysis with the given name, input another name",
 							"Unable to save meta-analysis", JOptionPane.ERROR_MESSAGE);
 					saveAsAnalysis();
 				}
@@ -97,10 +99,15 @@ public class MetaAnalysisWizard implements ViewBuilder {
 	
 	
 	@SuppressWarnings("serial")
-	public class SelectDrugsWizardStep extends PanelWizardStep {
+	public static class SelectDrugsWizardStep extends PanelWizardStep {
+		MetaAnalysisWizardPresentation d_pm;
+		Main d_frame;
 
-		public SelectDrugsWizardStep() {
+		public SelectDrugsWizardStep(MetaAnalysisWizardPresentation pm, Main frame) {
 			super("Select Drugs","Select the drugs to be used for meta analysis.");
+			
+			d_pm = pm;
+			d_frame = frame;
 					
 			setLayout(new BorderLayout());
 			    

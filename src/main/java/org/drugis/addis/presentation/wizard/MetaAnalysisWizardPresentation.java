@@ -9,7 +9,6 @@ import java.util.List;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
@@ -132,12 +131,6 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		}
 		
 		return new RandomEffectsMetaAnalysis(name, (OutcomeMeasure) getOutcomeMeasureModel().getValue(), studyArms);
-	}
-	
-	public RandomEffectsMetaAnalysisPresentation saveMetaAnalysis(String name) throws EntityIdExistsException {
-		RandomEffectsMetaAnalysis ma = createMetaAnalysis(name);		
-		d_domain.addMetaAnalysis(ma);
-		return (RandomEffectsMetaAnalysisPresentation) d_pmm.getModel(ma);
 	}
 	
 	public ValueModel getMetaAnalysisCompleteModel() {
