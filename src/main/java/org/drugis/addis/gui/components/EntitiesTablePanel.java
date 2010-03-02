@@ -1,6 +1,7 @@
 package org.drugis.addis.gui.components;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -22,6 +23,7 @@ public class EntitiesTablePanel<T extends Entity> extends JPanel {
 	private Main d_main;
 	
 	public EntitiesTablePanel(List<String> formatter, List<PresentationModel<T>> entities, Main parent) {
+		super(new BorderLayout());
 		d_characteristics = formatter;
 		d_entities = entities;
 		d_main = parent;
@@ -33,14 +35,13 @@ public class EntitiesTablePanel<T extends Entity> extends JPanel {
 		final EntityTableModel<T> etm = new EntityTableModel<T>(d_entities, d_characteristics);
 		final JTable table = new StudyTable(etm);
 		table.addKeyListener(new EntityTableDeleteListener(d_main));
-
+			
 		JScrollPane sp = new JScrollPane(table);		
 		sp.setBorder(BorderFactory.createEmptyBorder());
+		sp.setPreferredSize(new Dimension(200, 450));
 		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		//table.setFillsViewportHeight(true);
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		setLayout(new BorderLayout());
+
 		add(sp, BorderLayout.NORTH);
 	}
 	

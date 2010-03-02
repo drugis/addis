@@ -9,6 +9,8 @@ import javax.swing.table.AbstractTableModel;
 import org.drugis.addis.entities.Entity;
 
 import com.jgoodies.binding.PresentationModel;
+import com.jgoodies.binding.beans.PropertyNotFoundException;
+import com.jgoodies.binding.value.ValueModel;
 
 
 @SuppressWarnings("serial")
@@ -35,7 +37,13 @@ public class EntityTableModel<T extends Entity> extends AbstractTableModel {
 		if (column == 0)
 			return d_entities.get(row).getBean();
 		
-		return d_entities.get(row).getModel(d_props.get(column)).getValue();
+		
+		try {
+			ValueModel model = d_entities.get(row).getModel(d_props.get(column));
+			return model.getValue();
+		} catch (PropertyNotFoundException e) {
+			return "";
+		}
 	}
 
 	@Override

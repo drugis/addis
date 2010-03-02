@@ -1,8 +1,11 @@
 package org.drugis.addis.gui.builder;
 
+import java.awt.Dimension;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.gui.Main;
