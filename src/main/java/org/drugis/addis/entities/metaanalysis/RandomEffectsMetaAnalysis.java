@@ -3,8 +3,8 @@ package org.drugis.addis.entities.metaanalysis;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -25,33 +25,17 @@ import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
-public class RandomEffectsMetaAnalysis extends AbstractEntity implements
-Comparable<MetaAnalysis>, MetaAnalysis {
+public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 
 	private static final long serialVersionUID = -4351415410739040259L;
-	private OutcomeMeasure d_om;
-	private List<? extends Study> d_studies;
-	private Drug d_drug1;
-	private Drug d_drug2;	
-	
-	private String d_name;	
-	private int d_totalSampleSize;
-
 	transient private double d_thetaDSL;
 	transient private double d_SEThetaDSL;
 	transient private Interval<Double> d_confidenceInterval;
 	transient private double d_qIV;
 	private List<StudyArmsEntry> d_studyArms;
-	
 
-	public static final String PROPERTY_TYPE = "type";
-	public static final String PROPERTY_INDICATION = "indication";
-	public static final String PROPERTY_OUTCOME_MEASURE = "outcomeMeasure";
 	public static final String PROPERTY_FIRST_DRUG = "firstDrug";
 	public static final String PROPERTY_SECOND_DRUG = "secondDrug";
-	public static final String PROPERTY_SAMPLE_SIZE = "sampleSize";
-	public static final String PROPERTY_STUDIES_INCLUDED = "studiesIncluded";
-	
 	/**
 	 * 
 	 * @param name
@@ -64,123 +48,69 @@ Comparable<MetaAnalysis>, MetaAnalysis {
 	 */
 	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<? extends Study> studies,
 			Drug drug1, Drug drug2) 
-		throws IllegalArgumentException {
-		if (studies.isEmpty()) {
-			throw new IllegalArgumentException("studylist empty");
-		}
-//FIXME	if (studies.size() <= 1) {
-//			throw new IllegalArgumentException("Cannot calculate Random Effects for just one study");
-//		}
-		checkSameIndication(studies);
-		d_studies = studies;
-		d_om = om;
-		d_drug1 = drug1;
-		d_drug2 = drug2;
-		d_name = name;
+	throws IllegalArgumentException {
+		super(name, studies.get(0).getIndication(), om, studies, Arrays.asList(new Drug[] {drug1, drug2}));
+
 		d_studyArms = new ArrayList<StudyArmsEntry>();
 
 		for (Study s : d_studies) {
-			d_totalSampleSize += s.getSampleSize();
-			
-			/* Fill the studyArms list for forward compatibility */
 			Arm arm1 = RelativeEffectFactory.findFirstArm(s, drug1);
 			Arm arm2 = RelativeEffectFactory.findFirstArm(s, drug2);
 			d_studyArms.add(new StudyArmsEntry(s, arm1, arm2));
 		}
-		
-		
 	}
 	
-	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms) throws IllegalArgumentException {
-		if(studyArms.isEmpty()){
-			throw new IllegalArgumentException("studylist empty");
-		}
-		d_studies = StudyArmsEntry.getStudyList(studyArms);
-		checkSameIndication(d_studies);
-		
-		d_name = name;
-		d_om = om;
+	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms)
+	throws IllegalArgumentException {
+		super(name, getIndication(studyArms), om, getStudies(studyArms), getDrugs(studyArms));
+
 		d_studyArms = studyArms;
-		d_drug1 = d_studyArms.get(0).getBase().getDrug();
-		d_drug2 = d_studyArms.get(0).getSubject().getDrug();
 		
 		for (StudyArmsEntry s : studyArms){
-			if(!s.getBase().getDrug().equals(d_drug1)){
+			if(!s.getBase().getDrug().equals(getFirstDrug())){
 				throw new IllegalArgumentException("Left drug not consistent over all studies");
 			}
-			if(!s.getSubject().getDrug().equals(d_drug2)){
+			if(!s.getSubject().getDrug().equals(getSecondDrug())){
 				throw new IllegalArgumentException("Right drug not consistent over all studies");
 			}
 		}
-		
-		for (Study s : d_studies) {
-			d_totalSampleSize += s.getSampleSize();
-		}
+	}
+
+	private static List<Drug> getDrugs(List<StudyArmsEntry> studyArms) {
+		return Arrays.asList(new Drug[]{getFirstDrug(studyArms), getSecondDrug(studyArms)});
+	}
+
+	private static Drug getSecondDrug(List<StudyArmsEntry> studyArms) {
+		return studyArms.get(0).getSubject().getDrug();
+	}
+
+	private static Drug getFirstDrug(List<StudyArmsEntry> studyArms) {
+		return studyArms.get(0).getBase().getDrug();
+	}
+
+	private static List<? extends Study> getStudies(
+			List<StudyArmsEntry> studyArms) {
+		return StudyArmsEntry.getStudyList(studyArms);
+	}
+
+	private static Indication getIndication(List<StudyArmsEntry> studyArms) {
+		return getStudies(studyArms).get(0).getIndication();
 	}
 
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
 		in.defaultReadObject();
 	}	
 	
-	@Override
-	public String toString() {
-		return getName();
-	}
-	
-	public void setName(String name) {
-		String oldName = d_name;
-		d_name = name;
-		firePropertyChange(PROPERTY_NAME, oldName, d_name);
-	}
-	
-	private void checkSameIndication(List<? extends Study> studies) throws IllegalArgumentException {
-		Indication ind = getIndicationFromStudy(studies.get(0));
-		for (int i=1;i<studies.size();i++) {
-			Indication ind2 = getIndicationFromStudy(studies.get(i));
-			if (!ind2.equals(ind)) {
-				throw new IllegalArgumentException("different indications in studies");
-			}
-		}
-	}
-
-	private Indication getIndicationFromStudy(Study study) {
-		return study.getIndication();
-	}
-
 	public Drug getFirstDrug() {
-		return d_drug1;
+		return d_drugs.get(0);
 	}
 	
 	public Drug getSecondDrug() {
-		return d_drug2;
+		return d_drugs.get(1);
 	}
 	
 	public List<StudyArmsEntry> getStudyArms() {
 		return d_studyArms;
-	}
-	
-	public String getName() {
-		return d_name;
-	}
-	
-	public String getType() {
-		return "DerSimonian-Laird Random Effects";
-	}
-	
-	public int getSampleSize() {
-		return d_totalSampleSize;
-	}
-	
-	public List<Study> getStudies() {
-		return Collections.unmodifiableList(d_studies);
-	}
-	
-	public OutcomeMeasure getOutcomeMeasure() {
-		return d_om;
-	}
-	
-	public int getStudiesIncluded() {
-		return d_studies.size();
 	}
 	
 	private void compute(Class<? extends RelativeEffect<?>> relEffClass) {
@@ -197,7 +127,7 @@ Comparable<MetaAnalysis>, MetaAnalysis {
 			
 		for (int i=0; i<d_studies.size(); ++i ){
 			RelativeEffect<? extends Measurement> re;
-			re = RelativeEffectFactory.buildRelativeEffect(d_studyArms.get(i), d_om, type);
+			re = RelativeEffectFactory.buildRelativeEffect(d_studyArms.get(i), d_outcome, type);
 			relEffects.add(re);
 		}
 		
@@ -358,25 +288,6 @@ Comparable<MetaAnalysis>, MetaAnalysis {
 		public boolean isDefined() {
 			return true;
 		}
-	}
-	
-	@Override
-	public Set<Entity> getDependencies() {
-		HashSet<Entity> deps = new HashSet<Entity>();
-		deps.add(getFirstDrug());
-		deps.add(getSecondDrug());
-		deps.add(getIndication());
-		deps.add(getOutcomeMeasure());
-		deps.addAll(getStudies());
-		return deps;
-	}
-	
-	public Indication getIndication() {
-		return getIndicationFromStudy(d_studies.get(0));
-	}
-
-	public int compareTo(MetaAnalysis o) {
-		return getName().compareTo(o.getName());
 	}
 }
 

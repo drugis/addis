@@ -113,6 +113,11 @@ public class RandomEffectsMetaAnalysisTest {
 	}
 	
 	@Test
+	public void testIncludedDrugs() {
+		assertEquals(Arrays.asList(new Drug [] {d_fluox, d_sertr}), d_rema.getIncludedDrugs());
+	}
+	
+	@Test
 	public void testGetStudies() {
 		assertEquals(d_studyList, d_rema.getStudies());
 	}
