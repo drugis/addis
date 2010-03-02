@@ -11,27 +11,23 @@ import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.RiskDifference;
 import org.drugis.addis.entities.RiskRatio;
 import org.drugis.addis.entities.StandardisedMeanDifference;
-import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.common.gui.ViewBuilder;
 
-import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class RandomEffectsMetaAnalysisView implements ViewBuilder {
+public class RandomEffectsMetaAnalysisView extends AbstractMetaAnalysisView<RandomEffectsMetaAnalysisPresentation>
+implements ViewBuilder {
 	
-	private RandomEffectsMetaAnalysisPresentation d_pm;
-	private Main d_parent;
 	private boolean d_overView;
 
 	public RandomEffectsMetaAnalysisView(RandomEffectsMetaAnalysisPresentation pm, Main parent, boolean overView) {
-		d_pm = pm;
-		d_parent = parent;
+		super(pm, parent);
 		d_overView = overView;
 	}
 
@@ -115,53 +111,6 @@ public class RandomEffectsMetaAnalysisView implements ViewBuilder {
 		builder.setBackground(Color.white);
 		
 		return builder.getPanel();	
-	}
-
-	private JComponent buildStudiesPart() {
-		FormLayout layout = new FormLayout(
-				"pref:grow:fill",
-				"p");
-		
-		PanelBuilder builder = new PanelBuilder(layout);
-		CellConstraints cc =  new CellConstraints();
-				
-		builder.add(GUIFactory.buildStudyPanel(d_pm, d_parent), cc.xy(1, 1));
-		
-		return builder.getPanel();
-	}
-
-	private JComponent buildOverviewPart() {
-		FormLayout layout = new FormLayout(
-				"pref, 3dlu, pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
-		
-		PanelBuilder builder = new PanelBuilder(layout);
-		CellConstraints cc =  new CellConstraints();
-		
-		builder.addLabel("ID:", cc.xy(1, 1));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(RandomEffectsMetaAnalysis.PROPERTY_NAME)),
-				cc.xy(3, 1));
-		
-		builder.addLabel("Type:", cc.xy(1, 3));
-		builder.addLabel("DerSimonian-Laird random effects inverse variance model", cc.xy(3, 3));
-				
-		builder.addLabel("Indication:", cc.xy(1, 5));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getIndicationModel().getLabelModel()),
-				cc.xy(3, 5));
-
-		builder.addLabel("Endpoint:", cc.xy(1, 7));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getOutcomeMeasureModel().getLabelModel()),
-				cc.xy(3, 7));
-		
-		builder.addLabel("First drug:", cc.xy(1, 9));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getFirstDrugModel().getLabelModel()),
-				cc.xy(3, 9));
-		
-		builder.addLabel("Second drug:", cc.xy(1,11));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getSecondDrugModel().getLabelModel()),
-				cc.xy(3,11));
-		
-		return builder.getPanel();
 	}
 
 }

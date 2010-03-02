@@ -26,7 +26,8 @@ public class ViewFactory {
 					main, false);
 		} else if (node instanceof NetworkMetaAnalysis) {
 			return new NetworkMetaAnalysisView(
-					(NetworkMetaAnalysisPresentation) pmf.getModel(((NetworkMetaAnalysis) node)));
+					(NetworkMetaAnalysisPresentation) pmf.getModel(((NetworkMetaAnalysis) node)),
+					main);
 		} else if (node instanceof Study) {
 			return new StudyView((StudyPresentationModel) pmf
 					.getModel(((Study) node)), main.getDomain(), main);

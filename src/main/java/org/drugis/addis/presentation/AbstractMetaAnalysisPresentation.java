@@ -13,7 +13,8 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 
 @SuppressWarnings("serial")
-public class AbstractMetaAnalysisPresentation<T extends MetaAnalysis> extends PresentationModel<T> {
+public class AbstractMetaAnalysisPresentation<T extends MetaAnalysis> extends PresentationModel<T>
+implements StudyListPresentationModel {
 
 	protected PresentationModelFactory d_mgr;
 	protected DefaultStudyListPresentationModel d_studyModel;
