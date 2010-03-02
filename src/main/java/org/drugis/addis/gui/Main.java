@@ -83,10 +83,12 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.builder.DrugView;
 import org.drugis.addis.gui.builder.EntitiesNodeView;
 import org.drugis.addis.gui.builder.IndicationView;
+import org.drugis.addis.gui.builder.NetworkMetaAnalysisView;
 import org.drugis.addis.gui.builder.OutcomeMeasureView;
 import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
 import org.drugis.addis.gui.builder.StudiesNodeView;
@@ -99,6 +101,7 @@ import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
 import org.drugis.addis.presentation.DrugPresentationModel;
 import org.drugis.addis.presentation.IndicationPresentation;
+import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.StudyPresentationModel;
@@ -726,7 +729,9 @@ public class Main extends JFrame {
 				if (node == null) {
 					noneSelected();
 				} else if (node instanceof RandomEffectsMetaAnalysis) {
-					metaAnalysisSelected((RandomEffectsMetaAnalysis) node);
+					randomEffectsMetaAnalysisSelected((RandomEffectsMetaAnalysis) node);
+				} else if (node instanceof NetworkMetaAnalysis) {
+					networkMetaAnalysisSelected((NetworkMetaAnalysis) node);
 				} else if (node instanceof Study) {
 					studySelected((Study) node);
 				} else if (node instanceof Variable) {
@@ -852,13 +857,19 @@ public class Main extends JFrame {
 		setRightPanelView(view);
 	}
 
-	private void metaAnalysisSelected(RandomEffectsMetaAnalysis node) {
+	private void randomEffectsMetaAnalysisSelected(RandomEffectsMetaAnalysis node) {
 		RandomEffectsMetaAnalysisView view = new RandomEffectsMetaAnalysisView(
-				(RandomEffectsMetaAnalysisPresentation) d_pmManager
-						.getModel(node), this, false);
+				(RandomEffectsMetaAnalysisPresentation) d_pmManager.getModel(node), 
+				this, false);
 		setRightPanelView(view);
 	}
-
+	
+	private void networkMetaAnalysisSelected(NetworkMetaAnalysis node) {
+		NetworkMetaAnalysisView view = new NetworkMetaAnalysisView(
+				(NetworkMetaAnalysisPresentation) d_pmManager.getModel(node));
+		setRightPanelView(view);
+	}
+	
 	private void analysesLabelSelected() {
 		List<String> formatter = new ArrayList<String>();
 		formatter.add("name");

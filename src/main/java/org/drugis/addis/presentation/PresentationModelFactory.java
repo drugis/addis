@@ -33,6 +33,7 @@ import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 
 import com.jgoodies.binding.PresentationModel;
@@ -114,6 +115,9 @@ public class PresentationModelFactory {
 		}
 		if (obj instanceof RandomEffectsMetaAnalysis) {
 			return new RandomEffectsMetaAnalysisPresentation((RandomEffectsMetaAnalysis) obj, this);
+		}
+		if (obj instanceof NetworkMetaAnalysis) {
+			return new NetworkMetaAnalysisPresentation((NetworkMetaAnalysis) obj);
 		}
 		return new PresentationModel(obj);
 	}
