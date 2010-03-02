@@ -82,6 +82,7 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.builder.DrugView;
 import org.drugis.addis.gui.builder.EntitiesNodeView;
@@ -308,8 +309,8 @@ public class Main extends JFrame {
 		} else if (selected instanceof Endpoint) {
 			selectedType = "endpoint";
 		} else if (selected instanceof AdverseEvent) {
-			selectedType = "Adverse drug event";
-		} else if (selected instanceof RandomEffectsMetaAnalysis) {
+			selectedType = "adverse drug event";
+		} else if (selected instanceof MetaAnalysis) {
 			selectedType = "meta-analysis";
 		} else if (selected instanceof Study) {
 			selectedType = "study";
@@ -340,9 +341,9 @@ public class Main extends JFrame {
 			} else if (selected instanceof Study) {
 				getDomain().deleteStudy((Study) selected);
 				leftTreeFocus(d_domainTreeModel.getStudiesNode());
-			} else if (selected instanceof RandomEffectsMetaAnalysis) {
+			} else if (selected instanceof MetaAnalysis) {
 				getDomain().deleteMetaAnalysis(
-						(RandomEffectsMetaAnalysis) selected);
+						(MetaAnalysis) selected);
 				leftTreeFocus(d_domainTreeModel.getAnalysesNode());
 			} else if (selected instanceof Indication) {
 				getDomain().deleteIndication((Indication) selected);
