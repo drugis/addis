@@ -5,14 +5,13 @@ import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.SelectableStudyGraph;
 import org.drugis.addis.gui.StudyGraph;
+import org.drugis.addis.presentation.SelectableStudyGraphModel;
 import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
-import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardModel;
@@ -45,6 +44,36 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		return wizardModel;
 	}
 	
+	public static class OverviewWizardStep extends AbstractOverviewWizardStep<SelectableStudyGraphModel> {
+		public OverviewWizardStep(NetworkMetaAnalysisWizardPM pm, Main main) {
+			super(pm, main);
+
+			setLayout(new BorderLayout());
+			    
+			FormLayout layout = new FormLayout(
+					"center:pref:grow",
+					"p"
+					);	
+			
+			PanelBuilder builder = new PanelBuilder(layout);
+			CellConstraints cc = new CellConstraints();
+			
+			builder.add(buildStudiesGraph(), cc.xy(1, 1));
+			
+			JScrollPane sp = new JScrollPane(builder.getPanel());
+			add(sp);
+			sp.getVerticalScrollBar().setUnitIncrement(16);
+			
+			setComplete(true);
+		}
+
+		protected Component buildStudiesGraph() {
+			StudyGraph panel = new StudyGraph(((NetworkMetaAnalysisWizardPM)d_pm).getSelectedStudyGraphModel());
+			panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+			return panel;
+		}
+	}
+	
 	public static class SelectDrugsWizardStep extends PanelWizardStep {
 
 		public SelectDrugsWizardStep(NetworkMetaAnalysisWizardPM pm, Main main) {
@@ -71,47 +100,6 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		
 		private Component buildStudiesGraph(NetworkMetaAnalysisWizardPM pm) {
 			SelectableStudyGraph panel = new SelectableStudyGraph(pm.getStudyGraphModel());
-			panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-			return panel;
-		}
-	}
-	
-	public static class OverviewWizardStep extends PanelWizardStep {
-		private final NetworkMetaAnalysisWizardPM d_pm;
-		private final Main d_main;
-
-		public OverviewWizardStep(NetworkMetaAnalysisWizardPM pm, Main main) {
-			super("Overview","Overview of selected Meta-analysis.");
-			d_pm = pm;
-			d_main = main;
-
-			setLayout(new BorderLayout());
-			    
-			FormLayout layout = new FormLayout(
-					"center:pref:grow",
-					"p"
-					);	
-			
-			PanelBuilder builder = new PanelBuilder(layout);
-			CellConstraints cc = new CellConstraints();
-			
-			builder.add(buildStudiesGraph(), cc.xy(1, 1));
-			
-			JScrollPane sp = new JScrollPane(builder.getPanel());
-			add(sp);
-			sp.getVerticalScrollBar().setUnitIncrement(16);
-			
-			setComplete(true);
-		}
-		
-		public void applyState() throws InvalidStateException {
-			JOptionPane.showMessageDialog(d_main, 
-					"Sorry, we are not yet able to save Network Meta-Analyses", 
-					"Not Implemented", JOptionPane.WARNING_MESSAGE);
-		}
-		
-		private Component buildStudiesGraph() {
-			StudyGraph panel = new StudyGraph(d_pm.getSelectedStudyGraphModel());
 			panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 			return panel;
 		}

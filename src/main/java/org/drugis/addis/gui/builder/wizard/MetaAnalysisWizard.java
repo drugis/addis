@@ -6,24 +6,24 @@ import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.drugis.addis.entities.EntityIdExistsException;
+import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
+import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ViewBuilder;
-import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardModel;
 import org.pietschy.wizard.models.StaticModel;
 
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -52,46 +52,20 @@ public class MetaAnalysisWizard extends Wizard {
 		return wizardModel;
 	}
 
-	public static class OverviewWizardStep extends PanelWizardStep {
-		
-		private final MetaAnalysisWizardPresentation d_pm;
-		private final Main d_frame;
-
+	public static class OverviewWizardStep extends AbstractOverviewWizardStep<StudyGraphModel> {
 		public OverviewWizardStep(MetaAnalysisWizardPresentation pm, Main frame) {
-			super("Overview","Overview of selected Meta-analysis.");
-			d_pm = pm;
-			d_frame = frame;
+			super(pm, frame);
 		}
 		
 		public void prepare() {
 			removeAll();
 			
-			ViewBuilder mav = new RandomEffectsMetaAnalysisView(d_pm.getMetaAnalysisModel(), d_frame, true);
+			RandomEffectsMetaAnalysis analysis = (RandomEffectsMetaAnalysis)d_pm.createMetaAnalysis("");
+			PresentationModel<RandomEffectsMetaAnalysis> pm = d_main.getPresentationModelFactory().getModel(analysis);
+			ViewBuilder mav = new RandomEffectsMetaAnalysisView(
+					(RandomEffectsMetaAnalysisPresentation)pm, d_main, true);
 			add(mav.buildPanel());
 			setComplete(true);
-		}
-
-		public void applyState()
-		throws InvalidStateException {
-			saveAsAnalysis();
-		}
-
-		private void saveAsAnalysis() throws InvalidStateException {
-			String res = JOptionPane.showInputDialog(this.getTopLevelAncestor(),
-					"Input name for new analysis", 
-					"Save meta-analysis", JOptionPane.QUESTION_MESSAGE);
-			if (res != null) {
-				try {
-					d_frame.leftTreeFocus(d_pm.saveMetaAnalysis(res));
-				} catch (EntityIdExistsException e) {
-					JOptionPane.showMessageDialog(this.getTopLevelAncestor(), 
-							"There already exists a meta-analysis with the given name, input another name",
-							"Unable to save meta-analysis", JOptionPane.ERROR_MESSAGE);
-					saveAsAnalysis();
-				}
-			} else {
-				throw new InvalidStateException();
-			}
 		}
 	}
 
