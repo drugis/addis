@@ -57,11 +57,13 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 		d_studiesMeasuringValueModel = new StudiesMeasuringValueModel();
 		
 		d_selectedArms = new HashMap<Study, Map<Drug, ModifiableHolder<Arm>>>();
-		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(new PropertyChangeListener() {
+		
+		PropertyChangeListener listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent ev) {
 				updateArmHolders();
 			}
-		});
+		};
+		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(listener);
 	}
 	
 	protected abstract void buildDrugHolders();

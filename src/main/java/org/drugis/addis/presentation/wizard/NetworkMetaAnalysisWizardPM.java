@@ -31,6 +31,11 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 		super(d, pmm);
 		d_selectedStudyGraph = new StudyGraphModel(getStudyListModel().getSelectedStudiesModel(), 
 				getSelectedDrugsModel());
+		d_studyGraphPresentationModel.getSelectedDrugsModel().addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent arg0) {
+				updateArmHolders();
+			}
+		});
 		d_studySelectionCompleteModel = new StudySelectionCompleteListener();
 	}
 

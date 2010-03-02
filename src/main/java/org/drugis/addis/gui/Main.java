@@ -253,6 +253,7 @@ public class Main extends JFrame {
 
 		addMenu.add(createAddStudyMenuItem());
 		addMenu.add(createAddMetaAnalysisMenuItem());
+		addMenu.add(createAddNetworkMetaAnalysisMenuItem());
 		return addMenu;
 	}
 
@@ -423,6 +424,19 @@ public class Main extends JFrame {
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				showMetaAnalysisWizard();
+			}
+		});
+
+		return item;
+	}
+	
+	private JMenuItem createAddNetworkMetaAnalysisMenuItem() {
+		JMenuItem item = new JMenuItem("Network Meta-Analysis", ImageLoader
+				.getIcon(FileNames.ICON_NETWMETASTUDY_NEW));
+		item.setMnemonic('n');
+		item.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				showNetworkMetaAnalysisWizard();
 			}
 		});
 
@@ -599,7 +613,7 @@ public class Main extends JFrame {
 		});
 		
 		JButton topAddNetworkMetaStudyButton = new JButton("Create network meta-analysis",
-				ImageLoader.getIcon(FileNames.ICON_METASTUDY_NEW));
+				ImageLoader.getIcon(FileNames.ICON_NETWMETASTUDY_NEW));
 		topAddNetworkMetaStudyButton.setToolTipText("Create network meta-analysis");
 		topAddNetworkMetaStudyButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {

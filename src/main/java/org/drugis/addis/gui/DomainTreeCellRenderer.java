@@ -31,6 +31,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.ImageLoader;
 
@@ -51,6 +52,9 @@ public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 			setToolTipText("Population baseline characteristic");
 		} else if (value instanceof RandomEffectsMetaAnalysis) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_METASTUDY));
+			setToolTipText("Meta-analysis");
+		} else if (value instanceof NetworkMetaAnalysis) {
+			setIcon(ImageLoader.getIcon(FileNames.ICON_NETWMETASTUDY));
 			setToolTipText("Meta-analysis");
 		} else if (value instanceof Study) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_STUDY));
