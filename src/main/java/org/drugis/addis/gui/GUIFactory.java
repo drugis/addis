@@ -36,8 +36,8 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.gui.builder.StudyTablePanelView;
 import org.drugis.addis.gui.components.LinkLabel;
+import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.StudyListPresentationModel;
 import org.drugis.common.ImageLoader;
 import org.jdesktop.swingx.JXCollapsiblePane;
@@ -106,7 +106,7 @@ public class GUIFactory {
 		if(studies.getIncludedStudies().getValue().isEmpty()) {
 			studiesComp = new JLabel("No studies found.");
 		} else {
-			studiesComp = new StudyTablePanelView(studies, parent).buildPanel();
+			studiesComp = new StudiesTablePanel(studies, parent); 
 		}
 		return studiesComp;
 	}	

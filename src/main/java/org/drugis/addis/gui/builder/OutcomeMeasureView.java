@@ -27,6 +27,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.VariablePresentationModel;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
@@ -108,8 +109,7 @@ public class OutcomeMeasureView implements ViewBuilder {
 		if(d_model.getIncludedStudies().getValue().isEmpty()) {
 			studiesComp = new JLabel("No studies found.");
 		} else {
-			StudyTablePanelView d_studyView = new StudyTablePanelView(d_model, d_frame);
-			studiesComp = d_studyView.buildPanel();
+			studiesComp = new StudiesTablePanel(d_model, d_frame);
 		}
 		return studiesComp;
 	}	

@@ -86,13 +86,13 @@ import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.builder.EntitiesNodeView;
 import org.drugis.addis.gui.builder.StudiesNodeView;
-import org.drugis.addis.gui.builder.StudyTablePanelView;
 import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.builder.ViewFactory;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.builder.wizard.MetaAnalysisWizard;
 import org.drugis.addis.gui.builder.wizard.NetworkMetaAnalysisWizard;
 import org.drugis.addis.gui.components.LinkLabel;
+import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyPresentationModel;
@@ -811,9 +811,9 @@ public class Main extends JFrame {
 	}
 
 	private void studyLabelSelected() {
-		StudiesNodeView view = new StudiesNodeView(new StudyTablePanelView(
-				new DefaultStudyListPresentationModel(getDomain()
-						.getStudiesHolder()), this).buildPanel());
+		DefaultStudyListPresentationModel studyListPM =
+			new DefaultStudyListPresentationModel(getDomain().getStudiesHolder());
+		StudiesNodeView view = new StudiesNodeView(new StudiesTablePanel(studyListPM, this));
 		setRightPanelView(view);
 	}
 
