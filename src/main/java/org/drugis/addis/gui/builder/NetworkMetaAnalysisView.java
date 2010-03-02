@@ -1,11 +1,13 @@
 package org.drugis.addis.gui.builder;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -45,7 +47,9 @@ implements ViewBuilder {
 	}
 	
 	public JComponent buildStudyGraphPart() {
-		return new JPanel();
+		StudyGraph panel = new StudyGraph(d_pm.getStudyGraphModel());
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		return panel;
 	}
 	
 	public JComponent buildResultsPart() {
