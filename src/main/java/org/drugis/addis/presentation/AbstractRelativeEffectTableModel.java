@@ -1,7 +1,10 @@
 package org.drugis.addis.presentation;
 
+import java.util.List;
+
 import javax.swing.table.AbstractTableModel;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RelativeEffect;
@@ -13,9 +16,17 @@ implements RelativeEffectTableModel {
 	protected Study d_study;
 	protected OutcomeMeasure d_outMeas;
 	protected PresentationModelFactory d_pmf;
+	private List<Arm> d_arms;
 	
 	protected AbstractRelativeEffectTableModel(Study study, OutcomeMeasure om, PresentationModelFactory pmf) {
 		d_study = study;
+		d_outMeas = om;
+		d_pmf = pmf;
+		d_arms = d_study.getArms();
+	}
+	
+	protected AbstractRelativeEffectTableModel(List<Arm> arms, OutcomeMeasure om, PresentationModelFactory pmf) {
+		d_arms = arms;
 		d_outMeas = om;
 		d_pmf = pmf;
 	}
@@ -28,11 +39,11 @@ implements RelativeEffectTableModel {
 
 
 	public int getColumnCount() {
-		return d_study.getArms().size();
+		return d_arms.size();
 	}
 
 	public int getRowCount() {
-		return d_study.getArms().size();
+		return d_arms.size();
 	}
 
 	public Object getValueAt(int row, int col) {
@@ -40,8 +51,8 @@ implements RelativeEffectTableModel {
 			return d_pmf.getModel(d_study.getArms().get(row));
 		}
 		
-		Measurement denominator = d_study.getMeasurement(d_outMeas, d_study.getArms().get(row));
-		Measurement numerator = d_study.getMeasurement(d_outMeas, d_study.getArms().get(col));
+		Measurement denominator = d_study.getMeasurement(d_outMeas, d_arms.get(row));
+		Measurement numerator = d_study.getMeasurement(d_outMeas, d_arms.get(col));
 		return d_pmf.getModel(getRelativeEffect(denominator, numerator));
 	}
 
@@ -57,7 +68,7 @@ implements RelativeEffectTableModel {
 	}
 
 	private String getArmLabel(int index) {
-		return d_pmf.getLabeledModel(d_study.getArms().get(index)).getLabelModel().getString();
+		return d_pmf.getLabeledModel(d_arms.get(index)).getLabelModel().getString();
 	}
 
 	public String getDescription() {
@@ -66,7 +77,7 @@ implements RelativeEffectTableModel {
 	}
 
 	public ForestPlotPresentation getPlotPresentation(int row, int column) {
-		return new ForestPlotPresentation((Study)d_study, d_outMeas, d_study.getArms().get(row).getDrug(),
+		return new ForestPlotPresentation((Study)d_study, d_outMeas, d_arms.get(row).getDrug(),
 				d_study.getArms().get(column).getDrug(), getRelativeEffectType(), d_pmf);
 	}
 }

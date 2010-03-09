@@ -25,7 +25,6 @@ import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.StudyGraphModel.Edge;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.drugis.mtc.InconsistencyModel;
-import org.drugis.mtc.Network;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.jags.JagsModelFactory;
 import org.jgrapht.alg.ConnectivityInspector;
@@ -158,11 +157,15 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	private InconsistencyModel createInconsistencyModel() {
 		NetworkBuilder builder = new NetworkBuilder();
         for(Study s : getSelectedStudiesModel().getValue()){
-			for (Arm a : s.getArms()) {
+			for (Drug d : getSelectedDrugsModel().getValue()) {
 				for (Variable v : s.getVariables(Endpoint.class)) {
-					if(! (s.getMeasurement(v, a) instanceof BasicRateMeasurement))
+					if(! s.getDrugs().contains(d))
 						break;
-					BasicRateMeasurement m = (BasicRateMeasurement)s.getMeasurement(v, a);		
+					Arm a = getSelectedArmModel(s, d).getValue();
+//					TODO: this check must be changed after meta analysis can be done over other measurements as well 
+					if(! (s.getMeasurement(v, a) instanceof BasicRateMeasurement)) 
+						break;
+					BasicRateMeasurement m = (BasicRateMeasurement)s.getMeasurement(v, a);	
 					builder.add(s.getId(), a.getDrug().getName(), m.getRate(), m.getSampleSize());
 				}
         	}

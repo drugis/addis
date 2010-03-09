@@ -55,6 +55,10 @@ implements ViewBuilder {
 	public JComponent buildResultsPart() {
 		JPanel jPanel = new JPanel();
 		jPanel.add(new JLabel("Calculating results is not implemented yet!"));
+		
+		// make table of results (cipriani 2009, fig. 3, pp752):
+		//jPanel.add(new AbstractRelativeEffectTableModel() {
+		
 		return jPanel;
 	}
 }
