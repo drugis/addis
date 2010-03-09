@@ -19,7 +19,6 @@ public class OddsRatioTableModelTest extends RelativeEffectTableModelBaseTest {
 	@Test
 	public void testGetTitle() {
 		String title = "Odds-Ratio Table";
-		assertEquals(title, d_threeArmModel.getTitle());
-		
+		assertEquals(title, d_threeArmModel.getTitle());	
 	}
 }
