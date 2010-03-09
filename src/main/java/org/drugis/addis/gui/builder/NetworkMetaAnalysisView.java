@@ -9,6 +9,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.RelativeEffectTableDialog;
@@ -66,9 +68,9 @@ implements ViewBuilder {
 		
 		// make table of results (cipriani 2009, fig. 3, pp752):
 		
-		
+		Study study = new Study("NetworkMetaAnalysis", ExampleData.buildIndicationDepression());
 		final RelativeEffectTableModel tableModel = new NetworkMetaAnalysisTableModel(
-				d_pm.getBean().getIncludedDrugs(), d_pm.getBean().getOutcomeMeasure(), 
+				study, d_pm.getBean().getIncludedDrugs(), d_pm.getBean().getOutcomeMeasure(), 
 				d_parent.getPresentationModelFactory(), d_pm.getBean().getModel(), d_pm.getBean().getBuilder());
 		
 		return createRatioButton(tableModel);

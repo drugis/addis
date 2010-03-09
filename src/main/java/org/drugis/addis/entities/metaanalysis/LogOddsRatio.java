@@ -19,7 +19,6 @@
 
 package org.drugis.addis.entities.metaanalysis;
 
-import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.common.Interval;
@@ -27,28 +26,16 @@ import org.drugis.common.Interval;
 public class LogOddsRatio extends OddsRatio  {
 	private static final long serialVersionUID = -9012075635937781733L;
 	
-	Double d_LogMean;
-	Double d_LogStddev;
-	
 	public LogOddsRatio(RateMeasurement denominator, RateMeasurement numerator) {
 		super(denominator, numerator);
 	}
 
-	public LogOddsRatio(Double mean, Double stddev) {
-//		TODO: this next line doesnt make sense
-		super(new BasicRateMeasurement(1,2), new BasicRateMeasurement(1,2));
-		d_LogMean = mean;
-		d_LogStddev = stddev;
-	}
-
 	public Double getRelativeEffect() {
-		//return Math.log(d_mean);
-		return d_LogMean;
+		return Math.log(super.getRelativeEffect());
 	}
 
 	@Override
 	public Interval<Double> getConfidenceInterval() {
-		//throw new RuntimeException("log odds ratio doesn't have confidence interval"); 
-		return new Interval<Double>(d_LogMean - 2*d_LogStddev, d_LogMean + 2*d_LogStddev);
+		throw new RuntimeException("log odds ratio doesn't have confidence interval"); 
 	}		
 }

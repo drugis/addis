@@ -85,7 +85,7 @@ public class NetworkMetaAnalysisTest {
     	assertNotNull(d_model.getRelativeEffect(parox, fluox));
     	assertNotNull(d_model.getRelativeEffect(sertr, parox));
     	assertNotNull(d_model.getRelativeEffect(parox, sertr));
-
+    	
     	assertEquals(0, d_model.getInconsistencyFactors().size());
     }
 }

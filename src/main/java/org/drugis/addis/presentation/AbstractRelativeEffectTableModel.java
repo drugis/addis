@@ -1,11 +1,7 @@
 package org.drugis.addis.presentation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RelativeEffect;
@@ -17,17 +13,9 @@ implements RelativeEffectTableModel {
 	protected Study d_study;
 	protected OutcomeMeasure d_outMeas;
 	protected PresentationModelFactory d_pmf;
-	protected List<Drug> d_drugs;
 	
 	protected AbstractRelativeEffectTableModel(Study study, OutcomeMeasure om, PresentationModelFactory pmf) {
 		d_study = study;
-		d_outMeas = om;
-		d_pmf = pmf;
-		d_drugs = new ArrayList<Drug>(d_study.getDrugs());
-	}
-	
-	protected AbstractRelativeEffectTableModel(List<Drug> drugs, OutcomeMeasure om, PresentationModelFactory pmf) {
-		d_drugs = drugs;
 		d_outMeas = om;
 		d_pmf = pmf;
 	}
@@ -40,17 +28,18 @@ implements RelativeEffectTableModel {
 
 
 	public int getColumnCount() {
-		return d_drugs.size();
+		return d_study.getArms().size();
 	}
 
 	public int getRowCount() {
-		return d_drugs.size();
+		return d_study.getArms().size();
 	}
 
 	public Object getValueAt(int row, int col) {
 		if (row == col) {
-			return d_pmf.getModel(d_drugs.get(row));
+			return d_pmf.getModel(d_study.getArms().get(row));
 		}
+		
 		Measurement denominator = d_study.getMeasurement(d_outMeas, d_study.getArms().get(row));
 		Measurement numerator = d_study.getMeasurement(d_outMeas, d_study.getArms().get(col));
 		return d_pmf.getModel(getRelativeEffect(denominator, numerator));
@@ -68,15 +57,11 @@ implements RelativeEffectTableModel {
 	}
 
 	private String getArmLabel(int index) {
-		return d_pmf.getLabeledModel(d_drugs.get(index)).getLabelModel().getString();
+		return d_pmf.getLabeledModel(d_study.getArms().get(index)).getLabelModel().getString();
 	}
 
 	public String getDescription() {
-		String studyName = "";
-		if(d_study != null)
-			studyName = d_study.getId();
-		
-		return getTitle() + " for \"" + studyName 
+		return getTitle() + " for \"" + d_study.getId() 
 				+ "\" on Endpoint \"" + d_outMeas.getName() + "\"";
 	}
 
