@@ -1,10 +1,11 @@
 package org.drugis.addis.presentation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RelativeEffect;
@@ -16,17 +17,17 @@ implements RelativeEffectTableModel {
 	protected Study d_study;
 	protected OutcomeMeasure d_outMeas;
 	protected PresentationModelFactory d_pmf;
-	private List<Arm> d_arms;
+	protected List<Drug> d_drugs;
 	
 	protected AbstractRelativeEffectTableModel(Study study, OutcomeMeasure om, PresentationModelFactory pmf) {
 		d_study = study;
 		d_outMeas = om;
 		d_pmf = pmf;
-		d_arms = d_study.getArms();
+		d_drugs = new ArrayList<Drug>(d_study.getDrugs());
 	}
 	
-	protected AbstractRelativeEffectTableModel(List<Arm> arms, OutcomeMeasure om, PresentationModelFactory pmf) {
-		d_arms = arms;
+	protected AbstractRelativeEffectTableModel(List<Drug> drugs, OutcomeMeasure om, PresentationModelFactory pmf) {
+		d_drugs = drugs;
 		d_outMeas = om;
 		d_pmf = pmf;
 	}
@@ -39,20 +40,19 @@ implements RelativeEffectTableModel {
 
 
 	public int getColumnCount() {
-		return d_arms.size();
+		return d_drugs.size();
 	}
 
 	public int getRowCount() {
-		return d_arms.size();
+		return d_drugs.size();
 	}
 
 	public Object getValueAt(int row, int col) {
 		if (row == col) {
-			return d_pmf.getModel(d_study.getArms().get(row));
+			return d_pmf.getModel(d_drugs.get(row));
 		}
-		
-		Measurement denominator = d_study.getMeasurement(d_outMeas, d_arms.get(row));
-		Measurement numerator = d_study.getMeasurement(d_outMeas, d_arms.get(col));
+		Measurement denominator = d_study.getMeasurement(d_outMeas, d_study.getArms().get(row));
+		Measurement numerator = d_study.getMeasurement(d_outMeas, d_study.getArms().get(col));
 		return d_pmf.getModel(getRelativeEffect(denominator, numerator));
 	}
 
@@ -68,16 +68,20 @@ implements RelativeEffectTableModel {
 	}
 
 	private String getArmLabel(int index) {
-		return d_pmf.getLabeledModel(d_arms.get(index)).getLabelModel().getString();
+		return d_pmf.getLabeledModel(d_drugs.get(index)).getLabelModel().getString();
 	}
 
 	public String getDescription() {
-		return getTitle() + " for \"" + d_study.getId() 
+		String studyName = "";
+		if(d_study != null)
+			studyName = d_study.getId();
+		
+		return getTitle() + " for \"" + studyName 
 				+ "\" on Endpoint \"" + d_outMeas.getName() + "\"";
 	}
 
 	public ForestPlotPresentation getPlotPresentation(int row, int column) {
-		return new ForestPlotPresentation((Study)d_study, d_outMeas, d_arms.get(row).getDrug(),
+		return new ForestPlotPresentation((Study)d_study, d_outMeas, d_study.getArms().get(row).getDrug(),
 				d_study.getArms().get(column).getDrug(), getRelativeEffectType(), d_pmf);
 	}
 }

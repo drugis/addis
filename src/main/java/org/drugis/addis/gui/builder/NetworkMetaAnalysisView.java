@@ -1,14 +1,22 @@
 package org.drugis.addis.gui.builder;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.RelativeEffectTableDialog;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
+import org.drugis.addis.presentation.NetworkMetaAnalysisTableModel;
+import org.drugis.addis.presentation.RelativeEffectTableModel;
+import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -57,8 +65,30 @@ implements ViewBuilder {
 		jPanel.add(new JLabel("Calculating results is not implemented yet!"));
 		
 		// make table of results (cipriani 2009, fig. 3, pp752):
-		//jPanel.add(new AbstractRelativeEffectTableModel() {
 		
-		return jPanel;
+		
+		final RelativeEffectTableModel tableModel = new NetworkMetaAnalysisTableModel(
+				d_pm.getBean().getIncludedDrugs(), d_pm.getBean().getOutcomeMeasure(), 
+				d_parent.getPresentationModelFactory(), d_pm.getBean().getModel(), d_pm.getBean().getBuilder());
+		
+		return createRatioButton(tableModel);
+		
+		
+		//jPanel.add(tableModel);
+						
+//		return jPanel;
 	}
+	
+	private JButton createRatioButton(final RelativeEffectTableModel tableModel) {
+		JButton button = new JButton(tableModel.getTitle());
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				RelativeEffectTableDialog dlg = new RelativeEffectTableDialog(d_parent, tableModel);
+				GUIHelper.centerWindow(dlg, d_parent);
+				dlg.setVisible(true);
+			}
+		});
+		return button;
+	}
+	
 }

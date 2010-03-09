@@ -1,5 +1,6 @@
 package org.drugis.addis.entities.metaanalysis;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -111,5 +112,15 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	
 	public Arm getArm(Study s, Drug d) {
 		return d_armMap.get(s).get(d);
+	}
+	
+	public List<Arm> getArmList(){
+		List <Arm>armList = new ArrayList<Arm>();
+		for(Study s : d_armMap.keySet()){
+			for(Drug d : d_armMap.get(s).keySet()){
+				armList.add(d_armMap.get(s).get(d));
+			}
+		}
+		return armList;
 	}
 }

@@ -26,7 +26,7 @@ import org.drugis.common.Interval;
 public class LogOddsRatio extends OddsRatio  {
 	private static final long serialVersionUID = -9012075635937781733L;
 	
-	LogOddsRatio(RateMeasurement denominator, RateMeasurement numerator) {
+	public LogOddsRatio(RateMeasurement denominator, RateMeasurement numerator) {
 		super(denominator, numerator);
 	}
 
