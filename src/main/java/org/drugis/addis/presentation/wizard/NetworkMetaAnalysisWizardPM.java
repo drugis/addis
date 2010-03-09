@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
@@ -21,6 +24,10 @@ import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.StudyGraphModel.Edge;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
+import org.drugis.mtc.InconsistencyModel;
+import org.drugis.mtc.Network;
+import org.drugis.mtc.NetworkBuilder;
+import org.drugis.mtc.jags.JagsModelFactory;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.event.GraphEdgeChangeEvent;
 import org.jgrapht.event.GraphListener;
@@ -143,7 +150,25 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 		List<? extends Study> studies = getSelectedStudiesModel().getValue();
 		List<Drug> drugs = getSelectedDrugsModel().getValue();
 		Map<Study, Map<Drug, Arm>> armMap = getArmMap();
-		return new NetworkMetaAnalysis(name, indication, om, studies, drugs, armMap);
+		InconsistencyModel model = createInconsistencyModel();
+		
+		return new NetworkMetaAnalysis(name, indication, om, studies, drugs, armMap, model);
+	}
+
+	private InconsistencyModel createInconsistencyModel() {
+		NetworkBuilder builder = new NetworkBuilder();
+        for(Study s : getSelectedStudiesModel().getValue()){
+			for (Arm a : s.getArms()) {
+				for (Variable v : s.getVariables(Endpoint.class)) {
+					if(! (s.getMeasurement(v, a) instanceof BasicRateMeasurement))
+						break;
+					BasicRateMeasurement m = (BasicRateMeasurement)s.getMeasurement(v, a);		
+					builder.add(s.getId(), a.getDrug().getName(), m.getRate(), m.getSampleSize());
+				}
+        	}
+        }
+        InconsistencyModel model = (new JagsModelFactory()).getInconsistencyModel(builder.buildNetwork());
+		return model;
 	}
 
 	private Map<Study, Map<Drug, Arm>> getArmMap() {
