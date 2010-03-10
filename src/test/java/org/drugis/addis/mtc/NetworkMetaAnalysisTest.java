@@ -21,6 +21,7 @@ import org.drugis.mtc.ProgressListener;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.ProgressEvent.EventType;
 import org.drugis.mtc.jags.JagsModelFactory;
+import org.drugis.mtc.yadas.YadasModelFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,7 +50,8 @@ public class NetworkMetaAnalysisTest {
         }
         d_network = d_builder.buildNetwork();
         
-		d_model = (new JagsModelFactory()).getInconsistencyModel(d_network);
+		//d_model = (new JagsModelFactory()).getInconsistencyModel(d_network);
+		d_model = (new YadasModelFactory()).getInconsistencyModel(d_network);
     }
     
     @Test
@@ -58,12 +60,12 @@ public class NetworkMetaAnalysisTest {
     	mock.update(d_model, new ProgressEvent(EventType.MODEL_CONSTRUCTION_STARTED));
     	mock.update(d_model, new ProgressEvent(EventType.MODEL_CONSTRUCTION_FINISHED));
     	mock.update(d_model, new ProgressEvent(EventType.BURNIN_STARTED));
-    	for (int i = 1; i <= 30; ++i) {
+    	for (int i = 1; i <= 50; ++i) {
 	    	mock.update(d_model, new ProgressEvent(EventType.BURNIN_PROGRESS, i * 100));
     	}
     	mock.update(d_model, new ProgressEvent(EventType.BURNIN_FINISHED));
     	mock.update(d_model, new ProgressEvent(EventType.SIMULATION_STARTED));
-    	for (int i = 1; i <= 20; ++i) {
+    	for (int i = 1; i <= 100; ++i) {
 	    	mock.update(d_model, new ProgressEvent(EventType.SIMULATION_PROGRESS, i * 100));
     	}
     	mock.update(d_model, new ProgressEvent(EventType.SIMULATION_FINISHED));
