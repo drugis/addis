@@ -17,7 +17,6 @@ import org.drugis.addis.gui.RelativeEffectTableDialog;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkMetaAnalysisTableModel;
-import org.drugis.addis.presentation.RelativeEffectTableModel;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -69,11 +68,11 @@ implements ViewBuilder {
 		// make table of results (cipriani 2009, fig. 3, pp752):
 		
 		Study study = new Study("NetworkMetaAnalysis", ExampleData.buildIndicationDepression());
-		final RelativeEffectTableModel tableModel = new NetworkMetaAnalysisTableModel(
+		final NetworkMetaAnalysisTableModel networkAnalysisTableModel = new NetworkMetaAnalysisTableModel(
 				study, d_pm.getBean().getIncludedDrugs(), d_pm.getBean().getOutcomeMeasure(), 
 				d_parent.getPresentationModelFactory(), d_pm.getBean().getModel(), d_pm.getBean().getBuilder());
 		
-		return createRatioButton(tableModel);
+		return createRatioButton(networkAnalysisTableModel);
 		
 		
 		//jPanel.add(tableModel);
@@ -81,11 +80,11 @@ implements ViewBuilder {
 //		return jPanel;
 	}
 	
-	private JButton createRatioButton(final RelativeEffectTableModel tableModel) {
-		JButton button = new JButton(tableModel.getTitle());
+	private JButton createRatioButton(final NetworkMetaAnalysisTableModel networkAnalysisTableModel) {
+		JButton button = new JButton("show results");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				RelativeEffectTableDialog dlg = new RelativeEffectTableDialog(d_parent, tableModel);
+				RelativeEffectTableDialog dlg = new RelativeEffectTableDialog(d_parent, networkAnalysisTableModel);
 				GUIHelper.centerWindow(dlg, d_parent);
 				dlg.setVisible(true);
 			}
