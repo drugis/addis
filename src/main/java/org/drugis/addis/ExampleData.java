@@ -590,9 +590,14 @@ public class ExampleData {
 				buildStudyBennie(), buildStudyChouinard(), buildStudyDeWilde()});
 		List<Drug> drugs = Arrays.asList(new Drug[] {buildDrugFluoxetine(), buildDrugParoxetine(), 
 				buildDrugSertraline()});
-		return new NetworkMetaAnalysis("Test Network", 
+		
+		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network", 
 				buildIndicationDepression(), buildEndpointHamd(),
 				studies, drugs, buildMap(studies, drugs));
+		//Thread thread = new Thread(analysis);
+		//thread.start();
+		
+		return analysis;
 	}
 
 	private static Map<Study, Map<Drug, Arm>> buildMap(List<Study> studies,

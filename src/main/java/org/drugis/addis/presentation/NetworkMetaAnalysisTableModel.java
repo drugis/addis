@@ -7,23 +7,21 @@ import javax.swing.table.AbstractTableModel;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.LogContinuousMeasurementEstimate;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.Study;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Treatment;
 
 @SuppressWarnings("serial")
-public class NetworkMetaAnalysisTableModel  extends AbstractTableModel{
+public class NetworkMetaAnalysisTableModel  extends AbstractTableModel implements Runnable{
 	private InconsistencyModel d_model;
     private NetworkBuilder d_builder;
     private List<Drug> d_drugs;
 	private PresentationModelFactory d_pmf;
 	
-	public NetworkMetaAnalysisTableModel(Study study, List<Drug> drugList,
-			OutcomeMeasure outcomeMeasure,
-			PresentationModelFactory presentationModelFactory, InconsistencyModel model, NetworkBuilder builder) {
-//		super(study, outcomeMeasure, presentationModelFactory);
+	public NetworkMetaAnalysisTableModel(List<Drug> drugList, OutcomeMeasure outcomeMeasure,
+			PresentationModelFactory presentationModelFactory,
+			InconsistencyModel model, NetworkBuilder builder) {
 		d_pmf = presentationModelFactory;
 		d_model = model;
 		d_builder = builder;
@@ -49,12 +47,20 @@ public class NetworkMetaAnalysisTableModel  extends AbstractTableModel{
 		if (row == col) {
 			return d_pmf.getModel(d_drugs.get(row));
 		}
+		
+		while (!d_model.isReady()) {
+			try {
+				wait(1);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+
+			}
+//			d_model.run(); 
+//			return d_pmf.getModel(new LogContinuousMeasurementEstimate(0, 0));
+		}
 
 		final Treatment drug1 = d_builder.getTreatment(d_drugs.get(row).toString());
 		final Treatment drug2 = d_builder.getTreatment(d_drugs.get(col).toString());
-		if (!d_model.isReady()) {
-			d_model.run();
-		}
 		
 		Estimate relEffect = d_model.getRelativeEffect(drug1, drug2);
 
@@ -66,12 +72,15 @@ public class NetworkMetaAnalysisTableModel  extends AbstractTableModel{
 		return "Network Meta-Analysis (Inconsistency Model)";
 	}
 
-	public ForestPlotPresentation getPlotPresentation(int row, int column) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public String getTitle() {
 		return getDescription();
+	}
+	
+	public Boolean isReady(){
+		return d_model.isReady();
+	}
+
+	public void run() {
+		d_model.run();
 	}
 }

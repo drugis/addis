@@ -1,24 +1,21 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
+import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkMetaAnalysisTableModel;
-import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -64,37 +61,36 @@ implements ViewBuilder {
 	
 	public JComponent buildResultsPart() {
 		JPanel jPanel = new JPanel();
-		//jPanel.add(new JLabel("Calculating results is not implemented yet!"));
 		
 		// make table of results (cipriani 2009, fig. 3, pp752):
-		
-		Study study = new Study("NetworkMetaAnalysis", ExampleData.buildIndicationDepression());
 		final NetworkMetaAnalysisTableModel networkAnalysisTableModel = new NetworkMetaAnalysisTableModel(
-				study, d_pm.getBean().getIncludedDrugs(), d_pm.getBean().getOutcomeMeasure(), 
-				d_parent.getPresentationModelFactory(), d_pm.getBean().getModel(), d_pm.getBean().getBuilder());
+				d_pm.getBean().getIncludedDrugs(), d_pm.getBean().getOutcomeMeasure(), d_parent.getPresentationModelFactory(), 
+				d_pm.getBean().getModel(), d_pm.getBean().getBuilder());
+
+		Thread thread = new Thread(networkAnalysisTableModel);
+		thread.start();
 		
-//		return createRatioButton(networkAnalysisTableModel);
-		
-		
-//		jPanel.add(new NetworkMetaAnalysisTableDialog(d_parent, networkAnalysisTableModel), BorderLayout.CENTER);
-//		return jPanel;
-		
-		JComponent table = new NetworkMetaAnalysisTablePanel(d_parent, networkAnalysisTableModel);
-		table.setVisible(true);
-		jPanel.add(table, BorderLayout.CENTER);
-		return jPanel;
-	}
-	
-	private JButton createRatioButton(final NetworkMetaAnalysisTableModel networkAnalysisTableModel) {
-		JButton button = new JButton("show results");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				//NetworkMetaAnalysisTableComponent dlg = new NetworkMetaAnalysisTableComponent(d_parent, networkAnalysisTableModel);
-				//GUIHelper.centerWindow(dlg, d_parent);
-				//dlg.setVisible(true);
+		ModifiableHolder<Boolean> readyModel = new ModifiableHolder<Boolean> (networkAnalysisTableModel.isReady());
+		readyModel.addValueChangeListener(new PropertyChangeListener() {
+			
+			public void propertyChange(PropertyChangeEvent evt) {
+				System.out.println("value changed!");
+				
 			}
 		});
-		return button;
-	}
+
+		
+		if(!networkAnalysisTableModel.isReady())
+			return new JLabel("calculating.....");
+		
+
+		// this creates the table
+		NetworkMetaAnalysisTablePanel tablePanel = new NetworkMetaAnalysisTablePanel(d_parent, networkAnalysisTableModel);
+		tablePanel.setVisible(true);
+		jPanel.add(tablePanel, BorderLayout.CENTER);
+
+		return jPanel;
+	}	
 	
+
 }

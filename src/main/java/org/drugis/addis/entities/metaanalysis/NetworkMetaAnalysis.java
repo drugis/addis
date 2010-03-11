@@ -15,7 +15,7 @@ import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.NetworkBuilder;
 
-public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis {
+public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis, Runnable{
 	private static final long serialVersionUID = -1646175155970420625L;
 	
 	transient private InconsistencyModel d_model;
@@ -30,10 +30,8 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		d_armMap = armMap;
 	}
 
-	private InconsistencyModel createInconsistencyModel(List<? extends Study> studies,
-			List<Drug> drugs, Map<Study, Map<Drug, Arm>> armMap) {
+	private InconsistencyModel createInconsistencyModel() {
 		return (DefaultModelFactory.instance()).getInconsistencyModel(getBuilder().buildNetwork());
-		
 	}
 
 	private NetworkBuilder createBuilder(List<? extends Study> studies, List<Drug> drugs,
@@ -62,7 +60,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 
 	public InconsistencyModel getModel() {
 		if (d_model == null) {
-			d_model = createInconsistencyModel(d_studies, d_drugs, d_armMap);
+			d_model = createInconsistencyModel();
 		}
 		return d_model;
 	}
@@ -72,5 +70,10 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			d_builder = createBuilder(d_studies, d_drugs, d_armMap);
 		}
 		return d_builder;
+	}
+
+	public void run() {
+		// TODO Auto-generated method stub
+		d_model = createInconsistencyModel();
 	}
 }

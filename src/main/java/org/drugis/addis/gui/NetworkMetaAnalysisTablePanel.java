@@ -3,40 +3,34 @@ package org.drugis.addis.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
-import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.gui.components.EnhancedTableHeader;
 import org.drugis.addis.presentation.LabeledPresentationModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisTableModel;
-import org.drugis.addis.presentation.RelativeEffectPresentation;
-import org.drugis.addis.presentation.RelativeEffectTableModel;
-import org.drugis.common.gui.GUIHelper;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 
 @SuppressWarnings("serial")
-public class NetworkMetaAnalysisTablePanel extends JPanel {
+public class NetworkMetaAnalysisTablePanel extends JPanel{
 	private NetworkMetaAnalysisTableModel d_tableModel;
 
 	public NetworkMetaAnalysisTablePanel(JFrame parent, NetworkMetaAnalysisTableModel networkAnalysisTableModel) {
 		d_tableModel = networkAnalysisTableModel;
 		
+		initComps();
+	}
+	
+
+	public void run() {
 		initComps();
 	}
 	
