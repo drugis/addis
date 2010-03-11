@@ -42,8 +42,7 @@ public class NetworkMetaAnalysisTableModel  extends AbstractTableModel implement
 		if (row == col) {
 			return null;
 		}
-//		return "\"" + getArmLabel(col) + "\" relative to \"" + getArmLabel(row) + "\"";
-		return "NetworkMetaAnalysisTableModel.java";
+		return "\"" + d_drugs.get(col) + "\" relative to \"" + d_drugs.get(row) + "\"";
 	}
 	
 	public Object getValueAt(int row, int col) {
@@ -60,7 +59,6 @@ public class NetworkMetaAnalysisTableModel  extends AbstractTableModel implement
 		Estimate relEffect = d_model.getRelativeEffect(drug1, drug2);
 
 		// convert to Log Odds-ratio
-//		return d_pmf.getLabeledModel(new LogOddsRatio(new BasicRateMeasurement(1, 10), new BasicRateMeasurement(2, 10)));
 		return d_pmf.getModel(new LogContinuousMeasurementEstimate(relEffect.getMean(), relEffect.getStandardDeviation()));
 	}
 
