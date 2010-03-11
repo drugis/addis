@@ -11,9 +11,9 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.NetworkBuilder;
-import org.drugis.mtc.jags.JagsModelFactory;
 
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis {
 	private static final long serialVersionUID = -1646175155970420625L;
@@ -32,7 +32,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 
 	private InconsistencyModel createInconsistencyModel(List<? extends Study> studies,
 			List<Drug> drugs, Map<Study, Map<Drug, Arm>> armMap) {
-		return (new JagsModelFactory()).getInconsistencyModel(getBuilder().buildNetwork());
+		return (DefaultModelFactory.instance()).getInconsistencyModel(getBuilder().buildNetwork());
 		
 	}
 

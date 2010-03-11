@@ -13,20 +13,22 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
+import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.InconsistencyModel;
+import org.drugis.mtc.ModelFactory;
 import org.drugis.mtc.Network;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.ProgressEvent;
 import org.drugis.mtc.ProgressListener;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.ProgressEvent.EventType;
-import org.drugis.mtc.jags.JagsModelFactory;
-import org.drugis.mtc.yadas.YadasModelFactory;
 import org.junit.Before;
 import org.junit.Test;
 
 public class NetworkMetaAnalysisTest {
-    private NetworkBuilder d_builder;
+    private static final int NSIMULATION = 1000;
+	private static final int NBURNIN = 40;
+	private NetworkBuilder d_builder;
 	private Network d_network;
 	private InconsistencyModel d_model;
 
@@ -50,8 +52,8 @@ public class NetworkMetaAnalysisTest {
         }
         d_network = d_builder.buildNetwork();
         
-		//d_model = (new JagsModelFactory()).getInconsistencyModel(d_network);
-		d_model = (new YadasModelFactory()).getInconsistencyModel(d_network);
+        ModelFactory factory = DefaultModelFactory.instance();
+		d_model = factory.getInconsistencyModel(d_network);
     }
     
     @Test
@@ -60,12 +62,12 @@ public class NetworkMetaAnalysisTest {
     	mock.update(d_model, new ProgressEvent(EventType.MODEL_CONSTRUCTION_STARTED));
     	mock.update(d_model, new ProgressEvent(EventType.MODEL_CONSTRUCTION_FINISHED));
     	mock.update(d_model, new ProgressEvent(EventType.BURNIN_STARTED));
-    	for (int i = 1; i <= 50; ++i) {
+    	for (int i = 1; i < NBURNIN; ++i) {
 	    	mock.update(d_model, new ProgressEvent(EventType.BURNIN_PROGRESS, i * 100));
     	}
     	mock.update(d_model, new ProgressEvent(EventType.BURNIN_FINISHED));
     	mock.update(d_model, new ProgressEvent(EventType.SIMULATION_STARTED));
-    	for (int i = 1; i <= 100; ++i) {
+    	for (int i = 1; i < NSIMULATION; ++i) {
 	    	mock.update(d_model, new ProgressEvent(EventType.SIMULATION_PROGRESS, i * 100));
     	}
     	mock.update(d_model, new ProgressEvent(EventType.SIMULATION_FINISHED));
