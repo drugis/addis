@@ -14,7 +14,7 @@ import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Treatment;
 
 @SuppressWarnings("serial")
-public class NetworkMetaAnalysisTableModel  extends AbstractTableModel implements RelativeEffectTableModel{
+public class NetworkMetaAnalysisTableModel  extends AbstractTableModel{
 	private InconsistencyModel d_model;
     private NetworkBuilder d_builder;
     private List<Drug> d_drugs;
@@ -63,7 +63,7 @@ public class NetworkMetaAnalysisTableModel  extends AbstractTableModel implement
 	}
 
 	public String getDescription() {
-		return "Network Meta-Analysis";
+		return "Network Meta-Analysis (Inconsistency Model)";
 	}
 
 	public ForestPlotPresentation getPlotPresentation(int row, int column) {

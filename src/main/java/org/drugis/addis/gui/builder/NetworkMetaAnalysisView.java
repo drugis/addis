@@ -1,5 +1,6 @@
 package org.drugis.addis.gui.builder;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,7 +14,7 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.RelativeEffectTableDialog;
+import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkMetaAnalysisTableModel;
@@ -63,7 +64,7 @@ implements ViewBuilder {
 	
 	public JComponent buildResultsPart() {
 		JPanel jPanel = new JPanel();
-		jPanel.add(new JLabel("Calculating results is not implemented yet!"));
+		//jPanel.add(new JLabel("Calculating results is not implemented yet!"));
 		
 		// make table of results (cipriani 2009, fig. 3, pp752):
 		
@@ -72,21 +73,25 @@ implements ViewBuilder {
 				study, d_pm.getBean().getIncludedDrugs(), d_pm.getBean().getOutcomeMeasure(), 
 				d_parent.getPresentationModelFactory(), d_pm.getBean().getModel(), d_pm.getBean().getBuilder());
 		
-		return createRatioButton(networkAnalysisTableModel);
+//		return createRatioButton(networkAnalysisTableModel);
 		
 		
-		//jPanel.add(tableModel);
-						
+//		jPanel.add(new NetworkMetaAnalysisTableDialog(d_parent, networkAnalysisTableModel), BorderLayout.CENTER);
 //		return jPanel;
+		
+		JComponent table = new NetworkMetaAnalysisTablePanel(d_parent, networkAnalysisTableModel);
+		table.setVisible(true);
+		jPanel.add(table, BorderLayout.CENTER);
+		return jPanel;
 	}
 	
 	private JButton createRatioButton(final NetworkMetaAnalysisTableModel networkAnalysisTableModel) {
 		JButton button = new JButton("show results");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				RelativeEffectTableDialog dlg = new RelativeEffectTableDialog(d_parent, networkAnalysisTableModel);
-				GUIHelper.centerWindow(dlg, d_parent);
-				dlg.setVisible(true);
+				//NetworkMetaAnalysisTableComponent dlg = new NetworkMetaAnalysisTableComponent(d_parent, networkAnalysisTableModel);
+				//GUIHelper.centerWindow(dlg, d_parent);
+				//dlg.setVisible(true);
 			}
 		});
 		return button;
