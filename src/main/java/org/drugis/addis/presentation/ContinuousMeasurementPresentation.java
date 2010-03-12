@@ -2,6 +2,7 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.DecimalFormat;
 
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Measurement;
@@ -35,7 +36,9 @@ public class ContinuousMeasurementPresentation extends PresentationModel<Continu
 			if (mean == null || stdDev == null || sampleSize == null) {
 				return "INCOMPLETE"; 
 			}
-			return mean.toString() + " \u00B1 " + stdDev.toString() + " (" + sampleSize + ")"; 
+			
+			DecimalFormat df = new DecimalFormat("####0.0##");
+			return df.format(mean) + " \u00B1 " + df.format(stdDev) + " (" + sampleSize + ")";
 		}
 		
 		public void propertyChange(PropertyChangeEvent evt) {

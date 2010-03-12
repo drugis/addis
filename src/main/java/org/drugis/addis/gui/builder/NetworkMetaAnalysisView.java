@@ -17,6 +17,10 @@ import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkMetaAnalysisTableModel;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.mtc.MixedTreatmentComparison;
+import org.drugis.mtc.ProgressEvent;
+import org.drugis.mtc.ProgressListener;
+import org.drugis.mtc.ProgressEvent.EventType;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -24,33 +28,63 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class NetworkMetaAnalysisView extends AbstractMetaAnalysisView<NetworkMetaAnalysisPresentation>
 implements ViewBuilder {
+	
+	JComponent d_panel = new JPanel();;
+	private PanelBuilder d_builder;
+	private CellConstraints d_cc;
+	
 	public NetworkMetaAnalysisView(NetworkMetaAnalysisPresentation model, Main main) {
 		super(model, main);
+
+		d_pm.getBean().getModel().addProgressListener(new ProgressListener() {	
+			public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
+				if (d_panel != null) {
+					if(event.getType() == EventType.SIMULATION_FINISHED) {
+						System.out.println("Model Ready, trying to change panel.");
+						
+						d_panel.setVisible(false);
+						
+						d_panel.removeAll();
+
+						buildPanel();
+						
+						d_panel.setVisible(true);
+					}
+				}
+
+			}
+		});
+
+		Thread t = new Thread(d_pm.getBean());
+		t.start();
 	}
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+		d_builder = new PanelBuilder(layout);
 		
-		PanelBuilder builder = new PanelBuilder(layout);
-		builder.setDefaultDialogBorder();
+		d_builder.setDefaultDialogBorder();
 		
-		CellConstraints cc =  new CellConstraints();		
+		d_cc = new CellConstraints();		
 
-		builder.addSeparator("Network meta-analysis", cc.xy(1, 1));
-		builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
+		d_builder.addSeparator("Network meta-analysis", d_cc.xy(1, 1));
+		d_builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), d_cc.xy(1, 3));
 
-		builder.addSeparator("Included studies", cc.xy(1, 5));
-		builder.add(GUIFactory.createCollapsiblePanel(buildStudiesPart()), cc.xy(1, 7));
+		d_builder.addSeparator("Included studies", d_cc.xy(1, 5));
+		d_builder.add(GUIFactory.createCollapsiblePanel(buildStudiesPart()), d_cc.xy(1, 7));
 
-		builder.addSeparator("Evidence network", cc.xy(1, 9));
-		builder.add(GUIFactory.createCollapsiblePanel(buildStudyGraphPart()), cc.xy(1, 11));
+		d_builder.addSeparator("Evidence network", d_cc.xy(1, 9));
+		d_builder.add(GUIFactory.createCollapsiblePanel(buildStudyGraphPart()), d_cc.xy(1, 11));
 
-		builder.addSeparator("Results", cc.xy(1, 13));
-		builder.add(GUIFactory.createCollapsiblePanel(buildResultsPart()), cc.xy(1, 15));
+		d_builder.addSeparator("Results", d_cc.xy(1, 13));
+		d_builder.add(GUIFactory.createCollapsiblePanel(buildResultsPart()), d_cc.xy(1, 15));
 
-		return builder.getPanel();
+		d_panel.add(d_builder.getPanel());
+		
+		
+		return d_panel;
 	}
 	
 	public JComponent buildStudyGraphPart() {
@@ -62,28 +96,26 @@ implements ViewBuilder {
 	public JComponent buildResultsPart() {
 		JPanel jPanel = new JPanel();
 		
+		System.out.println("building panel");
+		
 		// make table of results (cipriani 2009, fig. 3, pp752):
 		final NetworkMetaAnalysisTableModel networkAnalysisTableModel = new NetworkMetaAnalysisTableModel(
-				d_pm.getBean().getIncludedDrugs(), d_pm.getBean().getOutcomeMeasure(), d_parent.getPresentationModelFactory(), 
-				d_pm.getBean().getModel(), d_pm.getBean().getBuilder());
-
-		Thread thread = new Thread(networkAnalysisTableModel);
-		thread.start();
+				d_pm, d_parent.getPresentationModelFactory());
 		
-		ModifiableHolder<Boolean> readyModel = new ModifiableHolder<Boolean> (networkAnalysisTableModel.isReady());
+		ModifiableHolder<Boolean> readyModel = new ModifiableHolder<Boolean> (d_pm.getBean().getModel().isReady());
 		readyModel.addValueChangeListener(new PropertyChangeListener() {
 			
 			public void propertyChange(PropertyChangeEvent evt) {
 				System.out.println("value changed!");
-				
 			}
 		});
 
 		
-		if(!networkAnalysisTableModel.isReady())
+		if(!d_pm.getBean().getModel().isReady())
 			return new JLabel("calculating.....");
 		
-
+		System.out.println("adding table to panel");
+		
 		// this creates the table
 		NetworkMetaAnalysisTablePanel tablePanel = new NetworkMetaAnalysisTablePanel(d_parent, networkAnalysisTableModel);
 		tablePanel.setVisible(true);

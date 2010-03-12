@@ -40,7 +40,10 @@ public class NetworkMetaAnalysisTablePanel extends JPanel{
 				Object val, boolean isSelected, boolean hasFocus, int row, int col) {
 			
 			JLabel label = BasicComponentFactory.createLabel(((LabeledPresentationModel)val).getLabelModel());
+			//System.out.println(((LabeledPresentationModel)val).getLabelModel().getValue());
 			label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+			
+			
 			
 			if (((PresentationModel<?>)val).getBean() instanceof Drug) {
 				label.setBackground(Color.lightGray);

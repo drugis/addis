@@ -19,6 +19,8 @@
 
 package org.drugis.addis.entities;
 
+import java.text.DecimalFormat;
+
 
 public class BasicContinuousMeasurement extends BasicMeasurement implements ContinuousMeasurement {
 	private static final long serialVersionUID = 6086085465347586428L;
@@ -62,7 +64,9 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 		if (d_mean == null || d_stdDev == null || d_sampleSize == null) {
 			return "INCOMPLETE"; 
 		}
-		return d_mean.toString() + " \u00B1 " + d_stdDev.toString() + " (" + d_sampleSize + ")";
+		
+		DecimalFormat df = new DecimalFormat("##0.0##");
+		return df.format(d_mean) + " \u00B1 " + df.format(d_stdDev) + " (" + d_sampleSize + ")";
 	}
 
 	public boolean isOfType(Variable.Type type) {

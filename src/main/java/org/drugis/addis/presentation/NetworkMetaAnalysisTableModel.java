@@ -1,54 +1,42 @@
 package org.drugis.addis.presentation;
 
-import java.util.List;
-
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.LogContinuousMeasurementEstimate;
-import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.mtc.Estimate;
-import org.drugis.mtc.InconsistencyModel;
-import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Treatment;
 
 @SuppressWarnings("serial")
-public class NetworkMetaAnalysisTableModel  extends AbstractTableModel implements Runnable{
-	private InconsistencyModel d_model;
-    private NetworkBuilder d_builder;
-    private List<Drug> d_drugs;
+public class NetworkMetaAnalysisTableModel  extends AbstractTableModel{
+	private NetworkMetaAnalysisPresentation d_pm;
 	private PresentationModelFactory d_pmf;
-	
-	public NetworkMetaAnalysisTableModel(List<Drug> drugList, OutcomeMeasure outcomeMeasure,
-			PresentationModelFactory presentationModelFactory,
-			InconsistencyModel model, NetworkBuilder builder) {
-		d_pmf = presentationModelFactory;
-		d_model = model;
-		d_builder = builder;
-		d_drugs = drugList;
+
+	public NetworkMetaAnalysisTableModel(NetworkMetaAnalysisPresentation pm, PresentationModelFactory pmf) {
+		d_pm = pm;
+		d_pmf = pmf;
 	}
 
 	public int getColumnCount() {
-		return d_drugs.size();
+		return d_pm.getBean().getIncludedDrugs().size();
 	}
 
 	public int getRowCount() {
-		return d_drugs.size();
+		return d_pm.getBean().getIncludedDrugs().size();
 	}
 	
 	public String getDescriptionAt(int row, int col) {
 		if (row == col) {
 			return null;
 		}
-		return "\"" + d_drugs.get(col) + "\" relative to \"" + d_drugs.get(row) + "\"";
+		return "\"" + d_pm.getBean().getIncludedDrugs().get(col) + "\" relative to \"" + d_pm.getBean().getIncludedDrugs().get(row) + "\"";
 	}
 	
 	public Object getValueAt(int row, int col) {
 		if (row == col) {
-			return d_pmf.getModel(d_drugs.get(row));
+			return d_pmf.getModel(d_pm.getBean().getIncludedDrugs().get(row));
 		}
 		
-		while (!d_model.isReady()) {
+		while (!d_pm.getBean().getModel().isReady()) {
 			try {
 				wait(1);
 			} catch (Exception e) {
@@ -59,10 +47,10 @@ public class NetworkMetaAnalysisTableModel  extends AbstractTableModel implement
 //			return d_pmf.getModel(new LogContinuousMeasurementEstimate(0, 0));
 		}
 
-		final Treatment drug1 = d_builder.getTreatment(d_drugs.get(row).toString());
-		final Treatment drug2 = d_builder.getTreatment(d_drugs.get(col).toString());
+		final Treatment drug1 = d_pm.getBean().getBuilder().getTreatment(d_pm.getBean().getIncludedDrugs().get(row).toString());
+		final Treatment drug2 = d_pm.getBean().getBuilder().getTreatment(d_pm.getBean().getIncludedDrugs().get(col).toString());
 		
-		Estimate relEffect = d_model.getRelativeEffect(drug1, drug2);
+		Estimate relEffect = d_pm.getBean().getModel().getRelativeEffect(drug1, drug2);
 
 		// convert to Log Odds-ratio
 		return d_pmf.getModel(new LogContinuousMeasurementEstimate(relEffect.getMean(), relEffect.getStandardDeviation()));
@@ -74,13 +62,5 @@ public class NetworkMetaAnalysisTableModel  extends AbstractTableModel implement
 
 	public String getTitle() {
 		return getDescription();
-	}
-	
-	public Boolean isReady(){
-		return d_model.isReady();
-	}
-
-	public void run() {
-		d_model.run();
 	}
 }
