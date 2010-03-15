@@ -35,17 +35,6 @@ public class NetworkMetaAnalysisTableModel  extends AbstractTableModel{
 		if (row == col) {
 			return d_pmf.getModel(d_pm.getBean().getIncludedDrugs().get(row));
 		}
-		
-		while (!d_pm.getBean().getModel().isReady()) {
-			try {
-				wait(1);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-
-			}
-//			d_model.run(); 
-//			return d_pmf.getModel(new LogContinuousMeasurementEstimate(0, 0));
-		}
 
 		final Treatment drug1 = d_pm.getBean().getBuilder().getTreatment(d_pm.getBean().getIncludedDrugs().get(row).toString());
 		final Treatment drug2 = d_pm.getBean().getBuilder().getTreatment(d_pm.getBean().getIncludedDrugs().get(col).toString());

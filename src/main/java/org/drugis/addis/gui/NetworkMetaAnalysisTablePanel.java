@@ -40,11 +40,8 @@ public class NetworkMetaAnalysisTablePanel extends JPanel{
 				Object val, boolean isSelected, boolean hasFocus, int row, int col) {
 			
 			JLabel label = BasicComponentFactory.createLabel(((LabeledPresentationModel)val).getLabelModel());
-			//System.out.println(((LabeledPresentationModel)val).getLabelModel().getValue());
 			label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-			
-			
-			
+	
 			if (((PresentationModel<?>)val).getBean() instanceof Drug) {
 				label.setBackground(Color.lightGray);
 			} 
@@ -73,13 +70,11 @@ public class NetworkMetaAnalysisTablePanel extends JPanel{
 						BorderFactory.createEmptyBorder(7, 7, 7, 7),
 						BorderFactory.createMatteBorder(1, 1, 0, 0, Color.gray)));
 		
-		
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		panel.add(description, BorderLayout.NORTH);
 		panel.add(tablePanel, BorderLayout.CENTER);		
-		
 		
 		this.add(panel);
 	}

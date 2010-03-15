@@ -31,7 +31,6 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	private InconsistencyModel createInconsistencyModel() {
-		System.out.println("creating inconsistency model");
 		return (DefaultModelFactory.instance()).getInconsistencyModel(getBuilder().buildNetwork());
 	}
 
@@ -77,5 +76,4 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		// TODO Auto-generated method stub
 		getModel().run();
 	}
-	
 }

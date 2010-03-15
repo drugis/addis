@@ -1,6 +1,7 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -8,6 +9,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
@@ -29,7 +31,7 @@ import com.jgoodies.forms.layout.FormLayout;
 public class NetworkMetaAnalysisView extends AbstractMetaAnalysisView<NetworkMetaAnalysisPresentation>
 implements ViewBuilder {
 	
-	JComponent d_panel = new JPanel();;
+	JPanel d_pane = new JPanel();
 	private PanelBuilder d_builder;
 	private CellConstraints d_cc;
 	
@@ -38,20 +40,14 @@ implements ViewBuilder {
 
 		d_pm.getBean().getModel().addProgressListener(new ProgressListener() {	
 			public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
-				if (d_panel != null) {
+				if (d_pane != null) {
 					if(event.getType() == EventType.SIMULATION_FINISHED) {
-						System.out.println("Model Ready, trying to change panel.");
-						
-						d_panel.setVisible(false);
-						
-						d_panel.removeAll();
-
+						d_pane.setVisible(false);
+						d_pane.removeAll();
 						buildPanel();
-						
-						d_panel.setVisible(true);
+						d_pane.setVisible(true);
 					}
 				}
-
 			}
 		});
 
@@ -64,7 +60,7 @@ implements ViewBuilder {
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		d_builder = new PanelBuilder(layout);
-		
+	
 		d_builder.setDefaultDialogBorder();
 		
 		d_cc = new CellConstraints();		
@@ -79,12 +75,17 @@ implements ViewBuilder {
 		d_builder.add(GUIFactory.createCollapsiblePanel(buildStudyGraphPart()), d_cc.xy(1, 11));
 
 		d_builder.addSeparator("Results", d_cc.xy(1, 13));
-		d_builder.add(GUIFactory.createCollapsiblePanel(buildResultsPart()), d_cc.xy(1, 15));
+		JComponent resultsPart = buildResultsPart();
+		d_builder.add(GUIFactory.createCollapsiblePanel(resultsPart), d_cc.xy(1, 15));
 
-		d_panel.add(d_builder.getPanel());
+		d_pane.setLayout(new BorderLayout());
+		d_pane.add(d_builder.getPanel(), BorderLayout.CENTER);
 		
-		
-		return d_panel;
+		// Update preferred size when the size of the results section has changed.
+		Dimension curSize = d_pane.getPreferredSize();
+		d_pane.setPreferredSize(new Dimension(curSize.width, (int) (curSize.height + resultsPart.getPreferredSize().getHeight())));
+
+		return d_pane;
 	}
 	
 	public JComponent buildStudyGraphPart() {
@@ -95,8 +96,6 @@ implements ViewBuilder {
 	
 	public JComponent buildResultsPart() {
 		JPanel jPanel = new JPanel();
-		
-		System.out.println("building panel");
 		
 		// make table of results (cipriani 2009, fig. 3, pp752):
 		final NetworkMetaAnalysisTableModel networkAnalysisTableModel = new NetworkMetaAnalysisTableModel(
@@ -113,14 +112,15 @@ implements ViewBuilder {
 		
 		if(!d_pm.getBean().getModel().isReady())
 			return new JLabel("calculating.....");
-		
-		System.out.println("adding table to panel");
-		
+
 		// this creates the table
 		NetworkMetaAnalysisTablePanel tablePanel = new NetworkMetaAnalysisTablePanel(d_parent, networkAnalysisTableModel);
 		tablePanel.setVisible(true);
 		jPanel.add(tablePanel, BorderLayout.CENTER);
-
+		
+//		JScrollPane scrollPane = new JScrollPane(tablePanel);
+//		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+		
 		return jPanel;
 	}	
 	
