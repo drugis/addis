@@ -95,8 +95,6 @@ implements ViewBuilder {
 	}
 	
 	public JComponent buildResultsPart() {
-		JPanel jPanel = new JPanel();
-		
 		// make table of results (cipriani 2009, fig. 3, pp752):
 		final NetworkMetaAnalysisTableModel networkAnalysisTableModel = new NetworkMetaAnalysisTableModel(
 				d_pm, d_parent.getPresentationModelFactory());
@@ -116,12 +114,14 @@ implements ViewBuilder {
 		// this creates the table
 		NetworkMetaAnalysisTablePanel tablePanel = new NetworkMetaAnalysisTablePanel(d_parent, networkAnalysisTableModel);
 		tablePanel.setVisible(true);
-		jPanel.add(tablePanel, BorderLayout.CENTER);
 		
-//		JScrollPane scrollPane = new JScrollPane(tablePanel);
-//		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+		JScrollPane sp = new JScrollPane(tablePanel);		
+		sp.setViewportBorder(BorderFactory.createEmptyBorder());
+		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		sp.getVerticalScrollBar().setUnitIncrement(16);
 		
-		return jPanel;
+		return sp;
 	}	
 	
 
