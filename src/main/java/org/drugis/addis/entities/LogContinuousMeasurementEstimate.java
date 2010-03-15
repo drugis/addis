@@ -1,5 +1,7 @@
 package org.drugis.addis.entities;
 
+import java.text.DecimalFormat;
+
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.distribution.NormalDistribution;
 import org.apache.commons.math.distribution.NormalDistributionImpl;
@@ -25,5 +27,16 @@ public class LogContinuousMeasurementEstimate extends BasicContinuousMeasurement
 
 	public double getExpMean() {
 		return Math.exp(getMean());
+	}
+	
+	@Override
+	public String toString() {
+		if (getMean() == null || getStdDev() == null) {
+			return "INCOMPLETE"; 
+		}
+		
+		DecimalFormat df = new DecimalFormat("##0.0##");
+		return df.format(getExpMean()) + " (" + df.format(getConfidenceInterval().getLowerBound())
+				+ ", " + df.format(getConfidenceInterval().getUpperBound()) + ")";
 	}
 }

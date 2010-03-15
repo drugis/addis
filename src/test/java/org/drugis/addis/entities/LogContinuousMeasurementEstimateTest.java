@@ -41,4 +41,8 @@ public class LogContinuousMeasurementEstimateTest {
 		assertEquals(Math.exp(1.73), d_logEstimate.getExpMean(),0.00001);
 	}
 	
+	@Test
+	public void testToString() {
+		assertEquals("5.641 (2.476, 12.848)", d_logEstimate.toString());
+	}
 }

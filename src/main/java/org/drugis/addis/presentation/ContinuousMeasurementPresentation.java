@@ -21,38 +21,11 @@ public class ContinuousMeasurementPresentation extends PresentationModel<Continu
 		}
 		
 		public String getValue() {
-			return generateLabel(getMean(), getStdDev(), getSampleSize());
-		}
-
-		private Double getStdDev() {
-			return getBean().getStdDev();
-		}
-
-		private Double getMean() {
-			return getBean().getMean();
-		}
-		
-		public String generateLabel(Double mean, Double stdDev, Integer sampleSize) {
-			if (mean == null || stdDev == null || sampleSize == null) {
-				return "INCOMPLETE"; 
-			}
-			
-			DecimalFormat df = new DecimalFormat("####0.0##");
-			return df.format(mean) + " \u00B1 " + df.format(stdDev) + " (" + sampleSize + ")";
+			return getBean().toString();
 		}
 		
 		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals(ContinuousMeasurement.PROPERTY_MEAN)) {
-				firePropertyChange("value", generateLabel((Double) evt.getOldValue(), getStdDev(), getSampleSize()), generateLabel((Double) evt.getNewValue(), getStdDev(), getSampleSize()));
-			} else if (evt.getPropertyName().equals(ContinuousMeasurement.PROPERTY_STDDEV)) {
-				firePropertyChange("value", generateLabel(getMean(), (Double) evt.getOldValue(), getSampleSize()), generateLabel(getMean(), (Double) evt.getNewValue(), getSampleSize()));
-			} else if (evt.getPropertyName().equals(Measurement.PROPERTY_SAMPLESIZE)) {
-				firePropertyChange("value", generateLabel(getMean(), getStdDev(), (Integer) evt.getOldValue()), generateLabel(getMean(), getStdDev(), (Integer) evt.getNewValue()));
-			}
-		}
-
-		private Integer getSampleSize() {
-			return getBean().getSampleSize();
+			firePropertyChange("value", null, getBean().toString());
 		}
 
 		public void setValue(Object newValue) {
