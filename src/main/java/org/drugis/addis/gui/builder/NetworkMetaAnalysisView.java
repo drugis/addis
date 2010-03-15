@@ -39,9 +39,11 @@ implements ViewBuilder {
 		d_pm.getBean().getModel().addProgressListener(new ProgressListener() {
 			public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
 				if (d_pane != null) {
-					if(event.getType() == EventType.SIMULATION_PROGRESS){
+					if(event.getType() == EventType.SIMULATION_PROGRESS && d_progressBar != null){
+						d_progressBar.setString("Simulating: " + event.getIteration()/1000 + "%");
 						d_progressBar.setValue(event.getIteration()/1000);
 					} else if(event.getType() == EventType.BURNIN_PROGRESS && d_progressBar != null){
+						d_progressBar.setString("Burning: " + event.getIteration()/40 + "%");
 						d_progressBar.setValue(event.getIteration()/40);
 					} else if(event.getType() == EventType.SIMULATION_FINISHED) {
 						d_pane.setVisible(false);
@@ -105,6 +107,7 @@ implements ViewBuilder {
 			if(d_progressBar == null)
 				d_progressBar = new JProgressBar();
 			
+			d_progressBar.setStringPainted(true);
 			return d_progressBar;
 		}
 
@@ -120,6 +123,4 @@ implements ViewBuilder {
 		
 		return sp;
 	}	
-	
-
 }
