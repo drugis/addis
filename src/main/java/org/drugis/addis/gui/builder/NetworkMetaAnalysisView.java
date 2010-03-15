@@ -1,7 +1,6 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -28,41 +27,53 @@ import com.jgoodies.forms.layout.FormLayout;
 public class NetworkMetaAnalysisView extends AbstractMetaAnalysisView<NetworkMetaAnalysisPresentation>
 implements ViewBuilder {
 	
+	
+	private class AnalysisProgressListener implements ProgressListener {
+		private JProgressBar d_progBar;
+		
+		public AnalysisProgressListener(JProgressBar progBar, MixedTreatmentComparison networkModel) {
+			d_progBar = progBar;
+			networkModel.addProgressListener(this);
+		}
+		
+		public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
+			if (d_pane != null) {
+				if(event.getType() == EventType.SIMULATION_PROGRESS && d_incProgressBar != null){
+					d_progBar.setString("Simulating: " + event.getIteration()/1000 + "%");
+					d_progBar.setValue(event.getIteration()/1000);
+				} else if(event.getType() == EventType.BURNIN_PROGRESS && d_incProgressBar != null){
+					d_progBar.setString("Burn in: " + event.getIteration()/40 + "%");
+					d_progBar.setValue(event.getIteration()/40);
+				} else if(event.getType() == EventType.SIMULATION_FINISHED) {
+					d_progBar.setVisible(false);
+				}
+			}
+		}
+	}
+	
+	
 	JPanel d_pane = new JPanel();
 	private PanelBuilder d_builder;
 	private CellConstraints d_cc;
-	private JProgressBar d_progressBar;
+	private JProgressBar d_incProgressBar;
+	private JProgressBar d_conProgressBar;
 	
 	public NetworkMetaAnalysisView(NetworkMetaAnalysisPresentation model, Main main) {
 		super(model, main);
 
-		d_pm.getBean().getModel().addProgressListener(new ProgressListener() {
-			public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
-				if (d_pane != null) {
-					if(event.getType() == EventType.SIMULATION_PROGRESS && d_progressBar != null){
-						d_progressBar.setString("Simulating: " + event.getIteration()/1000 + "%");
-						d_progressBar.setValue(event.getIteration()/1000);
-					} else if(event.getType() == EventType.BURNIN_PROGRESS && d_progressBar != null){
-						d_progressBar.setString("Burning: " + event.getIteration()/40 + "%");
-						d_progressBar.setValue(event.getIteration()/40);
-					} else if(event.getType() == EventType.SIMULATION_FINISHED) {
-						d_pane.setVisible(false);
-						d_pane.removeAll();
-						buildPanel();
-						d_pane.setVisible(true);
-					}
-				}
-			}
-		});
+		d_conProgressBar = new JProgressBar();
+		d_incProgressBar = new JProgressBar();
+		
+		new AnalysisProgressListener(d_conProgressBar, d_pm.getBean().getConsistencyModel());
+		new AnalysisProgressListener(d_incProgressBar, d_pm.getBean().getInconsistencyModel());
 
-		Thread t = new Thread(d_pm.getBean());
-		t.start();
+		d_pm.getBean().run();
 	}
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		d_builder = new PanelBuilder(layout);
 	
 		d_builder.setDefaultDialogBorder();
@@ -78,16 +89,20 @@ implements ViewBuilder {
 		d_builder.addSeparator("Evidence network", d_cc.xy(1, 9));
 		d_builder.add(GUIFactory.createCollapsiblePanel(buildStudyGraphPart()), d_cc.xy(1, 11));
 
-		d_builder.addSeparator("Results", d_cc.xy(1, 13));
-		JComponent resultsPart = buildResultsPart();
-		d_builder.add(GUIFactory.createCollapsiblePanel(resultsPart), d_cc.xy(1, 15));
+		d_builder.addSeparator("Results - network inconsistency model", d_cc.xy(1, 13));
+		if(!d_pm.getBean().getConsistencyModel().isReady())
+			d_builder.add(d_incProgressBar, d_cc.xy(1, 15));
+		JComponent inconsistencyResultsPart = buildResultsPart(d_pm.getBean().getInconsistencyModel(),d_incProgressBar);
+		d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyResultsPart), d_cc.xy(1, 17));
+		
+		d_builder.addSeparator("Results - network consistency model", d_cc.xy(1, 19));
+		if(!d_pm.getBean().getInconsistencyModel().isReady())
+			d_builder.add(d_conProgressBar, d_cc.xy(1, 21));
+		JComponent consistencyResultsPart = buildResultsPart(d_pm.getBean().getConsistencyModel(), d_conProgressBar);
+		d_builder.add(GUIFactory.createCollapsiblePanel(consistencyResultsPart), d_cc.xy(1, 23));
 
 		d_pane.setLayout(new BorderLayout());
 		d_pane.add(d_builder.getPanel(), BorderLayout.CENTER);
-		
-		// Update preferred size when the size of the results section has changed.
-		Dimension curSize = d_pane.getPreferredSize();
-		d_pane.setPreferredSize(new Dimension(curSize.width, (int) (curSize.height + resultsPart.getPreferredSize().getHeight())));
 
 		return d_pane;
 	}
@@ -98,29 +113,28 @@ implements ViewBuilder {
 		return panel;
 	}
 	
-	public JComponent buildResultsPart() {
-		// make table of results (cipriani 2009, fig. 3, pp752):
-		final NetworkMetaAnalysisTableModel networkAnalysisTableModel = new NetworkMetaAnalysisTableModel(
-				d_pm, d_parent.getPresentationModelFactory());
+	public JComponent buildResultsPart(MixedTreatmentComparison networkModel, JProgressBar progBar) {
+		JScrollPane scrollPane = new JScrollPane();
 		
-		if(!d_pm.getBean().getModel().isReady()){
-			if(d_progressBar == null)
-				d_progressBar = new JProgressBar();
-			
-			d_progressBar.setStringPainted(true);
-			return d_progressBar;
+		if(!networkModel.isReady()){
+			progBar.setStringPainted(true);
 		}
 
+		// make table of results (cipriani 2009, fig. 3, pp752):
+		final NetworkMetaAnalysisTableModel networkAnalysisTableModel = new NetworkMetaAnalysisTableModel(
+				d_pm, d_parent.getPresentationModelFactory(), networkModel);
+		
 		// this creates the table
 		NetworkMetaAnalysisTablePanel tablePanel = new NetworkMetaAnalysisTablePanel(d_parent, networkAnalysisTableModel);
 		tablePanel.setVisible(true);
 		
-		JScrollPane sp = new JScrollPane(tablePanel);		
-		sp.setViewportBorder(BorderFactory.createEmptyBorder());
-		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		sp.getVerticalScrollBar().setUnitIncrement(16);
+		scrollPane.getViewport().add(tablePanel);
+		scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		
-		return sp;
+		return scrollPane;
 	}	
+	
 }

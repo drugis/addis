@@ -11,17 +11,21 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.NetworkBuilder;
 
-public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis, Runnable{
+public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis{
 	private static final long serialVersionUID = -1646175155970420625L;
 	
-	transient private InconsistencyModel d_model;
+	transient private InconsistencyModel d_inconsistencyModel;
+	transient private ConsistencyModel d_consistencyModel;
 	transient private NetworkBuilder d_builder;
-
+	transient private boolean d_hasRun = false;
 	private Map<Study, Map<Drug, Arm>> d_armMap;
+
+	
 
 	public NetworkMetaAnalysis(String name, Indication indication,
 			OutcomeMeasure om, List<? extends Study> studies, List<Drug> drugs,
@@ -32,6 +36,10 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 
 	private InconsistencyModel createInconsistencyModel() {
 		return (DefaultModelFactory.instance()).getInconsistencyModel(getBuilder().buildNetwork());
+	}
+	
+	private ConsistencyModel createConsistencyModel() {
+		return (DefaultModelFactory.instance()).getConsistencyModel(getBuilder().buildNetwork());
 	}
 
 	private NetworkBuilder createBuilder(List<? extends Study> studies, List<Drug> drugs,
@@ -58,11 +66,18 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return "Markov Chain Monte Carlo Network Meta-Analysis";
 	}
 
-	public InconsistencyModel getModel() {
-		if (d_model == null) {
-			d_model = createInconsistencyModel();
+	public InconsistencyModel getInconsistencyModel() {
+		if (d_inconsistencyModel == null) {
+			d_inconsistencyModel = createInconsistencyModel();
 		}
-		return d_model;
+		return d_inconsistencyModel;
+	}
+	
+	public ConsistencyModel getConsistencyModel() {
+		if (d_consistencyModel == null) {
+			d_consistencyModel = createConsistencyModel();
+		}
+		return d_consistencyModel;
 	}
 
 	public NetworkBuilder getBuilder() {
@@ -73,7 +88,15 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	public void run() {
-		// TODO Auto-generated method stub
-		getModel().run();
+		if (!d_hasRun)
+		{
+			Thread inconsistency = new Thread(getInconsistencyModel());
+			inconsistency.start();
+		
+			Thread consistency = new Thread(getConsistencyModel());
+			consistency.start();
+		}
+		d_hasRun = true;
+		
 	}
 }
