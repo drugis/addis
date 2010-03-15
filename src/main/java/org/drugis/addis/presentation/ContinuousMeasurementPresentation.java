@@ -2,10 +2,8 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.DecimalFormat;
 
 import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.addis.entities.Measurement;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;

@@ -2,20 +2,17 @@ package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
-import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkMetaAnalysisTableModel;
 import org.drugis.common.gui.ViewBuilder;
@@ -34,14 +31,19 @@ implements ViewBuilder {
 	JPanel d_pane = new JPanel();
 	private PanelBuilder d_builder;
 	private CellConstraints d_cc;
+	private JProgressBar d_progressBar;
 	
 	public NetworkMetaAnalysisView(NetworkMetaAnalysisPresentation model, Main main) {
 		super(model, main);
 
-		d_pm.getBean().getModel().addProgressListener(new ProgressListener() {	
+		d_pm.getBean().getModel().addProgressListener(new ProgressListener() {
 			public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
 				if (d_pane != null) {
-					if(event.getType() == EventType.SIMULATION_FINISHED) {
+					if(event.getType() == EventType.SIMULATION_PROGRESS){
+						d_progressBar.setValue(event.getIteration()/1000);
+					} else if(event.getType() == EventType.BURNIN_PROGRESS && d_progressBar != null){
+						d_progressBar.setValue(event.getIteration()/40);
+					} else if(event.getType() == EventType.SIMULATION_FINISHED) {
 						d_pane.setVisible(false);
 						d_pane.removeAll();
 						buildPanel();
@@ -99,17 +101,12 @@ implements ViewBuilder {
 		final NetworkMetaAnalysisTableModel networkAnalysisTableModel = new NetworkMetaAnalysisTableModel(
 				d_pm, d_parent.getPresentationModelFactory());
 		
-		ModifiableHolder<Boolean> readyModel = new ModifiableHolder<Boolean> (d_pm.getBean().getModel().isReady());
-		readyModel.addValueChangeListener(new PropertyChangeListener() {
+		if(!d_pm.getBean().getModel().isReady()){
+			if(d_progressBar == null)
+				d_progressBar = new JProgressBar();
 			
-			public void propertyChange(PropertyChangeEvent evt) {
-				System.out.println("value changed!");
-			}
-		});
-
-		
-		if(!d_pm.getBean().getModel().isReady())
-			return new JLabel("calculating.....");
+			return d_progressBar;
+		}
 
 		// this creates the table
 		NetworkMetaAnalysisTablePanel tablePanel = new NetworkMetaAnalysisTablePanel(d_parent, networkAnalysisTableModel);
