@@ -1,27 +1,29 @@
 package org.drugis.addis.entities;
 
+import org.apache.commons.math.MathException;
+import org.apache.commons.math.distribution.NormalDistribution;
+import org.apache.commons.math.distribution.NormalDistributionImpl;
+import org.drugis.common.Interval;
+
 public class LogContinuousMeasurementEstimate extends BasicContinuousMeasurement {
 	private static final long serialVersionUID = -593325391463716636L;
 
 	public LogContinuousMeasurementEstimate(double logMean, double logStdDev) {
-		super(Math.exp(logMean), Math.exp(logStdDev), 0);
-		// TODO Auto-generated constructor stub
+		super(logMean, logStdDev, 0);
 	}
 	
-	public Double getMean() {
-		return Math.log(super.getMean());
-	}
-	
-	public void setMean(Double logMean) {
-		super.setMean(Math.exp(logMean));
-	}
-	
-	public Double getStdDev() {
-		return Math.log(super.getStdDev());
-	}
-	
-	public void setStdDev(Double logStdDev) {
-		super.setStdDev(Math.exp(logStdDev));
+	public Interval<Double> getConfidenceInterval() {
+		NormalDistribution distribution = new NormalDistributionImpl(getMean(), getStdDev());
+		try {
+			return new Interval<Double>(Math.exp(distribution.inverseCumulativeProbability(0.025)),
+					Math.exp(distribution.inverseCumulativeProbability(0.975)));
+		} catch (MathException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
+	public double getExpMean() {
+		return Math.exp(getMean());
+	}
 }
