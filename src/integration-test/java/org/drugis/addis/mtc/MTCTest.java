@@ -81,6 +81,9 @@ public class MTCTest {
     	
     	for (InconsistencyParameter p : d_model.getInconsistencyFactors()) {
     		assertNotNull(d_model.getInconsistency(p));
+    		System.out.println("\n"+d_model.getInconsistency(p));
+    		System.out.println(p);
+    		System.out.println(p.treatmentList());
     	}
     }
 }

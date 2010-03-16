@@ -48,6 +48,7 @@ import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.RelativeEffectFactory;
 
 public class ExampleData {
+	private static Study s_studyFava02 = null;
 	private static Indication s_indicationDepression;
 	private static Endpoint s_endpointHamd;
 	private static Endpoint s_endpointCgi;
@@ -500,14 +501,68 @@ public class ExampleData {
 		return study;
 	}
 	
+	public static Study buildStudyFava2002() {
+		if (s_studyFava02 == null) {
+			s_studyFava02 = realBuildStudyFava02();
+		}
+	
+		return s_studyFava02;
+	}
+
+	private static Study realBuildStudyFava02() {
+		Endpoint hamd = buildEndpointHamd();
+		Drug fluoxetine = buildDrugFluoxetine();
+		Drug sertraline = buildDrugSertraline();
+		Drug paroxetine = buildDrugParoxetine();
+		Study study = new Study("Fava et al, 2002", buildIndicationDepression());
+		study.setEndpoints(Collections.singletonList(hamd));
+		
+		// Study characteristics
+		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, 1);
+		study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,
+				"");
+		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,
+				"");
+		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
+				"");
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
+		
+		// Sertraline data
+		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
+		Arm sertr = new Arm(sertraline, dose, 96);
+		BasicRateMeasurement sHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
+		sHamd.setRate(70);
+		study.addArm(sertr);
+		study.setMeasurement(hamd, sertr, sHamd);
+
+		// Fluoxetine data
+		dose = new FixedDose(30.0, SIUnit.MILLIGRAMS_A_DAY);
+		Arm fluox = new Arm(fluoxetine, dose, 92);
+		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
+		fHamd.setRate(57);
+		study.addArm(fluox);
+		study.setMeasurement(hamd, fluox, fHamd);
+		
+		// Paroxetine data
+		dose = new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY);
+		Arm parox = new Arm(paroxetine, dose, 93);
+		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
+		pHamd.setRate(64);
+		study.addArm(parox);
+		study.setMeasurement(hamd, parox, pHamd);
+		
+		return study;
+	}
+	
 	public static Drug buildPlacebo() {
 		if (s_placebo == null) {
 			s_placebo = new Drug("Placebo", "");
 		}
 		return s_placebo;
 	}
-
-
+	
 	public static Drug buildDrugParoxetine() {
 		if (s_parox == null) {
 			s_parox = new Drug("Paroxetine", "A04AA01");
@@ -587,15 +642,13 @@ public class ExampleData {
 
 	public static NetworkMetaAnalysis buildNetworkMetaAnalysis() {
 		List<Study> studies = Arrays.asList(new Study[] {
-				buildStudyBennie(), buildStudyChouinard(), buildStudyDeWilde()});
+				buildStudyBennie(), buildStudyChouinard(), buildStudyDeWilde(), buildStudyFava2002()});
 		List<Drug> drugs = Arrays.asList(new Drug[] {buildDrugFluoxetine(), buildDrugParoxetine(), 
 				buildDrugSertraline()});
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network", 
 				buildIndicationDepression(), buildEndpointHamd(),
 				studies, drugs, buildMap(studies, drugs));
-		//Thread thread = new Thread(analysis);
-		//thread.start();
 		
 		return analysis;
 	}

@@ -13,7 +13,9 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.DefaultModelFactory;
+import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyModel;
+import org.drugis.mtc.InconsistencyParameter;
 import org.drugis.mtc.NetworkBuilder;
 
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis{
@@ -96,7 +98,14 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			Thread consistency = new Thread(getConsistencyModel());
 			consistency.start();
 		}
-		d_hasRun = true;
-		
+		d_hasRun = true;	
+	}
+	
+	public List<InconsistencyParameter> getInconsistencyFactors(){
+		return getInconsistencyModel().getInconsistencyFactors();
+	}
+	
+	public Estimate getInconsistency(InconsistencyParameter ip){
+		return getInconsistencyModel().getInconsistency(ip);
 	}
 }

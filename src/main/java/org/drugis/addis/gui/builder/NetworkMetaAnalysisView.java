@@ -13,7 +13,7 @@ import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
-import org.drugis.addis.presentation.NetworkMetaAnalysisTableModel;
+import org.drugis.addis.presentation.NetworkTableModel;
 import org.drugis.common.gui.ViewBuilder;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.ProgressEvent;
@@ -121,7 +121,7 @@ implements ViewBuilder {
 		}
 
 		// make table of results (cipriani 2009, fig. 3, pp752):
-		final NetworkMetaAnalysisTableModel networkAnalysisTableModel = new NetworkMetaAnalysisTableModel(
+		final NetworkTableModel networkAnalysisTableModel = new NetworkTableModel(
 				d_pm, d_parent.getPresentationModelFactory(), networkModel);
 		
 		// this creates the table

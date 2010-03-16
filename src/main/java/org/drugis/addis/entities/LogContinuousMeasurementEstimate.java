@@ -10,7 +10,7 @@ import org.drugis.common.Interval;
 public class LogContinuousMeasurementEstimate extends BasicContinuousMeasurement {
 	private static final long serialVersionUID = -593325391463716636L;
 
-	public LogContinuousMeasurementEstimate(double logMean, double logStdDev) {
+	public LogContinuousMeasurementEstimate(Double logMean, Double logStdDev) {
 		super(logMean, logStdDev, 0);
 	}
 	
@@ -32,7 +32,7 @@ public class LogContinuousMeasurementEstimate extends BasicContinuousMeasurement
 	@Override
 	public String toString() {
 		if (getMean() == null || getStdDev() == null) {
-			return "INCOMPLETE"; 
+			return "n/a"; 
 		}
 		
 		DecimalFormat df = new DecimalFormat("##0.0##");

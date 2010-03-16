@@ -10,20 +10,21 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.gui.components.EnhancedTableHeader;
 import org.drugis.addis.presentation.LabeledPresentationModel;
-import org.drugis.addis.presentation.NetworkMetaAnalysisTableModel;
+import org.drugis.addis.presentation.NetworkTableModel;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisTablePanel extends JPanel{
-	private NetworkMetaAnalysisTableModel d_tableModel;
+	private NetworkTableModel d_tableModel;
 
-	public NetworkMetaAnalysisTablePanel(JFrame parent, NetworkMetaAnalysisTableModel networkAnalysisTableModel) {
+	public NetworkMetaAnalysisTablePanel(JFrame parent, NetworkTableModel networkAnalysisTableModel) {
 		d_tableModel = networkAnalysisTableModel;
 		
 		initComps();
@@ -50,6 +51,15 @@ public class NetworkMetaAnalysisTablePanel extends JPanel{
 			if (d_tableModel.getDescriptionAt(row, col) != null) {
 				label.setToolTipText(d_tableModel.getDescriptionAt(row, col));
 			}
+			
+			// Resize column if necessary.
+			TableColumn colo = table.getColumnModel().getColumn(col);
+			if (label.getPreferredSize().width > colo.getWidth()) {
+				table.setVisible(false);
+				colo.setMinWidth(label.getPreferredSize().width + 5);
+				table.setVisible(true);
+			}
+			
 			
 			return label;
 		}

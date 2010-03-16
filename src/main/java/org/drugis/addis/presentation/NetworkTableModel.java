@@ -2,7 +2,6 @@ package org.drugis.addis.presentation;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.LogContinuousMeasurementEstimate;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Estimate;
@@ -11,12 +10,12 @@ import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Treatment;
 
 @SuppressWarnings("serial")
-public class NetworkMetaAnalysisTableModel  extends AbstractTableModel{
+public class NetworkTableModel  extends AbstractTableModel{
 	private NetworkMetaAnalysisPresentation d_pm;
 	private PresentationModelFactory d_pmf;
 	MixedTreatmentComparison d_networkModel;
 
-	public NetworkMetaAnalysisTableModel(NetworkMetaAnalysisPresentation pm, PresentationModelFactory pmf, MixedTreatmentComparison networkModel) {
+	public NetworkTableModel(NetworkMetaAnalysisPresentation pm, PresentationModelFactory pmf, MixedTreatmentComparison networkModel) {
 		d_pm = pm;
 		d_pmf = pmf;
 		d_networkModel = networkModel;
@@ -41,7 +40,7 @@ public class NetworkMetaAnalysisTableModel  extends AbstractTableModel{
 		if (row == col) {
 			return d_pmf.getModel(d_pm.getBean().getIncludedDrugs().get(row));
 		} else if(!d_networkModel.isReady()){
-			return d_pmf.getModel(new BasicContinuousMeasurement(0.0, 0.0,0));
+			return d_pmf.getModel(new LogContinuousMeasurementEstimate(null, null));
 		} 
 
 		final Treatment drug1 = d_pm.getBean().getBuilder().getTreatment(d_pm.getBean().getIncludedDrugs().get(row).toString());
@@ -51,6 +50,11 @@ public class NetworkMetaAnalysisTableModel  extends AbstractTableModel{
 
 		// convert to Log Odds-ratio
 		return d_pmf.getModel(new LogContinuousMeasurementEstimate(relEffect.getMean(), relEffect.getStandardDeviation()));
+		
+//		BasicContinuousMeasurement contMeas = new BasicContinuousMeasurement(relEffect.getMean(), relEffect.getStandardDeviation(), 0);
+//		PresentationModel<BasicContinuousMeasurement> pres = d_pmf.getModel(contMeas);
+//		ContinuousMeasurementPresentation<BasicContinuousMeasurement> pm = (ContinuousMeasurementPresentation) pres;
+//		return pm.normConfIntervalString();
 	}
 
 	public String getDescription() {
