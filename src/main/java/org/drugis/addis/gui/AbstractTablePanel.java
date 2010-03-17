@@ -50,6 +50,7 @@ public class AbstractTablePanel extends JPanel {
 						BorderFactory.createEmptyBorder(7, 7, 7, 7),
 						BorderFactory.createMatteBorder(1, 1, 0, 0, Color.gray)));
 		d_table.setPreferredScrollableViewportSize(new Dimension(500, d_table.getPreferredSize().height ));
+		d_table.setBackground(Color.WHITE);
 		
 		d_rootPanel.add(scroll, BorderLayout.CENTER);			
 		this.add(d_rootPanel); 
