@@ -17,7 +17,6 @@ import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.InconsistencyParameter;
 import org.drugis.mtc.NetworkBuilder;
-import org.drugis.mtc.Treatment;
 
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis{
 	private static final long serialVersionUID = -1646175155970420625L;

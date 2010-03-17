@@ -105,8 +105,5 @@ public class MTCTest {
     	
     	assertTrue(model.rankProbability( d_builder.getTreatment("C"), 3) < model.rankProbability( d_builder.getTreatment("B"), 3));
     	assertTrue(model.rankProbability( d_builder.getTreatment("B"), 3) < model.rankProbability( d_builder.getTreatment("A"), 3));
- 	
-    
-
     }
 }
