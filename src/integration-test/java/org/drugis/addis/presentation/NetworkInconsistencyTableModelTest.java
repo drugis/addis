@@ -44,7 +44,6 @@ public class NetworkInconsistencyTableModelTest {
 			for(int y = 0; y < d_tableModel.getRowCount(); ++y) {
 				InconsistencyParameter ip = d_analysis.getInconsistencyModel().getInconsistencyFactors().get(y);
 				if(x == 0){
-					// TODO: the order is not stable :s
 					assertEquals("Fluoxetine, Sertraline, Paroxetine", d_tableModel.getValueAt(y, x));
 				} else if (x == 1){
 					Estimate icModel = d_analysis.getInconsistencyModel().getInconsistency(ip);
