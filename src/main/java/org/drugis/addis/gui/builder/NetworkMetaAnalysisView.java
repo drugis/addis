@@ -8,10 +8,12 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 
+import org.drugis.addis.gui.AbstractTablePanel;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
+import org.drugis.addis.presentation.NetworkInconsistencyTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
 import org.drugis.common.gui.ViewBuilder;
@@ -73,7 +75,7 @@ implements ViewBuilder {
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		d_builder = new PanelBuilder(layout);
 	
 		d_builder.setDefaultDialogBorder();
@@ -95,11 +97,17 @@ implements ViewBuilder {
 		JComponent inconsistencyResultsPart = buildResultsPart(d_pm.getBean().getInconsistencyModel(),d_incProgressBar);
 		d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyResultsPart), d_cc.xy(1, 17));
 		
-		d_builder.addSeparator("Results - network consistency model", d_cc.xy(1, 19));
+		NetworkInconsistencyTableModel inconsistencyTableModel = new NetworkInconsistencyTableModel(
+						d_pm, d_parent.getPresentationModelFactory());
+		JPanel inconsistencyTable = new AbstractTablePanel(inconsistencyTableModel);
+		//JTable inconsistencyTable = new JTable(inconsistencyTableModel);
+		d_builder.add(inconsistencyTable, d_cc.xy(1, 19));
+			
+		d_builder.addSeparator("Results - network consistency model", d_cc.xy(1, 21));
 		if(!d_pm.getBean().getInconsistencyModel().isReady())
-			d_builder.add(d_conProgressBar, d_cc.xy(1, 21));
+			d_builder.add(d_conProgressBar, d_cc.xy(1, 23));
 		JComponent consistencyResultsPart = buildResultsPart(d_pm.getBean().getConsistencyModel(), d_conProgressBar);
-		d_builder.add(GUIFactory.createCollapsiblePanel(consistencyResultsPart), d_cc.xy(1, 23));
+		d_builder.add(GUIFactory.createCollapsiblePanel(consistencyResultsPart), d_cc.xy(1, 25));
 
 		d_pane.setLayout(new BorderLayout());
 		d_pane.add(d_builder.getPanel(), BorderLayout.CENTER);
@@ -127,8 +135,8 @@ implements ViewBuilder {
 		// this creates the table
 		NetworkMetaAnalysisTablePanel tablePanel = new NetworkMetaAnalysisTablePanel(d_parent, networkAnalysisTableModel);
 		tablePanel.setVisible(true);
-		
 		scrollPane.getViewport().add(tablePanel);
+		
 		scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

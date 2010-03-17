@@ -50,11 +50,6 @@ public class NetworkTableModel  extends AbstractTableModel{
 
 		// convert to Log Odds-ratio
 		return d_pmf.getModel(new LogContinuousMeasurementEstimate(relEffect.getMean(), relEffect.getStandardDeviation()));
-		
-//		BasicContinuousMeasurement contMeas = new BasicContinuousMeasurement(relEffect.getMean(), relEffect.getStandardDeviation(), 0);
-//		PresentationModel<BasicContinuousMeasurement> pres = d_pmf.getModel(contMeas);
-//		ContinuousMeasurementPresentation<BasicContinuousMeasurement> pm = (ContinuousMeasurementPresentation) pres;
-//		return pm.normConfIntervalString();
 	}
 
 	public String getDescription() {

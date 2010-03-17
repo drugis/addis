@@ -15,6 +15,10 @@ public class NetworkInconsistencyTableModel  extends AbstractTableModel{
 		d_pm = pm;
 		d_pmf = pmf;
 	}
+	
+	public String getColumnName(int column) {
+		return column == 0 ? "Inconsistency Cycle" : "Confidence Interval";
+	}
 
 	public int getColumnCount() {
 		return 2;
@@ -33,6 +37,9 @@ public class NetworkInconsistencyTableModel  extends AbstractTableModel{
 	}*/
 	
 	public String getValueAt(int row, int col) {
+		if(!d_pm.getBean().getInconsistencyModel().isReady()){
+			return "n/a";
+		}
 		InconsistencyParameter ip = d_pm.getBean().getInconsistencyModel().getInconsistencyFactors().get(row);
 		if(col == 0){
 			String out = "(";
@@ -41,7 +48,6 @@ public class NetworkInconsistencyTableModel  extends AbstractTableModel{
 			}
 			return out.substring(0, out.length()-2) + ")";
 		} else{
-			//DecimalFormat df = new DecimalFormat("##0.0##");
 			Estimate ic = d_pm.getBean().getInconsistency(ip);
 
 			BasicContinuousMeasurement contMeas = new BasicContinuousMeasurement(ic.getMean(), ic.getStandardDeviation(), 0);
