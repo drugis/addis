@@ -95,15 +95,22 @@ public class MTCTest {
     	ConsistencyModel model = factory.getConsistencyModel(d_network);
     	
     	model.run();
-
-    	assertTrue(model.rankProbability( d_builder.getTreatment("A"), 1) < model.rankProbability( d_builder.getTreatment("B"), 1));
-    	assertTrue(model.rankProbability( d_builder.getTreatment("B"), 1) < model.rankProbability( d_builder.getTreatment("C"), 1));
- 	
-    	assertTrue(model.rankProbability( d_builder.getTreatment("A"), 2) < model.rankProbability( d_builder.getTreatment("C"), 2));
-    	assertTrue(model.rankProbability( d_builder.getTreatment("C"), 2) < model.rankProbability( d_builder.getTreatment("B"), 2));
- 	
     	
-    	assertTrue(model.rankProbability( d_builder.getTreatment("C"), 3) < model.rankProbability( d_builder.getTreatment("B"), 3));
-    	assertTrue(model.rankProbability( d_builder.getTreatment("B"), 3) < model.rankProbability( d_builder.getTreatment("A"), 3));
+    	assertTrue(model.rankProbability(d_builder.getTreatment("A"), 1) < model.rankProbability( d_builder.getTreatment("B"), 1));
+    	assertTrue(model.rankProbability(d_builder.getTreatment("B"), 1) < model.rankProbability( d_builder.getTreatment("C"), 1));
+    	
+    	assertTrue(model.rankProbability(d_builder.getTreatment("A"), 2) < model.rankProbability( d_builder.getTreatment("C"), 2));
+    	assertTrue(model.rankProbability(d_builder.getTreatment("C"), 2) < model.rankProbability( d_builder.getTreatment("B"), 2));
+    	
+    	assertTrue(model.rankProbability(d_builder.getTreatment("C"), 3) < model.rankProbability( d_builder.getTreatment("B"), 3));
+    	assertTrue(model.rankProbability(d_builder.getTreatment("B"), 3) < model.rankProbability( d_builder.getTreatment("A"), 3));
+    	
+    	assertEquals(1.0, model.rankProbability(d_builder.getTreatment("A"), 1) + model.rankProbability(d_builder.getTreatment("B"), 1) + model.rankProbability(d_builder.getTreatment("C"), 1), 0.00001);
+    	assertEquals(1.0, model.rankProbability(d_builder.getTreatment("A"), 2) + model.rankProbability(d_builder.getTreatment("B"), 2) + model.rankProbability(d_builder.getTreatment("C"), 2), 0.00001);
+    	assertEquals(1.0, model.rankProbability(d_builder.getTreatment("A"), 3) + model.rankProbability(d_builder.getTreatment("B"), 3) + model.rankProbability(d_builder.getTreatment("C"), 3), 0.00001);
+    	
+    	assertEquals(1.0, model.rankProbability(d_builder.getTreatment("A"), 1) + model.rankProbability(d_builder.getTreatment("A"), 2) + model.rankProbability(d_builder.getTreatment("A"), 3), 0.00001);
+    	assertEquals(1.0, model.rankProbability(d_builder.getTreatment("B"), 1) + model.rankProbability(d_builder.getTreatment("B"), 2) + model.rankProbability(d_builder.getTreatment("B"), 3), 0.00001);
+    	assertEquals(1.0, model.rankProbability(d_builder.getTreatment("C"), 1) + model.rankProbability(d_builder.getTreatment("C"), 2) + model.rankProbability(d_builder.getTreatment("C"), 3), 0.00001);
     }
 }
