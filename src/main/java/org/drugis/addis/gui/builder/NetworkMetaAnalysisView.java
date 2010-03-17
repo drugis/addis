@@ -4,10 +4,12 @@ import java.awt.BorderLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.AbstractTablePanel;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
@@ -66,10 +68,12 @@ implements ViewBuilder {
 		d_conProgressBar = new JProgressBar();
 		d_incProgressBar = new JProgressBar();
 		
-		new AnalysisProgressListener(d_conProgressBar, d_pm.getBean().getConsistencyModel());
-		new AnalysisProgressListener(d_incProgressBar, d_pm.getBean().getInconsistencyModel());
-
-		d_pm.getBean().run();
+		if( !(d_pm.getBean().getIncludedStudies().get(0).getEndpoints().get(0).getType() == Variable.Type.CONTINUOUS)){
+			new AnalysisProgressListener(d_conProgressBar, d_pm.getBean().getConsistencyModel());
+			new AnalysisProgressListener(d_incProgressBar, d_pm.getBean().getInconsistencyModel());
+	
+			d_pm.getBean().run();
+		}
 	}
 
 	public JComponent buildPanel() {
@@ -91,22 +95,29 @@ implements ViewBuilder {
 		d_builder.addSeparator("Evidence network", d_cc.xy(1, 9));
 		d_builder.add(GUIFactory.createCollapsiblePanel(buildStudyGraphPart()), d_cc.xy(1, 11));
 
-		d_builder.addSeparator("Results - network inconsistency model", d_cc.xy(1, 13));
-		if(!d_pm.getBean().getConsistencyModel().isReady())
-			d_builder.add(d_incProgressBar, d_cc.xy(1, 15));
-		JComponent inconsistencyResultsPart = buildResultsPart(d_pm.getBean().getInconsistencyModel(),d_incProgressBar);
-		d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyResultsPart), d_cc.xy(1, 17));
-		
-		NetworkInconsistencyTableModel inconsistencyTableModel = new NetworkInconsistencyTableModel(
-						d_pm, d_parent.getPresentationModelFactory());
-		JPanel inconsistencyTable = new AbstractTablePanel(inconsistencyTableModel);
-		d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyTable), d_cc.xy(1, 19));
+		System.out.println(d_pm.getBean().getIncludedStudies().get(0).getEndpoints().get(0).getType());
+		if( d_pm.getBean().getIncludedStudies().get(0).getEndpoints().get(0).getType() == Variable.Type.CONTINUOUS){
+			d_builder.addSeparator("Results", d_cc.xy(1, 13));
+			d_builder.add(new JLabel("Network meta analysis not yet possible for continuous measurements."), d_cc.xy(1, 15));
+		}
+		else{		
+			d_builder.addSeparator("Results - network inconsistency model", d_cc.xy(1, 13));
+			if(!d_pm.getBean().getConsistencyModel().isReady())
+				d_builder.add(d_incProgressBar, d_cc.xy(1, 15));
+			JComponent inconsistencyResultsPart = buildResultsPart(d_pm.getBean().getInconsistencyModel(),d_incProgressBar);
+			d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyResultsPart), d_cc.xy(1, 17));
 			
-		d_builder.addSeparator("Results - network consistency model", d_cc.xy(1, 21));
-		if(!d_pm.getBean().getInconsistencyModel().isReady())
-			d_builder.add(d_conProgressBar, d_cc.xy(1, 23));
-		JComponent consistencyResultsPart = buildResultsPart(d_pm.getBean().getConsistencyModel(), d_conProgressBar);
-		d_builder.add(GUIFactory.createCollapsiblePanel(consistencyResultsPart), d_cc.xy(1, 25));
+			NetworkInconsistencyTableModel inconsistencyTableModel = new NetworkInconsistencyTableModel(
+							d_pm, d_parent.getPresentationModelFactory());
+			JPanel inconsistencyTable = new AbstractTablePanel(inconsistencyTableModel);
+			d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyTable), d_cc.xy(1, 19));
+				
+			d_builder.addSeparator("Results - network consistency model", d_cc.xy(1, 21));
+			if(!d_pm.getBean().getInconsistencyModel().isReady())
+				d_builder.add(d_conProgressBar, d_cc.xy(1, 23));
+			JComponent consistencyResultsPart = buildResultsPart(d_pm.getBean().getConsistencyModel(), d_conProgressBar);
+			d_builder.add(GUIFactory.createCollapsiblePanel(consistencyResultsPart), d_cc.xy(1, 25));
+		}
 
 		d_pane.setLayout(new BorderLayout());
 		d_pane.add(d_builder.getPanel(), BorderLayout.CENTER);

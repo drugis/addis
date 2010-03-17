@@ -1,6 +1,5 @@
 package org.drugis.addis.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 
