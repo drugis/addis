@@ -7,7 +7,7 @@ import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyParameter;
 
 @SuppressWarnings("serial")
-public class NetworkInconsistencyTableModel  extends AbstractTableModel{
+public class NetworkInconsistencyTableModel  extends AbstractTableModel implements TableModelWithDescription{
 	private NetworkMetaAnalysisPresentation d_pm;
 	private PresentationModelFactory d_pmf;
 
@@ -17,7 +17,7 @@ public class NetworkInconsistencyTableModel  extends AbstractTableModel{
 	}
 	
 	public String getColumnName(int column) {
-		return column == 0 ? "Inconsistency Cycle" : "Confidence Interval";
+		return column == 0 ? "Cycle" : "Confidence Interval";
 	}
 
 	public int getColumnCount() {
@@ -28,25 +28,17 @@ public class NetworkInconsistencyTableModel  extends AbstractTableModel{
 		return d_pm.getBean().getInconsistencyFactors().size();
 	}
 	
-	/*
-	public String getDescriptionAt(int row, int col) {
-		if (row == col) {
-			return null;
-		}
-		return "\"" + d_pm.getBean().getIncludedDrugs().get(col) + "\" relative to \"" + d_pm.getBean().getIncludedDrugs().get(row) + "\"";
-	}*/
-	
 	public String getValueAt(int row, int col) {
 		if(!d_pm.getBean().getInconsistencyModel().isReady()){
 			return "n/a";
 		}
 		InconsistencyParameter ip = d_pm.getBean().getInconsistencyModel().getInconsistencyFactors().get(row);
 		if(col == 0){
-			String out = "(";
+			String out = "";
 			for (int i=0; i<ip.treatmentList().size() - 1; ++i){
 				out += ip.treatmentList().get(i).id() + ", ";
 			}
-			return out.substring(0, out.length()-2) + ")";
+			return out.substring(0, out.length()-2);
 		} else{
 			Estimate ic = d_pm.getBean().getInconsistency(ip);
 
@@ -58,7 +50,7 @@ public class NetworkInconsistencyTableModel  extends AbstractTableModel{
 	}
 
 	public String getDescription() {
-		return "Network Meta-Analysis (Inconsistency Model)";
+		return "Inconsistency Factors";
 	}
 
 	public String getTitle() {

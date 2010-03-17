@@ -100,8 +100,7 @@ implements ViewBuilder {
 		NetworkInconsistencyTableModel inconsistencyTableModel = new NetworkInconsistencyTableModel(
 						d_pm, d_parent.getPresentationModelFactory());
 		JPanel inconsistencyTable = new AbstractTablePanel(inconsistencyTableModel);
-		//JTable inconsistencyTable = new JTable(inconsistencyTableModel);
-		d_builder.add(inconsistencyTable, d_cc.xy(1, 19));
+		d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyTable), d_cc.xy(1, 19));
 			
 		d_builder.addSeparator("Results - network consistency model", d_cc.xy(1, 21));
 		if(!d_pm.getBean().getInconsistencyModel().isReady())

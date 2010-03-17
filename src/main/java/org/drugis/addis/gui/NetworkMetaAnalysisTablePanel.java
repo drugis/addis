@@ -9,7 +9,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.presentation.LabeledPresentationModel;
@@ -34,8 +33,6 @@ public class NetworkMetaAnalysisTablePanel extends AbstractTablePanel{
 	
 	@Override
 	protected void initComps() {
-		JLabel description = new JLabel(((NetworkTableModel) d_tableModel).getDescription());
-		d_rootPanel.add(description, BorderLayout.NORTH);
 		d_table.setTableHeader(null);
 		super.initComps();
 	}
@@ -54,13 +51,6 @@ public class NetworkMetaAnalysisTablePanel extends AbstractTablePanel{
 			
 			if (((NetworkTableModel) d_tableModel).getDescriptionAt(row, col) != null) {
 				label.setToolTipText(((NetworkTableModel) d_tableModel).getDescriptionAt(row, col));
-			}
-			
-			TableColumn colo = table.getColumnModel().getColumn(col);
-			if ((label.getPreferredSize().width+5) > colo.getWidth()) {
-				table.setVisible(false);
-				colo.setMinWidth(label.getPreferredSize().width + 5);
-				table.setVisible(true);
 			}
 			
 			return label;

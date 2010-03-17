@@ -61,6 +61,7 @@ extends PresentationModel<T> implements LabeledPresentationModel {
 			return null;
 		}
 
-		return df.format(getBean().getMean()) + " (" + df.format(confInterval.getLowerBound()) + ", " + df.format(confInterval.getUpperBound());
+		return df.format(getBean().getMean()) + 
+				" (" + df.format(confInterval.getLowerBound()) + ", " + df.format(confInterval.getUpperBound()) + ")";
 	}
 }

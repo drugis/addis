@@ -10,7 +10,7 @@ import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Treatment;
 
 @SuppressWarnings("serial")
-public class NetworkTableModel  extends AbstractTableModel{
+public class NetworkTableModel  extends AbstractTableModel implements TableModelWithDescription{
 	private NetworkMetaAnalysisPresentation d_pm;
 	private PresentationModelFactory d_pmf;
 	MixedTreatmentComparison d_networkModel;
