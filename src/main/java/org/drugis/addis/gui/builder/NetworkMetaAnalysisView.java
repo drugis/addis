@@ -95,7 +95,6 @@ implements ViewBuilder {
 		d_builder.addSeparator("Evidence network", d_cc.xy(1, 9));
 		d_builder.add(GUIFactory.createCollapsiblePanel(buildStudyGraphPart()), d_cc.xy(1, 11));
 
-		System.out.println(d_pm.getBean().getIncludedStudies().get(0).getEndpoints().get(0).getType());
 		if( d_pm.getBean().getIncludedStudies().get(0).getEndpoints().get(0).getType() == Variable.Type.CONTINUOUS){
 			d_builder.addSeparator("Results", d_cc.xy(1, 13));
 			d_builder.add(new JLabel("Network meta analysis not yet possible for continuous measurements."), d_cc.xy(1, 15));

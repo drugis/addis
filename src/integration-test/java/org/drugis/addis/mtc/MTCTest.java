@@ -7,7 +7,9 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.InconsistencyParameter;
@@ -85,5 +87,26 @@ public class MTCTest {
     		System.out.println(p);
     		System.out.println(p.treatmentList());
     	}
+    }
+    
+    @Test
+    public void testGetRanks() {
+    	ModelFactory factory = DefaultModelFactory.instance();
+    	ConsistencyModel model = factory.getConsistencyModel(d_network);
+    	
+    	model.run();
+
+    	assertTrue(model.rankProbability( d_builder.getTreatment("A"), 1) < model.rankProbability( d_builder.getTreatment("B"), 1));
+    	assertTrue(model.rankProbability( d_builder.getTreatment("B"), 1) < model.rankProbability( d_builder.getTreatment("C"), 1));
+ 	
+    	assertTrue(model.rankProbability( d_builder.getTreatment("A"), 2) < model.rankProbability( d_builder.getTreatment("C"), 2));
+    	assertTrue(model.rankProbability( d_builder.getTreatment("C"), 2) < model.rankProbability( d_builder.getTreatment("B"), 2));
+ 	
+    	
+    	assertTrue(model.rankProbability( d_builder.getTreatment("C"), 3) < model.rankProbability( d_builder.getTreatment("B"), 3));
+    	assertTrue(model.rankProbability( d_builder.getTreatment("B"), 3) < model.rankProbability( d_builder.getTreatment("A"), 3));
+ 	
+    
+
     }
 }

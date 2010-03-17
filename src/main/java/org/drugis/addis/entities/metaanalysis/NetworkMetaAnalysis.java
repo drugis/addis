@@ -17,6 +17,7 @@ import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.InconsistencyParameter;
 import org.drugis.mtc.NetworkBuilder;
+import org.drugis.mtc.Treatment;
 
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis{
 	private static final long serialVersionUID = -1646175155970420625L;
@@ -26,14 +27,16 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	transient private NetworkBuilder d_builder;
 	transient private boolean d_hasRun = false;
 	private Map<Study, Map<Drug, Arm>> d_armMap;
-
 	
-
 	public NetworkMetaAnalysis(String name, Indication indication,
 			OutcomeMeasure om, List<? extends Study> studies, List<Drug> drugs,
 			Map<Study, Map<Drug, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, studies, drugs, armMap);
 		d_armMap = armMap;
+	}
+	
+	public Double getRankProbability(Drug d, int rank){
+		return d_consistencyModel.rankProbability(d_builder.getTreatment(d.getName()), rank);
 	}
 
 	private InconsistencyModel createInconsistencyModel() {
