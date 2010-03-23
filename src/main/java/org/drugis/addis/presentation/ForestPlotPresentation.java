@@ -14,11 +14,11 @@ import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.RelativeEffect.AxisType;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.RelativeEffectFactory;
-import org.drugis.addis.plot.BinnedScale;
-import org.drugis.addis.plot.ForestPlot;
-import org.drugis.addis.plot.IdentityScale;
-import org.drugis.addis.plot.LinearScale;
-import org.drugis.addis.plot.LogScale;
+import org.drugis.addis.treeplot.BinnedScale;
+import org.drugis.addis.treeplot.ForestPlot;
+import org.drugis.addis.treeplot.IdentityScale;
+import org.drugis.addis.treeplot.LinearScale;
+import org.drugis.addis.treeplot.LogScale;
 import org.drugis.common.Interval;
 
 

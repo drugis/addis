@@ -1,4 +1,4 @@
-package org.drugis.addis.plot;
+package org.drugis.addis.treeplot;
 
 public class IdentityScale implements Scale {
 

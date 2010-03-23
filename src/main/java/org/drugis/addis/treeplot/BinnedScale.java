@@ -1,4 +1,4 @@
-package org.drugis.addis.plot;
+package org.drugis.addis.treeplot;
 
 /**
  * A BinnedScale maps a real value x to a bin n in some integer range [nMin, nMax].

@@ -23,6 +23,10 @@ import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.ProgressEvent;
 import org.drugis.mtc.ProgressListener;
 import org.drugis.mtc.ProgressEvent.EventType;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.Plot;
+import org.jfree.data.category.CategoryDataset;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -117,6 +121,15 @@ implements ViewBuilder {
 			JComponent consistencyResultsPart = buildResultsPart(d_pm.getBean().getConsistencyModel(), d_conProgressBar);
 			d_builder.add(GUIFactory.createCollapsiblePanel(consistencyResultsPart), d_cc.xy(1, 25));
 		}
+		
+		// JFreeChart
+//		final JFreeChart chart = ChartFactory.createBarChart("barchart", arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+//		CategoryDataset dataset;
+//		final JFreeChart chart = ChartFactory.createBarChart3D(title, categoryAxisLabel, valueAxisLabel, dataset, orientation, legend, tooltips, urls)
+		
+		//Plot plot = null;
+		//JFreeChart j = new JFreeChart("test", plot);
+		// JFreeChart
 
 		d_pane.setLayout(new BorderLayout());
 		d_pane.add(d_builder.getPanel(), BorderLayout.CENTER);

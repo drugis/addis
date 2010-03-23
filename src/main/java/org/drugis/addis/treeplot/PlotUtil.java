@@ -1,4 +1,4 @@
-package org.drugis.addis.plot;
+package org.drugis.addis.treeplot;
 
 import java.awt.Graphics2D;
 

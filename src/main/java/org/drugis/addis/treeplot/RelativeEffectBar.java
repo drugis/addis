@@ -1,10 +1,10 @@
-package org.drugis.addis.plot;
+package org.drugis.addis.treeplot;
 
 import java.awt.Graphics2D;
 
 import org.drugis.addis.entities.RelativeEffect;
 
-public class RelativeEffectBar implements Plot {
+public class RelativeEffectBar implements TreePlot {
 	private int d_confStart;
 	private int d_confEnd;
 	private int d_diamondCenter;

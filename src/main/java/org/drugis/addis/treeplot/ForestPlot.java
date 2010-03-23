@@ -1,4 +1,4 @@
-package org.drugis.addis.plot;
+package org.drugis.addis.treeplot;
 
 import java.awt.BasicStroke;
 import java.awt.Dimension;
@@ -12,7 +12,7 @@ import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.RelativeEffect.AxisType;
 import org.drugis.addis.presentation.ForestPlotPresentation;
 
-public class ForestPlot implements Plot {
+public class ForestPlot implements TreePlot {
 	enum Align {
 		LEFT,
 		CENTER,

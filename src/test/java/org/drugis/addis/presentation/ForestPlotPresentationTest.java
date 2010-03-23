@@ -22,7 +22,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.RelativeEffect.AxisType;
-import org.drugis.addis.plot.ForestPlot;
+import org.drugis.addis.treeplot.ForestPlot;
 import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Test;

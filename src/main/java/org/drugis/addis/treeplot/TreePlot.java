@@ -1,7 +1,7 @@
-package org.drugis.addis.plot;
+package org.drugis.addis.treeplot;
 
 import java.awt.Graphics2D;
 
-public interface Plot {
+public interface TreePlot {
 	public void paint(Graphics2D g2d);
 }

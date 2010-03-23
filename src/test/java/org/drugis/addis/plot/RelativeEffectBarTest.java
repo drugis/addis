@@ -9,6 +9,9 @@ import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.RelativeEffect;
+import org.drugis.addis.treeplot.BinnedScale;
+import org.drugis.addis.treeplot.IdentityScale;
+import org.drugis.addis.treeplot.RelativeEffectBar;
 import org.junit.Test;
 
 public class RelativeEffectBarTest {
