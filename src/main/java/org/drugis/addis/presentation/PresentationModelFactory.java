@@ -19,8 +19,8 @@
 
 package org.drugis.addis.presentation;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
@@ -39,7 +39,7 @@ import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import com.jgoodies.binding.PresentationModel;
 
 public class PresentationModelFactory {
-	private Map<Object, PresentationModel<?>> d_cache = new	HashMap<Object, PresentationModel<?>>();
+	private Map<Object, PresentationModel<?>> d_cache = new	WeakHashMap<Object, PresentationModel<?>>();
 	private Domain d_domain;
 	
 	public PresentationModelFactory(Domain domain) {
@@ -57,9 +57,10 @@ public class PresentationModelFactory {
 	@SuppressWarnings("unchecked")
 	public <T> PresentationModel<T> getModel(T obj) {
 		PresentationModel mod = d_cache.get(obj);
-		if (mod != null) {
+		if ((mod != null) && (mod.getBean() == obj)) {
 			return mod;
 		}
+	
 		mod = createModel(obj);
 		d_cache.put(obj, mod);
 		return (PresentationModel<T>)mod;

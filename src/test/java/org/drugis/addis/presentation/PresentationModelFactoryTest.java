@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
@@ -130,6 +132,27 @@ public class PresentationModelFactoryTest {
 	public void testGetOtherModel() {
 		assertNotNull(d_manager.getModel((Study) d_domain.getStudies().first()));
 	}
+	
+	private void makeStudyPmOnce (Study study) {
+		d_manager.getModel(study);
+	}
+	
+	@Test
+	public void testPresentationModelDoesntCacheDeleted () throws DependentEntitiesException {
+		String id = "whichEveriD";
+		d_domain.addStudy(new Study(id, d_domain.getIndications().first()));
+		
+		d_domain.getStudies().last().setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, "This value should not be retained");
+		assertEquals("This value should not be retained",d_domain.getStudies().last().getCharacteristic(BasicStudyCharacteristic.OBJECTIVE));
+		makeStudyPmOnce(d_domain.getStudies().last());
+		d_domain.deleteStudy(d_domain.getStudies().last());
+		
+		Study myStudy = new Study(id, new Indication(0l, ""));
+		Object expected = myStudy.getCharacteristic(BasicStudyCharacteristic.OBJECTIVE);
+		Object actual = d_manager.getModel(myStudy).getBean().getCharacteristic(BasicStudyCharacteristic.OBJECTIVE);
+		assertEquals(expected, actual);
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	@Test
