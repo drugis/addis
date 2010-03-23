@@ -82,6 +82,7 @@ public class GUIFactory {
 		JideButton button = new JideButton(pane.getActionMap().get(JXCollapsiblePane.TOGGLE_ACTION));
 		button.setText("");
 		topPane.add(button, BorderLayout.SOUTH);
+
 		return topPane;
 	}	
 

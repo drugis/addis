@@ -28,10 +28,8 @@ import org.drugis.mtc.ProgressEvent.EventType;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.DefaultCategoryDataset;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -108,27 +106,40 @@ implements ViewBuilder {
 			d_builder.addSeparator("Results", d_cc.xy(1, 13));
 			d_builder.add(new JLabel("Network meta analysis not yet possible for continuous measurements."), d_cc.xy(1, 15));
 		}
-		else{		
+		else{
 			d_builder.addSeparator("Results - network inconsistency model", d_cc.xy(1, 13));
+			
+			JPanel inconsistencyPanel = new JPanel(new BorderLayout());
+			
 			if(!d_pm.getBean().getConsistencyModel().isReady())
 				d_builder.add(d_incProgressBar, d_cc.xy(1, 15));
 			JComponent inconsistencyResultsPart = buildResultsPart(d_pm.getBean().getInconsistencyModel(),d_incProgressBar);
-			d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyResultsPart), d_cc.xy(1, 17));
+			inconsistencyPanel.add(inconsistencyResultsPart,BorderLayout.NORTH);
 			
 			NetworkInconsistencyTableModel inconsistencyTableModel = new NetworkInconsistencyTableModel(
 							d_pm, d_parent.getPresentationModelFactory());
 			JPanel inconsistencyTable = new AbstractTablePanel(inconsistencyTableModel);
-			d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyTable), d_cc.xy(1, 19));
-				
+			inconsistencyPanel.add(inconsistencyTable,BorderLayout.SOUTH);
+			
+			d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyPanel), d_cc.xy(1, 19));
+			
 			d_builder.addSeparator("Results - network consistency model", d_cc.xy(1, 21));
+			
+			JPanel consistencyPanel = new JPanel(new BorderLayout());
+			
 			if(!d_pm.getBean().getInconsistencyModel().isReady())
 				d_builder.add(d_conProgressBar, d_cc.xy(1, 23));
+				
 			JComponent consistencyResultsPart = buildResultsPart(d_pm.getBean().getConsistencyModel(), d_conProgressBar);
-			d_builder.add(GUIFactory.createCollapsiblePanel(consistencyResultsPart), d_cc.xy(1, 25));
+			consistencyPanel.add(consistencyResultsPart,BorderLayout.NORTH);
+			
+			consistencyPanel.add(createRankProbChart(d_pm.getBean().getConsistencyModel()), BorderLayout.SOUTH);
+			JPanel collapsiblePanel = GUIFactory.createCollapsiblePanel(consistencyPanel);
+			/* Fix: ScrollPanel Viewport doesn't have correct size when containing a CollapsiblePanel*/
+			collapsiblePanel.setBorder(BorderFactory.createEmptyBorder(0,0,20,0));  
+			d_builder.add(collapsiblePanel, d_cc.xy(1, 27));
 		}
 		
-		d_builder.add(createRankProbChart(d_pm.getBean().getConsistencyModel()), d_cc.xy(1, 27));
-
 		d_pane.setLayout(new BorderLayout());
 		d_pane.add(d_builder.getPanel(), BorderLayout.CENTER);
 
@@ -145,12 +156,12 @@ implements ViewBuilder {
 		panel.setLayout(new BorderLayout());
 		
 		ChartPanel chartPanel = new ChartPanel(chart);
+		chartPanel.setSize(chartPanel.getPreferredSize().width, chartPanel.getPreferredSize().height+1);
 		chartPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-		
+	
+		panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 		panel.add(chartPanel, BorderLayout.CENTER);
-		
-		panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 40, 0));
-		
+
 		return panel;
 	}
 	
