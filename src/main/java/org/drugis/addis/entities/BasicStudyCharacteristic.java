@@ -76,7 +76,7 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 	}
 	
 	public enum Status {
-		NOT_YET_RECRUITING("NHot yet recruiting"),
+		NOT_YET_RECRUITING("Not yet recruiting"),
 		RECRUITING("Recruiting"),
 		ENROLLING("Enrolling"),
 		ACTIVE("Active"),
