@@ -1,6 +1,7 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -19,14 +20,18 @@ import org.drugis.addis.presentation.NetworkInconsistencyTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.ProgressEvent;
 import org.drugis.mtc.ProgressListener;
 import org.drugis.mtc.ProgressEvent.EventType;
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.Plot;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -34,8 +39,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class NetworkMetaAnalysisView extends AbstractMetaAnalysisView<NetworkMetaAnalysisPresentation>
 implements ViewBuilder {
-	
-	
+
 	private class AnalysisProgressListener implements ProgressListener {
 		private JProgressBar d_progBar;
 		
@@ -55,6 +59,7 @@ implements ViewBuilder {
 				} else if(event.getType() == EventType.SIMULATION_FINISHED) {
 					d_progBar.setVisible(false);
 				}
+				
 			}
 		}
 	}
@@ -83,7 +88,7 @@ implements ViewBuilder {
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		d_builder = new PanelBuilder(layout);
 	
 		d_builder.setDefaultDialogBorder();
@@ -122,19 +127,31 @@ implements ViewBuilder {
 			d_builder.add(GUIFactory.createCollapsiblePanel(consistencyResultsPart), d_cc.xy(1, 25));
 		}
 		
-		// JFreeChart
-//		final JFreeChart chart = ChartFactory.createBarChart("barchart", arg1, arg2, arg3, arg4, arg5, arg6, arg7)
-//		CategoryDataset dataset;
-//		final JFreeChart chart = ChartFactory.createBarChart3D(title, categoryAxisLabel, valueAxisLabel, dataset, orientation, legend, tooltips, urls)
-		
-		//Plot plot = null;
-		//JFreeChart j = new JFreeChart("test", plot);
-		// JFreeChart
+		d_builder.add(createRankProbChart(d_pm.getBean().getConsistencyModel()), d_cc.xy(1, 27));
 
 		d_pane.setLayout(new BorderLayout());
 		d_pane.add(d_builder.getPanel(), BorderLayout.CENTER);
 
 		return d_pane;
+	}
+
+	private JComponent createRankProbChart(ConsistencyModel networkModel) {
+		CategoryDataset dataset = d_pm.getRankProbabilityDataset();
+		
+		JFreeChart chart = ChartFactory.createBarChart("Rank Probability", "Rank", "Probability", 
+						dataset, PlotOrientation.VERTICAL, true, false, false);	
+		
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		
+		ChartPanel chartPanel = new ChartPanel(chart);
+		chartPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+		
+		panel.add(chartPanel, BorderLayout.CENTER);
+		
+		panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 40, 0));
+		
+		return panel;
 	}
 	
 	public JComponent buildStudyGraphPart() {
