@@ -22,6 +22,9 @@ package org.drugis.addis.entities;
 import java.util.Collections;
 import java.util.Set;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 public class Indication extends AbstractEntity implements Comparable<Indication> {
 	private static final long serialVersionUID = -4383475531365696177L;
 	
@@ -88,4 +91,25 @@ public class Indication extends AbstractEntity implements Comparable<Indication>
 	public String toString() {
 		return d_code.toString() + " " + d_name;
 	}
+	
+	protected static final XMLFormat<Indication> XML = new XMLFormat<Indication>(Indication.class) {
+		@Override
+		public Indication newInstance(Class<Indication> cls, InputElement ie) throws XMLStreamException {
+			return new Indication(ie.getAttribute("code", 0l), ie.getAttribute("name", null));
+		}
+		@Override
+		public boolean isReferenceable() {
+			return true;
+		}
+		@Override
+		public void read(InputElement ie, Indication i) throws XMLStreamException {
+			i.setName(ie.getAttribute("name", null));
+			i.setCode(ie.getAttribute("code", 0l));
+		}
+		@Override
+		public void write(Indication i, OutputElement oe) throws XMLStreamException {
+			oe.setAttribute("name", i.getName());
+			oe.setAttribute("code", i.getCode());
+		}
+	};
 }

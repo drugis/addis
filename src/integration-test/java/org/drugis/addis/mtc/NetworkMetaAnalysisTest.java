@@ -36,8 +36,6 @@ public class NetworkMetaAnalysisTest {
     public void setUp() {
         d_builder = new NetworkBuilder();
         
-        System.out.println();
-        
         NetworkMetaAnalysis netwAnalysis = ExampleData.buildNetworkMetaAnalysis();
         
         for(Study s : netwAnalysis.getIncludedStudies()){

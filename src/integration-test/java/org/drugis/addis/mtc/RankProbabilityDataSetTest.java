@@ -21,8 +21,6 @@ public class RankProbabilityDataSetTest {
 	private NetworkMetaAnalysis d_nma;
 	private CategoryDataset d_dataSet;
 
-	//d_DataSet; 
-	
 	@Before
 	public void setUp() {
 		PresentationModelFactory pmf = new PresentationModelFactory(new DomainImpl());
