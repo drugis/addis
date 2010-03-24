@@ -1,4 +1,4 @@
-package org.drugis.addis.presentation;
+package org.drugis.addis.mtc;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,6 +8,8 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
+import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
+import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.mtc.Treatment;
 import org.jfree.data.category.CategoryDataset;
 import org.junit.Before;

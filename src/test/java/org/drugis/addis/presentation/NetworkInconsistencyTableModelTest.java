@@ -2,6 +2,7 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 
+
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.DomainImpl;
@@ -16,12 +17,12 @@ public class NetworkInconsistencyTableModelTest {
 	private PresentationModelFactory d_pmf;
 	private NetworkInconsistencyTableModel d_tableModel;
 	private NetworkMetaAnalysis d_analysis;
-
+	
 	@Before
 	public void setUp() {
 		DomainImpl domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		d_analysis = ExampleData.buildNetworkMetaAnalysis();
+		d_analysis = NetworkTableModelTest.buildMockNetworkMetaAnalysis();
 		d_pmf = new PresentationModelFactory(domain);
 		
 		d_tableModel = new NetworkInconsistencyTableModel((NetworkMetaAnalysisPresentation) d_pmf.getModel(d_analysis), d_pmf);
@@ -56,4 +57,6 @@ public class NetworkInconsistencyTableModelTest {
 			}
 		}	
 	}
+	
+	
 }

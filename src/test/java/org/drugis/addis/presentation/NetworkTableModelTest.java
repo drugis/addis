@@ -2,11 +2,20 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+import java.util.List;
+
+import mocks.MockNetworkMetaAnalysis;
+
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.LogContinuousMeasurementEstimate;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
+import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
+import org.drugis.addis.presentation.NetworkTableModel;
+import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.Treatment;
 import org.junit.Before;
@@ -25,7 +34,7 @@ public class NetworkTableModelTest {
 	public void setUp() {
 		DomainImpl domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		d_analysis = ExampleData.buildNetworkMetaAnalysis();
+		d_analysis = buildMockNetworkMetaAnalysis();
 		d_pmf = new PresentationModelFactory(domain);
 		d_tableModel = new NetworkTableModel((NetworkMetaAnalysisPresentation)d_pmf.getModel(d_analysis), d_pmf, d_analysis.getInconsistencyModel());
 	}
@@ -74,5 +83,18 @@ public class NetworkTableModelTest {
 				}
 			}
 		}	
+	}
+
+	public static NetworkMetaAnalysis buildMockNetworkMetaAnalysis() {
+		List<Study> studies = Arrays.asList(new Study[] {
+				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), ExampleData.buildStudyDeWilde(), ExampleData.buildStudyFava2002()});
+		List<Drug> drugs = Arrays.asList(new Drug[] {ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine(), 
+				ExampleData.buildDrugSertraline()});
+		
+		NetworkMetaAnalysis analysis = new MockNetworkMetaAnalysis("Test Network", 
+				ExampleData.buildIndicationDepression(), ExampleData.buildEndpointHamd(),
+				studies, drugs, ExampleData.buildMap(studies, drugs));
+		
+		return analysis;
 	}
 }

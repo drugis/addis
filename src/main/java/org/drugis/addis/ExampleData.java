@@ -652,8 +652,8 @@ public class ExampleData {
 		
 		return analysis;
 	}
-
-	private static Map<Study, Map<Drug, Arm>> buildMap(List<Study> studies,
+	
+	public static Map<Study, Map<Drug, Arm>> buildMap(List<Study> studies,
 			List<Drug> drugs) {
 		Map<Study, Map<Drug, Arm>> map = new HashMap<Study, Map<Drug,Arm>>();
 		for (Study s : studies) {
