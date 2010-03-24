@@ -16,13 +16,13 @@ import com.jgoodies.binding.value.AbstractValueModel;
 public class ContinuousMeasurementPresentationTest {
 	private BasicContinuousMeasurement d_basicContinuousMeasurement;
 	private Arm d_pg;
-	private ContinuousMeasurementPresentation d_pres;
+	private ContinuousMeasurementPresentation<BasicContinuousMeasurement> d_pres;
 	
 	@Before
 	public void setUp() {
 		d_pg = new Arm(null, null, 1);
 		d_basicContinuousMeasurement = new BasicContinuousMeasurement(0.0, 0.0, d_pg.getSize());
-		d_pres = new ContinuousMeasurementPresentation(d_basicContinuousMeasurement);
+		d_pres = new ContinuousMeasurementPresentation<BasicContinuousMeasurement>(d_basicContinuousMeasurement);
 	}
 	
 	@Test
