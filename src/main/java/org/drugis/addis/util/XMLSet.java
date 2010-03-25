@@ -51,7 +51,7 @@ public class XMLSet<T extends Entity> {
 			//System.out.println("XMLSet::XMLFormat::write " + wrappedSet.getSet());
 			for (Object o : wrappedSet.getSet()) {
 				Entity e = (Entity) o;
-				System.out.println(e);
+//				System.out.println(e);
 				Type t = e.getClass();
 				oe.add(e,wrappedSet.getTypeName());
 			}

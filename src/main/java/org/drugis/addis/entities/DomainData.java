@@ -145,7 +145,6 @@ public class DomainData implements Serializable {
 	
 	/* private SortedSet<Endpoint> d_endpoints;
 	private SortedSet<Drug> d_drugs;
-	private SortedSet<Indication> d_indications;
 	private SortedSet<AdverseEvent> d_ades;
 	private SortedSet<PopulationCharacteristic> d_variables;
 	private SortedSet<Study> d_studies;
