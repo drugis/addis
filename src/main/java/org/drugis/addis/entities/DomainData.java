@@ -4,20 +4,23 @@ import java.io.Serializable;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.addis.util.XMLSet;
 
 public class DomainData implements Serializable {
 	private static final long serialVersionUID = 8470783311348971598L;
 
 	private SortedSet<Endpoint> d_endpoints;
-	private SortedSet<Study> d_studies;
-	private SortedSet<MetaAnalysis> d_metaAnalyses;	
 	private SortedSet<Drug> d_drugs;
 	private SortedSet<Indication> d_indications;
 	private SortedSet<AdverseEvent> d_ades;
-	
 	private SortedSet<PopulationCharacteristic> d_variables;
-	
+	private SortedSet<Study> d_studies;
+	private SortedSet<MetaAnalysis> d_metaAnalyses;	
+
 	public DomainData() {
 		d_endpoints = new TreeSet<Endpoint>();
 		d_studies = new TreeSet<Study>();
@@ -28,6 +31,34 @@ public class DomainData implements Serializable {
 		d_ades = new TreeSet<AdverseEvent>();
 	}
 	
+	public void setEndpoints(SortedSet<Endpoint> endpoints) {
+		d_endpoints = endpoints;
+	}
+
+	public void setDrugs(SortedSet<Drug> drugs) {
+		d_drugs = drugs;
+	}
+
+	public void setIndications(SortedSet<Indication> indications) {
+		d_indications = indications;
+	}
+
+	public void setAdes(SortedSet<AdverseEvent> ades) {
+		d_ades = ades;
+	}
+
+	public void setVariables(SortedSet<PopulationCharacteristic> variables) {
+		d_variables = variables;
+	}
+
+	public void setStudies(SortedSet<Study> studies) {
+		d_studies = studies;
+	}
+
+	public void setMetaAnalyses(SortedSet<MetaAnalysis> metaAnalyses) {
+		d_metaAnalyses = metaAnalyses;
+	}
+
 	public SortedSet<Endpoint> getEndpoints() {
 		return d_endpoints;
 	}
@@ -111,4 +142,38 @@ public class DomainData implements Serializable {
 	public void removeAdverseEvent(AdverseEvent ade) {
 		d_ades.remove(ade);
 	}
+	
+	/* private SortedSet<Endpoint> d_endpoints;
+	private SortedSet<Drug> d_drugs;
+	private SortedSet<Indication> d_indications;
+	private SortedSet<AdverseEvent> d_ades;
+	private SortedSet<PopulationCharacteristic> d_variables;
+	private SortedSet<Study> d_studies;
+	private SortedSet<MetaAnalysis> d_metaAnalyses;	*/
+	
+	
+	protected static final XMLFormat<DomainData> XML = new XMLFormat<DomainData>(DomainData.class) {
+		public DomainData newInstance(Class<DomainData> cls, InputElement ie) throws XMLStreamException {
+			// In newInstance, only use getAttribute, not get. Thats why no indication can be instantiated at this point
+			return new DomainData();
+		}
+		
+		public boolean isReferenceable() {
+			return false;
+		}
+		
+		@SuppressWarnings("unchecked")
+		public void read(InputElement ie, DomainData d) throws XMLStreamException {
+			XMLSet<Indication> xmlset = ie.get("indications",XMLSet.class);
+			d.setIndications((SortedSet) xmlset.getSet());
+			
+		}
+		
+		@Override
+		public void write(DomainData d, OutputElement oe) throws XMLStreamException {
+			System.out.println("DomainData::XMLFormat::write " + d.getIndications());
+			oe.add(new XMLSet<Indication>(d.getIndications(),"indication"),"indications",XMLSet.class);
+			//oe.add(new XMLSet<Study>(d.getStudies(),"study"),"studies", XMLSet.class);
+		}
+	};
 }

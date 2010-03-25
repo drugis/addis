@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 
 import javolution.xml.XMLBinding;
@@ -41,8 +42,8 @@ public class AddisBinding extends XMLBinding {
 	private void setAliases() {
 //		This part avoids the class hierarchy names in the xml code (indication instead of org.drugis.addis.entities.indication)
 		setAlias(Study.class,"study");
+		setAlias(Indication.class, "indication");
 		/*
-		setAlias(Rank.class, "rank");
 		setAlias(GaussianMeasurement.class, "gaussian");
 		setAlias(LogNormalMeasurement.class, "lognormal");
 		setAlias(ExactMeasurement.class, "exact");

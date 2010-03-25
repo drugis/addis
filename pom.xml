@@ -134,7 +134,7 @@
       		<dependency>
           		<groupId>javolution</groupId>
           		<artifactId>javolution</artifactId>
-          		<version>5.4.0</version>
+          		<version>5.4.4</version>
       		</dependency>
 
 

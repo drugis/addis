@@ -94,6 +94,14 @@ public class DomainImpl implements Domain {
  		JUnit. 
 */
 	}
+	
+	public void setDomainData(DomainData d) {
+		d_domainData = d;
+	}
+	
+	public DomainData getDomainData() {
+		return d_domainData;
+	}
 
 	public void addEndpoint(Endpoint e) {
 		if (e == null) {

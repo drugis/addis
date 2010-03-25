@@ -440,9 +440,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		
 		@Override
 		public Study newInstance(Class<Study> cls, InputElement ie) throws XMLStreamException {
-			System.out.println("StudyXML::newInstance");
-			//System.out.println(ie.get("indication", Indication.class));
-			return new Study((String) ie.getAttribute("name", null), ie.get("indication", Indication.class));
+			// In newInstance, only use getAttribute, not get. Thats why no indication can be instantiated at this point
+			return new Study((String) ie.getAttribute("name", null), null);
 		}
 		
 		@Override
@@ -452,7 +451,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		
 		@Override
 		public void read(InputElement ie, Study s) throws XMLStreamException {
-			System.out.println("StudyXML::read");
 			s.setId(ie.getAttribute("name", null));
 			s.setIndication(ie.get("indication", Indication.class));
 		}
