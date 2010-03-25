@@ -12,6 +12,7 @@ import java.util.Set;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.common.ObserverManager;
 
 import com.jgoodies.binding.beans.BeanUtils;
@@ -77,6 +78,12 @@ public abstract class AbstractEntity implements Entity, Serializable {
 							BeanUtils.setValue(i, properties[p], ie.getAttribute(properties[p].getName(), null));
 						} else if (properties[p].getPropertyType().equals(Long.class)) {
 							BeanUtils.setValue(i, properties[p], ie.getAttribute(properties[p].getName(), 0l));
+						} else if (properties[p].getPropertyType().equals(Direction.class)) {
+							BeanUtils.setValue(i, properties[p], ie.get(properties[p].getName()));
+						} else if (properties[p].getPropertyType().equals(Entity.class)) {
+							BeanUtils.setValue(i, properties[p], ie.get(properties[p].getName()));
+						} else {
+							System.err.println("AbstractEntity-> For type "+properties[p].getPropertyType()+" not recognized");
 						}
 					}
 				}
@@ -88,9 +95,31 @@ public abstract class AbstractEntity implements Entity, Serializable {
 		public void write(Entity i, OutputElement oe) throws XMLStreamException {
 			try {
 				PropertyDescriptor[] properties = Introspector.getBeanInfo(i.getClass()).getPropertyDescriptors();
+
+				for(int p = 0; p < properties.length; ++p) {
+					if (!(properties[p].getName().equals("class") || properties[p].getName().equals("dependencies"))) {
+						Object value = BeanUtils.getValue(i, properties[p]);
+						System.out.println("Going to write " + value);
+						if (! ((value instanceof Enum) || (value instanceof Entity)) ) {
+							System.out.println("As attribute " + value.getClass());
+							oe.setAttribute(properties[p].getName(), value);
+						}
+					}
+				}
+
 				for(int p = 0; p < properties.length; ++p){
-					if (!(properties[p].getName().equals("class") || properties[p].getName().equals("dependencies")))
-						oe.setAttribute(properties[p].getName(), BeanUtils.getValue(i, properties[p]));
+					if (!(properties[p].getName().equals("class") || properties[p].getName().equals("dependencies"))) {
+						Object value = BeanUtils.getValue(i, properties[p]);
+						System.out.println("Going to write " + value);
+						if (value instanceof Enum) {
+							System.out.println("As Enum");
+							oe.add(value, properties[p].getName());
+						} else if (value instanceof Entity){
+							System.out.println("As Object");
+							oe.add(value, properties[p].getName());
+						}
+					}
+						//oe.add(BeanUtils.getValue(i, properties[p]), properties[p].getName());
 				}		
 //				System.out.println("beaninf: "+Introspector.getBeanInfo(i.getClass()).getPropertyDescriptors()[3].getPropertyType());
 			} catch (IntrospectionException e) {

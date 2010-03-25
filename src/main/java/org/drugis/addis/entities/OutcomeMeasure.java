@@ -9,8 +9,11 @@ public interface OutcomeMeasure extends Variable {
 		HIGHER_IS_BETTER("Higher is better"),
 		LOWER_IS_BETTER("Lower is better");
 		
-		
 		String d_string;
+		
+		Direction() {
+		}
+		
 		Direction(String s) {
 			d_string = s;
 		}

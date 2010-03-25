@@ -6,9 +6,11 @@ import javolution.xml.stream.XMLStreamException;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainData;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class XMLLoadSaveTest {
@@ -23,6 +25,14 @@ public class XMLLoadSaveTest {
 		Indication i = ExampleData.buildIndicationDepression();
 		String xml = XMLHelper.toXml(i, Indication.class);
 //		System.out.println(xml);
+		assertEquals(i,XMLHelper.fromXml(xml));
+	}
+	
+	@Ignore
+	public void doEndpoint() throws XMLStreamException {
+		Endpoint i = ExampleData.buildEndpointCgi();
+		String xml = XMLHelper.toXml(i, Endpoint.class);
+		System.out.println("\n"+xml+"\n");
 		assertEquals(i,XMLHelper.fromXml(xml));
 	}
 	

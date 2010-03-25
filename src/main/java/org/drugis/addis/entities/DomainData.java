@@ -172,7 +172,8 @@ public class DomainData implements Serializable {
 		public void write(DomainData d, OutputElement oe) throws XMLStreamException {
 			System.out.println("DomainData::XMLFormat::write " + d.getIndications());
 			oe.add(new XMLSet<Indication>(d.getIndications(),"indication"),"indications",XMLSet.class);
-			//oe.add(new XMLSet<Study>(d.getStudies(),"study"),"studies", XMLSet.class);
+//			oe.add(new XMLSet<Endpoint>(d.getEndpoints(),"endpoint"),"endpoints",XMLSet.class);
+//			oe.add(new XMLSet<Study>(d.getStudies(),"study"),"studies", XMLSet.class);
 		}
 	};
 }
