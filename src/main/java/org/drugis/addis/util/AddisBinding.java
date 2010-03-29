@@ -3,10 +3,7 @@ package org.drugis.addis.util;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Entity;
-import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.*;
 
 import javolution.xml.XMLBinding;
 import javolution.xml.XMLObjectReader;
@@ -45,6 +42,8 @@ public class AddisBinding extends XMLBinding {
 		setAlias(Study.class,"study");
 		setAlias(Indication.class, "indication");
 		setAlias(Endpoint.class, "endpoint");
+		setAlias(AdverseEvent.class, "adverse event");
+		setAlias(Drug.class, "drug");
 		/*
 		setAlias(GaussianMeasurement.class, "gaussian");
 		setAlias(LogNormalMeasurement.class, "lognormal");

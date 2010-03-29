@@ -3,12 +3,19 @@ package org.drugis.addis.entities;
 public class AdverseEvent extends AbstractVariable implements OutcomeMeasure {
 	private static final long serialVersionUID = -1026622949185265860L;
 
+	public AdverseEvent() {
+		super("", Type.RATE);
+	}
+	
 	public AdverseEvent(String name, Variable.Type type) {
 		super(name, type);
 	}
 
 	public Direction getDirection() {
 		return Direction.LOWER_IS_BETTER;
+	}
+	
+	public void setDirection(Direction dir) {
 	}
 	
 	@Override

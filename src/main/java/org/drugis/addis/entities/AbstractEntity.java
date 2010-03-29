@@ -12,7 +12,6 @@ import java.util.Set;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
-import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.common.ObserverManager;
 
 import com.jgoodies.binding.beans.BeanUtils;
@@ -74,15 +73,15 @@ public abstract class AbstractEntity implements Entity, Serializable {
 				
 				for(int p = 0; p < properties.length; ++p){
 					if (!(properties[p].getName().equals("class") || properties[p].getName().equals("dependencies"))) {
-						System.out.println("AbstractEntity::XMLFormat: reading " + properties[p].getName());
+//						System.out.println("AbstractEntity::XMLFormat: reading " + properties[p].getName());
 						if (properties[p].getPropertyType().equals(String.class)) {
-							System.out.println("as String");
+//							System.out.println("as String");
 							BeanUtils.setValue(i, properties[p], ie.getAttribute(properties[p].getName(), null));
 						} else if (properties[p].getPropertyType().equals(Long.class)) {
-							System.out.println("as Long");
+//							System.out.println("as Long");
 							BeanUtils.setValue(i, properties[p], ie.getAttribute(properties[p].getName(), 0l));
 						} else{
-							System.out.println(".. didnt read");
+//							System.out.println(".. didnt read");
 						}
 					}
 				}
@@ -90,15 +89,15 @@ public abstract class AbstractEntity implements Entity, Serializable {
 				
 				for(int p = 0; p < properties.length; ++p){
 					if (!(properties[p].getName().equals("class") || properties[p].getName().equals("dependencies"))) {
-						System.out.println("AbstractEntity::XMLFormat: reading " + properties[p].getName());
+//						System.out.println("AbstractEntity::XMLFormat: reading " + properties[p].getName());
 						if (properties[p].getPropertyType().isEnum()) {
-							System.out.println("as Enum");
+//							System.out.println("as Enum");
 							BeanUtils.setValue(i, properties[p], ie.get(properties[p].getName()));
 						} else if (properties[p].getPropertyType().equals(Entity.class)) {
-							System.out.println("as Entity");
+//							System.out.println("as Entity");
 							BeanUtils.setValue(i, properties[p], ie.get(properties[p].getName()));
 						} else {
-							System.out.println("Didnt read");
+//							System.out.println("Didnt read");
 						}
 					}
 				}
@@ -114,9 +113,9 @@ public abstract class AbstractEntity implements Entity, Serializable {
 				for(int p = 0; p < properties.length; ++p) {
 					if (!(properties[p].getName().equals("class") || properties[p].getName().equals("dependencies"))) {
 						Object value = BeanUtils.getValue(i, properties[p]);
-						System.out.println("Going to write " + value);
+//						System.out.println("Going to write " + value);
 						if (! ((value instanceof Enum) || (value instanceof Entity)) ) {
-							System.out.println("As attribute " + value.getClass());
+//							System.out.println("As attribute " + value.getClass());
 							oe.setAttribute(properties[p].getName(), value);
 						}
 					}
@@ -125,20 +124,17 @@ public abstract class AbstractEntity implements Entity, Serializable {
 				for(int p = 0; p < properties.length; ++p){
 					if (!(properties[p].getName().equals("class") || properties[p].getName().equals("dependencies"))) {
 						Object value = BeanUtils.getValue(i, properties[p]);
-						System.out.println("Going to write " + value);
+//						System.out.println("Going to write " + value);
 						if (value instanceof Enum) {
-							System.out.println("As Enum");
+//							System.out.println("As Enum");
 							//oe.setAttribute(properties[p].getName(),value);
 							oe.add(value, properties[p].getName());
-							//oe.add((Enum) value, properties[p].getName(),Enum.class);
 						} else if (value instanceof Entity){
-							System.out.println("As Object");
+//							System.out.println("As Object");
 							oe.add(value, properties[p].getName());
 						}
 					}
-						//oe.add(BeanUtils.getValue(i, properties[p]), properties[p].getName());
 				}		
-//				System.out.println("beaninf: "+Introspector.getBeanInfo(i.getClass()).getPropertyDescriptors()[3].getPropertyType());
 			} catch (IntrospectionException e) {
 				e.printStackTrace();
 			}

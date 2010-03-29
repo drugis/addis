@@ -36,7 +36,7 @@ public interface OutcomeMeasure extends Variable {
 					return Direction.LOWER_IS_BETTER;
 			}
 			public boolean isReferenceable() {
-				return true;
+				return false;
 			}
 			public void read(InputElement ie, Direction d) throws XMLStreamException {
 			}

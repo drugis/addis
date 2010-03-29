@@ -143,12 +143,12 @@ public class DomainData implements Serializable {
 		d_ades.remove(ade);
 	}
 	
-	/* private SortedSet<Endpoint> d_endpoints;
+/*
 	private SortedSet<Drug> d_drugs;
-	private SortedSet<AdverseEvent> d_ades;
 	private SortedSet<PopulationCharacteristic> d_variables;
 	private SortedSet<Study> d_studies;
-	private SortedSet<MetaAnalysis> d_metaAnalyses;	*/
+	private SortedSet<MetaAnalysis> d_metaAnalyses;	
+*/
 	
 	
 	protected static final XMLFormat<DomainData> XML = new XMLFormat<DomainData>(DomainData.class) {
@@ -165,6 +165,9 @@ public class DomainData implements Serializable {
 		public void read(InputElement ie, DomainData d) throws XMLStreamException {
 			d.setIndications((SortedSet) ((XMLSet<Indication>) ie.get("indications",XMLSet.class)).getSet());
 			d.setEndpoints((SortedSet) ((XMLSet<Endpoint>) ie.get("endpoints",XMLSet.class)).getSet());
+			if (ie.get("adverse events",XMLSet.class) != null)
+				d.setAdes((SortedSet) ((XMLSet<AdverseEvent>) ie.get("adverse events",XMLSet.class)).getSet());
+			d.setDrugs((SortedSet) ((XMLSet<Drug>) ie.get("drugs",XMLSet.class)).getSet());
 			
 		}
 		
@@ -173,6 +176,9 @@ public class DomainData implements Serializable {
 			System.out.println("DomainData::XMLFormat::write " + d.getIndications());
 			oe.add(new XMLSet<Indication>(d.getIndications(),"indication"),"indications",XMLSet.class);
 			oe.add(new XMLSet<Endpoint>(d.getEndpoints(),"endpoint"),"endpoints",XMLSet.class);
+			if (d.getAdverseEvents().size() != 0)
+				oe.add(new XMLSet<AdverseEvent>(d.getAdverseEvents(),"adverse event"),"adverse events",XMLSet.class);
+			oe.add(new XMLSet<Drug>(d.getDrugs(), "drug"), "drugs", XMLSet.class);
 //			oe.add(new XMLSet<Study>(d.getStudies(),"study"),"studies", XMLSet.class);
 		}
 	};

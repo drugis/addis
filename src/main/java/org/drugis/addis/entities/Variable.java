@@ -40,7 +40,7 @@ public interface Variable extends Entity, Comparable<Variable> {
 					return Type.CATEGORICAL;
 			}
 			public boolean isReferenceable() {
-				return true;
+				return false;
 			}
 			public void read(InputElement ie, Type d) throws XMLStreamException {
 			}
