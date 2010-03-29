@@ -5,11 +5,14 @@ import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AdverseEvent;
+import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
+import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.DomainData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
@@ -67,6 +70,17 @@ public class XMLLoadSaveTest {
 	}	
 	
 	@Test
+	public void doPopulationChars() throws XMLStreamException {
+		CategoricalPopulationCharacteristic gender = new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
+		String xml = XMLHelper.toXml(gender, CategoricalPopulationCharacteristic.class);
+		
+		System.out.println("\n"+xml+"\n");
+		
+		CategoricalPopulationCharacteristic objFromXml = XMLHelper.fromXml(xml);
+		assertEquals(gender, objFromXml);
+	}
+	
+	@Test
 	public void doStudy() throws XMLStreamException {
 		Study s = ExampleData.buildStudyChouinard();
 		String xml = XMLHelper.toXml(s, Study.class);
@@ -79,11 +93,13 @@ public class XMLLoadSaveTest {
 		DomainImpl d = new DomainImpl();
 		ExampleData.initDefaultData(d);
 		DomainData data = d.getDomainData();
+//		data.addVariable(new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"}));
 		
 		String xml = XMLHelper.toXml(data, DomainData.class);
 		System.out.println(xml);
 		DomainData loadedDomainData = XMLHelper.fromXml(xml);
 		assertEquals(d.getIndications(), loadedDomainData.getIndications());
+		
 		// FIXME
 	}
 

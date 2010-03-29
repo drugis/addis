@@ -1,6 +1,7 @@
 package org.drugis.addis.entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -144,7 +145,6 @@ public class DomainData implements Serializable {
 	}
 	
 /*
-	private SortedSet<Drug> d_drugs;
 	private SortedSet<PopulationCharacteristic> d_variables;
 	private SortedSet<Study> d_studies;
 	private SortedSet<MetaAnalysis> d_metaAnalyses;	
@@ -163,12 +163,34 @@ public class DomainData implements Serializable {
 		
 		@SuppressWarnings("unchecked")
 		public void read(InputElement ie, DomainData d) throws XMLStreamException {
-			d.setIndications((SortedSet) ((XMLSet<Indication>) ie.get("indications",XMLSet.class)).getSet());
-			d.setEndpoints((SortedSet) ((XMLSet<Endpoint>) ie.get("endpoints",XMLSet.class)).getSet());
-			if (ie.get("adverse events",XMLSet.class) != null)
-				d.setAdes((SortedSet) ((XMLSet<AdverseEvent>) ie.get("adverse events",XMLSet.class)).getSet());
-			d.setDrugs((SortedSet) ((XMLSet<Drug>) ie.get("drugs",XMLSet.class)).getSet());
+			XMLSet indication = ie.get("indications",XMLSet.class);
+			d.setIndications((SortedSet) ((XMLSet<Indication>) indication).getSet());
 			
+			
+			XMLSet endpoint = ie.get("endpoints",XMLSet.class);
+			d.setEndpoints((SortedSet) ((XMLSet<Endpoint>) endpoint).getSet());
+			
+			
+			XMLSet ade = ie.get("adverse events",XMLSet.class);
+			if (ade != null)
+				d.setAdes((SortedSet) ((XMLSet<AdverseEvent>) ade).getSet());
+			
+			
+			XMLSet drug = ie.get("drugs",XMLSet.class);
+			d.setDrugs((SortedSet) ((XMLSet<Drug>) drug).getSet());
+			
+			XMLSet popchars = ie.get("populationcharacteristics", XMLSet.class);
+			if (popchars != null)
+				d.setVariables((SortedSet) ((XMLSet<PopulationCharacteristic>) popchars).getSet());
+			
+			XMLSet catChar = ie.get("categoricalcharacteristic", XMLSet.class);
+			if (catChar != null)
+				d.setVariables((SortedSet) ((XMLSet<CategoricalPopulationCharacteristic>) catChar).getSet());
+			
+			
+			XMLSet contChar = ie.get("continuouscharacteristic", XMLSet.class);
+			if (contChar != null)
+				d.setVariables((SortedSet) ((XMLSet<ContinuousPopulationCharacteristic>) contChar).getSet());
 		}
 		
 		@Override
@@ -179,6 +201,7 @@ public class DomainData implements Serializable {
 			if (d.getAdverseEvents().size() != 0)
 				oe.add(new XMLSet<AdverseEvent>(d.getAdverseEvents(),"adverse event"),"adverse events",XMLSet.class);
 			oe.add(new XMLSet<Drug>(d.getDrugs(), "drug"), "drugs", XMLSet.class);
+			oe.add(new XMLSet<PopulationCharacteristic>(d.getVariables(), "populationcharacteristic"), "populationcharacteristics", XMLSet.class);
 //			oe.add(new XMLSet<Study>(d.getStudies(),"study"),"studies", XMLSet.class);
 		}
 	};

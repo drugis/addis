@@ -44,6 +44,14 @@ public class AddisBinding extends XMLBinding {
 		setAlias(Endpoint.class, "endpoint");
 		setAlias(AdverseEvent.class, "adverse event");
 		setAlias(Drug.class, "drug");
+		setAlias(PopulationCharacteristic.class, "population characteristic");
+		
+		setAlias(CategoricalPopulationCharacteristic.class, "categoricalcharacteristic");
+		setAlias(ContinuousPopulationCharacteristic.class, "continuouscharacteristic");
+		setAlias(org.drugis.addis.entities.Variable.Type.class, "type");
+
+		
+		setAlias(String.class, "string");
 		/*
 		setAlias(GaussianMeasurement.class, "gaussian");
 		setAlias(LogNormalMeasurement.class, "lognormal");

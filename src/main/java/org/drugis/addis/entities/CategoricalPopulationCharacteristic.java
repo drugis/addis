@@ -4,14 +4,22 @@ public class CategoricalPopulationCharacteristic extends AbstractVariable implem
 	private static final long serialVersionUID = 8700874872019027607L;
 	private String[] d_categories;
 	
+	public CategoricalPopulationCharacteristic() {
+		super("", Type.CATEGORICAL);
+	}
+	
 	public CategoricalPopulationCharacteristic(String name, String[] categories) {
 		super(name, Type.CATEGORICAL);
 		d_categories = categories;
 		d_description = "";
 	}
-
+	
 	public String[] getCategories() {
 		return d_categories;
+	}
+	
+	public void setCategories(String[] categories) {
+		d_categories = categories;
 	}
 	
 	public FrequencyMeasurement buildMeasurement() {
