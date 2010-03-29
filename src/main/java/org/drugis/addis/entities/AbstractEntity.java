@@ -71,19 +71,34 @@ public abstract class AbstractEntity implements Entity, Serializable {
 			PropertyDescriptor[] properties = null;
 			try {
 				properties = Introspector.getBeanInfo(i.getClass()).getPropertyDescriptors();
-					
+				
 				for(int p = 0; p < properties.length; ++p){
 					if (!(properties[p].getName().equals("class") || properties[p].getName().equals("dependencies"))) {
+						System.out.println("AbstractEntity::XMLFormat: reading " + properties[p].getName());
 						if (properties[p].getPropertyType().equals(String.class)) {
+							System.out.println("as String");
 							BeanUtils.setValue(i, properties[p], ie.getAttribute(properties[p].getName(), null));
 						} else if (properties[p].getPropertyType().equals(Long.class)) {
+							System.out.println("as Long");
 							BeanUtils.setValue(i, properties[p], ie.getAttribute(properties[p].getName(), 0l));
-						} else if (properties[p].getPropertyType().equals(Direction.class)) {
+						} else{
+							System.out.println(".. didnt read");
+						}
+					}
+				}
+				System.out.println("attribures read, now others");
+				
+				for(int p = 0; p < properties.length; ++p){
+					if (!(properties[p].getName().equals("class") || properties[p].getName().equals("dependencies"))) {
+						System.out.println("AbstractEntity::XMLFormat: reading " + properties[p].getName());
+						if (properties[p].getPropertyType().isEnum()) {
+							System.out.println("as Enum");
 							BeanUtils.setValue(i, properties[p], ie.get(properties[p].getName()));
 						} else if (properties[p].getPropertyType().equals(Entity.class)) {
+							System.out.println("as Entity");
 							BeanUtils.setValue(i, properties[p], ie.get(properties[p].getName()));
 						} else {
-							System.err.println("AbstractEntity-> For type "+properties[p].getPropertyType()+" not recognized");
+							System.out.println("Didnt read");
 						}
 					}
 				}
@@ -113,7 +128,9 @@ public abstract class AbstractEntity implements Entity, Serializable {
 						System.out.println("Going to write " + value);
 						if (value instanceof Enum) {
 							System.out.println("As Enum");
+							//oe.setAttribute(properties[p].getName(),value);
 							oe.add(value, properties[p].getName());
+							//oe.add((Enum) value, properties[p].getName(),Enum.class);
 						} else if (value instanceof Entity){
 							System.out.println("As Object");
 							oe.add(value, properties[p].getName());

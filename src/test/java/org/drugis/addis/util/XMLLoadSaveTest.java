@@ -8,7 +8,10 @@ import org.drugis.addis.entities.DomainData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import org.drugis.addis.entities.Variable.Type;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -28,12 +31,19 @@ public class XMLLoadSaveTest {
 		assertEquals(i,XMLHelper.fromXml(xml));
 	}
 	
-	@Ignore
+	@Test
 	public void doEndpoint() throws XMLStreamException {
 		Endpoint i = ExampleData.buildEndpointCgi();
+		i.setDirection(Direction.LOWER_IS_BETTER);
+		i.setType(Type.CATEGORICAL);
 		String xml = XMLHelper.toXml(i, Endpoint.class);
 		System.out.println("\n"+xml+"\n");
-		assertEquals(i,XMLHelper.fromXml(xml));
+		Endpoint objFromXml = XMLHelper.fromXml(xml);
+		assertEquals(i.getDirection(),objFromXml.getDirection());
+		assertEquals(i.getType(),objFromXml.getType());
+		assertEquals(i, objFromXml);
+		i.setDirection(Direction.HIGHER_IS_BETTER);
+		i.setType(Type.CONTINUOUS);
 	}
 	
 	@Test

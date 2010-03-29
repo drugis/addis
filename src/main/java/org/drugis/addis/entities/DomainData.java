@@ -163,8 +163,8 @@ public class DomainData implements Serializable {
 		
 		@SuppressWarnings("unchecked")
 		public void read(InputElement ie, DomainData d) throws XMLStreamException {
-			XMLSet<Indication> xmlset = ie.get("indications",XMLSet.class);
-			d.setIndications((SortedSet) xmlset.getSet());
+			d.setIndications((SortedSet) ((XMLSet<Indication>) ie.get("indications",XMLSet.class)).getSet());
+			d.setEndpoints((SortedSet) ((XMLSet<Endpoint>) ie.get("endpoints",XMLSet.class)).getSet());
 			
 		}
 		
@@ -172,7 +172,7 @@ public class DomainData implements Serializable {
 		public void write(DomainData d, OutputElement oe) throws XMLStreamException {
 			System.out.println("DomainData::XMLFormat::write " + d.getIndications());
 			oe.add(new XMLSet<Indication>(d.getIndications(),"indication"),"indications",XMLSet.class);
-//			oe.add(new XMLSet<Endpoint>(d.getEndpoints(),"endpoint"),"endpoints",XMLSet.class);
+			oe.add(new XMLSet<Endpoint>(d.getEndpoints(),"endpoint"),"endpoints",XMLSet.class);
 //			oe.add(new XMLSet<Study>(d.getStudies(),"study"),"studies", XMLSet.class);
 		}
 	};

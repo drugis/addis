@@ -1,5 +1,12 @@
 package org.drugis.addis.entities;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.XMLFormat.InputElement;
+import javolution.xml.XMLFormat.OutputElement;
+import javolution.xml.stream.XMLStreamException;
+
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
+
 
 public interface Variable extends Entity, Comparable<Variable> {
 	
@@ -11,6 +18,9 @@ public interface Variable extends Entity, Comparable<Variable> {
 		
 		private String d_name;
 		
+		Type() {
+		}
+		
 		Type(String name) {
 			d_name = name;
 		}
@@ -18,6 +28,26 @@ public interface Variable extends Entity, Comparable<Variable> {
 		public String toString() {
 			return d_name;
 		}
+		
+		protected static final XMLFormat<Type> XML = new XMLFormat<Type>(Type.class) {
+			public Type newInstance(Class<Type> cls, InputElement ie) throws XMLStreamException {
+				// In newInstance, only use getAttribute, not get. Thats why no indication can be instantiated at this point
+				if (ie.getAttribute("type", null).equals(CONTINUOUS.toString()))
+					return Type.CONTINUOUS;
+				else if (ie.getAttribute("type", null).equals(RATE.toString()))
+					return Type.RATE;
+				else
+					return Type.CATEGORICAL;
+			}
+			public boolean isReferenceable() {
+				return true;
+			}
+			public void read(InputElement ie, Type d) throws XMLStreamException {
+			}
+			public void write(Type d, OutputElement oe) throws XMLStreamException {
+				oe.setAttribute("type", d.toString());
+			}
+		};
 	}
 
 	public static final String PROPERTY_NAME = "name";
