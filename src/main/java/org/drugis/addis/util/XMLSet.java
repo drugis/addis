@@ -1,13 +1,9 @@
 package org.drugis.addis.util;
-import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
-
-import org.drugis.addis.entities.Entity;
 
 
 public class XMLSet<T> {
@@ -37,7 +33,7 @@ public class XMLSet<T> {
 		@Override
 		public XMLSet newInstance(Class<XMLSet> cls, InputElement ie) throws XMLStreamException {
 			//System.out.println("XMLSet::newInstance");
-			return new XMLSet(new TreeSet(),"unknown"); // FIXME
+			return new XMLSet(new ArrayList(),"unknown"); // FIXME
 		}
 		
 		@Override

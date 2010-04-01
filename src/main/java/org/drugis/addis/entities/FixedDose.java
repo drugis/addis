@@ -9,6 +9,9 @@ public class FixedDose extends AbstractDose {
 
 	private Double d_quantity;
 	
+	public FixedDose(){
+	}
+	
 	public FixedDose(double quantity, SIUnit unit) {
 		d_quantity = quantity;
 		d_unit = unit;

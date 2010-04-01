@@ -2,6 +2,7 @@ package org.drugis.addis.util;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 
 import org.drugis.addis.entities.*;
 
@@ -50,7 +51,26 @@ public class AddisBinding extends XMLBinding {
 		setAlias(ContinuousPopulationCharacteristic.class, "continuouscharacteristic");
 		setAlias(org.drugis.addis.entities.Variable.Type.class, "type");
 
+		setAlias(FixedDose.class, "fixedDose");
+		setAlias(FlexibleDose.class, "flexibleDose");
+		setAlias(SIUnit.class, "SIUnit");
+		setAlias(Arm.class, "arm");
+		setAlias(Indication.class, "indication");
+		setAlias(Variable.class, "variable");
+		setAlias(Date.class, "date");
 		
+		
+		setAlias(BasicStudyCharacteristic.class, "basicCharacteristic");
+		setAlias(BasicStudyCharacteristic.Status.class, "status");
+		setAlias(BasicStudyCharacteristic.Allocation.class, "allocation");
+		setAlias(BasicStudyCharacteristic.Blinding.class, "blinding");
+		setAlias(CharacteristicsMap.class, "characteristicMap");
+		
+		setAlias(BasicContinuousMeasurement.class, "continuousMeasurement");
+		setAlias(BasicRateMeasurement.class, "rateMeasurement");
+		setAlias(OutcomeMeasure.Direction.class, "direction");
+
+		setAlias(Integer.class, "number");
 		setAlias(String.class, "string");
 		/*
 		setAlias(GaussianMeasurement.class, "gaussian");

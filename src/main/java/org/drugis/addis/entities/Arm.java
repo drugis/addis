@@ -32,6 +32,9 @@ public class Arm extends AbstractEntity {
 	public static final String PROPERTY_DRUG = "drug";
 	public static final String PROPERTY_DOSE = "dose";	
 	
+	public Arm(){
+	}
+	
 	public Arm(Drug drug, AbstractDose dose, int size) {
 		d_drug = drug;
 		d_dose = dose;

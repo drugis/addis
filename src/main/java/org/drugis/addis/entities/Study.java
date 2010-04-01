@@ -30,9 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.drugis.common.EqualsUtil;
 
 public class Study extends AbstractEntity implements Comparable<Study>, Entity {
@@ -89,6 +86,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	private Indication d_indication;
 	private Map<Object, Note> d_notes = new HashMap<Object, Note>();
+	
+	public Study (){
+	}
 	
 	public Study(String id, Indication i) {
 		d_id = id;
@@ -426,39 +426,43 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		setEndpoints(newVal);
 	}
 	
-	protected static final XMLFormat<Study> XML = new XMLFormat<Study>(Study.class) {
-		// TODO: .....
-//		public final static String PROPERTY_ID = "id";
-//		public final static String PROPERTY_ENDPOINTS = "endpoints";
-//		public final static String PROPERTY_ADVERSE_EVENTS = "adverseEvents";
-//		public final static String PROPERTY_POPULATION_CHARACTERISTICS = "populationCharacteristics";
-//		public final static String PROPERTY_ARMS = "arms";
-//		public final static String PROPERTY_CHARACTERISTIC = "Characteristics";
-//		public final static String PROPERTY_NOTE = "Note";
-
-		
-		
-		@Override
-		public Study newInstance(Class<Study> cls, InputElement ie) throws XMLStreamException {
-			// In newInstance, only use getAttribute, not get. Thats why no indication can be instantiated at this point
-			return new Study((String) ie.getAttribute("name", null), null);
-		}
-		
-		@Override
-		public boolean isReferenceable() {
-			return true;
-		}
-		
-		@Override
-		public void read(InputElement ie, Study s) throws XMLStreamException {
-			s.setId(ie.getAttribute("name", null));
-			s.setIndication(ie.get("indication", Indication.class));
-		}
-		
-		@Override
-		public void write(Study s, OutputElement oe) throws XMLStreamException {
-			oe.setAttribute("name", s.getId());
-			oe.add(s.getIndication(), "indication", Indication.class);
-		}
-	};
+	public Map<MeasurementKey, Measurement> getMeasurements() {
+		return d_measurements;
+	}
+	
+//	protected static final XMLFormat<Study> XML = new XMLFormat<Study>(Study.class) {
+//		// TODO: .....
+////		public final static String PROPERTY_ID = "id";
+////		public final static String PROPERTY_ENDPOINTS = "endpoints";
+////		public final static String PROPERTY_ADVERSE_EVENTS = "adverseEvents";
+////		public final static String PROPERTY_POPULATION_CHARACTERISTICS = "populationCharacteristics";
+////		public final static String PROPERTY_ARMS = "arms";
+////		public final static String PROPERTY_CHARACTERISTIC = "Characteristics";
+////		public final static String PROPERTY_NOTE = "Note";
+//
+//		
+//		
+//		@Override
+//		public Study newInstance(Class<Study> cls, InputElement ie) throws XMLStreamException {
+//			// In newInstance, only use getAttribute, not get. Thats why no indication can be instantiated at this point
+//			return new Study((String) ie.getAttribute("name", null), null);
+//		}
+//		
+//		@Override
+//		public boolean isReferenceable() {
+//			return true;
+//		}
+//		
+//		@Override
+//		public void read(InputElement ie, Study s) throws XMLStreamException {
+//			s.setId(ie.getAttribute("name", null));
+//			s.setIndication(ie.get("indication", Indication.class));
+//		}
+//		
+//		@Override
+//		public void write(Study s, OutputElement oe) throws XMLStreamException {
+//			oe.setAttribute("name", s.getId());
+//			oe.add(s.getIndication(), "indication", Indication.class);
+//		}
+//	};
 }

@@ -31,6 +31,10 @@ public class FlexibleDose extends AbstractDose {
 	public static final String PROPERTY_MIN_DOSE = "minDose";
 	public static final String PROPERTY_MAX_DOSE = "maxDose";
 	
+	
+	public FlexibleDose(){
+	}
+	
 	public FlexibleDose(Interval<Double> flexDose, SIUnit unit) {
 		if (flexDose.getLowerBound() > flexDose.getUpperBound()) {
 			throw new IllegalArgumentException("Dose bounds illegal");

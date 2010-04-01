@@ -1,7 +1,6 @@
 package org.drugis.addis.entities;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -145,7 +144,7 @@ public class DomainData implements Serializable {
 	}
 	
 /*
-	private SortedSet<PopulationCharacteristic> d_variables;
+	
 	private SortedSet<Study> d_studies;
 	private SortedSet<MetaAnalysis> d_metaAnalyses;	
 */
@@ -202,7 +201,7 @@ public class DomainData implements Serializable {
 				oe.add(new XMLSet<AdverseEvent>(d.getAdverseEvents(),"adverse event"),"adverse events",XMLSet.class);
 			oe.add(new XMLSet<Drug>(d.getDrugs(), "drug"), "drugs", XMLSet.class);
 			oe.add(new XMLSet<PopulationCharacteristic>(d.getVariables(), "populationcharacteristic"), "populationcharacteristics", XMLSet.class);
-//			oe.add(new XMLSet<Study>(d.getStudies(),"study"),"studies", XMLSet.class);
+			oe.add(new XMLSet<Study>(d.getStudies(),"study"),"studies", XMLSet.class);
 		}
 	};
 }

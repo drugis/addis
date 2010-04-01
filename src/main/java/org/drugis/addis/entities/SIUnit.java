@@ -21,6 +21,9 @@ package org.drugis.addis.entities;
 
 import java.io.Serializable;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 public enum SIUnit implements Serializable {
 	MILLIGRAMS_A_DAY("Milligrams a Day", "mg/day");
 	
@@ -43,4 +46,20 @@ public enum SIUnit implements Serializable {
 	public String toString() {
 		return d_symbol;
 	}
+	
+	protected static final XMLFormat<SIUnit> XML = new XMLFormat<SIUnit>(SIUnit.class) {
+		public SIUnit newInstance(Class<SIUnit> cls, InputElement ie) throws XMLStreamException {
+			// In newInstance, only use getAttribute, not get. Thats why no indication can be instantiated at this point
+			return SIUnit.MILLIGRAMS_A_DAY;
+		}
+		public boolean isReferenceable() {
+			return false;
+		}
+		public void read(InputElement ie, SIUnit d) throws XMLStreamException {
+		}
+		
+		public void write(SIUnit d, OutputElement oe) throws XMLStreamException {
+			oe.setAttribute("unit", d.toString());
+		}
+	};
 }

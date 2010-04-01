@@ -1,11 +1,7 @@
 package org.drugis.addis.entities;
 
 import javolution.xml.XMLFormat;
-import javolution.xml.XMLFormat.InputElement;
-import javolution.xml.XMLFormat.OutputElement;
 import javolution.xml.stream.XMLStreamException;
-
-import org.drugis.addis.entities.OutcomeMeasure.Direction;
 
 
 public interface Variable extends Entity, Comparable<Variable> {

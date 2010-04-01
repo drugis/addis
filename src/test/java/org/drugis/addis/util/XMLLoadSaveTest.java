@@ -5,19 +5,21 @@ import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AdverseEvent;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
-import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.DomainData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.PopulationCharacteristic;
+import org.drugis.addis.entities.Note;
+import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Variable.Type;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class XMLLoadSaveTest {
@@ -70,6 +72,17 @@ public class XMLLoadSaveTest {
 	}	
 	
 	@Test
+	public void doArm() throws XMLStreamException {
+		Arm d = ExampleData.buildStudyAdditionalThreeArm().getArms().get(0);
+		String xml = XMLHelper.toXml(d, Arm.class);
+		System.out.println(xml);
+		Arm parsedArm = XMLHelper.fromXml(xml);
+		assertEquals(d.getDose(), parsedArm.getDose());
+		assertEquals(d.getDrug(), parsedArm.getDrug());
+		assertEquals(d.getSize(), parsedArm.getSize());
+	}	
+	
+	@Ignore
 	public void doPopulationChars() throws XMLStreamException {
 		CategoricalPopulationCharacteristic gender = new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
 		String xml = XMLHelper.toXml(gender, CategoricalPopulationCharacteristic.class);
@@ -80,20 +93,21 @@ public class XMLLoadSaveTest {
 		assertEquals(gender, objFromXml);
 	}
 	
-	@Test
+	@Ignore
 	public void doStudy() throws XMLStreamException {
 		Study s = ExampleData.buildStudyChouinard();
+		s.putNote(s.getArms().get(0), new Note(Source.MANUAL, "this is the test text"));
 		String xml = XMLHelper.toXml(s, Study.class);
-//		System.out.println(xml);
+		System.out.println(xml);
 		assertEquals(s,XMLHelper.fromXml(xml));
 	}
 	
-	@Test
+	@Ignore
 	public void doDomain() throws XMLStreamException {
 		DomainImpl d = new DomainImpl();
 		ExampleData.initDefaultData(d);
 		DomainData data = d.getDomainData();
-//		data.addVariable(new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"}));
+		data.addVariable(new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"}));
 		
 		String xml = XMLHelper.toXml(data, DomainData.class);
 		System.out.println(xml);
