@@ -29,9 +29,6 @@ public enum SIUnit implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String d_name;
 	private String d_symbol;
-	
-	EnumXMLFormat<SIUnit> XML = new EnumXMLFormat<SIUnit>();
-	
 	private SIUnit(String name, String symbol) {
 		d_name = name;
 		d_symbol = symbol;
@@ -48,4 +45,8 @@ public enum SIUnit implements Serializable {
 	public String toString() {
 		return d_symbol;
 	}
+	
+	
+	EnumXMLFormat<SIUnit> XML = new EnumXMLFormat<SIUnit>(SIUnit.class);
+	
 }

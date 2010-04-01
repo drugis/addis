@@ -22,6 +22,9 @@ package org.drugis.addis.entities;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import org.drugis.addis.util.EnumXMLFormat;
+
 public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 
 	TITLE("Title", String.class, true),
@@ -40,12 +43,14 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 	private String d_description;
 	private Class<?> d_type;
 	private boolean d_defaultVisible;
+	static EnumXMLFormat<BasicStudyCharacteristic> XML = new EnumXMLFormat<BasicStudyCharacteristic>(BasicStudyCharacteristic.class);
 	
 	public enum Allocation {
 		RANDOMIZED("Randomized"),
 		NONRANDOMIZED("Non-randomized");
 		
 		private String d_title;
+		static EnumXMLFormat<Allocation> XML = new EnumXMLFormat<Allocation>(Allocation.class);
 
 		Allocation(String title) {
 			d_title = title;
@@ -68,6 +73,7 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 		}
 		
 		private String d_title;
+		static EnumXMLFormat<Blinding> XML = new EnumXMLFormat<Blinding>(Blinding.class);
 		
 		@Override
 		public String toString() {
@@ -86,6 +92,7 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 		WITHDRAWN("Withdrawn");
 		
 		private String d_title;
+		static EnumXMLFormat<Status> XML = new EnumXMLFormat<Status>(Status.class);
 
 		Status(String title) {
 			d_title = title;

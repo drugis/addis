@@ -1,5 +1,8 @@
 package org.drugis.addis.entities;
 
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import org.drugis.addis.util.EnumXMLFormat;
+
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
@@ -25,25 +28,7 @@ public interface Variable extends Entity, Comparable<Variable> {
 			return d_name;
 		}
 		
-		protected static final XMLFormat<Type> XML = new XMLFormat<Type>(Type.class) {
-			public Type newInstance(Class<Type> cls, InputElement ie) throws XMLStreamException {
-				// In newInstance, only use getAttribute, not get. Thats why no indication can be instantiated at this point
-				if (ie.getAttribute("type", null).equals(CONTINUOUS.toString()))
-					return Type.CONTINUOUS;
-				else if (ie.getAttribute("type", null).equals(RATE.toString()))
-					return Type.RATE;
-				else
-					return Type.CATEGORICAL;
-			}
-			public boolean isReferenceable() {
-				return false;
-			}
-			public void read(InputElement ie, Type d) throws XMLStreamException {
-			}
-			public void write(Type d, OutputElement oe) throws XMLStreamException {
-				oe.setAttribute("type", d.toString());
-			}
-		};
+		static EnumXMLFormat<Type> XML = new EnumXMLFormat<Type>(Type.class);
 	}
 
 	public static final String PROPERTY_NAME = "name";

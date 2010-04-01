@@ -3,20 +3,17 @@ package org.drugis.addis.util;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
-public class EnumXMLFormat<T extends Enum<T>>  extends XMLFormat<T> {
+@SuppressWarnings("unchecked")
+public class EnumXMLFormat<T extends Enum>  extends XMLFormat<T> {
 	
-	@SuppressWarnings("unchecked")
-	public EnumXMLFormat(){
-		super((Class<T>) Enum.class);
+	public EnumXMLFormat(Class<T> c){
+		super( c);
 	}
 	
 	public T newInstance(Class<T> enumClass, InputElement ie) throws XMLStreamException {
-		String selectedOption = ie.getAttribute(enumClass.getSimpleName()).toString();
+		String selectedOption = ie.getAttribute("value").toString();
 		
-		for (T curOption : enumClass.getEnumConstants())
-			if (selectedOption.equals(curOption.toString()))
-				return curOption;
-		return null;
+		return (T) Enum.valueOf(enumClass, selectedOption);
 	}
 	public boolean isReferenceable() {
 		return false;
@@ -25,6 +22,6 @@ public class EnumXMLFormat<T extends Enum<T>>  extends XMLFormat<T> {
 	}
 	
 	public void write(T enumInstance, OutputElement oe) throws XMLStreamException {
-		oe.setAttribute(enumInstance.getClass().getSimpleName() ,enumInstance.toString());
+		oe.setAttribute("value" ,enumInstance.name());
 	}
 }

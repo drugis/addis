@@ -155,6 +155,10 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		throw new IllegalAccessError("Can't set characteristics map directly.");
 	}
 	
+	public void setCharacteristics(CharacteristicsMap m) {
+		d_chars = m;
+	}
+	
 	public CharacteristicsMap getCharacteristics() {
 		return d_chars;
 	}

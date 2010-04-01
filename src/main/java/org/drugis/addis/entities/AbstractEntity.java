@@ -129,8 +129,14 @@ public abstract class AbstractEntity implements Entity, Serializable {
 						System.out.println(" as string array: "+retrievedVal);
 						BeanUtils.setValue(i, properties[p], retrievedVal);
 					} else if (List.class.isAssignableFrom(properties[p].getPropertyType())) {
-						System.out.println(" as List");
+						System.out.print(" as List");
 						XMLSet xmlSet = ((XMLSet) ie.get(properties[p].getName(),XMLSet.class));
+						if(xmlSet == null){
+							System.err.println("AbstractEntity::read WHY IS XMLSET NULL??");
+							continue;
+						}
+							
+						System.out.println( xmlSet);
 						BeanUtils.setValue(i, properties[p], xmlSet.getSet());
 					} else System.out.println(" Didnt read as node");
 
@@ -143,12 +149,10 @@ public abstract class AbstractEntity implements Entity, Serializable {
 		protected boolean propertyIsExcluded(Entity e, String propertyName) {
 			if (propertyName.equals("dependencies") || propertyName.equals("class") || propertyName.equals("xmlExclusions"))
 				return true;
-			
-			System.out.println("checking exclusion: "+e.getXmlExclusions());
+
 			if (e.getXmlExclusions() == null)
 				return false;
-			
-			System.out.println("checking exclusion2: "+e.getXmlExclusions());
+
 			for (String s : e.getXmlExclusions()) {
 				if (s.equals(propertyName))
 					return true;
