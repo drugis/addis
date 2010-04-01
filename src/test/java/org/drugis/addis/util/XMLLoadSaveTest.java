@@ -82,7 +82,7 @@ public class XMLLoadSaveTest {
 		assertEquals(d.getSize(), parsedArm.getSize());
 	}	
 	
-	@Ignore
+	@Test
 	public void doPopulationChars() throws XMLStreamException {
 		CategoricalPopulationCharacteristic gender = new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
 		String xml = XMLHelper.toXml(gender, CategoricalPopulationCharacteristic.class);

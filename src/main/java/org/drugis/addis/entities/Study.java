@@ -430,6 +430,11 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return d_measurements;
 	}
 	
+	@Override
+	public String[] getXmlExclusions() {
+		return new String[] {"sampleSize"};
+	}
+	
 //	protected static final XMLFormat<Study> XML = new XMLFormat<Study>(Study.class) {
 //		// TODO: .....
 ////		public final static String PROPERTY_ID = "id";

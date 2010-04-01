@@ -31,4 +31,7 @@ public interface Entity extends Serializable, Observable {
 	 */
 	
 	public Set<? extends Entity> getDependencies();
+
+	public String[] getXmlExclusions();
+	
 }
