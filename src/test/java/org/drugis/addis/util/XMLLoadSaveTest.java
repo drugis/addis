@@ -1,6 +1,10 @@
 package org.drugis.addis.util;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.ExampleData;
@@ -53,6 +57,34 @@ public class XMLLoadSaveTest {
 	}
 	
 	@Test
+	public void doEndpointHamd() throws XMLStreamException {
+		Endpoint i = ExampleData.buildEndpointHamd();
+		String xml = XMLHelper.toXml(i, Endpoint.class);
+		System.out.println("\n"+xml+"\n");
+		Endpoint objFromXml = XMLHelper.fromXml(xml);
+		assertEquals(i.getDirection(),objFromXml.getDirection());
+		assertEquals(i.getType(),objFromXml.getType());
+		assertEquals(i, objFromXml);
+	}
+	
+	@Test
+	public void doListOfEndpoints() throws XMLStreamException {
+		List<Endpoint> list = new ArrayList();
+		
+		list.add(ExampleData.buildEndpointCgi());
+		list.add(ExampleData.buildEndpointHamd());
+		list.add(ExampleData.buildEndpointCVdeath());
+		
+		XMLSet xmlSet = new XMLSet(list,"endpoints");
+		
+		String xml = XMLHelper.toXml(xmlSet,XMLSet.class);
+		System.out.println("\n"+xml+"\n");
+		XMLSet objFromXml = XMLHelper.fromXml(xml);
+		
+		assertEquals(list,(List) objFromXml.getSet());
+	}
+	
+	@Test
 	public void doAdverseEvent() throws XMLStreamException {
 		AdverseEvent ade = new AdverseEvent("name", Variable.Type.RATE);
 		String xml = XMLHelper.toXml(ade, AdverseEvent.class);
@@ -93,13 +125,22 @@ public class XMLLoadSaveTest {
 		assertEquals(gender, objFromXml);
 	}
 	
-	@Ignore
+	@Test
 	public void doStudy() throws XMLStreamException {
 		Study s = ExampleData.buildStudyChouinard();
-		s.putNote(s.getArms().get(0), new Note(Source.MANUAL, "this is the test text"));
+//		s.putNote(s.getArms().get(0), new Note(Source.MANUAL, "this is the test text"));
 		String xml = XMLHelper.toXml(s, Study.class);
 		System.out.println(xml);
-		assertEquals(s,XMLHelper.fromXml(xml));
+		
+		Study parsedStudy = new Study();
+		parsedStudy = (Study)XMLHelper.fromXml(xml);
+
+		assertEquals(s.getStudyId(),parsedStudy.getStudyId());
+		System.out.println(parsedStudy.getMeasurements());
+		System.out.println(parsedStudy.getIndication());
+		// TODO: characteristicmap
+		// TODO: measurements
+		// TODO: notes
 	}
 	
 	@Ignore

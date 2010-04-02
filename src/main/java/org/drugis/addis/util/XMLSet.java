@@ -33,6 +33,9 @@ public class XMLSet<T> {
 		@Override
 		public XMLSet newInstance(Class<XMLSet> cls, InputElement ie) throws XMLStreamException {
 			//System.out.println("XMLSet::newInstance");
+			System.out.print("");
+			if(cls==null)
+				System.out.println("");;
 			return new XMLSet(new ArrayList(),"unknown"); // FIXME
 		}
 		

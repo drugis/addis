@@ -27,6 +27,10 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	private Double d_mean;
 	private Double d_stdDev;
 		
+	public BasicContinuousMeasurement(){
+		super(0);
+	}
+	
 	public BasicContinuousMeasurement(Double mean, Double stdDev, Integer size) {
 		super(size);
 		d_mean = mean;

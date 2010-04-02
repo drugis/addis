@@ -25,6 +25,10 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 	
 	private Integer d_rate;
 	
+	public BasicRateMeasurement() {
+		super(0);
+	}
+	
 	public BasicRateMeasurement(int rate, int size) {
 		super(size);
 		d_rate = rate;
@@ -54,5 +58,10 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 	
 	public boolean isOfType(Variable.Type type) {
 		return type.equals(Variable.Type.RATE);
+	}
+	
+	@Override
+	public String[] getXmlExclusions() {
+		return new String[] {"label"};
 	}
 }

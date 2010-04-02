@@ -35,13 +35,16 @@ import org.drugis.common.EqualsUtil;
 public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private static final long serialVersionUID = 532314508658928979L;
 	
-	private static class MeasurementKey implements Serializable {
+	public static class MeasurementKey extends AbstractEntity implements Entity {
 		private static final long serialVersionUID = 6310789667384578005L;
 		
 		private Entity d_outcomeM;
 		private Arm d_arm;
 		
-		public MeasurementKey(Entity e, Arm g) {
+		public MeasurementKey() {
+		}
+	
+		public MeasurementKey(Entity e, Arm g)  {
 			if (e == null) {
 				throw new NullPointerException("Variable/Outcome = " + e + " may not be null");
 			}
@@ -50,6 +53,19 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			}
 			d_outcomeM = e;
 			d_arm = g;
+		}
+
+		public Entity getOutcomeM() {
+			return d_outcomeM;
+		}
+		public void setOutcomeM(Entity outcomeM) {
+			d_outcomeM = outcomeM;
+		}
+		public Arm getArm() {
+			return d_arm;
+		}
+		public void setArm(Arm arm) {
+			d_arm = arm;
 		}
 		
 		public boolean equals(Object o) {
@@ -66,9 +82,14 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			code = code * 31 + (d_arm == null ? 0 : d_arm.hashCode());
 			return code;
 		}
+
+		@Override
+		public Set<? extends Entity> getDependencies() {
+			return null;
+		}
 	}
 	
-	public final static String PROPERTY_ID = "id";
+	public final static String PROPERTY_ID = "studyId";
 	public final static String PROPERTY_ENDPOINTS = "endpoints";
 	public final static String PROPERTY_ADVERSE_EVENTS = "adverseEvents";
 	public final static String PROPERTY_POPULATION_CHARACTERISTICS = "populationCharacteristics";
@@ -78,9 +99,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public final static String PROPERTY_INDICATION = "indication";
 
 	private List<Arm> d_arms = new ArrayList<Arm>();
-	private String d_id;
+	private String d_studyId;
 	private Map<MeasurementKey, Measurement> d_measurements = new HashMap<MeasurementKey, Measurement>();
-	private List<Endpoint> d_endpoints = new ArrayList<Endpoint>();
+	private List<Endpoint> d_endpointList = new ArrayList<Endpoint>();
 	private List<AdverseEvent> d_adverseEvents = new ArrayList<AdverseEvent>();
 	private List<PopulationCharacteristic> d_populationChars = new ArrayList<PopulationCharacteristic>();
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
@@ -91,7 +112,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 	
 	public Study(String id, Indication i) {
-		d_id = id;
+		d_studyId = id;
 		d_indication = i;
 		setArms(new ArrayList<Arm>());
 	}
@@ -163,40 +184,40 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return d_chars;
 	}
 	
-	public String getId() {
-		return d_id;
+	public String getStudyId() {
+		return d_studyId;
 	}
 	
-	public void setId(String id) {
-		String oldVal = d_id;
-		d_id = id;
-		firePropertyChange(PROPERTY_ID, oldVal, d_id);
+	public void setStudyId(String id) {
+		String oldVal = d_studyId;
+		d_studyId = id;
+		firePropertyChange(PROPERTY_ID, oldVal, d_studyId);
 	}
 	
 	@Override
 	public String toString() {
-		return getId();
+		return getStudyId();
 	}
 	
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Study) {
 			Study other = (Study)o;
-			if (other.getId() == null) {
-				return getId() == null;
+			if (other.getStudyId() == null) {
+				return getStudyId() == null;
 			}
-			return other.getId().equals(getId());
+			return other.getStudyId().equals(getStudyId());
 		}
 		return false;
 	}
 	
 	@Override
 	public int hashCode() {
-		return getId() == null ? 0 : getId().hashCode();
+		return getStudyId() == null ? 0 : getStudyId().hashCode();
 	}
 	
 	public int compareTo(Study other) {
-		return getId().compareTo(other.getId());
+		return getStudyId().compareTo(other.getStudyId());
 	}
 	
 	public Measurement getMeasurement(Variable v, Arm g) {
@@ -259,14 +280,18 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 
 	public List<OutcomeMeasure> getOutcomeMeasures() {
 		List<OutcomeMeasure> l = new ArrayList<OutcomeMeasure>();
-		l.addAll(d_endpoints);
+		l.addAll(d_endpointList);
 		l.addAll(d_adverseEvents);
 		return l;
 	}
 	
 	public List<Endpoint> getEndpoints() {
-		return Collections.unmodifiableList(d_endpoints);
+		return Collections.unmodifiableList(d_endpointList);
 	}
+	public List<Endpoint> getEPs() {
+		return getEndpoints();
+	}
+	
 	
 	public List<AdverseEvent> getAdverseEvents() {
 		return Collections.unmodifiableList(d_adverseEvents);
@@ -278,7 +303,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	
 	public List<? extends Variable> getVariables(Class<? extends Variable> type) {
 		if (type == Endpoint.class) {
-			return Collections.unmodifiableList(d_endpoints);
+			return Collections.unmodifiableList(d_endpointList);
 		} else if (type == AdverseEvent.class){
 			return Collections.unmodifiableList(d_adverseEvents);
 		}		
@@ -287,9 +312,13 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	
 	public void setEndpoints(List<Endpoint> endpoints) {
 		List<Endpoint> oldVal = getEndpoints();
-		d_endpoints = new ArrayList<Endpoint>(endpoints);
+		d_endpointList = new ArrayList<Endpoint>(endpoints);
 		updateMeasurements();
 		firePropertyChange(PROPERTY_ENDPOINTS, oldVal, getEndpoints());
+	}
+	
+	public void setEPs(List<Endpoint> endpoints) {
+		setEndpoints(endpoints);
 	}
 	
 	public void setAdverseEvents(List<AdverseEvent> ade) {
@@ -323,7 +352,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		if (om == null) 
 			throw new NullPointerException("Cannot add a NULL outcome measure");
 		
-		List<Endpoint> newVal = new ArrayList<Endpoint>(d_endpoints);
+		List<Endpoint> newVal = new ArrayList<Endpoint>(d_endpointList);
 		newVal.add(om);
 		setEndpoints(newVal);
 	}
@@ -333,8 +362,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 
 	public void deleteEndpoint(Endpoint om) {
-		if (d_endpoints.contains(om)) {
-			List<Endpoint> newVal = new ArrayList<Endpoint>(d_endpoints);
+		if (d_endpointList.contains(om)) {
+			List<Endpoint> newVal = new ArrayList<Endpoint>(d_endpointList);
 			newVal.remove(om);
 			setEndpoints(newVal);
 		}
@@ -419,13 +448,16 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public Map<Object,Note> getNotes() {
 		return d_notes;
 	}
-	
+	public void setNotes(Map<Object,Note> notes) {
+		d_notes = notes;
+	}
+
 	public void removeNote (Object key){
 		d_notes.remove(key);
 	}
 
 	public void removeEndpoint(int i) {
-		List<Endpoint> newVal = new ArrayList<Endpoint>(d_endpoints);
+		List<Endpoint> newVal = new ArrayList<Endpoint>(d_endpointList);
 		newVal.remove(i);
 		setEndpoints(newVal);
 	}
@@ -434,9 +466,13 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return d_measurements;
 	}
 	
+	public void setMeasurements(Map<MeasurementKey, Measurement> m) {
+		d_measurements = m;
+	}
+	
 	@Override
 	public String[] getXmlExclusions() {
-		return new String[] {"sampleSize"};
+		return new String[] {"sampleSize", "outcomeMeasures", "endpoints", "drugs"};
 	}
 	
 //	protected static final XMLFormat<Study> XML = new XMLFormat<Study>(Study.class) {

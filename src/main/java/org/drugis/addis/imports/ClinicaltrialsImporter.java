@@ -71,7 +71,7 @@ public class ClinicaltrialsImporter {
 	
 	private static void getClinicalTrialsData(Study study, ClinicalStudy studyImport) {
 		// ID  (& ID note =study url)
-		study.setId(studyImport.getIdInfo().getNctId());
+		study.setStudyId(studyImport.getIdInfo().getNctId());
 		study.putNote(Study.PROPERTY_ID, new Note(Source.CLINICALTRIALS, studyImport.getIdInfo().getNctId().trim()));
 		
 		// Title

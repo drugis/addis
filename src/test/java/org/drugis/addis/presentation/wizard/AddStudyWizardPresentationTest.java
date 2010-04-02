@@ -118,7 +118,7 @@ public class AddStudyWizardPresentationTest {
 	@Test
 	public void testCheckID() {
 		assertEquals(true,d_wizard.checkID());
-		d_wizard.getIdModel().setValue(d_domain.getStudies().first().getId());
+		d_wizard.getIdModel().setValue(d_domain.getStudies().first().getStudyId());
 		assertEquals(false,d_wizard.checkID());
 	}
 	
@@ -140,7 +140,7 @@ public class AddStudyWizardPresentationTest {
 	
 	@Test(expected=IllegalStateException.class)
 	public void testSaveIllegalID() throws InvalidStateException {
-		d_wizard.getIdModel().setValue(d_domain.getStudies().first().getId());
+		d_wizard.getIdModel().setValue(d_domain.getStudies().first().getStudyId());
 		d_wizard.getEndpointModel(0).setValue(d_domain.getEndpoints().first());
 		d_wizard.getIndicationModel().setValue(d_domain.getIndications().first());
 		d_wizard.saveStudy();

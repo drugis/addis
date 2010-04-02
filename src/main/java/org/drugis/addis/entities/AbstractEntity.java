@@ -15,6 +15,7 @@ import java.util.Set;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
+import org.drugis.addis.util.XMLHelper;
 import org.drugis.addis.util.XMLSet;
 import org.drugis.common.ObserverManager;
 
@@ -83,6 +84,7 @@ public abstract class AbstractEntity implements Entity, Serializable {
 				for(int p = 0; p < properties.length; ++p){
 					if (propertyIsExcluded(i, properties[p].getName()))
 						continue;
+					
 					System.out.print("AbstractEntity::XMLFormat: inspecting " + properties[p].getName() + ", class is " + properties[p].getPropertyType());	
 					if (properties[p].getPropertyType().equals(String.class)) {
 						System.out.println(" as String");
@@ -107,6 +109,11 @@ public abstract class AbstractEntity implements Entity, Serializable {
 					if (propertyIsExcluded(i, properties[p].getName()))
 						continue;
 
+					// This is an unfortunate bugfix for the javolution use of the keyword "end....."
+					String propertyName = properties[p].getName();
+					if(propertyName.equals("endpoints"))
+						propertyName = "results";
+					
 					System.out.print("AbstractEntity::XMLFormat: inspecting " + properties[p].getName() + ", class is " + properties[p].getPropertyType());
 
 					if (properties[p].getPropertyType().isEnum()) {
@@ -129,15 +136,12 @@ public abstract class AbstractEntity implements Entity, Serializable {
 						System.out.println(" as string array: "+retrievedVal);
 						BeanUtils.setValue(i, properties[p], retrievedVal);
 					} else if (List.class.isAssignableFrom(properties[p].getPropertyType())) {
-						System.out.print(" as List");
-						XMLSet xmlSet = ((XMLSet) ie.get(properties[p].getName(),XMLSet.class));
-						if(xmlSet == null){
-							System.err.println("AbstractEntity::read WHY IS XMLSET NULL??");
-							continue;
-						}
-							
-						System.out.println( xmlSet);
-						BeanUtils.setValue(i, properties[p], xmlSet.getSet());
+						System.out.print(" as List " + propertyName + " ");
+						XMLSet xmlSet = ((XMLSet) ie.get(propertyName,XMLSet.class));
+						if (xmlSet != null)
+							BeanUtils.setValue(i, properties[p], xmlSet.getSet());
+						else
+							System.err.println(propertyName + "not found, not reading.");
 					} else System.out.println(" Didnt read as node");
 
 				}
@@ -171,6 +175,7 @@ public abstract class AbstractEntity implements Entity, Serializable {
 				for(int p = 0; p < properties.length; ++p){
 					if(propertyIsExcluded(i, properties[p].getName()))
 						continue;
+					
 					//						if (!(properties[p].getName().equals("class") || properties[p].getName().equals("dependencies"))) {
 					Object value = BeanUtils.getValue(i, properties[p]);
 					System.out.print("(attributes) inspecting "+properties[p].getName() + ", value is: " + value + ", class is " + value.getClass());	
@@ -188,6 +193,12 @@ public abstract class AbstractEntity implements Entity, Serializable {
 				for(int p = 0; p < properties.length; ++p){
 					if(propertyIsExcluded(i, properties[p].getName()))
 						continue;
+					
+					// This is an unfortunate bugfix for the javolution use of the keyword "end....."
+					String propertyName = properties[p].getName();
+					if(propertyName.equals("endpoints"))
+						propertyName = "results";
+								
 					Object value = BeanUtils.getValue(i, properties[p]);
 					System.out.print("(others) inspecting "+properties[p].getName() + ", value is: " + value + ", class is " + value.getClass());
 					if (value instanceof Enum) {
@@ -204,14 +215,16 @@ public abstract class AbstractEntity implements Entity, Serializable {
 							stringList.add(s);
 						oe.add(new XMLSet<String>(stringList,""),properties[p].getName(), XMLSet.class);
 					} else if (value instanceof List) { // ADE list
-						System.out.println("writing as List");
-						oe.add(new XMLSet( (List)value, ""),properties[p].getName(), XMLSet.class);
+						System.out.println("writing "+propertyName+" as List");
+						List list = (List)value;
+						//if(!list.isEmpty())
+							oe.add(new XMLSet( list, ""),propertyName, XMLSet.class);
 					} else if (value instanceof Set) {
 						System.out.println("writing as Set");
 						oe.add(new XMLSet( (Set)value, ""),properties[p].getName(), XMLSet.class);
 					} else if (value instanceof Map) {
 						System.out.println("writing as Map");
-						oe.add(value);
+						oe.add(value, properties[p].getName());
 					}
 					// FIXME: Map
 					else System.out.println("Not writing, not known other. (maybe attribute?)");

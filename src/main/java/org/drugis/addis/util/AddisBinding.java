@@ -50,6 +50,7 @@ public class AddisBinding extends XMLBinding {
 		setAlias(CategoricalPopulationCharacteristic.class, "categoricalcharacteristic");
 		setAlias(ContinuousPopulationCharacteristic.class, "continuouscharacteristic");
 		setAlias(org.drugis.addis.entities.Variable.Type.class, "type");
+		setAlias(org.drugis.addis.entities.Study.MeasurementKey.class, "measurementkey");
 
 		setAlias(FixedDose.class, "fixedDose");
 		setAlias(FlexibleDose.class, "flexibleDose");

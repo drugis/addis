@@ -50,7 +50,7 @@ public class ClinicaltrialImporterTest {
  	}
 
 	private void testRetrievedStudy() {
-		assertEquals("NCT00644527",d_testStudy.getId());
+		assertEquals("NCT00644527",d_testStudy.getStudyId());
 		assertEquals("Receptive Music Therapy for the Treatment of Depression", d_testStudy.getCharacteristic(BasicStudyCharacteristic.TITLE));
 		assertEquals(BasicStudyCharacteristic.Allocation.RANDOMIZED, d_testStudy.getCharacteristic( BasicStudyCharacteristic.ALLOCATION));
 		assertEquals(BasicStudyCharacteristic.Blinding.DOUBLE_BLIND, d_testStudy.getCharacteristic( BasicStudyCharacteristic.BLINDING));

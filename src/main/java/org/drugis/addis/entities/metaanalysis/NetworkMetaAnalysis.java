@@ -59,7 +59,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 					if(! (s.getMeasurement(v, a) instanceof BasicRateMeasurement)) 
 						break;
 					BasicRateMeasurement m = (BasicRateMeasurement)s.getMeasurement(v, a);	
-					builder.add(s.getId(), a.getDrug().getName(), m.getRate(), m.getSampleSize());
+					builder.add(s.getStudyId(), a.getDrug().getName(), m.getRate(), m.getSampleSize());
 				}
         	}
         }

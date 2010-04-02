@@ -224,7 +224,7 @@ public class AddStudyWizardPresentation {
 		// Source
 		getSourceModel().setValue(Source.CLINICALTRIALS);
 		// Id & Title
-		getIdModel().setValue(getOldStudy().getId());
+		getIdModel().setValue(getOldStudy().getStudyId());
 		getTitleModel().setValue(getOldStudy().getCharacteristic(BasicStudyCharacteristic.TITLE));
 		
 		// Endpoints.
