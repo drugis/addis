@@ -19,22 +19,22 @@ public class AddisBinding extends XMLBinding {
 		setAliases();
 	}
 
-	public static Entity readModel(InputStream is) throws XMLStreamException {
+	public static Object readModel(InputStream is) throws XMLStreamException {
 		XMLObjectReader reader = new XMLObjectReader().setInput(is).setBinding(new AddisBinding());
 		reader.setReferenceResolver(new XMLReferenceResolver());
 		return reader.read();
 	}
-	// SMAAModel -> Entity
-	public static void writeModel(Entity model, OutputStream os) throws XMLStreamException {
+
+	public static void writeModel(Object model, OutputStream os) throws XMLStreamException {
 		XMLObjectWriter writer = new XMLObjectWriter().setOutput(os).setBinding(new AddisBinding());
 		writer.setReferenceResolver(new XMLReferenceResolver());		
 		writer.setIndentation("\t");
 //		The top level cannot be aliased, thats why its being renamed here (in JSMAA)
-//		if (model instanceof SMAATRIModel) {
-//			writer.write((SMAATRIModel) model, "SMAA-TRI-model", SMAATRIModel.class);
-//		} else {
-			writer.write(model, "Addis-model", Entity.class);
-//		}
+		if (model instanceof DomainData) {
+			writer.write((DomainData) model, "ADDIS-Domain", DomainData.class);
+		} else {
+			writer.write(model, "Addis-model", Object.class);
+		}
 		writer.close();
 	}
 	
@@ -73,6 +73,7 @@ public class AddisBinding extends XMLBinding {
 
 		setAlias(Integer.class, "number");
 		setAlias(String.class, "string");
+		setAlias(DomainData.class, "addis-data");
 		/*
 		setAlias(GaussianMeasurement.class, "gaussian");
 		setAlias(LogNormalMeasurement.class, "lognormal");

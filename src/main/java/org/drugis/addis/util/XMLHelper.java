@@ -2,6 +2,8 @@ package org.drugis.addis.util;
 
 import java.io.StringReader;
 
+import org.drugis.addis.entities.DomainData;
+
 import javolution.io.AppendableWriter;
 import javolution.text.TextBuilder;
 import javolution.xml.XMLObjectReader;
@@ -17,7 +19,10 @@ public class XMLHelper {
 		XMLObjectWriter writer = new XMLObjectWriter().setOutput(out).setBinding(new AddisBinding());
 		writer.setReferenceResolver(new XMLReferenceResolver());		
 		writer.setIndentation("\t");
-		writer.write(obj, cls.getCanonicalName(), cls);
+		if (cls.equals(DomainData.class))
+			writer.write(obj, "addis-data", cls);
+		else
+			writer.write(obj, cls.getCanonicalName(), cls);
 		writer.close();
 		return xml.toString();
 	}
