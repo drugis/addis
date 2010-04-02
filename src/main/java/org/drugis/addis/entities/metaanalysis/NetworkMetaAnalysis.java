@@ -25,7 +25,9 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	transient private ConsistencyModel d_consistencyModel;
 	transient private NetworkBuilder d_builder;
 	transient private boolean d_hasRun = false;
-	private Map<Study, Map<Drug, Arm>> d_armMap;
+	
+	public NetworkMetaAnalysis(){
+	}
 	
 	public NetworkMetaAnalysis(String name, Indication indication,
 			OutcomeMeasure om, List<? extends Study> studies, List<Drug> drugs,
@@ -109,5 +111,10 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	
 	public Estimate getInconsistency(InconsistencyParameter ip){
 		return getInconsistencyModel().getInconsistency(ip);
+	}
+	
+	@Override
+	public String[] getXmlExclusions() {
+		return new String[] {"armList", "builder", "consistencyModel", "inconsistencyModel", "inconsistencyFactors", "type", "studiesIncluded", "sampleSize"};
 	}
 }

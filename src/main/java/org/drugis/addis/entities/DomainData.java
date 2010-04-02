@@ -187,6 +187,10 @@ public class DomainData implements Serializable {
 			XMLSet study = ie.get("studies", XMLSet.class);
 			if (study != null)
 				d.setStudies((SortedSet) ((XMLSet<Study>) study).getSet());
+			
+			XMLSet analysis = ie.get("meta-analyses", XMLSet.class);
+			if (analysis != null)
+				d.setStudies((SortedSet) ((XMLSet<MetaAnalysis>) analysis).getSet());
 		}
 		
 		@Override
@@ -199,7 +203,7 @@ public class DomainData implements Serializable {
 			oe.add(new XMLSet<Drug>(d.getDrugs(), "drug"), "drugs", XMLSet.class);
 			oe.add(new XMLSet<PopulationCharacteristic>(d.getVariables(), "populationcharacteristic"), "populationcharacteristics", XMLSet.class);
 			oe.add(new XMLSet<Study>(d.getStudies(),"study"),"studies", XMLSet.class);
-//			oe.add()
+			oe.add(new XMLSet<MetaAnalysis>(d.getMetaAnalyses(), "meta-analysis"), "meta-analyses", XMLSet.class);
 		}
 	};
 }

@@ -24,8 +24,12 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	protected List<Drug> d_drugs;
 	protected String d_name;
 	protected int d_totalSampleSize;
-	private final Map<Study, Map<Drug, Arm>> d_armMap;
-
+	protected Map<Study, Map<Drug, Arm>> d_armMap;
+	
+	// FIXME
+	public AbstractMetaAnalysis(){
+	}
+	
 	public AbstractMetaAnalysis(String name, 
 			Indication indication, OutcomeMeasure om,
 			List<? extends Study> studies, List<Drug> drugs, Map<Study, Map<Drug, Arm>> armMap) 
@@ -42,6 +46,10 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		d_name = name;
 		d_armMap = armMap;
 		
+		setSampleSize();
+	}
+
+	private void setSampleSize() {
 		for (Study s : d_studies) {
 			d_totalSampleSize += s.getSampleSize();
 		}
@@ -122,5 +130,10 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 			}
 		}
 		return armList;
+	}
+	
+	@Override
+	public String[] getXmlExclusions() {
+		return new String[] {"armList", "sampleSize", "studiesIncluded", "type"};
 	}
 }

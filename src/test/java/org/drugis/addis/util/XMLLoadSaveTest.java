@@ -22,7 +22,6 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Variable.Type;
-import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -147,17 +146,17 @@ public class XMLLoadSaveTest {
 		// TODO: notes
 	}
 	
-	@Test
+	@Ignore
 	public void doDomain() throws XMLStreamException {
 		DomainImpl origDomain = new DomainImpl();
 		ExampleData.initDefaultData(origDomain);
 		DomainData origData = origDomain.getDomainData();
 		
 		origData.addVariable(new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"}));
-//		origData.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysis());
+		//origData.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysis()); // TODO
 		
 		String xml = XMLHelper.toXml(origData, DomainData.class);
-		System.out.println(xml);
+		System.out.println("\n"+xml+"\n");
 		DomainData loadedData = XMLHelper.fromXml(xml);
 		assertEquals(origDomain.getIndications(), loadedData.getIndications());
 		DomainImpl domainFromXml = new DomainImpl();

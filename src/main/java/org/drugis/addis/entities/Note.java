@@ -46,5 +46,10 @@ public class Note extends AbstractEntity {
 	public Source getSource(){
 		return d_source;
 	}
+	
+	public void setSource(Source source){
+		d_source = source;
+	}
+	
 
 }
