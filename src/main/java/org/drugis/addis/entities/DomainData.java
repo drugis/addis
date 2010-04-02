@@ -143,13 +143,6 @@ public class DomainData implements Serializable {
 		d_ades.remove(ade);
 	}
 	
-/*
-	
-	private SortedSet<Study> d_studies;
-	private SortedSet<MetaAnalysis> d_metaAnalyses;	
-*/
-	
-	
 	protected static final XMLFormat<DomainData> XML = new XMLFormat<DomainData>(DomainData.class) {
 		public DomainData newInstance(Class<DomainData> cls, InputElement ie) throws XMLStreamException {
 			// In newInstance, only use getAttribute, not get. Thats why no indication can be instantiated at this point
@@ -206,6 +199,7 @@ public class DomainData implements Serializable {
 			oe.add(new XMLSet<Drug>(d.getDrugs(), "drug"), "drugs", XMLSet.class);
 			oe.add(new XMLSet<PopulationCharacteristic>(d.getVariables(), "populationcharacteristic"), "populationcharacteristics", XMLSet.class);
 			oe.add(new XMLSet<Study>(d.getStudies(),"study"),"studies", XMLSet.class);
+//			oe.add()
 		}
 	};
 }

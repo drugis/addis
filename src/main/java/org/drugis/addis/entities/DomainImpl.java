@@ -218,11 +218,16 @@ public class DomainImpl implements Domain {
 	public boolean equals(Object o) {
 		if (o instanceof Domain) {
 			Domain other = (Domain)o;
-			return getEndpoints().equals(other.getEndpoints()) &&
+			return (
+				getEndpoints().equals(other.getEndpoints()) &&
 				getDrugs().equals(other.getDrugs()) &&
-				getStudies().equals(other.getStudies());
+				getIndications().equals(other.getIndications()) &&
+				getAdverseEvents().equals(other.getAdverseEvents()) &&
+				getVariables().equals(other.getVariables()) &&
+				getStudies().equals(other.getStudies()) &&
+				getMetaAnalyses().equals(other.getMetaAnalyses())
+			);
 		}
-		
 		return false;
 	}
 	
@@ -389,7 +394,6 @@ public class DomainImpl implements Domain {
 				fireValueChange(null, d_vars);
 			}
 		}
-		
 	}
 
 	public void addAdverseEvent(AdverseEvent ade) {

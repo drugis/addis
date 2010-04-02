@@ -12,6 +12,9 @@ public class Note extends AbstractEntity {
 	private String d_text;
 	private Source d_source;
 
+	public Note() {
+	}
+	
 	public Note(Source source){
 		this(source, "");		
 	}

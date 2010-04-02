@@ -22,6 +22,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Variable.Type;
+import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -47,7 +48,7 @@ public class XMLLoadSaveTest {
 		i.setDirection(Direction.LOWER_IS_BETTER);
 		i.setType(Type.CATEGORICAL);
 		String xml = XMLHelper.toXml(i, Endpoint.class);
-		System.out.println("\n"+xml+"\n");
+//		System.out.println("\n"+xml+"\n");
 		Endpoint objFromXml = XMLHelper.fromXml(xml);
 		assertEquals(i.getDirection(),objFromXml.getDirection());
 		assertEquals(i.getType(),objFromXml.getType());
@@ -60,7 +61,7 @@ public class XMLLoadSaveTest {
 	public void doEndpointHamd() throws XMLStreamException {
 		Endpoint i = ExampleData.buildEndpointHamd();
 		String xml = XMLHelper.toXml(i, Endpoint.class);
-		System.out.println("\n"+xml+"\n");
+//		System.out.println("\n"+xml+"\n");
 		Endpoint objFromXml = XMLHelper.fromXml(xml);
 		assertEquals(i.getDirection(),objFromXml.getDirection());
 		assertEquals(i.getType(),objFromXml.getType());
@@ -78,7 +79,7 @@ public class XMLLoadSaveTest {
 		XMLSet xmlSet = new XMLSet(list,"endpoints");
 		
 		String xml = XMLHelper.toXml(xmlSet,XMLSet.class);
-		System.out.println("\n"+xml+"\n");
+//		System.out.println("\n"+xml+"\n");
 		XMLSet objFromXml = XMLHelper.fromXml(xml);
 		
 		assertEquals(list, objFromXml.getList());
@@ -88,7 +89,7 @@ public class XMLLoadSaveTest {
 	public void doAdverseEvent() throws XMLStreamException {
 		AdverseEvent ade = new AdverseEvent("name", Variable.Type.RATE);
 		String xml = XMLHelper.toXml(ade, AdverseEvent.class);
-		System.out.println("\n"+xml+"\n");
+//		System.out.println("\n"+xml+"\n");
 		AdverseEvent objFromXml = XMLHelper.fromXml(xml);
 		assertEquals(ade.getDirection(),objFromXml.getDirection());
 		assertEquals(ade.getType(),objFromXml.getType());
@@ -107,7 +108,7 @@ public class XMLLoadSaveTest {
 	public void doArm() throws XMLStreamException {
 		Arm d = ExampleData.buildStudyAdditionalThreeArm().getArms().get(0);
 		String xml = XMLHelper.toXml(d, Arm.class);
-		System.out.println(xml);
+//		System.out.println(xml);
 		Arm parsedArm = XMLHelper.fromXml(xml);
 		assertEquals(d.getDose(), parsedArm.getDose());
 		assertEquals(d.getDrug(), parsedArm.getDrug());
@@ -119,7 +120,7 @@ public class XMLLoadSaveTest {
 		CategoricalPopulationCharacteristic gender = new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
 		String xml = XMLHelper.toXml(gender, CategoricalPopulationCharacteristic.class);
 		
-		System.out.println("\n"+xml+"\n");
+//		System.out.println("\n"+xml+"\n");
 		
 		CategoricalPopulationCharacteristic objFromXml = XMLHelper.fromXml(xml);
 		assertEquals(gender, objFromXml);
@@ -128,16 +129,19 @@ public class XMLLoadSaveTest {
 	@Test
 	public void doStudy() throws XMLStreamException {
 		Study s = ExampleData.buildStudyChouinard();
-//		s.putNote(s.getArms().get(0), new Note(Source.MANUAL, "this is the test text"));
+		
+		Note note = new Note(Source.MANUAL, "this is the test text");
+//		s.setMeasurement(v, m)
+		
+		s.putNote(s.getArms().get(0), note);
 		String xml = XMLHelper.toXml(s, Study.class);
-		System.out.println(xml);
+//		System.out.println(xml);
 		
 		Study parsedStudy = new Study();
 		parsedStudy = (Study)XMLHelper.fromXml(xml);
 
 		assertEquals(s.getStudyId(),parsedStudy.getStudyId());
-		System.out.println(parsedStudy.getMeasurements());
-		System.out.println(parsedStudy.getIndication());
+		
 		// TODO: characteristicmap
 		// TODO: measurements
 		// TODO: notes
@@ -145,15 +149,21 @@ public class XMLLoadSaveTest {
 	
 	@Test
 	public void doDomain() throws XMLStreamException {
-		DomainImpl d = new DomainImpl();
-		ExampleData.initDefaultData(d);
-		DomainData data = d.getDomainData();
-		data.addVariable(new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"}));
+		DomainImpl origDomain = new DomainImpl();
+		ExampleData.initDefaultData(origDomain);
+		DomainData origData = origDomain.getDomainData();
 		
-		String xml = XMLHelper.toXml(data, DomainData.class);
+		origData.addVariable(new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"}));
+//		origData.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysis());
+		
+		String xml = XMLHelper.toXml(origData, DomainData.class);
 		System.out.println(xml);
-		DomainData loadedDomainData = XMLHelper.fromXml(xml);
-		assertEquals(d.getIndications(), loadedDomainData.getIndications());
+		DomainData loadedData = XMLHelper.fromXml(xml);
+		assertEquals(origDomain.getIndications(), loadedData.getIndications());
+		DomainImpl domainFromXml = new DomainImpl();
+		
+		domainFromXml.setDomainData(loadedData);
+		assertEquals(origDomain, domainFromXml);
 		
 		// FIXME
 	}
