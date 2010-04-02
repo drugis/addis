@@ -190,6 +190,10 @@ public class DomainData implements Serializable {
 			XMLSet contChar = ie.get("continuouscharacteristic", XMLSet.class);
 			if (contChar != null)
 				d.setVariables((SortedSet) ((XMLSet<ContinuousPopulationCharacteristic>) contChar).getSet());
+			
+			XMLSet study = ie.get("studies", XMLSet.class);
+			if (study != null)
+				d.setStudies((SortedSet) ((XMLSet<Study>) study).getSet());
 		}
 		
 		@Override

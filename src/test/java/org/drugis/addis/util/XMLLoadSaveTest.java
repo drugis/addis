@@ -81,7 +81,7 @@ public class XMLLoadSaveTest {
 		System.out.println("\n"+xml+"\n");
 		XMLSet objFromXml = XMLHelper.fromXml(xml);
 		
-		assertEquals(list,(List) objFromXml.getSet());
+		assertEquals(list, objFromXml.getList());
 	}
 	
 	@Test
@@ -143,7 +143,7 @@ public class XMLLoadSaveTest {
 		// TODO: notes
 	}
 	
-	@Ignore
+	@Test
 	public void doDomain() throws XMLStreamException {
 		DomainImpl d = new DomainImpl();
 		ExampleData.initDefaultData(d);

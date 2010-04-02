@@ -129,7 +129,7 @@ public abstract class AbstractEntity implements Entity, Serializable {
 						BeanUtils.setValue(i, properties[p], ie.get(properties[p].getName()));
 					} else if (properties[p].getPropertyType().equals(String[].class)) {
 						XMLSet<String> xmlSet = ((XMLSet<String>) ie.get(properties[p].getName(),XMLSet.class));
-						String[] retrievedVal = new String[xmlSet.getSet().size()];
+						String[] retrievedVal = new String[xmlSet.getList().size()];
 						int index=0;
 						for (Object o : xmlSet.getSet())
 							retrievedVal[index++] = ((String) o);		
@@ -139,7 +139,7 @@ public abstract class AbstractEntity implements Entity, Serializable {
 						System.out.print(" as List " + propertyName + " ");
 						XMLSet xmlSet = ((XMLSet) ie.get(propertyName,XMLSet.class));
 						if (xmlSet != null)
-							BeanUtils.setValue(i, properties[p], xmlSet.getSet());
+							BeanUtils.setValue(i, properties[p], xmlSet.getList());
 						else
 							System.err.println(propertyName + "not found, not reading.");
 					} else System.out.println(" Didnt read as node");

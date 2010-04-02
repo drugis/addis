@@ -1,24 +1,37 @@
 package org.drugis.addis.util;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
 
 public class XMLSet<T> {
-	private Collection<T> d_set;
+	private Collection<T> d_list;
 	private String d_typeName;
 	
 	
-	public XMLSet(Collection<T> set, String typeName) {
-		d_set = set;
+	public XMLSet(Collection<T> list, String typeName) {
+		d_list = list;
 		d_typeName = typeName;
 	}
 	
-	public Collection<T> getSet() {
-		return d_set;
+	public List<T> getList() {
+		return (List<T>) d_list;
 	}
+	
+	public Collection<T> getCollection() {
+		return d_list;
+	}
+	
+	public Set<T> getSet() {
+		return new TreeSet<T>(d_list);
+	}
+	
 	
 	public String getTypeName() {
 		return d_typeName;
@@ -43,14 +56,14 @@ public class XMLSet<T> {
 		public void read(InputElement ie, XMLSet wrappedSet) throws XMLStreamException {
 			//System.out.println("XMLSet::read");
 			while (ie.hasNext()) {
-				wrappedSet.getSet().add(ie.getNext());
+				wrappedSet.getList().add(ie.getNext());
 			}
 		}
 		
 		@Override
 		public void write(XMLSet wrappedSet, OutputElement oe) throws XMLStreamException {
 			//System.out.println("XMLSet::XMLFormat::write " + wrappedSet.getSet());
-			for (Object o : wrappedSet.getSet()) {
+			for (Object o : wrappedSet.getCollection()) {
 				oe.add(o);
 			}
 		
