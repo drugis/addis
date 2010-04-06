@@ -44,4 +44,9 @@ public abstract class BasicMeasurement extends AbstractEntity implements Measure
 	public Integer getSampleSize() {
 		return d_sampleSize;
 	}
+	
+	
+	
+	// XML Formatter
+	
 }

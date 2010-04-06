@@ -23,7 +23,7 @@ import java.io.Serializable;
 
 import com.jgoodies.binding.beans.Observable;
 
-public interface Measurement extends Observable, Serializable {
+public interface Measurement extends Observable, Serializable, Entity {
 
 	public static final String PROPERTY_SAMPLESIZE = "sampleSize";
 

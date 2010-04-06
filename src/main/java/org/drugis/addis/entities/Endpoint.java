@@ -27,7 +27,6 @@ public class Endpoint extends AbstractVariable implements OutcomeMeasure {
 	
 	public Endpoint() {
 		super("", Type.RATE);
-		System.out.println("empty endpoint made");
 	}
 	
 	public Endpoint(String name, Variable.Type type, Direction direction) {

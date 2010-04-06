@@ -15,7 +15,6 @@ import java.util.Set;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
-import org.drugis.addis.util.XMLHelper;
 import org.drugis.addis.util.XMLSet;
 import org.drugis.common.ObserverManager;
 
@@ -189,7 +188,7 @@ public abstract class AbstractEntity implements Entity, Serializable {
 				}
 
 				System.out.println("done writing attributes, starting to write others");
-
+				
 				for(int p = 0; p < properties.length; ++p){
 					if(propertyIsExcluded(i, properties[p].getName()))
 						continue;
