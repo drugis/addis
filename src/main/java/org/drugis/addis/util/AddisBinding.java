@@ -97,21 +97,6 @@ public class AddisBinding extends XMLBinding {
 		setAlias(String.class, "string");
 		setAlias(DomainData.class, "addis-data");
 		setAlias(Interval.class, "interval");
-		/*
-		setAlias(GaussianMeasurement.class, "gaussian");
-		setAlias(LogNormalMeasurement.class, "lognormal");
-		setAlias(ExactMeasurement.class, "exact");
-		setAlias(CriterionMeasurementPair.class, "criterionMeasurement");
-		setAlias(CriterionAlternativeMeasurement.class, "criterionAlternativeMeasurement");
-		setAlias(ScaleCriterion.class, "cardinalCriterion");
-		setAlias(OrdinalCriterion.class, "ordinalCriterion");
-		setAlias(OutrankingCriterion.class, "outrankingCriterion");
-		setAlias(Alternative.class, "alternative");
-		setAlias(CardinalPreferenceInformation.class, "cardinalPreferences");
-		setAlias(OrdinalPreferenceInformation.class, "ordinalPreferences");
-		setAlias(Interval.class, "interval");
-		setAlias(SMAAModel.class, "SMAA-2-model");
-		setAlias(SMAATRIModel.class, "SMAA-TRI-model");*/
 	}
 	
 	// Override XMLFormatter for Date.class objects
@@ -144,37 +129,11 @@ public class AddisBinding extends XMLBinding {
 		}
 	};
 	
-	// Override XMLFormatter for Interval objects
-	XMLFormat<Interval<Double>> intervalXML = new XMLFormat<Interval<Double>>(null) {
-		
-		@Override
-		public Interval<Double> newInstance(Class<Interval<Double>> cls, InputElement ie) throws XMLStreamException {
-			return new Interval<Double>(Double.parseDouble(ie.getAttribute("lowerBound").toString()), Double.parseDouble(ie.getAttribute("upperBound").toString()));
-		}
-		
-		@Override
-		public void read(javolution.xml.XMLFormat.InputElement xml, Interval<Double> interval) throws XMLStreamException {
-		}
 
-		@Override
-		public void write(Interval<Double> interval, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
-			xml.setAttribute("lowerBound", interval.getLowerBound());
-			xml.setAttribute("upperBound", interval.getUpperBound());
-		}	
-		
-		@Override
-		public boolean isReferenceable() {
-			return false;
-		}
-	};
-	
-	
     @SuppressWarnings("unchecked")
 	public XMLFormat getFormat(Class cls) throws XMLStreamException {
         if (Date.class.isAssignableFrom(cls)) {
             return dateXML; // Overrides default XML format.
-        } else if (Interval.class.isAssignableFrom(cls)) {
-        		return intervalXML; 
         } else {
             return super.getFormat(cls);
         }

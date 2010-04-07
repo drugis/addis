@@ -125,17 +125,6 @@ public class XMLLoadSaveTest {
 	}
 	
 	@Test
-	public void doInterval() throws XMLStreamException {
-		Interval<Double> interval = new Interval<Double>(24.0,123.0);
-		String xml = XMLHelper.toXml(interval, Interval.class);
-		
-		System.out.println("\n"+xml+"\n");
-		
-		Interval<Double> objFromXml = XMLHelper.fromXml(xml);
-		assertEquals(interval, objFromXml);
-	}
-	
-	@Test
 	public void doStudy() throws XMLStreamException {
 		Study s = ExampleData.buildStudyChouinard();
 		
