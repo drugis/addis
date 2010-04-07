@@ -123,7 +123,7 @@ public class XMLLoadSaveTest {
 		assertEquals(gender, objFromXml);
 	}
 	
-	@Ignore
+	@Test
 	public void doStudy() throws XMLStreamException {
 		Study s = ExampleData.buildStudyChouinard();
 		

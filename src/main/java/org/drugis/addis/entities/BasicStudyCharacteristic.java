@@ -22,7 +22,6 @@ package org.drugis.addis.entities;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.util.EnumXMLFormat;
 
 public enum BasicStudyCharacteristic implements Serializable, Characteristic {

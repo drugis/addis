@@ -2,15 +2,36 @@ package org.drugis.addis.util;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.drugis.addis.entities.*;
-
 import javolution.xml.XMLBinding;
+import javolution.xml.XMLFormat;
 import javolution.xml.XMLObjectReader;
 import javolution.xml.XMLObjectWriter;
 import javolution.xml.XMLReferenceResolver;
 import javolution.xml.stream.XMLStreamException;
+
+import org.drugis.addis.entities.AdverseEvent;
+import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.BasicContinuousMeasurement;
+import org.drugis.addis.entities.BasicRateMeasurement;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
+import org.drugis.addis.entities.CharacteristicsMap;
+import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
+import org.drugis.addis.entities.DomainData;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.PopulationCharacteristic;
+import org.drugis.addis.entities.SIUnit;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Variable;
 
 @SuppressWarnings("serial")
 public class AddisBinding extends XMLBinding {
@@ -89,5 +110,40 @@ public class AddisBinding extends XMLBinding {
 		setAlias(Interval.class, "interval");
 		setAlias(SMAAModel.class, "SMAA-2-model");
 		setAlias(SMAATRIModel.class, "SMAA-TRI-model");*/
-	}		
+	}
+	
+	// Override XMLFormatter for Date.class objects
+	XMLFormat<Date> dateXML = new XMLFormat<Date>(null) {
+		SimpleDateFormat sdf = new SimpleDateFormat("DD MMM yyyy");
+		
+		@Override
+		public Date newInstance(Class<Date> cls, InputElement ie) throws XMLStreamException {
+			try {
+				return sdf.parse(ie.getAttribute("date").toString());
+			} catch (ParseException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		
+		@Override
+		public void read(javolution.xml.XMLFormat.InputElement xml, Date date) throws XMLStreamException {
+		}
+
+		@Override
+		public void write(Date date, javolution.xml.XMLFormat.OutputElement xml) throws XMLStreamException {
+			if (date != null)
+				xml.setAttribute("date", sdf.format(date));
+		}	
+	}; // Unbound.
+	
+    @SuppressWarnings("unchecked")
+	public XMLFormat getFormat(Class cls) throws XMLStreamException {
+        if (Date.class.isAssignableFrom(cls)) {
+            return dateXML; // Overrides default XML format.
+        } else {
+            return super.getFormat(cls);
+        }
+    }
+
 }

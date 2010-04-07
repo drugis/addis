@@ -2,11 +2,6 @@ package org.drugis.addis.entities;
 
 import org.drugis.addis.util.EnumXMLFormat;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.XMLFormat.InputElement;
-import javolution.xml.XMLFormat.OutputElement;
-import javolution.xml.stream.XMLStreamException;
-
 
 public interface OutcomeMeasure extends Variable {
 

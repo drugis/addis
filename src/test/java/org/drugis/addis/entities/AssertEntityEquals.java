@@ -1,16 +1,14 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
-import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.common.JUnitUtil;
 
 public class AssertEntityEquals {
@@ -148,7 +146,10 @@ public class AssertEntityEquals {
 		while (charIterator.hasNext()) {
 			Characteristic curChar = charIterator.next();
 			//System.out.println(curChar);
-			assertEquals(expected.getCharacteristic(curChar), actual.getCharacteristic(curChar));
+			if (expected.getCharacteristic(curChar) instanceof Date)
+				assertEquals(expected.getCharacteristic(curChar).toString(), actual.getCharacteristic(curChar).toString());
+			else
+				assertEquals(expected.getCharacteristic(curChar), actual.getCharacteristic(curChar));
 		}
 		
 		//notes

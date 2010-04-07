@@ -144,6 +144,7 @@ public class DomainData implements Serializable {
 	}
 	
 	protected static final XMLFormat<DomainData> XML = new XMLFormat<DomainData>(DomainData.class) {
+		
 		public DomainData newInstance(Class<DomainData> cls, InputElement ie) throws XMLStreamException {
 			// In newInstance, only use getAttribute, not get. Thats why no indication can be instantiated at this point
 			return new DomainData();

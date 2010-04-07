@@ -1,5 +1,9 @@
 package org.drugis.addis.presentation;
 
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,8 +17,6 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
 
 public class SelectableStudyGraphModelTest {
 
@@ -39,6 +41,7 @@ public class SelectableStudyGraphModelTest {
 	
 	@Test
 	public void testGetSelectedDrugsModel() {
+		
 		ListHolder<Drug> selDrugs = d_pm.getSelectedDrugsModel();
 		List<Drug> list = Collections.singletonList(ExampleData.buildDrugFluoxetine());
 		
@@ -46,7 +49,9 @@ public class SelectableStudyGraphModelTest {
 		selDrugs.addValueChangeListener(mock);
 		
 		d_drugListHolder.setValue(list);
-		verify(mock);	
+		verify(mock);
+		
+		
 	}
 	
 	@Test
