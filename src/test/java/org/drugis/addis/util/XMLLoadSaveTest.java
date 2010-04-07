@@ -160,7 +160,7 @@ public class XMLLoadSaveTest {
 		assertEquals(analysis, (MetaAnalysis)XMLHelper.fromXml(xml));
 	}	
 	
-	@Ignore
+	@Test
 	public void doDomain() throws XMLStreamException {
 		// TODO: Test whether the domains are actually equals!
 		DomainImpl origDomain = new DomainImpl();
@@ -178,8 +178,7 @@ public class XMLLoadSaveTest {
 		DomainImpl domainFromXml = new DomainImpl();
 		
 		domainFromXml.setDomainData(loadedData);
-		assertEquals(origDomain, domainFromXml);
-
+		
+		AssertEntityEquals.assertDomainEquals(origDomain, domainFromXml);
 	}
-
 }

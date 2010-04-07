@@ -96,7 +96,7 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 					XMLSet<String> xmlSet = ((XMLSet<String>) ie.get(properties[p].getName(),XMLSet.class));
 					String[] retrievedVal = new String[xmlSet.getList().size()];
 					int index=0;
-					for (Object o : xmlSet.getSet())
+					for (Object o : xmlSet.getList())
 						retrievedVal[index++] = ((String) o);		
 					System.out.println(" as string array: "+retrievedVal);
 					BeanUtils.setValue(i, properties[p], retrievedVal);

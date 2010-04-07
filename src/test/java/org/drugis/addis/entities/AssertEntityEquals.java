@@ -3,12 +3,15 @@ package org.drugis.addis.entities;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.drugis.common.JUnitUtil;
 
 public class AssertEntityEquals {
@@ -76,10 +79,8 @@ public class AssertEntityEquals {
 		assertEquals(expected.getCategories().length, actual.getCategories().length);
 		for(int i = 0; i < expected.getCategories().length; ++i)
 			assertEquals(expected.getCategories()[i], actual.getCategories()[i]);
-		
 	}
 	
-
 	public static void assertEntityEquals(Measurement expected, Measurement actual) {
 		assertEquals(expected.getSampleSize(), actual.getSampleSize());
 		if (expected instanceof ContinuousMeasurement) {
@@ -94,43 +95,25 @@ public class AssertEntityEquals {
 		}
 	}
 	
+	public static void assertEntityEquals(Collection<? extends Entity> expected, Collection<? extends Entity> actual) {
+		assertEquals(expected.size(), actual.size());
+		Iterator<? extends Entity> expectedIterator = expected.iterator();
+		Iterator<? extends Entity> actualIterator = actual.iterator();
+		while (expectedIterator.hasNext()) 
+			assertEntityEquals(expectedIterator.next(), actualIterator.next());
+	}
+	
 	public static void assertEntityEquals(Study expected, Study actual) {
 		assertEquals(expected, actual);
-		
-		// ade's
-		assertEquals(expected.getAdverseEvents().size(), actual.getAdverseEvents().size());
-		for (int i=0; i<expected.getAdverseEvents().size(); ++i)
-			assertEntityEquals(expected.getAdverseEvents().get(i), actual.getAdverseEvents().get(i));
-		
-		// arms
-		assertEquals(expected.getArms().size(), actual.getArms().size());
-		for (int i=0; i<expected.getArms().size(); ++i)
-			assertEntityEquals(expected.getArms().get(i), actual.getArms().get(i));
-		
-		// endpoints
-		assertEquals(expected.getEndpoints().size(), actual.getEndpoints().size());
-		for (int i=0; i<expected.getEndpoints().size(); ++i)
-			assertEntityEquals(expected.getEndpoints().get(i), actual.getEndpoints().get(i));
+		assertEntityEquals(expected.getAdverseEvents(), actual.getAdverseEvents());
+		assertEntityEquals(expected.getArms(), actual.getArms());
+		assertEntityEquals(expected.getEndpoints(), actual.getEndpoints());
+		assertEntityEquals(expected.getOutcomeMeasures(), actual.getOutcomeMeasures());
+		assertEntityEquals(expected.getPopulationCharacteristics(), actual.getPopulationCharacteristics());
+		assertEntityEquals(expected.getDrugs(), actual.getDrugs());
 		
 		// indication
 		assertEntityEquals(expected.getIndication(), actual.getIndication());
-		
-		// outcomemeasures
-		assertEquals(expected.getOutcomeMeasures().size(), actual.getOutcomeMeasures().size());
-		for (int i=0; i<expected.getOutcomeMeasures().size(); ++i)
-			assertEntityEquals(expected.getOutcomeMeasures().get(i), actual.getOutcomeMeasures().get(i));
-		
-		// population characteristics
-		assertEquals(expected.getPopulationCharacteristics().size(), actual.getPopulationCharacteristics().size());
-		for (int i=0; i<expected.getPopulationCharacteristics().size(); ++i)
-			assertEntityEquals(expected.getPopulationCharacteristics().get(i), actual.getPopulationCharacteristics().get(i));
-		
-		// drugs
-		assertEquals(expected.getDrugs().size(), actual.getDrugs().size());
-		Iterator<Drug> expDrugIterator = expected.getDrugs().iterator();
-		Iterator<Drug> actDrugIterator = expected.getDrugs().iterator();
-		while (expDrugIterator.hasNext())
-			assertEntityEquals(expDrugIterator.next(), actDrugIterator.next());
 		
 		// measurements
 		assertEquals(expected.getMeasurements().keySet().size(), actual.getMeasurements().keySet().size());
@@ -145,7 +128,6 @@ public class AssertEntityEquals {
 		Iterator<Characteristic> charIterator = expected.getCharacteristics().keySet().iterator();
 		while (charIterator.hasNext()) {
 			Characteristic curChar = charIterator.next();
-			//System.out.println(curChar);
 			if (expected.getCharacteristic(curChar) instanceof Date)
 				assertEquals(expected.getCharacteristic(curChar).toString(), actual.getCharacteristic(curChar).toString());
 			else
@@ -157,8 +139,38 @@ public class AssertEntityEquals {
 	}
 	
 	public static void assertEntityEquals(Entity expected, Entity actual){
-		System.err.println("AssertEntityEquals::AssertEntityEquals(Entity, Entity) should never be called.");
-		fail();
+		if (expected instanceof Endpoint)
+			assertEntityEquals((Endpoint) expected, (Endpoint) actual);
+		else if (expected instanceof Arm)
+			assertEntityEquals((Arm) expected, (Arm) actual);
+		else if (expected instanceof CategoricalPopulationCharacteristic)
+			assertEntityEquals((CategoricalPopulationCharacteristic) expected, (CategoricalPopulationCharacteristic) actual);
+		else if (expected instanceof Drug)
+			assertEntityEquals((Drug) expected, (Drug) actual);
+		else if (expected instanceof Indication)
+			assertEntityEquals((Indication) expected, (Indication) actual);
+		else if (expected instanceof Measurement)
+			assertEntityEquals((Measurement) expected, (Measurement) actual);
+		else if (expected instanceof OutcomeMeasure)
+			assertEntityEquals((OutcomeMeasure) expected, (OutcomeMeasure) actual);
+		else if (expected instanceof Study)
+			assertEntityEquals((Study) expected, (Study) actual);
+		else if (expected instanceof Variable)
+			assertEntityEquals((Variable) expected, (Variable) actual);
+		else {
+			System.err.println("No test for the equality of this entity: " + expected.getClass());
+			fail();
+		}
 	}
 
+	public static void assertDomainEquals(Domain d1, Domain d2) {
+		assertEntityEquals(d1.getEndpoints(), d2.getEndpoints());
+		assertEntityEquals(d1.getDrugs(), d2.getDrugs());
+		assertEntityEquals(d1.getIndications(), d2.getIndications());
+		assertEntityEquals(d1.getAdverseEvents(), d2.getAdverseEvents());
+		assertEntityEquals(d1.getVariables(), d2.getVariables());
+		assertEntityEquals(d1.getStudies(), d2.getStudies());
+		// assertEntityEquals(d1.getMetaAnalyses(), d2.getMetaAnalyses()); // FIXME	
+	}
+	
 }
