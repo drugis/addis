@@ -24,7 +24,6 @@ import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
-import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -180,9 +179,7 @@ public class XMLLoadSaveTest {
 		
 		domainFromXml.setDomainData(loadedData);
 		assertEquals(origDomain, domainFromXml);
-		
 
-		// FIXME: Dates are still ignored!
 	}
 
 }
