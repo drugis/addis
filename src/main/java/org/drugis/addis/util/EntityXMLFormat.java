@@ -4,7 +4,6 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -14,11 +13,7 @@ import java.util.Set;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
-import org.drugis.common.Interval;
-
-import scala.Collection;
 
 import com.jgoodies.binding.beans.BeanUtils;
 
@@ -112,12 +107,14 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 					System.out.println(" as string array: "+retrievedVal);
 					BeanUtils.setValue(i, properties[p], retrievedVal);
 				} else if (List.class.isAssignableFrom(properties[p].getPropertyType())) {
-					System.out.print(" as List " + propertyName + " ");
-					XMLSet xmlSet = ((XMLSet) ie.get(propertyName,XMLSet.class));
-					if (xmlSet != null)
-						BeanUtils.setValue(i, properties[p], xmlSet.getList());
-					else
-						System.err.println(propertyName + "not found, not reading.");
+					List retrList = ie.get(propertyName,ArrayList.class);
+					BeanUtils.setValue(i, properties[p], retrList);
+//					System.out.print(" as List " + propertyName + " ");
+//					XMLSet xmlSet = ((XMLSet) ie.get(propertyName,XMLSet.class));
+//					if (xmlSet != null)
+//						BeanUtils.setValue(i, properties[p], xmlSet.getList());
+//					else
+//						System.err.println(propertyName + "not found, not reading.");
 				} else System.out.println(" Didnt read as node");
 
 			}
@@ -141,7 +138,6 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 	}
 	
 	private boolean classIsNode(Class clsToCompare) {
-		System.out.println("Going to compare " + clsToCompare);
 		boolean isNode = false;
 		for (Class<?> nodeCls : NODES) {
 			if (nodeCls.isAssignableFrom(clsToCompare))
@@ -200,8 +196,7 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 					oe.add(new XMLSet<String>(stringList,""),properties[p].getName(), XMLSet.class);
 				} else if (value instanceof List) { // ADE list
 					System.out.println("writing "+propertyName+" as List");
-					List list = (List)value;
-					oe.add(new XMLSet( list, ""),propertyName, XMLSet.class);
+					oe.add(new ArrayList<Object>((List) value), propertyName, ArrayList.class);
 				} else if (value instanceof Set) {
 					System.out.println("writing as Set");
 					oe.add(new XMLSet( (Set)value, ""),properties[p].getName(), XMLSet.class);
