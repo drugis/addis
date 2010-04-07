@@ -16,6 +16,7 @@ import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.util.XMLSet;
+import org.drugis.common.Interval;
 import org.drugis.common.ObserverManager;
 
 import com.jgoodies.binding.beans.BeanUtils;
@@ -178,7 +179,7 @@ public abstract class AbstractEntity implements Entity, Serializable {
 					//						if (!(properties[p].getName().equals("class") || properties[p].getName().equals("dependencies"))) {
 					Object value = BeanUtils.getValue(i, properties[p]);
 					System.out.print("(attributes) inspecting "+properties[p].getName() + ", value is: " + value + ", class is " + value.getClass());	
-					if (! ((value instanceof Enum) || (value instanceof Entity) || (value instanceof String[]) || value instanceof List || value instanceof Set || value instanceof Map) ) {
+					if (! ((value instanceof Enum) || (value instanceof Entity) || (value instanceof String[]) || value instanceof List || value instanceof Set || value instanceof Map || value instanceof Interval) ) {
 						System.out.print("  writing ");
 						oe.setAttribute(properties[p].getName(), value);
 						System.out.println(".. done writing.");

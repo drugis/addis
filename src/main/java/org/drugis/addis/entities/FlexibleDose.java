@@ -33,6 +33,7 @@ public class FlexibleDose extends AbstractDose {
 	
 	
 	public FlexibleDose(){
+		d_flexDose = new Interval<Double>(0.,0.);
 	}
 	
 	public FlexibleDose(Interval<Double> flexDose, SIUnit unit) {
@@ -100,5 +101,10 @@ public class FlexibleDose extends AbstractDose {
 		hash += getFlexibleDose().hashCode();
 		hash = hash * 31 + getUnit().hashCode();
 		return hash;
+	}
+	
+	@Override
+	public String[] getXmlExclusions() {
+		return new String[] {"flexibleDose"};
 	}
 }

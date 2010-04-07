@@ -53,4 +53,26 @@ public class DomainManager {
 	throws IOException {
 		d_domain.saveDomainData(os);
 	}
+	
+	/**
+	 * Replace the Domain by a new instance loaded from a XML stream.
+	 * @param is Stream to read objects from.
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void loadXMLDomain(InputStream is)
+	throws IOException, ClassNotFoundException {
+		d_domain.loadXMLDomainData(is);
+	}
+	
+	/**
+	 * Save the Domain by a new instance loaded from a XML stream.
+	 * @param os Stream to write objects to.
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void saveXMLDomain(OutputStream os)
+	throws IOException {
+		d_domain.saveXMLDomainData(os);
+	}
 }

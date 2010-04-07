@@ -164,7 +164,7 @@ public class DomainData implements Serializable {
 			d.setEndpoints((SortedSet) ((XMLSet<Endpoint>) endpoint).getSet());
 			
 			
-			XMLSet ade = ie.get("adverse events",XMLSet.class);
+			XMLSet ade = ie.get("adverseEvents",XMLSet.class);
 			if (ade != null)
 				d.setAdes((SortedSet) ((XMLSet<AdverseEvent>) ade).getSet());
 			
@@ -172,16 +172,16 @@ public class DomainData implements Serializable {
 			XMLSet drug = ie.get("drugs",XMLSet.class);
 			d.setDrugs((SortedSet) ((XMLSet<Drug>) drug).getSet());
 			
-			XMLSet popchars = ie.get("populationcharacteristics", XMLSet.class);
+			XMLSet popchars = ie.get("populationCharacteristics", XMLSet.class);
 			if (popchars != null)
 				d.setVariables((SortedSet) ((XMLSet<PopulationCharacteristic>) popchars).getSet());
 			
-			XMLSet catChar = ie.get("categoricalcharacteristic", XMLSet.class);
+			XMLSet catChar = ie.get("categoricalCharacteristic", XMLSet.class);
 			if (catChar != null)
 				d.setVariables((SortedSet) ((XMLSet<CategoricalPopulationCharacteristic>) catChar).getSet());
 			
 			
-			XMLSet contChar = ie.get("continuouscharacteristic", XMLSet.class);
+			XMLSet contChar = ie.get("continuousCharacteristic", XMLSet.class);
 			if (contChar != null)
 				d.setVariables((SortedSet) ((XMLSet<ContinuousPopulationCharacteristic>) contChar).getSet());
 			
@@ -189,9 +189,9 @@ public class DomainData implements Serializable {
 			if (study != null)
 				d.setStudies((SortedSet) ((XMLSet<Study>) study).getSet());
 			
-			XMLSet analysis = ie.get("meta-analyses", XMLSet.class);
-			if (analysis != null)
-				d.setStudies((SortedSet) ((XMLSet<MetaAnalysis>) analysis).getSet());
+//			XMLSet analysis = ie.get("metaAnalyses", XMLSet.class);
+//			if (analysis != null)
+//				d.setStudies((SortedSet) ((XMLSet<MetaAnalysis>) analysis).getSet());
 		}
 		
 		@Override
@@ -200,11 +200,11 @@ public class DomainData implements Serializable {
 			oe.add(new XMLSet<Indication>(d.getIndications(),"indication"),"indications",XMLSet.class);
 			oe.add(new XMLSet<Endpoint>(d.getEndpoints(),"endpoint"),"endpoints",XMLSet.class);
 			if (d.getAdverseEvents().size() != 0)
-				oe.add(new XMLSet<AdverseEvent>(d.getAdverseEvents(),"adverse event"),"adverse events",XMLSet.class);
+				oe.add(new XMLSet<AdverseEvent>(d.getAdverseEvents(),"adverse event"),"adverseEvents",XMLSet.class);
 			oe.add(new XMLSet<Drug>(d.getDrugs(), "drug"), "drugs", XMLSet.class);
-			oe.add(new XMLSet<PopulationCharacteristic>(d.getVariables(), "populationcharacteristic"), "populationcharacteristics", XMLSet.class);
+			oe.add(new XMLSet<PopulationCharacteristic>(d.getVariables(), "populationCharacteristic"), "populationCharacteristics", XMLSet.class);
 			oe.add(new XMLSet<Study>(d.getStudies(),"study"),"studies", XMLSet.class);
-			oe.add(new XMLSet<MetaAnalysis>(d.getMetaAnalyses(), "meta-analysis"), "meta-analyses", XMLSet.class);
+//			oe.add(new XMLSet<MetaAnalysis>(d.getMetaAnalyses(), "meta-analysis"), "metaAnalyses", XMLSet.class);
 		}
 	};
 }

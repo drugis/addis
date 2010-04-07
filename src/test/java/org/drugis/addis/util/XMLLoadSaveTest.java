@@ -24,6 +24,7 @@ import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -121,6 +122,17 @@ public class XMLLoadSaveTest {
 		
 		CategoricalPopulationCharacteristic objFromXml = XMLHelper.fromXml(xml);
 		assertEquals(gender, objFromXml);
+	}
+	
+	@Test
+	public void doInterval() throws XMLStreamException {
+		Interval<Double> interval = new Interval<Double>(24.0,123.0);
+		String xml = XMLHelper.toXml(interval, Interval.class);
+		
+		System.out.println("\n"+xml+"\n");
+		
+		Interval<Double> objFromXml = XMLHelper.fromXml(xml);
+		assertEquals(interval, objFromXml);
 	}
 	
 	@Test

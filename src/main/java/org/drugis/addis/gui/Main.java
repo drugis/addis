@@ -175,6 +175,16 @@ public class Main extends JFrame {
 		FileOutputStream fos = new FileOutputStream(f);
 		d_domain.saveDomain(fos);
 	}
+	
+	private void saveDomainToXMLFile(String fileName) throws IOException {
+		File f = new File(fileName);
+		if (f.exists()) {
+			f.delete();
+		}
+
+		FileOutputStream fos = new FileOutputStream(f);
+		d_domain.saveXMLDomain(fos);
+	}
 
 	private void initializeDomain() {
 		d_domain = new DomainManager();
@@ -198,6 +208,17 @@ public class Main extends JFrame {
 		if (f.exists() && f.isFile()) {
 			FileInputStream fis = new FileInputStream(f);
 			d_domain.loadDomain(fis);
+		} else {
+			throw new FileNotFoundException(fileName + " not found");
+		}
+	}
+	
+	private void loadDomainFromXMLFile(String fileName) throws IOException,
+	ClassNotFoundException {
+		File f = new File(fileName);
+		if (f.exists() && f.isFile()) {
+			FileInputStream fis = new FileInputStream(f);
+			d_domain.loadXMLDomain(fis);
 		} else {
 			throw new FileNotFoundException(fileName + " not found");
 		}
@@ -258,6 +279,8 @@ public class Main extends JFrame {
 
 		fileMenu.add(createOpenItem());
 		fileMenu.add(createSaveItem());
+		fileMenu.add(createImportXMLItem());
+		fileMenu.add(createExportXMLItem());
 		fileMenu.add(createExitItem());
 
 		return fileMenu;
@@ -539,6 +562,32 @@ public class Main extends JFrame {
 		});
 		return openItem;
 	}
+	
+	private JMenuItem createImportXMLItem() {
+		JMenuItem openItem = new JMenuItem("Import XML", ImageLoader
+				.getIcon(FileNames.ICON_OPENFILE));
+		openItem.setMnemonic('i');
+		openItem.addActionListener(new AbstractAction() {
+
+			public void actionPerformed(ActionEvent e) {
+				final JFileChooser fileChooser = new JFileChooser();
+				int returnVal = fileChooser.showOpenDialog(Main.this);
+
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					try {
+						loadDomainFromXMLFile(fileChooser.getSelectedFile()
+								.getAbsolutePath());
+					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(Main.this,
+								"Couldn't open file "
+										+ fileChooser.getSelectedFile()
+												.getAbsolutePath() + " .");
+					}
+				}
+			}
+		});
+		return openItem;
+	}
 
 	private JMenuItem createSaveItem() {
 		JMenuItem saveItem = new JMenuItem("Save", ImageLoader
@@ -559,6 +608,33 @@ public class Main extends JFrame {
 								"Couldn't save file "
 										+ fileChooser.getSelectedFile()
 												.getAbsolutePath() + " .");
+					}
+				}
+			}
+		});
+		return saveItem;
+	}
+	
+	private JMenuItem createExportXMLItem() {
+		JMenuItem saveItem = new JMenuItem("Export XML", ImageLoader
+				.getIcon(FileNames.ICON_SAVEFILE));
+		saveItem.setMnemonic('e');
+		saveItem.addActionListener(new AbstractAction() {
+
+			public void actionPerformed(ActionEvent e) {
+				final JFileChooser fileChooser = new JFileChooser();
+				int returnVal = fileChooser.showSaveDialog(Main.this);
+
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					try {
+						saveDomainToXMLFile(fileChooser.getSelectedFile()
+								.getAbsolutePath());
+					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(Main.this,
+								"Couldn't save file "
+										+ fileChooser.getSelectedFile()
+												.getAbsolutePath() + " .");
+						e1.printStackTrace();
 					}
 				}
 			}

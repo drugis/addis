@@ -1,5 +1,6 @@
 package org.drugis.addis.util;
 
+import java.io.InputStream;
 import java.io.StringReader;
 
 import org.drugis.addis.entities.DomainData;
@@ -30,6 +31,13 @@ public class XMLHelper {
 	public static <T> T fromXml(String xml) throws XMLStreamException {	     
 		StringReader sreader = new StringReader(xml);
 		XMLObjectReader reader = new XMLObjectReader().setInput(sreader).setBinding(new AddisBinding());
+		reader.setReferenceResolver(new XMLReferenceResolver());
+		return reader.<T>read();
+	}
+	
+	public static <T> T fromXml(InputStream xmlStream) throws XMLStreamException {	     
+		//StringReader sreader = new StringReader(xml);
+		XMLObjectReader reader = new XMLObjectReader().setInput(xmlStream).setBinding(new AddisBinding());
 		reader.setReferenceResolver(new XMLReferenceResolver());
 		return reader.<T>read();
 	}

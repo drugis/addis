@@ -61,4 +61,18 @@ public class DomainManagerTest {
 		
 		assertEquals(domain, d_manager.getDomain());
 	}
+	
+	@Test
+	public void testSaveLoadDomainXml() throws IOException, ClassNotFoundException {
+		ExampleData.initDefaultData(d_manager.getDomain());
+		
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		d_manager.saveXMLDomain(bos);
+		Domain domain = d_manager.getDomain();
+
+		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+		d_manager.loadXMLDomain(bis);
+		
+		assertEquals(domain, d_manager.getDomain());
+	}
 }

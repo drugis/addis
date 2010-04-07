@@ -33,15 +33,35 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
+import javolution.xml.stream.XMLStreamException;
+
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.ListHolder;
+import org.drugis.addis.util.XMLHelper;
 
 public class DomainImpl implements Domain {
 	private DomainData d_domainData;
 	
 	private List<DomainListener> d_listeners;
 	private PropertyChangeListener d_studyListener;
+	
+	/**
+	 * Replace the DomainData by a new instance loaded from a xml file.
+	 * @param is Stream to read objects from.
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void loadXMLDomainData(InputStream is)
+	throws IOException, ClassNotFoundException {
+		try {
+			d_domainData = XMLHelper.fromXml(is);
+		} catch (XMLStreamException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		domainDataReinit();
+	}
 	
 	/**
 	 * Replace the DomainData by a new instance loaded from a stream.
@@ -66,6 +86,22 @@ public class DomainImpl implements Domain {
 	throws IOException {
 		ObjectOutputStream oos = new ObjectOutputStream(os);
 		oos.writeObject(d_domainData);
+	}
+	
+	/**
+	 * Save the Domain to an xml stream.
+	 * @param os Stream to write objects to.
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void saveXMLDomainData(OutputStream os)
+	throws IOException {
+		try {
+			String s = XMLHelper.toXml(d_domainData, DomainData.class);
+			os.write(s.getBytes());
+		} catch (XMLStreamException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void domainDataReinit() {
