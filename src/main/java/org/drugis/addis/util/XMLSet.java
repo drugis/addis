@@ -1,7 +1,6 @@
 package org.drugis.addis.util;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -9,11 +8,9 @@ import java.util.TreeSet;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
-
 public class XMLSet<T> {
 	private Collection<T> d_list;
 	private String d_typeName;
-	
 	
 	public XMLSet(Collection<T> list, String typeName) {
 		d_list = list;
@@ -32,12 +29,11 @@ public class XMLSet<T> {
 		return new TreeSet<T>(d_list);
 	}
 	
-	
 	public String getTypeName() {
 		return d_typeName;
 	}
 	
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused", "unchecked" })
 	private static final XMLFormat<XMLSet> XML = new XMLFormat<XMLSet>(XMLSet.class) {		
 		@Override
 		public boolean isReferenceable() {
@@ -66,7 +62,6 @@ public class XMLSet<T> {
 			for (Object o : wrappedSet.getCollection()) {
 				oe.add(o);
 			}
-		
 		}		
 	};				
 }

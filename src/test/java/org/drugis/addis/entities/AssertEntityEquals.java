@@ -7,24 +7,22 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.drugis.common.JUnitUtil;
 
 public class AssertEntityEquals {
 	
 	private static class MeasurementComparator implements Comparator<Measurement> {
-		// FIXME
 		
+		// FIXME: This compare does not necessarily work; Different objects could return the same comparator value.   
 		private double calcValue(Measurement m) {
-			if (m instanceof ContinuousMeasurement)
+			if (m instanceof ContinuousMeasurement) {
 				return calcValue((ContinuousMeasurement) m);
-			else if (m instanceof RateMeasurement)
+			} else if (m instanceof RateMeasurement) {
 				return calcValue((RateMeasurement) m);
-			else 
+			} else 
 				throw new IllegalArgumentException("Unknown type of measurement");
 		}
 		
@@ -59,8 +57,6 @@ public class AssertEntityEquals {
 	}
 
 	public static void assertEntityEquals(Arm expected, Arm actual) {
-		//assertEquals(expected.getName(),actual.getName());
-		//assertEquals (expected.getAtcCode(), actual.getAtcCode());
 		assertEntityEquals(expected.getDrug(), actual.getDrug());
 		assertEquals(expected.getDose(), actual.getDose());
 		assertEquals(expected.getSize(), actual.getSize());
@@ -86,8 +82,7 @@ public class AssertEntityEquals {
 		if (expected instanceof ContinuousMeasurement) {
 			assertEquals( ((ContinuousMeasurement) expected).getMean() , ((ContinuousMeasurement) actual).getMean() );
 			assertEquals( ((ContinuousMeasurement) expected).getStdDev() , ((ContinuousMeasurement) actual).getStdDev() );
-		}
-		else if (expected instanceof RateMeasurement) 
+		} else if (expected instanceof RateMeasurement) 
 			assertEquals( ((RateMeasurement) expected).getRate() , ((RateMeasurement) actual).getRate() );
 		else {
 			System.err.println("Measurement type not recognized.");
@@ -172,5 +167,4 @@ public class AssertEntityEquals {
 		assertEntityEquals(d1.getStudies(), d2.getStudies());
 		// assertEntityEquals(d1.getMetaAnalyses(), d2.getMetaAnalyses()); // FIXME	
 	}
-	
 }

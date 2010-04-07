@@ -4,6 +4,9 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,19 +14,26 @@ import java.util.Set;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
 import org.drugis.common.Interval;
 
+import scala.Collection;
+
 import com.jgoodies.binding.beans.BeanUtils;
 
-
+@SuppressWarnings("unchecked")
 public class EntityXMLFormat extends XMLFormat<Entity>
 {	
+	static final Set<Class> NODES = new HashSet<Class>(); 
 
 	public EntityXMLFormat() {
 		super(Entity.class);
+		// These classes should not be treated as properties, but as nodes.
+		Collections.addAll(NODES, Enum.class, Entity.class, String[].class, List.class, Set.class, Map.class);
 	}
 
+	
 	@Override
 	public Entity newInstance(Class<Entity> cls, InputElement ie) throws XMLStreamException {
 		try {
@@ -34,6 +44,7 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 		} 
 		return null;
 	}
+	
 	@Override
 	public boolean isReferenceable() {
 		return true;
@@ -128,6 +139,16 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 		}
 		return false;
 	}
+	
+	private boolean classIsNode(Class clsToCompare) {
+		System.out.println("Going to compare " + clsToCompare);
+		boolean isNode = false;
+		for (Class<?> nodeCls : NODES) {
+			if (nodeCls.isAssignableFrom(clsToCompare))
+				isNode = true;
+		}
+		return isNode;			
+	}
 
 	@Override
 	public void write(Entity i, OutputElement oe) throws XMLStreamException {
@@ -141,16 +162,14 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 				if(propertyIsExcluded(i, properties[p].getName()))
 					continue;
 
-				//						if (!(properties[p].getName().equals("class") || properties[p].getName().equals("dependencies"))) {
 				Object value = BeanUtils.getValue(i, properties[p]);
 				System.out.print("(attributes) inspecting "+properties[p].getName() + ", value is: " + value + ", class is " + value.getClass());	
-				if (! ((value instanceof Enum) || (value instanceof Entity) || (value instanceof String[]) || value instanceof List || value instanceof Set || value instanceof Map || value instanceof Interval) ) {
+				if (!classIsNode(value.getClass())) {
 					System.out.print("  writing ");
 					oe.setAttribute(properties[p].getName(), value);
 					System.out.println(".. done writing.");
 				}
 				else System.out.println(" not writing, no attribute ");
-				//						}
 			}
 
 			System.out.println("done writing attributes, starting to write others");
@@ -182,7 +201,6 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 				} else if (value instanceof List) { // ADE list
 					System.out.println("writing "+propertyName+" as List");
 					List list = (List)value;
-					//if(!list.isEmpty())
 					oe.add(new XMLSet( list, ""),propertyName, XMLSet.class);
 				} else if (value instanceof Set) {
 					System.out.println("writing as Set");
@@ -193,11 +211,9 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 				}
 				// FIXME: Map
 				else System.out.println("Not writing, not known other. (maybe attribute?)");
-
 			}		
 		} catch (IntrospectionException e) {
 			e.printStackTrace();
 		}
-		System.out.println("<<");
 	}
 }
