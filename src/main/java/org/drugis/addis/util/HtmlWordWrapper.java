@@ -34,9 +34,12 @@ public class HtmlWordWrapper {
 	private static final Pattern wrapRE = Pattern.compile(".{0,79}(?:\\S(?:-| |$)|$)");
 
 	private static String[] makeParts(String str) {
-	    List<String> list = new LinkedList<String>();
-	    Matcher m = wrapRE.matcher(str);
-	    while (m.find()) list.add(m.group());
-	    return (String[]) list.toArray(new String[list.size()]);
+		if (str != null && str != "") {
+		    List<String> list = new LinkedList<String>();
+		    Matcher m = wrapRE.matcher(str);
+		    while (m.find()) list.add(m.group());
+		    return list.toArray(new String[]{});
+		}
+		return new String[] {};
 	}
 }
