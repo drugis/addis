@@ -17,7 +17,7 @@ import org.junit.Test;
 
 // rows are drugs, cols are ranks
 
-public class RankProbabilityDataSetTest {
+public class RankProbabilityDataSetITCase {
 	private NetworkMetaAnalysis d_nma;
 	private CategoryDataset d_dataSet;
 
