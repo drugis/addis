@@ -2,6 +2,7 @@ package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,8 @@ import com.jgraph.components.labels.CellConstants;
 import com.jgraph.components.labels.MultiLineVertexRenderer;
 import com.jgraph.layout.JGraphFacade;
 import com.jgraph.layout.graph.JGraphSimpleLayout;
+import com.jgraph.layout.hierarchical.JGraphHierarchicalLayout;
+import com.jgraph.layout.organic.JGraphOrganicLayout;
 
 @SuppressWarnings("serial")
 public class StudyGraph extends JPanel {
@@ -40,7 +43,7 @@ public class StudyGraph extends JPanel {
 		d_pm = pm;
 
 		d_vertexAttributes = new AttributeMap();
-		CellConstants.setVertexShape(d_vertexAttributes, MultiLineVertexRenderer.SHAPE_CIRCLE);
+		CellConstants.setVertexShape(d_vertexAttributes, MultiLineVertexRenderer.SHAPE_RECTANGLE);
 		CellConstants.setBackground(d_vertexAttributes, Color.WHITE);
 		CellConstants.setForeground(d_vertexAttributes, Color.BLACK);
 		CellConstants.setBorder(d_vertexAttributes, BorderFactory.createLineBorder(Color.BLACK, 2));
@@ -82,9 +85,8 @@ public class StudyGraph extends JPanel {
 		JGraph jgraph = createGraph(layoutCache);
 		add(jgraph, BorderLayout.CENTER);
 		
-		// add a circle layout to the graph
-		final JGraphSimpleLayout layout = new JGraphSimpleLayout(JGraphSimpleLayout.TYPE_CIRCLE);
-		//final JGraphOrganicLayout layout = new JGraphOrganicLayout(new Rectangle2D.Double(0.0, 0.0, 500, 500));
+		// Layout the graph
+		final JGraphHierarchicalLayout layout = new JGraphHierarchicalLayout();
 		final JGraphFacade facade = new JGraphFacade(jgraph);
 		layout.run(facade);
 		Map nested = facade.createNestedMap(true, true);
