@@ -61,6 +61,7 @@ public class EnhancedTableHeader extends JTableHeader {
 				requiredColumnWidth = MAX_COL_WIDTH;
 			}
 			col.setMinWidth(requiredColumnWidth);
+//			col.setMaxWidth(requiredColumnWidth);
 		}
 	}
 

@@ -56,6 +56,7 @@ implements ViewBuilder {
 					d_progBar.setValue(event.getIteration()/40);
 				} else if(event.getType() == EventType.SIMULATION_FINISHED) {
 					d_progBar.setVisible(false);
+					d_pane.validate();
 				}
 				
 			}

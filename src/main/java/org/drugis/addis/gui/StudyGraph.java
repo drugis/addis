@@ -2,7 +2,6 @@ package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,9 +25,7 @@ import org.jgrapht.ext.JGraphModelAdapter;
 import com.jgraph.components.labels.CellConstants;
 import com.jgraph.components.labels.MultiLineVertexRenderer;
 import com.jgraph.layout.JGraphFacade;
-import com.jgraph.layout.graph.JGraphSimpleLayout;
 import com.jgraph.layout.hierarchical.JGraphHierarchicalLayout;
-import com.jgraph.layout.organic.JGraphOrganicLayout;
 
 @SuppressWarnings("serial")
 public class StudyGraph extends JPanel {
