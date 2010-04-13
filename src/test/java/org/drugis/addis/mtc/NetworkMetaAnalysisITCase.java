@@ -81,13 +81,14 @@ public class NetworkMetaAnalysisITCase {
     	Treatment fluox = d_builder.getTreatment("Fluoxetine");
     	Treatment sertr = d_builder.getTreatment("Sertraline");
     	Treatment parox = d_builder.getTreatment("Paroxetine");
+    	
     	assertNotNull(d_model.getRelativeEffect(fluox, sertr));
-    	assertNotNull(d_model.getRelativeEffect(sertr, fluox));
+    	assertNotNull(d_model.getRelativeEffect(sertr, fluox));	
     	assertNotNull(d_model.getRelativeEffect(fluox, parox));
     	assertNotNull(d_model.getRelativeEffect(parox, fluox));
     	assertNotNull(d_model.getRelativeEffect(sertr, parox));
     	assertNotNull(d_model.getRelativeEffect(parox, sertr));
     	
-    	assertEquals(0, d_model.getInconsistencyFactors().size());
+    	assertEquals(1, d_model.getInconsistencyFactors().size());
     }
 }
