@@ -115,6 +115,7 @@ public class AddisBinding extends XMLBinding {
 		
 		@Override
 		public void read(javolution.xml.XMLFormat.InputElement xml, Date date) throws XMLStreamException {
+			//is solved in newinstance() method
 		}
 
 		@Override

@@ -109,12 +109,6 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 				} else if (List.class.isAssignableFrom(properties[p].getPropertyType())) {
 					List retrList = ie.get(propertyName,ArrayList.class);
 					BeanUtils.setValue(i, properties[p], retrList);
-//					System.out.print(" as List " + propertyName + " ");
-//					XMLSet xmlSet = ((XMLSet) ie.get(propertyName,XMLSet.class));
-//					if (xmlSet != null)
-//						BeanUtils.setValue(i, properties[p], xmlSet.getList());
-//					else
-//						System.err.println(propertyName + "not found, not reading.");
 				} else System.out.println(" Didnt read as node");
 
 			}

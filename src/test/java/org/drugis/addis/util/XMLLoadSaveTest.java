@@ -157,8 +157,6 @@ public class XMLLoadSaveTest {
 		AssertEntityEquals.assertEntityEquals(s, parsedStudy);
 		//assertEquals(s.getStudyId(),parsedStudy.getStudyId());
 		
-		// TODO: characteristicmap
-		
 		assertEquals(s.getNote(s.getArms().get(0).toString()), parsedStudy.getNote(parsedStudy.getArms().get(0).toString()));
 	}
 	

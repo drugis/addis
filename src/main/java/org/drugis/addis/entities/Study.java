@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,20 +35,21 @@ import javolution.xml.XMLFormat;
 import javolution.xml.XMLFormat.InputElement;
 import javolution.xml.stream.XMLStreamException;
 
+import org.drugis.addis.util.AddisBinding;
 import org.drugis.common.EqualsUtil;
 
 public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private static final long serialVersionUID = 532314508658928979L;
-	
+
 	public static class MeasurementKey extends AbstractEntity implements Entity {
 		private static final long serialVersionUID = 6310789667384578005L;
-		
+
 		private Entity d_outcomeM;
 		private Arm d_arm;
-		
+
 		public MeasurementKey() {
 		}
-	
+
 		public MeasurementKey(Entity e, Arm g)  {
 			if (e == null) {
 				throw new NullPointerException("Variable/Outcome = " + e + " may not be null");
@@ -71,7 +73,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		public void setArm(Arm arm) {
 			d_arm = arm;
 		}
-		
+
 		public boolean equals(Object o) {
 			if (o instanceof MeasurementKey) { 
 				MeasurementKey other = (MeasurementKey)o;
@@ -79,7 +81,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			}
 			return false;
 		}
-		
+
 		public int hashCode() {
 			int code = 1;
 			code = code * 31 + d_outcomeM.hashCode();
@@ -92,7 +94,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			return null;
 		}
 	}
-	
+
 	public final static String PROPERTY_ID = "studyId";
 	public final static String PROPERTY_ENDPOINTS = "endpoints";
 	public final static String PROPERTY_ADVERSE_EVENTS = "adverseEvents";
@@ -111,10 +113,10 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	private Indication d_indication;
 	private Map<Object, Note> d_notes = new HashMap<Object, Note>();
-	
+
 	public Study (){
 	}
-	
+
 	public Study(String id, Indication i) {
 		d_studyId = id;
 		d_indication = i;
@@ -122,28 +124,28 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 
 	private void readObject(ObjectInputStream in) 
-		throws IOException, ClassNotFoundException {
-				in.defaultReadObject();
+	throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
 	}
-	
+
 	public List<Arm> getArms() {
 		return d_arms;
 	}
-	
+
 	public void setArms(List<Arm> arms) {
 		List<Arm> oldVal = d_arms;
 		d_arms = arms;
 		updateMeasurements();
-		
+
 		firePropertyChange(PROPERTY_ARMS, oldVal, d_arms);
 	}
-	
+
 	public void addArm(Arm group) {
 		List<Arm> newVal = new ArrayList<Arm>(d_arms);
 		newVal.add(group);
 		setArms(newVal);
 	}
-	
+
 	public Set<Drug> getDrugs() {
 		Set<Drug> drugs = new HashSet<Drug>();
 		for (Arm g : getArms()) {
@@ -151,7 +153,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		}
 		return drugs;
 	}
-	
+
 	public Indication getIndication() {
 		return d_indication;
 	}
@@ -161,7 +163,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		d_indication = indication;
 		firePropertyChange(PROPERTY_INDICATION, oldInd, indication);
 	}
-	
+
 	public Set<Entity> getDependencies() {
 		HashSet<Entity> dep = new HashSet<Entity>(getDrugs());
 		dep.addAll(getOutcomeMeasures());
@@ -169,40 +171,40 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		dep.add(d_indication);
 		return dep;
 	}
-	
+
 	public void setCharacteristic(BasicStudyCharacteristic c, Object val) {
 		d_chars.put(c, val);
 		/* Beware: Every characteristicHolder attached to this study will receive this event, even though only one characteristic has changed*/
 		firePropertyChange(PROPERTY_CHARACTERISTIC, c, c);
 	}
-	
+
 	public CharacteristicsMap setCharacteristics() {
 		throw new IllegalAccessError("Can't set characteristics map directly.");
 	}
-	
+
 	public void setCharacteristics(CharacteristicsMap m) {
 		d_chars = m;
 	}
-	
+
 	public CharacteristicsMap getCharacteristics() {
 		return d_chars;
 	}
-	
+
 	public String getStudyId() {
 		return d_studyId;
 	}
-	
+
 	public void setStudyId(String id) {
 		String oldVal = d_studyId;
 		d_studyId = id;
 		firePropertyChange(PROPERTY_ID, oldVal, d_studyId);
 	}
-	
+
 	@Override
 	public String toString() {
 		return getStudyId();
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Study) {
@@ -214,24 +216,24 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return getStudyId() == null ? 0 : getStudyId().hashCode();
 	}
-	
+
 	public int compareTo(Study other) {
 		return getStudyId().compareTo(other.getStudyId());
 	}
-	
+
 	public Measurement getMeasurement(Variable v, Arm g) {
 		return d_measurements.get(new MeasurementKey(v, g));
 	}
-	
+
 	public Measurement getMeasurement(Variable v) {
 		return getMeasurement(v, null);
 	}
-	
+
 	private void forceLegalArguments(OutcomeMeasure e, Arm g, Measurement m) {
 		if (!getArms().contains(g)) {
 			throw new IllegalArgumentException("Arm " + g + " not part of this study.");
@@ -243,12 +245,12 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			throw new IllegalArgumentException("Measurement does not conform with outcome");
 		}
 	}
-	
+
 	public void setMeasurement(OutcomeMeasure e, Arm g, Measurement m) {
 		forceLegalArguments(e, g, m);
 		d_measurements.put(new MeasurementKey(e, g), m);
 	}
-	
+
 	/**
 	 * Set population characteristic measurement on arm.
 	 * @param v
@@ -259,7 +261,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		forceLegalArguments(v, g, m);
 		d_measurements.put(new MeasurementKey(v, g), m);
 	}
-	
+
 	/**
 	 * Set population characteristic measurement on study.
 	 * @param v
@@ -269,7 +271,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public void setMeasurement(Variable v, Measurement m) {
 		setMeasurement(v, null, m);
 	}
-	
+
 	private void forceLegalArguments(Variable v, Arm g, Measurement m) {
 		if (!d_populationChars.contains(v)) {
 			throw new IllegalArgumentException("Variable " + v + " not in study");
@@ -288,23 +290,23 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		l.addAll(d_adverseEvents);
 		return l;
 	}
-	
+
 	public List<Endpoint> getEndpoints() {
 		return Collections.unmodifiableList(d_endpointList);
 	}
 	public List<Endpoint> getEPs() {
 		return getEndpoints();
 	}
-	
-	
+
+
 	public List<AdverseEvent> getAdverseEvents() {
 		return Collections.unmodifiableList(d_adverseEvents);
 	}
-	
+
 	public List<PopulationCharacteristic> getPopulationCharacteristics() {
 		return Collections.unmodifiableList(d_populationChars);
 	}
-	
+
 	public List<? extends Variable> getVariables(Class<? extends Variable> type) {
 		if (type == Endpoint.class) {
 			return Collections.unmodifiableList(d_endpointList);
@@ -313,41 +315,41 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		}		
 		return Collections.unmodifiableList(d_populationChars); 
 	}
-	
+
 	public void setEndpoints(List<Endpoint> endpoints) {
 		List<Endpoint> oldVal = getEndpoints();
 		d_endpointList = new ArrayList<Endpoint>(endpoints);
 		updateMeasurements();
 		firePropertyChange(PROPERTY_ENDPOINTS, oldVal, getEndpoints());
 	}
-	
+
 	public void setEPs(List<Endpoint> endpoints) {
 		setEndpoints(endpoints);
 	}
-	
+
 	public void setAdverseEvents(List<AdverseEvent> ade) {
 		List<AdverseEvent> oldVal = getAdverseEvents();
 		d_adverseEvents = new ArrayList<AdverseEvent>(ade);
 		updateMeasurements();
 		firePropertyChange(PROPERTY_ADVERSE_EVENTS, oldVal, getAdverseEvents());
 	}
-	
+
 	public void setPopulationCharacteristics(List<PopulationCharacteristic> chars) {
 		List<? extends Variable> oldVal = getVariables(PopulationCharacteristic.class);
 		d_populationChars = new ArrayList<PopulationCharacteristic>(chars);
 		updateMeasurements();
 		firePropertyChange(PROPERTY_POPULATION_CHARACTERISTICS, oldVal, getVariables(PopulationCharacteristic.class));
 	}
-	
+
 	public void addAdverseEvent(AdverseEvent ade) {
 		if (ade == null) 
 			throw new NullPointerException("Cannot add a NULL outcome measure");
-		
+
 		List<AdverseEvent> newList = new ArrayList<AdverseEvent>(d_adverseEvents);
 		newList.add(ade);
 		setAdverseEvents(newList);
 	}
-	
+
 	public void addOutcomeMeasure(Endpoint om) {
 		addEndpoint(om);
 	}
@@ -355,12 +357,12 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public void addEndpoint(Endpoint om) {
 		if (om == null) 
 			throw new NullPointerException("Cannot add a NULL outcome measure");
-		
+
 		List<Endpoint> newVal = new ArrayList<Endpoint>(d_endpointList);
 		newVal.add(om);
 		setEndpoints(newVal);
 	}
-		
+
 	public void deleteOutcomeMeasure(Endpoint om) {
 		deleteEndpoint(om);
 	}
@@ -372,7 +374,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			setEndpoints(newVal);
 		}
 	}
-	
+
 	private void updateMeasurements() {
 		// Add default measurements for all outcomes
 		for (OutcomeMeasure om : getOutcomeMeasures()) {
@@ -403,7 +405,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			}
 		}
 	}
-	
+
 	private boolean orphanKey(MeasurementKey k) {
 		// OutcomeMeasure measurements
 		if (k.d_outcomeM instanceof OutcomeMeasure) {
@@ -425,30 +427,30 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			}
 			return false;
 		}
-		
+
 		throw new IllegalStateException(k + " is not a valid measurement key");
 	}
 
 	public Object getCharacteristic(Characteristic c) {
 		return d_chars.get(c);
 	}
-	
+
 	public int getSampleSize() {
 		int s = 0;
 		for (Arm pg : d_arms)
 			s += pg.getSize();
 		return s;
 	}
-	
+
 	public void putNote(Object key, Note note){
 		d_notes.put(key, note);
 		firePropertyChange(PROPERTY_NOTE, key, key);
 	}
-	
+
 	public Note getNote(Object key){
 		return d_notes.get(key);
 	}
-	
+
 	public Map<Object,Note> getNotes() {
 		return d_notes;
 	}
@@ -465,32 +467,32 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		newVal.remove(i);
 		setEndpoints(newVal);
 	}
-	
+
 	public Map<MeasurementKey, Measurement> getMeasurements() {
 		return d_measurements;
 	}
-	
+
 	public void setMeasurements(Map<MeasurementKey, Measurement> m) {
 		d_measurements = m;
 	}
-	
+
 	@Override
 	public String[] getXmlExclusions() {
-		return new String[] {"sampleSize", "outcomeMeasures", "endpoints", "drugs", "notes"};
+		return new String[] {"sampleSize", "outcomeMeasures", "endpoints", "drugs"};
 	}
-	
-	
+
+
 	protected static final XMLFormat<Entry> entryXML = new XMLFormat<Entry>(Entry.class) {
-		
+
 		class MyEntry implements Entry {
 
 			Object key, value;	
-			
+
 			public Object setKey(Object key) {
 				this.key = key;
 				return key;
 			}
-			
+
 			public Object getKey() {
 				return key;
 			}
@@ -503,69 +505,100 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 				this.value = value;
 				return value;
 			}
-			
+
 		}
-		
+
 		public Entry newInstance(Class<Entry> cls, InputElement ie) throws XMLStreamException {
 			return new MyEntry();
 		}
-		
+
 		@Override
 		public void read(javolution.xml.XMLFormat.InputElement ie, Entry entry)
-				throws XMLStreamException {
-				System.out.println("-------------- attempting to read entry element");
+		throws XMLStreamException {
+			
+			Object key = ie.get("key");
+			if (key != null) {
+				System.out.println("--- Reading note");
+				String text = ie.get("noteText", String.class);
+				Source src = ie.get("noteSrc", Source.class);
+				((MyEntry) entry).setKey(key);
+				((MyEntry) entry).setValue(new Note(src, text));
+			} else {
+				System.out.println("--- Reading measurement");
 				Entity outcomeMeasure = (Entity) ie.get("outcomeMeasure");
-				System.out.println("parsed outcomeM:   "+outcomeMeasure);
 				Arm arm = (Arm) ie.get("arm",Arm.class);
-				System.out.println("parsed arm:        "+arm);
 				Measurement measurement = ie.get("measurement");
-				System.out.println("parsed measurement: "+measurement);
-				
+
 				MeasurementKey mk = new MeasurementKey(outcomeMeasure, arm);
 				((MyEntry) entry).setKey(mk);
 				((MyEntry) entry).setValue(measurement);
+			}
 		}
-		
+
 
 		public void write(Entry e,
 				javolution.xml.XMLFormat.OutputElement oe)
-				throws XMLStreamException {
-			
-			Entry<MeasurementKey, Measurement> entry = (Entry<MeasurementKey, Measurement>) e;
-			
-			//System.out.println("entry is: "+entry);
-			oe.add((OutcomeMeasure) entry.getKey().getOutcomeM(), "outcomeMeasure");
-			oe.add(entry.getKey().getArm(), "arm", Arm.class);
-			oe.add(entry.getValue(), "measurement");
-		}
-	
-	};
-	
-	protected static final XMLFormat<HashMap> mapXML = new XMLFormat<HashMap>(  (Class<HashMap>) new HashMap().getClass()) {
-	
-		@Override
-		public boolean isReferenceable() {
-			return true;
-		}
-		
-		@Override
-		public void read(InputElement ie, HashMap s) throws XMLStreamException {
-			
-			while (ie.hasNext()) {
-				System.out.println("-------------- attempting to read measurement map element");
-				Entry<MeasurementKey,Measurement> e = ie.get("measurement", Entry.class);
-				s.put(e.getKey(), e.getValue());
+		throws XMLStreamException {
+
+			if (e.getValue() instanceof Measurement) {
+				Entry<MeasurementKey, Measurement> entry = (Entry<MeasurementKey, Measurement>) e;
+				//System.out.println("entry is: "+entry);
+				oe.add((OutcomeMeasure) entry.getKey().getOutcomeM(), "outcomeMeasure");
+				oe.add(entry.getKey().getArm(), "arm", Arm.class);
+				oe.add(entry.getValue(), "measurement");
+			} else if (e.getValue() instanceof Note){
+				oe.add(e.getKey(),"key");
+				oe.add( ((Note) e.getValue()).getText(), "noteText", String.class );
+				oe.add( ((Note) e.getValue()).getSource(), "noteSrc", Source.class );
 			}
 		}
-		
+
+	};
+
+	protected static final XMLFormat<HashMap> mapXML = new XMLFormat<HashMap>(  (Class<HashMap>) new HashMap().getClass()) {
+
+		@Override
+		public boolean isReferenceable() {
+			return false;
+		}
+
+		@Override
+		public void read(InputElement ie, HashMap s) throws XMLStreamException {
+
+			while (ie.hasNext()) {
+				System.out.println("-------------- attempting to read measurement map element");
+				Entry<MeasurementKey,Measurement> measEntry = ie.get("measurement", Entry.class);
+				if(measEntry!= null)
+					s.put(measEntry.getKey(), measEntry.getValue());
+				Entry<Object, Note> noteEntry = ie.get("note", Entry.class);
+				if(noteEntry != null)
+					s.put(noteEntry.getKey(), noteEntry.getValue());
+			}
+		}
+
 		@SuppressWarnings("unchecked")
 		@Override
 		public void write(HashMap map, OutputElement oe) throws XMLStreamException {
 
+			if (map.entrySet().isEmpty())
+				return;
+
+			Iterator iterator = map.entrySet().iterator();
+			Entry value = (Entry) iterator.next();
+
+			if (value.getValue() instanceof Measurement) {
 				Map<MeasurementKey, Measurement> measurementMap = (Map<MeasurementKey, Measurement>) map;
 				for(Map.Entry<MeasurementKey, Measurement> e: measurementMap.entrySet()){
 					oe.add(e,"measurement",Entry.class);
 				}
+			} else if (value.getValue() instanceof Note){
+				Map<Object, Note> noteMap = (Map<Object, Note>) map;
+				for(Map.Entry<Object, Note> e: noteMap.entrySet()){
+					oe.add(e,"note",Entry.class);
+				}
+
+			}
+
 		}
 	};
 }
