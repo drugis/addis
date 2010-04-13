@@ -137,6 +137,7 @@ public class AddisBinding extends XMLBinding {
         } else {
             return super.getFormat(cls);
         }
+        
     }
 
 }

@@ -28,6 +28,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
+
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.common.EqualsUtil;
 
@@ -474,39 +478,59 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return new String[] {"sampleSize", "outcomeMeasures", "endpoints", "drugs"};
 	}
 	
-//	protected static final XMLFormat<Study> XML = new XMLFormat<Study>(Study.class) {
-//		// TODO: .....
-////		public final static String PROPERTY_ID = "id";
-////		public final static String PROPERTY_ENDPOINTS = "endpoints";
-////		public final static String PROPERTY_ADVERSE_EVENTS = "adverseEvents";
-////		public final static String PROPERTY_POPULATION_CHARACTERISTICS = "populationCharacteristics";
-////		public final static String PROPERTY_ARMS = "arms";
-////		public final static String PROPERTY_CHARACTERISTIC = "Characteristics";
-////		public final static String PROPERTY_NOTE = "Note";
-//
-//		
-//		
-//		@Override
-//		public Study newInstance(Class<Study> cls, InputElement ie) throws XMLStreamException {
-//			// In newInstance, only use getAttribute, not get. Thats why no indication can be instantiated at this point
-//			return new Study((String) ie.getAttribute("name", null), null);
-//		}
-//		
-//		@Override
-//		public boolean isReferenceable() {
-//			return true;
-//		}
-//		
-//		@Override
-//		public void read(InputElement ie, Study s) throws XMLStreamException {
-//			s.setId(ie.getAttribute("name", null));
-//			s.setIndication(ie.get("indication", Indication.class));
-//		}
-//		
-//		@Override
-//		public void write(Study s, OutputElement oe) throws XMLStreamException {
-//			oe.setAttribute("name", s.getId());
-//			oe.add(s.getIndication(), "indication", Indication.class);
-//		}
-//	};
+	
+	protected static final XMLFormat<Entry> entryXML = new XMLFormat<Entry>(Entry.class) {
+
+		@Override
+		public void read(javolution.xml.XMLFormat.InputElement arg0, Entry arg1)
+				throws XMLStreamException {
+			// TODO Auto-generated method stub
+			
+		}
+		
+
+		public void write(Entry e,
+				javolution.xml.XMLFormat.OutputElement oe)
+				throws XMLStreamException {
+			
+			Entry<MeasurementKey, Measurement> entry = (Entry<MeasurementKey, Measurement>) e;
+			
+			//System.out.println("entry is: "+entry);
+			oe.add(entry.getKey().getArm(), "arm", Arm.class);
+			oe.add((OutcomeMeasure) entry.getKey().getOutcomeM(), "outcomeMeasure");
+			oe.add(entry.getValue(), "measurement");
+		}
+	
+	};
+	
+	protected static final XMLFormat<Map<MeasurementKey,Measurement>> mapXML = new XMLFormat<Map<MeasurementKey,Measurement>>(  (Class<Map<MeasurementKey, Measurement>>) new HashMap<MeasurementKey,Measurement>().getClass()) {
+	
+		@Override
+		public boolean isReferenceable() {
+			return true;
+		}
+		
+		@Override
+		public void read(InputElement ie, Map<MeasurementKey,Measurement> s) throws XMLStreamException {
+			
+		}
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		public void write(Map map, OutputElement oe) throws XMLStreamException {
+			System.out.println("writing map");
+			if(map.keySet().isEmpty())
+				return;
+
+			Object first = map.keySet().iterator().next();
+			if (first instanceof BasicStudyCharacteristic){
+				CharacteristicsMap.XMLMap.write((CharacteristicsMap) map, oe);
+			} else if(first instanceof MeasurementKey){
+				Map<MeasurementKey, Measurement> measurementMap = (Map<MeasurementKey, Measurement>) map;
+				for(Map.Entry<MeasurementKey, Measurement> e: measurementMap.entrySet()){
+					oe.add(e,"measurement");
+				}
+			}
+		}
+	};
 }
