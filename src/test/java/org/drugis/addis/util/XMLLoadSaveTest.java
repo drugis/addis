@@ -12,6 +12,7 @@ import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.AssertEntityEquals;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
+import org.drugis.addis.entities.CharacteristicsMap;
 import org.drugis.addis.entities.DomainData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
@@ -124,6 +125,18 @@ public class XMLLoadSaveTest {
 	}
 	
 	@Test
+	public void doMap() throws XMLStreamException {
+		CharacteristicsMap expectedMap = ExampleData.buildStudyChouinard().getCharacteristics();
+		
+		String xml = XMLHelper.toXml(expectedMap, CharacteristicsMap.class);
+		System.out.println(xml);
+		
+		CharacteristicsMap parsedMap = (CharacteristicsMap)XMLHelper.fromXml(xml);
+		
+		AssertEntityEquals.assertEntityEquals(expectedMap, parsedMap);
+	}
+	
+	@Test
 	public void doStudy() throws XMLStreamException {
 		Study s = ExampleData.buildStudyChouinard();
 		
@@ -180,5 +193,7 @@ public class XMLLoadSaveTest {
 		domainFromXml.setDomainData(loadedData);
 		
 		AssertEntityEquals.assertDomainEquals(origDomain, domainFromXml);
+		
+		XMLHelper.toXml(origData, DomainData.class);
 	}
 }
