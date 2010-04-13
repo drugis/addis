@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import javolution.xml.XMLFormat;
+import javolution.xml.XMLFormat.InputElement;
 import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.common.EqualsUtil;
@@ -475,17 +476,54 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	
 	@Override
 	public String[] getXmlExclusions() {
-		return new String[] {"sampleSize", "outcomeMeasures", "endpoints", "drugs"};
+		return new String[] {"sampleSize", "outcomeMeasures", "endpoints", "drugs", "notes"};
 	}
 	
 	
 	protected static final XMLFormat<Entry> entryXML = new XMLFormat<Entry>(Entry.class) {
+		
+		class MyEntry implements Entry {
 
-		@Override
-		public void read(javolution.xml.XMLFormat.InputElement arg0, Entry arg1)
-				throws XMLStreamException {
-			// TODO Auto-generated method stub
+			Object key, value;	
 			
+			public Object setKey(Object key) {
+				this.key = key;
+				return key;
+			}
+			
+			public Object getKey() {
+				return key;
+			}
+
+			public Object getValue() {
+				return value;
+			}
+
+			public Object setValue(Object value) {
+				this.value = value;
+				return value;
+			}
+			
+		}
+		
+		public Entry newInstance(Class<Entry> cls, InputElement ie) throws XMLStreamException {
+			return new MyEntry();
+		}
+		
+		@Override
+		public void read(javolution.xml.XMLFormat.InputElement ie, Entry entry)
+				throws XMLStreamException {
+				System.out.println("-------------- attempting to read entry element");
+				Entity outcomeMeasure = (Entity) ie.get("outcomeMeasure");
+				System.out.println("parsed outcomeM:   "+outcomeMeasure);
+				Arm arm = (Arm) ie.get("arm",Arm.class);
+				System.out.println("parsed arm:        "+arm);
+				Measurement measurement = ie.get("measurement");
+				System.out.println("parsed measurement: "+measurement);
+				
+				MeasurementKey mk = new MeasurementKey(outcomeMeasure, arm);
+				((MyEntry) entry).setKey(mk);
+				((MyEntry) entry).setValue(measurement);
 		}
 		
 
@@ -496,14 +534,14 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			Entry<MeasurementKey, Measurement> entry = (Entry<MeasurementKey, Measurement>) e;
 			
 			//System.out.println("entry is: "+entry);
-			oe.add(entry.getKey().getArm(), "arm", Arm.class);
 			oe.add((OutcomeMeasure) entry.getKey().getOutcomeM(), "outcomeMeasure");
+			oe.add(entry.getKey().getArm(), "arm", Arm.class);
 			oe.add(entry.getValue(), "measurement");
 		}
 	
 	};
 	
-	protected static final XMLFormat<Map<MeasurementKey,Measurement>> mapXML = new XMLFormat<Map<MeasurementKey,Measurement>>(  (Class<Map<MeasurementKey, Measurement>>) new HashMap<MeasurementKey,Measurement>().getClass()) {
+	protected static final XMLFormat<HashMap> mapXML = new XMLFormat<HashMap>(  (Class<HashMap>) new HashMap().getClass()) {
 	
 		@Override
 		public boolean isReferenceable() {
@@ -511,26 +549,23 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		}
 		
 		@Override
-		public void read(InputElement ie, Map<MeasurementKey,Measurement> s) throws XMLStreamException {
+		public void read(InputElement ie, HashMap s) throws XMLStreamException {
 			
+			while (ie.hasNext()) {
+				System.out.println("-------------- attempting to read measurement map element");
+				Entry<MeasurementKey,Measurement> e = ie.get("measurement", Entry.class);
+				s.put(e.getKey(), e.getValue());
+			}
 		}
 		
 		@SuppressWarnings("unchecked")
 		@Override
-		public void write(Map map, OutputElement oe) throws XMLStreamException {
-			System.out.println("writing map");
-			if(map.keySet().isEmpty())
-				return;
+		public void write(HashMap map, OutputElement oe) throws XMLStreamException {
 
-			Object first = map.keySet().iterator().next();
-			if (first instanceof BasicStudyCharacteristic){
-				CharacteristicsMap.XMLMap.write((CharacteristicsMap) map, oe);
-			} else if(first instanceof MeasurementKey){
 				Map<MeasurementKey, Measurement> measurementMap = (Map<MeasurementKey, Measurement>) map;
 				for(Map.Entry<MeasurementKey, Measurement> e: measurementMap.entrySet()){
-					oe.add(e,"measurement");
+					oe.add(e,"measurement",Entry.class);
 				}
-			}
 		}
 	};
 }
