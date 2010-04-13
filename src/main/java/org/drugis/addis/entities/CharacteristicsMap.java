@@ -15,6 +15,12 @@ public class CharacteristicsMap extends MapBean<Characteristic, Object> {
 	}
 	
 	protected static XMLFormat<CharacteristicsMap> XMLMap = new XMLFormat<CharacteristicsMap>(CharacteristicsMap.class) {
+		
+		@Override
+		public boolean isReferenceable() {
+			return false;
+		}
+		
 		@Override
 		public void read(InputElement xml,	CharacteristicsMap obj) throws XMLStreamException {
 			for(BasicStudyCharacteristic c : BasicStudyCharacteristic.values()){

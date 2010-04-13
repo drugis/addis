@@ -481,11 +481,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return new String[] {"sampleSize", "outcomeMeasures", "endpoints", "drugs"};
 	}
 
-
-	protected static final XMLFormat<Entry> entryXML = new XMLFormat<Entry>(Entry.class) {
+	protected static final XMLFormat<Entry> measurementEntryXML = new XMLFormat<Entry>(Entry.class) {
 
 		class MyEntry implements Entry {
-
 			Object key, value;	
 
 			public Object setKey(Object key) {
@@ -505,9 +503,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 				this.value = value;
 				return value;
 			}
-
 		}
-
+		
 		public Entry newInstance(Class<Entry> cls, InputElement ie) throws XMLStreamException {
 			return new MyEntry();
 		}
@@ -534,7 +531,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 				((MyEntry) entry).setValue(measurement);
 			}
 		}
-
 
 		public void write(Entry e,
 				javolution.xml.XMLFormat.OutputElement oe)

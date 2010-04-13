@@ -182,16 +182,14 @@ public class XMLLoadSaveTest {
 		//origData.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysis()); // TODO
 		
 		String xml = XMLHelper.toXml(origData, DomainData.class);
-		
-		DomainData loadedData = XMLHelper.fromXml(xml);
 		System.out.println("\n"+xml+"\n");
+		DomainData loadedData = XMLHelper.fromXml(xml);
+
 		assertEquals(origDomain.getIndications(), loadedData.getIndications());
 		DomainImpl domainFromXml = new DomainImpl();
 		
 		domainFromXml.setDomainData(loadedData);
 		
 		AssertEntityEquals.assertDomainEquals(origDomain, domainFromXml);
-		
-		XMLHelper.toXml(origData, DomainData.class);
 	}
 }

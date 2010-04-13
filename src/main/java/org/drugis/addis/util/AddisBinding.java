@@ -87,7 +87,7 @@ public class AddisBinding extends XMLBinding {
 		setAlias(BasicStudyCharacteristic.Status.class, "status");
 		setAlias(BasicStudyCharacteristic.Allocation.class, "allocation");
 		setAlias(BasicStudyCharacteristic.Blinding.class, "blinding");
-		setAlias(CharacteristicsMap.class, "characteristicMap");
+		setAlias(CharacteristicsMap.class, "characteristics");
 		
 		setAlias(BasicContinuousMeasurement.class, "continuousMeasurement");
 		setAlias(BasicRateMeasurement.class, "rateMeasurement");
@@ -101,7 +101,7 @@ public class AddisBinding extends XMLBinding {
 	
 	// Override XMLFormatter for Date.class objects
 	XMLFormat<Date> dateXML = new XMLFormat<Date>(null) {
-		SimpleDateFormat sdf = new SimpleDateFormat("DD MMM yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
 		
 		@Override
 		public Date newInstance(Class<Date> cls, InputElement ie) throws XMLStreamException {

@@ -1,14 +1,17 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import org.drugis.common.JUnitUtil;
 
@@ -133,6 +136,7 @@ public class AssertEntityEquals {
 		assertEquals(expected.getNotes().keySet().size(), actual.getNotes().keySet().size());
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static void assertEntityEquals(Entity expected, Entity actual){
 		if (expected instanceof Endpoint)
 			assertEntityEquals((Endpoint) expected, (Endpoint) actual);
@@ -153,7 +157,18 @@ public class AssertEntityEquals {
 		else if (expected instanceof Variable)
 			assertEntityEquals((Variable) expected, (Variable) actual);
 		else if (expected instanceof CharacteristicsMap){
-			//TODO: maps not tested yet!
+			Map<Object,Object> expMap = (Map<Object,Object>) expected;
+			Map<Object,Object> actMap = (Map<Object,Object>) actual;
+			for(Entry e : expMap.entrySet() ){
+				assertTrue(actMap.keySet().contains(e.getKey()));
+				boolean objFound = false;
+				String objToCompare = e.getValue().toString();
+				for (Object o : expMap.values()) {
+					if (o.toString().equals(objToCompare))
+						objFound = true;
+				}
+				assertTrue(objFound);
+			}
 		} else {
 			System.err.println("No test for the equality of this entity: " + expected.getClass());
 			fail();

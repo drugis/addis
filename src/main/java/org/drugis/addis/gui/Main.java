@@ -578,6 +578,7 @@ public class Main extends JFrame {
 						loadDomainFromXMLFile(fileChooser.getSelectedFile()
 								.getAbsolutePath());
 					} catch (Exception e1) {
+						e1.printStackTrace();
 						JOptionPane.showMessageDialog(Main.this,
 								"Couldn't open file "
 										+ fileChooser.getSelectedFile()

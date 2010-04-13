@@ -5,6 +5,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +98,7 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 					System.out.println(parsedVal);
 				}	else if (Map.class.isAssignableFrom(properties[p].getPropertyType())) {
 					System.out.println(" as Map");
-					BeanUtils.setValue(i, properties[p], ie.get(properties[p].getName()));
+					BeanUtils.setValue(i, properties[p], ie.get(properties[p].getName(), HashMap.class));
 				} else if (properties[p].getPropertyType().equals(String[].class)) {
 					XMLSet<String> xmlSet = ((XMLSet<String>) ie.get(properties[p].getName(),XMLSet.class));
 					String[] retrievedVal = new String[xmlSet.getList().size()];
@@ -196,9 +197,8 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 					oe.add(new XMLSet( (Set)value, ""),properties[p].getName(), XMLSet.class);
 				} else if (value instanceof Map) {
 					System.out.println("writing as Map");
-					oe.add(value, properties[p].getName());
+					oe.add((HashMap) value, properties[p].getName(), HashMap.class);
 				}
-				// FIXME: Map
 				else System.out.println("Not writing, not known other. (maybe attribute?)");
 			}		
 		} catch (IntrospectionException e) {
