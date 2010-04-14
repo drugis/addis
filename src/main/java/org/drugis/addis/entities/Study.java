@@ -288,10 +288,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public List<Endpoint> getEndpoints() {
 		return Collections.unmodifiableList(d_endpointList);
 	}
-	public List<Endpoint> getEPs() {
-		return getEndpoints();
-	}
-
 
 	public List<AdverseEvent> getAdverseEvents() {
 		return Collections.unmodifiableList(d_adverseEvents);
@@ -315,10 +311,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		d_endpointList = new ArrayList<Endpoint>(endpoints);
 		updateMeasurements();
 		firePropertyChange(PROPERTY_ENDPOINTS, oldVal, getEndpoints());
-	}
-
-	public void setEPs(List<Endpoint> endpoints) {
-		setEndpoints(endpoints);
 	}
 
 	public void setAdverseEvents(List<AdverseEvent> ade) {
@@ -472,6 +464,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 
 	@Override
 	public String[] getXmlExclusions() {
-		return new String[] {"sampleSize", "outcomeMeasures", "endpoints", "drugs"};
+		return new String[] {"sampleSize", "outcomeMeasures", "drugs"};
 	}
 }

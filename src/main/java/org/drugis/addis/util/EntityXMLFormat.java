@@ -3,6 +3,7 @@ package org.drugis.addis.util;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,11 +35,15 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 	public Entity newInstance(Class<Entity> cls, InputElement ie) throws XMLStreamException {
 		try {
 			System.out.println("Entities::AbstractEntity::XMLFormat->  trying to run empty constructor for: "+cls);
-			return (Entity) cls.getConstructors()[0].newInstance();
+			for (Constructor<?> c : cls.getConstructors()) {
+				if (c.getParameterTypes().length == 0) {
+					return (Entity)c.newInstance();
+				}
+			}
+			throw new IllegalStateException("No zero-argument constructor for " + cls);
 		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-		return null;
+			throw new XMLStreamException(e);
+		}
 	}
 	
 	@Override
