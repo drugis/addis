@@ -38,13 +38,12 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	public static final String PROPERTY_INCLUDED_STUDIES_COUNT = "studiesIncluded";
 	public static final String PROPERTY_FIRST_DRUG = "firstDrug";
 	public static final String PROPERTY_SECOND_DRUG = "secondDrug";
+	
+	protected RandomEffectsMetaAnalysis() {
+		super();
+	}
+	
 	/**
-	 * 
-	 * @param name
-	 * @param om
-	 * @param studies
-	 * @param drug1
-	 * @param drug2
 	 * @throws IllegalArgumentException if all studies don't measure the same indication OR
 	 * if the list of studies is empty
 	 */
@@ -314,6 +313,11 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		public boolean isDefined() {
 			return true;
 		}
+	}
+
+	@Override
+	protected void finalizeImport() {
+		throw new RuntimeException();
 	}
 }
 

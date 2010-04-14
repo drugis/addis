@@ -4,17 +4,26 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javolution.xml.XMLFormat;
 
 import org.drugis.addis.util.EntityXMLFormat;
+import org.drugis.addis.util.EntryXMLFormat;
+import org.drugis.addis.util.HashMapXMLFormat;
 import org.drugis.common.ObserverManager;
 
 public abstract class AbstractEntity implements Entity, Serializable {
 	private static final long serialVersionUID = -3889001536692466540L;
 	
 	transient private ObserverManager d_om;
+
+	@SuppressWarnings("unchecked")
+	protected static final XMLFormat<HashMap> mapXML = new HashMapXMLFormat();
+	@SuppressWarnings("unchecked")
+	protected static final XMLFormat<Entry> entryXML = new EntryXMLFormat();
 	
 	public AbstractEntity() {
 		init();

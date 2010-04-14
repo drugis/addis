@@ -2,10 +2,14 @@ package org.drugis.addis.entities.metaanalysis;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Arm;
@@ -26,8 +30,8 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	protected int d_totalSampleSize;
 	protected Map<Study, Map<Drug, Arm>> d_armMap;
 	
-	// FIXME
-	public AbstractMetaAnalysis(){
+	protected AbstractMetaAnalysis() {
+		d_armMap = new HashMap<Study, Map<Drug, Arm>>();
 	}
 	
 	public AbstractMetaAnalysis(String name, 
@@ -132,8 +136,40 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		return armList;
 	}
 	
-	@Override
-	public String[] getXmlExclusions() {
-		return new String[] {"armList", "sampleSize", "studiesIncluded", "type"};
+	protected abstract void finalizeImport();
+	
+	protected static final XMLFormat<AbstractMetaAnalysis> XML = new XMLFormat<AbstractMetaAnalysis>(AbstractMetaAnalysis.class) {		
+		@Override
+		public void read(javolution.xml.XMLFormat.InputElement ie,
+				AbstractMetaAnalysis meta) throws XMLStreamException {
+			// FIXME: read
+			calculateDerived(meta);
+		}
+
+		private void calculateDerived(AbstractMetaAnalysis meta) {
+			// FIXME: make studyList etc.
+			meta.finalizeImport();
+		}
+
+		@Override
+		public void write(AbstractMetaAnalysis meta,
+				javolution.xml.XMLFormat.OutputElement oe)
+				throws XMLStreamException {
+			oe.setAttribute("name", meta.getName());
+			oe.add(meta.getIndication(), "indication", Indication.class);
+			oe.add(meta.getOutcomeMeasure(), "outcomeMeasure");
+
+			oe.add(convertMap(meta.d_armMap), "armEntries", List.class);
+		}
+	};
+	
+	private class ArmEntry {
+		
 	}
+
+	protected static List<ArmEntry> convertMap(Map<Study, Map<Drug, Arm>> armMap) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

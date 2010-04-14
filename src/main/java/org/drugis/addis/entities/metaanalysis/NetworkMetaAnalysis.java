@@ -26,7 +26,8 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	transient private NetworkBuilder d_builder;
 	transient private boolean d_hasRun = false;
 	
-	public NetworkMetaAnalysis(){
+	protected NetworkMetaAnalysis() {
+		super();
 	}
 	
 	public NetworkMetaAnalysis(String name, Indication indication,
@@ -112,9 +113,9 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	public Estimate getInconsistency(InconsistencyParameter ip){
 		return getInconsistencyModel().getInconsistency(ip);
 	}
-	
+
 	@Override
-	public String[] getXmlExclusions() {
-		return new String[] {"armList", "builder", "consistencyModel", "inconsistencyModel", "inconsistencyFactors", "type", "studiesIncluded", "sampleSize"};
+	protected void finalizeImport() {
+		
 	}
 }

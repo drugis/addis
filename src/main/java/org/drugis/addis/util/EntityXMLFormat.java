@@ -53,23 +53,23 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 		try {
 			properties = Introspector.getBeanInfo(i.getClass()).getPropertyDescriptors();
 			System.out.println("reading properties");
-			for(int p = 0; p < properties.length; ++p){
-				if (propertyIsExcluded(i, properties[p].getName()))
+			for(PropertyDescriptor p : properties) {
+				if (propertyIsExcluded(i, p.getName()))
 					continue;
 
-				System.out.print("AbstractEntity::XMLFormat: inspecting " + properties[p].getName() + ", class is " + properties[p].getPropertyType());	
-				if (properties[p].getPropertyType().equals(String.class)) {
+				System.out.print("AbstractEntity::XMLFormat: inspecting " + p.getName() + ", class is " + p.getPropertyType());	
+				if (p.getPropertyType().equals(String.class)) {
 					System.out.println(" as String");
-					BeanUtils.setValue(i, properties[p], ie.getAttribute(properties[p].getName(), null));
-				} else if (properties[p].getPropertyType().equals(Long.class)) {
+					BeanUtils.setValue(i, p, ie.getAttribute(p.getName(), null));
+				} else if (p.getPropertyType().equals(Long.class)) {
 					System.out.println(" as Long");
-					BeanUtils.setValue(i, properties[p], ie.getAttribute(properties[p].getName(), 0l));
-				} else if (properties[p].getPropertyType().equals(int.class) || properties[p].getPropertyType().equals(Integer.class)) {
+					BeanUtils.setValue(i, p, ie.getAttribute(p.getName(), 0l));
+				} else if (p.getPropertyType().equals(int.class) || p.getPropertyType().equals(Integer.class)) {
 					System.out.println(" as Integer");
-					BeanUtils.setValue(i, properties[p], ie.getAttribute(properties[p].getName(), 0));
-				} else if (properties[p].getPropertyType().equals(Double.class)) {
+					BeanUtils.setValue(i, p, ie.getAttribute(p.getName(), 0));
+				} else if (p.getPropertyType().equals(Double.class)) {
 					System.out.println(" as Double");
-					BeanUtils.setValue(i, properties[p], ie.getAttribute(properties[p].getName(), 0.0));
+					BeanUtils.setValue(i, p, ie.getAttribute(p.getName(), 0.0));
 				}  else{
 					System.out.println(" .. didnt read as leaf");
 				}
@@ -77,39 +77,39 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 			}
 			System.out.println("attribures read, now others");
 
-			for(int p = 0; p < properties.length; ++p){
-				if (propertyIsExcluded(i, properties[p].getName()))
+			for(PropertyDescriptor p : properties){
+				if (propertyIsExcluded(i, p.getName()))
 					continue;
 
 				// This is an unfortunate bugfix for the javolution use of the keyword "end....."
-				String propertyName = properties[p].getName();
+				String propertyName = p.getName();
 				if(propertyName.equals("endpoints"))
 					propertyName = "results";
 
-				System.out.print("AbstractEntity::XMLFormat: inspecting " + properties[p].getName() + ", class is " + properties[p].getPropertyType());
+				System.out.print("AbstractEntity::XMLFormat: inspecting " + p.getName() + ", class is " + p.getPropertyType());
 
-				if (properties[p].getPropertyType().isEnum()) {
-					System.out.println(" as Enum of type "+properties[p].getPropertyType());
-					BeanUtils.setValue(i, properties[p], ie.get(properties[p].getName(),properties[p].getPropertyType()));
-				} else if (Entity.class.isAssignableFrom(properties[p].getPropertyType()) ) {
+				if (p.getPropertyType().isEnum()) {
+					System.out.println(" as Enum of type "+p.getPropertyType());
+					BeanUtils.setValue(i, p, ie.get(p.getName(),p.getPropertyType()));
+				} else if (Entity.class.isAssignableFrom(p.getPropertyType()) ) {
 					System.out.println(" as Entity");
-					Object parsedVal = ie.get(properties[p].getName());
-					BeanUtils.setValue(i, properties[p], parsedVal);
+					Object parsedVal = ie.get(p.getName());
+					BeanUtils.setValue(i, p, parsedVal);
 					System.out.println(parsedVal);
-				}	else if (Map.class.isAssignableFrom(properties[p].getPropertyType())) {
+				}	else if (Map.class.isAssignableFrom(p.getPropertyType())) {
 					System.out.println(" as Map");
-					BeanUtils.setValue(i, properties[p], ie.get(properties[p].getName(), HashMap.class));
-				} else if (properties[p].getPropertyType().equals(String[].class)) {
-					XMLSet<String> xmlSet = ((XMLSet<String>) ie.get(properties[p].getName(),XMLSet.class));
+					BeanUtils.setValue(i, p, ie.get(p.getName(), HashMap.class));
+				} else if (p.getPropertyType().equals(String[].class)) {
+					XMLSet<String> xmlSet = ((XMLSet<String>) ie.get(p.getName(),XMLSet.class));
 					String[] retrievedVal = new String[xmlSet.getList().size()];
 					int index=0;
 					for (Object o : xmlSet.getList())
 						retrievedVal[index++] = ((String) o);		
 					System.out.println(" as string array: "+retrievedVal);
-					BeanUtils.setValue(i, properties[p], retrievedVal);
-				} else if (List.class.isAssignableFrom(properties[p].getPropertyType())) {
+					BeanUtils.setValue(i, p, retrievedVal);
+				} else if (List.class.isAssignableFrom(p.getPropertyType())) {
 					List retrList = ie.get(propertyName,ArrayList.class);
-					BeanUtils.setValue(i, properties[p], retrList);
+					BeanUtils.setValue(i, p, retrList);
 				} else System.out.println(" Didnt read as node");
 
 			}

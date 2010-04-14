@@ -24,9 +24,8 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Variable.Type;
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class XMLLoadSaveTest {
@@ -160,15 +159,15 @@ public class XMLLoadSaveTest {
 		assertEquals(s.getNote(s.getArms().get(0).toString()), parsedStudy.getNote(parsedStudy.getArms().get(0).toString()));
 	}
 	
-	@Ignore
+	@Test
 	public void doMetaAnalysis() throws XMLStreamException {
-		MetaAnalysis analysis = ExampleData.buildNetworkMetaAnalysis();
+		NetworkMetaAnalysis analysis = ExampleData.buildNetworkMetaAnalysis();
 
-		String xml = XMLHelper.toXml(analysis, MetaAnalysis.class);
+		String xml = XMLHelper.toXml(analysis, NetworkMetaAnalysis.class);
 		System.out.println(xml);
 
 
-		assertEquals(analysis, (MetaAnalysis)XMLHelper.fromXml(xml));
+		assertEquals(analysis, (NetworkMetaAnalysis)XMLHelper.fromXml(xml));
 	}	
 	
 	@Test

@@ -25,17 +25,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.XMLFormat.InputElement;
-import javolution.xml.stream.XMLStreamException;
 
-import org.drugis.addis.util.AddisBinding;
 import org.drugis.common.EqualsUtil;
 
 public class Study extends AbstractEntity implements Comparable<Study>, Entity {
@@ -480,121 +474,4 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public String[] getXmlExclusions() {
 		return new String[] {"sampleSize", "outcomeMeasures", "endpoints", "drugs"};
 	}
-
-	protected static final XMLFormat<Entry> measurementEntryXML = new XMLFormat<Entry>(Entry.class) {
-
-		class MyEntry implements Entry {
-			Object key, value;	
-
-			public Object setKey(Object key) {
-				this.key = key;
-				return key;
-			}
-
-			public Object getKey() {
-				return key;
-			}
-
-			public Object getValue() {
-				return value;
-			}
-
-			public Object setValue(Object value) {
-				this.value = value;
-				return value;
-			}
-		}
-		
-		public Entry newInstance(Class<Entry> cls, InputElement ie) throws XMLStreamException {
-			return new MyEntry();
-		}
-
-		@Override
-		public void read(javolution.xml.XMLFormat.InputElement ie, Entry entry)
-		throws XMLStreamException {
-			
-			Object key = ie.get("key");
-			if (key != null) {
-				System.out.println("--- Reading note");
-				String text = ie.get("noteText", String.class);
-				Source src = ie.get("noteSrc", Source.class);
-				((MyEntry) entry).setKey(key);
-				((MyEntry) entry).setValue(new Note(src, text));
-			} else {
-				System.out.println("--- Reading measurement");
-				Entity outcomeMeasure = (Entity) ie.get("outcomeMeasure");
-				Arm arm = (Arm) ie.get("arm",Arm.class);
-				Measurement measurement = ie.get("measurement");
-
-				MeasurementKey mk = new MeasurementKey(outcomeMeasure, arm);
-				((MyEntry) entry).setKey(mk);
-				((MyEntry) entry).setValue(measurement);
-			}
-		}
-
-		public void write(Entry e,
-				javolution.xml.XMLFormat.OutputElement oe)
-		throws XMLStreamException {
-
-			if (e.getValue() instanceof Measurement) {
-				Entry<MeasurementKey, Measurement> entry = (Entry<MeasurementKey, Measurement>) e;
-				//System.out.println("entry is: "+entry);
-				oe.add((OutcomeMeasure) entry.getKey().getOutcomeM(), "outcomeMeasure");
-				oe.add(entry.getKey().getArm(), "arm", Arm.class);
-				oe.add(entry.getValue(), "measurement");
-			} else if (e.getValue() instanceof Note){
-				oe.add(e.getKey(),"key");
-				oe.add( ((Note) e.getValue()).getText(), "noteText", String.class );
-				oe.add( ((Note) e.getValue()).getSource(), "noteSrc", Source.class );
-			}
-		}
-
-	};
-
-	protected static final XMLFormat<HashMap> mapXML = new XMLFormat<HashMap>(  (Class<HashMap>) new HashMap().getClass()) {
-
-		@Override
-		public boolean isReferenceable() {
-			return false;
-		}
-
-		@Override
-		public void read(InputElement ie, HashMap s) throws XMLStreamException {
-
-			while (ie.hasNext()) {
-				System.out.println("-------------- attempting to read measurement map element");
-				Entry<MeasurementKey,Measurement> measEntry = ie.get("measurement", Entry.class);
-				if(measEntry!= null)
-					s.put(measEntry.getKey(), measEntry.getValue());
-				Entry<Object, Note> noteEntry = ie.get("note", Entry.class);
-				if(noteEntry != null)
-					s.put(noteEntry.getKey(), noteEntry.getValue());
-			}
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public void write(HashMap map, OutputElement oe) throws XMLStreamException {
-
-			if (map.entrySet().isEmpty())
-				return;
-
-			Iterator iterator = map.entrySet().iterator();
-			Entry value = (Entry) iterator.next();
-
-			if (value.getValue() instanceof Measurement) {
-				Map<MeasurementKey, Measurement> measurementMap = (Map<MeasurementKey, Measurement>) map;
-				for(Map.Entry<MeasurementKey, Measurement> e: measurementMap.entrySet()){
-					oe.add(e,"measurement",Entry.class);
-				}
-			} else if (value.getValue() instanceof Note){
-				Map<Object, Note> noteMap = (Map<Object, Note>) map;
-				for(Map.Entry<Object, Note> e: noteMap.entrySet()){
-					oe.add(e,"note",Entry.class);
-				}
-
-			}
-
-		}
-	};
 }
