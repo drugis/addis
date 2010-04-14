@@ -10,11 +10,9 @@ import javolution.xml.stream.XMLStreamException;
 
 public class XMLSet<T> {
 	private Collection<T> d_list;
-	private String d_typeName;
 	
-	public XMLSet(Collection<T> list, String typeName) {
+	public XMLSet(Collection<T> list) {
 		d_list = list;
-		d_typeName = typeName;
 	}
 	
 	public List<T> getList() {
@@ -29,10 +27,6 @@ public class XMLSet<T> {
 		return new TreeSet<T>(d_list);
 	}
 	
-	public String getTypeName() {
-		return d_typeName;
-	}
-	
 	@SuppressWarnings({ "unused", "unchecked" })
 	private static final XMLFormat<XMLSet> XML = new XMLFormat<XMLSet>(XMLSet.class) {		
 		@Override
@@ -45,7 +39,7 @@ public class XMLSet<T> {
 			System.out.print("");
 			if(cls==null)
 				System.out.println("");;
-			return new XMLSet(new ArrayList(),"unknown"); // FIXME
+			return new XMLSet(new ArrayList()); // FIXME
 		}
 		
 		@Override

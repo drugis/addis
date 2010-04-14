@@ -26,7 +26,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	transient private NetworkBuilder d_builder;
 	transient private boolean d_hasRun = false;
 	
-	protected NetworkMetaAnalysis() {
+	public NetworkMetaAnalysis() {
 		super();
 	}
 	
@@ -34,7 +34,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			OutcomeMeasure om, List<? extends Study> studies, List<Drug> drugs,
 			Map<Study, Map<Drug, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, studies, drugs, armMap);
-		d_armMap = armMap;
+//		d_armMap = new ArmMap(armMap);
 	}
 	
 	public Double getRankProbability(Drug d, int rank){

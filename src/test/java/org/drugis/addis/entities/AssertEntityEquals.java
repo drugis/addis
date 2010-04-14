@@ -3,6 +3,7 @@ package org.drugis.addis.entities;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -13,6 +14,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
+import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.drugis.common.JUnitUtil;
 
 public class AssertEntityEquals {
@@ -136,6 +138,17 @@ public class AssertEntityEquals {
 		assertEquals(expected.getNotes().keySet().size(), actual.getNotes().keySet().size());
 	}
 	
+	public static void assertEntityEquals(MetaAnalysis expected, MetaAnalysis actual) {
+		assertEquals(expected.getName(), actual.getName());
+		assertEquals(expected.getType(), actual.getType());
+		assertAllAndOnly(expected.getIncludedStudies(), actual.getIncludedStudies());
+		assertAllAndOnly(expected.getIncludedDrugs(), actual.getIncludedDrugs());
+		assertEquals(expected.getSampleSize(), actual.getSampleSize());
+		assertEquals(expected.getOutcomeMeasure(), actual.getOutcomeMeasure());
+		assertEquals(expected.getIndication(), actual.getIndication());
+		assertEquals(expected.getDependencies(), actual.getDependencies());
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static void assertEntityEquals(Entity expected, Entity actual){
 		if (expected instanceof Endpoint)
@@ -182,6 +195,6 @@ public class AssertEntityEquals {
 		assertEntityEquals(d1.getAdverseEvents(), d2.getAdverseEvents());
 		assertEntityEquals(d1.getVariables(), d2.getVariables());
 		assertEntityEquals(d1.getStudies(), d2.getStudies());
-		// assertEntityEquals(d1.getMetaAnalyses(), d2.getMetaAnalyses()); // FIXME	
+		assertEntityEquals(d1.getMetaAnalyses(), d2.getMetaAnalyses());	
 	}
 }

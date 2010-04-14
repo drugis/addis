@@ -188,13 +188,13 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 					ArrayList<String> stringList = new ArrayList<String>();
 					for (String s : (String[]) value)
 						stringList.add(s);
-					oe.add(new XMLSet<String>(stringList,""),properties[p].getName(), XMLSet.class);
+					oe.add(new XMLSet<String>(stringList),properties[p].getName(), XMLSet.class);
 				} else if (value instanceof List) { // ADE list
 					System.out.println("writing "+propertyName+" as List");
 					oe.add(new ArrayList<Object>((List) value), propertyName, ArrayList.class);
 				} else if (value instanceof Set) {
 					System.out.println("writing as Set");
-					oe.add(new XMLSet( (Set)value, ""),properties[p].getName(), XMLSet.class);
+					oe.add(new XMLSet( (Set)value),properties[p].getName(), XMLSet.class);
 				} else if (value instanceof Map) {
 					System.out.println("writing as Map");
 					oe.add((HashMap) value, properties[p].getName(), HashMap.class);

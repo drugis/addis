@@ -22,16 +22,28 @@ import org.drugis.addis.entities.Study;
 public abstract class AbstractMetaAnalysis extends AbstractEntity implements MetaAnalysis {
 	private static final long serialVersionUID = 6504073155207712299L;
 	
+	private static class ArmMap extends HashMap<Study, Map<Drug, Arm>> {
+		private static final long serialVersionUID = -8579169115557701584L;
+
+		public ArmMap() {
+			super();
+		}
+		
+		public ArmMap(Map<Study, Map<Drug, Arm>> other) {
+			super(other);
+		}
+	}
+	
 	protected OutcomeMeasure d_outcome;
 	protected Indication d_indication;
 	protected List<? extends Study> d_studies;
 	protected List<Drug> d_drugs;
 	protected String d_name;
 	protected int d_totalSampleSize;
-	protected Map<Study, Map<Drug, Arm>> d_armMap;
+	protected ArmMap d_armMap;
 	
 	protected AbstractMetaAnalysis() {
-		d_armMap = new HashMap<Study, Map<Drug, Arm>>();
+		d_armMap = new ArmMap();
 	}
 	
 	public AbstractMetaAnalysis(String name, 
@@ -48,7 +60,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		d_indication = indication;
 		d_outcome = om;
 		d_name = name;
-		d_armMap = armMap;
+		d_armMap = new ArmMap(armMap);
 		
 		setSampleSize();
 	}
@@ -113,6 +125,18 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	public Indication getIndication() {
 		return d_indication;
 	}
+	
+	public boolean equals(Object o) { 
+		if (o instanceof AbstractMetaAnalysis) {
+			AbstractMetaAnalysis other = (AbstractMetaAnalysis)o;
+			return (other.getClass() == getClass()) && other.getName().equals(getName());
+		}
+		return false;
+	}
+	
+	public int hashCode() {
+		return getName().hashCode();
+	}
 
 	public int compareTo(MetaAnalysis o) {
 		return getName().compareTo(o.getName());
@@ -142,13 +166,13 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		@Override
 		public void read(javolution.xml.XMLFormat.InputElement ie,
 				AbstractMetaAnalysis meta) throws XMLStreamException {
-			// FIXME: read
-			calculateDerived(meta);
-		}
-
-		private void calculateDerived(AbstractMetaAnalysis meta) {
-			// FIXME: make studyList etc.
-			meta.finalizeImport();
+			meta.d_name = ie.getAttribute("name").toString();
+			meta.d_indication = ie.get("indication", Indication.class);
+			meta.d_outcome = ie.get("outcomeMeasure");
+			
+			meta.d_armMap = ie.get("armEntries", ArmMap.class);
+						
+			meta.calculateDerived();
 		}
 
 		@Override
@@ -159,17 +183,86 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 			oe.add(meta.getIndication(), "indication", Indication.class);
 			oe.add(meta.getOutcomeMeasure(), "outcomeMeasure");
 
-			oe.add(convertMap(meta.d_armMap), "armEntries", List.class);
+			oe.add(meta.d_armMap, "armEntries", ArmMap.class);
 		}
 	};
 	
-	private class ArmEntry {
+	private static class ArmEntry {
+		public ArmEntry() {
+			
+		}
+		public ArmEntry(Study s, Drug d, Arm a) {
+			study = s;
+			drug = d;
+			arm = a;
+		}
+		public Study study;
+		public Drug drug;
+		public Arm arm;
+	}
+	
+	@SuppressWarnings("unused")
+	private static final XMLFormat<ArmMap> armMapXML = new XMLFormat<ArmMap>(ArmMap.class) {
+		public ArmMap newInstance(Class<ArmMap> cls, XMLFormat.InputElement xml) {
+			return new ArmMap();
+		}
 		
-	}
+		@Override
+		public void read(javolution.xml.XMLFormat.InputElement ie,
+				ArmMap ae) throws XMLStreamException {
+			while (ie.hasNext()) {
+				ArmEntry entry = ie.get("armEntry", ArmEntry.class);
+				if (!ae.containsKey(entry.study)) { 
+					ae.put(entry.study, new HashMap<Drug, Arm>());
+				}
+				ae.get(entry.study).put(entry.drug, entry.arm);
+			}
+		}
 
-	protected static List<ArmEntry> convertMap(Map<Study, Map<Drug, Arm>> armMap) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		@Override
+		public void write(ArmMap am,
+				javolution.xml.XMLFormat.OutputElement oe)
+				throws XMLStreamException {
+			for (Study s : am.keySet()) {
+				for (Drug d : am.get(s).keySet()) {
+					oe.add(new ArmEntry(s, d, am.get(s).get(d)), "armEntry", ArmEntry.class);
+				}
+			}
+		}
+	};
+	
+	private static final XMLFormat<ArmEntry> armEntryXML = new XMLFormat<ArmEntry>(ArmEntry.class) {
+		public ArmEntry newInstance(Class<ArmEntry> cls, XMLFormat.InputElement xml) {
+			return new ArmEntry();
+		}
+		
+		@Override
+		public void read(javolution.xml.XMLFormat.InputElement ie,
+				ArmEntry ae) throws XMLStreamException {
+			ae.study = ie.get("study", Study.class);
+			ae.drug = ie.get("drug", Drug.class);
+			ae.arm = ie.get("arm", Arm.class);
+		}
 
+		@Override
+		public void write(ArmEntry ae,
+				javolution.xml.XMLFormat.OutputElement oe)
+				throws XMLStreamException {
+			oe.add(ae.study);
+			oe.add(ae.drug);
+			oe.add(ae.arm);
+		}
+		
+	};
+
+	private void calculateDerived() {
+		d_studies = new ArrayList<Study>(d_armMap.keySet());
+		Set<Drug> drugs = new HashSet<Drug>();
+		for (Study s : d_studies) {
+			drugs.addAll(d_armMap.get(s).keySet());
+		}
+		d_drugs = new ArrayList<Drug>(drugs);
+		setSampleSize();
+		finalizeImport();
+	}
 }

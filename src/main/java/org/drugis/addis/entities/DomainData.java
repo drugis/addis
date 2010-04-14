@@ -189,22 +189,22 @@ public class DomainData implements Serializable {
 			if (study != null)
 				d.setStudies((SortedSet) ((XMLSet<Study>) study).getSet());
 			
-//			XMLSet analysis = ie.get("metaAnalyses", XMLSet.class);
-//			if (analysis != null)
-//				d.setStudies((SortedSet) ((XMLSet<MetaAnalysis>) analysis).getSet());
+			XMLSet analysis = ie.get("metaAnalyses", XMLSet.class);
+			if (analysis != null)
+				d.setStudies((SortedSet) ((XMLSet<MetaAnalysis>) analysis).getSet());
 		}
 		
 		@Override
 		public void write(DomainData d, OutputElement oe) throws XMLStreamException {
 			System.out.println("DomainData::XMLFormat::write " + d.getIndications());
-			oe.add(new XMLSet<Indication>(d.getIndications(),"indication"),"indications",XMLSet.class);
-			oe.add(new XMLSet<Endpoint>(d.getEndpoints(),"endpoint"),"endpoints",XMLSet.class);
+			oe.add(new XMLSet<Indication>(d.getIndications()),"indications",XMLSet.class);
+			oe.add(new XMLSet<Endpoint>(d.getEndpoints()),"endpoints",XMLSet.class);
 			if (d.getAdverseEvents().size() != 0)
-				oe.add(new XMLSet<AdverseEvent>(d.getAdverseEvents(),"adverse event"),"adverseEvents",XMLSet.class);
-			oe.add(new XMLSet<Drug>(d.getDrugs(), "drug"), "drugs", XMLSet.class);
-			oe.add(new XMLSet<PopulationCharacteristic>(d.getVariables(), "populationCharacteristic"), "populationCharacteristics", XMLSet.class);
-			oe.add(new XMLSet<Study>(d.getStudies(),"study"),"studies", XMLSet.class);
-//			oe.add(new XMLSet<MetaAnalysis>(d.getMetaAnalyses(), "meta-analysis"), "metaAnalyses", XMLSet.class);
+				oe.add(new XMLSet<AdverseEvent>(d.getAdverseEvents()),"adverseEvents",XMLSet.class);
+			oe.add(new XMLSet<Drug>(d.getDrugs()), "drugs", XMLSet.class);
+			oe.add(new XMLSet<PopulationCharacteristic>(d.getVariables()), "populationCharacteristics", XMLSet.class);
+			oe.add(new XMLSet<Study>(d.getStudies()),"studies", XMLSet.class);
+			oe.add(new XMLSet<MetaAnalysis>(d.getMetaAnalyses()), "metaAnalyses", XMLSet.class);
 		}
 	};
 }

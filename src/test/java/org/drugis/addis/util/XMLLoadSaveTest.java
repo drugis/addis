@@ -1,7 +1,7 @@
 package org.drugis.addis.util;
 
 import static org.junit.Assert.assertEquals;
-
+import static org.drugis.addis.entities.AssertEntityEquals.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +76,7 @@ public class XMLLoadSaveTest {
 		list.add(ExampleData.buildEndpointHamd());
 		list.add(ExampleData.buildEndpointCVdeath());
 		
-		XMLSet<Endpoint> xmlSet = new XMLSet<Endpoint>(list,"endpoints");
+		XMLSet<Endpoint> xmlSet = new XMLSet<Endpoint>(list);
 		
 		String xml = XMLHelper.toXml(xmlSet,XMLSet.class);
 //		System.out.println("\n"+xml+"\n");
@@ -154,7 +154,6 @@ public class XMLLoadSaveTest {
 		System.out.println(parsedStudy.getMeasurements());
 		
 		AssertEntityEquals.assertEntityEquals(s, parsedStudy);
-		//assertEquals(s.getStudyId(),parsedStudy.getStudyId());
 		
 		assertEquals(s.getNote(s.getArms().get(0).toString()), parsedStudy.getNote(parsedStudy.getArms().get(0).toString()));
 	}
@@ -165,9 +164,9 @@ public class XMLLoadSaveTest {
 
 		String xml = XMLHelper.toXml(analysis, NetworkMetaAnalysis.class);
 		System.out.println(xml);
-
-
-		assertEquals(analysis, (NetworkMetaAnalysis)XMLHelper.fromXml(xml));
+		
+		NetworkMetaAnalysis importedAnalysis = (NetworkMetaAnalysis)XMLHelper.fromXml(xml);
+		assertEntityEquals(analysis, importedAnalysis);
 	}	
 	
 	@Test
