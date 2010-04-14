@@ -39,7 +39,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	public static final String PROPERTY_FIRST_DRUG = "firstDrug";
 	public static final String PROPERTY_SECOND_DRUG = "secondDrug";
 	
-	protected RandomEffectsMetaAnalysis() {
+	public RandomEffectsMetaAnalysis() {
 		super();
 	}
 	
@@ -317,7 +317,6 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 
 	@Override
 	protected void finalizeImport() {
-		throw new RuntimeException();
 	}
 }
 

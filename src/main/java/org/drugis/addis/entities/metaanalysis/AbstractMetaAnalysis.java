@@ -267,11 +267,13 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 
 	private void calculateDerived() {
 		d_studies = new ArrayList<Study>(d_armMap.keySet());
+		Collections.sort(d_studies);
 		Set<Drug> drugs = new HashSet<Drug>();
 		for (Study s : d_studies) {
 			drugs.addAll(d_armMap.get(s).keySet());
 		}
 		d_drugs = new ArrayList<Drug>(drugs);
+		Collections.sort(d_drugs);
 		setSampleSize();
 		finalizeImport();
 	}

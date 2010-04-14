@@ -141,8 +141,8 @@ public class AssertEntityEquals {
 	public static void assertEntityEquals(MetaAnalysis expected, MetaAnalysis actual) {
 		assertEquals(expected.getName(), actual.getName());
 		assertEquals(expected.getType(), actual.getType());
-		assertAllAndOnly(expected.getIncludedStudies(), actual.getIncludedStudies());
-		assertAllAndOnly(expected.getIncludedDrugs(), actual.getIncludedDrugs());
+		assertEquals(expected.getIncludedStudies(), actual.getIncludedStudies());
+		assertEquals(expected.getIncludedDrugs(), actual.getIncludedDrugs());
 		assertEquals(expected.getSampleSize(), actual.getSampleSize());
 		assertEquals(expected.getOutcomeMeasure(), actual.getOutcomeMeasure());
 		assertEquals(expected.getIndication(), actual.getIndication());
