@@ -19,7 +19,7 @@ import org.junit.Test;
 
 
 // FIXME: handle with mock (no need for this to be IT)
-public class RankProbabilityDataSetITCase {
+public class RankProbabilityDataSetIT {
 	private NetworkMetaAnalysis d_nma;
 	private CategoryDataset d_dataSet;
 

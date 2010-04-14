@@ -23,7 +23,7 @@ import org.drugis.mtc.ProgressEvent.EventType;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MTCITCase {
+public class MTCIT {
 	private static final int NBURNIN = 40;
 	private static final int NSIMULATION = 1000;
     private NetworkBuilder d_builder;
