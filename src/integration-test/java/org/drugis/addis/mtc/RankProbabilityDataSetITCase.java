@@ -17,6 +17,8 @@ import org.junit.Test;
 
 // rows are drugs, cols are ranks
 
+
+// FIXME: handle with mock (no need for this to be IT)
 public class RankProbabilityDataSetITCase {
 	private NetworkMetaAnalysis d_nma;
 	private CategoryDataset d_dataSet;
