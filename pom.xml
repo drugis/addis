@@ -139,8 +139,8 @@
 
 
 	</dependencies>
-
     <build>
+	<testSourceDirectory>src/integration-test/java</testSourceDirectory>
         <plugins>
 			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
