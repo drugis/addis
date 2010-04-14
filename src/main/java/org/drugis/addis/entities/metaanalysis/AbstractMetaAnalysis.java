@@ -160,8 +160,6 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		return armList;
 	}
 	
-	protected abstract void finalizeImport();
-	
 	protected static final XMLFormat<AbstractMetaAnalysis> XML = new XMLFormat<AbstractMetaAnalysis>(AbstractMetaAnalysis.class) {		
 		@Override
 		public void read(javolution.xml.XMLFormat.InputElement ie,
@@ -236,6 +234,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		}
 	};
 	
+	@SuppressWarnings("unused")
 	private static final XMLFormat<ArmEntry> armEntryXML = new XMLFormat<ArmEntry>(ArmEntry.class) {
 		public ArmEntry newInstance(Class<ArmEntry> cls, XMLFormat.InputElement xml) {
 			return new ArmEntry();
@@ -275,6 +274,5 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		d_drugs = new ArrayList<Drug>(drugs);
 		Collections.sort(d_drugs);
 		setSampleSize();
-		finalizeImport();
 	}
 }

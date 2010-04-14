@@ -15,7 +15,6 @@ import java.util.TreeSet;
 import java.util.Map.Entry;
 
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
-import org.drugis.common.JUnitUtil;
 
 public class AssertEntityEquals {
 	
@@ -121,7 +120,7 @@ public class AssertEntityEquals {
 		expectedMeasurementSet.addAll(expected.getMeasurements().values());
 		SortedSet<Measurement> actualMeasurementSet = new TreeSet<Measurement>(new MeasurementComparator());
 		actualMeasurementSet.addAll(actual.getMeasurements().values());
-		JUnitUtil.assertAllAndOnly(expectedMeasurementSet, actualMeasurementSet);
+		assertAllAndOnly(expectedMeasurementSet, actualMeasurementSet);
 		
 		// characteristics
 		assertEquals(expected.getCharacteristics().keySet().size(), actual.getCharacteristics().keySet().size());

@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
@@ -39,7 +42,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	public static final String PROPERTY_FIRST_DRUG = "firstDrug";
 	public static final String PROPERTY_SECOND_DRUG = "secondDrug";
 	
-	public RandomEffectsMetaAnalysis() {
+	private RandomEffectsMetaAnalysis() {
 		super();
 	}
 	
@@ -314,9 +317,23 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 			return true;
 		}
 	}
+	
+	protected static final XMLFormat<RandomEffectsMetaAnalysis> NETWORK_XML = 
+		new XMLFormat<RandomEffectsMetaAnalysis>(RandomEffectsMetaAnalysis.class) {
+		@Override
+		public RandomEffectsMetaAnalysis newInstance(Class<RandomEffectsMetaAnalysis> cls, InputElement xml) {
+			return new RandomEffectsMetaAnalysis();
+		}
 
-	@Override
-	protected void finalizeImport() {
-	}
+		@Override
+		public void read(InputElement arg0, RandomEffectsMetaAnalysis arg1) throws XMLStreamException {
+			XML.read(arg0, arg1);
+		}
+
+		@Override
+		public void write(RandomEffectsMetaAnalysis arg0, OutputElement arg1) throws XMLStreamException {
+			XML.write(arg0, arg1);
+		}
+	};
 }
 

@@ -3,6 +3,9 @@ package org.drugis.addis.entities.metaanalysis;
 import java.util.List;
 import java.util.Map;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.Drug;
@@ -26,7 +29,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	transient private NetworkBuilder d_builder;
 	transient private boolean d_hasRun = false;
 	
-	public NetworkMetaAnalysis() {
+	private NetworkMetaAnalysis() {
 		super();
 	}
 	
@@ -34,7 +37,6 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			OutcomeMeasure om, List<? extends Study> studies, List<Drug> drugs,
 			Map<Study, Map<Drug, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, studies, drugs, armMap);
-//		d_armMap = new ArmMap(armMap);
 	}
 	
 	public Double getRankProbability(Drug d, int rank){
@@ -113,9 +115,22 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	public Estimate getInconsistency(InconsistencyParameter ip){
 		return getInconsistencyModel().getInconsistency(ip);
 	}
-
-	@Override
-	protected void finalizeImport() {
+	
+	protected static final XMLFormat<NetworkMetaAnalysis> NETWORK_XML = 
+			new XMLFormat<NetworkMetaAnalysis>(NetworkMetaAnalysis.class) {
+		@Override
+		public NetworkMetaAnalysis newInstance(Class<NetworkMetaAnalysis> cls, InputElement xml) {
+			return new NetworkMetaAnalysis();
+		}
 		
-	}
+		@Override
+		public void read(InputElement arg0, NetworkMetaAnalysis arg1) throws XMLStreamException {
+			XML.read(arg0, arg1);
+		}
+
+		@Override
+		public void write(NetworkMetaAnalysis arg0, OutputElement arg1) throws XMLStreamException {
+			XML.write(arg0, arg1);
+		}
+	};
 }
