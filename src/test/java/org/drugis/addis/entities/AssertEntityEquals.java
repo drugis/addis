@@ -169,7 +169,9 @@ public class AssertEntityEquals {
 			assertEntityEquals((Study) expected, (Study) actual);
 		else if (expected instanceof Variable)
 			assertEntityEquals((Variable) expected, (Variable) actual);
-		else if (expected instanceof CharacteristicsMap){
+		else if (expected instanceof MetaAnalysis) {
+			assertEntityEquals((MetaAnalysis)expected, (MetaAnalysis)actual);
+		} else if (expected instanceof CharacteristicsMap){
 			Map<Object,Object> expMap = (Map<Object,Object>) expected;
 			Map<Object,Object> actMap = (Map<Object,Object>) actual;
 			for(Entry e : expMap.entrySet() ){

@@ -191,7 +191,7 @@ public class DomainData implements Serializable {
 			
 			XMLSet analysis = ie.get("metaAnalyses", XMLSet.class);
 			if (analysis != null)
-				d.setStudies((SortedSet) ((XMLSet<MetaAnalysis>) analysis).getSet());
+				d.setMetaAnalyses((SortedSet) ((XMLSet<MetaAnalysis>) analysis).getSet());
 		}
 		
 		@Override

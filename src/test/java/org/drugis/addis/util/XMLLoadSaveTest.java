@@ -177,7 +177,7 @@ public class XMLLoadSaveTest {
 		DomainData origData = origDomain.getDomainData();
 		
 		origData.addVariable(new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"}));
-		//origData.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysis()); // TODO
+		origData.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysis()); 
 		
 		String xml = XMLHelper.toXml(origData, DomainData.class);
 		System.out.println("\n"+xml+"\n");

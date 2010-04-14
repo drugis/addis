@@ -208,6 +208,11 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		}
 		
 		@Override
+		public boolean isReferenceable() {
+			return false;
+		}
+		
+		@Override
 		public void read(javolution.xml.XMLFormat.InputElement ie,
 				ArmMap ae) throws XMLStreamException {
 			while (ie.hasNext()) {
@@ -234,6 +239,11 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	private static final XMLFormat<ArmEntry> armEntryXML = new XMLFormat<ArmEntry>(ArmEntry.class) {
 		public ArmEntry newInstance(Class<ArmEntry> cls, XMLFormat.InputElement xml) {
 			return new ArmEntry();
+		}
+		
+		@Override
+		public boolean isReferenceable() {
+			return false;
 		}
 		
 		@Override
