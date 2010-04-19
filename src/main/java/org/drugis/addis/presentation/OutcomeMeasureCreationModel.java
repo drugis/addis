@@ -10,7 +10,7 @@ import org.drugis.addis.entities.Variable;
 @SuppressWarnings("serial")
 public class OutcomeMeasureCreationModel extends VariablePresentationModel {
 	public OutcomeMeasureCreationModel(OutcomeMeasure bean) {
-		super(bean, null);
+		super(bean, null, null);
 		
 		getModel(Endpoint.PROPERTY_TYPE).addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent event) {

@@ -29,24 +29,25 @@ import org.drugis.addis.gui.builder.AddVariableView;
 import org.drugis.addis.presentation.VariablePresentationModel;
 import org.drugis.common.gui.OkCancelDialog;
 
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class AddVariableDialog extends OkCancelDialog {
 	private Domain d_domain;
-	private Variable d_om;
 	private Main d_main;
 	private ValueModel d_selectionModel;
+	private PresentationModel<Variable> d_pm;
 	
-	public AddVariableDialog(Main frame, Domain domain, Variable om, ValueModel selectionModel) {
-		super(frame, "Add " + VariablePresentationModel.getCategoryName(om) );
+	public AddVariableDialog(Main frame, Domain domain, Variable variable, ValueModel selectionModel) {
+		super(frame, "Add " + VariablePresentationModel.getEntityName(variable) );
 		this.d_main = frame;
 		this.setModal(true);
 		d_domain = domain;
-		d_om = om;
+		d_pm = frame.getPresentationModelFactory().getCreationModel(variable);
 		
-		AddVariableView view = new AddVariableView(
-				frame.getPresentationModelFactory().getCreationModel(d_om), d_okButton);
+		AddVariableView view = new AddVariableView(d_pm, d_okButton);
+		
 		getUserPanel().add(view.buildPanel());
 		pack();
 		getRootPane().setDefaultButton(d_okButton);
@@ -59,19 +60,19 @@ public class AddVariableDialog extends OkCancelDialog {
 
 	protected void commit() {
 		
-		if (d_om instanceof Endpoint)
-			d_domain.addEndpoint((Endpoint) d_om);
-		else if (d_om instanceof AdverseEvent)
-			d_domain.addAdverseEvent((AdverseEvent) d_om);
-		else if (d_om instanceof PopulationCharacteristic) {
-			d_domain.addVariable((PopulationCharacteristic) d_om);
+		if (d_pm.getBean() instanceof Endpoint)
+			d_domain.addEndpoint((Endpoint) d_pm.getBean());
+		else if (d_pm.getBean() instanceof AdverseEvent)
+			d_domain.addAdverseEvent((AdverseEvent) d_pm.getBean());
+		else if (d_pm.getBean() instanceof PopulationCharacteristic) {
+			d_domain.addVariable((PopulationCharacteristic) d_pm.getBean());
 		}
 		else 
 			throw new IllegalArgumentException("Unknown type of OutcomeMeasure.");
 		
 		setVisible(false);
 		if (d_selectionModel != null)
-			d_selectionModel.setValue(d_om);
-		d_main.leftTreeFocus(d_om);
+			d_selectionModel.setValue(d_pm.getBean());
+		d_main.leftTreeFocus(d_pm.getBean());
 	}
 }

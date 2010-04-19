@@ -19,15 +19,22 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.Dimension;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
@@ -39,28 +46,52 @@ import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class AddVariableView implements ViewBuilder {
+	private JLabel d_dynamicLabel;
 	private JTextField d_name;
 	private JTextField d_description;
 	private JTextField d_unitOfMeasurement;
-	private PresentationModel<Variable> d_model;
+	private VariablePresentationModel d_model;
 	private JComboBox d_type;
 	private JComboBox d_direction;
+	private JList d_categories;
 	private NotEmptyValidator d_validator;
+	private JScrollPane d_scrollPane;
 	
 	public AddVariableView(PresentationModel<Variable> model, JButton okButton) {
-		d_model = model;
+		d_model = (VariablePresentationModel) model;
 		d_validator = new NotEmptyValidator(okButton);
 	}
 	
 	private void initComponents() {
+		ArrayList<Type> values = new ArrayList<Type>(Arrays.asList(Variable.Type.values()));
+		if (!(d_model.getBean() instanceof PopulationCharacteristic))
+			values.remove(Variable.Type.CATEGORICAL);
+		
+		d_type = AuxComponentFactory.createBoundComboBox( values.toArray(), d_model.getTypeModel());
+		d_type.addItemListener(new ItemListener() {	
+			public void itemStateChanged(ItemEvent e) {
+				d_unitOfMeasurement.setVisible(!d_type.getSelectedItem().equals(Type.CATEGORICAL));
+				d_scrollPane.setVisible(d_type.getSelectedItem().equals(Type.CATEGORICAL));
+				if (d_type.getSelectedItem().equals(Type.CATEGORICAL)){
+					Bindings.bind(d_categories, d_model.getCategoriesListModel());
+					d_dynamicLabel.setText("Categories: ");
+				} else {
+					d_dynamicLabel.setText("Unit of Measurement: ");
+				}
+			}
+		});
+		
 		d_name = BasicComponentFactory.createTextField(d_model.getModel(OutcomeMeasure.PROPERTY_NAME), false);
 		AutoSelectFocusListener.add(d_name);
-
+		d_name.setColumns(30);
+		d_validator.add(d_name);
+		
 		d_description = BasicComponentFactory.createTextField(
 				d_model.getModel(OutcomeMeasure.PROPERTY_DESCRIPTION), false);
 		
@@ -73,25 +104,20 @@ public class AddVariableView implements ViewBuilder {
 		
 		AutoSelectFocusListener.add(d_unitOfMeasurement);
 		d_unitOfMeasurement.setColumns(30);
-				
-		d_name.setColumns(30);
-	
-		d_validator.add(d_name);
-		
-		ArrayList<Type> values = new ArrayList<Type>(Arrays.asList(Variable.Type.values()));
-		values.remove(Variable.Type.CATEGORICAL);
-		d_type = AuxComponentFactory.createBoundComboBox(
-				values.toArray(), d_model.getModel(OutcomeMeasure.PROPERTY_TYPE));
 		
 		if (d_model.getBean() instanceof OutcomeMeasure) {
 			d_direction = AuxComponentFactory.createBoundComboBox(
 					OutcomeMeasure.Direction.values(), d_model.getModel(OutcomeMeasure.PROPERTY_DIRECTION));
 		}
 		
+		d_categories = new JList();
+		
 		ComboBoxPopupOnFocusListener.add(d_type);
 		d_validator.add(d_type);
 	}
 
+	
+	
 	/**
 	 * @see org.drugis.common.gui.ViewBuilder#buildPanel()
 	 */
@@ -105,21 +131,27 @@ public class AddVariableView implements ViewBuilder {
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
-		
 		CellConstraints cc = new CellConstraints();
-		String categoryName = VariablePresentationModel.getCategoryName(d_model.getBean());
+		
+		String categoryName = VariablePresentationModel.getEntityName(d_model.getBean());
 		builder.addSeparator(categoryName , cc.xyw(1, 1, 3));
-		builder.addLabel("Name:", cc.xy(1, 3));
-		builder.add(d_name, cc.xy(3,3));
 		
-		builder.addLabel("Description:", cc.xy(1, 5));
-		builder.add(d_description, cc.xy(3, 5));
+		builder.addLabel("Type:", cc.xy(1, 3));
+		builder.add(d_type, cc.xy(3, 3));
+	
+		builder.addLabel("Name:", cc.xy(1, 5));
+		builder.add(d_name, cc.xy(3,5));
 		
-		builder.addLabel("Unit of Measurement:", cc.xy(1, 7));
-		builder.add(d_unitOfMeasurement, cc.xy(3, 7));
+		builder.addLabel("Description:", cc.xy(1, 7));
+		builder.add(d_description, cc.xy(3, 7));
 		
-		builder.addLabel("Type:", cc.xy(1, 9));
-		builder.add(d_type, cc.xy(3, 9));
+		d_dynamicLabel = builder.addLabel("Unit of Measurement:", cc.xy(1, 9));
+		builder.add(d_unitOfMeasurement, cc.xy(3, 9));
+		
+		d_scrollPane = new JScrollPane(d_categories);
+		d_scrollPane.setVisible(false);
+		d_scrollPane.setPreferredSize(new Dimension(60, 40));
+		builder.add(d_scrollPane, cc.xy(3, 9));
 		
 		if (d_direction != null) {
 			builder.addLabel("Direction:", cc.xy(1, 11));

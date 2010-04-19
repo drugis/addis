@@ -87,7 +87,7 @@ public class PresentationModelFactory {
 	private PresentationModel createModel(Object obj) {
 		if (obj instanceof Variable) {
 			return new VariablePresentationModel((Variable)obj,
-					d_domain.getStudies((Variable)obj));
+					d_domain.getStudies((Variable)obj), this);
 		}
 		if (obj instanceof Study) {
 			return new StudyPresentationModel((Study) obj, this);
