@@ -143,6 +143,10 @@ public class DomainData implements Serializable {
 		d_ades.remove(ade);
 	}
 	
+	public void removeVariable(Variable var) {
+		d_variables.remove(var);
+	}
+	
 	protected static final XMLFormat<DomainData> XML = new XMLFormat<DomainData>(DomainData.class) {
 		
 		public DomainData newInstance(Class<DomainData> cls, InputElement ie) throws XMLStreamException {

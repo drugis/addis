@@ -136,6 +136,14 @@ public interface Domain {
 	public void removeListener(DomainListener listener);
 
 	/**
+	 * Deletes a variable from the domain.
+	 * 
+	 * @param b the variable to delete
+	 * @throws DependentEntitiesException if some entities depend on the variable
+	 */
+	public void deleteEntity(Variable v) throws DependentEntitiesException;
+	
+	/**
 	 * Deletes a study from the domain.
 	 * 
 	 * @param s the study to delete

@@ -81,6 +81,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
@@ -333,6 +334,8 @@ public class Main extends JFrame {
 			selectedType = "study";
 		} else if (selected instanceof Indication) {
 			selectedType = "indication";
+		} else if (selected instanceof Variable)  {
+			selectedType = "variable";
 		}
 
 		int conf = JOptionPane.showConfirmDialog(this,
@@ -353,8 +356,9 @@ public class Main extends JFrame {
 			} else if (selected instanceof AdverseEvent) {
 				getDomain().deleteAdverseEvent((AdverseEvent) selected);
 				leftTreeFocus(d_domainTreeModel.getAdverseEventsNode());
-			} else if (selected instanceof Variable) {
-				// FIXME
+			} else if (selected instanceof PopulationCharacteristic) {
+				getDomain().deleteEntity((Variable) selected);
+				leftTreeFocus(d_domainTreeModel.getPopulationCharacteristicsNode());
 			} else if (selected instanceof Study) {
 				getDomain().deleteStudy((Study) selected);
 				leftTreeFocus(d_domainTreeModel.getStudiesNode());

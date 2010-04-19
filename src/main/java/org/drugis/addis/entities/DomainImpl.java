@@ -289,6 +289,12 @@ public class DomainImpl implements Domain {
 		}		
 		return deps;
 	}
+	
+	public void deleteEntity(Variable v) throws DependentEntitiesException {
+		checkDependents(v);
+		d_domainData.removeVariable(v);
+		fireDomainChanged(DomainEvent.Type.VARIABLES);
+	}
 
 	public void deleteStudy(Study s) throws DependentEntitiesException {
 		checkDependents(s);
