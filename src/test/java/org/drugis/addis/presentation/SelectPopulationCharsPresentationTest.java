@@ -37,7 +37,7 @@ public class SelectPopulationCharsPresentationTest {
 			}
 		};
 		
-		d_pm = new SelectPopulationCharsPresentation(d_list, new Main());
+		d_pm = new SelectPopulationCharsPresentation(d_list, null);
 	}
 	
 	@Test
