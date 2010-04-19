@@ -921,8 +921,7 @@ public class Main extends JFrame {
 	private void setRightPanelViewSize() {
 		JComponent view = (JComponent) d_rightPanel.getViewport().getView();
 		Dimension dimension = new Dimension();
-		int prefWidth = getSize().width - d_leftPanel.getPreferredSize().width
-				- 40;
+		int prefWidth = getSize().width - d_leftPanel.getPreferredSize().width - 40;
 		dimension.width = Math.max(prefWidth, view.getMinimumSize().width);
 		dimension.height = view.getPreferredSize().height;
 		view.setPreferredSize(dimension);

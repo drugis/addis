@@ -19,10 +19,14 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.Color;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 
+import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.GUIFactory;
@@ -33,17 +37,18 @@ import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.value.ConverterFactory;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class OutcomeMeasureView implements ViewBuilder {
+public class VariableView implements ViewBuilder {
 	private VariablePresentationModel d_model;
 	private Main d_frame;
 	
-	public OutcomeMeasureView(VariablePresentationModel model, Main frame) {
+	public VariableView(VariablePresentationModel model, Main frame) {
 		d_model = model;
 		d_frame = frame;
 	}
@@ -70,7 +75,7 @@ public class OutcomeMeasureView implements ViewBuilder {
 	private JPanel buildOverviewPart() {
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, pref:grow",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();
 		
@@ -82,9 +87,11 @@ public class OutcomeMeasureView implements ViewBuilder {
  		builder.add(BasicComponentFactory.createLabel(
 				d_model.getModel(Variable.PROPERTY_DESCRIPTION)), cc.xy(3, 3));
 
-		builder.addLabel("Unit of Measurement:", cc.xy(1, 5));
-		builder.add(BasicComponentFactory.createLabel(
-				d_model.getModel(Variable.PROPERTY_UNIT_OF_MEASUREMENT)), cc.xy(3, 5));
+ 		if(! (d_model.getBean() instanceof CategoricalPopulationCharacteristic)) {
+ 			builder.addLabel("Unit of Measurement:", cc.xy(1, 5));
+ 			builder.add(BasicComponentFactory.createLabel(
+ 					d_model.getModel(Variable.PROPERTY_UNIT_OF_MEASUREMENT)), cc.xy(3, 5));
+ 		}
 
 		ValueModel typeModel = ConverterFactory.createStringConverter(
 				d_model.getModel(Variable.PROPERTY_TYPE),
@@ -99,6 +106,14 @@ public class OutcomeMeasureView implements ViewBuilder {
 					new OneWayObjectFormat());
 			builder.add(BasicComponentFactory.createLabel(
 					directionModel), cc.xy(3, 9));
+		}
+		
+		if( d_model.getBean() instanceof CategoricalPopulationCharacteristic) {
+			builder.addLabel("categories:", cc.xy(1, 11));
+			JList listBox = new JList();
+			listBox.setBackground(new Color(239, 235, 231));
+			Bindings.bind(listBox,d_model.getCategoriesListModel());
+			builder.add(listBox, cc.xy(3, 11));
 		}
 
 		return builder.getPanel();

@@ -32,7 +32,7 @@ public class ViewFactory {
 			return new StudyView((StudyPresentationModel) pmf
 					.getModel(((Study) node)), main.getDomain(), main);
 		} else if (node instanceof Variable) {
-			return new OutcomeMeasureView(
+			return new VariableView(
 					(VariablePresentationModel) pmf.getModel(((Variable) node)), main);
 		} else if (node instanceof Drug) {
 			return new DrugView((DrugPresentationModel) pmf.getModel(((Drug) node)), main);
