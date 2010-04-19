@@ -20,6 +20,8 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
@@ -37,6 +40,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Variable.Type;
+import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
@@ -62,6 +66,7 @@ public class AddVariableView implements ViewBuilder {
 	private JList d_categories;
 	private NotEmptyValidator d_validator;
 	private JScrollPane d_scrollPane;
+	private JButton d_AddcatBtn;
 	
 	public AddVariableView(PresentationModel<Variable> model, JButton okButton) {
 		d_model = (VariablePresentationModel) model;
@@ -76,9 +81,11 @@ public class AddVariableView implements ViewBuilder {
 		d_type = AuxComponentFactory.createBoundComboBox( values.toArray(), d_model.getTypeModel());
 		d_type.addItemListener(new ItemListener() {	
 			public void itemStateChanged(ItemEvent e) {
-				d_unitOfMeasurement.setVisible(!d_type.getSelectedItem().equals(Type.CATEGORICAL));
-				d_scrollPane.setVisible(d_type.getSelectedItem().equals(Type.CATEGORICAL));
-				if (d_type.getSelectedItem().equals(Type.CATEGORICAL)){
+				boolean catVisible = d_type.getSelectedItem().equals(Type.CATEGORICAL);
+				d_unitOfMeasurement.setVisible(!catVisible);
+				d_scrollPane.setVisible(catVisible);
+				d_AddcatBtn.setVisible(catVisible);
+				if (catVisible){
 					Bindings.bind(d_categories, d_model.getCategoriesListModel());
 					d_dynamicLabel.setText("Categories: ");
 				} else {
@@ -125,7 +132,7 @@ public class AddVariableView implements ViewBuilder {
 		initComponents();
 
 		FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, pref",
+				"right:pref, 3dlu, pref, 3dlu, pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		
@@ -152,6 +159,18 @@ public class AddVariableView implements ViewBuilder {
 		d_scrollPane.setVisible(false);
 		d_scrollPane.setPreferredSize(new Dimension(60, 40));
 		builder.add(d_scrollPane, cc.xy(3, 9));
+		
+		d_AddcatBtn = GUIFactory.createPlusButton("add new category");
+		d_AddcatBtn.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent arg0) {
+				String newCat = JOptionPane.showInputDialog("enter name of new category");
+				d_model.addNewCategory(newCat);
+			}
+		});
+		
+		d_AddcatBtn.setVisible(false);
+		builder.add(d_AddcatBtn,cc.xy(5,9));
 		
 		if (d_direction != null) {
 			builder.addLabel("Direction:", cc.xy(1, 11));

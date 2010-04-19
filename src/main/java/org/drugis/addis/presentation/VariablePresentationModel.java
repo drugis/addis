@@ -1,5 +1,8 @@
 package org.drugis.addis.presentation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.Characteristic;
@@ -29,6 +32,7 @@ public class VariablePresentationModel extends PresentationModel<Variable> imple
 		public void setValue(Object newValue) {
 			if (newValue.equals(Type.CATEGORICAL) && (getBean() instanceof PopulationCharacteristic))
 				setBean(new CategoricalPopulationCharacteristic());
+			
 			else if (!newValue.equals(Type.CATEGORICAL) && (getBean() instanceof PopulationCharacteristic)) 
 				setBean(new ContinuousPopulationCharacteristic());
 			super.setValue(newValue);
@@ -78,8 +82,19 @@ public class VariablePresentationModel extends PresentationModel<Variable> imple
 			throw new IllegalStateException(getBean() + " is not a categoricalPopulationCharacteristic");
 		
 		ValueModel stringListModel =  d_pmf.getModel((CategoricalPopulationCharacteristic) getBean())
-		.getModel(CategoricalPopulationCharacteristic.PROPERTY_CATEGORIESASLIST);
+										            .getModel(CategoricalPopulationCharacteristic.PROPERTY_CATEGORIESASLIST);
+		
 		return new SelectionInList<String>(stringListModel);
-		//return stringListModel;
+	}
+	
+	public void addNewCategory (String category) {
+		if (!(getBean() instanceof CategoricalPopulationCharacteristic ))
+			throw new IllegalStateException(getBean() + " is not a categoricalPopulationCharacteristic");
+		
+		CategoricalPopulationCharacteristic catVar = (CategoricalPopulationCharacteristic) getBean();
+		List<String> catsList = new ArrayList<String>(catVar.getCategoriesAsList());
+		if (!catsList.contains(category))
+			catsList.add(category);
+		catVar.setCategoriesAsList(catsList);	
 	}
 }

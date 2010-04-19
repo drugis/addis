@@ -33,7 +33,8 @@ public class CategoricalPopulationCharacteristic extends AbstractVariable implem
 	}
 	
 	public void setCategoriesAsList(List<String> categories) {
-		d_categories = (String[]) categories.toArray();
+		setCategories((String[]) categories.toArray(d_categories));
+		firePropertyChange(PROPERTY_CATEGORIESASLIST, null, categories);
 	}
 	
 	public FrequencyMeasurement buildMeasurement() {
