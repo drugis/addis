@@ -679,7 +679,7 @@ public class DomainTest {
 		List<Variable> expected = new ArrayList<Variable>();
 		expected.add(v1);
 		expected.add(v2);
-		PropertyChangeListener mock = JUnitUtil.mockListener(vars, "value", null, expected);
+		PropertyChangeListener mock = JUnitUtil.mockListener(vars, "value", vars.getValue(), expected);
 		vars.addValueChangeListener(mock);
 		d_domain.addVariable(v2);
 		verify(mock);

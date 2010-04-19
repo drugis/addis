@@ -5,16 +5,22 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import org.drugis.addis.entities.PopulationCharacteristic;
+import org.drugis.addis.gui.Main;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class SelectPopulationCharsPresentation
 extends SelectFromFiniteListPresentationImpl<PopulationCharacteristic> {
-	public SelectPopulationCharsPresentation(ListHolder<PopulationCharacteristic> options) {
+	public SelectPopulationCharsPresentation(ListHolder<PopulationCharacteristic> options, Main main) {
 		super(options, "Population Baseline Characteristics", "Select Population Baseline Characteristics",
-			"Please select the appropriate population baseline characteristics.");
+			"Please select the appropriate population baseline characteristics.", main);
 		d_addSlotsEnabled = new AddSlotsEnabledModel();
+	}
+	
+	@Override
+	public void showAddOptionDialog(int idx) {
+		d_main.showAddPopulationCharacteristicDialog(getSlot(idx));
 	}
 	
 	public class AddSlotsEnabledModel extends AbstractValueModel implements PropertyChangeListener {

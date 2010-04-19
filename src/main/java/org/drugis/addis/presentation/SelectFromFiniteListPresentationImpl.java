@@ -26,9 +26,9 @@ implements SelectFromFiniteListPresentationModel<T> {
 	private String d_typeName;
 	private String d_title;
 	private String d_description;
-	
+
 	public SelectFromFiniteListPresentationImpl(ListHolder<T> options,
-			String typeName, String title, String description) {
+			String typeName, String title, String description, Main main) {
 		d_typeName = typeName;
 		d_title = title;
 		d_description = description;
@@ -36,6 +36,7 @@ implements SelectFromFiniteListPresentationModel<T> {
 		d_options = options;
 		d_addSlotsEnabled = new AddSlotsAlwaysEnabledModel();
 		d_inputCompleteModel = new InputCompleteModel();
+		d_main = main;
 	}
 
 	public ListHolder<T> getOptions() {
@@ -73,7 +74,7 @@ implements SelectFromFiniteListPresentationModel<T> {
 	}
 
 	public boolean hasAddOptionDialog() {
-		return false;
+		return true;
 	}
 	
 	public void showAddOptionDialog(int idx) {

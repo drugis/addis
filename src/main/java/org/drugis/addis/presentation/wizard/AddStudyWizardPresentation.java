@@ -182,7 +182,7 @@ public class AddStudyWizardPresentation {
 		d_adverseEventListHolder = new AdverseEventListHolder(d_domain);
 		d_populationCharsListHolder = d_domain.getVariablesHolder();
 		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_adverseEventListHolder, main);
-		d_populationCharSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder);
+		d_populationCharSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder, main);
 		clearStudies();
 	}
 	

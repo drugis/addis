@@ -2,8 +2,8 @@ package org.drugis.addis.presentation;
 
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -12,6 +12,7 @@ import java.util.List;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.PopulationCharacteristic;
+import org.drugis.addis.gui.Main;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class SelectPopulationCharsPresentationTest {
 			}
 		};
 		
-		d_pm = new SelectPopulationCharsPresentation(d_list);
+		d_pm = new SelectPopulationCharsPresentation(d_list, new Main());
 	}
 	
 	@Test
@@ -46,7 +47,7 @@ public class SelectPopulationCharsPresentationTest {
 	
 	@Test
 	public void testHasAddOptionDialog() {
-		assertFalse(d_pm.hasAddOptionDialog());
+		assertTrue(d_pm.hasAddOptionDialog());
 	}
 	
 	@Test

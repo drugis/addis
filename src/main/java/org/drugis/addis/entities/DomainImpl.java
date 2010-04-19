@@ -426,8 +426,9 @@ public class DomainImpl implements Domain {
 
 		public void domainChanged(DomainEvent evt) {
 			if (evt.getType().equals(DomainEvent.Type.VARIABLES)) {
+				List<PopulationCharacteristic> old = d_vars;
 				d_vars = getVars();
-				fireValueChange(null, d_vars);
+				fireValueChange(old, d_vars);
 			}
 		}
 	}

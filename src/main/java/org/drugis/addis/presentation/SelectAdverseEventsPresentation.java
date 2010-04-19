@@ -8,13 +8,7 @@ public class SelectAdverseEventsPresentation
 extends SelectFromFiniteListPresentationImpl<AdverseEvent> {
 	
 	public SelectAdverseEventsPresentation(ListHolder<AdverseEvent> options, Main main) {
-		super(options, "Adverse Event", "Select Adverse Events", "Please select the appropriate adverse events.");
-		d_main = main;
-	}
-	
-	@Override
-	public boolean hasAddOptionDialog() {
-		return true;
+		super(options, "Adverse Event", "Select Adverse Events", "Please select the appropriate adverse events.", main);
 	}
 
 	public void showAddOptionDialog(int idx) {
