@@ -296,13 +296,13 @@ public class DomainImpl implements Domain {
 		fireDomainChanged(DomainEvent.Type.VARIABLES);
 	}
 
-	public void deleteStudy(Study s) throws DependentEntitiesException {
+	public void deleteEntity(Study s) throws DependentEntitiesException {
 		checkDependents(s);
 		d_domainData.removeStudy(s);
 		fireDomainChanged(DomainEvent.Type.STUDIES);
 	}
 
-	public void deleteDrug(Drug d) throws DependentEntitiesException {
+	public void deleteEntity(Drug d) throws DependentEntitiesException {
 		checkDependents(d);
 		d_domainData.removeDrug(d);
 		fireDomainChanged(DomainEvent.Type.DRUGS);
@@ -315,13 +315,13 @@ public class DomainImpl implements Domain {
 		}
 	}
 
-	public void deleteEndpoint(Endpoint e) throws DependentEntitiesException {
+	public void deleteEntity(Endpoint e) throws DependentEntitiesException {
 		checkDependents(e);
 		d_domainData.removeEndpoint(e);
 		fireDomainChanged(DomainEvent.Type.ENDPOINTS);		
 	}
 
-	public void deleteIndication(Indication i) throws DependentEntitiesException {
+	public void deleteEntity(Indication i) throws DependentEntitiesException {
 		checkDependents(i);
 		d_domainData.removeIndication(i);
 		fireDomainChanged(DomainEvent.Type.INDICATIONS);
@@ -350,7 +350,7 @@ public class DomainImpl implements Domain {
 		return Collections.unmodifiableSortedSet(d_domainData.getMetaAnalyses()); 
 	}
 
-	public void deleteMetaAnalysis(MetaAnalysis ma)
+	public void deleteEntity(MetaAnalysis ma)
 			throws DependentEntitiesException {
 		checkDependents(ma);
 		d_domainData.removeMetaAnalysis(ma);
@@ -448,7 +448,7 @@ public class DomainImpl implements Domain {
 		
 	}
 
-	public void deleteAdverseEvent(AdverseEvent ade)
+	public void deleteEntity(AdverseEvent ade)
 			throws DependentEntitiesException {
 		checkDependents(ade);
 		d_domainData.removeAdverseEvent(ade);

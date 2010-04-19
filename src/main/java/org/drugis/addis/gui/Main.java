@@ -348,26 +348,26 @@ public class Main extends JFrame {
 		}
 		try {
 			if (selected instanceof Drug) {
-				getDomain().deleteDrug((Drug) selected);
+				getDomain().deleteEntity((Drug) selected);
 				leftTreeFocus(d_domainTreeModel.getDrugsNode());
 			} else if (selected instanceof Endpoint) {
-				getDomain().deleteEndpoint((Endpoint) selected);
+				getDomain().deleteEntity((Endpoint) selected);
 				leftTreeFocus(d_domainTreeModel.getEndpointsNode());
 			} else if (selected instanceof AdverseEvent) {
-				getDomain().deleteAdverseEvent((AdverseEvent) selected);
+				getDomain().deleteEntity((AdverseEvent) selected);
 				leftTreeFocus(d_domainTreeModel.getAdverseEventsNode());
 			} else if (selected instanceof PopulationCharacteristic) {
 				getDomain().deleteEntity((Variable) selected);
 				leftTreeFocus(d_domainTreeModel.getPopulationCharacteristicsNode());
 			} else if (selected instanceof Study) {
-				getDomain().deleteStudy((Study) selected);
+				getDomain().deleteEntity((Study) selected);
 				leftTreeFocus(d_domainTreeModel.getStudiesNode());
 			} else if (selected instanceof MetaAnalysis) {
-				getDomain().deleteMetaAnalysis(
+				getDomain().deleteEntity(
 						(MetaAnalysis) selected);
 				leftTreeFocus(d_domainTreeModel.getAnalysesNode());
 			} else if (selected instanceof Indication) {
-				getDomain().deleteIndication((Indication) selected);
+				getDomain().deleteEntity((Indication) selected);
 				leftTreeFocus(d_domainTreeModel.getIndicationsNode());
 			}
 		} catch (DependentEntitiesException e) {

@@ -177,7 +177,7 @@ public class DomainTest {
 		RandomEffectsMetaAnalysis s = addMetaAnalysisToDomain();
 		
 		assertTrue(d_domain.getMetaAnalyses().contains(s));
-		d_domain.deleteMetaAnalysis(s);
+		d_domain.deleteEntity(s);
 		assertFalse(d_domain.getMetaAnalyses().contains(s));
 	}		
 	
@@ -499,7 +499,7 @@ public class DomainTest {
 		Study s = new Study("X", d_indication);
 		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s);
-		d_domain.deleteStudy(s);
+		d_domain.deleteEntity(s);
 		assertTrue(d_domain.getStudies().isEmpty());
 	}
 	
@@ -528,7 +528,7 @@ public class DomainTest {
 		ArrayList<Study> studies = new ArrayList<Study>(d_domain.getStudies());
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", e, studies, fluox, parox); 
 		d_domain.addMetaAnalysis(ma);
-		d_domain.deleteStudy(s1);
+		d_domain.deleteEntity(s1);
 	}
 	
 	@Test
@@ -541,7 +541,7 @@ public class DomainTest {
 		d_domain.addListener(mock);
 		mock.domainChanged(new DomainEvent(DomainEvent.Type.STUDIES));		
 		replay(mock);
-		d_domain.deleteStudy(s1);
+		d_domain.deleteEntity(s1);
 		verify(mock);
 	}
 
@@ -549,7 +549,7 @@ public class DomainTest {
 	public void testDeleteDrug() throws DependentEntitiesException {
 		Drug d = new Drug("X", "atc");
 		d_domain.addDrug(d);
-		d_domain.deleteDrug(d);
+		d_domain.deleteEntity(d);
 		assertTrue(d_domain.getDrugs().isEmpty());
 	}
 	
@@ -566,7 +566,7 @@ public class DomainTest {
 		s1.addArm(g);
 		
 
-		d_domain.deleteDrug(d);
+		d_domain.deleteEntity(d);
 	}
 	
 	@Test
@@ -578,7 +578,7 @@ public class DomainTest {
 		d_domain.addListener(mock);
 		mock.domainChanged(new DomainEvent(DomainEvent.Type.DRUGS));		
 		replay(mock);
-		d_domain.deleteDrug(d);
+		d_domain.deleteEntity(d);
 		verify(mock);
 	}
 
@@ -586,7 +586,7 @@ public class DomainTest {
 	public void testDeleteEndpoint() throws DependentEntitiesException {
 		Endpoint e = new Endpoint("e", Variable.Type.RATE);
 		d_domain.addEndpoint(e);
-		d_domain.deleteEndpoint(e);
+		d_domain.deleteEntity(e);
 		assertTrue(d_domain.getEndpoints().isEmpty());
 	}
 	
@@ -600,7 +600,7 @@ public class DomainTest {
 		d_domain.addEndpoint(e);
 		s1.addEndpoint(e);
 			
-		d_domain.deleteEndpoint(e);
+		d_domain.deleteEntity(e);
 	}
 	
 	@Test
@@ -612,7 +612,7 @@ public class DomainTest {
 		d_domain.addListener(mock);
 		mock.domainChanged(new DomainEvent(DomainEvent.Type.ENDPOINTS));		
 		replay(mock);
-		d_domain.deleteEndpoint(d);
+		d_domain.deleteEntity(d);
 		verify(mock);
 	}
 	
@@ -620,7 +620,7 @@ public class DomainTest {
 	public void testDeleteIndication() throws DependentEntitiesException {
 		Indication i = new Indication(01L, "i");
 		d_domain.addIndication(i);
-		d_domain.deleteIndication(i);
+		d_domain.deleteEntity(i);
 		assertTrue(d_domain.getIndications().isEmpty());
 	}
 	
@@ -631,7 +631,7 @@ public class DomainTest {
 		d_domain.addIndication(indication);
 		d_domain.addStudy(s1);
 			
-		d_domain.deleteIndication(indication);
+		d_domain.deleteEntity(indication);
 	}
 	
 	@Test
@@ -643,7 +643,7 @@ public class DomainTest {
 		d_domain.addListener(mock);
 		mock.domainChanged(new DomainEvent(DomainEvent.Type.INDICATIONS));		
 		replay(mock);
-		d_domain.deleteIndication(i);
+		d_domain.deleteEntity(i);
 		verify(mock);
 	}
 	
@@ -719,7 +719,7 @@ public class DomainTest {
 	public void testDeleteAde() throws DependentEntitiesException {
 		AdverseEvent e = new AdverseEvent("e", Variable.Type.RATE);
 		d_domain.addAdverseEvent(e);
-		d_domain.deleteAdverseEvent(e);
+		d_domain.deleteEntity(e);
 		assertTrue(d_domain.getAdverseEvents().isEmpty());
 	}
 	
@@ -733,7 +733,7 @@ public class DomainTest {
 		d_domain.addAdverseEvent(a);
 		s1.addAdverseEvent(a);
 			
-		d_domain.deleteAdverseEvent(a);
+		d_domain.deleteEntity(a);
 	}
 	
 	@Test
@@ -745,7 +745,7 @@ public class DomainTest {
 		d_domain.addListener(mock);
 		mock.domainChanged(new DomainEvent(DomainEvent.Type.ADVERSE_EVENTS));		
 		replay(mock);
-		d_domain.deleteAdverseEvent(d);
+		d_domain.deleteEntity(d);
 		verify(mock);
 	}
 

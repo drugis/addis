@@ -149,7 +149,7 @@ public interface Domain {
 	 * @param s the study to delete
 	 * @throws DependentEntitiesException if some entities depend on the study
 	 */
-	public void deleteStudy(Study s) throws DependentEntitiesException;
+	public void deleteEntity(Study s) throws DependentEntitiesException;
 	
 	/**
 	 * Deletes a meta-analysis from the domain.
@@ -157,7 +157,7 @@ public interface Domain {
 	 * @param ma the meta-analysis to delete 
 	 * @throws DependentEntitiesException if some entities depend on the meta-analysis
 	 */
-	public void deleteMetaAnalysis(MetaAnalysis ma) throws DependentEntitiesException;
+	public void deleteEntity(MetaAnalysis ma) throws DependentEntitiesException;
 	
 	/**
 	 * Deletes a drug from the domain.
@@ -165,7 +165,7 @@ public interface Domain {
 	 * @param d the drug to delete 
 	 * @throws DependeptEntititesException if some entities depend on this drug
 	 */
-	public void deleteDrug(Drug d) throws DependentEntitiesException;
+	public void deleteEntity(Drug d) throws DependentEntitiesException;
 	
 	/**
 	 * Deletes an endpoint from the domain.
@@ -173,7 +173,7 @@ public interface Domain {
 	 * @param e the endpoint to delete
 	 * @throws DependentEntitiesException if some entities depend on this endpoint
 	 */
-	public void deleteEndpoint(Endpoint e) throws DependentEntitiesException;
+	public void deleteEntity(Endpoint e) throws DependentEntitiesException;
 	
 	/**
 	 * Deletes an Indication from the domain.
@@ -181,7 +181,7 @@ public interface Domain {
 	 * @param i the Indication to delete
 	 * @throws DependentEntitiesException if some entities depend on this endpoint
 	 */
-	public void deleteIndication(Indication i) throws DependentEntitiesException;
+	public void deleteEntity(Indication i) throws DependentEntitiesException;
 	
 	public SortedSet<PopulationCharacteristic> getVariables();
 	
@@ -193,5 +193,5 @@ public interface Domain {
 	
 	public void addAdverseEvent(AdverseEvent ade);
 	
-	public void deleteAdverseEvent(AdverseEvent ade) throws DependentEntitiesException;
+	public void deleteEntity(AdverseEvent ade) throws DependentEntitiesException;
 }

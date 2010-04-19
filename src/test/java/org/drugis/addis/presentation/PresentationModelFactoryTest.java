@@ -145,7 +145,7 @@ public class PresentationModelFactoryTest {
 		d_domain.getStudies().last().setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, "This value should not be retained");
 		assertEquals("This value should not be retained",d_domain.getStudies().last().getCharacteristic(BasicStudyCharacteristic.OBJECTIVE));
 		makeStudyPmOnce(d_domain.getStudies().last());
-		d_domain.deleteStudy(d_domain.getStudies().last());
+		d_domain.deleteEntity(d_domain.getStudies().last());
 		
 		Study myStudy = new Study(id, new Indication(0l, ""));
 		Object expected = myStudy.getCharacteristic(BasicStudyCharacteristic.OBJECTIVE);

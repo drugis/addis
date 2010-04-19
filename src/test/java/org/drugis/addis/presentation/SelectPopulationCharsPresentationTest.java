@@ -12,7 +12,6 @@ import java.util.List;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.PopulationCharacteristic;
-import org.drugis.addis.gui.Main;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
