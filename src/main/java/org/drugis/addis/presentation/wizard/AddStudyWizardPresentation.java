@@ -129,13 +129,14 @@ public class AddStudyWizardPresentation {
 		
 		@Override
 		public void setValue(Object newValue) {
+			super.setValue(newValue);
 			// If the outcome that was selected is already selected somewhere else, reset the other selection
 			for (ModifiableHolder<T> omHolder : d_selectionModelList) {
 				if ((!omHolder.equals(this)) && (omHolder.getValue() != null))
 					if (omHolder.getValue().equals(getValue()))
 						omHolder.setValue(null);
 			}
-			super.setValue(newValue);
+			
 		}
 	}
 	
