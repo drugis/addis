@@ -7,11 +7,11 @@ import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyParameter;
 
 @SuppressWarnings("serial")
-public class NetworkInconsistencyTableModel  extends AbstractTableModel implements TableModelWithDescription{
+public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel implements TableModelWithDescription{
 	private NetworkMetaAnalysisPresentation d_pm;
 	private PresentationModelFactory d_pmf;
 
-	public NetworkInconsistencyTableModel(NetworkMetaAnalysisPresentation pm, PresentationModelFactory pmf) {
+	public NetworkInconsistencyFactorsTableModel(NetworkMetaAnalysisPresentation pm, PresentationModelFactory pmf) {
 		d_pm = pm;
 		d_pmf = pmf;
 	}

@@ -2,6 +2,7 @@ package org.drugis.addis.presentation;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.drugis.addis.entities.ContinuousMeasurementEstimate;
 import org.drugis.addis.entities.LogContinuousMeasurementEstimate;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Estimate;
@@ -48,8 +49,12 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 		
 		Estimate relEffect = d_networkModel.getRelativeEffect(drug1, drug2);
 
-		// convert to Log Odds-ratio
-		return d_pmf.getModel(new LogContinuousMeasurementEstimate(relEffect.getMean(), relEffect.getStandardDeviation()));
+		
+		if(d_pm.getBean().isContinuous())
+			return d_pmf.getModel(new ContinuousMeasurementEstimate(relEffect.getMean(), relEffect.getStandardDeviation()));
+		else
+			// convert to Log Odds-ratio
+			return d_pmf.getModel(new LogContinuousMeasurementEstimate(relEffect.getMean(), relEffect.getStandardDeviation()));
 	}
 
 	public String getDescription() {

@@ -8,14 +8,12 @@ import java.util.List;
 import mocks.MockNetworkMetaAnalysis;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.ContinuousMeasurementEstimate;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.LogContinuousMeasurementEstimate;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
-import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
-import org.drugis.addis.presentation.NetworkTableModel;
-import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.Treatment;
 import org.junit.Before;
@@ -103,7 +101,7 @@ public class NetworkTableModelTest {
 					Treatment t1 = d_contAnalysis.getBuilder().getTreatment(d_contAnalysis.getIncludedDrugs().get(x).getName());
 					Treatment t2 = d_contAnalysis.getBuilder().getTreatment(d_contAnalysis.getIncludedDrugs().get(y).getName());
 					Estimate relEffect = d_contAnalysis.getInconsistencyModel().getRelativeEffect(t1, t2);
-					assertEquals(new LogContinuousMeasurementEstimate(relEffect.getMean(), relEffect.getStandardDeviation()).toString(), ((PresentationModel<LogContinuousMeasurementEstimate>) d_contTableModel.getValueAt(x, y)).getBean().toString());
+					assertEquals(new ContinuousMeasurementEstimate(relEffect.getMean(), relEffect.getStandardDeviation()).toString(), ((PresentationModel<ContinuousMeasurementEstimate>) d_contTableModel.getValueAt(x, y)).getBean().toString());
 				}
 			}
 		}	

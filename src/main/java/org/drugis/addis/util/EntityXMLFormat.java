@@ -86,10 +86,7 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 				if (propertyIsExcluded(i, p.getName()))
 					continue;
 
-				// This is an unfortunate bugfix for the javolution use of the keyword "end....."
 				String propertyName = p.getName();
-				//if(propertyName.equals("endpoints"))
-				//	propertyName = "results";
 
 				System.out.print("AbstractEntity::XMLFormat: inspecting " + p.getName() + ", class is " + p.getPropertyType());
 
@@ -175,10 +172,7 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 				if(propertyIsExcluded(i, properties[p].getName()))
 					continue;
 
-				// This is an unfortunate bugfix for the javolution use of the keyword "end....."
 				String propertyName = properties[p].getName();
-				//if(propertyName.equals("endpoints"))
-				//	propertyName = "results";
 
 				Object value = BeanUtils.getValue(i, properties[p]);
 				System.out.print("(others) inspecting "+properties[p].getName() + ", value is: " + value + ", class is " + value.getClass());

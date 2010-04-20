@@ -33,6 +33,8 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	transient private ConsistencyModel d_consistencyModel;
 	transient private NetworkBuilder<? extends org.drugis.mtc.Measurement> d_builder;
 	transient private boolean d_hasRun = false;
+
+	private boolean d_isContinuous = false;
 	
 	private NetworkMetaAnalysis() {
 		super();
@@ -87,9 +89,10 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			return d_builder;
 		else if (m instanceof BasicRateMeasurement)
 			return d_builder = new DichotomousNetworkBuilder();
-		else if (m instanceof BasicContinuousMeasurement)
+		else if (m instanceof BasicContinuousMeasurement){ 
+			d_isContinuous = true;
 			return d_builder = new ContinuousNetworkBuilder();
-		else 
+		} else 
 			throw new IllegalStateException("Unknown type of measurement: "+m);	
 	}
 
@@ -155,4 +158,8 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			XML.write(arg0, arg1);
 		}
 	};
+	
+	public boolean isContinuous() {
+		return d_isContinuous;
+	}
 }

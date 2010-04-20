@@ -14,7 +14,7 @@ import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
-import org.drugis.addis.presentation.NetworkInconsistencyTableModel;
+import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
 import org.drugis.common.gui.ViewBuilder;
@@ -47,11 +47,11 @@ implements ViewBuilder {
 		public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
 			if (d_pane != null) {
 				if(event.getType() == EventType.SIMULATION_PROGRESS && d_incProgressBar != null){
-					d_progBar.setString("Simulating: " + event.getIteration()/1000 + "%");
-					d_progBar.setValue(event.getIteration()/1000);
+					d_progBar.setString("Simulating: " + event.getIteration()/(event.getTotalIterations()/100) + "%");
+					d_progBar.setValue(event.getIteration()/(event.getTotalIterations()/100));
 				} else if(event.getType() == EventType.BURNIN_PROGRESS && d_incProgressBar != null){
-					d_progBar.setString("Burn in: " + event.getIteration()/40 + "%");
-					d_progBar.setValue(event.getIteration()/40);
+					d_progBar.setString("Burn in: " + event.getIteration()/(event.getTotalIterations()/100) + "%");
+					d_progBar.setValue(event.getIteration()/(event.getTotalIterations()/100));
 				} else if(event.getType() == EventType.SIMULATION_FINISHED) {
 					d_progBar.setVisible(false);
 					d_pane.validate();
@@ -108,7 +108,7 @@ implements ViewBuilder {
 		JComponent inconsistencyResultsPart = buildResultsPart(d_pm.getBean().getInconsistencyModel(),d_incProgressBar);
 		inconsistencyPanel.add(inconsistencyResultsPart,BorderLayout.NORTH);
 
-		NetworkInconsistencyTableModel inconsistencyTableModel = new NetworkInconsistencyTableModel(
+		NetworkInconsistencyFactorsTableModel inconsistencyTableModel = new NetworkInconsistencyFactorsTableModel(
 				d_pm, d_parent.getPresentationModelFactory());
 		JPanel inconsistencyTable = new AbstractTablePanel(inconsistencyTableModel);
 		inconsistencyPanel.add(inconsistencyTable,BorderLayout.SOUTH);

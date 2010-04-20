@@ -22,7 +22,7 @@ import org.junit.Test;
 public class NetworkInconsistencyTableModelTest {
 
 	private PresentationModelFactory d_pmf;
-	private NetworkInconsistencyTableModel d_tableModel;
+	private NetworkInconsistencyFactorsTableModel d_tableModel;
 	private NetworkMetaAnalysis d_analysis;
 	
 	@Before
@@ -32,7 +32,7 @@ public class NetworkInconsistencyTableModelTest {
 		d_analysis = NetworkTableModelTest.buildMockNetworkMetaAnalysis();
 		d_pmf = new PresentationModelFactory(domain);
 		
-		d_tableModel = new NetworkInconsistencyTableModel((NetworkMetaAnalysisPresentation) d_pmf.getModel(d_analysis), d_pmf);
+		d_tableModel = new NetworkInconsistencyFactorsTableModel((NetworkMetaAnalysisPresentation) d_pmf.getModel(d_analysis), d_pmf);
 	}
 	
 	@Test
@@ -68,7 +68,7 @@ public class NetworkInconsistencyTableModelTest {
 	@Test
 	public void testContinuousValueAt() {
 		NetworkMetaAnalysis d_contAnalysis = buildMockContinuousNetworkMetaAnalysis();
-		NetworkInconsistencyTableModel d_contTableModel = new NetworkInconsistencyTableModel((NetworkMetaAnalysisPresentation) d_pmf.getModel(d_contAnalysis), d_pmf);
+		NetworkInconsistencyFactorsTableModel d_contTableModel = new NetworkInconsistencyFactorsTableModel((NetworkMetaAnalysisPresentation) d_pmf.getModel(d_contAnalysis), d_pmf);
 		d_contAnalysis.getInconsistencyModel().run();
 		for(int x = 0; x < d_contTableModel.getColumnCount(); ++x) {
 			for(int y = 0; y < d_contTableModel.getRowCount(); ++y) {
