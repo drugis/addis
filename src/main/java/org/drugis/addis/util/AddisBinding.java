@@ -84,7 +84,7 @@ public class AddisBinding extends XMLBinding {
 		setAlias(Variable.class, "variable");
 		setAlias(Date.class, "date");
 		
-		
+		 
 		setAlias(BasicStudyCharacteristic.class, "basicCharacteristic");
 		setAlias(BasicStudyCharacteristic.Status.class, "status");
 		setAlias(BasicStudyCharacteristic.Allocation.class, "allocation");

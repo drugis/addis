@@ -25,9 +25,7 @@ public class AbstractMetaAnalysisView<T extends AbstractMetaAnalysisPresentation
 	}
 
 	protected JComponent buildStudiesPart() {
-		FormLayout layout = new FormLayout(
-				"pref:grow:fill",
-				"p");
+		FormLayout layout = new FormLayout("pref:grow:fill","p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();

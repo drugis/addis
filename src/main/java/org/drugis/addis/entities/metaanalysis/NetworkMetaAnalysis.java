@@ -23,6 +23,7 @@ import org.drugis.mtc.DichotomousNetworkBuilder;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.InconsistencyParameter;
+import org.drugis.mtc.Network;
 import org.drugis.mtc.NetworkBuilder;
 
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis{
@@ -48,7 +49,8 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	private InconsistencyModel createInconsistencyModel() {
-		return (DefaultModelFactory.instance()).getInconsistencyModel(getBuilder().buildNetwork());
+		Network<? extends org.drugis.mtc.Measurement> network = getBuilder().buildNetwork();
+		return (DefaultModelFactory.instance()).getInconsistencyModel(network);
 	}
 	
 	private ConsistencyModel createConsistencyModel() {

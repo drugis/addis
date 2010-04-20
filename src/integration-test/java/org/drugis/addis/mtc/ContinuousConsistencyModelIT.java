@@ -75,6 +75,4 @@ public class ContinuousConsistencyModelIT {
 	    	assertNotNull(d_model.getRelativeEffect(c, b));
 	    	assertNotNull(d_model.getRelativeEffect(b, c));
 	    }
-	
-
 }
