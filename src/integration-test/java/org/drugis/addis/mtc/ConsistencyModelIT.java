@@ -9,9 +9,10 @@ import static org.junit.Assert.assertNotNull;
 
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.DefaultModelFactory;
+import org.drugis.mtc.DichotomousMeasurement;
+import org.drugis.mtc.DichotomousNetworkBuilder;
 import org.drugis.mtc.ModelFactory;
 import org.drugis.mtc.Network;
-import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.ProgressEvent;
 import org.drugis.mtc.ProgressListener;
 import org.drugis.mtc.Treatment;
@@ -20,15 +21,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ConsistencyModelIT {
-	private static final int NBURNIN = 40;
-	private static final int NSIMULATION = 1000;
-    private NetworkBuilder d_builder;
-	private Network d_network;
+    private DichotomousNetworkBuilder d_builder;
+	private Network<DichotomousMeasurement> d_network;
 	private ConsistencyModel d_model;
 
-    @Before
+    @SuppressWarnings("unchecked")
+	@Before
     public void setUp() {
-        d_builder = new NetworkBuilder();
+        d_builder = new DichotomousNetworkBuilder();
         d_builder.add("1", "A", 5, 100);
         d_builder.add("1", "B", 23, 100);
         d_builder.add("2", "B", 12, 43);
@@ -47,13 +47,13 @@ public class ConsistencyModelIT {
     	mock.update(d_model, new ProgressEvent(EventType.MODEL_CONSTRUCTION_STARTED));
     	mock.update(d_model, new ProgressEvent(EventType.MODEL_CONSTRUCTION_FINISHED));
     	mock.update(d_model, new ProgressEvent(EventType.BURNIN_STARTED));
-    	for (int i = 1; i < NBURNIN; ++i) {
-	    	mock.update(d_model, new ProgressEvent(EventType.BURNIN_PROGRESS, i * 100));
+    	for (int i = 100; i < d_model.getBurnInIterations(); i+=100) {
+	    	mock.update(d_model, new ProgressEvent(EventType.BURNIN_PROGRESS, i, d_model.getBurnInIterations()));
     	}
     	mock.update(d_model, new ProgressEvent(EventType.BURNIN_FINISHED));
     	mock.update(d_model, new ProgressEvent(EventType.SIMULATION_STARTED));
-    	for (int i = 1; i < NSIMULATION; ++i) {
-	    	mock.update(d_model, new ProgressEvent(EventType.SIMULATION_PROGRESS, i * 100));
+    	for (int i = 100; i < d_model.getSimulationIterations(); i+=100) {
+	    	mock.update(d_model, new ProgressEvent(EventType.SIMULATION_PROGRESS, i, d_model.getSimulationIterations()));
     	}
     	mock.update(d_model, new ProgressEvent(EventType.SIMULATION_FINISHED));
     	replay(mock);

@@ -47,7 +47,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	}
 
 	private void fillDataSet() {
-		NetworkBuilder builder = getBean().getBuilder();
+		NetworkBuilder<? extends org.drugis.mtc.Measurement> builder = getBean().getBuilder();
 		ConsistencyModel consistencyModel = getBean().getConsistencyModel();
 		for (Drug d : getBean().getIncludedDrugs()) {
 			for (int rank = 1; rank <= getBean().getIncludedDrugs().size(); ++rank) {	

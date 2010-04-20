@@ -136,7 +136,6 @@ public class AddStudyWizardPresentation {
 					if (omHolder.getValue().equals(getValue()))
 						omHolder.setValue(null);
 			}
-			
 		}
 	}
 	

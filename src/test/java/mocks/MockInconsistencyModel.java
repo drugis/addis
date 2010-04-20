@@ -63,5 +63,19 @@ public class MockInconsistencyModel implements InconsistencyModel {
 	public void run() {
 		d_ready = true;
 	}
+
+	public int getBurnInIterations() {
+		return -1;
+	}
+
+	public int getSimulationIterations() {
+		return -1;
+	}
+
+	public void setBurnInIterations(int it) {
+	}
+
+	public void setSimulationIterations(int it) {
+	}
 	
 }
