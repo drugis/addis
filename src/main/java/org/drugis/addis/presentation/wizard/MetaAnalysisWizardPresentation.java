@@ -55,7 +55,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 			}			
 		});
 		
-		d_endpointHolder.addPropertyChangeListener(
+		d_outcomeHolder.addPropertyChangeListener(
 				new SetEmptyListener(new ModifiableHolder[]{d_firstDrugHolder, d_secondDrugHolder}));
 		
 		d_selectedDrugs = new SelectedDrugsHolder(d_firstDrugHolder, d_secondDrugHolder);
@@ -158,6 +158,6 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 
 	@Override
 	protected StudyGraphModel buildStudyGraphPresentation() {
-		return new StudyGraphModel(d_indicationHolder, d_endpointHolder, d_drugListHolder, d_domain);				
+		return new StudyGraphModel(d_indicationHolder, d_outcomeHolder, d_drugListHolder, d_domain);				
 	}	
 }

@@ -64,7 +64,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			for (Drug d : drugs) {
 				if(! s.getDrugs().contains(d))
 					continue;
-				for (Variable v : s.getVariables(Endpoint.class)) {
+				for (Variable v : s.getVariables(OutcomeMeasure.class)) {
 					if (!v.equals(d_outcome))
 						continue;
 					Arm a = armMap.get(s).get(d);

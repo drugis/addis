@@ -33,13 +33,14 @@ public class OutcomeListHolder extends AbstractListHolder<OutcomeMeasure> implem
 	}
 	
 	private List<OutcomeMeasure> getEndpointSet() {
-		TreeSet<OutcomeMeasure> endpoints = new TreeSet<OutcomeMeasure>();
+		TreeSet<OutcomeMeasure> outcomeMeasures = new TreeSet<OutcomeMeasure>();
 		if (this.d_indication.getValue() != null) {
 			for (Study s : d_domain.getStudies(this.d_indication.getValue()).getValue()) {
-				endpoints.addAll(s.getOutcomeMeasures());
+				outcomeMeasures.addAll(s.getOutcomeMeasures());
 			}			
 		}	
-		return new ArrayList<OutcomeMeasure>(endpoints);
+		
+		return new ArrayList<OutcomeMeasure>(outcomeMeasures);
 	}		
 
 	public void propertyChange(PropertyChangeEvent event) {
