@@ -34,7 +34,7 @@ import com.jgoodies.binding.value.ValueModel;
 public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 
 	protected Domain d_domain;
-	protected PresentationModelFactory d_pmm;
+	protected PresentationModelFactory d_pmf;
 	protected ModifiableHolder<Indication> d_indicationHolder;
 	protected ModifiableHolder<OutcomeMeasure> d_outcomeHolder;
 	protected OutcomeListHolder d_outcomeListHolder;
@@ -44,9 +44,9 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 	protected Map<Study, Map<Drug, ModifiableHolder<Arm>>> d_selectedArms;
 	protected DefaultSelectableStudyListPresentationModel d_studyListPm;	
 
-	public AbstractMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmm) {
+	public AbstractMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmf) {
 		d_domain = d;
-		d_pmm = pmm;
+		d_pmf = pmf;
 	
 		d_indicationHolder = new ModifiableHolder<Indication>();
 		d_outcomeHolder = new ModifiableHolder<OutcomeMeasure>();

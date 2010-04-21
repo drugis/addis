@@ -1,6 +1,7 @@
 package org.drugis.common;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.SortedSet;
 
 public class CollectionUtil {
@@ -27,4 +28,13 @@ public class CollectionUtil {
 		return -1;
 	}
 
+	public static boolean containsAllAndOnly(List<?> c1, List<?> c2) {
+		if (c1 == null || c2 == null)
+			return false;
+		if (c1.size() != c2.size())
+			return false;
+		if (!c1.containsAll(c2))
+			return false;
+		return true;
+	}
 }

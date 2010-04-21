@@ -153,7 +153,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 
 	public RandomEffectsMetaAnalysisPresentation getMetaAnalysisModel() {
-		return (RandomEffectsMetaAnalysisPresentation) d_pmm.getModel(createMetaAnalysis(""));
+		return (RandomEffectsMetaAnalysisPresentation) d_pmf.getModel(createMetaAnalysis(""));
 	}
 
 	@Override
