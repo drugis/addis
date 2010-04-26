@@ -37,7 +37,7 @@ public class EnhancedTable extends JTable {
 	public void tableChanged(TableModelEvent e) {
 		super.tableChanged(e);
 		if (d_tableHeader != null) {
-			d_tableHeader.autoSizeColumns();	
+			d_tableHeader.autoSizeColumns();
 		}
 	}
 	

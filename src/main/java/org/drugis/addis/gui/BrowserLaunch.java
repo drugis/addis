@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 
 public class BrowserLaunch {
 	static final String[] browsers = { "firefox", "opera", "konqueror", "epiphany",
-		"seamonkey", "galeon", "kazehakase", "mozilla", "netscape" };
+		"seamonkey", "galeon", "kazehakase", "mozilla", "netscape", "chrome" };
 
 	/**
 	 * Opens the specified web page in a web browser

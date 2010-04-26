@@ -1,0 +1,29 @@
+General (above studies table)
+=============================
+
+Network Meta-Analysis (or Mixed Treatment Comparison, MTC) is a technique to meta-analyze more than two drugs at the same time. Using a full Bayesian evidence network, all indirect comparisons are taken into account to arrive at a single, integrated, estimate of the effect of all included treatments based on all included studies.
+
+This software is meant as a demonstration of the sort of analysis enabled by MTCs. The functionality provided is not yet sufficient to do a full MTC analysis, as concerns such as the assessment of convergence of the Bayesian model and the adequacy of the run-length cannot be addressed. If you are interested in doing such an analysis, you can find more information at <a href="http://drugis.org/mtc">http://drugis.org/mtc</a>, or contact Gert van Valkenhoef, the corresponding author.
+
+Disclaimer (in red)
+===================
+
+Please note that the current implementation of the Bayesian model using the Yadas MCMC (Markov Chain Monte Carlo) program is not completely accurate due to the lack of a multi-variate normal density in Yadas. We have contacted the author of Yadas to remedy this, so far with no result.
+
+Because of this, the covariance structure of multi-arm studies is not correctly represented. If multi-arm studies dominate the evidence network, this means that the results of the analysis may be unreliable. If multi-arm studies are not included, this problem does not occur.
+
+An alternative implementation using JAGS and R that does not have this problem is available from <a href="http://drugis.org/mtc">http://drugis.org/mtc</a>, but is more difficult to use.
+
+Inconsistency model
+===================
+
+In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em> of evidence, in addition to <em>heterogeneity</em> within a comparison. Whereas heterogeneity represents between-study variation in the measured relative effect of a pair of treatments, inconsistency can only occur when a treatment C has a different effect when it is compared with A or B (i.e., studies comparing A and C are systematically different from studies comparing A and B). Thus, inconsistency may even occur with normal meta-analysis, but can only be detected using a network meta-analysis, and then only when there are closed loops in the evidence structure.
+
+For more information about assessing inconsistency, see G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, Journal of the American Statistical Association, 101(474): 447-459. <a href="http://dx.doi.org/10.1198/016214505000001302">doi:10.1198/016214505000001302</a>.
+
+Consistency model
+=================
+
+If there is no relevant inconsistency in the evidence, a consistency model can be used to draw conclusions about the relative effect of the included treatments. Using normal meta-analysis, we could only get a subset of the confidence intervals for relative effects we derive using network meta-analysis. Network meta-analysis gives a consistent, integrated picture of the relative effects.
+
+However, given such a consistent set of relative effect estimates, it may still be difficult to draw conclusions on a potentially large set of treatments. Luckily, the Bayesian approach allows us to do even more with the data, and can be used to estimate the probability that, given the priors and the data, each of the treatments is the best, the second best, etc. This is given below in the rank probability plot. Rank probabilities sum to one, both within a rank over treatments and within a treatment over ranks.

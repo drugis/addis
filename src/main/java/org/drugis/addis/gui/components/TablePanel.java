@@ -10,7 +10,7 @@ import javax.swing.JTable;
 @SuppressWarnings("serial")
 public class TablePanel extends JPanel {
 	
-	private final JTable d_table;
+	protected final JTable d_table;
 
 	public TablePanel(JTable table) {
 		super(new BorderLayout());

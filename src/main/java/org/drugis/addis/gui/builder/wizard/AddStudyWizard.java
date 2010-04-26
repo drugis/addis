@@ -808,7 +808,6 @@ public class AddStudyWizard implements ViewBuilder{
 				doc.insertString(doc.getLength(), DEFAULT_NOTETITLE + "\n", doc.getStyle("bold"));
 				doc.insertString(doc.getLength(), (String)model.getValue(), doc.getStyle("regular"));
 			} catch (BadLocationException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
