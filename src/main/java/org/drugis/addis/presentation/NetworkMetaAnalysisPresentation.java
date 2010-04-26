@@ -37,6 +37,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 				public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
 					if (event.getType() == EventType.SIMULATION_FINISHED)
 						fillDataSet();
+//					if(event.getType() == EventType.MODEL_CONSTRUCTION_FINISHED)
 				}
 			});
 		}

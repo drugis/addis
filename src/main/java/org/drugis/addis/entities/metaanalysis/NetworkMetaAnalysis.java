@@ -59,7 +59,18 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	private NetworkBuilder<? extends org.drugis.mtc.Measurement> createBuilder(List<? extends Study> studies, List<Drug> drugs, Map<Study, Map<Drug, Arm>> armMap) {
+		/*  
+		 * Comments generate network xml code that can be read by the scala implementation.
+		 */
+//		System.out.println("<network>");
+//		System.out.println("<treatments>");
+//		for (Drug d : drugs) {
+//			System.out.println("<treatment id=\"" + d.getName() + "\"/>");
+//		}
+//		System.out.println("</treatments>");
+//		System.out.println("<studies>");
 		for(Study s : studies){
+//			System.out.println("<study id=\"" + s.getStudyId() + "\">");
 			for (Drug d : drugs) {
 				if(! s.getDrugs().contains(d))
 					continue;
@@ -72,14 +83,20 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 						BasicRateMeasurement brm = (BasicRateMeasurement)m;	
 						((DichotomousNetworkBuilder) getTypedBuilder(brm)).add(s.getStudyId(), a.getDrug().getName(),
 																			   brm.getRate(), brm.getSampleSize());
+//						System.out.println("<measurement treatment=\"" + a.getDrug().getName() + "\" responders=\"" + 
+//								brm.getRate() + "\" sample=\"" + brm.getSampleSize() + "\"/>");
 					} else if (m instanceof BasicContinuousMeasurement) {
 						BasicContinuousMeasurement cm = (BasicContinuousMeasurement) m;
 						((ContinuousNetworkBuilder) getTypedBuilder(cm)).add(s.getStudyId(), a.getDrug().getName(),
 																	           cm.getMean(), cm.getStdDev(), cm.getSampleSize());
 					}
 				}
+				
         	}
+//			System.out.println("</study>");
         }
+//		System.out.println("</studies>");
+//		System.out.println("</network>");
 		return d_builder;
 	}
 	

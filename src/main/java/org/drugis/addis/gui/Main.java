@@ -910,7 +910,7 @@ public class Main extends JFrame {
 		frame.setVisible(true);
 	}
 
-	private void dataModelChanged() {
+	public void dataModelChanged() {
 		if (d_rightPanelBuilder != null) {
 			setRightPanelContents(d_rightPanelBuilder.buildPanel());
 		}

@@ -25,7 +25,9 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel i
 	}
 
 	public int getRowCount() {
-		return d_pm.getBean().getInconsistencyFactors().size();
+		if(d_pm.getBean().getInconsistencyModel().isReady())
+			return d_pm.getBean().getInconsistencyFactors().size();
+		return 0;
 	}
 	
 	public String getValueAt(int row, int col) {

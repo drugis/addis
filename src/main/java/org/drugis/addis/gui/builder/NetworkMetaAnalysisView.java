@@ -58,18 +58,19 @@ implements ViewBuilder {
 				} else if(event.getType() == EventType.SIMULATION_FINISHED) {
 					d_progBar.setVisible(false);
 					d_pane.validate();
+					d_parent.dataModelChanged();
 				}
-				
 			}
 		}
 	}
-	
 	
 	JPanel d_pane = new JPanel();
 	private PanelBuilder d_builder;
 	private CellConstraints d_cc;
 	private JProgressBar d_incProgressBar;
 	private JProgressBar d_conProgressBar;
+	private JPanel d_inconsistencyPanel;
+	private NetworkInconsistencyFactorsTableModel d_inconsistencyTableModel;
 	
 	public NetworkMetaAnalysisView(NetworkMetaAnalysisPresentation model, Main main) {
 		super(model, main);
@@ -104,25 +105,26 @@ implements ViewBuilder {
 
 		d_builder.addSeparator("Results - network inconsistency model", d_cc.xy(1, 13));
 
-//		Build inconsistency part
-		JPanel inconsistencyPanel = new JPanel(new BorderLayout());
+//		build inconsistency part
+		d_inconsistencyPanel = new JPanel(new BorderLayout());
 
 		if(!d_pm.getBean().getInconsistencyModel().isReady())
 			d_builder.add(d_incProgressBar, d_cc.xy(1, 15));
 		
-		String inconsistencyText = "<html>In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em><br> of evidence, in addition to <em>heterogeneity</em> within a comparison. Whereas heterogeneity represents <br>between-study variation in the measured relative effect of a pair of treatments, inconsistency can only <br> occur when a treatment C has a different effect when it is compared with A or B (i.e., studies comparing <br>A and C are systematically different from studies comparing A and B). Thus, inconsistency may even occur <br> with normal meta-analysis, but can only be detected using a network meta-analysis, and then only when <br>there are closed loops in the evidence structure. For more information about assessing inconsistency, <br>see G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, <br>Journal of the American Statistical Association, 101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.<html>";
+		String inconsistencyText = "<html>In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em><br> of evidence, in addition to <em>heterogeneity</em> within a comparison. Whereas heterogeneity represents <br>between-study variation in the measured relative effect of a pair of treatments, inconsistency can only <br> occur when a treatment C has a different effect when it is compared with A or B (i.e., studies comparing <br>A and C are systematically different from studies comparing B and C). Thus, inconsistency may even occur <br> with normal meta-analysis, but can only be detected using a network meta-analysis, and then only when <br>there are closed loops in the evidence structure. For more information about assessing inconsistency, <br>see G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, <br>Journal of the American Statistical Association, 101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.<html>";
 		JComponent inconsistencyPane = HtmlWordWrapper.createHtmlPane(inconsistencyText);
-		inconsistencyPanel.add(inconsistencyPane, BorderLayout.NORTH);
+		d_inconsistencyPanel.add(inconsistencyPane, BorderLayout.NORTH);
 		
 		JComponent inconsistencyResultsPart = buildResultsPart(d_pm.getBean().getInconsistencyModel(),d_incProgressBar);
-		inconsistencyPanel.add(inconsistencyResultsPart,BorderLayout.CENTER);
+		d_inconsistencyPanel.add(inconsistencyResultsPart,BorderLayout.CENTER);
 
-		NetworkInconsistencyFactorsTableModel inconsistencyTableModel = new NetworkInconsistencyFactorsTableModel(
+		
+		d_inconsistencyTableModel = new NetworkInconsistencyFactorsTableModel(
 				d_pm, d_parent.getPresentationModelFactory());
-		JPanel inconsistencyTable = new AbstractTablePanel(inconsistencyTableModel);
-		inconsistencyPanel.add(inconsistencyTable,BorderLayout.SOUTH);
+		JPanel inconsistencyTable = new AbstractTablePanel(d_inconsistencyTableModel);
+		d_inconsistencyPanel.add(inconsistencyTable,BorderLayout.SOUTH);
 
-		d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyPanel), d_cc.xy(1, 19));
+		d_builder.add(GUIFactory.createCollapsiblePanel(d_inconsistencyPanel), d_cc.xy(1, 19));
 
 		d_builder.addSeparator("Results - network consistency model", d_cc.xy(1, 21));
 
