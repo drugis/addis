@@ -191,7 +191,6 @@ public class DomainData implements Serializable {
 		
 		@Override
 		public void write(DomainData d, OutputElement oe) throws XMLStreamException {
-			System.out.println("DomainData::XMLFormat::write " + d.getIndications());
 			oe.add(new TreeSet<Indication>(d.getIndications()),"indications",TreeSet.class);
 			oe.add(new TreeSet<Endpoint>(d.getEndpoints()),"endpoints",TreeSet.class);
 			if (d.getAdverseEvents().size() != 0)

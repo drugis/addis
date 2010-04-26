@@ -38,7 +38,7 @@ public class XMLLoadSaveTest {
 	public void doIndication() throws XMLStreamException {
 		Indication i = ExampleData.buildIndicationDepression();
 		String xml = XMLHelper.toXml(i, Indication.class);
-//		System.out.println(xml);
+//		System.out.println("\n"+xml+"\n");
 		assertEquals(i, ((Indication)XMLHelper.fromXml(xml)));
 		Indication parsedIndication = (Indication)XMLHelper.fromXml(xml);
 		AssertEntityEquals.assertEntityEquals(i, parsedIndication);
@@ -113,9 +113,7 @@ public class XMLLoadSaveTest {
 	public void doPopulationChars() throws XMLStreamException {
 		CategoricalPopulationCharacteristic gender = new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
 		String xml = XMLHelper.toXml(gender, CategoricalPopulationCharacteristic.class);
-		
 //		System.out.println("\n"+xml+"\n");
-		
 		CategoricalPopulationCharacteristic objFromXml = XMLHelper.fromXml(xml);
 		assertEquals(gender, objFromXml);
 	}
@@ -123,68 +121,50 @@ public class XMLLoadSaveTest {
 	@Test
 	public void doMap() throws XMLStreamException {
 		CharacteristicsMap expectedMap = ExampleData.buildStudyChouinard().getCharacteristics();
-		
 		String xml = XMLHelper.toXml(expectedMap, CharacteristicsMap.class);
-		System.out.println(xml);
-		
+//		System.out.println("\n"+xml+"\n");
 		CharacteristicsMap parsedMap = (CharacteristicsMap)XMLHelper.fromXml(xml);
-		
 		AssertEntityEquals.assertEntityEquals(expectedMap, parsedMap);
 	}
 	
 	@Test
 	public void doStudy() throws XMLStreamException {
 		Study s = ExampleData.buildStudyChouinard();
-		
-		
 		Note note = new Note(Source.MANUAL, "this is the test text");
 		s.putNote(s.getArms().get(0), note);
-	
 		String xml = XMLHelper.toXml(s, Study.class);
-		System.out.println(xml);
-//		s.addAdverseEvent(new AdverseEvent());
-		
+//		System.out.println("\n"+xml+"\n");
 		Study parsedStudy = new Study();
 		parsedStudy = (Study)XMLHelper.fromXml(xml);
-
-		System.out.println(s.getMeasurements());
-		System.out.println(parsedStudy.getMeasurements());
-		
 		AssertEntityEquals.assertEntityEquals(s, parsedStudy);
-		
 		assertEquals(s.getNote(s.getArms().get(0).toString()), parsedStudy.getNote(parsedStudy.getArms().get(0).toString()));
 	}
 	
 	@Test
 	public void doMetaAnalysis() throws XMLStreamException {
 		NetworkMetaAnalysis analysis = ExampleData.buildNetworkMetaAnalysis();
-
 		String xml = XMLHelper.toXml(analysis, NetworkMetaAnalysis.class);
-		System.out.println(xml);
-		
+//		System.out.println("\n"+xml+"\n");		
 		NetworkMetaAnalysis importedAnalysis = (NetworkMetaAnalysis)XMLHelper.fromXml(xml);
 		assertEntityEquals(analysis, importedAnalysis);
 	}	
 	
 	@Test
 	public void doDomain() throws XMLStreamException {
-		// TODO: Test whether the domains are actually equals!
 		DomainImpl origDomain = new DomainImpl();
 		ExampleData.initDefaultData(origDomain);
 		DomainData origData = origDomain.getDomainData();
-		
 		origData.addVariable(new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"}));
 		origData.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysis()); 
 		
 		String xml = XMLHelper.toXml(origData, DomainData.class);
-		System.out.println("\n"+xml+"\n");
+//		System.out.println("\n"+xml+"\n");
 		DomainData loadedData = XMLHelper.fromXml(xml);
 
-		assertEquals(origDomain.getIndications(), loadedData.getIndications());
 		DomainImpl domainFromXml = new DomainImpl();
-		
 		domainFromXml.setDomainData(loadedData);
 		
+		assertEquals(origDomain.getIndications(), loadedData.getIndications());
 		AssertEntityEquals.assertDomainEquals(origDomain, domainFromXml);
 	}
 }

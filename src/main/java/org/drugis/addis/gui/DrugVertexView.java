@@ -28,7 +28,6 @@ public class DrugVertexView extends VertexView {
 		
 		public void paint(Graphics g) {
 			setSize(200, 50);
-			System.out.println(getSize());
 			Graphics2D g2d = (Graphics2D)g;
 			setBorder(BorderFactory.createLineBorder(Color.black, 3));
 			setBackground(Color.WHITE);

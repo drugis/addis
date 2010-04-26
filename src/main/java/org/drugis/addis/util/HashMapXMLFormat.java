@@ -31,7 +31,6 @@ public final class HashMapXMLFormat extends XMLFormat<HashMap> {
 	public void read(InputElement ie, HashMap s) throws XMLStreamException {
 
 		while (ie.hasNext()) {
-			System.out.println("-------------- attempting to read measurement map element");
 			Entry<Study.MeasurementKey,Measurement> measEntry = ie.get("measurement", Entry.class);
 			if(measEntry!= null)
 				s.put(measEntry.getKey(), measEntry.getValue());
@@ -60,8 +59,6 @@ public final class HashMapXMLFormat extends XMLFormat<HashMap> {
 			for(Map.Entry<Object, Note> e: noteMap.entrySet()){
 				oe.add(e,"note",Entry.class);
 			}
-
 		}
-
 	}
 }

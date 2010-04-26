@@ -81,12 +81,8 @@ public class MTCIT {
     	
     	assertEquals(1, d_model.getInconsistencyFactors().size());
     	
-    	for (InconsistencyParameter p : d_model.getInconsistencyFactors()) {
+    	for (InconsistencyParameter p : d_model.getInconsistencyFactors()) 
     		assertNotNull(d_model.getInconsistency(p));
-    		System.out.println("\n"+d_model.getInconsistency(p));
-    		System.out.println(p);
-    		System.out.println(p.treatmentList());
-    	}
     }
     
     @Test
