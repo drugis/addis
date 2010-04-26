@@ -1,11 +1,19 @@
 package org.drugis.addis.util;
 
+import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.BorderFactory;
+import javax.swing.JTextPane;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.event.HyperlinkEvent.EventType;
+
 import org.apache.commons.lang.StringEscapeUtils;
+import org.drugis.addis.gui.BrowserLaunch;
 
 public class HtmlWordWrapper {
 	public static String wordWrap(String input) {
@@ -41,5 +49,27 @@ public class HtmlWordWrapper {
 		    return list.toArray(new String[]{});
 		}
 		return new String[] {};
+	}
+
+	public static JTextPane createHtmlPane(String paneText) {
+		return createHtmlPane(paneText, new Color(255, 255, 180));
+	}
+	
+	public static JTextPane createHtmlPane(String paneText, Color paneColor) {
+		JTextPane generalPane = new JTextPane();
+		generalPane.setContentType("text/html");
+		generalPane.setEditable(false);
+		generalPane.setText(paneText);
+		generalPane.addHyperlinkListener(new HyperlinkListener() {
+			
+			public void hyperlinkUpdate(HyperlinkEvent e) {
+				if (e.getEventType() == EventType.ACTIVATED)
+					BrowserLaunch.openURL(e.getURL().toString());
+			}
+		});
+	
+		generalPane.setBackground(paneColor);
+		generalPane.setBorder(BorderFactory.createEtchedBorder());
+		return generalPane;
 	}
 }
