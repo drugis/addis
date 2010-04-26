@@ -28,10 +28,9 @@ public class EntitiesNodeView<T extends Entity> implements ViewBuilder {
 		d_title = title;
 	}
 
-	public JComponent buildPanel() {
-
+	public JComponent buildPanel() {		
 		FormLayout layout = new FormLayout(
-				"pref:grow:fill",
+				"pref",
 				"p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);

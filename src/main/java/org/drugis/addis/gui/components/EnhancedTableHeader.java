@@ -53,7 +53,7 @@ public class EnhancedTableHeader extends JTableHeader {
 
 	public static void autoSizeColumns(JTable table) {
 		int col_count = table.getModel().getColumnCount();
-
+		
 		for (int i = 0; i < col_count; i++) {
 			TableColumn col = table.getColumnModel().getColumn(i);
 			int requiredColumnWidth = getRequiredColumnWidth(table, col);
