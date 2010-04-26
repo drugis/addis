@@ -1,9 +1,9 @@
 package org.drugis.addis.util;
 
+import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
 import static org.junit.Assert.assertEquals;
-import static org.drugis.addis.entities.AssertEntityEquals.*;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.TreeSet;
 
 import javolution.xml.stream.XMLStreamException;
 
@@ -32,7 +32,6 @@ public class XMLLoadSaveTest {
 	
 	@Before
 	public void setUp()  {
-		
 	}
 	
 	@Test
@@ -70,19 +69,17 @@ public class XMLLoadSaveTest {
 	
 	@Test
 	public void doListOfEndpoints() throws XMLStreamException {
-		List<Endpoint> list = new ArrayList<Endpoint>();
+		TreeSet<Endpoint> set = new TreeSet<Endpoint>();
 		
-		list.add(ExampleData.buildEndpointCgi());
-		list.add(ExampleData.buildEndpointHamd());
-		list.add(ExampleData.buildEndpointCVdeath());
+		set.add(ExampleData.buildEndpointCgi());
+		set.add(ExampleData.buildEndpointHamd());
+		set.add(ExampleData.buildEndpointCVdeath());
 		
-		XMLSet<Endpoint> xmlSet = new XMLSet<Endpoint>(list);
-		
-		String xml = XMLHelper.toXml(xmlSet,XMLSet.class);
+		String xml = XMLHelper.toXml(set,TreeSet.class);
 //		System.out.println("\n"+xml+"\n");
-		XMLSet<Endpoint> objFromXml = XMLHelper.fromXml(xml);
+		TreeSet<Endpoint> objFromXml = XMLHelper.fromXml(xml);
 		
-		assertEquals(list, objFromXml.getList());
+		assertEquals(set, objFromXml);
 	}
 	
 	@Test

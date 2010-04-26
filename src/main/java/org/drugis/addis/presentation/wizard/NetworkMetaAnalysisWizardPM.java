@@ -40,7 +40,6 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 				getSelectedDrugsModel()); // FIXME: Use BuildStudyGraphPresentation, don't create multiple copies.
 		d_studyGraphPresentationModel.getSelectedDrugsModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
-				long startTime = System.currentTimeMillis();
 				updateArmHolders();
 			}
 		});

@@ -102,11 +102,11 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 					System.out.println(" as Map");
 					BeanUtils.setValue(i, p, ie.get(p.getName(), HashMap.class));
 				} else if (p.getPropertyType().equals(String[].class)) {
-					XMLSet<String> xmlSet = ((XMLSet<String>) ie.get(p.getName(),XMLSet.class));
-					String[] retrievedVal = new String[xmlSet.getList().size()];
+					ArrayList<String> list = ((ArrayList<String>) ie.get(p.getName(),ArrayList.class));
+					String[] retrievedVal = new String[list.size()];
 					int index=0;
-					for (Object o : xmlSet.getList())
-						retrievedVal[index++] = ((String) o);		
+					for (String s : list)
+						retrievedVal[index++] = s;		
 					System.out.println(" as string array: "+retrievedVal);
 					BeanUtils.setValue(i, p, retrievedVal);
 				} else if (List.class.isAssignableFrom(p.getPropertyType())) {
@@ -188,13 +188,10 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 					ArrayList<String> stringList = new ArrayList<String>();
 					for (String s : (String[]) value)
 						stringList.add(s);
-					oe.add(new XMLSet<String>(stringList),properties[p].getName(), XMLSet.class);
+					oe.add(stringList,properties[p].getName(), ArrayList.class);
 				} else if (value instanceof List) { // ADE list
 					System.out.println("writing "+propertyName+" as List");
 					oe.add(new ArrayList<Object>((List) value), propertyName, ArrayList.class);
-				} else if (value instanceof Set) {
-					System.out.println("writing as Set");
-					oe.add(new XMLSet( (Set)value),properties[p].getName(), XMLSet.class);
 				} else if (value instanceof Map) {
 					System.out.println("writing as Map");
 					oe.add((HashMap) value, properties[p].getName(), HashMap.class);
