@@ -34,9 +34,9 @@ import com.jgoodies.binding.value.ValueModel;
 public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 
 	protected Domain d_domain;
-	protected PresentationModelFactory d_pmm;
+	protected PresentationModelFactory d_pmf;
 	protected ModifiableHolder<Indication> d_indicationHolder;
-	protected ModifiableHolder<OutcomeMeasure> d_endpointHolder;
+	protected ModifiableHolder<OutcomeMeasure> d_outcomeHolder;
 	protected OutcomeListHolder d_outcomeListHolder;
 	protected DrugListHolder d_drugListHolder;
 	protected G d_studyGraphPresentationModel;	
@@ -44,13 +44,15 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 	protected Map<Study, Map<Drug, ModifiableHolder<Arm>>> d_selectedArms;
 	protected DefaultSelectableStudyListPresentationModel d_studyListPm;	
 
-	public AbstractMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmm) {
+	public AbstractMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmf) {
 		d_domain = d;
-		d_pmm = pmm;
+		d_pmf = pmf;
 	
 		d_indicationHolder = new ModifiableHolder<Indication>();
-		d_endpointHolder = new ModifiableHolder<OutcomeMeasure>();
-		d_indicationHolder.addPropertyChangeListener(new SetEmptyListener(d_endpointHolder));
+		d_outcomeHolder = new ModifiableHolder<OutcomeMeasure>();
+		
+		d_indicationHolder.addPropertyChangeListener(new SetEmptyListener(d_outcomeHolder));
+	
 		d_outcomeListHolder = new OutcomeListHolder(d_indicationHolder, d_domain);		
 		d_drugListHolder = new DrugListHolder();
 		d_studyGraphPresentationModel = buildStudyGraphPresentation();
@@ -78,10 +80,10 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 	}
 	
 	protected List<Study> getStudiesEndpointAndIndication() {
-		if (d_endpointHolder.getValue() == null || d_indicationHolder.getValue() == null) {
+		if (d_outcomeHolder.getValue() == null || d_indicationHolder.getValue() == null) {
 			return Collections.emptyList();
 		}
-		List<Study> studies = new ArrayList<Study>(d_domain.getStudies(d_endpointHolder.getValue()).getValue());
+		List<Study> studies = new ArrayList<Study>(d_domain.getStudies(d_outcomeHolder.getValue()).getValue());
 		studies.retainAll(d_domain.getStudies(d_indicationHolder.getValue()).getValue());
 		return studies;
 	}	
@@ -91,7 +93,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 	}	
 	
 	public ValueHolder<OutcomeMeasure> getOutcomeMeasureModel() {
-		return d_endpointHolder;
+		return d_outcomeHolder;
 	}
 
 	public AbstractListHolder<Drug> getDrugListModel() {
@@ -158,13 +160,13 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 	@SuppressWarnings("serial")
 	protected class DrugListHolder extends AbstractListHolder<Drug> implements PropertyChangeListener {
 		public DrugListHolder() {
-			d_endpointHolder.addValueChangeListener(this);
+			d_outcomeHolder.addValueChangeListener(this);
 		}
 		
 		@Override
 		public List<Drug> getValue() {
 			SortedSet<Drug> drugs = new TreeSet<Drug>();
-			if (d_indicationHolder.getValue() != null && d_endpointHolder.getValue() != null) {
+			if (d_indicationHolder.getValue() != null && d_outcomeHolder.getValue() != null) {
 				List<Study> studies = getStudiesEndpointAndIndication();
 				for (Study s : studies) {
 					drugs.addAll(s.getDrugs());
@@ -182,7 +184,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 	public class StudiesMeasuringValueModel extends AbstractValueModel implements PropertyChangeListener {
 		
 		public StudiesMeasuringValueModel() {
-			d_endpointHolder.addValueChangeListener(this);			
+			d_outcomeHolder.addValueChangeListener(this);			
 		}
 
 		public Object getValue() {
@@ -191,7 +193,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 
 		private Object constructString() {
 			String indVal = d_indicationHolder.getValue() != null ? d_indicationHolder.getValue().toString() : "";
-			String endpVal = d_endpointHolder.getValue() != null ? d_endpointHolder.getValue().toString() : "";
+			String endpVal = d_outcomeHolder.getValue() != null ? d_outcomeHolder.getValue().toString() : "";
 			return "Studies measuring " + indVal + " on " + endpVal;
 		}
 		

@@ -14,5 +14,6 @@ public class EntitiesTablePanel<T extends Entity> extends TablePanel {
 		super(new EnhancedTable(new EntityTableModel<T>(entities, formatter)));
 				
 		getTable().addKeyListener(new EntityTableDeleteListener(parent));
+		getTable().setPreferredScrollableViewportSize(d_table.getPreferredSize());
 	}
 }

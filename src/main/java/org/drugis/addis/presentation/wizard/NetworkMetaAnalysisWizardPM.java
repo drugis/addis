@@ -37,7 +37,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	public NetworkMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmm) {
 		super(d, pmm);
 		d_selectedStudyGraph = new StudyGraphModel(getSelectedStudiesModel(), 
-				getSelectedDrugsModel());
+				getSelectedDrugsModel()); // FIXME: Use BuildStudyGraphPresentation, don't create multiple copies.
 		d_studyGraphPresentationModel.getSelectedDrugsModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
 				updateArmHolders();
@@ -62,7 +62,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 
 	@Override
 	protected SelectableStudyGraphModel buildStudyGraphPresentation() {
-		return new SelectableStudyGraphModel(d_indicationHolder, d_endpointHolder, d_drugListHolder, d_domain);
+		return new SelectableStudyGraphModel(d_indicationHolder, d_outcomeHolder, d_drugListHolder, d_domain);
 	}
 	
 	public ValueModel getConnectedDrugsSelectedModel() {
@@ -133,7 +133,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 		@SuppressWarnings("unchecked")
 		public void propertyChange(PropertyChangeEvent evt) {
 			List<Drug> selectedDrugs = (List<Drug>) evt.getNewValue();	
-			setValue(selectedDrugs.size() > 1 && d_studyGraphPresentationModel.isSelectionConnected());			
+			setValue(selectedDrugs.size() > 1 && d_studyGraphPresentationModel.isSelectionConnected());
 		}
 	}
 

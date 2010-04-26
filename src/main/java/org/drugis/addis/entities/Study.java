@@ -302,6 +302,11 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			return Collections.unmodifiableList(d_endpointList);
 		} else if (type == AdverseEvent.class){
 			return Collections.unmodifiableList(d_adverseEvents);
+		} else if (type == OutcomeMeasure.class) {
+			List<Variable> varList = new ArrayList<Variable>();
+			varList.addAll(d_endpointList);
+			varList.addAll(d_adverseEvents);
+			return Collections.unmodifiableList(varList);
 		}		
 		return Collections.unmodifiableList(d_populationChars); 
 	}

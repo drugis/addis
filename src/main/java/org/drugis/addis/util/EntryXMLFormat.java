@@ -53,13 +53,11 @@ public final class EntryXMLFormat extends XMLFormat<Entry> {
 		
 		Object key = ie.get("key");
 		if (key != null) {
-			System.out.println("--- Reading note");
 			String text = ie.get("noteText", String.class);
 			Source src = ie.get("noteSrc", Source.class);
 			((MyEntry) entry).setKey(key);
 			((MyEntry) entry).setValue(new Note(src, text));
 		} else {
-			System.out.println("--- Reading measurement");
 			Entity outcomeMeasure = (Entity) ie.get("outcomeMeasure");
 			Arm arm = (Arm) ie.get("arm",Arm.class);
 			Measurement measurement = ie.get("measurement");
@@ -76,7 +74,6 @@ public final class EntryXMLFormat extends XMLFormat<Entry> {
 
 		if (e.getValue() instanceof Measurement) {
 			Entry<Study.MeasurementKey, Measurement> entry = (Entry<Study.MeasurementKey, Measurement>) e;
-			//System.out.println("entry is: "+entry);
 			oe.add((OutcomeMeasure) entry.getKey().getOutcomeM(), "outcomeMeasure");
 			oe.add(entry.getKey().getArm(), "arm", Arm.class);
 			oe.add(entry.getValue(), "measurement");

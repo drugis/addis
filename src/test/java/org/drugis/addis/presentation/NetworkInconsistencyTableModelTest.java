@@ -74,7 +74,6 @@ public class NetworkInconsistencyTableModelTest {
 			for(int y = 0; y < d_contTableModel.getRowCount(); ++y) {
 				InconsistencyParameter ip = d_contAnalysis.getInconsistencyModel().getInconsistencyFactors().get(y);
 				if(x == 0){
-					System.out.println("inconsistency cycle: "+d_contTableModel.getValueAt(y, x));
 					assertEquals("Fluoxetine, Sertraline, Paroxetine", d_contTableModel.getValueAt(y, x));
 				} else if (x == 1){
 					Estimate icModel = d_contAnalysis.getInconsistencyModel().getInconsistency(ip);

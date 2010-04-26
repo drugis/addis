@@ -8,7 +8,6 @@ import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
-import org.drugis.addis.util.XMLSet;
 
 public class DomainData implements Serializable {
 	private static final long serialVersionUID = 8470783311348971598L;
@@ -160,55 +159,46 @@ public class DomainData implements Serializable {
 		
 		@SuppressWarnings("unchecked")
 		public void read(InputElement ie, DomainData d) throws XMLStreamException {
-			XMLSet indication = ie.get("indications",XMLSet.class);
-			d.setIndications((SortedSet) ((XMLSet<Indication>) indication).getSet());
+			d.setIndications(ie.get("indications",TreeSet.class));
+			d.setEndpoints(ie.get("endpoints",TreeSet.class));
 			
-			
-			XMLSet endpoint = ie.get("endpoints",XMLSet.class);
-			d.setEndpoints((SortedSet) ((XMLSet<Endpoint>) endpoint).getSet());
-			
-			
-			XMLSet ade = ie.get("adverseEvents",XMLSet.class);
+			TreeSet ade = ie.get("adverseEvents",TreeSet.class);
 			if (ade != null)
-				d.setAdes((SortedSet) ((XMLSet<AdverseEvent>) ade).getSet());
+				d.setAdes(ade);
 			
+			d.setDrugs(ie.get("drugs",TreeSet.class));
 			
-			XMLSet drug = ie.get("drugs",XMLSet.class);
-			d.setDrugs((SortedSet) ((XMLSet<Drug>) drug).getSet());
-			
-			XMLSet popchars = ie.get("populationCharacteristics", XMLSet.class);
+			TreeSet popchars = ie.get("populationCharacteristics", TreeSet.class);
 			if (popchars != null)
-				d.setVariables((SortedSet) ((XMLSet<PopulationCharacteristic>) popchars).getSet());
+				d.setVariables(popchars);
 			
-			XMLSet catChar = ie.get("categoricalCharacteristic", XMLSet.class);
+			TreeSet catChar = ie.get("categoricalCharacteristic", TreeSet.class);
 			if (catChar != null)
-				d.setVariables((SortedSet) ((XMLSet<CategoricalPopulationCharacteristic>) catChar).getSet());
+				d.setVariables(catChar);
 			
-			
-			XMLSet contChar = ie.get("continuousCharacteristic", XMLSet.class);
+			TreeSet contChar = ie.get("continuousCharacteristic", TreeSet.class);
 			if (contChar != null)
-				d.setVariables((SortedSet) ((XMLSet<ContinuousPopulationCharacteristic>) contChar).getSet());
+				d.setVariables(contChar);
 			
-			XMLSet study = ie.get("studies", XMLSet.class);
+			TreeSet study = ie.get("studies", TreeSet.class);
 			if (study != null)
-				d.setStudies((SortedSet) ((XMLSet<Study>) study).getSet());
+				d.setStudies(study);
 			
-			XMLSet analysis = ie.get("metaAnalyses", XMLSet.class);
+			TreeSet analysis = ie.get("metaAnalyses", TreeSet.class);
 			if (analysis != null)
-				d.setMetaAnalyses((SortedSet) ((XMLSet<MetaAnalysis>) analysis).getSet());
+				d.setMetaAnalyses(analysis);
 		}
 		
 		@Override
 		public void write(DomainData d, OutputElement oe) throws XMLStreamException {
-			System.out.println("DomainData::XMLFormat::write " + d.getIndications());
-			oe.add(new XMLSet<Indication>(d.getIndications()),"indications",XMLSet.class);
-			oe.add(new XMLSet<Endpoint>(d.getEndpoints()),"endpoints",XMLSet.class);
+			oe.add(new TreeSet<Indication>(d.getIndications()),"indications",TreeSet.class);
+			oe.add(new TreeSet<Endpoint>(d.getEndpoints()),"endpoints",TreeSet.class);
 			if (d.getAdverseEvents().size() != 0)
-				oe.add(new XMLSet<AdverseEvent>(d.getAdverseEvents()),"adverseEvents",XMLSet.class);
-			oe.add(new XMLSet<Drug>(d.getDrugs()), "drugs", XMLSet.class);
-			oe.add(new XMLSet<PopulationCharacteristic>(d.getVariables()), "populationCharacteristics", XMLSet.class);
-			oe.add(new XMLSet<Study>(d.getStudies()),"studies", XMLSet.class);
-			oe.add(new XMLSet<MetaAnalysis>(d.getMetaAnalyses()), "metaAnalyses", XMLSet.class);
+				oe.add(new TreeSet<AdverseEvent>(d.getAdverseEvents()),"adverseEvents",TreeSet.class);
+			oe.add(new TreeSet<Drug>(d.getDrugs()), "drugs", TreeSet.class);
+			oe.add(new TreeSet<PopulationCharacteristic>(d.getVariables()), "populationCharacteristics", TreeSet.class);
+			oe.add(new TreeSet<Study>(d.getStudies()),"studies", TreeSet.class);
+			oe.add(new TreeSet<MetaAnalysis>(d.getMetaAnalyses()), "metaAnalyses", TreeSet.class);
 		}
 	};
 }

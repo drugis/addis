@@ -64,7 +64,7 @@ public class ClinicaltrialsImporter {
 			getClinicalTrialsData(study,studyImport);
 		} 
 		catch (JAXBException e){
-			System.out.println("Error in parsing xml file (ClinicaltrialsImporter.java))");
+			System.err.println("Error in parsing xml file (ClinicaltrialsImporter.java))");
 			e.printStackTrace();
 		} 
 	}
