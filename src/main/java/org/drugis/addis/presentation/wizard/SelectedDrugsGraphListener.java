@@ -44,8 +44,6 @@ public class SelectedDrugsGraphListener extends MouseAdapter {
 		}
 		d_drugList.setValue(drugs);
 		d_studyGraph.layoutGraph();
-		
-		
 	}
 
 }

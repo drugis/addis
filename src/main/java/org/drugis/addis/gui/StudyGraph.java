@@ -17,9 +17,6 @@ import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.jgraph.JGraph;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.GraphLayoutCache;
-import org.jgrapht.event.GraphEdgeChangeEvent;
-import org.jgrapht.event.GraphListener;
-import org.jgrapht.event.GraphVertexChangeEvent;
 import org.jgrapht.ext.JGraphModelAdapter;
 
 import com.jgraph.components.labels.CellConstants;
@@ -44,26 +41,6 @@ public class StudyGraph extends JPanel {
 		CellConstants.setBackground(d_vertexAttributes, Color.WHITE);
 		CellConstants.setForeground(d_vertexAttributes, Color.BLACK);
 		CellConstants.setBorder(d_vertexAttributes, BorderFactory.createLineBorder(Color.BLACK, 2));
-		
-		layoutGraph();
-
-		d_pm.addGraphListener(new GraphListener<Vertex, Edge>() {
-			public void vertexRemoved(GraphVertexChangeEvent<Vertex> e) {
-				// CANNOT call layoutGraph() here, because of bug in JGraph/JGraphT
-				// HOWEVER, it is neither needed due to order of adding/removing in the PM.
-				// Hanno + Tommi, 16.2.2010
-			}
-			public void vertexAdded(GraphVertexChangeEvent<Vertex> e) {
-				layoutGraph();
-			}
-			public void edgeRemoved(GraphEdgeChangeEvent<Vertex, Edge> e) {
-				layoutGraph();				
-			}
-			public void edgeAdded(GraphEdgeChangeEvent<Vertex, Edge> e) {
-				layoutGraph();
-			}
-		}); 
-		
 	}
 
 	@SuppressWarnings("unchecked")

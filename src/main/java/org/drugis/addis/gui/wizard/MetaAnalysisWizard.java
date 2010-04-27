@@ -72,6 +72,7 @@ public class MetaAnalysisWizard extends Wizard {
 	public static class SelectDrugsWizardStep extends PanelWizardStep {
 		MetaAnalysisWizardPresentation d_pm;
 		Main d_frame;
+		private StudyGraph d_studyGraph;
 
 		public SelectDrugsWizardStep(MetaAnalysisWizardPresentation pm, Main frame) {
 			super("Select Drugs","Select the drugs to be used for meta analysis.");
@@ -105,8 +106,12 @@ public class MetaAnalysisWizard extends Wizard {
 		
 		private Component buildStudiesGraph() {
 			StudyGraphModel pm = d_pm.getStudyGraphModel();
-			StudyGraph panel = new StudyGraph(pm);
-			return panel;
+			d_studyGraph = new StudyGraph(pm);
+			return d_studyGraph;
+		}
+		
+		@Override public void prepare() {
+			d_studyGraph.layoutGraph();
 		}
 
 		private JPanel buildSelectDrugsPanel() {

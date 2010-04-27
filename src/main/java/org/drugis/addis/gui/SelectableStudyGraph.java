@@ -1,8 +1,5 @@
 package org.drugis.addis.gui;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.SelectableStudyGraphModel;
@@ -15,12 +12,6 @@ public class SelectableStudyGraph extends StudyGraph {
 
 	public SelectableStudyGraph(SelectableStudyGraphModel pm) {
 		super(pm);
-		
-		pm.getSelectedDrugsModel().addValueChangeListener(new PropertyChangeListener() {			
-			public void propertyChange(PropertyChangeEvent evt) {
-				layoutGraph();
-			}
-		});
 	}
 	
 	@Override

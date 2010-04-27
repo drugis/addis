@@ -3,9 +3,7 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
@@ -261,16 +259,17 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 					Vertex vert1 = findVertex(d1);
 					Vertex vert2 = findVertex(d2);
 					if ((vert1 != null) && (vert2 != null)) {
-						
 						Edge toDelete = getEdge(vert1, vert2);
 						if (toDelete != null) {
 							int origStudyCount = toDelete.getStudyCount();
 							removeEdge(toDelete);
 							if (origStudyCount > 1)
 							{
-								//System.out.println("Reducing count between " + vert1 + " and " + vert2 + " by one to " + (origStudyCount-1));
+//								System.out.println("Reducing count between " + vert1 + " and " + vert2 + " by one to " + (origStudyCount-1));
 								addEdge(vert1, vert2, new Edge(origStudyCount -1));
-							}	
+							} else {
+//								System.out.println("Removing edge between " + vert1 + " and " + vert2);
+							}
 						}
 					}
 				}

@@ -45,6 +45,8 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 	}
 	
 	public static class OverviewWizardStep extends AbstractOverviewWizardStep<SelectableStudyGraphModel> {
+		private StudyGraph d_studyGraph;
+
 		public OverviewWizardStep(NetworkMetaAnalysisWizardPM pm, Main main) {
 			super(pm, main);
 
@@ -68,13 +70,19 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		}
 
 		protected Component buildStudiesGraph() {
-			StudyGraph panel = new StudyGraph(((NetworkMetaAnalysisWizardPM)d_pm).getSelectedStudyGraphModel());
-			panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-			return panel;
+			d_studyGraph = new StudyGraph(((NetworkMetaAnalysisWizardPM)d_pm).getSelectedStudyGraphModel());
+			d_studyGraph.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+			return d_studyGraph;
+		}
+		
+		@Override public void prepare() {
+			d_studyGraph.layoutGraph();
 		}
 	}
 	
 	public static class SelectDrugsWizardStep extends PanelWizardStep {
+
+		private SelectableStudyGraph d_studyGraph;
 
 		public SelectDrugsWizardStep(NetworkMetaAnalysisWizardPM pm, Main main) {
 			super("Select Drugs","Select the drugs to be used for the network meta-analysis. To continue, (1) at least two drugs must be selected, and (2) all selected drugs must be connected.");
@@ -99,9 +107,13 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		}
 		
 		private Component buildStudiesGraph(NetworkMetaAnalysisWizardPM pm) {
-			SelectableStudyGraph panel = new SelectableStudyGraph(pm.getStudyGraphModel());
-			panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-			return panel;
+			d_studyGraph = new SelectableStudyGraph(pm.getStudyGraphModel());
+			d_studyGraph.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+			return d_studyGraph;
+		}
+		
+		@Override public void prepare() {
+			d_studyGraph.layoutGraph();
 		}
 	}
 }
