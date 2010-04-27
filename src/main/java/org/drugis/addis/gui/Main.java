@@ -919,6 +919,7 @@ public class Main extends JFrame {
 		//d_rightPanel.repaint();
 		d_rightPanel.setVisible(false);
 		d_rightPanel.setVisible(true);
+		d_rightPanel.revalidate();
 	}
 	
 	public void reloadRightPanel() {

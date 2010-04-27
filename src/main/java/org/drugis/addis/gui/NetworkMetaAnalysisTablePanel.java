@@ -9,7 +9,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.gui.components.EnhancedTableHeader;

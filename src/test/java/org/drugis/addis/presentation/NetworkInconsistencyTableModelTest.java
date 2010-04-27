@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 
-
 import mocks.MockNetworkMetaAnalysis;
 
 import org.drugis.addis.ExampleData;
@@ -18,8 +17,6 @@ import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyParameter;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.jgoodies.binding.PresentationModel;
 
 public class NetworkInconsistencyTableModelTest {
 

@@ -10,10 +10,18 @@ import javax.swing.JTable;
 @SuppressWarnings("serial")
 public class TablePanel extends JPanel {
 	
-	protected final JTable d_table;
+	protected JTable d_table;
 
+	public TablePanel() {
+		super(new BorderLayout());
+	}
+	
 	public TablePanel(JTable table) {
 		super(new BorderLayout());
+		init(table);
+	}
+	
+	public void init(JTable table) {
 		d_table = table;
 		addScrollPane();
 	}
