@@ -3,7 +3,9 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
@@ -46,6 +48,10 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		
 		public int getStudyCount() {
 			return d_studies;
+		}
+		
+		public void setStudyCount(int studies) {
+			 d_studies = studies;
 		}
 		
 		public String toString() {
@@ -115,6 +121,8 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		oldEdges.addAll(d_studies.getValue());
 		oldEdges.removeAll(edgesToAdd); // the existing vertices
 		
+		System.out.println("edges to add " + edgesToAdd);
+		
 		//		add edges
 		for (Study s : edgesToAdd) {
 			for(Drug d1 : s.getDrugs()){
@@ -138,6 +146,8 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		List<Drug> verticesToAdd = new ArrayList<Drug>();
 		verticesToAdd.addAll(d_drugs.getValue());
 		verticesToAdd.removeAll(d_previousUpdateDrugs); // contains only newly added drugs
+		
+		System.out.println("vertices to add " + verticesToAdd);
 		
 		// calculate the vertices that we still want
 		List<Drug> oldVertices = new ArrayList<Drug>();
@@ -181,6 +191,8 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		verticesToDelete.addAll(d_previousUpdateDrugs);
 		verticesToDelete.removeAll(d_drugs.getValue()); // contains only deleted drugs.
 		
+		System.out.println("vertices to delete " + verticesToDelete);
+		
 		for (Drug drugToDelete : verticesToDelete) {
 			for (Drug anyDrug : drugs) {
 				if ((findVertex(drugToDelete) == null) || (findVertex(anyDrug) == null))
@@ -198,11 +210,33 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		edgesToDelete.addAll(d_previousUpdateStudies);
 		edgesToDelete.removeAll(d_studies.getValue()); // contains only deleted studies.
 		
+		System.out.println("Edges to delete " + edgesToDelete);
+		
 		for (Study s: edgesToDelete){
-			for(Drug d1 : s.getDrugs()){
-				for (Drug d2 : s.getDrugs()){
-					if ((findVertex(d1) != null) && (findVertex(d2) != null))
-					removeAllEdges(findVertex(d1), findVertex(d2));
+			List<Drug> drugs = new ArrayList<Drug>(s.getDrugs());
+			for(int i = 0; i < drugs.size() - 1; ++i) {
+				Drug d1 = drugs.get(i);
+				for (int j = i + 1; j < drugs.size(); ++j){
+					Drug d2 = drugs.get(j);
+					Vertex vert1 = findVertex(d1);
+					Vertex vert2 = findVertex(d2);
+					if ((vert1 != null) && (vert2 != null)) {
+						Edge toDelete = getEdge(vert1, vert2);
+						if (toDelete != null) {
+							int origStudyCount = toDelete.getStudyCount();
+							removeEdge(toDelete);
+							if (origStudyCount > 1)
+							{
+								System.out.println("Reducing count between " + vert1 + " and " + vert2 + " by one to " + (origStudyCount-1));
+								addEdge(vert1, vert2, new Edge(origStudyCount -1));
+					
+								//toDelete.setStudyCount(origStudyCount-1);
+							}
+							//else
+								//removeEdge(toDelete);
+						}
+					//removeAllEdges(findVertex(d1), findVertex(d2));
+					}
 				}
 			}
 		}
