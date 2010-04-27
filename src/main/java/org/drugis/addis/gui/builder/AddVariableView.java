@@ -24,8 +24,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -51,6 +54,7 @@ import org.drugis.common.gui.ViewBuilder;
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -67,10 +71,13 @@ public class AddVariableView implements ViewBuilder {
 	private NotEmptyValidator d_validator;
 	private JScrollPane d_scrollPane;
 	private JButton d_AddcatBtn;
+	private SelectionInList<String> d_categoriesListModel;
+	private JButton d_dOkButton;
 	
 	public AddVariableView(PresentationModel<Variable> model, JButton okButton) {
 		d_model = (VariablePresentationModel) model;
-		d_validator = new NotEmptyValidator(okButton);
+		d_dOkButton = okButton;
+		d_validator = new NotEmptyValidator(d_dOkButton);
 	}
 	
 	private void initComponents() {
@@ -86,7 +93,9 @@ public class AddVariableView implements ViewBuilder {
 				d_scrollPane.setVisible(catVisible);
 				d_AddcatBtn.setVisible(catVisible);
 				if (catVisible){
-					Bindings.bind(d_categories, d_model.getCategoriesListModel());
+					d_categoriesListModel = d_model.getCategoriesListModel();
+					Bindings.bind(d_categories, d_categoriesListModel);
+					d_validator.add(d_categories);
 					d_dynamicLabel.setText("Categories: ");
 				} else {
 					d_dynamicLabel.setText("Unit of Measurement: ");
@@ -119,7 +128,6 @@ public class AddVariableView implements ViewBuilder {
 		
 		d_categories = new JList();
 		
-		ComboBoxPopupOnFocusListener.add(d_type);
 		d_validator.add(d_type);
 	}
 

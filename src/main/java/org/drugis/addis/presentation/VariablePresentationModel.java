@@ -8,6 +8,7 @@ import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
@@ -28,14 +29,27 @@ public class VariablePresentationModel extends PresentationModel<Variable> imple
 	
 	
 	private class TypeValueHolder extends ModifiableHolder<Type> {
+			
+		public TypeValueHolder(Type t) {
+			super(t);
+		}
+		
 		@Override
 		public void setValue(Object newValue) {
-			if (newValue.equals(Type.CATEGORICAL) && (getBean() instanceof PopulationCharacteristic))
+			Variable bean = getBean();
+			if (newValue.equals(Type.CATEGORICAL) && (bean instanceof PopulationCharacteristic))
 				setBean(new CategoricalPopulationCharacteristic());
 			
-			else if (!newValue.equals(Type.CATEGORICAL) && (getBean() instanceof PopulationCharacteristic)) 
-				setBean(new ContinuousPopulationCharacteristic());
+			else if (!newValue.equals(Type.CATEGORICAL) && (bean instanceof PopulationCharacteristic)) {
+				ContinuousPopulationCharacteristic newBean = new ContinuousPopulationCharacteristic();
+				newBean.setType((Type) newValue);
+				setBean(newBean);
+			}
 			super.setValue(newValue);
+			
+			if ((bean instanceof OutcomeMeasure)) {
+				((OutcomeMeasure) bean).setType(getValue());
+			}
 		}
 	}
 	
@@ -73,7 +87,7 @@ public class VariablePresentationModel extends PresentationModel<Variable> imple
 	}
 	
 	public ValueModel getTypeModel() {
-		return new TypeValueHolder();
+		return new TypeValueHolder(getBean().getType());
 	}
 	
 	public SelectionInList<String> getCategoriesListModel() {

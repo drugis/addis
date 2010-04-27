@@ -20,6 +20,8 @@
 package org.drugis.addis.gui;
 
 
+import javax.swing.JOptionPane;
+
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
@@ -60,8 +62,18 @@ public class AddVariableDialog extends OkCancelDialog {
 
 	protected void commit() {
 		
+		if ( 	d_domain.getEndpoints().contains(d_pm.getBean())     ||
+				d_domain.getAdverseEvents().contains(d_pm.getBean()) ||
+				d_domain.getVariables().contains(d_pm.getBean())       ) {
+			
+			JOptionPane.showMessageDialog(d_main,
+			    "An item with the name " + d_pm.getBean().getName() + " already exists in the domain.",
+			    "Couldn't add Variable", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
 		if (d_pm.getBean() instanceof Endpoint)
-			d_domain.addEndpoint((Endpoint) d_pm.getBean());
+				d_domain.addEndpoint((Endpoint) d_pm.getBean());
 		else if (d_pm.getBean() instanceof AdverseEvent)
 			d_domain.addAdverseEvent((AdverseEvent) d_pm.getBean());
 		else if (d_pm.getBean() instanceof PopulationCharacteristic) {

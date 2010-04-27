@@ -25,15 +25,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.swing.text.JTextComponent;
+
+import org.jfree.data.general.DatasetChangeListener;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.toedter.calendar.JDateChooser;
@@ -44,6 +51,7 @@ public class NotEmptyValidator extends AbstractValueModel{
 	private List<JComponent> d_fields = new ArrayList<JComponent>();
 	private DocumentListener d_myTextListener = new MyTextListener();
 	private ComboBoxListener d_myActionListener = new ComboBoxListener();
+	private MyListDataListener d_myListDataChangeListener = new MyListDataListener();
 	private JButton button = new JButton();
 	
 	public NotEmptyValidator(JButton button) {
@@ -65,12 +73,17 @@ public class NotEmptyValidator extends AbstractValueModel{
 			d_fields.add(field);
 		} else if (field instanceof JDateChooser) {
 			d_fields.add(field);
+		} else if (field instanceof JList) {
+			((JList) field).getModel().addListDataListener(d_myListDataChangeListener);
+			d_fields.add(field);
 		}
+		
 		/* If we are dealing with a container component, add all components recursively */
-		else if (field instanceof Container){
+		else if (field instanceof JComponent){
 			Container pane = (Container) field;
 			for (Component component : pane.getComponents())
-				add((JComponent) component);
+				if (component instanceof JComponent)
+					add((JComponent) component);
 		}
 		checkFieldsEmptyForButton();
 	}
@@ -97,13 +110,37 @@ public class NotEmptyValidator extends AbstractValueModel{
 				if (((JDateChooser)f).getDate() == null){
 					empty = true;
 					break;
+				}	
+			} else if (f instanceof JList){
+				JList list = (JList) f;
+				if (list.getModel().getSize() < 2) {
+					empty = true;
+					break;
 				}
-					
 			}
+			
 		}
 		fireValueChange(null, !empty);
 		return empty;
 	}	
+	
+	private class MyListDataListener implements ListDataListener {
+
+		public void contentsChanged(ListDataEvent arg0) {
+			checkFieldsEmptyForButton();
+			
+		}
+
+		public void intervalAdded(ListDataEvent arg0) {
+			checkFieldsEmptyForButton();
+			
+		}
+
+		public void intervalRemoved(ListDataEvent arg0) {
+			checkFieldsEmptyForButton();
+		}
+		
+	}
 	
 	private class ComboBoxListener implements ActionListener, ItemListener{
 		public void actionPerformed(ActionEvent arg0) {
