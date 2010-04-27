@@ -10,6 +10,7 @@ operating systems ship with a suitable JRE.
 
 Versions
 ========
+0.8: Network meta-analysis, XML import/export
 0.6: Added add-study-wizard, import from ClinicalTrials.gov
 0.4.1 : Fixed example data (studies Org 022 and 023), changed domain
 	to be version-specific.
