@@ -121,7 +121,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		oldEdges.addAll(d_studies.getValue());
 		oldEdges.removeAll(edgesToAdd); // the existing vertices
 		
-		System.out.println("edges to add " + edgesToAdd);
+		//System.out.println("edges to add " + edgesToAdd);
 		
 		//		add edges
 		for (Study s : edgesToAdd) {
@@ -147,7 +147,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		verticesToAdd.addAll(d_drugs.getValue());
 		verticesToAdd.removeAll(d_previousUpdateDrugs); // contains only newly added drugs
 		
-		System.out.println("vertices to add " + verticesToAdd);
+		//System.out.println("vertices to add " + verticesToAdd);
 		
 		// calculate the vertices that we still want
 		List<Drug> oldVertices = new ArrayList<Drug>();
@@ -191,7 +191,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		verticesToDelete.addAll(d_previousUpdateDrugs);
 		verticesToDelete.removeAll(d_drugs.getValue()); // contains only deleted drugs.
 		
-		System.out.println("vertices to delete " + verticesToDelete);
+		//System.out.println("vertices to delete " + verticesToDelete);
 		
 		for (Drug drugToDelete : verticesToDelete) {
 			for (Drug anyDrug : drugs) {
@@ -210,7 +210,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		edgesToDelete.addAll(d_previousUpdateStudies);
 		edgesToDelete.removeAll(d_studies.getValue()); // contains only deleted studies.
 		
-		System.out.println("Edges to delete " + edgesToDelete);
+		//System.out.println("Edges to delete " + edgesToDelete);
 		
 		for (Study s: edgesToDelete){
 			List<Drug> drugs = new ArrayList<Drug>(s.getDrugs());
@@ -218,24 +218,21 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 				Drug d1 = drugs.get(i);
 				for (int j = i + 1; j < drugs.size(); ++j){
 					Drug d2 = drugs.get(j);
+					
 					Vertex vert1 = findVertex(d1);
 					Vertex vert2 = findVertex(d2);
 					if ((vert1 != null) && (vert2 != null)) {
+						
 						Edge toDelete = getEdge(vert1, vert2);
 						if (toDelete != null) {
 							int origStudyCount = toDelete.getStudyCount();
 							removeEdge(toDelete);
 							if (origStudyCount > 1)
 							{
-								System.out.println("Reducing count between " + vert1 + " and " + vert2 + " by one to " + (origStudyCount-1));
+								//System.out.println("Reducing count between " + vert1 + " and " + vert2 + " by one to " + (origStudyCount-1));
 								addEdge(vert1, vert2, new Edge(origStudyCount -1));
-					
-								//toDelete.setStudyCount(origStudyCount-1);
-							}
-							//else
-								//removeEdge(toDelete);
+							}	
 						}
-					//removeAllEdges(findVertex(d1), findVertex(d2));
 					}
 				}
 			}
