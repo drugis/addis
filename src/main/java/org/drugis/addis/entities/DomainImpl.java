@@ -138,6 +138,16 @@ public class DomainImpl implements Domain {
 	public DomainData getDomainData() {
 		return d_domainData;
 	}
+	
+	public void addOutcomeMeasure(OutcomeMeasure om) {
+		if (om instanceof Endpoint)
+			addEndpoint((Endpoint) om);
+		else if (om instanceof AdverseEvent) {
+			addAdverseEvent((AdverseEvent) om);
+		} else {
+			throw new IllegalStateException("Illegal OutcomeMeasure type " + om.getClass());
+		}
+	}
 
 	public void addEndpoint(Endpoint e) {
 		if (e == null) {
