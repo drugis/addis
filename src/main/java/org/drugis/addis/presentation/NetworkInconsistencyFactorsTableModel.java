@@ -25,13 +25,13 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel i
 	}
 
 	public int getRowCount() {
-		if(d_pm.getBean().getInconsistencyModel().isReady())
+		if(d_pm.isModelConstructionFinished())
 			return d_pm.getBean().getInconsistencyFactors().size();
 		return 0;
 	}
 	
 	public String getValueAt(int row, int col) {
-		if(!d_pm.getBean().getInconsistencyModel().isReady()){
+		if(!d_pm.isModelConstructionFinished()){
 			return "n/a";
 		}
 		InconsistencyParameter ip = d_pm.getBean().getInconsistencyModel().getInconsistencyFactors().get(row);
@@ -41,14 +41,15 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel i
 				out += ip.treatmentList().get(i).id() + ", ";
 			}
 			return out.substring(0, out.length()-2);
-		} else{
+		} else if (d_pm.getBean().getInconsistencyModel().isReady()){
 			Estimate ic = d_pm.getBean().getInconsistency(ip);
 
 			BasicContinuousMeasurement contMeas = new BasicContinuousMeasurement(ic.getMean(), ic.getStandardDeviation(), 0);
 			ContinuousMeasurementPresentation<BasicContinuousMeasurement> pm = 
 								(ContinuousMeasurementPresentation<BasicContinuousMeasurement>) d_pmf.getModel(contMeas);
 			return pm.normConfIntervalString();
-		}
+		} else
+			return "n/a";
 	}
 
 	public String getDescription() {

@@ -50,15 +50,20 @@ public class EnhancedTableHeader extends JTableHeader {
 	 public void autoSizeColumns() {
 		autoSizeColumns(d_table);
 	 }
-
+	 
 	public static void autoSizeColumns(JTable table) {
+		autoSizeColumns(table, MAX_COL_WIDTH);
+	}
+
+	public static void autoSizeColumns(JTable table, int maxColWidth) {
 		int col_count = table.getModel().getColumnCount();
+		
 		
 		for (int i = 0; i < col_count; i++) {
 			TableColumn col = table.getColumnModel().getColumn(i);
 			int requiredColumnWidth = getRequiredColumnWidth(table, col);
-			if (requiredColumnWidth > MAX_COL_WIDTH) {
-				requiredColumnWidth = MAX_COL_WIDTH;
+			if (requiredColumnWidth > maxColWidth) {
+				requiredColumnWidth = maxColWidth;
 			}
 			col.setMinWidth(requiredColumnWidth);
 //			col.setMaxWidth(requiredColumnWidth);

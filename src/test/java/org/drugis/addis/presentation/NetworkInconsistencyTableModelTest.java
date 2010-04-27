@@ -19,6 +19,8 @@ import org.drugis.mtc.InconsistencyParameter;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jgoodies.binding.PresentationModel;
+
 public class NetworkInconsistencyTableModelTest {
 
 	private PresentationModelFactory d_pmf;
@@ -32,7 +34,10 @@ public class NetworkInconsistencyTableModelTest {
 		d_analysis = NetworkTableModelTest.buildMockNetworkMetaAnalysis();
 		d_pmf = new PresentationModelFactory(domain);
 		
-		d_tableModel = new NetworkInconsistencyFactorsTableModel((NetworkMetaAnalysisPresentation) d_pmf.getModel(d_analysis), d_pmf);
+		NetworkMetaAnalysisPresentation pm = (NetworkMetaAnalysisPresentation) d_pmf.getModel(d_analysis);
+		d_tableModel = new NetworkInconsistencyFactorsTableModel((NetworkMetaAnalysisPresentation) pm, d_pmf);
+		pm.d_isModelConstructionFinished = true;
+		
 	}
 	
 	@Test

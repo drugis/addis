@@ -67,4 +67,10 @@ public class AbstractTablePanel extends JPanel {
 			return label;
 		}
 	}
+	
+	public void doLayout() {
+		super.doLayout();
+		EnhancedTableHeader.autoSizeColumns(d_table, 350);
+		d_table.setPreferredScrollableViewportSize(new Dimension(d_table.getPreferredSize().width, d_table.getPreferredSize().height ));
+	}
 }

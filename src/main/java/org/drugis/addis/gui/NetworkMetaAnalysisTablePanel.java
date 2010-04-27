@@ -57,11 +57,6 @@ public class NetworkMetaAnalysisTablePanel extends AbstractTablePanel{
 				label.setToolTipText(((NetworkTableModel) d_tableModel).getDescriptionAt(row, col));
 			}
 			
-//			 Set correct size
-			TableColumn column = table.getColumnModel().getColumn(col);
-			column.setMinWidth((int) label.getPreferredSize().getWidth() + 10);
-			d_table.setPreferredScrollableViewportSize(new Dimension(d_table.getPreferredSize().width, d_table.getPreferredSize().height ));
-			
 			return label;
 		}
 	}

@@ -17,9 +17,18 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<NetworkMetaAnalysis> {
 
 	private DefaultCategoryDataset d_dataset;
+	boolean d_isModelConstructionFinished = false;
 
 	public NetworkMetaAnalysisPresentation(NetworkMetaAnalysis bean, PresentationModelFactory mgr) {
 		super(bean, mgr);
+		
+		getBean().getInconsistencyModel().addProgressListener(new ProgressListener() {
+			
+			public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
+				if (event.getType() == ProgressEvent.EventType.MODEL_CONSTRUCTION_FINISHED)
+					d_isModelConstructionFinished = true;
+			}
+		});
 	}
 
 	public StudyGraphModel getStudyGraphModel() {
@@ -57,5 +66,9 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 				d_dataset.addValue((Number) rankProb, d, rank);
 			}	
 		}
+	}
+	
+	public boolean isModelConstructionFinished() {
+		return d_isModelConstructionFinished;
 	}
 }

@@ -48,36 +48,43 @@ implements ViewBuilder {
 		}
 		
 		public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
-			if (d_pane != null) {
-				if(event.getType() == EventType.SIMULATION_PROGRESS && d_incProgressBar != null){
-					d_progBar.setString("Simulating: " + event.getIteration()/(event.getTotalIterations()/100) + "%");
-					d_progBar.setValue(event.getIteration()/(event.getTotalIterations()/100));
-				} else if(event.getType() == EventType.BURNIN_PROGRESS && d_incProgressBar != null){
-					d_progBar.setString("Burn in: " + event.getIteration()/(event.getTotalIterations()/100) + "%");
-					d_progBar.setValue(event.getIteration()/(event.getTotalIterations()/100));
-				} else if(event.getType() == EventType.SIMULATION_FINISHED) {
-					d_progBar.setVisible(false);
-					d_pane.validate();
-					d_parent.dataModelChanged();
+			if (event.getType() == EventType.MODEL_CONSTRUCTION_FINISHED) {
+				if (d_inconsistencyFactorsTablePanel != null) {
+					d_inconsistencyFactorsTablePanel.doLayout();
+					d_parent.repaintRightPanel();
 				}
+			}
+			if(event.getType() == EventType.SIMULATION_PROGRESS && d_incProgressBar != null){
+				d_progBar.setString("Simulating: " + event.getIteration()/(event.getTotalIterations()/100) + "%");
+				d_progBar.setValue(event.getIteration()/(event.getTotalIterations()/100));
+			} else if(event.getType() == EventType.BURNIN_PROGRESS && d_incProgressBar != null){
+				d_progBar.setString("Burn in: " + event.getIteration()/(event.getTotalIterations()/100) + "%");
+				d_progBar.setValue(event.getIteration()/(event.getTotalIterations()/100));
+			} else if(event.getType() == EventType.SIMULATION_FINISHED) {
+				d_progBar.setVisible(false);
+				d_inconsistencyTablePanel.doLayout();
+				d_consistencyTablePanel.doLayout();
+				d_inconsistencyFactorsTablePanel.doLayout();
+				d_parent.repaintRightPanel();
 			}
 		}
 	}
 	
-	JPanel d_pane = new JPanel();
+	//JPanel d_pane = new JPanel();
 	private PanelBuilder d_builder;
 	private CellConstraints d_cc;
 	private JProgressBar d_incProgressBar;
 	private JProgressBar d_conProgressBar;
-	private JPanel d_inconsistencyPanel;
-	private NetworkInconsistencyFactorsTableModel d_inconsistencyTableModel;
+	private NetworkMetaAnalysisTablePanel d_inconsistencyTablePanel;
+	private NetworkMetaAnalysisTablePanel d_consistencyTablePanel;
+	private JPanel d_inconsistencyFactorsTablePanel;
 	
 	public NetworkMetaAnalysisView(NetworkMetaAnalysisPresentation model, Main main) {
 		super(model, main);
 
+		// Get progress-bars.
 		d_conProgressBar = new JProgressBar();
 		d_incProgressBar = new JProgressBar();
-		
 		new AnalysisProgressListener(d_conProgressBar, d_pm.getBean().getConsistencyModel());
 		new AnalysisProgressListener(d_incProgressBar, d_pm.getBean().getInconsistencyModel());
 
@@ -85,6 +92,11 @@ implements ViewBuilder {
 	}
 
 	public JComponent buildPanel() {
+		if (d_builder != null) {
+			d_builder.getPanel().removeAll();
+			d_builder.getPanel().setVisible(false);
+		}
+		
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
@@ -104,31 +116,21 @@ implements ViewBuilder {
 		d_builder.add(GUIFactory.createCollapsiblePanel(buildStudyGraphPart()), d_cc.xy(1, 11));
 
 		d_builder.addSeparator("Results - network inconsistency model", d_cc.xy(1, 13));
-
-//		build inconsistency part
-		d_inconsistencyPanel = new JPanel(new BorderLayout());
-
-		if(!d_pm.getBean().getInconsistencyModel().isReady())
-			d_builder.add(d_incProgressBar, d_cc.xy(1, 15));
-		
-		String inconsistencyText = "<html>In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em><br> of evidence, in addition to <em>heterogeneity</em> within a comparison. Whereas heterogeneity represents <br>between-study variation in the measured relative effect of a pair of treatments, inconsistency can only <br> occur when a treatment C has a different effect when it is compared with A or B (i.e., studies comparing <br>A and C are systematically different from studies comparing B and C). Thus, inconsistency may even occur <br> with normal meta-analysis, but can only be detected using a network meta-analysis, and then only when <br>there are closed loops in the evidence structure. For more information about assessing inconsistency, <br>see G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, <br>Journal of the American Statistical Association, 101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.<html>";
-		JComponent inconsistencyPane = HtmlWordWrapper.createHtmlPane(inconsistencyText);
-		d_inconsistencyPanel.add(inconsistencyPane, BorderLayout.NORTH);
-		
-		JComponent inconsistencyResultsPart = buildResultsPart(d_pm.getBean().getInconsistencyModel(),d_incProgressBar);
-		d_inconsistencyPanel.add(inconsistencyResultsPart,BorderLayout.CENTER);
-
-		
-		d_inconsistencyTableModel = new NetworkInconsistencyFactorsTableModel(
-				d_pm, d_parent.getPresentationModelFactory());
-		JPanel inconsistencyTable = new AbstractTablePanel(d_inconsistencyTableModel);
-		d_inconsistencyPanel.add(inconsistencyTable,BorderLayout.SOUTH);
-
-		d_builder.add(GUIFactory.createCollapsiblePanel(d_inconsistencyPanel), d_cc.xy(1, 19));
+		buildInconsistencyPart();
 
 		d_builder.addSeparator("Results - network consistency model", d_cc.xy(1, 21));
+		buildConsistencyPart();
 
-//		Build consistency part
+
+//		d_pane.setLayout(new BorderLayout());
+//		d_pane.add(d_builder.getPanel(), BorderLayout.CENTER);
+//		return d_pane;
+		return d_builder.getPanel();
+	}
+
+	private void buildConsistencyPart() {
+		
+		
 		JPanel consistencyPanel = new JPanel(new BorderLayout());
 		if(!d_pm.getBean().getConsistencyModel().isReady())
 			d_builder.add(d_conProgressBar, d_cc.xy(1, 23));
@@ -145,13 +147,31 @@ implements ViewBuilder {
 		JPanel collapsiblePanel = GUIFactory.createCollapsiblePanel(consistencyPanel);
 		/* Fix: ScrollPanel Viewport doesn't have correct size when containing a CollapsiblePanel*/
 		collapsiblePanel.setBorder(BorderFactory.createEmptyBorder(0,0,20,0));  
+		
 		d_builder.add(collapsiblePanel, d_cc.xy(1, 27));
+	}
 
+	private void buildInconsistencyPart() {
+		JPanel inconsistencyPanel = new JPanel(new BorderLayout());
 
-		d_pane.setLayout(new BorderLayout());
-		d_pane.add(d_builder.getPanel(), BorderLayout.CENTER);
+		if(!d_pm.getBean().getInconsistencyModel().isReady())
+			d_builder.add(d_incProgressBar, d_cc.xy(1, 15));
+		
+		String inconsistencyText = "<html>In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em><br> of evidence, in addition to <em>heterogeneity</em> within a comparison. Whereas heterogeneity represents <br>between-study variation in the measured relative effect of a pair of treatments, inconsistency can only <br> occur when a treatment C has a different effect when it is compared with A or B (i.e., studies comparing <br>A and C are systematically different from studies comparing B and C). Thus, inconsistency may even occur <br> with normal meta-analysis, but can only be detected using a network meta-analysis, and then only when <br>there are closed loops in the evidence structure. For more information about assessing inconsistency, <br>see G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, <br>Journal of the American Statistical Association, 101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.<html>";
+		JComponent inconsistencyPane = HtmlWordWrapper.createHtmlPane(inconsistencyText);
+		inconsistencyPanel.add(inconsistencyPane, BorderLayout.NORTH);
+		
+		JComponent inconsistencyResultsPart = buildResultsPart(d_pm.getBean().getInconsistencyModel(),d_incProgressBar);
+		inconsistencyPanel.add(inconsistencyResultsPart,BorderLayout.CENTER);
 
-		return d_pane;
+		
+		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(
+				d_pm, d_parent.getPresentationModelFactory());
+		d_inconsistencyFactorsTablePanel = new AbstractTablePanel(inconsistencyFactorsTableModel);
+		inconsistencyPanel.add(d_inconsistencyFactorsTablePanel,BorderLayout.SOUTH);
+		d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyPanel), d_cc.xy(1, 19));
+
+		
 	}
 
 	private JComponent createRankProbChart(ConsistencyModel networkModel) {
@@ -199,11 +219,16 @@ implements ViewBuilder {
 
 
 		// make table of results (cipriani 2009, fig. 3, pp752):
-		final NetworkTableModel networkAnalysisTableModel = new NetworkTableModel(
+		NetworkTableModel networkAnalysisTableModel = new NetworkTableModel(
 				d_pm, d_parent.getPresentationModelFactory(), networkModel);
 		
 		// this creates the table
 		NetworkMetaAnalysisTablePanel tablePanel = new NetworkMetaAnalysisTablePanel(d_parent, networkAnalysisTableModel);
+		if(networkModel instanceof InconsistencyModel)
+			d_inconsistencyTablePanel = tablePanel;
+		else
+			d_consistencyTablePanel = tablePanel;
+			
 		tablePanel.setVisible(true);
 		scrollPane.getViewport().add(tablePanel);
 		

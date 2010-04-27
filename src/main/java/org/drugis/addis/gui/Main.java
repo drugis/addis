@@ -910,7 +910,18 @@ public class Main extends JFrame {
 		frame.setVisible(true);
 	}
 
-	public void dataModelChanged() {
+	private void dataModelChanged() {
+		reloadRightPanel();
+	}
+	
+	public void repaintRightPanel() {
+		//d_rightPanel.doLayout();
+		//d_rightPanel.repaint();
+		d_rightPanel.setVisible(false);
+		d_rightPanel.setVisible(true);
+	}
+	
+	public void reloadRightPanel() {
 		if (d_rightPanelBuilder != null) {
 			setRightPanelContents(d_rightPanelBuilder.buildPanel());
 		}
