@@ -131,10 +131,11 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 						continue;
 	
 					if ((findVertex(d1) != null) && (findVertex(d2) != null)) {
-						if (getEdge(findVertex(d1), findVertex(d2)) == null) {
-							List<Study> studies = getStudies(d1, d2);
-							addEdge(findVertex(d1), findVertex(d2), new Edge(studies.size()));
-						}
+						Edge curEdge = getEdge(findVertex(d1), findVertex(d2));
+						if (curEdge != null) 
+							removeEdge(curEdge);
+						List<Study> studies = getStudies(d1, d2);
+						addEdge(findVertex(d1), findVertex(d2), new Edge(studies.size()));
 					}
 				}
 			}
