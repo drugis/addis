@@ -61,6 +61,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	
 	protected ListHolder<Drug> d_drugs;
 	private ListHolder<Study> d_studies;
+	private ValueHolder<OutcomeMeasure> d_outcome;
 	
 	private List<Drug> d_previousUpdateDrugs = new ArrayList<Drug>();
 	private List<Study> d_previousUpdateStudies = new ArrayList<Study>();
@@ -70,6 +71,8 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		
 		d_drugs = drugs;
 		d_studies = studies;
+		
+		
 		updateGraph();
 		
 		PropertyChangeListener listener = new PropertyChangeListener() {
@@ -84,9 +87,44 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	public StudyGraphModel(ValueHolder<Indication> indication, ValueHolder<OutcomeMeasure> outcome, 
 			ListHolder<Drug> drugs, Domain domain) {
 		this(new DomainStudyListHolder(domain, indication, outcome), drugs);
+		d_outcome = outcome;
+		
+		d_outcome.addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				resetGraph();
+				//System.out.println("Resetting graph.");
+			}
+		});
+	}
+	
+	public void resetGraph() {
+		ArrayList<Edge> edges = new ArrayList<Edge>(edgeSet());
+		ArrayList<Vertex> verts = new ArrayList<Vertex>(vertexSet());
+		d_previousUpdateDrugs = new ArrayList<Drug>();
+		d_previousUpdateStudies = new ArrayList<Study>();
+
+		removeAllEdges(edges);
+		removeAllVertices(verts);
+
+		List<Drug> drugs = d_drugs.getValue();
+
+		for (Drug d : drugs) {
+			addVertex(new Vertex(d, calculateSampleSize(d)));
+		}
+
+		for (int i = 0; i < (drugs.size() - 1); ++i) {
+			for (int j = i + 1; j < drugs.size(); ++j) {
+				List<Study> studies = getStudies(drugs.get(i), drugs.get(j));
+				if (studies.size() > 0) {
+					addEdge(findVertex(drugs.get(i)), findVertex(drugs.get(j)), new Edge(studies.size()));
+				}
+			}
+		}
 	}
 	
 	public void updateGraph() {	
+		// FIXME: Check whether we're still at the same endpoint.
+		
 		if (!needUpdate()) 
 			return;
 
