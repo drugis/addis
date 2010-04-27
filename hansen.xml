@@ -162,12 +162,12 @@
 				<measurement id="64">
 					<outcomeMeasure class="endpoint" ref="3"/>
 					<arm ref="52"/>
-					<measurement class="rateMeasurement" id="65" rate="34" sampleSize="40"/>
+					<measurement class="rateMeasurement" id="65" rate="25" sampleSize="40"/>
 				</measurement>
 				<measurement id="66">
 					<outcomeMeasure class="endpoint" ref="3"/>
 					<arm ref="54"/>
-					<measurement class="rateMeasurement" id="67" rate="35" sampleSize="47"/>
+					<measurement class="rateMeasurement" id="67" rate="30" sampleSize="47"/>
 				</measurement>
 				<measurement id="68">
 					<outcomeMeasure class="adverseEvent" ref="8"/>
@@ -217,44 +217,44 @@
 			<indication class="indication" ref="1"/>
 			<measurements>
 				<measurement id="84">
-					<outcomeMeasure class="adverseEvent" ref="7"/>
-					<arm ref="80"/>
-					<measurement class="rateMeasurement" id="85" rate="17" sampleSize="43"/>
+					<outcomeMeasure class="endpoint" ref="3"/>
+					<arm ref="78"/>
+					<measurement class="rateMeasurement" id="85" rate="25" sampleSize="41"/>
 				</measurement>
 				<measurement id="86">
-					<outcomeMeasure class="adverseEvent" ref="5"/>
-					<arm ref="78"/>
-					<measurement class="rateMeasurement" id="87" rate="0" sampleSize="41"/>
-				</measurement>
-				<measurement id="88">
 					<outcomeMeasure class="adverseEvent" ref="7"/>
 					<arm ref="78"/>
-					<measurement class="rateMeasurement" id="89" rate="7" sampleSize="41"/>
+					<measurement class="rateMeasurement" id="87" rate="7" sampleSize="41"/>
+				</measurement>
+				<measurement id="88">
+					<outcomeMeasure class="adverseEvent" ref="9"/>
+					<arm ref="78"/>
+					<measurement class="rateMeasurement" id="89" rate="11" sampleSize="41"/>
 				</measurement>
 				<measurement id="90">
-					<outcomeMeasure class="endpoint" ref="3"/>
-					<arm ref="78"/>
-					<measurement class="rateMeasurement" id="91" rate="25" sampleSize="41"/>
-				</measurement>
-				<measurement id="92">
-					<outcomeMeasure class="adverseEvent" ref="9"/>
-					<arm ref="78"/>
-					<measurement class="rateMeasurement" id="93" rate="11" sampleSize="41"/>
-				</measurement>
-				<measurement id="94">
 					<outcomeMeasure class="adverseEvent" ref="5"/>
 					<arm ref="80"/>
-					<measurement class="rateMeasurement" id="95" rate="4" sampleSize="43"/>
+					<measurement class="rateMeasurement" id="91" rate="4" sampleSize="43"/>
 				</measurement>
-				<measurement id="96">
+				<measurement id="92">
+					<outcomeMeasure class="adverseEvent" ref="7"/>
+					<arm ref="80"/>
+					<measurement class="rateMeasurement" id="93" rate="17" sampleSize="43"/>
+				</measurement>
+				<measurement id="94">
 					<outcomeMeasure class="endpoint" ref="3"/>
 					<arm ref="80"/>
-					<measurement class="rateMeasurement" id="97" rate="23" sampleSize="43"/>
+					<measurement class="rateMeasurement" id="95" rate="23" sampleSize="43"/>
 				</measurement>
-				<measurement id="98">
+				<measurement id="96">
 					<outcomeMeasure class="adverseEvent" ref="9"/>
 					<arm ref="80"/>
-					<measurement class="rateMeasurement" id="99" rate="4" sampleSize="43"/>
+					<measurement class="rateMeasurement" id="97" rate="4" sampleSize="43"/>
+				</measurement>
+				<measurement id="98">
+					<outcomeMeasure class="adverseEvent" ref="5"/>
+					<arm ref="78"/>
+					<measurement class="rateMeasurement" id="99" rate="0" sampleSize="41"/>
 				</measurement>
 			</measurements>
 			<notes/>
@@ -385,8 +385,8 @@
 			<measurements>
 				<measurement id="144">
 					<outcomeMeasure class="endpoint" ref="3"/>
-					<arm ref="138"/>
-					<measurement class="rateMeasurement" id="145" rate="72" sampleSize="134"/>
+					<arm ref="140"/>
+					<measurement class="rateMeasurement" id="145" rate="79" sampleSize="135"/>
 				</measurement>
 				<measurement id="146">
 					<outcomeMeasure class="adverseEvent" ref="7"/>
@@ -394,44 +394,44 @@
 					<measurement class="rateMeasurement" id="147" rate="14" sampleSize="134"/>
 				</measurement>
 				<measurement id="148">
-					<outcomeMeasure class="endpoint" ref="3"/>
-					<arm ref="140"/>
-					<measurement class="rateMeasurement" id="149" rate="79" sampleSize="135"/>
+					<outcomeMeasure class="adverseEvent" ref="5"/>
+					<arm ref="138"/>
+					<measurement class="rateMeasurement" id="149" rate="11" sampleSize="134"/>
 				</measurement>
 				<measurement id="150">
-					<outcomeMeasure class="adverseEvent" ref="7"/>
-					<arm ref="140"/>
-					<measurement class="rateMeasurement" id="151" rate="13" sampleSize="135"/>
+					<outcomeMeasure class="adverseEvent" ref="6"/>
+					<arm ref="138"/>
+					<measurement class="rateMeasurement" id="151" rate="11" sampleSize="134"/>
 				</measurement>
 				<measurement id="152">
-					<outcomeMeasure class="adverseEvent" ref="9"/>
+					<outcomeMeasure class="adverseEvent" ref="7"/>
 					<arm ref="140"/>
-					<measurement class="rateMeasurement" id="153" rate="6" sampleSize="135"/>
+					<measurement class="rateMeasurement" id="153" rate="13" sampleSize="135"/>
 				</measurement>
 				<measurement id="154">
-					<outcomeMeasure class="adverseEvent" ref="6"/>
+					<outcomeMeasure class="endpoint" ref="3"/>
 					<arm ref="138"/>
-					<measurement class="rateMeasurement" id="155" rate="11" sampleSize="134"/>
+					<measurement class="rateMeasurement" id="155" rate="72" sampleSize="134"/>
 				</measurement>
 				<measurement id="156">
-					<outcomeMeasure class="adverseEvent" ref="6"/>
-					<arm ref="140"/>
-					<measurement class="rateMeasurement" id="157" rate="12" sampleSize="135"/>
-				</measurement>
-				<measurement id="158">
-					<outcomeMeasure class="adverseEvent" ref="5"/>
-					<arm ref="140"/>
-					<measurement class="rateMeasurement" id="159" rate="11" sampleSize="135"/>
-				</measurement>
-				<measurement id="160">
 					<outcomeMeasure class="adverseEvent" ref="9"/>
 					<arm ref="138"/>
-					<measurement class="rateMeasurement" id="161" rate="15" sampleSize="134"/>
+					<measurement class="rateMeasurement" id="157" rate="15" sampleSize="134"/>
+				</measurement>
+				<measurement id="158">
+					<outcomeMeasure class="adverseEvent" ref="9"/>
+					<arm ref="140"/>
+					<measurement class="rateMeasurement" id="159" rate="6" sampleSize="135"/>
+				</measurement>
+				<measurement id="160">
+					<outcomeMeasure class="adverseEvent" ref="5"/>
+					<arm ref="140"/>
+					<measurement class="rateMeasurement" id="161" rate="11" sampleSize="135"/>
 				</measurement>
 				<measurement id="162">
-					<outcomeMeasure class="adverseEvent" ref="5"/>
-					<arm ref="138"/>
-					<measurement class="rateMeasurement" id="163" rate="11" sampleSize="134"/>
+					<outcomeMeasure class="adverseEvent" ref="6"/>
+					<arm ref="140"/>
+					<measurement class="rateMeasurement" id="163" rate="12" sampleSize="135"/>
 				</measurement>
 			</measurements>
 			<notes/>
@@ -548,34 +548,34 @@
 			<indication class="indication" ref="1"/>
 			<measurements>
 				<measurement id="204">
-					<outcomeMeasure class="adverseEvent" ref="9"/>
+					<outcomeMeasure class="endpoint" ref="3"/>
 					<arm ref="200"/>
-					<measurement class="rateMeasurement" id="205" rate="6" sampleSize="98"/>
+					<measurement class="rateMeasurement" id="205" rate="59" sampleSize="98"/>
 				</measurement>
 				<measurement id="206">
-					<outcomeMeasure class="endpoint" ref="3"/>
-					<arm ref="200"/>
-					<measurement class="rateMeasurement" id="207" rate="59" sampleSize="98"/>
+					<outcomeMeasure class="adverseEvent" ref="7"/>
+					<arm ref="198"/>
+					<measurement class="rateMeasurement" id="207" rate="14" sampleSize="100"/>
 				</measurement>
 				<measurement id="208">
-					<outcomeMeasure class="adverseEvent" ref="7"/>
-					<arm ref="198"/>
-					<measurement class="rateMeasurement" id="209" rate="14" sampleSize="100"/>
-				</measurement>
-				<measurement id="210">
-					<outcomeMeasure class="adverseEvent" ref="7"/>
-					<arm ref="200"/>
-					<measurement class="rateMeasurement" id="211" rate="15" sampleSize="98"/>
-				</measurement>
-				<measurement id="212">
 					<outcomeMeasure class="endpoint" ref="3"/>
 					<arm ref="198"/>
-					<measurement class="rateMeasurement" id="213" rate="47" sampleSize="100"/>
+					<measurement class="rateMeasurement" id="209" rate="47" sampleSize="100"/>
+				</measurement>
+				<measurement id="210">
+					<outcomeMeasure class="adverseEvent" ref="9"/>
+					<arm ref="198"/>
+					<measurement class="rateMeasurement" id="211" rate="24" sampleSize="100"/>
+				</measurement>
+				<measurement id="212">
+					<outcomeMeasure class="adverseEvent" ref="7"/>
+					<arm ref="200"/>
+					<measurement class="rateMeasurement" id="213" rate="15" sampleSize="98"/>
 				</measurement>
 				<measurement id="214">
 					<outcomeMeasure class="adverseEvent" ref="9"/>
-					<arm ref="198"/>
-					<measurement class="rateMeasurement" id="215" rate="24" sampleSize="100"/>
+					<arm ref="200"/>
+					<measurement class="rateMeasurement" id="215" rate="6" sampleSize="98"/>
 				</measurement>
 			</measurements>
 			<notes/>
@@ -607,13 +607,13 @@
 			<measurements>
 				<measurement id="226">
 					<outcomeMeasure class="endpoint" ref="3"/>
-					<arm ref="220"/>
-					<measurement class="rateMeasurement" id="227" rate="63" sampleSize="122"/>
+					<arm ref="222"/>
+					<measurement class="rateMeasurement" id="227" rate="61" sampleSize="120"/>
 				</measurement>
 				<measurement id="228">
 					<outcomeMeasure class="endpoint" ref="3"/>
-					<arm ref="222"/>
-					<measurement class="rateMeasurement" id="229" rate="61" sampleSize="120"/>
+					<arm ref="220"/>
+					<measurement class="rateMeasurement" id="229" rate="63" sampleSize="122"/>
 				</measurement>
 			</measurements>
 			<notes/>
@@ -1039,19 +1039,19 @@
 			<indication class="indication" ref="1"/>
 			<measurements>
 				<measurement id="382">
-					<outcomeMeasure class="endpoint" ref="3"/>
+					<outcomeMeasure class="adverseEvent" ref="9"/>
 					<arm ref="376"/>
-					<measurement class="rateMeasurement" id="383" rate="54" sampleSize="90"/>
+					<measurement class="rateMeasurement" id="383" rate="2" sampleSize="90"/>
 				</measurement>
 				<measurement id="384">
 					<outcomeMeasure class="adverseEvent" ref="7"/>
-					<arm ref="378"/>
-					<measurement class="rateMeasurement" id="385" rate="14" sampleSize="94"/>
+					<arm ref="376"/>
+					<measurement class="rateMeasurement" id="385" rate="13" sampleSize="90"/>
 				</measurement>
 				<measurement id="386">
-					<outcomeMeasure class="adverseEvent" ref="7"/>
-					<arm ref="376"/>
-					<measurement class="rateMeasurement" id="387" rate="13" sampleSize="90"/>
+					<outcomeMeasure class="endpoint" ref="3"/>
+					<arm ref="378"/>
+					<measurement class="rateMeasurement" id="387" rate="56" sampleSize="94"/>
 				</measurement>
 				<measurement id="388">
 					<outcomeMeasure class="adverseEvent" ref="9"/>
@@ -1059,14 +1059,14 @@
 					<measurement class="rateMeasurement" id="389" rate="20" sampleSize="94"/>
 				</measurement>
 				<measurement id="390">
-					<outcomeMeasure class="endpoint" ref="3"/>
+					<outcomeMeasure class="adverseEvent" ref="7"/>
 					<arm ref="378"/>
-					<measurement class="rateMeasurement" id="391" rate="56" sampleSize="94"/>
+					<measurement class="rateMeasurement" id="391" rate="14" sampleSize="94"/>
 				</measurement>
 				<measurement id="392">
-					<outcomeMeasure class="adverseEvent" ref="9"/>
+					<outcomeMeasure class="endpoint" ref="3"/>
 					<arm ref="376"/>
-					<measurement class="rateMeasurement" id="393" rate="2" sampleSize="90"/>
+					<measurement class="rateMeasurement" id="393" rate="54" sampleSize="90"/>
 				</measurement>
 			</measurements>
 			<notes/>
@@ -1105,24 +1105,24 @@
 					<measurement class="rateMeasurement" id="405" rate="8" sampleSize="73"/>
 				</measurement>
 				<measurement id="406">
-					<outcomeMeasure class="endpoint" ref="3"/>
-					<arm ref="400"/>
-					<measurement class="rateMeasurement" id="407" rate="27" sampleSize="73"/>
-				</measurement>
-				<measurement id="408">
-					<outcomeMeasure class="endpoint" ref="3"/>
-					<arm ref="398"/>
-					<measurement class="rateMeasurement" id="409" rate="37" sampleSize="73"/>
-				</measurement>
-				<measurement id="410">
 					<outcomeMeasure class="adverseEvent" ref="9"/>
 					<arm ref="398"/>
-					<measurement class="rateMeasurement" id="411" rate="21" sampleSize="73"/>
+					<measurement class="rateMeasurement" id="407" rate="21" sampleSize="73"/>
 				</measurement>
-				<measurement id="412">
+				<measurement id="408">
 					<outcomeMeasure class="adverseEvent" ref="7"/>
 					<arm ref="398"/>
-					<measurement class="rateMeasurement" id="413" rate="6" sampleSize="73"/>
+					<measurement class="rateMeasurement" id="409" rate="6" sampleSize="73"/>
+				</measurement>
+				<measurement id="410">
+					<outcomeMeasure class="endpoint" ref="3"/>
+					<arm ref="400"/>
+					<measurement class="rateMeasurement" id="411" rate="27" sampleSize="73"/>
+				</measurement>
+				<measurement id="412">
+					<outcomeMeasure class="endpoint" ref="3"/>
+					<arm ref="398"/>
+					<measurement class="rateMeasurement" id="413" rate="37" sampleSize="73"/>
 				</measurement>
 				<measurement id="414">
 					<outcomeMeasure class="adverseEvent" ref="9"/>
@@ -1159,13 +1159,13 @@
 			<measurements>
 				<measurement id="426">
 					<outcomeMeasure class="adverseEvent" ref="9"/>
-					<arm ref="420"/>
-					<measurement class="rateMeasurement" id="427" rate="10" sampleSize="37"/>
+					<arm ref="422"/>
+					<measurement class="rateMeasurement" id="427" rate="10" sampleSize="41"/>
 				</measurement>
 				<measurement id="428">
 					<outcomeMeasure class="adverseEvent" ref="9"/>
-					<arm ref="422"/>
-					<measurement class="rateMeasurement" id="429" rate="10" sampleSize="41"/>
+					<arm ref="420"/>
+					<measurement class="rateMeasurement" id="429" rate="10" sampleSize="37"/>
 				</measurement>
 			</measurements>
 			<notes/>
@@ -1681,9 +1681,9 @@
 			<indication class="indication" ref="1"/>
 			<measurements>
 				<measurement id="616">
-					<outcomeMeasure class="adverseEvent" ref="9"/>
+					<outcomeMeasure class="adverseEvent" ref="7"/>
 					<arm ref="612"/>
-					<measurement class="rateMeasurement" id="617" rate="3" sampleSize="32"/>
+					<measurement class="rateMeasurement" id="617" rate="1" sampleSize="32"/>
 				</measurement>
 				<measurement id="618">
 					<outcomeMeasure class="adverseEvent" ref="7"/>
@@ -1691,14 +1691,14 @@
 					<measurement class="rateMeasurement" id="619" rate="0" sampleSize="32"/>
 				</measurement>
 				<measurement id="620">
-					<outcomeMeasure class="adverseEvent" ref="7"/>
-					<arm ref="612"/>
-					<measurement class="rateMeasurement" id="621" rate="1" sampleSize="32"/>
+					<outcomeMeasure class="adverseEvent" ref="9"/>
+					<arm ref="610"/>
+					<measurement class="rateMeasurement" id="621" rate="2" sampleSize="32"/>
 				</measurement>
 				<measurement id="622">
 					<outcomeMeasure class="adverseEvent" ref="9"/>
-					<arm ref="610"/>
-					<measurement class="rateMeasurement" id="623" rate="2" sampleSize="32"/>
+					<arm ref="612"/>
+					<measurement class="rateMeasurement" id="623" rate="3" sampleSize="32"/>
 				</measurement>
 			</measurements>
 			<notes/>
@@ -1911,43 +1911,43 @@
 			<measurements>
 				<measurement id="698">
 					<outcomeMeasure class="endpoint" ref="3"/>
-					<arm ref="692"/>
-					<measurement class="rateMeasurement" id="699" rate="34" sampleSize="66"/>
+					<arm ref="694"/>
+					<measurement class="rateMeasurement" id="699" rate="38" sampleSize="66"/>
 				</measurement>
 				<measurement id="700">
 					<outcomeMeasure class="adverseEvent" ref="6"/>
-					<arm ref="692"/>
-					<measurement class="rateMeasurement" id="701" rate="9" sampleSize="66"/>
+					<arm ref="694"/>
+					<measurement class="rateMeasurement" id="701" rate="13" sampleSize="66"/>
 				</measurement>
 				<measurement id="702">
-					<outcomeMeasure class="adverseEvent" ref="9"/>
-					<arm ref="694"/>
-					<measurement class="rateMeasurement" id="703" rate="0" sampleSize="66"/>
+					<outcomeMeasure class="adverseEvent" ref="7"/>
+					<arm ref="692"/>
+					<measurement class="rateMeasurement" id="703" rate="4" sampleSize="66"/>
 				</measurement>
 				<measurement id="704">
 					<outcomeMeasure class="adverseEvent" ref="6"/>
-					<arm ref="694"/>
-					<measurement class="rateMeasurement" id="705" rate="13" sampleSize="66"/>
+					<arm ref="692"/>
+					<measurement class="rateMeasurement" id="705" rate="9" sampleSize="66"/>
 				</measurement>
 				<measurement id="706">
 					<outcomeMeasure class="adverseEvent" ref="9"/>
-					<arm ref="692"/>
-					<measurement class="rateMeasurement" id="707" rate="8" sampleSize="66"/>
+					<arm ref="694"/>
+					<measurement class="rateMeasurement" id="707" rate="0" sampleSize="66"/>
 				</measurement>
 				<measurement id="708">
-					<outcomeMeasure class="adverseEvent" ref="7"/>
-					<arm ref="694"/>
-					<measurement class="rateMeasurement" id="709" rate="5" sampleSize="66"/>
+					<outcomeMeasure class="endpoint" ref="3"/>
+					<arm ref="692"/>
+					<measurement class="rateMeasurement" id="709" rate="34" sampleSize="66"/>
 				</measurement>
 				<measurement id="710">
-					<outcomeMeasure class="endpoint" ref="3"/>
+					<outcomeMeasure class="adverseEvent" ref="7"/>
 					<arm ref="694"/>
-					<measurement class="rateMeasurement" id="711" rate="38" sampleSize="66"/>
+					<measurement class="rateMeasurement" id="711" rate="5" sampleSize="66"/>
 				</measurement>
 				<measurement id="712">
-					<outcomeMeasure class="adverseEvent" ref="7"/>
+					<outcomeMeasure class="adverseEvent" ref="9"/>
 					<arm ref="692"/>
-					<measurement class="rateMeasurement" id="713" rate="4" sampleSize="66"/>
+					<measurement class="rateMeasurement" id="713" rate="8" sampleSize="66"/>
 				</measurement>
 			</measurements>
 			<notes/>
@@ -2925,12 +2925,8 @@
 			<adverseEvents id="1068">
 				<adverseEvent ref="8"/>
 				<adverseEvent ref="5"/>
-				<adverseEvent ref="5"/>
-				<adverseEvent ref="6"/>
 				<adverseEvent ref="6"/>
 				<adverseEvent ref="7"/>
-				<adverseEvent ref="7"/>
-				<adverseEvent ref="9"/>
 				<adverseEvent ref="9"/>
 			</adverseEvents>
 			<arms id="1069">
