@@ -443,4 +443,9 @@ public class DomainImpl implements Domain {
 	public SortedSet<AdverseEvent> getAdverseEvents() {
 		return Collections.unmodifiableSortedSet(d_domainData.getAdverseEvents());
 	}
+
+	public void clearDomain() {
+		d_domainData = new DomainData();
+		domainDataReinit();
+	}
 }

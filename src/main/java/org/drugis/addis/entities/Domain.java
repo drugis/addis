@@ -196,4 +196,6 @@ public interface Domain {
 	public void addAdverseEvent(AdverseEvent ade);
 	
 	public void deleteEntity(AdverseEvent ade) throws DependentEntitiesException;
+
+	public void clearDomain();
 }

@@ -259,6 +259,7 @@ public class Main extends JFrame {
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic('f');
 
+		fileMenu.add(createNewItem());
 		fileMenu.add(createImportXMLItem());
 		fileMenu.add(createExportXMLItem());
 		fileMenu.add(createExitItem());
@@ -266,6 +267,7 @@ public class Main extends JFrame {
 		return fileMenu;
 	}
 
+	
 	private JMenu createEditMenu() {
 		JMenu editMenu = new JMenu("Edit");
 		editMenu.setMnemonic('e');
@@ -518,6 +520,18 @@ public class Main extends JFrame {
 				selectionModel);
 		GUIHelper.centerWindow(dialog, this);
 		dialog.setVisible(true);
+	}
+	
+	private JMenuItem createNewItem() {
+		JMenuItem newItem = new JMenuItem("new", ImageLoader
+				.getIcon(FileNames.ICON_DRUG)); // FIXME
+		newItem.setMnemonic('n');
+		newItem.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				d_domain.getDomain().clearDomain();
+			}
+		});
+		return newItem;
 	}
 	
 	private JMenuItem createImportXMLItem() {

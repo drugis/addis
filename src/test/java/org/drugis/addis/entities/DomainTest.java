@@ -59,6 +59,17 @@ public class DomainTest {
 		assertTrue(d_domain.getIndications().isEmpty());
 	}
 	
+	@Test
+	public void testClearDomain() {
+		ExampleData.initDefaultData(d_domain);
+		assertFalse(d_domain.getEndpoints().isEmpty());
+		assertFalse(d_domain.getStudies().isEmpty());
+		assertFalse(d_domain.getDrugs().isEmpty());
+		assertFalse(d_domain.getIndications().isEmpty());
+		d_domain.clearDomain();
+		testEmptyDomain();
+	}
+	
 	@Test(expected=NullPointerException.class)
 	public void testAddEndpointNull() {
 		d_domain.addEndpoint(null);

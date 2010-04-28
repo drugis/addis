@@ -105,6 +105,21 @@ public class DomainImplTest {
 	}
 	
 	@Test
+	public void testClearingDomainFiresListeners() throws Exception {
+		ExampleData.initDefaultData(d_domain);
+
+		DomainListener mock2 = createMock(DomainListener.class);
+		d_domain.addListener(mock2);
+		for (DomainEvent.Type t : DomainEvent.Type.values()) {
+			mock2.domainChanged(new DomainEvent(t));
+		}
+		
+		replay(mock2);
+		d_domain.clearDomain();
+		verify(mock2);	
+	}
+	
+	@Test
 	public void testReloadingDomainKeepsStudyListener() throws Exception {
 		ExampleData.initDefaultData(d_domain);
 		
