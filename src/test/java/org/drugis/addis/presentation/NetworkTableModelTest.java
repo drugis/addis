@@ -76,7 +76,7 @@ public class NetworkTableModelTest {
 		for(int x = 0; x < d_tableModel.getColumnCount(); ++x) {
 			for(int y = 0; y < d_tableModel.getRowCount(); ++y) {
 				if(x == y){
-					assertEquals(d_analysis.getIncludedDrugs().get(x), ((PresentationModel<Drug>) d_tableModel.getValueAt(x, y)).getBean());
+					assertEquals(d_analysis.getArmList().get(x), ((PresentationModel<Drug>) d_tableModel.getValueAt(x, y)).getBean());
 					assertEquals(null, d_tableModel.getDescriptionAt(x, y));
 				} else {
 					assertEquals("n/a", ((PresentationModel<LogContinuousMeasurementEstimate>) d_tableModel.getValueAt(x, y)).getBean().toString());
@@ -95,7 +95,7 @@ public class NetworkTableModelTest {
 		for(int x = 0; x < d_analysis.getIncludedDrugs().size(); ++x){
 			for(int y = 0; y < d_analysis.getIncludedDrugs().size(); ++y){
 				if(x == y){
-					assertEquals(d_analysis.getIncludedDrugs().get(x), ((PresentationModel<Drug>) d_tableModel.getValueAt(x, y)).getBean());
+					assertEquals(d_analysis.getArmList().get(x), ((PresentationModel<Drug>) d_tableModel.getValueAt(x, y)).getBean());
 				} else {
 					Treatment t1 = d_analysis.getBuilder().getTreatment(d_analysis.getIncludedDrugs().get(x).getName());
 					Treatment t2 = d_analysis.getBuilder().getTreatment(d_analysis.getIncludedDrugs().get(y).getName());
@@ -117,7 +117,7 @@ public class NetworkTableModelTest {
 		for(int x = 0; x < d_contAnalysis.getIncludedDrugs().size(); ++x){
 			for(int y = 0; y < d_contAnalysis.getIncludedDrugs().size(); ++y){
 				if(x == y){
-					assertEquals(d_contAnalysis.getIncludedDrugs().get(x), ((PresentationModel<Drug>) d_contTableModel.getValueAt(x, y)).getBean());
+					assertEquals(d_contAnalysis.getArmList().get(x), ((PresentationModel<Drug>) d_contTableModel.getValueAt(x, y)).getBean());
 				} else {
 					Treatment t1 = d_contAnalysis.getBuilder().getTreatment(d_contAnalysis.getIncludedDrugs().get(x).getName());
 					Treatment t2 = d_contAnalysis.getBuilder().getTreatment(d_contAnalysis.getIncludedDrugs().get(y).getName());

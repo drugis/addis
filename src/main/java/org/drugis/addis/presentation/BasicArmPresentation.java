@@ -25,7 +25,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.Drug;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -36,19 +35,15 @@ public class BasicArmPresentation extends PresentationModel<Arm> implements Labe
 		private String d_cachedLabel;
 		
 		public LabelModel() {
-			d_cachedLabel = calcLabel(getDrug());
+			d_cachedLabel = calcLabel(getBean());
 			getBean().addPropertyChangeListener(this);
 		}
 		
-		private String calcLabel(Drug drug) {
-			if (drug == null) {
+		private String calcLabel(Arm arm) {
+			if (arm == null || arm.getDrug() == null || arm.getDose() == null) {
 				return "INCOMPLETE";
 			}
-			return drug.toString();
-		}
-
-		private Drug getDrug() {
-			return getBean().getDrug();
+			return arm.getDrug().toString() + ", " + arm.getDose().toString();
 		}
 
 		public String getValue() {
@@ -58,7 +53,7 @@ public class BasicArmPresentation extends PresentationModel<Arm> implements Labe
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equals(Arm.PROPERTY_DRUG)) {
 				String oldVal = d_cachedLabel;
-				d_cachedLabel = calcLabel((Drug)evt.getNewValue());
+				d_cachedLabel = calcLabel(getBean());
 				firePropertyChange("value", oldVal, d_cachedLabel);
 			}
 		}

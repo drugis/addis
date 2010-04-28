@@ -60,7 +60,8 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 	
 	public Object getValueAt(int row, int col) {
 		if (row == col) {
-			return d_pmf.getModel(d_pm.getBean().getIncludedDrugs().get(row));
+			//return d_pmf.getModel(d_pm.getBean().getIncludedDrugs().get(row));
+			return d_pmf.getModel(d_pm.getBean().getArmList().get(row));
 		} else if(!d_networkModel.isReady()){
 			return d_pmf.getModel(new LogContinuousMeasurementEstimate(null, null));
 		} 
