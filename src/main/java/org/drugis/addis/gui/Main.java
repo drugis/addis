@@ -683,8 +683,12 @@ public class Main extends JFrame {
 
 		initRightPanel();
 		pane.setRightComponent(d_rightPanel);
-
+		
 		add(pane);
+	}
+	
+	public JScrollPane getRightPanel(){
+		return d_rightPanel;
 	}
 
 	private void initLeftPanel() {

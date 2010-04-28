@@ -113,7 +113,8 @@ public class VariableView implements ViewBuilder {
 		if( d_model.getBean() instanceof CategoricalPopulationCharacteristic) {
 			builder.addLabel("categories:", cc.xy(1, 11));
 			JList listBox = new JList();
-			listBox.setBackground(new Color(239, 235, 231));
+			Color c = d_frame.getRightPanel().getBackground();
+			listBox.setBackground(new Color(c.getRed(), c.getGreen(), c.getBlue()));
 			Bindings.bind(listBox,d_model.getCategoriesListModel());
 			builder.add(listBox, cc.xy(3, 11));
 		}
