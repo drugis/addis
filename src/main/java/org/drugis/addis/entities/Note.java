@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.Set;
 
 public class Note extends AbstractEntity {
-	private static final long serialVersionUID = -7168275781000353799L;
 	
 	public static final String PROPERTY_TEXT = "text";
 	public static final String PROPERTY_SOURCE = "source";

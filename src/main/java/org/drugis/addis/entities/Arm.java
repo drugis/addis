@@ -25,7 +25,6 @@ import java.util.Set;
 
 
 public class Arm extends AbstractEntity {
-	private static final long serialVersionUID = -2092185548220089471L;
 	private Integer d_size;
 	private Drug d_drug;
 	private AbstractDose d_dose;

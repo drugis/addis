@@ -24,7 +24,6 @@ package org.drugis.addis.entities;
 import static org.drugis.common.EqualsUtil.equal;
 
 public class FixedDose extends AbstractDose {
-	private static final long serialVersionUID = 8020828306122176413L;
 
 	public static final String PROPERTY_QUANTITY = "quantity";
 

@@ -28,7 +28,6 @@ import org.apache.commons.math.distribution.NormalDistribution;
 import org.apache.commons.math.distribution.NormalDistributionImpl;
 import org.drugis.common.Interval;
 
-@SuppressWarnings("serial")
 public class ContinuousMeasurementEstimate extends BasicContinuousMeasurement{
 	protected DecimalFormat d_decimalFormatter;
 

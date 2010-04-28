@@ -12,7 +12,6 @@ import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
 import org.drugis.mtc.InconsistencyModel;
 
 
-@SuppressWarnings("serial")
 public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 	
 	private MockInconsistencyModel d_mockIncModel;

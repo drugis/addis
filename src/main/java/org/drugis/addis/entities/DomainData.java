@@ -21,7 +21,6 @@
 
 package org.drugis.addis.entities;
 
-import java.io.Serializable;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -30,8 +29,7 @@ import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 
-public class DomainData implements Serializable {
-	private static final long serialVersionUID = 8470783311348971598L;
+public class DomainData {
 
 	private SortedSet<Endpoint> d_endpoints;
 	private SortedSet<Drug> d_drugs;

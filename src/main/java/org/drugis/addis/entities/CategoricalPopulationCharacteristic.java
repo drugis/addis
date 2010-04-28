@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CategoricalPopulationCharacteristic extends AbstractVariable implements PopulationCharacteristic {
-	private static final long serialVersionUID = 8700874872019027607L;
 	private String[] d_categories;
 	
 	public static final String PROPERTY_CATEGORIESASLIST = "categoriesAsList";

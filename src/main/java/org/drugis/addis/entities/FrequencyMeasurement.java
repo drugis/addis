@@ -28,7 +28,6 @@ import java.util.Set;
 
 public class FrequencyMeasurement extends BasicMeasurement {
 
-	private static final long serialVersionUID = -6601562604420073113L;
 	private CategoricalPopulationCharacteristic d_cv;
 	
 	private Map<String, Integer> d_frequencies = new HashMap<String, Integer>();

@@ -24,7 +24,6 @@ package org.drugis.addis.entities;
 import java.util.Set;
 
 public abstract class AbstractDose extends AbstractEntity {
-	private static final long serialVersionUID = 3825538297852622266L;
 	
 	protected SIUnit d_unit;
 	public static final String PROPERTY_UNIT = "unit";

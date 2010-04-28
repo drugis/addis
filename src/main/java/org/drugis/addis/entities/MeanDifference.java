@@ -25,7 +25,6 @@ import org.drugis.common.Interval;
 
 
 public class MeanDifference extends AbstractRelativeEffect<ContinuousMeasurement> {
-	private static final long serialVersionUID = 5993936352514545950L;
 
 	/**
 	 * The MeanDifference of two ContinuousMeasurements.

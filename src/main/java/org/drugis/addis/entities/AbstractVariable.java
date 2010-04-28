@@ -27,7 +27,6 @@ import java.util.Set;
 import org.drugis.common.EqualsUtil;
 
 public abstract class AbstractVariable extends AbstractEntity implements Variable {
-	private static final long serialVersionUID = 5902516465466960966L;
 
 	protected String d_name;
 	String d_description = "";

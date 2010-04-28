@@ -21,12 +21,10 @@
 
 package org.drugis.addis.entities;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudyArmsEntry implements Serializable {
-	private static final long serialVersionUID = -8054742152791933411L;
+public class StudyArmsEntry {
 
 	private Study d_study;
 	private Arm d_base;

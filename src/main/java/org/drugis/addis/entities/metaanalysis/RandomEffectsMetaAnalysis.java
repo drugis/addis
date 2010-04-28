@@ -53,7 +53,6 @@ import org.drugis.common.StudentTTable;
 
 public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 
-	private static final long serialVersionUID = -4351415410739040259L;
 	transient private double d_thetaDSL;
 	transient private double d_SEThetaDSL;
 	transient private Interval<Double> d_confidenceInterval;
@@ -273,7 +272,6 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	}
 
 	private class RandomEffects extends AbstractEntity implements RelativeEffectMetaAnalysis<Measurement> {
-		private static final long serialVersionUID = 6195228866106906214L;
 		
 		private Interval<Double> t_confidenceInterval;
 		private double t_thetaDSL;

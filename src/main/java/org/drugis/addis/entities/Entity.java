@@ -21,12 +21,11 @@
 
 package org.drugis.addis.entities;
 
-import java.io.Serializable;
 import java.util.Set;
 
 import com.jgoodies.binding.beans.Observable;
 
-public interface Entity extends Serializable, Observable {
+public interface Entity extends Observable {
 	/**
 	 * Get the set of strong entities that this entity needs to exist.
 	 * @return A set of entities that this entity depends on. Never null.

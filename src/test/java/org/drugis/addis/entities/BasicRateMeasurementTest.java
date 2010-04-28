@@ -22,12 +22,6 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -41,17 +35,6 @@ public class BasicRateMeasurementTest {
 	public void setUp() {
 		d_pg = new Arm(null, null, 101);
 		d_measurement = new BasicRateMeasurement(67, d_pg.getSize());
-	}
-	
-	@Test
-	public void testSerialization() throws Exception {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutputStream oos = new ObjectOutputStream(bos);
-		oos.writeObject(d_measurement);
-		ObjectInputStream ois = new ObjectInputStream(
-				new ByteArrayInputStream(bos.toByteArray()));
-		d_measurement = (BasicMeasurement) ois.readObject();
-		assertNotNull(d_measurement);
 	}
 	
 	@Test

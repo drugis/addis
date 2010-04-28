@@ -26,7 +26,6 @@ import static org.drugis.common.EqualsUtil.equal;
 import org.drugis.common.Interval;
 
 public class FlexibleDose extends AbstractDose {
-	private static final long serialVersionUID = -8789524312421940513L;
 	private Interval<Double> d_flexDose;
 	
 	public static final String PROPERTY_FLEXIBLEDOSE = "flexibleDose";

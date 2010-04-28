@@ -41,7 +41,6 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 
 public abstract class AbstractMetaAnalysis extends AbstractEntity implements MetaAnalysis {
-	private static final long serialVersionUID = 6504073155207712299L;
 	
 	private static class ArmMap extends HashMap<Study, Map<Drug, Arm>> {
 		private static final long serialVersionUID = -8579169115557701584L;

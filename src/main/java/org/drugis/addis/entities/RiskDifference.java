@@ -24,7 +24,6 @@ package org.drugis.addis.entities;
 import org.drugis.common.Interval;
 
 public class RiskDifference extends AbstractRelativeEffect<RateMeasurement> {
-	private static final long serialVersionUID = -6459490310869138478L;
 
 	public RiskDifference(RateMeasurement denominator, RateMeasurement numerator) {
 		super(numerator, denominator);

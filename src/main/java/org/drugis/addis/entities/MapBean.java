@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 
 abstract public class MapBean<K, V> extends AbstractEntity implements Map<K, V>  {
-	private static final long serialVersionUID = -8733867872254497765L;
 
 	public static final String PROPERTY_CONTENTS = "contents";
 	

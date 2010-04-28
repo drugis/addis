@@ -33,7 +33,6 @@ import org.drugis.common.StudentTTable;
 
 public abstract class AbstractRelativeEffect<T extends Measurement> extends AbstractEntity implements RelativeEffect<T>{
 
-	private static final long serialVersionUID = 1863294156273299358L;
 	protected T d_subject;
 	protected T d_baseline; 
 

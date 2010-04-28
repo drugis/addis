@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.Set;
 
 public class Drug extends AbstractEntity implements Comparable<Drug> {
-	private static final long serialVersionUID = 5156008576438893074L;
 
 	private String d_name = "";
 	private String d_atcCode = "";

@@ -35,10 +35,8 @@ import java.util.Set;
 import org.drugis.common.EqualsUtil;
 
 public class Study extends AbstractEntity implements Comparable<Study>, Entity {
-	private static final long serialVersionUID = 532314508658928979L;
 
 	public static class MeasurementKey extends AbstractEntity implements Entity {
-		private static final long serialVersionUID = 6310789667384578005L;
 
 		private Entity d_outcomeM;
 		private Arm d_arm;

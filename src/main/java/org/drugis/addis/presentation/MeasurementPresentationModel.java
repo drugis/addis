@@ -31,7 +31,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 
 public class MeasurementPresentationModel extends PresentationModel<Measurement> {
-	private static final long serialVersionUID = -1122087193288204443L;
+	private static final long serialVersionUID = 7208656609682779611L;
 	
 	private AbstractValueModel d_pgSize;
 	

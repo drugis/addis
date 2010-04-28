@@ -22,7 +22,6 @@
 package org.drugis.addis.entities;
 
 public class RiskRatio extends AbstractRatio {
-	private static final long serialVersionUID = 3178825436484450721L;
 
 	public RiskRatio(RateMeasurement denominator, RateMeasurement numerator) {
 		super(numerator, denominator);

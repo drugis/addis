@@ -27,7 +27,6 @@ import org.apache.commons.math.distribution.NormalDistributionImpl;
 import org.drugis.common.Interval;
 
 public class LogContinuousMeasurementEstimate extends ContinuousMeasurementEstimate { //ContinuousMeasurementEstimate {
-	private static final long serialVersionUID = -593325391463716636L;
 
 	public LogContinuousMeasurementEstimate(Double logMean, Double logStdDev) {
 		super(logMean, logStdDev);

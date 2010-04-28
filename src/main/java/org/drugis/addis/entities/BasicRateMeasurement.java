@@ -23,7 +23,6 @@ package org.drugis.addis.entities;
 
 
 public class BasicRateMeasurement extends BasicMeasurement implements RateMeasurement {
-	private static final long serialVersionUID = -1004559723622385992L;
 	
 	private Integer d_rate;
 	

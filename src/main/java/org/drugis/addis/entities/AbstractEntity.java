@@ -24,7 +24,6 @@ package org.drugis.addis.entities;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -36,8 +35,7 @@ import org.drugis.addis.util.EntryXMLFormat;
 import org.drugis.addis.util.HashMapXMLFormat;
 import org.drugis.common.ObserverManager;
 
-public abstract class AbstractEntity implements Entity, Serializable {
-	private static final long serialVersionUID = -3889001536692466540L;
+public abstract class AbstractEntity implements Entity {
 	
 	transient private ObserverManager d_om;
 

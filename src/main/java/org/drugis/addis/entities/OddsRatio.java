@@ -23,7 +23,6 @@ package org.drugis.addis.entities;
 
 
 public class OddsRatio extends AbstractRatio {
-	private static final long serialVersionUID = -6897859558867350347L;
 
 	/**
 	 * The odds-ratio of two RateMeasurements.

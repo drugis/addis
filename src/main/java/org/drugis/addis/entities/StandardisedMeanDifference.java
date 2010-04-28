@@ -24,7 +24,6 @@ package org.drugis.addis.entities;
 import org.drugis.common.Interval;
 
 public class StandardisedMeanDifference extends AbstractRelativeEffect<ContinuousMeasurement> {
-	private static final long serialVersionUID = -8753337320258281527L;
 	/*
 	 * The Standardised Mean Difference is calculated through Cohen's d and adjusted with J(degrees of freedom)
 	 * to result in Hedges g. All formulas are based on The Handbook of Research Synthesis and Meta-Analysis 

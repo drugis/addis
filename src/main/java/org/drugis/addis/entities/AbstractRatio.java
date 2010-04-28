@@ -26,7 +26,6 @@ import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
 public abstract class AbstractRatio extends AbstractRelativeEffect<RateMeasurement> {
-	private static final long serialVersionUID = 1647344976539753330L;
 	protected double d_correction;
 	
 	protected AbstractRatio(RateMeasurement numerator, RateMeasurement denominator) throws IllegalArgumentException {

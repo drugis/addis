@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.Set;
 
 public abstract class BasicMeasurement extends AbstractEntity implements Measurement {
-	private static final long serialVersionUID = 6892934487858770855L;
 	protected Integer d_sampleSize;
 
 	public BasicMeasurement(int size) {

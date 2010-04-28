@@ -47,7 +47,6 @@ import org.drugis.mtc.Network;
 import org.drugis.mtc.NetworkBuilder;
 
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis{
-	private static final long serialVersionUID = -1646175155970420625L;
 	
 	transient private InconsistencyModel d_inconsistencyModel;
 	transient private ConsistencyModel d_consistencyModel;

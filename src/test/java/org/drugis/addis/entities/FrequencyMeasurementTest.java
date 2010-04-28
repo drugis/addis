@@ -147,13 +147,4 @@ public class FrequencyMeasurementTest {
 		assertEquals(50, m.getFrequency(d_cv.getCategories()[0]));
 		assertEquals(40, m.getFrequency(d_cv.getCategories()[1]));
 	}
-	
-	@Test
-	public void testSerialization() throws Exception {
-		d_meas.setFrequency(d_cv.getCategories()[0], 25);
-
-		FrequencyMeasurement newMeas = JUnitUtil.serializeObject(d_meas);
-		
-		assertEquals(d_meas, newMeas);
-	}
 }

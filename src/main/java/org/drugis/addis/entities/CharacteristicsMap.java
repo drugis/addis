@@ -28,7 +28,6 @@ import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
 public class CharacteristicsMap extends MapBean<Characteristic, Object> {
-	private static final long serialVersionUID = -6003644367870072126L;
 	
 	@Override
 	public Set<Entity> getDependencies() {

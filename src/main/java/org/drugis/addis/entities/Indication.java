@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.Set;
 
 public class Indication extends AbstractEntity implements Comparable<Indication> {
-	private static final long serialVersionUID = -4383475531365696177L;
 	
 	private String d_name;
 	/**
