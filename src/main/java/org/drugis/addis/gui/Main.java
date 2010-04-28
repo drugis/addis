@@ -116,7 +116,7 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 @SuppressWarnings("serial")
 public class Main extends JFrame {
 	private static final String DOMAIN_DEFAULT_FILENAME = "domain-"
-			+ AppInfo.getAppVersion() + ".dat";
+			+ AppInfo.getAppVersion() + ".xml";
 	private JComponent d_leftPanel;
 	private JScrollPane d_rightPanel;
 	private ViewBuilder d_rightPanelBuilder;
@@ -160,23 +160,13 @@ public class Main extends JFrame {
 
 	protected void quitApplication() {
 		try {
-			saveDomainToFile(DOMAIN_DEFAULT_FILENAME);
+			saveDomainToXMLFile(DOMAIN_DEFAULT_FILENAME);
 			System.exit(0);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Error saving domain",
 					"Error saving domain", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
-	}
-
-	private void saveDomainToFile(String fileName) throws IOException {
-		File f = new File(fileName);
-		if (f.exists()) {
-			f.delete();
-		}
-
-		FileOutputStream fos = new FileOutputStream(f);
-		d_domain.saveDomain(fos);
 	}
 	
 	private void saveDomainToXMLFile(String fileName) throws IOException {
@@ -193,7 +183,7 @@ public class Main extends JFrame {
 		d_domain = new DomainManager();
 
 		try {
-			loadDomainFromFile(DOMAIN_DEFAULT_FILENAME);
+			loadDomainFromXMLFile(DOMAIN_DEFAULT_FILENAME);
 		} catch (Exception e) {
 			MainData.initDefaultData(getDomain());
 		}
@@ -203,17 +193,6 @@ public class Main extends JFrame {
 
 	public Domain getDomain() {
 		return d_domain.getDomain();
-	}
-
-	private void loadDomainFromFile(String fileName) throws IOException,
-			ClassNotFoundException {
-		File f = new File(fileName);
-		if (f.exists() && f.isFile()) {
-			FileInputStream fis = new FileInputStream(f);
-			d_domain.loadDomain(fis);
-		} else {
-			throw new FileNotFoundException(fileName + " not found");
-		}
 	}
 	
 	private void loadDomainFromXMLFile(String fileName) throws IOException,
@@ -280,8 +259,6 @@ public class Main extends JFrame {
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic('f');
 
-		fileMenu.add(createOpenItem());
-		fileMenu.add(createSaveItem());
 		fileMenu.add(createImportXMLItem());
 		fileMenu.add(createExportXMLItem());
 		fileMenu.add(createExitItem());
@@ -542,35 +519,9 @@ public class Main extends JFrame {
 		GUIHelper.centerWindow(dialog, this);
 		dialog.setVisible(true);
 	}
-
-	private JMenuItem createOpenItem() {
-		JMenuItem openItem = new JMenuItem("Open", ImageLoader
-				.getIcon(FileNames.ICON_OPENFILE));
-		openItem.setMnemonic('o');
-		openItem.addActionListener(new AbstractAction() {
-
-			public void actionPerformed(ActionEvent e) {
-				final JFileChooser fileChooser = new JFileChooser();
-				int returnVal = fileChooser.showOpenDialog(Main.this);
-
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					try {
-						loadDomainFromFile(fileChooser.getSelectedFile()
-								.getAbsolutePath());
-					} catch (Exception e1) {
-						JOptionPane.showMessageDialog(Main.this,
-								"Couldn't open file "
-										+ fileChooser.getSelectedFile()
-												.getAbsolutePath() + " .");
-					}
-				}
-			}
-		});
-		return openItem;
-	}
 	
 	private JMenuItem createImportXMLItem() {
-		JMenuItem openItem = new JMenuItem("Import XML", ImageLoader
+		JMenuItem openItem = new JMenuItem("Load XML", ImageLoader
 				.getIcon(FileNames.ICON_OPENFILE));
 		openItem.setMnemonic('i');
 		openItem.addActionListener(new AbstractAction() {
@@ -595,35 +546,9 @@ public class Main extends JFrame {
 		});
 		return openItem;
 	}
-
-	private JMenuItem createSaveItem() {
-		JMenuItem saveItem = new JMenuItem("Save", ImageLoader
-				.getIcon(FileNames.ICON_SAVEFILE));
-		saveItem.setMnemonic('s');
-		saveItem.addActionListener(new AbstractAction() {
-
-			public void actionPerformed(ActionEvent e) {
-				final JFileChooser fileChooser = new JFileChooser();
-				int returnVal = fileChooser.showSaveDialog(Main.this);
-
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					try {
-						saveDomainToFile(fileChooser.getSelectedFile()
-								.getAbsolutePath());
-					} catch (Exception e1) {
-						JOptionPane.showMessageDialog(Main.this,
-								"Couldn't save file "
-										+ fileChooser.getSelectedFile()
-												.getAbsolutePath() + " .");
-					}
-				}
-			}
-		});
-		return saveItem;
-	}
 	
 	private JMenuItem createExportXMLItem() {
-		JMenuItem saveItem = new JMenuItem("Export XML", ImageLoader
+		JMenuItem saveItem = new JMenuItem("Save XML", ImageLoader
 				.getIcon(FileNames.ICON_SAVEFILE));
 		saveItem.setMnemonic('e');
 		saveItem.addActionListener(new AbstractAction() {

@@ -89,7 +89,7 @@ public class DomainImplTest {
 		ExampleData.initDefaultData(d_domain);
 		
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		d_domain.saveDomainData(bos);
+		d_domain.saveXMLDomainData(bos);
 
 		DomainListener mock2 = createMock(DomainListener.class);
 		d_domain.addListener(mock2);
@@ -99,7 +99,7 @@ public class DomainImplTest {
 		replay(mock2);
 		
 		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-		d_domain.loadDomainData(bis);
+		d_domain.loadXMLDomainData(bis);
 
 		verify(mock2);	
 	}
@@ -110,9 +110,9 @@ public class DomainImplTest {
 		
 			
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		d_domain.saveDomainData(bos);
+		d_domain.saveXMLDomainData(bos);
 		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-		d_domain.loadDomainData(bis);
+		d_domain.loadXMLDomainData(bis);
 		
 		Study s = (Study) d_domain.getStudies().first();
 		

@@ -54,12 +54,12 @@ public class DomainManagerTest {
 		ExampleData.initDefaultData(d_manager.getDomain());
 		
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		d_manager.saveDomain(bos);
+		d_manager.saveXMLDomain(bos);
 		Domain domain = d_manager.getDomain();
 		
 		d_manager = new DomainManager();
 		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-		d_manager.loadDomain(bis);
+		d_manager.loadXMLDomain(bis);
 		
 		assertEquals(domain, d_manager.getDomain());
 	}

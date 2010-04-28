@@ -25,8 +25,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,31 +61,6 @@ public class DomainImpl implements Domain {
 			e.printStackTrace();
 		}
 		domainDataReinit();
-	}
-	
-	/**
-	 * Replace the DomainData by a new instance loaded from a stream.
-	 * @param is Stream to read objects from.
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	public void loadDomainData(InputStream is)
-	throws IOException, ClassNotFoundException {
-		ObjectInputStream ois = new ObjectInputStream(is);
-		d_domainData = (DomainData)ois.readObject();
-		domainDataReinit();
-	}
-	
-	/**
-	 * Save the Domain to a stream.
-	 * @param os Stream to write objects to.
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	public void saveDomainData(OutputStream os)
-	throws IOException {
-		ObjectOutputStream oos = new ObjectOutputStream(os);
-		oos.writeObject(d_domainData);
 	}
 	
 	/**
