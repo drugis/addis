@@ -34,7 +34,7 @@ public class ContinuousMeasurementEstimate extends BasicContinuousMeasurement{
 
 	public ContinuousMeasurementEstimate(Double mean, Double stddev){
 		super(mean, stddev, 0);
-		d_decimalFormatter = new DecimalFormat("##0.0##");
+		d_decimalFormatter = new DecimalFormat("##0.000");
 	}
 	
 	public Interval<Double> getConfidenceInterval() {

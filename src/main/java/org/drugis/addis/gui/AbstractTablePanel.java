@@ -106,7 +106,7 @@ public class AbstractTablePanel extends JPanel {
 		super.doLayout();
 		EnhancedTableHeader.autoSizeColumns(d_table, 350);
 		d_table.setPreferredScrollableViewportSize(new Dimension(d_table.getPreferredSize().width, d_table.getPreferredSize().height ));
-		if (d_maxWidth != 0)
-			d_scroll.setPreferredSize(new Dimension(Math.min(d_table.getPreferredScrollableViewportSize().width +22, d_maxWidth), d_tableModel.getRowCount() * 24));
+		if (d_maxWidth != 0 && d_table.getPreferredSize().width > d_maxWidth)
+			d_scroll.setPreferredSize(new Dimension(Math.min(d_table.getPreferredSize().width, d_maxWidth), d_table.getPreferredSize().height + 35));
 	}
 }

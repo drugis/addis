@@ -54,7 +54,9 @@ public class EnhancedTableHeader extends JTableHeader {
 		Component component;
 		int requiredWidth = 0;
 		int rows = table.getRowCount();
-		
+		if (column.getHeaderValue() != null) {
+			requiredWidth = (int) column.getHeaderValue().toString().length()*7;
+		}
 		for (int i = 0; i < rows; i++) {
 			renderer = table.getCellRenderer(i, modelIndex);
 			Object valueAt = table.getValueAt(i, modelIndex);
@@ -79,7 +81,6 @@ public class EnhancedTableHeader extends JTableHeader {
 	public static void autoSizeColumns(JTable table, int maxColWidth) {
 		int col_count = table.getModel().getColumnCount();
 		
-		
 		for (int i = 0; i < col_count; i++) {
 			TableColumn col = table.getColumnModel().getColumn(i);
 			int requiredColumnWidth = getRequiredColumnWidth(table, col);
@@ -87,7 +88,6 @@ public class EnhancedTableHeader extends JTableHeader {
 				requiredColumnWidth = maxColWidth;
 			}
 			col.setMinWidth(requiredColumnWidth);
-//			col.setMaxWidth(requiredColumnWidth);
 		}
 	}
 

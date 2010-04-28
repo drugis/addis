@@ -80,10 +80,4 @@ public class NetworkMetaAnalysisTablePanel extends AbstractTablePanel{
 			return label;
 		}
 	}
-	
-	public void doLayout() {
-		super.doLayout();
-		EnhancedTableHeader.autoSizeColumns(d_table);
-		d_table.setPreferredScrollableViewportSize(new Dimension(d_table.getPreferredSize().width, d_table.getPreferredSize().height ));
-	}
 }

@@ -107,7 +107,7 @@ implements ViewBuilder {
 		d_incProgressBar = new JProgressBar();
 		new AnalysisProgressListener(d_conProgressBar, d_pm.getBean().getConsistencyModel());
 		new AnalysisProgressListener(d_incProgressBar, d_pm.getBean().getInconsistencyModel());
-
+		
 		d_pm.getBean().run();
 	}
 
@@ -236,7 +236,7 @@ implements ViewBuilder {
 			d_consistencyTablePanel = tablePanel;
 			
 		tablePanel.setVisible(true);
-		tablePanel.setMaxWidth(700);
+		tablePanel.setMaxWidth((int) d_builder.getPanel().getPreferredSize().getWidth());
 		panel.add(tablePanel, BorderLayout.NORTH);
 		
 		return panel;
