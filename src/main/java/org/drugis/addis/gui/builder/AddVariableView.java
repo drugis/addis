@@ -38,6 +38,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Variable;
@@ -178,7 +179,7 @@ public class AddVariableView implements ViewBuilder {
 		d_AddcatBtn.setVisible(false);
 		builder.add(d_AddcatBtn,cc.xy(5,9));
 		
-		if (d_direction != null) {
+		if (d_direction != null && !(d_model.getBean() instanceof AdverseEvent)) {
 			builder.addLabel("Direction:", cc.xy(1, 11));
 			builder.add(d_direction, cc.xy(3, 11));
 		}

@@ -111,7 +111,6 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		d_outcome.addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				resetGraph();
-				//System.out.println("Resetting graph.");
 			}
 		});
 	}
@@ -142,8 +141,6 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	}
 	
 	public void updateGraph() {	
-		// FIXME: Check whether we're still at the same endpoint.
-		
 		if (!needUpdate()) 
 			return;
 
