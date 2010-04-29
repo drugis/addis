@@ -534,8 +534,8 @@ public class Main extends JFrame {
 	}
 	
 	private JMenuItem createNewItem() {
-		JMenuItem newItem = new JMenuItem("new", ImageLoader
-				.getIcon(FileNames.ICON_DRUG)); // FIXME
+		JMenuItem newItem = new JMenuItem("New", ImageLoader
+				.getIcon(FileNames.ICON_NEWFILE));
 		newItem.setMnemonic('n');
 		newItem.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -548,7 +548,7 @@ public class Main extends JFrame {
 	private JMenuItem createImportXMLItem() {
 		JMenuItem openItem = new JMenuItem("Load XML", ImageLoader
 				.getIcon(FileNames.ICON_OPENFILE));
-		openItem.setMnemonic('i');
+		openItem.setMnemonic('l');
 		openItem.addActionListener(new AbstractAction() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -575,7 +575,7 @@ public class Main extends JFrame {
 	private JMenuItem createExportXMLItem() {
 		JMenuItem saveItem = new JMenuItem("Save XML", ImageLoader
 				.getIcon(FileNames.ICON_SAVEFILE));
-		saveItem.setMnemonic('e');
+		saveItem.setMnemonic('s');
 		saveItem.addActionListener(new AbstractAction() {
 
 			public void actionPerformed(ActionEvent e) {
