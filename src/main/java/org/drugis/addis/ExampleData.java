@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
@@ -54,6 +55,7 @@ public class ExampleData {
 	private static Indication s_indicationDepression;
 	private static Endpoint s_endpointHamd;
 	private static Endpoint s_endpointCgi;
+	private static AdverseEvent s_convulsion;
 	private static Drug s_parox;
 	private static Drug s_fluox;
 	private static Drug s_viagra;
@@ -100,6 +102,7 @@ public class ExampleData {
 		// unused stuff
 		domain.addVariable(buildGenderVariable());
 		domain.addVariable(buildAgeVariable());
+		domain.addAdverseEvent(buildAdverseEventConvulsion());
 	}
 
 	public static CategoricalPopulationCharacteristic buildGenderVariable() {
@@ -668,5 +671,13 @@ public class ExampleData {
 			map.put(s, drugMap);
 		}
 		return map;
+	}
+	
+	public static AdverseEvent buildAdverseEventConvulsion() {
+		if (s_convulsion == null) {
+			s_convulsion = new AdverseEvent("Convulsion", Variable.Type.RATE);
+			s_convulsion.setDescription("Rate of convulsion during study");
+		}
+		return s_convulsion;
 	}
 }

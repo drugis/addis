@@ -35,7 +35,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.MainData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
@@ -48,7 +47,6 @@ import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyGraphModel;
-import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -100,11 +98,11 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testGetEndpointSetForAdverseEvent() {
-		d_domain.getStudies().first().addAdverseEvent(MainData.buildAdverseEventConvulsion());
+		d_domain.getStudies().first().addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		List<OutcomeMeasure> expected = new ArrayList<OutcomeMeasure>();
 		expected.add(ExampleData.buildEndpointCgi());
-		expected.add(MainData.buildAdverseEventConvulsion());
+		expected.add(ExampleData.buildAdverseEventConvulsion());
 		expected.add(ExampleData.buildEndpointHamd());
 		JUnitUtil.assertAllAndOnly(expected, d_wizard.getOutcomeMeasureListModel().getValue());
 	}
