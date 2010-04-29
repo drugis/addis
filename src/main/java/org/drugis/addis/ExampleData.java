@@ -352,6 +352,7 @@ public class ExampleData {
 		Study study = new Study("Bennie et al, 1995", buildIndicationDepression());
 		study.setEndpoints(new ArrayList<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
+//		study.addAdverseEvent(buildAdverseEventConvulsion());
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -653,6 +654,19 @@ public class ExampleData {
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network", 
 				buildIndicationDepression(), buildEndpointHamd(),
+				studies, drugs, buildMap(studies, drugs));
+		
+		return analysis;
+	}
+	
+	public static NetworkMetaAnalysis buildNetworkMetaAnalysisAlternative() {
+		List<Study> studies = Arrays.asList(new Study[] {
+				buildStudyBennie(), buildStudyChouinard(), buildStudyDeWilde(), buildStudyFava2002()});
+		List<Drug> drugs = Arrays.asList(new Drug[] {buildDrugFluoxetine(), buildDrugParoxetine(), 
+				buildDrugSertraline()});
+		
+		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network2", 
+				buildIndicationDepression(), buildAdverseEventConvulsion(),
 				studies, drugs, buildMap(studies, drugs));
 		
 		return analysis;
