@@ -23,6 +23,7 @@ package org.drugis.addis.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -30,7 +31,8 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
-import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.gui.components.EnhancedTableHeader;
 import org.drugis.addis.presentation.LabeledPresentationModel;
 import org.drugis.addis.presentation.NetworkTableModel;
 
@@ -64,7 +66,7 @@ public class NetworkMetaAnalysisTablePanel extends AbstractTablePanel{
 			JLabel label = BasicComponentFactory.createLabel(((LabeledPresentationModel)val).getLabelModel());
 			label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 	
-			if (((PresentationModel<?>)val).getBean() instanceof Arm) {
+			if (((PresentationModel<?>)val).getBean() instanceof Drug) {
 				label.setBackground(Color.lightGray);
 			} else {
 				label.setBackground(Color.WHITE);

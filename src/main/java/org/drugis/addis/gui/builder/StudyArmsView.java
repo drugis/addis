@@ -21,7 +21,10 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.text.FieldPosition;
+import java.text.Format;
 import java.text.NumberFormat;
+import java.text.ParsePosition;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -77,6 +80,7 @@ public class StudyArmsView implements ViewBuilder {
 		return builder.getPanel();
 	}
 
+	@SuppressWarnings("serial")
 	private int buildArm(FormLayout layout, PanelBuilder builder, CellConstraints cc, int row, Arm g) {
 		BasicArmPresentation armModel = (BasicArmPresentation)d_pm.getModel(g);
 		LayoutUtil.addRow(layout);
@@ -85,6 +89,24 @@ public class StudyArmsView implements ViewBuilder {
 		builder.add(
 				armLabel,
 				cc.xy(1, row));
+		
+		builder.add(
+				BasicComponentFactory.createLabel(
+						armModel.getModel(Arm.PROPERTY_DOSE),
+						new Format() {
+							
+							@Override
+							public Object parseObject(String source, ParsePosition pos) {
+								return null;
+							}
+							
+							@Override
+							public StringBuffer format(Object obj, StringBuffer toAppendTo,
+									FieldPosition pos) {
+								return toAppendTo.append(obj.toString());
+							}
+						}),
+						cc.xy(3, row, "right, center"));
 		
 		builder.add(
 				BasicComponentFactory.createLabel(

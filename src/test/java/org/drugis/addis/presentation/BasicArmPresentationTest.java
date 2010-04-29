@@ -62,7 +62,7 @@ public class BasicArmPresentationTest {
 		group.setDose(dose);
 		Drug drug = new Drug("Fluoxetine", "atc");
 		group.setDrug(drug);
-		assertEquals("Fluoxetine, 25.5 mg/day", d_pres.getLabelModel().getValue());
+		assertEquals("Fluoxetine", d_pres.getLabelModel().getValue());
 	}
 		
 	@Test
