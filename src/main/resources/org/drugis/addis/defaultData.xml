@@ -1,0 +1,773 @@
+<?xml version="1.0" ?>
+<addis-data>
+	<indications id="0">
+		<indication id="1" code="48447003" name="Chronic Heart Failure"/>
+		<indication id="2" code="310497006" name="Severe depression"/>
+	</indications>
+	<endpoints id="3">
+		<endpoint id="4" description="Change from baseline CGI Severity of Illness score" name="CGI Severity Change" unitOfMeasurement="Deviation from the baseline of CGI Severity of Illness score">
+			<direction value="HIGHER_IS_BETTER"/>
+			<type value="CONTINUOUS"/>
+		</endpoint>
+		<endpoint id="5" description="Rate of mortality due to cardiovascular causes" name="Cardiovascular Death Incidence" unitOfMeasurement="Ratio of Patients">
+			<direction value="LOWER_IS_BETTER"/>
+			<type value="RATE"/>
+		</endpoint>
+		<endpoint id="6" description="Responders with a 50% increase in HAM-D score" name="HAM-D Responders" unitOfMeasurement="Ratio of Patients">
+			<direction value="HIGHER_IS_BETTER"/>
+			<type value="RATE"/>
+		</endpoint>
+	</endpoints>
+	<adverseEvents id="7">
+		<adverseEvent id="8" description="Rate of convulsion during study" name="Convulsion" unitOfMeasurement="Ratio of Patients">
+			<direction value="LOWER_IS_BETTER"/>
+			<type value="RATE"/>
+		</adverseEvent>
+		<adverseEvent id="9" description="Rate of patients reporting severe headache due to excessive alcohol consumption" name="Headache" unitOfMeasurement="Ratio of Patients">
+			<direction value="LOWER_IS_BETTER"/>
+			<type value="RATE"/>
+		</adverseEvent>
+	</adverseEvents>
+	<drugs id="10">
+		<drug id="11" atcCode="N06AA09" name="Amitriptyline"/>
+		<drug id="12" atcCode="N07BA02" name="Bupropion"/>
+		<drug id="13" atcCode="C09CA06" name="Candesartan"/>
+		<drug id="14" atcCode="N06AB03" name="Fluoxetine"/>
+		<drug id="15" atcCode="A04AA01" name="Paroxetine"/>
+		<drug id="16" atcCode="" name="Placebo"/>
+		<drug id="17" atcCode="NO6AX11" name="Remeron"/>
+		<drug id="18" atcCode="N06AB06" name="Sertraline"/>
+		<drug id="19" atcCode="N06AX05" name="Trazodone"/>
+	</drugs>
+	<populationCharacteristics id="20">
+		<continuousCharacteristic id="21" description="" name="Age" unitOfMeasurement="">
+			<type value="CONTINUOUS"/>
+		</continuousCharacteristic>
+		<categoricalCharacteristic id="22" description="" name="Gender" unitOfMeasurement="">
+			<categories id="23">
+				<string id="24" value="Male"/>
+				<string id="25" value="Female"/>
+			</categories>
+			<type value="CATEGORICAL"/>
+		</categoricalCharacteristic>
+	</populationCharacteristics>
+	<studies id="26">
+		<study id="27" studyId="Bennie et al, 1995">
+			<adverseEvents id="28"/>
+			<arms id="29">
+				<arm id="30" size="144">
+					<dose class="fixedDose" id="31" quantity="20.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="14"/>
+				</arm>
+				<arm id="32" size="142">
+					<dose class="fixedDose" id="33" quantity="50.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="18"/>
+				</arm>
+			</arms>
+			<characteristics class="characteristics">
+				<ALLOCATION class="allocation" value="RANDOMIZED"/>
+				<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+				<OBJECTIVE class="string" id="34" value="Comparing the efficacy and safety of sertraline with those of fluoxetine."/>
+				<STATUS class="status" value="COMPLETED"/>
+				<INCLUSION class="string" id="35" value="Psychiatric outpatients with DSM-III-R major depression or bipolar disorder (depressed)."/>
+				<EXCLUSION class="string" id="36" value=""/>
+			</characteristics>
+			<endpoints id="37">
+				<endpoint ref="6"/>
+				<endpoint ref="4"/>
+			</endpoints>
+			<indication class="indication" ref="2"/>
+			<measurements>
+				<measurement id="38">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="30"/>
+					<measurement class="rateMeasurement" id="39" rate="63" sampleSize="144"/>
+				</measurement>
+				<measurement id="40">
+					<outcomeMeasure class="endpoint" ref="4"/>
+					<arm ref="32"/>
+					<measurement class="continuousMeasurement" id="41" mean="0.6899999999999999" sampleSize="142" stdDev="0.5"/>
+				</measurement>
+				<measurement id="42">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="32"/>
+					<measurement class="rateMeasurement" id="43" rate="73" sampleSize="142"/>
+				</measurement>
+				<measurement id="44">
+					<outcomeMeasure class="endpoint" ref="4"/>
+					<arm ref="30"/>
+					<measurement class="continuousMeasurement" id="45" mean="0.67" sampleSize="144" stdDev="0.5"/>
+				</measurement>
+			</measurements>
+			<notes/>
+			<populationCharacteristics id="46"/>
+		</study>
+		<study id="47" studyId="Boyer et al, 1998">
+			<adverseEvents id="48"/>
+			<arms id="49">
+				<arm id="50" size="122">
+					<dose class="fixedDose" id="51" quantity="75.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="18"/>
+				</arm>
+				<arm id="52" size="120">
+					<dose class="fixedDose" id="53" quantity="30.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="14"/>
+				</arm>
+			</arms>
+			<characteristics class="characteristics">
+				<ALLOCATION class="allocation" value="RANDOMIZED"/>
+				<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+				<CENTERS class="number" value="1"/>
+				<OBJECTIVE class="string" ref="36"/>
+				<STATUS class="status" value="COMPLETED"/>
+				<INCLUSION class="string" ref="36"/>
+				<EXCLUSION class="string" ref="36"/>
+			</characteristics>
+			<endpoints id="54">
+				<endpoint ref="6"/>
+			</endpoints>
+			<indication class="indication" ref="2"/>
+			<measurements>
+				<measurement id="55">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="52"/>
+					<measurement class="rateMeasurement" id="56" rate="61" sampleSize="120"/>
+				</measurement>
+				<measurement id="57">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="50"/>
+					<measurement class="rateMeasurement" id="58" rate="63" sampleSize="122"/>
+				</measurement>
+			</measurements>
+			<notes/>
+			<populationCharacteristics id="59"/>
+		</study>
+		<study id="60" studyId="Chouinard et al, 1999">
+			<adverseEvents id="61"/>
+			<arms id="62">
+				<arm id="63" size="102">
+					<dose class="fixedDose" id="64" quantity="25.5">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="15"/>
+				</arm>
+				<arm id="65" size="101">
+					<dose class="fixedDose" id="66" quantity="27.5">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="14"/>
+				</arm>
+			</arms>
+			<characteristics class="characteristics">
+				<ALLOCATION class="allocation" value="RANDOMIZED"/>
+				<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+				<CENTERS class="number" value="8"/>
+				<OBJECTIVE class="string" id="67" value="The antidepressant and anxiolytic efficacy of the selective serotonin reuptake inhibitors paroxetine and fluoxetine was compared in patients with moderate to severe depression."/>
+				<STUDY_START class="date" date="13 Dec 1991"/>
+				<STATUS class="status" value="COMPLETED"/>
+				<INCLUSION class="string" id="68" value="Patients were recruited through newspaper ads and referrals. Patients were included if they had symptoms of depression for at least one month prior to the screening visit, a total score of 20 on the 21-item Hamilton Depression Rating Scale (HAM-D) (Hamilton, 1960), and a score of two on item one HAM-D at the screening visit (5–14 days prior to baseline) and at entry (Day 0)."/>
+				<EXCLUSION class="string" id="69" value="Patients were excluded if they had significant coexisting illness, including renal, hepatic, gastrointestinal, cardiovascular or neurological disease; non-stabilized diabetes; other current Axis I psychiatric diagnosis; organic brain syndrome; past or present abuse of alcohol or illicit drugs; were at significant risk of suicide; or were pregnant or lactating. Other exclusion criteria included ECT or continuous lithium therapy in the preceding two months, monoamine oxidase inhibitor or oral neuroleptic use in the preceding 21 days, any antidepressant or sedative hypnotic (except chloral hydrate) in the previous seven days, fluoxetine in the previous 35 days, or current therapy with an anticoagulant or type 1C antiarrhythmic (e.g. flecainide, propafenone). Patients who had clinically significant abnormalities on the prestudy physical examination, ECG or laboratory tests (hematology, biochemistry and thyroid tests) were also excluded. The use of formal psychotherapy was not permitted for the duration of the study."/>
+			</characteristics>
+			<endpoints id="70">
+				<endpoint ref="6"/>
+				<endpoint ref="4"/>
+			</endpoints>
+			<indication class="indication" ref="2"/>
+			<measurements>
+				<measurement id="71">
+					<outcomeMeasure class="endpoint" ref="4"/>
+					<arm ref="63"/>
+					<measurement class="continuousMeasurement" id="72" mean="-1.6899999999999999" sampleSize="102" stdDev="0.16"/>
+				</measurement>
+				<measurement id="73">
+					<outcomeMeasure class="endpoint" ref="4"/>
+					<arm ref="65"/>
+					<measurement class="continuousMeasurement" id="74" mean="-1.8" sampleSize="101" stdDev="0.16"/>
+				</measurement>
+				<measurement id="75">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="65"/>
+					<measurement class="rateMeasurement" id="76" rate="67" sampleSize="101"/>
+				</measurement>
+				<measurement id="77">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="63"/>
+					<measurement class="rateMeasurement" id="78" rate="67" sampleSize="102"/>
+				</measurement>
+			</measurements>
+			<notes/>
+			<populationCharacteristics id="79"/>
+		</study>
+		<study id="80" studyId="De Wilde et al, 1993">
+			<adverseEvents id="81"/>
+			<arms id="82">
+				<arm id="83" size="37">
+					<dose class="fixedDose" id="84" quantity="25.5">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="15"/>
+				</arm>
+				<arm id="85" size="41">
+					<dose class="fixedDose" id="86" quantity="27.5">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="14"/>
+				</arm>
+			</arms>
+			<characteristics class="characteristics">
+				<ALLOCATION class="allocation" value="RANDOMIZED"/>
+				<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+				<CENTERS class="number" value="1"/>
+				<OBJECTIVE class="string" id="87" value="To compare the efficacy and tolerability of once or twice daily administration of the selective serotonin reuptake inhibitors paroxetine and fluoxetine."/>
+				<STATUS class="status" value="COMPLETED"/>
+				<INCLUSION class="string" id="88" value="After a 1-week placebo wash-out, patients suffering from DSM-III major depression and with a score of 18 or more on the 21-item Hamilton Rating Scale for Depression (HRSD) received either paroxetine or fluoxetine."/>
+				<EXCLUSION class="string" ref="36"/>
+			</characteristics>
+			<endpoints id="89">
+				<endpoint ref="6"/>
+			</endpoints>
+			<indication class="indication" ref="2"/>
+			<measurements>
+				<measurement id="90">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="85"/>
+					<measurement class="rateMeasurement" id="91" rate="26" sampleSize="41"/>
+				</measurement>
+				<measurement id="92">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="83"/>
+					<measurement class="rateMeasurement" id="93" rate="23" sampleSize="37"/>
+				</measurement>
+			</measurements>
+			<notes/>
+			<populationCharacteristics id="94"/>
+		</study>
+		<study id="95" studyId="Fava et al, 2002">
+			<adverseEvents id="96"/>
+			<arms id="97">
+				<arm id="98" size="96">
+					<dose class="fixedDose" id="99" quantity="75.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="18"/>
+				</arm>
+				<arm id="100" size="92">
+					<dose class="fixedDose" id="101" quantity="30.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="14"/>
+				</arm>
+				<arm id="102" size="93">
+					<dose class="fixedDose" id="103" quantity="0.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="15"/>
+				</arm>
+			</arms>
+			<characteristics class="characteristics">
+				<ALLOCATION class="allocation" value="RANDOMIZED"/>
+				<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+				<CENTERS class="number" value="1"/>
+				<OBJECTIVE class="string" ref="36"/>
+				<STATUS class="status" value="COMPLETED"/>
+				<INCLUSION class="string" ref="36"/>
+				<EXCLUSION class="string" ref="36"/>
+			</characteristics>
+			<endpoints id="104">
+				<endpoint ref="6"/>
+			</endpoints>
+			<indication class="indication" ref="2"/>
+			<measurements>
+				<measurement id="105">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="102"/>
+					<measurement class="rateMeasurement" id="106" rate="64" sampleSize="93"/>
+				</measurement>
+				<measurement id="107">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="98"/>
+					<measurement class="rateMeasurement" id="108" rate="70" sampleSize="96"/>
+				</measurement>
+				<measurement id="109">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="100"/>
+					<measurement class="rateMeasurement" id="110" rate="57" sampleSize="92"/>
+				</measurement>
+			</measurements>
+			<notes/>
+			<populationCharacteristics id="111"/>
+		</study>
+		<study id="112" studyId="McMurray et al, 2003">
+			<adverseEvents id="113"/>
+			<arms id="114">
+				<arm id="115" size="1273">
+					<dose class="fixedDose" id="116" quantity="32.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="13"/>
+				</arm>
+				<arm id="117" size="1271">
+					<dose class="fixedDose" id="118" quantity="32.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="16"/>
+				</arm>
+			</arms>
+			<characteristics class="characteristics">
+				<ALLOCATION class="allocation" value="RANDOMIZED"/>
+				<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+				<CENTERS class="number" value="618"/>
+				<OBJECTIVE class="string" id="119" value="Angiotensin II type 1 receptor blockers have favourable effects on heamodynamic measurements, neurohumoral activity and left-ventricular remodelling when added to angiotensin-converting-enzyme (ACE) inhibitors in patients with chronic heart failure (CHF). We aimed to find out whether these drugs improve clinical outcome."/>
+				<STUDY_START class="date" date="01 Mar 1999"/>
+				<STUDY_END class="date" date="31 Mar 2003"/>
+				<STATUS class="status" value="COMPLETED"/>
+				<INCLUSION class="string" id="120" value="Eligible patients were aged 18 years or older, had left-ventricular ejection fraction 40% or lower measured within the past 6 months, New York Heart Association functional class II–IV (if class II, patients had to have admission to hospital for a cardiac reason in the previous 6 months), and treatment with an ACE inhibitor at a constant dose for 30 days or longer."/>
+				<EXCLUSION class="string" ref="36"/>
+			</characteristics>
+			<endpoints id="121">
+				<endpoint ref="5"/>
+			</endpoints>
+			<indication class="indication" ref="1"/>
+			<measurements>
+				<measurement id="122">
+					<outcomeMeasure class="endpoint" ref="5"/>
+					<arm ref="117"/>
+					<measurement class="rateMeasurement" id="123" rate="347" sampleSize="1271"/>
+				</measurement>
+				<measurement id="124">
+					<outcomeMeasure class="endpoint" ref="5"/>
+					<arm ref="115"/>
+					<measurement class="rateMeasurement" id="125" rate="302" sampleSize="1273"/>
+				</measurement>
+			</measurements>
+			<notes/>
+			<populationCharacteristics id="126"/>
+		</study>
+		<study id="127" studyId="MultipleArms, 1993">
+			<adverseEvents id="128"/>
+			<arms id="129">
+				<arm id="130" size="37">
+					<dose class="fixedDose" id="131" quantity="25.5">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="15"/>
+				</arm>
+				<arm id="132" size="54">
+					<dose class="fixedDose" id="133" quantity="5.5">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="15"/>
+				</arm>
+				<arm id="134" size="41">
+					<dose class="fixedDose" id="135" quantity="27.5">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="14"/>
+				</arm>
+			</arms>
+			<characteristics class="characteristics">
+				<ALLOCATION class="allocation" value="RANDOMIZED"/>
+				<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+				<CENTERS class="number" value="1"/>
+				<OBJECTIVE class="string" ref="87"/>
+				<STATUS class="status" value="COMPLETED"/>
+				<INCLUSION class="string" ref="88"/>
+				<EXCLUSION class="string" ref="36"/>
+			</characteristics>
+			<endpoints id="136">
+				<endpoint ref="6"/>
+			</endpoints>
+			<indication class="indication" ref="2"/>
+			<measurements>
+				<measurement id="137">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="132"/>
+					<measurement class="rateMeasurement" id="138" rate="23" sampleSize="54"/>
+				</measurement>
+				<measurement id="139">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="130"/>
+					<measurement class="rateMeasurement" id="140" rate="23" sampleSize="37"/>
+				</measurement>
+				<measurement id="141">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="134"/>
+					<measurement class="rateMeasurement" id="142" rate="26" sampleSize="41"/>
+				</measurement>
+			</measurements>
+			<notes/>
+			<populationCharacteristics id="143"/>
+		</study>
+		<study id="144" studyId="Newhouse et al, 2000">
+			<adverseEvents id="145"/>
+			<arms id="146">
+				<arm id="147" size="117">
+					<dose class="fixedDose" id="148" quantity="75.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="18"/>
+				</arm>
+				<arm id="149" size="119">
+					<dose class="fixedDose" id="150" quantity="30.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="14"/>
+				</arm>
+			</arms>
+			<characteristics class="characteristics">
+				<ALLOCATION class="allocation" value="RANDOMIZED"/>
+				<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+				<CENTERS class="number" value="1"/>
+				<OBJECTIVE class="string" ref="36"/>
+				<STATUS class="status" value="COMPLETED"/>
+				<INCLUSION class="string" ref="36"/>
+				<EXCLUSION class="string" ref="36"/>
+			</characteristics>
+			<endpoints id="151">
+				<endpoint ref="6"/>
+			</endpoints>
+			<indication class="indication" ref="2"/>
+			<measurements>
+				<measurement id="152">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="149"/>
+					<measurement class="rateMeasurement" id="153" rate="84" sampleSize="119"/>
+				</measurement>
+				<measurement id="154">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="147"/>
+					<measurement class="rateMeasurement" id="155" rate="85" sampleSize="117"/>
+				</measurement>
+			</measurements>
+			<notes/>
+			<populationCharacteristics id="156"/>
+		</study>
+		<study id="157" studyId="Organon 003-022, 1990">
+			<adverseEvents id="158"/>
+			<arms id="159">
+				<arm id="160" size="47">
+					<dose class="flexibleDose" id="161" maxDose="35.0" minDose="5.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="17"/>
+				</arm>
+				<arm id="162" size="47">
+					<dose class="flexibleDose" id="163" maxDose="280.0" minDose="40.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="11"/>
+				</arm>
+				<arm id="164" size="48">
+					<dose class="fixedDose" id="165" quantity="0.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="16"/>
+				</arm>
+			</arms>
+			<characteristics class="characteristics">
+				<ALLOCATION class="allocation" value="RANDOMIZED"/>
+				<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+				<CENTERS class="number" value="1"/>
+				<OBJECTIVE class="string" ref="36"/>
+				<STUDY_END class="date" date="26 Feb 1990"/>
+				<STATUS class="status" value="COMPLETED"/>
+				<INCLUSION class="string" ref="36"/>
+				<EXCLUSION class="string" ref="36"/>
+			</characteristics>
+			<endpoints id="166">
+				<endpoint ref="4"/>
+			</endpoints>
+			<indication class="indication" ref="2"/>
+			<measurements>
+				<measurement id="167">
+					<outcomeMeasure class="endpoint" ref="4"/>
+					<arm ref="162"/>
+					<measurement class="continuousMeasurement" id="168" mean="1.57" sampleSize="47" stdDev="1.3029999999999999"/>
+				</measurement>
+				<measurement id="169">
+					<outcomeMeasure class="endpoint" ref="4"/>
+					<arm ref="160"/>
+					<measurement class="continuousMeasurement" id="170" mean="1.9399999999999999" sampleSize="47" stdDev="1.577"/>
+				</measurement>
+				<measurement id="171">
+					<outcomeMeasure class="endpoint" ref="4"/>
+					<arm ref="164"/>
+					<measurement class="continuousMeasurement" id="172" mean="0.84999999999999998" sampleSize="48" stdDev="1.316"/>
+				</measurement>
+			</measurements>
+			<notes/>
+			<populationCharacteristics id="173"/>
+		</study>
+		<study id="174" studyId="Organon 003-023, 1992">
+			<adverseEvents id="175"/>
+			<arms id="176">
+				<arm id="177" size="49">
+					<dose class="flexibleDose" id="178" maxDose="35.0" minDose="5.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="17"/>
+				</arm>
+				<arm id="179" size="48">
+					<dose class="flexibleDose" id="180" maxDose="280.0" minDose="40.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="19"/>
+				</arm>
+				<arm id="181" size="49">
+					<dose class="fixedDose" id="182" quantity="0.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="16"/>
+				</arm>
+			</arms>
+			<characteristics class="characteristics">
+				<ALLOCATION class="allocation" value="RANDOMIZED"/>
+				<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+				<CENTERS class="number" value="1"/>
+				<OBJECTIVE class="string" ref="36"/>
+				<STUDY_END class="date" date="01 May 1992"/>
+				<STATUS class="status" value="COMPLETED"/>
+				<INCLUSION class="string" ref="36"/>
+				<EXCLUSION class="string" ref="36"/>
+			</characteristics>
+			<endpoints id="183">
+				<endpoint ref="4"/>
+			</endpoints>
+			<indication class="indication" ref="2"/>
+			<measurements>
+				<measurement id="184">
+					<outcomeMeasure class="endpoint" ref="4"/>
+					<arm ref="177"/>
+					<measurement class="continuousMeasurement" id="185" mean="0.8" sampleSize="49" stdDev="1.26"/>
+				</measurement>
+				<measurement id="186">
+					<outcomeMeasure class="endpoint" ref="4"/>
+					<arm ref="179"/>
+					<measurement class="continuousMeasurement" id="187" mean="0.62" sampleSize="48" stdDev="1.109"/>
+				</measurement>
+				<measurement id="188">
+					<outcomeMeasure class="endpoint" ref="4"/>
+					<arm ref="181"/>
+					<measurement class="continuousMeasurement" id="189" mean="0.58999999999999997" sampleSize="49" stdDev="1.12"/>
+				</measurement>
+			</measurements>
+			<notes/>
+			<populationCharacteristics id="190"/>
+		</study>
+		<study id="191" studyId="Sechter et al, 1999">
+			<adverseEvents id="192"/>
+			<arms id="193">
+				<arm id="194" size="118">
+					<dose class="fixedDose" id="195" quantity="75.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="18"/>
+				</arm>
+				<arm id="196" size="120">
+					<dose class="fixedDose" id="197" quantity="30.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug class="drug" ref="14"/>
+				</arm>
+			</arms>
+			<characteristics class="characteristics">
+				<ALLOCATION class="allocation" value="RANDOMIZED"/>
+				<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+				<CENTERS class="number" value="1"/>
+				<OBJECTIVE class="string" ref="36"/>
+				<STATUS class="status" value="COMPLETED"/>
+				<INCLUSION class="string" ref="36"/>
+				<EXCLUSION class="string" ref="36"/>
+			</characteristics>
+			<endpoints id="198">
+				<endpoint ref="6"/>
+			</endpoints>
+			<indication class="indication" ref="2"/>
+			<measurements>
+				<measurement id="199">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="194"/>
+					<measurement class="rateMeasurement" id="200" rate="86" sampleSize="118"/>
+				</measurement>
+				<measurement id="201">
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="196"/>
+					<measurement class="rateMeasurement" id="202" rate="76" sampleSize="120"/>
+				</measurement>
+			</measurements>
+			<notes/>
+			<populationCharacteristics id="203"/>
+		</study>
+	</studies>
+	<metaAnalyses id="204">
+		<randomEffectsMetaAnalysis id="205" name="Hansen et al, 2005">
+			<indication ref="2"/>
+			<outcomeMeasure class="endpoint" ref="6"/>
+			<armEntries>
+				<armEntry>
+					<study ref="47"/>
+					<drug ref="14"/>
+					<arm ref="52"/>
+				</armEntry>
+				<armEntry>
+					<study ref="47"/>
+					<drug ref="18"/>
+					<arm ref="50"/>
+				</armEntry>
+				<armEntry>
+					<study ref="95"/>
+					<drug ref="14"/>
+					<arm ref="100"/>
+				</armEntry>
+				<armEntry>
+					<study ref="95"/>
+					<drug ref="18"/>
+					<arm ref="98"/>
+				</armEntry>
+				<armEntry>
+					<study ref="144"/>
+					<drug ref="14"/>
+					<arm ref="149"/>
+				</armEntry>
+				<armEntry>
+					<study ref="144"/>
+					<drug ref="18"/>
+					<arm ref="147"/>
+				</armEntry>
+				<armEntry>
+					<study ref="191"/>
+					<drug ref="14"/>
+					<arm ref="196"/>
+				</armEntry>
+				<armEntry>
+					<study ref="191"/>
+					<drug ref="18"/>
+					<arm ref="194"/>
+				</armEntry>
+				<armEntry>
+					<study ref="27"/>
+					<drug ref="14"/>
+					<arm ref="30"/>
+				</armEntry>
+				<armEntry>
+					<study ref="27"/>
+					<drug ref="18"/>
+					<arm ref="32"/>
+				</armEntry>
+			</armEntries>
+		</randomEffectsMetaAnalysis>
+		<networkMetaAnalysis id="206" name="Test Network">
+			<indication ref="2"/>
+			<outcomeMeasure class="endpoint" ref="6"/>
+			<armEntries>
+				<armEntry>
+					<study ref="80"/>
+					<drug ref="14"/>
+					<arm ref="85"/>
+				</armEntry>
+				<armEntry>
+					<study ref="80"/>
+					<drug ref="15"/>
+					<arm ref="83"/>
+				</armEntry>
+				<armEntry>
+					<study ref="60"/>
+					<drug ref="14"/>
+					<arm ref="65"/>
+				</armEntry>
+				<armEntry>
+					<study ref="60"/>
+					<drug ref="15"/>
+					<arm ref="63"/>
+				</armEntry>
+				<armEntry>
+					<study id="207" studyId="Fava et al, 2002">
+						<adverseEvents id="208"/>
+						<arms id="209">
+							<arm id="210" size="96">
+								<dose class="fixedDose" id="211" quantity="75.0">
+									<unit value="MILLIGRAMS_A_DAY"/>
+								</dose>
+								<drug class="drug" ref="18"/>
+							</arm>
+							<arm id="212" size="92">
+								<dose class="fixedDose" id="213" quantity="30.0">
+									<unit value="MILLIGRAMS_A_DAY"/>
+								</dose>
+								<drug class="drug" ref="14"/>
+							</arm>
+							<arm id="214" size="93">
+								<dose class="fixedDose" id="215" quantity="0.0">
+									<unit value="MILLIGRAMS_A_DAY"/>
+								</dose>
+								<drug class="drug" ref="15"/>
+							</arm>
+						</arms>
+						<characteristics class="characteristics">
+							<ALLOCATION class="allocation" value="RANDOMIZED"/>
+							<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+							<CENTERS class="number" value="1"/>
+							<OBJECTIVE class="string" ref="36"/>
+							<STATUS class="status" value="COMPLETED"/>
+							<INCLUSION class="string" ref="36"/>
+							<EXCLUSION class="string" ref="36"/>
+						</characteristics>
+						<endpoints id="216">
+							<endpoint ref="6"/>
+						</endpoints>
+						<indication class="indication" ref="2"/>
+						<measurements>
+							<measurement id="217">
+								<outcomeMeasure class="endpoint" ref="6"/>
+								<arm ref="214"/>
+								<measurement class="rateMeasurement" id="218" rate="64" sampleSize="93"/>
+							</measurement>
+							<measurement id="219">
+								<outcomeMeasure class="endpoint" ref="6"/>
+								<arm ref="210"/>
+								<measurement class="rateMeasurement" id="220" rate="70" sampleSize="96"/>
+							</measurement>
+							<measurement id="221">
+								<outcomeMeasure class="endpoint" ref="6"/>
+								<arm ref="212"/>
+								<measurement class="rateMeasurement" id="222" rate="57" sampleSize="92"/>
+							</measurement>
+						</measurements>
+						<notes/>
+						<populationCharacteristics id="223"/>
+					</study>
+					<drug ref="14"/>
+					<arm ref="212"/>
+				</armEntry>
+				<armEntry>
+					<study ref="207"/>
+					<drug ref="18"/>
+					<arm ref="210"/>
+				</armEntry>
+				<armEntry>
+					<study ref="207"/>
+					<drug ref="15"/>
+					<arm ref="214"/>
+				</armEntry>
+				<armEntry>
+					<study ref="27"/>
+					<drug ref="14"/>
+					<arm ref="30"/>
+				</armEntry>
+				<armEntry>
+					<study ref="27"/>
+					<drug ref="18"/>
+					<arm ref="32"/>
+				</armEntry>
+			</armEntries>
+		</networkMetaAnalysis>
+	</metaAnalyses>
+</addis-data>

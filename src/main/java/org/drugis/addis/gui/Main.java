@@ -37,6 +37,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -71,7 +72,6 @@ import javax.swing.tree.TreePath;
 
 import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
-import org.drugis.addis.MainData;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.DependentEntitiesException;
@@ -185,7 +185,13 @@ public class Main extends JFrame {
 		try {
 			loadDomainFromXMLFile(DOMAIN_DEFAULT_FILENAME);
 		} catch (Exception e) {
-			MainData.initDefaultData(getDomain());
+			try {
+				loadDomainFromXMLResource("defaultData.xml");
+			} catch (Exception e2) {
+				JOptionPane.showMessageDialog(this,
+						"Error loading default data: " + e2.toString(), "Error loading domain",
+						JOptionPane.ERROR_MESSAGE);
+			}
 		}
 
 		getDomain().addListener(new MainListener());
@@ -204,6 +210,11 @@ public class Main extends JFrame {
 		} else {
 			throw new FileNotFoundException(fileName + " not found");
 		}
+	}
+	
+	private void loadDomainFromXMLResource(String fileName) throws IOException, ClassNotFoundException {
+		InputStream fis = Main.class.getResourceAsStream("/org/drugis/addis/" + fileName);
+		d_domain.loadXMLDomain(fis);
 	}
 
 	private void initMenu() {
