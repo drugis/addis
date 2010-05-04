@@ -1,5 +1,7 @@
 package org.drugis.addis.presentation.wizard;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,10 +16,12 @@ import org.drugis.addis.presentation.ValueHolder;
 public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationPM {
 
 	private Map<OutcomeMeasure,ModifiableHolder<Boolean>> d_outcomeSelectedMap;
+	private Map<OutcomeMeasure,ModifiableHolder<MetaAnalysis>> d_metaAnalysisSelectedMap;
 	
 	public BenefitRiskWizardPM(Domain d) {
 		super(d);
 		d_outcomeSelectedMap = new HashMap<OutcomeMeasure,ModifiableHolder<Boolean>>();
+		d_metaAnalysisSelectedMap = new HashMap<OutcomeMeasure,ModifiableHolder<MetaAnalysis>>();
 	}
 	
 	public ListHolder<OutcomeMeasure> getOutcomesListModel() {
@@ -38,6 +42,17 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		if (val == null) {
 			val = new ModifiableHolder<Boolean>(new Boolean(false));
 			d_outcomeSelectedMap.put(om, val);
+			
+		}
+		
+		return val;
+	}
+
+	public ValueHolder<MetaAnalysis> getMetaAnalysesSelectedModel(OutcomeMeasure om) {
+		ModifiableHolder<MetaAnalysis> val = d_metaAnalysisSelectedMap.get(om);
+		if (val == null) {
+			val = new ModifiableHolder<MetaAnalysis>();
+			d_metaAnalysisSelectedMap.put(om, val);
 		}
 		
 		return val;

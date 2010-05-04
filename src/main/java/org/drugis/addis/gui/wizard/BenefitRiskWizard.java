@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,6 +23,7 @@ import org.pietschy.wizard.WizardModel;
 import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -83,14 +83,14 @@ public class BenefitRiskWizard extends Wizard {
 		private Component buildCriteriaPane(BenefitRiskWizardPM pm) {
 			setLayout(new BorderLayout());
 			FormLayout layout = new FormLayout(
-					"left:pref",
+					"left:pref, 3dlu, left:pref",
 					"p, 3dlu, p, 3dlu, p"
 					);	
 			
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc = new CellConstraints();
 			
-			JLabel criteriaLabel = new JLabel("Criteria                                          ");
+			JLabel criteriaLabel = new JLabel("Criteria");
 			criteriaLabel.setFont(new Font(Font.SERIF, Font.BOLD, 12));
 			builder.add(criteriaLabel, cc.xy(1, 1));
 			int row = 1;
@@ -99,12 +99,12 @@ public class BenefitRiskWizard extends Wizard {
 				row += 2;
 				LayoutUtil.addRow(layout);
 				JCheckBox checkBox = BasicComponentFactory.createCheckBox(d_pm.getOutcomeSelectedModel(out), out.getName());
-				builder.add(checkBox, cc.xy(1, row));
+				builder.add(checkBox, cc.xyw(1, row, 3));
 				
 				// Add radio-button panel
 				row += 2;
 				LayoutUtil.addRow(layout);
-				builder.add(buildRadioButtonAnalysisPanel(out), cc.xy(1, row, CellConstraints.RIGHT, CellConstraints.DEFAULT));
+				builder.add(buildRadioButtonAnalysisPanel(out), cc.xy(3, row, CellConstraints.RIGHT, CellConstraints.DEFAULT));
 			}
 			
 			return builder.getPanel();
@@ -119,11 +119,12 @@ public class BenefitRiskWizard extends Wizard {
 			ValueHolder<Boolean> enabledModel = d_pm.getOutcomeSelectedModel(out);
 			
 			// Add the radio buttons
-			ButtonGroup group = new ButtonGroup();
 			for(MetaAnalysis ma : d_pm.getMetaAnalyses(out)){
-				JRadioButton radioButton = AuxComponentFactory.createDynamicEnabledRadioButton(ma.getName(), enabledModel);
+				ValueModel selectedModel = d_pm.getMetaAnalysesSelectedModel(out);
+				JRadioButton radioButton = AuxComponentFactory.createDynamicEnabledRadioButton(ma.getName(), ma, selectedModel, enabledModel);
 				radioButtonPanel.add(radioButton);
-				group.add(radioButton);
+				
+				
 			}
 			return radioButtonPanel;
 		}

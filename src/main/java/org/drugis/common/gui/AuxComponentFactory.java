@@ -3,6 +3,8 @@ package org.drugis.common.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.util.Date;
 
@@ -97,9 +99,25 @@ public class AuxComponentFactory {
 		return panel;
 	}
 	
-	public static JRadioButton createDynamicEnabledRadioButton(String text, ValueModel enabledModel) {
-		JRadioButton button = new JRadioButton(text);
+	public static JRadioButton createDynamicEnabledRadioButton(String text, Object choice, ValueModel selectedValueModel, ValueModel enabledModel) {
+		JRadioButton button = BasicComponentFactory.createRadioButton(selectedValueModel, choice, text);
 		Bindings.bind(button,"enabled", enabledModel);
+		
+		enabledModel.addValueChangeListener(new EnabledListener(selectedValueModel));
+		
 		return button;
+	}
+
+	private static class EnabledListener implements PropertyChangeListener {
+		ValueModel d_selectedValueModel;
+		
+		public EnabledListener(ValueModel selectedValueModel) {
+			d_selectedValueModel = selectedValueModel;
+		}
+		
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getNewValue().equals(false))
+				d_selectedValueModel.setValue(null);
+		}
 	}
 }
