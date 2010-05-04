@@ -1,7 +1,10 @@
 package org.drugis.addis.presentation.wizard;
 
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -30,6 +33,14 @@ public class BenfitRiskWizardPMTest {
 		ExampleData.initDefaultData(d_domain);
 		d_pm = new BenefitRiskWizardPM(d_domain); 
 		d_indication = ExampleData.buildIndicationDepression();
+		
+		try {
+			d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysis());
+			d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisAlternative());
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 	}
 	
 	@Test
@@ -64,5 +75,17 @@ public class BenfitRiskWizardPMTest {
 		assertFalse(origModel.getValue());
 		d_pm.getOutcomeSelectedModel(om).setValue(new Boolean(true));
 		assertTrue(origModel.getValue());
+	}
+	
+	@Test
+	public void testGetMetaAnalysesSelectedModel() {
+		ValueHolder<MetaAnalysis> metaAnal1 = d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd());
+		assertNull(metaAnal1.getValue());
+		
+		metaAnal1.setValue(ExampleData.buildNetworkMetaAnalysis());
+		assertNotNull(metaAnal1.getValue());
+		
+		ValueHolder<MetaAnalysis> metaAnal2 = d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd());
+		assertEquals(metaAnal1.getValue(), metaAnal2.getValue());
 	}
 }

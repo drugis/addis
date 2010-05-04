@@ -104,7 +104,7 @@ public class BenefitRiskWizard extends Wizard {
 				// Add radio-button panel
 				row += 2;
 				LayoutUtil.addRow(layout);
-				builder.add(buildRadioButtonAnalysisPanel(out), cc.xy(3, row, CellConstraints.RIGHT, CellConstraints.DEFAULT));
+				builder.add(buildRadioButtonAnalysisPanel(out), cc.xy(3, row, CellConstraints.LEFT, CellConstraints.DEFAULT));
 			}
 			
 			return builder.getPanel();
