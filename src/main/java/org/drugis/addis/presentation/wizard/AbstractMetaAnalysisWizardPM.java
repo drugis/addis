@@ -35,7 +35,6 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.EntityIdExistsException;
-import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
@@ -52,11 +51,9 @@ import org.drugis.addis.presentation.ValueHolder;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
-public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
+public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> extends AbstractWizardWithSelectableIndicationPM {
 
-	protected Domain d_domain;
 	protected PresentationModelFactory d_pmf;
-	protected ModifiableHolder<Indication> d_indicationHolder;
 	protected ModifiableHolder<OutcomeMeasure> d_outcomeHolder;
 	protected OutcomeListHolder d_outcomeListHolder;
 	protected DrugListHolder d_drugListHolder;
@@ -66,10 +63,9 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 	protected DefaultSelectableStudyListPresentationModel d_studyListPm;	
 
 	public AbstractMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmf) {
-		d_domain = d;
+		super(d);
 		d_pmf = pmf;
 	
-		d_indicationHolder = new ModifiableHolder<Indication>();
 		d_outcomeHolder = new ModifiableHolder<OutcomeMeasure>();
 		
 		d_indicationHolder.addPropertyChangeListener(new SetEmptyListener(d_outcomeHolder));
@@ -96,10 +92,6 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 	
 	abstract protected G buildStudyGraphPresentation();
 	
-	public ValueHolder<Indication> getIndicationModel() {
-		return d_indicationHolder; 
-	}
-	
 	protected List<Study> getStudiesEndpointAndIndication() {
 		if (d_outcomeHolder.getValue() == null || d_indicationHolder.getValue() == null) {
 			return Collections.emptyList();
@@ -121,16 +113,6 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> {
 		return d_drugListHolder;
 	}
 
-	@SuppressWarnings("serial")
-	public ListHolder<Indication> getIndicationListModel() {
-		return new AbstractListHolder<Indication>() {
-			@Override
-			public List<Indication> getValue() {
-				return new ArrayList<Indication>(d_domain.getIndications());
-			}
-		};
-	}
-	
 	public AbstractListHolder<OutcomeMeasure> getOutcomeMeasureListModel() {
 		return d_outcomeListHolder;
 	}

@@ -11,6 +11,7 @@ import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -94,5 +95,11 @@ public class AuxComponentFactory {
 		measurementTable.setBackground(Color.WHITE);
 		measurementTable.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 		return panel;
+	}
+	
+	public static JRadioButton createDynamicEnabledRadioButton(String text, ValueModel enabledModel) {
+		JRadioButton button = new JRadioButton(text);
+		Bindings.bind(button,"enabled", enabledModel);
+		return button;
 	}
 }

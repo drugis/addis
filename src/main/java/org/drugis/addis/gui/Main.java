@@ -95,12 +95,14 @@ import org.drugis.addis.gui.builder.ViewFactory;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.StudiesTablePanel;
+import org.drugis.addis.gui.wizard.BenefitRiskWizard;
 import org.drugis.addis.gui.wizard.MetaAnalysisWizard;
 import org.drugis.addis.gui.wizard.NetworkMetaAnalysisWizard;
 import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
+import org.drugis.addis.presentation.wizard.BenefitRiskWizardPresentation;
 import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
 import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 import org.drugis.common.ImageLoader;
@@ -263,6 +265,7 @@ public class Main extends JFrame {
 		addMenu.add(createAddStudyMenuItem());
 		addMenu.add(createAddMetaAnalysisMenuItem());
 		addMenu.add(createAddNetworkMetaAnalysisMenuItem());
+		addMenu.add(createAddBRAnalysisMenuItem());
 		return addMenu;
 	}
 
@@ -438,6 +441,19 @@ public class Main extends JFrame {
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				showMetaAnalysisWizard();
+			}
+		});
+
+		return item;
+	}
+	
+	private JMenuItem createAddBRAnalysisMenuItem() {
+		JMenuItem item = new JMenuItem("Benefit-Risk Analysis", ImageLoader
+				.getIcon(FileNames.ICON_METASTUDY_NEW));
+		item.setMnemonic('b');
+		item.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				showBRAnalysisWizard();
 			}
 		});
 
@@ -648,11 +664,21 @@ public class Main extends JFrame {
 				showNetworkMetaAnalysisWizard();
 			}
 		});		
+		
+		JButton topAddBRAnalysisButton = new JButton("Create benefit-risk analysis",
+				ImageLoader.getIcon(FileNames.ICON_NETWMETASTUDY_NEW));
+		topAddBRAnalysisButton.setToolTipText("Create benefit-risk analysis");
+		topAddBRAnalysisButton.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				showBRAnalysisWizard();
+			}
+		});		
 
 		ButtonBarBuilder2 builder = new ButtonBarBuilder2();
 		builder.addButton(topAddStudyButton);
 		builder.addButton(topAddMetaStudyButton);
 		builder.addButton(topAddNetworkMetaStudyButton);
+		builder.addButton(topAddBRAnalysisButton);
 		builder.addGlue();
 
 		String latestVersion = AppInfo.getLatestVersion();
@@ -675,6 +701,12 @@ public class Main extends JFrame {
 		MetaAnalysisWizard wizard = new MetaAnalysisWizard(this,
 				new MetaAnalysisWizardPresentation(getDomain(), d_pmManager));
 		wizard.showInDialog("Create DerSimonian-Laird random effects meta-analysis", this,	true);
+	}
+	
+	private void showBRAnalysisWizard() {
+		BenefitRiskWizard wizard = new BenefitRiskWizard(this,
+				new BenefitRiskWizardPresentation(getDomain()));
+		wizard.showInDialog("Create benefit-risk analysis", this,	true);
 	}
 	
 	private void showNetworkMetaAnalysisWizard() {

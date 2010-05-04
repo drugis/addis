@@ -101,6 +101,7 @@ public class JSMAAIntegration {
 	public void addModelResults() {
 //		// the outputs of addis::metaanalysis, these are the inputs for BR analysis
 //		for(MetaAnalysis ma : d_analyses){
+//			d_smaaModel.addCriterion(new ScaleCriterion(ma.getOutcomeMeasure().getName()));
 //			for(Drug d : ma.getIncludedDrugs()){
 //				
 //			}
