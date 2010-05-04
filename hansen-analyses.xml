@@ -3709,7 +3709,7 @@
 		</networkMetaAnalysis>
 		<networkMetaAnalysis id="1222" name="Hansen Headache network">
 			<indication ref="1"/>
-			<outcomeMeasure class="endpoint" ref="3"/>
+			<outcomeMeasure class="endpoint" ref="7"/>
 			<armEntries>
 				<armEntry>
 					<study ref="217"/>
