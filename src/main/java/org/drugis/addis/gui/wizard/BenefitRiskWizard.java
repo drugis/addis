@@ -17,6 +17,7 @@ import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
 import org.drugis.common.gui.AuxComponentFactory;
+import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardModel;
@@ -28,14 +29,12 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import fi.smaa.common.gui.LayoutUtil;
-
 @SuppressWarnings("serial")
 public class BenefitRiskWizard extends Wizard {
 	
 	public BenefitRiskWizard(Main parent, BenefitRiskWizardPM pm) {
 		super(buildModel(pm, parent));
-		super.getTitleComponent().setPreferredSize(new Dimension(750, 125));
+		getTitleComponent().setPreferredSize(new Dimension(750, 125));
 		
 		setPreferredSize(new Dimension(750, 750));
 	}
