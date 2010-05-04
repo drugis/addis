@@ -35,6 +35,7 @@ public class BenefitRiskWizard extends Wizard {
 	
 	public BenefitRiskWizard(Main parent, BenefitRiskWizardPM pm) {
 		super(buildModel(pm, parent));
+		super.getTitleComponent().setPreferredSize(new Dimension(750, 125));
 		
 		setPreferredSize(new Dimension(750, 750));
 	}
@@ -95,6 +96,9 @@ public class BenefitRiskWizard extends Wizard {
 			builder.add(criteriaLabel, cc.xy(1, 1));
 			int row = 1;
 			for(OutcomeMeasure out : d_pm.getOutcomesListModel().getValue()){
+				if(d_pm.getMetaAnalyses(out).isEmpty())
+					continue;
+
 				// Add outcome measure checkbox
 				row += 2;
 				LayoutUtil.addRow(layout);
