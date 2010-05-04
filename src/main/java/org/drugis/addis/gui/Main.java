@@ -102,7 +102,7 @@ import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
-import org.drugis.addis.presentation.wizard.BenefitRiskWizardPresentation;
+import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
 import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
 import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 import org.drugis.common.ImageLoader;
@@ -705,7 +705,7 @@ public class Main extends JFrame {
 	
 	private void showBRAnalysisWizard() {
 		BenefitRiskWizard wizard = new BenefitRiskWizard(this,
-				new BenefitRiskWizardPresentation(getDomain()));
+				new BenefitRiskWizardPM(getDomain()));
 		wizard.showInDialog("Create benefit-risk analysis", this,	true);
 	}
 	

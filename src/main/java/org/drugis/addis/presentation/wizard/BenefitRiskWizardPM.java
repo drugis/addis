@@ -11,11 +11,11 @@ import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 
-public class BenefitRiskWizardPresentation extends AbstractWizardWithSelectableIndicationPM {
+public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationPM {
 
 	private Map<OutcomeMeasure,ModifiableHolder<Boolean>> d_outcomeSelectedMap;
 	
-	public BenefitRiskWizardPresentation(Domain d) {
+	public BenefitRiskWizardPM(Domain d) {
 		super(d);
 		d_outcomeSelectedMap = new HashMap<OutcomeMeasure,ModifiableHolder<Boolean>>();
 	}
@@ -42,4 +42,6 @@ public class BenefitRiskWizardPresentation extends AbstractWizardWithSelectableI
 		
 		return val;
 	}
+	
+	
 }

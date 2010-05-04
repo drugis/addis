@@ -16,7 +16,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.addis.presentation.wizard.BenefitRiskWizardPresentation;
+import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
@@ -25,7 +25,6 @@ import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.factories.ComponentFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
@@ -34,13 +33,13 @@ import fi.smaa.common.gui.LayoutUtil;
 @SuppressWarnings("serial")
 public class BenefitRiskWizard extends Wizard {
 	
-	public BenefitRiskWizard(Main parent, BenefitRiskWizardPresentation pm) {
+	public BenefitRiskWizard(Main parent, BenefitRiskWizardPM pm) {
 		super(buildModel(pm, parent));
 		
 		setPreferredSize(new Dimension(750, 750));
 	}
 
-	private static WizardModel buildModel(BenefitRiskWizardPresentation pm, Main frame) {
+	private static WizardModel buildModel(BenefitRiskWizardPM pm, Main frame) {
 		StaticModel wizardModel = new StaticModel();
 		wizardModel.add(new SelectIndicationWizardStep(pm));
 		wizardModel.add(new SelectCriteriaAndAlternativesWizardStep(pm));
@@ -50,9 +49,9 @@ public class BenefitRiskWizard extends Wizard {
 	
 	private static class SelectCriteriaAndAlternativesWizardStep extends PanelWizardStep {
 		
-		private BenefitRiskWizardPresentation d_pm;
+		private BenefitRiskWizardPM d_pm;
 
-		public SelectCriteriaAndAlternativesWizardStep(BenefitRiskWizardPresentation pm){
+		public SelectCriteriaAndAlternativesWizardStep(BenefitRiskWizardPM pm){
 			super("Select Criteria and Alternatives","In this step, you select the criteria (analyses on specific outcomemeasures) and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least two criteria and at least two alternatives must be included.");
 			d_pm = pm;
 			
@@ -81,7 +80,7 @@ public class BenefitRiskWizard extends Wizard {
 			return builder.getPanel();
 		}
 
-		private Component buildCriteriaPane(BenefitRiskWizardPresentation pm) {
+		private Component buildCriteriaPane(BenefitRiskWizardPM pm) {
 			setLayout(new BorderLayout());
 			FormLayout layout = new FormLayout(
 					"left:pref",
@@ -129,7 +128,7 @@ public class BenefitRiskWizard extends Wizard {
 			return radioButtonPanel;
 		}
 
-		private Component buildAlternativesPane(BenefitRiskWizardPresentation pm) {
+		private Component buildAlternativesPane(BenefitRiskWizardPM pm) {
 			// TODO Auto-generated method stub
 			return new JLabel("buildAlternativesPane not implemented yet");
 		}
