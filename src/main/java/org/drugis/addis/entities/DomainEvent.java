@@ -33,7 +33,8 @@ public class DomainEvent {
 		INDICATIONS,
 		ANALYSES,
 		VARIABLES,
-		ADVERSE_EVENTS
+		ADVERSE_EVENTS,
+		BENEFITRISK_ANALYSIS
 	}
 
 	public DomainEvent(Type type) {

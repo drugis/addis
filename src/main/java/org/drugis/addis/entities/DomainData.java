@@ -37,7 +37,8 @@ public class DomainData {
 	private SortedSet<AdverseEvent> d_ades;
 	private SortedSet<PopulationCharacteristic> d_variables;
 	private SortedSet<Study> d_studies;
-	private SortedSet<MetaAnalysis> d_metaAnalyses;	
+	private SortedSet<MetaAnalysis> d_metaAnalyses;
+	private SortedSet<BenefitRiskAnalysis> d_benefitRiskAnalyses;	
 
 	public DomainData() {
 		d_endpoints = new TreeSet<Endpoint>();
@@ -47,6 +48,7 @@ public class DomainData {
 		d_indications = new TreeSet<Indication>();	
 		d_variables = new TreeSet<PopulationCharacteristic>();
 		d_ades = new TreeSet<AdverseEvent>();
+		d_benefitRiskAnalyses = new TreeSet<BenefitRiskAnalysis>();
 	}
 	
 	public void setEndpoints(SortedSet<Endpoint> endpoints) {
@@ -220,4 +222,8 @@ public class DomainData {
 			oe.add(new TreeSet<MetaAnalysis>(d.getMetaAnalyses()), "metaAnalyses", TreeSet.class);
 		}
 	};
+
+	public void addBenefitRiskAnalysis(BenefitRiskAnalysis brAnalysis) {
+		d_benefitRiskAnalyses.add(brAnalysis);		
+	}
 }

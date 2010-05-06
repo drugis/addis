@@ -77,6 +77,13 @@ public interface Domain {
 		throws NullPointerException, IllegalArgumentException, EntityIdExistsException;
 	
 	/**
+	 * Adds a BenefitRiskAnalysis to the data model.
+	 * 
+	 * @param ms the BenefitRiskAnalysis to add
+	 */
+	public void addBenefitRiskAnalysis(BenefitRiskAnalysis ma);
+	
+	/**
 	 * Get the studies stored in the data model, EXCLUDING the meta-studies.
 	 * @return An unmodifiable sorted set of studies. Never a null.
 	 */

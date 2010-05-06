@@ -430,7 +430,6 @@ public class DomainImpl implements Domain {
 		}
 		d_domainData.addAdverseEvent(ade);
 		fireDomainChanged(DomainEvent.Type.ADVERSE_EVENTS);
-		
 	}
 
 	public void deleteEntity(AdverseEvent ade)
@@ -447,5 +446,13 @@ public class DomainImpl implements Domain {
 	public void clearDomain() {
 		d_domainData = new DomainData();
 		domainDataReinit();
+	}
+
+	public void addBenefitRiskAnalysis(BenefitRiskAnalysis brAnalysis) {
+		if (brAnalysis == null) {
+			throw new NullPointerException();
+		}
+		d_domainData.addBenefitRiskAnalysis(brAnalysis);
+		fireDomainChanged(DomainEvent.Type.BENEFITRISK_ANALYSIS);
 	}
 }
