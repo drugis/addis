@@ -8,18 +8,20 @@ import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 
 public class BenefitRiskAnalysis extends AbstractEntity {
 
-	Indication d_indication;
-	List<OutcomeMeasure> d_outcomeMeasures;
-	List<MetaAnalysis> d_metaAnalyses;
-	List<Drug> d_drugs;
+	private String d_id;
+	private Indication d_indication;
+	private List<OutcomeMeasure> d_outcomeMeasures;
+	private List<MetaAnalysis> d_metaAnalyses;
+	private List<Drug> d_drugs;
 	
-	public BenefitRiskAnalysis(Indication indication, List<OutcomeMeasure> outcomeMeasures,
+	public BenefitRiskAnalysis(String id, Indication indication, List<OutcomeMeasure> outcomeMeasures,
 			List<MetaAnalysis> metaAnalysis, List<Drug> drugs) {
 		super();
 		d_indication = indication;
 		d_outcomeMeasures = outcomeMeasures;
 		d_metaAnalyses = metaAnalysis;
 		d_drugs = drugs;
+		setId(id);
 	}
 
 	public Indication getIndication() {
@@ -62,6 +64,14 @@ public class BenefitRiskAnalysis extends AbstractEntity {
 		dependencies.addAll(d_drugs);
 		dependencies.addAll(d_metaAnalyses);
 		return dependencies;
+	}
+
+	public void setId(String id) {
+		d_id = id;
+	}
+
+	public String getId() {
+		return d_id;
 	}
 
 }

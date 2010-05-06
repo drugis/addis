@@ -226,4 +226,8 @@ public class DomainData {
 	public void addBenefitRiskAnalysis(BenefitRiskAnalysis brAnalysis) {
 		d_benefitRiskAnalyses.add(brAnalysis);		
 	}
+
+	public SortedSet<BenefitRiskAnalysis> getBenefitRiskAnalyses() {
+		return d_benefitRiskAnalyses;
+	}
 }

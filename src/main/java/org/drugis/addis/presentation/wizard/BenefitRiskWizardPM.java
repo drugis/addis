@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
+import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -18,6 +19,7 @@ import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.UnmodifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
+import org.pietschy.wizard.InvalidStateException;
 
 public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationPM {
 
@@ -59,7 +61,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 					++maCounter;
 			
 			int altCounter = 0;
-			for (ModifiableHolder<Boolean> altEnabled : d_AlternativeSelectedMap.values())
+			for (ModifiableHolder<Boolean> altEnabled : d_alternativeSelectedMap.values())
 				if (altEnabled.getValue())
 					++altCounter;
 			
@@ -70,7 +72,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	private Map<OutcomeMeasure,ModifiableHolder<Boolean>> d_outcomeSelectedMap;
 	private Map<OutcomeMeasure,ModifiableHolder<MetaAnalysis>> d_metaAnalysisSelectedMap;
 	private HashMap<Drug, ModifiableHolder<Boolean>> d_alternativeEnabledMap;
-	private HashMap<Drug, ModifiableHolder<Boolean>> d_AlternativeSelectedMap;
+	private HashMap<Drug, ModifiableHolder<Boolean>> d_alternativeSelectedMap;
 	private CompleteHolder d_completeHolder;
 	
 	public BenefitRiskWizardPM(Domain d) {
@@ -78,7 +80,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		d_outcomeSelectedMap = new HashMap<OutcomeMeasure, ModifiableHolder<Boolean>>();
 		d_metaAnalysisSelectedMap = new HashMap<OutcomeMeasure, ModifiableHolder<MetaAnalysis>>();
 		d_alternativeEnabledMap = new HashMap<Drug, ModifiableHolder<Boolean>>();
-		d_AlternativeSelectedMap = new HashMap<Drug, ModifiableHolder<Boolean>>();
+		d_alternativeSelectedMap = new HashMap<Drug, ModifiableHolder<Boolean>>();
 		d_completeHolder = new CompleteHolder();
 	}
 	
@@ -165,11 +167,11 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	}
 
 	public ValueHolder<Boolean> getAlternativeSelectedModel(Drug d) {
-		ModifiableHolder<Boolean> val = d_AlternativeSelectedMap.get(d);
+		ModifiableHolder<Boolean> val = d_alternativeSelectedMap.get(d);
 		if (val == null) {
 			val = new ModifiableHolder<Boolean>(false);
 			val.addPropertyChangeListener(d_completeHolder);
-			d_AlternativeSelectedMap.put(d, val);
+			d_alternativeSelectedMap.put(d, val);
 		}
 		
 		return val;
@@ -177,5 +179,47 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 
 	public ValueHolder<Boolean> getCompleteModel() {
 		return d_completeHolder;
+	}
+	
+	public BenefitRiskAnalysis saveAnalysis(String id) throws InvalidStateException {
+		if(!getCompleteModel().getValue())
+			throw new InvalidStateException("cannot commit, Benefit Risk Analysis not ready. Select at least two criteria, and two alternatives");
+		
+		BenefitRiskAnalysis brAnalysis = createBRAnalysis(id);
+		
+		if(d_domain.getBenefitRiskAnalyses().contains(brAnalysis))
+			throw new IllegalStateException("Benefit Risk Analysis with this ID already exists in domain");
+		
+		d_domain.addBenefitRiskAnalysis(brAnalysis);
+		return brAnalysis;
+	}
+
+	private BenefitRiskAnalysis createBRAnalysis(String id) {
+		ArrayList<OutcomeMeasure> outcomes = getSelectedEntities(d_outcomeSelectedMap);
+		ArrayList<Drug> alternatives = getSelectedEntities(d_alternativeSelectedMap);
+		ArrayList<MetaAnalysis> metaAnalyses = new ArrayList<MetaAnalysis>();
+		
+		for(ModifiableHolder<MetaAnalysis> ma : d_metaAnalysisSelectedMap.values()){
+			if(ma.getValue() !=null )
+				metaAnalyses.add(ma.getValue());
+		}
+			
+		BenefitRiskAnalysis brAnalysis = new BenefitRiskAnalysis(
+				id,
+				d_indicationHolder.getValue(), 
+				outcomes,
+				metaAnalyses, 
+				alternatives
+			);
+		return brAnalysis;
+	}
+
+	private <T> ArrayList<T> getSelectedEntities(Map<T, ModifiableHolder<Boolean>> outcomeSelectedMap) {
+		ArrayList<T> list = new ArrayList<T>();
+		for(T entity : outcomeSelectedMap.keySet()){
+			if(outcomeSelectedMap.get(entity).getValue().equals(true))
+				list.add(entity);
+		}
+		return list;
 	}
 }

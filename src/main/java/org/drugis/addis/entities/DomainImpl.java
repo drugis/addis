@@ -455,4 +455,8 @@ public class DomainImpl implements Domain {
 		d_domainData.addBenefitRiskAnalysis(brAnalysis);
 		fireDomainChanged(DomainEvent.Type.BENEFITRISK_ANALYSIS);
 	}
+
+	public SortedSet<BenefitRiskAnalysis> getBenefitRiskAnalyses() {
+		return Collections.unmodifiableSortedSet(d_domainData.getBenefitRiskAnalyses());
+	}
 }

@@ -205,4 +205,6 @@ public interface Domain {
 	public void deleteEntity(AdverseEvent ade) throws DependentEntitiesException;
 
 	public void clearDomain();
+
+	public SortedSet<BenefitRiskAnalysis> getBenefitRiskAnalyses();
 }
