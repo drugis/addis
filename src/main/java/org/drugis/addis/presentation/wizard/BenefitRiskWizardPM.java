@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
@@ -181,14 +182,14 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return d_completeHolder;
 	}
 	
-	public BenefitRiskAnalysis saveAnalysis(String id) throws InvalidStateException {
+	public BenefitRiskAnalysis saveAnalysis(String id) throws InvalidStateException, EntityIdExistsException {
 		if(!getCompleteModel().getValue())
 			throw new InvalidStateException("cannot commit, Benefit Risk Analysis not ready. Select at least two criteria, and two alternatives");
 		
 		BenefitRiskAnalysis brAnalysis = createBRAnalysis(id);
 		
 		if(d_domain.getBenefitRiskAnalyses().contains(brAnalysis))
-			throw new IllegalStateException("Benefit Risk Analysis with this ID already exists in domain");
+			throw new EntityIdExistsException("Benefit Risk Analysis with this ID already exists in domain");
 		
 		d_domain.addBenefitRiskAnalysis(brAnalysis);
 		return brAnalysis;

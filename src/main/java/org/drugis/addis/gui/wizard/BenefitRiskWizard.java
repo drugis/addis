@@ -7,10 +7,12 @@ import java.awt.Font;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.drugis.addis.gui.Main;
@@ -18,6 +20,7 @@ import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
+import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardModel;
@@ -32,30 +35,29 @@ import com.jgoodies.forms.layout.FormLayout;
 
 @SuppressWarnings("serial")
 public class BenefitRiskWizard extends Wizard {
-	
+
 	public BenefitRiskWizard(Main parent, BenefitRiskWizardPM pm) {
 		super(buildModel(pm, parent));
 		getTitleComponent().setPreferredSize(new Dimension(750, 100));
-		
-		
 		setPreferredSize(new Dimension(750, 750));
 	}
 
 	private static WizardModel buildModel(BenefitRiskWizardPM pm, Main frame) {
 		DynamicModel wizardModel = new DynamicModel();
 		wizardModel.add(new SelectIndicationWizardStep(pm));
-		wizardModel.add(new SelectCriteriaAndAlternativesWizardStep(pm));
+		wizardModel.add(new SelectCriteriaAndAlternativesWizardStep(pm, frame));
 		
 		return wizardModel;
 	}
 	
 	private static class SelectCriteriaAndAlternativesWizardStep extends PanelWizardStep {
-		
+		private Main d_main;
 		private BenefitRiskWizardPM d_pm;
 
-		public SelectCriteriaAndAlternativesWizardStep(BenefitRiskWizardPM pm){
+		public SelectCriteriaAndAlternativesWizardStep(BenefitRiskWizardPM pm, Main main){
 			super("Select Criteria and Alternatives","In this step, you select the criteria (analyses on specific outcomemeasures) and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least two criteria and at least two alternatives must be included.");
 			d_pm = pm;
+			d_main = main;
 		}
 
 		@Override
@@ -63,6 +65,28 @@ public class BenefitRiskWizard extends Wizard {
 			this.removeAll();
 			add(buildPanel());
 			Bindings.bind(this, "complete", d_pm.getCompleteModel());
+		}
+		
+		public void applyState() throws InvalidStateException {
+			saveAsAnalysis();
+		}
+
+		private void saveAsAnalysis() throws InvalidStateException {
+			String res = JOptionPane.showInputDialog(this.getTopLevelAncestor(),
+					"Input name for new analysis", 
+					"Save meta-analysis", JOptionPane.QUESTION_MESSAGE);
+			if (res != null) {
+				try {
+					d_main.leftTreeFocus(d_pm.saveAnalysis(res));
+				} catch (EntityIdExistsException e) {
+					JOptionPane.showMessageDialog(this.getTopLevelAncestor(), 
+							"There already exists a meta-analysis with the given name, input another name",
+							"Unable to save meta-analysis", JOptionPane.ERROR_MESSAGE);
+					saveAsAnalysis();
+				}
+			} else {
+				throw new InvalidStateException();
+			}
 		}
 
 		private JPanel buildPanel() {

@@ -28,6 +28,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.AdverseEvent;
+import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
@@ -67,6 +68,9 @@ public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 		} else if (value instanceof Indication) {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_INDICATION));
 			setToolTipText("Indication");
+		} else if (value instanceof BenefitRiskAnalysis) {
+			setIcon(ImageLoader.getIcon(FileNames.ICON_METASTUDY));
+			setToolTipText("Benefit-risk Analysis");
 		} else {
 			setToolTipText(null); //no tool tip
 		}

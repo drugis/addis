@@ -21,6 +21,9 @@
 
 package org.drugis.addis.gui.builder;
 
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
@@ -61,7 +64,11 @@ public class ViewFactory {
 			return new IndicationView(
 					(IndicationPresentation) pmf.getModel(((Indication) node)), main);
 		}
-		return null;
+		return new ViewBuilder() {
+			public JComponent buildPanel() {
+				return new JLabel("not implemented in ViewFactory");
+			}
+		};
 	}
 
 }

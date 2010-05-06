@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 
-public class BenefitRiskAnalysis extends AbstractEntity {
+public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<BenefitRiskAnalysis> {
 
 	private String d_id;
 	private Indication d_indication;
@@ -74,4 +74,18 @@ public class BenefitRiskAnalysis extends AbstractEntity {
 		return d_id;
 	}
 
+	public boolean equals(Object other){
+		if (other == null)
+			return false;
+		if (!(other instanceof BenefitRiskAnalysis))
+			return false;
+		return this.getId().equals( ((BenefitRiskAnalysis)other).getId() );
+	}
+
+	public int compareTo(BenefitRiskAnalysis other) {
+		if (other == null) {
+			return 1;
+		}
+		return getId().compareTo(other.getId());
+	}
 }

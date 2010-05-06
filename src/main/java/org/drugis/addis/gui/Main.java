@@ -73,6 +73,7 @@ import javax.swing.tree.TreePath;
 import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.AdverseEvent;
+import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
@@ -779,6 +780,9 @@ public class Main extends JFrame {
 		d_leftPanelTree.expandPath(new TreePath(new Object[] {
 				d_domainTreeModel.getRoot(),
 				d_domainTreeModel.getPopulationCharacteristicsNode() }));
+		d_leftPanelTree.expandPath(new TreePath(new Object[] {
+				d_domainTreeModel.getRoot(),
+				d_domainTreeModel.getBenefitRiskAnlysisNode() }));
 	}
 
 	private TreeSelectionListener createSelectionListener() {
@@ -877,7 +881,7 @@ public class Main extends JFrame {
 		buildEntityTable(getDomain().getMetaAnalyses(), properties,
 				"Meta-Analyses");
 	}
-
+	
 	private void setRightPanelView(ViewBuilder view) {
 		d_rightPanelBuilder = view;
 		setRightPanelContents(view.buildPanel());
@@ -903,8 +907,6 @@ public class Main extends JFrame {
 	}
 	
 	public void repaintRightPanel() {
-		//d_rightPanel.doLayout();
-		//d_rightPanel.repaint();
 		d_rightPanel.setVisible(false);
 		d_rightPanel.setVisible(true);
 		d_rightPanel.revalidate();
@@ -971,6 +973,10 @@ public class Main extends JFrame {
 			d_leftPanelTree.setSelectionPath(new TreePath(new Object[] {
 					d_domainTreeModel.getRoot(),
 					d_domainTreeModel.getAnalysesNode(), node }));
+		} else if (node instanceof BenefitRiskAnalysis) {
+			d_leftPanelTree.setSelectionPath(new TreePath(new Object[] {
+					d_domainTreeModel.getRoot(),
+					d_domainTreeModel.getBenefitRiskAnlysisNode(), node }));
 		}
 	}
 }

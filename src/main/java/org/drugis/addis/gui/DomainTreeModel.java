@@ -43,8 +43,6 @@ import org.drugis.common.CollectionUtil;
 
 
 public class DomainTreeModel implements TreeModel {
-	public static final int numOfBranches = 7;
-	
 	public static final int INDICATIONS = 0;
 	public static final int DRUGS = 1;	
 	public static final int ENDPOINTS = 2;
@@ -52,6 +50,9 @@ public class DomainTreeModel implements TreeModel {
 	public static final int POPULATION_CHARACTERISTICS = 4;
 	public static final int STUDIES = 5;
 	public static final int ANALYSES = 6;
+	public static final int BENEFITRISK_ANALYSIS = 7;
+	
+	public static final int numOfBranches = 8; // Don't forget me! or suffer the consequences, like Tijs and Hanno
 
 	private String d_root = "Database";
 	private String d_indicationsNode = "Indications";
@@ -61,6 +62,7 @@ public class DomainTreeModel implements TreeModel {
 	private String d_studiesNode = "Studies";
 	private String d_drugsNode = "Drugs";
 	private String d_analysesNode = "Analyses";
+	private String d_brNode = "Benefit-risk analysis";
 	private Domain d_domain;
 	
 	private List<TreeModelListener> d_listeners;
@@ -94,6 +96,8 @@ public class DomainTreeModel implements TreeModel {
 			return d_drugsNode;
 		} else if (d_root == parent && childIndex == ANALYSES) {
 			return d_analysesNode;
+		} else if (d_root == parent && childIndex == BENEFITRISK_ANALYSIS) {
+			return d_brNode;
 		} else if (isIndicationRequest(parent, childIndex)) {
 			return CollectionUtil.getElementAtIndex(d_domain.getIndications(), childIndex);
 		} else if (isEndpointRequest(parent, childIndex)) {
@@ -108,6 +112,8 @@ public class DomainTreeModel implements TreeModel {
 			return CollectionUtil.getElementAtIndex(d_domain.getStudies(), childIndex);
 		} else if (isMetaStudyRequest(parent, childIndex)) {
 			return CollectionUtil.getElementAtIndex(d_domain.getMetaAnalyses(), childIndex);
+		} else if (isBenefitRiskRequest(parent, childIndex)) {
+			return CollectionUtil.getElementAtIndex(d_domain.getBenefitRiskAnalyses(), childIndex);
 		}
 		return null;
 	}
@@ -139,6 +145,10 @@ public class DomainTreeModel implements TreeModel {
 	private boolean isMetaStudyRequest(Object parent, int childIndex) {
 		return d_analysesNode == parent && childIndex >= 0 && childIndex < d_domain.getMetaAnalyses().size();
 	}
+	
+	private boolean isBenefitRiskRequest(Object parent, int childIndex) {
+		return d_brNode == parent && childIndex >= 0 && childIndex < d_domain.getBenefitRiskAnalyses().size();
+	}
 
 	public int getChildCount(Object parent) {
 		if (d_root == parent) {
@@ -157,6 +167,8 @@ public class DomainTreeModel implements TreeModel {
 			return d_domain.getDrugs().size();
 		} else if (d_analysesNode == parent) {
 			return d_domain.getMetaAnalyses().size();
+		} else if (d_brNode == parent) {
+			return d_domain.getBenefitRiskAnalyses().size();
 		}
 		return 0;
 	}
@@ -182,7 +194,10 @@ public class DomainTreeModel implements TreeModel {
 		}	
 		if (parent == d_root && child == d_analysesNode) {
 			return ANALYSES;
-		}	
+		}
+		if (parent == d_root && child == d_brNode) {
+			return BENEFITRISK_ANALYSIS;
+		}
 		if (parent == d_indicationsNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getIndications(), child);
 		}
@@ -282,4 +297,9 @@ public class DomainTreeModel implements TreeModel {
 	public Object getPopulationCharacteristicsNode() {
 		return getChild(getRoot(), DomainTreeModel.POPULATION_CHARACTERISTICS);
 	}
+	
+	public Object getBenefitRiskAnlysisNode() {
+		return getChild(getRoot(), DomainTreeModel.BENEFITRISK_ANALYSIS);
+	}
+	
 }
