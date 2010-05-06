@@ -130,9 +130,9 @@ public class BenfitRiskWizardPMTest {
 	public void testGetAlternativeSelectedModel() {
 		Drug d = ExampleData.buildDrugParoxetine();
 		ValueHolder<Boolean> actual = d_pm.getAlternativeSelectedModel(d);
-		assertEquals(true,actual.getValue());
-		actual.setValue(false);
 		assertEquals(false,actual.getValue());
+		actual.setValue(true);
+		assertEquals(true,actual.getValue());
 	}
 	
 }

@@ -41,7 +41,7 @@ public class OutcomeListHolder extends AbstractListHolder<OutcomeMeasure> implem
 	
 	private class AlphabeticalOmComparator implements Comparator<OutcomeMeasure>  {
 		public int compare(OutcomeMeasure o1, OutcomeMeasure o2) {
-			return o2.getName().compareTo(o1.getName());
+			return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
 		}
 	}
 	

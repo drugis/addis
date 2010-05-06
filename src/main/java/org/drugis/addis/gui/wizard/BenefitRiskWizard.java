@@ -55,8 +55,6 @@ public class BenefitRiskWizard extends Wizard {
 		public SelectCriteriaAndAlternativesWizardStep(BenefitRiskWizardPM pm){
 			super("Select Criteria and Alternatives","In this step, you select the criteria (analyses on specific outcomemeasures) and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least two criteria and at least two alternatives must be included.");
 			d_pm = pm;
-			
-			//prepare();
 		}
 
 		@Override
@@ -67,7 +65,6 @@ public class BenefitRiskWizard extends Wizard {
 		}
 
 		private JPanel buildPanel() {
-//			setLayout(new BorderLayout());
 			FormLayout layout = new FormLayout(
 					"left:pref, 3dlu, left:pref",
 					"p"
@@ -152,7 +149,6 @@ public class BenefitRiskWizard extends Wizard {
 				
 				JCheckBox drugCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(d.getName(), enabledModel, selectedModel);
 				builder.add(drugCheckbox, cc.xy(1, row += 2));
-
 			}
 			
 			return builder.getPanel();
