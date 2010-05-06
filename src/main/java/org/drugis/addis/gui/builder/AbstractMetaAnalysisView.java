@@ -93,10 +93,6 @@ public class AbstractMetaAnalysisView<T extends AbstractMetaAnalysisPresentation
 			JTextPane generalPane = HtmlWordWrapper.createHtmlPane(paneText);
 			
 			builder.add(generalPane, cc.xyw(1, 11, 3));
-
-			String disclaimerText = "<html>Please note that the current implementation of the Bayesian model using the Yadas MCMC (Markov Chain <br>Monte Carlo) program is not completely accurate due to the lack of a multi-variate normal density in Yadas. <br>We have contacted the author of Yadas to remedy this, so far with no result. Because of this, the covariance <br>structure of multi-arm studies is not correctly represented. If multi-arm studies dominate the evidence <br>network, this means that the results of the analysis may be unreliable. If multi-arm studies are not included, <br>this problem does not occur. An alternative implementation using JAGS and R that does not have this <br>problem is available from <a href=http://drugis.org/mtc>http://drugis.org/mtc</a>, but is more difficult to use. </html>";
-			JTextPane disclaimerPane = HtmlWordWrapper.createHtmlPane(disclaimerText, new Color(255, 180, 180));
-			builder.add(disclaimerPane, cc.xyw(1, 13, 3));
 		}
 		
 		return builder.getPanel();
