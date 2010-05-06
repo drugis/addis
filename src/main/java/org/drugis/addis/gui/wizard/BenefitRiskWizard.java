@@ -89,7 +89,8 @@ public class BenefitRiskWizard extends Wizard {
 			CellConstraints cc = new CellConstraints();
 			
 			JLabel criteriaLabel = new JLabel("Criteria");
-			criteriaLabel.setFont(new Font(Font.SERIF, Font.BOLD, 12));
+			criteriaLabel.setFont(
+				criteriaLabel.getFont().deriveFont(Font.BOLD));
 			builder.add(criteriaLabel, cc.xy(1, 1));
 			int row = 1;
 			for(OutcomeMeasure out : d_pm.getOutcomesListModel().getValue()){
