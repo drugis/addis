@@ -28,6 +28,7 @@ import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.formatter.EmptyNumberFormatter;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
+import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.util.DefaultUnitConverter;
 
 public class AuxComponentFactory {
@@ -112,5 +113,13 @@ public class AuxComponentFactory {
 		JCheckBox checkBox = BasicComponentFactory.createCheckBox(selectedModel, name);
 		Bindings.bind(checkBox,"enabled", enabledModel);	
 		return checkBox;
+	}
+
+	public static JScrollPane createInScrollPane(PanelBuilder builder, int x, int y) {
+		JScrollPane scroll = new JScrollPane(builder.getPanel());
+		scroll.setPreferredSize(new Dimension(x, y));
+		scroll.getVerticalScrollBar().setUnitIncrement(16);
+		scroll.setVisible(true);
+		return scroll;
 	}
 }

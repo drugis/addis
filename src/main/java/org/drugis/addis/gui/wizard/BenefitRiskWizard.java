@@ -21,7 +21,7 @@ import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardModel;
-import org.pietschy.wizard.models.StaticModel;
+import org.pietschy.wizard.models.DynamicModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
@@ -35,13 +35,14 @@ public class BenefitRiskWizard extends Wizard {
 	
 	public BenefitRiskWizard(Main parent, BenefitRiskWizardPM pm) {
 		super(buildModel(pm, parent));
-		getTitleComponent().setPreferredSize(new Dimension(750, 125));
+		getTitleComponent().setPreferredSize(new Dimension(750, 100));
+		
 		
 		setPreferredSize(new Dimension(750, 750));
 	}
 
 	private static WizardModel buildModel(BenefitRiskWizardPM pm, Main frame) {
-		StaticModel wizardModel = new StaticModel();
+		DynamicModel wizardModel = new DynamicModel();
 		wizardModel.add(new SelectIndicationWizardStep(pm));
 		wizardModel.add(new SelectCriteriaAndAlternativesWizardStep(pm));
 		
@@ -109,7 +110,7 @@ public class BenefitRiskWizard extends Wizard {
 				builder.add(buildRadioButtonAnalysisPanel(out), cc.xy(3, row, CellConstraints.LEFT, CellConstraints.DEFAULT));
 			}
 			
-			return builder.getPanel();
+			return AuxComponentFactory.createInScrollPane(builder, 350, 550);
 		}
 
 		private JPanel buildRadioButtonAnalysisPanel(OutcomeMeasure out) {
@@ -139,7 +140,7 @@ public class BenefitRiskWizard extends Wizard {
 			CellConstraints cc = new CellConstraints();
 			
 			JLabel alternativesLabel = new JLabel("Alternatives");
-			alternativesLabel.setFont(new Font(Font.SERIF, Font.BOLD, 12));
+			alternativesLabel.setFont(alternativesLabel.getFont().deriveFont(Font.BOLD));
 			builder.add(alternativesLabel, cc.xy(1, 1));
 			
 			int row = 1;
@@ -152,8 +153,7 @@ public class BenefitRiskWizard extends Wizard {
 				builder.add(drugCheckbox, cc.xy(1, row += 2));
 			}
 			
-			return builder.getPanel();
+			return AuxComponentFactory.createInScrollPane(builder, 350, 550);
 		}
-
 	}
 }

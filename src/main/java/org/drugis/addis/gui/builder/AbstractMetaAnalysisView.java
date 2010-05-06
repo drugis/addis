@@ -21,8 +21,6 @@
 
 package org.drugis.addis.gui.builder;
 
-import java.awt.Color;
-
 import javax.swing.JComponent;
 import javax.swing.JTextPane;
 
