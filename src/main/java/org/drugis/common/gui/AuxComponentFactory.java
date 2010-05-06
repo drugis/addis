@@ -105,22 +105,7 @@ public class AuxComponentFactory {
 		JRadioButton button = BasicComponentFactory.createRadioButton(selectedValueModel, choice, text);
 		Bindings.bind(button,"enabled", enabledModel);
 		
-		enabledModel.addValueChangeListener(new EnabledListener(selectedValueModel));
-		
 		return button;
-	}
-
-	private static class EnabledListener implements PropertyChangeListener {
-		ValueModel d_selectedValueModel;
-		
-		public EnabledListener(ValueModel selectedValueModel) {
-			d_selectedValueModel = selectedValueModel;
-		}
-		
-		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getNewValue().equals(false))
-				d_selectedValueModel.setValue(null);
-		}
 	}
 
 	public static JCheckBox createDynamicEnabledBoundCheckbox(String name,
@@ -128,7 +113,6 @@ public class AuxComponentFactory {
 			ValueHolder<Boolean> selectedModel) {
 		JCheckBox checkBox = BasicComponentFactory.createCheckBox(selectedModel, name);
 		Bindings.bind(checkBox,"enabled", enabledModel);	
-//		enabledModel.addValueChangeListener(new EnabledListener(selectedValueModel));
 		return checkBox;
 	}
 }

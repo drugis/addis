@@ -24,6 +24,7 @@ import org.pietschy.wizard.WizardModel;
 import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -62,6 +63,7 @@ public class BenefitRiskWizard extends Wizard {
 		public void prepare() {
 			this.removeAll();
 			add(buildPanel());
+			Bindings.bind(this, "complete", d_pm.getCompleteModel());
 		}
 
 		private JPanel buildPanel() {
