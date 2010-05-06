@@ -13,6 +13,8 @@ import java.util.TreeSet;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
@@ -73,7 +75,7 @@ public class BenfitRiskWizardPMTest {
 		OutcomeMeasure om = ExampleData.buildEndpointHamd();
 		ValueHolder<Boolean> origModel = d_pm.getOutcomeSelectedModel(om);
 		assertFalse(origModel.getValue());
-		d_pm.getOutcomeSelectedModel(om).setValue(new Boolean(true));
+		d_pm.getOutcomeSelectedModel(om).setValue(true);
 		assertTrue(origModel.getValue());
 	}
 	
@@ -88,4 +90,49 @@ public class BenfitRiskWizardPMTest {
 		ValueHolder<MetaAnalysis> metaAnal2 = d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd());
 		assertEquals(metaAnal1.getValue(), metaAnal2.getValue());
 	}
+	
+	@Test
+	public void testGetAlternativesListModel() {
+		List<Drug> expected = new ArrayList<Drug>();
+		for (MetaAnalysis ma : d_domain.getMetaAnalyses()) {
+			if (ma.getIndication().equals(d_indication))
+				expected.addAll(ma.getIncludedDrugs());
+		}
+		
+		assertAllAndOnly(expected, d_pm.getAlternativesListModel().getValue());
+	}
+	
+	@Test
+	public void testGetAlternativeEnabledModel() {
+		
+		for (Drug d : d_pm.getAlternativesListModel().getValue()) {
+			assertEquals(false, d_pm.getAlternativeEnabledModel(d).getValue());
+		}
+		
+		d_pm.getIndicationModel().setValue(d_indication);
+		Endpoint outcomeM = ExampleData.buildEndpointHamd();
+		d_pm.getOutcomeSelectedModel(outcomeM).setValue(true);
+		d_pm.getMetaAnalysesSelectedModel(outcomeM).setValue(ExampleData.buildNetworkMetaAnalysis());
+
+		assertTrue(d_pm.getAlternativesListModel().getValue().size() > 0);
+		
+		for (Drug d : d_pm.getAlternativesListModel().getValue()) {
+			boolean expected = true;
+			for (ValueHolder<MetaAnalysis> mah : d_pm.getSelectedMetaAnalysisHolders())
+				if (!mah.getValue().getIncludedDrugs().contains(d))
+					expected = false;
+			
+			assertEquals(expected, d_pm.getAlternativeEnabledModel(d).getValue());
+		}
+	}
+	
+	@Test
+	public void testGetAlternativeSelectedModel() {
+		Drug d = ExampleData.buildDrugParoxetine();
+		ValueHolder<Boolean> actual = d_pm.getAlternativeSelectedModel(d);
+		assertEquals(true,actual.getValue());
+		actual.setValue(false);
+		assertEquals(false,actual.getValue());
+	}
+	
 }

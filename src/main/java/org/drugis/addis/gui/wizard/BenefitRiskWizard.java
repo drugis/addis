@@ -1,6 +1,5 @@
 package org.drugis.addis.gui.wizard;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -11,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.drugis.addis.gui.Main;
@@ -65,7 +65,7 @@ public class BenefitRiskWizard extends Wizard {
 		}
 
 		private JPanel buildPanel() {
-			setLayout(new BorderLayout());
+//			setLayout(new BorderLayout());
 			FormLayout layout = new FormLayout(
 					"left:pref, 3dlu, left:pref",
 					"p"
@@ -81,7 +81,6 @@ public class BenefitRiskWizard extends Wizard {
 		}
 
 		private Component buildCriteriaPane(BenefitRiskWizardPM pm) {
-			setLayout(new BorderLayout());
 			FormLayout layout = new FormLayout(
 					"left:pref, 3dlu, left:pref",
 					"p, 3dlu, p, 3dlu, p"
@@ -126,15 +125,35 @@ public class BenefitRiskWizard extends Wizard {
 				ValueModel selectedModel = d_pm.getMetaAnalysesSelectedModel(out);
 				JRadioButton radioButton = AuxComponentFactory.createDynamicEnabledRadioButton(ma.getName(), ma, selectedModel, enabledModel);
 				radioButtonPanel.add(radioButton);
-				
-				
 			}
 			return radioButtonPanel;
 		}
 
 		private Component buildAlternativesPane(BenefitRiskWizardPM pm) {
-			// TODO Auto-generated method stub
-			return new JLabel("buildAlternativesPane not implemented yet");
+			FormLayout layout = new FormLayout(
+					"left:pref, 3dlu, left:pref",
+					"p, 3dlu, p, 3dlu, p"
+					);	
+			
+			PanelBuilder builder = new PanelBuilder(layout);
+			CellConstraints cc = new CellConstraints();
+			
+			JLabel alternativesLabel = new JLabel("Alternatives");
+			alternativesLabel.setFont(new Font(Font.SERIF, Font.BOLD, 12));
+			builder.add(alternativesLabel, cc.xy(1, 1));
+			
+			int row = 1;
+			for( Drug d : d_pm.getAlternativesListModel().getValue() ){
+				LayoutUtil.addRow(layout);
+				ValueHolder<Boolean> enabledModel  = d_pm.getAlternativeEnabledModel(d);
+				ValueHolder<Boolean> selectedModel = d_pm.getAlternativeSelectedModel(d);
+				
+				JCheckBox drugCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(d.getName(), enabledModel, selectedModel);
+				builder.add(drugCheckbox, cc.xy(1, row += 2));
+
+			}
+			
+			return builder.getPanel();
 		}
 
 	}

@@ -8,6 +8,7 @@ import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.util.Date;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
@@ -22,6 +23,7 @@ import javax.swing.text.NumberFormatter;
 
 import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
+import org.drugis.addis.presentation.ValueHolder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
@@ -119,5 +121,14 @@ public class AuxComponentFactory {
 			if (evt.getNewValue().equals(false))
 				d_selectedValueModel.setValue(null);
 		}
+	}
+
+	public static JCheckBox createDynamicEnabledBoundCheckbox(String name,
+			ValueHolder<Boolean> enabledModel,
+			ValueHolder<Boolean> selectedModel) {
+		JCheckBox checkBox = BasicComponentFactory.createCheckBox(selectedModel, name);
+		Bindings.bind(checkBox,"enabled", enabledModel);	
+//		enabledModel.addValueChangeListener(new EnabledListener(selectedValueModel));
+		return checkBox;
 	}
 }
