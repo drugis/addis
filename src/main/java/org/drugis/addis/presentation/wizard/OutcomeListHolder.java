@@ -24,7 +24,9 @@ package org.drugis.addis.presentation.wizard;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.drugis.addis.entities.Domain;
@@ -36,6 +38,13 @@ import org.drugis.addis.presentation.ModifiableHolder;
 
 @SuppressWarnings("serial")
 public class OutcomeListHolder extends AbstractListHolder<OutcomeMeasure> implements PropertyChangeListener {
+	
+	private class AlphabeticalOmComparator implements Comparator<OutcomeMeasure>  {
+		public int compare(OutcomeMeasure o1, OutcomeMeasure o2) {
+			return o2.getName().compareTo(o1.getName());
+		}
+	}
+	
 	private ModifiableHolder<Indication> d_indication;
 	private Domain d_domain;
 
@@ -47,18 +56,31 @@ public class OutcomeListHolder extends AbstractListHolder<OutcomeMeasure> implem
 	
 	@Override
 	public List<OutcomeMeasure> getValue() {	
-		return getEndpointSet();
+		return getOutcomeSet();
 	}
 	
-	private List<OutcomeMeasure> getEndpointSet() {
-		TreeSet<OutcomeMeasure> outcomeMeasures = new TreeSet<OutcomeMeasure>();
+	private List<OutcomeMeasure> getOutcomeSet() {
+		SortedSet<OutcomeMeasure> endpoints = new TreeSet<OutcomeMeasure>(new AlphabeticalOmComparator());
+		SortedSet<OutcomeMeasure> ades = new TreeSet<OutcomeMeasure>(new AlphabeticalOmComparator());
 		if (this.d_indication.getValue() != null) {
 			for (Study s : d_domain.getStudies(this.d_indication.getValue()).getValue()) {
-				outcomeMeasures.addAll(s.getOutcomeMeasures());
+				ArrayList<OutcomeMeasure> tempEndpoints = new ArrayList<OutcomeMeasure>();
+				tempEndpoints.addAll(s.getEndpoints());
+				tempEndpoints.removeAll(endpoints);
+				endpoints.addAll(tempEndpoints);
+			}			
+			for (Study s : d_domain.getStudies(this.d_indication.getValue()).getValue()) {
+				ArrayList<OutcomeMeasure> tempAdes = new ArrayList<OutcomeMeasure>();
+				tempAdes.addAll(s.getAdverseEvents());
+				tempAdes.removeAll(ades);
+				ades.addAll(tempAdes);
 			}			
 		}	
 		
-		return new ArrayList<OutcomeMeasure>(outcomeMeasures);
+		ArrayList<OutcomeMeasure> outcomes = new ArrayList<OutcomeMeasure>();
+		outcomes.addAll(endpoints);
+		outcomes.addAll(ades);
+		return outcomes;
 	}		
 
 	public void propertyChange(PropertyChangeEvent event) {
