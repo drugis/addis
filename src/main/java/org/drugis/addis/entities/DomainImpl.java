@@ -341,6 +341,13 @@ public class DomainImpl implements Domain {
 		d_domainData.removeMetaAnalysis(ma);
 		fireDomainChanged(DomainEvent.Type.ANALYSES);
 	}
+
+	public void deleteEntity(BenefitRiskAnalysis bra)
+			throws DependentEntitiesException {
+		checkDependents(bra);
+		d_domainData.removeBRAnalysis(bra);
+		fireDomainChanged(DomainEvent.Type.BENEFITRISK_ANALYSIS);
+	}
 	
 	@SuppressWarnings("serial")
 	private class StudiesForEntityListHolder extends AbstractListHolder<Study> implements DomainListener {

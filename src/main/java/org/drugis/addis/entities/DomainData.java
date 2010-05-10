@@ -147,6 +147,10 @@ public class DomainData {
 		d_metaAnalyses.remove(ma);
 	}
 	
+	public void removeBRAnalysis(BenefitRiskAnalysis bra) {
+		d_benefitRiskAnalyses.remove(bra);
+	}
+	
 	public void removeDrug(Drug d) {
 		d_drugs.remove(d);
 	}
@@ -205,9 +209,13 @@ public class DomainData {
 			if (study != null)
 				d.setStudies(study);
 			
-			TreeSet analysis = ie.get("metaAnalyses", TreeSet.class);
-			if (analysis != null)
-				d.setMetaAnalyses(analysis);
+			TreeSet metaAnalysis = ie.get("metaAnalyses", TreeSet.class);
+			if (metaAnalysis != null)
+				d.setMetaAnalyses(metaAnalysis);
+			
+			TreeSet BRAnalysis = ie.get("benefitRiskAnalyses", TreeSet.class);
+			if (BRAnalysis != null)
+				d.setBenefitRiskAnalyses(BRAnalysis);
 		}
 		
 		@Override
@@ -220,6 +228,7 @@ public class DomainData {
 			oe.add(new TreeSet<PopulationCharacteristic>(d.getVariables()), "populationCharacteristics", TreeSet.class);
 			oe.add(new TreeSet<Study>(d.getStudies()),"studies", TreeSet.class);
 			oe.add(new TreeSet<MetaAnalysis>(d.getMetaAnalyses()), "metaAnalyses", TreeSet.class);
+			oe.add(new TreeSet<BenefitRiskAnalysis>(d.getBenefitRiskAnalyses()), "benefitRiskAnalyses", TreeSet.class);
 		}
 	};
 
@@ -229,5 +238,9 @@ public class DomainData {
 
 	public SortedSet<BenefitRiskAnalysis> getBenefitRiskAnalyses() {
 		return d_benefitRiskAnalyses;
+	}
+
+	public void setBenefitRiskAnalyses(SortedSet<BenefitRiskAnalysis> set) {
+		d_benefitRiskAnalyses = set;
 	}
 }

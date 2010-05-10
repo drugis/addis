@@ -326,6 +326,8 @@ public class Main extends JFrame {
 			selectedType = "adverse drug event";
 		} else if (selected instanceof MetaAnalysis) {
 			selectedType = "meta-analysis";
+		} else if (selected instanceof BenefitRiskAnalysis) {
+			selectedType = "Benefit-risk analysis";
 		} else if (selected instanceof Study) {
 			selectedType = "study";
 		} else if (selected instanceof Indication) {
@@ -362,6 +364,10 @@ public class Main extends JFrame {
 				getDomain().deleteEntity(
 						(MetaAnalysis) selected);
 				leftTreeFocus(d_domainTreeModel.getAnalysesNode());
+			} else if (selected instanceof BenefitRiskAnalysis) {
+				getDomain().deleteEntity(
+						(BenefitRiskAnalysis) selected);
+				leftTreeFocus(d_domainTreeModel.getBenefitRiskAnlysisNode());
 			} else if (selected instanceof Indication) {
 				getDomain().deleteEntity((Indication) selected);
 				leftTreeFocus(d_domainTreeModel.getIndicationsNode());
@@ -450,7 +456,7 @@ public class Main extends JFrame {
 	
 	private JMenuItem createAddBRAnalysisMenuItem() {
 		JMenuItem item = new JMenuItem("Benefit-Risk Analysis", ImageLoader
-				.getIcon(FileNames.ICON_METASTUDY_NEW));
+				.getIcon(FileNames.ICON_BENEFITRISK));
 		item.setMnemonic('b');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -667,7 +673,7 @@ public class Main extends JFrame {
 		});		
 		
 		JButton topAddBRAnalysisButton = new JButton("Create benefit-risk analysis",
-				ImageLoader.getIcon(FileNames.ICON_NETWMETASTUDY_NEW));
+				ImageLoader.getIcon(FileNames.ICON_BENEFITRISK));
 		topAddBRAnalysisButton.setToolTipText("Create benefit-risk analysis");
 		topAddBRAnalysisButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
@@ -808,6 +814,8 @@ public class Main extends JFrame {
 					populationCharacteristicsLabelSelected();
 				} else if (node == d_domainTreeModel.getAnalysesNode()) {
 					analysesLabelSelected();
+				} else if (node == d_domainTreeModel.getBenefitRiskAnlysisNode()) {
+					benefitRiskLabelSelected();
 				} else {
 					noneSelected();
 				}
@@ -880,6 +888,13 @@ public class Main extends JFrame {
 				"includedDrugs", "studiesIncluded", "sampleSize"};
 		buildEntityTable(getDomain().getMetaAnalyses(), properties,
 				"Meta-Analyses");
+	}
+	
+	private void benefitRiskLabelSelected() {
+		String [] properties = {"name", "indication", "outcomeMeasures", 
+				"metaAnalyses", "baseline", "drugs"};
+		buildEntityTable(getDomain().getBenefitRiskAnalyses(), properties,
+				"Benefit-Risk Analyses");
 	}
 	
 	private void setRightPanelView(ViewBuilder view) {

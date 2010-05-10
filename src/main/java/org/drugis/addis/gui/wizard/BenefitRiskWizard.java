@@ -40,6 +40,7 @@ public class BenefitRiskWizard extends Wizard {
 		super(buildModel(pm, parent));
 		getTitleComponent().setPreferredSize(new Dimension(750, 100));
 		setPreferredSize(new Dimension(750, 750));
+		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 	}
 
 	private static WizardModel buildModel(BenefitRiskWizardPM pm, Main frame) {

@@ -69,7 +69,7 @@ public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 			setIcon(ImageLoader.getIcon(FileNames.ICON_INDICATION));
 			setToolTipText("Indication");
 		} else if (value instanceof BenefitRiskAnalysis) {
-			setIcon(ImageLoader.getIcon(FileNames.ICON_METASTUDY));
+			setIcon(ImageLoader.getIcon(FileNames.ICON_BENEFITRISK));
 			setToolTipText("Benefit-risk Analysis");
 		} else {
 			setToolTipText(null); //no tool tip
