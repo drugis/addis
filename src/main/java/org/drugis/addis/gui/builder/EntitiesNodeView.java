@@ -21,6 +21,7 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -28,6 +29,7 @@ import javax.swing.JComponent;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.EntitiesTablePanel;
+import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
@@ -55,13 +57,18 @@ public class EntitiesNodeView<T extends Entity> implements ViewBuilder {
 				"p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
-		builder.setDefaultDialogBorder();
-		
+
 		CellConstraints cc =  new CellConstraints();
 		
-		builder.addSeparator(d_title, cc.xy(1, 1));
-		builder.add(new EntitiesTablePanel<T>(d_formatter, d_dpms, d_main), cc.xy(1, 3));
+		if (d_title != null)
+			builder.addSeparator(d_title, cc.xy(1, 1));
 		
+		TablePanel tablePanel = new EntitiesTablePanel<T>(d_formatter, d_dpms, d_main);
+		int height = tablePanel.getPreferredSize().height;
+		int width = Math.min(715, tablePanel.getPreferredSize().width);
+		tablePanel.getTable().setPreferredScrollableViewportSize(new Dimension(width, height));
+		builder.add(tablePanel,cc.xy(1, 3));
+
 		return builder.getPanel();
 	}
 

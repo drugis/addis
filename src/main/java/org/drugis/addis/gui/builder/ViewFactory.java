@@ -24,6 +24,7 @@ package org.drugis.addis.gui.builder;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
@@ -63,6 +64,8 @@ public class ViewFactory {
 		} else if (node instanceof Indication) {
 			return new IndicationView(
 					(IndicationPresentation) pmf.getModel(((Indication) node)), main);
+		}  else if (node instanceof BenefitRiskAnalysis) {
+			return new BenefitRiskView(pmf.getModel((BenefitRiskAnalysis) node), pmf);
 		}
 		return new ViewBuilder() {
 			public JComponent buildPanel() {

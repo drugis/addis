@@ -15,6 +15,12 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	private List<Drug> d_drugs;
 	private Drug d_baseline;
 	
+	public static String PROPERTY_NAME = "name";
+	public static String PROPERTY_INDICATION = "indication";
+	public static String PROPERTY_OUTCOMEMEASURES = "outcomeMeasures";
+	public static String PROPERTY_DRUGS = "drugs";
+	public static String PROPERTY_BASELINE = "baseline";
+	
 	public BenefitRiskAnalysis() {
 	}
 	
