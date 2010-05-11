@@ -214,7 +214,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	public RelativeEffect<? extends Measurement> getRelativeEffect(Drug d1, Drug d2, Class<? extends RelativeEffect<?>> type) {
 		if(!getConsistencyModel().isReady()){
 			System.out.println("running consistency");
-			getConsistencyModel().run();
+			getConsistencyModel().run(); // TODO: should be 'start()', and the tables should be built with models, that update if the thread finishes
 //			return new MetaAnalysisRelativeEffect<Measurement>(new Interval<Double>(0d, 0d), 0, 0, 0);
 		}
 		System.out.println("consistency done");
@@ -232,6 +232,4 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		RelativeEffect<Measurement> re = new MetaAnalysisRelativeEffect<Measurement>(confidenceInterval, realRelativeEffect, 0, consistencyEstimate.getStandardDeviation());
 		return re;
 	}
-
-	
 }

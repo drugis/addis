@@ -46,7 +46,7 @@ import fi.smaa.jsmaa.gui.views.ResultsView;
 import fi.smaa.jsmaa.model.Alternative;
 import fi.smaa.jsmaa.model.Criterion;
 import fi.smaa.jsmaa.model.ExactMeasurement;
-import fi.smaa.jsmaa.model.GaussianMeasurement;
+import fi.smaa.jsmaa.model.LogNormalMeasurement;
 import fi.smaa.jsmaa.model.SMAAModel;
 import fi.smaa.jsmaa.model.ScaleCriterion;
 import fi.smaa.jsmaa.simulator.ResultsEvent;
@@ -174,11 +174,15 @@ public class BenefitRiskView implements ViewBuilder {
 		for(OutcomeMeasure om : brAnalysis.getOutcomeMeasures()){ // endpoints
 			Criterion crit = getCriterion(om);
 			smaaModel.addCriterion(crit);
-			smaaModel.setMeasurement(crit, baseLineAlt, new ExactMeasurement(1.0));			
+			smaaModel.setMeasurement(crit, baseLineAlt, new ExactMeasurement(1.0));		
 			for(Drug d : brAnalysis.getDrugs()){ // drugs
 				smaaModel.addAlternative(getAlternative(d));
 				RelativeEffect<? extends Measurement> relativeEffect = brAnalysis.getRelativeEffect(d, om);
-				fi.smaa.jsmaa.model.Measurement m = new GaussianMeasurement(relativeEffect.getRelativeEffect(), relativeEffect.getError());
+//			TODO: 
+				//if(dichotomous) then
+				fi.smaa.jsmaa.model.Measurement m = new LogNormalMeasurement(relativeEffect.getRelativeEffect(), relativeEffect.getError());
+				//else if(continuous) then the baseline is 0, and:
+//				fi.smaa.jsmaa.model.Measurement m = new GaussianMeasurement(relativeEffect.getRelativeEffect(), relativeEffect.getError());
 				smaaModel.setMeasurement( crit, getAlternative(d), m);		
 			}
 		}
