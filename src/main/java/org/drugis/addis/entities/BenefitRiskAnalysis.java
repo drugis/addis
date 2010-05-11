@@ -1,5 +1,7 @@
 package org.drugis.addis.entities;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -66,6 +68,11 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	public void setDrugs(List<Drug> drugs) {
 		d_drugs = drugs;
 	}
+	
+	@Override
+	public String[] getXmlExclusions() {
+		return new String[]{"allDrugs"};
+	}
 
 	@Override
 	public Set<? extends Entity> getDependencies() {
@@ -119,4 +126,6 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 		}
 		return null;
 	}
+
+
 }

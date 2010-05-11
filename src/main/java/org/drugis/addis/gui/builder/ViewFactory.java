@@ -65,7 +65,7 @@ public class ViewFactory {
 			return new IndicationView(
 					(IndicationPresentation) pmf.getModel(((Indication) node)), main);
 		}  else if (node instanceof BenefitRiskAnalysis) {
-			return new BenefitRiskView(pmf.getModel((BenefitRiskAnalysis) node), pmf);
+			return new BenefitRiskView(pmf.getModel((BenefitRiskAnalysis) node), pmf, main);
 		}
 		return new ViewBuilder() {
 			public JComponent buildPanel() {

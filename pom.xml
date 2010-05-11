@@ -44,10 +44,15 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>fi.smaa</groupId>
-			<artifactId>jsmaa-lib</artifactId>
-			<version>0.6.2</version>
+			<groupId>fi.smaa.jsmaa</groupId>
+			<artifactId>lib</artifactId>
+			<version>0.7-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>fi.smaa.jsmaa</groupId>
+			<artifactId>gui</artifactId>
+			<version>0.7-SNAPSHOT</version>
+		</dependency>		
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc</artifactId>

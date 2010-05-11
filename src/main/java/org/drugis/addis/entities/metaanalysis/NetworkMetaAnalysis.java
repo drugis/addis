@@ -227,7 +227,8 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		/** Beware!: for the dichotomous case, we are converting the logMean to the actual mean to consistently display the  
 		 *  relative effect in a table.
 		 */
-		double realRelativeEffect = isContinuous() ? consistencyEstimate.getMean() : Math.exp(consistencyEstimate.getMean());
+		//double realRelativeEffect = isContinuous() ? consistencyEstimate.getMean() : Math.exp(consistencyEstimate.getMean());
+		double realRelativeEffect = consistencyEstimate.getMean(); // FIXME: Display normal mean.
 		RelativeEffect<Measurement> re = new MetaAnalysisRelativeEffect<Measurement>(confidenceInterval, realRelativeEffect, 0, consistencyEstimate.getStandardDeviation());
 		return re;
 	}
