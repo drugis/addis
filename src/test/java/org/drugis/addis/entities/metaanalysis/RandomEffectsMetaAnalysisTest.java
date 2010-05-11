@@ -40,7 +40,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OddsRatio;
-import org.drugis.addis.entities.RelativeEffectMetaAnalysis;
+import org.drugis.addis.entities.RandomEffectMetaAnalysisRelativeEffect;
 import org.drugis.addis.entities.RiskRatio;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
@@ -178,7 +178,7 @@ public class RandomEffectsMetaAnalysisTest {
 	
 	@Test
 	public void testGetRiskRatioRelativeEffect() {
-		RelativeEffectMetaAnalysis<Measurement> riskRatio = d_rema.getRelativeEffect(RiskRatio.class);
+		RandomEffectMetaAnalysisRelativeEffect<Measurement> riskRatio = d_rema.getRelativeEffect(RiskRatio.class);
 		assertEquals(2.03, riskRatio.getHeterogeneity(), 0.01);
 		assertEquals(calculateI2(2.03,d_rema.getIncludedStudies().size()), riskRatio.getHeterogeneityI2(), 0.01);
 		assertEquals(1.10, (riskRatio.getRelativeEffect()), 0.01); 
@@ -188,7 +188,7 @@ public class RandomEffectsMetaAnalysisTest {
 	
 	@Test
 	public void testGetOddsRatioRelativeEffect() {
-		RelativeEffectMetaAnalysis<Measurement> oddsRatio = d_rema.getRelativeEffect(OddsRatio.class);
+		RandomEffectMetaAnalysisRelativeEffect<Measurement> oddsRatio = d_rema.getRelativeEffect(OddsRatio.class);
 		assertEquals(2.14, oddsRatio.getHeterogeneity(), 0.01);
 		assertEquals(1.30, (oddsRatio.getRelativeEffect()), 0.01); 
 		assertEquals(1.03, (oddsRatio.getConfidenceInterval().getLowerBound()), 0.01);
@@ -205,7 +205,7 @@ public class RandomEffectsMetaAnalysisTest {
 		
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta",
 				d_contEndpoint, studies, d_fluox, d_sertr);
-		RelativeEffectMetaAnalysis<Measurement> relativeEffect = ma.getRelativeEffect(MeanDifference.class);
+		RandomEffectMetaAnalysisRelativeEffect<Measurement> relativeEffect = ma.getRelativeEffect(MeanDifference.class);
 		assertEquals(2.5, relativeEffect.getRelativeEffect(), 0.01);
 	}
 		

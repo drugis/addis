@@ -7,10 +7,14 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 
 import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.addis.gui.AbstractTablePanel;
 import org.drugis.addis.gui.GUIFactory;
+import org.drugis.addis.gui.components.TablePanel;
+import org.drugis.addis.presentation.BenefitRiskMeasurementTableModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -33,7 +37,7 @@ public class BenefitRiskView implements ViewBuilder {
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
@@ -45,14 +49,21 @@ public class BenefitRiskView implements ViewBuilder {
 		
 		builder.addSeparator("Included Analyses", cc.xy(1, 7));
 		builder.add(GUIFactory.createCollapsiblePanel(buildAnalysesPart()), cc.xy(1, 9));
-//		addAnalysesPart(builder);
-//		addMeasurementsPart(builder);
-//		addJSMAPart(builder);
+		
+		builder.addSeparator("Measurements", cc.xy(1, 11));
+		builder.add(GUIFactory.createCollapsiblePanel(buildMeasurementsPart()), cc.xy(1, 13));
+		
+		builder.addSeparator("preferences", cc.xy(1, 15));
+//		builder.add(GUIFactory.createCollapsiblePanel(buildPreferencesPart()), cc.xy(1, 17));
+		
+		builder.addSeparator("rank acceptabilities", cc.xy(1, 19));
+//		builder.add(GUIFactory.createCollapsiblePanel(buildRankAcceptabilitiesPart()), cc.xy(1, 21));
+		
+		builder.addSeparator("central weigths", cc.xy(1, 23));
+//		builder.add(GUIFactory.createCollapsiblePanel(buildWeightsPart()), cc.xy(1, 25));
 		
 		return builder.getPanel();
 	}
-
-	
 
 	private JPanel buildOverviewPart() {
 		CellConstraints cc = new CellConstraints();
@@ -86,6 +97,13 @@ public class BenefitRiskView implements ViewBuilder {
 		
 		String[] formatter = {"name","type","indication","outcomeMeasure","drugs","studies","sampleSize"};
 		return new EntitiesNodeView<MetaAnalysis>(Arrays.asList(formatter), entitiesPMs, null, null).buildPanel();
+	}
+	
+	private JComponent buildMeasurementsPart() {
+		BenefitRiskMeasurementTableModel brTableModel = new BenefitRiskMeasurementTableModel(d_pm.getBean(), d_pmf);
+//		JTable jTable = new JTable(brTableModel);
+//		jTable.getColumn(0).setHeaderValue("lhkgs");
+		return new AbstractTablePanel(brTableModel);
 	}
 
 }

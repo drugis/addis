@@ -30,12 +30,16 @@ import javolution.xml.stream.XMLStreamException;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
+import org.drugis.addis.entities.ContinuousMeasurementEstimate;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.LogContinuousMeasurementEstimate;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.common.Interval;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.ContinuousNetworkBuilder;
 import org.drugis.mtc.DefaultModelFactory;
@@ -45,6 +49,7 @@ import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.InconsistencyParameter;
 import org.drugis.mtc.Network;
 import org.drugis.mtc.NetworkBuilder;
+import org.drugis.mtc.Treatment;
 
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis{
 	
@@ -198,4 +203,34 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	public boolean isContinuous() {
 		return d_isContinuous;
 	}
+	
+	private Interval<Double> getConfidenceInterval(double mean, double stdDev) {
+		if (isContinuous()) 
+			return new ContinuousMeasurementEstimate(mean,stdDev).getConfidenceInterval();
+		else
+			return new LogContinuousMeasurementEstimate(mean, stdDev).getConfidenceInterval();
+	}
+
+	public RelativeEffect<? extends Measurement> getRelativeEffect(Drug d1, Drug d2, Class<? extends RelativeEffect<?>> type) {
+		if(!getConsistencyModel().isReady()){
+			System.out.println("running consistency");
+			getConsistencyModel().run();
+//			return new MetaAnalysisRelativeEffect<Measurement>(new Interval<Double>(0d, 0d), 0, 0, 0);
+		}
+		System.out.println("consistency done");
+		
+		ConsistencyModel consistencyModel = getConsistencyModel();
+		Estimate consistencyEstimate = consistencyModel.getRelativeEffect(new Treatment(d1.getName()), new Treatment(d2.getName()));
+		
+		Interval<Double> confidenceInterval = getConfidenceInterval(consistencyEstimate.getMean(), consistencyEstimate.getStandardDeviation());
+		
+		/** Beware!: for the dichotomous case, we are converting the logMean to the actual mean to consistently display the  
+		 *  relative effect in a table.
+		 */
+		double realRelativeEffect = isContinuous() ? consistencyEstimate.getMean() : Math.exp(consistencyEstimate.getMean());
+		RelativeEffect<Measurement> re = new MetaAnalysisRelativeEffect<Measurement>(confidenceInterval, realRelativeEffect, 0, consistencyEstimate.getStandardDeviation());
+		return re;
+	}
+
+	
 }

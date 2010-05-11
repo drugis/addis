@@ -111,4 +111,12 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	public Drug getBaseline() {
 		return d_baseline;
 	}
+
+	public RelativeEffect<? extends Measurement> getRelativeEffect(Drug d, OutcomeMeasure om) {
+		for(MetaAnalysis ma : getMetaAnalyses()){
+			if(ma.getOutcomeMeasure().equals(om))
+				return ma.getRelativeEffect(d_baseline, d, OddsRatio.class);
+		}
+		return null;
+	}
 }

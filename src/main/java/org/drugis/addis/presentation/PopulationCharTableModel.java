@@ -25,7 +25,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 
 @SuppressWarnings("serial")
-public class PopulationCharTableModel extends MeasurementTableModel {
+public class PopulationCharTableModel extends StudyMeasurementTableModel {
 	public PopulationCharTableModel(Study study, PresentationModelFactory pmf) {
 		super(study, pmf, Variable.class);
 		
