@@ -27,6 +27,7 @@ import org.drugis.common.gui.ViewBuilder;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -34,10 +35,14 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import fi.smaa.jsmaa.gui.components.ResultsCellRenderer;
 import fi.smaa.jsmaa.gui.components.ResultsTable;
+import fi.smaa.jsmaa.gui.jfreechart.CentralWeightsDataset;
 import fi.smaa.jsmaa.gui.jfreechart.RankAcceptabilitiesDataset;
+import fi.smaa.jsmaa.gui.presentation.CentralWeightTableModel;
 import fi.smaa.jsmaa.gui.presentation.RankAcceptabilityTableModel;
 import fi.smaa.jsmaa.gui.presentation.SMAA2ResultsTableModel;
+import fi.smaa.jsmaa.gui.views.ResultsView;
 import fi.smaa.jsmaa.model.Alternative;
 import fi.smaa.jsmaa.model.Criterion;
 import fi.smaa.jsmaa.model.ExactMeasurement;
@@ -47,7 +52,6 @@ import fi.smaa.jsmaa.model.ScaleCriterion;
 import fi.smaa.jsmaa.simulator.ResultsEvent;
 import fi.smaa.jsmaa.simulator.SMAA2Results;
 import fi.smaa.jsmaa.simulator.SMAA2SimulationThread;
-import fi.smaa.jsmaa.simulator.SMAAResults;
 import fi.smaa.jsmaa.simulator.SMAAResultsListener;
 import fi.smaa.jsmaa.simulator.SMAASimulator;
 
@@ -112,35 +116,35 @@ public class BenefitRiskView implements ViewBuilder {
 		builder.add(GUIFactory.createCollapsiblePanel(buildRankAcceptabilitiesPart()), cc.xy(1, 21));
 		
 		builder.addSeparator("central weigths", cc.xy(1, 23));
-//		builder.add(GUIFactory.createCollapsiblePanel(buildWeightsPart()), cc.xy(1, 25));
+		builder.add(GUIFactory.createCollapsiblePanel(buildWeightsPart()), cc.xy(1, 25));
 		
 		return builder.getPanel();
 	}
 
 	private JComponent buildWeightsPart() {
-		return null;
-		
-		
-		//results.get
-		/* code from jsmaa
+		CentralWeightsDataset   cwData       = new CentralWeightsDataset(getSmaaModelResults());
+		CentralWeightTableModel cwTableModel = new CentralWeightTableModel(getSmaaModelResults());
+
 		final JFreeChart chart = ChartFactory.createLineChart(
 		        "", "Criterion", "Central Weight",
-		        centralWeightsDataset, PlotOrientation.VERTICAL, true, true, false);
+		        cwData, PlotOrientation.VERTICAL, true, true, false);
 		LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, true);
 		chart.getCategoryPlot().setRenderer(renderer);
-		ResultsTable table = new ResultsTable(centralWeightsTM);
+		ResultsTable table = new ResultsTable(cwTableModel);
 		table.setAutoCreateRowSorter(true);			
 		table.setDefaultRenderer(Object.class, new ResultsCellRenderer(1.0));
-		return new ResultsView(parent, "Central weight vectors", table, chart, FileNames.ICON_SCRIPT).buildPanel();
-		*/
+		
+		// FIXME: FileNames.ICON_SCRIPT was replaced by "". Should be filename of an icon 
+		return new ResultsView(d_main, "Central weight vectors", table, chart, "").buildPanel(); 
+
 	}
 
 	private JComponent buildRankAcceptabilitiesPart() {
 		
-		SMAA2ResultsTableModel tableModel = new RankAcceptabilityTableModel(getSmaaModel());
+		SMAA2ResultsTableModel tableModel = new RankAcceptabilityTableModel(getSmaaModelResults());
 		ResultsTable table = new ResultsTable(tableModel);
 		
-		RankAcceptabilitiesDataset rankData = new RankAcceptabilitiesDataset(getSmaaModel());
+		RankAcceptabilitiesDataset rankData = new RankAcceptabilitiesDataset(getSmaaModelResults());
 		final JFreeChart chart = ChartFactory.createStackedBarChart(
 		        "", "Alternative", "Rank Acceptability",
 		        rankData, PlotOrientation.VERTICAL, true, true, false);
@@ -156,7 +160,7 @@ public class BenefitRiskView implements ViewBuilder {
 		return panel;
 	}
 
-	private SMAA2Results getSmaaModel() {
+	private SMAA2Results getSmaaModelResults() {
 		
 		if (d_smaaModelResults != null)
 			return d_smaaModelResults;
@@ -242,8 +246,6 @@ public class BenefitRiskView implements ViewBuilder {
 	
 	private JComponent buildMeasurementsPart() {
 		BenefitRiskMeasurementTableModel brTableModel = new BenefitRiskMeasurementTableModel(d_pm.getBean(), d_pmf);
-//		JTable jTable = new JTable(brTableModel);
-//		jTable.getColumn(0).setHeaderValue("lhkgs");
 		return new AbstractTablePanel(brTableModel);
 	}
 
