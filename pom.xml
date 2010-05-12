@@ -46,12 +46,12 @@
 		<dependency>
 			<groupId>fi.smaa.jsmaa</groupId>
 			<artifactId>lib</artifactId>
-			<version>0.7-SNAPSHOT</version>
+			<version>0.6.3</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.smaa.jsmaa</groupId>
 			<artifactId>gui</artifactId>
-			<version>0.7-SNAPSHOT</version>
+			<version>0.6.3</version>
 		</dependency>		
 		<dependency>
 			<groupId>org.drugis</groupId>
