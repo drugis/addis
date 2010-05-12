@@ -35,6 +35,7 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Domain;
@@ -45,9 +46,12 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.RelativeEffectFactory;
 
 public class ExampleData {
@@ -157,6 +161,7 @@ public class ExampleData {
 		Study study = new Study("Chouinard et al, 1999", buildIndicationDepression());
 		study.setEndpoints(new ArrayList<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
+		study.addAdverseEvent(buildAdverseEventConvulsion());
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -352,7 +357,7 @@ public class ExampleData {
 		Study study = new Study("Bennie et al, 1995", buildIndicationDepression());
 		study.setEndpoints(new ArrayList<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
-//		study.addAdverseEvent(buildAdverseEventConvulsion());
+		study.addAdverseEvent(buildAdverseEventConvulsion());
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -661,7 +666,7 @@ public class ExampleData {
 	
 	public static NetworkMetaAnalysis buildNetworkMetaAnalysisAlternative() {
 		List<Study> studies = Arrays.asList(new Study[] {
-				buildStudyBennie(), buildStudyChouinard(), buildStudyDeWilde(), buildStudyFava2002()});
+				buildStudyBennie(), buildStudyChouinard()});
 		List<Drug> drugs = Arrays.asList(new Drug[] {buildDrugFluoxetine(), buildDrugParoxetine(), 
 				buildDrugSertraline()});
 		
@@ -693,5 +698,44 @@ public class ExampleData {
 			s_convulsion.setDescription("Rate of convulsion during study");
 		}
 		return s_convulsion;
+	}
+
+	public static BenefitRiskAnalysis buildBenefitRiskAnalysis() {
+		Indication indication = buildIndicationDepression();
+		
+		List<OutcomeMeasure> outcomeMeasureList = new ArrayList<OutcomeMeasure>();
+		outcomeMeasureList.add(buildEndpointHamd());
+		outcomeMeasureList.add(buildAdverseEventConvulsion());
+		
+		List<MetaAnalysis> metaAnalysisList = new ArrayList<MetaAnalysis>();
+		metaAnalysisList.add(buildMetaAnalysisHamd());
+		metaAnalysisList.add(buildMetaAnalysisConv());
+		
+		
+		
+		return new BenefitRiskAnalysis("testBenefitRiskAnalysis",
+										indication, outcomeMeasureList, metaAnalysisList, null, null);										
+	}
+
+	private static MetaAnalysis buildMetaAnalysisConv() {
+		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
+		
+		Study s1 = buildStudyChouinard();
+		studyArms.add(new StudyArmsEntry(s1, s1.getArms().get(0), s1.getArms().get(1)));
+		Study s2 = buildStudyBennie();
+		studyArms.add(new StudyArmsEntry(s2, s2.getArms().get(0), s2.getArms().get(1)));		
+		
+		return new RandomEffectsMetaAnalysis("Convulsion test analysis", buildAdverseEventConvulsion(), studyArms);
+	}
+
+	private static MetaAnalysis buildMetaAnalysisHamd() {
+		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
+		
+		Study s1 = buildStudyChouinard();
+		studyArms.add(new StudyArmsEntry(s1, s1.getArms().get(0), s1.getArms().get(1)));
+		Study s2 = buildStudyBennie();
+		studyArms.add(new StudyArmsEntry(s2, s2.getArms().get(0), s2.getArms().get(1)));		
+		
+		return new RandomEffectsMetaAnalysis("Hamd test analysis", buildEndpointHamd(), studyArms);
 	}
 }

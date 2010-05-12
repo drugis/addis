@@ -70,10 +70,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 			Indication indication, OutcomeMeasure om,
 			List<? extends Study> studies, List<Drug> drugs, Map<Study, Map<Drug, Arm>> armMap) 
 	throws IllegalArgumentException {
-		if (studies.isEmpty()) {
-			throw new IllegalArgumentException("studylist empty");
-		}
-		checkSameIndication(studies, indication);
+		checkDataConsistency(studies, indication, om);
 		
 		d_drugs = drugs;
 		d_studies = studies;
@@ -102,15 +99,19 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		firePropertyChange(PROPERTY_NAME, oldName, d_name);
 	}
 
-	protected void checkSameIndication(List<? extends Study> studies, Indication indication)
+	protected void checkDataConsistency(List<? extends Study> studies, Indication indication, OutcomeMeasure om)
 	throws IllegalArgumentException {
-		for (int i = 1; i < studies.size(); i++) {
-			Indication ind2 = studies.get(i).getIndication();
-			if (!ind2.equals(indication)) {
-				throw new IllegalArgumentException("different indications in studies");
-			}
+		if (studies.isEmpty())
+			throw new IllegalArgumentException("studylist empty");
+
+		for (int i = 0; i < studies.size(); i++) {
+			if (!studies.get(i).getOutcomeMeasures().contains(om))
+				throw new IllegalArgumentException("Not all studies are comparing OutcomeMeasure " + om);
+			if (!studies.get(i).getIndication().equals(indication))
+				throw new IllegalArgumentException("Not all studies measure indication " + indication);
 		}
 	}
+	
 
 	public String getName() {
 		return d_name;

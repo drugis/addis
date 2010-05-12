@@ -33,6 +33,7 @@ import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.presentation.BenefitRiskPM;
 import org.drugis.addis.presentation.DrugPresentationModel;
 import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
@@ -65,7 +66,7 @@ public class ViewFactory {
 			return new IndicationView(
 					(IndicationPresentation) pmf.getModel(((Indication) node)), main);
 		}  else if (node instanceof BenefitRiskAnalysis) {
-			return new BenefitRiskView(pmf.getModel((BenefitRiskAnalysis) node), pmf, main);
+			return new BenefitRiskView((BenefitRiskPM) pmf.getModel((BenefitRiskAnalysis) node), main);
 		}
 		return new ViewBuilder() {
 			public JComponent buildPanel() {

@@ -3,10 +3,6 @@ package org.drugis.addis.presentation;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.BenefitRiskAnalysis;
-import org.drugis.addis.entities.ContinuousMeasurementEstimate;
-import org.drugis.addis.entities.LogContinuousMeasurementEstimate;
-import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.RelativeEffect;
 
 @SuppressWarnings("serial")
 public class BenefitRiskMeasurementTableModel extends AbstractTableModel {

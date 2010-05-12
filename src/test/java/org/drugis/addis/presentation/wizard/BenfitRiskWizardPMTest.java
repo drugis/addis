@@ -15,6 +15,7 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
@@ -30,18 +31,15 @@ public class BenfitRiskWizardPMTest {
 	private Indication d_indication;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
 		d_pm = new BenefitRiskWizardPM(d_domain); 
 		d_indication = ExampleData.buildIndicationDepression();
 		
-		try {
-			d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysis());
-			d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisAlternative());
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
+		d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysis());
+		d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisAlternative());
+	
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 	}
 	

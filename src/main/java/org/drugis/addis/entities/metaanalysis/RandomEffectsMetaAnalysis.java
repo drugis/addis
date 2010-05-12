@@ -70,6 +70,16 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	throws IllegalArgumentException {
 		super(name, studies.get(0).getIndication(), om, studies, 
 				Arrays.asList(new Drug[] {drug1, drug2}), getArmMap(studies, drug1, drug2));
+		checkREDataConsistency(studies, drug1, drug2);
+	}
+
+	private void checkREDataConsistency(List<? extends Study> studies,
+			Drug drug1, Drug drug2) {
+		if (studies.size() == 0)
+			throw new IllegalArgumentException("No studies in MetaAnalysis");
+		for (Study s : studies)
+			if (!(s.getDrugs().contains(drug1) && s.getDrugs().contains(drug2)))
+				throw new IllegalArgumentException("Not all studies contain the drugs under comparison");
 	}
 
 	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms)
