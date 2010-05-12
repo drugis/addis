@@ -250,6 +250,7 @@ public class ExampleData {
 		Drug fluoxetine = buildDrugFluoxetine();
 		Study study = new Study("De Wilde et al, 1993", buildIndicationDepression());
 		study.setEndpoints(Collections.singletonList(hamd));
+		study.setAdverseEvents(Collections.singletonList(buildAdverseEventConvulsion()));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -711,10 +712,11 @@ public class ExampleData {
 		metaAnalysisList.add(buildMetaAnalysisHamd());
 		metaAnalysisList.add(buildMetaAnalysisConv());
 		
-		
+		Drug parox = buildDrugParoxetine();
+		List<Drug> fluoxList = Collections.singletonList(buildDrugFluoxetine());
 		
 		return new BenefitRiskAnalysis("testBenefitRiskAnalysis",
-										indication, outcomeMeasureList, metaAnalysisList, null, null);										
+										indication, outcomeMeasureList, metaAnalysisList, parox, fluoxList);										
 	}
 
 	private static MetaAnalysis buildMetaAnalysisConv() {
@@ -722,7 +724,8 @@ public class ExampleData {
 		
 		Study s1 = buildStudyChouinard();
 		studyArms.add(new StudyArmsEntry(s1, s1.getArms().get(0), s1.getArms().get(1)));
-		Study s2 = buildStudyBennie();
+		
+		Study s2 = buildStudyDeWilde();
 		studyArms.add(new StudyArmsEntry(s2, s2.getArms().get(0), s2.getArms().get(1)));		
 		
 		return new RandomEffectsMetaAnalysis("Convulsion test analysis", buildAdverseEventConvulsion(), studyArms);
@@ -733,7 +736,7 @@ public class ExampleData {
 		
 		Study s1 = buildStudyChouinard();
 		studyArms.add(new StudyArmsEntry(s1, s1.getArms().get(0), s1.getArms().get(1)));
-		Study s2 = buildStudyBennie();
+		Study s2 = buildStudyDeWilde();
 		studyArms.add(new StudyArmsEntry(s2, s2.getArms().get(0), s2.getArms().get(1)));		
 		
 		return new RandomEffectsMetaAnalysis("Hamd test analysis", buildEndpointHamd(), studyArms);

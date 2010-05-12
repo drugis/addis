@@ -63,7 +63,7 @@ public class MeasurementTableModelTest {
 
 	@Test
 	public void testGetRowCount() {
-		assertEquals(d_standardStudy.getOutcomeMeasures().size(), d_model.getRowCount());
+		assertEquals(d_standardStudy.getEndpoints().size(), d_model.getRowCount());
 	}
 
 	@Test
