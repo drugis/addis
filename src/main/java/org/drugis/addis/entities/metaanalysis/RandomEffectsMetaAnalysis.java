@@ -52,6 +52,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	transient private double d_SEThetaDSL;
 	transient private Interval<Double> d_confidenceInterval;
 	transient private double d_qIV;
+	transient private RelativeEffect.AxisType d_axisType; 
 	
 	public static final String PROPERTY_INCLUDED_STUDIES_COUNT = "studiesIncluded";
 	public static final String PROPERTY_FIRST_DRUG = "firstDrug";
@@ -188,6 +189,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		for (int i=0; i<d_studies.size(); ++i ){
 			RelativeEffect<? extends Measurement> re;
 			re = RelativeEffectFactory.buildRelativeEffect(getStudyArms(drugsSwapped).get(i), d_outcome, type);
+			d_axisType = re.getAxisType();
 			relEffects.add(re);
 		}
 		
@@ -278,7 +280,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		return weightSum;
 	}
 	
-	public RelativeEffect<Measurement> getRelativeEffect(Drug d1, Drug d2, Class<? extends RelativeEffect<?>> type) {
+	public RandomEffectMetaAnalysisRelativeEffect<Measurement> getRelativeEffect(Drug d1, Drug d2, Class<? extends RelativeEffect<?>> type) {
 		// check if drugs make sense
 		List<Drug> askedDrugs = Arrays.asList(new Drug[]{d1,d2});
 		if (!d_drugs.containsAll(askedDrugs))
@@ -295,7 +297,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		
 	public RandomEffectMetaAnalysisRelativeEffect<Measurement> getRelativeEffect(Class<? extends RelativeEffect<?>> type) {
 		compute(type, false);
-		return new RandomEffects(d_confidenceInterval, d_thetaDSL, d_totalSampleSize, d_SEThetaDSL, d_qIV);		
+		return getRelativeEffect(getFirstDrug(), getSecondDrug(), type);
 	}
 
 	private class RandomEffects extends MetaAnalysisRelativeEffect<Measurement> implements RandomEffectMetaAnalysisRelativeEffect<Measurement> {
@@ -303,7 +305,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 
 		public RandomEffects(Interval<Double> confidenceInterval, double relativeEffect, 
 				int totalSampleSize, double stdDev, double qIV) {
-			super(confidenceInterval, relativeEffect, totalSampleSize, stdDev);
+			super(confidenceInterval, relativeEffect, totalSampleSize, stdDev, d_axisType);
 			t_qIV = qIV;
 		}
 		

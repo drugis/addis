@@ -13,7 +13,11 @@ import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.junit.*;
+import static org.drugis.common.JUnitUtil.assertAllAndOnly;
+
+import com.jgoodies.binding.PresentationModel;
 
 import fi.smaa.jsmaa.model.Alternative;
 import fi.smaa.jsmaa.model.Criterion;
@@ -35,7 +39,10 @@ public class BenefitRiskPMTest {
 	public void testGetSmaaModelResults() {
 		// TODO: the measurements are not tested yet.
 		
+		/* Added twice to test the correct caching of Criteria and Alternatives.*/
 		SMAA2Results actual = d_pm.getSmaaModelResults(new JProgressBar());
+		actual = d_pm.getSmaaModelResults(new JProgressBar());
+		
 		List<Alternative> actualAlternatives = actual.getAlternatives();
 		List<? extends Criterion> actualCriteria = actual.getCriteria();
 		
@@ -58,11 +65,13 @@ public class BenefitRiskPMTest {
 		}
 	}
 	
-	public void testGetCriterion(){
-		assertTrue(false);
-	}	
-	
-	public void testGetAlternative(){
-		assertTrue(false);
+	public void testGetAnalysesPMList() {
+		List<PresentationModel<MetaAnalysis>> expected = new ArrayList<PresentationModel<MetaAnalysis>>();
+		for (MetaAnalysis ma : d_pm.getBean().getMetaAnalyses())
+			expected.add(d_pmf.getModel(ma));
+		assertAllAndOnly(expected, d_pm.getAnalysesPMList());
 	}
+	
+	
+
 }

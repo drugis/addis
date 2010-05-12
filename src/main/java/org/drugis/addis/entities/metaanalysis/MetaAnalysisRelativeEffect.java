@@ -11,20 +11,22 @@ import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.common.Interval;
 
 public class MetaAnalysisRelativeEffect<T extends Measurement> extends AbstractEntity implements RelativeEffect<T> {
-	public Interval<Double> d_confidenceInterval;
-	public double d_relativeEffect;
-	public int d_totalSampleSize;
-	public Double d_stdDev;
+	private Interval<Double> d_confidenceInterval;
+	private double d_relativeEffect;
+	private int d_totalSampleSize;
+	private Double d_stdDev;
+	private RelativeEffect.AxisType d_type;
 	
 	public MetaAnalysisRelativeEffect(Interval<Double> confidenceInterval, double relativeEffect, 
-			int totalSampleSize, double stdDev) {
+			int totalSampleSize, double stdDev, RelativeEffect.AxisType type) {
 		d_confidenceInterval = confidenceInterval;
 		d_relativeEffect = relativeEffect;
 		d_totalSampleSize = totalSampleSize;
 		d_stdDev = stdDev;
+		d_type = type;
 	}
 	public RelativeEffect.AxisType getAxisType() {
-		return AxisType.LOGARITHMIC;
+		return d_type;
 	}
 
 	public Interval<Double> getConfidenceInterval() {

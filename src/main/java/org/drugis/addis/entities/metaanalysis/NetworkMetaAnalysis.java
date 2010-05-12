@@ -27,6 +27,7 @@ import java.util.Map;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
+import org.apache.commons.math.optimization.linear.Relationship;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
@@ -229,7 +230,10 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		 */
 		//double realRelativeEffect = isContinuous() ? consistencyEstimate.getMean() : Math.exp(consistencyEstimate.getMean());
 		double realRelativeEffect = consistencyEstimate.getMean(); // FIXME: Display normal mean.
-		RelativeEffect<Measurement> re = new MetaAnalysisRelativeEffect<Measurement>(confidenceInterval, realRelativeEffect, 0, consistencyEstimate.getStandardDeviation());
+		RelativeEffect<Measurement> re = new MetaAnalysisRelativeEffect<Measurement>(confidenceInterval, realRelativeEffect,
+													0, consistencyEstimate.getStandardDeviation(), 
+													isContinuous() ? RelativeEffect.AxisType.LINEAR : RelativeEffect.AxisType.LOGARITHMIC
+		                                 );
 		return re;
 	}
 }
