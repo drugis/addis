@@ -131,7 +131,6 @@ public class BenefitRiskView implements ViewBuilder {
 		LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, true);
 		chart.getCategoryPlot().setRenderer(renderer);
 		ResultsTable table = new ResultsTable(cwTableModel);
-		table.setAutoCreateRowSorter(true);			
 		table.setDefaultRenderer(Object.class, new ResultsCellRenderer(1.0));
 		
 		// FIXME: FileNames.ICON_SCRIPT was replaced by "". Should be filename of an icon 
