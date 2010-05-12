@@ -92,10 +92,9 @@ public class SMAAEntityFactory {
 			for(Drug d : brAnalysis.getDrugs()){ // drugs
 				RelativeEffect<? extends Measurement> relativeEffect = (RelativeEffect<? extends Measurement>) brAnalysis.getRelativeEffect(d, om);
 				
-				// set the baseline
-				//if(smaaModel.getMeasurement(crit, baseLineAlt) == null){
+				// set the baseline // FIXME
 				if (!baseLineSet) {
-					System.out.println(relativeEffect.getAxisType());
+					//System.out.println(relativeEffect.getAxisType());
 					if(relativeEffect.getAxisType() == RelativeEffect.AxisType.LOGARITHMIC)
 						smaaModel.setMeasurement(crit, baseLineAlt, new ExactMeasurement(1d));	
 					else if(relativeEffect.getAxisType() == RelativeEffect.AxisType.LINEAR)
@@ -103,6 +102,7 @@ public class SMAAEntityFactory {
 					else throw new IllegalArgumentException("RelativeEffect has an unknown axis-type: " + relativeEffect);
 					baseLineSet = true;
 				}
+				//smaaModel.setMeasurement(crit, baseLineAlt, new ExactMeasurement(1d));
 				
 				// set the alternatives measurements
 				smaaModel.addAlternative(getAlternative(d));

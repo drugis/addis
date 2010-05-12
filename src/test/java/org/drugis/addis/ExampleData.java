@@ -215,10 +215,14 @@ public class ExampleData {
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(parox);
 		pCgi.setMean(-1.69);
 		pCgi.setStdDev(0.16);
+		BasicRateMeasurement pConv = (BasicRateMeasurement) buildAdverseEventConvulsion().buildMeasurement(parox);
+		pConv.setRate(10);
+		pConv.setSampleSize(40);
 		
 		study.addArm(parox);
 		study.setMeasurement(buildEndpointHamd(), parox, pHamd);
 		study.setMeasurement(buildEndpointCgi(), parox, pCgi);
+		study.setMeasurement(buildAdverseEventConvulsion(),parox, pConv);
 		
 	
 		
@@ -230,10 +234,14 @@ public class ExampleData {
 		BasicContinuousMeasurement fCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(fluox);
 		fCgi.setMean(-1.8);
 		fCgi.setStdDev(0.16);
+		BasicRateMeasurement fConv = (BasicRateMeasurement) buildAdverseEventConvulsion().buildMeasurement(parox);
+		fConv.setRate(12);
+		fConv.setSampleSize(40);
 		
 		study.addArm(fluox);
 		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);		
 		study.setMeasurement(buildEndpointCgi(), fluox, fCgi);
+		study.setMeasurement(buildAdverseEventConvulsion(), fluox, pConv);
 		return study;
 	}
 
@@ -273,18 +281,29 @@ public class ExampleData {
 		// Paroxetine data
 		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		Arm parox = new Arm(buildDrugParoxetine(), dose, 37);
+		
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
 		pHamd.setRate(23);
+		BasicRateMeasurement pConv = (BasicRateMeasurement) buildAdverseEventConvulsion().buildMeasurement(parox);
+		pConv.setRate(10);
+		pConv.setSampleSize(40);
+		
 		study.addArm(parox);
 		study.setMeasurement(hamd, parox, pHamd);
+		study.setMeasurement(buildAdverseEventConvulsion(),parox, pConv);
 
 		// Fluoxetine data
 		dose = new FixedDose(27.5, SIUnit.MILLIGRAMS_A_DAY);
 		Arm fluox = new Arm(fluoxetine, dose, 41);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(26);
+		BasicRateMeasurement fConv = (BasicRateMeasurement) buildAdverseEventConvulsion().buildMeasurement(fluox);
+		fConv.setRate(10);
+		fConv.setSampleSize(34);
+		
 		study.addArm(fluox);
 		study.setMeasurement(hamd, fluox, fHamd);
+		study.setMeasurement(buildAdverseEventConvulsion(), fluox, fConv);
 		return study;
 	}
 
