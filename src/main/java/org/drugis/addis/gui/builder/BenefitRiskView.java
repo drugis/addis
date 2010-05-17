@@ -1,6 +1,8 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 
 import javax.swing.JComponent;
@@ -39,42 +41,59 @@ public class BenefitRiskView implements ViewBuilder {
 	private BenefitRiskPM d_pm;
 	private Main d_main;
 	private JProgressBar d_SMAAprogressBar;
+	private PanelBuilder d_builder;
 	
 	public BenefitRiskView(BenefitRiskPM pm, Main main) {
 		d_pm = pm;
 		d_main = main;
 		d_SMAAprogressBar = new JProgressBar();
+		d_pm.addPropertyChangeListener(new PropertyChangeListener() {
+
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getPropertyName().equals(BenefitRiskPM.PROPERTY_ALLMODELSREADY)){
+					System.out.println("All models ready");
+					d_main.reloadRightPanel();
+				}
+			}
+		});
 	}
 	
 	public JComponent buildPanel() {
+		System.out.println("Building panel");
+		
+		if (d_builder != null)
+			d_builder.getPanel().removeAll();
+		
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
-		PanelBuilder builder = new PanelBuilder(layout);
-		builder.setDefaultDialogBorder();
+		d_builder = new PanelBuilder(layout);
+		d_builder.setDefaultDialogBorder();
 		
 		CellConstraints cc =  new CellConstraints();
 		
-		builder.addSeparator("Benefit-Risk Analysis", cc.xy(1, 1));
-		builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
+		d_builder.addSeparator("Benefit-Risk Analysis", cc.xy(1, 1));
+		d_builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
 		
-		builder.addSeparator("Included Analyses", cc.xy(1, 7));
-		builder.add(GUIFactory.createCollapsiblePanel(buildAnalysesPart()), cc.xy(1, 9));
+		d_builder.addSeparator("Included Analyses", cc.xy(1, 7));
+		d_builder.add(GUIFactory.createCollapsiblePanel(buildAnalysesPart()), cc.xy(1, 9));
 		
-		builder.addSeparator("Measurements", cc.xy(1, 11));
-		builder.add(GUIFactory.createCollapsiblePanel(buildMeasurementsPart()), cc.xy(1, 13));
+		d_builder.addSeparator("Measurements", cc.xy(1, 11));
+		d_builder.add(GUIFactory.createCollapsiblePanel(buildMeasurementsPart()), cc.xy(1, 13));
 		
-		builder.addSeparator("preferences", cc.xy(1, 15));
-//		builder.add(GUIFactory.createCollapsiblePanel(buildPreferencesPart()), cc.xy(1, 17));
+		d_builder.addSeparator("preferences", cc.xy(1, 15));
+		//builder.add(GUIFactory.createCollapsiblePanel(buildPreferencesPart()), cc.xy(1, 17));
 		
-		builder.addSeparator("rank acceptabilities", cc.xy(1, 19));
-		builder.add(GUIFactory.createCollapsiblePanel(buildRankAcceptabilitiesPart()), cc.xy(1, 21));
+		d_builder.addSeparator("rank acceptabilities", cc.xy(1, 19));
+		if(d_pm.allModelsReady())
+			d_builder.add(GUIFactory.createCollapsiblePanel(buildRankAcceptabilitiesPart()), cc.xy(1, 21));
 		
-		builder.addSeparator("central weigths", cc.xy(1, 23));
-		builder.add(GUIFactory.createCollapsiblePanel(buildWeightsPart()), cc.xy(1, 25));
+		d_builder.addSeparator("central weigths", cc.xy(1, 23));
+		if(d_pm.allModelsReady())
+			d_builder.add(GUIFactory.createCollapsiblePanel(buildWeightsPart()), cc.xy(1, 25));
 		
-		return builder.getPanel();
+		return d_builder.getPanel();
 	}
 
 	private JComponent buildWeightsPart() {

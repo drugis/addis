@@ -56,7 +56,8 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	transient private InconsistencyModel d_inconsistencyModel;
 	transient private ConsistencyModel d_consistencyModel;
 	transient private NetworkBuilder<? extends org.drugis.mtc.Measurement> d_builder;
-	transient private boolean d_hasStarted = false;
+	transient private boolean d_consistencyHasStarted = false;
+	transient private boolean d_inconsistencyHasStarted = false;
 
 	private boolean d_isContinuous = false;
 	
@@ -161,23 +162,24 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		}
 		return d_builder;
 	}
-
-	public void run() {
-		if (!d_hasStarted)
-		{
-			if (!getInconsistencyModel().isReady()) {
-				Thread inconsistency = new Thread(getInconsistencyModel());
-				inconsistency.start();
-			}
-
-			if (!getConsistencyModel().isReady()) {
-				Thread consistency = new Thread(getConsistencyModel());
-				consistency.start();
-			}
-			d_hasStarted = true;
-		}
-	}
 	
+	public void run() {
+		runInconsistency();
+		runConsistency();
+	}
+
+	public void runInconsistency() {
+		if (!d_inconsistencyHasStarted)
+			new Thread(getInconsistencyModel()).start();
+		d_inconsistencyHasStarted = true;
+	}
+
+	public void runConsistency() {
+		if (!d_consistencyHasStarted)
+			new Thread(getConsistencyModel()).start();
+		d_consistencyHasStarted = true;
+	}
+
 	public List<InconsistencyParameter> getInconsistencyFactors(){
 		return getInconsistencyModel().getInconsistencyFactors();
 	}
@@ -216,10 +218,10 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	public RelativeEffect<? extends Measurement> getRelativeEffect(Drug d1, Drug d2, Class<? extends RelativeEffect<?>> type) {
-		if(!getConsistencyModel().isReady()){
-			getConsistencyModel().run(); // TODO: should be 'start()', and the tables should be built with models, that update if the thread finishes
-//			return new MetaAnalysisRelativeEffect<Measurement>(new Interval<Double>(0d, 0d), 0, 0, 0);
-		}
+		
+		if(!getConsistencyModel().isReady())
+			//return new MetaAnalysisRelativeEffect<Measurement>(new Interval<Double>(0d, 0d), 0, 0, 0, AxisType.LINEAR);
+			return null;
 		
 		ConsistencyModel consistencyModel = getConsistencyModel();
 		Estimate consistencyEstimate = consistencyModel.getRelativeEffect(new Treatment(d1.getName()), new Treatment(d2.getName()));

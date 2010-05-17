@@ -41,6 +41,7 @@ public class NetworkMetaAnalysisTest {
 	public void setup(){
 		d_analysis = ExampleData.buildNetworkMetaAnalysis();
 		d_mockAnalysis = NetworkTableModelTest.buildMockNetworkMetaAnalysis();
+		d_mockAnalysis.run();
 	}
 	
 	@Test

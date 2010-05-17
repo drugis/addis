@@ -3,10 +3,12 @@ package org.drugis.addis.presentation;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.BenefitRiskAnalysis;
+import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.RelativeEffect;
 
 @SuppressWarnings("serial")
 public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
-
+	
 	protected BenefitRiskAnalysis d_br;
 //	private PresentationModelFactory d_pmf;
 
@@ -42,7 +44,10 @@ public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
 		
 		//RelativeEffect<? extends Measurement> relativeEffect = d_br.getRelativeEffect(d_br.getDrugs().get(rowIndex), d_br.getOutcomeMeasures().get(columnIndex-1));
 		//return d_pmf.getModel(new LogContinuousMeasurementEstimate(relativeEffect.getRelativeEffect(), relativeEffect.getError()));
-		return d_br.getRelativeEffect(d_br.getDrugs().get(rowIndex), d_br.getOutcomeMeasures().get(columnIndex-1));
+		RelativeEffect<? extends Measurement> relativeEffect = d_br.getRelativeEffect(d_br.getDrugs().get(rowIndex), d_br.getOutcomeMeasures().get(columnIndex-1));
+		if (relativeEffect == null)
+			return "N/A";
+		return relativeEffect;
 	}
 
 }
