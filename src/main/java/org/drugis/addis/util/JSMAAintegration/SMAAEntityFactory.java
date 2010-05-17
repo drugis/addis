@@ -37,8 +37,10 @@ public class SMAAEntityFactory {
 		}
 		
 		public void resultsChanged(ResultsEvent ev) {
-			int progress = (d_simulator.getCurrentIteration() *100) / d_simulator.getTotalIterations();
-			d_bar.setValue(progress);
+			if (d_bar != null) {
+				int progress = (d_simulator.getCurrentIteration() *100) / d_simulator.getTotalIterations();
+				d_bar.setValue(progress);
+			}
 		}
 	}
 	
@@ -81,7 +83,7 @@ public class SMAAEntityFactory {
 		simulationThread.start();
 	}
 
-	private SMAAModel createSmaaModel(BenefitRiskAnalysis brAnalysis) {
+	SMAAModel createSmaaModel(BenefitRiskAnalysis brAnalysis) {
 		SMAAModel smaaModel = new SMAAModel(brAnalysis.getName());
 
 		Alternative baseLineAlt = getAlternative(brAnalysis.getBaseline());
@@ -116,7 +118,7 @@ public class SMAAEntityFactory {
 		return smaaModel;
 	}
 	
-	private Criterion getCriterion(OutcomeMeasure om) {
+	Criterion getCriterion(OutcomeMeasure om) {
 		if(d_outcomeCriterionMap.containsKey(om))
 			return d_outcomeCriterionMap.get(om);
 		ScaleCriterion c = new ScaleCriterion(om.getName());
@@ -124,7 +126,7 @@ public class SMAAEntityFactory {
 		return c;
 	}
 	
-	private Alternative getAlternative(Drug d) {
+	Alternative getAlternative(Drug d) {
 		if(d_drugAlternativeMap.containsKey(d))
 			return d_drugAlternativeMap.get(d);
 		Alternative a = new Alternative(d.getName());
