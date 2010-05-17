@@ -197,7 +197,7 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testGetChildCount() {
-		assertEquals(7, d_treeModel.getChildCount(d_treeModel.getRoot()));
+		assertEquals(8, d_treeModel.getChildCount(d_treeModel.getRoot()));
 		
 		assertEquals(2, d_treeModel.getChildCount(d_treeModel.getAnalysesNode()));
 		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getIndicationsNode()));
