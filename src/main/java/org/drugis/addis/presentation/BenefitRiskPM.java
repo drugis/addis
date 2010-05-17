@@ -13,6 +13,7 @@ import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.ProgressEvent;
 import org.drugis.mtc.ProgressListener;
+import org.drugis.mtc.ProgressEvent.EventType;
 
 import com.jgoodies.binding.PresentationModel;
 
@@ -20,8 +21,30 @@ import fi.smaa.jsmaa.simulator.SMAA2Results;
 
 @SuppressWarnings("serial")
 public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
-	
-	public static final String PROPERTY_ALLMODELSREADY = "allModelsReady";
+
+	private class AnalysisProgressListener implements ProgressListener {
+		JProgressBar d_progBar;
+
+		public AnalysisProgressListener(MixedTreatmentComparison networkModel) {
+			networkModel.addProgressListener(this);
+		}
+		
+		public void attachBar(JProgressBar bar) {
+			d_progBar = bar;
+		}
+
+		public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
+			if(event.getType() == EventType.SIMULATION_PROGRESS && d_progBar != null){
+				d_progBar.setString("Simulating: " + event.getIteration()/(event.getTotalIterations()/100) + "%");
+				d_progBar.setValue(event.getIteration()/(event.getTotalIterations()/100));
+			} else if(event.getType() == EventType.BURNIN_PROGRESS && d_progBar != null){
+				d_progBar.setString("Burn in: " + event.getIteration()/(event.getTotalIterations()/100) + "%");
+				d_progBar.setValue(event.getIteration()/(event.getTotalIterations()/100));
+			} else if(event.getType() == EventType.SIMULATION_FINISHED) {
+				d_progBar.setVisible(false);
+			}
+		}
+	}
 	
 	private class AllModelsReadyListener implements ProgressListener {
 		private List<ConsistencyModel> d_models = new ArrayList<ConsistencyModel>();
@@ -32,9 +55,10 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		}
 
 		public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
-			if (event.getType() == ProgressEvent.EventType.SIMULATION_FINISHED)
+			if (event.getType() == ProgressEvent.EventType.SIMULATION_FINISHED){
 				if(allModelsReady())
 					firePropertyChange(PROPERTY_ALLMODELSREADY, false, true);
+			}
 		}
 
 		public boolean allModelsReady() {
@@ -45,9 +69,12 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		}
 	}
 	
+	public static final String PROPERTY_ALLMODELSREADY = "allModelsReady";
+	
 	private PresentationModelFactory d_pmf;
 	private SMAAEntityFactory d_smaaf;
 	private AllModelsReadyListener d_allModelsReadyListener;
+	private List<AnalysisProgressListener> d_analysisProgressListeners;
 	
 	public boolean allModelsReady() {
 		return d_allModelsReadyListener.allModelsReady();
@@ -59,15 +86,18 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		d_pmf = pmf;
 		d_smaaf = new SMAAEntityFactory();
 		d_allModelsReadyListener = new AllModelsReadyListener();
+		d_analysisProgressListeners = new ArrayList<AnalysisProgressListener>();
 		startAllNetworkAnalyses();
 	}
 
-	private void startAllNetworkAnalyses() {
-		for (MetaAnalysis ma : getBean().getMetaAnalyses() )
-			if (ma instanceof NetworkMetaAnalysis) {
-				d_allModelsReadyListener.addModel(((NetworkMetaAnalysis) ma).getConsistencyModel());
-				((NetworkMetaAnalysis) ma).runConsistency();
-			}
+	public int getNumProgBars() {
+		return d_analysisProgressListeners.size();
+	}
+	
+	public void attachProgBar(JProgressBar bar, int progBarNum) {
+		if (progBarNum >= d_analysisProgressListeners.size() )
+			throw new IllegalArgumentException();
+		d_analysisProgressListeners.get(progBarNum).attachBar(bar);
 	}
 
 	public SMAA2Results getSmaaModelResults(JProgressBar progressBar) {
@@ -84,5 +114,16 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 
 	public BenefitRiskMeasurementTableModel getMeasurementTableModel() {
 		return new BenefitRiskMeasurementTableModel(getBean(), d_pmf);
+	}
+	
+	private void startAllNetworkAnalyses() {
+		for (MetaAnalysis ma : getBean().getMetaAnalyses() ){
+			if (ma instanceof NetworkMetaAnalysis) {
+				ConsistencyModel consistencyModel = ((NetworkMetaAnalysis) ma).getConsistencyModel();
+				d_allModelsReadyListener.addModel(consistencyModel);
+				((NetworkMetaAnalysis) ma).runConsistency();
+				d_analysisProgressListeners.add(new AnalysisProgressListener(consistencyModel));
+			}
+		}
 	}
 }

@@ -16,6 +16,7 @@ import org.drugis.addis.gui.AbstractTablePanel;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.BenefitRiskPM;
+import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -51,7 +52,6 @@ public class BenefitRiskView implements ViewBuilder {
 
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals(BenefitRiskPM.PROPERTY_ALLMODELSREADY)){
-					System.out.println("All models ready");
 					d_main.reloadRightPanel();
 				}
 			}
@@ -59,8 +59,6 @@ public class BenefitRiskView implements ViewBuilder {
 	}
 	
 	public JComponent buildPanel() {
-		System.out.println("Building panel");
-		
 		if (d_builder != null)
 			d_builder.getPanel().removeAll();
 		
@@ -93,9 +91,30 @@ public class BenefitRiskView implements ViewBuilder {
 			d_builder.addSeparator("central weigths", cc.xy(1, 23));
 			d_builder.add(GUIFactory.createCollapsiblePanel(buildWeightsPart()), cc.xy(1, 25));
 		} else {
-			d_builder.addLabel("Analysing benefits and risks.. please wait", cc.xy(1, 15));
+			d_builder.add(GUIFactory.createCollapsiblePanel(buildAnalyzingPart()), cc.xy(1, 15));
 		}
 		return d_builder.getPanel();
+	}
+
+	private JComponent buildAnalyzingPart() {
+		FormLayout layout = new FormLayout(
+				"pref:grow:fill",
+				"p, 3dlu, p");
+		PanelBuilder builder = new PanelBuilder(layout);
+		CellConstraints cc =  new CellConstraints();
+		
+		builder.addSeparator("Running MTC models ... please wait",cc.xy(1,1));
+		int row = 1;
+		for (int i=0; i<d_pm.getNumProgBars(); ++i){
+			LayoutUtil.addRow(layout);
+			row += 2;
+			JProgressBar bar = new JProgressBar();
+			bar.setStringPainted(true);
+			d_pm.attachProgBar(bar,i);
+			builder.add(bar,cc.xy(1, row));
+		}
+		
+		return builder.getPanel();
 	}
 
 	private JComponent buildWeightsPart() {
