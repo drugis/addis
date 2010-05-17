@@ -3,8 +3,11 @@ package org.drugis.addis.presentation;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.BenefitRiskAnalysis;
+import org.drugis.addis.entities.ContinuousMeasurementEstimate;
+import org.drugis.addis.entities.LogContinuousMeasurementEstimate;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.RelativeEffect;
+import org.drugis.addis.entities.RelativeEffect.AxisType;
 
 @SuppressWarnings("serial")
 public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
@@ -41,13 +44,19 @@ public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
 		if (columnIndex == 0) {
 			return d_br.getDrugs().get(rowIndex).getName();
 		}
-		
-		//RelativeEffect<? extends Measurement> relativeEffect = d_br.getRelativeEffect(d_br.getDrugs().get(rowIndex), d_br.getOutcomeMeasures().get(columnIndex-1));
-		//return d_pmf.getModel(new LogContinuousMeasurementEstimate(relativeEffect.getRelativeEffect(), relativeEffect.getError()));
+
 		RelativeEffect<? extends Measurement> relativeEffect = d_br.getRelativeEffect(d_br.getDrugs().get(rowIndex), d_br.getOutcomeMeasures().get(columnIndex-1));
 		if (relativeEffect == null)
 			return "N/A";
-		return relativeEffect;
+		
+		Double mean = relativeEffect.getRelativeEffect();
+		Double error = relativeEffect.getError();
+		
+		if (relativeEffect.getAxisType() == AxisType.LOGARITHMIC) {
+			return new LogContinuousMeasurementEstimate(Math.log(mean), error);
+		} else {
+			return new ContinuousMeasurementEstimate(mean, error);
+		}
 	}
 
 }

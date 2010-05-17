@@ -209,30 +209,19 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	public boolean isContinuous() {
 		return d_isContinuous;
 	}
-	
-	private Interval<Double> getConfidenceInterval(double mean, double stdDev) {
-		if (isContinuous()) 
-			return new ContinuousMeasurementEstimate(mean,stdDev).getConfidenceInterval();
-		else
-			return new LogContinuousMeasurementEstimate(mean, stdDev).getConfidenceInterval();
-	}
 
 	public RelativeEffect<? extends Measurement> getRelativeEffect(Drug d1, Drug d2, Class<? extends RelativeEffect<?>> type) {
 		
 		if(!getConsistencyModel().isReady())
-			//return new MetaAnalysisRelativeEffect<Measurement>(new Interval<Double>(0d, 0d), 0, 0, 0, AxisType.LINEAR);
 			return null;
 		
 		ConsistencyModel consistencyModel = getConsistencyModel();
 		Estimate consistencyEstimate = consistencyModel.getRelativeEffect(new Treatment(d1.getName()), new Treatment(d2.getName()));
 		
-		Interval<Double> confidenceInterval = getConfidenceInterval(consistencyEstimate.getMean(), consistencyEstimate.getStandardDeviation());
-		
 		/** Beware!: for the dichotomous case, we are converting the logMean to the actual mean
 		 */
-		//double realRelativeEffect = isContinuous() ? consistencyEstimate.getMean() : Math.exp(consistencyEstimate.getMean());
-		double realRelativeEffect = isContinuous() ? consistencyEstimate.getMean() : Math.exp(consistencyEstimate.getMean()); // FIXME: Display normal mean.
-		RelativeEffect<Measurement> re = new MetaAnalysisRelativeEffect<Measurement>(confidenceInterval, realRelativeEffect,
+		double realRelativeEffect = isContinuous() ? consistencyEstimate.getMean() : Math.exp(consistencyEstimate.getMean());
+		RelativeEffect<Measurement> re = new MetaAnalysisRelativeEffect<Measurement>(null, realRelativeEffect,
 													0, consistencyEstimate.getStandardDeviation(), 
 													isContinuous() ? RelativeEffect.AxisType.LINEAR : RelativeEffect.AxisType.LOGARITHMIC
 		                                 );
