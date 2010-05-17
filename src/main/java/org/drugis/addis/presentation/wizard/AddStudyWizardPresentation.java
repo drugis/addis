@@ -52,7 +52,7 @@ import org.drugis.addis.imports.ClinicaltrialsImporter;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.BasicArmPresentation;
 import org.drugis.addis.presentation.ListHolder;
-import org.drugis.addis.presentation.MeasurementTableModel;
+import org.drugis.addis.presentation.StudyMeasurementTableModel;
 import org.drugis.addis.presentation.MutableCharacteristicHolder;
 import org.drugis.addis.presentation.PopulationCharTableModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -357,9 +357,9 @@ public class AddStudyWizardPresentation {
 		return new StudyNoteHolder(getOldStudy(),getOldStudy().getArms().get(curArmNumber));
 	}
 
-	public MeasurementTableModel getEndpointMeasurementTableModel() {
+	public StudyMeasurementTableModel getEndpointMeasurementTableModel() {
 		commitOutcomesArmsToNew();
-		return new MeasurementTableModel(getNewStudy(),d_pmf, Endpoint.class);
+		return new StudyMeasurementTableModel(getNewStudy(),d_pmf, Endpoint.class);
 	}
 	
 	
@@ -458,9 +458,9 @@ public class AddStudyWizardPresentation {
 		return d_oldStudyPM.getBean();
 	}
 
-	private MeasurementTableModel getAdverseEventMeasurementTableModel() {
+	private StudyMeasurementTableModel getAdverseEventMeasurementTableModel() {
 		commitAdverseEventsToStudy();
-		return new MeasurementTableModel(getNewStudy(),d_pmf, AdverseEvent.class);
+		return new StudyMeasurementTableModel(getNewStudy(),d_pmf, AdverseEvent.class);
 	}
 	
 	private PopulationCharTableModel getPopulationCharMeasurementTableModel() {
@@ -470,7 +470,7 @@ public class AddStudyWizardPresentation {
 
 	public OutcomeMeasurementsModel getAdverseEventsModel() {
 		return new OutcomeMeasurementsModel() {
-			public MeasurementTableModel getMeasurementTableModel() {
+			public StudyMeasurementTableModel getMeasurementTableModel() {
 				return getAdverseEventMeasurementTableModel();
 			}
 		};
@@ -478,7 +478,7 @@ public class AddStudyWizardPresentation {
 	
 	public OutcomeMeasurementsModel getEndpointsModel() {
 		return new OutcomeMeasurementsModel() {
-			public MeasurementTableModel getMeasurementTableModel() {
+			public StudyMeasurementTableModel getMeasurementTableModel() {
 				return getEndpointMeasurementTableModel();
 			}
 		};

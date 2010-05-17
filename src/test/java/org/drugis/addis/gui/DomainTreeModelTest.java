@@ -206,6 +206,7 @@ public class DomainTreeModelTest {
 		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getPopulationCharacteristicsNode()));	
 		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getDrugsNode()));		
 		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getStudiesNode()));
+		assertEquals(0, d_treeModel.getChildCount(d_treeModel.getBenefitRiskAnlysisNode()));
 		assertEquals(0, d_treeModel.getChildCount(d_firstEndpoint));
 	}
 

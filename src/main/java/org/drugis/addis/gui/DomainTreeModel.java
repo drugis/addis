@@ -30,6 +30,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import org.drugis.addis.entities.AdverseEvent;
+import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
@@ -176,48 +177,36 @@ public class DomainTreeModel implements TreeModel {
 	public int getIndexOfChild(Object parent, Object child) {
 		if (parent == d_root && child == d_indicationsNode) {
 			return INDICATIONS;
-		}
-		if (parent == d_root && child == d_endpointsNode) {
+		} if (parent == d_root && child == d_endpointsNode) {
 			return ENDPOINTS;
-		}
-		if (parent == d_root && child == d_adverseEventNode) {
+		} if (parent == d_root && child == d_adverseEventNode) {
 			return ADVERSE_EVENTS;
-		}
-		if (parent == d_root && child == d_popcharsNode) {
+		} if (parent == d_root && child == d_popcharsNode) {
 			return POPULATION_CHARACTERISTICS;
-		}
-		if (parent == d_root && child == d_studiesNode) {
+		} if (parent == d_root && child == d_studiesNode) {
 			return STUDIES;
-		}
-		if (parent == d_root && child == d_drugsNode) {
+		} if (parent == d_root && child == d_drugsNode) {
 			return DRUGS;
-		}	
-		if (parent == d_root && child == d_analysesNode) {
+		} if (parent == d_root && child == d_analysesNode) {
 			return ANALYSES;
-		}
-		if (parent == d_root && child == d_brNode) {
+		} if (parent == d_root && child == d_brNode) {
 			return BENEFITRISK_ANALYSIS;
-		}
-		if (parent == d_indicationsNode) {
+		} if (parent == d_indicationsNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getIndications(), child);
-		}
-		if (parent == d_endpointsNode) {
+		} if (parent == d_endpointsNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getEndpoints(), child);
-		}
-		if (parent == d_adverseEventNode) {
+		} if (parent == d_adverseEventNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getAdverseEvents(), child);
-		}
-		if (parent == d_popcharsNode) {
+		} if (parent == d_popcharsNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getVariables(), child);
-		}
-		if (parent == d_studiesNode) {
+		} if (parent == d_studiesNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getStudies(), child);
-		}
-		if (parent == d_drugsNode) {
+		} if (parent == d_drugsNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getDrugs(), child);			
-		}
-		if (parent == d_analysesNode) {
+		} if (parent == d_analysesNode) {
 			return CollectionUtil.getIndexOfElement(d_domain.getMetaAnalyses(), child);			
+		} if (parent == d_brNode) {
+			return CollectionUtil.getIndexOfElement(d_domain.getBenefitRiskAnalyses(), child);			
 		}
 		return -1;
 	}
@@ -241,6 +230,9 @@ public class DomainTreeModel implements TreeModel {
 		}		
 		if (node instanceof MetaAnalysis) {
 			return d_domain.getMetaAnalyses().contains(node);
+		}
+		if (node instanceof BenefitRiskAnalysis) {
+			return d_domain.getBenefitRiskAnalyses().contains(node);
 		}
 		if (node instanceof Study) {
 			return d_domain.getStudies().contains(node);

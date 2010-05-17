@@ -33,6 +33,7 @@ public class FileNames {
 	public static final String ICON_NETWMETASTUDY = "netwmetastudy.gif";
 	public static final String ICON_METASTUDY_NEW = "metastudy_new.gif";
 	public static final String ICON_NETWMETASTUDY_NEW = "netwmetastudy_new.gif";
+	public static final String ICON_BENEFITRISK = "benefitrisk.gif";
 	public static final String ICON_DELETE = "delete.gif";
 	public static final String ICON_INDICATION = "indication.gif";
 	public static final String ICON_PLUS = "add.gif";

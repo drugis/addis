@@ -168,6 +168,8 @@ public interface Domain {
 	 */
 	public void deleteEntity(MetaAnalysis ma) throws DependentEntitiesException;
 	
+	public void deleteEntity(BenefitRiskAnalysis bra) throws DependentEntitiesException;
+
 	/**
 	 * Deletes a drug from the domain.
 	 * 

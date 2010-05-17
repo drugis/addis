@@ -90,9 +90,10 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testGetEndpointSet() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		List<Endpoint> expected = new ArrayList<Endpoint>();
+		List<OutcomeMeasure> expected = new ArrayList<OutcomeMeasure>();
 		expected.add(ExampleData.buildEndpointCgi());		
-		expected.add(ExampleData.buildEndpointHamd());		
+		expected.add(ExampleData.buildEndpointHamd());
+		expected.add(ExampleData.buildAdverseEventConvulsion());
 		assertEquals(expected, d_wizard.getOutcomeMeasureListModel().getValue());
 	}
 	

@@ -35,6 +35,7 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Domain;
@@ -45,9 +46,12 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.RelativeEffectFactory;
 
 public class ExampleData {
@@ -157,6 +161,7 @@ public class ExampleData {
 		Study study = new Study("Chouinard et al, 1999", buildIndicationDepression());
 		study.setEndpoints(new ArrayList<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
+		study.addAdverseEvent(buildAdverseEventConvulsion());
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -210,10 +215,14 @@ public class ExampleData {
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(parox);
 		pCgi.setMean(-1.69);
 		pCgi.setStdDev(0.16);
+		BasicRateMeasurement pConv = (BasicRateMeasurement) buildAdverseEventConvulsion().buildMeasurement(parox);
+		pConv.setRate(10);
+		pConv.setSampleSize(40);
 		
 		study.addArm(parox);
 		study.setMeasurement(buildEndpointHamd(), parox, pHamd);
 		study.setMeasurement(buildEndpointCgi(), parox, pCgi);
+		study.setMeasurement(buildAdverseEventConvulsion(),parox, pConv);
 		
 	
 		
@@ -225,10 +234,14 @@ public class ExampleData {
 		BasicContinuousMeasurement fCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(fluox);
 		fCgi.setMean(-1.8);
 		fCgi.setStdDev(0.16);
+		BasicRateMeasurement fConv = (BasicRateMeasurement) buildAdverseEventConvulsion().buildMeasurement(parox);
+		fConv.setRate(12);
+		fConv.setSampleSize(40);
 		
 		study.addArm(fluox);
 		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);		
 		study.setMeasurement(buildEndpointCgi(), fluox, fCgi);
+		study.setMeasurement(buildAdverseEventConvulsion(), fluox, pConv);
 		return study;
 	}
 
@@ -245,6 +258,7 @@ public class ExampleData {
 		Drug fluoxetine = buildDrugFluoxetine();
 		Study study = new Study("De Wilde et al, 1993", buildIndicationDepression());
 		study.setEndpoints(Collections.singletonList(hamd));
+		study.setAdverseEvents(Collections.singletonList(buildAdverseEventConvulsion()));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -267,18 +281,29 @@ public class ExampleData {
 		// Paroxetine data
 		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
 		Arm parox = new Arm(buildDrugParoxetine(), dose, 37);
+		
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
 		pHamd.setRate(23);
+		BasicRateMeasurement pConv = (BasicRateMeasurement) buildAdverseEventConvulsion().buildMeasurement(parox);
+		pConv.setRate(10);
+		pConv.setSampleSize(40);
+		
 		study.addArm(parox);
 		study.setMeasurement(hamd, parox, pHamd);
+		study.setMeasurement(buildAdverseEventConvulsion(),parox, pConv);
 
 		// Fluoxetine data
 		dose = new FixedDose(27.5, SIUnit.MILLIGRAMS_A_DAY);
 		Arm fluox = new Arm(fluoxetine, dose, 41);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(26);
+		BasicRateMeasurement fConv = (BasicRateMeasurement) buildAdverseEventConvulsion().buildMeasurement(fluox);
+		fConv.setRate(10);
+		fConv.setSampleSize(34);
+		
 		study.addArm(fluox);
 		study.setMeasurement(hamd, fluox, fHamd);
+		study.setMeasurement(buildAdverseEventConvulsion(), fluox, fConv);
 		return study;
 	}
 
@@ -352,7 +377,7 @@ public class ExampleData {
 		Study study = new Study("Bennie et al, 1995", buildIndicationDepression());
 		study.setEndpoints(new ArrayList<Endpoint>(
 				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
-//		study.addAdverseEvent(buildAdverseEventConvulsion());
+		study.addAdverseEvent(buildAdverseEventConvulsion());
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -661,7 +686,7 @@ public class ExampleData {
 	
 	public static NetworkMetaAnalysis buildNetworkMetaAnalysisAlternative() {
 		List<Study> studies = Arrays.asList(new Study[] {
-				buildStudyBennie(), buildStudyChouinard(), buildStudyDeWilde(), buildStudyFava2002()});
+				buildStudyBennie(), buildStudyChouinard()});
 		List<Drug> drugs = Arrays.asList(new Drug[] {buildDrugFluoxetine(), buildDrugParoxetine(), 
 				buildDrugSertraline()});
 		
@@ -693,5 +718,46 @@ public class ExampleData {
 			s_convulsion.setDescription("Rate of convulsion during study");
 		}
 		return s_convulsion;
+	}
+
+	public static BenefitRiskAnalysis buildBenefitRiskAnalysis() {
+		Indication indication = buildIndicationDepression();
+		
+		List<OutcomeMeasure> outcomeMeasureList = new ArrayList<OutcomeMeasure>();
+		outcomeMeasureList.add(buildEndpointHamd());
+		outcomeMeasureList.add(buildAdverseEventConvulsion());
+		
+		List<MetaAnalysis> metaAnalysisList = new ArrayList<MetaAnalysis>();
+		metaAnalysisList.add(buildMetaAnalysisHamd());
+		metaAnalysisList.add(buildMetaAnalysisConv());
+		
+		Drug parox = buildDrugParoxetine();
+		List<Drug> fluoxList = Collections.singletonList(buildDrugFluoxetine());
+		
+		return new BenefitRiskAnalysis("testBenefitRiskAnalysis",
+										indication, outcomeMeasureList, metaAnalysisList, parox, fluoxList);										
+	}
+
+	private static MetaAnalysis buildMetaAnalysisConv() {
+		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
+		
+		Study s1 = buildStudyChouinard();
+		studyArms.add(new StudyArmsEntry(s1, s1.getArms().get(0), s1.getArms().get(1)));
+		
+		Study s2 = buildStudyDeWilde();
+		studyArms.add(new StudyArmsEntry(s2, s2.getArms().get(0), s2.getArms().get(1)));		
+		
+		return new RandomEffectsMetaAnalysis("Convulsion test analysis", buildAdverseEventConvulsion(), studyArms);
+	}
+
+	private static MetaAnalysis buildMetaAnalysisHamd() {
+		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
+		
+		Study s1 = buildStudyChouinard();
+		studyArms.add(new StudyArmsEntry(s1, s1.getArms().get(0), s1.getArms().get(1)));
+		Study s2 = buildStudyDeWilde();
+		studyArms.add(new StudyArmsEntry(s2, s2.getArms().get(0), s2.getArms().get(1)));		
+		
+		return new RandomEffectsMetaAnalysis("Hamd test analysis", buildEndpointHamd(), studyArms);
 	}
 }

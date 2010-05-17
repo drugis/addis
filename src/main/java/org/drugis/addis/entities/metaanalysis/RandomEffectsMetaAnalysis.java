@@ -25,26 +25,21 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
-import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.RandomEffectMetaAnalysisRelativeEffect;
 import org.drugis.addis.entities.RelativeEffect;
-import org.drugis.addis.entities.RelativeEffectMetaAnalysis;
 import org.drugis.addis.entities.RiskRatio;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
@@ -57,6 +52,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	transient private double d_SEThetaDSL;
 	transient private Interval<Double> d_confidenceInterval;
 	transient private double d_qIV;
+	transient private RelativeEffect.AxisType d_axisType; 
 	
 	public static final String PROPERTY_INCLUDED_STUDIES_COUNT = "studiesIncluded";
 	public static final String PROPERTY_FIRST_DRUG = "firstDrug";
@@ -75,6 +71,16 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	throws IllegalArgumentException {
 		super(name, studies.get(0).getIndication(), om, studies, 
 				Arrays.asList(new Drug[] {drug1, drug2}), getArmMap(studies, drug1, drug2));
+		checkREDataConsistency(studies, drug1, drug2);
+	}
+
+	private void checkREDataConsistency(List<? extends Study> studies,
+			Drug drug1, Drug drug2) {
+		if (studies.size() == 0)
+			throw new IllegalArgumentException("No studies in MetaAnalysis");
+		for (Study s : studies)
+			if (!(s.getDrugs().contains(drug1) && s.getDrugs().contains(drug2)))
+				throw new IllegalArgumentException("Not all studies contain the drugs under comparison");
 	}
 
 	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms)
@@ -154,14 +160,21 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	}
 	
 	public List<StudyArmsEntry> getStudyArms() {
+		return getStudyArms(false);
+	}
+	
+	private List<StudyArmsEntry> getStudyArms(boolean drugsSwapped) {
 		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
 		for (Study s : getIncludedStudies()) {
-			studyArms.add(new StudyArmsEntry(s, getArm(s, getFirstDrug()), getArm(s, getSecondDrug())));
+			if (!drugsSwapped)
+				studyArms.add(new StudyArmsEntry(s, getArm(s, getFirstDrug()), getArm(s, getSecondDrug())));
+			else
+				studyArms.add(new StudyArmsEntry(s, getArm(s, getSecondDrug()), getArm(s, getFirstDrug())));
 		}
 		return studyArms;
 	}
 	
-	private void compute(Class<? extends RelativeEffect<?>> relEffClass) {
+	private void compute(Class<? extends RelativeEffect<?>> relEffClass, boolean drugsSwapped) {
 		
 		Class<? extends RelativeEffect<? extends Measurement>> type = relEffClass; 
 		if (relEffClass == RiskRatio.class)
@@ -175,7 +188,8 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 			
 		for (int i=0; i<d_studies.size(); ++i ){
 			RelativeEffect<? extends Measurement> re;
-			re = RelativeEffectFactory.buildRelativeEffect(getStudyArms().get(i), d_outcome, type);
+			re = RelativeEffectFactory.buildRelativeEffect(getStudyArms(drugsSwapped).get(i), d_outcome, type);
+			d_axisType = re.getAxisType();
 			relEffects.add(re);
 		}
 		
@@ -264,61 +278,37 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 			weightSum += weights.get(i);
 		}
 		return weightSum;
-	}	
+	}
+	
+	public RandomEffectMetaAnalysisRelativeEffect<Measurement> getRelativeEffect(Drug d1, Drug d2, Class<? extends RelativeEffect<?>> type) {
+		// check if drugs make sense
+		List<Drug> askedDrugs = Arrays.asList(new Drug[]{d1,d2});
+		if (!d_drugs.containsAll(askedDrugs))
+			throw new IllegalArgumentException(d_name + " compares drugs " + d_drugs + " but " + askedDrugs + " were asked");
 		
-	public RelativeEffectMetaAnalysis<Measurement> getRelativeEffect(Class<? extends RelativeEffect<?>> type) {
-		compute(type);
-		return new RandomEffects(d_confidenceInterval, d_thetaDSL, d_totalSampleSize, d_SEThetaDSL, d_qIV);		
+		// return measurement
+		if(d1.equals(getFirstDrug()))
+			compute(type, false);
+		else 
+			compute(type, true);
+		
+		return new RandomEffects(d_confidenceInterval, d_thetaDSL, d_totalSampleSize, d_SEThetaDSL, d_qIV);
+	}
+		
+	public RandomEffectMetaAnalysisRelativeEffect<Measurement> getRelativeEffect(Class<? extends RelativeEffect<?>> type) {
+		compute(type, false);
+		return getRelativeEffect(getFirstDrug(), getSecondDrug(), type);
 	}
 
-	private class RandomEffects extends AbstractEntity implements RelativeEffectMetaAnalysis<Measurement> {
-		
-		private Interval<Double> t_confidenceInterval;
-		private double t_thetaDSL;
-		private int t_totalSampleSize;
-		private double t_qIV;
-		private Double t_SEThetaDSL;
+	private class RandomEffects extends MetaAnalysisRelativeEffect<Measurement> implements RandomEffectMetaAnalysisRelativeEffect<Measurement> {
+		public double t_qIV;
 
-		public RandomEffects(Interval<Double> confidenceInterval, double thetaDSL, 
-				int totalSampleSize, double SEThetaDSL, double qIV) {
-			t_confidenceInterval = confidenceInterval;
-			t_thetaDSL = thetaDSL;
-			t_totalSampleSize = totalSampleSize;
-			t_SEThetaDSL = SEThetaDSL;
+		public RandomEffects(Interval<Double> confidenceInterval, double relativeEffect, 
+				int totalSampleSize, double stdDev, double qIV) {
+			super(confidenceInterval, relativeEffect, totalSampleSize, stdDev, d_axisType);
 			t_qIV = qIV;
 		}
-		public RelativeEffect.AxisType getAxisType() {
-			return AxisType.LOGARITHMIC;
-		}
-
-		public Interval<Double> getConfidenceInterval() {
-			return t_confidenceInterval;
-		}
-
-		public Double getRelativeEffect() {
-			return t_thetaDSL;
-		}
 		
-		public Integer getSampleSize() {
-			return t_totalSampleSize;
-		}
-
-		public String getName() {
-			return "Random Effects";
-		}		
-
-		public RateMeasurement getSubject() {
-			throw new RuntimeException("Cannot get a Subject Measurement from Random Effects (Meta-Analysis)");
-		}
-		
-		public RateMeasurement getBaseline() {
-			throw new RuntimeException("Cannot get a Baseline Measurement from Random Effects (Meta-Analysis)");
-		}
-
-		public Double getError() {
-			return t_SEThetaDSL;
-		}
-
 		public double getHeterogeneity() {
 			return t_qIV;
 		}
@@ -326,14 +316,6 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		public double getHeterogeneityI2() {
 			int k = getIncludedStudies().size();
 			return Math.max(0, 100* ((t_qIV - (k-1)) / t_qIV ) );
-		}
-		@Override
-		public Set<Entity> getDependencies() {
-			return Collections.emptySet();
-		}	
-		
-		public boolean isDefined() {
-			return true;
 		}
 	}
 	

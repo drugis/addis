@@ -26,8 +26,7 @@ import org.apache.commons.math.distribution.NormalDistribution;
 import org.apache.commons.math.distribution.NormalDistributionImpl;
 import org.drugis.common.Interval;
 
-public class LogContinuousMeasurementEstimate extends ContinuousMeasurementEstimate { //ContinuousMeasurementEstimate {
-
+public class LogContinuousMeasurementEstimate extends ContinuousMeasurementEstimate {
 	public LogContinuousMeasurementEstimate(Double logMean, Double logStdDev) {
 		super(logMean, logStdDev);
 	}

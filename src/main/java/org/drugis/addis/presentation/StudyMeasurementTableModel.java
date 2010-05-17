@@ -31,15 +31,15 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 
-public class MeasurementTableModel extends AbstractTableModel {		
-	private static final long serialVersionUID = 5331596469882184969L;
+@SuppressWarnings("serial")
+public class StudyMeasurementTableModel extends AbstractTableModel {		
 
 	protected Study d_study;
 	private PresentationModelFactory d_pmf;
 	private Class<? extends Variable> d_type;
 	protected MyMeasurementListener d_measurementListener = new MyMeasurementListener();
 	
-	public MeasurementTableModel(Study study, PresentationModelFactory pmf, Class<? extends Variable> type) {
+	public StudyMeasurementTableModel(Study study, PresentationModelFactory pmf, Class<? extends Variable> type) {
 		d_study = study;
 		d_pmf = pmf;
 		d_type = type;

@@ -8,20 +8,31 @@ import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
 
 public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<BenefitRiskAnalysis> {
 
-	private String d_id;
+	private String d_name;
 	private Indication d_indication;
 	private List<OutcomeMeasure> d_outcomeMeasures;
 	private List<MetaAnalysis> d_metaAnalyses;
 	private List<Drug> d_drugs;
+	private Drug d_baseline;
+	
+	public static String PROPERTY_NAME = "name";
+	public static String PROPERTY_INDICATION = "indication";
+	public static String PROPERTY_OUTCOMEMEASURES = "outcomeMeasures";
+	public static String PROPERTY_DRUGS = "drugs";
+	public static String PROPERTY_BASELINE = "baseline";
+	
+	public BenefitRiskAnalysis() {
+	}
 	
 	public BenefitRiskAnalysis(String id, Indication indication, List<OutcomeMeasure> outcomeMeasures,
-			List<MetaAnalysis> metaAnalysis, List<Drug> drugs) {
+			List<MetaAnalysis> metaAnalysis, Drug baseline, List<Drug> drugs) {
 		super();
 		d_indication = indication;
 		d_outcomeMeasures = outcomeMeasures;
 		d_metaAnalyses = metaAnalysis;
 		d_drugs = drugs;
-		setId(id);
+		setBaseline(baseline);
+		setName(id);
 	}
 
 	public Indication getIndication() {
@@ -40,11 +51,11 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 		d_outcomeMeasures = outcomeMeasures;
 	}
 
-	public List<MetaAnalysis> getMetaAnalysis() {
+	public List<MetaAnalysis> getMetaAnalyses() {
 		return d_metaAnalyses;
 	}
 
-	public void setMetaAnalysis(List<MetaAnalysis> metaAnalysis) {
+	public void setMetaAnalyses(List<MetaAnalysis> metaAnalysis) {
 		d_metaAnalyses = metaAnalysis;
 	}
 
@@ -54,6 +65,11 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 
 	public void setDrugs(List<Drug> drugs) {
 		d_drugs = drugs;
+	}
+	
+	@Override
+	public String[] getXmlExclusions() {
+		return new String[]{"allDrugs"};
 	}
 
 	@Override
@@ -66,12 +82,12 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 		return dependencies;
 	}
 
-	public void setId(String id) {
-		d_id = id;
+	public void setName(String id) {
+		d_name = id;
 	}
 
-	public String getId() {
-		return d_id;
+	public String getName() {
+		return d_name;
 	}
 
 	public boolean equals(Object other){
@@ -79,13 +95,35 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 			return false;
 		if (!(other instanceof BenefitRiskAnalysis))
 			return false;
-		return this.getId().equals( ((BenefitRiskAnalysis)other).getId() );
+		return this.getName().equals( ((BenefitRiskAnalysis)other).getName() );
 	}
 
 	public int compareTo(BenefitRiskAnalysis other) {
 		if (other == null) {
 			return 1;
 		}
-		return getId().compareTo(other.getId());
+		return getName().compareTo(other.getName());
 	}
+	
+	public String toString() {
+		return getName();
+	}
+
+	public void setBaseline(Drug baseline) {
+		d_baseline = baseline;
+	}
+
+	public Drug getBaseline() {
+		return d_baseline;
+	}
+
+	public RelativeEffect<? extends Measurement> getRelativeEffect(Drug d, OutcomeMeasure om) {
+		for(MetaAnalysis ma : getMetaAnalyses()){
+			if(ma.getOutcomeMeasure().equals(om))
+				return ma.getRelativeEffect(d_baseline, d, OddsRatio.class);
+		}
+		return null;
+	}
+
+
 }

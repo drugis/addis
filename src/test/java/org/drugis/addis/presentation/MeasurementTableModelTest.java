@@ -45,7 +45,7 @@ public class MeasurementTableModelTest {
 
 	private Study d_standardStudy;
 	private PresentationModelFactory d_pmf;
-	private MeasurementTableModel d_model;
+	private StudyMeasurementTableModel d_model;
 	
 	@Before
 	public void setUp() {
@@ -53,7 +53,7 @@ public class MeasurementTableModelTest {
 		ExampleData.initDefaultData(domain);
 		d_pmf = new PresentationModelFactory(domain);
 		d_standardStudy = ExampleData.buildStudyDeWilde();
-		d_model = new MeasurementTableModel(d_standardStudy, d_pmf, Endpoint.class);
+		d_model = new StudyMeasurementTableModel(d_standardStudy, d_pmf, Endpoint.class);
 	}
 		
 	@Test
@@ -63,7 +63,7 @@ public class MeasurementTableModelTest {
 
 	@Test
 	public void testGetRowCount() {
-		assertEquals(d_standardStudy.getOutcomeMeasures().size(), d_model.getRowCount());
+		assertEquals(d_standardStudy.getEndpoints().size(), d_model.getRowCount());
 	}
 
 	@Test

@@ -24,6 +24,7 @@ package org.drugis.addis.gui.builder;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
@@ -32,6 +33,7 @@ import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.presentation.BenefitRiskPM;
 import org.drugis.addis.presentation.DrugPresentationModel;
 import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
@@ -63,6 +65,8 @@ public class ViewFactory {
 		} else if (node instanceof Indication) {
 			return new IndicationView(
 					(IndicationPresentation) pmf.getModel(((Indication) node)), main);
+		}  else if (node instanceof BenefitRiskAnalysis) {
+			return new BenefitRiskView((BenefitRiskPM) pmf.getModel((BenefitRiskAnalysis) node), main);
 		}
 		return new ViewBuilder() {
 			public JComponent buildPanel() {

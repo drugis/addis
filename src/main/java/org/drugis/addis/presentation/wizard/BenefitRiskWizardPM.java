@@ -205,11 +205,14 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 				metaAnalyses.add(ma.getValue());
 		}
 			
+		Drug baseline = alternatives.get(0);
+		alternatives.remove(0);
 		BenefitRiskAnalysis brAnalysis = new BenefitRiskAnalysis(
 				id,
 				d_indicationHolder.getValue(), 
 				outcomes,
 				metaAnalyses, 
+				baseline, 
 				alternatives
 			);
 		return brAnalysis;

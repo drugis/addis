@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
@@ -121,6 +122,9 @@ public class PresentationModelFactory {
 		}
 		if (obj instanceof NetworkMetaAnalysis) {
 			return new NetworkMetaAnalysisPresentation((NetworkMetaAnalysis) obj, this);
+		}
+		if (obj instanceof BenefitRiskAnalysis) {
+			return new BenefitRiskPM((BenefitRiskAnalysis) obj, this);
 		}
 		return new PresentationModel(obj);
 	}

@@ -214,11 +214,11 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 	}
 
 	public TableModel getEndpointTableModel() {
-		return new MeasurementTableModel(getBean(), d_pmf, Endpoint.class);
+		return new StudyMeasurementTableModel(getBean(), d_pmf, Endpoint.class);
 	}
 	
 	public TableModel getAdverseEventTableModel() {
-		return new MeasurementTableModel(getBean(), d_pmf, AdverseEvent.class);
+		return new StudyMeasurementTableModel(getBean(), d_pmf, AdverseEvent.class);
 	}
 
 	public Note getNote(Object key) {
