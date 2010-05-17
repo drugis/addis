@@ -21,23 +21,15 @@
 
 package org.drugis.addis.entities.metaanalysis;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.RelativeEffect.AxisType;
-import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
-import org.drugis.mtc.ProgressEvent;
-import org.drugis.mtc.ProgressListener;
-import org.drugis.mtc.ProgressEvent.EventType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -64,7 +56,7 @@ public class NetworkMetaAnalysisTest {
 	@Test
 	public void testGetRelativeEffect() {
 		RelativeEffect<? extends Measurement> actual = d_mockAnalysis.getRelativeEffect(ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine(), OddsRatio.class);
-		RelativeEffect<? extends Measurement> expected = new MetaAnalysisRelativeEffect<Measurement>(null, 1.0, 0, 0.33333, AxisType.LOGARITHMIC);
+		RelativeEffect<? extends Measurement> expected = new MetaAnalysisRelativeEffect<Measurement>(null, Math.exp(1.0), 0, 0.33333, AxisType.LOGARITHMIC);
 		assertEquals(expected.getRelativeEffect(), actual.getRelativeEffect());
 		assertEquals(expected.getError(), actual.getError());
 		assertEquals(expected.getAxisType(), actual.getAxisType());

@@ -52,8 +52,11 @@ public class SMAAEntityFactory {
 	}
 	
 	public static CardinalMeasurement createCardinalMeasurement(RelativeEffect<? extends Measurement> re) {
+		/* Beware, even though the axistype is logarithmic, the mean has been converted to a normal scale 
+		 * by taking the exponent.
+		 */
 		if (re.getAxisType().equals(RelativeEffect.AxisType.LOGARITHMIC))
-			return new LogNormalMeasurement(re.getRelativeEffect(),re.getError());
+			return new LogNormalMeasurement(Math.log(re.getRelativeEffect()),re.getError());
 		else if (re.getAxisType().equals(RelativeEffect.AxisType.LINEAR)){
 			return new GaussianMeasurement(re.getRelativeEffect(),re.getError());
 		} else

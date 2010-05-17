@@ -196,6 +196,19 @@ public class RandomEffectsMetaAnalysisTest {
 	}
 	
 	@Test
+	public void testGetRelativeEffect() {
+		RandomEffectMetaAnalysisRelativeEffect<Measurement> approach1 = 
+			d_rema.getRelativeEffect(OddsRatio.class);
+		RandomEffectMetaAnalysisRelativeEffect<Measurement> approach2 = 
+			d_rema.getRelativeEffect(d_rema.getFirstDrug(), d_rema.getSecondDrug(), OddsRatio.class);
+
+		assertEquals(approach1.getRelativeEffect(), approach2.getRelativeEffect());
+		assertEquals(approach1.getError(), approach2.getError());
+		assertEquals(approach1.getSampleSize(), approach2.getSampleSize());
+		assertEquals(approach1.getAxisType(), approach2.getAxisType());
+	}
+	
+	@Test
 	public void testContinuousMetaAnalysis() {
 		Study s1 = createContStudy("s1", 50, 4, 2, 50, 6, 2, d_ind);
 		Study s2 = createContStudy("s2", 50, 4, 2, 50, 7, 2, d_ind);
