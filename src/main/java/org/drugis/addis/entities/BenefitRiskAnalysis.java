@@ -20,6 +20,7 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	public static String PROPERTY_OUTCOMEMEASURES = "outcomeMeasures";
 	public static String PROPERTY_DRUGS = "drugs";
 	public static String PROPERTY_BASELINE = "baseline";
+	public static String PROPERTY_METAANALYSES = "metaAnalyses";
 	
 	public BenefitRiskAnalysis() {
 	}
@@ -40,7 +41,9 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	}
 
 	public void setIndication(Indication indication) {
+		Indication oldValue = d_indication;
 		d_indication = indication;
+		firePropertyChange(PROPERTY_INDICATION, oldValue, indication);
 	}
 
 	public List<OutcomeMeasure> getOutcomeMeasures() {
@@ -48,7 +51,9 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	}
 
 	public void setOutcomeMeasures(List<OutcomeMeasure> outcomeMeasures) {
+		List<OutcomeMeasure> oldValue = d_outcomeMeasures;
 		d_outcomeMeasures = outcomeMeasures;
+		firePropertyChange(PROPERTY_OUTCOMEMEASURES, oldValue, outcomeMeasures);
 	}
 
 	public List<MetaAnalysis> getMetaAnalyses() {
@@ -56,7 +61,9 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	}
 
 	public void setMetaAnalyses(List<MetaAnalysis> metaAnalysis) {
+		List<MetaAnalysis> oldValue = d_metaAnalyses;
 		d_metaAnalyses = metaAnalysis;
+		firePropertyChange(PROPERTY_METAANALYSES, oldValue, metaAnalysis);
 	}
 
 	public List<Drug> getDrugs() {
@@ -64,7 +71,9 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	}
 
 	public void setDrugs(List<Drug> drugs) {
+		List<Drug> oldValue = d_drugs;
 		d_drugs = drugs;
+		firePropertyChange(PROPERTY_DRUGS, oldValue, drugs);
 	}
 	
 	@Override
@@ -82,8 +91,10 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 		return dependencies;
 	}
 
-	public void setName(String id) {
-		d_name = id;
+	public void setName(String name) {
+		String oldValue = d_name;
+		d_name = name;
+		firePropertyChange(PROPERTY_NAME, oldValue, name);
 	}
 
 	public String getName() {
@@ -110,7 +121,9 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	}
 
 	public void setBaseline(Drug baseline) {
+		Drug oldValue = d_baseline;
 		d_baseline = baseline;
+		firePropertyChange(PROPERTY_BASELINE, oldValue, baseline);
 	}
 
 	public Drug getBaseline() {

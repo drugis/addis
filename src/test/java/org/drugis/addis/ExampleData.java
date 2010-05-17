@@ -738,7 +738,7 @@ public class ExampleData {
 										indication, outcomeMeasureList, metaAnalysisList, parox, fluoxList);										
 	}
 
-	private static MetaAnalysis buildMetaAnalysisConv() {
+	public static MetaAnalysis buildMetaAnalysisConv() {
 		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
 		
 		Study s1 = buildStudyChouinard();
@@ -750,7 +750,7 @@ public class ExampleData {
 		return new RandomEffectsMetaAnalysis("Convulsion test analysis", buildAdverseEventConvulsion(), studyArms);
 	}
 
-	private static MetaAnalysis buildMetaAnalysisHamd() {
+	public static MetaAnalysis buildMetaAnalysisHamd() {
 		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
 		
 		Study s1 = buildStudyChouinard();
