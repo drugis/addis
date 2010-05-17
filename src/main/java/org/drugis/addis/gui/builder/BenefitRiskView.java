@@ -82,17 +82,19 @@ public class BenefitRiskView implements ViewBuilder {
 		d_builder.addSeparator("Measurements", cc.xy(1, 11));
 		d_builder.add(GUIFactory.createCollapsiblePanel(buildMeasurementsPart()), cc.xy(1, 13));
 		
-		d_builder.addSeparator("preferences", cc.xy(1, 15));
-		//builder.add(GUIFactory.createCollapsiblePanel(buildPreferencesPart()), cc.xy(1, 17));
-		
-		d_builder.addSeparator("rank acceptabilities", cc.xy(1, 19));
-		if(d_pm.allModelsReady())
+		if(d_pm.allModelsReady()){
+			d_builder.addSeparator("preferences", cc.xy(1, 15));
+			//builder.add(GUIFactory.createCollapsiblePanel(buildPreferencesPart()), cc.xy(1, 17));
+
+			d_builder.addSeparator("rank acceptabilities", cc.xy(1, 19));
+
 			d_builder.add(GUIFactory.createCollapsiblePanel(buildRankAcceptabilitiesPart()), cc.xy(1, 21));
-		
-		d_builder.addSeparator("central weigths", cc.xy(1, 23));
-		if(d_pm.allModelsReady())
+
+			d_builder.addSeparator("central weigths", cc.xy(1, 23));
 			d_builder.add(GUIFactory.createCollapsiblePanel(buildWeightsPart()), cc.xy(1, 25));
-		
+		} else {
+			d_builder.addLabel("Analysing benefits and risks.. please wait", cc.xy(1, 15));
+		}
 		return d_builder.getPanel();
 	}
 
@@ -160,6 +162,10 @@ public class BenefitRiskView implements ViewBuilder {
 	}
 	
 	private JComponent buildMeasurementsPart() {
-		return new AbstractTablePanel(d_pm.getMeasurementTableModel());
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(new JLabel("All measurements are relative to "+d_pm.getBean().getBaseline()), BorderLayout.NORTH);
+		panel.add(new AbstractTablePanel(d_pm.getMeasurementTableModel()), BorderLayout.SOUTH);
+	
+		return panel;
 	}
 }
