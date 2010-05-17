@@ -21,22 +21,74 @@
 
 package org.drugis.addis.entities.metaanalysis;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.*;
 
+
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.OddsRatio;
+import org.drugis.addis.entities.RelativeEffect;
+import org.drugis.addis.entities.RelativeEffect.AxisType;
+import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
+import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
+import org.drugis.mtc.ProgressEvent;
+import org.drugis.mtc.ProgressListener;
+import org.drugis.mtc.ProgressEvent.EventType;
+import org.junit.Before;
 import org.junit.Test;
 
 public class NetworkMetaAnalysisTest {
+	private NetworkMetaAnalysis d_analysis;
+	private NetworkMetaAnalysis d_mockAnalysis;
+
+	@Before
+	public void setup(){
+		d_analysis = ExampleData.buildNetworkMetaAnalysis();
+		d_mockAnalysis = NetworkTableModelTest.buildMockNetworkMetaAnalysis();
+	}
+	
 	@Test
 	public void testSetName() {
-		NetworkMetaAnalysis analysis = ExampleData.buildNetworkMetaAnalysis();
-		JUnitUtil.testSetter(analysis, MetaAnalysis.PROPERTY_NAME, analysis.getName(), "TEST");
+		JUnitUtil.testSetter(d_analysis, MetaAnalysis.PROPERTY_NAME, d_analysis.getName(), "TEST");
 	}
 	
 	@Test
 	public void testGetType() {
-		NetworkMetaAnalysis analysis = ExampleData.buildNetworkMetaAnalysis();
-		assertEquals("Markov Chain Monte Carlo Network Meta-Analysis", analysis.getType());
+		assertEquals("Markov Chain Monte Carlo Network Meta-Analysis", d_analysis.getType());
+	}
+	
+	@Test
+	public void testGetRelativeEffect() {
+		RelativeEffect<? extends Measurement> actual = d_mockAnalysis.getRelativeEffect(ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine(), OddsRatio.class);
+		RelativeEffect<? extends Measurement> expected = new MetaAnalysisRelativeEffect<Measurement>(null, 1.0, 0, 0.33333, AxisType.LOGARITHMIC);
+		assertEquals(expected.getRelativeEffect(), actual.getRelativeEffect());
+		assertEquals(expected.getError(), actual.getError());
+		assertEquals(expected.getAxisType(), actual.getAxisType());
 	}
 }
+
+//
+//@Test
+//public void runModel() {
+//	ProgressListener mock = createMock(ProgressListener.class);
+//	mock.update(d_model, new ProgressEvent(EventType.MODEL_CONSTRUCTION_STARTED));
+//	mock.update(d_model, new ProgressEvent(EventType.MODEL_CONSTRUCTION_FINISHED));
+//	mock.update(d_model, new ProgressEvent(EventType.BURNIN_STARTED));
+//	for (int i = 100; i < d_model.getBurnInIterations(); i+=100) {
+//    	mock.update(d_model, new ProgressEvent(EventType.BURNIN_PROGRESS, i, d_model.getBurnInIterations()));
+//	}
+//	mock.update(d_model, new ProgressEvent(EventType.BURNIN_FINISHED));
+//	mock.update(d_model, new ProgressEvent(EventType.SIMULATION_STARTED));
+//	for (int i = 100; i < d_model.getSimulationIterations(); i+=100) {
+//    	mock.update(d_model, new ProgressEvent(EventType.SIMULATION_PROGRESS, i, d_model.getSimulationIterations()));
+//	}
+//	mock.update(d_model, new ProgressEvent(EventType.SIMULATION_FINISHED));
+//	replay(mock);
+//	d_model.addProgressListener(mock);
+//	d_model.run();
+//	verify(mock);
+//}

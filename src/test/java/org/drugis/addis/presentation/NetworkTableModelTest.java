@@ -26,7 +26,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 
-import mocks.MockNetworkMetaAnalysis;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.ContinuousMeasurementEstimate;
@@ -35,6 +34,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.LogContinuousMeasurementEstimate;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
+import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.Treatment;
 import org.junit.Before;

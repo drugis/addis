@@ -1,4 +1,4 @@
-package mocks;
+package org.drugis.addis.mocks;
 
 
 import java.util.ArrayList;
