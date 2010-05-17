@@ -27,7 +27,6 @@ import java.util.Map;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
-import org.apache.commons.math.optimization.linear.Relationship;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
@@ -57,7 +56,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	transient private InconsistencyModel d_inconsistencyModel;
 	transient private ConsistencyModel d_consistencyModel;
 	transient private NetworkBuilder<? extends org.drugis.mtc.Measurement> d_builder;
-	transient private boolean d_hasRun = false;
+	transient private boolean d_hasStarted = false;
 
 	private boolean d_isContinuous = false;
 	
@@ -164,15 +163,19 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	public void run() {
-		if (!d_hasRun)
+		if (!d_hasStarted)
 		{
-			Thread inconsistency = new Thread(getInconsistencyModel());
-			inconsistency.start();
-		
-			Thread consistency = new Thread(getConsistencyModel());
-			consistency.start();
+			if (!getInconsistencyModel().isReady()) {
+				Thread inconsistency = new Thread(getInconsistencyModel());
+				inconsistency.start();
+			}
+
+			if (!getConsistencyModel().isReady()) {
+				Thread consistency = new Thread(getConsistencyModel());
+				consistency.start();
+			}
+			d_hasStarted = true;
 		}
-		d_hasRun = true;	
 	}
 	
 	public List<InconsistencyParameter> getInconsistencyFactors(){

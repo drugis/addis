@@ -8,11 +8,11 @@ import org.drugis.addis.entities.BenefitRiskAnalysis;
 public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
 
 	protected BenefitRiskAnalysis d_br;
-	private PresentationModelFactory d_pmf;
+//	private PresentationModelFactory d_pmf;
 
 	public BenefitRiskMeasurementTableModel(BenefitRiskAnalysis br, PresentationModelFactory pmf) {
 		d_br = br;
-		d_pmf = pmf;
+//		d_pmf = pmf;
 	}
 
 	public int getColumnCount() {
