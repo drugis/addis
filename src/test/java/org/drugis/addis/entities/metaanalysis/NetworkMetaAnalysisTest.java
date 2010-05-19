@@ -60,8 +60,8 @@ public class NetworkMetaAnalysisTest {
 		// FIXME breaks
 		RelativeEffect<? extends Measurement> actual = d_mockAnalysis.getRelativeEffect(ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine(), OddsRatio.class);
 		RelativeEffect<? extends Measurement> expected = new MetaAnalysisRelativeEffect<Measurement>(null, Math.exp(1.0), 0, 0.33333, AxisType.LOGARITHMIC);
-		System.out.println(expected);
-		System.out.println(actual);
+		System.out.println("expected: "+expected);
+		System.out.println("actual: "+actual);
 		assertEquals(expected.getRelativeEffect(), actual.getRelativeEffect());
 		assertEquals(expected.getError(), actual.getError());
 		assertEquals(expected.getAxisType(), actual.getAxisType());
