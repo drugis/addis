@@ -121,9 +121,9 @@ public class ForestPlot implements TreePlot {
 			float[] dash = { 1f, 1f, 1f };
 			g2d.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, 
 	                BasicStroke.JOIN_ROUND, 1.0f, dash, 2f ));
-			g2d.drawLine(d_pm.getScale().getBin(d_pm.getRelativeEffectAt(d_pm.getNumRelativeEffects()-1).getMedian()).bin, 
+			g2d.drawLine(d_pm.getScale().getBin(d_pm.getRelativeEffectAt(d_pm.getNumRelativeEffects()-1).getRelativeEffect()).bin, 
 					(FULLROW * (d_bars.size() - 1)) + 3,
-					d_pm.getScale().getBin(d_pm.getRelativeEffectAt(d_pm.getNumRelativeEffects()-1).getMedian()).bin, 
+					d_pm.getScale().getBin(d_pm.getRelativeEffectAt(d_pm.getNumRelativeEffects()-1).getRelativeEffect()).bin, 
 					ROWVCENTER);
 		}
 	}

@@ -44,11 +44,9 @@ public interface RelativeEffect<T extends Measurement> extends Entity{
 	 */
 	public Interval<Double> getConfidenceInterval();
 
-	public Double getMedian();
+	public Double getRelativeEffect();
 
-	public Double getSigma();
-	
-	public Double getMu();
+	public Double getError();
 	
 	public String getName();
 	

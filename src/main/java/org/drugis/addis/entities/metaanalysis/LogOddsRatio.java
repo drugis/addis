@@ -31,8 +31,8 @@ public class LogOddsRatio extends OddsRatio  {
 		super(denominator, numerator);
 	}
 
-	public Double getMedian() {
-		return Math.log(super.getMedian());
+	public Double getRelativeEffect() {
+		return Math.log(super.getRelativeEffect());
 	}
 
 	@Override

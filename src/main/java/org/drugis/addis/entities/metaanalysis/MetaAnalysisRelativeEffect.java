@@ -45,16 +45,8 @@ public class MetaAnalysisRelativeEffect<T extends Measurement> extends AbstractE
 		return d_confidenceInterval;
 	}
 
-	public Double getMedian() {
+	public Double getRelativeEffect() {
 		return d_relativeEffect;
-	}
-	
-	public Double getMu() { // FIXME
-		if (getAxisType() == AxisType.LINEAR)
-			return getMedian();
-		else if (getAxisType() == AxisType.LOGARITHMIC)
-			return Math.log(getMedian());
-		throw new IllegalStateException("Unknown axis type");
 	}
 	
 	public Integer getSampleSize() {
@@ -73,7 +65,7 @@ public class MetaAnalysisRelativeEffect<T extends Measurement> extends AbstractE
 		throw new RuntimeException("Cannot get a Baseline Measurement from Random Effects (Meta-Analysis)");
 	}
 
-	public Double getSigma() {
+	public Double getError() {
 		return d_stdDev;
 	}
 	

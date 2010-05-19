@@ -29,11 +29,7 @@ public class RiskDifference extends AbstractRelativeEffect<RateMeasurement> {
 		super(numerator, denominator);
 	}
 
-	public Double getMedian() {
-		return getMu();
-	}
-	
-	public Double getMu() {
+	public Double getRelativeEffect() {
 		double a = getSubject().getRate();
 		double n1 = getSubject().getSampleSize();
 		double c = getBaseline().getRate();
@@ -51,7 +47,7 @@ public class RiskDifference extends AbstractRelativeEffect<RateMeasurement> {
 
 
 	// Here: gets the STANDARD ERROR of the RISK DIFFERENCE
-	public Double getSigma() {
+	public Double getError() {
 		double a = getSubject().getRate();
 		double n1 = getSubject().getSampleSize();
 		double b = n1 - a;

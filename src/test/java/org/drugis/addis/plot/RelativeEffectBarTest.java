@@ -56,7 +56,7 @@ public class RelativeEffectBarTest {
 		shapeSet.add(new Line(lowerX , 11, upperX , 11));
 		
 		// set Mean box in mock.
-		shapeSet.add(new FilledRectangle( bsl.getBin(effect.getMedian()).bin - 2, 11 - 2, 5, 5) );
+		shapeSet.add(new FilledRectangle( bsl.getBin(effect.getRelativeEffect()).bin - 2, 11 - 2, 5, 5) );
 	
 		MockGraphics2D g2d = new MockGraphics2D(shapeSet);
 		RelativeEffectBar plot = new RelativeEffectBar(bsl, 11, effect, 5);
@@ -83,7 +83,7 @@ public class RelativeEffectBarTest {
 		shapeSet.add(new Line(lowerX , 11, upperX , 11));
 		
 		// set Mean box in mock.
-		int center = bsl.getBin(effect.getMedian()).bin;
+		int center = bsl.getBin(effect.getRelativeEffect()).bin;
 		shapeSet.add(new Line(center + 8, 11, center, 19));
 		shapeSet.add(new Line(center, 19, center - 8, 11));
 		shapeSet.add(new Line(center - 8, 11, center, 3));

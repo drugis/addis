@@ -195,7 +195,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		
 		// Calculate the weights.
 		for (RelativeEffect<? extends Measurement> re : relEffects) {
-			weights.add(1D / Math.pow(re.getSigma(),2));
+			weights.add(1D / Math.pow(re.getError(),2));
 		}
 		
 		// Calculate needed variables.
@@ -205,7 +205,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		
 		// Calculated the adjusted Weights.
 		for (RelativeEffect<? extends Measurement> re : relEffects) {
-			adjweights.add(1 / (Math.pow(re.getSigma(),2) + tauSquared) );
+			adjweights.add(1 / (Math.pow(re.getError(),2) + tauSquared) );
 		}
 		
 		d_thetaDSL = getThetaDL(adjweights, relEffects);
@@ -233,7 +233,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	private double getThetaDL(List<Double> adjweights, List<RelativeEffect<? extends Measurement>> relEffects) {
 		double numerator = 0;
 		for (int i=0; i < adjweights.size(); ++i) {
-			numerator += adjweights.get(i) * relEffects.get(i).getMedian();
+			numerator += adjweights.get(i) * relEffects.get(i).getRelativeEffect();
 		}
 		
 		return numerator / computeSum(adjweights);
@@ -254,7 +254,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	private double getQIV(List<Double> weights, List<RelativeEffect<? extends Measurement>> relEffects, double thetaIV) {
 		double sum = 0;
 		for (int i=0; i < weights.size(); ++i) {
-			sum += weights.get(i) * Math.pow(relEffects.get(i).getMedian() - thetaIV,2);
+			sum += weights.get(i) * Math.pow(relEffects.get(i).getRelativeEffect() - thetaIV,2);
 		}
 		return sum;
 	}
@@ -266,7 +266,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		double sumWeightRatio = 0D;
 			
 		for (int i=0; i < weights.size(); ++i) {
-			sumWeightRatio += weights.get(i) * relEffects.get(i).getMedian();
+			sumWeightRatio += weights.get(i) * relEffects.get(i).getRelativeEffect();
 		}
 		
 		return sumWeightRatio / computeSum(weights);

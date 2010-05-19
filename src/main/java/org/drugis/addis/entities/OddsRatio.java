@@ -42,11 +42,7 @@ public class OddsRatio extends AbstractRatio {
 		return AxisType.LOGARITHMIC;
 	}
 
-	public Double getMedian() {
-		return Math.exp(getMu());
-	}
-	
-	public Double getMu() {
+	public Double getRelativeEffect() {
 		if (!isDefined())
 			return Double.NaN;
 		
@@ -54,10 +50,10 @@ public class OddsRatio extends AbstractRatio {
 		double b = d_baseline.getRate() + d_correction;
 		double d = d_baseline.getSampleSize() - d_baseline.getRate() + d_correction;
 		double c = d_subject.getSampleSize() - d_subject.getRate() + d_correction;
-		return Math.log((a * d) / (b * c)); 
+		return (a * d) / (b * c); 
 	}
 
-	public Double getSigma() { //NB: this is the LOG error
+	public Double getError() { //NB: this is the LOG error
 		if (!isDefined())
 			return Double.NaN;
 		

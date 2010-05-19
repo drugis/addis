@@ -87,6 +87,6 @@ public abstract class AbstractRelativeEffect<T extends Measurement> extends Abst
 		}
 		double t = StudentTTable.getT(getDegreesOfFreedom());
 
-		return new Interval<Double>(getMedian() - t * getSigma(), getMedian() + t * getSigma());
+		return new Interval<Double>(getRelativeEffect() - t * getError(), getRelativeEffect() + t * getError());
 	}
 }

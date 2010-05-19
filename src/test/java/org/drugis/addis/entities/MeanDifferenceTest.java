@@ -49,20 +49,20 @@ public class MeanDifferenceTest {
 	
 	@Test
 	public void testGetMean() {
-		assertEquals(s_mean1 - s_mean2, d_md.getMedian(),0.0001);
+		assertEquals(s_mean1 - s_mean2, d_md.getRelativeEffect(),0.0001);
 	}
 	
 	@Test
 	public void testGetError() {
 		double expected = Math.sqrt(square(s_stdDev1) / (double) s_subjSize + square(s_stdDev2) / (double) s_baslSize);
-		assertEquals(expected, d_md.getSigma(),0.0001);
+		assertEquals(expected, d_md.getError(),0.0001);
 	}
 
 	@Test
 	public void testGetCI() {
 		double t = StudentTTable.getT(s_subjSize + s_baslSize - 2);
-		double upper = d_md.getMedian() + t*d_md.getSigma();
-		double lower = d_md.getMedian() - t*d_md.getSigma();
+		double upper = d_md.getRelativeEffect() + t*d_md.getError();
+		double lower = d_md.getRelativeEffect() - t*d_md.getError();
 		assertEquals(upper, d_md.getConfidenceInterval().getUpperBound(), 0.0001);
 		assertEquals(lower, d_md.getConfidenceInterval().getLowerBound(), 0.0001);
 	}

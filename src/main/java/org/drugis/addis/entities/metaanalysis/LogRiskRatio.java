@@ -32,8 +32,8 @@ public class LogRiskRatio extends RiskRatio {
 	}
 	
 	@Override
-	public Double getMedian() {
-		return Math.log(super.getMedian());
+	public Double getRelativeEffect() {
+		return Math.log(super.getRelativeEffect());
 	}
 	
 	@Override

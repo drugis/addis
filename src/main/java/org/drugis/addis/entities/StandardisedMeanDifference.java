@@ -39,16 +39,11 @@ public class StandardisedMeanDifference extends AbstractRelativeEffect<Continuou
 		return getDefaultConfidenceInterval();
 	}
 
-	public Double getMu() {
+	public Double getRelativeEffect() {
 		return getCorrectionJ() * getCohenD();
 	}
 	
-	public Double getMedian() {
-		return getMu();
-	}
-		
-	
-	public Double getSigma() {
+	public Double getError() {
 		return Math.sqrt(square(getCorrectionJ()) * getCohenVariance());
 	}
 	
