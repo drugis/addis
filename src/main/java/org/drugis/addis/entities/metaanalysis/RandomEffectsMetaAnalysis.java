@@ -36,11 +36,9 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RandomEffectMetaAnalysisRelativeEffect;
 import org.drugis.addis.entities.RelativeEffect;
-import org.drugis.addis.entities.RiskRatio;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.common.Interval;
@@ -176,19 +174,13 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	
 	private void compute(Class<? extends RelativeEffect<?>> relEffClass, boolean drugsSwapped) {
 		
-		Class<? extends RelativeEffect<? extends Measurement>> type = relEffClass; 
-		if (relEffClass == RiskRatio.class)
-			type = LogRiskRatio.class;
-		if (relEffClass == OddsRatio.class)
-			type = LogOddsRatio.class;
-		
 		List<Double> weights = new ArrayList<Double>();
 		List<Double> adjweights = new ArrayList<Double>();
 		List<RelativeEffect<? extends Measurement>> relEffects = new ArrayList<RelativeEffect<? extends Measurement>>();
 			
 		for (int i=0; i<d_studies.size(); ++i ){
 			RelativeEffect<? extends Measurement> re;
-			re = RelativeEffectFactory.buildRelativeEffect(getStudyArms(drugsSwapped).get(i), d_outcome, type);
+			re = RelativeEffectFactory.buildRelativeEffect(getStudyArms(drugsSwapped).get(i), d_outcome, relEffClass);
 			d_axisType = re.getAxisType();
 			relEffects.add(re);
 		}
@@ -211,12 +203,12 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		d_thetaDSL = getThetaDL(adjweights, relEffects);
 		d_SEThetaDSL = getSE_ThetaDL(adjweights);
 			
-		d_confidenceInterval = getConfidenceInterval();
+		d_confidenceInterval = getConfidenceInterval(); // FIXME: Old mechanism, let the releff calculate its own confidence interval.
 		
-		if ((type == LogRiskRatio.class) || (type == LogOddsRatio.class)) {
-			d_thetaDSL = Math.exp(d_thetaDSL);
-			d_confidenceInterval = new Interval<Double>(Math.exp(d_confidenceInterval.getLowerBound()),Math.exp(d_confidenceInterval.getUpperBound()));
-		}
+//		if () {
+//			d_thetaDSL = Math.exp(d_thetaDSL);
+//			d_confidenceInterval = new Interval<Double>(Math.exp(d_confidenceInterval.getLowerBound()),Math.exp(d_confidenceInterval.getUpperBound()));
+//		}
 	}
 	
 	private Interval<Double> getConfidenceInterval() {	
@@ -233,7 +225,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	private double getThetaDL(List<Double> adjweights, List<RelativeEffect<? extends Measurement>> relEffects) {
 		double numerator = 0;
 		for (int i=0; i < adjweights.size(); ++i) {
-			numerator += adjweights.get(i) * relEffects.get(i).getMedian();
+			numerator += adjweights.get(i) * relEffects.get(i).getMu();
 		}
 		
 		return numerator / computeSum(adjweights);
@@ -254,7 +246,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	private double getQIV(List<Double> weights, List<RelativeEffect<? extends Measurement>> relEffects, double thetaIV) {
 		double sum = 0;
 		for (int i=0; i < weights.size(); ++i) {
-			sum += weights.get(i) * Math.pow(relEffects.get(i).getMedian() - thetaIV,2);
+			sum += weights.get(i) * Math.pow(relEffects.get(i).getMu() - thetaIV,2);
 		}
 		return sum;
 	}
@@ -266,7 +258,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		double sumWeightRatio = 0D;
 			
 		for (int i=0; i < weights.size(); ++i) {
-			sumWeightRatio += weights.get(i) * relEffects.get(i).getMedian();
+			sumWeightRatio += weights.get(i) * relEffects.get(i).getMu();
 		}
 		
 		return sumWeightRatio / computeSum(weights);
@@ -305,7 +297,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 
 		public RandomEffects(Interval<Double> confidenceInterval, double relativeEffect, 
 				int totalSampleSize, double stdDev, double qIV) {
-			super(confidenceInterval, relativeEffect, totalSampleSize, stdDev, d_axisType);
+			super(relativeEffect, stdDev, totalSampleSize, d_axisType);
 			t_qIV = qIV;
 		}
 		

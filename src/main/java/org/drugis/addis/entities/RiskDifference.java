@@ -21,7 +21,6 @@
 
 package org.drugis.addis.entities;
 
-import org.drugis.common.Interval;
 
 public class RiskDifference extends AbstractRelativeEffect<RateMeasurement> {
 
@@ -29,10 +28,6 @@ public class RiskDifference extends AbstractRelativeEffect<RateMeasurement> {
 		super(numerator, denominator);
 	}
 
-	public Double getMedian() {
-		return getMu();
-	}
-	
 	public Double getMu() {
 		double a = getSubject().getRate();
 		double n1 = getSubject().getSampleSize();
@@ -41,16 +36,7 @@ public class RiskDifference extends AbstractRelativeEffect<RateMeasurement> {
 		
 		return (a/n1 - c/n2);
 	}
-	
-	/**
-	 * Confidence interval for the mean difference.
-	 */
-	public Interval<Double> getConfidenceInterval() {
-		return getDefaultConfidenceInterval();
-	}
 
-
-	// Here: gets the STANDARD ERROR of the RISK DIFFERENCE
 	public Double getSigma() {
 		double a = getSubject().getRate();
 		double n1 = getSubject().getSampleSize();

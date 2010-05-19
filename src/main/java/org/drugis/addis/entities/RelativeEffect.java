@@ -23,13 +23,9 @@ package org.drugis.addis.entities;
 
 import org.drugis.common.Interval;
 
-public interface RelativeEffect<T extends Measurement> extends Entity{
 
-	public enum AxisType {
-		LINEAR,
-		LOGARITHMIC;
-	}
-	
+public interface RelativeEffect<T extends Measurement> extends Distribution, Entity{
+
 	public static final String PROPERTY_SAMPLESIZE = "sampleSize";
 	
 	public T getSubject();
@@ -38,21 +34,9 @@ public interface RelativeEffect<T extends Measurement> extends Entity{
 
 	public Integer getSampleSize();
 
-	/**
-	 * Get the 95% confidence interval.
-	 * @return The confidence interval.
-	 */
-	public Interval<Double> getConfidenceInterval();
-
-	public Double getMedian();
-
-	public Double getSigma();
-	
-	public Double getMu();
-	
 	public String getName();
 	
-	public AxisType getAxisType();
-	
 	public boolean isDefined();
+
+	public Interval<Double> getConfidenceInterval();
 }

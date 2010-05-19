@@ -22,8 +22,6 @@
 package org.drugis.addis.entities;
 
 
-import org.drugis.common.Interval;
-import org.drugis.common.StudentTTable;
 
 public abstract class AbstractRatio extends AbstractRelativeEffect<RateMeasurement> {
 	protected double d_correction;
@@ -32,22 +30,6 @@ public abstract class AbstractRatio extends AbstractRelativeEffect<RateMeasureme
 		super(numerator, denominator);
 		//undefined if no events happen or events happen for all subjects
 		calculateCorrection();
-	}
-	
-	private double getCriticalValue() {
-		return StudentTTable.getT(getDegreesOfFreedom());
-	}
-
-	
-	public Interval<Double> getConfidenceInterval() {
-		if (getDegreesOfFreedom() < 1) {
-			return new Interval<Double>(Double.NaN, Double.NaN);
-		}
-		double lBound = Math.log(getMedian());
-		lBound -= getCriticalValue() * getSigma();
-		double uBound = Math.log(getMedian());
-		uBound += getCriticalValue() * getSigma();
-		return new Interval<Double>(Math.exp(lBound), Math.exp(uBound));
 	}
 
 	protected void calculateCorrection() {

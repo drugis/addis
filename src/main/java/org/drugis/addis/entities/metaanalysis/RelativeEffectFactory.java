@@ -53,14 +53,8 @@ public class RelativeEffectFactory {
 		if (type.equals(OddsRatio.class)) {
 			return buildOddsRatio(s, om, base, subj);
 		}
-		if (type.equals(LogOddsRatio.class)) {
-			return buildLogOddsRatio(s, om, base, subj);
-		}
 		if (type.equals(RiskRatio.class)) {
 			return buildRiskRatio(s, om, base, subj);
-		}
-		if (type.equals(LogRiskRatio.class)) {
-			return buildLogRiskRatio(s, om, base, subj);
 		}
 		if (type.equals(RiskDifference.class)) {
 			return buildRiskDifference(s, om, base, subj);
@@ -95,14 +89,8 @@ public class RelativeEffectFactory {
 		if (type.equals(OddsRatio.class)) {
 			return buildOddsRatio(s, om, base, subj);
 		}
-		if (type.equals(LogOddsRatio.class)) {
-			return buildLogOddsRatio(s, om, base, subj);
-		}
 		if (type.equals(RiskRatio.class)) {
 			return buildRiskRatio(s, om, base, subj);
-		}
-		if (type.equals(LogRiskRatio.class)) {
-			return buildLogRiskRatio(s, om, base, subj);
 		}
 		if (type.equals(RiskDifference.class)) {
 			return buildRiskDifference(s, om, base, subj);
@@ -125,24 +113,10 @@ public class RelativeEffectFactory {
 				findRateMeasurement(s, om, base),
 				findRateMeasurement(s, om, subj));
 	}
-
-	private static RelativeEffect<?> buildLogRiskRatio(Study s, OutcomeMeasure om,
-			Arm base, Arm subj) {
-		return new LogRiskRatio(
-				findRateMeasurement(s, om, base),
-				findRateMeasurement(s, om, subj));
-	}
 	
 	private static RelativeEffect<?> buildOddsRatio(Study s, OutcomeMeasure om,
 			Arm base, Arm subj) {
 		return new OddsRatio(
-				findRateMeasurement(s, om, base),
-				findRateMeasurement(s, om, subj));
-	}
-	
-	private static RelativeEffect<?> buildLogOddsRatio(Study s, OutcomeMeasure om,
-			Arm base, Arm subj) {
-		return new LogOddsRatio(
 				findRateMeasurement(s, om, base),
 				findRateMeasurement(s, om, subj));
 	}

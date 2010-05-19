@@ -41,10 +41,6 @@ public class OddsRatio extends AbstractRatio {
 	public AxisType getAxisType() {
 		return AxisType.LOGARITHMIC;
 	}
-
-	public Double getMedian() {
-		return Math.exp(getMu());
-	}
 	
 	public Double getMu() {
 		if (!isDefined())

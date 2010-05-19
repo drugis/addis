@@ -51,11 +51,6 @@ public class RiskRatio extends AbstractRatio {
 		return "Risk ratio";
 	}
 	
-	
-	public Double getMedian() {
-		return Math.exp(getMu());
-	}
-	
 	public Double getMu() {
 		if (!isDefined())
 			return Double.NaN;
