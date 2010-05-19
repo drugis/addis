@@ -28,9 +28,9 @@ public class MetaAnalysisRelativeEffect<T extends Measurement> extends AbstractE
 	public MetaAnalysisRelativeEffect(Interval<Double> confidenceInterval, double relativeEffect, 
 			int totalSampleSize, double stdDev, RelativeEffect.AxisType type) {
 //		assert(stdDev >= 0); // FIXME: Breaks a test in mvn, probably due to bad testdata.
-		if (confidenceInterval == null) {
-			throw new NullPointerException("confidenceInterval null");
-		}
+//		if (confidenceInterval == null) {
+//			throw new NullPointerException("confidenceInterval null");
+//		}
 		d_confidenceInterval = confidenceInterval;
 		d_relativeEffect = relativeEffect;
 		d_totalSampleSize = totalSampleSize;

@@ -10,10 +10,11 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RelativeEffect;
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
 
 import fi.smaa.jsmaa.model.Alternative;
+import fi.smaa.jsmaa.model.CardinalCriterion;
 import fi.smaa.jsmaa.model.CardinalMeasurement;
-import fi.smaa.jsmaa.model.Criterion;
 import fi.smaa.jsmaa.model.ExactMeasurement;
 import fi.smaa.jsmaa.model.GaussianMeasurement;
 import fi.smaa.jsmaa.model.LogNormalMeasurement;
@@ -44,12 +45,12 @@ public class SMAAEntityFactory {
 		}
 	}
 	
-	private Map<OutcomeMeasure, Criterion> d_outcomeCriterionMap;
+	private Map<OutcomeMeasure, CardinalCriterion> d_outcomeCriterionMap;
 	private Map<Drug, Alternative> d_drugAlternativeMap;
 	private SMAA2Results d_smaaModelResults;
 	
 	public SMAAEntityFactory() {
-		d_outcomeCriterionMap = new HashMap<OutcomeMeasure, Criterion>();
+		d_outcomeCriterionMap = new HashMap<OutcomeMeasure, CardinalCriterion>();
 		d_drugAlternativeMap  = new HashMap<Drug, Alternative>();
 	}
 	
@@ -90,7 +91,7 @@ public class SMAAEntityFactory {
 		smaaModel.addAlternative(baseLineAlt);
 
 		for(OutcomeMeasure om : brAnalysis.getOutcomeMeasures()){ // endpoints
-			Criterion crit = getCriterion(om);
+			CardinalCriterion crit = getCriterion(om);
 			smaaModel.addCriterion(crit);
 			
 			boolean baseLineSet = false;
@@ -104,6 +105,7 @@ public class SMAAEntityFactory {
 						smaaModel.setMeasurement(crit, baseLineAlt, new ExactMeasurement(1d));	
 					else if(relativeEffect.getAxisType() == RelativeEffect.AxisType.LINEAR)
 						smaaModel.setMeasurement(crit, baseLineAlt, new ExactMeasurement(0d));	
+					
 					else throw new IllegalArgumentException("RelativeEffect has an unknown axis-type: " + relativeEffect);
 					baseLineSet = true;
 				}
@@ -112,16 +114,17 @@ public class SMAAEntityFactory {
 				// set the alternatives measurements
 				smaaModel.addAlternative(getAlternative(d));
 				CardinalMeasurement m = createCardinalMeasurement(relativeEffect);
-				smaaModel.setMeasurement( crit, getAlternative(d), m);		
+				smaaModel.setMeasurement( crit, getAlternative(d), m);
 			}
 		}
 		return smaaModel;
 	}
 	
-	Criterion getCriterion(OutcomeMeasure om) {
+	CardinalCriterion getCriterion(OutcomeMeasure om) {
 		if(d_outcomeCriterionMap.containsKey(om))
 			return d_outcomeCriterionMap.get(om);
 		ScaleCriterion c = new ScaleCriterion(om.getName());
+		c.setAscending(om.getDirection() == Direction.HIGHER_IS_BETTER);
 		d_outcomeCriterionMap.put(om, c);
 		return c;
 	}
@@ -134,5 +137,3 @@ public class SMAAEntityFactory {
 		return a;
 	}
 }
-
-
