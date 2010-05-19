@@ -21,8 +21,10 @@
 
 package org.drugis.addis;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -38,11 +40,13 @@ import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Variable.Type;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -149,8 +153,25 @@ public class NetworkData extends DefaultHandler {
 		}
 	}
 	
-	public static void main(String[] args) {
-		String basename = "/home/jing/hansen/";
+	public static Endpoint buildEndpointMADRS() {
+		Endpoint e = new Endpoint("MADRS Responders", Type.RATE);
+		e.setDescription("Responders with a 50% increase in MADRS score");
+		return e;
+	}
+	
+	public static Endpoint buildEndpointDropouts() {
+		Endpoint e = new Endpoint("Dropouts", Type.RATE);
+		e.setDescription("Number of patients dropping out of the study prematurely");
+		e.setDirection(Direction.LOWER_IS_BETTER);
+		return e;
+	}
+	
+	public static String adeFile(String ade) {
+		return ade.replaceAll(" ", "");
+	}
+	
+	public static void main(String[] args) throws IOException {
+		String basename = "/home/gert/escher/hansen/";
 		String extension = ".xml";
 		
 		DomainImpl d = new DomainImpl();
@@ -158,9 +179,15 @@ public class NetworkData extends DefaultHandler {
 		d.addIndication(depression);
 		Map<String, OutcomeMeasure> toParse = new HashMap<String, OutcomeMeasure>();
 		toParse.put("hamd", ExampleData.buildEndpointHamd());
-		for (String ade : new String[] {"Diarrhea", "Dizziness", "Headache", "Insomnia", "Nausea"}) {
-			toParse.put(ade, buildAdverseEvent(ade));
+		toParse.put("madrs", buildEndpointMADRS());
+		toParse.put("dropouts", buildEndpointDropouts());
+		
+		BufferedReader adeReader = new BufferedReader(new FileReader(basename + "adeList.txt"));
+		String ade = null;
+		while ((ade = adeReader.readLine()) != null) {
+			toParse.put(adeFile(ade), buildAdverseEvent(ade));
 		}
+		adeReader.close();
 		
 		for (Entry<String, OutcomeMeasure> entry : toParse.entrySet()) {
 			try {
