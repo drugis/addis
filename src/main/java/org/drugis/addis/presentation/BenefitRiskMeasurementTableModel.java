@@ -7,7 +7,7 @@ import org.drugis.addis.entities.ContinuousMeasurementEstimate;
 import org.drugis.addis.entities.LogContinuousMeasurementEstimate;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.RelativeEffect;
-import org.drugis.addis.entities.Distribution.AxisType;
+import org.drugis.addis.entities.RelativeEffect.AxisType;
 
 @SuppressWarnings("serial")
 public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
@@ -52,7 +52,7 @@ public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
 		Double mean = relativeEffect.getMedian();
 		Double error = relativeEffect.getSigma();
 		
-		if (relativeEffect.getAxisType() == org.drugis.addis.entities.Distribution.AxisType.LOGARITHMIC) {
+		if (relativeEffect.getAxisType() == AxisType.LOGARITHMIC) {
 			return new LogContinuousMeasurementEstimate(Math.log(mean), error);
 		} else {
 			return new ContinuousMeasurementEstimate(mean, error);

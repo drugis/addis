@@ -21,6 +21,8 @@
 
 package org.drugis.addis.entities;
 
+import org.drugis.common.Interval;
+
 public class StandardisedMeanDifference extends AbstractRelativeEffect<ContinuousMeasurement> {
 	/*
 	 * The Standardised Mean Difference is calculated through Cohen's d and adjusted with J(degrees of freedom)
@@ -33,9 +35,18 @@ public class StandardisedMeanDifference extends AbstractRelativeEffect<Continuou
 		super(subject, baseline);
 	}
 
+	public Interval<Double> getConfidenceInterval() {
+		return getDefaultConfidenceInterval();
+	}
+
 	public Double getMu() {
 		return getCorrectionJ() * getCohenD();
-	}	
+	}
+	
+	public Double getMedian() {
+		return getMu();
+	}
+		
 	
 	public Double getSigma() {
 		return Math.sqrt(square(getCorrectionJ()) * getCohenVariance());

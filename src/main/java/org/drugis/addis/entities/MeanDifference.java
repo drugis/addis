@@ -21,6 +21,7 @@
 
 package org.drugis.addis.entities;
 
+import org.drugis.common.Interval;
 
 
 public class MeanDifference extends AbstractRelativeEffect<ContinuousMeasurement> {
@@ -34,6 +35,14 @@ public class MeanDifference extends AbstractRelativeEffect<ContinuousMeasurement
 	
 	public MeanDifference(ContinuousMeasurement baseline, ContinuousMeasurement subject) throws IllegalArgumentException {
 		super(subject, baseline);
+	}
+	
+	public Interval<Double> getConfidenceInterval() {
+		return getDefaultConfidenceInterval();
+	}
+
+	public Double getMedian() {
+		return getMu();
 	}
 	
 	public Double getMu() {

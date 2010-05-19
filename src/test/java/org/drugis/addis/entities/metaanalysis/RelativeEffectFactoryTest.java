@@ -36,6 +36,7 @@ import org.drugis.addis.entities.RiskDifference;
 import org.drugis.addis.entities.RiskRatio;
 import org.drugis.addis.entities.StandardisedMeanDifference;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.metaanalysis.LogOddsRatio;
 import org.drugis.addis.entities.metaanalysis.RelativeEffectFactory;
 import org.junit.Test;
 
@@ -203,6 +204,72 @@ public class RelativeEffectFactoryTest {
 				ExampleData.buildDrugParoxetine(),
 				ExampleData.buildDrugFluoxetine(),
 				RiskDifference.class);
+	}
+	
+	@Test
+	public void testGetLogRiskRatio() {
+		Study s = ExampleData.buildStudyChouinard();
+		Endpoint e = ExampleData.buildEndpointHamd();
+		Drug base = ExampleData.buildDrugParoxetine();
+		Drug subj = ExampleData.buildDrugFluoxetine();
+		Arm pBase = s.getArms().get(0);
+		Arm pSubj = s.getArms().get(1);
+		// sanity check:
+		assertEquals(base, pBase.getDrug());
+		assertEquals(subj, pSubj.getDrug());
+		
+		RelativeEffect<?> expected = new LogRiskRatio(
+				(RateMeasurement)s.getMeasurement(e, pBase),
+				(RateMeasurement)s.getMeasurement(e, pSubj));
+		
+		RelativeEffect<?> actual =
+				RelativeEffectFactory.buildRelativeEffect(s, e, base, subj,
+						LogRiskRatio.class);
+		
+		assertRelativeEffectEqual(expected, actual);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testGetLogRiskRatioCont() {
+		RelativeEffectFactory.buildRelativeEffect(
+				ExampleData.buildStudyChouinard(),
+				ExampleData.buildEndpointCgi(),
+				ExampleData.buildDrugParoxetine(),
+				ExampleData.buildDrugFluoxetine(),
+				LogRiskRatio.class);
+	}
+	
+	@Test
+	public void testGetLogOddsRatio() {
+		Study s = ExampleData.buildStudyChouinard();
+		Endpoint e = ExampleData.buildEndpointHamd();
+		Drug base = ExampleData.buildDrugParoxetine();
+		Drug subj = ExampleData.buildDrugFluoxetine();
+		Arm pBase = s.getArms().get(0);
+		Arm pSubj = s.getArms().get(1);
+		// sanity check:
+		assertEquals(base, pBase.getDrug());
+		assertEquals(subj, pSubj.getDrug());
+		
+		RelativeEffect<?> expected = new LogOddsRatio(
+				(RateMeasurement)s.getMeasurement(e, pBase),
+				(RateMeasurement)s.getMeasurement(e, pSubj));
+		
+		RelativeEffect<?> actual =
+				RelativeEffectFactory.buildRelativeEffect(s, e, base, subj,
+						LogOddsRatio.class);
+		
+		assertRelativeEffectEqual(expected, actual);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testGetLogOddsRatioCont() {
+		RelativeEffectFactory.buildRelativeEffect(
+				ExampleData.buildStudyChouinard(),
+				ExampleData.buildEndpointCgi(),
+				ExampleData.buildDrugParoxetine(),
+				ExampleData.buildDrugFluoxetine(),
+				LogOddsRatio.class);
 	}
 	
 	private static void assertRelativeEffectEqual(RelativeEffect<?> expected,

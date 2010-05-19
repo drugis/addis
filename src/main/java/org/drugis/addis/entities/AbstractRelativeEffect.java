@@ -28,7 +28,10 @@ import java.io.ObjectInputStream;
 import java.util.Collections;
 import java.util.Set;
 
-public abstract class AbstractRelativeEffect<T extends Measurement> extends AbstractDistribution implements RelativeEffect<T>{
+import org.drugis.common.Interval;
+import org.drugis.common.StudentTTable;
+
+public abstract class AbstractRelativeEffect<T extends Measurement> extends AbstractEntity implements RelativeEffect<T>{
 
 	protected T d_subject;
 	protected T d_baseline; 
@@ -72,9 +75,18 @@ public abstract class AbstractRelativeEffect<T extends Measurement> extends Abst
 		}		
 	}
 	
+	protected abstract Integer getDegreesOfFreedom();
+	
 	public boolean isDefined() {
 		return getDegreesOfFreedom() > 0;
 	}
 	
+	public Interval<Double> getDefaultConfidenceInterval() {
+		if (!isDefined()) {
+			return new Interval<Double>(Double.NaN, Double.NaN);
+		}
+		double t = StudentTTable.getT(getDegreesOfFreedom());
 
+		return new Interval<Double>(getMedian() - t * getSigma(), getMedian() + t * getSigma());
+	}
 }

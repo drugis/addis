@@ -50,13 +50,12 @@ public class BenefitRiskMeasurementTableModelTest {
 	
 	@Test
 	public void testGetValueAt() {
-		for (int i=0; i<d_brAnalysis.getDrugs().size(); ++i) {
+		for (int i=0; i<d_brAnalysis.getDrugs().size(); ++i)
 			for (int j=0; j<d_brAnalysis.getOutcomeMeasures().size(); ++j) {
 				String expected = d_brAnalysis.getRelativeEffect(d_brAnalysis.getDrugs().get(i), d_brAnalysis.getOutcomeMeasures().get(j)).toString();
 				String actual = d_pm.getValueAt(i, j+1).toString();
 				assertEquals(expected, actual);
 			}
-		}
 	}
 	
 	

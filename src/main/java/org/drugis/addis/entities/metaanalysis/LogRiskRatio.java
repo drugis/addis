@@ -19,40 +19,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.entities;
+package org.drugis.addis.entities.metaanalysis;
 
+import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.RiskRatio;
 import org.drugis.common.Interval;
 
-public interface RelativeEffect<T extends Measurement> extends Entity{
+public class LogRiskRatio extends RiskRatio {
 
-	public enum AxisType {
-		LINEAR,
-		LOGARITHMIC;
+	LogRiskRatio(RateMeasurement denominator, RateMeasurement numerator) {
+		super(denominator, numerator);
 	}
 	
-	public static final String PROPERTY_SAMPLESIZE = "sampleSize";
+	@Override
+	public Double getMedian() {
+		return Math.log(super.getMedian());
+	}
 	
-	public T getSubject();
-
-	public T getBaseline();
-
-	public Integer getSampleSize();
-
-	/**
-	 * Get the 95% confidence interval.
-	 * @return The confidence interval.
-	 */
-	public Interval<Double> getConfidenceInterval();
-
-	public Double getMedian();
-
-	public Double getSigma();
-	
-	public Double getMu();
-	
-	public String getName();
-	
-	public AxisType getAxisType();
-	
-	public boolean isDefined();
+	@Override
+	public Interval<Double> getConfidenceInterval() {
+		throw new RuntimeException("log risk ratio doesn't have confidence interval");
+	}
 }

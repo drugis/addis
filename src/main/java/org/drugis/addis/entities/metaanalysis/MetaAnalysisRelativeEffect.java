@@ -4,38 +4,57 @@ import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Set;
 
-import org.drugis.addis.entities.AbstractDistribution;
+import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.common.Interval;
 
-public class MetaAnalysisRelativeEffect<T extends Measurement> extends AbstractDistribution implements RelativeEffect<T> {
-	private double d_mu;
+public class MetaAnalysisRelativeEffect<T extends Measurement> extends AbstractEntity implements RelativeEffect<T> {
+	private Interval<Double> d_confidenceInterval;
+	private double d_relativeEffect;
 	private int d_totalSampleSize;
-	private double d_sigma;
+	private double d_stdDev;
 	private RelativeEffect.AxisType d_type;
 	
-	public MetaAnalysisRelativeEffect(double mu, double sigma, RelativeEffect.AxisType type) {
-		this(mu,sigma,0,type);
-	}
-	
-	public MetaAnalysisRelativeEffect(double mu, double sigma, 
-			int totalSampleSize, RelativeEffect.AxisType type) {
-		assert(sigma >= 0); // FIXME: Breaks a test in mvn, probably due to bad testdata.
-		d_mu = mu;
+	/**
+	 * 
+	 * @param confidenceInterval must not be null
+	 * @param relativeEffect
+	 * @param totalSampleSize
+	 * @param stdDev >= 0.0
+	 * @param type
+	 */
+	public MetaAnalysisRelativeEffect(Interval<Double> confidenceInterval, double relativeEffect, 
+			int totalSampleSize, double stdDev, RelativeEffect.AxisType type) {
+//		assert(stdDev >= 0); // FIXME: Breaks a test in mvn, probably due to bad testdata.
+		if (confidenceInterval == null) {
+			throw new NullPointerException("confidenceInterval null");
+		}
+		d_confidenceInterval = confidenceInterval;
+		d_relativeEffect = relativeEffect;
 		d_totalSampleSize = totalSampleSize;
-		d_sigma = sigma;
+		d_stdDev = stdDev;
 		d_type = type;
 	}
-	
 	public RelativeEffect.AxisType getAxisType() {
 		return d_type;
 	}
 
+	public Interval<Double> getConfidenceInterval() {
+		return d_confidenceInterval;
+	}
+
+	public Double getMedian() {
+		return d_relativeEffect;
+	}
 	
-	public Double getMu() {
-		return d_mu;
+	public Double getMu() { // FIXME
+		if (getAxisType() == AxisType.LINEAR)
+			return getMedian();
+		else if (getAxisType() == AxisType.LOGARITHMIC)
+			return Math.log(getMedian());
+		throw new IllegalStateException("Unknown axis type");
 	}
 	
 	public Integer getSampleSize() {
@@ -55,7 +74,7 @@ public class MetaAnalysisRelativeEffect<T extends Measurement> extends AbstractD
 	}
 
 	public Double getSigma() {
-		return d_sigma;
+		return d_stdDev;
 	}
 	
 	@Override
@@ -69,21 +88,8 @@ public class MetaAnalysisRelativeEffect<T extends Measurement> extends AbstractD
 	
 	public String toString() {
 		DecimalFormat formatter = new DecimalFormat("##0.000");
-		return formatter.format(d_mu) + " (" + 
-		       formatter.format(getConfidenceInterval().getLowerBound()) + ", " + 
-		       formatter.format(getConfidenceInterval().getUpperBound()) + ")";
-	}
-
-	public Interval<Double> getConfidenceInterval() {
-		return null;
-	}
-
-	@Override
-	public Integer getDegreesOfFreedom() {
-//		The sample size is set to 0 if unknown
-		if (getSampleSize() > 2)
-			return getSampleSize() -2;
-		else
-			return Integer.MAX_VALUE;
+		return formatter.format(d_relativeEffect) + " (" + 
+		       formatter.format(d_confidenceInterval.getLowerBound()) + ", " + 
+		       formatter.format(d_confidenceInterval.getUpperBound()) + ")";
 	}
 }

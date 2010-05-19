@@ -218,8 +218,9 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		/** Beware!: for the dichotomous case, we are converting the logMean to the actual mean
 		 */
 		double realRelativeEffect = isContinuous() ? consistencyEstimate.getMean() : Math.exp(consistencyEstimate.getMean());
-		RelativeEffect<Measurement> re = new MetaAnalysisRelativeEffect<Measurement>(realRelativeEffect, consistencyEstimate.getStandardDeviation(),
-													0, isContinuous() ? RelativeEffect.AxisType.LINEAR : RelativeEffect.AxisType.LOGARITHMIC
+		RelativeEffect<Measurement> re = new MetaAnalysisRelativeEffect<Measurement>(null, realRelativeEffect,
+													0, consistencyEstimate.getStandardDeviation(), 
+													isContinuous() ? RelativeEffect.AxisType.LINEAR : RelativeEffect.AxisType.LOGARITHMIC
 		                                 );
 		return re;
 	}
