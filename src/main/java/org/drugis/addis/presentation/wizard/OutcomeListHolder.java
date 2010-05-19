@@ -24,7 +24,6 @@ package org.drugis.addis.presentation.wizard;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -35,15 +34,10 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
+import org.drugis.common.AlphabeticalComparator;
 
 @SuppressWarnings("serial")
 public class OutcomeListHolder extends AbstractListHolder<OutcomeMeasure> implements PropertyChangeListener {
-	
-	private class AlphabeticalOmComparator implements Comparator<OutcomeMeasure>  {
-		public int compare(OutcomeMeasure o1, OutcomeMeasure o2) {
-			return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
-		}
-	}
 	
 	private ModifiableHolder<Indication> d_indication;
 	private Domain d_domain;
@@ -60,8 +54,8 @@ public class OutcomeListHolder extends AbstractListHolder<OutcomeMeasure> implem
 	}
 	
 	private List<OutcomeMeasure> getOutcomeSet() {
-		SortedSet<OutcomeMeasure> endpoints = new TreeSet<OutcomeMeasure>(new AlphabeticalOmComparator());
-		SortedSet<OutcomeMeasure> ades = new TreeSet<OutcomeMeasure>(new AlphabeticalOmComparator());
+		SortedSet<OutcomeMeasure> endpoints = new TreeSet<OutcomeMeasure>(new AlphabeticalComparator());
+		SortedSet<OutcomeMeasure> ades = new TreeSet<OutcomeMeasure>(new AlphabeticalComparator());
 		if (this.d_indication.getValue() != null) {
 			for (Study s : d_domain.getStudies(this.d_indication.getValue()).getValue()) {
 				ArrayList<OutcomeMeasure> tempEndpoints = new ArrayList<OutcomeMeasure>();
