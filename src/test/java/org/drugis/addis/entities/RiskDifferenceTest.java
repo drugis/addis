@@ -73,12 +73,12 @@ public class RiskDifferenceTest {
 	
 	@Test
 	public void testGetRelativeEffect() {
-		assertEquals(RiskDifference(),	(double)d_riskDif.getRelativeEffect(), 0.00001);
+		assertEquals(RiskDifference(),	(double)d_riskDif.getMedian(), 0.00001);
 	}
 	
 	@Test
 	public void testGetRelativeEffectvsCooper1977() {
-		assertEquals(s_cooper1977RD, d_cooperRD.getRelativeEffect(), 0.001);	
+		assertEquals(s_cooper1977RD, d_cooperRD.getMedian(), 0.001);	
 	}
 	
 	@Test
@@ -107,6 +107,6 @@ public class RiskDifferenceTest {
 
 	@Test
 	public void testGetErrorvsCooper() {
-		assertEquals(s_cooper1977RDvar,square(d_cooperRD.getError()),0.001);
+		assertEquals(s_cooper1977RDvar,square(d_cooperRD.getSigma()),0.001);
 	}
 }

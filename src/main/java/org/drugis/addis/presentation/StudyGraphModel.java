@@ -31,7 +31,6 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.common.CollectionUtil;
 import org.jgrapht.graph.ListenableUndirectedGraph;
 
 @SuppressWarnings("serial")

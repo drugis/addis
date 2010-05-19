@@ -41,13 +41,17 @@ public class MeanDifference extends AbstractRelativeEffect<ContinuousMeasurement
 		return getDefaultConfidenceInterval();
 	}
 
-	public Double getRelativeEffect() {
+	public Double getMedian() {
+		return getMu();
+	}
+	
+	public Double getMu() {
 		return d_subject.getMean() - d_baseline.getMean();
 	}
 	
-	public Double getError() {
+	public Double getSigma() {
 		return Math.sqrt(square(d_subject.getStdDev()) / (double) d_subject.getSampleSize() 
-						+ square(d_baseline.getStdDev()) / (double) d_baseline.getSampleSize());
+				+ square(d_baseline.getStdDev()) / (double) d_baseline.getSampleSize());
 	}
 	
 	private Double square(double x) {
@@ -66,4 +70,5 @@ public class MeanDifference extends AbstractRelativeEffect<ContinuousMeasurement
 	protected Integer getDegreesOfFreedom() {
 		return getSampleSize() - 2;
 	}
+
 }

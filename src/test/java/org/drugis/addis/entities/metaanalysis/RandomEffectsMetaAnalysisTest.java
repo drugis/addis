@@ -181,7 +181,7 @@ public class RandomEffectsMetaAnalysisTest {
 		RandomEffectMetaAnalysisRelativeEffect<Measurement> riskRatio = d_rema.getRelativeEffect(RiskRatio.class);
 		assertEquals(2.03, riskRatio.getHeterogeneity(), 0.01);
 		assertEquals(calculateI2(2.03,d_rema.getIncludedStudies().size()), riskRatio.getHeterogeneityI2(), 0.01);
-		assertEquals(1.10, (riskRatio.getRelativeEffect()), 0.01); 
+		assertEquals(1.10, (riskRatio.getMedian()), 0.01); 
 		assertEquals(1.01, (riskRatio.getConfidenceInterval().getLowerBound()), 0.01);
 		assertEquals(1.20, (riskRatio.getConfidenceInterval().getUpperBound()), 0.01);		
 	}
@@ -190,7 +190,7 @@ public class RandomEffectsMetaAnalysisTest {
 	public void testGetOddsRatioRelativeEffect() {
 		RandomEffectMetaAnalysisRelativeEffect<Measurement> oddsRatio = d_rema.getRelativeEffect(OddsRatio.class);
 		assertEquals(2.14, oddsRatio.getHeterogeneity(), 0.01);
-		assertEquals(1.30, (oddsRatio.getRelativeEffect()), 0.01); 
+		assertEquals(1.30, (oddsRatio.getMedian()), 0.01); 
 		assertEquals(1.03, (oddsRatio.getConfidenceInterval().getLowerBound()), 0.01);
 		assertEquals(1.65, (oddsRatio.getConfidenceInterval().getUpperBound()), 0.01);		
 	}
@@ -202,8 +202,8 @@ public class RandomEffectsMetaAnalysisTest {
 		RandomEffectMetaAnalysisRelativeEffect<Measurement> approach2 = 
 			d_rema.getRelativeEffect(d_rema.getFirstDrug(), d_rema.getSecondDrug(), OddsRatio.class);
 
-		assertEquals(approach1.getRelativeEffect(), approach2.getRelativeEffect());
-		assertEquals(approach1.getError(), approach2.getError());
+		assertEquals(approach1.getMedian(), approach2.getMedian());
+		assertEquals(approach1.getSigma(), approach2.getSigma());
 		assertEquals(approach1.getSampleSize(), approach2.getSampleSize());
 		assertEquals(approach1.getAxisType(), approach2.getAxisType());
 	}
@@ -219,7 +219,7 @@ public class RandomEffectsMetaAnalysisTest {
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta",
 				d_contEndpoint, studies, d_fluox, d_sertr);
 		RandomEffectMetaAnalysisRelativeEffect<Measurement> relativeEffect = ma.getRelativeEffect(MeanDifference.class);
-		assertEquals(2.5, relativeEffect.getRelativeEffect(), 0.01);
+		assertEquals(2.5, relativeEffect.getMedian(), 0.01);
 	}
 		
 	private Study createRateStudy(String studyName,

@@ -37,7 +37,7 @@ public class RiskRatio extends AbstractRatio {
 		return AxisType.LOGARITHMIC;
 	}
 
-	public Double getError() { //NB: this is the LOG error
+	public Double getSigma() { //NB: this is the LOG error
 		if (!isDefined())
 			return Double.NaN;
 
@@ -51,12 +51,19 @@ public class RiskRatio extends AbstractRatio {
 		return "Risk ratio";
 	}
 	
-	public Double getRelativeEffect() {
+	
+	public Double getMedian() {
+		return Math.exp(getMu());
+	}
+	
+	public Double getMu() {
 		if (!isDefined())
 			return Double.NaN;
 		
-		return ( (d_subject.getRate() + d_correction) / (d_subject.getSampleSize()) ) 
-			/ ( (d_baseline.getRate() + d_correction) / (d_baseline.getSampleSize()) );  
+		double expResult = ( (d_subject.getRate() + d_correction) / (d_subject.getSampleSize()) ) 
+			/ ( (d_baseline.getRate() + d_correction) / (d_baseline.getSampleSize()) );
+		
+		return Math.log(expResult);
 	}
 
 	@Override

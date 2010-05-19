@@ -58,9 +58,9 @@ public class SMAAEntityFactory {
 		 * by taking the exponent.
 		 */
 		if (re.getAxisType().equals(RelativeEffect.AxisType.LOGARITHMIC))
-			return new LogNormalMeasurement(Math.log(re.getRelativeEffect()),re.getError());
+			return new LogNormalMeasurement(Math.log(re.getMedian()),re.getSigma());
 		else if (re.getAxisType().equals(RelativeEffect.AxisType.LINEAR)){
-			return new GaussianMeasurement(re.getRelativeEffect(),re.getError());
+			return new GaussianMeasurement(re.getMedian(),re.getSigma());
 		} else
 			throw new IllegalArgumentException("RelativeEffect has an unknown axis-type: " + re);
 	}

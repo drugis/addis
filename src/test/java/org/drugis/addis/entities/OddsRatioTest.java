@@ -62,17 +62,17 @@ public class OddsRatioTest {
 	
 	@Test
 	public void testGetMean() {
-		assertEquals(1.36, (d_ratioBennie.getRelativeEffect()), 0.01);
-		assertEquals(1.03, (d_ratioBoyer.getRelativeEffect()), 0.01); 
-		assertEquals(1.65, (d_ratioFava.getRelativeEffect()), 0.01);
-		assertEquals(1.11, (d_ratioNewhouse.getRelativeEffect()), 0.01);
-		assertEquals(1.56, (d_ratioSechter.getRelativeEffect()), 0.01); 
+		assertEquals(1.36, (d_ratioBennie.getMedian()), 0.01);
+		assertEquals(1.03, (d_ratioBoyer.getMedian()), 0.01); 
+		assertEquals(1.65, (d_ratioFava.getMedian()), 0.01);
+		assertEquals(1.11, (d_ratioNewhouse.getMedian()), 0.01);
+		assertEquals(1.56, (d_ratioSechter.getMedian()), 0.01); 
 	}
 	
 	@Test
 	public void testGetError() {
 		double expected = Math.sqrt(1/63D + 1/73D + 1/(144D-63D) + 1/(142D-73D));
-		assertEquals(expected, d_ratioBennie.getError(), 0.001);
+		assertEquals(expected, d_ratioBennie.getSigma(), 0.001);
 	}
 	
 	@Test
@@ -115,13 +115,13 @@ public class OddsRatioTest {
 		RateMeasurement rmA1 = new BasicRateMeasurement(0, 100);
 		RateMeasurement rmC1 = new BasicRateMeasurement(0, 100);
 		OddsRatio or = new OddsRatio(rmA1, rmC1);
-		assertEquals(Double.NaN, or.getError(), 0.001);
-		assertEquals(Double.NaN, or.getRelativeEffect(), 0.001);
+		assertEquals(Double.NaN, or.getSigma(), 0.001);
+		assertEquals(Double.NaN, or.getMedian(), 0.001);
 		RateMeasurement rmB1 = new BasicRateMeasurement(100, 100);
 		RateMeasurement rmD1 = new BasicRateMeasurement(100, 100);
 		or = new OddsRatio(rmB1, rmD1);
-		assertEquals(Double.NaN, or.getError(), 0.001);
-		assertEquals(Double.NaN, or.getRelativeEffect(), 0.001);
+		assertEquals(Double.NaN, or.getSigma(), 0.001);
+		assertEquals(Double.NaN, or.getMedian(), 0.001);
 	}
 	
 	@Test
@@ -131,8 +131,8 @@ public class OddsRatioTest {
 	
 		OddsRatio or1 = new OddsRatio(rm1, rm2);
 		
-		assertEquals(Math.sqrt(4.0), or1.getError(), 0.001);
-		assertEquals(3.0, or1.getRelativeEffect(), 0.001);
+		assertEquals(Math.sqrt(4.0), or1.getSigma(), 0.001);
+		assertEquals(3.0, or1.getMedian(), 0.001);
 	}
 		
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize)

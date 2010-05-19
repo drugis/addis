@@ -54,7 +54,7 @@ public class StandardisedMeanDifferenceTest {
 	@Test
 	public void testGetMean() {
 		double expected = getSMD();
-		assertEquals(expected, d_smd.getRelativeEffect(),0.0001);
+		assertEquals(expected, d_smd.getMedian(),0.0001);
 	}
 
 	@Test
@@ -62,14 +62,14 @@ public class StandardisedMeanDifferenceTest {
 		double firstFactor = (double) d_sampleSize / ((double) s_subjSize * (double) s_baslSize);
 		double secondFactor = square(getSMD()) / (2 * ((double) d_sampleSize - 3.94));
 		double expected = Math.sqrt(firstFactor + secondFactor);
-		assertEquals(expected, d_smd.getError(), 0.01);
+		assertEquals(expected, d_smd.getSigma(), 0.01);
 	}
 	
 	@Test
 	public void testGetCI() {
 		double t = StudentTTable.getT(d_sampleSize - 2);
-		double upper = d_smd.getRelativeEffect() + d_smd.getError() * t;
-		double lower = d_smd.getRelativeEffect() - d_smd.getError() * t;
+		double upper = d_smd.getMedian() + d_smd.getSigma() * t;
+		double lower = d_smd.getMedian() - d_smd.getSigma() * t;
 		Interval<Double> interval = d_smd.getConfidenceInterval();
 		assertEquals(upper, interval.getUpperBound(),0.0001);
 		assertEquals(lower, interval.getLowerBound(),0.0001);
@@ -99,8 +99,8 @@ public class StandardisedMeanDifferenceTest {
 		assertEquals(0.5970D, d_smd.getCohenD(), 0.0001);
 		assertEquals(0.0418D, d_smd.getCohenVariance(), 0.0001);
 		assertEquals(0.9923D, d_smd.getCorrectionJ(), 0.0001);
-		assertEquals(0.5924D, d_smd.getRelativeEffect(), 0.0001);
-		assertEquals(Math.sqrt(0.04114D), d_smd.getError(), 0.0001);
+		assertEquals(0.5924D, d_smd.getMedian(), 0.0001);
+		assertEquals(Math.sqrt(0.04114D), d_smd.getSigma(), 0.0001);
 	}
 	
 	private double square(double x) {

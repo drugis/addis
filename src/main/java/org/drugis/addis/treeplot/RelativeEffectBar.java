@@ -40,7 +40,7 @@ public class RelativeEffectBar implements TreePlot {
 		d_confEnd = scale.getBin(effect.getConfidenceInterval().getUpperBound()).bin;
 		
 		// Calculate parameters of mean-diamond.
-		d_diamondCenter = scale.getBin(effect.getRelativeEffect()).bin;
+		d_diamondCenter = scale.getBin(effect.getMedian()).bin;
 		d_diamondSize = diamondW; 
 	}
 	

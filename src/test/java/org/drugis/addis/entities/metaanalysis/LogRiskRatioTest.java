@@ -77,17 +77,17 @@ public class LogRiskRatioTest {
 	
 	@Test
 	public void testGetMean() {
-		assertEquals(1.18, Math.exp(d_ratioBennie.getRelativeEffect()), 0.01);
-		assertEquals(1.02, Math.exp(d_ratioBoyer.getRelativeEffect()), 0.01); 
-		assertEquals(1.18, Math.exp(d_ratioFava.getRelativeEffect()), 0.01);
-		assertEquals(1.03, Math.exp(d_ratioNewhouse.getRelativeEffect()), 0.01);
-		assertEquals(1.15, Math.exp(d_ratioSechter.getRelativeEffect()), 0.01); 
+		assertEquals(1.18, Math.exp(d_ratioBennie.getMedian()), 0.01);
+		assertEquals(1.02, Math.exp(d_ratioBoyer.getMedian()), 0.01); 
+		assertEquals(1.18, Math.exp(d_ratioFava.getMedian()), 0.01);
+		assertEquals(1.03, Math.exp(d_ratioNewhouse.getMedian()), 0.01);
+		assertEquals(1.15, Math.exp(d_ratioSechter.getMedian()), 0.01); 
 	}
 	
 	@Test
 	public void testGetError() {
 		double expected = Math.sqrt(1/63D + 1/73D - 1/144D - 1/142D);
-		assertEquals(expected, d_ratioBennie.getError(), 0.001);
+		assertEquals(expected, d_ratioBennie.getSigma(), 0.001);
 	}
 			
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize) {
