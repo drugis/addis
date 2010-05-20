@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
 import org.drugis.common.AlphabeticalComparator;
 
 public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<BenefitRiskAnalysis> {
@@ -147,5 +148,11 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 		return null;
 	}
 
-
+	public void runAllConsistencyModels() {
+		for (MetaAnalysis ma : getMetaAnalyses() ){
+			if (ma instanceof NetworkMetaAnalysis) 
+				((NetworkMetaAnalysis) ma).runConsistency();
+		}
+	}
+	
 }

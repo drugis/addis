@@ -120,11 +120,11 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 	}
 	
 	private void startAllNetworkAnalyses() {
+		getBean().runAllConsistencyModels();
 		for (MetaAnalysis ma : getBean().getMetaAnalyses() ){
 			if (ma instanceof NetworkMetaAnalysis) {
 				ConsistencyModel consistencyModel = ((NetworkMetaAnalysis) ma).getConsistencyModel();
 				d_allModelsReadyListener.addModel(consistencyModel);
-				((NetworkMetaAnalysis) ma).runConsistency();
 				d_analysisProgressListeners.add(new AnalysisProgressListener(consistencyModel));
 			}
 		}

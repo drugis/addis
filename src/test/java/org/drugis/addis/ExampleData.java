@@ -94,9 +94,7 @@ public class ExampleData {
 		domain.addStudy(buildStudyDeWilde());		
 		domain.addStudy(buildStudyBennie());	
 		domain.addStudy(buildStudyMultipleArmsperDrug());
-		
-
-				
+			
 		// heart failure data
 		domain.addIndication(buildIndicationChronicHeartFailure());
 		domain.addDrug(buildDrugCandesartan());
