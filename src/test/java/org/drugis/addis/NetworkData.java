@@ -56,14 +56,20 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 public class NetworkData extends DefaultHandler {
+	interface IdGenerator {
+		String studyId(String id);
+	}
 	private final Domain d_domain;
 	private XMLReader d_xr;
 	private Indication d_indication;
 	private OutcomeMeasure d_outcome;
 	private Study d_study;
+	private IdGenerator d_gen;
 
-	public NetworkData(Domain domain, Indication indication, OutcomeMeasure outcome) throws SAXException {
+	public NetworkData(Domain domain, Indication indication, OutcomeMeasure outcome, IdGenerator gen)
+	throws SAXException {
 		super();
+		d_gen = gen;
 		d_domain = domain;
 		d_xr = XMLReaderFactory.createXMLReader();
 		d_xr.setContentHandler(this);
@@ -83,7 +89,7 @@ public class NetworkData extends DefaultHandler {
 			String id = atts.getValue("id");
 			d_domain.addDrug(new Drug(id, id));
 		} else if (name.equals("study")) {
-			String id = studyId(atts.getValue("id"));
+			String id = d_gen.studyId(atts.getValue("id"));
 			d_study = addOrCreateStudy(id);
 			d_study.addOutcomeMeasure(d_outcome);
 		} else if (name.equals("measurement")) {
@@ -144,9 +150,9 @@ public class NetworkData extends DefaultHandler {
 		return null;
 	}
 
-	public static void addData(Domain domain, InputStream xml, Indication i, OutcomeMeasure o) {
+	public static void addData(Domain domain, InputStream xml, Indication i, OutcomeMeasure o, IdGenerator gen) {
 		try {
-			NetworkData reader = new NetworkData(domain, i, o);
+			NetworkData reader = new NetworkData(domain, i, o, gen);
 			reader.parse(xml);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -182,6 +188,12 @@ public class NetworkData extends DefaultHandler {
 		toParse.put("madrs", buildEndpointMADRS());
 		toParse.put("dropouts", buildEndpointDropouts());
 		
+		IdGenerator gen = new IdGenerator() {
+			public String studyId(String id) {
+				return NetworkData.studyId(id);
+			}
+		};
+		
 		BufferedReader adeReader = new BufferedReader(new FileReader(basename + "adeList.txt"));
 		String ade = null;
 		while ((ade = adeReader.readLine()) != null) {
@@ -195,7 +207,7 @@ public class NetworkData extends DefaultHandler {
 				String name = entry.getKey();
 				
 				d.addOutcomeMeasure(om);
-				addData(d, new FileInputStream(basename + name + extension), depression, om);
+				addData(d, new FileInputStream(basename + name + extension), depression, om, gen);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
