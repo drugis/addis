@@ -18,7 +18,7 @@ import org.drugis.addis.presentation.BenefitRiskPM;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.junit.Test;
 
-public class BenefitRiskIntegrationTest {
+public class BenefitRiskIntegrationIT {
 
 	@Test
 	public void testBRAnalysisContinuous() throws InterruptedException, FileNotFoundException, IOException, ClassNotFoundException {
