@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
@@ -43,11 +44,13 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Variable.Type;
+import org.drugis.mtc.ContinuousMeasurement;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -65,6 +68,7 @@ public class NetworkData extends DefaultHandler {
 	private OutcomeMeasure d_outcome;
 	private Study d_study;
 	private IdGenerator d_gen;
+	private Type d_type;
 
 	public NetworkData(Domain domain, Indication indication, OutcomeMeasure outcome, IdGenerator gen)
 	throws SAXException {
@@ -83,9 +87,17 @@ public class NetworkData extends DefaultHandler {
 		d_xr.parse(new InputSource(xml));
 	}
 	
-	public void startElement (String uri, String name,
-		      String qName, Attributes atts) {
-		if (name.equals("treatment")) {
+	public void startElement (String uri, String name, String qName, Attributes atts) {
+		if (name.equals("network")) {
+			String type = atts.getValue(0);
+			if (type == null || type.equals("") || type.equals("dichotomous")) {
+				d_type = Type.RATE;
+			} else if (type.equals("continuous")) {
+				d_type = Type.CONTINUOUS;
+			} else {
+				throw new RuntimeException("Unsupported type " + type);
+			}
+		} else if (name.equals("treatment")) {
 			String id = atts.getValue("id");
 			d_domain.addDrug(new Drug(id, id));
 		} else if (name.equals("study")) {
@@ -94,10 +106,19 @@ public class NetworkData extends DefaultHandler {
 			d_study.addOutcomeMeasure(d_outcome);
 		} else if (name.equals("measurement")) {
 			Drug drug = findDrug(atts.getValue("treatment"));
-			int resp = Integer.parseInt(atts.getValue("responders"));
 			int samp = Integer.parseInt(atts.getValue("sample"));
 			Arm arm = addOrCreateArm(d_study, drug, samp);
-			BasicRateMeasurement meas = new BasicRateMeasurement(resp, samp);
+			Measurement meas;
+			if (d_type == Type.RATE) {
+				int resp = Integer.parseInt(atts.getValue("responders"));
+				meas = new BasicRateMeasurement(resp, samp);
+			} else if (d_type == Type.CONTINUOUS) {
+				double mean = Double.parseDouble(atts.getValue("mean"));
+				double stdDev = Double.parseDouble(atts.getValue("standardDeviation"));
+				meas = new BasicContinuousMeasurement(mean, stdDev, samp);
+			} else {
+				throw new RuntimeException("Unsupported type " + d_type);
+			}
 			d_study.setMeasurement(d_outcome, arm, meas);
 		}
 	}
@@ -187,6 +208,7 @@ public class NetworkData extends DefaultHandler {
 		toParse.put("hamd", ExampleData.buildEndpointHamd());
 		toParse.put("madrs", buildEndpointMADRS());
 		toParse.put("dropouts", buildEndpointDropouts());
+		toParse.put("CGI", ExampleData.buildEndpointCgi());
 		
 		IdGenerator gen = new IdGenerator() {
 			public String studyId(String id) {
