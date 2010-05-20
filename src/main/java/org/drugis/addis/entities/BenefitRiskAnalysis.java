@@ -1,13 +1,16 @@
 package org.drugis.addis.entities;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.common.AlphabeticalComparator;
 
 public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<BenefitRiskAnalysis> {
-
+	
 	private String d_name;
 	private Indication d_indication;
 	private List<OutcomeMeasure> d_outcomeMeasures;
@@ -47,7 +50,9 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	}
 
 	public List<OutcomeMeasure> getOutcomeMeasures() {
-		return d_outcomeMeasures;
+		List<OutcomeMeasure> sortedList = new ArrayList<OutcomeMeasure>(d_outcomeMeasures);
+		Collections.sort(sortedList, new AlphabeticalComparator());
+		return sortedList;
 	}
 
 	public void setOutcomeMeasures(List<OutcomeMeasure> outcomeMeasures) {
@@ -67,7 +72,9 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	}
 
 	public List<Drug> getDrugs() {
-		return d_drugs;
+		List<Drug> sortedList = new ArrayList<Drug>(d_drugs);
+		Collections.sort(sortedList, new AlphabeticalComparator());
+		return sortedList;
 	}
 
 	public void setDrugs(List<Drug> drugs) {

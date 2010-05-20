@@ -6,9 +6,11 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.common.AlphabeticalComparator;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +38,7 @@ public class BenefitRiskAnalysisTest {
 		ArrayList<OutcomeMeasure> newList = new ArrayList<OutcomeMeasure>();
 		newList.add(ExampleData.buildEndpointCVdeath());
 		newList.add(ExampleData.buildAdverseEventConvulsion());
+		Collections.sort(newList, new AlphabeticalComparator());
 		JUnitUtil.testSetter(d_BRAnalysis, BenefitRiskAnalysis.PROPERTY_OUTCOMEMEASURES, 
 				d_BRAnalysis.getOutcomeMeasures(), newList);
 	}
@@ -44,6 +47,7 @@ public class BenefitRiskAnalysisTest {
 		ArrayList<Drug> newList = new ArrayList<Drug>();
 		newList.add(ExampleData.buildDrugViagra());
 		newList.add(ExampleData.buildDrugCandesartan());
+		Collections.sort(newList, new AlphabeticalComparator());
 		JUnitUtil.testSetter(d_BRAnalysis, BenefitRiskAnalysis.PROPERTY_DRUGS, 
 				d_BRAnalysis.getDrugs(), newList);
 	}

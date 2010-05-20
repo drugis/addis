@@ -24,13 +24,16 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 
 	private class AnalysisProgressListener implements ProgressListener {
 		JProgressBar d_progBar;
+		private MixedTreatmentComparison d_networkModel;
 
 		public AnalysisProgressListener(MixedTreatmentComparison networkModel) {
 			networkModel.addProgressListener(this);
+			d_networkModel = networkModel;
 		}
 		
 		public void attachBar(JProgressBar bar) {
 			d_progBar = bar;
+			bar.setVisible(!d_networkModel.isReady());
 		}
 
 		public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
