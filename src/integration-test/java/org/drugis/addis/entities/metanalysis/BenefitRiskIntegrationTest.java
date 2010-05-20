@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.drugis.addis.entities.BenefitRiskAnalysis;
+import org.drugis.addis.entities.ContinuousMeasurementEstimate;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainManager;
 import org.drugis.addis.entities.LogContinuousMeasurementEstimate;
@@ -15,22 +16,16 @@ import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
 import org.drugis.addis.presentation.BenefitRiskMeasurementTableModel;
 import org.drugis.addis.presentation.BenefitRiskPM;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.junit.Before;
 import org.junit.Test;
 
 public class BenefitRiskIntegrationTest {
-	
-	@Before
-	public void setup() {
-		
-		
-	}
-	
+
 	@Test
 	public void testBRAnalysisContinuous() throws InterruptedException, FileNotFoundException, IOException, ClassNotFoundException {
 		DomainManager domainmgr = new DomainManager();
 		domainmgr.loadXMLDomain(new FileInputStream("src/main/xml/hansen_cgi_brAnalysis.xml"));
 		Domain domain = domainmgr.getDomain();
+		PresentationModelFactory pmf = new PresentationModelFactory(domain);
 		
 		// Run the br analysis.
 		BenefitRiskAnalysis analysis = domain.getBenefitRiskAnalyses().first();
@@ -46,6 +41,17 @@ public class BenefitRiskIntegrationTest {
 			modelsDone = allDone;
 			Thread.sleep(100);
 		}
+		
+		// check measurementsTable values
+/*
+ * The 'expected' values below are not guaranteed to be correct. This part of the test is intended to flag changes of the results.
+ * However, since the results are non-deterministic the test might fail occasionally even if the algorithm hasn't changed.
+ */
+		BenefitRiskPM pm = (BenefitRiskPM) pmf.getModel(analysis);
+		BenefitRiskMeasurementTableModel mtm = pm.getMeasurementTableModel();
+		
+		assertMeanwithinTenPercent(0.875, -1.032, 2.782, mtm.getValueAt(0, 1));
+		assertMeanwithinTenPercent(0.838, 0.465, 1.509, mtm.getValueAt(0, 2));
 	}
 	
 	@Test
@@ -105,16 +111,16 @@ public class BenefitRiskIntegrationTest {
 	}
 	
 	protected void assertMeanwithinTenPercent(double pointEstimate, double lowerBound, double upperBound, Object measurementTableObject) {
-//		Note that this is the maximum allowed deviation for (3*6=) 18 cases, including the error in the expected (=recorded) value
+//		Note that this is the maximum allowed deviation for all cases in these tests, including the error in the expected (=recorded) value
 		double allowedDeviation = 0.075;
 		
 		if (measurementTableObject instanceof LogContinuousMeasurementEstimate) {
 			assertEquals(pointEstimate, Math.exp(((LogContinuousMeasurementEstimate) measurementTableObject).getMean()), pointEstimate * allowedDeviation);
-			assertEquals(lowerBound, ((LogContinuousMeasurementEstimate) measurementTableObject).getConfidenceInterval().getLowerBound(), lowerBound * allowedDeviation);
-			assertEquals(upperBound, ((LogContinuousMeasurementEstimate) measurementTableObject).getConfidenceInterval().getUpperBound(), upperBound * allowedDeviation);
+		} else if (measurementTableObject instanceof ContinuousMeasurementEstimate) {
+			assertEquals(pointEstimate, ((ContinuousMeasurementEstimate) measurementTableObject).getMean(), pointEstimate * allowedDeviation);
 		}
-		else
-			throw new IllegalArgumentException("");
+		assertEquals(lowerBound, ((ContinuousMeasurementEstimate) measurementTableObject).getConfidenceInterval().getLowerBound(), Math.abs(lowerBound) * allowedDeviation);
+		assertEquals(upperBound, ((ContinuousMeasurementEstimate) measurementTableObject).getConfidenceInterval().getUpperBound(), Math.abs(upperBound) * allowedDeviation);
 	}
 }
 
