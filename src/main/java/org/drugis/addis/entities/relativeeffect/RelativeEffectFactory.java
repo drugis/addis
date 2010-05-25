@@ -50,9 +50,6 @@ public class RelativeEffectFactory {
 		if (type.equals(BasicRiskRatio.class)) {
 			return buildRiskRatio(s, om, base, subj);
 		}
-		if (type.equals(LogRiskRatio.class)) {
-			return buildLogRiskRatio(s, om, base, subj);
-		}
 		if (type.equals(BasicRiskDifference.class)) {
 			return buildRiskDifference(s, om, base, subj);
 		}
@@ -89,9 +86,6 @@ public class RelativeEffectFactory {
 		if (type.equals(BasicRiskRatio.class)) {
 			return buildRiskRatio(s, om, base, subj);
 		}
-		if (type.equals(LogRiskRatio.class)) {
-			return buildLogRiskRatio(s, om, base, subj);
-		}
 		if (type.equals(BasicRiskDifference.class)) {
 			return buildRiskDifference(s, om, base, subj);
 		}
@@ -110,13 +104,6 @@ public class RelativeEffectFactory {
 	private static RelativeEffect<?> buildRiskRatio(Study s, OutcomeMeasure om,
 			Arm base, Arm subj) {
 		return new BasicRiskRatio(
-				findRateMeasurement(s, om, base),
-				findRateMeasurement(s, om, subj));
-	}
-
-	private static RelativeEffect<?> buildLogRiskRatio(Study s, OutcomeMeasure om,
-			Arm base, Arm subj) {
-		return new LogRiskRatio(
 				findRateMeasurement(s, om, base),
 				findRateMeasurement(s, om, subj));
 	}
