@@ -17,9 +17,7 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 		
 		transient  double d_thetaDSL;
 		transient  double d_SEThetaDSL;
-		//transient  Interval<Double> d_confidenceInterval;
 		transient  double d_qIV;
-		//transient private AxisType d_axisType; 
 		
 		public ComputeRandomEffects(List<BasicRelativeEffect<? extends Measurement>> relEffects, boolean drugsSwapped) {
 			List<Double> weights = new ArrayList<Double>();
@@ -29,15 +27,6 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 				throw new IllegalStateException("Cannot calculate RandomEffectMetaAnalysis without any relative effects.");
 		
 			d_axisType = relEffects.get(0).getAxisType();
-			/*
-			List<RelativeEffect<? extends Measurement>> relEffects = new ArrayList<RelativeEffect<? extends Measurement>>();
-				
-			for (int i=0; i<d_studies.size(); ++i ){
-				RelativeEffect<? extends Measurement> re;
-				re = RelativeEffectFactory.buildRelativeEffect(getStudyArms(drugsSwapped).get(i), d_outcome, type);
-				d_axisType = re.getAxisType();
-				relEffects.add(re);
-			}*/
 			
 			// FIXME: How are we going to get mu & sigma in a consistent way, without using large if-else trains. Or, if preferably, no if-else.
 			
@@ -58,13 +47,6 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 			
 			d_thetaDSL = getThetaDL(adjweights, relEffects);
 			d_SEThetaDSL = getSE_ThetaDL(adjweights);
-				
-			//d_confidenceInterval = getConfidenceInterval();
-			
-			/*if ((type == LogRiskRatio.class) || (type == LogOddsRatio.class)) {
-				d_thetaDSL = Math.exp(d_thetaDSL);
-				d_confidenceInterval = new Interval<Double>(Math.exp(d_confidenceInterval.getLowerBound()),Math.exp(d_confidenceInterval.getUpperBound()));
-			}*/
 		}
 		
 		private double getSE_ThetaDL(List<Double> adjweights) {

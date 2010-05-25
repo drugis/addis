@@ -39,23 +39,14 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
-import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
-import org.drugis.addis.entities.relativeeffect.LogOddsRatio;
-import org.drugis.addis.entities.relativeeffect.LogRiskRatio;
-import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RandomEffectsRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
-import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
-import org.drugis.common.Interval;
-import org.drugis.common.StudentTTable;
 
 public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 
-
-	
 	public static final String PROPERTY_INCLUDED_STUDIES_COUNT = "studiesIncluded";
 	public static final String PROPERTY_FIRST_DRUG = "firstDrug";
 	public static final String PROPERTY_SECOND_DRUG = "secondDrug";
@@ -175,31 +166,12 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		}
 		return studyArms;
 	}
-	
-	
-	/*
-	private Interval<Double> getConfidenceInterval() {	
-		double Z95percent = StudentTTable.getT(Integer.MAX_VALUE);
-		double lower = d_thetaDSL - Z95percent * d_SEThetaDSL;
-		double upper = d_thetaDSL + Z95percent * d_SEThetaDSL;
-		return new Interval<Double>(lower, upper);
-	}*/
-	
 
-	
 	public RandomEffectMetaAnalysisRelativeEffect<Measurement> getRelativeEffect(Drug d1, Drug d2, Class<? extends RelativeEffect<?>> type) {
 		// check if drugs make sense
 		List<Drug> askedDrugs = Arrays.asList(new Drug[]{d1,d2});
 		if (!d_drugs.containsAll(askedDrugs))
 			throw new IllegalArgumentException(d_name + " compares drugs " + d_drugs + " but " + askedDrugs + " were asked");
-		
-		// return measurement
-		/*if(d1.equals(getFirstDrug()))
-			compute(type, false);
-		else 
-			compute(type, true);
-		
-		return new RandomEffects(d_confidenceInterval, d_thetaDSL, d_totalSampleSize, d_SEThetaDSL, d_qIV);*/
 		
 		boolean drugsSwapped = !d1.equals(getFirstDrug());
 		List<BasicRelativeEffect<? extends Measurement>> relEffects = new ArrayList<BasicRelativeEffect<? extends Measurement>>();
