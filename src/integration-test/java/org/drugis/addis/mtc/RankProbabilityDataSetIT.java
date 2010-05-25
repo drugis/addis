@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.mtc.Treatment;

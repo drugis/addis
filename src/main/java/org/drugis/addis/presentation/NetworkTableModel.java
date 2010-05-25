@@ -23,8 +23,8 @@ package org.drugis.addis.presentation;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.ContinuousMeasurementEstimate;
-import org.drugis.addis.entities.LogContinuousMeasurementEstimate;
+import org.drugis.addis.entities.relativeeffect.ContinuousMeasurementEstimate;
+import org.drugis.addis.entities.relativeeffect.LogContinuousMeasurementEstimate;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyModel;

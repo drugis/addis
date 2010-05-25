@@ -30,8 +30,8 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.junit.Test;
 
 import com.jgoodies.binding.PresentationModel;

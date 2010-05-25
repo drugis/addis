@@ -23,6 +23,7 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
 
+import org.drugis.addis.entities.relativeeffect.MeanDifference;
 import org.drugis.common.StudentTTable;
 import org.junit.Before;
 import org.junit.Test;

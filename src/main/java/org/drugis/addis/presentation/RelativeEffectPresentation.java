@@ -26,7 +26,7 @@ import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
 import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.RelativeEffect;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.common.Interval;
 
 import com.jgoodies.binding.PresentationModel;

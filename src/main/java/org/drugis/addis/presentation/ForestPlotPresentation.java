@@ -28,13 +28,13 @@ import java.util.List;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
-import org.drugis.addis.entities.RelativeEffect.AxisType;
-import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
-import org.drugis.addis.entities.metaanalysis.RelativeEffectFactory;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect.AxisType;
 import org.drugis.addis.treeplot.BinnedScale;
 import org.drugis.addis.treeplot.ForestPlot;
 import org.drugis.addis.treeplot.IdentityScale;

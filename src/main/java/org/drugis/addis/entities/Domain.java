@@ -23,7 +23,8 @@ package org.drugis.addis.entities;
 
 import java.util.SortedSet;
 
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 
 public interface Domain {

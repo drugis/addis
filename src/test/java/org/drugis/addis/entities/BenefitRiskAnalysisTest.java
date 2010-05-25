@@ -9,7 +9,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.relativeeffect.OddsRatio;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.common.AlphabeticalComparator;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;

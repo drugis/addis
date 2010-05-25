@@ -14,7 +14,7 @@ import javax.swing.JRadioButton;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;

@@ -37,7 +37,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.DefaultListHolder;
 import org.drugis.addis.presentation.DefaultSelectableStudyListPresentationModel;

@@ -23,7 +23,7 @@ package org.drugis.addis.presentation;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NetworkBuilder;

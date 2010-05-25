@@ -9,11 +9,11 @@ import java.util.List;
 import javax.swing.JProgressBar;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.junit.*;
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 

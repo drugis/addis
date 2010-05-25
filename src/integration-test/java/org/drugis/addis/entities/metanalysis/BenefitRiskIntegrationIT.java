@@ -6,13 +6,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.drugis.addis.entities.BenefitRiskAnalysis;
-import org.drugis.addis.entities.ContinuousMeasurementEstimate;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainManager;
-import org.drugis.addis.entities.LogContinuousMeasurementEstimate;
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
-import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.relativeeffect.ContinuousMeasurementEstimate;
+import org.drugis.addis.entities.relativeeffect.LogContinuousMeasurementEstimate;
 import org.drugis.addis.presentation.BenefitRiskMeasurementTableModel;
 import org.drugis.addis.presentation.BenefitRiskPM;
 import org.drugis.addis.presentation.PresentationModelFactory;

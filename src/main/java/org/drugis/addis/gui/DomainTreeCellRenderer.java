@@ -28,14 +28,14 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.AdverseEvent;
-import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.ImageLoader;
 
 @SuppressWarnings("serial")

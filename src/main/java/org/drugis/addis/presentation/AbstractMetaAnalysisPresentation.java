@@ -27,7 +27,7 @@ import java.util.List;
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;

@@ -33,7 +33,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
-import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;

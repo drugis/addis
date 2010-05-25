@@ -24,9 +24,9 @@ package org.drugis.addis.gui.builder;
 import javax.swing.JComponent;
 import javax.swing.JTextPane;
 
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
-import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.AbstractMetaAnalysisPresentation;

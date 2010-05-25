@@ -53,8 +53,8 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.Interval;
 
 @SuppressWarnings("serial")

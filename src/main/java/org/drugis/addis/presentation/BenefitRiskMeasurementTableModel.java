@@ -2,12 +2,12 @@ package org.drugis.addis.presentation;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.BenefitRiskAnalysis;
-import org.drugis.addis.entities.ContinuousMeasurementEstimate;
-import org.drugis.addis.entities.LogContinuousMeasurementEstimate;
 import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.RelativeEffect;
-import org.drugis.addis.entities.RelativeEffect.AxisType;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.relativeeffect.ContinuousMeasurementEstimate;
+import org.drugis.addis.entities.relativeeffect.LogContinuousMeasurementEstimate;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect.AxisType;
 
 @SuppressWarnings("serial")
 public class BenefitRiskMeasurementTableModel extends AbstractTableModel {

@@ -10,8 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-import org.drugis.addis.entities.BenefitRiskAnalysis;
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.gui.AbstractTablePanel;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;

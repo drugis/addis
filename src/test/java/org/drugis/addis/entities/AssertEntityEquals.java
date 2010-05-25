@@ -35,7 +35,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 
 public class AssertEntityEquals {
 	

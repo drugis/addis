@@ -23,7 +23,7 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 
-import org.drugis.addis.entities.StandardisedMeanDifference;
+import org.drugis.addis.entities.relativeeffect.StandardisedMeanDifference;
 import org.junit.Before;
 import org.junit.Test;
 

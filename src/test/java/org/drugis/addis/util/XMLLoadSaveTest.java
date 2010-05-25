@@ -45,7 +45,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Variable.Type;
-import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -32,7 +32,7 @@ import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyParameter;

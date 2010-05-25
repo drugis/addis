@@ -5,9 +5,9 @@ import java.util.List;
 
 import javax.swing.JProgressBar;
 
-import org.drugis.addis.entities.BenefitRiskAnalysis;
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
-import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.util.JSMAAintegration.SMAAEntityFactory;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;

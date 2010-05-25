@@ -25,8 +25,8 @@ import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
 @SuppressWarnings("serial")
 public abstract class AbstractRelativeEffectTableModel extends AbstractTableModel

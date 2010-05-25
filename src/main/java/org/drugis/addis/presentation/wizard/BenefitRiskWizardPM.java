@@ -10,12 +10,12 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
-import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.UnmodifiableHolder;

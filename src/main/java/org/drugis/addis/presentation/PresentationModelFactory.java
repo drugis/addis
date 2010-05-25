@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
@@ -33,11 +32,12 @@ import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
 import com.jgoodies.binding.PresentationModel;
 

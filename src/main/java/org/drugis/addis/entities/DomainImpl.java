@@ -35,7 +35,8 @@ import java.util.SortedSet;
 
 import javolution.xml.stream.XMLStreamException;
 
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.util.XMLHelper;

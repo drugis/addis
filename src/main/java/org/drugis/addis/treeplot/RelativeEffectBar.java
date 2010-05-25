@@ -23,7 +23,7 @@ package org.drugis.addis.treeplot;
 
 import java.awt.Graphics2D;
 
-import org.drugis.addis.entities.RelativeEffect;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
 public class RelativeEffectBar implements TreePlot {
 	private int d_confStart;

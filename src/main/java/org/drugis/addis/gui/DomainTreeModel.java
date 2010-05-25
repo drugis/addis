@@ -30,7 +30,6 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import org.drugis.addis.entities.AdverseEvent;
-import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
@@ -39,7 +38,8 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.common.CollectionUtil;
 
 

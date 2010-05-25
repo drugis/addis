@@ -26,12 +26,12 @@ import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 
-import org.drugis.addis.entities.MeanDifference;
-import org.drugis.addis.entities.OddsRatio;
-import org.drugis.addis.entities.RelativeEffect;
-import org.drugis.addis.entities.RiskDifference;
-import org.drugis.addis.entities.RiskRatio;
-import org.drugis.addis.entities.StandardisedMeanDifference;
+import org.drugis.addis.entities.relativeeffect.MeanDifference;
+import org.drugis.addis.entities.relativeeffect.OddsRatio;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.entities.relativeeffect.RiskDifference;
+import org.drugis.addis.entities.relativeeffect.RiskRatio;
+import org.drugis.addis.entities.relativeeffect.StandardisedMeanDifference;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;

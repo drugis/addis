@@ -4,11 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.RelativeEffect;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.junit.Before;
 import org.junit.Test;
 

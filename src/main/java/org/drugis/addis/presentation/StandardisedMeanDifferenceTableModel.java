@@ -24,9 +24,9 @@ package org.drugis.addis.presentation;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.RelativeEffect;
-import org.drugis.addis.entities.StandardisedMeanDifference;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.entities.relativeeffect.StandardisedMeanDifference;
 
 @SuppressWarnings("serial")
 public class StandardisedMeanDifferenceTableModel extends AbstractRelativeEffectTableModel{

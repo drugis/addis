@@ -30,7 +30,7 @@ import java.util.List;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.Measurement;
 import org.drugis.mtc.NetworkBuilder;

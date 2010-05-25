@@ -23,7 +23,7 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 
-import org.drugis.addis.entities.RiskDifference;
+import org.drugis.addis.entities.relativeeffect.RiskDifference;
 import org.junit.Before;
 import org.junit.Test;
 

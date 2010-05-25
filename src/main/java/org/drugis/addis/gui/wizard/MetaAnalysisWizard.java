@@ -30,7 +30,7 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;

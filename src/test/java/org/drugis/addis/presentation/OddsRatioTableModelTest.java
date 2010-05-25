@@ -23,7 +23,7 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 
-import org.drugis.addis.entities.OddsRatio;
+import org.drugis.addis.entities.relativeeffect.OddsRatio;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -30,10 +30,10 @@ import java.util.List;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.MeanDifference;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.relativeeffect.MeanDifference;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
 

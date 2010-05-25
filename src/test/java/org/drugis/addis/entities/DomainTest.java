@@ -34,7 +34,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;

@@ -5,12 +5,12 @@ import java.util.Map;
 
 import javax.swing.JProgressBar;
 
-import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
 import fi.smaa.jsmaa.model.Alternative;
 import fi.smaa.jsmaa.model.CardinalCriterion;

@@ -35,7 +35,6 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
-import org.drugis.addis.entities.BenefitRiskAnalysis;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Domain;
@@ -49,10 +48,11 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
-import org.drugis.addis.entities.metaanalysis.MetaAnalysis;
-import org.drugis.addis.entities.metaanalysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.metaanalysis.RandomEffectsMetaAnalysis;
-import org.drugis.addis.entities.metaanalysis.RelativeEffectFactory;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
 
 public class ExampleData {
 	private static Study s_studyFava02 = null;

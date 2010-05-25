@@ -21,13 +21,13 @@
 
 package org.drugis.addis.presentation;
 
-import org.drugis.addis.entities.AbstractRelativeEffect;
 import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.OddsRatio;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.addis.entities.RelativeEffect;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.relativeeffect.AbstractRelativeEffect;
+import org.drugis.addis.entities.relativeeffect.OddsRatio;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
 @SuppressWarnings("serial")
 public class OddsRatioTableModel extends AbstractRelativeEffectTableModel {
