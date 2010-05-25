@@ -37,7 +37,7 @@ import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Test;
 
-public class OddsRatioTest {
+public class BasicOddsRatioTest {
 	private Drug d_fluox;
 	private Drug d_sertra;
 	
@@ -46,7 +46,7 @@ public class OddsRatioTest {
 	
 	private Study d_bennie, d_boyer, d_fava, d_newhouse, d_sechter;
 	
-	private OddsRatio d_ratioBennie, d_ratioBoyer, d_ratioFava, d_ratioNewhouse, d_ratioSechter;
+	private BasicOddsRatio d_ratioBennie, d_ratioBoyer, d_ratioFava, d_ratioNewhouse, d_ratioSechter;
 
 	@Before
 	public void setUp() {
@@ -62,11 +62,11 @@ public class OddsRatioTest {
 		d_sechter = createStudy("Sechter 1999", 76,120, 86,118);
 				
 		
-		d_ratioBennie = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, d_fluox, d_sertra, OddsRatio.class);
-		d_ratioBoyer = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, d_fluox, d_sertra, OddsRatio.class);
-		d_ratioFava = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, d_fluox, d_sertra, OddsRatio.class);
-		d_ratioNewhouse = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, d_fluox, d_sertra, OddsRatio.class);
-		d_ratioSechter = (OddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, d_fluox, d_sertra, OddsRatio.class);
+		d_ratioBennie = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, d_fluox, d_sertra, BasicOddsRatio.class);
+		d_ratioBoyer = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, d_fluox, d_sertra, BasicOddsRatio.class);
+		d_ratioFava = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, d_fluox, d_sertra, BasicOddsRatio.class);
+		d_ratioNewhouse = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, d_fluox, d_sertra, BasicOddsRatio.class);
+		d_ratioSechter = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, d_fluox, d_sertra, BasicOddsRatio.class);
 	}
 	
 	@Test
@@ -119,16 +119,22 @@ public class OddsRatioTest {
 		assertEquals(2.70, (ival.getUpperBound()), 0.01); 
 	}
 	
+	@Test public void testGetDistribution() {
+		Distribution distribution = d_ratioSechter.getDistribution();
+		assertEquals(0.90, distribution.getQuantile(0.025), 0.01);
+		assertEquals(2.70, distribution.getQuantile(0.975), 0.01);
+	}
+	
 	@Test
 	public void testUndefined() {
 		RateMeasurement rmA1 = new BasicRateMeasurement(0, 100);
 		RateMeasurement rmC1 = new BasicRateMeasurement(0, 100);
-		OddsRatio or = new OddsRatio(rmA1, rmC1);
+		BasicOddsRatio or = new BasicOddsRatio(rmA1, rmC1);
 		assertEquals(Double.NaN, or.getError(), 0.001);
 		assertEquals(Double.NaN, or.getRelativeEffect(), 0.001);
 		RateMeasurement rmB1 = new BasicRateMeasurement(100, 100);
 		RateMeasurement rmD1 = new BasicRateMeasurement(100, 100);
-		or = new OddsRatio(rmB1, rmD1);
+		or = new BasicOddsRatio(rmB1, rmD1);
 		assertEquals(Double.NaN, or.getError(), 0.001);
 		assertEquals(Double.NaN, or.getRelativeEffect(), 0.001);
 	}
@@ -138,7 +144,7 @@ public class OddsRatioTest {
 		RateMeasurement rm1 = new BasicRateMeasurement(0, 1);
 		RateMeasurement rm2 = new BasicRateMeasurement(1, 2);
 	
-		OddsRatio or1 = new OddsRatio(rm1, rm2);
+		BasicOddsRatio or1 = new BasicOddsRatio(rm1, rm2);
 		
 		assertEquals(Math.sqrt(4.0), or1.getError(), 0.001);
 		assertEquals(3.0, or1.getRelativeEffect(), 0.001);

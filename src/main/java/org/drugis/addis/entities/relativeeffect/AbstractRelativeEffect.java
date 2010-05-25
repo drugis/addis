@@ -32,12 +32,11 @@ import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.common.Interval;
-import org.drugis.common.StudentTTable;
 
 public abstract class AbstractRelativeEffect<T extends Measurement> extends AbstractEntity implements RelativeEffect<T>{
 
 	protected T d_subject;
-	protected T d_baseline; 
+	protected T d_baseline;
 
 	protected AbstractRelativeEffect(T subject, T baseline) {
 		d_subject  = subject;
@@ -84,12 +83,15 @@ public abstract class AbstractRelativeEffect<T extends Measurement> extends Abst
 		return getDegreesOfFreedom() > 0;
 	}
 	
-	public Interval<Double> getDefaultConfidenceInterval() {
+	public AxisType getAxisType() {
+		return getDistribution().getAxisType();
+	}
+	
+	public Interval<Double> getConfidenceInterval() {
 		if (!isDefined()) {
 			return new Interval<Double>(Double.NaN, Double.NaN);
 		}
-		double t = StudentTTable.getT(getDegreesOfFreedom());
 
-		return new Interval<Double>(getRelativeEffect() - t * getError(), getRelativeEffect() + t * getError());
+		return new Interval<Double>(getDistribution().getQuantile(0.025), getDistribution().getQuantile(0.975));
 	}
 }

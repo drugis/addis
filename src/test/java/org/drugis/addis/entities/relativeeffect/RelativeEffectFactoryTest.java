@@ -32,13 +32,13 @@ import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.relativeeffect.LogOddsRatio;
 import org.drugis.addis.entities.relativeeffect.LogRiskRatio;
-import org.drugis.addis.entities.relativeeffect.MeanDifference;
-import org.drugis.addis.entities.relativeeffect.OddsRatio;
+import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
+import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
-import org.drugis.addis.entities.relativeeffect.RiskDifference;
-import org.drugis.addis.entities.relativeeffect.RiskRatio;
-import org.drugis.addis.entities.relativeeffect.StandardisedMeanDifference;
+import org.drugis.addis.entities.relativeeffect.BasicRiskDifference;
+import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
+import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
 import org.junit.Test;
 
 public class RelativeEffectFactoryTest {
@@ -54,13 +54,13 @@ public class RelativeEffectFactoryTest {
 		assertEquals(base, pBase.getDrug());
 		assertEquals(subj, pSubj.getDrug());
 		
-		RelativeEffect<?> expected = new StandardisedMeanDifference(
+		RelativeEffect<?> expected = new BasicStandardisedMeanDifference(
 				(ContinuousMeasurement)s.getMeasurement(e, pSubj),
 				(ContinuousMeasurement)s.getMeasurement(e, pBase));
 		
 		RelativeEffect<?> actual =
 				RelativeEffectFactory.buildRelativeEffect(s, e, base, subj,
-						StandardisedMeanDifference.class);
+						BasicStandardisedMeanDifference.class);
 		
 		assertRelativeEffectEqual(expected, actual);
 	}
@@ -72,7 +72,7 @@ public class RelativeEffectFactoryTest {
 				ExampleData.buildEndpointHamd(),
 				ExampleData.buildDrugParoxetine(),
 				ExampleData.buildDrugFluoxetine(),
-				StandardisedMeanDifference.class);
+				BasicStandardisedMeanDifference.class);
 	}
 	
 	@Test
@@ -87,13 +87,13 @@ public class RelativeEffectFactoryTest {
 		assertEquals(base, pBase.getDrug());
 		assertEquals(subj, pSubj.getDrug());
 		
-		RelativeEffect<?> expected = new MeanDifference(
+		RelativeEffect<?> expected = new BasicMeanDifference(
 				(ContinuousMeasurement)s.getMeasurement(e, pBase),
 				(ContinuousMeasurement)s.getMeasurement(e, pSubj));
 		
 		RelativeEffect<?> actual =
 				RelativeEffectFactory.buildRelativeEffect(s, e, base, subj,
-						MeanDifference.class);
+						BasicMeanDifference.class);
 		
 		assertRelativeEffectEqual(expected, actual);
 	}
@@ -105,7 +105,7 @@ public class RelativeEffectFactoryTest {
 				ExampleData.buildEndpointHamd(),
 				ExampleData.buildDrugParoxetine(),
 				ExampleData.buildDrugFluoxetine(),
-				MeanDifference.class);
+				BasicMeanDifference.class);
 	}
 	
 	@Test
@@ -120,13 +120,13 @@ public class RelativeEffectFactoryTest {
 		assertEquals(base, pBase.getDrug());
 		assertEquals(subj, pSubj.getDrug());
 		
-		RelativeEffect<?> expected = new OddsRatio(
+		RelativeEffect<?> expected = new BasicOddsRatio(
 				(RateMeasurement)s.getMeasurement(e, pBase),
 				(RateMeasurement)s.getMeasurement(e, pSubj));
 		
 		RelativeEffect<?> actual =
 				RelativeEffectFactory.buildRelativeEffect(s, e, base, subj,
-						OddsRatio.class);
+						BasicOddsRatio.class);
 		
 		assertRelativeEffectEqual(expected, actual);
 	}
@@ -138,7 +138,7 @@ public class RelativeEffectFactoryTest {
 				ExampleData.buildEndpointCgi(),
 				ExampleData.buildDrugParoxetine(),
 				ExampleData.buildDrugFluoxetine(),
-				OddsRatio.class);
+				BasicOddsRatio.class);
 	}
 	
 	@Test
@@ -153,13 +153,13 @@ public class RelativeEffectFactoryTest {
 		assertEquals(base, pBase.getDrug());
 		assertEquals(subj, pSubj.getDrug());
 		
-		RelativeEffect<?> expected = new RiskRatio(
+		RelativeEffect<?> expected = new BasicRiskRatio(
 				(RateMeasurement)s.getMeasurement(e, pBase),
 				(RateMeasurement)s.getMeasurement(e, pSubj));
 		
 		RelativeEffect<?> actual =
 				RelativeEffectFactory.buildRelativeEffect(s, e, base, subj,
-						RiskRatio.class);
+						BasicRiskRatio.class);
 		
 		assertRelativeEffectEqual(expected, actual);
 	}
@@ -171,7 +171,7 @@ public class RelativeEffectFactoryTest {
 				ExampleData.buildEndpointCgi(),
 				ExampleData.buildDrugParoxetine(),
 				ExampleData.buildDrugFluoxetine(),
-				RiskRatio.class);
+				BasicRiskRatio.class);
 	}
 	
 	@Test
@@ -186,13 +186,13 @@ public class RelativeEffectFactoryTest {
 		assertEquals(base, pBase.getDrug());
 		assertEquals(subj, pSubj.getDrug());
 		
-		RelativeEffect<?> expected = new RiskDifference(
+		RelativeEffect<?> expected = new BasicRiskDifference(
 				(RateMeasurement)s.getMeasurement(e, pBase),
 				(RateMeasurement)s.getMeasurement(e, pSubj));
 		
 		RelativeEffect<?> actual =
 				RelativeEffectFactory.buildRelativeEffect(s, e, base, subj,
-						RiskDifference.class);
+						BasicRiskDifference.class);
 		
 		assertRelativeEffectEqual(expected, actual);
 	}
@@ -204,7 +204,7 @@ public class RelativeEffectFactoryTest {
 				ExampleData.buildEndpointCgi(),
 				ExampleData.buildDrugParoxetine(),
 				ExampleData.buildDrugFluoxetine(),
-				RiskDifference.class);
+				BasicRiskDifference.class);
 	}
 	
 	@Test

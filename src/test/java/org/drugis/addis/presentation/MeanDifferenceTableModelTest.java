@@ -23,7 +23,7 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 
-import org.drugis.addis.entities.relativeeffect.MeanDifference;
+import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ public class MeanDifferenceTableModelTest extends RelativeEffectTableModelBaseTe
 		baseSetUpContinuous();	
 		d_stdModel = new MeanDifferenceTableModel(d_standardStudy, d_endpoint, d_pmf);
 		d_threeArmModel = new MeanDifferenceTableModel(d_threeArmStudy, d_endpoint, d_pmf);
-		d_relativeEffectClass = MeanDifference.class;
+		d_relativeEffectClass = BasicMeanDifference.class;
 	}
 
 	@Test

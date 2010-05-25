@@ -23,52 +23,43 @@ package org.drugis.addis.entities.relativeeffect;
 
 import org.drugis.addis.entities.RateMeasurement;
 
+public class BasicRiskDifference extends AbstractRelativeEffect<RateMeasurement> {
 
-public class OddsRatio extends AbstractRatio {
-
-	/**
-	 * The odds-ratio of two RateMeasurements.
-	 * In a forest plot, the numerator will be on the right and the denominator on the left.
-	 * @param denominator
-	 * @param numerator
-	 */
-	public OddsRatio(RateMeasurement denominator, RateMeasurement numerator) { 
+	public BasicRiskDifference(RateMeasurement denominator, RateMeasurement numerator) {
 		super(numerator, denominator);
 	}
 
-	public String getName() {
-		return "Odds ratio";
-	}
-	
-	public AxisType getAxisType() {
-		return AxisType.LOGARITHMIC;
-	}
-
 	public Double getRelativeEffect() {
-		if (!isDefined())
-			return Double.NaN;
+		double a = getSubject().getRate();
+		double n1 = getSubject().getSampleSize();
+		double c = getBaseline().getRate();
+		double n2 = getBaseline().getSampleSize();
 		
-		double a = d_subject.getRate() + d_correction;
-		double b = d_baseline.getRate() + d_correction;
-		double d = d_baseline.getSampleSize() - d_baseline.getRate() + d_correction;
-		double c = d_subject.getSampleSize() - d_subject.getRate() + d_correction;
-		return (a * d) / (b * c); 
+		return (a/n1 - c/n2);
 	}
 
-	public Double getError() { //NB: this is the LOG error
-		if (!isDefined())
-			return Double.NaN;
+	// Here: gets the STANDARD ERROR of the RISK DIFFERENCE
+	public Double getError() {
+		double a = getSubject().getRate();
+		double n1 = getSubject().getSampleSize();
+		double b = n1 - a;
+		double c = getBaseline().getRate();
+		double n2 = getBaseline().getSampleSize();
+		double d = n2 - c;
 		
-		double a = d_subject.getRate() + d_correction;
-		double b = d_baseline.getRate() + d_correction;
-		double d = d_baseline.getSampleSize() - d_baseline.getRate() + d_correction;
-		double c = d_subject.getSampleSize() - d_subject.getRate() + d_correction;
-		
-		return Math.sqrt(1.0/a + 1.0/b + 1.0/c + 1.0/d);
+		return new Double(Math.sqrt(a*b/Math.pow(n1,3) + c*d/Math.pow(n2,3)));
+	}
+
+	public String getName() {
+		return "Risk Difference";
 	}
 
 	@Override
 	protected Integer getDegreesOfFreedom() {
-		return getSampleSize() -2;
+		return getSampleSize() - 2;
+	}
+
+	public Distribution getDistribution() {
+		return new TransformedStudentT(getRelativeEffect(), getError(), getDegreesOfFreedom());
 	}
 }

@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.relativeeffect.AxisType;
-import org.drugis.addis.entities.relativeeffect.OddsRatio;
+import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
@@ -58,7 +58,7 @@ public class NetworkMetaAnalysisTest {
 	@Ignore
 	public void testGetRelativeEffect() {
 		// FIXME breaks
-		RelativeEffect<? extends Measurement> actual = d_mockAnalysis.getRelativeEffect(ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine(), OddsRatio.class);
+		RelativeEffect<? extends Measurement> actual = d_mockAnalysis.getRelativeEffect(ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine(), BasicOddsRatio.class);
 		RelativeEffect<? extends Measurement> expected = new MetaAnalysisRelativeEffect<Measurement>(null, Math.exp(1.0), 0, 0.33333, AxisType.LOGARITHMIC);
 		System.out.println("expected: "+expected);
 		System.out.println("actual: "+actual);

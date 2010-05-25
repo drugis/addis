@@ -23,46 +23,62 @@ package org.drugis.addis.entities.relativeeffect;
 
 import org.drugis.addis.entities.RateMeasurement;
 
-public class RiskRatio extends AbstractRatio {
 
-	public RiskRatio(RateMeasurement denominator, RateMeasurement numerator) {
+public class BasicOddsRatio extends AbstractRatio {
+
+	/**
+	 * The odds-ratio of two RateMeasurements.
+	 * In a forest plot, the numerator will be on the right and the denominator on the left.
+	 * @param denominator
+	 * @param numerator
+	 */
+	public BasicOddsRatio(RateMeasurement denominator, RateMeasurement numerator) { 
 		super(numerator, denominator);
 	}
 
-	@Override
-	public String toString() {
-		return "[" + d_baseline.toString() + "] / [" 
-		+ d_subject.toString() + "]";
+	public String getName() {
+		return "Odds ratio";
 	}
 	
 	public AxisType getAxisType() {
 		return AxisType.LOGARITHMIC;
 	}
 
-	public Double getError() { //NB: this is the LOG error
-		if (!isDefined())
-			return Double.NaN;
-
-		return Math.sqrt((1.0 / (d_subject.getRate() + d_correction)) +
-				(1.0 / (d_baseline.getRate() + d_correction)) -
-				(1.0 / (d_subject.getSampleSize())) -
-				(1.0 / (d_baseline.getSampleSize())));		
-	}
-
-	public String getName() {
-		return "Risk ratio";
-	}
-	
 	public Double getRelativeEffect() {
 		if (!isDefined())
 			return Double.NaN;
 		
-		return ( (d_subject.getRate() + d_correction) / (d_subject.getSampleSize()) ) 
-			/ ( (d_baseline.getRate() + d_correction) / (d_baseline.getSampleSize()) );  
+		double a = d_subject.getRate() + d_correction;
+		double b = d_baseline.getRate() + d_correction;
+		double d = d_baseline.getSampleSize() - d_baseline.getRate() + d_correction;
+		double c = d_subject.getSampleSize() - d_subject.getRate() + d_correction;
+		return (a * d) / (b * c); 
+	}
+
+	public Double getError() { //NB: this is the LOG error
+		if (!isDefined())
+			return Double.NaN;
+		
+		double a = d_subject.getRate() + d_correction;
+		double b = d_baseline.getRate() + d_correction;
+		double d = d_baseline.getSampleSize() - d_baseline.getRate() + d_correction;
+		double c = d_subject.getSampleSize() - d_subject.getRate() + d_correction;
+		
+		return Math.sqrt(1.0/a + 1.0/b + 1.0/c + 1.0/d);
 	}
 
 	@Override
 	protected Integer getDegreesOfFreedom() {
-		return getSampleSize() - 2;
+		return getSampleSize() -2;
+	}
+
+	@Override
+	protected double getMu() {
+		return Math.log(getRelativeEffect());
+	}
+
+	@Override
+	protected double getSigma() {
+		return getError();
 	}
 }

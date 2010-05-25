@@ -25,13 +25,13 @@ import static org.junit.Assert.assertEquals;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.relativeeffect.RiskDifference;
+import org.drugis.addis.entities.relativeeffect.BasicRiskDifference;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RiskDifferenceTest {
+public class BasicRiskDifferenceTest {
 	private static final int s_sizeNum = 142;
 	private static final int s_sizeDen = 144;
 	private static final int s_effectNum = 73;
@@ -47,11 +47,11 @@ public class RiskDifferenceTest {
 		
 	BasicRateMeasurement d_cooper1977Num;
 	BasicRateMeasurement d_cooper1977Den;
-	RiskDifference d_cooperRD;
+	BasicRiskDifference d_cooperRD;
 	
 	BasicRateMeasurement d_numerator;
 	BasicRateMeasurement d_denominator;
-	RiskDifference d_riskDif;
+	BasicRiskDifference d_riskDif;
 			
 	@Before
 	public void setUp() {
@@ -59,14 +59,14 @@ public class RiskDifferenceTest {
 		Arm pden = new Arm(null,null,s_sizeDen);
 		d_numerator = new BasicRateMeasurement(s_effectNum, pnum.getSize());		
 		d_denominator = new BasicRateMeasurement(s_effectDen, pden.getSize());
-		d_riskDif = new RiskDifference(d_denominator, d_numerator);
+		d_riskDif = new BasicRiskDifference(d_denominator, d_numerator);
 		
 		//cooper 1977 from Warn2002
 		Arm fnum = new Arm(null, null, s_cooper1977nT);
 		Arm fden = new Arm(null, null, s_cooper1977nC);
 		d_cooper1977Num = new BasicRateMeasurement(s_cooper1977rT, fnum.getSize());
 		d_cooper1977Den = new BasicRateMeasurement(s_cooper1977rC, fden.getSize());
-		d_cooperRD = new RiskDifference(d_cooper1977Den, d_cooper1977Num);
+		d_cooperRD = new BasicRiskDifference(d_cooper1977Den, d_cooper1977Num);
 	}
 	
 	@Test

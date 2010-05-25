@@ -24,7 +24,7 @@ package org.drugis.addis.entities.relativeeffect;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.common.Interval;
 
-public class LogOddsRatio extends OddsRatio  {
+public class LogOddsRatio extends BasicOddsRatio  {
 	
 	public LogOddsRatio(RateMeasurement denominator, RateMeasurement numerator) {
 		super(denominator, numerator);

@@ -28,7 +28,7 @@ import java.util.Collection;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.addis.entities.relativeeffect.MeanDifference;
+import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.treeplot.BinnedScale;
 import org.drugis.addis.treeplot.IdentityScale;
@@ -42,7 +42,7 @@ public class RelativeEffectBarTest {
 		// Create relative effect.
 		Arm p1 = new Arm(null, null, 100);
 		Arm p2 = new Arm(null, null, 100);
-		RelativeEffect<ContinuousMeasurement> effect = new MeanDifference(new BasicContinuousMeasurement(0.25, 1.26 / Math.sqrt(2), p1.getSize()), 
+		RelativeEffect<ContinuousMeasurement> effect = new BasicMeanDifference(new BasicContinuousMeasurement(0.25, 1.26 / Math.sqrt(2), p1.getSize()), 
 											new BasicContinuousMeasurement(0.5, 1.26 / Math.sqrt(2), p2.getSize()));
 	
 		// Make some BinnedScale that maps [0, 1] -> [0, 200]
@@ -69,7 +69,7 @@ public class RelativeEffectBarTest {
 	public void testCombinedPlot() {
 		Arm p1 = new Arm(null, null, 100);
 		Arm p2 = new Arm(null, null, 100);
-		RelativeEffect<ContinuousMeasurement> effect = new MeanDifference(new BasicContinuousMeasurement(0.25, 1.26 / Math.sqrt(2), p1.getSize()), 
+		RelativeEffect<ContinuousMeasurement> effect = new BasicMeanDifference(new BasicContinuousMeasurement(0.25, 1.26 / Math.sqrt(2), p1.getSize()), 
 											new BasicContinuousMeasurement(0.5, 1.26 / Math.sqrt(2), p2.getSize()));
 	
 		// Make some BinnedScale that maps [0, 1] -> [0, 200]

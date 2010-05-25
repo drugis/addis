@@ -38,7 +38,7 @@ import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RiskRatioTest {
+public class BasicRiskRatioTest {
 	BasicMeasurement d_numerator;
 	BasicMeasurement d_denominator;
 	RelativeEffect<RateMeasurement> d_ratio;
@@ -72,11 +72,11 @@ public class RiskRatioTest {
 		d_sechter = createStudy("Sechter 1999", 76,120, 86,118);
 				
 		
-		d_ratioBennie = RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, d_fluox, d_sertra, RiskRatio.class);
-		d_ratioBoyer = RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, d_fluox, d_sertra, RiskRatio.class);
-		d_ratioFava = RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, d_fluox, d_sertra, RiskRatio.class);
-		d_ratioNewhouse = RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, d_fluox, d_sertra, RiskRatio.class);
-		d_ratioSechter = RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, d_fluox, d_sertra, RiskRatio.class);		
+		d_ratioBennie = RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, d_fluox, d_sertra, BasicRiskRatio.class);
+		d_ratioBoyer = RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, d_fluox, d_sertra, BasicRiskRatio.class);
+		d_ratioFava = RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, d_fluox, d_sertra, BasicRiskRatio.class);
+		d_ratioNewhouse = RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, d_fluox, d_sertra, BasicRiskRatio.class);
+		d_ratioSechter = RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, d_fluox, d_sertra, BasicRiskRatio.class);		
 	}
 	
 
@@ -133,12 +133,12 @@ public class RiskRatioTest {
 	public void testUndefined() {
 		RateMeasurement rmA1 = new BasicRateMeasurement(0, 100);
 		RateMeasurement rmC1 = new BasicRateMeasurement(0, 100);
-		AbstractRatio rr = new RiskRatio(rmA1, rmC1);
+		AbstractRatio rr = new BasicRiskRatio(rmA1, rmC1);
 		assertEquals(Double.NaN, rr.getError(), 0.001);
 		assertEquals(Double.NaN, rr.getRelativeEffect(), 0.001);
 		RateMeasurement rmB1 = new BasicRateMeasurement(100, 100);
 		RateMeasurement rmD1 = new BasicRateMeasurement(100, 100);
-		rr = new RiskRatio(rmB1, rmD1);
+		rr = new BasicRiskRatio(rmB1, rmD1);
 		assertEquals(Double.NaN, rr.getError(), 0.001);
 		assertEquals(Double.NaN, rr.getRelativeEffect(), 0.001);
 	}
@@ -148,7 +148,7 @@ public class RiskRatioTest {
 		RateMeasurement rm1 = new BasicRateMeasurement(0, 1);
 		RateMeasurement rm2 = new BasicRateMeasurement(1, 2);
 	
-		AbstractRatio rr1 = new RiskRatio(rm1, rm2);
+		AbstractRatio rr1 = new BasicRiskRatio(rm1, rm2);
 		
 		assertEquals(Math.sqrt(1.0 + 1.0/6.0), rr1.getError(), 0.001);
 		assertEquals(1.5, rr1.getRelativeEffect(), 0.001);

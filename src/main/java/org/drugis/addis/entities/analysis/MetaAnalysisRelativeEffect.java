@@ -8,6 +8,7 @@ import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.relativeeffect.AxisType;
+import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.common.Interval;
 
@@ -84,5 +85,9 @@ public class MetaAnalysisRelativeEffect<T extends Measurement> extends AbstractE
 		return formatter.format(d_relativeEffect) + " (" + 
 		       formatter.format(d_confidenceInterval.getLowerBound()) + ", " + 
 		       formatter.format(d_confidenceInterval.getUpperBound()) + ")";
+	}
+	
+	public Distribution getDistribution() {
+		return null;
 	}
 }

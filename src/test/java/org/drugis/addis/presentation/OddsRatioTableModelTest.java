@@ -23,7 +23,7 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 
-import org.drugis.addis.entities.relativeeffect.OddsRatio;
+import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class OddsRatioTableModelTest extends RelativeEffectTableModelBaseTest {
 		baseSetUpRate();	
 		d_stdModel = new OddsRatioTableModel(d_standardStudy, d_endpoint, d_pmf);
 		d_threeArmModel = new OddsRatioTableModel(d_threeArmStudy, d_endpoint, d_pmf);
-		d_relativeEffectClass = OddsRatio.class;
+		d_relativeEffectClass = BasicOddsRatio.class;
 	}
 
 	@Test

@@ -22,10 +22,9 @@
 package org.drugis.addis.entities.relativeeffect;
 
 import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.common.Interval;
 
 
-public class MeanDifference extends AbstractRelativeEffect<ContinuousMeasurement> {
+public class BasicMeanDifference extends AbstractRelativeEffect<ContinuousMeasurement> {
 
 	/**
 	 * The MeanDifference of two ContinuousMeasurements.
@@ -34,12 +33,8 @@ public class MeanDifference extends AbstractRelativeEffect<ContinuousMeasurement
 	 * @param subject
 	 */
 	
-	public MeanDifference(ContinuousMeasurement baseline, ContinuousMeasurement subject) throws IllegalArgumentException {
+	public BasicMeanDifference(ContinuousMeasurement baseline, ContinuousMeasurement subject) throws IllegalArgumentException {
 		super(subject, baseline);
-	}
-	
-	public Interval<Double> getConfidenceInterval() {
-		return getDefaultConfidenceInterval();
 	}
 
 	public Double getRelativeEffect() {
@@ -59,12 +54,12 @@ public class MeanDifference extends AbstractRelativeEffect<ContinuousMeasurement
 		return "Mean Difference";
 	}
 
-	public AxisType getAxisType() {
-		return AxisType.LINEAR;
-	}
-
 	@Override
 	protected Integer getDegreesOfFreedom() {
 		return getSampleSize() - 2;
+	}
+
+	public Distribution getDistribution() {
+		return new TransformedStudentT(getRelativeEffect(), getError(), getDegreesOfFreedom());
 	}
 }

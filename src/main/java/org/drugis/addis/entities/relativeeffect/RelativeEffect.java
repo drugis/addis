@@ -26,23 +26,30 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.common.Interval;
 
 public interface RelativeEffect<T extends Measurement> extends Entity{
-
+	@Deprecated
 	public static final String PROPERTY_SAMPLESIZE = "sampleSize";
 	
 	public T getSubject();
 
 	public T getBaseline();
 
+	@Deprecated
 	public Integer getSampleSize();
 
+	
+	public Distribution getDistribution();
+	
 	/**
 	 * Get the 95% confidence interval.
 	 * @return The confidence interval.
 	 */
+	@Deprecated
 	public Interval<Double> getConfidenceInterval();
 
+	@Deprecated
 	public Double getRelativeEffect();
 
+	@Deprecated
 	public Double getError();
 	
 	public String getName();

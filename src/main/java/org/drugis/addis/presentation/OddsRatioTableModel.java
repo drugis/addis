@@ -26,7 +26,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.relativeeffect.AbstractRelativeEffect;
-import org.drugis.addis.entities.relativeeffect.OddsRatio;
+import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
 @SuppressWarnings("serial")
@@ -38,7 +38,7 @@ public class OddsRatioTableModel extends AbstractRelativeEffectTableModel {
 
 	@Override
 	protected AbstractRelativeEffect<RateMeasurement> getRelativeEffect(Measurement denominator, Measurement numerator) {
-		return new OddsRatio((RateMeasurement)denominator,
+		return new BasicOddsRatio((RateMeasurement)denominator,
 		(RateMeasurement)numerator);
 	}
 
@@ -49,6 +49,6 @@ public class OddsRatioTableModel extends AbstractRelativeEffectTableModel {
 
 	@Override
 	protected Class<? extends RelativeEffect<?>> getRelativeEffectType() {
-		return OddsRatio.class;
+		return BasicOddsRatio.class;
 	}
 }

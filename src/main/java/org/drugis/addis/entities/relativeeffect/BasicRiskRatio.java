@@ -22,53 +22,53 @@
 package org.drugis.addis.entities.relativeeffect;
 
 import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.common.Interval;
 
-public class RiskDifference extends AbstractRelativeEffect<RateMeasurement> {
+public class BasicRiskRatio extends AbstractRatio {
 
-	public RiskDifference(RateMeasurement denominator, RateMeasurement numerator) {
+	public BasicRiskRatio(RateMeasurement denominator, RateMeasurement numerator) {
 		super(numerator, denominator);
 	}
 
-	public Double getRelativeEffect() {
-		double a = getSubject().getRate();
-		double n1 = getSubject().getSampleSize();
-		double c = getBaseline().getRate();
-		double n2 = getBaseline().getSampleSize();
-		
-		return (a/n1 - c/n2);
-	}
-	
-	/**
-	 * Confidence interval for the mean difference.
-	 */
-	public Interval<Double> getConfidenceInterval() {
-		return getDefaultConfidenceInterval();
+	@Override
+	public String toString() {
+		return "[" + d_baseline.toString() + "] / [" 
+		+ d_subject.toString() + "]";
 	}
 
+	public Double getError() { //NB: this is the LOG error
+		if (!isDefined())
+			return Double.NaN;
 
-	// Here: gets the STANDARD ERROR of the RISK DIFFERENCE
-	public Double getError() {
-		double a = getSubject().getRate();
-		double n1 = getSubject().getSampleSize();
-		double b = n1 - a;
-		double c = getBaseline().getRate();
-		double n2 = getBaseline().getSampleSize();
-		double d = n2 - c;
-		
-		return new Double(Math.sqrt(a*b/Math.pow(n1,3) + c*d/Math.pow(n2,3)));
+		return Math.sqrt((1.0 / (d_subject.getRate() + d_correction)) +
+				(1.0 / (d_baseline.getRate() + d_correction)) -
+				(1.0 / (d_subject.getSampleSize())) -
+				(1.0 / (d_baseline.getSampleSize())));		
 	}
 
 	public String getName() {
-		return "Risk Difference";
+		return "Risk ratio";
 	}
 	
-	public AxisType getAxisType() {
-		return AxisType.LINEAR;
+	public Double getRelativeEffect() {
+		if (!isDefined())
+			return Double.NaN;
+		
+		return ( (d_subject.getRate() + d_correction) / (d_subject.getSampleSize()) ) 
+			/ ( (d_baseline.getRate() + d_correction) / (d_baseline.getSampleSize()) );  
 	}
 
 	@Override
 	protected Integer getDegreesOfFreedom() {
 		return getSampleSize() - 2;
+	}
+
+	@Override
+	protected double getMu() {
+		return Math.log(getRelativeEffect());
+	}
+
+	@Override
+	protected double getSigma() {
+		return getError();
 	}
 }

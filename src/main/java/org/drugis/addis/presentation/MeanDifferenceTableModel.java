@@ -25,7 +25,7 @@ import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.relativeeffect.MeanDifference;
+import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
 @SuppressWarnings("serial")
@@ -39,7 +39,7 @@ public class MeanDifferenceTableModel extends AbstractRelativeEffectTableModel{
 	@Override
 	protected RelativeEffect<ContinuousMeasurement> getRelativeEffect(Measurement baseline,
 			Measurement subject) {
-		return new MeanDifference((ContinuousMeasurement) baseline, (ContinuousMeasurement) subject);
+		return new BasicMeanDifference((ContinuousMeasurement) baseline, (ContinuousMeasurement) subject);
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class MeanDifferenceTableModel extends AbstractRelativeEffectTableModel{
 
 	@Override
 	protected Class<? extends RelativeEffect<?>> getRelativeEffectType() {
-		return MeanDifference.class;
+		return BasicMeanDifference.class;
 	}
 
 }

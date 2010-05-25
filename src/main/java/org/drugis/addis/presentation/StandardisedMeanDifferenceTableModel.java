@@ -26,7 +26,7 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.addis.entities.relativeeffect.StandardisedMeanDifference;
+import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
 
 @SuppressWarnings("serial")
 public class StandardisedMeanDifferenceTableModel extends AbstractRelativeEffectTableModel{
@@ -39,7 +39,7 @@ public class StandardisedMeanDifferenceTableModel extends AbstractRelativeEffect
 	@Override
 	protected RelativeEffect<ContinuousMeasurement> getRelativeEffect(Measurement baseline,
 			Measurement subject) {
-		return new StandardisedMeanDifference((ContinuousMeasurement) subject, (ContinuousMeasurement) baseline);
+		return new BasicStandardisedMeanDifference((ContinuousMeasurement) subject, (ContinuousMeasurement) baseline);
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class StandardisedMeanDifferenceTableModel extends AbstractRelativeEffect
 
 	@Override
 	protected Class<? extends RelativeEffect<?>> getRelativeEffectType() {
-		return StandardisedMeanDifference.class;
+		return BasicStandardisedMeanDifference.class;
 	}
 
 }

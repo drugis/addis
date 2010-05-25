@@ -22,22 +22,17 @@
 package org.drugis.addis.entities.relativeeffect;
 
 import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.common.Interval;
 
-public class StandardisedMeanDifference extends AbstractRelativeEffect<ContinuousMeasurement> {
+public class BasicStandardisedMeanDifference extends AbstractRelativeEffect<ContinuousMeasurement> {
 	/*
 	 * The Standardised Mean Difference is calculated through Cohen's d and adjusted with J(degrees of freedom)
 	 * to result in Hedges g. All formulas are based on The Handbook of Research Synthesis and Meta-Analysis 
 	 * by Cooper et al. 2nd Edition pages 225-230
 	 */
 	
-	public StandardisedMeanDifference(ContinuousMeasurement subject,
+	public BasicStandardisedMeanDifference(ContinuousMeasurement subject,
 			ContinuousMeasurement baseline) throws IllegalArgumentException {
 		super(subject, baseline);
-	}
-
-	public Interval<Double> getConfidenceInterval() {
-		return getDefaultConfidenceInterval();
 	}
 
 	public Double getRelativeEffect() {
@@ -82,7 +77,7 @@ public class StandardisedMeanDifference extends AbstractRelativeEffect<Continuou
 		return "Standardised Mean Difference";
 	}
 	
-	public AxisType getAxisType() {
-		return AxisType.LINEAR;
+	public Distribution getDistribution() {
+		return new TransformedStudentT(getRelativeEffect(), getError(), getDegreesOfFreedom());
 	}
 }

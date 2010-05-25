@@ -33,7 +33,7 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
-import org.drugis.addis.entities.relativeeffect.MeanDifference;
+import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
 
@@ -95,9 +95,9 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
 		RandomEffectsMetaAnalysisPresentation pres = (RandomEffectsMetaAnalysisPresentation) fact.getModel(meta);
 		
-		ForestPlotPresentation expected = new ForestPlotPresentation(meta, MeanDifference.class, 
+		ForestPlotPresentation expected = new ForestPlotPresentation(meta, BasicMeanDifference.class, 
 				new PresentationModelFactory(new DomainImpl()));
-		ForestPlotPresentation actual = pres.getForestPlotPresentation(MeanDifference.class);
+		ForestPlotPresentation actual = pres.getForestPlotPresentation(BasicMeanDifference.class);
 		assertEquals(expected.getRelativeEffectAt(0).getRelativeEffect(), actual.getRelativeEffectAt(0).getRelativeEffect(), 0.001);
 		assertEquals(expected.getHeterogeneity(), actual.getHeterogeneity());
 		assertEquals(expected.getHeterogeneityI2(), actual.getHeterogeneityI2());

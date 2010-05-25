@@ -26,12 +26,12 @@ import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 
-import org.drugis.addis.entities.relativeeffect.MeanDifference;
-import org.drugis.addis.entities.relativeeffect.OddsRatio;
+import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
+import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.addis.entities.relativeeffect.RiskDifference;
-import org.drugis.addis.entities.relativeeffect.RiskRatio;
-import org.drugis.addis.entities.relativeeffect.StandardisedMeanDifference;
+import org.drugis.addis.entities.relativeeffect.BasicRiskDifference;
+import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
+import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;
@@ -90,31 +90,31 @@ implements ViewBuilder {
 		builder.addSeparator("Mean difference", cc.xy(1, 9));
 		
 		if (d_overView) {
-			builder.add(buildRelativeEffectPart(MeanDifference.class), cc.xy(1, 11));			
+			builder.add(buildRelativeEffectPart(BasicMeanDifference.class), cc.xy(1, 11));			
 		} else {
-			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(MeanDifference.class)), cc.xy(1, 11));
+			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(BasicMeanDifference.class)), cc.xy(1, 11));
 		}
 		
 		if (!d_overView) {
 			builder.addSeparator("Standardised mean difference", cc.xy(1, 17));
-			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(StandardisedMeanDifference.class)), cc.xy(1, 19));
+			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(BasicStandardisedMeanDifference.class)), cc.xy(1, 19));
 		}
 	}
 
 	private void buildRatePlotsPart(PanelBuilder builder, CellConstraints cc) {
 		builder.addSeparator("Odds ratio", cc.xy(1, 9));
 		if (d_overView) {
-			builder.add(buildRelativeEffectPart(OddsRatio.class), cc.xy(1, 11));			
+			builder.add(buildRelativeEffectPart(BasicOddsRatio.class), cc.xy(1, 11));			
 		} else {
-			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(OddsRatio.class)), cc.xy(1, 11));
+			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(BasicOddsRatio.class)), cc.xy(1, 11));
 		}
 		
 		if (!d_overView) {
 			builder.addSeparator("Risk ratio", cc.xy(1, 13));
-			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(RiskRatio.class)), cc.xy(1, 15));
+			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(BasicRiskRatio.class)), cc.xy(1, 15));
 		
 			builder.addSeparator("Risk difference", cc.xy(1, 17));
-			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(RiskDifference.class)), cc.xy(1, 19));
+			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(BasicRiskDifference.class)), cc.xy(1, 19));
 		}
 	}
 

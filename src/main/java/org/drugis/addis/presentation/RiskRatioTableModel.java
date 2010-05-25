@@ -26,7 +26,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.addis.entities.relativeeffect.RiskRatio;
+import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
 
 @SuppressWarnings("serial")
 public class RiskRatioTableModel extends AbstractRelativeEffectTableModel {
@@ -37,7 +37,7 @@ public class RiskRatioTableModel extends AbstractRelativeEffectTableModel {
 
 	@Override
 	protected RelativeEffect<RateMeasurement> getRelativeEffect(Measurement denominator, Measurement numerator) {
-		return new RiskRatio((RateMeasurement)denominator, (RateMeasurement)numerator);
+		return new BasicRiskRatio((RateMeasurement)denominator, (RateMeasurement)numerator);
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class RiskRatioTableModel extends AbstractRelativeEffectTableModel {
 
 	@Override
 	protected Class<? extends RelativeEffect<?>> getRelativeEffectType() {
-		return RiskRatio.class;
+		return BasicRiskRatio.class;
 	}
 
 }

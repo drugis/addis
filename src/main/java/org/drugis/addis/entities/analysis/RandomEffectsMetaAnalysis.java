@@ -42,11 +42,11 @@ import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.LogOddsRatio;
 import org.drugis.addis.entities.relativeeffect.LogRiskRatio;
-import org.drugis.addis.entities.relativeeffect.OddsRatio;
+import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
-import org.drugis.addis.entities.relativeeffect.RiskRatio;
+import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 
@@ -181,9 +181,9 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	private void compute(Class<? extends RelativeEffect<?>> relEffClass, boolean drugsSwapped) {
 		
 		Class<? extends RelativeEffect<? extends Measurement>> type = relEffClass; 
-		if (relEffClass == RiskRatio.class)
+		if (relEffClass == BasicRiskRatio.class)
 			type = LogRiskRatio.class;
-		if (relEffClass == OddsRatio.class)
+		if (relEffClass == BasicOddsRatio.class)
 			type = LogOddsRatio.class;
 		
 		List<Double> weights = new ArrayList<Double>();

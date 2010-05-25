@@ -13,8 +13,8 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.relativeeffect.MeanDifference;
-import org.drugis.addis.entities.relativeeffect.OddsRatio;
+import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
+import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.common.AlphabeticalComparator;
 
@@ -149,7 +149,7 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	public RelativeEffect<? extends Measurement> getRelativeEffect(Drug d, OutcomeMeasure om) {
 		for(MetaAnalysis ma : getMetaAnalyses()){
 			if(ma.getOutcomeMeasure().equals(om)){
-				Class<? extends RelativeEffect<? extends Measurement>> type = (om.getType().equals(Variable.Type.RATE)) ? OddsRatio.class : MeanDifference.class;
+				Class<? extends RelativeEffect<? extends Measurement>> type = (om.getType().equals(Variable.Type.RATE)) ? BasicOddsRatio.class : BasicMeanDifference.class;
 				return ma.getRelativeEffect(d_baseline, d, type);
 			}
 		}

@@ -11,7 +11,7 @@ import java.util.Collections;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
-import org.drugis.addis.entities.relativeeffect.OddsRatio;
+import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.common.AlphabeticalComparator;
 import org.drugis.common.JUnitUtil;
@@ -98,7 +98,7 @@ public class BenefitRiskAnalysisTest {
 		RelativeEffect<? extends Measurement> actual = d_BRAnalysis.getRelativeEffect(
 				d_BRAnalysis.getDrugs().get(0), d_BRAnalysis.getOutcomeMeasures().get(0));
 		RelativeEffect<? extends Measurement> expected = ExampleData.buildMetaAnalysisHamd().getRelativeEffect(
-				ExampleData.buildDrugParoxetine(), ExampleData.buildDrugFluoxetine(), OddsRatio.class);
+				ExampleData.buildDrugParoxetine(), ExampleData.buildDrugFluoxetine(), BasicOddsRatio.class);
 		assertEquals(expected.getRelativeEffect(), actual.getRelativeEffect());
 		assertEquals(expected.getError(), actual.getError());
 		assertEquals(expected.getConfidenceInterval(), actual.getConfidenceInterval());

@@ -25,13 +25,13 @@ import static org.junit.Assert.assertEquals;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
-import org.drugis.addis.entities.relativeeffect.StandardisedMeanDifference;
+import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 import org.junit.Before;
 import org.junit.Test;
 
-public class StandardisedMeanDifferenceTest {
+public class BasicStandardisedMeanDifferenceTest {
 	//Example data from The Handbook of Research Synthesis and Meta-Analysis page 226-227
 	private static final double s_subjMean = 103;
 	private static final double s_baselMean = 100;
@@ -41,7 +41,7 @@ public class StandardisedMeanDifferenceTest {
 	private static final int s_baslSize = 50;
 	int d_sampleSize = s_subjSize + s_baslSize;
 	
-	private StandardisedMeanDifference d_smd;
+	private BasicStandardisedMeanDifference d_smd;
 	private BasicContinuousMeasurement d_subject;
 	private BasicContinuousMeasurement d_baseline;
 	
@@ -51,7 +51,7 @@ public class StandardisedMeanDifferenceTest {
 		Arm basels = new Arm(null, null, s_baslSize);
 		d_subject = new BasicContinuousMeasurement(s_subjMean, s_subjStdDev, subjs.getSize());
 		d_baseline = new BasicContinuousMeasurement(s_baselMean, s_baslStdDev, basels.getSize());
-		d_smd = new StandardisedMeanDifference(d_subject, d_baseline);
+		d_smd = new BasicStandardisedMeanDifference(d_subject, d_baseline);
 	}
 	
 	@Test

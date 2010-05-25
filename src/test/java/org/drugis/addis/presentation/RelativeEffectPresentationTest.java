@@ -28,7 +28,7 @@ import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.relativeeffect.OddsRatio;
+import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class RelativeEffectPresentationTest {
 	
 	BasicRateMeasurement d_numerator;
 	BasicRateMeasurement d_denominator;
-	OddsRatio d_ratio;
+	BasicOddsRatio d_ratio;
 	RelativeEffectPresentation d_presentation;
 	
 	@Before
@@ -54,7 +54,7 @@ public class RelativeEffectPresentationTest {
 		Arm pden = new Arm(null,null,s_sizeDen);
 		d_numerator = new BasicRateMeasurement(s_effectNum, pnum.getSize());		
 		d_denominator = new BasicRateMeasurement(s_effectDen, pden.getSize());
-		d_ratio = new OddsRatio(d_denominator, d_numerator);
+		d_ratio = new BasicOddsRatio(d_denominator, d_numerator);
 		d_presentation = new RelativeEffectPresentation(d_ratio);
 	}
 	

@@ -26,7 +26,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.addis.entities.relativeeffect.RiskDifference;
+import org.drugis.addis.entities.relativeeffect.BasicRiskDifference;
 
 @SuppressWarnings("serial")
 public class RiskDifferenceTableModel extends AbstractRelativeEffectTableModel {
@@ -39,7 +39,7 @@ public class RiskDifferenceTableModel extends AbstractRelativeEffectTableModel {
 	
 	@Override
 	protected RelativeEffect<RateMeasurement> getRelativeEffect(Measurement denominator, Measurement numerator) {
-		return new RiskDifference((RateMeasurement) denominator, (RateMeasurement) numerator);
+		return new BasicRiskDifference((RateMeasurement) denominator, (RateMeasurement) numerator);
 	}
 
 	@Override
@@ -50,6 +50,6 @@ public class RiskDifferenceTableModel extends AbstractRelativeEffectTableModel {
 
 	@Override
 	protected Class<? extends RelativeEffect<?>> getRelativeEffectType() {
-		return RiskDifference.class;
+		return BasicRiskDifference.class;
 	}
 }

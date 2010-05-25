@@ -23,7 +23,7 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 
-import org.drugis.addis.entities.relativeeffect.RiskDifference;
+import org.drugis.addis.entities.relativeeffect.BasicRiskDifference;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ public class RiskDifferenceTableModelTest extends RelativeEffectTableModelBaseTe
 		baseSetUpRate();	
 		d_stdModel = new RiskDifferenceTableModel(d_standardStudy, d_endpoint, d_pmf);
 		d_threeArmModel = new RiskDifferenceTableModel(d_threeArmStudy, d_endpoint, d_pmf);
-		d_relativeEffectClass = RiskDifference.class;
+		d_relativeEffectClass = BasicRiskDifference.class;
 	}
 
 	@Test

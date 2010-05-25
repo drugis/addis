@@ -23,7 +23,7 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 
-import org.drugis.addis.entities.relativeeffect.RiskRatio;
+import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ public class RiskRatioTableModelTest extends RelativeEffectTableModelBaseTest {
 		baseSetUpRate();	
 		d_stdModel = new RiskRatioTableModel(d_standardStudy, d_endpoint, d_pmf);
 		d_threeArmModel = new RiskRatioTableModel(d_threeArmStudy, d_endpoint, d_pmf);
-		d_relativeEffectClass = RiskRatio.class;
+		d_relativeEffectClass = BasicRiskRatio.class;
 	}
 
 	@Test

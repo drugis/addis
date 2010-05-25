@@ -43,10 +43,10 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
-import org.drugis.addis.entities.relativeeffect.MeanDifference;
-import org.drugis.addis.entities.relativeeffect.OddsRatio;
+import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
+import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelativeEffect;
-import org.drugis.addis.entities.relativeeffect.RiskRatio;
+import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -179,7 +179,7 @@ public class RandomEffectsMetaAnalysisTest {
 	
 	@Test
 	public void testGetRiskRatioRelativeEffect() {
-		RandomEffectMetaAnalysisRelativeEffect<Measurement> riskRatio = d_rema.getRelativeEffect(RiskRatio.class);
+		RandomEffectMetaAnalysisRelativeEffect<Measurement> riskRatio = d_rema.getRelativeEffect(BasicRiskRatio.class);
 		assertEquals(2.03, riskRatio.getHeterogeneity(), 0.01);
 		assertEquals(calculateI2(2.03,d_rema.getIncludedStudies().size()), riskRatio.getHeterogeneityI2(), 0.01);
 		assertEquals(1.10, (riskRatio.getRelativeEffect()), 0.01); 
@@ -189,7 +189,7 @@ public class RandomEffectsMetaAnalysisTest {
 	
 	@Test
 	public void testGetOddsRatioRelativeEffect() {
-		RandomEffectMetaAnalysisRelativeEffect<Measurement> oddsRatio = d_rema.getRelativeEffect(OddsRatio.class);
+		RandomEffectMetaAnalysisRelativeEffect<Measurement> oddsRatio = d_rema.getRelativeEffect(BasicOddsRatio.class);
 		assertEquals(2.14, oddsRatio.getHeterogeneity(), 0.01);
 		assertEquals(1.30, (oddsRatio.getRelativeEffect()), 0.01); 
 		assertEquals(1.03, (oddsRatio.getConfidenceInterval().getLowerBound()), 0.01);
@@ -199,9 +199,9 @@ public class RandomEffectsMetaAnalysisTest {
 	@Test
 	public void testGetRelativeEffect() {
 		RandomEffectMetaAnalysisRelativeEffect<Measurement> approach1 = 
-			d_rema.getRelativeEffect(OddsRatio.class);
+			d_rema.getRelativeEffect(BasicOddsRatio.class);
 		RandomEffectMetaAnalysisRelativeEffect<Measurement> approach2 = 
-			d_rema.getRelativeEffect(d_rema.getFirstDrug(), d_rema.getSecondDrug(), OddsRatio.class);
+			d_rema.getRelativeEffect(d_rema.getFirstDrug(), d_rema.getSecondDrug(), BasicOddsRatio.class);
 
 		assertEquals(approach1.getRelativeEffect(), approach2.getRelativeEffect());
 		assertEquals(approach1.getError(), approach2.getError());
@@ -219,7 +219,7 @@ public class RandomEffectsMetaAnalysisTest {
 		
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta",
 				d_contEndpoint, studies, d_fluox, d_sertr);
-		RandomEffectMetaAnalysisRelativeEffect<Measurement> relativeEffect = ma.getRelativeEffect(MeanDifference.class);
+		RandomEffectMetaAnalysisRelativeEffect<Measurement> relativeEffect = ma.getRelativeEffect(BasicMeanDifference.class);
 		assertEquals(2.5, relativeEffect.getRelativeEffect(), 0.01);
 	}
 		

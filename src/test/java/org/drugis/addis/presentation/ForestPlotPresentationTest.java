@@ -41,7 +41,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.relativeeffect.AxisType;
-import org.drugis.addis.entities.relativeeffect.MeanDifference;
+import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.treeplot.ForestPlot;
 import org.drugis.common.Interval;
@@ -98,7 +98,7 @@ public class ForestPlotPresentationTest {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(d_s1);
 		studies.add(d_s2);
-		d_pm = new ForestPlotPresentation(studies, d_endpoint, d_baseline, d_subject, MeanDifference.class, 
+		d_pm = new ForestPlotPresentation(studies, d_endpoint, d_baseline, d_subject, BasicMeanDifference.class, 
 				new PresentationModelFactory(new DomainImpl()), null);
 	}
 	
@@ -106,10 +106,10 @@ public class ForestPlotPresentationTest {
 	public void testGetListedRelativeEffects() {
 		assertEquals(2, d_pm.getNumRelativeEffects());
 		assertRelativeEffectEqual(
-				new MeanDifference(d_mBase1, d_mSubj1),
+				new BasicMeanDifference(d_mBase1, d_mSubj1),
 				d_pm.getRelativeEffectAt(0));
 		assertRelativeEffectEqual(
-				new MeanDifference(d_mBase2, d_mSubj2),
+				new BasicMeanDifference(d_mBase2, d_mSubj2),
 				d_pm.getRelativeEffectAt(1));
 	}
 	
@@ -175,7 +175,7 @@ public class ForestPlotPresentationTest {
 		
 		ForestPlotPresentation pm = new ForestPlotPresentation(studies, d_endpoint,
 				d_baseline, d_subject,
-				MeanDifference.class, new PresentationModelFactory(new DomainImpl()), null);
+				BasicMeanDifference.class, new PresentationModelFactory(new DomainImpl()), null);
 		assertEquals(5, pm.getDiamondSize(0));
 		assertEquals(21, pm.getDiamondSize(1));
 	}

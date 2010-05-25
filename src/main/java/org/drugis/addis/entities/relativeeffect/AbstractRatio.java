@@ -23,8 +23,6 @@ package org.drugis.addis.entities.relativeeffect;
 
 
 import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.common.Interval;
-import org.drugis.common.StudentTTable;
 
 public abstract class AbstractRatio extends AbstractRelativeEffect<RateMeasurement> {
 	protected double d_correction;
@@ -35,22 +33,6 @@ public abstract class AbstractRatio extends AbstractRelativeEffect<RateMeasureme
 		calculateCorrection();
 	}
 	
-	private double getCriticalValue() {
-		return StudentTTable.getT(getDegreesOfFreedom());
-	}
-
-	
-	public Interval<Double> getConfidenceInterval() {
-		if (getDegreesOfFreedom() < 1) {
-			return new Interval<Double>(Double.NaN, Double.NaN);
-		}
-		double lBound = Math.log(getRelativeEffect());
-		lBound -= getCriticalValue() * getError();
-		double uBound = Math.log(getRelativeEffect());
-		uBound += getCriticalValue() * getError();
-		return new Interval<Double>(Math.exp(lBound), Math.exp(uBound));
-	}
-
 	protected void calculateCorrection() {
 		if (checkForZeros())
 			d_correction = 0.5D;
@@ -76,4 +58,11 @@ public abstract class AbstractRatio extends AbstractRelativeEffect<RateMeasureme
 				(d_subject.getRate() == d_subject.getSampleSize() && 
 				d_baseline.getRate() == d_baseline.getSampleSize());
 	}
+	
+	public TransformedLogStudentT getDistribution() {
+		return new TransformedLogStudentT(getMu(), getSigma(), getDegreesOfFreedom());
+	}
+	
+	protected abstract double getMu();
+	protected abstract double getSigma();
 }

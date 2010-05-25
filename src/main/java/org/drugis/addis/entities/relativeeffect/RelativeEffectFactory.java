@@ -38,25 +38,25 @@ public class RelativeEffectFactory {
 		Arm base = findFirstArm(s, baseDrug);
 		Arm subj = findFirstArm(s, subjDrug);
 		
-		if (type.equals(StandardisedMeanDifference.class)) {
+		if (type.equals(BasicStandardisedMeanDifference.class)) {
 			return buildStandardisedMeanDifference(s, om, base, subj);
 		}
-		if (type.equals(MeanDifference.class)) {
+		if (type.equals(BasicMeanDifference.class)) {
 			return buildMeanDifference(s, om, base, subj);
 		}
-		if (type.equals(OddsRatio.class)) {
+		if (type.equals(BasicOddsRatio.class)) {
 			return buildOddsRatio(s, om, base, subj);
 		}
 		if (type.equals(LogOddsRatio.class)) {
 			return buildLogOddsRatio(s, om, base, subj);
 		}
-		if (type.equals(RiskRatio.class)) {
+		if (type.equals(BasicRiskRatio.class)) {
 			return buildRiskRatio(s, om, base, subj);
 		}
 		if (type.equals(LogRiskRatio.class)) {
 			return buildLogRiskRatio(s, om, base, subj);
 		}
-		if (type.equals(RiskDifference.class)) {
+		if (type.equals(BasicRiskDifference.class)) {
 			return buildRiskDifference(s, om, base, subj);
 		}
 		
@@ -80,25 +80,25 @@ public class RelativeEffectFactory {
 		Arm base = studyArmsEntry.getBase();
 		Arm subj = studyArmsEntry.getSubject();
 		
-		if (type.equals(StandardisedMeanDifference.class)) {
+		if (type.equals(BasicStandardisedMeanDifference.class)) {
 			return buildStandardisedMeanDifference(s, om, base, subj);
 		}
-		if (type.equals(MeanDifference.class)) {
+		if (type.equals(BasicMeanDifference.class)) {
 			return buildMeanDifference(s, om, base, subj);
 		}
-		if (type.equals(OddsRatio.class)) {
+		if (type.equals(BasicOddsRatio.class)) {
 			return buildOddsRatio(s, om, base, subj);
 		}
 		if (type.equals(LogOddsRatio.class)) {
 			return buildLogOddsRatio(s, om, base, subj);
 		}
-		if (type.equals(RiskRatio.class)) {
+		if (type.equals(BasicRiskRatio.class)) {
 			return buildRiskRatio(s, om, base, subj);
 		}
 		if (type.equals(LogRiskRatio.class)) {
 			return buildLogRiskRatio(s, om, base, subj);
 		}
-		if (type.equals(RiskDifference.class)) {
+		if (type.equals(BasicRiskDifference.class)) {
 			return buildRiskDifference(s, om, base, subj);
 		}
 		
@@ -108,14 +108,14 @@ public class RelativeEffectFactory {
 	
 	private static RelativeEffect<?> buildRiskDifference(Study s, OutcomeMeasure om,
 			Arm base, Arm subj) {
-		return new RiskDifference(
+		return new BasicRiskDifference(
 				findRateMeasurement(s, om, base),
 				findRateMeasurement(s, om, subj));
 	}
 
 	private static RelativeEffect<?> buildRiskRatio(Study s, OutcomeMeasure om,
 			Arm base, Arm subj) {
-		return new RiskRatio(
+		return new BasicRiskRatio(
 				findRateMeasurement(s, om, base),
 				findRateMeasurement(s, om, subj));
 	}
@@ -129,7 +129,7 @@ public class RelativeEffectFactory {
 	
 	private static RelativeEffect<?> buildOddsRatio(Study s, OutcomeMeasure om,
 			Arm base, Arm subj) {
-		return new OddsRatio(
+		return new BasicOddsRatio(
 				findRateMeasurement(s, om, base),
 				findRateMeasurement(s, om, subj));
 	}
@@ -143,14 +143,14 @@ public class RelativeEffectFactory {
 
 	private static RelativeEffect<?> buildMeanDifference(Study s, OutcomeMeasure om,
 			Arm base, Arm subj) {
-		return new MeanDifference(
+		return new BasicMeanDifference(
 				findContinuousMeasurement(s, om, base),
 				findContinuousMeasurement(s, om, subj));
 	}
 
 	private static RelativeEffect<?> buildStandardisedMeanDifference(Study s,
 			OutcomeMeasure e, Arm base, Arm subj) {
-		return new StandardisedMeanDifference(
+		return new BasicStandardisedMeanDifference(
 				findContinuousMeasurement(s, e, subj),
 				findContinuousMeasurement(s, e, base));
 	}

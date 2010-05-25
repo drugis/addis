@@ -24,7 +24,7 @@ package org.drugis.addis.entities.relativeeffect;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.common.Interval;
 
-public class LogRiskRatio extends RiskRatio {
+public class LogRiskRatio extends BasicRiskRatio {
 
 	LogRiskRatio(RateMeasurement denominator, RateMeasurement numerator) {
 		super(denominator, numerator);
