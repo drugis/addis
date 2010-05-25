@@ -36,6 +36,7 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.ContinuousNetworkBuilder;
@@ -220,7 +221,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		double realRelativeEffect = isContinuous() ? consistencyEstimate.getMean() : Math.exp(consistencyEstimate.getMean());
 		RelativeEffect<Measurement> re = new MetaAnalysisRelativeEffect<Measurement>(null, realRelativeEffect,
 													0, consistencyEstimate.getStandardDeviation(), 
-													isContinuous() ? RelativeEffect.AxisType.LINEAR : RelativeEffect.AxisType.LOGARITHMIC
+													isContinuous() ? AxisType.LINEAR : AxisType.LOGARITHMIC
 		                                 );
 		return re;
 	}

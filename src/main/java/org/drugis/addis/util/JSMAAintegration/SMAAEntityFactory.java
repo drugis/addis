@@ -10,6 +10,7 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
 import fi.smaa.jsmaa.model.Alternative;
@@ -58,9 +59,9 @@ public class SMAAEntityFactory {
 		/* Beware, even though the axistype is logarithmic, the mean has been converted to a normal scale 
 		 * by taking the exponent.
 		 */
-		if (re.getAxisType().equals(RelativeEffect.AxisType.LOGARITHMIC))
+		if (re.getAxisType().equals(AxisType.LOGARITHMIC))
 			return new LogNormalMeasurement(Math.log(re.getRelativeEffect()),re.getError());
-		else if (re.getAxisType().equals(RelativeEffect.AxisType.LINEAR)){
+		else if (re.getAxisType().equals(AxisType.LINEAR)){
 			return new GaussianMeasurement(re.getRelativeEffect(),re.getError());
 		} else
 			throw new IllegalArgumentException("RelativeEffect has an unknown axis-type: " + re);
@@ -101,9 +102,9 @@ public class SMAAEntityFactory {
 				// set the baseline // FIXME
 				if (!baseLineSet) {
 					//System.out.println(relativeEffect.getAxisType());
-					if(relativeEffect.getAxisType() == RelativeEffect.AxisType.LOGARITHMIC)
+					if(relativeEffect.getAxisType() == AxisType.LOGARITHMIC)
 						smaaModel.setMeasurement(crit, baseLineAlt, new ExactMeasurement(1d));	
-					else if(relativeEffect.getAxisType() == RelativeEffect.AxisType.LINEAR)
+					else if(relativeEffect.getAxisType() == AxisType.LINEAR)
 						smaaModel.setMeasurement(crit, baseLineAlt, new ExactMeasurement(0d));	
 					
 					else throw new IllegalArgumentException("RelativeEffect has an unknown axis-type: " + relativeEffect);

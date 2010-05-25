@@ -7,6 +7,7 @@ import java.util.Set;
 import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.common.Interval;
 
@@ -15,7 +16,7 @@ public class MetaAnalysisRelativeEffect<T extends Measurement> extends AbstractE
 	private double d_relativeEffect;
 	private int d_totalSampleSize;
 	private double d_stdDev;
-	private RelativeEffect.AxisType d_type;
+	private AxisType d_type;
 	
 	/**
 	 * 
@@ -26,7 +27,7 @@ public class MetaAnalysisRelativeEffect<T extends Measurement> extends AbstractE
 	 * @param type
 	 */
 	public MetaAnalysisRelativeEffect(Interval<Double> confidenceInterval, double relativeEffect, 
-			int totalSampleSize, double stdDev, RelativeEffect.AxisType type) {
+			int totalSampleSize, double stdDev, AxisType type) {
 //		assert(stdDev >= 0); // FIXME: Breaks a test in mvn, probably due to bad testdata.
 //		if (confidenceInterval == null) {
 //			throw new NullPointerException("confidenceInterval null");
@@ -37,7 +38,7 @@ public class MetaAnalysisRelativeEffect<T extends Measurement> extends AbstractE
 		d_stdDev = stdDev;
 		d_type = type;
 	}
-	public RelativeEffect.AxisType getAxisType() {
+	public AxisType getAxisType() {
 		return d_type;
 	}
 

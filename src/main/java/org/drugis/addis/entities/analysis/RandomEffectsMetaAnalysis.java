@@ -39,6 +39,7 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
+import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.LogOddsRatio;
 import org.drugis.addis.entities.relativeeffect.LogRiskRatio;
 import org.drugis.addis.entities.relativeeffect.OddsRatio;
@@ -55,7 +56,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 	transient private double d_SEThetaDSL;
 	transient private Interval<Double> d_confidenceInterval;
 	transient private double d_qIV;
-	transient private RelativeEffect.AxisType d_axisType; 
+	transient private AxisType d_axisType; 
 	
 	public static final String PROPERTY_INCLUDED_STUDIES_COUNT = "studiesIncluded";
 	public static final String PROPERTY_FIRST_DRUG = "firstDrug";

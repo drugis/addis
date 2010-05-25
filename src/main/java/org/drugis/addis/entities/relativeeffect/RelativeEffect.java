@@ -27,11 +27,6 @@ import org.drugis.common.Interval;
 
 public interface RelativeEffect<T extends Measurement> extends Entity{
 
-	public enum AxisType {
-		LINEAR,
-		LOGARITHMIC;
-	}
-	
 	public static final String PROPERTY_SAMPLESIZE = "sampleSize";
 	
 	public T getSubject();

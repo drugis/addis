@@ -25,9 +25,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.OddsRatio;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.addis.entities.relativeeffect.RelativeEffect.AxisType;
 import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
