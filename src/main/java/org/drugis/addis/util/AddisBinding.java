@@ -53,6 +53,7 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.Interval;
@@ -123,6 +124,10 @@ public class AddisBinding extends XMLBinding {
 		
 		setAlias(NetworkMetaAnalysis.class, "networkMetaAnalysis");
 		setAlias(RandomEffectsMetaAnalysis.class, "randomEffectsMetaAnalysis");
+		setAlias(BenefitRiskAnalysis.class, "org.drugis.addis.entities.BenefitRiskAnalysis"); // FIXME: Hack to ensure compatibility with old xml.
+		setAlias(BenefitRiskAnalysis.class, "benefitRiskAnalysis");
+		
+		
 	}
 	
 	// Override XMLFormatter for Date.class objects

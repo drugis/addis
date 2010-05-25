@@ -23,7 +23,7 @@ package org.drugis.addis.entities.relativeeffect;
 
 import org.drugis.addis.entities.RateMeasurement;
 
-public class BasicRiskRatio extends AbstractRatio {
+public class BasicRiskRatio extends BasicRatio {
 
 	public BasicRiskRatio(RateMeasurement denominator, RateMeasurement numerator) {
 		super(numerator, denominator);

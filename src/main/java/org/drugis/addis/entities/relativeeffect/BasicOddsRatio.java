@@ -24,7 +24,7 @@ package org.drugis.addis.entities.relativeeffect;
 import org.drugis.addis.entities.RateMeasurement;
 
 
-public class BasicOddsRatio extends AbstractRatio {
+public class BasicOddsRatio extends BasicRatio {
 
 	/**
 	 * The odds-ratio of two RateMeasurements.

@@ -24,7 +24,7 @@ package org.drugis.addis.entities.relativeeffect;
 import org.drugis.addis.entities.ContinuousMeasurement;
 
 
-public class BasicMeanDifference extends AbstractRelativeEffect<ContinuousMeasurement> {
+public class BasicMeanDifference extends BasicRelativeEffect<ContinuousMeasurement> {
 
 	/**
 	 * The MeanDifference of two ContinuousMeasurements.

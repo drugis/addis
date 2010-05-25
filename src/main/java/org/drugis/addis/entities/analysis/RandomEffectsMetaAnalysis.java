@@ -40,10 +40,12 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.relativeeffect.AxisType;
+import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.LogOddsRatio;
 import org.drugis.addis.entities.relativeeffect.LogRiskRatio;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelativeEffect;
+import org.drugis.addis.entities.relativeeffect.RandomEffectsRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
 import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
@@ -52,11 +54,7 @@ import org.drugis.common.StudentTTable;
 
 public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 
-	transient private double d_thetaDSL;
-	transient private double d_SEThetaDSL;
-	transient private Interval<Double> d_confidenceInterval;
-	transient private double d_qIV;
-	transient private AxisType d_axisType; 
+
 	
 	public static final String PROPERTY_INCLUDED_STUDIES_COUNT = "studiesIncluded";
 	public static final String PROPERTY_FIRST_DRUG = "firstDrug";
@@ -178,111 +176,16 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		return studyArms;
 	}
 	
-	private void compute(Class<? extends RelativeEffect<?>> relEffClass, boolean drugsSwapped) {
-		
-		Class<? extends RelativeEffect<? extends Measurement>> type = relEffClass; 
-		if (relEffClass == BasicRiskRatio.class)
-			type = LogRiskRatio.class;
-		if (relEffClass == BasicOddsRatio.class)
-			type = LogOddsRatio.class;
-		
-		List<Double> weights = new ArrayList<Double>();
-		List<Double> adjweights = new ArrayList<Double>();
-		List<RelativeEffect<? extends Measurement>> relEffects = new ArrayList<RelativeEffect<? extends Measurement>>();
-			
-		for (int i=0; i<d_studies.size(); ++i ){
-			RelativeEffect<? extends Measurement> re;
-			re = RelativeEffectFactory.buildRelativeEffect(getStudyArms(drugsSwapped).get(i), d_outcome, type);
-			d_axisType = re.getAxisType();
-			relEffects.add(re);
-		}
-		
-		// Calculate the weights.
-		for (RelativeEffect<? extends Measurement> re : relEffects) {
-			weights.add(1D / Math.pow(re.getError(),2));
-		}
-		
-		// Calculate needed variables.
-		double thetaIV = getThetaIV(weights, relEffects);
-		d_qIV = getQIV(weights, relEffects, thetaIV);
-		double tauSquared = getTauSquared(d_qIV, weights);
-		
-		// Calculated the adjusted Weights.
-		for (RelativeEffect<? extends Measurement> re : relEffects) {
-			adjweights.add(1 / (Math.pow(re.getError(),2) + tauSquared) );
-		}
-		
-		d_thetaDSL = getThetaDL(adjweights, relEffects);
-		d_SEThetaDSL = getSE_ThetaDL(adjweights);
-			
-		d_confidenceInterval = getConfidenceInterval();
-		
-		if ((type == LogRiskRatio.class) || (type == LogOddsRatio.class)) {
-			d_thetaDSL = Math.exp(d_thetaDSL);
-			d_confidenceInterval = new Interval<Double>(Math.exp(d_confidenceInterval.getLowerBound()),Math.exp(d_confidenceInterval.getUpperBound()));
-		}
-	}
 	
+	/*
 	private Interval<Double> getConfidenceInterval() {	
 		double Z95percent = StudentTTable.getT(Integer.MAX_VALUE);
 		double lower = d_thetaDSL - Z95percent * d_SEThetaDSL;
 		double upper = d_thetaDSL + Z95percent * d_SEThetaDSL;
 		return new Interval<Double>(lower, upper);
-	}
+	}*/
 	
-	private double getSE_ThetaDL(List<Double> adjweights) {
-		return 1.0 / (Math.sqrt(computeSum(adjweights)));
-	}
 
-	private double getThetaDL(List<Double> adjweights, List<RelativeEffect<? extends Measurement>> relEffects) {
-		double numerator = 0;
-		for (int i=0; i < adjweights.size(); ++i) {
-			numerator += adjweights.get(i) * relEffects.get(i).getRelativeEffect();
-		}
-		
-		return numerator / computeSum(adjweights);
-	}
-	
-	private double getTauSquared(double Q, List<Double> weights) {
-		double k = weights.size();
-		double squaredWeightsSum = 0;
-		for (int i=0;i<weights.size();i++) {
-			squaredWeightsSum += Math.pow(weights.get(i),2);
-		}
-		
-		double num = Q - (k - 1);
-		double denum = computeSum(weights) - (squaredWeightsSum / computeSum(weights));
-		return Math.max(num / denum, 0);
-	}
-	
-	private double getQIV(List<Double> weights, List<RelativeEffect<? extends Measurement>> relEffects, double thetaIV) {
-		double sum = 0;
-		for (int i=0; i < weights.size(); ++i) {
-			sum += weights.get(i) * Math.pow(relEffects.get(i).getRelativeEffect() - thetaIV,2);
-		}
-		return sum;
-	}
-	
-	private double getThetaIV(List<Double> weights, List<RelativeEffect<? extends Measurement>> relEffects) {
-		assert(weights.size() == relEffects.size());
-		
-		// Calculate the sums
-		double sumWeightRatio = 0D;
-			
-		for (int i=0; i < weights.size(); ++i) {
-			sumWeightRatio += weights.get(i) * relEffects.get(i).getRelativeEffect();
-		}
-		
-		return sumWeightRatio / computeSum(weights);
-	}	
-	
-	protected double computeSum(List<Double> weights) {
-		double weightSum = 0;
-		for (int i=0; i < weights.size(); ++i) {
-			weightSum += weights.get(i);
-		}
-		return weightSum;
-	}
 	
 	public RandomEffectMetaAnalysisRelativeEffect<Measurement> getRelativeEffect(Drug d1, Drug d2, Class<? extends RelativeEffect<?>> type) {
 		// check if drugs make sense
@@ -291,36 +194,28 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 			throw new IllegalArgumentException(d_name + " compares drugs " + d_drugs + " but " + askedDrugs + " were asked");
 		
 		// return measurement
-		if(d1.equals(getFirstDrug()))
+		/*if(d1.equals(getFirstDrug()))
 			compute(type, false);
 		else 
 			compute(type, true);
 		
-		return new RandomEffects(d_confidenceInterval, d_thetaDSL, d_totalSampleSize, d_SEThetaDSL, d_qIV);
+		return new RandomEffects(d_confidenceInterval, d_thetaDSL, d_totalSampleSize, d_SEThetaDSL, d_qIV);*/
+		
+		boolean drugsSwapped = !d1.equals(getFirstDrug());
+		List<BasicRelativeEffect<? extends Measurement>> relEffects = new ArrayList<BasicRelativeEffect<? extends Measurement>>();
+		
+		for (int i=0; i<d_studies.size(); ++i ){
+			RelativeEffect<? extends Measurement> re;
+			re = RelativeEffectFactory.buildRelativeEffect(getStudyArms(drugsSwapped).get(i), d_outcome, type);
+			relEffects.add((BasicRelativeEffect<? extends Measurement>) re);
+		}
+		
+		// FIXME: Whot? Do we want a large if-else to create what we want in a factory?
+		return new RandomEffectsRelativeEffect(relEffects, drugsSwapped, d_totalSampleSize);
 	}
 		
 	public RandomEffectMetaAnalysisRelativeEffect<Measurement> getRelativeEffect(Class<? extends RelativeEffect<?>> type) {
-		compute(type, false);
 		return getRelativeEffect(getFirstDrug(), getSecondDrug(), type);
-	}
-
-	private class RandomEffects extends MetaAnalysisRelativeEffect<Measurement> implements RandomEffectMetaAnalysisRelativeEffect<Measurement> {
-		public double t_qIV;
-
-		public RandomEffects(Interval<Double> confidenceInterval, double relativeEffect, 
-				int totalSampleSize, double stdDev, double qIV) {
-			super(confidenceInterval, relativeEffect, totalSampleSize, stdDev, d_axisType);
-			t_qIV = qIV;
-		}
-		
-		public double getHeterogeneity() {
-			return t_qIV;
-		}
-		
-		public double getHeterogeneityI2() {
-			int k = getIncludedStudies().size();
-			return Math.max(0, 100* ((t_qIV - (k-1)) / t_qIV ) );
-		}
 	}
 	
 	protected static final XMLFormat<RandomEffectsMetaAnalysis> NETWORK_XML = 

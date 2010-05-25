@@ -25,7 +25,7 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.relativeeffect.AbstractRelativeEffect;
+import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.LogOddsRatio;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
@@ -37,7 +37,7 @@ public class LogOddsRatioTableModel extends OddsRatioTableModel {
 	}
 
 	@Override
-	protected AbstractRelativeEffect<RateMeasurement> getRelativeEffect(Measurement denominator, Measurement numerator) {
+	protected BasicRelativeEffect<RateMeasurement> getRelativeEffect(Measurement denominator, Measurement numerator) {
 		return new LogOddsRatio((RateMeasurement)denominator,
 		(RateMeasurement)numerator);
 	}
