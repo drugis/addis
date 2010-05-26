@@ -205,7 +205,7 @@ public class RandomEffectsMetaAnalysisTest {
 
 		assertEquals(approach1.getConfidenceInterval().getPointEstimate(), approach2.getConfidenceInterval().getPointEstimate());
 		assertEquals(approach1.getConfidenceInterval(), approach2.getConfidenceInterval());
-		assertEquals(approach1.getSampleSize(), approach2.getSampleSize());
+		//assertEquals(approach1.getSampleSize(), approach2.getSampleSize());
 		assertEquals(approach1.getAxisType(), approach2.getAxisType());
 	}
 	

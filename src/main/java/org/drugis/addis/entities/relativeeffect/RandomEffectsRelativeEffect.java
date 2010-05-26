@@ -1,7 +1,6 @@
 package org.drugis.addis.entities.relativeeffect;
 
 import java.beans.PropertyChangeListener;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

@@ -33,6 +33,7 @@ import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.AxisType;
+import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
 import org.drugis.addis.treeplot.BinnedScale;
@@ -113,7 +114,7 @@ public class ForestPlotPresentation {
 	private void initScales() {
 		for (int i = 0; i < getNumRelativeEffects(); ++i) {
 			if (!isCombined(i)) {
-				d_max = Math.max(getRelativeEffectAt(i).getSampleSize(), d_max);
+				d_max = Math.max(((BasicRelativeEffect<?>)getRelativeEffectAt(i)).getSampleSize(), d_max);
 			}
 		}
 		
@@ -237,13 +238,12 @@ public class ForestPlotPresentation {
 	}
 	
 	private double getWeightAt(int index) {
-		return (double) (getRelativeEffectAt(index).getSampleSize()) / d_max;
+		return (double) (((BasicRelativeEffect<?>)getRelativeEffectAt(index)).getSampleSize()) / d_max;
 	}
 
 	public int getDiamondSize(int index) {
-		double weight = getWeightAt(index);
 		BinnedScale tempbin = new BinnedScale(new IdentityScale(), 1, 10);
-		return isCombined(index) ? 0 : tempbin.getBin(weight).bin * 2 + 1;
+		return isCombined(index) ? 0 : tempbin.getBin(getWeightAt(index)).bin * 2 + 1;
 	}
 
 	public OutcomeMeasure getOutcomeMeasure() {

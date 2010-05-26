@@ -33,7 +33,8 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
 
 public abstract class BasicRelativeEffect<T extends Measurement> extends AbstractEntity implements RelativeEffect<T>{
-
+	public static final String PROPERTY_SAMPLESIZE = "sampleSize";
+	
 	protected T d_subject;
 	protected T d_baseline;
 

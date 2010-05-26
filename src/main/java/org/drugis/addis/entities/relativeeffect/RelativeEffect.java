@@ -25,15 +25,10 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
 
 public interface RelativeEffect<T extends Measurement> extends Entity{
-	@Deprecated
-	public static final String PROPERTY_SAMPLESIZE = "sampleSize";
-	
+
 	public T getSubject();
 
 	public T getBaseline();
-
-	@Deprecated
-	public Integer getSampleSize();
 
 	public Distribution getDistribution();
 	
