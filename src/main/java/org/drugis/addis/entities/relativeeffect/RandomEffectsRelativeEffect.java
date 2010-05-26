@@ -202,7 +202,7 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 	//public abstract String getName();
 	
 	public String getName() {
-		return "Random Effects relative Effect";
+		return "Random Effects Relative Effect";
 	}
 	
 	public Distribution createDistribution(double mu, double sigma) { // FIXME subclass

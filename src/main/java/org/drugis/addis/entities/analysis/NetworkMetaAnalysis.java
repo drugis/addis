@@ -36,7 +36,6 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.mtc.ConsistencyModel;
@@ -215,15 +214,12 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			return null;
 		
 		ConsistencyModel consistencyModel = getConsistencyModel();
-		Estimate consistencyEstimate = consistencyModel.getRelativeEffect(new Treatment(d1.getName()), new Treatment(d2.getName()));
+		Estimate estimate = consistencyModel.getRelativeEffect(new Treatment(d1.getName()), new Treatment(d2.getName()));
 		
-		/** Beware!: for the dichotomous case, we are converting the logMean to the actual mean
-		 */
-		double realRelativeEffect = isContinuous() ? consistencyEstimate.getMean() : Math.exp(consistencyEstimate.getMean());
-		RelativeEffect<Measurement> re = new NetworkRelativeEffect<Measurement>(null, realRelativeEffect,
-													0, consistencyEstimate.getStandardDeviation(), 
-													isContinuous() ? AxisType.LINEAR : AxisType.LOGARITHMIC
-		                                 );
-		return re;
+		if (isContinuous()) {
+			return NetworkRelativeEffect.buildMeanDifference(estimate.getMean(), estimate.getStandardDeviation());
+		} else {
+			return NetworkRelativeEffect.buildOddsRatio(estimate.getMean(), estimate.getStandardDeviation());
+		}
 	}
 }
