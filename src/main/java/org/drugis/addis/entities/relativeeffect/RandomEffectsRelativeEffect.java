@@ -10,53 +10,51 @@ import org.drugis.addis.entities.Measurement;
 
 public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRelativeEffect {
 	
-	private class ComputeRandomEffects {
+	private abstract static class DerSimonianLairdComputations {
 		
-		transient  double d_thetaDSL;
-		transient  double d_SEThetaDSL;
-		transient  double d_qIV;
+		double d_thetaDSL;
+		double d_SEThetaDSL;
+		double d_qIV;
+		int d_numRelativeEffects;
+		Distribution d_distribution;
 		
-		public ComputeRandomEffects(List<BasicRelativeEffect<? extends Measurement>> relEffects) {
+		public DerSimonianLairdComputations(List<Distribution> distributions) {
+			if (distributions.isEmpty())
+				throw new IllegalStateException("Cannot calculate RandomEffectMetaAnalysis without any relative effects.");
+			
+			d_numRelativeEffects = distributions.size();
 			List<Double> weights = new ArrayList<Double>();
 			List<Double> adjweights = new ArrayList<Double>();
-			
-			if (relEffects.size() < 1)
-				throw new IllegalStateException("Cannot calculate RandomEffectMetaAnalysis without any relative effects.");
-		
-			d_axisType = relEffects.get(0).getAxisType();
-			
-			// FIXME: How are we going to get mu & sigma in a consistent way, without using large if-else trains. Or, if preferably, no if-else.
-			
+
 			// Calculate the weights.
-			for (BasicRelativeEffect<? extends Measurement> re : relEffects) {
-				weights.add(1D / Math.pow(re.getError(),2));
+			for (Distribution dist : distributions) {
+				weights.add(1D / Math.pow(getSigma(dist),2));
 			}
 			
 			// Calculate needed variables.
-			double thetaIV = getThetaIV(weights, relEffects);
-			d_qIV = getQIV(weights, relEffects, thetaIV);
+			double thetaIV = getThetaIV(weights, distributions);
+			d_qIV = getQIV(weights, distributions, thetaIV);
 			double tauSquared = getTauSquared(d_qIV, weights);
 			
 			// Calculated the adjusted Weights.
-			for (BasicRelativeEffect<? extends Measurement> re : relEffects) {
-				adjweights.add(1 / (Math.pow(re.getError(),2) + tauSquared) );
+			for (Distribution dist : distributions) {
+				adjweights.add(1 / (Math.pow(getSigma(dist),2) + tauSquared) );
 			}
 			
-			d_thetaDSL = getThetaDL(adjweights, relEffects);
+			d_thetaDSL = getThetaDL(adjweights, distributions);
 			d_SEThetaDSL = getSE_ThetaDL(adjweights);
+			
+			d_distribution = getPooledDistribution();
 		}
 		
 		private double getSE_ThetaDL(List<Double> adjweights) {
 			return 1.0 / (Math.sqrt(computeSum(adjweights)));
 		}
 
-		
-		
-		private double getThetaDL(List<Double> adjweights, List<BasicRelativeEffect<? extends Measurement>> relEffects) {
+		private double getThetaDL(List<Double> adjweights, List<Distribution> relEffects) {
 			double numerator = 0;
 			for (int i=0; i < adjweights.size(); ++i) {
-				BasicRelativeEffect<? extends Measurement> re = relEffects.get(i);
-				numerator += adjweights.get(i) * getMu(re);
+				numerator += adjweights.get(i) * getMu(relEffects.get(i));
 			}
 			
 			return numerator / computeSum(adjweights);
@@ -76,40 +74,23 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 			return Math.max(num / denum, 0);
 		}
 		
-		private double getQIV(List<Double> weights, List<BasicRelativeEffect<? extends Measurement>> relEffects, double thetaIV) {
+		private double getQIV(List<Double> weights, List<Distribution> relEffects, double thetaIV) {
 			double sum = 0;
-			for (int i=0; i < weights.size(); ++i) {
-				BasicRelativeEffect<? extends Measurement> re = relEffects.get(i);
-				sum += weights.get(i) * Math.pow(getMu(re) - thetaIV,2);
+			for (int i = 0; i < weights.size(); ++i) {
+				sum += weights.get(i) * Math.pow(getMu(relEffects.get(i)) - thetaIV,2);
 			}
 			return sum;
 		}
 		
-		private double getThetaIV(List<Double> weights, List<BasicRelativeEffect<? extends Measurement>> relEffects) {
-			assert(weights.size() == relEffects.size());
-			
-			// Calculate the sums
+		private double getThetaIV(List<Double> weights, List<Distribution> relEffects) {
 			double sumWeightRatio = 0D;
-				
-			for (int i=0; i < weights.size(); ++i) {
-				BasicRelativeEffect<? extends Measurement> re = relEffects.get(i);
-				sumWeightRatio += weights.get(i) * getMu(re);
+			
+			for (int i = 0; i < weights.size(); ++i) {
+				sumWeightRatio += weights.get(i) * getMu(relEffects.get(i));
 			}
 			
 			return sumWeightRatio / computeSum(weights);
 		}	
-		
-		protected double getMu(BasicRelativeEffect<? extends Measurement> re) {
-			double val;
-			Distribution distribution = re.getDistribution();
-			if (distribution instanceof TransformedStudentT)
-				val = ((TransformedStudentT) distribution).getMu();
-			else if (distribution instanceof TransformedLogStudentT)
-				val = ((TransformedLogStudentT) distribution).getMu();
-			else
-				throw new RuntimeException("Unexpected Distribution type");
-			return val;
-		}
 		
 		protected double computeSum(List<Double> weights) {
 			double weightSum = 0;
@@ -118,25 +99,81 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 			}
 			return weightSum;
 		}
+		
+		public double getHeterogeneity() {
+			return d_qIV;
+		}
+		
+		public double getHeterogeneityI2() {
+			return Math.max(0, 100* ((getHeterogeneity() - (d_numRelativeEffects-1)) / getHeterogeneity() ) );
+		}
+		
+		public Distribution getDistribution() {
+			return d_distribution;
+		}
+		
+		protected abstract Distribution getPooledDistribution();
+		protected abstract double getMu(Distribution d);
+		protected abstract double getSigma(Distribution d);
+	}
+	
+	private class LinDSLComputations extends DerSimonianLairdComputations {
+		public LinDSLComputations(List<Distribution> distributions) {
+			super(distributions);
+		}
+		
+		public double getMu(Distribution d) {
+			return ((TransformedStudentT)d).getMu();
+		}
+		
+		public double getSigma(Distribution d) {
+			return ((TransformedStudentT)d).getSigma();
+		}
+		
+		public Distribution getPooledDistribution() {
+			return new Gaussian(d_thetaDSL, d_SEThetaDSL);
+		}
+	}
+	
+	private class LogDSLComputations extends DerSimonianLairdComputations {
+		public LogDSLComputations(List<Distribution> distributions) {
+			super(distributions);
+		}
+		
+		public double getMu(Distribution d) {
+			return ((TransformedLogStudentT)d).getMu();
+		}
+		
+		public double getSigma(Distribution d) {
+			return ((TransformedLogStudentT)d).getSigma();
+		}
+		
+		public Distribution getPooledDistribution() {
+			return new LogGaussian(d_thetaDSL, d_SEThetaDSL);
+		}
 	}
 	
 	private List<BasicRelativeEffect<? extends Measurement>> d_componentEffects;
-	private Distribution d_distribution;
-	private ComputeRandomEffects d_results;
-	private int d_numRelativeEffects;
-	private AxisType d_axisType; // FIXME
+	private DerSimonianLairdComputations d_results;
 	private int d_totalSampleSize;
 
 	public RandomEffectsRelativeEffect(List<BasicRelativeEffect<? extends Measurement>> componentEffects, int totalSampleSize) {
 		d_componentEffects = componentEffects;
-		d_numRelativeEffects = componentEffects.size();
 		d_totalSampleSize = totalSampleSize;
-		d_results = new ComputeRandomEffects(d_componentEffects);
-		d_distribution = createDistribution(d_results.d_thetaDSL, d_results.d_SEThetaDSL);
+		switch (componentEffects.get(0).getAxisType()) {
+		case LINEAR:
+			d_results = new LinDSLComputations(getDistributions(componentEffects));
+			break;
+		case LOGARITHMIC:
+			d_results = new LogDSLComputations(getDistributions(componentEffects));
+			break;
+		default:
+			throw new IllegalStateException("Unknown AxisType " + componentEffects.get(0).getAxisType());
+		}
 	}
 
 	public AxisType getAxisType() {
-		return d_distribution.getAxisType();
+		return getDistribution().getAxisType();
 	}
 
 	public Measurement getBaseline() {
@@ -145,11 +182,12 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 	}
 
 	public ConfidenceInterval getConfidenceInterval() {
-		return new ConfidenceInterval(d_distribution.getQuantile(0.5), d_distribution.getQuantile(0.025),d_distribution.getQuantile(0.975));
+		return new ConfidenceInterval(getDistribution().getQuantile(0.5), 
+				getDistribution().getQuantile(0.025), getDistribution().getQuantile(0.975));
 	}
 
 	public Distribution getDistribution() {
-		return d_distribution;
+		return d_results.getDistribution();
 	}
 
 	public Integer getSampleSize() {
@@ -162,8 +200,7 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 	}
 
 	public boolean isDefined() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public Set<? extends Entity> getDependencies() {
@@ -186,37 +223,31 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 	}
 	
 	public double getHeterogeneity() {
-		return d_results.d_qIV;
+		return d_results.getHeterogeneity();
 	}
 	
 	public double getHeterogeneityI2() {
-		return Math.max(0, 100* ((getHeterogeneity() - (d_numRelativeEffects-1)) / getHeterogeneity() ) );
+		return d_results.getHeterogeneityI2();
 	}
 	
 	public String toString() {
 		return this.getClass().getSimpleName() + "(" + getConfidenceInterval().toString() +")";
 	}
 	
-	// FIXME: Should be abstract, including the class. See FIXME in RandomEffectMetaAnalysis
-	//protected abstract Distribution createDistribution(double mu, double sigma);
-	//public abstract String getName();
-	
 	public String getName() {
 		return "Random Effects Relative Effect";
 	}
-	
-	public Distribution createDistribution(double mu, double sigma) { // FIXME subclass
-		switch (d_axisType) {
-			case LOGARITHMIC:
-				return new LogGaussian(mu, sigma);
-			case LINEAR:
-				return new Gaussian(mu, sigma);
-			default:
-				throw new IllegalStateException("Axistype " + d_axisType + " unknown");
-		}
-	}
+
 
 	public Double getError() { // FIXME subclass
 			return d_results.d_SEThetaDSL;
+	}
+	
+	public static List<Distribution> getDistributions(List<BasicRelativeEffect<?>> res) {
+		List<Distribution> dists = new ArrayList<Distribution>();
+		for (RelativeEffect<?> re: res) {
+			dists.add(re.getDistribution());
+		}
+		return dists;
 	}
 }
