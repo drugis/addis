@@ -28,11 +28,10 @@ import java.io.ObjectInputStream;
 import java.util.Collections;
 import java.util.Set;
 
-import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
 
-public abstract class AbstractBasicRelativeEffect<T extends Measurement> extends AbstractEntity implements BasicRelativeEffect<T>{
+public abstract class AbstractBasicRelativeEffect<T extends Measurement> extends AbstractRelativeEffect<T> implements BasicRelativeEffect<T>{
 	protected T d_subject;
 	protected T d_baseline;
 
@@ -83,17 +82,5 @@ public abstract class AbstractBasicRelativeEffect<T extends Measurement> extends
 	
 	public boolean isDefined() {
 		return getDegreesOfFreedom() > 0;
-	}
-	
-	public AxisType getAxisType() {
-		return getDistribution().getAxisType();
-	}
-	
-	public ConfidenceInterval getConfidenceInterval() {
-		if (!isDefined()) {
-			return new ConfidenceInterval(Double.NaN, Double.NaN, Double.NaN);
-		}
-
-		return new ConfidenceInterval(getDistribution().getQuantile(0.5), getDistribution().getQuantile(0.025), getDistribution().getQuantile(0.975));
 	}
 }

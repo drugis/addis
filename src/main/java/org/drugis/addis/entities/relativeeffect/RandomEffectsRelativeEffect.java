@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
 
-public class RandomEffectsRelativeEffect extends AbstractEntity implements RandomEffectMetaAnalysisRelativeEffect<Measurement> {
+public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurement> implements RandomEffectMetaAnalysisRelativeEffect<Measurement> {
 	
 	private abstract static class DerSimonianLairdComputations {
 		
@@ -154,10 +153,8 @@ public class RandomEffectsRelativeEffect extends AbstractEntity implements Rando
 	}
 
 	private DerSimonianLairdComputations d_results;
-	private int d_totalSampleSize;
 
 	public RandomEffectsRelativeEffect(List<BasicRelativeEffect<? extends Measurement>> componentEffects, int totalSampleSize) {
-		d_totalSampleSize = totalSampleSize;
 		switch (componentEffects.get(0).getAxisType()) {
 		case LINEAR:
 			d_results = new LinDSLComputations(getDistributions(componentEffects));
@@ -170,33 +167,10 @@ public class RandomEffectsRelativeEffect extends AbstractEntity implements Rando
 		}
 	}
 
-	public AxisType getAxisType() {
-		return getDistribution().getAxisType();
-	}
-
-	public Measurement getBaseline() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public ConfidenceInterval getConfidenceInterval() {
-		return new ConfidenceInterval(getDistribution().getQuantile(0.5), 
-				getDistribution().getQuantile(0.025), getDistribution().getQuantile(0.975));
-	}
-
 	public Distribution getDistribution() {
 		return d_results.getDistribution();
 	}
-
-	public Integer getSampleSize() {
-		return d_totalSampleSize;
-	}
-
-	public Measurement getSubject() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	public boolean isDefined() {
 		return true;
 	}
@@ -217,11 +191,6 @@ public class RandomEffectsRelativeEffect extends AbstractEntity implements Rando
 		return "Random Effects Relative Effect";
 	}
 
-
-	public Double getError() {
-			return d_results.d_SEThetaDSL;
-	}
-	
 	public static List<Distribution> getDistributions(List<BasicRelativeEffect<?>> res) {
 		List<Distribution> dists = new ArrayList<Distribution>();
 		for (RelativeEffect<?> re: res) {
