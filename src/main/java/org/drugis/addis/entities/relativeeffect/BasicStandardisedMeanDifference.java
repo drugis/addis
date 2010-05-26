@@ -35,7 +35,7 @@ public class BasicStandardisedMeanDifference extends BasicRelativeEffect<Continu
 		super(subject, baseline);
 	}
 
-	public Double getRelativeEffect() {
+	private double getMu() {
 		return getCorrectionJ() * getCohenD();
 	}
 	
@@ -78,6 +78,6 @@ public class BasicStandardisedMeanDifference extends BasicRelativeEffect<Continu
 	}
 	
 	public Distribution getDistribution() {
-		return new TransformedStudentT(getRelativeEffect(), getError(), getDegreesOfFreedom());
+		return new TransformedStudentT(getMu(), getError(), getDegreesOfFreedom());
 	}
 }

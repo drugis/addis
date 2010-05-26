@@ -82,11 +82,11 @@ public class BasicRiskRatioTest {
 
 	@Test
 	public void testGetMean() {
-		assertEquals(1.18, d_ratioBennie.getRelativeEffect(), 0.01);
-		assertEquals(1.02, d_ratioBoyer.getRelativeEffect(), 0.01); 
-		assertEquals(1.18, d_ratioFava.getRelativeEffect(), 0.01);
-		assertEquals(1.03, d_ratioNewhouse.getRelativeEffect(), 0.01);
-		assertEquals(1.15, d_ratioSechter.getRelativeEffect(), 0.01); 
+		assertEquals(1.18, d_ratioBennie.getConfidenceInterval().getPointEstimate(), 0.01);
+		assertEquals(1.02, d_ratioBoyer.getConfidenceInterval().getPointEstimate(), 0.01); 
+		assertEquals(1.18, d_ratioFava.getConfidenceInterval().getPointEstimate(), 0.01);
+		assertEquals(1.03, d_ratioNewhouse.getConfidenceInterval().getPointEstimate(), 0.01);
+		assertEquals(1.15, d_ratioSechter.getConfidenceInterval().getPointEstimate(), 0.01); 
 	}
 	
 	@Test
@@ -135,12 +135,12 @@ public class BasicRiskRatioTest {
 		RateMeasurement rmC1 = new BasicRateMeasurement(0, 100);
 		BasicRatio rr = new BasicRiskRatio(rmA1, rmC1);
 		assertEquals(Double.NaN, rr.getError(), 0.001);
-		assertEquals(Double.NaN, rr.getRelativeEffect(), 0.001);
+		assertEquals(Double.NaN, rr.getConfidenceInterval().getPointEstimate(), 0.001);
 		RateMeasurement rmB1 = new BasicRateMeasurement(100, 100);
 		RateMeasurement rmD1 = new BasicRateMeasurement(100, 100);
 		rr = new BasicRiskRatio(rmB1, rmD1);
 		assertEquals(Double.NaN, rr.getError(), 0.001);
-		assertEquals(Double.NaN, rr.getRelativeEffect(), 0.001);
+		assertEquals(Double.NaN, rr.getConfidenceInterval().getPointEstimate(), 0.001);
 	}
 	
 	@Test
@@ -151,7 +151,7 @@ public class BasicRiskRatioTest {
 		BasicRatio rr1 = new BasicRiskRatio(rm1, rm2);
 		
 		assertEquals(Math.sqrt(1.0 + 1.0/6.0), rr1.getError(), 0.001);
-		assertEquals(1.5, rr1.getRelativeEffect(), 0.001);
+		assertEquals(1.5, rr1.getConfidenceInterval().getPointEstimate(), 0.001);
 	}
 	
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize) {

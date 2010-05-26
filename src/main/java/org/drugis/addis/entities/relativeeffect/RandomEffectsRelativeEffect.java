@@ -223,14 +223,4 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 	public Double getError() { // FIXME subclass
 			return d_results.d_SEThetaDSL;
 	}
-
-	public Double getRelativeEffect() { // FIXME subclass
-		if (d_axisType == AxisType.LOGARITHMIC) // FIXME
-			return Math.exp(d_results.d_thetaDSL);
-		else if (d_axisType == AxisType.LINEAR) // FIXME
-			return d_results.d_thetaDSL;
-		else
-			throw new IllegalStateException("Axistype unknown");
-	}
-
 }

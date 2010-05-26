@@ -44,7 +44,7 @@ public class NetworkRelativeEffect<T extends Measurement> extends AbstractEntity
 		return d_confidenceInterval;
 	}
 
-	public Double getRelativeEffect() {
+	private double getMu() {
 		return d_relativeEffect;
 	}
 	
@@ -87,9 +87,9 @@ public class NetworkRelativeEffect<T extends Measurement> extends AbstractEntity
 	public Distribution getDistribution() {
 		switch (getAxisType()) {
 		case LOGARITHMIC:
-			return new LogGaussian(Math.log(getRelativeEffect()), getError());
+			return new LogGaussian(Math.log(getMu()), getError());
 		case LINEAR:
-			return new Gaussian(getRelativeEffect(), getError());
+			return new Gaussian(getMu(), getError());
 		default:
 			throw new IllegalStateException("AxisType " + getAxisType() + " unknown");
 		}

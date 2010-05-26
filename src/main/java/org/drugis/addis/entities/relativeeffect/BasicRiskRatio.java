@@ -48,23 +48,20 @@ public class BasicRiskRatio extends BasicRatio {
 	public String getName() {
 		return "Risk ratio";
 	}
-	
-	public Double getRelativeEffect() {
+
+	@Override
+	protected double getMu() {
 		if (!isDefined())
 			return Double.NaN;
 		
-		return ( (d_subject.getRate() + d_correction) / (d_subject.getSampleSize()) ) 
-			/ ( (d_baseline.getRate() + d_correction) / (d_baseline.getSampleSize()) );  
+		double ratio = ( (d_subject.getRate() + d_correction) / (d_subject.getSampleSize()) ) 
+			/ ( (d_baseline.getRate() + d_correction) / (d_baseline.getSampleSize()) );
+		return Math.log(ratio);
 	}
 
 	@Override
 	protected Integer getDegreesOfFreedom() {
 		return getSampleSize() - 2;
-	}
-
-	@Override
-	protected double getMu() {
-		return Math.log(getRelativeEffect());
 	}
 
 	@Override

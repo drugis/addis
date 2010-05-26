@@ -29,7 +29,7 @@ public class BasicRiskDifference extends BasicRelativeEffect<RateMeasurement> {
 		super(numerator, denominator);
 	}
 
-	public Double getRelativeEffect() {
+	private double getMu() {
 		double a = getSubject().getRate();
 		double n1 = getSubject().getSampleSize();
 		double c = getBaseline().getRate();
@@ -60,6 +60,6 @@ public class BasicRiskDifference extends BasicRelativeEffect<RateMeasurement> {
 	}
 
 	public Distribution getDistribution() {
-		return new TransformedStudentT(getRelativeEffect(), getError(), getDegreesOfFreedom());
+		return new TransformedStudentT(getMu(), getError(), getDegreesOfFreedom());
 	}
 }

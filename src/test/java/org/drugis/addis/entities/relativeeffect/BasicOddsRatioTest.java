@@ -71,11 +71,11 @@ public class BasicOddsRatioTest {
 	
 	@Test
 	public void testGetMean() {
-		assertEquals(1.36, (d_ratioBennie.getRelativeEffect()), 0.01);
-		assertEquals(1.03, (d_ratioBoyer.getRelativeEffect()), 0.01); 
-		assertEquals(1.65, (d_ratioFava.getRelativeEffect()), 0.01);
-		assertEquals(1.11, (d_ratioNewhouse.getRelativeEffect()), 0.01);
-		assertEquals(1.56, (d_ratioSechter.getRelativeEffect()), 0.01); 
+		assertEquals(1.36, (d_ratioBennie.getConfidenceInterval().getPointEstimate()), 0.01);
+		assertEquals(1.03, (d_ratioBoyer.getConfidenceInterval().getPointEstimate()), 0.01); 
+		assertEquals(1.65, (d_ratioFava.getConfidenceInterval().getPointEstimate()), 0.01);
+		assertEquals(1.11, (d_ratioNewhouse.getConfidenceInterval().getPointEstimate()), 0.01);
+		assertEquals(1.56, (d_ratioSechter.getConfidenceInterval().getPointEstimate()), 0.01); 
 	}
 	
 	@Test
@@ -131,12 +131,12 @@ public class BasicOddsRatioTest {
 		RateMeasurement rmC1 = new BasicRateMeasurement(0, 100);
 		BasicOddsRatio or = new BasicOddsRatio(rmA1, rmC1);
 		assertEquals(Double.NaN, or.getError(), 0.001);
-		assertEquals(Double.NaN, or.getRelativeEffect(), 0.001);
+		assertEquals(Double.NaN, or.getConfidenceInterval().getPointEstimate(), 0.001);
 		RateMeasurement rmB1 = new BasicRateMeasurement(100, 100);
 		RateMeasurement rmD1 = new BasicRateMeasurement(100, 100);
 		or = new BasicOddsRatio(rmB1, rmD1);
 		assertEquals(Double.NaN, or.getError(), 0.001);
-		assertEquals(Double.NaN, or.getRelativeEffect(), 0.001);
+		assertEquals(Double.NaN, or.getConfidenceInterval().getPointEstimate(), 0.001);
 	}
 	
 	@Test
@@ -147,7 +147,7 @@ public class BasicOddsRatioTest {
 		BasicOddsRatio or1 = new BasicOddsRatio(rm1, rm2);
 		
 		assertEquals(Math.sqrt(4.0), or1.getError(), 0.001);
-		assertEquals(3.0, or1.getRelativeEffect(), 0.001);
+		assertEquals(3.0, or1.getConfidenceInterval().getPointEstimate(), 0.001);
 	}
 		
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize)

@@ -63,7 +63,7 @@ public class NetworkMetaAnalysisTest {
 		RelativeEffect<? extends Measurement> expected = new NetworkRelativeEffect<Measurement>(null, Math.exp(1.0), 0, 0.33333, AxisType.LOGARITHMIC);
 		System.out.println("expected: "+expected);
 		System.out.println("actual: "+actual);
-		assertEquals(expected.getRelativeEffect(), actual.getRelativeEffect());
+		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actual.getConfidenceInterval().getPointEstimate());
 		assertEquals(expected.getError(), actual.getError());
 		assertEquals(expected.getAxisType(), actual.getAxisType());
 	}

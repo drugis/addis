@@ -26,8 +26,8 @@ import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.common.Interval;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -49,8 +49,8 @@ public class RelativeEffectPresentation extends PresentationModel<RelativeEffect
 				return "N/A";
 			}			
 			DecimalFormat format = new DecimalFormat("###0.00");
-			Interval<Double> ci = getBean().getConfidenceInterval();			
-			return format.format(getBean().getRelativeEffect()) + " (" + format.format(ci.getLowerBound()) + ", " + 
+			ConfidenceInterval ci = getBean().getConfidenceInterval();			
+			return format.format(ci.getPointEstimate()) + " (" + format.format(ci.getLowerBound()) + ", " + 
 				format.format(ci.getUpperBound()) + ")";
 		}
 

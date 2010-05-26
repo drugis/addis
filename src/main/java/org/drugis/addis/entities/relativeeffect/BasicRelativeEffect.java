@@ -31,7 +31,6 @@ import java.util.Set;
 import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
-import org.drugis.common.Interval;
 
 public abstract class BasicRelativeEffect<T extends Measurement> extends AbstractEntity implements RelativeEffect<T>{
 

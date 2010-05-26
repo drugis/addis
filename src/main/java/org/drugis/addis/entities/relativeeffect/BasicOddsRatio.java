@@ -44,7 +44,8 @@ public class BasicOddsRatio extends BasicRatio {
 		return AxisType.LOGARITHMIC;
 	}
 
-	public Double getRelativeEffect() {
+	@Override
+	protected double getMu() {
 		if (!isDefined())
 			return Double.NaN;
 		
@@ -52,7 +53,7 @@ public class BasicOddsRatio extends BasicRatio {
 		double b = d_baseline.getRate() + d_correction;
 		double d = d_baseline.getSampleSize() - d_baseline.getRate() + d_correction;
 		double c = d_subject.getSampleSize() - d_subject.getRate() + d_correction;
-		return (a * d) / (b * c); 
+		return Math.log((a * d) / (b * c)); 
 	}
 
 	public Double getError() { //NB: this is the LOG error
@@ -70,11 +71,6 @@ public class BasicOddsRatio extends BasicRatio {
 	@Override
 	protected Integer getDegreesOfFreedom() {
 		return getSampleSize() -2;
-	}
-
-	@Override
-	protected double getMu() {
-		return Math.log(getRelativeEffect());
 	}
 
 	@Override

@@ -99,7 +99,7 @@ public class BenefitRiskAnalysisTest {
 				d_BRAnalysis.getDrugs().get(0), d_BRAnalysis.getOutcomeMeasures().get(0));
 		RelativeEffect<? extends Measurement> expected = ExampleData.buildMetaAnalysisHamd().getRelativeEffect(
 				ExampleData.buildDrugParoxetine(), ExampleData.buildDrugFluoxetine(), BasicOddsRatio.class);
-		assertEquals(expected.getRelativeEffect(), actual.getRelativeEffect());
+		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actual.getConfidenceInterval().getPointEstimate());
 		assertEquals(expected.getError(), actual.getError());
 		assertEquals(expected.getConfidenceInterval(), actual.getConfidenceInterval());
 	}

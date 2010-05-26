@@ -33,7 +33,7 @@ public class JSMAAIntegrationTest {
 		CardinalMeasurement actual = SMAAEntityFactory.createCardinalMeasurement(relativeEffect.getDistribution());
 		assertTrue(!((LogNormalMeasurement) actual).getMean().isNaN());
 		assertTrue(actual instanceof LogNormalMeasurement);
-		assertEquals(Math.log(relativeEffect.getRelativeEffect()),((LogNormalMeasurement) actual).getMean(),0.0001);
+		assertEquals(Math.log(relativeEffect.getConfidenceInterval().getPointEstimate()),((LogNormalMeasurement) actual).getMean(),0.0001);
 		assertEquals(relativeEffect.getError(),((LogNormalMeasurement) actual).getStDev(),0.0001);
 	}
 	
@@ -45,7 +45,7 @@ public class JSMAAIntegrationTest {
 			for(Drug d : d_BRAnalysis.getDrugs()){
 				fi.smaa.jsmaa.model.Measurement actualMeasurement = smaaModel.getMeasurement(d_SMAAFactory.getCriterion(om), d_SMAAFactory.getAlternative(d));
 				RelativeEffect<? extends Measurement> expRelativeEffect = d_BRAnalysis.getRelativeEffect(d, om);
-				assertEquals(Math.log(expRelativeEffect.getRelativeEffect()), ((LogNormalMeasurement) actualMeasurement).getMean(), 0.0001);
+				assertEquals(Math.log(expRelativeEffect.getConfidenceInterval().getPointEstimate()), ((LogNormalMeasurement) actualMeasurement).getMean(), 0.0001);
 			}
 		}
 	}

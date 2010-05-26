@@ -23,7 +23,6 @@ package org.drugis.addis.entities.relativeeffect;
 
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
-import org.drugis.common.Interval;
 
 public interface RelativeEffect<T extends Measurement> extends Entity{
 	@Deprecated
@@ -36,7 +35,6 @@ public interface RelativeEffect<T extends Measurement> extends Entity{
 	@Deprecated
 	public Integer getSampleSize();
 
-	
 	public Distribution getDistribution();
 	
 	/**
@@ -44,9 +42,6 @@ public interface RelativeEffect<T extends Measurement> extends Entity{
 	 * @return The confidence interval.
 	 */
 	public ConfidenceInterval getConfidenceInterval();
-
-	@Deprecated
-	public Double getRelativeEffect();
 
 	@Deprecated
 	public Double getError();

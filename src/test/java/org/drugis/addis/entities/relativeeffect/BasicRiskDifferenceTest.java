@@ -76,12 +76,12 @@ public class BasicRiskDifferenceTest {
 	
 	@Test
 	public void testGetRelativeEffect() {
-		assertEquals(RiskDifference(),	(double)d_riskDif.getRelativeEffect(), 0.00001);
+		assertEquals(RiskDifference(),	(double)d_riskDif.getConfidenceInterval().getPointEstimate(), 0.00001);
 	}
 	
 	@Test
 	public void testGetRelativeEffectvsCooper1977() {
-		assertEquals(s_cooper1977RD, d_cooperRD.getRelativeEffect(), 0.001);	
+		assertEquals(s_cooper1977RD, d_cooperRD.getConfidenceInterval().getPointEstimate(), 0.001);	
 	}
 	
 	@Test

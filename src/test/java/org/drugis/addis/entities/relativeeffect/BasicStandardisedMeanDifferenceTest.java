@@ -57,7 +57,7 @@ public class BasicStandardisedMeanDifferenceTest {
 	@Test
 	public void testGetMean() {
 		double expected = getSMD();
-		assertEquals(expected, d_smd.getRelativeEffect(),0.0001);
+		assertEquals(expected, d_smd.getConfidenceInterval().getPointEstimate(),0.0001);
 	}
 
 	@Test
@@ -71,8 +71,8 @@ public class BasicStandardisedMeanDifferenceTest {
 	@Test
 	public void testGetCI() {
 		double t = StudentTTable.getT(d_sampleSize - 2);
-		double upper = d_smd.getRelativeEffect() + d_smd.getError() * t;
-		double lower = d_smd.getRelativeEffect() - d_smd.getError() * t;
+		double upper = d_smd.getConfidenceInterval().getPointEstimate() + d_smd.getError() * t;
+		double lower = d_smd.getConfidenceInterval().getPointEstimate() - d_smd.getError() * t;
 		Interval<Double> interval = d_smd.getConfidenceInterval();
 		assertEquals(upper, interval.getUpperBound(),0.0001);
 		assertEquals(lower, interval.getLowerBound(),0.0001);
@@ -102,7 +102,7 @@ public class BasicStandardisedMeanDifferenceTest {
 		assertEquals(0.5970D, d_smd.getCohenD(), 0.0001);
 		assertEquals(0.0418D, d_smd.getCohenVariance(), 0.0001);
 		assertEquals(0.9923D, d_smd.getCorrectionJ(), 0.0001);
-		assertEquals(0.5924D, d_smd.getRelativeEffect(), 0.0001);
+		assertEquals(0.5924D, d_smd.getConfidenceInterval().getPointEstimate(), 0.0001);
 		assertEquals(Math.sqrt(0.04114D), d_smd.getError(), 0.0001);
 	}
 	

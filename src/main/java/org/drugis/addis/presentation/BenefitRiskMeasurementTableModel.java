@@ -49,7 +49,7 @@ public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
 		if (relativeEffect == null)
 			return "N/A";
 		
-		Double mean = relativeEffect.getRelativeEffect();
+		Double mean = relativeEffect.getConfidenceInterval().getPointEstimate();
 		Double error = relativeEffect.getError();
 		
 		if (relativeEffect.getAxisType() == AxisType.LOGARITHMIC) {

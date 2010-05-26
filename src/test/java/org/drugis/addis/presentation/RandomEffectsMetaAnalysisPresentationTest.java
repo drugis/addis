@@ -98,7 +98,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		ForestPlotPresentation expected = new ForestPlotPresentation(meta, BasicMeanDifference.class, 
 				new PresentationModelFactory(new DomainImpl()));
 		ForestPlotPresentation actual = pres.getForestPlotPresentation(BasicMeanDifference.class);
-		assertEquals(expected.getRelativeEffectAt(0).getRelativeEffect(), actual.getRelativeEffectAt(0).getRelativeEffect(), 0.001);
+		assertEquals(expected.getRelativeEffectAt(0).getConfidenceInterval().getPointEstimate(), actual.getRelativeEffectAt(0).getConfidenceInterval().getPointEstimate(), 0.001);
 		assertEquals(expected.getHeterogeneity(), actual.getHeterogeneity());
 		assertEquals(expected.getHeterogeneityI2(), actual.getHeterogeneityI2());
 	}

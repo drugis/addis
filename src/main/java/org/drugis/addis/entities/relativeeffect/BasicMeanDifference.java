@@ -37,7 +37,7 @@ public class BasicMeanDifference extends BasicRelativeEffect<ContinuousMeasureme
 		super(subject, baseline);
 	}
 
-	public Double getRelativeEffect() {
+	private double getMu() {
 		return d_subject.getMean() - d_baseline.getMean();
 	}
 	
@@ -60,6 +60,6 @@ public class BasicMeanDifference extends BasicRelativeEffect<ContinuousMeasureme
 	}
 
 	public Distribution getDistribution() {
-		return new TransformedStudentT(getRelativeEffect(), getError(), getDegreesOfFreedom());
+		return new TransformedStudentT(getMu(), getError(), getDegreesOfFreedom());
 	}
 }
