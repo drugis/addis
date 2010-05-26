@@ -31,6 +31,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.junit.Test;
 
@@ -65,12 +66,12 @@ public abstract class RelativeEffectTableModelBaseTest {
 		Arm pg1 = d_threeArmStudy.getArms().get(1);
 		Arm pg2 = d_threeArmStudy.getArms().get(2);
 		
-		PresentationModel<RelativeEffect<?>> val01 = (PresentationModel<RelativeEffect<?>>)d_threeArmModel.getValueAt(0, 1);
+		PresentationModel<BasicRelativeEffect<?>> val01 = (PresentationModel<BasicRelativeEffect<?>>)d_threeArmModel.getValueAt(0, 1);
 		assertTrue(d_relativeEffectClass.isInstance(val01.getBean()));
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg0), val01.getBean().getBaseline());
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val01.getBean().getSubject());
 		
-		PresentationModel<RelativeEffect<?>> val12 = (PresentationModel<RelativeEffect<?>>)d_threeArmModel.getValueAt(1, 2);
+		PresentationModel<BasicRelativeEffect<?>> val12 = (PresentationModel<BasicRelativeEffect<?>>)d_threeArmModel.getValueAt(1, 2);
 		assertTrue(d_relativeEffectClass.isInstance(val12.getBean()));
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val12.getBean().getBaseline());
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val12.getBean().getSubject());
@@ -84,12 +85,12 @@ public abstract class RelativeEffectTableModelBaseTest {
 		Arm pg1 = d_threeArmStudy.getArms().get(1);
 		Arm pg2 = d_threeArmStudy.getArms().get(2);
 		
-		PresentationModel<RelativeEffect<?>> val20 = (PresentationModel<RelativeEffect<?>>)d_threeArmModel.getValueAt(2, 0);
+		PresentationModel<BasicRelativeEffect<?>> val20 = (PresentationModel<BasicRelativeEffect<?>>)d_threeArmModel.getValueAt(2, 0);
 		assertTrue(d_relativeEffectClass.isInstance(val20.getBean()));
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val20.getBean().getBaseline());
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg0), val20.getBean().getSubject());
 		
-		PresentationModel<RelativeEffect<?>> val21 = (PresentationModel<RelativeEffect<?>>)d_threeArmModel.getValueAt(2, 1);
+		PresentationModel<BasicRelativeEffect<?>> val21 = (PresentationModel<BasicRelativeEffect<?>>)d_threeArmModel.getValueAt(2, 1);
 		assertTrue(d_relativeEffectClass.isInstance(val21.getBean()));
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg2), val21.getBean().getBaseline());
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val21.getBean().getSubject());
@@ -137,10 +138,10 @@ public abstract class RelativeEffectTableModelBaseTest {
 		assertEquals(d_relativeEffectClass, pm.getRelativeEffectAt(0).getClass());
 		assertEquals(d_standardStudy.toString(), pm.getStudyLabelAt(0));
 		assertEquals(1, pm.getNumRelativeEffects());
-		Measurement bl = (Measurement) pm.getRelativeEffectAt(0).getBaseline();
+		Measurement bl = (Measurement) ((BasicRelativeEffect<?>) pm.getRelativeEffectAt(0)).getBaseline();
 		assertEquals(d_standardStudy.getArms().get(1).getSize(),
 				bl.getSampleSize());
-		Measurement subj = (Measurement) pm.getRelativeEffectAt(0).getSubject();
+		Measurement subj = (Measurement) ((BasicRelativeEffect<?>) pm.getRelativeEffectAt(0)).getSubject();
 		assertEquals(d_standardStudy.getArms().get(0).getSize(),
 				subj.getSampleSize());
 		assertEquals(d_endpoint, pm.getOutcomeMeasure());

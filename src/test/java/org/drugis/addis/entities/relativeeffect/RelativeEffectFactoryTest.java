@@ -200,8 +200,14 @@ public class RelativeEffectFactoryTest {
 	
 	private static void assertRelativeEffectEqual(RelativeEffect<?> expected,
 			RelativeEffect<?> actual) {
-		assertEquals(expected.getBaseline(), actual.getBaseline());
-		assertEquals(expected.getSubject(), actual.getSubject());
 		assertEquals(expected.getClass(), actual.getClass());
+		assertEquals(expected.getConfidenceInterval(), actual.getConfidenceInterval());
+		
+		if (expected instanceof BasicRelativeEffect<?>) {
+			BasicRelativeEffect<?> e = (BasicRelativeEffect<?>) expected;
+			BasicRelativeEffect<?> a = (BasicRelativeEffect<?>) actual;
+			assertEquals(e.getBaseline(), a.getBaseline());
+			assertEquals(e.getSubject(), a.getSubject()); 
+		}
 	}
 }

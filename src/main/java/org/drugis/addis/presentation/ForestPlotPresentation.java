@@ -46,7 +46,7 @@ import org.drugis.common.Interval;
 
 public class ForestPlotPresentation {
 	private List<Study> d_studies;
-	private List<RelativeEffect<?>> d_relEffects;
+	private List<BasicRelativeEffect<?>> d_relEffects;
 	private OutcomeMeasure d_outMeas;
 	private Drug d_baseline;
 	private Drug d_subject;
@@ -64,7 +64,7 @@ public class ForestPlotPresentation {
 		d_baseline = baseline;
 		d_subject = subject;
 		d_type = type;
-		d_relEffects = new ArrayList<RelativeEffect<?>>();
+		d_relEffects = new ArrayList<BasicRelativeEffect<?>>();
 		d_analysis = analysis;
 		
 		fillRelativeEffectList(studies);
@@ -95,12 +95,12 @@ public class ForestPlotPresentation {
 
 	private void addRelativeEffect(Study s) {
 		d_studies.add(s);
-		d_relEffects.add(RelativeEffectFactory.buildRelativeEffect(s, d_outMeas, d_baseline, d_subject, d_type));
+		d_relEffects.add((BasicRelativeEffect<?>) RelativeEffectFactory.buildRelativeEffect(s, d_outMeas, d_baseline, d_subject, d_type));
 	}
 	
 	private void addRelativeEffect(StudyArmsEntry entry) {
 		d_studies.add(entry.getStudy());
-		d_relEffects.add(RelativeEffectFactory.buildRelativeEffect(entry, d_outMeas, d_type));
+		d_relEffects.add((BasicRelativeEffect<?>) RelativeEffectFactory.buildRelativeEffect(entry, d_outMeas, d_type));
 	}
 	
 	public RelativeEffect<?> getMetaAnalysisEffect() {

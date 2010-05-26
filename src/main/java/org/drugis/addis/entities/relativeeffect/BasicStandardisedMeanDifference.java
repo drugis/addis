@@ -23,7 +23,7 @@ package org.drugis.addis.entities.relativeeffect;
 
 import org.drugis.addis.entities.ContinuousMeasurement;
 
-public class BasicStandardisedMeanDifference extends BasicRelativeEffect<ContinuousMeasurement> {
+public class BasicStandardisedMeanDifference extends AbstractBasicRelativeEffect<ContinuousMeasurement> {
 	/*
 	 * The Standardised Mean Difference is calculated through Cohen's d and adjusted with J(degrees of freedom)
 	 * to result in Hedges g. All formulas are based on The Handbook of Research Synthesis and Meta-Analysis 

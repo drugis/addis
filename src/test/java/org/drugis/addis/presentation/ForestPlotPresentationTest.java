@@ -42,6 +42,7 @@ import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
+import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.treeplot.ForestPlot;
 import org.drugis.common.Interval;
@@ -216,8 +217,14 @@ public class ForestPlotPresentationTest {
 	
 	private static void assertRelativeEffectEqual(RelativeEffect<?> expected,
 			RelativeEffect<?> actual) {
-		assertEquals(expected.getBaseline(), actual.getBaseline());
-		assertEquals(expected.getSubject(), actual.getSubject());
 		assertEquals(expected.getClass(), actual.getClass());
+		assertEquals(expected.getConfidenceInterval(), actual.getConfidenceInterval());
+		
+		if (expected instanceof BasicRelativeEffect<?>) {
+			BasicRelativeEffect<?> e = (BasicRelativeEffect<?>) expected;
+			BasicRelativeEffect<?> a = (BasicRelativeEffect<?>) actual;
+			assertEquals(e.getBaseline(), a.getBaseline());
+			assertEquals(e.getSubject(), a.getSubject()); 
+		}
 	}
 }

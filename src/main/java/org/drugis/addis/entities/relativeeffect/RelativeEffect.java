@@ -26,10 +26,6 @@ import org.drugis.addis.entities.Measurement;
 
 public interface RelativeEffect<T extends Measurement> extends Entity{
 
-	public T getSubject();
-
-	public T getBaseline();
-
 	public Distribution getDistribution();
 	
 	/**
@@ -37,10 +33,10 @@ public interface RelativeEffect<T extends Measurement> extends Entity{
 	 * @return The confidence interval.
 	 */
 	public ConfidenceInterval getConfidenceInterval();
-
-	public String getName();
 	
 	public AxisType getAxisType();
 	
 	public boolean isDefined();
+	
+	public String getName();
 }

@@ -24,7 +24,7 @@ package org.drugis.addis.entities.relativeeffect;
 
 import org.drugis.addis.entities.RateMeasurement;
 
-public abstract class BasicRatio extends BasicRelativeEffect<RateMeasurement> {
+public abstract class BasicRatio extends AbstractBasicRelativeEffect<RateMeasurement> {
 	protected double d_correction;
 	
 	protected BasicRatio(RateMeasurement numerator, RateMeasurement denominator) throws IllegalArgumentException {
