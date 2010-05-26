@@ -76,6 +76,8 @@ public abstract class BasicRelativeEffect<T extends Measurement> extends Abstrac
 		}		
 	}
 	
+	public abstract Double getError();
+	
 	protected abstract Integer getDegreesOfFreedom();
 	
 	public boolean isDefined() {

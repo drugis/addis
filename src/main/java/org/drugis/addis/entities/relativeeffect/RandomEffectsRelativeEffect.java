@@ -29,7 +29,7 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 			// FIXME: How are we going to get mu & sigma in a consistent way, without using large if-else trains. Or, if preferably, no if-else.
 			
 			// Calculate the weights.
-			for (RelativeEffect<? extends Measurement> re : relEffects) {
+			for (BasicRelativeEffect<? extends Measurement> re : relEffects) {
 				weights.add(1D / Math.pow(re.getError(),2));
 			}
 			
@@ -39,7 +39,7 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 			double tauSquared = getTauSquared(d_qIV, weights);
 			
 			// Calculated the adjusted Weights.
-			for (RelativeEffect<? extends Measurement> re : relEffects) {
+			for (BasicRelativeEffect<? extends Measurement> re : relEffects) {
 				adjweights.add(1 / (Math.pow(re.getError(),2) + tauSquared) );
 			}
 			
@@ -194,11 +194,8 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 		return Math.max(0, 100* ((getHeterogeneity() - (d_numRelativeEffects-1)) / getHeterogeneity() ) );
 	}
 	
-	public String toString() { // FIXME
-		DecimalFormat decimalFormatter = new DecimalFormat("##0.000");
-		return "" + decimalFormatter.format(d_distribution.getQuantile(0.5)) + " (" +
-					decimalFormatter.format(d_distribution.getQuantile(0.025)) + ", " + 
-					decimalFormatter.format(d_distribution.getQuantile(0.975)) + ")";
+	public String toString() {
+		return this.getClass().getSimpleName() + "(" + getConfidenceInterval().toString() +")";
 	}
 	
 	// FIXME: Should be abstract, including the class. See FIXME in RandomEffectMetaAnalysis

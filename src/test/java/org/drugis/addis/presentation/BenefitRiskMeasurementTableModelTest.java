@@ -8,6 +8,7 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,8 +53,8 @@ public class BenefitRiskMeasurementTableModelTest {
 	public void testGetValueAt() {
 		for (int i=0; i<d_brAnalysis.getDrugs().size(); ++i)
 			for (int j=0; j<d_brAnalysis.getOutcomeMeasures().size(); ++j) {
-				String expected = d_brAnalysis.getRelativeEffect(d_brAnalysis.getDrugs().get(i), d_brAnalysis.getOutcomeMeasures().get(j)).toString();
-				String actual = d_pm.getValueAt(i, j+1).toString();
+				ConfidenceInterval expected = d_brAnalysis.getRelativeEffect(d_brAnalysis.getDrugs().get(i), d_brAnalysis.getOutcomeMeasures().get(j)).getConfidenceInterval();
+				Object actual = d_pm.getValueAt(i, j+1);
 				assertEquals(expected, actual);
 			}
 	}

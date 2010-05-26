@@ -64,7 +64,7 @@ public class NetworkMetaAnalysisTest {
 		System.out.println("expected: "+expected);
 		System.out.println("actual: "+actual);
 		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actual.getConfidenceInterval().getPointEstimate());
-		assertEquals(expected.getError(), actual.getError());
+		assertEquals(expected.getConfidenceInterval(), actual.getConfidenceInterval());
 		assertEquals(expected.getAxisType(), actual.getAxisType());
 	}
 }

@@ -43,9 +43,6 @@ public interface RelativeEffect<T extends Measurement> extends Entity{
 	 */
 	public ConfidenceInterval getConfidenceInterval();
 
-	@Deprecated
-	public Double getError();
-	
 	public String getName();
 	
 	public AxisType getAxisType();

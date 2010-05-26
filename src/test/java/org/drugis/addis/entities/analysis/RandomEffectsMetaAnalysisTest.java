@@ -204,7 +204,7 @@ public class RandomEffectsMetaAnalysisTest {
 			d_rema.getRelativeEffect(d_rema.getFirstDrug(), d_rema.getSecondDrug(), BasicOddsRatio.class);
 
 		assertEquals(approach1.getConfidenceInterval().getPointEstimate(), approach2.getConfidenceInterval().getPointEstimate());
-		assertEquals(approach1.getError(), approach2.getError());
+		assertEquals(approach1.getConfidenceInterval(), approach2.getConfidenceInterval());
 		assertEquals(approach1.getSampleSize(), approach2.getSampleSize());
 		assertEquals(approach1.getAxisType(), approach2.getAxisType());
 	}

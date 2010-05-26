@@ -8,6 +8,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,8 +34,8 @@ public class JSMAAIntegrationTest {
 		CardinalMeasurement actual = SMAAEntityFactory.createCardinalMeasurement(relativeEffect.getDistribution());
 		assertTrue(!((LogNormalMeasurement) actual).getMean().isNaN());
 		assertTrue(actual instanceof LogNormalMeasurement);
-		assertEquals(Math.log(relativeEffect.getConfidenceInterval().getPointEstimate()),((LogNormalMeasurement) actual).getMean(),0.0001);
-		assertEquals(relativeEffect.getError(),((LogNormalMeasurement) actual).getStDev(),0.0001);
+		assertEquals(Math.log(relativeEffect.getConfidenceInterval().getPointEstimate()),((LogNormalMeasurement) actual).getMean(), 0.0001);
+		assertEquals(((LogGaussian)relativeEffect.getDistribution()).getSigma(),((LogNormalMeasurement) actual).getStDev(), 0.0001);
 	}
 	
 	
