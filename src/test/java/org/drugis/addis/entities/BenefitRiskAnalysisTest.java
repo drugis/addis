@@ -17,7 +17,9 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.common.AlphabeticalComparator;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.Test;;
+
+
 
 public class BenefitRiskAnalysisTest {
 	private BenefitRiskAnalysis d_BRAnalysis;
