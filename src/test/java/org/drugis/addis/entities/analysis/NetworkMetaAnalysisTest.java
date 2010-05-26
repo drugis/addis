@@ -22,6 +22,7 @@
 package org.drugis.addis.entities.analysis;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Measurement;
@@ -31,7 +32,6 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class NetworkMetaAnalysisTest {
@@ -55,13 +55,12 @@ public class NetworkMetaAnalysisTest {
 		assertEquals("Markov Chain Monte Carlo Network Meta-Analysis", d_analysis.getType());
 	}
 	
-	@Ignore
+	@Test
 	public void testGetRelativeEffect() {
-		// FIXME breaks
 		RelativeEffect<? extends Measurement> actual = d_mockAnalysis.getRelativeEffect(ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine(), BasicOddsRatio.class);
 		RelativeEffect<? extends Measurement> expected = NetworkRelativeEffect.buildOddsRatio(1.0, 0.33333);
-		System.out.println("expected: "+expected);
-		System.out.println("actual: "+actual);
+		assertNotNull(expected);
+		assertNotNull(actual);
 		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actual.getConfidenceInterval().getPointEstimate());
 		assertEquals(expected.getConfidenceInterval(), actual.getConfidenceInterval());
 		assertEquals(expected.getAxisType(), actual.getAxisType());

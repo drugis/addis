@@ -2,6 +2,7 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
@@ -99,6 +100,8 @@ public class BenefitRiskAnalysisTest {
 				d_BRAnalysis.getDrugs().get(0), d_BRAnalysis.getOutcomeMeasures().get(0));
 		RelativeEffect<? extends Measurement> expected = ExampleData.buildMetaAnalysisHamd().getRelativeEffect(
 				ExampleData.buildDrugParoxetine(), ExampleData.buildDrugFluoxetine(), BasicOddsRatio.class);
+		assertNotNull(actual);
+		assertNotNull(expected);
 		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actual.getConfidenceInterval().getPointEstimate());
 		assertEquals(expected.getConfidenceInterval(), actual.getConfidenceInterval());
 	}
