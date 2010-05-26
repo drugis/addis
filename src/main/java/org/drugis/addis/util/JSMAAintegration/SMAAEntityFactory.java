@@ -1,22 +1,23 @@
 package org.drugis.addis.util.JSMAAintegration;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JProgressBar;
 
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.relativeeffect.AxisType;
-import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.entities.relativeeffect.Gaussian;
+import org.drugis.addis.entities.relativeeffect.LogGaussian;
 
 import fi.smaa.jsmaa.model.Alternative;
 import fi.smaa.jsmaa.model.CardinalCriterion;
 import fi.smaa.jsmaa.model.CardinalMeasurement;
-import fi.smaa.jsmaa.model.ExactMeasurement;
 import fi.smaa.jsmaa.model.GaussianMeasurement;
 import fi.smaa.jsmaa.model.LogNormalMeasurement;
 import fi.smaa.jsmaa.model.SMAAModel;
@@ -55,16 +56,13 @@ public class SMAAEntityFactory {
 		d_drugAlternativeMap  = new HashMap<Drug, Alternative>();
 	}
 	
-	public static CardinalMeasurement createCardinalMeasurement(RelativeEffect<? extends Measurement> re) {
-		/* Beware, even though the axistype is logarithmic, the mean has been converted to a normal scale 
-		 * by taking the exponent.
-		 */
-		if (re.getAxisType().equals(AxisType.LOGARITHMIC))
-			return new LogNormalMeasurement(Math.log(re.getRelativeEffect()),re.getError());
-		else if (re.getAxisType().equals(AxisType.LINEAR)){
-			return new GaussianMeasurement(re.getRelativeEffect(),re.getError());
+	public static CardinalMeasurement createCardinalMeasurement(Distribution re) {
+		if (re instanceof LogGaussian)
+			return new LogNormalMeasurement(((LogGaussian) re).getMu(), ((LogGaussian) re).getSigma());
+		else if (re instanceof Gaussian){
+			return new GaussianMeasurement(((Gaussian) re).getMu(), ((Gaussian) re).getSigma());
 		} else
-			throw new IllegalArgumentException("RelativeEffect has an unknown axis-type: " + re);
+			throw new IllegalArgumentException("Unhandled distribution: " + re);
 	}
 	
 	public SMAA2Results createSmaaModelResults(BenefitRiskAnalysis bra, JProgressBar progressBar) {
@@ -88,34 +86,22 @@ public class SMAAEntityFactory {
 	SMAAModel createSmaaModel(BenefitRiskAnalysis brAnalysis) {
 		SMAAModel smaaModel = new SMAAModel(brAnalysis.getName());
 
-		Alternative baseLineAlt = getAlternative(brAnalysis.getBaseline());
-		smaaModel.addAlternative(baseLineAlt);
-
-		for(OutcomeMeasure om : brAnalysis.getOutcomeMeasures()){ // endpoints
+		// FIXME: refactor BRAnalysis to have baseline in the set of drugs.
+		Set<Drug> drugs = new HashSet<Drug>();
+		drugs.addAll(brAnalysis.getDrugs());
+		drugs.add(brAnalysis.getBaseline());
+				
+		for (Drug d: drugs) {
+			smaaModel.addAlternative(getAlternative(d));
+		}
+		
+		for (OutcomeMeasure om : brAnalysis.getOutcomeMeasures()) {
 			CardinalCriterion crit = getCriterion(om);
 			smaaModel.addCriterion(crit);
 			
-			boolean baseLineSet = false;
-			for(Drug d : brAnalysis.getDrugs()){ // drugs
-				RelativeEffect<? extends Measurement> relativeEffect = (RelativeEffect<? extends Measurement>) brAnalysis.getRelativeEffect(d, om);
-				
-				// set the baseline // FIXME
-				if (!baseLineSet) {
-					//System.out.println(relativeEffect.getAxisType());
-					if(relativeEffect.getAxisType() == AxisType.LOGARITHMIC)
-						smaaModel.setMeasurement(crit, baseLineAlt, new ExactMeasurement(1d));	
-					else if(relativeEffect.getAxisType() == AxisType.LINEAR)
-						smaaModel.setMeasurement(crit, baseLineAlt, new ExactMeasurement(0d));	
-					
-					else throw new IllegalArgumentException("RelativeEffect has an unknown axis-type: " + relativeEffect);
-					baseLineSet = true;
-				}
-				//smaaModel.setMeasurement(crit, baseLineAlt, new ExactMeasurement(1d));
-				
-				// set the alternatives measurements
-				smaaModel.addAlternative(getAlternative(d));
-				CardinalMeasurement m = createCardinalMeasurement(relativeEffect);
-				smaaModel.setMeasurement( crit, getAlternative(d), m);
+			for (Drug d : drugs) {
+				CardinalMeasurement m = createCardinalMeasurement(brAnalysis.getRelativeEffectDistribution(d, om));
+				smaaModel.setMeasurement(crit, getAlternative(d), m);
 			}
 		}
 		return smaaModel;

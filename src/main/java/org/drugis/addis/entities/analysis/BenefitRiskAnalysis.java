@@ -15,6 +15,9 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
+import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.entities.relativeeffect.Gaussian;
+import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.common.AlphabeticalComparator;
 
@@ -154,6 +157,18 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 			}
 		}
 		return null;
+	}
+	
+	public Distribution getRelativeEffectDistribution(Drug d, OutcomeMeasure om) {
+		if (d.equals(getBaseline())) {
+			switch (om.getType()) {
+			case RATE:
+				return new LogGaussian(0, 0);
+			case CONTINUOUS:
+				return new Gaussian(0, 0);
+			}
+		}
+		return getRelativeEffect(d, om).getDistribution();
 	}
 
 	public void runAllConsistencyModels() {

@@ -87,11 +87,11 @@ public abstract class BasicRelativeEffect<T extends Measurement> extends Abstrac
 		return getDistribution().getAxisType();
 	}
 	
-	public Interval<Double> getConfidenceInterval() {
+	public ConfidenceInterval getConfidenceInterval() {
 		if (!isDefined()) {
-			return new Interval<Double>(Double.NaN, Double.NaN);
+			return new ConfidenceInterval(Double.NaN, Double.NaN, Double.NaN);
 		}
 
-		return new Interval<Double>(getDistribution().getQuantile(0.025), getDistribution().getQuantile(0.975));
+		return new ConfidenceInterval(getDistribution().getQuantile(0.5), getDistribution().getQuantile(0.025), getDistribution().getQuantile(0.975));
 	}
 }

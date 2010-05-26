@@ -1,4 +1,4 @@
-package org.drugis.addis.entities.analysis;
+package org.drugis.addis.entities.relativeeffect;
 
 import java.text.DecimalFormat;
 import java.util.Collections;
@@ -7,13 +7,10 @@ import java.util.Set;
 import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.relativeeffect.AxisType;
-import org.drugis.addis.entities.relativeeffect.Distribution;
-import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.common.Interval;
 
-public class MetaAnalysisRelativeEffect<T extends Measurement> extends AbstractEntity implements RelativeEffect<T> {
-	private Interval<Double> d_confidenceInterval;
+public class NetworkRelativeEffect<T extends Measurement> extends AbstractEntity implements RelativeEffect<T> {
+	private ConfidenceInterval d_confidenceInterval;
 	private double d_relativeEffect;
 	private int d_totalSampleSize;
 	private double d_stdDev;
@@ -27,13 +24,13 @@ public class MetaAnalysisRelativeEffect<T extends Measurement> extends AbstractE
 	 * @param stdDev >= 0.0
 	 * @param type
 	 */
-	public MetaAnalysisRelativeEffect(Interval<Double> confidenceInterval, double relativeEffect, 
+	public NetworkRelativeEffect(Interval<Double> confidenceInterval, double relativeEffect, 
 			int totalSampleSize, double stdDev, AxisType type) {
 //		assert(stdDev >= 0); // FIXME: Breaks a test in mvn, probably due to bad testdata.
 //		if (confidenceInterval == null) {
 //			throw new NullPointerException("confidenceInterval null");
 //		}
-		d_confidenceInterval = confidenceInterval;
+		d_confidenceInterval = new ConfidenceInterval(relativeEffect, confidenceInterval.getLowerBound(), confidenceInterval.getUpperBound());
 		d_relativeEffect = relativeEffect;
 		d_totalSampleSize = totalSampleSize;
 		d_stdDev = stdDev;
@@ -43,7 +40,7 @@ public class MetaAnalysisRelativeEffect<T extends Measurement> extends AbstractE
 		return d_type;
 	}
 
-	public Interval<Double> getConfidenceInterval() {
+	public ConfidenceInterval getConfidenceInterval() {
 		return d_confidenceInterval;
 	}
 
@@ -88,6 +85,13 @@ public class MetaAnalysisRelativeEffect<T extends Measurement> extends AbstractE
 	}
 	
 	public Distribution getDistribution() {
-		return null;
+		switch (getAxisType()) {
+		case LOGARITHMIC:
+			return new LogGaussian(Math.log(getRelativeEffect()), getError());
+		case LINEAR:
+			return new Gaussian(getRelativeEffect(), getError());
+		default:
+			throw new IllegalStateException("AxisType " + getAxisType() + " unknown");
+		}
 	}
 }

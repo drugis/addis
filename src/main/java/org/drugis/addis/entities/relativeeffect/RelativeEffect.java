@@ -43,8 +43,7 @@ public interface RelativeEffect<T extends Measurement> extends Entity{
 	 * Get the 95% confidence interval.
 	 * @return The confidence interval.
 	 */
-	@Deprecated
-	public Interval<Double> getConfidenceInterval();
+	public ConfidenceInterval getConfidenceInterval();
 
 	@Deprecated
 	public Double getRelativeEffect();

@@ -37,6 +37,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.relativeeffect.AxisType;
+import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.ContinuousNetworkBuilder;
@@ -219,7 +220,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		/** Beware!: for the dichotomous case, we are converting the logMean to the actual mean
 		 */
 		double realRelativeEffect = isContinuous() ? consistencyEstimate.getMean() : Math.exp(consistencyEstimate.getMean());
-		RelativeEffect<Measurement> re = new MetaAnalysisRelativeEffect<Measurement>(null, realRelativeEffect,
+		RelativeEffect<Measurement> re = new NetworkRelativeEffect<Measurement>(null, realRelativeEffect,
 													0, consistencyEstimate.getStandardDeviation(), 
 													isContinuous() ? AxisType.LINEAR : AxisType.LOGARITHMIC
 		                                 );

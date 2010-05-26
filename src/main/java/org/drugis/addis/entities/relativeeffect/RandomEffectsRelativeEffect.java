@@ -8,8 +8,6 @@ import java.util.Set;
 
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
-import org.drugis.common.Interval;
-import org.drugis.common.StudentTTable;
 
 public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRelativeEffect {
 	
@@ -19,7 +17,7 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 		transient  double d_SEThetaDSL;
 		transient  double d_qIV;
 		
-		public ComputeRandomEffects(List<BasicRelativeEffect<? extends Measurement>> relEffects, boolean drugsSwapped) {
+		public ComputeRandomEffects(List<BasicRelativeEffect<? extends Measurement>> relEffects) {
 			List<Double> weights = new ArrayList<Double>();
 			List<Double> adjweights = new ArrayList<Double>();
 			
@@ -102,7 +100,7 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 			return sumWeightRatio / computeSum(weights);
 		}	
 		
-		protected double getMu(BasicRelativeEffect<? extends Measurement> re) { // FIXME - shouldn't be necessary 
+		protected double getMu(BasicRelativeEffect<? extends Measurement> re) {
 			double val;
 			Distribution distribution = re.getDistribution();
 			if (distribution instanceof TransformedStudentT)
@@ -130,11 +128,11 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 	private AxisType d_axisType; // FIXME
 	private int d_totalSampleSize;
 
-	public RandomEffectsRelativeEffect(List<BasicRelativeEffect<? extends Measurement>> componentEffects, boolean drugsSwapped, int totalSampleSize) {
+	public RandomEffectsRelativeEffect(List<BasicRelativeEffect<? extends Measurement>> componentEffects, int totalSampleSize) {
 		d_componentEffects = componentEffects;
 		d_numRelativeEffects = componentEffects.size();
 		d_totalSampleSize = totalSampleSize;
-		d_results = new ComputeRandomEffects(d_componentEffects, drugsSwapped);
+		d_results = new ComputeRandomEffects(d_componentEffects);
 		d_distribution = createDistribution(d_results.d_thetaDSL, d_results.d_SEThetaDSL);
 	}
 
@@ -147,8 +145,8 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 		return null;
 	}
 
-	public Interval<Double> getConfidenceInterval() {
-		return new Interval<Double>(d_distribution.getQuantile(0.025),d_distribution.getQuantile(0.975));
+	public ConfidenceInterval getConfidenceInterval() {
+		return new ConfidenceInterval(d_distribution.getQuantile(0.5), d_distribution.getQuantile(0.025),d_distribution.getQuantile(0.975));
 	}
 
 	public Distribution getDistribution() {
@@ -212,14 +210,14 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 	}
 	
 	public Distribution createDistribution(double mu, double sigma) { // FIXME subclass
-		if (d_axisType == AxisType.LOGARITHMIC) // FIXME
-			//return new TransformedLogStudentT(mu, sigma, d_totalSampleSize-2); 
-			return new LogGaussian(mu, sigma); // FIXME
-		else if (d_axisType == AxisType.LINEAR) // FIXME
-			//return new TransformedStudentT(mu, sigma, d_totalSampleSize-2);
-			return new Gaussian(mu, sigma); // FIXME
-		else
-			throw new IllegalStateException("Axistype unknown");
+		switch (d_axisType) {
+			case LOGARITHMIC:
+				return new LogGaussian(mu, sigma);
+			case LINEAR:
+				return new Gaussian(mu, sigma);
+			default:
+				throw new IllegalStateException("Axistype " + d_axisType + " unknown");
+		}
 	}
 
 	public Double getError() { // FIXME subclass

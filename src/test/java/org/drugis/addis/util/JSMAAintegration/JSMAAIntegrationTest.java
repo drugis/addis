@@ -30,7 +30,7 @@ public class JSMAAIntegrationTest {
 	public void testCreateCardinalMeasurementRate() {
 		
 		RelativeEffect<? extends Measurement> relativeEffect = d_BRAnalysis.getRelativeEffect(ExampleData.buildDrugParoxetine(), ExampleData.buildEndpointHamd());
-		CardinalMeasurement actual = SMAAEntityFactory.createCardinalMeasurement(relativeEffect);
+		CardinalMeasurement actual = SMAAEntityFactory.createCardinalMeasurement(relativeEffect.getDistribution());
 		assertTrue(!((LogNormalMeasurement) actual).getMean().isNaN());
 		assertTrue(actual instanceof LogNormalMeasurement);
 		assertEquals(Math.log(relativeEffect.getRelativeEffect()),((LogNormalMeasurement) actual).getMean(),0.0001);

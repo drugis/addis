@@ -183,7 +183,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		}
 		
 		// FIXME: Whot? Do we want a large if-else to create what we want in a factory?
-		return new RandomEffectsRelativeEffect(relEffects, drugsSwapped, d_totalSampleSize);
+		return new RandomEffectsRelativeEffect(relEffects, d_totalSampleSize);
 	}
 		
 	public RandomEffectMetaAnalysisRelativeEffect<Measurement> getRelativeEffect(Class<? extends RelativeEffect<?>> type) {
