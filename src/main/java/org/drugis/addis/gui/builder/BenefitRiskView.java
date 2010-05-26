@@ -77,14 +77,14 @@ public class BenefitRiskView implements ViewBuilder {
 		d_builder.add(GUIFactory.createCollapsiblePanel(buildMeasurementsPart()), cc.xy(1, 13));
 		
 		if(d_pm.allModelsReady()){
-			d_builder.addSeparator("preferences", cc.xy(1, 15));
+			d_builder.addSeparator("Preferences", cc.xy(1, 15));
 			d_builder.add(GUIFactory.createCollapsiblePanel(buildPreferencesPart()), cc.xy(1, 17));
 
-			d_builder.addSeparator("rank acceptabilities", cc.xy(1, 19));
+			d_builder.addSeparator("Rank Acceptabilities", cc.xy(1, 19));
 
 			d_builder.add(GUIFactory.createCollapsiblePanel(buildRankAcceptabilitiesPart()), cc.xy(1, 21));
 
-			d_builder.addSeparator("central weigths", cc.xy(1, 23));
+			d_builder.addSeparator("Central Weigths", cc.xy(1, 23));
 			d_builder.add(GUIFactory.createCollapsiblePanel(buildWeightsPart()), cc.xy(1, 25));
 		} else {
 			d_builder.add(GUIFactory.createCollapsiblePanel(buildAnalyzingPart()), cc.xy(1, 15));

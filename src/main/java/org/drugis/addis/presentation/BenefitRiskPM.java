@@ -115,7 +115,8 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		d_analysisProgressListeners = new ArrayList<AnalysisProgressListener>();
 		d_buildQueue = new BuildQueue();
 		
-		startAllNetworkAnalyses();
+		if (!startAllNetworkAnalyses())
+			startSmaa();
 	}
 	
 	private void startSmaa() {
@@ -167,15 +168,18 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		return new BenefitRiskMeasurementTableModel(getBean(), d_pmf);
 	}
 	
-	private void startAllNetworkAnalyses() {
+	private boolean startAllNetworkAnalyses() {
 		getBean().runAllConsistencyModels();
+		boolean hasNetworks = false;
 		for (MetaAnalysis ma : getBean().getMetaAnalyses() ){
 			if (ma instanceof NetworkMetaAnalysis) {
+				hasNetworks = true;
 				ConsistencyModel consistencyModel = ((NetworkMetaAnalysis) ma).getConsistencyModel();
 				d_allModelsReadyListener.addModel(consistencyModel);
 				d_analysisProgressListeners.add(new AnalysisProgressListener(consistencyModel));
 			}
 		}
+		return hasNetworks;
 	}
 	
 	public PreferencePresentationModel getPreferencePresentationModel() {
