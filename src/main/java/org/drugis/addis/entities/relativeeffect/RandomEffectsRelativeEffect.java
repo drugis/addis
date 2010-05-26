@@ -1,14 +1,14 @@
 package org.drugis.addis.entities.relativeeffect;
 
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
 
-public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRelativeEffect {
+public class RandomEffectsRelativeEffect extends AbstractEntity implements RandomEffectMetaAnalysisRelativeEffect<Measurement> {
 	
 	private abstract static class DerSimonianLairdComputations {
 		
@@ -69,7 +69,7 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 			
 			double num = Q - (k - 1);
 			double denum = computeSum(weights) - (squaredWeightsSum / computeSum(weights));
-			if (denum == 0) // FIXME ask.
+			if (denum == 0) // FIXME denum shouldn't be 0.
 				return 0;
 			return Math.max(num / denum, 0);
 		}
@@ -152,13 +152,11 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 			return new LogGaussian(d_thetaDSL, d_SEThetaDSL);
 		}
 	}
-	
-	private List<BasicRelativeEffect<? extends Measurement>> d_componentEffects;
+
 	private DerSimonianLairdComputations d_results;
 	private int d_totalSampleSize;
 
 	public RandomEffectsRelativeEffect(List<BasicRelativeEffect<? extends Measurement>> componentEffects, int totalSampleSize) {
-		d_componentEffects = componentEffects;
 		d_totalSampleSize = totalSampleSize;
 		switch (componentEffects.get(0).getAxisType()) {
 		case LINEAR:
@@ -203,25 +201,6 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 		return true;
 	}
 
-	public Set<? extends Entity> getDependencies() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String[] getXmlExclusions() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		// TODO Auto-generated method stub
-	}
-	
 	public double getHeterogeneity() {
 		return d_results.getHeterogeneity();
 	}
@@ -239,7 +218,7 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 	}
 
 
-	public Double getError() { // FIXME subclass
+	public Double getError() {
 			return d_results.d_SEThetaDSL;
 	}
 	
@@ -249,5 +228,10 @@ public class RandomEffectsRelativeEffect implements RandomEffectMetaAnalysisRela
 			dists.add(re.getDistribution());
 		}
 		return dists;
+	}
+
+	@Override
+	public Set<? extends Entity> getDependencies() {
+		return null;
 	}
 }

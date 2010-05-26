@@ -182,7 +182,6 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 			relEffects.add((BasicRelativeEffect<? extends Measurement>) re);
 		}
 		
-		// FIXME: Whot? Do we want a large if-else to create what we want in a factory?
 		return new RandomEffectsRelativeEffect(relEffects, d_totalSampleSize);
 	}
 		
