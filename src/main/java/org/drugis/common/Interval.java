@@ -23,17 +23,28 @@ public class Interval<N extends Number> {
 		return d_upperBound.doubleValue() - d_lowerBound.doubleValue();
 	}
 	
+	protected boolean canEqual(Interval<?> other) {
+		if (other.getClass().equals(Interval.class)) return true;
+		return false;
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Interval<?>) {
-			Interval<?> in = (Interval<?>) o;
-			if (in.getLowerBound().getClass().equals(getLowerBound().getClass())) {
-				return ((getLowerBound().equals(in.getLowerBound())) && (getUpperBound().equals(in.getUpperBound())));
+			Interval<?> other = (Interval<?>) o;
+			if (other.canEqual(this)) {
+				if (other.getLowerBound().getClass().equals(getLowerBound().getClass())) {
+					return ((getLowerBound().equals(other.getLowerBound())) && (getUpperBound().equals(other.getUpperBound())));
+				}
 			}
 		} 
 		
 		return false;
 		
+	}
+	
+	@Override public int hashCode() {
+		return d_lowerBound.hashCode() * 31 + d_upperBound.hashCode();
 	}
 	
 	@Override

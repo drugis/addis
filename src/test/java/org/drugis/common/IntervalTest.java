@@ -2,7 +2,9 @@ package org.drugis.common;
 
 import static org.junit.Assert.*;
 
+import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
 import org.junit.Test;
+import static org.drugis.common.JUnitUtil.assertNotEquals;
 
 public class IntervalTest {
 	
@@ -30,17 +32,23 @@ public class IntervalTest {
 	public void testEquals() {
 		Interval<Double> in = new Interval<Double>(1.0, 6.0);
 		Interval<Integer> in2 = new Interval<Integer>(1, 6);
-		assertNotSame(in, in2);
+		assertNotEquals(in, in2);
 		Double d = new Double(1.0);
 		Integer i = new Integer(6);
-		assertNotSame(d, in);
-		assertNotSame(i, in2);
+		assertNotEquals(d, in);
+		assertNotEquals(i, in2);
 		Interval<Double> in3 = new Interval<Double>(1.0, 6.0);
 		Interval<Integer> in4 = new Interval<Integer>(1, 6);
 		assertEquals(in, in3);
+		assertEquals(in.hashCode(), in3.hashCode());
 		assertEquals(in2, in4);
+		assertEquals(in2.hashCode(), in4.hashCode());
 		Interval<Double> in5 = new Interval<Double>(2.0, 5.0);
-		assertNotSame(in, in5);
+		assertNotEquals(in, in5);
+		
+		ConfidenceInterval in6 = new ConfidenceInterval(1.0, 2.0, 5.0);
+		assertNotEquals(in6, in5);
+		assertNotEquals(in5, in6);
 	}
 
 	@Test
