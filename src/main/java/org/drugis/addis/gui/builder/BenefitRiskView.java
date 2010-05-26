@@ -30,6 +30,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import fi.smaa.jsmaa.gui.components.ResultsCellRenderer;
 import fi.smaa.jsmaa.gui.components.ResultsTable;
+import fi.smaa.jsmaa.gui.presentation.PreferencePresentationModel;
 import fi.smaa.jsmaa.gui.views.PreferenceInformationView;
 import fi.smaa.jsmaa.gui.views.ResultsView;
 
@@ -93,7 +94,20 @@ public class BenefitRiskView implements ViewBuilder {
 	}
 
 	private JComponent buildPreferencesPart() {
-		return new PreferenceInformationView(d_pm.getPreferencePresentationModel()).buildPanel();
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		final PreferencePresentationModel ppm = d_pm.getPreferencePresentationModel();
+		ppm.addPropertyChangeListener(PreferencePresentationModel.PREFERENCE_TYPE,
+				new PropertyChangeListener() {
+					public void propertyChange(PropertyChangeEvent arg0) {
+						panel.removeAll();
+						panel.add(new PreferenceInformationView(ppm).buildPanel());
+						d_main.pack();
+					}			
+		});
+		JComponent prefPanel = new PreferenceInformationView(ppm).buildPanel();
+		panel.add(prefPanel);
+		return panel;
 	}
 
 	private JComponent buildAnalyzingPart() {
