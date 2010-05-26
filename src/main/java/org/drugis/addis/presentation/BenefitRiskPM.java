@@ -8,6 +8,7 @@ import javax.swing.JProgressBar;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.util.JSMAAintegration.BRSMAASimulationBuilder;
 import org.drugis.addis.util.JSMAAintegration.SMAAEntityFactory;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
@@ -17,6 +18,16 @@ import org.drugis.mtc.ProgressEvent.EventType;
 
 import com.jgoodies.binding.PresentationModel;
 
+import fi.smaa.jsmaa.gui.jfreechart.CentralWeightsDataset;
+import fi.smaa.jsmaa.gui.jfreechart.RankAcceptabilitiesDataset;
+import fi.smaa.jsmaa.gui.presentation.CentralWeightTableModel;
+import fi.smaa.jsmaa.gui.presentation.PreferencePresentationModel;
+import fi.smaa.jsmaa.gui.presentation.RankAcceptabilityTableModel;
+import fi.smaa.jsmaa.gui.presentation.SMAA2ResultsTableModel;
+import fi.smaa.jsmaa.model.ModelChangeEvent;
+import fi.smaa.jsmaa.model.SMAAModel;
+import fi.smaa.jsmaa.model.SMAAModelListener;
+import fi.smaa.jsmaa.simulator.BuildQueue;
 import fi.smaa.jsmaa.simulator.SMAA2Results;
 
 @SuppressWarnings("serial")
@@ -59,8 +70,10 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 
 		public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
 			if (event.getType() == ProgressEvent.EventType.SIMULATION_FINISHED){
-				if(allModelsReady())
+				if(allModelsReady()) {
+					startSmaa();					
 					firePropertyChange(PROPERTY_ALLMODELSREADY, false, true);
+				}
 			}
 		}
 
@@ -75,9 +88,20 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 	public static final String PROPERTY_ALLMODELSREADY = "allModelsReady";
 	
 	private PresentationModelFactory d_pmf;
-	private SMAAEntityFactory d_smaaf;
 	private AllModelsReadyListener d_allModelsReadyListener;
 	private List<AnalysisProgressListener> d_analysisProgressListeners;
+
+	private RankAcceptabilityTableModel d_rankAccepTM;
+	private RankAcceptabilitiesDataset d_rankAccepDS;	
+	private BuildQueue d_buildQueue;
+
+	private CentralWeightsDataset d_cwDS;
+
+	private CentralWeightTableModel d_cwTM;
+
+	private PreferencePresentationModel d_prefPresModel;
+
+	private SMAAModel d_model;
 	
 	public boolean allModelsReady() {
 		return d_allModelsReadyListener.allModelsReady();
@@ -87,10 +111,34 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		super(bean);
 		
 		d_pmf = pmf;
-		d_smaaf = new SMAAEntityFactory();
 		d_allModelsReadyListener = new AllModelsReadyListener();
 		d_analysisProgressListeners = new ArrayList<AnalysisProgressListener>();
+		d_buildQueue = new BuildQueue();
+		
 		startAllNetworkAnalyses();
+	}
+	
+	private void startSmaa() {
+		SMAAEntityFactory smaaf = new SMAAEntityFactory();
+		d_model = smaaf.createSmaaModel(getBean());
+		SMAA2Results emptyResults = new SMAA2Results(d_model.getAlternatives(), d_model.getCriteria(), 10);
+		d_rankAccepDS = new RankAcceptabilitiesDataset(emptyResults);
+		d_rankAccepTM = new RankAcceptabilityTableModel(emptyResults);
+		d_cwTM = new CentralWeightTableModel(emptyResults);
+		d_cwDS = new CentralWeightsDataset(emptyResults);
+		d_prefPresModel = new PreferencePresentationModel(d_model);
+
+		d_model.addModelListener(new SMAAModelListener() {
+			public void modelChanged(ModelChangeEvent type) {
+				startSimulation();
+			}			
+		});
+		startSimulation();
+	}
+
+	private void startSimulation() {
+		d_buildQueue.add(new BRSMAASimulationBuilder(d_model,
+				d_rankAccepTM, d_rankAccepDS, d_cwTM, d_cwDS));
 	}
 
 	public int getNumProgBars() {
@@ -102,9 +150,9 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 			throw new IllegalArgumentException();
 		d_analysisProgressListeners.get(progBarNum).attachBar(bar);
 	}
-
-	public SMAA2Results getSmaaModelResults(JProgressBar progressBar) {
-		return d_smaaf.createSmaaModelResults(getBean(),progressBar);
+	
+	public PreferencePresentationModel getSmaaPreferenceModel() {
+		return null;
 	}
 	
 	
@@ -129,4 +177,24 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 			}
 		}
 	}
+	
+	public PreferencePresentationModel getPreferencePresentationModel() {
+		return d_prefPresModel;
+	}
+
+	public SMAA2ResultsTableModel getRankAcceptabilitiesTableModel() {
+		return d_rankAccepTM;
+	}
+
+	public RankAcceptabilitiesDataset getRankAcceptabilityDataSet() {
+		return d_rankAccepDS;
+	}
+
+	public CentralWeightsDataset getCentralWeightsDataSet() {
+		return d_cwDS;
+	}
+
+	public CentralWeightTableModel getCentralWeightsTableModel() {
+		return d_cwTM;
+	}	
 }

@@ -30,11 +30,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import fi.smaa.jsmaa.gui.components.ResultsCellRenderer;
 import fi.smaa.jsmaa.gui.components.ResultsTable;
-import fi.smaa.jsmaa.gui.jfreechart.CentralWeightsDataset;
-import fi.smaa.jsmaa.gui.jfreechart.RankAcceptabilitiesDataset;
-import fi.smaa.jsmaa.gui.presentation.CentralWeightTableModel;
-import fi.smaa.jsmaa.gui.presentation.RankAcceptabilityTableModel;
-import fi.smaa.jsmaa.gui.presentation.SMAA2ResultsTableModel;
+import fi.smaa.jsmaa.gui.views.PreferenceInformationView;
 import fi.smaa.jsmaa.gui.views.ResultsView;
 
 public class BenefitRiskView implements ViewBuilder {
@@ -82,7 +78,7 @@ public class BenefitRiskView implements ViewBuilder {
 		
 		if(d_pm.allModelsReady()){
 			d_builder.addSeparator("preferences", cc.xy(1, 15));
-			//builder.add(GUIFactory.createCollapsiblePanel(buildPreferencesPart()), cc.xy(1, 17));
+			d_builder.add(GUIFactory.createCollapsiblePanel(buildPreferencesPart()), cc.xy(1, 17));
 
 			d_builder.addSeparator("rank acceptabilities", cc.xy(1, 19));
 
@@ -94,6 +90,10 @@ public class BenefitRiskView implements ViewBuilder {
 			d_builder.add(GUIFactory.createCollapsiblePanel(buildAnalyzingPart()), cc.xy(1, 15));
 		}
 		return d_builder.getPanel();
+	}
+
+	private JComponent buildPreferencesPart() {
+		return new PreferenceInformationView(d_pm.getPreferencePresentationModel()).buildPanel();
 	}
 
 	private JComponent buildAnalyzingPart() {
@@ -118,15 +118,12 @@ public class BenefitRiskView implements ViewBuilder {
 	}
 
 	private JComponent buildWeightsPart() {
-		CentralWeightsDataset   cwData       = new CentralWeightsDataset(d_pm.getSmaaModelResults(d_SMAAprogressBar));
-		CentralWeightTableModel cwTableModel = new CentralWeightTableModel(d_pm.getSmaaModelResults(d_SMAAprogressBar));
-
 		final JFreeChart chart = ChartFactory.createLineChart(
 		        "", "Criterion", "Central Weight",
-		        cwData, PlotOrientation.VERTICAL, true, true, false);
+		        d_pm.getCentralWeightsDataSet(), PlotOrientation.VERTICAL, true, true, false);
 		LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, true);
 		chart.getCategoryPlot().setRenderer(renderer);
-		ResultsTable table = new ResultsTable(cwTableModel);
+		ResultsTable table = new ResultsTable(d_pm.getCentralWeightsTableModel());
 		table.setDefaultRenderer(Object.class, new ResultsCellRenderer(1.0));
 		
 		// FIXME: FileNames.ICON_SCRIPT was replaced by "". Should be filename of an icon 
@@ -134,14 +131,11 @@ public class BenefitRiskView implements ViewBuilder {
 	}
 
 	private JComponent buildRankAcceptabilitiesPart() {
-		
-		SMAA2ResultsTableModel tableModel = new RankAcceptabilityTableModel(d_pm.getSmaaModelResults(d_SMAAprogressBar));
-		ResultsTable table = new ResultsTable(tableModel);
-		
-		RankAcceptabilitiesDataset rankData = new RankAcceptabilitiesDataset(d_pm.getSmaaModelResults(d_SMAAprogressBar));
+		ResultsTable table = new ResultsTable(d_pm.getRankAcceptabilitiesTableModel());
+	
 		final JFreeChart chart = ChartFactory.createStackedBarChart(
 		        "", "Alternative", "Rank Acceptability",
-		        rankData, PlotOrientation.VERTICAL, true, true, false);
+		        d_pm.getRankAcceptabilityDataSet(), PlotOrientation.VERTICAL, true, true, false);
 
 		JPanel panel = new JPanel(new BorderLayout());
 		fi.smaa.jsmaa.gui.views.ResultsView view = new fi.smaa.jsmaa.gui.views.ResultsView(d_main, "Rank acceptability indices", table, chart, "");

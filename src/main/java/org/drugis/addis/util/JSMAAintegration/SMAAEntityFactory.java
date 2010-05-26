@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JProgressBar;
-
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
@@ -22,34 +20,11 @@ import fi.smaa.jsmaa.model.GaussianMeasurement;
 import fi.smaa.jsmaa.model.LogNormalMeasurement;
 import fi.smaa.jsmaa.model.SMAAModel;
 import fi.smaa.jsmaa.model.ScaleCriterion;
-import fi.smaa.jsmaa.simulator.ResultsEvent;
-import fi.smaa.jsmaa.simulator.SMAA2Results;
-import fi.smaa.jsmaa.simulator.SMAA2SimulationThread;
-import fi.smaa.jsmaa.simulator.SMAAResultsListener;
-import fi.smaa.jsmaa.simulator.SMAASimulator;
 
 public class SMAAEntityFactory {
-
-	private final class ProgressListener implements SMAAResultsListener {
-		private final SMAASimulator d_simulator;
-		private final JProgressBar d_bar;
-
-		public ProgressListener(SMAASimulator simulator, JProgressBar bar) {
-			d_simulator = simulator;
-			d_bar = bar;
-		}
-		
-		public void resultsChanged(ResultsEvent ev) {
-			if (d_bar != null) {
-				int progress = (d_simulator.getCurrentIteration() *100) / d_simulator.getTotalIterations();
-				d_bar.setValue(progress);
-			}
-		}
-	}
 	
 	private Map<OutcomeMeasure, CardinalCriterion> d_outcomeCriterionMap;
 	private Map<Drug, Alternative> d_drugAlternativeMap;
-	private SMAA2Results d_smaaModelResults;
 	
 	public SMAAEntityFactory() {
 		d_outcomeCriterionMap = new HashMap<OutcomeMeasure, CardinalCriterion>();
@@ -65,25 +40,7 @@ public class SMAAEntityFactory {
 			throw new IllegalArgumentException("Unhandled distribution: " + re);
 	}
 	
-	public SMAA2Results createSmaaModelResults(BenefitRiskAnalysis bra, JProgressBar progressBar) {
-		if (d_smaaModelResults != null)
-			return d_smaaModelResults;
-		
-		SMAAModel smaaModel = createSmaaModel(bra);
-		runSMAAModel(progressBar, smaaModel);
-
-		return d_smaaModelResults;
-	}
-
-	private void runSMAAModel(JProgressBar progressBar, SMAAModel smaaModel) {
-		SMAA2SimulationThread simulationThread = new SMAA2SimulationThread(smaaModel, 500000);
-		SMAASimulator simulator = new SMAASimulator(smaaModel, simulationThread);
-		d_smaaModelResults = (SMAA2Results)simulator.getResults();
-		d_smaaModelResults.addResultsListener(new ProgressListener(simulator, progressBar));
-		simulationThread.start();
-	}
-
-	SMAAModel createSmaaModel(BenefitRiskAnalysis brAnalysis) {
+	public SMAAModel createSmaaModel(BenefitRiskAnalysis brAnalysis) {
 		SMAAModel smaaModel = new SMAAModel(brAnalysis.getName());
 
 		// FIXME: refactor BRAnalysis to have baseline in the set of drugs.

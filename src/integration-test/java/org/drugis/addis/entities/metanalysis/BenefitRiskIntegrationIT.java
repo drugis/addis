@@ -11,6 +11,7 @@ import org.drugis.addis.entities.DomainManager;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
 import org.drugis.addis.entities.relativeeffect.ContinuousMeasurementEstimate;
 import org.drugis.addis.entities.relativeeffect.LogContinuousMeasurementEstimate;
 import org.drugis.addis.presentation.BenefitRiskMeasurementTableModel;
@@ -119,8 +120,8 @@ public class BenefitRiskIntegrationIT {
 		} else if (measurementTableObject instanceof ContinuousMeasurementEstimate) {
 			assertEquals(pointEstimate, ((ContinuousMeasurementEstimate) measurementTableObject).getMean(), pointEstimate * allowedDeviation);
 		}
-		assertEquals(lowerBound, ((ContinuousMeasurementEstimate) measurementTableObject).getConfidenceInterval().getLowerBound(), Math.abs(lowerBound) * allowedDeviation);
-		assertEquals(upperBound, ((ContinuousMeasurementEstimate) measurementTableObject).getConfidenceInterval().getUpperBound(), Math.abs(upperBound) * allowedDeviation);
+		assertEquals(lowerBound, ((ConfidenceInterval) measurementTableObject).getLowerBound(), Math.abs(lowerBound) * allowedDeviation);
+		assertEquals(upperBound, ((ConfidenceInterval) measurementTableObject).getUpperBound(), Math.abs(upperBound) * allowedDeviation);
 	}
 }
 
