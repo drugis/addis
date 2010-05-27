@@ -58,7 +58,7 @@ public class NetworkMetaAnalysisTest {
 	@Test
 	public void testGetRelativeEffect() {
 		RelativeEffect<? extends Measurement> actual = d_mockAnalysis.getRelativeEffect(ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine(), BasicOddsRatio.class);
-		RelativeEffect<? extends Measurement> expected = NetworkRelativeEffect.buildOddsRatio(1.0, 0.33333);
+		NetworkRelativeEffect<? extends Measurement> expected = NetworkRelativeEffect.buildOddsRatio(1.0, 0.33333);
 		assertNotNull(expected);
 		assertNotNull(actual);
 		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actual.getConfidenceInterval().getPointEstimate());
