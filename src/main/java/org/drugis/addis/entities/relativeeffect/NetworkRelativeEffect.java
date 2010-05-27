@@ -12,11 +12,11 @@ public class NetworkRelativeEffect<T extends Measurement> extends AbstractRelati
 		d_distribution = d;
 	}
 
-	static public NetworkRelativeEffect<?> buildOddsRatio(double mu, double sigma) {
+	static public NetworkRelativeEffect<? extends Measurement> buildOddsRatio(double mu, double sigma) {
 		return new NetworkRelativeEffect<Measurement>(new LogGaussian(mu, sigma));
 	}
 	
-	static public NetworkRelativeEffect<?> buildMeanDifference(double mu, double sigma) {
+	static public NetworkRelativeEffect<? extends Measurement> buildMeanDifference(double mu, double sigma) {
 		return new NetworkRelativeEffect<Measurement>(new Gaussian(mu, sigma));
 	}
 

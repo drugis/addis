@@ -38,10 +38,13 @@ public class NetworkMetaAnalysisTest {
 	private NetworkMetaAnalysis d_mockAnalysis;
 
 	@Before
-	public void setup(){
+	public void setup() throws InterruptedException{
 		d_analysis = ExampleData.buildNetworkMetaAnalysis();
 		d_mockAnalysis = NetworkTableModelTest.buildMockNetworkMetaAnalysis();
 		d_mockAnalysis.run();
+		while (!d_mockAnalysis.getConsistencyModel().isReady()) {
+			Thread.sleep(10);
+		}
 	}
 	
 	@Test

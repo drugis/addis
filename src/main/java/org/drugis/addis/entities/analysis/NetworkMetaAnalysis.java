@@ -208,7 +208,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return d_isContinuous;
 	}
 
-	public RelativeEffect<? extends Measurement> getRelativeEffect(Drug d1, Drug d2, Class<? extends RelativeEffect<?>> type) {
+	public NetworkRelativeEffect<? extends Measurement> getRelativeEffect(Drug d1, Drug d2, Class<? extends RelativeEffect<?>> type) {
 		
 		if(!getConsistencyModel().isReady())
 			return null;
