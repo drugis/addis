@@ -38,13 +38,11 @@ public class BenefitRiskView implements ViewBuilder {
 	
 	private BenefitRiskPM d_pm;
 	private Main d_main;
-	private JProgressBar d_SMAAprogressBar;
 	private PanelBuilder d_builder;
 	
 	public BenefitRiskView(BenefitRiskPM pm, Main main) {
 		d_pm = pm;
 		d_main = main;
-		d_SMAAprogressBar = new JProgressBar();
 		d_pm.addPropertyChangeListener(new PropertyChangeListener() {
 
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -154,7 +152,7 @@ public class BenefitRiskView implements ViewBuilder {
 		JPanel panel = new JPanel(new BorderLayout());
 		fi.smaa.jsmaa.gui.views.ResultsView view = new fi.smaa.jsmaa.gui.views.ResultsView(d_main, "Rank acceptability indices", table, chart, "");
 		panel.add(view.buildPanel(), BorderLayout.CENTER);
-		panel.add(d_SMAAprogressBar, BorderLayout.NORTH);
+		panel.add(d_pm.getSmaaSimulationProgressBar(), BorderLayout.NORTH);
 
 		return panel;
 	}

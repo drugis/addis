@@ -18,6 +18,7 @@ import org.drugis.mtc.ProgressEvent.EventType;
 
 import com.jgoodies.binding.PresentationModel;
 
+import fi.smaa.jsmaa.gui.components.SimulationProgressBar;
 import fi.smaa.jsmaa.gui.jfreechart.CentralWeightsDataset;
 import fi.smaa.jsmaa.gui.jfreechart.RankAcceptabilitiesDataset;
 import fi.smaa.jsmaa.gui.presentation.CentralWeightTableModel;
@@ -102,6 +103,8 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 	private PreferencePresentationModel d_prefPresModel;
 
 	private SMAAModel d_model;
+
+	private SimulationProgressBar d_progressBar;
 	
 	public boolean allModelsReady() {
 		return d_allModelsReadyListener.allModelsReady();
@@ -114,6 +117,7 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		d_allModelsReadyListener = new AllModelsReadyListener();
 		d_analysisProgressListeners = new ArrayList<AnalysisProgressListener>();
 		d_buildQueue = new BuildQueue();
+		d_progressBar = new SimulationProgressBar();
 		
 		if (!startAllNetworkAnalyses())
 			startSmaa();
@@ -136,10 +140,14 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		});
 		startSimulation();
 	}
+	
+	public SimulationProgressBar getSmaaSimulationProgressBar() {
+		return d_progressBar;
+	}
 
 	private void startSimulation() {
 		d_buildQueue.add(new BRSMAASimulationBuilder(d_model,
-				d_rankAccepTM, d_rankAccepDS, d_cwTM, d_cwDS));
+				d_rankAccepTM, d_rankAccepDS, d_cwTM, d_cwDS, d_progressBar));
 	}
 
 	public int getNumProgBars() {
