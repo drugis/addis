@@ -139,7 +139,7 @@ public class BenefitRiskView implements ViewBuilder {
 		table.setDefaultRenderer(Object.class, new ResultsCellRenderer(1.0));
 		
 		// FIXME: FileNames.ICON_SCRIPT was replaced by "". Should be filename of an icon 
-		return new ResultsView(d_main, "Central weight vectors", table, chart, "").buildPanel(); 
+		return new ResultsView(d_main, table, chart, "").buildPanel(); 
 	}
 
 	private JComponent buildRankAcceptabilitiesPart() {
@@ -150,7 +150,7 @@ public class BenefitRiskView implements ViewBuilder {
 		        d_pm.getRankAcceptabilityDataSet(), PlotOrientation.VERTICAL, true, true, false);
 
 		JPanel panel = new JPanel(new BorderLayout());
-		fi.smaa.jsmaa.gui.views.ResultsView view = new fi.smaa.jsmaa.gui.views.ResultsView(d_main, "Rank acceptability indices", table, chart, "");
+		fi.smaa.jsmaa.gui.views.ResultsView view = new fi.smaa.jsmaa.gui.views.ResultsView(d_main, table, chart, "");
 		panel.add(view.buildPanel(), BorderLayout.CENTER);
 		panel.add(d_pm.getSmaaSimulationProgressBar(), BorderLayout.NORTH);
 
