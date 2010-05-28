@@ -112,16 +112,16 @@ public class BenefitRiskIntegrationIT {
 	}
 	
 	protected void assertMeanwithinTenPercent(double pointEstimate, double lowerBound, double upperBound, Object measurementTableObject) {
-//		Note that this is the maximum allowed deviation for all cases in these tests, including the error in the expected (=recorded) value
-		double allowedDeviation = 0.075;
+//		Note that this is the maximum allowed deviation (10%) for all cases in these tests, including the error in the expected (=recorded) value
+		double allowedDeviation = 0.1;
 		
 		if (measurementTableObject instanceof LogContinuousMeasurementEstimate) {
-			assertEquals(pointEstimate, Math.exp(((LogContinuousMeasurementEstimate) measurementTableObject).getMean()), allowedDeviation);
+			assertEquals(pointEstimate, Math.exp(((LogContinuousMeasurementEstimate) measurementTableObject).getMean()), pointEstimate * allowedDeviation);
 		} else if (measurementTableObject instanceof ContinuousMeasurementEstimate) {
-			assertEquals(pointEstimate, ((ContinuousMeasurementEstimate) measurementTableObject).getMean(), allowedDeviation);
+			assertEquals(pointEstimate, ((ContinuousMeasurementEstimate) measurementTableObject).getMean(), pointEstimate * allowedDeviation);
 		}
-		assertEquals(lowerBound, ((ConfidenceInterval) measurementTableObject).getLowerBound(), allowedDeviation);
-		assertEquals(upperBound, ((ConfidenceInterval) measurementTableObject).getUpperBound(), allowedDeviation);
+		assertEquals(lowerBound, ((ConfidenceInterval) measurementTableObject).getLowerBound(), (Math.abs(lowerBound) + pointEstimate) * allowedDeviation);
+		assertEquals(upperBound, ((ConfidenceInterval) measurementTableObject).getUpperBound(), (Math.abs(upperBound) + pointEstimate) * allowedDeviation);
 	}
 }
 
