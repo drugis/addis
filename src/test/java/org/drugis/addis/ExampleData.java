@@ -251,7 +251,7 @@ public class ExampleData {
 		return s_studyDeWilde;
 	}
 
-	private static Study realBuildStudyDeWilde() {
+	public static Study realBuildStudyDeWilde() {
 		Endpoint hamd = buildEndpointHamd();
 		Drug fluoxetine = buildDrugFluoxetine();
 		Study study = new Study("De Wilde et al, 1993", buildIndicationDepression());
