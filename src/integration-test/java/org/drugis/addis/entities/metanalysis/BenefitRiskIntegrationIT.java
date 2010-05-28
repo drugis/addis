@@ -116,12 +116,12 @@ public class BenefitRiskIntegrationIT {
 		double allowedDeviation = 0.075;
 		
 		if (measurementTableObject instanceof LogContinuousMeasurementEstimate) {
-			assertEquals(pointEstimate, Math.exp(((LogContinuousMeasurementEstimate) measurementTableObject).getMean()), pointEstimate * allowedDeviation);
+			assertEquals(pointEstimate, Math.exp(((LogContinuousMeasurementEstimate) measurementTableObject).getMean()), allowedDeviation);
 		} else if (measurementTableObject instanceof ContinuousMeasurementEstimate) {
-			assertEquals(pointEstimate, ((ContinuousMeasurementEstimate) measurementTableObject).getMean(), pointEstimate * allowedDeviation);
+			assertEquals(pointEstimate, ((ContinuousMeasurementEstimate) measurementTableObject).getMean(), allowedDeviation);
 		}
-		assertEquals(lowerBound, ((ConfidenceInterval) measurementTableObject).getLowerBound(), Math.abs(lowerBound) * allowedDeviation);
-		assertEquals(upperBound, ((ConfidenceInterval) measurementTableObject).getUpperBound(), Math.abs(upperBound) * allowedDeviation);
+		assertEquals(lowerBound, ((ConfidenceInterval) measurementTableObject).getLowerBound(), allowedDeviation);
+		assertEquals(upperBound, ((ConfidenceInterval) measurementTableObject).getUpperBound(), allowedDeviation);
 	}
 }
 
