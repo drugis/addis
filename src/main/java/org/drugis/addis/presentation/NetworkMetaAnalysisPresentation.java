@@ -46,10 +46,15 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		getBean().getInconsistencyModel().addProgressListener(new ProgressListener() {
 			
 			public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
-				if (event.getType() == ProgressEvent.EventType.MODEL_CONSTRUCTION_FINISHED)
+				if (event.getType() == ProgressEvent.EventType.MODEL_CONSTRUCTION_FINISHED) {
 					d_isModelConstructionFinished = true;
+				}
 			}
 		});
+	}
+	
+	public String getNetworkXML() {
+		return getBean().getNetwork().toPrettyXML();
 	}
 
 	public StudyGraphModel getStudyGraphModel() {

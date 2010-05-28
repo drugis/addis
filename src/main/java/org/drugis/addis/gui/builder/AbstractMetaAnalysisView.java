@@ -62,7 +62,7 @@ public class AbstractMetaAnalysisView<T extends AbstractMetaAnalysisPresentation
 	protected JComponent buildOverviewPart() {
 		FormLayout layout = new FormLayout(
 				"pref, 3dlu, pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();

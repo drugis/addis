@@ -108,6 +108,7 @@ implements ViewBuilder {
 		new AnalysisProgressListener(d_conProgressBar, d_pm.getBean().getConsistencyModel());
 		new AnalysisProgressListener(d_incProgressBar, d_pm.getBean().getInconsistencyModel());
 		
+		//System.out.println(d_pm.getNetworkXML());
 		d_pm.getBean().run();
 	}
 
