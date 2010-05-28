@@ -37,7 +37,7 @@
 			<layout>default</layout>
 			<url>http://smaa.fi/mvn</url>
 			<snapshots>
-				<enabled>false</enabled>
+				<enabled>true</enabled>
 			</snapshots>
 		</repository>
 	</repositories>
