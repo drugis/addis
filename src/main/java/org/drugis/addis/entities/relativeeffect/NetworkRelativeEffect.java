@@ -4,9 +4,15 @@ import org.drugis.addis.entities.Measurement;
 
 public class NetworkRelativeEffect<T extends Measurement> extends AbstractRelativeEffect<T> implements RelativeEffect<T> {
 	private Distribution d_distribution;
-
+	private final boolean d_defined;
+	
 	public NetworkRelativeEffect(Distribution d) {
 		d_distribution = d;
+		d_defined = true;
+	}
+	
+	public NetworkRelativeEffect() {
+		d_defined = false;
 	}
 
 	static public NetworkRelativeEffect<? extends Measurement> buildOddsRatio(double mu, double sigma) {
@@ -26,6 +32,6 @@ public class NetworkRelativeEffect<T extends Measurement> extends AbstractRelati
 	}
 
 	public boolean isDefined() {
-		return true;
+		return d_defined;
 	}
 }

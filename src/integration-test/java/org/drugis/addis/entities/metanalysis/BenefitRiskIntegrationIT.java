@@ -12,8 +12,6 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
-import org.drugis.addis.entities.relativeeffect.ContinuousMeasurementEstimate;
-import org.drugis.addis.entities.relativeeffect.LogContinuousMeasurementEstimate;
 import org.drugis.addis.presentation.BenefitRiskMeasurementTableModel;
 import org.drugis.addis.presentation.BenefitRiskPM;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -115,13 +113,10 @@ public class BenefitRiskIntegrationIT {
 //		Note that this is the maximum allowed deviation (10%) for all cases in these tests, including the error in the expected (=recorded) value
 		double allowedDeviation = 0.1;
 		
-		if (measurementTableObject instanceof LogContinuousMeasurementEstimate) {
-			assertEquals(pointEstimate, Math.exp(((LogContinuousMeasurementEstimate) measurementTableObject).getMean()), pointEstimate * allowedDeviation);
-		} else if (measurementTableObject instanceof ContinuousMeasurementEstimate) {
-			assertEquals(pointEstimate, ((ContinuousMeasurementEstimate) measurementTableObject).getMean(), pointEstimate * allowedDeviation);
-		}
-		assertEquals(lowerBound, ((ConfidenceInterval) measurementTableObject).getLowerBound(), (Math.abs(lowerBound) + pointEstimate) * allowedDeviation);
-		assertEquals(upperBound, ((ConfidenceInterval) measurementTableObject).getUpperBound(), (Math.abs(upperBound) + pointEstimate) * allowedDeviation);
+		ConfidenceInterval ci = (ConfidenceInterval) measurementTableObject;
+		assertEquals(pointEstimate, ci.getPointEstimate(), pointEstimate * allowedDeviation);
+		assertEquals(lowerBound, ci.getLowerBound(), (Math.abs(lowerBound) + pointEstimate) * allowedDeviation);
+		assertEquals(upperBound, ci.getUpperBound(), (Math.abs(upperBound) + pointEstimate) * allowedDeviation);
 	}
 }
 

@@ -23,17 +23,18 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
-
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.relativeeffect.ContinuousMeasurementEstimate;
-import org.drugis.addis.entities.relativeeffect.LogContinuousMeasurementEstimate;
+import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.entities.relativeeffect.Gaussian;
+import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.Treatment;
@@ -79,7 +80,7 @@ public class NetworkTableModelTest {
 					assertEquals(d_analysis.getIncludedDrugs().get(x), ((PresentationModel<Drug>) d_tableModel.getValueAt(x, y)).getBean());
 					assertEquals(null, d_tableModel.getDescriptionAt(x, y));
 				} else {
-					assertEquals("n/a", ((PresentationModel<LogContinuousMeasurementEstimate>) d_tableModel.getValueAt(x, y)).getBean().toString());
+					assertEquals("N/A", ((LabeledPresentationModel) d_tableModel.getValueAt(x, y)).getLabelModel().getString());
 					String expected = "\""+d_analysis.getIncludedDrugs().get(y)+"\" relative to \""+d_analysis.getIncludedDrugs().get(x)+"\"";
 					assertEquals(expected, d_tableModel.getDescriptionAt(x, y));
 				}
@@ -100,10 +101,15 @@ public class NetworkTableModelTest {
 					Treatment t1 = d_analysis.getBuilder().getTreatment(d_analysis.getIncludedDrugs().get(x).getName());
 					Treatment t2 = d_analysis.getBuilder().getTreatment(d_analysis.getIncludedDrugs().get(y).getName());
 					Estimate relEffect = d_analysis.getInconsistencyModel().getRelativeEffect(t1, t2);
-					assertEquals(new LogContinuousMeasurementEstimate(relEffect.getMean(), relEffect.getStandardDeviation()).toString(), ((PresentationModel<LogContinuousMeasurementEstimate>) d_tableModel.getValueAt(x, y)).getBean().toString());
+					assertEquals(distributionToString(new LogGaussian(relEffect.getMean(), relEffect.getStandardDeviation())), ((LabeledPresentationModel) d_tableModel.getValueAt(x, y)).getLabelModel().getString());
 				}
 			}
 		}	
+	}
+	
+	private String distributionToString(Distribution distr) {
+		DecimalFormat df = new DecimalFormat("##0.00");
+		return "" + df.format(distr.getQuantile(0.50)) + " (" + df.format(distr.getQuantile(0.025)) + ", " + df.format(distr.getQuantile(0.975)) +")"; 
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -113,6 +119,7 @@ public class NetworkTableModelTest {
 		d_contTableModel = new NetworkTableModel((NetworkMetaAnalysisPresentation)d_pmf.getModel(d_contAnalysis), d_pmf, d_contAnalysis.getInconsistencyModel());
 		
 		d_contAnalysis.getInconsistencyModel().run();
+		d_tableModel = new NetworkTableModel((NetworkMetaAnalysisPresentation)d_pmf.getModel(d_contAnalysis), d_pmf, d_contAnalysis.getInconsistencyModel());
 
 		for(int x = 0; x < d_contAnalysis.getIncludedDrugs().size(); ++x){
 			for(int y = 0; y < d_contAnalysis.getIncludedDrugs().size(); ++y){
@@ -122,7 +129,7 @@ public class NetworkTableModelTest {
 					Treatment t1 = d_contAnalysis.getBuilder().getTreatment(d_contAnalysis.getIncludedDrugs().get(x).getName());
 					Treatment t2 = d_contAnalysis.getBuilder().getTreatment(d_contAnalysis.getIncludedDrugs().get(y).getName());
 					Estimate relEffect = d_contAnalysis.getInconsistencyModel().getRelativeEffect(t1, t2);
-					assertEquals(new ContinuousMeasurementEstimate(relEffect.getMean(), relEffect.getStandardDeviation()).toString(), ((PresentationModel<ContinuousMeasurementEstimate>) d_contTableModel.getValueAt(x, y)).getBean().toString());
+					assertEquals(distributionToString(new Gaussian(relEffect.getMean(), relEffect.getStandardDeviation())), ((LabeledPresentationModel) d_tableModel.getValueAt(x, y)).getLabelModel().getString());
 				}
 			}
 		}	

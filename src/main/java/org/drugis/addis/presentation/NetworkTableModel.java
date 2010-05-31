@@ -23,8 +23,8 @@ package org.drugis.addis.presentation;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.relativeeffect.ContinuousMeasurementEstimate;
-import org.drugis.addis.entities.relativeeffect.LogContinuousMeasurementEstimate;
+import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyModel;
@@ -61,21 +61,23 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 	public Object getValueAt(int row, int col) {
 		if (row == col) {
 			return d_pmf.getModel(d_pm.getBean().getIncludedDrugs().get(row));
-		} else if(!d_networkModel.isReady()){
-			return d_pmf.getModel(new LogContinuousMeasurementEstimate(null, null));
-		} 
+		} if (!d_networkModel.isReady()) {
+			return d_pmf.getLabeledModel(new NetworkRelativeEffect<Measurement>());
+		}
 
 		final Treatment drug1 = d_pm.getBean().getBuilder().getTreatment(d_pm.getBean().getIncludedDrugs().get(row).toString());
 		final Treatment drug2 = d_pm.getBean().getBuilder().getTreatment(d_pm.getBean().getIncludedDrugs().get(col).toString());
 		
-		Estimate relEffect = d_networkModel.getRelativeEffect(drug1, drug2);
-
+		Estimate re = d_networkModel.getRelativeEffect(drug1, drug2);
+		
+		NetworkRelativeEffect<? extends Measurement> nre;
 		
 		if(d_pm.getBean().isContinuous())
-			return d_pmf.getModel(new ContinuousMeasurementEstimate(relEffect.getMean(), relEffect.getStandardDeviation()));
+			nre = NetworkRelativeEffect.buildMeanDifference(re.getMean(), re.getStandardDeviation());
 		else
-			// convert to Log Odds-ratio
-			return d_pmf.getModel(new LogContinuousMeasurementEstimate(relEffect.getMean(), relEffect.getStandardDeviation()));
+			nre = NetworkRelativeEffect.buildOddsRatio(re.getMean(), re.getStandardDeviation());
+		
+		return d_pmf.getLabeledModel(nre);
 	}
 
 	public String getDescription() {

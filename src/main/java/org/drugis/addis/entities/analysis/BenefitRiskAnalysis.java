@@ -156,7 +156,7 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 				return ma.getRelativeEffect(d_baseline, d, type);
 			}
 		}
-		return null;
+		throw new IllegalArgumentException("No analyses comparing drug " + d + " and Outcome " + om + " in this Benefit-Risk analysis");
 	}
 	
 	public Distribution getRelativeEffectDistribution(Drug d, OutcomeMeasure om) {
