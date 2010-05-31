@@ -88,6 +88,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.builder.EntitiesNodeView;
 import org.drugis.addis.gui.builder.StudiesNodeView;
@@ -985,6 +986,10 @@ public class Main extends JFrame {
 					.getModel(((Study) node)), getDomain(), this);
 			setRightPanelView(view);
 		} else if (node instanceof RandomEffectsMetaAnalysis) {
+			d_leftPanelTree.setSelectionPath(new TreePath(new Object[] {
+					d_domainTreeModel.getRoot(),
+					d_domainTreeModel.getAnalysesNode(), node }));
+		} else if (node instanceof NetworkMetaAnalysis) {
 			d_leftPanelTree.setSelectionPath(new TreePath(new Object[] {
 					d_domainTreeModel.getRoot(),
 					d_domainTreeModel.getAnalysesNode(), node }));
