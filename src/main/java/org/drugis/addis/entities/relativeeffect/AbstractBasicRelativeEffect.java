@@ -23,8 +23,6 @@ package org.drugis.addis.entities.relativeeffect;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.Collections;
 import java.util.Set;
 
@@ -40,11 +38,6 @@ public abstract class AbstractBasicRelativeEffect<T extends Measurement> extends
 		d_baseline = baseline;
 		connectListeners();
 	}
-	
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
-		in.defaultReadObject();
-		connectListeners();
-	}	
 	
 	private void connectListeners() {
 		MemberListener listener = new MemberListener();
@@ -77,8 +70,6 @@ public abstract class AbstractBasicRelativeEffect<T extends Measurement> extends
 	public abstract Double getError();
 	
 	protected abstract Integer getDegreesOfFreedom();
-	
-	
 	
 	public boolean isDefined() {
 		return getDegreesOfFreedom() > 0;

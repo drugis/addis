@@ -2,9 +2,7 @@ package org.drugis.addis.entities.relativeeffect;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
 
 public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurement> implements RandomEffectMetaAnalysisRelativeEffect<Measurement> {
@@ -197,10 +195,5 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 			dists.add(re.getDistribution());
 		}
 		return dists;
-	}
-
-	@Override
-	public Set<? extends Entity> getDependencies() {
-		return null;
 	}
 }

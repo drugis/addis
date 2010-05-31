@@ -1,8 +1,5 @@
 package org.drugis.addis.entities.relativeeffect;
 
-import java.util.Set;
-
-import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
 
 public class NetworkRelativeEffect<T extends Measurement> extends AbstractRelativeEffect<T> implements RelativeEffect<T> {
@@ -18,11 +15,6 @@ public class NetworkRelativeEffect<T extends Measurement> extends AbstractRelati
 	
 	static public NetworkRelativeEffect<? extends Measurement> buildMeanDifference(double mu, double sigma) {
 		return new NetworkRelativeEffect<Measurement>(new Gaussian(mu, sigma));
-	}
-
-	@Override
-	public Set<? extends Entity> getDependencies() {
-		return null;
 	}
 
 	public Distribution getDistribution() {

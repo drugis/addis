@@ -21,10 +21,11 @@
 
 package org.drugis.addis.entities.relativeeffect;
 
-import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
 
-public interface RelativeEffect<T extends Measurement> extends Entity{
+import com.jgoodies.binding.beans.Observable;
+
+public interface RelativeEffect<T extends Measurement> extends Observable{
 
 	public Distribution getDistribution();
 	
