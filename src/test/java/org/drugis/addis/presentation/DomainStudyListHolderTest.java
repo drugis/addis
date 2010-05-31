@@ -23,6 +23,7 @@ package org.drugis.addis.presentation;
 
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.*;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -65,6 +66,12 @@ public class DomainStudyListHolderTest {
 		studies.add(ExampleData.buildStudyMultipleArmsperDrug());
 		
 		assertAllAndOnly(studies, d_pm.getValue());
+	}
+	
+	@Test
+	public void testHidesZeroRateStudies() {
+		d_domain.addStudy(ExampleData.buildStudyZeroRate());
+		assertFalse(d_pm.getValue().contains(ExampleData.buildStudyZeroRate()));
 	}
 	
 	@Test

@@ -42,11 +42,10 @@ import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
-import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
+import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelativeEffect;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -207,6 +206,14 @@ public class RandomEffectsMetaAnalysisTest {
 		assertEquals(approach1.getConfidenceInterval(), approach2.getConfidenceInterval());
 		//assertEquals(approach1.getSampleSize(), approach2.getSampleSize());
 		assertEquals(approach1.getAxisType(), approach2.getAxisType());
+	}
+	
+	@Test(expected = IllegalStateException.class)
+	public void testGetRelativeEffectErrorIfStudyCannotBeAnalyzed() {
+		Study illegal = createRateStudy("rate = 0",0,144,0,142, d_ind);
+		d_studyList.add(illegal);
+		RandomEffectsMetaAnalysis rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, d_fluox, d_sertr);
+		rema.getRelativeEffect(BasicOddsRatio.class);
 	}
 	
 	@Test
