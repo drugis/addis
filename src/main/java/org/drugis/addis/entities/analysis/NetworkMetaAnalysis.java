@@ -199,7 +199,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	public NetworkRelativeEffect<? extends Measurement> getRelativeEffect(Drug d1, Drug d2, Class<? extends RelativeEffect<?>> type) {
 		
 		if(!getConsistencyModel().isReady())
-			return null;
+			return new NetworkRelativeEffect<Measurement>(); // empty relative effect.
 		
 		ConsistencyModel consistencyModel = getConsistencyModel();
 		Estimate estimate = consistencyModel.getRelativeEffect(new Treatment(d1.getName()), new Treatment(d2.getName()));

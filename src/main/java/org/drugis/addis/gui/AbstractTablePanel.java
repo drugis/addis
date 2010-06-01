@@ -41,7 +41,6 @@ import org.drugis.addis.presentation.TableModelWithDescription;
 public class AbstractTablePanel extends JPanel {
 
 	protected TableModel d_tableModel;
-	//protected JPanel d_rootPanel;
 	protected JTable d_table;
 	private JScrollPane d_scroll;
 	private int d_maxWidth;
@@ -51,8 +50,6 @@ public class AbstractTablePanel extends JPanel {
 		d_tableModel = tableModel;
 		d_table = new JTable(d_tableModel);
 		d_table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		//d_rootPanel = new JPanel(new BorderLayout());
-		//d_rootPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		setRenderer();
 		initComps();
 	}

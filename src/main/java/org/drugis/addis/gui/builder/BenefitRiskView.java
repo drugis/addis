@@ -172,9 +172,6 @@ public class BenefitRiskView implements ViewBuilder {
 		builder.addLabel("Criteria:", cc.xy(1, 5));
 		builder.add(new JLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_OUTCOMEMEASURES).getValue().toString()),cc.xy(3, 5));
 		
-		builder.addLabel("Baseline:", cc.xy(1, 7));
-		builder.add(new JLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_BASELINE).getValue().toString()),cc.xy(3, 7));
-		
 		builder.addLabel("Alternatives:", cc.xy(1, 9));
 		builder.add(new JLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_DRUGS).getValue().toString()),cc.xy(3, 9));
 		

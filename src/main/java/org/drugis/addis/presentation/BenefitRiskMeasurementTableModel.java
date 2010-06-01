@@ -10,11 +10,11 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
 	
 	protected BenefitRiskAnalysis d_br;
-//	private PresentationModelFactory d_pmf;
+	private PresentationModelFactory d_pmf;
 
 	public BenefitRiskMeasurementTableModel(BenefitRiskAnalysis br, PresentationModelFactory pmf) {
 		d_br = br;
-//		d_pmf = pmf;
+		d_pmf = pmf;
 	}
 
 	public int getColumnCount() {
@@ -43,10 +43,8 @@ public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
 		}
 
 		RelativeEffect<? extends Measurement> relativeEffect = d_br.getRelativeEffect(d_br.getDrugs().get(rowIndex), d_br.getOutcomeMeasures().get(columnIndex-1));
-		if (relativeEffect == null)
-			return "N/A";
-		
-		return relativeEffect.getConfidenceInterval();
+
+		return d_pmf.getLabeledModel(relativeEffect);
 	}
 
 }

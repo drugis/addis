@@ -30,7 +30,7 @@ public class JSMAAIntegrationTest {
 	@Test
 	public void testCreateCardinalMeasurementRate() {
 		
-		RelativeEffect<? extends Measurement> relativeEffect = d_BRAnalysis.getRelativeEffect(ExampleData.buildDrugParoxetine(), ExampleData.buildEndpointHamd());
+		RelativeEffect<? extends Measurement> relativeEffect = d_BRAnalysis.getRelativeEffect(ExampleData.buildDrugFluoxetine(), ExampleData.buildEndpointHamd());
 		CardinalMeasurement actual = SMAAEntityFactory.createCardinalMeasurement(relativeEffect.getDistribution());
 		assertTrue(!((LogNormalMeasurement) actual).getMean().isNaN());
 		assertTrue(actual instanceof LogNormalMeasurement);
@@ -44,6 +44,8 @@ public class JSMAAIntegrationTest {
 		SMAAModel smaaModel = d_SMAAFactory.createSmaaModel(d_BRAnalysis);
 		for(OutcomeMeasure om : d_BRAnalysis.getOutcomeMeasures()){
 			for(Drug d : d_BRAnalysis.getDrugs()){
+				if (d.equals(d_BRAnalysis.getBaseline()))
+					continue;
 				fi.smaa.jsmaa.model.Measurement actualMeasurement = smaaModel.getMeasurement(d_SMAAFactory.getCriterion(om), d_SMAAFactory.getAlternative(d));
 				RelativeEffect<? extends Measurement> expRelativeEffect = d_BRAnalysis.getRelativeEffect(d, om);
 				assertEquals(Math.log(expRelativeEffect.getConfidenceInterval().getPointEstimate()), ((LogNormalMeasurement) actualMeasurement).getMean(), 0.0001);

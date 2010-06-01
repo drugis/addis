@@ -57,6 +57,8 @@ public class RelativeEffectPresentation extends PresentationModel<RelativeEffect
 		public void setValue(Object arg0) {
 			throw new RuntimeException();
 		}
+		
+	
 	}
 
 	public RelativeEffectPresentation(RelativeEffect<? extends Measurement> bean) {
@@ -65,5 +67,9 @@ public class RelativeEffectPresentation extends PresentationModel<RelativeEffect
 	
 	public AbstractValueModel getLabelModel() {
 		return new LabelModel();
+	}
+	
+	public String toString() {
+		return (String) getLabelModel().getValue();
 	}
 }

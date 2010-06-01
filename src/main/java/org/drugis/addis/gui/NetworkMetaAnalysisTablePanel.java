@@ -37,8 +37,6 @@ import org.drugis.addis.presentation.NetworkTableModel;
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 
-
-
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisTablePanel extends AbstractTablePanel{
 	
@@ -71,8 +69,10 @@ public class NetworkMetaAnalysisTablePanel extends AbstractTablePanel{
 			}
 			label.setOpaque(true);
 			
-			if (((NetworkTableModel) d_tableModel).getDescriptionAt(row, col) != null) {
-				label.setToolTipText(((NetworkTableModel) d_tableModel).getDescriptionAt(row, col));
+			if (d_tableModel instanceof NetworkTableModel) { // FIXME: Extract TableModelWithDescriptionAt interface
+				if (((NetworkTableModel) d_tableModel).getDescriptionAt(row, col) != null) {
+					label.setToolTipText(((NetworkTableModel) d_tableModel).getDescriptionAt(row, col));
+				}
 			}
 			
 			return label;

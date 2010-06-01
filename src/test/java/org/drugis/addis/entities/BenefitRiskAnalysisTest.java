@@ -53,9 +53,13 @@ public class BenefitRiskAnalysisTest {
 		ArrayList<Drug> newList = new ArrayList<Drug>();
 		newList.add(ExampleData.buildDrugViagra());
 		newList.add(ExampleData.buildDrugCandesartan());
+
 		Collections.sort(newList, new AlphabeticalComparator());
-		JUnitUtil.testSetter(d_BRAnalysis, BenefitRiskAnalysis.PROPERTY_DRUGS, 
-				d_BRAnalysis.getDrugs(), newList);
+		//JUnitUtil.testSetter(d_BRAnalysis, BenefitRiskAnalysis.PROPERTY_DRUGS, 
+		//		d_BRAnalysis.getDrugs(), newList);
+		d_BRAnalysis.setDrugs(newList);
+		newList.add(ExampleData.buildDrugParoxetine());
+		JUnitUtil.assertAllAndOnly(newList, d_BRAnalysis.getDrugs());
 	}
 	@Test
 	public void testGetSetBaseLine() {

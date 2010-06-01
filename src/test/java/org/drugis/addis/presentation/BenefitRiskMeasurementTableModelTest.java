@@ -53,9 +53,9 @@ public class BenefitRiskMeasurementTableModelTest {
 	public void testGetValueAt() {
 		for (int i=0; i<d_brAnalysis.getDrugs().size(); ++i)
 			for (int j=0; j<d_brAnalysis.getOutcomeMeasures().size(); ++j) {
-				ConfidenceInterval expected = d_brAnalysis.getRelativeEffect(d_brAnalysis.getDrugs().get(i), d_brAnalysis.getOutcomeMeasures().get(j)).getConfidenceInterval();
+				Object expected = d_pmf.getLabeledModel(d_brAnalysis.getRelativeEffect(d_brAnalysis.getDrugs().get(i), d_brAnalysis.getOutcomeMeasures().get(j)));
 				Object actual = d_pm.getValueAt(i, j+1);
-				assertEquals(expected, actual);
+				assertEquals(expected.toString(), actual.toString());
 			}
 	}
 	

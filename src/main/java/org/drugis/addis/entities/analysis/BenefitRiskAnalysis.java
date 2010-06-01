@@ -18,6 +18,7 @@ import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
+import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.common.AlphabeticalComparator;
 
@@ -85,6 +86,7 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 
 	public List<Drug> getDrugs() {
 		List<Drug> sortedList = new ArrayList<Drug>(d_drugs);
+		sortedList.add(getBaseline());
 		Collections.sort(sortedList, new AlphabeticalComparator());
 		return sortedList;
 	}
@@ -92,12 +94,8 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	public void setDrugs(List<Drug> drugs) {
 		List<Drug> oldValue = d_drugs;
 		d_drugs = drugs;
+		d_drugs.remove(getBaseline());
 		firePropertyChange(PROPERTY_DRUGS, oldValue, drugs);
-	}
-	
-	@Override
-	public String[] getXmlExclusions() {
-		return new String[]{"allDrugs"};
 	}
 
 	@Override
@@ -152,9 +150,15 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	public RelativeEffect<? extends Measurement> getRelativeEffect(Drug d, OutcomeMeasure om) {
 		for(MetaAnalysis ma : getMetaAnalyses()){
 			if(ma.getOutcomeMeasure().equals(om)){
-				Class<? extends RelativeEffect<? extends Measurement>> type = (om.getType().equals(Variable.Type.RATE)) ? BasicOddsRatio.class : BasicMeanDifference.class;
-				return ma.getRelativeEffect(d_baseline, d, type);
+				if (!d.equals(getBaseline())) {
+					Class<? extends RelativeEffect<? extends Measurement>> type = (om.getType().equals(Variable.Type.RATE)) ? BasicOddsRatio.class : BasicMeanDifference.class;
+					return ma.getRelativeEffect(d_baseline, d, type);
+				}
+				else {
+					return new NetworkRelativeEffect<Measurement>(); // empty relative effect.
+				}
 			}
+			
 		}
 		throw new IllegalArgumentException("No analyses comparing drug " + d + " and Outcome " + om + " in this Benefit-Risk analysis");
 	}
