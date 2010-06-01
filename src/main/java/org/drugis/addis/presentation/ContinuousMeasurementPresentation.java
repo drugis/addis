@@ -71,7 +71,7 @@ extends PresentationModel<T> implements LabeledPresentationModel {
 	}
 	
 	public String normConfIntervalString() {
-		DecimalFormat df = new DecimalFormat("##0.0##");
+		DecimalFormat df = new DecimalFormat("###0.00");
 		NormalDistribution distribution = new NormalDistributionImpl(getBean().getMean(), getBean().getStdDev());
 		Interval<Double> confInterval;
 		try {
