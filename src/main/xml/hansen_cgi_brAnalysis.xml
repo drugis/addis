@@ -7549,7 +7549,7 @@
 		</randomEffectsMetaAnalysis>
 	</metaAnalyses>
 	<benefitRiskAnalyses id="2684">
-		<org.drugis.addis.entities.BenefitRiskAnalysis id="2685" name="cgi anxiety BR analysis">
+		<benefitRiskAnalysis id="2685" name="cgi anxiety BR analysis">
 			<baseline class="drug" ref="71"/>
 			<drugs id="2686">
 				<drug ref="75"/>
@@ -7563,6 +7563,6 @@
 				<endpoint ref="3"/>
 				<adverseEvent ref="13"/>
 			</outcomeMeasures>
-		</org.drugis.addis.entities.BenefitRiskAnalysis>
+		</benefitRiskAnalysis>
 	</benefitRiskAnalyses>
 </addis-data>

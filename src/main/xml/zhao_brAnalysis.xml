@@ -4501,7 +4501,7 @@
 		</randomEffectsMetaAnalysis>
 	</metaAnalyses>
 	<benefitRiskAnalyses id="1229">
-		<org.drugis.addis.entities.BenefitRiskAnalysis id="1230" name="Hansen BR analysis">
+		<benefitRiskAnalysis id="1230" name="Hansen BR analysis">
 			<baseline class="drug" ref="15"/>
 			<drugs id="1231">
 				<drug ref="18"/>
@@ -4525,6 +4525,6 @@
 				<adverseEvent ref="8"/>
 				<adverseEvent ref="9"/>
 			</outcomeMeasures>
-		</org.drugis.addis.entities.BenefitRiskAnalysis>
+		</benefitRiskAnalysis>
 	</benefitRiskAnalyses>
 </addis-data>

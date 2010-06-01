@@ -124,7 +124,6 @@ public class AddisBinding extends XMLBinding {
 		
 		setAlias(NetworkMetaAnalysis.class, "networkMetaAnalysis");
 		setAlias(RandomEffectsMetaAnalysis.class, "randomEffectsMetaAnalysis");
-		setAlias(BenefitRiskAnalysis.class, "org.drugis.addis.entities.BenefitRiskAnalysis"); // FIXME: Hack to ensure compatibility with old xml.
 		setAlias(BenefitRiskAnalysis.class, "benefitRiskAnalysis");
 		
 		
