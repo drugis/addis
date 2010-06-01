@@ -8,7 +8,6 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
 import org.junit.Before;
 import org.junit.Test;
 
