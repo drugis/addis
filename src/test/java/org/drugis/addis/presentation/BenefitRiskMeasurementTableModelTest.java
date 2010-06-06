@@ -57,4 +57,7 @@ public class BenefitRiskMeasurementTableModelTest {
 				assertEquals(expected.toString(), actual.toString());
 			}
 	}
+	
+	
+	
 }

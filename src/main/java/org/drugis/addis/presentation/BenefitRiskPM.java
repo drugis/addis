@@ -176,10 +176,6 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		return new BenefitRiskMeasurementTableModel(getBean(), d_pmf);
 	}
 	
-	public PreferenceScaleTableModel getPreferenceScaleTableModel() {
-		return new PreferenceScaleTableModel(getBean(), d_pmf);
-	}
-	
 	private boolean startAllNetworkAnalyses() {
 		getBean().runAllConsistencyModels();
 		boolean hasNetworks = false;
