@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 
 import org.drugis.addis.ExampleData;
@@ -72,7 +73,7 @@ public class BenefitRiskAnalysisTest {
 		newList.add(ExampleData.buildNetworkMetaAnalysis());
 		newList.add(ExampleData.buildNetworkMetaAnalysisAlternative());
 		JUnitUtil.testSetter(d_BRAnalysis, BenefitRiskAnalysis.PROPERTY_METAANALYSES, 
-				d_BRAnalysis.getMetaAnalyses(), newList);
+				d_BRAnalysis.getMetaAnalyses(), (Collection) newList);
 	}
 	
 	@Test

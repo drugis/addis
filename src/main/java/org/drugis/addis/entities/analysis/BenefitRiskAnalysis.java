@@ -1,9 +1,12 @@
 package org.drugis.addis.entities.analysis;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drugis.addis.entities.AbstractEntity;
@@ -22,12 +25,14 @@ import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.common.AlphabeticalComparator;
 
+
 public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<BenefitRiskAnalysis> {
 	
 	private String d_name;
 	private Indication d_indication;
-	private List<OutcomeMeasure> d_outcomeMeasures;
-	private List<MetaAnalysis> d_metaAnalyses;
+	//private List<OutcomeMeasure> d_outcomeMeasures;
+	//private List<MetaAnalysis> d_metaAnalyses;
+	private Map<OutcomeMeasure,MetaAnalysis> d_metaAnalysesMap;
 	private List<Drug> d_drugs;
 	private Drug d_baseline;
 	
@@ -45,11 +50,20 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 			List<MetaAnalysis> metaAnalysis, Drug baseline, List<Drug> drugs) {
 		super();
 		d_indication = indication;
-		d_outcomeMeasures = outcomeMeasures;
-		d_metaAnalyses = metaAnalysis;
+		d_metaAnalysesMap = constructMap(outcomeMeasures, metaAnalysis);
 		d_drugs = drugs;
 		setBaseline(baseline);
 		setName(id);
+	}
+	
+	private Map<OutcomeMeasure,MetaAnalysis> constructMap(Collection<OutcomeMeasure> outcomeMeasures, 	Collection<MetaAnalysis> metaAnalysis ) {
+		Map<OutcomeMeasure,MetaAnalysis> metaAnalysisMap = new HashMap<OutcomeMeasure,MetaAnalysis>();
+		for(MetaAnalysis ma : metaAnalysis){
+			if (!outcomeMeasures.contains(ma.getOutcomeMeasure()))
+				throw new IllegalStateException("Outcome " + ma.getOutcomeMeasure() + " not on the outcome-measure list");
+			metaAnalysisMap.put(ma.getOutcomeMeasure(), ma);
+		}
+		return metaAnalysisMap;
 	}
 
 	public Indication getIndication() {
@@ -63,24 +77,24 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	}
 
 	public List<OutcomeMeasure> getOutcomeMeasures() {
-		List<OutcomeMeasure> sortedList = new ArrayList<OutcomeMeasure>(d_outcomeMeasures);
+		List<OutcomeMeasure> sortedList = new ArrayList<OutcomeMeasure>(d_metaAnalysesMap.keySet());
 		Collections.sort(sortedList, new AlphabeticalComparator());
 		return sortedList;
 	}
 
 	public void setOutcomeMeasures(List<OutcomeMeasure> outcomeMeasures) {
-		List<OutcomeMeasure> oldValue = d_outcomeMeasures;
-		d_outcomeMeasures = outcomeMeasures;
+		List<OutcomeMeasure> oldValue = new ArrayList<OutcomeMeasure>(d_metaAnalysesMap.keySet());
+		d_metaAnalysesMap = constructMap(outcomeMeasures, d_metaAnalysesMap.values());
 		firePropertyChange(PROPERTY_OUTCOMEMEASURES, oldValue, outcomeMeasures);
 	}
 
-	public List<MetaAnalysis> getMetaAnalyses() {
-		return d_metaAnalyses;
+	public Collection<MetaAnalysis> getMetaAnalyses() {
+		return d_metaAnalysesMap.values();
 	}
 
 	public void setMetaAnalyses(List<MetaAnalysis> metaAnalysis) {
-		List<MetaAnalysis> oldValue = d_metaAnalyses;
-		d_metaAnalyses = metaAnalysis;
+		Collection<MetaAnalysis> oldValue = d_metaAnalysesMap.values();
+		d_metaAnalysesMap = constructMap(d_metaAnalysesMap.keySet(), metaAnalysis);
 		firePropertyChange(PROPERTY_METAANALYSES, oldValue, metaAnalysis);
 	}
 
@@ -102,9 +116,9 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	public Set<? extends Entity> getDependencies() {
 		HashSet<Entity> dependencies = new HashSet<Entity>();
 		dependencies.add(d_indication);
-		dependencies.addAll(d_outcomeMeasures);
+		dependencies.addAll(d_metaAnalysesMap.keySet());
 		dependencies.addAll(d_drugs);
-		dependencies.addAll(d_metaAnalyses);
+		dependencies.addAll(d_metaAnalysesMap.values());
 		return dependencies;
 	}
 
@@ -148,7 +162,7 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	}
 
 	public RelativeEffect<? extends Measurement> getRelativeEffect(Drug d, OutcomeMeasure om) {
-		for(MetaAnalysis ma : getMetaAnalyses()){
+			MetaAnalysis ma = d_metaAnalysesMap.get(om);
 			if(ma.getOutcomeMeasure().equals(om)){
 				if (!d.equals(getBaseline())) {
 					Class<? extends RelativeEffect<? extends Measurement>> type = (om.getType().equals(Variable.Type.RATE)) ? BasicOddsRatio.class : BasicMeanDifference.class;
@@ -159,7 +173,7 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 				}
 			}
 			
-		}
+		
 		throw new IllegalArgumentException("No analyses comparing drug " + d + " and Outcome " + om + " in this Benefit-Risk analysis");
 	}
 	
@@ -182,4 +196,27 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 		}
 	}
 	
+	/*
+	 * WIP
+	 */
+	// How to get the odds from a meta-analysis?
+	private double oddsBaseLine(OutcomeMeasure om) {
+		return 0;
+	}
+	
+	public Distribution getOddsRatioScale(OutcomeMeasure om) {
+		return null;
+	}
+	
+	public Distribution getAbsoluteRiskScale(OutcomeMeasure om) {
+		return null;
+	}
+	
+	public Distribution getRiskDifferenceScale(OutcomeMeasure om) {
+		return null;
+	}
+	
+	public Distribution getNNT(OutcomeMeasure om) {
+		return null;
+	}
 }
