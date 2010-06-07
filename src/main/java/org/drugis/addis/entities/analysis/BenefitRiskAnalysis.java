@@ -15,8 +15,8 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
-import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
+import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
@@ -166,7 +166,7 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	/**
 	 * The effect of d on om relative to the baseline treatment. 
 	 */
-	public Distribution getRelativeEffectDistribution(Drug d, OutcomeMeasure om) {
+	public GaussianBase getRelativeEffectDistribution(Drug d, OutcomeMeasure om) {
 		if (d.equals(getBaseline())) {
 			switch (om.getType()) {
 			case RATE:
@@ -175,13 +175,13 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 				return new Gaussian(0, 0);
 			}
 		}
-		return getRelativeEffect(d, om).getDistribution();
+		return (GaussianBase) getRelativeEffect(d, om).getDistribution();
 	}
 	
 	/**
 	 * Get the assumed distribution for the baseline odds.
 	 */
-	public Distribution getBaselineDistribution(OutcomeMeasure om) { // FIXME: implement for story 1.5
+	public GaussianBase getBaselineDistribution(OutcomeMeasure om) { // FIXME: implement for story 1.5
 		switch (om.getType()) {
 		case RATE:
 			return new LogGaussian(0.1, 0.1);
@@ -194,22 +194,11 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	/**
 	 * The absolute effect of d on om given the assumed odds of the baseline treatment. 
 	 */
-	public Distribution getAbsoluteEffectDistribution(Drug d, OutcomeMeasure om) {
-		switch (om.getType()) {
-			case RATE: {
-				LogGaussian baseline = (LogGaussian)getBaselineDistribution(om);
-				LogGaussian relative = (LogGaussian)getRelativeEffectDistribution(d, om);
-				return new LogGaussian(baseline.getMu() + relative.getMu(), 
-						Math.sqrt(Math.pow(baseline.getSigma(), 2) + Math.pow(relative.getSigma(), 2)));
-			}
-			case CONTINUOUS: {
-				Gaussian baseline = (Gaussian)getBaselineDistribution(om);
-				Gaussian relative = (Gaussian)getRelativeEffectDistribution(d, om);
-				return new Gaussian(baseline.getMu() + relative.getMu(), 
-						Math.sqrt(Math.pow(baseline.getSigma(), 2) + Math.pow(relative.getSigma(), 2)));
-			}
-		}
-		return null;
+	public GaussianBase getAbsoluteEffectDistribution(Drug d, OutcomeMeasure om) {
+		GaussianBase baseline = getBaselineDistribution(om);
+		GaussianBase relative = getRelativeEffectDistribution(d, om);
+		if (baseline == null || relative == null) return null;
+		return baseline.plus(relative);
 	}
 
 	public void runAllConsistencyModels() {

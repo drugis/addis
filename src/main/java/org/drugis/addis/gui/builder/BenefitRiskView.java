@@ -184,10 +184,17 @@ public class BenefitRiskView implements ViewBuilder {
 	}
 	
 	private JComponent buildMeasurementsPart() {
-		JPanel panel = new JPanel(new BorderLayout());
-		panel.add(new JLabel("All measurements are relative to "+d_pm.getBean().getBaseline()), BorderLayout.NORTH);
-		panel.add(new AbstractTablePanel(d_pm.getMeasurementTableModel()), BorderLayout.SOUTH);
+		CellConstraints cc = new CellConstraints();
+		FormLayout layout = new FormLayout("left:pref:grow",
+				"p, 3dlu, p, 3dlu, p, 3dlu, p");
+		PanelBuilder builder = new PanelBuilder(layout);
+		
+		builder.addLabel("All measurements are relative to "+d_pm.getBean().getBaseline(), cc.xy(1, 1));
+		builder.add(new AbstractTablePanel(d_pm.getMeasurementTableModel(true)), cc.xy(1, 3));
 	
-		return panel;
+		builder.addLabel("All measurements using assumption for absolute measurement on "+d_pm.getBean().getBaseline(), cc.xy(1, 5));
+		builder.add(new AbstractTablePanel(d_pm.getMeasurementTableModel(false)), cc.xy(1, 7));
+	
+		return builder.getPanel();
 	}
 }

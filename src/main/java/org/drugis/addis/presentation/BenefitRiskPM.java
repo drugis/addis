@@ -172,8 +172,8 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		return entitiesPMs;
 	}
 
-	public BenefitRiskMeasurementTableModel getMeasurementTableModel() {
-		return new BenefitRiskMeasurementTableModel(getBean(), d_pmf);
+	public BenefitRiskMeasurementTableModel getMeasurementTableModel(boolean relative) {
+		return new BenefitRiskMeasurementTableModel(getBean(), d_pmf, relative);
 	}
 	
 	private boolean startAllNetworkAnalyses() {
