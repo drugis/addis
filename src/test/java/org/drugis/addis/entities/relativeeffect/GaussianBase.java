@@ -32,8 +32,16 @@ public abstract class GaussianBase implements Distribution {
 	public double getMu() {
 		return d_mu;
 	}
-	
-	/*
-	abstract protected GaussianBase newInstance(double mu, double sigma);
-	abstract protected boolean canEqual(GaussianBase other); */
+
+	public GaussianBase plus(GaussianBase other) {
+		if (!canEqual(other)) throw new IllegalArgumentException(
+				"Cannot add together " + getClass().getSimpleName() +
+				" and " + other.getClass().getSimpleName());
+		return newInstance(getMu() + other.getMu(), 
+				Math.sqrt(getSigma() * getSigma() + other.getSigma() * other.getSigma()));
+	}
+
+	protected abstract GaussianBase newInstance(double mu, double sigma);
+
+	abstract protected boolean canEqual(GaussianBase other);
 }

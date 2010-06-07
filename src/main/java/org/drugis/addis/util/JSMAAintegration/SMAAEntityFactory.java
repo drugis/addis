@@ -11,6 +11,7 @@ import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
+import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 
 import fi.smaa.jsmaa.model.Alternative;
@@ -32,10 +33,11 @@ public class SMAAEntityFactory {
 	}
 	
 	public static CardinalMeasurement createCardinalMeasurement(Distribution re) {
-		if (re instanceof LogGaussian)
-			return new LogNormalMeasurement(((LogGaussian) re).getMu(), ((LogGaussian) re).getSigma());
-		else if (re instanceof Gaussian){
-			return new GaussianMeasurement(((Gaussian) re).getMu(), ((Gaussian) re).getSigma());
+		GaussianBase gauss = (GaussianBase)re;
+		if (re instanceof LogGaussian) {
+			return new LogNormalMeasurement(gauss.getMu(), gauss.getSigma());
+		} else if (re instanceof Gaussian) {
+			return new GaussianMeasurement(gauss.getMu(), gauss.getSigma());
 		} else
 			throw new IllegalArgumentException("Unhandled distribution: " + re);
 	}

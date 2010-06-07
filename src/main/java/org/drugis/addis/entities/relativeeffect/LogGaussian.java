@@ -13,4 +13,14 @@ public class LogGaussian extends GaussianBase {
 	public double getQuantile(double p) {
 		return Math.exp(calculateQuantile(p));
 	}
+
+	@Override
+	protected boolean canEqual(GaussianBase other) {
+		return (other instanceof LogGaussian);
+	}
+
+	@Override
+	protected LogGaussian newInstance(double mu, double sigma) {
+		return new LogGaussian(mu, sigma);
+	}
 }
