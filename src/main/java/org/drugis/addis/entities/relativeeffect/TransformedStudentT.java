@@ -5,9 +5,8 @@ import org.apache.commons.math.distribution.TDistribution;
 import org.apache.commons.math.distribution.TDistributionImpl;
 
 public class TransformedStudentT implements Distribution {
-
-	private final double d_mu;
-	private final double d_sigma;
+	private double d_mu;
+	private double d_sigma;
 	private final int d_degreesOfFreedom;
 
 	public TransformedStudentT(double mu, double sigma, int degreesOfFreedom) {

@@ -12,12 +12,15 @@ import java.util.Collections;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
+import org.drugis.addis.entities.relativeeffect.Gaussian;
+import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.common.AlphabeticalComparator;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
-import org.junit.Test;;
+import org.junit.Test;
 
 
 
@@ -34,11 +37,13 @@ public class BenefitRiskAnalysisTest {
 		JUnitUtil.testSetter(d_BRAnalysis, BenefitRiskAnalysis.PROPERTY_NAME, 
 				"testBenefitRiskAnalysis", "some new name");
 	}
+	
 	@Test
 	public void testGetSetIndication() {
 		JUnitUtil.testSetter(d_BRAnalysis, BenefitRiskAnalysis.PROPERTY_INDICATION, 
 				ExampleData.buildIndicationDepression(), ExampleData.buildIndicationChronicHeartFailure());
 	}
+	
 	@Test
 	public void testGetSetOutcomeMeasures() {
 		ArrayList<OutcomeMeasure> newList = new ArrayList<OutcomeMeasure>();
@@ -48,6 +53,7 @@ public class BenefitRiskAnalysisTest {
 		JUnitUtil.testSetter(d_BRAnalysis, BenefitRiskAnalysis.PROPERTY_OUTCOMEMEASURES, 
 				d_BRAnalysis.getOutcomeMeasures(), newList);
 	}
+	
 	@Test
 	public void testGetSetDrugs() {
 		ArrayList<Drug> newList = new ArrayList<Drug>();
@@ -61,11 +67,13 @@ public class BenefitRiskAnalysisTest {
 		newList.add(ExampleData.buildDrugParoxetine());
 		JUnitUtil.assertAllAndOnly(newList, d_BRAnalysis.getDrugs());
 	}
+	
 	@Test
 	public void testGetSetBaseLine() {
 		JUnitUtil.testSetter(d_BRAnalysis, BenefitRiskAnalysis.PROPERTY_BASELINE, 
 				d_BRAnalysis.getBaseline(), ExampleData.buildDrugViagra());
 	}
+	
 	@Test
 	public void testGetSetMetaAnalyses() {
 		ArrayList<MetaAnalysis> newList = new ArrayList<MetaAnalysis>();
@@ -102,13 +110,61 @@ public class BenefitRiskAnalysisTest {
 	
 	@Test
 	public void testGetRelativeEffect() {
-		RelativeEffect<? extends Measurement> actual = d_BRAnalysis.getRelativeEffect(
-				d_BRAnalysis.getDrugs().get(0), d_BRAnalysis.getOutcomeMeasures().get(0));
+		OutcomeMeasure om = ExampleData.buildEndpointHamd();
+		
+		Drug fluox = ExampleData.buildDrugFluoxetine();
+		RelativeEffect<? extends Measurement> actual = d_BRAnalysis.getRelativeEffect(fluox, om);
 		RelativeEffect<? extends Measurement> expected = ExampleData.buildMetaAnalysisHamd().getRelativeEffect(
-				ExampleData.buildDrugParoxetine(), ExampleData.buildDrugFluoxetine(), BasicOddsRatio.class);
+				ExampleData.buildDrugParoxetine(), fluox, BasicOddsRatio.class);
 		assertNotNull(actual);
 		assertNotNull(expected);
 		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actual.getConfidenceInterval().getPointEstimate());
 		assertEquals(expected.getConfidenceInterval(), actual.getConfidenceInterval());
+	}
+	
+	@Test
+	public void testGetAbsoluteEffect() {
+		OutcomeMeasure om = ExampleData.buildEndpointHamd();
+		Drug fluox = ExampleData.buildDrugFluoxetine();
+		Drug parox = ExampleData.buildDrugParoxetine();
+		
+		LogGaussian baseline = (LogGaussian)d_BRAnalysis.getBaselineDistribution(om);
+		LogGaussian relative = (LogGaussian)d_BRAnalysis.getRelativeEffectDistribution(fluox, om);
+		double expectedMu = baseline.getMu() + relative.getMu();
+		double expectedSigma = Math.sqrt(Math.pow(baseline.getSigma(), 2) + Math.pow(relative.getSigma(), 2));
+
+		LogGaussian absoluteF = (LogGaussian)d_BRAnalysis.getAbsoluteEffectDistribution(fluox, om);
+		assertEquals(expectedMu, absoluteF.getMu(), 0.0000001);
+		assertEquals(expectedSigma, absoluteF.getSigma(), 0.0000001);
+
+		LogGaussian absoluteP = (LogGaussian)d_BRAnalysis.getAbsoluteEffectDistribution(parox, om);
+		assertEquals(baseline.getMu(), absoluteP.getMu(), 0.0000001);
+		assertEquals(baseline.getSigma(), absoluteP.getSigma(), 0.0000001);
+	}
+	
+	@Test
+	public void testGetAbsoluteEffectContinuous() {
+		OutcomeMeasure om = ExampleData.buildEndpointCgi();
+		Drug fluox = ExampleData.buildDrugFluoxetine();
+		Drug parox = ExampleData.buildDrugParoxetine();
+		Study study = ExampleData.buildStudyChouinard();
+		MetaAnalysis ma = new RandomEffectsMetaAnalysis("ma", om, Collections.singletonList(study), fluox, parox);
+		BenefitRiskAnalysis br = new BenefitRiskAnalysis("br", study.getIndication(), 
+				Collections.singletonList(om), 
+				Collections.singletonList(ma), 
+				fluox, Collections.singletonList(parox));
+		
+		Gaussian baseline = (Gaussian)br.getBaselineDistribution(om);
+		Gaussian relative = (Gaussian)br.getRelativeEffectDistribution(parox, om);
+		double expectedMu = baseline.getMu() + relative.getMu();
+		double expectedSigma = Math.sqrt(Math.pow(baseline.getSigma(), 2) + Math.pow(relative.getSigma(), 2));
+
+		Gaussian absoluteP = (Gaussian)br.getAbsoluteEffectDistribution(parox, om);
+		assertEquals(expectedMu, absoluteP.getMu(), 0.0000001);
+		assertEquals(expectedSigma, absoluteP.getSigma(), 0.0000001);
+		
+		Gaussian absoluteF = (Gaussian)br.getAbsoluteEffectDistribution(fluox, om);
+		assertEquals(baseline.getMu(), absoluteF.getMu(), 0.0000001);
+		assertEquals(baseline.getSigma(), absoluteF.getSigma(), 0.0000001);
 	}
 }

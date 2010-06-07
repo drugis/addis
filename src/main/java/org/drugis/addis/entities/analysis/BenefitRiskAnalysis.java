@@ -163,6 +163,9 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 		throw new IllegalArgumentException("No analyses comparing drug " + d + " and Outcome " + om + " in this Benefit-Risk analysis");
 	}
 	
+	/**
+	 * The effect of d on om relative to the baseline treatment. 
+	 */
 	public Distribution getRelativeEffectDistribution(Drug d, OutcomeMeasure om) {
 		if (d.equals(getBaseline())) {
 			switch (om.getType()) {
@@ -173,6 +176,40 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 			}
 		}
 		return getRelativeEffect(d, om).getDistribution();
+	}
+	
+	/**
+	 * Get the assumed distribution for the baseline odds.
+	 */
+	public Distribution getBaselineDistribution(OutcomeMeasure om) { // FIXME: implement for story 1.5
+		switch (om.getType()) {
+		case RATE:
+			return new LogGaussian(0.1, 0.1);
+		case CONTINUOUS:
+			return new Gaussian(0.1, 0.1);
+		}
+		return null;
+	}
+
+	/**
+	 * The absolute effect of d on om given the assumed odds of the baseline treatment. 
+	 */
+	public Distribution getAbsoluteEffectDistribution(Drug d, OutcomeMeasure om) {
+		switch (om.getType()) {
+			case RATE: {
+				LogGaussian baseline = (LogGaussian)getBaselineDistribution(om);
+				LogGaussian relative = (LogGaussian)getRelativeEffectDistribution(d, om);
+				return new LogGaussian(baseline.getMu() + relative.getMu(), 
+						Math.sqrt(Math.pow(baseline.getSigma(), 2) + Math.pow(relative.getSigma(), 2)));
+			}
+			case CONTINUOUS: {
+				Gaussian baseline = (Gaussian)getBaselineDistribution(om);
+				Gaussian relative = (Gaussian)getRelativeEffectDistribution(d, om);
+				return new Gaussian(baseline.getMu() + relative.getMu(), 
+						Math.sqrt(Math.pow(baseline.getSigma(), 2) + Math.pow(relative.getSigma(), 2)));
+			}
+		}
+		return null;
 	}
 
 	public void runAllConsistencyModels() {

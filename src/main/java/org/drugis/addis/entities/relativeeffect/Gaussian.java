@@ -4,16 +4,9 @@ import org.apache.commons.math.MathException;
 import org.apache.commons.math.distribution.NormalDistribution;
 import org.apache.commons.math.distribution.NormalDistributionImpl;
 
-public class Gaussian implements Distribution {
-	private final double d_mu;
-	private final double d_sigma;
-
+public class Gaussian extends GaussianBase {
 	public Gaussian(double mu, double sigma) {
-		if (Double.isNaN(mu)) throw new IllegalArgumentException("mu may not be NaN");
-		if (Double.isNaN(sigma)) throw new IllegalArgumentException("sigma may not be NaN");
-		if (sigma < 0.0) throw new IllegalArgumentException("sigma must be >= 0.0");
-		d_mu = mu;
-		d_sigma = sigma;
+		super(mu, sigma);
 	}
 
 	public AxisType getAxisType() {
@@ -21,19 +14,11 @@ public class Gaussian implements Distribution {
 	}
 
 	public double getQuantile(double p) {
-		NormalDistribution dist = new NormalDistributionImpl(d_mu, d_sigma);
+		NormalDistribution dist = new NormalDistributionImpl(getMu(), getSigma());
 		try {
 			return dist.inverseCumulativeProbability(p);
 		} catch (MathException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	public double getMu() {
-		return d_mu;
-	}
-
-	public double getSigma() {
-		return d_sigma;
 	}
 }
