@@ -1,8 +1,5 @@
 package org.drugis.addis.entities.relativeeffect;
 
-import org.apache.commons.math.MathException;
-import org.apache.commons.math.distribution.NormalDistribution;
-import org.apache.commons.math.distribution.NormalDistributionImpl;
 
 public class LogGaussian extends GaussianBase {
 	public LogGaussian(double mu, double sigma) {
@@ -14,11 +11,6 @@ public class LogGaussian extends GaussianBase {
 	}
 
 	public double getQuantile(double p) {
-		NormalDistribution dist = new NormalDistributionImpl(getMu(), getSigma());
-		try {
-			return Math.exp(dist.inverseCumulativeProbability(p));
-		} catch (MathException e) {
-			throw new RuntimeException(e);
-		}
+		return Math.exp(calculateQuantile(p));
 	}
 }

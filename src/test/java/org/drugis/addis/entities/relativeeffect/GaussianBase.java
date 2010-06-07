@@ -1,5 +1,9 @@
 package org.drugis.addis.entities.relativeeffect;
 
+import org.apache.commons.math.MathException;
+import org.apache.commons.math.distribution.NormalDistribution;
+import org.apache.commons.math.distribution.NormalDistributionImpl;
+
 public abstract class GaussianBase implements Distribution {
 	private double d_mu;
 	private double d_sigma;
@@ -12,8 +16,13 @@ public abstract class GaussianBase implements Distribution {
 		d_sigma = sigma;
 	}
 
-	protected double calcQuantile(double q) {
-		return 0;
+	protected double calculateQuantile(double p) {
+		NormalDistribution dist = new NormalDistributionImpl(getMu(), getSigma());
+		try {
+			return dist.inverseCumulativeProbability(p);
+		} catch (MathException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public double getSigma() {
@@ -23,4 +32,8 @@ public abstract class GaussianBase implements Distribution {
 	public double getMu() {
 		return d_mu;
 	}
+	
+	/*
+	abstract protected GaussianBase newInstance(double mu, double sigma);
+	abstract protected boolean canEqual(GaussianBase other); */
 }

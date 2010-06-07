@@ -1,4 +1,4 @@
-package org.drugis.addis.entities;
+package org.drugis.addis.entities.analysis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
