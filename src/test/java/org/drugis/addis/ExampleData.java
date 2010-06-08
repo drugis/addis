@@ -802,4 +802,17 @@ public class ExampleData {
 		
 		return new RandomEffectsMetaAnalysis("Hamd test analysis", buildEndpointHamd(), studyArms);
 	}
+
+	public static BenefitRiskAnalysis realBuildContinuousBenefitRisk() {
+		OutcomeMeasure om = buildEndpointCgi();
+		Drug fluox = buildDrugFluoxetine();
+		Drug parox = buildDrugParoxetine();
+		Study study = buildStudyChouinard();
+		MetaAnalysis ma = new RandomEffectsMetaAnalysis("ma", om, Collections.singletonList(study), fluox, parox);
+		BenefitRiskAnalysis br = new BenefitRiskAnalysis("br", study.getIndication(), 
+				Collections.singletonList(om), 
+				Collections.singletonList(ma), 
+				fluox, Collections.singletonList(parox));
+		return br;
+	}
 }

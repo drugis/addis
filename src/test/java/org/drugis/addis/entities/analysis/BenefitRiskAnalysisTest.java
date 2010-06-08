@@ -13,10 +13,8 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
-import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
@@ -151,12 +149,7 @@ public class BenefitRiskAnalysisTest {
 		OutcomeMeasure om = ExampleData.buildEndpointCgi();
 		Drug fluox = ExampleData.buildDrugFluoxetine();
 		Drug parox = ExampleData.buildDrugParoxetine();
-		Study study = ExampleData.buildStudyChouinard();
-		MetaAnalysis ma = new RandomEffectsMetaAnalysis("ma", om, Collections.singletonList(study), fluox, parox);
-		BenefitRiskAnalysis br = new BenefitRiskAnalysis("br", study.getIndication(), 
-				Collections.singletonList(om), 
-				Collections.singletonList(ma), 
-				fluox, Collections.singletonList(parox));
+		BenefitRiskAnalysis br = ExampleData.realBuildContinuousBenefitRisk();
 		
 		Gaussian baseline = (Gaussian)br.getBaselineDistribution(om);
 		Gaussian relative = (Gaussian)br.getRelativeEffectDistribution(parox, om);
