@@ -123,7 +123,11 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		d_buildQueue = new BuildQueue();
 		d_progressBar = new SimulationProgressBar();
 		
-		if (!startAllNetworkAnalyses())
+		/* 
+		 * Only start SMAA if all networks are already done calculating when running this constructor.
+		 * If not, the 'ready' event of the networks will trigger the creation of the SMAA model.
+		 */
+		if (startAllNetworkAnalyses())
 			startSmaa();
 	}
 	
@@ -182,16 +186,17 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 	
 	private boolean startAllNetworkAnalyses() {
 		getBean().runAllConsistencyModels();
-		boolean hasNetworks = false;
+		boolean allNetworksFinished = true;
 		for (MetaAnalysis ma : getBean().getMetaAnalyses() ){
 			if (ma instanceof NetworkMetaAnalysis) {
-				hasNetworks = true;
 				ConsistencyModel consistencyModel = ((NetworkMetaAnalysis) ma).getConsistencyModel();
+				if (!consistencyModel.isReady()) // FIXME: possible (but rare) Race condition
+					allNetworksFinished = false;
 				d_allModelsReadyListener.addModel(consistencyModel);
 				d_analysisProgressListeners.add(new AnalysisProgressListener(consistencyModel));
 			}
 		}
-		return hasNetworks;
+		return allNetworksFinished;
 	}
 	
 	public OutcomeMeasure getOutcomeMeasureForCriterion(CardinalCriterion crit) {
