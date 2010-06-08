@@ -99,11 +99,11 @@ public class BenefitRiskView implements ViewBuilder {
 				new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent arg0) {
 						panel.removeAll();
-						panel.add(new PreferenceInformationView(ppm).buildPanel());
+						panel.add(new PreferenceInformationView(ppm, new ClinicalScaleRenderer(d_pm)).buildPanel());
 						d_main.pack();
 					}			
 		});
-		JComponent prefPanel = new PreferenceInformationView(ppm).buildPanel();
+		JComponent prefPanel = new PreferenceInformationView(ppm, new ClinicalScaleRenderer(d_pm)).buildPanel();
 		panel.add(prefPanel);
 		return panel;
 	}

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -73,6 +74,15 @@ public class SMAAEntityFactory {
 		c.setAscending(om.getDirection() == Direction.HIGHER_IS_BETTER);
 		d_outcomeCriterionMap.put(om, c);
 		return c;
+	}
+	
+	public OutcomeMeasure getOutcomeMeasure(CardinalCriterion crit) {
+		for (Entry<OutcomeMeasure, CardinalCriterion> entry : d_outcomeCriterionMap.entrySet()) {
+			if (entry.getValue().equals(crit)) {
+				return entry.getKey();
+			}
+		}
+		return null; 
 	}
 	
 	Alternative getAlternative(Drug d) {

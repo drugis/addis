@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.swing.JProgressBar;
 
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -25,6 +26,7 @@ import fi.smaa.jsmaa.gui.presentation.CentralWeightTableModel;
 import fi.smaa.jsmaa.gui.presentation.PreferencePresentationModel;
 import fi.smaa.jsmaa.gui.presentation.RankAcceptabilityTableModel;
 import fi.smaa.jsmaa.gui.presentation.SMAA2ResultsTableModel;
+import fi.smaa.jsmaa.model.CardinalCriterion;
 import fi.smaa.jsmaa.model.ModelChangeEvent;
 import fi.smaa.jsmaa.model.SMAAModel;
 import fi.smaa.jsmaa.model.SMAAModelListener;
@@ -105,6 +107,8 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 	private SMAAModel d_model;
 
 	private SimulationProgressBar d_progressBar;
+
+	private SMAAEntityFactory d_smaaf;
 	
 	public boolean allModelsReady() {
 		return d_allModelsReadyListener.allModelsReady();
@@ -124,8 +128,8 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 	}
 	
 	private void startSmaa() {
-		SMAAEntityFactory smaaf = new SMAAEntityFactory();
-		d_model = smaaf.createSmaaModel(getBean());
+		d_smaaf = new SMAAEntityFactory();
+		d_model = d_smaaf.createSmaaModel(getBean());
 		SMAA2Results emptyResults = new SMAA2Results(d_model.getAlternatives(), d_model.getCriteria(), 10);
 		d_rankAccepDS = new RankAcceptabilitiesDataset(emptyResults);
 		d_rankAccepTM = new RankAcceptabilityTableModel(emptyResults);
@@ -188,6 +192,10 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 			}
 		}
 		return hasNetworks;
+	}
+	
+	public OutcomeMeasure getOutcomeMeasureForCriterion(CardinalCriterion crit) {
+		return d_smaaf.getOutcomeMeasure(crit);
 	}
 	
 	public PreferencePresentationModel getPreferencePresentationModel() {

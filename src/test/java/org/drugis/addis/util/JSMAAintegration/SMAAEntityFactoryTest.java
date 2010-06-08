@@ -13,11 +13,12 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.junit.Before;
 import org.junit.Test;
 
+import fi.smaa.jsmaa.model.CardinalCriterion;
 import fi.smaa.jsmaa.model.CardinalMeasurement;
 import fi.smaa.jsmaa.model.LogNormalMeasurement;
 import fi.smaa.jsmaa.model.SMAAModel;
 
-public class JSMAAIntegrationTest {
+public class SMAAEntityFactoryTest {
 	private SMAAEntityFactory d_SMAAFactory;
 	private BenefitRiskAnalysis d_BRAnalysis;
 
@@ -50,6 +51,15 @@ public class JSMAAIntegrationTest {
 				RelativeEffect<? extends Measurement> expRelativeEffect = d_BRAnalysis.getRelativeEffect(d, om);
 				assertEquals(Math.log(expRelativeEffect.getConfidenceInterval().getPointEstimate()), ((LogNormalMeasurement) actualMeasurement).getMean(), 0.0001);
 			}
+		}
+	}
+	
+	@Test 
+	public void testGetOutcomeMeasure() {
+		d_SMAAFactory.createSmaaModel(d_BRAnalysis);
+		for (OutcomeMeasure om : d_BRAnalysis.getOutcomeMeasures()) {
+			CardinalCriterion crit = d_SMAAFactory.getCriterion(om);
+			assertEquals(om, d_SMAAFactory.getOutcomeMeasure(crit));
 		}
 	}
 }

@@ -14,8 +14,7 @@ import fi.smaa.jsmaa.model.ScaleCriterion;
 
 @SuppressWarnings("serial")
 public class OddsRatioScalePresentation extends PresentationModel<ScaleCriterion> {
-
-	private abstract class ScaleConvertingValueModel extends AbstractValueModel {
+	public abstract class ScaleConvertingValueModel extends AbstractValueModel {
 		public ScaleConvertingValueModel() {
 			this(true, false);
 		}
@@ -36,6 +35,42 @@ public class OddsRatioScalePresentation extends PresentationModel<ScaleCriterion
 			throw new RuntimeException("Not able to set");
 		}
 	}
+
+
+	public final class NNTLabelValueModel extends ScaleConvertingValueModel {
+		private NNTLabelValueModel() {
+			super(false, true);
+		}
+
+		public Object getValue() {
+			return getNumberNeededToTreatLabel();
+		}
+	}
+
+	public final class NNTValueModel extends ScaleConvertingValueModel {
+		public Object getValue() {
+			return getNumberNeededToTreat();
+		}
+	}
+
+	public final class RiskDifferenceValueModel extends
+			ScaleConvertingValueModel {
+		public Object getValue() {
+			return getRiskDifference();
+		}
+	}
+
+	public final class RiskValueModel extends ScaleConvertingValueModel {
+		public Object getValue() {
+			return getRisk();
+		}
+	}
+
+	public final class OddsRatioValueModel extends ScaleConvertingValueModel {
+		public Object getValue() {
+			return getOddsRatio();
+		}
+	}
 	
 	public static final String PROPERTY_ODDS_RATIO = "oddsRatio";
 	public static final String PROPERTY_RISK = "risk";
@@ -53,35 +88,15 @@ public class OddsRatioScalePresentation extends PresentationModel<ScaleCriterion
 	@Override
 	public AbstractValueModel getModel(String property) {
 		if (property.equals(PROPERTY_ODDS_RATIO)) {	
-			return new ScaleConvertingValueModel() {
-				public Object getValue() {
-					return getOddsRatio();
-				}
-			};
+			return new OddsRatioValueModel();
 		} else if (property.equals(PROPERTY_RISK)) {	
-			return new ScaleConvertingValueModel() {
-				public Object getValue() {
-					return getRisk();
-				}
-			};
+			return new RiskValueModel();
 		} else if (property.equals(PROPERTY_RISK_DIFFERENCE)) {	
-			return new ScaleConvertingValueModel() {
-				public Object getValue() {
-					return getRiskDifference();
-				}
-			};
+			return new RiskDifferenceValueModel();
 		} else if (property.equals(PROPERTY_NNT)) {	
-			return new ScaleConvertingValueModel() {
-				public Object getValue() {
-					return getNumberNeededToTreat();
-				}
-			};
+			return new NNTValueModel();
 		} else if (property.equals(PROPERTY_NNT_LABEL)) {	
-			return new ScaleConvertingValueModel(false, true) {
-				public Object getValue() {
-					return getNumberNeededToTreatLabel();
-				}
-			};
+			return new NNTLabelValueModel();
 		}
 		return super.getModel(property);
 	}
