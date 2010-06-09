@@ -1,5 +1,6 @@
 package org.drugis.addis.util.JSMAAintegration;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -45,12 +46,8 @@ public class SMAAEntityFactory {
 	
 	public SMAAModel createSmaaModel(BenefitRiskAnalysis brAnalysis) {
 		SMAAModel smaaModel = new SMAAModel(brAnalysis.getName());
-
-		// FIXME: refactor BRAnalysis to have baseline in the set of drugs.
-		Set<Drug> drugs = new HashSet<Drug>();
-		drugs.addAll(brAnalysis.getDrugs());
-		drugs.add(brAnalysis.getBaseline());
 				
+		Collection<Drug> drugs = brAnalysis.getDrugs();
 		for (Drug d: drugs) {
 			smaaModel.addAlternative(getAlternative(d));
 		}
