@@ -75,7 +75,7 @@ public class BenefitRiskView implements ViewBuilder {
 		d_builder.addSeparator("Measurements", cc.xy(1, 11));
 		d_builder.add(GUIFactory.createCollapsiblePanel(buildMeasurementsPart()), cc.xy(1, 13));
 		
-		if(d_pm.allModelsReady()){
+		if(d_pm.allNMAModelsReady()){
 			d_builder.addSeparator("Preferences", cc.xy(1, 15));
 			d_builder.add(GUIFactory.createCollapsiblePanel(buildPreferencesPart()), cc.xy(1, 17));
 
@@ -122,7 +122,7 @@ public class BenefitRiskView implements ViewBuilder {
 			row += 2;
 			JProgressBar bar = new JProgressBar();
 			bar.setStringPainted(true);
-			d_pm.attachProgBar(bar,i);
+			d_pm.attachNMAProgBar(bar,i);
 			builder.add(bar,cc.xy(1, row));
 		}
 		
@@ -186,14 +186,17 @@ public class BenefitRiskView implements ViewBuilder {
 	private JComponent buildMeasurementsPart() {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = new FormLayout("left:pref:grow",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		builder.addLabel("All measurements are relative to "+d_pm.getBean().getBaseline(), cc.xy(1, 1));
 		builder.add(new AbstractTablePanel(d_pm.getMeasurementTableModel(true)), cc.xy(1, 3));
 	
 		builder.addLabel("All measurements using assumption for absolute measurement on "+d_pm.getBean().getBaseline(), cc.xy(1, 5));
-		builder.add(new AbstractTablePanel(d_pm.getMeasurementTableModel(false)), cc.xy(1, 7));
+		builder.add(new AbstractTablePanel(d_pm.getMeasurementTableModel(false)), cc.xy(1, 9));
+		
+		if (!d_pm.allBaselineModelsReady())
+			builder.addLabel("Warning! - These values are still being calculated, and are therefore unreliable.", cc.xy(1, 7));
 	
 		return builder.getPanel();
 	}

@@ -51,9 +51,8 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 		
 		notifyEvent(EventType.SIMULATION_STARTED);
 		simulate();
-		notifyEvent(EventType.SIMULATION_FINISHED);
-		
 		d_isReady  = true;
+		notifyEvent(EventType.SIMULATION_FINISHED);
 	}
 
 	private void notifyEvent(EventType type) {

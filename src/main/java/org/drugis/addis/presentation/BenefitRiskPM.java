@@ -9,6 +9,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.addis.util.JSMAAintegration.BRSMAASimulationBuilder;
 import org.drugis.addis.util.JSMAAintegration.SMAAEntityFactory;
 import org.drugis.mtc.ConsistencyModel;
@@ -65,26 +66,33 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 	}
 	
 	private class AllModelsReadyListener implements ProgressListener {
-		private List<ConsistencyModel> d_models = new ArrayList<ConsistencyModel>();
+		private List<MCMCModel> d_models = new ArrayList<MCMCModel>();
 		
-		public void addModel(ConsistencyModel model) {
+		public void addModel(MCMCModel model) {
 			model.addProgressListener(this);
 			d_models.add(model);
 		}
 
 		public void update(MCMCModel mtc, ProgressEvent event) {
 			if (event.getType() == ProgressEvent.EventType.SIMULATION_FINISHED){
+				//System.out.println("A model is ready.");
 				if(allModelsReady()) {
-					startSmaa();					
+					if (allNMAModelsReady())
+						startSmaa();					
 					firePropertyChange(PROPERTY_ALLMODELSREADY, false, true);
 				}
 			}
 		}
 
 		public boolean allModelsReady() {
-			for (ConsistencyModel model : d_models)
+//			for (MCMCModel model : d_models)
+//				System.out.print(model.isReady()+"\t");
+//			System.out.println("\n");
+			
+			for (MCMCModel model : d_models){
 				if (!model.isReady())
 					return false;
+			}
 			return true;
 		}
 	}
@@ -92,7 +100,8 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 	public static final String PROPERTY_ALLMODELSREADY = "allModelsReady";
 	
 	private PresentationModelFactory d_pmf;
-	private AllModelsReadyListener d_allModelsReadyListener;
+	private AllModelsReadyListener d_allNetworkModelsReadyListener;
+	private AllModelsReadyListener d_allBaselineModelsReadyListener;
 	private List<AnalysisProgressListener> d_analysisProgressListeners;
 
 	private RankAcceptabilityTableModel d_rankAccepTM;
@@ -111,15 +120,20 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 
 	private SMAAEntityFactory d_smaaf;
 	
-	public boolean allModelsReady() {
-		return d_allModelsReadyListener.allModelsReady();
+	public boolean allNMAModelsReady() {
+		return d_allNetworkModelsReadyListener.allModelsReady();
+	}
+	
+	public boolean allBaselineModelsReady() {
+		return d_allBaselineModelsReadyListener.allModelsReady();
 	}
 	
 	public BenefitRiskPM(BenefitRiskAnalysis bean, PresentationModelFactory pmf) {
 		super(bean);
 		
 		d_pmf = pmf;
-		d_allModelsReadyListener = new AllModelsReadyListener();
+		d_allNetworkModelsReadyListener = new AllModelsReadyListener();
+		d_allBaselineModelsReadyListener = new AllModelsReadyListener();
 		d_analysisProgressListeners = new ArrayList<AnalysisProgressListener>();
 		d_buildQueue = new BuildQueue();
 		d_progressBar = new SimulationProgressBar();
@@ -163,7 +177,7 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		return d_analysisProgressListeners.size();
 	}
 	
-	public void attachProgBar(JProgressBar bar, int progBarNum) {
+	public void attachNMAProgBar(JProgressBar bar, int progBarNum) {
 		if (progBarNum >= d_analysisProgressListeners.size() )
 			throw new IllegalArgumentException();
 		d_analysisProgressListeners.get(progBarNum).attachBar(bar);
@@ -182,24 +196,12 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 	}
 
 	public BenefitRiskMeasurementTableModel getMeasurementTableModel(boolean relative) {
+		if (!relative) {
+			startAllBaselineModels();
+		}
 		return new BenefitRiskMeasurementTableModel(getBean(), d_pmf, relative);
 	}
-	
-	private boolean startAllNetworkAnalyses() {
-		getBean().runAllConsistencyModels();
-		boolean allNetworksFinished = true;
-		for (MetaAnalysis ma : getBean().getMetaAnalyses() ){
-			if (ma instanceof NetworkMetaAnalysis) {
-				ConsistencyModel consistencyModel = ((NetworkMetaAnalysis) ma).getConsistencyModel();
-				if (!consistencyModel.isReady()) // FIXME: possible (but rare) Race condition
-					allNetworksFinished = false;
-				d_allModelsReadyListener.addModel(consistencyModel);
-				d_analysisProgressListeners.add(new AnalysisProgressListener(consistencyModel));
-			}
-		}
-		return allNetworksFinished;
-	}
-	
+
 	public OutcomeMeasure getOutcomeMeasureForCriterion(CardinalCriterion crit) {
 		return d_smaaf.getOutcomeMeasure(crit);
 	}
@@ -223,4 +225,27 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 	public CentralWeightTableModel getCentralWeightsTableModel() {
 		return d_cwTM;
 	}	
+	
+	private boolean startAllNetworkAnalyses() {
+		getBean().runAllConsistencyModels();
+		boolean allNetworksFinished = true;
+		for (MetaAnalysis ma : getBean().getMetaAnalyses() ){
+			if (ma instanceof NetworkMetaAnalysis) {
+				ConsistencyModel consistencyModel = ((NetworkMetaAnalysis) ma).getConsistencyModel();
+				if (!consistencyModel.isReady()) // FIXME: possible (but rare) Race condition
+					allNetworksFinished = false;
+				d_allNetworkModelsReadyListener.addModel(consistencyModel);
+				d_analysisProgressListeners.add(new AnalysisProgressListener(consistencyModel));
+			}
+		}
+		return allNetworksFinished;
+	}
+	
+	private void startAllBaselineModels() {
+		AbstractBaselineModel<?> model;
+		for (OutcomeMeasure om : getBean().getOutcomeMeasures()) {
+			model = getBean().getBaselineModel(om);
+			if (!model.isReady()) d_allBaselineModelsReadyListener.addModel(model);
+		}
+	}
 }

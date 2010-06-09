@@ -195,35 +195,23 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	 * Get the assumed distribution for the baseline odds.
 	 */
 	public GaussianBase getBaselineDistribution(OutcomeMeasure om) {
-		AbstractBaselineModel<?> model = d_baselineModelMap.get(om);
-		if (model == null) {
-			model = createBaselineModel(om);
-			d_baselineModelMap.put(om,model);
-		}
+		AbstractBaselineModel<?> model = getBaselineModel(om);
 		if (!model.isReady()) {
 			switch (om.getType()) {
-				case RATE: return new LogGaussian(0.0, 0.0001);
-				case CONTINUOUS: return new Gaussian(0.0, 0.0001);
+				case RATE: return new LogGaussian(0.001, 0.0001);
+				case CONTINUOUS: return new Gaussian(0.001, 0.0001);
 			}
 		}
 		return (GaussianBase) model.getResult();
 	}
 	
-	/**
-	 * The absolute effect of d on om given the assumed odds of the baseline treatment. 
-	 */
-	public GaussianBase getAbsoluteEffectDistribution(Drug d, OutcomeMeasure om) {
-		GaussianBase baseline = getBaselineDistribution(om);
-		GaussianBase relative = getRelativeEffectDistribution(d, om);
-		if (baseline == null || relative == null) return null;
-		return baseline.plus(relative);
-	}
-
-	public void runAllConsistencyModels() {
-		for (MetaAnalysis ma : getMetaAnalyses() ){
-			if (ma instanceof NetworkMetaAnalysis) 
-				((NetworkMetaAnalysis) ma).runConsistency();
+	public AbstractBaselineModel<?> getBaselineModel(OutcomeMeasure om) {
+		AbstractBaselineModel<?> model = d_baselineModelMap.get(om);
+		if (model == null) {
+			model = createBaselineModel(om);
+			d_baselineModelMap.put(om,model);
 		}
+		return model;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -257,4 +245,22 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 		
 		return result;
 	}
+	
+	/**
+	 * The absolute effect of d on om given the assumed odds of the baseline treatment. 
+	 */
+	public GaussianBase getAbsoluteEffectDistribution(Drug d, OutcomeMeasure om) {
+		GaussianBase baseline = getBaselineDistribution(om);
+		GaussianBase relative = getRelativeEffectDistribution(d, om);
+		if (baseline == null || relative == null) return null;
+		return baseline.plus(relative);
+	}
+
+	public void runAllConsistencyModels() {
+		for (MetaAnalysis ma : getMetaAnalyses() ){
+			if (ma instanceof NetworkMetaAnalysis) 
+				((NetworkMetaAnalysis) ma).runConsistency();
+		}
+	}
+	
 }
