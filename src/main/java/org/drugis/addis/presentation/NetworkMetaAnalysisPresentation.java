@@ -25,7 +25,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.mtc.ConsistencyModel;
-import org.drugis.mtc.MixedTreatmentComparison;
+import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.ProgressEvent;
 import org.drugis.mtc.ProgressListener;
@@ -45,7 +45,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		
 		getBean().getInconsistencyModel().addProgressListener(new ProgressListener() {
 			
-			public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
+			public void update(MCMCModel mtc, ProgressEvent event) {
 				if (event.getType() == ProgressEvent.EventType.MODEL_CONSTRUCTION_FINISHED) {
 					d_isModelConstructionFinished = true;
 				}
@@ -69,7 +69,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 
 		if (!consistencyModel.isReady()) {
 			consistencyModel.addProgressListener(new ProgressListener() {
-				public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
+				public void update(MCMCModel mtc, ProgressEvent event) {
 					if (event.getType() == EventType.SIMULATION_FINISHED)
 						fillDataSet();
 //					if(event.getType() == EventType.MODEL_CONSTRUCTION_FINISHED)

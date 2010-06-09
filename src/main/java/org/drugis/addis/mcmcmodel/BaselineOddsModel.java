@@ -17,27 +17,60 @@ import java.util.List;
 
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
+import org.drugis.mtc.MCMCModel;
+import org.drugis.mtc.ProgressEvent;
 import org.drugis.mtc.ProgressListener;
+import org.drugis.mtc.ProgressEvent.EventType;
 import org.drugis.mtc.yadas.DirectParameter;
 
+//FIXME: allow reuse of ProgressObservable from MTC
 public class BaselineOddsModel implements MCMCModel {
 	private int d_burnInIter = 10000;
 	private int d_simulationIter = 20000;
+	private int d_reportingInterval = 100;
 	private boolean d_isReady = false;
 	private final List<RateMeasurement> d_measurements;
 	private List<MCMCUpdate> d_updates;
 	private DirectParameter d_mu;
+	private List<ProgressListener> d_listeners;
 	
 	public BaselineOddsModel(List<RateMeasurement> measurements) {
 		d_measurements = measurements;
+		d_listeners = new ArrayList<ProgressListener>();
 	}
 
 	public void run() {
+		notifyEvent(EventType.MODEL_CONSTRUCTION_STARTED);
 		buildModel();
+		notifyEvent(EventType.MODEL_CONSTRUCTION_FINISHED);
+		
+		notifyEvent(EventType.BURNIN_STARTED);
 		burnIn();
+		notifyEvent(EventType.BURNIN_FINISHED);
+		
+		notifyEvent(EventType.SIMULATION_STARTED);
 		simulate();
+		notifyEvent(EventType.SIMULATION_FINISHED);
 		
 		d_isReady  = true;
+	}
+	
+	private void notifyEvent(EventType type) {
+		for (ProgressListener l : d_listeners) {
+			l.update(this, new ProgressEvent(type));
+		}
+	}
+
+	private void notifyBurnInProgress(int iter) {
+		for (ProgressListener l : d_listeners) {
+			l.update(this, new ProgressEvent(EventType.BURNIN_PROGRESS, iter, d_burnInIter));
+		}
+	}
+
+	private void notifySimulationProgress(int iter) {
+		for (ProgressListener l : d_listeners) {
+			l.update(this, new ProgressEvent(EventType.SIMULATION_PROGRESS, iter, d_simulationIter));
+		}
 	}
 	
 	private void buildModel() {
@@ -89,12 +122,14 @@ public class BaselineOddsModel implements MCMCModel {
 
 	private void burnIn() {
 		for (int iter = 0; iter < d_burnInIter; ++iter) {
+			if (iter > 0 && iter % d_reportingInterval == 0) notifyBurnInProgress(iter);
 			update();
 		}
 	}
 
 	private void simulate() {
 		for (int iter = 0; iter < d_simulationIter; ++iter) {
+			if (iter > 0 && iter % d_reportingInterval == 0) notifySimulationProgress(iter);
 			update();
 			output();
 		}
@@ -111,8 +146,7 @@ public class BaselineOddsModel implements MCMCModel {
 	}
 
 	public void addProgressListener(ProgressListener l) {
-		// TODO Auto-generated method stub
-		
+		d_listeners.add(l);		
 	}
 
 	public boolean isReady() {

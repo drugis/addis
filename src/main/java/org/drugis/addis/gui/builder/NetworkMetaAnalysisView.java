@@ -41,6 +41,7 @@ import org.drugis.addis.util.HtmlWordWrapper;
 import org.drugis.common.gui.ViewBuilder;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
+import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.ProgressEvent;
 import org.drugis.mtc.ProgressListener;
@@ -66,7 +67,7 @@ implements ViewBuilder {
 			networkModel.addProgressListener(this);
 		}
 		
-		public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
+		public void update(MCMCModel mtc, ProgressEvent event) {
 			if (event.getType() == EventType.MODEL_CONSTRUCTION_FINISHED) {
 				if (d_inconsistencyFactorsTablePanel != null) {
 					d_inconsistencyFactorsTablePanel.doLayout();

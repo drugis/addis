@@ -12,6 +12,7 @@ import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.util.JSMAAintegration.BRSMAASimulationBuilder;
 import org.drugis.addis.util.JSMAAintegration.SMAAEntityFactory;
 import org.drugis.mtc.ConsistencyModel;
+import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.ProgressEvent;
 import org.drugis.mtc.ProgressListener;
@@ -50,7 +51,7 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 			bar.setVisible(!d_networkModel.isReady());
 		}
 
-		public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
+		public void update(MCMCModel mtc, ProgressEvent event) {
 			if(event.getType() == EventType.SIMULATION_PROGRESS && d_progBar != null){
 				d_progBar.setString("Simulating: " + event.getIteration()/(event.getTotalIterations()/100) + "%");
 				d_progBar.setValue(event.getIteration()/(event.getTotalIterations()/100));
@@ -71,7 +72,7 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 			d_models.add(model);
 		}
 
-		public void update(MixedTreatmentComparison mtc, ProgressEvent event) {
+		public void update(MCMCModel mtc, ProgressEvent event) {
 			if (event.getType() == ProgressEvent.EventType.SIMULATION_FINISHED){
 				if(allModelsReady()) {
 					startSmaa();					

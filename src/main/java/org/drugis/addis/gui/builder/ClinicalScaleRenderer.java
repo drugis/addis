@@ -12,7 +12,6 @@ import org.drugis.addis.entities.analysis.OddsRatioToClinicalConverter;
 import org.drugis.addis.presentation.BenefitRiskPM;
 import org.drugis.addis.presentation.OddsRatioScalePresentation;
 import org.drugis.common.gui.NumberAndIntervalFormat;
-import org.drugis.common.gui.OneWayObjectFormat;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
