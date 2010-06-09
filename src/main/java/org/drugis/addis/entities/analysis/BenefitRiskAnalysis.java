@@ -200,38 +200,13 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 			model = createBaselineModel(om);
 			d_baselineModelMap.put(om,model);
 		}
-		
-		return (GaussianBase) model.getResult();
-	}
-
-	@SuppressWarnings("unchecked")
-	private AbstractBaselineModel<?> createBaselineModel(OutcomeMeasure om) {
-		AbstractBaselineModel<?> model = null;
+		if (!model.isReady()) {
 			switch (om.getType()) {
-			case RATE:
-				model = new BaselineOddsModel(getBaselineMeasurements(om));
-				model.run();
-			break;
-			case CONTINUOUS:
-				model = new BaselineMeanDifferenceModel(getBaselineMeasurements(om));
-				model.run();
-			break;
+				case RATE: return new LogGaussian(0.0, 0.0001);
+				case CONTINUOUS: return new Gaussian(0.0, 0.0001);
 			}
-		return model;
-	}
-	
-	// FIXME: type safety.
-	@SuppressWarnings("unchecked")
-	private List getBaselineMeasurements(OutcomeMeasure om) {
-		List<Measurement> result = new ArrayList<Measurement>(); 
-		for (MetaAnalysis ma : getMetaAnalyses())
-			if (ma.getOutcomeMeasure().equals(om))
-				for (Study s : ma.getIncludedStudies())
-					for (Arm a : s.getArms())
-						if (a.getDrug().equals(getBaseline()))
-							result.add(s.getMeasurement(om,a));
-		
-		return result;
+		}
+		return (GaussianBase) model.getResult();
 	}
 	
 	/**
@@ -251,4 +226,35 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	private AbstractBaselineModel<?> createBaselineModel(OutcomeMeasure om) {
+		AbstractBaselineModel<?> model = null;
+			switch (om.getType()) {
+			case RATE:
+				model = new BaselineOddsModel(getBaselineMeasurements(om));
+				Thread t1 = new Thread(model);
+				t1.start();
+			break;
+			case CONTINUOUS:
+				model = new BaselineMeanDifferenceModel(getBaselineMeasurements(om));
+				Thread t2 = new Thread(model);
+				t2.start();
+			break;
+			}
+		return model;
+	}
+	
+	// FIXME: type safety.
+	@SuppressWarnings("unchecked")
+	private List getBaselineMeasurements(OutcomeMeasure om) {
+		List<Measurement> result = new ArrayList<Measurement>(); 
+		for (MetaAnalysis ma : getMetaAnalyses())
+			if (ma.getOutcomeMeasure().equals(om))
+				for (Study s : ma.getIncludedStudies())
+					for (Arm a : s.getArms())
+						if (a.getDrug().equals(getBaseline()))
+							result.add(s.getMeasurement(om,a));
+		
+		return result;
+	}
 }
