@@ -58,7 +58,7 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 			} else if(event.getType() == EventType.BURNIN_PROGRESS && d_progBar != null){
 				d_progBar.setString("Burn in: " + event.getIteration()/(event.getTotalIterations()/100) + "%");
 				d_progBar.setValue(event.getIteration()/(event.getTotalIterations()/100));
-			} else if(event.getType() == EventType.SIMULATION_FINISHED) {
+			} else if(event.getType() == EventType.SIMULATION_FINISHED && d_progBar != null) {
 				d_progBar.setVisible(false);
 			}
 		}

@@ -2,16 +2,21 @@ package org.drugis.addis.entities.analysis;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drugis.addis.entities.AbstractEntity;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
@@ -20,6 +25,9 @@ import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
+import org.drugis.addis.mcmcmodel.BaselineMeanDifferenceModel;
+import org.drugis.addis.mcmcmodel.BaselineOddsModel;
 import org.drugis.common.AlphabeticalComparator;
 
 public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<BenefitRiskAnalysis> {
@@ -30,6 +38,7 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	private List<MetaAnalysis> d_metaAnalyses;
 	private List<Drug> d_drugs;
 	private Drug d_baseline;
+	private Map<OutcomeMeasure,AbstractBaselineModel<?>> d_baselineModelMap;
 	
 	public static String PROPERTY_NAME = "name";
 	public static String PROPERTY_INDICATION = "indication";
@@ -39,6 +48,7 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	public static String PROPERTY_METAANALYSES = "metaAnalyses";
 	
 	public BenefitRiskAnalysis() {
+		d_baselineModelMap = new HashMap<OutcomeMeasure,AbstractBaselineModel<?>>();
 	}
 	
 	public BenefitRiskAnalysis(String id, Indication indication, List<OutcomeMeasure> outcomeMeasures,
@@ -48,6 +58,8 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 		d_outcomeMeasures = outcomeMeasures;
 		d_metaAnalyses = metaAnalysis;
 		d_drugs = drugs;
+		d_baselineModelMap = new HashMap<OutcomeMeasure,AbstractBaselineModel<?>>();
+		
 		setBaseline(baseline);
 		setName(id);
 	}
@@ -178,19 +190,50 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 		return (GaussianBase) getRelativeEffect(d, om).getDistribution();
 	}
 	
+	
 	/**
 	 * Get the assumed distribution for the baseline odds.
 	 */
-	public GaussianBase getBaselineDistribution(OutcomeMeasure om) { // FIXME: implement for story 1.5
-		switch (om.getType()) {
-		case RATE:
-			return new LogGaussian(0.1, 0.1);
-		case CONTINUOUS:
-			return new Gaussian(0.1, 0.1);
+	public GaussianBase getBaselineDistribution(OutcomeMeasure om) {
+		AbstractBaselineModel<?> model = d_baselineModelMap.get(om);
+		if (model == null) {
+			model = createBaselineModel(om);
+			d_baselineModelMap.put(om,model);
 		}
-		return null;
+		
+		return (GaussianBase) model.getResult();
 	}
 
+	@SuppressWarnings("unchecked")
+	private AbstractBaselineModel<?> createBaselineModel(OutcomeMeasure om) {
+		AbstractBaselineModel<?> model = null;
+			switch (om.getType()) {
+			case RATE:
+				model = new BaselineOddsModel(getBaselineMeasurements(om));
+				model.run();
+			break;
+			case CONTINUOUS:
+				model = new BaselineMeanDifferenceModel(getBaselineMeasurements(om));
+				model.run();
+			break;
+			}
+		return model;
+	}
+	
+	// FIXME: type safety.
+	@SuppressWarnings("unchecked")
+	private List getBaselineMeasurements(OutcomeMeasure om) {
+		List<Measurement> result = new ArrayList<Measurement>(); 
+		for (MetaAnalysis ma : getMetaAnalyses())
+			if (ma.getOutcomeMeasure().equals(om))
+				for (Study s : ma.getIncludedStudies())
+					for (Arm a : s.getArms())
+						if (a.getDrug().equals(getBaseline()))
+							result.add(s.getMeasurement(om,a));
+		
+		return result;
+	}
+	
 	/**
 	 * The absolute effect of d on om given the assumed odds of the baseline treatment. 
 	 */
