@@ -33,7 +33,7 @@ public abstract class AbstractBasicRelativeEffect<T extends Measurement> extends
 	protected T d_subject;
 	protected T d_baseline;
 
-	protected AbstractBasicRelativeEffect(T subject, T baseline) {
+	protected AbstractBasicRelativeEffect(T baseline, T subject) {
 		d_subject  = subject;
 		d_baseline = baseline;
 		connectListeners();

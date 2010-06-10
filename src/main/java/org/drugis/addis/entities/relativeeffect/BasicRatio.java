@@ -27,8 +27,8 @@ import org.drugis.addis.entities.RateMeasurement;
 public abstract class BasicRatio extends AbstractBasicRelativeEffect<RateMeasurement> {
 	protected double d_correction;
 	
-	protected BasicRatio(RateMeasurement numerator, RateMeasurement denominator) throws IllegalArgumentException {
-		super(numerator, denominator);
+	protected BasicRatio(RateMeasurement baseline, RateMeasurement subject) throws IllegalArgumentException {
+		super(baseline, subject);
 		//undefined if no events happen or events happen for all subjects
 		calculateCorrection();
 	}

@@ -46,8 +46,8 @@ public class RelativeEffectFactoryTest {
 		assertEquals(subj, pSubj.getDrug());
 		
 		RelativeEffect<?> expected = new BasicStandardisedMeanDifference(
-				(ContinuousMeasurement)s.getMeasurement(e, pSubj),
-				(ContinuousMeasurement)s.getMeasurement(e, pBase));
+				(ContinuousMeasurement)s.getMeasurement(e, pBase),
+				(ContinuousMeasurement)s.getMeasurement(e, pSubj));
 		
 		RelativeEffect<?> actual =
 				RelativeEffectFactory.buildRelativeEffect(s, e, base, subj,

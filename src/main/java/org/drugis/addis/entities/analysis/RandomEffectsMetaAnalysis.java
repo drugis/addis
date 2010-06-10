@@ -173,16 +173,22 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		if (!d_drugs.containsAll(askedDrugs))
 			throw new IllegalArgumentException(d_name + " compares drugs " + d_drugs + " but " + askedDrugs + " were asked");
 		
+		
+		List<BasicRelativeEffect<? extends Measurement>> relEffects = getFilteredRelativeEffects(d1, d2, type);
+		
+		return new RandomEffectsRelativeEffect(relEffects, d_totalSampleSize);
+	}
+
+	List<BasicRelativeEffect<? extends Measurement>> getFilteredRelativeEffects(Drug d1, Drug d2, Class<? extends RelativeEffect<?>> type) {
 		boolean drugsSwapped = !d1.equals(getFirstDrug());
 		List<BasicRelativeEffect<? extends Measurement>> relEffects = new ArrayList<BasicRelativeEffect<? extends Measurement>>();
 		
-		for (int i=0; i<d_studies.size(); ++i ){
+		for (int i=0; i<d_studies.size(); ++i ){ // FIXME: don't add studies with undefined relative effects.
 			RelativeEffect<? extends Measurement> re;
 			re = RelativeEffectFactory.buildRelativeEffect(getStudyArms(drugsSwapped).get(i), d_outcome, type);
 			relEffects.add((BasicRelativeEffect<? extends Measurement>) re);
 		}
-		
-		return new RandomEffectsRelativeEffect(relEffects, d_totalSampleSize);
+		return relEffects;
 	}
 		
 	public RandomEffectMetaAnalysisRelativeEffect<Measurement> getRelativeEffect(Class<? extends RelativeEffect<?>> type) {

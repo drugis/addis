@@ -772,4 +772,39 @@ public class ExampleData {
 				fluox, Collections.singletonList(parox));
 		return br;
 	}
+	
+    public static Study realBuildStudyZeroRate() {
+        Endpoint hamd = buildEndpointHamd();
+        Drug fluoxetine = buildDrugFluoxetine();
+        Drug sertraline = buildDrugSertraline();
+        Drug paroxetine = buildDrugParoxetine();
+        Study study = new Study("fluoxRatingZeroStudy", buildIndicationDepression());
+        study.setEndpoints(Collections.singletonList(hamd));
+        
+        // Sertraline data
+        FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
+        Arm sertr = new Arm(sertraline, dose, 96);
+        BasicRateMeasurement sHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
+        sHamd.setRate(70);
+        study.addArm(sertr);
+        study.setMeasurement(hamd, sertr, sHamd);
+
+        // Fluoxetine data
+        dose = new FixedDose(30.0, SIUnit.MILLIGRAMS_A_DAY);
+        Arm fluox = new Arm(fluoxetine, dose, 92);
+        BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
+        fHamd.setRate(0);
+        study.addArm(fluox);
+        study.setMeasurement(hamd, fluox, fHamd);
+        
+        // Paroxetine data
+        dose = new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY);
+        Arm parox = new Arm(paroxetine, dose, 93);
+        BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
+        pHamd.setRate(64);
+        study.addArm(parox);
+        study.setMeasurement(hamd, parox, pHamd);
+        
+        return study;
+    }
 }

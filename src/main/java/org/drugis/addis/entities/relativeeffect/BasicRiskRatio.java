@@ -25,8 +25,8 @@ import org.drugis.addis.entities.RateMeasurement;
 
 public class BasicRiskRatio extends BasicRatio {
 
-	public BasicRiskRatio(RateMeasurement denominator, RateMeasurement numerator) {
-		super(numerator, denominator);
+	public BasicRiskRatio(RateMeasurement baseline, RateMeasurement subject) {
+		super(baseline, subject);
 	}
 
 	@Override

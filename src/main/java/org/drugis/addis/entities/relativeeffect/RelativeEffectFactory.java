@@ -125,8 +125,8 @@ public class RelativeEffectFactory {
 	private static RelativeEffect<?> buildStandardisedMeanDifference(Study s,
 			OutcomeMeasure e, Arm base, Arm subj) {
 		return new BasicStandardisedMeanDifference(
-				findContinuousMeasurement(s, e, subj),
-				findContinuousMeasurement(s, e, base));
+				findContinuousMeasurement(s, e, base),
+				findContinuousMeasurement(s, e, subj));
 	}
 	
 	private static ContinuousMeasurement findContinuousMeasurement(Study s, OutcomeMeasure om, Arm arm) {

@@ -29,11 +29,11 @@ public class BasicOddsRatio extends BasicRatio {
 	/**
 	 * The odds-ratio of two RateMeasurements.
 	 * In a forest plot, the numerator will be on the right and the denominator on the left.
-	 * @param denominator
-	 * @param numerator
+	 * @param baseline
+	 * @param subject
 	 */
-	public BasicOddsRatio(RateMeasurement denominator, RateMeasurement numerator) { 
-		super(numerator, denominator);
+	public BasicOddsRatio(RateMeasurement baseline, RateMeasurement subject) { 
+		super(baseline, subject);
 	}
 
 	public String getName() {
@@ -42,6 +42,11 @@ public class BasicOddsRatio extends BasicRatio {
 	
 	public AxisType getAxisType() {
 		return AxisType.LOGARITHMIC;
+	}
+	
+	@Override
+	public boolean isDefined() {
+		return d_baseline.getRate() > 0 && d_subject.getRate() < d_subject.getSampleSize();
 	}
 
 	@Override

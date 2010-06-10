@@ -34,7 +34,7 @@ public class BasicMeanDifference extends AbstractBasicRelativeEffect<ContinuousM
 	 */
 	
 	public BasicMeanDifference(ContinuousMeasurement baseline, ContinuousMeasurement subject) throws IllegalArgumentException {
-		super(subject, baseline);
+		super(baseline, subject);
 	}
 
 	private double getMu() {

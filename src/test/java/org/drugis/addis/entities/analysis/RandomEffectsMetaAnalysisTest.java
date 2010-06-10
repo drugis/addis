@@ -22,6 +22,7 @@
 package org.drugis.addis.entities.analysis;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -42,13 +43,15 @@ import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
-import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelativeEffect;
+import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
+import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelativeEffect;
+import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class RandomEffectsMetaAnalysisTest {
@@ -283,5 +286,16 @@ public class RandomEffectsMetaAnalysisTest {
 		deps.addAll(Arrays.asList(new Study[]{d_bennie, d_boyer, d_fava, d_newhouse, d_sechter}));
 		
 		assertEquals(deps, d_rema.getDependencies());
+	}
+	
+	@Test @Ignore
+	public void testFilterUndefinedRelativeEffects() {
+		List<BasicRelativeEffect<? extends Measurement>> expected = d_rema.getFilteredRelativeEffects(d_fluox, d_sertr, BasicOddsRatio.class);
+		Study zeroRate = createRateStudy("ZeroRate 2012", 0, 120, 86, 118, d_ind);
+		d_studyList.add(zeroRate);
+		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, d_fluox, d_sertr);
+		List<BasicRelativeEffect<? extends Measurement>> actual = d_rema.getFilteredRelativeEffects(d_fluox, d_sertr, BasicOddsRatio.class);
+		assertFalse(RelativeEffectFactory.buildRelativeEffect(zeroRate, d_rateEndpoint, d_fluox, d_sertr, BasicOddsRatio.class).isDefined());
+		assertEquals(expected, actual);
 	}
 }

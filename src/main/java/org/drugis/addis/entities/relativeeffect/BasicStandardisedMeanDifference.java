@@ -30,9 +30,9 @@ public class BasicStandardisedMeanDifference extends AbstractBasicRelativeEffect
 	 * by Cooper et al. 2nd Edition pages 225-230
 	 */
 	
-	public BasicStandardisedMeanDifference(ContinuousMeasurement subject,
-			ContinuousMeasurement baseline) throws IllegalArgumentException {
-		super(subject, baseline);
+	public BasicStandardisedMeanDifference(ContinuousMeasurement baseline,
+			ContinuousMeasurement subject) throws IllegalArgumentException {
+		super(baseline, subject);
 	}
 
 	private double getMu() {

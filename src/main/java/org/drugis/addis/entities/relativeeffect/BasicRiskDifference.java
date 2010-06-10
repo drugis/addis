@@ -25,8 +25,8 @@ import org.drugis.addis.entities.RateMeasurement;
 
 public class BasicRiskDifference extends AbstractBasicRelativeEffect<RateMeasurement> {
 
-	public BasicRiskDifference(RateMeasurement denominator, RateMeasurement numerator) {
-		super(numerator, denominator);
+	public BasicRiskDifference(RateMeasurement baseline, RateMeasurement subject) {
+		super(baseline, subject);
 	}
 
 	private double getMu() {
