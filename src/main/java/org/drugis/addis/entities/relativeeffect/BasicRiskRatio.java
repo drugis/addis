@@ -39,8 +39,8 @@ public class BasicRiskRatio extends BasicRatio {
 		if (!isDefined())
 			return Double.NaN;
 
-		return Math.sqrt((1.0 / (d_subject.getRate() + d_correction)) +
-				(1.0 / (d_baseline.getRate() + d_correction)) -
+		return Math.sqrt((1.0 / (d_subject.getRate())) +
+				(1.0 / (d_baseline.getRate())) -
 				(1.0 / (d_subject.getSampleSize())) -
 				(1.0 / (d_baseline.getSampleSize())));		
 	}
@@ -59,8 +59,8 @@ public class BasicRiskRatio extends BasicRatio {
 		if (!isDefined())
 			return Double.NaN;
 		
-		double ratio = ( (d_subject.getRate() + d_correction) / (d_subject.getSampleSize()) ) 
-			/ ( (d_baseline.getRate() + d_correction) / (d_baseline.getSampleSize()) );
+		double ratio = ( ((double)d_subject.getRate()) / ((double)d_subject.getSampleSize()) ) 
+			/ ( ((double)d_baseline.getRate()) / ((double)d_baseline.getSampleSize()) );
 		return Math.log(ratio);
 	}
 
