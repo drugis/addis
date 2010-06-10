@@ -41,6 +41,7 @@ public class BasicMeanDifference extends AbstractBasicRelativeEffect<ContinuousM
 		return d_subject.getMean() - d_baseline.getMean();
 	}
 	
+	@Override
 	public Double getError() {
 		return Math.sqrt(square(d_subject.getStdDev()) / (double) d_subject.getSampleSize() 
 						+ square(d_baseline.getStdDev()) / (double) d_baseline.getSampleSize());

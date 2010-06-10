@@ -41,6 +41,7 @@ public interface Variable extends Entity, Comparable<Variable> {
 			d_name = name;
 		}
 		
+		@Override
 		public String toString() {
 			return d_name;
 		}

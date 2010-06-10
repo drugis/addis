@@ -99,6 +99,7 @@ public class AbstractTablePanel extends JPanel {
 		}
 	}
 		
+	@Override
 	public void doLayout() {
 		super.doLayout();
 		EnhancedTableHeader.autoSizeColumns(d_table, 350);

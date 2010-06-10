@@ -59,6 +59,7 @@ public class Note extends AbstractEntity {
 		return d_text;
 	}
 	
+	@Override
 	public String toString() {
 		return getText();
 	}

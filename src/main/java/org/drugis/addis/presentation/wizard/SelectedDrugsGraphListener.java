@@ -44,6 +44,7 @@ public class SelectedDrugsGraphListener extends MouseAdapter {
 		this.d_jgraph = graph;
 	}
 	
+	@Override
 	public void mousePressed(MouseEvent e) {
 		Object cell = d_jgraph.getFirstCellForLocation(e.getX(), e.getY());		
 		

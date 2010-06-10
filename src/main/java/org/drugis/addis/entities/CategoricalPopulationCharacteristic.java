@@ -57,14 +57,17 @@ public class CategoricalPopulationCharacteristic extends AbstractVariable implem
 		firePropertyChange(PROPERTY_CATEGORIESASLIST, null, categories);
 	}
 	
+	@Override
 	public FrequencyMeasurement buildMeasurement() {
 		return new FrequencyMeasurement(this);
 	}
 
+	@Override
 	public int compareTo(Variable other) {
 		return getName().compareTo(other.getName());
 	}
 
+	@Override
 	public FrequencyMeasurement buildMeasurement(int size) {
 		FrequencyMeasurement m = new FrequencyMeasurement(this);
 		m.setSampleSize(size);

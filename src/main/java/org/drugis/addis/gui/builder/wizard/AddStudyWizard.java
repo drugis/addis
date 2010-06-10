@@ -114,6 +114,7 @@ public class AddStudyWizard implements ViewBuilder{
 		Wizard wizard = new Wizard(wizardModel);
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 		wizard.addWizardListener(new WizardAdapter() {
+			@Override
 			public void wizardClosed(WizardEvent e) {
 				d_main.leftTreeFocus(d_pm.saveStudy());
 			}
@@ -182,6 +183,7 @@ public class AddStudyWizard implements ViewBuilder{
 			d_dialog = dialog;
 		} 
 		
+		@Override
 		public void prepare() {
 			this.setVisible(false);
 			if (d_scrollPane != null)
@@ -265,7 +267,8 @@ public class AddStudyWizard implements ViewBuilder{
 					"The drug field of every arm must be filled in order to continue. At least one arm must be included.");
 		}
 		
-		 public void prepare() {
+		 @Override
+		public void prepare() {
 			 this.setVisible(false);
 			 d_validator = new NotEmptyValidator();
 			 d_validator.addValueChangeListener(new CompleteListener(this));
@@ -407,7 +410,8 @@ public class AddStudyWizard implements ViewBuilder{
 			this.setLayout(new BorderLayout());
 		}
 		
-		 public void prepare() {
+		 @Override
+		public void prepare() {
 			 this.setVisible(false);
  			 d_validator = new NotEmptyValidator();
 			 d_validator.addValueChangeListener(new CompleteListener(this));
@@ -515,6 +519,7 @@ public class AddStudyWizard implements ViewBuilder{
 			excludedChars.add(BasicStudyCharacteristic.SOURCE);
 		}
 		
+		@Override
 		public void prepare() {
 			 if (d_scrollPane != null)
 				 remove(d_scrollPane);
@@ -614,7 +619,8 @@ public class AddStudyWizard implements ViewBuilder{
 					"An indication must be selected to continue.");
 		}
 		
-		 public void prepare() {
+		 @Override
+		public void prepare() {
 			 this.setVisible(false);
 			 d_validator = new NotEmptyValidator();
 			 d_validator.addValueChangeListener(new CompleteListener(this));
@@ -676,7 +682,8 @@ public class AddStudyWizard implements ViewBuilder{
 			super("Select ID and Title","Set the ID and title of the study. Studies can also be extracted from Clinicaltrials.gov using the NCT-id.");
 		 }
 
-		 public void prepare() {
+		 @Override
+		public void prepare() {
 			 this.setVisible(false);
 			 d_validator = new NotEmptyValidator();
 			 d_validator.addValueChangeListener(new CompleteListener(this));

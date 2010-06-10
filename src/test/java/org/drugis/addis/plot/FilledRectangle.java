@@ -47,6 +47,7 @@ public class FilledRectangle extends Rectangle {
 		this(r.x, r.y, r.width, r.height, c);
 	}
 
+	@Override
 	public boolean equals(Object o) {
 		if (o instanceof FilledRectangle) {
 			FilledRectangle other = (FilledRectangle) o;
@@ -55,6 +56,7 @@ public class FilledRectangle extends Rectangle {
 		return false;
 	}
 	
+	@Override
 	public String toString() {
 		return "FilledRectangle(x = " + x + ", y = " + y +
 			", width = " + width + ", height = " + height +

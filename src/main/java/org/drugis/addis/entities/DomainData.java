@@ -174,15 +174,18 @@ public class DomainData {
 	
 	protected static final XMLFormat<DomainData> XML = new XMLFormat<DomainData>(DomainData.class) {
 		
+		@Override
 		public DomainData newInstance(Class<DomainData> cls, InputElement ie) throws XMLStreamException {
 			// In newInstance, only use getAttribute, not get. Thats why no indication can be instantiated at this point
 			return new DomainData();
 		}
 		
+		@Override
 		public boolean isReferenceable() {
 			return false;
 		}
 		
+		@Override
 		@SuppressWarnings("unchecked")
 		public void read(InputElement ie, DomainData d) throws XMLStreamException {
 			d.setIndications(ie.get("indications",TreeSet.class));

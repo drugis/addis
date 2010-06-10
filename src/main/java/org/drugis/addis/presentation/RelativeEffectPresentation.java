@@ -69,6 +69,7 @@ public class RelativeEffectPresentation extends PresentationModel<RelativeEffect
 		return new LabelModel();
 	}
 	
+	@Override
 	public String toString() {
 		return (String) getLabelModel().getValue();
 	}

@@ -23,6 +23,7 @@ public class MockBenefitRiskAnalysis extends BenefitRiskAnalysis {
 	/**
 	 * Get the assumed distribution for the baseline odds.
 	 */
+	@Override
 	public GaussianBase getBaselineDistribution(OutcomeMeasure om) {
 		switch (om.getType()) {
 			case RATE: return new LogGaussian(0.001, 0.0001);

@@ -119,14 +119,17 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 			super(distributions);
 		}
 		
+		@Override
 		public double getMu(Distribution d) {
 			return ((TransformedStudentT)d).getMu();
 		}
 		
+		@Override
 		public double getSigma(Distribution d) {
 			return ((TransformedStudentT)d).getSigma();
 		}
 		
+		@Override
 		public Distribution getPooledDistribution() {
 			return new Gaussian(d_thetaDSL, d_SEThetaDSL);
 		}
@@ -137,14 +140,17 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 			super(distributions);
 		}
 		
+		@Override
 		public double getMu(Distribution d) {
 			return ((TransformedLogStudentT)d).getMu();
 		}
 		
+		@Override
 		public double getSigma(Distribution d) {
 			return ((TransformedLogStudentT)d).getSigma();
 		}
 		
+		@Override
 		public Distribution getPooledDistribution() {
 			return new LogGaussian(d_thetaDSL, d_SEThetaDSL);
 		}
@@ -181,6 +187,7 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 		return d_results.getHeterogeneityI2();
 	}
 	
+	@Override
 	public String toString() {
 		return this.getClass().getSimpleName() + "(" + getConfidenceInterval().toString() +")";
 	}

@@ -42,6 +42,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 			d_om = om;
 		}
 		
+		@Override
 		public void setValue(Object selected) {
 			super.setValue(selected);
 			if (selected.equals(false))

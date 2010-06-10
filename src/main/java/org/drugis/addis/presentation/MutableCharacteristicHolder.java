@@ -31,6 +31,7 @@ public class MutableCharacteristicHolder extends StudyCharacteristicHolder {
 		super(bean, characteristic);
 	}
 
+	@Override
 	public void setValue(Object newValue) {
 		Object oldValue = d_study.getCharacteristics().get(d_char);
 		((Study)d_study).setCharacteristic((BasicStudyCharacteristic) d_char, newValue);

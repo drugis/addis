@@ -61,6 +61,7 @@ public final class EntryXMLFormat extends XMLFormat<Entry> {
 		}
 	}
 
+	@Override
 	public Entry newInstance(Class<Entry> cls, InputElement ie) throws XMLStreamException {
 		return new MyEntry();
 	}
@@ -86,6 +87,7 @@ public final class EntryXMLFormat extends XMLFormat<Entry> {
 		}
 	}
 
+	@Override
 	public void write(Entry e,
 			javolution.xml.XMLFormat.OutputElement oe)
 	throws XMLStreamException {

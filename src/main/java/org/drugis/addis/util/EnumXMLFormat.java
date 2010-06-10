@@ -31,17 +31,21 @@ public class EnumXMLFormat<T extends Enum>  extends XMLFormat<T> {
 		super( c);
 	}
 	
+	@Override
 	public T newInstance(Class<T> enumClass, InputElement ie) throws XMLStreamException {
 		String selectedOption = ie.getAttribute("value").toString();
 		
 		return (T) Enum.valueOf(enumClass, selectedOption);
 	}
+	@Override
 	public boolean isReferenceable() {
 		return false;
 	}
+	@Override
 	public void read(InputElement ie, T enumInstance) throws XMLStreamException {
 	}
 	
+	@Override
 	public void write(T enumInstance, OutputElement oe) throws XMLStreamException {
 		oe.setAttribute("value" ,enumInstance.name());
 	}

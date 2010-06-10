@@ -79,6 +79,7 @@ public class FlexibleDose extends AbstractDose {
 		firePropertyChange(PROPERTY_MAX_DOSE, oldVal.getUpperBound(), d_flexDose.getUpperBound());
 	}
 
+	@Override
 	public String toString() {
 		if (d_flexDose == null || d_unit == null) {
 			return "INCOMPLETE";

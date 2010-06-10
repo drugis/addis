@@ -42,6 +42,7 @@ public abstract class AbstractOverviewWizardStep<G extends StudyGraphModel> exte
 	}
 
 
+	@Override
 	public void applyState()
 	throws InvalidStateException {
 		saveAsAnalysis();

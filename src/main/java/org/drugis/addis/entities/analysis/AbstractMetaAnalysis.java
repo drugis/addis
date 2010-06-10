@@ -147,6 +147,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		return d_indication;
 	}
 	
+	@Override
 	public boolean equals(Object o) { 
 		if (o instanceof AbstractMetaAnalysis) {
 			AbstractMetaAnalysis other = (AbstractMetaAnalysis)o;
@@ -155,6 +156,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		return false;
 	}
 	
+	@Override
 	public int hashCode() {
 		return getName().hashCode();
 	}
@@ -222,6 +224,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	
 	@SuppressWarnings("unused")
 	private static final XMLFormat<ArmMap> armMapXML = new XMLFormat<ArmMap>(ArmMap.class) {
+		@Override
 		public ArmMap newInstance(Class<ArmMap> cls, XMLFormat.InputElement xml) {
 			return new ArmMap();
 		}
@@ -257,6 +260,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	
 	@SuppressWarnings("unused")
 	private static final XMLFormat<ArmEntry> armEntryXML = new XMLFormat<ArmEntry>(ArmEntry.class) {
+		@Override
 		public ArmEntry newInstance(Class<ArmEntry> cls, XMLFormat.InputElement xml) {
 			return new ArmEntry();
 		}

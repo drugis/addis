@@ -68,6 +68,7 @@ public class BenefitRiskWizard extends Wizard {
 			Bindings.bind(this, "complete", d_pm.getCompleteModel());
 		}
 		
+		@Override
 		public void applyState() throws InvalidStateException {
 			saveAsAnalysis();
 		}

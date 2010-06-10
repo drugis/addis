@@ -39,6 +39,7 @@ public class PopulationCharTableModel extends StudyMeasurementTableModel {
 		return super.getColumnCount() + 1;
 	}
 
+	@Override
 	public Object getValueAt(int row, int col) {
 		if (col == getColumnCount() - 1) {
 			return d_study.getMeasurement(getCharAt(row));

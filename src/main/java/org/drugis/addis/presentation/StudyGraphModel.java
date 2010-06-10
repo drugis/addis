@@ -52,6 +52,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 			return d_sampleSize;
 		}
 				
+		@Override
 		public String toString() {
 			return d_drug.getName();
 		}
@@ -72,6 +73,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 			 d_studies = studies;
 		}
 		
+		@Override
 		public String toString() {
 			return Integer.toString(d_studies);
 		}

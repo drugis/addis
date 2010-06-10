@@ -129,6 +129,7 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 		return d_name;
 	}
 
+	@Override
 	public boolean equals(Object other){
 		if (other == null)
 			return false;
@@ -144,6 +145,7 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 		return getName().compareTo(other.getName());
 	}
 	
+	@Override
 	public String toString() {
 		return getName();
 	}

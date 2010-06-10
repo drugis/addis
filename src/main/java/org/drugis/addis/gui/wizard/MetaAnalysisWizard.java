@@ -78,6 +78,7 @@ public class MetaAnalysisWizard extends Wizard {
 			super(pm, frame);
 		}
 		
+		@Override
 		public void prepare() {
 			removeAll();
 			

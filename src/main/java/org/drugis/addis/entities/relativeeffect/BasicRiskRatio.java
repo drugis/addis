@@ -35,6 +35,7 @@ public class BasicRiskRatio extends BasicRatio {
 		+ d_subject.toString() + "]";
 	}
 
+	@Override
 	public Double getError() { //NB: this is the LOG error
 		if (!isDefined())
 			return Double.NaN;

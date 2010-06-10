@@ -58,10 +58,12 @@ public class AddVariableDialog extends OkCancelDialog {
 		d_selectionModel = selectionModel;
 	}
 
+	@Override
 	protected void cancel() {
 		setVisible(false);
 	}
 
+	@Override
 	protected void commit() {
 		
 		if ( 	d_domain.getEndpoints().contains(d_pm.getBean())     ||

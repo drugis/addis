@@ -66,6 +66,7 @@ extends PresentationModel<T> implements LabeledPresentationModel {
 		return new LabelModel();
 	}
 	
+	@Override
 	public String toString() {
 		return (String) getLabelModel().getValue(); 
 	}

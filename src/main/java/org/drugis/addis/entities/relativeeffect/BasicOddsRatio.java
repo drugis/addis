@@ -40,6 +40,7 @@ public class BasicOddsRatio extends BasicRatio {
 		return "Odds ratio";
 	}
 	
+	@Override
 	public AxisType getAxisType() {
 		return AxisType.LOGARITHMIC;
 	}
@@ -67,6 +68,7 @@ public class BasicOddsRatio extends BasicRatio {
 		return Math.log((a * d) / (b * c)); 
 	}
 
+	@Override
 	public Double getError() {
 		if (!isDefined())
 			return Double.NaN;

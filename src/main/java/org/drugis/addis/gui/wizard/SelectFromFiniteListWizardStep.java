@@ -82,7 +82,8 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 		d_pm.getInputCompleteModel().addValueChangeListener(new CompleteListener(this));
 	}
 		
-	 public void prepare() {
+	 @Override
+	public void prepare() {
 		 this.setVisible(false);
 		 
 		 if (d_scrollPane != null)

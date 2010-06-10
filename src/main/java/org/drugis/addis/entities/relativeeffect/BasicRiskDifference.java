@@ -39,6 +39,7 @@ public class BasicRiskDifference extends AbstractBasicRelativeEffect<RateMeasure
 	}
 
 	// Here: gets the STANDARD ERROR of the RISK DIFFERENCE
+	@Override
 	public Double getError() {
 		double a = getSubject().getRate();
 		double n1 = getSubject().getSampleSize();

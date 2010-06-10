@@ -73,6 +73,7 @@ public abstract class AbstractVariable extends AbstractEntity implements Variabl
 		return d_name;
 	}
 
+	@Override
 	public String toString() {
 		return getName();
 	}
@@ -91,6 +92,7 @@ public abstract class AbstractVariable extends AbstractEntity implements Variabl
 		return getName().compareTo(other.getName());
 	}
 
+	@Override
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();
 	}

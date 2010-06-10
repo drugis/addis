@@ -42,6 +42,7 @@ public class EnhancedTableHeader extends JTableHeader {
 		super(cm);
 		this.d_table = table;
 		addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				doMouseClicked(e);
 			}

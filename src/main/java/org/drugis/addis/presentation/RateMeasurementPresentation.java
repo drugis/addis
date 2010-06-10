@@ -78,6 +78,7 @@ public class RateMeasurementPresentation extends PresentationModel<RateMeasureme
 		return new LabelModel();
 	}
 	
+	@Override
 	public String toString() {
 		return (String) getLabelModel().getValue(); 
 	}

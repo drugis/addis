@@ -63,6 +63,7 @@ public class StudyMeasurementTableModel extends AbstractTableModel {
 		return d_study.getVariables(d_type).size();
 	}
 	
+	@Override
 	public boolean isCellEditable(int row, int col) {
 		return false;
 	}

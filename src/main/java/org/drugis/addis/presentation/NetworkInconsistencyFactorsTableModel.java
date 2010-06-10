@@ -37,6 +37,7 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel i
 		d_pmf = pmf;
 	}
 	
+	@Override
 	public String getColumnName(int column) {
 		return column == 0 ? "Cycle" : "Confidence Interval";
 	}

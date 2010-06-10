@@ -47,6 +47,7 @@ public class FixedDose extends AbstractDose {
 		firePropertyChange(PROPERTY_QUANTITY, oldVal, d_quantity);
 	}
 	
+	@Override
 	public String toString() {
 		if (d_quantity == null || d_unit == null) {
 			return "INCOMPLETE";

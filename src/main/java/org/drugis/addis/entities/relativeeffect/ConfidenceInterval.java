@@ -17,6 +17,7 @@ public class ConfidenceInterval extends Interval<Double> {
 		return d_pointEstimate;
 	}
 	
+	@Override
 	protected boolean canEqual(Interval<?> other) {
 		if (other.getClass().equals(ConfidenceInterval.class)) return true;
 		return false;

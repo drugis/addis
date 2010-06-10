@@ -26,10 +26,12 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 		d_mockConsistencyModel = new MockConsistencyModel();
 	}
 	
+	@Override
 	public InconsistencyModel getInconsistencyModel() {
 		return d_mockInconsistencyModel;
 	}
 	
+	@Override
 	public ConsistencyModel getConsistencyModel() {
 		return d_mockConsistencyModel;
 	}

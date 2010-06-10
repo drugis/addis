@@ -78,6 +78,7 @@ public class Arm extends AbstractEntity {
 		firePropertyChange(PROPERTY_SIZE, oldVal, d_size);
 	}
 	
+	@Override
 	public Set<Entity> getDependencies() {
 		// TODO Auto-generated method stub
 		return null;

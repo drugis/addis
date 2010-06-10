@@ -64,6 +64,7 @@ public class EnhancedTable extends JTable {
 	
 	private class MyRenderer extends DefaultTableCellRenderer {
 		
+		@Override
 		public void setValue(Object value) {
 			if (value instanceof Date) {
 				SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");

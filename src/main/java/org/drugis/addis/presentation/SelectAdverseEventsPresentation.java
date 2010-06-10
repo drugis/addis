@@ -32,6 +32,7 @@ extends SelectFromFiniteListPresentationImpl<AdverseEvent> {
 		super(options, "Adverse Event", "Select Adverse Events", "Please select the appropriate adverse events.", main);
 	}
 
+	@Override
 	public void showAddOptionDialog(int idx) {
 		d_main.showAddAdverseEventDialog(getSlot(idx));
 	}

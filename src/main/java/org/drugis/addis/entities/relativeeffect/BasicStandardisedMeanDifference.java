@@ -39,6 +39,7 @@ public class BasicStandardisedMeanDifference extends AbstractBasicRelativeEffect
 		return getCorrectionJ() * getCohenD();
 	}
 	
+	@Override
 	public Double getError() {
 		return Math.sqrt(square(getCorrectionJ()) * getCohenVariance());
 	}
@@ -69,6 +70,7 @@ public class BasicStandardisedMeanDifference extends AbstractBasicRelativeEffect
 		return Math.sqrt(numerator/(double) getDegreesOfFreedom());
 	}
 	
+	@Override
 	protected Integer getDegreesOfFreedom() {
 		return getSampleSize() - 2;
 	}

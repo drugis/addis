@@ -68,6 +68,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			d_arm = arm;
 		}
 
+		@Override
 		public boolean equals(Object o) {
 			if (o instanceof MeasurementKey) { 
 				MeasurementKey other = (MeasurementKey)o;
@@ -76,6 +77,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			return false;
 		}
 
+		@Override
 		public int hashCode() {
 			int code = 1;
 			code = code * 31 + d_outcomeM.hashCode();
@@ -158,6 +160,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		firePropertyChange(PROPERTY_INDICATION, oldInd, indication);
 	}
 
+	@Override
 	public Set<Entity> getDependencies() {
 		HashSet<Entity> dep = new HashSet<Entity>(getDrugs());
 		dep.addAll(getOutcomeMeasures());

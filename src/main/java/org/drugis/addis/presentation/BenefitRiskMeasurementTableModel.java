@@ -57,6 +57,7 @@ public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
 		return d_br.getDrugs().size();
 	}
 
+	@Override
 	public boolean isCellEditable(int row, int col) {
 		return false;
 	}

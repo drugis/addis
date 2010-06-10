@@ -56,6 +56,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(d_metaAnalysisCompleteListener);		
 	}
 
+	@Override
 	protected void buildDrugHolders() {
 		d_firstDrugHolder = new ModifiableHolder<Drug>();		
 		d_secondDrugHolder = new ModifiableHolder<Drug>();
@@ -142,6 +143,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		return d_selectedDrugs;
 	}
 	
+	@Override
 	public RandomEffectsMetaAnalysis createMetaAnalysis(String name) {
 		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
 		

@@ -47,6 +47,7 @@ public class DrugVertexView extends VertexView {
 			super(text);
 		}
 		
+		@Override
 		public void paint(Graphics g) {
 			setSize(200, 50);
 			Graphics2D g2d = (Graphics2D)g;
@@ -61,6 +62,7 @@ public class DrugVertexView extends VertexView {
 			//super.paint(g);
 		}
 		
+		@Override
 		public Dimension getPreferredSize() {
 			return new Dimension(400, 80);
 		}
@@ -71,6 +73,7 @@ public class DrugVertexView extends VertexView {
 		}
 		
 		
+		@Override
 		public Dimension getPreferredSize() {
 			return new Dimension(400, 80);
 		}

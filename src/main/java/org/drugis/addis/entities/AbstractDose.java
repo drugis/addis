@@ -38,6 +38,7 @@ public abstract class AbstractDose extends AbstractEntity {
 		firePropertyChange(PROPERTY_UNIT, oldVal, d_unit);
 	}
 
+	@Override
 	public Set<Entity> getDependencies() {
 		return null;
 	}

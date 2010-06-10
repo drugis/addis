@@ -51,6 +51,7 @@ public class Indication extends AbstractEntity implements Comparable<Indication>
 		return d_code.compareTo(other.d_code);
 	}
 
+	@Override
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();
 	}

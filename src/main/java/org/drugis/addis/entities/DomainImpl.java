@@ -237,6 +237,7 @@ public class DomainImpl implements Domain {
 		return new StudiesForEntityListHolder(null);
 	}
 
+	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Domain) {
 			Domain other = (Domain)o;
@@ -253,6 +254,7 @@ public class DomainImpl implements Domain {
 		return false;
 	}
 	
+	@Override
 	public int hashCode() {
 		int hash = 1;
 		hash = hash * 31 + getEndpoints().hashCode();

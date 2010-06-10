@@ -90,6 +90,7 @@ public class Drug extends AbstractEntity implements Comparable<Drug> {
 		return getName().compareTo(other.getName());
 	}
 
+	@Override
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();
 	}

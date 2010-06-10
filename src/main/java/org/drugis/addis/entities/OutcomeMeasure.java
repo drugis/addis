@@ -41,6 +41,7 @@ public interface OutcomeMeasure extends Variable {
 			d_string = s;
 		}
 		
+		@Override
 		public String toString() {
 			return d_string;
 		}

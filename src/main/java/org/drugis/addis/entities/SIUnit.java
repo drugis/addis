@@ -43,6 +43,7 @@ public enum SIUnit implements Serializable {
 		return d_symbol;
 	}
 	
+	@Override
 	public String toString() {
 		return d_symbol;
 	}

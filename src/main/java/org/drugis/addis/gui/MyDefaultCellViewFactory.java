@@ -39,6 +39,7 @@ public class MyDefaultCellViewFactory extends DefaultCellViewFactory {
 		this.d_model = model;
 	}
 	
+	@Override
 	protected VertexView createVertexView(Object cell) {
 		if (cell instanceof DefaultGraphCell) {
 			MultiLineVertexView multiLineVertexView = new MultiLineVertexView(cell);
