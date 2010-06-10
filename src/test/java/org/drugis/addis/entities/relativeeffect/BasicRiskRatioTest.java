@@ -148,11 +148,11 @@ public class BasicRiskRatioTest {
 	}
 
 	@Test
-	public void testZeroSubjectRateShouldBeDefined() {
+	public void testZeroSubjectRateShouldBeUndefined() { // although we can calculate a point-estimate, we can't get a CI.
 		RateMeasurement base = new BasicRateMeasurement(50, 100);
 		RateMeasurement subj = new BasicRateMeasurement(0, 100);
 		BasicRiskRatio or = new BasicRiskRatio(base, subj);
-		assertTrue(or.isDefined());
+		assertFalse(or.isDefined());
 	}
 
 	@Test

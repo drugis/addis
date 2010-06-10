@@ -51,7 +51,7 @@ public class BasicRiskRatio extends BasicRatio {
 	
 	@Override
 	public boolean isDefined() {
-		return super.isDefined() && d_baseline.getRate() > 0;
+		return super.isDefined() && d_baseline.getRate() > 0 && d_subject.getRate() > 0;
 	}
 
 	@Override

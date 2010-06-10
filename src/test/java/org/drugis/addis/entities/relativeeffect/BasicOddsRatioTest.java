@@ -23,7 +23,6 @@ package org.drugis.addis.entities.relativeeffect;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicRateMeasurement;
@@ -144,19 +143,19 @@ public class BasicOddsRatioTest {
 	}
 
 	@Test
-	public void testZeroSubjectRateShouldBeDefined() {
+	public void testZeroSubjectRateShouldBeUndefined() { // although we can calculate a point-estimate, we can't get a CI.
 		RateMeasurement base = new BasicRateMeasurement(50, 100);
 		RateMeasurement subj = new BasicRateMeasurement(0, 100);
 		BasicOddsRatio or = new BasicOddsRatio(base, subj);
-		assertTrue(or.isDefined());
+		assertFalse(or.isDefined());
 	}
 
 	@Test
-	public void testFullBaselineRateShouldBeDefined() {
+	public void testFullBaselineRateShouldBeUndefined() { // although we can calculate a point-estimate, we can't get a CI.
 		RateMeasurement base = new BasicRateMeasurement(100, 100);
 		RateMeasurement subj = new BasicRateMeasurement(50, 100);
 		BasicOddsRatio or = new BasicOddsRatio(base, subj);
-		assertTrue(or.isDefined());
+		assertFalse(or.isDefined());
 	}
 
 	@Test
