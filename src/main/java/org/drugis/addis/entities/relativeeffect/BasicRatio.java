@@ -34,31 +34,9 @@ public abstract class BasicRatio extends AbstractBasicRelativeEffect<RateMeasure
 	}
 	
 	protected void calculateCorrection() {
-		if (checkForZeros())
-			d_correction = 0.5D;
-		else
 			d_correction = 0.0;
 	}
 
-	private boolean checkForZeros() {
-		return (d_subject.getRate() == 0 || 
-				d_baseline.getRate() == 0 || 
-				d_subject.getRate() == d_subject.getSampleSize() || 
-				d_baseline.getRate() == d_baseline.getSampleSize());
-	}
-	
-	@Override
-	public boolean isDefined() {
-		return super.isDefined() && !checkUndefined();
-	}
-
-	protected boolean checkUndefined() {
-		return (d_subject.getRate() == 0 && 
-				d_baseline.getRate() == 0 ) || 
-				(d_subject.getRate() == d_subject.getSampleSize() && 
-				d_baseline.getRate() == d_baseline.getSampleSize());
-	}
-	
 	public TransformedLogStudentT getDistribution() {
 		return new TransformedLogStudentT(getMu(), getSigma(), getDegreesOfFreedom());
 	}

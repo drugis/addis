@@ -46,7 +46,7 @@ public class BasicOddsRatio extends BasicRatio {
 	
 	@Override
 	public boolean isDefined() {
-		return d_baseline.getRate() > 0 && d_subject.getRate() < d_subject.getSampleSize();
+		return  super.isDefined() && d_baseline.getRate() > 0 && d_subject.getRate() < d_subject.getSampleSize();
 	}
 
 	@Override

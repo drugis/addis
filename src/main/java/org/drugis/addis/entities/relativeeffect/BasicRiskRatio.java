@@ -48,6 +48,11 @@ public class BasicRiskRatio extends BasicRatio {
 	public String getName() {
 		return "Risk ratio";
 	}
+	
+	@Override
+	public boolean isDefined() {
+		return super.isDefined() && d_baseline.getRate() > 0;
+	}
 
 	@Override
 	protected double getMu() {

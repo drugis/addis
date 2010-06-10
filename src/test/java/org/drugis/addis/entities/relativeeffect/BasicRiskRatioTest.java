@@ -22,6 +22,8 @@
 package org.drugis.addis.entities.relativeeffect;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
@@ -130,28 +132,44 @@ public class BasicRiskRatioTest {
 	}
 	
 	@Test
-	public void testUndefined() {
-		RateMeasurement rmA1 = new BasicRateMeasurement(0, 100);
-		RateMeasurement rmC1 = new BasicRateMeasurement(0, 100);
-		BasicRatio rr = new BasicRiskRatio(rmA1, rmC1);
-		assertEquals(Double.NaN, rr.getError(), 0.001);
-		assertEquals(Double.NaN, rr.getConfidenceInterval().getPointEstimate(), 0.001);
-		RateMeasurement rmB1 = new BasicRateMeasurement(100, 100);
-		RateMeasurement rmD1 = new BasicRateMeasurement(100, 100);
-		rr = new BasicRiskRatio(rmB1, rmD1);
-		assertEquals(Double.NaN, rr.getError(), 0.001);
-		assertEquals(Double.NaN, rr.getConfidenceInterval().getPointEstimate(), 0.001);
+	public void testZeroBaselineRateShouldBeUndefined() {
+		RateMeasurement base = new BasicRateMeasurement(0, 100);
+		RateMeasurement subj = new BasicRateMeasurement(50, 100);
+		BasicRiskRatio or = new BasicRiskRatio(base, subj);
+		assertFalse(or.isDefined());
 	}
-	
+
 	@Test
-	public void testDefinedButWithAZero() {
-		RateMeasurement rm1 = new BasicRateMeasurement(0, 1);
-		RateMeasurement rm2 = new BasicRateMeasurement(1, 2);
-	
-		BasicRatio rr1 = new BasicRiskRatio(rm1, rm2);
-		
-		assertEquals(Math.sqrt(1.0 + 1.0/6.0), rr1.getError(), 0.001);
-		assertEquals(1.5, rr1.getConfidenceInterval().getPointEstimate(), 0.001);
+	public void testFullSubjectRateShouldBeDefined() {
+		RateMeasurement base = new BasicRateMeasurement(50, 100);
+		RateMeasurement subj = new BasicRateMeasurement(100, 100);
+		BasicRiskRatio or = new BasicRiskRatio(base, subj);
+		assertTrue(or.isDefined());
+	}
+
+	@Test
+	public void testZeroSubjectRateShouldBeDefined() {
+		RateMeasurement base = new BasicRateMeasurement(50, 100);
+		RateMeasurement subj = new BasicRateMeasurement(0, 100);
+		BasicRiskRatio or = new BasicRiskRatio(base, subj);
+		assertTrue(or.isDefined());
+	}
+
+	@Test
+	public void testFullBaselineRateShouldBeDefined() {
+		RateMeasurement base = new BasicRateMeasurement(100, 100);
+		RateMeasurement subj = new BasicRateMeasurement(50, 100);
+		BasicRiskRatio or = new BasicRiskRatio(base, subj);
+		assertTrue(or.isDefined());
+	}
+
+	@Test
+	public void testUndefinedShouldResultInNaN() {
+		RateMeasurement rmA1 = new BasicRateMeasurement(0, 100);
+		RateMeasurement rmC1 = new BasicRateMeasurement(50, 100);
+		BasicOddsRatio or = new BasicOddsRatio(rmA1, rmC1);
+		assertEquals(Double.NaN, or.getError(), 0.001);
+		assertEquals(Double.NaN, or.getConfidenceInterval().getPointEstimate(), 0.001);
 	}
 	
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize) {
