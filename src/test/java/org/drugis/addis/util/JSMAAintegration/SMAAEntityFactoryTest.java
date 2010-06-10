@@ -24,7 +24,7 @@ public class SMAAEntityFactoryTest {
 
 	@Before
 	public void setup() {
-		d_BRAnalysis = ExampleData.buildBenefitRiskAnalysis();
+		d_BRAnalysis = ExampleData.buildMockBenefitRiskAnalysis();
 		d_SMAAFactory = new SMAAEntityFactory();
 	}
 	

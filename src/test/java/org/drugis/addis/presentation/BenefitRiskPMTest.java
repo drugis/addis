@@ -22,7 +22,7 @@ public class BenefitRiskPMTest {
 	@Before
 	public void setUp() {
 		d_pmf = new PresentationModelFactory(new DomainImpl());
-		BenefitRiskAnalysis analysis = ExampleData.buildBenefitRiskAnalysis();
+		BenefitRiskAnalysis analysis = ExampleData.buildMockBenefitRiskAnalysis();
 		d_pm = new BenefitRiskPM(analysis, d_pmf);
 	}
 	

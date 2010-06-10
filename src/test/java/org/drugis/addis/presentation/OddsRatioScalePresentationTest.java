@@ -28,7 +28,7 @@ public class OddsRatioScalePresentationTest {
 	
 	@Before
 	public void setUp() {
-		d_br = ExampleData.buildBenefitRiskAnalysis();
+		d_br = ExampleData.buildMockBenefitRiskAnalysis();
 		d_orc = new OddsRatioToClinicalConverter(d_br, ExampleData.buildEndpointHamd());
 		d_criterion = new ScaleCriterion("criterion", true);
 		d_criterion.setScale(new fi.smaa.jsmaa.model.Interval(0.95, 1.30));

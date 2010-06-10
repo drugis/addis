@@ -53,6 +53,7 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
+import org.drugis.addis.mocks.MockBenefitRiskAnalysis;
 
 public class ExampleData {
 	private static Study s_studyFava02 = null;
@@ -762,7 +763,7 @@ public class ExampleData {
 		return s_convulsion;
 	}
 
-	public static BenefitRiskAnalysis buildBenefitRiskAnalysis() {
+	public static BenefitRiskAnalysis buildMockBenefitRiskAnalysis() {
 		Indication indication = buildIndicationDepression();
 		
 		List<OutcomeMeasure> outcomeMeasureList = new ArrayList<OutcomeMeasure>();
@@ -776,7 +777,7 @@ public class ExampleData {
 		Drug parox = buildDrugParoxetine();
 		List<Drug> fluoxList = Collections.singletonList(buildDrugFluoxetine());
 		
-		return new BenefitRiskAnalysis("testBenefitRiskAnalysis",
+		return new MockBenefitRiskAnalysis("testBenefitRiskAnalysis",
 										indication, outcomeMeasureList, metaAnalysisList, parox, fluoxList);										
 	}
 
@@ -803,13 +804,13 @@ public class ExampleData {
 		return new RandomEffectsMetaAnalysis("Hamd test analysis", buildEndpointHamd(), studyArms);
 	}
 
-	public static BenefitRiskAnalysis realBuildContinuousBenefitRisk() {
+	public static BenefitRiskAnalysis realBuildContinuousMockBenefitRisk() {
 		OutcomeMeasure om = buildEndpointCgi();
 		Drug fluox = buildDrugFluoxetine();
 		Drug parox = buildDrugParoxetine();
 		Study study = buildStudyChouinard();
 		MetaAnalysis ma = new RandomEffectsMetaAnalysis("ma", om, Collections.singletonList(study), fluox, parox);
-		BenefitRiskAnalysis br = new BenefitRiskAnalysis("br", study.getIndication(), 
+		BenefitRiskAnalysis br = new MockBenefitRiskAnalysis("br", study.getIndication(), 
 				Collections.singletonList(om), 
 				Collections.singletonList(ma), 
 				fluox, Collections.singletonList(parox));

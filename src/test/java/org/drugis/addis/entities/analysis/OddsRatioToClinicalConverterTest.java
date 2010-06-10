@@ -15,24 +15,24 @@ public class OddsRatioToClinicalConverterTest {
 
 	@Before
 	public void setUp(){
-		BenefitRiskAnalysis br = ExampleData.buildBenefitRiskAnalysis();
+		BenefitRiskAnalysis br = ExampleData.buildMockBenefitRiskAnalysis();
 		d_orc = new OddsRatioToClinicalConverter(br, ExampleData.buildEndpointHamd());
 		d_baselineOdds = br.getBaselineDistribution(ExampleData.buildEndpointHamd()).getQuantile(0.5);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorShouldFailOnContinuous() {
-		new OddsRatioToClinicalConverter(ExampleData.realBuildContinuousBenefitRisk(), ExampleData.buildEndpointCgi());
+		new OddsRatioToClinicalConverter(ExampleData.realBuildContinuousMockBenefitRisk(), ExampleData.buildEndpointCgi());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorShouldFailOnMissingOutcome() {
-		new OddsRatioToClinicalConverter(ExampleData.buildBenefitRiskAnalysis(), ExampleData.buildEndpointCVdeath());
+		new OddsRatioToClinicalConverter(ExampleData.buildMockBenefitRiskAnalysis(), ExampleData.buildEndpointCVdeath());
 	}
 	
 	@Test
 	public void testGetOddsRatio() {
-		OddsRatioToClinicalConverter orc = new OddsRatioToClinicalConverter(ExampleData.buildBenefitRiskAnalysis(), ExampleData.buildEndpointHamd());
+		OddsRatioToClinicalConverter orc = new OddsRatioToClinicalConverter(ExampleData.buildMockBenefitRiskAnalysis(), ExampleData.buildEndpointHamd());
 		Interval<Double> expected = new Interval<Double>(0.95,1.25);
 		assertEquals(expected, orc.getOddsRatio(expected));
 	}

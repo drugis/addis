@@ -31,7 +31,7 @@ public class BenefitRiskAnalysisTest {
 
 	@Before
 	public void setup(){
-		d_BRAnalysis = ExampleData.buildBenefitRiskAnalysis();
+		d_BRAnalysis = ExampleData.buildMockBenefitRiskAnalysis();
 	}
 	
 	@Test
@@ -88,7 +88,7 @@ public class BenefitRiskAnalysisTest {
 	@Test
 	public void testEquals(){
 		assertFalse(d_BRAnalysis.equals("nope, no meta Analysis"));
-		BenefitRiskAnalysis otherBRAnalysis = ExampleData.buildBenefitRiskAnalysis();
+		BenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMockBenefitRiskAnalysis();
 		assertTrue(d_BRAnalysis.equals(otherBRAnalysis));
 		otherBRAnalysis.setName("some new name");
 		assertFalse(d_BRAnalysis.equals(otherBRAnalysis));
@@ -99,7 +99,7 @@ public class BenefitRiskAnalysisTest {
 	public void testCompareTo(){
 		assertEquals(1, d_BRAnalysis.compareTo(null));
 		assertEquals(0, d_BRAnalysis.compareTo(d_BRAnalysis));
-		BenefitRiskAnalysis otherBRAnalysis = ExampleData.buildBenefitRiskAnalysis();
+		BenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMockBenefitRiskAnalysis();
 		assertEquals(0, d_BRAnalysis.compareTo(otherBRAnalysis));
 		otherBRAnalysis.setName("some new name");
 		assertNotSame(0, d_BRAnalysis.compareTo(otherBRAnalysis));
@@ -149,7 +149,7 @@ public class BenefitRiskAnalysisTest {
 		OutcomeMeasure om = ExampleData.buildEndpointCgi();
 		Drug fluox = ExampleData.buildDrugFluoxetine();
 		Drug parox = ExampleData.buildDrugParoxetine();
-		BenefitRiskAnalysis br = ExampleData.realBuildContinuousBenefitRisk();
+		BenefitRiskAnalysis br = ExampleData.realBuildContinuousMockBenefitRisk();
 		
 		Gaussian baseline = (Gaussian)br.getBaselineDistribution(om);
 		Gaussian relative = (Gaussian)br.getRelativeEffectDistribution(parox, om);

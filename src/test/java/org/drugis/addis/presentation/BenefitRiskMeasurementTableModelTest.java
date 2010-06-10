@@ -25,7 +25,7 @@ public class BenefitRiskMeasurementTableModelTest {
 	@Before
 	public void setUp() {
 		d_pmf = new PresentationModelFactory(new DomainImpl());
-		d_brAnalysis = ExampleData.buildBenefitRiskAnalysis();
+		d_brAnalysis = ExampleData.buildMockBenefitRiskAnalysis();
 		d_pm = new BenefitRiskMeasurementTableModel(d_brAnalysis, d_pmf, true);
 	}
 	
