@@ -180,9 +180,6 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 			RelativeEffect<? extends Measurement> re;
 			re = RelativeEffectFactory.buildRelativeEffect(getStudyArms(drugsSwapped).get(i), d_outcome, type);
 			relEffects.add((BasicRelativeEffect<? extends Measurement>) re);
-			Study study = d_studies.get(i);
-			if (!study.canBeUsedForAnalysis(d_outcome))
-				throw new IllegalStateException("There are measurements in study " +study+ " on outcome " + d_outcome + " that will lead to undefined relative effects!");
 		}
 		
 		return new RandomEffectsRelativeEffect(relEffects, d_totalSampleSize);

@@ -53,8 +53,6 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 	private Domain d_domain;
 	private NetworkMetaAnalysisWizardPM d_pm;
-	private Drug d_Parox;
-	private Drug d_fluox;
 	
 	@Before
 	public void setUp() {
@@ -77,14 +75,12 @@ public class NetworkMetaAnalysisWizardPMTest {
 		assertFalse((Boolean)completeModel.getValue());
 		
 		newList = new ArrayList<Drug>(newList);
-		d_Parox = ExampleData.buildDrugParoxetine();
-		newList.add(d_Parox);
+		newList.add(ExampleData.buildDrugParoxetine());
 		d_pm.getSelectedDrugsModel().setValue(newList);
 		assertFalse((Boolean)completeModel.getValue());
 		
 		newList = new ArrayList<Drug>(newList);		
-		d_fluox = ExampleData.buildDrugFluoxetine();
-		newList.add(d_fluox);
+		newList.add(ExampleData.buildDrugFluoxetine());
 		d_pm.getSelectedDrugsModel().setValue(newList);
 		assertTrue((Boolean)completeModel.getValue());		
 	}
@@ -138,19 +134,6 @@ public class NetworkMetaAnalysisWizardPMTest {
 	}
 	
 	@Test
-	public void testStudyListModelHidesStudiesWithZeroRates() {
-		Study illegal = ExampleData.buildStudyZeroRate();
-		d_domain.addStudy(illegal);
-		NetworkMetaAnalysisWizardPM pm = new NetworkMetaAnalysisWizardPM(d_domain, new PresentationModelFactory(d_domain));
-		pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		ArrayList<Drug> selectionList = new ArrayList<Drug>();
-		selectionList.add(ExampleData.buildDrugSertraline());
-		selectionList.add(ExampleData.buildDrugParoxetine());
-		assertFalse(pm.getStudyListModel().getIncludedStudies().getValue().contains(illegal));
-	}
-	
-	@Test
 	public void testGetSelectedStudyGraphUpdateDrugs() {
 		StudyGraphModel graphModel = d_pm.getSelectedStudyGraphModel();
 
@@ -167,8 +150,6 @@ public class NetworkMetaAnalysisWizardPMTest {
 		assertEquals(2, graphModel.vertexSet().size());
 		assertEquals(0, graphModel.edgeSet().size());
 	}
-	
-	
 	
 	@Test
 	public void testGetSelectedStudyGraphUpdateStudies() {

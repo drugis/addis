@@ -222,7 +222,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 			for (Study s : allStudies) {
 				List<Drug> drugs = new ArrayList<Drug>(s.getDrugs());
 				drugs.retainAll(getSelectedDrugsModel().getValue());
-				if (drugs.size() >= 2 && s.canBeUsedForAnalysis(d_outcomeHolder.getValue())) {
+				if (drugs.size() >= 2) {
 					okStudies.add(s);
 				}
 			}

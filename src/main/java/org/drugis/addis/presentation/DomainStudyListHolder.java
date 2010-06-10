@@ -23,7 +23,6 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -62,17 +61,12 @@ public class DomainStudyListHolder extends AbstractListHolder<Study> {
 		d_indication.addValueChangeListener(listener);
 		d_outcome.addValueChangeListener(listener);
 	}
-	
+
 	@Override
 	public List<Study> getValue() {
 		if (d_indication.getValue() == null || d_outcome.getValue() == null)
 			return Collections.emptyList();
-		List<Study> studies = new ArrayList<Study>();
-		for (Study s : d_domain.getStudies(d_indication.getValue()).getValue()) {
-			if (s.canBeUsedForAnalysis(d_outcome.getValue()))
-				studies.add(s);
-		}
-		
+		List<Study> studies = d_domain.getStudies(d_indication.getValue()).getValue();
 		studies.retainAll(d_domain.getStudies(d_outcome.getValue()).getValue());
 		return studies;
 	}

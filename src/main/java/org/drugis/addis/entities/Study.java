@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 
 import org.drugis.common.EqualsUtil;
@@ -474,20 +473,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		d_measurements = m;
 	}
 
-	// FIXME: Is this the way to go?
-	public boolean canBeUsedForAnalysis(OutcomeMeasure om) {
-		
-		for (Entry<MeasurementKey, Measurement> entry : getMeasurements().entrySet()) {
-			if (entry.getKey().getOutcomeM().equals(om)){
-				Measurement m = entry.getValue();
-				if (m instanceof RateMeasurement)
-					if (((RateMeasurement) m).getRate() == 0)
-						return false;
-			}
-		}
-		return true;
-	}
-	
 	@Override
 	public String[] getXmlExclusions() {
 		return new String[] {"sampleSize", "outcomeMeasures", "drugs"};
