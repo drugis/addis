@@ -912,10 +912,24 @@ public class Main extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		Main frame = new Main();
-		frame.initComponents();
-		frame.pack();
-		frame.setVisible(true);
+		ThreadGroup threadGroup = new ThreadGroup("ExceptionGroup") {
+			@Override
+			public void uncaughtException(Thread t, Throwable e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, e.toString(), "Unexpected Error", JOptionPane.ERROR_MESSAGE);
+			}
+		};
+		Thread mainThread = new Thread(threadGroup, "Main thread") {
+			@Override
+			public void run() {
+				Main frame = new Main();
+				frame.initComponents();
+				frame.pack();
+				frame.setVisible(true);
+	
+			}
+		};
+		mainThread.start();
 	}
 
 	private void dataModelChanged() {

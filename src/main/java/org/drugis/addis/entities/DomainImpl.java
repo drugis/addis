@@ -58,8 +58,7 @@ public class DomainImpl implements Domain {
 		try {
 			d_domainData = XMLHelper.fromXml(is);
 		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		domainDataReinit();
 	}
