@@ -39,7 +39,7 @@ public class ClinicalScaleRenderer implements ScaleRenderer {
 				return panel;
 			} else {
 				PresentationModel<ScaleCriterion> cpm = new PresentationModel<ScaleCriterion>((ScaleCriterion) c);
-				JLabel orLabel = new JLabel("MD: ");
+				JLabel orLabel = new JLabel("RMD: ");
 				JLabel scaleLabel = BasicComponentFactory.createLabel(cpm.getModel(ScaleCriterion.PROPERTY_SCALE), 
 						new fi.smaa.jsmaa.gui.IntervalFormat());
 				JPanel panel = new JPanel(new FlowLayout());
