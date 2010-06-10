@@ -117,7 +117,7 @@ public class BenefitRiskView implements ViewBuilder {
 		
 		builder.addSeparator("Running MTC models ... please wait",cc.xy(1,1));
 		int row = 1;
-		for (int i=0; i<d_pm.getNumProgBars(); ++i){
+		for (int i=0; i<d_pm.getNumNMAProgBars(); ++i){
 			LayoutUtil.addRow(layout);
 			row += 2;
 			JProgressBar bar = new JProgressBar();
@@ -185,19 +185,30 @@ public class BenefitRiskView implements ViewBuilder {
 	
 	private JComponent buildMeasurementsPart() {
 		CellConstraints cc = new CellConstraints();
-		FormLayout layout = new FormLayout("left:pref:grow",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+		FormLayout layout = new FormLayout("pref:grow:fill",
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		builder.addLabel("All measurements are relative to "+d_pm.getBean().getBaseline(), cc.xy(1, 1));
 		builder.add(new AbstractTablePanel(d_pm.getMeasurementTableModel(true)), cc.xy(1, 3));
-	
+		
 		builder.addLabel("All measurements using assumption for absolute measurement on "+d_pm.getBean().getBaseline(), cc.xy(1, 5));
 		builder.add(new AbstractTablePanel(d_pm.getMeasurementTableModel(false)), cc.xy(1, 9));
 		
-		if (!d_pm.allBaselineModelsReady())
-			builder.addLabel("Warning! - These values are still being calculated, and are therefore unreliable.", cc.xy(1, 7));
-	
+		int row = 11;
+		if (!d_pm.allBaselineModelsReady()) {
+			builder.addLabel("Warning! - These values are still being calculated, and are therefore unreliable.", cc.xy(1, row));
+			for (int i=0; i<d_pm.getNumBaselineProgBars(); ++i){
+				LayoutUtil.addRow(layout);
+				row += 2;
+				JProgressBar bar = new JProgressBar();
+				bar.setStringPainted(true);
+				d_pm.attachBaselineProgBar(bar,i);
+				builder.add(bar,cc.xy(1, row));
+			}
+			row += 2;
+			// "pref:grow:fill"
+		}
 		return builder.getPanel();
 	}
 }

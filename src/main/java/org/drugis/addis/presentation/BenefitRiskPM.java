@@ -14,7 +14,6 @@ import org.drugis.addis.util.JSMAAintegration.BRSMAASimulationBuilder;
 import org.drugis.addis.util.JSMAAintegration.SMAAEntityFactory;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MCMCModel;
-import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.ProgressEvent;
 import org.drugis.mtc.ProgressListener;
 import org.drugis.mtc.ProgressEvent.EventType;
@@ -40,9 +39,9 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 
 	private class AnalysisProgressListener implements ProgressListener {
 		JProgressBar d_progBar;
-		private MixedTreatmentComparison d_networkModel;
+		private MCMCModel d_networkModel;
 
-		public AnalysisProgressListener(MixedTreatmentComparison networkModel) {
+		public AnalysisProgressListener(MCMCModel networkModel) {
 			networkModel.addProgressListener(this);
 			d_networkModel = networkModel;
 		}
@@ -102,7 +101,8 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 	private PresentationModelFactory d_pmf;
 	private AllModelsReadyListener d_allNetworkModelsReadyListener;
 	private AllModelsReadyListener d_allBaselineModelsReadyListener;
-	private List<AnalysisProgressListener> d_analysisProgressListeners;
+	private List<AnalysisProgressListener> d_NMAnalysisProgressListeners;
+	private List<AnalysisProgressListener> d_baselineProgressListeners;
 
 	private RankAcceptabilityTableModel d_rankAccepTM;
 	private RankAcceptabilitiesDataset d_rankAccepDS;	
@@ -134,7 +134,8 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		d_pmf = pmf;
 		d_allNetworkModelsReadyListener = new AllModelsReadyListener();
 		d_allBaselineModelsReadyListener = new AllModelsReadyListener();
-		d_analysisProgressListeners = new ArrayList<AnalysisProgressListener>();
+		d_NMAnalysisProgressListeners = new ArrayList<AnalysisProgressListener>();
+		d_baselineProgressListeners = new ArrayList<AnalysisProgressListener>();
 		d_buildQueue = new BuildQueue();
 		d_progressBar = new SimulationProgressBar();
 		
@@ -173,14 +174,24 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 				d_rankAccepTM, d_rankAccepDS, d_cwTM, d_cwDS, d_progressBar));
 	}
 
-	public int getNumProgBars() {
-		return d_analysisProgressListeners.size();
+	public int getNumNMAProgBars() {
+		return d_NMAnalysisProgressListeners.size();
+	}
+	
+	public int getNumBaselineProgBars() {
+		return d_NMAnalysisProgressListeners.size();
 	}
 	
 	public void attachNMAProgBar(JProgressBar bar, int progBarNum) {
-		if (progBarNum >= d_analysisProgressListeners.size() )
+		if (progBarNum >= d_NMAnalysisProgressListeners.size() )
 			throw new IllegalArgumentException();
-		d_analysisProgressListeners.get(progBarNum).attachBar(bar);
+		d_NMAnalysisProgressListeners.get(progBarNum).attachBar(bar);
+	}
+	
+	public void attachBaselineProgBar(JProgressBar bar, int progBarNum) {
+		if (progBarNum >= d_baselineProgressListeners.size() )
+			throw new IllegalArgumentException();
+		d_baselineProgressListeners.get(progBarNum).attachBar(bar);
 	}
 	
 	public PreferencePresentationModel getSmaaPreferenceModel() {
@@ -235,7 +246,7 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 				if (!consistencyModel.isReady()) // FIXME: possible (but rare) Race condition
 					allNetworksFinished = false;
 				d_allNetworkModelsReadyListener.addModel(consistencyModel);
-				d_analysisProgressListeners.add(new AnalysisProgressListener(consistencyModel));
+				d_NMAnalysisProgressListeners.add(new AnalysisProgressListener(consistencyModel));
 			}
 		}
 		return allNetworksFinished;
@@ -245,7 +256,10 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		AbstractBaselineModel<?> model;
 		for (OutcomeMeasure om : getBean().getOutcomeMeasures()) {
 			model = getBean().getBaselineModel(om);
-			if (!model.isReady()) d_allBaselineModelsReadyListener.addModel(model);
+			if (!model.isReady()) {
+				d_allBaselineModelsReadyListener.addModel(model);
+				d_baselineProgressListeners.add(new AnalysisProgressListener(model));
+			}
 		}
 	}
 }
