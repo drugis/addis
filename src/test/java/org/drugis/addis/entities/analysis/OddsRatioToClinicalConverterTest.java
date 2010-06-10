@@ -40,7 +40,7 @@ public class OddsRatioToClinicalConverterTest {
 	@Test
 	public void testGetRisk() {
 		Interval<Double> oddsRatio = new Interval<Double>(0.95, 1.25);
-		Interval<Double> odds = new Interval<Double>(oddsRatio.getLowerBound() + d_baselineOdds, oddsRatio.getUpperBound() + d_baselineOdds);
+		Interval<Double> odds = new Interval<Double>(oddsRatio.getLowerBound() * d_baselineOdds, oddsRatio.getUpperBound() * d_baselineOdds);
 		Interval<Double> expected = new Interval<Double>(odds.getLowerBound() / (1 + odds.getLowerBound()), odds.getUpperBound() / (1 + odds.getUpperBound()));
 		assertEquals(expected.getLowerBound(), d_orc.getRisk(oddsRatio).getLowerBound(), EPSILON);
 		assertEquals(expected.getUpperBound(), d_orc.getRisk(oddsRatio).getUpperBound(), EPSILON);
@@ -49,7 +49,7 @@ public class OddsRatioToClinicalConverterTest {
 	@Test
 	public void testGetRiskDifference() {
 		Interval<Double> oddsRatio = new Interval<Double>(0.95, 1.25);
-		Interval<Double> odds = new Interval<Double>(oddsRatio.getLowerBound() + d_baselineOdds, oddsRatio.getUpperBound() + d_baselineOdds);
+		Interval<Double> odds = new Interval<Double>(oddsRatio.getLowerBound() * d_baselineOdds, oddsRatio.getUpperBound() * d_baselineOdds);
 		double expected = odds.getUpperBound() / (1 + odds.getUpperBound()) - odds.getLowerBound() / (1 + odds.getLowerBound());
 		assertEquals(expected, d_orc.getRiskDifference(oddsRatio), EPSILON);
 	}
@@ -57,7 +57,7 @@ public class OddsRatioToClinicalConverterTest {
 	@Test
 	public void testGetNumberNeededToTreat() {
 		Interval<Double> oddsRatio = new Interval<Double>(0.95, 1.25);
-		Interval<Double> odds = new Interval<Double>(oddsRatio.getLowerBound() + d_baselineOdds, oddsRatio.getUpperBound() + d_baselineOdds);
+		Interval<Double> odds = new Interval<Double>(oddsRatio.getLowerBound() * d_baselineOdds, oddsRatio.getUpperBound() * d_baselineOdds);
 		double riskDifference = odds.getUpperBound() / (1 + odds.getUpperBound()) - odds.getLowerBound() / (1 + odds.getLowerBound());
 		double expected = 1d / riskDifference;
 		assertEquals(expected, d_orc.getNumberNeededToTreat(oddsRatio), EPSILON);

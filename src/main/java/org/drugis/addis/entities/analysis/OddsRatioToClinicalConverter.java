@@ -36,9 +36,9 @@ public class OddsRatioToClinicalConverter {
 	 * @return Risk associated with the extremes of the scale.
 	 */
 	public Interval<Double> getRisk(Interval<Double> scale) {
-		double baselineOdds = d_br.getBaselineDistribution(d_om).getQuantile(0.5);
-		double oddsL = scale.getLowerBound() + baselineOdds;
-		double oddsU = scale.getUpperBound() + baselineOdds;
+		double baselineOdds = d_br.getBaselineDistribution(d_om).getQuantile(0.5); // or: 1.0 for absolute measurements
+		double oddsL = scale.getLowerBound() * baselineOdds;
+		double oddsU = scale.getUpperBound() * baselineOdds;
 		
 		return new Interval<Double>(oddsToRisk(oddsL), oddsToRisk(oddsU));
 	}
