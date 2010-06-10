@@ -28,6 +28,11 @@ public abstract class BasicRatio extends AbstractBasicRelativeEffect<RateMeasure
 	protected BasicRatio(RateMeasurement baseline, RateMeasurement subject) throws IllegalArgumentException {
 		super(baseline, subject);
 	}
+	
+	@Override
+	public AxisType getAxisType() {
+		return AxisType.LOGARITHMIC;
+	}
 
 	public TransformedLogStudentT getDistribution() {
 		return new TransformedLogStudentT(getMu(), getSigma(), getDegreesOfFreedom());

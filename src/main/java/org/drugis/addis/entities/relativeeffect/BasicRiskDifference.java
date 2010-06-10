@@ -49,6 +49,11 @@ public class BasicRiskDifference extends AbstractBasicRelativeEffect<RateMeasure
 		
 		return new Double(Math.sqrt(a*b/Math.pow(n1,3) + c*d/Math.pow(n2,3)));
 	}
+	
+	@Override
+	public boolean isDefined() {
+		return super.isDefined() && (d_baseline.getRate() > 0 || d_subject.getRate() > 0);
+	}
 
 	public String getName() {
 		return "Risk Difference";

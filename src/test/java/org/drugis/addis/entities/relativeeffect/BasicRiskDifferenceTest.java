@@ -21,11 +21,12 @@
 
 package org.drugis.addis.entities.relativeeffect;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.relativeeffect.BasicRiskDifference;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 import org.junit.Before;
@@ -111,5 +112,23 @@ public class BasicRiskDifferenceTest {
 	@Test
 	public void testGetErrorvsCooper() {
 		assertEquals(s_cooper1977RDvar,square(d_cooperRD.getError()),0.001);
+	}
+	
+	@Test
+	public void testBothRatesZeroShouldBeUndefined() { // although we can calculate a point estimate, the CI is not well defined.
+		BasicRateMeasurement base = new BasicRateMeasurement(0, 10);
+		BasicRateMeasurement subj = new BasicRateMeasurement(0, 10);
+		BasicRiskDifference rd = new BasicRiskDifference(base, subj);
+		assertFalse(rd.isDefined());
+	}
+	
+	@Test
+	public void testOneRateZeroShouldBeDefined() {
+		BasicRateMeasurement base = new BasicRateMeasurement(0, 10);
+		BasicRateMeasurement subj = new BasicRateMeasurement(5, 10);
+		BasicRiskDifference rd = new BasicRiskDifference(base, subj);
+		assertTrue(rd.isDefined());
+		BasicRiskDifference rd2 = new BasicRiskDifference(subj, base);
+		assertTrue(rd2.isDefined());
 	}
 }
