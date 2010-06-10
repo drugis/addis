@@ -86,7 +86,8 @@ public class ForestPlot implements TreePlot {
 		
 		g2d.translate(STUDYWIDTH, FULLROW);
 		for (int i=0; i < d_bars.size(); ++i) {
-			d_bars.get(i).paint(g2d);
+			if (d_pm.getRelativeEffectAt(i).isDefined())
+				d_bars.get(i).paint(g2d);
 		}
 		paintAxis(g2d);
 	}
