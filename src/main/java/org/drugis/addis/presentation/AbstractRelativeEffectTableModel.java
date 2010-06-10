@@ -43,7 +43,7 @@ implements RelativeEffectTableModel {
 	
 	public abstract String getTitle();
 
-	protected abstract RelativeEffect<?> getRelativeEffect(Measurement denominator, Measurement numerator);
+	protected abstract RelativeEffect<?> getRelativeEffect(Measurement baseline, Measurement subject);
 	
 	protected abstract Class<? extends RelativeEffect<?>> getRelativeEffectType();
 

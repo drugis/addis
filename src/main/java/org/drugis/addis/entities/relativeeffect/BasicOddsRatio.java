@@ -68,9 +68,10 @@ public class BasicOddsRatio extends BasicRatio {
 			return Double.NaN;
 		
 		double a = d_subject.getRate();
-		double b = d_baseline.getRate();
+		double b = d_subject.getSampleSize() - d_subject.getRate();
+		
+		double c = d_baseline.getRate();
 		double d = d_baseline.getSampleSize() - d_baseline.getRate();
-		double c = d_subject.getSampleSize() - d_subject.getRate();
 		
 		return Math.sqrt(1.0/a + 1.0/b + 1.0/c + 1.0/d);
 	}

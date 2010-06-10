@@ -37,9 +37,8 @@ public class OddsRatioTableModel extends AbstractRelativeEffectTableModel {
 	}
 
 	@Override
-	protected BasicRelativeEffect<RateMeasurement> getRelativeEffect(Measurement denominator, Measurement numerator) {
-		return new BasicOddsRatio((RateMeasurement)denominator,
-		(RateMeasurement)numerator);
+	protected BasicRelativeEffect<RateMeasurement> getRelativeEffect(Measurement baseline, Measurement subject) {
+		return new BasicOddsRatio((RateMeasurement)baseline, (RateMeasurement)subject);
 	}
 
 	@Override
