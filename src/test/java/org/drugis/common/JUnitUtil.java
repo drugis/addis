@@ -46,6 +46,9 @@ import java.util.Set;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
+import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
+
 import com.jgoodies.binding.beans.Observable;
 import com.jgoodies.binding.value.ValueModel;
 
@@ -279,6 +282,15 @@ public class JUnitUtil {
 		if (!actual.containsAll(expected)) {
 			throw new AssertionError("AllAndOnly: actual does not contain the expected.\n" +
 					"expected = " + expected + " actual = " + actual);
+		}
+	}
+
+	public static void assertRelativeEffectListEquals(List<BasicRelativeEffect<? extends Measurement>> expected, List<BasicRelativeEffect<? extends Measurement>> actual) {
+		assertEquals(expected.size(), actual.size());
+		for (int i = 0; i < expected.size(); ++i) {
+			assertEquals(expected.get(i).getClass(), actual.get(i).getClass());
+			assertEquals(expected.get(i).getBaseline(), actual.get(i).getBaseline());
+			assertEquals(expected.get(i).getSubject(), actual.get(i).getSubject());
 		}
 	}	
 }

@@ -51,7 +51,6 @@ import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelative
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class RandomEffectsMetaAnalysisTest {
@@ -288,7 +287,7 @@ public class RandomEffectsMetaAnalysisTest {
 		assertEquals(deps, d_rema.getDependencies());
 	}
 	
-	@Test @Ignore
+	@Test
 	public void testFilterUndefinedRelativeEffects() {
 		List<BasicRelativeEffect<? extends Measurement>> expected = d_rema.getFilteredRelativeEffects(d_fluox, d_sertr, BasicOddsRatio.class);
 		Study zeroRate = createRateStudy("ZeroRate 2012", 0, 120, 86, 118, d_ind);
@@ -296,6 +295,6 @@ public class RandomEffectsMetaAnalysisTest {
 		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, d_fluox, d_sertr);
 		List<BasicRelativeEffect<? extends Measurement>> actual = d_rema.getFilteredRelativeEffects(d_fluox, d_sertr, BasicOddsRatio.class);
 		assertFalse(RelativeEffectFactory.buildRelativeEffect(zeroRate, d_rateEndpoint, d_fluox, d_sertr, BasicOddsRatio.class).isDefined());
-		assertEquals(expected, actual);
+		JUnitUtil.assertRelativeEffectListEquals(expected, actual);
 	}
 }

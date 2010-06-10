@@ -183,10 +183,11 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		boolean drugsSwapped = !d1.equals(getFirstDrug());
 		List<BasicRelativeEffect<? extends Measurement>> relEffects = new ArrayList<BasicRelativeEffect<? extends Measurement>>();
 		
-		for (int i=0; i<d_studies.size(); ++i ){ // FIXME: don't add studies with undefined relative effects.
+		for (int i=0; i<d_studies.size(); ++i ){ 
 			RelativeEffect<? extends Measurement> re;
 			re = RelativeEffectFactory.buildRelativeEffect(getStudyArms(drugsSwapped).get(i), d_outcome, type);
-			relEffects.add((BasicRelativeEffect<? extends Measurement>) re);
+			if (re.isDefined())
+				relEffects.add((BasicRelativeEffect<? extends Measurement>) re);
 		}
 		return relEffects;
 	}
