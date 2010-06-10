@@ -56,20 +56,26 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	}
 
 	private void notifyEvent(EventType type) {
-		for (ProgressListener l : d_listeners) {
-			l.update(this, new ProgressEvent(type));
+		synchronized(d_listeners)  {
+			for (ProgressListener l : d_listeners) {
+				l.update(this, new ProgressEvent(type));
+			}
 		}
 	}
 
 	private void notifyBurnInProgress(int iter) {
-		for (ProgressListener l : d_listeners) {
-			l.update(this, new ProgressEvent(EventType.BURNIN_PROGRESS, iter, d_burnInIter));
+		synchronized(d_listeners)  {
+			for (ProgressListener l : d_listeners) {
+				l.update(this, new ProgressEvent(EventType.BURNIN_PROGRESS, iter, d_burnInIter));
+			}
 		}
 	}
 
 	private void notifySimulationProgress(int iter) {
-		for (ProgressListener l : d_listeners) {
-			l.update(this, new ProgressEvent(EventType.SIMULATION_PROGRESS, iter, d_simulationIter));
+		synchronized(d_listeners)  {
+			for (ProgressListener l : d_listeners) {
+				l.update(this, new ProgressEvent(EventType.SIMULATION_PROGRESS, iter, d_simulationIter));
+			}
 		}
 	}
 
@@ -99,7 +105,9 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	}
 
 	public void addProgressListener(ProgressListener l) {
-		d_listeners.add(l);		
+		synchronized(d_listeners)  {
+			d_listeners.add(l);
+		}
 	}
 
 	public boolean isReady() {
