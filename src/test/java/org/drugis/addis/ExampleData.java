@@ -696,6 +696,20 @@ public class ExampleData {
 		return analysis;
 	}
 	
+	public static NetworkMetaAnalysis buildNetworkMetaAnalysisCgi() {
+		List<Study> studies = Arrays.asList(new Study[] {
+				buildStudyBennie(), buildStudyChouinard()});
+		List<Drug> drugs = Arrays.asList(new Drug[] {buildDrugFluoxetine(), buildDrugParoxetine(), 
+				buildDrugSertraline()});
+		
+		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("CGI network", 
+				buildIndicationDepression(), buildEndpointCgi(),
+				studies, drugs, buildMap(studies, drugs));
+		
+		return analysis;
+	}
+	
+	
 	public static Map<Study, Map<Drug, Arm>> buildMap(List<Study> studies,
 			List<Drug> drugs) {
 		Map<Study, Map<Drug, Arm>> map = new HashMap<Study, Map<Drug,Arm>>();

@@ -3,7 +3,6 @@ package org.drugis.addis.presentation.wizard;
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -39,24 +38,27 @@ public class BenfitRiskWizardPMTest {
 		
 		d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysis());
 		d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisAlternative());
+		d_domain.addMetaAnalysis(ExampleData.buildMetaAnalysisConv());
+		d_domain.addMetaAnalysis(ExampleData.buildMetaAnalysisHamd());
+		d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisCgi());
 	
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 	}
 	
 	@Test
-	public void testGetOutcomesListModel() {
+	public void testOutcomesListModelIncludesOutcomes() { // FIXME: should be on basis of analyses, not studies.
 		for (Indication indication : d_domain.getIndications()) {
 			TreeSet<OutcomeMeasure> expected = new TreeSet<OutcomeMeasure>();
 			for (Study s : d_domain.getStudies(indication).getValue()) 
 				expected.addAll(s.getOutcomeMeasures());
-					
+
 			d_pm.getIndicationModel().setValue(indication);
-			assertAllAndOnly(expected,d_pm.getOutcomesListModel().getValue());
+			assertAllAndOnly(expected, d_pm.getOutcomesListModel().getValue());
 		}
 	}
 	
 	@Test
-	public void testGetMetaAnalyses() {
+	public void testMetaAnalysesForEachOutcome() {
 		d_pm.getIndicationModel().setValue(d_indication);
 		for (OutcomeMeasure om : d_pm.getOutcomesListModel().getValue()) {
 			List<MetaAnalysis> analyses = new ArrayList<MetaAnalysis>();
@@ -69,7 +71,7 @@ public class BenfitRiskWizardPMTest {
 	}
 	
 	@Test
-	public void testGetOutcomeSelectedModel() {
+	public void testOutcomeSelectedModelKeepsChanges() {
 		OutcomeMeasure om = ExampleData.buildEndpointHamd();
 		ValueHolder<Boolean> origModel = d_pm.getOutcomeSelectedModel(om);
 		assertFalse(origModel.getValue());
@@ -78,19 +80,19 @@ public class BenfitRiskWizardPMTest {
 	}
 	
 	@Test
-	public void testGetMetaAnalysesSelectedModel() {
+	public void testMetaAnalysesSelectedModelKeepsChanges() {
 		ValueHolder<MetaAnalysis> metaAnal1 = d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd());
 		assertNull(metaAnal1.getValue());
 		
 		metaAnal1.setValue(ExampleData.buildNetworkMetaAnalysis());
-		assertNotNull(metaAnal1.getValue());
+		assertEquals(ExampleData.buildNetworkMetaAnalysis(), metaAnal1.getValue());
 		
 		ValueHolder<MetaAnalysis> metaAnal2 = d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd());
 		assertEquals(metaAnal1.getValue(), metaAnal2.getValue());
 	}
 	
 	@Test
-	public void testGetAlternativesListModel() {
+	public void testAlternativesListModelShouldBeUnionOfAnalyzedDrugs() {
 		List<Drug> expected = new ArrayList<Drug>();
 		for (MetaAnalysis ma : d_domain.getMetaAnalyses()) {
 			if (ma.getIndication().equals(d_indication))
@@ -101,7 +103,7 @@ public class BenfitRiskWizardPMTest {
 	}
 	
 	@Test
-	public void testGetAlternativeEnabledModel() {
+	public void testAlternativeEnabledModelShouldReflectInclusion() {
 		
 		for (Drug d : d_pm.getAlternativesListModel().getValue()) {
 			assertEquals(false, d_pm.getAlternativeEnabledModel(d).getValue());
@@ -133,4 +135,50 @@ public class BenfitRiskWizardPMTest {
 		assertEquals(true,actual.getValue());
 	}
 	
+	@Test
+	public void testCompletedModelFalseWithLessThanTwoDrugs() {
+		d_pm.getIndicationModel().setValue(d_indication);
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		d_pm.getOutcomeSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysis());
+		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
+		assertTrue(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).getValue());
+		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine()).setValue(false);
+		assertFalse(d_pm.getCompleteModel().getValue());
+	}
+
+	@Test
+	public void testCompletedModelFalseWithLessThanTwoCriteria() {
+		d_pm.getIndicationModel().setValue(d_indication);
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
+		assertTrue(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).getValue());
+		assertTrue(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine()).getValue());
+		assertFalse(d_pm.getCompleteModel().getValue());
+	}
+
+	@Test
+	public void testCompletedModelFalseWithCriteriaWithoutAnalysis() {
+		d_pm.getIndicationModel().setValue(d_indication);
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
+		d_pm.getOutcomeSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+		assertFalse(d_pm.getCompleteModel().getValue());
+		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
+		assertTrue(d_pm.getCompleteModel().getValue());
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
+		assertFalse(d_pm.getCompleteModel().getValue());
+	}
+
+	@Test
+	public void testCompletedModelTrueWithTwoDrugsTwoCriteria() {
+		d_pm.getIndicationModel().setValue(d_indication);
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		d_pm.getOutcomeSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysis());
+		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
+		assertTrue(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).getValue());
+		assertTrue(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine()).getValue());
+		assertTrue(d_pm.getCompleteModel().getValue());
+	}
 }
