@@ -156,6 +156,8 @@ public class Main extends JFrame {
 		GUIHelper.initializeLookAndFeel();
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		ToolTipManager.sharedInstance().setInitialDelay(0);
+		
+		GUIHelper.configureJFreeChartLookAndFeel();
 
 		initializeDomain();
 		d_pmManager = new PresentationModelFactory(getDomain());

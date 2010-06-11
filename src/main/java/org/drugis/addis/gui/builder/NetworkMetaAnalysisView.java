@@ -210,7 +210,7 @@ implements ViewBuilder {
 
 		return panel;
 	}
-	
+
 	public JComponent buildStudyGraphPart() {
 		StudyGraph panel = new StudyGraph(d_pm.getStudyGraphModel());
 		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));

@@ -9,6 +9,9 @@ import javax.swing.UIManager;
 
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.util.HtmlWordWrapper;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.StandardChartTheme;
+import org.jfree.chart.renderer.category.StandardBarPainter;
 
 import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.windows.WindowsLookAndFeel;
@@ -73,6 +76,13 @@ public class GUIHelper {
 			return HtmlWordWrapper.wordWrap(text);
 		}
 		return null;
+	}
+
+	public static void configureJFreeChartLookAndFeel() {
+		StandardChartTheme chartTheme = new StandardChartTheme("ADDIS");
+		chartTheme.setBarPainter(new StandardBarPainter());
+		chartTheme.setShadowVisible(false);
+		ChartFactory.setChartTheme(chartTheme);
 	}
 	
 }
