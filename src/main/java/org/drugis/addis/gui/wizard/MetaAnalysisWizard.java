@@ -27,6 +27,7 @@ import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -81,12 +82,19 @@ public class MetaAnalysisWizard extends Wizard {
 		@Override
 		public void prepare() {
 			removeAll();
+
+			setLayout(new BorderLayout()); // needed for placement
 			
 			RandomEffectsMetaAnalysis analysis = (RandomEffectsMetaAnalysis)d_pm.createMetaAnalysis("");
 			PresentationModel<RandomEffectsMetaAnalysis> pm = d_main.getPresentationModelFactory().getModel(analysis);
 			ViewBuilder mav = new RandomEffectsMetaAnalysisView(
 					(RandomEffectsMetaAnalysisPresentation)pm, d_main, true);
-			add(mav.buildPanel());
+			JComponent panel = mav.buildPanel();
+
+			JScrollPane sp = new JScrollPane(panel);
+			sp.getVerticalScrollBar().setUnitIncrement(16);
+			add(sp, BorderLayout.CENTER);
+			
 			setComplete(true);
 		}
 	}

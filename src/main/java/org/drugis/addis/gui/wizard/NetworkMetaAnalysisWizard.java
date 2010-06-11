@@ -84,9 +84,9 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 			builder.add(buildStudiesGraph(), cc.xy(1, 1));
 			
 			JScrollPane sp = new JScrollPane(builder.getPanel());
-			add(sp);
 			sp.getVerticalScrollBar().setUnitIncrement(16);
-			
+			add(sp, BorderLayout.CENTER);
+
 			setComplete(true);
 		}
 
