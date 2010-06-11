@@ -31,7 +31,6 @@ import com.jgoodies.forms.layout.FormLayout;
 import fi.smaa.jsmaa.gui.components.ResultsCellRenderer;
 import fi.smaa.jsmaa.gui.components.ResultsTable;
 import fi.smaa.jsmaa.gui.presentation.PreferencePresentationModel;
-import fi.smaa.jsmaa.gui.views.PreferenceInformationView;
 import fi.smaa.jsmaa.gui.views.ResultsView;
 
 public class BenefitRiskView implements ViewBuilder {
@@ -99,11 +98,11 @@ public class BenefitRiskView implements ViewBuilder {
 				new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent arg0) {
 						panel.removeAll();
-						panel.add(new PreferenceInformationView(ppm, new ClinicalScaleRenderer(d_pm)).buildPanel());
+						panel.add(new ModifiedPrefInfoView(ppm, new ClinicalScaleRenderer(d_pm)).buildPanel());
 						d_main.pack();
 					}			
 		});
-		JComponent prefPanel = new PreferenceInformationView(ppm, new ClinicalScaleRenderer(d_pm)).buildPanel();
+		JComponent prefPanel = new ModifiedPrefInfoView(ppm, new ClinicalScaleRenderer(d_pm)).buildPanel();
 		panel.add(prefPanel);
 		return panel;
 	}
