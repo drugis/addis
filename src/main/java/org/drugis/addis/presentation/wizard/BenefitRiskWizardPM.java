@@ -57,8 +57,8 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		
 		public void propertyChange(PropertyChangeEvent evt) {
 			setValue(
-					(getSelectedEntities(d_outcomeSelectedMap).size() >= 2) && 
-					(getSelectedEntities(d_alternativeSelectedMap).size() >= 2) && 
+					(getSelectedCriteria().size() >= 2) && 
+					(getSelectedAlternatives().size() >= 2) && 
 					selectedOutcomesHaveAnalysis());
 		}
 	}
@@ -76,6 +76,16 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		d_alternativeEnabledMap = new HashMap<Drug, ModifiableHolder<Boolean>>();
 		d_alternativeSelectedMap = new HashMap<Drug, ModifiableHolder<Boolean>>();
 		d_completeHolder = new CompleteHolder();
+		
+		d_indicationHolder.addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				d_outcomeSelectedMap.clear();
+				d_alternativeSelectedMap.clear();
+				d_alternativeEnabledMap.clear();
+				d_metaAnalysisSelectedMap.clear();
+				d_completeHolder.propertyChange(null);
+			}
+		});
 	}
 	
 	public boolean selectedOutcomesHaveAnalysis() {
@@ -228,5 +238,13 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 				list.add(entity);
 		}
 		return list;
+	}
+
+	ArrayList<OutcomeMeasure> getSelectedCriteria() {
+		return getSelectedEntities(d_outcomeSelectedMap);
+	}
+
+	ArrayList<Drug> getSelectedAlternatives() {
+		return getSelectedEntities(d_alternativeSelectedMap);
 	}
 }

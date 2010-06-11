@@ -181,4 +181,18 @@ public class BenfitRiskWizardPMTest {
 		assertTrue(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine()).getValue());
 		assertTrue(d_pm.getCompleteModel().getValue());
 	}
+	
+	@Test
+	public void testChangeIndicationShouldClearValues() {
+		d_pm.getIndicationModel().setValue(d_indication);
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		d_pm.getOutcomeSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysis());
+		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
+		
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
+		assertTrue(d_pm.getSelectedCriteria().isEmpty());
+		assertTrue(d_pm.getSelectedAlternatives().isEmpty());
+		assertFalse(d_pm.getCompleteModel().getValue());
+	}
 }
