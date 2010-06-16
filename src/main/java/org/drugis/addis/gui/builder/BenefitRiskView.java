@@ -16,6 +16,7 @@ import org.drugis.addis.gui.AbstractTablePanel;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.BenefitRiskPM;
+import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 import org.jfree.chart.ChartFactory;
@@ -56,9 +57,15 @@ public class BenefitRiskView implements ViewBuilder {
 		if (d_builder != null)
 			d_builder.getPanel().removeAll();
 		
-		FormLayout layout = new FormLayout(
+		final FormLayout layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, " + // 1-3 
+				"3dlu, p, 3dlu, p, " + // 4-7
+				"3dlu, p, 3dlu, p, " + // 8-11 
+				"3dlu, p, 3dlu, p, " + // 12-15
+				"3dlu, p, 3dlu, p, " + // 16-19
+				"3dlu, p, 3dlu, p" // 20-23
+				);
 		
 		d_builder = new PanelBuilder(layout);
 		d_builder.setDefaultDialogBorder();
@@ -68,28 +75,32 @@ public class BenefitRiskView implements ViewBuilder {
 		d_builder.addSeparator("Benefit-Risk Analysis", cc.xy(1, 1));
 		d_builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
 		
-		d_builder.addSeparator("Included Analyses", cc.xy(1, 7));
-		d_builder.add(GUIFactory.createCollapsiblePanel(buildAnalysesPart()), cc.xy(1, 9));
+		d_builder.addSeparator("Included Analyses", cc.xy(1, 5));
+		d_builder.add(GUIFactory.createCollapsiblePanel(buildAnalysesPart()), cc.xy(1, 7));
 		
-		d_builder.addSeparator("Measurements", cc.xy(1, 11));
-		d_builder.add(GUIFactory.createCollapsiblePanel(buildMeasurementsPart()), cc.xy(1, 13));
+		d_builder.addSeparator("Measurements", cc.xy(1, 9));
+		d_builder.add(GUIFactory.createCollapsiblePanel(buildMeasurementsPart()), cc.xy(1, 11));
 		
 		if(d_pm.allNMAModelsReady()){
-			d_builder.addSeparator("Preferences", cc.xy(1, 15));
-			d_builder.add(GUIFactory.createCollapsiblePanel(buildPreferencesPart()), cc.xy(1, 17));
+			d_builder.addSeparator("Preferences", cc.xy(1, 13));
+			JComponent prefsPart = buildPreferencesPart();
+			d_builder.add(GUIFactory.createCollapsiblePanel(prefsPart), cc.xy(1, 15));
+			
+			d_builder.addSeparator("Rank Acceptabilities", cc.xy(1, 17));
+			d_builder.add(GUIFactory.createCollapsiblePanel(buildRankAcceptabilitiesPart()), cc.xy(1, 19));
 
-			d_builder.addSeparator("Rank Acceptabilities", cc.xy(1, 19));
-
-			d_builder.add(GUIFactory.createCollapsiblePanel(buildRankAcceptabilitiesPart()), cc.xy(1, 21));
-
-			d_builder.addSeparator("Central Weigths", cc.xy(1, 23));
-			d_builder.add(GUIFactory.createCollapsiblePanel(buildWeightsPart()), cc.xy(1, 25));
+			d_builder.addSeparator("Central Weigths", cc.xy(1, 21));
+			d_builder.add(GUIFactory.createCollapsiblePanel(buildWeightsPart()), cc.xy(1, 23));
+			
+			final JPanel panel = d_builder.getPanel();
+			ChildComponenentHeightPropagater.attachToContainer(panel);
+			return panel;
 		} else {
 			d_builder.add(GUIFactory.createCollapsiblePanel(buildAnalyzingPart()), cc.xy(1, 15));
+			return d_builder.getPanel();
 		}
-		return d_builder.getPanel();
 	}
-
+	
 	private JComponent buildPreferencesPart() {
 		final JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
