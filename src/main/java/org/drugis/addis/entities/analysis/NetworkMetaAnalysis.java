@@ -124,14 +124,14 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return "Markov Chain Monte Carlo Network Meta-Analysis";
 	}
 
-	public InconsistencyModel getInconsistencyModel() {
+	public synchronized InconsistencyModel getInconsistencyModel() {
 		if (d_inconsistencyModel == null) {
 			d_inconsistencyModel = createInconsistencyModel();
 		}
 		return d_inconsistencyModel;
 	}
 	
-	public ConsistencyModel getConsistencyModel() {
+	public synchronized ConsistencyModel getConsistencyModel() {
 		if (d_consistencyModel == null) {
 			d_consistencyModel = createConsistencyModel();
 		}

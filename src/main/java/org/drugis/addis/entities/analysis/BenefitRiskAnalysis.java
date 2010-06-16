@@ -218,13 +218,9 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 			switch (om.getType()) {
 			case RATE:
 				model = new BaselineOddsModel(getBaselineMeasurements(om));
-				Thread t1 = new Thread(model);
-				t1.start();
 			break;
 			case CONTINUOUS:
 				model = new BaselineMeanDifferenceModel(getBaselineMeasurements(om));
-				Thread t2 = new Thread(model);
-				t2.start();
 			break;
 			}
 		return model;

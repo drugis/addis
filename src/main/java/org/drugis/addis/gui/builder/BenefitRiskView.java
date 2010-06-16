@@ -1,12 +1,13 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
@@ -18,6 +19,7 @@ import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.BenefitRiskPM;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.LayoutUtil;
+import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -97,7 +99,15 @@ public class BenefitRiskView implements ViewBuilder {
 			return panel;
 		} else {
 			d_builder.add(GUIFactory.createCollapsiblePanel(buildAnalyzingPart()), cc.xy(1, 15));
-			return d_builder.getPanel();
+			JPanel panel = d_builder.getPanel();
+			panel.addComponentListener(new ComponentAdapter() {
+				@Override
+				public void componentResized(ComponentEvent e) {
+					// We would love to listen to componentShown(), but that isn't triggered. Hooray!
+					d_pm.startAllSimulations();
+				}
+			});
+			return panel;
 		}
 	}
 	
@@ -174,16 +184,19 @@ public class BenefitRiskView implements ViewBuilder {
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		builder.addLabel("ID:", cc.xy(1, 1));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_NAME)),cc.xy(3, 1));
+		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_NAME)), cc.xy(3, 1));
 		
 		builder.addLabel("Indication:", cc.xy(1, 3));
-		builder.add(new JLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_INDICATION).getValue().toString()),cc.xy(3, 3));
+		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_INDICATION), new OneWayObjectFormat()), 
+				cc.xy(3, 3));
 		
 		builder.addLabel("Criteria:", cc.xy(1, 5));
-		builder.add(new JLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_OUTCOMEMEASURES).getValue().toString()),cc.xy(3, 5));
+		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_OUTCOMEMEASURES), new OneWayObjectFormat()), 
+				cc.xy(3, 5));
 		
 		builder.addLabel("Alternatives:", cc.xy(1, 9));
-		builder.add(new JLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_DRUGS).getValue().toString()),cc.xy(3, 9));
+		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_DRUGS), new OneWayObjectFormat()), 
+				cc.xy(3, 9));
 		
 		return builder.getPanel();	
 	}
@@ -201,12 +214,12 @@ public class BenefitRiskView implements ViewBuilder {
 		
 		builder.addLabel("All measurements are odds ratios (or relative mean difference) relative to " + d_pm.getBean().getBaseline(), cc.xy(1, 1));
 		builder.add(new AbstractTablePanel(d_pm.getMeasurementTableModel(true)), cc.xy(1, 3));
-		
+	
 		builder.addLabel("All measurements are odds (or mean difference) calculated from assumed odds (or mean difference) of " + d_pm.getBean().getBaseline(), cc.xy(1, 5));
 		builder.add(new AbstractTablePanel(d_pm.getMeasurementTableModel(false)), cc.xy(1, 9));
-		
+
 		int row = 9;
-		if (!d_pm.allBaselineModelsReady()) {
+		if (!d_pm.allNMAModelsReady()) {
 			for (int i=0; i<d_pm.getNumBaselineProgBars(); ++i){
 				LayoutUtil.addRow(layout);
 				row += 2;
@@ -218,6 +231,7 @@ public class BenefitRiskView implements ViewBuilder {
 			row += 2;
 			// "pref:grow:fill"
 		}
+
 		return builder.getPanel();
 	}
 }

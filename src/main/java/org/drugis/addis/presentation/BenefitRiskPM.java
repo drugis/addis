@@ -100,7 +100,6 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 	
 	private PresentationModelFactory d_pmf;
 	private AllModelsReadyListener d_allNetworkModelsReadyListener;
-	private AllModelsReadyListener d_allBaselineModelsReadyListener;
 	private List<AnalysisProgressListener> d_NMAnalysisProgressListeners;
 	private List<AnalysisProgressListener> d_baselineProgressListeners;
 
@@ -119,13 +118,13 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 	private SimulationProgressBar d_progressBar;
 
 	private SMAAEntityFactory d_smaaf;
+
+	private List<MCMCModel> d_baselineModels;
+
+	private boolean d_allSimulationsStarted = false;
 	
 	public boolean allNMAModelsReady() {
 		return d_allNetworkModelsReadyListener.allModelsReady();
-	}
-	
-	public boolean allBaselineModelsReady() {
-		return d_allBaselineModelsReadyListener.allModelsReady();
 	}
 	
 	public BenefitRiskPM(BenefitRiskAnalysis bean, PresentationModelFactory pmf) {
@@ -133,7 +132,6 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		
 		d_pmf = pmf;
 		d_allNetworkModelsReadyListener = new AllModelsReadyListener();
-		d_allBaselineModelsReadyListener = new AllModelsReadyListener();
 		d_NMAnalysisProgressListeners = new ArrayList<AnalysisProgressListener>();
 		d_baselineProgressListeners = new ArrayList<AnalysisProgressListener>();
 		d_buildQueue = new BuildQueue();
@@ -143,8 +141,9 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		 * Only start SMAA if all networks are already done calculating when running this constructor.
 		 * If not, the 'ready' event of the networks will trigger the creation of the SMAA model.
 		 */
-		if (startAllNetworkAnalyses())
-			startSmaa();
+		d_baselineModels = new ArrayList<MCMCModel>();
+		initAllBaselineModels();
+		initAllNetworkAnalyses();
 	}
 	
 	private void startSmaa() {
@@ -179,7 +178,7 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 	}
 	
 	public int getNumBaselineProgBars() {
-		return d_NMAnalysisProgressListeners.size();
+		return d_baselineProgressListeners.size();
 	}
 	
 	public void attachNMAProgBar(JProgressBar bar, int progBarNum) {
@@ -207,9 +206,6 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 	}
 
 	public BenefitRiskMeasurementTableModel getMeasurementTableModel(boolean relative) {
-		if (!relative) {
-			startAllBaselineModels();
-		}
 		return new BenefitRiskMeasurementTableModel(getBean(), d_pmf, relative);
 	}
 
@@ -237,29 +233,39 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		return d_cwTM;
 	}	
 	
-	private boolean startAllNetworkAnalyses() {
-		getBean().runAllConsistencyModels();
-		boolean allNetworksFinished = true;
+	private void initAllNetworkAnalyses() {
 		for (MetaAnalysis ma : getBean().getMetaAnalyses() ){
 			if (ma instanceof NetworkMetaAnalysis) {
 				ConsistencyModel consistencyModel = ((NetworkMetaAnalysis) ma).getConsistencyModel();
-				if (!consistencyModel.isReady()) // FIXME: possible (but rare) Race condition
-					allNetworksFinished = false;
 				d_allNetworkModelsReadyListener.addModel(consistencyModel);
 				d_NMAnalysisProgressListeners.add(new AnalysisProgressListener(consistencyModel));
 			}
 		}
-		return allNetworksFinished;
 	}
 	
-	private void startAllBaselineModels() {
+	public synchronized void startAllSimulations() {
+		if (d_allSimulationsStarted) {
+			return;
+		}
+
+		getBean().runAllConsistencyModels();
+		for (MCMCModel model : d_baselineModels) {
+			if (!model.isReady()) {
+				Thread t = new Thread(model);
+				t.start();
+			}
+		}
+
+		d_allSimulationsStarted  = true;
+	}
+	
+	private void initAllBaselineModels() {
 		AbstractBaselineModel<?> model;
 		for (OutcomeMeasure om : getBean().getOutcomeMeasures()) {
 			model = getBean().getBaselineModel(om);
-			if (!model.isReady()) {
-				d_allBaselineModelsReadyListener.addModel(model);
-				d_baselineProgressListeners.add(new AnalysisProgressListener(model));
-			}
+			d_baselineModels.add(model);
+			d_allNetworkModelsReadyListener.addModel(model);
+			d_baselineProgressListeners.add(new AnalysisProgressListener(model));
 		}
 	}
 }

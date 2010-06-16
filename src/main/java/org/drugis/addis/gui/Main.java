@@ -156,7 +156,7 @@ public class Main extends JFrame {
 		GUIHelper.initializeLookAndFeel();
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		ToolTipManager.sharedInstance().setInitialDelay(0);
-		
+
 		GUIHelper.configureJFreeChartLookAndFeel();
 
 		initializeDomain();
@@ -174,7 +174,7 @@ public class Main extends JFrame {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void saveDomainToXMLFile(String fileName) throws IOException {
 		File f = new File(fileName);
 		if (f.exists()) {
@@ -195,8 +195,8 @@ public class Main extends JFrame {
 				loadDomainFromXMLResource("defaultData.xml");
 			} catch (Exception e2) {
 				JOptionPane.showMessageDialog(this,
-						"Error loading default data: " + e2.toString(), "Error loading domain",
-						JOptionPane.ERROR_MESSAGE);
+						"Error loading default data: " + e2.toString(),
+						"Error loading domain", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 
@@ -206,9 +206,9 @@ public class Main extends JFrame {
 	public Domain getDomain() {
 		return d_domain.getDomain();
 	}
-	
+
 	private void loadDomainFromXMLFile(String fileName) throws IOException,
-	ClassNotFoundException {
+			ClassNotFoundException {
 		File f = new File(fileName);
 		if (f.exists() && f.isFile()) {
 			FileInputStream fis = new FileInputStream(f);
@@ -217,9 +217,11 @@ public class Main extends JFrame {
 			throw new FileNotFoundException(fileName + " not found");
 		}
 	}
-	
-	private void loadDomainFromXMLResource(String fileName) throws IOException, ClassNotFoundException {
-		InputStream fis = Main.class.getResourceAsStream("/org/drugis/addis/" + fileName);
+
+	private void loadDomainFromXMLResource(String fileName) throws IOException,
+			ClassNotFoundException {
+		InputStream fis = Main.class.getResourceAsStream("/org/drugis/addis/"
+				+ fileName);
 		d_domain.loadXMLDomain(fis);
 	}
 
@@ -285,7 +287,6 @@ public class Main extends JFrame {
 		return fileMenu;
 	}
 
-	
 	private JMenu createEditMenu() {
 		JMenu editMenu = new JMenu("Edit");
 		editMenu.setMnemonic('e');
@@ -335,7 +336,7 @@ public class Main extends JFrame {
 			selectedType = "study";
 		} else if (selected instanceof Indication) {
 			selectedType = "indication";
-		} else if (selected instanceof Variable)  {
+		} else if (selected instanceof Variable) {
 			selectedType = "variable";
 		}
 
@@ -359,17 +360,16 @@ public class Main extends JFrame {
 				leftTreeFocus(d_domainTreeModel.getAdverseEventsNode());
 			} else if (selected instanceof PopulationCharacteristic) {
 				getDomain().deleteEntity((Variable) selected);
-				leftTreeFocus(d_domainTreeModel.getPopulationCharacteristicsNode());
+				leftTreeFocus(d_domainTreeModel
+						.getPopulationCharacteristicsNode());
 			} else if (selected instanceof Study) {
 				getDomain().deleteEntity((Study) selected);
 				leftTreeFocus(d_domainTreeModel.getStudiesNode());
 			} else if (selected instanceof MetaAnalysis) {
-				getDomain().deleteEntity(
-						(MetaAnalysis) selected);
+				getDomain().deleteEntity((MetaAnalysis) selected);
 				leftTreeFocus(d_domainTreeModel.getAnalysesNode());
 			} else if (selected instanceof BenefitRiskAnalysis) {
-				getDomain().deleteEntity(
-						(BenefitRiskAnalysis) selected);
+				getDomain().deleteEntity((BenefitRiskAnalysis) selected);
 				leftTreeFocus(d_domainTreeModel.getBenefitRiskAnlysisNode());
 			} else if (selected instanceof Indication) {
 				getDomain().deleteEntity((Indication) selected);
@@ -406,8 +406,8 @@ public class Main extends JFrame {
 	}
 
 	private JMenuItem createAddAdverseEventMenuItem() {
-		JMenuItem item = new JMenuItem("Adverse drug event",
-				ImageLoader.getIcon(FileNames.ICON_ADVERSE_EVENT));
+		JMenuItem item = new JMenuItem("Adverse drug event", ImageLoader
+				.getIcon(FileNames.ICON_ADVERSE_EVENT));
 		item.setMnemonic('a');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -417,10 +417,10 @@ public class Main extends JFrame {
 
 		return item;
 	}
-	
+
 	private JMenuItem createAddPopulationCharacteristicMenuItem() {
-		JMenuItem item = new JMenuItem("Population characteristic",
-				ImageLoader.getIcon(FileNames.ICON_POPULATION_CHAR));
+		JMenuItem item = new JMenuItem("Population characteristic", ImageLoader
+				.getIcon(FileNames.ICON_POPULATION_CHAR));
 		item.setMnemonic('p');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -456,7 +456,7 @@ public class Main extends JFrame {
 
 		return item;
 	}
-	
+
 	private JMenuItem createAddBRAnalysisMenuItem() {
 		JMenuItem item = new JMenuItem("Benefit-Risk Analysis", ImageLoader
 				.getIcon(FileNames.ICON_BENEFITRISK));
@@ -469,7 +469,7 @@ public class Main extends JFrame {
 
 		return item;
 	}
-	
+
 	private JMenuItem createAddNetworkMetaAnalysisMenuItem() {
 		JMenuItem item = new JMenuItem("Network Meta-Analysis", ImageLoader
 				.getIcon(FileNames.ICON_NETWMETASTUDY_NEW));
@@ -531,7 +531,7 @@ public class Main extends JFrame {
 		GUIHelper.centerWindow(dialog, this);
 		dialog.setVisible(true);
 	}
-	
+
 	public void showAddPopulationCharacteristicDialog(ValueModel selectionModel) {
 		AddVariableDialog dialog = new AddVariableDialog(this, getDomain(),
 				new ContinuousPopulationCharacteristic(""), selectionModel);
@@ -558,7 +558,7 @@ public class Main extends JFrame {
 		GUIHelper.centerWindow(dialog, this);
 		dialog.setVisible(true);
 	}
-	
+
 	private JMenuItem createNewItem() {
 		JMenuItem newItem = new JMenuItem("New", ImageLoader
 				.getIcon(FileNames.ICON_NEWFILE));
@@ -570,7 +570,7 @@ public class Main extends JFrame {
 		});
 		return newItem;
 	}
-	
+
 	private JMenuItem createImportXMLItem() {
 		JMenuItem openItem = new JMenuItem("Load XML", ImageLoader
 				.getIcon(FileNames.ICON_OPENFILE));
@@ -597,7 +597,7 @@ public class Main extends JFrame {
 		});
 		return openItem;
 	}
-	
+
 	private JMenuItem createExportXMLItem() {
 		JMenuItem saveItem = new JMenuItem("Save XML", ImageLoader
 				.getIcon(FileNames.ICON_SAVEFILE));
@@ -665,24 +665,27 @@ public class Main extends JFrame {
 				showMetaAnalysisWizard();
 			}
 		});
-		
-		JButton topAddNetworkMetaStudyButton = new JButton("Create network meta-analysis",
-				ImageLoader.getIcon(FileNames.ICON_NETWMETASTUDY_NEW));
-		topAddNetworkMetaStudyButton.setToolTipText("Create network meta-analysis");
+
+		JButton topAddNetworkMetaStudyButton = new JButton(
+				"Create network meta-analysis", ImageLoader
+						.getIcon(FileNames.ICON_NETWMETASTUDY_NEW));
+		topAddNetworkMetaStudyButton
+				.setToolTipText("Create network meta-analysis");
 		topAddNetworkMetaStudyButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 				showNetworkMetaAnalysisWizard();
 			}
-		});		
-		
-		JButton topAddBRAnalysisButton = new JButton("Create benefit-risk analysis",
-				ImageLoader.getIcon(FileNames.ICON_BENEFITRISK));
+		});
+
+		JButton topAddBRAnalysisButton = new JButton(
+				"Create benefit-risk analysis", ImageLoader
+						.getIcon(FileNames.ICON_BENEFITRISK));
 		topAddBRAnalysisButton.setToolTipText("Create benefit-risk analysis");
 		topAddBRAnalysisButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 				showBRAnalysisWizard();
 			}
-		});		
+		});
 
 		ButtonBarBuilder2 builder = new ButtonBarBuilder2();
 		builder.addButton(topAddStudyButton);
@@ -710,20 +713,22 @@ public class Main extends JFrame {
 	private void showMetaAnalysisWizard() {
 		MetaAnalysisWizard wizard = new MetaAnalysisWizard(this,
 				new MetaAnalysisWizardPresentation(getDomain(), d_pmManager));
-		wizard.showInDialog("Create DerSimonian-Laird random effects meta-analysis", this,	true);
+		wizard.showInDialog(
+				"Create DerSimonian-Laird random effects meta-analysis", this,
+				true);
 	}
-	
+
 	private void showBRAnalysisWizard() {
 		BenefitRiskWizard wizard = new BenefitRiskWizard(this,
 				new BenefitRiskWizardPM(getDomain()));
-		wizard.showInDialog("Create benefit-risk analysis", this,	true);
+		wizard.showInDialog("Create benefit-risk analysis", this, true);
 	}
-	
+
 	private void showNetworkMetaAnalysisWizard() {
 		NetworkMetaAnalysisWizard wizard = new NetworkMetaAnalysisWizard(this,
 				new NetworkMetaAnalysisWizardPM(getDomain(), d_pmManager));
 		wizard.showInDialog("Create network meta-analysis", this, true);
-	}	
+	}
 
 	private void initPanel() {
 		JSplitPane pane = new JSplitPane();
@@ -736,11 +741,11 @@ public class Main extends JFrame {
 
 		initRightPanel();
 		pane.setRightComponent(d_rightPanel);
-		
+
 		add(pane);
 	}
-	
-	public JScrollPane getRightPanel(){
+
+	public JScrollPane getRightPanel() {
 		return d_rightPanel;
 	}
 
@@ -777,7 +782,8 @@ public class Main extends JFrame {
 		d_leftPanelTree.expandPath(new TreePath(new Object[] {
 				d_domainTreeModel.getRoot(),
 				d_domainTreeModel.getEndpointsNode() }));
-		d_leftPanelTree.expandPath(new TreePath(new Object[] {
+		d_leftPanelTree
+				.expandPath(new TreePath(new Object[] {
 						d_domainTreeModel.getRoot(),
 						d_domainTreeModel.getDrugsNode() }));
 		d_leftPanelTree.expandPath(new TreePath(new Object[] {
@@ -802,7 +808,7 @@ public class Main extends JFrame {
 				if (node == null) {
 					noneSelected();
 				} else if (node instanceof Entity) {
-					entitySelected((Entity)node);
+					entitySelected((Entity) node);
 				} else if (node == d_domainTreeModel.getStudiesNode()) {
 					studyLabelSelected();
 				} else if (node == d_domainTreeModel.getDrugsNode()) {
@@ -813,11 +819,13 @@ public class Main extends JFrame {
 					endpointLabelSelected();
 				} else if (node == d_domainTreeModel.getAdverseEventsNode()) {
 					adverseEventLabelSelected();
-				} else if (node == d_domainTreeModel.getPopulationCharacteristicsNode()) {
+				} else if (node == d_domainTreeModel
+						.getPopulationCharacteristicsNode()) {
 					populationCharacteristicsLabelSelected();
 				} else if (node == d_domainTreeModel.getAnalysesNode()) {
 					analysesLabelSelected();
-				} else if (node == d_domainTreeModel.getBenefitRiskAnlysisNode()) {
+				} else if (node == d_domainTreeModel
+						.getBenefitRiskAnlysisNode()) {
 					benefitRiskLabelSelected();
 				} else {
 					noneSelected();
@@ -825,7 +833,7 @@ public class Main extends JFrame {
 			}
 		};
 	}
-	
+
 	private void entitySelected(Entity node) {
 		ViewBuilder view = ViewFactory.createView(node, d_pmManager, this);
 		setRightPanelView(view);
@@ -841,65 +849,69 @@ public class Main extends JFrame {
 	}
 
 	private void drugLabelSelected() {
-		String [] properties = {"name", "atcCode"};
+		String[] properties = { "name", "atcCode" };
 		buildEntityTable(getDomain().getDrugs(), properties, "Drugs");
 	}
 
 	private void endpointLabelSelected() {
-		String [] properties = {"name", "description", "unitOfMeasurement",
-				"type", "direction"};
+		String[] properties = { "name", "description", "unitOfMeasurement",
+				"type", "direction" };
 		buildEntityTable(getDomain().getEndpoints(), properties, "Endpoints");
 	}
 
 	private void populationCharacteristicsLabelSelected() {
-		String [] properties = {"name", "description", "unitOfMeasurement", "type"};
-		buildEntityTable(getDomain().getVariables(), properties, "Population characteristics");
+		String[] properties = { "name", "description", "unitOfMeasurement",
+				"type" };
+		buildEntityTable(getDomain().getVariables(), properties,
+				"Population characteristics");
 	}
-	
+
 	private void adverseEventLabelSelected() {
-		String [] properties = {"name", "description", "unitOfMeasurement",
-				"type", "direction"};
+		String[] properties = { "name", "description", "unitOfMeasurement",
+				"type", "direction" };
 		buildEntityTable(getDomain().getAdverseEvents(), properties,
 				"Adverse drug events");
 	}
-	
+
 	private <T extends Entity> void buildEntityTable(SortedSet<T> allX,
 			String[] formatter, String title) {
 		List<PresentationModel<T>> dpms = new ArrayList<PresentationModel<T>>();
 		for (T i : allX) {
 			dpms.add(d_pmManager.getModel(i));
 		}
-		EntitiesNodeView<T> view = 
-			new EntitiesNodeView<T>(Arrays.asList(formatter), dpms, this, title);
+		EntitiesNodeView<T> view = new EntitiesNodeView<T>(Arrays
+				.asList(formatter), dpms, this, title);
 		setRightPanelView(view);
 	}
 
 	private void indicationLabelSelected() {
-		String [] properties = {"name", "code"};
-		buildEntityTable(getDomain().getIndications(), properties, "Indications");
+		String[] properties = { "name", "code" };
+		buildEntityTable(getDomain().getIndications(), properties,
+				"Indications");
 	}
 
 	private void studyLabelSelected() {
-		DefaultStudyListPresentationModel studyListPM =
-			new DefaultStudyListPresentationModel(getDomain().getStudiesHolder());
-		StudiesNodeView view = new StudiesNodeView(new StudiesTablePanel(studyListPM, this));
+		DefaultStudyListPresentationModel studyListPM = new DefaultStudyListPresentationModel(
+				getDomain().getStudiesHolder());
+		StudiesNodeView view = new StudiesNodeView(new StudiesTablePanel(
+				studyListPM, this));
 		setRightPanelView(view);
 	}
 
 	private void analysesLabelSelected() {
-		String [] properties = {"name", "type", "indication", "outcomeMeasure", 
-				"includedDrugs", "studiesIncluded", "sampleSize"};
+		String[] properties = { "name", "type", "indication", "outcomeMeasure",
+				"includedDrugs", "studiesIncluded", "sampleSize" };
 		buildEntityTable(getDomain().getMetaAnalyses(), properties,
 				"Meta-Analyses");
 	}
-	
+
 	private void benefitRiskLabelSelected() {
-		String [] properties = {"name", "indication", "outcomeMeasures", 
-				"metaAnalyses", "baseline", "drugs"};
+		String[] properties = { "name", "indication", "outcomeMeasures",
+				"metaAnalyses", "baseline", "drugs" };
 		buildEntityTable(getDomain().getBenefitRiskAnalyses(), properties,
 				"Benefit-Risk Analyses");
 	}
-	
+
 	private void setRightPanelView(ViewBuilder view) {
 		d_rightPanelBuilder = view;
 		setRightPanelContents(view.buildPanel());
@@ -918,7 +930,8 @@ public class Main extends JFrame {
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(null, e.toString(), "Unexpected Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, e.toString(),
+						"Unexpected Error", JOptionPane.ERROR_MESSAGE);
 			}
 		};
 		Thread mainThread = new Thread(threadGroup, "Main thread") {
@@ -928,7 +941,7 @@ public class Main extends JFrame {
 				frame.initComponents();
 				frame.pack();
 				frame.setVisible(true);
-	
+
 			}
 		};
 		mainThread.start();
@@ -937,13 +950,13 @@ public class Main extends JFrame {
 	private void dataModelChanged() {
 		reloadRightPanel();
 	}
-	
+
 	public void repaintRightPanel() {
 		d_rightPanel.setVisible(false);
 		d_rightPanel.setVisible(true);
 		d_rightPanel.revalidate();
 	}
-	
+
 	public void reloadRightPanel() {
 		if (d_rightPanelBuilder != null) {
 			setRightPanelContents(d_rightPanelBuilder.buildPanel());
@@ -952,14 +965,14 @@ public class Main extends JFrame {
 
 	private void setRightPanelContents(JComponent component) {
 		d_rightPanel.setViewportView(component);
-
 		setRightPanelViewSize();
 	}
 
 	private void setRightPanelViewSize() {
 		JComponent view = (JComponent) d_rightPanel.getViewport().getView();
 		Dimension dimension = new Dimension();
-		int prefWidth = getSize().width - d_leftPanel.getPreferredSize().width - 40;
+		int prefWidth = getSize().width - d_leftPanel.getPreferredSize().width
+				- 40;
 		dimension.width = Math.max(prefWidth, view.getMinimumSize().width);
 		dimension.height = view.getPreferredSize().height;
 		view.setPreferredSize(dimension);
@@ -993,9 +1006,11 @@ public class Main extends JFrame {
 					d_domainTreeModel.getRoot(),
 					d_domainTreeModel.getAdverseEventsNode(), node }));
 		} else if (node instanceof Variable) {
-			d_leftPanelTree.setSelectionPath(new TreePath(new Object[] {
-					d_domainTreeModel.getRoot(),
-					d_domainTreeModel.getPopulationCharacteristicsNode(), node }));
+			d_leftPanelTree
+					.setSelectionPath(new TreePath(new Object[] {
+							d_domainTreeModel.getRoot(),
+							d_domainTreeModel
+									.getPopulationCharacteristicsNode(), node }));
 		} else if (node instanceof Study) {
 			d_leftPanelTree.setSelectionPath(null);
 			StudyView view = new StudyView((StudyPresentationModel) d_pmManager
