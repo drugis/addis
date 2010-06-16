@@ -11,7 +11,7 @@ public class ImageLoader {
 	static private Map<String, Icon> icons;
 	static private String imagePath;
 	
-	public static void setImagepath(String _imagePath) {
+	public static void setImagePath(String _imagePath) {
 		imagePath = _imagePath;
 		icons = new HashMap<String, Icon>();
 	}

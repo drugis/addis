@@ -138,7 +138,7 @@ public class Main extends JFrame {
 
 	public Main() {
 		super(AppInfo.getAppName() + " v" + AppInfo.getAppVersion());
-		ImageLoader.setImagepath("/org/drugis/addis/gfx/");
+		ImageLoader.setImagePath("/org/drugis/addis/gfx/");
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent evt) {
