@@ -44,8 +44,11 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		@Override
 		public void setValue(Object selected) {
 			super.setValue(selected);
-			if (selected.equals(false))
+			if (selected.equals(false)) {
 				getMetaAnalysesSelectedModel(d_om).setValue(null);
+			} else if (getMetaAnalyses(d_om).size() == 1) {
+				getMetaAnalysesSelectedModel(d_om).setValue(getMetaAnalyses(d_om).get(0));
+			}
 		}
 	}
 	

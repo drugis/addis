@@ -3,6 +3,7 @@ package org.drugis.addis.presentation.wizard;
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -77,6 +78,20 @@ public class BenfitRiskWizardPMTest {
 		assertFalse(origModel.getValue());
 		d_pm.getOutcomeSelectedModel(om).setValue(true);
 		assertTrue(origModel.getValue());
+	}
+	
+	@Test
+	public void testOutcomeSelectedSingleAnalysisShouldSelect() {
+		OutcomeMeasure om = ExampleData.buildEndpointCgi();
+		d_pm.getOutcomeSelectedModel(om).setValue(true);
+		assertNotNull(d_pm.getMetaAnalysesSelectedModel(om).getValue());	
+	}
+	
+	@Test
+	public void testOutcomeSelectedMultipleAnalysisShouldNotSelect() {
+		OutcomeMeasure om = ExampleData.buildEndpointHamd();
+		d_pm.getOutcomeSelectedModel(om).setValue(true);
+		assertNull(d_pm.getMetaAnalysesSelectedModel(om).getValue());	
 	}
 	
 	@Test
@@ -162,12 +177,12 @@ public class BenfitRiskWizardPMTest {
 		d_pm.getIndicationModel().setValue(d_indication);
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
+		assertTrue(d_pm.getCompleteModel().getValue());
 		d_pm.getOutcomeSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
 		assertFalse(d_pm.getCompleteModel().getValue());
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
 		assertTrue(d_pm.getCompleteModel().getValue());
-		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
-		assertFalse(d_pm.getCompleteModel().getValue());
 	}
 
 	@Test
