@@ -29,11 +29,13 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-import org.drugis.addis.gui.AbstractTablePanel;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
+import org.drugis.addis.gui.components.EnhancedTable;
+import org.drugis.addis.gui.components.EnhancedTableHeader;
+import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
@@ -185,7 +187,8 @@ implements ViewBuilder {
 		
 		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(
 				d_pm, d_parent.getPresentationModelFactory());
-		d_inconsistencyFactorsTablePanel = new AbstractTablePanel(inconsistencyFactorsTableModel);
+		EnhancedTable table = new EnhancedTable(inconsistencyFactorsTableModel, 300);
+		d_inconsistencyFactorsTablePanel = new TablePanel(table);
 		inconsistencyPanel.add(d_inconsistencyFactorsTablePanel,BorderLayout.SOUTH);
 		
 		
@@ -238,7 +241,6 @@ implements ViewBuilder {
 			d_consistencyTablePanel = tablePanel;
 			
 		tablePanel.setVisible(true);
-		tablePanel.setMaxWidth((int) d_builder.getPanel().getPreferredSize().getWidth());
 		panel.add(tablePanel, BorderLayout.NORTH);
 		
 		return panel;

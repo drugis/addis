@@ -54,6 +54,12 @@ public class EnhancedTable extends JTable {
 		setModel(sort);
 	}
 	
+	public EnhancedTable(TableModel model, int maxColWidth) {
+		this(model);
+		d_tableHeader.setMaxColWidth(maxColWidth);
+		d_tableHeader.autoSizeColumns();
+	}
+	
 	@Override
 	public void tableChanged(TableModelEvent e) {
 		super.tableChanged(e);

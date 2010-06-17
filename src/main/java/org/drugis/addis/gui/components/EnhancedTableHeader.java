@@ -35,7 +35,8 @@ import javax.swing.table.TableColumnModel;
 
 @SuppressWarnings("serial")
 public class EnhancedTableHeader extends JTableHeader {
-	private static final int MAX_COL_WIDTH = 150;
+	private static final int DEFAULT_MAX_COL_WIDTH = 150;
+	private int d_maxColWidth = DEFAULT_MAX_COL_WIDTH;
 	private final JTable d_table;
 
 	public EnhancedTableHeader(TableColumnModel cm, JTable table) {
@@ -72,11 +73,11 @@ public class EnhancedTableHeader extends JTableHeader {
 	 * Autosizes all columns to fit to width of their data or max. length.
 	 */
 	 public void autoSizeColumns() {
-		autoSizeColumns(d_table);
+		autoSizeColumns(d_table, d_maxColWidth);
 	 }
 	 
 	public static void autoSizeColumns(JTable table) {
-		autoSizeColumns(table, MAX_COL_WIDTH);
+		autoSizeColumns(table, DEFAULT_MAX_COL_WIDTH);
 	}
 
 	public static void autoSizeColumns(JTable table, int maxColWidth) {
@@ -130,5 +131,9 @@ public class EnhancedTableHeader extends JTableHeader {
 			 return null;
 		 }
 		 return getColumnModel().getColumn(columnIndex);
+	 }
+	 
+	 public void setMaxColWidth(int maxColWidth) {
+		 d_maxColWidth = maxColWidth;
 	 }
 }

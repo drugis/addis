@@ -31,6 +31,8 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.gui.components.EnhancedTable;
+import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.LabeledPresentationModel;
 import org.drugis.addis.presentation.NetworkTableModel;
 
@@ -38,24 +40,15 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 
 @SuppressWarnings("serial")
-public class NetworkMetaAnalysisTablePanel extends AbstractTablePanel{
+public class NetworkMetaAnalysisTablePanel extends TablePanel {
 	
 	public NetworkMetaAnalysisTablePanel(JFrame parent, NetworkTableModel networkAnalysisTableModel) {
-		super(networkAnalysisTableModel);
-	}
-
-	@Override
-	public void setRenderer() {
+		super(new EnhancedTable(networkAnalysisTableModel));
 		d_table.setDefaultRenderer(Object.class, new NetworkTableCellRenderer());
-	}
-	
-	@Override
-	protected void initComps() {
 		d_table.setTableHeader(null);
-		super.initComps();
 	}
 	
-	class NetworkTableCellRenderer implements TableCellRenderer {
+	static class NetworkTableCellRenderer implements TableCellRenderer {
 		public Component getTableCellRendererComponent(JTable table,
 				Object val, boolean isSelected, boolean hasFocus, int row, int col) {
 			
@@ -69,9 +62,9 @@ public class NetworkMetaAnalysisTablePanel extends AbstractTablePanel{
 			}
 			label.setOpaque(true);
 			
-			if (d_tableModel instanceof NetworkTableModel) { // FIXME: Extract TableModelWithDescriptionAt interface
-				if (((NetworkTableModel) d_tableModel).getDescriptionAt(row, col) != null) {
-					label.setToolTipText(((NetworkTableModel) d_tableModel).getDescriptionAt(row, col));
+			if (table.getModel() instanceof NetworkTableModel) { // FIXME: Extract TableModelWithDescriptionAt interface
+				if (((NetworkTableModel) table.getModel()).getDescriptionAt(row, col) != null) {
+					label.setToolTipText(((NetworkTableModel) table.getModel()).getDescriptionAt(row, col));
 				}
 			}
 			

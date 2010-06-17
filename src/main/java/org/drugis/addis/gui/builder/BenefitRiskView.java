@@ -13,10 +13,11 @@ import javax.swing.JProgressBar;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
-import org.drugis.addis.gui.AbstractTablePanel;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
+import org.drugis.addis.gui.components.EnhancedTable;
+import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.BenefitRiskPM;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.LayoutUtil;
@@ -246,18 +247,15 @@ public class BenefitRiskView implements ViewBuilder {
 	
 	private JComponent buildMeasurementsPart() {
 		CellConstraints cc = new CellConstraints();
-		FormLayout layout = new FormLayout("left:pref:grow:fill",
+		FormLayout layout = new FormLayout("pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		builder.addLabel("All measurements are odds ratios (or relative mean difference) relative to " + d_pm.getBean().getBaseline(), cc.xy(1, 1));
-		builder.add(new AbstractTablePanel(d_pm.getMeasurementTableModel(true)), cc.xy(1, 3));
+		builder.add(new TablePanel(new EnhancedTable(d_pm.getMeasurementTableModel(true))), cc.xy(1, 3));
 	
-		builder.addLabel("All measurements are odds (or mean difference) calculated from assumed odds (or mean difference) of " + d_pm.getBean().getBaseline(), cc.xy(1, 5));
-		builder.add(new AbstractTablePanel(d_pm.getMeasurementTableModel(false)), cc.xy(1, 9));
-
-		int row = 9;
-
+		builder.addLabel("All measurements are odds (or mean difference) calculated from\n assumed odds (or mean difference) of " + d_pm.getBean().getBaseline(), cc.xy(1, 5));
+		builder.add(new TablePanel(new EnhancedTable(d_pm.getMeasurementTableModel(false))), cc.xy(1, 9));
 
 		return builder.getPanel();
 	}
