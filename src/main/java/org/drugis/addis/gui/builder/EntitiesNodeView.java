@@ -52,7 +52,7 @@ public class EntitiesNodeView<T extends Entity> implements ViewBuilder {
 
 	public JComponent buildPanel() {		
 		FormLayout layout = new FormLayout(
-				"3dlu, pref:grow:fill, 3dlu",
+				"pref:grow:fill",
 				"p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -60,10 +60,10 @@ public class EntitiesNodeView<T extends Entity> implements ViewBuilder {
 		CellConstraints cc =  new CellConstraints();
 		
 		if (d_title != null)
-			builder.addSeparator(d_title, cc.xy(2, 1));
+			builder.addSeparator(d_title, cc.xy(1, 1));
 		
 		TablePanel tablePanel = new EntitiesTablePanel<T>(d_formatter, d_dpms, d_main);
-		builder.add(tablePanel,cc.xy(2, 3));
+		builder.add(tablePanel,cc.xy(1, 3));
 
 		return builder.getPanel();
 	}

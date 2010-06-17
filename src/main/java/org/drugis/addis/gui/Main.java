@@ -741,6 +741,7 @@ public class Main extends JFrame {
 
 		initRightPanel();
 		pane.setRightComponent(d_rightPanel);
+		d_rightPanel.setMinimumSize(new Dimension(770, d_rightPanel.getMinimumSize().height));
 
 		add(pane);
 	}
