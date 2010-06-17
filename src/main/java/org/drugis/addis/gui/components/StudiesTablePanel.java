@@ -49,7 +49,7 @@ public class StudiesTablePanel extends TablePanel {
 		bb.addButton(StudiesTablePanel.buildCustomizeButton(studyListPresentationModel, main));
 		bb.addGlue();
 		
-		add(bb.getPanel(), BorderLayout.WEST);
+		add(bb.getPanel(), BorderLayout.SOUTH);
 	}
 
 	public static JTable createTable(final StudyListPresentationModel studyListPM, final Main main) {

@@ -22,6 +22,10 @@
 package org.drugis.addis.gui.components;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -52,13 +56,24 @@ public class TablePanel extends JPanel {
 	}
 
 	private void addScrollPane() {
-		JScrollPane sp = new JScrollPane(d_table);		
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		final JScrollPane sp = new JScrollPane(d_table);		
 		sp.setBorder(BorderFactory.createEmptyBorder());
-		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		sp.getVerticalScrollBar().setUnitIncrement(16);
-	
-		add(sp, BorderLayout.NORTH);
+		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		panel.add(sp);
+		
+		this.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				System.out.println(e);
+				int tablewidth = d_table.getPreferredSize().width;
+				int panelwidth = getSize().width - 20; // FIXME
+				sp.setPreferredSize(new Dimension(Math.min(tablewidth, panelwidth), sp.getPreferredSize().height));
+			}
+			
+		});
+		add(panel, BorderLayout.CENTER);
 	}
 
 }
