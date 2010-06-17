@@ -102,12 +102,12 @@ public abstract class RelativeEffectTableModelBaseTest {
 		for (int i = 0; i < d_standardStudy.getArms().size(); ++i) {
 			Object val = d_stdModel.getValueAt(i, i);
 			assertTrue("Instance of PresentationModel", val instanceof PresentationModel);
-			assertEquals(((PresentationModel) val).getBean(), d_standardStudy.getArms().get(i));
+			assertEquals(d_standardStudy.getArms().get(i), ((PresentationModel) val).getBean());
 		}
 		for (int i = 0; i < d_threeArmStudy.getArms().size(); ++i) {
 			Object val = d_threeArmModel.getValueAt(i, i);
 			assertTrue("Instance of PresentationModel", val instanceof PresentationModel);
-			assertEquals(((PresentationModel) val).getBean(), d_threeArmStudy.getArms().get(i));
+			assertEquals(d_threeArmStudy.getArms().get(i), ((PresentationModel) val).getBean());
 		}
 	}
 
