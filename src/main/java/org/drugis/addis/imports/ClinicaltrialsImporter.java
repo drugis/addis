@@ -22,7 +22,10 @@
 package org.drugis.addis.imports;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -79,15 +82,23 @@ public class ClinicaltrialsImporter {
 
 	public static void getClinicaltrialsData(Study study, File file){
 		try {
-			JAXBContext jc = JAXBContext.newInstance("org.drugis.addis.imports"); //
-			Unmarshaller unmarshaller = jc.createUnmarshaller();
-			ClinicalStudy studyImport = (ClinicalStudy) unmarshaller.unmarshal(file);// the .xml file to be read
+			getClinicaltrialsData(study, new FileInputStream(file));
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		} 
+	}
+
+	public static void getClinicaltrialsData(Study study, InputStream is) {
+		JAXBContext jc;
+		try {
+			jc = JAXBContext.newInstance("org.drugis.addis.imports");
+			ClinicalStudy studyImport = (ClinicalStudy) jc.createUnmarshaller().unmarshal(is);
 			getClinicalTrialsData(study,studyImport);
-		} 
-		catch (JAXBException e){
+		} catch (JAXBException e) {
 			System.err.println("Error in parsing xml file (ClinicaltrialsImporter.java))");
-			e.printStackTrace();
-		} 
+			throw new RuntimeException(e);
+		}
+
 	}
 	
 	private static void getClinicalTrialsData(Study study, ClinicalStudy studyImport) {

@@ -24,7 +24,7 @@ package org.drugis.addis.imports;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,6 +43,9 @@ import org.junit.Test;
 
 
 public class ClinicaltrialImporterTest {
+	private static InputStream getXMLResource(String name) {
+		return ClinicaltrialImporterTest.class.getResourceAsStream(name);
+	}
 	
 	Domain d_testDomain;
 	Study  d_testStudy;
@@ -64,7 +67,7 @@ public class ClinicaltrialImporterTest {
 	
 	@Test
 	public void testGetClinicaltrialsData(){
-		ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, new File("./src/main/xml/NCT00644527"));
+		ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, getXMLResource("NCT00644527.xml"));
 		
 		testRetrievedStudy();
 		//assertEquals(new Endpoint("Change of a composite measure including the Hamilton Depression Scale (double weighted), the Beck Depression Inventory (single weighted) and the HADS-D-scale (single weighted) between study entry and 5 / 10 and 15-week-follow-up.", Type.RATE), testStudy); //:TODO how should this be set?
