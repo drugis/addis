@@ -42,6 +42,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Variable.Type;
@@ -86,6 +87,14 @@ public class XMLLoadSaveTest {
 //		System.out.println("\n"+xml+"\n");
 		Endpoint objFromXml = XMLHelper.fromXml(xml);
 		AssertEntityEquals.assertEntityEquals(i, objFromXml);
+	}
+	
+	@Test
+	public void doUnknownDose() throws XMLStreamException {
+		UnknownDose d = new UnknownDose();
+		String xml = XMLHelper.toXml(d, UnknownDose.class);
+		UnknownDose objFromXml = XMLHelper.fromXml(xml);
+		assertEquals(d, objFromXml);
 	}
 	
 	@Test

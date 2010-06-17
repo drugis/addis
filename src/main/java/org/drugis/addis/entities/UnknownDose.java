@@ -46,4 +46,9 @@ public class UnknownDose extends AbstractDose {
 	public int hashCode() {
 		return 1;
 	}
+	
+	@Override
+	public String[] getXmlExclusions() {
+		return new String[] {"unit"};
+	}
 }
