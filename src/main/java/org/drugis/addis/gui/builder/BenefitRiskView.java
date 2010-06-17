@@ -16,6 +16,7 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.gui.AbstractTablePanel;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
 import org.drugis.addis.presentation.BenefitRiskPM;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.LayoutUtil;
@@ -38,21 +39,16 @@ import fi.smaa.jsmaa.gui.views.ResultsView;
 
 public class BenefitRiskView implements ViewBuilder {
 	
+	private static final String WAITING_MESSAGE = "Please wait while the sub-analyses run";
 	private BenefitRiskPM d_pm;
 	private Main d_main;
 	private PanelBuilder d_builder;
+
 	
 	public BenefitRiskView(BenefitRiskPM pm, Main main) {
 		d_pm = pm;
 		d_main = main;
-		d_pm.addPropertyChangeListener(new PropertyChangeListener() {
 
-			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals(BenefitRiskPM.PROPERTY_ALLMODELSREADY)){
-					d_main.reloadRightPanel();
-				}
-			}
-		});
 	}
 	
 	public JComponent buildPanel() {
@@ -60,13 +56,14 @@ public class BenefitRiskView implements ViewBuilder {
 			d_builder.getPanel().removeAll();
 		
 		final FormLayout layout = new FormLayout(
-				"pref:grow:fill",
+				"pref:grow(0.95):fill",
 				"p, 3dlu, p, " + // 1-3 
 				"3dlu, p, 3dlu, p, " + // 4-7
 				"3dlu, p, 3dlu, p, " + // 8-11 
 				"3dlu, p, 3dlu, p, " + // 12-15
 				"3dlu, p, 3dlu, p, " + // 16-19
-				"3dlu, p, 3dlu, p" // 20-23
+				"3dlu, p, 3dlu, p," + // 20-23
+				"3dlu, p"
 				);
 		
 		d_builder = new PanelBuilder(layout);
@@ -77,65 +74,78 @@ public class BenefitRiskView implements ViewBuilder {
 		d_builder.addSeparator("Benefit-Risk Analysis", cc.xy(1, 1));
 		d_builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
 		
-		d_builder.addSeparator("Included Analyses", cc.xy(1, 5));
-		d_builder.add(GUIFactory.createCollapsiblePanel(buildAnalysesPart()), cc.xy(1, 7));
+		final JComponent progressBars = buildProgressBars();
+		d_builder.add(progressBars, cc.xy(1, 5));
 		
-		d_builder.addSeparator("Measurements", cc.xy(1, 9));
-		d_builder.add(GUIFactory.createCollapsiblePanel(buildMeasurementsPart()), cc.xy(1, 11));
-		
-		if(d_pm.allNMAModelsReady()){
-			d_builder.addSeparator("Preferences", cc.xy(1, 13));
-			JComponent prefsPart = buildPreferencesPart();
-			d_builder.add(GUIFactory.createCollapsiblePanel(prefsPart), cc.xy(1, 15));
-			
-			d_builder.addSeparator("Rank Acceptabilities", cc.xy(1, 17));
-			d_builder.add(GUIFactory.createCollapsiblePanel(buildRankAcceptabilitiesPart()), cc.xy(1, 19));
-
-			d_builder.addSeparator("Central Weigths", cc.xy(1, 21));
-			d_builder.add(GUIFactory.createCollapsiblePanel(buildWeightsPart()), cc.xy(1, 23));
-			
-			final JPanel panel = d_builder.getPanel();
-			ChildComponenentHeightPropagater.attachToContainer(panel);
-			return panel;
-		} else {
-			d_builder.add(GUIFactory.createCollapsiblePanel(buildAnalyzingPart()), cc.xy(1, 15));
-			JPanel panel = d_builder.getPanel();
-			panel.addComponentListener(new ComponentAdapter() {
-				@Override
-				public void componentResized(ComponentEvent e) {
-					// We would love to listen to componentShown(), but that isn't triggered. Hooray!
-					d_pm.startAllSimulations();
+		d_pm.getAllModelsReadyModel().addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (progressBars != null) {
+					progressBars.setVisible(false);
+					d_pm.startSMAA();
 				}
+			}
+		});
+		
+		d_builder.addSeparator("Included Analyses", cc.xy(1, 7));
+		d_builder.add(GUIFactory.createCollapsiblePanel(buildAnalysesPart()), cc.xy(1, 9));
+		
+		d_builder.addSeparator("Measurements", cc.xy(1, 11));
+		d_builder.add(GUIFactory.createCollapsiblePanel(buildMeasurementsPart()), cc.xy(1, 13));
+		
+		d_builder.addSeparator("Preferences", cc.xy(1, 15));
+		d_builder.add(GUIFactory.createCollapsiblePanel(buildPreferencesPart()), cc.xy(1, 17));
+		
+		d_builder.addSeparator("Rank Acceptabilities", cc.xy(1, 19));
+		d_builder.add(GUIFactory.createCollapsiblePanel(buildRankAcceptabilitiesPart()), cc.xy(1, 21));
+		
+		d_builder.addSeparator("Central Weigths", cc.xy(1, 23));
+		d_builder.add(GUIFactory.createCollapsiblePanel(buildCentralWeightsPart()), cc.xy(1, 25));
+		
+		final JPanel panel = d_builder.getPanel();
+		ChildComponenentHeightPropagater.attachToContainer(panel);
+		panel.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				// We would love to listen to componentShown(), but that isn't triggered. Hooray!
+				d_pm.startAllSimulations();
+			}
+		});
+		return panel;
+	}
+	
+	private class PreferencesBuilder implements ViewBuilder {
+
+		public JComponent buildPanel() {
+			final JPanel panel = new JPanel();
+			panel.setLayout(new BorderLayout());
+			final PreferencePresentationModel ppm = d_pm.getPreferencePresentationModel();
+			ppm.addPropertyChangeListener(PreferencePresentationModel.PREFERENCE_TYPE,
+					new PropertyChangeListener() {
+						public void propertyChange(PropertyChangeEvent arg0) {
+							panel.removeAll();
+							panel.add(new ModifiedPrefInfoView(ppm, new ClinicalScaleRenderer(d_pm)).buildPanel());
+							d_main.pack();
+						}			
 			});
+			JComponent prefPanel = new ModifiedPrefInfoView(ppm, new ClinicalScaleRenderer(d_pm)).buildPanel();
+			panel.add(prefPanel);
 			return panel;
 		}
+		
 	}
 	
 	private JComponent buildPreferencesPart() {
-		final JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-		final PreferencePresentationModel ppm = d_pm.getPreferencePresentationModel();
-		ppm.addPropertyChangeListener(PreferencePresentationModel.PREFERENCE_TYPE,
-				new PropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent arg0) {
-						panel.removeAll();
-						panel.add(new ModifiedPrefInfoView(ppm, new ClinicalScaleRenderer(d_pm)).buildPanel());
-						d_main.pack();
-					}			
-		});
-		JComponent prefPanel = new ModifiedPrefInfoView(ppm, new ClinicalScaleRenderer(d_pm)).buildPanel();
-		panel.add(prefPanel);
-		return panel;
+		return createWaiter(new PreferencesBuilder());
 	}
 
-	private JComponent buildAnalyzingPart() {
+	private JComponent buildProgressBars() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
 				"p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();
 		
-		builder.addSeparator("Running MTC models ... please wait",cc.xy(1,1));
+		builder.addLabel("Running sub-analyses. Please wait.",cc.xy(1,1));
 		int row = 1;
 		for (int i=0; i<d_pm.getNumNMAProgBars(); ++i){
 			LayoutUtil.addRow(layout);
@@ -145,38 +155,66 @@ public class BenefitRiskView implements ViewBuilder {
 			d_pm.attachNMAProgBar(bar,i);
 			builder.add(bar,cc.xy(1, row));
 		}
+
+		for (int i=0; i<d_pm.getNumBaselineProgBars(); ++i){
+			LayoutUtil.addRow(layout);
+			row += 2;
+			JProgressBar bar = new JProgressBar();
+			bar.setStringPainted(true);
+			d_pm.attachBaselineProgBar(bar,i);
+			builder.add(bar,cc.xy(1, row));
+		}
 		
 		return builder.getPanel();
 	}
+	
+	private class CentralWeightsBuilder implements ViewBuilder {
+		public JComponent buildPanel() {
+			final JFreeChart chart = ChartFactory.createLineChart(
+			        "", "Criterion", "Central Weight",
+			        d_pm.getCentralWeightsDataSet(), PlotOrientation.VERTICAL, true, true, false);
+			LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, true);
+			chart.getCategoryPlot().setRenderer(renderer);
+			ResultsTable table = new ResultsTable(d_pm.getCentralWeightsTableModel());
+			table.setDefaultRenderer(Object.class, new ResultsCellRenderer(1.0));
+			
+			// FIXME: FileNames.ICON_SCRIPT was replaced by "". Should be filename of an icon 
+			return new ResultsView(d_main, table, chart, "").buildPanel(); 
+		}
+	}
 
-	private JComponent buildWeightsPart() {
-		final JFreeChart chart = ChartFactory.createLineChart(
-		        "", "Criterion", "Central Weight",
-		        d_pm.getCentralWeightsDataSet(), PlotOrientation.VERTICAL, true, true, false);
-		LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, true);
-		chart.getCategoryPlot().setRenderer(renderer);
-		ResultsTable table = new ResultsTable(d_pm.getCentralWeightsTableModel());
-		table.setDefaultRenderer(Object.class, new ResultsCellRenderer(1.0));
+	private JComponent buildCentralWeightsPart() {
+		return createWaiter(new CentralWeightsBuilder());
+	}
+	
+	private class RankAcceptabilitiesBuilder implements ViewBuilder {
+
+		public JComponent buildPanel() {
+			ResultsTable table = new ResultsTable(d_pm.getRankAcceptabilitiesTableModel());
+			
+			final JFreeChart chart = ChartFactory.createStackedBarChart(
+			        "", "Alternative", "Rank Acceptability",
+			        d_pm.getRankAcceptabilityDataSet(), PlotOrientation.VERTICAL, true, true, false);
+
+			JPanel panel = new JPanel(new BorderLayout());
+			fi.smaa.jsmaa.gui.views.ResultsView view = new fi.smaa.jsmaa.gui.views.ResultsView(d_main, table, chart, "");
+			panel.add(view.buildPanel(), BorderLayout.CENTER);
+			panel.add(d_pm.getSmaaSimulationProgressBar(), BorderLayout.NORTH);
+
+			return panel;
+		}
 		
-		// FIXME: FileNames.ICON_SCRIPT was replaced by "". Should be filename of an icon 
-		return new ResultsView(d_main, table, chart, "").buildPanel(); 
 	}
 
 	private JComponent buildRankAcceptabilitiesPart() {
-		ResultsTable table = new ResultsTable(d_pm.getRankAcceptabilitiesTableModel());
-	
-		final JFreeChart chart = ChartFactory.createStackedBarChart(
-		        "", "Alternative", "Rank Acceptability",
-		        d_pm.getRankAcceptabilityDataSet(), PlotOrientation.VERTICAL, true, true, false);
-
-		JPanel panel = new JPanel(new BorderLayout());
-		fi.smaa.jsmaa.gui.views.ResultsView view = new fi.smaa.jsmaa.gui.views.ResultsView(d_main, table, chart, "");
-		panel.add(view.buildPanel(), BorderLayout.CENTER);
-		panel.add(d_pm.getSmaaSimulationProgressBar(), BorderLayout.NORTH);
-
-		return panel;
+		return createWaiter(new RankAcceptabilitiesBuilder());
 	}
 
+	private BuildViewWhenReadyComponent createWaiter(ViewBuilder builder) {
+		return new BuildViewWhenReadyComponent(builder, d_pm.getAllModelsReadyModel(),
+				WAITING_MESSAGE);
+	}
+	
 	private JPanel buildOverviewPart() {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = new FormLayout("right:pref, 3dlu, left:pref:grow",
@@ -208,7 +246,7 @@ public class BenefitRiskView implements ViewBuilder {
 	
 	private JComponent buildMeasurementsPart() {
 		CellConstraints cc = new CellConstraints();
-		FormLayout layout = new FormLayout("pref:grow:fill",
+		FormLayout layout = new FormLayout("left:pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		
@@ -219,18 +257,7 @@ public class BenefitRiskView implements ViewBuilder {
 		builder.add(new AbstractTablePanel(d_pm.getMeasurementTableModel(false)), cc.xy(1, 9));
 
 		int row = 9;
-		if (!d_pm.allNMAModelsReady()) {
-			for (int i=0; i<d_pm.getNumBaselineProgBars(); ++i){
-				LayoutUtil.addRow(layout);
-				row += 2;
-				JProgressBar bar = new JProgressBar();
-				bar.setStringPainted(true);
-				d_pm.attachBaselineProgBar(bar,i);
-				builder.add(bar,cc.xy(1, row));
-			}
-			row += 2;
-			// "pref:grow:fill"
-		}
+
 
 		return builder.getPanel();
 	}

@@ -64,30 +64,32 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		}
 	}
 	
-	private class AllModelsReadyListener implements ProgressListener {
+	private static class AllModelsReadyListener extends UnmodifiableHolder<Boolean> implements ProgressListener {
 		private List<MCMCModel> d_models = new ArrayList<MCMCModel>();
+		
+		public AllModelsReadyListener() {
+			super(true);
+		}
 		
 		public void addModel(MCMCModel model) {
 			model.addProgressListener(this);
 			d_models.add(model);
 		}
+		
+		@Override 
+		public Boolean getValue() {
+			return allModelsReady();
+		}
 
 		public void update(MCMCModel mtc, ProgressEvent event) {
 			if (event.getType() == ProgressEvent.EventType.SIMULATION_FINISHED){
-				//System.out.println("A model is ready.");
 				if(allModelsReady()) {
-					if (allNMAModelsReady())
-						startSmaa();					
-					firePropertyChange(PROPERTY_ALLMODELSREADY, false, true);
+					fireValueChange(false, true);
 				}
 			}
 		}
 
 		public boolean allModelsReady() {
-//			for (MCMCModel model : d_models)
-//				System.out.print(model.isReady()+"\t");
-//			System.out.println("\n");
-			
 			for (MCMCModel model : d_models){
 				if (!model.isReady())
 					return false;
@@ -146,7 +148,7 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		initAllNetworkAnalyses();
 	}
 	
-	private void startSmaa() {
+	public void startSMAA() {
 		d_smaaf = new SMAAEntityFactory();
 		d_model = d_smaaf.createSmaaModel(getBean());
 		SMAA2Results emptyResults = new SMAA2Results(d_model.getAlternatives(), d_model.getCriteria(), 10);
@@ -241,6 +243,10 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 				d_NMAnalysisProgressListeners.add(new AnalysisProgressListener(consistencyModel));
 			}
 		}
+	}
+	
+	public ValueHolder<Boolean> getAllModelsReadyModel() {
+		return d_allNetworkModelsReadyListener;
 	}
 	
 	public synchronized void startAllSimulations() {
