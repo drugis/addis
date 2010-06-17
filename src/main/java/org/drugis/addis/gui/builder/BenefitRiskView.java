@@ -19,6 +19,7 @@ import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.BenefitRiskPM;
+import org.drugis.addis.util.HtmlWordWrapper;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OneWayObjectFormat;
@@ -251,10 +252,19 @@ public class BenefitRiskView implements ViewBuilder {
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		
-		builder.addLabel("All measurements are odds ratios (or relative mean difference) relative to " + d_pm.getBean().getBaseline(), cc.xy(1, 1));
+		builder.add(HtmlWordWrapper.createHtmlPane(
+				HtmlWordWrapper.wordWrap(
+				"Relative measurements: odds ratio or mean difference, with "
+						+ d_pm.getBean().getBaseline() +" as the common comparator.", true)),
+				cc.xy(1, 1));
 		builder.add(new TablePanel(new EnhancedTable(d_pm.getMeasurementTableModel(true))), cc.xy(1, 3));
 	
-		builder.addLabel("All measurements are odds (or mean difference) calculated from\n assumed odds (or mean difference) of " + d_pm.getBean().getBaseline(), cc.xy(1, 5));
+		builder.add(HtmlWordWrapper.createHtmlPane(
+				HtmlWordWrapper.wordWrap(
+				"Absolute measurements: odds or mean calculated from the assumed odds or mean for " + 
+				d_pm.getBean().getBaseline() + ". The method used to derive the assumed odds or mean are heuristic, "
+				+ "and the absolute values should be interpreted with care.", true)),
+				cc.xy(1, 5));
 		builder.add(new TablePanel(new EnhancedTable(d_pm.getMeasurementTableModel(false))), cc.xy(1, 9));
 
 		return builder.getPanel();

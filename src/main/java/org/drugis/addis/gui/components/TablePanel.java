@@ -63,16 +63,17 @@ public class TablePanel extends JPanel {
 		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		panel.add(sp);
 		
-		this.addComponentListener(new ComponentAdapter() {
+		ComponentAdapter scrollPaneSizer = new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
-				System.out.println(e);
-				int tablewidth = d_table.getPreferredSize().width;
-				int panelwidth = getSize().width - 20; // FIXME
+				int tablewidth = d_table.getPreferredSize().width + 2; // FIXME: magic number
+				int panelwidth = getSize().width - 20; // FIXME: magic number
 				sp.setPreferredSize(new Dimension(Math.min(tablewidth, panelwidth), sp.getPreferredSize().height));
 			}
-			
-		});
+		};
+		d_table.addComponentListener(scrollPaneSizer);
+		this.addComponentListener(scrollPaneSizer);
+		
 		add(panel, BorderLayout.CENTER);
 	}
 

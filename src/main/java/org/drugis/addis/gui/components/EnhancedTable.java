@@ -46,26 +46,30 @@ public class EnhancedTable extends JTable {
 		setTableHeader(d_tableHeader);
 		setPreferredScrollableViewportSize(getPreferredSize());
 		setBackground(Color.WHITE);
-		d_tableHeader.autoSizeColumns();
+		autoSizeColumns();
 		setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
 		TableSorter sort = new TableSorter(model);
 		sort.setTableHeader(getTableHeader());
 		setModel(sort);
 	}
+
+	public void autoSizeColumns() {
+		if (d_tableHeader != null) {
+			d_tableHeader.autoSizeColumns();
+		}
+	}
 	
 	public EnhancedTable(TableModel model, int maxColWidth) {
 		this(model);
 		d_tableHeader.setMaxColWidth(maxColWidth);
-		d_tableHeader.autoSizeColumns();
+		autoSizeColumns();
 	}
 	
 	@Override
 	public void tableChanged(TableModelEvent e) {
 		super.tableChanged(e);
-		if (d_tableHeader != null) {
-			d_tableHeader.autoSizeColumns();
-		}
+		autoSizeColumns();
 	}
 	
 	private class MyRenderer extends DefaultTableCellRenderer {

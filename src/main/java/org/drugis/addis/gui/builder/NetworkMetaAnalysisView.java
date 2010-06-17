@@ -34,7 +34,6 @@ import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.components.EnhancedTable;
-import org.drugis.addis.gui.components.EnhancedTableHeader;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
@@ -177,7 +176,7 @@ implements ViewBuilder {
 		if(!d_pm.getBean().getInconsistencyModel().isReady())
 			d_builder.add(d_incProgressBar, d_cc.xy(1, 15));
 		
-		String inconsistencyText = "<html>In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em><br> of evidence, in addition to <em>heterogeneity</em> within a comparison. Whereas heterogeneity represents <br>between-study variation in the measured relative effect of a pair of treatments, inconsistency can only <br> occur when a treatment C has a different effect when it is compared with A or B (i.e., studies comparing <br>A and C are systematically different from studies comparing B and C). Thus, inconsistency may even occur <br> with normal meta-analysis, but can only be detected using a network meta-analysis, and then only when <br>there are closed loops in the evidence structure. For more information about assessing inconsistency, <br>see G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, <br>Journal of the American Statistical Association, 101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.<html>";
+		String inconsistencyText = "<html>In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em><br> of evidence, in addition to <em>heterogeneity</em> within a comparison. Whereas heterogeneity represents <br>between-study variation in the measured relative effect of a pair of treatments, inconsistency can only <br> occur when a treatment C has a different effect when it is compared with A or B (i.e., studies comparing <br>A and C are systematically different from studies comparing B and C). Thus, inconsistency may even occur <br> with normal meta-analysis, but can only be detected using a network meta-analysis, and then only when <br>there are closed loops in the evidence structure. For more information about assessing inconsistency, <br>see G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, <br>Journal of the American Statistical Association, 101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.</html>";
 		JComponent inconsistencyPane = HtmlWordWrapper.createHtmlPane(inconsistencyText);
 		inconsistencyPanel.add(inconsistencyPane, BorderLayout.NORTH);
 		

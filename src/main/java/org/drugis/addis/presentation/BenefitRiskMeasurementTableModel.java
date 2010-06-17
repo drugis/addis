@@ -1,5 +1,8 @@
 package org.drugis.addis.presentation;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Drug;
@@ -47,6 +50,12 @@ public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
 				}
 			};
 		}
+		((BenefitRiskPM)pmf.getModel(br)).getAllModelsReadyModel().addValueChangeListener(new PropertyChangeListener() {
+			
+			public void propertyChange(PropertyChangeEvent evt) {
+				fireTableDataChanged();				
+			}
+		});
 	}
 
 	public int getColumnCount() {
