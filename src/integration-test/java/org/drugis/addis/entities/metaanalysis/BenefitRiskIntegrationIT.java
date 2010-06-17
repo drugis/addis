@@ -1,10 +1,10 @@
-package org.drugis.addis.entities.metanalysis;
+package org.drugis.addis.entities.metaanalysis;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainManager;
@@ -22,11 +22,14 @@ import org.junit.Test;
 import com.jgoodies.binding.PresentationModel;
 
 public class BenefitRiskIntegrationIT {
+	private static InputStream getXMLResource(String filename) {
+		return BenefitRiskIntegrationIT.class.getResourceAsStream(filename);
+	}
 
 	@Test
 	public void testBRAnalysisContinuous() throws InterruptedException, FileNotFoundException, IOException, ClassNotFoundException {
 		DomainManager domainmgr = new DomainManager();
-		domainmgr.loadXMLDomain(new FileInputStream("src/main/xml/hansen_cgi_brAnalysis.xml"));
+		domainmgr.loadXMLDomain(getXMLResource("hansen_cgi_brAnalysis.xml"));
 		Domain domain = domainmgr.getDomain();
 		PresentationModelFactory pmf = new PresentationModelFactory(domain);
 		
@@ -46,10 +49,10 @@ public class BenefitRiskIntegrationIT {
 		}
 		
 		// check measurementsTable values
-/*
- * The 'expected' values below are not guaranteed to be correct. This part of the test is intended to flag changes of the results.
- * However, since the results are non-deterministic the test might fail occasionally even if the algorithm hasn't changed.
- */
+		/*
+		 * The 'expected' values below are not guaranteed to be correct. This part of the test is intended to flag changes of the results.
+		 * However, since the results are non-deterministic the test might fail occasionally even if the algorithm hasn't changed.
+		 */
 		BenefitRiskPM pm = (BenefitRiskPM) pmf.getModel(analysis);
 		BenefitRiskMeasurementTableModel mtm = pm.getMeasurementTableModel(true);
 		
@@ -60,7 +63,7 @@ public class BenefitRiskIntegrationIT {
 	@Test
 	public void testBRAnalysisResults() throws FileNotFoundException, IOException, ClassNotFoundException, InterruptedException {
 		DomainManager domainmgr = new DomainManager();
-		domainmgr.loadXMLDomain(new FileInputStream("src/main/xml/zhao_brAnalysis.xml"));
+		domainmgr.loadXMLDomain(getXMLResource("zhao_brAnalysis.xml"));
 		Domain domain = domainmgr.getDomain();
 		PresentationModelFactory pmf = new PresentationModelFactory(domain);
 		
@@ -80,10 +83,10 @@ public class BenefitRiskIntegrationIT {
 		}
 		
 		// check measurementsTable values
-/*
- * The 'expected' values below are not guaranteed to be correct. This part of the test is intended to flag changes of the results.
- * However, since the results are non-deterministic the test might fail occasionally even if the algorithm hasn't changed.
- */
+		/*
+		 * The 'expected' values below are not guaranteed to be correct. This part of the test is intended to flag changes of the results.
+		 * However, since the results are non-deterministic the test might fail occasionally even if the algorithm hasn't changed.
+		 */
 		BenefitRiskPM pm = (BenefitRiskPM) pmf.getModel(analysis);
 		BenefitRiskMeasurementTableModel mtm = pm.getMeasurementTableModel(true);
 		
