@@ -42,12 +42,11 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Variable.Type;
 import org.xml.sax.Attributes;
@@ -126,7 +125,7 @@ public class NetworkData extends DefaultHandler {
 	private Arm addOrCreateArm(Study study, Drug drug, int samp) {
 		Arm arm = findArm(study, drug);
 		if (arm == null) {
-			arm = new Arm(drug, new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY), samp);
+			arm = new Arm(drug, new UnknownDose(), samp);
 			study.addArm(arm);
 		}
 		return arm;
