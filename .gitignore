@@ -1,0 +1,7 @@
+.classpath
+.metadata
+.project
+.settings
+*~
+src/main/generated-source
+target
