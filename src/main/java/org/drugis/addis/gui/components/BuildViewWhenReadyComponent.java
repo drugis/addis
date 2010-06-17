@@ -1,7 +1,6 @@
 package org.drugis.addis.gui.components;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Random;
@@ -67,7 +66,6 @@ public class BuildViewWhenReadyComponent extends JPanel {
 		JPanel nested = new JPanel(new BorderLayout());
 		nested.add(spinner, BorderLayout.CENTER);
 		nested.add(label, BorderLayout.SOUTH);
-		nested.setBackground(Color.WHITE);
 		add(nested);
 		setVisible(true);
 	}

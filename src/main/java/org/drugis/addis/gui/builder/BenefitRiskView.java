@@ -56,7 +56,7 @@ public class BenefitRiskView implements ViewBuilder {
 			d_builder.getPanel().removeAll();
 		
 		final FormLayout layout = new FormLayout(
-				"pref:grow(0.95):fill",
+				"pref:grow:fill",
 				"p, 3dlu, p, " + // 1-3 
 				"3dlu, p, 3dlu, p, " + // 4-7
 				"3dlu, p, 3dlu, p, " + // 8-11 
