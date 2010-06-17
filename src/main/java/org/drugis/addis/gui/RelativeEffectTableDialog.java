@@ -74,14 +74,15 @@ public class RelativeEffectTableDialog extends JDialog {
 				return new JLabel("");
 			}
 			
-			JLabel label = BasicComponentFactory.createLabel(((LabeledPresentationModel)val).getLabelModel());
-			label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-			
+			JLabel label = null;
 			if (((PresentationModel<?>)val).getBean() instanceof Arm) {
+				label = new JLabel(((PresentationModel<?>)val).getBean().toString());
 				label.setBackground(Color.lightGray);
 			} else {
+				label = BasicComponentFactory.createLabel(((LabeledPresentationModel)val).getLabelModel());
 				label.setBackground(Color.white);
 			}
+			label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 			label.setOpaque(true);
 			
 			if (d_tableModel.getDescriptionAt(row, col) != null) {
