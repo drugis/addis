@@ -22,10 +22,13 @@
 package org.drugis.addis.gui.components;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -63,18 +66,35 @@ public class TablePanel extends JPanel {
 		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		panel.add(sp);
 		
-		ComponentAdapter scrollPaneSizer = new ComponentAdapter() {
+		final ComponentAdapter scrollPaneSizer = new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
+				if (findParent() == null)
+					return;
 				int tablewidth = d_table.getPreferredSize().width + 2; // FIXME: magic number
-				int panelwidth = getSize().width - 20; // FIXME: magic number
+				int panelwidth = findParent().getSize().width - 50; // FIXME: magic number
 				sp.setPreferredSize(new Dimension(Math.min(tablewidth, panelwidth), sp.getPreferredSize().height));
+				sp.revalidate();
 			}
 		};
 		d_table.addComponentListener(scrollPaneSizer);
-		this.addComponentListener(scrollPaneSizer);
+		
+		this.addHierarchyListener(new HierarchyListener() {
+			public void hierarchyChanged(HierarchyEvent e) {
+				if (findParent() != null) {
+					findParent().addComponentListener(scrollPaneSizer);
+				}
+			}
+		});
 		
 		add(panel, BorderLayout.CENTER);
 	}
 
+	protected Container findParent() {
+		Container p = this;
+		while (!(p instanceof JScrollPane) && p != null) {
+			p = p.getParent();
+		}
+		return p;
+	}
 }

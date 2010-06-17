@@ -139,6 +139,10 @@ public class Main extends JFrame {
 	public Main() {
 		super(AppInfo.getAppName() + " v" + AppInfo.getAppVersion());
 		ImageLoader.setImagePath("/org/drugis/addis/gfx/");
+
+		setPreferredSize(new Dimension(1020, 764));
+		setMinimumSize(new Dimension(1020, 764));
+
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent evt) {
@@ -151,8 +155,7 @@ public class Main extends JFrame {
 				setRightPanelViewSize();
 			}
 		});
-
-		setPreferredSize(new Dimension(1020, 764));
+		
 		GUIHelper.initializeLookAndFeel();
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		ToolTipManager.sharedInstance().setInitialDelay(0);
@@ -738,7 +741,8 @@ public class Main extends JFrame {
 
 		initLeftPanel();
 		pane.setLeftComponent(d_leftPanel);
-
+		d_leftPanel.setMinimumSize(new Dimension(200, d_leftPanel.getMinimumSize().height));
+		
 		initRightPanel();
 		pane.setRightComponent(d_rightPanel);
 		d_rightPanel.setMinimumSize(new Dimension(770, d_rightPanel.getMinimumSize().height));
@@ -923,6 +927,7 @@ public class Main extends JFrame {
 		JPanel panel = new JPanel();
 		JScrollPane scrollPane = new JScrollPane(panel);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		d_rightPanel = scrollPane;
 	}
 
