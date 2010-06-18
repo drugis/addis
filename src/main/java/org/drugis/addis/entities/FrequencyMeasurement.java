@@ -174,6 +174,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 				FrequencyMeasurement fm) throws XMLStreamException {
 			fm.d_cv = ie.get("variable", CategoricalPopulationCharacteristic.class);
 			fm.d_frequencies = ie.get("frequencies", FrequencyMap.class);
+			fm.updateSampleSize();
 		}
 
 		@Override
