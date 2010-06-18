@@ -157,7 +157,7 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 					continue;
 
 				Object value = BeanUtils.getValue(i, properties[p]);
-				if (!classIsNode(value.getClass())) {
+				if (value != null && !classIsNode(value.getClass())) {
 					oe.setAttribute(properties[p].getName(), value);
 				}
 			}
@@ -181,8 +181,8 @@ public class EntityXMLFormat extends XMLFormat<Entity>
 					oe.add(stringList,properties[p].getName(), ArrayList.class);
 				} else if (value instanceof List) { // ADE list
 					oe.add(new ArrayList<Object>((List) value), propertyName, ArrayList.class);
-				} else if (value instanceof Map) {
-					oe.add((HashMap) value, properties[p].getName(), HashMap.class);
+				} else if (value instanceof HashMap) {
+					oe.add((HashMap)value, properties[p].getName(), HashMap.class);
 				}
 			}		
 		} catch (IntrospectionException e) {

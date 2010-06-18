@@ -109,7 +109,10 @@ public class AssertEntityEquals {
 			assertEquals( ((ContinuousMeasurement) expected).getStdDev() , ((ContinuousMeasurement) actual).getStdDev() );
 		} else if (expected instanceof RateMeasurement) 
 			assertEquals( ((RateMeasurement) expected).getRate() , ((RateMeasurement) actual).getRate() );
-		else {
+		else if (expected instanceof FrequencyMeasurement) {
+			assertEquals(((FrequencyMeasurement) expected).getCategoricalVariable() , ((FrequencyMeasurement) actual).getCategoricalVariable());
+			assertEquals(((FrequencyMeasurement) expected).getFrequencies() , ((FrequencyMeasurement) actual).getFrequencies());
+		} else {
 			System.err.println("Measurement type not recognized.");
 			fail();
 		}

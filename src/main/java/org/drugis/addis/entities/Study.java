@@ -21,8 +21,6 @@
 
 package org.drugis.addis.entities;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 
 import org.drugis.common.EqualsUtil;
 
@@ -117,11 +114,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		d_studyId = id;
 		d_indication = i;
 		setArms(new ArrayList<Arm>());
-	}
-
-	private void readObject(ObjectInputStream in) 
-	throws IOException, ClassNotFoundException {
-		in.defaultReadObject();
 	}
 
 	public List<Arm> getArms() {

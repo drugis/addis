@@ -47,6 +47,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
@@ -115,6 +116,7 @@ public class AddisBinding extends XMLBinding {
 		
 		setAlias(BasicContinuousMeasurement.class, "continuousMeasurement");
 		setAlias(BasicRateMeasurement.class, "rateMeasurement");
+		setAlias(FrequencyMeasurement.class, "frequencyMeasurement");
 		setAlias(OutcomeMeasure.Direction.class, "direction");
 
 		setAlias(Integer.class, "number");
@@ -125,8 +127,6 @@ public class AddisBinding extends XMLBinding {
 		setAlias(NetworkMetaAnalysis.class, "networkMetaAnalysis");
 		setAlias(RandomEffectsMetaAnalysis.class, "randomEffectsMetaAnalysis");
 		setAlias(BenefitRiskAnalysis.class, "benefitRiskAnalysis");
-		
-		
 	}
 	
 	// Override XMLFormatter for Date.class objects

@@ -30,9 +30,9 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.Note;
-import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Variable;
 @SuppressWarnings("unchecked")
 public final class EntryXMLFormat extends XMLFormat<Entry> {
 	public EntryXMLFormat() {
@@ -94,7 +94,7 @@ public final class EntryXMLFormat extends XMLFormat<Entry> {
 
 		if (e.getValue() instanceof Measurement) {
 			Entry<Study.MeasurementKey, Measurement> entry = (Entry<Study.MeasurementKey, Measurement>) e;
-			oe.add((OutcomeMeasure) entry.getKey().getOutcomeM(), "outcomeMeasure");
+			oe.add((Variable) entry.getKey().getOutcomeM(), "outcomeMeasure");
 			oe.add(entry.getKey().getArm(), "arm", Arm.class);
 			oe.add(entry.getValue(), "measurement");
 		} else if (e.getValue() instanceof Note){

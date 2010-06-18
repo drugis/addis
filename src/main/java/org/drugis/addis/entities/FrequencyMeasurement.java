@@ -25,46 +25,71 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
+
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
 
 public class FrequencyMeasurement extends BasicMeasurement {
 
 	private CategoricalPopulationCharacteristic d_cv;
 	
-	private Map<String, Integer> d_frequencies = new HashMap<String, Integer>();
+	@SuppressWarnings("serial")
+	private static class FrequencyMap extends HashMap<String, Integer> {
+		
+	}
+
+	private static class FrequencyEntry {
+		public String key;
+		public Integer value;
+
+		public FrequencyEntry() {}
+		
+		public FrequencyEntry(Entry<String, Integer> entry) {
+			key = entry.getKey();
+			value = entry.getValue();
+		}
+	}
+	
+	private FrequencyMap d_frequencies = new FrequencyMap();
 	 
 	public static final String PROPERTY_FREQUENCIES = "frequencies";
-
+	
+	private FrequencyMeasurement() {
+		super(0);
+	}
+	
 	public FrequencyMeasurement(CategoricalPopulationCharacteristic cv) {
 		super(0);
 		d_cv = cv;
 		for (String cat : d_cv.getCategories()) {
-			d_frequencies.put(cat, new Integer(0));
+			getFrequencies().put(cat, new Integer(0));
 		}
 	}
 	
 	private void updateSampleSize() {
 		int size = 0;
 		for (String cat : d_cv.getCategories()) {
-			size += d_frequencies.get(cat).intValue();
+			size += getFrequencies().get(cat).intValue();
 		}
 		setSampleSize(size);
 	}
 
 	public void setFrequency(String category, int freq) throws IllegalArgumentException {
 		checkCategory(category);
-		Map<String, Integer> oldfreq = new HashMap<String,Integer>(d_frequencies);
-		d_frequencies.put(category, freq);
+		Map<String, Integer> oldfreq = new HashMap<String,Integer>(getFrequencies());
+		getFrequencies().put(category, freq);
 		updateSampleSize();
-		firePropertyChange(PROPERTY_FREQUENCIES, oldfreq, d_frequencies);
+		firePropertyChange(PROPERTY_FREQUENCIES, oldfreq, getFrequencies());
 	}
 	
 	public int getFrequency(String category) throws IllegalArgumentException {
 		checkCategory(category);
-		return d_frequencies.get(category).intValue();
+		return getFrequencies().get(category).intValue();
 	}
 
 	private void checkCategory(String category) {
-		if (!d_frequencies.containsKey(category)) {
+		if (!getFrequencies().containsKey(category)) {
 			throw new IllegalArgumentException("illegal category");
 		}
 	}
@@ -103,7 +128,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 			if (!ret.equals("")) {
 				ret += " / ";
 			}
-			ret += cat + " = " + d_frequencies.get(cat).intValue();
+			ret += cat + " = " + getFrequencies().get(cat).intValue();
 		}
 		return ret;
 	}
@@ -115,7 +140,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 			if (!m.getCategoricalVariable().equals(getCategoricalVariable())) {
 				return false;
 			}
-			return frequenciesEqual(d_frequencies, m.d_frequencies);
+			return frequenciesEqual(getFrequencies(), m.getFrequencies());
 		}
 		return false;
 	}
@@ -134,6 +159,89 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	}
 
 	public Map<String, Integer> getFrequencies() {
-		return Collections.unmodifiableMap(d_frequencies);
+		return d_frequencies;
 	}
+	
+	protected static final XMLFormat<FrequencyMeasurement> XML = new XMLFormat<FrequencyMeasurement>(FrequencyMeasurement.class) {
+		@Override
+		public FrequencyMeasurement newInstance(Class<FrequencyMeasurement> arg0, XMLFormat.InputElement arg1) 
+		throws XMLStreamException {
+			return new FrequencyMeasurement();
+		}
+		
+		@Override
+		public void read(javolution.xml.XMLFormat.InputElement ie,
+				FrequencyMeasurement fm) throws XMLStreamException {
+			fm.d_cv = ie.get("variable", CategoricalPopulationCharacteristic.class);
+			fm.d_frequencies = ie.get("frequencies", FrequencyMap.class);
+		}
+
+		@Override
+		public void write(FrequencyMeasurement fm,
+				javolution.xml.XMLFormat.OutputElement oe)
+				throws XMLStreamException {
+			oe.add(fm.d_cv, "variable", CategoricalPopulationCharacteristic.class);
+			oe.add(fm.d_frequencies, "frequencies", FrequencyMap.class);
+		}
+	};
+	
+	
+	@SuppressWarnings("unused")
+	private static final XMLFormat<FrequencyMap> armMapXML = new XMLFormat<FrequencyMap>(FrequencyMap.class) {
+		@Override
+		public FrequencyMap newInstance(Class<FrequencyMap> cls, XMLFormat.InputElement xml) {
+			return new FrequencyMap();
+		}
+		
+		@Override
+		public boolean isReferenceable() {
+			return false;
+		}
+		
+		@Override
+		public void read(javolution.xml.XMLFormat.InputElement ie,
+				FrequencyMap map) throws XMLStreamException {
+			while (ie.hasNext()) {
+				FrequencyEntry entry = ie.get("frequency", FrequencyEntry.class);
+				map.put(entry.key, entry.value);
+			}
+		}
+
+		@Override
+		public void write(FrequencyMap map,
+				javolution.xml.XMLFormat.OutputElement oe)
+				throws XMLStreamException {
+			for (Entry<String, Integer> e : map.entrySet()) {
+				oe.add(new FrequencyEntry(e), "frequency", FrequencyEntry.class);// write entries
+			}
+		}
+	};
+	
+	@SuppressWarnings("unused")
+	private static final XMLFormat<FrequencyEntry> entryXML = new XMLFormat<FrequencyEntry>(FrequencyEntry.class) {
+		@Override
+		public FrequencyEntry newInstance(Class<FrequencyEntry> cls, XMLFormat.InputElement xml) {
+			return new FrequencyEntry();
+		}
+		
+		@Override
+		public boolean isReferenceable() {
+			return false;
+		}
+		
+		@Override
+		public void read(javolution.xml.XMLFormat.InputElement ie,
+				FrequencyEntry entry) throws XMLStreamException {
+			entry.key = ie.getAttribute("category").toString();
+			entry.value = ie.getAttribute("count", 0);
+		}
+
+		@Override
+		public void write(FrequencyEntry entry,
+				javolution.xml.XMLFormat.OutputElement oe)
+				throws XMLStreamException {
+			oe.setAttribute("category", entry.key);
+			oe.setAttribute("count", entry.value);
+		}
+	};
 }

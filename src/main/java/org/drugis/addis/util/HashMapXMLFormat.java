@@ -49,7 +49,7 @@ public final class HashMapXMLFormat extends XMLFormat<HashMap> {
 	public void read(InputElement ie, HashMap s) throws XMLStreamException {
 
 		while (ie.hasNext()) {
-			Entry<Study.MeasurementKey,Measurement> measEntry = ie.get("measurement", Entry.class);
+			Entry<Study.MeasurementKey, Measurement> measEntry = ie.get("measurement", Entry.class);
 			if(measEntry!= null)
 				s.put(measEntry.getKey(), measEntry.getValue());
 			Entry<Object, Note> noteEntry = ie.get("note", Entry.class);

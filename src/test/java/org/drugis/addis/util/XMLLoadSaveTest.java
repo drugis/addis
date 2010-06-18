@@ -38,6 +38,7 @@ import org.drugis.addis.entities.DomainData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.Source;
@@ -177,7 +178,15 @@ public class XMLLoadSaveTest {
 //		System.out.println("\n"+xml+"\n");		
 		NetworkMetaAnalysis importedAnalysis = (NetworkMetaAnalysis)XMLHelper.fromXml(xml);
 		assertEntityEquals(analysis, importedAnalysis);
-	}	
+	}
+	
+	@Test
+	public void doFrequencyMeasurement() throws XMLStreamException {
+		FrequencyMeasurement measurement = new FrequencyMeasurement(ExampleData.buildGenderVariable());
+		String xml = XMLHelper.toXml(measurement, FrequencyMeasurement.class);
+		FrequencyMeasurement importedMeasurement = (FrequencyMeasurement)XMLHelper.fromXml(xml);
+		assertEntityEquals(measurement, importedMeasurement);
+	}
 	
 	@Test
 	public void doDomain() throws XMLStreamException {
