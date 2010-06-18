@@ -12,23 +12,23 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class BaselineMeanDifferenceModelIT {
-	@Ignore
+
 	@Test
 	public void testModelResults() {
 		// values calculated using equivalent JAGS model with 10k/20k iterations.
 		double[] m = new double[] {-1.52, -2.1, -2.3, -0.69, -2.5};
 		double[] s = new double[] {1.18, 0.1, 1.4, 0.16, 1.6};
 		int[] n = new int[] {30, 86, 178, 102, 177};
-		double expectedMu = -1.853143;
-		double expectedSigma = 1.428731;
-		double dev = expectedSigma * 0.05;
+		double expectedMu = -1.804124;
+		double expectedSigma = 0.645427;
+		double dev = expectedSigma * 0.075;
 		
 		BaselineMeanDifferenceModel model = new BaselineMeanDifferenceModel(buildMeasurementsList(m, s, n));
 		model.run();
 		
 		assertTrue(model.isReady());
 		assertEquals(expectedMu, model.getResult().getMu(), dev);
-		assertEquals(expectedSigma, model.getResult().getSigma(), dev);
+		assertEquals(expectedSigma, model.getResult().getSigma(), dev * 2);
 	}
 
 	private static List<ContinuousMeasurement> buildMeasurementsList(double[] m, double[] s, int[] n) {
