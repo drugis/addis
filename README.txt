@@ -20,6 +20,8 @@ operating systems ship with a suitable JRE.
 Versions
 --------
 
+0.10: Benefit-risk analysis, baseline effect (heuristic) estimation
+
 0.8.1: Faster network meta-analysis (updated library), minor fixes
 
 0.8: Network meta-analysis, XML import/export
