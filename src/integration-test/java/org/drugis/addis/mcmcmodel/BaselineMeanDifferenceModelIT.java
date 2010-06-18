@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.ContinuousMeasurement;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BaselineMeanDifferenceModelIT {
