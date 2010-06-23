@@ -302,7 +302,7 @@ public class Main extends JFrame {
 		
 		d_editMenuEditItem = createEditItem();
 		d_editMenuEditItem.setEnabled(false);
-		//editMenu.add(d_editMenuEditItem);
+		editMenu.add(d_editMenuEditItem);
 		
 		return editMenu;
 	}
@@ -326,7 +326,7 @@ public class Main extends JFrame {
 		item.setMnemonic('e');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(Main.this, "Oh hai!", "Edit", JOptionPane.INFORMATION_MESSAGE);
+				editMenuAction();
 			}
 		});
 
@@ -334,11 +334,30 @@ public class Main extends JFrame {
 	}
 
 	protected void deleteMenuAction() {
-		Object selected = d_leftPanelTree.getSelectionPath()
-				.getLastPathComponent();
+		Entity selected = getSelectedEntity();
+		if (selected != null) {
+			deleteEntity(selected);
+		}
+	}
 
-		if (selected instanceof Entity) {
-			deleteEntity((Entity) selected);
+	private Entity getSelectedEntity() {
+		Object obj = d_leftPanelTree.getSelectionPath().getLastPathComponent();
+		if (obj instanceof Entity) return (Entity) obj;
+		return null;
+	}
+	
+	protected void editMenuAction() {
+		Entity selected = getSelectedEntity();
+		if (selected != null && selected instanceof Study) {
+			Study study = (Study) selected;
+			if (getDomain().hasDependents(study)) {
+				JOptionPane.showMessageDialog(Main.this,
+						"The study \"" + study + "\" is used by analyses. You can't edit it.",
+						"Unable to edit",
+						JOptionPane.ERROR_MESSAGE);
+			} else {
+				showEditStudyWizard(study);
+			}
 		}
 	}
 
@@ -572,6 +591,20 @@ public class Main extends JFrame {
 		WizardFrameCloser.bind(wizard, dialog);
 		dialog.setVisible(true);
 
+	}
+	
+	private void showEditStudyWizard(Study study) {
+		JDialog dialog = new JDialog((Frame) this, "Add Study", true);
+		AddStudyWizardPresentation pm = new AddStudyWizardPresentation(getDomain(),
+				getPresentationModelFactory(), this);
+		pm.setNewStudy(study);
+		deleteEntity(study);
+		AddStudyWizard wizardBuilder = new AddStudyWizard(pm, this, dialog);
+		Wizard wizard = wizardBuilder.buildPanel();
+		dialog.getContentPane().add(wizard);
+		dialog.pack();
+		WizardFrameCloser.bind(wizard, dialog);
+		dialog.setVisible(true);
 	}
 
 	public void showAddDrugDialog(ValueModel selectionModel) {

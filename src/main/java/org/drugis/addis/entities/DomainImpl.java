@@ -468,4 +468,8 @@ public class DomainImpl implements Domain {
 	public SortedSet<BenefitRiskAnalysis> getBenefitRiskAnalyses() {
 		return Collections.unmodifiableSortedSet(d_domainData.getBenefitRiskAnalyses());
 	}
+
+	public boolean hasDependents(Entity entity) {
+		return !getDependents(entity).isEmpty();
+	}
 }

@@ -210,4 +210,11 @@ public interface Domain {
 	public void clearDomain();
 
 	public SortedSet<BenefitRiskAnalysis> getBenefitRiskAnalyses();
+
+	/**
+	 * Return whether any entities depend on this entity.
+	 * @param entity
+	 * @return true if this entity is being used by others.
+	 */
+	public boolean hasDependents(Entity entity);
 }

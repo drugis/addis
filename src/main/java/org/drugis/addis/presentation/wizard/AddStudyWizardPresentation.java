@@ -238,6 +238,29 @@ public class AddStudyWizardPresentation {
 		d_newStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
 		migrateImportToNew(studyID);
 	}
+	
+	public void setNewStudy(Study study) {
+		d_newStudyPM = new StudyPresentationModel(study, d_pmf);
+		d_selectedEndpointsList = new ArrayList<ModifiableHolder<Endpoint>>();
+		for (Endpoint e : study.getEndpoints()) {
+			EndpointHolder endpointHolder = new EndpointHolder();
+			endpointHolder.setValue(e);
+			d_selectedEndpointsList.add(endpointHolder);
+		}
+		d_selectedArmList = new ArrayList<BasicArmPresentation>();
+		for (Arm a : study.getArms()) {
+			BasicArmPresentation armHolder = new BasicArmPresentation(a, d_pmf);
+			d_selectedArmList.add(armHolder);
+		}
+		for (AdverseEvent ade : study.getAdverseEvents()) {
+			d_adverseEventSelect.addSlot();
+			d_adverseEventSelect.getSlot(d_adverseEventSelect.countSlots() - 1).setValue(ade);
+		}
+		for (PopulationCharacteristic pc : study.getPopulationCharacteristics()) {
+			d_populationCharSelect.addSlot();
+			d_populationCharSelect.getSlot(d_populationCharSelect.countSlots() - 1).setValue(pc);
+		}
+	}
 
 	private void migrateImportToNew(Object studyID) {
 		// Characteristics
