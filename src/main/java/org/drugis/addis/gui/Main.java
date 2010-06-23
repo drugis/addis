@@ -302,7 +302,7 @@ public class Main extends JFrame {
 		
 		d_editMenuEditItem = createEditItem();
 		d_editMenuEditItem.setEnabled(false);
-		editMenu.add(d_editMenuEditItem);
+		//editMenu.add(d_editMenuEditItem);
 		
 		return editMenu;
 	}
