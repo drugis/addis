@@ -33,17 +33,9 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
-import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.common.CollectionUtil;
 
 import com.jgoodies.binding.beans.BeanUtils;
@@ -109,27 +101,20 @@ public class DomainTreeModel implements TreeModel {
 	public Object getChild(Object parent, int childIndex) {
 		if (d_root == parent && childIndex >= 0 && childIndex < TYPES.length) {
 			return TYPES[childIndex];
-		} else if (isIndicationRequest(parent, childIndex)) {
-			return CollectionUtil.getElementAtIndex(d_domain.getIndications(), childIndex);
-		} else if (isEndpointRequest(parent, childIndex)) {
-			return CollectionUtil.getElementAtIndex(d_domain.getEndpoints(), childIndex);
-		} else if (isAdverseEventRequest(parent, childIndex)) {
-			return CollectionUtil.getElementAtIndex(d_domain.getAdverseEvents(), childIndex);
-		} else if (isPopulationCharacteristicRequest(parent, childIndex)) {
-			return CollectionUtil.getElementAtIndex(d_domain.getVariables(), childIndex);
-		} else if (isDrugsRequest(parent, childIndex)) {
-			return CollectionUtil.getElementAtIndex(d_domain.getDrugs(), childIndex);
-		} else if (isStudyRequest(parent, childIndex)) {
-			return CollectionUtil.getElementAtIndex(d_domain.getStudies(), childIndex);
-		} else if (isMetaStudyRequest(parent, childIndex)) {
-			return CollectionUtil.getElementAtIndex(d_domain.getMetaAnalyses(), childIndex);
-		} else if (isBenefitRiskRequest(parent, childIndex)) {
-			return CollectionUtil.getElementAtIndex(d_domain.getBenefitRiskAnalyses(), childIndex);
+		} else {
+			for (CategoryNode cat : TYPES) {
+				if (isCategoryRequest(cat, parent, childIndex)) {
+					return CollectionUtil.getElementAtIndex(getCategoryContents(cat), childIndex);
+				}
+			}
 		}
 		return null;
 	}
 	
 	private SortedSet<?> getCategoryContents(CategoryNode node) {
+		if (node == null) {
+			return null;
+		}
 		try {
 			PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(
 					Domain.class, node.getPropertyName());
@@ -144,58 +129,22 @@ public class DomainTreeModel implements TreeModel {
 		return categoryNode == parent && childIndex >= 0 && childIndex < getCategoryContents(categoryNode).size();
 	}
 
-
-	private boolean isIndicationRequest(Object parent, int childIndex) {
-		return isCategoryRequest(TYPES[INDICATIONS], parent, childIndex);
-	}
-
-	private boolean isStudyRequest(Object parent, int childIndex) {
-		return isCategoryRequest(TYPES[STUDIES], parent, childIndex);
-	}
-	
-	private boolean isDrugsRequest(Object parent, int childIndex) {
-		return isCategoryRequest(TYPES[DRUGS], parent, childIndex);
-	}	
-
-	private boolean isEndpointRequest(Object parent, int childIndex) {
-		return isCategoryRequest(TYPES[ENDPOINTS], parent, childIndex);
-	}
-	
-	private boolean isAdverseEventRequest(Object parent, int childIndex) {
-		return isCategoryRequest(TYPES[ADVERSE_EVENTS], parent, childIndex);
-	}
-	
-	private boolean isPopulationCharacteristicRequest(Object parent, int childIndex) {
-		return isCategoryRequest(TYPES[POPULATION_CHARACTERISTICS], parent, childIndex);
-	}
-	
-	private boolean isMetaStudyRequest(Object parent, int childIndex) {
-		return isCategoryRequest(TYPES[ANALYSES], parent, childIndex);
-	}
-	
-	private boolean isBenefitRiskRequest(Object parent, int childIndex) {
-		return isCategoryRequest(TYPES[BENEFITRISK_ANALYSIS], parent, childIndex);
+	private CategoryNode getCategoryNode(Object node) {
+		int typeIdx = Arrays.asList(TYPES).indexOf(node);
+		if (typeIdx >= 0) {
+			return TYPES[typeIdx];
+		}
+		return null;
 	}
 
 	public int getChildCount(Object parent) {
 		if (d_root == parent) {
 			return TYPES.length;
-		} else if (TYPES[INDICATIONS] == parent) {
-			return d_domain.getIndications().size();
-		} else if (TYPES[ENDPOINTS] == parent) {
-			return d_domain.getEndpoints().size();
-		} else if (TYPES[ADVERSE_EVENTS] == parent) {
-			return d_domain.getAdverseEvents().size();
-		} else if (TYPES[POPULATION_CHARACTERISTICS] == parent) {
-			return d_domain.getVariables().size();
-		} else if (TYPES[STUDIES] == parent) {
-			return d_domain.getStudies().size();
-		} else if (TYPES[DRUGS] == parent) {
-			return d_domain.getDrugs().size();
-		} else if (TYPES[ANALYSES] == parent) {
-			return d_domain.getMetaAnalyses().size();
-		} else if (TYPES[BENEFITRISK_ANALYSIS] == parent) {
-			return d_domain.getBenefitRiskAnalyses().size();
+		} else {
+			SortedSet<?> contents = getCategoryContents(getCategoryNode(parent));
+			if (contents != null) {
+				return contents.size();
+			}
 		}
 		return 0;
 	}
@@ -203,22 +152,11 @@ public class DomainTreeModel implements TreeModel {
 	public int getIndexOfChild(Object parent, Object child) {
 		if (parent == d_root) {
 			return Arrays.asList(TYPES).indexOf(child);
-		} if (parent == TYPES[INDICATIONS]) {
-			return CollectionUtil.getIndexOfElement(d_domain.getIndications(), child);
-		} if (parent == TYPES[ENDPOINTS]) {
-			return CollectionUtil.getIndexOfElement(d_domain.getEndpoints(), child);
-		} if (parent == TYPES[ADVERSE_EVENTS]) {
-			return CollectionUtil.getIndexOfElement(d_domain.getAdverseEvents(), child);
-		} if (parent == TYPES[POPULATION_CHARACTERISTICS]) {
-			return CollectionUtil.getIndexOfElement(d_domain.getVariables(), child);
-		} if (parent == TYPES[STUDIES]) {
-			return CollectionUtil.getIndexOfElement(d_domain.getStudies(), child);
-		} if (parent == TYPES[DRUGS]) {
-			return CollectionUtil.getIndexOfElement(d_domain.getDrugs(), child);			
-		} if (parent == TYPES[ANALYSES]) {
-			return CollectionUtil.getIndexOfElement(d_domain.getMetaAnalyses(), child);			
-		} if (parent == TYPES[BENEFITRISK_ANALYSIS]) {
-			return CollectionUtil.getIndexOfElement(d_domain.getBenefitRiskAnalyses(), child);			
+		} else {
+			SortedSet<?> contents = getCategoryContents(getCategoryNode(parent));
+			if (contents != null) {
+				return CollectionUtil.getIndexOfElement(contents, child);
+			}
 		}
 		return -1;
 	}
@@ -228,29 +166,11 @@ public class DomainTreeModel implements TreeModel {
 	}
 
 	public boolean isLeaf(Object node) {
-		if (node instanceof Indication) {
-			return d_domain.getIndications().contains(node);
-		}
-		if (node instanceof Endpoint) {
-			return d_domain.getEndpoints().contains(node);
-		}
-		if (node instanceof AdverseEvent) {
-			return d_domain.getAdverseEvents().contains(node);
-		}		
-		if (node instanceof Variable) {
-			return d_domain.getVariables().contains(node);
-		}		
-		if (node instanceof MetaAnalysis) {
-			return d_domain.getMetaAnalyses().contains(node);
-		}
-		if (node instanceof BenefitRiskAnalysis) {
-			return d_domain.getBenefitRiskAnalyses().contains(node);
-		}
-		if (node instanceof Study) {
-			return d_domain.getStudies().contains(node);
-		}
-		if (node instanceof Drug) {
-			return d_domain.getDrugs().contains(node);			
+		for (CategoryNode cat : TYPES) {
+			// FIXME: TreeSet seems to have a broken contains() impl., hence the hax
+			if (Arrays.asList(getCategoryContents(cat).toArray()).contains(node)) {
+				return true;
+			}
 		}
 		return false;
 	}
