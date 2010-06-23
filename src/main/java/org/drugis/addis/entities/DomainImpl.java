@@ -274,6 +274,11 @@ public class DomainImpl implements Domain {
 				deps.add(s);
 			}
 		}		
+		for (BenefitRiskAnalysis s : d_domainData.getBenefitRiskAnalyses()) {
+			if (s.getDependencies().contains(e)) {
+				deps.add(s);
+			}
+		}		
 		return deps;
 	}
 	
