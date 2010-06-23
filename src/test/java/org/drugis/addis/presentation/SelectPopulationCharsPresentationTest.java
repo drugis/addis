@@ -111,29 +111,6 @@ public class SelectPopulationCharsPresentationTest {
 		d_pm.removeSlot(0);
 		assertEquals(d_pm.getSlot(0).getValue(), d_var2);
 	}
-
-	@Test
-	public void testAddSlotsEnabledModel() {
-		assertEquals(d_pm.getAddSlotsEnabledModel().getValue(), Boolean.TRUE);
-		
-		d_pm.addSlot();
-		
-		// Make sure adding is disabled when we have as many slots as options
-		PropertyChangeListener mock = JUnitUtil.mockListener(d_pm.getAddSlotsEnabledModel(), "value",
-				Boolean.TRUE, Boolean.FALSE);
-		d_pm.getAddSlotsEnabledModel().addValueChangeListener(mock);
-		d_pm.addSlot();
-		assertEquals(d_pm.getAddSlotsEnabledModel().getValue(), Boolean.FALSE);
-		verify(mock);
-		
-		// Make sure removing slots gets it back to normal
-		mock = JUnitUtil.mockListener(d_pm.getAddSlotsEnabledModel(), "value",
-				Boolean.FALSE, Boolean.TRUE);
-		d_pm.getAddSlotsEnabledModel().addValueChangeListener(mock);
-		d_pm.removeSlot(1);
-		assertEquals(d_pm.getAddSlotsEnabledModel().getValue(), Boolean.TRUE);
-		verify(mock);
-	}
 	
 	@Test
 	public void testInputCompleteModel() {
