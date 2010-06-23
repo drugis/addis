@@ -92,7 +92,6 @@ import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.builder.EntitiesNodeView;
 import org.drugis.addis.gui.builder.StudiesNodeView;
-import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.builder.ViewFactory;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.components.LinkLabel;
@@ -102,7 +101,6 @@ import org.drugis.addis.gui.wizard.MetaAnalysisWizard;
 import org.drugis.addis.gui.wizard.NetworkMetaAnalysisWizard;
 import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
 import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
@@ -128,7 +126,9 @@ public class Main extends JFrame {
 	private DomainManager d_domain;
 	private DomainTreeModel d_domainTreeModel;
 	private JTree d_leftPanelTree;
+	
 	private JMenuItem d_editMenuDeleteItem;
+	private JMenuItem d_editMenuEditItem;
 
 	private PresentationModelFactory d_pmManager;
 
@@ -293,11 +293,17 @@ public class Main extends JFrame {
 	private JMenu createEditMenu() {
 		JMenu editMenu = new JMenu("Edit");
 		editMenu.setMnemonic('e');
+		
 		d_editMenuDeleteItem = createDeleteItem();
 		d_editMenuDeleteItem.setEnabled(false);
 		d_editMenuDeleteItem.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_DELETE, 0));
 		editMenu.add(d_editMenuDeleteItem);
+		
+		d_editMenuEditItem = createEditItem();
+		d_editMenuEditItem.setEnabled(false);
+		//editMenu.add(d_editMenuEditItem);
+		
 		return editMenu;
 	}
 
@@ -308,6 +314,19 @@ public class Main extends JFrame {
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				deleteMenuAction();
+			}
+		});
+
+		return item;
+	}
+	
+	private JMenuItem createEditItem() {
+		JMenuItem item = new JMenuItem("Edit", ImageLoader
+				.getIcon(FileNames.ICON_EDIT));
+		item.setMnemonic('e');
+		item.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(Main.this, "Oh hai!", "Edit", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 
@@ -810,6 +829,10 @@ public class Main extends JFrame {
 			public void valueChanged(TreeSelectionEvent event) {
 				Object node = ((JTree) event.getSource())
 						.getLastSelectedPathComponent();
+				if (node == null || !(node instanceof Entity)) {
+					nonEntitySelected();
+				}
+				
 				if (node == null) {
 					noneSelected();
 				} else if (node instanceof Entity) {
@@ -838,11 +861,17 @@ public class Main extends JFrame {
 			}
 		};
 	}
+	
+	private void nonEntitySelected() {
+		d_editMenuDeleteItem.setEnabled(false);
+		d_editMenuEditItem.setEnabled(false);
+	}
 
 	private void entitySelected(Entity node) {
 		ViewBuilder view = ViewFactory.createView(node, d_pmManager, this);
 		setRightPanelView(view);
 		d_editMenuDeleteItem.setEnabled(true);
+		d_editMenuEditItem.setEnabled(node instanceof Study);
 	}
 
 	private void noneSelected() {
@@ -920,7 +949,7 @@ public class Main extends JFrame {
 	private void setRightPanelView(ViewBuilder view) {
 		d_rightPanelBuilder = view;
 		setRightPanelContents(view.buildPanel());
-		d_editMenuDeleteItem.setEnabled(true);
+		//d_editMenuDeleteItem.setEnabled(true);
 	}
 
 	private void initRightPanel() {
@@ -1018,10 +1047,10 @@ public class Main extends JFrame {
 							d_domainTreeModel
 									.getPopulationCharacteristicsNode(), node }));
 		} else if (node instanceof Study) {
-			d_leftPanelTree.setSelectionPath(null);
-			StudyView view = new StudyView((StudyPresentationModel) d_pmManager
-					.getModel(((Study) node)), getDomain(), this);
-			setRightPanelView(view);
+			d_leftPanelTree
+					.setSelectionPath(new TreePath(new Object[] {
+							d_domainTreeModel.getRoot(),
+							d_domainTreeModel.getStudiesNode(), node }));
 		} else if (node instanceof RandomEffectsMetaAnalysis) {
 			d_leftPanelTree.setSelectionPath(new TreePath(new Object[] {
 					d_domainTreeModel.getRoot(),
