@@ -765,7 +765,7 @@ public class Main extends JFrame {
 		d_leftPanelTree.setRootVisible(false);
 		expandLeftPanelTree();
 
-		d_leftPanelTree.addTreeSelectionListener(createSelectionListener());
+		d_leftPanelTree.addTreeSelectionListener(new DomainTreeSelectionListener());
 		d_domainTreeModel.addTreeModelListener(new TreeModelListener() {
 			public void treeNodesChanged(TreeModelEvent arg0) {
 			}
@@ -791,44 +791,66 @@ public class Main extends JFrame {
 		}
 	}
 
-	private TreeSelectionListener createSelectionListener() {
-		return new TreeSelectionListener() {
-			public void valueChanged(TreeSelectionEvent event) {
-				Object node = ((JTree) event.getSource())
-						.getLastSelectedPathComponent();
-				if (node == null || !(node instanceof Entity)) {
-					nonEntitySelected();
-				}
-				
-				if (node == null) {
-					noneSelected();
-				} else if (node instanceof Entity) {
-					entitySelected((Entity) node);
-				} else if (node == d_domainTreeModel.getStudiesNode()) {
-					studyLabelSelected();
-				} else if (node == d_domainTreeModel.getDrugsNode()) {
-					drugLabelSelected();
-				} else if (node == d_domainTreeModel.getIndicationsNode()) {
-					indicationLabelSelected();
-				} else if (node == d_domainTreeModel.getEndpointsNode()) {
-					endpointLabelSelected();
-				} else if (node == d_domainTreeModel.getAdverseEventsNode()) {
-					adverseEventLabelSelected();
-				} else if (node == d_domainTreeModel
-						.getPopulationCharacteristicsNode()) {
-					populationCharacteristicsLabelSelected();
-				} else if (node == d_domainTreeModel.getMetaAnalysesNode()) {
-					analysesLabelSelected();
-				} else if (node == d_domainTreeModel
-						.getBenefitRiskAnalysesNode()) {
-					benefitRiskLabelSelected();
-				} else {
-					noneSelected();
-				}
+	private class DomainTreeSelectionListener implements TreeSelectionListener {
+		public void valueChanged(TreeSelectionEvent event) {
+			Object node = ((JTree) event.getSource()).getLastSelectedPathComponent();
+			if (node == null || !(node instanceof Entity)) {
+				nonEntitySelected();
 			}
-		};
-	}
+
+			if (node == null) {
+				noneSelected();
+			} else if (node instanceof Entity) {
+				entitySelected((Entity) node);
+			} else if (node instanceof CategoryNode) {
+				categorySelected((CategoryNode) node);
+			} else {
+				noneSelected();
+			}
+		}
+	};
 	
+	private void categorySelected(CategoryNode node) {
+		if (node.equals(d_domainTreeModel.getStudiesNode())) {
+			DefaultStudyListPresentationModel studyListPM = new DefaultStudyListPresentationModel(
+					getDomain().getStudiesHolder());
+			StudiesNodeView view = new StudiesNodeView(new StudiesTablePanel(
+					studyListPM, this));
+			setRightPanelView(view);
+		} else if (node.equals(d_domainTreeModel.getDrugsNode())) {
+			String[] properties = { "name", "atcCode" };
+			buildEntityTable(getDomain().getDrugs(), properties, node.getPlural());
+		} else if (node.equals(d_domainTreeModel.getIndicationsNode())) {
+			String[] properties = { "name", "code" };
+			buildEntityTable(getDomain().getIndications(), properties,
+					node.getPlural());
+		} else if (node.equals(d_domainTreeModel.getEndpointsNode())) {
+			String[] properties = { "name", "description", "unitOfMeasurement",
+					"type", "direction" };
+			buildEntityTable(getDomain().getEndpoints(), properties, node.getPlural());
+		} else if (node.equals(d_domainTreeModel.getAdverseEventsNode())) {
+			String[] properties = { "name", "description", "unitOfMeasurement",
+					"type", "direction" };
+			buildEntityTable(getDomain().getAdverseEvents(), properties,
+					node.getPlural());
+		} else if (node.equals(d_domainTreeModel .getPopulationCharacteristicsNode())) {
+			String[] properties = { "name", "description", "unitOfMeasurement",
+					"type" };
+			buildEntityTable(getDomain().getPopulationCharacteristics(), properties,
+					node.getPlural());
+		} else if (node.equals(d_domainTreeModel.getMetaAnalysesNode())) {
+			String[] properties = { "name", "type", "indication", "outcomeMeasure",
+					"includedDrugs", "studiesIncluded", "sampleSize" };
+			buildEntityTable(getDomain().getMetaAnalyses(), properties,
+					node.getPlural());
+		} else if (node.equals(d_domainTreeModel.getBenefitRiskAnalysesNode())) {
+			String[] properties = { "name", "indication", "outcomeMeasures",
+					"metaAnalyses", "baseline", "drugs" };
+			buildEntityTable(getDomain().getBenefitRiskAnalyses(), properties,
+					node.getPlural());
+		}
+	}
+
 	private void nonEntitySelected() {
 		d_editMenuDeleteItem.setEnabled(false);
 		d_editMenuEditItem.setEnabled(false);
@@ -849,31 +871,6 @@ public class Main extends JFrame {
 		});
 	}
 
-	private void drugLabelSelected() {
-		String[] properties = { "name", "atcCode" };
-		buildEntityTable(getDomain().getDrugs(), properties, "Drugs");
-	}
-
-	private void endpointLabelSelected() {
-		String[] properties = { "name", "description", "unitOfMeasurement",
-				"type", "direction" };
-		buildEntityTable(getDomain().getEndpoints(), properties, "Endpoints");
-	}
-
-	private void populationCharacteristicsLabelSelected() {
-		String[] properties = { "name", "description", "unitOfMeasurement",
-				"type" };
-		buildEntityTable(getDomain().getPopulationCharacteristics(), properties,
-				"Population characteristics");
-	}
-
-	private void adverseEventLabelSelected() {
-		String[] properties = { "name", "description", "unitOfMeasurement",
-				"type", "direction" };
-		buildEntityTable(getDomain().getAdverseEvents(), properties,
-				"Adverse drug events");
-	}
-
 	private <T extends Entity> void buildEntityTable(SortedSet<T> allX,
 			String[] formatter, String title) {
 		List<PresentationModel<T>> dpms = new ArrayList<PresentationModel<T>>();
@@ -885,38 +882,9 @@ public class Main extends JFrame {
 		setRightPanelView(view);
 	}
 
-	private void indicationLabelSelected() {
-		String[] properties = { "name", "code" };
-		buildEntityTable(getDomain().getIndications(), properties,
-				"Indications");
-	}
-
-	private void studyLabelSelected() {
-		DefaultStudyListPresentationModel studyListPM = new DefaultStudyListPresentationModel(
-				getDomain().getStudiesHolder());
-		StudiesNodeView view = new StudiesNodeView(new StudiesTablePanel(
-				studyListPM, this));
-		setRightPanelView(view);
-	}
-
-	private void analysesLabelSelected() {
-		String[] properties = { "name", "type", "indication", "outcomeMeasure",
-				"includedDrugs", "studiesIncluded", "sampleSize" };
-		buildEntityTable(getDomain().getMetaAnalyses(), properties,
-				"Meta-Analyses");
-	}
-
-	private void benefitRiskLabelSelected() {
-		String[] properties = { "name", "indication", "outcomeMeasures",
-				"metaAnalyses", "baseline", "drugs" };
-		buildEntityTable(getDomain().getBenefitRiskAnalyses(), properties,
-				"Benefit-Risk Analyses");
-	}
-
 	private void setRightPanelView(ViewBuilder view) {
 		d_rightPanelBuilder = view;
 		setRightPanelContents(view.buildPanel());
-		//d_editMenuDeleteItem.setEnabled(true);
 	}
 
 	private void initRightPanel() {
