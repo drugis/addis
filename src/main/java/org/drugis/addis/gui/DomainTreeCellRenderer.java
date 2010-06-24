@@ -26,52 +26,34 @@ import java.awt.Component;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
-import org.drugis.addis.FileNames;
-import org.drugis.addis.entities.AdverseEvent;
-import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.EntityCategory;
 import org.drugis.common.ImageLoader;
 
 @SuppressWarnings("serial")
 public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
+	private final Domain d_domain;
+
+	public DomainTreeCellRenderer(Domain domain) {
+		d_domain = domain;
+	}
 	
 	@Override
 	public Component getTreeCellRendererComponent(JTree tree, Object value,	boolean sel,
 			boolean expanded, boolean leaf, int row, boolean hasFocus) {
-		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-		if (value instanceof Endpoint) {
-			setIcon(ImageLoader.getIcon(FileNames.ICON_ENDPOINT));
-			setToolTipText("Endpoint");
-		} else if (value instanceof AdverseEvent) {
-			setIcon(ImageLoader.getIcon(FileNames.ICON_ADVERSE_EVENT));
-			setToolTipText("Adverse drug event");
-		} else if (value instanceof Variable) {
-			setIcon(ImageLoader.getIcon(FileNames.ICON_POPULATION_CHAR));
-			setToolTipText("Population baseline characteristic");
-		} else if (value instanceof RandomEffectsMetaAnalysis) {
-			setIcon(ImageLoader.getIcon(FileNames.ICON_METASTUDY));
-			setToolTipText("Meta-analysis");
-		} else if (value instanceof NetworkMetaAnalysis) {
-			setIcon(ImageLoader.getIcon(FileNames.ICON_NETWMETASTUDY));
-			setToolTipText("Meta-analysis");
-		} else if (value instanceof Study) {
-			setIcon(ImageLoader.getIcon(FileNames.ICON_STUDY));
-			setToolTipText("Study");				
-		} else if (value instanceof Drug) {
-			setIcon(ImageLoader.getIcon(FileNames.ICON_DRUG));
-			setToolTipText("Drug");	
-		} else if (value instanceof Indication) {
-			setIcon(ImageLoader.getIcon(FileNames.ICON_INDICATION));
-			setToolTipText("Indication");
-		} else if (value instanceof BenefitRiskAnalysis) {
-			setIcon(ImageLoader.getIcon(FileNames.ICON_BENEFITRISK));
-			setToolTipText("Benefit-risk Analysis");
+		if (value instanceof EntityCategory) {
+			CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge((EntityCategory)value);
+			super.getTreeCellRendererComponent(tree, knowledge.getPlural(), sel, expanded, leaf, row, hasFocus);
+		} else {
+			super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+		}
+		if (value instanceof Entity) {
+			Entity entity = (Entity) value;
+			CategoryKnowledge knowledge =
+				CategoryKnowledgeFactory.getCategoryKnowledge(d_domain.getCategory((Entity)value));
+			setIcon(ImageLoader.getIcon(knowledge.getIconName(entity.getClass())));
+			setToolTipText(knowledge.getSingular());
 		} else {
 			setToolTipText(null); //no tool tip
 		}

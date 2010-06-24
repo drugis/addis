@@ -48,22 +48,22 @@ import com.jgoodies.binding.beans.BeanUtils;
 
 public class DomainImpl implements Domain {
 	private static final EntityCategory CATEGORY_INDICATIONS =
-		new EntityCategory("Indication", "indications", Indication.class);
+		new EntityCategory("indications", Indication.class);
 	private static final EntityCategory CATEGORY_DRUGS =
-		new EntityCategory("Drug", "drugs", Drug.class);
+		new EntityCategory("drugs", Drug.class);
 	private static final EntityCategory CATEGORY_ENDPOINTS =
-		new EntityCategory("Endpoint", "endpoints", Endpoint.class);
+		new EntityCategory("endpoints", Endpoint.class);
 	private static final EntityCategory CATEGORY_ADVERSE_EVENTS =
-		new EntityCategory("Adverse drug event", "adverseEvents", AdverseEvent.class);
+		new EntityCategory("adverseEvents", AdverseEvent.class);
 	private static final EntityCategory CATEGORY_POPULATION_CHARACTERISTICS =
-		new EntityCategory("Population characteristic", "populationCharacteristics", PopulationCharacteristic.class);
+		new EntityCategory("populationCharacteristics", PopulationCharacteristic.class);
 	private static final EntityCategory CATEGORY_STUDIES =
-		new EntityCategory("Study", "Studies", "studies", Study.class);
+		new EntityCategory("studies", Study.class);
 	private static final EntityCategory CATEGORY_META_ANALYSES =
-		new EntityCategory("Meta-analysis", "Meta-analyses", "metaAnalyses", MetaAnalysis.class);
+		new EntityCategory("metaAnalyses", MetaAnalysis.class);
 	private static final EntityCategory CATEGORY_BENEFIT_RISK_ANALYSES =
-		new EntityCategory("Benefit-risk analysis", "Benefit-risk analyses",
-				"benefitRiskAnalyses", BenefitRiskAnalysis.class);
+		new EntityCategory("benefitRiskAnalyses",
+				BenefitRiskAnalysis.class);
 	
 	private static final List<EntityCategory> CATEGORIES = 
 		Arrays.asList(new EntityCategory[] {

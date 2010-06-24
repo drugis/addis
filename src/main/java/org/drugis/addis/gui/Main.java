@@ -361,7 +361,8 @@ public class Main extends JFrame {
 	}
 
 	public void deleteEntity(Entity selected) {
-		String selectedType = d_domainMgr.getDomain().getCategory(selected).getSingular();
+		EntityCategory category = getDomain().getCategory(selected);
+		String selectedType = CategoryKnowledgeFactory.getCategoryKnowledge(category).getSingular();
 
 		int conf = JOptionPane.showConfirmDialog(this,
 				"Do you really want to delete " + selectedType + " " + selected
@@ -577,7 +578,7 @@ public class Main extends JFrame {
 		newItem.setMnemonic('n');
 		newItem.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				d_domainMgr.getDomain().clearDomain();
+				getDomain().clearDomain();
 			}
 		});
 		return newItem;
@@ -766,7 +767,7 @@ public class Main extends JFrame {
 	private void initLeftPanel() {
 		d_domainTreeModel = new DomainTreeModel(getDomain());
 		d_leftPanelTree = new JTree(d_domainTreeModel);
-		d_leftPanelTree.setCellRenderer(new DomainTreeCellRenderer());
+		d_leftPanelTree.setCellRenderer(new DomainTreeCellRenderer(getDomain()));
 		d_leftPanelTree.setRootVisible(false);
 		expandLeftPanelTree();
 
@@ -790,7 +791,7 @@ public class Main extends JFrame {
 	}
 
 	private void expandLeftPanelTree() {
-		for (EntityCategory cat : d_domainMgr.getDomain().getCategories()) {
+		for (EntityCategory cat : getDomain().getCategories()) {
 			d_leftPanelTree.expandPath(new TreePath(new Object[] {
 					d_domainTreeModel.getRoot(), cat}));
 		}
@@ -816,6 +817,7 @@ public class Main extends JFrame {
 	};
 	
 	private void categorySelected(EntityCategory node) {
+		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(node);
 		if (node.getEntityClass().equals(Study.class)) {
 			DefaultStudyListPresentationModel studyListPM = new DefaultStudyListPresentationModel(
 					getDomain().getStudiesHolder());
@@ -824,35 +826,35 @@ public class Main extends JFrame {
 			setRightPanelView(view);
 		} else if (node.getEntityClass().equals(Drug.class)) {
 			String[] properties = { "name", "atcCode" };
-			buildEntityTable(getDomain().getDrugs(), properties, node.getPlural());
+			buildEntityTable(getDomain().getDrugs(), properties, knowledge.getPlural());
 		} else if (node.getEntityClass().equals(Indication.class)) {
 			String[] properties = { "name", "code" };
 			buildEntityTable(getDomain().getIndications(), properties,
-					node.getPlural());
+					knowledge.getPlural());
 		} else if (node.getEntityClass().equals(Endpoint.class)) {
 			String[] properties = { "name", "description", "unitOfMeasurement",
 					"type", "direction" };
-			buildEntityTable(getDomain().getEndpoints(), properties, node.getPlural());
+			buildEntityTable(getDomain().getEndpoints(), properties, knowledge.getPlural());
 		} else if (node.getEntityClass().equals(AdverseEvent.class)) {
 			String[] properties = { "name", "description", "unitOfMeasurement",
 					"type", "direction" };
 			buildEntityTable(getDomain().getAdverseEvents(), properties,
-					node.getPlural());
+					knowledge.getPlural());
 		} else if (node.getEntityClass().equals(PopulationCharacteristic.class)) {
 			String[] properties = { "name", "description", "unitOfMeasurement",
 					"type" };
 			buildEntityTable(getDomain().getPopulationCharacteristics(), properties,
-					node.getPlural());
+					knowledge.getPlural());
 		} else if (node.getEntityClass().equals(MetaAnalysis.class)) {
 			String[] properties = { "name", "type", "indication", "outcomeMeasure",
 					"includedDrugs", "studiesIncluded", "sampleSize" };
 			buildEntityTable(getDomain().getMetaAnalyses(), properties,
-					node.getPlural());
+					knowledge.getPlural());
 		} else if (node.getEntityClass().equals(BenefitRiskAnalysis.class)) {
 			String[] properties = { "name", "indication", "outcomeMeasures",
 					"metaAnalyses", "baseline", "drugs" };
 			buildEntityTable(getDomain().getBenefitRiskAnalyses(), properties,
-					node.getPlural());
+					knowledge.getPlural());
 		}
 	}
 
