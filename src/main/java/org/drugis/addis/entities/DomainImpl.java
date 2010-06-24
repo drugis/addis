@@ -290,7 +290,7 @@ public class DomainImpl implements Domain {
 		} else if (entity instanceof AdverseEvent) {
 			deleteAdverseEvent((AdverseEvent) entity);
 		} else if (entity instanceof PopulationCharacteristic) {
-			deleteEntity((Variable) entity);
+			deletePopulationCharacteristic((PopulationCharacteristic) entity);
 		} else if (entity instanceof Study) {
 			deleteStudy((Study) entity);
 		} else if (entity instanceof MetaAnalysis) {

@@ -389,32 +389,7 @@ public class Main extends JFrame {
 			return;
 		}
 		try {
-			if (selected instanceof Drug) {
-				getDomain().deleteEntity((Drug) selected);
-				leftTreeFocus(d_domainTreeModel.getDrugsNode());
-			} else if (selected instanceof Endpoint) {
-				getDomain().deleteEntity((Endpoint) selected);
-				leftTreeFocus(d_domainTreeModel.getEndpointsNode());
-			} else if (selected instanceof AdverseEvent) {
-				getDomain().deleteEntity((AdverseEvent) selected);
-				leftTreeFocus(d_domainTreeModel.getAdverseEventsNode());
-			} else if (selected instanceof PopulationCharacteristic) {
-				getDomain().deleteEntity((Variable) selected);
-				leftTreeFocus(d_domainTreeModel
-						.getPopulationCharacteristicsNode());
-			} else if (selected instanceof Study) {
-				getDomain().deleteEntity((Study) selected);
-				leftTreeFocus(d_domainTreeModel.getStudiesNode());
-			} else if (selected instanceof MetaAnalysis) {
-				getDomain().deleteEntity((MetaAnalysis) selected);
-				leftTreeFocus(d_domainTreeModel.getMetaAnalysesNode());
-			} else if (selected instanceof BenefitRiskAnalysis) {
-				getDomain().deleteEntity((BenefitRiskAnalysis) selected);
-				leftTreeFocus(d_domainTreeModel.getBenefitRiskAnalysesNode());
-			} else if (selected instanceof Indication) {
-				getDomain().deleteEntity((Indication) selected);
-				leftTreeFocus(d_domainTreeModel.getIndicationsNode());
-			}
+			getDomain().deleteEntity(selected);
 		} catch (DependentEntitiesException e) {
 			String str = new String(selected + " is used by: ");
 			for (Entity en : e.getDependents()) {
