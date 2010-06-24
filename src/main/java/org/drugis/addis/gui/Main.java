@@ -79,15 +79,10 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.DomainManager;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
-import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.gui.DomainTreeModel.CategoryNode;
 import org.drugis.addis.gui.builder.EntitiesNodeView;
 import org.drugis.addis.gui.builder.StudiesNodeView;
@@ -361,24 +356,7 @@ public class Main extends JFrame {
 	}
 
 	public void deleteEntity(Entity selected) {
-		String selectedType = "";
-		if (selected instanceof Drug) {
-			selectedType = "drug";
-		} else if (selected instanceof Endpoint) {
-			selectedType = "endpoint";
-		} else if (selected instanceof AdverseEvent) {
-			selectedType = "adverse drug event";
-		} else if (selected instanceof MetaAnalysis) {
-			selectedType = "meta-analysis";
-		} else if (selected instanceof BenefitRiskAnalysis) {
-			selectedType = "Benefit-risk analysis";
-		} else if (selected instanceof Study) {
-			selectedType = "study";
-		} else if (selected instanceof Indication) {
-			selectedType = "indication";
-		} else if (selected instanceof Variable) {
-			selectedType = "variable";
-		}
+		String selectedType = d_domainTreeModel.getEntityCategory(selected).getSingular();
 
 		int conf = JOptionPane.showConfirmDialog(this,
 				"Do you really want to delete " + selectedType + " " + selected

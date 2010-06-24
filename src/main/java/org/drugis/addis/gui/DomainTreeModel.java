@@ -54,18 +54,34 @@ public class DomainTreeModel implements TreeModel {
 
 
 	public static class CategoryNode {
-		private final String d_label;
+		private final String d_singular;
+		private final String d_plural;
 		private final String d_property;
 		private final Class<? extends Entity> d_entityClass;
-
-		public CategoryNode(String label, String property, Class<? extends Entity> entityClass) {
-			d_label = label;
-			d_property = property;
+		
+		public CategoryNode(String singular, String plural, String propertyName,
+				Class<? extends Entity> entityClass) {
+			d_singular = singular;
+			d_plural = plural;
+			d_property = propertyName;
 			d_entityClass = entityClass;
+		}
+
+		public CategoryNode(String singular, String propertyName, 
+				Class<? extends Entity> entityClass) {
+			this(singular, singular + "s", propertyName, entityClass);
+		}
+		
+		public String getSingular() {
+			return d_singular;
+		}
+		
+		public String getPlural() {
+			return d_plural;
 		}
 		
 		public String toString() {
-			return d_label;
+			return getPlural();
 		}
 		
 		public String getPropertyName() {
@@ -78,21 +94,22 @@ public class DomainTreeModel implements TreeModel {
 	}
 	
 	private static final CategoryNode NODE_INDICATIONS =
-		new CategoryNode("Indications", "indications", Indication.class);
+		new CategoryNode("Indication", "indications", Indication.class);
 	private static final CategoryNode NODE_DRUGS =
-		new CategoryNode("Drugs", "drugs", Drug.class);
+		new CategoryNode("Drug", "drugs", Drug.class);
 	private static final CategoryNode NODE_ENDPOINTS =
-		new CategoryNode("Endpoints", "endpoints", Endpoint.class);
+		new CategoryNode("Endpoint", "endpoints", Endpoint.class);
 	private static final CategoryNode NODE_ADVERSE_EVENTS =
-		new CategoryNode("Adverse drug events", "adverseEvents", AdverseEvent.class);
+		new CategoryNode("Adverse drug event", "adverseEvents", AdverseEvent.class);
 	private static final CategoryNode NODE_POPULATION_CHARACTERISTICS =
-		new CategoryNode("Population characteristics", "populationCharacteristics", PopulationCharacteristic.class);
+		new CategoryNode("Population characteristic", "populationCharacteristics", PopulationCharacteristic.class);
 	private static final CategoryNode NODE_STUDIES =
-		new CategoryNode("Studies", "studies", Study.class);
+		new CategoryNode("Study", "Studies", "studies", Study.class);
 	private static final CategoryNode NODE_META_ANALYSES =
-		new CategoryNode("Analyses", "metaAnalyses", MetaAnalysis.class);
+		new CategoryNode("Meta-analysis", "Meta-analyses", "metaAnalyses", MetaAnalysis.class);
 	private static final CategoryNode NODE_BENEFIT_RISK_ANALYSES =
-		new CategoryNode("Benefit-risk analyses", "benefitRiskAnalyses", BenefitRiskAnalysis.class);
+		new CategoryNode("Benefit-risk analysis", "Benefit-risk analyses",
+				"benefitRiskAnalyses", BenefitRiskAnalysis.class);
 	
 	private static final List<CategoryNode> CATEGORIES = 
 		Arrays.asList(new CategoryNode[] {
@@ -192,7 +209,7 @@ public class DomainTreeModel implements TreeModel {
 		return d_root;
 	}
 	
-	private CategoryNode getEntityCategory(Entity entity) {
+	public CategoryNode getEntityCategory(Entity entity) {
 		for (CategoryNode cat : getCategories()) {
 			if (cat.getEntityClass().isInstance(entity)) {
 				return cat;
