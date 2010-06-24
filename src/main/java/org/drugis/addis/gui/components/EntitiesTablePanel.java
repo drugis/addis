@@ -30,9 +30,9 @@ import org.drugis.addis.presentation.EntityTableModel;
 import com.jgoodies.binding.PresentationModel;
 
 @SuppressWarnings("serial")
-public class EntitiesTablePanel<T extends Entity> extends TablePanel {
-	public EntitiesTablePanel(List<String> formatter, List<PresentationModel<T>> entities, Main parent) {
-		super(new EnhancedTable(new EntityTableModel<T>(entities, formatter)));
+public class EntitiesTablePanel extends TablePanel {
+	public EntitiesTablePanel(List<String> formatter, List<PresentationModel<? extends Entity>> entities, Main parent) {
+		super(new EnhancedTable(new EntityTableModel(entities, formatter)));
 				
 		if (parent != null)
 			getTable().addKeyListener(new EntityTableDeleteListener(parent));

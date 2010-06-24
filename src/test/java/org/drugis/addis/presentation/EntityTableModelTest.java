@@ -34,6 +34,7 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Entity;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -43,7 +44,7 @@ import com.jgoodies.binding.PresentationModel;
 
 public class EntityTableModelTest {
 	Domain d_domain;
-	EntityTableModel<Drug> d_tableModel;
+	EntityTableModel d_tableModel;
 	List<String> d_properties;
 	
 	@Before
@@ -53,11 +54,11 @@ public class EntityTableModelTest {
 		d_properties = new ArrayList<String>();
 		d_properties.add("name");
 		d_properties.add("atcCode");
-		List<PresentationModel<Drug>> pm = new ArrayList<PresentationModel<Drug>>();
+		List<PresentationModel<? extends Entity>> pm = new ArrayList<PresentationModel<? extends Entity>>();
 		PresentationModelFactory pmf = new PresentationModelFactory(d_domain);
 		for (Drug d : d_domain.getDrugs())
 			pm.add(pmf.getModel(d));
-		d_tableModel = new EntityTableModel<Drug>(pm, d_properties);
+		d_tableModel = new EntityTableModel(pm, d_properties);
 	}
 	
 	@Test

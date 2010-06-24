@@ -33,7 +33,6 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
@@ -264,7 +263,8 @@ public class BenefitRiskView implements ViewBuilder {
 	
 	private JComponent buildAnalysesPart() {	
 		String[] formatter = {"name","type","indication","outcomeMeasure","drugs","studies","sampleSize"};
-		return new EntitiesNodeView<MetaAnalysis>(Arrays.asList(formatter), d_pm.getAnalysesPMList(), null, null).buildPanel();
+		return EntitiesNodeView.build(Arrays.asList(formatter),
+				d_pm.getAnalysesPMList(), null, null).buildPanel();
 	}
 	
 	private JComponent buildMeasurementsPart() {

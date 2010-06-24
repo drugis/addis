@@ -4,6 +4,7 @@ import javax.swing.JDialog;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.wizard.NetworkMetaAnalysisWizard;
 import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
@@ -14,7 +15,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class NetworkMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 	public NetworkMetaAnalysesKnowledge() {
-		super("Network meta-analysis", "Network meta-analyses", null);
+		super("Network meta-analysis", "Network meta-analyses", null, NetworkMetaAnalysis.class);
 	}
 	
 	@Override
@@ -42,5 +43,11 @@ public class NetworkMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 	@Override
 	public boolean isToolbarCategory() {
 		return true;
+	}
+	
+	@Override
+	protected String[] getShownProperties() {
+		return new String[] { "name", "type", "indication", "outcomeMeasure",
+				"includedDrugs", "studiesIncluded", "sampleSize" };
 	}
 }

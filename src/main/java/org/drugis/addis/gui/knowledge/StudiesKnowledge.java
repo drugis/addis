@@ -4,9 +4,14 @@ import javax.swing.JDialog;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.builder.StudiesNodeView;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
+import org.drugis.addis.gui.components.StudiesTablePanel;
+import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
+import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardFrameCloser;
 
@@ -14,7 +19,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class StudiesKnowledge extends CategoryKnowledgeBase {
 	public StudiesKnowledge() {
-		super("Study", "Studies", FileNames.ICON_STUDY);
+		super("Study", "Studies", FileNames.ICON_STUDY, Study.class);
 	}
 	
 	@Override
@@ -39,5 +44,13 @@ public class StudiesKnowledge extends CategoryKnowledgeBase {
 	@Override
 	public boolean isToolbarCategory() {
 		return true;
+	}
+	
+	@Override
+	public ViewBuilder getCategoryViewBuilder(Main main, Domain domain) {
+		DefaultStudyListPresentationModel studyListPM = new DefaultStudyListPresentationModel(
+				domain.getStudiesHolder());
+		StudiesNodeView view = new StudiesNodeView(new StudiesTablePanel(studyListPM, main));
+		return view;
 	}
 }

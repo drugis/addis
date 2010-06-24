@@ -5,6 +5,7 @@ import javax.swing.JDialog;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.AddVariableDialog;
 import org.drugis.addis.gui.Main;
@@ -13,7 +14,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class PopulationCharacteristicsKnowledge extends CategoryKnowledgeBase {
 	public PopulationCharacteristicsKnowledge() {
-		super("Population characteristic", FileNames.ICON_POPULATION_CHAR);
+		super("Population characteristic", FileNames.ICON_POPULATION_CHAR, PopulationCharacteristic.class);
 	}
 
 	@Override
@@ -22,4 +23,9 @@ public class PopulationCharacteristicsKnowledge extends CategoryKnowledgeBase {
 		Variable variable = new ContinuousPopulationCharacteristic("");
 		return new AddVariableDialog(main, domain, variable, selectionModel);
 	}	
+	
+	@Override
+	protected String[] getShownProperties() {
+		return new String[] { "name", "description", "unitOfMeasurement", "type" };
+	}
 }

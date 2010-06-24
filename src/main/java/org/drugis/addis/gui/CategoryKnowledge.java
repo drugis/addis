@@ -3,6 +3,7 @@ package org.drugis.addis.gui;
 import javax.swing.JDialog;
 
 import org.drugis.addis.entities.Domain;
+import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.value.ValueModel;
 
@@ -43,4 +44,9 @@ public interface CategoryKnowledge {
 	 * Whether the category should get a toolbar button.
 	 */
 	public boolean isToolbarCategory();
+	
+	/**
+	 * What to show for the category
+	 */
+	public ViewBuilder getCategoryViewBuilder(Main main, Domain domain);
 }

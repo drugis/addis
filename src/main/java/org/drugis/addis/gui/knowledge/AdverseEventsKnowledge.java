@@ -13,7 +13,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class AdverseEventsKnowledge extends CategoryKnowledgeBase {
 	public AdverseEventsKnowledge() {
-		super("Adverse event", FileNames.ICON_ADVERSE_EVENT);
+		super("Adverse event", FileNames.ICON_ADVERSE_EVENT, AdverseEvent.class);
 	}
 	
 	@Override
@@ -21,5 +21,10 @@ public class AdverseEventsKnowledge extends CategoryKnowledgeBase {
 			ValueModel selectionModel) {
 		Variable variable = new AdverseEvent("", Variable.Type.RATE);
 		return new AddVariableDialog(main, domain, variable, selectionModel);
+	}
+	
+	@Override
+	protected String[] getShownProperties() {
+		return new String[] { "name", "description", "unitOfMeasurement", "type", "direction" };
 	}
 }

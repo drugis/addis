@@ -38,10 +38,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.SortedSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -72,28 +68,17 @@ import javax.swing.tree.TreePath;
 
 import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
-import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.DomainManager;
-import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityCategory;
-import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.MetaAnalysis;
-import org.drugis.addis.gui.builder.EntitiesNodeView;
-import org.drugis.addis.gui.builder.StudiesNodeView;
 import org.drugis.addis.gui.builder.ViewFactory;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.components.LinkLabel;
-import org.drugis.addis.gui.components.StudiesTablePanel;
-import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.common.ImageLoader;
@@ -102,7 +87,6 @@ import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardFrameCloser;
 
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
@@ -609,44 +593,7 @@ public class Main extends JFrame {
 	
 	private void categorySelected(EntityCategory node) {
 		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(node);
-		if (node.getEntityClass().equals(Study.class)) {
-			DefaultStudyListPresentationModel studyListPM = new DefaultStudyListPresentationModel(
-					getDomain().getStudiesHolder());
-			StudiesNodeView view = new StudiesNodeView(new StudiesTablePanel(
-					studyListPM, this));
-			setRightPanelView(view);
-		} else if (node.getEntityClass().equals(Drug.class)) {
-			String[] properties = { "name", "atcCode" };
-			buildEntityTable(getDomain().getDrugs(), properties, knowledge.getPlural());
-		} else if (node.getEntityClass().equals(Indication.class)) {
-			String[] properties = { "name", "code" };
-			buildEntityTable(getDomain().getIndications(), properties,
-					knowledge.getPlural());
-		} else if (node.getEntityClass().equals(Endpoint.class)) {
-			String[] properties = { "name", "description", "unitOfMeasurement",
-					"type", "direction" };
-			buildEntityTable(getDomain().getEndpoints(), properties, knowledge.getPlural());
-		} else if (node.getEntityClass().equals(AdverseEvent.class)) {
-			String[] properties = { "name", "description", "unitOfMeasurement",
-					"type", "direction" };
-			buildEntityTable(getDomain().getAdverseEvents(), properties,
-					knowledge.getPlural());
-		} else if (node.getEntityClass().equals(PopulationCharacteristic.class)) {
-			String[] properties = { "name", "description", "unitOfMeasurement",
-					"type" };
-			buildEntityTable(getDomain().getPopulationCharacteristics(), properties,
-					knowledge.getPlural());
-		} else if (node.getEntityClass().equals(MetaAnalysis.class)) {
-			String[] properties = { "name", "type", "indication", "outcomeMeasure",
-					"includedDrugs", "studiesIncluded", "sampleSize" };
-			buildEntityTable(getDomain().getMetaAnalyses(), properties,
-					knowledge.getPlural());
-		} else if (node.getEntityClass().equals(BenefitRiskAnalysis.class)) {
-			String[] properties = { "name", "indication", "outcomeMeasures",
-					"metaAnalyses", "baseline", "drugs" };
-			buildEntityTable(getDomain().getBenefitRiskAnalyses(), properties,
-					knowledge.getPlural());
-		}
+		setRightPanelView(knowledge.getCategoryViewBuilder(this, getDomain()));
 	}
 
 	private void nonEntitySelected() {
@@ -667,17 +614,6 @@ public class Main extends JFrame {
 				return new JPanel();
 			}
 		});
-	}
-
-	private <T extends Entity> void buildEntityTable(SortedSet<T> allX,
-			String[] formatter, String title) {
-		List<PresentationModel<T>> dpms = new ArrayList<PresentationModel<T>>();
-		for (T i : allX) {
-			dpms.add(d_pmManager.getModel(i));
-		}
-		EntitiesNodeView<T> view = new EntitiesNodeView<T>(Arrays
-				.asList(formatter), dpms, this, title);
-		setRightPanelView(view);
 	}
 
 	private void setRightPanelView(ViewBuilder view) {

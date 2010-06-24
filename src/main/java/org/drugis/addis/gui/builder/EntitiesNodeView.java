@@ -21,6 +21,7 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -36,20 +37,28 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class EntitiesNodeView<T extends Entity> implements ViewBuilder {
+public class EntitiesNodeView implements ViewBuilder {
 	
 	private List<String> d_formatter;
-	private List<PresentationModel<T>> d_dpms;
+	private List<PresentationModel<? extends Entity>> d_dpms;
 	private Main d_main;
 	private String d_title;
 
-	public EntitiesNodeView(List<String> formatter, List<PresentationModel<T>> dpms, Main main, String title) {
+	public EntitiesNodeView(List<String> formatter, List<PresentationModel<? extends Entity>> dpms, Main main, String title) {
 		d_formatter = formatter;
 		d_dpms = dpms;
 		d_main = main;
 		d_title = title;
 	}
-
+	
+	public static <T extends Entity> EntitiesNodeView build(List<String> formatter, List<PresentationModel<T>> dpms, Main main, String title) {
+		List<PresentationModel<? extends Entity>> list = new ArrayList<PresentationModel<? extends Entity>>();
+		for (PresentationModel<T> pm : dpms) {
+			list.add(pm);
+		}
+		return new EntitiesNodeView(formatter, list, main, title);
+	}
+	
 	public JComponent buildPanel() {		
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
@@ -62,7 +71,7 @@ public class EntitiesNodeView<T extends Entity> implements ViewBuilder {
 		if (d_title != null)
 			builder.addSeparator(d_title, cc.xy(1, 1));
 		
-		TablePanel tablePanel = new EntitiesTablePanel<T>(d_formatter, d_dpms, d_main);
+		TablePanel tablePanel = new EntitiesTablePanel(d_formatter, d_dpms, d_main);
 		builder.add(tablePanel,cc.xy(1, 3));
 
 		return builder.getPanel();

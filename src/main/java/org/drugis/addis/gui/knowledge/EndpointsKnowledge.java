@@ -13,7 +13,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class EndpointsKnowledge extends CategoryKnowledgeBase {
 	public EndpointsKnowledge() {
-		super("Endpoint", FileNames.ICON_ENDPOINT);
+		super("Endpoint", FileNames.ICON_ENDPOINT, Endpoint.class);
 	}
 	
 	@Override
@@ -21,5 +21,11 @@ public class EndpointsKnowledge extends CategoryKnowledgeBase {
 			ValueModel selectionModel) {
 		Variable variable = new Endpoint("", Variable.Type.RATE);
 		return new AddVariableDialog(main, domain, variable, selectionModel);
+	}
+	
+	@Override
+	protected String[] getShownProperties() {
+		return new String[] { "name", "description", "unitOfMeasurement",
+					"type", "direction" };
 	}
 }

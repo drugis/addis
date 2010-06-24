@@ -4,6 +4,7 @@ import javax.swing.JDialog;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.wizard.BenefitRiskWizard;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
@@ -14,7 +15,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 	public BenefitRiskAnalysesKnowledge() {
-		super("Benefit-risk analysis", "Benefit-risk analyses", FileNames.ICON_BENEFITRISK);
+		super("Benefit-risk analysis", "Benefit-risk analyses", FileNames.ICON_BENEFITRISK, BenefitRiskAnalysis.class);
 	}
 	
 	@Override
@@ -32,5 +33,11 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 	@Override
 	public boolean isToolbarCategory() {
 		return true;
+	}
+	
+	@Override
+	protected String[] getShownProperties() {
+		return new String[] { "name", "indication", "outcomeMeasures",
+				"metaAnalyses", "baseline", "drugs" };
 	}
 }

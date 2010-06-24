@@ -35,13 +35,13 @@ import com.jgoodies.binding.value.ValueModel;
 
 
 @SuppressWarnings("serial")
-public class EntityTableModel<T extends Entity> extends AbstractTableModel {
-	List<PresentationModel<T>> d_entities;
+public class EntityTableModel extends AbstractTableModel {
+	List<PresentationModel<? extends Entity>> d_entities;
 	List<String> d_props;
 
-	public EntityTableModel(List<PresentationModel<T>> entities, List<String> properties) {
+	public EntityTableModel(List<PresentationModel<? extends Entity>> entities, List<String> properties) {
 		d_entities = entities;
-		for (PresentationModel<T> pm : d_entities)
+		for (PresentationModel<? extends Entity> pm : d_entities)
 			pm.addPropertyChangeListener(new ValueChangeListener());
 		d_props = properties;
 	}
