@@ -258,15 +258,9 @@ public class Main extends JFrame {
 	private JMenu createAddMenu() { // FIXME
 		JMenu addMenu = new JMenu("Add");
 		addMenu.setMnemonic('a');
-		addMenu.add(createAddIndicationMenuItem());
-		addMenu.add(createAddDrugMenuItem());
-		addMenu.add(createAddEndpointMenuItem());
-		addMenu.add(createAddAdverseEventMenuItem());
-		addMenu.add(createAddPopulationCharacteristicMenuItem());
-		addMenu.add(createAddStudyMenuItem());
-		addMenu.add(createAddMetaAnalysisMenuItem());
-		addMenu.add(createAddNetworkMetaAnalysisMenuItem());
-		addMenu.add(createAddBRAnalysisMenuItem());
+		for (EntityCategory cat : getDomain().getCategories()) {
+			addMenu.add(createAddMenuItem(CategoryKnowledgeFactory.getCategoryKnowledge(cat)));
+		}
 		return addMenu;
 	}
 
@@ -384,46 +378,6 @@ public class Main extends JFrame {
 		}
 	}
 
-	private JMenuItem createAddEndpointMenuItem() {
-		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(Endpoint.class);
-		return createAddMenuItem(knowledge);
-	}
-
-	private JMenuItem createAddAdverseEventMenuItem() {
-		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(AdverseEvent.class);
-		return createAddMenuItem(knowledge);
-	}
-
-	private JMenuItem createAddPopulationCharacteristicMenuItem() {
-		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(PopulationCharacteristic.class);
-		return createAddMenuItem(knowledge);
-	}
-
-	private JMenuItem createAddStudyMenuItem() {
-		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(Study.class);
-		return createAddMenuItem(knowledge);
-	}
-
-	private JMenuItem createAddMetaAnalysisMenuItem() {
-		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(PairWiseMetaAnalysis.class);
-		return createAddMenuItem(knowledge);
-	}
-
-	private JMenuItem createAddBRAnalysisMenuItem() {
-		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(BenefitRiskAnalysis.class);
-		return createAddMenuItem(knowledge);
-	}
-
-	private JMenuItem createAddNetworkMetaAnalysisMenuItem() {
-		final CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(NetworkMetaAnalysis.class);
-		return createAddMenuItem(knowledge);
-	}
-
-	private JMenuItem createAddIndicationMenuItem() {
-		final CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(Indication.class);
-		return createAddMenuItem(knowledge);
-	}
-
 	private JMenuItem createAddMenuItem(final CategoryKnowledge knowledge) {
 		JMenuItem item = new JMenuItem(knowledge.getSingular(), ImageLoader.getIcon(knowledge.getIconName()));
 		item.setMnemonic(knowledge.getMnemonic());
@@ -433,11 +387,6 @@ public class Main extends JFrame {
 			}
 		});
 		return item;
-	}
-
-	private JMenuItem createAddDrugMenuItem() {
-		final CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class);
-		return createAddMenuItem(knowledge);
 	}
 
 	public void showAddDialog(CategoryKnowledge knowledge, ValueModel selectionModel) {
