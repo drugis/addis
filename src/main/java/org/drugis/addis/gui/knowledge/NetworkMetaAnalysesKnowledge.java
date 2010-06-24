@@ -38,4 +38,9 @@ public class NetworkMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 		WizardFrameCloser.bind(wizard, dialog);
 		return dialog;
 	}
+	
+	@Override
+	public boolean isToolbarCategory() {
+		return true;
+	}
 }

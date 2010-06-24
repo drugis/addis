@@ -35,4 +35,9 @@ public class StudiesKnowledge extends CategoryKnowledgeBase {
 		WizardFrameCloser.bind(wizard, dialog);
 		return dialog;
 	}
+	
+	@Override
+	public boolean isToolbarCategory() {
+		return true;
+	}
 }

@@ -46,4 +46,8 @@ public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 	public JDialog getAddDialog(Main main, Domain domain, ValueModel selectionModel) {
 		return null;
 	}
+	
+	public boolean isToolbarCategory() {
+		return false;
+	}
 }

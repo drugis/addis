@@ -87,8 +87,6 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
-import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.gui.builder.EntitiesNodeView;
 import org.drugis.addis.gui.builder.StudiesNodeView;
 import org.drugis.addis.gui.builder.ViewFactory;
@@ -255,7 +253,7 @@ public class Main extends JFrame {
 		dlg.setVisible(true);
 	}
 
-	private JMenu createAddMenu() { // FIXME
+	private JMenu createAddMenu() {
 		JMenu addMenu = new JMenu("Add");
 		addMenu.setMnemonic('a');
 		for (EntityCategory cat : getDomain().getCategories()) {
@@ -379,7 +377,7 @@ public class Main extends JFrame {
 	}
 
 	private JMenuItem createAddMenuItem(final CategoryKnowledge knowledge) {
-		JMenuItem item = new JMenuItem(knowledge.getSingular(), ImageLoader.getIcon(knowledge.getIconName()));
+		JMenuItem item = new JMenuItem(knowledge.getSingular(), ImageLoader.getIcon(knowledge.getNewIconName()));
 		item.setMnemonic(knowledge.getMnemonic());
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -498,50 +496,13 @@ public class Main extends JFrame {
 		toolbar.setFloatable(false);
 		toolbar.setLayout(new BorderLayout());
 
-		JButton topAddStudyButton = new JButton("Add study", ImageLoader
-				.getIcon(FileNames.ICON_STUDY_NEW));
-		topAddStudyButton.setToolTipText("Add study");
-		topAddStudyButton.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-				showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class), null);
-			}
-		});
-
-		JButton topAddMetaStudyButton = new JButton("Create meta-analysis",
-				ImageLoader.getIcon(FileNames.ICON_METASTUDY_NEW));
-		topAddMetaStudyButton.setToolTipText("Create meta-analysis");
-		topAddMetaStudyButton.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-				showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(PairWiseMetaAnalysis.class), null);
-			}
-		});
-
-		JButton topAddNetworkMetaStudyButton = new JButton(
-				"Create network meta-analysis", ImageLoader
-						.getIcon(FileNames.ICON_NETWMETASTUDY_NEW));
-		topAddNetworkMetaStudyButton
-				.setToolTipText("Create network meta-analysis");
-		topAddNetworkMetaStudyButton.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-				showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(NetworkMetaAnalysis.class), null);
-			}
-		});
-
-		JButton topAddBRAnalysisButton = new JButton(
-				"Create benefit-risk analysis", ImageLoader
-						.getIcon(FileNames.ICON_BENEFITRISK));
-		topAddBRAnalysisButton.setToolTipText("Create benefit-risk analysis");
-		topAddBRAnalysisButton.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-				showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(BenefitRiskAnalysis.class), null);
-			}
-		});
-
 		ButtonBarBuilder2 builder = new ButtonBarBuilder2();
-		builder.addButton(topAddStudyButton);
-		builder.addButton(topAddMetaStudyButton);
-		builder.addButton(topAddNetworkMetaStudyButton);
-		builder.addButton(topAddBRAnalysisButton);
+		for (EntityCategory cat : getDomain().getCategories()) {
+			CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(cat);
+			if (knowledge.isToolbarCategory()) {
+				builder.addButton(createToolbarButton(knowledge));
+			}
+		}
 		builder.addGlue();
 
 		String latestVersion = AppInfo.getLatestVersion();
@@ -558,6 +519,19 @@ public class Main extends JFrame {
 		toolbar.add(builder.getPanel(), BorderLayout.CENTER);
 		toolbar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		add(toolbar, BorderLayout.NORTH);
+	}
+
+	private JButton createToolbarButton(final CategoryKnowledge knowledge) {
+		String title = "Create " + knowledge.getSingular();
+		JButton topAddStudyButton = new JButton(title,
+				ImageLoader.getIcon(knowledge.getNewIconName()));
+		topAddStudyButton.setToolTipText(title);
+		topAddStudyButton.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				showAddDialog(knowledge, null);
+			}
+		});
+		return topAddStudyButton;
 	}
 
 	private void initPanel() {

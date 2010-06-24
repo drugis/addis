@@ -34,5 +34,13 @@ public interface CategoryKnowledge {
 	 */
 	public char getMnemonic();
 	
+	/**
+	 * Builds the creation dialog for this category.
+	 */
 	public JDialog getAddDialog(Main main, Domain domain, ValueModel selectionModel);
+	
+	/**
+	 * Whether the category should get a toolbar button.
+	 */
+	public boolean isToolbarCategory();
 }

@@ -17,7 +17,6 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 		super("Benefit-risk analysis", "Benefit-risk analyses", FileNames.ICON_BENEFITRISK);
 	}
 	
-
 	@Override
 	public JDialog getAddDialog(Main main, Domain domain,
 			ValueModel selectionModel) {
@@ -28,5 +27,10 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 		dialog.pack();
 		WizardFrameCloser.bind(wizard, dialog);
 		return dialog;
+	}
+	
+	@Override
+	public boolean isToolbarCategory() {
+		return true;
 	}
 }
