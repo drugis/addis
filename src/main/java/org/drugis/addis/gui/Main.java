@@ -79,11 +79,16 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.DomainManager;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityCategory;
+import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.gui.builder.EntitiesNodeView;
 import org.drugis.addis.gui.builder.StudiesNodeView;
 import org.drugis.addis.gui.builder.ViewFactory;
@@ -811,39 +816,39 @@ public class Main extends JFrame {
 	};
 	
 	private void categorySelected(EntityCategory node) {
-		if (node.equals(d_domainTreeModel.getStudiesNode())) {
+		if (node.getEntityClass().equals(Study.class)) {
 			DefaultStudyListPresentationModel studyListPM = new DefaultStudyListPresentationModel(
 					getDomain().getStudiesHolder());
 			StudiesNodeView view = new StudiesNodeView(new StudiesTablePanel(
 					studyListPM, this));
 			setRightPanelView(view);
-		} else if (node.equals(d_domainTreeModel.getDrugsNode())) {
+		} else if (node.getEntityClass().equals(Drug.class)) {
 			String[] properties = { "name", "atcCode" };
 			buildEntityTable(getDomain().getDrugs(), properties, node.getPlural());
-		} else if (node.equals(d_domainTreeModel.getIndicationsNode())) {
+		} else if (node.getEntityClass().equals(Indication.class)) {
 			String[] properties = { "name", "code" };
 			buildEntityTable(getDomain().getIndications(), properties,
 					node.getPlural());
-		} else if (node.equals(d_domainTreeModel.getEndpointsNode())) {
+		} else if (node.getEntityClass().equals(Endpoint.class)) {
 			String[] properties = { "name", "description", "unitOfMeasurement",
 					"type", "direction" };
 			buildEntityTable(getDomain().getEndpoints(), properties, node.getPlural());
-		} else if (node.equals(d_domainTreeModel.getAdverseEventsNode())) {
+		} else if (node.getEntityClass().equals(AdverseEvent.class)) {
 			String[] properties = { "name", "description", "unitOfMeasurement",
 					"type", "direction" };
 			buildEntityTable(getDomain().getAdverseEvents(), properties,
 					node.getPlural());
-		} else if (node.equals(d_domainTreeModel .getPopulationCharacteristicsNode())) {
+		} else if (node.getEntityClass().equals(PopulationCharacteristic.class)) {
 			String[] properties = { "name", "description", "unitOfMeasurement",
 					"type" };
 			buildEntityTable(getDomain().getPopulationCharacteristics(), properties,
 					node.getPlural());
-		} else if (node.equals(d_domainTreeModel.getMetaAnalysesNode())) {
+		} else if (node.getEntityClass().equals(MetaAnalysis.class)) {
 			String[] properties = { "name", "type", "indication", "outcomeMeasure",
 					"includedDrugs", "studiesIncluded", "sampleSize" };
 			buildEntityTable(getDomain().getMetaAnalyses(), properties,
 					node.getPlural());
-		} else if (node.equals(d_domainTreeModel.getBenefitRiskAnalysesNode())) {
+		} else if (node.getEntityClass().equals(BenefitRiskAnalysis.class)) {
 			String[] properties = { "name", "indication", "outcomeMeasures",
 					"metaAnalyses", "baseline", "drugs" };
 			buildEntityTable(getDomain().getBenefitRiskAnalyses(), properties,

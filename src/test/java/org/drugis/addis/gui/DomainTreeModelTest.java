@@ -53,6 +53,8 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.junit.Before;
@@ -201,14 +203,14 @@ public class DomainTreeModelTest {
 	public void testGetChildCount() {
 		assertEquals(8, d_treeModel.getChildCount(d_treeModel.getRoot()));
 		
-		assertEquals(2, d_treeModel.getChildCount(d_treeModel.getMetaAnalysesNode()));
-		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getIndicationsNode()));
-		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getEndpointsNode()));
-		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getAdverseEventsNode()));	
-		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getPopulationCharacteristicsNode()));	
-		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getDrugsNode()));		
-		assertEquals(1, d_treeModel.getChildCount(d_treeModel.getStudiesNode()));
-		assertEquals(0, d_treeModel.getChildCount(d_treeModel.getBenefitRiskAnalysesNode()));
+		assertEquals(2, d_treeModel.getChildCount(d_domain.getCategory(MetaAnalysis.class)));
+		assertEquals(1, d_treeModel.getChildCount(d_domain.getCategory(Indication.class)));
+		assertEquals(1, d_treeModel.getChildCount(d_domain.getCategory(Endpoint.class)));
+		assertEquals(1, d_treeModel.getChildCount(d_domain.getCategory(AdverseEvent.class)));	
+		assertEquals(1, d_treeModel.getChildCount(d_domain.getCategory(PopulationCharacteristic.class)));	
+		assertEquals(1, d_treeModel.getChildCount(d_domain.getCategory(Drug.class)));		
+		assertEquals(1, d_treeModel.getChildCount(d_domain.getCategory(Study.class)));
+		assertEquals(0, d_treeModel.getChildCount(d_domain.getCategory(BenefitRiskAnalysis.class)));
 		assertEquals(0, d_treeModel.getChildCount(d_firstEndpoint));
 	}
 
@@ -346,12 +348,12 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testGetPathToCategory() {
-		assertEquals(new TreePath(new Object[] { d_treeModel.getRoot(), d_treeModel.getIndicationsNode() }), 
-				d_treeModel.getPathTo(d_treeModel.getIndicationsNode()));
-		assertEquals(new TreePath(new Object[] { d_treeModel.getRoot(), d_treeModel.getEndpointsNode() }), 
-				d_treeModel.getPathTo(d_treeModel.getEndpointsNode()));
-		assertEquals(new TreePath(new Object[] { d_treeModel.getRoot(), d_treeModel.getBenefitRiskAnalysesNode() }), 
-				d_treeModel.getPathTo(d_treeModel.getBenefitRiskAnalysesNode()));
+		assertEquals(new TreePath(new Object[] { d_treeModel.getRoot(), d_domain.getCategory(Indication.class) }), 
+				d_treeModel.getPathTo(d_domain.getCategory(Indication.class)));
+		assertEquals(new TreePath(new Object[] { d_treeModel.getRoot(), d_domain.getCategory(Endpoint.class) }), 
+				d_treeModel.getPathTo(d_domain.getCategory(Endpoint.class)));
+		assertEquals(new TreePath(new Object[] { d_treeModel.getRoot(), d_domain.getCategory(BenefitRiskAnalysis.class) }), 
+				d_treeModel.getPathTo(d_domain.getCategory(BenefitRiskAnalysis.class)));
 	}
 	
 	@Test
