@@ -60,9 +60,13 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
+import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.StudyView;
@@ -242,7 +246,7 @@ public class AddStudyWizard implements ViewBuilder{
 			}
 			
 			public void actionPerformed(ActionEvent e) {
-				d_main.showAddDrugDialog(d_pm.getArmModel(d_index).getModel(Arm.PROPERTY_DRUG));
+				d_main.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class), d_pm.getArmModel(d_index).getModel(Arm.PROPERTY_DRUG));
 			}
 		}
 		private class RemoveArmListener extends AbstractAction {
@@ -395,7 +399,8 @@ public class AddStudyWizard implements ViewBuilder{
 			}
 			
 			public void actionPerformed(ActionEvent e) {
-				d_main.showAddEndpointDialog(d_pm.getEndpointModel(d_index));
+				d_main.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Endpoint.class),
+						d_pm.getEndpointModel(d_index));
 			}
 		}
 		
@@ -653,7 +658,8 @@ public class AddStudyWizard implements ViewBuilder{
 			d_builder.add(btn, cc.xy(5, 3));
 			btn.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent arg0) {
-					d_main.showAddIndicationDialog(d_pm.getIndicationModel());
+					d_main.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Indication.class),
+							d_pm.getIndicationModel());
 				}
 			});
 			

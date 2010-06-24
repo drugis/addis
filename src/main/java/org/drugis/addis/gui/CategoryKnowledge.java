@@ -1,5 +1,11 @@
 package org.drugis.addis.gui;
 
+import javax.swing.JDialog;
+
+import org.drugis.addis.entities.Domain;
+
+import com.jgoodies.binding.value.ValueModel;
+
 
 public interface CategoryKnowledge {
 	
@@ -17,4 +23,16 @@ public interface CategoryKnowledge {
 	 * Get the filename for the entity icon.
 	 */
 	public String getIconName();
+	
+	/**
+	 * Get the filename for the entity "new" icon.
+	 */
+	public String getNewIconName();
+
+	/**
+	 * Get the entity mnemonic (keyboard shortcut).
+	 */
+	public char getMnemonic();
+	
+	public JDialog getAddDialog(Main main, Domain domain, ValueModel selectionModel);
 }

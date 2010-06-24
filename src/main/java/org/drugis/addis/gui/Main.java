@@ -73,7 +73,6 @@ import javax.swing.tree.TreePath;
 import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.AdverseEvent;
-import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
@@ -86,24 +85,19 @@ import org.drugis.addis.entities.EntityCategory;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.gui.builder.EntitiesNodeView;
 import org.drugis.addis.gui.builder.StudiesNodeView;
 import org.drugis.addis.gui.builder.ViewFactory;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.StudiesTablePanel;
-import org.drugis.addis.gui.wizard.BenefitRiskWizard;
-import org.drugis.addis.gui.wizard.MetaAnalysisWizard;
-import org.drugis.addis.gui.wizard.NetworkMetaAnalysisWizard;
 import org.drugis.addis.presentation.DefaultStudyListPresentationModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
-import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
-import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
-import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
@@ -261,7 +255,7 @@ public class Main extends JFrame {
 		dlg.setVisible(true);
 	}
 
-	private JMenu createAddMenu() {
+	private JMenu createAddMenu() { // FIXME
 		JMenu addMenu = new JMenu("Add");
 		addMenu.setMnemonic('a');
 		addMenu.add(createAddIndicationMenuItem());
@@ -269,7 +263,6 @@ public class Main extends JFrame {
 		addMenu.add(createAddEndpointMenuItem());
 		addMenu.add(createAddAdverseEventMenuItem());
 		addMenu.add(createAddPopulationCharacteristicMenuItem());
-
 		addMenu.add(createAddStudyMenuItem());
 		addMenu.add(createAddMetaAnalysisMenuItem());
 		addMenu.add(createAddNetworkMetaAnalysisMenuItem());
@@ -392,165 +385,67 @@ public class Main extends JFrame {
 	}
 
 	private JMenuItem createAddEndpointMenuItem() {
-		JMenuItem item = new JMenuItem("Endpoint", ImageLoader
-				.getIcon(FileNames.ICON_ENDPOINT));
-		item.setMnemonic('e');
-		item.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				showAddEndpointDialog(null);
-			}
-		});
-
-		return item;
+		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(Endpoint.class);
+		return createAddMenuItem(knowledge);
 	}
 
 	private JMenuItem createAddAdverseEventMenuItem() {
-		JMenuItem item = new JMenuItem("Adverse drug event", ImageLoader
-				.getIcon(FileNames.ICON_ADVERSE_EVENT));
-		item.setMnemonic('a');
-		item.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				showAddAdverseEventDialog(null);
-			}
-		});
-
-		return item;
+		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(AdverseEvent.class);
+		return createAddMenuItem(knowledge);
 	}
 
 	private JMenuItem createAddPopulationCharacteristicMenuItem() {
-		JMenuItem item = new JMenuItem("Population characteristic", ImageLoader
-				.getIcon(FileNames.ICON_POPULATION_CHAR));
-		item.setMnemonic('p');
-		item.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				showAddPopulationCharacteristicDialog(null);
-			}
-		});
-
-		return item;
+		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(PopulationCharacteristic.class);
+		return createAddMenuItem(knowledge);
 	}
 
 	private JMenuItem createAddStudyMenuItem() {
-		JMenuItem item = new JMenuItem("Study", ImageLoader
-				.getIcon(FileNames.ICON_STUDY_NEW));
-		item.setMnemonic('s');
-		item.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				showAddStudyWizard();
-			}
-		});
-
-		return item;
+		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(Study.class);
+		return createAddMenuItem(knowledge);
 	}
 
 	private JMenuItem createAddMetaAnalysisMenuItem() {
-		JMenuItem item = new JMenuItem("Meta-Analysis", ImageLoader
-				.getIcon(FileNames.ICON_METASTUDY_NEW));
-		item.setMnemonic('m');
-		item.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				showMetaAnalysisWizard();
-			}
-		});
-
-		return item;
+		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(PairWiseMetaAnalysis.class);
+		return createAddMenuItem(knowledge);
 	}
 
 	private JMenuItem createAddBRAnalysisMenuItem() {
-		JMenuItem item = new JMenuItem("Benefit-Risk Analysis", ImageLoader
-				.getIcon(FileNames.ICON_BENEFITRISK));
-		item.setMnemonic('b');
-		item.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				showBRAnalysisWizard();
-			}
-		});
-
-		return item;
+		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(BenefitRiskAnalysis.class);
+		return createAddMenuItem(knowledge);
 	}
 
 	private JMenuItem createAddNetworkMetaAnalysisMenuItem() {
-		JMenuItem item = new JMenuItem("Network Meta-Analysis", ImageLoader
-				.getIcon(FileNames.ICON_NETWMETASTUDY_NEW));
-		item.setMnemonic('n');
-		item.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				showNetworkMetaAnalysisWizard();
-			}
-		});
-
-		return item;
+		final CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(NetworkMetaAnalysis.class);
+		return createAddMenuItem(knowledge);
 	}
 
 	private JMenuItem createAddIndicationMenuItem() {
-		JMenuItem item = new JMenuItem("Indication", ImageLoader
-				.getIcon(FileNames.ICON_INDICATION));
-		item.setMnemonic('i');
+		final CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(Indication.class);
+		return createAddMenuItem(knowledge);
+	}
+
+	private JMenuItem createAddMenuItem(final CategoryKnowledge knowledge) {
+		JMenuItem item = new JMenuItem(knowledge.getSingular(), ImageLoader.getIcon(knowledge.getIconName()));
+		item.setMnemonic(knowledge.getMnemonic());
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				showAddIndicationDialog(null);
+				showAddDialog(knowledge, null);
 			}
-
 		});
-
 		return item;
 	}
 
 	private JMenuItem createAddDrugMenuItem() {
-		JMenuItem item = new JMenuItem("Drug", ImageLoader
-				.getIcon(FileNames.ICON_DRUG));
-		item.setMnemonic('d');
-		item.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				showAddDrugDialog(null);
-			}
-
-		});
-
-		return item;
+		final CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class);
+		return createAddMenuItem(knowledge);
 	}
 
-	public void showAddIndicationDialog(ValueModel selectionModel) {
-		AddIndicationDialog dialog = new AddIndicationDialog(this, getDomain(),
-				selectionModel);
+	public void showAddDialog(CategoryKnowledge knowledge, ValueModel selectionModel) {
+		JDialog dialog = knowledge.getAddDialog(this, getDomain(), selectionModel);
 		GUIHelper.centerWindow(dialog, this);
 		dialog.setVisible(true);
 	}
 
-	public void showAddEndpointDialog(ValueModel selectionModel) {
-		AddVariableDialog dialog = new AddVariableDialog(this, getDomain(),
-				new Endpoint("", Variable.Type.RATE), selectionModel);
-		GUIHelper.centerWindow(dialog, this);
-		dialog.setVisible(true);
-	}
-
-	public void showAddAdverseEventDialog(ValueModel selectionModel) {
-		AddVariableDialog dialog = new AddVariableDialog(this, getDomain(),
-				new AdverseEvent("", Variable.Type.RATE), selectionModel);
-		GUIHelper.centerWindow(dialog, this);
-		dialog.setVisible(true);
-	}
-
-	public void showAddPopulationCharacteristicDialog(ValueModel selectionModel) {
-		AddVariableDialog dialog = new AddVariableDialog(this, getDomain(),
-				new ContinuousPopulationCharacteristic(""), selectionModel);
-		GUIHelper.centerWindow(dialog, this);
-		dialog.setVisible(true);
-	}
-
-	private void showAddStudyWizard() {
-		JDialog dialog = new JDialog((Frame) this, "Add Study", true);
-		AddStudyWizard wizardBuilder = new AddStudyWizard(
-				new AddStudyWizardPresentation(getDomain(),
-						getPresentationModelFactory(), this), this, dialog);
-		Wizard wizard = wizardBuilder.buildPanel();
-		dialog.getContentPane().add(wizard);
-		dialog.pack();
-		WizardFrameCloser.bind(wizard, dialog);
-		dialog.setVisible(true);
-
-	}
-	
 	private void showEditStudyWizard(Study study) {
 		JDialog dialog = new JDialog((Frame) this, "Add Study", true);
 		AddStudyWizardPresentation pm = new AddStudyWizardPresentation(getDomain(),
@@ -562,13 +457,6 @@ public class Main extends JFrame {
 		dialog.getContentPane().add(wizard);
 		dialog.pack();
 		WizardFrameCloser.bind(wizard, dialog);
-		dialog.setVisible(true);
-	}
-
-	public void showAddDrugDialog(ValueModel selectionModel) {
-		AddDrugDialog dialog = new AddDrugDialog(this, getDomain(),
-				selectionModel);
-		GUIHelper.centerWindow(dialog, this);
 		dialog.setVisible(true);
 	}
 
@@ -666,7 +554,7 @@ public class Main extends JFrame {
 		topAddStudyButton.setToolTipText("Add study");
 		topAddStudyButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
-				showAddStudyWizard();
+				showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class), null);
 			}
 		});
 
@@ -675,7 +563,7 @@ public class Main extends JFrame {
 		topAddMetaStudyButton.setToolTipText("Create meta-analysis");
 		topAddMetaStudyButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
-				showMetaAnalysisWizard();
+				showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(PairWiseMetaAnalysis.class), null);
 			}
 		});
 
@@ -686,7 +574,7 @@ public class Main extends JFrame {
 				.setToolTipText("Create network meta-analysis");
 		topAddNetworkMetaStudyButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
-				showNetworkMetaAnalysisWizard();
+				showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(NetworkMetaAnalysis.class), null);
 			}
 		});
 
@@ -696,7 +584,7 @@ public class Main extends JFrame {
 		topAddBRAnalysisButton.setToolTipText("Create benefit-risk analysis");
 		topAddBRAnalysisButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
-				showBRAnalysisWizard();
+				showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(BenefitRiskAnalysis.class), null);
 			}
 		});
 
@@ -721,26 +609,6 @@ public class Main extends JFrame {
 		toolbar.add(builder.getPanel(), BorderLayout.CENTER);
 		toolbar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		add(toolbar, BorderLayout.NORTH);
-	}
-
-	private void showMetaAnalysisWizard() {
-		MetaAnalysisWizard wizard = new MetaAnalysisWizard(this,
-				new MetaAnalysisWizardPresentation(getDomain(), d_pmManager));
-		wizard.showInDialog(
-				"Create DerSimonian-Laird random effects meta-analysis", this,
-				true);
-	}
-
-	private void showBRAnalysisWizard() {
-		BenefitRiskWizard wizard = new BenefitRiskWizard(this,
-				new BenefitRiskWizardPM(getDomain()));
-		wizard.showInDialog("Create benefit-risk analysis", this, true);
-	}
-
-	private void showNetworkMetaAnalysisWizard() {
-		NetworkMetaAnalysisWizard wizard = new NetworkMetaAnalysisWizard(this,
-				new NetworkMetaAnalysisWizardPM(getDomain(), d_pmManager));
-		wizard.showInDialog("Create network meta-analysis", this, true);
 	}
 
 	private void initPanel() {

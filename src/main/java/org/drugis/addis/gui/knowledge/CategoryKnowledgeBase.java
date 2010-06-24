@@ -1,6 +1,12 @@
 package org.drugis.addis.gui.knowledge;
 
+import javax.swing.JDialog;
+
+import org.drugis.addis.entities.Domain;
 import org.drugis.addis.gui.CategoryKnowledge;
+import org.drugis.addis.gui.Main;
+
+import com.jgoodies.binding.value.ValueModel;
 
 public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 	private final String d_singular;
@@ -27,5 +33,17 @@ public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 	
 	public String getIconName() {
 		return d_iconName;
+	}
+	
+	public String getNewIconName() {
+		return d_iconName;
+	}
+	
+	public char getMnemonic() {
+		return getSingular().toLowerCase().charAt(0);
+	}
+	
+	public JDialog getAddDialog(Main main, Domain domain, ValueModel selectionModel) {
+		return null;
 	}
 }
