@@ -1,6 +1,5 @@
 package org.drugis.addis.gui.knowledge;
 
-import org.drugis.addis.entities.Entity;
 import org.drugis.addis.gui.CategoryKnowledge;
 
 public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
@@ -26,7 +25,7 @@ public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 		return d_singular;
 	}
 	
-	public String getIconName(Class<? extends Entity> cls) {
+	public String getIconName() {
 		return d_iconName;
 	}
 }

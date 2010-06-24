@@ -35,8 +35,8 @@ import java.util.List;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.common.JUnitUtil;
@@ -163,6 +163,13 @@ public class DomainTest {
 	private RandomEffectsMetaAnalysis addMetaAnalysisToDomain() throws Exception {
 		ExampleData.initDefaultData(d_domain);
 		RandomEffectsMetaAnalysis ma = generateMetaAnalysis();
+		d_domain.addMetaAnalysis(ma);
+		return ma;
+	}
+	
+	private NetworkMetaAnalysis addNetworkMetaAnalysisToDomain() throws Exception {
+		ExampleData.initDefaultData(d_domain);
+		NetworkMetaAnalysis ma = ExampleData.buildNetworkMetaAnalysis();
 		d_domain.addMetaAnalysis(ma);
 		return ma;
 	}
@@ -768,15 +775,16 @@ public class DomainTest {
 	
 	@Test
 	public void testGetCategories() {
-		assertEquals(8, d_domain.getCategories().size());
+		assertEquals(9, d_domain.getCategories().size());
 		assertEquals(Indication.class, d_domain.getCategories().get(0).getEntityClass());
 		assertEquals(Drug.class, d_domain.getCategories().get(1).getEntityClass());
 		assertEquals(Endpoint.class, d_domain.getCategories().get(2).getEntityClass());
 		assertEquals(AdverseEvent.class, d_domain.getCategories().get(3).getEntityClass());
 		assertEquals(PopulationCharacteristic.class, d_domain.getCategories().get(4).getEntityClass());
 		assertEquals(Study.class, d_domain.getCategories().get(5).getEntityClass());
-		assertEquals(MetaAnalysis.class, d_domain.getCategories().get(6).getEntityClass());
-		assertEquals(BenefitRiskAnalysis.class, d_domain.getCategories().get(7).getEntityClass());
+		assertEquals(PairWiseMetaAnalysis.class, d_domain.getCategories().get(6).getEntityClass());
+		assertEquals(NetworkMetaAnalysis.class, d_domain.getCategories().get(7).getEntityClass());
+		assertEquals(BenefitRiskAnalysis.class, d_domain.getCategories().get(8).getEntityClass());
 	}
 	
 	@Test
@@ -784,8 +792,8 @@ public class DomainTest {
 		assertEquals(Indication.class, d_domain.getCategory(Indication.class).getEntityClass());
 		assertEquals(null, d_domain.getCategory(Arm.class));
 		assertEquals(Drug.class, d_domain.getCategory(Drug.class).getEntityClass());
-		assertEquals(MetaAnalysis.class, d_domain.getCategory(MetaAnalysis.class).getEntityClass());
-		assertEquals(MetaAnalysis.class, d_domain.getCategory(NetworkMetaAnalysis.class).getEntityClass());
+		assertEquals(PairWiseMetaAnalysis.class, d_domain.getCategory(PairWiseMetaAnalysis.class).getEntityClass());
+		assertEquals(NetworkMetaAnalysis.class, d_domain.getCategory(NetworkMetaAnalysis.class).getEntityClass());
 	}
 	
 	@Test
@@ -810,9 +818,27 @@ public class DomainTest {
 				d_domain.getCategory(PopulationCharacteristic.class)));
 		assertEquals(d_domain.getStudies(), d_domain.getCategoryContents(
 				d_domain.getCategory(Study.class)));
-		assertEquals(d_domain.getMetaAnalyses(), d_domain.getCategoryContents(
-				d_domain.getCategory(MetaAnalysis.class)));
+		assertEquals(d_domain.getPairWiseMetaAnalyses(), d_domain.getCategoryContents(
+				d_domain.getCategory(PairWiseMetaAnalysis.class)));
 		assertEquals(d_domain.getBenefitRiskAnalyses(), d_domain.getCategoryContents(
 				d_domain.getCategory(BenefitRiskAnalysis.class)));
+	}
+	
+	@Test
+	public void testGetPairWiseMetaAnalyses() throws Exception {
+		assertEquals(Collections.emptySet(), d_domain.getPairWiseMetaAnalyses());
+		PairWiseMetaAnalysis anl = addMetaAnalysisToDomain();
+		assertEquals(Collections.singleton(anl), d_domain.getPairWiseMetaAnalyses());
+		addNetworkMetaAnalysisToDomain();
+		assertEquals(Collections.singleton(anl), d_domain.getPairWiseMetaAnalyses());
+	}
+	
+	@Test
+	public void testGetNetworkMetaAnalyses() throws Exception {
+		assertEquals(Collections.emptySet(), d_domain.getNetworkMetaAnalyses());
+		NetworkMetaAnalysis anl = addNetworkMetaAnalysisToDomain();
+		assertEquals(Collections.singleton(anl), d_domain.getNetworkMetaAnalyses());
+		addMetaAnalysisToDomain();
+		assertEquals(Collections.singleton(anl), d_domain.getNetworkMetaAnalyses());
 	}
 }

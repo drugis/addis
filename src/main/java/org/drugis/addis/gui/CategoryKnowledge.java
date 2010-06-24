@@ -1,6 +1,5 @@
 package org.drugis.addis.gui;
 
-import org.drugis.addis.entities.Entity;
 
 public interface CategoryKnowledge {
 	
@@ -17,5 +16,5 @@ public interface CategoryKnowledge {
 	/**
 	 * Get the filename for the entity icon.
 	 */
-	public String getIconName(Class<? extends Entity> cls);
+	public String getIconName();
 }

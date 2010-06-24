@@ -35,11 +35,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.util.XMLHelper;
@@ -59,8 +62,10 @@ public class DomainImpl implements Domain {
 		new EntityCategory("populationCharacteristics", PopulationCharacteristic.class);
 	private static final EntityCategory CATEGORY_STUDIES =
 		new EntityCategory("studies", Study.class);
-	private static final EntityCategory CATEGORY_META_ANALYSES =
-		new EntityCategory("metaAnalyses", MetaAnalysis.class);
+	private static final EntityCategory CATEGORY_PAIR_WISE_META_ANALYSES =
+		new EntityCategory("pairWiseMetaAnalyses", PairWiseMetaAnalysis.class);
+	private static final EntityCategory CATEGORY_NETWORK_META_ANALYSES =
+		new EntityCategory("networkMetaAnalyses", NetworkMetaAnalysis.class);
 	private static final EntityCategory CATEGORY_BENEFIT_RISK_ANALYSES =
 		new EntityCategory("benefitRiskAnalyses",
 				BenefitRiskAnalysis.class);
@@ -73,7 +78,8 @@ public class DomainImpl implements Domain {
 			CATEGORY_ADVERSE_EVENTS,
 			CATEGORY_POPULATION_CHARACTERISTICS,
 			CATEGORY_STUDIES,
-			CATEGORY_META_ANALYSES,
+			CATEGORY_PAIR_WISE_META_ANALYSES,
+			CATEGORY_NETWORK_META_ANALYSES,
 			CATEGORY_BENEFIT_RISK_ANALYSES
 		});
 	
@@ -564,5 +570,25 @@ public class DomainImpl implements Domain {
 		} catch (IntrospectionException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public SortedSet<NetworkMetaAnalysis> getNetworkMetaAnalyses() {
+		SortedSet<NetworkMetaAnalysis> nwAnalyses = new TreeSet<NetworkMetaAnalysis>();
+		for (MetaAnalysis ma : getMetaAnalyses()) {
+			if (ma instanceof NetworkMetaAnalysis) {
+				nwAnalyses.add((NetworkMetaAnalysis)ma);
+			}
+		}
+		return nwAnalyses;
+	}
+
+	public SortedSet<PairWiseMetaAnalysis> getPairWiseMetaAnalyses() {
+		SortedSet<PairWiseMetaAnalysis> pwAnalyses = new TreeSet<PairWiseMetaAnalysis>();
+		for (MetaAnalysis ma : getMetaAnalyses()) {
+			if (ma instanceof PairWiseMetaAnalysis) {
+				pwAnalyses.add((PairWiseMetaAnalysis)ma);
+			}
+		}
+		return pwAnalyses;
 	}
 }

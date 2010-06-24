@@ -26,6 +26,8 @@ import java.util.SortedSet;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 
 public interface Domain {
@@ -146,6 +148,18 @@ public interface Domain {
 	 * @return An unmodifiable sorted set of meta-studies. Never a null.
 	 */
 	public SortedSet<MetaAnalysis> getMetaAnalyses();	
+	
+	/**
+	 * Get the meta-studies stored in the data model.
+	 * @return An unmodifiable sorted set of meta-studies. Never a null.
+	 */
+	public SortedSet<NetworkMetaAnalysis> getNetworkMetaAnalyses();	
+	
+	/**
+	 * Get the meta-studies stored in the data model.
+	 * @return An unmodifiable sorted set of meta-studies. Never a null.
+	 */
+	public SortedSet<PairWiseMetaAnalysis> getPairWiseMetaAnalyses();	
 	
 	/**
 	 * Adds a BenefitRiskAnalysis to the data model.

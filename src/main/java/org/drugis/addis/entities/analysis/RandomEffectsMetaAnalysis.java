@@ -45,12 +45,9 @@ import org.drugis.addis.entities.relativeeffect.RandomEffectsRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
 
-public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
+public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements PairWiseMetaAnalysis {
 
 	public static final String PROPERTY_INCLUDED_STUDIES_COUNT = "studiesIncluded";
-	public static final String PROPERTY_FIRST_DRUG = "firstDrug";
-	public static final String PROPERTY_SECOND_DRUG = "secondDrug";
-	
 	private RandomEffectsMetaAnalysis() {
 		super();
 	}
@@ -144,10 +141,16 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis {
 		in.defaultReadObject();
 	}	
 	
+	/* (non-Javadoc)
+	 * @see org.drugis.addis.entities.analysis.PairWiseMetaAnalysis#getFirstDrug()
+	 */
 	public Drug getFirstDrug() {
 		return d_drugs.get(0);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.drugis.addis.entities.analysis.PairWiseMetaAnalysis#getSecondDrug()
+	 */
 	public Drug getSecondDrug() {
 		return d_drugs.get(1);
 	}

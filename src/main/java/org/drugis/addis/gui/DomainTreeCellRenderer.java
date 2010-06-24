@@ -49,10 +49,9 @@ public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 			super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 		}
 		if (value instanceof Entity) {
-			Entity entity = (Entity) value;
 			CategoryKnowledge knowledge =
 				CategoryKnowledgeFactory.getCategoryKnowledge(d_domain.getCategory((Entity)value));
-			setIcon(ImageLoader.getIcon(knowledge.getIconName(entity.getClass())));
+			setIcon(ImageLoader.getIcon(knowledge.getIconName()));
 			setToolTipText(knowledge.getSingular());
 		} else {
 			setToolTipText(null); //no tool tip

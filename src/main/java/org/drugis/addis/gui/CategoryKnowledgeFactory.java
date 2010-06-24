@@ -12,13 +12,15 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.gui.knowledge.AdverseEventsKnowledge;
 import org.drugis.addis.gui.knowledge.BenefitRiskAnalysesKnowledge;
 import org.drugis.addis.gui.knowledge.DrugsKnowledge;
 import org.drugis.addis.gui.knowledge.EndpointsKnowledge;
 import org.drugis.addis.gui.knowledge.IndicationsKnowledge;
-import org.drugis.addis.gui.knowledge.MetaAnalysesKnowledge;
+import org.drugis.addis.gui.knowledge.NetworkMetaAnalysesKnowledge;
+import org.drugis.addis.gui.knowledge.PairWiseMetaAnalysesKnowledge;
 import org.drugis.addis.gui.knowledge.PopulationCharacteristicsKnowledge;
 import org.drugis.addis.gui.knowledge.StudiesKnowledge;
 
@@ -32,7 +34,8 @@ public class CategoryKnowledgeFactory {
 		s_knowledge.put(AdverseEvent.class, new AdverseEventsKnowledge());
 		s_knowledge.put(PopulationCharacteristic.class, new PopulationCharacteristicsKnowledge());
 		s_knowledge.put(Study.class, new StudiesKnowledge());
-		s_knowledge.put(MetaAnalysis.class, new MetaAnalysesKnowledge());
+		s_knowledge.put(PairWiseMetaAnalysis.class, new PairWiseMetaAnalysesKnowledge());
+		s_knowledge.put(NetworkMetaAnalysis.class, new NetworkMetaAnalysesKnowledge());
 		s_knowledge.put(BenefitRiskAnalysis.class, new BenefitRiskAnalysesKnowledge());
 	};
 	
