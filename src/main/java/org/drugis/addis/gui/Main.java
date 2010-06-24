@@ -790,7 +790,7 @@ public class Main extends JFrame {
 	}
 
 	private void expandLeftPanelTree() {
-		for (EntityCategory cat : d_domainTreeModel.getCategories()) {
+		for (EntityCategory cat : d_domainMgr.getDomain().getCategories()) {
 			d_leftPanelTree.expandPath(new TreePath(new Object[] {
 					d_domainTreeModel.getRoot(), cat}));
 		}

@@ -118,85 +118,85 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testGetIndicationsNode() {
-		assertNotNull(d_treeModel.getIndicationsNode());
-		assertEquals("Indications", d_treeModel.getIndicationsNode().toString());
+		assertNotNull(d_domain.getCategory(Indication.class));
+		assertEquals("Indications", d_domain.getCategory(Indication.class).toString());
 	}
 	
 	@Test
 	public void testGetEndpointsNode() {
-		assertNotNull(d_treeModel.getEndpointsNode());
-		assertEquals("Endpoints", d_treeModel.getEndpointsNode().toString());
+		assertNotNull(d_domain.getCategory(Endpoint.class));
+		assertEquals("Endpoints", d_domain.getCategory(Endpoint.class).toString());
 	}
 	
 	@Test
 	public void testGetAdeNode() {
-		assertNotNull(d_treeModel.getAdverseEventsNode());
-		assertEquals("Adverse drug events", d_treeModel.getAdverseEventsNode().toString());
+		assertNotNull(d_domain.getCategory(AdverseEvent.class));
+		assertEquals("Adverse drug events", d_domain.getCategory(AdverseEvent.class).toString());
 	}
 	
 	@Test
 	public void testGetPopCharNode() {
-		assertNotNull(d_treeModel.getPopulationCharacteristicsNode());
-		assertEquals("Population characteristics", d_treeModel.getPopulationCharacteristicsNode().toString());
+		assertNotNull(d_domain.getCategory(PopulationCharacteristic.class));
+		assertEquals("Population characteristics", d_domain.getCategory(PopulationCharacteristic.class).toString());
 	}
 	
 	@Test
 	public void testGetStudiesNode() {
-		assertNotNull(d_treeModel.getStudiesNode());
-		assertEquals("Studies", d_treeModel.getStudiesNode().toString());
+		assertNotNull(d_domain.getCategory(Study.class));
+		assertEquals("Studies", d_domain.getCategory(Study.class).toString());
 	}
 	
 	@Test
 	public void testGetDrugsNode() {
-		assertEquals("Drugs", d_treeModel.getDrugsNode().toString());
+		assertEquals("Drugs", d_domain.getCategory(Drug.class).toString());
 	}
 	
 	@Test
 	public void testGetAnalysesNode(){
-		assertEquals("Meta-analyses",d_treeModel.getMetaAnalysesNode().toString());
+		assertEquals("Meta-analyses",d_domain.getCategory(MetaAnalysis.class).toString());
 	}
 	
 	@Test
 	public void testGetIndication() {
-		assertEquals(d_firstIndication, d_treeModel.getChild(d_treeModel.getIndicationsNode(), 0));
-		assertEquals(null, d_treeModel.getChild(d_treeModel.getIndicationsNode(), 1));
+		assertEquals(d_firstIndication, d_treeModel.getChild(d_domain.getCategory(Indication.class), 0));
+		assertEquals(null, d_treeModel.getChild(d_domain.getCategory(Indication.class), 1));
 	}
 
 	@Test
 	public void testGetEndpoint() {
-		assertEquals(d_firstEndpoint, d_treeModel.getChild(d_treeModel.getEndpointsNode(), 0));
-		assertEquals(null, d_treeModel.getChild(d_treeModel.getEndpointsNode(), 1));
+		assertEquals(d_firstEndpoint, d_treeModel.getChild(d_domain.getCategory(Endpoint.class), 0));
+		assertEquals(null, d_treeModel.getChild(d_domain.getCategory(Endpoint.class), 1));
 	}
 	
 	@Test
 	public void testGetADE() {
-		assertEquals(d_firstADE, d_treeModel.getChild(d_treeModel.getAdverseEventsNode(), 0));
-		assertEquals(null, d_treeModel.getChild(d_treeModel.getAdverseEventsNode(), 1));
+		assertEquals(d_firstADE, d_treeModel.getChild(d_domain.getCategory(AdverseEvent.class), 0));
+		assertEquals(null, d_treeModel.getChild(d_domain.getCategory(AdverseEvent.class), 1));
 	}
 	
 	@Test
 	public void testGetPopChar() {
-		assertEquals(d_firstPopChar, d_treeModel.getChild(d_treeModel.getPopulationCharacteristicsNode(), 0));
-		assertEquals(null, d_treeModel.getChild(d_treeModel.getAdverseEventsNode(), 1));
+		assertEquals(d_firstPopChar, d_treeModel.getChild(d_domain.getCategory(PopulationCharacteristic.class), 0));
+		assertEquals(null, d_treeModel.getChild(d_domain.getCategory(AdverseEvent.class), 1));
 	}
 	
 	@Test
 	public void testGetDrug() {
-		assertEquals(d_firstDrug, d_treeModel.getChild(d_treeModel.getDrugsNode(), 0));
-		assertEquals(null, d_treeModel.getChild(d_treeModel.getDrugsNode(), 1));		
+		assertEquals(d_firstDrug, d_treeModel.getChild(d_domain.getCategory(Drug.class), 0));
+		assertEquals(null, d_treeModel.getChild(d_domain.getCategory(Drug.class), 1));		
 	}
 	
 	@Test
 	public void testGetAnalysis() {
-		assertEquals(d_networkAnalysis, d_treeModel.getChild(d_treeModel.getMetaAnalysesNode(), 0));
-		assertEquals(d_firstMetaAnalysis, d_treeModel.getChild(d_treeModel.getMetaAnalysesNode(), 1));
-		assertEquals(null, d_treeModel.getChild(d_treeModel.getMetaAnalysesNode(), 2));		
+		assertEquals(d_networkAnalysis, d_treeModel.getChild(d_domain.getCategory(MetaAnalysis.class), 0));
+		assertEquals(d_firstMetaAnalysis, d_treeModel.getChild(d_domain.getCategory(MetaAnalysis.class), 1));
+		assertEquals(null, d_treeModel.getChild(d_domain.getCategory(MetaAnalysis.class), 2));		
 	}
 	
 	@Test
 	public void testGetStudy() {
-		assertEquals(d_firstStudy, d_treeModel.getChild(d_treeModel.getStudiesNode(), 0));
-		assertEquals(null, d_treeModel.getChild(d_treeModel.getStudiesNode(), 1));
+		assertEquals(d_firstStudy, d_treeModel.getChild(d_domain.getCategory(Study.class), 0));
+		assertEquals(null, d_treeModel.getChild(d_domain.getCategory(Study.class), 1));
 	}
 	
 	@Test
@@ -217,7 +217,7 @@ public class DomainTreeModelTest {
 	@Test
 	public void testGetIndexOfChild() {
 		// test root
-		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), d_treeModel.getIndicationsNode()));
+		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), d_domain.getCategory(Indication.class)));
 			
 		// test categories
 		for (EntityCategory cat : d_domain.getCategories()) {
@@ -226,28 +226,28 @@ public class DomainTreeModelTest {
 		}
 		
 		// test first element of every category
-		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getIndicationsNode(), d_firstIndication));
-		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getEndpointsNode(), d_firstEndpoint));	
-		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getAdverseEventsNode(), d_firstADE));			
-		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getPopulationCharacteristicsNode(), d_firstPopChar));			
-		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getStudiesNode(), d_firstStudy));
-		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getDrugsNode(), d_firstDrug));
-		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getMetaAnalysesNode(), d_networkAnalysis));
+		assertEquals(0, d_treeModel.getIndexOfChild(d_domain.getCategory(Indication.class), d_firstIndication));
+		assertEquals(0, d_treeModel.getIndexOfChild(d_domain.getCategory(Endpoint.class), d_firstEndpoint));	
+		assertEquals(0, d_treeModel.getIndexOfChild(d_domain.getCategory(AdverseEvent.class), d_firstADE));			
+		assertEquals(0, d_treeModel.getIndexOfChild(d_domain.getCategory(PopulationCharacteristic.class), d_firstPopChar));			
+		assertEquals(0, d_treeModel.getIndexOfChild(d_domain.getCategory(Study.class), d_firstStudy));
+		assertEquals(0, d_treeModel.getIndexOfChild(d_domain.getCategory(Drug.class), d_firstDrug));
+		assertEquals(0, d_treeModel.getIndexOfChild(d_domain.getCategory(MetaAnalysis.class), d_networkAnalysis));
 		
 		// test non element of tree
-		assertEquals(-1, d_treeModel.getIndexOfChild(d_treeModel.getEndpointsNode(), new Object()));
+		assertEquals(-1, d_treeModel.getIndexOfChild(d_domain.getCategory(Endpoint.class), new Object()));
 	}
 	
 	@Test
 	public void testIsLeaf() {
 		assertFalse(d_treeModel.isLeaf(d_treeModel.getRoot()));
 		
-		assertFalse(d_treeModel.isLeaf(d_treeModel.getIndicationsNode()));		
-		assertFalse(d_treeModel.isLeaf(d_treeModel.getEndpointsNode()));
-		assertFalse(d_treeModel.isLeaf(d_treeModel.getAdverseEventsNode()));		
-		assertFalse(d_treeModel.isLeaf(d_treeModel.getStudiesNode()));
-		assertFalse(d_treeModel.isLeaf(d_treeModel.getDrugsNode()));		
-		assertFalse(d_treeModel.isLeaf(d_treeModel.getMetaAnalysesNode()));	
+		assertFalse(d_treeModel.isLeaf(d_domain.getCategory(Indication.class)));		
+		assertFalse(d_treeModel.isLeaf(d_domain.getCategory(Endpoint.class)));
+		assertFalse(d_treeModel.isLeaf(d_domain.getCategory(AdverseEvent.class)));		
+		assertFalse(d_treeModel.isLeaf(d_domain.getCategory(Study.class)));
+		assertFalse(d_treeModel.isLeaf(d_domain.getCategory(Drug.class)));		
+		assertFalse(d_treeModel.isLeaf(d_domain.getCategory(MetaAnalysis.class)));	
 		
 		assertTrue(d_treeModel.isLeaf(d_firstIndication));
 		assertTrue(d_treeModel.isLeaf(d_firstEndpoint));
@@ -360,11 +360,11 @@ public class DomainTreeModelTest {
 	public void testGetPathToEntity() {
 		assertEquals(
 				new TreePath(new Object[] {
-						d_treeModel.getRoot(), d_treeModel.getIndicationsNode(), d_firstIndication}),
+						d_treeModel.getRoot(), d_domain.getCategory(Indication.class), d_firstIndication}),
 				d_treeModel.getPathTo(d_firstIndication));
 		assertEquals(
 				new TreePath(new Object[] {
-						d_treeModel.getRoot(), d_treeModel.getMetaAnalysesNode(), d_firstMetaAnalysis}),
+						d_treeModel.getRoot(), d_domain.getCategory(MetaAnalysis.class), d_firstMetaAnalysis}),
 				d_treeModel.getPathTo(d_firstMetaAnalysis));
 	}
 }

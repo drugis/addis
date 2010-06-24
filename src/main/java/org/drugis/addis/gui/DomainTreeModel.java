@@ -30,19 +30,11 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
-import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityCategory;
-import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.PopulationCharacteristic;
-import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.common.CollectionUtil;
 
 
@@ -67,10 +59,10 @@ public class DomainTreeModel implements TreeModel {
 	}
 
 	public Object getChild(Object parent, int childIndex) {
-		if (d_root == parent && childIndex >= 0 && childIndex < getCategories().size()) {
-			return getCategories().get(childIndex);
+		if (d_root == parent && childIndex >= 0 && childIndex < d_domain.getCategories().size()) {
+			return d_domain.getCategories().get(childIndex);
 		} else {
-			for (EntityCategory cat : getCategories()) {
+			for (EntityCategory cat : d_domain.getCategories()) {
 				if (isCategoryRequest(cat, parent, childIndex)) {
 					return CollectionUtil.getElementAtIndex(d_domain.getCategoryContents(cat), childIndex);
 				}
@@ -85,16 +77,16 @@ public class DomainTreeModel implements TreeModel {
 	}
 
 	private EntityCategory getCategoryNode(Object node) {
-		int typeIdx = getCategories().indexOf(node);
+		int typeIdx = d_domain.getCategories().indexOf(node);
 		if (typeIdx >= 0) {
-			return getCategories().get(typeIdx);
+			return d_domain.getCategories().get(typeIdx);
 		}
 		return null;
 	}
 
 	public int getChildCount(Object parent) {
 		if (d_root == parent) {
-			return getCategories().size();
+			return d_domain.getCategories().size();
 		} else {
 			SortedSet<?> contents = d_domain.getCategoryContents(getCategoryNode(parent));
 			if (contents != null) {
@@ -106,7 +98,7 @@ public class DomainTreeModel implements TreeModel {
 
 	public int getIndexOfChild(Object parent, Object child) {
 		if (parent == d_root) {
-			return getCategories().indexOf(child);
+			return d_domain.getCategories().indexOf(child);
 		} else {
 			SortedSet<?> contents = d_domain.getCategoryContents(getCategoryNode(parent));
 			if (contents != null) {
@@ -133,7 +125,7 @@ public class DomainTreeModel implements TreeModel {
 	public TreePath getPathTo(Object node) {
 		if (d_root.equals(node)) {
 			return new TreePath(new Object[] { d_root });
-		} else if (getCategories().contains(node)) {
+		} else if (d_domain.getCategories().contains(node)) {
 			return new TreePath(new Object[] { d_root, node });
 		} else if (isLeaf(node)) {
 			return new TreePath(new Object[] { d_root, d_domain.getCategory(((Entity)node)), node }); 
@@ -159,41 +151,4 @@ public class DomainTreeModel implements TreeModel {
 
 	public void valueForPathChanged(TreePath path, Object node) {
 	}
-	
-	public Object getIndicationsNode() {
-		return d_domain.getCategory(Indication.class);
-	}
-
-	public Object getStudiesNode() {
-		return d_domain.getCategory(Study.class);
-	}
-
-	public Object getEndpointsNode() {
-		return d_domain.getCategory(Endpoint.class);
-	}
-	
-	public Object getAdverseEventsNode() {
-		return d_domain.getCategory(AdverseEvent.class);
-	}
-	
-	public Object getDrugsNode() {
-		return d_domain.getCategory(Drug.class);
-	}
-	
-	public Object getMetaAnalysesNode() {
-		return d_domain.getCategory(MetaAnalysis.class);
-	}
-	
-	public Object getPopulationCharacteristicsNode() {
-		return d_domain.getCategory(PopulationCharacteristic.class);
-	}
-	
-	public Object getBenefitRiskAnalysesNode() {
-		return d_domain.getCategory(BenefitRiskAnalysis.class);
-	}
-
-	public List<EntityCategory> getCategories() {
-		return d_domain.getCategories();
-	}
-	
 }
