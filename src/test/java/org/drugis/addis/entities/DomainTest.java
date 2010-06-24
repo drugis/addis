@@ -97,7 +97,7 @@ public class DomainTest {
 	
 	@Test(expected=NullPointerException.class)
 	public void testAddVariableNull() {
-		d_domain.addVariable(null);
+		d_domain.addPopulationCharacteristic(null);
 	}	
 	
 
@@ -663,9 +663,9 @@ public class DomainTest {
 	@Test
 	public void testGetVariables() {
 		CategoricalPopulationCharacteristic c = new CategoricalPopulationCharacteristic("x", new String[]{"x", "y", "z"});
-		d_domain.addVariable(c);
+		d_domain.addPopulationCharacteristic(c);
 		
-		assertEquals(Collections.singleton(c), d_domain.getVariables());
+		assertEquals(Collections.singleton(c), d_domain.getPopulationCharacteristics());
 	}
 	
 	@Test
@@ -674,16 +674,16 @@ public class DomainTest {
 		d_domain.addListener(mock);
 		mock.domainChanged(new DomainEvent(DomainEvent.Type.VARIABLES));
 		replay(mock);
-		d_domain.addVariable(new CategoricalPopulationCharacteristic("x", new String[]{"x"}));
+		d_domain.addPopulationCharacteristic(new CategoricalPopulationCharacteristic("x", new String[]{"x"}));
 		verify(mock);
 	}
 	
 	@Test
 	public void testVariablesHolder() {
-		ListHolder<PopulationCharacteristic> vars = d_domain.getVariablesHolder();
+		ListHolder<PopulationCharacteristic> vars = d_domain.getPopulationCharacteristicsHolder();
 		
 		PopulationCharacteristic v1 = new ContinuousPopulationCharacteristic("Age");
-		d_domain.addVariable(v1);
+		d_domain.addPopulationCharacteristic(v1);
 		
 		assertEquals(1, vars.getValue().size());
 		assertTrue(vars.getValue().contains(v1));
@@ -694,7 +694,7 @@ public class DomainTest {
 		expected.add(v2);
 		PropertyChangeListener mock = JUnitUtil.mockListener(vars, "value", vars.getValue(), expected);
 		vars.addValueChangeListener(mock);
-		d_domain.addVariable(v2);
+		d_domain.addPopulationCharacteristic(v2);
 		verify(mock);
 		
 		assertEquals(2, vars.getValue().size());

@@ -88,8 +88,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
-import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.gui.DomainTreeModel.CategoryNode;
 import org.drugis.addis.gui.builder.EntitiesNodeView;
 import org.drugis.addis.gui.builder.StudiesNodeView;
 import org.drugis.addis.gui.builder.ViewFactory;
@@ -408,10 +407,10 @@ public class Main extends JFrame {
 				leftTreeFocus(d_domainTreeModel.getStudiesNode());
 			} else if (selected instanceof MetaAnalysis) {
 				getDomain().deleteEntity((MetaAnalysis) selected);
-				leftTreeFocus(d_domainTreeModel.getAnalysesNode());
+				leftTreeFocus(d_domainTreeModel.getMetaAnalysesNode());
 			} else if (selected instanceof BenefitRiskAnalysis) {
 				getDomain().deleteEntity((BenefitRiskAnalysis) selected);
-				leftTreeFocus(d_domainTreeModel.getBenefitRiskAnlysisNode());
+				leftTreeFocus(d_domainTreeModel.getBenefitRiskAnalysesNode());
 			} else if (selected instanceof Indication) {
 				getDomain().deleteEntity((Indication) selected);
 				leftTreeFocus(d_domainTreeModel.getIndicationsNode());
@@ -833,28 +832,10 @@ public class Main extends JFrame {
 	}
 
 	private void expandLeftPanelTree() {
-		d_leftPanelTree.expandPath(new TreePath(new Object[] {
-				d_domainTreeModel.getRoot(),
-				d_domainTreeModel.getIndicationsNode() }));
-		d_leftPanelTree.expandPath(new TreePath(new Object[] {
-				d_domainTreeModel.getRoot(),
-				d_domainTreeModel.getEndpointsNode() }));
-		d_leftPanelTree
-				.expandPath(new TreePath(new Object[] {
-						d_domainTreeModel.getRoot(),
-						d_domainTreeModel.getDrugsNode() }));
-		d_leftPanelTree.expandPath(new TreePath(new Object[] {
-				d_domainTreeModel.getRoot(),
-				d_domainTreeModel.getAnalysesNode() }));
-		d_leftPanelTree.expandPath(new TreePath(new Object[] {
-				d_domainTreeModel.getRoot(),
-				d_domainTreeModel.getAdverseEventsNode() }));
-		d_leftPanelTree.expandPath(new TreePath(new Object[] {
-				d_domainTreeModel.getRoot(),
-				d_domainTreeModel.getPopulationCharacteristicsNode() }));
-		d_leftPanelTree.expandPath(new TreePath(new Object[] {
-				d_domainTreeModel.getRoot(),
-				d_domainTreeModel.getBenefitRiskAnlysisNode() }));
+		for (CategoryNode cat : DomainTreeModel.getCategories()) {
+			d_leftPanelTree.expandPath(new TreePath(new Object[] {
+					d_domainTreeModel.getRoot(), cat}));
+		}
 	}
 
 	private TreeSelectionListener createSelectionListener() {
@@ -883,10 +864,10 @@ public class Main extends JFrame {
 				} else if (node == d_domainTreeModel
 						.getPopulationCharacteristicsNode()) {
 					populationCharacteristicsLabelSelected();
-				} else if (node == d_domainTreeModel.getAnalysesNode()) {
+				} else if (node == d_domainTreeModel.getMetaAnalysesNode()) {
 					analysesLabelSelected();
 				} else if (node == d_domainTreeModel
-						.getBenefitRiskAnlysisNode()) {
+						.getBenefitRiskAnalysesNode()) {
 					benefitRiskLabelSelected();
 				} else {
 					noneSelected();
@@ -929,7 +910,7 @@ public class Main extends JFrame {
 	private void populationCharacteristicsLabelSelected() {
 		String[] properties = { "name", "description", "unitOfMeasurement",
 				"type" };
-		buildEntityTable(getDomain().getVariables(), properties,
+		buildEntityTable(getDomain().getPopulationCharacteristics(), properties,
 				"Population characteristics");
 	}
 
@@ -1053,49 +1034,9 @@ public class Main extends JFrame {
 	}
 
 	public void leftTreeFocus(Object node) {
-		if (d_domainTreeModel
-				.getIndexOfChild(d_domainTreeModel.getRoot(), node) != -1) {
-			d_leftPanelTree.setSelectionPath(new TreePath(new Object[] {
-					d_domainTreeModel.getRoot(), node }));
-		} else if (node instanceof Indication) {
-			d_leftPanelTree.setSelectionPath(new TreePath(new Object[] {
-					d_domainTreeModel.getRoot(),
-					d_domainTreeModel.getIndicationsNode(), node }));
-		} else if (node instanceof Drug) {
-			d_leftPanelTree.setSelectionPath(new TreePath(new Object[] {
-					d_domainTreeModel.getRoot(),
-					d_domainTreeModel.getDrugsNode(), node }));
-		} else if (node instanceof Endpoint) {
-			d_leftPanelTree.setSelectionPath(new TreePath(new Object[] {
-					d_domainTreeModel.getRoot(),
-					d_domainTreeModel.getEndpointsNode(), node }));
-		} else if (node instanceof AdverseEvent) {
-			d_leftPanelTree.setSelectionPath(new TreePath(new Object[] {
-					d_domainTreeModel.getRoot(),
-					d_domainTreeModel.getAdverseEventsNode(), node }));
-		} else if (node instanceof Variable) {
-			d_leftPanelTree
-					.setSelectionPath(new TreePath(new Object[] {
-							d_domainTreeModel.getRoot(),
-							d_domainTreeModel
-									.getPopulationCharacteristicsNode(), node }));
-		} else if (node instanceof Study) {
-			d_leftPanelTree
-					.setSelectionPath(new TreePath(new Object[] {
-							d_domainTreeModel.getRoot(),
-							d_domainTreeModel.getStudiesNode(), node }));
-		} else if (node instanceof RandomEffectsMetaAnalysis) {
-			d_leftPanelTree.setSelectionPath(new TreePath(new Object[] {
-					d_domainTreeModel.getRoot(),
-					d_domainTreeModel.getAnalysesNode(), node }));
-		} else if (node instanceof NetworkMetaAnalysis) {
-			d_leftPanelTree.setSelectionPath(new TreePath(new Object[] {
-					d_domainTreeModel.getRoot(),
-					d_domainTreeModel.getAnalysesNode(), node }));
-		} else if (node instanceof BenefitRiskAnalysis) {
-			d_leftPanelTree.setSelectionPath(new TreePath(new Object[] {
-					d_domainTreeModel.getRoot(),
-					d_domainTreeModel.getBenefitRiskAnlysisNode(), node }));
+		TreePath path = d_domainTreeModel.getPathTo(node);
+		if (path != null) {
+			d_leftPanelTree.setSelectionPath(path);
 		}
 	}
 }

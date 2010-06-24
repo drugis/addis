@@ -33,22 +33,35 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.PopulationCharacteristic;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.common.CollectionUtil;
 
 import com.jgoodies.binding.beans.BeanUtils;
 
 
 public class DomainTreeModel implements TreeModel {
+
+
 	public static class CategoryNode {
 		private final String d_label;
 		private final String d_property;
+		private final Class<? extends Entity> d_entityClass;
 
-		public CategoryNode(String label, String property) {
+		public CategoryNode(String label, String property, Class<? extends Entity> entityClass) {
 			d_label = label;
 			d_property = property;
+			d_entityClass = entityClass;
 		}
 		
 		public String toString() {
@@ -58,27 +71,41 @@ public class DomainTreeModel implements TreeModel {
 		public String getPropertyName() {
 			return d_property;
 		}
+		
+		public Class<? extends Entity> getEntityClass() {
+			return d_entityClass;
+		}
 	}
-	public static final CategoryNode[] TYPES = new CategoryNode[] {
-		new CategoryNode("Indications", "indications"),
-		new CategoryNode("Drugs", "drugs"),
-		new CategoryNode("Endpoints", "endpoints"),
-		new CategoryNode("Adverse drug events", "adverseEvents"),
-		new CategoryNode("Population characteristics", "variables"),
-		new CategoryNode("Studies", "studies"),
-		new CategoryNode("Analyses", "metaAnalyses"),
-		new CategoryNode("Benefit-risk analyses", "benefitRiskAnalyses")
-	} ;
 	
-	public static final int INDICATIONS = 0;
-	public static final int DRUGS = 1;	
-	public static final int ENDPOINTS = 2;
-	public static final int ADVERSE_EVENTS = 3;
-	public static final int POPULATION_CHARACTERISTICS = 4;
-	public static final int STUDIES = 5;
-	public static final int ANALYSES = 6;
-	public static final int BENEFITRISK_ANALYSIS = 7;
-
+	private static final CategoryNode NODE_INDICATIONS =
+		new CategoryNode("Indications", "indications", Indication.class);
+	private static final CategoryNode NODE_DRUGS =
+		new CategoryNode("Drugs", "drugs", Drug.class);
+	private static final CategoryNode NODE_ENDPOINTS =
+		new CategoryNode("Endpoints", "endpoints", Endpoint.class);
+	private static final CategoryNode NODE_ADVERSE_EVENTS =
+		new CategoryNode("Adverse drug events", "adverseEvents", AdverseEvent.class);
+	private static final CategoryNode NODE_POPULATION_CHARACTERISTICS =
+		new CategoryNode("Population characteristics", "populationCharacteristics", PopulationCharacteristic.class);
+	private static final CategoryNode NODE_STUDIES =
+		new CategoryNode("Studies", "studies", Study.class);
+	private static final CategoryNode NODE_META_ANALYSES =
+		new CategoryNode("Analyses", "metaAnalyses", MetaAnalysis.class);
+	private static final CategoryNode NODE_BENEFIT_RISK_ANALYSES =
+		new CategoryNode("Benefit-risk analyses", "benefitRiskAnalyses", BenefitRiskAnalysis.class);
+	
+	private static final List<CategoryNode> CATEGORIES = 
+		Arrays.asList(new CategoryNode[] {
+			NODE_INDICATIONS,
+			NODE_DRUGS,
+			NODE_ENDPOINTS,
+			NODE_ADVERSE_EVENTS,
+			NODE_POPULATION_CHARACTERISTICS,
+			NODE_STUDIES,
+			NODE_META_ANALYSES,
+			NODE_BENEFIT_RISK_ANALYSES
+		});
+	
 	private String d_root = "Database";
 	private Domain d_domain;
 	
@@ -99,10 +126,10 @@ public class DomainTreeModel implements TreeModel {
 	}
 
 	public Object getChild(Object parent, int childIndex) {
-		if (d_root == parent && childIndex >= 0 && childIndex < TYPES.length) {
-			return TYPES[childIndex];
+		if (d_root == parent && childIndex >= 0 && childIndex < getCategories().size()) {
+			return getCategories().get(childIndex);
 		} else {
-			for (CategoryNode cat : TYPES) {
+			for (CategoryNode cat : getCategories()) {
 				if (isCategoryRequest(cat, parent, childIndex)) {
 					return CollectionUtil.getElementAtIndex(getCategoryContents(cat), childIndex);
 				}
@@ -130,16 +157,16 @@ public class DomainTreeModel implements TreeModel {
 	}
 
 	private CategoryNode getCategoryNode(Object node) {
-		int typeIdx = Arrays.asList(TYPES).indexOf(node);
+		int typeIdx = getCategories().indexOf(node);
 		if (typeIdx >= 0) {
-			return TYPES[typeIdx];
+			return getCategories().get(typeIdx);
 		}
 		return null;
 	}
 
 	public int getChildCount(Object parent) {
 		if (d_root == parent) {
-			return TYPES.length;
+			return getCategories().size();
 		} else {
 			SortedSet<?> contents = getCategoryContents(getCategoryNode(parent));
 			if (contents != null) {
@@ -151,7 +178,7 @@ public class DomainTreeModel implements TreeModel {
 
 	public int getIndexOfChild(Object parent, Object child) {
 		if (parent == d_root) {
-			return Arrays.asList(TYPES).indexOf(child);
+			return getCategories().indexOf(child);
 		} else {
 			SortedSet<?> contents = getCategoryContents(getCategoryNode(parent));
 			if (contents != null) {
@@ -164,15 +191,35 @@ public class DomainTreeModel implements TreeModel {
 	public Object getRoot() {
 		return d_root;
 	}
+	
+	private CategoryNode getEntityCategory(Entity entity) {
+		for (CategoryNode cat : getCategories()) {
+			if (cat.getEntityClass().isInstance(entity)) {
+				return cat;
+			}
+		}
+		return null;
+	}
 
 	public boolean isLeaf(Object node) {
-		for (CategoryNode cat : TYPES) {
-			// FIXME: TreeSet seems to have a broken contains() impl., hence the hax
-			if (Arrays.asList(getCategoryContents(cat).toArray()).contains(node)) {
-				return true;
+		if (node instanceof Entity) {
+			CategoryNode category = getEntityCategory((Entity) node);
+			if (category != null) {
+				return getCategoryContents(category).contains(node);
 			}
 		}
 		return false;
+	}
+	
+	public TreePath getPathTo(Object node) {
+		if (d_root.equals(node)) {
+			return new TreePath(new Object[] { d_root });
+		} else if (getCategories().contains(node)) {
+			return new TreePath(new Object[] { d_root, node });
+		} else if (isLeaf(node)) {
+			return new TreePath(new Object[] { d_root, getEntityCategory((Entity)node), node }); 
+		}
+		return null;
 	}
 
 	public void addTreeModelListener(TreeModelListener listener) {
@@ -195,35 +242,39 @@ public class DomainTreeModel implements TreeModel {
 	}
 	
 	public Object getIndicationsNode() {
-		return getChild(getRoot(), DomainTreeModel.INDICATIONS);
+		return NODE_INDICATIONS;
 	}
 
 	public Object getStudiesNode() {
-		return getChild(getRoot(), DomainTreeModel.STUDIES);
+		return NODE_STUDIES;
 	}
 
 	public Object getEndpointsNode() {
-		return getChild(getRoot(), DomainTreeModel.ENDPOINTS);
+		return NODE_ENDPOINTS;
 	}
 	
 	public Object getAdverseEventsNode() {
-		return getChild(getRoot(), DomainTreeModel.ADVERSE_EVENTS);
+		return NODE_ADVERSE_EVENTS;
 	}
 	
 	public Object getDrugsNode() {
-		return getChild(getRoot(), DomainTreeModel.DRUGS);
+		return NODE_DRUGS;
 	}
 	
-	public Object getAnalysesNode() {
-		return getChild(getRoot(), DomainTreeModel.ANALYSES);
+	public Object getMetaAnalysesNode() {
+		return NODE_META_ANALYSES;
 	}
 	
 	public Object getPopulationCharacteristicsNode() {
-		return getChild(getRoot(), DomainTreeModel.POPULATION_CHARACTERISTICS);
+		return NODE_POPULATION_CHARACTERISTICS;
 	}
 	
-	public Object getBenefitRiskAnlysisNode() {
-		return getChild(getRoot(), DomainTreeModel.BENEFITRISK_ANALYSIS);
+	public Object getBenefitRiskAnalysesNode() {
+		return NODE_BENEFIT_RISK_ANALYSES;
+	}
+
+	public static List<CategoryNode> getCategories() {
+		return CATEGORIES;
 	}
 	
 }

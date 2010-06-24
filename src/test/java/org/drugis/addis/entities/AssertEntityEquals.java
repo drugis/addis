@@ -218,7 +218,7 @@ public class AssertEntityEquals {
 		assertEntityEquals(d1.getDrugs(), d2.getDrugs());
 		assertEntityEquals(d1.getIndications(), d2.getIndications());
 		assertEntityEquals(d1.getAdverseEvents(), d2.getAdverseEvents());
-		assertEntityEquals(d1.getVariables(), d2.getVariables());
+		assertEntityEquals(d1.getPopulationCharacteristics(), d2.getPopulationCharacteristics());
 		assertEntityEquals(d1.getStudies(), d2.getStudies());
 		assertEntityEquals(d1.getMetaAnalyses(), d2.getMetaAnalyses());	
 	}

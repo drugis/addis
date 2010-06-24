@@ -43,6 +43,21 @@ public interface Domain {
 	public SortedSet<Indication> getIndications();
 	
 	/**
+	 * Adds an drug to the data model.
+	 * 
+	 * @param e the drug to add
+	 * @throws NullPointerException if e is null
+	 */
+	public void addDrug(Drug d) throws NullPointerException;
+
+	/**
+	 * Get the drugs stored in the data model.
+	 * @return An unmodifiable sorted set of drugs. Never a null.
+	 */
+	public SortedSet<Drug> getDrugs();
+	
+	
+	/**
 	 * Adds an endpoint to the data model.
 	 * 
 	 * @param e the endpoint to add
@@ -55,6 +70,24 @@ public interface Domain {
 	 * @return An unmodifiable sorted set of endpoints. Never a null.
 	 */
 	public SortedSet<Endpoint> getEndpoints();
+	
+	/**
+	 * Adds an adverse event to the data model.
+	 * 
+	 * @param ade the adverse event to add
+	 * @throws NullPointerException if ade is null
+	 */
+	public void addAdverseEvent(AdverseEvent ade);
+	
+	/**
+	 * Get the adverse events stored in the data model.
+	 * @return An unmodifiable sorted set of adverse events. Never a null.
+	 */
+	public SortedSet<AdverseEvent> getAdverseEvents();
+	
+	public void addPopulationCharacteristic(PopulationCharacteristic c);
+	
+	public SortedSet<PopulationCharacteristic> getPopulationCharacteristics();
 		
 	/**
 	 * Adds a study to the data model.
@@ -64,9 +97,15 @@ public interface Domain {
 	 * @throws IllegalArgumentException if indication of the study is not included in the domain yet
 	 */
 	public void addStudy(Study s) throws NullPointerException, IllegalArgumentException;
+	
+	/**
+	 * Get the studies stored in the data model, EXCLUDING the meta-studies.
+	 * @return An unmodifiable sorted set of studies. Never a null.
+	 */
+	public SortedSet<Study> getStudies();
 
 	/**
-	 * Adds a MetaStudy to the data model.
+	 * Adds a meta analysis to the data model.
 	 * 
 	 * @param ms the meta-study to add
 	 * @throws NullPointerException if ma is null
@@ -78,27 +117,29 @@ public interface Domain {
 		throws NullPointerException, IllegalArgumentException, EntityIdExistsException;
 	
 	/**
-	 * Adds a BenefitRiskAnalysis to the data model.
-	 * 
-	 * @param ms the BenefitRiskAnalysis to add
-	 */
-	public void addBenefitRiskAnalysis(BenefitRiskAnalysis ma);
-	
-	/**
-	 * Get the studies stored in the data model, EXCLUDING the meta-studies.
-	 * @return An unmodifiable sorted set of studies. Never a null.
-	 */
-	public SortedSet<Study> getStudies();
-	
-	/**
 	 * Get the meta-studies stored in the data model.
 	 * @return An unmodifiable sorted set of meta-studies. Never a null.
 	 */
 	public SortedSet<MetaAnalysis> getMetaAnalyses();	
 	
+	/**
+	 * Adds a BenefitRiskAnalysis to the data model.
+	 * 
+	 * @param br the BenefitRiskAnalysis to add
+	 */
+	public void addBenefitRiskAnalysis(BenefitRiskAnalysis br);
+
+	public SortedSet<BenefitRiskAnalysis> getBenefitRiskAnalyses();
 	
 	/**
-	 * Get studies by Endpoint.
+	 * Delete a top-level entity from the domain.
+	 * @param entity The entity to remove.
+	 * @throws DependentEntitiesException if the entity is used by other top-level entities.
+	 */
+	public void deleteEntity(Entity entity) throws DependentEntitiesException;
+	
+	/**
+	 * Get studies by Variable (Endpoint, AdverseEvent or PopulationCharacteristic).
 	 * @return An unmodifiable sorted set of studies. Never null.
 	 */
 	public ListHolder<Study> getStudies(Variable e);
@@ -121,19 +162,11 @@ public interface Domain {
 	 */
 	public ListHolder<Study> getStudiesHolder();
 	
-	/**
-	 * Adds an drug to the data model.
-	 * 
-	 * @param e the drug to add
-	 * @throws NullPointerException if e is null
+	/** 
+	 * Get all population characteristics
+	 * @return A ListHolder of studies.
 	 */
-	public void addDrug(Drug d) throws NullPointerException;
-
-	/**
-	 * Get the drugs stored in the data model.
-	 * @return An unmodifiable sorted set of drugs. Never a null.
-	 */
-	public SortedSet<Drug> getDrugs();
+	public ListHolder<PopulationCharacteristic> getPopulationCharacteristicsHolder();
 	
 	/**
 	 * Add a listener to the domain object.
@@ -145,71 +178,7 @@ public interface Domain {
 	 */
 	public void removeListener(DomainListener listener);
 
-	/**
-	 * Deletes a variable from the domain.
-	 * 
-	 * @param b the variable to delete
-	 * @throws DependentEntitiesException if some entities depend on the variable
-	 */
-	public void deleteEntity(Variable v) throws DependentEntitiesException;
-	
-	/**
-	 * Deletes a study from the domain.
-	 * 
-	 * @param s the study to delete
-	 * @throws DependentEntitiesException if some entities depend on the study
-	 */
-	public void deleteEntity(Study s) throws DependentEntitiesException;
-	
-	/**
-	 * Deletes a meta-analysis from the domain.
-	 * 
-	 * @param ma the meta-analysis to delete 
-	 * @throws DependentEntitiesException if some entities depend on the meta-analysis
-	 */
-	public void deleteEntity(MetaAnalysis ma) throws DependentEntitiesException;
-	
-	public void deleteEntity(BenefitRiskAnalysis bra) throws DependentEntitiesException;
-
-	/**
-	 * Deletes a drug from the domain.
-	 * 
-	 * @param d the drug to delete 
-	 * @throws DependeptEntititesException if some entities depend on this drug
-	 */
-	public void deleteEntity(Drug d) throws DependentEntitiesException;
-	
-	/**
-	 * Deletes an endpoint from the domain.
-	 * 
-	 * @param e the endpoint to delete
-	 * @throws DependentEntitiesException if some entities depend on this endpoint
-	 */
-	public void deleteEntity(Endpoint e) throws DependentEntitiesException;
-	
-	/**
-	 * Deletes an Indication from the domain.
-	 * 
-	 * @param i the Indication to delete
-	 * @throws DependentEntitiesException if some entities depend on this endpoint
-	 */
-	public void deleteEntity(Indication i) throws DependentEntitiesException;
-	
-	public SortedSet<PopulationCharacteristic> getVariables();
-	
-	public void addVariable(PopulationCharacteristic c);
-
-	public ListHolder<PopulationCharacteristic> getVariablesHolder();
-	
-	public SortedSet<AdverseEvent> getAdverseEvents();
-	
-	public void addAdverseEvent(AdverseEvent ade);
-	
-	public void deleteEntity(AdverseEvent ade) throws DependentEntitiesException;
-
 	public void clearDomain();
-
-	public SortedSet<BenefitRiskAnalysis> getBenefitRiskAnalyses();
 
 	/**
 	 * Return whether any entities depend on this entity.

@@ -103,8 +103,8 @@ public class ExampleData {
 		domain.addStudy(buildStudyMcMurray());
 		
 		// unused stuff
-		domain.addVariable(buildGenderVariable());
-		domain.addVariable(buildAgeVariable());
+		domain.addPopulationCharacteristic(buildGenderVariable());
+		domain.addPopulationCharacteristic(buildAgeVariable());
 		domain.addAdverseEvent(buildAdverseEventConvulsion());
 	}
 

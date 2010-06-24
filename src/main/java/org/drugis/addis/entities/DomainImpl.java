@@ -245,7 +245,7 @@ public class DomainImpl implements Domain {
 				getDrugs().equals(other.getDrugs()) &&
 				getIndications().equals(other.getIndications()) &&
 				getAdverseEvents().equals(other.getAdverseEvents()) &&
-				getVariables().equals(other.getVariables()) &&
+				getPopulationCharacteristics().equals(other.getPopulationCharacteristics()) &&
 				getStudies().equals(other.getStudies()) &&
 				getMetaAnalyses().equals(other.getMetaAnalyses())
 			);
@@ -282,19 +282,41 @@ public class DomainImpl implements Domain {
 		return deps;
 	}
 	
-	public void deleteEntity(Variable v) throws DependentEntitiesException {
+	public void deleteEntity(Entity entity) throws DependentEntitiesException {
+		if (entity instanceof Drug) {
+			deleteDrug((Drug) entity);
+		} else if (entity instanceof Endpoint) {
+			deleteEndpoint((Endpoint) entity);
+		} else if (entity instanceof AdverseEvent) {
+			deleteAdverseEvent((AdverseEvent) entity);
+		} else if (entity instanceof PopulationCharacteristic) {
+			deleteEntity((Variable) entity);
+		} else if (entity instanceof Study) {
+			deleteStudy((Study) entity);
+		} else if (entity instanceof MetaAnalysis) {
+			deleteMetaAnalysis((MetaAnalysis) entity);
+		} else if (entity instanceof BenefitRiskAnalysis) {
+			deleteBenefitRiskAnalysis((BenefitRiskAnalysis) entity);
+		} else if (entity instanceof Indication) {
+			deleteIndication((Indication) entity);
+		} else {
+			throw new RuntimeException("Unhandled entity type " + entity.getClass().getSimpleName());
+		}
+	}
+	
+	public void deletePopulationCharacteristic(PopulationCharacteristic v) throws DependentEntitiesException {
 		checkDependents(v);
 		d_domainData.removeVariable(v);
 		fireDomainChanged(DomainEvent.Type.VARIABLES);
 	}
 
-	public void deleteEntity(Study s) throws DependentEntitiesException {
+	public void deleteStudy(Study s) throws DependentEntitiesException {
 		checkDependents(s);
 		d_domainData.removeStudy(s);
 		fireDomainChanged(DomainEvent.Type.STUDIES);
 	}
 
-	public void deleteEntity(Drug d) throws DependentEntitiesException {
+	public void deleteDrug(Drug d) throws DependentEntitiesException {
 		checkDependents(d);
 		d_domainData.removeDrug(d);
 		fireDomainChanged(DomainEvent.Type.DRUGS);
@@ -307,13 +329,13 @@ public class DomainImpl implements Domain {
 		}
 	}
 
-	public void deleteEntity(Endpoint e) throws DependentEntitiesException {
+	public void deleteEndpoint(Endpoint e) throws DependentEntitiesException {
 		checkDependents(e);
 		d_domainData.removeEndpoint(e);
 		fireDomainChanged(DomainEvent.Type.ENDPOINTS);		
 	}
 
-	public void deleteEntity(Indication i) throws DependentEntitiesException {
+	public void deleteIndication(Indication i) throws DependentEntitiesException {
 		checkDependents(i);
 		d_domainData.removeIndication(i);
 		fireDomainChanged(DomainEvent.Type.INDICATIONS);
@@ -342,14 +364,14 @@ public class DomainImpl implements Domain {
 		return Collections.unmodifiableSortedSet(d_domainData.getMetaAnalyses()); 
 	}
 
-	public void deleteEntity(MetaAnalysis ma)
+	public void deleteMetaAnalysis(MetaAnalysis ma)
 			throws DependentEntitiesException {
 		checkDependents(ma);
 		d_domainData.removeMetaAnalysis(ma);
 		fireDomainChanged(DomainEvent.Type.ANALYSES);
 	}
 
-	public void deleteEntity(BenefitRiskAnalysis bra)
+	public void deleteBenefitRiskAnalysis(BenefitRiskAnalysis bra)
 			throws DependentEntitiesException {
 		checkDependents(bra);
 		d_domainData.removeBRAnalysis(bra);
@@ -394,11 +416,11 @@ public class DomainImpl implements Domain {
 		}
 	}
 
-	public SortedSet<PopulationCharacteristic> getVariables() {
+	public SortedSet<PopulationCharacteristic> getPopulationCharacteristics() {
 		return Collections.unmodifiableSortedSet(d_domainData.getVariables());
 	}
 
-	public void addVariable(PopulationCharacteristic c) {
+	public void addPopulationCharacteristic(PopulationCharacteristic c) {
 		if (c == null) {
 			throw new NullPointerException("Categorical Variable may not be null");
 		}
@@ -407,7 +429,7 @@ public class DomainImpl implements Domain {
 		fireDomainChanged(DomainEvent.Type.VARIABLES);
 	}
 
-	public ListHolder<PopulationCharacteristic> getVariablesHolder() {
+	public ListHolder<PopulationCharacteristic> getPopulationCharacteristicsHolder() {
 		return new VariablesHolder();
 	}
 	
@@ -421,7 +443,7 @@ public class DomainImpl implements Domain {
 		}
 
 		private ArrayList<PopulationCharacteristic> getVars() {
-			return new ArrayList<PopulationCharacteristic>(getVariables());
+			return new ArrayList<PopulationCharacteristic>(getPopulationCharacteristics());
 		}
 		
 		@Override
@@ -446,7 +468,7 @@ public class DomainImpl implements Domain {
 		fireDomainChanged(DomainEvent.Type.ADVERSE_EVENTS);
 	}
 
-	public void deleteEntity(AdverseEvent ade)
+	public void deleteAdverseEvent(AdverseEvent ade)
 			throws DependentEntitiesException {
 		checkDependents(ade);
 		d_domainData.removeAdverseEvent(ade);
