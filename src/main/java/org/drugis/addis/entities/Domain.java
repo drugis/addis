@@ -21,6 +21,7 @@
 
 package org.drugis.addis.entities;
 
+import java.util.List;
 import java.util.SortedSet;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
@@ -28,6 +29,30 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 
 public interface Domain {
+	/**
+	 * Get the list of top-level entity categories.
+	 */
+	public List<EntityCategory> getCategories();
+	
+	/**
+	 * Get the entities that belong to a category.
+	 */
+	public SortedSet<? extends Entity> getCategoryContents(EntityCategory node);
+	
+	/**
+	 * Get the category an entity belongs to.
+	 * @param entity The entity to categorize.
+	 * @return The top-level category for the entity, or null if the entity is not a top-level entity.
+	 */
+	public EntityCategory getCategory(Entity entity);
+	
+	/**
+	 * Get the category a type of entity belongs to.
+	 * @param entityClass The class of entity to categorize.
+	 * @return The top-level category for the entity class, or null if the entity class is not top-level.
+	 */
+	public EntityCategory getCategory(Class<? extends Entity> entityClass);
+	 
 	/**
 	 * Adds an indication to the data model.
 	 * 

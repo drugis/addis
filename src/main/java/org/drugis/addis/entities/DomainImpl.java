@@ -21,12 +21,15 @@
 
 package org.drugis.addis.entities;
 
+import java.beans.IntrospectionException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -41,7 +44,39 @@ import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.util.XMLHelper;
 
+import com.jgoodies.binding.beans.BeanUtils;
+
 public class DomainImpl implements Domain {
+	private static final EntityCategory CATEGORY_INDICATIONS =
+		new EntityCategory("Indication", "indications", Indication.class);
+	private static final EntityCategory CATEGORY_DRUGS =
+		new EntityCategory("Drug", "drugs", Drug.class);
+	private static final EntityCategory CATEGORY_ENDPOINTS =
+		new EntityCategory("Endpoint", "endpoints", Endpoint.class);
+	private static final EntityCategory CATEGORY_ADVERSE_EVENTS =
+		new EntityCategory("Adverse drug event", "adverseEvents", AdverseEvent.class);
+	private static final EntityCategory CATEGORY_POPULATION_CHARACTERISTICS =
+		new EntityCategory("Population characteristic", "populationCharacteristics", PopulationCharacteristic.class);
+	private static final EntityCategory CATEGORY_STUDIES =
+		new EntityCategory("Study", "Studies", "studies", Study.class);
+	private static final EntityCategory CATEGORY_META_ANALYSES =
+		new EntityCategory("Meta-analysis", "Meta-analyses", "metaAnalyses", MetaAnalysis.class);
+	private static final EntityCategory CATEGORY_BENEFIT_RISK_ANALYSES =
+		new EntityCategory("Benefit-risk analysis", "Benefit-risk analyses",
+				"benefitRiskAnalyses", BenefitRiskAnalysis.class);
+	
+	private static final List<EntityCategory> CATEGORIES = 
+		Arrays.asList(new EntityCategory[] {
+			CATEGORY_INDICATIONS,
+			CATEGORY_DRUGS,
+			CATEGORY_ENDPOINTS,
+			CATEGORY_ADVERSE_EVENTS,
+			CATEGORY_POPULATION_CHARACTERISTICS,
+			CATEGORY_STUDIES,
+			CATEGORY_META_ANALYSES,
+			CATEGORY_BENEFIT_RISK_ANALYSES
+		});
+	
 	private DomainData d_domainData;
 	
 	private List<DomainListener> d_listeners;
@@ -498,5 +533,36 @@ public class DomainImpl implements Domain {
 
 	public boolean hasDependents(Entity entity) {
 		return !getDependents(entity).isEmpty();
+	}
+
+	public List<EntityCategory> getCategories() {
+		return CATEGORIES;
+	}
+
+	public EntityCategory getCategory(Entity entity) {
+		return getCategory(entity.getClass());
+	}
+
+	public EntityCategory getCategory(Class<? extends Entity> entityClass) {
+		for (EntityCategory cat : getCategories()) {
+			if (cat.getEntityClass().isAssignableFrom(entityClass)) {
+				return cat;
+			}
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public SortedSet<? extends Entity> getCategoryContents(EntityCategory node) {
+		if (node == null) {
+			return null;
+		}
+		try {
+			PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(
+					Domain.class, node.getPropertyName());
+			return (SortedSet<? extends Entity>)BeanUtils.getValue(this, propertyDescriptor);
+		} catch (IntrospectionException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

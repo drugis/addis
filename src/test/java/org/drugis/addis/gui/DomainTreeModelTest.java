@@ -40,6 +40,7 @@ import javax.swing.tree.TreePath;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.EntityCategory;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
@@ -54,7 +55,6 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
-import org.drugis.addis.gui.DomainTreeModel.CategoryNode;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -151,7 +151,7 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testGetAnalysesNode(){
-		assertEquals("Analyses",d_treeModel.getMetaAnalysesNode().toString());
+		assertEquals("Meta-analyses",d_treeModel.getMetaAnalysesNode().toString());
 	}
 	
 	@Test
@@ -218,8 +218,8 @@ public class DomainTreeModelTest {
 		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), d_treeModel.getIndicationsNode()));
 			
 		// test categories
-		for (CategoryNode cat : DomainTreeModel.getCategories()) {
-			assertEquals(DomainTreeModel.getCategories().indexOf(cat),
+		for (EntityCategory cat : d_domain.getCategories()) {
+			assertEquals(d_domain.getCategories().indexOf(cat),
 					d_treeModel.getIndexOfChild(d_treeModel.getRoot(), cat));
 		}
 		

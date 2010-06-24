@@ -34,6 +34,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.common.JUnitUtil;
@@ -762,4 +765,54 @@ public class DomainTest {
 		verify(mock);
 	}
 
+	
+	@Test
+	public void testGetCategories() {
+		assertEquals(8, d_domain.getCategories().size());
+		assertEquals(Indication.class, d_domain.getCategories().get(0).getEntityClass());
+		assertEquals(Drug.class, d_domain.getCategories().get(1).getEntityClass());
+		assertEquals(Endpoint.class, d_domain.getCategories().get(2).getEntityClass());
+		assertEquals(AdverseEvent.class, d_domain.getCategories().get(3).getEntityClass());
+		assertEquals(PopulationCharacteristic.class, d_domain.getCategories().get(4).getEntityClass());
+		assertEquals(Study.class, d_domain.getCategories().get(5).getEntityClass());
+		assertEquals(MetaAnalysis.class, d_domain.getCategories().get(6).getEntityClass());
+		assertEquals(BenefitRiskAnalysis.class, d_domain.getCategories().get(7).getEntityClass());
+	}
+	
+	@Test
+	public void testGetCategoryForClass() {
+		assertEquals(Indication.class, d_domain.getCategory(Indication.class).getEntityClass());
+		assertEquals(null, d_domain.getCategory(Arm.class));
+		assertEquals(Drug.class, d_domain.getCategory(Drug.class).getEntityClass());
+		assertEquals(MetaAnalysis.class, d_domain.getCategory(MetaAnalysis.class).getEntityClass());
+		assertEquals(MetaAnalysis.class, d_domain.getCategory(NetworkMetaAnalysis.class).getEntityClass());
+	}
+	
+	@Test
+	public void testGetCategoryForEntity() {
+		assertEquals(Indication.class, d_domain.getCategory(new Indication()).getEntityClass());
+		assertEquals(null, d_domain.getCategory(new Arm()));
+		assertEquals(Drug.class, d_domain.getCategory(new Drug()).getEntityClass());
+		assertEquals(BenefitRiskAnalysis.class, d_domain.getCategory(new BenefitRiskAnalysis()).getEntityClass());
+	}
+	
+	@Test
+	public void testGetCategoryContents() {
+		assertEquals(d_domain.getIndications(), d_domain.getCategoryContents(
+				d_domain.getCategory(Indication.class)));
+		assertEquals(d_domain.getDrugs(), d_domain.getCategoryContents(
+				d_domain.getCategory(Drug.class)));
+		assertEquals(d_domain.getEndpoints(), d_domain.getCategoryContents(
+				d_domain.getCategory(Endpoint.class)));
+		assertEquals(d_domain.getAdverseEvents(), d_domain.getCategoryContents(
+				d_domain.getCategory(AdverseEvent.class)));
+		assertEquals(d_domain.getPopulationCharacteristics(), d_domain.getCategoryContents(
+				d_domain.getCategory(PopulationCharacteristic.class)));
+		assertEquals(d_domain.getStudies(), d_domain.getCategoryContents(
+				d_domain.getCategory(Study.class)));
+		assertEquals(d_domain.getMetaAnalyses(), d_domain.getCategoryContents(
+				d_domain.getCategory(MetaAnalysis.class)));
+		assertEquals(d_domain.getBenefitRiskAnalyses(), d_domain.getCategoryContents(
+				d_domain.getCategory(BenefitRiskAnalysis.class)));
+	}
 }

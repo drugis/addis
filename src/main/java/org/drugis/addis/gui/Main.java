@@ -81,9 +81,9 @@ import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.DomainManager;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.EntityCategory;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.gui.DomainTreeModel.CategoryNode;
 import org.drugis.addis.gui.builder.EntitiesNodeView;
 import org.drugis.addis.gui.builder.StudiesNodeView;
 import org.drugis.addis.gui.builder.ViewFactory;
@@ -117,7 +117,7 @@ public class Main extends JFrame {
 	private JScrollPane d_rightPanel;
 	private ViewBuilder d_rightPanelBuilder;
 
-	private DomainManager d_domain;
+	private DomainManager d_domainMgr;
 	private DomainTreeModel d_domainTreeModel;
 	private JTree d_leftPanelTree;
 	
@@ -179,11 +179,11 @@ public class Main extends JFrame {
 		}
 
 		FileOutputStream fos = new FileOutputStream(f);
-		d_domain.saveXMLDomain(fos);
+		d_domainMgr.saveXMLDomain(fos);
 	}
 
 	private void initializeDomain() {
-		d_domain = new DomainManager();
+		d_domainMgr = new DomainManager();
 
 		try {
 			loadDomainFromXMLFile(DOMAIN_DEFAULT_FILENAME);
@@ -201,7 +201,7 @@ public class Main extends JFrame {
 	}
 
 	public Domain getDomain() {
-		return d_domain.getDomain();
+		return d_domainMgr.getDomain();
 	}
 
 	private void loadDomainFromXMLFile(String fileName) throws IOException,
@@ -209,7 +209,7 @@ public class Main extends JFrame {
 		File f = new File(fileName);
 		if (f.exists() && f.isFile()) {
 			FileInputStream fis = new FileInputStream(f);
-			d_domain.loadXMLDomain(fis);
+			d_domainMgr.loadXMLDomain(fis);
 		} else {
 			throw new FileNotFoundException(fileName + " not found");
 		}
@@ -219,7 +219,7 @@ public class Main extends JFrame {
 			ClassNotFoundException {
 		InputStream fis = Main.class.getResourceAsStream("/org/drugis/addis/"
 				+ fileName);
-		d_domain.loadXMLDomain(fis);
+		d_domainMgr.loadXMLDomain(fis);
 	}
 
 	private void initMenu() {
@@ -356,7 +356,7 @@ public class Main extends JFrame {
 	}
 
 	public void deleteEntity(Entity selected) {
-		String selectedType = d_domainTreeModel.getEntityCategory(selected).getSingular();
+		String selectedType = d_domainMgr.getDomain().getCategory(selected).getSingular();
 
 		int conf = JOptionPane.showConfirmDialog(this,
 				"Do you really want to delete " + selectedType + " " + selected
@@ -572,7 +572,7 @@ public class Main extends JFrame {
 		newItem.setMnemonic('n');
 		newItem.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				d_domain.getDomain().clearDomain();
+				d_domainMgr.getDomain().clearDomain();
 			}
 		});
 		return newItem;
@@ -785,7 +785,7 @@ public class Main extends JFrame {
 	}
 
 	private void expandLeftPanelTree() {
-		for (CategoryNode cat : DomainTreeModel.getCategories()) {
+		for (EntityCategory cat : d_domainTreeModel.getCategories()) {
 			d_leftPanelTree.expandPath(new TreePath(new Object[] {
 					d_domainTreeModel.getRoot(), cat}));
 		}
@@ -802,15 +802,15 @@ public class Main extends JFrame {
 				noneSelected();
 			} else if (node instanceof Entity) {
 				entitySelected((Entity) node);
-			} else if (node instanceof CategoryNode) {
-				categorySelected((CategoryNode) node);
+			} else if (node instanceof EntityCategory) {
+				categorySelected((EntityCategory) node);
 			} else {
 				noneSelected();
 			}
 		}
 	};
 	
-	private void categorySelected(CategoryNode node) {
+	private void categorySelected(EntityCategory node) {
 		if (node.equals(d_domainTreeModel.getStudiesNode())) {
 			DefaultStudyListPresentationModel studyListPM = new DefaultStudyListPresentationModel(
 					getDomain().getStudiesHolder());

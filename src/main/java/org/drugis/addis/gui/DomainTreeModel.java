@@ -21,10 +21,7 @@
 
 package org.drugis.addis.gui;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -40,6 +37,7 @@ import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.EntityCategory;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
@@ -47,82 +45,8 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.common.CollectionUtil;
 
-import com.jgoodies.binding.beans.BeanUtils;
-
 
 public class DomainTreeModel implements TreeModel {
-
-
-	public static class CategoryNode {
-		private final String d_singular;
-		private final String d_plural;
-		private final String d_property;
-		private final Class<? extends Entity> d_entityClass;
-		
-		public CategoryNode(String singular, String plural, String propertyName,
-				Class<? extends Entity> entityClass) {
-			d_singular = singular;
-			d_plural = plural;
-			d_property = propertyName;
-			d_entityClass = entityClass;
-		}
-
-		public CategoryNode(String singular, String propertyName, 
-				Class<? extends Entity> entityClass) {
-			this(singular, singular + "s", propertyName, entityClass);
-		}
-		
-		public String getSingular() {
-			return d_singular;
-		}
-		
-		public String getPlural() {
-			return d_plural;
-		}
-		
-		public String toString() {
-			return getPlural();
-		}
-		
-		public String getPropertyName() {
-			return d_property;
-		}
-		
-		public Class<? extends Entity> getEntityClass() {
-			return d_entityClass;
-		}
-	}
-	
-	private static final CategoryNode NODE_INDICATIONS =
-		new CategoryNode("Indication", "indications", Indication.class);
-	private static final CategoryNode NODE_DRUGS =
-		new CategoryNode("Drug", "drugs", Drug.class);
-	private static final CategoryNode NODE_ENDPOINTS =
-		new CategoryNode("Endpoint", "endpoints", Endpoint.class);
-	private static final CategoryNode NODE_ADVERSE_EVENTS =
-		new CategoryNode("Adverse drug event", "adverseEvents", AdverseEvent.class);
-	private static final CategoryNode NODE_POPULATION_CHARACTERISTICS =
-		new CategoryNode("Population characteristic", "populationCharacteristics", PopulationCharacteristic.class);
-	private static final CategoryNode NODE_STUDIES =
-		new CategoryNode("Study", "Studies", "studies", Study.class);
-	private static final CategoryNode NODE_META_ANALYSES =
-		new CategoryNode("Meta-analysis", "Meta-analyses", "metaAnalyses", MetaAnalysis.class);
-	private static final CategoryNode NODE_BENEFIT_RISK_ANALYSES =
-		new CategoryNode("Benefit-risk analysis", "Benefit-risk analyses",
-				"benefitRiskAnalyses", BenefitRiskAnalysis.class);
-	
-	private static final List<CategoryNode> CATEGORIES = 
-		Arrays.asList(new CategoryNode[] {
-			NODE_INDICATIONS,
-			NODE_DRUGS,
-			NODE_ENDPOINTS,
-			NODE_ADVERSE_EVENTS,
-			NODE_POPULATION_CHARACTERISTICS,
-			NODE_STUDIES,
-			NODE_META_ANALYSES,
-			NODE_BENEFIT_RISK_ANALYSES
-		});
-	
 	private String d_root = "Database";
 	private Domain d_domain;
 	
@@ -146,34 +70,21 @@ public class DomainTreeModel implements TreeModel {
 		if (d_root == parent && childIndex >= 0 && childIndex < getCategories().size()) {
 			return getCategories().get(childIndex);
 		} else {
-			for (CategoryNode cat : getCategories()) {
+			for (EntityCategory cat : getCategories()) {
 				if (isCategoryRequest(cat, parent, childIndex)) {
-					return CollectionUtil.getElementAtIndex(getCategoryContents(cat), childIndex);
+					return CollectionUtil.getElementAtIndex(d_domain.getCategoryContents(cat), childIndex);
 				}
 			}
 		}
 		return null;
 	}
 	
-	private SortedSet<?> getCategoryContents(CategoryNode node) {
-		if (node == null) {
-			return null;
-		}
-		try {
-			PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(
-					Domain.class, node.getPropertyName());
-			return (SortedSet<?>)BeanUtils.getValue(d_domain, propertyDescriptor);
-		} catch (IntrospectionException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	private boolean isCategoryRequest(CategoryNode categoryNode, Object parent,
+	private boolean isCategoryRequest(EntityCategory categoryNode, Object parent,
 			int childIndex) {
-		return categoryNode == parent && childIndex >= 0 && childIndex < getCategoryContents(categoryNode).size();
+		return categoryNode == parent && childIndex >= 0 && childIndex < d_domain.getCategoryContents(categoryNode).size();
 	}
 
-	private CategoryNode getCategoryNode(Object node) {
+	private EntityCategory getCategoryNode(Object node) {
 		int typeIdx = getCategories().indexOf(node);
 		if (typeIdx >= 0) {
 			return getCategories().get(typeIdx);
@@ -185,7 +96,7 @@ public class DomainTreeModel implements TreeModel {
 		if (d_root == parent) {
 			return getCategories().size();
 		} else {
-			SortedSet<?> contents = getCategoryContents(getCategoryNode(parent));
+			SortedSet<?> contents = d_domain.getCategoryContents(getCategoryNode(parent));
 			if (contents != null) {
 				return contents.size();
 			}
@@ -197,7 +108,7 @@ public class DomainTreeModel implements TreeModel {
 		if (parent == d_root) {
 			return getCategories().indexOf(child);
 		} else {
-			SortedSet<?> contents = getCategoryContents(getCategoryNode(parent));
+			SortedSet<?> contents = d_domain.getCategoryContents(getCategoryNode(parent));
 			if (contents != null) {
 				return CollectionUtil.getIndexOfElement(contents, child);
 			}
@@ -209,20 +120,11 @@ public class DomainTreeModel implements TreeModel {
 		return d_root;
 	}
 	
-	public CategoryNode getEntityCategory(Entity entity) {
-		for (CategoryNode cat : getCategories()) {
-			if (cat.getEntityClass().isInstance(entity)) {
-				return cat;
-			}
-		}
-		return null;
-	}
-
 	public boolean isLeaf(Object node) {
 		if (node instanceof Entity) {
-			CategoryNode category = getEntityCategory((Entity) node);
+			EntityCategory category = d_domain.getCategory(((Entity) node));
 			if (category != null) {
-				return getCategoryContents(category).contains(node);
+				return d_domain.getCategoryContents(category).contains(node);
 			}
 		}
 		return false;
@@ -234,7 +136,7 @@ public class DomainTreeModel implements TreeModel {
 		} else if (getCategories().contains(node)) {
 			return new TreePath(new Object[] { d_root, node });
 		} else if (isLeaf(node)) {
-			return new TreePath(new Object[] { d_root, getEntityCategory((Entity)node), node }); 
+			return new TreePath(new Object[] { d_root, d_domain.getCategory(((Entity)node)), node }); 
 		}
 		return null;
 	}
@@ -259,39 +161,39 @@ public class DomainTreeModel implements TreeModel {
 	}
 	
 	public Object getIndicationsNode() {
-		return NODE_INDICATIONS;
+		return d_domain.getCategory(Indication.class);
 	}
 
 	public Object getStudiesNode() {
-		return NODE_STUDIES;
+		return d_domain.getCategory(Study.class);
 	}
 
 	public Object getEndpointsNode() {
-		return NODE_ENDPOINTS;
+		return d_domain.getCategory(Endpoint.class);
 	}
 	
 	public Object getAdverseEventsNode() {
-		return NODE_ADVERSE_EVENTS;
+		return d_domain.getCategory(AdverseEvent.class);
 	}
 	
 	public Object getDrugsNode() {
-		return NODE_DRUGS;
+		return d_domain.getCategory(Drug.class);
 	}
 	
 	public Object getMetaAnalysesNode() {
-		return NODE_META_ANALYSES;
+		return d_domain.getCategory(MetaAnalysis.class);
 	}
 	
 	public Object getPopulationCharacteristicsNode() {
-		return NODE_POPULATION_CHARACTERISTICS;
+		return d_domain.getCategory(PopulationCharacteristic.class);
 	}
 	
 	public Object getBenefitRiskAnalysesNode() {
-		return NODE_BENEFIT_RISK_ANALYSES;
+		return d_domain.getCategory(BenefitRiskAnalysis.class);
 	}
 
-	public static List<CategoryNode> getCategories() {
-		return CATEGORIES;
+	public List<EntityCategory> getCategories() {
+		return d_domain.getCategories();
 	}
 	
 }
