@@ -27,7 +27,6 @@ public class StudiesKnowledge extends CategoryKnowledgeBase {
 		return FileNames.ICON_STUDY_NEW;
 	}
 	
-	@Override
 	public JDialog getAddDialog(Main main, Domain domain,
 			ValueModel selectionModel) { // TODO: AddStudyWizard should implement Wizard to simplify code below.
 		JDialog dialog = new JDialog(main, "Add Study", true);

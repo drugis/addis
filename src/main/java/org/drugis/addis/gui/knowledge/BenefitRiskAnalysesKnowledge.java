@@ -18,7 +18,6 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 		super("Benefit-risk analysis", "Benefit-risk analyses", FileNames.ICON_BENEFITRISK, BenefitRiskAnalysis.class);
 	}
 	
-	@Override
 	public JDialog getAddDialog(Main main, Domain domain,
 			ValueModel selectionModel) {
 		JDialog dialog = new JDialog(main, "Create Benefit-risk analysis", true);

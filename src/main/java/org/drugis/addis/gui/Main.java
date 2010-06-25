@@ -76,7 +76,6 @@ import org.drugis.addis.entities.DomainManager;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityCategory;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.gui.builder.ViewFactory;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -330,8 +329,7 @@ public class Main extends JFrame {
 	}
 
 	public void deleteEntity(Entity selected) {
-		EntityCategory category = getDomain().getCategory(selected);
-		String selectedType = CategoryKnowledgeFactory.getCategoryKnowledge(category).getSingular();
+		String selectedType = getEntityKnowledge(selected).getSingular();
 
 		int conf = JOptionPane.showConfirmDialog(this,
 				"Do you really want to delete " + selectedType + " " + selected
@@ -601,11 +599,17 @@ public class Main extends JFrame {
 		d_editMenuEditItem.setEnabled(false);
 	}
 
-	private void entitySelected(Entity node) {
-		ViewBuilder view = ViewFactory.createView(node, d_pmManager, this);
+	private void entitySelected(Entity entity) {
+		ViewBuilder view = getEntityKnowledge(entity).getEntityViewBuilder(this, getDomain(), entity);
 		setRightPanelView(view);
 		d_editMenuDeleteItem.setEnabled(true);
-		d_editMenuEditItem.setEnabled(node instanceof Study);
+		d_editMenuEditItem.setEnabled(entity instanceof Study);
+	}
+
+	private CategoryKnowledge getEntityKnowledge(Entity entity) {
+		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(
+				getDomain().getCategory(entity));
+		return knowledge;
 	}
 
 	private void noneSelected() {

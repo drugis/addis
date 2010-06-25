@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.SortedSet;
 
-import javax.swing.JDialog;
-
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.gui.CategoryKnowledge;
@@ -16,7 +14,6 @@ import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
-import com.jgoodies.binding.value.ValueModel;
 
 public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 	private final String d_singular;
@@ -56,10 +53,6 @@ public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 		return getSingular().toLowerCase().charAt(0);
 	}
 	
-	public JDialog getAddDialog(Main main, Domain domain, ValueModel selectionModel) {
-		return null;
-	}
-	
 	public boolean isToolbarCategory() {
 		return false;
 	}
@@ -86,5 +79,10 @@ public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 
 	protected String[] getShownProperties() {
 		return new String[] {};
+	}
+	
+	public ViewBuilder getEntityViewBuilder(Main main, Domain domain,
+			Entity entity) {
+		return ViewFactory.createView(entity, main.getPresentationModelFactory(), main);
 	}
 }

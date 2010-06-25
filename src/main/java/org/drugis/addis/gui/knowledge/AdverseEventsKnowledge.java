@@ -16,7 +16,6 @@ public class AdverseEventsKnowledge extends CategoryKnowledgeBase {
 		super("Adverse event", FileNames.ICON_ADVERSE_EVENT, AdverseEvent.class);
 	}
 	
-	@Override
 	public JDialog getAddDialog(Main main, Domain domain,
 			ValueModel selectionModel) {
 		Variable variable = new AdverseEvent("", Variable.Type.RATE);

@@ -33,7 +33,6 @@ public class PairWiseMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 		return FileNames.ICON_METASTUDY_NEW;
 	}
 	
-	@Override
 	public JDialog getAddDialog(Main main, Domain domain,
 			ValueModel selectionModel) {
 		JDialog dialog = new JDialog(main, "Create DerSimonian-Laird random effects meta-analysis", true);

@@ -3,6 +3,7 @@ package org.drugis.addis.gui;
 import javax.swing.JDialog;
 
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.Entity;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.value.ValueModel;
@@ -49,4 +50,9 @@ public interface CategoryKnowledge {
 	 * What to show for the category
 	 */
 	public ViewBuilder getCategoryViewBuilder(Main main, Domain domain);
+	
+	/**
+	 * What to show for a specific entity 
+	 */
+	public ViewBuilder getEntityViewBuilder(Main main, Domain domain, Entity entity);
 }

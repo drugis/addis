@@ -43,6 +43,10 @@ public class CategoryKnowledgeFactory {
 		return s_knowledge.get(category.getEntityClass());
 	}
 	
+	/**
+	 * Only use when you know the type at compile time, and only use for the identical type as
+	 * defined for the category. If you need run-time type determination, use Domain.getEntityCategory(entity).
+	 */
 	public static CategoryKnowledge getCategoryKnowledge(Class<? extends Entity> entityClass) {
 		return s_knowledge.get(entityClass);
 	}

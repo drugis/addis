@@ -17,7 +17,6 @@ public class PopulationCharacteristicsKnowledge extends CategoryKnowledgeBase {
 		super("Population characteristic", FileNames.ICON_POPULATION_CHAR, PopulationCharacteristic.class);
 	}
 
-	@Override
 	public JDialog getAddDialog(Main main, Domain domain,
 			ValueModel selectionModel) {
 		Variable variable = new ContinuousPopulationCharacteristic("");

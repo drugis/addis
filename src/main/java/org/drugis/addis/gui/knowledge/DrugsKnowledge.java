@@ -15,7 +15,6 @@ public class DrugsKnowledge extends CategoryKnowledgeBase {
 		super("Drug", FileNames.ICON_DRUG, Drug.class);
 	}
 	
-	@Override
 	public JDialog getAddDialog(Main main, Domain domain,
 			ValueModel selectionModel) {
 		return new AddDrugDialog(main, domain, selectionModel);

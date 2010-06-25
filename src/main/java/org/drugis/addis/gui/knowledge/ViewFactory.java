@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui.builder;
+package org.drugis.addis.gui.knowledge;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -33,6 +33,13 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.builder.BenefitRiskView;
+import org.drugis.addis.gui.builder.DrugView;
+import org.drugis.addis.gui.builder.IndicationView;
+import org.drugis.addis.gui.builder.NetworkMetaAnalysisView;
+import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
+import org.drugis.addis.gui.builder.StudyView;
+import org.drugis.addis.gui.builder.VariableView;
 import org.drugis.addis.presentation.BenefitRiskPM;
 import org.drugis.addis.presentation.DrugPresentationModel;
 import org.drugis.addis.presentation.IndicationPresentation;
@@ -43,7 +50,8 @@ import org.drugis.addis.presentation.StudyPresentationModel;
 import org.drugis.addis.presentation.VariablePresentationModel;
 import org.drugis.common.gui.ViewBuilder;
 
-public class ViewFactory {
+// FIXME: refactor -- move into Knowledge classes.
+class ViewFactory {
 
 	public static ViewBuilder createView(Entity node, PresentationModelFactory pmf, Main main) {
 		if (node instanceof RandomEffectsMetaAnalysis) {

@@ -16,7 +16,6 @@ public class IndicationsKnowledge extends CategoryKnowledgeBase {
 	}
 	
 		
-	@Override
 	public JDialog getAddDialog(Main main, Domain domain,
 			ValueModel selectionModel) {
 		return new AddIndicationDialog(main, domain, selectionModel);

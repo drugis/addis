@@ -16,7 +16,6 @@ public class EndpointsKnowledge extends CategoryKnowledgeBase {
 		super("Endpoint", FileNames.ICON_ENDPOINT, Endpoint.class);
 	}
 	
-	@Override
 	public JDialog getAddDialog(Main main, Domain domain,
 			ValueModel selectionModel) {
 		Variable variable = new Endpoint("", Variable.Type.RATE);

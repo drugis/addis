@@ -28,7 +28,6 @@ public class NetworkMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 		return FileNames.ICON_NETWMETASTUDY_NEW;
 	}
 
-	@Override
 	public JDialog getAddDialog(Main main, Domain domain,
 			ValueModel selectionModel) {
 		JDialog dialog = new JDialog(main, "Create Network meta-analysis", true);
