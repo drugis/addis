@@ -177,7 +177,7 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		d_rankAccepTM = new RankAcceptabilityTableModel(emptyResults);
 		d_cwTM = new CentralWeightTableModel(emptyResults);
 		d_cwDS = new CentralWeightsDataset(emptyResults);
-		d_prefPresModel = new PreferencePresentationModel(d_model);
+		d_prefPresModel = new PreferencePresentationModel(d_model, false);
 
 		d_model.addModelListener(new SMAAModelListener() {
 			public void modelChanged(ModelChangeEvent type) {
