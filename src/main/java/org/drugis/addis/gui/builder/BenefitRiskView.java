@@ -54,7 +54,8 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import fi.smaa.jsmaa.gui.components.ResultsCellRenderer;
+import fi.smaa.jsmaa.gui.components.CentralWeightsCellRenderer;
+import fi.smaa.jsmaa.gui.components.ResultsCellColorRenderer;
 import fi.smaa.jsmaa.gui.components.ResultsTable;
 import fi.smaa.jsmaa.gui.presentation.PreferencePresentationModel;
 import fi.smaa.jsmaa.gui.views.ResultsView;
@@ -198,7 +199,7 @@ public class BenefitRiskView implements ViewBuilder {
 			LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, true);
 			chart.getCategoryPlot().setRenderer(renderer);
 			ResultsTable table = new ResultsTable(d_pm.getCentralWeightsTableModel());
-			table.setDefaultRenderer(Object.class, new ResultsCellRenderer(1.0));
+			table.setDefaultRenderer(Object.class, new CentralWeightsCellRenderer(1.0));
 			
 			// FIXME: FileNames.ICON_SCRIPT was replaced by "". Should be filename of an icon 
 			return new ResultsView(d_main, table, chart, "").buildPanel(); 
@@ -213,6 +214,7 @@ public class BenefitRiskView implements ViewBuilder {
 
 		public JComponent buildPanel() {
 			ResultsTable table = new ResultsTable(d_pm.getRankAcceptabilitiesTableModel());
+			table.setDefaultRenderer(Object.class, new ResultsCellColorRenderer(1.0));			
 			
 			final JFreeChart chart = ChartFactory.createStackedBarChart(
 			        "", "Alternative", "Rank Acceptability",
