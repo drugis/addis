@@ -28,6 +28,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Date;
@@ -117,11 +119,26 @@ public class AddStudyWizard implements ViewBuilder{
 		DynamicModel wizardModel = buildModel(d_pm);
 		Wizard wizard = new Wizard(wizardModel);
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
+		
+		d_dialog.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowDeactivated(WindowEvent arg0) {
+				d_pm.deactivated();
+			}
+		});
+		
+		
 		wizard.addWizardListener(new WizardAdapter() {
 			@Override
 			public void wizardClosed(WizardEvent e) {
 				d_main.leftTreeFocus(d_pm.saveStudy());
+				// FIXME: Appears never to be called.
 			}
+			@Override
+			public void wizardCancelled(WizardEvent e) {
+				d_pm.deactivated();
+			}
+			
 		});
 		wizard.setPreferredSize(new Dimension(750, 750));
 		return wizard;
@@ -174,7 +191,7 @@ public class AddStudyWizard implements ViewBuilder{
 	 }
 	
 	@SuppressWarnings("serial")
-	public static class SetMeasurementsWizardStep extends PanelWizardStep {
+	public class SetMeasurementsWizardStep extends PanelWizardStep {
 		private JScrollPane d_scrollPane;
 		private OutcomeMeasurementsModel d_model;
 		private JDialog d_dialog;
@@ -185,6 +202,8 @@ public class AddStudyWizard implements ViewBuilder{
 			super(title, description);
 			d_model = model;
 			d_dialog = dialog;
+			if (d_pm.isEditing())
+				setComplete(true);
 		} 
 		
 		@Override
@@ -269,6 +288,8 @@ public class AddStudyWizard implements ViewBuilder{
 		public SetArmsWizardStep(){
 			super("Select Arms", "Please input the appropriate arms. " +
 					"The drug field of every arm must be filled in order to continue. At least one arm must be included.");
+			if (d_pm.isEditing())
+				setComplete(true);
 		}
 		
 		 @Override
@@ -413,6 +434,8 @@ public class AddStudyWizard implements ViewBuilder{
 					"All endpoints must be assigned a unique value, or removed from the study. " +
 					"At least one endpoint must be selected.");
 			this.setLayout(new BorderLayout());
+			if (d_pm.isEditing())
+				setComplete(true);
 		}
 		
 		 @Override
@@ -522,6 +545,8 @@ public class AddStudyWizard implements ViewBuilder{
 			excludedChars.add(BasicStudyCharacteristic.TITLE);
 			excludedChars.add(BasicStudyCharacteristic.CREATION_DATE);
 			excludedChars.add(BasicStudyCharacteristic.SOURCE);
+			if (d_pm.isEditing())
+				setComplete(true);
 		}
 		
 		@Override
@@ -622,6 +647,8 @@ public class AddStudyWizard implements ViewBuilder{
 		public SelectIndicationWizardStep () {
 			super("Select Indication", "Select the indication for this study. " +
 					"An indication must be selected to continue.");
+			if (d_pm.isEditing())
+				setComplete(true);
 		}
 		
 		 @Override

@@ -42,7 +42,7 @@ public class EntityTableDeleteListener extends KeyAdapter {
 			int row = studyTable.getSelectedRow();
 
 			Entity en = (Entity) studyTable.getModel().getValueAt(row, 0);
-			d_main.deleteEntity(en);
+			d_main.deleteEntity(en, true);
 		}
 	}
 }

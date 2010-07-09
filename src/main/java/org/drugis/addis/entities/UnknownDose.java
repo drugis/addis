@@ -23,9 +23,13 @@ package org.drugis.addis.entities;
 
 public class UnknownDose extends AbstractDose {
 	
+	public UnknownDose() {
+		d_unit = SIUnit.MILLIGRAMS_A_DAY;
+	}
+	
 	@Override
 	public void setUnit(SIUnit u) {
-		throw new UnsupportedOperationException();
+		d_unit = u;
 	}
 
 	@Override

@@ -186,7 +186,7 @@ public class AddStudyWizardPresentation {
 	private Domain d_domain;
 	private PresentationModelFactory d_pmf;
 	private StudyPresentationModel d_newStudyPM;
-	private StudyPresentationModel d_oldStudyPM;
+	private StudyPresentationModel d_importedStudyPM;
 	
 	List<ModifiableHolder<Endpoint>> d_selectedEndpointsList;
 	List<BasicArmPresentation> d_selectedArmList;
@@ -195,6 +195,7 @@ public class AddStudyWizardPresentation {
 	private ListHolder<PopulationCharacteristic> d_populationCharsListHolder;
 	private SelectAdverseEventsPresentation d_adverseEventSelect;
 	private SelectFromFiniteListPresentationModel<PopulationCharacteristic> d_populationCharSelect;
+	private Study d_origStudy = null;
 	
 	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, Main main) {
 		d_domain = d;
@@ -205,6 +206,16 @@ public class AddStudyWizardPresentation {
 		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_adverseEventListHolder, main);
 		d_populationCharSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder, main);
 		clearStudies();
+	}
+	
+	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, Main main, Study origStudy) {
+		this(d, pmf, main);
+		d_origStudy  = origStudy;
+		setNewStudy(origStudy.clone());
+//		commitPopulationCharsToStudy();
+//		commitOutcomesArmsToNew();
+//		commitAdverseEventsToStudy();
+//		commitPopulationCharsToStudy();
 	}
 	
 	public ValueModel getSourceModel() {
@@ -234,7 +245,7 @@ public class AddStudyWizardPresentation {
 	public void importCT() throws MalformedURLException, IOException{
 		Object studyID = getIdModel().getValue();
 		String url = "http://clinicaltrials.gov/show/"+studyID+"?displayxml=true";
-		d_oldStudyPM = (StudyPresentationModel) new StudyPresentationModel(ClinicaltrialsImporter.getClinicaltrialsData(url),d_pmf);
+		d_importedStudyPM = (StudyPresentationModel) new StudyPresentationModel(ClinicaltrialsImporter.getClinicaltrialsData(url),d_pmf);
 		d_newStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
 		migrateImportToNew(studyID);
 	}
@@ -294,7 +305,7 @@ public class AddStudyWizardPresentation {
 	}
 	
 	public void clearStudies() {
-		d_oldStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
+		d_importedStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
 		d_newStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
 		getSourceModel().setValue(Source.MANUAL);
 		d_selectedEndpointsList = new ArrayList<ModifiableHolder<Endpoint>>();
@@ -321,9 +332,9 @@ public class AddStudyWizardPresentation {
 	}
 
 	public ValueModel getEndpointNoteModel(int i) {
-		if(d_oldStudyPM.getEndpoints().size() <= i)
+		if(d_importedStudyPM.getEndpoints().size() <= i)
 			return null;
-		return new StudyNoteHolder(getOldStudy(),new ArrayList<OutcomeMeasure>(d_oldStudyPM.getEndpoints()).get(i));
+		return new StudyNoteHolder(getOldStudy(),new ArrayList<OutcomeMeasure>(d_importedStudyPM.getEndpoints()).get(i));
 	}
 	
 	public int getNumberEndpoints() {
@@ -375,7 +386,7 @@ public class AddStudyWizardPresentation {
 	}
 	
 	public ValueModel getArmNoteModel(int curArmNumber) {
-		if(d_oldStudyPM.getArms().size() <= curArmNumber)
+		if(d_importedStudyPM.getArms().size() <= curArmNumber)
 			return null;
 		return new StudyNoteHolder(getOldStudy(),getOldStudy().getArms().get(curArmNumber));
 	}
@@ -395,12 +406,15 @@ public class AddStudyWizardPresentation {
 			throw new IllegalStateException("Study with this ID already exists in domain");
 		
 		// transfer the notes from the imported study to the new one.
-		if (d_oldStudyPM != null)
+		if (d_importedStudyPM != null)
 			transferNotes();
 		
 		// Add the study to the domain.
 		Study study = getNewStudy();
 		d_domain.addStudy(study);
+		
+		d_newStudyPM.isStudyFinished();
+		
 		return study;
 	}
 
@@ -478,7 +492,7 @@ public class AddStudyWizardPresentation {
 	}
 
 	private Study getOldStudy() {
-		return d_oldStudyPM.getBean();
+		return d_importedStudyPM.getBean();
 	}
 
 	private StudyMeasurementTableModel getAdverseEventMeasurementTableModel() {
@@ -521,5 +535,14 @@ public class AddStudyWizardPresentation {
 
 	public SelectFromFiniteListPresentationModel<PopulationCharacteristic> getPopulationCharSelectModel() {
 		return d_populationCharSelect;
+	}
+
+	public void deactivated() {
+		if (isEditing() && checkID())
+			d_domain.addStudy(d_origStudy);
+	}
+
+	public boolean isEditing() {
+		return (d_origStudy != null);
 	} 
 }

@@ -38,12 +38,7 @@ public class UnknownDoseTest {
 	
 	@Test
 	public void testGetUnit() {
-		assertEquals(null, new UnknownDose().getUnit());
-	}
-	
-	@Test(expected=UnsupportedOperationException.class)
-	public void testSetUnit() {
-		new UnknownDose().setUnit(SIUnit.MILLIGRAMS_A_DAY);
+		assertEquals(SIUnit.MILLIGRAMS_A_DAY, new UnknownDose().getUnit());
 	}
 	
 	@Test

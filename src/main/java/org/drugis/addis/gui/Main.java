@@ -269,7 +269,7 @@ public class Main extends JFrame {
 		
 		d_editMenuEditItem = createEditItem();
 		d_editMenuEditItem.setEnabled(false);
-		//editMenu.add(d_editMenuEditItem);
+		editMenu.add(d_editMenuEditItem);
 		
 		return editMenu;
 	}
@@ -303,7 +303,7 @@ public class Main extends JFrame {
 	protected void deleteMenuAction() {
 		Entity selected = getSelectedEntity();
 		if (selected != null) {
-			deleteEntity(selected);
+			deleteEntity(selected, true);
 		}
 	}
 
@@ -328,16 +328,18 @@ public class Main extends JFrame {
 		}
 	}
 
-	public void deleteEntity(Entity selected) {
+	public void deleteEntity(Entity selected, boolean confirmation) {
 		String selectedType = getEntityKnowledge(selected).getSingular();
 
-		int conf = JOptionPane.showConfirmDialog(this,
-				"Do you really want to delete " + selectedType + " " + selected
-						+ " ?", "Confirm deletion", JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE, ImageLoader
-						.getIcon(FileNames.ICON_DELETE));
-		if (conf != JOptionPane.YES_OPTION) {
-			return;
+		if (confirmation) {
+			int conf = JOptionPane.showConfirmDialog(this,
+					"Do you really want to delete " + selectedType + " " + selected
+					+ " ?", "Confirm deletion", JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE, ImageLoader
+					.getIcon(FileNames.ICON_DELETE));
+			if (conf != JOptionPane.YES_OPTION) {
+				return;
+			}
 		}
 		try {
 			getDomain().deleteEntity(selected);
@@ -378,9 +380,9 @@ public class Main extends JFrame {
 	private void showEditStudyWizard(Study study) {
 		JDialog dialog = new JDialog((Frame) this, "Add Study", true);
 		AddStudyWizardPresentation pm = new AddStudyWizardPresentation(getDomain(),
-				getPresentationModelFactory(), this);
-		pm.setNewStudy(study);
-		deleteEntity(study);
+				getPresentationModelFactory(), this, study);
+		//pm.setNewStudy(study);
+		deleteEntity(study, false);
 		AddStudyWizard wizardBuilder = new AddStudyWizard(pm, this, dialog);
 		Wizard wizard = wizardBuilder.buildPanel();
 		dialog.getContentPane().add(wizard);
