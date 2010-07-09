@@ -110,6 +110,19 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public Study (){
 	}
 
+	@Override
+	public Study clone() {
+		Study newStudy = new Study(getStudyId(), getIndication());
+		newStudy.setArms(getArms());
+		newStudy.setMeasurements(getMeasurements());
+		newStudy.setEndpoints(getEndpoints());
+		newStudy.setAdverseEvents(getAdverseEvents());
+		newStudy.setPopulationCharacteristics(getPopulationCharacteristics());
+		newStudy.setCharacteristics(getCharacteristics());
+		newStudy.setNotes(getNotes());
+		return newStudy;
+	}
+	
 	public Study(String id, Indication i) {
 		d_studyId = id;
 		d_indication = i;

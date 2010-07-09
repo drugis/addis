@@ -298,4 +298,12 @@ public class StudyTest {
 		s.removeNote(key);
 		assertTrue(s.getNote(key) == null);
 	}
+	
+	@Test
+	public void testClone() {
+		Study orig = ExampleData.buildStudyFava2002();
+		Study clone = orig.clone();
+		assertEquals(orig, clone);
+		AssertEntityEquals.assertEntityEquals(orig, clone);
+	}
 }
