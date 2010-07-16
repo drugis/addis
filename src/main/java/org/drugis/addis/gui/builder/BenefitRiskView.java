@@ -29,6 +29,7 @@ import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
@@ -225,6 +226,7 @@ public class BenefitRiskView implements ViewBuilder {
 			fi.smaa.jsmaa.gui.views.ResultsView view = new fi.smaa.jsmaa.gui.views.ResultsView(d_main, table, chart, "");
 			panel.add(view.buildPanel(), BorderLayout.CENTER);
 			panel.add(d_pm.getSmaaSimulationProgressBar(), BorderLayout.NORTH);
+			panel.add(new JLabel("    Lower rank number is better."), BorderLayout.SOUTH);
 
 			return panel;
 		}

@@ -26,6 +26,7 @@ import java.awt.Color;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
@@ -209,6 +210,8 @@ implements ViewBuilder {
 	
 		panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 		panel.add(chartPanel, BorderLayout.CENTER);
+		
+		panel.add(new JLabel(d_pm.getRankProbabilityRankChartNote()), BorderLayout.SOUTH);
 
 		return panel;
 	}

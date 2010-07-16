@@ -23,6 +23,7 @@ package org.drugis.addis.presentation;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MCMCModel;
@@ -96,5 +97,14 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	
 	public boolean isModelConstructionFinished() {
 		return d_isModelConstructionFinished;
+	}
+
+	public String getRankProbabilityRankChartNote() {
+		if(getBean().getOutcomeMeasure().getDirection() == Direction.HIGHER_IS_BETTER) {
+			return "A lower rank number indicates the drug is better";
+		} else {
+			return "A higher rank number indicates the drug is better";
+		}
+	
 	}
 }
