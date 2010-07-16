@@ -27,52 +27,22 @@ import java.beans.PropertyChangeListener;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.relativeeffect.GaussianBase;
-import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
-import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.entities.relativeeffect.Distribution;
 
 @SuppressWarnings("serial")
 public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
-	interface MeasurementSource {
-		public  RelativeEffect<? extends Measurement> getMeasurement(Drug drug, OutcomeMeasure om);
-	}
 	
 	protected BenefitRiskAnalysis d_br;
 	private PresentationModelFactory d_pmf;
-	private MeasurementSource d_source;
+	private final boolean d_relative;
 
 	public BenefitRiskMeasurementTableModel(BenefitRiskAnalysis br, PresentationModelFactory pmf, boolean relative) {
 		d_br = br;
 		d_pmf = pmf;
-		if (relative) {
-			d_source = new MeasurementSource() {
-				public RelativeEffect<? extends Measurement> getMeasurement(Drug drug,
-						OutcomeMeasure om) {
-					return d_br.getRelativeEffect(drug, om);
-				}
-			};
-		} else {
-			d_source = new MeasurementSource() {
-				public RelativeEffect<? extends Measurement> getMeasurement(Drug drug,
-						OutcomeMeasure om) {
-					GaussianBase dist = d_br.getAbsoluteEffectDistribution(drug, om);
-					if (dist == null) return new NetworkRelativeEffect<Measurement>(); // empty relative effect.
-					switch (om.getType()) {
-					case CONTINUOUS:
-						return NetworkRelativeEffect.buildMeanDifference(dist.getMu(), dist.getSigma());
-					case RATE:
-						return NetworkRelativeEffect.buildOddsRatio(dist.getMu(), dist.getSigma());
-					default:
-						throw new IllegalStateException();	
-					}
-				}
-			};
-		}
+		d_relative = relative;
 		((BenefitRiskPM)pmf.getModel(br)).getAllModelsReadyModel().addValueChangeListener(new PropertyChangeListener() {
-			
 			public void propertyChange(PropertyChangeEvent evt) {
 				fireTableDataChanged();				
 			}
@@ -107,15 +77,8 @@ public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
 		}
 
 		OutcomeMeasure om = d_br.getOutcomeMeasures().get(columnIndex-1);
-		
-		RelativeEffect<? extends Measurement> measurement = getMeasurement(drug, om);
-
-		return d_pmf.getLabeledModel(measurement);
+		Distribution dist = d_relative ? d_br.getRelativeEffectDistribution(drug, om) : d_br.getAbsoluteEffectDistribution(drug, om);
+	
+		return d_pmf.getLabeledModel(dist);
 	}
-
-	private RelativeEffect<? extends Measurement> getMeasurement(Drug drug,
-			OutcomeMeasure om) {
-		return d_source.getMeasurement(drug, om);
-	}
-
 }

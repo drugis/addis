@@ -162,7 +162,7 @@ public class BenefitRiskAnalysisTest {
 
 		LogGaussian absoluteP = (LogGaussian)d_BRAnalysis.getAbsoluteEffectDistribution(parox, om);
 		assertEquals(baseline.getMu(), absoluteP.getMu(), 0.0000001);
-		assertEquals(baseline.getSigma(), absoluteP.getSigma(), 0.0000001);
+		assertEquals(baseline.getSigma(), absoluteP.getSigma(), 0.0001);
 	}
 	
 	@Test
@@ -183,6 +183,6 @@ public class BenefitRiskAnalysisTest {
 		
 		Gaussian absoluteF = (Gaussian)br.getAbsoluteEffectDistribution(fluox, om);
 		assertEquals(baseline.getMu(), absoluteF.getMu(), 0.0000001);
-		assertEquals(baseline.getSigma(), absoluteF.getSigma(), 0.0000001);
+		assertEquals(baseline.getSigma(), absoluteF.getSigma(), 0.0001);
 	}
 }

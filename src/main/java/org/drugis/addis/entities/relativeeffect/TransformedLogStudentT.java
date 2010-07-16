@@ -24,8 +24,9 @@ package org.drugis.addis.entities.relativeeffect;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.distribution.TDistribution;
 import org.apache.commons.math.distribution.TDistributionImpl;
+import org.drugis.addis.entities.AbstractObservable;
 
-public class TransformedLogStudentT implements Distribution {
+public class TransformedLogStudentT extends AbstractObservable implements Distribution {
 	private double d_mu;
 	private double d_sigma;
 	private final int d_degreesOfFreedom;

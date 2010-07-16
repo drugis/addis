@@ -21,7 +21,9 @@
 
 package org.drugis.addis.entities.relativeeffect;
 
-public interface Distribution {
+import com.jgoodies.binding.beans.Observable;
+
+public interface Distribution extends Observable {
 	/**
 	 * Get the p-probability quantile.
 	 * @param p probability in [0, 1]

@@ -24,8 +24,9 @@ package org.drugis.addis.entities.relativeeffect;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.distribution.NormalDistribution;
 import org.apache.commons.math.distribution.NormalDistributionImpl;
+import org.drugis.addis.entities.AbstractObservable;
 
-public abstract class GaussianBase implements Distribution {
+public abstract class GaussianBase extends AbstractObservable implements Distribution {
 	private double d_mu;
 	private double d_sigma;
 

@@ -40,9 +40,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
-import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
-import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
@@ -201,14 +199,6 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	 * The effect of d on om relative to the baseline treatment. 
 	 */
 	public GaussianBase getRelativeEffectDistribution(Drug d, OutcomeMeasure om) {
-		if (d.equals(getBaseline())) {
-			switch (om.getType()) {
-			case RATE:
-				return new LogGaussian(0, 0);
-			case CONTINUOUS:
-				return new Gaussian(0, 0);
-			}
-		}
 		return (GaussianBase) getRelativeEffect(d, om).getDistribution();
 	}
 	

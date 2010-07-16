@@ -57,8 +57,6 @@ public class RelativeEffectPresentation extends PresentationModel<RelativeEffect
 		public void setValue(Object arg0) {
 			throw new RuntimeException();
 		}
-		
-	
 	}
 
 	public RelativeEffectPresentation(RelativeEffect<? extends Measurement> bean) {

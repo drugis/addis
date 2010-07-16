@@ -37,6 +37,7 @@ import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
 import com.jgoodies.binding.PresentationModel;
@@ -125,6 +126,9 @@ public class PresentationModelFactory {
 		}
 		if (obj instanceof BenefitRiskAnalysis) {
 			return new BenefitRiskPM((BenefitRiskAnalysis) obj, this);
+		} 	
+		if (obj instanceof Distribution) {
+			return new DistributionPresentation((Distribution) obj);
 		}
 		return new PresentationModel(obj);
 	}
