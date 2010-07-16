@@ -44,7 +44,7 @@ public class CharacteristicsMap extends MapBean<Characteristic, Object> {
 		@Override
 		public void read(InputElement xml,	CharacteristicsMap obj) throws XMLStreamException {
 			for(BasicStudyCharacteristic c : BasicStudyCharacteristic.values()){
-				Object value = xml.get(c.toString(),c.getValueType());
+				Object value = xml.get(c.toString());
 				if(value != null)
 					obj.put(c, value );	
 			}

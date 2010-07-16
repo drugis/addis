@@ -68,6 +68,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
+import org.drugis.addis.entities.BasicStudyCharacteristic.SmallText;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
@@ -606,7 +607,7 @@ public class AddStudyWizard implements ViewBuilder{
 			}
 			return row;
 		}
-		
+
 		private JComponent createCharacteristicComponent(BasicStudyCharacteristic c) {
 			JComponent component = null;
 			if (c.getValueType() != null) {
@@ -620,19 +621,22 @@ public class AddStudyWizard implements ViewBuilder{
 					JDateChooser chooser = new JDateChooser();
 					PropertyConnector.connectAndUpdate(mvmodel, chooser, "date");
 					component = chooser;
+				} else if (c.getValueType().equals(SmallText.class)) {
+					ValueModel model = d_pm.getCharacteristicModel(c);
+					component = BasicComponentFactory.createTextField(model, true);
 				} else {
 					if (c.getValueType().isEnum()) {
 						try {
-							
+
 							component = createOptionsComboBox(c, c.getValueType().getEnumConstants());
 						} catch (Exception e) {
 							component = new JLabel("ILLEGAL CHARACTERISTIC ENUM TYPE");
 						}
+					} else {
+						throw new RuntimeException("unknown characteristic type");
 					}
 				}
-			} else {
-				throw new RuntimeException("unknown characteristic type");
-			}
+			} 
 			
 			return component;
 		}
