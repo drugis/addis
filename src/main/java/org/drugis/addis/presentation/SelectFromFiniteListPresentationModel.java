@@ -86,6 +86,11 @@ public interface SelectFromFiniteListPresentationModel<T> {
 	 * A list of options to select from.
 	 */
 	ListHolder<T> getOptions();
+	
+	/**
+	 * A method to remove all slots.
+	 */
+	public void clear();
 
 	public List<ModifiableHolder<T>> getSlots();
 }

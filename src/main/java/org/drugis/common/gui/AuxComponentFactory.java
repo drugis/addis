@@ -17,8 +17,12 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.NumberFormatter;
+import javax.swing.text.StyledDocument;
 
+import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
@@ -29,6 +33,8 @@ import com.jgoodies.binding.formatter.EmptyNumberFormatter;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.util.DefaultUnitConverter;
 
 public class AuxComponentFactory {
@@ -121,5 +127,36 @@ public class AuxComponentFactory {
 		scroll.getVerticalScrollBar().setUnitIncrement(16);
 		scroll.setVisible(true);
 		return scroll;
+	}
+
+	public static int addNoteField(PanelBuilder builder, CellConstraints cc,	int row, int col, int width, FormLayout layout, ValueModel model) {
+		if(model != null && model.getValue() != null && model.getValue() != ""){
+			LayoutUtil.addRow(layout);
+			row+=2;
+			
+			JTextPane area = new JTextPane();
+			StyledDocument doc = area.getStyledDocument();
+			AddStudyWizard.addStylesToDoc(doc);
+			
+			area.setBackground(new Color(255, 255, 180));
+			
+			try {
+				doc.insertString(doc.getLength(), AddStudyWizard.DEFAULT_NOTETITLE + "\n", doc.getStyle("bold"));
+				doc.insertString(doc.getLength(), (String)model.getValue(), doc.getStyle("regular"));
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			}
+	
+			area.setEditable(false);
+			
+			JScrollPane pane = new JScrollPane(area);
+			pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			pane.setPreferredSize(AddStudyWizard.defaultTextPaneDimension(area));
+			
+			pane.setWheelScrollingEnabled(true);
+			pane.getVerticalScrollBar().setValue(0);
+			builder.add(pane, cc.xyw(col, row, width));
+		}
+		return row;
 	}
 }

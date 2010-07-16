@@ -117,6 +117,10 @@ implements SelectFromFiniteListPresentationModel<T> {
 	public List<ModifiableHolder<T>> getSlots() { 
 		return Collections.unmodifiableList(d_slots);
 	}
+	
+	public void clear() {
+		d_slots.clear();
+	}
 
 	class Slot<E> extends ModifiableHolder<E> {
 		private List<ModifiableHolder<E>> d_slots;

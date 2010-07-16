@@ -34,7 +34,6 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.pietschy.wizard.InvalidStateException;
@@ -95,7 +94,8 @@ public class AddStudyWizardPresentationTest {
 		assertEquals(Source.MANUAL, d_wizardImported.getSourceModel().getValue());
 		assertEquals(null, d_wizardImported.getTitleModel().getValue());
 		assertEquals(null,d_wizardImported.getIndicationNoteModel().getValue());
-		assertEquals(1,d_wizardImported.getNumberEndpoints());
+		//assertEquals(1,d_wizardImported.getNumberEndpoints());
+		assertEquals(1,d_wizardImported.getEndpointSelectModel().getSlots().size());
 		assertEquals(2,d_wizardImported.getNumberArms());
 	}
 	
@@ -105,26 +105,27 @@ public class AddStudyWizardPresentationTest {
 		assertEquals("March 2008",d_wizardImported.getCharacteristicNoteModel(BasicStudyCharacteristic.STUDY_START).getValue());
 	}
 	
-	@Test
-	public void testGetEndpointListModel() {
-		JUnitUtil.assertAllAndOnly(d_domain.getEndpoints(), d_wizard.getEndpointListModel().getValue());
-	}
+//	@Test
+//	public void testGetEndpointListModel() {
+//		JUnitUtil.assertAllAndOnly(d_domain.getEndpoints(), d_wizard.getEndpointListModel().getValue());
+//	}
 	
 	@Test 
 	public void testGetEndpointNoteModel() throws MalformedURLException, IOException {
 		importStudy();
 		String note = (String) d_wizardImported.getEndpointNoteModel(1).getValue();
 		assertTrue(note.contains("Quality of life"));
-		d_wizardImported.removeEndpoint(0);
+		d_wizardImported.removeImportEndpoint(0);
 		note = (String) d_wizardImported.getEndpointNoteModel(0).getValue();
 		assertTrue(note.contains("Quality of life"));
 	}
 	
 	@Test
 	public void testgetNumberEndpoints() {
-		int numEndpoints = d_wizard.getNumberEndpoints();
-		d_wizard.addEndpointModels(2);
-		assertEquals(numEndpoints + 2, d_wizard.getNumberEndpoints());
+		int numEndpoints = d_wizard.getEndpointSelectModel().getSlots().size();
+		d_wizard.getEndpointSelectModel().addSlot();
+		d_wizard.getEndpointSelectModel().addSlot();
+		assertEquals(numEndpoints + 2, d_wizard.getEndpointSelectModel().getSlots().size());
 	}
 	
 	@Test
@@ -145,7 +146,7 @@ public class AddStudyWizardPresentationTest {
 	
 	@Test
 	public void testSaveStudy() {
-		d_wizard.getEndpointModel(0).setValue(d_domain.getEndpoints().first());
+		d_wizard.getEndpointSelectModel().getSlot(0).setValue(d_domain.getEndpoints().first());
 		d_wizard.getIndicationModel().setValue(d_domain.getIndications().first());
 		d_wizard.saveStudy();
 		assertTrue(d_domain.getStudies().contains(d_wizard.getStudy()));
@@ -154,15 +155,16 @@ public class AddStudyWizardPresentationTest {
 	@Test(expected=IllegalStateException.class)
 	public void testSaveNoEndpoint() {
 		d_wizard.getIndicationModel().setValue(d_domain.getIndications().first());
-		assertEquals(1, d_wizard.getNumberEndpoints());
-		d_wizard.removeEndpoint(0);
+		assertEquals(1, d_wizard.getEndpointSelectModel().getSlots().size());
+		//d_wizard.removeEndpoint(0);
+		d_wizard.getEndpointSelectModel().removeSlot(0);
 		d_wizard.saveStudy();
 	}
 	
 	@Test(expected=IllegalStateException.class)
 	public void testSaveIllegalID() throws InvalidStateException {
 		d_wizard.getIdModel().setValue(d_domain.getStudies().first().getStudyId());
-		d_wizard.getEndpointModel(0).setValue(d_domain.getEndpoints().first());
+		d_wizard.getEndpointSelectModel().getSlot(0).setValue(d_domain.getEndpoints().first());
 		d_wizard.getIndicationModel().setValue(d_domain.getIndications().first());
 		d_wizard.saveStudy();
 	}
@@ -171,13 +173,13 @@ public class AddStudyWizardPresentationTest {
 	public void testTransferNotes() throws MalformedURLException, IOException {
 		importStudy();
 		d_wizardImported.getIndicationModel().setValue(d_domain.getIndications().first());
-		d_wizardImported.getEndpointModel(0).setValue(d_domain.getEndpoints().first());
-		d_wizardImported.getEndpointModel(1).setValue(d_domain.getEndpoints().last());
+		d_wizardImported.getEndpointSelectModel().getSlot(0).setValue(d_domain.getEndpoints().first());
+		d_wizardImported.getEndpointSelectModel().getSlot(1).setValue(d_domain.getEndpoints().last());
 		d_wizardImported.commitOutcomesArmsToNew();
 		d_wizardImported.saveStudy();
 		assertEquals("NCT00644527",d_wizardImported.getStudy().getNote(Study.PROPERTY_ID).getText());
 		assertTrue(d_wizardImported.getStudy().getNote(BasicStudyCharacteristic.TITLE).getText().contains("Rezeptive Musiktherapie Bei Depression"));
-		assertTrue(d_wizardImported.getStudy().getNote(d_wizardImported.getEndpointModel(0).getValue()).getText().contains("the Beck Depression Inventory (single weighted)"));
+		assertTrue(d_wizardImported.getStudy().getNote(d_wizardImported.getEndpointSelectModel().getSlot(0).getValue()).getText().contains("the Beck Depression Inventory (single weighted)"));
 		assertTrue(d_wizardImported.getStudy().getNote(d_wizardImported.getArmModel(3).getBean()).getText().contains("Each 50% of the subjects will be assigned randomly"));
 	}
 }

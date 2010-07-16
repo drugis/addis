@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.gui.GUIFactory;
+import org.drugis.addis.presentation.NoteModelPresentation;
 import org.drugis.addis.presentation.SelectFromFiniteListPresentationModel;
 import org.drugis.addis.presentation.wizard.CompleteListener;
 import org.drugis.common.gui.AuxComponentFactory;
@@ -146,6 +147,12 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 				JButton addOptionButton = GUIFactory.createPlusButton("Add new " + d_pm.getTypeName());
 				addOptionButton.addActionListener(new AddOptionButtonListener(i));
 				d_builder.add(addOptionButton, cc.xy(7, row));
+			}
+			
+			if ( d_pm instanceof NoteModelPresentation) {
+				row = AuxComponentFactory.addNoteField(d_builder, cc, row, 5, 1, layout, ((NoteModelPresentation) d_pm).getNoteModel(i));
+				LayoutUtil.addRow(layout);
+				row += 2;
 			}
 		}
 		return row;	
