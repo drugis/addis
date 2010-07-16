@@ -24,6 +24,9 @@ package org.drugis.addis.presentation;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.entities.relativeeffect.Gaussian;
+import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Estimate;
@@ -70,14 +73,11 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 		
 		Estimate re = d_networkModel.getRelativeEffect(drug1, drug2);
 		
-		NetworkRelativeEffect<? extends Measurement> nre;
+		double mu = re.getMean();
+		double sigma = re.getStandardDeviation();
+		Distribution dist = (d_pm.getBean().isContinuous()) ?  new Gaussian(mu, sigma) : new LogGaussian(mu, sigma);
 		
-		if(d_pm.getBean().isContinuous())
-			nre = NetworkRelativeEffect.buildMeanDifference(re.getMean(), re.getStandardDeviation());
-		else
-			nre = NetworkRelativeEffect.buildOddsRatio(re.getMean(), re.getStandardDeviation());
-		
-		return d_pmf.getLabeledModel(nre);
+		return d_pmf.getLabeledModel(dist);
 	}
 
 	public String getDescription() {

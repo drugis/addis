@@ -54,6 +54,7 @@ public class OutcomeMeasureCreationModel extends VariablePresentationModel {
 
 			private Object getUOM() {
 				return getModel(Variable.PROPERTY_UNIT_OF_MEASUREMENT).getValue();
-			}});
+			}
+		});
 	}
 }
