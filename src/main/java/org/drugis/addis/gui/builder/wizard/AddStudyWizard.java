@@ -133,8 +133,8 @@ public class AddStudyWizard implements ViewBuilder{
 			@Override
 			public void wizardClosed(WizardEvent e) {
 				d_main.leftTreeFocus(d_pm.saveStudy());
-				System.out.println("SAVESTUDY WIZARDCLOSED");
-				// FIXME: Appears never to be called. Or to be called inappropriately.
+				// ATTENTION: Many more events which save: see edit functionality. 
+				// This event is linked to the "Finish" button
 			}
 			@Override
 			public void wizardCancelled(WizardEvent e) {

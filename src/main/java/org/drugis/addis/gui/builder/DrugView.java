@@ -28,11 +28,13 @@ import javax.swing.JPanel;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.DrugPresentationModel;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -80,7 +82,7 @@ public class DrugView implements ViewBuilder{
 
 	private JPanel createOverviewPart() {
 		FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, left:pref:grow",
+				"right:pref, 3dlu, left:pref, center:8dlu, left:pref",
 				"p, 3dlu, p"
 				);	
 		
@@ -88,7 +90,11 @@ public class DrugView implements ViewBuilder{
 		CellConstraints cc = new CellConstraints();
 		
 		builder.addLabel("Name:", cc.xy(1, 1));
-		builder.add(BasicComponentFactory.createLabel(d_model.getModel(Drug.PROPERTY_NAME)), cc.xy(3,1));
+		AbstractValueModel drugname = d_model.getModel(Drug.PROPERTY_NAME);
+		builder.add(BasicComponentFactory.createLabel(drugname), cc.xy(3,1));
+		builder.add(new JLabel("-"), cc.xy(4,1));
+		builder.add(new LinkLabel("Search for SmPC at medicine.org.uk", "http://www.medicines.org.uk/EMC/searchresults.aspx?term=" + 
+				drugname.getValue().toString().replace(' ', '+')), cc.xy(5,1));
 		builder.addLabel("ATC Code:", cc.xy(1, 3));
 		builder.add(BasicComponentFactory.createLabel(d_model.getModel(Drug.PROPERTY_ATCCODE)), cc.xy(3, 3));
 		
