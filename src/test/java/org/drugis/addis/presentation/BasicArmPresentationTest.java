@@ -77,7 +77,7 @@ public class BasicArmPresentationTest {
 		String expect = (String) lm.getValue();
 		
 		d_pg.setDrug(drug2);
-		PropertyChangeListener l = JUnitUtil.mockListener(lm, "value", lm.getValue(), expect);
+		PropertyChangeListener l = JUnitUtil.mockListener(lm, "value", null, expect);
 		lm.addPropertyChangeListener(l);
 		d_pg.setDrug(drug);
 		verify(l);

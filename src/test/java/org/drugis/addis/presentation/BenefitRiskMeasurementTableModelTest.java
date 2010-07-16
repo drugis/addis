@@ -79,7 +79,7 @@ public class BenefitRiskMeasurementTableModelTest {
 			for (int j=0; j<d_brAnalysis.getOutcomeMeasures().size(); ++j) {
 				Drug drug = d_brAnalysis.getDrugs().get(i);
 				OutcomeMeasure om = d_brAnalysis.getOutcomeMeasures().get(j);
-				Object expected = d_pmf.getLabeledModel(d_brAnalysis.getRelativeEffect(drug, om));
+				Object expected = d_pmf.getLabeledModel(d_brAnalysis.getRelativeEffectDistribution(drug, om));
 				Object actual = d_pm.getValueAt(i, j+1);
 				assertEquals(expected.toString(), actual.toString());
 			}

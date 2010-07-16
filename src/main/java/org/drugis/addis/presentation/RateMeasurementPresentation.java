@@ -22,7 +22,6 @@
 package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.RateMeasurement;
 
@@ -31,10 +30,10 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class RateMeasurementPresentation extends PresentationModel<RateMeasurement> implements LabeledPresentationModel {
-	public class LabelModel extends AbstractValueModel implements PropertyChangeListener {
+	public class LabelModel extends DefaultLabelModel {
 
 		public LabelModel() {
-			getBean().addPropertyChangeListener(this);
+			super(getBean());
 		}
 
 		private Integer getSize() {
@@ -52,10 +51,12 @@ public class RateMeasurementPresentation extends PresentationModel<RateMeasureme
 			return rate.toString() + "/" + size.toString();
 		}
 		
+		@Override
 		public String getValue() {
 			return generateLabel(getRate(), getSize());
 		}
 
+		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equals(RateMeasurement.PROPERTY_RATE)) {
 				firePropertyChange("value", generateLabel((Integer) evt.getOldValue(), getSize()), generateLabel((Integer) evt.getNewValue(), getSize()));
@@ -63,10 +64,6 @@ public class RateMeasurementPresentation extends PresentationModel<RateMeasureme
 			else if (evt.getPropertyName().equals(RateMeasurement.PROPERTY_SAMPLESIZE)) {
 				firePropertyChange("value", generateLabel(getRate(), (Integer) evt.getOldValue()), generateLabel(getRate(), (Integer) evt.getNewValue()));
 			}
-		}
-
-		public void setValue(Object newValue) {
-			throw new RuntimeException("Label is Read-Only");
 		}
 	}
 

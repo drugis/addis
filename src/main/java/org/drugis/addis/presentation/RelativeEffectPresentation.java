@@ -21,8 +21,6 @@
 
 package org.drugis.addis.presentation;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
 import org.drugis.addis.entities.Measurement;
@@ -35,15 +33,12 @@ import com.jgoodies.binding.value.AbstractValueModel;
 @SuppressWarnings("serial")
 public class RelativeEffectPresentation extends PresentationModel<RelativeEffect<? extends Measurement>> implements LabeledPresentationModel {
 	
-	public class LabelModel extends AbstractValueModel implements PropertyChangeListener {
+	public class LabelModel extends DefaultLabelModel {
 		public LabelModel() {
-			getBean().addPropertyChangeListener(this);
-		}
-		
-		public void propertyChange(PropertyChangeEvent evt) {
-			firePropertyChange("value", null, getValue());
+			super(getBean());
 		}
 
+		@Override
 		public Object getValue() {
 			if (!getBean().isDefined()) {
 				return "N/A";
@@ -52,10 +47,6 @@ public class RelativeEffectPresentation extends PresentationModel<RelativeEffect
 			ConfidenceInterval ci = getBean().getConfidenceInterval();
 			return format.format(ci.getPointEstimate()) + " (" + format.format(ci.getLowerBound()) + ", " + 
 				format.format(ci.getUpperBound()) + ")";
-		}
-
-		public void setValue(Object arg0) {
-			throw new RuntimeException();
 		}
 	}
 

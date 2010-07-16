@@ -32,23 +32,6 @@ import com.jgoodies.binding.value.AbstractValueModel;
 @SuppressWarnings("serial")
 public class FrequencyMeasurementPresentation extends PresentationModel<FrequencyMeasurement>
 		implements LabeledPresentationModel {
-	public class LabelModel extends  AbstractValueModel implements PropertyChangeListener {
-		public LabelModel() {
-			getBean().addPropertyChangeListener(this);			
-		}
-		
-		public String getValue() {
-			return getBean().toString();
-		}
-
-		public void propertyChange(PropertyChangeEvent evt) {
-			fireValueChange(null, getValue());
-		}
-
-		public void setValue(Object newValue) {
-			throw new RuntimeException("Label is Read-Only");
-		}
-	}
 	
 	public class FrequencyModel extends AbstractValueModel implements PropertyChangeListener {
 		private String d_cat;
@@ -85,6 +68,6 @@ public class FrequencyMeasurementPresentation extends PresentationModel<Frequenc
 	}
 
 	public AbstractValueModel getLabelModel() {
-		return new LabelModel();
+		return new DefaultLabelModel(getBean());
 	}
 }

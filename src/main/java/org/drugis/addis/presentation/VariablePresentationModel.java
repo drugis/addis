@@ -38,7 +38,6 @@ import org.drugis.addis.entities.Variable.Type;
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.AbstractValueModel;
-import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
@@ -89,7 +88,7 @@ public class VariablePresentationModel extends PresentationModel<Variable> imple
 	}
 
 	public AbstractValueModel getLabelModel() {
-		return new ValueHolder(getBean().getName());
+		return new DefaultLabelModel(getBean());
 	}
 	
 	public static String getEntityName(Variable om) throws IllegalArgumentException{

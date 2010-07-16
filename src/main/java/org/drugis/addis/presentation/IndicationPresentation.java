@@ -22,7 +22,6 @@
 package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Indication;
@@ -33,25 +32,18 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class IndicationPresentation extends PresentationModel<Indication> implements LabeledPresentationModel, StudyListPresentationModel {
-	public class LabelModel extends AbstractValueModel implements PropertyChangeListener {
-		protected LabelModel() {
-			getBean().addPropertyChangeListener(this);
+	public class LabelModel extends DefaultLabelModel {
+		protected LabelModel()  {
+			super(getBean());
 		}
 
+		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equals(Indication.PROPERTY_CODE)) {
 				firePropertyChange("value", (evt.getOldValue() + " " + getBean().getName()), getValue());
 			} else if (evt.getPropertyName().equals(Indication.PROPERTY_NAME)) {
 				firePropertyChange("value", (getBean().getCode() + " " + evt.getOldValue()), getValue());
 			}
-		}
-
-		public String getValue() {
-			return getBean().toString();
-		}
-
-		public void setValue(Object newValue) {
-			throw new RuntimeException("Label is Read-Only");
 		}
 	}
 

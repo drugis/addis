@@ -27,7 +27,6 @@ import org.drugis.addis.entities.Study;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
-import com.jgoodies.binding.value.ValueHolder;
 
 @SuppressWarnings("serial")
 public class DrugPresentationModel extends PresentationModel<Drug> implements StudyListPresentationModel, LabeledPresentationModel {
@@ -49,6 +48,6 @@ public class DrugPresentationModel extends PresentationModel<Drug> implements St
 	}
 
 	public AbstractValueModel getLabelModel() {
-		return new ValueHolder(getBean().getName());
+		return new DefaultLabelModel(getBean());
 	}
 }
