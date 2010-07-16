@@ -133,7 +133,8 @@ public class AddStudyWizard implements ViewBuilder{
 			@Override
 			public void wizardClosed(WizardEvent e) {
 				d_main.leftTreeFocus(d_pm.saveStudy());
-				// FIXME: Appears never to be called.
+				System.out.println("SAVESTUDY WIZARDCLOSED");
+				// FIXME: Appears never to be called. Or to be called inappropriately.
 			}
 			@Override
 			public void wizardCancelled(WizardEvent e) {
@@ -621,7 +622,7 @@ public class AddStudyWizard implements ViewBuilder{
 					JDateChooser chooser = new JDateChooser();
 					PropertyConnector.connectAndUpdate(mvmodel, chooser, "date");
 					component = chooser;
-				} else if (c.getValueType().equals(SmallText.class)) {
+				} else if (SmallText.class.isAssignableFrom(c.getValueType())) {
 					ValueModel model = d_pm.getCharacteristicModel(c);
 					component = BasicComponentFactory.createTextField(model, true);
 				} else {
