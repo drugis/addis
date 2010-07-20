@@ -35,13 +35,17 @@ public class RelativeEffectCanvas extends JPanel {
 	
 	private ForestPlot d_plot;
 
+	public ForestPlot getPlot() {
+		return d_plot;
+	}
+
 	public RelativeEffectCanvas(ForestPlotPresentation model) {
 		d_plot = new ForestPlot(model);
 	}
 	
 	@Override
 	protected void paintComponent(Graphics g) {
-		d_plot.paint((Graphics2D) g);		
+		d_plot.paint((Graphics2D) g);
 	}
 	
 	@Override

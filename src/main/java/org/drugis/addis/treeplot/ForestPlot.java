@@ -33,7 +33,7 @@ import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.presentation.ForestPlotPresentation;
 
-public class ForestPlot implements TreePlot {
+public class ForestPlot implements Paintable {
 	enum Align {
 		LEFT,
 		CENTER,

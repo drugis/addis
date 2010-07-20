@@ -22,20 +22,24 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
-import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.BasicRiskDifference;
 import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
 import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
+import org.drugis.common.gui.PNGExporter;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -46,9 +50,11 @@ public class RandomEffectsMetaAnalysisView extends AbstractMetaAnalysisView<Rand
 implements ViewBuilder {
 	
 	private boolean d_overView;
+	private final Main d_parent;
 
 	public RandomEffectsMetaAnalysisView(RandomEffectsMetaAnalysisPresentation pm, Main parent, boolean overView) {
 		super(pm, parent);
+		d_parent = parent;
 		d_overView = overView;
 	}
 
@@ -118,16 +124,26 @@ implements ViewBuilder {
 		}
 	}
 
+	@SuppressWarnings("serial")
 	private JComponent buildRelativeEffectPart(Class<? extends RelativeEffect<?>> type) {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
-				"p");
+				"p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();
 		
-		RelativeEffectCanvas canvas = new RelativeEffectCanvas(d_pm.getForestPlotPresentation(type));
+		final RelativeEffectCanvas canvas = new RelativeEffectCanvas(d_pm.getForestPlotPresentation(type));
 		builder.add(canvas, cc.xy(1, 1));
+		
+		JButton saveBtn = new JButton("Save Image");
+		saveBtn.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+			PNGExporter.writePNG(d_parent, canvas.getPlot(), 1000, 500);
+			}
+		});
+		builder.add(saveBtn,cc.xy(1, 3));
+		
 		builder.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.black, 1), BorderFactory.createEmptyBorder(1, 1, 1, 1)));
 		builder.setBackground(Color.white);
 		

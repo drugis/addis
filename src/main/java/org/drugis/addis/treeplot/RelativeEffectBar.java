@@ -25,7 +25,7 @@ import java.awt.Graphics2D;
 
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
-public class RelativeEffectBar implements TreePlot {
+public class RelativeEffectBar implements Paintable {
 	private int d_confStart;
 	private int d_confEnd;
 	private int d_diamondCenter;
