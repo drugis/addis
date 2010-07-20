@@ -23,6 +23,7 @@ package org.drugis.addis.treeplot;
 
 import java.awt.BasicStroke;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
@@ -77,30 +78,31 @@ public class ForestPlot extends JComponent {
 		return new Dimension(FULLWIDTH + 20, y);
 	}
 	
-	public void paint(Graphics2D g2d) {
-		d_g2d = g2d;
-		g2d.translate(PADDING, PADDING);
+	@Override
+	public void paint(Graphics g) {
+		d_g2d = (Graphics2D) g;
+		d_g2d.translate(PADDING, PADDING);
 		
-		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		d_g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		
 		//HEADER ROW:
-		drawVCentrString(g2d, "Study", 0, 1, Align.LEFT);
-		drawVCentrString(g2d, "Relative Effect (95% CI)", 0, FULLWIDTH, Align.RIGHT);
+		drawVCentrString(d_g2d, "Study", 0, 1, Align.LEFT);
+		drawVCentrString(d_g2d, "Relative Effect (95% CI)", 0, FULLWIDTH, Align.RIGHT);
 		
-		g2d.drawRect(1, ROWHEIGHT, FULLWIDTH, 1);
+		d_g2d.drawRect(1, ROWHEIGHT, FULLWIDTH, 1);
 				
 		//STUDY COLUMN & CI COLUMN:
 		for (int i = 0; i < d_pm.getNumRelativeEffects(); ++i) {
-			drawVCentrString(g2d, d_pm.getStudyLabelAt(i), i + 1, 1, Align.LEFT);
-			drawVCentrString(g2d, d_pm.getCIlabelAt(i).getLabelModel().getString(), i + 1, FULLWIDTH, Align.RIGHT);
+			drawVCentrString(d_g2d, d_pm.getStudyLabelAt(i), i + 1, 1, Align.LEFT);
+			drawVCentrString(d_g2d, d_pm.getCIlabelAt(i).getLabelModel().getString(), i + 1, FULLWIDTH, Align.RIGHT);
 		}
 		
-		g2d.translate(STUDYWIDTH, FULLROW);
+		d_g2d.translate(STUDYWIDTH, FULLROW);
 		for (int i=0; i < d_bars.size(); ++i) {
 			if (d_pm.getRelativeEffectAt(i).isDefined())
-				d_bars.get(i).paint(g2d);
+				d_bars.get(i).paint(d_g2d);
 		}
-		paintAxis(g2d);
+		paintAxis(d_g2d);
 	}
 
 	private int getNumRows() {

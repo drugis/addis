@@ -11,9 +11,6 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
 
 public class PNGExporter {
 
@@ -36,48 +33,13 @@ public class PNGExporter {
 	}
 	
 	
-	public static void writePNG(Component frame, JComponent p, int width, int height) {
-		final JFileChooser fileChooser = new JFileChooser();
-		
-		fileChooser.addChoosableFileFilter(new FileFilter() {
-			
+	public static void writePNG(Component frame, final JComponent p, final int width, final int height) {
+		new FileSaveDialog(frame, "png", "PNG files") {
 			@Override
-			public String getDescription() {
-				return "PNG image";
-			}
-			
-			@Override
-			 public boolean accept(File f) {
-		        if (f.isDirectory()) {
-		            return true;
-		        }
-		        
-		        String extension = getExtension(f);
-		        if (extension != null) {
-		            if (extension.equals("png")) {
-		            	return true;
-		        	} else {
-		                return false;
-		            }
-		        }
-		        return false;
-			}
-		});
-		
-		int returnVal = fileChooser.showSaveDialog(frame);
-
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			try {
-				String path = fixExtension(fileChooser.getSelectedFile().getAbsolutePath());
+			public void save(String path) {
 				writePNG(path, p, width, height);
-			} catch (Exception e1) {
-				JOptionPane.showMessageDialog(frame,
-						"Couldn't save file "
-								+ fileChooser.getSelectedFile()
-										.getAbsolutePath() + " .");
-				e1.printStackTrace();
 			}
-		}
+		};
 	}
 	
     public static String getExtension(File f) {
