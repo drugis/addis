@@ -29,11 +29,14 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JComponent;
+
 import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.presentation.ForestPlotPresentation;
 
-public class ForestPlot implements Paintable {
+@SuppressWarnings("serial")
+public class ForestPlot extends JComponent {
 	enum Align {
 		LEFT,
 		CENTER,
@@ -68,6 +71,7 @@ public class ForestPlot implements Paintable {
 		}
 	}
 	
+	@Override
 	public Dimension getSize() {
 		int y = (int) ((FULLROW * (d_bars.size() + 4)) + ROWVCENTER + d_g2d.getFontMetrics().getHeight());
 		return new Dimension(FULLWIDTH + 20, y);

@@ -23,11 +23,13 @@ package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Drug;
@@ -35,6 +37,7 @@ import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.StudyGraphModel.Edge;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
+import org.drugis.common.gui.PNGExporter;
 import org.jgraph.JGraph;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.GraphLayoutCache;
@@ -52,6 +55,8 @@ public class StudyGraph extends JPanel {
 	@SuppressWarnings("unchecked")
 	protected JGraphModelAdapter d_model;
 	private AttributeMap d_vertexAttributes;
+
+	private JGraph d_jgraph;
 	
 	public StudyGraph(StudyGraphModel pm) {
 		super(new BorderLayout());
@@ -77,17 +82,20 @@ public class StudyGraph extends JPanel {
 		
 		// create graph
 		removeAll();
-		JGraph jgraph = createGraph(layoutCache);
-		add(jgraph, BorderLayout.CENTER);
+		d_jgraph = createGraph(layoutCache);
+		add(d_jgraph, BorderLayout.CENTER);
 		
 		// Layout the graph
 		final JGraphHierarchicalLayout layout = new JGraphHierarchicalLayout();
-		final JGraphFacade facade = new JGraphFacade(jgraph);
+		final JGraphFacade facade = new JGraphFacade(d_jgraph);
 		layout.run(facade);
 		Map nested = facade.createNestedMap(true, true);
-		jgraph.getGraphLayoutCache().edit(nested);
-	
-		jgraph.repaint();
+		d_jgraph.getGraphLayoutCache().edit(nested);
+		
+		d_jgraph.repaint();
+		
+		//BufferedImage img = jgraph.getImage(Color.white, 10);
+		//PNGExporter.writePNG("graph.png", img);
 	}
 
 	protected MyDefaultCellViewFactory getCellFactory() {
@@ -101,6 +109,13 @@ public class StudyGraph extends JPanel {
 		jgraph.setEnabled(false);
 		
 		return jgraph;
+	}
+	
+	public void saveAsPng(JFrame frame) {
+		Color oldCol = d_jgraph.getBackground();
+		d_jgraph.setBackground(Color.white);
+		PNGExporter.writePNG(frame, this, (int) getPreferredSize().getWidth(), (int) getPreferredSize().getHeight());
+		d_jgraph.setBackground(oldCol);
 	}
 	
 	public static class MutableDrugListHolder extends AbstractListHolder<Drug> {
@@ -126,6 +141,5 @@ public class StudyGraph extends JPanel {
 			d_drugs = new ArrayList<Drug>(drugs);
 			fireValueChange(oldValue, d_drugs);
 		}
-		
 	}
 }

@@ -10,27 +10,33 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.filechooser.*;
-
-import org.drugis.addis.treeplot.Paintable;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 
 public class PNGExporter {
 
-	public static void writePNG(String filename, Paintable p, int width, int height) {
+	public static void writePNG(String filename, JComponent p, int width, int height) {
 		GraphicsConfiguration config = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-		BufferedImage b = config.createCompatibleImage(width, height, Transparency.OPAQUE);
+		BufferedImage bufferedImage = config.createCompatibleImage(width, height, Transparency.OPAQUE);
 
-		Graphics2D toWrite = b.createGraphics();
+		Graphics2D toWrite = bufferedImage.createGraphics();
 		toWrite.setBackground(Color.WHITE);
-		toWrite.clearRect(0, 0, b.getWidth(), b.getHeight());
+		toWrite.clearRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
 		toWrite.setColor(Color.BLACK);
 		p.paint(toWrite);
 		
+		writePNG(filename, bufferedImage);
+	}
+
+
+	public static void writePNG(String filename, BufferedImage b) {
 		try{ImageIO.write(b,"png",new File(filename));}catch (Exception e) {e.printStackTrace();}
 	}
 	
-	public static void writePNG(Component frame, Paintable p, int width, int height) {
+	
+	public static void writePNG(Component frame, JComponent p, int width, int height) {
 		final JFileChooser fileChooser = new JFileChooser();
 		
 		fileChooser.addChoosableFileFilter(new FileFilter() {

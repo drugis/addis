@@ -23,8 +23,11 @@ package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -101,9 +104,11 @@ implements ViewBuilder {
 	private NetworkMetaAnalysisTablePanel d_inconsistencyTablePanel;
 	private NetworkMetaAnalysisTablePanel d_consistencyTablePanel;
 	private JPanel d_inconsistencyFactorsTablePanel;
+	private final Main d_main;
 	
 	public NetworkMetaAnalysisView(NetworkMetaAnalysisPresentation model, Main main) {
 		super(model, main);
+		d_main = main;
 
 		// Get progress-bars.
 		d_conProgressBar = new JProgressBar();
@@ -216,11 +221,24 @@ implements ViewBuilder {
 		return panel;
 	}
 
+	@SuppressWarnings("serial")
 	public JComponent buildStudyGraphPart() {
-		StudyGraph panel = new StudyGraph(d_pm.getStudyGraphModel());
+		JPanel encapsulating = new JPanel(new BorderLayout());
+	
+		final StudyGraph panel = new StudyGraph(d_pm.getStudyGraphModel());
 		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		panel.layoutGraph();
-		return panel;
+		encapsulating.add(panel, BorderLayout.NORTH);
+		
+		JButton saveBtn = new JButton("Save Image");
+		saveBtn.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				panel.saveAsPng(d_main);
+			}
+		});
+		encapsulating.add(saveBtn, BorderLayout.SOUTH);
+		
+		return encapsulating;
 	}
 	
 	public JComponent buildResultsPart(MixedTreatmentComparison networkModel, JProgressBar progBar) {
