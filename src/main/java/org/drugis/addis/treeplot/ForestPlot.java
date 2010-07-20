@@ -54,6 +54,7 @@ public class ForestPlot implements Paintable {
 	
 	private List<RelativeEffectBar> d_bars;
 	private ForestPlotPresentation d_pm;
+	private Graphics2D d_g2d;
 	
 	public ForestPlot (ForestPlotPresentation pm) {
 		d_pm = pm;
@@ -67,7 +68,13 @@ public class ForestPlot implements Paintable {
 		}
 	}
 	
+	public Dimension getSize() {
+		int y = (int) ((FULLROW * (d_bars.size() + 4)) + ROWVCENTER + d_g2d.getFontMetrics().getHeight());
+		return new Dimension(FULLWIDTH + 20, y);
+	}
+	
 	public void paint(Graphics2D g2d) {
+		d_g2d = g2d;
 		g2d.translate(PADDING, PADDING);
 		
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);

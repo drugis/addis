@@ -10,8 +10,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import javax.swing.*;
+import javax.swing.filechooser.*;
 
 import org.drugis.addis.treeplot.Paintable;
 
@@ -32,12 +32,38 @@ public class PNGExporter {
 	
 	public static void writePNG(Component frame, Paintable p, int width, int height) {
 		final JFileChooser fileChooser = new JFileChooser();
+		
+		fileChooser.addChoosableFileFilter(new FileFilter() {
+			
+			@Override
+			public String getDescription() {
+				return "PNG image";
+			}
+			
+			@Override
+			 public boolean accept(File f) {
+		        if (f.isDirectory()) {
+		            return true;
+		        }
+		        
+		        String extension = getExtension(f);
+		        if (extension != null) {
+		            if (extension.equals("png")) {
+		            	return true;
+		        	} else {
+		                return false;
+		            }
+		        }
+		        return false;
+			}
+		});
+		
 		int returnVal = fileChooser.showSaveDialog(frame);
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			try {
-				System.out.println("Writing to " + fileChooser.getSelectedFile().getAbsolutePath());
-				writePNG(fileChooser.getSelectedFile().getAbsolutePath(), p, width, height);
+				String path = fixExtension(fileChooser.getSelectedFile().getAbsolutePath());
+				writePNG(path, p, width, height);
 			} catch (Exception e1) {
 				JOptionPane.showMessageDialog(frame,
 						"Couldn't save file "
@@ -47,4 +73,20 @@ public class PNGExporter {
 			}
 		}
 	}
+	
+    public static String getExtension(File f) {
+        String ext = null;
+        String s = f.getName();
+        int i = s.lastIndexOf('.');
+
+        if (i > 0 &&  i < s.length() - 1) {
+            ext = s.substring(i+1).toLowerCase();
+        }
+        return ext;
+    }
+    
+    public static String fixExtension(String absPath) {
+    	return absPath.toLowerCase().contains(".png") ? absPath : absPath+".png";
+    }
+
 }

@@ -21,6 +21,7 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 
@@ -28,6 +29,7 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
@@ -39,6 +41,7 @@ import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
+import org.drugis.addis.treeplot.ForestPlot;
 import org.drugis.common.gui.PNGExporter;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -126,9 +129,11 @@ implements ViewBuilder {
 
 	@SuppressWarnings("serial")
 	private JComponent buildRelativeEffectPart(Class<? extends RelativeEffect<?>> type) {
+		JPanel encapsulating = new JPanel(new BorderLayout());
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
 				"p, 3dlu, p");
+		
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();
@@ -136,18 +141,21 @@ implements ViewBuilder {
 		final RelativeEffectCanvas canvas = new RelativeEffectCanvas(d_pm.getForestPlotPresentation(type));
 		builder.add(canvas, cc.xy(1, 1));
 		
-		JButton saveBtn = new JButton("Save Image");
-		saveBtn.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-			PNGExporter.writePNG(d_parent, canvas.getPlot(), 1000, 500);
-			}
-		});
-		builder.add(saveBtn,cc.xy(1, 3));
-		
 		builder.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.black, 1), BorderFactory.createEmptyBorder(1, 1, 1, 1)));
 		builder.setBackground(Color.white);
 		
-		return builder.getPanel();	
+		encapsulating.add(builder.getPanel(),BorderLayout.NORTH);
+		
+		JButton saveBtn = new JButton("Save Image");
+		saveBtn.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+			ForestPlot plot = canvas.getPlot();
+			PNGExporter.writePNG(d_parent, plot, (int) plot.getSize().getWidth(),(int) plot.getSize().getHeight());
+			}
+		});
+		encapsulating.add(saveBtn, BorderLayout.SOUTH);
+
+		return encapsulating;	
 	}
 
 }
