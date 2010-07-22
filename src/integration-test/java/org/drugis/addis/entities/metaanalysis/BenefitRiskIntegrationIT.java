@@ -34,6 +34,7 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
+import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.presentation.BenefitRiskMeasurementTableModel;
 import org.drugis.addis.presentation.BenefitRiskPM;
@@ -143,10 +144,10 @@ public class BenefitRiskIntegrationIT {
 		double allowedDeviation = 0.1;
 		
 		
-		ConfidenceInterval ci = (ConfidenceInterval) ((PresentationModel<RelativeEffect<Measurement>>) measurementTableObject).getBean().getConfidenceInterval();
-		assertEquals(pointEstimate, ci.getPointEstimate(), pointEstimate * allowedDeviation);
-		assertEquals(lowerBound, ci.getLowerBound(), (Math.abs(lowerBound) + pointEstimate) * allowedDeviation);
-		assertEquals(upperBound, ci.getUpperBound(), (Math.abs(upperBound) + pointEstimate) * allowedDeviation);
+		Distribution ci = ((PresentationModel<Distribution>) measurementTableObject).getBean();
+		assertEquals(pointEstimate, ci.getQuantile(.5), pointEstimate * allowedDeviation);
+		assertEquals(lowerBound, ci.getQuantile(0.025), (Math.abs(lowerBound) + pointEstimate) * allowedDeviation);
+		assertEquals(upperBound, ci.getQuantile(0.975), (Math.abs(upperBound) + pointEstimate) * allowedDeviation);
 	}
 }
 

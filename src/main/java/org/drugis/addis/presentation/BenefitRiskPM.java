@@ -33,6 +33,7 @@ import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.addis.util.JSMAAintegration.BRSMAASimulationBuilder;
 import org.drugis.addis.util.JSMAAintegration.SMAAEntityFactory;
+import org.drugis.addis.util.threading.ThreadHandler;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.ProgressEvent;
@@ -278,8 +279,9 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		getBean().runAllConsistencyModels();
 		for (MCMCModel model : d_baselineModels) {
 			if (!model.isReady()) {
-				Thread t = new Thread(model);
-				t.start();
+				ThreadHandler.getInstance().scheduleTask(model);
+				//Thread t = new Thread(model);
+				//t.start();
 			}
 		}
 

@@ -37,13 +37,14 @@ import java.util.List;
 
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.util.threading.AbstractSuspendableRunnable;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.ProgressEvent;
 import org.drugis.mtc.ProgressListener;
 import org.drugis.mtc.ProgressEvent.EventType;
 import org.drugis.mtc.yadas.DirectParameter;
 
-abstract public class AbstractBaselineModel<T extends Measurement> implements MCMCModel {
+abstract public class AbstractBaselineModel<T extends Measurement> extends AbstractSuspendableRunnable implements MCMCModel {
 
 	public abstract Distribution getResult();
 
@@ -102,6 +103,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 
 	private void burnIn() {
 		for (int iter = 0; iter < d_burnInIter; ++iter) {
+			waitIfSuspended();
 			if (iter > 0 && iter % d_reportingInterval == 0) notifyBurnInProgress(iter);
 			update();
 		}
@@ -109,6 +111,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 
 	private void simulate() {
 		for (int iter = 0; iter < d_simulationIter; ++iter) {
+			waitIfSuspended();
 			if (iter > 0 && iter % d_reportingInterval == 0) notifySimulationProgress(iter);
 			update();
 			output();
@@ -121,6 +124,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 
 	private void update() {
 		for (MCMCUpdate u : d_updates) {
+			waitIfSuspended();
 			u.update();
 		}
 	}

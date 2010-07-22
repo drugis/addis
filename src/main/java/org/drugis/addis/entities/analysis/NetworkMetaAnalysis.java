@@ -38,6 +38,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.util.threading.ThreadHandler;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.ContinuousNetworkBuilder;
 import org.drugis.mtc.DefaultModelFactory;
@@ -156,13 +157,15 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 
 	public void runInconsistency() {
 		if (!d_inconsistencyHasStarted)
-			new Thread(getInconsistencyModel()).start();
+			ThreadHandler.getInstance().scheduleTask(getInconsistencyModel());
+			//new Thread(getInconsistencyModel()).start();
 		d_inconsistencyHasStarted = true;
 	}
 
 	public void runConsistency() {
 		if (!d_consistencyHasStarted)
-			new Thread(getConsistencyModel()).start();
+			ThreadHandler.getInstance().scheduleTask(getConsistencyModel());
+			//new Thread(getConsistencyModel()).start();
 		d_consistencyHasStarted = true;
 	}
 
