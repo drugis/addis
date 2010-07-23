@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -85,7 +86,8 @@ public class ThreadHandlerTest {
 	public void testReprioritise() {
 		LinkedList<Runnable> ToDo1 = new LinkedList<Runnable>();
 						
-		final int NUMMODELS = 4;
+		int numCores = Runtime.getRuntime().availableProcessors();
+		final int NUMMODELS = numCores + 2;
 		
 		for(int i=0; i < NUMMODELS; ++i) {
 			ToDo1.add(new FakeModel((i+1) * 300));
@@ -93,17 +95,28 @@ public class ThreadHandlerTest {
 		
 		ThreadHandler th = ThreadHandler.getInstance();
 		th.scheduleTasks(ToDo1);
-		assertTrue(th.d_runningTasks.containsAll(ToDo1.subList(0,2)));
-		assertTrue(th.d_scheduledTasks.containsAll(ToDo1.subList(2,4)));
 		
-		th.scheduleTasks(ToDo1.subList(0, 2));
-		assertTrue(th.d_runningTasks.containsAll(ToDo1.subList(0,2)));
-		assertTrue(th.d_scheduledTasks.containsAll(ToDo1.subList(2,4)));
+		List<Runnable> nCoresHeadList = ToDo1.subList(0,numCores);
+		List<Runnable> nCoresHeadListComplement = ToDo1.subList(numCores, numCores + (NUMMODELS - numCores));
+
+		assertTrue(th.d_runningTasks.containsAll(nCoresHeadList));
+		assertTrue(th.d_scheduledTasks.containsAll(nCoresHeadListComplement));
 		
-		th.scheduleTasks(ToDo1.subList(2, 4));
-		assertTrue(th.d_runningTasks.containsAll(ToDo1.subList(2,4)));
-		assertTrue(th.d_scheduledTasks.containsAll(ToDo1.subList(0,2)));
+		// Note: NOP; rescheduling already-running tasks should not change anything
+		th.scheduleTasks(nCoresHeadList);
+		assertTrue(th.d_runningTasks.containsAll(nCoresHeadList));
+		assertTrue(th.d_scheduledTasks.containsAll(nCoresHeadListComplement));
+				
+
+		// reprioritise scheduled tasks by re-adding them; should displace running tasks
+		th.scheduleTasks(nCoresHeadListComplement);
+//		System.out.println(nCoresHeadListComplement);
+//		System.out.println(nCoresHeadList);		
 		
+		List<Runnable> nCoresTailList = ToDo1.subList((NUMMODELS - numCores), numCores + (NUMMODELS - numCores));
+		List<Runnable> nCoresTailListComplement = ToDo1.subList(0,(NUMMODELS - numCores));
+		assertTrue(th.d_runningTasks.containsAll(nCoresTailList));
+		assertTrue(th.d_scheduledTasks.containsAll(nCoresTailListComplement));
 	}
 	
 	@Test
