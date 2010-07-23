@@ -20,9 +20,11 @@ public abstract class AbstractSuspendableRunnable implements SuspendableRunnable
 
 	protected void waitIfSuspended() {
 		while(isThreadSuspended()) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
+			synchronized(this) {
+				try {
+					wait();
+				} catch (InterruptedException e) {
+				}
 			}
 		}
 	}

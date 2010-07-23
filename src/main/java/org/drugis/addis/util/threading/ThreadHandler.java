@@ -11,24 +11,21 @@ public class ThreadHandler {
 		public void run(){
 			while(true) {
 				synchronized (d_running) {
-					//Iterator<SuspendableThreadWrapper> it = d_running.iterator();
 					for (int i=0; i<d_running.size(); ++i) {
-					//while(it.hasNext()) {
 						SuspendableThreadWrapper t = d_running.get(i);
 						if (t.isTerminated()) {
-							//it.remove();
 							d_running.remove(i);
+//							System.out.println("Task finished " + t);
 							if (!d_scheduledTasks.isEmpty()) {
 								SuspendableThreadWrapper newThread = d_scheduledTasks.pop();
 								newThread.start();
+//								System.out.println("Executing from schedule " + newThread);
 								d_running.add(i, newThread);
-								//d_running.push(newThread);
 							}
 						}
 					}
 				}
 				try {
-
 					Thread.sleep(200);
 				} catch (InterruptedException e) {
 					throw new RuntimeException(e);
@@ -68,10 +65,10 @@ public class ThreadHandler {
 			// remove N=t.size() tasks from running and stack them in scheduledTasks (take various sizes into account)
 			int toStack = Math.min(toAdd.size() - (d_numCores - d_running.size()), d_running.size()); // needed cores - available cores = cores that need to be pre-empted.
 			for(int i=0 ; i < toStack ; ++i ) {
-				if (d_running.peek().suspend()) {
-					SuspendableThreadWrapper runningThread = d_running.pop();
+				if (d_running.peekLast().suspend()) {
+					SuspendableThreadWrapper runningThread = d_running.removeLast();
 					d_scheduledTasks.push(runningThread);
-					System.out.println("moving back to scheduler " + runningThread); 
+//					System.out.println("moving back to scheduler " + runningThread); 
 				}
 			}
 
@@ -79,15 +76,15 @@ public class ThreadHandler {
 			toStack = Math.min(d_numCores - d_running.size() , toAdd.size() ) ;
 			for(int i=0; i<toStack; ++i) {
 				SuspendableThreadWrapper newRunning = toAdd.pop();
-				newRunning.start();
 				d_running.push(newRunning);
-				System.out.println("executing " + newRunning); 
+				newRunning.start();
+//				System.out.println("executing " + newRunning + " running size " + d_running.size()); 
 			}
 
 			// stack remaining threads from t in scheduledTasks
 			for(SuspendableThreadWrapper m : toAdd) {
 				d_scheduledTasks.push(m);
-				System.out.println("Scheduling " + m);
+//				System.out.println("Scheduling " + m);
 			}
 		}
 	}
@@ -99,6 +96,4 @@ public class ThreadHandler {
 			newList.add(new SuspendableThreadWrapper(r));
 		return newList;
 	}
-	
-	
 }
