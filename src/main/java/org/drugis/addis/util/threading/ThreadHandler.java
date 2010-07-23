@@ -17,7 +17,7 @@ public class ThreadHandler {
 							d_runningTasks.remove(i);
 //							System.out.println("Task finished " + t);
 							if (!d_scheduledTasks.isEmpty()) {
-								SuspendableThreadWrapper newThread = d_scheduledTasks.pop();
+								SuspendableThreadWrapper newThread = d_scheduledTasks.removeFirst();
 								newThread.start();
 //								System.out.println("Executing from schedule " + newThread);
 								d_runningTasks.add(i, newThread);
@@ -82,7 +82,7 @@ public class ThreadHandler {
 			// execute numCores tasks from t 
 			toStack = Math.min(d_numCores - d_runningTasks.size() , toAdd.size() ) ;
 			for(int i=0; i<toStack; ++i) {
-				SuspendableThreadWrapper newRunning = toAdd.pop();
+				SuspendableThreadWrapper newRunning = toAdd.removeFirst();
 				d_runningTasks.push(newRunning);
 				newRunning.start();
 //				System.out.println("executing " + newRunning + " running size " + d_runningTasks.size()); 
