@@ -10,17 +10,17 @@ public class ThreadHandler {
 	private class RunQueueCleaner implements Runnable {
 		public void run(){
 			while(true) {
-				synchronized (d_running) {
-					for (int i=0; i<d_running.size(); ++i) {
-						SuspendableThreadWrapper t = d_running.get(i);
+				synchronized (d_runningTasks) {
+					for (int i=0; i<d_runningTasks.size(); ++i) {
+						SuspendableThreadWrapper t = d_runningTasks.get(i);
 						if (t.isTerminated()) {
-							d_running.remove(i);
+							d_runningTasks.remove(i);
 //							System.out.println("Task finished " + t);
 							if (!d_scheduledTasks.isEmpty()) {
 								SuspendableThreadWrapper newThread = d_scheduledTasks.pop();
 								newThread.start();
 //								System.out.println("Executing from schedule " + newThread);
-								d_running.add(i, newThread);
+								d_runningTasks.add(i, newThread);
 							}
 						}
 					}
@@ -36,14 +36,14 @@ public class ThreadHandler {
 
 	private final int d_numCores;
 	LinkedList<SuspendableThreadWrapper> d_scheduledTasks;
-	LinkedList<SuspendableThreadWrapper> d_running;
+	LinkedList<SuspendableThreadWrapper> d_runningTasks;
 	Thread d_cleaner;
 	private static ThreadHandler d_singleton;
 	
 	private ThreadHandler() {
 		d_numCores = Runtime.getRuntime().availableProcessors();
 		d_scheduledTasks = new LinkedList<SuspendableThreadWrapper>();
-		d_running = new LinkedList<SuspendableThreadWrapper>();
+		d_runningTasks = new LinkedList<SuspendableThreadWrapper>();
 		d_cleaner = new Thread(new RunQueueCleaner());
 		d_cleaner.start();
 	}
@@ -58,27 +58,34 @@ public class ThreadHandler {
 		scheduleTasks(Collections.singleton(r));
 	}
 	
-	synchronized public void scheduleTasks(Collection<Runnable> t) {
-		LinkedList<SuspendableThreadWrapper> toAdd = runnableToWrapper(t);
-
-		synchronized (d_running) {
+	public synchronized void scheduleTasks(Collection<Runnable> newTasks) {
+		synchronized (d_runningTasks) {
+			LinkedList<SuspendableThreadWrapper> toAdd = getWrappers(newTasks);
+			
+//			System.out.println("newTasks " + newTasks);
+			
+			/* If tasks already present, reschedule to running or to head of queue  */
+			toAdd.removeAll(d_runningTasks);
+			d_scheduledTasks.removeAll(toAdd);
+			
+			
 			// remove N=t.size() tasks from running and stack them in scheduledTasks (take various sizes into account)
-			int toStack = Math.min(toAdd.size() - (d_numCores - d_running.size()), d_running.size()); // needed cores - available cores = cores that need to be pre-empted.
+			int toStack = Math.min(toAdd.size() - (d_numCores - d_runningTasks.size()), d_runningTasks.size()); // needed cores - available cores = cores that need to be pre-empted.
 			for(int i=0 ; i < toStack ; ++i ) {
-				if (d_running.peekLast().suspend()) {
-					SuspendableThreadWrapper runningThread = d_running.removeLast();
+				if (d_runningTasks.peekLast().suspend()) {
+					SuspendableThreadWrapper runningThread = d_runningTasks.removeLast();
 					d_scheduledTasks.push(runningThread);
 //					System.out.println("moving back to scheduler " + runningThread); 
 				}
 			}
 
 			// execute numCores tasks from t 
-			toStack = Math.min(d_numCores - d_running.size() , toAdd.size() ) ;
+			toStack = Math.min(d_numCores - d_runningTasks.size() , toAdd.size() ) ;
 			for(int i=0; i<toStack; ++i) {
 				SuspendableThreadWrapper newRunning = toAdd.pop();
-				d_running.push(newRunning);
+				d_runningTasks.push(newRunning);
 				newRunning.start();
-//				System.out.println("executing " + newRunning + " running size " + d_running.size()); 
+//				System.out.println("executing " + newRunning + " running size " + d_runningTasks.size()); 
 			}
 
 			// stack remaining threads from t in scheduledTasks
@@ -86,14 +93,32 @@ public class ThreadHandler {
 				d_scheduledTasks.push(m);
 //				System.out.println("Scheduling " + m);
 			}
+			
+//			System.out.println("after Schedule queue " + d_scheduledTasks);
+//			System.out.println("after Running queue " + d_runningTasks);
 		}
 	}
-
-	private LinkedList<SuspendableThreadWrapper> runnableToWrapper(
-			Collection<Runnable> t) {
+	
+	// FIXME: Fix with Map, don't forget to use WeakReference for both keys and values.
+	private LinkedList<SuspendableThreadWrapper> getWrappers(Collection<Runnable> newRunnables) {
+		/* Check whether Runnable already exists in scheduled tasks, so we can reschedule*/
 		LinkedList<SuspendableThreadWrapper> newList = new LinkedList<SuspendableThreadWrapper>();
-		for (Runnable r : t)
-			newList.add(new SuspendableThreadWrapper(r));
+		for (Runnable r : newRunnables) {
+			boolean found = false;
+			LinkedList<SuspendableThreadWrapper> examineList = new LinkedList<SuspendableThreadWrapper>();
+			examineList.addAll(d_scheduledTasks);
+			examineList.addAll(d_runningTasks);
+			for (SuspendableThreadWrapper w : examineList) {
+				if (w.getRunnable().equals(r)) {
+					newList.add(w);
+//					System.out.println("Adding already existing thread to wrapper list " + w);
+					found = true;
+				}
+			}
+			if (!found)
+				newList.add(new SuspendableThreadWrapper(r));
+		}
+		
 		return newList;
 	}
 }

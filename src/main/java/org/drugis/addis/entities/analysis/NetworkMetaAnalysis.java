@@ -156,14 +156,14 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	public void runInconsistency() {
-		if (!d_inconsistencyHasStarted)
+//		if (!d_inconsistencyHasStarted)
 			ThreadHandler.getInstance().scheduleTask(getInconsistencyModel());
 			//new Thread(getInconsistencyModel()).start();
 		d_inconsistencyHasStarted = true;
 	}
 
 	public void runConsistency() {
-		if (!d_consistencyHasStarted)
+//		if (!d_consistencyHasStarted)
 			ThreadHandler.getInstance().scheduleTask(getConsistencyModel());
 			//new Thread(getConsistencyModel()).start();
 		d_consistencyHasStarted = true;

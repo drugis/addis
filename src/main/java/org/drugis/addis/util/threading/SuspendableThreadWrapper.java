@@ -4,7 +4,7 @@ import java.lang.Thread.State;
 
 public class SuspendableThreadWrapper {
 	private Thread d_thread;
-	final Runnable d_runnable;
+	private final Runnable d_runnable;
 
 	SuspendableThreadWrapper(Runnable runnable) {
 		d_runnable = runnable;
@@ -41,7 +41,6 @@ public class SuspendableThreadWrapper {
 	private void startAsNewThread() {
 		d_thread = new Thread(d_runnable);
 		d_thread.start();
-		//d_thread.si
 	}
 	
 	private void resumeThread() {
@@ -51,6 +50,10 @@ public class SuspendableThreadWrapper {
 		else {
 			throw new RuntimeException("Thread already running.");
 		}
+	}
+	
+	Runnable getRunnable() {
+		return d_runnable;
 	}
 	
 	@Override

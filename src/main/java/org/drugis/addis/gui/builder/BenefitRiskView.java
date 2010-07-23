@@ -80,7 +80,7 @@ public class BenefitRiskView implements ViewBuilder {
 		if (d_builder != null)
 			d_builder.getPanel().removeAll();
 		
-		System.out.println("re-building panel");
+
 		
 		final FormLayout layout = new FormLayout(
 				"pref:grow:fill",

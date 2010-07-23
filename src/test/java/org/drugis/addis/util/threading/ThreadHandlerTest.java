@@ -28,6 +28,8 @@ public class ThreadHandlerTest {
 		}
 		
 		public void run() {
+			if (d_done)
+				throw new IllegalStateException("Thread already done.");
 			try {
 				Thread.sleep(d_ms);
 				waitIfSuspended();
@@ -40,16 +42,15 @@ public class ThreadHandlerTest {
 		@Override
 		public boolean equals(Object o) {
 			if (o instanceof SuspendableThreadWrapper)
-				return ((SuspendableThreadWrapper) o).d_runnable.equals(this);
+				return ((SuspendableThreadWrapper) o).getRunnable().equals(this);
 			else if (o instanceof FakeModel)
-				return (((FakeModel) o).d_ms == d_ms && ((FakeModel) o).d_done == d_done);
+				return super.equals(o);
 			return false;
 		}
 	};
 	
 	@Test
 	public void testQueueingOrder() {
-		
 		LinkedList<Runnable> ToDo1 = new LinkedList<Runnable>();
 		LinkedList<Runnable> ToDo2 = new LinkedList<Runnable>();
 		
@@ -75,21 +76,45 @@ public class ThreadHandlerTest {
 		th.scheduleTasks(ToDo1);
 		th.scheduleTasks(ToDo2);
 		assertTrue(th.d_scheduledTasks.contains(tmp1));
-		assertTrue(th.d_running.contains(tmp6));
-		waitTillDone();
+		assertTrue(th.d_runningTasks.contains(tmp6));
+	}
+	
+
+	
+	@Test
+	public void testReprioritise() {
+		LinkedList<Runnable> ToDo1 = new LinkedList<Runnable>();
+						
+		final int NUMMODELS = 4;
+		
+		for(int i=0; i < NUMMODELS; ++i) {
+			ToDo1.add(new FakeModel((i+1) * 300));
+		}
+		
+		ThreadHandler th = ThreadHandler.getInstance();
+		th.scheduleTasks(ToDo1);
+		assertTrue(th.d_runningTasks.containsAll(ToDo1.subList(0,2)));
+		assertTrue(th.d_scheduledTasks.containsAll(ToDo1.subList(2,4)));
+		
+		th.scheduleTasks(ToDo1.subList(0, 2));
+		assertTrue(th.d_runningTasks.containsAll(ToDo1.subList(0,2)));
+		assertTrue(th.d_scheduledTasks.containsAll(ToDo1.subList(2,4)));
+		
+		th.scheduleTasks(ToDo1.subList(2, 4));
+		assertTrue(th.d_runningTasks.containsAll(ToDo1.subList(2,4)));
+		assertTrue(th.d_scheduledTasks.containsAll(ToDo1.subList(0,2)));
+		
 	}
 	
 	@Test
 	public void testHighLoad() {
-		
-		
 		final int NUMTHREADS = 100;
 		LinkedList<Runnable> runnables = new LinkedList<Runnable>();
 		ThreadHandler th = ThreadHandler.getInstance();
 		ArrayList<FakeModel> threadList = new ArrayList<FakeModel>(NUMTHREADS);
 		
 		for (int i=0; i<NUMTHREADS; ++i) {
-			FakeModel mod = new FakeModel((int) Math.random() * 100);
+			FakeModel mod = new FakeModel((int) (Math.random() * 100));
 			threadList.add(mod);
 			runnables.add(mod);
 			if ((Math.random() > 0.75) || (i == (NUMTHREADS-1))) {
@@ -97,11 +122,11 @@ public class ThreadHandlerTest {
 				runnables.clear();
 			}
 			sleep((int) (Math.random() * 50));
-			assertTrue(Runtime.getRuntime().availableProcessors() >= th.d_running.size());
-//			System.out.println("running: " + th.d_running.size() + " scheduled: "+th.d_scheduledTasks.size());
+			assertTrue(Runtime.getRuntime().availableProcessors() >= th.d_runningTasks.size());
+//			System.out.println("running: " + th.d_runningTasks.size() + " scheduled: "+th.d_scheduledTasks.size());
 		}
 		
-		assertTrue(Runtime.getRuntime().availableProcessors() >= th.d_running.size());
+		assertTrue(Runtime.getRuntime().availableProcessors() >= th.d_runningTasks.size());
 		waitTillDone();
 		for (FakeModel mod : threadList) {
 //			System.out.println(mod + " " + mod.getDone());
@@ -111,8 +136,8 @@ public class ThreadHandlerTest {
 	
 	private void waitTillDone() {
 		ThreadHandler th = ThreadHandler.getInstance();
-		while ((th.d_running.size() > 0) || (th.d_scheduledTasks.size() > 0)) {
-//			System.out.println("running: " + th.d_running.size() + " scheduled: "+th.d_scheduledTasks.size());
+		while ((th.d_runningTasks.size() > 0) || (th.d_scheduledTasks.size() > 0)) {
+//			System.out.println("running: " + th.d_runningTasks.size() + " scheduled: "+th.d_scheduledTasks.size());
 			sleep(100);
 		}
 	}
