@@ -49,7 +49,7 @@ import org.junit.Test;
 
 public class StudyPresentationModelTest {
 	
-	private StudyPresentationModel d_model;
+	private StudyPresentation d_model;
 	private Study d_study;
 	private PresentationModelFactory d_pmf;
 
@@ -57,7 +57,7 @@ public class StudyPresentationModelTest {
 	public void setUp() {
 		d_study = new Study("study", new Indication(0L, "ind"));
 		d_pmf = new PresentationModelFactory(new DomainImpl());
-		d_model = new StudyPresentationModel(d_study, d_pmf);
+		d_model = new StudyPresentation(d_study, d_pmf);
 	}
 	
 	@Test

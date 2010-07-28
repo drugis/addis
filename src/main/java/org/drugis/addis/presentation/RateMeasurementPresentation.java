@@ -29,7 +29,7 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class RateMeasurementPresentation extends PresentationModel<RateMeasurement> implements LabeledPresentationModel {
+public class RateMeasurementPresentation extends PresentationModel<RateMeasurement> implements LabeledPresentation {
 	public class LabelModel extends DefaultLabelModel {
 
 		public LabelModel() {

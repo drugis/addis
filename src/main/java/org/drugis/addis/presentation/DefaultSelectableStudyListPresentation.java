@@ -31,14 +31,14 @@ import java.util.Set;
 
 import org.drugis.addis.entities.Study;
 
-public class DefaultSelectableStudyListPresentationModel extends DefaultStudyListPresentationModel implements SelectableStudyListPresentationModel{
+public class DefaultSelectableStudyListPresentation extends DefaultStudyListPresentation implements SelectableStudyListPresentation{
 
 	private HashMap<Study, ModifiableHolder<Boolean>> d_selectedStudiesMap;
 	
 	private ChangeListener d_listener = new ChangeListener();
 	private ListHolder<Study> d_selectedStudiesList = new DefaultListHolder<Study>(new ArrayList<Study>());
 
-	public DefaultSelectableStudyListPresentationModel(ListHolder<Study> list) {
+	public DefaultSelectableStudyListPresentation(ListHolder<Study> list) {
 		super(list);
 		
 		getIncludedStudies().addValueChangeListener(d_listener);
@@ -90,7 +90,7 @@ public class DefaultSelectableStudyListPresentationModel extends DefaultStudyLis
 	
 	/**
 	 * 
-	 * @see org.drugis.addis.presentation.SelectableStudyListPresentationModel#getSelectedStudyBooleanModel(org.drugis.addis.entities.Study)
+	 * @see org.drugis.addis.presentation.SelectableStudyListPresentation#getSelectedStudyBooleanModel(org.drugis.addis.entities.Study)
 	 * @throws IllegalArgumentException if !getIncludedStudies().getValue().contains(s)
 	 */
 	public ModifiableHolder<Boolean> getSelectedStudyBooleanModel(Study s) throws IllegalArgumentException{

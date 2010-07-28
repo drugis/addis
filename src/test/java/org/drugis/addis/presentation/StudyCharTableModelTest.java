@@ -88,7 +88,7 @@ public class StudyCharTableModelTest {
 			assertEquals(s, d_model.getValueAt(row, 0));
 			int column = 1;
 			for (Characteristic c : StudyCharacteristics.values()) {
-				StudyPresentationModel model = (StudyPresentationModel) d_pmf.getModel(s);
+				StudyPresentation model = (StudyPresentation) d_pmf.getModel(s);
 				assertEquals(model.getCharacteristicModel(c).getValue(), d_model.getValueAt(row, column));
 				++column;
 			}
@@ -105,7 +105,7 @@ public class StudyCharTableModelTest {
 			int column = 0;
 			for (Characteristic c : StudyCharacteristics.values()) {
 				if (column > 0) {
-					StudyPresentationModel model = (StudyPresentationModel) d_pmf.getModel(s);
+					StudyPresentation model = (StudyPresentation) d_pmf.getModel(s);
 					assertEquals(model.getCharacteristicModel(c).getValue(), d_model.getValueAt(row, column));
 				}
 				++column;
@@ -167,7 +167,7 @@ public class StudyCharTableModelTest {
 				return new ArrayList<Study>();
 			}
 		};
-		DefaultStudyListPresentationModel model = new DefaultStudyListPresentationModel(list);
+		DefaultStudyListPresentation model = new DefaultStudyListPresentation(list);
 		TableModel tableModel = new StudyCharTableModel(model, new PresentationModelFactory(d_domain));
 		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(tableModel ));
 		tableModel.addTableModelListener(mock);

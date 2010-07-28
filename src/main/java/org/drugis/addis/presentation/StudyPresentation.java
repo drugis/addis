@@ -46,7 +46,7 @@ import org.drugis.addis.entities.DerivedStudyCharacteristic.Dosing;
 import com.jgoodies.binding.PresentationModel;
 
 @SuppressWarnings("serial")
-public class StudyPresentationModel extends PresentationModel<Study> {
+public class StudyPresentation extends PresentationModel<Study> {
 	
 	private StudyCharacteristicHolder d_armsHolder;
 	private StudyCharacteristicHolder d_doseHolder;
@@ -57,7 +57,7 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 	
 	private Map<Characteristic, StudyCharacteristicHolder> d_characteristicModelMap;
 	
-	public StudyPresentationModel(Study s, PresentationModelFactory pmf) {
+	public StudyPresentation(Study s, PresentationModelFactory pmf) {
 		super(s);
 		
 		d_characteristicModelMap = new HashMap<Characteristic, StudyCharacteristicHolder>();
@@ -178,7 +178,7 @@ public class StudyPresentationModel extends PresentationModel<Study> {
 		return getBean().getVariables(Variable.class);
 	}
 	
-	public LabeledPresentationModel getCharacteristicModel(BasicStudyCharacteristic c) {
+	public LabeledPresentation getCharacteristicModel(BasicStudyCharacteristic c) {
 		if (getBean().getCharacteristic(c) != null) {
 			return d_pmf.getLabeledModel(getBean().getCharacteristic(c));
 		}

@@ -36,7 +36,7 @@ import org.junit.Test;
 
 public class DefaultSelectableStudyListPresentationModelTest {
 
-	private DefaultSelectableStudyListPresentationModel d_model;
+	private DefaultSelectableStudyListPresentation d_model;
 	private DefaultListHolder<Study> d_holder;
 	private Study d_s1;
 	private Study d_s2;
@@ -53,7 +53,7 @@ public class DefaultSelectableStudyListPresentationModelTest {
 		d_studies.add(d_s2);
 		d_holder = new DefaultListHolder<Study>(d_studies);
 		
-		d_model = new DefaultSelectableStudyListPresentationModel(d_holder); 
+		d_model = new DefaultSelectableStudyListPresentation(d_holder); 
 	}
 	
 	@Test

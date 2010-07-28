@@ -38,13 +38,13 @@ import com.jgoodies.binding.PresentationModel;
 public class BenefitRiskPMTest {
 
 	private PresentationModelFactory d_pmf;
-	private BenefitRiskPM d_pm;
+	private BenefitRiskPresentation d_pm;
 
 	@Before
 	public void setUp() {
 		d_pmf = new PresentationModelFactory(new DomainImpl());
 		BenefitRiskAnalysis analysis = ExampleData.buildMockBenefitRiskAnalysis();
-		d_pm = new BenefitRiskPM(analysis, d_pmf);
+		d_pm = new BenefitRiskPresentation(analysis, d_pmf);
 	}
 	
 	@Test

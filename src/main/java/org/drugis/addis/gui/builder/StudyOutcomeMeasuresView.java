@@ -44,7 +44,7 @@ import org.drugis.addis.presentation.RelativeEffectTableModel;
 import org.drugis.addis.presentation.RiskDifferenceTableModel;
 import org.drugis.addis.presentation.RiskRatioTableModel;
 import org.drugis.addis.presentation.StandardisedMeanDifferenceTableModel;
-import org.drugis.addis.presentation.StudyPresentationModel;
+import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
@@ -56,16 +56,16 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class StudyOutcomeMeasuresView implements ViewBuilder {
 	
-	private StudyPresentationModel d_model;
+	private StudyPresentation d_model;
 	private PresentationModelFactory d_pmf;
 	private JFrame d_mainWindow;
 	private boolean d_isEndpoints;
 
-	public StudyOutcomeMeasuresView(StudyPresentationModel model, Main main, boolean endpoints) {
+	public StudyOutcomeMeasuresView(StudyPresentation model, Main main, boolean endpoints) {
 		this(model, main, main.getPresentationModelFactory(), endpoints);
 	}
 	
-	public StudyOutcomeMeasuresView(StudyPresentationModel model, JFrame parent, 
+	public StudyOutcomeMeasuresView(StudyPresentation model, JFrame parent, 
 			PresentationModelFactory pmf, boolean endpoints) {
 		d_model = model;
 		d_pmf = pmf;

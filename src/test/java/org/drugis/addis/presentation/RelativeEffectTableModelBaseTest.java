@@ -118,8 +118,8 @@ public abstract class RelativeEffectTableModelBaseTest {
 
 	@Test
 	public void testGetDescriptionAt() {
-		LabeledPresentationModel pg0 = d_pmf.getLabeledModel(d_threeArmStudy.getArms().get(0));
-		LabeledPresentationModel pg1 = d_pmf.getLabeledModel(d_threeArmStudy.getArms().get(1));
+		LabeledPresentation pg0 = d_pmf.getLabeledModel(d_threeArmStudy.getArms().get(0));
+		LabeledPresentation pg1 = d_pmf.getLabeledModel(d_threeArmStudy.getArms().get(1));
 		String expected = "\"" + pg1.getLabelModel().getValue() + "\" relative to \"" +
 				pg0.getLabelModel().getValue() + "\"";
 		assertEquals(expected, d_threeArmModel.getDescriptionAt(0, 1));

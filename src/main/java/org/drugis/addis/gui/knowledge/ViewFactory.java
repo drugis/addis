@@ -40,14 +40,14 @@ import org.drugis.addis.gui.builder.NetworkMetaAnalysisView;
 import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
 import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.builder.VariableView;
-import org.drugis.addis.presentation.BenefitRiskPM;
-import org.drugis.addis.presentation.DrugPresentationModel;
+import org.drugis.addis.presentation.BenefitRiskPresentation;
+import org.drugis.addis.presentation.DrugPresentation;
 import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
-import org.drugis.addis.presentation.StudyPresentationModel;
-import org.drugis.addis.presentation.VariablePresentationModel;
+import org.drugis.addis.presentation.StudyPresentation;
+import org.drugis.addis.presentation.VariablePresentation;
 import org.drugis.common.gui.ViewBuilder;
 
 // FIXME: refactor -- move into Knowledge classes.
@@ -63,18 +63,18 @@ class ViewFactory {
 					(NetworkMetaAnalysisPresentation) pmf.getModel(((NetworkMetaAnalysis) node)),
 					main);
 		} else if (node instanceof Study) {
-			return new StudyView((StudyPresentationModel) pmf
+			return new StudyView((StudyPresentation) pmf
 					.getModel(((Study) node)), main.getDomain(), main);
 		} else if (node instanceof Variable) {
 			return new VariableView(
-					(VariablePresentationModel) pmf.getModel(((Variable) node)), main);
+					(VariablePresentation) pmf.getModel(((Variable) node)), main);
 		} else if (node instanceof Drug) {
-			return new DrugView((DrugPresentationModel) pmf.getModel(((Drug) node)), main);
+			return new DrugView((DrugPresentation) pmf.getModel(((Drug) node)), main);
 		} else if (node instanceof Indication) {
 			return new IndicationView(
 					(IndicationPresentation) pmf.getModel(((Indication) node)), main);
 		}  else if (node instanceof BenefitRiskAnalysis) {
-			BenefitRiskPM model = (BenefitRiskPM) pmf.getModel((BenefitRiskAnalysis) node);
+			BenefitRiskPresentation model = (BenefitRiskPresentation) pmf.getModel((BenefitRiskAnalysis) node);
 			return new BenefitRiskView(model, main);
 		}
 		return new ViewBuilder() {

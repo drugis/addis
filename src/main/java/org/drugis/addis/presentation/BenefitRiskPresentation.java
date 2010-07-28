@@ -57,7 +57,7 @@ import fi.smaa.jsmaa.simulator.BuildQueue;
 import fi.smaa.jsmaa.simulator.SMAA2Results;
 
 @SuppressWarnings("serial")
-public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
+public class BenefitRiskPresentation extends PresentationModel<BenefitRiskAnalysis>{
 
 	private class AnalysisProgressListener implements ProgressListener {
 		JProgressBar d_progBar;
@@ -151,7 +151,7 @@ public class BenefitRiskPM extends PresentationModel<BenefitRiskAnalysis>{
 		return d_allNetworkModelsReadyListener.allModelsReady();
 	}
 	
-	public BenefitRiskPM(BenefitRiskAnalysis bean, PresentationModelFactory pmf) {
+	public BenefitRiskPresentation(BenefitRiskAnalysis bean, PresentationModelFactory pmf) {
 		super(bean);
 		
 		d_pmf = pmf;

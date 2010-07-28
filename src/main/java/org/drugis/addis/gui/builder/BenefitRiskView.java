@@ -39,7 +39,7 @@ import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.TablePanel;
-import org.drugis.addis.presentation.BenefitRiskPM;
+import org.drugis.addis.presentation.BenefitRiskPresentation;
 import org.drugis.addis.util.HtmlWordWrapper;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.LayoutUtil;
@@ -65,12 +65,12 @@ import fi.smaa.jsmaa.gui.views.ResultsView;
 public class BenefitRiskView implements ViewBuilder {
 	
 	private static final String WAITING_MESSAGE = "Please wait while the sub-analyses run";
-	private BenefitRiskPM d_pm;
+	private BenefitRiskPresentation d_pm;
 	private Main d_main;
 	private PanelBuilder d_builder;
 
 	
-	public BenefitRiskView(BenefitRiskPM pm, Main main) {
+	public BenefitRiskView(BenefitRiskPresentation pm, Main main) {
 		d_pm = pm;
 		d_main = main;
 

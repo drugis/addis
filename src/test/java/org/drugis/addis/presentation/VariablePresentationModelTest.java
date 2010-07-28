@@ -42,7 +42,7 @@ public class VariablePresentationModelTest {
 	private Domain d_domain;
 	private PresentationModelFactory d_pmf;
 	private Variable d_omEndpoint;
-	private VariablePresentationModel d_pmEndpoint;
+	private VariablePresentation d_pmEndpoint;
 
 	//OutcomePresentationModel d_opm = new OutcomePresentationModel(om, );
 	
@@ -55,7 +55,7 @@ public class VariablePresentationModelTest {
 		d_pmf = new PresentationModelFactory(d_domain);
 		
 		d_omEndpoint = new Endpoint("testendpoint", Variable.Type.CONTINUOUS);
-		d_pmEndpoint = (VariablePresentationModel) d_pmf.getModel(d_omEndpoint);
+		d_pmEndpoint = (VariablePresentation) d_pmf.getModel(d_omEndpoint);
 	}
 	
 	@Test
@@ -66,14 +66,14 @@ public class VariablePresentationModelTest {
 	@Test
 	public void testGetNameADE() {
 		Variable omAde = new AdverseEvent("testade", Variable.Type.CONTINUOUS);
-		VariablePresentationModel pm_ade = (VariablePresentationModel) d_pmf.getModel(omAde);
+		VariablePresentation pm_ade = (VariablePresentation) d_pmf.getModel(omAde);
 		assertEquals ("Adverse drug event", pm_ade.getCategoryName());
 	}
 	
 	@Test
 	public void testGetNamePopChar() {
 		Variable omAde = new ContinuousPopulationCharacteristic("testvar");
-		VariablePresentationModel pm = (VariablePresentationModel) d_pmf.getModel(omAde);
+		VariablePresentation pm = (VariablePresentation) d_pmf.getModel(omAde);
 		assertEquals ("Population characteristic", pm.getCategoryName());
 	}
 	
@@ -84,7 +84,7 @@ public class VariablePresentationModelTest {
 	
 	@Test
 	public void testGetIncludedStudies() {
-		VariablePresentationModel pmCardovascular = (VariablePresentationModel) d_pmf.getModel((Variable) ExampleData.buildEndpointCVdeath());
+		VariablePresentation pmCardovascular = (VariablePresentation) d_pmf.getModel((Variable) ExampleData.buildEndpointCVdeath());
 		JUnitUtil.assertAllAndOnly(Collections.singleton(ExampleData.buildStudyMcMurray()), pmCardovascular.getIncludedStudies().getValue());
 	}
 

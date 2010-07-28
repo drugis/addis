@@ -77,7 +77,7 @@ import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.wizard.SelectFromFiniteListWizardStep;
-import org.drugis.addis.presentation.DosePresentationModel;
+import org.drugis.addis.presentation.DosePresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.wizard.CompleteListener;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.OutcomeMeasurementsModel;
@@ -364,7 +364,7 @@ public class AddStudyWizard implements ViewBuilder{
 				btn.addActionListener(new NewDrugButtonListener(curArmNumber));
 				
 				// add min dose
-				DosePresentationModel doseModel = d_pm.getArmModel(curArmNumber).getDoseModel();
+				DosePresentation doseModel = d_pm.getArmModel(curArmNumber).getDoseModel();
 				JTextField minDoseField =  new JFormattedTextField(new DefaultFormatter());
 				PropertyConnector.connectAndUpdate(doseModel.getMinModel(), minDoseField, "value");
 				minDoseField.setColumns(4);

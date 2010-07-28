@@ -29,12 +29,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class EndpointCreationModelTest {
-	private OutcomeMeasureCreationModel d_pm;
+	private OutcomeMeasureCreationPresentation d_pm;
 
 	@Before
 	public void setUp() {
 		Endpoint endpoint = new Endpoint("X", Variable.Type.RATE);
-		d_pm = new OutcomeMeasureCreationModel(endpoint);
+		d_pm = new OutcomeMeasureCreationPresentation(endpoint);
 	}
 	
 	@Test

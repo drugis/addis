@@ -40,7 +40,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.addis.presentation.SelectableStudyListPresentationModel;
+import org.drugis.addis.presentation.SelectableStudyListPresentation;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.JUnitUtil;
@@ -87,7 +87,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 	
 	@Test
 	public void testStudyListModel() {
-		SelectableStudyListPresentationModel listModel = d_pm.getStudyListModel();
+		SelectableStudyListPresentation listModel = d_pm.getStudyListModel();
 		
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
@@ -110,7 +110,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 	
 	@Test
 	public void testStudyListModelAdds() {
-		SelectableStudyListPresentationModel listModel = d_pm.getStudyListModel();
+		SelectableStudyListPresentation listModel = d_pm.getStudyListModel();
 		
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());

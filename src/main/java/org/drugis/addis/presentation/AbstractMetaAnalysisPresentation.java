@@ -35,15 +35,15 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class AbstractMetaAnalysisPresentation<T extends MetaAnalysis> extends PresentationModel<T>
-implements StudyListPresentationModel {
+implements StudyListPresentation {
 
 	protected PresentationModelFactory d_mgr;
-	protected DefaultStudyListPresentationModel d_studyModel;
+	protected DefaultStudyListPresentation d_studyModel;
 	
 	public AbstractMetaAnalysisPresentation(T bean, PresentationModelFactory mgr) {
 		super(bean);
 		d_mgr = mgr;
-		d_studyModel = new DefaultStudyListPresentationModel(new MyListHolder());
+		d_studyModel = new DefaultStudyListPresentation(new MyListHolder());
 	}
 	
 	
@@ -61,12 +61,12 @@ implements StudyListPresentationModel {
 	}
 
 
-	public LabeledPresentationModel getIndicationModel() {
+	public LabeledPresentation getIndicationModel() {
 		return d_mgr.getLabeledModel(getBean().getIndication());
 	}
 
 
-	public LabeledPresentationModel getOutcomeMeasureModel() {
+	public LabeledPresentation getOutcomeMeasureModel() {
 		return d_mgr.getLabeledModel(getBean().getOutcomeMeasure());
 	}
 

@@ -58,10 +58,10 @@ import org.drugis.addis.presentation.MutableCharacteristicHolder;
 import org.drugis.addis.presentation.PopulationCharTableModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectAdverseEventsPresentation;
-import org.drugis.addis.presentation.SelectFromFiniteListPresentationModel;
+import org.drugis.addis.presentation.SelectFromFiniteListPresentation;
 import org.drugis.addis.presentation.SelectPopulationCharsPresentation;
 import org.drugis.addis.presentation.StudyNoteHolder;
-import org.drugis.addis.presentation.StudyPresentationModel;
+import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
 
 import com.jgoodies.binding.value.ValueModel;
@@ -154,8 +154,8 @@ public class AddStudyWizardPresentation {
 	
 	private Domain d_domain;
 	private PresentationModelFactory d_pmf;
-	private StudyPresentationModel d_newStudyPM;
-	private StudyPresentationModel d_importedStudyPM;
+	private StudyPresentation d_newStudyPM;
+	private StudyPresentation d_importedStudyPM;
 	
 	//List<ModifiableHolder<Endpoint>> d_selectedEndpointsList;
 	List<BasicArmPresentation> d_selectedArmList;
@@ -163,8 +163,8 @@ public class AddStudyWizardPresentation {
 	private ListHolder<AdverseEvent> d_adverseEventListHolder;
 	private ListHolder<PopulationCharacteristic> d_populationCharsListHolder;
 	private SelectAdverseEventsPresentation d_adverseEventSelect;
-	private SelectFromFiniteListPresentationModel<PopulationCharacteristic> d_populationCharSelect;
-	private SelectFromFiniteListPresentationModel<Endpoint> d_endpointSelect;
+	private SelectFromFiniteListPresentation<PopulationCharacteristic> d_populationCharSelect;
+	private SelectFromFiniteListPresentation<Endpoint> d_endpointSelect;
 	private Study d_origStudy = null;
 	
 	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, Main main) {
@@ -212,13 +212,13 @@ public class AddStudyWizardPresentation {
 	public void importCT() throws MalformedURLException, IOException{
 		Object studyID = getIdModel().getValue();
 		String url = "http://clinicaltrials.gov/show/"+studyID+"?displayxml=true";
-		d_importedStudyPM = (StudyPresentationModel) new StudyPresentationModel(ClinicaltrialsImporter.getClinicaltrialsData(url),d_pmf);
-		d_newStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
+		d_importedStudyPM = (StudyPresentation) new StudyPresentation(ClinicaltrialsImporter.getClinicaltrialsData(url),d_pmf);
+		d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study("", new Indication(0l,"")),d_pmf);
 		migrateImportToNew(studyID);
 	}
 	
 	public void setNewStudy(Study study) {
-		d_newStudyPM = new StudyPresentationModel(study, d_pmf);
+		d_newStudyPM = new StudyPresentation(study, d_pmf);
 		d_endpointSelect.clear();
 		for (Endpoint e : study.getEndpoints()) {
 			d_endpointSelect.addSlot();
@@ -274,8 +274,8 @@ public class AddStudyWizardPresentation {
 	}
 	
 	public void clearStudies() {
-		d_importedStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
-		d_newStudyPM = (StudyPresentationModel) new StudyPresentationModel(new Study("", new Indication(0l,"")),d_pmf);
+		d_importedStudyPM = (StudyPresentation) new StudyPresentation(new Study("", new Indication(0l,"")),d_pmf);
+		d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study("", new Indication(0l,"")),d_pmf);
 		getSourceModel().setValue(Source.MANUAL);
 		d_endpointSelect.clear();
 		while (d_adverseEventSelect.countSlots() > 0) {
@@ -435,7 +435,7 @@ public class AddStudyWizardPresentation {
 		return d_newStudyPM.getBean();
 	}
 	
-	public StudyPresentationModel getNewStudyPM() {
+	public StudyPresentation getNewStudyPM() {
 		return d_newStudyPM;
 	}
 
@@ -477,15 +477,15 @@ public class AddStudyWizardPresentation {
 		};
 	} 
 
-	public SelectFromFiniteListPresentationModel<AdverseEvent> getAdverseEventSelectModel() {
+	public SelectFromFiniteListPresentation<AdverseEvent> getAdverseEventSelectModel() {
 		return d_adverseEventSelect;
 	}
 	
-	public SelectFromFiniteListPresentationModel<Endpoint> getEndpointSelectModel() {
+	public SelectFromFiniteListPresentation<Endpoint> getEndpointSelectModel() {
 		return d_endpointSelect;
 	} 
 
-	public SelectFromFiniteListPresentationModel<PopulationCharacteristic> getPopulationCharSelectModel() {
+	public SelectFromFiniteListPresentation<PopulationCharacteristic> getPopulationCharSelectModel() {
 		return d_populationCharSelect;
 	}
 

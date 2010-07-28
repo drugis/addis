@@ -25,7 +25,7 @@ import java.util.List;
 
 import com.jgoodies.binding.value.ValueModel;
 
-public interface SelectFromFiniteListPresentationModel<T> {
+public interface SelectFromFiniteListPresentation<T> {
 	/**
 	 * Remove one of the slots
 	 * @param idx

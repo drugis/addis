@@ -35,14 +35,14 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.CharacteristicSelectDialog;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.StudyCharTableModel;
-import org.drugis.addis.presentation.StudyListPresentationModel;
+import org.drugis.addis.presentation.StudyListPresentation;
 import org.drugis.common.gui.GUIHelper;
 
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
 @SuppressWarnings("serial")
 public class StudiesTablePanel extends TablePanel {
-	public StudiesTablePanel(StudyListPresentationModel studyListPresentationModel, Main main) {
+	public StudiesTablePanel(StudyListPresentation studyListPresentationModel, Main main) {
 		super(createTable(studyListPresentationModel, main));
 		
 		ButtonBarBuilder2 bb = new ButtonBarBuilder2();
@@ -52,7 +52,7 @@ public class StudiesTablePanel extends TablePanel {
 		add(bb.getPanel(), BorderLayout.SOUTH);
 	}
 
-	public static JTable createTable(final StudyListPresentationModel studyListPM, final Main main) {
+	public static JTable createTable(final StudyListPresentation studyListPM, final Main main) {
 		StudyCharTableModel model = new StudyCharTableModel(studyListPM, main.getPresentationModelFactory());
 		JTable table = new EnhancedTable(model);
 		table.addMouseListener(new MouseAdapter() {
@@ -69,7 +69,7 @@ public class StudiesTablePanel extends TablePanel {
 		return table;
 	}
 
-	public static JButton buildCustomizeButton(final StudyListPresentationModel studyListPM, final Main main) {
+	public static JButton buildCustomizeButton(final StudyListPresentation studyListPM, final Main main) {
 		JButton customizeButton = new JButton("Customize Shown Characteristics");
 		customizeButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {

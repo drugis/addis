@@ -30,7 +30,7 @@ import javax.swing.JPanel;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.OddsRatioToClinicalConverter;
-import org.drugis.addis.presentation.BenefitRiskPM;
+import org.drugis.addis.presentation.BenefitRiskPresentation;
 import org.drugis.addis.presentation.OddsRatioScalePresentation;
 import org.drugis.common.gui.NumberAndIntervalFormat;
 
@@ -43,9 +43,9 @@ import fi.smaa.jsmaa.model.ScaleCriterion;
 
 public class ClinicalScaleRenderer implements ScaleRenderer {
 
-	private final BenefitRiskPM d_pm;
+	private final BenefitRiskPresentation d_pm;
 
-	public ClinicalScaleRenderer(BenefitRiskPM pm) {
+	public ClinicalScaleRenderer(BenefitRiskPresentation pm) {
 		d_pm = pm;
 	}
 

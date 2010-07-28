@@ -30,7 +30,7 @@ import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.StudiesTablePanel;
-import org.drugis.addis.presentation.DrugPresentationModel;
+import org.drugis.addis.presentation.DrugPresentation;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -40,10 +40,10 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class DrugView implements ViewBuilder{
-	private DrugPresentationModel d_model;
+	private DrugPresentation d_model;
 	private Main d_parent;
 
-	public DrugView(DrugPresentationModel model, Main parent) {
+	public DrugView(DrugPresentation model, Main parent) {
 		d_model = model;
 		d_parent = parent;
 	}

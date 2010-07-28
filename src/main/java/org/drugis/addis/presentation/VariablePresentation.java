@@ -41,7 +41,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
-public class VariablePresentationModel extends PresentationModel<Variable> implements StudyListPresentationModel, LabeledPresentationModel {
+public class VariablePresentation extends PresentationModel<Variable> implements StudyListPresentation, LabeledPresentation {
 
 	private ListHolder<Study> d_studies;
 	private CharacteristicVisibleMap d_characteristicVisibleMap = new CharacteristicVisibleMap();
@@ -73,7 +73,7 @@ public class VariablePresentationModel extends PresentationModel<Variable> imple
 		}
 	}
 	
-	public VariablePresentationModel(Variable bean, ListHolder<Study> studies, PresentationModelFactory pmf) {
+	public VariablePresentation(Variable bean, ListHolder<Study> studies, PresentationModelFactory pmf) {
 		super(bean);
 		d_studies = studies;
 		d_pmf = pmf;

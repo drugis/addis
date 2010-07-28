@@ -46,7 +46,7 @@ import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
-import org.drugis.addis.presentation.VariablePresentationModel;
+import org.drugis.addis.presentation.VariablePresentation;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -63,7 +63,7 @@ public class AddVariableView implements ViewBuilder {
 	private JTextField d_name;
 	private JTextField d_description;
 	private JTextField d_unitOfMeasurement;
-	private VariablePresentationModel d_model;
+	private VariablePresentation d_model;
 	private JComboBox d_type;
 	private JComboBox d_direction;
 	private JList d_categories;
@@ -74,7 +74,7 @@ public class AddVariableView implements ViewBuilder {
 	private JButton d_dOkButton;
 	
 	public AddVariableView(PresentationModel<Variable> model, JButton okButton) {
-		d_model = (VariablePresentationModel) model;
+		d_model = (VariablePresentation) model;
 		d_dOkButton = okButton;
 		d_validator = new NotEmptyValidator(d_dOkButton);
 	}
@@ -147,7 +147,7 @@ public class AddVariableView implements ViewBuilder {
 		builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
 		
-		String categoryName = VariablePresentationModel.getEntityName(d_model.getBean());
+		String categoryName = VariablePresentation.getEntityName(d_model.getBean());
 		builder.addSeparator(categoryName , cc.xyw(1, 1, 3));
 		
 		builder.addLabel("Type:", cc.xy(1, 3));

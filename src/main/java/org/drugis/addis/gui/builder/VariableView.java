@@ -34,7 +34,7 @@ import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudiesTablePanel;
-import org.drugis.addis.presentation.VariablePresentationModel;
+import org.drugis.addis.presentation.VariablePresentation;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -47,10 +47,10 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class VariableView implements ViewBuilder {
-	private VariablePresentationModel d_model;
+	private VariablePresentation d_model;
 	private Main d_frame;
 	
-	public VariableView(VariablePresentationModel model, Main frame) {
+	public VariableView(VariablePresentation model, Main frame) {
 		d_model = model;
 		d_frame = frame;
 	}

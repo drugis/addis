@@ -31,7 +31,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class FrequencyMeasurementPresentation extends PresentationModel<FrequencyMeasurement>
-		implements LabeledPresentationModel {
+		implements LabeledPresentation {
 	
 	public class FrequencyModel extends AbstractValueModel implements PropertyChangeListener {
 		private String d_cat;

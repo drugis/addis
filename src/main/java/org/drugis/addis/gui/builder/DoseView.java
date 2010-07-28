@@ -31,7 +31,7 @@ import javax.swing.text.DefaultFormatter;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
-import org.drugis.addis.presentation.DosePresentationModel;
+import org.drugis.addis.presentation.DosePresentation;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -39,17 +39,17 @@ import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.list.SelectionInList;
 
 public class DoseView implements ViewBuilder {
-	private DosePresentationModel d_model;
+	private DosePresentation d_model;
 	private JComboBox d_unit;
 	private NotEmptyValidator d_validator;
 	private JFormattedTextField d_quantityMin;
 	private JFormattedTextField d_quantityMax;
 	
-	public DoseView(DosePresentationModel dose) {
+	public DoseView(DosePresentation dose) {
 		d_model = dose;
 	}
 	
-	public DoseView(DosePresentationModel dose, NotEmptyValidator validator) {
+	public DoseView(DosePresentation dose, NotEmptyValidator validator) {
 		d_model = dose;
 		d_validator = validator;
 	}	

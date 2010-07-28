@@ -10,7 +10,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 
 @SuppressWarnings("serial")
-public class DistributionPresentation extends PresentationModel<Distribution> implements LabeledPresentationModel {
+public class DistributionPresentation extends PresentationModel<Distribution> implements LabeledPresentation {
 
 	public class LabelModel extends DefaultLabelModel {
 		

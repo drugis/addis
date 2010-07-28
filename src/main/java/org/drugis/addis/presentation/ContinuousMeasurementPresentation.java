@@ -37,7 +37,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class ContinuousMeasurementPresentation<T extends ContinuousMeasurement> 
-extends PresentationModel<T> implements LabeledPresentationModel {
+extends PresentationModel<T> implements LabeledPresentation {
 	
 	public ContinuousMeasurementPresentation(T bean) {
 		super(bean);

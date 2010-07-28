@@ -40,7 +40,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.StudiesTablePanel;
-import org.drugis.addis.presentation.StudyListPresentationModel;
+import org.drugis.addis.presentation.StudyListPresentation;
 import org.drugis.common.ImageLoader;
 import org.jdesktop.swingx.JXCollapsiblePane;
 
@@ -104,7 +104,7 @@ public class GUIFactory {
 		return textLabel;
 	}
 
-	public static JComponent buildStudyPanel(StudyListPresentationModel studies, Main parent) {
+	public static JComponent buildStudyPanel(StudyListPresentation studies, Main parent) {
 		JComponent studiesComp = null;
 		if(studies.getIncludedStudies().getValue().isEmpty()) {
 			studiesComp = new JLabel("No studies found.");

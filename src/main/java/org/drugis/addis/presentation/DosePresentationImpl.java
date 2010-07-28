@@ -33,7 +33,7 @@ import org.drugis.common.Interval;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueHolder;
 
-class DosePresentationImpl implements DosePresentationModel {
+class DosePresentationImpl implements DosePresentation {
 	private Arm d_pg;
 	private ValueHolder d_min;
 	private ValueHolder d_max;

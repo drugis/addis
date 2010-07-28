@@ -24,7 +24,7 @@ package org.drugis.addis.presentation;
 @SuppressWarnings("serial")
 public class SelectableStudyCharTableModel extends StudyCharTableModel {
 
-	public SelectableStudyCharTableModel(SelectableStudyListPresentationModel pm, PresentationModelFactory pmf) {
+	public SelectableStudyCharTableModel(SelectableStudyListPresentation pm, PresentationModelFactory pmf) {
 		super(pm, pmf);
 	}
 	
@@ -59,7 +59,7 @@ public class SelectableStudyCharTableModel extends StudyCharTableModel {
 	}
 
 	private ModifiableHolder<Boolean> getVisibleModelByRow(int rowIndex) {
-		return ((SelectableStudyListPresentationModel)d_pm).getSelectedStudyBooleanModel(d_pm.getIncludedStudies().getValue().get(rowIndex));
+		return ((SelectableStudyListPresentation)d_pm).getSelectedStudyBooleanModel(d_pm.getIncludedStudies().getValue().get(rowIndex));
 	}
 	
 	@Override

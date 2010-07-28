@@ -31,7 +31,7 @@ import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.addis.presentation.StudyPresentationModel;
+import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -40,13 +40,13 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class StudyView implements ViewBuilder {
-	private StudyPresentationModel d_model;
+	private StudyPresentation d_model;
 	private StudyCharacteristicsView d_charView;
 	private StudyOutcomeMeasuresView d_epView;
 	private StudyOutcomeMeasuresView d_adeView;	
 	private StudyArmsView d_armsView;
 	
-	public StudyView(StudyPresentationModel model, Domain domain, JFrame parent, PresentationModelFactory pmf) {
+	public StudyView(StudyPresentation model, Domain domain, JFrame parent, PresentationModelFactory pmf) {
 		d_model = model;
 		d_charView = new StudyCharacteristicsView(model);
 		d_epView = new StudyOutcomeMeasuresView(model, parent, pmf, true);
@@ -54,7 +54,7 @@ public class StudyView implements ViewBuilder {
 		d_armsView = new StudyArmsView(model, pmf);			
 	}
 	
-	public StudyView(StudyPresentationModel model, Domain domain, Main main) {
+	public StudyView(StudyPresentation model, Domain domain, Main main) {
 		this(model, domain, main, main.getPresentationModelFactory());
 	}
 	

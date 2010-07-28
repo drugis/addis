@@ -40,11 +40,11 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.DefaultListHolder;
-import org.drugis.addis.presentation.DefaultSelectableStudyListPresentationModel;
+import org.drugis.addis.presentation.DefaultSelectableStudyListPresentation;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.addis.presentation.SelectableStudyListPresentationModel;
+import org.drugis.addis.presentation.SelectableStudyListPresentation;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.ValueHolder;
 
@@ -60,7 +60,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	protected G d_studyGraphPresentationModel;	
 	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;
 	protected Map<Study, Map<Drug, ModifiableHolder<Arm>>> d_selectedArms;
-	protected DefaultSelectableStudyListPresentationModel d_studyListPm;	
+	protected DefaultSelectableStudyListPresentation d_studyListPm;	
 
 	public AbstractMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmf) {
 		super(d);
@@ -74,7 +74,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		d_drugListHolder = new DrugListHolder();
 		d_studyGraphPresentationModel = buildStudyGraphPresentation();
 		buildDrugHolders();
-		d_studyListPm = new DefaultSelectableStudyListPresentationModel(new StudyListHolder());
+		d_studyListPm = new DefaultSelectableStudyListPresentation(new StudyListHolder());
 
 		d_studiesMeasuringValueModel = new StudiesMeasuringValueModel();
 		
@@ -148,7 +148,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		return d_selectedArms.get(study).get(drug);
 	}
 
-	public SelectableStudyListPresentationModel getStudyListModel() {
+	public SelectableStudyListPresentation getStudyListModel() {
 		return d_studyListPm;
 	}
 

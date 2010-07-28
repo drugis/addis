@@ -40,7 +40,7 @@ import javax.swing.table.TableCellRenderer;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.gui.components.EnhancedTableHeader;
-import org.drugis.addis.presentation.LabeledPresentationModel;
+import org.drugis.addis.presentation.LabeledPresentation;
 import org.drugis.addis.presentation.RelativeEffectPresentation;
 import org.drugis.addis.presentation.RelativeEffectTableModel;
 import org.drugis.common.gui.GUIHelper;
@@ -79,7 +79,7 @@ public class RelativeEffectTableDialog extends JDialog {
 				label = new JLabel(((PresentationModel<?>)val).getBean().toString());
 				label.setBackground(Color.lightGray);
 			} else {
-				label = BasicComponentFactory.createLabel(((LabeledPresentationModel)val).getLabelModel());
+				label = BasicComponentFactory.createLabel(((LabeledPresentation)val).getLabelModel());
 				label.setBackground(Color.white);
 			}
 			label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));

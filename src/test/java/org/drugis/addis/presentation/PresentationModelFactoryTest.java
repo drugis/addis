@@ -77,7 +77,7 @@ public class PresentationModelFactoryTest {
 		Study s = new Study("Study", new Indication(666L, "evil"));
 		PresentationModel m = d_manager.getModel(s);
 		assertEquals(s, m.getBean());
-		assertTrue(m instanceof StudyPresentationModel);
+		assertTrue(m instanceof StudyPresentation);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -109,11 +109,11 @@ public class PresentationModelFactoryTest {
 		PresentationModel m = d_manager.getModel(d);
 		
 		assertEquals(d, m.getBean());
-		assertEquals(DrugPresentationModel.class, m.getClass());
+		assertEquals(DrugPresentation.class, m.getClass());
 		assertEquals(d_domain.getStudies(d).getValue().size(),
-				((DrugPresentationModel) m).getIncludedStudies().getValue().size());
+				((DrugPresentation) m).getIncludedStudies().getValue().size());
 		assertTrue(d_domain.getStudies(d).getValue().containsAll(
-				((DrugPresentationModel) m).getIncludedStudies().getValue()));		
+				((DrugPresentation) m).getIncludedStudies().getValue()));		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -123,11 +123,11 @@ public class PresentationModelFactoryTest {
 		PresentationModel m = d_manager.getModel(e);
 		
 		assertEquals(e, m.getBean());
-		assertEquals(VariablePresentationModel.class, m.getClass());
+		assertEquals(VariablePresentation.class, m.getClass());
 		assertEquals(d_domain.getStudies(e).getValue().size(),
-				((VariablePresentationModel) m).getIncludedStudies().getValue().size());
+				((VariablePresentation) m).getIncludedStudies().getValue().size());
 		assertTrue(d_domain.getStudies(e).getValue().containsAll(
-				((VariablePresentationModel) m).getIncludedStudies().getValue()));
+				((VariablePresentation) m).getIncludedStudies().getValue()));
 	}
 
 	@Test
@@ -163,6 +163,6 @@ public class PresentationModelFactoryTest {
 		PresentationModel m = d_manager.getCreationModel(e);
 		
 		assertEquals(e, m.getBean());
-		assertEquals(OutcomeMeasureCreationModel.class, m.getClass());
+		assertEquals(OutcomeMeasureCreationPresentation.class, m.getClass());
 	}
 }

@@ -21,14 +21,37 @@
 
 package org.drugis.addis.presentation;
 
-import org.drugis.addis.entities.Characteristic;
-import org.drugis.addis.entities.Study;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
+import org.drugis.addis.entities.Measurement;
+
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
-public interface StudyListPresentationModel {
 
-	public ListHolder<Study> getIncludedStudies();
+public class MeasurementPresentation extends PresentationModel<Measurement> {
+	private static final long serialVersionUID = 7208656609682779611L;
 	
-	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c);
+	private AbstractValueModel d_pgSize;
+	
+	public MeasurementPresentation(Measurement bean, AbstractValueModel abstractValueModel) {
+		super(bean);
+		d_pgSize = abstractValueModel;
+		this.addBeanPropertyChangeListener(new MeasurementChangeListener());
+		d_pgSize.addPropertyChangeListener(new MeasurementChangeListener());
+	}
+	
+	private class MeasurementChangeListener implements PropertyChangeListener {
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			int mySize = (Integer) getValue("sampleSize");
+			if (evt.getSource() == d_pgSize) {
+				setValue("sampleSize", d_pgSize.getValue());
+			}
+			else if (mySize > (Integer) d_pgSize.getValue()){
+				setValue("sampleSize", d_pgSize.getValue());
+			}
+		}
+	}
 }

@@ -27,17 +27,17 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 @SuppressWarnings("serial")
 public class RandomEffectsMetaAnalysisPresentation
 extends AbstractMetaAnalysisPresentation<RandomEffectsMetaAnalysis>
-implements StudyListPresentationModel {
+implements StudyListPresentation {
 
 	public RandomEffectsMetaAnalysisPresentation(RandomEffectsMetaAnalysis bean, PresentationModelFactory mgr) {
 		super(bean, mgr);
 	}
 	
-	public LabeledPresentationModel getFirstDrugModel() {
+	public LabeledPresentation getFirstDrugModel() {
 		return d_mgr.getLabeledModel(getBean().getFirstDrug());
 	}
 	
-	public LabeledPresentationModel getSecondDrugModel() {
+	public LabeledPresentation getSecondDrugModel() {
 		return d_mgr.getLabeledModel(getBean().getSecondDrug());		
 	}
 

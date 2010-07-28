@@ -33,16 +33,16 @@ import javax.swing.JSeparator;
 
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.StudyCharacteristics;
-import org.drugis.addis.presentation.StudyListPresentationModel;
+import org.drugis.addis.presentation.StudyListPresentation;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 
 @SuppressWarnings("serial")
 public class CharacteristicSelectDialog extends JDialog {
-	private StudyListPresentationModel d_pm;
+	private StudyListPresentation d_pm;
 
 	public CharacteristicSelectDialog(JFrame parent,
-			StudyListPresentationModel pm) {
+			StudyListPresentation pm) {
 		super(parent, "Select Characteristics to Show");
 		this.d_pm = pm;
 		setModal(true);

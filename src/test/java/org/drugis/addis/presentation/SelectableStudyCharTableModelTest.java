@@ -44,7 +44,7 @@ public class SelectableStudyCharTableModelTest {
 	private Domain d_domain;
 	private StudyCharTableModel d_model;
 	private Indication d_ind;
-	private SelectableStudyListPresentationModel d_pm;
+	private SelectableStudyListPresentation d_pm;
 	
 	@Before
 	public void setUp() {
@@ -54,7 +54,7 @@ public class SelectableStudyCharTableModelTest {
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
 		d_ind = d_domain.getIndications().first();
-		d_pm = new DefaultSelectableStudyListPresentationModel(d_domain.getStudies(d_ind));
+		d_pm = new DefaultSelectableStudyListPresentation(d_domain.getStudies(d_ind));
 		d_model = new SelectableStudyCharTableModel(d_pm, new PresentationModelFactory(d_domain));
 		for (Characteristic c : StudyCharacteristics.values()) {
 			d_pm.getCharacteristicVisibleModel(c).setValue(true);

@@ -31,7 +31,7 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class IndicationPresentation extends PresentationModel<Indication> implements LabeledPresentationModel, StudyListPresentationModel {
+public class IndicationPresentation extends PresentationModel<Indication> implements LabeledPresentation, StudyListPresentation {
 	public class LabelModel extends DefaultLabelModel {
 		protected LabelModel()  {
 			super(getBean());

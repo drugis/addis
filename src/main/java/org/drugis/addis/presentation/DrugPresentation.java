@@ -29,12 +29,12 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class DrugPresentationModel extends PresentationModel<Drug> implements StudyListPresentationModel, LabeledPresentationModel {
+public class DrugPresentation extends PresentationModel<Drug> implements StudyListPresentation, LabeledPresentation {
 	
 	private CharacteristicVisibleMap d_charVisibleMap = new CharacteristicVisibleMap();
 	private ListHolder<Study> d_studies;
 
-	public DrugPresentationModel(Drug drug, ListHolder<Study> studies) {
+	public DrugPresentation(Drug drug, ListHolder<Study> studies) {
 		super(drug);
 		d_studies = studies;		
 	}

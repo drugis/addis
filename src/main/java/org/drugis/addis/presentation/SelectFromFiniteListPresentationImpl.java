@@ -36,7 +36,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 abstract public class SelectFromFiniteListPresentationImpl<T> extends Model
-implements SelectFromFiniteListPresentationModel<T> {
+implements SelectFromFiniteListPresentation<T> {
 
 	protected List<ModifiableHolder<T>> d_slots;
 	protected ListHolder<T> d_options;

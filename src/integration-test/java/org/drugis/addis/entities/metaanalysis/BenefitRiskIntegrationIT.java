@@ -29,15 +29,12 @@ import java.io.InputStream;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainManager;
-import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
 import org.drugis.addis.entities.relativeeffect.Distribution;
-import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.presentation.BenefitRiskMeasurementTableModel;
-import org.drugis.addis.presentation.BenefitRiskPM;
+import org.drugis.addis.presentation.BenefitRiskPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.junit.Test;
 
@@ -75,7 +72,7 @@ public class BenefitRiskIntegrationIT {
 		 * The 'expected' values below are not guaranteed to be correct. This part of the test is intended to flag changes of the results.
 		 * However, since the results are non-deterministic the test might fail occasionally even if the algorithm hasn't changed.
 		 */
-		BenefitRiskPM pm = (BenefitRiskPM) pmf.getModel(analysis);
+		BenefitRiskPresentation pm = (BenefitRiskPresentation) pmf.getModel(analysis);
 		BenefitRiskMeasurementTableModel mtm = pm.getMeasurementTableModel(true);
 		
 		assertMeanwithinTenPercent(0.875, -1.032, 2.782, mtm.getValueAt(1, 1));
@@ -109,7 +106,7 @@ public class BenefitRiskIntegrationIT {
 		 * The 'expected' values below are not guaranteed to be correct. This part of the test is intended to flag changes of the results.
 		 * However, since the results are non-deterministic the test might fail occasionally even if the algorithm hasn't changed.
 		 */
-		BenefitRiskPM pm = (BenefitRiskPM) pmf.getModel(analysis);
+		BenefitRiskPresentation pm = (BenefitRiskPresentation) pmf.getModel(analysis);
 		BenefitRiskMeasurementTableModel mtm = pm.getMeasurementTableModel(true);
 		
 		

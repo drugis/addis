@@ -214,7 +214,7 @@ public class ForestPlotPresentation {
 		return Math.log(x) / Math.log(base);
 	}
 
-	public LabeledPresentationModel getCIlabelAt(int i) {
+	public LabeledPresentation getCIlabelAt(int i) {
 		return d_pmf.getLabeledModel(getRelativeEffectAt(i));
 	}
 	

@@ -50,9 +50,9 @@ public class PresentationModelFactory {
 		d_domain = domain;
 	}
 	
-	public <T> LabeledPresentationModel getLabeledModel(T obj) {
+	public <T> LabeledPresentation getLabeledModel(T obj) {
 		try {
-			return (LabeledPresentationModel)getModel(obj);
+			return (LabeledPresentation)getModel(obj);
 		} catch (ClassCastException e) {
 			return null;
 		}
@@ -82,7 +82,7 @@ public class PresentationModelFactory {
 	@SuppressWarnings("unchecked")
 	private PresentationModel createCreationModel(Object obj) {
 		if (obj instanceof OutcomeMeasure) {
-			return new OutcomeMeasureCreationModel((OutcomeMeasure)obj);
+			return new OutcomeMeasureCreationPresentation((OutcomeMeasure)obj);
 		}
 		return null;
 	}
@@ -90,11 +90,11 @@ public class PresentationModelFactory {
 	@SuppressWarnings("unchecked")
 	private PresentationModel createModel(Object obj) {
 		if (obj instanceof Variable) {
-			return new VariablePresentationModel((Variable)obj,
+			return new VariablePresentation((Variable)obj,
 					d_domain.getStudies((Variable)obj), this);
 		}
 		if (obj instanceof Study) {
-			return new StudyPresentationModel((Study) obj, this);
+			return new StudyPresentation((Study) obj, this);
 		}		
 		if (obj instanceof Indication) {
 			return new IndicationPresentation((Indication)obj, d_domain.getStudies((Indication)obj));
@@ -116,7 +116,7 @@ public class PresentationModelFactory {
 		}
 		if (obj instanceof Drug) {
 			Drug d = (Drug) obj;
-			return new DrugPresentationModel(d, d_domain.getStudies(d));
+			return new DrugPresentation(d, d_domain.getStudies(d));
 		}
 		if (obj instanceof RandomEffectsMetaAnalysis) {
 			return new RandomEffectsMetaAnalysisPresentation((RandomEffectsMetaAnalysis) obj, this);
@@ -125,7 +125,7 @@ public class PresentationModelFactory {
 			return new NetworkMetaAnalysisPresentation((NetworkMetaAnalysis) obj, this);
 		}
 		if (obj instanceof BenefitRiskAnalysis) {
-			return new BenefitRiskPM((BenefitRiskAnalysis) obj, this);
+			return new BenefitRiskPresentation((BenefitRiskAnalysis) obj, this);
 		} 	
 		if (obj instanceof Distribution) {
 			return new DistributionPresentation((Distribution) obj);

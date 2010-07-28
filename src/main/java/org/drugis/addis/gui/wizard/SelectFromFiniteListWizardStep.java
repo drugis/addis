@@ -32,7 +32,7 @@ import javax.swing.JScrollPane;
 
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.presentation.NoteModelPresentation;
-import org.drugis.addis.presentation.SelectFromFiniteListPresentationModel;
+import org.drugis.addis.presentation.SelectFromFiniteListPresentation;
 import org.drugis.addis.presentation.wizard.CompleteListener;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
@@ -45,7 +45,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 @SuppressWarnings("serial")
 public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
-	private SelectFromFiniteListPresentationModel<T> d_pm;
+	private SelectFromFiniteListPresentation<T> d_pm;
 	
 	private class RemoveSlotListener extends AbstractAction {
 		int d_index;
@@ -75,7 +75,7 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 	private PanelBuilder d_builder;
 	private JScrollPane d_scrollPane;
 		
-	public SelectFromFiniteListWizardStep(SelectFromFiniteListPresentationModel<T> pm) {
+	public SelectFromFiniteListWizardStep(SelectFromFiniteListPresentation<T> pm) {
 		super(pm.getTitle(), pm.getDescription());
 		this.setLayout(new BorderLayout());
 		d_pm = pm;

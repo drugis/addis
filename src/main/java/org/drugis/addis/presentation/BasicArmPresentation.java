@@ -27,7 +27,7 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class BasicArmPresentation extends PresentationModel<Arm> implements LabeledPresentationModel {
+public class BasicArmPresentation extends PresentationModel<Arm> implements LabeledPresentation {
 	
 	public class LabelModel extends DefaultLabelModel {
 		
@@ -51,7 +51,7 @@ public class BasicArmPresentation extends PresentationModel<Arm> implements Labe
 		return new LabelModel();
 	}
 	
-	public DosePresentationModel getDoseModel() {
+	public DosePresentation getDoseModel() {
 		return new DosePresentationImpl(this);
 	}
 }

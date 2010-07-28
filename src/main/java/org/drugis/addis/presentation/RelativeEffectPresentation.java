@@ -31,7 +31,7 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class RelativeEffectPresentation extends PresentationModel<RelativeEffect<? extends Measurement>> implements LabeledPresentationModel {
+public class RelativeEffectPresentation extends PresentationModel<RelativeEffect<? extends Measurement>> implements LabeledPresentation {
 	
 	public class LabelModel extends DefaultLabelModel {
 		public LabelModel() {

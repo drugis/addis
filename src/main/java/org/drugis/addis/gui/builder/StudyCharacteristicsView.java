@@ -30,7 +30,7 @@ import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.StudyCharacteristics;
-import org.drugis.addis.presentation.StudyPresentationModel;
+import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
@@ -43,9 +43,9 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class StudyCharacteristicsView implements ViewBuilder {
 	
-	private StudyPresentationModel d_model;
+	private StudyPresentation d_model;
 
-	public StudyCharacteristicsView(StudyPresentationModel model) {
+	public StudyCharacteristicsView(StudyPresentation model) {
 		d_model = model;
 	}
 

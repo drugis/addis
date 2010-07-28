@@ -33,7 +33,7 @@ import javax.swing.table.TableCellRenderer;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.TablePanel;
-import org.drugis.addis.presentation.LabeledPresentationModel;
+import org.drugis.addis.presentation.LabeledPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
 
 import com.jgoodies.binding.PresentationModel;
@@ -52,7 +52,7 @@ public class NetworkMetaAnalysisTablePanel extends TablePanel {
 		public Component getTableCellRendererComponent(JTable table,
 				Object val, boolean isSelected, boolean hasFocus, int row, int col) {
 			
-			JLabel label = BasicComponentFactory.createLabel(((LabeledPresentationModel)val).getLabelModel());
+			JLabel label = BasicComponentFactory.createLabel(((LabeledPresentation)val).getLabelModel());
 			label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 	
 			if (((PresentationModel<?>)val).getBean() instanceof Drug) {

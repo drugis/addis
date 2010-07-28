@@ -80,7 +80,7 @@ public class NetworkTableModelTest {
 					assertEquals(d_analysis.getIncludedDrugs().get(x), ((PresentationModel<Drug>) d_tableModel.getValueAt(x, y)).getBean());
 					assertEquals(null, d_tableModel.getDescriptionAt(x, y));
 				} else {
-					assertEquals("N/A", ((LabeledPresentationModel) d_tableModel.getValueAt(x, y)).getLabelModel().getString());
+					assertEquals("N/A", ((LabeledPresentation) d_tableModel.getValueAt(x, y)).getLabelModel().getString());
 					String expected = "\""+d_analysis.getIncludedDrugs().get(y)+"\" relative to \""+d_analysis.getIncludedDrugs().get(x)+"\"";
 					assertEquals(expected, d_tableModel.getDescriptionAt(x, y));
 				}
@@ -101,7 +101,7 @@ public class NetworkTableModelTest {
 					Treatment t1 = d_analysis.getBuilder().getTreatment(d_analysis.getIncludedDrugs().get(x).getName());
 					Treatment t2 = d_analysis.getBuilder().getTreatment(d_analysis.getIncludedDrugs().get(y).getName());
 					Estimate relEffect = d_analysis.getInconsistencyModel().getRelativeEffect(t1, t2);
-					assertEquals(distributionToString(new LogGaussian(relEffect.getMean(), relEffect.getStandardDeviation())), ((LabeledPresentationModel) d_tableModel.getValueAt(x, y)).getLabelModel().getString());
+					assertEquals(distributionToString(new LogGaussian(relEffect.getMean(), relEffect.getStandardDeviation())), ((LabeledPresentation) d_tableModel.getValueAt(x, y)).getLabelModel().getString());
 				}
 			}
 		}	
@@ -129,7 +129,7 @@ public class NetworkTableModelTest {
 					Treatment t1 = d_contAnalysis.getBuilder().getTreatment(d_contAnalysis.getIncludedDrugs().get(x).getName());
 					Treatment t2 = d_contAnalysis.getBuilder().getTreatment(d_contAnalysis.getIncludedDrugs().get(y).getName());
 					Estimate relEffect = d_contAnalysis.getInconsistencyModel().getRelativeEffect(t1, t2);
-					assertEquals(distributionToString(new Gaussian(relEffect.getMean(), relEffect.getStandardDeviation())), ((LabeledPresentationModel) d_tableModel.getValueAt(x, y)).getLabelModel().getString());
+					assertEquals(distributionToString(new Gaussian(relEffect.getMean(), relEffect.getStandardDeviation())), ((LabeledPresentation) d_tableModel.getValueAt(x, y)).getLabelModel().getString());
 				}
 			}
 		}	

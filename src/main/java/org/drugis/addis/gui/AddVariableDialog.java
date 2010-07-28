@@ -30,7 +30,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.builder.AddVariableView;
-import org.drugis.addis.presentation.VariablePresentationModel;
+import org.drugis.addis.presentation.VariablePresentation;
 import org.drugis.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.PresentationModel;
@@ -44,7 +44,7 @@ public class AddVariableDialog extends OkCancelDialog {
 	private PresentationModel<Variable> d_pm;
 	
 	public AddVariableDialog(Main frame, Domain domain, Variable variable, ValueModel selectionModel) {
-		super(frame, "Add " + VariablePresentationModel.getEntityName(variable) );
+		super(frame, "Add " + VariablePresentation.getEntityName(variable) );
 		this.d_main = frame;
 		this.setModal(true);
 		d_domain = domain;
