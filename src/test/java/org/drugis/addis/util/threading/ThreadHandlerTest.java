@@ -1,5 +1,6 @@
 package org.drugis.addis.util.threading;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -10,12 +11,12 @@ import org.junit.Test;
 
 public class ThreadHandlerTest {
 
-	class FakeModel extends AbstractSuspendableRunnable{
+	class SuspendableTestThread extends AbstractSuspendableRunnable{
 		
 		private final int d_ms;
 		boolean d_done;
 
-		public FakeModel(int ms) {
+		public SuspendableTestThread(int ms) {
 			d_ms = ms;
 		}
 		
@@ -44,9 +45,38 @@ public class ThreadHandlerTest {
 		public boolean equals(Object o) {
 			if (o instanceof SuspendableThreadWrapper)
 				return ((SuspendableThreadWrapper) o).getRunnable().equals(this);
-			else if (o instanceof FakeModel)
+			else if (o instanceof SuspendableTestThread)
 				return super.equals(o);
 			return false;
+		}
+	};
+	
+	class NonSuspendableTestThread implements Runnable{
+		
+		private final int d_ms;
+		boolean d_done;
+
+		public NonSuspendableTestThread(int ms) {
+			d_ms = ms;
+		}
+		
+		public synchronized boolean getDone() {
+			return d_done;
+		}
+		
+		@Override
+		public String toString() {
+			return ""+d_ms;
+		}
+		
+		public void run() {
+			if (d_done)
+				throw new IllegalStateException("Thread already done.");
+			try {
+				Thread.sleep(d_ms);
+			} catch (InterruptedException e) {
+			}
+			d_done = true;
 		}
 	};
 	
@@ -55,13 +85,13 @@ public class ThreadHandlerTest {
 		LinkedList<Runnable> ToDo1 = new LinkedList<Runnable>();
 		LinkedList<Runnable> ToDo2 = new LinkedList<Runnable>();
 		
-		FakeModel tmp1 = new FakeModel(100);
-		FakeModel tmp2 = new FakeModel(200);
-		FakeModel tmp3 = new FakeModel(300);
-		FakeModel tmp4 = new FakeModel(400);
-		FakeModel tmp5 = new FakeModel(500);
-		FakeModel tmp6 = new FakeModel(600);
-		FakeModel tmp7 = new FakeModel(700);
+		SuspendableTestThread tmp1 = new SuspendableTestThread(100);
+		SuspendableTestThread tmp2 = new SuspendableTestThread(200);
+		SuspendableTestThread tmp3 = new SuspendableTestThread(300);
+		SuspendableTestThread tmp4 = new SuspendableTestThread(400);
+		SuspendableTestThread tmp5 = new SuspendableTestThread(500);
+		SuspendableTestThread tmp6 = new SuspendableTestThread(600);
+		SuspendableTestThread tmp7 = new SuspendableTestThread(700);
 		
 		ToDo1.add(tmp1);
 		ToDo1.add(tmp2);
@@ -90,7 +120,7 @@ public class ThreadHandlerTest {
 		final int NUMMODELS = numCores + 2;
 		
 		for(int i=0; i < NUMMODELS; ++i) {
-			ToDo1.add(new FakeModel((i+1) * 300));
+			ToDo1.add(new SuspendableTestThread((i+1) * 300));
 		}
 		
 		ThreadHandler th = ThreadHandler.getInstance();
@@ -124,10 +154,10 @@ public class ThreadHandlerTest {
 		final int NUMTHREADS = 100;
 		LinkedList<Runnable> runnables = new LinkedList<Runnable>();
 		ThreadHandler th = ThreadHandler.getInstance();
-		ArrayList<FakeModel> threadList = new ArrayList<FakeModel>(NUMTHREADS);
+		ArrayList<SuspendableTestThread> threadList = new ArrayList<SuspendableTestThread>(NUMTHREADS);
 		
 		for (int i=0; i<NUMTHREADS; ++i) {
-			FakeModel mod = new FakeModel((int) (Math.random() * 100));
+			SuspendableTestThread mod = new SuspendableTestThread((int) (Math.random() * 100));
 			threadList.add(mod);
 			runnables.add(mod);
 			if ((Math.random() > 0.75) || (i == (NUMTHREADS-1))) {
@@ -141,10 +171,37 @@ public class ThreadHandlerTest {
 		
 		assertTrue(Runtime.getRuntime().availableProcessors() >= th.d_runningTasks.size());
 		waitTillDone();
-		for (FakeModel mod : threadList) {
+		for (SuspendableTestThread mod : threadList) {
 //			System.out.println(mod + " " + mod.getDone());
 			assertTrue(mod.getDone());
 		}
+	}
+	
+	@Test
+	public void testTakeSuspendableSlot() {
+		waitTillDone();
+		ThreadHandler th = ThreadHandler.getInstance();
+		//ArrayList<FakeModel> threadList = new ArrayList<FakeModel>();
+		// This works.
+		int numCores = Runtime.getRuntime().availableProcessors();
+		
+		th.scheduleTask(new SuspendableTestThread(100));
+		for (int i=0; i<numCores -1; ++i)
+			th.scheduleTask(new NonSuspendableTestThread(100));
+		SuspendableTestThread newThread = new SuspendableTestThread(50);
+		th.scheduleTask(newThread);
+		assertTrue(th.d_runningTasks.contains(newThread));
+		assertFalse(th.d_scheduledTasks.contains(newThread));
+		waitTillDone();
+		
+		for (int i=0; i<numCores -1; ++i)
+			th.scheduleTask(new NonSuspendableTestThread(100));
+		th.scheduleTask(new SuspendableTestThread(100));
+		newThread = new SuspendableTestThread(50);
+		th.scheduleTask(newThread);
+		assertTrue(th.d_runningTasks.contains(newThread));
+		assertFalse(th.d_scheduledTasks.contains(newThread));
+		waitTillDone();
 	}
 	
 	private void waitTillDone() {
@@ -154,6 +211,7 @@ public class ThreadHandlerTest {
 			sleep(100);
 		}
 	}
+	
 
 	private void sleep(int ms ) {
 		try {

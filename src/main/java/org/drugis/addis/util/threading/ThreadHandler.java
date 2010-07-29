@@ -20,7 +20,7 @@ public class ThreadHandler {
 								SuspendableThreadWrapper newThread = d_scheduledTasks.removeFirst();
 								newThread.start();
 //								System.out.println("Executing from schedule " + newThread);
-								d_runningTasks.add(i, newThread);
+								d_runningTasks.addFirst(newThread);
 							}
 						}
 					}
@@ -71,11 +71,15 @@ public class ThreadHandler {
 			
 			// remove N=t.size() tasks from running and stack them in scheduledTasks (take various sizes into account)
 			int toStack = Math.min(toAdd.size() - (d_numCores - d_runningTasks.size()), d_runningTasks.size()); // needed cores - available cores = cores that need to be pre-empted.
-			for(int i=0 ; i < toStack ; ++i ) {
-				if (d_runningTasks.getLast().suspend()) {
-					SuspendableThreadWrapper runningThread = d_runningTasks.removeLast();
-					d_scheduledTasks.addFirst(runningThread);
-//					System.out.println("moving back to scheduler " + runningThread); 
+			for(int tasksToReplace=0 ; tasksToReplace < toStack ; ++tasksToReplace ) {
+				for (int runQueIndex = d_runningTasks.size()-1; runQueIndex >= 0; --runQueIndex)
+				{
+					if (d_runningTasks.get(runQueIndex).suspend()) {
+						SuspendableThreadWrapper runningThread = d_runningTasks.remove(runQueIndex);
+						d_scheduledTasks.addFirst(runningThread);
+						//	System.out.println("moving back to scheduler " + runningThread); 
+						break;
+					}
 				}
 			}
 
