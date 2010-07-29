@@ -13,6 +13,7 @@ public class EntityCategory {
 		d_entityClass = entityClass;
 	}
 	
+	@Override
 	public String toString() {
 		return d_entityClass.getSimpleName();
 	}

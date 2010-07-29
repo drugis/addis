@@ -57,8 +57,8 @@ public abstract class FileSaveDialog {
 
 
     
-    public static String fixExtension(String absPath) {
-    	return absPath.toLowerCase().contains(".png") ? absPath : absPath+".png";
+    public static String fixExtension(String absPath, String ext) {
+    	return absPath.toLowerCase().contains("."+ext) ? absPath : absPath+"."+ext;
     }
 
 	
@@ -70,7 +70,7 @@ public abstract class FileSaveDialog {
 		int returnVal = fileChooser.showSaveDialog(frame);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			try {
-				String path = fixExtension(fileChooser.getSelectedFile().getAbsolutePath());
+				String path = fixExtension(fileChooser.getSelectedFile().getAbsolutePath(),extension);
 				save(path);
 			} catch (Exception e1) {
 				JOptionPane.showMessageDialog(frame,
