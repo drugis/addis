@@ -36,7 +36,7 @@ public class PNGExporter {
 	public static void writePNG(Component frame, final JComponent p, final int width, final int height) {
 		new FileSaveDialog(frame, "png", "PNG files") {
 			@Override
-			public void save(String path) {
+			public void doAction(String path) {
 				writePNG(path, p, width, height);
 			}
 		};

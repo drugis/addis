@@ -45,7 +45,6 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -81,6 +80,7 @@ import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.common.ImageLoader;
+import org.drugis.common.gui.FileLoadDialog;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
@@ -408,24 +408,22 @@ public class Main extends JFrame {
 		JMenuItem openItem = new JMenuItem("Load XML", ImageLoader
 				.getIcon(FileNames.ICON_OPENFILE));
 		openItem.setMnemonic('l');
+		final Main me = this;
 		openItem.addActionListener(new AbstractAction() {
-
+		// loadDomainFromXMLFile(fileChooser.getSelectedFile().getAbsolutePath());
+			
 			public void actionPerformed(ActionEvent e) {
-				final JFileChooser fileChooser = new JFileChooser();
-				int returnVal = fileChooser.showOpenDialog(Main.this);
-
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					try {
-						loadDomainFromXMLFile(fileChooser.getSelectedFile()
-								.getAbsolutePath());
-					} catch (Exception e1) {
-						e1.printStackTrace();
-						JOptionPane.showMessageDialog(Main.this,
-								"Couldn't open file "
-										+ fileChooser.getSelectedFile()
-												.getAbsolutePath() + " .");
+				new FileLoadDialog(me, "xml", "XML files") {
+					@Override
+					public void doAction(String path) {
+						try {
+							loadDomainFromXMLFile(path);
+						} catch (Exception e1) {
+							JOptionPane.showMessageDialog(Main.this, "Couldn't open file " + path);
+							e1.printStackTrace();
+						}
 					}
-				}
+				};
 			}
 		});
 		return openItem;
@@ -441,7 +439,7 @@ public class Main extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				new FileSaveDialog(me, "xml", "XML files") {
 					@Override
-					public void save(String path) {
+					public void doAction(String path) {
 						try {
 							saveDomainToXMLFile(path);
 						} catch (Exception e1) {
