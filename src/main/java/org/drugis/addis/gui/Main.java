@@ -23,7 +23,6 @@ package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Insets;
@@ -93,19 +92,6 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame {
-	
-	private final class MainFileSaveDialog extends FileSaveDialog {
-		private MainFileSaveDialog(Component frame, String extension,
-				String description) {
-			super(frame, extension, description);
-		}
-
-		@Override
-		public void doAction(String path) {
-			saveDomainToFile(path);
-		}
-	}
-	
 	private static final String DOMAIN_DEFAULT_FILENAME = "domain-"
 			+ AppInfo.getAppVersion() + ".xml";
 	private JComponent d_leftPanel;
@@ -120,7 +106,6 @@ public class Main extends JFrame {
 	private JMenuItem d_editMenuEditItem;
 
 	private PresentationModelFactory d_pmManager;
-	private String d_curFilename = null;
 
 	public PresentationModelFactory getPresentationModelFactory() {
 		return d_pmManager;
@@ -266,9 +251,8 @@ public class Main extends JFrame {
 		fileMenu.setMnemonic('f');
 
 		fileMenu.add(createNewItem());
-		fileMenu.add(createLoadItem());
-		fileMenu.add(createSaveItem());
-		fileMenu.add(createSaveAsItem());
+		fileMenu.add(createImportXMLItem());
+		fileMenu.add(createExportXMLItem());
 		fileMenu.add(createExitItem());
 
 		return fileMenu;
@@ -420,7 +404,7 @@ public class Main extends JFrame {
 		return newItem;
 	}
 
-	private JMenuItem createLoadItem() {
+	private JMenuItem createImportXMLItem() {
 		JMenuItem openItem = new JMenuItem("Load XML", ImageLoader
 				.getIcon(FileNames.ICON_OPENFILE));
 		openItem.setMnemonic('l');
@@ -445,55 +429,28 @@ public class Main extends JFrame {
 		return openItem;
 	}
 
-	private JMenuItem createSaveItem() {
+	private JMenuItem createExportXMLItem() {
 		JMenuItem saveItem = new JMenuItem("Save XML", ImageLoader
 				.getIcon(FileNames.ICON_SAVEFILE));
 		saveItem.setMnemonic('s');
-		
-		// Attach to ctrl-s
-		saveItem.setAccelerator(KeyStroke.getKeyStroke(
-				KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
-		
 		final Main me = this;
 		saveItem.addActionListener(new AbstractAction() {
 
 			public void actionPerformed(ActionEvent e) {
-				if (d_curFilename == null) {				
-					new MainFileSaveDialog(me, "xml", "XML files");
-				} else {
-					saveDomainToFile(d_curFilename);
-				}
+				new FileSaveDialog(me, "xml", "XML files") {
+					@Override
+					public void doAction(String path) {
+						try {
+							saveDomainToXMLFile(path);
+						} catch (Exception e1) {
+							JOptionPane.showMessageDialog(Main.this, "Couldn't save file " + path);
+							e1.printStackTrace();
+						}
+					}
+				};
 			}
 		});
 		return saveItem;
-	}
-	
-	private JMenuItem createSaveAsItem() {
-		JMenuItem saveItem = new JMenuItem("Save as XML...", ImageLoader
-				.getIcon(FileNames.ICON_SAVEFILE));
-		
-		// attach to ctrl-shift-s
-		saveItem.setAccelerator(KeyStroke.getKeyStroke(
-				KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
-		
-		saveItem.setMnemonic('a');
-		final Main me = this;
-		saveItem.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-				new MainFileSaveDialog(me, "xml", "XML files");
-			}
-		});
-		return saveItem;
-	}
-	
-	private void saveDomainToFile(String path) {
-		try {
-			saveDomainToXMLFile(path);
-			d_curFilename = path;
-		} catch (Exception e1) {
-			JOptionPane.showMessageDialog(Main.this, "Couldn't save file " + path);
-			e1.printStackTrace();
-		}
 	}
 
 	private JMenuItem createExitItem() {

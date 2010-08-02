@@ -22,15 +22,12 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -45,7 +42,6 @@ import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.BenefitRiskPresentation;
 import org.drugis.addis.util.HtmlWordWrapper;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
-import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
@@ -230,28 +226,13 @@ public class BenefitRiskView implements ViewBuilder {
 
 			JPanel panel = new JPanel(new BorderLayout());
 			fi.smaa.jsmaa.gui.views.ResultsView view = new fi.smaa.jsmaa.gui.views.ResultsView(d_main, table, chart, "");
-			panel.add(d_pm.getSmaaSimulationProgressBar(), BorderLayout.NORTH);
 			panel.add(view.buildPanel(), BorderLayout.CENTER);
-			
-			
-			JPanel secPanel = new JPanel(new BorderLayout());
-			secPanel.add(new JLabel("    Lower rank number is better."), BorderLayout.CENTER);
-			JButton expButton = new JButton("Export to JSMAA");
-			secPanel.add(expButton, BorderLayout.SOUTH);
-			panel.add(secPanel,BorderLayout.SOUTH);
-			
-			expButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					new FileSaveDialog(d_main, "jsmaa", "JSMAA") {
-						@Override
-						public void doAction(String path) {
-							d_pm.saveSmaa(path);
-						}
-					};
-				}
-			});
+			panel.add(d_pm.getSmaaSimulationProgressBar(), BorderLayout.NORTH);
+			panel.add(new JLabel("    Lower rank number is better."), BorderLayout.SOUTH);
+
 			return panel;
 		}
+		
 	}
 
 	private JComponent buildRankAcceptabilitiesPart() {

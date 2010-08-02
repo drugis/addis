@@ -21,15 +21,10 @@
 
 package org.drugis.addis.presentation;
 
-import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JProgressBar;
-
-import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
@@ -58,7 +53,6 @@ import fi.smaa.jsmaa.model.CardinalCriterion;
 import fi.smaa.jsmaa.model.ModelChangeEvent;
 import fi.smaa.jsmaa.model.SMAAModel;
 import fi.smaa.jsmaa.model.SMAAModelListener;
-import fi.smaa.jsmaa.model.xml.JSMAABinding;
 import fi.smaa.jsmaa.simulator.BuildQueue;
 import fi.smaa.jsmaa.simulator.SMAA2Results;
 
@@ -143,7 +137,7 @@ public class BenefitRiskPresentation extends PresentationModel<BenefitRiskAnalys
 
 	private PreferencePresentationModel d_prefPresModel;
 
-	private SMAAModel d_smaaModel;
+	private SMAAModel d_model;
 
 	private SimulationProgressBar d_progressBar;
 
@@ -178,15 +172,15 @@ public class BenefitRiskPresentation extends PresentationModel<BenefitRiskAnalys
 	
 	public void startSMAA() {
 		d_smaaf = new SMAAEntityFactory();
-		d_smaaModel = d_smaaf.createSmaaModel(getBean());
-		SMAA2Results emptyResults = new SMAA2Results(d_smaaModel.getAlternatives(), d_smaaModel.getCriteria(), 10);
+		d_model = d_smaaf.createSmaaModel(getBean());
+		SMAA2Results emptyResults = new SMAA2Results(d_model.getAlternatives(), d_model.getCriteria(), 10);
 		d_rankAccepDS = new RankAcceptabilitiesDataset(emptyResults);
 		d_rankAccepTM = new RankAcceptabilityTableModel(emptyResults);
 		d_cwTM = new CentralWeightTableModel(emptyResults);
 		d_cwDS = new CentralWeightsDataset(emptyResults);
-		d_prefPresModel = new PreferencePresentationModel(d_smaaModel, false);
+		d_prefPresModel = new PreferencePresentationModel(d_model, false);
 
-		d_smaaModel.addModelListener(new SMAAModelListener() {
+		d_model.addModelListener(new SMAAModelListener() {
 			public void modelChanged(ModelChangeEvent type) {
 				startSimulation();
 			}			
@@ -199,7 +193,7 @@ public class BenefitRiskPresentation extends PresentationModel<BenefitRiskAnalys
 	}
 
 	private void startSimulation() {
-		d_buildQueue.add(new BRSMAASimulationBuilder(d_smaaModel,
+		d_buildQueue.add(new BRSMAASimulationBuilder(d_model,
 				d_rankAccepTM, d_rankAccepDS, d_cwTM, d_cwDS, d_progressBar));
 	}
 
@@ -292,15 +286,6 @@ public class BenefitRiskPresentation extends PresentationModel<BenefitRiskAnalys
 		}
 
 		d_allSimulationsStarted  = true;
-	}
-	
-	public void saveSmaa(String filename) {
-		try {
-			FileOutputStream os = new FileOutputStream(filename);
-			JSMAABinding.writeModel(d_smaaModel, os);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 	}
 	
 	private void initAllBaselineModels() {
