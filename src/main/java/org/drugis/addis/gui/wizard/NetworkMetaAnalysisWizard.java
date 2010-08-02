@@ -106,7 +106,7 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		private SelectableStudyGraph d_studyGraph;
 
 		public SelectDrugsWizardStep(NetworkMetaAnalysisWizardPM pm, Main main) {
-			super("Select Drugs","Select the drugs to be used for the network meta-analysis. To continue, (1) at least two drugs must be selected, and (2) all selected drugs must be connected.");
+			super("Select Drugs","Select the drugs to be used for the network meta-analysis. Click to select (green) or deselect (gray).  To continue, (1) at least two drugs must be selected, and (2) all selected drugs must be connected.");
 					
 			setLayout(new BorderLayout());
 			    

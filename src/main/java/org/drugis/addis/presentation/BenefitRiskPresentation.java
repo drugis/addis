@@ -21,15 +21,11 @@
 
 package org.drugis.addis.presentation;
 
-import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JProgressBar;
-
-import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
