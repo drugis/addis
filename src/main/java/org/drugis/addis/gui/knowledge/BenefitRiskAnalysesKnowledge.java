@@ -4,10 +4,14 @@ import javax.swing.JDialog;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.builder.BenefitRiskView;
 import org.drugis.addis.gui.wizard.BenefitRiskWizard;
+import org.drugis.addis.presentation.BenefitRiskPresentation;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
+import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardFrameCloser;
 
@@ -38,5 +42,12 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 	protected String[] getShownProperties() {
 		return new String[] { "name", "indication", "outcomeMeasures",
 				"metaAnalyses", "baseline", "drugs" };
+	}
+
+	@Override
+	public ViewBuilder getEntityViewBuilder(Main main, Domain domain,
+			Entity entity) {
+		BenefitRiskPresentation model = (BenefitRiskPresentation) main.getPresentationModelFactory().getModel((BenefitRiskAnalysis) entity);
+		return new BenefitRiskView(model, main);
 	}
 }

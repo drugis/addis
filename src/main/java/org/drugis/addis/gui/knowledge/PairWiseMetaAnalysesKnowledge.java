@@ -4,10 +4,15 @@ import javax.swing.JDialog;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
 import org.drugis.addis.gui.wizard.MetaAnalysisWizard;
+import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
+import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardFrameCloser;
 
@@ -54,4 +59,14 @@ public class PairWiseMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 		return new String[] { "name", "type", "indication", "outcomeMeasure",
 		"includedDrugs", "studiesIncluded", "sampleSize" };
 	}
+
+	@Override
+	public ViewBuilder getEntityViewBuilder(Main main, Domain domain,
+			Entity entity) {
+		return new RandomEffectsMetaAnalysisView(
+				(RandomEffectsMetaAnalysisPresentation)main.getPresentationModelFactory().getModel(((RandomEffectsMetaAnalysis) entity)), 
+				main, false);
+	}
+	
+	
 }

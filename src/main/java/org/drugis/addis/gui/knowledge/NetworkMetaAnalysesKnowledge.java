@@ -4,10 +4,14 @@ import javax.swing.JDialog;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.builder.NetworkMetaAnalysisView;
 import org.drugis.addis.gui.wizard.NetworkMetaAnalysisWizard;
+import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
+import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardFrameCloser;
 
@@ -48,5 +52,13 @@ public class NetworkMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 	protected String[] getShownProperties() {
 		return new String[] { "name", "type", "indication", "outcomeMeasure",
 				"includedDrugs", "studiesIncluded", "sampleSize" };
+	}
+
+	@Override
+	public ViewBuilder getEntityViewBuilder(Main main, Domain domain,
+			Entity entity) {
+		return new NetworkMetaAnalysisView(
+				(NetworkMetaAnalysisPresentation) main.getPresentationModelFactory().getModel(((NetworkMetaAnalysis) entity)),
+				main);
 	}
 }

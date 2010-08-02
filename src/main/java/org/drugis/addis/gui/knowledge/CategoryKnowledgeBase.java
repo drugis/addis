@@ -81,8 +81,6 @@ public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 		return new String[] {};
 	}
 	
-	public ViewBuilder getEntityViewBuilder(Main main, Domain domain,
-			Entity entity) {
-		return ViewFactory.createView(entity, main.getPresentationModelFactory(), main);
-	}
+	abstract public ViewBuilder getEntityViewBuilder(Main main, Domain domain,
+			final Entity entity);
 }
