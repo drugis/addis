@@ -24,11 +24,9 @@ package org.drugis.addis.presentation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
-import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;

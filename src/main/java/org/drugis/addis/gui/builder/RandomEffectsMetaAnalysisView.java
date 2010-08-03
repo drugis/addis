@@ -31,9 +31,8 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.BasicRiskDifference;
@@ -76,7 +75,7 @@ implements ViewBuilder {
 		CellConstraints cc =  new CellConstraints();		
 
 		if (!d_overView) {
-			builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(RandomEffectsMetaAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
+			builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(PairWiseMetaAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
 			builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
 
 			builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural(), cc.xy(1, 5));

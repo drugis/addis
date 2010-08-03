@@ -24,7 +24,6 @@ package org.drugis.addis.gui.builder;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;

@@ -58,7 +58,8 @@ public class NetworkMetaAnalysisTablePanel extends TablePanel {
 			if (((PresentationModel<?>)val).getBean() instanceof Drug) {
 				label.setBackground(Color.lightGray);
 			} else {
-				label.setBackground(Color.WHITE);
+				if (!isSelected)
+					label.setBackground(Color.WHITE);
 			}
 			label.setOpaque(true);
 			

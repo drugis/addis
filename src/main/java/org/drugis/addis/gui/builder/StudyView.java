@@ -27,9 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.AdverseEvent;
-import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;

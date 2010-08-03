@@ -105,6 +105,7 @@ public class BenfitRiskWizardPMTest {
 	public void testOutcomeSelectedSingleAnalysisShouldSelect() {
 		OutcomeMeasure om = ExampleData.buildEndpointCgi();
 		d_pm.getOutcomeSelectedModel(om).setValue(true);
+		assertTrue(d_pm.getMetaAnalyses(om).size() == 1);
 		assertNotNull(d_pm.getMetaAnalysesSelectedModel(om).getValue());	
 	}
 	
@@ -112,6 +113,7 @@ public class BenfitRiskWizardPMTest {
 	public void testOutcomeSelectedMultipleAnalysisShouldNotSelect() {
 		OutcomeMeasure om = ExampleData.buildEndpointHamd();
 		d_pm.getOutcomeSelectedModel(om).setValue(true);
+		assertTrue(d_pm.getMetaAnalyses(om).size() > 1);
 		assertNull(d_pm.getMetaAnalysesSelectedModel(om).getValue());	
 	}
 	

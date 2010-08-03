@@ -49,7 +49,6 @@ import org.pietschy.wizard.models.DynamicModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
-import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -170,7 +169,7 @@ public class BenefitRiskWizard extends Wizard {
 			
 			// Add the radio buttons
 			for(MetaAnalysis ma : d_pm.getMetaAnalyses(out)){
-				ValueModel selectedModel = d_pm.getMetaAnalysesSelectedModel(out);
+				ValueHolder<MetaAnalysis> selectedModel = d_pm.getMetaAnalysesSelectedModel(out);
 				JRadioButton radioButton = AuxComponentFactory.createDynamicEnabledRadioButton(ma.getName(), ma, selectedModel, enabledModel);
 				radioButtonPanel.add(radioButton);
 			}

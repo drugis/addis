@@ -105,6 +105,5 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		} else {
 			return "A higher rank number indicates the drug is better";
 		}
-	
 	}
 }

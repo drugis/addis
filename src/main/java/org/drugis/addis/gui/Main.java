@@ -606,8 +606,10 @@ public class Main extends JFrame {
 
 	private void expandLeftPanelTree() {
 		for (EntityCategory cat : getDomain().getCategories()) {
-			d_leftPanelTree.expandPath(new TreePath(new Object[] {
-					d_domainTreeModel.getRoot(), cat}));
+			if (!cat.getEntityClass().equals(Study.class))
+				d_leftPanelTree.expandPath(new TreePath(new Object[] 
+				    {d_domainTreeModel.getRoot(), cat}
+				));
 		}
 	}
 

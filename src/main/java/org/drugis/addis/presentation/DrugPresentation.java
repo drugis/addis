@@ -50,4 +50,9 @@ public class DrugPresentation extends PresentationModel<Drug> implements StudyLi
 	public AbstractValueModel getLabelModel() {
 		return new DefaultLabelModel(getBean());
 	}
+	
+	@Override
+	public String toString() {
+		return (String) getLabelModel().getValue();
+	}
 }

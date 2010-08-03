@@ -32,8 +32,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
@@ -90,12 +90,12 @@ implements ViewBuilder {
 				d_progBar.setString("Burn in: " + event.getIteration()/(event.getTotalIterations()/100) + "%");
 				d_progBar.setValue(event.getIteration()/(event.getTotalIterations()/100));
 			} else if(event.getType() == EventType.SIMULATION_FINISHED) {
+				((AbstractTableModel) d_inconsistencyTablePanel.getTable().getModel()).fireTableDataChanged();
+				((AbstractTableModel) d_consistencyTablePanel.getTable().getModel()).fireTableDataChanged();
 				d_progBar.setVisible(false);
 				d_inconsistencyTablePanel.doLayout();
 				d_consistencyTablePanel.doLayout();
 				d_inconsistencyFactorsTablePanel.doLayout();
-				d_parent.repaintRightPanel();
-				
 			}
 		}
 	}
@@ -192,7 +192,8 @@ implements ViewBuilder {
 		
 		JComponent inconsistencyResultsPart = buildResultsPart(d_pm.getBean().getInconsistencyModel(),d_incProgressBar);
 		inconsistencyPanel.add(inconsistencyResultsPart,BorderLayout.CENTER);
-
+		
+		
 		
 		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(
 				d_pm, d_parent.getPresentationModelFactory());
@@ -254,6 +255,7 @@ implements ViewBuilder {
 		}
 
 		// make table of results (cipriani 2009, fig. 3, pp752):
+		
 		NetworkTableModel networkAnalysisTableModel = new NetworkTableModel(
 				d_pm, d_parent.getPresentationModelFactory(), networkModel);
 		

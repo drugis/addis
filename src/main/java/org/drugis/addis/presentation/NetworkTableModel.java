@@ -31,8 +31,12 @@ import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyModel;
+import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
+import org.drugis.mtc.ProgressEvent;
+import org.drugis.mtc.ProgressListener;
 import org.drugis.mtc.Treatment;
+import org.drugis.mtc.ProgressEvent.EventType;
 
 @SuppressWarnings("serial")
 public class NetworkTableModel  extends AbstractTableModel implements TableModelWithDescription{
@@ -44,6 +48,17 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 		d_pm = pm;
 		d_pmf = pmf;
 		d_networkModel = networkModel;
+		
+		attachModelListener(networkModel);
+	}
+
+	private void attachModelListener(MixedTreatmentComparison networkModel) {
+		networkModel.addProgressListener(new ProgressListener() {
+			public void update(MCMCModel mtc, ProgressEvent event) {
+				if(event.getType() == EventType.SIMULATION_FINISHED)
+					fireTableDataChanged();
+			}
+		});
 	}
 
 	public int getColumnCount() {
