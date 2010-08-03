@@ -33,6 +33,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
@@ -135,10 +139,10 @@ implements ViewBuilder {
 		
 		d_cc = new CellConstraints();		
 
-		d_builder.addSeparator("Network meta-analysis", d_cc.xy(1, 1));
+		d_builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(NetworkMetaAnalysis.class).getSingularCapitalized(), d_cc.xy(1, 1));
 		d_builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), d_cc.xy(1, 3));
 
-		d_builder.addSeparator("Included studies", d_cc.xy(1, 5));
+		d_builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural(), d_cc.xy(1, 5));
 		d_builder.add(GUIFactory.createCollapsiblePanel(buildStudiesPart()), d_cc.xy(1, 7));
 
 		d_builder.addSeparator("Evidence network", d_cc.xy(1, 9));

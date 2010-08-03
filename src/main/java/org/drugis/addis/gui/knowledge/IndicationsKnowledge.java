@@ -16,7 +16,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class IndicationsKnowledge extends CategoryKnowledgeBase {
 	public IndicationsKnowledge() {
-		super("Indication", FileNames.ICON_INDICATION, Indication.class);
+		super("indication", FileNames.ICON_INDICATION, Indication.class);
 	}
 	
 		

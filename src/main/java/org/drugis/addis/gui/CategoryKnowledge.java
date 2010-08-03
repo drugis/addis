@@ -12,9 +12,14 @@ import com.jgoodies.binding.value.ValueModel;
 public interface CategoryKnowledge {
 	
 	/**
-	 * Get the type name (singular) of entities in this category.
+	 * Get the type name (singular) of entities in this category with a capitalized first letter.
 	 */
 	public String getSingular();
+	
+	/**
+	 * Get the type name (singular) of entities in this category with a capitalized first letter.
+	 */
+	public String getSingularCapitalized();
 	
 	/**
 	 * Get the type name (plural) of entities in this category.

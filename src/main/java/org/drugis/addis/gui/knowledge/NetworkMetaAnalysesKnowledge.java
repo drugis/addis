@@ -19,7 +19,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class NetworkMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 	public NetworkMetaAnalysesKnowledge() {
-		super("Network meta-analysis", "Network meta-analyses", null, NetworkMetaAnalysis.class);
+		super("network meta-analysis", "Network meta-analyses", null, NetworkMetaAnalysis.class);
 	}
 	
 	@Override

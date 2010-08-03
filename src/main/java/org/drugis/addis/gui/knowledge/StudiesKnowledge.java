@@ -22,7 +22,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class StudiesKnowledge extends CategoryKnowledgeBase {
 	public StudiesKnowledge() {
-		super("Study", "Studies", FileNames.ICON_STUDY, Study.class);
+		super("study", "Studies", FileNames.ICON_STUDY, Study.class);
 	}
 	
 	@Override

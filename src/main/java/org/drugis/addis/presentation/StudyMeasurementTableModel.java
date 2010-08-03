@@ -30,6 +30,7 @@ import javax.swing.table.AbstractTableModel;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.gui.CategoryKnowledgeFactory;
 
 @SuppressWarnings("serial")
 public class StudyMeasurementTableModel extends AbstractTableModel {		
@@ -71,7 +72,7 @@ public class StudyMeasurementTableModel extends AbstractTableModel {
 	@Override
 	public String getColumnName(int index) {
 		if (index == 0) {
-			return d_type.getSimpleName();
+			return CategoryKnowledgeFactory.getCategoryKnowledge(d_type).getSingularCapitalized();
 		}
 		return d_pmf.getLabeledModel(d_study.getArms().get(index-1)).getLabelModel().getString();	
 	}

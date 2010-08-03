@@ -22,7 +22,7 @@ public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 	private final Class<? extends Entity> d_entityClass;
 	
 	public CategoryKnowledgeBase(String singular, String iconName, Class<? extends Entity> entityClass) {
-		this(singular, singular + "s", iconName, entityClass);
+		this(singular, capitalize(singular) + "s", iconName, entityClass);
 	}
 	
 	public CategoryKnowledgeBase(String singular, String plural, String iconName,
@@ -41,6 +41,14 @@ public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 		return d_singular;
 	}
 	
+	public String getSingularCapitalized() {
+		return capitalize(d_singular);
+	}
+	
+	private static String capitalize(String in) {
+		return Character.toUpperCase(in.charAt(0)) + in.substring(1);
+	}
+	
 	public String getIconName() {
 		return d_iconName;
 	}
@@ -50,7 +58,7 @@ public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 	}
 	
 	public char getMnemonic() {
-		return getSingular().toLowerCase().charAt(0);
+		return getSingularCapitalized().toLowerCase().charAt(0);
 	}
 	
 	public boolean isToolbarCategory() {

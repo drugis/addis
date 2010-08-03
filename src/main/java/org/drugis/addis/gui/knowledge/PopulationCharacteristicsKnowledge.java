@@ -18,7 +18,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class PopulationCharacteristicsKnowledge extends CategoryKnowledgeBase {
 	public PopulationCharacteristicsKnowledge() {
-		super("Population characteristic", FileNames.ICON_POPULATION_CHAR, PopulationCharacteristic.class);
+		super("population characteristic", FileNames.ICON_POPULATION_CHAR, PopulationCharacteristic.class);
 	}
 
 	public JDialog getAddDialog(Main main, Domain domain,

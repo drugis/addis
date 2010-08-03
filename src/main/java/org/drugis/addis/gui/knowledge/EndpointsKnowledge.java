@@ -17,7 +17,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class EndpointsKnowledge extends CategoryKnowledgeBase {
 	public EndpointsKnowledge() {
-		super("Endpoint", FileNames.ICON_ENDPOINT, Endpoint.class);
+		super("endpoint", FileNames.ICON_ENDPOINT, Endpoint.class);
 	}
 	
 	public JDialog getAddDialog(Main main, Domain domain,

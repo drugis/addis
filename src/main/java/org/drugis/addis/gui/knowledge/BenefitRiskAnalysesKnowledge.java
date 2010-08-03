@@ -19,7 +19,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 	public BenefitRiskAnalysesKnowledge() {
-		super("Benefit-risk analysis", "Benefit-risk analyses", FileNames.ICON_BENEFITRISK, BenefitRiskAnalysis.class);
+		super("benefit-risk analysis", "Benefit-risk analyses", FileNames.ICON_BENEFITRISK, BenefitRiskAnalysis.class);
 	}
 	
 	public JDialog getAddDialog(Main main, Domain domain,

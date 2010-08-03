@@ -24,7 +24,10 @@ package org.drugis.addis.gui.builder;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.IndicationPresentation;
@@ -58,9 +61,9 @@ public class IndicationView implements ViewBuilder {
 		
 		CellConstraints cc =  new CellConstraints();
 		
-		builder.addSeparator("Indication", cc.xy(1, 1));
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Indication.class).getSingularCapitalized(), cc.xy(1, 1));
 		builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
-		builder.addSeparator("Studies", cc.xy(1, 5));
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural(), cc.xy(1, 5));
 		builder.add(GUIFactory.createCollapsiblePanel(GUIFactory.buildStudyPanel(d_pm, d_parent)), cc.xy(1, 7));		
 		
 		return builder.getPanel();

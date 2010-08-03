@@ -31,12 +31,16 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.BasicRiskDifference;
 import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
 import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;
@@ -72,10 +76,10 @@ implements ViewBuilder {
 		CellConstraints cc =  new CellConstraints();		
 
 		if (!d_overView) {
-			builder.addSeparator("Meta-analysis", cc.xy(1, 1));
+			builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(RandomEffectsMetaAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
 			builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
 
-			builder.addSeparator("Included studies", cc.xy(1, 5));
+			builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural(), cc.xy(1, 5));
 			builder.add(GUIFactory.createCollapsiblePanel(buildStudiesPart()), cc.xy(1, 7));
 		}
 

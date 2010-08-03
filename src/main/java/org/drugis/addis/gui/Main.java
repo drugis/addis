@@ -346,7 +346,7 @@ public class Main extends JFrame {
 	}
 
 	public void deleteEntity(Entity selected, boolean confirmation) {
-		String selectedType = getEntityKnowledge(selected).getSingular();
+		String selectedType = getEntityKnowledge(selected).getSingularCapitalized();
 
 		if (confirmation) {
 			int conf = JOptionPane.showConfirmDialog(this,
@@ -378,7 +378,7 @@ public class Main extends JFrame {
 	}
 
 	private JMenuItem createAddMenuItem(final CategoryKnowledge knowledge) {
-		JMenuItem item = new JMenuItem(knowledge.getSingular(), ImageLoader.getIcon(knowledge.getNewIconName()));
+		JMenuItem item = new JMenuItem(knowledge.getSingularCapitalized(), ImageLoader.getIcon(knowledge.getNewIconName()));
 		item.setMnemonic(knowledge.getMnemonic());
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -545,7 +545,7 @@ public class Main extends JFrame {
 	}
 
 	private JButton createToolbarButton(final CategoryKnowledge knowledge) {
-		String title = "Create " + knowledge.getSingular();
+		String title = "Create " + knowledge.getSingularCapitalized();
 		JButton topAddStudyButton = new JButton(title,
 				ImageLoader.getIcon(knowledge.getNewIconName()));
 		topAddStudyButton.setToolTipText(title);

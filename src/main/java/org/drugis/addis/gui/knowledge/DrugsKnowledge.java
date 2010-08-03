@@ -16,7 +16,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class DrugsKnowledge extends CategoryKnowledgeBase {
 	public DrugsKnowledge() {
-		super("Drug", FileNames.ICON_DRUG, Drug.class);
+		super("drug", FileNames.ICON_DRUG, Drug.class);
 	}
 	
 	public JDialog getAddDialog(Main main, Domain domain,

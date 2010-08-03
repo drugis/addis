@@ -52,7 +52,7 @@ public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 			CategoryKnowledge knowledge =
 				CategoryKnowledgeFactory.getCategoryKnowledge(d_domain.getCategory((Entity)value));
 			setIcon(ImageLoader.getIcon(knowledge.getIconName()));
-			setToolTipText(knowledge.getSingular());
+			setToolTipText(knowledge.getSingularCapitalized());
 		} else {
 			setToolTipText(null); //no tool tip
 		}

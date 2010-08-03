@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drugis.addis.entities.AdverseEvent;
+import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
+import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
@@ -32,11 +34,15 @@ public class CategoryKnowledgeFactory {
 		s_knowledge.put(Drug.class, new DrugsKnowledge());
 		s_knowledge.put(Endpoint.class, new EndpointsKnowledge());
 		s_knowledge.put(AdverseEvent.class, new AdverseEventsKnowledge());
-		s_knowledge.put(PopulationCharacteristic.class, new PopulationCharacteristicsKnowledge());
 		s_knowledge.put(Study.class, new StudiesKnowledge());
 		s_knowledge.put(PairWiseMetaAnalysis.class, new PairWiseMetaAnalysesKnowledge());
 		s_knowledge.put(NetworkMetaAnalysis.class, new NetworkMetaAnalysesKnowledge());
 		s_knowledge.put(BenefitRiskAnalysis.class, new BenefitRiskAnalysesKnowledge());
+		
+		PopulationCharacteristicsKnowledge popcharKnowledge = new PopulationCharacteristicsKnowledge();
+		s_knowledge.put(PopulationCharacteristic.class, popcharKnowledge);
+		s_knowledge.put(CategoricalPopulationCharacteristic.class, popcharKnowledge);
+		s_knowledge.put(ContinuousPopulationCharacteristic.class, popcharKnowledge);
 	};
 	
 	public static CategoryKnowledge getCategoryKnowledge(EntityCategory category) {

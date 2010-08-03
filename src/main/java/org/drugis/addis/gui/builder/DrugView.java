@@ -26,6 +26,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.LinkLabel;
@@ -60,10 +62,12 @@ public class DrugView implements ViewBuilder{
 		
 		CellConstraints cc = new CellConstraints();
 		
-		builder.addSeparator("Drug", cc.xy(1, 1));
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class).getSingularCapitalized(), cc.xy(1, 1));
 		builder.add(GUIFactory.createCollapsiblePanel(createOverviewPart()),
 				cc.xy(1, 3));
-		builder.addSeparator("Studies measuring this drug", cc.xy(1, 5));
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural()
+							 + " measuring this "
+							 + CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class).getSingular() , cc.xy(1, 5));
 		builder.add(GUIFactory.createCollapsiblePanel(buildStudiesComp()), 
 				cc.xy(1, 7));
 				

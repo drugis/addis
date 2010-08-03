@@ -26,7 +26,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.drugis.addis.entities.AdverseEvent;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.MeasurementTable;
@@ -69,7 +75,7 @@ public class StudyView implements ViewBuilder {
 		CellConstraints cc = new CellConstraints();
 		
 		int row = 1;
-		builder.addSeparator("Study", cc.xy(1,row));
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getSingularCapitalized(), cc.xy(1,row));
 		row += 2;
 		builder.add(GUIFactory.createCollapsiblePanel(d_charView.buildPanel()),	cc.xy(1, row));
 		row += 2;
@@ -81,11 +87,11 @@ public class StudyView implements ViewBuilder {
 		row += 2;
 		builder.add(buildPopulationPart(), cc.xy(1, row));
 		row += 2;
-		builder.addSeparator("Outcomes - Endpoints", cc.xy(1, row));
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Endpoint.class).getPlural(), cc.xy(1, row));
 		row += 2;
 		builder.add(buildEndpointPart(), cc.xy(1, row));
 		row += 2;
-		builder.addSeparator("Outcomes - Adverse Drug Events", cc.xy(1, row));		
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(AdverseEvent.class).getPlural(), cc.xy(1, row));		
 		row += 2;
 		builder.add(buildAdverseEventPart(), cc.xy(1, row));
 		

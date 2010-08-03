@@ -17,7 +17,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class AdverseEventsKnowledge extends CategoryKnowledgeBase {
 	public AdverseEventsKnowledge() {
-		super("Adverse event", FileNames.ICON_ADVERSE_EVENT, AdverseEvent.class);
+		super("adverse event", FileNames.ICON_ADVERSE_EVENT, AdverseEvent.class);
 	}
 	
 	public JDialog getAddDialog(Main main, Domain domain,

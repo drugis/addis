@@ -34,6 +34,7 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Variable.Type;
+import org.drugis.addis.gui.CategoryKnowledgeFactory;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.SelectionInList;
@@ -92,14 +93,7 @@ public class VariablePresentation extends PresentationModel<Variable> implements
 	}
 	
 	public static String getEntityName(Variable om) throws IllegalArgumentException{
-		if(om instanceof Endpoint)
-			return "Endpoint";
-		if(om instanceof AdverseEvent)
-			return "Adverse drug event";
-		if(om instanceof Variable)
-			return "Population characteristic";
-		else
-			throw new IllegalArgumentException("Category not recognized");
+		return CategoryKnowledgeFactory.getCategoryKnowledge(om.getClass()).getSingularCapitalized();
 	}
 	
 	public String getCategoryName() throws IllegalArgumentException{

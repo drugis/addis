@@ -37,6 +37,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
@@ -102,7 +103,7 @@ public class BenefitRiskView implements ViewBuilder {
 		
 		CellConstraints cc =  new CellConstraints();
 		
-		d_builder.addSeparator("Benefit-Risk Analysis", cc.xy(1, 1));
+		d_builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(BenefitRiskAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
 		d_builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
 		
 		final JComponent progressBars = buildProgressBars();
