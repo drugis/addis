@@ -26,6 +26,11 @@ import javax.swing.table.AbstractTableModel;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyParameter;
+import org.drugis.mtc.MCMCModel;
+import org.drugis.mtc.MixedTreatmentComparison;
+import org.drugis.mtc.ProgressEvent;
+import org.drugis.mtc.ProgressListener;
+import org.drugis.mtc.ProgressEvent.EventType;
 
 @SuppressWarnings("serial")
 public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel implements TableModelWithDescription{
@@ -35,6 +40,16 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel i
 	public NetworkInconsistencyFactorsTableModel(NetworkMetaAnalysisPresentation pm, PresentationModelFactory pmf) {
 		d_pm = pm;
 		d_pmf = pmf;
+		attachModelListener(d_pm.getBean().getInconsistencyModel());
+	}
+	
+	private void attachModelListener(MixedTreatmentComparison networkModel) {
+		networkModel.addProgressListener(new ProgressListener() {
+			public void update(MCMCModel mtc, ProgressEvent event) {
+				if(event.getType() == EventType.MODEL_CONSTRUCTION_FINISHED || event.getType() == EventType.SIMULATION_FINISHED)
+					fireTableDataChanged();
+			}
+		});
 	}
 	
 	@Override

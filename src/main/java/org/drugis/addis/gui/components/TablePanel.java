@@ -73,7 +73,14 @@ public class TablePanel extends JPanel {
 					return;
 				int tablewidth = d_table.getPreferredSize().width + 2; // FIXME: magic number
 				int panelwidth = findParent().getSize().width - 50; // FIXME: magic number
-				sp.setPreferredSize(new Dimension(Math.min(tablewidth, panelwidth), sp.getPreferredSize().height));
+				
+				int headerHeight = 0;
+				if (d_table.getTableHeader() != null)
+					headerHeight = d_table.getTableHeader().getHeight();
+				
+				int height = d_table.getPreferredSize().height  + sp.getHorizontalScrollBar().getHeight() + headerHeight + 2; // FIXME: magic number
+				
+				sp.setPreferredSize(new Dimension(Math.min(tablewidth, panelwidth), height));
 				sp.revalidate();
 			}
 		};

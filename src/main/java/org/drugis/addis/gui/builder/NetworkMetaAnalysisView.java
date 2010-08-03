@@ -79,6 +79,7 @@ implements ViewBuilder {
 		public void update(MCMCModel mtc, ProgressEvent event) {
 			if (event.getType() == EventType.MODEL_CONSTRUCTION_FINISHED) {
 				if (d_inconsistencyFactorsTablePanel != null) {
+					((AbstractTableModel) d_inconsistencyFactorsTablePanel.getTable().getModel()).fireTableDataChanged();
 					d_inconsistencyFactorsTablePanel.doLayout();
 					d_parent.repaintRightPanel();
 				}
@@ -107,7 +108,7 @@ implements ViewBuilder {
 	private JProgressBar d_conProgressBar;
 	private NetworkMetaAnalysisTablePanel d_inconsistencyTablePanel;
 	private NetworkMetaAnalysisTablePanel d_consistencyTablePanel;
-	private JPanel d_inconsistencyFactorsTablePanel;
+	private TablePanel d_inconsistencyFactorsTablePanel;
 	private final Main d_main;
 	
 	public NetworkMetaAnalysisView(NetworkMetaAnalysisPresentation model, Main main) {
@@ -192,8 +193,6 @@ implements ViewBuilder {
 		
 		JComponent inconsistencyResultsPart = buildResultsPart(d_pm.getBean().getInconsistencyModel(),d_incProgressBar);
 		inconsistencyPanel.add(inconsistencyResultsPart,BorderLayout.CENTER);
-		
-		
 		
 		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(
 				d_pm, d_parent.getPresentationModelFactory());
