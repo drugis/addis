@@ -67,7 +67,7 @@ public class VariablePresentationModelTest {
 	public void testGetNameADE() {
 		Variable omAde = new AdverseEvent("testade", Variable.Type.CONTINUOUS);
 		VariablePresentation pm_ade = (VariablePresentation) d_pmf.getModel(omAde);
-		assertEquals ("Adverse drug event", pm_ade.getCategoryName());
+		assertEquals ("Adverse event", pm_ade.getCategoryName());
 	}
 	
 	@Test

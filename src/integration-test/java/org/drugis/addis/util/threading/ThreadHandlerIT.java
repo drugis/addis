@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class ThreadHandlerTest {
+public class ThreadHandlerIT {
 
 	class SuspendableTestThread extends AbstractSuspendableRunnable{
 		

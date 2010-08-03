@@ -21,13 +21,14 @@
 
 package org.drugis.addis.presentation;
 
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 
 @SuppressWarnings("serial")
 public class PopulationCharTableModel extends StudyMeasurementTableModel {
 	public PopulationCharTableModel(Study study, PresentationModelFactory pmf) {
-		super(study, pmf, Variable.class);
+		super(study, pmf, PopulationCharacteristic.class);
 		
 		for (Variable v : d_study.getVariables(Variable.class)) {
 			d_study.getMeasurement(v).addPropertyChangeListener(d_measurementListener);

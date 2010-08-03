@@ -87,7 +87,7 @@ public class PopulationCharTableModelTest {
 	
 	@Test
 	public void testGetColumnName() {
-		assertEquals("Variable", d_model.getColumnName(0));
+		assertEquals("Population characteristic", d_model.getColumnName(0));
 		for (int i = 0; i < d_study.getArms().size(); i++) {
 			String exp = d_pmf.getLabeledModel(d_study.getArms().get(i)).getLabelModel().getString();
 			String cname= d_model.getColumnName(i + 1);
