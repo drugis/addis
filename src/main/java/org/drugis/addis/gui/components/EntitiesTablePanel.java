@@ -21,6 +21,8 @@
 
 package org.drugis.addis.gui.components;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import org.drugis.addis.entities.Entity;
@@ -31,10 +33,21 @@ import com.jgoodies.binding.PresentationModel;
 
 @SuppressWarnings("serial")
 public class EntitiesTablePanel extends TablePanel {
-	public EntitiesTablePanel(List<String> formatter, List<PresentationModel<? extends Entity>> entities, Main parent) {
+	public EntitiesTablePanel(List<String> formatter, final List<PresentationModel<? extends Entity>> entities, final Main parent) {
 		super(new EnhancedTable(new EntityTableModel(entities, formatter)));
 				
 		if (parent != null)
 			getTable().addKeyListener(new EntityTableDeleteListener(parent));
+		
+		getTable().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() > 1) {
+					int row = ((EnhancedTable)e.getComponent()).rowAtPoint(e.getPoint());
+					Entity entity = entities.get(row).getBean();
+					parent.leftTreeFocus(entity);
+				}
+			}
+		});
 	}
 }
