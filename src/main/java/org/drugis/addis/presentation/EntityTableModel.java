@@ -63,7 +63,7 @@ public class EntityTableModel extends AbstractTableModel {
 			ValueModel model = d_entities.get(row).getModel(d_props.get(column));
 			return model.getValue();
 		} catch (PropertyNotFoundException e) {
-			return "";
+			throw new RuntimeException(e);
 		}
 	}
 
