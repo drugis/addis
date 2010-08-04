@@ -122,6 +122,7 @@ public class Main extends JFrame {
 	private PresentationModelFactory d_pmManager;
 	private String d_curFilename = null;
 	private final static String DEFAULT_TITLE = AppInfo.getAppName() + " v" + AppInfo.getAppVersion();
+	private JMenuItem d_saveMenuItem;
 
 	public PresentationModelFactory getPresentationModelFactory() {
 		return d_pmManager;
@@ -448,16 +449,16 @@ public class Main extends JFrame {
 	}
 
 	private JMenuItem createSaveItem() {
-		JMenuItem saveItem = new JMenuItem("Save XML", ImageLoader
+		d_saveMenuItem = new JMenuItem("Save XML", ImageLoader
 				.getIcon(FileNames.ICON_SAVEFILE));
-		saveItem.setMnemonic('s');
+		d_saveMenuItem.setMnemonic('s');
 		
 		// Attach to ctrl-s
-		saveItem.setAccelerator(KeyStroke.getKeyStroke(
+		d_saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
 		
 		final Main me = this;
-		saveItem.addActionListener(new AbstractAction() {
+		d_saveMenuItem.addActionListener(new AbstractAction() {
 
 			public void actionPerformed(ActionEvent e) {
 				if (d_curFilename == null) {				
@@ -467,7 +468,7 @@ public class Main extends JFrame {
 				}
 			}
 		});
-		return saveItem;
+		return d_saveMenuItem;
 	}
 	
 	private JMenuItem createSaveAsItem() {
@@ -504,6 +505,7 @@ public class Main extends JFrame {
 		int y = path.lastIndexOf("/");
 		String str = path.substring(y+1, x);
 		this.setTitle(DEFAULT_TITLE + " - " + str);
+		d_saveMenuItem.setEnabled(false);
 	}
 
 	private JMenuItem createExitItem() {
@@ -710,6 +712,7 @@ public class Main extends JFrame {
 
 	private void dataModelChanged() {
 		reloadRightPanel();
+		d_saveMenuItem.setEnabled(true);
 	}
 
 	public void repaintRightPanel() {
