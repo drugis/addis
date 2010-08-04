@@ -67,6 +67,7 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	
 	public BenefitRiskAnalysis() {
 		d_baselineModelMap = new HashMap<OutcomeMeasure,AbstractBaselineModel<?>>();
+		d_metaAnalyses = new ArrayList<MetaAnalysis>();
 	}
 	
 	public BenefitRiskAnalysis(String id, Indication indication, List<OutcomeMeasure> outcomeMeasures,
@@ -105,13 +106,16 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	}
 
 	public List<MetaAnalysis> getMetaAnalyses() {
-		return d_metaAnalyses;
+		ArrayList<MetaAnalysis> analyses = new ArrayList<MetaAnalysis>(d_metaAnalyses);
+		Collections.sort(analyses, new AlphabeticalComparator());
+		return Collections.unmodifiableList(analyses);
+		//return analyses;
 	}
 
 	public void setMetaAnalyses(List<MetaAnalysis> metaAnalysis) {
-		List<MetaAnalysis> oldValue = d_metaAnalyses;
+		List<MetaAnalysis> oldValue = getMetaAnalyses();
 		d_metaAnalyses = metaAnalysis;
-		firePropertyChange(PROPERTY_METAANALYSES, oldValue, metaAnalysis);
+		firePropertyChange(PROPERTY_METAANALYSES, oldValue, getMetaAnalyses());
 	}
 
 	public List<Drug> getDrugs() {

@@ -102,6 +102,7 @@ public class BenefitRiskAnalysisTest {
 		ArrayList<MetaAnalysis> newList = new ArrayList<MetaAnalysis>();
 		newList.add(ExampleData.buildNetworkMetaAnalysis());
 		newList.add(ExampleData.buildNetworkMetaAnalysisAlternative());
+		Collections.sort(newList,new AlphabeticalComparator());
 		JUnitUtil.testSetter(d_BRAnalysis, BenefitRiskAnalysis.PROPERTY_METAANALYSES, 
 				d_BRAnalysis.getMetaAnalyses(), newList);
 	}
