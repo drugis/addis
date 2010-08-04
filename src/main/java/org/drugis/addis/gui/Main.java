@@ -121,13 +121,14 @@ public class Main extends JFrame {
 
 	private PresentationModelFactory d_pmManager;
 	private String d_curFilename = null;
+	private final static String DEFAULT_TITLE = AppInfo.getAppName() + " v" + AppInfo.getAppVersion();
 
 	public PresentationModelFactory getPresentationModelFactory() {
 		return d_pmManager;
 	}
 
 	public Main() {
-		super(AppInfo.getAppName() + " v" + AppInfo.getAppVersion());
+		super(DEFAULT_TITLE);
 		ImageLoader.setImagePath("/org/drugis/addis/gfx/");
 
 		setPreferredSize(new Dimension(1020, 764));
@@ -434,6 +435,7 @@ public class Main extends JFrame {
 					public void doAction(String path) {
 						try {
 							loadDomainFromXMLFile(path);
+							setCurrentFileName(path);
 						} catch (Exception e1) {
 							JOptionPane.showMessageDialog(Main.this, "Couldn't open file " + path);
 							e1.printStackTrace();
@@ -489,11 +491,19 @@ public class Main extends JFrame {
 	private void saveDomainToFile(String path) {
 		try {
 			saveDomainToXMLFile(path);
-			d_curFilename = path;
+			setCurrentFileName(path);
 		} catch (Exception e1) {
 			JOptionPane.showMessageDialog(Main.this, "Couldn't save file " + path);
 			e1.printStackTrace();
 		}
+	}
+
+	private void setCurrentFileName(String path) {
+		d_curFilename = path;
+		int x = path.lastIndexOf(".");
+		int y = path.lastIndexOf("/");
+		String str = path.substring(y+1, x);
+		this.setTitle(DEFAULT_TITLE + " - " + str);
 	}
 
 	private JMenuItem createExitItem() {
