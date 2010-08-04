@@ -31,9 +31,14 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+
+import org.drugis.addis.presentation.TableModelWithDescription;
+
+import com.sun.java.components.TableSorter;
 
 @SuppressWarnings("serial")
 public class TablePanel extends JPanel {
@@ -51,6 +56,7 @@ public class TablePanel extends JPanel {
 	
 	public void init(JTable table) {
 		d_table = table;
+		addDescription();
 		addScrollPane();
 	}
 	
@@ -64,6 +70,7 @@ public class TablePanel extends JPanel {
 		sp.setBorder(BorderFactory.createEmptyBorder());
 		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		
 		panel.add(sp);
 		
 		final ComponentAdapter scrollPaneSizer = new ComponentAdapter() {
@@ -95,6 +102,24 @@ public class TablePanel extends JPanel {
 		});
 		
 		add(panel, BorderLayout.CENTER);
+	}
+
+	private void addDescription() {
+		String description = getDescription();
+		if (description != null) {
+			add(new JLabel(description), BorderLayout.NORTH);
+		}
+	}
+	
+	private String getDescription() {
+		String description = null;
+		if (d_table.getModel() instanceof TableSorter) {
+			if ( ((TableSorter) d_table.getModel()).getTableModel() instanceof TableModelWithDescription) {
+				description = ((TableModelWithDescription) ((TableSorter) d_table.getModel()).getTableModel()).getDescription();
+			}
+		} else if (d_table.getModel() instanceof TableModelWithDescription)
+			description = ((TableModelWithDescription) d_table.getModel()).getDescription();
+		return description;
 	}
 
 	protected Container findParent() {

@@ -192,12 +192,14 @@ implements ViewBuilder {
 		inconsistencyPanel.add(inconsistencyPane, BorderLayout.NORTH);
 		
 		JComponent inconsistencyResultsPart = buildResultsPart(d_pm.getBean().getInconsistencyModel(),d_incProgressBar);
+		
 		inconsistencyPanel.add(inconsistencyResultsPart,BorderLayout.CENTER);
 		
 		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(
 				d_pm, d_parent.getPresentationModelFactory());
 		EnhancedTable table = new EnhancedTable(inconsistencyFactorsTableModel, 300);
 		d_inconsistencyFactorsTablePanel = new TablePanel(table);
+		
 		inconsistencyPanel.add(d_inconsistencyFactorsTablePanel,BorderLayout.SOUTH);
 		
 		
@@ -266,7 +268,8 @@ implements ViewBuilder {
 			d_consistencyTablePanel = tablePanel;
 			
 		tablePanel.setVisible(true);
-		panel.add(tablePanel, BorderLayout.NORTH);
+		panel.add(tablePanel, BorderLayout.CENTER);
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
 		
 		return panel;
 	}	
