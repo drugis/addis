@@ -29,6 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.gui.components.EnhancedTable;
@@ -38,6 +39,7 @@ import org.drugis.addis.presentation.NetworkTableModel;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.sun.java.components.TableSorter;
 
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisTablePanel extends TablePanel {
@@ -63,9 +65,11 @@ public class NetworkMetaAnalysisTablePanel extends TablePanel {
 			}
 			label.setOpaque(true);
 			
-			if (table.getModel() instanceof NetworkTableModel) { // FIXME: Extract TableModelWithDescriptionAt interface
-				if (((NetworkTableModel) table.getModel()).getDescriptionAt(row, col) != null) {
-					label.setToolTipText(((NetworkTableModel) table.getModel()).getDescriptionAt(row, col));
+			TableModel model = ((TableSorter) table.getModel()).getTableModel();
+			if (model instanceof NetworkTableModel) { // FIXME: Extract TableModelWithDescriptionAt interface
+				NetworkTableModel networkTableModel = (NetworkTableModel) model;
+				if (networkTableModel.getDescriptionAt(row, col) != null) {
+					label.setToolTipText(networkTableModel.getDescriptionAt(row, col));
 				}
 			}
 			
