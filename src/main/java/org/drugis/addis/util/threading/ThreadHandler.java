@@ -4,7 +4,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
-public class ThreadHandler {
+import org.drugis.addis.entities.AbstractObservable;
+
+public class ThreadHandler extends AbstractObservable {
+	
+	public static final String PROPERTY_RUNNING_THREADS = "runningThreads";
+	public static final String PROPERTY_QUEUED_THREADS = "queuedThreads";
 	
 	/* Separate thread to check whether new threads can be started */
 	private class RunQueueCleaner implements Runnable {
@@ -18,10 +23,13 @@ public class ThreadHandler {
 //							System.out.println("Task finished " + t);
 							if (!d_scheduledTasks.isEmpty()) {
 								SuspendableThreadWrapper newThread = d_scheduledTasks.removeFirst();
+								
 								newThread.start();
 //								System.out.println("Executing from schedule " + newThread);
 								d_runningTasks.addFirst(newThread);
 							}
+							firePropertyChange(PROPERTY_QUEUED_THREADS, null, d_scheduledTasks.size());
+							firePropertyChange(PROPERTY_RUNNING_THREADS, null, d_runningTasks.size());
 						}
 					}
 				}
@@ -52,6 +60,14 @@ public class ThreadHandler {
 		if (d_singleton == null)
 			d_singleton = new ThreadHandler();
 		return d_singleton;
+	}
+	
+	public int getRunningThreads() {
+		return d_runningTasks.size();
+	}
+	
+	public int getQueuedThreads() {
+		return d_scheduledTasks.size();
 	}
 	
 	public void scheduleTask(Runnable r) {
@@ -97,6 +113,9 @@ public class ThreadHandler {
 				d_scheduledTasks.addFirst(m);
 //				System.out.println("Scheduling " + m);
 			}
+			
+			firePropertyChange(PROPERTY_QUEUED_THREADS, null, d_scheduledTasks.size());
+			firePropertyChange(PROPERTY_RUNNING_THREADS, null, d_runningTasks.size());
 			
 //			System.out.println("after Schedule queue " + d_scheduledTasks);
 //			System.out.println("after Running queue " + d_runningTasks);

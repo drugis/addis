@@ -47,6 +47,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -123,7 +124,8 @@ public class Main extends JFrame {
 	private String d_curFilename = null;
 	private final static String DEFAULT_TITLE = AppInfo.getAppName() + " v" + AppInfo.getAppVersion();
 	private JMenuItem d_saveMenuItem;
-
+	private StatusBar d_statusBar;
+	
 	public PresentationModelFactory getPresentationModelFactory() {
 		return d_pmManager;
 	}
@@ -527,6 +529,8 @@ public class Main extends JFrame {
 	}
 
 	private void initToolbar() {
+		d_statusBar = new StatusBar();
+
 		JToolBar toolbar = new JToolBar();
 		toolbar.setFloatable(false);
 		toolbar.setLayout(new BorderLayout());
@@ -554,6 +558,7 @@ public class Main extends JFrame {
 		toolbar.add(builder.getPanel(), BorderLayout.CENTER);
 		toolbar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		add(toolbar, BorderLayout.NORTH);
+		add(d_statusBar, BorderLayout.SOUTH);
 	}
 
 	private JButton createToolbarButton(final CategoryKnowledge knowledge) {

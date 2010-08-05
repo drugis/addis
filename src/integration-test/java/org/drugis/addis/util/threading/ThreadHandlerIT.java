@@ -11,7 +11,7 @@ import org.junit.Test;
 
 public class ThreadHandlerIT {
 
-	class SuspendableTestThread extends AbstractSuspendableRunnable{
+	public static class SuspendableTestThread extends AbstractSuspendableRunnable{
 		
 		private final int d_ms;
 		boolean d_done;
@@ -204,7 +204,7 @@ public class ThreadHandlerIT {
 		waitTillDone();
 	}
 	
-	private void waitTillDone() {
+	public static void waitTillDone() {
 		ThreadHandler th = ThreadHandler.getInstance();
 		while ((th.d_runningTasks.size() > 0) || (th.d_scheduledTasks.size() > 0)) {
 //			System.out.println("running: " + th.d_runningTasks.size() + " scheduled: "+th.d_scheduledTasks.size());
@@ -213,7 +213,7 @@ public class ThreadHandlerIT {
 	}
 	
 
-	private void sleep(int ms ) {
+	private static void sleep(int ms ) {
 		try {
 			Thread.sleep(ms);
 		} catch (InterruptedException e) {
