@@ -38,6 +38,7 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
+import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.common.AlphabeticalComparator;
@@ -133,17 +134,19 @@ public class BenefitRiskAnalysisTest {
 	}
 	
 	@Test
-	public void testGetRelativeEffect() {
+	public void testGetDistribution() {
 		OutcomeMeasure om = ExampleData.buildEndpointHamd();
 		
 		Drug fluox = ExampleData.buildDrugFluoxetine();
-		RelativeEffect<? extends Measurement> actual = d_BRAnalysis.getRelativeEffect(fluox, om);
+		GaussianBase actualDist = d_BRAnalysis.getRelativeEffectDistribution(fluox, om);
+		
 		RelativeEffect<? extends Measurement> expected = ExampleData.buildMetaAnalysisHamd().getRelativeEffect(
 				ExampleData.buildDrugParoxetine(), fluox, BasicOddsRatio.class);
-		assertNotNull(actual);
+		assertNotNull(actualDist);
 		assertNotNull(expected);
-		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actual.getConfidenceInterval().getPointEstimate());
-		assertEquals(expected.getConfidenceInterval(), actual.getConfidenceInterval());
+		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actualDist.getQuantile(0.50), 0.00001);
+		assertEquals(expected.getConfidenceInterval().getLowerBound(), actualDist.getQuantile(0.025), 0.00001);
+		assertEquals(expected.getConfidenceInterval().getUpperBound(), actualDist.getQuantile(0.975), 0.00001);
 	}
 	
 	@Test

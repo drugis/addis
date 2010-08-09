@@ -26,11 +26,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.relativeeffect.LogGaussian;
-import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,12 +50,12 @@ public class SMAAEntityFactoryTest {
 	@Test
 	public void testCreateCardinalMeasurementRate() {
 		
-		RelativeEffect<? extends Measurement> relativeEffect = d_BRAnalysis.getRelativeEffect(ExampleData.buildDrugFluoxetine(), ExampleData.buildEndpointHamd());
-		CardinalMeasurement actual = SMAAEntityFactory.createCardinalMeasurement(relativeEffect.getDistribution());
+		GaussianBase relativeEffect = d_BRAnalysis.getRelativeEffectDistribution(ExampleData.buildDrugFluoxetine(), ExampleData.buildEndpointHamd());
+		CardinalMeasurement actual = SMAAEntityFactory.createCardinalMeasurement(relativeEffect);
 		assertTrue(!((LogNormalMeasurement) actual).getMean().isNaN());
 		assertTrue(actual instanceof LogNormalMeasurement);
-		assertEquals(Math.log(relativeEffect.getConfidenceInterval().getPointEstimate()),((LogNormalMeasurement) actual).getMean(), 0.0001);
-		assertEquals(((LogGaussian)relativeEffect.getDistribution()).getSigma(),((LogNormalMeasurement) actual).getStDev(), 0.0001);
+		assertEquals(Math.log(relativeEffect.getQuantile(0.50)),((LogNormalMeasurement) actual).getMean(), 0.0001);
+		assertEquals(relativeEffect.getSigma(),((LogNormalMeasurement) actual).getStDev(), 0.0001);
 	}
 	
 	
@@ -69,8 +67,8 @@ public class SMAAEntityFactoryTest {
 				if (d.equals(d_BRAnalysis.getBaseline()))
 					continue;
 				fi.smaa.jsmaa.model.Measurement actualMeasurement = smaaModel.getMeasurement(d_SMAAFactory.getCriterion(om), d_SMAAFactory.getAlternative(d));
-				RelativeEffect<? extends Measurement> expRelativeEffect = d_BRAnalysis.getRelativeEffect(d, om);
-				assertEquals(Math.log(expRelativeEffect.getConfidenceInterval().getPointEstimate()), ((LogNormalMeasurement) actualMeasurement).getMean(), 0.0001);
+				GaussianBase expDistribution = d_BRAnalysis.getRelativeEffectDistribution(d, om);
+				assertEquals(Math.log(expDistribution.getQuantile(0.50)), ((LogNormalMeasurement) actualMeasurement).getMean(), 0.0001);
 			}
 		}
 	}
