@@ -191,7 +191,7 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 					return ma.getRelativeEffect(d_baseline, d, type);
 				}
 				else {
-					return (om.getType().equals(Variable.Type.RATE)) ?  NetworkRelativeEffect.buildOddsRatio(0, .0001) : NetworkRelativeEffect.buildMeanDifference(0, .0001); 
+					return (om.getType().equals(Variable.Type.RATE)) ?  NetworkRelativeEffect.buildOddsRatio(0.0, 0.0) : NetworkRelativeEffect.buildMeanDifference(0.0, 0.0); 
 				}
 			}
 			
