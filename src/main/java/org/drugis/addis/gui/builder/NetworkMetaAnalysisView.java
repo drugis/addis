@@ -42,6 +42,7 @@ import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.components.EnhancedTable;
+import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
@@ -134,7 +135,7 @@ implements ViewBuilder {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
-		d_builder = new PanelBuilder(layout);
+		d_builder = new PanelBuilder(layout, new ScrollableJPanel());
 	
 		d_builder.setDefaultDialogBorder();
 		
@@ -156,7 +157,6 @@ implements ViewBuilder {
 		buildConsistencyPart();
 
 		JPanel panel = d_builder.getPanel();
-		attachResizedListener(panel);
 		return panel;
 	}
 

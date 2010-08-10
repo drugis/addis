@@ -42,10 +42,10 @@ import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
 import org.drugis.addis.gui.components.EnhancedTable;
+import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.BenefitRiskPresentation;
 import org.drugis.addis.util.HtmlWordWrapper;
-import org.drugis.common.gui.AbstractViewBuilder;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.LayoutUtil;
@@ -68,13 +68,14 @@ import fi.smaa.jsmaa.gui.presentation.PreferencePresentationModel;
 import fi.smaa.jsmaa.gui.views.PreferenceInformationView;
 import fi.smaa.jsmaa.gui.views.ResultsView;
 
-public class BenefitRiskView extends AbstractViewBuilder implements ViewBuilder {
+public class BenefitRiskView implements ViewBuilder {
 
 	
 	private static final String WAITING_MESSAGE = "Please wait while the sub-analyses run";
 	private BenefitRiskPresentation d_pm;
 	private Main d_main;
 	private PanelBuilder d_builder;
+	protected JPanel d_panel;
 	
 	public BenefitRiskView(BenefitRiskPresentation pm, Main main) {
 		d_pm = pm;
@@ -97,7 +98,7 @@ public class BenefitRiskView extends AbstractViewBuilder implements ViewBuilder 
 				"3dlu, p"
 				);
 		
-		d_builder = new PanelBuilder(layout);
+		d_builder = new PanelBuilder(layout, new ScrollableJPanel());
 		d_builder.setDefaultDialogBorder();
 		
 		CellConstraints cc =  new CellConstraints();
@@ -135,7 +136,7 @@ public class BenefitRiskView extends AbstractViewBuilder implements ViewBuilder 
 		d_panel = d_builder.getPanel();
 		ChildComponenentHeightPropagater.attachToContainer(d_panel);
 		
-		attachResizedListener(d_panel);
+		//attachResizedListener(d_panel);
 		
 		d_panel.addComponentListener(new ComponentAdapter() {
 			@Override

@@ -43,6 +43,7 @@ import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;
+import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.treeplot.ForestPlot;
 import org.drugis.common.gui.PNGExporter;
@@ -67,7 +68,7 @@ implements ViewBuilder {
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
-		PanelBuilder builder = new PanelBuilder(layout);
+		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();
 		
 		CellConstraints cc =  new CellConstraints();		
@@ -93,7 +94,6 @@ implements ViewBuilder {
 		}
 
 		JPanel panel = builder.getPanel();
-		attachResizedListener(panel);
 		return panel;
 	}
 

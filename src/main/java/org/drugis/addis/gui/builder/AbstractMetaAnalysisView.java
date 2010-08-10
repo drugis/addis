@@ -31,7 +31,6 @@ import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.AbstractMetaAnalysisPresentation;
 import org.drugis.addis.util.HtmlWordWrapper;
-import org.drugis.common.gui.AbstractViewBuilder;
 import org.drugis.common.gui.OneWayObjectFormat;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -39,7 +38,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public abstract class AbstractMetaAnalysisView<T extends AbstractMetaAnalysisPresentation<?>> extends AbstractViewBuilder  {
+public abstract class AbstractMetaAnalysisView<T extends AbstractMetaAnalysisPresentation<?>> {
 
 	protected T d_pm;
 	protected Main d_parent;
