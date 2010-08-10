@@ -73,7 +73,7 @@ public class BenefitRiskView implements ViewBuilder {
 	class ResizedListener extends ComponentAdapter {
 		@Override
 		public void componentResized(ComponentEvent e) {
-			if (d_panel != null) {
+			if (d_panel != null && d_parent != null) {
 				d_panel.setPreferredSize(new Dimension(d_parent.getWidth(), d_panel.getHeight()));
 				d_panel.setSize(d_panel.getPreferredSize());
 			}
