@@ -22,8 +22,6 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -47,6 +45,7 @@ import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.BenefitRiskPresentation;
 import org.drugis.addis.util.HtmlWordWrapper;
+import org.drugis.common.gui.AbstractViewBuilder;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.LayoutUtil;
@@ -69,25 +68,13 @@ import fi.smaa.jsmaa.gui.presentation.PreferencePresentationModel;
 import fi.smaa.jsmaa.gui.views.PreferenceInformationView;
 import fi.smaa.jsmaa.gui.views.ResultsView;
 
-public class BenefitRiskView implements ViewBuilder {
-	class ResizedListener extends ComponentAdapter {
-		@Override
-		public void componentResized(ComponentEvent e) {
-			if (d_panel != null && d_parent != null) {
-				d_panel.setPreferredSize(new Dimension(d_parent.getWidth(), d_panel.getHeight()));
-				d_panel.setSize(d_panel.getPreferredSize());
-			}
-		}
-	}
+public class BenefitRiskView extends AbstractViewBuilder implements ViewBuilder {
+
 	
 	private static final String WAITING_MESSAGE = "Please wait while the sub-analyses run";
 	private BenefitRiskPresentation d_pm;
 	private Main d_main;
 	private PanelBuilder d_builder;
-	private Container d_parent;
-	private JPanel d_panel;
-	private ResizedListener d_resizedListener = null;
-
 	
 	public BenefitRiskView(BenefitRiskPresentation pm, Main main) {
 		d_pm = pm;
@@ -98,8 +85,6 @@ public class BenefitRiskView implements ViewBuilder {
 	public JComponent buildPanel() {
 		if (d_builder != null)
 			d_builder.getPanel().removeAll();
-		
-
 		
 		final FormLayout layout = new FormLayout(
 				"pref:grow:fill",
@@ -149,22 +134,17 @@ public class BenefitRiskView implements ViewBuilder {
 		
 		d_panel = d_builder.getPanel();
 		ChildComponenentHeightPropagater.attachToContainer(d_panel);
+		
+		attachResizedListener(d_panel);
+		
 		d_panel.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
 				// We would love to listen to componentShown(), but that isn't triggered. Hooray!
 				d_pm.startAllSimulations();
-				attachResizedListener();
 			}
 		});
 		return d_panel;
-	}
-	
-	private void attachResizedListener() {
-		d_parent = d_panel.getParent();
-		if (d_resizedListener == null && d_parent != null) {
-			d_parent.addComponentListener(d_resizedListener = new ResizedListener());
-		}
 	}
 	
 	private class PreferencesBuilder implements ViewBuilder {

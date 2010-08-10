@@ -155,7 +155,9 @@ implements ViewBuilder {
 		d_builder.addSeparator("Results - network consistency model", d_cc.xy(1, 21));
 		buildConsistencyPart();
 
-		return d_builder.getPanel();
+		JPanel panel = d_builder.getPanel();
+		attachResizedListener(panel);
+		return panel;
 	}
 
 	private void buildConsistencyPart() {

@@ -56,11 +56,9 @@ public class RandomEffectsMetaAnalysisView extends AbstractMetaAnalysisView<Rand
 implements ViewBuilder {
 	
 	private boolean d_overView;
-	private final Main d_parent;
 
 	public RandomEffectsMetaAnalysisView(RandomEffectsMetaAnalysisPresentation pm, Main parent, boolean overView) {
 		super(pm, parent);
-		d_parent = parent;
 		d_overView = overView;
 	}
 
@@ -94,7 +92,9 @@ implements ViewBuilder {
 					d_pm.getAnalysisType() + " is not a supported type of endpoint");
 		}
 
-		return builder.getPanel();
+		JPanel panel = builder.getPanel();
+		attachResizedListener(panel);
+		return panel;
 	}
 
 	private void buildContinuousPlotsPart(PanelBuilder builder,

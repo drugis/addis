@@ -24,7 +24,7 @@ public class ChildComponenentHeightPropagater extends ComponentAdapter {
 		for (Component c : panel.getComponents()) {
 			total += c.getSize().height;
 		}
-		int spacing = 7;
+		int spacing = 7; //FIXME: Get from jgoodies.
 		int height = total + (panel.getComponentCount() - 1) * spacing;
 		int width = panel.getPreferredSize().width;
 		panel.setSize(new Dimension(width, height));
