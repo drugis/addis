@@ -49,6 +49,10 @@ public class ImageExporter {
         SVGGraphics2D svgGenerator = new SVGGraphics2D(document);
         // Setting image dimensions
         svgGenerator.setSVGCanvasSize(new Dimension(width,height));
+        // setting background to white :_)
+        svgGenerator.setBackground(Color.WHITE);
+        svgGenerator.clearRect(0, 0, width, height);
+        svgGenerator.setColor(Color.BLACK);
         // Ask the test to render into the SVG Graphics2D implementation.
         p.paint(svgGenerator);
         // Finally, stream out SVG to the standard output using UTF-8 encoding.

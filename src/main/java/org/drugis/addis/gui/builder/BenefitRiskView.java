@@ -236,7 +236,7 @@ public class BenefitRiskView implements ViewBuilder {
 			
 			
 			JPanel secPanel = new JPanel(new BorderLayout());
-			secPanel.add(new JLabel("    Lower rank number is better."), BorderLayout.CENTER);
+			secPanel.add(new JLabel("    Lower rank is better."), BorderLayout.CENTER);
 			JButton expButton = new JButton("Export to JSMAA");
 			secPanel.add(expButton, BorderLayout.SOUTH);
 			panel.add(secPanel,BorderLayout.SOUTH);

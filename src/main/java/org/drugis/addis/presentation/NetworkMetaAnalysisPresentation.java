@@ -101,9 +101,9 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 
 	public String getRankProbabilityRankChartNote() {
 		if(getBean().getOutcomeMeasure().getDirection() == Direction.HIGHER_IS_BETTER) {
-			return "A lower rank number indicates the drug is better";
+			return "A lower rank indicates the drug is better";
 		} else {
-			return "A higher rank number indicates the drug is better";
+			return "A higher rank indicates the drug is better";
 		}
 	}
 }
