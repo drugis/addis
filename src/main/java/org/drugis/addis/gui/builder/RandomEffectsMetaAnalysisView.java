@@ -46,7 +46,7 @@ import org.drugis.addis.gui.components.RelativeEffectCanvas;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.treeplot.ForestPlot;
-import org.drugis.common.gui.PNGExporter;
+import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -153,7 +153,7 @@ implements ViewBuilder {
 		saveBtn.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 			ForestPlot plot = canvas.getPlot();
-			PNGExporter.writePNG(d_parent, plot, (int) plot.getSize().getWidth(),(int) plot.getSize().getHeight());
+			ImageExporter.writeImage(d_parent, plot, (int) plot.getSize().getWidth(),(int) plot.getSize().getHeight());
 			}
 		});
 		encapsulating.add(saveBtn, BorderLayout.SOUTH);

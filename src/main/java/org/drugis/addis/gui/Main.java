@@ -101,7 +101,7 @@ public class Main extends JFrame {
 		}
 
 		@Override
-		public void doAction(String path) {
+		public void doAction(String path, String extension) {
 			saveDomainToFile(path);
 		}
 	}
@@ -434,7 +434,7 @@ public class Main extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				new FileLoadDialog(me, "xml", "XML files") {
 					@Override
-					public void doAction(String path) {
+					public void doAction(String path, String extension) {
 						try {
 							loadDomainFromXMLFile(path);
 							setCurrentFileName(path);

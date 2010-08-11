@@ -136,8 +136,6 @@ public class BenefitRiskView implements ViewBuilder {
 		d_panel = d_builder.getPanel();
 		ChildComponenentHeightPropagater.attachToContainer(d_panel);
 		
-		//attachResizedListener(d_panel);
-		
 		d_panel.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
@@ -247,7 +245,7 @@ public class BenefitRiskView implements ViewBuilder {
 				public void actionPerformed(ActionEvent e) {
 					new FileSaveDialog(d_main, "jsmaa", "JSMAA") {
 						@Override
-						public void doAction(String path) {
+						public void doAction(String path, String extension) {
 							d_pm.saveSmaa(path);
 						}
 					};

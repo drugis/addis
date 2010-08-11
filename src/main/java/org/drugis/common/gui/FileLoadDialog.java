@@ -11,6 +11,6 @@ public abstract class FileLoadDialog extends FileDialog {
 		String message = "Couldn't open file ";
 
 		int returnValue = d_fileChooser.showOpenDialog(frame);
-		handleFileDialogResult(frame, extension, returnValue, message);
+		handleFileDialogResult(frame, returnValue, message);
 	}
 }
