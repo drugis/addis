@@ -90,7 +90,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 			for (int rank = 1; rank <= getBean().getIncludedDrugs().size(); ++rank) {	
 				Treatment treatment = builder.getTreatment(d.toString());
 				double rankProb = consistencyModel.rankProbability(treatment, rank);
-				d_dataset.addValue((Number) rankProb, "Rank " + rank, d);
+				d_dataset.addValue((Number) rankProb, d, rank);
 			}	
 		}
 	}
