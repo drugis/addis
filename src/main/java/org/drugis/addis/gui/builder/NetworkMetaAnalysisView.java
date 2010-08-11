@@ -49,7 +49,6 @@ import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
 import org.drugis.addis.util.HtmlWordWrapper;
 import org.drugis.common.gui.ViewBuilder;
-import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
@@ -175,7 +174,7 @@ implements ViewBuilder {
 		
 		consistencyPanel.add(consistencyResultsPart,BorderLayout.CENTER);
 
-		consistencyPanel.add(createRankProbChart(d_pm.getBean().getConsistencyModel()), BorderLayout.SOUTH);
+		consistencyPanel.add(createRankProbChart(), BorderLayout.SOUTH);
 		JPanel collapsiblePanel = GUIFactory.createCollapsiblePanel(consistencyPanel);
 		/* Fix: ScrollPanel Viewport doesn't have correct size when containing a CollapsiblePanel*/
 		collapsiblePanel.setBorder(BorderFactory.createEmptyBorder(0,0,20,0));  
@@ -208,10 +207,10 @@ implements ViewBuilder {
 		d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyPanel), d_cc.xy(1, 19));
 	}
 
-	private JComponent createRankProbChart(ConsistencyModel networkModel) {
+	private JComponent createRankProbChart() {
 		CategoryDataset dataset = d_pm.getRankProbabilityDataset();
 		
-		JFreeChart chart = ChartFactory.createBarChart("Rank Probability", "Rank", "Probability", 
+		JFreeChart chart = ChartFactory.createBarChart("Rank Probability", "Treatment", "Probability", 
 						dataset, PlotOrientation.VERTICAL, true, false, false);	
 		
 		JPanel panel = new JPanel();
