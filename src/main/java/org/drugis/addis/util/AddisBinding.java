@@ -98,6 +98,7 @@ public class AddisBinding extends XMLBinding {
 		setAlias(ContinuousPopulationCharacteristic.class, "continuousCharacteristic");
 		setAlias(org.drugis.addis.entities.Variable.Type.class, "type");
 		setAlias(org.drugis.addis.entities.Study.MeasurementKey.class, "measurementkey");
+		setAlias(org.drugis.addis.entities.Source.class, "source"); //
 
 		setAlias(FixedDose.class, "fixedDose");
 		setAlias(FlexibleDose.class, "flexibleDose");
@@ -105,9 +106,8 @@ public class AddisBinding extends XMLBinding {
 		setAlias(Arm.class, "arm");
 		setAlias(Indication.class, "indication");
 		setAlias(Variable.class, "variable");
-		setAlias(Date.class, "date");
+		setAlias(Date.class, "date");	
 		
-		 
 		setAlias(BasicStudyCharacteristic.class, "basicCharacteristic");
 		setAlias(BasicStudyCharacteristic.Status.class, "status");
 		setAlias(BasicStudyCharacteristic.Allocation.class, "allocation");
