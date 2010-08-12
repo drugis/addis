@@ -54,48 +54,59 @@ public class RankProbabilityDataSetIT {
 	}
 	
 	@Test
-	public void testGetColumnIndex() {
+	public void testGetRowIndex() {
 		Integer key = 3;
-		assertEquals(key - 1, d_dataSet.getColumnIndex(key) );
+		assertEquals(key - 1, d_dataSet.getRowIndex("Rank " + key) );
+	}
+	
+	@Test
+	public void testGetColumnIndex() {
+		Drug key = ExampleData.buildDrugFluoxetine();
+		assertEquals(0, d_dataSet.getColumnIndex(key));
+		key = ExampleData.buildDrugParoxetine();
+		assertEquals(1, d_dataSet.getColumnIndex(key));
+		key = ExampleData.buildDrugSertraline();
+		assertEquals(2, d_dataSet.getColumnIndex(key));
+	}
+	
+	@Test
+	public void testGetRowIndexThrows() {
+		assertEquals(-1, d_dataSet.getRowIndex(10000));
 	}
 	
 	@Test
 	public void testGetColumnIndexThrows() {
 		assertEquals(-1, d_dataSet.getColumnIndex(10000));
 	}
-
-	@Test
-	public void testGetColumnKey() {
-		Integer index = 2;
-		assertEquals(index+1, d_dataSet.getColumnKey(index));
-	}
-
-	@Test
-	public void testGetColumnKeys() {
-		ArrayList<Integer> columnKeys = new ArrayList<Integer>();
-		for(int i = 0; i < d_nma.getIncludedDrugs().size(); ++i)
-			columnKeys.add(i+1);
-		assertEquals(columnKeys, d_dataSet.getColumnKeys());
-	}
-
-	@Test
-	public void testGetRowIndex() {
-		Drug key = ExampleData.buildDrugFluoxetine();
-		assertEquals(0, d_dataSet.getRowIndex(key));
-		key = ExampleData.buildDrugParoxetine();
-		assertEquals(1, d_dataSet.getRowIndex(key));
-		key = ExampleData.buildDrugSertraline();
-		assertEquals(2, d_dataSet.getRowIndex(key));
-	}
+	
+	
 
 	@Test
 	public void testGetRowKey() {
-		assertEquals(ExampleData.buildDrugParoxetine(), d_dataSet.getRowKey(1));
+		Integer index = 2;
+		assertEquals("Rank " + (index+1), d_dataSet.getRowKey(index));
 	}
 
 	@Test
+	public void testGetColumnKey() {
+		assertEquals(ExampleData.buildDrugParoxetine(), d_dataSet.getColumnKey(1));
+	}
+	
+	@Test
 	public void testGetRowKeys() {
-		assertEquals(d_nma.getIncludedDrugs(), d_dataSet.getRowKeys());
+		ArrayList<String> columnKeys = new ArrayList<String>();
+		for(int i = 0; i < d_nma.getIncludedDrugs().size(); ++i)
+			columnKeys.add("Rank " + (i+1));
+		assertEquals(columnKeys, d_dataSet.getRowKeys());
+	}
+
+
+
+	
+
+	@Test
+	public void testGetColumnKeys() {
+		assertEquals(d_nma.getIncludedDrugs(), d_dataSet.getColumnKeys());
 	}
 	
 	@Test
@@ -112,14 +123,14 @@ public class RankProbabilityDataSetIT {
 	public void testGetValue() {
 		for (int row =0; row < d_dataSet.getRowCount(); ++row){
 			for (int col =0; col < d_dataSet.getColumnCount(); ++col) {
-				Drug rowKey = (Drug) d_dataSet.getRowKey(row); // rowKey is the Drug
-				int  colKey = col+1; // colKey is the Rank
+				Drug colKey = (Drug) d_dataSet.getColumnKey(col); // colKey is the Drug
+				int  rowKey = col+1; // rowKey is the Rank
 
-				String drugName = rowKey.toString();	
+				String drugName = colKey.toString();	
 				Treatment treatment = d_nma.getBuilder().getTreatment(drugName);
 
-				Double expected = d_nma.getConsistencyModel().rankProbability(treatment, colKey);
-				assertEquals(expected, d_dataSet.getValue(rowKey, colKey));
+				Double expected = d_nma.getConsistencyModel().rankProbability(treatment, rowKey);
+				assertEquals(expected, d_dataSet.getValue("Rank " +rowKey, colKey));
 			}
 		}
 	}
