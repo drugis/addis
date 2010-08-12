@@ -28,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +48,7 @@ public class DomainTest {
 
 	private Domain d_domain;
 	private Indication d_indication;
+	private boolean d_eventFired;
 	
 	@Before
 	public void setUp() {
@@ -822,6 +824,37 @@ public class DomainTest {
 				d_domain.getCategory(PairWiseMetaAnalysis.class)));
 		assertEquals(d_domain.getBenefitRiskAnalyses(), d_domain.getCategoryContents(
 				d_domain.getCategory(BenefitRiskAnalysis.class)));
+	}
+	
+	@Test
+	public void testGetCategoryContentsModel() {
+		JUnitUtil.assertAllAndOnly(d_domain.getIndications(), d_domain.getCategoryContentsModel(
+				d_domain.getCategory(Indication.class)).getValue());
+		JUnitUtil.assertAllAndOnly(d_domain.getDrugs(), d_domain.getCategoryContentsModel(
+				d_domain.getCategory(Drug.class)).getValue());
+		JUnitUtil.assertAllAndOnly(d_domain.getEndpoints(), d_domain.getCategoryContentsModel(
+				d_domain.getCategory(Endpoint.class)).getValue());
+	}
+	
+	@Test
+	public void testGetCategoryContentsModelFiresOnChange() {
+		ListHolder<? extends Entity> model = d_domain.getCategoryContentsModel(d_domain.getCategory(Drug.class));
+		JUnitUtil.assertAllAndOnly(d_domain.getDrugs(), model.getValue());
+		Drug viagra = ExampleData.buildDrugViagra();
+		final ArrayList<Entity> drugs = new ArrayList<Entity>(model.getValue());
+		drugs.add(viagra);
+		d_eventFired = false;
+		
+		model.addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				d_eventFired = true;
+				assertEquals(drugs, evt.getNewValue());
+			}
+		});
+		
+		d_domain.addDrug(viagra);
+		
+		assertTrue(d_eventFired);
 	}
 	
 	@Test

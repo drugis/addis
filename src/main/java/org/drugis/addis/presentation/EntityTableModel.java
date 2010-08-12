@@ -29,21 +29,28 @@ import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Entity;
 
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.beans.PropertyNotFoundException;
 import com.jgoodies.binding.value.ValueModel;
 
 
 @SuppressWarnings("serial")
-public class EntityTableModel extends AbstractTableModel {
-	List<PresentationModel<? extends Entity>> d_entities;
+public class EntityTableModel extends AbstractTableModel implements TableModelWithDescription {
+	ListHolder<? extends Entity> d_entities;
 	List<String> d_props;
+	private final PresentationModelFactory d_pmf;
+	private final String d_title;
 
-	public EntityTableModel(List<PresentationModel<? extends Entity>> entities, List<String> properties) {
+	public EntityTableModel(ListHolder<? extends Entity> entities, List<String> properties, PresentationModelFactory pmf, String title) {
 		d_entities = entities;
-		for (PresentationModel<? extends Entity> pm : d_entities)
-			pm.addPropertyChangeListener(new ValueChangeListener());
 		d_props = properties;
+		d_pmf = pmf;
+		d_title = title;
+		
+		d_entities.addValueChangeListener(new PropertyChangeListener() {	
+			public void propertyChange(PropertyChangeEvent evt) {
+				fireTableDataChanged();
+			}
+		});
 	}
 	
 	public int getColumnCount() {
@@ -51,16 +58,16 @@ public class EntityTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		return d_entities.size();
+		return d_entities.getValue().size();
 	}
 
 	public Object getValueAt(int row, int column) {
 		if (column == 0)
-			return d_entities.get(row).getBean();
+			return d_entities.getValue().get(row);
 		
 		
 		try {
-			ValueModel model = d_entities.get(row).getModel(d_props.get(column));
+			ValueModel model = d_pmf.getModel(d_entities.getValue().get(row)).getModel(d_props.get(column));
 			return model.getValue();
 		} catch (PropertyNotFoundException e) {
 			throw new RuntimeException(e);
@@ -79,10 +86,8 @@ public class EntityTableModel extends AbstractTableModel {
 			
 		return name.substring(0, 1).toUpperCase() + name.substring(1);
 	}
-	
-	private class ValueChangeListener implements PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent evt) {
-			fireTableStructureChanged();
-		}		
+
+	public String getDescription() {
+		return d_title;
 	}
 }
