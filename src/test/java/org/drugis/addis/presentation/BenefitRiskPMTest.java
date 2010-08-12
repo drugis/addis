@@ -23,6 +23,8 @@ package org.drugis.addis.presentation;
 
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,20 +41,20 @@ public class BenefitRiskPMTest {
 
 	private PresentationModelFactory d_pmf;
 	private BenefitRiskPresentation d_pm;
+	private boolean d_eventHasFired;
+	private DomainImpl d_domain;
 
 	@Before
 	public void setUp() {
-		d_pmf = new PresentationModelFactory(new DomainImpl());
+		d_domain = new DomainImpl();
+		d_pmf = new PresentationModelFactory(d_domain);
 		BenefitRiskAnalysis analysis = ExampleData.buildMockBenefitRiskAnalysis();
 		d_pm = new BenefitRiskPresentation(analysis, d_pmf);
+		d_eventHasFired = false;
 	}
 	
 	@Test
-	public void testGetAnalysesPMList() {
-		List<PresentationModel<MetaAnalysis>> expected = new ArrayList<PresentationModel<MetaAnalysis>>();
-		for (MetaAnalysis ma : d_pm.getBean().getMetaAnalyses())
-			expected.add(d_pmf.getModel(ma));
-		assertAllAndOnly(expected, d_pm.getAnalysesPMList());
+	public void testGetAnalysesModel() {
+		assertAllAndOnly(d_pm.getBean().getMetaAnalyses(), d_pm.getAnalysesModel().getValue());
 	}
-
 }

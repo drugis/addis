@@ -42,6 +42,7 @@ import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
 import org.drugis.addis.gui.components.EnhancedTable;
+import org.drugis.addis.gui.components.EntitiesTablePanel;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.BenefitRiskPresentation;
@@ -290,8 +291,7 @@ public class BenefitRiskView implements ViewBuilder {
 	
 	private JComponent buildAnalysesPart() {	
 		String[] formatter = {"name","type","indication","outcomeMeasure","includedDrugs","includedStudies","sampleSize"};
-		return EntitiesNodeView.build(Arrays.asList(formatter),
-				d_pm.getAnalysesPMList(), d_main, null).buildPanel();
+		return new EntitiesTablePanel(Arrays.asList(formatter), d_pm.getAnalysesModel(), d_main, d_pm.getFactory());
 	}
 	
 	private JComponent buildMeasurementsPart() {
