@@ -77,6 +77,7 @@ import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.wizard.SelectFromFiniteListWizardStep;
+import org.drugis.addis.imports.PubMedIDRetriever;
 import org.drugis.addis.presentation.DosePresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.wizard.CompleteListener;
@@ -543,9 +544,12 @@ public class AddStudyWizard implements ViewBuilder{
 	
 	@SuppressWarnings("serial")
 	public class EnterCharacteristicsWizardStep extends PanelWizardStep{
-		
+		JPanel d_me = this;
 		private PanelBuilder d_builder;
 		private JScrollPane d_scrollPane;
+		private JTextField d_PubmedIDField;
+		private JButton d_PubmedImportButton;
+		private NotEmptyValidator d_validator;
 
 		private Set<BasicStudyCharacteristic> excludedChars = new HashSet<BasicStudyCharacteristic>();		
 		
@@ -556,19 +560,23 @@ public class AddStudyWizard implements ViewBuilder{
 			excludedChars.add(BasicStudyCharacteristic.TITLE);
 			excludedChars.add(BasicStudyCharacteristic.CREATION_DATE);
 			excludedChars.add(BasicStudyCharacteristic.SOURCE);
+			excludedChars.add(BasicStudyCharacteristic.PUBMED);
 			if (d_pm.isEditing())
 				setComplete(true);
 		}
 		
 		@Override
 		public void prepare() {
-			 if (d_scrollPane != null)
+			d_validator = new NotEmptyValidator();
+			d_validator.addValueChangeListener(new CompleteListener(this));
+			
+			if (d_scrollPane != null)
 				 remove(d_scrollPane);
 			 
-			 setComplete(true); // Don't require fields to be filled
+			setComplete(true); // Don't require fields to be filled
 			 
-			 buildWizardStep();
-			 repaint(); 
+			buildWizardStep();
+			repaint(); 
 		}
 
 		private void buildWizardStep() {
@@ -580,7 +588,10 @@ public class AddStudyWizard implements ViewBuilder{
 			d_builder.setDefaultDialogBorder();
 			CellConstraints cc = new CellConstraints();
 			
-			buildCharacteristicsPart(3, d_builder, cc, 1, layout);
+			int endRow = buildCharacteristicsPart(3, d_builder, cc, 1, layout);
+			
+			//creating pubmed stuff
+			createPubmedIDTextFieldAndButton(3, d_builder, cc, endRow, layout);
 			
 			JPanel panel = d_builder.getPanel();
 			this.setLayout(new BorderLayout());
@@ -590,6 +601,38 @@ public class AddStudyWizard implements ViewBuilder{
 			add(d_scrollPane, BorderLayout.CENTER);
 		}
 		
+		private void createPubmedIDTextFieldAndButton(int fullWidth, PanelBuilder builder, CellConstraints cc, int row, FormLayout layout) {
+			// add Pubmed ID textbox
+			builder.addLabel("PubmedID:",cc.xy(1, row/*, "right, c"*/));
+			d_PubmedIDField = BasicComponentFactory.createTextField(d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED), false);
+			d_PubmedIDField.setColumns(30);
+			d_validator.add(d_PubmedIDField);
+			d_builder.add(d_PubmedIDField, cc.xy(3, row));
+			
+			// add import button
+			d_PubmedImportButton = GUIFactory.createIconButton(FileNames.ICON_IMPORT,
+					"Click here to retrieve PubMed ID from ncbi.nlm.nih.gov");
+			d_PubmedImportButton.setEnabled(true);
+			d_PubmedImportButton.addActionListener(new AbstractAction() {
+				public void actionPerformed(ActionEvent arg0) {
+					String tmpStudyID = "";
+					tmpStudyID = d_pm.getIdModel().getValue().toString();
+					if(tmpStudyID.isEmpty()) {
+						JOptionPane.showMessageDialog(d_me, "No Study ID");
+					}
+					else{
+						try {
+							d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED).setValue(new PubMedIDRetriever().importPubMedID(tmpStudyID));
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(d_me, "Couldn't retrieve PubMed ID ...", "Warning", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				}});
+			d_builder.add(d_PubmedImportButton, cc.xy(5, row));
+
+		}
+		
+		
 		private int buildCharacteristicsPart(int fullWidth, PanelBuilder builder, CellConstraints cc, int row, FormLayout layout) {
 			
 			for (BasicStudyCharacteristic c : BasicStudyCharacteristic.values()) {
@@ -597,7 +640,7 @@ public class AddStudyWizard implements ViewBuilder{
 					// add characteristic field
 					builder.addLabel(c.getDescription() + ":", cc.xy(1, row/*, "right, c"*/));
 					builder.add(createCharacteristicComponent(c), cc.xyw(3, row,fullWidth));
-					
+															
 					// add note field
 					row = AuxComponentFactory.addNoteField(builder, cc, row, 3, 1, layout, d_pm.getCharacteristicNoteModel(c));
 
@@ -625,7 +668,8 @@ public class AddStudyWizard implements ViewBuilder{
 				} else if (SmallText.class.isAssignableFrom(c.getValueType())) {
 					ValueModel model = d_pm.getCharacteristicModel(c);
 					component = BasicComponentFactory.createTextField(model, true);
-				} else {
+				} // 
+				else {
 					if (c.getValueType().isEnum()) {
 						try {
 
@@ -648,7 +692,6 @@ public class AddStudyWizard implements ViewBuilder{
 			ComboBoxPopupOnFocusListener.add(component);
 			return component;
 		}
-		
 	}
 	
 	
