@@ -617,7 +617,7 @@ public class AddStudyWizard implements ViewBuilder{
 				public void actionPerformed(ActionEvent arg0) {
 					String tmpStudyID = "";
 					tmpStudyID = d_pm.getIdModel().getValue().toString();
-					if(tmpStudyID.isEmpty()) {
+					if(tmpStudyID.length() == 0) {
 						JOptionPane.showMessageDialog(d_me, "No Study ID");
 					}
 					else{
