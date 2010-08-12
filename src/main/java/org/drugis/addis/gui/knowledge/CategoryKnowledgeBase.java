@@ -6,7 +6,8 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.gui.CategoryKnowledge;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.builder.EntitiesNodeView;
+import org.drugis.addis.gui.components.EntitiesTablePanel;
+import org.drugis.addis.gui.components.PanelViewBuilder;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.gui.ViewBuilder;
@@ -63,10 +64,8 @@ public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 	
 	private ViewBuilder buildEntityTable(ListHolder<? extends Entity> entities,
 			String[] formatter, String title, PresentationModelFactory pmf, Main main) {
-	
-		EntitiesNodeView view = new EntitiesNodeView(
-				Arrays.asList(formatter), entities, main, title, pmf);
-		return view;
+		return new PanelViewBuilder(new EntitiesTablePanel(Arrays.asList(formatter), 
+														   entities, main, pmf, getPlural()));
 	}
 	
 	public ViewBuilder getCategoryViewBuilder(Main main, Domain domain) {

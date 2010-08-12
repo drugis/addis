@@ -23,25 +23,16 @@ package org.drugis.addis.presentation;
 
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.jgoodies.binding.PresentationModel;
 
 public class BenefitRiskPMTest {
 
 	private PresentationModelFactory d_pmf;
 	private BenefitRiskPresentation d_pm;
-	private boolean d_eventHasFired;
 	private DomainImpl d_domain;
 
 	@Before
@@ -50,7 +41,6 @@ public class BenefitRiskPMTest {
 		d_pmf = new PresentationModelFactory(d_domain);
 		BenefitRiskAnalysis analysis = ExampleData.buildMockBenefitRiskAnalysis();
 		d_pm = new BenefitRiskPresentation(analysis, d_pmf);
-		d_eventHasFired = false;
 	}
 	
 	@Test

@@ -291,7 +291,7 @@ public class BenefitRiskView implements ViewBuilder {
 	
 	private JComponent buildAnalysesPart() {	
 		String[] formatter = {"name","type","indication","outcomeMeasure","includedDrugs","includedStudies","sampleSize"};
-		return new EntitiesTablePanel(Arrays.asList(formatter), d_pm.getAnalysesModel(), d_main, d_pm.getFactory());
+		return new EntitiesTablePanel(Arrays.asList(formatter), d_pm.getAnalysesModel(), d_main, d_pm.getFactory(), null);
 	}
 	
 	private JComponent buildMeasurementsPart() {

@@ -35,8 +35,8 @@ import org.drugis.addis.presentation.PresentationModelFactory;
 public class EntitiesTablePanel extends TablePanel {
 	private final ListHolder<? extends Entity> d_entities;
 
-	public EntitiesTablePanel(List<String> formatter, ListHolder<? extends Entity> entities, final Main parent, PresentationModelFactory pmf) {
-		super(new EnhancedTable(new EntityTableModel(entities, formatter, pmf)));
+	public EntitiesTablePanel(List<String> formatter, ListHolder<? extends Entity> entities, final Main parent, PresentationModelFactory pmf, String title) {
+		super(new EnhancedTable(new EntityTableModel(entities, formatter, pmf, title)));
 		d_entities = entities;
 				
 		if (parent != null)
