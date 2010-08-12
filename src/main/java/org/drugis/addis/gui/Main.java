@@ -424,7 +424,7 @@ public class Main extends JFrame {
 	}
 
 	private JMenuItem createLoadItem() {
-		JMenuItem openItem = new JMenuItem("Load XML", ImageLoader
+		JMenuItem openItem = new JMenuItem("Load", ImageLoader
 				.getIcon(FileNames.ICON_OPENFILE));
 		openItem.setMnemonic('l');
 		final Main me = this;
@@ -450,7 +450,7 @@ public class Main extends JFrame {
 	}
 
 	private JMenuItem createSaveItem() {
-		d_saveMenuItem = new JMenuItem("Save XML", ImageLoader
+		d_saveMenuItem = new JMenuItem("Save", ImageLoader
 				.getIcon(FileNames.ICON_SAVEFILE));
 		d_saveMenuItem.setMnemonic('s');
 		
@@ -473,12 +473,14 @@ public class Main extends JFrame {
 	}
 	
 	private JMenuItem createSaveAsItem() {
-		JMenuItem saveItem = new JMenuItem("Save as XML...", ImageLoader
+		JMenuItem saveItem = new JMenuItem("Save As", ImageLoader
 				.getIcon(FileNames.ICON_SAVEFILE));
 		
 		// attach to ctrl-shift-s
 		saveItem.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
+		//align "Ctrl+Shift+S" text in the menu to the right
+		saveItem.setAlignmentX(LEFT_ALIGNMENT);
 		
 		saveItem.setMnemonic('a');
 		final Main me = this;
