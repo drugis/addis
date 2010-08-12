@@ -41,6 +41,11 @@ public interface Domain {
 	 */
 	public SortedSet<? extends Entity> getCategoryContents(EntityCategory node);
 	
+	/** 
+	 * Get a ValueModel to the collection of entities that belong to a category.
+	 */
+	public ListHolder<? extends Entity> getCategoryContentsModel(EntityCategory node);
+	
 	/**
 	 * Get the category an entity belongs to.
 	 * @param entity The entity to categorize.

@@ -44,6 +44,7 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.presentation.AbstractListHolder;
+import org.drugis.addis.presentation.DefaultListHolder;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.util.XMLHelper;
 
@@ -570,6 +571,17 @@ public class DomainImpl implements Domain {
 		} catch (IntrospectionException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public ListHolder<? extends Entity> getCategoryContentsModel(
+			final EntityCategory node) {
+		final DefaultListHolder<? extends Entity> listHolder = new DefaultListHolder<Entity>(new ArrayList<Entity>(getCategoryContents(node)));
+		addListener(new DomainListener() {
+			public void domainChanged(DomainEvent evt) {
+				listHolder.setValue(new ArrayList<Entity>(getCategoryContents(node)));
+			}
+		});
+		return listHolder;
 	}
 
 	public SortedSet<NetworkMetaAnalysis> getNetworkMetaAnalyses() {
