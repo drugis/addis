@@ -217,15 +217,6 @@ public class AddStudyWizardPresentation {
 		migrateImportToNew(studyID);
 	}
 	
-	/*
-	public void importPubMedID() throws MalformedURLException, IOException{
-		Object PubMedID = getIdModel().getValue();
-		String url = "http://clinicaltrials.gov/show/"+PubMedID+"?displayxml=true";
-		d_importedPubMedPM = (StudyPresentation) new StudyPresentation(ClinicaltrialsImporter.getClinicaltrialsData(url),d_pmf);
-		d_newPubMedPM = (StudyPresentation) new StudyPresentation(new Study("", new Indication(0l,"")),d_pmf);
-		migrateImportToNew(PubMedID);
-	}
-	*/
 	public void setNewStudy(Study study) {
 		d_newStudyPM = new StudyPresentation(study, d_pmf);
 		d_endpointSelect.clear();

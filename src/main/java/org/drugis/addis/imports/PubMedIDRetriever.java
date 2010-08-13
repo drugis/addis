@@ -1,7 +1,12 @@
 package org.drugis.addis.imports;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -11,7 +16,7 @@ import org.w3c.dom.NodeList;
 
 public class PubMedIDRetriever {
 
-	public Document parse (InputStream is) {
+	private Document parse (InputStream is) {
         Document ret = null;
         DocumentBuilderFactory domFactory;
         DocumentBuilder builder;
@@ -36,38 +41,43 @@ public class PubMedIDRetriever {
 	}
 	*/
 	
-	public String importPubMedID(String StudyID) throws Exception {
-		String PubMedID = "";
+	public List<String> importPubMedID(String StudyID) throws MalformedURLException, IOException{
+		List<String> PubMedID = new ArrayList<String>(1);
 		String urlOne = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&retmax=0&usehistory=y&term="+StudyID+"[Secondary%20Source%20ID]";
 		String queryKey = "";
 		String webEnv = "";
 		
-		URL XmlUrlOne = null;
-		XmlUrlOne = new URL(urlOne);
-					
-		InputStream inOne = XmlUrlOne.openStream();
+		// first url
+		
+		URLConnection XmlUrlOne = new URL(urlOne).openConnection();
+		XmlUrlOne.setConnectTimeout(10000);
+		XmlUrlOne.setReadTimeout(15000);
+		InputStream inOne = XmlUrlOne.getInputStream();
+		
+		
 		Document docOne = parse(inOne);
-
-		// second url
+		docOne.getDocumentElement().normalize();
 		
 		NodeList QK = docOne.getElementsByTagName("QueryKey");
 		queryKey = QK.item(0).getFirstChild().getNodeValue();
 		NodeList WE = docOne.getElementsByTagName("WebEnv");
 		webEnv = WE.item(0).getFirstChild().getNodeValue();
 		
+		// second url
+		
 		String urlTwo = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=xml&query_key="+queryKey+"&WebEnv="+webEnv+"&retstart=0&retmax=10%22";
-		URL XmlUrlTwo = null;
-		XmlUrlTwo = new URL(urlTwo);
+		URLConnection XmlUrlTwo = new URL(urlTwo).openConnection();
+		XmlUrlTwo.setConnectTimeout(10000);
+		XmlUrlTwo.setReadTimeout(15000);
+		InputStream inTwo = XmlUrlTwo.getInputStream();
 		
-		
-		InputStream inTwo = XmlUrlTwo.openStream();
 		Document docTwo = parse(inTwo);
-		
 		docTwo.getDocumentElement().normalize();
 		
 		NodeList PID = docTwo.getElementsByTagName("Id");
 		
-		PubMedID = PID.item(0).getFirstChild().getNodeValue();
+		for(int i=0; i<PID.getLength(); i++)
+			PubMedID.add(PID.item(i).getFirstChild().getNodeValue());
 		
 		return PubMedID;
 	}

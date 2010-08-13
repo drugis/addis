@@ -604,7 +604,7 @@ public class AddStudyWizard implements ViewBuilder{
 		private void createPubmedIDTextFieldAndButton(int fullWidth, PanelBuilder builder, CellConstraints cc, int row, FormLayout layout) {
 			// add Pubmed ID textbox
 			builder.addLabel("PubmedID:",cc.xy(1, row/*, "right, c"*/));
-			d_PubmedIDField = BasicComponentFactory.createTextField(d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED), false);
+			d_PubmedIDField = BasicComponentFactory.createTextField(d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED), false); //
 			d_PubmedIDField.setColumns(30);
 			d_validator.add(d_PubmedIDField);
 			d_builder.add(d_PubmedIDField, cc.xy(3, row));
@@ -622,9 +622,14 @@ public class AddStudyWizard implements ViewBuilder{
 					}
 					else{
 						try {
-							d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED).setValue(new PubMedIDRetriever().importPubMedID(tmpStudyID));
-						} catch (Exception e) {
-							JOptionPane.showMessageDialog(d_me, "Couldn't retrieve PubMed ID ...", "Warning", JOptionPane.ERROR_MESSAGE);
+							d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED).setValue(new PubMedIDRetriever().importPubMedID(tmpStudyID).get(0));
+							
+						} catch (MalformedURLException e) {
+							JOptionPane.showMessageDialog(d_me, "Couldn't retrieve PubMed ID ...", "Connection problem", JOptionPane.ERROR_MESSAGE);
+						} catch (IOException e) {
+							JOptionPane.showMessageDialog(d_me, "Couldn't read PubMed ID ...", "File format problem", JOptionPane.ERROR_MESSAGE);
+						} catch (IndexOutOfBoundsException e) {
+							JOptionPane.showMessageDialog(d_me, "The Study ID ("+tmpStudyID+")\nhas no PubMed ID associated", "Warning", JOptionPane.ERROR_MESSAGE);
 						}
 					}
 				}});
