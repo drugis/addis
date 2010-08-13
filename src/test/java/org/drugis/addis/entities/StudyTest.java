@@ -69,7 +69,7 @@ public class StudyTest {
 	}
 	
 	@Test
-	public void testAddOutcomeMeasure() {
+	public void testAddEndpoint() {
 		JUnitUtil.testAdder(new Study("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Variable.Type.RATE));
 	}
 	
