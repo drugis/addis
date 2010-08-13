@@ -1,8 +1,6 @@
 package org.drugis.addis.imports;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -15,71 +13,68 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 public class PubMedIDRetriever {
+	private static final String PUBMED_API = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
 
-	private Document parse (InputStream is) {
-        Document ret = null;
-        DocumentBuilderFactory domFactory;
-        DocumentBuilder builder;
-
-        try {
-            domFactory = DocumentBuilderFactory.newInstance();
-            domFactory.setValidating(false);
-            domFactory.setNamespaceAware(false);
-            builder = domFactory.newDocumentBuilder();
-
-            ret = builder.parse(is);
-        }
-        catch (Exception ex) {
-            System.err.println("unable to load XML: " + ex);
-        }
-        return ret;
-    }
-	
-	/*
-	public static void main(String [] args) throws Exception{
-		System.out.println(new PubMedIDRetriever().importPubMedID("NCT00000400"));
-	}
-	*/
-	
-	public List<String> importPubMedID(String StudyID) throws MalformedURLException, IOException{
-		List<String> PubMedID = new ArrayList<String>(1);
-		String urlOne = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&retmax=0&usehistory=y&term="+StudyID+"[Secondary%20Source%20ID]";
-		String queryKey = "";
-		String webEnv = "";
+	public List<String> importPubMedID(String StudyID) {
+		// First returned document is a key into the results.
+		InputStream inOne = openUrl(PUBMED_API + "esearch.fcgi?db=pubmed&retmax=0&usehistory=y&term="+StudyID+"[Secondary%20Source%20ID]");
+		String resultsUrl = getResultsUrl(inOne);
 		
-		// first url
-		
-		URLConnection XmlUrlOne = new URL(urlOne).openConnection();
-		XmlUrlOne.setConnectTimeout(10000);
-		XmlUrlOne.setReadTimeout(15000);
-		InputStream inOne = XmlUrlOne.getInputStream();
-		
-		
-		Document docOne = parse(inOne);
-		docOne.getDocumentElement().normalize();
-		
-		NodeList QK = docOne.getElementsByTagName("QueryKey");
-		queryKey = QK.item(0).getFirstChild().getNodeValue();
-		NodeList WE = docOne.getElementsByTagName("WebEnv");
-		webEnv = WE.item(0).getFirstChild().getNodeValue();
-		
-		// second url
-		
-		String urlTwo = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=xml&query_key="+queryKey+"&WebEnv="+webEnv+"&retstart=0&retmax=10%22";
-		URLConnection XmlUrlTwo = new URL(urlTwo).openConnection();
-		XmlUrlTwo.setConnectTimeout(10000);
-		XmlUrlTwo.setReadTimeout(15000);
-		InputStream inTwo = XmlUrlTwo.getInputStream();
-		
+		// Second returned document contains results.
+		InputStream inTwo = openUrl(PUBMED_API + resultsUrl);
 		Document docTwo = parse(inTwo);
-		docTwo.getDocumentElement().normalize();
-		
+		return getIdList(docTwo);
+	}
+	
+	private Document parse (InputStream is) {
+		try {
+			DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+			domFactory.setValidating(false);
+			domFactory.setNamespaceAware(false);
+			DocumentBuilder builder = domFactory.newDocumentBuilder();
+			
+			Document ret = builder.parse(is);
+	
+			return ret;
+		} catch (Exception e) {
+			throw new RuntimeException("Error parsing PubMed response", e);
+		}
+    }
+
+	private String getResultsUrl(InputStream inOne) {
+		Document docOne = parse(inOne);
+		String queryKey = getTagValue(docOne, "QueryKey");
+		String webEnv = getTagValue(docOne, "WebEnv");
+		String resultsUrl = "esummary.fcgi?db=pubmed&retmode=xml&query_key="+queryKey+"&WebEnv="+webEnv+"&retstart=0";
+		return resultsUrl;
+	}
+
+	private String getTagValue(Document docOne, String tagName) {
+		NodeList QK = docOne.getElementsByTagName(tagName);
+		return QK.item(0).getFirstChild().getNodeValue();
+	}
+
+	private List<String> getIdList(Document docTwo) {	
 		NodeList PID = docTwo.getElementsByTagName("Id");
 		
-		for(int i=0; i<PID.getLength(); i++)
+		List<String> PubMedID = new ArrayList<String>();
+		for (int i = 0; i < PID.getLength(); i++) {
 			PubMedID.add(PID.item(i).getFirstChild().getNodeValue());
+		}
 		
 		return PubMedID;
+	}
+
+	private InputStream openUrl(String urlOne) {
+		try { 
+			URLConnection XmlUrlOne = new URL(urlOne).openConnection();
+			XmlUrlOne.setConnectTimeout(1000);
+			XmlUrlOne.setReadTimeout(1500);
+			InputStream inOne = XmlUrlOne.getInputStream();
+			return inOne;
+		} catch (Exception e) {
+			throw new RuntimeException("Could not open PubMed connection", e);
+		}
 	}
 
 }

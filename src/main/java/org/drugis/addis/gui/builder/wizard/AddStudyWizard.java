@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -622,14 +623,15 @@ public class AddStudyWizard implements ViewBuilder{
 					}
 					else{
 						try {
-							d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED).setValue(new PubMedIDRetriever().importPubMedID(tmpStudyID).get(0));
-							
-						} catch (MalformedURLException e) {
-							JOptionPane.showMessageDialog(d_me, "Couldn't retrieve PubMed ID ...", "Connection problem", JOptionPane.ERROR_MESSAGE);
-						} catch (IOException e) {
-							JOptionPane.showMessageDialog(d_me, "Couldn't read PubMed ID ...", "File format problem", JOptionPane.ERROR_MESSAGE);
-						} catch (IndexOutOfBoundsException e) {
-							JOptionPane.showMessageDialog(d_me, "The Study ID ("+tmpStudyID+")\nhas no PubMed ID associated", "Warning", JOptionPane.ERROR_MESSAGE);
+							List<String> importPubMedID = new PubMedIDRetriever().importPubMedID(tmpStudyID);
+							if (!importPubMedID.isEmpty()) {
+								d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED).setValue(importPubMedID.get(0));
+							} else {
+								JOptionPane.showMessageDialog(d_me, "The Study ID ("+tmpStudyID+")\nhas no PubMed ID associated", "Warning", JOptionPane.WARNING_MESSAGE);
+							}
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(d_me, "Couldn't retrieve PubMed ID ...", e.getMessage(), JOptionPane.ERROR_MESSAGE);
+							e.printStackTrace();
 						}
 					}
 				}});
