@@ -22,11 +22,8 @@
 package org.drugis.addis.entities;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.util.EnumXMLFormat;
 
@@ -108,64 +105,6 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 		public String toString() {
 			return d_title;
 		}		
-	}
-	
-	public static class PubMedId {
-		private String d_id;
-
-		private PubMedId() {
-			d_id = null;
-		}
-		
-		public PubMedId(String id) {
-			d_id = id;
-		}
-
-		private String getId() {
-			return d_id;
-		}
-		
-		public String toString() {
-			return getId();
-		}
-		
-		public boolean equals(Object o) {
-			if (o instanceof PubMedId) {
-				return ((PubMedId)o).getId().equals(this.getId());
-			}
-			return false;
-		}
-		
-		protected static final XMLFormat<PubMedId> XML = new XMLFormat<PubMedId>(PubMedId.class) {
-			@Override
-			public PubMedId newInstance(java.lang.Class<PubMedId> cls, XMLFormat.InputElement ie) throws XMLStreamException {
-				return new PubMedId();
-			};
-
-			@Override
-			public void read(javolution.xml.XMLFormat.InputElement ie,
-					PubMedId obj) throws XMLStreamException {
-				obj.d_id = ie.getAttribute("value").toString();
-			}
-
-			@Override
-			public void write(PubMedId obj,
-					javolution.xml.XMLFormat.OutputElement oe)
-					throws XMLStreamException {
-				oe.setAttribute("value", obj.getId());				
-			}
-	
-			@Override
-			public boolean isReferenceable() {
-				return false;
-			}
-		};
-	}
-	
-	@SuppressWarnings("serial")
-	public static class PubMedIdList extends ArrayList<PubMedId> {
-		public PubMedIdList() {
-		}
 	}
 	
 	BasicStudyCharacteristic(String name, Class<?> type, boolean defaultVisible) {

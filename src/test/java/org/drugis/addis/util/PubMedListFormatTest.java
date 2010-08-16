@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drugis.addis.entities.BasicStudyCharacteristic.PubMedId;
+import org.drugis.addis.entities.PubMedId;
 import org.junit.Test;
 
 public class PubMedListFormatTest {

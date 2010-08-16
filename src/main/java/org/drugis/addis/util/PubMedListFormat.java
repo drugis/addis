@@ -8,8 +8,8 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drugis.addis.entities.BasicStudyCharacteristic.PubMedId;
-import org.drugis.addis.entities.BasicStudyCharacteristic.PubMedIdList;
+import org.drugis.addis.entities.PubMedId;
+import org.drugis.addis.entities.PubMedIdList;
 
 @SuppressWarnings("serial")
 public class PubMedListFormat extends Format {

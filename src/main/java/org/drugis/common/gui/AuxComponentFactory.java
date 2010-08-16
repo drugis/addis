@@ -22,7 +22,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.NumberFormatter;
 import javax.swing.text.StyledDocument;
 
-import org.drugis.addis.entities.BasicStudyCharacteristic.PubMedIdList;
+import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.MeasurementTable;

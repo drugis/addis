@@ -51,6 +51,8 @@ import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
+import org.drugis.addis.entities.PubMedId;
+import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
@@ -112,8 +114,8 @@ public class AddisBinding extends XMLBinding {
 		setAlias(BasicStudyCharacteristic.Status.class, "status");
 		setAlias(BasicStudyCharacteristic.Allocation.class, "allocation");
 		setAlias(BasicStudyCharacteristic.Blinding.class, "blinding");
-		setAlias(BasicStudyCharacteristic.PubMedIdList.class, "pubMedReferences");
-		setAlias(BasicStudyCharacteristic.PubMedId.class, "pubMedId");
+		setAlias(PubMedIdList.class, "pubMedReferences");
+		setAlias(PubMedId.class, "pubMedId");
 		setAlias(CharacteristicsMap.class, "characteristics");
 		
 		setAlias(BasicContinuousMeasurement.class, "continuousMeasurement");

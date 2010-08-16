@@ -41,6 +41,8 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
+import org.drugis.addis.entities.PubMedId;
+import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.UnknownDose;
@@ -156,6 +158,17 @@ public class XMLLoadSaveTest {
 //		System.out.println("\n"+xml+"\n");
 		CharacteristicsMap parsedMap = (CharacteristicsMap)XMLHelper.fromXml(xml);
 		AssertEntityEquals.assertEntityEquals(expectedMap, parsedMap);
+	}
+	
+	@Test
+	public void doPubMedIdList() throws XMLStreamException {
+		PubMedIdList expectedList = new PubMedIdList();
+		expectedList.add(new PubMedId("12345"));
+		expectedList.add(new PubMedId("5006"));
+		String xml = XMLHelper.toXml(expectedList, PubMedIdList.class);
+//		System.out.println("\n"+xml+"\n");
+		PubMedIdList parsedList = (PubMedIdList)XMLHelper.fromXml(xml);
+		assertEquals(expectedList, parsedList);
 	}
 	
 	@Test
