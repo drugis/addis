@@ -8,7 +8,8 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.BasicStudyCharacteristic.PubMedId;
+import org.drugis.addis.entities.BasicStudyCharacteristic.PubmedIdList;
 
 @SuppressWarnings("serial")
 public class PubMedListFormat extends Format {
@@ -35,7 +36,7 @@ public class PubMedListFormat extends Format {
 	@Override
 	public Object parseObject(String source, ParsePosition pos) {
 		pos.setIndex(source.length() + 1);
-		List<String> list = new BasicStudyCharacteristic.PubmedIdList();
+		PubmedIdList list = new PubmedIdList();
 		
 		StringTokenizer tokenizer = new StringTokenizer(source, ",");
 		while (tokenizer.hasMoreTokens()) {
@@ -45,12 +46,12 @@ public class PubMedListFormat extends Format {
 		return list;
 	}
 
-	private void validatePubMedID(String source, List<String> list) {
+	private void validatePubMedID(String source, PubmedIdList list) {
 		Matcher removeNonDigits = s_nonDigit.matcher(source);
 		Matcher removeZeros = s_leadingZeros.matcher(removeNonDigits.replaceAll(""));
 		String processed = removeZeros.replaceFirst("");
 		if(processed.length() != 0) {
-			list.add(processed);
+			list.add(new PubMedId(processed));
 		}
 	}
 

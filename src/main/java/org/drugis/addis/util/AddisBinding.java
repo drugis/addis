@@ -112,6 +112,8 @@ public class AddisBinding extends XMLBinding {
 		setAlias(BasicStudyCharacteristic.Status.class, "status");
 		setAlias(BasicStudyCharacteristic.Allocation.class, "allocation");
 		setAlias(BasicStudyCharacteristic.Blinding.class, "blinding");
+		setAlias(BasicStudyCharacteristic.PubmedIdList.class, "pubMedReferences");
+		setAlias(BasicStudyCharacteristic.PubMedId.class, "pubMedId");
 		setAlias(CharacteristicsMap.class, "characteristics");
 		
 		setAlias(BasicContinuousMeasurement.class, "continuousMeasurement");

@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.text.NumberFormat;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -83,9 +82,9 @@ public class AuxComponentFactory {
 			component = BasicComponentFactory.createLabel(model, new DayDateFormat());
 		} else if (valueType.equals(PubmedIdList.class)) {
 			component = new JPanel();
-			List<String> pubmedIds = (PubmedIdList)model.getValue();
+			PubmedIdList pubmedIds = (PubmedIdList)model.getValue();
 			for (int i = 0; i < pubmedIds.size(); i++) {
-				component.add(new LinkLabel(pubmedIds.get(i), "http://www.ncbi.nlm.nih.gov/pubmed/" + pubmedIds.get(i)));	
+				component.add(new LinkLabel(pubmedIds.get(i).toString(), "http://www.ncbi.nlm.nih.gov/pubmed/" + pubmedIds.get(i).toString()));	
 			}
 		} else {
 			component = BasicComponentFactory.createLabel(model, new OneWayObjectFormat());

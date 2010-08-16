@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drugis.addis.entities.BasicStudyCharacteristic.PubMedId;
 import org.junit.Test;
 
 public class PubMedListFormatTest {
@@ -23,20 +24,20 @@ public class PubMedListFormatTest {
 	}
 	
 	@Test
-	public void testFormatSingleEntry() {
+	public void testFormatSingleEntry() { 
 		String str1 = "12345";
-		assertEquals(str1, d_format.format(Collections.singletonList(str1)));
+		assertEquals(str1, d_format.format(Collections.singletonList(new PubMedId(str1))));
 		String str2 = "123456";
-		assertEquals(str2, d_format.format(Collections.singletonList(str2)));
+		assertEquals(str2, d_format.format(Collections.singletonList(new PubMedId(str2))));
 	}
 
 	@Test
 	public void testFormatMultipleEntry() {
 		String str1 = "123";
 		String str2 = "456";
-		List<String> lst = new ArrayList<String>();
-		lst.add(str1);
-		lst.add(str2);
+		List<PubMedId> lst = new ArrayList<PubMedId>();
+		lst.add(new PubMedId(str1));
+		lst.add(new PubMedId(str2));
 		assertEquals(str1 + ", " + str2, d_format.format(lst));
 	}
 
@@ -48,14 +49,14 @@ public class PubMedListFormatTest {
 	@Test
 	public void testParseSingleEntry() throws ParseException {
 		String str1 = "12345";
-		assertEquals(Collections.singletonList(str1), d_format.parseObject(str1));
+		assertEquals(Collections.singletonList(new PubMedId(str1)), d_format.parseObject(str1));
 	}
 	
 	@Test
 	public void testParseSingleEntryWithNonDigits() throws ParseException {
-		assertEquals(Collections.singletonList("12345"), d_format.parseObject("12345a"));
-		assertEquals(Collections.singletonList("12345"), d_format.parseObject("-1x23\n45a"));
-		assertEquals(Collections.singletonList("12345"), d_format.parseObject("0012345"));
+		assertEquals(Collections.singletonList(new PubMedId("12345")), d_format.parseObject("12345a"));
+		assertEquals(Collections.singletonList(new PubMedId("12345")), d_format.parseObject("-1x23\n45a"));
+		assertEquals(Collections.singletonList(new PubMedId("12345")), d_format.parseObject("0012345"));
 	}
 	
 	@Test
@@ -67,16 +68,16 @@ public class PubMedListFormatTest {
 	public void testParseMultipleEntries() throws ParseException {
 		String str1 = "123";
 		String str2 = "456";
-		List<String> lst = new ArrayList<String>();
-		lst.add(str1);
-		lst.add(str2);
+		List<PubMedId> lst = new ArrayList<PubMedId>();
+		lst.add(new PubMedId(str1));
+		lst.add(new PubMedId(str2));
 		assertEquals(lst, d_format.parseObject(str1 + ", " + str2));
 		assertEquals(lst, d_format.parseObject(str1 + "," + str2));
 	}
 	
 	@Test
 	public void testParseMultipleWithInvalidEntry() throws ParseException {
-		assertEquals(Collections.singletonList("12345"), d_format.parseObject("12345a, x"));
+		assertEquals(Collections.singletonList(new PubMedId("12345")), d_format.parseObject("12345a, x"));
 		assertEquals(Collections.emptyList(), d_format.parseObject("x, y"));
 	}
 }
