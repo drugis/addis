@@ -3,6 +3,9 @@
  */
 package org.drugis.addis.entities;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
@@ -31,9 +34,15 @@ public class PubMedId {
 		return false;
 	}
 	
+	private static final Pattern s_onlyDigits = Pattern.compile("^[1-9][0-9]*$");
+	
 	private void setId(String id) {
-		if (id == null || id.length() == 0) {
-			throw new IllegalArgumentException();
+		if (id == null || id.length() == 0) { // FIXME: more validation should be done
+			throw new IllegalArgumentException("PubMedId may not be null or empty.");
+		}
+		Matcher matcher = s_onlyDigits.matcher(id);
+		if (!matcher.matches()) {
+			throw new IllegalArgumentException("Only digits are valid in a PubMedId, and it may not start with 0.");
 		}
 		d_id = id;
 	}
