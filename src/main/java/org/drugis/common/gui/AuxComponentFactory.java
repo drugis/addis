@@ -22,7 +22,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.NumberFormatter;
 import javax.swing.text.StyledDocument;
 
-import org.drugis.addis.entities.BasicStudyCharacteristic.PubmedIdList;
+import org.drugis.addis.entities.BasicStudyCharacteristic.PubMedIdList;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.MeasurementTable;
@@ -80,9 +80,9 @@ public class AuxComponentFactory {
 			component = createTextArea(model,false);
 		} else if (valueType.equals(Date.class)) {
 			component = BasicComponentFactory.createLabel(model, new DayDateFormat());
-		} else if (valueType.equals(PubmedIdList.class)) {
+		} else if (valueType.equals(PubMedIdList.class)) {
 			component = new JPanel();
-			PubmedIdList pubmedIds = (PubmedIdList)model.getValue();
+			PubMedIdList pubmedIds = (PubMedIdList)model.getValue();
 			for (int i = 0; i < pubmedIds.size(); i++) {
 				component.add(new LinkLabel(pubmedIds.get(i).toString(), "http://www.ncbi.nlm.nih.gov/pubmed/" + pubmedIds.get(i).toString()));	
 			}

@@ -42,7 +42,7 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 	STATUS("Study status", Status.class, false),
 	INCLUSION("Inclusion criteria", String.class, false),
 	EXCLUSION("Exclusion criteria", String.class, false),
-	PUBMED("Pubmed ID", PubmedIdList.class, false),
+	PUBMED("Pubmed ID", PubMedIdList.class, false),
 	SOURCE("Source of the data", Source.class, false),
 	CREATION_DATE("Creation/extraction date", Date.class, false);
 
@@ -163,8 +163,8 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 	}
 	
 	@SuppressWarnings("serial")
-	public static class PubmedIdList extends ArrayList<PubMedId> {
-		public PubmedIdList() {
+	public static class PubMedIdList extends ArrayList<PubMedId> {
+		public PubMedIdList() {
 		}
 	}
 	

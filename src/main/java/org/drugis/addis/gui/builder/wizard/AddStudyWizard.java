@@ -69,7 +69,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
-import org.drugis.addis.entities.BasicStudyCharacteristic.PubmedIdList;
+import org.drugis.addis.entities.BasicStudyCharacteristic.PubMedIdList;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
@@ -508,7 +508,7 @@ public class AddStudyWizard implements ViewBuilder{
 					JDateChooser chooser = new JDateChooser();
 					PropertyConnector.connectAndUpdate(mvmodel, chooser, "date");
 					component = chooser;
-				} else if (PubmedIdList.class.isAssignableFrom(c.getValueType())) {
+				} else if (PubMedIdList.class.isAssignableFrom(c.getValueType())) {
 					ValueModel model = d_pm.getCharacteristicModel(c);
 					component = createPubMedIDComponent(model);
 				} else {
