@@ -69,7 +69,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
-import org.drugis.addis.entities.BasicStudyCharacteristic.SmallText;
+import org.drugis.addis.entities.BasicStudyCharacteristic.PubmedIdList;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
@@ -83,6 +83,7 @@ import org.drugis.addis.presentation.DosePresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.wizard.CompleteListener;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.OutcomeMeasurementsModel;
+import org.drugis.addis.util.PubMedListFormat;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
@@ -408,125 +409,6 @@ public class AddStudyWizard implements ViewBuilder{
 		}		
 	}
 	
-//	@SuppressWarnings("serial")
-//	public class ObsoleteSelectEndpointWizardStep extends PanelWizardStep{
-//		private class RemoveEndpointListener extends AbstractAction {
-//			int d_index;
-//			
-//			public RemoveEndpointListener(int index) {
-//				d_index = index;
-//			}
-//			
-//			public void actionPerformed(ActionEvent e) {
-//				d_pm.removeEndpoint(d_index);
-//				prepare();
-//			}	
-//		} 
-//		
-//		private class NewEndpointButtonListener implements ActionListener{
-//			int d_index;
-//
-//			public NewEndpointButtonListener(int index) {
-//				d_index = index;
-//			}
-//			
-//			public void actionPerformed(ActionEvent e) {
-//				d_main.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Endpoint.class),
-//						d_pm.getEndpointModel(d_index));
-//			}
-//		}
-//		
-//		private PanelBuilder d_builder;
-//		private NotEmptyValidator d_validator;
-//		private JScrollPane d_scrollPane;
-//	
-//		
-//		
-//		public SelectEndpointWizardStep(){
-//			super("Select Endpoints","Please select the appropriate endpoints. " +
-//					"All endpoints must be assigned a unique value, or removed from the study. " +
-//					"At least one endpoint must be selected.");
-//			this.setLayout(new BorderLayout());
-//			if (d_pm.isEditing())
-//				setComplete(true);
-//		}
-//		
-//		 @Override
-//		public void prepare() {
-//			 this.setVisible(false);
-// 			 d_validator = new NotEmptyValidator();
-//			 d_validator.addValueChangeListener(new CompleteListener(this));
-//			 
-//			 if (d_scrollPane != null)
-//				 remove(d_scrollPane);
-//			 
-//			 buildWizardStep();
-//			 this.setVisible(true);
-//			 repaint();
-//		 }
-//		 
-//		private void buildWizardStep() {
-//			FormLayout layout = new FormLayout(
-//					"center:pref, 3dlu, right:pref, 3dlu, fill:pref:grow, 3dlu, left:pref",
-//					"p, 3dlu, p"
-//					);	
-//			d_builder = new PanelBuilder(layout);
-//			d_builder.setDefaultDialogBorder();
-//			CellConstraints cc = new CellConstraints();
-//			
-//			int row = buildEndpointsPart(1, d_builder, cc, 1, layout);
-//			
-//			// add 'Add endpoint button' 
-//			JButton btn = new JButton("Add Endpoint");
-//			d_builder.add(btn, cc.xy(1, row+=2));
-//			btn.addActionListener(new AbstractAction() {
-//				
-//				public void actionPerformed(ActionEvent e) {
-//					d_pm.addEndpointModels(1);
-//					prepare();
-//				}
-//			});
-//		
-//			JPanel panel = d_builder.getPanel();
-//			d_scrollPane = new JScrollPane(panel);
-//			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-//		
-//			add(d_scrollPane, BorderLayout.CENTER);
-//		}
-//
-//		private int buildEndpointsPart(int fullWidth, PanelBuilder builder, CellConstraints cc, int row, FormLayout layout) {
-//			
-//			// For all the endpoints found in the imported study
-//			for(int i = 0; i < d_pm.getNumberEndpoints(); ++i){
-//				LayoutUtil.addRow(layout);
-//				row+=2;
-//				
-//				// add 'remove endpoint' button
-//				JButton btn = new JButton("Remove Endpoint");
-//				builder.add(btn, cc.xy(1, row));
-//				btn.addActionListener(new RemoveEndpointListener(i));
-//				
-//				// add label
-//				builder.addLabel("Endpoint: ", cc.xy(3, row));
-//				
-//				// Set the endoints from a list of options
-//				JComboBox endpoints = AuxComponentFactory.createBoundComboBox(d_pm.getEndpointListModel(), d_pm.getEndpointModel(i));
-//				d_validator.add(endpoints);
-//				builder.add(endpoints, cc.xy(5, row));
-//				
-//				// add 'add endpoint button' 
-//				btn = GUIFactory.createPlusButton("Add new endpoint");
-//				builder.add(btn, cc.xy(7, row));
-//				btn.addActionListener(new NewEndpointButtonListener(i));
-//				
-//				
-//				// Show the notes from the imported study
-//				row = AuxComponentFactory.addNoteField(builder, cc, row, 3, 3, layout, d_pm.getEndpointNoteModel(i));
-//			}
-//			return row;	
-//		}
-//	}
-	
 	@SuppressWarnings("serial")
 	public class SelectPopulationCharsWizardStep extends SelectFromFiniteListWizardStep<PopulationCharacteristic> {
 		public SelectPopulationCharsWizardStep() {
@@ -604,11 +486,14 @@ public class AddStudyWizard implements ViewBuilder{
 		
 		private void createPubmedIDTextFieldAndButton(int fullWidth, PanelBuilder builder, CellConstraints cc, int row, FormLayout layout) {
 			// add Pubmed ID textbox
-			builder.addLabel("PubmedID:",cc.xy(1, row/*, "right, c"*/));
-			d_PubmedIDField = BasicComponentFactory.createTextField(d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED), false); //
+			builder.addLabel("PubmedID(s):",cc.xy(1, row/*, "right, c"*/));
+			
+			d_PubmedIDField = (JTextField)createCharacteristicComponent(BasicStudyCharacteristic.PUBMED);							
 			d_PubmedIDField.setColumns(30);
+			d_PubmedIDField.setToolTipText("Please enter multiple PubMed IDs delimited by comma");
 			d_validator.add(d_PubmedIDField);
 			d_builder.add(d_PubmedIDField, cc.xy(3, row));
+			
 			
 			// add import button
 			d_PubmedImportButton = GUIFactory.createIconButton(FileNames.ICON_IMPORT,
@@ -625,7 +510,7 @@ public class AddStudyWizard implements ViewBuilder{
 						try {
 							List<String> importPubMedID = new PubMedIDRetriever().importPubMedID(tmpStudyID);
 							if (!importPubMedID.isEmpty()) {
-								d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED).setValue(importPubMedID.get(0));
+								d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED).setValue(importPubMedID);
 							} else {
 								JOptionPane.showMessageDialog(d_me, "The Study ID ("+tmpStudyID+")\nhas no PubMed ID associated", "Warning", JOptionPane.WARNING_MESSAGE);
 							}
@@ -638,7 +523,6 @@ public class AddStudyWizard implements ViewBuilder{
 			d_builder.add(d_PubmedImportButton, cc.xy(5, row));
 
 		}
-		
 		
 		private int buildCharacteristicsPart(int fullWidth, PanelBuilder builder, CellConstraints cc, int row, FormLayout layout) {
 			
@@ -672,9 +556,9 @@ public class AddStudyWizard implements ViewBuilder{
 					JDateChooser chooser = new JDateChooser();
 					PropertyConnector.connectAndUpdate(mvmodel, chooser, "date");
 					component = chooser;
-				} else if (SmallText.class.isAssignableFrom(c.getValueType())) {
+				} else if (PubmedIdList.class.isAssignableFrom(c.getValueType())) {
 					ValueModel model = d_pm.getCharacteristicModel(c);
-					component = BasicComponentFactory.createTextField(model, true);
+					component = BasicComponentFactory.createFormattedTextField(model, new PubMedListFormat());
 				} // 
 				else {
 					if (c.getValueType().isEnum()) {

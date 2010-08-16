@@ -97,7 +97,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public final static String PROPERTY_CHARACTERISTIC = "Characteristics";
 	public final static String PROPERTY_NOTE = "Note";
 	public final static String PROPERTY_INDICATION = "indication";
-
+	//public final static String PROPERTY_PUBMED = "Pubmed Id";
+	
 	private List<Arm> d_arms = new ArrayList<Arm>();
 	private String d_studyId;
 	private Map<MeasurementKey, Measurement> d_measurements = new HashMap<MeasurementKey, Measurement>();
@@ -107,8 +108,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	private Indication d_indication;
 	private Map<Object, Note> d_notes = new HashMap<Object, Note>();
-
-	public Study (){
+	//private List<String> d_pubmedList = new ArrayList<String>();
+	
+	public Study(){
 	}
 
 	@Override
