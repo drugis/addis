@@ -430,8 +430,6 @@ public class AddStudyWizard implements ViewBuilder{
 		JPanel d_me = this;
 		private PanelBuilder d_builder;
 		private JScrollPane d_scrollPane;
-		private JTextField d_PubmedIDField;
-		private JButton d_PubmedImportButton;
 		private NotEmptyValidator d_validator;
 
 		private Set<BasicStudyCharacteristic> excludedChars = new HashSet<BasicStudyCharacteristic>();		
@@ -443,7 +441,6 @@ public class AddStudyWizard implements ViewBuilder{
 			excludedChars.add(BasicStudyCharacteristic.TITLE);
 			excludedChars.add(BasicStudyCharacteristic.CREATION_DATE);
 			excludedChars.add(BasicStudyCharacteristic.SOURCE);
-			excludedChars.add(BasicStudyCharacteristic.PUBMED);
 			if (d_pm.isEditing())
 				setComplete(true);
 		}
@@ -471,10 +468,7 @@ public class AddStudyWizard implements ViewBuilder{
 			d_builder.setDefaultDialogBorder();
 			CellConstraints cc = new CellConstraints();
 			
-			int endRow = buildCharacteristicsPart(3, d_builder, cc, 1, layout);
-			
-			//creating pubmed stuff
-			createPubmedIDTextFieldAndButton(3, d_builder, cc, endRow, layout);
+			buildCharacteristicsPart(3, d_builder, cc, 1, layout);
 			
 			JPanel panel = d_builder.getPanel();
 			this.setLayout(new BorderLayout());
@@ -484,60 +478,18 @@ public class AddStudyWizard implements ViewBuilder{
 			add(d_scrollPane, BorderLayout.CENTER);
 		}
 		
-		private void createPubmedIDTextFieldAndButton(int fullWidth, PanelBuilder builder, CellConstraints cc, int row, FormLayout layout) {
-			// add Pubmed ID textbox
-			builder.addLabel("PubmedID(s):",cc.xy(1, row/*, "right, c"*/));
-			
-			d_PubmedIDField = (JTextField)createCharacteristicComponent(BasicStudyCharacteristic.PUBMED);							
-			d_PubmedIDField.setColumns(30);
-			d_PubmedIDField.setToolTipText("Please enter multiple PubMed IDs delimited by comma");
-			d_validator.add(d_PubmedIDField);
-			d_builder.add(d_PubmedIDField, cc.xy(3, row));
-			
-			
-			// add import button
-			d_PubmedImportButton = GUIFactory.createIconButton(FileNames.ICON_IMPORT,
-					"Click here to retrieve PubMed ID from ncbi.nlm.nih.gov");
-			d_PubmedImportButton.setEnabled(true);
-			d_PubmedImportButton.addActionListener(new AbstractAction() {
-				public void actionPerformed(ActionEvent arg0) {
-					String tmpStudyID = "";
-					tmpStudyID = d_pm.getIdModel().getValue().toString();
-					if(tmpStudyID.length() == 0) {
-						JOptionPane.showMessageDialog(d_me, "No Study ID");
-					}
-					else{
-						try {
-							List<String> importPubMedID = new PubMedIDRetriever().importPubMedID(tmpStudyID);
-							if (!importPubMedID.isEmpty()) {
-								d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED).setValue(importPubMedID);
-							} else {
-								JOptionPane.showMessageDialog(d_me, "The Study ID ("+tmpStudyID+")\nhas no PubMed ID associated", "Warning", JOptionPane.WARNING_MESSAGE);
-							}
-						} catch (Exception e) {
-							JOptionPane.showMessageDialog(d_me, "Couldn't retrieve PubMed ID ...", e.getMessage(), JOptionPane.ERROR_MESSAGE);
-							e.printStackTrace();
-						}
-					}
-				}});
-			d_builder.add(d_PubmedImportButton, cc.xy(5, row));
-
-		}
-		
 		private int buildCharacteristicsPart(int fullWidth, PanelBuilder builder, CellConstraints cc, int row, FormLayout layout) {
-			
 			for (BasicStudyCharacteristic c : BasicStudyCharacteristic.values()) {
 				if (!excludedChars.contains(c)) {
 					// add characteristic field
 					builder.addLabel(c.getDescription() + ":", cc.xy(1, row/*, "right, c"*/));
 					builder.add(createCharacteristicComponent(c), cc.xyw(3, row,fullWidth));
-															
+
 					// add note field
 					row = AuxComponentFactory.addNoteField(builder, cc, row, 3, 1, layout, d_pm.getCharacteristicNoteModel(c));
 
 					LayoutUtil.addRow(layout);
 					row += 2;
-
 				}
 			}
 			return row;
@@ -558,12 +510,10 @@ public class AddStudyWizard implements ViewBuilder{
 					component = chooser;
 				} else if (PubmedIdList.class.isAssignableFrom(c.getValueType())) {
 					ValueModel model = d_pm.getCharacteristicModel(c);
-					component = BasicComponentFactory.createFormattedTextField(model, new PubMedListFormat());
-				} // 
-				else {
+					component = createPubMedIDComponent(model);
+				} else {
 					if (c.getValueType().isEnum()) {
 						try {
-
 							component = createOptionsComboBox(c, c.getValueType().getEnumConstants());
 						} catch (Exception e) {
 							component = new JLabel("ILLEGAL CHARACTERISTIC ENUM TYPE");
@@ -575,6 +525,37 @@ public class AddStudyWizard implements ViewBuilder{
 			} 
 			
 			return component;
+		}
+
+		private JComponent createPubMedIDComponent(ValueModel model) {
+			JTextField inputField = BasicComponentFactory.createFormattedTextField(model, new PubMedListFormat());							
+			inputField.setColumns(30);
+			inputField.setToolTipText("You can enter multiple PubMed IDs delimited by comma");
+			
+			// add import button
+			JButton importButton = GUIFactory.createIconButton(FileNames.ICON_SEARCH,
+					"Search PubMed ID based on the trial ID");
+			importButton.addActionListener(new AbstractAction() {
+				public void actionPerformed(ActionEvent arg0) {
+					String studyID = d_pm.getIdModel().getValue().toString();
+					try {
+						List<String> importPubMedID = new PubMedIDRetriever().importPubMedID(studyID);
+						if (!importPubMedID.isEmpty()) {
+							d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED).setValue(importPubMedID);
+						} else {
+							JOptionPane.showMessageDialog(d_me, "The Study ID ("+studyID+")\nhas no PubMed ID associated", "Warning", JOptionPane.WARNING_MESSAGE);
+						}
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(d_me, "Couldn't retrieve PubMed ID ...", e.getMessage(), JOptionPane.ERROR_MESSAGE);
+						e.printStackTrace();
+					}
+				}
+			});
+
+			JPanel panel = new JPanel();
+			panel.add(inputField);
+			panel.add(importButton);
+			return panel;
 		}
 		
 		private <E> JComponent createOptionsComboBox(BasicStudyCharacteristic c, E[] options) {

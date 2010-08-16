@@ -49,4 +49,5 @@ public class FileNames {
 	public static final String ICON_PILLS = "handandpills.png";
 	public static final String ICON_TIP = "tip.gif";
 	public static final String ICON_WAITING = "loader.gif";
+	public static final String ICON_SEARCH = "search.gif";
 }

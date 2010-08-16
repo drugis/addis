@@ -82,13 +82,10 @@ public class AuxComponentFactory {
 		} else if (valueType.equals(Date.class)) {
 			component = BasicComponentFactory.createLabel(model, new DayDateFormat());
 		} else if (valueType.equals(PubmedIdList.class)) {
-			// FIXME: change to model paradigm
 			component = new JPanel();
-			
 			List<String> pubmedIds = (PubmedIdList)model.getValue();
-
-			for (int i=0; i<pubmedIds.size(); i++) {
-				component.add(new LinkLabel(pubmedIds.get(i).toString(), "http://www.ncbi.nlm.nih.gov/pubmed/" + pubmedIds.get(i).toString()));	
+			for (int i = 0; i < pubmedIds.size(); i++) {
+				component.add(new LinkLabel(pubmedIds.get(i), "http://www.ncbi.nlm.nih.gov/pubmed/" + pubmedIds.get(i)));	
 			}
 		} else {
 			component = BasicComponentFactory.createLabel(model, new OneWayObjectFormat());
