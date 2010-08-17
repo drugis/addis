@@ -1,5 +1,9 @@
 package org.drugis.addis.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -36,5 +40,17 @@ public class AtcParser {
 			}
 		}
 		return detailsList;
+	}
+	
+	public List<AtcDescription> parse(InputStream is) throws IOException {	
+		String inputLine;
+		List<AtcDescription> finalList = new ArrayList<AtcDescription>();
+		BufferedReader readCode = new BufferedReader(new InputStreamReader(is));
+		while ((inputLine = readCode.readLine()) != null) {
+			if(!findDrugDetails(inputLine).isEmpty()){
+				finalList.addAll(findDrugDetails(inputLine));
+			}
+		}
+		return finalList;
 	}
 }
