@@ -50,4 +50,9 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 		BenefitRiskPresentation model = (BenefitRiskPresentation) main.getPresentationModelFactory().getModel((BenefitRiskAnalysis) entity);
 		return new BenefitRiskView(model, main);
 	}
+	
+	@Override
+	public String getNewIconName() {
+		return FileNames.ICON_BENEFITRISK_NEW;
+	}
 }
