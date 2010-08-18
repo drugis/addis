@@ -82,7 +82,7 @@ public class AuxComponentFactory {
 			component = BasicComponentFactory.createLabel(model, new DayDateFormat());
 		} else if (valueType.equals(PubMedIdList.class)) {
 			component = new JPanel();
-			PubMedIdList pubmedIds = (PubMedIdList)model.getValue();
+			PubMedIdList pubmedIds = (PubMedIdList)model.getValue();			
 			for (int i = 0; i < pubmedIds.size(); i++) {
 				component.add(new LinkLabel(pubmedIds.get(i).toString(), "http://www.ncbi.nlm.nih.gov/pubmed/" + pubmedIds.get(i).toString()));	
 			}

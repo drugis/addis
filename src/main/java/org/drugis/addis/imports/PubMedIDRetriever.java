@@ -3,19 +3,19 @@ package org.drugis.addis.imports;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.drugis.addis.entities.PubMedId;
+import org.drugis.addis.entities.PubMedIdList;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 public class PubMedIDRetriever {
 	private static final String PUBMED_API = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
 
-	public List<String> importPubMedID(String StudyID) {
+	public PubMedIdList importPubMedID(String StudyID) {
 		// First returned document is a key into the results.
 		InputStream inOne = openUrl(PUBMED_API + "esearch.fcgi?db=pubmed&retmax=0&usehistory=y&term="+StudyID+"[Secondary%20Source%20ID]");
 		String resultsUrl = getResultsUrl(inOne);
@@ -54,12 +54,12 @@ public class PubMedIDRetriever {
 		return QK.item(0).getFirstChild().getNodeValue();
 	}
 
-	private List<String> getIdList(Document docTwo) {	
+	private PubMedIdList getIdList(Document docTwo) {	
 		NodeList PID = docTwo.getElementsByTagName("Id");
 		
-		List<String> PubMedID = new ArrayList<String>();
+		PubMedIdList PubMedID = new PubMedIdList();
 		for (int i = 0; i < PID.getLength(); i++) {
-			PubMedID.add(PID.item(i).getFirstChild().getNodeValue());
+			PubMedID.add(new PubMedId(PID.item(i).getFirstChild().getNodeValue()));
 		}
 		
 		return PubMedID;

@@ -3,8 +3,9 @@ package org.drugis.addis.imports;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collections;
-import java.util.List;
 
+import org.drugis.addis.entities.PubMedId;
+import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,13 +17,13 @@ public class PubMedIDRetrieverTest {
 	
 	@Test
 	public void testImportPubMedID() throws MalformedURLException, IOException {
-		List<String> testPubMedIDs = new PubMedIDRetriever().importPubMedID("NCT00000400");
-		JUnitUtil.assertAllAndOnly(Collections.singletonList("19401368"), testPubMedIDs);
+		PubMedIdList testPubMedIDs = new PubMedIDRetriever().importPubMedID("NCT00000400");
+		JUnitUtil.assertAllAndOnly(Collections.singletonList(new PubMedId("19401368")), testPubMedIDs);
 	}
 	
 	@Test
 	public void testImportPubMedNoID() throws MalformedURLException, IOException {
-		List<String> testPubMedIDs = new PubMedIDRetriever().importPubMedID("NCT");
+		PubMedIdList testPubMedIDs = new PubMedIDRetriever().importPubMedID("NCT");
 		JUnitUtil.assertAllAndOnly(Collections.emptyList(), testPubMedIDs);
 	}
 }

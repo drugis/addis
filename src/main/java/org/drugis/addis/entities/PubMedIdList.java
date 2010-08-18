@@ -10,4 +10,6 @@ import java.util.ArrayList;
 public class PubMedIdList extends ArrayList<PubMedId> {
 	public PubMedIdList() {
 	}
+
+	
 }

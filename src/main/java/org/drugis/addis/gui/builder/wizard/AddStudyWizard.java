@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -539,7 +538,7 @@ public class AddStudyWizard implements ViewBuilder{
 				public void actionPerformed(ActionEvent arg0) {
 					String studyID = d_pm.getIdModel().getValue().toString();
 					try {
-						List<String> importPubMedID = new PubMedIDRetriever().importPubMedID(studyID);
+						PubMedIdList importPubMedID = new PubMedIDRetriever().importPubMedID(studyID);
 						if (!importPubMedID.isEmpty()) {
 							d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED).setValue(importPubMedID);
 						} else {
