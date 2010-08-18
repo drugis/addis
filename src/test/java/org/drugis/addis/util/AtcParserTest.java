@@ -81,21 +81,12 @@ public class AtcParserTest {
 		}
 		assertEquals("N06AB03", tmp.get(0).getCode());
 		assertEquals("fluoxetine", tmp.get(0).getDescription());
-		
 	}
 	
 	@Test 
 	public void testCodeParseFromUrl() throws IOException {
-		d_urlStream = new URL("http://www.whocc.no/atc_ddd_index/?code=ATC+code&namesearchtype=containing&name=fluoxetine").openConnection().getInputStream();
-		BufferedReader readCode = new BufferedReader(new InputStreamReader(d_urlStream));
-		AtcParser parser = new AtcParser();
-		String inputLine;
-		List<AtcDescription> tmp = Collections.emptyList();
-		while ((inputLine = readCode.readLine()) != null && tmp.isEmpty()) {
-			tmp = parser.findDrugDetails(inputLine);
-		}
-		assertEquals("N06AB03", tmp.get(0).getCode());
-		assertEquals("fluoxetine", tmp.get(0).getDescription());
+		assertEquals("N06AB03", new AtcParser().getAtcCode("fluoxetine").getCode());
+		assertEquals("fluoxetine", new AtcParser().getAtcCode("fluoxetine").getDescription());
 		
 	}
 	
