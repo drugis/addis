@@ -6,7 +6,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.junit.Test;
 public class AtcParserTest {
 	InputStream d_drugStream;
 	InputStream d_codeStream;
+	InputStream d_urlStream;
 	
 	@Before
 	public void setUp() {
@@ -48,6 +50,13 @@ public class AtcParserTest {
 	}
 	
 	@Test
+	public void testURLs() throws MalformedURLException, IOException {
+		d_urlStream = new URL("http://www.whocc.no/atc_ddd_index/?code=").openConnection().getInputStream();
+		BufferedReader readCode = new BufferedReader(new InputStreamReader(d_urlStream));
+		readCode.readLine();
+	}
+	
+	@Test
 	public void testMatchCodeFail() {
 		String drugTest = "This will have to return null";
 		assertEquals(Collections.emptyList(), new AtcParser().findDrugDetails(drugTest));
@@ -64,6 +73,21 @@ public class AtcParserTest {
 	@Test 
 	public void testCodeParse() throws IOException {
 		BufferedReader readCode = new BufferedReader(new InputStreamReader(d_drugStream));
+		AtcParser parser = new AtcParser();
+		String inputLine;
+		List<AtcDescription> tmp = Collections.emptyList();
+		while ((inputLine = readCode.readLine()) != null && tmp.isEmpty()) {
+			tmp = parser.findDrugDetails(inputLine);
+		}
+		assertEquals("N06AB03", tmp.get(0).getCode());
+		assertEquals("fluoxetine", tmp.get(0).getDescription());
+		
+	}
+	
+	@Test 
+	public void testCodeParseFromUrl() throws IOException {
+		d_urlStream = new URL("http://www.whocc.no/atc_ddd_index/?code=ATC+code&namesearchtype=containing&name=fluoxetine").openConnection().getInputStream();
+		BufferedReader readCode = new BufferedReader(new InputStreamReader(d_urlStream));
 		AtcParser parser = new AtcParser();
 		String inputLine;
 		List<AtcDescription> tmp = Collections.emptyList();
@@ -107,4 +131,26 @@ public class AtcParserTest {
 		assertEquals("N07BA03", finalList.get(5).getCode());
 		assertEquals("varenicline", finalList.get(5).getDescription());
 	}
+	
+	@Test 
+	public void testDrugAllDetailsParseFromUrl() throws IOException {
+		d_urlStream = new URL("http://www.whocc.no/atc_ddd_index/?code=N07BA").openConnection().getInputStream();
+		AtcParser parser = new AtcParser();
+		List<AtcDescription> finalList = parser.parse(d_urlStream);
+		
+		assertEquals(6, finalList.size());
+		assertEquals("N", finalList.get(0).getCode());
+		assertEquals("NERVOUS SYSTEM", finalList.get(0).getDescription());
+		assertEquals("N07", finalList.get(1).getCode());
+		assertEquals("OTHER NERVOUS SYSTEM DRUGS", finalList.get(1).getDescription());
+		assertEquals("N07B", finalList.get(2).getCode());
+		assertEquals("DRUGS USED IN ADDICTIVE DISORDERS", finalList.get(2).getDescription());
+		assertEquals("N07BA", finalList.get(3).getCode());
+		assertEquals("Drugs used in nicotine dependence", finalList.get(3).getDescription());
+		assertEquals("N07BA01", finalList.get(4).getCode());
+		assertEquals("nicotine", finalList.get(4).getDescription());
+		assertEquals("N07BA03", finalList.get(5).getCode());
+		assertEquals("varenicline", finalList.get(5).getDescription());
+	}
+	
 }
