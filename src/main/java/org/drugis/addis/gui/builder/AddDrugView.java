@@ -22,7 +22,6 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -69,12 +68,14 @@ public class AddDrugView implements ViewBuilder {
 		d_loadButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {					
-					d_model.getModel(Drug.PROPERTY_ATCCODE).setValue(new AtcParser().getAtcCode(d_model.getModel(Drug.PROPERTY_NAME).getString()));
-				} catch (IOException e) {
+					String code = new AtcParser().getAtcCode(d_model.getModel(Drug.PROPERTY_NAME).getString()).getCode();
+					d_model.getModel(Drug.PROPERTY_ATCCODE).setValue(code);
+					if(code == null) {
+						JOptionPane.showMessageDialog(new JPanel(), "The drug ("+d_model.getModel(Drug.PROPERTY_NAME).getString()+")\nhas no ATC code associated", "Warning", JOptionPane.WARNING_MESSAGE);
+					}
+				} catch (Exception e) {
 					JOptionPane.showMessageDialog(new JPanel(), "Couldn't retrieve ATC code...", e.getMessage(), JOptionPane.ERROR_MESSAGE);
 					e.printStackTrace();
-				} catch (IndexOutOfBoundsException e) {
-					JOptionPane.showMessageDialog(new JPanel(), "The drug ("+d_model.getModel(Drug.PROPERTY_NAME).getString()+")\nhas no ATC code associated", "Warning", JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		});

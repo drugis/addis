@@ -21,6 +21,9 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.io.IOException;
+import java.util.List;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -33,6 +36,9 @@ import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.DrugPresentation;
+import org.drugis.addis.util.AtcParser;
+import org.drugis.addis.util.AtcParser.AtcDescription;
+import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -101,7 +107,19 @@ public class DrugView implements ViewBuilder{
 				drugname.getValue().toString().replace(' ', '+')), cc.xy(5,1));
 		builder.addLabel("ATC Code:", cc.xy(1, 3));
 		builder.add(BasicComponentFactory.createLabel(d_model.getModel(Drug.PROPERTY_ATCCODE)), cc.xy(3, 3));
-		
+		int pos = 3;
+		try {
+			List<AtcDescription> drugDetails = new AtcParser().getAtcDetails(d_model.getModel(Drug.PROPERTY_ATCCODE).getString());
+			for(AtcDescription desc : drugDetails) {
+				if(!desc.getCode().equals(d_model.getModel(Drug.PROPERTY_ATCCODE).getString())){
+					LayoutUtil.addRow(layout);
+					builder.addLabel(desc.getCode() + ": " + desc.getDescription(), cc.xy(3, pos+=2));
+				}
+			}
+		} catch (IOException e) {
+			//
+			e.printStackTrace();
+		}
 		return builder.getPanel();
 	}
 }

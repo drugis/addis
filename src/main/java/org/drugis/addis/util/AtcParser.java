@@ -36,7 +36,7 @@ public class AtcParser {
 		}		
 	}
 	
-	private static final Pattern s_codePattern = Pattern.compile("<a href=\"[^\"]*/\\?code=([A-Z0-9]*)(&[^\"]*)?\">([\\w\\s]*)</a>", Pattern.CASE_INSENSITIVE);
+	private static final Pattern s_codePattern = Pattern.compile("<a href=\"[^\"]*/\\?code=([A-Z0-9]*)(&[^\"]*)?\">([\\w\\s,-/(/)]*)</a>", Pattern.CASE_INSENSITIVE);
 
 	public List<AtcDescription> findDrugDetails(String inputLine) {
 		Matcher matchCode = s_codePattern.matcher(inputLine);
@@ -74,5 +74,8 @@ public class AtcParser {
 		return result;
 	}
 	
-	//public List<AtcDescription> getAtcDetails(String drugName)
+	public List<AtcDescription> getAtcDetails(String atcCode) throws IOException {
+		InputStream d_urlStream = new URL("http://www.whocc.no/atc_ddd_index/?code="+atcCode).openConnection().getInputStream();
+		return new AtcParser().parse(d_urlStream);
+	}
 }
