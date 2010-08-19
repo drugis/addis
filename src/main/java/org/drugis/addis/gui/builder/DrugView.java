@@ -33,10 +33,12 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.DrugPresentation;
 import org.drugis.addis.util.AtcParser;
+import org.drugis.addis.util.RunnableReadyModel;
 import org.drugis.addis.util.AtcParser.AtcDescription;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -94,7 +96,7 @@ public class DrugView implements ViewBuilder{
 	private JPanel createOverviewPart() {
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, left:pref, center:8dlu, left:pref",
-				"p, 3dlu, p"
+				"p, 3dlu, p, 3dlu, p"
 				);	
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -107,24 +109,70 @@ public class DrugView implements ViewBuilder{
 		builder.add(new LinkLabel("Search for SmPC at " + SEARCH_DOMAIN, getSearchUrl(drugname)), cc.xy(5,1));
 		builder.addLabel("ATC Code:", cc.xy(1, 3));
 		builder.add(BasicComponentFactory.createLabel(d_model.getModel(Drug.PROPERTY_ATCCODE)), cc.xy(3, 3));
-		int pos = 3;
-		try {
-			List<AtcDescription> drugDetails = new AtcParser().getAtcDetails(d_model.getModel(Drug.PROPERTY_ATCCODE).getString());
-			for(AtcDescription desc : drugDetails) {
-				if(!desc.getCode().equals(d_model.getModel(Drug.PROPERTY_ATCCODE).getString())){
-					LayoutUtil.addRow(layout);
-					builder.addLabel(desc.getCode() + ": " + desc.getDescription(), cc.xy(3, pos+=2));
+		
+		AtcDetailsRetriever retriever = new AtcDetailsRetriever();
+		AtcDetailsPanelBuilder detailsBuilder = new AtcDetailsPanelBuilder(retriever);
+		RunnableReadyModel readyModel = new RunnableReadyModel(retriever);
+		BuildViewWhenReadyComponent c = new BuildViewWhenReadyComponent(detailsBuilder, readyModel, "Loading...");
+		builder.add(c, cc.xy(3, 5));
+		new Thread(readyModel).start();
+			
+		return builder.getPanel();
+	}
+	
+	private class AtcDetailsRetriever implements Runnable {
+		private IOException d_error;
+		private List<AtcDescription> d_drugDetails;
+
+		public void run() {
+			try {
+				d_drugDetails = new AtcParser().getAtcDetails(d_model.getModel(Drug.PROPERTY_ATCCODE).getString());
+			} catch (IOException e) {
+				d_error = e;
+			}
+		}
+
+		public IOException getError() {
+			return d_error;
+		}
+
+		public List<AtcDescription> getDrugDetails() {
+			return d_drugDetails;
+		}
+	}
+	
+	private class AtcDetailsPanelBuilder implements ViewBuilder {
+		private final AtcDetailsRetriever d_details;
+
+		public AtcDetailsPanelBuilder(AtcDetailsRetriever details) {
+			d_details = details;
+		}
+
+		public JComponent buildPanel() {
+			FormLayout layout = new FormLayout("left:pref", "p");	
+			PanelBuilder builder = new PanelBuilder(layout);
+			CellConstraints cc = new CellConstraints();
+			
+			if (d_details.getError() != null) {
+				builder.addLabel("Error communicating with WHO website: " + d_details.getError().getMessage());
+			} else {
+				int pos = 1;
+				if(d_details.getDrugDetails().isEmpty()) {
+					builder.addLabel("No details found for this ATC code.");
+				}
+				for(AtcDescription desc : d_details.getDrugDetails()) {
+					if(!desc.getCode().equals(d_model.getModel(Drug.PROPERTY_ATCCODE).getString())){
+						builder.addLabel(desc.getCode() + ": " + desc.getDescription(), cc.xy(1, pos));
+						LayoutUtil.addRow(layout);
+						pos += 2;
+					}
 				}
 			}
-		} catch (IOException e) {
-			//
-			e.printStackTrace();
-		}
-		return builder.getPanel();
+			return builder.getPanel();
+		}		
 	}
 
 	private String getSearchUrl(AbstractValueModel drugname) {
-		return "http://www." + SEARCH_DOMAIN + "/EMC/searchresults.aspx?term=" + 
-				drugname.getValue().toString().replace(' ', '+');
+		return "http://www." + SEARCH_DOMAIN + "/EMC/searchresults.aspx?term=" + drugname.getValue().toString().replace(' ', '+');
 	}
 }
