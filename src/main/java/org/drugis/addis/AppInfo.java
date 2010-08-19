@@ -29,7 +29,7 @@ import java.net.URLConnection;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-import org.apache.myfaces.trinidad.context.Version;
+import org.drugis.addis.util.Version;
 
 //import java.version.*;
 
