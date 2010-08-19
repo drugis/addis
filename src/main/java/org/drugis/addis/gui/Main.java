@@ -22,7 +22,6 @@
 package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -77,7 +76,6 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityCategory;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
-import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.common.ImageLoader;
@@ -123,8 +121,7 @@ public class Main extends JFrame {
 	private String d_curFilename = null;
 	private final static String DEFAULT_TITLE = AppInfo.getAppName() + " v" + AppInfo.getAppVersion();
 	private JMenuItem d_saveMenuItem;
-	private StatusBar d_statusBar;
-	
+
 	public PresentationModelFactory getPresentationModelFactory() {
 		return d_pmManager;
 	}
@@ -527,11 +524,10 @@ public class Main extends JFrame {
 		initMenu();
 		initPanel();
 		initToolbar();
+		initStatusBar();
 	}
 
 	private void initToolbar() {
-		d_statusBar = new StatusBar();
-
 		JToolBar toolbar = new JToolBar();
 		toolbar.setFloatable(false);
 		toolbar.setLayout(new BorderLayout());
@@ -543,23 +539,16 @@ public class Main extends JFrame {
 				builder.addButton(createToolbarButton(knowledge));
 			}
 		}
-		builder.addGlue();
-
-		String latestVersion = AppInfo.getLatestVersion();
-		if (latestVersion != null) {
-			LinkLabel linkLabel = new LinkLabel(
-					"<font color=\"red\">new version available</font>",
-					"http://drugis.org/files/addis-" + latestVersion + ".zip");
-			linkLabel.setForeground(Color.RED);
-			builder.addButton(linkLabel);
-			builder.addRelatedGap();
-		}
-		builder.addButton(GUIFactory.buildSiteLink());
 
 		toolbar.add(builder.getPanel(), BorderLayout.CENTER);
 		toolbar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		add(toolbar, BorderLayout.NORTH);
-		add(d_statusBar, BorderLayout.SOUTH);
+	}
+
+	private void initStatusBar() {
+		StatusBar statusBar = new StatusBar();
+		statusBar.setFloatable(false);
+		add(statusBar, BorderLayout.SOUTH);
 	}
 
 	private JButton createToolbarButton(final CategoryKnowledge knowledge) {
