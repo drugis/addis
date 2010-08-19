@@ -48,6 +48,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class DrugView implements ViewBuilder{
+	private static final String SEARCH_DOMAIN = "medicines.org.uk";
 	private DrugPresentation d_model;
 	private Main d_parent;
 
@@ -103,8 +104,7 @@ public class DrugView implements ViewBuilder{
 		AbstractValueModel drugname = d_model.getModel(Drug.PROPERTY_NAME);
 		builder.add(BasicComponentFactory.createLabel(drugname), cc.xy(3,1));
 		builder.add(new JLabel("-"), cc.xy(4,1));
-		builder.add(new LinkLabel("Search for SmPC at medicine.org.uk", "http://www.medicines.org.uk/EMC/searchresults.aspx?term=" + 
-				drugname.getValue().toString().replace(' ', '+')), cc.xy(5,1));
+		builder.add(new LinkLabel("Search for SmPC at " + SEARCH_DOMAIN, getSearchUrl(drugname)), cc.xy(5,1));
 		builder.addLabel("ATC Code:", cc.xy(1, 3));
 		builder.add(BasicComponentFactory.createLabel(d_model.getModel(Drug.PROPERTY_ATCCODE)), cc.xy(3, 3));
 		int pos = 3;
@@ -121,5 +121,10 @@ public class DrugView implements ViewBuilder{
 			e.printStackTrace();
 		}
 		return builder.getPanel();
+	}
+
+	private String getSearchUrl(AbstractValueModel drugname) {
+		return "http://www." + SEARCH_DOMAIN + "/EMC/searchresults.aspx?term=" + 
+				drugname.getValue().toString().replace(' ', '+');
 	}
 }
