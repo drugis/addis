@@ -21,6 +21,8 @@
 
 package org.drugis.addis.gui;
 
+import javax.swing.JOptionPane;
+
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.gui.builder.AddIndicationView;
@@ -57,6 +59,13 @@ public class AddIndicationDialog extends OkCancelDialog {
 
 	@Override
 	protected void commit() {
+		if (d_domain.getIndications().contains(d_indication)) {
+			JOptionPane.showMessageDialog(d_main,
+			    "An item with the code " + d_indication.getCode() + " already exists in the domain.",
+			    "Couldn't add Indication", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
 		d_domain.addIndication(d_indication);
 		setVisible(false);
 		d_main.leftTreeFocus(d_indication);

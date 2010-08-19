@@ -21,6 +21,8 @@
 
 package org.drugis.addis.gui;
 
+import javax.swing.JOptionPane;
+
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.gui.builder.AddDrugView;
@@ -57,6 +59,13 @@ public class AddDrugDialog extends OkCancelDialog {
 	
 	@Override
 	protected void commit() {
+		if (d_domain.getDrugs().contains(d_drug)) {
+			JOptionPane.showMessageDialog(d_main,
+			    "An item with the name " + d_drug.getName() + " already exists in the domain.",
+			    "Couldn't add Drug", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
 		d_domain.addDrug(d_drug);
 		setVisible(false);
 		d_main.leftTreeFocus(d_drug);

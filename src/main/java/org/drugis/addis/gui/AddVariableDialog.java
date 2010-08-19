@@ -65,26 +65,24 @@ public class AddVariableDialog extends OkCancelDialog {
 
 	@Override
 	protected void commit() {
-		
-		if ( 	d_domain.getEndpoints().contains(d_pm.getBean())     ||
+		if (d_domain.getEndpoints().contains(d_pm.getBean()) ||
 				d_domain.getAdverseEvents().contains(d_pm.getBean()) ||
-				d_domain.getPopulationCharacteristics().contains(d_pm.getBean())       ) {
-			
+				d_domain.getPopulationCharacteristics().contains(d_pm.getBean())) {
 			JOptionPane.showMessageDialog(d_main,
 			    "An item with the name " + d_pm.getBean().getName() + " already exists in the domain.",
 			    "Couldn't add Variable", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		
-		if (d_pm.getBean() instanceof Endpoint)
-				d_domain.addEndpoint((Endpoint) d_pm.getBean());
-		else if (d_pm.getBean() instanceof AdverseEvent)
+		if (d_pm.getBean() instanceof Endpoint) {
+			d_domain.addEndpoint((Endpoint) d_pm.getBean());
+		} else if (d_pm.getBean() instanceof AdverseEvent) {
 			d_domain.addAdverseEvent((AdverseEvent) d_pm.getBean());
-		else if (d_pm.getBean() instanceof PopulationCharacteristic) {
+		} else if (d_pm.getBean() instanceof PopulationCharacteristic) {
 			d_domain.addPopulationCharacteristic((PopulationCharacteristic) d_pm.getBean());
-		}
-		else 
+		} else { 
 			throw new IllegalArgumentException("Unknown type of OutcomeMeasure.");
+		}
 		
 		setVisible(false);
 		if (d_selectionModel != null)
