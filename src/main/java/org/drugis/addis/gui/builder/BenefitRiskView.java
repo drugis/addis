@@ -22,6 +22,7 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -32,7 +33,6 @@ import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
@@ -49,15 +49,18 @@ import org.drugis.addis.presentation.BenefitRiskPresentation;
 import org.drugis.addis.util.HtmlWordWrapper;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.FileSaveDialog;
+import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -210,9 +213,16 @@ public class BenefitRiskView implements ViewBuilder {
 			chart.getCategoryPlot().setRenderer(renderer);
 			ResultsTable table = new ResultsTable(d_pm.getCentralWeightsTableModel());
 			table.setDefaultRenderer(Object.class, new CentralWeightsCellRenderer(1.0));
+			JComponent viewPanel = new ResultsView(d_main, table, chart, "").buildPanel();
 			
-			// FIXME: FileNames.ICON_SCRIPT was replaced by "". Should be filename of an icon 
-			return new ResultsView(d_main, table, chart, "").buildPanel(); 
+			JPanel panel = new JPanel(new BorderLayout());
+			panel.add(viewPanel, BorderLayout.CENTER);
+			
+			ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
+			bbuilder.addButton(createSaveImageButton(findChartPanel(viewPanel)));
+			panel.add(bbuilder.getPanel(), BorderLayout.SOUTH);
+
+			return panel; 
 		}
 	}
 
@@ -227,21 +237,26 @@ public class BenefitRiskView implements ViewBuilder {
 			table.setDefaultRenderer(Object.class, new ResultsCellColorRenderer(1.0));			
 			
 			final JFreeChart chart = ChartFactory.createStackedBarChart(
-			        "", "Alternative", "Rank Acceptability",
+			        "Rank Acceptability", "Alternative", "Rank Acceptability",
 			        d_pm.getRankAcceptabilityDataSet(), PlotOrientation.VERTICAL, true, true, false);
+			chart.addSubtitle(new org.jfree.chart.title.ShortTextTitle("Rank 1 is best, rank N is worst."));
 
 			JPanel panel = new JPanel(new BorderLayout());
 			fi.smaa.jsmaa.gui.views.ResultsView view = new fi.smaa.jsmaa.gui.views.ResultsView(d_main, table, chart, "");
 			panel.add(d_pm.getSmaaSimulationProgressBar(), BorderLayout.NORTH);
-			panel.add(view.buildPanel(), BorderLayout.CENTER);
+			JComponent viewPanel = view.buildPanel();
+			panel.add(viewPanel, BorderLayout.CENTER);
 			
+			ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
+			bbuilder.addButton(createSaveImageButton(findChartPanel(viewPanel)));
+			bbuilder.addButton(createExportButton());
+			panel.add(bbuilder.getPanel(), BorderLayout.SOUTH);
 			
-			JPanel secPanel = new JPanel(new BorderLayout());
-			secPanel.add(new JLabel("    Rank 1 is best, rank N is worst."), BorderLayout.CENTER);
-			JButton expButton = new JButton("Export to JSMAA");
-			secPanel.add(expButton, BorderLayout.SOUTH);
-			panel.add(secPanel,BorderLayout.SOUTH);
-			
+			return panel;
+		}
+
+		private JButton createExportButton() {
+			JButton expButton = new JButton("Export model to JSMAA");
 			expButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					new FileSaveDialog(d_main, "jsmaa", "JSMAA") {
@@ -252,8 +267,28 @@ public class BenefitRiskView implements ViewBuilder {
 					};
 				}
 			});
-			return panel;
+			return expButton;
 		}
+	}
+	
+	private JButton createSaveImageButton(final JComponent chart) {
+		JButton button = new JButton("Save Image");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ImageExporter.writeImage(d_main, chart, (int) chart.getSize().getWidth(), (int) chart.getSize().getHeight());
+			}
+		});
+		return button;
+	}
+	
+	// FIXME: the need for this hax should be fixed in JSMAA.
+	private static ChartPanel findChartPanel(JComponent viewPanel) {
+		for (Component c : viewPanel.getComponents()) {
+			if (c instanceof ChartPanel) {
+				return (ChartPanel)c;
+			}
+		}
+		return null;
 	}
 
 	private JComponent buildRankAcceptabilitiesPart() {

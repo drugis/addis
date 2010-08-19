@@ -63,7 +63,7 @@ public class ImageExporter {
 	}
 	
 	public static void writeImage(Component frame, final JComponent p, final int width, final int height) {
-		new FileSaveDialog(frame, new String [] {"png","svg"}, new String [] {"PNG files", "SVG files"}) {
+		new FileSaveDialog(frame, new String [] {"png", "svg"}, new String [] {"PNG files", "SVG files"}) {
 			@Override
 			public void doAction(String path, String extension) {
 				if (extension.equals("png"))

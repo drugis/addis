@@ -110,11 +110,10 @@ public class StudyGraph extends JPanel {
 		return jgraph;
 	}
 	
-	public void saveAsPng(JFrame frame) {
+	public void saveImage(JFrame frame) {
 		Color oldCol = d_jgraph.getBackground();
 		d_jgraph.setBackground(Color.white);
-		//ImageExporter.writePNG(frame, this, (int) getPreferredSize().getWidth(), (int) getPreferredSize().getHeight());
-		ImageExporter.writeImage(frame, this, (int) getPreferredSize().getWidth(), (int) getPreferredSize().getHeight());
+		ImageExporter.writeImage(frame, this, (int) getSize().getWidth(), (int) getSize().getHeight());
 		d_jgraph.setBackground(oldCol);
 	}
 	
