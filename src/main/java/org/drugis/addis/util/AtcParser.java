@@ -36,7 +36,7 @@ public class AtcParser {
 		}		
 	}
 	
-	private static final Pattern s_codePattern = Pattern.compile("<a href=\"[^\"]*/\\?code=([A-Z0-9]*)(&[^\"]*)?\">([\\w\\s,-/(/)]*)</a>", Pattern.CASE_INSENSITIVE);
+	private static final Pattern s_codePattern = Pattern.compile("<a href=\"[^\"]*/\\?code=([A-Z0-9]*)(&[^\"]*)?\">([^<]*)</a>", Pattern.CASE_INSENSITIVE);
 
 	public List<AtcDescription> findDrugDetails(String inputLine) {
 		Matcher matchCode = s_codePattern.matcher(inputLine);
