@@ -49,6 +49,7 @@ public class FileNames {
 	public static final String ICON_DOCTOR = "legodoctor.png";
 	public static final String ICON_PILLS = "handandpills.png";
 	public static final String ICON_TIP = "tip.gif";
-	public static final String ICON_WAITING = "loader.gif";
+	public static final String ICON_LOADING_LARGE = "loader32.gif";
+	public static final String ICON_LOADING = "loader16.gif";
 	public static final String ICON_SEARCH = "search.gif";
 }
