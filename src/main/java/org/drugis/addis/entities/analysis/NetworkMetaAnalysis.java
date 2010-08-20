@@ -57,8 +57,6 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	transient private NetworkBuilder<? extends org.drugis.mtc.Measurement> d_builder;
 
 	private boolean d_isContinuous = false;
-	private boolean d_inconsistencyHasStarted;
-	private boolean d_consistencyHasStarted;
 	
 	private NetworkMetaAnalysis() {
 		super();
@@ -156,17 +154,13 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	public void runInconsistency() {
-		if (!d_inconsistencyHasStarted)
+		if (!d_inconsistencyModel.isReady())
 			ThreadHandler.getInstance().scheduleTask(getInconsistencyModel());
-			//new Thread(getInconsistencyModel()).start();
-		d_inconsistencyHasStarted = true;
 	}
 
 	public void runConsistency() {
-		if (!d_consistencyHasStarted)
+		if (!d_consistencyModel.isReady())
 			ThreadHandler.getInstance().scheduleTask(getConsistencyModel());
-			//new Thread(getConsistencyModel()).start();
-		d_consistencyHasStarted = true;
 	}
 
 	public List<InconsistencyParameter> getInconsistencyFactors(){
