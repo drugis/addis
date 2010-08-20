@@ -39,8 +39,11 @@ public abstract class GaussianBase extends AbstractObservable implements Distrib
 	}
 
 	protected double calculateQuantile(double p) {
-		NormalDistribution dist = new NormalDistributionImpl(getMu(), getSigma());
 		try {
+			if (getSigma() == 0.0) {
+				return getMu();
+			}
+			NormalDistribution dist = new NormalDistributionImpl(getMu(), getSigma());
 			return dist.inverseCumulativeProbability(p);
 		} catch (MathException e) {
 			throw new RuntimeException(e);

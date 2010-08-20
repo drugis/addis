@@ -25,6 +25,7 @@ package org.drugis.addis.mocks;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drugis.common.threading.AbstractSuspendable;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.InconsistencyParameter;
@@ -33,7 +34,7 @@ import org.drugis.mtc.Treatment;
 
 
 
-public class MockInconsistencyModel implements InconsistencyModel {
+public class MockInconsistencyModel extends AbstractSuspendable implements InconsistencyModel {
 
 	boolean d_ready = false;
 	

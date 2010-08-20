@@ -37,14 +37,14 @@ import java.util.List;
 
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.relativeeffect.Distribution;
-import org.drugis.addis.util.threading.AbstractSuspendableRunnable;
+import org.drugis.common.threading.AbstractSuspendable;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.ProgressEvent;
 import org.drugis.mtc.ProgressListener;
 import org.drugis.mtc.ProgressEvent.EventType;
 import org.drugis.mtc.yadas.DirectParameter;
 
-abstract public class AbstractBaselineModel<T extends Measurement> extends AbstractSuspendableRunnable implements MCMCModel {
+abstract public class AbstractBaselineModel<T extends Measurement> extends AbstractSuspendable implements MCMCModel {
 
 	public abstract Distribution getResult();
 

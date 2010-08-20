@@ -22,6 +22,7 @@
 package org.drugis.addis.mocks;
 
 
+import org.drugis.common.threading.AbstractSuspendable;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.ProgressListener;
@@ -29,7 +30,7 @@ import org.drugis.mtc.Treatment;
 
 
 
-public class MockConsistencyModel implements ConsistencyModel {
+public class MockConsistencyModel extends AbstractSuspendable implements ConsistencyModel {
 
 	boolean d_ready = false;
 	
