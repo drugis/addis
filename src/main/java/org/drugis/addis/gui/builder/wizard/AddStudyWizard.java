@@ -481,7 +481,7 @@ public class AddStudyWizard implements ViewBuilder{
 			for (BasicStudyCharacteristic c : BasicStudyCharacteristic.values()) {
 				if (!excludedChars.contains(c)) {
 					// add characteristic field
-					builder.addLabel(c.getDescription() + ":", cc.xy(1, row/*, "right, c"*/));
+					builder.addLabel(c.getDescription() + ":", cc.xy(1, row));
 					builder.add(createCharacteristicComponent(c), cc.xyw(3, row,fullWidth));
 
 					// add note field
@@ -525,10 +525,14 @@ public class AddStudyWizard implements ViewBuilder{
 			
 			return component;
 		}
-
-		private JButton d_importButton;
 		
-		private class pubMedIdsRetriever implements Runnable {
+		private class PubMedIdsRetriever implements Runnable {
+			private final JButton d_importButton;
+
+			public PubMedIdsRetriever(JButton importButton) {
+				d_importButton = importButton;
+			}
+			
 			public void run() {				
 					String studyID = d_pm.getIdModel().getValue().toString();
 					try {
@@ -546,7 +550,6 @@ public class AddStudyWizard implements ViewBuilder{
 						d_importButton.setEnabled(true);
 					} catch (Exception e) {
 						JOptionPane.showMessageDialog(d_me, "Couldn't retrieve PubMed ID ...", e.getMessage(), JOptionPane.ERROR_MESSAGE);
-						//e.printStackTrace();
 					}
 			}
 		}
@@ -556,21 +559,23 @@ public class AddStudyWizard implements ViewBuilder{
 			inputField.setColumns(30);
 			inputField.setToolTipText("You can enter multiple PubMed IDs delimited by comma");
 			
-			// add import button
-			d_importButton = GUIFactory.createIconButton(FileNames.ICON_SEARCH,
+			final JButton d_importButton = GUIFactory.createIconButton(FileNames.ICON_SEARCH,
 					"Search PubMed ID based on the trial ID");
 			d_importButton.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent arg0) {
-					pubMedIdsRetriever pubMedRetriever = new pubMedIdsRetriever();
+					PubMedIdsRetriever pubMedRetriever = new PubMedIdsRetriever(d_importButton);
 					RunnableReadyModel readyModel = new RunnableReadyModel(pubMedRetriever);
 					new Thread(readyModel).start();
 				}
 			});
 
-			JPanel panel = new JPanel();
-			panel.add(inputField);
-			panel.add(d_importButton);
-			return panel;
+			PanelBuilder builder = new PanelBuilder(new FormLayout("pref:grow, 3dlu, pref", "p"));
+			CellConstraints cc = new CellConstraints();
+
+			builder.add(inputField, cc.xy(1, 1));
+			builder.add(d_importButton, cc.xy(3, 1));
+
+			return builder.getPanel();
 		}
 		
 		private <E> JComponent createOptionsComboBox(BasicStudyCharacteristic c, E[] options) {
