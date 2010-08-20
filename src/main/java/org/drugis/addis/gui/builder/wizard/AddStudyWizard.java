@@ -31,7 +31,6 @@ import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -83,6 +82,7 @@ import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.wizard.CompleteListener;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.OutcomeMeasurementsModel;
 import org.drugis.addis.util.PubMedListFormat;
+import org.drugis.addis.util.RunnableReadyModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
@@ -526,34 +526,50 @@ public class AddStudyWizard implements ViewBuilder{
 			return component;
 		}
 
+		private JButton d_importButton;
+		
+		private class pubMedIdsRetriever implements Runnable {
+			public void run() {				
+					String studyID = d_pm.getIdModel().getValue().toString();
+					try {
+						d_importButton.setIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
+						d_importButton.setEnabled(false);
+						
+						PubMedIdList importPubMedID = new PubMedIDRetriever().importPubMedID(studyID);
+						
+						if (!importPubMedID.isEmpty()) {
+							d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED).setValue(importPubMedID);
+						} else {
+							JOptionPane.showMessageDialog(d_me, "The Study ID ("+studyID+")\nhas no PubMed ID associated", "Warning", JOptionPane.WARNING_MESSAGE);
+						}
+						d_importButton.setIcon(ImageLoader.getIcon(FileNames.ICON_SEARCH));
+						d_importButton.setEnabled(true);
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(d_me, "Couldn't retrieve PubMed ID ...", e.getMessage(), JOptionPane.ERROR_MESSAGE);
+						//e.printStackTrace();
+					}
+			}
+		}
+		
 		private JComponent createPubMedIDComponent(ValueModel model) {
 			JTextField inputField = BasicComponentFactory.createFormattedTextField(model, new PubMedListFormat());							
 			inputField.setColumns(30);
 			inputField.setToolTipText("You can enter multiple PubMed IDs delimited by comma");
 			
 			// add import button
-			JButton importButton = GUIFactory.createIconButton(FileNames.ICON_SEARCH,
+			d_importButton = GUIFactory.createIconButton(FileNames.ICON_SEARCH,
 					"Search PubMed ID based on the trial ID");
-			importButton.addActionListener(new AbstractAction() {
+			d_importButton.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent arg0) {
-					String studyID = d_pm.getIdModel().getValue().toString();
-					try {
-						PubMedIdList importPubMedID = new PubMedIDRetriever().importPubMedID(studyID);
-						if (!importPubMedID.isEmpty()) {
-							d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED).setValue(importPubMedID);
-						} else {
-							JOptionPane.showMessageDialog(d_me, "The Study ID ("+studyID+")\nhas no PubMed ID associated", "Warning", JOptionPane.WARNING_MESSAGE);
-						}
-					} catch (Exception e) {
-						JOptionPane.showMessageDialog(d_me, "Couldn't retrieve PubMed ID ...", e.getMessage(), JOptionPane.ERROR_MESSAGE);
-						e.printStackTrace();
-					}
+					pubMedIdsRetriever pubMedRetriever = new pubMedIdsRetriever();
+					RunnableReadyModel readyModel = new RunnableReadyModel(pubMedRetriever);
+					new Thread(readyModel).start();
 				}
 			});
 
 			JPanel panel = new JPanel();
 			panel.add(inputField);
-			panel.add(importButton);
+			panel.add(d_importButton);
 			return panel;
 		}
 		
@@ -698,15 +714,9 @@ public class AddStudyWizard implements ViewBuilder{
 				d_importButton.setEnabled(false);
 				d_importButton.addActionListener(new AbstractAction() {
 					public void actionPerformed(ActionEvent arg0) {
-						try {
-							d_pm.importCT();
-						} catch (MalformedURLException e) {
-							JOptionPane.showMessageDialog(d_me, "Invalid NCT ID: "+ d_pm.getIdModel().getValue());
-						} catch (IOException e) {
-							JOptionPane.showMessageDialog(d_me, "Couldn't find ID: " + d_pm.getIdModel().getValue() + " on ClinicalTrials.gov");
-						}
-						prepare();
-
+						CTRetriever ctRetriever = new CTRetriever();
+						RunnableReadyModel readyModel = new RunnableReadyModel(ctRetriever);
+						new Thread(readyModel).start();
 					}});
 				d_builder.add(d_importButton, cc.xy(5, 3));	
 				
@@ -741,6 +751,20 @@ public class AddStudyWizard implements ViewBuilder{
 				add(d_scrollPane, BorderLayout.CENTER);
 		 }
 		 
+		private class CTRetriever implements Runnable {
+			public void run() {
+				try {
+					d_importButton.setIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
+					d_importButton.setEnabled(false);
+					d_pm.importCT();
+					d_importButton.setIcon(ImageLoader.getIcon(FileNames.ICON_SEARCH));
+					d_importButton.setEnabled(true);
+				} catch (IOException e) {
+					JOptionPane.showMessageDialog(d_me, "Couldn't find NCT ID: "+ d_pm.getIdModel().getValue(), "Warning" , JOptionPane.ERROR_MESSAGE);
+				}
+				prepare();
+			}
+		}
 
 		private class ImportButtonEnableListener implements CaretListener{
 			public void caretUpdate(CaretEvent arg0) {

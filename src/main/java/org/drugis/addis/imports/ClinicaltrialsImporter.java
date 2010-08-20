@@ -62,7 +62,7 @@ public class ClinicaltrialsImporter {
 		return study;
 	}
 	
-	public static void getClinicaltrialsData(Study study, String url) throws IOException, MalformedURLException{
+	public static void getClinicaltrialsData(Study study, String url) throws IOException{
 		URL updateWebService;
 		
 		try {

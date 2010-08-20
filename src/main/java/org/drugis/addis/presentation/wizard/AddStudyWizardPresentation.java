@@ -24,7 +24,6 @@ package org.drugis.addis.presentation.wizard;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -52,17 +51,17 @@ import org.drugis.addis.imports.ClinicaltrialsImporter;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.BasicArmPresentation;
 import org.drugis.addis.presentation.ListHolder;
-import org.drugis.addis.presentation.SelectEndpointPresentation;
-import org.drugis.addis.presentation.StudyMeasurementTableModel;
+import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.MutableCharacteristicHolder;
 import org.drugis.addis.presentation.PopulationCharTableModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectAdverseEventsPresentation;
+import org.drugis.addis.presentation.SelectEndpointPresentation;
 import org.drugis.addis.presentation.SelectFromFiniteListPresentation;
 import org.drugis.addis.presentation.SelectPopulationCharsPresentation;
+import org.drugis.addis.presentation.StudyMeasurementTableModel;
 import org.drugis.addis.presentation.StudyNoteHolder;
 import org.drugis.addis.presentation.StudyPresentation;
-import org.drugis.addis.presentation.ModifiableHolder;
 
 import com.jgoodies.binding.value.ValueModel;
 
@@ -211,8 +210,8 @@ public class AddStudyWizardPresentation {
 		return d_domain;
 	}
 
-	public void importCT() throws MalformedURLException, IOException{
-		Object studyID = getIdModel().getValue();
+	public void importCT() throws IOException {
+		String studyID = getIdModel().getValue().toString().trim().replace(" ", "%20");
 		String url = "http://clinicaltrials.gov/show/"+studyID+"?displayxml=true";
 		d_importedStudyPM = (StudyPresentation) new StudyPresentation(ClinicaltrialsImporter.getClinicaltrialsData(url),d_pmf);
 		d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study("", new Indication(0l,"")),d_pmf);

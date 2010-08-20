@@ -84,13 +84,6 @@ public class AddDrugView implements ViewBuilder {
 				d_loadButton.setIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
 				d_loadButton.setEnabled(false);
 				
-				try {
-					Thread.sleep(1500);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
 				d_atcCode = new AtcParser().getAtcCode(d_model.getModel(Drug.PROPERTY_NAME).getString()).getCode();
 				d_loadButton.setIcon(ImageLoader.getIcon(FileNames.ICON_SEARCH));
 				d_model.getModel(Drug.PROPERTY_ATCCODE).setValue(d_atcCode);
