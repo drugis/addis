@@ -90,7 +90,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 			for (int rank = 1; rank <= getBean().getIncludedDrugs().size(); ++rank) {	
 				Treatment treatment = builder.getTreatment(d.toString());
 				double rankProb = consistencyModel.rankProbability(treatment, rank);
-				d_dataset.addValue((Number) rankProb, d, rank);
+				d_dataset.addValue((Number) rankProb, "Rank " + rank, d);
 			}	
 		}
 	}
@@ -101,9 +101,11 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 
 	public String getRankProbabilityRankChartNote() {
 		if(getBean().getOutcomeMeasure().getDirection() == Direction.HIGHER_IS_BETTER) {
-			return "A lower rank number indicates the drug is better";
+			//return "A lower rank indicates the drug is better";
+			return "Rank 1 is best, rank N is worst.";
 		} else {
-			return "A higher rank number indicates the drug is better";
+			//return "A higher rank indicates the drug is better";
+			return "Rank 1 is worst, rank N is best.";
 		}
 	}
 }

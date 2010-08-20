@@ -24,6 +24,7 @@ package org.drugis.addis.entities;
 import java.io.Serializable;
 import java.util.Date;
 
+
 import org.drugis.addis.util.EnumXMLFormat;
 
 public enum BasicStudyCharacteristic implements Serializable, Characteristic {
@@ -38,7 +39,7 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 	STATUS("Study status", Status.class, false),
 	INCLUSION("Inclusion criteria", String.class, false),
 	EXCLUSION("Exclusion criteria", String.class, false),
-	PUBMED("Pubmed ID", PubmedId.class, false),
+	PUBMED("Pubmed ID", PubMedIdList.class, false),
 	SOURCE("Source of the data", Source.class, false),
 	CREATION_DATE("Creation/extraction date", Date.class, false);
 
@@ -104,16 +105,6 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 		public String toString() {
 			return d_title;
 		}		
-	}
-	
-	public class SmallText {
-		public SmallText() {
-		}
-	}
-	
-	public class PubmedId extends SmallText {
-		public PubmedId() {
-		}
 	}
 	
 	BasicStudyCharacteristic(String name, Class<?> type, boolean defaultVisible) {

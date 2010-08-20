@@ -43,9 +43,10 @@ import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;
+import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.treeplot.ForestPlot;
-import org.drugis.common.gui.PNGExporter;
+import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -56,11 +57,9 @@ public class RandomEffectsMetaAnalysisView extends AbstractMetaAnalysisView<Rand
 implements ViewBuilder {
 	
 	private boolean d_overView;
-	private final Main d_parent;
 
 	public RandomEffectsMetaAnalysisView(RandomEffectsMetaAnalysisPresentation pm, Main parent, boolean overView) {
 		super(pm, parent);
-		d_parent = parent;
 		d_overView = overView;
 	}
 
@@ -69,7 +68,7 @@ implements ViewBuilder {
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
-		PanelBuilder builder = new PanelBuilder(layout);
+		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();
 		
 		CellConstraints cc =  new CellConstraints();		
@@ -94,7 +93,8 @@ implements ViewBuilder {
 					d_pm.getAnalysisType() + " is not a supported type of endpoint");
 		}
 
-		return builder.getPanel();
+		JPanel panel = builder.getPanel();
+		return panel;
 	}
 
 	private void buildContinuousPlotsPart(PanelBuilder builder,
@@ -153,7 +153,7 @@ implements ViewBuilder {
 		saveBtn.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 			ForestPlot plot = canvas.getPlot();
-			PNGExporter.writePNG(d_parent, plot, (int) plot.getSize().getWidth(),(int) plot.getSize().getHeight());
+			ImageExporter.writeImage(d_parent, plot, (int) plot.getSize().getWidth(),(int) plot.getSize().getHeight());
 			}
 		});
 		encapsulating.add(saveBtn, BorderLayout.SOUTH);

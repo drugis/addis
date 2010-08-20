@@ -60,7 +60,7 @@ import fi.smaa.jsmaa.simulator.SMAA2Results;
 
 @SuppressWarnings("serial")
 public class BenefitRiskPresentation extends PresentationModel<BenefitRiskAnalysis>{
-
+	
 	private class AnalysisProgressListener implements ProgressListener {
 		JProgressBar d_progBar;
 		private MCMCModel d_networkModel;
@@ -224,11 +224,9 @@ public class BenefitRiskPresentation extends PresentationModel<BenefitRiskAnalys
 	}
 	
 	
-	public List<PresentationModel<MetaAnalysis>> getAnalysesPMList() {
-		List<PresentationModel<MetaAnalysis>> entitiesPMs = new ArrayList<PresentationModel<MetaAnalysis>>();
-		for (MetaAnalysis a : getBean().getMetaAnalyses())
-			entitiesPMs.add(d_pmf.getModel(a));
-		return entitiesPMs;
+	public ListHolder<MetaAnalysis> getAnalysesModel() {
+		// FIXME: By the time it's possible the edit BR-analyses, this listholder should be hooked up.
+		return new DefaultListHolder<MetaAnalysis>(getBean().getMetaAnalyses());
 	}
 
 	public BenefitRiskMeasurementTableModel getMeasurementTableModel(boolean relative) {
@@ -307,5 +305,9 @@ public class BenefitRiskPresentation extends PresentationModel<BenefitRiskAnalys
 			d_allNetworkModelsReadyListener.addModel(model);
 			d_baselineProgressListeners.add(new AnalysisProgressListener(model));
 		}
+	}
+
+	public PresentationModelFactory getFactory() {
+		return d_pmf;
 	}
 }

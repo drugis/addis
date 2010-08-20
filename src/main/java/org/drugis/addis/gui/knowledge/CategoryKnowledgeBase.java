@@ -1,19 +1,16 @@
 package org.drugis.addis.gui.knowledge;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.SortedSet;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.gui.CategoryKnowledge;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.builder.EntitiesNodeView;
+import org.drugis.addis.gui.components.EntitiesTablePanel;
+import org.drugis.addis.gui.components.PanelViewBuilder;
+import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.gui.ViewBuilder;
-
-import com.jgoodies.binding.PresentationModel;
 
 public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 	private final String d_singular;
@@ -65,19 +62,14 @@ public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 		return false;
 	}
 	
-	private ViewBuilder buildEntityTable(SortedSet<? extends Entity> allX,
+	private ViewBuilder buildEntityTable(ListHolder<? extends Entity> entities,
 			String[] formatter, String title, PresentationModelFactory pmf, Main main) {
-		List<PresentationModel<? extends Entity>> dpms = new ArrayList<PresentationModel<? extends Entity>>();
-		for (Entity i : allX) {
-			dpms.add(pmf.getModel(i));
-		}
-		EntitiesNodeView view = new EntitiesNodeView(
-				Arrays.asList(formatter), dpms, main, title);
-		return view;
+		return new PanelViewBuilder(new EntitiesTablePanel(Arrays.asList(formatter), 
+														   entities, main, pmf, getPlural()));
 	}
 	
 	public ViewBuilder getCategoryViewBuilder(Main main, Domain domain) {
-		return buildEntityTable(domain.getCategoryContents(domain.getCategory(getEntityClass())),
+		return buildEntityTable(domain.getCategoryContentsModel(domain.getCategory(getEntityClass())),
 				getShownProperties(), getPlural(), main.getPresentationModelFactory(), main);
 	}
 	

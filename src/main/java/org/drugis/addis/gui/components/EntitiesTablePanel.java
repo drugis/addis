@@ -28,13 +28,16 @@ import java.util.List;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.EntityTableModel;
-
-import com.jgoodies.binding.PresentationModel;
+import org.drugis.addis.presentation.ListHolder;
+import org.drugis.addis.presentation.PresentationModelFactory;
 
 @SuppressWarnings("serial")
 public class EntitiesTablePanel extends TablePanel {
-	public EntitiesTablePanel(List<String> formatter, final List<PresentationModel<? extends Entity>> entities, final Main parent) {
-		super(new EnhancedTable(new EntityTableModel(entities, formatter)));
+	private final ListHolder<? extends Entity> d_entities;
+
+	public EntitiesTablePanel(List<String> formatter, ListHolder<? extends Entity> entities, final Main parent, PresentationModelFactory pmf, String title) {
+		super(new EnhancedTable(new EntityTableModel(entities, formatter, pmf, title)));
+		d_entities = entities;
 				
 		if (parent != null)
 			getTable().addKeyListener(new EntityTableDeleteListener(parent));
@@ -44,7 +47,7 @@ public class EntitiesTablePanel extends TablePanel {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() > 1) {
 					int row = ((EnhancedTable)e.getComponent()).rowAtPoint(e.getPoint());
-					Entity entity = entities.get(row).getBean();
+					Entity entity = d_entities.getValue().get(row);
 					parent.leftTreeFocus(entity);
 				}
 			}

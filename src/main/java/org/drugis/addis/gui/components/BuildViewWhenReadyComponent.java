@@ -82,7 +82,7 @@ public class BuildViewWhenReadyComponent extends JPanel {
 	private void buildWaitingView() {
 		setVisible(false);
 		removeAll();
-		JLabel spinner = new JLabel(ImageLoader.getIcon(FileNames.ICON_WAITING));
+		JLabel spinner = new JLabel(ImageLoader.getIcon(FileNames.ICON_LOADING_LARGE));
 		JLabel label = new JLabel(d_message);
 		JPanel nested = new JPanel(new BorderLayout());
 		nested.add(spinner, BorderLayout.CENTER);

@@ -24,12 +24,12 @@ package org.drugis.addis.gui.builder;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.table.AbstractTableModel;
@@ -42,13 +42,14 @@ import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.components.EnhancedTable;
+import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
 import org.drugis.addis.util.HtmlWordWrapper;
+import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
-import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
@@ -61,6 +62,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
 
+import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -134,7 +136,7 @@ implements ViewBuilder {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
-		d_builder = new PanelBuilder(layout);
+		d_builder = new PanelBuilder(layout, new ScrollableJPanel());
 	
 		d_builder.setDefaultDialogBorder();
 		
@@ -155,7 +157,8 @@ implements ViewBuilder {
 		d_builder.addSeparator("Results - network consistency model", d_cc.xy(1, 21));
 		buildConsistencyPart();
 
-		return d_builder.getPanel();
+		JPanel panel = d_builder.getPanel();
+		return panel;
 	}
 
 	private void buildConsistencyPart() {
@@ -173,7 +176,7 @@ implements ViewBuilder {
 		
 		consistencyPanel.add(consistencyResultsPart,BorderLayout.CENTER);
 
-		consistencyPanel.add(createRankProbChart(d_pm.getBean().getConsistencyModel()), BorderLayout.SOUTH);
+		consistencyPanel.add(createRankProbChart(), BorderLayout.SOUTH);
 		JPanel collapsiblePanel = GUIFactory.createCollapsiblePanel(consistencyPanel);
 		/* Fix: ScrollPanel Viewport doesn't have correct size when containing a CollapsiblePanel*/
 		collapsiblePanel.setBorder(BorderFactory.createEmptyBorder(0,0,20,0));  
@@ -206,45 +209,65 @@ implements ViewBuilder {
 		d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyPanel), d_cc.xy(1, 19));
 	}
 
-	private JComponent createRankProbChart(ConsistencyModel networkModel) {
+	private JComponent createRankProbChart() {
 		CategoryDataset dataset = d_pm.getRankProbabilityDataset();
-		
-		JFreeChart chart = ChartFactory.createBarChart("Rank Probability", "Rank", "Probability", 
+		JFreeChart chart = ChartFactory.createBarChart("Rank Probability", "Treatment", "Probability", 
 						dataset, PlotOrientation.VERTICAL, true, false, false);	
-		
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
+		chart.addSubtitle(new org.jfree.chart.title.ShortTextTitle(d_pm.getRankProbabilityRankChartNote()));
+
+		FormLayout layout = new FormLayout(
+				"pref:grow:fill",
+				"p, 3dlu, p");
+		PanelBuilder builder = new PanelBuilder(layout);
+		CellConstraints cc =  new CellConstraints();
 		
 		ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setSize(chartPanel.getPreferredSize().width, chartPanel.getPreferredSize().height+1);
 		chartPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 	
-		panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
-		panel.add(chartPanel, BorderLayout.CENTER);
+		builder.add(chartPanel, cc.xy(1, 1));
 		
-		panel.add(new JLabel(d_pm.getRankProbabilityRankChartNote()), BorderLayout.SOUTH);
+		ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
+		bbuilder.addButton(createSaveImageButton(chartPanel));
+		builder.add(bbuilder.getPanel(), cc.xy(1, 3));
 
-		return panel;
+		return builder.getPanel();
+	}
+
+	private JButton createSaveImageButton(final JComponent comp) {
+		JButton button = new JButton("Save Image");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ImageExporter.writeImage(d_main, comp, (int) comp.getSize().getWidth(), (int) comp.getSize().getHeight());
+			}
+		});
+		return button;
 	}
 
 	@SuppressWarnings("serial")
 	public JComponent buildStudyGraphPart() {
-		JPanel encapsulating = new JPanel(new BorderLayout());
+		FormLayout layout = new FormLayout(
+				"pref",
+				"p, 3dlu, p");
+		PanelBuilder builder = new PanelBuilder(layout);
+		CellConstraints cc =  new CellConstraints();
 	
 		final StudyGraph panel = new StudyGraph(d_pm.getStudyGraphModel());
 		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		panel.layoutGraph();
-		encapsulating.add(panel, BorderLayout.NORTH);
+		builder.add(panel, cc.xy(1, 1));
 		
 		JButton saveBtn = new JButton("Save Image");
 		saveBtn.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
-				panel.saveAsPng(d_main);
+				panel.saveImage(d_main);
 			}
 		});
-		encapsulating.add(saveBtn, BorderLayout.SOUTH);
+		ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
+		bbuilder.addButton(saveBtn);
+		builder.add(bbuilder.getPanel(), cc.xy(1, 3));
 		
-		return encapsulating;
+		return builder.getPanel();
 	}
 	
 	public JComponent buildResultsPart(MixedTreatmentComparison networkModel, JProgressBar progBar) {

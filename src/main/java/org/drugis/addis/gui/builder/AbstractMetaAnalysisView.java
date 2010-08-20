@@ -38,7 +38,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class AbstractMetaAnalysisView<T extends AbstractMetaAnalysisPresentation<?>> {
+public abstract class AbstractMetaAnalysisView<T extends AbstractMetaAnalysisPresentation<?>> {
 
 	protected T d_pm;
 	protected Main d_parent;

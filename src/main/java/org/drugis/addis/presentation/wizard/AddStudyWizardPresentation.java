@@ -158,6 +158,7 @@ public class AddStudyWizardPresentation {
 	private StudyPresentation d_importedStudyPM;
 	
 	//List<ModifiableHolder<Endpoint>> d_selectedEndpointsList;
+	
 	List<BasicArmPresentation> d_selectedArmList;
 	private ListHolder<Endpoint> d_endpointListHolder;
 	private ListHolder<AdverseEvent> d_adverseEventListHolder;
@@ -165,6 +166,7 @@ public class AddStudyWizardPresentation {
 	private SelectAdverseEventsPresentation d_adverseEventSelect;
 	private SelectFromFiniteListPresentation<PopulationCharacteristic> d_populationCharSelect;
 	private SelectFromFiniteListPresentation<Endpoint> d_endpointSelect;
+	
 	private Study d_origStudy = null;
 	
 	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, Main main) {

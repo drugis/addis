@@ -34,6 +34,7 @@ public class FileNames {
 	public static final String ICON_METASTUDY_NEW = "metastudy_new.gif";
 	public static final String ICON_NETWMETASTUDY_NEW = "netwmetastudy_new.gif";
 	public static final String ICON_BENEFITRISK = "benefitrisk.gif";
+	public static final String ICON_BENEFITRISK_NEW = "benefitrisk_new.gif";
 	public static final String ICON_DELETE = "delete.gif";
 	public static final String ICON_EDIT = "edit.gif";
 	public static final String ICON_INDICATION = "indication.gif";
@@ -48,5 +49,7 @@ public class FileNames {
 	public static final String ICON_DOCTOR = "legodoctor.png";
 	public static final String ICON_PILLS = "handandpills.png";
 	public static final String ICON_TIP = "tip.gif";
-	public static final String ICON_WAITING = "loader.gif";
+	public static final String ICON_LOADING_LARGE = "loader32.gif";
+	public static final String ICON_LOADING = "loader16.gif";
+	public static final String ICON_SEARCH = "search.gif";
 }

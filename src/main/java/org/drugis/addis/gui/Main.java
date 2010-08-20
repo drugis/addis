@@ -22,7 +22,6 @@
 package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -47,7 +46,6 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -78,7 +76,6 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityCategory;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
-import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.common.ImageLoader;
@@ -102,7 +99,7 @@ public class Main extends JFrame {
 		}
 
 		@Override
-		public void doAction(String path) {
+		public void doAction(String path, String extension) {
 			saveDomainToFile(path);
 		}
 	}
@@ -124,8 +121,7 @@ public class Main extends JFrame {
 	private String d_curFilename = null;
 	private final static String DEFAULT_TITLE = AppInfo.getAppName() + " v" + AppInfo.getAppVersion();
 	private JMenuItem d_saveMenuItem;
-	private StatusBar d_statusBar;
-	
+
 	public PresentationModelFactory getPresentationModelFactory() {
 		return d_pmManager;
 	}
@@ -425,7 +421,7 @@ public class Main extends JFrame {
 	}
 
 	private JMenuItem createLoadItem() {
-		JMenuItem openItem = new JMenuItem("Load XML", ImageLoader
+		JMenuItem openItem = new JMenuItem("Load", ImageLoader
 				.getIcon(FileNames.ICON_OPENFILE));
 		openItem.setMnemonic('l');
 		final Main me = this;
@@ -435,7 +431,7 @@ public class Main extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				new FileLoadDialog(me, "xml", "XML files") {
 					@Override
-					public void doAction(String path) {
+					public void doAction(String path, String extension) {
 						try {
 							loadDomainFromXMLFile(path);
 							setCurrentFileName(path);
@@ -451,7 +447,7 @@ public class Main extends JFrame {
 	}
 
 	private JMenuItem createSaveItem() {
-		d_saveMenuItem = new JMenuItem("Save XML", ImageLoader
+		d_saveMenuItem = new JMenuItem("Save", ImageLoader
 				.getIcon(FileNames.ICON_SAVEFILE));
 		d_saveMenuItem.setMnemonic('s');
 		
@@ -474,12 +470,14 @@ public class Main extends JFrame {
 	}
 	
 	private JMenuItem createSaveAsItem() {
-		JMenuItem saveItem = new JMenuItem("Save as XML...", ImageLoader
+		JMenuItem saveItem = new JMenuItem("Save As", ImageLoader
 				.getIcon(FileNames.ICON_SAVEFILE));
 		
 		// attach to ctrl-shift-s
 		saveItem.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
+		//align "Ctrl+Shift+S" text in the menu to the right
+		saveItem.setAlignmentX(LEFT_ALIGNMENT);
 		
 		saveItem.setMnemonic('a');
 		final Main me = this;
@@ -526,11 +524,10 @@ public class Main extends JFrame {
 		initMenu();
 		initPanel();
 		initToolbar();
+		initStatusBar();
 	}
 
 	private void initToolbar() {
-		d_statusBar = new StatusBar();
-
 		JToolBar toolbar = new JToolBar();
 		toolbar.setFloatable(false);
 		toolbar.setLayout(new BorderLayout());
@@ -542,23 +539,16 @@ public class Main extends JFrame {
 				builder.addButton(createToolbarButton(knowledge));
 			}
 		}
-		builder.addGlue();
-
-		String latestVersion = AppInfo.getLatestVersion();
-		if (latestVersion != null) {
-			LinkLabel linkLabel = new LinkLabel(
-					"<font color=\"red\">new version available</font>",
-					"http://drugis.org/files/addis-" + latestVersion + ".zip");
-			linkLabel.setForeground(Color.RED);
-			builder.addButton(linkLabel);
-			builder.addRelatedGap();
-		}
-		builder.addButton(GUIFactory.buildSiteLink());
 
 		toolbar.add(builder.getPanel(), BorderLayout.CENTER);
 		toolbar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		add(toolbar, BorderLayout.NORTH);
-		add(d_statusBar, BorderLayout.SOUTH);
+	}
+
+	private void initStatusBar() {
+		StatusBar statusBar = new StatusBar();
+		statusBar.setFloatable(false);
+		add(statusBar, BorderLayout.SOUTH);
 	}
 
 	private JButton createToolbarButton(final CategoryKnowledge knowledge) {

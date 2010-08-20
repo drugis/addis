@@ -19,6 +19,7 @@ public abstract class FileDialog {
 			d_description = description;
 			
 		}
+		
 		@Override
 		public String getDescription() {
 			return d_description;
@@ -35,6 +36,9 @@ public abstract class FileDialog {
 	        return ext;
 	    }
 	    
+		public String getPresentExtension() {
+			return d_extension;
+		}
 		
 		@Override
 		 public boolean accept(File f) {
@@ -61,25 +65,27 @@ public abstract class FileDialog {
     	return absPath.toLowerCase().contains("."+ext) ? absPath : absPath+"."+ext;
     }
 
+    public FileDialog(Component frame, String extension, String description){
+    	this(frame, new String [] {extension}, new String [] {description});
+    }
 	
-	public FileDialog(Component frame, String extension, final String description) {
+	public FileDialog(Component frame, String [] extension, String [] description) {
 		
 		d_fileChooser = new JFileChooser();
-		d_fileChooser.addChoosableFileFilter(new CustomFileFilter(extension, description));
-		
+		for(int i=0; i< extension.length; i++) {
+			d_fileChooser.addChoosableFileFilter(new CustomFileFilter(extension[i], description[i]));
+		}
 		if (d_currentDirectory != null)
 			d_fileChooser.setCurrentDirectory(d_currentDirectory);
-			
+	}
 	
-}
-	
-	protected void handleFileDialogResult(Component frame, String extension,
-			int returnVal, String message) {
+	protected void handleFileDialogResult(Component frame, int returnVal, String message) {
 		d_currentDirectory = d_fileChooser.getCurrentDirectory();
+		String extension = ((CustomFileFilter) d_fileChooser.getFileFilter()).getPresentExtension();
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			try {
 				String path = fixExtension(d_fileChooser.getSelectedFile().getAbsolutePath(),extension);
-				doAction(path);
+				doAction(path, extension);
 			} catch (Exception e1) {
 				
 				JOptionPane.showMessageDialog(frame,
@@ -91,6 +97,6 @@ public abstract class FileDialog {
 		}
 	}
 
-	public abstract void doAction(String path);
+	public abstract void doAction(String path, String extension);
 	
 }
