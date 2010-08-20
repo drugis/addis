@@ -738,14 +738,14 @@ public class AddStudyWizard implements ViewBuilder{
 				AuxComponentFactory.addNoteField(d_builder, cc, 7, 3, 1, layout, d_pm.getCharacteristicNoteModel(BasicStudyCharacteristic.TITLE));
 				
 				// add clear button
-				JButton clearButton = new JButton("clear");
+				JButton clearButton = new JButton("Clear input");
 				clearButton.addActionListener(new AbstractAction() {
 					public void actionPerformed(ActionEvent arg0) {
 						d_pm.clearStudies();
 						prepare();	
 					}
 				});
-				d_builder.add(clearButton, cc.xy(5, 11));
+				d_builder.add(clearButton, cc.xy(3, 11));
 				
 				d_builder.add(buildTip(), cc.xy(3, 13));
 				
