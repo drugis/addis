@@ -2,6 +2,8 @@ package org.drugis.addis.util.threading;
 
 import java.lang.Thread.State;
 
+import org.drugis.common.threading.Suspendable;
+
 public class SuspendableThreadWrapper {
 	private Thread d_thread;
 	private final Runnable d_runnable;
@@ -14,7 +16,7 @@ public class SuspendableThreadWrapper {
 	public synchronized void start() {
 		if (d_thread == null) {
 			startAsNewThread();
-		} else if (d_runnable instanceof SuspendableRunnable) {
+		} else if (d_runnable instanceof Suspendable) {
 			resumeThread();
 		} else {
 			throw new RuntimeException("Thread already running and not suspendable.");
@@ -24,8 +26,8 @@ public class SuspendableThreadWrapper {
 	public synchronized boolean suspend() {
 		if (d_thread == null) {
 			throw new IllegalStateException("Thread not started yet");
-		} else if (d_runnable instanceof SuspendableRunnable) {
-			((SuspendableRunnable) d_runnable).suspend();
+		} else if (d_runnable instanceof Suspendable) {
+			((Suspendable) d_runnable).suspend();
 			return true;
 		} else {
 			return false;
@@ -44,7 +46,7 @@ public class SuspendableThreadWrapper {
 	}
 	
 	private void resumeThread() {
-		SuspendableRunnable susRunnable = (SuspendableRunnable) d_runnable;
+		Suspendable susRunnable = (Suspendable) d_runnable;
 		if (susRunnable.isThreadSuspended())
 			susRunnable.wakeUp();
 		else {

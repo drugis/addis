@@ -7,11 +7,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.drugis.common.threading.AbstractSuspendable;
 import org.junit.Test;
 
 public class ThreadHandlerIT {
 
-	public static class SuspendableTestThread extends AbstractSuspendableRunnable{
+	public static class SuspendableTestThread extends AbstractSuspendable{
 		
 		private final int d_ms;
 		boolean d_done;
