@@ -47,7 +47,7 @@ import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
-import org.drugis.addis.util.HtmlWordWrapper;
+import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
 import org.drugis.mtc.InconsistencyModel;
@@ -168,9 +168,10 @@ implements ViewBuilder {
 		if(!d_pm.getBean().getConsistencyModel().isReady())
 			d_builder.add(d_conProgressBar, d_cc.xy(1, 23));
 
-		String consistencyText = "<html>If there is no relevant inconsistency in the evidence, a consistency model can be used to draw conclusions <br>about the relative effect of the included treatments. Using normal meta-analysis, we could only get a subset <br>of the confidence intervals for relative effects we derive using network meta-analysis. <br>Network meta-analysis gives a consistent, integrated picture of the relative effects. However, given such a <br>consistent set of relative effect estimates, it may still be difficult to draw conclusions on a potentially large <br>set of treatments. Luckily, the Bayesian approach allows us to do even more with the data, and can be used <br>to estimate the probability that, given the priors and the data, each of the treatments is the best, the <br>second best, etc. This is given below in the rank probability plot. Rank probabilities sum to one, both within a <br>rank over treatments and within a treatment over ranks.</html>";
-		JComponent consistencyPane = HtmlWordWrapper.createHtmlPane(consistencyText);
-		consistencyPanel.add(consistencyPane, BorderLayout.NORTH);
+		String consistencyText = "<html>If there is no relevant inconsistency in the evidence, a consistency model can be used to draw conclusions about the relative effect of the included treatments. Using normal meta-analysis, we could only get a subset of the confidence intervals for relative effects we derive using network meta-analysis. Network meta-analysis gives a consistent, integrated picture of the relative effects. However, given such a consistent set of relative effect estimates, it may still be difficult to draw conclusions on a potentially large set of treatments. Luckily, the Bayesian approach allows us to do even more with the data, and can be used to estimate the probability that, given the priors and the data, each of the treatments is the best, the second best, etc. This is given below in the rank probability plot. Rank probabilities sum to one, both within a rank over treatments and within a treatment over ranks.</html>";
+		JComponent consistencyNote = AuxComponentFactory.createNoteField(consistencyText);
+		consistencyPanel.add(consistencyNote, BorderLayout.NORTH);
+		
 		
 		JComponent consistencyResultsPart = buildResultsPart(d_pm.getBean().getConsistencyModel(), d_conProgressBar);
 		
@@ -182,20 +183,19 @@ implements ViewBuilder {
 		collapsiblePanel.setBorder(BorderFactory.createEmptyBorder(0,0,20,0));  
 		
 		d_builder.add(collapsiblePanel, d_cc.xy(1, 27));
-	}
+	}	
 
 	private void buildInconsistencyPart() {
 		JPanel inconsistencyPanel = new JPanel(new BorderLayout());
-
+		
 		if(!d_pm.getBean().getInconsistencyModel().isReady())
 			d_builder.add(d_incProgressBar, d_cc.xy(1, 15));
 		
-		String inconsistencyText = "<html>In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em><br> of evidence, in addition to <em>heterogeneity</em> within a comparison. Whereas heterogeneity represents <br>between-study variation in the measured relative effect of a pair of treatments, inconsistency can only <br> occur when a treatment C has a different effect when it is compared with A or B (i.e., studies comparing <br>A and C are systematically different from studies comparing B and C). Thus, inconsistency may even occur <br> with normal meta-analysis, but can only be detected using a network meta-analysis, and then only when <br>there are closed loops in the evidence structure. For more information about assessing inconsistency, <br>see G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, <br>Journal of the American Statistical Association, 101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.</html>";
-		JComponent inconsistencyPane = HtmlWordWrapper.createHtmlPane(inconsistencyText);
-		inconsistencyPanel.add(inconsistencyPane, BorderLayout.NORTH);
+		String inconsistencyText = "<html>In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em> of evidence, in addition to <em>heterogeneity</em> within a comparison. Whereas heterogeneity represents between-study variation in the measured relative effect of a pair of treatments, inconsistency can only occur when a treatment C has a different effect when it is compared with A or B (i.e., studies comparing A and C are systematically different from studies comparing B and C). Thus, inconsistency may even occur with normal meta-analysis, but can only be detected using a network meta-analysis, and then only when there are closed loops in the evidence structure. For more information about assessing inconsistency, see G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, Journal of the American Statistical Association, 101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.</html>";
+		JComponent inconsitencyNote = AuxComponentFactory.createNoteField(inconsistencyText);
+		inconsistencyPanel.add(inconsitencyNote, BorderLayout.NORTH);
 		
 		JComponent inconsistencyResultsPart = buildResultsPart(d_pm.getBean().getInconsistencyModel(),d_incProgressBar);
-		
 		inconsistencyPanel.add(inconsistencyResultsPart,BorderLayout.CENTER);
 		
 		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(

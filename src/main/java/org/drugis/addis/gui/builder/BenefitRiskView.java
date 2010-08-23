@@ -46,7 +46,7 @@ import org.drugis.addis.gui.components.EntitiesTablePanel;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.BenefitRiskPresentation;
-import org.drugis.addis.util.HtmlWordWrapper;
+import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
@@ -334,20 +334,26 @@ public class BenefitRiskView implements ViewBuilder {
 		FormLayout layout = new FormLayout("pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
-		
+		/*
 		builder.add(HtmlWordWrapper.createHtmlPane(
 				HtmlWordWrapper.wordWrap(
 				"Relative measurements: odds ratio or mean difference, with "
 						+ d_pm.getBean().getBaseline() +" as the common comparator.", true)),
-				cc.xy(1, 1));
+				cc.xy(1, 1));*/
+		builder.add(AuxComponentFactory.createNoteField("Relative measurements: odds ratio or mean difference, with "
+				+ d_pm.getBean().getBaseline() +" as the common comparator."),cc.xy(1, 1));
 		builder.add(new TablePanel(new EnhancedTable(d_pm.getMeasurementTableModel(true))), cc.xy(1, 3));
-	
+		/*
 		builder.add(HtmlWordWrapper.createHtmlPane(
 				HtmlWordWrapper.wordWrap(
 				"Absolute measurements: odds or mean calculated from the assumed odds or mean for " + 
 				d_pm.getBean().getBaseline() + ". The method used to derive the assumed odds or mean are heuristic, "
 				+ "and the absolute values should be interpreted with care.", true)),
 				cc.xy(1, 5));
+				*/
+		builder.add(AuxComponentFactory.createNoteField("Absolute measurements: odds or mean calculated from the assumed odds or mean for " + 
+				d_pm.getBean().getBaseline() + ". The method used to derive the assumed odds or mean are heuristic, "
+				+ "and the absolute values should be interpreted with care."), cc.xy(1, 5));
 		builder.add(new TablePanel(new EnhancedTable(d_pm.getMeasurementTableModel(false))), cc.xy(1, 9));
 
 		return builder.getPanel();

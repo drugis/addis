@@ -22,12 +22,14 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.NumberFormatter;
 import javax.swing.text.StyledDocument;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.util.HtmlWordWrapper;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
@@ -137,7 +139,7 @@ public class AuxComponentFactory {
 		return scroll;
 	}
 
-	public static int addNoteField(PanelBuilder builder, CellConstraints cc,	int row, int col, int width, FormLayout layout, ValueModel model) {
+	public static int addNoteField(PanelBuilder builder, CellConstraints cc, int row, int col, int width, FormLayout layout, ValueModel model) {
 		if(model != null && model.getValue() != null && model.getValue() != ""){
 			LayoutUtil.addRow(layout);
 			row+=2;
@@ -166,5 +168,26 @@ public class AuxComponentFactory {
 			builder.add(pane, cc.xyw(col, row, width));
 		}
 		return row;
+	}
+	
+	public static JComponent createNoteField(String text) {
+		if(text.length() != 0){	
+			JComponent htmlPane = HtmlWordWrapper.createHtmlPane(text);
+			htmlPane.setBorder(null);
+			
+			JScrollPane pane = new JScrollPane(htmlPane);
+			pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			
+			pane.setMinimumSize(AddStudyWizard.defaultTextPaneDimension((JTextPane)htmlPane));			
+			
+			String[] arr = StringEscapeUtils.escapeHtml(text).split(" ");
+			pane.setPreferredSize(new Dimension(0, arr.length + 25) );
+			
+			pane.getVerticalScrollBar().setValue(1);
+			pane.setWheelScrollingEnabled(true);
+			
+			return pane;
+		}
+		return null;
 	}
 }

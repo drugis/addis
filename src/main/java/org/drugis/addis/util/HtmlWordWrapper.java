@@ -91,6 +91,7 @@ public class HtmlWordWrapper {
 	
 		generalPane.setBackground(paneColor);
 		generalPane.setBorder(BorderFactory.createEtchedBorder());
+		
 		return generalPane;
 	}
 }
