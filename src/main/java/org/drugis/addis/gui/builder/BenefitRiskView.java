@@ -153,19 +153,35 @@ public class BenefitRiskView implements ViewBuilder {
 	private class PreferencesBuilder implements ViewBuilder {
 
 		public JComponent buildPanel() {
+			FormLayout layout = new FormLayout("pref:grow:fill", "p, 3dlu, p");
+			PanelBuilder builder = new PanelBuilder(layout);
+			CellConstraints cc = new CellConstraints();
+			
 			final JPanel panel = new JPanel();
 			panel.setLayout(new BorderLayout());
-			final PreferencePresentationModel ppm = d_pm.getPreferencePresentationModel();
-			ppm.addPropertyChangeListener(PreferencePresentationModel.PREFERENCE_TYPE,
+			builder.add(panel, cc.xy(1, 1));
+
+			ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
+			bbuilder.addButton(createExportButton());
+			JPanel buttonBar = bbuilder.getPanel();
+			builder.add(buttonBar, cc.xy(1, 3));
+
+			d_pm.getPreferencePresentationModel().addPropertyChangeListener(
+					PreferencePresentationModel.PREFERENCE_TYPE,
 					new PropertyChangeListener() {
 						public void propertyChange(PropertyChangeEvent arg0) {
-							panel.removeAll();
-							panel.add(new PreferenceInformationView(ppm, new ClinicalScaleRenderer(d_pm)).buildPanel());
+							rebuildPanel(panel);
 						}			
-			});
-			JComponent prefPanel = new PreferenceInformationView(ppm, new ClinicalScaleRenderer(d_pm)).buildPanel();
-			panel.add(prefPanel);
-			return panel;
+					});
+			rebuildPanel(panel);
+			
+			return builder.getPanel();
+		}
+
+		private void rebuildPanel(final JPanel panel) {
+			panel.removeAll();
+			JComponent prefPanel = new PreferenceInformationView(d_pm.getPreferencePresentationModel(), new ClinicalScaleRenderer(d_pm)).buildPanel();
+			panel.add(prefPanel, BorderLayout.CENTER);
 		}
 		
 	}
@@ -249,26 +265,11 @@ public class BenefitRiskView implements ViewBuilder {
 			
 			ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
 			bbuilder.addButton(createSaveImageButton(findChartPanel(viewPanel)));
-			bbuilder.addButton(createExportButton());
 			panel.add(bbuilder.getPanel(), BorderLayout.SOUTH);
-			
+
 			return panel;
 		}
 
-		private JButton createExportButton() {
-			JButton expButton = new JButton("Export model to JSMAA");
-			expButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					new FileSaveDialog(d_main, "jsmaa", "JSMAA") {
-						@Override
-						public void doAction(String path, String extension) {
-							d_pm.saveSmaa(path);
-						}
-					};
-				}
-			});
-			return expButton;
-		}
 	}
 	
 	private JButton createSaveImageButton(final JComponent chart) {
@@ -279,6 +280,21 @@ public class BenefitRiskView implements ViewBuilder {
 			}
 		});
 		return button;
+	}
+
+	private JButton createExportButton() {
+		JButton expButton = new JButton("Export model to JSMAA");
+		expButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new FileSaveDialog(d_main, "jsmaa", "JSMAA") {
+					@Override
+					public void doAction(String path, String extension) {
+						d_pm.saveSmaa(path);
+					}
+				};
+			}
+		});
+		return expButton;
 	}
 	
 	// FIXME: the need for this hax should be fixed in JSMAA.
