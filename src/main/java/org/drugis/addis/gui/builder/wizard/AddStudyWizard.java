@@ -28,8 +28,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
@@ -87,13 +85,12 @@ import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
+import org.pietschy.wizard.AbstractWizardModel;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardAdapter;
 import org.pietschy.wizard.WizardEvent;
-import org.pietschy.wizard.WizardModel;
-import org.pietschy.wizard.models.Condition;
-import org.pietschy.wizard.models.DynamicModel;
+import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.beans.PropertyConnector;
@@ -119,37 +116,24 @@ public class AddStudyWizard implements ViewBuilder{
 	}
 	
 	public Wizard buildPanel() {
-		DynamicModel wizardModel = buildModel(d_pm);
+		AbstractWizardModel wizardModel = buildModel(d_pm);
 		Wizard wizard = new Wizard(wizardModel);
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
-		
-		d_dialog.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowDeactivated(WindowEvent arg0) {
-				d_pm.deactivated();
-			}
-		});
-		
-		
+
 		wizard.addWizardListener(new WizardAdapter() {
 			@Override
 			public void wizardClosed(WizardEvent e) {
 				d_main.leftTreeFocus(d_pm.saveStudy());
-				// ATTENTION: Many more events which save: see edit functionality. 
-				// This event is linked to the "Finish" button
 			}
-			@Override
-			public void wizardCancelled(WizardEvent e) {
-				d_pm.deactivated();
-			}
-			
 		});
 		wizard.setPreferredSize(new Dimension(750, 750));
 		return wizard;
 	}
 
-	private DynamicModel buildModel(final AddStudyWizardPresentation pm) {
-		DynamicModel wizardModel = new DynamicModel();
+	private AbstractWizardModel buildModel(final AddStudyWizardPresentation pm) {
+		//DynamicModel wizardModel = new DynamicModel();
+		//FIXME: re-enable DynamicModel when saving of OutcomeMeasure-lists to study is sane.
+		StaticModel wizardModel = new StaticModel();
 		wizardModel.add(new EnterIdTitleWizardStep());
 		wizardModel.add(new SelectIndicationWizardStep());
 		wizardModel.add(new EnterCharacteristicsWizardStep());
@@ -157,17 +141,17 @@ public class AddStudyWizard implements ViewBuilder{
 		wizardModel.add(new SetArmsWizardStep());
 		wizardModel.add(new SetEndpointMeasurementsWizardStep());
 		wizardModel.add(new SelectAdverseEventWizardStep());
-		wizardModel.add(new SetAdverseEventMeasurementsWizardStep(), new Condition() {
+		wizardModel.add(new SetAdverseEventMeasurementsWizardStep()/*, new Condition() {
 			public boolean evaluate(WizardModel model) {
 				return pm.getAdverseEventSelectModel().getSlots().size() > 0;
 			}
-		});
+		}*/);
 		wizardModel.add(new SelectPopulationCharsWizardStep());
-		wizardModel.add(new SetPopulationCharMeasurementsWizardStep(), new Condition() {
+		wizardModel.add(new SetPopulationCharMeasurementsWizardStep()/*, new Condition() {
 			public boolean evaluate(WizardModel model) {
 				return d_pm.getPopulationCharSelectModel().getSlots().size() > 0;
 			}			
-		});
+		}*/);
 		wizardModel.add(new ReviewStudyStep());
 		return wizardModel;
 	}
@@ -704,7 +688,9 @@ public class AddStudyWizard implements ViewBuilder{
 					
 					public void focusLost(FocusEvent e) {
 						if (!d_pm.checkID()){
-							JOptionPane.showMessageDialog(d_main, "WARNING: There is already a study with this ID in the domain."+ d_pm.getIdModel().getValue());
+							JOptionPane.showMessageDialog(d_main, "There is already a study called \"" + 
+									d_pm.getIdModel().getValue() + "\".\nPlease save under a different title.",
+									"Error: study already exists", JOptionPane.ERROR_MESSAGE);
 							setComplete(false);
 						}
 					}

@@ -33,6 +33,7 @@ import javax.swing.table.TableModel;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
@@ -238,6 +239,7 @@ public class AddStudyWizardPresentation {
 			d_populationCharSelect.addSlot();
 			d_populationCharSelect.getSlot(d_populationCharSelect.countSlots() - 1).setValue(pc);
 		}
+		
 	}
 
 	private void migrateImportToNew(Object studyID) {
@@ -358,20 +360,33 @@ public class AddStudyWizardPresentation {
 		if (d_importedStudyPM != null)
 			transferNotes();
 		
+
+		if (isEditing()) {
+			try {
+				d_domain.deleteEntity(d_origStudy);
+			} catch (DependentEntitiesException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		// Add the study to the domain.
-		Study study = getNewStudy();
-		d_domain.addStudy(study);
+		d_domain.addStudy(getNewStudy());
 		
 		d_newStudyPM.isStudyFinished();
 		
-		return study;
+		return getNewStudy();
 	}
 
 	public boolean checkID() {
-		if (d_domain.getStudies().contains(getNewStudy())) {
-				return false;
+		if (!d_domain.getStudies().contains(getNewStudy())) {
+			return true;
 		}
-		return true;
+		
+		if (isEditing()) {
+			return getNewStudy().equals(d_origStudy);
+		}
+		
+		return false;
 	}
 	
 	Study getStudy() {
@@ -490,14 +505,7 @@ public class AddStudyWizardPresentation {
 		return d_populationCharSelect;
 	}
 
-	public void deactivated() {
-		if (isEditing() && checkID())
-			d_domain.addStudy(d_origStudy);
-	}
-
 	public boolean isEditing() {
 		return (d_origStudy != null);
 	}
-
-
 }

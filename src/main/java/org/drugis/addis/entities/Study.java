@@ -97,7 +97,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public final static String PROPERTY_CHARACTERISTIC = "Characteristics";
 	public final static String PROPERTY_NOTE = "Note";
 	public final static String PROPERTY_INDICATION = "indication";
-	//public final static String PROPERTY_PUBMED = "Pubmed Id";
 	
 	private List<Arm> d_arms = new ArrayList<Arm>();
 	private String d_studyId;
@@ -108,7 +107,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	private Indication d_indication;
 	private Map<Object, Note> d_notes = new HashMap<Object, Note>();
-	//private List<String> d_pubmedList = new ArrayList<String>();
 	
 	public Study(){
 	}
@@ -117,10 +115,14 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public Study clone() {
 		Study newStudy = new Study(getStudyId(), getIndication());
 		newStudy.setArms(getArms());
-		newStudy.setMeasurements(getMeasurements());
+
 		newStudy.setEndpoints(getEndpoints());
 		newStudy.setAdverseEvents(getAdverseEvents());
 		newStudy.setPopulationCharacteristics(getPopulationCharacteristics());
+
+		// Copy measurements _AFTER_ the outcomes, since setEndpoints() etc removes orphan measurements from the study.
+		newStudy.setMeasurements(getMeasurements());
+		
 		newStudy.setCharacteristics(getCharacteristics());
 		newStudy.setNotes(getNotes());
 		return newStudy;
@@ -425,7 +427,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 
 	private boolean orphanKey(MeasurementKey k) {
-		// OutcomeMeasure measurements
+		// OutcomeMeasure measurement
 		if (k.d_outcomeM instanceof OutcomeMeasure) {
 			if (!getOutcomeMeasures().contains(k.d_outcomeM)) {
 				return true;

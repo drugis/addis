@@ -200,8 +200,7 @@ public class Main extends JFrame {
 		return d_domainMgr.getDomain();
 	}
 
-	private void loadDomainFromXMLFile(String fileName) throws IOException,
-			ClassNotFoundException {
+	private void loadDomainFromXMLFile(String fileName) throws IOException,	ClassNotFoundException {
 		File f = new File(fileName);
 		if (f.exists() && f.isFile()) {
 			FileInputStream fis = new FileInputStream(f);
@@ -211,10 +210,8 @@ public class Main extends JFrame {
 		}
 	}
 
-	private void loadDomainFromXMLResource(String fileName) throws IOException,
-			ClassNotFoundException {
-		InputStream fis = Main.class.getResourceAsStream("/org/drugis/addis/"
-				+ fileName);
+	private void loadDomainFromXMLResource(String fileName) throws IOException, ClassNotFoundException {
+		InputStream fis = Main.class.getResourceAsStream("/org/drugis/addis/" + fileName);
 		d_domainMgr.loadXMLDomain(fis);
 	}
 
@@ -280,8 +277,7 @@ public class Main extends JFrame {
 		
 		d_editMenuDeleteItem = createDeleteItem();
 		d_editMenuDeleteItem.setEnabled(false);
-		d_editMenuDeleteItem.setAccelerator(KeyStroke.getKeyStroke(
-				KeyEvent.VK_DELETE, 0));
+		d_editMenuDeleteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 		editMenu.add(d_editMenuDeleteItem);
 		
 		d_editMenuEditItem = createEditItem();
@@ -292,8 +288,7 @@ public class Main extends JFrame {
 	}
 
 	private JMenuItem createDeleteItem() {
-		JMenuItem item = new JMenuItem("Delete", ImageLoader
-				.getIcon(FileNames.ICON_DELETE));
+		JMenuItem item = new JMenuItem("Delete", ImageLoader.getIcon(FileNames.ICON_DELETE));
 		item.setMnemonic('d');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -305,8 +300,7 @@ public class Main extends JFrame {
 	}
 	
 	private JMenuItem createEditItem() {
-		JMenuItem item = new JMenuItem("Edit", ImageLoader
-				.getIcon(FileNames.ICON_EDIT));
+		JMenuItem item = new JMenuItem("Edit", ImageLoader.getIcon(FileNames.ICON_EDIT));
 		item.setMnemonic('e');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -398,8 +392,8 @@ public class Main extends JFrame {
 		JDialog dialog = new JDialog((Frame) this, "Add Study", true);
 		AddStudyWizardPresentation pm = new AddStudyWizardPresentation(getDomain(),
 				getPresentationModelFactory(), this, study);
-		//pm.setNewStudy(study);
-		deleteEntity(study, false);
+		
+		leftTreeFocus(d_domainTreeModel.getRoot());
 		AddStudyWizard wizardBuilder = new AddStudyWizard(pm, this, dialog);
 		Wizard wizard = wizardBuilder.buildPanel();
 		dialog.getContentPane().add(wizard);
@@ -447,17 +441,15 @@ public class Main extends JFrame {
 	}
 
 	private JMenuItem createSaveItem() {
-		d_saveMenuItem = new JMenuItem("Save", ImageLoader
-				.getIcon(FileNames.ICON_SAVEFILE));
+		d_saveMenuItem = new JMenuItem("Save", ImageLoader.getIcon(FileNames.ICON_SAVEFILE));
 		d_saveMenuItem.setMnemonic('s');
 		
 		// Attach to ctrl-s
-		d_saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(
-				KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+		d_saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
 		
 		final Main me = this;
 		d_saveMenuItem.addActionListener(new AbstractAction() {
-
+			
 			public void actionPerformed(ActionEvent e) {
 				if (d_curFilename == null) {				
 					new MainFileSaveDialog(me, "xml", "XML files");
@@ -470,12 +462,10 @@ public class Main extends JFrame {
 	}
 	
 	private JMenuItem createSaveAsItem() {
-		JMenuItem saveItem = new JMenuItem("Save As", ImageLoader
-				.getIcon(FileNames.ICON_SAVEFILE));
+		JMenuItem saveItem = new JMenuItem("Save As", ImageLoader.getIcon(FileNames.ICON_SAVEFILE));
 		
 		// attach to ctrl-shift-s
-		saveItem.setAccelerator(KeyStroke.getKeyStroke(
-				KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
+		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
 		//align "Ctrl+Shift+S" text in the menu to the right
 		saveItem.setAlignmentX(LEFT_ALIGNMENT);
 		
@@ -509,8 +499,7 @@ public class Main extends JFrame {
 	}
 
 	private JMenuItem createExitItem() {
-		JMenuItem exitItem = new JMenuItem("Exit", ImageLoader
-				.getIcon(FileNames.ICON_STOP));
+		JMenuItem exitItem = new JMenuItem("Exit", ImageLoader.getIcon(FileNames.ICON_STOP));
 		exitItem.setMnemonic('e');
 		exitItem.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {

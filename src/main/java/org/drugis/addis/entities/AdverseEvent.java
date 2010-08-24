@@ -49,7 +49,7 @@ public class AdverseEvent extends AbstractVariable implements OutcomeMeasure {
 	@Override
 	public int hashCode() {
 		if (d_name != null) {
-			return d_name.hashCode() + 7;
+			return d_name.hashCode() + 7; //magic number ?
 		}
 		return 0;
 	}
