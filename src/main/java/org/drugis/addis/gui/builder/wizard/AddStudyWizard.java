@@ -90,7 +90,7 @@ import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardAdapter;
 import org.pietschy.wizard.WizardEvent;
-import org.pietschy.wizard.models.StaticModel;
+import org.pietschy.wizard.models.DynamicModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.beans.PropertyConnector;
@@ -118,6 +118,7 @@ public class AddStudyWizard implements ViewBuilder{
 	public Wizard buildPanel() {
 		AbstractWizardModel wizardModel = buildModel(d_pm);
 		Wizard wizard = new Wizard(wizardModel);
+		
 		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 
 		wizard.addWizardListener(new WizardAdapter() {
@@ -131,9 +132,7 @@ public class AddStudyWizard implements ViewBuilder{
 	}
 
 	private AbstractWizardModel buildModel(final AddStudyWizardPresentation pm) {
-		//DynamicModel wizardModel = new DynamicModel();
-		//FIXME: re-enable DynamicModel when saving of OutcomeMeasure-lists to study is sane.
-		StaticModel wizardModel = new StaticModel();
+		DynamicModel wizardModel = new DynamicModel();
 		wizardModel.add(new EnterIdTitleWizardStep());
 		wizardModel.add(new SelectIndicationWizardStep());
 		wizardModel.add(new EnterCharacteristicsWizardStep());
@@ -153,6 +152,11 @@ public class AddStudyWizard implements ViewBuilder{
 			}			
 		}*/);
 		wizardModel.add(new ReviewStudyStep());
+		
+		wizardModel.setLastVisible(false); // FIXME: disable skipping of the Measurement steps!
+		// The measurements + variable lists are saved on viewing the measurement tables
+		// until this is fixed, skipping steps should be disabled.
+		
 		return wizardModel;
 	}
 	
