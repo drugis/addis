@@ -13,6 +13,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 public class PubMedIDRetriever {
+	private static final int READ_TIMEOUT = 3000;
+	private static final int CONNECTION_TIMEOUT = 3000;
 	private static final String PUBMED_API = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
 
 	public PubMedIdList importPubMedID(String StudyID) {
@@ -68,8 +70,8 @@ public class PubMedIDRetriever {
 	private InputStream openUrl(String urlOne) {
 		try { 
 			URLConnection XmlUrlOne = new URL(urlOne).openConnection();
-			XmlUrlOne.setConnectTimeout(1000);
-			XmlUrlOne.setReadTimeout(1500);
+			XmlUrlOne.setConnectTimeout(CONNECTION_TIMEOUT);
+			XmlUrlOne.setReadTimeout(READ_TIMEOUT);
 			InputStream inOne = XmlUrlOne.getInputStream();
 			return inOne;
 		} catch (Exception e) {
