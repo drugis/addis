@@ -101,7 +101,7 @@ public class AddDrugView implements ViewBuilder {
 					d_model.getModel(Drug.PROPERTY_ATCCODE).setValue(d_atcCode);
 				}
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(d_panel, "Couldn't retrieve ATC code...", e.getMessage(), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(d_panel, "Couldn't retrieve ATC code...\n"+e.getMessage(), "Connection problem" , JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
 			}
 		}
