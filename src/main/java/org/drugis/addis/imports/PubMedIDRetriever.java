@@ -67,13 +67,13 @@ public class PubMedIDRetriever {
 		return PubMedID;
 	}
 
-	private InputStream openUrl(String urlOne) {
+	private InputStream openUrl(String url) {
 		try { 
-			URLConnection XmlUrlOne = new URL(urlOne).openConnection();
-			XmlUrlOne.setConnectTimeout(CONNECTION_TIMEOUT);
-			XmlUrlOne.setReadTimeout(READ_TIMEOUT);
-			InputStream inOne = XmlUrlOne.getInputStream();
-			return inOne;
+			URLConnection urlConn = new URL(url).openConnection();
+			urlConn.setConnectTimeout(CONNECTION_TIMEOUT);
+			urlConn.setReadTimeout(READ_TIMEOUT);
+			InputStream is = urlConn.getInputStream();
+			return is;
 		} catch (Exception e) {
 			throw new RuntimeException("Could not open PubMed connection", e);
 		}

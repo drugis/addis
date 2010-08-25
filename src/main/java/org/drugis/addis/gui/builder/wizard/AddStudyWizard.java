@@ -522,7 +522,7 @@ public class AddStudyWizard implements ViewBuilder{
 			}
 			
 			public void run() {				
-					String studyID = d_pm.getIdModel().getValue().toString();
+					String studyID = d_pm.getIdModel().getValue().toString().trim().replace(" ", "%20");
 					try {
 						d_importButton.setIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
 						d_importButton.setEnabled(false);
@@ -547,8 +547,7 @@ public class AddStudyWizard implements ViewBuilder{
 			inputField.setColumns(30);
 			inputField.setToolTipText("You can enter multiple PubMed IDs delimited by comma");
 			
-			final JButton d_importButton = GUIFactory.createIconButton(FileNames.ICON_SEARCH,
-					"Search PubMed ID based on the trial ID");
+			final JButton d_importButton = GUIFactory.createIconButton(FileNames.ICON_SEARCH, "Search PubMed ID based on the trial ID");
 			d_importButton.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent arg0) {
 					PubMedIdsRetriever pubMedRetriever = new PubMedIdsRetriever(d_importButton);

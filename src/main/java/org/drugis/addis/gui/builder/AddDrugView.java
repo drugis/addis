@@ -52,7 +52,8 @@ public class AddDrugView implements ViewBuilder {
 	private String d_atcCode;
 	private JButton d_loadButton;
 	private PresentationModel<Drug> d_model;
-	private NotEmptyValidator d_validator; 
+	private NotEmptyValidator d_validator;
+	private JPanel d_panel; 
 
 	public AddDrugView(PresentationModel<Drug> presentationModel, JButton okButton) {
 		d_validator = new NotEmptyValidator(okButton);
@@ -61,7 +62,6 @@ public class AddDrugView implements ViewBuilder {
 	
 	@SuppressWarnings("serial")
 	public void initComponents() {
-		d_atcCode = null;
 		d_name = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_NAME), false);
 		d_name.setColumns(15);
 		d_validator.add(d_name);
@@ -71,9 +71,9 @@ public class AddDrugView implements ViewBuilder {
 		
 		d_loadButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-					AtcCodeRetriever codeRetriever = new AtcCodeRetriever();
-					RunnableReadyModel readyModel = new RunnableReadyModel(codeRetriever);
+					RunnableReadyModel readyModel = new RunnableReadyModel(new AtcCodeRetriever());
 					new Thread(readyModel).start();
+					//SwingUtilities.invokeLater(new Thread(readyModel));
 			}
 		});
 	}
@@ -81,20 +81,28 @@ public class AddDrugView implements ViewBuilder {
 	private class AtcCodeRetriever implements Runnable {
 		public void run() {
 			try {
+				d_atcCode = null;
+				String drugName = d_model.getModel(Drug.PROPERTY_NAME).getString().trim();
 				d_loadButton.setIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
 				d_loadButton.setEnabled(false);
 				
-				d_atcCode = new AtcParser().getAtcCode(d_model.getModel(Drug.PROPERTY_NAME).getString()).getCode();
-				d_loadButton.setIcon(ImageLoader.getIcon(FileNames.ICON_SEARCH));
-				d_model.getModel(Drug.PROPERTY_ATCCODE).setValue(d_atcCode);
-				d_loadButton.setEnabled(true);
+				d_atcCode = new AtcParser().getAtcCode(drugName.replace(" ", "%20")).getCode();
 				
+				d_loadButton.setIcon(ImageLoader.getIcon(FileNames.ICON_SEARCH));
+				d_loadButton.setEnabled(true);
+				d_model.getModel(Drug.PROPERTY_NAME).setValue(drugName);
 				if(d_atcCode == null) {
-					JOptionPane.showMessageDialog(new JPanel(), "The drug ("+d_model.getModel(Drug.PROPERTY_NAME).getString()+")\nhas no ATC code associated", "Warning", JOptionPane.WARNING_MESSAGE);
+					d_model.getModel(Drug.PROPERTY_ATCCODE).setValue("");
+					Thread.yield();
+					JOptionPane.showMessageDialog(d_panel,
+							(drugName.isEmpty() ? "Please enter a drug name" : "The drug \""+drugName+"\"\nhas no ATC code associated"), "Not found", 
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					d_model.getModel(Drug.PROPERTY_ATCCODE).setValue(d_atcCode);
 				}
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(new JPanel(), "Couldn't retrieve ATC code...", e.getMessage(), JOptionPane.ERROR_MESSAGE);
-				//e.printStackTrace();
+				JOptionPane.showMessageDialog(d_panel, "Couldn't retrieve ATC code...", e.getMessage(), JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
 			}
 		}
 	}
@@ -119,6 +127,7 @@ public class AddDrugView implements ViewBuilder {
 		builder.addLabel("ATC Code:", cc.xy(1, 5));
 		builder.add(d_atcCodeTextField, cc.xyw(3, 5, 3));
 		
-		return builder.getPanel();	
+		d_panel = builder.getPanel();
+		return d_panel;	
 	}
 }
