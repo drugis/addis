@@ -178,12 +178,11 @@ public class AuxComponentFactory {
 			JScrollPane pane = new JScrollPane(htmlPane);
 			pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 			
-			pane.setMinimumSize(AddStudyWizard.defaultTextPaneDimension((JTextPane)htmlPane));			
-			
+			//pane.setPreferredSize(new Dimension(0,85));
+			//pane.setPreferredSize(AddStudyWizard.defaultTextPaneDimension((JTextPane)htmlPane));			
 			String[] arr = StringEscapeUtils.escapeHtml(text).split(" ");
-			pane.setPreferredSize(new Dimension(0, arr.length + 25) );
+			pane.setPreferredSize(new Dimension(0, (arr.length < 85 ? arr.length + 18 : 85)) );			
 			
-			pane.getVerticalScrollBar().setValue(1);
 			pane.setWheelScrollingEnabled(true);
 			
 			return pane;

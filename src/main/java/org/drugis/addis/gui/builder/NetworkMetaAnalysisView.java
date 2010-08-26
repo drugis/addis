@@ -137,7 +137,6 @@ implements ViewBuilder {
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		d_builder = new PanelBuilder(layout, new ScrollableJPanel());
-	
 		d_builder.setDefaultDialogBorder();
 		
 		d_cc = new CellConstraints();		
@@ -172,7 +171,6 @@ implements ViewBuilder {
 		JComponent consistencyNote = AuxComponentFactory.createNoteField(consistencyText);
 		consistencyPanel.add(consistencyNote, BorderLayout.NORTH);
 		
-		
 		JComponent consistencyResultsPart = buildResultsPart(d_pm.getBean().getConsistencyModel(), d_conProgressBar);
 		
 		consistencyPanel.add(consistencyResultsPart,BorderLayout.CENTER);
@@ -183,28 +181,30 @@ implements ViewBuilder {
 		collapsiblePanel.setBorder(BorderFactory.createEmptyBorder(0,0,20,0));  
 		
 		d_builder.add(collapsiblePanel, d_cc.xy(1, 27));
-	}	
+	}
 
 	private void buildInconsistencyPart() {
-		JPanel inconsistencyPanel = new JPanel(new BorderLayout());
+		JPanel inconsistencyPanel = new JPanel();
+		inconsistencyPanel.setLayout(new BorderLayout());
 		
 		if(!d_pm.getBean().getInconsistencyModel().isReady())
 			d_builder.add(d_incProgressBar, d_cc.xy(1, 15));
 		
 		String inconsistencyText = "<html>In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em> of evidence, in addition to <em>heterogeneity</em> within a comparison. Whereas heterogeneity represents between-study variation in the measured relative effect of a pair of treatments, inconsistency can only occur when a treatment C has a different effect when it is compared with A or B (i.e., studies comparing A and C are systematically different from studies comparing B and C). Thus, inconsistency may even occur with normal meta-analysis, but can only be detected using a network meta-analysis, and then only when there are closed loops in the evidence structure. For more information about assessing inconsistency, see G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, Journal of the American Statistical Association, 101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.</html>";
 		JComponent inconsitencyNote = AuxComponentFactory.createNoteField(inconsistencyText);
+		
 		inconsistencyPanel.add(inconsitencyNote, BorderLayout.NORTH);
 		
 		JComponent inconsistencyResultsPart = buildResultsPart(d_pm.getBean().getInconsistencyModel(),d_incProgressBar);
-		inconsistencyPanel.add(inconsistencyResultsPart,BorderLayout.CENTER);
+		inconsistencyPanel.add(inconsistencyResultsPart, BorderLayout.CENTER);
 		
 		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(
 				d_pm, d_parent.getPresentationModelFactory());
 		EnhancedTable table = new EnhancedTable(inconsistencyFactorsTableModel, 300);
 		d_inconsistencyFactorsTablePanel = new TablePanel(table);
 		
-		inconsistencyPanel.add(d_inconsistencyFactorsTablePanel,BorderLayout.SOUTH);
-		
+		inconsistencyPanel.add(d_inconsistencyFactorsTablePanel, BorderLayout.SOUTH);
+		inconsistencyPanel.revalidate();
 		
 		d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyPanel), d_cc.xy(1, 19));
 	}

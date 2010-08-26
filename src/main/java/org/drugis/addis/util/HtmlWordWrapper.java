@@ -81,6 +81,8 @@ public class HtmlWordWrapper {
 		generalPane.setContentType("text/html");
 		generalPane.setEditable(false);
 		generalPane.setText(paneText);
+		generalPane.setCaretPosition(0);
+				
 		generalPane.addHyperlinkListener(new HyperlinkListener() {
 			
 			public void hyperlinkUpdate(HyperlinkEvent e) {
