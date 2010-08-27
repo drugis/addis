@@ -409,8 +409,9 @@ public class Main extends JFrame {
 		newItem.setMnemonic('n');
 		newItem.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				ThreadHandler.getInstance().clear();
-				getDomain().clearDomain();
+				ThreadHandler.getInstance().clear();	// Terminate all running threads.
+				getDomain().clearDomain();	
+				d_pmManager.clearCache();				// Empty the PresentationModelFactory cache.
 			}
 		});
 		return newItem;
@@ -429,9 +430,10 @@ public class Main extends JFrame {
 					@Override
 					public void doAction(String path, String extension) {
 						try {
-							ThreadHandler.getInstance().clear();
+							ThreadHandler.getInstance().clear();	// Terminate all running threads.
 							loadDomainFromXMLFile(path);
 							setCurrentFileName(path);
+							d_pmManager.clearCache();				// Empty the PresentationModelFactory cache.
 						} catch (Exception e1) {
 							JOptionPane.showMessageDialog(Main.this, "Couldn't open file " + path);
 							e1.printStackTrace();

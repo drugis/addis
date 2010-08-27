@@ -70,6 +70,10 @@ public class PresentationModelFactory {
 		return (PresentationModel<T>)mod;
 	}
 	
+	public void clearCache() {
+		d_cache.clear();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public <T> PresentationModel<T> getCreationModel(T obj) {
 		PresentationModel model = createCreationModel(obj);
@@ -132,4 +136,6 @@ public class PresentationModelFactory {
 		}
 		return new PresentationModel(obj);
 	}
+
+
 }
