@@ -78,6 +78,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
+import org.drugis.addis.util.threading.ThreadHandler;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.FileLoadDialog;
 import org.drugis.common.gui.FileSaveDialog;
@@ -408,6 +409,7 @@ public class Main extends JFrame {
 		newItem.setMnemonic('n');
 		newItem.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
+				ThreadHandler.getInstance().clear();
 				getDomain().clearDomain();
 			}
 		});
@@ -427,6 +429,7 @@ public class Main extends JFrame {
 					@Override
 					public void doAction(String path, String extension) {
 						try {
+							ThreadHandler.getInstance().clear();
 							loadDomainFromXMLFile(path);
 							setCurrentFileName(path);
 						} catch (Exception e1) {
