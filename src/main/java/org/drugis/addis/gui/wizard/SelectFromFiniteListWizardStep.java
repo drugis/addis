@@ -97,18 +97,20 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 		 
 	private void buildWizardStep() {
 		FormLayout layout = new FormLayout(
-				"center:pref, 3dlu, right:pref, 3dlu, fill:pref:grow, 3dlu, left:pref",
+				"max(30dlu;pref), 3dlu, right:pref, 3dlu, fill:pref:grow, 3dlu, left:pref",
 				"p, 3dlu, p"
 				);	
 		d_builder = new PanelBuilder(layout);
 		d_builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
 		
+		d_builder.addLabel(d_pm.getTypeName() + "s: ", cc.xy(5, 1));
+		
 		int row = buildSlotsPart(7, cc, 1, layout);
 		
 		// Add slot button
 		row += 2;
-		JButton btn = new JButton("Add " + d_pm.getTypeName());
+		JButton btn = new JButton("Add");
 		d_builder.add(btn, cc.xy(1, row));
 		Bindings.bind(btn, "enabled", d_pm.getAddSlotsEnabledModel());
 		btn.addActionListener(new AbstractAction() {
@@ -117,6 +119,7 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 				prepare();
 			}
 		});
+		d_builder.addSeparator("", cc.xy(5, row));
 	
 		JPanel panel = d_builder.getPanel();
 		d_scrollPane = new JScrollPane(panel);
@@ -131,20 +134,17 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 			row+=2;
 			
 			// add 'remove' button
-			JButton btn = new JButton("Remove " + d_pm.getTypeName());
+			JButton btn = new JButton("Remove");
 			d_builder.add(btn, cc.xy(1, row));
 			btn.addActionListener(new RemoveSlotListener(i));
-			
-			// add label
-			d_builder.addLabel(d_pm.getTypeName() + ": ", cc.xy(3, row));
-			
+						
 			// dropdown
 			JComboBox endpoints = AuxComponentFactory.createBoundComboBox(d_pm.getOptions(), d_pm.getSlot(i));
 			d_builder.add(endpoints, cc.xy(5, row));
 			
 			// possibly add "new X" button
 			if (d_pm.hasAddOptionDialog()) {
-				JButton addOptionButton = GUIFactory.createPlusButton("Add new " + d_pm.getTypeName());
+				JButton addOptionButton = GUIFactory.createPlusButton("Create " + d_pm.getTypeName());
 				addOptionButton.addActionListener(new AddOptionButtonListener(i));
 				d_builder.add(addOptionButton, cc.xy(7, row));
 			}

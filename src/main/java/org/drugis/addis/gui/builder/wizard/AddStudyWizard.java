@@ -308,14 +308,21 @@ public class AddStudyWizard implements ViewBuilder{
 			CellConstraints cc = new CellConstraints();
 			
 			// Labels
-			d_builder.add(new JLabel("Drugs:"),cc.xy(3, 1));
+			d_builder.add(new JLabel("Drug:"),cc.xy(3, 1));
 			d_builder.add(new JLabel("Dose:"),cc.xy(7, 1));
 			d_builder.add(new JLabel("Size:"),cc.xy(13, 1));
 			
+			
 			int row = buildArmsPart(1, d_builder, cc, 3, layout);
 			
+			if(d_pm.getNumberArms() == 0 ) {
+				d_pm.addArmModels(1);
+				row += 2;
+				prepare();
+			}
+			
 			// add 'Add Arm' button 
-			JButton btn = new JButton("Add Arm");
+			JButton btn = new JButton("Add");
 			d_builder.add(btn, cc.xy(1, row+=2));
 			btn.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
@@ -323,6 +330,7 @@ public class AddStudyWizard implements ViewBuilder{
 					prepare();
 				}
 			});
+			d_builder.addSeparator("", cc.xyw(3, row, 11));
 			
 			JPanel panel = d_builder.getPanel();
 			this.setLayout(new BorderLayout());
@@ -339,7 +347,7 @@ public class AddStudyWizard implements ViewBuilder{
 				row+=2;
 				
 				// add 'remove arm button' 
-				JButton btn = new JButton("Remove Arm");
+				JButton btn = new JButton("Remove");
 				builder.add(btn, cc.xy(1, row));
 				btn.addActionListener(new RemoveArmListener(curArmNumber));
 				
@@ -349,7 +357,7 @@ public class AddStudyWizard implements ViewBuilder{
 				builder.add(drugsBox, cc.xy(3, row));
 				
 				// add 'add drug button' 
-				btn = GUIFactory.createPlusButton("add new drug");
+				btn = GUIFactory.createPlusButton("Create drug");
 				builder.add(btn, cc.xy(5, row));
 				btn.addActionListener(new NewDrugButtonListener(curArmNumber));
 				
