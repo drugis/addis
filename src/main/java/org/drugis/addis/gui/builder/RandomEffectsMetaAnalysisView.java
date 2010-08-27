@@ -29,6 +29,7 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Study;
@@ -49,6 +50,7 @@ import org.drugis.addis.treeplot.ForestPlot;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
 
+import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -149,14 +151,20 @@ implements ViewBuilder {
 		
 		encapsulating.add(builder.getPanel(),BorderLayout.NORTH);
 		
-		JButton saveBtn = new JButton("Save Image");
-		saveBtn.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-			ForestPlot plot = canvas.getPlot();
-			ImageExporter.writeImage(d_parent, plot, (int) plot.getSize().getWidth(),(int) plot.getSize().getHeight());
-			}
-		});
-		encapsulating.add(saveBtn, BorderLayout.SOUTH);
+		if (!d_overView) {
+			JButton saveBtn = new JButton("Save Image");
+			saveBtn.addActionListener(new AbstractAction() {
+				public void actionPerformed(ActionEvent e) {
+				ForestPlot plot = canvas.getPlot();
+				ImageExporter.writeImage(d_parent, plot, (int) plot.getSize().getWidth(),(int) plot.getSize().getHeight());
+				}
+			});
+			ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
+			bbuilder.addButton(saveBtn);
+			
+			encapsulating.add(new JLabel(" "), BorderLayout.CENTER);
+			encapsulating.add(bbuilder.getPanel(), BorderLayout.SOUTH);
+		}
 
 		return encapsulating;	
 	}
