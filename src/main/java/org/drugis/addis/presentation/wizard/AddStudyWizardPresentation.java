@@ -212,11 +212,15 @@ public class AddStudyWizardPresentation {
 	}
 
 	public void importCT() throws IOException {
-		String studyID = getIdModel().getValue().toString().trim().replace(" ", "%20");
-		String url = "http://clinicaltrials.gov/show/"+studyID+"?displayxml=true";
-		d_importedStudyPM = (StudyPresentation) new StudyPresentation(ClinicaltrialsImporter.getClinicaltrialsData(url),d_pmf);
-		d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study("", new Indication(0l,"")),d_pmf);
-		migrateImportToNew(studyID);
+		if(!getIdModel().getValue().toString().isEmpty()) {
+			String studyID = getIdModel().getValue().toString().trim().replace(" ", "%20");
+			String url = "http://clinicaltrials.gov/show/"+studyID+"?displayxml=true";
+			d_importedStudyPM = (StudyPresentation) new StudyPresentation(ClinicaltrialsImporter.getClinicaltrialsData(url),d_pmf);
+			d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study("", new Indication(0l,"")),d_pmf);
+			migrateImportToNew(studyID);
+		} else {
+			throw new IOException("No Study Id Entered");
+		}
 	}
 	
 	public void setNewStudy(Study study) {

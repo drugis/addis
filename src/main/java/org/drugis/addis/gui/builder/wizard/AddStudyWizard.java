@@ -28,7 +28,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -756,13 +755,23 @@ public class AddStudyWizard implements ViewBuilder{
 		private class CTRetriever implements Runnable {
 			public void run() {
 				try {
+					try {
 					d_importButton.setIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
 					d_importButton.setEnabled(false);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					d_pm.importCT();
+					Thread.yield();
+					try {
 					d_importButton.setIcon(ImageLoader.getIcon(FileNames.ICON_SEARCH));
 					d_importButton.setEnabled(true);
-				} catch (IOException e) {
-					JOptionPane.showMessageDialog(d_me, "Couldn't find NCT ID: "+ d_pm.getIdModel().getValue(), "Warning" , JOptionPane.ERROR_MESSAGE);
+					}catch (Exception e) {
+						e.printStackTrace();
+					}
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(d_me, "Couldn't find NCT ID: "+ d_pm.getIdModel().getValue(), "Not Found" , JOptionPane.WARNING_MESSAGE);
+					System.out.println(e.getMessage());
 				}
 				prepare();
 			}
