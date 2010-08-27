@@ -65,10 +65,14 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 	public void run() {
 		notifyEvent(EventType.MODEL_CONSTRUCTION_STARTED);
 		buildModel();
+		if (isTerminated())
+			return ;
 		notifyEvent(EventType.MODEL_CONSTRUCTION_FINISHED);
 		
 		notifyEvent(EventType.BURNIN_STARTED);
 		burnIn();
+		if (isTerminated())
+			return ;
 		notifyEvent(EventType.BURNIN_FINISHED);
 		
 		notifyEvent(EventType.SIMULATION_STARTED);
@@ -103,16 +107,25 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 
 	private void burnIn() {
 		for (int iter = 0; iter < d_burnInIter; ++iter) {
-			waitIfSuspended();
-			if (iter > 0 && iter % d_reportingInterval == 0) notifyBurnInProgress(iter);
+			
+			if (iter > 0 && iter % d_reportingInterval == 0) {
+				notifyBurnInProgress(iter);
+				waitIfSuspended();
+				if (isTerminated())
+					return ;
+			}
 			update();
 		}
 	}
 
 	private void simulate() {
 		for (int iter = 0; iter < d_simulationIter; ++iter) {
-			waitIfSuspended();
-			if (iter > 0 && iter % d_reportingInterval == 0) notifySimulationProgress(iter);
+			if (iter > 0 && iter % d_reportingInterval == 0) {
+				notifySimulationProgress(iter);
+				waitIfSuspended();
+				if (isTerminated())
+					return ;
+			}
 			update();
 			output();
 		}

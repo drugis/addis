@@ -40,10 +40,14 @@ public class SuspendableThreadWrapper {
 		return d_thread.getState() == State.TERMINATED ;
 	}
 	
-	// FIXME:
 	public boolean terminate() {
 		if (d_thread == null)
 			return true;
+		else if (d_runnable instanceof Suspendable) {
+			((Suspendable) d_runnable).terminate();
+			return true;
+		}
+		
 		return false;
 	}
 	

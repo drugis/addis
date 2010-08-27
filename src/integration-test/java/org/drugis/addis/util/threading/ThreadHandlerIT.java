@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.drugis.common.threading.AbstractSuspendable;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ThreadHandlerIT {
@@ -241,7 +240,7 @@ public class ThreadHandlerIT {
 		assertEquals(numCores, th.getRunningThreads());
 	}
 	
-	@Ignore
+	@Test
 	public void testClearRemovesSuspendableRunningTasks() {
 		waitTillDone();
 		ThreadHandler th = ThreadHandler.getInstance();

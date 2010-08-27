@@ -148,6 +148,8 @@ public class ThreadHandler extends AbstractObservable {
 	public void clear() {
 		terminateTasks(d_runningTasks);
 		terminateTasks(d_scheduledTasks);
+		firePropertyChange(PROPERTY_QUEUED_THREADS, null, d_scheduledTasks.size());
+		firePropertyChange(PROPERTY_RUNNING_THREADS, null, d_runningTasks.size());
 	}
 
 	private void terminateTasks(LinkedList<SuspendableThreadWrapper> tasks) {
