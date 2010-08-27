@@ -23,10 +23,12 @@ public class PubMedId {
 		return d_id;
 	}
 	
+	@Override
 	public String toString() {
 		return getId();
 	}
 	
+	@Override
 	public boolean equals(Object o) {
 		if (o instanceof PubMedId) {
 			return ((PubMedId)o).getId().equals(this.getId());
