@@ -144,4 +144,21 @@ public class ThreadHandler extends AbstractObservable {
 		
 		return newList;
 	}
+	
+	public void clear() {
+		terminateTasks(d_runningTasks);
+		terminateTasks(d_scheduledTasks);
+	}
+
+	private void terminateTasks(LinkedList<SuspendableThreadWrapper> tasks) {
+		for (int i=0; i < tasks.size(); ++i) {
+			SuspendableThreadWrapper thread = tasks.get(i);
+			if (thread.terminate()) {
+				tasks.remove(thread);
+				--i;
+			}
+		}
+	}
+	
+
 }

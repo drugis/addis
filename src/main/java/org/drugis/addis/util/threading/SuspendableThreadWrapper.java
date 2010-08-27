@@ -40,6 +40,13 @@ public class SuspendableThreadWrapper {
 		return d_thread.getState() == State.TERMINATED ;
 	}
 	
+	// FIXME:
+	public boolean terminate() {
+		if (d_thread == null)
+			return true;
+		return false;
+	}
+	
 	private void startAsNewThread() {
 		d_thread = new Thread(d_runnable);
 		d_thread.start();

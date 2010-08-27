@@ -1,5 +1,6 @@
 package org.drugis.addis.util.threading;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -8,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.drugis.common.threading.AbstractSuspendable;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ThreadHandlerIT {
@@ -203,6 +205,57 @@ public class ThreadHandlerIT {
 		assertTrue(th.d_runningTasks.contains(newThread));
 		assertFalse(th.d_scheduledTasks.contains(newThread));
 		waitTillDone();
+	}
+	
+	@Test
+	public void testClearRemovesWaitingTasks() {
+		waitTillDone();
+		ThreadHandler th = ThreadHandler.getInstance();
+		int numCores = Runtime.getRuntime().availableProcessors();
+		
+		List<Runnable> runthreads = new ArrayList<Runnable>();
+		for (int i=0; i<numCores + 2; ++i) // 2 threads in waiting list.
+			runthreads.add(new SuspendableTestThread(100));
+		th.scheduleTasks(runthreads);
+		assertEquals(2, th.getQueuedThreads());
+		
+		th.clear();
+		
+		assertEquals(0, th.getQueuedThreads());
+	}
+	
+	@Test
+	public void testClearCantRemoveUnsuspendableRunningTasks() {
+		waitTillDone();
+		ThreadHandler th = ThreadHandler.getInstance();
+		int numCores = Runtime.getRuntime().availableProcessors();
+		
+		List<Runnable> runthreads = new ArrayList<Runnable>();
+		for (int i=0; i<numCores; ++i) // numcore threads running.
+			runthreads.add(new NonSuspendableTestThread(100));
+		th.scheduleTasks(runthreads);
+		assertEquals(numCores, th.getRunningThreads());
+		
+		th.clear();
+		
+		assertEquals(numCores, th.getRunningThreads());
+	}
+	
+	@Ignore
+	public void testClearRemovesSuspendableRunningTasks() {
+		waitTillDone();
+		ThreadHandler th = ThreadHandler.getInstance();
+		int numCores = Runtime.getRuntime().availableProcessors();
+		
+		List<Runnable> runthreads = new ArrayList<Runnable>();
+		for (int i=0; i<numCores + 2; ++i) // 2 threads in waiting list.
+			runthreads.add(new SuspendableTestThread(100));
+		th.scheduleTasks(runthreads);
+		assertEquals(2, th.getRunningThreads());
+		
+		th.clear();
+		
+		assertEquals(0, th.getRunningThreads());
 	}
 	
 	public static void waitTillDone() {
