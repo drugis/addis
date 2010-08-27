@@ -579,7 +579,7 @@ public class Main extends JFrame {
 		d_leftPanelTree = new JTree(d_domainTreeModel);
 		d_leftPanelTree.setCellRenderer(new DomainTreeCellRenderer(getDomain()));
 		d_leftPanelTree.setRootVisible(false);
-		expandLeftPanelTree(5);
+		expandLeftPanelTree();
 
 		d_leftPanelTree.addTreeSelectionListener(new DomainTreeSelectionListener());
 		d_domainTreeModel.addTreeModelListener(new TreeModelListener() {
@@ -593,21 +593,21 @@ public class Main extends JFrame {
 			}
 
 			public void treeStructureChanged(TreeModelEvent arg0) {
-				expandLeftPanelTree(5);
+				expandLeftPanelTree();
 			}
 		});
 
 		d_leftPanel = new JScrollPane(d_leftPanelTree);
 	}
 
-	private void expandLeftPanelTree(int rowExpandLimit) {
+	private void expandLeftPanelTree() {
 		for (EntityCategory cat : getDomain().getCategories()) {
 			//if (!cat.getEntityClass().equals(Study.class))
-			if(d_domainTreeModel.getChildCount(getDomain().getCategory(cat.getEntityClass())) < rowExpandLimit) {
+			//if(d_domainTreeModel.getChildCount(getDomain().getCategory(cat.getEntityClass())) < 5) {
 				d_leftPanelTree.expandPath(new TreePath(new Object[] 
 				    {d_domainTreeModel.getRoot(), cat}
 				));
-			}
+			//}
 		}
 	}
 
