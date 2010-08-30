@@ -25,6 +25,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -48,6 +52,7 @@ import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
 import org.drugis.common.gui.AuxComponentFactory;
+import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
 import org.drugis.mtc.InconsistencyModel;
@@ -243,6 +248,34 @@ implements ViewBuilder {
 		});
 		return button;
 	}
+	
+	private JButton createSaveDataButton() {
+		JButton button = new JButton("Save MTC Data Set");
+		button.setToolTipText("Save data set for analysis using drugis.org MTC");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				new FileSaveDialog(d_main, "xml", "XML files") {
+					@Override
+					public void doAction(String path, String extension) {
+						writeXML(path, d_pm.getNetworkXML());
+					}
+				};
+			}
+		});
+		return button;
+	}
+	
+	private void writeXML(String path, String networkXML) {
+		try {
+			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(path));
+			out.write(networkXML);
+			out.close();
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	@SuppressWarnings("serial")
 	public JComponent buildStudyGraphPart() {
@@ -265,6 +298,7 @@ implements ViewBuilder {
 		});
 		ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
 		bbuilder.addButton(saveBtn);
+		bbuilder.addButton(createSaveDataButton());
 		builder.add(bbuilder.getPanel(), cc.xy(1, 3));
 		
 		return builder.getPanel();
