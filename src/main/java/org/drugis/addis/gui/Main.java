@@ -703,9 +703,7 @@ public class Main extends JFrame {
 				Main frame = new Main();
 				frame.initComponents();
 				frame.pack();
-				//frame.setVisible(false);
 				frame.showWelcome();
-
 			}
 		};
 		mainThread.start();
@@ -714,6 +712,11 @@ public class Main extends JFrame {
 	private void dataModelChanged() {
 		reloadRightPanel();
 		d_saveMenuItem.setEnabled(true);
+		updateTitle();
+	}
+	
+	private void updateTitle() {
+		setTitle(getTitle().lastIndexOf("*") < 0 ? getTitle() + "*" : getTitle());
 	}
 
 	public void repaintRightPanel() {
@@ -748,6 +751,7 @@ public class Main extends JFrame {
 			dataModelChanged();
 		}
 	}
+ 
 
 	public void leftTreeFocus(Object node) {
 		TreePath path = d_domainTreeModel.getPathTo(node);
