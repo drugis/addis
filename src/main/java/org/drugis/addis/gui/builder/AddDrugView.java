@@ -95,7 +95,7 @@ public class AddDrugView implements ViewBuilder {
 					d_model.getModel(Drug.PROPERTY_ATCCODE).setValue("");
 					Thread.yield();
 					JOptionPane.showMessageDialog(d_panel,
-							((drugName.length() == 0) ? "Please enter a drug name" : "The drug \""+drugName+"\"\nhas no ATC code associated"), "Not found", 
+							(drugName.isEmpty() ? "Please enter a drug name" : "The drug \""+drugName+"\"\nhas no ATC code associated"), "Not found", 
 							JOptionPane.WARNING_MESSAGE);
 				} else {
 					d_model.getModel(Drug.PROPERTY_ATCCODE).setValue(d_atcCode);

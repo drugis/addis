@@ -56,7 +56,7 @@ public class AtcParser {
 		List<AtcDescription> finalList = new ArrayList<AtcDescription>();
 		BufferedReader readCode = new BufferedReader(new InputStreamReader(is));
 		while ((inputLine = readCode.readLine()) != null) {
-			if(!(findDrugDetails(inputLine).isEmpty())){
+			if(!findDrugDetails(inputLine).isEmpty()){
 				finalList.addAll(findDrugDetails(inputLine));
 			}
 		}
@@ -64,7 +64,7 @@ public class AtcParser {
 	}
 
 	public AtcDescription getAtcCode(String drugName) throws IOException {
-		if(drugName.length() != 0) {
+		if(!drugName.isEmpty()) {
 			URLConnection d_urlStream = new URL("http://www.whocc.no/atc_ddd_index/?name="+drugName).openConnection();
 			d_urlStream.setConnectTimeout(CONNECTION_TIMEOUT);
 			d_urlStream.setReadTimeout(READ_TIMEOUT);
@@ -83,7 +83,7 @@ public class AtcParser {
 	}
 	
 	public List<AtcDescription> getAtcDetails(String atcCode) throws IOException {
-		if(atcCode.length() != 0) {
+		if(!atcCode.isEmpty()) {
 			InputStream d_urlStream = new URL("http://www.whocc.no/atc_ddd_index/?code="+atcCode).openConnection().getInputStream();
 			return new AtcParser().parse(d_urlStream);
 		}
