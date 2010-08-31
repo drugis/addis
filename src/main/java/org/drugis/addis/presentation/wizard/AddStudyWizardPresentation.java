@@ -67,17 +67,18 @@ import org.drugis.addis.presentation.StudyPresentation;
 import com.jgoodies.binding.value.ValueModel;
 
 public class AddStudyWizardPresentation {
-	
+
 	public interface OutcomeMeasurementsModel {
 		TableModel getMeasurementTableModel();
 	}
-	
+
 	@SuppressWarnings("serial")
-	private class DrugListHolder extends AbstractListHolder<Drug> implements PropertyChangeListener, DomainListener {
+	private class DrugListHolder extends AbstractListHolder<Drug> implements
+			PropertyChangeListener, DomainListener {
 		public DrugListHolder() {
 			d_domain.addListener(this);
 		}
-		
+
 		@Override
 		public List<Drug> getValue() {
 			return new ArrayList<Drug>(d_domain.getDrugs());
@@ -91,33 +92,33 @@ public class AddStudyWizardPresentation {
 			fireValueChange(null, getValue());
 		}
 	}
-	
+
 	@SuppressWarnings("serial")
 	private abstract static class OutcomeListHolder<T extends OutcomeMeasure>
-	extends AbstractListHolder<T> 
-	implements PropertyChangeListener, DomainListener {
+			extends AbstractListHolder<T> implements PropertyChangeListener,
+			DomainListener {
 		protected Domain d_domain;
-		
+
 		public OutcomeListHolder(Domain domain) {
 			domain.addListener(this);
 			d_domain = domain;
 		}
 
 		public void propertyChange(PropertyChangeEvent arg0) {
-			fireValueChange(null, getValue());			
+			fireValueChange(null, getValue());
 		}
 
 		public void domainChanged(DomainEvent evt) {
-			fireValueChange(null, getValue());			
+			fireValueChange(null, getValue());
 		}
 	}
-	
+
 	@SuppressWarnings("serial")
 	private static class EndpointListHolder extends OutcomeListHolder<Endpoint> {
 		public EndpointListHolder(Domain domain) {
 			super(domain);
 		}
-		
+
 		@Override
 		public List<Endpoint> getValue() {
 			return new ArrayList<Endpoint>(d_domain.getEndpoints());
@@ -125,17 +126,18 @@ public class AddStudyWizardPresentation {
 	}
 
 	@SuppressWarnings("serial")
-	private static class AdverseEventListHolder extends OutcomeListHolder<AdverseEvent> {
+	private static class AdverseEventListHolder extends
+			OutcomeListHolder<AdverseEvent> {
 		public AdverseEventListHolder(Domain domain) {
 			super(domain);
 		}
-		
+
 		@Override
 		public List<AdverseEvent> getValue() {
 			return new ArrayList<AdverseEvent>(d_domain.getAdverseEvents());
 		}
 	}
-	
+
 	@SuppressWarnings("serial")
 	private class IndicationListHolder extends AbstractListHolder<Indication> {
 		public IndicationListHolder() {
@@ -145,20 +147,20 @@ public class AddStudyWizardPresentation {
 				}
 			});
 		}
-		
+
 		@Override
 		public List<Indication> getValue() {
 			return new ArrayList<Indication>(d_domain.getIndications());
 		}
 	}
-	
+
 	private Domain d_domain;
 	private PresentationModelFactory d_pmf;
 	private StudyPresentation d_newStudyPM;
 	private StudyPresentation d_importedStudyPM;
-	
-	//List<ModifiableHolder<Endpoint>> d_selectedEndpointsList;
-	
+
+	// List<ModifiableHolder<Endpoint>> d_selectedEndpointsList;
+
 	List<BasicArmPresentation> d_selectedArmList;
 	private ListHolder<Endpoint> d_endpointListHolder;
 	private ListHolder<AdverseEvent> d_adverseEventListHolder;
@@ -166,69 +168,83 @@ public class AddStudyWizardPresentation {
 	private SelectAdverseEventsPresentation d_adverseEventSelect;
 	private SelectFromFiniteListPresentation<PopulationCharacteristic> d_populationCharSelect;
 	private SelectFromFiniteListPresentation<Endpoint> d_endpointSelect;
-	
+
 	private Study d_origStudy = null;
-	
-	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, Main main) {
+
+	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf,
+			Main main) {
 		d_domain = d;
 		d_pmf = pmf;
 		d_endpointListHolder = new EndpointListHolder(d_domain);
 		d_adverseEventListHolder = new AdverseEventListHolder(d_domain);
-		d_populationCharsListHolder = d_domain.getPopulationCharacteristicsHolder();
-		d_endpointSelect = new SelectEndpointPresentation(d_endpointListHolder, main, this);
-		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_adverseEventListHolder, main);
-		d_populationCharSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder, main);
+		d_populationCharsListHolder = d_domain
+				.getPopulationCharacteristicsHolder();
+		d_endpointSelect = new SelectEndpointPresentation(d_endpointListHolder,
+				main, this);
+		d_adverseEventSelect = new SelectAdverseEventsPresentation(
+				d_adverseEventListHolder, main);
+		d_populationCharSelect = new SelectPopulationCharsPresentation(
+				d_populationCharsListHolder, main);
 		clearStudies();
 	}
-	
-	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, Main main, Study origStudy) {
+
+	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf,
+			Main main, Study origStudy) {
 		this(d, pmf, main);
-		d_origStudy  = origStudy;
+		d_origStudy = origStudy;
 		setNewStudy(origStudy.clone());
 	}
-	
+
 	public ValueModel getSourceModel() {
-		return new MutableCharacteristicHolder(getNewStudy(), BasicStudyCharacteristic.SOURCE);
+		return new MutableCharacteristicHolder(getNewStudy(),
+				BasicStudyCharacteristic.SOURCE);
 	}
-	
+
 	public ValueModel getSourceNoteModel() {
-		return new StudyNoteHolder(getImportStudy(), BasicStudyCharacteristic.SOURCE);
+		return new StudyNoteHolder(getImportStudy(),
+				BasicStudyCharacteristic.SOURCE);
 	}
-	
+
 	public ValueModel getIdModel() {
 		return d_newStudyPM.getModel(Study.PROPERTY_ID);
 	}
-	
+
 	public ValueModel getIdNoteModel() {
 		return new StudyNoteHolder(getImportStudy(), Study.PROPERTY_ID);
 	}
-	
+
 	public ValueModel getTitleModel() {
-		return new MutableCharacteristicHolder(getNewStudy(), BasicStudyCharacteristic.TITLE);
+		return new MutableCharacteristicHolder(getNewStudy(),
+				BasicStudyCharacteristic.TITLE);
 	}
-	
+
 	public Domain getDomain() {
 		return d_domain;
 	}
 
 	public void importCT() throws IOException {
-		if(!getIdModel().getValue().toString().isEmpty()) {
-			String studyID = getIdModel().getValue().toString().trim().replace(" ", "%20");
-			String url = "http://clinicaltrials.gov/show/"+studyID+"?displayxml=true";
-			d_importedStudyPM = (StudyPresentation) new StudyPresentation(ClinicaltrialsImporter.getClinicaltrialsData(url),d_pmf);
-			d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study("", new Indication(0l,"")),d_pmf);
+		if (getIdModel().getValue().toString().length() != 0) {
+			String studyID = getIdModel().getValue().toString().trim().replace(
+					" ", "%20");
+			String url = "http://clinicaltrials.gov/show/" + studyID
+					+ "?displayxml=true";
+			d_importedStudyPM = (StudyPresentation) new StudyPresentation(
+					ClinicaltrialsImporter.getClinicaltrialsData(url), d_pmf);
+			d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study(
+					"", new Indication(0l, "")), d_pmf);
 			migrateImportToNew(studyID);
 		} else {
 			throw new IOException("No Study Id Entered");
 		}
 	}
-	
+
 	public void setNewStudy(Study study) {
 		d_newStudyPM = new StudyPresentation(study, d_pmf);
 		d_endpointSelect.clear();
 		for (Endpoint e : study.getEndpoints()) {
 			d_endpointSelect.addSlot();
-			d_endpointSelect.getSlot(d_endpointSelect.countSlots() -1).setValue(e);
+			d_endpointSelect.getSlot(d_endpointSelect.countSlots() - 1)
+					.setValue(e);
 		}
 		d_selectedArmList = new ArrayList<BasicArmPresentation>();
 		for (Arm a : study.getArms()) {
@@ -237,31 +253,37 @@ public class AddStudyWizardPresentation {
 		}
 		for (AdverseEvent ade : study.getAdverseEvents()) {
 			d_adverseEventSelect.addSlot();
-			d_adverseEventSelect.getSlot(d_adverseEventSelect.countSlots() - 1).setValue(ade);
+			d_adverseEventSelect.getSlot(d_adverseEventSelect.countSlots() - 1)
+					.setValue(ade);
 		}
 		for (PopulationCharacteristic pc : study.getPopulationCharacteristics()) {
 			d_populationCharSelect.addSlot();
-			d_populationCharSelect.getSlot(d_populationCharSelect.countSlots() - 1).setValue(pc);
+			d_populationCharSelect.getSlot(
+					d_populationCharSelect.countSlots() - 1).setValue(pc);
 		}
-		
+
 	}
 
 	private void migrateImportToNew(Object studyID) {
 		// Characteristics
-		getNewStudy().getCharacteristics().putAll(getImportStudy().getCharacteristics());
+		getNewStudy().getCharacteristics().putAll(
+				getImportStudy().getCharacteristics());
 		// Source
 		getSourceModel().setValue(Source.CLINICALTRIALS);
 		// Id & Title
 		getIdModel().setValue(getImportStudy().getStudyId());
-		getTitleModel().setValue(getImportStudy().getCharacteristic(BasicStudyCharacteristic.TITLE));
-		
+		getTitleModel().setValue(
+				getImportStudy().getCharacteristic(
+						BasicStudyCharacteristic.TITLE));
+
 		// Endpoints.
 		d_endpointSelect.clear();
-		//d_selectedEndpointsList = new ArrayList<ModifiableHolder<Endpoint>>();
-		for (int i=0 ; i < getImportStudy().getOutcomeMeasures().size(); i++)
+		// d_selectedEndpointsList = new
+		// ArrayList<ModifiableHolder<Endpoint>>();
+		for (int i = 0; i < getImportStudy().getOutcomeMeasures().size(); i++)
 			d_endpointSelect.addSlot();
-		//addEndpointModels(getOldStudy().getOutcomeMeasures().size());
-		
+		// addEndpointModels(getOldStudy().getOutcomeMeasures().size());
+
 		// Arms & Dosage
 		d_selectedArmList = new ArrayList<BasicArmPresentation>();
 		addArmModels(getImportStudy().getArms().size());
@@ -271,7 +293,7 @@ public class AddStudyWizardPresentation {
 	public ListHolder<Indication> getIndicationListModel() {
 		return new IndicationListHolder();
 	}
-	
+
 	public ValueModel getIndicationModel() {
 		return d_newStudyPM.getModel(Study.PROPERTY_INDICATION);
 	}
@@ -279,10 +301,12 @@ public class AddStudyWizardPresentation {
 	public ValueModel getIndicationNoteModel() {
 		return new StudyNoteHolder(getImportStudy(), Study.PROPERTY_INDICATION);
 	}
-	
+
 	public void clearStudies() {
-		d_importedStudyPM = (StudyPresentation) new StudyPresentation(new Study("", new Indication(0l,"")),d_pmf);
-		d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study("", new Indication(0l,"")),d_pmf);
+		d_importedStudyPM = (StudyPresentation) new StudyPresentation(
+				new Study("", new Indication(0l, "")), d_pmf);
+		d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study("",
+				new Indication(0l, "")), d_pmf);
 		getSourceModel().setValue(Source.MANUAL);
 		d_endpointSelect.clear();
 		while (d_adverseEventSelect.countSlots() > 0) {
@@ -291,12 +315,12 @@ public class AddStudyWizardPresentation {
 		d_selectedArmList = new ArrayList<BasicArmPresentation>();
 		d_endpointSelect.addSlot();
 		addArmModels(2);
-		
+
 	}
-	
-	
-	public MutableCharacteristicHolder getCharacteristicModel(BasicStudyCharacteristic c) {
-		return new MutableCharacteristicHolder(getNewStudy(),c);
+
+	public MutableCharacteristicHolder getCharacteristicModel(
+			BasicStudyCharacteristic c) {
+		return new MutableCharacteristicHolder(getNewStudy(), c);
 	}
 
 	public ValueModel getCharacteristicNoteModel(BasicStudyCharacteristic c) {
@@ -304,66 +328,72 @@ public class AddStudyWizardPresentation {
 	}
 
 	public ValueModel getEndpointNoteModel(int i) {
-		if(d_importedStudyPM.getEndpoints().size() <= i)
+		if (d_importedStudyPM.getEndpoints().size() <= i)
 			return null;
-		return new StudyNoteHolder(getImportStudy(),new ArrayList<OutcomeMeasure>(d_importedStudyPM.getEndpoints()).get(i));
+		return new StudyNoteHolder(getImportStudy(),
+				new ArrayList<OutcomeMeasure>(d_importedStudyPM.getEndpoints())
+						.get(i));
 	}
 
 	public void removeImportEndpoint(int i) {
-		if ( getImportStudy().getEndpoints().size() > i)
+		if (getImportStudy().getEndpoints().size() > i)
 			getImportStudy().removeEndpoint(i);
 	}
 
-	
 	public void addArmModels(int numArms) {
-		for(int i = 0; i<numArms; ++i){
-			d_selectedArmList.add(new BasicArmPresentation(new Arm(new Drug("", ""), new FixedDose(0l, SIUnit.MILLIGRAMS_A_DAY),0), d_pmf));
+		for (int i = 0; i < numArms; ++i) {
+			d_selectedArmList
+					.add(new BasicArmPresentation(new Arm(new Drug("", ""),
+							new FixedDose(0l, SIUnit.MILLIGRAMS_A_DAY), 0),
+							d_pmf));
 		}
 	}
-	
-	public int getNumberArms(){
+
+	public int getNumberArms() {
 		return d_selectedArmList.size();
 	}
-	
-	public void removeArm(int armNum){
+
+	public void removeArm(int armNum) {
 		d_selectedArmList.remove(armNum);
-		
-		if( getImportStudy().getArms().size() > armNum )
-			getImportStudy().getArms().remove(getImportStudy().getArms().get(armNum));	
+
+		if (getImportStudy().getArms().size() > armNum)
+			getImportStudy().getArms().remove(
+					getImportStudy().getArms().get(armNum));
 	}
-	
-	public DrugListHolder getDrugsModel(){
+
+	public DrugListHolder getDrugsModel() {
 		return new DrugListHolder();
 	}
-	
-	public BasicArmPresentation getArmModel(int armNumber){
+
+	public BasicArmPresentation getArmModel(int armNumber) {
 		return d_selectedArmList.get(armNumber);
 	}
-	
+
 	public ValueModel getArmNoteModel(int curArmNumber) {
-		if(d_importedStudyPM.getArms().size() <= curArmNumber)
+		if (d_importedStudyPM.getArms().size() <= curArmNumber)
 			return null;
-		return new StudyNoteHolder(getImportStudy(),getImportStudy().getArms().get(curArmNumber));
+		return new StudyNoteHolder(getImportStudy(), getImportStudy().getArms()
+				.get(curArmNumber));
 	}
 
 	public StudyMeasurementTableModel getEndpointMeasurementTableModel() {
 		commitOutcomesArmsToNew();
-		return new StudyMeasurementTableModel(getNewStudy(),d_pmf, Endpoint.class);
+		return new StudyMeasurementTableModel(getNewStudy(), d_pmf,
+				Endpoint.class);
 	}
-	
-	
+
 	public Study saveStudy() {
-		if (d_selectedArmList.isEmpty()) 
+		if (d_selectedArmList.isEmpty())
 			throw new IllegalStateException("No arms selected in study.");
-		if (d_endpointSelect.countSlots() == 0) 
+		if (d_endpointSelect.countSlots() == 0)
 			throw new IllegalStateException("No endpoints selected in study.");
 		if (!checkID())
-			throw new IllegalStateException("Study with this ID already exists in domain");
-		
+			throw new IllegalStateException(
+					"Study with this ID already exists in domain");
+
 		// transfer the notes from the imported study to the new one.
 		if (d_importedStudyPM != null)
 			transferNotes();
-		
 
 		if (isEditing()) {
 			try {
@@ -372,12 +402,12 @@ public class AddStudyWizardPresentation {
 				e.printStackTrace();
 			}
 		}
-		
+
 		// Add the study to the domain.
 		d_domain.addStudy(getNewStudy());
-		
+
 		d_newStudyPM.isStudyFinished();
-		
+
 		return getNewStudy();
 	}
 
@@ -385,67 +415,76 @@ public class AddStudyWizardPresentation {
 		if (!d_domain.getStudies().contains(getNewStudy())) {
 			return true;
 		}
-		
+
 		if (isEditing()) {
 			return getNewStudy().equals(d_origStudy);
 		}
-		
+
 		return false;
 	}
-	
+
 	Study getStudy() {
 		return getNewStudy();
 	}
-	
-	void commitOutcomesArmsToNew(){
+
+	void commitOutcomesArmsToNew() {
 		List<Endpoint> outcomeMeasures = new ArrayList<Endpoint>();
-		for(ModifiableHolder<Endpoint> outcomeHolder : d_endpointSelect.getSlots()) {
+		for (ModifiableHolder<Endpoint> outcomeHolder : d_endpointSelect
+				.getSlots()) {
 			outcomeMeasures.add(outcomeHolder.getValue());
-		}	
+		}
 		getNewStudy().setEndpoints(outcomeMeasures);
-		
+
 		List<Arm> arms = new ArrayList<Arm>();
-		for(BasicArmPresentation arm : d_selectedArmList) { 
+		for (BasicArmPresentation arm : d_selectedArmList) {
 			arms.add(arm.getBean());
 		}
-		
+
 		getNewStudy().setArms(arms);
 	}
-	
+
 	private void commitAdverseEventsToStudy() {
 		List<AdverseEvent> outcomeMeasures = new ArrayList<AdverseEvent>();
-		for(ModifiableHolder<AdverseEvent> outcomeHolder : d_adverseEventSelect.getSlots()) {
+		for (ModifiableHolder<AdverseEvent> outcomeHolder : d_adverseEventSelect
+				.getSlots()) {
 			outcomeMeasures.add(outcomeHolder.getValue());
-		}	
+		}
 		getNewStudy().setAdverseEvents(outcomeMeasures);
 	}
-	
+
 	private void commitPopulationCharsToStudy() {
 		List<PopulationCharacteristic> outcomeMeasures = new ArrayList<PopulationCharacteristic>();
-		for(ModifiableHolder<PopulationCharacteristic> outcomeHolder : d_populationCharSelect.getSlots()) {
+		for (ModifiableHolder<PopulationCharacteristic> outcomeHolder : d_populationCharSelect
+				.getSlots()) {
 			outcomeMeasures.add(outcomeHolder.getValue());
-		}	
+		}
 		getNewStudy().setPopulationCharacteristics(outcomeMeasures);
 	}
-	
+
 	private void transferNotes() {
-		for (Entry<Object,Note> noteEntry : getImportStudy().getNotes().entrySet()) {
+		for (Entry<Object, Note> noteEntry : getImportStudy().getNotes()
+				.entrySet()) {
 			Object key = noteEntry.getKey();
 			Note value = noteEntry.getValue();
-			/* If notes are keyed by either Characteristic or Property (String), we can just copy them */
-			if ((key instanceof BasicStudyCharacteristic) || (key instanceof String)) {
-				getNewStudy().putNote(key,value);
+			/*
+			 * If notes are keyed by either Characteristic or Property (String),
+			 * we can just copy them
+			 */
+			if ((key instanceof BasicStudyCharacteristic)
+					|| (key instanceof String)) {
+				getNewStudy().putNote(key, value);
 			} else if (key instanceof Endpoint) {
 				int outcomeIndex = getImportStudy().getEndpoints().indexOf(key);
 				if (outcomeIndex > -1) {
-					Object newKey =  getNewStudy().getEndpoints().get(outcomeIndex);
-					getNewStudy().putNote(newKey,value);
+					Object newKey = getNewStudy().getEndpoints().get(
+							outcomeIndex);
+					getNewStudy().putNote(newKey, value);
 				}
 			} else if (key instanceof Arm) {
 				int armIndex = getImportStudy().getArms().indexOf(key);
 				if (armIndex > -1) {
-					Object newKey =  getNewStudy().getArms().get(armIndex);
-					getNewStudy().putNote(newKey,value);
+					Object newKey = getNewStudy().getArms().get(armIndex);
+					getNewStudy().putNote(newKey, value);
 				}
 			}
 		}
@@ -454,7 +493,7 @@ public class AddStudyWizardPresentation {
 	private Study getNewStudy() {
 		return d_newStudyPM.getBean();
 	}
-	
+
 	public StudyPresentation getNewStudyPM() {
 		return d_newStudyPM;
 	}
@@ -465,9 +504,10 @@ public class AddStudyWizardPresentation {
 
 	private StudyMeasurementTableModel getAdverseEventMeasurementTableModel() {
 		commitAdverseEventsToStudy();
-		return new StudyMeasurementTableModel(getNewStudy(),d_pmf, AdverseEvent.class);
+		return new StudyMeasurementTableModel(getNewStudy(), d_pmf,
+				AdverseEvent.class);
 	}
-	
+
 	private PopulationCharTableModel getPopulationCharMeasurementTableModel() {
 		commitPopulationCharsToStudy();
 		return d_newStudyPM.getPopulationCharTableModel();
@@ -479,8 +519,8 @@ public class AddStudyWizardPresentation {
 				return getAdverseEventMeasurementTableModel();
 			}
 		};
-	} 
-	
+	}
+
 	public OutcomeMeasurementsModel getEndpointsModel() {
 		return new OutcomeMeasurementsModel() {
 			public StudyMeasurementTableModel getMeasurementTableModel() {
@@ -488,22 +528,22 @@ public class AddStudyWizardPresentation {
 			}
 		};
 	}
-	
+
 	public OutcomeMeasurementsModel getPopulationCharsModel() {
 		return new OutcomeMeasurementsModel() {
 			public TableModel getMeasurementTableModel() {
 				return getPopulationCharMeasurementTableModel();
 			}
 		};
-	} 
+	}
 
 	public SelectFromFiniteListPresentation<AdverseEvent> getAdverseEventSelectModel() {
 		return d_adverseEventSelect;
 	}
-	
+
 	public SelectFromFiniteListPresentation<Endpoint> getEndpointSelectModel() {
 		return d_endpointSelect;
-	} 
+	}
 
 	public SelectFromFiniteListPresentation<PopulationCharacteristic> getPopulationCharSelectModel() {
 		return d_populationCharSelect;
