@@ -755,20 +755,14 @@ public class AddStudyWizard implements ViewBuilder{
 		private class CTRetriever implements Runnable {
 			public void run() {
 				try {
-					try {
+					
 					d_importButton.setIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
 					d_importButton.setEnabled(false);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					
 					d_pm.importCT();
-					Thread.yield();
-					try {
+					
 					d_importButton.setIcon(ImageLoader.getIcon(FileNames.ICON_SEARCH));
 					d_importButton.setEnabled(true);
-					}catch (Exception e) {
-						e.printStackTrace();
-					}
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(d_me, "Couldn't find NCT ID: "+ d_pm.getIdModel().getValue(), "Not Found" , JOptionPane.WARNING_MESSAGE);
 					System.out.println(e.getMessage());

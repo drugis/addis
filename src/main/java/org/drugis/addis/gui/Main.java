@@ -124,7 +124,7 @@ public class Main extends JFrame {
 	private JMenuItem d_saveMenuItem;
 
 	public PresentationModelFactory getPresentationModelFactory() {
-		return d_pmManager;
+		return getPmManager();
 	}
 
 	public Main() {
@@ -155,7 +155,12 @@ public class Main extends JFrame {
 
 		initializeDomain();
 		d_pmManager = new PresentationModelFactory(getDomain());
-
+	}
+	
+	protected void showWelcome() {
+		final WelcomeDialog welcome = new WelcomeDialog(this);
+		GUIHelper.centerWindow(welcome, this);
+		welcome.setVisible(true);
 	}
 
 	protected void quitApplication() {
@@ -411,7 +416,7 @@ public class Main extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				ThreadHandler.getInstance().clear();	// Terminate all running threads.
 				getDomain().clearDomain();	
-				d_pmManager.clearCache();				// Empty the PresentationModelFactory cache.
+				getPmManager().clearCache();				// Empty the PresentationModelFactory cache.
 			}
 		});
 		return newItem;
@@ -430,10 +435,7 @@ public class Main extends JFrame {
 					@Override
 					public void doAction(String path, String extension) {
 						try {
-							ThreadHandler.getInstance().clear();	// Terminate all running threads.
-							loadDomainFromXMLFile(path);
-							setCurrentFileName(path);
-							d_pmManager.clearCache();				// Empty the PresentationModelFactory cache.
+							fileLoadActions(path, extension);
 						} catch (Exception e1) {
 							JOptionPane.showMessageDialog(Main.this, "Couldn't open file " + path);
 							e1.printStackTrace();
@@ -443,6 +445,13 @@ public class Main extends JFrame {
 			}
 		});
 		return openItem;
+	}
+	
+	public void fileLoadActions(String path, String extension) throws IOException, ClassNotFoundException {
+		ThreadHandler.getInstance().clear();	// Terminate all running threads.
+		loadDomainFromXMLFile(path);
+		setCurrentFileName(path);
+		getPmManager().clearCache();				// Empty the PresentationModelFactory cache.
 	}
 
 	private JMenuItem createSaveItem() {
@@ -694,7 +703,8 @@ public class Main extends JFrame {
 				Main frame = new Main();
 				frame.initComponents();
 				frame.pack();
-				frame.setVisible(true);
+				//frame.setVisible(false);
+				frame.showWelcome();
 
 			}
 		};
@@ -744,5 +754,9 @@ public class Main extends JFrame {
 		if (path != null) {
 			d_leftPanelTree.setSelectionPath(path);
 		}
+	}
+
+	public PresentationModelFactory getPmManager() {
+		return d_pmManager;
 	}
 }
