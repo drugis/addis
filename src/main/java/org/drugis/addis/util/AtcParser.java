@@ -64,7 +64,7 @@ public class AtcParser {
 	}
 
 	public AtcDescription getAtcCode(String drugName) throws IOException {
-		if(!drugName.isEmpty()) {
+		if(drugName.length() != 0) {
 			URLConnection d_urlStream = new URL("http://www.whocc.no/atc_ddd_index/?name="+drugName).openConnection();
 			d_urlStream.setConnectTimeout(CONNECTION_TIMEOUT);
 			d_urlStream.setReadTimeout(READ_TIMEOUT);
@@ -83,7 +83,7 @@ public class AtcParser {
 	}
 	
 	public List<AtcDescription> getAtcDetails(String atcCode) throws IOException {
-		if(!atcCode.isEmpty()) {
+		if(atcCode.length() != 0) {
 			InputStream d_urlStream = new URL("http://www.whocc.no/atc_ddd_index/?code="+atcCode).openConnection().getInputStream();
 			return new AtcParser().parse(d_urlStream);
 		}
