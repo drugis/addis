@@ -132,7 +132,7 @@ implements SelectFromFiniteListPresentation<T> {
 			super.setValue(obj);			
 			// Make sure each option is selected only once
 			for (ModifiableHolder<E> s : d_slots) {
-				if (s != this && EqualsUtil.equal(s.getValue(), getValue())) {
+				if (s.getValue() != null && s != this && EqualsUtil.equal(s.getValue(), getValue())) {
 					s.setValue(null);
 				}
 			}
