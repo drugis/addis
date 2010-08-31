@@ -256,16 +256,16 @@
 		</adverseEvent>
 	</adverseEvents>
 	<drugs id="66">
-		<drug id="67" atcCode="Bupropion" name="Bupropion"/>
-		<drug id="68" atcCode="Citalopram" name="Citalopram"/>
-		<drug id="69" atcCode="Duloxetine" name="Duloxetine"/>
-		<drug id="70" atcCode="Escitalopram" name="Escitalopram"/>
-		<drug id="71" atcCode="Fluoxetine" name="Fluoxetine"/>
-		<drug id="72" atcCode="Fluvoxamine" name="Fluvoxamine"/>
-		<drug id="73" atcCode="Mirtazapine" name="Mirtazapine"/>
-		<drug id="74" atcCode="Paroxetine" name="Paroxetine"/>
-		<drug id="75" atcCode="Sertraline" name="Sertraline"/>
-		<drug id="76" atcCode="Venlafaxine" name="Venlafaxine"/>
+		<drug id="67" atcCode="N06AX12" name="Bupropion"/>
+		<drug id="68" atcCode="N06AB04" name="Citalopram"/>
+		<drug id="69" atcCode="N06AX21" name="Duloxetine"/>
+		<drug id="70" atcCode="N06AB10" name="Escitalopram"/>
+		<drug id="71" atcCode="N06AB03" name="Fluoxetine"/>
+		<drug id="72" atcCode="N06AB08" name="Fluvoxamine"/>
+		<drug id="73" atcCode="N06AX11" name="Mirtazapine"/>
+		<drug id="74" atcCode="N06AB05" name="Paroxetine"/>
+		<drug id="75" atcCode="N06AB06" name="Sertraline"/>
+		<drug id="76" atcCode="N06AX16" name="Venlafaxine"/>
 	</drugs>
 	<populationCharacteristics id="77"/>
 	<studies id="78">
