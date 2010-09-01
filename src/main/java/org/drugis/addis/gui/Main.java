@@ -59,6 +59,7 @@ import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -105,8 +106,7 @@ public class Main extends JFrame {
 		}
 	}
 	
-	private static final String DOMAIN_DEFAULT_FILENAME = "domain-"
-			+ AppInfo.getAppVersion() + ".xml";
+	private static final String DOMAIN_DEFAULT_FILENAME = "domain-"	+ AppInfo.getAppVersion() + ".xml";
 	private JComponent d_leftPanel;
 	private JScrollPane d_rightPanel;
 	private ViewBuilder d_rightPanelBuilder;
@@ -122,6 +122,7 @@ public class Main extends JFrame {
 	private String d_curFilename = null;
 	private final static String DEFAULT_TITLE = AppInfo.getAppName() + " v" + AppInfo.getAppVersion();
 	private JMenuItem d_saveMenuItem;
+	private boolean d_dataChanged = false;
 
 	public PresentationModelFactory getPresentationModelFactory() {
 		return getPmManager();
@@ -130,7 +131,7 @@ public class Main extends JFrame {
 	public Main() {
 		super(DEFAULT_TITLE);
 		ImageLoader.setImagePath("/org/drugis/addis/gfx/");
-
+		
 		setPreferredSize(new Dimension(1020, 764));
 		setMinimumSize(new Dimension(1020, 764));
 
@@ -146,14 +147,14 @@ public class Main extends JFrame {
 				setRightPanelViewSize();
 			}
 		});
-		
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		GUIHelper.initializeLookAndFeel();
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		ToolTipManager.sharedInstance().setInitialDelay(0);
 
 		GUIHelper.configureJFreeChartLookAndFeel();
 
-		initializeDomain();
+		initializeDomain(false);		
 		d_pmManager = new PresentationModelFactory(getDomain());
 	}
 	
@@ -164,14 +165,38 @@ public class Main extends JFrame {
 	}
 
 	protected void quitApplication() {
-		try {
-			saveDomainToXMLFile(DOMAIN_DEFAULT_FILENAME);
-			System.exit(0);
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(this, "Error saving domain",
-					"Error saving domain", JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
+		if(isDataChanged()) {
+			if(saveChangesDialog()) {
+				dispose(); System.exit(0);
+			}
+		} else {
+			dispose(); System.exit(0);
 		}
+	}
+	
+	protected boolean saveChangesDialog(){
+		boolean yesNoClicked = false;
+		int action = JOptionPane.showConfirmDialog(Main.this, "Do you want to save changes?", 
+				"File contents changed", JOptionPane.YES_NO_CANCEL_OPTION);
+		switch(action) {
+			case JOptionPane.YES_OPTION : {
+				try {
+					if (getCurFilename() == null) {				
+						new MainFileSaveDialog(Main.this, "xml", "XML files");
+					} else {
+						saveDomainToFile(getCurFilename());
+						yesNoClicked = true;
+					}										
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(Main.this, "Error saving domain", "Error saving domain", JOptionPane.ERROR_MESSAGE);
+					e.printStackTrace();
+				}
+			} break;
+			case JOptionPane.NO_OPTION : {
+				yesNoClicked = true;
+			} break;
+		}
+		return yesNoClicked;
 	}
 
 	private void saveDomainToXMLFile(String fileName) throws IOException {
@@ -184,9 +209,17 @@ public class Main extends JFrame {
 		d_domainMgr.saveXMLDomain(fos);
 	}
 
-	private void initializeDomain() {
+	private void initializeDomain(boolean newDomain) {
 		d_domainMgr = new DomainManager();
 
+		if(newDomain){
+			loadDomain();
+		}
+		getDomain().addListener(new MainListener());
+		setDataChanged(false);
+	}
+	
+	public void loadDomain() {
 		try {
 			loadDomainFromXMLFile(DOMAIN_DEFAULT_FILENAME);
 		} catch (Exception e) {
@@ -198,8 +231,8 @@ public class Main extends JFrame {
 						"Error loading domain", JOptionPane.ERROR_MESSAGE);
 			}
 		}
-
-		getDomain().addListener(new MainListener());
+		setTitle(AppInfo.getAppName() + " v" + AppInfo.getAppVersion() + " - Example data");
+		setDataChanged(false);
 	}
 
 	public Domain getDomain() {
@@ -414,44 +447,63 @@ public class Main extends JFrame {
 		newItem.setMnemonic('n');
 		newItem.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				ThreadHandler.getInstance().clear();	// Terminate all running threads.
-				getDomain().clearDomain();	
-				getPmManager().clearCache();				// Empty the PresentationModelFactory cache.
+				if(isDataChanged()) {
+					if(saveChangesDialog()){
+						newFileActions();
+					}
+				} else {
+					newFileActions();
+				}
 			}
 		});
 		return newItem;
+	}
+	
+	private void newFileActions() {
+		ThreadHandler.getInstance().clear();	// Terminate all running threads.
+		getDomain().clearDomain();	
+		getPmManager().clearCache();				// Empty the PresentationModelFactory cache.
+		setTitle(DEFAULT_TITLE + " - New File");
+		setCurFilename(null);
+		setDataChanged(false);
 	}
 
 	private JMenuItem createLoadItem() {
 		JMenuItem openItem = new JMenuItem("Load", ImageLoader
 				.getIcon(FileNames.ICON_OPENFILE));
 		openItem.setMnemonic('l');
-		final Main me = this;
 		openItem.addActionListener(new AbstractAction() {
 		// loadDomainFromXMLFile(fileChooser.getSelectedFile().getAbsolutePath());
-			
 			public void actionPerformed(ActionEvent e) {
-				new FileLoadDialog(me, "xml", "XML files") {
-					@Override
-					public void doAction(String path, String extension) {
-						try {
-							fileLoadActions(path, extension);
-						} catch (Exception e1) {
-							JOptionPane.showMessageDialog(Main.this, "Couldn't open file " + path);
-							e1.printStackTrace();
-						}
+				if(isDataChanged()) {
+					if(saveChangesDialog()) {
+						fileLoadActions();
 					}
-				};
+				} else {
+					fileLoadActions();
+				}
 			}
 		});
 		return openItem;
 	}
 	
-	public void fileLoadActions(String path, String extension) throws IOException, ClassNotFoundException {
-		ThreadHandler.getInstance().clear();	// Terminate all running threads.
-		loadDomainFromXMLFile(path);
-		setCurrentFileName(path);
-		getPmManager().clearCache();				// Empty the PresentationModelFactory cache.
+	public int fileLoadActions() {
+		FileLoadDialog d = new FileLoadDialog(Main.this, "xml", "XML files") {
+			@Override
+			public void doAction(String path, String extension) {
+				try {
+					ThreadHandler.getInstance().clear();	// Terminate all running threads.
+					loadDomainFromXMLFile(path);
+					setFileNameAndReset(path);
+					getPmManager().clearCache();				// Empty the PresentationModelFactory cache.
+					setDataChanged(false);
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(Main.this, "Couldn't open file " + path);
+						e1.printStackTrace();
+					}
+				}
+		};
+		return d.getReturnValue();
 	}
 
 	private JMenuItem createSaveItem() {
@@ -465,10 +517,10 @@ public class Main extends JFrame {
 		d_saveMenuItem.addActionListener(new AbstractAction() {
 			
 			public void actionPerformed(ActionEvent e) {
-				if (d_curFilename == null) {				
+				if (getCurFilename() == null) {				
 					new MainFileSaveDialog(me, "xml", "XML files");
 				} else {
-					saveDomainToFile(d_curFilename);
+					saveDomainToFile(getCurFilename());
 				}
 			}
 		});
@@ -496,20 +548,21 @@ public class Main extends JFrame {
 	private void saveDomainToFile(String path) {
 		try {
 			saveDomainToXMLFile(path);
-			setCurrentFileName(path);
+			setFileNameAndReset(path);
 		} catch (Exception e1) {
 			JOptionPane.showMessageDialog(Main.this, "Couldn't save file " + path);
 			e1.printStackTrace();
 		}
 	}
 
-	private void setCurrentFileName(String path) {
-		d_curFilename = path;
+	private void setFileNameAndReset(String path) {
+		setCurFilename(path);
 		int x = path.lastIndexOf(".");
 		int y = path.lastIndexOf("/");
 		String str = path.substring(y+1, x);
 		this.setTitle(DEFAULT_TITLE + " - " + str);
 		d_saveMenuItem.setEnabled(false);
+		setDataChanged(false);
 	}
 
 	private JMenuItem createExitItem() {
@@ -597,15 +650,9 @@ public class Main extends JFrame {
 
 		d_leftPanelTree.addTreeSelectionListener(new DomainTreeSelectionListener());
 		d_domainTreeModel.addTreeModelListener(new TreeModelListener() {
-			public void treeNodesChanged(TreeModelEvent arg0) {
-			}
-
-			public void treeNodesInserted(TreeModelEvent arg0) {
-			}
-
-			public void treeNodesRemoved(TreeModelEvent arg0) {
-			}
-
+			public void treeNodesChanged(TreeModelEvent arg0) {}
+			public void treeNodesInserted(TreeModelEvent arg0) {}
+			public void treeNodesRemoved(TreeModelEvent arg0) {}
 			public void treeStructureChanged(TreeModelEvent arg0) {
 				expandLeftPanelTree();
 			}
@@ -703,9 +750,8 @@ public class Main extends JFrame {
 				Main frame = new Main();
 				frame.initComponents();
 				frame.pack();
-				//frame.setVisible(false);
+				//frame.setVisible(true);
 				frame.showWelcome();
-
 			}
 		};
 		mainThread.start();
@@ -714,6 +760,12 @@ public class Main extends JFrame {
 	private void dataModelChanged() {
 		reloadRightPanel();
 		d_saveMenuItem.setEnabled(true);
+		updateTitle();
+		setDataChanged(true);
+	}
+	
+	private void updateTitle() {
+		setTitle(getTitle().lastIndexOf("*") < 0 ? getTitle() + "*" : getTitle());
 	}
 
 	public void repaintRightPanel() {
@@ -748,6 +800,7 @@ public class Main extends JFrame {
 			dataModelChanged();
 		}
 	}
+ 
 
 	public void leftTreeFocus(Object node) {
 		TreePath path = d_domainTreeModel.getPathTo(node);
@@ -758,5 +811,21 @@ public class Main extends JFrame {
 
 	public PresentationModelFactory getPmManager() {
 		return d_pmManager;
+	}
+
+	public void setCurFilename(String curFilename) {
+		d_curFilename = curFilename;
+	}
+
+	public String getCurFilename() {
+		return d_curFilename;
+	}
+
+	public void setDataChanged(boolean dataChanged) {
+		d_dataChanged = dataChanged;
+	}
+
+	public boolean isDataChanged() {
+		return d_dataChanged;
 	}
 }

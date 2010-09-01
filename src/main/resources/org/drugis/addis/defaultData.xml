@@ -83,24 +83,24 @@
 			<indication class="indication" ref="2"/>
 			<measurements>
 				<measurement id="38">
-					<outcomeMeasure class="endpoint" ref="6"/>
-					<arm ref="30"/>
-					<measurement class="rateMeasurement" id="39" rate="63" sampleSize="144"/>
+					<outcomeMeasure class="endpoint" ref="4"/>
+					<arm ref="32"/>
+					<measurement class="continuousMeasurement" id="39" mean="0.6899999999999999" sampleSize="142" stdDev="0.5"/>
 				</measurement>
 				<measurement id="40">
 					<outcomeMeasure class="endpoint" ref="4"/>
-					<arm ref="32"/>
-					<measurement class="continuousMeasurement" id="41" mean="0.6899999999999999" sampleSize="142" stdDev="0.5"/>
+					<arm ref="30"/>
+					<measurement class="continuousMeasurement" id="41" mean="0.67" sampleSize="144" stdDev="0.5"/>
 				</measurement>
 				<measurement id="42">
 					<outcomeMeasure class="endpoint" ref="6"/>
-					<arm ref="32"/>
-					<measurement class="rateMeasurement" id="43" rate="73" sampleSize="142"/>
+					<arm ref="30"/>
+					<measurement class="rateMeasurement" id="43" rate="63" sampleSize="144"/>
 				</measurement>
 				<measurement id="44">
-					<outcomeMeasure class="endpoint" ref="4"/>
-					<arm ref="30"/>
-					<measurement class="continuousMeasurement" id="45" mean="0.67" sampleSize="144" stdDev="0.5"/>
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="32"/>
+					<measurement class="rateMeasurement" id="45" rate="73" sampleSize="142"/>
 				</measurement>
 			</measurements>
 			<notes/>
@@ -183,9 +183,9 @@
 			<indication class="indication" ref="2"/>
 			<measurements>
 				<measurement id="71">
-					<outcomeMeasure class="endpoint" ref="4"/>
-					<arm ref="63"/>
-					<measurement class="continuousMeasurement" id="72" mean="-1.6899999999999999" sampleSize="102" stdDev="0.16"/>
+					<outcomeMeasure class="endpoint" ref="6"/>
+					<arm ref="65"/>
+					<measurement class="rateMeasurement" id="72" rate="67" sampleSize="101"/>
 				</measurement>
 				<measurement id="73">
 					<outcomeMeasure class="endpoint" ref="4"/>
@@ -194,13 +194,13 @@
 				</measurement>
 				<measurement id="75">
 					<outcomeMeasure class="endpoint" ref="6"/>
-					<arm ref="65"/>
-					<measurement class="rateMeasurement" id="76" rate="67" sampleSize="101"/>
+					<arm ref="63"/>
+					<measurement class="rateMeasurement" id="76" rate="67" sampleSize="102"/>
 				</measurement>
 				<measurement id="77">
-					<outcomeMeasure class="endpoint" ref="6"/>
+					<outcomeMeasure class="endpoint" ref="4"/>
 					<arm ref="63"/>
-					<measurement class="rateMeasurement" id="78" rate="67" sampleSize="102"/>
+					<measurement class="continuousMeasurement" id="78" mean="-1.6899999999999999" sampleSize="102" stdDev="0.16"/>
 				</measurement>
 			</measurements>
 			<notes/>
@@ -288,13 +288,13 @@
 			<measurements>
 				<measurement id="105">
 					<outcomeMeasure class="endpoint" ref="6"/>
-					<arm ref="102"/>
-					<measurement class="rateMeasurement" id="106" rate="64" sampleSize="93"/>
+					<arm ref="98"/>
+					<measurement class="rateMeasurement" id="106" rate="70" sampleSize="96"/>
 				</measurement>
 				<measurement id="107">
 					<outcomeMeasure class="endpoint" ref="6"/>
-					<arm ref="98"/>
-					<measurement class="rateMeasurement" id="108" rate="70" sampleSize="96"/>
+					<arm ref="102"/>
+					<measurement class="rateMeasurement" id="108" rate="64" sampleSize="93"/>
 				</measurement>
 				<measurement id="109">
 					<outcomeMeasure class="endpoint" ref="6"/>
@@ -394,13 +394,13 @@
 				</measurement>
 				<measurement id="139">
 					<outcomeMeasure class="endpoint" ref="6"/>
-					<arm ref="130"/>
-					<measurement class="rateMeasurement" id="140" rate="23" sampleSize="37"/>
+					<arm ref="134"/>
+					<measurement class="rateMeasurement" id="140" rate="26" sampleSize="41"/>
 				</measurement>
 				<measurement id="141">
 					<outcomeMeasure class="endpoint" ref="6"/>
-					<arm ref="134"/>
-					<measurement class="rateMeasurement" id="142" rate="26" sampleSize="41"/>
+					<arm ref="130"/>
+					<measurement class="rateMeasurement" id="142" rate="23" sampleSize="37"/>
 				</measurement>
 			</measurements>
 			<notes/>
@@ -438,13 +438,13 @@
 			<measurements>
 				<measurement id="152">
 					<outcomeMeasure class="endpoint" ref="6"/>
-					<arm ref="149"/>
-					<measurement class="rateMeasurement" id="153" rate="84" sampleSize="119"/>
+					<arm ref="147"/>
+					<measurement class="rateMeasurement" id="153" rate="85" sampleSize="117"/>
 				</measurement>
 				<measurement id="154">
 					<outcomeMeasure class="endpoint" ref="6"/>
-					<arm ref="147"/>
-					<measurement class="rateMeasurement" id="155" rate="85" sampleSize="117"/>
+					<arm ref="149"/>
+					<measurement class="rateMeasurement" id="155" rate="84" sampleSize="119"/>
 				</measurement>
 			</measurements>
 			<notes/>
@@ -489,13 +489,13 @@
 			<measurements>
 				<measurement id="167">
 					<outcomeMeasure class="endpoint" ref="4"/>
-					<arm ref="162"/>
-					<measurement class="continuousMeasurement" id="168" mean="1.57" sampleSize="47" stdDev="1.3029999999999999"/>
+					<arm ref="160"/>
+					<measurement class="continuousMeasurement" id="168" mean="1.9399999999999999" sampleSize="47" stdDev="1.577"/>
 				</measurement>
 				<measurement id="169">
 					<outcomeMeasure class="endpoint" ref="4"/>
-					<arm ref="160"/>
-					<measurement class="continuousMeasurement" id="170" mean="1.9399999999999999" sampleSize="47" stdDev="1.577"/>
+					<arm ref="162"/>
+					<measurement class="continuousMeasurement" id="170" mean="1.57" sampleSize="47" stdDev="1.3029999999999999"/>
 				</measurement>
 				<measurement id="171">
 					<outcomeMeasure class="endpoint" ref="4"/>
@@ -545,13 +545,13 @@
 			<measurements>
 				<measurement id="184">
 					<outcomeMeasure class="endpoint" ref="4"/>
-					<arm ref="177"/>
-					<measurement class="continuousMeasurement" id="185" mean="0.8" sampleSize="49" stdDev="1.26"/>
+					<arm ref="179"/>
+					<measurement class="continuousMeasurement" id="185" mean="0.62" sampleSize="48" stdDev="1.109"/>
 				</measurement>
 				<measurement id="186">
 					<outcomeMeasure class="endpoint" ref="4"/>
-					<arm ref="179"/>
-					<measurement class="continuousMeasurement" id="187" mean="0.62" sampleSize="48" stdDev="1.109"/>
+					<arm ref="177"/>
+					<measurement class="continuousMeasurement" id="187" mean="0.8" sampleSize="49" stdDev="1.26"/>
 				</measurement>
 				<measurement id="188">
 					<outcomeMeasure class="endpoint" ref="4"/>
@@ -633,16 +633,6 @@
 					<arm ref="98"/>
 				</armEntry>
 				<armEntry>
-					<study ref="144"/>
-					<drug ref="14"/>
-					<arm ref="149"/>
-				</armEntry>
-				<armEntry>
-					<study ref="144"/>
-					<drug ref="18"/>
-					<arm ref="147"/>
-				</armEntry>
-				<armEntry>
 					<study ref="191"/>
 					<drug ref="14"/>
 					<arm ref="196"/>
@@ -651,6 +641,16 @@
 					<study ref="191"/>
 					<drug ref="18"/>
 					<arm ref="194"/>
+				</armEntry>
+				<armEntry>
+					<study ref="144"/>
+					<drug ref="14"/>
+					<arm ref="149"/>
+				</armEntry>
+				<armEntry>
+					<study ref="144"/>
+					<drug ref="18"/>
+					<arm ref="147"/>
 				</armEntry>
 				<armEntry>
 					<study ref="27"/>
@@ -727,18 +727,18 @@
 						<measurements>
 							<measurement id="217">
 								<outcomeMeasure class="endpoint" ref="6"/>
-								<arm ref="214"/>
-								<measurement class="rateMeasurement" id="218" rate="64" sampleSize="93"/>
+								<arm ref="212"/>
+								<measurement class="rateMeasurement" id="218" rate="57" sampleSize="92"/>
 							</measurement>
 							<measurement id="219">
 								<outcomeMeasure class="endpoint" ref="6"/>
-								<arm ref="210"/>
-								<measurement class="rateMeasurement" id="220" rate="70" sampleSize="96"/>
+								<arm ref="214"/>
+								<measurement class="rateMeasurement" id="220" rate="64" sampleSize="93"/>
 							</measurement>
 							<measurement id="221">
 								<outcomeMeasure class="endpoint" ref="6"/>
-								<arm ref="212"/>
-								<measurement class="rateMeasurement" id="222" rate="57" sampleSize="92"/>
+								<arm ref="210"/>
+								<measurement class="rateMeasurement" id="222" rate="70" sampleSize="96"/>
 							</measurement>
 						</measurements>
 						<notes/>
@@ -770,4 +770,5 @@
 			</armEntries>
 		</networkMetaAnalysis>
 	</metaAnalyses>
+	<benefitRiskAnalyses id="224"/>
 </addis-data>
