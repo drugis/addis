@@ -52,4 +52,7 @@ public class FileNames {
 	public static final String ICON_LOADING_LARGE = "loader32.gif";
 	public static final String ICON_LOADING = "loader16.gif";
 	public static final String ICON_SEARCH = "search.gif";
+	public static final String IMAGE_HEADER = "header.png";
+	public static final String IMAGE_FOOTER = "footer.png";
+	
 }
