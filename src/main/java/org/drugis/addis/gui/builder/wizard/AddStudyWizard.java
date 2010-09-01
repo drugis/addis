@@ -765,7 +765,6 @@ public class AddStudyWizard implements ViewBuilder{
 					d_importButton.setEnabled(true);
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(d_me, "Couldn't find NCT ID: "+ d_pm.getIdModel().getValue(), "Not Found" , JOptionPane.WARNING_MESSAGE);
-					System.out.println(e.getMessage());
 				}
 				prepare();
 			}
