@@ -34,7 +34,7 @@ public class WelcomeDialog extends JDialog {
 		d_main = parent;
 		setTitle("Welcome to " + AppInfo.getAppName());		
 		initComps();
-		setPreferredSize(new Dimension(446, 289));
+		setPreferredSize(new Dimension(446, 325));
 		setResizable(false);
 		//setAlwaysOnTop(true);
 		//setModalityType(Dialog.ModalityType.TOOLKIT_MODAL);
@@ -69,7 +69,9 @@ public class WelcomeDialog extends JDialog {
 				"If you are new to the software we recommend that you look over the example data.</center></html>"),
 				cc.xyw(1, 2, 4));
 		*/
-		JButton exampleData = GUIFactory.createIconButton(FileNames.ICON_TIP, "Load example data");
+		JButton exampleData = GUIFactory.createIconButton(FileNames.ICON_TIP, 
+				"<html> Open an example file which contains <br />a complete dataset for analysis. </html>");
+		exampleData.setPreferredSize(new Dimension(40, 40));
 		exampleData.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				d_main.loadDomain();	
@@ -77,7 +79,9 @@ public class WelcomeDialog extends JDialog {
 				dispose();
 			}
 			});
-		JButton loadData = GUIFactory.createIconButton(FileNames.ICON_OPENFILE, "Load data from file");
+		JButton loadData = GUIFactory.createIconButton(FileNames.ICON_OPENFILE, 
+				"<html> Load data from existing file <br /> to visualize, edit or perform analysis. </html>");
+		loadData.setPreferredSize(new Dimension(40, 40));
 		loadData.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 				if(d_main.fileLoadActions() != JFileChooser.CANCEL_OPTION) {			
@@ -86,7 +90,9 @@ public class WelcomeDialog extends JDialog {
 				}
 			}
 			});
-		JButton newData = GUIFactory.createIconButton(FileNames.ICON_NEWFILE, "Begin with no data");
+		JButton newData = GUIFactory.createIconButton(FileNames.ICON_NEWFILE, 
+				"<html> Create an empty file with no exisitng entities. <br /> You need to enter data to perform an analysis. </html>");
+		newData.setPreferredSize(new Dimension(40, 40));
 		newData.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				ThreadHandler.getInstance().clear();	// Terminate all running threads.
@@ -100,11 +106,11 @@ public class WelcomeDialog extends JDialog {
 			}});
 		
 		builder.add(exampleData, cc.xy(2, 4));
-		builder.add(new JLabel("Load example data"), cc.xy(4, 4));
+		builder.add(new JLabel("Open a complete dataset example"), cc.xy(4, 4));
 		builder.add(loadData, cc.xy(2, 6));
-		builder.add(new JLabel("Load data from file"), cc.xy(4, 6));
+		builder.add(new JLabel("Load data from previously saved file"), cc.xy(4, 6));
 		builder.add(newData, cc.xy(2, 8));
-		builder.add(new JLabel("Begin with no data"), cc.xy(4, 8));
+		builder.add(new JLabel("Create new dataset"), cc.xy(4, 8));
 		
 		JLabel labelFooter = new JLabel();
 		labelFooter.setIcon(ImageLoader.getIcon(FileNames.IMAGE_FOOTER));
