@@ -94,6 +94,8 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 @SuppressWarnings("serial")
 public class Main extends JFrame {
 	
+	private static final String EXAMPLE_XML = "defaultData.xml";
+
 	private final class MainFileSaveDialog extends FileSaveDialog {
 		private MainFileSaveDialog(Component frame, String extension,
 				String description) {
@@ -106,7 +108,6 @@ public class Main extends JFrame {
 		}
 	}
 	
-	private static final String DOMAIN_DEFAULT_FILENAME = "domain-"	+ AppInfo.getAppVersion() + ".xml";
 	private JComponent d_leftPanel;
 	private JScrollPane d_rightPanel;
 	private ViewBuilder d_rightPanelBuilder;
@@ -154,7 +155,7 @@ public class Main extends JFrame {
 
 		GUIHelper.configureJFreeChartLookAndFeel();
 
-		initializeDomain(false);		
+		initializeDomain();		
 		d_pmManager = new PresentationModelFactory(getDomain());
 	}
 	
@@ -209,29 +210,22 @@ public class Main extends JFrame {
 		d_domainMgr.saveXMLDomain(fos);
 	}
 
-	private void initializeDomain(boolean newDomain) {
+	private void initializeDomain() {
 		d_domainMgr = new DomainManager();
 
-		if(newDomain){
-			loadDomain();
-		}
 		getDomain().addListener(new MainListener());
 		setDataChanged(false);
 	}
 	
-	public void loadDomain() {
+	public void loadExampleDomain() {
 		try {
-			loadDomainFromXMLFile(DOMAIN_DEFAULT_FILENAME);
-		} catch (Exception e) {
-			try {
-				loadDomainFromXMLResource("defaultData.xml");
-			} catch (Exception e2) {
-				JOptionPane.showMessageDialog(this,
-						"Error loading default data: " + e2.toString(),
-						"Error loading domain", JOptionPane.ERROR_MESSAGE);
-			}
+			loadDomainFromXMLResource(EXAMPLE_XML);
+		} catch (Exception e2) {
+			JOptionPane.showMessageDialog(this,
+					"Error loading default data: " + e2.toString(),
+					"Error loading domain", JOptionPane.ERROR_MESSAGE);
 		}
-		setTitle(AppInfo.getAppName() + " v" + AppInfo.getAppVersion() + " - Example data");
+		setTitle(DEFAULT_TITLE + " - Example data");
 		setDataChanged(false);
 	}
 
@@ -460,12 +454,20 @@ public class Main extends JFrame {
 	}
 	
 	private void newFileActions() {
-		ThreadHandler.getInstance().clear();	// Terminate all running threads.
-		getDomain().clearDomain();	
-		getPmManager().clearCache();				// Empty the PresentationModelFactory cache.
+		resetDomain();
+		newDomain();
+	}
+
+	public void newDomain() {
 		setTitle(DEFAULT_TITLE + " - New File");
 		setCurFilename(null);
 		setDataChanged(false);
+	}
+
+	private void resetDomain() {
+		ThreadHandler.getInstance().clear();	// Terminate all running threads.
+		getDomain().clearDomain();	
+		getPmManager().clearCache();			// Empty the PresentationModelFactory cache.
 	}
 
 	private JMenuItem createLoadItem() {
@@ -663,12 +665,7 @@ public class Main extends JFrame {
 
 	private void expandLeftPanelTree() {
 		for (EntityCategory cat : getDomain().getCategories()) {
-			//if (!cat.getEntityClass().equals(Study.class))
-			//if(d_domainTreeModel.getChildCount(getDomain().getCategory(cat.getEntityClass())) < 5) {
-				d_leftPanelTree.expandPath(new TreePath(new Object[] 
-				    {d_domainTreeModel.getRoot(), cat}
-				));
-			//}
+			d_leftPanelTree.expandPath(new TreePath(new Object[] {d_domainTreeModel.getRoot(), cat}));
 		}
 	}
 
