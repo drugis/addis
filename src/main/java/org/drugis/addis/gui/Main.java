@@ -428,7 +428,7 @@ public class Main extends JFrame {
 	}
 
 	private void showEditStudyWizard(Study study) {
-		JDialog dialog = new JDialog((Frame) this, "Add Study", true);
+		JDialog dialog = new JDialog((Frame) this, "Edit Study", true);
 		AddStudyWizardPresentation pm = new AddStudyWizardPresentation(getDomain(),
 				getPresentationModelFactory(), this, study);
 		
