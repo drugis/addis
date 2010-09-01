@@ -54,5 +54,4 @@ public class FileNames {
 	public static final String ICON_SEARCH = "search.gif";
 	public static final String IMAGE_HEADER = "header.png";
 	public static final String IMAGE_FOOTER = "footer.png";
-	
 }
