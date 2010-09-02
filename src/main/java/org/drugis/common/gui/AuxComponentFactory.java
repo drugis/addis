@@ -43,6 +43,8 @@ import com.jgoodies.forms.util.DefaultUnitConverter;
 
 public class AuxComponentFactory {
 
+	public static final Color COLOR_NOTE = new Color(255, 255, 180);
+
 	public static <T> JComboBox createBoundComboBox(T[] values, ValueModel model) {
 		SelectionInList<T> typeSelectionInList =
 			new SelectionInList<T>(values, model);
@@ -148,7 +150,7 @@ public class AuxComponentFactory {
 			StyledDocument doc = area.getStyledDocument();
 			AddStudyWizard.addStylesToDoc(doc);
 			
-			area.setBackground(new Color(255, 255, 180));
+			area.setBackground(COLOR_NOTE);
 			
 			try {
 				doc.insertString(doc.getLength(), AddStudyWizard.DEFAULT_NOTETITLE + "\n", doc.getStyle("bold"));
