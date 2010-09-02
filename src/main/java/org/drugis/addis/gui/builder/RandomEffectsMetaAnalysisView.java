@@ -70,8 +70,9 @@ implements ViewBuilder {
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
-		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
+		builder.setOpaque(true);
 		
 		CellConstraints cc =  new CellConstraints();		
 
@@ -116,10 +117,11 @@ implements ViewBuilder {
 	}
 
 	private void buildRatePlotsPart(PanelBuilder builder, CellConstraints cc) {
-		builder.addSeparator("Odds ratio", cc.xy(1, 9));
 		if (d_overView) {
+			builder.addSeparator("Odds ratio", cc.xy(1, 9));
 			builder.add(buildRelativeEffectPart(BasicOddsRatio.class), cc.xy(1, 11));			
 		} else {
+			builder.addSeparator("Odds ratio", cc.xy(1, 9));
 			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(BasicOddsRatio.class)), cc.xy(1, 11));
 		}
 		
@@ -149,7 +151,7 @@ implements ViewBuilder {
 		builder.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.black, 1), BorderFactory.createEmptyBorder(1, 1, 1, 1)));
 		builder.setBackground(Color.white);
 		
-		encapsulating.add(builder.getPanel(),BorderLayout.NORTH);
+		encapsulating.add(builder.getPanel(),BorderLayout.SOUTH);
 		
 		if (!d_overView) {
 			JButton saveBtn = new JButton("Save Image");
@@ -165,6 +167,7 @@ implements ViewBuilder {
 			encapsulating.add(new JLabel(" "), BorderLayout.CENTER);
 			encapsulating.add(bbuilder.getPanel(), BorderLayout.SOUTH);
 		}
+
 
 		return encapsulating;	
 	}
