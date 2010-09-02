@@ -44,6 +44,9 @@ import org.drugis.common.ImageLoader;
 @SuppressWarnings("serial")
 public class AboutDialog extends JDialog {
 
+			
+	
+	
 	public AboutDialog(JFrame parent) {
 		super(parent);
 		setTitle("About " + AppInfo.getAppName());		
@@ -51,12 +54,18 @@ public class AboutDialog extends JDialog {
 		setPreferredSize(new Dimension(450, 250));
 		pack();
 	}
-
+	
+	public static String getCopyInfo()
+	{
+		return AppInfo.getAppName() + " is open source and licensed under GPLv3.\n"
+		+"\u00A9 2009: \tGert van Valkenhoef\n\tTommi Tervonen\n\tTijs Zwinkels\n\tMaarten Jacobs\n\tHanno Koeslag";
+	}
+	
 	private void initComps() {
-		String title = AppInfo.getAppName() + " v" + AppInfo.getAppVersion();		
-		String subTitle = AppInfo.getAppName() + " is open source and licensed under GPLv3.\n"
-			+"\u00A9 2009: \tGert van Valkenhoef\n\tTommi Tervonen\n\tTijs Zwinkels\n\tMaarten Jacobs\n\tHanno Koeslag";
 
+		String title = AppInfo.getAppName() + " v" + AppInfo.getAppVersion();
+		String subTitle = getCopyInfo();
+		
 		JPanel panel = new JPanel(new BorderLayout());
 		
 		JLabel titleLabel = new JLabel(title);
