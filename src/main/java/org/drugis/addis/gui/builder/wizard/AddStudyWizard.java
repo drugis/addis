@@ -529,12 +529,12 @@ public class AddStudyWizard implements ViewBuilder{
 			}
 			
 			public void run() {				
-					String studyID = d_pm.getIdModel().getValue().toString().trim().replace(" ", "%20");
+					String studyID = d_pm.getIdModel().getValue().toString().trim();
 					try {
 						d_importButton.setIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
 						d_importButton.setEnabled(false);
 						
-						PubMedIdList importPubMedID = new PubMedIDRetriever().importPubMedID(studyID);
+						PubMedIdList importPubMedID = new PubMedIDRetriever().importPubMedID(studyID.replace(" ", "%20"));
 						
 						if (!importPubMedID.isEmpty()) {
 							d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED).setValue(importPubMedID);
