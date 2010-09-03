@@ -80,6 +80,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
+import org.drugis.addis.util.CopyrightInfo;
 import org.drugis.addis.util.threading.ThreadHandler;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.FileLoadDialog;
@@ -158,6 +159,11 @@ public class Main extends JFrame {
 
 		initializeDomain();		
 		d_pmManager = new PresentationModelFactory(getDomain());
+		try {
+			new CopyrightInfo().writeHeader("HEADERR");
+		} catch (IOException e) {			
+			e.printStackTrace();
+		}
 	}
 	
 	protected void showWelcome() {
