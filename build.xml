@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="warn" name="ADDIS">
+<project basedir="." default="warn" name="ADDIS" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 	<target name="warn">
 		<echo>Please use Maven2!</echo>
 	</target>
 
-	<loadfile property="header" srcFile="HEADER" />
+	<artifact:pom id="addis-pom" file="pom.xml" />
+
 
 	<target name="license">
+		<java classpath="target/addis-${addis-pom.version}-jar-with-dependencies.jar" classname="org.drugis.addis.util.CopyrightInfo" />
+		<loadfile property="header" srcFile="HEADER" />
 		<replaceregexp flags="s"
 			match=".*package org.drugis.addis"
 			replace="${header}package org.drugis.addis">
