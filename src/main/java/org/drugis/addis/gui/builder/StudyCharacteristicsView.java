@@ -28,7 +28,6 @@ import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.StudyCharacteristics;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
@@ -66,32 +65,23 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		
 		int row = 3;
 		for (Characteristic c : StudyCharacteristics.values()) {
-			if (isCharacteristicShown(c)) {
-				LayoutUtil.addRow(layout);
-				builder.addLabel(c.getDescription() + ":", cc.xy(1, row));
+			LayoutUtil.addRow(layout);
+			builder.addLabel(c.getDescription() + ":", cc.xy(1, row));
 
-				JComponent charView = 
-					AuxComponentFactory.createCharacteristicView(d_model.getCharacteristicModel(c));
-				if (charView instanceof JScrollPane) {
-					JScrollPane pane = (JScrollPane)charView;
-					((JComponent)pane.getViewport().getView()).setToolTipText(
-							GUIHelper.createToolTip(d_model.getNote(c)));
-				} else {
-					charView.setToolTipText(GUIHelper.createToolTip(d_model.getNote(c)));
-				}
-				builder.add(charView,
-						cc.xyw(3, row, fullWidth - 2));
-
-				row += 2;
+			JComponent charView = 
+				AuxComponentFactory.createCharacteristicView(d_model.getCharacteristicModel(c));
+			if (charView instanceof JScrollPane) {
+				JScrollPane pane = (JScrollPane)charView;
+				((JComponent)pane.getViewport().getView()).setToolTipText(
+						GUIHelper.createToolTip(d_model.getNote(c)));
+			} else {
+				charView.setToolTipText(GUIHelper.createToolTip(d_model.getNote(c)));
 			}
+			builder.add(charView,
+					cc.xyw(3, row, fullWidth - 2));
+
+			row += 2;
 		}
 		return builder.getPanel();
-	}
-
-	private boolean isCharacteristicShown(Characteristic c) {
-		if (c.equals(BasicStudyCharacteristic.STUDY_END)) {
-			return (d_model.isStudyFinished());
-		}
-		return true;
 	}
 }

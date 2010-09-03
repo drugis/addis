@@ -23,6 +23,7 @@ package org.drugis.addis.entities;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -161,6 +162,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		d_studyId = id;
 		d_indication = i;
 		setArms(new ArrayList<Arm>());
+		setCharacteristic(BasicStudyCharacteristic.CREATION_DATE, new Date());
 	}
 
 	public List<Arm> getArms() {
