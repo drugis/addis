@@ -159,11 +159,6 @@ public class Main extends JFrame {
 
 		initializeDomain();		
 		d_pmManager = new PresentationModelFactory(getDomain());
-		try {
-			new CopyrightInfo().writeHeader("HEADERR");
-		} catch (IOException e) {			
-			e.printStackTrace();
-		}
 	}
 	
 	protected void showWelcome() {

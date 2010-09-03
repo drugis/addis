@@ -11,6 +11,7 @@ public final class CopyrightInfo {
 	private final int YEAR2009 = 0;
 	private final int YEAR2010 = 1;
 	private final String[] years = {"2009", "2010"};
+	private final static String HEADER_FILENAME = "HEADER";
 	private String [][] d_authors;
 	private static String d_aboutText;
 	private static String d_headerText;
@@ -36,7 +37,7 @@ public final class CopyrightInfo {
 			for(String author : d_authors[i]) {
 				c += author.length() + 2;
 				d_headerText += author + ", ";
-				if(c > 60) {
+				if(c > 72) {
 					d_headerText += "\n * ";
 					c = 3;
 				}				 
@@ -81,4 +82,14 @@ public final class CopyrightInfo {
 	      out.close();
 	    }
 	}
+	
+	public void main(String [] args) {
+		try {
+			new CopyrightInfo().writeHeader(HEADER_FILENAME);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }
