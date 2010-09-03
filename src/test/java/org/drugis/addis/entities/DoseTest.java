@@ -103,4 +103,26 @@ public class DoseTest {
 		assertEquals(new FlexibleDose(q1, SIUnit.MILLIGRAMS_A_DAY).hashCode(),
 				new FlexibleDose(q1, SIUnit.MILLIGRAMS_A_DAY).hashCode());
 	}
+	
+	@Test
+	public void testCloneFixedDose() {
+		FixedDose dose = new FixedDose(12.5, SIUnit.MILLIGRAMS_A_DAY);
+		assertEquals(dose, dose.clone());
+		assertFalse(dose == dose.clone());
+	}
+	
+	@Test
+	public void testCloneFlexibleDose() {
+		Interval<Double> q1 = new Interval<Double>(13.0, 15.0);
+		FlexibleDose dose = new FlexibleDose(q1, SIUnit.MILLIGRAMS_A_DAY);
+		assertEquals(dose, dose.clone());
+		assertFalse(dose == dose.clone());
+	}
+	
+	@Test
+	public void testCloneUnknownDose() {
+		UnknownDose dose = new UnknownDose();
+		assertEquals(dose, dose.clone());
+		assertFalse(dose == dose.clone());
+	}
 }

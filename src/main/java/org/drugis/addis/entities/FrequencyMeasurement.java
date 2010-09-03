@@ -98,14 +98,6 @@ public class FrequencyMeasurement extends BasicMeasurement {
 		return d_cv;
 	}
 	
-	public FrequencyMeasurement deepCopy() {
-		FrequencyMeasurement m = new FrequencyMeasurement(getCategoricalVariable());
-		for (String cat : d_cv.getCategories()) {
-			m.setFrequency(cat, getFrequency(cat));
-		}
-		return m;
-	}
-	
 	public void add(FrequencyMeasurement other) {
 		for (String cat : d_cv.getCategories()) {
 			setFrequency(cat, getFrequency(cat) + other.getFrequency(cat));
@@ -131,6 +123,15 @@ public class FrequencyMeasurement extends BasicMeasurement {
 			ret += cat + " = " + getFrequencies().get(cat).intValue();
 		}
 		return ret;
+	}
+	
+	@Override
+	public FrequencyMeasurement clone() {
+		FrequencyMeasurement m = new FrequencyMeasurement(getCategoricalVariable());
+		for (String cat : d_cv.getCategories()) {
+			m.setFrequency(cat, getFrequency(cat));
+		}
+		return m;
 	}
 	
 	@Override

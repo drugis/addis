@@ -27,7 +27,6 @@ import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.Source;
@@ -77,7 +76,7 @@ public final class EntryXMLFormat extends XMLFormat<Entry> {
 			((MyEntry) entry).setKey(key);
 			((MyEntry) entry).setValue(new Note(src, text));
 		} else {
-			Entity outcomeMeasure = (Entity) ie.get("outcomeMeasure");
+			Variable outcomeMeasure = (Variable) ie.get("outcomeMeasure");
 			Arm arm = (Arm) ie.get("arm",Arm.class);
 			Measurement measurement = ie.get("measurement");
 
@@ -94,7 +93,7 @@ public final class EntryXMLFormat extends XMLFormat<Entry> {
 
 		if (e.getValue() instanceof Measurement) {
 			Entry<Study.MeasurementKey, Measurement> entry = (Entry<Study.MeasurementKey, Measurement>) e;
-			oe.add((Variable) entry.getKey().getOutcomeM(), "outcomeMeasure");
+			oe.add((Variable) entry.getKey().getVariable(), "outcomeMeasure");
 			oe.add(entry.getKey().getArm(), "arm", Arm.class);
 			oe.add(entry.getValue(), "measurement");
 		} else if (e.getValue() instanceof Note){

@@ -21,6 +21,8 @@
 
 package org.drugis.addis.entities;
 
+import static org.junit.Assert.*;
+
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,10 +30,14 @@ import org.junit.Test;
 public class ArmTest {
 	
 	private Arm d_pg;
+	private Arm d_orig;
+	private Arm d_clone;
 
 	@Before
 	public void setUp() {
 		d_pg = new Arm(null, null, 0);
+		d_orig = new Arm(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY), 123);
+		d_clone = d_orig.clone();
 	}
 	
 	@Test
@@ -47,5 +53,20 @@ public class ArmTest {
 	@Test
 	public void testSetDose() {
 		JUnitUtil.testSetter(d_pg, Arm.PROPERTY_DOSE, null, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY));
+	}
+	
+	@Test
+	public void testCloneReturnsEqualEntity() {
+		AssertEntityEquals.assertEntityEquals(d_orig, d_clone);
+	}
+	
+	@Test
+	public void testCloneReturnsDistinctObject() {
+		assertFalse(d_orig == d_clone);
+	}
+	
+	@Test
+	public void testCloneReturnsDistinctDose() {
+		assertFalse(d_orig.getDose() == d_clone.getDose());
 	}
 }

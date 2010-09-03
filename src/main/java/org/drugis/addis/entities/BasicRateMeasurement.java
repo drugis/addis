@@ -80,4 +80,9 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 	public int hashCode() {
 		return 31 * d_sampleSize.hashCode() + d_rate.hashCode();
 	}
+	
+	@Override
+	public Measurement clone() {
+		return new BasicRateMeasurement(d_rate, d_sampleSize);
+	}
 }

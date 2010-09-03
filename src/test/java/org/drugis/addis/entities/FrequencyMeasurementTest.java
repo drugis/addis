@@ -105,7 +105,7 @@ public class FrequencyMeasurementTest {
 	@Test
 	public void testDeepCopy() {
 		d_meas.setFrequency(d_cv.getCategories()[0], 25);		
-		FrequencyMeasurement m = d_meas.deepCopy();
+		FrequencyMeasurement m = d_meas.clone();
 		assertTrue(d_meas.getCategoricalVariable() == m.getCategoricalVariable());
 		assertEquals(25, m.getFrequency(d_cv.getCategories()[0]));
 		assertEquals(0, m.getFrequency(d_cv.getCategories()[1]));		
@@ -116,12 +116,12 @@ public class FrequencyMeasurementTest {
 	
 	@Test
 	public void testEquals() {
-		FrequencyMeasurement m = d_meas.deepCopy();
+		FrequencyMeasurement m = d_meas.clone();
 		d_meas.setFrequency(d_cv.getCategories()[0], 25);
 		d_meas.setFrequency(d_cv.getCategories()[1], 50);
 		
 		assertFalse(d_meas.equals(m));
-		m = d_meas.deepCopy();
+		m = d_meas.clone();
 		assertEquals(d_meas, m);
 		
 		assertFalse(d_meas.equals(null));
@@ -135,7 +135,7 @@ public class FrequencyMeasurementTest {
 	
 	@Test
 	public void testAdd() {
-		FrequencyMeasurement m = d_meas.deepCopy();
+		FrequencyMeasurement m = d_meas.clone();
 		d_meas.setFrequency(d_cv.getCategories()[0], 25);
 		d_meas.setFrequency(d_cv.getCategories()[1], 20);
 	
@@ -146,5 +146,13 @@ public class FrequencyMeasurementTest {
 		m.add(d_meas);
 		assertEquals(50, m.getFrequency(d_cv.getCategories()[0]));
 		assertEquals(40, m.getFrequency(d_cv.getCategories()[1]));
+	}
+	
+	@Test
+	public void testClone() {
+		d_meas.setFrequency(d_cv.getCategories()[0], 25);
+		d_meas.setFrequency(d_cv.getCategories()[1], 20);
+		assertEquals(d_meas, d_meas.clone());
+		assertFalse(d_meas == d_meas.clone());
 	}
 }

@@ -93,4 +93,9 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	public int hashCode() {
 		return (31 * (d_sampleSize.hashCode() + 31 * d_mean.hashCode())) + d_stdDev.hashCode();
 	}
+	
+	@Override
+	public Measurement clone() {
+		return new BasicContinuousMeasurement(d_mean, d_stdDev, d_sampleSize);
+	}
 }

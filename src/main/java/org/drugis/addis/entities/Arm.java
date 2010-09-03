@@ -23,9 +23,6 @@ package org.drugis.addis.entities;
 
 import java.util.Set;
 
-import org.drugis.common.EqualsUtil;
-
-
 public class Arm extends AbstractEntity {
 	private Integer d_size;
 	private Drug d_drug;
@@ -87,22 +84,7 @@ public class Arm extends AbstractEntity {
 	}
 	
 	@Override
-	public boolean equals(Object o) {
-		if (o instanceof Arm) {
-			Arm other = (Arm) o;
-			return EqualsUtil.equal(d_dose, other.d_dose) && 
-				EqualsUtil.equal(d_drug, other.d_drug) &&
-				EqualsUtil.equal(d_size, other.d_size);
-		}
-		return false;
-	}
-	
-	@Override
-	public int hashCode() {
-		return hash(d_dose) + 31 * (hash(d_drug) + 31 * hash(d_size));
-	}
-
-	private int hash(Object o) {
-		return o == null ? 0 : o.hashCode();
+	public Arm clone() {
+		return new Arm(getDrug(), getDose().clone(), getSize());
 	}
 }
