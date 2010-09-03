@@ -39,32 +39,23 @@ import javax.swing.SwingConstants;
 
 import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
+import org.drugis.addis.util.CopyrightInfo;
 import org.drugis.common.ImageLoader;
 
 @SuppressWarnings("serial")
 public class AboutDialog extends JDialog {
 
-			
-	
-	
 	public AboutDialog(JFrame parent) {
 		super(parent);
 		setTitle("About " + AppInfo.getAppName());		
 		initComps();
-		setPreferredSize(new Dimension(450, 250));
 		pack();
 	}
 	
-	public static String getCopyInfo()
-	{
-		return AppInfo.getAppName() + " is open source and licensed under GPLv3.\n"
-		+"\u00A9 2009: \tGert van Valkenhoef\n\tTommi Tervonen\n\tTijs Zwinkels\n\tMaarten Jacobs\n\tHanno Koeslag";
-	}
-	
 	private void initComps() {
-
+		CopyrightInfo copyInfo = new CopyrightInfo();
+		setPreferredSize(new Dimension(450, copyInfo.getAboutLineCount() * 26));
 		String title = AppInfo.getAppName() + " v" + AppInfo.getAppVersion();
-		String subTitle = getCopyInfo();
 		
 		JPanel panel = new JPanel(new BorderLayout());
 		
@@ -77,7 +68,7 @@ public class AboutDialog extends JDialog {
 		
 		
 		JPanel licPanel = new JPanel(new BorderLayout());
-		JTextArea licArea = new JTextArea(subTitle) {
+		JTextArea licArea = new JTextArea(copyInfo.getAboutText()) {
 			@Override
 			public Insets getInsets() {
 				return new Insets(5, 5, 5, 5);
