@@ -94,9 +94,8 @@ implements ViewBuilder {
 			throw new RuntimeException("Unexpected case: " +
 					d_pm.getAnalysisType() + " is not a supported type of endpoint");
 		}
-
-		JPanel panel = builder.getPanel();
-		return panel;
+		
+		return builder.getPanel();
 	}
 
 	private void buildContinuousPlotsPart(PanelBuilder builder,
