@@ -98,14 +98,6 @@ public class FrequencyMeasurement extends BasicMeasurement {
 		return d_cv;
 	}
 	
-	public FrequencyMeasurement deepCopy() {
-		FrequencyMeasurement m = new FrequencyMeasurement(getCategoricalVariable());
-		for (String cat : d_cv.getCategories()) {
-			m.setFrequency(cat, getFrequency(cat));
-		}
-		return m;
-	}
-	
 	public void add(FrequencyMeasurement other) {
 		for (String cat : d_cv.getCategories()) {
 			setFrequency(cat, getFrequency(cat) + other.getFrequency(cat));
@@ -134,6 +126,15 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	}
 	
 	@Override
+	public FrequencyMeasurement clone() {
+		FrequencyMeasurement m = new FrequencyMeasurement(getCategoricalVariable());
+		for (String cat : d_cv.getCategories()) {
+			m.setFrequency(cat, getFrequency(cat));
+		}
+		return m;
+	}
+	
+	@Override
 	public boolean equals(Object o) {
 		if (o instanceof FrequencyMeasurement) {
 			FrequencyMeasurement m = (FrequencyMeasurement) o;
@@ -157,11 +158,16 @@ public class FrequencyMeasurement extends BasicMeasurement {
 		}
 		return true;
 	}
+	
+	@Override
+	public int hashCode() {
+		return d_frequencies.hashCode();
+	}
 
 	public Map<String, Integer> getFrequencies() {
 		return d_frequencies;
 	}
-	
+
 	protected static final XMLFormat<FrequencyMeasurement> XML = new XMLFormat<FrequencyMeasurement>(FrequencyMeasurement.class) {
 		@Override
 		public FrequencyMeasurement newInstance(Class<FrequencyMeasurement> arg0, XMLFormat.InputElement arg1) 

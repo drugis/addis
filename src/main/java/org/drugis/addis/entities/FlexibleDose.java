@@ -109,4 +109,9 @@ public class FlexibleDose extends AbstractDose {
 	public String[] getXmlExclusions() {
 		return new String[] {"flexibleDose"};
 	}
+
+	@Override
+	public AbstractDose clone() {
+		return new FlexibleDose(getFlexibleDose(), getUnit());
+	}
 }

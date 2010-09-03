@@ -73,4 +73,9 @@ public class FixedDose extends AbstractDose {
 		hash = hash * 31 + getUnit().hashCode();
 		return hash;
 	}
+
+	@Override
+	public AbstractDose clone() {
+		return new FixedDose(getQuantity(), getUnit());
+	}
 }

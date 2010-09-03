@@ -55,4 +55,9 @@ public class UnknownDose extends AbstractDose {
 	public String[] getXmlExclusions() {
 		return new String[] {"unit"};
 	}
+
+	@Override
+	public AbstractDose clone() {
+		return new UnknownDose();
+	}
 }

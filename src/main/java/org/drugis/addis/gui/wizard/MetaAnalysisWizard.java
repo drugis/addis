@@ -109,9 +109,7 @@ public class MetaAnalysisWizard extends Wizard {
 			
 			d_pm = pm;
 			d_frame = frame;
-					
 			setLayout(new BorderLayout());
-			    
 			FormLayout layout = new FormLayout(
 					"center:pref:grow",
 					"p, 3dlu, p, 3dlu, p"

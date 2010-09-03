@@ -531,7 +531,6 @@ public class AddStudyWizard implements ViewBuilder{
 			public void run() {				
 					String studyID = d_pm.getIdModel().getValue().toString().trim();
 					try {
-						d_importButton.setIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
 						d_importButton.setEnabled(false);
 						
 						PubMedIdList importPubMedID = new PubMedIDRetriever().importPubMedID(studyID.replace(" ", "%20"));
@@ -541,7 +540,6 @@ public class AddStudyWizard implements ViewBuilder{
 						} else {
 							JOptionPane.showMessageDialog(d_me, "The Study ID ("+studyID+")\nhas no PubMed ID associated", "Warning", JOptionPane.WARNING_MESSAGE);
 						}
-						d_importButton.setIcon(ImageLoader.getIcon(FileNames.ICON_SEARCH));
 						d_importButton.setEnabled(true);
 					} catch (Exception e) {
 						JOptionPane.showMessageDialog(d_me, "Couldn't retrieve PubMed ID ...", e.getMessage(), JOptionPane.ERROR_MESSAGE);
@@ -555,6 +553,7 @@ public class AddStudyWizard implements ViewBuilder{
 			inputField.setToolTipText("You can enter multiple PubMed IDs delimited by comma");
 			
 			final JButton d_importButton = GUIFactory.createIconButton(FileNames.ICON_SEARCH, "Search PubMed ID based on the trial ID");
+			d_importButton.setDisabledIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
 			d_importButton.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent arg0) {
 					PubMedIdsRetriever pubMedRetriever = new PubMedIdsRetriever(d_importButton);
@@ -712,7 +711,7 @@ public class AddStudyWizard implements ViewBuilder{
 				// add import button
 				d_importButton = GUIFactory.createIconButton(FileNames.ICON_IMPORT,
 						"Enter NCT id to retrieve study data from ClinicalTrials.gov");
-				d_importButton.setEnabled(false);
+				d_importButton.setDisabledIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
 				d_importButton.addActionListener(new AbstractAction() {
 					public void actionPerformed(ActionEvent arg0) {
 						CTRetriever ctRetriever = new CTRetriever();
@@ -742,7 +741,6 @@ public class AddStudyWizard implements ViewBuilder{
 					}
 				});
 				d_builder.add(clearButton, cc.xy(3, 11));
-				
 				d_builder.add(buildTip(), cc.xy(3, 13));
 				
 				this.setLayout(new BorderLayout());
@@ -755,13 +753,8 @@ public class AddStudyWizard implements ViewBuilder{
 		private class CTRetriever implements Runnable {
 			public void run() {
 				try {
-					
-					d_importButton.setIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
-					d_importButton.setEnabled(false);
-					
+					d_importButton.setEnabled(false);				
 					d_pm.importCT();
-					
-					d_importButton.setIcon(ImageLoader.getIcon(FileNames.ICON_SEARCH));
 					d_importButton.setEnabled(true);
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(d_me, "Couldn't find NCT ID: "+ d_pm.getIdModel().getValue(), "Not Found" , JOptionPane.WARNING_MESSAGE);

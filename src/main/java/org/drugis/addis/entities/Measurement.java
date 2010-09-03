@@ -30,4 +30,6 @@ public interface Measurement extends Observable, Entity {
 	public Integer getSampleSize();
 	
 	public boolean isOfType(Variable.Type type);
+
+	public Measurement clone();
 }

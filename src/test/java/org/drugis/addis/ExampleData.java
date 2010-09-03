@@ -43,6 +43,7 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
@@ -61,6 +62,7 @@ public class ExampleData {
 	private static Endpoint s_endpointHamd;
 	private static Endpoint s_endpointCgi;
 	private static AdverseEvent s_convulsion;
+	private static AdverseEvent s_sexdysf;
 	private static Drug s_parox;
 	private static Drug s_fluox;
 	private static Drug s_viagra;
@@ -546,6 +548,11 @@ public class ExampleData {
 		Drug paroxetine = buildDrugParoxetine();
 		Study study = new Study("Fava et al, 2002", buildIndicationDepression());
 		study.setEndpoints(Collections.singletonList(hamd));
+		List<AdverseEvent> ade = new ArrayList<AdverseEvent>();
+		ade.add(buildAdverseEventConvulsion());
+		ade.add(buildAdverseEventSexualDysfunction());
+		study.setAdverseEvents(ade);
+		study.setPopulationCharacteristics(Collections.<PopulationCharacteristic>singletonList(buildGenderVariable()));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -586,6 +593,14 @@ public class ExampleData {
 		return study;
 	}
 	
+	private static AdverseEvent buildAdverseEventSexualDysfunction() {
+		if (s_sexdysf == null) {
+			s_sexdysf = new AdverseEvent("Sexual Dysfunction", Variable.Type.RATE);
+			s_sexdysf.setDescription("Rate");
+		}
+		return s_sexdysf;
+	}
+
 	public static Drug buildPlacebo() {
 		if (s_placebo == null) {
 			s_placebo = new Drug("Placebo", "");

@@ -23,7 +23,6 @@ package org.drugis.addis.entities;
 
 import java.util.Set;
 
-
 public class Arm extends AbstractEntity {
 	private Integer d_size;
 	private Drug d_drug;
@@ -82,5 +81,10 @@ public class Arm extends AbstractEntity {
 	public Set<Entity> getDependencies() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public Arm clone() {
+		return new Arm(getDrug(), getDose().clone(), getSize());
 	}
 }
