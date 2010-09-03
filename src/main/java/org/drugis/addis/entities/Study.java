@@ -36,41 +36,38 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 
 	public static class MeasurementKey extends AbstractEntity implements Entity {
 
-		private Entity d_outcomeM;
+		private Variable d_variable;
 		private Arm d_arm;
 
-		public MeasurementKey() {
-		}
-
-		public MeasurementKey(Entity e, Arm g)  {
-			if (e == null) {
-				throw new NullPointerException("Variable/Outcome = " + e + " may not be null");
+		public MeasurementKey(Variable v, Arm g)  {
+			if (v == null) {
+				throw new NullPointerException("Variable may not be null");
 			}
-			if (!(e instanceof Variable) && g == null) {
-				throw new NullPointerException("Arm = " + g + " may not be null for Endpoints/ADEs");
+			if (v instanceof OutcomeMeasure && g == null) {
+				throw new NullPointerException("Arm may not be null for Endpoints/ADEs");
 			}
-			d_outcomeM = e;
+			d_variable = v;
 			d_arm = g;
 		}
 
-		public Entity getOutcomeM() {
-			return d_outcomeM;
+		public Variable getVariable() {
+			return d_variable;
 		}
-		public void setOutcomeM(Entity outcomeM) {
-			d_outcomeM = outcomeM;
-		}
+		
 		public Arm getArm() {
 			return d_arm;
 		}
-		public void setArm(Arm arm) {
-			d_arm = arm;
+		
+		@Override
+		public String toString() {
+			return "<" + d_variable + ", " + d_arm + ">";
 		}
 
 		@Override
 		public boolean equals(Object o) {
 			if (o instanceof MeasurementKey) { 
 				MeasurementKey other = (MeasurementKey)o;
-				return d_outcomeM.equals(other.d_outcomeM) && EqualsUtil.equal(d_arm, other.d_arm);
+				return d_variable.equals(other.d_variable) && EqualsUtil.equal(d_arm, other.d_arm);
 			}
 			return false;
 		}
@@ -78,7 +75,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		@Override
 		public int hashCode() {
 			int code = 1;
-			code = code * 31 + d_outcomeM.hashCode();
+			code = code * 31 + d_variable.hashCode();
 			code = code * 31 + (d_arm == null ? 0 : d_arm.hashCode());
 			return code;
 		}
@@ -114,20 +111,52 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	@Override
 	public Study clone() {
 		Study newStudy = new Study(getStudyId(), getIndication());
-		newStudy.setArms(getArms());
+		newStudy.setArms(cloneArms());
 
 		newStudy.setEndpoints(getEndpoints());
 		newStudy.setAdverseEvents(getAdverseEvents());
 		newStudy.setPopulationCharacteristics(getPopulationCharacteristics());
 
 		// Copy measurements _AFTER_ the outcomes, since setEndpoints() etc removes orphan measurements from the study.
-		newStudy.setMeasurements(getMeasurements());
+		newStudy.setMeasurements(cloneMeasurements(newStudy.getArms()));
 		
-		newStudy.setCharacteristics(getCharacteristics());
+		newStudy.setCharacteristics(cloneCharacteristics());
 		newStudy.setNotes(getNotes());
 		return newStudy;
 	}
 	
+	private CharacteristicsMap cloneCharacteristics() {
+		CharacteristicsMap cm = new CharacteristicsMap();
+		for(Characteristic c : d_chars.keySet()){
+			cm.put(c, d_chars.get(c));
+		}
+		return cm;
+	}
+
+	private Map<MeasurementKey, Measurement> cloneMeasurements(List<Arm> newArms) {
+		HashMap<MeasurementKey, Measurement> hashMap = new HashMap<MeasurementKey, Measurement>();
+		for(MeasurementKey key : d_measurements.keySet()) {
+			hashMap.put(fixKey(key, newArms), d_measurements.get(key).clone());
+		}
+		return hashMap;
+	}
+
+	private MeasurementKey fixKey(MeasurementKey key, List<Arm> newArms) {
+		if (key.getArm() == null) {
+			return key;
+		}
+		int idx = getArms().indexOf(key.getArm());
+		return new MeasurementKey(key.getVariable(), newArms.get(idx));
+	}
+
+	private List<Arm> cloneArms() {
+		List<Arm> newList = new ArrayList<Arm>();
+		for(Arm a : getArms()) {
+			newList.add(a.clone());
+		}
+		return newList;
+	}
+
 	public Study(String id, Indication i) {
 		d_studyId = id;
 		d_indication = i;
@@ -428,8 +457,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 
 	private boolean orphanKey(MeasurementKey k) {
 		// OutcomeMeasure measurement
-		if (k.d_outcomeM instanceof OutcomeMeasure) {
-			if (!getOutcomeMeasures().contains(k.d_outcomeM)) {
+		if (k.d_variable instanceof OutcomeMeasure) {
+			if (!getOutcomeMeasures().contains(k.d_variable)) {
 				return true;
 			}
 			if (!d_arms.contains(k.d_arm)){
@@ -438,8 +467,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			return false;
 		}
 		// PopulationChar measurements
-		if (k.d_outcomeM instanceof Variable) {
-			if (!getVariables(Variable.class).contains(k.d_outcomeM)) {
+		if (k.d_variable instanceof Variable) {
+			if (!getVariables(Variable.class).contains(k.d_variable)) {
 				return true;
 			}
 			if (k.d_arm != null && !d_arms.contains(k.d_arm)) {

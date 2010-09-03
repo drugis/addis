@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,10 +43,14 @@ import org.junit.Test;
 public class StudyTest {
 	
 	private Arm d_pg;
+	private Study d_orig;
+	private Study d_clone;
 
 	@Before
 	public void setUp() {
 		d_pg = new Arm(null, null, 0);
+		d_orig = ExampleData.buildStudyFava2002();
+		d_clone = d_orig.clone();
 	}
 	
 	@Test
@@ -300,10 +305,49 @@ public class StudyTest {
 	}
 	
 	@Test
-	public void testClone() {
-		Study orig = ExampleData.buildStudyFava2002();
-		Study clone = orig.clone();
-		assertEquals(orig, clone);
-		AssertEntityEquals.assertEntityEquals(orig, clone);
+	public void testCloneReturnsEqualEntity() {
+		assertEquals(d_orig, d_clone);
+		AssertEntityEquals.assertEntityEquals(d_orig, d_clone);
+	}
+	
+	@Test
+	public void testCloneReturnsDistinctObject() {
+		assertFalse(d_orig == d_clone);
+	}
+	
+	@Test
+	public void testCloneReturnsDistinctArms() {
+		assertFalse(d_orig.getArms() == d_clone.getArms());
+		for (int i = 0; i < d_orig.getArms().size(); ++i) {
+			assertFalse(d_orig.getArms().get(i) == d_clone.getArms().get(i));
+		}
+	}
+	
+	@Test
+	public void testCloneReturnsDistinctVariableLists() {
+		assertFalse(d_orig.getEndpoints() == d_clone.getEndpoints());
+		assertFalse(d_orig.getAdverseEvents() == d_clone.getAdverseEvents());
+		assertFalse(d_orig.getPopulationCharacteristics() == d_clone.getPopulationCharacteristics());
+	}
+	
+	@Test
+	public void testCloneReturnsDistinctMeasurements() {
+		assertFalse(d_orig.getMeasurements() == d_clone.getMeasurements());
+		for (MeasurementKey key : d_orig.getMeasurements().keySet()) {
+			assertFalse(d_orig.getMeasurements().get(key) == d_clone.getMeasurements().get(key));
+		}
+	}
+	
+	@Test
+	public void testCloneHasCorrectMeasurementKeys() {
+		Arm arm = d_clone.getArms().get(1);
+		arm.setDrug(ExampleData.buildDrugViagra());
+		assertEquals(d_orig.getMeasurement(d_orig.getEndpoints().get(0), d_orig.getArms().get(1)),
+				d_clone.getMeasurement(d_clone.getEndpoints().get(0), arm));
+	}
+	
+	@Test
+	public void testCloneHasDistinctCharacteristics() {
+		assertFalse(d_orig.getCharacteristics() == d_clone.getCharacteristics());
 	}
 }

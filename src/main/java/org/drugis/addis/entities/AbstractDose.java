@@ -42,5 +42,7 @@ public abstract class AbstractDose extends AbstractEntity {
 	public Set<Entity> getDependencies() {
 		return null;
 	}
-
+	
+	@Override
+	public abstract AbstractDose clone();
 }

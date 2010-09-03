@@ -24,45 +24,21 @@ package org.drugis.addis.entities;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 
-import java.util.Collection;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.Map.Entry;
 
+import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.common.EqualsUtil;
 
 public class AssertEntityEquals {
-	
-	private static class MeasurementComparator implements Comparator<Measurement> {
-		
-		// FIXME: This compare does not necessarily work; Different objects could return the same comparator value.   
-		private double calcValue(Measurement m) {
-			if (m instanceof ContinuousMeasurement) {
-				return calcValue((ContinuousMeasurement) m);
-			} else if (m instanceof RateMeasurement) {
-				return calcValue((RateMeasurement) m);
-			} else 
-				throw new IllegalArgumentException("Unknown type of measurement");
-		}
-		
-		private double calcValue(ContinuousMeasurement m) {
-			return - (Math.exp(m.getMean())*Math.exp(m.getStdDev())*Math.exp(m.getSampleSize()));
-		}
-		
-		private double calcValue(RateMeasurement m) {
-			return Math.exp(m.getRate()) * Math.exp(m.getSampleSize());
-		}
-		
-		public int compare(Measurement o1, Measurement o2) {
-			return (int) (calcValue(o1) - calcValue(o2));
-		}
-	}
 	
 	public static void assertEntityEquals(Indication expected, Indication actual) {
 		assertEquals(expected.getClass(), actual.getClass());
@@ -80,11 +56,20 @@ public class AssertEntityEquals {
 		assertEquals(expected.getName(),actual.getName());
 		assertEquals (expected.getAtcCode(), actual.getAtcCode());
 	}
+	
+	public static boolean armsEqual(Arm expected, Arm actual) {
+		if (expected == null || actual == null) {
+			return expected == actual;
+		}
+		return EqualsUtil.equal(expected.getDrug(), actual.getDrug()) &&
+			EqualsUtil.equal(expected.getDose(), actual.getDose()) &&
+			EqualsUtil.equal(expected.getSize(), actual.getSize());
+	}
 
 	public static void assertEntityEquals(Arm expected, Arm actual) {
-		assertEntityEquals(expected.getDrug(), actual.getDrug());
-		assertEquals(expected.getDose(), actual.getDose());
-		assertEquals(expected.getSize(), actual.getSize());
+		if (!armsEqual(expected, actual)) {
+			throw new AssertionError("Expected " + expected + " but got " + actual);
+		}
 	}
 	
 	public static void assertEntityEquals(Variable expected, Variable actual) {
@@ -118,7 +103,18 @@ public class AssertEntityEquals {
 		}
 	}
 	
-	public static void assertEntityEquals(Collection<? extends Entity> expected, Collection<? extends Entity> actual) {
+
+	private static void assertEntityEquals(SortedSet<? extends Entity> expected, SortedSet<? extends Entity> actual) {
+		assertEntityEquals(asList(expected), asList(actual));
+	}
+
+	private static List<? extends Entity> asList(SortedSet<? extends Entity> expected) {
+		List<Entity> expList = new ArrayList<Entity>();
+		expList.addAll(expected);
+		return expList;
+	}
+	
+	public static void assertEntityEquals(List<? extends Entity> expected, List<? extends Entity> actual) {
 		assertEquals(expected.size(), actual.size());
 		Iterator<? extends Entity> expectedIterator = expected.iterator();
 		Iterator<? extends Entity> actualIterator = actual.iterator();
@@ -133,19 +129,18 @@ public class AssertEntityEquals {
 		assertEntityEquals(expected.getEndpoints(), actual.getEndpoints());
 		assertEntityEquals(expected.getOutcomeMeasures(), actual.getOutcomeMeasures());
 		assertEntityEquals(expected.getPopulationCharacteristics(), actual.getPopulationCharacteristics());
-		assertEntityEquals(expected.getDrugs(), actual.getDrugs());
+		assertEquals(expected.getDrugs(), actual.getDrugs());
 		
 		// indication
 		assertEntityEquals(expected.getIndication(), actual.getIndication());
 		
 		// measurements
 		assertEquals(expected.getMeasurements().keySet().size(), actual.getMeasurements().keySet().size());
-		SortedSet<Measurement> expectedMeasurementSet = new TreeSet<Measurement>(new MeasurementComparator());
-		expectedMeasurementSet.addAll(expected.getMeasurements().values());
-		SortedSet<Measurement> actualMeasurementSet = new TreeSet<Measurement>(new MeasurementComparator());
-		actualMeasurementSet.addAll(actual.getMeasurements().values());
-		assertAllAndOnly(expectedMeasurementSet, actualMeasurementSet);
-		
+		for (Entry<MeasurementKey, Measurement> entry : expected.getMeasurements().entrySet()) {
+			Object actualKey = findMatchingKey(entry.getKey(), actual.getMeasurements().keySet());
+			assertEquals(entry.getValue(), actual.getMeasurements().get(actualKey));
+		}
+
 		// characteristics
 		assertEquals(expected.getCharacteristics().keySet().size(), actual.getCharacteristics().keySet().size());
 		Iterator<Characteristic> charIterator = expected.getCharacteristics().keySet().iterator();
@@ -161,6 +156,16 @@ public class AssertEntityEquals {
 		assertEquals(expected.getNotes().keySet().size(), actual.getNotes().keySet().size());
 	}
 	
+	private static Object findMatchingKey(MeasurementKey key, Set<MeasurementKey> keySet) {
+		for (MeasurementKey otherKey : keySet) {
+			if (EqualsUtil.equal(key.getVariable(), otherKey.getVariable()) &&
+					armsEqual(key.getArm(), otherKey.getArm())) {
+				return otherKey;
+			}
+		}
+		return null;
+	}
+
 	public static void assertEntityEquals(MetaAnalysis expected, MetaAnalysis actual) {
 		assertEquals(expected.getName(), actual.getName());
 		assertEquals(expected.getType(), actual.getType());
@@ -222,4 +227,5 @@ public class AssertEntityEquals {
 		assertEntityEquals(d1.getStudies(), d2.getStudies());
 		assertEntityEquals(d1.getMetaAnalyses(), d2.getMetaAnalyses());	
 	}
+
 }

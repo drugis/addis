@@ -22,6 +22,7 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -51,5 +52,11 @@ public class BasicRateMeasurementTest {
 	@Test
 	public void testToString() {
 		assertEquals("67/101", d_measurement.toString());
+	}
+	
+	@Test
+	public void testClone() {
+		assertEquals(d_measurement, d_measurement.clone());
+		assertFalse(d_measurement == d_measurement.clone());
 	}
 }
