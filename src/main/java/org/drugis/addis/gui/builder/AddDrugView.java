@@ -66,6 +66,7 @@ public class AddDrugView implements ViewBuilder {
 		d_name.setColumns(15);
 		d_validator.add(d_name);
 		d_loadButton = GUIFactory.createIconButton(FileNames.ICON_SEARCH, "Search ATC Code");
+		d_loadButton.setDisabledIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
 		d_atcCodeTextField = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_ATCCODE), false);
 		d_validator.add(d_atcCodeTextField);
 		
@@ -83,12 +84,10 @@ public class AddDrugView implements ViewBuilder {
 			try {
 				d_atcCode = null;
 				String drugName = d_model.getModel(Drug.PROPERTY_NAME).getString().trim();
-				d_loadButton.setIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
 				d_loadButton.setEnabled(false);
 				
 				d_atcCode = new AtcParser().getAtcCode(drugName.replace(" ", "%20")).getCode();
 				
-				d_loadButton.setIcon(ImageLoader.getIcon(FileNames.ICON_SEARCH));
 				d_loadButton.setEnabled(true);
 				d_model.getModel(Drug.PROPERTY_NAME).setValue(drugName);
 				if(d_atcCode == null) {
