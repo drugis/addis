@@ -529,12 +529,12 @@ public class AddStudyWizard implements ViewBuilder{
 			}
 			
 			public void run() {				
-					String studyID = d_pm.getIdModel().getValue().toString().trim().replace(" ", "%20");
+					String studyID = d_pm.getIdModel().getValue().toString().trim();
 					try {
 						d_importButton.setIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
 						d_importButton.setEnabled(false);
 						
-						PubMedIdList importPubMedID = new PubMedIDRetriever().importPubMedID(studyID);
+						PubMedIdList importPubMedID = new PubMedIDRetriever().importPubMedID(studyID.replace(" ", "%20"));
 						
 						if (!importPubMedID.isEmpty()) {
 							d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED).setValue(importPubMedID);
@@ -765,7 +765,6 @@ public class AddStudyWizard implements ViewBuilder{
 					d_importButton.setEnabled(true);
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(d_me, "Couldn't find NCT ID: "+ d_pm.getIdModel().getValue(), "Not Found" , JOptionPane.WARNING_MESSAGE);
-					System.out.println(e.getMessage());
 				}
 				prepare();
 			}

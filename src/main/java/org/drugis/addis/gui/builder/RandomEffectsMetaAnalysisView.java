@@ -44,7 +44,6 @@ import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;
-import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.treeplot.ForestPlot;
 import org.drugis.common.gui.ImageExporter;
@@ -70,8 +69,9 @@ implements ViewBuilder {
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
-		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+		PanelBuilder builder = new PanelBuilder(layout/*, new ScrollableJPanel()*/);
 		builder.setDefaultDialogBorder();
+		builder.setOpaque(true);
 		
 		CellConstraints cc =  new CellConstraints();		
 
@@ -116,7 +116,7 @@ implements ViewBuilder {
 
 	private void buildRatePlotsPart(PanelBuilder builder, CellConstraints cc) {
 		builder.addSeparator("Odds ratio", cc.xy(1, 9));
-		if (d_overView) {
+		if (d_overView) {			
 			builder.add(buildRelativeEffectPart(BasicOddsRatio.class), cc.xy(1, 11));			
 		} else {
 			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(BasicOddsRatio.class)), cc.xy(1, 11));
@@ -164,6 +164,7 @@ implements ViewBuilder {
 			encapsulating.add(new JLabel(" "), BorderLayout.CENTER);
 			encapsulating.add(bbuilder.getPanel(), BorderLayout.SOUTH);
 		}
+
 
 		return encapsulating;	
 	}
