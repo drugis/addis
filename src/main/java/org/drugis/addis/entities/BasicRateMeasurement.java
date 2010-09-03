@@ -65,4 +65,19 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 	public String[] getXmlExclusions() {
 		return new String[] {"label"};
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof BasicRateMeasurement) {
+			BasicRateMeasurement other = (BasicRateMeasurement) o;
+			return d_sampleSize.equals(other.d_sampleSize) &&
+				d_rate.equals(other.d_rate);
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return 31 * d_sampleSize.hashCode() + d_rate.hashCode();
+	}
 }

@@ -24,45 +24,17 @@ package org.drugis.addis.entities;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.Map.Entry;
 
+import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 
 public class AssertEntityEquals {
-	
-	private static class MeasurementComparator implements Comparator<Measurement> {
-		
-		// FIXME: This compare does not necessarily work; Different objects could return the same comparator value.   
-		private double calcValue(Measurement m) {
-			if (m instanceof ContinuousMeasurement) {
-				return calcValue((ContinuousMeasurement) m);
-			} else if (m instanceof RateMeasurement) {
-				return calcValue((RateMeasurement) m);
-			} else 
-				throw new IllegalArgumentException("Unknown type of measurement");
-		}
-		
-		private double calcValue(ContinuousMeasurement m) {
-			return - (Math.exp(m.getMean())*Math.exp(m.getStdDev())*Math.exp(m.getSampleSize()));
-		}
-		
-		private double calcValue(RateMeasurement m) {
-			return Math.exp(m.getRate()) * Math.exp(m.getSampleSize());
-		}
-		
-		public int compare(Measurement o1, Measurement o2) {
-			return (int) (calcValue(o1) - calcValue(o2));
-		}
-	}
 	
 	public static void assertEntityEquals(Indication expected, Indication actual) {
 		assertEquals(expected.getClass(), actual.getClass());
@@ -140,12 +112,10 @@ public class AssertEntityEquals {
 		
 		// measurements
 		assertEquals(expected.getMeasurements().keySet().size(), actual.getMeasurements().keySet().size());
-		SortedSet<Measurement> expectedMeasurementSet = new TreeSet<Measurement>(new MeasurementComparator());
-		expectedMeasurementSet.addAll(expected.getMeasurements().values());
-		SortedSet<Measurement> actualMeasurementSet = new TreeSet<Measurement>(new MeasurementComparator());
-		actualMeasurementSet.addAll(actual.getMeasurements().values());
-		assertAllAndOnly(expectedMeasurementSet, actualMeasurementSet);
-		
+		for (Entry<MeasurementKey, Measurement> entry : expected.getMeasurements().entrySet()) {
+			assertEquals(entry.getValue(), actual.getMeasurements().get(entry.getKey()));
+		}
+
 		// characteristics
 		assertEquals(expected.getCharacteristics().keySet().size(), actual.getCharacteristics().keySet().size());
 		Iterator<Characteristic> charIterator = expected.getCharacteristics().keySet().iterator();

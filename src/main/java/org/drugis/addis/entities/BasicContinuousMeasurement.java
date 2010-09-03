@@ -77,4 +77,20 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	public boolean isOfType(Variable.Type type) {
 		return type.equals(Variable.Type.CONTINUOUS);
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof BasicContinuousMeasurement) {
+			BasicContinuousMeasurement other = (BasicContinuousMeasurement) o;
+			return d_sampleSize.equals(other.d_sampleSize) && 
+				d_mean.equals(other.d_mean) &&
+				d_stdDev.equals(other.d_stdDev);
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return (31 * (d_sampleSize.hashCode() + 31 * d_mean.hashCode())) + d_stdDev.hashCode();
+	}
 }

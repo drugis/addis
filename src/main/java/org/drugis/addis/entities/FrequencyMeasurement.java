@@ -157,11 +157,16 @@ public class FrequencyMeasurement extends BasicMeasurement {
 		}
 		return true;
 	}
+	
+	@Override
+	public int hashCode() {
+		return d_frequencies.hashCode();
+	}
 
 	public Map<String, Integer> getFrequencies() {
 		return d_frequencies;
 	}
-	
+
 	protected static final XMLFormat<FrequencyMeasurement> XML = new XMLFormat<FrequencyMeasurement>(FrequencyMeasurement.class) {
 		@Override
 		public FrequencyMeasurement newInstance(Class<FrequencyMeasurement> arg0, XMLFormat.InputElement arg1) 
