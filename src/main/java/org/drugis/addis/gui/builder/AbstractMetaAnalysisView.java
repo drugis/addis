@@ -22,6 +22,7 @@
 package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -33,6 +34,7 @@ import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.OneWayObjectFormat;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.value.ConverterFactory;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -60,7 +62,7 @@ public abstract class AbstractMetaAnalysisView<T extends AbstractMetaAnalysisPre
 
 	protected JComponent buildOverviewPart() {
 		FormLayout layout = new FormLayout(
-				"pref, 3dlu, pref:grow:fill",
+				"pref, 3dlu, pref:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -82,7 +84,10 @@ public abstract class AbstractMetaAnalysisView<T extends AbstractMetaAnalysisPre
 				cc.xy(3, 7));
 		
 		builder.addLabel("Included drugs:", cc.xy(1, 9));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(MetaAnalysis.PROPERTY_INCLUDED_DRUGS), new OneWayObjectFormat()),
+		
+		JScrollPane createTextArea = AuxComponentFactory.createTextArea(ConverterFactory.createStringConverter(d_pm.getModel(MetaAnalysis.PROPERTY_INCLUDED_DRUGS), new OneWayObjectFormat()), false);
+		//createTextArea.setMaximumSize(createTextArea.getPreferredSize());
+		builder.add(createTextArea,
 				cc.xy(3, 9));
 
 		if(d_pm.getBean() instanceof NetworkMetaAnalysis){
