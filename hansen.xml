@@ -8395,57 +8395,60 @@
 			</adverseEvents>
 			<arms id="3068">
 				<arm id="3069" size="52">
-					<dose class="org.drugis.addis.entities.UnknownDose" id="3070"/>
+					<dose class="flexibleDose" id="3070" maxDose="40.0" minDose="10.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
 					<drug class="drug" ref="74"/>
 				</arm>
 				<arm id="3071" size="48">
-					<dose class="org.drugis.addis.entities.UnknownDose" id="3072"/>
+					<dose class="flexibleDose" id="3072" maxDose="300.0" minDose="100.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
 					<drug class="drug" ref="67"/>
 				</arm>
 			</arms>
 			<characteristics class="characteristics">
 				<TITLE class="string" id="3073" value="Bupropion sustained release versus paroxetine for the treatment of depression in the elderly."/>
+				<ALLOCATION class="allocation" value="RANDOMIZED"/>
+				<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+				<OBJECTIVE class="string" id="3074" value="This study compared the efficacy and safety of bupropion sustained release (SR) with the selective serotonin reuptake inhibitor paroxetine in the treatment of major depression in elderly outpatients."/>
+				<STATUS class="status" value="COMPLETED"/>
+				<INCLUSION class="string" id="3075" value="Men and women 60 years of age and older with a minimum baseline score of 18 on the 21-item Hamilton Rating Scale for Depression (HAM-D) who presented with a recurrent episode of nonpsychotic major depressive disorder (DSM-IV) with a duration of at least 8 weeks, but not more than 24 months, and who were considered clinically appropriate for treatment with either bupropion SR or paroxetine were eligible for the study."/>
+				<EXCLUSION class="string" id="3076" value="Patients who had a known predisposition to seizures were excluded from the study. Patients taking medications or treatments that lower the seizure threshold were also excluded. Patients were excluded if they were actively suicidal, had a history or current diagnosis of anorexia nervosa or bulimia nervosa, had an unstable medical disorder, or had a history of nonresponsiveness to pharmacotherapy for depression. Patients were also excluded if they had a history of alcohol or substance abuse within 1 year prior to the study or myocardial infarction, uncontrolled hypertension, or unstable heart disease within 6 months prior to the study. Patients could not have received any psychoactive drug within 1 week of the treatment phase of the study (2 weeks for MAOIs and 4 weeks for fluoxetine or investigational drugs) or have had previous treatment with bupropion or paroxetine."/>
+				<PUBMED class="pubMedReferences" id="3077">
+					<pubMedId value="10817105"/>
+				</PUBMED>
 			</characteristics>
-			<endpoints id="3074">
+			<endpoints id="3078">
 				<endpoint ref="4"/>
 				<endpoint ref="5"/>
 			</endpoints>
 			<indication class="indication" ref="1"/>
 			<measurements>
-				<measurement id="3075">
-					<outcomeMeasure class="adverseEvent" ref="43"/>
-					<arm ref="3069"/>
-					<measurement class="rateMeasurement" id="3076" rate="8" sampleSize="52"/>
-				</measurement>
-				<measurement id="3077">
-					<outcomeMeasure class="adverseEvent" ref="37"/>
-					<arm ref="3071"/>
-					<measurement class="rateMeasurement" id="3078" rate="17" sampleSize="48"/>
-				</measurement>
 				<measurement id="3079">
-					<outcomeMeasure class="adverseEvent" ref="25"/>
+					<outcomeMeasure class="adverseEvent" ref="58"/>
 					<arm ref="3071"/>
-					<measurement class="rateMeasurement" id="3080" rate="6" sampleSize="48"/>
+					<measurement class="rateMeasurement" id="3080" rate="3" sampleSize="48"/>
 				</measurement>
 				<measurement id="3081">
-					<outcomeMeasure class="adverseEvent" ref="45"/>
+					<outcomeMeasure class="endpoint" ref="5"/>
 					<arm ref="3069"/>
-					<measurement class="rateMeasurement" id="3082" rate="7" sampleSize="52"/>
+					<measurement class="rateMeasurement" id="3082" rate="40" sampleSize="52"/>
 				</measurement>
 				<measurement id="3083">
-					<outcomeMeasure class="adverseEvent" ref="45"/>
+					<outcomeMeasure class="endpoint" ref="5"/>
 					<arm ref="3071"/>
-					<measurement class="rateMeasurement" id="3084" rate="6" sampleSize="48"/>
+					<measurement class="rateMeasurement" id="3084" rate="34" sampleSize="48"/>
 				</measurement>
 				<measurement id="3085">
-					<outcomeMeasure class="adverseEvent" ref="11"/>
+					<outcomeMeasure class="adverseEvent" ref="23"/>
 					<arm ref="3069"/>
-					<measurement class="rateMeasurement" id="3086" rate="6" sampleSize="52"/>
+					<measurement class="rateMeasurement" id="3086" rate="11" sampleSize="52"/>
 				</measurement>
 				<measurement id="3087">
-					<outcomeMeasure class="adverseEvent" ref="12"/>
+					<outcomeMeasure class="adverseEvent" ref="45"/>
 					<arm ref="3069"/>
-					<measurement class="rateMeasurement" id="3088" rate="6" sampleSize="52"/>
+					<measurement class="rateMeasurement" id="3088" rate="7" sampleSize="52"/>
 				</measurement>
 				<measurement id="3089">
 					<outcomeMeasure class="endpoint" ref="4"/>
@@ -8453,90 +8456,100 @@
 					<measurement class="rateMeasurement" id="3090" rate="8" sampleSize="52"/>
 				</measurement>
 				<measurement id="3091">
-					<outcomeMeasure class="adverseEvent" ref="37"/>
-					<arm ref="3069"/>
-					<measurement class="rateMeasurement" id="3092" rate="10" sampleSize="52"/>
+					<outcomeMeasure class="adverseEvent" ref="23"/>
+					<arm ref="3071"/>
+					<measurement class="rateMeasurement" id="3092" rate="3" sampleSize="48"/>
 				</measurement>
 				<measurement id="3093">
-					<outcomeMeasure class="endpoint" ref="5"/>
-					<arm ref="3071"/>
-					<measurement class="rateMeasurement" id="3094" rate="34" sampleSize="48"/>
+					<outcomeMeasure class="adverseEvent" ref="21"/>
+					<arm ref="3069"/>
+					<measurement class="rateMeasurement" id="3094" rate="8" sampleSize="52"/>
 				</measurement>
 				<measurement id="3095">
-					<outcomeMeasure class="adverseEvent" ref="23"/>
-					<arm ref="3069"/>
-					<measurement class="rateMeasurement" id="3096" rate="11" sampleSize="52"/>
+					<outcomeMeasure class="adverseEvent" ref="27"/>
+					<arm ref="3071"/>
+					<measurement class="rateMeasurement" id="3096" rate="6" sampleSize="48"/>
 				</measurement>
 				<measurement id="3097">
-					<outcomeMeasure class="endpoint" ref="5"/>
-					<arm ref="3069"/>
-					<measurement class="rateMeasurement" id="3098" rate="40" sampleSize="52"/>
+					<outcomeMeasure class="adverseEvent" ref="11"/>
+					<arm ref="3071"/>
+					<measurement class="rateMeasurement" id="3098" rate="7" sampleSize="48"/>
 				</measurement>
 				<measurement id="3099">
-					<outcomeMeasure class="adverseEvent" ref="25"/>
+					<outcomeMeasure class="adverseEvent" ref="12"/>
 					<arm ref="3069"/>
-					<measurement class="rateMeasurement" id="3100" rate="7" sampleSize="52"/>
+					<measurement class="rateMeasurement" id="3100" rate="6" sampleSize="52"/>
 				</measurement>
 				<measurement id="3101">
-					<outcomeMeasure class="adverseEvent" ref="27"/>
+					<outcomeMeasure class="adverseEvent" ref="37"/>
 					<arm ref="3069"/>
-					<measurement class="rateMeasurement" id="3102" rate="8" sampleSize="52"/>
+					<measurement class="rateMeasurement" id="3102" rate="10" sampleSize="52"/>
 				</measurement>
 				<measurement id="3103">
-					<outcomeMeasure class="adverseEvent" ref="21"/>
+					<outcomeMeasure class="adverseEvent" ref="43"/>
 					<arm ref="3069"/>
 					<measurement class="rateMeasurement" id="3104" rate="8" sampleSize="52"/>
 				</measurement>
 				<measurement id="3105">
-					<outcomeMeasure class="adverseEvent" ref="58"/>
-					<arm ref="3069"/>
-					<measurement class="rateMeasurement" id="3106" rate="14" sampleSize="52"/>
+					<outcomeMeasure class="adverseEvent" ref="21"/>
+					<arm ref="3071"/>
+					<measurement class="rateMeasurement" id="3106" rate="2" sampleSize="48"/>
 				</measurement>
 				<measurement id="3107">
 					<outcomeMeasure class="adverseEvent" ref="11"/>
-					<arm ref="3071"/>
-					<measurement class="rateMeasurement" id="3108" rate="7" sampleSize="48"/>
+					<arm ref="3069"/>
+					<measurement class="rateMeasurement" id="3108" rate="6" sampleSize="52"/>
 				</measurement>
 				<measurement id="3109">
-					<outcomeMeasure class="adverseEvent" ref="58"/>
+					<outcomeMeasure class="adverseEvent" ref="12"/>
 					<arm ref="3071"/>
-					<measurement class="rateMeasurement" id="3110" rate="3" sampleSize="48"/>
+					<measurement class="rateMeasurement" id="3110" rate="1" sampleSize="48"/>
 				</measurement>
 				<measurement id="3111">
-					<outcomeMeasure class="adverseEvent" ref="27"/>
+					<outcomeMeasure class="adverseEvent" ref="43"/>
 					<arm ref="3071"/>
 					<measurement class="rateMeasurement" id="3112" rate="6" sampleSize="48"/>
 				</measurement>
 				<measurement id="3113">
-					<outcomeMeasure class="adverseEvent" ref="43"/>
+					<outcomeMeasure class="adverseEvent" ref="25"/>
 					<arm ref="3071"/>
 					<measurement class="rateMeasurement" id="3114" rate="6" sampleSize="48"/>
 				</measurement>
 				<measurement id="3115">
-					<outcomeMeasure class="adverseEvent" ref="23"/>
-					<arm ref="3071"/>
-					<measurement class="rateMeasurement" id="3116" rate="3" sampleSize="48"/>
+					<outcomeMeasure class="adverseEvent" ref="25"/>
+					<arm ref="3069"/>
+					<measurement class="rateMeasurement" id="3116" rate="7" sampleSize="52"/>
 				</measurement>
 				<measurement id="3117">
-					<outcomeMeasure class="adverseEvent" ref="21"/>
-					<arm ref="3071"/>
-					<measurement class="rateMeasurement" id="3118" rate="2" sampleSize="48"/>
+					<outcomeMeasure class="adverseEvent" ref="27"/>
+					<arm ref="3069"/>
+					<measurement class="rateMeasurement" id="3118" rate="8" sampleSize="52"/>
 				</measurement>
 				<measurement id="3119">
-					<outcomeMeasure class="endpoint" ref="4"/>
+					<outcomeMeasure class="adverseEvent" ref="45"/>
 					<arm ref="3071"/>
-					<measurement class="rateMeasurement" id="3120" rate="8" sampleSize="48"/>
+					<measurement class="rateMeasurement" id="3120" rate="6" sampleSize="48"/>
 				</measurement>
 				<measurement id="3121">
-					<outcomeMeasure class="adverseEvent" ref="12"/>
+					<outcomeMeasure class="endpoint" ref="4"/>
 					<arm ref="3071"/>
-					<measurement class="rateMeasurement" id="3122" rate="1" sampleSize="48"/>
+					<measurement class="rateMeasurement" id="3122" rate="8" sampleSize="48"/>
+				</measurement>
+				<measurement id="3123">
+					<outcomeMeasure class="adverseEvent" ref="58"/>
+					<arm ref="3069"/>
+					<measurement class="rateMeasurement" id="3124" rate="14" sampleSize="52"/>
+				</measurement>
+				<measurement id="3125">
+					<outcomeMeasure class="adverseEvent" ref="37"/>
+					<arm ref="3071"/>
+					<measurement class="rateMeasurement" id="3126" rate="17" sampleSize="48"/>
 				</measurement>
 			</measurements>
 			<notes/>
-			<populationCharacteristics id="3123"/>
+			<populationCharacteristics id="3127"/>
 		</study>
 	</studies>
-	<metaAnalyses id="3124"/>
-	<benefitRiskAnalyses id="3125"/>
+	<metaAnalyses id="3128"/>
+	<benefitRiskAnalyses id="3129"/>
 </addis-data>
