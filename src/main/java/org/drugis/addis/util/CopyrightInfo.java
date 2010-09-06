@@ -19,7 +19,7 @@ public final class CopyrightInfo {
 	
 	public CopyrightInfo() {
 		d_aboutNewLines = 2;
-		d_authors = new String [years.length+1][10];
+		d_authors = new String[years.length+1][];
 		d_authors[YEAR2009] = new String[] {"Gert van Valkenhoef" , "Tommi Tervonen"};
 		d_authors[YEAR2010] = new String[] {"Gert van Valkenhoef" , "Tommi Tervonen", "Tijs Zwinkels", "Maarten Jacobs",
 									"Hanno Koeslag", "Florin Schimbinschi", "Ahmad Kamal", "Daniel Reid"};
@@ -39,7 +39,7 @@ public final class CopyrightInfo {
 				d_headerText += author + ", ";
 				if(c > 72) {
 					d_headerText += "\n * ";
-					c = 3;
+					c = 3 + author.length();
 				}				 
 				d_aboutText += author + "\n";
 				++d_aboutNewLines;
@@ -51,7 +51,9 @@ public final class CopyrightInfo {
 			++d_aboutNewLines;
 		}
 		
-		d_headerText += " * This program is free software: you can redistribute it and/or modify\n" +
+		d_headerText +=
+				" *\n" +
+				" * This program is free software: you can redistribute it and/or modify\n" +
 				" * it under the terms of the GNU General Public License as published by\n" +
 				" * the Free Software Foundation, either version 3 of the License, or\n" +
 				" * (at your option) any later version.\n" +
@@ -63,7 +65,7 @@ public final class CopyrightInfo {
 				" *\n" +
 				" * You should have received a copy of the GNU General Public License\n" +
 				" * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n" +
-				" */";
+				" */\n\n";
 	
 	}
 
@@ -83,11 +85,10 @@ public final class CopyrightInfo {
 	    }
 	}
 	
-	public void main(String [] args) {
+	public static void main(String [] args) {
 		try {
 			new CopyrightInfo().writeHeader(HEADER_FILENAME);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
