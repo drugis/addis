@@ -55,6 +55,7 @@ import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
@@ -74,61 +75,53 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class NetworkMetaAnalysisView extends AbstractMetaAnalysisView<NetworkMetaAnalysisPresentation>
 implements ViewBuilder {
-
 	private class AnalysisProgressListener implements ProgressListener {
 		private JProgressBar d_progBar;
 		
-		public AnalysisProgressListener(JProgressBar progBar, MixedTreatmentComparison networkModel) {
+		public AnalysisProgressListener(JProgressBar progBar) {
 			d_progBar = progBar;
-			networkModel.addProgressListener(this);
 		}
 		
 		public void update(MCMCModel mtc, ProgressEvent event) {
-			if (event.getType() == EventType.MODEL_CONSTRUCTION_FINISHED) {
-				if (d_inconsistencyFactorsTablePanel != null) {
-					((AbstractTableModel) d_inconsistencyFactorsTablePanel.getTable().getModel()).fireTableDataChanged();
-					d_inconsistencyFactorsTablePanel.doLayout();
-					d_parent.repaintRightPanel();
-				}
-			}
-			if(event.getType() == EventType.SIMULATION_PROGRESS && d_incProgressBar != null){
+			if(event.getType() == EventType.SIMULATION_PROGRESS && d_progBar != null){
 				d_progBar.setString("Simulating: " + event.getIteration()/(event.getTotalIterations()/100) + "%");
 				d_progBar.setValue(event.getIteration()/(event.getTotalIterations()/100));
-			} else if(event.getType() == EventType.BURNIN_PROGRESS && d_incProgressBar != null){
+			} else if(event.getType() == EventType.BURNIN_PROGRESS && d_progBar != null){
 				d_progBar.setString("Burn in: " + event.getIteration()/(event.getTotalIterations()/100) + "%");
 				d_progBar.setValue(event.getIteration()/(event.getTotalIterations()/100));
-			} else if(event.getType() == EventType.SIMULATION_FINISHED) {
-				((AbstractTableModel) d_inconsistencyTablePanel.getTable().getModel()).fireTableDataChanged();
-				((AbstractTableModel) d_consistencyTablePanel.getTable().getModel()).fireTableDataChanged();
-				d_progBar.setVisible(false);
-				d_inconsistencyTablePanel.doLayout();
-				d_consistencyTablePanel.doLayout();
-				d_inconsistencyFactorsTablePanel.doLayout();
 			}
 		}
 	}
 	
-	//JPanel d_pane = new JPanel();
+	private static class AnalysisFinishedListener implements ProgressListener {
+		private final JProgressBar d_progressBar;
+		private final TablePanel[] d_tablePanels;
+
+		public AnalysisFinishedListener(JProgressBar progressBar, TablePanel[] tablePanels) {
+			d_progressBar = progressBar;
+			d_tablePanels = tablePanels;
+		}
+
+		public void update(MCMCModel mtc, ProgressEvent event) {
+			if(event.getType() == EventType.SIMULATION_FINISHED) {
+				for (TablePanel tablePanel : d_tablePanels) {
+					((AbstractTableModel) tablePanel.getTable().getModel()).fireTableDataChanged();
+					tablePanel.doLayout();
+				}
+				d_progressBar.setVisible(false);
+			}
+		}
+		
+	}
+
 	private PanelBuilder d_builder;
 	private CellConstraints d_cc;
-	private JProgressBar d_incProgressBar;
-	private JProgressBar d_conProgressBar;
-	private NetworkMetaAnalysisTablePanel d_inconsistencyTablePanel;
-	private NetworkMetaAnalysisTablePanel d_consistencyTablePanel;
-	private TablePanel d_inconsistencyFactorsTablePanel;
 	private final Main d_main;
 	
 	public NetworkMetaAnalysisView(NetworkMetaAnalysisPresentation model, Main main) {
 		super(model, main);
 		d_main = main;
 
-		// Get progress-bars.
-		d_conProgressBar = new JProgressBar();
-		d_incProgressBar = new JProgressBar();
-		new AnalysisProgressListener(d_conProgressBar, d_pm.getBean().getConsistencyModel());
-		new AnalysisProgressListener(d_incProgressBar, d_pm.getBean().getInconsistencyModel());
-		
-		//System.out.println(d_pm.getNetworkXML());
 		d_pm.getBean().run();
 	}
 
@@ -169,16 +162,23 @@ implements ViewBuilder {
 		
 		
 		JPanel consistencyPanel = new JPanel(new BorderLayout());
-		if(!d_pm.getBean().getConsistencyModel().isReady())
+		ConsistencyModel consistencyModel = d_pm.getBean().getConsistencyModel();
+		JProgressBar d_conProgressBar = new JProgressBar();
+		consistencyModel.addProgressListener(new AnalysisProgressListener(d_conProgressBar));
+		if(!consistencyModel.isReady()) {
 			d_builder.add(d_conProgressBar, d_cc.xy(1, 23));
+			d_conProgressBar.setStringPainted(true);
+		}
 
 		String consistencyText = "<html>If there is no relevant inconsistency in the evidence, a consistency model can be used to draw conclusions about the relative effect of the included treatments. Using normal meta-analysis, we could only get a subset of the confidence intervals for relative effects we derive using network meta-analysis. Network meta-analysis gives a consistent, integrated picture of the relative effects. However, given such a consistent set of relative effect estimates, it may still be difficult to draw conclusions on a potentially large set of treatments. Luckily, the Bayesian approach allows us to do even more with the data, and can be used to estimate the probability that, given the priors and the data, each of the treatments is the best, the second best, etc. This is given below in the rank probability plot. Rank probabilities sum to one, both within a rank over treatments and within a treatment over ranks.</html>";
 		JComponent consistencyNote = AuxComponentFactory.createNoteField(consistencyText);
 		consistencyPanel.add(consistencyNote, BorderLayout.NORTH);
 		
-		JComponent consistencyResultsPart = buildResultsPart(d_pm.getBean().getConsistencyModel(), d_conProgressBar);
+		TablePanel consistencyTablePanel = createNetworkTablePanel(consistencyModel);
+		consistencyModel.addProgressListener(
+				new AnalysisFinishedListener(d_conProgressBar, new TablePanel[] {consistencyTablePanel}));
 		
-		consistencyPanel.add(consistencyResultsPart,BorderLayout.CENTER);
+		consistencyPanel.add(consistencyTablePanel,BorderLayout.CENTER);
 
 		consistencyPanel.add(createRankProbChart(), BorderLayout.SOUTH);
 		JPanel collapsiblePanel = GUIFactory.createCollapsiblePanel(consistencyPanel);
@@ -192,24 +192,47 @@ implements ViewBuilder {
 		JPanel inconsistencyPanel = new JPanel();
 		inconsistencyPanel.setLayout(new BorderLayout());
 		
-		if(!d_pm.getBean().getInconsistencyModel().isReady())
+		InconsistencyModel inconsistencyModel = d_pm.getBean().getInconsistencyModel();
+		JProgressBar d_incProgressBar = new JProgressBar();
+		inconsistencyModel.addProgressListener(new AnalysisProgressListener(d_incProgressBar));
+		if(!inconsistencyModel.isReady()) {
 			d_builder.add(d_incProgressBar, d_cc.xy(1, 15));
+			d_incProgressBar.setStringPainted(true);
+		}
 		
 		String inconsistencyText = "<html>In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em> of evidence, in addition to <em>heterogeneity</em> within a comparison. Whereas heterogeneity represents between-study variation in the measured relative effect of a pair of treatments, inconsistency can only occur when a treatment C has a different effect when it is compared with A or B (i.e., studies comparing A and C are systematically different from studies comparing B and C). Thus, inconsistency may even occur with normal meta-analysis, but can only be detected using a network meta-analysis, and then only when there are closed loops in the evidence structure. For more information about assessing inconsistency, see G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, Journal of the American Statistical Association, 101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.</html>";
-		JComponent inconsitencyNote = AuxComponentFactory.createNoteField(inconsistencyText);
+		JComponent inconsistencyNote = AuxComponentFactory.createNoteField(inconsistencyText);
 		
-		inconsistencyPanel.add(inconsitencyNote, BorderLayout.NORTH);
+		inconsistencyPanel.add(inconsistencyNote, BorderLayout.NORTH);
 		
-		JComponent inconsistencyResultsPart = buildResultsPart(d_pm.getBean().getInconsistencyModel(),d_incProgressBar);
-		inconsistencyPanel.add(inconsistencyResultsPart, BorderLayout.CENTER);
+		TablePanel inconsistencyTablePanel = createNetworkTablePanel(inconsistencyModel);
+		inconsistencyPanel.add(inconsistencyTablePanel, BorderLayout.CENTER);
 		
 		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(
 				d_pm, d_parent.getPresentationModelFactory());
 		EnhancedTable table = new EnhancedTable(inconsistencyFactorsTableModel, 300);
-		d_inconsistencyFactorsTablePanel = new TablePanel(table);
+		final TablePanel inconsistencyFactorsTablePanel = new TablePanel(table);
 		
-		inconsistencyPanel.add(d_inconsistencyFactorsTablePanel, BorderLayout.SOUTH);
+		inconsistencyModel.addProgressListener(new ProgressListener() {
+			public void update(MCMCModel mtc, ProgressEvent event) {
+				if (event.getType() == EventType.MODEL_CONSTRUCTION_FINISHED) {
+					if (inconsistencyFactorsTablePanel != null) {
+						((AbstractTableModel) inconsistencyFactorsTablePanel.getTable().getModel()).fireTableStructureChanged();
+						inconsistencyFactorsTablePanel.doLayout();
+						d_parent.repaintRightPanel();
+					}
+				}
+			}
+		});
+		
+		inconsistencyPanel.add(inconsistencyFactorsTablePanel, BorderLayout.SOUTH);
 		inconsistencyPanel.revalidate();
+		
+		inconsistencyModel.addProgressListener(
+				new AnalysisFinishedListener(d_incProgressBar, new TablePanel[] {
+						inconsistencyTablePanel, inconsistencyFactorsTablePanel
+				})
+			);
 		
 		d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyPanel), d_cc.xy(1, 19));
 	}
@@ -303,32 +326,18 @@ implements ViewBuilder {
 		
 		return builder.getPanel();
 	}
-	
-	public JComponent buildResultsPart(MixedTreatmentComparison networkModel, JProgressBar progBar) {
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-		
-		if(!networkModel.isReady()){
-			progBar.setStringPainted(true);
-		}
 
-		// make table of results (cipriani 2009, fig. 3, pp752):
-		
+	/**
+	 * Make table of results (Cipriani et al., Lancet(2009), fig. 3, pp752).
+	 * @param networkModel Model for which to display results.
+	 * @return A TablePanel
+	 */
+	private NetworkMetaAnalysisTablePanel createNetworkTablePanel(
+			MixedTreatmentComparison networkModel) {
 		NetworkTableModel networkAnalysisTableModel = new NetworkTableModel(
 				d_pm, d_parent.getPresentationModelFactory(), networkModel);
 		
-		// this creates the table
-		NetworkMetaAnalysisTablePanel tablePanel = new NetworkMetaAnalysisTablePanel(d_parent, networkAnalysisTableModel);
-		if(networkModel instanceof InconsistencyModel)
-			d_inconsistencyTablePanel = tablePanel;
-		else
-			d_consistencyTablePanel = tablePanel;
-			
-		tablePanel.setVisible(true);
-		panel.add(tablePanel, BorderLayout.CENTER);
-		panel.setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
-		
-		return panel;
+		return new NetworkMetaAnalysisTablePanel(d_parent, networkAnalysisTableModel);
 	}	
 	
 }
