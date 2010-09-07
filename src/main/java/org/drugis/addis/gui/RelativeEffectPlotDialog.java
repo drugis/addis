@@ -54,6 +54,7 @@ public class RelativeEffectPlotDialog extends JDialog {
 		final RelativeEffectCanvas canvas = new RelativeEffectCanvas(pres);
 
 		JButton saveButton = new JButton("Save Image");
+		
 		saveButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 				ForestPlot plot = canvas.getPlot();
