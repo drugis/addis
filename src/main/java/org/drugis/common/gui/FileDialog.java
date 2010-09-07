@@ -62,7 +62,13 @@ public abstract class FileDialog {
 	protected JFileChooser d_fileChooser;
     
     public static String fixExtension(String absPath, String ext) {
-    	return absPath.toLowerCase().contains("."+ext) ? absPath : absPath+"."+ext;
+    	if (ext == null || ext.equals("")) {
+    		return absPath;
+    	}
+    	if (absPath.toLowerCase().substring(absPath.lastIndexOf('.') + 1, absPath.length()).equals(ext)) {
+    		return absPath;
+    	}
+    	return absPath + "." + ext;
     }
 
     public FileDialog(Component frame, String extension, String description){
@@ -72,28 +78,39 @@ public abstract class FileDialog {
 	public FileDialog(Component frame, String [] extension, String [] description) {
 		
 		d_fileChooser = new JFileChooser();
+		CustomFileFilter defaultFilter = null;
 		for(int i=0; i< extension.length; i++) {
-			d_fileChooser.addChoosableFileFilter(new CustomFileFilter(extension[i], description[i]));
+			CustomFileFilter filter = new CustomFileFilter(extension[i], description[i]);
+			d_fileChooser.addChoosableFileFilter(filter);
+			if (i == 0) {
+				defaultFilter = filter;
+			}
 		}
+		d_fileChooser.setFileFilter(defaultFilter);
 		if (d_currentDirectory != null)
 			d_fileChooser.setCurrentDirectory(d_currentDirectory);
 	}
 	
 	protected void handleFileDialogResult(Component frame, int returnVal, String message) {
 		d_currentDirectory = d_fileChooser.getCurrentDirectory();
-		String extension = ((CustomFileFilter) d_fileChooser.getFileFilter()).getPresentExtension();
+		String extension = getExtension();
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			String path = fixExtension(d_fileChooser.getSelectedFile().getAbsolutePath(),extension);
 			try {
-				String path = fixExtension(d_fileChooser.getSelectedFile().getAbsolutePath(),extension);
 				doAction(path, extension);
 			} catch (Exception e1) {
-				
-				JOptionPane.showMessageDialog(frame,
-								message
-								+ d_fileChooser.getSelectedFile()
-										.getAbsolutePath() + " .");
+				JOptionPane.showMessageDialog(frame, message + "\n" +
+						d_fileChooser.getSelectedFile().getAbsolutePath());
 				e1.printStackTrace();
 			}
+		}
+	}
+
+	private String getExtension() {
+		if(d_fileChooser.getFileFilter() instanceof CustomFileFilter) {
+			return ((CustomFileFilter) d_fileChooser.getFileFilter()).getPresentExtension();
+		} else {
+			return "";
 		}
 	}
 

@@ -477,6 +477,7 @@ public class Main extends JFrame {
 		ThreadHandler.getInstance().clear();	// Terminate all running threads.
 		getDomain().clearDomain();	
 		getPmManager().clearCache();			// Empty the PresentationModelFactory cache.
+		setDataChanged(false);
 	}
 
 	private JMenuItem createLoadItem() {
@@ -484,7 +485,6 @@ public class Main extends JFrame {
 				.getIcon(FileNames.ICON_OPENFILE));
 		openItem.setMnemonic('l');
 		openItem.addActionListener(new AbstractAction() {
-		// loadDomainFromXMLFile(fileChooser.getSelectedFile().getAbsolutePath());
 			public void actionPerformed(ActionEvent e) {
 				if(isDataChanged()) {
 					if(saveChangesDialog()) {
@@ -503,11 +503,9 @@ public class Main extends JFrame {
 			@Override
 			public void doAction(String path, String extension) {
 				try {
-					ThreadHandler.getInstance().clear();	// Terminate all running threads.
+					resetDomain();
 					loadDomainFromXMLFile(path);
 					setFileNameAndReset(path);
-					getPmManager().clearCache();				// Empty the PresentationModelFactory cache.
-					setDataChanged(false);
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(Main.this, "Couldn't open file " + path);
 						e1.printStackTrace();
