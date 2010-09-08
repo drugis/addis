@@ -55,7 +55,6 @@ public class BuildViewWhenReadyComponent extends JPanel {
 		d_builder = builder;
 		d_readyModel = readyModel;
 		d_readyModel.addValueChangeListener(new PropertyChangeListener() {
-			
 			public void propertyChange(PropertyChangeEvent evt) {
 				buildView();
 			}

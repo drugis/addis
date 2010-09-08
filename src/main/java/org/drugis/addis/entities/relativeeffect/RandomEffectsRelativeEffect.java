@@ -39,30 +39,37 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 		public DerSimonianLairdComputations(List<Distribution> distributions) {
 			if (distributions.isEmpty())
 				throw new IllegalStateException("Cannot calculate RandomEffectMetaAnalysis without any relative effects.");
-			
+	
 			d_numRelativeEffects = distributions.size();
-			List<Double> weights = new ArrayList<Double>();
-			List<Double> adjweights = new ArrayList<Double>();
 
-			// Calculate the weights.
+			List<Double> weights = new ArrayList<Double>();
 			for (Distribution dist : distributions) {
-				weights.add(1D / Math.pow(getSigma(dist),2));
+				weights.add(1D / Math.pow(getSigma(dist), 2));
 			}
 			
-			// Calculate needed variables.
 			double thetaIV = getThetaIV(weights, distributions);
 			d_qIV = getQIV(weights, distributions, thetaIV);
-			double tauSquared = getTauSquared(d_qIV, weights);
 			
-			// Calculated the adjusted Weights.
-			for (Distribution dist : distributions) {
-				adjweights.add(1 / (Math.pow(getSigma(dist),2) + tauSquared) );
-			}
+			List<Double> adjweights = calculateAdjustedWeights(distributions, weights);
 			
 			d_thetaDSL = getThetaDL(adjweights, distributions);
 			d_SEThetaDSL = getSE_ThetaDL(adjweights);
 			
 			d_distribution = getPooledDistribution();
+		}
+
+		private List<Double> calculateAdjustedWeights(List<Distribution> distributions, List<Double> weights) {
+			if (distributions.size() < 2) { // getTauSquared is NaN if n = 1
+				return weights;
+			}
+			
+			final double tauSquared = getTauSquared(d_qIV, weights);
+			
+			List<Double> adjweights = new ArrayList<Double>();
+			for (Distribution dist : distributions) {
+				adjweights.add(1D / (Math.pow(getSigma(dist), 2) + tauSquared));
+			}
+			return adjweights;
 		}
 		
 		private double getSE_ThetaDL(List<Double> adjweights) {
@@ -80,33 +87,32 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 		
 		private double getTauSquared(double Q, List<Double> weights) {
 			double k = weights.size();
+			double num = Q - (k - 1);
+			double denum = computeSum(weights) - (computeSquaredSum(weights) / computeSum(weights));
+			return Math.max(num / denum, 0);
+		}
+
+		private double computeSquaredSum(List<Double> weights) {
 			double squaredWeightsSum = 0;
 			for (int i=0;i<weights.size();i++) {
-				squaredWeightsSum += Math.pow(weights.get(i),2);
+				squaredWeightsSum += Math.pow(weights.get(i), 2);
 			}
-			
-			double num = Q - (k - 1);
-			double denum = computeSum(weights) - (squaredWeightsSum / computeSum(weights));
-			if (denum == 0) // FIXME denum shouldn't be 0.
-				return 0;
-			return Math.max(num / denum, 0);
+			return squaredWeightsSum;
 		}
 		
 		private double getQIV(List<Double> weights, List<Distribution> relEffects, double thetaIV) {
 			double sum = 0;
 			for (int i = 0; i < weights.size(); ++i) {
-				sum += weights.get(i) * Math.pow(getMu(relEffects.get(i)) - thetaIV,2);
+				sum += weights.get(i) * Math.pow(getMu(relEffects.get(i)) - thetaIV, 2);
 			}
 			return sum;
 		}
 		
 		private double getThetaIV(List<Double> weights, List<Distribution> relEffects) {
 			double sumWeightRatio = 0D;
-			
 			for (int i = 0; i < weights.size(); ++i) {
 				sumWeightRatio += weights.get(i) * getMu(relEffects.get(i));
 			}
-			
 			return sumWeightRatio / computeSum(weights);
 		}	
 		
@@ -123,7 +129,7 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 		}
 		
 		public double getHeterogeneityI2() {
-			return Math.max(0, 100* ((getHeterogeneity() - (d_numRelativeEffects-1)) / getHeterogeneity() ) );
+			return Math.max(0, 100 * ((getHeterogeneity() - (d_numRelativeEffects - 1)) / getHeterogeneity()));
 		}
 		
 		public Distribution getDistribution() {
@@ -179,7 +185,7 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 
 	private DerSimonianLairdComputations d_results;
 
-	public RandomEffectsRelativeEffect(List<BasicRelativeEffect<? extends Measurement>> componentEffects, int totalSampleSize) {
+	public RandomEffectsRelativeEffect(List<BasicRelativeEffect<? extends Measurement>> componentEffects) {
 		switch (componentEffects.get(0).getAxisType()) {
 		case LINEAR:
 			d_results = new LinDSLComputations(getDistributions(componentEffects));

@@ -11,6 +11,7 @@ public class DateUtil {
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
+		cal.set(Calendar.AM_PM, Calendar.AM);
 		Date date = cal.getTime();
 		return date;
 	}
