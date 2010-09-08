@@ -277,14 +277,14 @@ public class BenefitRiskPresentation extends PresentationModel<BenefitRiskAnalys
 		}
 
 		getBean().runAllConsistencyModels();
+		List<Runnable> models = new ArrayList<Runnable>();
 		for (MCMCModel model : d_baselineModels) {
 			if (!model.isReady()) {
-				ThreadHandler.getInstance().scheduleTask(model);
-				//Thread t = new Thread(model);
-				//t.start();
+				models.add(model);
 			}
 		}
-
+		ThreadHandler.getInstance().scheduleTasks(models);
+		
 		d_allSimulationsStarted  = true;
 	}
 	

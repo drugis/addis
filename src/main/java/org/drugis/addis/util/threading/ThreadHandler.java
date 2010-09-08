@@ -78,12 +78,9 @@ public class ThreadHandler extends AbstractObservable {
 		synchronized (d_runningTasks) {
 			LinkedList<SuspendableThreadWrapper> toAdd = getWrappers(newTasks);
 			
-//			System.out.println("newTasks " + newTasks);
-			
 			/* If tasks already present, reschedule to running or to head of queue  */
 			toAdd.removeAll(d_runningTasks);
 			d_scheduledTasks.removeAll(toAdd);
-			
 			
 			// remove N=t.size() tasks from running and stack them in scheduledTasks (take various sizes into account)
 			int toStack = Math.min(toAdd.size() - (d_numCores - d_runningTasks.size()), d_runningTasks.size()); // needed cores - available cores = cores that need to be pre-empted.
@@ -93,7 +90,6 @@ public class ThreadHandler extends AbstractObservable {
 					if (d_runningTasks.get(runQueIndex).suspend()) {
 						SuspendableThreadWrapper runningThread = d_runningTasks.remove(runQueIndex);
 						d_scheduledTasks.addFirst(runningThread);
-						//	System.out.println("moving back to scheduler " + runningThread); 
 						break;
 					}
 				}
@@ -105,20 +101,15 @@ public class ThreadHandler extends AbstractObservable {
 				SuspendableThreadWrapper newRunning = toAdd.removeFirst();
 				d_runningTasks.addFirst(newRunning);
 				newRunning.start();
-//				System.out.println("executing " + newRunning + " running size " + d_runningTasks.size()); 
 			}
 
 			// stack remaining threads from t in scheduledTasks
 			for(SuspendableThreadWrapper m : toAdd) {
 				d_scheduledTasks.addFirst(m);
-//				System.out.println("Scheduling " + m);
 			}
 			
 			firePropertyChange(PROPERTY_QUEUED_THREADS, null, d_scheduledTasks.size());
 			firePropertyChange(PROPERTY_RUNNING_THREADS, null, d_runningTasks.size());
-			
-//			System.out.println("after Schedule queue " + d_scheduledTasks);
-//			System.out.println("after Running queue " + d_runningTasks);
 		}
 	}
 	

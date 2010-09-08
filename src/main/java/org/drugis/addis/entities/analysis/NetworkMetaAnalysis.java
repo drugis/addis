@@ -21,6 +21,7 @@
 
 package org.drugis.addis.entities.analysis;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -149,19 +150,12 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 	
 	public void run() {
-		runInconsistency();
-		runConsistency();
+		List<Runnable> tasks = new ArrayList<Runnable>();
+		tasks.add(getConsistencyModel());
+		tasks.add(getInconsistencyModel());
+		ThreadHandler.getInstance().scheduleTasks(tasks);
 	}
 
-	public void runInconsistency() {
-		if (!getInconsistencyModel().isReady())
-			ThreadHandler.getInstance().scheduleTask(getInconsistencyModel());
-	}
-
-	public void runConsistency() {
-		if (!getConsistencyModel().isReady())
-			ThreadHandler.getInstance().scheduleTask(getConsistencyModel());
-	}
 
 	public List<InconsistencyParameter> getInconsistencyFactors(){
 		return getInconsistencyModel().getInconsistencyFactors();
