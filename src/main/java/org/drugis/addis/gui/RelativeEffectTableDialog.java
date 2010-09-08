@@ -31,6 +31,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -74,7 +75,7 @@ public class RelativeEffectTableDialog extends JDialog {
 				return new JLabel("");
 			}
 			
-			JLabel label = null;
+			JComponent label = null;
 			if (((PresentationModel<?>)val).getBean() instanceof Arm) {
 				label = new JLabel(((PresentationModel<?>)val).getBean().toString());
 				label.setBackground(Color.lightGray);
@@ -134,6 +135,8 @@ public class RelativeEffectTableDialog extends JDialog {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+		JLabel clickLegend = new JLabel("Click on any white cell to display its forest plot.");
+		
 		JButton closeButton = new JButton("Close");
 		closeButton.setMnemonic('c');
 		closeButton.addActionListener(new AbstractAction() {
@@ -144,10 +147,14 @@ public class RelativeEffectTableDialog extends JDialog {
 		});
 		
 		table.addMouseListener(new CellClickedMouseListener());
-		
+
+		JPanel bottomPanel = new JPanel(new BorderLayout());
+			
 		panel.add(description, BorderLayout.NORTH);
-		panel.add(tablePanel, BorderLayout.CENTER);		
-		panel.add(closeButton, BorderLayout.SOUTH);		
+		panel.add(tablePanel, BorderLayout.CENTER);
+		bottomPanel.add(clickLegend, BorderLayout.CENTER);
+		bottomPanel.add(closeButton, BorderLayout.SOUTH);		
+		panel.add(bottomPanel, BorderLayout.SOUTH);
 		
 		setContentPane(panel);
 	}
