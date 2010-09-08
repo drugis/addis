@@ -185,6 +185,7 @@ public class Main extends JFrame {
 				try {
 					if (getCurFilename() == null) {				
 						new MainFileSaveDialog(Main.this, "xml", "XML files");
+						yesNoClicked = true;
 					} else {
 						saveDomainToFile(getCurFilename());
 						yesNoClicked = true;

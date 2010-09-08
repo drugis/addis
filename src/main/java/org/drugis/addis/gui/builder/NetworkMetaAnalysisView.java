@@ -225,7 +225,6 @@ implements ViewBuilder {
 						((AbstractTableModel) inconsistencyFactorsTablePanel.getTable().getModel()).fireTableStructureChanged();
 						inconsistencyFactorsTablePanel.doLayout();
 						d_parent.reloadRightPanel();
-						
 					}
 				}
 			}
