@@ -179,7 +179,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		
 		List<BasicRelativeEffect<? extends Measurement>> relEffects = getFilteredRelativeEffects(d1, d2, type);
 		
-		return new RandomEffectsRelativeEffect(relEffects, d_totalSampleSize);
+		return new RandomEffectsRelativeEffect(relEffects);
 	}
 
 	List<BasicRelativeEffect<? extends Measurement>> getFilteredRelativeEffects(Drug d1, Drug d2, Class<? extends RelativeEffect<?>> type) {
