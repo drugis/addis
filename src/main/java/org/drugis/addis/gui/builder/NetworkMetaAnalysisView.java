@@ -21,7 +21,6 @@
 
 package org.drugis.addis.gui.builder;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -160,8 +159,11 @@ implements ViewBuilder {
 
 	private void buildConsistencyPart() {
 		
+		FormLayout layout = new FormLayout(	"pref:grow:fill",
+				"p, 3dlu, p, 3dlu, p" );
+		JPanel consistencyPanel = new JPanel(layout);
+		CellConstraints cc =  new CellConstraints();
 		
-		JPanel consistencyPanel = new JPanel(new BorderLayout());
 		ConsistencyModel consistencyModel = d_pm.getBean().getConsistencyModel();
 		JProgressBar d_conProgressBar = new JProgressBar();
 		consistencyModel.addProgressListener(new AnalysisProgressListener(d_conProgressBar));
@@ -172,25 +174,28 @@ implements ViewBuilder {
 
 		String consistencyText = "<html>If there is no relevant inconsistency in the evidence, a consistency model can be used to draw conclusions about the relative effect of the included treatments. Using normal meta-analysis, we could only get a subset of the confidence intervals for relative effects we derive using network meta-analysis. Network meta-analysis gives a consistent, integrated picture of the relative effects. However, given such a consistent set of relative effect estimates, it may still be difficult to draw conclusions on a potentially large set of treatments. Luckily, the Bayesian approach allows us to do even more with the data, and can be used to estimate the probability that, given the priors and the data, each of the treatments is the best, the second best, etc. This is given below in the rank probability plot. Rank probabilities sum to one, both within a rank over treatments and within a treatment over ranks.</html>";
 		JComponent consistencyNote = AuxComponentFactory.createNoteField(consistencyText);
-		consistencyPanel.add(consistencyNote, BorderLayout.NORTH);
+
+		consistencyPanel.add(consistencyNote, cc.xy(1, 1));
 		
 		TablePanel consistencyTablePanel = createNetworkTablePanel(consistencyModel);
 		consistencyModel.addProgressListener(
 				new AnalysisFinishedListener(d_conProgressBar, new TablePanel[] {consistencyTablePanel}));
 		
-		consistencyPanel.add(consistencyTablePanel,BorderLayout.CENTER);
+		consistencyPanel.add(consistencyTablePanel, cc.xy(1, 3));
 
-		consistencyPanel.add(createRankProbChart(), BorderLayout.SOUTH);
+		consistencyPanel.add(createRankProbChart(), cc.xy(1, 5));
 		JPanel collapsiblePanel = GUIFactory.createCollapsiblePanel(consistencyPanel);
-		/* Fix: ScrollPanel Viewport doesn't have correct size when containing a CollapsiblePanel*/
 		collapsiblePanel.setBorder(BorderFactory.createEmptyBorder(0,0,20,0));  
 		
 		d_builder.add(collapsiblePanel, d_cc.xy(1, 27));
 	}
 
 	private void buildInconsistencyPart() {
-		JPanel inconsistencyPanel = new JPanel();
-		inconsistencyPanel.setLayout(new BorderLayout());
+	
+		FormLayout layout = new FormLayout("pref:grow:fill",
+				"p, 3dlu, p, 3dlu, p");
+		JPanel inconsistencyPanel = new JPanel(layout);
+		CellConstraints cc = new CellConstraints();
 		
 		InconsistencyModel inconsistencyModel = d_pm.getBean().getInconsistencyModel();
 		JProgressBar d_incProgressBar = new JProgressBar();
@@ -203,10 +208,10 @@ implements ViewBuilder {
 		String inconsistencyText = "<html>In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em> of evidence, in addition to <em>heterogeneity</em> within a comparison. Whereas heterogeneity represents between-study variation in the measured relative effect of a pair of treatments, inconsistency can only occur when a treatment C has a different effect when it is compared with A or B (i.e., studies comparing A and C are systematically different from studies comparing B and C). Thus, inconsistency may even occur with normal meta-analysis, but can only be detected using a network meta-analysis, and then only when there are closed loops in the evidence structure. For more information about assessing inconsistency, see G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, Journal of the American Statistical Association, 101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.</html>";
 		JComponent inconsistencyNote = AuxComponentFactory.createNoteField(inconsistencyText);
 		
-		inconsistencyPanel.add(inconsistencyNote, BorderLayout.NORTH);
+		inconsistencyPanel.add(inconsistencyNote, cc.xy(1,1));
 		
 		TablePanel inconsistencyTablePanel = createNetworkTablePanel(inconsistencyModel);
-		inconsistencyPanel.add(inconsistencyTablePanel, BorderLayout.CENTER);
+		inconsistencyPanel.add(inconsistencyTablePanel, cc.xy(1,3));
 		
 		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(
 				d_pm, d_parent.getPresentationModelFactory());
@@ -219,13 +224,14 @@ implements ViewBuilder {
 					if (inconsistencyFactorsTablePanel != null) {
 						((AbstractTableModel) inconsistencyFactorsTablePanel.getTable().getModel()).fireTableStructureChanged();
 						inconsistencyFactorsTablePanel.doLayout();
-						d_parent.repaintRightPanel();
+						d_parent.reloadRightPanel();
+						
 					}
 				}
 			}
 		});
 		
-		inconsistencyPanel.add(inconsistencyFactorsTablePanel, BorderLayout.SOUTH);
+		inconsistencyPanel.add(inconsistencyFactorsTablePanel, cc.xy(1, 5));
 		inconsistencyPanel.revalidate();
 		
 		inconsistencyModel.addProgressListener(
@@ -254,7 +260,7 @@ implements ViewBuilder {
 		chartPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 	
 		builder.add(chartPanel, cc.xy(1, 1));
-		
+				
 		ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
 		bbuilder.addButton(createSaveImageButton(chartPanel));
 		builder.add(bbuilder.getPanel(), cc.xy(1, 3));

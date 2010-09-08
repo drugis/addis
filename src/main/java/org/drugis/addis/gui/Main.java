@@ -780,7 +780,9 @@ public class Main extends JFrame {
 
 	public void reloadRightPanel() {
 		if (d_rightPanelBuilder != null) {
+			d_rightPanel.setVisible(false);
 			setRightPanelContents(d_rightPanelBuilder.buildPanel());
+			d_rightPanel.setVisible(true);	
 		}
 	}
 
