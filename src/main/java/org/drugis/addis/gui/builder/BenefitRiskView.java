@@ -312,8 +312,7 @@ public class BenefitRiskView implements ViewBuilder {
 	}
 
 	private BuildViewWhenReadyComponent createWaiter(ViewBuilder builder) {
-		return new BuildViewWhenReadyComponent(builder, d_pm.getAllModelsReadyModel(),
-				WAITING_MESSAGE);
+		return new BuildViewWhenReadyComponent(builder, d_pm.getAllModelsReadyModel(), WAITING_MESSAGE);
 	}
 	
 	private JPanel buildOverviewPart() {
@@ -350,23 +349,11 @@ public class BenefitRiskView implements ViewBuilder {
 		FormLayout layout = new FormLayout("pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
-		/*
-		builder.add(HtmlWordWrapper.createHtmlPane(
-				HtmlWordWrapper.wordWrap(
-				"Relative measurements: odds ratio or mean difference, with "
-						+ d_pm.getBean().getBaseline() +" as the common comparator.", true)),
-				cc.xy(1, 1));*/
+		
 		builder.add(AuxComponentFactory.createNoteField("Relative measurements: odds ratio or mean difference, with "
 				+ d_pm.getBean().getBaseline() +" as the common comparator."),cc.xy(1, 1));
 		builder.add(new TablePanel(new EnhancedTable(d_pm.getMeasurementTableModel(true))), cc.xy(1, 3));
-		/*
-		builder.add(HtmlWordWrapper.createHtmlPane(
-				HtmlWordWrapper.wordWrap(
-				"Absolute measurements: odds or mean calculated from the assumed odds or mean for " + 
-				d_pm.getBean().getBaseline() + ". The method used to derive the assumed odds or mean are heuristic, "
-				+ "and the absolute values should be interpreted with care.", true)),
-				cc.xy(1, 5));
-				*/
+		
 		builder.add(AuxComponentFactory.createNoteField("Absolute measurements: odds or mean calculated from the assumed odds or mean for " + 
 				d_pm.getBean().getBaseline() + ". The method used to derive the assumed odds or mean are heuristic, "
 				+ "and the absolute values should be interpreted with care."), cc.xy(1, 5));
