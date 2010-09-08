@@ -48,6 +48,7 @@ import org.drugis.addis.mcmcmodel.BaselineMeanDifferenceModel;
 import org.drugis.addis.mcmcmodel.BaselineOddsModel;
 import org.drugis.addis.util.threading.ThreadHandler;
 import org.drugis.common.AlphabeticalComparator;
+import org.drugis.mtc.ConsistencyModel;
 
 public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<BenefitRiskAnalysis> {
 	
@@ -269,8 +270,12 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	public void runAllConsistencyModels() {
 		List<Runnable> tasks = new ArrayList<Runnable>();
 		for (MetaAnalysis ma : getMetaAnalyses() ){
-			if (ma instanceof NetworkMetaAnalysis) 
-				tasks.add(((NetworkMetaAnalysis) ma).getConsistencyModel());
+			if (ma instanceof NetworkMetaAnalysis) {
+				ConsistencyModel model = ((NetworkMetaAnalysis) ma).getConsistencyModel();
+				if (!model.isReady()) {
+					tasks.add(model);
+				}			
+			}
 		}
 		ThreadHandler.getInstance().scheduleTasks(tasks);
 	}

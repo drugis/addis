@@ -25,8 +25,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
@@ -84,7 +82,7 @@ public class BenefitRiskView implements ViewBuilder {
 	public BenefitRiskView(BenefitRiskPresentation pm, Main main) {
 		d_pm = pm;
 		d_main = main;
-
+		d_pm.startAllSimulations();
 	}
 	
 	public JComponent buildPanel() {
@@ -140,13 +138,13 @@ public class BenefitRiskView implements ViewBuilder {
 		d_panel = d_builder.getPanel();
 		ChildComponenentHeightPropagater.attachToContainer(d_panel);
 		
-		d_panel.addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentResized(ComponentEvent e) {
-				// We would love to listen to componentShown(), but that isn't triggered. Hooray!
-				d_pm.startAllSimulations();
-			}
-		});
+//		d_panel.addComponentListener(new ComponentAdapter() {
+//			@Override
+//			public void componentResized(ComponentEvent e) {
+//				// We would love to listen to componentShown(), but that isn't triggered. Hooray!
+//				d_pm.startAllSimulations();
+//			}
+//		});
 		return d_panel;
 	}
 	

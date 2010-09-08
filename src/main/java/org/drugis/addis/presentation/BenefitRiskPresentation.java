@@ -147,8 +147,6 @@ public class BenefitRiskPresentation extends PresentationModel<BenefitRiskAnalys
 
 	private List<MCMCModel> d_baselineModels;
 
-	private boolean d_allSimulationsStarted = false;
-	
 	public boolean allNMAModelsReady() {
 		return d_allNetworkModelsReadyListener.allModelsReady();
 	}
@@ -272,10 +270,6 @@ public class BenefitRiskPresentation extends PresentationModel<BenefitRiskAnalys
 	}
 	
 	public synchronized void startAllSimulations() {
-		if (d_allSimulationsStarted) {
-			return;
-		}
-
 		getBean().runAllConsistencyModels();
 		List<Runnable> models = new ArrayList<Runnable>();
 		for (MCMCModel model : d_baselineModels) {
@@ -284,8 +278,6 @@ public class BenefitRiskPresentation extends PresentationModel<BenefitRiskAnalys
 			}
 		}
 		ThreadHandler.getInstance().scheduleTasks(models);
-		
-		d_allSimulationsStarted  = true;
 	}
 	
 	public void saveSmaa(String filename) {
