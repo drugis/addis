@@ -14,7 +14,7 @@ did not perform the network meta-analyses.
 Requirements
 ------------
 
-ADDIS is made in Java, and requires Java 5 (JRE 1.5). Most modern
+ADDIS is made in Java, and requires Java 5 (JRE 1.5) or higher. Most modern
 operating systems ship with a suitable JRE.
 
 Versions
