@@ -151,8 +151,12 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	
 	public void run() {
 		List<Runnable> tasks = new ArrayList<Runnable>();
-		tasks.add(getConsistencyModel());
-		tasks.add(getInconsistencyModel());
+		if (!getConsistencyModel().isReady()) {
+			tasks.add(getConsistencyModel());
+		}
+		if (!getInconsistencyModel().isReady()) {
+			tasks.add(getInconsistencyModel());
+		}
 		ThreadHandler.getInstance().scheduleTasks(tasks);
 	}
 

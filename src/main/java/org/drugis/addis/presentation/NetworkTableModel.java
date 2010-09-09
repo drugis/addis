@@ -76,6 +76,7 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 		return "\"" + d_pm.getBean().getIncludedDrugs().get(col) + "\" relative to \"" + d_pm.getBean().getIncludedDrugs().get(row) + "\"";
 	}
 	
+	// FIXME: refactor (duplicate code with NetworkMetaAnalysis.getRelativeEffect
 	public Object getValueAt(int row, int col) {
 		if (row == col) {
 			return d_pmf.getModel(d_pm.getBean().getIncludedDrugs().get(row));
