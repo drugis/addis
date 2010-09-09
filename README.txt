@@ -4,21 +4,22 @@ ADDIS - Aggregate Data Drug Information System
 ADDIS is a software developed within the Dutch Escher-project for
 managing and analyzing clinical trial information.
 
-See the data/ directory in this distribution for an example data file
-including several example analyses. The example is modeled on the paper:
-Hansen et al., Annals of internal medicine, 143(6): 415-426, 2005. All
-data was extracted by us from the original papers; the pair-wise
-meta-analyses are re-analyses of the ones in the paper. Hansen et al.
-did not perform the network meta-analyses.
+ADDIS comes with a built-in example modeled on the paper: Hansen et al.,
+Annals of internal medicine, 143(6): 415-426, 2005. All data was
+extracted by us from the original papers.
 
 Requirements
 ------------
 
-ADDIS is made in Java, and requires Java 5 (JRE 1.5) or higher. Most modern
-operating systems ship with a suitable JRE.
+ADDIS is made in Java, and requires Java 5 (JRE 1.5) or newer. Most
+modern operating systems ship with a suitable JRE.
 
 Versions
 --------
+
+1.0: Welcome screen, limited editing, links to various information
+   systems (PubMed, medicines.org.uk, whocc.no) and many minor
+   improvements.
 
 0.10: Benefit-risk analysis, baseline effect (heuristic) estimation
 
@@ -28,13 +29,13 @@ Versions
 
 0.6: Added add-study-wizard, import from ClinicalTrials.gov
 
-0.4.1 : Fixed example data (studies Org 022 and 023), changed domain
-        to be version-specific.
+0.4.1: Fixed example data (studies Org 022 and 023), changed domain
+   to be version-specific.
 
-0.4 : Added meta-analysis, removed combined studies and MCDA-hookup.
-      Lots of minor changes.
+0.4: Added meta-analysis, removed combined studies and MCDA-hookup.
+   Lots of minor changes.
 
-0.2 : Initial release.
+0.2: Initial release.
 
 Building ADDIS from source
 --------------------------

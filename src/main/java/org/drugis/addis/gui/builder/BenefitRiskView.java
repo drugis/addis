@@ -139,13 +139,6 @@ public class BenefitRiskView implements ViewBuilder {
 		d_panel = d_builder.getPanel();
 		ChildComponenentHeightPropagater.attachToContainer(d_panel);
 		
-//		d_panel.addComponentListener(new ComponentAdapter() {
-//			@Override
-//			public void componentResized(ComponentEvent e) {
-//				// We would love to listen to componentShown(), but that isn't triggered. Hooray!
-//				d_pm.startAllSimulations();
-//			}
-//		});
 		return d_panel;
 	}
 	
