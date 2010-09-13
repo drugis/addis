@@ -22,7 +22,7 @@ import org.w3c.dom.Document;
 
 public class ImageExporter {
 
-	private static void writePNG(String filename, JComponent p, int width, int height) {
+	public static void writePNG(String filename, JComponent p, int width, int height) {
 		GraphicsConfiguration config = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
 		BufferedImage bufferedImage = config.createCompatibleImage(width, height, Transparency.OPAQUE);
 
@@ -39,7 +39,7 @@ public class ImageExporter {
 		try{ImageIO.write(b,"png",new File(filename));}catch (Exception e) {e.printStackTrace();}
 	}
 	
-	private static void writeSVG(String filename, JComponent p, int width, int height){
+	public static void writeSVG(String filename, JComponent p, int width, int height){
 		// Get a DOMImplementation.
         DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
         // Create an instance of org.w3c.dom.Document.
