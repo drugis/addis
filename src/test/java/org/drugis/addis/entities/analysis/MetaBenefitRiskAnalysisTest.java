@@ -47,7 +47,7 @@ import org.junit.Test;
 
 
 
-public class BenefitRiskAnalysisTest {
+public class MetaBenefitRiskAnalysisTest {
 	private MetaBenefitRiskAnalysis d_BRAnalysis;
 
 	@Before
