@@ -28,6 +28,7 @@ import java.util.List;
 
 import javax.swing.JProgressBar;
 
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
@@ -144,7 +145,7 @@ public class BenefitRiskPresentation extends PresentationModel<MetaBenefitRiskAn
 
 	private SimulationProgressBar d_progressBar;
 
-	private SMAAEntityFactory d_smaaf;
+	private SMAAEntityFactory<Drug> d_smaaf;
 
 	private List<MCMCModel> d_baselineModels;
 
@@ -172,7 +173,7 @@ public class BenefitRiskPresentation extends PresentationModel<MetaBenefitRiskAn
 	}
 	
 	public void startSMAA() {
-		d_smaaf = new SMAAEntityFactory();
+		d_smaaf = new SMAAEntityFactory<Drug>();
 		d_smaaModel = d_smaaf.createSmaaModel(getBean());
 		SMAA2Results emptyResults = new SMAA2Results(d_smaaModel.getAlternatives(), d_smaaModel.getCriteria(), 10);
 		d_rankAccepDS = new RankAcceptabilitiesDataset(emptyResults);

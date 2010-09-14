@@ -22,15 +22,16 @@
 
 package org.drugis.addis.util.JSMAAintegration;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
-import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
@@ -44,14 +45,14 @@ import fi.smaa.jsmaa.model.LogNormalMeasurement;
 import fi.smaa.jsmaa.model.SMAAModel;
 import fi.smaa.jsmaa.model.ScaleCriterion;
 
-public class SMAAEntityFactory {
+public class SMAAEntityFactory<AltType extends Entity> {
 	
 	private Map<OutcomeMeasure, CardinalCriterion> d_outcomeCriterionMap;
-	private Map<Drug, Alternative> d_drugAlternativeMap;
+	private Map<AltType, Alternative> d_entityAlternativeMap;
 	
 	public SMAAEntityFactory() {
 		d_outcomeCriterionMap = new HashMap<OutcomeMeasure, CardinalCriterion>();
-		d_drugAlternativeMap  = new HashMap<Drug, Alternative>();
+		d_entityAlternativeMap  = new HashMap<AltType, Alternative>();
 	}
 	
 	public static CardinalMeasurement createCardinalMeasurement(Distribution re) {
@@ -64,21 +65,20 @@ public class SMAAEntityFactory {
 			throw new IllegalArgumentException("Unhandled distribution: " + re);
 	}
 	
-	public SMAAModel createSmaaModel(MetaBenefitRiskAnalysis brAnalysis) {
+	public SMAAModel createSmaaModel(BenefitRiskAnalysis<AltType> brAnalysis) {
 		SMAAModel smaaModel = new SMAAModel(brAnalysis.getName());
 				
-		Collection<Drug> drugs = brAnalysis.getDrugs();
-		for (Drug d: drugs) {
-			smaaModel.addAlternative(getAlternative(d));
+		for (AltType a : brAnalysis.getAlternatives()) {
+			smaaModel.addAlternative(getAlternative(a));
 		}
 		
 		for (OutcomeMeasure om : brAnalysis.getOutcomeMeasures()) {
 			CardinalCriterion crit = getCriterion(om);
 			smaaModel.addCriterion(crit);
 			
-			for (Drug d : drugs) {
-				CardinalMeasurement m = createCardinalMeasurement(brAnalysis.getMeasurement(d, om));
-				smaaModel.setMeasurement(crit, getAlternative(d), m);
+			for (AltType a : brAnalysis.getAlternatives()) {
+				CardinalMeasurement m = createCardinalMeasurement(brAnalysis.getMeasurement(a, om));
+				smaaModel.setMeasurement(crit, getAlternative(a), m);
 			}
 		}
 		return smaaModel;
@@ -102,11 +102,20 @@ public class SMAAEntityFactory {
 		return null; 
 	}
 	
-	Alternative getAlternative(Drug d) {
-		if(d_drugAlternativeMap.containsKey(d))
-			return d_drugAlternativeMap.get(d);
-		Alternative a = new Alternative(d.getName());
-		d_drugAlternativeMap.put(d, a);
+	Alternative getAlternative(AltType a2) {
+		if(d_entityAlternativeMap.containsKey(a2))
+			return d_entityAlternativeMap.get(a2);
+		Alternative a = null;
+		if (a2 instanceof Arm) {
+			Arm arm = (Arm) a2;
+			a = new Alternative(arm.getDrug() + " " + arm.getDose());
+		} else if (a2 instanceof Drug) {
+			Drug drug = (Drug) a2;
+			a = new Alternative(drug.getName());
+		} else {
+			a = new Alternative(a2.toString());
+		}
+		d_entityAlternativeMap.put(a2, a);
 		return a;
 	}
 }

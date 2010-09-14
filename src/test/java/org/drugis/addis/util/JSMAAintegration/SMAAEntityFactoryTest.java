@@ -39,13 +39,13 @@ import fi.smaa.jsmaa.model.LogNormalMeasurement;
 import fi.smaa.jsmaa.model.SMAAModel;
 
 public class SMAAEntityFactoryTest {
-	private SMAAEntityFactory d_SMAAFactory;
+	private SMAAEntityFactory<Drug> d_SMAAFactory;
 	private MetaBenefitRiskAnalysis d_BRAnalysis;
 
 	@Before
 	public void setup() {
 		d_BRAnalysis = ExampleData.buildBenefitRiskAnalysis();
-		d_SMAAFactory = new SMAAEntityFactory();
+		d_SMAAFactory = new SMAAEntityFactory<Drug>();
 	}
 	
 	@Test
