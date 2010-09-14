@@ -7,11 +7,16 @@ import java.util.Set;
 
 import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
 
 public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<Arm> {
 	public static String PROPERTY_STUDY = "study";
@@ -46,8 +51,17 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 	}
 
 	public Distribution getMeasurement(Arm alternative, OutcomeMeasure criterion) {
-		// TODO Auto-generated method stub
-		return null;
+		Measurement measurement = d_study.getMeasurement(criterion, alternative);
+		if (measurement instanceof RateMeasurement) {
+			RateMeasurement rateMeasurement = (RateMeasurement) measurement;
+			return new Beta(1 + rateMeasurement.getRate(), 1 + rateMeasurement.getSampleSize() - rateMeasurement.getRate());
+		} else if (measurement instanceof ContinuousMeasurement) {
+			ContinuousMeasurement contMeasurement = (ContinuousMeasurement) measurement;
+			return new TransformedStudentT(contMeasurement.getMean(), contMeasurement.getStdDev(), 
+					contMeasurement.getSampleSize() - 1);
+		} else {
+			throw new IllegalStateException("Unknown measurement type " + measurement.getClass().getSimpleName());
+		}
 	}
 
 	public String getName() {

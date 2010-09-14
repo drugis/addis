@@ -2,7 +2,6 @@ package org.drugis.addis.entities.analysis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,10 +10,15 @@ import java.util.Set;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.ContinuousMeasurement;
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.relativeeffect.Beta;
+import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -65,8 +69,30 @@ public class StudyBenefitRiskAnalysisTest {
 	}
 	
 	@Test
-	public void testMeasurements() {
-		fail();
+	public void testGetMeasurementForRateOutcome() {
+		Study study = d_analysis.getStudy();
+		Arm arm = study.getArms().get(0);
+		Endpoint endpoint = ExampleData.buildEndpointHamd();
+		RateMeasurement measurement = (RateMeasurement) study.getMeasurement(endpoint, arm);
+		Beta expected = new Beta(1 + measurement.getRate(), 1 + measurement.getSampleSize() - measurement.getRate());
+		assertEquals(expected, d_analysis.getMeasurement(arm, endpoint));
 	}
 
+	@Test
+	public void testGetMeasurementForContinuousOutcome() {
+		Indication indication = ExampleData.buildIndicationDepression();
+		Study study = ExampleData.buildStudyChouinard();
+		List<OutcomeMeasure> criteria = new ArrayList<OutcomeMeasure>();
+		Endpoint endpoint = ExampleData.buildEndpointCgi();
+		criteria.add(endpoint);
+		criteria.add(ExampleData.buildAdverseEventConvulsion());
+		List<Arm> alternatives = study.getArms();
+		d_analysis = new StudyBenefitRiskAnalysis(NAME, indication, study, criteria, alternatives);
+		
+		Arm arm = study.getArms().get(1);
+		ContinuousMeasurement measurement = (ContinuousMeasurement) study.getMeasurement(endpoint, arm);
+		TransformedStudentT expected = new TransformedStudentT(measurement.getMean(), measurement.getStdDev(),
+				measurement.getSampleSize() - 1);
+		assertEquals(expected, d_analysis.getMeasurement(arm, endpoint));
+	}
 }

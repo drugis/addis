@@ -41,4 +41,13 @@ public class Beta extends AbstractObservable implements Distribution {
 		}
 	}
 
+	@Override
+	public boolean equals(Object o){
+		if(o instanceof Beta) {
+			Beta other = (Beta) o;
+			return (other.d_alpha == d_alpha) && (other.d_beta == d_beta);
+		}
+		return false;
+	}
+	
 }

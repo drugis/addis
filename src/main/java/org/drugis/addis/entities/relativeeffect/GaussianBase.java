@@ -38,7 +38,9 @@ public abstract class GaussianBase extends AbstractObservable implements Distrib
 		if (sigma < 0.0) throw new IllegalArgumentException("sigma must be >= 0.0");
 		d_mu = mu;
 		d_sigma = sigma;
-		d_dist = new NormalDistributionImpl(d_mu, d_sigma);
+		if (getSigma() != 0.0) {
+			d_dist = new NormalDistributionImpl(d_mu, d_sigma);
+		}
 	}
 
 	protected double calculateQuantile(double p) {

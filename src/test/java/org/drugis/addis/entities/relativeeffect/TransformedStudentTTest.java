@@ -23,6 +23,7 @@
 package org.drugis.addis.entities.relativeeffect;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -80,5 +81,14 @@ public class TransformedStudentTTest {
 	
 	@Test(expected=IllegalArgumentException.class) public void testPreconditionDegreesOfFreedomPositive() {
 		new TransformedStudentT(0.0, 1.0, 0);
+	}
+	
+	@Test
+	public void testEquals() {
+		assertFalse(new TransformedStudentT(1.0, 0.2, 5).equals(null));
+		assertEquals(new TransformedStudentT(1.0, 0.2, 5), new TransformedStudentT(1.0, 0.2, 5));
+		assertFalse(new TransformedStudentT(1.0, 0.2, 5).equals(new TransformedStudentT(1.003, 0.2, 5)));
+		assertFalse(new TransformedStudentT(1.0, 0.2, 5).equals(new TransformedStudentT(1.0, 0.3, 5)));
+		assertFalse(new TransformedStudentT(1.0, 0.2, 5).equals(new TransformedStudentT(1.0, 0.2, 800)));
 	}
 }

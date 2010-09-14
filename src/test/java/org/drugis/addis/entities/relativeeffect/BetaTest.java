@@ -29,4 +29,13 @@ public class BetaTest {
 		assertEquals(0.20910650, new Beta(5, 18).getQuantile(0.5), EPSILON);
 		assertEquals(0.35124865, new Beta(5, 18).getQuantile(0.93), EPSILON);
 	}
+	
+	@Test
+	public void testEquals() {
+		assertFalse(new Beta(1, 1).equals(null));
+		assertEquals(new Beta(1, 1), new Beta(1, 1));
+		assertFalse(new Beta(1, 1).equals("Beta"));
+		assertFalse(new Beta(1, 1).equals(new Beta(2, 1)));
+		assertFalse(new Beta(1, 1).equals(new Beta(1, 2)));
+	}
 }
