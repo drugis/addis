@@ -325,7 +325,7 @@ public class BenefitRiskView implements ViewBuilder {
 				cc.xy(3, 5));
 		
 		builder.addLabel("Alternatives:", cc.xy(1, 9));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(MetaBenefitRiskAnalysis.PROPERTY_DRUGS), new OneWayObjectFormat()), 
+		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(MetaBenefitRiskAnalysis.PROPERTY_ALTERNATIVES), new OneWayObjectFormat()), 
 				cc.xy(3, 9));
 		
 		return builder.getPanel();	

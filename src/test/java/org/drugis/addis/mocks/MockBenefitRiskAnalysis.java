@@ -39,7 +39,7 @@ public class MockBenefitRiskAnalysis extends MetaBenefitRiskAnalysis {
 			List<OutcomeMeasure> outcomeMeasureList,
 			List<MetaAnalysis> metaAnalysisList, Drug baseline,
 			List<Drug> drugList) {
-		super(id,indication,outcomeMeasureList,metaAnalysisList,baseline,drugList);
+		super(id,indication,metaAnalysisList,baseline,drugList);
 	}
 
 	/**

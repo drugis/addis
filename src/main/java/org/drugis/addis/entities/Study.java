@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drugis.common.AlphabeticalComparator;
+import org.drugis.common.OutcomeComparator;
 import org.drugis.common.DateUtil;
 import org.drugis.common.EqualsUtil;
 
@@ -327,13 +327,13 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		List<OutcomeMeasure> l = new ArrayList<OutcomeMeasure>();
 		
 		List<OutcomeMeasure> sortedList = new ArrayList<OutcomeMeasure>(d_endpointList);
-		Collections.sort(sortedList, new AlphabeticalComparator());
+		Collections.sort(sortedList, new OutcomeComparator());
 		
 		l.addAll(sortedList);
 		
 		sortedList.clear();
 		sortedList.addAll(d_adverseEvents);
-		Collections.sort(sortedList, new AlphabeticalComparator());
+		Collections.sort(sortedList, new OutcomeComparator());
 		
 		l.addAll(sortedList);
 		return l;
@@ -354,11 +354,11 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public List<? extends Variable> getVariables(Class<? extends Variable> type) {
 		if (type == Endpoint.class) {
 			List<Endpoint> list = new ArrayList<Endpoint>(d_endpointList);
-			Collections.sort(list, new AlphabeticalComparator());
+			Collections.sort(list, new OutcomeComparator());
 			return Collections.unmodifiableList(list);
 		} else if (type == AdverseEvent.class){
 			List<AdverseEvent> list = new ArrayList<AdverseEvent>(d_adverseEvents);
-			Collections.sort(list, new AlphabeticalComparator());
+			Collections.sort(list, new OutcomeComparator());
 			return Collections.unmodifiableList(list);
 		} else if (type == OutcomeMeasure.class) {
 			return Collections.unmodifiableList(getOutcomeMeasures());

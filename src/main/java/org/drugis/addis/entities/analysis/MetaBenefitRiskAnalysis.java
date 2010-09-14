@@ -49,6 +49,7 @@ import org.drugis.addis.mcmcmodel.BaselineMeanDifferenceModel;
 import org.drugis.addis.mcmcmodel.BaselineOddsModel;
 import org.drugis.addis.util.threading.ThreadHandler;
 import org.drugis.common.AlphabeticalComparator;
+import org.drugis.common.OutcomeComparator;
 import org.drugis.mtc.ConsistencyModel;
 
 public class MetaBenefitRiskAnalysis extends AbstractEntity implements Comparable<MetaBenefitRiskAnalysis> {
@@ -64,6 +65,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements Comparabl
 	public static String PROPERTY_NAME = "name";
 	public static String PROPERTY_INDICATION = "indication";
 	public static String PROPERTY_OUTCOMEMEASURES = "outcomeMeasures";
+	public static String PROPERTY_ALTERNATIVES = "alternatives";
 	public static String PROPERTY_DRUGS = "drugs";
 	public static String PROPERTY_BASELINE = "baseline";
 	public static String PROPERTY_METAANALYSES = "metaAnalyses";
@@ -73,12 +75,12 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements Comparabl
 		d_metaAnalyses = new ArrayList<MetaAnalysis>();
 	}
 	
-	public MetaBenefitRiskAnalysis(String id, Indication indication, List<OutcomeMeasure> outcomeMeasures,
-			List<MetaAnalysis> metaAnalysis, Drug baseline, List<Drug> drugs) {
+	public MetaBenefitRiskAnalysis(String id, Indication indication, List<MetaAnalysis> metaAnalysis,
+			Drug baseline, List<Drug> drugs) {
 		super();
 		d_indication = indication;
-		d_outcomeMeasures = outcomeMeasures;
 		d_metaAnalyses = metaAnalysis;
+		d_outcomeMeasures = findOutcomeMeasures();
 		d_drugs = drugs;
 		d_baselineModelMap = new HashMap<OutcomeMeasure,AbstractBaselineModel<?>>();
 		
@@ -97,28 +99,36 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements Comparabl
 	}
 
 	public List<OutcomeMeasure> getOutcomeMeasures() {
-		List<OutcomeMeasure> sortedList = new ArrayList<OutcomeMeasure>(d_outcomeMeasures);
-		Collections.sort(sortedList, new AlphabeticalComparator());
+		List<OutcomeMeasure> sortedList = findOutcomeMeasures();
+		Collections.sort(sortedList, new OutcomeComparator());
 		return sortedList;
 	}
 
-	public void setOutcomeMeasures(List<OutcomeMeasure> outcomeMeasures) {
-		List<OutcomeMeasure> oldValue = d_outcomeMeasures;
-		d_outcomeMeasures = outcomeMeasures;
-		firePropertyChange(PROPERTY_OUTCOMEMEASURES, oldValue, outcomeMeasures);
+	private List<OutcomeMeasure> findOutcomeMeasures() {
+		List<OutcomeMeasure> list = new ArrayList<OutcomeMeasure>();
+		for (MetaAnalysis a : d_metaAnalyses) {
+			list.add(a.getOutcomeMeasure());
+		}
+		return list;
 	}
 
 	public List<MetaAnalysis> getMetaAnalyses() {
 		ArrayList<MetaAnalysis> analyses = new ArrayList<MetaAnalysis>(d_metaAnalyses);
 		Collections.sort(analyses, new AlphabeticalComparator());
 		return Collections.unmodifiableList(analyses);
-		//return analyses;
 	}
 
+	// FIXME: make private or default
 	public void setMetaAnalyses(List<MetaAnalysis> metaAnalysis) {
 		List<MetaAnalysis> oldValue = getMetaAnalyses();
+		List<OutcomeMeasure> oldOutcomes = getOutcomeMeasures();
 		d_metaAnalyses = metaAnalysis;
 		firePropertyChange(PROPERTY_METAANALYSES, oldValue, getMetaAnalyses());
+		firePropertyChange(PROPERTY_OUTCOMEMEASURES, oldOutcomes, getOutcomeMeasures());
+	}
+	
+	public List<Drug> getAlternatives() {
+		return getDrugs();
 	}
 
 	public List<Drug> getDrugs() {
@@ -128,11 +138,13 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements Comparabl
 		return sortedList;
 	}
 
+	// FIXME: make private or default
 	public void setDrugs(List<Drug> drugs) {
 		List<Drug> oldValue = d_drugs;
 		d_drugs = drugs;
 		d_drugs.remove(getBaseline());
 		firePropertyChange(PROPERTY_DRUGS, oldValue, drugs);
+		firePropertyChange(PROPERTY_ALTERNATIVES, oldValue, drugs);
 	}
 
 	@Override

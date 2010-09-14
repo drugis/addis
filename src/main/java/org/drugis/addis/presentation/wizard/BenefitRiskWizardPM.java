@@ -234,7 +234,6 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	}
 
 	private MetaBenefitRiskAnalysis createBRAnalysis(String id) {
-		ArrayList<OutcomeMeasure> outcomes = getSelectedEntities(d_outcomeSelectedMap);
 		ArrayList<Drug> alternatives = getSelectedEntities(d_alternativeSelectedMap);
 		ArrayList<MetaAnalysis> metaAnalyses = new ArrayList<MetaAnalysis>();
 		
@@ -248,8 +247,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		MetaBenefitRiskAnalysis brAnalysis = new MetaBenefitRiskAnalysis(
 				id,
 				d_indicationHolder.getValue(), 
-				outcomes,
-				metaAnalyses, 
+				metaAnalyses,
 				baseline, 
 				alternatives
 			);

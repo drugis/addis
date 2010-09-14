@@ -30,13 +30,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
@@ -70,16 +69,6 @@ public class BenefitRiskAnalysisTest {
 	}
 	
 	@Test
-	public void testGetSetOutcomeMeasures() {
-		ArrayList<OutcomeMeasure> newList = new ArrayList<OutcomeMeasure>();
-		newList.add(ExampleData.buildEndpointCVdeath());
-		newList.add(ExampleData.buildAdverseEventConvulsion());
-		Collections.sort(newList, new AlphabeticalComparator());
-		JUnitUtil.testSetter(d_BRAnalysis, MetaBenefitRiskAnalysis.PROPERTY_OUTCOMEMEASURES, 
-				d_BRAnalysis.getOutcomeMeasures(), newList);
-	}
-	
-	@Test
 	public void testGetSetDrugs() {
 		ArrayList<Drug> newList = new ArrayList<Drug>();
 		newList.add(ExampleData.buildDrugViagra());
@@ -107,6 +96,19 @@ public class BenefitRiskAnalysisTest {
 		Collections.sort(newList,new AlphabeticalComparator());
 		JUnitUtil.testSetter(d_BRAnalysis, MetaBenefitRiskAnalysis.PROPERTY_METAANALYSES, 
 				d_BRAnalysis.getMetaAnalyses(), newList);
+	}
+	
+	@Test
+	public void testSetMetaAnalysesAffectsOutcomes() {
+		ArrayList<MetaAnalysis> newList = new ArrayList<MetaAnalysis>();
+		newList.add(ExampleData.buildNetworkMetaAnalysis());
+		newList.add(ExampleData.buildNetworkMetaAnalysisAlternative());
+		d_BRAnalysis.setMetaAnalyses(newList);
+
+		List<OutcomeMeasure> expected = new ArrayList<OutcomeMeasure>();
+		expected.add(ExampleData.buildEndpointHamd());
+		expected.add(ExampleData.buildAdverseEventConvulsion());
+		assertEquals(expected, d_BRAnalysis.getOutcomeMeasures());		
 	}
 	
 	@Test
