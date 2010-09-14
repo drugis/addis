@@ -40,7 +40,7 @@ public class BenefitRiskPMTest {
 	public void setUp() {
 		d_domain = new DomainImpl();
 		d_pmf = new PresentationModelFactory(d_domain);
-		MetaBenefitRiskAnalysis analysis = ExampleData.buildMockBenefitRiskAnalysis();
+		MetaBenefitRiskAnalysis analysis = ExampleData.buildBenefitRiskAnalysis();
 		d_pm = new BenefitRiskPresentation(analysis, d_pmf);
 	}
 	

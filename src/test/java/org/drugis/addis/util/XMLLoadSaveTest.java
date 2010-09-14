@@ -188,8 +188,7 @@ public class XMLLoadSaveTest {
 	@Test
 	public void doMetaAnalysis() throws XMLStreamException {
 		NetworkMetaAnalysis analysis = ExampleData.buildNetworkMetaAnalysis();
-		String xml = XMLHelper.toXml(analysis, NetworkMetaAnalysis.class);
-//		System.out.println("\n"+xml+"\n");		
+		String xml = XMLHelper.toXml(analysis, NetworkMetaAnalysis.class);		
 		NetworkMetaAnalysis importedAnalysis = (NetworkMetaAnalysis)XMLHelper.fromXml(xml);
 		assertEntityEquals(analysis, importedAnalysis);
 	}

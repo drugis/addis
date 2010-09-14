@@ -62,7 +62,7 @@ public class StudyBenefitRiskAnalysisTest {
 	public void testCompareTo() {
 		assertTrue(d_analysis.compareTo(null) > 0);
 		assertEquals(0, d_analysis.compareTo(d_analysis));
-		MetaBenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMockBenefitRiskAnalysis();
+		MetaBenefitRiskAnalysis otherBRAnalysis = ExampleData.buildBenefitRiskAnalysis();
 		assertTrue(d_analysis.compareTo(otherBRAnalysis) < 0);
 		otherBRAnalysis.setName("Je Loeder");
 		assertTrue(d_analysis.compareTo(otherBRAnalysis) > 0);

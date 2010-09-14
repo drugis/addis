@@ -36,9 +36,8 @@ import org.drugis.addis.entities.relativeeffect.LogGaussian;
 public class MockBenefitRiskAnalysis extends MetaBenefitRiskAnalysis {
 
 	public MockBenefitRiskAnalysis(String id, Indication indication,
-			List<OutcomeMeasure> outcomeMeasureList,
-			List<MetaAnalysis> metaAnalysisList, Drug baseline,
-			List<Drug> drugList) {
+			List<MetaAnalysis> metaAnalysisList,
+			Drug baseline, List<Drug> drugList) {
 		super(id,indication,metaAnalysisList,baseline,drugList);
 	}
 

@@ -749,7 +749,7 @@ public class ExampleData {
 		return s_convulsion;
 	}
 
-	public static MetaBenefitRiskAnalysis buildMockBenefitRiskAnalysis() {
+	public static MetaBenefitRiskAnalysis buildBenefitRiskAnalysis() {
 		Indication indication = buildIndicationDepression();
 		
 		List<OutcomeMeasure> outcomeMeasureList = new ArrayList<OutcomeMeasure>();
@@ -764,7 +764,7 @@ public class ExampleData {
 		List<Drug> fluoxList = Collections.singletonList(buildDrugFluoxetine());
 		
 		return new MockBenefitRiskAnalysis("testBenefitRiskAnalysis",
-										indication, outcomeMeasureList, metaAnalysisList, parox, fluoxList);										
+										indication, metaAnalysisList, parox, fluoxList);										
 	}
 
 	public static MetaAnalysis buildMetaAnalysisConv() {
@@ -797,9 +797,9 @@ public class ExampleData {
 		Study study = buildStudyChouinard();
 		MetaAnalysis ma = new RandomEffectsMetaAnalysis("ma", om, Collections.singletonList(study), fluox, parox);
 		MetaBenefitRiskAnalysis br = new MockBenefitRiskAnalysis("br", study.getIndication(), 
-				Collections.singletonList(om), 
 				Collections.singletonList(ma), 
-				fluox, Collections.singletonList(parox));
+				fluox, 
+				Collections.singletonList(parox));
 		return br;
 	}
 	

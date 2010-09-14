@@ -37,6 +37,7 @@ import java.util.Map.Entry;
 
 import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.common.EqualsUtil;
 
 public class AssertEntityEquals {
@@ -178,6 +179,14 @@ public class AssertEntityEquals {
 		assertEquals(expected.getDependencies(), actual.getDependencies());
 	}
 	
+	public static void assertEntityEquals(MetaBenefitRiskAnalysis expected, MetaBenefitRiskAnalysis actual) {
+		assertEquals(expected.getName(), actual.getName());
+		assertEquals(expected.getBaseline(), actual.getBaseline());
+		assertEquals(expected.getIndication(), actual.getIndication());
+		assertEquals(expected.getMetaAnalyses(), actual.getMetaAnalyses());
+		assertEquals(expected.getDrugs(), actual.getDrugs());
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static void assertEntityEquals(Entity expected, Entity actual){
 		if (expected instanceof Endpoint)
@@ -200,7 +209,7 @@ public class AssertEntityEquals {
 			assertEntityEquals((Variable) expected, (Variable) actual);
 		else if (expected instanceof MetaAnalysis) {
 			assertEntityEquals((MetaAnalysis)expected, (MetaAnalysis)actual);
-		} else if (expected instanceof CharacteristicsMap){
+		} else if (expected instanceof CharacteristicsMap) { // FIXME: WTF.
 			Map<Object,Object> expMap = (Map<Object,Object>) expected;
 			Map<Object,Object> actMap = (Map<Object,Object>) actual;
 			for(Entry e : expMap.entrySet() ){
@@ -213,6 +222,8 @@ public class AssertEntityEquals {
 				}
 				assertTrue(objFound);
 			}
+		} else if (expected instanceof MetaBenefitRiskAnalysis) {
+			assertEntityEquals((MetaBenefitRiskAnalysis)expected, (MetaBenefitRiskAnalysis)actual);
 		} else {
 			System.err.println("No test for the equality of this entity: " + expected.getClass());
 			fail();
