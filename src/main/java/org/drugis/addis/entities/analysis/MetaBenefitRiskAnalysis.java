@@ -53,7 +53,7 @@ import org.drugis.common.AlphabeticalComparator;
 import org.drugis.common.OutcomeComparator;
 import org.drugis.mtc.ConsistencyModel;
 
-public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis {
+public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<Drug> {
 	
 	private String d_name;
 	private Indication d_indication;
@@ -170,10 +170,10 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 			return false;
 		if (!(other instanceof MetaBenefitRiskAnalysis))
 			return false;
-		return this.getName().equals( ((BenefitRiskAnalysis)other).getName() );
+		return this.getName().equals( ((BenefitRiskAnalysis<?>)other).getName() );
 	}
 
-	public int compareTo(BenefitRiskAnalysis other) {
+	public int compareTo(BenefitRiskAnalysis<?> other) {
 		if (other == null) {
 			return 1;
 		}

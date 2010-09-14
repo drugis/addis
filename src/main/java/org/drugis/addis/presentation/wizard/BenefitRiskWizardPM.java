@@ -221,7 +221,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return d_completeHolder;
 	}
 	
-	public BenefitRiskAnalysis saveAnalysis(String id) throws InvalidStateException, EntityIdExistsException {
+	public BenefitRiskAnalysis<?> saveAnalysis(String id) throws InvalidStateException, EntityIdExistsException {
 		if(!getCompleteModel().getValue())
 			throw new InvalidStateException("cannot commit, Benefit Risk Analysis not ready. Select at least two criteria, and two alternatives");
 		

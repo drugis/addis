@@ -150,7 +150,7 @@ public class DomainData {
 		d_metaAnalyses.remove(ma);
 	}
 	
-	public void removeBRAnalysis(BenefitRiskAnalysis bra) {
+	public void removeBRAnalysis(BenefitRiskAnalysis<?> bra) {
 		d_benefitRiskAnalyses.remove(bra);
 	}
 	
