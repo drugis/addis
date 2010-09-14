@@ -31,7 +31,6 @@ public interface Entity extends Observable {
 	 * Get the set of strong entities that this entity needs to exist.
 	 * @return A set of entities that this entity depends on. Never null.
 	 */
-	
 	public Set<? extends Entity> getDependencies();
 
 	public String[] getXmlExclusions();

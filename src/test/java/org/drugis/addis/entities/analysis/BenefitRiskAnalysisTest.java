@@ -25,7 +25,6 @@ package org.drugis.addis.entities.analysis;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -123,12 +122,12 @@ public class BenefitRiskAnalysisTest {
 	
 	@Test 
 	public void testCompareTo(){
-		assertEquals(1, d_BRAnalysis.compareTo(null));
+		assertTrue(d_BRAnalysis.compareTo(null) > 0);
 		assertEquals(0, d_BRAnalysis.compareTo(d_BRAnalysis));
 		MetaBenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMockBenefitRiskAnalysis();
 		assertEquals(0, d_BRAnalysis.compareTo(otherBRAnalysis));
 		otherBRAnalysis.setName("some new name");
-		assertNotSame(0, d_BRAnalysis.compareTo(otherBRAnalysis));
+		assertTrue(d_BRAnalysis.compareTo(otherBRAnalysis) > 0);
 	}
 	
 	@Test
