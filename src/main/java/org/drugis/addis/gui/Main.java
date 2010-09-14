@@ -22,17 +22,21 @@
 
 package org.drugis.addis.gui;
 
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.HeadlessException;
 import java.awt.Insets;
+import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -86,6 +90,7 @@ import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.FileLoadDialog;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.GUIHelper;
+import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardFrameCloser;
@@ -150,6 +155,7 @@ public class Main extends JFrame {
 				setRightPanelViewSize();
 			}
 		});
+		
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		GUIHelper.initializeLookAndFeel();
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
@@ -159,6 +165,27 @@ public class Main extends JFrame {
 
 		initializeDomain();		
 		d_pmManager = new PresentationModelFactory(getDomain());
+/*
+		final JPanel content = (JPanel) super.getContentPane();
+		content.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control P"), "printWindow");
+		content.getActionMap().put("printWindow", 
+				new AbstractAction("printWindow") { 
+					public void actionPerformed(ActionEvent evt) {
+						final java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
+						System.out.println("pressed ctrl+P " + currentTimestamp); 
+						try {
+							printWindow(content);
+						} catch (HeadlessException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (AWTException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					} 
+				} 
+		);
+		*/
 	}
 	
 	protected void showWelcome() {
@@ -175,6 +202,30 @@ public class Main extends JFrame {
 		} else {
 			dispose(); System.exit(0);
 		}
+	}
+	
+	public void printWindow(final JComponent component) throws HeadlessException, AWTException {
+		BufferedImage screencapture = null;
+		if(component == null ) {
+			screencapture = new Robot().createScreenCapture(
+					new java.awt.Rectangle(java.awt.Toolkit.getDefaultToolkit().getScreenSize()) );
+		}
+		else {
+			screencapture = new BufferedImage(component.getWidth(), component.getHeight(), BufferedImage.TYPE_INT_RGB);
+			component.paint(screencapture.createGraphics());
+			screencapture.createGraphics().dispose();
+		}
+		
+		new FileSaveDialog(Main.this, "svg", "SVG files") {
+			@Override
+			public void doAction(String path, String extension) {
+				ImageExporter.writeSVG(path, component, component.getWidth(), component.getHeight());
+			}
+		};
+		/*
+		try {ImageIO.write(screencapture, "jpg", new File("screencapture.jpg"));} 
+		catch (IOException e) {	e.printStackTrace();}
+		*/	
 	}
 	
 	protected boolean saveChangesDialog(){
