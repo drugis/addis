@@ -32,12 +32,15 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
+import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
 
 import fi.smaa.jsmaa.model.Alternative;
+import fi.smaa.jsmaa.model.BetaMeasurement;
 import fi.smaa.jsmaa.model.CardinalCriterion;
 import fi.smaa.jsmaa.model.CardinalMeasurement;
 import fi.smaa.jsmaa.model.GaussianMeasurement;
@@ -56,13 +59,23 @@ public class SMAAEntityFactory<AltType extends Entity> {
 	}
 	
 	public static CardinalMeasurement createCardinalMeasurement(Distribution re) {
-		GaussianBase gauss = (GaussianBase)re;
-		if (re instanceof LogGaussian) {
-			return new LogNormalMeasurement(gauss.getMu(), gauss.getSigma());
-		} else if (re instanceof Gaussian) {
-			return new GaussianMeasurement(gauss.getMu(), gauss.getSigma());
-		} else
-			throw new IllegalArgumentException("Unhandled distribution: " + re);
+		if (re instanceof GaussianBase) {
+			GaussianBase gauss = (GaussianBase)re;
+			if (re instanceof LogGaussian) {
+				return new LogNormalMeasurement(gauss.getMu(), gauss.getSigma());
+			} else if (re instanceof Gaussian) {
+				return new GaussianMeasurement(gauss.getMu(), gauss.getSigma());
+			} else {
+				throw new IllegalArgumentException("Unhandled distribution: " + re);
+			}
+		} else if (re instanceof TransformedStudentT) {
+			TransformedStudentT studentt = (TransformedStudentT) re;
+			return new GaussianMeasurement(studentt.getMu(), studentt.getSigma());
+		} else if (re instanceof Beta) {
+			Beta beta = (Beta) re;
+			return new BetaMeasurement(beta.getAlpha(), beta.getBeta(), 0, 1);
+		}
+		throw new IllegalArgumentException("Unhandled distribution: " + re);
 	}
 	
 	public SMAAModel createSmaaModel(BenefitRiskAnalysis<AltType> brAnalysis) {
