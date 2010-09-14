@@ -26,7 +26,7 @@ import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,7 +40,7 @@ public class BenefitRiskPMTest {
 	public void setUp() {
 		d_domain = new DomainImpl();
 		d_pmf = new PresentationModelFactory(d_domain);
-		BenefitRiskAnalysis analysis = ExampleData.buildMockBenefitRiskAnalysis();
+		MetaBenefitRiskAnalysis analysis = ExampleData.buildMockBenefitRiskAnalysis();
 		d_pm = new BenefitRiskPresentation(analysis, d_pmf);
 	}
 	

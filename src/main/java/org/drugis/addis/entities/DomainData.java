@@ -28,7 +28,7 @@ import java.util.TreeSet;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 
 public class DomainData {
@@ -40,7 +40,7 @@ public class DomainData {
 	private SortedSet<PopulationCharacteristic> d_variables;
 	private SortedSet<Study> d_studies;
 	private SortedSet<MetaAnalysis> d_metaAnalyses;
-	private SortedSet<BenefitRiskAnalysis> d_benefitRiskAnalyses;	
+	private SortedSet<MetaBenefitRiskAnalysis> d_benefitRiskAnalyses;	
 
 	public DomainData() {
 		d_endpoints = new TreeSet<Endpoint>();
@@ -50,7 +50,7 @@ public class DomainData {
 		d_indications = new TreeSet<Indication>();	
 		d_variables = new TreeSet<PopulationCharacteristic>();
 		d_ades = new TreeSet<AdverseEvent>();
-		d_benefitRiskAnalyses = new TreeSet<BenefitRiskAnalysis>();
+		d_benefitRiskAnalyses = new TreeSet<MetaBenefitRiskAnalysis>();
 	}
 	
 	public void setEndpoints(SortedSet<Endpoint> endpoints) {
@@ -149,7 +149,7 @@ public class DomainData {
 		d_metaAnalyses.remove(ma);
 	}
 	
-	public void removeBRAnalysis(BenefitRiskAnalysis bra) {
+	public void removeBRAnalysis(MetaBenefitRiskAnalysis bra) {
 		d_benefitRiskAnalyses.remove(bra);
 	}
 	
@@ -233,19 +233,19 @@ public class DomainData {
 			oe.add(new TreeSet<PopulationCharacteristic>(d.getVariables()), "populationCharacteristics", TreeSet.class);
 			oe.add(new TreeSet<Study>(d.getStudies()),"studies", TreeSet.class);
 			oe.add(new TreeSet<MetaAnalysis>(d.getMetaAnalyses()), "metaAnalyses", TreeSet.class);
-			oe.add(new TreeSet<BenefitRiskAnalysis>(d.getBenefitRiskAnalyses()), "benefitRiskAnalyses", TreeSet.class);
+			oe.add(new TreeSet<MetaBenefitRiskAnalysis>(d.getBenefitRiskAnalyses()), "benefitRiskAnalyses", TreeSet.class);
 		}
 	};
 
-	public void addBenefitRiskAnalysis(BenefitRiskAnalysis brAnalysis) {
+	public void addBenefitRiskAnalysis(MetaBenefitRiskAnalysis brAnalysis) {
 		d_benefitRiskAnalyses.add(brAnalysis);		
 	}
 
-	public SortedSet<BenefitRiskAnalysis> getBenefitRiskAnalyses() {
+	public SortedSet<MetaBenefitRiskAnalysis> getBenefitRiskAnalyses() {
 		return d_benefitRiskAnalyses;
 	}
 
-	public void setBenefitRiskAnalyses(SortedSet<BenefitRiskAnalysis> set) {
+	public void setBenefitRiskAnalyses(SortedSet<MetaBenefitRiskAnalysis> set) {
 		d_benefitRiskAnalyses = set;
 	}
 }

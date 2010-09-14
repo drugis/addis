@@ -29,7 +29,7 @@ import java.util.List;
 import javax.swing.JProgressBar;
 
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
@@ -60,7 +60,7 @@ import fi.smaa.jsmaa.simulator.BuildQueue;
 import fi.smaa.jsmaa.simulator.SMAA2Results;
 
 @SuppressWarnings("serial")
-public class BenefitRiskPresentation extends PresentationModel<BenefitRiskAnalysis>{
+public class BenefitRiskPresentation extends PresentationModel<MetaBenefitRiskAnalysis>{
 	
 	private class AnalysisProgressListener implements ProgressListener {
 		JProgressBar d_progBar;
@@ -152,7 +152,7 @@ public class BenefitRiskPresentation extends PresentationModel<BenefitRiskAnalys
 		return d_allNetworkModelsReadyListener.allModelsReady();
 	}
 	
-	public BenefitRiskPresentation(BenefitRiskAnalysis bean, PresentationModelFactory pmf) {
+	public BenefitRiskPresentation(MetaBenefitRiskAnalysis bean, PresentationModelFactory pmf) {
 		super(bean);
 		
 		d_pmf = pmf;

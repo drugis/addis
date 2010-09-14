@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +40,7 @@ import fi.smaa.jsmaa.model.SMAAModel;
 
 public class SMAAEntityFactoryTest {
 	private SMAAEntityFactory d_SMAAFactory;
-	private BenefitRiskAnalysis d_BRAnalysis;
+	private MetaBenefitRiskAnalysis d_BRAnalysis;
 
 	@Before
 	public void setup() {

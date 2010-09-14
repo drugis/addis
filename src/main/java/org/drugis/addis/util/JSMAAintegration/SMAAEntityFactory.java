@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
@@ -64,7 +64,7 @@ public class SMAAEntityFactory {
 			throw new IllegalArgumentException("Unhandled distribution: " + re);
 	}
 	
-	public SMAAModel createSmaaModel(BenefitRiskAnalysis brAnalysis) {
+	public SMAAModel createSmaaModel(MetaBenefitRiskAnalysis brAnalysis) {
 		SMAAModel smaaModel = new SMAAModel(brAnalysis.getName());
 				
 		Collection<Drug> drugs = brAnalysis.getDrugs();

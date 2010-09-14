@@ -32,10 +32,10 @@ import org.drugis.common.Interval;
  * Should not be used for continuous variables.
  */
 public class OddsRatioToClinicalConverter {
-	private final BenefitRiskAnalysis d_br;
+	private final MetaBenefitRiskAnalysis d_br;
 	private final OutcomeMeasure d_om;
 
-	public OddsRatioToClinicalConverter(BenefitRiskAnalysis br, OutcomeMeasure om) {
+	public OddsRatioToClinicalConverter(MetaBenefitRiskAnalysis br, OutcomeMeasure om) {
 		d_br = br;
 		d_om = om;
 		if (om.getType() != Type.RATE) throw new IllegalArgumentException("Only rate-outcomes supported");

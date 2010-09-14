@@ -51,7 +51,7 @@ import org.drugis.addis.util.threading.ThreadHandler;
 import org.drugis.common.AlphabeticalComparator;
 import org.drugis.mtc.ConsistencyModel;
 
-public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<BenefitRiskAnalysis> {
+public class MetaBenefitRiskAnalysis extends AbstractEntity implements Comparable<MetaBenefitRiskAnalysis> {
 	
 	private String d_name;
 	private Indication d_indication;
@@ -68,12 +68,12 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	public static String PROPERTY_BASELINE = "baseline";
 	public static String PROPERTY_METAANALYSES = "metaAnalyses";
 	
-	public BenefitRiskAnalysis() {
+	public MetaBenefitRiskAnalysis() {
 		d_baselineModelMap = new HashMap<OutcomeMeasure,AbstractBaselineModel<?>>();
 		d_metaAnalyses = new ArrayList<MetaAnalysis>();
 	}
 	
-	public BenefitRiskAnalysis(String id, Indication indication, List<OutcomeMeasure> outcomeMeasures,
+	public MetaBenefitRiskAnalysis(String id, Indication indication, List<OutcomeMeasure> outcomeMeasures,
 			List<MetaAnalysis> metaAnalysis, Drug baseline, List<Drug> drugs) {
 		super();
 		d_indication = indication;
@@ -159,12 +159,12 @@ public class BenefitRiskAnalysis extends AbstractEntity implements Comparable<Be
 	public boolean equals(Object other){
 		if (other == null)
 			return false;
-		if (!(other instanceof BenefitRiskAnalysis))
+		if (!(other instanceof MetaBenefitRiskAnalysis))
 			return false;
-		return this.getName().equals( ((BenefitRiskAnalysis)other).getName() );
+		return this.getName().equals( ((MetaBenefitRiskAnalysis)other).getName() );
 	}
 
-	public int compareTo(BenefitRiskAnalysis other) {
+	public int compareTo(MetaBenefitRiskAnalysis other) {
 		if (other == null) {
 			return 1;
 		}

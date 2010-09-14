@@ -50,7 +50,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
@@ -749,7 +749,7 @@ public class ExampleData {
 		return s_convulsion;
 	}
 
-	public static BenefitRiskAnalysis buildMockBenefitRiskAnalysis() {
+	public static MetaBenefitRiskAnalysis buildMockBenefitRiskAnalysis() {
 		Indication indication = buildIndicationDepression();
 		
 		List<OutcomeMeasure> outcomeMeasureList = new ArrayList<OutcomeMeasure>();
@@ -790,13 +790,13 @@ public class ExampleData {
 		return new RandomEffectsMetaAnalysis("Hamd test analysis", buildEndpointHamd(), studyArms);
 	}
 
-	public static BenefitRiskAnalysis realBuildContinuousMockBenefitRisk() {
+	public static MetaBenefitRiskAnalysis realBuildContinuousMockBenefitRisk() {
 		OutcomeMeasure om = buildEndpointCgi();
 		Drug fluox = buildDrugFluoxetine();
 		Drug parox = buildDrugParoxetine();
 		Study study = buildStudyChouinard();
 		MetaAnalysis ma = new RandomEffectsMetaAnalysis("ma", om, Collections.singletonList(study), fluox, parox);
-		BenefitRiskAnalysis br = new MockBenefitRiskAnalysis("br", study.getIndication(), 
+		MetaBenefitRiskAnalysis br = new MockBenefitRiskAnalysis("br", study.getIndication(), 
 				Collections.singletonList(om), 
 				Collections.singletonList(ma), 
 				fluox, Collections.singletonList(parox));

@@ -35,7 +35,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
@@ -220,11 +220,11 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return d_completeHolder;
 	}
 	
-	public BenefitRiskAnalysis saveAnalysis(String id) throws InvalidStateException, EntityIdExistsException {
+	public MetaBenefitRiskAnalysis saveAnalysis(String id) throws InvalidStateException, EntityIdExistsException {
 		if(!getCompleteModel().getValue())
 			throw new InvalidStateException("cannot commit, Benefit Risk Analysis not ready. Select at least two criteria, and two alternatives");
 		
-		BenefitRiskAnalysis brAnalysis = createBRAnalysis(id);
+		MetaBenefitRiskAnalysis brAnalysis = createBRAnalysis(id);
 		
 		if(d_domain.getBenefitRiskAnalyses().contains(brAnalysis))
 			throw new EntityIdExistsException("Benefit Risk Analysis with this ID already exists in domain");
@@ -233,7 +233,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return brAnalysis;
 	}
 
-	private BenefitRiskAnalysis createBRAnalysis(String id) {
+	private MetaBenefitRiskAnalysis createBRAnalysis(String id) {
 		ArrayList<OutcomeMeasure> outcomes = getSelectedEntities(d_outcomeSelectedMap);
 		ArrayList<Drug> alternatives = getSelectedEntities(d_alternativeSelectedMap);
 		ArrayList<MetaAnalysis> metaAnalyses = new ArrayList<MetaAnalysis>();
@@ -245,7 +245,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 			
 		Drug baseline = alternatives.get(0);
 		alternatives.remove(0);
-		BenefitRiskAnalysis brAnalysis = new BenefitRiskAnalysis(
+		MetaBenefitRiskAnalysis brAnalysis = new MetaBenefitRiskAnalysis(
 				id,
 				d_indicationHolder.getValue(), 
 				outcomes,

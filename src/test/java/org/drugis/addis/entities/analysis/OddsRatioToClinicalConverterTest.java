@@ -37,7 +37,7 @@ public class OddsRatioToClinicalConverterTest {
 
 	@Before
 	public void setUp(){
-		BenefitRiskAnalysis br = ExampleData.buildMockBenefitRiskAnalysis();
+		MetaBenefitRiskAnalysis br = ExampleData.buildMockBenefitRiskAnalysis();
 		d_orc = new OddsRatioToClinicalConverter(br, ExampleData.buildEndpointHamd());
 		d_baselineOdds = br.getBaselineDistribution(ExampleData.buildEndpointHamd()).getQuantile(0.5);
 	}

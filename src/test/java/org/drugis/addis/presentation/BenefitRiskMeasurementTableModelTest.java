@@ -30,7 +30,7 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class BenefitRiskMeasurementTableModelTest {
 
 	private PresentationModelFactory d_pmf;
 	private BenefitRiskMeasurementTableModel d_pm;
-	private BenefitRiskAnalysis d_brAnalysis;
+	private MetaBenefitRiskAnalysis d_brAnalysis;
 
 	@Before
 	public void setUp() {

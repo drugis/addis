@@ -30,7 +30,7 @@ import java.io.InputStream;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainManager;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
@@ -54,7 +54,7 @@ public class BenefitRiskIntegrationIT {
 		PresentationModelFactory pmf = new PresentationModelFactory(domain);
 		
 		// Run the br analysis.
-		BenefitRiskAnalysis analysis = domain.getBenefitRiskAnalyses().first();
+		MetaBenefitRiskAnalysis analysis = domain.getBenefitRiskAnalyses().first();
 		analysis.runAllConsistencyModels();
 		
 		boolean modelsDone = false;
@@ -88,7 +88,7 @@ public class BenefitRiskIntegrationIT {
 		PresentationModelFactory pmf = new PresentationModelFactory(domain);
 		
 		// Run the br analysis.
-		BenefitRiskAnalysis analysis = domain.getBenefitRiskAnalyses().first();
+		MetaBenefitRiskAnalysis analysis = domain.getBenefitRiskAnalyses().first();
 		analysis.runAllConsistencyModels();
 		
 		boolean modelsDone = false;

@@ -29,17 +29,17 @@ import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 
 @SuppressWarnings("serial")
 public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
 	
-	protected BenefitRiskAnalysis d_br;
+	protected MetaBenefitRiskAnalysis d_br;
 	private PresentationModelFactory d_pmf;
 	private final boolean d_relative;
 
-	public BenefitRiskMeasurementTableModel(BenefitRiskAnalysis br, PresentationModelFactory pmf, boolean relative) {
+	public BenefitRiskMeasurementTableModel(MetaBenefitRiskAnalysis br, PresentationModelFactory pmf, boolean relative) {
 		d_br = br;
 		d_pmf = pmf;
 		d_relative = relative;

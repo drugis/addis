@@ -36,7 +36,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
@@ -787,7 +787,7 @@ public class DomainTest {
 		assertEquals(Study.class, d_domain.getCategories().get(5).getEntityClass());
 		assertEquals(PairWiseMetaAnalysis.class, d_domain.getCategories().get(6).getEntityClass());
 		assertEquals(NetworkMetaAnalysis.class, d_domain.getCategories().get(7).getEntityClass());
-		assertEquals(BenefitRiskAnalysis.class, d_domain.getCategories().get(8).getEntityClass());
+		assertEquals(MetaBenefitRiskAnalysis.class, d_domain.getCategories().get(8).getEntityClass());
 	}
 	
 	@Test
@@ -804,7 +804,7 @@ public class DomainTest {
 		assertEquals(Indication.class, d_domain.getCategory(new Indication()).getEntityClass());
 		assertEquals(null, d_domain.getCategory(new Arm()));
 		assertEquals(Drug.class, d_domain.getCategory(new Drug()).getEntityClass());
-		assertEquals(BenefitRiskAnalysis.class, d_domain.getCategory(new BenefitRiskAnalysis()).getEntityClass());
+		assertEquals(MetaBenefitRiskAnalysis.class, d_domain.getCategory(new MetaBenefitRiskAnalysis()).getEntityClass());
 	}
 	
 	@Test
@@ -824,7 +824,7 @@ public class DomainTest {
 		assertEquals(d_domain.getPairWiseMetaAnalyses(), d_domain.getCategoryContents(
 				d_domain.getCategory(PairWiseMetaAnalysis.class)));
 		assertEquals(d_domain.getBenefitRiskAnalyses(), d_domain.getCategoryContents(
-				d_domain.getCategory(BenefitRiskAnalysis.class)));
+				d_domain.getCategory(MetaBenefitRiskAnalysis.class)));
 	}
 	
 	@Test

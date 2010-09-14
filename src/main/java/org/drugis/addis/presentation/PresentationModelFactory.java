@@ -35,7 +35,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
@@ -129,8 +129,8 @@ public class PresentationModelFactory {
 		if (obj instanceof NetworkMetaAnalysis) {
 			return new NetworkMetaAnalysisPresentation((NetworkMetaAnalysis) obj, this);
 		}
-		if (obj instanceof BenefitRiskAnalysis) {
-			return new BenefitRiskPresentation((BenefitRiskAnalysis) obj, this);
+		if (obj instanceof MetaBenefitRiskAnalysis) {
+			return new BenefitRiskPresentation((MetaBenefitRiskAnalysis) obj, this);
 		} 	
 		if (obj instanceof Distribution) {
 			return new DistributionPresentation((Distribution) obj);

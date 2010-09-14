@@ -27,13 +27,13 @@ import java.util.List;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 
-public class MockBenefitRiskAnalysis extends BenefitRiskAnalysis {
+public class MockBenefitRiskAnalysis extends MetaBenefitRiskAnalysis {
 
 	public MockBenefitRiskAnalysis(String id, Indication indication,
 			List<OutcomeMeasure> outcomeMeasureList,

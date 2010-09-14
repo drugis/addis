@@ -35,7 +35,7 @@ import org.drugis.addis.entities.EntityCategory;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.gui.knowledge.AdverseEventsKnowledge;
@@ -59,7 +59,7 @@ public class CategoryKnowledgeFactory {
 		s_knowledge.put(Study.class, new StudiesKnowledge());
 		s_knowledge.put(PairWiseMetaAnalysis.class, new PairWiseMetaAnalysesKnowledge());
 		s_knowledge.put(NetworkMetaAnalysis.class, new NetworkMetaAnalysesKnowledge());
-		s_knowledge.put(BenefitRiskAnalysis.class, new BenefitRiskAnalysesKnowledge());
+		s_knowledge.put(MetaBenefitRiskAnalysis.class, new BenefitRiskAnalysesKnowledge());
 		
 		PopulationCharacteristicsKnowledge popcharKnowledge = new PopulationCharacteristicsKnowledge();
 		s_knowledge.put(PopulationCharacteristic.class, popcharKnowledge);

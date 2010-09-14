@@ -35,7 +35,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
@@ -106,7 +106,7 @@ public class BenefitRiskView implements ViewBuilder {
 		
 		CellConstraints cc =  new CellConstraints();
 		
-		d_builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(BenefitRiskAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
+		d_builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(MetaBenefitRiskAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
 		d_builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
 		
 		final JComponent progressBars = buildProgressBars();
@@ -314,18 +314,18 @@ public class BenefitRiskView implements ViewBuilder {
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		builder.addLabel("ID:", cc.xy(1, 1));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_NAME)), cc.xy(3, 1));
+		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(MetaBenefitRiskAnalysis.PROPERTY_NAME)), cc.xy(3, 1));
 		
 		builder.addLabel("Indication:", cc.xy(1, 3));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_INDICATION), new OneWayObjectFormat()), 
+		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(MetaBenefitRiskAnalysis.PROPERTY_INDICATION), new OneWayObjectFormat()), 
 				cc.xy(3, 3));
 		
 		builder.addLabel("Criteria:", cc.xy(1, 5));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_OUTCOMEMEASURES), new OneWayObjectFormat()), 
+		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(MetaBenefitRiskAnalysis.PROPERTY_OUTCOMEMEASURES), new OneWayObjectFormat()), 
 				cc.xy(3, 5));
 		
 		builder.addLabel("Alternatives:", cc.xy(1, 9));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_DRUGS), new OneWayObjectFormat()), 
+		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(MetaBenefitRiskAnalysis.PROPERTY_DRUGS), new OneWayObjectFormat()), 
 				cc.xy(3, 9));
 		
 		return builder.getPanel();	

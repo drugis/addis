@@ -54,7 +54,7 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
@@ -174,7 +174,7 @@ public class DomainTreeModelTest {
 		assertEquals(1, d_treeModel.getChildCount(d_domain.getCategory(PopulationCharacteristic.class)));	
 		assertEquals(1, d_treeModel.getChildCount(d_domain.getCategory(Drug.class)));		
 		assertEquals(1, d_treeModel.getChildCount(d_domain.getCategory(Study.class)));
-		assertEquals(0, d_treeModel.getChildCount(d_domain.getCategory(BenefitRiskAnalysis.class)));
+		assertEquals(0, d_treeModel.getChildCount(d_domain.getCategory(MetaBenefitRiskAnalysis.class)));
 		assertEquals(0, d_treeModel.getChildCount(d_firstEndpoint));
 	}
 
@@ -316,8 +316,8 @@ public class DomainTreeModelTest {
 				d_treeModel.getPathTo(d_domain.getCategory(Indication.class)));
 		assertEquals(new TreePath(new Object[] { d_treeModel.getRoot(), d_domain.getCategory(Endpoint.class) }), 
 				d_treeModel.getPathTo(d_domain.getCategory(Endpoint.class)));
-		assertEquals(new TreePath(new Object[] { d_treeModel.getRoot(), d_domain.getCategory(BenefitRiskAnalysis.class) }), 
-				d_treeModel.getPathTo(d_domain.getCategory(BenefitRiskAnalysis.class)));
+		assertEquals(new TreePath(new Object[] { d_treeModel.getRoot(), d_domain.getCategory(MetaBenefitRiskAnalysis.class) }), 
+				d_treeModel.getPathTo(d_domain.getCategory(MetaBenefitRiskAnalysis.class)));
 	}
 	
 	@Test
