@@ -28,6 +28,7 @@ import java.util.TreeSet;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 
@@ -149,7 +150,7 @@ public class DomainData {
 		d_metaAnalyses.remove(ma);
 	}
 	
-	public void removeBRAnalysis(MetaBenefitRiskAnalysis bra) {
+	public void removeBRAnalysis(BenefitRiskAnalysis bra) {
 		d_benefitRiskAnalyses.remove(bra);
 	}
 	

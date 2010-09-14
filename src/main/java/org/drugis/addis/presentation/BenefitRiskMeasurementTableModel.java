@@ -78,7 +78,7 @@ public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
 		}
 
 		OutcomeMeasure om = d_br.getOutcomeMeasures().get(columnIndex-1);
-		Distribution dist = d_relative ? d_br.getRelativeEffectDistribution(drug, om) : d_br.getAbsoluteEffectDistribution(drug, om);
+		Distribution dist = d_relative ? d_br.getMeasurement(drug, om) : d_br.getAbsoluteEffectDistribution(drug, om);
 	
 		return d_pmf.getLabeledModel(dist);
 	}

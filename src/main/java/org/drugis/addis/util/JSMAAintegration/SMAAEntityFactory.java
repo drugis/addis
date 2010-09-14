@@ -77,7 +77,7 @@ public class SMAAEntityFactory {
 			smaaModel.addCriterion(crit);
 			
 			for (Drug d : drugs) {
-				CardinalMeasurement m = createCardinalMeasurement(brAnalysis.getRelativeEffectDistribution(d, om));
+				CardinalMeasurement m = createCardinalMeasurement(brAnalysis.getMeasurement(d, om));
 				smaaModel.setMeasurement(crit, getAlternative(d), m);
 			}
 		}

@@ -41,6 +41,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
+import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
@@ -52,7 +53,7 @@ import org.drugis.common.AlphabeticalComparator;
 import org.drugis.common.OutcomeComparator;
 import org.drugis.mtc.ConsistencyModel;
 
-public class MetaBenefitRiskAnalysis extends AbstractEntity implements Comparable<MetaBenefitRiskAnalysis> {
+public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis {
 	
 	private String d_name;
 	private Indication d_indication;
@@ -62,10 +63,6 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements Comparabl
 	private Drug d_baseline;
 	private Map<OutcomeMeasure,AbstractBaselineModel<?>> d_baselineModelMap;
 	
-	public static String PROPERTY_NAME = "name";
-	public static String PROPERTY_INDICATION = "indication";
-	public static String PROPERTY_OUTCOMEMEASURES = "outcomeMeasures";
-	public static String PROPERTY_ALTERNATIVES = "alternatives";
 	public static String PROPERTY_DRUGS = "drugs";
 	public static String PROPERTY_BASELINE = "baseline";
 	public static String PROPERTY_METAANALYSES = "metaAnalyses";
@@ -173,10 +170,10 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements Comparabl
 			return false;
 		if (!(other instanceof MetaBenefitRiskAnalysis))
 			return false;
-		return this.getName().equals( ((MetaBenefitRiskAnalysis)other).getName() );
+		return this.getName().equals( ((BenefitRiskAnalysis)other).getName() );
 	}
 
-	public int compareTo(MetaBenefitRiskAnalysis other) {
+	public int compareTo(BenefitRiskAnalysis other) {
 		if (other == null) {
 			return 1;
 		}
@@ -197,7 +194,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements Comparabl
 	public Drug getBaseline() {
 		return d_baseline;
 	}
-
+	
 	private RelativeEffect<? extends Measurement> getRelativeEffect(Drug d, OutcomeMeasure om) {
 		for(MetaAnalysis ma : getMetaAnalyses()){
 			if(ma.getOutcomeMeasure().equals(om)){
@@ -219,6 +216,10 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements Comparabl
 	 */
 	public GaussianBase getRelativeEffectDistribution(Drug d, OutcomeMeasure om) {
 		return (GaussianBase) getRelativeEffect(d, om).getDistribution();
+	}
+	
+	public Distribution getMeasurement(Drug d, OutcomeMeasure om) {
+		return getRelativeEffectDistribution(d, om);
 	}
 	
 	

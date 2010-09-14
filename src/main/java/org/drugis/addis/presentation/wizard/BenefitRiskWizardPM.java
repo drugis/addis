@@ -35,6 +35,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
@@ -220,7 +221,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return d_completeHolder;
 	}
 	
-	public MetaBenefitRiskAnalysis saveAnalysis(String id) throws InvalidStateException, EntityIdExistsException {
+	public BenefitRiskAnalysis saveAnalysis(String id) throws InvalidStateException, EntityIdExistsException {
 		if(!getCompleteModel().getValue())
 			throw new InvalidStateException("cannot commit, Benefit Risk Analysis not ready. Select at least two criteria, and two alternatives");
 		
