@@ -30,6 +30,7 @@ import org.drugis.addis.entities.AbstractObservable;
 public abstract class GaussianBase extends AbstractObservable implements Distribution {
 	private double d_mu;
 	private double d_sigma;
+	private NormalDistribution d_dist;
 
 	public GaussianBase(double mu, double sigma) {
 		if (Double.isNaN(mu)) throw new IllegalArgumentException("mu may not be NaN");
@@ -37,6 +38,7 @@ public abstract class GaussianBase extends AbstractObservable implements Distrib
 		if (sigma < 0.0) throw new IllegalArgumentException("sigma must be >= 0.0");
 		d_mu = mu;
 		d_sigma = sigma;
+		d_dist = new NormalDistributionImpl(d_mu, d_sigma);
 	}
 
 	protected double calculateQuantile(double p) {
@@ -44,8 +46,7 @@ public abstract class GaussianBase extends AbstractObservable implements Distrib
 			if (getSigma() == 0.0) {
 				return getMu();
 			}
-			NormalDistribution dist = new NormalDistributionImpl(getMu(), getSigma());
-			return dist.inverseCumulativeProbability(p);
+			return d_dist.inverseCumulativeProbability(p);
 		} catch (MathException e) {
 			throw new RuntimeException(e);
 		}
