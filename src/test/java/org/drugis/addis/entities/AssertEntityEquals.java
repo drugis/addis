@@ -38,6 +38,7 @@ import java.util.Map.Entry;
 import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.common.EqualsUtil;
 
 public class AssertEntityEquals {
@@ -186,6 +187,18 @@ public class AssertEntityEquals {
 		assertEquals(expected.getMetaAnalyses(), actual.getMetaAnalyses());
 		assertEquals(expected.getDrugs(), actual.getDrugs());
 	}
+
+	public static void assertEntityEquals(StudyBenefitRiskAnalysis expected, StudyBenefitRiskAnalysis actual) {
+		assertEquals(expected.getName(), actual.getName());
+		assertEquals(expected.getIndication(), actual.getIndication());
+		assertEquals(expected.getStudy(), actual.getStudy());
+		assertEquals(expected.getAlternatives().size(), actual.getAlternatives().size());
+		for (int i = 0; i < expected.getAlternatives().size(); ++i) {
+			assertEntityEquals(expected.getAlternatives().get(i), actual.getAlternatives().get(i));
+		}
+		assertEquals(expected.getOutcomeMeasures(), actual.getOutcomeMeasures());
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	public static void assertEntityEquals(Entity expected, Entity actual){
@@ -224,6 +237,8 @@ public class AssertEntityEquals {
 			}
 		} else if (expected instanceof MetaBenefitRiskAnalysis) {
 			assertEntityEquals((MetaBenefitRiskAnalysis)expected, (MetaBenefitRiskAnalysis)actual);
+		} else if (expected instanceof StudyBenefitRiskAnalysis) {
+			assertEntityEquals((StudyBenefitRiskAnalysis)expected, (StudyBenefitRiskAnalysis)actual);
 		} else {
 			System.err.println("No test for the equality of this entity: " + expected.getClass());
 			fail();

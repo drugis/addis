@@ -1,5 +1,6 @@
 package org.drugis.addis.entities.analysis;
 
+import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -7,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
@@ -19,6 +22,7 @@ import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
+import org.drugis.addis.util.XMLHelper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -94,5 +98,12 @@ public class StudyBenefitRiskAnalysisTest {
 		TransformedStudentT expected = new TransformedStudentT(measurement.getMean(), measurement.getStdDev(),
 				measurement.getSampleSize() - 1);
 		assertEquals(expected, d_analysis.getMeasurement(arm, endpoint));
+	}
+	
+	@Test
+	public void testXML() throws XMLStreamException {
+		String xml = XMLHelper.toXml(d_analysis, StudyBenefitRiskAnalysis.class);
+		StudyBenefitRiskAnalysis importedAnalysis = (StudyBenefitRiskAnalysis)XMLHelper.fromXml(xml);
+		assertEntityEquals(d_analysis, importedAnalysis);
 	}
 }

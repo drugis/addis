@@ -60,6 +60,7 @@ import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.common.Interval;
 
 @SuppressWarnings("serial")
@@ -132,6 +133,7 @@ public class AddisBinding extends XMLBinding {
 		setAlias(NetworkMetaAnalysis.class, "networkMetaAnalysis");
 		setAlias(RandomEffectsMetaAnalysis.class, "randomEffectsMetaAnalysis");
 		setAlias(MetaBenefitRiskAnalysis.class, "benefitRiskAnalysis");
+		setAlias(StudyBenefitRiskAnalysis.class, "studyBenefitRiskAnalysis");
 	}
 	
 	// Override XMLFormatter for Date.class objects
