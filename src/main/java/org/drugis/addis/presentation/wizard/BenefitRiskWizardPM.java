@@ -27,6 +27,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -34,10 +35,13 @@ import java.util.TreeSet;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.EntityIdExistsException;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
+import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.UnmodifiableHolder;
@@ -94,6 +98,8 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	private HashMap<Drug, ModifiableHolder<Boolean>> d_alternativeEnabledMap;
 	private HashMap<Drug, ModifiableHolder<Boolean>> d_alternativeSelectedMap;
 	private CompleteHolder d_completeHolder;
+	private HashMap<Study, ModifiableHolder<Study>> d_studySelectedMap;
+	private ModifiableHolder<Study> d_studyHolder;
 	
 	public BenefitRiskWizardPM(Domain d) {
 		super(d);
@@ -101,7 +107,9 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		d_metaAnalysisSelectedMap = new HashMap<OutcomeMeasure, ModifiableHolder<MetaAnalysis>>();
 		d_alternativeEnabledMap = new HashMap<Drug, ModifiableHolder<Boolean>>();
 		d_alternativeSelectedMap = new HashMap<Drug, ModifiableHolder<Boolean>>();
+		d_studySelectedMap = new HashMap<Study, ModifiableHolder<Study>>();
 		d_completeHolder = new CompleteHolder();
+		d_studyHolder = new ModifiableHolder<Study>();
 		
 		d_indicationHolder.addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -109,6 +117,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 				d_alternativeSelectedMap.clear();
 				d_alternativeEnabledMap.clear();
 				d_metaAnalysisSelectedMap.clear();
+				d_studySelectedMap.clear();
 				d_completeHolder.propertyChange(null);
 			}
 		});
@@ -127,6 +136,21 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return new OutcomeListHolder(d_indicationHolder, d_domain);
 	}
 
+	public ValueHolder<Study> getStudyModel() {
+		return d_studyHolder;
+	}
+	
+	public ValueHolder<Study> getStudyModel(Study id) {
+		ModifiableHolder<Study> val = d_studySelectedMap.get(id);
+		if(val == null) {
+			val = new ModifiableHolder<Study>(id);
+			val.addPropertyChangeListener(d_completeHolder);
+			d_studySelectedMap.put(id, val);
+		}
+		
+		return val;
+	}
+	
 	public ArrayList<MetaAnalysis> getMetaAnalyses(OutcomeMeasure out) {
 		ArrayList<MetaAnalysis> analyses = new ArrayList<MetaAnalysis>();
 		for(MetaAnalysis ma : d_domain.getMetaAnalyses()){
@@ -225,7 +249,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		if(!getCompleteModel().getValue())
 			throw new InvalidStateException("cannot commit, Benefit Risk Analysis not ready. Select at least two criteria, and two alternatives");
 		
-		MetaBenefitRiskAnalysis brAnalysis = createBRAnalysis(id);
+		MetaBenefitRiskAnalysis brAnalysis = createMetaBRAnalysis(id);
 		
 		if(d_domain.getBenefitRiskAnalyses().contains(brAnalysis))
 			throw new EntityIdExistsException("Benefit Risk Analysis with this ID already exists in domain");
@@ -234,7 +258,12 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return brAnalysis;
 	}
 
-	private MetaBenefitRiskAnalysis createBRAnalysis(String id) {
+	private BenefitRiskAnalysis<?> createStudyBRAnalysis(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private MetaBenefitRiskAnalysis createMetaBRAnalysis(String id) {
 		ArrayList<Drug> alternatives = getSelectedEntities(d_alternativeSelectedMap);
 		ArrayList<MetaAnalysis> metaAnalyses = new ArrayList<MetaAnalysis>();
 		
@@ -271,4 +300,15 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	ArrayList<Drug> getSelectedAlternatives() {
 		return getSelectedEntities(d_alternativeSelectedMap);
 	}
+	
+	@SuppressWarnings("serial")
+	public ListHolder<Study> getStudyListModel() {
+		return new AbstractListHolder<Study>() {
+			@Override
+			public List<Study> getValue() {
+				return new ArrayList<Study>(d_domain.getStudies());
+			}
+		};
+	}
+	
 }

@@ -25,9 +25,12 @@ package org.drugis.addis.gui.wizard;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -67,21 +70,43 @@ public class BenefitRiskWizard extends Wizard {
 	private static WizardModel buildModel(BenefitRiskWizardPM pm, Main frame) {
 		DynamicModel wizardModel = new DynamicModel();
 		wizardModel.add(new SelectIndicationWizardStep(pm));
+		wizardModel.add(new SelectStudyOrMetaAnalysisWizardStep(pm, frame));
 		wizardModel.add(new SelectCriteriaAndAlternativesWizardStep(pm, frame));
 		
 		return wizardModel;
 	}
 	
+	private static class SelectStudyOrMetaAnalysisWizardStep extends PanelWizardStep {
+		public SelectStudyOrMetaAnalysisWizardStep(BenefitRiskWizardPM pm, Main main){
+			super("Select Study or Meta-analysis","In this step, you select the criteria (analyses on specific outcomemeasures) and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least two criteria and at least two alternatives must be included.");
+			JComboBox studyBox = AuxComponentFactory.createBoundComboBox(pm.getStudyListModel(), pm.getStudyModel());
+			add(studyBox);
+			pm.getStudyModel().addValueChangeListener(new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					setComplete(evt.getNewValue() != null);
+				}
+			});
+		}
+	}
+
 	private static class SelectCriteriaAndAlternativesWizardStep extends PanelWizardStep {
 		private Main d_main;
 		private BenefitRiskWizardPM d_pm;
 
 		public SelectCriteriaAndAlternativesWizardStep(BenefitRiskWizardPM pm, Main main){
-			super("Select Criteria and Alternatives","In this step, you select the criteria (analyses on specific outcomemeasures) and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least two criteria and at least two alternatives must be included.");
-			d_pm = pm;
+			super("Select Study","Select an Indication that you want to use for this meta analysis.");
+			JComboBox indBox = AuxComponentFactory.createBoundComboBox(pm.getIndicationListModel(), pm.getIndicationModel());
+			add(indBox);
+			pm.getIndicationModel().addValueChangeListener(new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					setComplete(evt.getNewValue() != null);
+				}
+			});
 			d_main = main;
+			d_pm = pm;
 		}
 
+		
 		@Override
 		public void prepare() {
 			this.removeAll();

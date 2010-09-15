@@ -40,6 +40,7 @@ import java.util.TreeSet;
 
 import javolution.xml.stream.XMLStreamException;
 
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -70,7 +71,7 @@ public class DomainImpl implements Domain {
 		new EntityCategory("networkMetaAnalyses", NetworkMetaAnalysis.class);
 	private static final EntityCategory CATEGORY_BENEFIT_RISK_ANALYSES =
 		new EntityCategory("benefitRiskAnalyses",
-				MetaBenefitRiskAnalysis.class);
+				BenefitRiskAnalysis.class);
 	
 	private static final List<EntityCategory> CATEGORIES = 
 		Arrays.asList(new EntityCategory[] {
@@ -317,7 +318,7 @@ public class DomainImpl implements Domain {
 				deps.add(s);
 			}
 		}		
-		for (MetaBenefitRiskAnalysis s : d_domainData.getBenefitRiskAnalyses()) {
+		for (BenefitRiskAnalysis<?> s : d_domainData.getBenefitRiskAnalyses()) {
 			if (s.getDependencies().contains(e)) {
 				deps.add(s);
 			}
@@ -527,7 +528,7 @@ public class DomainImpl implements Domain {
 		domainDataReinit();
 	}
 
-	public void addBenefitRiskAnalysis(MetaBenefitRiskAnalysis brAnalysis) {
+	public void addBenefitRiskAnalysis(BenefitRiskAnalysis<?> brAnalysis) {
 		if (brAnalysis == null) {
 			throw new NullPointerException();
 		}
@@ -535,7 +536,7 @@ public class DomainImpl implements Domain {
 		fireDomainChanged(DomainEvent.Type.BENEFITRISK_ANALYSIS);
 	}
 
-	public SortedSet<MetaBenefitRiskAnalysis> getBenefitRiskAnalyses() {
+	public SortedSet<BenefitRiskAnalysis<?>> getBenefitRiskAnalyses() {
 		return Collections.unmodifiableSortedSet(d_domainData.getBenefitRiskAnalyses());
 	}
 

@@ -46,11 +46,12 @@ import org.drugis.addis.presentation.ValueHolder;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BenfitRiskWizardPMTest {
+public class BenefitRiskWizardPMTest {
 
 	private DomainImpl d_domain;
 	private BenefitRiskWizardPM d_pm;
 	private Indication d_indication;
+	private Study d_study;
 
 	@Before
 	public void setUp() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
@@ -58,12 +59,15 @@ public class BenfitRiskWizardPMTest {
 		ExampleData.initDefaultData(d_domain);
 		d_pm = new BenefitRiskWizardPM(d_domain); 
 		d_indication = ExampleData.buildIndicationDepression();
+		d_study = ExampleData.buildStudyChouinard();
 		
 		d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysis());
 		d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisAlternative());
 		d_domain.addMetaAnalysis(ExampleData.buildMetaAnalysisConv());
 		d_domain.addMetaAnalysis(ExampleData.buildMetaAnalysisHamd());
 		d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisCgi());
+		
+		d_domain.addStudy(d_study);
 	
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 	}

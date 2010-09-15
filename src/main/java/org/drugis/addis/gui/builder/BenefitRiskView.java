@@ -35,6 +35,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
@@ -106,7 +107,7 @@ public class BenefitRiskView implements ViewBuilder {
 		
 		CellConstraints cc =  new CellConstraints();
 		
-		d_builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(MetaBenefitRiskAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
+		d_builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(BenefitRiskAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
 		d_builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
 		
 		final JComponent progressBars = buildProgressBars();
@@ -289,7 +290,7 @@ public class BenefitRiskView implements ViewBuilder {
 		return expButton;
 	}
 	
-	// FIXME: the need for this hax should be fixed in JSMAA.
+	// FIXME: the need for this hack should be fixed in JSMAA.
 	private static ChartPanel findChartPanel(JComponent viewPanel) {
 		for (Component c : viewPanel.getComponents()) {
 			if (c instanceof ChartPanel) {
