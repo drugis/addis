@@ -48,6 +48,8 @@ import org.drugis.addis.presentation.UnmodifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.pietschy.wizard.InvalidStateException;
 
+import com.jgoodies.binding.value.ValueModel;
+
 public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationPM {
 
 	@SuppressWarnings("serial")
@@ -93,13 +95,19 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		}
 	}
 	
+	public enum BRAType {
+		SINGLE_STUDY_TYPE,
+		SYNTHESYS_TYPE
+	}
+	
 	private Map<OutcomeMeasure,ModifiableHolder<Boolean>> d_outcomeSelectedMap;
 	private Map<OutcomeMeasure,ModifiableHolder<MetaAnalysis>> d_metaAnalysisSelectedMap;
 	private HashMap<Drug, ModifiableHolder<Boolean>> d_alternativeEnabledMap;
 	private HashMap<Drug, ModifiableHolder<Boolean>> d_alternativeSelectedMap;
 	private CompleteHolder d_completeHolder;
-	private HashMap<Study, ModifiableHolder<Study>> d_studySelectedMap;
 	private ModifiableHolder<Study> d_studyHolder;
+	private ModifiableHolder<BRAType> d_analysisType;
+	private StudiesWithIndicationHolder d_studiesWithIndicationHolder;
 	
 	public BenefitRiskWizardPM(Domain d) {
 		super(d);
@@ -107,9 +115,9 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		d_metaAnalysisSelectedMap = new HashMap<OutcomeMeasure, ModifiableHolder<MetaAnalysis>>();
 		d_alternativeEnabledMap = new HashMap<Drug, ModifiableHolder<Boolean>>();
 		d_alternativeSelectedMap = new HashMap<Drug, ModifiableHolder<Boolean>>();
-		d_studySelectedMap = new HashMap<Study, ModifiableHolder<Study>>();
 		d_completeHolder = new CompleteHolder();
 		d_studyHolder = new ModifiableHolder<Study>();
+		d_analysisType = new ModifiableHolder<BRAType>(BRAType.SYNTHESYS_TYPE);
 		
 		d_indicationHolder.addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -117,10 +125,10 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 				d_alternativeSelectedMap.clear();
 				d_alternativeEnabledMap.clear();
 				d_metaAnalysisSelectedMap.clear();
-				d_studySelectedMap.clear();
 				d_completeHolder.propertyChange(null);
 			}
 		});
+		d_studiesWithIndicationHolder = new StudiesWithIndicationHolder(d_indicationHolder, d_domain);
 	}
 	
 	public boolean selectedOutcomesHaveAnalysis() {
@@ -140,17 +148,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return d_studyHolder;
 	}
 	
-	public ValueHolder<Study> getStudyModel(Study id) {
-		ModifiableHolder<Study> val = d_studySelectedMap.get(id);
-		if(val == null) {
-			val = new ModifiableHolder<Study>(id);
-			val.addPropertyChangeListener(d_completeHolder);
-			d_studySelectedMap.put(id, val);
-		}
-		
-		return val;
-	}
-	
+
 	public ArrayList<MetaAnalysis> getMetaAnalyses(OutcomeMeasure out) {
 		ArrayList<MetaAnalysis> analyses = new ArrayList<MetaAnalysis>();
 		for(MetaAnalysis ma : d_domain.getMetaAnalyses()){
@@ -302,13 +300,38 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	}
 	
 	@SuppressWarnings("serial")
-	public ListHolder<Study> getStudyListModel() {
-		return new AbstractListHolder<Study>() {
-			@Override
-			public List<Study> getValue() {
-				return new ArrayList<Study>(d_domain.getStudies());
+	public static class StudiesWithIndicationHolder extends AbstractListHolder<Study> implements PropertyChangeListener {
+		private final ValueHolder<Indication> d_indicationHolder;
+		private final Domain d_domain;
+
+		public StudiesWithIndicationHolder(ValueHolder<Indication> indicationHolder, Domain domain) {
+			d_indicationHolder = indicationHolder;
+			d_domain = domain;
+			d_indicationHolder.addValueChangeListener(this);
+		}
+
+		@Override
+		public List<Study> getValue() {
+			if(d_indicationHolder.getValue() == null) {
+				return new ArrayList<Study>();
+			} else {
+				return new ArrayList<Study>(d_domain.getStudies(d_indicationHolder.getValue()).getValue());
 			}
-		};
+		}
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			fireValueChange(null, getValue());
+		}
+		
+	}
+	
+	public ListHolder<Study> getStudiesWithIndication() {
+		return d_studiesWithIndicationHolder;
+	}	
+	
+	
+	public ValueModel getAnalysisType() {
+		return d_analysisType;
 	}
 	
 }

@@ -43,12 +43,14 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
+import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM.BRAType;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardModel;
+import org.pietschy.wizard.models.Condition;
 import org.pietschy.wizard.models.DynamicModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -67,10 +69,15 @@ public class BenefitRiskWizard extends Wizard {
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 	}
 
-	private static WizardModel buildModel(BenefitRiskWizardPM pm, Main frame) {
+	private static WizardModel buildModel(final BenefitRiskWizardPM pm, Main frame) {
 		DynamicModel wizardModel = new DynamicModel();
 		wizardModel.add(new SelectIndicationWizardStep(pm));
 		wizardModel.add(new SelectStudyOrMetaAnalysisWizardStep(pm, frame));
+		wizardModel.add(new SelectStudyWizardStep(pm, frame), new Condition() {
+			public boolean evaluate(WizardModel model) {
+				return pm.getAnalysisType().getValue() == BRAType.SINGLE_STUDY_TYPE;
+			}
+		});
 		wizardModel.add(new SelectCriteriaAndAlternativesWizardStep(pm, frame));
 		
 		return wizardModel;
@@ -79,7 +86,26 @@ public class BenefitRiskWizard extends Wizard {
 	private static class SelectStudyOrMetaAnalysisWizardStep extends PanelWizardStep {
 		public SelectStudyOrMetaAnalysisWizardStep(BenefitRiskWizardPM pm, Main main){
 			super("Select Study or Meta-analysis","In this step, you select the criteria (analyses on specific outcomemeasures) and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least two criteria and at least two alternatives must be included.");
-			JComboBox studyBox = AuxComponentFactory.createBoundComboBox(pm.getStudyListModel(), pm.getStudyModel());
+
+			JPanel radioButtonPanel = new JPanel();
+			radioButtonPanel.setLayout(new BoxLayout(radioButtonPanel,BoxLayout.Y_AXIS));
+			 JRadioButton MetaAnalysisButton = BasicComponentFactory.createRadioButton(pm.getAnalysisType(), BRAType.SYNTHESYS_TYPE, "Evidence synthesis");
+			 JRadioButton StudyButton = BasicComponentFactory.createRadioButton(pm.getAnalysisType(), BRAType.SINGLE_STUDY_TYPE, "Single Study");
+
+			 radioButtonPanel.add(MetaAnalysisButton);
+		     radioButtonPanel.add(StudyButton);
+		    
+		     add(radioButtonPanel);
+		    
+		     setComplete(true);
+		}
+	}
+
+	private static class SelectStudyWizardStep extends PanelWizardStep {
+		public SelectStudyWizardStep(final BenefitRiskWizardPM pm, Main main){
+			super("Select Study or Meta-analysis","test");
+			
+			JComboBox studyBox = AuxComponentFactory.createBoundComboBox(pm.getStudiesWithIndication(), pm.getStudyModel());
 			add(studyBox);
 			pm.getStudyModel().addValueChangeListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {

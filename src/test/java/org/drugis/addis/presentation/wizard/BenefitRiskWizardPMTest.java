@@ -236,6 +236,8 @@ public class BenefitRiskWizardPMTest {
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
 		assertTrue(d_pm.getSelectedCriteria().isEmpty());
 		assertTrue(d_pm.getSelectedAlternatives().isEmpty());
+		assertTrue(d_pm.getStudyModel().getValue() == null);
 		assertFalse(d_pm.getCompleteModel().getValue());
 	}
+
 }
