@@ -69,7 +69,6 @@ public class StudyGraph extends JPanel {
 		CellConstants.setBorder(d_vertexAttributes, BorderFactory.createLineBorder(Color.BLACK, 2));
 	}
 
-	@SuppressWarnings("unchecked")
 	public void layoutGraph() {
 		// in the JGraphModelAdapter, the Vertex size is set. Therefore, this must be done every time the graph is redrawn
 		d_model = new JGraphModelAdapter<Vertex, Edge>(d_pm);

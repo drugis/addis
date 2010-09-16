@@ -112,14 +112,13 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 				br.d_criteria = (List<OutcomeMeasure>) ie.get(PROPERTY_OUTCOMEMEASURES, ArrayList.class);
 			}
 		
-			@SuppressWarnings("unchecked")
 			@Override
 			public void write(StudyBenefitRiskAnalysis br, OutputElement oe) throws XMLStreamException {
 				oe.setAttribute(PROPERTY_NAME, br.getName());
 				oe.add(br.getIndication(), PROPERTY_INDICATION, Indication.class);
 				oe.add(br.getStudy(), PROPERTY_STUDY, Study.class);
-				oe.add(new ArrayList(br.getAlternatives()), PROPERTY_ARMS, ArrayList.class);
-				oe.add(new ArrayList(br.getOutcomeMeasures()), PROPERTY_OUTCOMEMEASURES, ArrayList.class);
+				oe.add(new ArrayList<Arm>(br.getAlternatives()), PROPERTY_ARMS, ArrayList.class);
+				oe.add(new ArrayList<OutcomeMeasure>(br.getOutcomeMeasures()), PROPERTY_OUTCOMEMEASURES, ArrayList.class);
 			}
 		};
 

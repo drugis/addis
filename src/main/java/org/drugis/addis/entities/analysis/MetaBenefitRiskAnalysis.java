@@ -307,9 +307,9 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 			public void write(MetaBenefitRiskAnalysis br, OutputElement oe) throws XMLStreamException {
 				oe.setAttribute(PROPERTY_NAME, br.getName());
 				oe.add(br.getBaseline(), PROPERTY_BASELINE, Drug.class);
-				oe.add(new ArrayList(br.getDrugs()), PROPERTY_DRUGS, ArrayList.class);
+				oe.add(new ArrayList<Drug>(br.getDrugs()), PROPERTY_DRUGS, ArrayList.class);
 				oe.add(br.getIndication(), PROPERTY_INDICATION, Indication.class);
-				oe.add(new ArrayList(br.getMetaAnalyses()), PROPERTY_METAANALYSES, ArrayList.class);
+				oe.add(new ArrayList<MetaAnalysis>(br.getMetaAnalyses()), PROPERTY_METAANALYSES, ArrayList.class);
 			}
 		};
 }

@@ -50,7 +50,6 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -487,13 +486,10 @@ public class Main extends JFrame {
 		dialog.pack();
 		WizardFrameCloser.bind(wizard, dialog);
 		dialog.setVisible(true);
-		
-		if(JFileChooser.CANCEL_OPTION == 1)
-		{
-			TreePath path = d_domainTreeModel.getPathTo(study);
-				if (path != null) {
-					d_leftPanelTree.setSelectionPath(path);
-			}
+
+		TreePath path = d_domainTreeModel.getPathTo(study);
+		if (path != null) {
+			d_leftPanelTree.setSelectionPath(path);
 		}
 	}
 
