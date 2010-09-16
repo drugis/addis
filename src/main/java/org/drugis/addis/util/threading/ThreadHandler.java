@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 import org.drugis.addis.entities.AbstractObservable;
+import org.drugis.common.threading.SuspendableThreadWrapper;
 
 public class ThreadHandler extends AbstractObservable {
 	
