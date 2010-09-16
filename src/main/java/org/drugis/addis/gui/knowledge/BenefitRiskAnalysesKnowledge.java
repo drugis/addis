@@ -28,10 +28,13 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.BenefitRiskView;
+import org.drugis.addis.gui.builder.StudyBenefitRiskView;
 import org.drugis.addis.gui.wizard.BenefitRiskWizard;
-import org.drugis.addis.presentation.BenefitRiskPresentation;
+import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
+import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
 import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.Wizard;
@@ -69,8 +72,16 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 	@Override
 	public ViewBuilder getEntityViewBuilder(Main main, Domain domain,
 			Entity entity) {
-		BenefitRiskPresentation model = (BenefitRiskPresentation) main.getPresentationModelFactory().getModel((MetaBenefitRiskAnalysis) entity);
-		return new BenefitRiskView(model, main);
+		if (entity instanceof MetaBenefitRiskAnalysis) {
+			MetaBenefitRiskAnalysis meta = (MetaBenefitRiskAnalysis) entity;
+			MetaBenefitRiskPresentation model = (MetaBenefitRiskPresentation) main.getPresentationModelFactory().getModel((MetaBenefitRiskAnalysis)meta );
+			return new BenefitRiskView(model, main);
+		} else if (entity instanceof StudyBenefitRiskAnalysis) {
+			StudyBenefitRiskAnalysis sbra = (StudyBenefitRiskAnalysis) entity;
+			StudyBenefitRiskPresentation model = (StudyBenefitRiskPresentation) main.getPresentationModelFactory().getModel((StudyBenefitRiskAnalysis) sbra );
+			return new StudyBenefitRiskView(model, main);
+		}
+		throw new RuntimeException("Unhandled BR Type!");
 	}
 	
 	@Override

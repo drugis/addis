@@ -43,7 +43,7 @@ public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
 		d_br = br;
 		d_pmf = pmf;
 		d_relative = relative;
-		((BenefitRiskPresentation)pmf.getModel(br)).getAllModelsReadyModel().addValueChangeListener(new PropertyChangeListener() {
+		((MetaBenefitRiskPresentation) pmf.getModel((MetaBenefitRiskAnalysis)br)).getAllModelsReadyModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				fireTableDataChanged();				
 			}

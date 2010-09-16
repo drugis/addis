@@ -33,7 +33,7 @@ import org.junit.Test;
 public class BenefitRiskPMTest {
 
 	private PresentationModelFactory d_pmf;
-	private BenefitRiskPresentation d_pm;
+	private MetaBenefitRiskPresentation d_pm;
 	private DomainImpl d_domain;
 
 	@Before
@@ -41,7 +41,7 @@ public class BenefitRiskPMTest {
 		d_domain = new DomainImpl();
 		d_pmf = new PresentationModelFactory(d_domain);
 		MetaBenefitRiskAnalysis analysis = ExampleData.buildBenefitRiskAnalysis();
-		d_pm = new BenefitRiskPresentation(analysis, d_pmf);
+		d_pm = new MetaBenefitRiskPresentation(analysis, d_pmf);
 	}
 	
 	@Test
