@@ -52,7 +52,6 @@ import com.jgraph.layout.hierarchical.JGraphHierarchicalLayout;
 public class StudyGraph extends JPanel {
 	protected StudyGraphModel d_pm;
 	
-	@SuppressWarnings("unchecked")
 	protected JGraphModelAdapter d_model;
 	private AttributeMap d_vertexAttributes;
 

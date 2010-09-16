@@ -85,7 +85,6 @@ public class PresentationModelFactory {
 		return getModel(obj);
 	}
 	
-	@SuppressWarnings("unchecked")
 	private PresentationModel createCreationModel(Object obj) {
 		if (obj instanceof OutcomeMeasure) {
 			return new OutcomeMeasureCreationPresentation((OutcomeMeasure)obj);

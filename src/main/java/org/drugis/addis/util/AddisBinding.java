@@ -169,7 +169,6 @@ public class AddisBinding extends XMLBinding {
 	
 
     @Override
-	@SuppressWarnings("unchecked")
 	public XMLFormat getFormat(Class cls) throws XMLStreamException {
         if (Date.class.isAssignableFrom(cls)) {
             return dateXML; // Overrides default XML format.

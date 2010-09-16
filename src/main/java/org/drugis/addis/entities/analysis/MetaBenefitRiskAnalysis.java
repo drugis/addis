@@ -246,7 +246,6 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	}
 	
 	// FIXME: type safety.
-	@SuppressWarnings("unchecked")
 	private List getBaselineMeasurements(OutcomeMeasure om) {
 		List<Measurement> result = new ArrayList<Measurement>(); 
 		for (MetaAnalysis ma : getMetaAnalyses())
@@ -302,7 +301,6 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 				}
 			}
 		
-			@SuppressWarnings("unchecked")
 			@Override
 			public void write(MetaBenefitRiskAnalysis br, OutputElement oe) throws XMLStreamException {
 				oe.setAttribute(PROPERTY_NAME, br.getName());
