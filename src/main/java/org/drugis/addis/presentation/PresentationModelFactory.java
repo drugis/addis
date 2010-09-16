@@ -134,8 +134,8 @@ public class PresentationModelFactory {
 			return new MetaBenefitRiskPresentation((MetaBenefitRiskAnalysis) obj, this);
 		}
 		if (obj instanceof StudyBenefitRiskAnalysis) {
-			throw new RuntimeException("StudyBenefitRiskAnalysis not supported");
-			//return new StudyBenefitRiskAnalysisPresentation((StudyBenefitRiskAnalysis) obj, this);
+//			throw new RuntimeException("StudyBenefitRiskAnalysis not supported");
+			return new StudyBenefitRiskPresentation((StudyBenefitRiskAnalysis) obj, this);
 		}
 		if (obj instanceof Distribution) {
 			return new DistributionPresentation((Distribution) obj);
