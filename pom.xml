@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>fi.smaa.jsmaa</groupId>
 			<artifactId>gui</artifactId>
-			<version>0.6.4</version>
+			<version>0.7-SNAPSHOT</version>
 		</dependency>		
 		<dependency>
 			<groupId>org.drugis</groupId>
