@@ -56,7 +56,12 @@
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc</artifactId>
-			<version>0.4.2</version>
+			<version>0.4.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.drugis</groupId>
+			<artifactId>common</artifactId>
+			<version>0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jgoodies</groupId>

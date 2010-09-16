@@ -182,7 +182,7 @@ public class BenefitRiskWizard extends Wizard {
 
 		private Component buildOutcomeMeasuresPane(BenefitRiskWizardPM pm) {
 			FormLayout layout = new FormLayout(
-					"left:pref, 3dlu, left:pref",
+					"left:pref",
 					"p, 3dlu, p, 3dlu, p"
 					);	
 			
@@ -199,7 +199,7 @@ public class BenefitRiskWizard extends Wizard {
 				row += 2;
 				LayoutUtil.addRow(layout);
 				JCheckBox checkBox = BasicComponentFactory.createCheckBox(d_pm.getOutcomeSelectedModel(out), out.getName());
-				builder.add(checkBox, cc.xyw(1, row, 3));
+				builder.add(checkBox, cc.xy(1, row));
 			}
 			
 			return AuxComponentFactory.createInScrollPane(builder, 350, 550);

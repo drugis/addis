@@ -31,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.drugis.common.threading.AbstractSuspendable;
+import org.drugis.common.threading.SuspendableThreadWrapper;
+import org.drugis.common.threading.TerminatedException;
 import org.junit.Test;
 
 public class ThreadHandlerIT {
@@ -60,6 +62,7 @@ public class ThreadHandlerIT {
 				Thread.sleep(d_ms);
 				waitIfSuspended();
 			} catch (InterruptedException e) {
+			} catch (TerminatedException t) {
 			}
 			d_done = true;
 		}
