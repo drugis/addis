@@ -45,7 +45,7 @@ import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.EntitiesTablePanel;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
-import org.drugis.addis.presentation.BenefitRiskPresentation;
+import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.FileSaveDialog;
@@ -74,14 +74,13 @@ import fi.smaa.jsmaa.gui.views.ResultsView;
 
 public class BenefitRiskView implements ViewBuilder {
 
-	
 	private static final String WAITING_MESSAGE = "Please wait while the sub-analyses run";
-	private BenefitRiskPresentation d_pm;
+	private MetaBenefitRiskPresentation d_pm;
 	private Main d_main;
 	private PanelBuilder d_builder;
 	protected JPanel d_panel;
 	
-	public BenefitRiskView(BenefitRiskPresentation pm, Main main) {
+	public BenefitRiskView(MetaBenefitRiskPresentation pm, Main main) {
 		d_pm = pm;
 		d_main = main;
 		d_pm.startAllSimulations();

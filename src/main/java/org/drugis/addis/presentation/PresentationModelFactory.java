@@ -38,6 +38,7 @@ import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
@@ -130,8 +131,12 @@ public class PresentationModelFactory {
 			return new NetworkMetaAnalysisPresentation((NetworkMetaAnalysis) obj, this);
 		}
 		if (obj instanceof MetaBenefitRiskAnalysis) {
-			return new BenefitRiskPresentation((MetaBenefitRiskAnalysis) obj, this);
-		} 	
+			return new MetaBenefitRiskPresentation((MetaBenefitRiskAnalysis) obj, this);
+		}
+		if (obj instanceof StudyBenefitRiskAnalysis) {
+			throw new RuntimeException("StudyBenefitRiskAnalysis not supported");
+			//return new StudyBenefitRiskAnalysisPresentation((StudyBenefitRiskAnalysis) obj, this);
+		}
 		if (obj instanceof Distribution) {
 			return new DistributionPresentation((Distribution) obj);
 		}
