@@ -25,7 +25,7 @@ package org.drugis.addis.entities;
 import java.util.List;
 import java.util.SortedSet;
 
-import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
@@ -172,9 +172,9 @@ public interface Domain {
 	 * 
 	 * @param br the BenefitRiskAnalysis to add
 	 */
-	public void addBenefitRiskAnalysis(MetaBenefitRiskAnalysis br);
+	public void addBenefitRiskAnalysis(BenefitRiskAnalysis<?> br);
 
-	public SortedSet<MetaBenefitRiskAnalysis> getBenefitRiskAnalyses();
+	public SortedSet<BenefitRiskAnalysis<?>> getBenefitRiskAnalyses();
 	
 	/**
 	 * Delete a top-level entity from the domain.

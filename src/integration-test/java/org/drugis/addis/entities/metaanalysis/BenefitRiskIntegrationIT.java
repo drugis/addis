@@ -54,7 +54,7 @@ public class BenefitRiskIntegrationIT {
 		PresentationModelFactory pmf = new PresentationModelFactory(domain);
 		
 		// Run the br analysis.
-		MetaBenefitRiskAnalysis analysis = domain.getBenefitRiskAnalyses().first();
+		MetaBenefitRiskAnalysis analysis = (MetaBenefitRiskAnalysis) domain.getBenefitRiskAnalyses().first();
 		analysis.runAllConsistencyModels();
 		
 		boolean modelsDone = false;
@@ -88,7 +88,7 @@ public class BenefitRiskIntegrationIT {
 		PresentationModelFactory pmf = new PresentationModelFactory(domain);
 		
 		// Run the br analysis.
-		MetaBenefitRiskAnalysis analysis = domain.getBenefitRiskAnalyses().first();
+		MetaBenefitRiskAnalysis analysis = (MetaBenefitRiskAnalysis) domain.getBenefitRiskAnalyses().first();
 		analysis.runAllConsistencyModels();
 		
 		boolean modelsDone = false;
