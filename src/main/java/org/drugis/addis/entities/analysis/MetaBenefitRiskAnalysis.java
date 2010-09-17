@@ -35,11 +35,13 @@ import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
@@ -231,29 +233,28 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		return model;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private AbstractBaselineModel<?> createBaselineModel(OutcomeMeasure om) {
 		AbstractBaselineModel<?> model = null;
 			switch (om.getType()) {
 			case RATE:
-				model = new BaselineOddsModel(getBaselineMeasurements(om));
+				model = new BaselineOddsModel(getBaselineMeasurements(om, RateMeasurement.class));
 			break;
 			case CONTINUOUS:
-				model = new BaselineMeanDifferenceModel(getBaselineMeasurements(om));
+				model = new BaselineMeanDifferenceModel(getBaselineMeasurements(om, ContinuousMeasurement.class));
 			break;
 			}
 		return model;
 	}
 	
-	// FIXME: type safety.
-	private List getBaselineMeasurements(OutcomeMeasure om) {
-		List<Measurement> result = new ArrayList<Measurement>(); 
+	@SuppressWarnings("unchecked")
+	private <M extends Measurement> List<M> getBaselineMeasurements(OutcomeMeasure om, Class<M> cls) {
+		List<M> result = new ArrayList<M>(); 
 		for (MetaAnalysis ma : getMetaAnalyses())
 			if (ma.getOutcomeMeasure().equals(om))
 				for (Study s : ma.getIncludedStudies())
 					for (Arm a : s.getArms())
 						if (a.getDrug().equals(getBaseline()))
-							result.add(s.getMeasurement(om,a));
+							result.add((M)s.getMeasurement(om,a));
 		
 		return result;
 	}

@@ -30,7 +30,7 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.builder.BenefitRiskView;
+import org.drugis.addis.gui.builder.MetaBenefitRiskView;
 import org.drugis.addis.gui.builder.StudyBenefitRiskView;
 import org.drugis.addis.gui.wizard.BenefitRiskWizard;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
@@ -75,7 +75,7 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 		if (entity instanceof MetaBenefitRiskAnalysis) {
 			MetaBenefitRiskAnalysis meta = (MetaBenefitRiskAnalysis) entity;
 			MetaBenefitRiskPresentation model = (MetaBenefitRiskPresentation) main.getPresentationModelFactory().getModel((MetaBenefitRiskAnalysis)meta );
-			return new BenefitRiskView(model, main);
+			return new MetaBenefitRiskView(model, main);
 		} else if (entity instanceof StudyBenefitRiskAnalysis) {
 			StudyBenefitRiskAnalysis sbra = (StudyBenefitRiskAnalysis) entity;
 			StudyBenefitRiskPresentation model = (StudyBenefitRiskPresentation) main.getPresentationModelFactory().getModel((StudyBenefitRiskAnalysis) sbra );
