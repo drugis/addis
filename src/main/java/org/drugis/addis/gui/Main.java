@@ -140,7 +140,7 @@ public class Main extends JFrame {
 		ImageLoader.setImagePath("/org/drugis/addis/gfx/");
 		
 		setPreferredSize(new Dimension(1020, 764));
-		setMinimumSize(new Dimension(1020, 764));
+		setMinimumSize(new Dimension(700, 500));
 
 		addWindowListener(new WindowAdapter() {
 			@Override
