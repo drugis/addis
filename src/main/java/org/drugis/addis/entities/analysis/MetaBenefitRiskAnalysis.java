@@ -72,9 +72,24 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	public static String PROPERTY_BASELINE = "baseline";
 	public static String PROPERTY_METAANALYSES = "metaAnalyses";
 	
-	private class AbsoluteMeasurementSource implements MeasurementSource<Drug> {
+
+	private class AbsoluteMeasurementSource extends AbstractMeasurementSource<Drug> {
 		public Distribution getMeasurement(Drug alternative, OutcomeMeasure criterion) {
 			return getAbsoluteEffectDistribution(alternative, criterion);
+		}
+	}
+	
+	
+	/*
+	((MetaBenefitRiskPresentation) pmf.getModel((MetaBenefitRiskAnalysis)bra)).getAllModelsReadyModel().addValueChangeListener(new PropertyChangeListener() {
+		public void propertyChange(PropertyChangeEvent evt) {
+			notifyListeners();				
+		}
+	});*/
+	
+	private class RelativeMeasurementSource extends AbstractMeasurementSource<Drug> {
+		public Distribution getMeasurement(Drug alternative, OutcomeMeasure criterion) {
+			return getRelativeEffectDistribution(alternative, criterion);
 		}
 	}
 	
@@ -222,6 +237,9 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		return new AbsoluteMeasurementSource();
 	}
 	
+	public MeasurementSource<Drug> getRelativeMeasurementSource() {
+		return new RelativeMeasurementSource();
+	}
 	
 	/**
 	 * Get the assumed distribution for the baseline odds.
@@ -321,4 +339,5 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 				oe.add(new ArrayList<MetaAnalysis>(br.getMetaAnalyses()), PROPERTY_METAANALYSES, ArrayList.class);
 			}
 		};
+
 }

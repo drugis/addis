@@ -29,6 +29,7 @@ import javax.swing.JProgressBar;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.analysis.MeasurementSource;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -118,7 +119,7 @@ public class MetaBenefitRiskPresentation extends BenefitRiskPresentation<Drug, M
 	}
 	
 	public MetaBenefitRiskPresentation(MetaBenefitRiskAnalysis bean, PresentationModelFactory pmf) {
-		super(bean);
+		super(bean, pmf);
 		
 		d_pmf = pmf;
 		d_allNetworkModelsReadyListener = new AllModelsReadyListener();
@@ -159,15 +160,6 @@ public class MetaBenefitRiskPresentation extends BenefitRiskPresentation<Drug, M
 		return new DefaultListHolder<MetaAnalysis>(getBean().getMetaAnalyses());
 	}
 
-	public BenefitRiskMeasurementTableModel getMeasurementTableModel(boolean relative) {
-		MetaBenefitRiskAnalysis bra = (MetaBenefitRiskAnalysis)getBean();
-		if (relative)
-			return new BenefitRiskMeasurementTableModel(bra, bra, d_pmf);
-		else
-			return new BenefitRiskMeasurementTableModel(bra, bra.getAbsoluteMeasurementSource() , d_pmf);
-			
-	}
-
 	public OutcomeMeasure getOutcomeMeasureForCriterion(CardinalCriterion crit) {
 		return d_smaaf.getOutcomeMeasure(crit);
 	}
@@ -206,4 +198,14 @@ public class MetaBenefitRiskPresentation extends BenefitRiskPresentation<Drug, M
 			d_baselineProgressListeners.add(new AnalysisProgressListener(model));
 		}
 	}
+	
+	public BenefitRiskMeasurementTableModel<Drug> getAbsoluteMeasurementTableModel() {
+		MeasurementSource<Drug> absoluteMeasurementSource = getBean().getAbsoluteMeasurementSource();
+		return new BenefitRiskMeasurementTableModel<Drug>(getBean(), absoluteMeasurementSource , d_pmf);
+	}
+
+	public BenefitRiskMeasurementTableModel<Drug> getRelativeMeasurementTableModel() {
+		return new BenefitRiskMeasurementTableModel<Drug>(getBean(), getBean().getRelativeMeasurementSource(), d_pmf);
+	}
 }
+

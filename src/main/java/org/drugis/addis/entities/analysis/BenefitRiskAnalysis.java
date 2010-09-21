@@ -5,8 +5,9 @@ import java.util.List;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.relativeeffect.Distribution;
 
-public interface BenefitRiskAnalysis<Alternative extends Entity> extends Comparable<BenefitRiskAnalysis<?>>, MeasurementSource<Alternative>, Entity {
+public interface BenefitRiskAnalysis<Alternative extends Entity> extends Comparable<BenefitRiskAnalysis<?>>, Entity {
 	public static String PROPERTY_NAME = "name";
 	public static String PROPERTY_INDICATION = "indication";
 	public static String PROPERTY_OUTCOMEMEASURES = "outcomeMeasures";
@@ -19,4 +20,6 @@ public interface BenefitRiskAnalysis<Alternative extends Entity> extends Compara
 	public abstract List<Alternative> getAlternatives();
 
 	public abstract String getName();
+	
+	public Distribution getMeasurement(Alternative a, OutcomeMeasure criterion);
 }
