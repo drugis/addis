@@ -112,7 +112,7 @@ public class RemeronData {
 	private void addAdverseEventMeasurements(Study study, Arm a, String[] parts) {
 		int sampleSize = getInt(parts[COLUMN_AST]);
 		for (int i = 0; i < d_adverseEvents.size(); ++i) {
-			int rate = getInt(parts[COLUMN_ADE] + i);
+			int rate = getInt(parts[COLUMN_ADE + 1]);
 			study.setMeasurement(d_adverseEvents.get(i), a, new BasicRateMeasurement(rate, sampleSize));
 		}
 	}
