@@ -160,7 +160,12 @@ public class MetaBenefitRiskPresentation extends BenefitRiskPresentation<Drug, M
 	}
 
 	public BenefitRiskMeasurementTableModel getMeasurementTableModel(boolean relative) {
-		return new BenefitRiskMeasurementTableModel((MetaBenefitRiskAnalysis)getBean(), d_pmf, relative);
+		MetaBenefitRiskAnalysis bra = (MetaBenefitRiskAnalysis)getBean();
+		if (relative)
+			return new BenefitRiskMeasurementTableModel(bra, bra, d_pmf);
+		else
+			return new BenefitRiskMeasurementTableModel(bra, bra.getAbsoluteMeasurementSource() , d_pmf);
+			
 	}
 
 	public OutcomeMeasure getOutcomeMeasureForCriterion(CardinalCriterion crit) {

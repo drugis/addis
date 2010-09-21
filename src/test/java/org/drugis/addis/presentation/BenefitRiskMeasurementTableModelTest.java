@@ -47,7 +47,7 @@ public class BenefitRiskMeasurementTableModelTest {
 	public void setUp() {
 		d_pmf = new PresentationModelFactory(new DomainImpl());
 		d_brAnalysis = ExampleData.buildBenefitRiskAnalysis();
-		d_pm = new BenefitRiskMeasurementTableModel(d_brAnalysis, d_pmf, true);
+		d_pm = new BenefitRiskMeasurementTableModel(d_brAnalysis, d_brAnalysis, d_pmf);
 	}
 	
 	@Test
@@ -88,7 +88,7 @@ public class BenefitRiskMeasurementTableModelTest {
 
 	@Test
 	public void testGetValueAtAbsolute() {
-		d_pm = new BenefitRiskMeasurementTableModel(d_brAnalysis, d_pmf, false);
+		d_pm = new BenefitRiskMeasurementTableModel(d_brAnalysis, d_brAnalysis.getAbsoluteMeasurementSource(), d_pmf);
 		for (int i=0; i < d_brAnalysis.getDrugs().size(); ++i) {
 			Drug drug = d_brAnalysis.getDrugs().get(i);
 			for (int j=0; j < d_brAnalysis.getOutcomeMeasures().size(); ++j) {

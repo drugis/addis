@@ -29,27 +29,28 @@ import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.analysis.MeasurementSource;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 
 @SuppressWarnings("serial")
 public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
 	
-	protected MetaBenefitRiskAnalysis d_br;
-	private PresentationModelFactory d_pmf;
-	private final boolean d_relative;
-
-	public BenefitRiskMeasurementTableModel(MetaBenefitRiskAnalysis br, PresentationModelFactory pmf, boolean relative) {
+	protected final MetaBenefitRiskAnalysis d_br;
+	private final PresentationModelFactory d_pmf;
+	private final MeasurementSource<Drug> d_source;
+	
+	public BenefitRiskMeasurementTableModel(MetaBenefitRiskAnalysis br, MeasurementSource<Drug> source, PresentationModelFactory pmf) {
 		d_br = br;
+		d_source = source;
 		d_pmf = pmf;
-		d_relative = relative;
 		((MetaBenefitRiskPresentation) pmf.getModel((MetaBenefitRiskAnalysis)br)).getAllModelsReadyModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				fireTableDataChanged();				
 			}
 		});
 	}
-
+	
 	public int getColumnCount() {
 		return d_br.getOutcomeMeasures().size()+1;
 	}
@@ -73,13 +74,10 @@ public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		Drug drug = d_br.getDrugs().get(rowIndex);
-		if (columnIndex == 0) {
-			return drug.getName();
-		}
+
+		if (columnIndex == 0) return drug.getName();
 
 		OutcomeMeasure om = d_br.getOutcomeMeasures().get(columnIndex-1);
-		Distribution dist = d_relative ? d_br.getMeasurement(drug, om) : d_br.getAbsoluteEffectDistribution(drug, om);
-	
-		return d_pmf.getLabeledModel(dist);
+		return d_pmf.getLabeledModel(d_source.getMeasurement(drug, om));
 	}
 }
