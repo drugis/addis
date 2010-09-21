@@ -7,7 +7,9 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ScrollableJPanel;
+import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
@@ -74,11 +76,12 @@ public class StudyBenefitRiskView extends AbstractBenefitRiskView<StudyBenefitRi
 	protected JComponent buildMeasurementsPart() {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = new FormLayout("pref:grow:fill",
-				"p");
+				"p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		builder.add(AuxComponentFactory.createNoteField("Measurements: incidence approximated with Beta-distribution, or continuous variables approximated with a Normal distribution."
 				),cc.xy(1, 1));
+		builder.add(new TablePanel(new EnhancedTable(d_pm.getMeasurementTableModel())), cc.xy(1, 3));
 	
 		return builder.getPanel();
 	}

@@ -21,6 +21,5 @@ public interface BenefitRiskAnalysis<Alternative extends Entity> extends Compara
 
 	public abstract String getName();
 	
-	public Distribution getMeasurement(Alternative alternative, OutcomeMeasure criterion);
-
+	public Distribution getMeasurement(Alternative a, OutcomeMeasure criterion);
 }

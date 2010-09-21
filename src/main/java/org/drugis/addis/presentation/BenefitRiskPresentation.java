@@ -38,10 +38,11 @@ extends PresentationModel<AnalysisType> {
 	protected SimulationProgressBar d_progressBar;
 	protected SMAAEntityFactory<Alternative> d_smaaf;
 
-	public BenefitRiskPresentation(AnalysisType bean) {
+	public BenefitRiskPresentation(AnalysisType bean, PresentationModelFactory pmf) {
 		super(bean);
 		d_buildQueue = new BuildQueue();
 		d_progressBar = new SimulationProgressBar();
+		d_pmf = pmf;
 	}
 	
 	public void startSMAA() {
@@ -107,4 +108,6 @@ extends PresentationModel<AnalysisType> {
 	public PresentationModelFactory getFactory() {
 		return d_pmf;
 	}
+
+
 }
