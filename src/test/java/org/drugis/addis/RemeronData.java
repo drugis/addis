@@ -71,7 +71,11 @@ public class RemeronData {
 	}
 	
 	private String unquote(String str) {
-		return str.substring(1, str.length() - 1);
+		if (str.charAt(0) == '"') {
+			return str.substring(1, str.length() - 1);
+		} else {
+			return str;
+		}
 	}
 	
 	private int getInt(String str) {
@@ -112,7 +116,7 @@ public class RemeronData {
 	private void addAdverseEventMeasurements(Study study, Arm a, String[] parts) {
 		int sampleSize = getInt(parts[COLUMN_AST]);
 		for (int i = 0; i < d_adverseEvents.size(); ++i) {
-			int rate = getInt(parts[COLUMN_ADE + 1]);
+			int rate = getInt(parts[COLUMN_ADE + i]);
 			study.setMeasurement(d_adverseEvents.get(i), a, new BasicRateMeasurement(rate, sampleSize));
 		}
 	}
