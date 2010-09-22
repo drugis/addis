@@ -57,6 +57,10 @@ import org.drugis.addis.util.threading.ThreadHandler;
 import org.drugis.common.AlphabeticalComparator;
 import org.drugis.common.OutcomeComparator;
 import org.drugis.mtc.ConsistencyModel;
+import org.drugis.mtc.MCMCModel;
+import org.drugis.mtc.ProgressEvent;
+import org.drugis.mtc.ProgressListener;
+import org.drugis.mtc.ProgressEvent.EventType;
 
 public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<Drug> {
 	
@@ -72,22 +76,49 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	public static String PROPERTY_BASELINE = "baseline";
 	public static String PROPERTY_METAANALYSES = "metaAnalyses";
 	
+	private final class SimulationFinishedNotifier implements ProgressListener {
+		private final AbstractMeasurementSource<Drug> d_source;
+		public SimulationFinishedNotifier(AbstractMeasurementSource<Drug> source) {
+			d_source = source;
+		}
+		public void update(MCMCModel mtc, ProgressEvent event) {
+			if (event.getType() == EventType.SIMULATION_FINISHED) {
+				d_source.notifyListeners();
+			}
+		}
+	}
 
 	private class AbsoluteMeasurementSource extends AbstractMeasurementSource<Drug> {
+		public AbsoluteMeasurementSource() {
+			SimulationFinishedNotifier simulationFinishedNotifier = new SimulationFinishedNotifier(this);
+			for (OutcomeMeasure om : getOutcomeMeasures()) {
+				getBaselineModel(om).addProgressListener(simulationFinishedNotifier);
+			}
+			attachToAllNetworkModels(simulationFinishedNotifier);
+			
+		}
+		
 		public Distribution getMeasurement(Drug alternative, OutcomeMeasure criterion) {
 			return getAbsoluteEffectDistribution(alternative, criterion);
 		}
 	}
 	
-	
-	/*
-	((MetaBenefitRiskPresentation) pmf.getModel((MetaBenefitRiskAnalysis)bra)).getAllModelsReadyModel().addValueChangeListener(new PropertyChangeListener() {
-		public void propertyChange(PropertyChangeEvent evt) {
-			notifyListeners();				
+	private void attachToAllNetworkModels(
+			SimulationFinishedNotifier simulationFinishedNotifier) {
+		for (MetaAnalysis ma : getMetaAnalyses()) {
+			if (ma instanceof NetworkMetaAnalysis) {
+				NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
+				nma.getConsistencyModel().addProgressListener(simulationFinishedNotifier);
+			}
 		}
-	});*/
+	}
 	
 	private class RelativeMeasurementSource extends AbstractMeasurementSource<Drug> {
+		public RelativeMeasurementSource() {
+			SimulationFinishedNotifier simulationFinishedNotifier = new SimulationFinishedNotifier(this);
+			attachToAllNetworkModels(simulationFinishedNotifier);
+		}
+
 		public Distribution getMeasurement(Drug alternative, OutcomeMeasure criterion) {
 			return getRelativeEffectDistribution(alternative, criterion);
 		}
