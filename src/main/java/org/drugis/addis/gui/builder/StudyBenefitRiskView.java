@@ -104,10 +104,4 @@ public class StudyBenefitRiskView extends AbstractBenefitRiskView<StudyBenefitRi
 	protected JComponent buildCentralWeightsPart() {
 		return new CentralWeightsBuilder().buildPanel();
 	}
-
-//	public JComponent buildPanel() {
-//		System.out.println("test");
-//		return new JPanel();
-//	}
-	
 }

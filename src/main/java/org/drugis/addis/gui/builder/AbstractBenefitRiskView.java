@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.BenefitRiskPresentation;
+import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.OneWayObjectFormat;
@@ -25,6 +26,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.value.ConverterFactory;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -76,7 +78,7 @@ public abstract class AbstractBenefitRiskView<PresentationType extends BenefitRi
 				cc.xy(3, 5));
 		
 		builder.addLabel("Alternatives:", cc.xy(1, 9));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(MetaBenefitRiskAnalysis.PROPERTY_ALTERNATIVES), new OneWayObjectFormat()), 
+		builder.add(AuxComponentFactory.createTextArea(ConverterFactory.createStringConverter(d_pm.getModel(MetaBenefitRiskAnalysis.PROPERTY_ALTERNATIVES), new OneWayObjectFormat()), false), 
 				cc.xy(3, 9));
 		
 		return builder.getPanel();	
