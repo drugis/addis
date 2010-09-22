@@ -68,7 +68,8 @@ public class MetaBenefitRiskPresentation extends BenefitRiskPresentation<Drug, M
 				d_progBar.setString("Burn in: " + event.getIteration()/(event.getTotalIterations()/100) + "%");
 				d_progBar.setValue(event.getIteration()/(event.getTotalIterations()/100));
 			} else if(event.getType() == EventType.SIMULATION_FINISHED && d_progBar != null) {
-				d_progBar.setVisible(false);
+				d_progBar.setString("Done!");
+				d_progBar.setValue(100);
 			}
 		}
 	}
@@ -144,14 +145,10 @@ public class MetaBenefitRiskPresentation extends BenefitRiskPresentation<Drug, M
 	}
 	
 	public void attachNMAProgBar(JProgressBar bar, int progBarNum) {
-		if (progBarNum >= d_NMAnalysisProgressListeners.size() )
-			throw new IllegalArgumentException();
 		d_NMAnalysisProgressListeners.get(progBarNum).attachBar(bar);
 	}
 	
 	public void attachBaselineProgBar(JProgressBar bar, int progBarNum) {
-		if (progBarNum >= d_baselineProgressListeners.size() )
-			throw new IllegalArgumentException();
 		d_baselineProgressListeners.get(progBarNum).attachBar(bar);
 	}
 	
@@ -200,8 +197,7 @@ public class MetaBenefitRiskPresentation extends BenefitRiskPresentation<Drug, M
 	}
 	
 	public BenefitRiskMeasurementTableModel<Drug> getAbsoluteMeasurementTableModel() {
-		MeasurementSource<Drug> absoluteMeasurementSource = getBean().getAbsoluteMeasurementSource();
-		return new BenefitRiskMeasurementTableModel<Drug>(getBean(), absoluteMeasurementSource , d_pmf);
+		return new BenefitRiskMeasurementTableModel<Drug>(getBean(), getBean().getAbsoluteMeasurementSource() , d_pmf);
 	}
 
 	public BenefitRiskMeasurementTableModel<Drug> getRelativeMeasurementTableModel() {
