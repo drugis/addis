@@ -8,6 +8,7 @@ mkdir $DIR
 #mkdir -p $DATA
 
 cp target/addis-$VERSION-jar-with-dependencies.jar $DIR/addis-$VERSION.jar
+chmod a+x $DIR/addis-$VERSION.jar
 cp LICENSE.txt $DIR
 cp README.txt $DIR
 #cp hansen.xml $DATA
