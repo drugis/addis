@@ -135,6 +135,16 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 				d_completeHolder.propertyChange(null);
 			}
 		});
+		d_studyHolder.addValueChangeListener(new PropertyChangeListener() {
+			
+			public void propertyChange(PropertyChangeEvent evt) {
+				d_outcomeSelectedMap.clear();
+				d_alternativeSelectedMap.clear();
+				d_armSelectedMap.clear();
+				d_completeHolder.propertyChange(null);
+			}
+		});
+		
 		d_studiesWithIndicationHolder = new StudiesWithIndicationHolder(d_indicationHolder, d_domain);
 	}
 	

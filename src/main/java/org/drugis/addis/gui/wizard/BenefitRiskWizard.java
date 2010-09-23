@@ -100,7 +100,7 @@ public class BenefitRiskWizard extends Wizard {
 			JPanel radioButtonPanel = new JPanel();
 			radioButtonPanel.setLayout(new BoxLayout(radioButtonPanel,BoxLayout.Y_AXIS));
 			 JRadioButton MetaAnalysisButton = BasicComponentFactory.createRadioButton(pm.getAnalysisType(), BRAType.SYNTHESYS_TYPE, "Evidence synthesis");
-			 JRadioButton StudyButton = BasicComponentFactory.createRadioButton(pm.getAnalysisType(), BRAType.SINGLE_STUDY_TYPE, "Single Study");
+			 JRadioButton StudyButton = BasicComponentFactory.createRadioButton(pm.getAnalysisType(), BRAType.SINGLE_STUDY_TYPE, "Single study");
 
 			 radioButtonPanel.add(MetaAnalysisButton);
 		     radioButtonPanel.add(StudyButton);
