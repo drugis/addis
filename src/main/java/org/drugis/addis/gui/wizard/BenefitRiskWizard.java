@@ -95,7 +95,7 @@ public class BenefitRiskWizard extends Wizard {
 	
 	private static class SelectStudyOrMetaAnalysisWizardStep extends PanelWizardStep {
 		public SelectStudyOrMetaAnalysisWizardStep(BenefitRiskWizardPM pm, Main main){
-			super("Select Study or Meta-analysis","In this step, you select the criteria (analyses on specific outcomemeasures) and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least two criteria and at least two alternatives must be included.");
+			super("Select Study or Meta-analysis","In this step, you select whether to base your analysis on a synthesis of multiple studies, or on a single study.");
 
 			JPanel radioButtonPanel = new JPanel();
 			radioButtonPanel.setLayout(new BoxLayout(radioButtonPanel,BoxLayout.Y_AXIS));
@@ -113,7 +113,7 @@ public class BenefitRiskWizard extends Wizard {
 
 	private static class SelectStudyWizardStep extends PanelWizardStep {
 		public SelectStudyWizardStep(final BenefitRiskWizardPM pm, Main main){
-			super("Select Study or Meta-analysis","test");
+			super("Select Study or Meta-analysis","In this step, you select which study you use as a basis for your analysis.");
 			
 			JComboBox studyBox = AuxComponentFactory.createBoundComboBox(pm.getStudiesWithIndication(), pm.getStudyModel());
 			add(studyBox);
@@ -130,8 +130,9 @@ public class BenefitRiskWizard extends Wizard {
 		private BenefitRiskWizardPM d_pm;
 	
 		public SelectOutcomeMeasuresAndArmsWizardStep(BenefitRiskWizardPM pm, Main main) {
-			super("Select OutcomeMeasures and Arms","test");
-			// TODO : Add text
+			super("Select OutcomeMeasures and Arms","In this step, you select the criteria (specific outcomemeasures) " +
+					"and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least " +
+					"two criteria and at least two alternatives must be included.");
 			d_main = main;
 			d_pm = pm;			
 		}
@@ -236,7 +237,7 @@ public class BenefitRiskWizard extends Wizard {
 		private BenefitRiskWizardPM d_pm;
 
 		public SelectCriteriaAndAlternativesWizardStep(BenefitRiskWizardPM pm, Main main){
-			super("Select Criteria and Alternatives","In this step, you select the criteria (analyses on specific outcomemeasures) and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least two criteria and at least two alternatives must be included.");//			JComboBox indBox = AuxComponentFactory.createBoundComboBox(pm.getIndicationListModel(), pm.getIndicationModel());
+			super("Select Criteria and Alternatives","In this step, you select the criteria (analyses on specific outcomemeasures) and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least two criteria and at least two alternatives must be included.");
 			d_main = main;
 			d_pm = pm;
 		}
