@@ -57,7 +57,7 @@ public class SMAAEntityFactoryTest {
 
 	@Before
 	public void setup() {
-		d_brAnalysis = ExampleData.buildBenefitRiskAnalysis();
+		d_brAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 		d_smaaFactory = new SMAAEntityFactory<Drug>();
 		
 		d_smaaFactoryArm = new SMAAEntityFactory<Arm>();

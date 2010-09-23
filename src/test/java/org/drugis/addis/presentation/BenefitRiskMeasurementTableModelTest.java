@@ -46,7 +46,7 @@ public class BenefitRiskMeasurementTableModelTest {
 	@Before
 	public void setUp() {
 		d_pmf = new PresentationModelFactory(new DomainImpl());
-		d_brAnalysis = ExampleData.buildBenefitRiskAnalysis();
+		d_brAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 		d_pm = new BenefitRiskMeasurementTableModel<Drug>(d_brAnalysis, d_brAnalysis.getRelativeMeasurementSource(), d_pmf);
 	}
 	

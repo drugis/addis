@@ -37,7 +37,7 @@ public class OddsRatioToClinicalConverterTest {
 
 	@Before
 	public void setUp(){
-		MetaBenefitRiskAnalysis br = ExampleData.buildBenefitRiskAnalysis();
+		MetaBenefitRiskAnalysis br = ExampleData.buildMetaBenefitRiskAnalysis();
 		d_orc = new OddsRatioToClinicalConverter(br, ExampleData.buildEndpointHamd());
 		d_baselineOdds = br.getBaselineDistribution(ExampleData.buildEndpointHamd()).getQuantile(0.5);
 	}
@@ -49,12 +49,12 @@ public class OddsRatioToClinicalConverterTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorShouldFailOnMissingOutcome() {
-		new OddsRatioToClinicalConverter(ExampleData.buildBenefitRiskAnalysis(), ExampleData.buildEndpointCVdeath());
+		new OddsRatioToClinicalConverter(ExampleData.buildMetaBenefitRiskAnalysis(), ExampleData.buildEndpointCVdeath());
 	}
 	
 	@Test
 	public void testGetOddsRatio() {
-		OddsRatioToClinicalConverter orc = new OddsRatioToClinicalConverter(ExampleData.buildBenefitRiskAnalysis(), ExampleData.buildEndpointHamd());
+		OddsRatioToClinicalConverter orc = new OddsRatioToClinicalConverter(ExampleData.buildMetaBenefitRiskAnalysis(), ExampleData.buildEndpointHamd());
 		Interval<Double> expected = new Interval<Double>(0.95,1.25);
 		assertEquals(expected, orc.getOddsRatio(expected));
 	}

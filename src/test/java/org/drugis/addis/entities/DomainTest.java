@@ -805,7 +805,7 @@ public class DomainTest {
 		assertEquals(null, d_domain.getCategory(new Arm()));
 		assertEquals(Drug.class, d_domain.getCategory(new Drug()).getEntityClass());
 		assertEquals(BenefitRiskAnalysis.class, 
-				d_domain.getCategory(ExampleData.buildBenefitRiskAnalysis()).getEntityClass());
+				d_domain.getCategory(ExampleData.buildMetaBenefitRiskAnalysis()).getEntityClass());
 	}
 	
 	@Test
