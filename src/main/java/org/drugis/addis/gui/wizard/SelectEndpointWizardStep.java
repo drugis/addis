@@ -26,6 +26,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
 import org.drugis.common.gui.AuxComponentFactory;
@@ -35,6 +36,8 @@ import org.pietschy.wizard.PanelWizardStep;
 public class SelectEndpointWizardStep extends PanelWizardStep {
 	public SelectEndpointWizardStep(AbstractMetaAnalysisWizardPM<?> pm) {
 		super("Select Endpoint","Select an Endpoint that you want to use for this meta analysis.");
+		add(new JLabel("Endpoint : "));
+
 		JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(pm.getOutcomeMeasureListModel(), pm.getOutcomeMeasureModel());
 		add(endPointBox);
 		pm.getOutcomeMeasureModel().addValueChangeListener(new PropertyChangeListener() {

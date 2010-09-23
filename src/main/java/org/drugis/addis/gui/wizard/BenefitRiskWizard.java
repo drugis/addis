@@ -113,8 +113,9 @@ public class BenefitRiskWizard extends Wizard {
 
 	private static class SelectStudyWizardStep extends PanelWizardStep {
 		public SelectStudyWizardStep(final BenefitRiskWizardPM pm, Main main){
-			super("Select Study or Meta-analysis","In this step, you select which study you use as a basis for your analysis.");
-			
+			super("Select Study","In this step, you select which study you use as a basis for your analysis.");
+			add(new JLabel("Study : "));
+
 			JComboBox studyBox = AuxComponentFactory.createBoundComboBox(pm.getStudiesWithIndication(), pm.getStudyModel());
 			add(studyBox);
 			pm.getStudyModel().addValueChangeListener(new PropertyChangeListener() {
