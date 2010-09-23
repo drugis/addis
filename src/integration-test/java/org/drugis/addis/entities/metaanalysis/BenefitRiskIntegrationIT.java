@@ -46,7 +46,6 @@ public class BenefitRiskIntegrationIT {
 		return BenefitRiskIntegrationIT.class.getResourceAsStream(filename);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testBRAnalysisContinuous() throws InterruptedException, FileNotFoundException, IOException, ClassNotFoundException {
 		DomainManager domainmgr = new DomainManager();
@@ -81,7 +80,6 @@ public class BenefitRiskIntegrationIT {
 		assertMeanwithinTenPercent(0.838, 0.465, 1.509, mtm.getValueAt(1, 2));
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testBRAnalysisResults() throws FileNotFoundException, IOException, ClassNotFoundException, InterruptedException {
 		DomainManager domainmgr = new DomainManager();

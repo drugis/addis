@@ -42,7 +42,6 @@ import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
 import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;

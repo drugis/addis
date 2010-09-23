@@ -29,7 +29,6 @@ import javax.swing.JProgressBar;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.MeasurementSource;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;

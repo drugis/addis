@@ -31,6 +31,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.presentation.ModifiableHolder;
@@ -72,23 +73,35 @@ public class BuildViewWhenReadyComponent extends JPanel {
 		}
 	}
 	
-	protected void buildDoneView() {
-		setVisible(false);
-		removeAll();
-		add(d_builder.buildPanel());
-		setVisible(true);
+	private void buildDoneView() {
+		Runnable worker = new Runnable() {
+			public void run() {
+				setVisible(false);
+				removeAll();
+				add(d_builder.buildPanel());
+				setVisible(true);
+			}
+		};
+		// GUI-modifying code should only be executed on the EventQueue.
+		SwingUtilities.invokeLater(worker);
 	}
 
 	private void buildWaitingView() {
-		setVisible(false);
-		removeAll();
-		JLabel spinner = new JLabel(ImageLoader.getIcon(FileNames.ICON_LOADING_LARGE));
-		JLabel label = new JLabel(d_message);
-		JPanel nested = new JPanel(new BorderLayout());
-		nested.add(spinner, BorderLayout.CENTER);
-		nested.add(label, BorderLayout.SOUTH);
-		add(nested);
-		setVisible(true);
+		Runnable worker = new Runnable() {
+			public void run() {
+				setVisible(false);
+				removeAll();
+				JLabel spinner = new JLabel(ImageLoader.getIcon(FileNames.ICON_LOADING_LARGE));
+				JLabel label = new JLabel(d_message);
+				JPanel nested = new JPanel(new BorderLayout());
+				nested.add(spinner, BorderLayout.CENTER);
+				nested.add(label, BorderLayout.SOUTH);
+				add(nested);
+				setVisible(true);
+			}
+		};
+		// GUI-modifying code should only be executed on the EventQueue.
+		SwingUtilities.invokeLater(worker);
 	}
 
 	public static void main(String [] args) throws InterruptedException {

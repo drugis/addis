@@ -32,7 +32,6 @@ import javax.swing.JPanel;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
 import org.drugis.addis.gui.components.LinkLabel;
@@ -114,8 +113,8 @@ public class DrugView implements ViewBuilder{
 		AtcDetailsRetriever retriever = new AtcDetailsRetriever();
 		AtcDetailsPanelBuilder detailsBuilder = new AtcDetailsPanelBuilder(retriever);
 		RunnableReadyModel readyModel = new RunnableReadyModel(retriever);
-//		BuildViewWhenReadyComponent c = new BuildViewWhenReadyComponent(detailsBuilder, readyModel, "Loading...");
-//		builder.add(c, cc.xy(3, 5));
+		BuildViewWhenReadyComponent c = new BuildViewWhenReadyComponent(detailsBuilder, readyModel, "Loading...");
+		builder.add(c, cc.xy(3, 5));
 		new Thread(readyModel).start();
 			
 		return builder.getPanel();

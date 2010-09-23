@@ -5,7 +5,6 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ScrollableJPanel;

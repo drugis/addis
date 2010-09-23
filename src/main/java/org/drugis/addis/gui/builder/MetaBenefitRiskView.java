@@ -35,7 +35,6 @@ import javax.swing.JProgressBar;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
 import org.drugis.addis.gui.components.EnhancedTable;

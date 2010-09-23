@@ -32,7 +32,6 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.presentation.PresentationModelFactory;

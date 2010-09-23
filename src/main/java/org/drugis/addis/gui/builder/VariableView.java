@@ -33,7 +33,6 @@ import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.VariablePresentation;

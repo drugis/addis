@@ -41,7 +41,6 @@ import javax.swing.table.AbstractTableModel;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
