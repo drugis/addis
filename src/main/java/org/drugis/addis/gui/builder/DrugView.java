@@ -73,12 +73,12 @@ public class DrugView implements ViewBuilder{
 		CellConstraints cc = new CellConstraints();
 		
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class).getSingularCapitalized(), cc.xy(1, 1));
-		builder.add(GUIFactory.createCollapsiblePanel(createOverviewPart()),
+		builder.add(createOverviewPart(),
 				cc.xy(1, 3));
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural()
 							 + " measuring this "
 							 + CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class).getSingular() , cc.xy(1, 5));
-		builder.add(GUIFactory.createCollapsiblePanel(buildStudiesComp()), 
+		builder.add(buildStudiesComp(), 
 				cc.xy(1, 7));
 				
 		return builder.getPanel();	
@@ -114,8 +114,8 @@ public class DrugView implements ViewBuilder{
 		AtcDetailsRetriever retriever = new AtcDetailsRetriever();
 		AtcDetailsPanelBuilder detailsBuilder = new AtcDetailsPanelBuilder(retriever);
 		RunnableReadyModel readyModel = new RunnableReadyModel(retriever);
-		BuildViewWhenReadyComponent c = new BuildViewWhenReadyComponent(detailsBuilder, readyModel, "Loading...");
-		builder.add(c, cc.xy(3, 5));
+//		BuildViewWhenReadyComponent c = new BuildViewWhenReadyComponent(detailsBuilder, readyModel, "Loading...");
+//		builder.add(c, cc.xy(3, 5));
 		new Thread(readyModel).start();
 			
 		return builder.getPanel();

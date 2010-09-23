@@ -64,7 +64,7 @@ public class GUIFactory {
 		return button;
 	}
 	
-	public static JPanel createCollapsiblePanel(JComponent innerComp) {
+	public static JPanel createCollapsiblePanela(JComponent innerComp) {
 		JPanel topPane = new JPanel(new BorderLayout());
 		JXCollapsiblePane pane = new JXCollapsiblePane();
 		pane.setLayout(new BorderLayout());

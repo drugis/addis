@@ -87,7 +87,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		CellConstraints cc =  new CellConstraints();
 		
 		d_builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(BenefitRiskAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
-		d_builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
+		d_builder.add(buildOverviewPart(), cc.xy(1, 3));
 		
 		final JComponent progressBars = buildProgressBars();
 		d_builder.add(progressBars, cc.xy(1, 5));
@@ -102,19 +102,19 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		});
 		
 		d_builder.addSeparator("Included Analyses", cc.xy(1, 7));
-		d_builder.add(GUIFactory.createCollapsiblePanel(buildAnalysesPart()), cc.xy(1, 9));
+		d_builder.add(buildAnalysesPart(), cc.xy(1, 9));
 		
 		d_builder.addSeparator("Measurements", cc.xy(1, 11));
-		d_builder.add(GUIFactory.createCollapsiblePanel(buildMeasurementsPart()), cc.xy(1, 13));
+		d_builder.add(buildMeasurementsPart(), cc.xy(1, 13));
 		
 		d_builder.addSeparator("Preferences", cc.xy(1, 15));
-		d_builder.add(GUIFactory.createCollapsiblePanel(buildPreferencesPart()), cc.xy(1, 17));
+		d_builder.add(buildPreferencesPart(), cc.xy(1, 17));
 		
 		d_builder.addSeparator("Rank Acceptabilities", cc.xy(1, 19));
-		d_builder.add(GUIFactory.createCollapsiblePanel(buildRankAcceptabilitiesPart()), cc.xy(1, 21));
+		d_builder.add(buildRankAcceptabilitiesPart(), cc.xy(1, 21));
 		
 		d_builder.addSeparator("Central Weights", cc.xy(1, 23));
-		d_builder.add(GUIFactory.createCollapsiblePanel(buildCentralWeightsPart()), cc.xy(1, 25));
+		d_builder.add(buildCentralWeightsPart(), cc.xy(1, 25));
 		
 		d_panel = d_builder.getPanel();
 		ChildComponenentHeightPropagater.attachToContainer(d_panel);

@@ -78,10 +78,10 @@ implements ViewBuilder {
 
 		if (!d_overView) {
 			builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(PairWiseMetaAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
-			builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), cc.xy(1, 3));
+			builder.add(buildOverviewPart(), cc.xy(1, 3));
 
 			builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural(), cc.xy(1, 5));
-			builder.add(GUIFactory.createCollapsiblePanel(buildStudiesPart()), cc.xy(1, 7));
+			builder.add(buildStudiesPart(), cc.xy(1, 7));
 		}
 
 		switch (d_pm.getAnalysisType()) {
@@ -106,12 +106,12 @@ implements ViewBuilder {
 		if (d_overView) {
 			builder.add(buildRelativeEffectPart(BasicMeanDifference.class), cc.xy(1, 11));			
 		} else {
-			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(BasicMeanDifference.class)), cc.xy(1, 11));
+			builder.add(buildRelativeEffectPart(BasicMeanDifference.class), cc.xy(1, 11));
 		}
 		
 		if (!d_overView) {
 			builder.addSeparator("Standardised mean difference", cc.xy(1, 17));
-			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(BasicStandardisedMeanDifference.class)), cc.xy(1, 19));
+			builder.add(buildRelativeEffectPart(BasicStandardisedMeanDifference.class), cc.xy(1, 19));
 		}
 	}
 
@@ -120,15 +120,15 @@ implements ViewBuilder {
 		if (d_overView) {			
 			builder.add(buildRelativeEffectPart(BasicOddsRatio.class), cc.xy(1, 11));			
 		} else {
-			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(BasicOddsRatio.class)), cc.xy(1, 11));
+			builder.add(buildRelativeEffectPart(BasicOddsRatio.class), cc.xy(1, 11));
 		}
 		
 		if (!d_overView) {
 			builder.addSeparator("Risk ratio", cc.xy(1, 13));
-			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(BasicRiskRatio.class)), cc.xy(1, 15));
+			builder.add(buildRelativeEffectPart(BasicRiskRatio.class), cc.xy(1, 15));
 		
 			builder.addSeparator("Risk difference", cc.xy(1, 17));
-			builder.add(GUIFactory.createCollapsiblePanel(buildRelativeEffectPart(BasicRiskDifference.class)), cc.xy(1, 19));
+			builder.add(buildRelativeEffectPart(BasicRiskDifference.class), cc.xy(1, 19));
 		}
 	}
 

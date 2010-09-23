@@ -76,7 +76,7 @@ public class StudyView implements ViewBuilder {
 		int row = 1;
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getSingularCapitalized(), cc.xy(1,row));
 		row += 2;
-		builder.add(GUIFactory.createCollapsiblePanel(d_charView.buildPanel()),	cc.xy(1, row));
+		builder.add(d_charView.buildPanel(),	cc.xy(1, row));
 		row += 2;
 		builder.addSeparator("Arms", cc.xy(1, row));
 		row += 2;
@@ -98,7 +98,7 @@ public class StudyView implements ViewBuilder {
 	}
 
 	private JComponent buildPopulationPart() {
-		return GUIFactory.createCollapsiblePanel(createPopulationPanel());
+		return createPopulationPanel();
 	}
 
 	private JComponent createPopulationPanel() {
@@ -110,14 +110,14 @@ public class StudyView implements ViewBuilder {
 	}
 
 	private JPanel buildArmsPart() {
-		return GUIFactory.createCollapsiblePanel(d_armsView.buildPanel());
+		return d_armsView.buildPanel();
 	}
 
 	private JComponent buildEndpointPart() {
-		return GUIFactory.createCollapsiblePanel(d_epView.buildPanel());
+		return d_epView.buildPanel();
 	}
 	
 	private JComponent buildAdverseEventPart() {
-		return GUIFactory.createCollapsiblePanel(d_adeView.buildPanel());
+		return d_adeView.buildPanel();
 	}
 }
