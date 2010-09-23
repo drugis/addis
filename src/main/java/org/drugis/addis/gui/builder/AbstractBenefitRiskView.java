@@ -11,12 +11,15 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.BenefitRiskPresentation;
+import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
+import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 import org.jfree.chart.ChartFactory;
@@ -63,23 +66,35 @@ public abstract class AbstractBenefitRiskView<PresentationType extends BenefitRi
 	protected JPanel buildOverviewPart() {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = new FormLayout("right:pref, 3dlu, left:pref:grow",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		builder.addLabel("ID:", cc.xy(1, 1));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(MetaBenefitRiskAnalysis.PROPERTY_NAME)), cc.xy(3, 1));
+		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_NAME)), cc.xy(3, 1));
 		
 		builder.addLabel("Indication:", cc.xy(1, 3));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(MetaBenefitRiskAnalysis.PROPERTY_INDICATION), new OneWayObjectFormat()), 
+		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_INDICATION), new OneWayObjectFormat()), 
 				cc.xy(3, 3));
 		
-		builder.addLabel("Criteria:", cc.xy(1, 5));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(MetaBenefitRiskAnalysis.PROPERTY_OUTCOMEMEASURES), new OneWayObjectFormat()), 
-				cc.xy(3, 5));
+		int row = 3;
+		if (d_pm instanceof StudyBenefitRiskPresentation) {
+			row += 2;
+			LayoutUtil.addRow(layout);
+			builder.addLabel("Study:", cc.xy(1, row));
+			builder.add(BasicComponentFactory.createLabel(d_pm.getModel(StudyBenefitRiskAnalysis.PROPERTY_STUDY), new OneWayObjectFormat()), 
+					cc.xy(3, row));
+			
+		}
 		
-		builder.addLabel("Alternatives:", cc.xy(1, 9));
-		builder.add(AuxComponentFactory.createTextArea(ConverterFactory.createStringConverter(d_pm.getModel(MetaBenefitRiskAnalysis.PROPERTY_ALTERNATIVES), new OneWayObjectFormat()), false), 
-				cc.xy(3, 9));
+		row += 2;
+		builder.addLabel("Criteria:", cc.xy(1, row));
+		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_OUTCOMEMEASURES), new OneWayObjectFormat()), 
+				cc.xy(3, row));
+		
+		row += 2;
+		builder.addLabel("Alternatives:", cc.xy(1, row));
+		builder.add(AuxComponentFactory.createTextArea(ConverterFactory.createStringConverter(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_ALTERNATIVES), new OneWayObjectFormat()), false), 
+				cc.xy(3, row));
 		
 		return builder.getPanel();	
 	}
