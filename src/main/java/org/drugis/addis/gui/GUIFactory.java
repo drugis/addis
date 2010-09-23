@@ -22,16 +22,13 @@
 
 package org.drugis.addis.gui;
 
-import java.awt.BorderLayout;
 import java.util.ArrayList;
 
-import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.AdverseEvent;
@@ -43,14 +40,12 @@ import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.StudyListPresentation;
 import org.drugis.common.ImageLoader;
-import org.jdesktop.swingx.JXCollapsiblePane;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.AbstractValueModel;
-import com.jidesoft.swing.JideButton;
 
 public class GUIFactory {
 	public static JButton createPlusButton(String toolTipText) {
@@ -63,31 +58,6 @@ public class GUIFactory {
 		button.setToolTipText(toolTipText);
 		return button;
 	}
-	
-	public static JPanel createCollapsiblePanela(JComponent innerComp) {
-		JPanel topPane = new JPanel(new BorderLayout());
-		JXCollapsiblePane pane = new JXCollapsiblePane();
-		pane.setLayout(new BorderLayout());
-		pane.setAnimated(true);
-		pane.add(innerComp);
-		
-		 // get the built-in toggle action
-		 Action toggleAction = pane.getActionMap().
-		   get(JXCollapsiblePane.TOGGLE_ACTION);
-
-		 // use the collapse/expand icons from the JTree UI
-		 toggleAction.putValue(JXCollapsiblePane.COLLAPSE_ICON,
-				 ImageLoader.getIcon(FileNames.ICON_COLLAPSE));
-		 toggleAction.putValue(JXCollapsiblePane.EXPAND_ICON,
-				 ImageLoader.getIcon(FileNames.ICON_EXPAND));
-		
-		topPane.add(pane, BorderLayout.CENTER);
-		JideButton button = new JideButton(pane.getActionMap().get(JXCollapsiblePane.TOGGLE_ACTION));
-		button.setText("");
-		topPane.add(button, BorderLayout.SOUTH);
-
-		return topPane;
-	}	
 
 	public static JComponent createOutcomeMeasureLabelWithIcon(OutcomeMeasure e) {
 		String fname = FileNames.ICON_STUDY;

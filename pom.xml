@@ -89,11 +89,6 @@
 			<version>2.4</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jidesoft</groupId>
-			<artifactId>jide-oss</artifactId>
-			<version>2.7.2</version>
-		</dependency>		
-		<dependency>
 			<groupId>org.pietschy</groupId>
 			<artifactId>wizard</artifactId>
 			<version>0.1.12</version>
