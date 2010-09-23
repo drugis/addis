@@ -1,18 +1,29 @@
 #!/bin/bash
 
-VERSION=$1
+echo '---- Getting version from Maven'
+mvn validate
+
+VERSION=`cat version`
+rm version
 DIR=addis-$VERSION
 GFX=src/main/resources/org/drugis/addis/gfx
 #DATA=$DIR/data
 
 if [ "$VERSION" = '' ]; then
-	echo 'Please specify the version on the command line';
+	echo '!!!! Error: could not get version';
 	exit;
+else
+	echo "---- Version: $VERSION"
 fi
 
 # Create header.png for current version
 echo '---- Generating header.png'
 (cat graphics/header.scm; echo "(addis-version-header \"ADDIS v $VERSION\" \"graphics/header.xcf\" \"$GFX/header.png\")"; echo '(gimp-quit 0)') | gimp -i -b -
+
+if [[ "$VERSION" == *-SNAPSHOT ]]; then
+	echo '!!!! Not packaging -SNAPSHOT';
+	exit;
+fi;
 
 # Add license to all files
 echo '---- Putting license on all sources'
@@ -20,7 +31,7 @@ ant license
 
 # Package ADDIS
 echo '---- Building JAR'
-mvn package -Dmaven.test.skip
+mvn clean package
 
 mkdir $DIR
 #mkdir -p $DATA
