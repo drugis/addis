@@ -177,10 +177,11 @@ public abstract class AbstractBenefitRiskView<PresentationType extends BenefitRi
 		}
 
 		private void rebuildPanel(final JPanel panel) {
+			((JPanel)panel.getParent()).setVisible(false);
 			panel.removeAll();
 			JComponent prefPanel = buildPreferenceInformationView(d_pm.getPreferencePresentationModel(), d_pm);
 			panel.add(prefPanel, BorderLayout.CENTER);
-
+			((JPanel)panel.getParent()).setVisible(true);
 		}
 
 	}
