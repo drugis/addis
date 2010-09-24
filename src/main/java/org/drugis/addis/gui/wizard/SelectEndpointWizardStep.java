@@ -35,8 +35,8 @@ import org.pietschy.wizard.PanelWizardStep;
 @SuppressWarnings("serial")
 public class SelectEndpointWizardStep extends PanelWizardStep {
 	public SelectEndpointWizardStep(AbstractMetaAnalysisWizardPM<?> pm) {
-		super("Select Endpoint","Select an Endpoint that you want to use for this meta analysis.");
-		add(new JLabel("Endpoint : "));
+		super("Select Outcome","Select an outcome measure (endpoint or adverse event) that you want to use for this meta analysis.");
+		add(new JLabel("Outcome measure : "));
 
 		JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(pm.getOutcomeMeasureListModel(), pm.getOutcomeMeasureModel());
 		add(endPointBox);
