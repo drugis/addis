@@ -2,7 +2,25 @@
 
 VERSION=$1
 DIR=addis-$VERSION
+GFX=src/main/resources/org/drugis/addis/gfx
 #DATA=$DIR/data
+
+if [ "$VERSION" = '' ]; then
+	echo 'Please specify the version on the command line';
+	exit;
+fi
+
+# Create header.png for current version
+echo '---- Generating header.png'
+(cat graphics/header.scm; echo "(addis-version-header \"ADDIS v $VERSION\" \"graphics/header.xcf\" \"$GFX/header.png\")"; echo '(gimp-quit 0)') | gimp -i -b -
+
+# Add license to all files
+echo '---- Putting license on all sources'
+ant license
+
+# Package ADDIS
+echo '---- Building JAR'
+mvn package -Dmaven.test.skip
 
 mkdir $DIR
 #mkdir -p $DATA
