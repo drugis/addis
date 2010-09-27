@@ -22,40 +22,38 @@
 
 package org.drugis.addis.presentation;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.entities.analysis.MeasurementSource;
+import org.drugis.addis.entities.analysis.MeasurementSource.Listener;
 
 @SuppressWarnings("serial")
-public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
+public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extends AbstractTableModel {
 	
-	protected BenefitRiskAnalysis d_br;
-	private PresentationModelFactory d_pmf;
-	private final boolean d_relative;
-
-	public BenefitRiskMeasurementTableModel(BenefitRiskAnalysis br, PresentationModelFactory pmf, boolean relative) {
-		d_br = br;
+	protected final BenefitRiskAnalysis<Alternative> d_br;
+	private final PresentationModelFactory d_pmf;
+	private final MeasurementSource<Alternative> d_source;
+	
+	public BenefitRiskMeasurementTableModel(BenefitRiskAnalysis<Alternative> bra, MeasurementSource<Alternative> source, PresentationModelFactory pmf) {
+		d_br = bra;
+		d_source = source;
 		d_pmf = pmf;
-		d_relative = relative;
-		((BenefitRiskPresentation)pmf.getModel(br)).getAllModelsReadyModel().addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				fireTableDataChanged();				
+		d_source.addMeasurementsChangedListener(new Listener() {
+			public void notifyMeasurementsChanged() {
+				fireTableDataChanged();
 			}
 		});
 	}
-
+	
 	public int getColumnCount() {
 		return d_br.getOutcomeMeasures().size()+1;
 	}
 
 	public int getRowCount() {
-		return d_br.getDrugs().size();
+		return d_br.getAlternatives().size();
 	}
 
 	@Override
@@ -72,14 +70,11 @@ public class BenefitRiskMeasurementTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		Drug drug = d_br.getDrugs().get(rowIndex);
-		if (columnIndex == 0) {
-			return drug.getName();
-		}
+		Alternative a = d_br.getAlternatives().get(rowIndex);
+
+		if (columnIndex == 0) return a.toString();
 
 		OutcomeMeasure om = d_br.getOutcomeMeasures().get(columnIndex-1);
-		Distribution dist = d_relative ? d_br.getRelativeEffectDistribution(drug, om) : d_br.getAbsoluteEffectDistribution(drug, om);
-	
-		return d_pmf.getLabeledModel(dist);
+		return d_pmf.getLabeledModel(d_source.getMeasurement(a, om));
 	}
 }

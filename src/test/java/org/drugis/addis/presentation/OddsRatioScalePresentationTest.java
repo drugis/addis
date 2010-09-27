@@ -27,7 +27,7 @@ import static org.easymock.EasyMock.*;
 import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.OddsRatioToClinicalConverter;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
@@ -40,7 +40,7 @@ import fi.smaa.jsmaa.model.ScaleCriterion;
 
 public class OddsRatioScalePresentationTest {
 	private OddsRatioToClinicalConverter d_orc;
-	private BenefitRiskAnalysis d_br;
+	private MetaBenefitRiskAnalysis d_br;
 	private ScaleCriterion d_criterion;
 	private OddsRatioScalePresentation d_pm;
 
@@ -50,7 +50,7 @@ public class OddsRatioScalePresentationTest {
 	
 	@Before
 	public void setUp() {
-		d_br = ExampleData.buildMockBenefitRiskAnalysis();
+		d_br = ExampleData.buildMetaBenefitRiskAnalysis();
 		d_orc = new OddsRatioToClinicalConverter(d_br, ExampleData.buildEndpointHamd());
 		d_criterion = new ScaleCriterion("criterion", true);
 		d_criterion.setScale(new fi.smaa.jsmaa.model.Interval(0.95, 1.30));

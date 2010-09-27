@@ -56,7 +56,6 @@ public class PresentationModelFactoryTest {
 		this.d_manager = new PresentationModelFactory(d_domain);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testMetaAnalysisGetModel() {
 		List<Study> studies = new ArrayList<Study>();
@@ -72,7 +71,6 @@ public class PresentationModelFactoryTest {
 		assertTrue(m instanceof RandomEffectsMetaAnalysisPresentation);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testStudyGetModel() {
 		Study s = new Study("Study", new Indication(666L, "evil"));
@@ -81,7 +79,6 @@ public class PresentationModelFactoryTest {
 		assertTrue(m instanceof StudyPresentation);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetIndicationModel() {
 		Indication indication = new Indication(0L, "");
@@ -103,7 +100,6 @@ public class PresentationModelFactoryTest {
 				d_domain.getStudies(ExampleData.buildIndicationDepression()).getValue()));
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetDrugModel(){
 		Drug d = ExampleData.buildDrugFluoxetine();
@@ -117,7 +113,6 @@ public class PresentationModelFactoryTest {
 				((DrugPresentation) m).getIncludedStudies().getValue()));		
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetEndpointModel() {
 		OutcomeMeasure e = ExampleData.buildEndpointHamd();
@@ -157,7 +152,6 @@ public class PresentationModelFactoryTest {
 	}
 	
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetEndpointCreationModel() {
 		OutcomeMeasure e = ExampleData.buildEndpointHamd();

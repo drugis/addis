@@ -172,9 +172,9 @@ public interface Domain {
 	 * 
 	 * @param br the BenefitRiskAnalysis to add
 	 */
-	public void addBenefitRiskAnalysis(BenefitRiskAnalysis br);
+	public void addBenefitRiskAnalysis(BenefitRiskAnalysis<?> br);
 
-	public SortedSet<BenefitRiskAnalysis> getBenefitRiskAnalyses();
+	public SortedSet<BenefitRiskAnalysis<?>> getBenefitRiskAnalyses();
 	
 	/**
 	 * Delete a top-level entity from the domain.

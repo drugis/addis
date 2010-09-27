@@ -4,7 +4,7 @@
 	<groupId>org.drugis</groupId>
 	<artifactId>addis</artifactId>
 	<name>ADDIS</name>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.3.1-SNAPSHOT</version>
 
 	<repositories>
 		<repository>
@@ -46,17 +46,22 @@
 		<dependency>
 			<groupId>fi.smaa.jsmaa</groupId>
 			<artifactId>lib</artifactId>
-			<version>0.6.4</version>
+			<version>0.7-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.smaa.jsmaa</groupId>
 			<artifactId>gui</artifactId>
-			<version>0.6.4</version>
+			<version>0.7-SNAPSHOT</version>
 		</dependency>		
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc</artifactId>
-			<version>0.4.2</version>
+			<version>0.4.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.drugis</groupId>
+			<artifactId>common</artifactId>
+			<version>0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jgoodies</groupId>
@@ -83,11 +88,6 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.4</version>
 		</dependency>
-		<dependency>
-			<groupId>com.jidesoft</groupId>
-			<artifactId>jide-oss</artifactId>
-			<version>2.7.2</version>
-		</dependency>		
 		<dependency>
 			<groupId>org.pietschy</groupId>
 			<artifactId>wizard</artifactId>
@@ -251,6 +251,24 @@
           </execution>
         </executions>
       </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<echo file="version">${project.version}</echo>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
         </plugins>
     </build>
     

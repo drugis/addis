@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
@@ -46,11 +47,12 @@ import org.drugis.addis.presentation.ValueHolder;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BenfitRiskWizardPMTest {
+public class BenefitRiskWizardPMTest {
 
 	private DomainImpl d_domain;
 	private BenefitRiskWizardPM d_pm;
 	private Indication d_indication;
+	private Study d_study;
 
 	@Before
 	public void setUp() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
@@ -58,12 +60,15 @@ public class BenfitRiskWizardPMTest {
 		ExampleData.initDefaultData(d_domain);
 		d_pm = new BenefitRiskWizardPM(d_domain); 
 		d_indication = ExampleData.buildIndicationDepression();
+		d_study = ExampleData.buildStudyChouinard();
 		
 		d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysis());
 		d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisAlternative());
 		d_domain.addMetaAnalysis(ExampleData.buildMetaAnalysisConv());
 		d_domain.addMetaAnalysis(ExampleData.buildMetaAnalysisHamd());
 		d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisCgi());
+		
+		d_domain.addStudy(d_study);
 	
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 	}
@@ -99,7 +104,24 @@ public class BenfitRiskWizardPMTest {
 		ValueHolder<Boolean> origModel = d_pm.getOutcomeSelectedModel(om);
 		assertFalse(origModel.getValue());
 		d_pm.getOutcomeSelectedModel(om).setValue(true);
-		assertTrue(origModel.getValue());
+		assertEquals(d_pm.getOutcomeSelectedModel(om).getValue(), origModel.getValue());
+	}
+	
+	@Test
+	public void testArmSelectedModelKeepsChanges() {
+		Arm a = d_study.getArms().get(0);
+		ValueHolder<Boolean> origArm = d_pm.getArmSelectedModel(a);
+		assertFalse(origArm.getValue());
+		d_pm.getArmSelectedModel(a).setValue(true);
+		assertEquals(d_pm.getArmSelectedModel(a).getValue(), origArm.getValue());
+	}
+
+	@Test
+	public void testOutcomeSelectedMultipleAnalysisShouldNotSelect() {
+		OutcomeMeasure om = ExampleData.buildEndpointHamd();
+		d_pm.getOutcomeSelectedModel(om).setValue(true);
+		assertTrue(d_pm.getMetaAnalyses(om).size() > 1);
+		assertNull(d_pm.getMetaAnalysesSelectedModel(om).getValue());	
 	}
 	
 	@Test
@@ -108,14 +130,6 @@ public class BenfitRiskWizardPMTest {
 		d_pm.getOutcomeSelectedModel(om).setValue(true);
 		assertTrue(d_pm.getMetaAnalyses(om).size() == 1);
 		assertNotNull(d_pm.getMetaAnalysesSelectedModel(om).getValue());	
-	}
-	
-	@Test
-	public void testOutcomeSelectedMultipleAnalysisShouldNotSelect() {
-		OutcomeMeasure om = ExampleData.buildEndpointHamd();
-		d_pm.getOutcomeSelectedModel(om).setValue(true);
-		assertTrue(d_pm.getMetaAnalyses(om).size() > 1);
-		assertNull(d_pm.getMetaAnalysesSelectedModel(om).getValue());	
 	}
 	
 	@Test
@@ -175,7 +189,17 @@ public class BenfitRiskWizardPMTest {
 	}
 	
 	@Test
-	public void testCompletedModelFalseWithLessThanTwoDrugs() {
+	public void testGetArmsSelectedModel() {
+		Arm a = d_study.getArms().get(0);
+		
+		ValueHolder<Boolean> actual = d_pm.getArmSelectedModel(a);
+		assertEquals(false,actual.getValue());
+		actual.setValue(true);
+		assertEquals(true,actual.getValue());
+	}
+		
+	@Test
+	public void testCompletedMetaModelFalseWithLessThanTwoDrugs() {
 		d_pm.getIndicationModel().setValue(d_indication);
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 		d_pm.getOutcomeSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
@@ -187,12 +211,44 @@ public class BenfitRiskWizardPMTest {
 	}
 
 	@Test
-	public void testCompletedModelFalseWithLessThanTwoCriteria() {
+	public void testCompletedMetaModelFalseWithLessThanTwoCriteria() {
 		d_pm.getIndicationModel().setValue(d_indication);
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
 		assertTrue(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).getValue());
 		assertTrue(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine()).getValue());
+		assertFalse(d_pm.getCompleteModel().getValue());
+	}
+
+	@Test
+	public void testCompletedStudyFalseWithLessThanTwoDrugs() {
+		d_pm.getIndicationModel().setValue(d_indication);
+
+		// note: using local copy of chouinard (has 2 arms) so that test won't fail if setup is changed to different study
+		Study local = ExampleData.buildStudyChouinard();
+		d_pm.getStudyModel().setValue(local);
+		
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
+		
+		d_pm.getArmSelectedModel(local.getArms().get(1)).setValue(true);
+		
+		assertFalse(d_pm.getCompleteModel().getValue());
+	}
+	
+	@Test
+	public void testCompletedSingleStudyFalseWithLessThanTwoCriteria() {
+		d_pm.getIndicationModel().setValue(d_indication);
+
+		// note: using local copy of chouinard (has 2 arms) so that test won't fail if setup is changed to different study
+		Study local = ExampleData.buildStudyChouinard();
+		d_pm.getStudyModel().setValue(local);
+		
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+
+		d_pm.getArmSelectedModel(local.getArms().get(0)).setValue(true);
+		d_pm.getArmSelectedModel(local.getArms().get(1)).setValue(true);
+		
 		assertFalse(d_pm.getCompleteModel().getValue());
 	}
 
@@ -210,7 +266,7 @@ public class BenfitRiskWizardPMTest {
 	}
 
 	@Test
-	public void testCompletedModelTrueWithTwoDrugsTwoCriteria() {
+	public void testCompletedMetaAnalysisModelTrueWithTwoDrugsTwoCriteria() {
 		d_pm.getIndicationModel().setValue(d_indication);
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 		d_pm.getOutcomeSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
@@ -218,6 +274,22 @@ public class BenfitRiskWizardPMTest {
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
 		assertTrue(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).getValue());
 		assertTrue(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine()).getValue());
+		assertTrue(d_pm.getCompleteModel().getValue());
+	}
+
+	@Test
+	public void testCompletedSingleStudyModelTrueWithTwoDrugsTwoCriteria() {
+		d_pm.getIndicationModel().setValue(d_indication);
+
+		// note: using local copy of chouinard (has 2 arms) so that test won't fail if setup is changed to different study
+		Study local = ExampleData.buildStudyChouinard();
+		d_pm.getStudyModel().setValue(local);
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
+
+		d_pm.getArmSelectedModel(local.getArms().get(0)).setValue(true);
+		d_pm.getArmSelectedModel(local.getArms().get(1)).setValue(true);
+		
 		assertTrue(d_pm.getCompleteModel().getValue());
 	}
 	
@@ -232,6 +304,25 @@ public class BenfitRiskWizardPMTest {
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
 		assertTrue(d_pm.getSelectedCriteria().isEmpty());
 		assertTrue(d_pm.getSelectedAlternatives().isEmpty());
+		assertTrue(d_pm.getStudyModel().getValue() == null);
 		assertFalse(d_pm.getCompleteModel().getValue());
 	}
+
+	@Test
+	public void testChangeStudyShouldClearValues() {
+		d_pm.getIndicationModel().setValue(d_indication);
+		d_pm.getStudyModel().setValue(d_study);
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
+		
+		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine()).setValue(true);
+		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).setValue(true);
+		
+		d_pm.getStudyModel().setValue(ExampleData.buildStudyBennie());
+		assertTrue(d_pm.getSelectedCriteria().isEmpty());
+		assertTrue(d_pm.getSelectedAlternatives().isEmpty());
+		assertFalse(d_pm.getCompleteModel().getValue());
+
+	}
+	
 }

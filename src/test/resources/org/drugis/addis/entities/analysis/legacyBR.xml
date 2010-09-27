@@ -1,0 +1,200 @@
+<?xml version="1.0" ?>
+<org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis id="0" name="testBenefitRiskAnalysis">
+	<baseline class="drug" id="1" atcCode="A04AA01" name="Paroxetine"/>
+	<drugs id="2">
+		<drug id="3" atcCode="N06AB03" name="Fluoxetine"/>
+		<drug ref="1"/>
+	</drugs>
+	<indication class="indication" id="4" code="310497006" name="Severe depression"/>
+	<metaAnalyses id="5">
+		<randomEffectsMetaAnalysis id="6" name="Convulsion test analysis">
+			<indication ref="4"/>
+			<outcomeMeasure class="adverseEvent" id="7" description="Rate of convulsion during study" name="Convulsion" unitOfMeasurement="Ratio of Patients">
+				<direction value="LOWER_IS_BETTER"/>
+				<type value="RATE"/>
+			</outcomeMeasure>
+			<armEntries>
+				<armEntry>
+					<study id="8" studyId="De Wilde et al, 1993">
+						<adverseEvents id="9">
+							<adverseEvent ref="7"/>
+						</adverseEvents>
+						<arms id="10">
+							<arm id="11" size="37">
+								<dose class="fixedDose" id="12" quantity="25.5">
+									<unit value="MILLIGRAMS_A_DAY"/>
+								</dose>
+								<drug class="drug" ref="1"/>
+							</arm>
+							<arm id="13" size="41">
+								<dose class="fixedDose" id="14" quantity="27.5">
+									<unit value="MILLIGRAMS_A_DAY"/>
+								</dose>
+								<drug class="drug" ref="3"/>
+							</arm>
+						</arms>
+						<characteristics class="characteristics">
+							<ALLOCATION class="allocation" value="RANDOMIZED"/>
+							<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+							<CENTERS class="number" value="1"/>
+							<OBJECTIVE class="string" id="15" value="To compare the efficacy and tolerability of once or twice daily administration of the selective serotonin reuptake inhibitors paroxetine and fluoxetine."/>
+							<STATUS class="status" value="COMPLETED"/>
+							<INCLUSION class="string" id="16" value="After a 1-week placebo wash-out, patients suffering from DSM-III major depression and with a score of 18 or more on the 21-item Hamilton Rating Scale for Depression (HRSD) received either paroxetine or fluoxetine."/>
+							<EXCLUSION class="string" id="17" value=""/>
+							<CREATION_DATE class="date" date="14 Sep 2010"/>
+						</characteristics>
+						<endpoints id="18">
+							<endpoint id="19" description="Responders with a 50% increase in HAM-D score" name="HAM-D Responders" unitOfMeasurement="Ratio of Patients">
+								<direction value="HIGHER_IS_BETTER"/>
+								<type value="RATE"/>
+							</endpoint>
+						</endpoints>
+						<indication class="indication" ref="4"/>
+						<measurements>
+							<measurement id="20">
+								<outcomeMeasure class="endpoint" ref="19"/>
+								<arm ref="13"/>
+								<measurement class="rateMeasurement" id="21" rate="26" sampleSize="41"/>
+							</measurement>
+							<measurement id="22">
+								<outcomeMeasure class="adverseEvent" ref="7"/>
+								<arm ref="11"/>
+								<measurement class="rateMeasurement" id="23" rate="10" sampleSize="40"/>
+							</measurement>
+							<measurement id="24">
+								<outcomeMeasure class="endpoint" ref="19"/>
+								<arm ref="11"/>
+								<measurement class="rateMeasurement" id="25" rate="23" sampleSize="37"/>
+							</measurement>
+							<measurement id="26">
+								<outcomeMeasure class="adverseEvent" ref="7"/>
+								<arm ref="13"/>
+								<measurement class="rateMeasurement" id="27" rate="10" sampleSize="34"/>
+							</measurement>
+						</measurements>
+						<notes/>
+						<populationCharacteristics id="28"/>
+					</study>
+					<drug ref="3"/>
+					<arm ref="13"/>
+				</armEntry>
+				<armEntry>
+					<study ref="8"/>
+					<drug ref="1"/>
+					<arm ref="11"/>
+				</armEntry>
+				<armEntry>
+					<study id="29" studyId="Chouinard et al, 1999">
+						<adverseEvents id="30">
+							<adverseEvent ref="7"/>
+						</adverseEvents>
+						<arms id="31">
+							<arm id="32" size="102">
+								<dose class="fixedDose" id="33" quantity="25.5">
+									<unit value="MILLIGRAMS_A_DAY"/>
+								</dose>
+								<drug class="drug" ref="1"/>
+							</arm>
+							<arm id="34" size="101">
+								<dose class="fixedDose" id="35" quantity="27.5">
+									<unit value="MILLIGRAMS_A_DAY"/>
+								</dose>
+								<drug class="drug" ref="3"/>
+							</arm>
+						</arms>
+						<characteristics class="characteristics">
+							<ALLOCATION class="allocation" value="RANDOMIZED"/>
+							<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+							<CENTERS class="number" value="8"/>
+							<OBJECTIVE class="string" id="36" value="The antidepressant and anxiolytic efficacy of the selective serotonin reuptake inhibitors paroxetine and fluoxetine was compared in patients with moderate to severe depression."/>
+							<STUDY_START class="date" date="13 Dec 1991"/>
+							<STATUS class="status" value="COMPLETED"/>
+							<INCLUSION class="string" id="37" value="Patients were recruited through newspaper ads and referrals. Patients were included if they had symptoms of depression for at least one month prior to the screening visit, a total score of 20 on the 21-item Hamilton Depression Rating Scale (HAM-D) (Hamilton, 1960), and a score of two on item one HAM-D at the screening visit (5–14 days prior to baseline) and at entry (Day 0)."/>
+							<EXCLUSION class="string" id="38" value="Patients were excluded if they had significant coexisting illness, including renal, hepatic, gastrointestinal, cardiovascular or neurological disease; non-stabilized diabetes; other current Axis I psychiatric diagnosis; organic brain syndrome; past or present abuse of alcohol or illicit drugs; were at significant risk of suicide; or were pregnant or lactating. Other exclusion criteria included ECT or continuous lithium therapy in the preceding two months, monoamine oxidase inhibitor or oral neuroleptic use in the preceding 21 days, any antidepressant or sedative hypnotic (except chloral hydrate) in the previous seven days, fluoxetine in the previous 35 days, or current therapy with an anticoagulant or type 1C antiarrhythmic (e.g. flecainide, propafenone). Patients who had clinically significant abnormalities on the prestudy physical examination, ECG or laboratory tests (hematology, biochemistry and thyroid tests) were also excluded. The use of formal psychotherapy was not permitted for the duration of the study."/>
+							<CREATION_DATE class="date" date="14 Sep 2010"/>
+						</characteristics>
+						<endpoints id="39">
+							<endpoint ref="19"/>
+							<endpoint id="40" description="Change from baseline CGI Severity of Illness score" name="CGI Severity Change" unitOfMeasurement="Deviation from the baseline of CGI Severity of Illness score">
+								<direction value="HIGHER_IS_BETTER"/>
+								<type value="CONTINUOUS"/>
+							</endpoint>
+						</endpoints>
+						<indication class="indication" ref="4"/>
+						<measurements>
+							<measurement id="41">
+								<outcomeMeasure class="endpoint" ref="19"/>
+								<arm ref="34"/>
+								<measurement class="rateMeasurement" id="42" rate="67" sampleSize="101"/>
+							</measurement>
+							<measurement id="43">
+								<outcomeMeasure class="endpoint" ref="40"/>
+								<arm ref="32"/>
+								<measurement class="continuousMeasurement" id="44" mean="-1.6899999999999999" sampleSize="102" stdDev="0.16"/>
+							</measurement>
+							<measurement id="45">
+								<outcomeMeasure class="adverseEvent" ref="7"/>
+								<arm ref="32"/>
+								<measurement class="rateMeasurement" id="46" rate="10" sampleSize="40"/>
+							</measurement>
+							<measurement id="47">
+								<outcomeMeasure class="adverseEvent" ref="7"/>
+								<arm ref="34"/>
+								<measurement class="rateMeasurement" ref="46"/>
+							</measurement>
+							<measurement id="48">
+								<outcomeMeasure class="endpoint" ref="40"/>
+								<arm ref="34"/>
+								<measurement class="continuousMeasurement" id="49" mean="-1.8" sampleSize="101" stdDev="0.16"/>
+							</measurement>
+							<measurement id="50">
+								<outcomeMeasure class="endpoint" ref="19"/>
+								<arm ref="32"/>
+								<measurement class="rateMeasurement" id="51" rate="67" sampleSize="102"/>
+							</measurement>
+						</measurements>
+						<notes/>
+						<populationCharacteristics id="52"/>
+					</study>
+					<drug ref="3"/>
+					<arm ref="34"/>
+				</armEntry>
+				<armEntry>
+					<study ref="29"/>
+					<drug ref="1"/>
+					<arm ref="32"/>
+				</armEntry>
+			</armEntries>
+		</randomEffectsMetaAnalysis>
+		<randomEffectsMetaAnalysis id="53" name="Hamd test analysis">
+			<indication ref="4"/>
+			<outcomeMeasure class="endpoint" ref="19"/>
+			<armEntries>
+				<armEntry>
+					<study ref="8"/>
+					<drug ref="3"/>
+					<arm ref="13"/>
+				</armEntry>
+				<armEntry>
+					<study ref="8"/>
+					<drug ref="1"/>
+					<arm ref="11"/>
+				</armEntry>
+				<armEntry>
+					<study ref="29"/>
+					<drug ref="3"/>
+					<arm ref="34"/>
+				</armEntry>
+				<armEntry>
+					<study ref="29"/>
+					<drug ref="1"/>
+					<arm ref="32"/>
+				</armEntry>
+			</armEntries>
+		</randomEffectsMetaAnalysis>
+	</metaAnalyses>
+	<outcomeMeasures id="54">
+		<endpoint ref="19"/>
+		<adverseEvent ref="7"/>
+	</outcomeMeasures>
+</org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis>

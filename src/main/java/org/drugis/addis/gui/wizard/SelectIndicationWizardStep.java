@@ -26,6 +26,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
 import org.drugis.addis.presentation.wizard.WizardWithSelectableIndicationPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
@@ -36,6 +37,7 @@ public class SelectIndicationWizardStep extends PanelWizardStep {
 	public SelectIndicationWizardStep(WizardWithSelectableIndicationPresentation pm) {
 		super("Select Indication","Select an Indication that you want to use for this meta analysis.");
 		JComboBox indBox = AuxComponentFactory.createBoundComboBox(pm.getIndicationListModel(), pm.getIndicationModel());
+		add(new JLabel("Indication : "));
 		add(indBox);
 		pm.getIndicationModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {

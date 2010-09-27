@@ -25,14 +25,18 @@ package org.drugis.addis.gui.wizard;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -40,12 +44,14 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
+import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM.BRAType;
 import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardModel;
+import org.pietschy.wizard.models.Condition;
 import org.pietschy.wizard.models.DynamicModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -64,22 +70,177 @@ public class BenefitRiskWizard extends Wizard {
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 	}
 
-	private static WizardModel buildModel(BenefitRiskWizardPM pm, Main frame) {
+	private static WizardModel buildModel(final BenefitRiskWizardPM pm, Main frame) {
 		DynamicModel wizardModel = new DynamicModel();
 		wizardModel.add(new SelectIndicationWizardStep(pm));
-		wizardModel.add(new SelectCriteriaAndAlternativesWizardStep(pm, frame));
+		wizardModel.add(new SelectStudyOrMetaAnalysisWizardStep(pm, frame));
+		wizardModel.add(new SelectStudyWizardStep(pm, frame), new Condition() {
+			public boolean evaluate(WizardModel model) {
+				return pm.getAnalysisType().getValue() == BRAType.SINGLE_STUDY_TYPE;
+			}
+		});
+		wizardModel.add(new SelectOutcomeMeasuresAndArmsWizardStep(pm, frame), new Condition() {
+			public boolean evaluate(WizardModel model) {
+				return pm.getAnalysisType().getValue() == BRAType.SINGLE_STUDY_TYPE;
+			}
+		});
+		wizardModel.add(new SelectCriteriaAndAlternativesWizardStep(pm, frame), new Condition() {
+			public boolean evaluate(WizardModel model) {
+				return pm.getAnalysisType().getValue() == BRAType.SYNTHESYS_TYPE;
+			}
+		});
 		
 		return wizardModel;
 	}
 	
+	private static class SelectStudyOrMetaAnalysisWizardStep extends PanelWizardStep {
+		public SelectStudyOrMetaAnalysisWizardStep(BenefitRiskWizardPM pm, Main main){
+			super("Select Study or Meta-analysis","In this step, you select whether to base your analysis on a synthesis of multiple studies, or on a single study.");
+
+			JPanel radioButtonPanel = new JPanel();
+			radioButtonPanel.setLayout(new BoxLayout(radioButtonPanel,BoxLayout.Y_AXIS));
+			 JRadioButton MetaAnalysisButton = BasicComponentFactory.createRadioButton(pm.getAnalysisType(), BRAType.SYNTHESYS_TYPE, "Evidence synthesis");
+			 JRadioButton StudyButton = BasicComponentFactory.createRadioButton(pm.getAnalysisType(), BRAType.SINGLE_STUDY_TYPE, "Single study");
+
+			 radioButtonPanel.add(MetaAnalysisButton);
+		     radioButtonPanel.add(StudyButton);
+		    
+		     add(radioButtonPanel);
+		    
+		     setComplete(true);
+		}
+	}
+
+	private static class SelectStudyWizardStep extends PanelWizardStep {
+		public SelectStudyWizardStep(final BenefitRiskWizardPM pm, Main main){
+			super("Select Study","In this step, you select which study you use as a basis for your analysis.");
+			add(new JLabel("Study : "));
+
+			JComboBox studyBox = AuxComponentFactory.createBoundComboBox(pm.getStudiesWithIndication(), pm.getStudyModel());
+			add(studyBox);
+			pm.getStudyModel().addValueChangeListener(new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					setComplete(evt.getNewValue() != null);
+				}
+			});
+		}
+	}
+
+	private static class SelectOutcomeMeasuresAndArmsWizardStep extends PanelWizardStep {
+		private Main d_main;
+		private BenefitRiskWizardPM d_pm;
+	
+		public SelectOutcomeMeasuresAndArmsWizardStep(BenefitRiskWizardPM pm, Main main) {
+			super("Select OutcomeMeasures and Arms","In this step, you select the criteria (specific outcomemeasures) " +
+					"and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least " +
+					"two criteria and at least two alternatives must be included.");
+			d_main = main;
+			d_pm = pm;			
+		}
+		
+		@Override
+		public void prepare() {
+			this.removeAll();
+			add(buildPanel());
+			Bindings.bind(this, "complete", d_pm.getCompleteModel());
+		}
+		
+		@Override
+		public void applyState() throws InvalidStateException {
+			saveAsAnalysis();
+		}
+		
+		private void saveAsAnalysis() throws InvalidStateException {
+			String res = JOptionPane.showInputDialog(this.getTopLevelAncestor(),
+					"Input name for new analysis", 
+					"Save analysis", JOptionPane.QUESTION_MESSAGE);
+			if (res != null) {
+				try {
+					d_main.leftTreeFocus(d_pm.saveAnalysis(res));
+				} catch (EntityIdExistsException e) {
+					JOptionPane.showMessageDialog(this.getTopLevelAncestor(), 
+							"There already exists an analysis with the given name, input another name",
+							"Unable to save analysis", JOptionPane.ERROR_MESSAGE);
+					saveAsAnalysis();
+				}
+			} else {
+				throw new InvalidStateException();
+			}
+		}
+		private JPanel buildPanel() {
+			FormLayout layout = new FormLayout(
+					"left:pref, 3dlu, left:pref",
+					"p"
+					);	
+			
+			PanelBuilder builder = new PanelBuilder(layout);
+			CellConstraints cc = new CellConstraints();
+			
+			builder.add(buildOutcomeMeasuresPane(d_pm), cc.xy(1, 1));
+			builder.add(buildArmsPane(d_pm), cc.xy(3, 1));
+			
+			return builder.getPanel();
+		}
+
+		private Component buildOutcomeMeasuresPane(BenefitRiskWizardPM pm) {
+			FormLayout layout = new FormLayout(
+					"left:pref",
+					"p, 3dlu, p, 3dlu, p"
+					);	
+			
+			PanelBuilder builder = new PanelBuilder(layout);
+			CellConstraints cc = new CellConstraints();
+			
+			JLabel outcomeMeasuresLabel = new JLabel("Criteria");
+			outcomeMeasuresLabel.setFont(
+				outcomeMeasuresLabel.getFont().deriveFont(Font.BOLD));
+			builder.add(outcomeMeasuresLabel, cc.xy(1, 1));
+			int row = 1;
+			for(OutcomeMeasure out : d_pm.getStudyModel().getValue().getOutcomeMeasures()){
+				// Add outcome measure checkbox
+				row += 2;
+				LayoutUtil.addRow(layout);
+				JCheckBox checkBox = BasicComponentFactory.createCheckBox(d_pm.getOutcomeSelectedModel(out), out.getName());
+				builder.add(checkBox, cc.xy(1, row));
+			}
+			
+			return AuxComponentFactory.createInScrollPane(builder, 350, 550);
+		}
+
+		private Component buildArmsPane(BenefitRiskWizardPM pm) {
+			FormLayout layout = new FormLayout(
+					"left:pref, 3dlu, left:pref",
+					"p, 3dlu, p, 3dlu, p"
+					);	
+			
+			PanelBuilder builder = new PanelBuilder(layout);
+			CellConstraints cc = new CellConstraints();
+			
+			JLabel alternativesLabel = new JLabel("Alternatives");
+			alternativesLabel.setFont(alternativesLabel.getFont().deriveFont(Font.BOLD));
+			builder.add(alternativesLabel, cc.xy(1, 1));
+			
+			int row = 1;
+			for(Arm a : d_pm.getStudyModel().getValue().getArms() ){
+				LayoutUtil.addRow(layout);
+				ValueHolder<Boolean> selectedModel = d_pm.getArmSelectedModel(a);
+				selectedModel.setValue(true);
+				JCheckBox armCheckbox = BasicComponentFactory.createCheckBox(selectedModel, a.getDrug().getName());
+				builder.add(armCheckbox, cc.xy(1, row += 2));
+			}
+			
+			return AuxComponentFactory.createInScrollPane(builder, 350, 550);
+		}		
+	}
+
 	private static class SelectCriteriaAndAlternativesWizardStep extends PanelWizardStep {
 		private Main d_main;
 		private BenefitRiskWizardPM d_pm;
 
 		public SelectCriteriaAndAlternativesWizardStep(BenefitRiskWizardPM pm, Main main){
 			super("Select Criteria and Alternatives","In this step, you select the criteria (analyses on specific outcomemeasures) and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least two criteria and at least two alternatives must be included.");
-			d_pm = pm;
 			d_main = main;
+			d_pm = pm;
 		}
 
 		@Override

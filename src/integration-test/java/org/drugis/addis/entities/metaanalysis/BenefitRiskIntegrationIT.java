@@ -30,12 +30,12 @@ import java.io.InputStream;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainManager;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.presentation.BenefitRiskMeasurementTableModel;
-import org.drugis.addis.presentation.BenefitRiskPresentation;
+import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.junit.Test;
 
@@ -54,7 +54,7 @@ public class BenefitRiskIntegrationIT {
 		PresentationModelFactory pmf = new PresentationModelFactory(domain);
 		
 		// Run the br analysis.
-		BenefitRiskAnalysis analysis = domain.getBenefitRiskAnalyses().first();
+		MetaBenefitRiskAnalysis analysis = (MetaBenefitRiskAnalysis) domain.getBenefitRiskAnalyses().first();
 		analysis.runAllConsistencyModels();
 		
 		boolean modelsDone = false;
@@ -73,8 +73,8 @@ public class BenefitRiskIntegrationIT {
 		 * The 'expected' values below are not guaranteed to be correct. This part of the test is intended to flag changes of the results.
 		 * However, since the results are non-deterministic the test might fail occasionally even if the algorithm hasn't changed.
 		 */
-		BenefitRiskPresentation pm = (BenefitRiskPresentation) pmf.getModel(analysis);
-		BenefitRiskMeasurementTableModel mtm = pm.getMeasurementTableModel(true);
+		MetaBenefitRiskPresentation pm = (MetaBenefitRiskPresentation) pmf.getModel((MetaBenefitRiskAnalysis)analysis);
+		BenefitRiskMeasurementTableModel mtm = pm.getRelativeMeasurementTableModel();
 		
 		assertMeanwithinTenPercent(0.875, -1.032, 2.782, mtm.getValueAt(1, 1));
 		assertMeanwithinTenPercent(0.838, 0.465, 1.509, mtm.getValueAt(1, 2));
@@ -88,7 +88,7 @@ public class BenefitRiskIntegrationIT {
 		PresentationModelFactory pmf = new PresentationModelFactory(domain);
 		
 		// Run the br analysis.
-		BenefitRiskAnalysis analysis = domain.getBenefitRiskAnalyses().first();
+		MetaBenefitRiskAnalysis analysis = (MetaBenefitRiskAnalysis) domain.getBenefitRiskAnalyses().first();
 		analysis.runAllConsistencyModels();
 		
 		boolean modelsDone = false;
@@ -107,8 +107,8 @@ public class BenefitRiskIntegrationIT {
 		 * The 'expected' values below are not guaranteed to be correct. This part of the test is intended to flag changes of the results.
 		 * However, since the results are non-deterministic the test might fail occasionally even if the algorithm hasn't changed.
 		 */
-		BenefitRiskPresentation pm = (BenefitRiskPresentation) pmf.getModel(analysis);
-		BenefitRiskMeasurementTableModel mtm = pm.getMeasurementTableModel(true);
+		MetaBenefitRiskPresentation pm = (MetaBenefitRiskPresentation) pmf.getModel((MetaBenefitRiskAnalysis)analysis);
+		BenefitRiskMeasurementTableModel mtm = pm.getRelativeMeasurementTableModel();
 		
 		
 		assertMeanwithinTenPercent(1.187, 0.904, 1.558,mtm.getValueAt(1, 1));

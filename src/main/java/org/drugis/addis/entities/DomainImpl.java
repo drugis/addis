@@ -41,6 +41,7 @@ import java.util.TreeSet;
 import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
@@ -317,7 +318,7 @@ public class DomainImpl implements Domain {
 				deps.add(s);
 			}
 		}		
-		for (BenefitRiskAnalysis s : d_domainData.getBenefitRiskAnalyses()) {
+		for (BenefitRiskAnalysis<?> s : d_domainData.getBenefitRiskAnalyses()) {
 			if (s.getDependencies().contains(e)) {
 				deps.add(s);
 			}
@@ -338,8 +339,8 @@ public class DomainImpl implements Domain {
 			deleteStudy((Study) entity);
 		} else if (entity instanceof MetaAnalysis) {
 			deleteMetaAnalysis((MetaAnalysis) entity);
-		} else if (entity instanceof BenefitRiskAnalysis) {
-			deleteBenefitRiskAnalysis((BenefitRiskAnalysis) entity);
+		} else if (entity instanceof MetaBenefitRiskAnalysis) {
+			deleteBenefitRiskAnalysis((MetaBenefitRiskAnalysis) entity);
 		} else if (entity instanceof Indication) {
 			deleteIndication((Indication) entity);
 		} else {
@@ -414,7 +415,7 @@ public class DomainImpl implements Domain {
 		fireDomainChanged(DomainEvent.Type.ANALYSES);
 	}
 
-	public void deleteBenefitRiskAnalysis(BenefitRiskAnalysis bra)
+	public void deleteBenefitRiskAnalysis(MetaBenefitRiskAnalysis bra)
 			throws DependentEntitiesException {
 		checkDependents(bra);
 		d_domainData.removeBRAnalysis(bra);
@@ -527,7 +528,7 @@ public class DomainImpl implements Domain {
 		domainDataReinit();
 	}
 
-	public void addBenefitRiskAnalysis(BenefitRiskAnalysis brAnalysis) {
+	public void addBenefitRiskAnalysis(BenefitRiskAnalysis<?> brAnalysis) {
 		if (brAnalysis == null) {
 			throw new NullPointerException();
 		}
@@ -535,7 +536,7 @@ public class DomainImpl implements Domain {
 		fireDomainChanged(DomainEvent.Type.BENEFITRISK_ANALYSIS);
 	}
 
-	public SortedSet<BenefitRiskAnalysis> getBenefitRiskAnalyses() {
+	public SortedSet<BenefitRiskAnalysis<?>> getBenefitRiskAnalyses() {
 		return Collections.unmodifiableSortedSet(d_domainData.getBenefitRiskAnalyses());
 	}
 

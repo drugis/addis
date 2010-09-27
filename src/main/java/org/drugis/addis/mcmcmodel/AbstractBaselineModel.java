@@ -39,6 +39,7 @@ import java.util.List;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.common.threading.AbstractSuspendable;
+import org.drugis.common.threading.TerminatedException;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.ProgressEvent;
 import org.drugis.mtc.ProgressListener;
@@ -64,22 +65,22 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 	}
 
 	public void run() {
-		notifyEvent(EventType.MODEL_CONSTRUCTION_STARTED);
-		buildModel();
-		if (isTerminated())
-			return ;
-		notifyEvent(EventType.MODEL_CONSTRUCTION_FINISHED);
-		
-		notifyEvent(EventType.BURNIN_STARTED);
-		burnIn();
-		if (isTerminated())
-			return ;
-		notifyEvent(EventType.BURNIN_FINISHED);
-		
-		notifyEvent(EventType.SIMULATION_STARTED);
-		simulate();
-		d_isReady  = true;
-		notifyEvent(EventType.SIMULATION_FINISHED);
+		try {
+			notifyEvent(EventType.MODEL_CONSTRUCTION_STARTED);
+			buildModel();
+			notifyEvent(EventType.MODEL_CONSTRUCTION_FINISHED);
+			
+			notifyEvent(EventType.BURNIN_STARTED);
+			burnIn();
+			notifyEvent(EventType.BURNIN_FINISHED);
+			
+			notifyEvent(EventType.SIMULATION_STARTED);
+			simulate();
+			d_isReady  = true;
+			notifyEvent(EventType.SIMULATION_FINISHED);
+		} catch (TerminatedException te) {
+			
+		}
 	}
 
 	private void notifyEvent(EventType type) {
@@ -106,26 +107,22 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 		}
 	}
 
-	private void burnIn() {
+	private void burnIn() throws TerminatedException {
 		for (int iter = 0; iter < d_burnInIter; ++iter) {
 			
 			if (iter > 0 && iter % d_reportingInterval == 0) {
 				notifyBurnInProgress(iter);
 				waitIfSuspended();
-				if (isTerminated())
-					return ;
 			}
 			update();
 		}
 	}
 
-	private void simulate() {
+	private void simulate() throws TerminatedException {
 		for (int iter = 0; iter < d_simulationIter; ++iter) {
 			if (iter > 0 && iter % d_reportingInterval == 0) {
 				notifySimulationProgress(iter);
 				waitIfSuspended();
-				if (isTerminated())
-					return ;
 			}
 			update();
 			output();
@@ -136,7 +133,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 		d_mu.update();
 	}
 
-	private void update() {
+	private void update() throws TerminatedException {
 		for (MCMCUpdate u : d_updates) {
 			waitIfSuspended();
 			u.update();

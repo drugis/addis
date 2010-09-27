@@ -41,7 +41,6 @@ import javax.swing.table.AbstractTableModel;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
@@ -140,13 +139,13 @@ implements ViewBuilder {
 		d_cc = new CellConstraints();		
 
 		d_builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(NetworkMetaAnalysis.class).getSingularCapitalized(), d_cc.xy(1, 1));
-		d_builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()), d_cc.xy(1, 3));
+		d_builder.add(buildOverviewPart(), d_cc.xy(1, 3));
 
 		d_builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural(), d_cc.xy(1, 5));
-		d_builder.add(GUIFactory.createCollapsiblePanel(buildStudiesPart()), d_cc.xy(1, 7));
+		d_builder.add(buildStudiesPart(), d_cc.xy(1, 7));
 
 		d_builder.addSeparator("Evidence network", d_cc.xy(1, 9));
-		d_builder.add(GUIFactory.createCollapsiblePanel(buildStudyGraphPart()), d_cc.xy(1, 11));
+		d_builder.add(buildStudyGraphPart(), d_cc.xy(1, 11));
 
 		d_builder.addSeparator("Results - network inconsistency model", d_cc.xy(1, 13));
 		buildInconsistencyPart();
@@ -185,7 +184,7 @@ implements ViewBuilder {
 		consistencyPanel.add(consistencyTablePanel, cc.xy(1, 3));
 
 		consistencyPanel.add(createRankProbChart(), cc.xy(1, 5));
-		JPanel collapsiblePanel = GUIFactory.createCollapsiblePanel(consistencyPanel);
+		JPanel collapsiblePanel = consistencyPanel;
 		collapsiblePanel.setBorder(BorderFactory.createEmptyBorder(0,0,20,0));  
 		
 		d_builder.add(collapsiblePanel, d_cc.xy(1, 27));
@@ -240,7 +239,7 @@ implements ViewBuilder {
 				})
 			);
 		
-		d_builder.add(GUIFactory.createCollapsiblePanel(inconsistencyPanel), d_cc.xy(1, 19));
+		d_builder.add(inconsistencyPanel, d_cc.xy(1, 19));
 	}
 
 	private JComponent createRankProbChart() {

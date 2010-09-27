@@ -1,15 +1,28 @@
- 1. ant license #apply license to all sources
-    - git commit
- 2. edit pom.xml (change version)
-    - git commit
- 3. mvn package
- 4. ./release.sh $(VERSION)
- 5. verify that the addis-$VERSION.zip was created and contains the JAR, the
+ 1. edit pom.xml and change version
+
+ 2. edit README.txt to reflect changes in the new version
+
+ 3. commit your changes to git
+
+ 4. ./release.sh
+
+ 5. commit the automated changes to git
+
+ 6. verify that the addis-$VERSION.zip was created and contains the JAR, the
     README and the LICENSE (and anything else that is supposed to be released)
     and that it works as expected (and all files have correct contents).
 
- 6. git tag $(VERSION)
- 7. git branch $(VERSION)b
- 8. git checkout $(VERSION)b
- 9. git push origin $(VERSION)b
-10. git push --tags
+ 7. push your changes:
+    $ git push origin master
+
+ 8. create the version branch & tag:
+    $ git branch $(VERSION)b
+    $ git checkout $(VERSION)b
+    $ git tag $(VERSION)
+    $ git push origin $(VERSION)b
+    $ git push --tags
+    $ git checkout master
+
+ 9. edit pom.xml and change version to appropriate -SNAPSHOT
+
+10. commit your changes to git

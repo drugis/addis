@@ -17,6 +17,8 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
+1.2: Benefit-risk models based on a single study.
+
 1.0: Welcome screen, limited editing, links to various information
    systems (PubMed, medicines.org.uk, whocc.no) and many minor
    improvements.

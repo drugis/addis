@@ -22,97 +22,43 @@
 
 package org.drugis.addis.entities.analysis;
 
+import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.io.InputStream;
+
+import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.common.AlphabeticalComparator;
-import org.drugis.common.JUnitUtil;
+import org.drugis.addis.util.XMLHelper;
 import org.junit.Before;
 import org.junit.Test;
 
 
 
-public class BenefitRiskAnalysisTest {
-	private BenefitRiskAnalysis d_BRAnalysis;
+public class MetaBenefitRiskAnalysisTest {
+	private MetaBenefitRiskAnalysis d_BRAnalysis;
 
 	@Before
 	public void setup(){
-		d_BRAnalysis = ExampleData.buildMockBenefitRiskAnalysis();
+		d_BRAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 	}
-	
-	@Test
-	public void testGetSetName() {
-		JUnitUtil.testSetter(d_BRAnalysis, BenefitRiskAnalysis.PROPERTY_NAME, 
-				"testBenefitRiskAnalysis", "some new name");
-	}
-	
-	@Test
-	public void testGetSetIndication() {
-		JUnitUtil.testSetter(d_BRAnalysis, BenefitRiskAnalysis.PROPERTY_INDICATION, 
-				ExampleData.buildIndicationDepression(), ExampleData.buildIndicationChronicHeartFailure());
-	}
-	
-	@Test
-	public void testGetSetOutcomeMeasures() {
-		ArrayList<OutcomeMeasure> newList = new ArrayList<OutcomeMeasure>();
-		newList.add(ExampleData.buildEndpointCVdeath());
-		newList.add(ExampleData.buildAdverseEventConvulsion());
-		Collections.sort(newList, new AlphabeticalComparator());
-		JUnitUtil.testSetter(d_BRAnalysis, BenefitRiskAnalysis.PROPERTY_OUTCOMEMEASURES, 
-				d_BRAnalysis.getOutcomeMeasures(), newList);
-	}
-	
-	@Test
-	public void testGetSetDrugs() {
-		ArrayList<Drug> newList = new ArrayList<Drug>();
-		newList.add(ExampleData.buildDrugViagra());
-		newList.add(ExampleData.buildDrugCandesartan());
 
-		Collections.sort(newList, new AlphabeticalComparator());
-		//JUnitUtil.testSetter(d_BRAnalysis, BenefitRiskAnalysis.PROPERTY_DRUGS, 
-		//		d_BRAnalysis.getDrugs(), newList);
-		d_BRAnalysis.setDrugs(newList);
-		newList.add(ExampleData.buildDrugParoxetine());
-		JUnitUtil.assertAllAndOnly(newList, d_BRAnalysis.getDrugs());
-	}
-	
-	@Test
-	public void testGetSetBaseLine() {
-		JUnitUtil.testSetter(d_BRAnalysis, BenefitRiskAnalysis.PROPERTY_BASELINE, 
-				d_BRAnalysis.getBaseline(), ExampleData.buildDrugViagra());
-	}
-	
-	@Test
-	public void testGetSetMetaAnalyses() {
-		ArrayList<MetaAnalysis> newList = new ArrayList<MetaAnalysis>();
-		newList.add(ExampleData.buildNetworkMetaAnalysis());
-		newList.add(ExampleData.buildNetworkMetaAnalysisAlternative());
-		Collections.sort(newList,new AlphabeticalComparator());
-		JUnitUtil.testSetter(d_BRAnalysis, BenefitRiskAnalysis.PROPERTY_METAANALYSES, 
-				d_BRAnalysis.getMetaAnalyses(), newList);
-	}
-	
 	@Test
 	public void testEquals(){
 		assertFalse(d_BRAnalysis.equals("nope, no meta Analysis"));
-		BenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMockBenefitRiskAnalysis();
+		MetaBenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 		assertTrue(d_BRAnalysis.equals(otherBRAnalysis));
 		otherBRAnalysis.setName("some new name");
 		assertFalse(d_BRAnalysis.equals(otherBRAnalysis));
@@ -121,12 +67,12 @@ public class BenefitRiskAnalysisTest {
 	
 	@Test 
 	public void testCompareTo(){
-		assertEquals(1, d_BRAnalysis.compareTo(null));
+		assertTrue(d_BRAnalysis.compareTo(null) > 0);
 		assertEquals(0, d_BRAnalysis.compareTo(d_BRAnalysis));
-		BenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMockBenefitRiskAnalysis();
+		MetaBenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 		assertEquals(0, d_BRAnalysis.compareTo(otherBRAnalysis));
 		otherBRAnalysis.setName("some new name");
-		assertNotSame(0, d_BRAnalysis.compareTo(otherBRAnalysis));
+		assertTrue(d_BRAnalysis.compareTo(otherBRAnalysis) > 0);
 	}
 	
 	@Test
@@ -175,7 +121,7 @@ public class BenefitRiskAnalysisTest {
 		OutcomeMeasure om = ExampleData.buildEndpointCgi();
 		Drug fluox = ExampleData.buildDrugFluoxetine();
 		Drug parox = ExampleData.buildDrugParoxetine();
-		BenefitRiskAnalysis br = ExampleData.realBuildContinuousMockBenefitRisk();
+		MetaBenefitRiskAnalysis br = ExampleData.realBuildContinuousMockBenefitRisk();
 		
 		Gaussian baseline = (Gaussian)br.getBaselineDistribution(om);
 		Gaussian relative = (Gaussian)br.getRelativeEffectDistribution(parox, om);
@@ -189,5 +135,21 @@ public class BenefitRiskAnalysisTest {
 		Gaussian absoluteF = (Gaussian)br.getAbsoluteEffectDistribution(fluox, om);
 		assertEquals(baseline.getMu(), absoluteF.getMu(), 0.0000001);
 		assertEquals(baseline.getSigma(), absoluteF.getSigma(), 0.0001);
+	}
+	
+	@Test
+	public void testXML() throws XMLStreamException {
+		String xml = XMLHelper.toXml(d_BRAnalysis, MetaBenefitRiskAnalysis.class);
+		MetaBenefitRiskAnalysis importedAnalysis = (MetaBenefitRiskAnalysis)XMLHelper.fromXml(xml);
+		assertEntityEquals(d_BRAnalysis, importedAnalysis);
+	}
+	
+	@Test
+	public void testLegacyXML() throws XMLStreamException {
+		InputStream xmlStream = getClass().getResourceAsStream("legacyBR.xml");
+		assertNotNull(xmlStream);
+		MetaBenefitRiskAnalysis importedAnalysis = 
+			(MetaBenefitRiskAnalysis)XMLHelper.fromXml(xmlStream);
+		assertEntityEquals(d_BRAnalysis, importedAnalysis);
 	}
 }

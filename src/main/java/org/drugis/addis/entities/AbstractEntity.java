@@ -34,9 +34,7 @@ import org.drugis.addis.util.HashMapXMLFormat;
 
 public abstract class AbstractEntity extends AbstractObservable implements Entity {
 	
-	@SuppressWarnings("unchecked")
 	protected static final XMLFormat<HashMap> mapXML = new HashMapXMLFormat();
-	@SuppressWarnings("unchecked")
 	protected static final XMLFormat<Entry> entryXML = new EntryXMLFormat();
 
 	public abstract Set<? extends Entity> getDependencies();

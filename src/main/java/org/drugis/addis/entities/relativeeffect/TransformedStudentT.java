@@ -67,5 +67,13 @@ public class TransformedStudentT extends AbstractObservable implements Distribut
 		return d_degreesOfFreedom;
 	}
 
-
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof TransformedStudentT) {
+			TransformedStudentT other = (TransformedStudentT) o;
+			return other.d_mu == d_mu && other.d_sigma == d_sigma && other.d_degreesOfFreedom == d_degreesOfFreedom;
+		}
+		return false;
+	}
+	
 }

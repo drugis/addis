@@ -163,9 +163,9 @@ public class JUnitUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void testAdder(Observable source, String propertyName, String methodName, Object toAdd) {
-		List list1 = new ArrayList();
-		List list2 = new ArrayList();
+	public static <T> void testAdder(Observable source, String propertyName, String methodName, T toAdd) {
+		List<T> list1 = new ArrayList<T>();
+		List<T> list2 = new ArrayList<T>();
 		list2.add(toAdd);
 		
 		PropertyChangeListener mock = mockListener(source, propertyName, list1, list2);
@@ -178,15 +178,15 @@ public class JUnitUtil {
 			fail(e.toString());
 		}
 		
-		assertTrue(((List) actual).contains(toAdd));
-		assertTrue(1 == ((List) actual).size());
+		assertTrue(((List<T>) actual).contains(toAdd));
+		assertTrue(1 == ((List<T>) actual).size());
 		verify(mock);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void testAdderSet(Observable source, String propertyName, String methodName, Object toAdd) {
-		Set list1 = new HashSet();
-		Set list2 = new HashSet();
+	public static <T> void testAdderSet(Observable source, String propertyName, String methodName, T toAdd) {
+		Set<T> list1 = new HashSet<T>();
+		Set<T> list2 = new HashSet<T>();
 		list2.add(toAdd);
 		
 		PropertyChangeListener mock = mockListener(source, propertyName, list1, list2);
@@ -199,16 +199,17 @@ public class JUnitUtil {
 			fail(e.toString());
 		}
 		
-		assertTrue(((Collection) actual).contains(toAdd));
-		assertTrue(1 == ((Collection) actual).size());
+		assertTrue(((Set<T>) actual).contains(toAdd));
+		assertTrue(1 == ((Set<T>) actual).size());
 		verify(mock);
 	}
 	
 
 	@SuppressWarnings("unchecked")
-	public static void testDeleter(Observable source, String propertyName, String deleteMethodName, Object toDelete) throws Exception {
-		List list1 = new ArrayList();
-		List list2 = new ArrayList();
+	public static <T> void testDeleter(Observable source, String propertyName, String deleteMethodName, T toDelete)
+	throws Exception {
+		List<T> list1 = new ArrayList<T>();
+		List<T> list2 = new ArrayList<T>();
 		list1.add(toDelete);
 
 		// set the parameter
@@ -220,14 +221,15 @@ public class JUnitUtil {
 		get1ParamMethod(source, deleteMethodName, toDelete).invoke(source, toDelete);		
 
 		Object actual = getGetterMethod(source, propertyName).invoke(source);
-		assertTrue(0 ==  ((List) actual).size());
+		assertTrue(0 ==  ((List<T>) actual).size());
 		verify(mock);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void testDeleterSet(Observable source, String propertyName, String deleteMethodName, Object toDelete) throws Exception {
-		Set list1 = new HashSet();
-		Set list2 = new HashSet();
+	public static <T> void testDeleterSet(Observable source, String propertyName, String deleteMethodName, T toDelete) 
+	throws Exception {
+		Set<T> list1 = new HashSet<T>();
+		Set<T> list2 = new HashSet<T>();
 		list1.add(toDelete);
 
 		// set the parameter
@@ -239,7 +241,7 @@ public class JUnitUtil {
 		get1ParamMethod(source, deleteMethodName, toDelete).invoke(source, toDelete);		
 
 		Object actual = getGetterMethod(source, propertyName).invoke(source);
-		assertTrue(0 ==  ((Set) actual).size());
+		assertTrue(0 ==  ((Set<T>) actual).size());
 		verify(mock);
 	}	
 

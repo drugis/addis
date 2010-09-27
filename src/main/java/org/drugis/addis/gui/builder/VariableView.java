@@ -33,7 +33,6 @@ import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.VariablePresentation;
@@ -69,9 +68,9 @@ public class VariableView implements ViewBuilder {
 		CellConstraints cc =  new CellConstraints();
 		
 		builder.addSeparator(d_model.getCategoryName(), cc.xy(1, 1));
-		builder.add(GUIFactory.createCollapsiblePanel(buildOverviewPart()),	cc.xy(1, 3));
+		builder.add(buildOverviewPart(),	cc.xy(1, 3));
 		builder.addSeparator("Studies measuring this "+ CategoryKnowledgeFactory.getCategoryKnowledge(d_model.getBean().getClass()).getSingular(), cc.xy(1, 5));		
-		builder.add(GUIFactory.createCollapsiblePanel(getStudiesComp()), cc.xy(1, 7));
+		builder.add(getStudiesComp(), cc.xy(1, 7));
 		
 		return builder.getPanel();
 	}

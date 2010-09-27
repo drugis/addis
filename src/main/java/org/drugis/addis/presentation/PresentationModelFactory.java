@@ -35,9 +35,10 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
@@ -84,7 +85,6 @@ public class PresentationModelFactory {
 		return getModel(obj);
 	}
 	
-	@SuppressWarnings("unchecked")
 	private PresentationModel createCreationModel(Object obj) {
 		if (obj instanceof OutcomeMeasure) {
 			return new OutcomeMeasureCreationPresentation((OutcomeMeasure)obj);
@@ -129,9 +129,12 @@ public class PresentationModelFactory {
 		if (obj instanceof NetworkMetaAnalysis) {
 			return new NetworkMetaAnalysisPresentation((NetworkMetaAnalysis) obj, this);
 		}
-		if (obj instanceof BenefitRiskAnalysis) {
-			return new BenefitRiskPresentation((BenefitRiskAnalysis) obj, this);
-		} 	
+		if (obj instanceof MetaBenefitRiskAnalysis) {
+			return new MetaBenefitRiskPresentation((MetaBenefitRiskAnalysis) obj, this);
+		}
+		if (obj instanceof StudyBenefitRiskAnalysis) {
+			return new StudyBenefitRiskPresentation((StudyBenefitRiskAnalysis) obj, this);
+		}
 		if (obj instanceof Distribution) {
 			return new DistributionPresentation((Distribution) obj);
 		}

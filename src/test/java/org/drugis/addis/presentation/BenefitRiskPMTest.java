@@ -26,26 +26,31 @@ import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.junit.Before;
 import org.junit.Test;
 
 public class BenefitRiskPMTest {
 
 	private PresentationModelFactory d_pmf;
-	private BenefitRiskPresentation d_pm;
+	private MetaBenefitRiskPresentation d_mpm;
 	private DomainImpl d_domain;
 
 	@Before
 	public void setUp() {
 		d_domain = new DomainImpl();
 		d_pmf = new PresentationModelFactory(d_domain);
-		BenefitRiskAnalysis analysis = ExampleData.buildMockBenefitRiskAnalysis();
-		d_pm = new BenefitRiskPresentation(analysis, d_pmf);
+		MetaBenefitRiskAnalysis metaBRanalysis = ExampleData.buildMetaBenefitRiskAnalysis();
+		StudyBenefitRiskAnalysis studyBRanalysis = ExampleData.buildStudyBenefitRiskAnalysis();
+		d_mpm = new MetaBenefitRiskPresentation(metaBRanalysis, d_pmf);
+		
+		// test creation; no further tests required
+		new StudyBenefitRiskPresentation(studyBRanalysis, d_pmf);
 	}
 	
 	@Test
 	public void testGetAnalysesModel() {
-		assertAllAndOnly(d_pm.getBean().getMetaAnalyses(), d_pm.getAnalysesModel().getValue());
+		assertAllAndOnly(d_mpm.getBean().getMetaAnalyses(), d_mpm.getAnalysesModel().getValue());
 	}
 }
