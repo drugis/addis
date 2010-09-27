@@ -62,6 +62,7 @@ public class NetworkMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 		dialog.getContentPane().add(wizard);
 		dialog.pack();
 		WizardFrameCloser.bind(wizard, dialog);
+		Main.bindPrintScreen(wizard);
 		return dialog;
 	}
 	

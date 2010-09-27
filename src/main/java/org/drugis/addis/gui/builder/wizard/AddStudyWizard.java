@@ -22,9 +22,11 @@
 
 package org.drugis.addis.gui.builder.wizard;
 
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -45,6 +47,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.table.TableModel;
@@ -109,10 +112,24 @@ public class AddStudyWizard implements ViewBuilder{
 	Main d_main;
 	private JDialog d_dialog;
 	
+	@SuppressWarnings("serial")
 	public AddStudyWizard(AddStudyWizardPresentation pm, Main main, JDialog frame) {
 		d_pm = pm;
 		d_main = main;
 		d_dialog = frame;
+		
+		final JPanel content = (JPanel) d_dialog.getContentPane();
+		content.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(Main.PRINT_SCREEN), "printWindow");
+		content.getActionMap().put("printWindow", 
+				new AbstractAction("printWindow") { 
+					public void actionPerformed(ActionEvent evt) {
+							try { Main.printWindow(content);
+							} catch (HeadlessException e) {	e.printStackTrace(); 
+							} catch (AWTException e) { e.printStackTrace();
+							}
+					} 
+				} 
+		);
 	}
 	
 	public Wizard buildPanel() {
