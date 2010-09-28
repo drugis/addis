@@ -31,7 +31,7 @@ import org.drugis.addis.entities.Study;
 
 public class MockStudyBenefitRiskAnalysis extends StudyBenefitRiskAnalysis {
 	public MockStudyBenefitRiskAnalysis(String name, Indication indication, Study study, 
-			List<OutcomeMeasure> criteria, List<Arm> alternatives) {
-		super(name,indication, study, criteria,alternatives);
+			List<OutcomeMeasure> criteria, List<Arm> alternatives, AnalysisType analysisType) {
+		super(name,indication, study, criteria,alternatives, analysisType);
 	}
 }

@@ -42,6 +42,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
 import org.drugis.addis.util.XMLHelper;
@@ -60,7 +61,7 @@ public class StudyBenefitRiskAnalysisTest {
 		criteria.add(ExampleData.buildEndpointHamd());
 		criteria.add(ExampleData.buildAdverseEventConvulsion());
 		List<Arm> alternatives = study.getArms();
-		d_analysis = new StudyBenefitRiskAnalysis(NAME, indication, study, criteria, alternatives);
+		d_analysis = new StudyBenefitRiskAnalysis(NAME, indication, study, criteria, alternatives, AnalysisType.SMAA_TYPE);
 	}
 	
 	@Test
@@ -113,7 +114,7 @@ public class StudyBenefitRiskAnalysisTest {
 		criteria.add(endpoint);
 		criteria.add(ExampleData.buildAdverseEventConvulsion());
 		List<Arm> alternatives = study.getArms();
-		d_analysis = new StudyBenefitRiskAnalysis(NAME, indication, study, criteria, alternatives);
+		d_analysis = new StudyBenefitRiskAnalysis(NAME, indication, study, criteria, alternatives, AnalysisType.SMAA_TYPE);
 		
 		Arm arm = study.getArms().get(1);
 		ContinuousMeasurement measurement = (ContinuousMeasurement) study.getMeasurement(endpoint, arm);
@@ -128,4 +129,5 @@ public class StudyBenefitRiskAnalysisTest {
 		StudyBenefitRiskAnalysis importedAnalysis = (StudyBenefitRiskAnalysis)XMLHelper.fromXml(xml);
 		assertEntityEquals(d_analysis, importedAnalysis);
 	}
+
 }

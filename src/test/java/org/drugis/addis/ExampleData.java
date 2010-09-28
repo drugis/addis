@@ -56,6 +56,7 @@ import org.drugis.addis.entities.analysis.MockStudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
 import org.drugis.addis.mocks.MockMetaBenefitRiskAnalysis;
 
@@ -780,7 +781,7 @@ public class ExampleData {
 		List<Arm> arms = study.getArms();
 	
 		return new MockStudyBenefitRiskAnalysis("testBenefitRiskAnalysis",
-										indication, study, outcomeMeasureList, arms);										
+										indication, study, outcomeMeasureList, arms, AnalysisType.SMAA_TYPE);										
 	}
 
 	public static MetaAnalysis buildMetaAnalysisConv() {

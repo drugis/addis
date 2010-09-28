@@ -52,6 +52,7 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 	private Indication d_indication;
 	private List<OutcomeMeasure> d_criteria;
 	private List<Arm> d_alternatives;
+	private AnalysisType d_analysisType;
 	
 	private class AbsoluteMeasurementSource extends AbstractMeasurementSource<Arm> {
 		public Distribution getMeasurement(Arm alternative, OutcomeMeasure criterion) {
@@ -60,12 +61,13 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 	}
 	
 	public StudyBenefitRiskAnalysis(String name, Indication indication, Study study, 
-			List<OutcomeMeasure> criteria, List<Arm> alternatives) {
+			List<OutcomeMeasure> criteria, List<Arm> alternatives, AnalysisType analysisType) {
 		d_name = name;
 		d_indication = indication;
 		d_study = study;
 		d_criteria = Collections.unmodifiableList(criteria);
 		d_alternatives = Collections.unmodifiableList(alternatives);
+		d_analysisType = analysisType;
 	}
 
 	private StudyBenefitRiskAnalysis() {
@@ -134,6 +136,11 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 			@Override
 			public void read(InputElement ie, StudyBenefitRiskAnalysis br) throws XMLStreamException {
 				br.setName(ie.getAttribute(PROPERTY_NAME, null));
+				// legacy: should not fail if no analysistype is set, for backwards compatibility with old xml files
+				try { br.d_analysisType =  AnalysisType.valueOf(ie.getAttribute(PROPERTY_ANALYSIS_TYPE, null)); } 
+				catch (NullPointerException e) { br.d_analysisType = AnalysisType.SMAA_TYPE; }
+				catch (IllegalArgumentException e ) { br.d_analysisType = AnalysisType.SMAA_TYPE; }
+				
 				br.d_indication = (Indication) ie.get(PROPERTY_INDICATION, Indication.class);
 				br.d_study = (Study) ie.get(PROPERTY_STUDY, Study.class);
 				br.d_alternatives = (List<Arm>) ie.get(PROPERTY_ARMS, ArrayList.class);
@@ -143,13 +150,14 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 			@Override
 			public void write(StudyBenefitRiskAnalysis br, OutputElement oe) throws XMLStreamException {
 				oe.setAttribute(PROPERTY_NAME, br.getName());
+				oe.setAttribute(PROPERTY_ANALYSIS_TYPE, br.getAnalysisType().toString());
 				oe.add(br.getIndication(), PROPERTY_INDICATION, Indication.class);
 				oe.add(br.getStudy(), PROPERTY_STUDY, Study.class);
 				oe.add(new ArrayList<Arm>(br.getAlternatives()), PROPERTY_ARMS, ArrayList.class);
 				oe.add(new ArrayList<OutcomeMeasure>(br.getOutcomeMeasures()), PROPERTY_OUTCOMEMEASURES, ArrayList.class);
 			}
 		};
-
+		
 	private void setName(String name) {
 		d_name = name;
 	}
@@ -161,5 +169,13 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 
 	public MeasurementSource<Arm> getAbsoluteMeasurementSource() {
 		return new AbsoluteMeasurementSource();
+	}
+
+	public AnalysisType getAnalysisType() {
+		return d_analysisType;
+	}
+
+	public void setAnalysisType(AnalysisType aT) {
+		d_analysisType = aT;
 	}
 }

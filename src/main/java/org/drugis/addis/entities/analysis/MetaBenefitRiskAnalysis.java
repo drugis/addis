@@ -371,4 +371,9 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 			}
 		};
 
+	public org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType getAnalysisType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

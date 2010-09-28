@@ -34,6 +34,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
@@ -66,7 +67,7 @@ public class SMAAEntityFactoryTest {
 		criteria.add(ExampleData.buildAdverseEventConvulsion());
 		List<Arm> alternatives = ExampleData.buildStudyChouinard().getArms();
 		d_brAnalysisStudy = new StudyBenefitRiskAnalysis("Study Analysis", ExampleData.buildIndicationDepression(),
-				ExampleData.buildStudyChouinard(), criteria, alternatives);
+				ExampleData.buildStudyChouinard(), criteria, alternatives, AnalysisType.SMAA_TYPE);
 	}
 	
 	@Test

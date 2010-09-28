@@ -105,7 +105,6 @@ public abstract class AbstractBenefitRiskView<PresentationType extends BenefitRi
 			builder.addLabel("Study:", cc.xy(1, row));
 			builder.add(BasicComponentFactory.createLabel(d_pm.getModel(StudyBenefitRiskAnalysis.PROPERTY_STUDY), new OneWayObjectFormat()), 
 					cc.xy(3, row));
-			
 		}
 		
 		row += 2;

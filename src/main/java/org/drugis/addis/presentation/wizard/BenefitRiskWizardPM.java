@@ -43,6 +43,7 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
@@ -296,7 +297,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		ArrayList<OutcomeMeasure> studyAnalyses = getSelectedEntities(d_outcomeSelectedMap);
 		
 		StudyBenefitRiskAnalysis sbr = new StudyBenefitRiskAnalysis(id, d_indicationHolder.getValue(), d_studyHolder.getValue(), 
-				studyAnalyses, alternatives);
+				studyAnalyses, alternatives, AnalysisType.SMAA_TYPE);
 		return sbr;
 	}
 
