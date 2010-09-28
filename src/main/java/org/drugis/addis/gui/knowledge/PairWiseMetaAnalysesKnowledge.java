@@ -88,7 +88,7 @@ public class PairWiseMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 			Entity entity) {
 		return new RandomEffectsMetaAnalysisView(
 				(RandomEffectsMetaAnalysisPresentation)main.getPresentationModelFactory().getModel(((RandomEffectsMetaAnalysis) entity)), 
-				main, false);
+				main);
 	}
 	
 	

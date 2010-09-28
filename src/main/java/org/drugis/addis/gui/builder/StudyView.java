@@ -26,6 +26,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Domain;
@@ -65,7 +66,7 @@ public class StudyView implements ViewBuilder {
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -80,8 +81,22 @@ public class StudyView implements ViewBuilder {
 		builder.addSeparator("Arms", cc.xy(1, row));
 		row += 2;
 		builder.add(buildArmsPart(),cc.xy(1, row));
-		row += 2;
-		builder.addSeparator("Baseline Characteristics", cc.xy(1, row));
+
+		
+		JTabbedPane tabbedPane = new JTabbedPane();
+		tabbedPane.addTab("Overview", builder.getPanel());
+
+		layout = new FormLayout( 
+				"pref:grow:fill",
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				);
+		
+		builder = new PanelBuilder(layout);
+		builder.setDefaultDialogBorder();
+		cc = new CellConstraints();
+		row = 1;
+		
+			builder.addSeparator("Baseline Characteristics", cc.xy(1, row));
 		row += 2;
 		builder.add(buildPopulationPart(), cc.xy(1, row));
 		row += 2;
@@ -92,8 +107,10 @@ public class StudyView implements ViewBuilder {
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(AdverseEvent.class).getPlural(), cc.xy(1, row));		
 		row += 2;
 		builder.add(buildAdverseEventPart(), cc.xy(1, row));
-		
-		return builder.getPanel();
+
+		tabbedPane.addTab("Data", builder.getPanel());
+
+		return tabbedPane;
 	}
 
 	private JComponent buildPopulationPart() {

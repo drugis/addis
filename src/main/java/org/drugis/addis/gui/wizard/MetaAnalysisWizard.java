@@ -40,7 +40,6 @@ import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
 import org.drugis.common.gui.AuxComponentFactory;
-import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardModel;
@@ -88,9 +87,9 @@ public class MetaAnalysisWizard extends Wizard {
 			
 			RandomEffectsMetaAnalysis analysis = (RandomEffectsMetaAnalysis)d_pm.createMetaAnalysis("");
 			PresentationModel<RandomEffectsMetaAnalysis> pm = d_main.getPresentationModelFactory().getModel(analysis);
-			ViewBuilder mav = new RandomEffectsMetaAnalysisView(
-					(RandomEffectsMetaAnalysisPresentation)pm, d_main, true);
-			JComponent panel = mav.buildPanel();
+			RandomEffectsMetaAnalysisView mav = new RandomEffectsMetaAnalysisView(
+					(RandomEffectsMetaAnalysisPresentation)pm, d_main);
+			JComponent panel = mav.getPlotsPanel(true);
 
 			JScrollPane sp = new JScrollPane(panel);
 			sp.getVerticalScrollBar().setUnitIncrement(16);

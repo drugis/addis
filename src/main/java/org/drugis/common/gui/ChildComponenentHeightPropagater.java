@@ -9,6 +9,8 @@ import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
+import javax.swing.JTabbedPane;
+
 public class ChildComponenentHeightPropagater extends ComponentAdapter {
 	private final Container d_panel;
 
@@ -19,16 +21,21 @@ public class ChildComponenentHeightPropagater extends ComponentAdapter {
 
 	@Override
 	public void componentResized(ComponentEvent e) {
+		JTabbedPane pane = (JTabbedPane) d_panel.getParent();
+		pane.setVisible(false);
+		
 		int total = 0;
-		Container panel = d_panel;
-		for (Component c : panel.getComponents()) {
+		for (Component c : d_panel.getComponents()) {
 			total += c.getSize().height;
 		}
 		int spacing = 7; //FIXME: Get from jgoodies.
-		int height = total + (panel.getComponentCount() - 1) * spacing;
-		int width = panel.getPreferredSize().width;
-		panel.setSize(new Dimension(width, height));
-		panel.setPreferredSize(new Dimension(width, height));
+		int height = total + (d_panel.getComponentCount() - 1) * spacing;
+		int width = d_panel.getPreferredSize().width;
+		d_panel.setSize(new Dimension(width, height));
+		d_panel.setPreferredSize(new Dimension(width, height));
+		
+		pane.setPreferredSize(new Dimension(width, height + 40)); // FIXME: magic numbers
+		pane.setVisible(true);
 	}
 	
 	public static void attachToContainer(Container panel) {

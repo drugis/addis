@@ -22,7 +22,6 @@
 
 package org.drugis.addis.gui.builder;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 
@@ -32,6 +31,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
@@ -57,89 +57,108 @@ import com.jgoodies.forms.layout.FormLayout;
 public class RandomEffectsMetaAnalysisView extends AbstractMetaAnalysisView<RandomEffectsMetaAnalysisPresentation>
 implements ViewBuilder {
 	
-	private boolean d_overView;
-
-	public RandomEffectsMetaAnalysisView(RandomEffectsMetaAnalysisPresentation pm, Main parent, boolean overView) {
+	public RandomEffectsMetaAnalysisView(RandomEffectsMetaAnalysisPresentation pm, Main parent) {
 		super(pm, parent);
-		d_overView = overView;
 	}
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p");
 		
-		PanelBuilder builder = new PanelBuilder(layout/*, new ScrollableJPanel()*/);
+		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		builder.setOpaque(true);
 		
 		CellConstraints cc =  new CellConstraints();		
 
-		if (!d_overView) {
-			builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(PairWiseMetaAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
-			builder.add(buildOverviewPart(), cc.xy(1, 3));
+		JTabbedPane tabbedPane = new JTabbedPane();
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(PairWiseMetaAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
+		builder.add(buildOverviewPart(), cc.xy(1, 3));
 
-			builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural(), cc.xy(1, 5));
-			builder.add(buildStudiesPart(), cc.xy(1, 7));
-		}
+		tabbedPane.addTab("Overview", builder.getPanel());
+		
+		layout = new FormLayout(
+				"pref:grow:fill",
+				"p, 3dlu, p, 3dlu, p");
+		builder = new PanelBuilder(layout);
+		
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural(), cc.xy(1, 1));
+		builder.add(buildStudiesPart(), cc.xy(1, 3));
 
+		builder.add(getPlotsPanel(false), cc.xy(1, 5));
+		tabbedPane.addTab("Results", builder.getPanel());
+		
+		return tabbedPane;
+	}
+
+	public JComponent getPlotsPanel(boolean isOverview) {
 		switch (d_pm.getAnalysisType()) {
 		case RATE:
-			buildRatePlotsPart(builder, cc);
-			break;
+			return buildRatePlotsPart(isOverview);
 		case CONTINUOUS:
-			buildContinuousPlotsPart(builder, cc);
-			break;
+			return buildContinuousPlotsPart(isOverview);
 		default:
 			throw new RuntimeException("Unexpected case: " +
 					d_pm.getAnalysisType() + " is not a supported type of endpoint");
 		}
+	}
+
+	private JComponent buildContinuousPlotsPart(boolean isOverview) {
 		
+		FormLayout layout = new FormLayout(
+				"pref:grow:fill", "p, 3dlu, p, 3dlu, p, 3dlu, p");
+		
+		PanelBuilder builder = new PanelBuilder(layout);
+		builder.setDefaultDialogBorder();
+		
+		CellConstraints cc = new CellConstraints();
+		builder.addSeparator("Mean difference", cc.xy(1, 1));
+		
+		builder.add(buildRelativeEffectPart(BasicMeanDifference.class, isOverview), cc.xy(1, 3));
+		
+		if (!isOverview) {
+			builder.addSeparator("Standardised mean difference", cc.xy(1, 5));
+			builder.add(buildRelativeEffectPart(BasicStandardisedMeanDifference.class, isOverview), cc.xy(1, 7));
+		}
 		return builder.getPanel();
 	}
 
-	private void buildContinuousPlotsPart(PanelBuilder builder,
-			CellConstraints cc) {
-		builder.addSeparator("Mean difference", cc.xy(1, 9));
+	private JComponent buildRatePlotsPart(boolean isOverview) {
+		FormLayout layout = new FormLayout(
+				"pref:grow:fill",
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
-		if (d_overView) {
-			builder.add(buildRelativeEffectPart(BasicMeanDifference.class), cc.xy(1, 11));			
-		} else {
-			builder.add(buildRelativeEffectPart(BasicMeanDifference.class), cc.xy(1, 11));
-		}
+		PanelBuilder builder = new PanelBuilder(layout);
+		builder.setDefaultDialogBorder();
 		
-		if (!d_overView) {
-			builder.addSeparator("Standardised mean difference", cc.xy(1, 17));
-			builder.add(buildRelativeEffectPart(BasicStandardisedMeanDifference.class), cc.xy(1, 19));
-		}
-	}
-
-	private void buildRatePlotsPart(PanelBuilder builder, CellConstraints cc) {
-		builder.addSeparator("Odds ratio", cc.xy(1, 9));
-		if (d_overView) {			
-			builder.add(buildRelativeEffectPart(BasicOddsRatio.class), cc.xy(1, 11));			
-		} else {
-			builder.add(buildRelativeEffectPart(BasicOddsRatio.class), cc.xy(1, 11));
-		}
+		CellConstraints cc = new CellConstraints();
 		
-		if (!d_overView) {
-			builder.addSeparator("Risk ratio", cc.xy(1, 13));
-			builder.add(buildRelativeEffectPart(BasicRiskRatio.class), cc.xy(1, 15));
+		builder.addSeparator("Odds ratio", cc.xy(1, 1));
+		builder.add(buildRelativeEffectPart(BasicOddsRatio.class, isOverview), cc.xy(1, 3));			
 		
-			builder.addSeparator("Risk difference", cc.xy(1, 17));
-			builder.add(buildRelativeEffectPart(BasicRiskDifference.class), cc.xy(1, 19));
+		if (!isOverview) {
+			builder.addSeparator("Risk ratio", cc.xy(1, 5));
+			builder.add(buildRelativeEffectPart(BasicRiskRatio.class, isOverview), cc.xy(1, 7));
+		
+			builder.addSeparator("Risk difference", cc.xy(1, 9));
+			builder.add(buildRelativeEffectPart(BasicRiskDifference.class, isOverview), cc.xy(1, 11));
 		}
+		return builder.getPanel();
 	}
 
 	@SuppressWarnings("serial")
-	private JComponent buildRelativeEffectPart(Class<? extends RelativeEffect<?>> type) {
-		JPanel encapsulating = new JPanel(new BorderLayout());
-		FormLayout layout = new FormLayout(
+	private JComponent buildRelativeEffectPart(Class<? extends RelativeEffect<?>> type, boolean isOverview) {
+		FormLayout layout1 = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p");
+		FormLayout layout2 = new FormLayout(
+				"pref:grow:fill",
+				"p, 3dlu");
+		JPanel encapsulating = new JPanel(layout1);
 		
-		
-		PanelBuilder builder = new PanelBuilder(layout);
+		PanelBuilder builder = new PanelBuilder(layout2);
+		builder.setDefaultDialogBorder();
 		CellConstraints cc =  new CellConstraints();
 		
 		final RelativeEffectCanvas canvas = new RelativeEffectCanvas(d_pm.getForestPlotPresentation(type));
@@ -148,9 +167,9 @@ implements ViewBuilder {
 		builder.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.black, 1), BorderFactory.createEmptyBorder(1, 1, 1, 1)));
 		builder.setBackground(Color.white);
 		
-		encapsulating.add(builder.getPanel(),BorderLayout.NORTH);
+		encapsulating.add(builder.getPanel(),cc.xy(1, 1));
 		
-		if (!d_overView) {
+		if (!isOverview) {
 			JButton saveBtn = new JButton("Save Image");
 			saveBtn.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
@@ -161,11 +180,9 @@ implements ViewBuilder {
 			ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
 			bbuilder.addButton(saveBtn);
 			
-			encapsulating.add(new JLabel(" "), BorderLayout.CENTER);
-			encapsulating.add(bbuilder.getPanel(), BorderLayout.SOUTH);
+			encapsulating.add(new JLabel(" "), cc.xy(1, 3));
+			encapsulating.add(bbuilder.getPanel(), cc.xy(1, 5));
 		}
-
-
 		return encapsulating;	
 	}
 
