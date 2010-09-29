@@ -71,6 +71,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	private List<Drug> d_drugs;
 	private Drug d_baseline;
 	private Map<OutcomeMeasure,AbstractBaselineModel<?>> d_baselineModelMap;
+	private AnalysisType d_analysisType;
 	
 	public static String PROPERTY_DRUGS = "drugs";
 	public static String PROPERTY_BASELINE = "baseline";
@@ -130,13 +131,14 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	}
 	
 	public MetaBenefitRiskAnalysis(String id, Indication indication, List<MetaAnalysis> metaAnalysis,
-			Drug baseline, List<Drug> drugs) {
+			Drug baseline, List<Drug> drugs, AnalysisType analysisType) {
 		super();
 		d_indication = indication;
 		d_metaAnalyses = metaAnalysis;
 		d_outcomeMeasures = findOutcomeMeasures();
 		d_drugs = drugs;
 		d_baselineModelMap = new HashMap<OutcomeMeasure,AbstractBaselineModel<?>>();
+		d_analysisType = analysisType;
 		
 		setBaseline(baseline);
 		setName(id);
@@ -352,6 +354,12 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 			@Override
 			public void read(InputElement ie, MetaBenefitRiskAnalysis br) throws XMLStreamException {
 				br.setName(ie.getAttribute(PROPERTY_NAME, null));
+				try 
+				{ // legacy: should not fail if no analysistype is set, for backwards compatibility with old xml files 
+					br.d_analysisType = AnalysisType.valueOf(ie.<String>getAttribute(PROPERTY_ANALYSIS_TYPE, 
+							AnalysisType.SMAA.toString())); 
+				} 
+				catch (IllegalArgumentException e ) { br.d_analysisType = AnalysisType.SMAA; }
 				br.setBaseline(ie.get(PROPERTY_BASELINE, Drug.class));
 				br.setDrugs((List<Drug>) ie.get(PROPERTY_DRUGS, ArrayList.class));
 				br.setIndication((Indication) ie.get(PROPERTY_INDICATION, Indication.class));
@@ -364,6 +372,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 			@Override
 			public void write(MetaBenefitRiskAnalysis br, OutputElement oe) throws XMLStreamException {
 				oe.setAttribute(PROPERTY_NAME, br.getName());
+				oe.setAttribute(PROPERTY_ANALYSIS_TYPE, br.d_analysisType.toString());
 				oe.add(br.getBaseline(), PROPERTY_BASELINE, Drug.class);
 				oe.add(new ArrayList<Drug>(br.getDrugs()), PROPERTY_DRUGS, ArrayList.class);
 				oe.add(br.getIndication(), PROPERTY_INDICATION, Indication.class);
@@ -371,9 +380,8 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 			}
 		};
 
-	public org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType getAnalysisType() {
-		// TODO Auto-generated method stub
-		return null;
+	public AnalysisType getAnalysisType() {
+		return d_analysisType;
 	}
 
 }

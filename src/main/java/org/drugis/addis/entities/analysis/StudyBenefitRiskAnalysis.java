@@ -136,10 +136,12 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 			@Override
 			public void read(InputElement ie, StudyBenefitRiskAnalysis br) throws XMLStreamException {
 				br.setName(ie.getAttribute(PROPERTY_NAME, null));
-				// legacy: should not fail if no analysistype is set, for backwards compatibility with old xml files
-				try { br.d_analysisType =  AnalysisType.valueOf(ie.getAttribute(PROPERTY_ANALYSIS_TYPE, null)); } 
-				catch (NullPointerException e) { br.d_analysisType = AnalysisType.SMAA_TYPE; }
-				catch (IllegalArgumentException e ) { br.d_analysisType = AnalysisType.SMAA_TYPE; }
+				try 
+				{ // legacy: should not fail if no analysistype is set, for backwards compatibility with old xml files 
+					br.d_analysisType = AnalysisType.valueOf(ie.<String>getAttribute(PROPERTY_ANALYSIS_TYPE, 
+							AnalysisType.SMAA.toString())); 
+				} 
+				catch (IllegalArgumentException e ) { br.d_analysisType = AnalysisType.SMAA; }
 				
 				br.d_indication = (Indication) ie.get(PROPERTY_INDICATION, Indication.class);
 				br.d_study = (Study) ie.get(PROPERTY_STUDY, Study.class);
@@ -173,9 +175,5 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 
 	public AnalysisType getAnalysisType() {
 		return d_analysisType;
-	}
-
-	public void setAnalysisType(AnalysisType aT) {
-		d_analysisType = aT;
 	}
 }

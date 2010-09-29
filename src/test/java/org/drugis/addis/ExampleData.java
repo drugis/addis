@@ -781,7 +781,7 @@ public class ExampleData {
 		List<Arm> arms = study.getArms();
 	
 		return new MockStudyBenefitRiskAnalysis("testBenefitRiskAnalysis",
-										indication, study, outcomeMeasureList, arms, AnalysisType.SMAA_TYPE);										
+										indication, study, outcomeMeasureList, arms, AnalysisType.SMAA);										
 	}
 
 	public static MetaAnalysis buildMetaAnalysisConv() {

@@ -24,8 +24,10 @@ package org.drugis.addis.entities.analysis;
 
 import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -61,7 +63,7 @@ public class StudyBenefitRiskAnalysisTest {
 		criteria.add(ExampleData.buildEndpointHamd());
 		criteria.add(ExampleData.buildAdverseEventConvulsion());
 		List<Arm> alternatives = study.getArms();
-		d_analysis = new StudyBenefitRiskAnalysis(NAME, indication, study, criteria, alternatives, AnalysisType.SMAA_TYPE);
+		d_analysis = new StudyBenefitRiskAnalysis(NAME, indication, study, criteria, alternatives, AnalysisType.SMAA);
 	}
 	
 	@Test
@@ -114,7 +116,7 @@ public class StudyBenefitRiskAnalysisTest {
 		criteria.add(endpoint);
 		criteria.add(ExampleData.buildAdverseEventConvulsion());
 		List<Arm> alternatives = study.getArms();
-		d_analysis = new StudyBenefitRiskAnalysis(NAME, indication, study, criteria, alternatives, AnalysisType.SMAA_TYPE);
+		d_analysis = new StudyBenefitRiskAnalysis(NAME, indication, study, criteria, alternatives, AnalysisType.SMAA);
 		
 		Arm arm = study.getArms().get(1);
 		ContinuousMeasurement measurement = (ContinuousMeasurement) study.getMeasurement(endpoint, arm);
@@ -130,4 +132,13 @@ public class StudyBenefitRiskAnalysisTest {
 		assertEntityEquals(d_analysis, importedAnalysis);
 	}
 
+	@Test
+	public void testLegacyXML() throws XMLStreamException {
+		InputStream xmlStream = getClass().getResourceAsStream("StudyLegacyBR.xml");
+		assertNotNull(xmlStream);
+		StudyBenefitRiskAnalysis importedAnalysis = 
+			(StudyBenefitRiskAnalysis)XMLHelper.fromXml(xmlStream);
+		assertEntityEquals(d_analysis, importedAnalysis);
+	}	
+	
 }

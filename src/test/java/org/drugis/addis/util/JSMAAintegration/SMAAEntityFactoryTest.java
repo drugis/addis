@@ -67,7 +67,7 @@ public class SMAAEntityFactoryTest {
 		criteria.add(ExampleData.buildAdverseEventConvulsion());
 		List<Arm> alternatives = ExampleData.buildStudyChouinard().getArms();
 		d_brAnalysisStudy = new StudyBenefitRiskAnalysis("Study Analysis", ExampleData.buildIndicationDepression(),
-				ExampleData.buildStudyChouinard(), criteria, alternatives, AnalysisType.SMAA_TYPE);
+				ExampleData.buildStudyChouinard(), criteria, alternatives, AnalysisType.SMAA);
 	}
 	
 	@Test

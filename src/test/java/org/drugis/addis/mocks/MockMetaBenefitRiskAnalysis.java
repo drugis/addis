@@ -38,7 +38,7 @@ public class MockMetaBenefitRiskAnalysis extends MetaBenefitRiskAnalysis {
 	public MockMetaBenefitRiskAnalysis(String id, Indication indication,
 			List<MetaAnalysis> metaAnalysisList,
 			Drug baseline, List<Drug> drugList) {
-		super(id,indication,metaAnalysisList,baseline,drugList);
+		super(id,indication,metaAnalysisList,baseline,drugList, AnalysisType.SMAA);
 	}
 
 	/**

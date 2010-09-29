@@ -36,7 +36,7 @@ public interface BenefitRiskAnalysis<Alternative extends Entity> extends Compara
 	public static String PROPERTY_ALTERNATIVES = "alternatives";
 	public static String PROPERTY_ANALYSIS_TYPE = "analysisType";
 
-	public enum AnalysisType { LYNDOBRIEN_TYPE, SMAA_TYPE };
+	public enum AnalysisType { LyndOBrien, SMAA };
 	
 	public abstract AnalysisType getAnalysisType();
 	
