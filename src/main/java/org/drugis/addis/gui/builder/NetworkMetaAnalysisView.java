@@ -38,10 +38,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
-import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.analysis.MeasurementSource;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.Main;

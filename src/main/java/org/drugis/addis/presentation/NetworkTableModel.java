@@ -25,8 +25,6 @@ package org.drugis.addis.presentation;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.analysis.MeasurementSource;
-import org.drugis.addis.entities.analysis.MeasurementSource.Listener;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
@@ -40,8 +38,6 @@ import org.drugis.mtc.ProgressEvent;
 import org.drugis.mtc.ProgressListener;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.ProgressEvent.EventType;
-
-import fi.smaa.jsmaa.model.Alternative;
 
 @SuppressWarnings("serial")
 public class NetworkTableModel  extends AbstractTableModel implements TableModelWithDescription{

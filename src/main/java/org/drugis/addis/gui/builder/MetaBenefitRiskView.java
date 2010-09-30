@@ -48,8 +48,6 @@ import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
-import org.drugis.mtc.ProgressEvent;
-import org.drugis.mtc.ProgressEvent.EventType;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
