@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -26,7 +27,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.components.LinkLabel;
-import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.util.HtmlWordWrapper;
@@ -108,7 +108,7 @@ public class AuxComponentFactory {
 	}
 
 	public static JComponent createUnscrollableTablePanel(
-			MeasurementTable measurementTable) {
+			JTable measurementTable) {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(measurementTable, BorderLayout.CENTER);
 		panel.add(measurementTable.getTableHeader(), BorderLayout.PAGE_START);

@@ -54,6 +54,10 @@ public class EnhancedTable extends JTable {
 		sort.setTableHeader(getTableHeader());
 		setModel(sort);
 	}
+	
+	public void setSortingStatus(int column, int order) {
+		((TableSorter)getModel()).setSortingStatus(column, order);
+	}
 
 	public void autoSizeColumns() {
 		if (d_tableHeader != null) {

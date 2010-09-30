@@ -25,19 +25,23 @@ package org.drugis.addis.gui.builder;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.RelativeEffectTableDialog;
-import org.drugis.addis.gui.components.MeasurementTable;
+import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.presentation.MeanDifferenceTableModel;
 import org.drugis.addis.presentation.OddsRatioTableModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -54,6 +58,7 @@ import org.drugis.common.gui.ViewBuilder;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.sun.java.components.TableSorter;
 
 public class StudyOutcomeMeasuresView implements ViewBuilder {
 	
@@ -110,12 +115,14 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 				LayoutUtil.addRow(layout);
 			}
 		
-			MeasurementTable measurementTable = null;
+			EnhancedTable measurementTable = null;
 			if (d_isEndpoints) {
-				measurementTable = new MeasurementTable(d_model.getEndpointTableModel());
+				measurementTable = new EnhancedTable(d_model.getEndpointTableModel());
 			} else {
-				measurementTable = new MeasurementTable(d_model.getAdverseEventTableModel());
+				measurementTable = new EnhancedTable(d_model.getAdverseEventTableModel());
 			}
+			measurementTable.setSortingStatus(0, TableSorter.ASCENDING);
+
 			builder.add(AuxComponentFactory.createUnscrollableTablePanel(measurementTable),
 					cc.xyw(1, row, 5));
 		}

@@ -353,16 +353,12 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 
 	public List<? extends Variable> getVariables(Class<? extends Variable> type) {
 		if (type == Endpoint.class) {
-			List<Endpoint> list = new ArrayList<Endpoint>(d_endpointList);
-			Collections.sort(list, new OutcomeComparator());
-			return Collections.unmodifiableList(list);
+			return Collections.unmodifiableList(d_endpointList);
 		} else if (type == AdverseEvent.class){
-			List<AdverseEvent> list = new ArrayList<AdverseEvent>(d_adverseEvents);
-			Collections.sort(list, new OutcomeComparator());
-			return Collections.unmodifiableList(list);
+			return Collections.unmodifiableList(d_adverseEvents);
 		} else if (type == OutcomeMeasure.class) {
 			return Collections.unmodifiableList(getOutcomeMeasures());
-		}		
+		}
 		return Collections.unmodifiableList(d_populationChars); 
 	}
 
