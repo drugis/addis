@@ -57,13 +57,28 @@ import com.jgoodies.binding.value.ValueModel;
 public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationPM {
 
 	@SuppressWarnings("serial")
-	private class MetaAnalysesSelectedHolder extends ModifiableHolder<MetaAnalysis> {
+	private class MetaAnalysesSelectedHolder extends AbstractListHolder<MetaAnalysis> implements PropertyChangeListener {
 		@Override
-		public void setValue(Object ma) {
-			super.setValue(ma);
+		public List<MetaAnalysis> getValue() {
+			List<MetaAnalysis> list = new ArrayList<MetaAnalysis>();
+			for (ModifiableHolder<MetaAnalysis> holder : getSelectedMetaAnalysisHolders()) {
+				if (holder.getValue() != null) {
+					list.add(holder.getValue());
+				}
+			}
+			return list;
+		}
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			fireValueChange();
+		}
+
+		public void fireValueChange() {
+			fireValueChange(null, getValue());			
 		}
 	}
 	
+	@SuppressWarnings("serial")
 	private class AlternativeEnabledModel extends ModifiableHolder<Boolean> implements PropertyChangeListener {
 		private final Drug d_alternative;
 
@@ -144,40 +159,26 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		d_analysisType = new ModifiableHolder<AnalysisType>(AnalysisType.SMAA);
 		d_criteriaEnabledMap = new HashMap<OutcomeMeasure, ModifiableHolder<Boolean>>();
 		
-		d_indicationHolder.addValueChangeListener(new PropertyChangeListener() {
+		PropertyChangeListener clearValuesListener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				d_outcomeSelectedMap.clear();
 				d_alternativeSelectedMap.clear();
 				d_armSelectedMap.clear();
 				d_alternativeEnabledMap.clear();
 				d_metaAnalysisSelectedMap.clear();
+				d_metaAnalysesSelectedHolder.fireValueChange();
 				d_completeHolder.propertyChange(null);
 			}
-		});
-		d_studyHolder.addValueChangeListener(new PropertyChangeListener() {
-			
-			public void propertyChange(PropertyChangeEvent evt) {
-				d_outcomeSelectedMap.clear();
-				d_alternativeSelectedMap.clear();
-				d_armSelectedMap.clear();
-				d_completeHolder.propertyChange(null);
-			}
-		});
+		};
 		
-		d_analysisType.addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				d_outcomeSelectedMap.clear();
-				d_alternativeSelectedMap.clear();
-				d_metaAnalysisSelectedMap.clear();
-				d_armSelectedMap.clear();
-				d_alternativeEnabledMap.clear();
-				d_completeHolder.propertyChange(null);
-			}
-		});
+		d_indicationHolder.addValueChangeListener(clearValuesListener);
+		d_studyHolder.addValueChangeListener(clearValuesListener);
+		d_analysisType.addValueChangeListener(clearValuesListener);
 		
 		d_studiesWithIndicationHolder = new StudiesWithIndicationHolder(d_indicationHolder, d_domain);
 		
 		d_metaAnalysesSelectedHolder = new MetaAnalysesSelectedHolder();
+		d_metaAnalysesSelectedHolder.addValueChangeListener(d_completeHolder);
 	}
 	
 	public boolean selectedOutcomesHaveAnalysis() {
@@ -241,9 +242,10 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	public ValueHolder<MetaAnalysis> getMetaAnalysesSelectedModel(OutcomeMeasure om) {
 		ModifiableHolder<MetaAnalysis> val = d_metaAnalysisSelectedMap.get(om);
 		if (val == null) {
-			val = getMetaAnalysesSelectedHolder();
-			val.addPropertyChangeListener(d_completeHolder);
+			val = new ModifiableHolder<MetaAnalysis>();
+			val.addPropertyChangeListener(d_metaAnalysesSelectedHolder);
 			d_metaAnalysisSelectedMap.put(om, val);
+			d_metaAnalysesSelectedHolder.fireValueChange(null, d_metaAnalysesSelectedHolder.getValue());
 		}
 		
 		return val;
@@ -277,20 +279,19 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		AlternativeEnabledModel model = new AlternativeEnabledModel(d);
 		getMetaAnalysesSelectedHolder().addValueChangeListener(model);
 		getSelectedAlternativesHolder().addValueChangeListener(model);
-		return null;
+		return model;
 	}
 
+	@SuppressWarnings("serial")
 	private AbstractValueModel getSelectedAlternativesHolder() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		return new AbstractListHolder<Drug>() { // FIXME: SHOULD LISTEN TO SOMETHING (BUT ALL TESTS PASS NOW)
 
-	private void updateAlternativesEnabled() {
-		for (Drug d : getAlternativesListModel().getValue()) {
-			boolean enabled = alternativeShouldBeEnabled(d);
-			getAlternativeEnabledModel(d).setValue(enabled);
-			getAlternativeSelectedModel(d).setValue(enabled);
-		}
+			@Override
+			public List<Drug> getValue() {
+				return getSelectedAlternatives();
+			}
+
+		};
 	}
 	
 	private boolean alternativeShouldBeEnabled(Drug d) {
