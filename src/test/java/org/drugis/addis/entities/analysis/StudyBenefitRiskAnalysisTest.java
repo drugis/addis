@@ -134,7 +134,7 @@ public class StudyBenefitRiskAnalysisTest {
 
 	@Test
 	public void testLegacyXML() throws XMLStreamException {
-		InputStream xmlStream = getClass().getResourceAsStream("StudyLegacyBR.xml");
+		InputStream xmlStream = getClass().getResourceAsStream("studyLegacyBR.xml");
 		assertNotNull(xmlStream);
 		StudyBenefitRiskAnalysis importedAnalysis = 
 			(StudyBenefitRiskAnalysis)XMLHelper.fromXml(xmlStream);

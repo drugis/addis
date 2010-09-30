@@ -1,0 +1,91 @@
+<?xml version="1.0" ?>
+<org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis id="0" name="Je Moeder">
+	<indication id="1" code="310497006" name="Severe depression"/>
+	<study id="2" studyId="Chouinard et al, 1999">
+		<adverseEvents id="3">
+			<adverseEvent id="4" description="Rate of convulsion during study" name="Convulsion" unitOfMeasurement="Ratio of Patients">
+				<direction value="LOWER_IS_BETTER"/>
+				<type value="RATE"/>
+			</adverseEvent>
+		</adverseEvents>
+		<arms id="5">
+			<arm id="6" size="102">
+				<dose class="fixedDose" id="7" quantity="25.5">
+					<unit value="MILLIGRAMS_A_DAY"/>
+				</dose>
+				<drug class="drug" id="8" atcCode="A04AA01" name="Paroxetine"/>
+			</arm>
+			<arm id="9" size="101">
+				<dose class="fixedDose" id="10" quantity="27.5">
+					<unit value="MILLIGRAMS_A_DAY"/>
+				</dose>
+				<drug class="drug" id="11" atcCode="N06AB03" name="Fluoxetine"/>
+			</arm>
+		</arms>
+		<characteristics class="characteristics">
+			<ALLOCATION class="allocation" value="RANDOMIZED"/>
+			<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+			<CENTERS class="number" value="8"/>
+			<OBJECTIVE class="string" id="12" value="The antidepressant and anxiolytic efficacy of the selective serotonin reuptake inhibitors paroxetine and fluoxetine was compared in patients with moderate to severe depression."/>
+			<STUDY_START class="date" date="13 Dec 1991"/>
+			<STATUS class="status" value="COMPLETED"/>
+			<INCLUSION class="string" id="13" value="Patients were recruited through newspaper ads and referrals. Patients were included if they had symptoms of depression for at least one month prior to the screening visit, a total score of 20 on the 21-item Hamilton Depression Rating Scale (HAM-D) (Hamilton, 1960), and a score of two on item one HAM-D at the screening visit (5–14 days prior to baseline) and at entry (Day 0)."/>
+			<EXCLUSION class="string" id="14" value="Patients were excluded if they had significant coexisting illness, including renal, hepatic, gastrointestinal, cardiovascular or neurological disease; non-stabilized diabetes; other current Axis I psychiatric diagnosis; organic brain syndrome; past or present abuse of alcohol or illicit drugs; were at significant risk of suicide; or were pregnant or lactating. Other exclusion criteria included ECT or continuous lithium therapy in the preceding two months, monoamine oxidase inhibitor or oral neuroleptic use in the preceding 21 days, any antidepressant or sedative hypnotic (except chloral hydrate) in the previous seven days, fluoxetine in the previous 35 days, or current therapy with an anticoagulant or type 1C antiarrhythmic (e.g. flecainide, propafenone). Patients who had clinically significant abnormalities on the prestudy physical examination, ECG or laboratory tests (hematology, biochemistry and thyroid tests) were also excluded. The use of formal psychotherapy was not permitted for the duration of the study."/>
+			<CREATION_DATE class="date" date="29 Sep 2010"/>
+		</characteristics>
+		<endpoints id="15">
+			<endpoint id="16" description="Responders with a 50% increase in HAM-D score" name="HAM-D Responders" unitOfMeasurement="Ratio of Patients">
+				<direction value="HIGHER_IS_BETTER"/>
+				<type value="RATE"/>
+			</endpoint>
+			<endpoint id="17" description="Change from baseline CGI Severity of Illness score" name="CGI Severity Change" unitOfMeasurement="Deviation from the baseline of CGI Severity of Illness score">
+				<direction value="HIGHER_IS_BETTER"/>
+				<type value="CONTINUOUS"/>
+			</endpoint>
+		</endpoints>
+		<indication class="indication" ref="1"/>
+		<measurements>
+			<measurement id="18">
+				<outcomeMeasure class="endpoint" ref="17"/>
+				<arm ref="9"/>
+				<measurement class="continuousMeasurement" id="19" mean="-1.8" sampleSize="101" stdDev="0.16"/>
+			</measurement>
+			<measurement id="20">
+				<outcomeMeasure class="endpoint" ref="17"/>
+				<arm ref="6"/>
+				<measurement class="continuousMeasurement" id="21" mean="-1.6899999999999999" sampleSize="102" stdDev="0.16"/>
+			</measurement>
+			<measurement id="22">
+				<outcomeMeasure class="endpoint" ref="16"/>
+				<arm ref="9"/>
+				<measurement class="rateMeasurement" id="23" rate="67" sampleSize="101"/>
+			</measurement>
+			<measurement id="24">
+				<outcomeMeasure class="endpoint" ref="16"/>
+				<arm ref="6"/>
+				<measurement class="rateMeasurement" id="25" rate="67" sampleSize="102"/>
+			</measurement>
+			<measurement id="26">
+				<outcomeMeasure class="adverseEvent" ref="4"/>
+				<arm ref="9"/>
+				<measurement class="rateMeasurement" id="27" rate="10" sampleSize="40"/>
+			</measurement>
+			<measurement id="28">
+				<outcomeMeasure class="adverseEvent" ref="4"/>
+				<arm ref="6"/>
+				<measurement class="rateMeasurement" ref="27"/>
+			</measurement>
+		</measurements>
+		<notes/>
+		<populationCharacteristics id="29"/>
+	</study>
+	<arms id="30">
+		<arm ref="6"/>
+		<arm ref="9"/>
+	</arms>
+	<outcomeMeasures id="31">
+		<endpoint ref="16"/>
+		<adverseEvent ref="4"/>
+	</outcomeMeasures>
+</org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis>
+
