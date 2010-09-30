@@ -25,6 +25,8 @@ package org.drugis.addis.presentation;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.analysis.MeasurementSource;
+import org.drugis.addis.entities.analysis.MeasurementSource.Listener;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
@@ -39,23 +41,26 @@ import org.drugis.mtc.ProgressListener;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.ProgressEvent.EventType;
 
+import fi.smaa.jsmaa.model.Alternative;
+
 @SuppressWarnings("serial")
 public class NetworkTableModel  extends AbstractTableModel implements TableModelWithDescription{
 	private NetworkMetaAnalysisPresentation d_pm;
 	private PresentationModelFactory d_pmf;
 	MixedTreatmentComparison d_networkModel;
-
 	public NetworkTableModel(NetworkMetaAnalysisPresentation pm, PresentationModelFactory pmf, MixedTreatmentComparison networkModel) {
 		d_pm = pm;
 		d_pmf = pmf;
 		d_networkModel = networkModel;
-		
+
 		attachModelListener(networkModel);
 	}
+
 
 	private void attachModelListener(MixedTreatmentComparison networkModel) {
 		networkModel.addProgressListener(new ProgressListener() {
 			public void update(MCMCModel mtc, ProgressEvent event) {
+//				mtc.addProgressListener(this);
 				if(event.getType() == EventType.SIMULATION_FINISHED)
 					fireTableDataChanged();
 			}
@@ -109,4 +114,9 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 	public String getTitle() {
 		return getDescription();
 	}
+
+//	public void update(MCMCModel mtc, ProgressEvent event) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 }

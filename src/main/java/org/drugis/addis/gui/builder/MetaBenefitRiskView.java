@@ -48,6 +48,8 @@ import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.mtc.ProgressEvent;
+import org.drugis.mtc.ProgressEvent.EventType;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -85,6 +87,11 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		
 		final JComponent progressBars = buildProgressBars();
 		d_builder.add(progressBars, cc.xy(1, 5));
+		
+		if (d_pm.getAllModelsReadyModel().getValue()) {
+			progressBars.setVisible(false);
+			d_pm.startSMAA();
+		}
 		
 		d_pm.getAllModelsReadyModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -150,7 +157,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 				"p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();
-		
+
 		builder.addLabel("Running sub-analyses. Please wait.",cc.xy(1,1));
 		int row = 1;
 		for (int i=0; i<d_pm.getNumNMAProgBars(); ++i){

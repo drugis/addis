@@ -51,6 +51,7 @@ public class StudyBenefitRiskView extends AbstractBenefitRiskView<StudyBenefitRi
 		super(model, main);
 		d_pm.startSMAA();
 	}
+
 	
 	public JComponent buildPanel() {
 		if (d_builder != null)

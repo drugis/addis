@@ -41,6 +41,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.MeasurementSource;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.Main;
@@ -93,7 +94,7 @@ implements ViewBuilder {
 			}
 		}
 	}
-	
+
 	private static class AnalysisFinishedListener implements ProgressListener {
 		private final JProgressBar d_progressBar;
 		private final TablePanel[] d_tablePanels;
@@ -106,7 +107,7 @@ implements ViewBuilder {
 		public void update(MCMCModel mtc, ProgressEvent event) {
 			if(event.getType() == EventType.SIMULATION_FINISHED) {
 				for (TablePanel tablePanel : d_tablePanels) {
-					((AbstractTableModel) tablePanel.getTable().getModel()).fireTableDataChanged();
+//					((AbstractTableModel) tablePanel.getTable().getModel()).fireTableDataChanged();
 					tablePanel.doLayout();
 				}
 				d_progressBar.setVisible(false);
@@ -232,7 +233,7 @@ implements ViewBuilder {
 			public void update(MCMCModel mtc, ProgressEvent event) {
 				if (event.getType() == EventType.MODEL_CONSTRUCTION_FINISHED) {
 					if (inconsistencyFactorsTablePanel != null) {
-						((AbstractTableModel) inconsistencyFactorsTablePanel.getTable().getModel()).fireTableStructureChanged();
+//						((AbstractTableModel) inconsistencyFactorsTablePanel.getTable().getModel()).fireTableStructureChanged();
 						inconsistencyFactorsTablePanel.doLayout();
 						d_parent.reloadRightPanel();
 					}
@@ -349,6 +350,7 @@ implements ViewBuilder {
 	 */
 	private NetworkMetaAnalysisTablePanel createNetworkTablePanel(
 			MixedTreatmentComparison networkModel) {
+
 		NetworkTableModel networkAnalysisTableModel = new NetworkTableModel(
 				d_pm, d_parent.getPresentationModelFactory(), networkModel);
 		

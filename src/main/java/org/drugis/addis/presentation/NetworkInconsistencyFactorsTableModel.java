@@ -47,8 +47,11 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel i
 	private void attachModelListener(MixedTreatmentComparison networkModel) {
 		networkModel.addProgressListener(new ProgressListener() {
 			public void update(MCMCModel mtc, ProgressEvent event) {
-				if(event.getType() == EventType.MODEL_CONSTRUCTION_FINISHED || event.getType() == EventType.SIMULATION_FINISHED)
-					fireTableDataChanged();
+				if(event.getType() == EventType.MODEL_CONSTRUCTION_FINISHED) {
+					fireTableStructureChanged();
+				} else if (event.getType() == EventType.SIMULATION_FINISHED) {
+					fireTableDataChanged();	
+				}
 			}
 		});
 	}
