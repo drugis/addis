@@ -86,6 +86,7 @@ public class BenefitRiskMeasurementTableModelTest {
 			}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetValueAtAbsolute() {
 		d_pm = new BenefitRiskMeasurementTableModel<Drug>(d_brAnalysis, d_brAnalysis.getAbsoluteMeasurementSource(), d_pmf);

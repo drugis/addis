@@ -97,6 +97,7 @@ public abstract class RelativeEffectTableModelBaseTest {
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val21.getBean().getSubject());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetValueAtDiagonal() {
 		for (int i = 0; i < d_standardStudy.getArms().size(); ++i) {
