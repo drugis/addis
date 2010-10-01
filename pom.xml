@@ -169,7 +169,7 @@
       		<dependency>
           		<groupId>javolution</groupId>
           		<artifactId>javolution</artifactId>
-          		<version>5.4.4</version>
+          		<version>5.5.1</version>
       		</dependency>
 		 <dependency>
 			<groupId>gov.lanl</groupId>
