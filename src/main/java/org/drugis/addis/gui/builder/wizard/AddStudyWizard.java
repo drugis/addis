@@ -69,6 +69,7 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
+import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
@@ -85,7 +86,6 @@ import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.OutcomeMe
 import org.drugis.addis.util.PubMedListFormat;
 import org.drugis.addis.util.RunnableReadyModel;
 import org.drugis.common.ImageLoader;
-import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.AbstractWizardModel;

@@ -160,7 +160,7 @@ public class Main extends JFrame {
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		ToolTipManager.sharedInstance().setInitialDelay(0);
 
-		GUIHelper.configureJFreeChartLookAndFeel();
+		GUIFactory.configureJFreeChartLookAndFeel();
 
 		initializeDomain();		
 		d_pmManager = new PresentationModelFactory(getDomain());

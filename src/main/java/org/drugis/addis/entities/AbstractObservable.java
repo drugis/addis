@@ -23,8 +23,10 @@
 package org.drugis.addis.entities;
 
 import java.beans.PropertyChangeListener;
-import org.drugis.common.ObserverManager;
+
 import com.jgoodies.binding.beans.Observable;
+
+import fi.smaa.common.ObserverManager;
 
 public abstract class AbstractObservable implements Observable {
 

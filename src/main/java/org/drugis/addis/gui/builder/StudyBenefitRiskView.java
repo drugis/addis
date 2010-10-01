@@ -27,13 +27,13 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
-import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
 
 import com.jgoodies.forms.builder.PanelBuilder;

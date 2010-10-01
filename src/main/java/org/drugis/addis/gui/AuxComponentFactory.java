@@ -1,4 +1,4 @@
-package org.drugis.common.gui;
+package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -29,7 +29,10 @@ import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.addis.util.HtmlWordWrapper;
+import org.drugis.common.HtmlWordWrapper;
+import org.drugis.common.gui.DayDateFormat;
+import org.drugis.common.gui.LayoutUtil;
+import org.drugis.common.gui.OneWayObjectFormat;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;

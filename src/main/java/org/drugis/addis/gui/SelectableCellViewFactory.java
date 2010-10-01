@@ -36,6 +36,7 @@ public class SelectableCellViewFactory extends MyDefaultCellViewFactory {
 
 	private ListHolder<Drug> d_selectedDrugs;
 
+	@SuppressWarnings("unchecked")
 	public SelectableCellViewFactory(JGraphModelAdapter model, ListHolder<Drug> selectedDrugs) {
 		super(model);
 		

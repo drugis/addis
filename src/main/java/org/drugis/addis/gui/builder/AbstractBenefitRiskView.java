@@ -35,10 +35,10 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
+import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.BenefitRiskPresentation;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
-import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;

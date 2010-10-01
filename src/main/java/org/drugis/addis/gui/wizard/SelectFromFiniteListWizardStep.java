@@ -31,11 +31,11 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.presentation.NoteModelPresentation;
 import org.drugis.addis.presentation.SelectFromFiniteListPresentation;
 import org.drugis.addis.presentation.wizard.CompleteListener;
-import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
 

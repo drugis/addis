@@ -44,6 +44,17 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.drugis</groupId>
+			<artifactId>common-lib</artifactId>
+			<version>0.2</version>
+      <classifier>tests</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.drugis</groupId>
+			<artifactId>common-gui</artifactId>
+			<version>0.2</version>
+		</dependency>
+		<dependency>
 			<groupId>fi.smaa.jsmaa</groupId>
 			<artifactId>lib</artifactId>
 			<version>0.7-SNAPSHOT</version>

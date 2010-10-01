@@ -34,6 +34,7 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.RelativeEffectTableDialog;
@@ -46,7 +47,6 @@ import org.drugis.addis.presentation.RiskDifferenceTableModel;
 import org.drugis.addis.presentation.RiskRatioTableModel;
 import org.drugis.addis.presentation.StandardisedMeanDifferenceTableModel;
 import org.drugis.addis.presentation.StudyPresentation;
-import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -90,7 +90,7 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 			for (OutcomeMeasure om : outcomeMeasures) {
 				JComponent outcomeMeasureLabelWithIcon = GUIFactory.createOutcomeMeasureLabelWithIcon(om);
 				
-				outcomeMeasureLabelWithIcon.setToolTipText(GUIHelper.createToolTip(
+				outcomeMeasureLabelWithIcon.setToolTipText(GUIFactory.createToolTip(
 						d_model.getBean().getNote(om)));
 				builder.add(
 						outcomeMeasureLabelWithIcon,

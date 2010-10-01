@@ -35,7 +35,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
-import org.drugis.common.OutcomeComparator;
+import org.drugis.addis.util.comparator.OutcomeComparator;
 
 @SuppressWarnings("serial")
 public class OutcomeListHolder extends AbstractListHolder<OutcomeMeasure> implements PropertyChangeListener {

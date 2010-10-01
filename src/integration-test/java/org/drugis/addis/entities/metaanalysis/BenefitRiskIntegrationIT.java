@@ -74,7 +74,7 @@ public class BenefitRiskIntegrationIT {
 		 * However, since the results are non-deterministic the test might fail occasionally even if the algorithm hasn't changed.
 		 */
 		MetaBenefitRiskPresentation pm = (MetaBenefitRiskPresentation) pmf.getModel((MetaBenefitRiskAnalysis)analysis);
-		BenefitRiskMeasurementTableModel mtm = pm.getRelativeMeasurementTableModel();
+		BenefitRiskMeasurementTableModel<?> mtm = pm.getRelativeMeasurementTableModel();
 		
 		assertMeanwithinTenPercent(0.875, -1.032, 2.782, mtm.getValueAt(1, 1));
 		assertMeanwithinTenPercent(0.838, 0.465, 1.509, mtm.getValueAt(1, 2));
@@ -108,7 +108,7 @@ public class BenefitRiskIntegrationIT {
 		 * However, since the results are non-deterministic the test might fail occasionally even if the algorithm hasn't changed.
 		 */
 		MetaBenefitRiskPresentation pm = (MetaBenefitRiskPresentation) pmf.getModel((MetaBenefitRiskAnalysis)analysis);
-		BenefitRiskMeasurementTableModel mtm = pm.getRelativeMeasurementTableModel();
+		BenefitRiskMeasurementTableModel<?> mtm = pm.getRelativeMeasurementTableModel();
 		
 		
 		assertMeanwithinTenPercent(1.187, 0.904, 1.558,mtm.getValueAt(1, 1));

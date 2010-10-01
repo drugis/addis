@@ -24,7 +24,7 @@ package org.drugis.addis.util;
 
 import static org.junit.Assert.*;
 
-import org.drugis.addis.util.HtmlWordWrapper;
+import org.drugis.common.HtmlWordWrapper;
 import org.junit.Test;
 
 public class HtmlWordWrapperTest {

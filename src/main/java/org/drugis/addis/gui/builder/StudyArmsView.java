@@ -32,9 +32,9 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.presentation.BasicArmPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -86,7 +86,7 @@ public class StudyArmsView implements ViewBuilder {
 		BasicArmPresentation armModel = (BasicArmPresentation)d_pm.getModel(g);
 		LayoutUtil.addRow(layout);
 		final JLabel armLabel = BasicComponentFactory.createLabel(d_pm.getLabeledModel(g).getLabelModel()); 
-		armLabel.setToolTipText(GUIHelper.createToolTip(d_model.getBean().getNote(armModel.getBean())));
+		armLabel.setToolTipText(GUIFactory.createToolTip(d_model.getBean().getNote(armModel.getBean())));
 		builder.add(
 				armLabel,
 				cc.xy(1, row));

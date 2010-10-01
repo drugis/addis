@@ -30,9 +30,9 @@ import javax.swing.JScrollPane;
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristics;
+import org.drugis.addis.gui.AuxComponentFactory;
+import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.presentation.StudyPresentation;
-import org.drugis.common.gui.AuxComponentFactory;
-import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -60,7 +60,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		
 		builder.addLabel("ID:", cc.xy(1, 1));
 		JLabel idLabel = BasicComponentFactory.createLabel(d_model.getModel(Study.PROPERTY_ID));
-		idLabel.setToolTipText(GUIHelper.createToolTip(d_model.getNote(Study.PROPERTY_ID)));
+		idLabel.setToolTipText(GUIFactory.createToolTip(d_model.getNote(Study.PROPERTY_ID)));
 		builder.add(idLabel,
 				cc.xyw(3, 1, fullWidth - 2));
 		
@@ -74,9 +74,9 @@ public class StudyCharacteristicsView implements ViewBuilder {
 			if (charView instanceof JScrollPane) {
 				JScrollPane pane = (JScrollPane)charView;
 				((JComponent)pane.getViewport().getView()).setToolTipText(
-						GUIHelper.createToolTip(d_model.getNote(c)));
+						GUIFactory.createToolTip(d_model.getNote(c)));
 			} else {
-				charView.setToolTipText(GUIHelper.createToolTip(d_model.getNote(c)));
+				charView.setToolTipText(GUIFactory.createToolTip(d_model.getNote(c)));
 			}
 			builder.add(charView,
 					cc.xyw(3, row, fullWidth - 2));

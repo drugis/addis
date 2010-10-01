@@ -22,8 +22,10 @@
 
 package org.drugis.addis.entities.relativeeffect;
 
-import static org.junit.Assert.*;
-import static org.drugis.common.JUnitUtil.assertNotEquals;
+import static org.junit.Assert.assertEquals;
+
+import org.drugis.common.Interval;
+import org.drugis.common.JUnitUtil;
 import org.junit.Test;
 
 public class ConfidenceIntervalTest {
@@ -46,8 +48,17 @@ public class ConfidenceIntervalTest {
 		
 		assertEquals(ci1, ci2);
 		assertEquals(ci1.hashCode(), ci2.hashCode());
-		assertNotEquals(ci1, ci3);
-		assertNotEquals(ci1, ci4);
-		assertNotEquals(ci1, ci5);
+		JUnitUtil.assertNotEquals(ci1, ci3);
+		JUnitUtil.assertNotEquals(ci1, ci4);
+		JUnitUtil.assertNotEquals(ci1, ci5);
 	}
+	
+	@Test
+	public void testEqualsInterval() {
+		Interval<Double> in5 = new Interval<Double>(2.0, 5.0);
+		ConfidenceInterval in6 = new ConfidenceInterval(1.0, 2.0, 5.0);
+		JUnitUtil.assertNotEquals(in6, in5);
+		JUnitUtil.assertNotEquals(in5, in6);
+	}
+
 }

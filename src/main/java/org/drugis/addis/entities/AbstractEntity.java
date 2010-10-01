@@ -32,6 +32,7 @@ import org.drugis.addis.util.EntityXMLFormat;
 import org.drugis.addis.util.EntryXMLFormat;
 import org.drugis.addis.util.HashMapXMLFormat;
 
+@SuppressWarnings("unchecked")
 public abstract class AbstractEntity extends AbstractObservable implements Entity {
 	
 	protected static final XMLFormat<HashMap> mapXML = new HashMapXMLFormat();

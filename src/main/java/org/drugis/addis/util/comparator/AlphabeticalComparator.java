@@ -1,4 +1,4 @@
-package org.drugis.common;
+package org.drugis.addis.util.comparator;
 
 import java.util.Comparator;
 

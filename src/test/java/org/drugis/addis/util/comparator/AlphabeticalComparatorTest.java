@@ -1,4 +1,4 @@
-package org.drugis.common;
+package org.drugis.addis.util.comparator;
 
 import static org.junit.Assert.assertEquals;
 

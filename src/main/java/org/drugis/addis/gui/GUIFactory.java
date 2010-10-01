@@ -35,10 +35,12 @@ import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.StudyListPresentation;
+import org.drugis.common.HtmlWordWrapper;
 import org.drugis.common.ImageLoader;
 
 import com.jgoodies.binding.PresentationModel;
@@ -46,6 +48,9 @@ import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.AbstractValueModel;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.StandardChartTheme;
+import org.jfree.chart.renderer.category.StandardBarPainter;
 
 public class GUIFactory {
 	public static JButton createPlusButton(String toolTipText) {
@@ -97,4 +102,20 @@ public class GUIFactory {
 					drugModel);
 		return BasicComponentFactory.createComboBox(drugSelectionInList);
 	}
+	
+	public static void configureJFreeChartLookAndFeel() {
+		StandardChartTheme chartTheme = new StandardChartTheme("ADDIS");
+		chartTheme.setBarPainter(new StandardBarPainter());
+		chartTheme.setShadowVisible(false);
+		ChartFactory.setChartTheme(chartTheme);
+	}
+	
+	public static String createToolTip(Note note) {
+		if (note == null) {
+			return null;
+		}
+		return "<html><b>From " + note.getSource().toString() + "</b><br>\n" + 
+			HtmlWordWrapper.wordWrap(note.getText(), false) + "</html>";
+	}
+
 }

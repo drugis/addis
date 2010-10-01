@@ -28,7 +28,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JLabel;
 
-import org.drugis.addis.gui.BrowserLaunch;
+import org.drugis.common.BrowserLaunch;
 
 @SuppressWarnings("serial")
 public class LinkLabel extends JLabel{

@@ -22,7 +22,7 @@
 
 package org.drugis.addis.entities;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;

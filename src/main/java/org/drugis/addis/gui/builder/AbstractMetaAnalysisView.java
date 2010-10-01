@@ -28,10 +28,10 @@ import javax.swing.JScrollPane;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.AbstractMetaAnalysisPresentation;
-import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.OneWayObjectFormat;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;

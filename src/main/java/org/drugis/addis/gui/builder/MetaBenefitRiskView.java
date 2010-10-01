@@ -35,6 +35,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
@@ -43,7 +44,6 @@ import org.drugis.addis.gui.components.EntitiesTablePanel;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
-import org.drugis.common.gui.AuxComponentFactory;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;

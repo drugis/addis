@@ -28,8 +28,8 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
+import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
-import org.drugis.common.gui.AuxComponentFactory;
 import org.pietschy.wizard.PanelWizardStep;
 
 @SuppressWarnings("serial")
