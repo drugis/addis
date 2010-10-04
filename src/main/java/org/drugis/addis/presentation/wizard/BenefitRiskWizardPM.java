@@ -140,10 +140,10 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	private HashMap<Arm, ModifiableHolder<Boolean>> d_armSelectedMap;
 	private CompleteHolder d_completeHolder;
 	private ModifiableHolder<Study> d_studyHolder;
-	private ModifiableHolder<BRAType> d_studyType;
-	private ModifiableHolder<AnalysisType> d_analysisType;
+	private ModifiableHolder<BRAType> d_evidenceTypeHolder;
+	private ModifiableHolder<AnalysisType> d_analysisTypeHolder;
 	private StudiesWithIndicationHolder d_studiesWithIndicationHolder;
-	private HashMap<OutcomeMeasure, ModifiableHolder<Boolean>> d_criteriaEnabledMap;
+	private HashMap<OutcomeMeasure, ModifiableHolder<Boolean>> d_outcomeEnabledMap;
 	private MetaAnalysesSelectedHolder d_metaAnalysesSelectedHolder;
 	
 	public BenefitRiskWizardPM(Domain d) {
@@ -154,26 +154,31 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		d_alternativeSelectedMap = new HashMap<Drug, ModifiableHolder<Boolean>>();
 		d_completeHolder = new CompleteHolder();
 		d_studyHolder = new ModifiableHolder<Study>();
-		d_studyType = new ModifiableHolder<BRAType>(BRAType.Synthesis);
+		d_evidenceTypeHolder = new ModifiableHolder<BRAType>(BRAType.Synthesis);
 		d_armSelectedMap = new HashMap<Arm, ModifiableHolder<Boolean>>();
-		d_analysisType = new ModifiableHolder<AnalysisType>(AnalysisType.SMAA);
-		d_criteriaEnabledMap = new HashMap<OutcomeMeasure, ModifiableHolder<Boolean>>();
+		d_analysisTypeHolder = new ModifiableHolder<AnalysisType>(AnalysisType.SMAA);
+		d_outcomeEnabledMap = new HashMap<OutcomeMeasure, ModifiableHolder<Boolean>>();
 		
 		PropertyChangeListener clearValuesListener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				d_outcomeSelectedMap.clear();
+				d_alternativeEnabledMap.clear();
 				d_alternativeSelectedMap.clear();
 				d_armSelectedMap.clear();
-				d_alternativeEnabledMap.clear();
-				d_metaAnalysisSelectedMap.clear();
 				d_metaAnalysesSelectedHolder.fireValueChange();
+				d_metaAnalysisSelectedMap.clear();
+				d_outcomeEnabledMap.clear();
 				d_completeHolder.propertyChange(null);
 			}
 		};
-		
 		d_indicationHolder.addValueChangeListener(clearValuesListener);
+		d_evidenceTypeHolder.addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				d_studyHolder.setValue(null);
+			}
+		});
 		d_studyHolder.addValueChangeListener(clearValuesListener);
-		d_analysisType.addValueChangeListener(clearValuesListener);
+		d_analysisTypeHolder.addValueChangeListener(clearValuesListener);
 		
 		d_studiesWithIndicationHolder = new StudiesWithIndicationHolder(d_indicationHolder, d_domain);
 		
@@ -284,8 +289,9 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 
 	@SuppressWarnings("serial")
 	private AbstractValueModel getSelectedAlternativesHolder() {
-		return new AbstractListHolder<Drug>() { // FIXME: SHOULD LISTEN TO SOMETHING (BUT ALL TESTS PASS NOW)
-
+				
+		return new AbstractListHolder<Drug>() {// FIXME: SHOULD LISTEN TO SOMETHING
+						
 			@Override
 			public List<Drug> getValue() {
 				return getSelectedAlternatives();
@@ -295,9 +301,9 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	}
 	
 	private boolean alternativeShouldBeEnabled(Drug d) {
-		if(d_analysisType.getValue() == AnalysisType.SMAA)
+		if(d_analysisTypeHolder.getValue() == AnalysisType.SMAA)
 			return getAlternativeIncludedInAllSelectedAnalyses(d);
-		else if (d_analysisType.getValue() == AnalysisType.LyndOBrien) {
+		else if (d_analysisTypeHolder.getValue() == AnalysisType.LyndOBrien) {
 			return (getAlternativeSelectedModel(d).getValue() == true) ||
 			getAlternativeIncludedInAllSelectedAnalyses(d) &&
 			nSelectedAlternatives() < 2;
@@ -305,7 +311,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return false;
 	}
 	
-	private Boolean getAlternativeIncludedInAllSelectedAnalyses(Drug d) {
+	private boolean getAlternativeIncludedInAllSelectedAnalyses(Drug d) {
 		boolean atLeastOneMASelected = false;
 		for(ValueHolder<MetaAnalysis> ma : getSelectedMetaAnalysisHolders()){
 			if(ma.getValue() == null)
@@ -319,24 +325,24 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return atLeastOneMASelected;
 	}
 
-	public ValueHolder<Boolean> getCriteriaEnabledModel(OutcomeMeasure out) {
-		ModifiableHolder<Boolean> val = d_criteriaEnabledMap.get(out);
+	public ValueHolder<Boolean> getOutcomeEnabledModel(OutcomeMeasure out) {
+		ModifiableHolder<Boolean> val = d_outcomeEnabledMap.get(out);
 		if (val == null) {
 			val = new ModifiableHolder<Boolean>(getCriterionShouldBeEnabled(out));
-			d_criteriaEnabledMap.put(out, val);
+			d_outcomeEnabledMap.put(out, val);
 		}
 		return val;
 	}
 
-	private Boolean getCriterionShouldBeEnabled(OutcomeMeasure out) {
+	private boolean getCriterionShouldBeEnabled(OutcomeMeasure out) {
 		if(getOutcomeSelectedModel(out).getValue() == true) return true;
-		else return (d_analysisType.getValue() == AnalysisType.SMAA) || (nSelectedOutcomes() < 2);
+		else return (d_analysisTypeHolder.getValue() == AnalysisType.SMAA) || (nSelectedOutcomes() < 2);
 	}
 
 	private void updateCriteriaEnabled() {
 		for (OutcomeMeasure om : getOutcomesListModel().getValue()) {
 			boolean enabled = getCriterionShouldBeEnabled(om);
-			getCriteriaEnabledModel(om).setValue(enabled);
+			getOutcomeEnabledModel(om).setValue(enabled);
 		}
 	}
 
@@ -375,11 +381,11 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		
 		BenefitRiskAnalysis<?> brAnalysis = null;
 
-		if(getStudyType().getValue() == BRAType.Synthesis) {
+		if(getEvidenceTypeHolder().getValue() == BRAType.Synthesis) {
 			if(!getCompleteModel().getValue())
 				throw new InvalidStateException("cannot commit, Benefit Risk Analysis not ready. Select at least two criteria, and two alternatives.");
 			brAnalysis = createMetaBRAnalysis(id);
- 		} else if(getStudyType().getValue() == BRAType.SingleStudy) {
+ 		} else if(getEvidenceTypeHolder().getValue() == BRAType.SingleStudy) {
 			if(!getCompleteModel().getValue())
 				throw new InvalidStateException("cannot commit, Benefit Risk Analysis not ready. Select at least two outcome measures, and two arms.");
 			brAnalysis = createStudyBRAnalysis(id);
@@ -470,12 +476,12 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	}	
 	
 	
-	public ValueModel getStudyType() {
-		return d_studyType;
+	public ValueModel getEvidenceTypeHolder() {
+		return d_evidenceTypeHolder;
 	}
 	
-	public ValueModel getAnalysisType() {
-		return d_analysisType;
+	public ValueModel getAnalysisTypeHolder() {
+		return d_analysisTypeHolder;
 	}
 
 }

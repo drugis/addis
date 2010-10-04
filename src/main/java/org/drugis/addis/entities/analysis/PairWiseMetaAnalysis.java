@@ -32,5 +32,5 @@ public interface PairWiseMetaAnalysis extends MetaAnalysis {
 	public Drug getFirstDrug();
 
 	public Drug getSecondDrug();
-
+	
 }

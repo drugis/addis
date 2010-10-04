@@ -43,8 +43,11 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM.BRAType;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class BenefitRiskWizardPMTest {
@@ -77,9 +80,12 @@ public class BenefitRiskWizardPMTest {
 	public void testOutcomesListModelIncludesOutcomes() { // FIXME: should be on basis of analyses, not studies.
 		for (Indication indication : d_domain.getIndications()) {
 			TreeSet<OutcomeMeasure> expected = new TreeSet<OutcomeMeasure>();
+			/*
+			for (MetaAnalysis analysis : d_domain.getMetaAnalyses()) {
+				expected.add(analysis.getOutcomeMeasure());
+			}*/
 			for (Study s : d_domain.getStudies(indication).getValue()) 
 				expected.addAll(s.getOutcomeMeasures());
-
 			d_pm.getIndicationModel().setValue(indication);
 			assertAllAndOnly(expected, d_pm.getOutcomesListModel().getValue());
 		}
@@ -308,10 +314,153 @@ public class BenefitRiskWizardPMTest {
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
 		assertTrue(d_pm.getSelectedCriteria().isEmpty());
 		assertTrue(d_pm.getSelectedAlternatives().isEmpty());
-		assertTrue(d_pm.getStudyModel().getValue() == null);
+		assertNull(d_pm.getStudyModel().getValue());
 		assertFalse(d_pm.getCompleteModel().getValue());
 	}
 
+	@Test
+	public void testChangeEvidenceTypeShouldClearValues() {
+		d_pm.getIndicationModel().setValue(d_indication);
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		d_pm.getStudyModel().setValue(d_study);
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.Synthesis);
+		assertTrue(d_pm.getSelectedCriteria().isEmpty());
+		assertTrue(d_pm.getSelectedAlternatives().isEmpty());
+		assertNull(d_pm.getStudyModel().getValue());
+		assertFalse(d_pm.getCompleteModel().getValue());
+	}
+	
+	@Test
+	public void testChangeAnalysisTypeShouldClearValues() {
+		d_pm.getIndicationModel().setValue(d_indication);
+		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine());
+		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine());
+		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugSertraline());
+		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysis());
+		
+		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.SMAA);
+		assertTrue(d_pm.getSelectedCriteria().isEmpty());
+		assertTrue(d_pm.getSelectedAlternatives().isEmpty());
+		assertFalse(d_pm.getCompleteModel().getValue());
+	}
+	
+	@Test
+	public void testResetSelectedOutcomesShouldCascadeToEnabledModels() {
+		d_pm.getIndicationModel().setValue(d_indication);
+		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		
+		assertTrue(d_pm.getOutcomesListModel().getValue().size() > 2);
+		
+		for (OutcomeMeasure om: d_pm.getOutcomesListModel().getValue()) {
+			assertTrue(d_pm.getOutcomeEnabledModel(om).getValue());
+		}
+		
+		d_pm.getOutcomeSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+		
+		for (OutcomeMeasure om: d_pm.getOutcomesListModel().getValue()) {
+			if (om.equals(ExampleData.buildEndpointHamd()) || om.equals(ExampleData.buildAdverseEventConvulsion())) {
+				assertTrue(d_pm.getOutcomeEnabledModel(om).getValue());
+			} else {
+				assertFalse(d_pm.getOutcomeEnabledModel(om).getValue());
+			}
+		}
+		
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(false);
+
+		for (OutcomeMeasure om: d_pm.getOutcomesListModel().getValue()) {
+			assertTrue(d_pm.getOutcomeEnabledModel(om).getValue());
+		}
+	}
+	
+	@Test
+	public void testChangeEvidenceTypeShouldCascadeToEnabledModels() {
+		d_pm.getIndicationModel().setValue(d_indication);
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		d_pm.getOutcomeSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.Synthesis);
+	
+		for (OutcomeMeasure om: d_pm.getOutcomesListModel().getValue()) {
+			assertTrue(d_pm.getOutcomeEnabledModel(om).getValue());
+		}
+	}
+	
+	@Test
+	public void testChangeAnalysisTypeShouldCascadeToEnabledModels() {
+		d_pm.getIndicationModel().setValue(d_indication);
+		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		d_pm.getOutcomeSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+		
+		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.SMAA);
+	
+		for (OutcomeMeasure om: d_pm.getOutcomesListModel().getValue()) {
+			assertTrue(d_pm.getOutcomeEnabledModel(om).getValue());
+		}
+	}
+	
+	@Ignore
+	@Test
+	public void testSelectedMetaAnalysesRestrictAlternatives() {
+		d_pm.getIndicationModel().setValue(d_indication);
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.Synthesis);
+		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.SMAA); 
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		
+		// First set a network-analysis with >3 alternatives
+		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysis());
+		// Select all alternatives
+		for (Drug d : d_pm.getAlternativesListModel().getValue()) {
+			d_pm.getAlternativeSelectedModel(d).setValue(true);
+		}
+		
+		// Change to a pair-wise meta-analysis (RandomEffectsMetaAnalysis)
+		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
+		
+		// The non-included alternative should be deselected and disabled.
+		assertTrue(d_pm.getAlternativeEnabledModel(ExampleData.buildDrugFluoxetine()).getValue());
+		assertTrue(d_pm.getAlternativeEnabledModel(ExampleData.buildDrugParoxetine()).getValue());
+		assertFalse(d_pm.getAlternativeEnabledModel(ExampleData.buildDrugSertraline()).getValue());
+		assertTrue(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).getValue());
+		assertTrue(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine()).getValue());
+		assertFalse(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugSertraline()).getValue());
+	}
+	
+	@Ignore
+	@Test
+	public void testSelectedMetaAnalysesRestrictAlternativesLyndOBrien() {
+		d_pm.getIndicationModel().setValue(d_indication);
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.Synthesis);
+		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
+		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+
+		// First set a network-analysis with >3 alternatives
+		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysis());
+		// Select two alternatives
+		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugSertraline()).setValue(true);
+		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).setValue(true);
+		
+		// Change to a pair-wise meta-analysis (RandomEffectsMetaAnalysis)
+		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
+		
+		// The non-included alternative should be deselected and disabled.
+		assertTrue(d_pm.getAlternativeEnabledModel(ExampleData.buildDrugFluoxetine()).getValue());
+		assertTrue(d_pm.getAlternativeEnabledModel(ExampleData.buildDrugParoxetine()).getValue());
+		assertFalse(d_pm.getAlternativeEnabledModel(ExampleData.buildDrugSertraline()).getValue());
+		assertTrue(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).getValue());
+		assertFalse(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine()).getValue());
+		assertFalse(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugSertraline()).getValue());
+	}
+	
+	// FIXME: also test that single-study criteria/alternatives are cleared.
+	
 	@Test
 	public void testChangeStudyShouldClearValues() {
 		d_pm.getIndicationModel().setValue(d_indication);
@@ -326,7 +475,5 @@ public class BenefitRiskWizardPMTest {
 		assertTrue(d_pm.getSelectedCriteria().isEmpty());
 		assertTrue(d_pm.getSelectedAlternatives().isEmpty());
 		assertFalse(d_pm.getCompleteModel().getValue());
-
-	}
-	
+	}	
 }

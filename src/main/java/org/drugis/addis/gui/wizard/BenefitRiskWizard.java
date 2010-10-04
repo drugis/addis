@@ -77,17 +77,17 @@ public class BenefitRiskWizard extends Wizard {
 		//wizardModel.add(new SelectStudyOrMetaAnalysisWizardStep(pm, frame));
 		wizardModel.add(new SelectStudyWizardStep(pm, frame), new Condition() {
 			public boolean evaluate(WizardModel model) {
-				return pm.getStudyType().getValue() == BRAType.SingleStudy;
+				return pm.getEvidenceTypeHolder().getValue() == BRAType.SingleStudy;
 			}
 		});
 		wizardModel.add(new SelectOutcomeMeasuresAndArmsWizardStep(pm, frame), new Condition() {
 			public boolean evaluate(WizardModel model) {
-				return pm.getStudyType().getValue() == BRAType.SingleStudy;
+				return pm.getEvidenceTypeHolder().getValue() == BRAType.SingleStudy;
 			}
 		});
 		wizardModel.add(new SelectCriteriaAndAlternativesWizardStep(pm, frame), new Condition() {
 			public boolean evaluate(WizardModel model) {
-				return pm.getStudyType().getValue() == BRAType.Synthesis;
+				return pm.getEvidenceTypeHolder().getValue() == BRAType.Synthesis;
 			}
 		});
 		
@@ -97,7 +97,7 @@ public class BenefitRiskWizard extends Wizard {
 	private static class SelectIndicationWizardStep extends PanelWizardStep {
 		public SelectIndicationWizardStep(BenefitRiskWizardPM pm) {
 			
-			super("Select Indication","Select an Indication that you want to use for this meta analysis.");
+			super("Select Indication, Study and Analysis","Select the Indication, Study and Analysis type that you want to use for this meta analysis.");
 
 			FormLayout layout = new FormLayout(
 					"right:pref, 3dlu, left:pref",
@@ -114,15 +114,14 @@ public class BenefitRiskWizard extends Wizard {
 			pm.getIndicationModel().addValueChangeListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
 					setComplete(evt.getNewValue() != null);
-					
 				}
 			});
 
 			builder.add(new JLabel("Study type : "), cc.xy(1, 3));
 			JPanel studyTypeRadioButtonPanel = new JPanel();
 			studyTypeRadioButtonPanel.setLayout(new BoxLayout(studyTypeRadioButtonPanel,BoxLayout.Y_AXIS));
-			JRadioButton MetaAnalysisButton = BasicComponentFactory.createRadioButton(pm.getStudyType(), BRAType.Synthesis, "Evidence synthesis");
-			JRadioButton StudyButton = BasicComponentFactory.createRadioButton(pm.getStudyType(), BRAType.SingleStudy, "Single study");
+			JRadioButton MetaAnalysisButton = BasicComponentFactory.createRadioButton(pm.getEvidenceTypeHolder(), BRAType.Synthesis, "Evidence synthesis");
+			JRadioButton StudyButton = BasicComponentFactory.createRadioButton(pm.getEvidenceTypeHolder(), BRAType.SingleStudy, "Single study");
 			studyTypeRadioButtonPanel.add(MetaAnalysisButton);
 		    studyTypeRadioButtonPanel.add(StudyButton);
 		    builder.add(studyTypeRadioButtonPanel, cc.xy(3, 3));
@@ -130,8 +129,8 @@ public class BenefitRiskWizard extends Wizard {
 			builder.add(new JLabel("Analysis type : "), cc.xy(1, 5));
 			JPanel analysisTypeRadioButtonPanel = new JPanel();
 			analysisTypeRadioButtonPanel.setLayout(new BoxLayout(analysisTypeRadioButtonPanel,BoxLayout.Y_AXIS));
-			JRadioButton SMAAButton = BasicComponentFactory.createRadioButton(pm.getAnalysisType(), AnalysisType.SMAA, "SMAA");
-			JRadioButton LyndOBrienButton = BasicComponentFactory.createRadioButton(pm.getAnalysisType(), AnalysisType.LyndOBrien, "Lynd & O'Brien");
+			JRadioButton SMAAButton = BasicComponentFactory.createRadioButton(pm.getAnalysisTypeHolder(), AnalysisType.SMAA, "SMAA");
+			JRadioButton LyndOBrienButton = BasicComponentFactory.createRadioButton(pm.getAnalysisTypeHolder(), AnalysisType.LyndOBrien, "Lynd & O'Brien");
 			analysisTypeRadioButtonPanel.add(SMAAButton);
 		    analysisTypeRadioButtonPanel.add(LyndOBrienButton);
 		    builder.add(analysisTypeRadioButtonPanel, cc.xy(3, 5));
@@ -341,11 +340,8 @@ public class BenefitRiskWizard extends Wizard {
 				// Add outcome measure checkbox
 				row += 2;
 				LayoutUtil.addRow(layout);
-				/*
-				JCheckBox checkBox = BasicComponentFactory.createCheckBox(d_pm.getOutcomeSelectedModel(out), out.getName());
-				builder.add(checkBox, cc.xyw(1, row, 3));
-				*/
-				ValueHolder<Boolean> enabledModel  = d_pm.getCriteriaEnabledModel(out);
+				
+				ValueHolder<Boolean> enabledModel  = d_pm.getOutcomeEnabledModel(out);
 				JCheckBox criteriaCheckBox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(out.getName(), enabledModel, d_pm.getOutcomeSelectedModel(out));
 				builder.add(criteriaCheckBox, cc.xyw(1, row, 3));
 				
