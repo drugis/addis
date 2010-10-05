@@ -88,7 +88,25 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		}
 
 		public void propertyChange(PropertyChangeEvent evt) {
-			setValue(alternativeShouldBeEnabled(d_alternative));			
+			boolean alternativeShouldBeEnabled = alternativeShouldBeEnabled(d_alternative);
+			if(!alternativeShouldBeEnabled) getAlternativeSelectedModel(d_alternative).setValue(false);
+			setValue(alternativeShouldBeEnabled);
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	private class AlternativeSelectedHolder extends ModifiableHolder<Boolean> {
+		Drug d_a;
+		
+		public AlternativeSelectedHolder(Drug d) {
+			super(false);
+			d_a = d;
+		}
+		
+		@Override
+		public void setValue(Object selected) {
+			super.setValue(selected);
+			updateAlternativesEnabled();
 		}
 	}
 	
@@ -145,6 +163,8 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	private StudiesWithIndicationHolder d_studiesWithIndicationHolder;
 	private HashMap<OutcomeMeasure, ModifiableHolder<Boolean>> d_outcomeEnabledMap;
 	private MetaAnalysesSelectedHolder d_metaAnalysesSelectedHolder;
+	private AlternativeSelectedHolder d_alternativeSelectedHolder;
+	
 	
 	public BenefitRiskWizardPM(Domain d) {
 		super(d);
@@ -186,6 +206,12 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		d_metaAnalysesSelectedHolder.addValueChangeListener(d_completeHolder);
 	}
 	
+	public void updateAlternativesEnabled() {
+		for(Drug d: d_alternativeSelectedMap.keySet()) {
+			getAlternativeEnabledModel(d).setValue(alternativeShouldBeEnabled(d));
+		}
+	}
+
 	public boolean selectedOutcomesHaveAnalysis() {
 		for (OutcomeMeasure om : getSelectedEntities(d_outcomeSelectedMap)) {
 			if (getMetaAnalysesSelectedModel(om).getValue() == null) {
@@ -244,6 +270,17 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return val;
 	}
 
+	public ValueHolder<Boolean> getAlternativeSelectedModel(Drug d) {
+		ModifiableHolder<Boolean> val = d_alternativeSelectedMap.get(d);
+		if (val == null) {
+			val = new AlternativeSelectedHolder(d);
+			val.addPropertyChangeListener(d_completeHolder);
+			d_alternativeSelectedMap.put(d, val);
+		}
+		return val;
+	}
+	
+	
 	public ValueHolder<MetaAnalysis> getMetaAnalysesSelectedModel(OutcomeMeasure om) {
 		ModifiableHolder<MetaAnalysis> val = d_metaAnalysisSelectedMap.get(om);
 		if (val == null) {
@@ -283,30 +320,18 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	private ModifiableHolder<Boolean> createAlternativeEnabledModel(Drug d) {
 		AlternativeEnabledModel model = new AlternativeEnabledModel(d);
 		getMetaAnalysesSelectedHolder().addValueChangeListener(model);
-		getSelectedAlternativesHolder().addValueChangeListener(model);
+		getAlternativeSelectedModel(d).addValueChangeListener(model);
 		return model;
 	}
 
-	@SuppressWarnings("serial")
-	private AbstractValueModel getSelectedAlternativesHolder() {
-				
-		return new AbstractListHolder<Drug>() {// FIXME: SHOULD LISTEN TO SOMETHING
-						
-			@Override
-			public List<Drug> getValue() {
-				return getSelectedAlternatives();
-			}
-
-		};
-	}
-	
 	private boolean alternativeShouldBeEnabled(Drug d) {
 		if(d_analysisTypeHolder.getValue() == AnalysisType.SMAA)
 			return getAlternativeIncludedInAllSelectedAnalyses(d);
 		else if (d_analysisTypeHolder.getValue() == AnalysisType.LyndOBrien) {
-			return (getAlternativeSelectedModel(d).getValue() == true) ||
-			getAlternativeIncludedInAllSelectedAnalyses(d) &&
-			nSelectedAlternatives() < 2;
+			if(!getAlternativeIncludedInAllSelectedAnalyses(d)) {
+				return false;
+			} 
+			return (getAlternativeSelectedModel(d).getValue() == true) || nSelectedAlternatives() < 2;
 		}
 		return false;
 	}
@@ -341,8 +366,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 
 	private void updateCriteriaEnabled() {
 		for (OutcomeMeasure om : getOutcomesListModel().getValue()) {
-			boolean enabled = getCriterionShouldBeEnabled(om);
-			getOutcomeEnabledModel(om).setValue(enabled);
+			getOutcomeEnabledModel(om).setValue(getCriterionShouldBeEnabled(om));
 		}
 	}
 
@@ -351,17 +375,6 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return d_metaAnalysisSelectedMap.values();
 	}
 
-	public ValueHolder<Boolean> getAlternativeSelectedModel(Drug d) {
-		ModifiableHolder<Boolean> val = d_alternativeSelectedMap.get(d);
-		if (val == null) {
-			val = new ModifiableHolder<Boolean>(false);
-			val.addPropertyChangeListener(d_completeHolder);
-			d_alternativeSelectedMap.put(d, val);
-		}
-		
-		return val;
-	}
-	
 	public ValueHolder<Boolean> getArmSelectedModel(Arm a) {
 		ModifiableHolder<Boolean> val = d_armSelectedMap.get(a);
 		if (val == null) {

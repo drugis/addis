@@ -105,7 +105,6 @@ implements ViewBuilder {
 		public void update(MCMCModel mtc, ProgressEvent event) {
 			if(event.getType() == EventType.SIMULATION_FINISHED) {
 				for (TablePanel tablePanel : d_tablePanels) {
-//					((AbstractTableModel) tablePanel.getTable().getModel()).fireTableDataChanged();
 					tablePanel.doLayout();
 				}
 				d_progressBar.setVisible(false);
@@ -231,7 +230,6 @@ implements ViewBuilder {
 			public void update(MCMCModel mtc, ProgressEvent event) {
 				if (event.getType() == EventType.MODEL_CONSTRUCTION_FINISHED) {
 					if (inconsistencyFactorsTablePanel != null) {
-//						((AbstractTableModel) inconsistencyFactorsTablePanel.getTable().getModel()).fireTableStructureChanged();
 						inconsistencyFactorsTablePanel.doLayout();
 						d_parent.reloadRightPanel();
 					}
