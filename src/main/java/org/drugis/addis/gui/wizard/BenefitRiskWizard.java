@@ -228,8 +228,10 @@ public class BenefitRiskWizard extends Wizard {
 				// Add outcome measure checkbox
 				row += 2;
 				LayoutUtil.addRow(layout);
-				JCheckBox checkBox = BasicComponentFactory.createCheckBox(d_pm.getOutcomeSelectedModel(out), out.getName());
-				builder.add(checkBox, cc.xy(1, row));
+				ValueHolder<Boolean> enabledModel  = d_pm.getOutcomeEnabledModel(out);
+				JCheckBox criteriaCheckBox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(out.getName(), enabledModel, d_pm.getOutcomeSelectedModel(out));
+//				JCheckBox checkBox = BasicComponentFactory.createCheckBox(d_pm.getOutcomeSelectedModel(out), out.getName());
+				builder.add(criteriaCheckBox, cc.xy(1, row));
 			}
 			
 			return AuxComponentFactory.createInScrollPane(builder, 350, 550);
@@ -251,9 +253,13 @@ public class BenefitRiskWizard extends Wizard {
 			int row = 1;
 			for(Arm a : d_pm.getStudyModel().getValue().getArms() ){
 				LayoutUtil.addRow(layout);
+
 				ValueHolder<Boolean> selectedModel = d_pm.getArmSelectedModel(a);
-				selectedModel.setValue(true);
-				JCheckBox armCheckbox = BasicComponentFactory.createCheckBox(selectedModel, a.getDrug().getName());
+				selectedModel.setValue(d_pm.getAnalysisTypeHolder().getValue() == AnalysisType.SMAA);
+				ValueHolder<Boolean> enabledModel  = d_pm.getArmEnabledModel(a);
+				
+				JCheckBox armCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(a.getDrug().getName(), enabledModel, selectedModel);				
+//				JCheckBox armCheckbox = BasicComponentFactory.createCheckBox(selectedModel, a.getDrug().getName());
 				builder.add(armCheckbox, cc.xy(1, row += 2));
 			}
 			

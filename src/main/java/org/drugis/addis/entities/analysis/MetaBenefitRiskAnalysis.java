@@ -44,6 +44,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.Distribution;
@@ -139,6 +140,9 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		d_drugs = drugs;
 		d_baselineModelMap = new HashMap<OutcomeMeasure,AbstractBaselineModel<?>>();
 		d_analysisType = analysisType;
+		if(d_analysisType == AnalysisType.LyndOBrien && (d_outcomeMeasures.size() != 2 || d_drugs.size() != 2) ) {
+			throw new IllegalArgumentException("Attempt to create Lynd & O'Brien analysis with not exactly 2 criteria and 2 alternatives");
+		}
 		
 		setBaseline(baseline);
 		setName(id);

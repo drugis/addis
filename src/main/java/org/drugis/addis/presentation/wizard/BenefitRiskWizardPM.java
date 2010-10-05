@@ -51,7 +51,6 @@ import org.drugis.addis.presentation.UnmodifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.pietschy.wizard.InvalidStateException;
 
-import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationPM {
@@ -93,14 +92,40 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 			setValue(alternativeShouldBeEnabled);
 		}
 	}
+
+	@SuppressWarnings("serial")
+	private class ArmEnabledModel extends ModifiableHolder<Boolean> implements PropertyChangeListener {
+		private final Arm d_arm;
+
+		public ArmEnabledModel(Arm a) {
+			d_arm = a;
+			setValue(armShouldBeEnabled(a));
+		}
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			setValue(armShouldBeEnabled(d_arm));
+		}
+	}
+
+	
+	@SuppressWarnings("serial")
+	private class ArmSelectedHolder extends ModifiableHolder<Boolean> {
+		public ArmSelectedHolder(Arm a) {
+			super(false);
+		}
+		
+		@Override
+		public void setValue(Object selected) {
+			super.setValue(selected);
+			updateArmsEnabled();
+		}
+	}
+
 	
 	@SuppressWarnings("serial")
 	private class AlternativeSelectedHolder extends ModifiableHolder<Boolean> {
-		Drug d_a;
-		
 		public AlternativeSelectedHolder(Drug d) {
 			super(false);
-			d_a = d;
 		}
 		
 		@Override
@@ -156,6 +181,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	private HashMap<Drug, ModifiableHolder<Boolean>> d_alternativeEnabledMap;
 	private HashMap<Drug, ModifiableHolder<Boolean>> d_alternativeSelectedMap;
 	private HashMap<Arm, ModifiableHolder<Boolean>> d_armSelectedMap;
+	private HashMap<Arm, ModifiableHolder<Boolean>> d_armEnabledMap;
 	private CompleteHolder d_completeHolder;
 	private ModifiableHolder<Study> d_studyHolder;
 	private ModifiableHolder<BRAType> d_evidenceTypeHolder;
@@ -163,7 +189,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	private StudiesWithIndicationHolder d_studiesWithIndicationHolder;
 	private HashMap<OutcomeMeasure, ModifiableHolder<Boolean>> d_outcomeEnabledMap;
 	private MetaAnalysesSelectedHolder d_metaAnalysesSelectedHolder;
-	private AlternativeSelectedHolder d_alternativeSelectedHolder;
+//	private AlternativeSelectedHolder d_alternativeSelectedHolder;
 	
 	
 	public BenefitRiskWizardPM(Domain d) {
@@ -172,10 +198,11 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		d_metaAnalysisSelectedMap = new HashMap<OutcomeMeasure, ModifiableHolder<MetaAnalysis>>();
 		d_alternativeEnabledMap = new HashMap<Drug, ModifiableHolder<Boolean>>();
 		d_alternativeSelectedMap = new HashMap<Drug, ModifiableHolder<Boolean>>();
+		d_armEnabledMap = new HashMap<Arm, ModifiableHolder<Boolean>>();
+		d_armSelectedMap = new HashMap<Arm, ModifiableHolder<Boolean>>();
 		d_completeHolder = new CompleteHolder();
 		d_studyHolder = new ModifiableHolder<Study>();
 		d_evidenceTypeHolder = new ModifiableHolder<BRAType>(BRAType.Synthesis);
-		d_armSelectedMap = new HashMap<Arm, ModifiableHolder<Boolean>>();
 		d_analysisTypeHolder = new ModifiableHolder<AnalysisType>(AnalysisType.SMAA);
 		d_outcomeEnabledMap = new HashMap<OutcomeMeasure, ModifiableHolder<Boolean>>();
 		
@@ -185,6 +212,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 				d_alternativeEnabledMap.clear();
 				d_alternativeSelectedMap.clear();
 				d_armSelectedMap.clear();
+				d_armEnabledMap.clear();
 				d_metaAnalysesSelectedHolder.fireValueChange();
 				d_metaAnalysisSelectedMap.clear();
 				d_outcomeEnabledMap.clear();
@@ -206,6 +234,31 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		d_metaAnalysesSelectedHolder.addValueChangeListener(d_completeHolder);
 	}
 	
+	public void updateArmsEnabled() {
+		for(Arm a: d_armSelectedMap.keySet()) {
+			getArmEnabledModel(a).setValue(armShouldBeEnabled(a));
+		}
+	}
+
+	public Object armShouldBeEnabled(Arm a) {
+		if(d_analysisTypeHolder.getValue() == AnalysisType.SMAA) return true;
+		else if(d_analysisTypeHolder.getValue() == AnalysisType.LyndOBrien)
+		{
+			return getArmSelectedModel(a).getValue() || (nArmsSelected() < 2);
+		}
+		return false;
+	}
+
+	private int nArmsSelected() {
+		int n = 0;
+		for(Arm a: d_armSelectedMap.keySet()) {
+			if(getArmSelectedModel(a).getValue() == true) {
+				++n;
+			}
+		}
+		return n;
+	}
+
 	public void updateAlternativesEnabled() {
 		for(Drug d: d_alternativeSelectedMap.keySet()) {
 			getAlternativeEnabledModel(d).setValue(alternativeShouldBeEnabled(d));
@@ -324,6 +377,13 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return model;
 	}
 
+	private ModifiableHolder<Boolean> createArmEnabledModel(Arm a) {
+		ArmEnabledModel model = new ArmEnabledModel(a);
+		getMetaAnalysesSelectedHolder().addValueChangeListener(model);
+		getArmSelectedModel(a).addValueChangeListener(model);
+		return model;
+	}
+
 	private boolean alternativeShouldBeEnabled(Drug d) {
 		if(d_analysisTypeHolder.getValue() == AnalysisType.SMAA)
 			return getAlternativeIncludedInAllSelectedAnalyses(d);
@@ -378,7 +438,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	public ValueHolder<Boolean> getArmSelectedModel(Arm a) {
 		ModifiableHolder<Boolean> val = d_armSelectedMap.get(a);
 		if (val == null) {
-			val = new ModifiableHolder<Boolean>(false);
+			val = new ArmSelectedHolder(a);
 			val.addPropertyChangeListener(d_completeHolder);
 			d_armSelectedMap.put(a, val);
 		}
@@ -415,7 +475,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		ArrayList<OutcomeMeasure> studyAnalyses = getSelectedEntities(d_outcomeSelectedMap);
 		
 		StudyBenefitRiskAnalysis sbr = new StudyBenefitRiskAnalysis(id, d_indicationHolder.getValue(), d_studyHolder.getValue(), 
-				studyAnalyses, alternatives, AnalysisType.SMAA);
+				studyAnalyses, alternatives, d_analysisTypeHolder.getValue());
 		return sbr;
 	}
 
@@ -436,7 +496,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 				metaAnalyses,
 				baseline, 
 				alternatives,
-				AnalysisType.SMAA
+				d_analysisTypeHolder.getValue()
 			);
 		return brAnalysis;
 	}
@@ -495,6 +555,15 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	
 	public ValueModel getAnalysisTypeHolder() {
 		return d_analysisTypeHolder;
+	}
+
+	public ValueHolder<Boolean> getArmEnabledModel(Arm a) {
+		ModifiableHolder<Boolean> val = d_armEnabledMap.get(a);
+		if (val == null) {
+			val = createArmEnabledModel(a); 
+			d_armEnabledMap.put(a, val);
+		}
+		return val;
 	}
 
 }

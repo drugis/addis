@@ -88,17 +88,21 @@ public abstract class AbstractBenefitRiskView<PresentationType extends BenefitRi
 	protected JPanel buildOverviewPart() {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = new FormLayout("right:pref, 3dlu, left:pref:grow",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		builder.addLabel("ID:", cc.xy(1, 1));
 		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_NAME)), cc.xy(3, 1));
 		
-		builder.addLabel("Indication:", cc.xy(1, 3));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_INDICATION), new OneWayObjectFormat()), 
+		builder.addLabel("Analysis type:", cc.xy(1, 3));
+		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_ANALYSIS_TYPE), new OneWayObjectFormat()),
 				cc.xy(3, 3));
-		
-		int row = 3;
+
+		builder.addLabel("Indication:", cc.xy(1, 5));
+		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_INDICATION), new OneWayObjectFormat()), 
+				cc.xy(3, 5));
+
+		int row = 5;
 		if (d_pm instanceof StudyBenefitRiskPresentation) {
 			row += 2;
 			LayoutUtil.addRow(layout);
@@ -116,6 +120,7 @@ public abstract class AbstractBenefitRiskView<PresentationType extends BenefitRi
 		builder.addLabel("Alternatives:", cc.xy(1, row));
 		builder.add(AuxComponentFactory.createTextArea(ConverterFactory.createStringConverter(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_ALTERNATIVES), new OneWayObjectFormat()), false), 
 				cc.xy(3, row));
+		
 		
 		return builder.getPanel();	
 	}

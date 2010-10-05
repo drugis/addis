@@ -29,18 +29,24 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.mocks.MockMetaBenefitRiskAnalysis;
 import org.drugis.addis.util.XMLHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -151,5 +157,29 @@ public class MetaBenefitRiskAnalysisTest {
 		MetaBenefitRiskAnalysis importedAnalysis = 
 			(MetaBenefitRiskAnalysis)XMLHelper.fromXml(xmlStream);
 		assertEntityEquals(d_BRAnalysis, importedAnalysis);
+	}
+	
+	@Test
+	public void testLOBrianAnalysisException() throws IllegalArgumentException {
+		Indication indication = ExampleData.buildIndicationDepression();
+		
+		List<OutcomeMeasure> outcomeMeasureList = new ArrayList<OutcomeMeasure>();
+		outcomeMeasureList.add(ExampleData.buildEndpointHamd());
+		outcomeMeasureList.add(ExampleData.buildAdverseEventConvulsion());
+		
+		List<MetaAnalysis> metaAnalysisList = new ArrayList<MetaAnalysis>();
+		metaAnalysisList.add(ExampleData.buildMetaAnalysisHamd());
+		metaAnalysisList.add(ExampleData.buildMetaAnalysisConv());
+		
+		Drug parox = ExampleData.buildDrugParoxetine();
+		List<Drug> fluoxList = Collections.singletonList(ExampleData.buildDrugFluoxetine());
+		
+		boolean caught = false;
+		try {
+			MetaBenefitRiskAnalysis tmp = new MetaBenefitRiskAnalysis("testBenefitRiskAnalysis", indication, 
+					metaAnalysisList, parox, fluoxList, AnalysisType.LyndOBrien);	
+		} catch(IllegalArgumentException a)
+		{caught = true;}
+		assertTrue(caught);
 	}
 }

@@ -68,6 +68,10 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 		d_criteria = Collections.unmodifiableList(criteria);
 		d_alternatives = Collections.unmodifiableList(alternatives);
 		d_analysisType = analysisType;
+		if(d_analysisType == AnalysisType.LyndOBrien && (d_criteria.size() != 2 || d_alternatives.size() != 2) ) {
+			throw new IllegalArgumentException("Attempt to create Lynd & O'Brien analysis with not exactly 2 criteria and 2 alternatives");
+		}
+				
 	}
 
 	private StudyBenefitRiskAnalysis() {
