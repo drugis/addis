@@ -141,4 +141,21 @@ public class StudyBenefitRiskAnalysisTest {
 		assertEntityEquals(d_analysis, importedAnalysis);
 	}	
 	
+	@Test
+	public void testLyndOBrienException() throws IllegalArgumentException {
+		Indication indication = ExampleData.buildIndicationDepression();
+		Study study = ExampleData.buildStudyChouinard();
+		List<OutcomeMeasure> criteria = new ArrayList<OutcomeMeasure>();
+		criteria.add(ExampleData.buildEndpointHamd());
+		criteria.add(ExampleData.buildAdverseEventConvulsion());
+		List<Arm> alternatives = new ArrayList<Arm>();
+		alternatives.add(study.getArms().get(0));
+		boolean caught = false;
+		try {
+			StudyBenefitRiskAnalysis temp = new StudyBenefitRiskAnalysis(NAME, indication, study, criteria, alternatives, AnalysisType.LyndOBrien);
+		} catch(IllegalArgumentException e)
+		{ caught = true;}
+		assertTrue(caught);
+	}
+	
 }
