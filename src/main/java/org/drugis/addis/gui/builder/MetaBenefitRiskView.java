@@ -57,8 +57,6 @@ import fi.smaa.jsmaa.gui.presentation.PreferencePresentationModel;
 import fi.smaa.jsmaa.gui.views.PreferenceInformationView;
 
 public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRiskPresentation> {
-
-	private PanelBuilder d_builder;
 	
 	public MetaBenefitRiskView(MetaBenefitRiskPresentation pm, Main main) {
 		super(pm, main);
@@ -66,25 +64,86 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 	}
 	
 	public JComponent buildPanel() {
-		if (d_builder != null)
-			d_builder.getPanel().removeAll();
+
+		PanelBuilder builder = buildOverviewPanel();
 		
+		JTabbedPane tabbedPane = new JTabbedPane();
+		tabbedPane.addTab("Outline", builder.getPanel());
+		
+		builder = buildMeasurementsPanel();
+		tabbedPane.addTab("Measurements", builder.getPanel());
+
+		JPanel panel = buildAnalysisPanel();
+		tabbedPane.addTab("Analysis", panel);
+		ChildComponenentHeightPropagater.attachToContainer(panel);
+
+		return tabbedPane;
+	}
+
+	private JPanel buildAnalysisPanel() {
+		FormLayout layout = new FormLayout(
+				"pref:grow:fill",
+				"p, 3dlu, p, " + // 1-3 
+				"3dlu, p, 3dlu, p, " + // 4-7
+				"3dlu, p, 3dlu, p" // 8-11 
+				);
+		CellConstraints cc;
+		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+		builder.setDefaultDialogBorder();
+		
+		cc =  new CellConstraints();
+		
+		builder.addSeparator("Preferences", cc.xy(1, 1));
+		builder.add(buildPreferencesPart(), cc.xy(1, 3));
+		
+		builder.addSeparator("Rank Acceptabilities", cc.xy(1, 5));
+		builder.add(buildRankAcceptabilitiesPart(), cc.xy(1, 7));
+		
+		builder.addSeparator("Central Weights", cc.xy(1, 9));
+		builder.add(buildCentralWeightsPart(), cc.xy(1, 11));
+		
+		JPanel panel = builder.getPanel();
+		return panel;
+	}
+
+	private PanelBuilder buildMeasurementsPanel() {
+		FormLayout layout = new FormLayout(
+				"pref:grow:fill",
+				"p, 3dlu, p, " + // 1-3 
+				"3dlu, p, 3dlu, p"// 4-7
+				);
+		CellConstraints cc;
+		PanelBuilder builder;
+
+		builder = new PanelBuilder(layout, new ScrollableJPanel());
+		builder.setDefaultDialogBorder();
+		
+		cc =  new CellConstraints();
+		
+		builder.addSeparator("Included Analyses", cc.xy(1, 1));
+		builder.add(buildAnalysesPart(), cc.xy(1, 3));
+		
+		builder.addSeparator("Measurements", cc.xy(1, 5));
+		builder.add(buildMeasurementsPart(), cc.xy(1, 7));
+		return builder;
+	}
+
+	private PanelBuilder buildOverviewPanel() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
 				"p, 3dlu, p, " + // 1-3 
 				"3dlu, p");
 		
-		d_builder = new PanelBuilder(layout, new ScrollableJPanel());
-		d_builder.setDefaultDialogBorder();
+		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+		builder.setDefaultDialogBorder();
 		
 		CellConstraints cc =  new CellConstraints();
 		
-		String singularCapitalized = CategoryKnowledgeFactory.getCategoryKnowledge(BenefitRiskAnalysis.class).getSingularCapitalized();
-		d_builder.addSeparator(singularCapitalized, cc.xy(1, 1));
-		d_builder.add(buildOverviewPart(), cc.xy(1, 3));
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(BenefitRiskAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
+		builder.add(buildOverviewPart(), cc.xy(1, 3));
 		
 		final JComponent progressBars = buildProgressBars();
-		d_builder.add(progressBars, cc.xy(1, 5));
+		builder.add(progressBars, cc.xy(1, 5));
 		
 		if (d_pm.getAllModelsReadyModel().getValue()) {
 			progressBars.setVisible(false);
@@ -99,54 +158,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 				}
 			}
 		});
-		
-		JTabbedPane tabbedPane = new JTabbedPane();
-		tabbedPane.addTab(singularCapitalized, d_builder.getPanel());
-		
-		layout = new FormLayout(
-				"pref:grow:fill",
-				"p, 3dlu, p, " + // 1-3 
-				"3dlu, p, 3dlu, p"// 4-7
-				);
-
-		d_builder = new PanelBuilder(layout, new ScrollableJPanel());
-		d_builder.setDefaultDialogBorder();
-		
-		cc =  new CellConstraints();
-		
-		d_builder.addSeparator("Included Analyses", cc.xy(1, 1));
-		d_builder.add(buildAnalysesPart(), cc.xy(1, 3));
-		
-		d_builder.addSeparator("Measurements", cc.xy(1, 5));
-		d_builder.add(buildMeasurementsPart(), cc.xy(1, 7));
-		tabbedPane.addTab("Measurements", d_builder.getPanel());
-
-		layout = new FormLayout(
-				"pref:grow:fill",
-				"p, 3dlu, p, " + // 1-3 
-				"3dlu, p, 3dlu, p, " + // 4-7
-				"3dlu, p, 3dlu, p" // 8-11 
-				);
-		
-		d_builder = new PanelBuilder(layout, new ScrollableJPanel());
-		d_builder.setDefaultDialogBorder();
-		
-		cc =  new CellConstraints();
-		
-		d_builder.addSeparator("Preferences", cc.xy(1, 1));
-		d_builder.add(buildPreferencesPart(), cc.xy(1, 3));
-		
-		d_builder.addSeparator("Rank Acceptabilities", cc.xy(1, 5));
-		d_builder.add(buildRankAcceptabilitiesPart(), cc.xy(1, 7));
-		
-		d_builder.addSeparator("Central Weights", cc.xy(1, 9));
-		d_builder.add(buildCentralWeightsPart(), cc.xy(1, 11));
-		
-		JPanel panel = d_builder.getPanel();
-		tabbedPane.addTab("Analysis", panel);
-		ChildComponenentHeightPropagater.attachToContainer(panel);
-
-		return tabbedPane;
+		return builder;
 	}
 	
 	private JComponent buildProgressBars() {
