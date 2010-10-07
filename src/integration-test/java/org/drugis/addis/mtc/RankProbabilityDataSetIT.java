@@ -48,7 +48,7 @@ public class RankProbabilityDataSetIT {
 	@Before
 	public void setUp() {
 		PresentationModelFactory pmf = new PresentationModelFactory(new DomainImpl());
-		d_nma = ExampleData.buildNetworkMetaAnalysis();
+		d_nma = ExampleData.buildNetworkMetaAnalysisHamD();
 		d_nma.getConsistencyModel().run();
 		NetworkMetaAnalysisPresentation pm = (NetworkMetaAnalysisPresentation) pmf.getModel(d_nma);
 		d_dataSet = pm.getRankProbabilityDataset();

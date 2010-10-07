@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.Main;
@@ -45,34 +46,61 @@ import fi.smaa.jsmaa.gui.views.PreferenceInformationView;
 
 public class StudyBenefitRiskView extends AbstractBenefitRiskView<StudyBenefitRiskPresentation> {
 
-	private PanelBuilder d_builder;
-	protected JPanel d_panel;
 	public StudyBenefitRiskView(StudyBenefitRiskPresentation model, Main main) {
 		super(model, main);
-		d_pm.startSMAA();
+		d_pm.startSMAA(); // FIXME: move to SMAA view/presentation
 	}
 
 	
 	public JComponent buildPanel() {
-		if (d_builder != null)
-			d_builder.getPanel().removeAll();
-		
+		JTabbedPane tabbedPane = new JTabbedPane();
+		tabbedPane.addTab("Overview", buildOverviewPanel());
+		tabbedPane.addTab("Analysis", buildAnalysisPanel());
+		return tabbedPane;
+	}
+
+
+	private JPanel buildOverviewPanel() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
 				"p, 3dlu, p"); // 1-3 
-				
-		d_builder = new PanelBuilder(layout, new ScrollableJPanel());
-		d_builder.setDefaultDialogBorder();
+		
+		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+		builder.setDefaultDialogBorder();
 		
 		CellConstraints cc =  new CellConstraints();
 		
 		String singularCapitalized = CategoryKnowledgeFactory.getCategoryKnowledge(BenefitRiskAnalysis.class).getSingularCapitalized();
-		d_builder.addSeparator(singularCapitalized, cc.xy(1, 1));
-		d_builder.add(buildOverviewPart(), cc.xy(1, 3));
+		builder.addSeparator(singularCapitalized, cc.xy(1, 1));
+		builder.add(buildOverviewPart(), cc.xy(1, 3));
 
-		JTabbedPane tabbedPane = new JTabbedPane();
-		tabbedPane.addTab(singularCapitalized, d_builder.getPanel());
-		
+
+		JPanel panel = builder.getPanel();
+		return panel;
+	}
+
+
+	private JPanel buildAnalysisPanel() {
+		if (d_pm.getBean().getAnalysisType() == AnalysisType.SMAA) {
+			return buildSMAAPanel();
+		} else {
+			return buildLyndOBrienPanel();
+		}
+	}
+	
+	private JPanel buildLyndOBrienPanel() {
+		// FIXME:
+		// return new LyndOBrienView(new LyndOBrienPresentation(d_pm)).getPanel();
+		return new JPanel();
+	}
+
+
+	private JPanel buildSMAAPanel() {
+		// FIXME:
+		// return new SMAAView(new SMAAPresentation(d_pm)).getPanel();
+		FormLayout layout;
+		PanelBuilder d_builder;
+		CellConstraints cc;
 		layout = new FormLayout(
 				"pref:grow:fill",
 				"p, 3dlu, p, " + // 1-3 
@@ -97,12 +125,9 @@ public class StudyBenefitRiskView extends AbstractBenefitRiskView<StudyBenefitRi
 		d_builder.addSeparator("Central Weights", cc.xy(1, 13));
 		d_builder.add(buildCentralWeightsPart(), cc.xy(1, 15));
 		
-		d_panel = d_builder.getPanel();
+		JPanel d_panel = d_builder.getPanel();
 		ChildComponenentHeightPropagater.attachToContainer(d_panel);
-		
-		tabbedPane.addTab("Analysis", d_builder.getPanel());
-		
-		return tabbedPane;
+		return d_panel;
 	}
 
 	@Override

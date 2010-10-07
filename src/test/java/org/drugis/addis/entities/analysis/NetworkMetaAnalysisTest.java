@@ -40,7 +40,7 @@ public class NetworkMetaAnalysisTest {
 
 	@Before
 	public void setup() throws InterruptedException{
-		d_analysis = ExampleData.buildNetworkMetaAnalysis();
+		d_analysis = ExampleData.buildNetworkMetaAnalysisHamD();
 		d_mockAnalysis = NetworkTableModelTest.buildMockNetworkMetaAnalysis();
 		d_mockAnalysis.run();
 		while (!d_mockAnalysis.getConsistencyModel().isReady()) {

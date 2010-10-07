@@ -95,7 +95,7 @@ public class DomainTreeModelTest {
 		d_firstMetaAnalysis = new RandomEffectsMetaAnalysis("meta", d_firstEndpoint, 
 				Collections.singletonList((Study)d_firstStudy), d_firstDrug, d_firstDrug);
 		
-		d_networkAnalysis = ExampleData.buildNetworkMetaAnalysis();
+		d_networkAnalysis = ExampleData.buildNetworkMetaAnalysisHamD();
 		
 		d_firstPopChar = new ContinuousPopulationCharacteristic("Age");
 		

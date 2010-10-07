@@ -329,7 +329,11 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 			}
 			return false;
 		} else if(getEvidenceTypeHolder().getValue() == BRAType.SingleStudy) {
-			return (getAlternativeSelectedModel(e).getValue() == true) || nSelectedAlternatives() < 2;
+			if(d_analysisTypeHolder.getValue() == AnalysisType.LyndOBrien) { 
+				return (getAlternativeSelectedModel(e).getValue() == true) || nSelectedAlternatives() < 2;
+			} else {
+				return true;
+			}
 		}
 		return false;
 	}

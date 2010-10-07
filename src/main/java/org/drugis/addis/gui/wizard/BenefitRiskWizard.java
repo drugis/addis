@@ -253,7 +253,6 @@ public class BenefitRiskWizard extends Wizard {
 				LayoutUtil.addRow(layout);
 
 				ValueHolder<Boolean> selectedModel = d_pm.getAlternativeSelectedModel(a);
-				selectedModel.setValue(d_pm.getAnalysisTypeHolder().getValue() == AnalysisType.SMAA);
 				ValueHolder<Boolean> enabledModel  = d_pm.getAlternativeEnabledModel(a);
 				
 				JCheckBox armCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(a.toString(), enabledModel, selectedModel);				

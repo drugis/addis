@@ -172,7 +172,7 @@ public class DomainTest {
 	
 	private NetworkMetaAnalysis addNetworkMetaAnalysisToDomain() throws Exception {
 		ExampleData.initDefaultData(d_domain);
-		NetworkMetaAnalysis ma = ExampleData.buildNetworkMetaAnalysis();
+		NetworkMetaAnalysis ma = ExampleData.buildNetworkMetaAnalysisHamD();
 		d_domain.addMetaAnalysis(ma);
 		return ma;
 	}

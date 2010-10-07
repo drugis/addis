@@ -187,7 +187,7 @@ public class XMLLoadSaveTest {
 	
 	@Test
 	public void doMetaAnalysis() throws XMLStreamException {
-		NetworkMetaAnalysis analysis = ExampleData.buildNetworkMetaAnalysis();
+		NetworkMetaAnalysis analysis = ExampleData.buildNetworkMetaAnalysisHamD();
 		String xml = XMLHelper.toXml(analysis, NetworkMetaAnalysis.class);		
 		NetworkMetaAnalysis importedAnalysis = (NetworkMetaAnalysis)XMLHelper.fromXml(xml);
 		assertEntityEquals(analysis, importedAnalysis);
@@ -207,7 +207,7 @@ public class XMLLoadSaveTest {
 		ExampleData.initDefaultData(origDomain);
 		DomainData origData = origDomain.getDomainData();
 		origData.addVariable(new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"}));
-		origData.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysis()); 
+		origData.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisHamD()); 
 		
 		String xml = XMLHelper.toXml(origData, DomainData.class);
 //		System.out.println("\n"+xml+"\n");

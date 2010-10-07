@@ -67,6 +67,7 @@ public class ExampleData {
 	private static Endpoint s_endpointCgi;
 	private static AdverseEvent s_convulsion;
 	private static AdverseEvent s_sexdysf;
+	private static AdverseEvent s_diarrhea;
 	private static Drug s_parox;
 	private static Drug s_fluox;
 	private static Drug s_viagra;
@@ -605,6 +606,14 @@ public class ExampleData {
 		return s_sexdysf;
 	}
 
+	public static AdverseEvent buildAdverseEventDiarrhea() {
+		if (s_diarrhea == null) {
+			s_diarrhea = new AdverseEvent("Diarrhea", Variable.Type.RATE);
+			s_diarrhea.setDescription("Rate");
+		}
+		return s_diarrhea;
+	}
+
 	public static Drug buildPlacebo() {
 		if (s_placebo == null) {
 			s_placebo = new Drug("Placebo", "");
@@ -689,7 +698,8 @@ public class ExampleData {
 		return s_endpointCVdeath;
 	}
 
-	public static NetworkMetaAnalysis buildNetworkMetaAnalysis() {
+
+	public static NetworkMetaAnalysis buildNetworkMetaAnalysisHamD() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				buildStudyBennie(), buildStudyChouinard(), buildStudyDeWilde(), buildStudyFava2002()});
 		List<Drug> drugs = Arrays.asList(new Drug[] {buildDrugFluoxetine(), buildDrugParoxetine(), 
@@ -702,7 +712,7 @@ public class ExampleData {
 		return analysis;
 	}
 	
-	public static NetworkMetaAnalysis buildNetworkMetaAnalysisAlternative() {
+	public static NetworkMetaAnalysis buildNetworkMetaAnalysisConvulsion() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				buildStudyBennie(), buildStudyChouinard()});
 		List<Drug> drugs = Arrays.asList(new Drug[] {buildDrugFluoxetine(), buildDrugParoxetine(), 
