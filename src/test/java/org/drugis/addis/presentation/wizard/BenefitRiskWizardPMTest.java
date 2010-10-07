@@ -406,7 +406,6 @@ public class BenefitRiskWizardPMTest {
 		}
 	}
 	
-	@Ignore
 	@Test
 	public void testSelectedMetaAnalysesRestrictAlternatives() {
 		d_pm.getIndicationModel().setValue(d_indication);
@@ -433,7 +432,6 @@ public class BenefitRiskWizardPMTest {
 		assertFalse(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugSertraline()).getValue());
 	}
 	
-	@Ignore
 	@Test
 	public void testSelectedMetaAnalysesRestrictAlternativesLyndOBrien() {
 		d_pm.getIndicationModel().setValue(d_indication);
