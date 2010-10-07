@@ -152,7 +152,7 @@ public class StudyBenefitRiskAnalysisTest {
 		alternatives.add(study.getArms().get(0));
 		boolean caught = false;
 		try {
-			StudyBenefitRiskAnalysis temp = new StudyBenefitRiskAnalysis(NAME, indication, study, criteria, alternatives, AnalysisType.LyndOBrien);
+			new StudyBenefitRiskAnalysis(NAME, indication, study, criteria, alternatives, AnalysisType.LyndOBrien);
 		} catch(IllegalArgumentException e)
 		{ caught = true;}
 		assertTrue(caught);

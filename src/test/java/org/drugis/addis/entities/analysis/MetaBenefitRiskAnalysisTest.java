@@ -46,7 +46,6 @@ import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.addis.mocks.MockMetaBenefitRiskAnalysis;
 import org.drugis.addis.util.XMLHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -176,7 +175,7 @@ public class MetaBenefitRiskAnalysisTest {
 		
 		boolean caught = false;
 		try {
-			MetaBenefitRiskAnalysis tmp = new MetaBenefitRiskAnalysis("testBenefitRiskAnalysis", indication, 
+			new MetaBenefitRiskAnalysis("testBenefitRiskAnalysis", indication, 
 					metaAnalysisList, parox, fluoxList, AnalysisType.LyndOBrien);	
 		} catch(IllegalArgumentException a)
 		{caught = true;}

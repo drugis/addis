@@ -47,7 +47,6 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM.BRAType;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BenefitRiskWizardPMTest {
@@ -114,12 +113,12 @@ public class BenefitRiskWizardPMTest {
 	}
 	
 	@Test
-	public void testArmSelectedModelKeepsChanges() {
+	public void testAlternativeSelectedModelKeepsChanges() {
 		Arm a = d_study.getArms().get(0);
-		ValueHolder<Boolean> origArm = d_pm.getArmSelectedModel(a);
+		ValueHolder<Boolean> origArm = d_pm.getAlternativeSelectedModel(a);
 		assertFalse(origArm.getValue());
-		d_pm.getArmSelectedModel(a).setValue(true);
-		assertEquals(d_pm.getArmSelectedModel(a).getValue(), origArm.getValue());
+		d_pm.getAlternativeSelectedModel(a).setValue(true);
+		assertEquals(d_pm.getAlternativeSelectedModel(a).getValue(), origArm.getValue());
 	}
 
 	@Test
@@ -195,16 +194,6 @@ public class BenefitRiskWizardPMTest {
 	}
 	
 	@Test
-	public void testGetArmsSelectedModel() {
-		Arm a = d_study.getArms().get(0);
-		
-		ValueHolder<Boolean> actual = d_pm.getArmSelectedModel(a);
-		assertEquals(false,actual.getValue());
-		actual.setValue(true);
-		assertEquals(true,actual.getValue());
-	}
-		
-	@Test
 	public void testCompletedMetaModelFalseWithLessThanTwoDrugs() {
 		d_pm.getIndicationModel().setValue(d_indication);
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
@@ -238,7 +227,7 @@ public class BenefitRiskWizardPMTest {
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
 		
-		d_pm.getArmSelectedModel(local.getArms().get(1)).setValue(true);
+		d_pm.getAlternativeSelectedModel(local.getArms().get(1)).setValue(true);
 		
 		assertFalse(d_pm.getCompleteModel().getValue());
 	}
@@ -253,8 +242,8 @@ public class BenefitRiskWizardPMTest {
 		
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 
-		d_pm.getArmSelectedModel(local.getArms().get(0)).setValue(true);
-		d_pm.getArmSelectedModel(local.getArms().get(1)).setValue(true);
+		d_pm.getAlternativeSelectedModel(local.getArms().get(0)).setValue(true);
+		d_pm.getAlternativeSelectedModel(local.getArms().get(1)).setValue(true);
 		
 		assertFalse(d_pm.getCompleteModel().getValue());
 	}
@@ -290,15 +279,15 @@ public class BenefitRiskWizardPMTest {
 	@Test
 	public void testCompletedSingleStudyModelTrueWithTwoDrugsTwoCriteria() {
 		d_pm.getIndicationModel().setValue(d_indication);
-
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
 		// note: using local copy of chouinard (has 2 arms) so that test won't fail if setup is changed to different study
 		Study local = ExampleData.buildStudyChouinard();
 		d_pm.getStudyModel().setValue(local);
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
 
-		d_pm.getArmSelectedModel(local.getArms().get(0)).setValue(true);
-		d_pm.getArmSelectedModel(local.getArms().get(1)).setValue(true);
+		d_pm.getAlternativeSelectedModel(local.getArms().get(0)).setValue(true);
+		d_pm.getAlternativeSelectedModel(local.getArms().get(1)).setValue(true);
 		
 		assertTrue(d_pm.getCompleteModel().getValue());
 	}
