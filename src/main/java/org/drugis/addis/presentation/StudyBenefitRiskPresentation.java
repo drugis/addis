@@ -39,4 +39,11 @@ public class StudyBenefitRiskPresentation extends
 		return new BenefitRiskMeasurementTableModel<Arm>(getBean(), getBean().getAbsoluteMeasurementSource() , d_pmf);
 	}
 
+	public synchronized void startAllSimulations() {
+	}
+
+	public ValueHolder<Boolean> getMeasurementsReadyModel() {
+		return new UnmodifiableHolder<Boolean>(true);
+	}
+
 }

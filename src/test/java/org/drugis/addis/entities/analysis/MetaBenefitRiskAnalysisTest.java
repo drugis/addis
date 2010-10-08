@@ -171,12 +171,14 @@ public class MetaBenefitRiskAnalysisTest {
 		metaAnalysisList.add(ExampleData.buildMetaAnalysisConv());
 		
 		Drug parox = ExampleData.buildDrugParoxetine();
-		List<Drug> fluoxList = Collections.singletonList(ExampleData.buildDrugFluoxetine());
+		List<Drug> drugList = new ArrayList<Drug>();
+		drugList.add(ExampleData.buildDrugFluoxetine());
+		drugList.add(ExampleData.buildDrugSertraline());
 		
 		boolean caught = false;
 		try {
 			new MetaBenefitRiskAnalysis("testBenefitRiskAnalysis", indication, 
-					metaAnalysisList, parox, fluoxList, AnalysisType.LyndOBrien);	
+					metaAnalysisList, parox, drugList, AnalysisType.LyndOBrien);	
 		} catch(IllegalArgumentException a)
 		{caught = true;}
 		assertTrue(caught);

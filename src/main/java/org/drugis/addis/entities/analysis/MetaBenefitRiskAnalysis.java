@@ -139,7 +139,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		d_drugs = drugs;
 		d_baselineModelMap = new HashMap<OutcomeMeasure,AbstractBaselineModel<?>>();
 		d_analysisType = analysisType;
-		if(d_analysisType == AnalysisType.LyndOBrien && (d_outcomeMeasures.size() != 2 || d_drugs.size() != 2) ) {
+		if(d_analysisType == AnalysisType.LyndOBrien && (d_outcomeMeasures.size() != 2 || d_drugs.size() != 1) ) {
 			throw new IllegalArgumentException("Attempt to create Lynd & O'Brien analysis with not exactly 2 criteria and 2 alternatives");
 		}
 		

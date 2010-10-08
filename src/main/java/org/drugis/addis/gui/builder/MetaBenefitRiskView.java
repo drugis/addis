@@ -32,103 +32,49 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.JTabbedPane;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.EntitiesTablePanel;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
-import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
-import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import fi.smaa.jsmaa.gui.presentation.PreferencePresentationModel;
-import fi.smaa.jsmaa.gui.views.PreferenceInformationView;
-
 public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRiskPresentation> {
 	
 	public MetaBenefitRiskView(MetaBenefitRiskPresentation pm, Main main) {
 		super(pm, main);
-		d_pm.startAllSimulations();
-	}
-	
-	public JComponent buildPanel() {
-
-		PanelBuilder builder = buildOverviewPanel();
-		
-		JTabbedPane tabbedPane = new JTabbedPane();
-		tabbedPane.addTab("Outline", builder.getPanel());
-		
-		builder = buildMeasurementsPanel();
-		tabbedPane.addTab("Measurements", builder.getPanel());
-
-		JPanel panel = buildAnalysisPanel();
-		tabbedPane.addTab("Analysis", panel);
-		ChildComponenentHeightPropagater.attachToContainer(panel);
-
-		return tabbedPane;
 	}
 
-	private JPanel buildAnalysisPanel() {
-		FormLayout layout = new FormLayout(
-				"pref:grow:fill",
-				"p, 3dlu, p, " + // 1-3 
-				"3dlu, p, 3dlu, p, " + // 4-7
-				"3dlu, p, 3dlu, p" // 8-11 
-				);
-		CellConstraints cc;
-		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
-		builder.setDefaultDialogBorder();
-		
-		cc =  new CellConstraints();
-		
-		builder.addSeparator("Preferences", cc.xy(1, 1));
-		builder.add(buildPreferencesPart(), cc.xy(1, 3));
-		
-		builder.addSeparator("Rank Acceptabilities", cc.xy(1, 5));
-		builder.add(buildRankAcceptabilitiesPart(), cc.xy(1, 7));
-		
-		builder.addSeparator("Central Weights", cc.xy(1, 9));
-		builder.add(buildCentralWeightsPart(), cc.xy(1, 11));
-		
-		JPanel panel = builder.getPanel();
-		return panel;
-	}
-
-	private PanelBuilder buildMeasurementsPanel() {
+	protected JPanel buildMeasurementsPanel() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
 				"p, 3dlu, p, " + // 1-3 
 				"3dlu, p, 3dlu, p"// 4-7
 				);
-		CellConstraints cc;
-		PanelBuilder builder;
-
-		builder = new PanelBuilder(layout, new ScrollableJPanel());
+		CellConstraints cc = new CellConstraints();
+		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();
-		
-		cc =  new CellConstraints();
-		
+
 		builder.addSeparator("Included Analyses", cc.xy(1, 1));
 		builder.add(buildAnalysesPart(), cc.xy(1, 3));
 		
 		builder.addSeparator("Measurements", cc.xy(1, 5));
 		builder.add(buildMeasurementsPart(), cc.xy(1, 7));
-		return builder;
+		return builder.getPanel();
 	}
 
-	private PanelBuilder buildOverviewPanel() {
+	@Override
+	protected JPanel buildOverviewPanel() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
 				"p, 3dlu, p, " + // 1-3 
@@ -145,20 +91,18 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		final JComponent progressBars = buildProgressBars();
 		builder.add(progressBars, cc.xy(1, 5));
 		
-		if (d_pm.getAllModelsReadyModel().getValue()) {
+		if (d_pm.getMeasurementsReadyModel().getValue()) {
 			progressBars.setVisible(false);
-			d_pm.startSMAA();
 		}
 		
-		d_pm.getAllModelsReadyModel().addValueChangeListener(new PropertyChangeListener() {
+		d_pm.getMeasurementsReadyModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (progressBars != null) {
 					progressBars.setVisible(false);
-					d_pm.startSMAA();
 				}
 			}
 		});
-		return builder;
+		return builder.getPanel();
 	}
 	
 	private JComponent buildProgressBars() {
@@ -191,11 +135,6 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		return builder.getPanel();
 	}
 	
-	@Override
-	protected JComponent buildCentralWeightsPart() {
-		return createWaiter(new CentralWeightsBuilder());
-	}
-	
 	protected JButton createSaveImageButton(final JComponent chart) {
 		JButton button = new JButton("Save Image");
 		button.addActionListener(new ActionListener() {
@@ -205,17 +144,11 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		});
 		return button;
 	}
-	@Override
-	protected JComponent buildRankAcceptabilitiesPart() {
-		return createWaiter(new RankAcceptabilitiesBuilder());
-	}
-
 	protected JComponent buildAnalysesPart() {	
 		String[] formatter = {"name","type","indication","outcomeMeasure","includedDrugs","includedStudies","sampleSize"};
 		return new EntitiesTablePanel(Arrays.asList(formatter), d_pm.getAnalysesModel(), d_main, d_pm.getFactory(), null);
 	}
 
-	@Override
 	protected JComponent buildMeasurementsPart() {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = new FormLayout("pref:grow:fill",
@@ -232,21 +165,5 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		builder.add(new TablePanel(new EnhancedTable(d_pm.getAbsoluteMeasurementTableModel())), cc.xy(1, 9));
 	
 		return builder.getPanel();
-	}
-
-	protected BuildViewWhenReadyComponent createWaiter(ViewBuilder builder) {
-		return new BuildViewWhenReadyComponent(builder, d_pm.getAllModelsReadyModel(), WAITING_MESSAGE);
-	}
-
-	@Override
-	protected JComponent buildPreferencesPart() {
-		return createWaiter(new PreferencesBuilder());
-	}
-
-	@Override
-	protected JComponent buildPreferenceInformationView(PreferencePresentationModel preferencePresentationModel, 
-			MetaBenefitRiskPresentation pm) {
-		JComponent prefPanel = new PreferenceInformationView(d_pm.getPreferencePresentationModel(), new ClinicalScaleRenderer(d_pm)).buildPanel();
-		return prefPanel;
 	}
 }

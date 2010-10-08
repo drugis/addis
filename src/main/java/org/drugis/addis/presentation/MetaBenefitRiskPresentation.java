@@ -170,10 +170,12 @@ public class MetaBenefitRiskPresentation extends BenefitRiskPresentation<Drug, M
 		}
 	}
 	
-	public ValueHolder<Boolean> getAllModelsReadyModel() {
+	@Override
+	public ValueHolder<Boolean> getMeasurementsReadyModel() {
 		return d_allNetworkModelsReadyListener;
 	}
 	
+	@Override
 	public synchronized void startAllSimulations() {
 		getBean().runAllConsistencyModels();
 		List<Runnable> models = new ArrayList<Runnable>();

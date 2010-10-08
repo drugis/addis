@@ -131,5 +131,9 @@ extends PresentationModel<AnalysisType> {
 		return d_pmf;
 	}
 
+	public abstract void startAllSimulations();
+
+	public abstract ValueHolder<Boolean> getMeasurementsReadyModel();
+
 
 }
