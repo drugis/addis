@@ -23,19 +23,19 @@
 package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
-import javax.swing.JScrollPane;
 
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.presentation.AbstractMetaAnalysisPresentation;
 import org.drugis.common.gui.OneWayObjectFormat;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.value.ConverterFactory;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -86,10 +86,9 @@ public abstract class AbstractMetaAnalysisView<T extends AbstractMetaAnalysisPre
 		
 		builder.addLabel("Included drugs:", cc.xy(1, 9));
 		
-		JScrollPane createTextArea = AuxComponentFactory.createTextArea(ConverterFactory.createStringConverter(d_pm.getModel(MetaAnalysis.PROPERTY_INCLUDED_DRUGS), new OneWayObjectFormat()), false);
-		//createTextArea.setMaximumSize(createTextArea.getPreferredSize());
-		builder.add(createTextArea,
-				cc.xy(3, 9));
+		//ListPanel drugList = new ListPanel(d_pm.getBean().getIncludedDrugs());
+		ListPanel drugList = new ListPanel(d_pm.getBean(), MetaAnalysis.PROPERTY_INCLUDED_DRUGS, Drug.class);
+		builder.add(drugList, cc.xy(3, 9));
 
 		if(d_pm.getBean() instanceof NetworkMetaAnalysis){
 			String paneText =  "<html>Network Meta-Analysis (or Mixed Treatment Comparison, MTC) is a technique to meta-analyze more than two drugs at the same time. Using a full Bayesian evidence network, all indirect comparisons are taken into account to arrive at a single, integrated, estimate of the effect of all included treatments based on all included studies. This software is meant as a demonstration of the sort of analysis enabled by MTCs. <br>The functionality provided is not yet sufficient to do a full MTC analysis, as concerns such as the assessment of convergence of the Bayesian model and the adequacy of the run-length cannot be addressed. If you are interested in doing such an analysis, you can find more information at <a href=http://drugis.org/mtc>http://drugis.org/mtc</a>, or contact Gert van Valkenhoef, the corresponding author.</html>";

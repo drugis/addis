@@ -27,6 +27,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.text.NumberFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -46,9 +48,11 @@ import javax.swing.text.NumberFormatter;
 import javax.swing.text.StyledDocument;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.components.LinkLabel;
+import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.HtmlWordWrapper;
@@ -115,6 +119,10 @@ public class AuxComponentFactory {
 			for (int i = 0; i < pubmedIds.size(); i++) {
 				component.add(new LinkLabel(pubmedIds.get(i).toString(), "http://www.ncbi.nlm.nih.gov/pubmed/" + pubmedIds.get(i).toString()));	
 			}
+		} else if (valueType.equals(List.class)) {
+			component = new ListPanel(model, "value", Entity.class);
+		} else if (valueType.equals(Set.class)) {
+			component = new ListPanel(model, "value", Entity.class);
 		} else {
 			component = BasicComponentFactory.createLabel(model, new OneWayObjectFormat());
 		}

@@ -78,8 +78,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 			} else {
 				charView.setToolTipText(GUIFactory.createToolTip(d_model.getNote(c)));
 			}
-			builder.add(charView,
-					cc.xyw(3, row, fullWidth - 2));
+			builder.add(charView, cc.xyw(3, row, fullWidth - 2));
 
 			row += 2;
 		}

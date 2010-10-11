@@ -129,7 +129,7 @@ public class StudyPresentation extends PresentationModel<Study> {
 		return false;
 	}
 	
-	private abstract class ListeningCharacteristicHolder extends StudyCharacteristicHolder implements PropertyChangeListener {
+	public abstract class ListeningCharacteristicHolder extends StudyCharacteristicHolder implements PropertyChangeListener {
 
 		public ListeningCharacteristicHolder(Study study, Characteristic characteristic) {
 			super(study, characteristic);

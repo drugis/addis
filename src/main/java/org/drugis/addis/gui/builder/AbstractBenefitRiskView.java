@@ -26,11 +26,12 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
-import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.presentation.BenefitRiskPresentation;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 import org.drugis.common.gui.LayoutUtil;
@@ -38,7 +39,6 @@ import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.value.ConverterFactory;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -101,14 +101,15 @@ public abstract class AbstractBenefitRiskView<PresentationType extends BenefitRi
 		
 		row += 2;
 		builder.addLabel("Criteria:", cc.xy(1, row));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_OUTCOMEMEASURES), new OneWayObjectFormat()), 
-				cc.xy(3, row));
+		ListPanel criteriaList = new ListPanel(d_pm.getBean(), BenefitRiskAnalysis.PROPERTY_OUTCOMEMEASURES, OutcomeMeasure.class);
+		builder.add(criteriaList,cc.xy(3, row));
 		
 		row += 2;
 		builder.addLabel("Alternatives:", cc.xy(1, row));
-		builder.add(AuxComponentFactory.createTextArea(ConverterFactory.createStringConverter(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_ALTERNATIVES), new OneWayObjectFormat()), false), 
-				cc.xy(3, row));
-		
+		//ListPanel alternativesList = new ListPanel(d_pm.getBean(), BenefitRiskAnalysis.PROPERTY_ALTERNATIVES, Alternative.class);
+		ListPanel alternativesList = new ListPanel(d_pm.getBean().getAlternatives());
+		builder.add(alternativesList,cc.xy(3, row));
+
 		
 		return builder.getPanel();	
 	}

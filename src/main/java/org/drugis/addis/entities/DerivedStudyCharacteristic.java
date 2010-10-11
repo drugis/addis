@@ -22,12 +22,14 @@
 
 package org.drugis.addis.entities;
 
+import java.util.Set;
+
 
 public enum DerivedStudyCharacteristic implements Characteristic {
 
 	STUDYSIZE("Study size", Integer.class, true),
 	INDICATION("Intended Indication", Indication.class, true),
-	DRUGS("Investigational drugs", Object.class, true),
+	DRUGS("Investigational drugs", Set.class, true),
 	DOSING("Dosing", Dosing.class, true),
 	ARMS("Study Arms", Integer.class, false);
 
