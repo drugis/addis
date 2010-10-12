@@ -55,8 +55,7 @@ extends PresentationModel<AnalysisType> {
 		return new SMAAPresentation<Alternative, AnalysisType>(getBean());
 	}
 
-	public LyndOBrienPresentation getLyndOBrienPresentation() {
-		return new LyndOBrienPresentation();
+	public LyndOBrienPresentation<Alternative, AnalysisType> getLyndOBrienPresentation() {
+		return new LyndOBrienPresentation<Alternative, AnalysisType>(getBean());
 	}
-
 }

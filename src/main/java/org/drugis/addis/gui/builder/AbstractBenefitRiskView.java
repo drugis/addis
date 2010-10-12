@@ -23,6 +23,7 @@
 package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -53,7 +54,7 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 	public AbstractBenefitRiskView(PresentationType model, Main main) {
 		d_pm = model;
 		d_main = main;
-		if (d_pm.getBean().getAnalysisType() == AnalysisType.SMAA) {
+		if (getAnalysis().getAnalysisType() == AnalysisType.SMAA) {
 			d_view = new SMAAView(d_pm, d_main);
 		} else {
 			d_view = new LyndOBrienView(d_pm, d_main);
@@ -80,7 +81,10 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		builder.addLabel("ID:", cc.xy(1, 1));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_NAME)), cc.xy(3, 1));
+		String value = (String) d_pm.getModel(BenefitRiskAnalysis.PROPERTY_NAME).getValue();
+		System.out.println(value);
+		JLabel tmp = new JLabel(value);
+		builder.add(tmp , cc.xy(3, 1));
 		
 		builder.addLabel("Analysis type:", cc.xy(1, 3));
 		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_ANALYSIS_TYPE), new OneWayObjectFormat()),
@@ -101,17 +105,21 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		
 		row += 2;
 		builder.addLabel("Criteria:", cc.xy(1, row));
-		ListPanel criteriaList = new ListPanel(d_pm.getBean(), BenefitRiskAnalysis.PROPERTY_OUTCOMEMEASURES, OutcomeMeasure.class);
+		ListPanel criteriaList = new ListPanel(getAnalysis(), BenefitRiskAnalysis.PROPERTY_OUTCOMEMEASURES, OutcomeMeasure.class);
 		builder.add(criteriaList,cc.xy(3, row));
 		
 		row += 2;
 		builder.addLabel("Alternatives:", cc.xy(1, row));
 		//ListPanel alternativesList = new ListPanel(d_pm.getBean(), BenefitRiskAnalysis.PROPERTY_ALTERNATIVES, Alternative.class);
-		ListPanel alternativesList = new ListPanel(d_pm.getBean().getAlternatives());
+		ListPanel alternativesList = new ListPanel(getAnalysis().getAlternatives());
 		builder.add(alternativesList,cc.xy(3, row));
 
 		
 		return builder.getPanel();	
+	}
+	
+	protected BenefitRiskAnalysis<?> getAnalysis() {
+		return (BenefitRiskAnalysis<?>)d_pm.getBean();
 	}
 
 	protected abstract JPanel buildMeasurementsPanel();

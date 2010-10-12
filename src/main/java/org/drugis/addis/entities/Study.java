@@ -426,10 +426,10 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private void updateMeasurements() {
 		// Add default measurements for all outcomes
 		for (OutcomeMeasure om : getOutcomeMeasures()) {
-			for (Arm g : getArms()) {
-				MeasurementKey key = new MeasurementKey(om, g);
+			for (Arm a : getArms()) {
+				MeasurementKey key = new MeasurementKey(om, a);
 				if (d_measurements.get(key) == null) {
-					d_measurements.put(key, om.buildMeasurement(g.getSize()));
+					d_measurements.put(key, om.buildMeasurement(a.getSize()));
 				}
 			}
 		}
