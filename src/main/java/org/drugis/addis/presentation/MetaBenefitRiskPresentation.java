@@ -43,7 +43,7 @@ import org.drugis.mtc.ProgressEvent.EventType;
 import fi.smaa.jsmaa.model.CardinalCriterion;
 
 @SuppressWarnings("serial")
-public class MetaBenefitRiskPresentation extends BenefitRiskPresentation<Drug, MetaBenefitRiskAnalysis> {
+public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<Drug, MetaBenefitRiskAnalysis> {
 	
 	private class AnalysisProgressListener implements ProgressListener {
 		JProgressBar d_progBar;
@@ -156,9 +156,6 @@ public class MetaBenefitRiskPresentation extends BenefitRiskPresentation<Drug, M
 		return new DefaultListHolder<MetaAnalysis>(getBean().getMetaAnalyses());
 	}
 
-	public OutcomeMeasure getOutcomeMeasureForCriterion(CardinalCriterion crit) {
-		return d_smaaf.getOutcomeMeasure(crit);
-	}
 	
 	private void initAllNetworkAnalyses() {
 		for (MetaAnalysis ma : getBean().getMetaAnalyses() ){

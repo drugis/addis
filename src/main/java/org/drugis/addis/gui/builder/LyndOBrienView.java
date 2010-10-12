@@ -1,21 +1,22 @@
 package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.presentation.BenefitRiskPresentation;
+import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
+import org.drugis.addis.presentation.LyndOBrienPresentation;
 import org.drugis.common.gui.ViewBuilder;
 
 public class LyndOBrienView implements ViewBuilder {
-	BenefitRiskPresentation<?,?> d_pm;
-	private Main d_main;
+	LyndOBrienPresentation d_pm;
 	
-	public LyndOBrienView(BenefitRiskPresentation<?,?> pm, Main main) {
+	public LyndOBrienView(AbstractBenefitRiskPresentation<?,?> pm, Main main) {
+		d_pm = pm.getLyndOBrienPresentation();
 	}
 
 	public JComponent buildPanel() {
-		// TODO Auto-generated method stub
-		return null;
+		return new JPanel();
 	}
 
 }

@@ -11,10 +11,14 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
 import org.drugis.addis.gui.components.ScrollableJPanel;
-import org.drugis.addis.presentation.BenefitRiskPresentation;
+import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
+import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
+import org.drugis.addis.presentation.SMAAPresentation;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
@@ -40,19 +44,22 @@ import fi.smaa.jsmaa.gui.views.ResultsView;
 public class SMAAView implements ViewBuilder  {
 	protected static final String WAITING_MESSAGE = "Please wait while the sub-analyses run";
 
-	private final BenefitRiskPresentation<?, ?> d_pm;
+	
+	private SMAAPresentation<?, ?> d_pm;
+	private final AbstractBenefitRiskPresentation<?, ?> d_BRpm;
 	private final Main d_main;
 
-	public SMAAView(BenefitRiskPresentation<?, ?> pm, Main main) {
-		d_pm = pm;
+	public SMAAView(AbstractBenefitRiskPresentation<?, ?> pm, Main main) {
+		d_pm = pm.getSMAAPresentation();
 		d_main = main;
+		d_BRpm = pm;
 		
 		// FIXME: below code should be in presentation.
-		if (d_pm.getMeasurementsReadyModel().getValue()) {
+		if (d_BRpm.getMeasurementsReadyModel().getValue()) {
 			d_pm.startSMAA();
 		}
 		
-		d_pm.getMeasurementsReadyModel().addValueChangeListener(new PropertyChangeListener() {
+		d_BRpm.getMeasurementsReadyModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 					d_pm.startSMAA();
 			}
@@ -131,16 +138,21 @@ public class SMAAView implements ViewBuilder  {
 		private void rebuildPanel(final JPanel panel) {
 			((JPanel)panel.getParent()).setVisible(false);
 			panel.removeAll();
-			JComponent prefPanel = buildPreferenceInformationView(d_pm.getPreferencePresentationModel(), d_pm);
+			JComponent prefPanel = buildPreferenceInformationView(d_pm.getPreferencePresentationModel(), d_BRpm);
 			panel.add(prefPanel, BorderLayout.CENTER);
 			((JPanel)panel.getParent()).setVisible(true);
 		}
 
 	}
 
-	public JComponent buildPreferenceInformationView(PreferencePresentationModel preferencePresentationModel, BenefitRiskPresentation<?,?> pm) {
-		JComponent prefPanel = new PreferenceInformationView(d_pm.getPreferencePresentationModel()).buildPanel();
-		return prefPanel;
+	@SuppressWarnings("unchecked")
+	public JComponent buildPreferenceInformationView(PreferencePresentationModel preferencePresentationModel, AbstractBenefitRiskPresentation<?,?> pm) {
+		if (d_BRpm instanceof MetaBenefitRiskPresentation) {
+			return new PreferenceInformationView(d_pm.getPreferencePresentationModel(),
+					new ClinicalScaleRenderer((MetaBenefitRiskPresentation) d_BRpm, (SMAAPresentation<Drug, BenefitRiskAnalysis<Drug>>) d_pm)).buildPanel();
+		} else {
+			return new PreferenceInformationView(d_pm.getPreferencePresentationModel()).buildPanel();
+		}
 	}
 	
 	public JComponent buildPreferencesPart() {
@@ -226,6 +238,6 @@ public class SMAAView implements ViewBuilder  {
 	
 
 	protected BuildViewWhenReadyComponent createWaiter(ViewBuilder builder) {
-		return new BuildViewWhenReadyComponent(builder, d_pm.getMeasurementsReadyModel(), WAITING_MESSAGE);
+		return new BuildViewWhenReadyComponent(builder, d_BRpm.getMeasurementsReadyModel(), WAITING_MESSAGE);
 	}
 }

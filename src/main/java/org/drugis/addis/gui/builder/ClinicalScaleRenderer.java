@@ -28,11 +28,14 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.OddsRatioToClinicalConverter;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.OddsRatioScalePresentation;
+import org.drugis.addis.presentation.SMAAPresentation;
 import org.drugis.common.gui.NumberAndIntervalFormat;
 
 import com.jgoodies.binding.PresentationModel;
@@ -45,15 +48,17 @@ import fi.smaa.jsmaa.model.ScaleCriterion;
 public class ClinicalScaleRenderer implements ScaleRenderer {
 
 	private final MetaBenefitRiskPresentation d_pm;
+	private SMAAPresentation<Drug, BenefitRiskAnalysis<Drug>> d_smaapm;
 
-	public ClinicalScaleRenderer(MetaBenefitRiskPresentation pm) {
+	public ClinicalScaleRenderer(MetaBenefitRiskPresentation pm, SMAAPresentation<Drug, BenefitRiskAnalysis<Drug>> smaapm) {
 		d_pm = pm;
+		d_smaapm = smaapm;
 	}
 
 	public JComponent getScaleComponent(Criterion c) {
 		if (c instanceof ScaleCriterion) {
 			ScaleCriterion criterion = (ScaleCriterion)c;
-			OutcomeMeasure outcome = d_pm.getOutcomeMeasureForCriterion(criterion);
+			OutcomeMeasure outcome = d_smaapm.getOutcomeMeasureForCriterion(criterion);
 			if (outcome.getType() == Variable.Type.RATE) {
 				OddsRatioToClinicalConverter converter = new OddsRatioToClinicalConverter(d_pm.getBean(), outcome);
 				OddsRatioScalePresentation cpm = new OddsRatioScalePresentation(criterion, converter);

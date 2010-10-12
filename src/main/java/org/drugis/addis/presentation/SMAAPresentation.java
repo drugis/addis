@@ -1,35 +1,12 @@
-/*
- * This file is part of ADDIS (Aggregate Data Drug Information System).
- * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package org.drugis.addis.presentation;
 
 import java.io.FileOutputStream;
 
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.util.JSMAAintegration.BRSMAASimulationBuilder;
 import org.drugis.addis.util.JSMAAintegration.SMAAEntityFactory;
-
-import com.jgoodies.binding.PresentationModel;
 
 import fi.smaa.jsmaa.gui.components.SimulationProgressBar;
 import fi.smaa.jsmaa.gui.jfreechart.CentralWeightsDataset;
@@ -38,6 +15,7 @@ import fi.smaa.jsmaa.gui.presentation.CentralWeightTableModel;
 import fi.smaa.jsmaa.gui.presentation.PreferencePresentationModel;
 import fi.smaa.jsmaa.gui.presentation.RankAcceptabilityTableModel;
 import fi.smaa.jsmaa.gui.presentation.SMAA2ResultsTableModel;
+import fi.smaa.jsmaa.model.CardinalCriterion;
 import fi.smaa.jsmaa.model.ModelChangeEvent;
 import fi.smaa.jsmaa.model.SMAAModel;
 import fi.smaa.jsmaa.model.SMAAModelListener;
@@ -45,11 +23,17 @@ import fi.smaa.jsmaa.model.xml.JSMAABinding;
 import fi.smaa.jsmaa.simulator.BuildQueue;
 import fi.smaa.jsmaa.simulator.SMAA2Results;
 
-@SuppressWarnings("serial")
-public abstract class BenefitRiskPresentation<Alternative extends Entity, AnalysisType extends BenefitRiskAnalysis<Alternative>> 
-extends PresentationModel<AnalysisType> {
+public class SMAAPresentation<Alternative extends Entity, AnalysisType extends BenefitRiskAnalysis<Alternative>> 
+{
 
-	protected PresentationModelFactory d_pmf;
+	private AnalysisType d_a;
+
+	public SMAAPresentation(AnalysisType a) {
+		d_a = a;
+		d_buildQueue = new BuildQueue();
+		d_progressBar = new SimulationProgressBar();
+	}
+
 	protected RankAcceptabilityTableModel d_rankAccepTM;
 	protected RankAcceptabilitiesDataset d_rankAccepDS;
 	protected BuildQueue d_buildQueue;
@@ -59,17 +43,10 @@ extends PresentationModel<AnalysisType> {
 	protected SMAAModel d_smaaModel;
 	protected SimulationProgressBar d_progressBar;
 	protected SMAAEntityFactory<Alternative> d_smaaf;
-
-	public BenefitRiskPresentation(AnalysisType bean, PresentationModelFactory pmf) {
-		super(bean);
-		d_buildQueue = new BuildQueue();
-		d_progressBar = new SimulationProgressBar();
-		d_pmf = pmf;
-	}
 	
 	public void startSMAA() {
 		d_smaaf = new SMAAEntityFactory<Alternative>();
-		d_smaaModel = d_smaaf.createSmaaModel(getBean());
+		d_smaaModel = d_smaaf.createSmaaModel(d_a);
 		SMAA2Results emptyResults = new SMAA2Results(d_smaaModel.getAlternatives(), d_smaaModel.getCriteria(), 10);
 		d_rankAccepDS = new RankAcceptabilitiesDataset(emptyResults);
 		d_rankAccepTM = new RankAcceptabilityTableModel(emptyResults);
@@ -117,6 +94,11 @@ extends PresentationModel<AnalysisType> {
 	public CentralWeightTableModel getCentralWeightsTableModel() {
 		return d_cwTM;
 	}
+	
+
+	public OutcomeMeasure getOutcomeMeasureForCriterion(CardinalCriterion crit) {
+		return d_smaaf.getOutcomeMeasure(crit);
+	}
 
 	public void saveSmaa(String filename) {
 		try {
@@ -125,15 +107,5 @@ extends PresentationModel<AnalysisType> {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	public PresentationModelFactory getFactory() {
-		return d_pmf;
-	}
-
-	public abstract void startAllSimulations();
-
-	public abstract ValueHolder<Boolean> getMeasurementsReadyModel();
-
-
+	}	
 }

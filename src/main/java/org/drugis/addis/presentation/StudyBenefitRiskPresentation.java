@@ -29,7 +29,7 @@ import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 
 @SuppressWarnings("serial")
 public class StudyBenefitRiskPresentation extends
-		BenefitRiskPresentation<Arm, StudyBenefitRiskAnalysis> {
+		AbstractBenefitRiskPresentation<Arm, StudyBenefitRiskAnalysis> {
 
 	public StudyBenefitRiskPresentation(StudyBenefitRiskAnalysis bean, PresentationModelFactory pmf) {
 		super(bean, pmf);

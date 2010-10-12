@@ -32,7 +32,7 @@ import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.ListPanel;
-import org.drugis.addis.presentation.BenefitRiskPresentation;
+import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OneWayObjectFormat;
@@ -43,7 +43,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public abstract class AbstractBenefitRiskView<PresentationType extends BenefitRiskPresentation<?, ?>> implements ViewBuilder {
+public abstract class AbstractBenefitRiskView<PresentationType extends AbstractBenefitRiskPresentation<?, ?>> implements ViewBuilder {
 
 
 	protected PresentationType d_pm;
@@ -66,7 +66,7 @@ public abstract class AbstractBenefitRiskView<PresentationType extends BenefitRi
 		JTabbedPane tabbedPane = new JTabbedPane();
 		tabbedPane.addTab("Overview", buildOverviewPanel());
 		tabbedPane.addTab("Measurements", buildMeasurementsPanel());
-		tabbedPane.addTab("Analysis", buildAnalysisPart());
+		tabbedPane.addTab("Analysis", buildAnalysisPanel());
 		return tabbedPane;
 	}
 
@@ -116,7 +116,7 @@ public abstract class AbstractBenefitRiskView<PresentationType extends BenefitRi
 
 	protected abstract JPanel buildMeasurementsPanel();
 
-	protected JComponent buildAnalysisPart() {
+	protected JComponent buildAnalysisPanel() {
 		return d_view.buildPanel();
 	}
 
