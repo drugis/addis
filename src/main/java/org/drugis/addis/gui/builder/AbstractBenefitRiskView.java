@@ -81,9 +81,7 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		builder.addLabel("ID:", cc.xy(1, 1));
-		String value = (String) d_pm.getModel(BenefitRiskAnalysis.PROPERTY_NAME).getValue();
-		System.out.println(value);
-		JLabel tmp = new JLabel(value);
+		JLabel tmp = new JLabel((String) d_pm.getModel(BenefitRiskAnalysis.PROPERTY_NAME).getValue());
 		builder.add(tmp , cc.xy(3, 1));
 		
 		builder.addLabel("Analysis type:", cc.xy(1, 3));

@@ -793,6 +793,20 @@ public class ExampleData {
 		return new MockStudyBenefitRiskAnalysis("testBenefitRiskAnalysis",
 										indication, study, outcomeMeasureList, arms, AnalysisType.SMAA);										
 	}
+	
+	public static StudyBenefitRiskAnalysis buildStudyLOBenefitRiskAnalysis() {
+		Indication indication = buildIndicationDepression();
+		
+		List<OutcomeMeasure> outcomeMeasureList = new ArrayList<OutcomeMeasure>();
+		Study study = ExampleData.buildStudyChouinard();
+		outcomeMeasureList.add(buildEndpointHamd());
+		outcomeMeasureList.add(buildAdverseEventConvulsion());
+		
+		List<Arm> arms = study.getArms();
+	
+		return new MockStudyBenefitRiskAnalysis("testBenefitRiskAnalysis",
+										indication, study, outcomeMeasureList, arms, AnalysisType.LyndOBrien);										
+	}
 
 	public static MetaAnalysis buildMetaAnalysisConv() {
 		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
