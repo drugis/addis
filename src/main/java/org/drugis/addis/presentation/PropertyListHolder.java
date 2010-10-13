@@ -33,17 +33,14 @@ public class PropertyListHolder<E> extends AbstractListHolder<E> implements Prop
 		if (d_vm.getValue() instanceof Set) {
 			List<E> lst = new ArrayList((Set<E>)d_vm.getValue());
 			Collections.sort(lst, new AlphabeticalComparator());
-			System.out.println("instanceof Set");
 			return lst;
 		}
-		System.out.println("NOT instanceof Set");
 		return Collections.unmodifiableList((List<E>) d_vm.getValue());
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void setValue(Object list) {
-		System.out.println(list);
 		if (d_vm.getValue() instanceof List) {
 			d_vm.setValue((List<E>)list); 
 		}
