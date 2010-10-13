@@ -27,7 +27,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.text.NumberFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
@@ -115,12 +114,10 @@ public class AuxComponentFactory {
 			component = BasicComponentFactory.createLabel(model, new DayDateFormat());
 		} else if (valueType.equals(PubMedIdList.class)) {
 			component = new JPanel();
-			PubMedIdList pubmedIds = (PubMedIdList)model.getValue();			
+			PubMedIdList pubmedIds = (PubMedIdList) model.getValue();			
 			for (int i = 0; i < pubmedIds.size(); i++) {
 				component.add(new LinkLabel(pubmedIds.get(i).toString(), "http://www.ncbi.nlm.nih.gov/pubmed/" + pubmedIds.get(i).toString()));	
 			}
-		} else if (valueType.equals(List.class)) {
-			component = new ListPanel(model, "value", Entity.class);
 		} else if (valueType.equals(Set.class)) {
 			component = new ListPanel(model, "value", Entity.class);
 		} else {
