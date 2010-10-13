@@ -7,11 +7,21 @@ import static org.junit.Assert.fail;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import javax.swing.text.html.parser.Entity;
+
+import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.Characteristic;
+import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyCharacteristics;
 import org.drugis.addis.entities.Variable.Type;
+import org.drugis.addis.gui.CharacteristicSelectDialog;
 import org.drugis.common.JUnitUtil;
 import org.easymock.EasyMock;
 import org.junit.Ignore;
@@ -72,7 +82,12 @@ public class PropertyListHolderTest {
 	@Test
 	@Ignore
 	public void testListHolderSetsValuesInUnderlyingSetProperty() {
-		fail();
+		Study orig = ExampleData.buildStudyFava2002();
+				/*
+		PropertyListHolder<Arm> drugHolder = new PropertyListHolder<Arm>(orig, DerivedStudyCharacteristic.DRUGS, Drug.class);
+		PropertyListHolder<Arm> drugHolder = new PropertyListHolder<Arm>(orig, Study.PROPERTY_ARMS, Entity.class);
+		*/
+		
 	}
 	
 	@Test

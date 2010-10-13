@@ -64,7 +64,7 @@ implements ViewBuilder {
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
@@ -76,17 +76,17 @@ implements ViewBuilder {
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(PairWiseMetaAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
 		builder.add(buildOverviewPart(), cc.xy(1, 3));
 
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural(), cc.xy(1, 5));
+		builder.add(buildStudiesPart(), cc.xy(1, 7));
+		
 		tabbedPane.addTab("Overview", builder.getPanel());
 		
 		layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu");
 		builder = new PanelBuilder(layout);
-		
-		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural(), cc.xy(1, 1));
-		builder.add(buildStudiesPart(), cc.xy(1, 3));
 
-		builder.add(getPlotsPanel(false), cc.xy(1, 5));
+		builder.add(getPlotsPanel(false), cc.xy(1, 3));
 		tabbedPane.addTab("Results", builder.getPanel());
 		
 		return tabbedPane;

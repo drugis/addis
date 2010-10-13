@@ -52,7 +52,7 @@ public class ListPanel extends JPanel {
 	}
 	
 	private String extractListItems() {
-		String listItems = "<html><ul>";
+		String listItems = "<html><ul style='list-style-type: circle; padding:0 px; margin:0 px; margin-left:10px;'>";
 		for(int i=0; i < d_entities.getValue().size(); i++) {
 			listItems += makeListItem(d_entities.getValue().get(i));
 		}
