@@ -2,32 +2,27 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.text.html.parser.Entity;
-
-import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.BasicStudyCharacteristic;
-import org.drugis.addis.entities.Characteristic;
-import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyCharacteristics;
 import org.drugis.addis.entities.Variable.Type;
-import org.drugis.addis.gui.CharacteristicSelectDialog;
 import org.drugis.common.JUnitUtil;
 import org.easymock.EasyMock;
-import org.junit.Ignore;
 import org.junit.Test;
 
+import com.jgoodies.binding.value.ValueHolder;
+import com.jgoodies.binding.value.ValueModel;
+
 public class PropertyListHolderTest {
+	
 	@Test
 	public void testListHolderReturnsContentsOfProperty() {
 		Study study = new Study("X", new Indication(8L, "EIGHT"));
@@ -63,8 +58,8 @@ public class PropertyListHolderTest {
 		EasyMock.verify(mockListener);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	@Ignore
 	public void testListHolderSetsValuesInUnderlyingProperty() {
 		Study study = new Study("X", new Indication(8L, "EIGHT"));
 		List<Endpoint> endpoints = new ArrayList<Endpoint>();
@@ -73,26 +68,38 @@ public class PropertyListHolderTest {
 			
 		PropertyListHolder<Endpoint> listHolder = new PropertyListHolder<Endpoint>(study, Study.PROPERTY_ENDPOINTS, Endpoint.class);
 		listHolder.setValue(endpoints);
-		
+	
+		assertFalse(listHolder.getValue() instanceof Set);
 		assertEquals(endpoints, study.getEndpoints());
 	}
 	
 	// FIXME: tests below should test for proper support of PROPERTY that is a Set rather than a List.
 	
+	@SuppressWarnings("unchecked")
 	@Test
-	@Ignore
 	public void testListHolderSetsValuesInUnderlyingSetProperty() {
-		Study orig = ExampleData.buildStudyFava2002();
-				/*
-		PropertyListHolder<Arm> drugHolder = new PropertyListHolder<Arm>(orig, DerivedStudyCharacteristic.DRUGS, Drug.class);
-		PropertyListHolder<Arm> drugHolder = new PropertyListHolder<Arm>(orig, Study.PROPERTY_ARMS, Entity.class);
-		*/
+		ValueModel valueHolderModel = new ValueHolder(new HashSet<String>());
 		
+		List<String> values = new ArrayList<String>();
+		values.add("a"); values.add("b"); values.add("c");
+		
+		PropertyListHolder<String> propertyListHolder = new PropertyListHolder<String>(valueHolderModel, "value", String.class);
+		propertyListHolder.setValue(values);
+		
+		assertTrue(valueHolderModel.getValue() instanceof Set);
+		assertEquals(new HashSet(values), valueHolderModel.getValue());
 	}
 	
 	@Test
-	@Ignore
 	public void testListHolderReturnsContentsOfSetProperty() {
-		fail();
+		List<String> values = new ArrayList<String>();
+		values.add("a"); values.add("b"); values.add("c");
+		
+		ValueModel valueHolderModel = new ValueHolder(new HashSet<String>());
+		
+		PropertyListHolder<String> propertyListHolder = new PropertyListHolder<String>(valueHolderModel, "value", String.class);
+		valueHolderModel.setValue(new HashSet<String>(values));
+		
+		assertEquals(values, propertyListHolder.getValue());
 	}
 }

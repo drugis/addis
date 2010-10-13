@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,19 +33,27 @@ public class PropertyListHolder<E> extends AbstractListHolder<E> implements Prop
 		if (d_vm.getValue() instanceof Set) {
 			List<E> lst = new ArrayList((Set<E>)d_vm.getValue());
 			Collections.sort(lst, new AlphabeticalComparator());
+			System.out.println("instanceof Set");
 			return lst;
 		}
-		return Collections.unmodifiableList((List<E>)d_vm.getValue());
+		System.out.println("NOT instanceof Set");
+		return Collections.unmodifiableList((List<E>) d_vm.getValue());
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void setValue(Object list) {
-		setValue((List<E>)list);
-	}
-	
-	public void setValue(List<E> list) {
-		// FIXME: NI
+		System.out.println(list);
+		if (d_vm.getValue() instanceof List) {
+			d_vm.setValue((List<E>)list); 
+		}
+		else if (d_vm.getValue() instanceof Set){
+			HashSet<E> hashSet = new HashSet<E>();
+			for(int i=0; i < ((List<E>) list).size(); i++) {
+				hashSet.add(((List<E>) list).get(i));
+			}
+			d_vm.setValue(hashSet);
+		}
 	}
 	
 	public void propertyChange(PropertyChangeEvent event) {

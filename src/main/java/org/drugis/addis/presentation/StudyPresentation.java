@@ -54,7 +54,6 @@ public class StudyPresentation extends PresentationModel<Study> {
 	private StudyCharacteristicHolder d_drugHolder;
 	private StudyCharacteristicHolder d_sizeHolder;
 	private StudyCharacteristicHolder d_indicationHolder;
-	//private StudyCharacteristicHolder d_pubmedHolder;
 	private PresentationModelFactory d_pmf;
 	
 	private Map<Characteristic, StudyCharacteristicHolder> d_characteristicModelMap;

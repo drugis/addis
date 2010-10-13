@@ -22,7 +22,6 @@
 
 package org.drugis.addis.gui.builder;
 
-
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
