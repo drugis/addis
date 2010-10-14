@@ -43,6 +43,7 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 	protected SMAAModel d_smaaModel;
 	protected SimulationProgressBar d_progressBar;
 	protected SMAAEntityFactory<Alternative> d_smaaf;
+	private ValueHolder<Boolean> d_initializedModel= new ModifiableHolder<Boolean>(false);
 	
 	public void startSMAA() {
 		d_smaaf = new SMAAEntityFactory<Alternative>();
@@ -53,6 +54,7 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 		d_cwTM = new CentralWeightTableModel(emptyResults);
 		d_cwDS = new CentralWeightsDataset(emptyResults);
 		d_prefPresModel = new PreferencePresentationModel(d_smaaModel, false);
+		d_initializedModel.setValue(true);
 	
 		d_smaaModel.addModelListener(new SMAAModelListener() {
 			public void modelChanged(ModelChangeEvent type) {
@@ -60,6 +62,10 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 			}			
 		});
 		startSimulation();
+	}
+	
+	public ValueHolder<Boolean> getInitializedModel() {
+		return d_initializedModel;
 	}
 
 	public SimulationProgressBar getSmaaSimulationProgressBar() {

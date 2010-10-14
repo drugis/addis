@@ -48,4 +48,12 @@ public class MockBenefitRiskDistr implements BenefitRiskDistribution {
 	double[][] getSamples() {
 		return d_samples;
 	}
+
+	public String getBenefitAxisName() {
+		return "\"Benefit\"";
+	}
+
+	public String getRiskAxisName() {
+		return "\"Risk\"";
+	}
 }

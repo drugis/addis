@@ -14,6 +14,8 @@ public interface BenefitRiskDistribution {
 	}
 	
 	public Sample nextSample();
-	public AxisType getRiskAxisType();
 	public AxisType getBenefitAxisType();
+	public AxisType getRiskAxisType();
+	public String getBenefitAxisName();
+	public String getRiskAxisName();
 }

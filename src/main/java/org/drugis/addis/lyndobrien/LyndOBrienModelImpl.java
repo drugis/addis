@@ -3,6 +3,7 @@ package org.drugis.addis.lyndobrien;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.lyndobrien.BenefitRiskDistribution.Sample;
 import org.drugis.common.threading.AbstractSuspendable;
 import org.drugis.common.threading.TerminatedException;
@@ -89,5 +90,21 @@ public class LyndOBrienModelImpl extends AbstractSuspendable implements LyndOBri
 
 	public Sample getData(int arg0) {
 		return d_data.get(arg0);
+	}
+	
+	public String getXAxisName() {
+		return d_brd.getBenefitAxisName();
+	}
+	
+	public String getYAxisName() {
+		return d_brd.getRiskAxisName();
+	}
+
+	public AxisType getBenefitAxisType() {
+		return d_brd.getBenefitAxisType();
+	}
+
+	public AxisType getRiskAxisType() {
+		return d_brd.getRiskAxisType();
 	}
 }

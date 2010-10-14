@@ -419,6 +419,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 				metaAnalyses.add(ma.getValue());
 		}
 			
+
 		Drug baseline = alternatives.get(0);
 		alternatives.remove(0);
 		MetaBenefitRiskAnalysis brAnalysis = new MetaBenefitRiskAnalysis(
@@ -429,6 +430,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 				alternatives,
 				d_analysisTypeHolder.getValue()
 			);
+		
 		return brAnalysis;
 	}
 	

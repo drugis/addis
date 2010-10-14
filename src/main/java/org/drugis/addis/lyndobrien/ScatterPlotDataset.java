@@ -16,6 +16,9 @@ public class ScatterPlotDataset extends AbstractXYDataset implements ProgressLis
 	public ScatterPlotDataset(LyndOBrienModel model){
 		d_model = model;
 		model.addProgressListener(this);
+		if(model.isReady()) {
+			d_itemCount = model.getSimulationIterations();
+		}
 	}
 	
 	@Override

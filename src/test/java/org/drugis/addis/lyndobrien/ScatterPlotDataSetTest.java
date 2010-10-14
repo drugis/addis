@@ -83,4 +83,11 @@ public class ScatterPlotDataSetTest {
 
 		set.update(d_model, new ProgressEvent(EventType.SIMULATION_PROGRESS, n, 3000));
 	}
+	
+	@Test
+	public void testInitializeDataSetWithFinishedSimulation() {
+		d_model.run();
+		ScatterPlotDataset set = new ScatterPlotDataset(d_model);
+		assertEquals(3000, set.getItemCount(0));
+	}
 }
