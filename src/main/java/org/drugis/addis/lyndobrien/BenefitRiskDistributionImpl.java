@@ -4,14 +4,15 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.AxisType;
+import org.drugis.addis.entities.relativeeffect.Beta;
+import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.util.JSMAAintegration.SMAAEntityFactory;
-
 import fi.smaa.jsmaa.model.CardinalMeasurement;
 
 /**
  * Sample relative benefit and risk based on 2x2 absolute effect distributions.
  */
-public class BenefitRiskDistributionImpl<Alternative extends Entity> implements BenefitRiskDistribution {
+public class BenefitRiskDistributionImpl<Alternative extends Entity> implements BenefitRiskDistribution{
 	private CardinalMeasurement d_subjBenefit;
 	private CardinalMeasurement d_baseBenefit;
 	private CardinalMeasurement d_subjRisk;
@@ -25,22 +26,22 @@ public class BenefitRiskDistributionImpl<Alternative extends Entity> implements 
 
 	public BenefitRiskDistributionImpl(BenefitRiskAnalysis<Alternative> a) {
 		Alternative alternative = a.getAlternatives().get(0);
-		OutcomeMeasure benefit = a.getOutcomeMeasures().get(0);
-		d_benefitAxisType = a.getMeasurement(alternative, benefit).getAxisType();
-		d_baseBenefit = SMAAEntityFactory.createCardinalMeasurement(a.getMeasurement(alternative, benefit));
+		OutcomeMeasure criterion = a.getOutcomeMeasures().get(0);
+		d_benefitAxisType = a.getMeasurement(alternative, criterion).getAxisType();
+		d_baseBenefit = SMAAEntityFactory.createCardinalMeasurement(a.getMeasurement(alternative, criterion));
 
 		alternative = a.getAlternatives().get(1);
-		benefit = a.getOutcomeMeasures().get(0);
-		d_subjBenefit = SMAAEntityFactory.createCardinalMeasurement(a.getMeasurement(alternative, benefit));
+		criterion = a.getOutcomeMeasures().get(0);
+		d_subjBenefit = SMAAEntityFactory.createCardinalMeasurement(a.getMeasurement(alternative, criterion));
 
 		alternative = a.getAlternatives().get(0);
-		benefit = a.getOutcomeMeasures().get(1);
-		d_riskAxisType = a.getMeasurement(alternative, benefit).getAxisType();
-		d_baseRisk = SMAAEntityFactory.createCardinalMeasurement(a.getMeasurement(alternative, benefit));
+		criterion = a.getOutcomeMeasures().get(1);
+		d_riskAxisType = a.getMeasurement(alternative, criterion).getAxisType();
+		d_baseRisk = SMAAEntityFactory.createCardinalMeasurement(a.getMeasurement(alternative, criterion));
 
 		alternative = a.getAlternatives().get(1);
-		benefit = a.getOutcomeMeasures().get(1);
-		d_subjRisk = SMAAEntityFactory.createCardinalMeasurement(a.getMeasurement(alternative, benefit));
+		criterion = a.getOutcomeMeasures().get(1);
+		d_subjRisk = SMAAEntityFactory.createCardinalMeasurement(a.getMeasurement(alternative, criterion));
 		
 		switch(a.getOutcomeMeasures().get(0).getDirection()) {
 		case HIGHER_IS_BETTER:
@@ -62,9 +63,26 @@ public class BenefitRiskDistributionImpl<Alternative extends Entity> implements 
 			d_riskMultiplier = 1;
 			break;
 		}
-//		if(d_baseBenefit instanceof Beta) {}
-		d_benefitAxisName += "\u0394(" + a.getOutcomeMeasures().get(0).getName() + ")";
-		d_riskAxisName += "\u0394(" + a.getOutcomeMeasures().get(1).getName() + ")";
+		
+		alternative = a.getAlternatives().get(0);
+		criterion = a.getOutcomeMeasures().get(0);
+		
+		if(a.getMeasurement(alternative, criterion) instanceof Beta) {
+			d_benefitAxisName += "\u0394 Incidence(" + a.getOutcomeMeasures().get(0).getName() + ")";
+		} else if (a.getMeasurement(alternative, criterion) instanceof LogGaussian) {
+			d_benefitAxisName += "Log OR (" + a.getOutcomeMeasures().get(0).getName() + ")";
+		} else {
+			d_benefitAxisName += "\u0394(" + a.getOutcomeMeasures().get(0).getName() + ")";
+		}
+		
+		criterion = a.getOutcomeMeasures().get(1);
+		if(a.getMeasurement(alternative, criterion) instanceof Beta) {
+			d_riskAxisName += "\u0394 Incidence(" + a.getOutcomeMeasures().get(1).getName() + ")";
+		} else if (a.getMeasurement(alternative, criterion) instanceof LogGaussian) {
+			d_riskAxisName += "Log OR (" + a.getOutcomeMeasures().get(1).getName() + ")";
+		} else {
+			d_riskAxisName += "\u0394(" + a.getOutcomeMeasures().get(1).getName() + ")";
+		}		
 	}
 
 	public AxisType getBenefitAxisType() {
