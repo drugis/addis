@@ -13,6 +13,7 @@ public interface LyndOBrienModel extends MCMCModel {
 	
 	public AxisType getBenefitAxisType();
 	public AxisType getRiskAxisType();
-	
+
+	public double getPValue(double mu);
 	
 }

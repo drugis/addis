@@ -107,4 +107,14 @@ public class LyndOBrienModelImpl extends AbstractSuspendable implements LyndOBri
 	public AxisType getRiskAxisType() {
 		return d_brd.getRiskAxisType();
 	}
+
+	public double getPValue(double mu) {
+		double belowMu = 0;
+		for(Sample s: d_data) {
+			if((s.risk / s.benefit) < mu) {
+				++belowMu;
+			}
+		}
+		return belowMu / d_data.size();
+	}
 }

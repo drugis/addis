@@ -38,6 +38,17 @@ public class LyndOBrienModelTest {
 	}
 	
 	@Test
+	public void testPValuesCorrect() {
+		LyndOBrienModel model = new LyndOBrienModelImpl(d_mockDistr);
+		model.run();
+		double[] expectedpvals = {0.5053333333333333, 0.5963333333333334, 0.726, 0.8383333333333334, 0.9173333333333333};
+		int i = 0;
+		for(double mu = 0.25; mu < 8; mu *= 2) {
+			assertEquals(expectedpvals[i++], model.getPValue(mu), EPSILON);
+		}
+	}
+	
+	@Test
 	public void testModelFiresEvents() {
 		LyndOBrienModel model = new LyndOBrienModelImpl(d_mockDistr);
     	ProgressListener mock = createStrictMock(ProgressListener.class);
