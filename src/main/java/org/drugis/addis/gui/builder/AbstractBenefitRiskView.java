@@ -108,7 +108,6 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		
 		row += 2;
 		builder.addLabel("Alternatives:", cc.xy(1, row));
-		//ListPanel alternativesList = new ListPanel(d_pm.getBean(), BenefitRiskAnalysis.PROPERTY_ALTERNATIVES, Alternative.class);
 		ListPanel alternativesList = new ListPanel(getAnalysis().getAlternatives());
 		builder.add(alternativesList,cc.xy(3, row));
 
