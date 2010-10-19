@@ -7,6 +7,10 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
+import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.LyndOBrienChartFactory;
 import org.drugis.addis.gui.Main;
@@ -50,13 +54,25 @@ public class LyndOBrienView implements ViewBuilder {
 
 		builder.addSeparator("Benefit-risk plane");
 		builder.add(createWaiter(new ScatterplotBuilder()), cc.xy(1,3));
+
+		String alternativeName = new String();
+		String baselineName = new String();
+		if(d_BRpm.getBean() instanceof StudyBenefitRiskAnalysis) {
+			baselineName = ((Arm) d_BRpm.getBean().getAlternatives().get(0)).getDrug().toString();
+			alternativeName = ((Arm) d_BRpm.getBean().getAlternatives().get(1)).getDrug().toString();
+		} else if (d_BRpm.getBean() instanceof MetaBenefitRiskAnalysis) {
+			baselineName = d_BRpm.getBean().getAlternatives().get(0).toString();
+			alternativeName = d_BRpm.getBean().getAlternatives().get(1).toString();
+		}
 		builder.add(AuxComponentFactory.createNoteField("Results of Monte Carlo simulations based on the difference-distributions of" +
-				" the alternatives and criteria. Results in the NW quadrant indicate that that the alternative is better and" +
-				" results in the SE quadrant indicate that the baseline drug is better."), cc.xy(1,5));
+				" the alternatives and criteria. Results in the NW quadrant indicate that " + 
+				alternativeName +" is better and" +
+				" results in the SE quadrant indicate that "+ baselineName  + " is better."), cc.xy(1,5));
 		builder.addSeparator("Benefit-Risk Aceptability curve", cc.xy(1, 7));
 		builder.add(createWaiter(new PvalueplotBuilder()), cc.xy(1,9));
 		builder.add(AuxComponentFactory.createNoteField("Probability for a given acceptability threshold " +
-				"\u03BC that the alternative is superior to the baseline. Indicates the proportion of datapoints in the Benefit-Risk" +
+				"\u03BC that " + alternativeName + " is superior to " + baselineName +". Indicates the" +
+				" proportion of datapoints in the Benefit-Risk" +
 				" plane that lie below the line y = \u03BC x"), cc.xy(1,11));
 		d_panel = builder.getPanel();
 		ChildComponenentHeightPropagater.attachToContainer(d_panel);
