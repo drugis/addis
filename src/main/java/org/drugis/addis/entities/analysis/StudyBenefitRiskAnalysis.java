@@ -143,7 +143,7 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 				try 
 				{ // legacy: should not fail if no analysistype is set, for backwards compatibility with old xml files 
 					br.d_analysisType = AnalysisType.valueOf(ie.<String>getAttribute(PROPERTY_ANALYSIS_TYPE, 
-							AnalysisType.SMAA.toString())); 
+							AnalysisType.SMAA.toString()));
 				} 
 				catch (IllegalArgumentException e ) { br.d_analysisType = AnalysisType.SMAA; }
 				

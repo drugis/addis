@@ -44,7 +44,7 @@ public class LyndOBrienView implements ViewBuilder {
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();
 
@@ -55,6 +55,9 @@ public class LyndOBrienView implements ViewBuilder {
 				" results in the SE quadrant indicate that the baseline drug is better."), cc.xy(1,5));
 		builder.addSeparator("Benefit-Risk Aceptability curve", cc.xy(1, 7));
 		builder.add(createWaiter(new PvalueplotBuilder()), cc.xy(1,9));
+		builder.add(AuxComponentFactory.createNoteField("Probability for a given acceptability threshold " +
+				"\u03BC that the alternative is superior to the baseline. Indicates the proportion of datapoints in the Benefit-Risk" +
+				" plane that lie below the line y = \u03BC x"), cc.xy(1,11));
 		d_panel = builder.getPanel();
 		ChildComponenentHeightPropagater.attachToContainer(d_panel);
 		return d_panel;
