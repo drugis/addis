@@ -23,16 +23,17 @@
 package org.drugis.addis.presentation;
 
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.common.threading.Task;
+import org.drugis.common.threading.TaskListener;
+import org.drugis.common.threading.event.TaskEvent;
+import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.ConsistencyModel;
-import org.drugis.mtc.MCMCModel;
+import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NetworkBuilder;
-import org.drugis.mtc.ProgressEvent;
-import org.drugis.mtc.ProgressListener;
 import org.drugis.mtc.Treatment;
-import org.drugis.mtc.ProgressEvent.EventType;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
@@ -40,19 +41,29 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<NetworkMetaAnalysis> {
 
 	private DefaultCategoryDataset d_dataset;
-	boolean d_isModelConstructionFinished = false;
+	ValueHolder<Boolean> d_inconsistencyModelConstructed;
+	
+	@SuppressWarnings("serial")
+	static class ModelConstructionFinishedModel extends UnmodifiableHolder<Boolean> implements TaskListener {
+		private Task d_task;
+		public ModelConstructionFinishedModel(MixedTreatmentComparison model) {
+			super(model.getActivityTask().getModel().getStartState().isFinished());
+			d_task = model.getActivityTask().getModel().getStartState();
+			d_task.addTaskListener(this);
+		}
+
+		public void taskEvent(TaskEvent event) {
+			fireValueChange(false, true);
+		}
+
+		public Boolean getValue() {
+			return d_task.isFinished();
+		}
+	}
 
 	public NetworkMetaAnalysisPresentation(NetworkMetaAnalysis bean, PresentationModelFactory mgr) {
 		super(bean, mgr);
-		
-		getBean().getInconsistencyModel().addProgressListener(new ProgressListener() {
-			
-			public void update(MCMCModel mtc, ProgressEvent event) {
-				if (event.getType() == ProgressEvent.EventType.MODEL_CONSTRUCTION_FINISHED) {
-					d_isModelConstructionFinished = true;
-				}
-			}
-		});
+		d_inconsistencyModelConstructed = new ModelConstructionFinishedModel(getBean().getInconsistencyModel());
 	}
 	
 	public String getNetworkXML() {
@@ -70,11 +81,11 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		ConsistencyModel consistencyModel = getBean().getConsistencyModel();
 
 		if (!consistencyModel.isReady()) {
-			consistencyModel.addProgressListener(new ProgressListener() {
-				public void update(MCMCModel mtc, ProgressEvent event) {
-					if (event.getType() == EventType.SIMULATION_FINISHED)
+			consistencyModel.getActivityTask().addTaskListener(new TaskListener() {
+				public void taskEvent(TaskEvent event) {
+					if (event.getType() == EventType.TASK_FINISHED) {
 						fillDataSet();
-//					if(event.getType() == EventType.MODEL_CONSTRUCTION_FINISHED)
+					}
 				}
 			});
 		}
@@ -96,8 +107,8 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 	}
 	
-	public boolean isModelConstructionFinished() {
-		return d_isModelConstructionFinished;
+	public ValueHolder<Boolean> getInconsistencyModelConstructedModel() {
+		return d_inconsistencyModelConstructed;
 	}
 
 	public String getRankProbabilityRankChartNote() {

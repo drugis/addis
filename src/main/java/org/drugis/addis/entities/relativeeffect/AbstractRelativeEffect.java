@@ -22,10 +22,10 @@
 
 package org.drugis.addis.entities.relativeeffect;
 
-import org.drugis.addis.entities.AbstractObservable;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.common.beans.AbstractObservable;
 
-public abstract class AbstractRelativeEffect<T extends Measurement> extends AbstractObservable implements RelativeEffect<T>{
+public abstract class AbstractRelativeEffect<T extends Measurement> extends AbstractObservable implements RelativeEffect<T> {
 
 	public AxisType getAxisType() {
 		return getDistribution().getAxisType();

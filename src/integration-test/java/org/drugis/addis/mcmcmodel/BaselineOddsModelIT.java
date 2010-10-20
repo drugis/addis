@@ -29,11 +29,12 @@ import java.util.List;
 
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.util.threading.TaskUtil;
 import org.junit.Test;
 
 public class BaselineOddsModelIT {
 	@Test
-	public void testModelResults() {
+	public void testModelResults() throws InterruptedException {
 		// values calculated using equivalent JAGS model with 10k/20k iterations.
 		int[] n = {47, 144, 120, 101, 73, 161, 54, 92, 45, 119, 103, 52, 120, 121, 170};
 		int[] r = {30, 63, 61, 67, 27, 95, 31, 57, 27, 84, 51, 9, 76, 77, 58};
@@ -42,7 +43,7 @@ public class BaselineOddsModelIT {
 		double dev = expectedSigma * 0.05;
 		
 		BaselineOddsModel model = new BaselineOddsModel(buildMeasurementsList(n, r));
-		model.run();
+		TaskUtil.run(model.getActivityTask());
 		
 		assertTrue(model.isReady());
 		assertEquals(expectedMu, model.getResult().getMu(), dev);

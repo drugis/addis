@@ -37,6 +37,7 @@ import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
+import org.drugis.addis.util.threading.TaskUtil;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.Treatment;
 import org.junit.Before;
@@ -91,8 +92,8 @@ public class NetworkTableModelTest {
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testGetValueAtAfterModelRun() {
-		d_analysis.getInconsistencyModel().run();
+	public void testGetValueAtAfterModelRun() throws InterruptedException {
+		TaskUtil.run(d_analysis.getInconsistencyModel().getActivityTask());
 
 		for(int x = 0; x < d_analysis.getIncludedDrugs().size(); ++x){
 			for(int y = 0; y < d_analysis.getIncludedDrugs().size(); ++y){
@@ -115,11 +116,11 @@ public class NetworkTableModelTest {
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testGetValueContinuousModelRun() {
+	public void testGetValueContinuousModelRun() throws InterruptedException {
 		d_contAnalysis = buildMockContinuousNetworkMetaAnalysis();
 		d_contTableModel = new NetworkTableModel((NetworkMetaAnalysisPresentation)d_pmf.getModel(d_contAnalysis), d_pmf, d_contAnalysis.getInconsistencyModel());
 		
-		d_contAnalysis.getInconsistencyModel().run();
+		TaskUtil.run(d_contAnalysis.getInconsistencyModel().getActivityTask());
 		d_tableModel = new NetworkTableModel((NetworkMetaAnalysisPresentation)d_pmf.getModel(d_contAnalysis), d_pmf, d_contAnalysis.getInconsistencyModel());
 
 		for(int x = 0; x < d_contAnalysis.getIncludedDrugs().size(); ++x){

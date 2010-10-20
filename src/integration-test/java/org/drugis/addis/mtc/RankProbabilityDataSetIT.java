@@ -32,6 +32,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
+import org.drugis.addis.util.threading.TaskUtil;
 import org.drugis.mtc.Treatment;
 import org.jfree.data.category.CategoryDataset;
 import org.junit.Before;
@@ -46,10 +47,10 @@ public class RankProbabilityDataSetIT {
 	private CategoryDataset d_dataSet;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws InterruptedException {
 		PresentationModelFactory pmf = new PresentationModelFactory(new DomainImpl());
 		d_nma = ExampleData.buildNetworkMetaAnalysisHamD();
-		d_nma.getConsistencyModel().run();
+		TaskUtil.run(d_nma.getConsistencyModel().getActivityTask());
 		NetworkMetaAnalysisPresentation pm = (NetworkMetaAnalysisPresentation) pmf.getModel(d_nma);
 		d_dataSet = pm.getRankProbabilityDataset();
 	}

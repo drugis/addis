@@ -24,9 +24,9 @@ package org.drugis.addis.mocks;
 
 
 import org.drugis.common.threading.AbstractSuspendable;
+import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Estimate;
-import org.drugis.mtc.ProgressListener;
 import org.drugis.mtc.Treatment;
 
 
@@ -46,9 +46,6 @@ public class MockConsistencyModel extends AbstractSuspendable implements Consist
 	
 	public Estimate getConsistency() {
 		return new MockEstimate();
-	}
-
-	public void addProgressListener(ProgressListener l) {
 	}
 
 	public Estimate getRelativeEffect(Treatment base, Treatment subj) {
@@ -80,6 +77,11 @@ public class MockConsistencyModel extends AbstractSuspendable implements Consist
 	public double rankProbability(Treatment t, int r) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public ActivityTask getActivityTask() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

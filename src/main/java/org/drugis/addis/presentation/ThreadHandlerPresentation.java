@@ -22,7 +22,7 @@
 
 package org.drugis.addis.presentation;
 
-import org.drugis.addis.util.threading.ThreadHandler;
+import org.drugis.common.threading.ThreadHandler;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.ValueModel;

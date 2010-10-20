@@ -15,6 +15,7 @@ import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.LyndOBrienPresentation;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.common.gui.task.TaskProgressBar;
 import org.jfree.chart.ChartPanel;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -68,9 +69,7 @@ public class LyndOBrienView implements ViewBuilder {
 					"p, 3dlu, p, 3dlu");
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc =  new CellConstraints();
-			JProgressBar bar = new JProgressBar();
-			bar.setStringPainted(true);
-			d_pm.attachProgBar(bar);
+			JProgressBar bar = new TaskProgressBar(d_pm.getTask());
 			builder.add(bar,cc.xy(1, 1));
 			builder.add(new ChartPanel(LyndOBrienChartFactory.buildScatterPlot(d_pm.getModel())), cc.xy(1,3));
 			return builder.getPanel();

@@ -27,11 +27,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.common.threading.AbstractSuspendable;
+import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.InconsistencyParameter;
-import org.drugis.mtc.ProgressListener;
 import org.drugis.mtc.Treatment;
+
+import scala.collection.JavaConversions$;
+import scala.collection.mutable.Buffer;
 
 
 
@@ -61,18 +64,19 @@ public class MockInconsistencyModel extends AbstractSuspendable implements Incon
 		cycle.add(new Treatment("Paroxetine"));
 		cycle.add(new Treatment("Fluoxetine"));
 
-		scala.collection.jcl.BufferWrapper<Treatment> wrapper =
-			(scala.collection.jcl.BufferWrapper<Treatment>)
-			scala.collection.jcl.Conversions$.MODULE$.convertList(cycle);
-		scala.List<Treatment> scalaCycle = scala.List$.MODULE$.fromIterator(wrapper.elements());
+		
+		Buffer<Treatment> buffer = JavaConversions$.MODULE$.asBuffer(cycle); 
+		scala.collection.immutable.List<Treatment> scalaCycle = buffer.toList();
+		
+//		scala.collection.jcl.BufferWrapper<Treatment> wrapper =
+//			(scala.collection.jcl.BufferWrapper<Treatment>)
+//			scala.collection.jcl.Conversions$.MODULE$.convertList(cycle);
+//		scala.List<Treatment> scalaCycle = scala.List$.MODULE$.fromIterator(wrapper.elements());
 
 		List<InconsistencyParameter> inFac = new ArrayList<InconsistencyParameter>();
 		inFac.add(new InconsistencyParameter(scalaCycle));
 
 		return inFac;
-	}
-
-	public void addProgressListener(ProgressListener l) {
 	}
 
 	public Estimate getRelativeEffect(Treatment base, Treatment subj) {
@@ -99,6 +103,11 @@ public class MockInconsistencyModel extends AbstractSuspendable implements Incon
 	}
 
 	public void setSimulationIterations(int it) {
+	}
+
+	public ActivityTask getActivityTask() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

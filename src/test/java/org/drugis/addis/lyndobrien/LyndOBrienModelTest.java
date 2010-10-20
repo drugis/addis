@@ -1,19 +1,17 @@
 package org.drugis.addis.lyndobrien;
 
-import static org.easymock.EasyMock.createStrictMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
 import org.drugis.addis.lyndobrien.BenefitRiskDistribution.Sample;
-import org.drugis.mtc.MCMCModel;
-import org.drugis.mtc.ProgressEvent;
-import org.drugis.mtc.ProgressListener;
-import org.drugis.mtc.ProgressEvent.EventType;
+import org.drugis.addis.util.threading.TaskUtil;
+import org.drugis.common.threading.Task;
+import org.drugis.common.threading.TaskListener;
+import org.drugis.common.threading.event.TaskEvent;
+import org.drugis.common.threading.event.TaskEvent.EventType;
+import org.drugis.common.threading.event.TaskProgressEvent;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,9 +25,9 @@ public class LyndOBrienModelTest {
 	}
 
 	@Test
-	public void testDataIdenticalToSamples() {
+	public void testDataIdenticalToSamples() throws InterruptedException {
 		LyndOBrienModel model = new LyndOBrienModelImpl(d_mockDistr);
-		model.run();
+		TaskUtil.run(model.getTask());
 		for (int i = 0; i < model.getSimulationIterations(); ++i) {
 			Sample s = model.getData(i);
 			assertEquals(d_mockDistr.getSamples()[0][i], s.benefit, EPSILON);
@@ -38,9 +36,9 @@ public class LyndOBrienModelTest {
 	}
 	
 	@Test
-	public void testPValuesCorrect() {
+	public void testPValuesCorrect() throws InterruptedException {
 		LyndOBrienModel model = new LyndOBrienModelImpl(d_mockDistr);
-		model.run();
+		TaskUtil.run(model.getTask());
 		double[] expectedpvals = {0.5053333333333333, 0.5963333333333334, 0.726, 0.8383333333333334, 0.9173333333333333};
 		int i = 0;
 		for(double mu = 0.25; mu < 8; mu *= 2) {
@@ -49,35 +47,21 @@ public class LyndOBrienModelTest {
 	}
 	
 	@Test
-	public void testModelFiresEvents() {
-		LyndOBrienModel model = new LyndOBrienModelImpl(d_mockDistr);
-    	ProgressListener mock = createStrictMock(ProgressListener.class);
-    	mock.update(model, new ProgressEvent(EventType.SIMULATION_STARTED));
-    	for (int i = 100; i < model.getSimulationIterations(); i += 100) {
-	    	mock.update(model, new ProgressEvent(EventType.SIMULATION_PROGRESS, i, model.getSimulationIterations()));
-    	}
-    	mock.update(model, new ProgressEvent(EventType.SIMULATION_FINISHED));
-    	replay(mock);
-    	model.addProgressListener(mock);
-    	model.run();
-    	verify(mock);
-	}
-	
-	@Test
-	public void testDataAfterEachInterval() {
+	public void testDataAfterEachInterval() throws InterruptedException {
 		final LyndOBrienModel model = new LyndOBrienModelImpl(d_mockDistr);
-		model.addProgressListener(new ProgressListener() {
-			public void update(MCMCModel mtc, ProgressEvent event) {
-				if (event.getType() == EventType.SIMULATION_PROGRESS) {
-					assertFalse(model.isReady());
-					for (int i = 0; i < event.getIteration(); ++i) {
+		Task task = model.getTask();
+		task.addTaskListener(new TaskListener() {
+			public void taskEvent(TaskEvent event) {
+				if (event.getType() == EventType.TASK_PROGRESS) {
+					TaskProgressEvent progress = (TaskProgressEvent)event;
+					for (int i = 0; i < progress.getIteration(); ++i) {
 						Sample s = model.getData(i);
 						assertEquals(d_mockDistr.getSamples()[0][i], s.benefit, EPSILON);
 						assertEquals(d_mockDistr.getSamples()[1][i], s.risk, EPSILON);
 					}
 					boolean exception = false;
 					try {
-						model.getData(event.getIteration());
+						model.getData(progress.getIteration());
 					} catch (Exception e) {
 						exception = true;
 					}
@@ -85,6 +69,6 @@ public class LyndOBrienModelTest {
 				}
 			}
 		});
-		model.run();
+		TaskUtil.run(task);
 	}
 }

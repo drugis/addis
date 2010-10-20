@@ -1,13 +1,13 @@
 package org.drugis.addis.lyndobrien;
 
-import org.drugis.mtc.MCMCModel;
-import org.drugis.mtc.ProgressEvent;
-import org.drugis.mtc.ProgressListener;
-import org.drugis.mtc.ProgressEvent.EventType;
+import org.drugis.common.threading.TaskListener;
+import org.drugis.common.threading.event.TaskEvent;
+import org.drugis.common.threading.event.TaskEvent.EventType;
+import org.drugis.common.threading.event.TaskProgressEvent;
 import org.jfree.data.xy.AbstractXYDataset;
 
 @SuppressWarnings("serial")
-public class ScatterPlotDataset extends AbstractXYDataset implements ProgressListener {
+public class ScatterPlotDataset extends AbstractXYDataset implements TaskListener {
 
 	private final LyndOBrienModel d_model;
 	private int d_itemCount = 0;
@@ -15,8 +15,8 @@ public class ScatterPlotDataset extends AbstractXYDataset implements ProgressLis
 
 	public ScatterPlotDataset(LyndOBrienModel model){
 		d_model = model;
-		model.addProgressListener(this);
-		if(model.isReady()) {
+		model.getTask().addTaskListener(this);
+		if(model.getTask().isFinished()) {
 			d_itemCount = model.getSimulationIterations();
 		}
 	}
@@ -43,12 +43,10 @@ public class ScatterPlotDataset extends AbstractXYDataset implements ProgressLis
 		return d_model.getData(item).risk;
 	}
 
-	public void update(MCMCModel mtc, ProgressEvent event) {
-		if(event.getType() == EventType.SIMULATION_PROGRESS) {
-			d_itemCount = event.getIteration();
-			fireDatasetChanged();
-		} else if (event.getType() == EventType.SIMULATION_FINISHED) {
-			d_itemCount = d_model.getSimulationIterations();
+	public void taskEvent(TaskEvent event) {
+		if(event.getType() == EventType.TASK_PROGRESS) {
+			TaskProgressEvent progress = (TaskProgressEvent)event;
+			d_itemCount = progress.getIteration();
 			fireDatasetChanged();
 		}
 	}

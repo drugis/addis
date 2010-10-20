@@ -29,15 +29,14 @@ import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
+import org.drugis.common.threading.TaskListener;
+import org.drugis.common.threading.event.TaskEvent;
+import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyModel;
-import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.ProgressEvent;
-import org.drugis.mtc.ProgressListener;
 import org.drugis.mtc.Treatment;
-import org.drugis.mtc.ProgressEvent.EventType;
 
 @SuppressWarnings("serial")
 public class NetworkTableModel  extends AbstractTableModel implements TableModelWithDescription{
@@ -54,11 +53,11 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 
 
 	private void attachModelListener(MixedTreatmentComparison networkModel) {
-		networkModel.addProgressListener(new ProgressListener() {
-			public void update(MCMCModel mtc, ProgressEvent event) {
-//				mtc.addProgressListener(this);
-				if(event.getType() == EventType.SIMULATION_FINISHED)
+		networkModel.getActivityTask().addTaskListener(new TaskListener() {
+			public void taskEvent(TaskEvent event) {
+				if (event.getType() == EventType.TASK_FINISHED) {
 					fireTableDataChanged();
+				}
 			}
 		});
 	}

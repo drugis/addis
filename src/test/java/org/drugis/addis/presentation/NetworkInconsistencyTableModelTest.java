@@ -35,6 +35,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
+import org.drugis.addis.util.threading.TaskUtil;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyParameter;
 import org.junit.Before;
@@ -55,8 +56,6 @@ public class NetworkInconsistencyTableModelTest {
 		
 		NetworkMetaAnalysisPresentation pm = (NetworkMetaAnalysisPresentation) d_pmf.getModel(d_analysis);
 		d_tableModel = new NetworkInconsistencyFactorsTableModel((NetworkMetaAnalysisPresentation) pm, d_pmf);
-		pm.d_isModelConstructionFinished = true;
-		
 	}
 	
 	@Test
@@ -70,8 +69,8 @@ public class NetworkInconsistencyTableModelTest {
 	}
 
 	@Test
-	public void testValueAt() {
-		d_analysis.getInconsistencyModel().run();
+	public void testValueAt() throws InterruptedException {
+		TaskUtil.run(d_analysis.getInconsistencyModel().getActivityTask());
 		for(int x = 0; x < d_tableModel.getColumnCount(); ++x) {
 			for(int y = 0; y < d_tableModel.getRowCount(); ++y) {
 				InconsistencyParameter ip = d_analysis.getInconsistencyModel().getInconsistencyFactors().get(y);
@@ -90,10 +89,10 @@ public class NetworkInconsistencyTableModelTest {
 	}
 	
 	@Test
-	public void testContinuousValueAt() {
+	public void testContinuousValueAt() throws InterruptedException {
 		NetworkMetaAnalysis d_contAnalysis = buildMockContinuousNetworkMetaAnalysis();
 		NetworkInconsistencyFactorsTableModel d_contTableModel = new NetworkInconsistencyFactorsTableModel((NetworkMetaAnalysisPresentation) d_pmf.getModel(d_contAnalysis), d_pmf);
-		d_contAnalysis.getInconsistencyModel().run();
+		TaskUtil.run(d_analysis.getInconsistencyModel().getActivityTask());
 		for(int x = 0; x < d_contTableModel.getColumnCount(); ++x) {
 			for(int y = 0; y < d_contTableModel.getRowCount(); ++y) {
 				InconsistencyParameter ip = d_contAnalysis.getInconsistencyModel().getInconsistencyFactors().get(y);

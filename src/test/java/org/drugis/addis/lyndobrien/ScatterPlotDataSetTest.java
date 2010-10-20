@@ -8,8 +8,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.drugis.mtc.ProgressEvent;
-import org.drugis.mtc.ProgressEvent.EventType;
+import org.drugis.addis.util.threading.TaskUtil;
+import org.drugis.common.threading.event.TaskProgressEvent;
 import org.jfree.data.general.DatasetChangeEvent;
 import org.jfree.data.general.DatasetChangeListener;
 import org.junit.Before;
@@ -33,9 +33,9 @@ public class ScatterPlotDataSetTest {
 	}
 	
 	@Test
-	public void testDataSetContentsAfterRun() {
+	public void testDataSetContentsAfterRun() throws InterruptedException {
 		ScatterPlotDataset set = new ScatterPlotDataset(d_model);
-		d_model.run();
+		TaskUtil.run(d_model.getTask());
 		assertEquals(d_model.getSimulationIterations(), set.getItemCount(0));
 		for(int i = 0; i < set.getItemCount(0); ++i) {
 			assertEquals(d_model.getData(i).benefit, set.getX(0, i));
@@ -52,20 +52,7 @@ public class ScatterPlotDataSetTest {
 		replay(mock);
 
 		set.addChangeListener(mock);
-		set.update(d_model, new ProgressEvent(EventType.SIMULATION_PROGRESS, 100, 3000));
-    	verify(mock);
-	}
-	
-	@Test
-	public void testDataSetChangedOnSimulationFinished() {
-		ScatterPlotDataset set = new ScatterPlotDataset(d_model);
-		
-		DatasetChangeListener mock = createStrictMock(DatasetChangeListener.class);
-		mock.datasetChanged((DatasetChangeEvent)anyObject());
-		replay(mock);
-
-		set.addChangeListener(mock);
-		set.update(d_model, new ProgressEvent(EventType.SIMULATION_FINISHED));
+		set.taskEvent(new TaskProgressEvent(d_model.getTask(), 100, 3000));
     	verify(mock);
 	}
 	
@@ -81,12 +68,12 @@ public class ScatterPlotDataSetTest {
 			}
 		});
 
-		set.update(d_model, new ProgressEvent(EventType.SIMULATION_PROGRESS, n, 3000));
+		set.taskEvent(new TaskProgressEvent(d_model.getTask(), n, 3000));
 	}
 	
 	@Test
-	public void testInitializeDataSetWithFinishedSimulation() {
-		d_model.run();
+	public void testInitializeDataSetWithFinishedSimulation() throws InterruptedException {
+		TaskUtil.run(d_model.getTask());
 		ScatterPlotDataset set = new ScatterPlotDataset(d_model);
 		assertEquals(3000, set.getItemCount(0));
 	}

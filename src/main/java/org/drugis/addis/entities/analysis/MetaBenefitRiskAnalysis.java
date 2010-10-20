@@ -55,12 +55,12 @@ import org.drugis.addis.mcmcmodel.BaselineMeanDifferenceModel;
 import org.drugis.addis.mcmcmodel.BaselineOddsModel;
 import org.drugis.addis.util.comparator.AlphabeticalComparator;
 import org.drugis.addis.util.comparator.OutcomeComparator;
-import org.drugis.addis.util.threading.ThreadHandler;
+import org.drugis.common.threading.Task;
+import org.drugis.common.threading.TaskListener;
+import org.drugis.common.threading.ThreadHandler;
+import org.drugis.common.threading.event.TaskEvent;
+import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.ConsistencyModel;
-import org.drugis.mtc.MCMCModel;
-import org.drugis.mtc.ProgressEvent;
-import org.drugis.mtc.ProgressListener;
-import org.drugis.mtc.ProgressEvent.EventType;
 
 public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<Drug> {
 	
@@ -70,20 +70,20 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	private List<MetaAnalysis> d_metaAnalyses;
 	private List<Drug> d_drugs;
 	private Drug d_baseline;
-	private Map<OutcomeMeasure,AbstractBaselineModel<?>> d_baselineModelMap;
+	private Map<OutcomeMeasure, AbstractBaselineModel<?>> d_baselineModelMap;
 	private AnalysisType d_analysisType;
 	
 	public static String PROPERTY_DRUGS = "drugs";
 	public static String PROPERTY_BASELINE = "baseline";
 	public static String PROPERTY_METAANALYSES = "metaAnalyses";
 	
-	private final class SimulationFinishedNotifier implements ProgressListener {
+	private final class SimulationFinishedNotifier implements TaskListener {
 		private final AbstractMeasurementSource<Drug> d_source;
 		public SimulationFinishedNotifier(AbstractMeasurementSource<Drug> source) {
 			d_source = source;
 		}
-		public void update(MCMCModel mtc, ProgressEvent event) {
-			if (event.getType() == EventType.SIMULATION_FINISHED) {
+		public void taskEvent(TaskEvent event) {
+			if (event.getType() == EventType.TASK_FINISHED) {
 				d_source.notifyListeners();
 			}
 		}
@@ -93,10 +93,9 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		public AbsoluteMeasurementSource() {
 			SimulationFinishedNotifier simulationFinishedNotifier = new SimulationFinishedNotifier(this);
 			for (OutcomeMeasure om : getOutcomeMeasures()) {
-				getBaselineModel(om).addProgressListener(simulationFinishedNotifier);
+				getBaselineModel(om).getActivityTask().addTaskListener(simulationFinishedNotifier);
 			}
-			attachToAllNetworkModels(simulationFinishedNotifier);
-			
+			attachToAllNetworkModels(simulationFinishedNotifier);			
 		}
 		
 		public Distribution getMeasurement(Drug alternative, OutcomeMeasure criterion) {
@@ -109,11 +108,11 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		for (MetaAnalysis ma : getMetaAnalyses()) {
 			if (ma instanceof NetworkMetaAnalysis) {
 				NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
-				nma.getConsistencyModel().addProgressListener(simulationFinishedNotifier);
+				nma.getConsistencyModel().getActivityTask().addTaskListener(simulationFinishedNotifier);
 			}
 		}
 	}
-	
+
 	private class RelativeMeasurementSource extends AbstractMeasurementSource<Drug> {
 		public RelativeMeasurementSource() {
 			SimulationFinishedNotifier simulationFinishedNotifier = new SimulationFinishedNotifier(this);
@@ -137,7 +136,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		d_metaAnalyses = metaAnalysis;
 		d_outcomeMeasures = findOutcomeMeasures();
 		d_drugs = drugs;
-		d_baselineModelMap = new HashMap<OutcomeMeasure,AbstractBaselineModel<?>>();
+		d_baselineModelMap = new HashMap<OutcomeMeasure, AbstractBaselineModel<?>>();
 		d_analysisType = analysisType;
 		if(d_analysisType == AnalysisType.LyndOBrien && (d_outcomeMeasures.size() != 2 || d_drugs.size() != 1) ) {
 			throw new IllegalArgumentException("Attempt to create Lynd & O'Brien analysis with not exactly 2 criteria and 2 alternatives");
@@ -334,12 +333,12 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	}
 
 	public void runAllConsistencyModels() {
-		List<Runnable> tasks = new ArrayList<Runnable>();
+		List<Task> tasks = new ArrayList<Task>();
 		for (MetaAnalysis ma : getMetaAnalyses() ){
 			if (ma instanceof NetworkMetaAnalysis) {
 				ConsistencyModel model = ((NetworkMetaAnalysis) ma).getConsistencyModel();
 				if (!model.isReady()) {
-					tasks.add(model);
+					tasks.add((Task) model.getActivityTask());
 				}			
 			}
 		}

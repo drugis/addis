@@ -25,7 +25,7 @@ package org.drugis.addis.entities.relativeeffect;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.distribution.BetaDistribution;
 import org.apache.commons.math.distribution.BetaDistributionImpl;
-import org.drugis.addis.entities.AbstractObservable;
+import org.drugis.common.beans.AbstractObservable;
 
 public class Beta extends AbstractObservable implements Distribution {
 	

@@ -44,6 +44,8 @@ import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
+import org.drugis.common.gui.task.TaskProgressBar;
+import org.drugis.common.threading.Task;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -114,21 +116,10 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 
 		builder.addLabel("Running sub-analyses. Please wait.",cc.xy(1,1));
 		int row = 1;
-		for (int i=0; i<d_pm.getNumNMAProgBars(); ++i){
+		for (Task t : d_pm.getMeasurementTasks()) {
 			LayoutUtil.addRow(layout);
 			row += 2;
-			JProgressBar bar = new JProgressBar();
-			bar.setStringPainted(true);
-			d_pm.attachNMAProgBar(bar,i);
-			builder.add(bar,cc.xy(1, row));
-		}
-
-		for (int i=0; i<d_pm.getNumBaselineProgBars(); ++i){
-			LayoutUtil.addRow(layout);
-			row += 2;
-			JProgressBar bar = new JProgressBar();
-			bar.setStringPainted(true);
-			d_pm.attachBaselineProgBar(bar,i);
+			JProgressBar bar = new TaskProgressBar(t);
 			builder.add(bar,cc.xy(1, row));
 		}
 		

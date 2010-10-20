@@ -40,7 +40,8 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.addis.util.threading.ThreadHandler;
+import org.drugis.common.threading.ThreadHandler;
+import org.drugis.common.threading.Task;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.ContinuousNetworkBuilder;
 import org.drugis.mtc.DefaultModelFactory;
@@ -151,12 +152,12 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 	
 	public void run() {
-		List<Runnable> tasks = new ArrayList<Runnable>();
+		List<Task> tasks = new ArrayList<Task>();
 		if (!getConsistencyModel().isReady()) {
-			tasks.add(getConsistencyModel());
+			tasks.add(getConsistencyModel().getActivityTask());
 		}
 		if (!getInconsistencyModel().isReady()) {
-			tasks.add(getInconsistencyModel());
+			tasks.add(getInconsistencyModel().getActivityTask());
 		}
 		ThreadHandler.getInstance().scheduleTasks(tasks);
 	}

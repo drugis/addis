@@ -1,14 +1,12 @@
 package org.drugis.addis.lyndobrien;
 
-import org.drugis.mtc.MCMCModel;
-import org.drugis.mtc.ProgressEvent;
-import org.drugis.mtc.ProgressListener;
-import org.drugis.mtc.ProgressEvent.EventType;
+import org.drugis.common.threading.TaskListener;
+import org.drugis.common.threading.event.TaskEvent;
+import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.jfree.data.xy.AbstractXYDataset;
 
 @SuppressWarnings("serial")
-public class pValueDataset extends AbstractXYDataset implements
-		ProgressListener {
+public class pValueDataset extends AbstractXYDataset implements TaskListener {
 
 	private final LyndOBrienModel d_model;
 	private int d_itemCount = 400;
@@ -18,8 +16,8 @@ public class pValueDataset extends AbstractXYDataset implements
 	public pValueDataset(LyndOBrienModel model) {
 		d_model = model;
 		d_data = new double[d_itemCount];
-		model.addProgressListener(this);
-		if(model.isReady()) {
+		model.getTask().addTaskListener(this);
+		if(model.getTask().isFinished()) {
 			calcPvalues();
 		}
 	}
@@ -41,11 +39,8 @@ public class pValueDataset extends AbstractXYDataset implements
 		return 1;
 	}
 
-	public void update(MCMCModel mtc, ProgressEvent event) {
-		if(event.getType() == EventType.SIMULATION_PROGRESS) {
-			calcPvalues();
-			fireDatasetChanged();
-		} else if (event.getType() == EventType.SIMULATION_FINISHED) {
+	public void taskEvent(TaskEvent event) {
+		if(event.getType() == EventType.TASK_PROGRESS) {
 			calcPvalues();
 			fireDatasetChanged();
 		}

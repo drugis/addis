@@ -38,116 +38,113 @@ import java.util.List;
 
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.relativeeffect.Distribution;
-import org.drugis.common.threading.AbstractSuspendable;
-import org.drugis.common.threading.TerminatedException;
+import org.drugis.common.threading.IterativeComputation;
+import org.drugis.common.threading.IterativeTask;
+import org.drugis.common.threading.SimpleSuspendableTask;
+import org.drugis.common.threading.SimpleTask;
+import org.drugis.common.threading.Task;
+import org.drugis.common.threading.activity.ActivityModel;
+import org.drugis.common.threading.activity.ActivityTask;
+import org.drugis.common.threading.activity.DirectTransition;
+import org.drugis.common.threading.activity.Transition;
 import org.drugis.mtc.MCMCModel;
-import org.drugis.mtc.ProgressEvent;
-import org.drugis.mtc.ProgressListener;
-import org.drugis.mtc.ProgressEvent.EventType;
 import org.drugis.mtc.yadas.DirectParameter;
 
-abstract public class AbstractBaselineModel<T extends Measurement> extends AbstractSuspendable implements MCMCModel {
+abstract public class AbstractBaselineModel<T extends Measurement> implements MCMCModel {
 
 	public abstract Distribution getResult();
 
 	private int d_burnInIter = 20000;
 	private int d_simulationIter = 30000;
 	private int d_reportingInterval = 100;
-	private boolean d_isReady = false;
 	protected List<T> d_measurements;
 	private List<MCMCUpdate> d_updates;
 	private DirectParameter d_mu;
-	private List<ProgressListener> d_listeners;
+	
+	private SimpleTask d_buildModelPhase = new SimpleSuspendableTask(new Runnable() {
+		public void run() {
+			buildModel();
+		}
+	});
+	
+	private IterativeTask d_burnInPhase = new IterativeTask(new IterativeComputation() {
+		private int d_iter = 0;
+		public void initialize() {}
+		public void finish() {}
+
+		public int getIteration() {
+			return d_iter;
+		}
+
+		public int getTotalIterations() {
+			return getBurnInIterations();
+		}
+
+		public void step() {
+			update();
+			++d_iter;
+		}
+	});
+	
+	private IterativeTask d_simulationPhase = new IterativeTask(new IterativeComputation() {
+		private int d_iter = 0;
+		public void initialize() {}
+		public void finish() {}
+
+		public int getIteration() {
+			return d_iter;
+		}
+
+		public int getTotalIterations() {
+			return getSimulationIterations();
+		}
+
+		public void step() {
+			update();
+			output();
+			++d_iter;
+		}
+	});
+	private ActivityTask d_activityTask;
 	
 	public AbstractBaselineModel(List<T> measurements) {
 		d_measurements = measurements;
-		d_listeners = new ArrayList<ProgressListener>();
+		d_burnInPhase.setReportingInterval(d_reportingInterval);
+		d_simulationPhase.setReportingInterval(d_reportingInterval);
+		List<Transition> transitions = new ArrayList<Transition>();
+		transitions.add(new DirectTransition(d_buildModelPhase, d_burnInPhase));
+		transitions.add(new DirectTransition(d_burnInPhase, d_simulationPhase));
+		d_activityTask = new ActivityTask(new ActivityModel(d_buildModelPhase, d_simulationPhase, transitions));
 	}
 
-	public void run() {
-		try {
-			notifyEvent(EventType.MODEL_CONSTRUCTION_STARTED);
-			buildModel();
-			notifyEvent(EventType.MODEL_CONSTRUCTION_FINISHED);
-			
-			notifyEvent(EventType.BURNIN_STARTED);
-			burnIn();
-			notifyEvent(EventType.BURNIN_FINISHED);
-			
-			notifyEvent(EventType.SIMULATION_STARTED);
-			simulate();
-			d_isReady  = true;
-			notifyEvent(EventType.SIMULATION_FINISHED);
-		} catch (TerminatedException te) {
-			
-		}
+	public ActivityTask getActivityTask() {
+		return d_activityTask;
 	}
-
-	private void notifyEvent(EventType type) {
-		synchronized(d_listeners)  {
-			for (ProgressListener l : d_listeners) {
-				l.update(this, new ProgressEvent(type));
-			}
-		}
+	
+	Task getBuildModelPhase() {
+		return d_buildModelPhase;
 	}
-
-	private void notifyBurnInProgress(int iter) {
-		synchronized(d_listeners)  {
-			for (ProgressListener l : d_listeners) {
-				l.update(this, new ProgressEvent(EventType.BURNIN_PROGRESS, iter, d_burnInIter));
-			}
-		}
+	
+	Task getBurnInPhase() {
+		return d_burnInPhase;
 	}
-
-	private void notifySimulationProgress(int iter) {
-		synchronized(d_listeners)  {
-			for (ProgressListener l : d_listeners) {
-				l.update(this, new ProgressEvent(EventType.SIMULATION_PROGRESS, iter, d_simulationIter));
-			}
-		}
-	}
-
-	private void burnIn() throws TerminatedException {
-		for (int iter = 0; iter < d_burnInIter; ++iter) {
-			
-			if (iter > 0 && iter % d_reportingInterval == 0) {
-				notifyBurnInProgress(iter);
-				waitIfSuspended();
-			}
-			update();
-		}
-	}
-
-	private void simulate() throws TerminatedException {
-		for (int iter = 0; iter < d_simulationIter; ++iter) {
-			if (iter > 0 && iter % d_reportingInterval == 0) {
-				notifySimulationProgress(iter);
-				waitIfSuspended();
-			}
-			update();
-			output();
-		}
+	
+	Task getSimulationPhase() {
+		return d_simulationPhase;
 	}
 
 	private void output() {
 		d_mu.update();
 	}
 
-	private void update() throws TerminatedException {
+	private void update() {
 		for (MCMCUpdate u : d_updates) {
-			waitIfSuspended();
 			u.update();
 		}
 	}
 
-	public void addProgressListener(ProgressListener l) {
-		synchronized(d_listeners)  {
-			d_listeners.add(l);
-		}
-	}
-
 	public boolean isReady() {
-		return d_isReady;
+		return d_simulationPhase.isFinished();
 	}
 
 	public int getBurnInIterations() {

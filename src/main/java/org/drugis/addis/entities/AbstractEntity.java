@@ -31,6 +31,7 @@ import javolution.xml.XMLFormat;
 import org.drugis.addis.util.EntityXMLFormat;
 import org.drugis.addis.util.EntryXMLFormat;
 import org.drugis.addis.util.HashMapXMLFormat;
+import org.drugis.common.beans.AbstractObservable;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractEntity extends AbstractObservable implements Entity {

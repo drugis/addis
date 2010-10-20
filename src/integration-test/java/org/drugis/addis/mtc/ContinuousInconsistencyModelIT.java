@@ -32,6 +32,7 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.util.threading.TaskUtil;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.Measurement;
 import org.drugis.mtc.NetworkBuilder;
@@ -54,8 +55,8 @@ public class ContinuousInconsistencyModelIT {
     }
     
     @Test
-    public void getResults() {
-    	d_model.run();
+    public void getResults() throws InterruptedException {
+    	TaskUtil.run(d_model.getActivityTask());
     	
     	assertEquals(1, d_nma.getInconsistencyFactors().size());
     	assertNotNull(d_nma.getInconsistency(d_nma.getInconsistencyFactors().get(0)));

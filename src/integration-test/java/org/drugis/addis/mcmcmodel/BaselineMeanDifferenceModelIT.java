@@ -30,12 +30,13 @@ import java.util.List;
 
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.ContinuousMeasurement;
+import org.drugis.addis.util.threading.TaskUtil;
 import org.junit.Test;
 
 public class BaselineMeanDifferenceModelIT {
 
 	@Test
-	public void testModelResults() {
+	public void testModelResults() throws InterruptedException {
 		// values calculated using equivalent JAGS model with 10k/20k iterations.
 		double[] m = new double[] {-1.52, -2.1, -2.3, -0.69, -2.5};
 		double[] s = new double[] {1.18, 0.1, 1.4, 0.16, 1.6};
@@ -45,7 +46,7 @@ public class BaselineMeanDifferenceModelIT {
 		double dev = expectedSigma * 0.075;
 		
 		BaselineMeanDifferenceModel model = new BaselineMeanDifferenceModel(buildMeasurementsList(m, s, n));
-		model.run();
+		TaskUtil.run(model.getActivityTask());
 		
 		assertTrue(model.isReady());
 		assertEquals(expectedMu, model.getResult().getMu(), dev);

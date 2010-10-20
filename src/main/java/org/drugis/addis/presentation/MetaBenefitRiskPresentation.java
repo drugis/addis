@@ -25,62 +25,40 @@ package org.drugis.addis.presentation;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JProgressBar;
-
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
-import org.drugis.addis.util.threading.ThreadHandler;
+import org.drugis.common.threading.ThreadHandler;
+import org.drugis.common.threading.Task;
+import org.drugis.common.threading.TaskListener;
+import org.drugis.common.threading.event.TaskEvent;
+import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MCMCModel;
-import org.drugis.mtc.ProgressEvent;
-import org.drugis.mtc.ProgressListener;
-import org.drugis.mtc.ProgressEvent.EventType;
 
 @SuppressWarnings("serial")
 public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<Drug, MetaBenefitRiskAnalysis> {
-	
-	private class AnalysisProgressListener implements ProgressListener {
-		JProgressBar d_progBar;
-		private MCMCModel d_networkModel;
-
-		public AnalysisProgressListener(MCMCModel networkModel) {
-			networkModel.addProgressListener(this);
-			d_networkModel = networkModel;
-		}
-		
-		public void attachBar(JProgressBar bar) {
-			d_progBar = bar;
-			bar.setVisible(!d_networkModel.isReady());
-		}
-
-		public void update(MCMCModel mtc, ProgressEvent event) {
-			if(event.getType() == EventType.SIMULATION_PROGRESS && d_progBar != null){
-				d_progBar.setString("Simulating: " + event.getIteration()/(event.getTotalIterations()/100) + "%");
-				d_progBar.setValue(event.getIteration()/(event.getTotalIterations()/100));
-			} else if(event.getType() == EventType.BURNIN_PROGRESS && d_progBar != null){
-				d_progBar.setString("Burn in: " + event.getIteration()/(event.getTotalIterations()/100) + "%");
-				d_progBar.setValue(event.getIteration()/(event.getTotalIterations()/100));
-			} else if(event.getType() == EventType.SIMULATION_FINISHED && d_progBar != null) {
-				d_progBar.setString("Done!");
-				d_progBar.setValue(100);
-			}
-		}
-	}
-	
-	private static class AllModelsReadyListener extends UnmodifiableHolder<Boolean> implements ProgressListener {
-		private List<MCMCModel> d_models = new ArrayList<MCMCModel>();
+	private static class AllModelsReadyListener extends UnmodifiableHolder<Boolean> implements TaskListener {
+		private List<Task> d_tasks = new ArrayList<Task>();
 		
 		public AllModelsReadyListener() {
 			super(true);
 		}
 		
-		public void addModel(MCMCModel model) {
-			model.addProgressListener(this);
-			d_models.add(model);
+		public void addTask(Task task) {
+			task.addTaskListener(this);
+			d_tasks.add(task);
+		}
+
+		public void taskEvent(TaskEvent event) {
+			if (event.getType() == EventType.TASK_FINISHED){
+				if(allModelsReady()) {
+					fireValueChange(false, true);
+				}
+			}
 		}
 		
 		@Override 
@@ -88,17 +66,9 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 			return allModelsReady();
 		}
 
-		public void update(MCMCModel mtc, ProgressEvent event) {
-			if (event.getType() == ProgressEvent.EventType.SIMULATION_FINISHED){
-				if(allModelsReady()) {
-					fireValueChange(false, true);
-				}
-			}
-		}
-
 		public boolean allModelsReady() {
-			for (MCMCModel model : d_models){
-				if (!model.isReady())
+			for (Task task : d_tasks){
+				if (!task.isFinished())
 					return false;
 			}
 			return true;
@@ -107,8 +77,6 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	
 	
 	private AllModelsReadyListener d_allNetworkModelsReadyListener;
-	private List<AnalysisProgressListener> d_NMAnalysisProgressListeners;
-	private List<AnalysisProgressListener> d_baselineProgressListeners;
 
 	private List<MCMCModel> d_baselineModels;
 
@@ -121,8 +89,6 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		
 		d_pmf = pmf;
 		d_allNetworkModelsReadyListener = new AllModelsReadyListener();
-		d_NMAnalysisProgressListeners = new ArrayList<AnalysisProgressListener>();
-		d_baselineProgressListeners = new ArrayList<AnalysisProgressListener>();
 	
 		/* 
 		 * Only start SMAA if all networks are already done calculating when running this constructor.
@@ -133,21 +99,21 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		initAllNetworkAnalyses();
 	}
 	
-	public int getNumNMAProgBars() {
-		return d_NMAnalysisProgressListeners.size();
-	}
-	
-	public int getNumBaselineProgBars() {
-		return d_baselineProgressListeners.size();
-	}
-	
-	public void attachNMAProgBar(JProgressBar bar, int progBarNum) {
-		d_NMAnalysisProgressListeners.get(progBarNum).attachBar(bar);
-	}
-	
-	public void attachBaselineProgBar(JProgressBar bar, int progBarNum) {
-		d_baselineProgressListeners.get(progBarNum).attachBar(bar);
-	}
+//	public int getNumNMAProgBars() {
+//		return d_NMAnalysisProgressListeners.size();
+//	}
+//	
+//	public int getNumBaselineProgBars() {
+//		return d_baselineProgressListeners.size();
+//	}
+//	
+//	public void attachNMAProgBar(JProgressBar bar, int progBarNum) {
+//		d_NMAnalysisProgressListeners.get(progBarNum).attachBar(bar);
+//	}
+//	
+//	public void attachBaselineProgBar(JProgressBar bar, int progBarNum) {
+//		d_baselineProgressListeners.get(progBarNum).attachBar(bar);
+//	}
 	
 	public ListHolder<MetaAnalysis> getAnalysesModel() {
 		// FIXME: By the time it's possible the edit BR-analyses, this listholder should be hooked up.
@@ -159,8 +125,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		for (MetaAnalysis ma : getBean().getMetaAnalyses() ){
 			if (ma instanceof NetworkMetaAnalysis) {
 				ConsistencyModel consistencyModel = ((NetworkMetaAnalysis) ma).getConsistencyModel();
-				d_allNetworkModelsReadyListener.addModel(consistencyModel);
-				d_NMAnalysisProgressListeners.add(new AnalysisProgressListener(consistencyModel));
+				d_allNetworkModelsReadyListener.addTask(consistencyModel.getActivityTask());
 			}
 		}
 	}
@@ -173,13 +138,13 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	@Override
 	public synchronized void startAllSimulations() {
 		getBean().runAllConsistencyModels();
-		List<Runnable> models = new ArrayList<Runnable>();
+		List<Task> tasks = new ArrayList<Task>();
 		for (MCMCModel model : d_baselineModels) {
 			if (!model.isReady()) {
-				models.add(model);
+				tasks.add((Task) model.getActivityTask());
 			}
 		}
-		ThreadHandler.getInstance().scheduleTasks(models);
+		ThreadHandler.getInstance().scheduleTasks(tasks);
 	}
 	
 	private void initAllBaselineModels() {
@@ -187,8 +152,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		for (OutcomeMeasure om : getBean().getOutcomeMeasures()) {
 			model = getBean().getBaselineModel(om);
 			d_baselineModels.add(model);
-			d_allNetworkModelsReadyListener.addModel(model);
-			d_baselineProgressListeners.add(new AnalysisProgressListener(model));
+			d_allNetworkModelsReadyListener.addTask(model.getActivityTask());
 		}
 	}
 	
@@ -198,6 +162,10 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 
 	public BenefitRiskMeasurementTableModel<Drug> getRelativeMeasurementTableModel() {
 		return new BenefitRiskMeasurementTableModel<Drug>(getBean(), getBean().getRelativeMeasurementSource(), d_pmf);
+	}
+
+	public List<Task> getMeasurementTasks() {
+		return new ArrayList<Task>();
 	}
 }
 
