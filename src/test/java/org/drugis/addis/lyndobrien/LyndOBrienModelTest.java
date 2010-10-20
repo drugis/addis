@@ -39,7 +39,7 @@ public class LyndOBrienModelTest {
 	public void testPValuesCorrect() throws InterruptedException {
 		LyndOBrienModel model = new LyndOBrienModelImpl(d_mockDistr);
 		TaskUtil.run(model.getTask());
-		double[] expectedpvals = {0.5053333333333333, 0.5963333333333334, 0.726, 0.8383333333333334, 0.9173333333333333};
+		double[] expectedpvals = {0.2876666666666667, 0.3506666666666667, 0.44433333333333336, 0.5286666666666666, 0.585};
 		int i = 0;
 		for(double mu = 0.25; mu < 8; mu *= 2) {
 			assertEquals(expectedpvals[i++], model.getPValue(mu), EPSILON);

@@ -61,8 +61,18 @@ public class LyndOBrienModelImpl implements LyndOBrienModel, IterativeComputatio
 	public double getPValue(double mu) {
 		double belowMu = 0;
 		for(Sample s: d_data) {
-			if((s.risk / s.benefit) < mu) {
-				++belowMu;
+			if(s.benefit < 0) {
+				if((s.risk / s.benefit) > mu) {
+					++belowMu;
+				}
+			} else if (s.benefit > 0) {
+				if((s.risk / s.benefit) < mu) {
+					++belowMu;
+				}
+			} else {
+				if (s.risk < 0) {
+					++belowMu;
+				}
 			}
 		}
 		return belowMu / d_data.size();
