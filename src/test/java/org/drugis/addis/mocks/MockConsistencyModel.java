@@ -23,17 +23,30 @@
 package org.drugis.addis.mocks;
 
 
-import org.drugis.common.threading.AbstractSuspendable;
+import java.util.Collections;
+
+import org.drugis.common.threading.SimpleSuspendableTask;
+import org.drugis.common.threading.Task;
+import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
+import org.drugis.common.threading.activity.DirectTransition;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.Treatment;
 
 
 
-public class MockConsistencyModel extends AbstractSuspendable implements ConsistencyModel {
+public class MockConsistencyModel implements ConsistencyModel {
 
 	boolean d_ready = false;
+	private ActivityTask d_task;
+	
+	public MockConsistencyModel() {
+		Task start = new SimpleSuspendableTask(new Runnable() { public void run() {} });
+		Task end = new SimpleSuspendableTask(new Runnable() { public void run() {} });
+		d_task = new ActivityTask(new ActivityModel(start, end, 
+				Collections.singleton(new DirectTransition(start, end))));
+	}
 	
 	public class MockEstimate implements Estimate {
 		public double getStandardDeviation() {
@@ -53,11 +66,7 @@ public class MockConsistencyModel extends AbstractSuspendable implements Consist
 	}
 
 	public boolean isReady() {
-		return d_ready;
-	}
-
-	public void run() {
-		d_ready = true;
+		return d_task.isFinished();
 	}
 
 	public int getBurnInIterations() {
@@ -80,8 +89,7 @@ public class MockConsistencyModel extends AbstractSuspendable implements Consist
 	}
 
 	public ActivityTask getActivityTask() {
-		// TODO Auto-generated method stub
-		return null;
+		return d_task;
 	}
 	
 }

@@ -24,10 +24,14 @@ package org.drugis.addis.mocks;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.drugis.common.threading.AbstractSuspendable;
+import org.drugis.common.threading.SimpleSuspendableTask;
+import org.drugis.common.threading.Task;
+import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
+import org.drugis.common.threading.activity.DirectTransition;
 import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.InconsistencyParameter;
@@ -36,11 +40,17 @@ import org.drugis.mtc.Treatment;
 import scala.collection.JavaConversions$;
 import scala.collection.mutable.Buffer;
 
-
-
-public class MockInconsistencyModel extends AbstractSuspendable implements InconsistencyModel {
+public class MockInconsistencyModel implements InconsistencyModel {
 
 	boolean d_ready = false;
+	private ActivityTask d_task;
+
+	public MockInconsistencyModel() {
+		Task start = new SimpleSuspendableTask(new Runnable() { public void run() {} });
+		Task end = new SimpleSuspendableTask(new Runnable() { public void run() {} });
+		d_task = new ActivityTask(new ActivityModel(start, end, 
+				Collections.singleton(new DirectTransition(start, end))));
+	}
 	
 	public class MockEstimate implements Estimate {
 		public double getStandardDeviation() {
@@ -55,9 +65,7 @@ public class MockInconsistencyModel extends AbstractSuspendable implements Incon
 		return new MockEstimate();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<InconsistencyParameter> getInconsistencyFactors() {
-
 		List<Treatment> cycle = new ArrayList<Treatment>();
 		cycle.add(new Treatment("Fluoxetine"));
 		cycle.add(new Treatment("Sertraline"));
@@ -67,11 +75,6 @@ public class MockInconsistencyModel extends AbstractSuspendable implements Incon
 		
 		Buffer<Treatment> buffer = JavaConversions$.MODULE$.asBuffer(cycle); 
 		scala.collection.immutable.List<Treatment> scalaCycle = buffer.toList();
-		
-//		scala.collection.jcl.BufferWrapper<Treatment> wrapper =
-//			(scala.collection.jcl.BufferWrapper<Treatment>)
-//			scala.collection.jcl.Conversions$.MODULE$.convertList(cycle);
-//		scala.List<Treatment> scalaCycle = scala.List$.MODULE$.fromIterator(wrapper.elements());
 
 		List<InconsistencyParameter> inFac = new ArrayList<InconsistencyParameter>();
 		inFac.add(new InconsistencyParameter(scalaCycle));
@@ -84,11 +87,7 @@ public class MockInconsistencyModel extends AbstractSuspendable implements Incon
 	}
 
 	public boolean isReady() {
-		return d_ready;
-	}
-
-	public void run() {
-		d_ready = true;
+		return d_task.isFinished();
 	}
 
 	public int getBurnInIterations() {
@@ -106,8 +105,7 @@ public class MockInconsistencyModel extends AbstractSuspendable implements Incon
 	}
 
 	public ActivityTask getActivityTask() {
-		// TODO Auto-generated method stub
-		return null;
+		return d_task;
 	}
 	
 }

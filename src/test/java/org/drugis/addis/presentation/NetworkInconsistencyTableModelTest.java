@@ -64,7 +64,9 @@ public class NetworkInconsistencyTableModelTest {
 	}
 
 	@Test
-	public void testGetRowCount() {
+	public void testGetRowCount() throws InterruptedException {
+		assertEquals(0, d_tableModel.getRowCount());
+		TaskUtil.run(d_analysis.getInconsistencyModel().getActivityTask().getModel().getStartState());
 		assertEquals(d_analysis.getInconsistencyFactors().size(), d_tableModel.getRowCount());
 	}
 
