@@ -135,16 +135,27 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		return d_allNetworkModelsReadyListener;
 	}
 	
+	public List<Task> getMeasurementTasks() {
+		List<Task> tasks = getBaselineTasks();
+		tasks.addAll(getBean().getNetworkTasks());
+		return tasks;
+	}
+	
 	@Override
 	public synchronized void startAllSimulations() {
 		getBean().runAllConsistencyModels();
+		List<Task> tasks = getBaselineTasks();
+		ThreadHandler.getInstance().scheduleTasks(tasks);
+	}
+
+	private List<Task> getBaselineTasks() {
 		List<Task> tasks = new ArrayList<Task>();
 		for (MCMCModel model : d_baselineModels) {
 			if (!model.isReady()) {
 				tasks.add((Task) model.getActivityTask());
 			}
 		}
-		ThreadHandler.getInstance().scheduleTasks(tasks);
+		return tasks;
 	}
 	
 	private void initAllBaselineModels() {
@@ -162,10 +173,6 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 
 	public BenefitRiskMeasurementTableModel<Drug> getRelativeMeasurementTableModel() {
 		return new BenefitRiskMeasurementTableModel<Drug>(getBean(), getBean().getRelativeMeasurementSource(), d_pmf);
-	}
-
-	public List<Task> getMeasurementTasks() {
-		return new ArrayList<Task>();
 	}
 }
 

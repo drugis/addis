@@ -144,6 +144,8 @@ implements ViewBuilder {
 		builder.addSeparator("Results - network consistency model", cc.xy(1, 1));
 		builder.add(buildConsistencyPart(), cc.xy(1, 3));
 		tabbedPane.addTab("Consistency", builder.getPanel());
+		
+		tabbedPane.setSelectedIndex(2);
 
 		return tabbedPane;
 	}

@@ -333,6 +333,11 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	}
 
 	public void runAllConsistencyModels() {
+		List<Task> tasks = getNetworkTasks();
+		ThreadHandler.getInstance().scheduleTasks(tasks);
+	}
+
+	public List<Task> getNetworkTasks() {
 		List<Task> tasks = new ArrayList<Task>();
 		for (MetaAnalysis ma : getMetaAnalyses() ){
 			if (ma instanceof NetworkMetaAnalysis) {
@@ -342,7 +347,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 				}			
 			}
 		}
-		ThreadHandler.getInstance().scheduleTasks(tasks);
+		return tasks;
 	}
 	
 	protected static final XMLFormat<MetaBenefitRiskAnalysis> METABR_XML = 

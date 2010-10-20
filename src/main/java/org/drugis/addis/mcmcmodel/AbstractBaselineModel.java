@@ -65,7 +65,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 		public void run() {
 			buildModel();
 		}
-	});
+	}, "building model");
 	
 	private IterativeTask d_burnInPhase = new IterativeTask(new IterativeComputation() {
 		private int d_iter = 0;
@@ -84,7 +84,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 			update();
 			++d_iter;
 		}
-	});
+	}, "burn-in");
 	
 	private IterativeTask d_simulationPhase = new IterativeTask(new IterativeComputation() {
 		private int d_iter = 0;
@@ -104,7 +104,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 			output();
 			++d_iter;
 		}
-	});
+	}, "simulation");
 	private ActivityTask d_activityTask;
 	
 	public AbstractBaselineModel(List<T> measurements) {
@@ -114,7 +114,9 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 		List<Transition> transitions = new ArrayList<Transition>();
 		transitions.add(new DirectTransition(d_buildModelPhase, d_burnInPhase));
 		transitions.add(new DirectTransition(d_burnInPhase, d_simulationPhase));
-		d_activityTask = new ActivityTask(new ActivityModel(d_buildModelPhase, d_simulationPhase, transitions));
+		d_activityTask = new ActivityTask(
+				new ActivityModel(d_buildModelPhase, d_simulationPhase, transitions), 
+				"MCMC model");
 	}
 
 	public ActivityTask getActivityTask() {
