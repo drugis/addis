@@ -6,14 +6,14 @@ import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.jfree.data.xy.AbstractXYDataset;
 
 @SuppressWarnings("serial")
-public class pValueDataset extends AbstractXYDataset implements TaskListener {
+public class AcceptabilityCurveDataset extends AbstractXYDataset implements TaskListener {
 
 	private final LyndOBrienModel d_model;
 	private int d_itemCount = 400;
 	private int d_seriesCount = 1;
 	private double[] d_data;
 	
-	public pValueDataset(LyndOBrienModel model) {
+	public AcceptabilityCurveDataset(LyndOBrienModel model) {
 		d_model = model;
 		d_data = new double[d_itemCount];
 		model.getTask().addTaskListener(this);
