@@ -127,6 +127,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	private MetaBenefitRiskAnalysis() {
 		d_baselineModelMap = new HashMap<OutcomeMeasure,AbstractBaselineModel<?>>();
 		d_metaAnalyses = new ArrayList<MetaAnalysis>();
+		d_outcomeMeasures = new ArrayList<OutcomeMeasure>();
 	}
 	
 	public MetaBenefitRiskAnalysis(String id, Indication indication, List<MetaAnalysis> metaAnalysis,
