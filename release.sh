@@ -25,13 +25,16 @@ if [[ "$VERSION" == *-SNAPSHOT ]]; then
 	exit;
 fi;
 
+# Package to be able to run CopyrightInfo
+mvn package -Dmaven.test.skip=true || exit
+
 # Add license to all files
 echo '---- Putting license on all sources'
-ant license
+ant license || exit
 
 # Package ADDIS
 echo '---- Building JAR'
-mvn clean package
+mvn clean package || exit
 
 mkdir $DIR
 #mkdir -p $DATA
