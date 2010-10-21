@@ -43,7 +43,6 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	private DefaultCategoryDataset d_dataset;
 	ValueHolder<Boolean> d_inconsistencyModelConstructed;
 	
-	@SuppressWarnings("serial")
 	static class ModelConstructionFinishedModel extends UnmodifiableHolder<Boolean> implements TaskListener {
 		private Task d_task;
 		public ModelConstructionFinishedModel(MixedTreatmentComparison model) {

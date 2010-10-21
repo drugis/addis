@@ -361,7 +361,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 			@Override
 			public void read(InputElement ie, MetaBenefitRiskAnalysis br) throws XMLStreamException {
 				br.setName(ie.getAttribute(PROPERTY_NAME, null));
-				try 
+				try
 				{ // legacy: should not fail if no analysistype is set, for backwards compatibility with old xml files 
 					br.d_analysisType = AnalysisType.valueOf(ie.<String>getAttribute(PROPERTY_ANALYSIS_TYPE, 
 							AnalysisType.SMAA.toString()));

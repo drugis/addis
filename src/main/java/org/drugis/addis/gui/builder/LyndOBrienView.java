@@ -26,6 +26,7 @@ import org.drugis.common.gui.task.TaskProgressBar;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.annotations.XYAnnotation;
 import org.jfree.chart.annotations.XYLineAnnotation;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
@@ -116,6 +117,8 @@ public class LyndOBrienView implements ViewBuilder {
 	@SuppressWarnings("serial")
 	private class draggableMuChartPanel extends ChartPanel{
 
+		private XYAnnotation d_prevAnnotation = null;
+
 		public draggableMuChartPanel(JFreeChart chart) {
 			super(chart);
 		}
@@ -149,20 +152,13 @@ public class LyndOBrienView implements ViewBuilder {
 				double upperY = r.getUpperBound();
 				
 				end = new Point2D.Double(Math.min(upperY / mu, upperX), Math.min(mu * upperX, upperY));
-//				end = new Point2D.Double(upperY / mu, upperY);
-//				if(end.x > upperX) {
-//					end.x = upperX;
-//					end.y = mu * upperX;
-//				}
-
 				start = new Point2D.Double(Math.max(lowerY / mu, lowerX), Math.max(mu * lowerX, lowerY));
-//				if(start.x < lowerX) {
-//					start.x = lowerX;
-//					start.y = ;
-//				}
 
-
-				plot.addAnnotation(new XYLineAnnotation(start.x, start.y,end.x, end.y));
+				if(d_prevAnnotation != null) {
+					plot.removeAnnotation(d_prevAnnotation);
+				}
+				d_prevAnnotation = new XYLineAnnotation(start.x, start.y,end.x, end.y);
+				plot.addAnnotation(d_prevAnnotation);
 			}
 		}
 	};
