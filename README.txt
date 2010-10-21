@@ -17,6 +17,8 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
+1.3: Added Lynd & O'Brien analysis as an alternative to SMAA
+
 1.2: Benefit-risk models based on a single study.
 
 1.0: Welcome screen, limited editing, links to various information
