@@ -108,11 +108,6 @@ public class LyndOBrienView implements ViewBuilder {
 			alternativeName = d_BRpm.getBean().getAlternatives().get(1).toString();
 		}
 		
-		java.lang.Double mu = 1.0;
-		d_pvalueLabel.setText("\u03BC = " + mu + " P-value: " + d_pm.getModel().getPValue(mu));
-		
-		builder.add(d_pvalueLabel, cc.xy(1,5));
-		
 		builder.add(AuxComponentFactory.createNoteField("Results of Monte Carlo simulations based on the difference-distributions of" +
 				" the alternatives and criteria. Results in the NW quadrant indicate that " + 
 				alternativeName +" is better and" +
@@ -133,7 +128,7 @@ public class LyndOBrienView implements ViewBuilder {
 		public JComponent buildPanel() {
 			FormLayout layout = new FormLayout(
 					"pref:grow:fill",
-					"p, 3dlu, p, 3dlu");
+					"p, 3dlu, p, 3dlu, p");
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc =  new CellConstraints();
 			JProgressBar bar = new TaskProgressBar(d_pm.getTask());
@@ -146,8 +141,13 @@ public class LyndOBrienView implements ViewBuilder {
 					d_pvalueLabel.setText("\u03BC = " + mu + " P-value: " + d_pm.getModel().getPValue(mu));
 				}
 			});
+
 			d_pm.getModel().getTask().addTaskListener(component);
 			builder.add(component, cc.xy(1,3));
+			java.lang.Double mu = 1.0;
+			d_pvalueLabel.setText("\u03BC = " + mu + " P-value: " + d_pm.getModel().getPValue(mu));
+			builder.add(d_pvalueLabel, cc.xy(1,5));
+
 			return builder.getPanel();
 		}
 	}
