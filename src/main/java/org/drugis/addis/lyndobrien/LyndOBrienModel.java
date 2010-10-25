@@ -36,7 +36,7 @@ public interface LyndOBrienModel {
 	public AxisType getBenefitAxisType();
 	public AxisType getRiskAxisType();
 
-	public double getPValue(double mu);
+	public Double getPValue(double mu);
 
 	/**
 	 * @return The task that executes this dataset.
