@@ -65,7 +65,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	public abstract Distribution getResult();
 
 	private int d_burnInIter = 20000;
-	private int d_simulationIter = 30000;
+	private int d_simulationIter = 50000;
 	private int d_reportingInterval = 100;
 	protected List<T> d_measurements;
 	private List<MCMCUpdate> d_updates;
