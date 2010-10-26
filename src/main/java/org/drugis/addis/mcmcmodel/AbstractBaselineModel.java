@@ -77,12 +77,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 		}
 	};
 	private NormalSummary d_summary;
-	
-	public AbstractBaselineModel() {
-		d_results.setDirectParameters(JavaConversions.asBuffer(Collections.singletonList(d_muParam)).toList());
-		d_summary = new NormalSummary(d_results, d_muParam);
-	}
-	
+
 	private SimpleTask d_buildModelPhase = new SimpleSuspendableTask(new Runnable() {
 		public void run() {
 			buildModel();
@@ -130,6 +125,8 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	private ActivityTask d_activityTask;
 	
 	public AbstractBaselineModel(List<T> measurements) {
+		d_results.setDirectParameters(JavaConversions.asBuffer(Collections.singletonList(d_muParam)).toList());
+		d_summary = new NormalSummary(d_results, d_muParam);
 		d_measurements = measurements;
 		d_burnInPhase.setReportingInterval(d_reportingInterval);
 		d_simulationPhase.setReportingInterval(d_reportingInterval);
@@ -210,8 +207,8 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	protected void buildModel() {
 		MCMCParameter studyMu = new MCMCParameter(doubleArray(0.0), doubleArray(0.1), null);
 		MCMCParameter mu = new MCMCParameter(new double[] {0.0}, new double[] {0.1}, null);
-		d_results.setNumberOfChains(1);
 		d_results.setNumberOfIterations(d_simulationIter);
+		d_results.setNumberOfChains(1);
 		d_muWriter = d_results.getParameterWriter(d_muParam, 0, mu, 0);
 		MCMCParameter sd = new MCMCParameter(new double[] {0.25}, new double[] {0.1}, null);
 	
