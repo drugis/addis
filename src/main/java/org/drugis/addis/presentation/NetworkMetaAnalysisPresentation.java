@@ -23,24 +23,18 @@
 package org.drugis.addis.presentation;
 
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.event.TaskEvent;
-import org.drugis.common.threading.event.TaskEvent.EventType;
-import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.NetworkBuilder;
-import org.drugis.mtc.Treatment;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<NetworkMetaAnalysis> {
-
-	private DefaultCategoryDataset d_dataset;
 	ValueHolder<Boolean> d_inconsistencyModelConstructed;
 	
 	static class ModelConstructionFinishedModel extends UnmodifiableHolder<Boolean> implements TaskListener {
@@ -75,36 +69,8 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	}
 
 	public CategoryDataset getRankProbabilityDataset() {
-
-		d_dataset = new DefaultCategoryDataset();
-//		ConsistencyModel consistencyModel = getBean().getConsistencyModel();
-//
-//		if (!consistencyModel.isReady()) {
-//			consistencyModel.getActivityTask().addTaskListener(new TaskListener() {
-//				public void taskEvent(TaskEvent event) {
-//					if (event.getType() == EventType.TASK_FINISHED) {
-//						fillDataSet();
-//					}
-//				}
-//			});
-//		}
-//		else
-//			fillDataSet();
-
-		return d_dataset;
+		return new DefaultCategoryDataset(); // FIXME: implement RankProbabilityDataSet(getBean().getRankProbabilities());
 	}
-
-//	private void fillDataSet() {
-//		NetworkBuilder<? extends org.drugis.mtc.Measurement> builder = getBean().getBuilder();
-//		ConsistencyModel consistencyModel = getBean().getConsistencyModel();
-//		for (Drug d : getBean().getIncludedDrugs()) {
-//			for (int rank = 1; rank <= getBean().getIncludedDrugs().size(); ++rank) {	
-//				Treatment treatment = builder.getTreatment(d.toString());
-//				double rankProb = consistencyModel.rankProbability(treatment, rank);
-//				d_dataset.addValue((Number) rankProb, "Rank " + rank, d);
-//			}	
-//		}
-//	}
 	
 	public ValueHolder<Boolean> getInconsistencyModelConstructedModel() {
 		return d_inconsistencyModelConstructed;

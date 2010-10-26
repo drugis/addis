@@ -55,6 +55,7 @@ import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.summary.RankProbabilitySummary;
 
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis{
 	
@@ -178,6 +179,12 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			d_summaries.get(networkModel).put(ip, summary);
 		}
 		return summary;
+	}
+	
+	public RankProbabilitySummary getRankProbabilities() {
+		// Note that the Summary should be cached to avoid re-calculating it all the time.
+		// new RankProbabilitySummary(d_consistencyModel, treatmentList);
+		return null;
 	}
 	
 	protected static final XMLFormat<NetworkMetaAnalysis> NETWORK_XML = 
