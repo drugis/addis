@@ -120,20 +120,20 @@ public class RankProbabilityDataSetIT {
 	public void testGetColumnCount() {
 		assertEquals (d_nma.getIncludedDrugs().size(), d_dataSet.getColumnCount());
 	}
-
-	@Test
-	public void testGetValue() {
-		for (int row =0; row < d_dataSet.getRowCount(); ++row){
-			for (int col =0; col < d_dataSet.getColumnCount(); ++col) {
-				Drug colKey = (Drug) d_dataSet.getColumnKey(col); // colKey is the Drug
-				int  rowKey = col+1; // rowKey is the Rank
-
-				String drugName = colKey.toString();	
-				Treatment treatment = d_nma.getBuilder().getTreatment(drugName);
-
-				Double expected = d_nma.getConsistencyModel().rankProbability(treatment, rowKey);
-				assertEquals(expected, d_dataSet.getValue("Rank " +rowKey, colKey));
-			}
-		}
-	}
+//
+//	@Test
+//	public void testGetValue() {
+//		for (int row =0; row < d_dataSet.getRowCount(); ++row){
+//			for (int col =0; col < d_dataSet.getColumnCount(); ++col) {
+//				Drug colKey = (Drug) d_dataSet.getColumnKey(col); // colKey is the Drug
+//				int  rowKey = col+1; // rowKey is the Rank
+//
+//				String drugName = colKey.toString();	
+//				Treatment treatment = d_nma.getBuilder().getTreatment(drugName);
+//
+//				Double expected = d_nma.getConsistencyModel().rankProbability(treatment, rowKey);
+//				assertEquals(expected, d_dataSet.getValue("Rank " +rowKey, colKey));
+//			}
+//		}
+//	}
 }

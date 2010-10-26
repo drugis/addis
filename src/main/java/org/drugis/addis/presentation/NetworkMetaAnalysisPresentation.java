@@ -77,34 +77,34 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	public CategoryDataset getRankProbabilityDataset() {
 
 		d_dataset = new DefaultCategoryDataset();
-		ConsistencyModel consistencyModel = getBean().getConsistencyModel();
-
-		if (!consistencyModel.isReady()) {
-			consistencyModel.getActivityTask().addTaskListener(new TaskListener() {
-				public void taskEvent(TaskEvent event) {
-					if (event.getType() == EventType.TASK_FINISHED) {
-						fillDataSet();
-					}
-				}
-			});
-		}
-		else
-			fillDataSet();
+//		ConsistencyModel consistencyModel = getBean().getConsistencyModel();
+//
+//		if (!consistencyModel.isReady()) {
+//			consistencyModel.getActivityTask().addTaskListener(new TaskListener() {
+//				public void taskEvent(TaskEvent event) {
+//					if (event.getType() == EventType.TASK_FINISHED) {
+//						fillDataSet();
+//					}
+//				}
+//			});
+//		}
+//		else
+//			fillDataSet();
 
 		return d_dataset;
 	}
 
-	private void fillDataSet() {
-		NetworkBuilder<? extends org.drugis.mtc.Measurement> builder = getBean().getBuilder();
-		ConsistencyModel consistencyModel = getBean().getConsistencyModel();
-		for (Drug d : getBean().getIncludedDrugs()) {
-			for (int rank = 1; rank <= getBean().getIncludedDrugs().size(); ++rank) {	
-				Treatment treatment = builder.getTreatment(d.toString());
-				double rankProb = consistencyModel.rankProbability(treatment, rank);
-				d_dataset.addValue((Number) rankProb, "Rank " + rank, d);
-			}	
-		}
-	}
+//	private void fillDataSet() {
+//		NetworkBuilder<? extends org.drugis.mtc.Measurement> builder = getBean().getBuilder();
+//		ConsistencyModel consistencyModel = getBean().getConsistencyModel();
+//		for (Drug d : getBean().getIncludedDrugs()) {
+//			for (int rank = 1; rank <= getBean().getIncludedDrugs().size(); ++rank) {	
+//				Treatment treatment = builder.getTreatment(d.toString());
+//				double rankProb = consistencyModel.rankProbability(treatment, rank);
+//				d_dataset.addValue((Number) rankProb, "Rank " + rank, d);
+//			}	
+//		}
+//	}
 	
 	public ValueHolder<Boolean> getInconsistencyModelConstructedModel() {
 		return d_inconsistencyModelConstructed;

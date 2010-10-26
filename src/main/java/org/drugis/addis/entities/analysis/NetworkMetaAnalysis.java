@@ -75,10 +75,6 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			Map<Study, Map<Drug, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, studies, drugs, armMap);
 	}
-	
-	public Double getRankProbability(Drug d, int rank){
-		return d_consistencyModel.rankProbability(d_builder.getTreatment(d.getName()), rank);
-	}
 
 	private InconsistencyModel createInconsistencyModel() {
 		InconsistencyModel inconsistencyModel = (DefaultModelFactory.instance()).getInconsistencyModel((Network<? extends org.drugis.mtc.Measurement>) getBuilder().buildNetwork());
