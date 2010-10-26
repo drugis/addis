@@ -31,8 +31,10 @@ import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.activity.DirectTransition;
 import org.drugis.mtc.ConsistencyModel;
-import org.drugis.mtc.Estimate;
+import org.drugis.mtc.MCMCResults;
+import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
+import org.drugis.mtc.yadas.YadasResults;
 
 
 
@@ -47,22 +49,18 @@ public class MockConsistencyModel implements ConsistencyModel {
 		d_task = new ActivityTask(new ActivityModel(start, end, 
 				Collections.singleton(new DirectTransition(start, end))));
 	}
-	
-	public class MockEstimate implements Estimate {
-		public double getStandardDeviation() {
-			return 0.33333;
-		}
-		public double getMean() {
-			return 1.0;
-		}
-	}
-	
-	public Estimate getConsistency() {
-		return new MockEstimate();
-	}
+//	
+//	public class MockEstimate implements Estimate {
+//		public double getStandardDeviation() {
+//			return 0.33333;
+//		}
+//		public double getMean() {
+//			return 1.0;
+//		}
+//	}
 
-	public Estimate getRelativeEffect(Treatment base, Treatment subj) {
-		return new MockEstimate();
+	public Parameter getRelativeEffect(Treatment base, Treatment subj) {
+		return null;
 	}
 
 	public boolean isReady() {
@@ -91,5 +89,13 @@ public class MockConsistencyModel implements ConsistencyModel {
 	public ActivityTask getActivityTask() {
 		return d_task;
 	}
-	
+
+	public Parameter getRandomEffectsVariance() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public MCMCResults getResults() {
+		return new YadasResults();
+	}
 }

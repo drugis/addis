@@ -38,8 +38,9 @@ import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.addis.util.threading.TaskUtil;
-import org.drugis.mtc.Estimate;
+import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.Treatment;
+import org.drugis.mtc.summary.NormalSummary;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -93,7 +94,8 @@ public class NetworkTableModelTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetValueAtAfterModelRun() throws InterruptedException {
-		TaskUtil.run(d_analysis.getInconsistencyModel().getActivityTask());
+		InconsistencyModel model = d_analysis.getInconsistencyModel();
+		TaskUtil.run(model.getActivityTask());
 
 		for(int x = 0; x < d_analysis.getIncludedDrugs().size(); ++x){
 			for(int y = 0; y < d_analysis.getIncludedDrugs().size(); ++y){
@@ -102,7 +104,7 @@ public class NetworkTableModelTest {
 				} else {
 					Treatment t1 = d_analysis.getBuilder().getTreatment(d_analysis.getIncludedDrugs().get(x).getName());
 					Treatment t2 = d_analysis.getBuilder().getTreatment(d_analysis.getIncludedDrugs().get(y).getName());
-					Estimate relEffect = d_analysis.getInconsistencyModel().getRelativeEffect(t1, t2);
+					NormalSummary relEffect = d_analysis.getNormalSummary(model, model.getRelativeEffect(t1, t2));
 					assertEquals(distributionToString(new LogGaussian(relEffect.getMean(), relEffect.getStandardDeviation())), ((LabeledPresentation) d_tableModel.getValueAt(x, y)).getLabelModel().getString());
 				}
 			}
@@ -118,10 +120,11 @@ public class NetworkTableModelTest {
 	@Test
 	public void testGetValueContinuousModelRun() throws InterruptedException {
 		d_contAnalysis = buildMockContinuousNetworkMetaAnalysis();
-		d_contTableModel = new NetworkTableModel((NetworkMetaAnalysisPresentation)d_pmf.getModel(d_contAnalysis), d_pmf, d_contAnalysis.getInconsistencyModel());
+		InconsistencyModel model = d_contAnalysis.getInconsistencyModel();
+		d_contTableModel = new NetworkTableModel((NetworkMetaAnalysisPresentation)d_pmf.getModel(d_contAnalysis), d_pmf, model);
 		
-		TaskUtil.run(d_contAnalysis.getInconsistencyModel().getActivityTask());
-		d_tableModel = new NetworkTableModel((NetworkMetaAnalysisPresentation)d_pmf.getModel(d_contAnalysis), d_pmf, d_contAnalysis.getInconsistencyModel());
+		TaskUtil.run(model.getActivityTask());
+		d_tableModel = new NetworkTableModel((NetworkMetaAnalysisPresentation)d_pmf.getModel(d_contAnalysis), d_pmf, model);
 
 		for(int x = 0; x < d_contAnalysis.getIncludedDrugs().size(); ++x){
 			for(int y = 0; y < d_contAnalysis.getIncludedDrugs().size(); ++y){
@@ -130,7 +133,7 @@ public class NetworkTableModelTest {
 				} else {
 					Treatment t1 = d_contAnalysis.getBuilder().getTreatment(d_contAnalysis.getIncludedDrugs().get(x).getName());
 					Treatment t2 = d_contAnalysis.getBuilder().getTreatment(d_contAnalysis.getIncludedDrugs().get(y).getName());
-					Estimate relEffect = d_contAnalysis.getInconsistencyModel().getRelativeEffect(t1, t2);
+					NormalSummary relEffect = d_contAnalysis.getNormalSummary(model, model.getRelativeEffect(t1, t2));
 					assertEquals(distributionToString(new Gaussian(relEffect.getMean(), relEffect.getStandardDeviation())), ((LabeledPresentation) d_tableModel.getValueAt(x, y)).getLabelModel().getString());
 				}
 			}

@@ -40,18 +40,19 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.Task;
+import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.ContinuousNetworkBuilder;
 import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.DichotomousNetworkBuilder;
-import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyModel;
-import org.drugis.mtc.InconsistencyParameter;
+import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Network;
 import org.drugis.mtc.NetworkBuilder;
+import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
+import org.drugis.mtc.summary.NormalSummary;
 
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis{
 	
@@ -163,12 +164,12 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 
-	public List<InconsistencyParameter> getInconsistencyFactors(){
+	public List<Parameter> getInconsistencyFactors(){
 		return getInconsistencyModel().getInconsistencyFactors();
 	}
 	
-	public Estimate getInconsistency(InconsistencyParameter ip){
-		return getInconsistencyModel().getInconsistency(ip);
+	public NormalSummary getNormalSummary(MixedTreatmentComparison networkModel, Parameter ip){
+		return new NormalSummary(networkModel.getResults(), ip);
 	}
 	
 	protected static final XMLFormat<NetworkMetaAnalysis> NETWORK_XML = 
@@ -199,7 +200,10 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			return new NetworkRelativeEffect<Measurement>(); // empty relative effect.
 		
 		ConsistencyModel consistencyModel = getConsistencyModel();
-		Estimate estimate = consistencyModel.getRelativeEffect(new Treatment(d1.getName()), new Treatment(d2.getName()));
+		Parameter param = consistencyModel.getRelativeEffect(new Treatment(d1.getName()), new Treatment(d2.getName()));
+		
+		// FIXME: cache these.
+		NormalSummary estimate = new NormalSummary(consistencyModel.getResults(), param);
 		
 		if (isContinuous()) {
 			return NetworkRelativeEffect.buildMeanDifference(estimate.getMean(), estimate.getStandardDeviation());

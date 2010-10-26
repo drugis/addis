@@ -32,12 +32,14 @@ import org.drugis.common.threading.Task;
 import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.activity.DirectTransition;
-import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.InconsistencyParameter;
+import org.drugis.mtc.MCMCResults;
+import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
+import org.drugis.mtc.yadas.YadasResults;
 
-import scala.collection.JavaConversions$;
+import scala.collection.JavaConversions;
 import scala.collection.mutable.Buffer;
 
 public class MockInconsistencyModel implements InconsistencyModel {
@@ -52,20 +54,16 @@ public class MockInconsistencyModel implements InconsistencyModel {
 				Collections.singleton(new DirectTransition(start, end))));
 	}
 	
-	public class MockEstimate implements Estimate {
-		public double getStandardDeviation() {
-			return 0.33333;
-		}
-		public double getMean() {
-			return 1.0;
-		}
-	}
-	
-	public Estimate getInconsistency(InconsistencyParameter param) {
-		return new MockEstimate();
-	}
+//	public class MockEstimate implements Estimate {
+//		public double getStandardDeviation() {
+//			return 0.33333;
+//		}
+//		public double getMean() {
+//			return 1.0;
+//		}
+//	}
 
-	public List<InconsistencyParameter> getInconsistencyFactors() {
+	public List<Parameter> getInconsistencyFactors() {
 		List<Treatment> cycle = new ArrayList<Treatment>();
 		cycle.add(new Treatment("Fluoxetine"));
 		cycle.add(new Treatment("Sertraline"));
@@ -73,17 +71,17 @@ public class MockInconsistencyModel implements InconsistencyModel {
 		cycle.add(new Treatment("Fluoxetine"));
 
 		
-		Buffer<Treatment> buffer = JavaConversions$.MODULE$.asBuffer(cycle); 
+		Buffer<Treatment> buffer = JavaConversions.asBuffer(cycle); 
 		scala.collection.immutable.List<Treatment> scalaCycle = buffer.toList();
 
-		List<InconsistencyParameter> inFac = new ArrayList<InconsistencyParameter>();
+		List<Parameter> inFac = new ArrayList<Parameter>();
 		inFac.add(new InconsistencyParameter(scalaCycle));
 
 		return inFac;
 	}
 
-	public Estimate getRelativeEffect(Treatment base, Treatment subj) {
-		return new MockEstimate();
+	public Parameter getRelativeEffect(Treatment base, Treatment subj) {
+		return null;
 	}
 
 	public boolean isReady() {
@@ -106,6 +104,20 @@ public class MockInconsistencyModel implements InconsistencyModel {
 
 	public ActivityTask getActivityTask() {
 		return d_task;
+	}
+
+	public Parameter getInconsistencyVariance() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Parameter getRandomEffectsVariance() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public MCMCResults getResults() {
+		return new YadasResults();
 	}
 	
 }

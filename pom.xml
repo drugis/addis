@@ -71,7 +71,17 @@
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
-			<artifactId>mtc</artifactId>
+			<artifactId>mtc-mcmc</artifactId>
+			<version>0.5-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.drugis</groupId>
+			<artifactId>mtc-model</artifactId>
+			<version>0.5-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.drugis</groupId>
+			<artifactId>mtc-lib</artifactId>
 			<version>0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>

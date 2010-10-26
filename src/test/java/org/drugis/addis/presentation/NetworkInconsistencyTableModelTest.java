@@ -36,8 +36,8 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.addis.util.threading.TaskUtil;
-import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyParameter;
+import org.drugis.mtc.summary.NormalSummary;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -73,13 +73,13 @@ public class NetworkInconsistencyTableModelTest {
 	@Test
 	public void testValueAt() throws InterruptedException {
 		TaskUtil.run(d_analysis.getInconsistencyModel().getActivityTask());
-		for(int x = 0; x < d_tableModel.getColumnCount(); ++x) {
+		for(int x = 0; x < d_tableModel.getColumnCount(); ++x) { // FIXME: why is this a loop?
 			for(int y = 0; y < d_tableModel.getRowCount(); ++y) {
-				InconsistencyParameter ip = d_analysis.getInconsistencyModel().getInconsistencyFactors().get(y);
+				InconsistencyParameter ip = (InconsistencyParameter)d_analysis.getInconsistencyModel().getInconsistencyFactors().get(y);
 				if(x == 0){
 					assertEquals("Fluoxetine, Sertraline, Paroxetine", d_tableModel.getValueAt(y, x));
-				} else if (x == 1){
-					Estimate icModel = d_analysis.getInconsistencyModel().getInconsistency(ip);
+				} else if (x == 1) {
+					NormalSummary icModel = d_analysis.getNormalSummary(d_analysis.getInconsistencyModel(), ip);
 					
 					BasicContinuousMeasurement contMeas = new BasicContinuousMeasurement(icModel.getMean(), icModel.getStandardDeviation(), 0);
 					ContinuousMeasurementPresentation<BasicContinuousMeasurement> pm = 
@@ -97,12 +97,11 @@ public class NetworkInconsistencyTableModelTest {
 		TaskUtil.run(d_analysis.getInconsistencyModel().getActivityTask());
 		for(int x = 0; x < d_contTableModel.getColumnCount(); ++x) {
 			for(int y = 0; y < d_contTableModel.getRowCount(); ++y) {
-				InconsistencyParameter ip = d_contAnalysis.getInconsistencyModel().getInconsistencyFactors().get(y);
+				InconsistencyParameter ip = (InconsistencyParameter)d_analysis.getInconsistencyModel().getInconsistencyFactors().get(y);
 				if(x == 0){
 					assertEquals("Fluoxetine, Sertraline, Paroxetine", d_contTableModel.getValueAt(y, x));
 				} else if (x == 1){
-					Estimate icModel = d_contAnalysis.getInconsistencyModel().getInconsistency(ip);
-					
+					NormalSummary icModel = d_analysis.getNormalSummary(d_analysis.getInconsistencyModel(), ip);					
 					BasicContinuousMeasurement contMeas = new BasicContinuousMeasurement(icModel.getMean(), icModel.getStandardDeviation(), 0);
 					ContinuousMeasurementPresentation<BasicContinuousMeasurement> pm = 
 										(ContinuousMeasurementPresentation<BasicContinuousMeasurement>) d_pmf.getModel(contMeas);

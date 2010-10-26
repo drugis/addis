@@ -33,10 +33,10 @@ import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.ConsistencyModel;
-import org.drugis.mtc.Estimate;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Treatment;
+import org.drugis.mtc.summary.NormalSummary;
 
 @SuppressWarnings("serial")
 public class NetworkTableModel  extends AbstractTableModel implements TableModelWithDescription{
@@ -88,7 +88,7 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 		final Treatment drug1 = d_pm.getBean().getBuilder().getTreatment(d_pm.getBean().getIncludedDrugs().get(row).toString());
 		final Treatment drug2 = d_pm.getBean().getBuilder().getTreatment(d_pm.getBean().getIncludedDrugs().get(col).toString());
 		
-		Estimate re = d_networkModel.getRelativeEffect(drug1, drug2);
+		NormalSummary re = d_pm.getBean().getNormalSummary(d_networkModel, d_networkModel.getRelativeEffect(drug1, drug2));
 		
 		double mu = re.getMean();
 		double sigma = re.getStandardDeviation();
@@ -109,9 +109,4 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 	public String getTitle() {
 		return getDescription();
 	}
-
-//	public void update(MCMCModel mtc, ProgressEvent event) {
-//		// TODO Auto-generated method stub
-//		
-//	}
 }

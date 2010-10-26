@@ -34,6 +34,7 @@ import gov.lanl.yadas.Uniform;
 import gov.lanl.yadas.UpdateTuner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.entities.Measurement;
@@ -43,12 +44,21 @@ import org.drugis.common.threading.IterativeTask;
 import org.drugis.common.threading.SimpleSuspendableTask;
 import org.drugis.common.threading.SimpleTask;
 import org.drugis.common.threading.Task;
+import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.activity.DirectTransition;
 import org.drugis.common.threading.activity.Transition;
+import org.drugis.common.threading.event.TaskEvent;
+import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.MCMCModel;
-import org.drugis.mtc.yadas.DirectParameter;
+import org.drugis.mtc.MCMCResults;
+import org.drugis.mtc.Parameter;
+import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.yadas.ParameterWriter;
+import org.drugis.mtc.yadas.YadasResults;
+
+import scala.collection.JavaConversions;
 
 abstract public class AbstractBaselineModel<T extends Measurement> implements MCMCModel {
 
@@ -59,7 +69,19 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	private int d_reportingInterval = 100;
 	protected List<T> d_measurements;
 	private List<MCMCUpdate> d_updates;
-	private DirectParameter d_mu;
+	private ParameterWriter d_muWriter;
+	private YadasResults d_results = new YadasResults();
+	private Parameter d_muParam = new Parameter() {
+		public String getName() {
+			return("mu");
+		}
+	};
+	private NormalSummary d_summary;
+	
+	public AbstractBaselineModel() {
+		d_results.setDirectParameters(JavaConversions.asBuffer(Collections.singletonList(d_muParam)).toList());
+		d_summary = new NormalSummary(d_results, d_muParam);
+	}
 	
 	private SimpleTask d_buildModelPhase = new SimpleSuspendableTask(new Runnable() {
 		public void run() {
@@ -136,7 +158,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	}
 
 	private void output() {
-		d_mu.update();
+		d_muWriter.output();
 	}
 
 	private void update() {
@@ -188,7 +210,9 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	protected void buildModel() {
 		MCMCParameter studyMu = new MCMCParameter(doubleArray(0.0), doubleArray(0.1), null);
 		MCMCParameter mu = new MCMCParameter(new double[] {0.0}, new double[] {0.1}, null);
-		d_mu = new DirectParameter(mu, 0);
+		d_results.setNumberOfChains(1);
+		d_results.setNumberOfIterations(d_simulationIter);
+		d_muWriter = d_results.getParameterWriter(d_muParam, 0, mu, 0);
 		MCMCParameter sd = new MCMCParameter(new double[] {0.25}, new double[] {0.1}, null);
 	
 		// data bond
@@ -225,14 +249,21 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 		for (MCMCParameter param : parameters) {
 			d_updates.add(new UpdateTuner(param, d_burnInIter / 50, 30, 1, Math.exp(-1)));
 		}
+		
+		d_simulationPhase.addTaskListener(new TaskListener() {
+			public void taskEvent(TaskEvent event) {
+				if (event.getType().equals(EventType.TASK_FINISHED)) {
+					d_results.simulationFinished();
+				}
+			}
+		});
 	}
-
-	protected double getStdDev() {
-		return d_mu.getStandardDeviation();
+	
+	public MCMCResults getResults() {
+		return d_results;
 	}
-
-	protected double getMean() {
-		return d_mu.getMean();
+	
+	public NormalSummary getSummary() {
+		return d_summary;
 	}
-
 }

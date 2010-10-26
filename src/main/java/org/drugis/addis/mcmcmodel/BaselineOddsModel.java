@@ -56,7 +56,7 @@ public class BaselineOddsModel extends AbstractBaselineModel<RateMeasurement> {
 
 	@Override
 	public LogGaussian getResult() {
-		return new LogGaussian(getMean(), getStdDev());
+		return new LogGaussian(getSummary().getMean(), getSummary().getStandardDeviation());
 	}
 
 	private double[] sampleSizeArray() {

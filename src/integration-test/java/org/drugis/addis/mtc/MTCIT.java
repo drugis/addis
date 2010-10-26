@@ -32,9 +32,9 @@ import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.DichotomousMeasurement;
 import org.drugis.mtc.DichotomousNetworkBuilder;
 import org.drugis.mtc.InconsistencyModel;
-import org.drugis.mtc.InconsistencyParameter;
 import org.drugis.mtc.ModelFactory;
 import org.drugis.mtc.Network;
+import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,8 +75,8 @@ public class MTCIT {
     	
     	assertEquals(1, d_model.getInconsistencyFactors().size());
     	
-    	for (InconsistencyParameter p : d_model.getInconsistencyFactors()) 
-    		assertNotNull(d_model.getInconsistency(p));
+    	for (Parameter p : d_model.getInconsistencyFactors()) 
+    		assertNotNull(d_model.getResults().getSamples(d_model.getResults().findParameter(p), 0));
     }
     
     @Test

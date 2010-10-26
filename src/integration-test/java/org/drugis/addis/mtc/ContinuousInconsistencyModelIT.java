@@ -59,7 +59,7 @@ public class ContinuousInconsistencyModelIT {
     	TaskUtil.run(d_model.getActivityTask());
     	
     	assertEquals(1, d_nma.getInconsistencyFactors().size());
-    	assertNotNull(d_nma.getInconsistency(d_nma.getInconsistencyFactors().get(0)));
+    	assertNotNull(d_nma.getNormalSummary(d_model, d_model.getInconsistencyFactors().get(0)));
     	Treatment a = d_builder.getTreatment("Fluoxetine");
     	Treatment b = d_builder.getTreatment("Paroxetine");
     	Treatment c = d_builder.getTreatment("Sertraline");

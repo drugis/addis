@@ -31,8 +31,9 @@ import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
-import org.drugis.mtc.Estimate;
+import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.InconsistencyParameter;
+import org.drugis.mtc.summary.NormalSummary;
 
 @SuppressWarnings("serial")
 public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel implements TableModelWithDescription{
@@ -77,17 +78,19 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel i
 		if(d_pm.getInconsistencyModelConstructedModel().getValue().equals(false)){
 			return "n/a";
 		}
-		InconsistencyParameter ip = d_pm.getBean().getInconsistencyModel().getInconsistencyFactors().get(row);
+		InconsistencyModel model = d_pm.getBean().getInconsistencyModel();
+		InconsistencyParameter ip = 
+			(InconsistencyParameter)model.getInconsistencyFactors().get(row);
 		if(col == 0){
 			String out = "";
 			for (int i=0; i<ip.treatmentList().size() - 1; ++i){
 				out += ip.treatmentList().get(i).id() + ", ";
 			}
 			return out.substring(0, out.length()-2);
-		} else if (d_pm.getBean().getInconsistencyModel().isReady()){
-			Estimate ic = d_pm.getBean().getInconsistency(ip);
-
-			BasicContinuousMeasurement contMeas = new BasicContinuousMeasurement(ic.getMean(), ic.getStandardDeviation(), 0);
+		} else if (model.isReady()){
+			// FIXME: cache summaries in NetworkMetaAnalysis, create direct Format for NormalSummary
+			NormalSummary summary = d_pm.getBean().getNormalSummary(model, ip);
+			BasicContinuousMeasurement contMeas = new BasicContinuousMeasurement(summary.getMean(), summary.getStandardDeviation(), 0);
 			ContinuousMeasurementPresentation<BasicContinuousMeasurement> pm = 
 								(ContinuousMeasurementPresentation<BasicContinuousMeasurement>) d_pmf.getModel(contMeas);
 			return pm.normConfIntervalString();

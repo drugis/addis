@@ -66,11 +66,12 @@ public class BaselineMeanDifferenceModel extends AbstractBaselineModel<Continuou
 
 	@Override
 	public Gaussian getResult() {
-		return new Gaussian(getMean(), getStdDev());
+		return new Gaussian(getSummary().getMean(), getSummary().getStandardDeviation());
 	}
 
 	@Override
 	protected double getStdDevPrior() {
 		return 20.0; // FIXME
 	}
+
 }
