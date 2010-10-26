@@ -23,6 +23,7 @@
 package org.drugis.addis.entities.analysis;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ import org.drugis.mtc.ContinuousNetworkBuilder;
 import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.DichotomousNetworkBuilder;
 import org.drugis.mtc.InconsistencyModel;
+import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Network;
 import org.drugis.mtc.NetworkBuilder;
@@ -59,6 +61,8 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	transient private InconsistencyModel d_inconsistencyModel;
 	transient private ConsistencyModel d_consistencyModel;
 	transient private NetworkBuilder<? extends org.drugis.mtc.Measurement> d_builder;
+	protected Map<MCMCModel, Map<Parameter, NormalSummary>> d_summaries = 
+		new HashMap<MCMCModel, Map<Parameter, NormalSummary>>();
 
 	private boolean d_isContinuous = false;
 	
@@ -77,12 +81,15 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	private InconsistencyModel createInconsistencyModel() {
-		Network<? extends org.drugis.mtc.Measurement> network = getBuilder().buildNetwork();
-		return (DefaultModelFactory.instance()).getInconsistencyModel(network);
+		InconsistencyModel inconsistencyModel = (DefaultModelFactory.instance()).getInconsistencyModel((Network<? extends org.drugis.mtc.Measurement>) getBuilder().buildNetwork());
+		d_summaries.put(inconsistencyModel, new HashMap<Parameter, NormalSummary>());
+		return inconsistencyModel;
 	}
 	
 	private ConsistencyModel createConsistencyModel() {
-		return (DefaultModelFactory.instance()).getConsistencyModel(getBuilder().buildNetwork());
+		ConsistencyModel consistencyModel = (DefaultModelFactory.instance()).getConsistencyModel(getBuilder().buildNetwork());
+		d_summaries.put(consistencyModel, new HashMap<Parameter, NormalSummary>());
+		return consistencyModel;
 	}
 
 	private NetworkBuilder<? extends org.drugis.mtc.Measurement> createBuilder(List<? extends Study> studies, List<Drug> drugs, Map<Study, Map<Drug, Arm>> armMap) {
@@ -169,7 +176,12 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 	
 	public NormalSummary getNormalSummary(MixedTreatmentComparison networkModel, Parameter ip){
-		return new NormalSummary(networkModel.getResults(), ip);
+		NormalSummary summary = d_summaries.get(networkModel).get(ip);
+		if (summary == null) {
+			summary = new NormalSummary(networkModel.getResults(), ip);
+			d_summaries.get(networkModel).put(ip, summary);
+		}
+		return summary;
 	}
 	
 	protected static final XMLFormat<NetworkMetaAnalysis> NETWORK_XML = 
@@ -201,9 +213,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		
 		ConsistencyModel consistencyModel = getConsistencyModel();
 		Parameter param = consistencyModel.getRelativeEffect(new Treatment(d1.getName()), new Treatment(d2.getName()));
-		
-		// FIXME: cache these.
-		NormalSummary estimate = new NormalSummary(consistencyModel.getResults(), param);
+		NormalSummary estimate = getNormalSummary(consistencyModel, param);
 		
 		if (isContinuous()) {
 			return NetworkRelativeEffect.buildMeanDifference(estimate.getMean(), estimate.getStandardDeviation());

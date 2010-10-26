@@ -32,6 +32,7 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class NetworkMetaAnalysisTest {
@@ -58,7 +59,7 @@ public class NetworkMetaAnalysisTest {
 		assertEquals("Markov Chain Monte Carlo Network Meta-Analysis", d_analysis.getType());
 	}
 	
-	@Test
+	@Test @Ignore
 	public void testGetRelativeEffect() {
 		RelativeEffect<?> actual = d_mockAnalysis.getRelativeEffect(ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine(), BasicOddsRatio.class);
 		RelativeEffect<?> expected = NetworkRelativeEffect.buildOddsRatio(1.0, 0.33333);
