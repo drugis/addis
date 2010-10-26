@@ -34,6 +34,7 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.addis.util.threading.TaskUtil;
 import org.drugis.mtc.InconsistencyParameter;
@@ -79,12 +80,9 @@ public class NetworkInconsistencyTableModelTest {
 				if(x == 0){
 					assertEquals("Fluoxetine, Sertraline, Paroxetine", d_tableModel.getValueAt(y, x));
 				} else if (x == 1) {
-					NormalSummary icModel = d_analysis.getNormalSummary(d_analysis.getInconsistencyModel(), ip);
-					
-					BasicContinuousMeasurement contMeas = new BasicContinuousMeasurement(icModel.getMean(), icModel.getStandardDeviation(), 0);
-					ContinuousMeasurementPresentation<BasicContinuousMeasurement> pm = 
-										(ContinuousMeasurementPresentation<BasicContinuousMeasurement>) d_pmf.getModel(contMeas);
-					assertEquals(pm.normConfIntervalString(), d_tableModel.getValueAt(y, x));
+					NormalSummary summary = d_analysis.getNormalSummary(d_analysis.getInconsistencyModel(), ip);
+					Gaussian dist = new Gaussian(summary.getMean(), summary.getStandardDeviation());
+					assertEquals(d_pmf.getLabeledModel(dist).getLabelModel().getValue(), d_tableModel.getValueAt(y, x));
 				}
 			}
 		}	

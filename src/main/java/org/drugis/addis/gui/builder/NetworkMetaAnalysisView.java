@@ -145,8 +145,6 @@ implements ViewBuilder {
 		builder.add(buildConsistencyPart(), cc.xy(1, 3));
 		tabbedPane.addTab("Consistency", builder.getPanel());
 		
-		tabbedPane.setSelectedIndex(2);
-
 		return tabbedPane;
 	}
 

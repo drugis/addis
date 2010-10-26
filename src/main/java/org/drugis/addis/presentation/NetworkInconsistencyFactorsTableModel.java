@@ -27,7 +27,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.BasicContinuousMeasurement;
+import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
@@ -88,12 +88,9 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel i
 			}
 			return out.substring(0, out.length()-2);
 		} else if (model.isReady()){
-			// FIXME: cache summaries in NetworkMetaAnalysis, create direct Format for NormalSummary
 			NormalSummary summary = d_pm.getBean().getNormalSummary(model, ip);
-			BasicContinuousMeasurement contMeas = new BasicContinuousMeasurement(summary.getMean(), summary.getStandardDeviation(), 0);
-			ContinuousMeasurementPresentation<BasicContinuousMeasurement> pm = 
-								(ContinuousMeasurementPresentation<BasicContinuousMeasurement>) d_pmf.getModel(contMeas);
-			return pm.normConfIntervalString();
+			Gaussian dist = new Gaussian(summary.getMean(), summary.getStandardDeviation());
+			return (String) d_pmf.getLabeledModel(dist).getLabelModel().getValue();
 		} else
 			return "n/a";
 	}
