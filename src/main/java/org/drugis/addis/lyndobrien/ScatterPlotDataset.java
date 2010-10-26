@@ -67,8 +67,7 @@ public class ScatterPlotDataset extends AbstractXYDataset implements TaskListene
 
 	public void taskEvent(TaskEvent event) {
 		if(event.getType() == EventType.TASK_PROGRESS) {
-			TaskProgressEvent progress = (TaskProgressEvent)event;
-			d_itemCount = progress.getIteration();
+			d_itemCount = ((TaskProgressEvent)event).getIteration();
 			fireDatasetChanged();
 		}
 	}

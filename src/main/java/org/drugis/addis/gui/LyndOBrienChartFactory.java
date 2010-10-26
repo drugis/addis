@@ -26,9 +26,9 @@ import java.awt.Color;
 import java.awt.geom.Ellipse2D;
 
 import org.drugis.addis.entities.relativeeffect.AxisType;
+import org.drugis.addis.lyndobrien.AcceptabilityCurveDataset;
 import org.drugis.addis.lyndobrien.LyndOBrienModel;
 import org.drugis.addis.lyndobrien.ScatterPlotDataset;
-import org.drugis.addis.lyndobrien.AcceptabilityCurveDataset;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.LogarithmicAxis;
@@ -79,6 +79,7 @@ public class LyndOBrienChartFactory {
 		XYDataset data = new AcceptabilityCurveDataset(model);
 		JFreeChart chart = ChartFactory.createXYLineChart("Benefit-Risk Acceptability curve", 
 				"Acceptability threshold \u03BC", "Probability", data, PlotOrientation.VERTICAL, false, false, false);
+		chart.getXYPlot().getRangeAxis().setRange(0, 1);
 		return chart;
 	}
 	

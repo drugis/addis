@@ -80,7 +80,7 @@ public class LyndOBrienModelImpl implements LyndOBrienModel, IterativeComputatio
 		return d_brd.getRiskAxisType();
 	}
 
-	public double getPValue(double mu) {
+	public Double getPValue(double mu) {
 		double belowMu = 0;
 		for(Sample s: d_data) {
 			if(s.benefit < 0) {

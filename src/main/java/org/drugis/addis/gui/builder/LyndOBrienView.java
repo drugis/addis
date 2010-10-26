@@ -26,10 +26,12 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.Point2D.Double;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
@@ -42,9 +44,13 @@ import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.LyndOBrienPresentation;
+import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.ViewBuilder;
 import org.drugis.common.gui.task.TaskProgressBar;
+import org.drugis.common.threading.TaskListener;
+import org.drugis.common.threading.event.TaskEvent;
+import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.JFreeChart;
@@ -63,10 +69,12 @@ public class LyndOBrienView implements ViewBuilder {
 	LyndOBrienPresentation<?,?> d_pm;
 	AbstractBenefitRiskPresentation<?, ?> d_BRpm;
 	private JPanel d_panel;
+	private JLabel d_pvalueLabel;
 	
 	public LyndOBrienView(AbstractBenefitRiskPresentation<?,?> pm, Main main) {
 		d_pm = pm.getLyndOBrienPresentation();
 		d_BRpm = pm;
+		d_pvalueLabel = new JLabel();
 		
 		if (d_BRpm.getMeasurementsReadyModel().getValue()) {
 			d_pm.startLyndOBrien();
@@ -82,7 +90,8 @@ public class LyndOBrienView implements ViewBuilder {
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, " +
+				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();
 
@@ -98,16 +107,17 @@ public class LyndOBrienView implements ViewBuilder {
 			baselineName = d_BRpm.getBean().getAlternatives().get(0).toString();
 			alternativeName = d_BRpm.getBean().getAlternatives().get(1).toString();
 		}
+		
 		builder.add(AuxComponentFactory.createNoteField("Results of Monte Carlo simulations based on the difference-distributions of" +
 				" the alternatives and criteria. Results in the NW quadrant indicate that " + 
 				alternativeName +" is better and" +
-				" results in the SE quadrant indicate that "+ baselineName  + " is better."), cc.xy(1,5));
-		builder.addSeparator("Benefit-Risk Aceptability curve", cc.xy(1, 7));
-		builder.add(createWaiter(new PvalueplotBuilder()), cc.xy(1,9));
+				" results in the SE quadrant indicate that "+ baselineName  + " is better."), cc.xy(1,7));
+		builder.addSeparator("Benefit-Risk Aceptability curve", cc.xy(1, 9));
+		builder.add(createWaiter(new PvalueplotBuilder()), cc.xy(1,11));
 		builder.add(AuxComponentFactory.createNoteField("Probability for a given acceptability threshold " +
 				"\u03BC that " + alternativeName + " is superior to " + baselineName +". Indicates the" +
 				" proportion of datapoints in the Benefit-Risk" +
-				" plane that lie below the line y = \u03BC x"), cc.xy(1,11));
+				" plane that lie below the line y = \u03BC x"), cc.xy(1,13));
 		d_panel = builder.getPanel();
 		ChildComponenentHeightPropagater.attachToContainer(d_panel);
 		return d_panel;
@@ -118,13 +128,26 @@ public class LyndOBrienView implements ViewBuilder {
 		public JComponent buildPanel() {
 			FormLayout layout = new FormLayout(
 					"pref:grow:fill",
-					"p, 3dlu, p, 3dlu");
+					"p, 3dlu, p, 3dlu, p");
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc =  new CellConstraints();
 			JProgressBar bar = new TaskProgressBar(d_pm.getTask());
 			builder.add(bar,cc.xy(1, 1));
-			draggableMuChartPanel component = new draggableMuChartPanel(LyndOBrienChartFactory.buildScatterPlot(d_pm.getModel()));
+			final draggableMuChartPanel component = new draggableMuChartPanel(LyndOBrienChartFactory.buildScatterPlot(d_pm.getModel()));
+			component.addListener(new PropertyChangeListener() {
+				
+				public void propertyChange(PropertyChangeEvent evt) {
+					java.lang.Double mu = component.getMu();
+					d_pvalueLabel.setText("\u03BC = " + mu + " P-value: " + d_pm.getModel().getPValue(mu));
+				}
+			});
+
+			d_pm.getModel().getTask().addTaskListener(component);
 			builder.add(component, cc.xy(1,3));
+			java.lang.Double mu = 1.0;
+			d_pvalueLabel.setText("\u03BC = " + mu + " P-value: " + d_pm.getModel().getPValue(mu));
+			builder.add(d_pvalueLabel, cc.xy(1,5));
+
 			return builder.getPanel();
 		}
 	}
@@ -137,18 +160,26 @@ public class LyndOBrienView implements ViewBuilder {
 	}
 	
 	@SuppressWarnings("serial")
-	private class draggableMuChartPanel extends ChartPanel{
+	private class draggableMuChartPanel extends ChartPanel implements TaskListener {
 
 		private XYAnnotation d_prevAnnotation = null;
+		private ModifiableHolder<java.lang.Double> d_mu;
 
 		public draggableMuChartPanel(JFreeChart chart) {
 			super(chart);
+			d_mu = new ModifiableHolder<java.lang.Double>(1.0);
+			drawMuLine(chart.getXYPlot(), d_mu.getValue());
+		}
+
+		public void addListener(PropertyChangeListener l) {
+			d_mu.addValueChangeListener(l);
 		}
 		
-		public void mouseDragged(MouseEvent e){
-			Point point = e.getPoint();
-			Point2D.Double start, end;
+		java.lang.Double getMu() {
+			return d_mu.getValue();
+		}
 
+		private Double convertToChartCoordinates(Point point) {
 			ChartRenderingInfo info = getChartRenderingInfo();
 			Rectangle2D dataArea = info.getPlotInfo().getDataArea();
 	        Point2D p = translateScreenToJava2D(
@@ -158,30 +189,48 @@ public class LyndOBrienView implements ViewBuilder {
 	        RectangleEdge rangeAxisEdge = plot.getRangeAxisEdge();
 	        ValueAxis domainAxis = plot.getDomainAxis();
 	        ValueAxis rangeAxis = plot.getRangeAxis();
-		    double chartX = domainAxis.java2DToValue(p.getX(), dataArea,
-	                domainAxisEdge);
-	        double chartY = rangeAxis.java2DToValue(p.getY(), dataArea,
-	                rangeAxisEdge);	
-	        
-			if (chartX > 0 && chartY > 0) {
-				
-				double mu = chartY / chartX;
-				Range d = plot.getDomainAxis().getRange();
-				Range r = plot.getRangeAxis().getRange();
-				double lowerX = d.getLowerBound();
-				double upperX = d.getUpperBound();
-				double lowerY = r.getLowerBound();
-				double upperY = r.getUpperBound();
-				
-				end = new Point2D.Double(Math.min(upperY / mu, upperX), Math.min(mu * upperX, upperY));
-				start = new Point2D.Double(Math.max(lowerY / mu, lowerX), Math.max(mu * lowerX, lowerY));
-
-				if(d_prevAnnotation != null) {
-					plot.removeAnnotation(d_prevAnnotation);
-				}
-				d_prevAnnotation = new XYLineAnnotation(start.x, start.y,end.x, end.y);
-				plot.addAnnotation(d_prevAnnotation);
+		    return new Point2D.Double(domainAxis.java2DToValue(p.getX(), dataArea,
+	                domainAxisEdge), rangeAxis.java2DToValue(p.getY(), dataArea,
+	    	                rangeAxisEdge));
+		}
+		
+		public void mouseDragged(MouseEvent e){
+			Point point = e.getPoint();
+			Double chartXY = convertToChartCoordinates(point);
+			
+	        // if the mouse is in the positive quadrant, change mu so that it is drawn through the mouse position
+	        if (chartXY.x > 0 && chartXY.y > 0) {
+				double mu = chartXY.y / chartXY.x;
+				drawMuLine(getChart().getXYPlot(), mu);
 			}
+		}
+
+		private void drawMuLine(XYPlot plot, double mu) {
+			Point2D.Double start;
+			Point2D.Double end;
+			d_mu.setValue(mu);
+			Range d = plot.getDomainAxis().getRange();
+			Range r = plot.getRangeAxis().getRange();
+			double lowerX = d.getLowerBound();
+			double upperX = d.getUpperBound();
+			double lowerY = r.getLowerBound();
+			double upperY = r.getUpperBound();
+			
+			end = new Point2D.Double(Math.min(upperY / mu, upperX), Math.min(mu * upperX, upperY));
+			start = new Point2D.Double(Math.max(lowerY / mu, lowerX), Math.max(mu * lowerX, lowerY));
+
+			if(d_prevAnnotation != null) {
+				plot.removeAnnotation(d_prevAnnotation);
+			}
+			d_prevAnnotation = new XYLineAnnotation(start.x, start.y,end.x, end.y);
+			plot.addAnnotation(d_prevAnnotation);
+		}
+
+		public void taskEvent(TaskEvent event) {
+			if(event.getType() == EventType.TASK_PROGRESS) {
+				drawMuLine(getChart().getXYPlot(), d_mu.getValue());
+			}
+
 		}
 	};
 	
