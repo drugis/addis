@@ -29,6 +29,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D.Double;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.DecimalFormat;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -123,7 +124,7 @@ public class LyndOBrienView implements ViewBuilder {
 		return d_panel;
 	}
 
-	private class ScatterplotBuilder implements ViewBuilder {
+	private class ScatterplotBuilder implements ViewBuilder, TaskListener {
 		
 		public JComponent buildPanel() {
 			FormLayout layout = new FormLayout(
@@ -134,21 +135,33 @@ public class LyndOBrienView implements ViewBuilder {
 			JProgressBar bar = new TaskProgressBar(d_pm.getTask());
 			builder.add(bar,cc.xy(1, 1));
 			final draggableMuChartPanel component = new draggableMuChartPanel(LyndOBrienChartFactory.buildScatterPlot(d_pm.getModel()));
+			d_pm.getModel().getTask().addTaskListener(this);
 			component.addListener(new PropertyChangeListener() {
 				
 				public void propertyChange(PropertyChangeEvent evt) {
 					java.lang.Double mu = component.getMu();
-					d_pvalueLabel.setText("\u03BC = " + mu + " P-value: " + d_pm.getModel().getPValue(mu));
+					setMuAndPValueLabel(mu);
 				}
 			});
 
 			d_pm.getModel().getTask().addTaskListener(component);
 			builder.add(component, cc.xy(1,3));
-			java.lang.Double mu = 1.0;
-			d_pvalueLabel.setText("\u03BC = " + mu + " P-value: " + d_pm.getModel().getPValue(mu));
+			setMuAndPValueLabel(1.0);
 			builder.add(d_pvalueLabel, cc.xy(1,5));
 
 			return builder.getPanel();
+		}
+
+		public void taskEvent(TaskEvent event) {
+			if(event.getType() == EventType.TASK_PROGRESS || event.getType() == EventType.TASK_FINISHED) {
+				java.lang.Double mu = 1.0;
+				setMuAndPValueLabel(mu);
+			}
+		}
+
+		private void setMuAndPValueLabel(java.lang.Double mu) {
+			DecimalFormat df = new DecimalFormat("#.##");
+			d_pvalueLabel.setText("\u03BC = " + df.format(mu) + ", P-value: " + df.format(d_pm.getModel().getPValue(mu)));
 		}
 	}
 	
@@ -236,7 +249,6 @@ public class LyndOBrienView implements ViewBuilder {
 	
 	
 	protected BuildViewWhenReadyComponent createWaiter(ViewBuilder builder) {
-		
 		return new BuildViewWhenReadyComponent(builder, d_BRpm.getMeasurementsReadyModel(), "");
 	}
 
