@@ -22,7 +22,6 @@
 
 package org.drugis.addis.lyndobrien;
 
-import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.common.threading.Task;
 
 public interface LyndOBrienModel {
@@ -33,9 +32,6 @@ public interface LyndOBrienModel {
 	public String getXAxisName();
 	public String getYAxisName();
 	
-	public AxisType getBenefitAxisType();
-	public AxisType getRiskAxisType();
-
 	public Double getPValue(double mu);
 
 	/**

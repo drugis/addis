@@ -367,7 +367,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 					br.d_analysisType = AnalysisType.valueOf(ie.<String>getAttribute(PROPERTY_ANALYSIS_TYPE, 
 							AnalysisType.SMAA.toString()));
 				} 
-				catch (IllegalArgumentException e ) { br.d_analysisType = AnalysisType.SMAA; }
+				catch (IllegalArgumentException e ) { br.d_analysisType = AnalysisType.SMAA;}
 				br.setBaseline(ie.get(PROPERTY_BASELINE, Drug.class));
 				br.setDrugs((List<Drug>) ie.get(PROPERTY_DRUGS, ArrayList.class));
 				br.setIndication((Indication) ie.get(PROPERTY_INDICATION, Indication.class));

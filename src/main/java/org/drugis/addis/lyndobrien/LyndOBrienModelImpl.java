@@ -25,7 +25,6 @@ package org.drugis.addis.lyndobrien;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.lyndobrien.BenefitRiskDistribution.Sample;
 import org.drugis.common.threading.IterativeComputation;
 import org.drugis.common.threading.IterativeTask;
@@ -43,7 +42,7 @@ public class LyndOBrienModelImpl implements LyndOBrienModel, IterativeComputatio
 	public LyndOBrienModelImpl(BenefitRiskDistribution brd){
 		d_brd = brd;
 		d_data = new ArrayList<Sample>();
-		d_task = new IterativeTask(this);
+		d_task = new IterativeTask(this, "Lynd & O'Brien Simulation");
 		d_task.setReportingInterval(d_reportingInterval);
 	}
 
@@ -70,14 +69,6 @@ public class LyndOBrienModelImpl implements LyndOBrienModel, IterativeComputatio
 	
 	public String getYAxisName() {
 		return d_brd.getRiskAxisName();
-	}
-
-	public AxisType getBenefitAxisType() {
-		return d_brd.getBenefitAxisType();
-	}
-
-	public AxisType getRiskAxisType() {
-		return d_brd.getRiskAxisType();
 	}
 
 	public Double getPValue(double mu) {
