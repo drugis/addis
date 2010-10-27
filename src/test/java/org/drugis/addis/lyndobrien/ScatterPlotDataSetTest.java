@@ -30,7 +30,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.drugis.addis.util.threading.TaskUtil;
+import org.drugis.common.threading.TaskUtil;
 import org.drugis.common.threading.event.TaskProgressEvent;
 import org.jfree.data.general.DatasetChangeEvent;
 import org.jfree.data.general.DatasetChangeListener;
