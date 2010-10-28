@@ -26,11 +26,13 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristics;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
+import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -43,7 +45,7 @@ import com.jgoodies.forms.layout.FormLayout;
 public class StudyCharacteristicsView implements ViewBuilder {
 	
 	private StudyPresentation d_model;
-
+	private static final String ICTRP_Link = "apps.who.int";
 	public StudyCharacteristicsView(StudyPresentation model) {
 		d_model = model;
 	}
@@ -51,19 +53,25 @@ public class StudyCharacteristicsView implements ViewBuilder {
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, left:pref:grow",
-				"p");
+				"p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 		
 		int fullWidth = 3;
-		
+
 		builder.addLabel("ID:", cc.xy(1, 1));
 		JLabel idLabel = BasicComponentFactory.createLabel(d_model.getModel(Study.PROPERTY_ID));
 		idLabel.setToolTipText(GUIFactory.createToolTip(d_model.getNote(Study.PROPERTY_ID)));
 		builder.add(idLabel,
 				cc.xyw(3, 1, fullWidth - 2));
 		
-		int row = 3;
+//		builder.addLabel("ICTRP ID : ", cc.xy(1, 3));
+//		builder.add(new LinkLabel("Search for ICTRP " + ICTRP_Link, getSearchUrl()), cc.xyw(2,3, fullWidth-1));
+//
+//		builder.addLabel("ICTRP Title : ", cc.xy(1, 5));
+//		builder.add(new LinkLabel("ICTRP trial detail ", getSearchTitleUrl()), cc.xyw(2,5, fullWidth-1));
+		
+		int row = 7;
 		for (Characteristic c : StudyCharacteristics.values()) {
 			LayoutUtil.addRow(layout);
 			builder.addLabel(c.getDescription() + ":", cc.xy(1, row));
@@ -82,5 +90,13 @@ public class StudyCharacteristicsView implements ViewBuilder {
 			row += 2;
 		}
 		return builder.getPanel();
+	}
+	private String getSearchTitleUrl() {
+		return "http://test.drugis.org/service/ictrp.php?query="+ d_model.getBean().getStudyId();
+	}
+
+	private String getSearchUrl() {
+		System.out.println(d_model.getBean().getArms().get(0).getDrug());
+		return "http://test.drugis.org/service/ictrp.php?query=" + d_model.getBean().getCharacteristic(BasicStudyCharacteristic.TITLE);
 	}
 }

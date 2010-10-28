@@ -768,7 +768,7 @@ public class AddStudyWizard implements ViewBuilder{
 				add(d_scrollPane, BorderLayout.CENTER);
 		 }
 		 
-		private class CTRetriever implements Runnable {
+		public class CTRetriever implements Runnable {
 			public void run() {
 				try {
 					d_importButton.setEnabled(false);				

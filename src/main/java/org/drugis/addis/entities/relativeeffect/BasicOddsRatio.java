@@ -60,11 +60,11 @@ public class BasicOddsRatio extends BasicRatio {
 		if (!isDefined())
 			return Double.NaN;
 		
-		double a = d_subject.getRate();
-		double b = d_subject.getSampleSize() - d_subject.getRate();
+		double a = getA();
+		double b = getB();
 		
-		double c = d_baseline.getRate();
-		double d = d_baseline.getSampleSize() - d_baseline.getRate();
+		double c = getC();
+		double d = getD();
 		
 		return Math.log((a * d) / (b * c)); 
 	}
@@ -74,11 +74,11 @@ public class BasicOddsRatio extends BasicRatio {
 		if (!isDefined())
 			return Double.NaN;
 		
-		double a = d_subject.getRate();
-		double b = d_subject.getSampleSize() - d_subject.getRate();
+		double a = getA();
+		double b = getB();
 		
-		double c = d_baseline.getRate();
-		double d = d_baseline.getSampleSize() - d_baseline.getRate();
+		double c = getC();
+		double d = getD();
 		
 		return Math.sqrt(1.0/a + 1.0/b + 1.0/c + 1.0/d);
 	}
@@ -91,5 +91,25 @@ public class BasicOddsRatio extends BasicRatio {
 	@Override
 	protected double getSigma() {
 		return getError();
+	}
+
+	public RelativeEffect<RateMeasurement> getCorrected() {
+		return new CorrectedBasicOddsRatio(this);
+	}
+	
+	protected double getA() {
+		return d_subject.getRate();
+	}
+
+	protected double getB() {
+		return d_subject.getSampleSize() - d_subject.getRate();
+	}
+	
+	protected double getC() {
+		return d_baseline.getRate();
+	}
+
+	protected double getD() {
+		return d_baseline.getSampleSize() - d_baseline.getRate();
 	}
 }

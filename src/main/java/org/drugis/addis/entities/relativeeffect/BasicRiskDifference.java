@@ -24,17 +24,17 @@ package org.drugis.addis.entities.relativeeffect;
 
 import org.drugis.addis.entities.RateMeasurement;
 
-public class BasicRiskDifference extends AbstractBasicRelativeEffect<RateMeasurement> {
+public class BasicRiskDifference extends AbstractBasicRelativeEffect<RateMeasurement> implements BasicRateRelativeEffect {
 
 	public BasicRiskDifference(RateMeasurement baseline, RateMeasurement subject) {
 		super(baseline, subject);
 	}
 
 	private double getMu() {
-		double a = getSubject().getRate();
-		double n1 = getSubject().getSampleSize();
-		double c = getBaseline().getRate();
-		double n2 = getBaseline().getSampleSize();
+		double a = getA();
+		double n1 = getA() + getB();
+		double c = getC();
+		double n2 = getC() + getD();
 		
 		return (a/n1 - c/n2);
 	}
@@ -42,16 +42,17 @@ public class BasicRiskDifference extends AbstractBasicRelativeEffect<RateMeasure
 	// Here: gets the STANDARD ERROR of the RISK DIFFERENCE
 	@Override
 	public Double getError() {
-		double a = getSubject().getRate();
-		double n1 = getSubject().getSampleSize();
-		double b = n1 - a;
-		double c = getBaseline().getRate();
-		double n2 = getBaseline().getSampleSize();
-		double d = n2 - c;
+		double a = getA();
+		double b = getB();
+		double n1 = a + b;
+
+		double c = getC();
+		double d = getD();
+		double n2 = c + d;
 		
 		return new Double(Math.sqrt(a*b/Math.pow(n1,3) + c*d/Math.pow(n2,3)));
 	}
-	
+
 	@Override
 	public boolean isDefined() {
 		return super.isDefined() && (d_baseline.getRate() > 0 || d_subject.getRate() > 0);
@@ -69,4 +70,25 @@ public class BasicRiskDifference extends AbstractBasicRelativeEffect<RateMeasure
 	public Distribution getDistribution() {
 		return new TransformedStudentT(getMu(), getError(), getDegreesOfFreedom());
 	}
+
+	public RelativeEffect<RateMeasurement> getCorrected() {
+		return new CorrectedBasicRiskDifference(this);
+	}
+
+	protected double getA() {
+		return getSubject().getRate();
+	}
+
+	protected double getB() {
+		return getSubject().getSampleSize() - getSubject().getRate();
+	}
+
+	protected double getC() {
+		return getBaseline().getRate();
+	}
+
+	protected double getD() {
+		return getBaseline().getSampleSize() - getBaseline().getRate();
+	}
+	
 }

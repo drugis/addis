@@ -34,6 +34,31 @@ import org.drugis.addis.entities.Variable;
 
 public class RelativeEffectFactory {
 	public static <T extends RelativeEffect<?>> RelativeEffect<?> buildRelativeEffect(
+			Study s, OutcomeMeasure om, Drug baseDrug, Drug subjDrug, Class<T> type, boolean isCorrected) {
+		
+		Arm base = findFirstArm(s, baseDrug);
+		Arm subj = findFirstArm(s, subjDrug);
+		
+		if (type.equals(BasicStandardisedMeanDifference.class)) {
+			return buildStandardisedMeanDifference(s, om, base, subj);
+		}
+		if (type.equals(BasicMeanDifference.class)) {
+			return buildMeanDifference(s, om, base, subj);
+		}
+		if (type.equals(BasicOddsRatio.class)) {
+			return isCorrected ? ((BasicOddsRatio) buildOddsRatio(s, om, base, subj)).getCorrected() : buildOddsRatio(s, om, base, subj);
+		}
+		if (type.equals(BasicRiskRatio.class)) {
+			return isCorrected ? ((BasicOddsRatio) buildRiskRatio(s, om, base, subj)).getCorrected() : buildRiskRatio(s, om, base, subj);
+		}
+		if (type.equals(BasicRiskDifference.class)) {
+			return isCorrected ? ((BasicOddsRatio) buildRiskDifference(s, om, base, subj)).getCorrected() : buildRiskDifference(s, om, base, subj);
+		}
+		
+		return null;
+	}
+	
+	public static <T extends RelativeEffect<?>> RelativeEffect<?> buildRelativeEffect(
 			Study s, OutcomeMeasure om, Drug baseDrug, Drug subjDrug, Class<T> type) {
 		
 		Arm base = findFirstArm(s, baseDrug);
@@ -57,7 +82,7 @@ public class RelativeEffectFactory {
 		
 		return null;
 	}
-	
+
 	public static Arm findFirstArm(Study s, Drug d) {
 		for (Arm a : s.getArms()) {
 			if (a.getDrug().equals(d))
@@ -69,7 +94,7 @@ public class RelativeEffectFactory {
 
 	public static RelativeEffect<? extends Measurement> buildRelativeEffect(
 			StudyArmsEntry studyArmsEntry, OutcomeMeasure om,
-			Class<? extends RelativeEffect<? extends Measurement>> type) {
+			Class<? extends RelativeEffect<? extends Measurement>> type, boolean isCorrected) {
 		
 		Study s = studyArmsEntry.getStudy();
 		Arm base = studyArmsEntry.getBase();
@@ -82,13 +107,13 @@ public class RelativeEffectFactory {
 			return buildMeanDifference(s, om, base, subj);
 		}
 		if (type.equals(BasicOddsRatio.class)) {
-			return buildOddsRatio(s, om, base, subj);
+			return isCorrected ? ((BasicOddsRatio) buildOddsRatio(s, om, base, subj)).getCorrected() : buildOddsRatio(s, om, base, subj);
 		}
 		if (type.equals(BasicRiskRatio.class)) {
-			return buildRiskRatio(s, om, base, subj);
+			return isCorrected ? ((BasicOddsRatio) buildRiskRatio(s, om, base, subj)).getCorrected() : buildRiskRatio(s, om, base, subj);
 		}
 		if (type.equals(BasicRiskDifference.class)) {
-			return buildRiskDifference(s, om, base, subj);
+			return isCorrected ? ((BasicOddsRatio) buildRiskDifference(s, om, base, subj)).getCorrected() : buildRiskDifference(s, om, base, subj);
 		}
 		
 		return null;

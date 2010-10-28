@@ -96,12 +96,16 @@ public class ForestPlotPresentation {
 
 	private void addRelativeEffect(Study s) {
 		d_studies.add(s);
-		d_relEffects.add((BasicRelativeEffect<?>) RelativeEffectFactory.buildRelativeEffect(s, d_outMeas, d_baseline, d_subject, d_type));
+		d_relEffects.add((BasicRelativeEffect<?>) 
+				RelativeEffectFactory.buildRelativeEffect(s, d_outMeas, d_baseline, d_subject, d_type, d_analysis.getIsCorrected()));
 	}
 	
 	private void addRelativeEffect(StudyArmsEntry entry) {
 		d_studies.add(entry.getStudy());
-		d_relEffects.add((BasicRelativeEffect<?>) RelativeEffectFactory.buildRelativeEffect(entry, d_outMeas, d_type));
+		BasicRelativeEffect<?> relEffect = (BasicRelativeEffect<?>) 
+			RelativeEffectFactory.buildRelativeEffect(entry, d_outMeas, d_type, d_analysis.getIsCorrected());
+
+		d_relEffects.add(relEffect);
 	}
 	
 	public RelativeEffect<?> getMetaAnalysisEffect() {

@@ -54,7 +54,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		super(d, pmm);
 				
 		d_metaAnalysisCompleteListener = new MetaAnalysisCompleteListener();		
-		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(d_metaAnalysisCompleteListener);		
+		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(d_metaAnalysisCompleteListener);
 	}
 
 	@Override

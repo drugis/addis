@@ -26,8 +26,11 @@ import org.drugis.addis.entities.Measurement;
 
 import com.jgoodies.binding.beans.Observable;
 
-public interface RelativeEffect<T extends Measurement> extends Observable{
+public interface RelativeEffect<T extends Measurement> extends Observable {
 
+	/**
+	 * Create a probability distribution for this relative effect.
+	 */
 	public Distribution getDistribution();
 	
 	/**

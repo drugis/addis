@@ -59,7 +59,6 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 			return StudyBenefitRiskAnalysis.this.getMeasurement(alternative, criterion);
 		}
 	}
-	
 	public StudyBenefitRiskAnalysis(String name, Indication indication, Study study, 
 			List<OutcomeMeasure> criteria, List<Arm> alternatives, AnalysisType analysisType) {
 		d_name = name;

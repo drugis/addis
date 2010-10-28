@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -49,6 +50,7 @@ import org.drugis.addis.treeplot.ForestPlot;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
 
+import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -125,9 +127,10 @@ implements ViewBuilder {
 	}
 
 	private JComponent buildRatePlotsPart(boolean isOverview) {
+		
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
@@ -136,13 +139,16 @@ implements ViewBuilder {
 		
 		builder.addSeparator("Odds ratio", cc.xy(1, 1));
 		builder.add(buildRelativeEffectPart(BasicOddsRatio.class, isOverview), cc.xy(1, 3));			
+
+		JCheckBox checkBox = BasicComponentFactory.createCheckBox(d_pm.getCorrectedForZeroesHolder(), "Correct for zeroes");
+		builder.add(checkBox, cc.xy(1, 5));
 		
 		if (!isOverview) {
-			builder.addSeparator("Risk ratio", cc.xy(1, 5));
-			builder.add(buildRelativeEffectPart(BasicRiskRatio.class, isOverview), cc.xy(1, 7));
+			builder.addSeparator("Risk ratio", cc.xy(1, 7));
+			builder.add(buildRelativeEffectPart(BasicRiskRatio.class, isOverview), cc.xy(1, 9));
 		
-			builder.addSeparator("Risk difference", cc.xy(1, 9));
-			builder.add(buildRelativeEffectPart(BasicRiskDifference.class, isOverview), cc.xy(1, 11));
+			builder.addSeparator("Risk difference", cc.xy(1, 11));
+			builder.add(buildRelativeEffectPart(BasicRiskDifference.class, isOverview), cc.xy(1, 13));
 		}
 		return builder.getPanel();
 	}

@@ -41,10 +41,16 @@ public class BasicRiskRatio extends BasicRatio {
 		if (!isDefined())
 			return Double.NaN;
 
-		return Math.sqrt((1.0 / (d_subject.getRate())) +
-				(1.0 / (d_baseline.getRate())) -
-				(1.0 / (d_subject.getSampleSize())) -
-				(1.0 / (d_baseline.getSampleSize())));		
+		double a = getA();
+		double n1 = a + getB();
+
+		double c = getC();
+		double n2 = c + getD();
+		
+		return Math.sqrt((1.0 / a) +
+				(1.0 / c) -
+				(1.0 / n1) -
+				(1.0 / n2));		
 	}
 
 	public String getName() {
@@ -61,9 +67,13 @@ public class BasicRiskRatio extends BasicRatio {
 		if (!isDefined())
 			return Double.NaN;
 		
-		double ratio = ( ((double)d_subject.getRate()) / ((double)d_subject.getSampleSize()) ) 
-			/ ( ((double)d_baseline.getRate()) / ((double)d_baseline.getSampleSize()) );
-		return Math.log(ratio);
+		double a = getA();
+		double n1 = a + getB();
+
+		double c = getC();
+		double n2 = c + getD();
+		
+		return Math.log(( a / n1 ) / ( c / n2 ));
 	}
 
 	@Override
@@ -75,4 +85,25 @@ public class BasicRiskRatio extends BasicRatio {
 	protected double getSigma() {
 		return getError();
 	}
+
+	public RelativeEffect<RateMeasurement> getCorrected() {
+		return new CorrectedBasicRiskRatio(this);
+	}
+	
+	protected double getA() {
+		return getSubject().getRate();
+	}
+
+	protected double getB() {
+		return getSubject().getSampleSize() - getSubject().getRate();
+	}
+
+	protected double getC() {
+		return getBaseline().getRate();
+	}
+
+	protected double getD() {
+		return getBaseline().getSampleSize() - getBaseline().getRate();
+	}
+	
 }

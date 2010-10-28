@@ -76,7 +76,7 @@ public class StudyView implements ViewBuilder {
 		int row = 1;
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getSingularCapitalized(), cc.xy(1,row));
 		row += 2;
-		builder.add(d_charView.buildPanel(),	cc.xy(1, row));
+		builder.add(d_charView.buildPanel(), cc.xy(1, row));
 		row += 2;
 		builder.addSeparator("Arms", cc.xy(1, row));
 		row += 2;

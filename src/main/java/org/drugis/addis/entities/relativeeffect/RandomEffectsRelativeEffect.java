@@ -231,4 +231,21 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 		}
 		return dists;
 	}
+
+	public static List<Distribution> getCorrectedDistributions(List<BasicRelativeEffect<?>> res) {
+		List<Distribution> dists = new ArrayList<Distribution>();
+		for (RelativeEffect<?> re: res) {
+			if(re instanceof BasicRiskDifference) {
+				dists.add(((BasicRiskDifference) re).getCorrected().getDistribution());
+			} else if(re instanceof BasicOddsRatio) {
+				dists.add(((BasicOddsRatio) re).getCorrected().getDistribution());
+			} else if(re instanceof BasicRiskRatio) {
+				dists.add(((BasicRiskRatio) re).getCorrected().getDistribution());
+			} else {
+				dists.add(re.getDistribution());
+			}
+		}
+		return dists;
+	}
+
 }

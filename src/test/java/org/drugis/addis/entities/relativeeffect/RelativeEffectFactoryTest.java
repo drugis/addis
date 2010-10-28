@@ -85,7 +85,7 @@ public class RelativeEffectFactoryTest {
 		
 		RelativeEffect<?> actual =
 				RelativeEffectFactory.buildRelativeEffect(s, e, base, subj,
-						BasicMeanDifference.class);
+						BasicMeanDifference.class, false);
 		
 		assertRelativeEffectEqual(expected, actual);
 	}
@@ -97,7 +97,7 @@ public class RelativeEffectFactoryTest {
 				ExampleData.buildEndpointHamd(),
 				ExampleData.buildDrugParoxetine(),
 				ExampleData.buildDrugFluoxetine(),
-				BasicMeanDifference.class);
+				BasicMeanDifference.class, false);
 	}
 	
 	@Test
