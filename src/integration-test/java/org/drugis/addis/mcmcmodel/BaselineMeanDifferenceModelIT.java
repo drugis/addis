@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.addis.util.threading.TaskUtil;
+import org.drugis.common.threading.TaskUtil;
 import org.junit.Test;
 
 public class BaselineMeanDifferenceModelIT {

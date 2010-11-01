@@ -28,9 +28,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.drugis.addis.lyndobrien.BenefitRiskDistribution.Sample;
-import org.drugis.addis.util.threading.TaskUtil;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskListener;
+import org.drugis.common.threading.TaskUtil;
 import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.common.threading.event.TaskProgressEvent;

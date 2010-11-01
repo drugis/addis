@@ -36,7 +36,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
-import org.drugis.addis.util.threading.TaskUtil;
+import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.InconsistencyParameter;
 import org.drugis.mtc.summary.NormalSummary;
 import org.junit.Before;

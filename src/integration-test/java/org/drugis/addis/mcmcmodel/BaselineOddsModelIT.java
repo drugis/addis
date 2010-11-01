@@ -29,7 +29,7 @@ import java.util.List;
 
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.addis.util.threading.TaskUtil;
+import org.drugis.common.threading.TaskUtil;
 import org.junit.Test;
 
 public class BaselineOddsModelIT {

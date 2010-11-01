@@ -24,7 +24,7 @@ package org.drugis.addis.mtc;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.drugis.addis.util.threading.TaskUtil;
+import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.DichotomousMeasurement;
