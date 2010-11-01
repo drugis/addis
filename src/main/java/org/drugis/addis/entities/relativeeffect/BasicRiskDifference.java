@@ -30,7 +30,9 @@ public class BasicRiskDifference extends AbstractBasicRelativeEffect<RateMeasure
 		super(baseline, subject);
 	}
 
-	private double getMu() {
+	protected double getMu() {
+		if (!isDefined())
+			return Double.NaN;
 		double a = getA();
 		double n1 = getA() + getB();
 		double c = getC();
@@ -42,6 +44,9 @@ public class BasicRiskDifference extends AbstractBasicRelativeEffect<RateMeasure
 	// Here: gets the STANDARD ERROR of the RISK DIFFERENCE
 	@Override
 	public Double getError() {
+		if (!isDefined())
+			return Double.NaN;
+		
 		double a = getA();
 		double b = getB();
 		double n1 = a + b;

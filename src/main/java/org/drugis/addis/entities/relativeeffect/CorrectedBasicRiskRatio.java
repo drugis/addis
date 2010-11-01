@@ -16,9 +16,9 @@ public class CorrectedBasicRiskRatio extends BasicRiskRatio implements
 	
 	@Override
 	public boolean isDefined() {
-		return super.isDefined() &&
-			(getA() != 0.5 && getC() != 0.5) && 
-			(getB() != 0.5 && getD() != 0.5);
+		return (getDegreesOfFreedom() > 0) &&
+			(getA() != 0.5 || getC() != 0.5) && 
+			(getB() != 0.5 || getD() != 0.5);
 	}
 	
 	@Override

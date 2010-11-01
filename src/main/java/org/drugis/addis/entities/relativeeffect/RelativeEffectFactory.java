@@ -49,10 +49,10 @@ public class RelativeEffectFactory {
 			return isCorrected ? ((BasicOddsRatio) buildOddsRatio(s, om, base, subj)).getCorrected() : buildOddsRatio(s, om, base, subj);
 		}
 		if (type.equals(BasicRiskRatio.class)) {
-			return isCorrected ? ((BasicOddsRatio) buildRiskRatio(s, om, base, subj)).getCorrected() : buildRiskRatio(s, om, base, subj);
+			return isCorrected ? ((BasicRiskRatio) buildRiskRatio(s, om, base, subj)).getCorrected() : buildRiskRatio(s, om, base, subj);
 		}
 		if (type.equals(BasicRiskDifference.class)) {
-			return isCorrected ? ((BasicOddsRatio) buildRiskDifference(s, om, base, subj)).getCorrected() : buildRiskDifference(s, om, base, subj);
+			return isCorrected ? ((BasicRiskDifference) buildRiskDifference(s, om, base, subj)).getCorrected() : buildRiskDifference(s, om, base, subj);
 		}
 		
 		return null;
