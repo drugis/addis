@@ -31,7 +31,6 @@ import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.DefaultCategoryDataset;
 
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<NetworkMetaAnalysis> {
@@ -69,9 +68,9 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	}
 
 	public CategoryDataset getRankProbabilityDataset() {
-		return new DefaultCategoryDataset(); // FIXME: implement RankProbabilityDataSet(getBean().getRankProbabilities());
+		return new RankProbabilityDataset(getBean().getRankProbabilities());
 	}
-	
+
 	public ValueHolder<Boolean> getInconsistencyModelConstructedModel() {
 		return d_inconsistencyModelConstructed;
 	}

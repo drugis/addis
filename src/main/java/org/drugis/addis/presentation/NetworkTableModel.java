@@ -30,6 +30,7 @@ import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
@@ -47,13 +48,14 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 	private PresentationModelFactory d_pmf;
 	MixedTreatmentComparison d_networkModel;
 	private final PropertyChangeListener d_listener;
+	private NetworkMetaAnalysis d_model;
 	
 	public NetworkTableModel(NetworkMetaAnalysisPresentation pm, PresentationModelFactory pmf, MixedTreatmentComparison networkModel) {
 		d_pm = pm;
 		d_pmf = pmf;
 		d_networkModel = networkModel;
 		d_na = d_pmf.getLabeledModel(new NetworkRelativeEffect<Measurement>());
-		
+		d_model = d_pm.getBean();
 		d_listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				fireTableDataChanged();
@@ -72,12 +74,8 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 	}
 
 	private void attachListener(MixedTreatmentComparison networkModel, Drug d1, Drug d2) {
-		NormalSummary normalSummary = getSummary(getTreatment(d1), getTreatment(d2));
+		NormalSummary normalSummary = getSummary(d_model.getTreatment(d1), d_model.getTreatment(d2));
 		normalSummary.addPropertyChangeListener(d_listener);
-	}
-
-	private Treatment getTreatment(Drug d1) {
-		return d_pm.getBean().getBuilder().getTreatment(d1.getName());
 	}
 
 	public int getColumnCount() {
@@ -120,7 +118,7 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 	}
 
 	private Treatment getTreatment(int idx) {
-		return getTreatment(d_pm.getBean().getIncludedDrugs().get(idx));
+		return d_model.getTreatments().get(idx);
 	}
 
 	public String getDescription() {

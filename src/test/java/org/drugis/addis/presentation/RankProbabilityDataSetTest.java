@@ -23,99 +23,136 @@
 package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
-
+import static org.easymock.EasyMock.*;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.mtc.MCMCResults;
+import org.drugis.mtc.Parameter;
+import org.drugis.mtc.BasicParameter;
+import org.drugis.mtc.Treatment;
+import org.drugis.mtc.summary.RankProbabilitySummary;
+import org.drugis.mtc.util.FileResults;
 import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.DatasetChangeListener;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class RankProbabilityDataSetTest {
-	private NetworkMetaAnalysis d_nma;
-	private CategoryDataset d_dataSet;
+import scala.actors.threadpool.Arrays;
 
+public class RankProbabilityDataSetTest {
+	private CategoryDataset d_dataSet;
+	private Treatment d_ta;
+	private Treatment d_tb;
+	private Treatment d_tc;
+	private RankProbabilitySummary d_summary;
+	private FileResults d_results;
+
+	@SuppressWarnings("unchecked")
 	@Before
-	public void setUp() throws InterruptedException {
-		// FIXME: set up dataset on basis of RankProbabilitySummary
+	public void setUp() throws IOException {
+		d_ta = new Treatment("A");
+		d_tb = new Treatment("B");
+		d_tc = new Treatment("C");
+		d_results = new FileResults(
+				RankProbabilityDataset.class.getResourceAsStream("rankProbabilitySamples.txt"),
+				new Parameter[] { new BasicParameter(d_ta, d_tb), new BasicParameter(d_ta, d_tc) },
+				1, 1000);
+		d_summary = new RankProbabilitySummary(d_results, Arrays.asList(new Treatment[] { d_ta, d_tb, d_tc }));
+		d_dataSet = new RankProbabilityDataset(d_summary);
 	}
 	
-	@Test @Ignore
+	@Test
 	public void testGetRowIndex() {
 		Integer key = 3;
 		assertEquals(key - 1, d_dataSet.getRowIndex("Rank " + key) );
 	}
 	
-	@Test @Ignore
+	@Test
 	public void testGetColumnIndex() {
-		Drug key = ExampleData.buildDrugFluoxetine();
-		assertEquals(0, d_dataSet.getColumnIndex(key));
-		key = ExampleData.buildDrugParoxetine();
-		assertEquals(1, d_dataSet.getColumnIndex(key));
-		key = ExampleData.buildDrugSertraline();
-		assertEquals(2, d_dataSet.getColumnIndex(key));
+		assertEquals(0, d_dataSet.getColumnIndex(d_ta.id()));
+		assertEquals(1, d_dataSet.getColumnIndex(d_tb.id()));
+		assertEquals(2, d_dataSet.getColumnIndex(d_tc.id()));
 	}
 	
-	@Test @Ignore
+	@Test
 	public void testGetRowIndexThrows() {
 		assertEquals(-1, d_dataSet.getRowIndex(10000));
 	}
 	
-	@Test @Ignore
+	@Test
 	public void testGetColumnIndexThrows() {
 		assertEquals(-1, d_dataSet.getColumnIndex(10000));
 	}
 	
-	@Test @Ignore
+	@Test
 	public void testGetRowKey() {
 		Integer index = 2;
 		assertEquals("Rank " + (index+1), d_dataSet.getRowKey(index));
 	}
 
-	@Test @Ignore
+	@Test
 	public void testGetColumnKey() {
-		assertEquals(ExampleData.buildDrugParoxetine(), d_dataSet.getColumnKey(1));
+		assertEquals(d_tb.id(), d_dataSet.getColumnKey(1));
 	}
 	
-	@Test @Ignore
+	@Test
 	public void testGetRowKeys() {
-		ArrayList<String> columnKeys = new ArrayList<String>();
-		for(int i = 0; i < d_nma.getIncludedDrugs().size(); ++i)
-			columnKeys.add("Rank " + (i+1));
-		assertEquals(columnKeys, d_dataSet.getRowKeys());
+		List<String> keys = new ArrayList<String>();
+		for(int i = 0; i < d_summary.getTreatments().size(); ++i)
+			keys.add("Rank " + (i+1));
+		assertEquals(keys, d_dataSet.getRowKeys());
 	}
 
-	@Test @Ignore
+	@SuppressWarnings("unchecked")
+	@Test
 	public void testGetColumnKeys() {
-		assertEquals(d_nma.getIncludedDrugs(), d_dataSet.getColumnKeys());
+		List<String> expected = Arrays.asList(new String[] { "A", "B", "C" });
+		assertEquals(expected, d_dataSet.getColumnKeys());
 	}
 	
-	@Test @Ignore
+	@Test
 	public void testGetRowCount() {
-		assertEquals (d_nma.getIncludedDrugs().size(), d_dataSet.getRowCount());
+		assertEquals (d_summary.getTreatments().size(), d_dataSet.getRowCount());
 	}
 
-	@Test @Ignore
+	@Test
 	public void testGetColumnCount() {
-		assertEquals (d_nma.getIncludedDrugs().size(), d_dataSet.getColumnCount());
+		assertEquals (d_summary.getTreatments().size(), d_dataSet.getColumnCount());
 	}
-//
-//	@Test
-//	public void testGetValue() {
-//		for (int row =0; row < d_dataSet.getRowCount(); ++row){
-//			for (int col =0; col < d_dataSet.getColumnCount(); ++col) {
-//				Drug colKey = (Drug) d_dataSet.getColumnKey(col); // colKey is the Drug
-//				int  rowKey = col+1; // rowKey is the Rank
-//
-//				String drugName = colKey.toString();	
-//				Treatment treatment = d_nma.getBuilder().getTreatment(drugName);
-//
-//				Double expected = d_nma.getConsistencyModel().rankProbability(treatment, rowKey);
-//				assertEquals(expected, d_dataSet.getValue("Rank " +rowKey, colKey));
-//			}
-//		}
-//	}
+
+	@Test
+	public void testGetValue() {
+		for (Treatment t : d_summary.getTreatments()) {
+			for (int r = 1; r <= d_summary.getTreatments().size(); ++r) {
+				assertEquals(0.0, d_dataSet.getValue(r - 1, d_summary.getTreatments().indexOf(t)));
+				assertEquals(0.0, d_dataSet.getValue("Rank " + r, t.id()));
+			}
+		}
+		
+		d_results.makeSamplesAvailable();
+		for (Treatment t : d_summary.getTreatments()) {
+			for (int r = 1; r <= d_summary.getTreatments().size(); ++r) {
+				assertEquals(d_summary.getValue(t, r), d_dataSet.getValue(r - 1, d_summary.getTreatments().indexOf(t)));
+				assertEquals(d_summary.getValue(t, r), d_dataSet.getValue("Rank " + r, t.id()));
+			}
+		}
+	}
+	
+	@Test
+	public void testUpdateFiresEvent() {
+		DatasetChangeListener mockListener = createMock(DatasetChangeListener.class);
+		mockListener.datasetChanged((DatasetChangeEvent) anyObject());
+		replay(mockListener);
+		
+		d_dataSet.addChangeListener(mockListener);
+		d_results.makeSamplesAvailable();
+		verify(mockListener);
+	}
 }

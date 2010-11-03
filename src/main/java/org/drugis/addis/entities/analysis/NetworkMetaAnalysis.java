@@ -182,11 +182,12 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 	
 	public RankProbabilitySummary getRankProbabilities() {
-		// Note that the Summary should be cached to avoid re-calculating it all the time.
-		// new RankProbabilitySummary(d_consistencyModel, treatmentList);
-		return null;
+		if (d_rankProbabilitySummary == null) {
+			d_rankProbabilitySummary = new RankProbabilitySummary(d_consistencyModel.getResults(), getTreatments());
+		}
+		return d_rankProbabilitySummary;
 	}
-	
+
 	protected static final XMLFormat<NetworkMetaAnalysis> NETWORK_XML = 
 			new XMLFormat<NetworkMetaAnalysis>(NetworkMetaAnalysis.class) {
 		@Override
@@ -204,6 +205,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			XML.write(arg0, arg1);
 		}
 	};
+	private RankProbabilitySummary d_rankProbabilitySummary;
 	
 	public boolean isContinuous() {
 		return d_isContinuous;
@@ -223,5 +225,17 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		} else {
 			return NetworkRelativeEffect.buildOddsRatio(estimate.getMean(), estimate.getStandardDeviation());
 		}
+	}
+	
+	public List<Treatment> getTreatments() {
+		List<Treatment> treatments = new ArrayList<Treatment>();
+		for (Drug d : d_drugs) {
+			treatments.add(getTreatment(d));
+		}
+		return treatments;
+	}
+
+	public Treatment getTreatment(Drug d1) {
+		return getBuilder().getTreatment(d1.getName());
 	}
 }
