@@ -24,39 +24,57 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.relativeeffect.Gaussian;
-import org.drugis.common.threading.TaskListener;
-import org.drugis.common.threading.event.TaskEvent;
-import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.InconsistencyParameter;
+import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.NormalSummary;
 
 @SuppressWarnings("serial")
 public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel implements TableModelWithDescription{
+	private static final String NA = "N/A";
 	private NetworkMetaAnalysisPresentation d_pm;
 	private PresentationModelFactory d_pmf;
+	private PropertyChangeListener d_listener;
+	private boolean d_listenersAttached;
 
 	public NetworkInconsistencyFactorsTableModel(NetworkMetaAnalysisPresentation pm, PresentationModelFactory pmf) {
 		d_pm = pm;
 		d_pmf = pmf;
-		d_pm.getBean().getInconsistencyModel().getActivityTask().addTaskListener(new TaskListener() {
-			public void taskEvent(TaskEvent event) {
-				if (event.getType() == EventType.TASK_FINISHED) {
-					fireTableDataChanged();	
-				}
+		
+		d_listener = new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				fireTableDataChanged();
 			}
-		});
+		};
+		
+		if (d_pm.getInconsistencyModelConstructedModel().getValue().equals(true)) {
+			attachListeners();
+		}
+		
 		d_pm.getInconsistencyModelConstructedModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getNewValue().equals(true)) {
-					fireTableStructureChanged();
+					fireTableStructureChanged();					
+					attachListeners();
 				}
 			}
 		});
+	}
+	
+	private void attachListeners() {
+		if (d_listenersAttached) return;
+		
+		List<Parameter> parameterList = d_pm.getBean().getInconsistencyFactors();
+		for(Parameter p : parameterList ) {
+			NormalSummary normalSummary = d_pm.getBean().getNormalSummary(getModel(), p);
+			normalSummary.addPropertyChangeListener(d_listener);
+		}
+		d_listenersAttached = true;
 	}
 	
 	@Override
@@ -76,9 +94,9 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel i
 	
 	public String getValueAt(int row, int col) {
 		if(d_pm.getInconsistencyModelConstructedModel().getValue().equals(false)){
-			return "n/a";
+			return NA;
 		}
-		InconsistencyModel model = d_pm.getBean().getInconsistencyModel();
+		InconsistencyModel model = getModel();
 		InconsistencyParameter ip = 
 			(InconsistencyParameter)model.getInconsistencyFactors().get(row);
 		if(col == 0){
@@ -92,7 +110,11 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel i
 			Gaussian dist = new Gaussian(summary.getMean(), summary.getStandardDeviation());
 			return (String) d_pmf.getLabeledModel(dist).getLabelModel().getValue();
 		} else
-			return "n/a";
+			return NA;
+	}
+
+	private InconsistencyModel getModel() {
+		return d_pm.getBean().getInconsistencyModel();
 	}
 
 	public String getDescription() {

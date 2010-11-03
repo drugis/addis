@@ -22,7 +22,6 @@
 
 package org.drugis.addis.mocks;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,22 +45,21 @@ public class MockInconsistencyModel implements InconsistencyModel {
 
 	boolean d_ready = false;
 	private ActivityTask d_task;
+	private YadasResults d_results;
+	
+	private static final int BURNIN_ITER = 1000;
+	private static final int SIMULATION_ITER = 10000;
 
 	public MockInconsistencyModel() {
 		Task start = new SimpleSuspendableTask(new Runnable() { public void run() {} });
-		Task end = new SimpleSuspendableTask(new Runnable() { public void run() {} });
+		Task end = new SimpleSuspendableTask(new Runnable() { public void run() { finished(); } });
 		d_task = new ActivityTask(new ActivityModel(start, end, 
 				Collections.singleton(new DirectTransition(start, end))));
+		d_results = new YadasResults();
+		d_results.setNumberOfIterations(SIMULATION_ITER);
+		d_results.setNumberOfChains(1);
+		d_results.setDirectParameters(JavaConversions.asBuffer(getInconsistencyFactors()).toList());
 	}
-	
-//	public class MockEstimate implements Estimate {
-//		public double getStandardDeviation() {
-//			return 0.33333;
-//		}
-//		public double getMean() {
-//			return 1.0;
-//		}
-//	}
 
 	public List<Parameter> getInconsistencyFactors() {
 		List<Treatment> cycle = new ArrayList<Treatment>();
@@ -89,11 +87,11 @@ public class MockInconsistencyModel implements InconsistencyModel {
 	}
 
 	public int getBurnInIterations() {
-		return -1;
+		return BURNIN_ITER;
 	}
 
 	public int getSimulationIterations() {
-		return -1;
+		return SIMULATION_ITER;
 	}
 
 	public void setBurnInIterations(int it) {
@@ -107,17 +105,19 @@ public class MockInconsistencyModel implements InconsistencyModel {
 	}
 
 	public Parameter getInconsistencyVariance() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public Parameter getRandomEffectsVariance() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public MCMCResults getResults() {
-		return new YadasResults();
+		return d_results;
+	}
+	
+	protected void finished() {
+		d_results.simulationFinished();
 	}
 	
 }

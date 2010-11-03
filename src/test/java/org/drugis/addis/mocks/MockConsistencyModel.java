@@ -22,7 +22,6 @@
 
 package org.drugis.addis.mocks;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,8 +39,6 @@ import org.drugis.mtc.Treatment;
 import org.drugis.mtc.yadas.YadasResults;
 
 import scala.collection.JavaConversions;
-
-
 
 public class MockConsistencyModel implements ConsistencyModel {
 
@@ -102,7 +99,6 @@ public class MockConsistencyModel implements ConsistencyModel {
 	}
 
 	public Parameter getRandomEffectsVariance() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
