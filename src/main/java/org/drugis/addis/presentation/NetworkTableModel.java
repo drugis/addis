@@ -22,16 +22,18 @@
 
 package org.drugis.addis.presentation;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.List;
+
 import javax.swing.table.AbstractTableModel;
 
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
-import org.drugis.common.threading.TaskListener;
-import org.drugis.common.threading.event.TaskEvent;
-import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
@@ -39,27 +41,43 @@ import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.NormalSummary;
 
 @SuppressWarnings("serial")
-public class NetworkTableModel  extends AbstractTableModel implements TableModelWithDescription{
+public class NetworkTableModel  extends AbstractTableModel implements TableModelWithDescription {
+	private final Object d_na;
 	private NetworkMetaAnalysisPresentation d_pm;
 	private PresentationModelFactory d_pmf;
 	MixedTreatmentComparison d_networkModel;
+	private final PropertyChangeListener d_listener;
+	
 	public NetworkTableModel(NetworkMetaAnalysisPresentation pm, PresentationModelFactory pmf, MixedTreatmentComparison networkModel) {
 		d_pm = pm;
 		d_pmf = pmf;
 		d_networkModel = networkModel;
-
-		attachModelListener(networkModel);
-	}
-
-
-	private void attachModelListener(MixedTreatmentComparison networkModel) {
-		networkModel.getActivityTask().addTaskListener(new TaskListener() {
-			public void taskEvent(TaskEvent event) {
-				if (event.getType() == EventType.TASK_FINISHED) {
-					fireTableDataChanged();
+		d_na = d_pmf.getLabeledModel(new NetworkRelativeEffect<Measurement>());
+		
+		d_listener = new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				fireTableDataChanged();
+			}
+		};
+		
+		// Listen to summaries
+		List<Drug> drugs = d_pm.getBean().getIncludedDrugs();
+		for(Drug d1 : drugs) {
+			for (Drug d2 : drugs) {
+				if (!d1.equals(d2)) {
+					attachListener(networkModel, d1, d2);
 				}
 			}
-		});
+		}
+	}
+
+	private void attachListener(MixedTreatmentComparison networkModel, Drug d1, Drug d2) {
+		NormalSummary normalSummary = getSummary(getTreatment(d1), getTreatment(d2));
+		normalSummary.addPropertyChangeListener(d_listener);
+	}
+
+	private Treatment getTreatment(Drug d1) {
+		return d_pm.getBean().getBuilder().getTreatment(d1.getName());
 	}
 
 	public int getColumnCount() {
@@ -77,24 +95,32 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 		return "\"" + d_pm.getBean().getIncludedDrugs().get(col) + "\" relative to \"" + d_pm.getBean().getIncludedDrugs().get(row) + "\"";
 	}
 	
-	// FIXME: refactor (duplicate code with NetworkMetaAnalysis.getRelativeEffect
 	public Object getValueAt(int row, int col) {
 		if (row == col) {
 			return d_pmf.getModel(d_pm.getBean().getIncludedDrugs().get(row));
 		} if (!d_networkModel.isReady()) {
-			return d_pmf.getLabeledModel(new NetworkRelativeEffect<Measurement>());
+			return d_na;
 		}
 
-		final Treatment drug1 = d_pm.getBean().getBuilder().getTreatment(d_pm.getBean().getIncludedDrugs().get(row).toString());
-		final Treatment drug2 = d_pm.getBean().getBuilder().getTreatment(d_pm.getBean().getIncludedDrugs().get(col).toString());
-		
-		NormalSummary re = d_pm.getBean().getNormalSummary(d_networkModel, d_networkModel.getRelativeEffect(drug1, drug2));
+		NormalSummary re = getSummary(getTreatment(row), getTreatment(col));
+		if (!re.isDefined()) {
+			return d_na;
+		}
 		
 		double mu = re.getMean();
 		double sigma = re.getStandardDeviation();
 		Distribution dist = (d_pm.getBean().isContinuous()) ?  new Gaussian(mu, sigma) : new LogGaussian(mu, sigma);
 		
 		return d_pmf.getLabeledModel(dist);
+	}
+
+	private NormalSummary getSummary(final Treatment drug1,
+			final Treatment drug2) {
+		return d_pm.getBean().getNormalSummary(d_networkModel, d_networkModel.getRelativeEffect(drug1, drug2));
+	}
+
+	private Treatment getTreatment(int idx) {
+		return getTreatment(d_pm.getBean().getIncludedDrugs().get(idx));
 	}
 
 	public String getDescription() {

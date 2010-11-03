@@ -23,10 +23,14 @@
 package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
@@ -37,10 +41,14 @@ import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
+import org.drugis.addis.mocks.MockNormalSummary;
+import org.drugis.common.JUnitUtil;
 import org.drugis.common.threading.TaskUtil;
+import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.NormalSummary;
+import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,7 +69,7 @@ public class NetworkTableModelTest {
 		ExampleData.initDefaultData(domain);
 		d_analysis = buildMockNetworkMetaAnalysis();
 		d_pmf = new PresentationModelFactory(domain);
-		d_tableModel = new NetworkTableModel((NetworkMetaAnalysisPresentation)d_pmf.getModel(d_analysis), d_pmf, d_analysis.getInconsistencyModel());
+		d_tableModel = new NetworkTableModel((NetworkMetaAnalysisPresentation)d_pmf.getModel(d_analysis), d_pmf, d_analysis.getConsistencyModel());
 	}
 	
 	@Test
@@ -77,6 +85,8 @@ public class NetworkTableModelTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testValueAt() {
+		assertTrue(d_tableModel.getColumnCount() > 0);
+		assertTrue(d_tableModel.getRowCount() > 0);
 		for(int x = 0; x < d_tableModel.getColumnCount(); ++x) {
 			for(int y = 0; y < d_tableModel.getRowCount(); ++y) {
 				if(x == y){
@@ -94,7 +104,7 @@ public class NetworkTableModelTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetValueAtAfterModelRun() throws InterruptedException {
-		InconsistencyModel model = d_analysis.getInconsistencyModel();
+		ConsistencyModel model = d_analysis.getConsistencyModel();
 		TaskUtil.run(model.getActivityTask());
 
 		for(int x = 0; x < d_analysis.getIncludedDrugs().size(); ++x){
@@ -108,7 +118,24 @@ public class NetworkTableModelTest {
 					assertEquals(distributionToString(new LogGaussian(relEffect.getMean(), relEffect.getStandardDeviation())), ((LabeledPresentation) d_tableModel.getValueAt(x, y)).getLabelModel().getString());
 				}
 			}
-		}	
+		}
+	}
+	
+	@Test
+	public void testUpdateFiresTableDataChangedEvent() throws InterruptedException {
+		ConsistencyModel model = d_analysis.getConsistencyModel();
+		TaskUtil.run(model.getActivityTask());
+		Treatment d1 = new Treatment(d_analysis.getIncludedDrugs().get(0).getName());
+		Treatment d2 = new Treatment(d_analysis.getIncludedDrugs().get(1).getName());
+		MockNormalSummary normalSummary = (MockNormalSummary)d_analysis.getNormalSummary(model, model.getRelativeEffect(d1, d2));
+		
+		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(d_tableModel));
+		d_tableModel.addTableModelListener(mock);
+		
+		// fire some event
+		normalSummary.fireChange();
+		
+		EasyMock.verify(mock);
 	}
 	
 	private String distributionToString(Distribution distr) {

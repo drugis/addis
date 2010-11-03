@@ -22,6 +22,7 @@
 
 package org.drugis.addis.mocks;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,9 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
+import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.NormalSummary;
 
 
@@ -48,11 +51,29 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 			Map<Study, Map<Drug, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, studies, drugs, armMap);
 		d_mockInconsistencyModel = new MockInconsistencyModel();
-		d_mockConsistencyModel = new MockConsistencyModel();
+		d_mockConsistencyModel = new MockConsistencyModel(toTreatments(drugs));
 		d_summaries.put(d_mockConsistencyModel, new HashMap<Parameter, NormalSummary>());
 		d_summaries.put(d_mockInconsistencyModel, new HashMap<Parameter, NormalSummary>());
 	}
-	
+
+	private List<Treatment> toTreatments(List<Drug> drugs) {
+		List<Treatment> ts = new ArrayList<Treatment>();
+		for (Drug d : drugs) {
+			ts.add(new Treatment(d.getName()));
+		}
+		return ts;
+	}
+
+	@Override
+	public NormalSummary getNormalSummary(MixedTreatmentComparison networkModel, Parameter ip) {
+		NormalSummary summary = d_summaries.get(networkModel).get(ip);
+		if (summary == null) {
+			summary = new MockNormalSummary(networkModel.getResults(), ip);
+			d_summaries.get(networkModel).put(ip, summary);
+		}
+		return summary;
+	}
+
 	@Override
 	public InconsistencyModel getInconsistencyModel() {
 		return d_mockInconsistencyModel;

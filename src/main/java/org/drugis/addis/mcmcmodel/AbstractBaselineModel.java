@@ -122,6 +122,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 			++d_iter;
 		}
 	}, "simulation");
+	
 	private ActivityTask d_activityTask;
 	
 	public AbstractBaselineModel(List<T> measurements) {
