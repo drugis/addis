@@ -32,7 +32,6 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristics;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
-import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;

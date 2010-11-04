@@ -42,7 +42,12 @@ public class Arm extends AbstractEntity {
 		d_size = size;
 		init();
 	}
-		
+
+	@Override
+	public int hashCode() {
+		return d_drug.getName() == null ? 0 : d_drug.getName().hashCode() + d_dose.hashCode() + d_size.hashCode();
+	}
+
 	public Drug getDrug() {
 		return d_drug;
 	}

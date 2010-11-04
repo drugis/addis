@@ -66,7 +66,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getNewValue() != null && evt.getNewValue().equals(getSecondDrug())) {
 					d_secondDrugHolder.setValue(null);
-				}									
+				}
 			}
 		});
 
@@ -82,6 +82,11 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 				new SetEmptyListener(new ModifiableHolder[]{d_firstDrugHolder, d_secondDrugHolder}));
 		
 		d_selectedDrugs = new SelectedDrugsHolder(d_firstDrugHolder, d_secondDrugHolder);
+		d_selectedDrugs.addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent arg0) {
+				updateArmHolders();
+			}
+		});
 	}
 	
 	@SuppressWarnings("serial")

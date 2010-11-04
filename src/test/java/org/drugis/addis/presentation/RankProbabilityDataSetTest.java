@@ -22,18 +22,18 @@
 
 package org.drugis.addis.presentation;
 
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
-import static org.easymock.EasyMock.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.mtc.MCMCResults;
-import org.drugis.mtc.Parameter;
 import org.drugis.mtc.BasicParameter;
+import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.RankProbabilitySummary;
 import org.drugis.mtc.util.FileResults;
@@ -41,7 +41,6 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.general.DatasetChangeEvent;
 import org.jfree.data.general.DatasetChangeListener;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import scala.actors.threadpool.Arrays;

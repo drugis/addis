@@ -364,9 +364,9 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 				br.setName(ie.getAttribute(PROPERTY_NAME, null));
 				try
 				{ // legacy: should not fail if no analysistype is set, for backwards compatibility with old xml files 
-					br.d_analysisType = AnalysisType.valueOf(ie.<String>getAttribute(PROPERTY_ANALYSIS_TYPE, 
+					br.d_analysisType = AnalysisType.valueOf(ie.<String>getAttribute(PROPERTY_ANALYSIS_TYPE,
 							AnalysisType.SMAA.toString()));
-				} 
+				}
 				catch (IllegalArgumentException e ) { br.d_analysisType = AnalysisType.SMAA;}
 				br.setBaseline(ie.get(PROPERTY_BASELINE, Drug.class));
 				br.setDrugs((List<Drug>) ie.get(PROPERTY_DRUGS, ArrayList.class));

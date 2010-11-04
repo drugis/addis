@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.AssertEntityEquals;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;

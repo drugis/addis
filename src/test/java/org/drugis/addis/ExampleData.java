@@ -76,6 +76,8 @@ public class ExampleData {
 	private static Endpoint s_endpointCVdeath;
 	private static Drug s_sertr;
 	private static Drug s_placebo;
+	private static Drug s_citalopram;
+	private static Drug s_escitalopram;
 	private static Study s_studyMcMurray;
 	private static Study s_study3Arm;
 
@@ -86,6 +88,8 @@ public class ExampleData {
 	
 	private static CategoricalPopulationCharacteristic s_gender;
 	private static ContinuousPopulationCharacteristic s_age;
+	private static Endpoint s_endpointMadrs;
+	private static Study s_studyBurke;
 	
 
 	public static void initDefaultData(Domain domain) {
@@ -94,13 +98,17 @@ public class ExampleData {
 		domain.addIndication(buildIndicationDepression());
 		domain.addEndpoint(buildEndpointHamd());
 		domain.addEndpoint(buildEndpointCgi());
+		domain.addEndpoint(buildEndpointMadrs());
 		domain.addDrug(buildDrugFluoxetine());
 		domain.addDrug(buildDrugParoxetine());
 		domain.addDrug(buildDrugSertraline());
+		domain.addDrug(buildDrugCitalopram());
+		domain.addDrug(buildDrugEscitalopram());
 		domain.addDrug(buildPlacebo());
 		domain.addStudy(buildStudyChouinard());
 		domain.addStudy(buildStudyDeWilde());		
 		domain.addStudy(buildStudyBennie());	
+		domain.addStudy(buildStudyBurke());
 		domain.addStudy(buildStudyMultipleArmsperDrug());
 			
 		// heart failure data
@@ -379,6 +387,83 @@ public class ExampleData {
 		return s_studyBennie;
 	}
 
+	public static Study buildStudyBurke() {
+		if (s_studyBurke == null) {
+			s_studyBurke = realBuildStudyBurke();
+		}
+		return s_studyBurke;
+	}
+
+	private static Study realBuildStudyBurke() {
+		Study study = new Study("Burke et al, 2002", buildIndicationDepression());
+		study.setEndpoints(new ArrayList<Endpoint>(Arrays.asList(new Endpoint[]{buildEndpointCgi(), buildEndpointMadrs()})));
+		study.addAdverseEvent(buildAdverseEventDiarrhea());
+		
+		// Study characteristics
+		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
+		study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
+		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,
+		"Eligible participants were male or female outpatients, 18 to 65 years of age, with DSM-IV diagnosis of major depressive disorder. Patients were required to meet DSM-IV criteria for a major depressive episode, at least 4 weeks in duration, and to have a " +
+		"minimum score of 22 on the Montgomery-Asberg Depression Rating Scale (MADRS), and a minimum score " +
+		"of 2 on item 1 (depressed mood) of the Hamilton Rating Scale for Depression (HAM-D).");
+		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,
+		"Patients were excluded if they had any DSM-IV Axis I disorder other than major depression, any personality disorder, a history of substance abuse, a suicide attempt within the past year, or evidence of active suicidal ideation (as indicated by a score of at least 5 on item 10 of the MADRS). Women of childbearing potential were included only if they agreed to use a medically acceptable method of contraception; pregnant or lactating women were excluded. No concomitant psychotropic medication was permitted, except zolpidem for insomnia (no more than 3 times per week).");
+		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
+		"Escitalopram is the single isomer responsible for the serotonin reuptake inhibition produced by the racemic antidepressant citalopram. The present randomized, double-blind, placebo-controlled, fixed-dose multicenter trial was designed to evaluate the efficacy and tolerability of escitalopram in the treatment of major depressive disorder.");
+		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
+		// STUDY_START, STUDY_END missing
+		
+		// Citalopram data
+		FixedDose dose40 = new FixedDose(40, SIUnit.MILLIGRAMS_A_DAY);
+		Arm cita = new Arm(buildDrugCitalopram(), dose40, 125);
+		BasicContinuousMeasurement cCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(cita);
+		cCgi.setMean(-1.2);
+		cCgi.setStdDev(0.1);
+		BasicRateMeasurement cMadrs = (BasicRateMeasurement)buildEndpointMadrs().buildMeasurement(cita);
+		cMadrs.setRate(57);
+		study.addArm(cita);
+		study.setMeasurement(buildEndpointCgi(), cita, cCgi);
+		study.setMeasurement(buildEndpointMadrs(), cita, cMadrs);
+		
+		// Escitalopram high dose data
+		FixedDose dose20 = new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY);
+		Arm esciHigh = new Arm(buildDrugEscitalopram(), dose20, 125);
+		BasicContinuousMeasurement ehCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(esciHigh);
+		ehCgi.setMean(-1.4);
+		ehCgi.setStdDev(0.1);
+		BasicRateMeasurement ehMadrs = (BasicRateMeasurement)buildEndpointMadrs().buildMeasurement(esciHigh);
+		ehMadrs.setRate(64);
+		study.addArm(esciHigh);
+		study.setMeasurement(buildEndpointCgi(), esciHigh, ehCgi);
+		study.setMeasurement(buildEndpointMadrs(), esciHigh, ehMadrs);
+
+		// Escitalopram low dose data
+		FixedDose dose10 = new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY);
+		Arm esciLow = new Arm(buildDrugEscitalopram(), dose10, 119);
+		BasicContinuousMeasurement elCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(esciLow);
+		elCgi.setMean(-1.3);
+		elCgi.setStdDev(0.1);
+		BasicRateMeasurement elMadrs = (BasicRateMeasurement)buildEndpointMadrs().buildMeasurement(esciLow);
+		elMadrs.setRate(59);
+		study.addArm(esciLow);
+		study.setMeasurement(buildEndpointCgi(), esciLow, elCgi);
+		study.setMeasurement(buildEndpointMadrs(), esciLow, elMadrs);
+		
+		// Placebo data
+		FixedDose dose0 = new FixedDose(0, SIUnit.MILLIGRAMS_A_DAY);
+		Arm placebo = new Arm(buildPlacebo(), dose0, 122);
+		BasicContinuousMeasurement plCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(placebo);
+		plCgi.setMean(-0.8);
+		plCgi.setStdDev(0.1);
+		BasicRateMeasurement plMadrs = (BasicRateMeasurement)buildEndpointMadrs().buildMeasurement(placebo);
+		plMadrs.setRate(33);
+		study.addArm(placebo);
+		study.setMeasurement(buildEndpointCgi(), placebo, plCgi);
+		study.setMeasurement(buildEndpointMadrs(), placebo, plMadrs);
+		return study;
+}
+	
+	
 	private static Study realBuildStudyBennie() {
 		Study study = new Study("Bennie et al, 1995", buildIndicationDepression());
 		study.setEndpoints(new ArrayList<Endpoint>(
@@ -649,6 +734,20 @@ public class ExampleData {
 		return s_candesartan;
 	}
 	
+	public static Drug buildDrugCitalopram() {
+		if (s_citalopram == null) {
+			s_citalopram = new Drug("Citalopram", "N06AB04");
+		}
+		return s_citalopram;
+	}
+	
+	public static Drug buildDrugEscitalopram() {
+		if (s_escitalopram == null) {
+			s_escitalopram = new Drug("Escitalopram", "N06AB10");
+		}
+		return s_citalopram;
+	}
+	
 	public static Indication buildIndicationDepression() {
 		if (s_indicationDepression == null) {
 			s_indicationDepression = new Indication(310497006L, "Severe depression");
@@ -688,7 +787,17 @@ public class ExampleData {
 		}
 		return s_endpointCgi;
 	}
-	
+
+	public static Endpoint buildEndpointMadrs() {
+		if (s_endpointMadrs == null) { 
+			Endpoint madrs = new Endpoint("MADRS Responders", Variable.Type.RATE);
+			madrs.setDescription("Responders with a 50% increase in MADRS score");
+			madrs.setUnitOfMeasurement("Ratio of Patients");
+			s_endpointMadrs = madrs;
+		}
+		return s_endpointMadrs;
+	}
+
 	public static Endpoint buildEndpointCVdeath() {
 		if (s_endpointCVdeath == null) {
 			Endpoint e = new Endpoint("Cardiovascular Death Incidence", Variable.Type.RATE, Direction.LOWER_IS_BETTER);

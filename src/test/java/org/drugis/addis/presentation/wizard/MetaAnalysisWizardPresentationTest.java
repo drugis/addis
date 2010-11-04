@@ -28,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -49,7 +50,9 @@ import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.internal.runners.statements.Fail;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
@@ -533,4 +536,19 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		assertAllAndOnly(studies, d_wizard.getMetaAnalysisModel().getIncludedStudies().getValue());
 	}
+	
+	@Test
+	@Ignore
+	public void testSwitchingRateToContinuousDrugStep() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugCitalopram());
+		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugEscitalopram());
+
+//		List<Study> studies =
+//			new ArrayList<Study>(d_wizard.getStudyListModel().getSelectedStudiesModel().getValue());
+		//FIXME: Finish
+		fail();
+	}
+	
 }
