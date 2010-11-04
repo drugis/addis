@@ -11,10 +11,13 @@ public class MockNormalSummary extends NormalSummary {
 
 	private double d_mean;
 	private double d_stdDev;
+	private MCMCResults d_results;
+	private boolean d_defined = false;
 	private static final Random RANDOM = new Random();
 
 	public MockNormalSummary(MCMCResults results, Parameter parameter) {
 		super(results, parameter);
+		d_results = results;
 		createResults();
 	}
 
@@ -22,11 +25,19 @@ public class MockNormalSummary extends NormalSummary {
 	public void resultsEvent(MCMCResultsEvent event) {
 		createResults();
 	}
+	
+	@Override
+	public boolean isDefined() {
+		 return d_defined;
+	}
 
 	private void createResults() {
-		if (!isDefined()) return;
+		if (d_results.getNumberOfSamples() < 2) return;
 		d_mean = RANDOM.nextDouble() * 4 - 2;
 		d_stdDev = RANDOM.nextDouble() * 1.5;
+		d_defined = true;
+		firePropertyChange(PROPERTY_MEAN, null, d_mean);
+		firePropertyChange(PROPERTY_STANDARD_DEVIATION, null, d_stdDev);
 	}
 	
 	public void fireChange() {

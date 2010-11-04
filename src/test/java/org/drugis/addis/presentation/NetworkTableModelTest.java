@@ -59,8 +59,8 @@ public class NetworkTableModelTest {
 	
 	private PresentationModelFactory d_pmf;
 	private NetworkTableModel d_tableModel;
-	private NetworkMetaAnalysis d_analysis;
 	private NetworkMetaAnalysis d_contAnalysis;
+	private NetworkMetaAnalysis d_analysis;
 	private NetworkTableModel d_contTableModel;
 
 	@Before
@@ -106,6 +106,7 @@ public class NetworkTableModelTest {
 	public void testGetValueAtAfterModelRun() throws InterruptedException {
 		ConsistencyModel model = d_analysis.getConsistencyModel();
 		TaskUtil.run(model.getActivityTask());
+		assertTrue(model.getActivityTask().isFinished());
 
 		for(int x = 0; x < d_analysis.getIncludedDrugs().size(); ++x){
 			for(int y = 0; y < d_analysis.getIncludedDrugs().size(); ++y){
