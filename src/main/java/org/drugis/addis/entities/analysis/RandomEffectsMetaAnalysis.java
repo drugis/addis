@@ -49,7 +49,7 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
 public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements PairWiseMetaAnalysis {
 
 	public static final String PROPERTY_INCLUDED_STUDIES_COUNT = "studiesIncluded";
-	public static final String PROPERTY_CORRECTED = "Corrected for zeroes";
+	public static final String PROPERTY_CORRECTED = "isCorrected";
 	private boolean d_isCorrected = false;
 	
 	private RandomEffectsMetaAnalysis() {
@@ -227,6 +227,12 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 
 	public boolean getIsCorrected() {
 		return d_isCorrected;
+	}
+
+	public void setIsCorrected(boolean iscorrected) {
+		boolean oldVal = d_isCorrected;
+		d_isCorrected = iscorrected;
+		firePropertyChange(PROPERTY_CORRECTED, oldVal, d_isCorrected);
 	}
 }
 

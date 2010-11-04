@@ -15,6 +15,11 @@ public class CorrectedBasicOddsRatio extends BasicOddsRatio implements
 	}
 
 	@Override
+	public String getName() {
+		return "Odds ratio (corrected for zeroes)";
+	}
+	
+	@Override
 	public boolean isDefined() {
 		return (getDegreesOfFreedom() > 0) &&
 			(getA() != 0.5 || getC() != 0.5) && 

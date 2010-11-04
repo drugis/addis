@@ -15,6 +15,12 @@ public class CorrectedBasicRiskDifference extends BasicRiskDifference implements
 	}
 
 	@Override
+	public String getName() {
+		return "Risk Difference (correced for zeroes)";
+	}
+
+	
+	@Override
 	public boolean isDefined() {
 		return super.isDefined() &&
 			(getA() != 0.5 || getC() != 0.5) && 

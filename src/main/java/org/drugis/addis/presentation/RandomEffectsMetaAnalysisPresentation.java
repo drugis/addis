@@ -22,9 +22,6 @@
 
 package org.drugis.addis.presentation;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
@@ -33,17 +30,8 @@ public class RandomEffectsMetaAnalysisPresentation
 extends AbstractMetaAnalysisPresentation<RandomEffectsMetaAnalysis>
 implements StudyListPresentation {
 
-	private ModifiableHolder<Boolean> d_isCorrectedForZeroesHolder;
-
 	public RandomEffectsMetaAnalysisPresentation(RandomEffectsMetaAnalysis bean, PresentationModelFactory mgr) {
 		super(bean, mgr);
-		d_isCorrectedForZeroesHolder = new ModifiableHolder<Boolean>(false);
-		d_isCorrectedForZeroesHolder.addValueChangeListener(new PropertyChangeListener() {
-			
-			public void propertyChange(PropertyChangeEvent evt) {
-				
-			}
-		});
 	}
 	
 	public LabeledPresentation getFirstDrugModel() {
@@ -57,9 +45,5 @@ implements StudyListPresentation {
 	public ForestPlotPresentation getForestPlotPresentation(Class<? extends RelativeEffect<?>> type) {
 		ForestPlotPresentation pm = new ForestPlotPresentation(getBean(), type, d_mgr);
 		return pm;
-	}
-	
-	public ModifiableHolder<Boolean> getCorrectedForZeroesHolder(){
-		return d_isCorrectedForZeroesHolder;
 	}
 }

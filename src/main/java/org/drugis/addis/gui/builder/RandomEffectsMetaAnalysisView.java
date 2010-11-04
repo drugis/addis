@@ -24,6 +24,8 @@ package org.drugis.addis.gui.builder;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -36,6 +38,7 @@ import javax.swing.JTabbedPane;
 
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.BasicRiskDifference;
@@ -51,6 +54,7 @@ import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -59,8 +63,23 @@ import com.jgoodies.forms.layout.FormLayout;
 public class RandomEffectsMetaAnalysisView extends AbstractMetaAnalysisView<RandomEffectsMetaAnalysisPresentation>
 implements ViewBuilder {
 	
+	private JComponent d_relativeEffectPart;
+	private ValueModel d_corForZeroes;
+	private boolean d_isOverview;
+
 	public RandomEffectsMetaAnalysisView(RandomEffectsMetaAnalysisPresentation pm, Main parent) {
 		super(pm, parent);
+		d_corForZeroes = d_pm.getModel(RandomEffectsMetaAnalysis.PROPERTY_CORRECTED);
+		d_isOverview = false;
+		d_corForZeroes.addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				d_relativeEffectPart.setVisible(false);
+				d_relativeEffectPart.removeAll();
+				d_relativeEffectPart.add(buildRelativeEffectPart(BasicOddsRatio.class));
+				d_relativeEffectPart.setVisible(true);
+			}
+		});
+
 	}
 
 	public JComponent buildPanel() {
@@ -95,18 +114,19 @@ implements ViewBuilder {
 	}
 
 	public JComponent getPlotsPanel(boolean isOverview) {
+		d_isOverview = isOverview;
 		switch (d_pm.getAnalysisType()) {
 		case RATE:
-			return buildRatePlotsPart(isOverview);
+			return buildRatePlotsPart();
 		case CONTINUOUS:
-			return buildContinuousPlotsPart(isOverview);
+			return buildContinuousPlotsPart();
 		default:
 			throw new RuntimeException("Unexpected case: " +
 					d_pm.getAnalysisType() + " is not a supported type of endpoint");
 		}
 	}
 
-	private JComponent buildContinuousPlotsPart(boolean isOverview) {
+	private JComponent buildContinuousPlotsPart() {
 		
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill", "p, 3dlu, p, 3dlu, p, 3dlu, p");
@@ -117,16 +137,16 @@ implements ViewBuilder {
 		CellConstraints cc = new CellConstraints();
 		builder.addSeparator("Mean difference", cc.xy(1, 1));
 		
-		builder.add(buildRelativeEffectPart(BasicMeanDifference.class, isOverview), cc.xy(1, 3));
+		builder.add(buildRelativeEffectPart(BasicMeanDifference.class), cc.xy(1, 3));
 		
-		if (!isOverview) {
+		if (!d_isOverview) {
 			builder.addSeparator("Standardised mean difference", cc.xy(1, 5));
-			builder.add(buildRelativeEffectPart(BasicStandardisedMeanDifference.class, isOverview), cc.xy(1, 7));
+			builder.add(buildRelativeEffectPart(BasicStandardisedMeanDifference.class), cc.xy(1, 7));
 		}
 		return builder.getPanel();
 	}
 
-	private JComponent buildRatePlotsPart(boolean isOverview) {
+	private JComponent buildRatePlotsPart() {
 		
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
@@ -138,23 +158,27 @@ implements ViewBuilder {
 		CellConstraints cc = new CellConstraints();
 		
 		builder.addSeparator("Odds ratio", cc.xy(1, 1));
-		builder.add(buildRelativeEffectPart(BasicOddsRatio.class, isOverview), cc.xy(1, 3));			
-
-		JCheckBox checkBox = BasicComponentFactory.createCheckBox(d_pm.getCorrectedForZeroesHolder(), "Correct for zeroes");
+		d_relativeEffectPart = new JPanel(); 
+		d_relativeEffectPart.add(buildRelativeEffectPart(BasicOddsRatio.class));
+		builder.add(d_relativeEffectPart, cc.xy(1, 3));			
+		
+		JCheckBox checkBox = BasicComponentFactory.createCheckBox(d_pm.getModel(RandomEffectsMetaAnalysis.PROPERTY_CORRECTED),
+				"Correct for zeroes");
 		builder.add(checkBox, cc.xy(1, 5));
 		
-		if (!isOverview) {
+		if (!d_isOverview) {
 			builder.addSeparator("Risk ratio", cc.xy(1, 7));
-			builder.add(buildRelativeEffectPart(BasicRiskRatio.class, isOverview), cc.xy(1, 9));
+			builder.add(buildRelativeEffectPart(BasicRiskRatio.class), cc.xy(1, 9));
 		
 			builder.addSeparator("Risk difference", cc.xy(1, 11));
-			builder.add(buildRelativeEffectPart(BasicRiskDifference.class, isOverview), cc.xy(1, 13));
+			builder.add(buildRelativeEffectPart(BasicRiskDifference.class), cc.xy(1, 13));
 		}
+
 		return builder.getPanel();
 	}
 
 	@SuppressWarnings("serial")
-	private JComponent buildRelativeEffectPart(Class<? extends RelativeEffect<?>> type, boolean isOverview) {
+	private JComponent buildRelativeEffectPart(Class<? extends RelativeEffect<?>> type) {
 		FormLayout layout1 = new FormLayout(
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p");
@@ -175,7 +199,7 @@ implements ViewBuilder {
 		
 		encapsulating.add(builder.getPanel(),cc.xy(1, 1));
 		
-		if (!isOverview) {
+		if (!d_isOverview) {
 			JButton saveBtn = new JButton("Save Image");
 			saveBtn.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
