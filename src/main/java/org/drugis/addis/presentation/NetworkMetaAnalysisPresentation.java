@@ -29,6 +29,7 @@ import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.event.TaskEvent;
+import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.jfree.data.category.CategoryDataset;
 
@@ -45,7 +46,9 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 
 		public void taskEvent(TaskEvent event) {
-			fireValueChange(false, true);
+			if (event.getType().equals(EventType.TASK_FINISHED)) {
+				fireValueChange(false, true);
+			}
 		}
 
 		public Boolean getValue() {
