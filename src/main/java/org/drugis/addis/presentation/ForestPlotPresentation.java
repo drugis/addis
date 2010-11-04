@@ -91,7 +91,8 @@ public class ForestPlotPresentation {
 		
 	public ForestPlotPresentation(Study s, OutcomeMeasure om, Drug baseline, Drug subject,
 			Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
-		this(Collections.singletonList((Study)s), om, baseline, subject, type, pmf, null);
+		this(Collections.singletonList((Study)s), om, baseline, subject, type, pmf, new
+				RandomEffectsMetaAnalysis("", om, Collections.singletonList((Study)s), baseline, subject));
 	}
 
 	private void addRelativeEffect(Study s) {
