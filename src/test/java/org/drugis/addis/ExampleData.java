@@ -98,17 +98,17 @@ public class ExampleData {
 		domain.addIndication(buildIndicationDepression());
 		domain.addEndpoint(buildEndpointHamd());
 		domain.addEndpoint(buildEndpointCgi());
-		domain.addEndpoint(buildEndpointMadrs());
+		//domain.addEndpoint(buildEndpointMadrs());
 		domain.addDrug(buildDrugFluoxetine());
 		domain.addDrug(buildDrugParoxetine());
 		domain.addDrug(buildDrugSertraline());
-		domain.addDrug(buildDrugCitalopram());
-		domain.addDrug(buildDrugEscitalopram());
+		//domain.addDrug(buildDrugCitalopram());
+		//domain.addDrug(buildDrugEscitalopram());
 		domain.addDrug(buildPlacebo());
 		domain.addStudy(buildStudyChouinard());
 		domain.addStudy(buildStudyDeWilde());		
 		domain.addStudy(buildStudyBennie());	
-		domain.addStudy(buildStudyBurke());
+		//domain.addStudy(buildStudyBurke());
 		domain.addStudy(buildStudyMultipleArmsperDrug());
 			
 		// heart failure data
