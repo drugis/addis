@@ -131,7 +131,8 @@ implements ViewBuilder {
 				"pref:grow:fill",
 				"p, 3dlu, p");
 		builder = new PanelBuilder(layout, new ScrollableJPanel());
-		
+		builder.setDefaultDialogBorder();
+
 		builder.addSeparator("Results - network inconsistency model", cc.xy(1, 1));
 		builder.add(buildInconsistencyPart(), cc.xy(1, 3));
 		tabbedPane.addTab("Inconsistency", builder.getPanel());
@@ -140,6 +141,7 @@ implements ViewBuilder {
 				"pref:grow:fill",
 				"p, 3dlu, p");
 		builder = new PanelBuilder(layout, new ScrollableJPanel());
+		builder.setDefaultDialogBorder();
 
 		builder.addSeparator("Results - network consistency model", cc.xy(1, 1));
 		builder.add(buildConsistencyPart(), cc.xy(1, 3));
@@ -182,7 +184,6 @@ implements ViewBuilder {
 		FormLayout layout = new FormLayout("pref:grow:fill",
 				"p, 3dlu, p, 5dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
-		builder.setDefaultDialogBorder();
 
 		CellConstraints cc = new CellConstraints();
 		
