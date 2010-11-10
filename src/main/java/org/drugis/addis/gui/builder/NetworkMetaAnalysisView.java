@@ -40,6 +40,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -51,9 +52,11 @@ import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
+import org.drugis.addis.presentation.MixedComparisonTableModel;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
+import org.drugis.addis.presentation.NormalSummaryCellRenderer;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
@@ -64,6 +67,7 @@ import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
+import org.drugis.mtc.summary.NormalSummary;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -95,6 +99,9 @@ implements ViewBuilder {
 			}
 		}
 	}
+	
+//	MixedTreatmentComparison
+//	InconsistencyModel
 
 	private final Main d_main;
 	
@@ -153,7 +160,7 @@ implements ViewBuilder {
 	private JPanel buildConsistencyPart() {
 		
 		FormLayout layout = new FormLayout(	"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p" );
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p" );
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		CellConstraints cc =  new CellConstraints();
 		
@@ -176,13 +183,21 @@ implements ViewBuilder {
 
 		builder.add(createRankProbChart(), cc.xy(1, 7));
 
+		MixedComparisonTableModel mixedComparisonTableModel = new MixedComparisonTableModel(d_pm, d_parent.getPresentationModelFactory(), consistencyModel);
+		EnhancedTable mixedComparisontable = new EnhancedTable(mixedComparisonTableModel, 300);
+		mixedComparisontable.setDefaultRenderer(NormalSummary.class, new NormalSummaryCellRenderer());
+
+		final TablePanel mixedComparisonTablePanel = new TablePanel(mixedComparisontable);
+//		builder.addSeparator("Variance Calculation", cc.xy(1, 9));
+		builder.add(mixedComparisonTablePanel, cc.xy(1,9));
+		
 		return builder.getPanel();
 	}
 
 	private Component buildInconsistencyPart() {
 	
 		FormLayout layout = new FormLayout("pref:grow:fill",
-				"p, 3dlu, p, 5dlu, p, 3dlu, p");
+				"p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 
 		CellConstraints cc = new CellConstraints();
@@ -216,6 +231,15 @@ implements ViewBuilder {
 		});
 		
 		builder.add(inconsistencyFactorsTablePanel, cc.xy(1, 7));
+		
+		MixedComparisonTableModel mixedComparisonTableModel = new MixedComparisonTableModel(d_pm, d_parent.getPresentationModelFactory(), inconsistencyModel);
+		EnhancedTable mixedComparisontable = new EnhancedTable(mixedComparisonTableModel, 300);
+		mixedComparisontable.setDefaultRenderer(NormalSummary.class, new NormalSummaryCellRenderer());
+		final TablePanel mixedComparisonTablePanel = new TablePanel(mixedComparisontable);
+		
+		builder.addSeparator("Variance Calculation", cc.xy(1, 9));
+		builder.add(mixedComparisonTablePanel, cc.xy(1,11));
+		
 		builder.getPanel().revalidate();
 		
 		inconsistencyModel.getActivityTask().addTaskListener(
