@@ -63,8 +63,10 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	transient private InconsistencyModel d_inconsistencyModel;
 	transient private ConsistencyModel d_consistencyModel;
 	transient private NetworkBuilder<? extends org.drugis.mtc.Measurement> d_builder;
-	protected Map<MCMCModel, Map<Parameter, NormalSummary>> d_summaries = 
+	protected Map<MCMCModel, Map<Parameter, NormalSummary>> d_normalSummaries = 
 		new HashMap<MCMCModel, Map<Parameter, NormalSummary>>();
+	protected Map<MCMCModel, Map<Parameter, QuantileSummary>> d_quantileSummaries = 
+		new HashMap<MCMCModel, Map<Parameter, QuantileSummary>>();
 
 	private boolean d_isContinuous = false;
 	
@@ -80,13 +82,15 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 
 	private InconsistencyModel createInconsistencyModel() {
 		InconsistencyModel inconsistencyModel = (DefaultModelFactory.instance()).getInconsistencyModel((Network<? extends org.drugis.mtc.Measurement>) getBuilder().buildNetwork());
-		d_summaries.put(inconsistencyModel, new HashMap<Parameter, NormalSummary>());
+		d_normalSummaries.put(inconsistencyModel, new HashMap<Parameter, NormalSummary>());
+		d_quantileSummaries.put(inconsistencyModel, new HashMap<Parameter, QuantileSummary>());
 		return inconsistencyModel;
 	}
 	
 	private ConsistencyModel createConsistencyModel() {
 		ConsistencyModel consistencyModel = (DefaultModelFactory.instance()).getConsistencyModel(getBuilder().buildNetwork());
-		d_summaries.put(consistencyModel, new HashMap<Parameter, NormalSummary>());
+		d_normalSummaries.put(consistencyModel, new HashMap<Parameter, NormalSummary>());
+		d_quantileSummaries.put(consistencyModel, new HashMap<Parameter, QuantileSummary>());
 		return consistencyModel;
 	}
 
@@ -173,16 +177,20 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return getInconsistencyModel().getInconsistencyFactors();
 	}
 	
-	//FIXME: TODO
 	public QuantileSummary getQuantileSummary(MixedTreatmentComparison networkModel, Parameter ip) {
-		return null;
+		QuantileSummary summary = d_quantileSummaries.get(networkModel).get(ip);
+		if (summary == null) {
+			summary = new QuantileSummary(networkModel.getResults(), ip);
+			d_quantileSummaries.get(networkModel).put(ip, summary);
+		}
+		return summary;
 	}
 	
 	public NormalSummary getNormalSummary(MixedTreatmentComparison networkModel, Parameter ip){
-		NormalSummary summary = d_summaries.get(networkModel).get(ip);
+		NormalSummary summary = d_normalSummaries.get(networkModel).get(ip);
 		if (summary == null) {
 			summary = new NormalSummary(networkModel.getResults(), ip);
-			d_summaries.get(networkModel).put(ip, summary);
+			d_normalSummaries.get(networkModel).put(ip, summary);
 		}
 		return summary;
 	}

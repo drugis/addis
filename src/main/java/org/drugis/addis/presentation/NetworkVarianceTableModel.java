@@ -5,7 +5,6 @@ import javax.swing.table.AbstractTableModel;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
 @SuppressWarnings("serial")
@@ -31,7 +30,7 @@ public class NetworkVarianceTableModel extends AbstractTableModel implements Tab
 	
 	@Override
 	public String getColumnName(int column) {
-		return column == 0 ? "Parameters" : "Median (95% CrI)";
+		return column == 0 ? "Parameter" : "Median (95% CrI)";
 	}
 	
 	public String getDescription() {
@@ -54,7 +53,7 @@ public class NetworkVarianceTableModel extends AbstractTableModel implements Tab
 		}
 	}
 
-	private NormalSummary getEstimate(int row) {
+	private QuantileSummary getEstimate(int row) {
 		InconsistencyModel model = d_pm.getBean().getInconsistencyModel();
 		if (model.isReady()){
 			if (row == RANDOM_EFFECTS) {
@@ -66,15 +65,15 @@ public class NetworkVarianceTableModel extends AbstractTableModel implements Tab
 		return null;
 	}
 
-	private NormalSummary getInconsistencySummary() {
+	private QuantileSummary getInconsistencySummary() {
 		Parameter p = ((InconsistencyModel) d_mtc).getInconsistencyVariance();
-		NormalSummary summary = d_pm.getBean().getNormalSummary(d_mtc, p); // FIXME: use Quantile
+		QuantileSummary summary = d_pm.getBean().getQuantileSummary(d_mtc, p);
 		return summary;
 	}
 
-	private NormalSummary getRandomEffectsSummary() {
+	private QuantileSummary getRandomEffectsSummary() {
 		Parameter p = d_mtc.getRandomEffectsVariance();
-		NormalSummary summary = d_pm.getBean().getNormalSummary(d_mtc, p); // FIXME: use Quantile
+		QuantileSummary summary = d_pm.getBean().getQuantileSummary(d_mtc, p);
 		return summary;
 	}
 

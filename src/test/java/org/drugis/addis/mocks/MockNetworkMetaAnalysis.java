@@ -52,8 +52,8 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 		super(name, indication, om, studies, drugs, armMap);
 		d_mockInconsistencyModel = new MockInconsistencyModel();
 		d_mockConsistencyModel = new MockConsistencyModel(toTreatments(drugs));
-		d_summaries.put(d_mockConsistencyModel, new HashMap<Parameter, NormalSummary>());
-		d_summaries.put(d_mockInconsistencyModel, new HashMap<Parameter, NormalSummary>());
+		d_normalSummaries.put(d_mockConsistencyModel, new HashMap<Parameter, NormalSummary>());
+		d_normalSummaries.put(d_mockInconsistencyModel, new HashMap<Parameter, NormalSummary>());
 	}
 
 	private List<Treatment> toTreatments(List<Drug> drugs) {
@@ -66,10 +66,10 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 
 	@Override
 	public NormalSummary getNormalSummary(MixedTreatmentComparison networkModel, Parameter ip) {
-		NormalSummary summary = d_summaries.get(networkModel).get(ip);
+		NormalSummary summary = d_normalSummaries.get(networkModel).get(ip);
 		if (summary == null) {
 			summary = new MockNormalSummary(networkModel.getResults(), ip);
-			d_summaries.get(networkModel).put(ip, summary);
+			d_normalSummaries.get(networkModel).put(ip, summary);
 		}
 		return summary;
 	}
