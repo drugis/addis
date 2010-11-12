@@ -40,6 +40,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -91,10 +92,15 @@ implements ViewBuilder {
 
 		public void taskEvent(TaskEvent event) {
 			if (event.getType() == EventType.TASK_FINISHED) {
-				for (TablePanel tablePanel : d_tablePanels) {
-					tablePanel.doLayout();
-				}
-				d_progressBar.setVisible(false);
+				Runnable r = new Runnable() {
+					public void run() {
+						for (TablePanel tablePanel : d_tablePanels) {
+							tablePanel.doLayout();
+						}
+						d_progressBar.setVisible(false);
+					}
+				};
+				SwingUtilities.invokeLater(r);
 			}
 		}
 	}
@@ -223,8 +229,13 @@ implements ViewBuilder {
 		d_pm.getInconsistencyModelConstructedModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getNewValue().equals(true)) {
-					inconsistencyFactorsTablePanel.doLayout();
-					d_parent.reloadRightPanel();
+					Runnable r = new Runnable() {
+						public void run() {
+							inconsistencyFactorsTablePanel.doLayout();
+							d_parent.reloadRightPanel();
+						}
+					};
+					SwingUtilities.invokeLater(r);
 				}
 			}
 		});
