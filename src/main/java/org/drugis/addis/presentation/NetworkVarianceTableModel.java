@@ -2,22 +2,21 @@ package org.drugis.addis.presentation;
 
 import javax.swing.table.AbstractTableModel;
 
-
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.summary.QuantileSummary;
 
-public class MixedComparisonTableModel extends AbstractTableModel implements TableModelWithDescription {
+@SuppressWarnings("serial")
+public class NetworkVarianceTableModel extends AbstractTableModel implements TableModelWithDescription {
 
 	private static final int RANDOM_EFFECTS = 0;
 	private NetworkMetaAnalysisPresentation d_pm;
-	private PresentationModelFactory d_pmf;
 	private MixedTreatmentComparison d_mtc;
 	
-	public MixedComparisonTableModel(NetworkMetaAnalysisPresentation pm, PresentationModelFactory pmf, MixedTreatmentComparison mtc) {
+	public NetworkVarianceTableModel(NetworkMetaAnalysisPresentation pm, MixedTreatmentComparison mtc) {
 		d_pm = pm;
-		d_pmf = pmf;
 		d_mtc = mtc;
 	}
 	
@@ -26,13 +25,13 @@ public class MixedComparisonTableModel extends AbstractTableModel implements Tab
 		if (columnIndex == 0) {
 			return String.class;
 		} else {
-			return NormalSummary.class;
+			return QuantileSummary.class;
 		}
 	}
 	
 	@Override
 	public String getColumnName(int column) {
-		return column == 0 ? " " : "Median (95% CrI)";
+		return column == 0 ? "Parameters" : "Median (95% CrI)";
 	}
 	
 	public String getDescription() {
@@ -69,13 +68,13 @@ public class MixedComparisonTableModel extends AbstractTableModel implements Tab
 
 	private NormalSummary getInconsistencySummary() {
 		Parameter p = ((InconsistencyModel) d_mtc).getInconsistencyVariance();
-		NormalSummary summary = d_pm.getBean().getNormalSummary(d_mtc, p);
+		NormalSummary summary = d_pm.getBean().getNormalSummary(d_mtc, p); // FIXME: use Quantile
 		return summary;
 	}
 
 	private NormalSummary getRandomEffectsSummary() {
 		Parameter p = d_mtc.getRandomEffectsVariance();
-		NormalSummary summary = d_pm.getBean().getNormalSummary(d_mtc, p);
+		NormalSummary summary = d_pm.getBean().getNormalSummary(d_mtc, p); // FIXME: use Quantile
 		return summary;
 	}
 

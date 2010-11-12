@@ -55,6 +55,7 @@ import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.RankProbabilitySummary;
 
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis{
@@ -170,6 +171,11 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 
 	public List<Parameter> getInconsistencyFactors(){
 		return getInconsistencyModel().getInconsistencyFactors();
+	}
+	
+	//FIXME: TODO
+	public QuantileSummary getQuantileSummary(MixedTreatmentComparison networkModel, Parameter ip) {
+		return null;
 	}
 	
 	public NormalSummary getNormalSummary(MixedTreatmentComparison networkModel, Parameter ip){

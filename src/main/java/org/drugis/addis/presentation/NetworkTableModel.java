@@ -101,7 +101,7 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 		}
 
 		NormalSummary re = getSummary(getTreatment(row), getTreatment(col));
-		if (!re.isDefined()) {
+		if (!re.getDefined()) {
 			return d_na;
 		}
 		

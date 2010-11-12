@@ -49,7 +49,7 @@ public class MockNormalSummary extends NormalSummary {
 	}
 	
 	@Override
-	public boolean isDefined() {
+	public boolean getDefined() {
 		 return d_defined;
 	}
 
