@@ -41,7 +41,6 @@ import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
@@ -53,12 +52,9 @@ import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.UnmodifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.util.comparator.CriteriaComparator;
-import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.pietschy.wizard.InvalidStateException;
 
 import com.jgoodies.binding.value.ValueModel;
-
-import fi.smaa.jsmaa.model.Alternative;
 
 public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationPM {
 
