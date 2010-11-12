@@ -1,5 +1,8 @@
 package org.drugis.addis.presentation;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.mtc.InconsistencyModel;
@@ -13,12 +16,30 @@ public class NetworkVarianceTableModel extends AbstractTableModel implements Tab
 	private static final int RANDOM_EFFECTS = 0;
 	private NetworkMetaAnalysisPresentation d_pm;
 	private MixedTreatmentComparison d_mtc;
+	private PropertyChangeListener d_listener;
 	
 	public NetworkVarianceTableModel(NetworkMetaAnalysisPresentation pm, MixedTreatmentComparison mtc) {
 		d_pm = pm;
 		d_mtc = mtc;
+		
+		d_listener = new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				fireTableDataChanged();
+			}
+		};
+		
+		if (mtc instanceof InconsistencyModel) {
+			InconsistencyModel incons = (InconsistencyModel) mtc;
+			attachListener(incons.getInconsistencyVariance());
+		}
+		Parameter randomEffectsVariance = mtc.getRandomEffectsVariance();
+		attachListener(randomEffectsVariance);
 	}
 	
+	private void attachListener(Parameter p) {
+		d_pm.getBean().getQuantileSummary(d_mtc, p).addPropertyChangeListener(d_listener); 
+	}
+
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		if (columnIndex == 0) {
