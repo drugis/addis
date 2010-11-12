@@ -26,6 +26,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
@@ -50,9 +52,13 @@ import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.UnmodifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.util.comparator.CriteriaComparator;
+import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.pietschy.wizard.InvalidStateException;
 
 import com.jgoodies.binding.value.ValueModel;
+
+import fi.smaa.jsmaa.model.Alternative;
 
 public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationPM {
 
@@ -372,7 +378,6 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		}
 	}
 
-
 	Collection<ModifiableHolder<MetaAnalysis>> getSelectedMetaAnalysisHolders() {
 		return d_metaAnalysisSelectedMap.values();
 	}
@@ -403,23 +408,27 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 
 	private StudyBenefitRiskAnalysis createStudyBRAnalysis(String id) {
 		List<Arm> alternatives = convertList(getSelectedEntities(d_alternativeSelectedMap), Arm.class);
-		List<OutcomeMeasure> studyAnalyses = getSelectedEntities(d_outcomeSelectedMap);
 		
+		List<OutcomeMeasure> studyAnalyses = getSelectedEntities(d_outcomeSelectedMap);
+		sortCriteria(studyAnalyses);
 		StudyBenefitRiskAnalysis sbr = new StudyBenefitRiskAnalysis(id, d_indicationHolder.getValue(), d_studyHolder.getValue(), 
 				studyAnalyses, alternatives, d_analysisTypeHolder.getValue());
 		return sbr;
 	}
 
+	private void sortCriteria(List<OutcomeMeasure> studyAnalyses) {
+		Collections.sort(studyAnalyses, new CriteriaComparator());
+	}
+
 	private MetaBenefitRiskAnalysis createMetaBRAnalysis(String id) {
 		List<Drug> alternatives = convertList(getSelectedEntities(d_alternativeSelectedMap), Drug.class);
 		List<MetaAnalysis> metaAnalyses = new ArrayList<MetaAnalysis>();
-		
+			
 		for(ModifiableHolder<MetaAnalysis> ma : d_metaAnalysisSelectedMap.values()){
 			if(ma.getValue() !=null )
 				metaAnalyses.add(ma.getValue());
 		}
 			
-
 		Drug baseline = alternatives.get(0);
 		alternatives.remove(0);
 		MetaBenefitRiskAnalysis brAnalysis = new MetaBenefitRiskAnalysis(
@@ -430,7 +439,6 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 				alternatives,
 				d_analysisTypeHolder.getValue()
 			);
-		
 		return brAnalysis;
 	}
 	
