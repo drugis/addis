@@ -63,7 +63,6 @@ import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.ConsistencyModel;
 
 public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<Drug> {
-	
 	private String d_name;
 	private Indication d_indication;
 	private List<OutcomeMeasure> d_outcomeMeasures;

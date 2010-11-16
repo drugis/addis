@@ -39,19 +39,11 @@ public class LyndOBrienChartFactory {
 		XYDataset data = new ScatterPlotDataset(model);
 		JFreeChart chart = ChartFactory.createScatterPlot("Benefit-Risk plane", model.getXAxisName(), model.getYAxisName(),
 				data, PlotOrientation.VERTICAL, false, false, false);
-//		JFreeChart chart = ChartFactory.createScatterPlot("Benefit-Risk plane", model.getYAxisName(), model.getXAxisName(),
-//				data, PlotOrientation.VERTICAL, false, false, false);
+
 		XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) chart.getXYPlot().getRenderer();
 		renderer.setSeriesOutlinePaint(0, Color.black);
 		renderer.setUseOutlinePaint(true);
 		renderer.setSeriesShape(0, new Ellipse2D.Double(-2.0, 2.0, 4.0, 4.0));
-
-		//FIXME: Ensure that the origin is always shown
-//		Range range = chart.getXYPlot().getDomainAxis().getRange();
-//		if(!range.contains(0))
-//		{
-//			range = Range.expandToInclude(range, 0);
-//		}
 		
 		// draw lines through origin.
 		chart.getXYPlot().setDomainZeroBaselineVisible(true);

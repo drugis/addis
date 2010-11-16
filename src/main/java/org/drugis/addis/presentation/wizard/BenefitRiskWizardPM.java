@@ -419,9 +419,9 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	private MetaBenefitRiskAnalysis createMetaBRAnalysis(String id) {
 		List<Drug> alternatives = convertList(getSelectedEntities(d_alternativeSelectedMap), Drug.class);
 		List<MetaAnalysis> metaAnalyses = new ArrayList<MetaAnalysis>();
-			
+		
 		for(ModifiableHolder<MetaAnalysis> ma : d_metaAnalysisSelectedMap.values()){
-			if(ma.getValue() !=null )
+			if(ma.getValue() != null)
 				metaAnalyses.add(ma.getValue());
 		}
 			
