@@ -47,8 +47,8 @@ public class StatusBar extends JToolBar {
 		setLayout(new BorderLayout());
 
 		ButtonBarBuilder2 builder = new ButtonBarBuilder2();
-		builder.addButton(createCounter("Analyses running: ", d_ThreadHandlerPresentation.getRunningThreads()));
-		builder.addButton(createCounter("Analyses waiting: ", d_ThreadHandlerPresentation.getThreadsInQueue()));
+		builder.addButton(createCounter("Running", "jobs", d_ThreadHandlerPresentation.getRunningThreads()));
+		builder.addButton(createCounter("for", "user tasks", d_ThreadHandlerPresentation.getThreadsInQueue()));
 		builder.addGlue();
 		
 		String latestVersion = AppInfo.getLatestVersion();
@@ -65,11 +65,12 @@ public class StatusBar extends JToolBar {
 		add(builder.getPanel(), BorderLayout.CENTER);
 	}
 
-	private JPanel createCounter(String string, ValueModel threads) {
+	private JPanel createCounter(String pre, String post, ValueModel threads) {
 		JPanel panel = new JPanel();
 		panel.setOpaque(false);
-		panel.add(new JLabel(string));
+		panel.add(new JLabel(pre));
 		panel.add(BasicComponentFactory.createLabel(threads, new OneWayObjectFormat()));
+		panel.add(new JLabel(post));
 		return panel;
 	}
 	
