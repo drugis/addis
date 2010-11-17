@@ -57,30 +57,11 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		super(pm, main);
 	}
 
-	protected JPanel buildMeasurementsPanel() {
-		FormLayout layout = new FormLayout(
-				"pref:grow:fill",
-				"p, 3dlu, p, " + // 1-3 
-				"3dlu, p, 3dlu, p"// 4-7
-				);
-		CellConstraints cc = new CellConstraints();
-		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
-		builder.setDefaultDialogBorder();
-
-		builder.addSeparator("Included Analyses", cc.xy(1, 1));
-		builder.add(buildAnalysesPart(), cc.xy(1, 3));
-		
-		builder.addSeparator("Measurements", cc.xy(1, 5));
-		builder.add(buildMeasurementsPart(), cc.xy(1, 7));
-		return builder.getPanel();
-	}
-
 	@Override
 	protected JPanel buildOverviewPanel() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p, " + // 1-3 
-				"3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();
@@ -90,8 +71,12 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(BenefitRiskAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
 		builder.add(buildOverviewPart(), cc.xy(1, 3));
 		
+
+		builder.addSeparator("Included Analyses", cc.xy(1, 5));
+		builder.add(buildAnalysesPart(), cc.xy(1, 7));
+		
 		final JComponent progressBars = buildProgressBars();
-		builder.add(progressBars, cc.xy(1, 5));
+		builder.add(progressBars, cc.xy(1, 9));
 		
 		if (d_pm.getMeasurementsReadyModel().getValue()) {
 			progressBars.setVisible(false);
@@ -114,7 +99,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();
 
-		builder.addLabel("Running sub-analyses. Please wait.",cc.xy(1,1));
+		builder.addSeparator("Running sub-analyses. Please wait.",cc.xy(1,1));
 		int row = 1;
 		for (Task t : d_pm.getMeasurementTasks()) {
 			LayoutUtil.addRow(layout);
@@ -140,6 +125,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		return new EntitiesTablePanel(Arrays.asList(formatter), d_pm.getAnalysesModel(), d_main, d_pm.getFactory(), null);
 	}
 
+	@Override
 	protected JComponent buildMeasurementsPart() {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = new FormLayout("pref:grow:fill",

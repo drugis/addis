@@ -43,6 +43,7 @@ import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.LyndOBrienChartFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
+import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.LyndOBrienPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
@@ -93,7 +94,8 @@ public class LyndOBrienView implements ViewBuilder {
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, " +
 				"p, 3dlu, p, 3dlu, p, 3dlu, p");
-		PanelBuilder builder = new PanelBuilder(layout);
+		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+		builder.setDefaultDialogBorder();
 		CellConstraints cc =  new CellConstraints();
 
 		builder.addSeparator("Benefit-risk plane");
