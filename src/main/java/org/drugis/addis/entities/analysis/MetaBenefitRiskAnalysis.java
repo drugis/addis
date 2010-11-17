@@ -53,6 +53,7 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.addis.mcmcmodel.BaselineMeanDifferenceModel;
 import org.drugis.addis.mcmcmodel.BaselineOddsModel;
+import org.drugis.addis.util.EnumXMLFormat;
 import org.drugis.addis.util.comparator.AlphabeticalComparator;
 import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.drugis.common.threading.Task;
@@ -360,13 +361,8 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 			@SuppressWarnings("unchecked")
 			@Override
 			public void read(InputElement ie, MetaBenefitRiskAnalysis br) throws XMLStreamException {
-				br.setName(ie.getAttribute(PROPERTY_NAME, null));
-				try
-				{ // legacy: should not fail if no analysistype is set, for backwards compatibility with old xml files 
-					br.d_analysisType = AnalysisType.valueOf(ie.<String>getAttribute(PROPERTY_ANALYSIS_TYPE,
-							AnalysisType.SMAA.toString()));
-				}
-				catch (IllegalArgumentException e ) { br.d_analysisType = AnalysisType.SMAA;}
+				br.setName(ie.getAttribute(PROPERTY_NAME, null)); 
+				br.d_analysisType = EnumXMLFormat.getEnumAttribute(ie, PROPERTY_ANALYSIS_TYPE, AnalysisType.SMAA);
 				br.setBaseline(ie.get(PROPERTY_BASELINE, Drug.class));
 				br.setDrugs((List<Drug>) ie.get(PROPERTY_DRUGS, ArrayList.class));
 				br.setIndication((Indication) ie.get(PROPERTY_INDICATION, Indication.class));
@@ -386,9 +382,8 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 				oe.add(new ArrayList<MetaAnalysis>(br.getMetaAnalyses()), PROPERTY_METAANALYSES, ArrayList.class);
 			}
 		};
-
+		
 	public AnalysisType getAnalysisType() {
 		return d_analysisType;
 	}
-
 }

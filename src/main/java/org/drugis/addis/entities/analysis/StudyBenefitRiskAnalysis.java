@@ -43,6 +43,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
+import org.drugis.addis.util.EnumXMLFormat;
 
 public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<Arm> {
 	public static String PROPERTY_STUDY = "study";
@@ -139,13 +140,7 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 			@Override
 			public void read(InputElement ie, StudyBenefitRiskAnalysis br) throws XMLStreamException {
 				br.setName(ie.getAttribute(PROPERTY_NAME, null));
-				try
-				{ // legacy: should not fail if no analysistype is set, for backwards compatibility with old xml files 
-					br.d_analysisType = AnalysisType.valueOf(ie.<String>getAttribute(PROPERTY_ANALYSIS_TYPE,
-							AnalysisType.SMAA.toString()));
-				} 
-				catch (IllegalArgumentException e ) { br.d_analysisType = AnalysisType.SMAA; }
-				
+				br.d_analysisType = EnumXMLFormat.getEnumAttribute(ie, PROPERTY_ANALYSIS_TYPE, AnalysisType.SMAA); 
 				br.d_indication = (Indication) ie.get(PROPERTY_INDICATION, Indication.class);
 				br.d_study = (Study) ie.get(PROPERTY_STUDY, Study.class);
 				br.d_alternatives = (List<Arm>) ie.get(PROPERTY_ARMS, ArrayList.class);
