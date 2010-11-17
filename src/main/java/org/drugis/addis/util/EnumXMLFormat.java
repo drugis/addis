@@ -22,6 +22,7 @@
 
 package org.drugis.addis.util;
 
+import javolution.text.CharArray;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
@@ -49,5 +50,10 @@ public class EnumXMLFormat<T extends Enum>  extends XMLFormat<T> {
 	@Override
 	public void write(T enumInstance, OutputElement oe) throws XMLStreamException {
 		oe.setAttribute("value" ,enumInstance.name());
+	}
+
+	public static <E extends Enum<E>> E getEnumAttribute(InputElement ie, String attr, E def) throws XMLStreamException {
+		CharArray val = ie.getAttribute(attr);
+		return val == null ? def : E.valueOf((Class<E>)def.getClass(), val.toString());
 	}
 }
