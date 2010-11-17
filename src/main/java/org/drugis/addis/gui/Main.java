@@ -36,6 +36,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -61,6 +63,7 @@ import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
@@ -90,6 +93,7 @@ import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
 import org.drugis.common.threading.ThreadHandler;
+import org.drugis.common.threading.event.TaskFailedEvent;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardFrameCloser;
 
@@ -164,8 +168,33 @@ public class Main extends JFrame {
 
 		initializeDomain();		
 		d_pmManager = new PresentationModelFactory(getDomain());
+		
+		addTaskFailureListener();
 
 		bindPrintScreen(super.getContentPane());
+	}
+
+	private void addTaskFailureListener() {
+		ThreadHandler.getInstance().addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent event) {
+				if (event.getPropertyName().equals(ThreadHandler.PROPERTY_FAILED_TASK)) {
+					final TaskFailedEvent taskEvent = (TaskFailedEvent) event.getNewValue();
+					
+					Runnable r = new Runnable() {
+						public void run() {
+							Throwable cause = taskEvent.getCause();
+							System.err.println("Task Failed: " + taskEvent.getSource());
+							cause.printStackTrace();
+							JOptionPane.showMessageDialog(null, cause.toString(),
+									"Task Failed: " + taskEvent.getSource(),
+									JOptionPane.ERROR_MESSAGE);
+							
+						}
+					};
+					SwingUtilities.invokeLater(r);
+				}
+			}
+		});
 	}
 
 	public static void bindPrintScreen(Container container) {
