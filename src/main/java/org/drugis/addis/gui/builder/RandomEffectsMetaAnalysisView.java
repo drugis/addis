@@ -24,13 +24,10 @@ package org.drugis.addis.gui.builder;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -38,7 +35,6 @@ import javax.swing.JTabbedPane;
 
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
-import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.BasicRiskDifference;
@@ -53,8 +49,6 @@ import org.drugis.addis.treeplot.ForestPlot;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
 
-import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -63,23 +57,11 @@ import com.jgoodies.forms.layout.FormLayout;
 public class RandomEffectsMetaAnalysisView extends AbstractMetaAnalysisView<RandomEffectsMetaAnalysisPresentation>
 implements ViewBuilder {
 	
-	private JComponent d_relativeEffectPart;
-	private ValueModel d_corForZeroes;
-	private boolean d_isOverview;
+	private boolean d_isWizard;
 
 	public RandomEffectsMetaAnalysisView(RandomEffectsMetaAnalysisPresentation pm, Main parent) {
 		super(pm, parent);
-		d_corForZeroes = d_pm.getModel(RandomEffectsMetaAnalysis.PROPERTY_CORRECTED);
-		d_isOverview = false;
-		d_corForZeroes.addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				d_relativeEffectPart.setVisible(false);
-				d_relativeEffectPart.removeAll();
-				d_relativeEffectPart.add(buildRelativeEffectPart(BasicOddsRatio.class));
-				d_relativeEffectPart.setVisible(true);
-			}
-		});
-
+		d_isWizard = false;
 	}
 
 	public JComponent buildPanel() {
@@ -114,7 +96,7 @@ implements ViewBuilder {
 	}
 
 	public JComponent getPlotsPanel(boolean isOverview) {
-		d_isOverview = isOverview;
+		d_isWizard = isOverview;
 		switch (d_pm.getAnalysisType()) {
 		case RATE:
 			return buildRatePlotsPart();
@@ -139,7 +121,7 @@ implements ViewBuilder {
 		
 		builder.add(buildRelativeEffectPart(BasicMeanDifference.class), cc.xy(1, 3));
 		
-		if (!d_isOverview) {
+		if (!d_isWizard) {
 			builder.addSeparator("Standardised mean difference", cc.xy(1, 5));
 			builder.add(buildRelativeEffectPart(BasicStandardisedMeanDifference.class), cc.xy(1, 7));
 		}
@@ -158,15 +140,9 @@ implements ViewBuilder {
 		CellConstraints cc = new CellConstraints();
 		
 		builder.addSeparator("Odds ratio", cc.xy(1, 1));
-		d_relativeEffectPart = new JPanel(); 
-		d_relativeEffectPart.add(buildRelativeEffectPart(BasicOddsRatio.class));
-		builder.add(d_relativeEffectPart, cc.xy(1, 3));			
+		builder.add(buildRelativeEffectPart(BasicOddsRatio.class), cc.xy(1,5));
 		
-		JCheckBox checkBox = BasicComponentFactory.createCheckBox(d_pm.getModel(RandomEffectsMetaAnalysis.PROPERTY_CORRECTED),
-				"Correct for zeroes");
-		builder.add(checkBox, cc.xy(1, 5));
-		
-		if (!d_isOverview) {
+		if (!d_isWizard) {
 			builder.addSeparator("Risk ratio", cc.xy(1, 7));
 			builder.add(buildRelativeEffectPart(BasicRiskRatio.class), cc.xy(1, 9));
 		
@@ -188,7 +164,6 @@ implements ViewBuilder {
 		JPanel encapsulating = new JPanel(layout1);
 		
 		PanelBuilder builder = new PanelBuilder(layout2);
-		builder.setDefaultDialogBorder();
 		CellConstraints cc =  new CellConstraints();
 		
 		final RelativeEffectCanvas canvas = new RelativeEffectCanvas(d_pm.getForestPlotPresentation(type));
@@ -199,7 +174,7 @@ implements ViewBuilder {
 		
 		encapsulating.add(builder.getPanel(),cc.xy(1, 1));
 		
-		if (!d_isOverview) {
+		if (!d_isWizard) {
 			JButton saveBtn = new JButton("Save Image");
 			saveBtn.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {

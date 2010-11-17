@@ -105,9 +105,6 @@ implements ViewBuilder {
 		}
 	}
 	
-//	MixedTreatmentComparison
-//	InconsistencyModel
-
 	private final Main d_main;
 	
 	public NetworkMetaAnalysisView(NetworkMetaAnalysisPresentation model, Main main) {

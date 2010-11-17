@@ -50,6 +50,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	private ModifiableHolder<Drug> d_secondDrugHolder;
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
 	private ListHolder<Drug> d_selectedDrugs;
+	private RandomEffectsMetaAnalysisPresentation d_pm;
 	public MetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
 		super(d, pmm);
 				
@@ -148,19 +149,23 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	public ListHolder<Drug> getSelectedDrugsModel() {
 		return d_selectedDrugs;
 	}
-	
-	@Override
-	public RandomEffectsMetaAnalysis createMetaAnalysis(String name) {
+
+	public RandomEffectsMetaAnalysis buildMetaAnalysis() {
 		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
 		
 		for (Study s : getStudyListModel().getSelectedStudiesModel().getValue()) {
 			Arm left = d_selectedArms.get(s).get(d_firstDrugHolder.getValue()).getValue();
 			Arm right = d_selectedArms.get(s).get(d_secondDrugHolder.getValue()).getValue();
 			studyArms.add(new StudyArmsEntry(s, left, right));
-		}
-		
-		return new RandomEffectsMetaAnalysis(name, (OutcomeMeasure) getOutcomeMeasureModel().getValue(), studyArms);
+		}	
+		return new RandomEffectsMetaAnalysis("", (OutcomeMeasure) getOutcomeMeasureModel().getValue(), studyArms);
 	}
+	
+	public RandomEffectsMetaAnalysis createMetaAnalysis(String name) {
+		d_pm.getBean().setName(name);
+		return d_pm.getBean();
+	}
+//	Boolean corr = (Boolean) d_pm.getModel(RandomEffectsMetaAnalysis.PROPERTY_CORRECTED).getValue();
 	
 	public ValueModel getMetaAnalysisCompleteModel() {
 		return d_metaAnalysisCompleteListener;
@@ -182,7 +187,8 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 
 	public RandomEffectsMetaAnalysisPresentation getMetaAnalysisModel() {
-		return (RandomEffectsMetaAnalysisPresentation) d_pmf.getModel(createMetaAnalysis(""));
+		d_pm = (RandomEffectsMetaAnalysisPresentation) d_pmf.getModel(buildMetaAnalysis());
+		return d_pm;
 	}
 
 	@Override
