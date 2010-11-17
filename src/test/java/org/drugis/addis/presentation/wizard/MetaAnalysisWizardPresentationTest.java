@@ -28,7 +28,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -46,11 +45,11 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
+import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -537,17 +536,32 @@ public class MetaAnalysisWizardPresentationTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testSwitchingRateToContinuousDrugStep() {
+		Study burke = ExampleData.buildStudyBurke();
+		Drug cita = ExampleData.buildDrugCitalopram();
+		Drug esci = ExampleData.buildDrugEscitalopram();
+		
+		d_domain.addStudy(burke);
+		d_domain.addDrug(cita);
+		d_domain.addDrug(esci);
+		d_domain.addEndpoint(ExampleData.buildEndpointMadrs());
+		d_domain.addAdverseEvent(ExampleData.buildAdverseEventDiarrhea());
+		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
-		d_wizard.getFirstDrugModel().setValue(ExampleData.buildDrugCitalopram());
-		d_wizard.getSecondDrugModel().setValue(ExampleData.buildDrugEscitalopram());
+		d_wizard.getFirstDrugModel().setValue(cita);
+		d_wizard.getSecondDrugModel().setValue(esci);
 
-//		List<Study> studies =
-//			new ArrayList<Study>(d_wizard.getStudyListModel().getSelectedStudiesModel().getValue());
-		//FIXME: Finish
-		fail();
+		ModifiableHolder<Arm> selectedArmModel = d_wizard.getSelectedArmModel(burke, esci);
+
+		Drug placebo = ExampleData.buildPlacebo();
+		d_wizard.getSecondDrugModel().setValue(placebo);
+
+		selectedArmModel = d_wizard.getSelectedArmModel(burke, placebo);
+
+		System.out.println(selectedArmModel.getValue());
+		
+		
 	}
 	
 }

@@ -420,9 +420,13 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		List<Drug> alternatives = convertList(getSelectedEntities(d_alternativeSelectedMap), Drug.class);
 		List<MetaAnalysis> metaAnalyses = new ArrayList<MetaAnalysis>();
 		
-		for(ModifiableHolder<MetaAnalysis> ma : d_metaAnalysisSelectedMap.values()){
-			if(ma.getValue() != null)
-				metaAnalyses.add(ma.getValue());
+		List<OutcomeMeasure> keySetArray = new ArrayList<OutcomeMeasure>(d_metaAnalysisSelectedMap.keySet());
+		sortCriteria(keySetArray);
+		
+		for(OutcomeMeasure om : keySetArray){
+			MetaAnalysis value = d_metaAnalysisSelectedMap.get(om).getValue();
+			if (value != null) 
+				metaAnalyses.add(value);
 		}
 			
 		Drug baseline = alternatives.get(0);

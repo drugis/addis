@@ -414,8 +414,8 @@ public class ExampleData {
 		// STUDY_START, STUDY_END missing
 		
 		// Citalopram data
-		FixedDose dose40 = new FixedDose(40, SIUnit.MILLIGRAMS_A_DAY);
-		Arm cita = new Arm(buildDrugCitalopram(), dose40, 125);
+		FixedDose dose = new FixedDose(40, SIUnit.MILLIGRAMS_A_DAY);
+		Arm cita = new Arm(buildDrugCitalopram(), dose, 125);
 		BasicContinuousMeasurement cCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(cita);
 		cCgi.setMean(-1.2);
 		cCgi.setStdDev(0.1);
@@ -426,8 +426,8 @@ public class ExampleData {
 		study.setMeasurement(buildEndpointMadrs(), cita, cMadrs);
 		
 		// Escitalopram high dose data
-		FixedDose dose20 = new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY);
-		Arm esciHigh = new Arm(buildDrugEscitalopram(), dose20, 125);
+		dose = new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY);
+		Arm esciHigh = new Arm(buildDrugEscitalopram(), dose, 125);
 		BasicContinuousMeasurement ehCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(esciHigh);
 		ehCgi.setMean(-1.4);
 		ehCgi.setStdDev(0.1);
@@ -438,8 +438,8 @@ public class ExampleData {
 		study.setMeasurement(buildEndpointMadrs(), esciHigh, ehMadrs);
 
 		// Escitalopram low dose data
-		FixedDose dose10 = new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY);
-		Arm esciLow = new Arm(buildDrugEscitalopram(), dose10, 119);
+		dose = new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY);
+		Arm esciLow = new Arm(buildDrugEscitalopram(), dose, 119);
 		BasicContinuousMeasurement elCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(esciLow);
 		elCgi.setMean(-1.3);
 		elCgi.setStdDev(0.1);
@@ -450,8 +450,8 @@ public class ExampleData {
 		study.setMeasurement(buildEndpointMadrs(), esciLow, elMadrs);
 		
 		// Placebo data
-		FixedDose dose0 = new FixedDose(0, SIUnit.MILLIGRAMS_A_DAY);
-		Arm placebo = new Arm(buildPlacebo(), dose0, 122);
+		dose = new FixedDose(0, SIUnit.MILLIGRAMS_A_DAY);
+		Arm placebo = new Arm(buildPlacebo(), dose, 122);
 		BasicContinuousMeasurement plCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(placebo);
 		plCgi.setMean(-0.8);
 		plCgi.setStdDev(0.1);
@@ -745,7 +745,7 @@ public class ExampleData {
 		if (s_escitalopram == null) {
 			s_escitalopram = new Drug("Escitalopram", "N06AB10");
 		}
-		return s_citalopram;
+		return s_escitalopram;
 	}
 	
 	public static Indication buildIndicationDepression() {

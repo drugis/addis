@@ -118,7 +118,7 @@ public class LyndOBrienView implements ViewBuilder {
 		builder.addSeparator("Benefit-Risk Aceptability curve", cc.xy(1, 9));
 		builder.add(createWaiter(new PvalueplotBuilder()), cc.xy(1,11));
 		builder.add(AuxComponentFactory.createNoteField("Probability for a given acceptability threshold " +
-				"\u03BC that " + alternativeName + " is superior to " + baselineName +". Indicates the" +
+				"\u03BC that " + baselineName + " is superior to " + alternativeName + ". Indicates the" +
 				" proportion of datapoints in the Benefit-Risk" +
 				" plane that lie below the line y = \u03BC x"), cc.xy(1,13));
 		d_panel = builder.getPanel();
