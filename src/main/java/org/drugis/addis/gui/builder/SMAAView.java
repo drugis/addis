@@ -66,18 +66,20 @@ import fi.smaa.jsmaa.gui.views.ResultsView;
 public class SMAAView implements ViewBuilder  {
 	protected static final String WAITING_MESSAGE = "Please wait while the sub-analyses run";
 
-	
-	private SMAAPresentation<?, ?> d_pm;
-	private final AbstractBenefitRiskPresentation<?, ?> d_BRpm;
+	@SuppressWarnings("unchecked")
+	private SMAAPresentation d_pm;
+	@SuppressWarnings("unchecked")
+	private final AbstractBenefitRiskPresentation d_BRpm;
 	private final Main d_main;
 
-	public SMAAView(AbstractBenefitRiskPresentation<?, ?> pm, Main main) {
+	@SuppressWarnings("unchecked")
+	public SMAAView(AbstractBenefitRiskPresentation pm, Main main) {
 		d_pm = pm.getSMAAPresentation();
 		d_main = main;
 		d_BRpm = pm;
 		
 		// FIXME: below code should be in presentation.
-		if (d_BRpm.getMeasurementsReadyModel().getValue()) {
+		if ((Boolean)d_BRpm.getMeasurementsReadyModel().getValue()) {
 			d_pm.startSMAA();
 		}
 		
@@ -259,7 +261,9 @@ public class SMAAView implements ViewBuilder  {
 
 	
 
+	@SuppressWarnings("unchecked")
 	protected BuildViewWhenReadyComponent createWaiter(ViewBuilder builder) {
-		return new BuildViewWhenReadyComponent(builder, d_BRpm.getMeasurementsReadyModel(), WAITING_MESSAGE);
+		return new BuildViewWhenReadyComponent(builder, 
+				d_BRpm.getMeasurementsReadyModel(), WAITING_MESSAGE);
 	}
 }
