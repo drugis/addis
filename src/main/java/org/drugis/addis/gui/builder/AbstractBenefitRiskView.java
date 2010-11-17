@@ -33,6 +33,7 @@ import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.ListPanel;
+import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 import org.drugis.common.gui.LayoutUtil;
@@ -119,10 +120,23 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		return (BenefitRiskAnalysis<?>)d_pm.getBean();
 	}
 
-	protected abstract JPanel buildMeasurementsPanel();
-
 	protected JComponent buildAnalysisPanel() {
 		return d_view.buildPanel();
 	}
 
+	protected JPanel buildMeasurementsPanel() {
+		FormLayout layout = new FormLayout(
+				"pref:grow:fill",
+				"p, 3dlu, p"
+				);
+		CellConstraints cc = new CellConstraints();
+		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+		builder.setDefaultDialogBorder();
+		
+		builder.addSeparator("Measurements", cc.xy(1, 1));
+		builder.add(buildMeasurementsPart(), cc.xy(1, 3));
+		return builder.getPanel();
+	}
+
+	protected abstract JComponent buildMeasurementsPart();
 }

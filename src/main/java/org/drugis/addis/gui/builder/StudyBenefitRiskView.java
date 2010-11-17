@@ -42,9 +42,8 @@ public class StudyBenefitRiskView extends AbstractBenefitRiskView<StudyBenefitRi
 	public StudyBenefitRiskView(StudyBenefitRiskPresentation model, Main main) {
 		super(model, main);
 	}
-
-	@Override
-	public JPanel buildMeasurementsPanel() {
+	
+	public JPanel buildMeasurementsPart() {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = new FormLayout("pref:grow:fill",
 				"p, 3dlu, p");
