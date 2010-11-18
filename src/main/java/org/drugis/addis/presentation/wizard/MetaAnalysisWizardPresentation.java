@@ -162,10 +162,15 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 	
 	public RandomEffectsMetaAnalysis createMetaAnalysis(String name) {
-		d_pm.getBean().setName(name);
-		return d_pm.getBean();
+		RandomEffectsMetaAnalysis ma = null;
+		if (d_pm == null) {
+			ma = buildMetaAnalysis();
+		} else {
+			ma = d_pm.getBean();
+		}
+		ma.setName(name);
+		return ma;
 	}
-//	Boolean corr = (Boolean) d_pm.getModel(RandomEffectsMetaAnalysis.PROPERTY_CORRECTED).getValue();
 	
 	public ValueModel getMetaAnalysisCompleteModel() {
 		return d_metaAnalysisCompleteListener;

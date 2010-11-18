@@ -59,7 +59,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	protected Indication d_indication;
 	protected List<? extends Study> d_studies;
 	protected List<Drug> d_drugs;
-	protected String d_name;
+	protected String d_name = "";
 	protected int d_totalSampleSize;
 	protected ArmMap d_armMap;
 	

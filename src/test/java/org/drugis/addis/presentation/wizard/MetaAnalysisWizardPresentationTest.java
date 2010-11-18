@@ -558,10 +558,6 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getSecondDrugModel().setValue(placebo);
 
 		selectedArmModel = d_wizard.getSelectedArmModel(burke, placebo);
-
-		System.out.println(selectedArmModel.getValue());
-		
-		
 	}
 	
 }
