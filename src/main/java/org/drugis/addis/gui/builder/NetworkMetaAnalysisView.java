@@ -24,8 +24,12 @@ package org.drugis.addis.gui.builder;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
@@ -37,9 +41,11 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 
 import org.drugis.addis.entities.Study;
@@ -52,6 +58,7 @@ import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
+import org.drugis.addis.presentation.ConvergenceDiagnosticTableModel;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
@@ -106,6 +113,7 @@ implements ViewBuilder {
 	}
 	
 	private final Main d_main;
+	private JDialog d_dialog = new JDialog();
 	
 	public NetworkMetaAnalysisView(NetworkMetaAnalysisPresentation model, Main main) {
 		super(model, main);
@@ -118,7 +126,7 @@ implements ViewBuilder {
 		
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();
 		
@@ -159,14 +167,45 @@ implements ViewBuilder {
 		return tabbedPane;
 	}
 
+	private void showConvergenceTable(MixedTreatmentComparison mtc) {
+		if(!d_dialog.isActive()) {
+			
+			//d_dialog.setSize(400, 300);
+			//d_dialog.setMinimumSize(new Dimension(400,200));
+			d_dialog.setModalityType(ModalityType.MODELESS);
+			d_dialog.setTitle("Convergence Table");
+			d_dialog.setLocationRelativeTo(null);
+			d_dialog.setAlwaysOnTop(true);
+			
+			ConvergenceDiagnosticTableModel tableModel = new ConvergenceDiagnosticTableModel(mtc);
+			
+			JTable convergenceTable = new EnhancedTable(tableModel);
+			convergenceTable.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if (e.getClickCount() > 1) {
+						int row = ((EnhancedTable)e.getComponent()).rowAtPoint(e.getPoint());
+						//showPlots(convergencePM.getSomething().get(row));
+					}
+				}
+			});
+			
+			d_dialog.add(convergenceTable);			
+			d_dialog.setSize(new Dimension(convergenceTable.getColumnCount()*250, convergenceTable.getRowCount() * 22 ));
+						
+			d_dialog.setVisible(true);
+		}
+	}
+
+	@SuppressWarnings("serial")
 	private JPanel buildConsistencyPart() {
 		
 		FormLayout layout = new FormLayout(	"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p" );
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p" );
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		CellConstraints cc =  new CellConstraints();
 		
-		ConsistencyModel consistencyModel = d_pm.getBean().getConsistencyModel();
+		final ConsistencyModel consistencyModel = d_pm.getBean().getConsistencyModel();
 		JProgressBar d_conProgressBar = new TaskProgressBar(consistencyModel.getActivityTask());
 		if(!consistencyModel.isReady()) {
 			builder.add(d_conProgressBar, cc.xy(1, 1));
@@ -193,18 +232,31 @@ implements ViewBuilder {
 		builder.addSeparator("Variance Calculation", cc.xy(1, 9));
 		builder.add(mixedComparisonTablePanel, cc.xy(1,11));
 		
+		builder.addSeparator("Convergence", cc.xy(1, 13));
+		
+		JButton assessConvergence = new JButton("Assess Convergence");
+		assessConvergence.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				showConvergenceTable(consistencyModel);
+			}
+		});
+		ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
+		bbuilder.addButton(assessConvergence);
+		builder.add(bbuilder.getPanel(), cc.xy(1, 15));
+		
 		return builder.getPanel();
 	}
 
+	@SuppressWarnings("serial")
 	private Component buildInconsistencyPart() {
 	
 		FormLayout layout = new FormLayout("pref:grow:fill",
-				"p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 
 		CellConstraints cc = new CellConstraints();
 		
-		InconsistencyModel inconsistencyModel = d_pm.getBean().getInconsistencyModel();
+		final InconsistencyModel inconsistencyModel = d_pm.getBean().getInconsistencyModel();
 		JProgressBar d_incProgressBar = new TaskProgressBar(inconsistencyModel.getActivityTask());
 		if(!inconsistencyModel.isReady()) {
 			builder.add(d_incProgressBar, cc.xy(1, 1));
@@ -253,6 +305,18 @@ implements ViewBuilder {
 						inconsistencyTablePanel, inconsistencyFactorsTablePanel
 				})
 			);
+		
+		builder.addSeparator("Convergence", cc.xy(1, 13));
+		
+		JButton assessConvergence = new JButton("Assess Convergence");
+		assessConvergence.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				showConvergenceTable(inconsistencyModel);
+			}
+		});
+		ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
+		bbuilder.addButton(assessConvergence);
+		builder.add(bbuilder.getPanel(), cc.xy(1, 15));
 		
 		return builder.getPanel();
 	}
