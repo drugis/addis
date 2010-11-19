@@ -22,14 +22,13 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
@@ -44,8 +43,8 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 
 import org.drugis.addis.entities.Study;
@@ -169,9 +168,6 @@ implements ViewBuilder {
 
 	private void showConvergenceTable(MixedTreatmentComparison mtc) {
 		if(!d_dialog.isActive()) {
-			
-			//d_dialog.setSize(400, 300);
-			//d_dialog.setMinimumSize(new Dimension(400,200));
 			d_dialog.setModalityType(ModalityType.MODELESS);
 			d_dialog.setTitle("Convergence Table");
 			d_dialog.setLocationRelativeTo(null);
@@ -179,20 +175,18 @@ implements ViewBuilder {
 			
 			ConvergenceDiagnosticTableModel tableModel = new ConvergenceDiagnosticTableModel(mtc);
 			
-			JTable convergenceTable = new EnhancedTable(tableModel);
-			convergenceTable.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					if (e.getClickCount() > 1) {
-						int row = ((EnhancedTable)e.getComponent()).rowAtPoint(e.getPoint());
-						//showPlots(convergencePM.getSomething().get(row));
-					}
-				}
-			});
+			EnhancedTable convergenceTable = new EnhancedTable(tableModel);
+			JScrollPane pane = new JScrollPane(convergenceTable);
 			
-			d_dialog.add(convergenceTable);			
-			d_dialog.setSize(new Dimension(convergenceTable.getColumnCount()*250, convergenceTable.getRowCount() * 22 ));
-						
+			convergenceTable.getColumnModel().getColumn(0).setMinWidth(170);
+			convergenceTable.getColumnModel().getColumn(1).setMinWidth(80);
+			int h = convergenceTable.getPreferredScrollableViewportSize().height;
+			convergenceTable.setPreferredScrollableViewportSize(new Dimension(250, h));
+			
+			d_dialog.setLayout(new BorderLayout());
+			d_dialog.add(pane, BorderLayout.CENTER);
+			d_dialog.pack();
+			d_dialog.setResizable(false);
 			d_dialog.setVisible(true);
 		}
 	}

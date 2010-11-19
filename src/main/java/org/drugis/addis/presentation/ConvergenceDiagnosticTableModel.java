@@ -3,6 +3,8 @@ package org.drugis.addis.presentation;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.mtc.MCMCResults;
+import org.drugis.mtc.MCMCResultsEvent;
+import org.drugis.mtc.MCMCResultsListener;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.convergence.GelmanRubinConvergence;
 
@@ -15,6 +17,12 @@ public class ConvergenceDiagnosticTableModel extends AbstractTableModel{
 
 	public ConvergenceDiagnosticTableModel(MixedTreatmentComparison mtc) {
 		d_results = mtc.getResults();
+		d_results.addResultsListener(new MCMCResultsListener() {
+			
+			public void resultsEvent(MCMCResultsEvent event) {
+				fireTableDataChanged();
+			}
+		});
 	}
 	
 	@Override
@@ -44,7 +52,7 @@ public class ConvergenceDiagnosticTableModel extends AbstractTableModel{
 		if (columnIndex == COL_PARAM) {
 			return d_results.getParameters()[rowIndex];
 		} else if (columnIndex == COL_ESTIMATE) {
-			GelmanRubinConvergence.diagnose(d_results, d_results.getParameters()[rowIndex]);
+			return GelmanRubinConvergence.diagnose(d_results, d_results.getParameters()[rowIndex]);
 		}
 		return null;
 	}
