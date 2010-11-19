@@ -77,7 +77,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 				throw new IllegalArgumentException("Not all studies contain the drugs under comparison");
 	}
 
-	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms)
+	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms, Boolean corr)
 	throws IllegalArgumentException {
 		super(name, getIndication(studyArms), om, getStudies(studyArms), getDrugs(studyArms), getArmMap(studyArms));
 		
@@ -89,8 +89,12 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 				throw new IllegalArgumentException("Right drug not consistent over all studies");
 			}
 		}
+		d_isCorrected = corr;
 	}
 	
+	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms) {
+		this(name, om, studyArms, false);
+	}
 
 	public String getType() {
 		return "DerSimonian-Laird Random Effects";

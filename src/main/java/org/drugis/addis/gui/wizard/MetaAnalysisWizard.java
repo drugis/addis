@@ -25,13 +25,18 @@ package org.drugis.addis.gui.wizard;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.Main;
@@ -45,7 +50,6 @@ import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardModel;
 import org.pietschy.wizard.models.StaticModel;
 
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -85,15 +89,27 @@ public class MetaAnalysisWizard extends Wizard {
 
 			setLayout(new BorderLayout()); // needed for placement
 			
-			RandomEffectsMetaAnalysis analysis = (RandomEffectsMetaAnalysis)d_pm.createMetaAnalysis("");
-			PresentationModel<RandomEffectsMetaAnalysis> pm = d_main.getPresentationModelFactory().getModel(analysis);
-			RandomEffectsMetaAnalysisView mav = new RandomEffectsMetaAnalysisView(
+			RandomEffectsMetaAnalysisPresentation pm = ((MetaAnalysisWizardPresentation)d_pm).getMetaAnalysisModel();
+			final RandomEffectsMetaAnalysisView mav = new RandomEffectsMetaAnalysisView(
 					(RandomEffectsMetaAnalysisPresentation)pm, d_main);
-			JComponent panel = mav.getPlotsPanel(true);
+			final JComponent panel = mav.getPlotsPanel(true);
 
-			JScrollPane sp = new JScrollPane(panel);
+			if(d_pm.getOutcomeMeasureModel().getValue().getType() == Type.RATE){
+				JCheckBox checkBox = BasicComponentFactory.createCheckBox(pm.getModel(RandomEffectsMetaAnalysis.PROPERTY_CORRECTED), "Correct for zeroes");
+				add(checkBox, BorderLayout.NORTH);
+			}
+			
+			final JScrollPane sp = new JScrollPane(panel);
 			sp.getVerticalScrollBar().setUnitIncrement(16);
 			add(sp, BorderLayout.CENTER);
+			
+			pm.getModel(RandomEffectsMetaAnalysis.PROPERTY_CORRECTED).addValueChangeListener(new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					sp.setVisible(false);
+					sp.setViewportView(mav.getPlotsPanel(true));
+					sp.setVisible(true);
+				}
+			});
 			
 			setComplete(true);
 		}

@@ -112,6 +112,7 @@ public class RankProbabilityDataset extends DefaultCategoryDataset {
 		return d_summary.getValue(d_summary.getTreatments().get(column), row + 1);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Number getValue(Comparable rowKey, Comparable columnKey) {
 		return getValue(getRowIndex(rowKey), getColumnIndex(columnKey));

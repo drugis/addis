@@ -43,6 +43,7 @@ import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.LyndOBrienChartFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
+import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.LyndOBrienPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
@@ -93,7 +94,8 @@ public class LyndOBrienView implements ViewBuilder {
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, " +
 				"p, 3dlu, p, 3dlu, p, 3dlu, p");
-		PanelBuilder builder = new PanelBuilder(layout);
+		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+		builder.setDefaultDialogBorder();
 		CellConstraints cc =  new CellConstraints();
 
 		builder.addSeparator("Benefit-risk plane");
@@ -116,7 +118,7 @@ public class LyndOBrienView implements ViewBuilder {
 		builder.addSeparator("Benefit-Risk Aceptability curve", cc.xy(1, 9));
 		builder.add(createWaiter(new PvalueplotBuilder()), cc.xy(1,11));
 		builder.add(AuxComponentFactory.createNoteField("Probability for a given acceptability threshold " +
-				"\u03BC that " + alternativeName + " is superior to " + baselineName +". Indicates the" +
+				"\u03BC that " + baselineName + " is superior to " + alternativeName + ". Indicates the" +
 				" proportion of datapoints in the Benefit-Risk" +
 				" plane that lie below the line y = \u03BC x"), cc.xy(1,13));
 		d_panel = builder.getPanel();

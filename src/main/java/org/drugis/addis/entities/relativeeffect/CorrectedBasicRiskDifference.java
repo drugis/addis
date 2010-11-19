@@ -38,7 +38,7 @@ public class CorrectedBasicRiskDifference extends BasicRiskDifference implements
 
 	@Override
 	public String getName() {
-		return "Risk Difference (correced for zeroes)";
+		return "Risk Difference (corrected for zeroes)";
 	}
 
 	

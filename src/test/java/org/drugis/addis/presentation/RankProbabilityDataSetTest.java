@@ -22,10 +22,7 @@
 
 package org.drugis.addis.presentation;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -148,6 +145,7 @@ public class RankProbabilityDataSetTest {
 	public void testUpdateFiresEvent() {
 		DatasetChangeListener mockListener = createMock(DatasetChangeListener.class);
 		mockListener.datasetChanged((DatasetChangeEvent) anyObject());
+		expectLastCall().atLeastOnce();
 		replay(mockListener);
 		
 		d_dataSet.addChangeListener(mockListener);

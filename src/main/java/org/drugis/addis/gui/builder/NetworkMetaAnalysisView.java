@@ -40,7 +40,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -52,10 +52,10 @@ import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
-import org.drugis.addis.presentation.NetworkVarianceTableModel;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
+import org.drugis.addis.presentation.NetworkVarianceTableModel;
 import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
@@ -67,9 +67,7 @@ import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
-import org.drugis.mtc.summary.Summary;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -94,10 +92,15 @@ implements ViewBuilder {
 
 		public void taskEvent(TaskEvent event) {
 			if (event.getType() == EventType.TASK_FINISHED) {
-				for (TablePanel tablePanel : d_tablePanels) {
-					tablePanel.doLayout();
-				}
-				d_progressBar.setVisible(false);
+				Runnable r = new Runnable() {
+					public void run() {
+						for (TablePanel tablePanel : d_tablePanels) {
+							tablePanel.doLayout();
+						}
+						d_progressBar.setVisible(false);
+					}
+				};
+				SwingUtilities.invokeLater(r);
 			}
 		}
 	}
@@ -223,8 +226,13 @@ implements ViewBuilder {
 		d_pm.getInconsistencyModelConstructedModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getNewValue().equals(true)) {
-					inconsistencyFactorsTablePanel.doLayout();
-					d_parent.reloadRightPanel();
+					Runnable r = new Runnable() {
+						public void run() {
+							inconsistencyFactorsTablePanel.doLayout();
+							d_parent.reloadRightPanel();
+						}
+					};
+					SwingUtilities.invokeLater(r);
 				}
 			}
 		});
