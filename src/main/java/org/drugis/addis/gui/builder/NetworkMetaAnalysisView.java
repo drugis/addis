@@ -22,10 +22,8 @@
 
 package org.drugis.addis.gui.builder;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -171,35 +169,22 @@ implements ViewBuilder {
 		return tabbedPane;
 	}
 
-	private void showConvergenceTable(final MixedTreatmentComparison mtc, ValueHolder<Boolean> modelConstructed) {
-		if(!d_dialog.isActive()) {
-			ConvergenceDiagnosticTableModel tableModel = new ConvergenceDiagnosticTableModel(mtc, modelConstructed);
-			EnhancedTable convergenceTable = new EnhancedTable(tableModel);
-			JScrollPane pane = new JScrollPane(convergenceTable);
-
-			convergenceTable.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					if (e.getClickCount() > 1) {
-						int row = ((EnhancedTable)e.getComponent()).rowAtPoint(e.getPoint());
-						Parameter p = mtc.getResults().getParameters()[row];
-						showConvergencePlots(mtc, p);
-					}
+	private JComponent buildConvergenceTable(final MixedTreatmentComparison mtc, ValueHolder<Boolean> modelConstructed) {
+		ConvergenceDiagnosticTableModel tableModel = new ConvergenceDiagnosticTableModel(mtc, modelConstructed);
+		EnhancedTable convergenceTable = new EnhancedTable(tableModel);
+		TablePanel pane = new TablePanel(convergenceTable);
+	
+		convergenceTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() > 1) {
+					int row = ((EnhancedTable)e.getComponent()).rowAtPoint(e.getPoint());
+					Parameter p = mtc.getResults().getParameters()[row];
+					showConvergencePlots(mtc, p);
 				}
-			});
-			
-			convergenceTable.getColumnModel().getColumn(0).setMinWidth(170);
-			convergenceTable.getColumnModel().getColumn(1).setMinWidth(80);
-			int h = convergenceTable.getPreferredScrollableViewportSize().height;
-			convergenceTable.setPreferredScrollableViewportSize(new Dimension(250, h));
-			
-			d_dialog.setLayout(new BorderLayout());
-			d_dialog.add(pane, BorderLayout.CENTER);
-			d_dialog.pack();
-			d_dialog.setLocationRelativeTo(d_main);
-			d_dialog.setResizable(false);
-			d_dialog.setVisible(true);
-		}
+			}
+		});
+		return pane;
 	}
 
 	protected void showConvergencePlots(MixedTreatmentComparison mtc,
@@ -210,7 +195,6 @@ implements ViewBuilder {
 		dialog.setVisible(true);
 	}
 
-	@SuppressWarnings("serial")
 	private JPanel buildConsistencyPart() {
 		
 		FormLayout layout = new FormLayout(	"pref:grow:fill",
@@ -247,20 +231,11 @@ implements ViewBuilder {
 		
 		builder.addSeparator("Convergence", cc.xy(1, 13));
 		
-		JButton assessConvergence = new JButton("Assess Convergence");
-		assessConvergence.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-				showConvergenceTable(consistencyModel, d_pm.getConsistencyModelConstructedModel());
-			}
-		});
-		ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
-		bbuilder.addButton(assessConvergence);
-		builder.add(bbuilder.getPanel(), cc.xy(1, 15));
-		
+		builder.add(buildConvergenceTable(consistencyModel, d_pm.getConsistencyModelConstructedModel()), cc.xy(1, 15));
+
 		return builder.getPanel();
 	}
 
-	@SuppressWarnings("serial")
 	private Component buildInconsistencyPart() {
 	
 		FormLayout layout = new FormLayout("pref:grow:fill",
@@ -321,15 +296,7 @@ implements ViewBuilder {
 		
 		builder.addSeparator("Convergence", cc.xy(1, 13));
 		
-		JButton assessConvergence = new JButton("Assess Convergence");
-		assessConvergence.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-				showConvergenceTable(inconsistencyModel, d_pm.getInconsistencyModelConstructedModel());
-			}
-		});
-		ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
-		bbuilder.addButton(assessConvergence);
-		builder.add(bbuilder.getPanel(), cc.xy(1, 15));
+		builder.add(buildConvergenceTable(inconsistencyModel, d_pm.getInconsistencyModelConstructedModel()), cc.xy(1, 15));
 		
 		return builder.getPanel();
 	}

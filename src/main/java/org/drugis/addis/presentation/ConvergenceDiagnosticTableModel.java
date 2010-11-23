@@ -86,6 +86,9 @@ public class ConvergenceDiagnosticTableModel extends AbstractTableModel{
 
 	private String getConvergence(int rowIndex) {
 		ConvergenceSummary summary = d_summaries.get(getParameter(rowIndex));
+		if(summary == null) {
+			return NA;
+		}
 		return summary.getDefined() ? formatNumber(summary) : NA;
 	}
 
