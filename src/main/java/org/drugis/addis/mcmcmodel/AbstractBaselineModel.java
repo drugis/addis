@@ -39,7 +39,7 @@ import java.util.List;
 
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.relativeeffect.Distribution;
-import org.drugis.common.threading.IterativeComputation;
+import org.drugis.common.threading.AbstractIterativeComputation;
 import org.drugis.common.threading.IterativeTask;
 import org.drugis.common.threading.SimpleSuspendableTask;
 import org.drugis.common.threading.SimpleTask;
@@ -84,42 +84,17 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 		}
 	}, "building model");
 	
-	private IterativeTask d_burnInPhase = new IterativeTask(new IterativeComputation() {
-		private int d_iter = 0;
-		public void initialize() {}
-		public void finish() {}
-
-		public int getIteration() {
-			return d_iter;
-		}
-
-		public int getTotalIterations() {
-			return getBurnInIterations();
-		}
-
-		public void step() {
+	private IterativeTask d_burnInPhase = new IterativeTask(new AbstractIterativeComputation(d_burnInIter) {
+		@Override
+		public void doStep() {
 			update();
-			++d_iter;
 		}
 	}, "burn-in");
 	
-	private IterativeTask d_simulationPhase = new IterativeTask(new IterativeComputation() {
-		private int d_iter = 0;
-		public void initialize() {}
-		public void finish() {}
-
-		public int getIteration() {
-			return d_iter;
-		}
-
-		public int getTotalIterations() {
-			return getSimulationIterations();
-		}
-
-		public void step() {
+	private IterativeTask d_simulationPhase = new IterativeTask(new AbstractIterativeComputation(d_simulationIter) {
+		public void doStep() {
 			update();
 			output();
-			++d_iter;
 		}
 	}, "simulation");
 	
