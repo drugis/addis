@@ -65,6 +65,7 @@ import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
 import org.drugis.addis.presentation.NetworkVarianceTableModel;
 import org.drugis.addis.presentation.SummaryCellRenderer;
+import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
@@ -170,9 +171,9 @@ implements ViewBuilder {
 		return tabbedPane;
 	}
 
-	private void showConvergenceTable(final MixedTreatmentComparison mtc) {
+	private void showConvergenceTable(final MixedTreatmentComparison mtc, ValueHolder<Boolean> modelConstructed) {
 		if(!d_dialog.isActive()) {
-			ConvergenceDiagnosticTableModel tableModel = new ConvergenceDiagnosticTableModel(mtc);
+			ConvergenceDiagnosticTableModel tableModel = new ConvergenceDiagnosticTableModel(mtc, modelConstructed);
 			EnhancedTable convergenceTable = new EnhancedTable(tableModel);
 			JScrollPane pane = new JScrollPane(convergenceTable);
 
@@ -249,7 +250,7 @@ implements ViewBuilder {
 		JButton assessConvergence = new JButton("Assess Convergence");
 		assessConvergence.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
-				showConvergenceTable(consistencyModel);
+				showConvergenceTable(consistencyModel, d_pm.getConsistencyModelConstructedModel());
 			}
 		});
 		ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
@@ -323,7 +324,7 @@ implements ViewBuilder {
 		JButton assessConvergence = new JButton("Assess Convergence");
 		assessConvergence.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
-				showConvergenceTable(inconsistencyModel);
+				showConvergenceTable(inconsistencyModel, d_pm.getInconsistencyModelConstructedModel());
 			}
 		});
 		ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();

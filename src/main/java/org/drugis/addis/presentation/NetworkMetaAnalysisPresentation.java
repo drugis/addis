@@ -41,6 +41,7 @@ import org.jfree.data.category.CategoryDataset;
 public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<NetworkMetaAnalysis> {
 	ValueHolder<Boolean> d_inconsistencyModelConstructed;
 	private Map<MixedTreatmentComparison,TaskProgressModel> d_progressModels;
+	private ValueHolder<Boolean> d_consistencyModelConstructed;
 	
 	static class ModelConstructionFinishedModel extends UnmodifiableHolder<Boolean> implements TaskListener {
 		private Task d_task;
@@ -64,6 +65,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	public NetworkMetaAnalysisPresentation(NetworkMetaAnalysis bean, PresentationModelFactory mgr) {
 		super(bean, mgr);
 		d_inconsistencyModelConstructed = new ModelConstructionFinishedModel(getBean().getInconsistencyModel());
+		d_consistencyModelConstructed = new ModelConstructionFinishedModel(getBean().getConsistencyModel());
 		d_progressModels = new HashMap<MixedTreatmentComparison, TaskProgressModel>();
 		addModel(getBean().getConsistencyModel());
 		addModel(getBean().getInconsistencyModel());
@@ -84,6 +86,10 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 
 	public ValueHolder<Boolean> getInconsistencyModelConstructedModel() {
 		return d_inconsistencyModelConstructed;
+	}
+	
+	public ValueHolder<Boolean> getConsistencyModelConstructedModel() {
+		return d_consistencyModelConstructed;
 	}
 
 	public String getRankProbabilityRankChartNote() {
@@ -107,4 +113,5 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	private TaskProgressModel addModel(MixedTreatmentComparison mtc) {
 		return d_progressModels.put(mtc, new TaskProgressModel(mtc.getActivityTask()));
 	}
+
 }
