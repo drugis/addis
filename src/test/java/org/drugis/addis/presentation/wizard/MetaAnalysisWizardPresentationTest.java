@@ -45,7 +45,6 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
-import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.common.JUnitUtil;
@@ -552,12 +551,12 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(cita);
 		d_wizard.getSecondDrugModel().setValue(esci);
 
-		ModifiableHolder<Arm> selectedArmModel = d_wizard.getSelectedArmModel(burke, esci);
+		d_wizard.getSelectedArmModel(burke, esci);
 
 		Drug placebo = ExampleData.buildPlacebo();
 		d_wizard.getSecondDrugModel().setValue(placebo);
 
-		selectedArmModel = d_wizard.getSelectedArmModel(burke, placebo);
+		d_wizard.getSelectedArmModel(burke, placebo);
 	}
 	
 }

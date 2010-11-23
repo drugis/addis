@@ -26,6 +26,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
@@ -37,8 +39,10 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
@@ -46,17 +50,20 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
+import org.drugis.addis.gui.ConvergencePlotsDialog;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
+import org.drugis.addis.presentation.ConvergenceDiagnosticTableModel;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
 import org.drugis.addis.presentation.NetworkVarianceTableModel;
 import org.drugis.addis.presentation.SummaryCellRenderer;
+import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
@@ -67,6 +74,7 @@ import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
+import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -106,19 +114,21 @@ implements ViewBuilder {
 	}
 	
 	private final Main d_main;
+	private JDialog d_dialog;
 	
 	public NetworkMetaAnalysisView(NetworkMetaAnalysisPresentation model, Main main) {
 		super(model, main);
 		d_main = main;
+		d_dialog = new JDialog(d_main, "Convergence Table", false);
 
-		d_pm.getBean().run();
+		d_pm.startModels();
 	}
 
 	public JComponent buildPanel() {
 		
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();
 		
@@ -159,15 +169,41 @@ implements ViewBuilder {
 		return tabbedPane;
 	}
 
+	private JComponent buildConvergenceTable(final MixedTreatmentComparison mtc, ValueHolder<Boolean> modelConstructed) {
+		ConvergenceDiagnosticTableModel tableModel = new ConvergenceDiagnosticTableModel(mtc, modelConstructed);
+		EnhancedTable convergenceTable = new EnhancedTable(tableModel);
+		TablePanel pane = new TablePanel(convergenceTable);
+	
+		convergenceTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() > 1) {
+					int row = ((EnhancedTable)e.getComponent()).rowAtPoint(e.getPoint());
+					Parameter p = mtc.getResults().getParameters()[row];
+					showConvergencePlots(mtc, p);
+				}
+			}
+		});
+		return pane;
+	}
+
+	protected void showConvergencePlots(MixedTreatmentComparison mtc,
+			Parameter p) {
+		JDialog dialog = new ConvergencePlotsDialog(d_dialog, mtc, p);
+		dialog.pack();
+		dialog.setLocationRelativeTo(d_dialog);
+		dialog.setVisible(true);
+	}
+
 	private JPanel buildConsistencyPart() {
 		
 		FormLayout layout = new FormLayout(	"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p" );
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p" );
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		CellConstraints cc =  new CellConstraints();
 		
-		ConsistencyModel consistencyModel = d_pm.getBean().getConsistencyModel();
-		JProgressBar d_conProgressBar = new TaskProgressBar(consistencyModel.getActivityTask());
+		final ConsistencyModel consistencyModel = d_pm.getBean().getConsistencyModel();
+		JProgressBar d_conProgressBar = new TaskProgressBar(d_pm.getProgressModel(consistencyModel));
 		if(!consistencyModel.isReady()) {
 			builder.add(d_conProgressBar, cc.xy(1, 1));
 		}
@@ -193,19 +229,23 @@ implements ViewBuilder {
 		builder.addSeparator("Variance Calculation", cc.xy(1, 9));
 		builder.add(mixedComparisonTablePanel, cc.xy(1,11));
 		
+		builder.addSeparator("Convergence", cc.xy(1, 13));
+		
+		builder.add(buildConvergenceTable(consistencyModel, d_pm.getConsistencyModelConstructedModel()), cc.xy(1, 15));
+
 		return builder.getPanel();
 	}
 
 	private Component buildInconsistencyPart() {
 	
 		FormLayout layout = new FormLayout("pref:grow:fill",
-				"p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 
 		CellConstraints cc = new CellConstraints();
 		
-		InconsistencyModel inconsistencyModel = d_pm.getBean().getInconsistencyModel();
-		JProgressBar d_incProgressBar = new TaskProgressBar(inconsistencyModel.getActivityTask());
+		final InconsistencyModel inconsistencyModel = d_pm.getBean().getInconsistencyModel();
+		JProgressBar d_incProgressBar = new TaskProgressBar(d_pm.getProgressModel(inconsistencyModel));
 		if(!inconsistencyModel.isReady()) {
 			builder.add(d_incProgressBar, cc.xy(1, 1));
 		}
@@ -253,6 +293,10 @@ implements ViewBuilder {
 						inconsistencyTablePanel, inconsistencyFactorsTablePanel
 				})
 			);
+		
+		builder.addSeparator("Convergence", cc.xy(1, 13));
+		
+		builder.add(buildConvergenceTable(inconsistencyModel, d_pm.getInconsistencyModelConstructedModel()), cc.xy(1, 15));
 		
 		return builder.getPanel();
 	}

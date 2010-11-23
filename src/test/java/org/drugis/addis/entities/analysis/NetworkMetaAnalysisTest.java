@@ -26,13 +26,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
+import org.drugis.mtc.BasicParameter;
+import org.drugis.mtc.Treatment;
+import org.drugis.mtc.summary.NormalSummary;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class NetworkMetaAnalysisTest {
@@ -59,10 +62,14 @@ public class NetworkMetaAnalysisTest {
 		assertEquals("Markov Chain Monte Carlo Network Meta-Analysis", d_analysis.getType());
 	}
 	
-	@Test @Ignore
+	@Test
 	public void testGetRelativeEffect() {
-		RelativeEffect<?> actual = d_mockAnalysis.getRelativeEffect(ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine(), BasicOddsRatio.class);
-		RelativeEffect<?> expected = NetworkRelativeEffect.buildOddsRatio(1.0, 0.33333);
+		Drug base = ExampleData.buildDrugFluoxetine();
+		Drug subj = ExampleData.buildDrugParoxetine();
+		RelativeEffect<?> actual = d_mockAnalysis.getRelativeEffect(base, subj, BasicOddsRatio.class);
+		NormalSummary summary = d_mockAnalysis.getNormalSummary(d_mockAnalysis.getConsistencyModel(), 
+				new BasicParameter(new Treatment(base.toString()), new Treatment(subj.toString())));
+		RelativeEffect<?> expected = NetworkRelativeEffect.buildOddsRatio(summary.getMean(), summary.getStandardDeviation());
 		assertNotNull(expected);
 		assertNotNull(actual);
 		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actual.getConfidenceInterval().getPointEstimate());
@@ -70,25 +77,3 @@ public class NetworkMetaAnalysisTest {
 		assertEquals(expected.getAxisType(), actual.getAxisType());
 	}
 }
-
-//
-//@Test
-//public void runModel() {
-//	ProgressListener mock = createMock(ProgressListener.class);
-//	mock.update(d_model, new ProgressEvent(EventType.MODEL_CONSTRUCTION_STARTED));
-//	mock.update(d_model, new ProgressEvent(EventType.MODEL_CONSTRUCTION_FINISHED));
-//	mock.update(d_model, new ProgressEvent(EventType.BURNIN_STARTED));
-//	for (int i = 100; i < d_model.getBurnInIterations(); i+=100) {
-//    	mock.update(d_model, new ProgressEvent(EventType.BURNIN_PROGRESS, i, d_model.getBurnInIterations()));
-//	}
-//	mock.update(d_model, new ProgressEvent(EventType.BURNIN_FINISHED));
-//	mock.update(d_model, new ProgressEvent(EventType.SIMULATION_STARTED));
-//	for (int i = 100; i < d_model.getSimulationIterations(); i+=100) {
-//    	mock.update(d_model, new ProgressEvent(EventType.SIMULATION_PROGRESS, i, d_model.getSimulationIterations()));
-//	}
-//	mock.update(d_model, new ProgressEvent(EventType.SIMULATION_FINISHED));
-//	replay(mock);
-//	d_model.addProgressListener(mock);
-//	d_model.run();
-//	verify(mock);
-//}

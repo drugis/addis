@@ -22,10 +22,14 @@
 
 package org.drugis.addis.presentation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.event.TaskEvent;
@@ -36,6 +40,8 @@ import org.jfree.data.category.CategoryDataset;
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<NetworkMetaAnalysis> {
 	ValueHolder<Boolean> d_inconsistencyModelConstructed;
+	private Map<MixedTreatmentComparison,TaskProgressModel> d_progressModels;
+	private ValueHolder<Boolean> d_consistencyModelConstructed;
 	
 	static class ModelConstructionFinishedModel extends UnmodifiableHolder<Boolean> implements TaskListener {
 		private Task d_task;
@@ -59,6 +65,10 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	public NetworkMetaAnalysisPresentation(NetworkMetaAnalysis bean, PresentationModelFactory mgr) {
 		super(bean, mgr);
 		d_inconsistencyModelConstructed = new ModelConstructionFinishedModel(getBean().getInconsistencyModel());
+		d_consistencyModelConstructed = new ModelConstructionFinishedModel(getBean().getConsistencyModel());
+		d_progressModels = new HashMap<MixedTreatmentComparison, TaskProgressModel>();
+		addModel(getBean().getConsistencyModel());
+		addModel(getBean().getInconsistencyModel());
 	}
 	
 	public String getNetworkXML() {
@@ -77,6 +87,10 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	public ValueHolder<Boolean> getInconsistencyModelConstructedModel() {
 		return d_inconsistencyModelConstructed;
 	}
+	
+	public ValueHolder<Boolean> getConsistencyModelConstructedModel() {
+		return d_consistencyModelConstructed;
+	}
 
 	public String getRankProbabilityRankChartNote() {
 		if(getBean().getOutcomeMeasure().getDirection() == Direction.HIGHER_IS_BETTER) {
@@ -87,4 +101,17 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 			return "Rank 1 is worst, rank N is best.";
 		}
 	}
+
+	public TaskProgressModel getProgressModel(MixedTreatmentComparison mtc) {
+		return d_progressModels.get(mtc);
+	}
+
+	public void startModels() {
+		getBean().run();
+	}
+
+	private TaskProgressModel addModel(MixedTreatmentComparison mtc) {
+		return d_progressModels.put(mtc, new TaskProgressModel(mtc.getActivityTask()));
+	}
+
 }
