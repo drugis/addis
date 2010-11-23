@@ -122,7 +122,7 @@ implements ViewBuilder {
 		d_main = main;
 		d_dialog = new JDialog(d_main, "Convergence Table", false);
 
-		d_pm.getBean().run();
+		d_pm.startModels();
 	}
 
 	public JComponent buildPanel() {
@@ -218,7 +218,7 @@ implements ViewBuilder {
 		CellConstraints cc =  new CellConstraints();
 		
 		final ConsistencyModel consistencyModel = d_pm.getBean().getConsistencyModel();
-		JProgressBar d_conProgressBar = new TaskProgressBar(consistencyModel.getActivityTask());
+		JProgressBar d_conProgressBar = new TaskProgressBar(d_pm.getProgressModel(consistencyModel));
 		if(!consistencyModel.isReady()) {
 			builder.add(d_conProgressBar, cc.xy(1, 1));
 		}
@@ -269,7 +269,7 @@ implements ViewBuilder {
 		CellConstraints cc = new CellConstraints();
 		
 		final InconsistencyModel inconsistencyModel = d_pm.getBean().getInconsistencyModel();
-		JProgressBar d_incProgressBar = new TaskProgressBar(inconsistencyModel.getActivityTask());
+		JProgressBar d_incProgressBar = new TaskProgressBar(d_pm.getProgressModel(inconsistencyModel));
 		if(!inconsistencyModel.isReady()) {
 			builder.add(d_incProgressBar, cc.xy(1, 1));
 		}
