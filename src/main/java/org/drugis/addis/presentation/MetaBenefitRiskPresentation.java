@@ -31,13 +31,14 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
-import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskListener;
+import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MCMCModel;
+import org.drugis.mtc.summary.Summary;
 
 @SuppressWarnings("serial")
 public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<Drug, MetaBenefitRiskAnalysis> {
@@ -77,7 +78,6 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	
 	
 	private AllModelsReadyListener d_allNetworkModelsReadyListener;
-
 	private List<MCMCModel> d_baselineModels;
 
 	public boolean allNMAModelsReady() {
@@ -89,11 +89,12 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		
 		d_pmf = pmf;
 		d_allNetworkModelsReadyListener = new AllModelsReadyListener();
-	
+
 		/* 
 		 * Only start SMAA if all networks are already done calculating when running this constructor.
 		 * If not, the 'ready' event of the networks will trigger the creation of the SMAA model.
 		 */
+		
 		d_baselineModels = new ArrayList<MCMCModel>();
 		initAllBaselineModels();
 		initAllNetworkAnalyses();
