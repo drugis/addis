@@ -42,7 +42,6 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
@@ -187,18 +186,17 @@ implements ViewBuilder {
 		return pane;
 	}
 
-	protected void showConvergencePlots(MixedTreatmentComparison mtc,
-			Parameter p) {
+	protected void showConvergencePlots(MixedTreatmentComparison mtc, Parameter p) {
 		JDialog dialog = new ConvergencePlotsDialog(d_dialog, mtc, p);
-		dialog.pack();
 		dialog.setLocationRelativeTo(d_dialog);
+		dialog.pack();
 		dialog.setVisible(true);
 	}
 
 	private JPanel buildConsistencyPart() {
 		
 		FormLayout layout = new FormLayout(	"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p" );
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p" );
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		CellConstraints cc =  new CellConstraints();
 		
@@ -230,8 +228,9 @@ implements ViewBuilder {
 		builder.add(mixedComparisonTablePanel, cc.xy(1,11));
 		
 		builder.addSeparator("Convergence", cc.xy(1, 13));
+		builder.add(AuxComponentFactory.createNoteField("Double click a parameter in the table below to see the convergence plots"), cc.xy(1, 15));
+		builder.add(buildConvergenceTable(consistencyModel, d_pm.getConsistencyModelConstructedModel()), cc.xy(1, 17));
 		
-		builder.add(buildConvergenceTable(consistencyModel, d_pm.getConsistencyModelConstructedModel()), cc.xy(1, 15));
 
 		return builder.getPanel();
 	}
@@ -239,7 +238,7 @@ implements ViewBuilder {
 	private Component buildInconsistencyPart() {
 	
 		FormLayout layout = new FormLayout("pref:grow:fill",
-				"p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 
 		CellConstraints cc = new CellConstraints();
@@ -295,8 +294,8 @@ implements ViewBuilder {
 			);
 		
 		builder.addSeparator("Convergence", cc.xy(1, 13));
-		
-		builder.add(buildConvergenceTable(inconsistencyModel, d_pm.getInconsistencyModelConstructedModel()), cc.xy(1, 15));
+		builder.add(AuxComponentFactory.createNoteField("Double click a parameter in the table below to see the convergence plots"), cc.xy(1, 15));
+		builder.add(buildConvergenceTable(inconsistencyModel, d_pm.getInconsistencyModelConstructedModel()), cc.xy(1, 17));
 		
 		return builder.getPanel();
 	}
@@ -396,13 +395,8 @@ implements ViewBuilder {
 	 * @param networkModel Model for which to display results.
 	 * @return A TablePanel
 	 */
-	private NetworkMetaAnalysisTablePanel createNetworkTablePanel(
-			MixedTreatmentComparison networkModel) {
-
-		NetworkTableModel networkAnalysisTableModel = new NetworkTableModel(
-				d_pm, d_parent.getPresentationModelFactory(), networkModel);
-		
+	private NetworkMetaAnalysisTablePanel createNetworkTablePanel( MixedTreatmentComparison networkModel ) {
+			NetworkTableModel networkAnalysisTableModel = new NetworkTableModel(d_pm, d_parent.getPresentationModelFactory(), networkModel);
 		return new NetworkMetaAnalysisTablePanel(d_parent, networkAnalysisTableModel);
-	}	
-	
+	}
 }
