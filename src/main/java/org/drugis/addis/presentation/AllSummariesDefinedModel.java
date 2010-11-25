@@ -9,11 +9,15 @@ import org.drugis.mtc.summary.Summary;
 @SuppressWarnings("serial")
 public class AllSummariesDefinedModel extends UnmodifiableHolder<Boolean> implements PropertyChangeListener {
 
+	private List<? extends Summary> d_summaries;
+	boolean d_oldVal;
+
 	public AllSummariesDefinedModel(List<? extends Summary> summaries) {
 		super(evaluate(summaries));
-		
-		for (Summary s : summaries) {
-			fireValueChange(false, s.PROPERTY_DEFINED);
+		d_summaries = summaries;
+		d_oldVal = evaluate(d_summaries);
+		for(Summary s: d_summaries) {
+			s.addPropertyChangeListener(this);
 		}
 	}
 
@@ -27,8 +31,13 @@ public class AllSummariesDefinedModel extends UnmodifiableHolder<Boolean> implem
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
-		// TODO Auto-generated method stub
-		
+		firePropertyChange("value", d_oldVal, evaluate(d_summaries));
+		d_oldVal = evaluate(d_summaries);
 	}
 
+	@Override
+	public Boolean getValue() {
+		return evaluate(d_summaries);
+	}
+	
 }

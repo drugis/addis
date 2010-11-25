@@ -32,89 +32,42 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.common.threading.Task;
-import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.ThreadHandler;
-import org.drugis.common.threading.event.TaskEvent;
-import org.drugis.common.threading.event.TaskEvent.EventType;
-import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MCMCModel;
+import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.Summary;
 
 @SuppressWarnings("serial")
 public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<Drug, MetaBenefitRiskAnalysis> {
-	private static class AllModelsReadyListener extends UnmodifiableHolder<Boolean> implements TaskListener {
-		private List<Task> d_tasks = new ArrayList<Task>();
-		
-		public AllModelsReadyListener() {
-			super(true);
-		}
-		
-		public void addTask(Task task) {
-			task.addTaskListener(this);
-			d_tasks.add(task);
-		}
-
-		public void taskEvent(TaskEvent event) {
-			if (event.getType() == EventType.TASK_FINISHED){
-				if(allModelsReady()) {
-					fireValueChange(false, true);
-				}
-			}
-		}
-		
-		@Override 
-		public Boolean getValue() {
-			return allModelsReady();
-		}
-
-		public boolean allModelsReady() {
-			for (Task task : d_tasks){
-				if (!task.isFinished())
-					return false;
-			}
-			return true;
-		}
-	}
 	
-	
-	private AllModelsReadyListener d_allNetworkModelsReadyListener;
+	private AllSummariesDefinedModel d_allSummariesDefinedModel;
 	private List<MCMCModel> d_baselineModels;
 
-	public boolean allNMAModelsReady() {
-		return d_allNetworkModelsReadyListener.allModelsReady();
-	}
-	
 	public MetaBenefitRiskPresentation(MetaBenefitRiskAnalysis bean, PresentationModelFactory pmf) {
 		super(bean, pmf);
 		
 		d_pmf = pmf;
-		d_allNetworkModelsReadyListener = new AllModelsReadyListener();
-
-		/* 
-		 * Only start SMAA if all networks are already done calculating when running this constructor.
-		 * If not, the 'ready' event of the networks will trigger the creation of the SMAA model.
-		 */
-		
 		d_baselineModels = new ArrayList<MCMCModel>();
 		initAllBaselineModels();
-		initAllNetworkAnalyses();
+
+		List<Summary> l = new ArrayList<Summary>();
+		for(MCMCModel m: d_baselineModels) {
+			AbstractBaselineModel<?> abm = (AbstractBaselineModel<?>) m; 
+			l.add(abm.getSummary());
+		}
+		for(Drug d: bean.getAlternatives()) {
+			if (!d.equals(bean.getBaseline())) {
+				for(MetaAnalysis ma: bean.getMetaAnalyses()) {
+					if (ma instanceof NetworkMetaAnalysis) {
+						NetworkMetaAnalysis nma = (NetworkMetaAnalysis) ma;
+						l.add(nma.getNormalSummary(nma.getConsistencyModel(), 
+								nma.getConsistencyModel().getRelativeEffect(new Treatment(bean.getBaseline().getName()), new Treatment(d.getName()))));
+					}
+				}
+			}
+		}
+		d_allSummariesDefinedModel = new AllSummariesDefinedModel(l);
 	}
-	
-//	public int getNumNMAProgBars() {
-//		return d_NMAnalysisProgressListeners.size();
-//	}
-//	
-//	public int getNumBaselineProgBars() {
-//		return d_baselineProgressListeners.size();
-//	}
-//	
-//	public void attachNMAProgBar(JProgressBar bar, int progBarNum) {
-//		d_NMAnalysisProgressListeners.get(progBarNum).attachBar(bar);
-//	}
-//	
-//	public void attachBaselineProgBar(JProgressBar bar, int progBarNum) {
-//		d_baselineProgressListeners.get(progBarNum).attachBar(bar);
-//	}
 	
 	public ListHolder<MetaAnalysis> getAnalysesModel() {
 		// FIXME: By the time it's possible the edit BR-analyses, this listholder should be hooked up.
@@ -122,18 +75,9 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	}
 
 	
-	private void initAllNetworkAnalyses() {
-		for (MetaAnalysis ma : getBean().getMetaAnalyses() ){
-			if (ma instanceof NetworkMetaAnalysis) {
-				ConsistencyModel consistencyModel = ((NetworkMetaAnalysis) ma).getConsistencyModel();
-				d_allNetworkModelsReadyListener.addTask(consistencyModel.getActivityTask());
-			}
-		}
-	}
-	
 	@Override
 	public ValueHolder<Boolean> getMeasurementsReadyModel() {
-		return d_allNetworkModelsReadyListener;
+		return d_allSummariesDefinedModel;
 	}
 	
 	public List<Task> getMeasurementTasks() {
@@ -164,7 +108,6 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		for (OutcomeMeasure om : getBean().getOutcomeMeasures()) {
 			model = getBean().getBaselineModel(om);
 			d_baselineModels.add(model);
-			d_allNetworkModelsReadyListener.addTask(model.getActivityTask());
 		}
 	}
 	
