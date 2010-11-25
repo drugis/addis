@@ -47,7 +47,6 @@ import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.LyndOBrienPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
-import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.ViewBuilder;
 import org.drugis.common.gui.task.TaskProgressBar;
 import org.drugis.common.threading.TaskListener;
@@ -122,7 +121,6 @@ public class LyndOBrienView implements ViewBuilder {
 				" proportion of datapoints in the Benefit-Risk" +
 				" plane that lie below the line y = \u03BC x"), cc.xy(1,13));
 		d_panel = builder.getPanel();
-		ChildComponenentHeightPropagater.attachToContainer(d_panel);
 		return d_panel;
 	}
 

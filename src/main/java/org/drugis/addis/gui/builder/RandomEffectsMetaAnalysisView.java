@@ -43,6 +43,7 @@ import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.treeplot.ForestPlot;
@@ -75,7 +76,7 @@ implements ViewBuilder {
 		
 		CellConstraints cc =  new CellConstraints();		
 
-		JTabbedPane tabbedPane = new JTabbedPane();
+		JTabbedPane tabbedPane = new AddisTabbedPane();
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(PairWiseMetaAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
 		builder.add(buildOverviewPart(), cc.xy(1, 3));
 

@@ -53,6 +53,7 @@ import org.drugis.addis.gui.ConvergencePlotsDialog;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
+import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
@@ -142,7 +143,7 @@ implements ViewBuilder {
 		builder.addSeparator("Evidence network", cc.xy(1, 9));
 		builder.add(buildStudyGraphPart(), cc.xy(1, 11));
 
-		JTabbedPane tabbedPane = new JTabbedPane();
+		JTabbedPane tabbedPane = new AddisTabbedPane();
 		tabbedPane.addTab("Overview", builder.getPanel());
 		
 		layout = new FormLayout(

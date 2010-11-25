@@ -35,6 +35,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyPresentation;
@@ -83,7 +84,7 @@ public class StudyView implements ViewBuilder {
 		builder.add(buildArmsPart(),cc.xy(1, row));
 
 		
-		JTabbedPane tabbedPane = new JTabbedPane();
+		JTabbedPane tabbedPane = new AddisTabbedPane();
 		tabbedPane.addTab("Overview", builder.getPanel());
 
 		layout = new FormLayout( 
