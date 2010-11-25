@@ -41,7 +41,6 @@ import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.SMAAPresentation;
-import org.drugis.common.gui.ChildComponenentHeightPropagater;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
@@ -112,7 +111,7 @@ public class SMAAView implements ViewBuilder  {
 		d_builder.add(buildCentralWeightsPart(), cc.xy(1, 15));
 		
 		JPanel d_panel = d_builder.getPanel();
-		ChildComponenentHeightPropagater.attachToContainer(d_panel);
+//		ChildComponenentHeightPropagater.attachToContainer(d_panel);
 		return d_panel;	
 	}
 		

@@ -44,7 +44,7 @@ public class BuildViewWhenReadyComponent extends JPanel {
 	private final ViewBuilder d_builder;
 	private final ValueHolder<Boolean> d_readyModel;
 	private final String d_message;
-
+	
 	/**
 	 * Only show (build) the component once the value model has true. 
 	 * Until then, show a waiting spinner and message.

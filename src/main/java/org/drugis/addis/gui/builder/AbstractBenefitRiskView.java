@@ -32,6 +32,7 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
@@ -65,14 +66,13 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 	
 
 	public JComponent buildPanel() {
-		JTabbedPane tabbedPane = new JTabbedPane();
+		JTabbedPane tabbedPane = new AddisTabbedPane();
 		tabbedPane.addTab("Overview", buildOverviewPanel());
 		tabbedPane.addTab("Measurements", buildMeasurementsPanel());
 		tabbedPane.addTab("Analysis", buildAnalysisPanel());
 		return tabbedPane;
 	}
 
-	
 	protected abstract JPanel buildOverviewPanel();
 
 	protected JPanel buildOverviewPart() {
@@ -111,7 +111,6 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		builder.addLabel("Alternatives:", cc.xy(1, row));
 		ListPanel alternativesList = new ListPanel(getAnalysis().getAlternatives());
 		builder.add(alternativesList,cc.xy(3, row));
-
 		
 		return builder.getPanel();	
 	}

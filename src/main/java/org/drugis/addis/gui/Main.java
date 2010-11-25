@@ -31,8 +31,6 @@ import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -84,6 +82,8 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityCategory;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
+import org.drugis.addis.gui.components.AddisScrollPane;
+import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.common.ImageLoader;
@@ -119,7 +119,7 @@ public class Main extends JFrame {
 	}
 	
 	private JComponent d_leftPanel;
-	private JScrollPane d_rightPanel;
+	private JPanel d_rightPanel;
 	private ViewBuilder d_rightPanelBuilder;
 
 	private DomainManager d_domainMgr;
@@ -150,12 +150,6 @@ public class Main extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent evt) {
 				quitApplication();
-			}
-		});
-		addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentResized(ComponentEvent arg0) {
-				setRightPanelViewSize();
 			}
 		});
 		
@@ -705,7 +699,7 @@ public class Main extends JFrame {
 		add(pane);
 	}
 
-	public JScrollPane getRightPanel() {
+	public JPanel getRightPanel() {
 		return d_rightPanel;
 	}
 
@@ -791,11 +785,8 @@ public class Main extends JFrame {
 	}
 
 	private void initRightPanel() {
-		JPanel panel = new JPanel();
-		JScrollPane scrollPane = new JScrollPane(panel);
-		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		d_rightPanel = scrollPane;
+		d_rightPanel = new JPanel(new BorderLayout());
+		d_rightPanel.setOpaque(true);
 	}
 
 	public static void main(String[] args) {
@@ -807,13 +798,13 @@ public class Main extends JFrame {
 						"Unexpected Error", JOptionPane.ERROR_MESSAGE);
 			}
 		};
+		
 		Thread mainThread = new Thread(threadGroup, "Main thread") {
 			@Override
 			public void run() {
 				Main frame = new Main();
 				frame.initComponents();
 				frame.pack();
-				//frame.setVisible(true);
 				frame.showWelcome();
 			}
 		};
@@ -846,18 +837,18 @@ public class Main extends JFrame {
 	}
 
 	private void setRightPanelContents(JComponent component) {
-		d_rightPanel.setViewportView(component);
-		setRightPanelViewSize();
+		d_rightPanel.setVisible(false);
+		d_rightPanel.removeAll();
+		d_rightPanel.add(encapsulate(component), BorderLayout.CENTER);
+		d_rightPanel.setVisible(true);
 	}
 
-	private void setRightPanelViewSize() {
-		JComponent view = (JComponent) d_rightPanel.getViewport().getView();
-		Dimension dimension = new Dimension();
-		int prefWidth = getSize().width - d_leftPanel.getPreferredSize().width
-				- 40;
-		dimension.width = Math.max(prefWidth, view.getMinimumSize().width);
-		dimension.height = view.getPreferredSize().height;
-		view.setPreferredSize(dimension);
+	
+	private Component encapsulate(JComponent component) {
+		if (!(component instanceof AddisTabbedPane)) {
+			return new AddisScrollPane(component);
+		}
+		return component;
 	}
 
 	private class MainListener implements DomainListener {

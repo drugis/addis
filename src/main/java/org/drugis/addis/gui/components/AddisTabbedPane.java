@@ -20,27 +20,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.util.comparator;
+package org.drugis.addis.gui.components;
 
-import java.util.Comparator;
+import java.awt.Component;
 
-import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import javax.swing.Icon;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 
-/**
- * Sorts criteria so that HIGHER_IS_BETTER are put before LOWER_IS_BETTER.
- */
-public class CriteriaComparator implements Comparator<OutcomeMeasure> {
-
-	public int compare(OutcomeMeasure x0, OutcomeMeasure x1) {
-		if (x0.getDirection() == x1.getDirection()) {
-			return x0.getName().compareTo(x1.getName());
-		}
-		if (x0.getDirection() == Direction.HIGHER_IS_BETTER) {
-			return -1;
-		} else {
-			return 1;
-		}
+public class AddisTabbedPane extends JTabbedPane {
+	private static final long serialVersionUID = -8961793373881538352L;
+	
+	public AddisTabbedPane() {
+		super();
+		setOpaque(true);
 	}
 
+	@Override
+	public void addTab(String title, Component component) {
+		super.addTab(title, encapsulate(component));
+	}
+
+
+	@Override
+	public void addTab(String title, Icon icon, Component component) {
+		super.addTab(title, icon, encapsulate(component));
+	}
+	
+	@Override
+	public void addTab(String title, Icon icon, Component component, String tip) {
+		super.addTab(title, icon, encapsulate(component), tip);
+	}
+	
+	private JScrollPane encapsulate(Component panel) {
+		return new AddisScrollPane(panel);
+	}
 }
