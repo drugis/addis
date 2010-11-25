@@ -134,7 +134,7 @@ public class LyndOBrienView implements ViewBuilder {
 					"p, 3dlu, p, 3dlu, p");
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc =  new CellConstraints();
-			JProgressBar bar = new TaskProgressBar(d_pm.getTask());
+			JProgressBar bar = new TaskProgressBar(d_pm.getProgressModel());
 			builder.add(bar,cc.xy(1, 1));
 			final draggableMuChartPanel component = new draggableMuChartPanel(LyndOBrienChartFactory.buildScatterPlot(d_pm.getModel()));
 			d_pm.getModel().getTask().addTaskListener(this);

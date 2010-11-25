@@ -28,6 +28,7 @@ import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.lyndobrien.BenefitRiskDistributionImpl;
 import org.drugis.addis.lyndobrien.LyndOBrienModel;
 import org.drugis.addis.lyndobrien.LyndOBrienModelImpl;
+import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 
@@ -35,6 +36,7 @@ public class LyndOBrienPresentation<Alternative extends Entity, AnalysisType ext
 	AnalysisType d_a;
 	StudyBenefitRiskAnalysis sbr;
 	private LyndOBrienModelImpl d_model;
+	private TaskProgressModel d_tpm;
 	private ValueHolder<Boolean> d_initializedModel = new ModifiableHolder<Boolean>(false);
 	
 	public LyndOBrienPresentation(AnalysisType at) {
@@ -52,10 +54,15 @@ public class LyndOBrienPresentation<Alternative extends Entity, AnalysisType ext
 	public void startLyndOBrien() {
 		d_model = new LyndOBrienModelImpl(new BenefitRiskDistributionImpl<Alternative>(d_a));
 		d_initializedModel.setValue(true);
+		d_tpm = new TaskProgressModel(d_model.getTask());
 		ThreadHandler.getInstance().scheduleTask(d_model.getTask());
 	}
 
 	public Task getTask() {
 		return d_model.getTask();
+	}
+
+	public TaskProgressModel getProgressModel() {
+		return d_tpm;
 	}
 }
