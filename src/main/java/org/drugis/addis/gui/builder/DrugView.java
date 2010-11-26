@@ -126,7 +126,6 @@ public class DrugView implements ViewBuilder{
 
 		public void run() {
 			try {
-				//Thread.sleep(500);
 				d_drugDetails = new AtcParser().getAtcDetails(d_model.getModel(Drug.PROPERTY_ATCCODE).getString());
 			} catch (IOException e) {
 				d_error = e;

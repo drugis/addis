@@ -39,7 +39,6 @@ import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.EntitiesTablePanel;
-import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.common.gui.ImageExporter;
@@ -63,14 +62,14 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
-		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+		PanelBuilder builder = new PanelBuilder(layout, new JPanel());
 		builder.setDefaultDialogBorder();
+		builder.setOpaque(true);
 		
 		CellConstraints cc =  new CellConstraints();
 		
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(BenefitRiskAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
 		builder.add(buildOverviewPart(), cc.xy(1, 3));
-		
 
 		builder.addSeparator("Included Analyses", cc.xy(1, 5));
 		builder.add(buildAnalysesPart(), cc.xy(1, 7));
@@ -89,6 +88,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 				}
 			}
 		});
+		
 		return builder.getPanel();
 	}
 	
@@ -131,6 +131,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		FormLayout layout = new FormLayout("pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
+		builder.setOpaque(true);
 		
 		builder.add(AuxComponentFactory.createNoteField("Relative measurements: odds ratio or mean difference, with "
 				+ d_pm.getBean().getBaseline() +" as the common comparator."),cc.xy(1, 1));

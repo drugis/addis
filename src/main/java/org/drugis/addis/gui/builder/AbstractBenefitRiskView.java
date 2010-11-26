@@ -34,7 +34,6 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.ListPanel;
-import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 import org.drugis.common.gui.LayoutUtil;
@@ -70,6 +69,7 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		tabbedPane.addTab("Overview", buildOverviewPanel());
 		tabbedPane.addTab("Measurements", buildMeasurementsPanel());
 		tabbedPane.addTab("Analysis", buildAnalysisPanel());
+		tabbedPane.setOpaque(true);
 		return tabbedPane;
 	}
 
@@ -80,6 +80,8 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		FormLayout layout = new FormLayout("right:pref, 3dlu, left:pref:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
+		
+		builder.setOpaque(true);
 		
 		builder.addLabel("ID:", cc.xy(1, 1));
 		JLabel tmp = new JLabel((String) d_pm.getModel(BenefitRiskAnalysis.PROPERTY_NAME).getValue());
@@ -129,8 +131,9 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 				"p, 3dlu, p"
 				);
 		CellConstraints cc = new CellConstraints();
-		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+		PanelBuilder builder = new PanelBuilder(layout, new JPanel());
 		builder.setDefaultDialogBorder();
+		builder.setOpaque(true);
 		
 		builder.addSeparator("Measurements", cc.xy(1, 1));
 		builder.add(buildMeasurementsPart(), cc.xy(1, 3));

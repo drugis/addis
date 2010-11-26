@@ -29,7 +29,6 @@ import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.EnhancedTable;
-import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 
@@ -63,7 +62,7 @@ public class StudyBenefitRiskView extends AbstractBenefitRiskView<StudyBenefitRi
 				"p, 3dlu, p, " + // 1-3 
 				"3dlu, p");
 		
-		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+		PanelBuilder builder = new PanelBuilder(layout, new JPanel());
 		builder.setDefaultDialogBorder();
 		
 		CellConstraints cc =  new CellConstraints();

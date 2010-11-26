@@ -87,7 +87,7 @@ implements ViewBuilder {
 		
 		layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu");
+				"p, 3dlu, p");
 		builder = new PanelBuilder(layout);
 
 		builder.add(getPlotsPanel(false), cc.xy(1, 3));

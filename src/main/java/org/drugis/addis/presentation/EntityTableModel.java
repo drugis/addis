@@ -66,7 +66,6 @@ public class EntityTableModel extends AbstractTableModel implements TableModelWi
 		if (column == 0)
 			return d_entities.getValue().get(row);
 		
-		
 		try {
 			ValueModel model = d_pmf.getModel(d_entities.getValue().get(row)).getModel(d_props.get(column));
 			return model.getValue();

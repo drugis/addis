@@ -37,7 +37,6 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
-import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.SMAAPresentation;
@@ -98,8 +97,9 @@ public class SMAAView implements ViewBuilder  {
 				"3dlu, p, 3dlu, p, " + // 8-11 
 				"3dlu, p, 3dlu, p "
 				);
-		PanelBuilder d_builder = new PanelBuilder(layout, new ScrollableJPanel());
+		PanelBuilder d_builder = new PanelBuilder(layout, new JPanel());
 		d_builder.setDefaultDialogBorder();
+		d_builder.setOpaque(true);
 		
 		d_builder.addSeparator("Preferences", cc.xy(1, 5));
 		d_builder.add(buildPreferencesPart(), cc.xy(1, 7));
@@ -110,9 +110,7 @@ public class SMAAView implements ViewBuilder  {
 		d_builder.addSeparator("Central Weights", cc.xy(1, 13));
 		d_builder.add(buildCentralWeightsPart(), cc.xy(1, 15));
 		
-		JPanel d_panel = d_builder.getPanel();
-//		ChildComponenentHeightPropagater.attachToContainer(d_panel);
-		return d_panel;	
+		return d_builder.getPanel();	
 	}
 		
 	private JButton createExportButton() {
@@ -135,6 +133,8 @@ public class SMAAView implements ViewBuilder  {
 		public JComponent buildPanel() {
 			FormLayout layout = new FormLayout("pref:grow:fill", "p, 3dlu, p");
 			PanelBuilder builder = new PanelBuilder(layout);
+			builder.setOpaque(true);
+
 			CellConstraints cc = new CellConstraints();
 
 			final JPanel panel = new JPanel();
