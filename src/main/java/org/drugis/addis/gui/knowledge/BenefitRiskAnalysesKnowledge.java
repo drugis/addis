@@ -27,6 +27,7 @@ import javax.swing.JDialog;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.gui.Main;
@@ -44,14 +45,12 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 	public BenefitRiskAnalysesKnowledge() {
-		super("benefit-risk analysis", "Benefit-risk analyses", FileNames.ICON_BENEFITRISK, MetaBenefitRiskAnalysis.class);
+		super("benefit-risk analysis", "Benefit-risk analyses", FileNames.ICON_BENEFITRISK, BenefitRiskAnalysis.class);
 	}
 	
-	public JDialog getAddDialog(Main main, Domain domain,
-			ValueModel selectionModel) {
+	public JDialog getAddDialog(Main main, Domain domain, ValueModel selectionModel) {
 		JDialog dialog = new JDialog(main, "Create Benefit-risk analysis", true);
-		Wizard wizard = new BenefitRiskWizard(main,
-				new BenefitRiskWizardPM(domain));
+		Wizard wizard = new BenefitRiskWizard(main,	new BenefitRiskWizardPM(domain));
 		dialog.getContentPane().add(wizard);
 		dialog.pack();
 		WizardFrameCloser.bind(wizard, dialog);
@@ -66,8 +65,10 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 	
 	@Override
 	protected String[] getShownProperties() {
-		return new String[] { "name", "indication", "outcomeMeasures",
-				"metaAnalyses", "baseline", "drugs" };
+		// Meta: "drugs" , "baseline", "metaAnalyses"
+		// S study: "study" , "arms"
+		
+		return new String[] { "name", "analysisType", "indication", "outcomeMeasures", "alternatives" };
 	}
 
 	@Override
