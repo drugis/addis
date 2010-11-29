@@ -17,7 +17,9 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
-1.3: Lynd & O'Brien benefit-risk analysis, corrected meta-analysis
+1.3: Lynd & O'Brien benefit-risk analysis, corrected meta-analysis,
+   network meta-analysis enhancements (assessment of convergence,
+   variance parameters), tabbed views.
 
 1.2.1: Bugfix release
 
