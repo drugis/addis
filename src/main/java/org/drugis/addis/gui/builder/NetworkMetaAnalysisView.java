@@ -34,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -57,6 +58,7 @@ import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
+import org.drugis.addis.lyndobrien.ScatterPlotDataset;
 import org.drugis.addis.presentation.ConvergenceDiagnosticTableModel;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
@@ -64,6 +66,7 @@ import org.drugis.addis.presentation.NetworkTableModel;
 import org.drugis.addis.presentation.NetworkVarianceTableModel;
 import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.util.EmpiricalDensityDataset;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
@@ -72,7 +75,9 @@ import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.ConsistencyModel;
+import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.InconsistencyModel;
+import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.QuantileSummary;
@@ -80,7 +85,9 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.xy.XYDataset;
 
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -166,7 +173,41 @@ implements ViewBuilder {
 		builder.add(buildConsistencyPart(), cc.xy(1, 3));
 		tabbedPane.addTab("Consistency", builder.getPanel());
 		
+		layout = new FormLayout(
+				"pref:grow:fill",
+				"p, 3dlu, p");
+		builder = new PanelBuilder(layout, new ScrollableJPanel());
+		builder.setDefaultDialogBorder();
+		
+		builder.add(buildNodeSplitPart(), cc.xy(1, 3));
+		tabbedPane.addTab("Node Split", builder.getPanel());
 		return tabbedPane;
+	}
+
+	private JComponent buildNodeSplitPart() {
+		JPanel panel = new JPanel();
+		
+		List<MCMCResults> results = d_pm.getNodeSplitResults();
+		for(MCMCResults r: results) {
+			panel.add(makeChart(r));
+		}
+		return panel;
+	}
+
+	private JComponent makeChart(MCMCResults r) {
+		XYDataset dataset = new EmpiricalDensityDataset(r, null, 0);
+		JFreeChart chart = ChartFactory.createXYLineChart(
+	            "Line Chart Demo 6",      
+	            "X",                      
+	            "Y",                      
+	            dataset,                  
+	            PlotOrientation.VERTICAL,
+	            true,                     
+	            true,                    
+	            false                    
+	        );
+        final ChartPanel chartPanel = new ChartPanel(chart);
+		return chartPanel;	
 	}
 
 	private JComponent buildConvergenceTable(final MixedTreatmentComparison mtc, ValueHolder<Boolean> modelConstructed) {

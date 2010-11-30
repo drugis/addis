@@ -23,6 +23,7 @@
 package org.drugis.addis.presentation;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.Drug;
@@ -34,6 +35,7 @@ import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
+import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.jfree.data.category.CategoryDataset;
 
@@ -112,6 +114,11 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 
 	private TaskProgressModel addModel(MixedTreatmentComparison mtc) {
 		return d_progressModels.put(mtc, new TaskProgressModel(mtc.getActivityTask()));
+	}
+
+	public List<MCMCResults> getNodeSplitResults() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

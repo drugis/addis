@@ -69,6 +69,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		new HashMap<MCMCModel, Map<Parameter, QuantileSummary>>();
 
 	private boolean d_isContinuous = false;
+	private RankProbabilitySummary d_rankProbabilitySummary;
 	
 	private NetworkMetaAnalysis() {
 		super();
@@ -219,7 +220,6 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			XML.write(arg0, arg1);
 		}
 	};
-	private RankProbabilitySummary d_rankProbabilitySummary;
 	
 	public boolean isContinuous() {
 		return d_isContinuous;
