@@ -78,7 +78,7 @@ implements ViewBuilder {
 
 		JTabbedPane tabbedPane = new AddisTabbedPane();
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(PairWiseMetaAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
-		builder.add(buildOverviewPart(), cc.xy(1, 3));
+		builder.add(buildPropertiesPart(), cc.xy(1, 3));
 
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural(), cc.xy(1, 5));
 		builder.add(buildStudiesPart(), cc.xy(1, 7));

@@ -35,8 +35,9 @@ import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
-import org.drugis.mtc.MCMCResults;
+import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.MixedTreatmentComparison;
+import org.drugis.mtc.NodeSplitModel;
 import org.jfree.data.category.CategoryDataset;
 
 @SuppressWarnings("serial")
@@ -71,6 +72,9 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		d_progressModels = new HashMap<MixedTreatmentComparison, TaskProgressModel>();
 		addModel(getBean().getConsistencyModel());
 		addModel(getBean().getInconsistencyModel());
+		for (BasicParameter p : getBean().getSplitParameters()) {
+			addModel(getBean().getNodeSplitModel(p));
+		}
 	}
 	
 	public String getNetworkXML() {
@@ -116,9 +120,12 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return d_progressModels.put(mtc, new TaskProgressModel(mtc.getActivityTask()));
 	}
 
-	public List<MCMCResults> getNodeSplitResults() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<BasicParameter> getSplitParameters() {
+		return getBean().getSplitParameters();
+	}
+
+	public NodeSplitModel getNodeSplitModel(BasicParameter p) {
+		return getBean().getNodeSplitModel(p);
 	}
 
 }

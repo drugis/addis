@@ -61,7 +61,7 @@ public abstract class AbstractMetaAnalysisView<T extends AbstractMetaAnalysisPre
 		return builder.getPanel();
 	}
 
-	protected JComponent buildOverviewPart() {
+	protected JComponent buildPropertiesPart() {
 		FormLayout layout = new FormLayout(
 				"pref, 3dlu, pref:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");

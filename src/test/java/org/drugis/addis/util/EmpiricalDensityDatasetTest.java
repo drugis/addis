@@ -3,6 +3,7 @@ package org.drugis.addis.util;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,13 +11,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-import org.apache.commons.math.stat.descriptive.summary.Sum;
 import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.util.FileResults;
 import org.drugis.mtc.yadas.RandomEffectsVariance;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class EmpiricalDensityDatasetTest {
@@ -24,9 +25,10 @@ public class EmpiricalDensityDatasetTest {
 	private Parameter[] d_parameters;
 	private FileResults d_results;
 	
-	private double[] s_densities1 = {54, 73, 82, 87,  93, 110, 140, 155, 177, 183, 238, 231, 250,
+	private static final int[] s_densities1 = {54, 73, 82, 87,  93, 110, 140, 155, 177, 183, 238, 231, 250,
 			254, 280, 300, 359, 371, 426, 401, 435, 440, 477, 504, 474, 450, 453, 478, 506, 475, 459,
 			462, 411, 412, 382, 336, 328, 318, 359, 272, 270, 224, 200, 180, 126, 149, 161,  93,  83,  69};
+	private static final double[] s_quantiles1 = { 0.1472530, 0.7713364 }; 
 
 	@Before
 	public void setUp() throws IOException {
@@ -38,39 +40,60 @@ public class EmpiricalDensityDatasetTest {
 				new BasicParameter(t1, t2), new BasicParameter(t2, t3), new RandomEffectsVariance()	
 		};
 		d_results = new FileResults(is, d_parameters, 3, 10000);
-		d_results.makeSamplesAvailable();
 	}
-	
-	@Test
-	public void testDensityLength() {
-		EmpiricalDensityDataset edd = new EmpiricalDensityDataset(d_results, d_parameters[0], 50);
-		assertEquals(50, edd.getDensities().length);
-	}
-	
-	@Test
-	public void testDensitySum() {
-		Sum sum = new Sum();
-		EmpiricalDensityDataset edd = new EmpiricalDensityDataset(d_results, d_parameters[0], 50);
-		assertEquals(sum.evaluate(s_densities1), sum.evaluate(edd.getDensities()), EPSILON);
-	}
-	
-	@Test
-	public void testDensities() {
-		EmpiricalDensityDataset edd = new EmpiricalDensityDataset(d_results, d_parameters[0], 50);
-		assertArrayEquals(s_densities1, edd.getDensities(), EPSILON);
-	}
-
-	@Test
-	public void testNormalisedDensities() throws IOException {
-		EmpiricalDensityDataset edd = new EmpiricalDensityDataset(d_results, d_parameters[0], 50);
-		double[] normDensities = readDensity("test.txt");
-		assertArrayEquals(normDensities, edd.getNormDensities(), EPSILON);
-	}
-	
 	
 	@Test
 	public void testReadFiles() throws IOException {
 		assertNotNull(readDensity("test.txt"));
+	}
+	
+	@Test
+	public void testCountLength() {
+		d_results.makeSamplesAvailable();
+		EmpiricalDensityDataset edd = new EmpiricalDensityDataset(d_results, d_parameters[0], 50);
+		assertEquals(50, edd.getCounts().length);
+	}
+	
+	@Test
+	public void testCounts() {
+		d_results.makeSamplesAvailable();
+		EmpiricalDensityDataset edd = new EmpiricalDensityDataset(d_results, d_parameters[0], 50);
+		assertArrayEquals(s_densities1, edd.getCounts());
+	}
+
+	@Test
+	public void testDensities() throws IOException {
+		d_results.makeSamplesAvailable();
+		EmpiricalDensityDataset edd = new EmpiricalDensityDataset(d_results, d_parameters[0], 50);
+		double[] normDensities = readDensity("test.txt");
+		assertArrayEquals(normDensities, edd.getDensities(), EPSILON);
+	}
+
+	@Test
+	public void testDensitiesDynamic() throws IOException {
+		EmpiricalDensityDataset edd = new EmpiricalDensityDataset(d_results, d_parameters[0], 50);
+		d_results.makeSamplesAvailable();
+		double[] normDensities = readDensity("test.txt");
+		assertArrayEquals(normDensities, edd.getDensities(), EPSILON);
+	}
+	
+	@Test @Ignore
+	public void testResultsEventShouldTriggerDatasetChanged() {
+		// FIXME: test for dataset change events.
+		fail();
+	}
+	
+	@Test
+	public void testGetX() throws IOException {
+		d_results.makeSamplesAvailable();
+		EmpiricalDensityDataset edd = new EmpiricalDensityDataset(d_results, d_parameters[0], 50);
+		double bottom = s_quantiles1[0];
+		double top = s_quantiles1[1];
+		double interval = (top - bottom) / 50;
+		
+		assertEquals((0.5 + 1) * interval + bottom, edd.getX(0, 1), EPSILON);
+		assertEquals((0.5 + 25) * interval + bottom, edd.getX(0, 25), EPSILON);
+		assertEquals((0.5 + 49) * interval + bottom, edd.getX(0, 49), EPSILON);
 	}
 	
 	private double[] readDensity(String file) throws IOException {

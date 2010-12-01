@@ -43,6 +43,7 @@ import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
+import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.ContinuousNetworkBuilder;
 import org.drugis.mtc.DefaultModelFactory;
@@ -52,6 +53,7 @@ import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Network;
 import org.drugis.mtc.NetworkBuilder;
+import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.NormalSummary;
@@ -70,6 +72,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 
 	private boolean d_isContinuous = false;
 	private RankProbabilitySummary d_rankProbabilitySummary;
+	private Map<BasicParameter, NodeSplitModel> d_nodeSplitModels = new HashMap<BasicParameter, NodeSplitModel>();
 	
 	private NetworkMetaAnalysis() {
 		super();
@@ -93,6 +96,10 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		d_normalSummaries.put(consistencyModel, new HashMap<Parameter, NormalSummary>());
 		d_quantileSummaries.put(consistencyModel, new HashMap<Parameter, QuantileSummary>());
 		return consistencyModel;
+	}
+	
+	private NodeSplitModel createNodeSplitModel(BasicParameter node) {
+		return (DefaultModelFactory.instance()).getNodeSplitModel(getBuilder().buildNetwork(), node);
 	}
 
 	private NetworkBuilder<? extends org.drugis.mtc.Measurement> createBuilder(List<? extends Study> studies, List<Drug> drugs, Map<Study, Map<Drug, Arm>> armMap) {
@@ -251,5 +258,16 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 
 	public Treatment getTreatment(Drug d1) {
 		return getBuilder().getTreatment(d1.getName());
+	}
+
+	public List<BasicParameter> getSplitParameters() {
+		return DefaultModelFactory.instance().getSplittableNodes(getBuilder().buildNetwork());
+	}
+
+	public NodeSplitModel getNodeSplitModel(BasicParameter p) {
+		if (!d_nodeSplitModels.containsKey(p)) {
+			d_nodeSplitModels.put(p, createNodeSplitModel(p));
+		}
+		return d_nodeSplitModels.get(p);
 	}
 }
