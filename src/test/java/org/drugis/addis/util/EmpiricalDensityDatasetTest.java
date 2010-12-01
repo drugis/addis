@@ -74,10 +74,24 @@ public class EmpiricalDensityDatasetTest {
 	}
 	
 	private double[] readDensity(String file) throws IOException {
+		/*
+		 * Generated in R using:
+			x <- read.table("conv-samples.txt", sep=",")
+			chains <- sapply(0:2, function(i) { x[(5001 + i * 10000):((i+1)*10000),1] })
+			y <- c(chains)
+			q <- quantile(y, c(0.025, 0.975), type=6)
+			nBins <- 50
+			binSize <- (q[2] - q[1])/nBins
+			breaks <- c(min(y), seq(from=q[1], to=q[2], by=binSize), max(y))
+			dens <- hist(y, plot=F, breaks=breaks)$density[2:51]
+			write.table(dens, "test.txt")
+		 */
+		
 		InputStream is = EmpiricalDensityDatasetTest.class.getResourceAsStream(file);
 		double[] data = new double[50];		
 		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		reader.readLine(); // skip the first line
 		for (int i = 0; reader.ready(); ++i) {
 			String line = reader.readLine();
 			StringTokenizer tok = new StringTokenizer(line, " ");
