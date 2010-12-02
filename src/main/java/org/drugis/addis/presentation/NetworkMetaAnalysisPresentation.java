@@ -45,6 +45,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	ValueHolder<Boolean> d_inconsistencyModelConstructed;
 	private Map<MixedTreatmentComparison,TaskProgressModel> d_progressModels;
 	private ValueHolder<Boolean> d_consistencyModelConstructed;
+	private Map<BasicParameter, ValueHolder<Boolean>> d_nodesplitModelsConstructed;
 	
 	static class ModelConstructionFinishedModel extends UnmodifiableHolder<Boolean> implements TaskListener {
 		private Task d_task;
@@ -70,10 +71,13 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		d_inconsistencyModelConstructed = new ModelConstructionFinishedModel(getBean().getInconsistencyModel());
 		d_consistencyModelConstructed = new ModelConstructionFinishedModel(getBean().getConsistencyModel());
 		d_progressModels = new HashMap<MixedTreatmentComparison, TaskProgressModel>();
+		d_nodesplitModelsConstructed = new HashMap<BasicParameter, ValueHolder<Boolean>>();
 		addModel(getBean().getConsistencyModel());
 		addModel(getBean().getInconsistencyModel());
 		for (BasicParameter p : getBean().getSplitParameters()) {
-			addModel(getBean().getNodeSplitModel(p));
+			NodeSplitModel m = getBean().getNodeSplitModel(p);
+			addModel(m);
+			d_nodesplitModelsConstructed.put(p, new ModelConstructionFinishedModel(m));
 		}
 	}
 	
@@ -98,6 +102,11 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return d_consistencyModelConstructed;
 	}
 
+	public ValueHolder<Boolean> getNodesplitModelConstructedModel(BasicParameter p) {
+		return d_nodesplitModelsConstructed.get(p);
+	}
+
+	
 	public String getRankProbabilityRankChartNote() {
 		if(getBean().getOutcomeMeasure().getDirection() == Direction.HIGHER_IS_BETTER) {
 			//return "A lower rank indicates the drug is better";

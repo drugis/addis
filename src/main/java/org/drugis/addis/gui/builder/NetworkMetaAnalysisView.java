@@ -64,6 +64,7 @@ import org.drugis.addis.presentation.NetworkVarianceTableModel;
 import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.util.EmpiricalDensityDataset;
+import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
@@ -275,18 +276,26 @@ implements ViewBuilder {
 			row += 2;
 			builder.addSeparator(p.getName(), cc.xyw(1, row, 3));
 			
-			// FIXME: add play button + progress bar
 			LayoutUtil.addRow(layout);
 			row += 2;
-			NodeSplitModel model = d_pm.getBean().getNodeSplitModel(p);
+			NodeSplitModel model = d_pm.getNodeSplitModel(p);
 			builder.add(createStartButton(model), cc.xy(1, row));
 			builder.add(new TaskProgressBar(d_pm.getProgressModel(model)), cc.xy(3, row));
+
+			LayoutUtil.addRow(layout);
+			row += 2;
+			builder.add(makeNodeSplitDensityChart(p), cc.xyw(1, row, 3));
 			
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.add(makeChart(p), cc.xyw(1, row, 3));
+			builder.addSeparator("Convergence", cc.xyw(1, row, 3));
+			LayoutUtil.addRow(layout);
+			row += 2;
+			builder.add(AuxComponentFactory.createNoteField("Double click a parameter in the table below to see the convergence plots"), cc.xyw(1, row, 3));
+			LayoutUtil.addRow(layout);
+			row += 2;
+			builder.add(buildConvergenceTable(model, d_pm.getNodesplitModelConstructedModel(p)), cc.xyw(1, row, 3));
 			
-			// FIXME: add convergence table
 		}
 		
 		return builder.getPanel();
@@ -312,21 +321,19 @@ implements ViewBuilder {
 		return tabbedPane;
 	}
 
-	private JComponent makeChart(BasicParameter p) {
+	private JComponent makeNodeSplitDensityChart(BasicParameter p) {
 		NodeSplitModel splitModel = d_pm.getNodeSplitModel(p);
-		//ConsistencyModel consModel = d_pm.getBean().getConsistencyModel();
-		XYDataset dataset = new EmpiricalDensityDataset(50, splitModel.getResults(), splitModel.getDirectEffect());
-		
-		// TODO: modify EmpiricalDensityDataset to support XYSeries
-		//XYSeriesCollection dataset = new XYSeriesCollection();
-		//dataset.addSeries((XYSeries) consDataset);
+		ConsistencyModel consModel = d_pm.getBean().getConsistencyModel();
+		XYDataset dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitModel.getResults(), splitModel.getDirectEffect()), 
+				new PlotParameter(splitModel.getResults(), splitModel.getIndirectEffect()), 
+				new PlotParameter(consModel.getResults(), p));
 		
 		JFreeChart chart = ChartFactory.createXYLineChart(
-	            p.getName() + " density plot", "X", "Y",                      
+	            p.getName() + " density plot", "Relative Effect", "Density",                      
 	            dataset, PlotOrientation.VERTICAL,
 	            true, true, false                    
 	        );
-		//chart
+
         return new ChartPanel(chart);	
 	}
 
