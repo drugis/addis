@@ -1,5 +1,10 @@
 package org.drugis.addis.util;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.math.stat.descriptive.rank.Percentile;
 import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MCMCResultsEvent;
@@ -10,88 +15,142 @@ import org.jfree.data.xy.AbstractXYDataset;
 
 public class EmpiricalDensityDataset extends AbstractXYDataset {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -9156379642630541775L;
 	private static Percentile s_p = new Percentile();
-	private int[] d_counts;
-	private double[] d_densities;
+	private int[][] d_counts;
+	private double[][] d_densities;
 	private double d_interval;
 	private double d_bottom;
-	private Parameter d_parameter;
-	private final MCMCResults d_results;
+	private Parameter[] d_parameters;
+	private final MCMCResults[] d_results;
 	private final int d_nBins;
-
-	public EmpiricalDensityDataset(MCMCResults r, Parameter p, int nBins) {
-		d_results = r;
-		d_parameter = p;
+	private int d_nSeries;
+	private double d_top;
+	private MCMCResultsListener d_listener = new MCMCResultsListener() {
+		public void resultsEvent(MCMCResultsEvent event) {
+			calculate();
+			fireDatasetChanged();
+		}
+	};
+	
+	public static class PlotParameter {
+		public final MCMCResults results;
+		public final Parameter parameter;
+		public PlotParameter(MCMCResults r, Parameter p) {
+			results = r;
+			parameter = p;
+		}
+	}
+	
+	public EmpiricalDensityDataset(int nBins, PlotParameter ... parameters) {
 		d_nBins = nBins;
-		d_densities = new double[nBins];
+		d_nSeries = parameters.length;
+		d_parameters = new Parameter[parameters.length];
+		d_results = new MCMCResults[parameters.length];
+		d_densities = new double[d_nSeries][d_nBins];
 		
-		r.addResultsListener(new MCMCResultsListener() {
-			public void resultsEvent(MCMCResultsEvent event) {
-				calculateDensity();
-				fireDatasetChanged();
+		Set<MCMCResults> unique = new HashSet<MCMCResults>();
+		for (int i = 0; i < parameters.length; ++i) {
+			d_parameters[i] = parameters[i].parameter;
+			d_results[i] = parameters[i].results;
+			unique.add(d_results[i]);
+		}
+		for (MCMCResults r : unique) {
+			r.addResultsListener(d_listener);
+		}
+		calculate();
+	}
+
+	public EmpiricalDensityDataset(int nBins, MCMCResults r, Parameter p) {
+		this(nBins, new PlotParameter(r, p));
+	}
+
+	private void calculate() {
+		List<Integer> paramIndex = new ArrayList<Integer>();
+		
+		for(int i = 0; i < d_nSeries; ++i) {
+			if (d_results[i].getNumberOfSamples() > 0) {
+				paramIndex.add(i);
 			}
-		});
+		}
 		
-		if (d_results.getNumberOfSamples() > 0) {
-			calculateDensity();
+		if (paramIndex.isEmpty()) return; // no samples available
+		
+		calcBounds(paramIndex);
+		calcDensities(paramIndex);
+	}
+
+	private void calcBounds(List<Integer> paramIndex) {
+		double[] samples = getSamples(paramIndex.get(0));
+		d_bottom = s_p.evaluate(samples, 2.5);
+		d_top = s_p.evaluate(samples, 97.5);
+		for (int j : paramIndex.subList(1, paramIndex.size())) {
+			samples = getSamples(j);
+			d_bottom = Math.min(s_p.evaluate(samples, 2.5), d_bottom);
+			d_top = Math.max(s_p.evaluate(samples, 97.5), d_top);
+		}
+
+		d_interval = (d_top - d_bottom) / d_nBins;
+	}
+
+	private void calcDensities(List<Integer> paramIndex) {
+		d_counts = new int[d_nSeries][d_nBins];
+		for (int j : paramIndex) {
+			double[] samples = getSamples(j);
+			double factor = samples.length * d_interval;
+			for (int i = 0; i < samples.length; ++i) {
+				double sample = samples[i];
+				if (sample >= d_bottom && sample < d_top) {
+					int idx = (int) ((sample - d_bottom) / d_interval);
+					++d_counts[j][idx];
+				}
+			}
+			for (int i = 0; i < d_nBins; ++i) {
+				d_densities[j][i] = d_counts[j][i] / factor; 
+			}
 		}
 	}
 
-	private void calculateDensity() {
-		double[] allChainsLastHalfSamples = SummaryUtil.getAllChainsLastHalfSamples(d_results, d_parameter);
-		d_bottom = s_p.evaluate(allChainsLastHalfSamples, 2.5);
-		double top = s_p.evaluate(allChainsLastHalfSamples, 97.5);
-		d_interval = (top - d_bottom) / d_nBins;
-		d_counts = new int[d_nBins];
-		int idx = 0;
-		for (int i = 0; i < allChainsLastHalfSamples.length; ++i) {
-			double sample = allChainsLastHalfSamples[i];
-			if (sample >= d_bottom && sample < top) {
-				idx = (int) ((sample - d_bottom) / d_interval);
-				++d_counts[idx];
-			}
-		}
-		d_densities = new double[d_nBins];
-		double factor = allChainsLastHalfSamples.length * d_interval;
-		for (int i = 0; i < d_nBins; ++i) {
-			d_densities[i] = d_counts[i] / factor; 
-		}
+	private double[] getSamples(int j) {
+		return SummaryUtil.getAllChainsLastHalfSamples(d_results[j], d_parameters[j]);
 	}
 
 	@Override
 	public int getSeriesCount() {
-		return 1;
+		return d_nSeries;
 	}
 
 	@Override
 	public Comparable<String> getSeriesKey(int series) {
-		return d_parameter.getName();
+		return d_parameters[series].getName();
 	}
 
 	public Double getX(int series, int bin) {
-		if( series != 0 ) throw new IndexOutOfBoundsException();
+		if (series < 0 || series >= d_nSeries) throw new IndexOutOfBoundsException();
 		return (0.5 + bin) * d_interval + d_bottom; 
 	}
 
 	public Double getY(int series, int bin) {
-		if( series != 0 ) throw new IndexOutOfBoundsException();
-		return d_densities[bin];
+		return d_densities[series][bin];
 	}
 
-	public int[] getCounts() {
-		return d_counts;
+	public int[] getCounts(int series) {
+		return d_counts[series];
 	}
 
-	public double[] getDensities() {
-		return d_densities;
+	public double[] getDensities(int series) {
+		return d_densities[series];
 	}
 
 	public int getItemCount(int series) {
 		return d_nBins;
 	}
 	
+	double getLowerBound() {
+		return d_bottom;
+	}
+	
+	double getUpperBound() {
+		return d_top;
+	}
 }

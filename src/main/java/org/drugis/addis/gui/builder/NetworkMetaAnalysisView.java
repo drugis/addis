@@ -315,7 +315,7 @@ implements ViewBuilder {
 	private JComponent makeChart(BasicParameter p) {
 		NodeSplitModel splitModel = d_pm.getNodeSplitModel(p);
 		//ConsistencyModel consModel = d_pm.getBean().getConsistencyModel();
-		XYDataset dataset = new EmpiricalDensityDataset(splitModel.getResults(), splitModel.getDirectEffect(), 50);
+		XYDataset dataset = new EmpiricalDensityDataset(50, splitModel.getResults(), splitModel.getDirectEffect());
 		
 		// TODO: modify EmpiricalDensityDataset to support XYSeries
 		//XYSeriesCollection dataset = new XYSeriesCollection();
