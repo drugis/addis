@@ -121,7 +121,7 @@ public class ConvergenceDiagnosticTableModel extends AbstractTableModel{
 		return s_format.format(summary.getScaleReduction());
 	}
 
-	private Object getParameter(int rowIndex) {
+	private Parameter getParameter(int rowIndex) {
 		return d_results.getParameters()[rowIndex];
 	}
 }

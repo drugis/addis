@@ -61,6 +61,7 @@ import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
 import org.drugis.addis.presentation.NetworkVarianceTableModel;
+import org.drugis.addis.presentation.PvalueTableModel;
 import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.util.EmpiricalDensityDataset;
@@ -81,6 +82,7 @@ import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -268,7 +270,7 @@ implements ViewBuilder {
 		
 		builder.addSeparator("Results - node-splitting analysis of inconsistency", cc.xyw(1, 1, 3));
 		
-		builder.addLabel("HERE BE A TABLE OF P-VALUES !!", cc.xyw(1, 3, 3));
+		builder.add(buildPvalueTable(), cc.xyw(1, 3, 3));
 
 		int row = 3;
 		for (BasicParameter p : d_pm.getSplitParameters()) {
@@ -301,6 +303,15 @@ implements ViewBuilder {
 		return builder.getPanel();
 	}
 
+	private JComponent buildPvalueTable() {
+		PvalueTableModel tableModel = new PvalueTableModel(d_pm);
+		
+		EnhancedTable table = new EnhancedTable(tableModel);
+		table.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
+		table.setDefaultRenderer(NodeSplitPValueSummary.class, new SummaryCellRenderer());
+		return new TablePanel(table);
+	}
+
 	private JButton createStartButton(final NodeSplitModel model) {
 		JButton button = new JButton(ImageLoader.getIcon(FileNames.ICON_RUN));
 		button.setToolTipText("Run simulation");
@@ -323,7 +334,7 @@ implements ViewBuilder {
 
 	private JComponent makeNodeSplitDensityChart(BasicParameter p) {
 		NodeSplitModel splitModel = d_pm.getNodeSplitModel(p);
-		ConsistencyModel consModel = d_pm.getBean().getConsistencyModel();
+		ConsistencyModel consModel = d_pm.getConsistencyModel();
 		XYDataset dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitModel.getResults(), splitModel.getDirectEffect()), 
 				new PlotParameter(splitModel.getResults(), splitModel.getIndirectEffect()), 
 				new PlotParameter(consModel.getResults(), p));

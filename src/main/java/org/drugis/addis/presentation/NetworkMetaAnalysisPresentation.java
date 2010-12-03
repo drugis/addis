@@ -36,6 +36,7 @@ import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.BasicParameter;
+import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NodeSplitModel;
 import org.jfree.data.category.CategoryDataset;
@@ -135,6 +136,10 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 
 	public NodeSplitModel getNodeSplitModel(BasicParameter p) {
 		return getBean().getNodeSplitModel(p);
+	}
+
+	public ConsistencyModel getConsistencyModel() {
+		return getBean().getConsistencyModel();
 	}
 
 }

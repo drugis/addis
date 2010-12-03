@@ -29,11 +29,11 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
-public class SummaryCellRenderer
-		implements TableCellRenderer {
+public class SummaryCellRenderer implements TableCellRenderer {
 
 	private static final DecimalFormat s_format = new DecimalFormat("#.##");
 
@@ -44,8 +44,20 @@ public class SummaryCellRenderer
 			str = getNormalSummaryString(cellContents);
 		} else if (cellContents instanceof QuantileSummary) {
 			str = getQuantileSummaryString(cellContents);
+		} else if (cellContents instanceof NodeSplitPValueSummary) {
+			str = getNodeSplitPvalueString(cellContents);
 		}
 		return (new DefaultTableCellRenderer()).getTableCellRendererComponent(table, str, isSelected, hasFocus, row, column);
+	}
+
+	private String getNodeSplitPvalueString(Object cellContents) {
+		NodeSplitPValueSummary re = (NodeSplitPValueSummary)cellContents;
+		
+		String str = "N/A";
+		if (re != null && re.getDefined()) {
+			str = format(re.getPvalue());
+		}
+		return str;
 	}
 
 	private String getQuantileSummaryString(Object cellContents) {
