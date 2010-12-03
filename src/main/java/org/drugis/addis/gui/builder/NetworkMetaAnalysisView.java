@@ -39,6 +39,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
@@ -57,6 +58,7 @@ import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.ConvergenceDiagnosticTableModel;
+import org.drugis.addis.presentation.MCMCResultsMemoryUsageModel;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
@@ -79,6 +81,7 @@ import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
+import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
@@ -91,6 +94,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.xy.XYDataset;
 
+import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -136,7 +140,8 @@ implements ViewBuilder {
 	public JComponent buildOverviewTab() {
 		final FormLayout layout = new FormLayout(
 				"pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p" +
+				", 3dlu, p, 3dlu, p"); // Memory usage part
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();
 		
@@ -150,6 +155,30 @@ implements ViewBuilder {
 
 		builder.addSeparator("Evidence network", cc.xy(1, 9));
 		builder.add(buildStudyGraphPart(), cc.xy(1, 11));
+		
+		//FIXME: do this for all models
+		builder.addSeparator("Memory usage", cc.xy(1, 13));
+		ConsistencyModel model = d_pm.getConsistencyModel();
+		builder.add(buildMemoryUsage(model, "Consistency model"),
+				cc.xy(1, 15));
+		
+		return builder.getPanel();
+	}
+
+	private JComponent buildMemoryUsage(MCMCModel model, String title) {
+		FormLayout layout = new FormLayout("pref, 3dlu, pref, 3dlu, pref",
+		"p, 3dlu, p");
+		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+		
+		CellConstraints cc = new CellConstraints();
+		
+		builder.add(AuxComponentFactory.createNoteField("Network meta-analysis results can use quite a bit of memory. "), cc.xyw(1, 1, 5));
+		
+		JLabel memory = BasicComponentFactory.createLabel(new MCMCResultsMemoryUsageModel(model.getResults()));
+		builder.add(new JLabel(title), cc.xy(1, 3));
+		builder.add(memory, cc.xy(3, 3));
+		builder.add(new JButton("Clear results"), cc.xy(5, 3));
+		
 		return builder.getPanel();
 	}
 	
