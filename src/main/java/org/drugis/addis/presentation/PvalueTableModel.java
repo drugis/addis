@@ -1,5 +1,6 @@
 package org.drugis.addis.presentation;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,31 +35,42 @@ public class PvalueTableModel extends AbstractTableModel {
 	
 	public PvalueTableModel(NetworkMetaAnalysisPresentation pm) {
 		d_pm = pm;
-		/*
+		
 		d_listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				fireTableDataChanged();
 			}
 		};
-		*/
+		
 		if(d_pm.getSplitParameters().size() > 0) {
-			initialise();
+			initialiseTable();
 		}
 	}
 
-	private void initialise() {
+	private void initialiseTable() {
 		d_rowcount = d_pm.getSplitParameters().size();
 		d_parameters = new ArrayList<BasicParameter>();
 		for (BasicParameter p : d_pm.getSplitParameters()) {
 			d_parameters.add(p);
-			d_quantileSummaries.put(p, new QuantileSummary(d_pm.getConsistencyModel().getResults(), p));
+			Summary value =  new QuantileSummary(d_pm.getConsistencyModel().getResults(), p);
+			value.addPropertyChangeListener(d_listener);
+			d_quantileSummaries.put(p, value);
+			
 			NodeSplitModel splitModel = d_pm.getNodeSplitModel(p);
 			Parameter direct = splitModel.getDirectEffect();
 			Parameter indirect = splitModel.getIndirectEffect();
 			MCMCResults splitres = splitModel.getResults();
-			d_quantileSummaries.put(direct, new QuantileSummary(splitres, direct));
-			d_quantileSummaries.put(indirect, new QuantileSummary(splitres, indirect));
-			d_pValueSummaries.put(p, new NodeSplitPValueSummary(splitres, direct, indirect));
+			QuantileSummary valueDirect = new QuantileSummary(splitres, direct);
+			valueDirect.addPropertyChangeListener(d_listener);
+			d_quantileSummaries.put(direct, valueDirect);
+			
+			QuantileSummary valueIndirect = new QuantileSummary(splitres, indirect);
+			valueIndirect.addPropertyChangeListener(d_listener);
+			d_quantileSummaries.put(indirect, valueIndirect);
+			
+			NodeSplitPValueSummary valuePvalue = new NodeSplitPValueSummary(splitres, direct, indirect);
+			valuePvalue.addPropertyChangeListener(d_listener);
+			d_pValueSummaries.put(p, valuePvalue);
 		}
 	}
 	
@@ -116,5 +128,4 @@ public class PvalueTableModel extends AbstractTableModel {
 			default : return Object.class;
 		}
 	}
-
 }
