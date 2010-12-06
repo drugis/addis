@@ -69,9 +69,9 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel i
 	private void attachListeners() {
 		if (d_listenersAttached) return;
 		
-		List<Parameter> parameterList = d_pm.getBean().getInconsistencyFactors();
+		List<Parameter> parameterList = d_pm.getInconsistencyFactors();
 		for(Parameter p : parameterList ) {
-			NormalSummary normalSummary = d_pm.getBean().getNormalSummary(getModel(), p);
+			NormalSummary normalSummary = d_pm.getNormalSummary(getModel(), p);
 			normalSummary.addPropertyChangeListener(d_listener);
 		}
 		d_listenersAttached = true;
@@ -88,7 +88,7 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel i
 
 	public int getRowCount() {
 		if(d_pm.getInconsistencyModelConstructedModel().getValue().equals(true))
-			return d_pm.getBean().getInconsistencyFactors().size();
+			return d_pm.getInconsistencyFactors().size();
 		return 0;
 	}
 	
@@ -106,7 +106,7 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel i
 			}
 			return out.substring(0, out.length()-2);
 		} else if (model.isReady()){
-			NormalSummary summary = d_pm.getBean().getNormalSummary(model, ip);
+			NormalSummary summary = d_pm.getNormalSummary(model, ip);
 			Gaussian dist = new Gaussian(summary.getMean(), summary.getStandardDeviation());
 			return (String) d_pmf.getLabeledModel(dist).getLabelModel().getValue();
 		} else
@@ -114,7 +114,7 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel i
 	}
 
 	private InconsistencyModel getModel() {
-		return d_pm.getBean().getInconsistencyModel();
+		return (InconsistencyModel) d_pm.getInconsistencyModel();
 	}
 
 	public String getDescription() {

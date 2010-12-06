@@ -190,7 +190,7 @@ implements ViewBuilder {
 		CellConstraints cc = new CellConstraints();
 		builder.addSeparator("Results - network inconsistency model", cc.xy(2, 2));
 		
-		final InconsistencyModel inconsistencyModel = d_pm.getBean().getInconsistencyModel();
+		final InconsistencyModel inconsistencyModel = (InconsistencyModel) d_pm.getInconsistencyModel();
 		JProgressBar d_incProgressBar = new TaskProgressBar(d_pm.getProgressModel(inconsistencyModel));
 		if(!inconsistencyModel.isReady()) {
 			builder.add(d_incProgressBar, cc.xy(2, 4));
@@ -255,7 +255,7 @@ implements ViewBuilder {
 		
 		builder.addSeparator("Results - network consistency model", cc.xy(2, 2));
 		
-		final ConsistencyModel consistencyModel = d_pm.getBean().getConsistencyModel();
+		final ConsistencyModel consistencyModel = d_pm.getConsistencyModel();
 		JProgressBar d_conProgressBar = new TaskProgressBar(d_pm.getProgressModel(consistencyModel));
 		if(!consistencyModel.isReady()) {
 			builder.add(d_conProgressBar, cc.xy(2, 4));

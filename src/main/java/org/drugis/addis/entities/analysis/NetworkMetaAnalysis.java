@@ -56,6 +56,7 @@ import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
+import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.RankProbabilitySummary;
@@ -69,6 +70,8 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		new HashMap<MCMCModel, Map<Parameter, NormalSummary>>();
 	protected Map<MCMCModel, Map<Parameter, QuantileSummary>> d_quantileSummaries = 
 		new HashMap<MCMCModel, Map<Parameter, QuantileSummary>>();
+	protected Map<Parameter, NodeSplitPValueSummary> d_nodeSplitPValueSummaries = 
+		new HashMap<Parameter, NodeSplitPValueSummary>();
 
 	private boolean d_isContinuous = false;
 	private RankProbabilitySummary d_rankProbabilitySummary;
@@ -99,7 +102,12 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 	
 	private NodeSplitModel createNodeSplitModel(BasicParameter node) {
-		return (DefaultModelFactory.instance()).getNodeSplitModel(getBuilder().buildNetwork(), node);
+		NodeSplitModel nodeSplitModel = (DefaultModelFactory.instance()).getNodeSplitModel(getBuilder().buildNetwork(), node);
+		d_normalSummaries.put(nodeSplitModel, new HashMap<Parameter, NormalSummary>());
+		d_quantileSummaries.put(nodeSplitModel, new HashMap<Parameter, QuantileSummary>());
+		d_nodeSplitPValueSummaries.put(node, new NodeSplitPValueSummary(nodeSplitModel.getResults(), 
+				nodeSplitModel.getDirectEffect(), nodeSplitModel.getIndirectEffect()));
+		return nodeSplitModel;
 	}
 
 	private NetworkBuilder<? extends org.drugis.mtc.Measurement> createBuilder(List<? extends Study> studies, List<Drug> drugs, Map<Study, Map<Drug, Arm>> armMap) {
@@ -199,6 +207,18 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		if (summary == null) {
 			summary = new NormalSummary(networkModel.getResults(), ip);
 			d_normalSummaries.get(networkModel).put(ip, summary);
+		}
+		return summary;
+	}
+	
+	public NodeSplitPValueSummary getNodesNodeSplitPValueSummary(Parameter p) {
+		NodeSplitPValueSummary summary = d_nodeSplitPValueSummaries.get(p);
+		if(summary == null) {
+			NodeSplitModel m = getNodeSplitModel((BasicParameter) p);
+			Parameter dir = m.getDirectEffect();
+			Parameter indir = m.getIndirectEffect();
+			summary = new NodeSplitPValueSummary(m.getResults(), dir, indir);
+			d_nodeSplitPValueSummaries.put(p, summary);
 		}
 		return summary;
 	}

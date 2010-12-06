@@ -59,7 +59,7 @@ public class NetworkVarianceTableModel extends AbstractTableModel implements Tab
 	}
 	
 	private void attachListener(Parameter p) {
-		d_pm.getBean().getQuantileSummary(d_mtc, p).addPropertyChangeListener(d_listener); 
+		d_pm.getQuantileSummary(d_mtc, p).addPropertyChangeListener(d_listener); 
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class NetworkVarianceTableModel extends AbstractTableModel implements Tab
 	}
 
 	private QuantileSummary getEstimate(int row) {
-		InconsistencyModel model = d_pm.getBean().getInconsistencyModel();
+		InconsistencyModel model = d_pm.getInconsistencyModel();
 		if (model.isReady()){
 			if (row == RANDOM_EFFECTS) {
 				return getRandomEffectsSummary();
@@ -110,13 +110,13 @@ public class NetworkVarianceTableModel extends AbstractTableModel implements Tab
 
 	private QuantileSummary getInconsistencySummary() {
 		Parameter p = ((InconsistencyModel) d_mtc).getInconsistencyVariance();
-		QuantileSummary summary = d_pm.getBean().getQuantileSummary(d_mtc, p);
+		QuantileSummary summary = d_pm.getQuantileSummary(d_mtc, p);
 		return summary;
 	}
 
 	private QuantileSummary getRandomEffectsSummary() {
 		Parameter p = d_mtc.getRandomEffectsVariance();
-		QuantileSummary summary = d_pm.getBean().getQuantileSummary(d_mtc, p);
+		QuantileSummary summary = d_pm.getQuantileSummary(d_mtc, p);
 		return summary;
 	}
 

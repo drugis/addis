@@ -10,7 +10,6 @@ import java.util.Map;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.mtc.BasicParameter;
-import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
@@ -52,23 +51,22 @@ public class PvalueTableModel extends AbstractTableModel {
 		d_parameters = new ArrayList<BasicParameter>();
 		for (BasicParameter p : d_pm.getSplitParameters()) {
 			d_parameters.add(p);
-			Summary value =  new QuantileSummary(d_pm.getConsistencyModel().getResults(), p);
+			Summary value = d_pm.getQuantileSummary(d_pm.getConsistencyModel(), p);
 			value.addPropertyChangeListener(d_listener);
 			d_quantileSummaries.put(p, value);
 			
 			NodeSplitModel splitModel = d_pm.getNodeSplitModel(p);
 			Parameter direct = splitModel.getDirectEffect();
 			Parameter indirect = splitModel.getIndirectEffect();
-			MCMCResults splitres = splitModel.getResults();
-			QuantileSummary valueDirect = new QuantileSummary(splitres, direct);
+			QuantileSummary valueDirect = d_pm.getQuantileSummary(splitModel, direct);
 			valueDirect.addPropertyChangeListener(d_listener);
 			d_quantileSummaries.put(direct, valueDirect);
 			
-			QuantileSummary valueIndirect = new QuantileSummary(splitres, indirect);
+			QuantileSummary valueIndirect = d_pm.getQuantileSummary(splitModel, indirect);
 			valueIndirect.addPropertyChangeListener(d_listener);
 			d_quantileSummaries.put(indirect, valueIndirect);
 			
-			NodeSplitPValueSummary valuePvalue = new NodeSplitPValueSummary(splitres, direct, indirect);
+			NodeSplitPValueSummary valuePvalue = d_pm.getNodeSplitPValueSummary(p);
 			valuePvalue.addPropertyChangeListener(d_listener);
 			d_pValueSummaries.put(p, valuePvalue);
 		}

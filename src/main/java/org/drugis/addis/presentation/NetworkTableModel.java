@@ -63,7 +63,7 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 		};
 		
 		// Listen to summaries
-		List<Drug> drugs = d_pm.getBean().getIncludedDrugs();
+		List<Drug> drugs = d_pm.getIncludedDrugs();
 		for(Drug d1 : drugs) {
 			for (Drug d2 : drugs) {
 				if (!d1.equals(d2)) {
@@ -79,23 +79,23 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 	}
 
 	public int getColumnCount() {
-		return d_pm.getBean().getIncludedDrugs().size();
+		return d_pm.getIncludedDrugs().size();
 	}
 
 	public int getRowCount() {
-		return d_pm.getBean().getIncludedDrugs().size();
+		return d_pm.getIncludedDrugs().size();
 	}
 	
 	public String getDescriptionAt(int row, int col) {
 		if (row == col) {
 			return null;
 		}
-		return "\"" + d_pm.getBean().getIncludedDrugs().get(col) + "\" relative to \"" + d_pm.getBean().getIncludedDrugs().get(row) + "\"";
+		return "\"" + d_pm.getIncludedDrugs().get(col) + "\" relative to \"" + d_pm.getBean().getIncludedDrugs().get(row) + "\"";
 	}
 	
 	public Object getValueAt(int row, int col) {
 		if (row == col) {
-			return d_pmf.getModel(d_pm.getBean().getIncludedDrugs().get(row));
+			return d_pmf.getModel(d_pm.getIncludedDrugs().get(row));
 		} if (!d_networkModel.isReady()) {
 			return d_na;
 		}
@@ -107,14 +107,14 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 		
 		double mu = re.getMean();
 		double sigma = re.getStandardDeviation();
-		Distribution dist = (d_pm.getBean().isContinuous()) ?  new Gaussian(mu, sigma) : new LogGaussian(mu, sigma);
+		Distribution dist = (d_pm.isContinuous()) ?  new Gaussian(mu, sigma) : new LogGaussian(mu, sigma);
 		
 		return d_pmf.getLabeledModel(dist);
 	}
 
 	private NormalSummary getSummary(final Treatment drug1,
 			final Treatment drug2) {
-		return d_pm.getBean().getNormalSummary(d_networkModel, d_networkModel.getRelativeEffect(drug1, drug2));
+		return d_pm.getNormalSummary(d_networkModel, d_networkModel.getRelativeEffect(drug1, drug2));
 	}
 
 	private Treatment getTreatment(int idx) {

@@ -134,11 +134,11 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		builder.setOpaque(true);
 		
 		builder.add(AuxComponentFactory.createNoteField("Relative measurements: odds ratio or mean difference, with "
-				+ d_pm.getBean().getBaseline() +" as the common comparator."),cc.xy(1, 1));
+				+ d_pm.getBaseline() +" as the common comparator."),cc.xy(1, 1));
 		builder.add(new TablePanel(new EnhancedTable(d_pm.getRelativeMeasurementTableModel())), cc.xy(1, 3));
 		
 		builder.add(AuxComponentFactory.createNoteField("Absolute measurements: odds or mean calculated from the assumed odds or mean for " + 
-				d_pm.getBean().getBaseline() + ". The method used to derive the assumed odds or mean are heuristic, "
+				d_pm.getBaseline() + ". The method used to derive the assumed odds or mean are heuristic, "
 				+ "and the absolute values should be interpreted with care."), cc.xy(1, 5));
 		builder.add(new TablePanel(new EnhancedTable(d_pm.getAbsoluteMeasurementTableModel())), cc.xy(1, 9));
 	

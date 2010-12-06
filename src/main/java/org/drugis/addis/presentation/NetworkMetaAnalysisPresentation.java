@@ -37,8 +37,13 @@ import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.ConsistencyModel;
+import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NodeSplitModel;
+import org.drugis.mtc.Parameter;
+import org.drugis.mtc.summary.NodeSplitPValueSummary;
+import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.summary.QuantileSummary;
 import org.jfree.data.category.CategoryDataset;
 
 @SuppressWarnings("serial")
@@ -69,12 +74,12 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 
 	public NetworkMetaAnalysisPresentation(NetworkMetaAnalysis bean, PresentationModelFactory mgr) {
 		super(bean, mgr);
-		d_inconsistencyModelConstructed = new ModelConstructionFinishedModel(getBean().getInconsistencyModel());
-		d_consistencyModelConstructed = new ModelConstructionFinishedModel(getBean().getConsistencyModel());
+		d_inconsistencyModelConstructed = new ModelConstructionFinishedModel(getInconsistencyModel());
+		d_consistencyModelConstructed = new ModelConstructionFinishedModel(getConsistencyModel());
 		d_progressModels = new HashMap<MixedTreatmentComparison, TaskProgressModel>();
 		d_nodesplitModelsConstructed = new HashMap<BasicParameter, ValueHolder<Boolean>>();
-		addModel(getBean().getConsistencyModel());
-		addModel(getBean().getInconsistencyModel());
+		addModel(getConsistencyModel());
+		addModel(getInconsistencyModel());
 		for (BasicParameter p : getBean().getSplitParameters()) {
 			NodeSplitModel m = getBean().getNodeSplitModel(p);
 			addModel(m);
@@ -82,6 +87,10 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 	}
 	
+	public InconsistencyModel getInconsistencyModel() {
+		return getBean().getInconsistencyModel();
+	}
+
 	public String getNetworkXML() {
 		return getBean().getNetwork().toPrettyXML();
 	}
@@ -125,7 +134,11 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	public void startModels() {
 		getBean().run();
 	}
-
+	
+	public QuantileSummary getQuantileSummary(MixedTreatmentComparison m, Parameter p) {
+		return getBean().getQuantileSummary(m, p);
+	}
+	
 	private TaskProgressModel addModel(MixedTreatmentComparison mtc) {
 		return d_progressModels.put(mtc, new TaskProgressModel(mtc.getActivityTask()));
 	}
@@ -140,6 +153,26 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 
 	public ConsistencyModel getConsistencyModel() {
 		return getBean().getConsistencyModel();
+	}
+
+	public NodeSplitPValueSummary getNodeSplitPValueSummary(Parameter p) {
+		return getBean().getNodesNodeSplitPValueSummary(p);
+	}
+
+	public List<Parameter> getInconsistencyFactors() {
+		return getBean().getInconsistencyFactors();
+	}
+
+	public NormalSummary getNormalSummary(InconsistencyModel model, Parameter p) {
+		return getBean().getNormalSummary(model, p);
+	}
+
+	public List<Drug> getIncludedDrugs() {
+		return getBean().getIncludedDrugs();
+	}
+
+	public boolean isContinuous() {
+		return getBean().isContinuous();
 	}
 
 }
