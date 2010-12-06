@@ -1,4 +1,4 @@
-package org.drugis.addis.presentation;
+package org.drugis.addis.util;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,7 +6,7 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.drugis.addis.util.EmpiricalDensityDatasetTest;
+import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
 import org.drugis.common.JUnitUtil;
 import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.MCMCResults;
@@ -43,6 +43,7 @@ public class MCMCResultsMemoryUsageModelTest {
 		public Parameter[] getParameters() { return new Parameter[d_nParameters]; }
 		public double getSample(int p, int c, int i) { return 0; }
 		public double[] getSamples(int p, int c) { return null; }
+		public void clear() {}
 	}
 
 	@Before

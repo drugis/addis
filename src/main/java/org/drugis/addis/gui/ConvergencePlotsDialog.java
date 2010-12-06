@@ -23,9 +23,9 @@
 package org.drugis.addis.gui;
 
 import java.awt.Color;
-import java.awt.Dialog;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
@@ -62,7 +62,7 @@ public class ConvergencePlotsDialog extends JDialog {
 	private XYSeries d_wSeries;
 	private SimpleSuspendableTask d_task;
 
-	public ConvergencePlotsDialog(final Dialog main, final MixedTreatmentComparison mtc, final Parameter p) {
+	public ConvergencePlotsDialog(final JFrame main, final MixedTreatmentComparison mtc, final Parameter p) {
 		super(main, p + " convergence diagnostics", false);		
 		setSize(640, 480);
 		d_rHatSeries = new XYSeries("R-Hat");

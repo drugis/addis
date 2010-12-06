@@ -40,6 +40,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
@@ -58,7 +59,6 @@ import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.ConvergenceDiagnosticTableModel;
-import org.drugis.addis.presentation.MCMCResultsMemoryUsageModel;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
@@ -67,6 +67,7 @@ import org.drugis.addis.presentation.PvalueTableModel;
 import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.util.EmpiricalDensityDataset;
+import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
 import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.FileSaveDialog;
@@ -127,12 +128,10 @@ implements ViewBuilder {
 	}
 	
 	private final Main d_main;
-	private JDialog d_dialog;
 	
 	public NetworkMetaAnalysisView(NetworkMetaAnalysisPresentation model, Main main) {
 		super(model, main);
 		d_main = main;
-		d_dialog = new JDialog(d_main, "Convergence Table", false);
 
 		d_pm.startModels();
 	}
@@ -141,7 +140,7 @@ implements ViewBuilder {
 		final FormLayout layout = new FormLayout(
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p" +
-				", 3dlu, p, 3dlu, p"); // Memory usage part
+				", 3dlu, p"); // Memory usage part
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();
 		
@@ -156,30 +155,64 @@ implements ViewBuilder {
 		builder.addSeparator("Evidence network", cc.xy(1, 9));
 		builder.add(buildStudyGraphPart(), cc.xy(1, 11));
 		
-		//FIXME: do this for all models
-		builder.addSeparator("Memory usage", cc.xy(1, 13));
-		ConsistencyModel model = d_pm.getConsistencyModel();
-		builder.add(buildMemoryUsage(model, "Consistency model"),
-				cc.xy(1, 15));
+		return builder.getPanel();
+	}
+	
+	private JComponent buildMemoryUsageTab() {
+		CellConstraints cc = new CellConstraints();
+		FormLayout layout = new FormLayout(
+				"3dlu, pref, 3dlu, right:pref, 3dlu, pref, 3dlu, pref:grow:fill, 3dlu",
+				"3dlu, p, 3dlu, p"
+				);
+		PanelBuilder builder = new PanelBuilder(layout);
+
+		int row = 2;
+		builder.addSeparator("Memory usage", cc.xyw(2, row, 7));
+		row += 2;
+		
+		builder.add(AuxComponentFactory.createNoteField("Network meta-analysis results can use quite a bit of memory. Here, the results of " +
+				"analyses may be discarded to save memory. The aggregate-level results will be maintained. However, after " +
+				"discarding the results, it will no longer be possible to display the convergence plots."), cc.xyw(2, row, 7));
+		LayoutUtil.addRow(builder.getLayout());
+		row += 2;
+
+		ConsistencyModel consModel = d_pm.getConsistencyModel();
+		LayoutUtil.addRow(layout);
+		row += 2;
+		buildMemoryUsage(consModel, "Consistency model", builder, row);
+
+		InconsistencyModel inconsModel = d_pm.getInconsistencyModel();
+		LayoutUtil.addRow(layout);
+		row += 2;
+		buildMemoryUsage(inconsModel, "Inconsistency model", builder, row);
+
+		for(BasicParameter p : d_pm.getSplitParameters()) {
+			NodeSplitModel nodeSplitModel= d_pm.getNodeSplitModel(p);
+			LayoutUtil.addRow(layout);
+			row += 2;
+			buildMemoryUsage(nodeSplitModel, "Node Split model, parameter " + p.getName(), builder, row);
+		}
 		
 		return builder.getPanel();
 	}
+	
 
-	private JComponent buildMemoryUsage(MCMCModel model, String title) {
-		FormLayout layout = new FormLayout("pref, 3dlu, pref, 3dlu, pref",
-		"p, 3dlu, p");
-		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+	private void buildMemoryUsage(final MCMCModel model, String title, PanelBuilder builder, int row) {
 		
 		CellConstraints cc = new CellConstraints();
 		
-		builder.add(AuxComponentFactory.createNoteField("Network meta-analysis results can use quite a bit of memory. "), cc.xyw(1, 1, 5));
-		
-		JLabel memory = BasicComponentFactory.createLabel(new MCMCResultsMemoryUsageModel(model.getResults()));
-		builder.add(new JLabel(title), cc.xy(1, 3));
-		builder.add(memory, cc.xy(3, 3));
-		builder.add(new JButton("Clear results"), cc.xy(5, 3));
-		
-		return builder.getPanel();
+		final MCMCResultsMemoryUsageModel memoryModel = new MCMCResultsMemoryUsageModel(model.getResults());
+		JLabel memory = BasicComponentFactory.createLabel(memoryModel);
+		builder.add(new JLabel(title), cc.xy(2, row));
+
+		builder.add(memory, cc.xy(4, row));
+		JButton button = new JButton("Clear results", ImageLoader.getIcon(FileNames.ICON_DELETE));
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				memoryModel.clear();
+			}
+		});
+		builder.add(button, cc.xy(6, row));
 	}
 	
 	private JComponent buildInconsistencyTab() {
@@ -355,9 +388,10 @@ implements ViewBuilder {
 	public JComponent buildPanel() {
 		JTabbedPane tabbedPane = new AddisTabbedPane();
 		tabbedPane.addTab("Overview", buildOverviewTab());
-		tabbedPane.addTab("Inconsistency", buildInconsistencyTab());
 		tabbedPane.addTab("Consistency", buildConsistencyTab());
+		tabbedPane.addTab("Inconsistency", buildInconsistencyTab());
 		tabbedPane.addTab("Node Split", buildNodeSplitTab());
+		tabbedPane.addTab("Memory Usage", buildMemoryUsageTab());
 		return tabbedPane;
 	}
 
@@ -396,10 +430,15 @@ implements ViewBuilder {
 	}
 
 	protected void showConvergencePlots(MixedTreatmentComparison mtc, Parameter p) {
-		JDialog dialog = new ConvergencePlotsDialog(d_dialog, mtc, p);
-		dialog.setLocationRelativeTo(d_dialog);
-		dialog.pack();
-		dialog.setVisible(true);
+		if(mtc.getResults().getNumberOfSamples() > 0) {
+			JDialog dialog = new ConvergencePlotsDialog(d_main, mtc, p);
+			dialog.setLocationRelativeTo(d_main);
+			dialog.pack();
+			dialog.setVisible(true);
+		} else {
+			JOptionPane.showMessageDialog(d_main, "Convergence plots cannot be shown because the results of " +
+					"this analysis has been discarded to save memory.", "No results available", JOptionPane.WARNING_MESSAGE);
+		}
 	}
 
 	private JComponent createRankProbChart() {

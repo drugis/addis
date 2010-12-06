@@ -1,8 +1,9 @@
-package org.drugis.addis.presentation;
+package org.drugis.addis.util;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.MCMCResultsListener;
@@ -45,6 +46,11 @@ public class MCMCResultsMemoryUsageModel extends AbstractValueModel implements V
 
 	public void setValue(Object newValue) {
 		throw new IllegalAccessError("MCMCResultsMemoryUsageModel is read-only");
+	}
+
+	public void clear() {
+		d_results.clear();
+		fireValueChange(null, getValue());
 	}
 
 }

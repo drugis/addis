@@ -163,7 +163,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return getBean().getInconsistencyFactors();
 	}
 
-	public NormalSummary getNormalSummary(InconsistencyModel model, Parameter p) {
+	public NormalSummary getNormalSummary(MixedTreatmentComparison model, Parameter p) {
 		return getBean().getNormalSummary(model, p);
 	}
 
