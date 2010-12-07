@@ -26,120 +26,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.Measurement;
+import org.drugis.mtc.util.DerSimonianLairdPooling;
+import org.drugis.mtc.util.EstimateWithPrecision;
 
 public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurement> implements RandomEffectMetaAnalysisRelativeEffect<Measurement> {
 	
 	private abstract static class DerSimonianLairdComputations {
-		
-		double d_thetaDSL;
-		double d_SEThetaDSL;
-		double d_qIV;
-		int d_numRelativeEffects;
-		Distribution d_distribution;
+		private DerSimonianLairdPooling d_nested;
 		
 		public DerSimonianLairdComputations(List<Distribution> distributions) {
 			if (distributions.isEmpty())
 				throw new IllegalStateException("Cannot calculate RandomEffectMetaAnalysis without any relative effects.");
 	
-			d_numRelativeEffects = distributions.size();
-
-			List<Double> weights = new ArrayList<Double>();
-			for (Distribution dist : distributions) {
-				weights.add(1D / Math.pow(getSigma(dist), 2));
-			}
-			
-			double thetaIV = getThetaIV(weights, distributions);
-			d_qIV = getQIV(weights, distributions, thetaIV);
-			
-			List<Double> adjweights = calculateAdjustedWeights(distributions, weights);
-			
-			d_thetaDSL = getThetaDL(adjweights, distributions);
-			d_SEThetaDSL = getSE_ThetaDL(adjweights);
-			
-			d_distribution = getPooledDistribution();
-		}
-
-		private List<Double> calculateAdjustedWeights(List<Distribution> distributions, List<Double> weights) {
-			if (distributions.size() < 2) { // getTauSquared is NaN if n = 1
-				return weights;
-			}
-			
-			final double tauSquared = getTauSquared(d_qIV, weights);
-			
-			List<Double> adjweights = new ArrayList<Double>();
-			for (Distribution dist : distributions) {
-				adjweights.add(1D / (Math.pow(getSigma(dist), 2) + tauSquared));
-			}
-			return adjweights;
-		}
-		
-		private double getSE_ThetaDL(List<Double> adjweights) {
-			return 1.0 / (Math.sqrt(computeSum(adjweights)));
-		}
-
-		private double getThetaDL(List<Double> adjweights, List<Distribution> relEffects) {
-			double numerator = 0;
-			for (int i=0; i < adjweights.size(); ++i) {
-				numerator += adjweights.get(i) * getMu(relEffects.get(i));
-			}
-			
-			return numerator / computeSum(adjweights);
-		}
-		
-		private double getTauSquared(double Q, List<Double> weights) {
-			double k = weights.size();
-			double num = Q - (k - 1);
-			double denum = computeSum(weights) - (computeSquaredSum(weights) / computeSum(weights));
-			return Math.max(num / denum, 0);
-		}
-
-		private double computeSquaredSum(List<Double> weights) {
-			double squaredWeightsSum = 0;
-			for (int i=0;i<weights.size();i++) {
-				squaredWeightsSum += Math.pow(weights.get(i), 2);
-			}
-			return squaredWeightsSum;
-		}
-		
-		private double getQIV(List<Double> weights, List<Distribution> relEffects, double thetaIV) {
-			double sum = 0;
-			for (int i = 0; i < weights.size(); ++i) {
-				sum += weights.get(i) * Math.pow(getMu(relEffects.get(i)) - thetaIV, 2);
-			}
-			return sum;
-		}
-		
-		private double getThetaIV(List<Double> weights, List<Distribution> relEffects) {
-			double sumWeightRatio = 0D;
-			for (int i = 0; i < weights.size(); ++i) {
-				sumWeightRatio += weights.get(i) * getMu(relEffects.get(i));
-			}
-			return sumWeightRatio / computeSum(weights);
-		}	
-		
-		protected double computeSum(List<Double> weights) {
-			double weightSum = 0;
-			for (int i=0; i < weights.size(); ++i) {
-				weightSum += weights.get(i);
-			}
-			return weightSum;
+			d_nested = new DerSimonianLairdPooling(getMu(distributions), getSigma(distributions));
 		}
 		
 		public double getHeterogeneity() {
-			return d_qIV;
+			return d_nested.getHeterogeneity();
 		}
 		
 		public double getHeterogeneityI2() {
-			return Math.max(0, 100 * ((getHeterogeneity() - (d_numRelativeEffects - 1)) / getHeterogeneity()));
+			return d_nested.getHeterogeneityTestStatistic() * 100;
 		}
 		
 		public Distribution getDistribution() {
-			return d_distribution;
+			return getPooledDistribution(d_nested.getPooled());
 		}
 		
-		protected abstract Distribution getPooledDistribution();
+		protected abstract Distribution getPooledDistribution(EstimateWithPrecision estimate);
 		protected abstract double getMu(Distribution d);
 		protected abstract double getSigma(Distribution d);
+
+		private double[] getSigma(List<Distribution> distributions) {
+			double[] val = new double[distributions.size()];
+			for (int i = 0; i < distributions.size(); ++i) {
+				val[i] = getSigma(distributions.get(i));
+			}
+			return val;
+		}
+
+		private double[] getMu(List<Distribution> distributions) {
+			double[] val = new double[distributions.size()];
+			for (int i = 0; i < distributions.size(); ++i) {
+				val[i] = getMu(distributions.get(i));
+			}
+			return val;
+		}
 	}
 	
 	private class LinDSLComputations extends DerSimonianLairdComputations {
@@ -158,8 +90,8 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 		}
 		
 		@Override
-		public Distribution getPooledDistribution() {
-			return new Gaussian(d_thetaDSL, d_SEThetaDSL);
+		protected Distribution getPooledDistribution(EstimateWithPrecision estimate) {
+			return new Gaussian(estimate.getPointEstimate(), estimate.getStandardError());
 		}
 	}
 	
@@ -179,8 +111,8 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 		}
 		
 		@Override
-		public Distribution getPooledDistribution() {
-			return new LogGaussian(d_thetaDSL, d_SEThetaDSL);
+		protected Distribution getPooledDistribution(EstimateWithPrecision estimate) {
+			return new LogGaussian(estimate.getPointEstimate(), estimate.getStandardError());
 		}
 	}
 

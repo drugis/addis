@@ -195,9 +195,9 @@ public class RandomEffectsMetaAnalysisTest {
 	public void testGetOddsRatioRelativeEffect() {
 		RandomEffectMetaAnalysisRelativeEffect<Measurement> oddsRatio = d_rema.getRelativeEffect(BasicOddsRatio.class);
 		assertEquals(2.14, oddsRatio.getHeterogeneity(), 0.01);
-		assertEquals(1.30, (oddsRatio.getConfidenceInterval().getPointEstimate()), 0.01); 
+		assertEquals(1.30, (oddsRatio.getConfidenceInterval().getPointEstimate()), 0.01);
 		assertEquals(1.03, (oddsRatio.getConfidenceInterval().getLowerBound()), 0.01);
-		assertEquals(1.65, (oddsRatio.getConfidenceInterval().getUpperBound()), 0.01);		
+		assertEquals(1.65, (oddsRatio.getConfidenceInterval().getUpperBound()), 0.01);
 	}
 	
 	@Test
