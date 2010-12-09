@@ -19,7 +19,8 @@ Versions
 
 1.3: Lynd & O'Brien benefit-risk analysis, corrected meta-analysis,
    network meta-analysis enhancements (assessment of convergence,
-   variance parameters), tabbed views.
+   variance parameters, node-splitting analysis, R-dump of results,
+   memory management), tabbed views.
 
 1.2.1: Bugfix release
 
