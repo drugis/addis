@@ -10,7 +10,6 @@ import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
 import org.drugis.common.JUnitUtil;
 import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.MCMCResults;
-import org.drugis.mtc.MCMCResultsListener;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.util.FileResults;
@@ -25,27 +24,6 @@ public class MCMCResultsMemoryUsageModelTest {
 	private FileResults d_results;
 	
 	
-	public class FakeResults implements MCMCResults {
-		private int d_nChains;
-		private int d_nSamples;
-		private int d_nParameters;
-
-		public FakeResults(int nChains, int nSamples, int nParameters) {
-			d_nChains = nChains;
-			d_nSamples = nSamples;
-			d_nParameters = nParameters;
-		}
-		public void addResultsListener(MCMCResultsListener l) {}
-		public void removeResultsListener(MCMCResultsListener l) {}
-		public int findParameter(Parameter p) { return 0; }
-		public int getNumberOfChains() { return d_nChains; }
-		public int getNumberOfSamples() { return d_nSamples; }
-		public Parameter[] getParameters() { return new Parameter[d_nParameters]; }
-		public double getSample(int p, int c, int i) { return 0; }
-		public double[] getSamples(int p, int c) { return null; }
-		public void clear() {}
-	}
-
 	@Before
 	public void setUp() throws IOException {
 		Treatment t1 = new Treatment("iPCI");

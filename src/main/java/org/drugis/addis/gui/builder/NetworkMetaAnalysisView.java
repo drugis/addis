@@ -66,6 +66,7 @@ import org.drugis.addis.presentation.NetworkVarianceTableModel;
 import org.drugis.addis.presentation.PvalueTableModel;
 import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EmpiricalDensityDataset;
 import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
 import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
@@ -88,6 +89,7 @@ import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.QuantileSummary;
+import org.drugis.mtc.util.MCMCResultsWriter;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -96,6 +98,7 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.xy.XYDataset;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -161,7 +164,7 @@ implements ViewBuilder {
 	private JComponent buildMemoryUsageTab() {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = new FormLayout(
-				"3dlu, pref, 3dlu, right:pref, 3dlu, pref, 3dlu, pref:grow:fill, 3dlu",
+				"3dlu, pref, 3dlu, right:pref, 3dlu, pref, 3dlu, pref, 3dlu, pref:grow:fill, 3dlu",
 				"3dlu, p, 3dlu, p"
 				);
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -172,28 +175,55 @@ implements ViewBuilder {
 		
 		builder.add(AuxComponentFactory.createNoteField("Network meta-analysis results can use quite a bit of memory. Here, the results of " +
 				"analyses may be discarded to save memory. The aggregate-level results will be maintained. However, after " +
-				"discarding the results, it will no longer be possible to display the convergence plots."), cc.xyw(2, row, 7));
+				"discarding the results, it will no longer be possible to display the convergence plots."), cc.xyw(2, row, 9));
 		LayoutUtil.addRow(builder.getLayout());
 		row += 2;
 
-		ConsistencyModel consModel = d_pm.getConsistencyModel();
+		final ConsistencyModel consModel = d_pm.getConsistencyModel();
 		LayoutUtil.addRow(layout);
 		row += 2;
 		buildMemoryUsage(consModel, "Consistency model", builder, row);
+		addRCodeSaveButton(cc, builder, row, consModel);
 
 		InconsistencyModel inconsModel = d_pm.getInconsistencyModel();
 		LayoutUtil.addRow(layout);
 		row += 2;
 		buildMemoryUsage(inconsModel, "Inconsistency model", builder, row);
+		addRCodeSaveButton(cc, builder, row, inconsModel);
 
 		for(BasicParameter p : d_pm.getSplitParameters()) {
 			NodeSplitModel nodeSplitModel= d_pm.getNodeSplitModel(p);
 			LayoutUtil.addRow(layout);
 			row += 2;
 			buildMemoryUsage(nodeSplitModel, "Node Split model, parameter " + p.getName(), builder, row);
+			addRCodeSaveButton(cc, builder, row, nodeSplitModel);
 		}
 		
 		return builder.getPanel();
+	}
+
+	private void addRCodeSaveButton(CellConstraints cc, PanelBuilder builder, int row, final MCMCModel model) {
+		final JButton button = new JButton("Dump to R-file", ImageLoader.getIcon(FileNames.ICON_SAVEFILE));
+		Bindings.bind(button, "enabled", new MCMCResultsAvailableModel(model.getResults()));
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new FileSaveDialog(d_main, "R", "R files") {
+					@Override
+					public void doAction(String path, String extension) {
+						try {
+							MCMCResultsWriter writer = new MCMCResultsWriter(model.getResults());
+							writer.write(new FileOutputStream(path));
+						} catch (FileNotFoundException e) {
+							throw new RuntimeException(e);
+						} catch (IOException e) {
+							throw new RuntimeException(e);
+						}
+					}
+				};
+				
+			}
+		});
+		builder.add(button, cc.xy(8, row));
 	}
 	
 
