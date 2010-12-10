@@ -149,7 +149,7 @@ public class LyndOBrienView implements ViewBuilder {
 		}
 
 		private void setMuAndPValueLabel(java.lang.Double mu) {
-			DecimalFormat df = new DecimalFormat("#.##");
+			DecimalFormat df = new DecimalFormat("0.00");
 			d_pvalueLabel.setText("\u03BC = " + df.format(mu) + ", P-value: " + df.format(d_pm.getModel().getPValue(mu)));
 		}
 	}

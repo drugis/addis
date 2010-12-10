@@ -62,7 +62,7 @@ public class AcceptabilityCurveDataset extends AbstractXYDataset implements Task
 	}
 
 	public void taskEvent(TaskEvent event) {
-		if(event.getType() == EventType.TASK_PROGRESS) {
+		if(event.getType() == EventType.TASK_FINISHED) {
 			calcPvalues();
 			fireDatasetChanged();
 		}
