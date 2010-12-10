@@ -26,37 +26,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.lyndobrien.BenefitRiskDistribution.Sample;
-import org.drugis.common.threading.IterativeComputation;
+import org.drugis.common.threading.AbstractIterativeComputation;
 import org.drugis.common.threading.IterativeTask;
 import org.drugis.common.threading.Task;
 
-public class LyndOBrienModelImpl implements LyndOBrienModel, IterativeComputation {
-
+public class LyndOBrienModelImpl extends AbstractIterativeComputation implements LyndOBrienModel {
 	private BenefitRiskDistribution d_brd;
-	private int d_simulationIter = 3000;
-	private int d_reportingInterval = 100;
+	private static final int SIMULATION_ITERATIONS = 3000;
+	private static final int REPORTING_INTERVAL = 100;
 	private List<Sample> d_data;
-	private int d_iter = 0;
 	private IterativeTask d_task;
 
-	public LyndOBrienModelImpl(BenefitRiskDistribution brd){
+	public LyndOBrienModelImpl(BenefitRiskDistribution brd) {
+		super(SIMULATION_ITERATIONS);
 		d_brd = brd;
 		d_data = new ArrayList<Sample>();
 		d_task = new IterativeTask(this, "Lynd & O'Brien Simulation");
-		d_task.setReportingInterval(d_reportingInterval);
-	}
-
-	public void setSimulationIterations(int it) {
-		d_simulationIter = it;
-	}
-	
-	public int getSimulationIterations() {
-		return d_simulationIter;
-	}
-
-	public boolean isReady() {
-		return d_task.isFinished();
-
+		d_task.setReportingInterval(REPORTING_INTERVAL);
 	}
 
 	public Sample getData(int arg0) {
@@ -91,23 +77,16 @@ public class LyndOBrienModelImpl implements LyndOBrienModel, IterativeComputatio
 		return belowMu / d_data.size();
 	}
 
-	public void initialize() {}
-	public void finish() {}
-
-	public int getIteration() {
-		return d_iter;
-	}
-
-	public int getTotalIterations() {
-		return d_simulationIter;
-	}
-
-	public void step() {
-		d_data.add(d_iter, d_brd.nextSample());
-		++d_iter;
-	}
-
 	public Task getTask() {
 		return d_task;
+	}
+
+	@Override
+	public void doStep() {
+		d_data.add(d_brd.nextSample());		
+	}
+
+	public int getSimulationIterations() {
+		return SIMULATION_ITERATIONS;
 	}
 }
