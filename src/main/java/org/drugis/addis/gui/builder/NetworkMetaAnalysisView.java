@@ -68,11 +68,11 @@ import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EmpiricalDensityDataset;
+import org.drugis.addis.util.ImageExporterExperimental;
 import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
 import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.FileSaveDialog;
-import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 import org.drugis.common.gui.task.TaskProgressBar;
@@ -490,17 +490,17 @@ implements ViewBuilder {
 		builder.add(chartPanel, cc.xy(1, 1));
 				
 		ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
-		bbuilder.addButton(createSaveImageButton(chartPanel));
+		bbuilder.addButton(createSaveImageButton(chart));
 		builder.add(bbuilder.getPanel(), cc.xy(1, 3));
 
 		return builder.getPanel();
 	}
 
-	private JButton createSaveImageButton(final JComponent comp) {
+	private JButton createSaveImageButton(final JFreeChart chart) {
 		JButton button = new JButton("Save Image");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ImageExporter.writeImage(d_main, comp, (int) comp.getSize().getWidth(), (int) comp.getSize().getHeight());
+				ImageExporterExperimental.writeImage(d_main, chart, 600, 400);
 			}
 		});
 		return button;

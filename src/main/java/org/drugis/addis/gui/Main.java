@@ -86,6 +86,7 @@ import org.drugis.addis.gui.components.AddisScrollPane;
 import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
+import org.drugis.addis.util.ImageExporterExperimental;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.FileLoadDialog;
 import org.drugis.common.gui.FileSaveDialog;
@@ -210,7 +211,7 @@ public class Main extends JFrame {
 		new FileSaveDialog(component, "svg", "SVG files") {
 			@Override
 			public void doAction(String path, String extension) {
-				ImageExporter.writeSVG(path, component, component.getWidth(), component.getHeight());
+				ImageExporterExperimental.writeSVG(path, component, component.getWidth(), component.getHeight());
 			}
 		};
 	}
