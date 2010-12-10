@@ -22,6 +22,8 @@
 
 package org.drugis.addis.entities.analysis;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,15 +55,17 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.addis.mcmcmodel.BaselineMeanDifferenceModel;
 import org.drugis.addis.mcmcmodel.BaselineOddsModel;
+import org.drugis.addis.presentation.AllSummariesDefinedModel;
 import org.drugis.addis.util.EnumXMLFormat;
 import org.drugis.addis.util.comparator.AlphabeticalComparator;
 import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.drugis.common.threading.Task;
-import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.ThreadHandler;
-import org.drugis.common.threading.event.TaskEvent;
-import org.drugis.common.threading.event.TaskEvent.EventType;
+import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.ConsistencyModel;
+import org.drugis.mtc.Parameter;
+import org.drugis.mtc.Treatment;
+import org.drugis.mtc.summary.Summary;
 
 public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<Drug> {
 	private String d_name;
@@ -77,46 +81,35 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	public static String PROPERTY_BASELINE = "baseline";
 	public static String PROPERTY_METAANALYSES = "metaAnalyses";
 	
-	private final class SimulationFinishedNotifier implements TaskListener {
-		private final AbstractMeasurementSource<Drug> d_source;
-		public SimulationFinishedNotifier(AbstractMeasurementSource<Drug> source) {
-			d_source = source;
-		}
-		public void taskEvent(TaskEvent event) {
-			if (event.getType() == EventType.TASK_FINISHED) {
-				d_source.notifyListeners();
-			}
-		}
-	}
-
 	private class AbsoluteMeasurementSource extends AbstractMeasurementSource<Drug> {
 		public AbsoluteMeasurementSource() {
-			SimulationFinishedNotifier simulationFinishedNotifier = new SimulationFinishedNotifier(this);
+			List<Summary> summaryList = new ArrayList<Summary>();
 			for (OutcomeMeasure om : getOutcomeMeasures()) {
-				getBaselineModel(om).getActivityTask().addTaskListener(simulationFinishedNotifier);
+				summaryList.add(getBaselineModel(om).getSummary());
 			}
-			attachToAllNetworkModels(simulationFinishedNotifier);			
+			summaryList.addAll(getEffectSummaries());
+			AllSummariesDefinedModel allSummariesDefinedModel = new AllSummariesDefinedModel(summaryList);
+			allSummariesDefinedModel.addValueChangeListener(new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					if (evt.getNewValue().equals(true)) notifyListeners();
+				}
+			});
 		}
 		
 		public Distribution getMeasurement(Drug alternative, OutcomeMeasure criterion) {
 			return getAbsoluteEffectDistribution(alternative, criterion);
 		}
 	}
-	
-	private void attachToAllNetworkModels(
-			SimulationFinishedNotifier simulationFinishedNotifier) {
-		for (MetaAnalysis ma : getMetaAnalyses()) {
-			if (ma instanceof NetworkMetaAnalysis) {
-				NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
-				nma.getConsistencyModel().getActivityTask().addTaskListener(simulationFinishedNotifier);
-			}
-		}
-	}
 
 	private class RelativeMeasurementSource extends AbstractMeasurementSource<Drug> {
 		public RelativeMeasurementSource() {
-			SimulationFinishedNotifier simulationFinishedNotifier = new SimulationFinishedNotifier(this);
-			attachToAllNetworkModels(simulationFinishedNotifier);
+			List<Summary> summaryList = getEffectSummaries();
+			AllSummariesDefinedModel allSummariesDefinedModel = new AllSummariesDefinedModel(summaryList);
+			allSummariesDefinedModel.addValueChangeListener(new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					if (evt.getNewValue().equals(true)) notifyListeners();
+				}
+			});
 		}
 
 		public Distribution getMeasurement(Drug alternative, OutcomeMeasure criterion) {
@@ -385,5 +378,19 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		
 	public AnalysisType getAnalysisType() {
 		return d_analysisType;
+	}
+
+	private List<Summary> getEffectSummaries() {
+		List<Summary> summaryList = new ArrayList<Summary>();
+		for (MetaAnalysis ma : getMetaAnalyses()) {
+			if (ma instanceof NetworkMetaAnalysis) {
+				for(Drug d: getAlternatives()) {
+					Parameter p = new BasicParameter(new Treatment(getBaseline().getName()), new Treatment(d.getName()));
+					NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
+					summaryList.add(nma.getNormalSummary(nma.getConsistencyModel(), p));
+				}
+			}
+		}
+		return summaryList;
 	}
 }
