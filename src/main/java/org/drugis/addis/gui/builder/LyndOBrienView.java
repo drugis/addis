@@ -75,16 +75,6 @@ public class LyndOBrienView implements ViewBuilder {
 		d_pm = pm.getLyndOBrienPresentation();
 		d_BRpm = pm;
 		d_pvalueLabel = new JLabel();
-		
-		if (d_BRpm.getMeasurementsReadyModel().getValue()) {
-			d_pm.startLyndOBrien();
-		}
-		
-		d_BRpm.getMeasurementsReadyModel().addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				d_pm.startLyndOBrien();
-			}
-		});
 	}
 
 	public JComponent buildPanel() {

@@ -75,17 +75,6 @@ public class SMAAView implements ViewBuilder  {
 		d_pm = pm.getSMAAPresentation();
 		d_main = main;
 		d_BRpm = pm;
-		
-		// FIXME: below code should be in presentation.
-		if ((Boolean)d_BRpm.getMeasurementsReadyModel().getValue()) {
-			d_pm.startSMAA();
-		}
-		
-		d_BRpm.getMeasurementsReadyModel().addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-					d_pm.startSMAA();
-			}
-		});
 	}
 
 	public JComponent buildPanel() {
@@ -263,6 +252,6 @@ public class SMAAView implements ViewBuilder  {
 	@SuppressWarnings("unchecked")
 	protected BuildViewWhenReadyComponent createWaiter(ViewBuilder builder) {
 		return new BuildViewWhenReadyComponent(builder, 
-				d_BRpm.getMeasurementsReadyModel(), WAITING_MESSAGE);
+				d_BRpm.getSMAAPresentation().getInitializedModel(), WAITING_MESSAGE);
 	}
 }

@@ -83,11 +83,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	
 	private class AbsoluteMeasurementSource extends AbstractMeasurementSource<Drug> {
 		public AbsoluteMeasurementSource() {
-			List<Summary> summaryList = new ArrayList<Summary>();
-			for (OutcomeMeasure om : getOutcomeMeasures()) {
-				summaryList.add(getBaselineModel(om).getSummary());
-			}
-			summaryList.addAll(getEffectSummaries());
+			List<Summary> summaryList = getEffectSummaries();
 			AllSummariesDefinedModel allSummariesDefinedModel = new AllSummariesDefinedModel(summaryList);
 			allSummariesDefinedModel.addValueChangeListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
@@ -103,7 +99,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 
 	private class RelativeMeasurementSource extends AbstractMeasurementSource<Drug> {
 		public RelativeMeasurementSource() {
-			List<Summary> summaryList = getEffectSummaries();
+			List<Summary> summaryList = getRelativeEffectSummaries();
 			AllSummariesDefinedModel allSummariesDefinedModel = new AllSummariesDefinedModel(summaryList);
 			allSummariesDefinedModel.addValueChangeListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
@@ -380,7 +376,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		return d_analysisType;
 	}
 
-	private List<Summary> getEffectSummaries() {
+	public List<Summary> getRelativeEffectSummaries() {
 		List<Summary> summaryList = new ArrayList<Summary>();
 		for (MetaAnalysis ma : getMetaAnalyses()) {
 			if (ma instanceof NetworkMetaAnalysis) {
@@ -393,6 +389,20 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 				}
 			}
 		}
+		return summaryList;
+	}
+
+	public List<Summary> getAbsoluteEffectSummaries() {
+		List<Summary> summaryList = new ArrayList<Summary>();
+		for (OutcomeMeasure om : getOutcomeMeasures()) {
+			summaryList.add(getBaselineModel(om).getSummary());
+		}
+		return summaryList;
+	}
+
+	public List<Summary> getEffectSummaries() {
+		List<Summary> summaryList = getAbsoluteEffectSummaries();
+		summaryList.addAll(getRelativeEffectSummaries());
 		return summaryList;
 	}
 }

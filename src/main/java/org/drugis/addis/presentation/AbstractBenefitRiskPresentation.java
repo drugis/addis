@@ -37,10 +37,18 @@ extends PresentationModel<AnalysisType> {
 	protected PresentationModelFactory d_pmf;
 	protected BuildQueue d_buildQueue;
 	protected SimulationProgressBar d_progressBar;
+	private SMAAPresentation<Alternative, AnalysisType> d_smaaPresentation;
+	private LyndOBrienPresentation<Alternative, AnalysisType> d_lyndOBrienPresentation;
 
 	public AbstractBenefitRiskPresentation(AnalysisType bean, PresentationModelFactory pmf) {
 		super(bean);
 		d_pmf = pmf;
+		
+		if (bean.getAnalysisType().equals(org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType.SMAA)) {
+			d_smaaPresentation = new SMAAPresentation<Alternative, AnalysisType>(getBean());
+		} else {
+			d_lyndOBrienPresentation = new LyndOBrienPresentation<Alternative, AnalysisType>(getBean());
+		}
 	}
 	
 	public PresentationModelFactory getFactory() {
@@ -52,10 +60,10 @@ extends PresentationModel<AnalysisType> {
 	public abstract ValueHolder<Boolean> getMeasurementsReadyModel();
 
 	public SMAAPresentation<Alternative, AnalysisType> getSMAAPresentation() {
-		return new SMAAPresentation<Alternative, AnalysisType>(getBean());
+		return d_smaaPresentation;
 	}
 
 	public LyndOBrienPresentation<Alternative, AnalysisType> getLyndOBrienPresentation() {
-		return new LyndOBrienPresentation<Alternative, AnalysisType>(getBean());
+		return d_lyndOBrienPresentation;
 	}
 }

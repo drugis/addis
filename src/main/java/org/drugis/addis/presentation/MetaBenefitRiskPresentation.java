@@ -22,6 +22,8 @@
 
 package org.drugis.addis.presentation;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,13 +31,11 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.MCMCModel;
-import org.drugis.mtc.Treatment;
-import org.drugis.mtc.summary.Summary;
 
 @SuppressWarnings("serial")
 public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<Drug, MetaBenefitRiskAnalysis> {
@@ -49,24 +49,37 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		d_pmf = pmf;
 		d_baselineModels = new ArrayList<MCMCModel>();
 		initAllBaselineModels();
+		d_allSummariesDefinedModel = new AllSummariesDefinedModel(bean.getEffectSummaries());
+		
+		if (bean.getAnalysisType().equals(AnalysisType.SMAA)) {
+			startSMAA();
+		} else {
+			startLyndOBrien();
+		}
+	}
 
-		List<Summary> l = new ArrayList<Summary>();
-		for(MCMCModel m: d_baselineModels) {
-			AbstractBaselineModel<?> abm = (AbstractBaselineModel<?>) m; 
-			l.add(abm.getSummary());
+	private void startSMAA() {
+		if ((Boolean)getMeasurementsReadyModel().getValue()) {
+			getSMAAPresentation().startSMAA();
 		}
-		for(Drug d: bean.getAlternatives()) {
-			if (!d.equals(bean.getBaseline())) {
-				for(MetaAnalysis ma: bean.getMetaAnalyses()) {
-					if (ma instanceof NetworkMetaAnalysis) {
-						NetworkMetaAnalysis nma = (NetworkMetaAnalysis) ma;
-						l.add(nma.getNormalSummary(nma.getConsistencyModel(), 
-								nma.getConsistencyModel().getRelativeEffect(new Treatment(bean.getBaseline().getName()), new Treatment(d.getName()))));
-					}
-				}
+		
+		getMeasurementsReadyModel().addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				getSMAAPresentation().startSMAA();
 			}
+		});
+	}
+
+	private void startLyndOBrien() {
+		if (getMeasurementsReadyModel().getValue()) {
+			getLyndOBrienPresentation().startLyndOBrien();
 		}
-		d_allSummariesDefinedModel = new AllSummariesDefinedModel(l);
+		
+		getMeasurementsReadyModel().addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				getLyndOBrienPresentation().startLyndOBrien();
+			}
+		});
 	}
 	
 	public ListHolder<MetaAnalysis> getAnalysesModel() {
