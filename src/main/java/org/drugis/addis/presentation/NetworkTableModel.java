@@ -35,14 +35,12 @@ import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
-import org.drugis.mtc.ConsistencyModel;
-import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.NormalSummary;
 
 @SuppressWarnings("serial")
-public class NetworkTableModel  extends AbstractTableModel implements TableModelWithDescription {
+public class NetworkTableModel extends AbstractTableModel {
 	private final Object d_na;
 	private NetworkMetaAnalysisPresentation d_pm;
 	private PresentationModelFactory d_pmf;
@@ -119,18 +117,5 @@ public class NetworkTableModel  extends AbstractTableModel implements TableModel
 
 	private Treatment getTreatment(int idx) {
 		return d_model.getTreatments().get(idx);
-	}
-
-	public String getDescription() {
-		String result = "Network Meta-Analysis";
-		if (d_networkModel instanceof InconsistencyModel)
-			result += " (Inconsistency Model)";
-		else if (d_networkModel instanceof ConsistencyModel)
-			result += " (Consistency Model)";
-		return result;
-	}
-
-	public String getTitle() {
-		return getDescription();
 	}
 }

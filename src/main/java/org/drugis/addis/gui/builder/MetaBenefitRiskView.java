@@ -24,8 +24,6 @@ package org.drugis.addis.gui.builder;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 
 import javax.swing.JButton;
@@ -77,18 +75,6 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		final JComponent progressBars = buildProgressBars();
 		builder.add(progressBars, cc.xy(1, 9));
 		
-		if (d_pm.getMeasurementsReadyModel().getValue()) {
-			progressBars.setVisible(false);
-		}
-		
-		d_pm.getMeasurementsReadyModel().addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				if (progressBars != null) {
-					progressBars.setVisible(false);
-				}
-			}
-		});
-		
 		return builder.getPanel();
 	}
 	
@@ -104,7 +90,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		for (Task t : d_pm.getMeasurementTasks()) {
 			LayoutUtil.addRow(layout);
 			row += 2;
-			JProgressBar bar = new TaskProgressBar(t);
+			JProgressBar bar = new TaskProgressBar(d_pm.getProgressModel(t));
 			builder.add(bar,cc.xy(1, row));
 		}
 		
@@ -122,7 +108,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 	}
 	protected JComponent buildAnalysesPart() {	
 		String[] formatter = {"name","type","indication","outcomeMeasure","includedDrugs","includedStudies","sampleSize"};
-		return new EntitiesTablePanel(Arrays.asList(formatter), d_pm.getAnalysesModel(), d_main, d_pm.getFactory(), null);
+		return new EntitiesTablePanel(Arrays.asList(formatter), d_pm.getAnalysesModel(), d_main, d_pm.getFactory());
 	}
 
 	@Override

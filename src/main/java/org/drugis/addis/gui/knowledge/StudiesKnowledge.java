@@ -29,7 +29,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.builder.StudiesNodeView;
+import org.drugis.addis.gui.builder.TitledPanelBuilder;
 import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.components.StudiesTablePanel;
@@ -74,7 +74,7 @@ public class StudiesKnowledge extends CategoryKnowledgeBase {
 	public ViewBuilder getCategoryViewBuilder(Main main, Domain domain) {
 		DefaultStudyListPresentation studyListPM = new DefaultStudyListPresentation(
 				domain.getStudiesHolder());
-		StudiesNodeView view = new StudiesNodeView(new StudiesTablePanel(studyListPM, main));
+		TitledPanelBuilder view = new TitledPanelBuilder(new StudiesTablePanel(studyListPM, main), "Studies");
 		return view;
 	}
 

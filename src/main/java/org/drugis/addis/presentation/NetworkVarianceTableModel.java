@@ -33,7 +33,7 @@ import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.QuantileSummary;
 
 @SuppressWarnings("serial")
-public class NetworkVarianceTableModel extends AbstractTableModel implements TableModelWithDescription {
+public class NetworkVarianceTableModel extends AbstractTableModel {
 
 	private static final int RANDOM_EFFECTS = 0;
 	private NetworkMetaAnalysisPresentation d_pm;
@@ -74,10 +74,6 @@ public class NetworkVarianceTableModel extends AbstractTableModel implements Tab
 	@Override
 	public String getColumnName(int column) {
 		return column == 0 ? "Parameter" : "Median (95% CrI)";
-	}
-	
-	public String getDescription() {
-		return null;
 	}
 
 	public int getRowCount() {

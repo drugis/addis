@@ -106,12 +106,12 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class NetworkMetaAnalysisView extends AbstractMetaAnalysisView<NetworkMetaAnalysisPresentation>
 implements ViewBuilder {
+	private static final String CONVERGENCE_TEXT = "Double click a parameter in the table below to see the convergence plots";
+
 	private static class AnalysisFinishedListener implements TaskListener {
-		private final JProgressBar d_progressBar;
 		private final TablePanel[] d_tablePanels;
 
-		public AnalysisFinishedListener(JProgressBar progressBar, TablePanel[] tablePanels) {
-			d_progressBar = progressBar;
+		public AnalysisFinishedListener(TablePanel[] tablePanels) {
 			d_tablePanels = tablePanels;
 		}
 
@@ -122,7 +122,6 @@ implements ViewBuilder {
 						for (TablePanel tablePanel : d_tablePanels) {
 							tablePanel.doLayout();
 						}
-						d_progressBar.setVisible(false);
 					}
 				};
 				SwingUtilities.invokeLater(r);
@@ -247,25 +246,30 @@ implements ViewBuilder {
 	
 	private JComponent buildInconsistencyTab() {
 		FormLayout layout = new FormLayout("3dlu, pref:grow:fill, 3dlu",
-		"3dlu, p, 3dlu, p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu");
+		"3dlu, p, 3dlu, p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		
 		CellConstraints cc = new CellConstraints();
-		builder.addSeparator("Results - network inconsistency model", cc.xy(2, 2));
+		int row = 2;
+		builder.addSeparator("Results - network inconsistency model", cc.xy(2, row));
+		row += 2;
 		
 		final InconsistencyModel inconsistencyModel = (InconsistencyModel) d_pm.getInconsistencyModel();
-		JProgressBar d_incProgressBar = new TaskProgressBar(d_pm.getProgressModel(inconsistencyModel));
-		if(!inconsistencyModel.isReady()) {
-			builder.add(d_incProgressBar, cc.xy(2, 4));
-		}
+		JProgressBar incProgressBar = new TaskProgressBar(d_pm.getProgressModel(inconsistencyModel));
+		builder.add(incProgressBar, cc.xy(2, row));
+		row += 2;
 		
 		String inconsistencyText = "<html>In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em> of evidence, in addition to <em>heterogeneity</em> within a comparison. Whereas heterogeneity represents between-study variation in the measured relative effect of a pair of treatments, inconsistency can only occur when a treatment C has a different effect when it is compared with A or B (i.e., studies comparing A and C are systematically different from studies comparing B and C). Thus, inconsistency may even occur with normal meta-analysis, but can only be detected using a network meta-analysis, and then only when there are closed loops in the evidence structure. For more information about assessing inconsistency, see G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, Journal of the American Statistical Association, 101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.</html>";
 		JComponent inconsistencyNote = AuxComponentFactory.createNoteField(inconsistencyText);
 		
-		builder.add(inconsistencyNote, cc.xy(2,6));
+		builder.add(inconsistencyNote, cc.xy(2, row));
+		row += 2;
 		
 		TablePanel inconsistencyTablePanel = createNetworkTablePanel(inconsistencyModel);
-		builder.add(inconsistencyTablePanel, cc.xy(2,8));
+		builder.addSeparator("Network Meta-Analysis (Inconsistency Model)", cc.xy(2, row));
+		row += 2;
+		builder.add(inconsistencyTablePanel, cc.xy(2,row));
+		row += 2;
 		
 		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(
 				d_pm, d_parent.getPresentationModelFactory());
@@ -286,43 +290,48 @@ implements ViewBuilder {
 			}
 		});
 		
-		builder.add(inconsistencyFactorsTablePanel, cc.xy(2, 10));
+		builder.addSeparator("Inconsistency Factors", cc.xy(2, row));
+		row += 2;
+		builder.add(inconsistencyFactorsTablePanel, cc.xy(2, row));
+		row += 2;
 		
 		NetworkVarianceTableModel mixedComparisonTableModel = new NetworkVarianceTableModel(d_pm, inconsistencyModel);
 		EnhancedTable mixedComparisontable = new EnhancedTable(mixedComparisonTableModel, 300);
 		mixedComparisontable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
 		final TablePanel mixedComparisonTablePanel = new TablePanel(mixedComparisontable);
 		
-		builder.addSeparator("Variance Calculation", cc.xy(2, 12));
-		builder.add(mixedComparisonTablePanel, cc.xy(2,14));
-		builder.getPanel().revalidate();
+		builder.addSeparator("Variance Calculation", cc.xy(2, row));
+		row += 2;
+		builder.add(mixedComparisonTablePanel, cc.xy(2, row));
+		row += 2;
 		
 		inconsistencyModel.getActivityTask().addTaskListener(
-				new AnalysisFinishedListener(d_incProgressBar, new TablePanel[] {
+				new AnalysisFinishedListener(new TablePanel[] {
 						inconsistencyTablePanel, inconsistencyFactorsTablePanel
 				})
 			);
 		
-		builder.addSeparator("Convergence", cc.xy(2, 16));
-		builder.add(AuxComponentFactory.createNoteField("Double click a parameter in the table below to see the convergence plots"), cc.xy(2, 18));
-		builder.add(buildConvergenceTable(inconsistencyModel, d_pm.getInconsistencyModelConstructedModel()), cc.xy(2, 20));
+		builder.addSeparator("Convergence", cc.xy(2, row));
+		row += 2;
+		builder.add(AuxComponentFactory.createNoteField(CONVERGENCE_TEXT), cc.xy(2, row));
+		row += 2;
+		builder.add(buildConvergenceTable(inconsistencyModel, d_pm.getInconsistencyModelConstructedModel()), cc.xy(2, row));
+		row += 2;
 		
 		return builder.getPanel();
 	}
 	
 	private JComponent buildConsistencyTab() {
 		FormLayout layout = new FormLayout(	"3dlu, pref:grow:fill, 3dlu",
-		"3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu" );
+		"3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu" );
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		CellConstraints cc =  new CellConstraints();
 		
 		builder.addSeparator("Results - network consistency model", cc.xy(2, 2));
 		
 		final ConsistencyModel consistencyModel = d_pm.getConsistencyModel();
-		JProgressBar d_conProgressBar = new TaskProgressBar(d_pm.getProgressModel(consistencyModel));
-		if(!consistencyModel.isReady()) {
-			builder.add(d_conProgressBar, cc.xy(2, 4));
-		}
+		JProgressBar conProgressBar = new TaskProgressBar(d_pm.getProgressModel(consistencyModel));
+		builder.add(conProgressBar, cc.xy(2, 4));
 		
 		String consistencyText = "<html>If there is no relevant inconsistency in the evidence, a consistency model can be used to draw conclusions about the relative effect of the included treatments. Using normal meta-analysis, we could only get a subset of the confidence intervals for relative effects we derive using network meta-analysis. Network meta-analysis gives a consistent, integrated picture of the relative effects. However, given such a consistent set of relative effect estimates, it may still be difficult to draw conclusions on a potentially large set of treatments. Luckily, the Bayesian approach allows us to do even more with the data, and can be used to estimate the probability that, given the priors and the data, each of the treatments is the best, the second best, etc. This is given below in the rank probability plot. Rank probabilities sum to one, both within a rank over treatments and within a treatment over ranks.</html>";
 		JComponent consistencyNote = AuxComponentFactory.createNoteField(consistencyText);
@@ -331,23 +340,34 @@ implements ViewBuilder {
 		
 		TablePanel consistencyTablePanel = createNetworkTablePanel(consistencyModel);
 		consistencyModel.getActivityTask().addTaskListener(
-				new AnalysisFinishedListener(d_conProgressBar, new TablePanel[] {consistencyTablePanel}));
+				new AnalysisFinishedListener(new TablePanel[] {consistencyTablePanel}));
 		
-		builder.add(consistencyTablePanel, cc.xy(2, 8));
+		int row = 8;
+		builder.addSeparator("Network Meta-Analysis (Consistency Model)", cc.xy(2, row));
+		row += 2;
+		builder.add(consistencyTablePanel, cc.xy(2, row));
+		row += 2;
 		
-		builder.add(createRankProbChart(), cc.xy(2, 10));
+		builder.add(createRankProbChart(), cc.xy(2, row));
+		row += 2;
 		
 		NetworkVarianceTableModel mixedComparisonTableModel = new NetworkVarianceTableModel(d_pm, consistencyModel);
 		EnhancedTable mixedComparisontable = new EnhancedTable(mixedComparisonTableModel, 300);
 		mixedComparisontable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
 		
 		final TablePanel mixedComparisonTablePanel = new TablePanel(mixedComparisontable);
-		builder.addSeparator("Variance Calculation", cc.xy(2, 12));
-		builder.add(mixedComparisonTablePanel, cc.xy(2,14));
+		builder.addSeparator("Variance Parameters", cc.xy(2, row));
+		row += 2;
+		builder.add(mixedComparisonTablePanel, cc.xy(2, row));
+		row += 2;
 		
-		builder.addSeparator("Convergence", cc.xy(2, 16));
-		builder.add(AuxComponentFactory.createNoteField("Double click a parameter in the table below to see the convergence plots"), cc.xy(2, 18));
-		builder.add(buildConvergenceTable(consistencyModel, d_pm.getConsistencyModelConstructedModel()), cc.xy(2, 20));
+		builder.addSeparator("Convergence", cc.xy(2, row));
+		row += 2;
+		
+		builder.add(AuxComponentFactory.createNoteField(CONVERGENCE_TEXT), cc.xy(2, row));
+		row += 2;
+		builder.add(buildConvergenceTable(consistencyModel, d_pm.getConsistencyModelConstructedModel()), cc.xy(2, row));
+		row += 2;
 		
 		return builder.getPanel();
 	}
@@ -385,7 +405,7 @@ implements ViewBuilder {
 			builder.addSeparator("Convergence", cc.xyw(1, row, 3));
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.add(AuxComponentFactory.createNoteField("Double click a parameter in the table below to see the convergence plots"), cc.xyw(1, row, 3));
+			builder.add(AuxComponentFactory.createNoteField(CONVERGENCE_TEXT), cc.xyw(1, row, 3));
 			LayoutUtil.addRow(layout);
 			row += 2;
 			builder.add(buildConvergenceTable(model, d_pm.getNodesplitModelConstructedModel(p)), cc.xyw(1, row, 3));
