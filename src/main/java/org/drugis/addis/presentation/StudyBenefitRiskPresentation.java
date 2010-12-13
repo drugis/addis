@@ -46,4 +46,13 @@ public class StudyBenefitRiskPresentation extends
 		return new UnmodifiableHolder<Boolean>(true);
 	}
 
+	@Override
+	protected void startSMAA() {
+		getSMAAPresentation().startSMAA();
+	}
+
+	@Override
+	protected void startLyndOBrien() {
+		getLyndOBrienPresentation().startLyndOBrien();
+	}
 }

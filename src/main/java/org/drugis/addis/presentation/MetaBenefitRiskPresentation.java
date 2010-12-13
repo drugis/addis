@@ -34,7 +34,6 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.Task;
@@ -54,16 +53,10 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		d_pmf = pmf;
 		initAllBaselineModels();
 		initAllProgressModels();
-		d_allSummariesDefinedModel = new AllSummariesDefinedModel(bean.getEffectSummaries());
-		
-		if (bean.getAnalysisType().equals(AnalysisType.SMAA)) {
-			startSMAA();
-		} else {
-			startLyndOBrien();
-		}
 	}
 
-	private void startSMAA() {
+	@Override
+	protected void startSMAA() {
 		if ((Boolean)getMeasurementsReadyModel().getValue()) {
 			getSMAAPresentation().startSMAA();
 		}
@@ -75,7 +68,8 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		});
 	}
 
-	private void startLyndOBrien() {
+	@Override
+	protected void startLyndOBrien() {
 		if (getMeasurementsReadyModel().getValue()) {
 			getLyndOBrienPresentation().startLyndOBrien();
 		}
@@ -95,6 +89,9 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	
 	@Override
 	public ValueHolder<Boolean> getMeasurementsReadyModel() {
+		if (d_allSummariesDefinedModel == null) {
+			d_allSummariesDefinedModel = new AllSummariesDefinedModel(getBean().getEffectSummaries());
+		}
 		return d_allSummariesDefinedModel;
 	}
 	
@@ -106,9 +103,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	
 	@Override
 	public synchronized void startAllSimulations() {
-		getBean().runAllConsistencyModels();
-		List<Task> tasks = getBaselineTasks();
-		ThreadHandler.getInstance().scheduleTasks(tasks);
+		ThreadHandler.getInstance().scheduleTasks(getMeasurementTasks());
 	}
 
 	private List<Task> getBaselineTasks() {
