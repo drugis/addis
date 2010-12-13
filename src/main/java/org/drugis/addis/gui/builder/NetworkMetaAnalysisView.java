@@ -106,7 +106,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class NetworkMetaAnalysisView extends AbstractMetaAnalysisView<NetworkMetaAnalysisPresentation>
 implements ViewBuilder {
-	private static final String CONVERGENCE_TEXT = "Double click a parameter in the table below to see the convergence plots";
+	private static final String CONVERGENCE_TEXT = "<p>Convergence is assessed using the Brooks-Gelman-Rubin method. This method compares within-chain and between-chain variance to calculate the <em>Potential Scale Reduction Factor</em> (PSRF). A PSRF close to one indicates approximate convergence has been reached. See S.P. Brooks and A. Gelman (1998), <em>General methods for monitoring convergence of iterative simulations</em>, Journal of Computational and Graphical Statistics, 7(4): 434-455. <a href=\"http://www.jstor.org/stable/1390675\">JSTOR 1390675</a>.</p><p>Double click a parameter in the table below to see the convergence plots.</p>";
 
 	private static class AnalysisFinishedListener implements TaskListener {
 		private final TablePanel[] d_tablePanels;
@@ -169,12 +169,12 @@ implements ViewBuilder {
 		PanelBuilder builder = new PanelBuilder(layout);
 
 		int row = 2;
-		builder.addSeparator("Memory usage", cc.xyw(2, row, 7));
+		builder.addSeparator("Memory usage", cc.xyw(2, row, 9));
 		row += 2;
 		
-		builder.add(AuxComponentFactory.createNoteField("Network meta-analysis results can use quite a bit of memory. Here, the results of " +
+		builder.add(AuxComponentFactory.createHtmlField("<p>Network meta-analysis results can use quite a bit of memory. Here, the results of " +
 				"analyses may be discarded to save memory. The aggregate-level results will be maintained. However, after " +
-				"discarding the results, it will no longer be possible to display the convergence plots."), cc.xyw(2, row, 9));
+				"discarding the results, it will no longer be possible to display the convergence plots.</p>"), cc.xyw(2, row, 7));
 		LayoutUtil.addRow(builder.getLayout());
 		row += 2;
 
@@ -259,8 +259,8 @@ implements ViewBuilder {
 		builder.add(incProgressBar, cc.xy(2, row));
 		row += 2;
 		
-		String inconsistencyText = "<html>In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em> of evidence, in addition to <em>heterogeneity</em> within a comparison. Whereas heterogeneity represents between-study variation in the measured relative effect of a pair of treatments, inconsistency can only occur when a treatment C has a different effect when it is compared with A or B (i.e., studies comparing A and C are systematically different from studies comparing B and C). Thus, inconsistency may even occur with normal meta-analysis, but can only be detected using a network meta-analysis, and then only when there are closed loops in the evidence structure. For more information about assessing inconsistency, see G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, Journal of the American Statistical Association, 101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.</html>";
-		JComponent inconsistencyNote = AuxComponentFactory.createNoteField(inconsistencyText);
+		String inconsistencyText = "<p>In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em> of evidence, in addition to <em>heterogeneity</em> within a comparison. Whereas heterogeneity represents between-study variation in the measured relative effect of a pair of treatments, inconsistency can only occur when a treatment C has a different effect when it is compared with A or B (i.e., studies comparing A and C are systematically different from studies comparing B and C). Thus, inconsistency may even occur with normal meta-analysis, but can only be detected using a network meta-analysis, and then only when there are closed loops in the evidence structure. For more information about assessing inconsistency, see G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, Journal of the American Statistical Association, 101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.</p>";
+		JComponent inconsistencyNote = AuxComponentFactory.createHtmlField(inconsistencyText);
 		
 		builder.add(inconsistencyNote, cc.xy(2, row));
 		row += 2;
@@ -313,7 +313,7 @@ implements ViewBuilder {
 		
 		builder.addSeparator("Convergence", cc.xy(2, row));
 		row += 2;
-		builder.add(AuxComponentFactory.createNoteField(CONVERGENCE_TEXT), cc.xy(2, row));
+		builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xy(2, row));
 		row += 2;
 		builder.add(buildConvergenceTable(inconsistencyModel, d_pm.getInconsistencyModelConstructedModel()), cc.xy(2, row));
 		row += 2;
@@ -333,8 +333,8 @@ implements ViewBuilder {
 		JProgressBar conProgressBar = new TaskProgressBar(d_pm.getProgressModel(consistencyModel));
 		builder.add(conProgressBar, cc.xy(2, 4));
 		
-		String consistencyText = "<html>If there is no relevant inconsistency in the evidence, a consistency model can be used to draw conclusions about the relative effect of the included treatments. Using normal meta-analysis, we could only get a subset of the confidence intervals for relative effects we derive using network meta-analysis. Network meta-analysis gives a consistent, integrated picture of the relative effects. However, given such a consistent set of relative effect estimates, it may still be difficult to draw conclusions on a potentially large set of treatments. Luckily, the Bayesian approach allows us to do even more with the data, and can be used to estimate the probability that, given the priors and the data, each of the treatments is the best, the second best, etc. This is given below in the rank probability plot. Rank probabilities sum to one, both within a rank over treatments and within a treatment over ranks.</html>";
-		JComponent consistencyNote = AuxComponentFactory.createNoteField(consistencyText);
+		String consistencyText = "<p>If there is no relevant inconsistency in the evidence, a consistency model can be used to draw conclusions about the relative effect of the included treatments. Using normal meta-analysis, we could only get a subset of the confidence intervals for relative effects we derive using network meta-analysis. Network meta-analysis gives a consistent, integrated picture of the relative effects. However, given such a consistent set of relative effect estimates, it may still be difficult to draw conclusions on a potentially large set of treatments. Luckily, the Bayesian approach allows us to do even more with the data, and can be used to estimate the probability that, given the priors and the data, each of the treatments is the best, the second best, etc. This is given below in the rank probability plot. Rank probabilities sum to one, both within a rank over treatments and within a treatment over ranks.</p>";
+		JComponent consistencyNote = AuxComponentFactory.createHtmlField(consistencyText);
 		
 		builder.add(consistencyNote, cc.xy(2, 6));
 		
@@ -364,7 +364,7 @@ implements ViewBuilder {
 		builder.addSeparator("Convergence", cc.xy(2, row));
 		row += 2;
 		
-		builder.add(AuxComponentFactory.createNoteField(CONVERGENCE_TEXT), cc.xy(2, row));
+		builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xy(2, row));
 		row += 2;
 		builder.add(buildConvergenceTable(consistencyModel, d_pm.getConsistencyModelConstructedModel()), cc.xy(2, row));
 		row += 2;
@@ -375,16 +375,22 @@ implements ViewBuilder {
 	private JComponent buildNodeSplitTab() {
 		final FormLayout layout = new FormLayout(
 				"pref, 3dlu, pref:grow:fill",
-				"p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p");
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();
 		
-		builder.addSeparator("Results - node-splitting analysis of inconsistency", cc.xyw(1, 1, 3));
+		int row = 1;
+		builder.addSeparator("Results - node-splitting analysis of inconsistency", cc.xyw(1, row, 3));
+		row += 2;
 		
-		builder.add(buildPvalueTable(), cc.xyw(1, 3, 3));
+		builder.add(
+				AuxComponentFactory.createHtmlField("<p>Node-splitting analysis is an alternative method to assess inconsistency in network meta-analysis. It assesses whether direct and indirect evidence on a specific node (the split node) are in agreement. While the results are easier to interpret, it requires a separate model to be run for each node to be split.</p><p>The table below allows you to compare the estimated quantiles for the direct and indirect evidence as well as the combined evidence. In addition a P-value is shown; a large value indicates no significant inconsistency was found. See S. Dias et al. (2010), <em>Checking consistency in mixed treatment comparison meta-analysis</em>, Statistics in Medicine, 29(7-8, Sp. Iss. SI): 932-944. <a href=\"http://dx.doi.org/10.1002/sim.3767\">doi:10.1002/sim.3767</a>.</p>"),
+				cc.xyw(1, row, 3));
+		row += 2;
+		
+		builder.add(buildPvalueTable(), cc.xyw(1, row, 3));
 
-		int row = 3;
 		for (BasicParameter p : d_pm.getSplitParameters()) {
 			LayoutUtil.addRow(layout);
 			row += 2;
@@ -405,7 +411,7 @@ implements ViewBuilder {
 			builder.addSeparator("Convergence", cc.xyw(1, row, 3));
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.add(AuxComponentFactory.createNoteField(CONVERGENCE_TEXT), cc.xyw(1, row, 3));
+			builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xyw(1, row, 3));
 			LayoutUtil.addRow(layout);
 			row += 2;
 			builder.add(buildConvergenceTable(model, d_pm.getNodesplitModelConstructedModel(p)), cc.xyw(1, row, 3));

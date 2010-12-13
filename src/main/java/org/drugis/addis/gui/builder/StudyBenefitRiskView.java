@@ -48,8 +48,8 @@ public class StudyBenefitRiskView extends AbstractBenefitRiskView<StudyBenefitRi
 				"p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		if(d_pm instanceof StudyBenefitRiskPresentation) {
-			builder.add(AuxComponentFactory.createNoteField("Measurements: incidence approximated with Beta-distribution, or continuous variables approximated with a Normal distribution."
-					),cc.xy(1, 1));
+			builder.add(AuxComponentFactory.createHtmlField("<p>Measurements: incidence approximated with Beta-distribution, or continuous variables approximated with a Normal distribution.</p>"),
+					cc.xy(1, 1));
 			builder.add(new TablePanel(new EnhancedTable(((StudyBenefitRiskPresentation) d_pm).getMeasurementTableModel())), cc.xy(1, 3));
 		}
 		return builder.getPanel();

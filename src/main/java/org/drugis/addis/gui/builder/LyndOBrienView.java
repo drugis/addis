@@ -99,16 +99,16 @@ public class LyndOBrienView implements ViewBuilder {
 			alternativeName = d_BRpm.getBean().getAlternatives().get(1).toString();
 		}
 		
-		builder.add(AuxComponentFactory.createNoteField("Results of Monte Carlo simulations based on the difference-distributions of" +
+		builder.add(AuxComponentFactory.createHtmlField("<p>Results of Monte Carlo simulations based on the difference-distributions of" +
 				" the alternatives and criteria. Results in the NW quadrant indicate that " + 
 				alternativeName +" is better and" +
-				" results in the SE quadrant indicate that "+ baselineName  + " is better."), cc.xy(1,7));
+				" results in the SE quadrant indicate that "+ baselineName  + " is better.</p>"), cc.xy(1,7));
 		builder.addSeparator("Benefit-Risk Aceptability curve", cc.xy(1, 9));
 		builder.add(createWaiter(new PvalueplotBuilder()), cc.xy(1,11));
-		builder.add(AuxComponentFactory.createNoteField("Probability for a given acceptability threshold " +
+		builder.add(AuxComponentFactory.createHtmlField("<p>Probability for a given acceptability threshold " +
 				"\u03BC that " + baselineName + " is superior to " + alternativeName + ". Indicates the" +
 				" proportion of datapoints in the Benefit-Risk" +
-				" plane that lie below the line y = \u03BC x"), cc.xy(1,13));
+				" plane that lie below the line y = \u03BC x</p>"), cc.xy(1,13));
 		d_panel = builder.getPanel();
 		return d_panel;
 	}

@@ -90,8 +90,8 @@ public abstract class AbstractMetaAnalysisView<T extends AbstractMetaAnalysisPre
 		builder.add(drugList, cc.xy(3, 9));
 
 		if(d_pm.getBean() instanceof NetworkMetaAnalysis){
-			String paneText =  "<html>Network Meta-Analysis (or Mixed Treatment Comparison, MTC) is a technique to meta-analyze more than two drugs at the same time. Using a full Bayesian evidence network, all indirect comparisons are taken into account to arrive at a single, integrated, estimate of the effect of all included treatments based on all included studies. This software is meant as a demonstration of the sort of analysis enabled by MTCs. <br>The functionality provided is not yet sufficient to do a full MTC analysis, as concerns such as the assessment of convergence of the Bayesian model and the adequacy of the run-length cannot be addressed. If you are interested in doing such an analysis, you can find more information at <a href=http://drugis.org/mtc>http://drugis.org/mtc</a>, or contact Gert van Valkenhoef, the corresponding author.</html>";
-			JComponent generalPane = AuxComponentFactory.createNoteField(paneText);
+			String paneText =  "<p>Network Meta-Analysis (or Mixed Treatment Comparison, MTC) is a technique to meta-analyze more than two drugs at the same time. Using a full Bayesian evidence network, all indirect comparisons are taken into account to arrive at a single, integrated, estimate of the effect of all included treatments based on all included studies.</p>";
+			JComponent generalPane = AuxComponentFactory.createHtmlField(paneText);
 			builder.add(generalPane, cc.xyw(1, 11, 3));
 		}
 		
