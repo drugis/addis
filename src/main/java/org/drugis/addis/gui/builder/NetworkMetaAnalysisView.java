@@ -84,6 +84,7 @@ import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel;
+import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
@@ -178,33 +179,47 @@ implements ViewBuilder {
 		LayoutUtil.addRow(builder.getLayout());
 		row += 2;
 
-		final ConsistencyModel consModel = d_pm.getConsistencyModel();
-		LayoutUtil.addRow(layout);
-		row += 2;
-		buildMemoryUsage(consModel, "Consistency model", builder, row);
-		addRCodeSaveButton(cc, builder, row, consModel);
-
-		InconsistencyModel inconsModel = d_pm.getInconsistencyModel();
-		LayoutUtil.addRow(layout);
-		row += 2;
-		buildMemoryUsage(inconsModel, "Inconsistency model", builder, row);
-		addRCodeSaveButton(cc, builder, row, inconsModel);
-
+		row = buildMemoryUsage(d_pm.getConsistencyModel(), "Consistency model", builder, layout, row);
+		row = buildMemoryUsage(d_pm.getInconsistencyModel(), "Inconsistency model", builder, layout, row);
 		for(BasicParameter p : d_pm.getSplitParameters()) {
-			NodeSplitModel nodeSplitModel= d_pm.getNodeSplitModel(p);
-			LayoutUtil.addRow(layout);
-			row += 2;
-			buildMemoryUsage(nodeSplitModel, "Node Split model, parameter " + p.getName(), builder, row);
-			addRCodeSaveButton(cc, builder, row, nodeSplitModel);
+			row = buildMemoryUsage(d_pm.getNodeSplitModel(p), "Node Split model, parameter " + p.getName(), builder, layout, row);
 		}
 		
 		return builder.getPanel();
 	}
 
-	private void addRCodeSaveButton(CellConstraints cc, PanelBuilder builder, int row, final MCMCModel model) {
-		final JButton button = new JButton("Dump to R-file", ImageLoader.getIcon(FileNames.ICON_SAVEFILE));
-		Bindings.bind(button, "enabled", new MCMCResultsAvailableModel(model.getResults()));
-		button.addActionListener(new ActionListener() {
+	private int buildMemoryUsage(final MCMCModel model, String name, PanelBuilder builder, FormLayout layout, int row) {
+		LayoutUtil.addRow(layout);
+		row += 2;
+		CellConstraints cc = new CellConstraints();
+		
+		final MCMCResultsMemoryUsageModel memoryModel = new MCMCResultsMemoryUsageModel(model.getResults());
+		JLabel memory = BasicComponentFactory.createLabel(memoryModel);
+		builder.add(new JLabel(name), cc.xy(2, row));
+		
+		final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(model.getResults());
+		
+		builder.add(memory, cc.xy(4, row));
+		JButton clearButton = new JButton("Clear results", ImageLoader.getIcon(FileNames.ICON_DELETE));
+		Bindings.bind(clearButton, "enabled", resultsAvailableModel);
+		clearButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.getResults().clear();
+				// FIXME: change MCMC contract so clear fires a MCMCResultsClearedEvent
+				memoryModel.resultsEvent(new MCMCResultsEvent(model.getResults()));
+				resultsAvailableModel.resultsEvent(new MCMCResultsEvent(model.getResults()));
+			}
+		});
+		builder.add(clearButton, cc.xy(6, row));
+		final JButton saveButton = new JButton("Dump to R-file", ImageLoader.getIcon(FileNames.ICON_SAVEFILE));
+		Bindings.bind(saveButton, "enabled", resultsAvailableModel);
+		saveButton.addActionListener(buildRButtonActionListener(model));
+		builder.add(saveButton, cc.xy(8, row));
+		return row;
+	}
+
+	private ActionListener buildRButtonActionListener(final MCMCModel model) {
+		return new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new FileSaveDialog(d_main, "R", "R files") {
 					@Override
@@ -221,27 +236,7 @@ implements ViewBuilder {
 				};
 				
 			}
-		});
-		builder.add(button, cc.xy(8, row));
-	}
-	
-
-	private void buildMemoryUsage(final MCMCModel model, String title, PanelBuilder builder, int row) {
-		
-		CellConstraints cc = new CellConstraints();
-		
-		final MCMCResultsMemoryUsageModel memoryModel = new MCMCResultsMemoryUsageModel(model.getResults());
-		JLabel memory = BasicComponentFactory.createLabel(memoryModel);
-		builder.add(new JLabel(title), cc.xy(2, row));
-
-		builder.add(memory, cc.xy(4, row));
-		JButton button = new JButton("Clear results", ImageLoader.getIcon(FileNames.ICON_DELETE));
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				memoryModel.clear();
-			}
-		});
-		builder.add(button, cc.xy(6, row));
+		};
 	}
 	
 	private JComponent buildInconsistencyTab() {
@@ -351,14 +346,12 @@ implements ViewBuilder {
 		builder.add(createRankProbChart(), cc.xy(2, row));
 		row += 2;
 		
-		NetworkVarianceTableModel mixedComparisonTableModel = new NetworkVarianceTableModel(d_pm, consistencyModel);
-		EnhancedTable mixedComparisontable = new EnhancedTable(mixedComparisonTableModel, 300);
-		mixedComparisontable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
+		EnhancedTable varianceTable = new EnhancedTable(new NetworkVarianceTableModel(d_pm, consistencyModel), 300);
+		varianceTable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
 		
-		final TablePanel mixedComparisonTablePanel = new TablePanel(mixedComparisontable);
 		builder.addSeparator("Variance Parameters", cc.xy(2, row));
 		row += 2;
-		builder.add(mixedComparisonTablePanel, cc.xy(2, row));
+		builder.add(new TablePanel(varianceTable), cc.xy(2, row));
 		row += 2;
 		
 		builder.addSeparator("Convergence", cc.xy(2, row));
