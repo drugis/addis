@@ -50,12 +50,10 @@ public class NetworkVarianceTableModel extends AbstractTableModel {
 			}
 		};
 		
-		if (mtc instanceof InconsistencyModel) {
-			InconsistencyModel incons = (InconsistencyModel) mtc;
-			attachListener(incons.getInconsistencyVariance());
+		if (isInconsistency()) {
+			attachListener(((InconsistencyModel) mtc).getInconsistencyVariance());
 		}
-		Parameter randomEffectsVariance = mtc.getRandomEffectsVariance();
-		attachListener(randomEffectsVariance);
+		attachListener(mtc.getRandomEffectsVariance());
 	}
 	
 	private void attachListener(Parameter p) {
@@ -93,8 +91,7 @@ public class NetworkVarianceTableModel extends AbstractTableModel {
 	}
 
 	private QuantileSummary getEstimate(int row) {
-		InconsistencyModel model = d_pm.getInconsistencyModel();
-		if (model.isReady()){
+		if (d_mtc.isReady()){
 			if (row == RANDOM_EFFECTS) {
 				return getRandomEffectsSummary();
 			} else {
