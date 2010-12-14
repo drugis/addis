@@ -1,32 +1,8 @@
-/*
- * This file is part of ADDIS (Aggregate Data Drug Information System).
- * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+package org.drugis.addis.gui.wizard;
 
-package org.drugis.addis.gui.builder.wizard;
-
-import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -47,7 +23,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.KeyStroke;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.table.TableModel;
@@ -77,7 +52,6 @@ import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
-import org.drugis.addis.gui.wizard.SelectFromFiniteListWizardStep;
 import org.drugis.addis.imports.PubMedIDRetriever;
 import org.drugis.addis.presentation.DosePresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
@@ -87,13 +61,12 @@ import org.drugis.addis.util.PubMedListFormat;
 import org.drugis.addis.util.RunnableReadyModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
-import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.AbstractWizardModel;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardAdapter;
 import org.pietschy.wizard.WizardEvent;
-import org.pietschy.wizard.models.DynamicModel;
+import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.beans.PropertyConnector;
@@ -104,85 +77,56 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.util.DefaultUnitConverter;
 import com.toedter.calendar.JDateChooser;
 
-public class AddStudyWizard implements ViewBuilder{
-	
+@SuppressWarnings("serial")
+public class AddStudyWizard extends Wizard {
 	private static final String EXAMPLE_NCT_ID = "NCT00296517";
 	public static final String DEFAULT_NOTETITLE = "Source Text (ClinicalTrials.gov):";
-	AddStudyWizardPresentation d_pm;
-	Main d_main;
-	private JDialog d_dialog;
-	
-	@SuppressWarnings("serial")
-	public AddStudyWizard(AddStudyWizardPresentation pm, Main main, JDialog frame) {
-		d_pm = pm;
-		d_main = main;
-		d_dialog = frame;
-		
-		final JPanel content = (JPanel) d_dialog.getContentPane();
-		content.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(Main.PRINT_SCREEN), "printWindow");
-		content.getActionMap().put("printWindow", 
-				new AbstractAction("printWindow") { 
-					public void actionPerformed(ActionEvent evt) {
-							try { Main.printWindow(content);
-							} catch (HeadlessException e) {	e.printStackTrace(); 
-							} catch (AWTException e) { e.printStackTrace();
-							}
-					} 
-				} 
-		);
-	}
-	
-	public Wizard buildPanel() {
-		AbstractWizardModel wizardModel = buildModel(d_pm);
-		Wizard wizard = new Wizard(wizardModel);
-		
-		wizard.setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 
-		wizard.addWizardListener(new WizardAdapter() {
+	public AddStudyWizard(final AddStudyWizardPresentation pm, final Main main, JDialog dialog) {
+		super(buildModel(pm, main, dialog));
+		
+		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
+		addWizardListener(new WizardAdapter() {
 			@Override
 			public void wizardClosed(WizardEvent e) {
-				d_main.leftTreeFocus(d_pm.saveStudy());
+				main.leftTreeFocus(pm.saveStudy());
 			}
 		});
-		wizard.setPreferredSize(new Dimension(750, 750));
-		return wizard;
+		setOverviewVisible(false);
+		setPreferredSize(new Dimension(760, 570));
 	}
-
-	private AbstractWizardModel buildModel(final AddStudyWizardPresentation pm) {
-		DynamicModel wizardModel = new DynamicModel();
-		wizardModel.add(new EnterIdTitleWizardStep());
-		wizardModel.add(new SelectIndicationWizardStep());
-		wizardModel.add(new EnterCharacteristicsWizardStep());
-		wizardModel.add(new SelectEndpointWizardStep());
-		wizardModel.add(new SetArmsWizardStep());
-		wizardModel.add(new SetEndpointMeasurementsWizardStep());
-		wizardModel.add(new SelectAdverseEventWizardStep());
-		wizardModel.add(new SetAdverseEventMeasurementsWizardStep()/*, new Condition() {
-			public boolean evaluate(WizardModel model) {
-				return pm.getAdverseEventSelectModel().getSlots().size() > 0;
-			}
-		}*/);
-		wizardModel.add(new SelectPopulationCharsWizardStep());
-		wizardModel.add(new SetPopulationCharMeasurementsWizardStep()/*, new Condition() {
-			public boolean evaluate(WizardModel model) {
-				return d_pm.getPopulationCharSelectModel().getSlots().size() > 0;
-			}			
-		}*/);
-		wizardModel.add(new ReviewStudyStep());
+	
+	private static AbstractWizardModel buildModel(final AddStudyWizardPresentation pm, Main main, JDialog dialog) {
+		StaticModel wizardModel = new StaticModel();
+		wizardModel.add(new EnterIdTitleWizardStep(pm, dialog));
+		wizardModel.add(new SelectIndicationWizardStep(pm, main));
+		wizardModel.add(new EnterCharacteristicsWizardStep(pm));
+		wizardModel.add(new SelectEndpointWizardStep(pm));
+		wizardModel.add(new SetArmsWizardStep(pm, main));
+		wizardModel.add(new SetEndpointMeasurementsWizardStep(pm, dialog));
+		wizardModel.add(new SelectAdverseEventWizardStep(pm));
+		wizardModel.add(new SetAdverseEventMeasurementsWizardStep(pm, dialog));
+		wizardModel.add(new SelectPopulationCharsWizardStep(pm));
+		wizardModel.add(new SetPopulationCharMeasurementsWizardStep(pm, dialog));
+		wizardModel.add(new ReviewStudyStep(pm, main));
 		
-		wizardModel.setLastVisible(false); // FIXME: disable skipping of the Measurement steps!
+		wizardModel.setLastVisible(false);
 		// The measurements + variable lists are saved on viewing the measurement tables
-		// until this is fixed, skipping steps should be disabled.
+		// unless this is changed, skipping steps should be disabled.
 		
 		return wizardModel;
 	}
 	
-	 @SuppressWarnings("serial")
-	private class ReviewStudyStep extends PanelWizardStep {
-		 public ReviewStudyStep() {
+	public static class ReviewStudyStep extends PanelWizardStep {
+		 private final AddStudyWizardPresentation d_pm;
+		private final Main d_main;
+
+		public ReviewStudyStep(AddStudyWizardPresentation pm, Main main) {
 			 super("Review study", "Please review the study to be created. " +
 					 "You can go back through the wizard to correct any mistakes, " +
 					 "but after the study has been added it cannot be changed.");
+			d_pm = pm;
+			d_main = main;
 			 setLayout(new BorderLayout());
 			 setComplete(true);
 		 }
@@ -192,25 +136,24 @@ public class AddStudyWizard implements ViewBuilder{
 			 StudyView view = new StudyView(d_pm.getNewStudyPM(), d_pm.getDomain(), 
 					 d_main, d_main.getPresentationModelFactory());
 			 removeAll();
-			 JScrollPane pane = new JScrollPane(view.buildPanel());
-			 pane.getVerticalScrollBar().setUnitIncrement(16);
-			 add(pane, BorderLayout.CENTER);
+			 add(view.buildPanel(), BorderLayout.CENTER);
 			 this.setVisible(true);			 
 		 }
 	 }
 	
-	@SuppressWarnings("serial")
-	public class SetMeasurementsWizardStep extends PanelWizardStep {
+	public static class SetMeasurementsWizardStep extends PanelWizardStep {
 		private JScrollPane d_scrollPane;
 		private OutcomeMeasurementsModel d_model;
 		private JDialog d_dialog;
 		private MeasurementTable d_table;
+		private AddStudyWizardPresentation d_pm;
 		
-		public SetMeasurementsWizardStep(String title, String description,
+		public SetMeasurementsWizardStep(AddStudyWizardPresentation pm, String title, String description,
 				OutcomeMeasurementsModel model, JDialog dialog) {
 			super(title, description);
 			d_model = model;
 			d_dialog = dialog;
+			d_pm = pm;
 			if (d_pm.isEditing())
 				setComplete(true);
 		} 
@@ -238,34 +181,30 @@ public class AddStudyWizard implements ViewBuilder{
 		}
 	}
 	
-	@SuppressWarnings("serial")
-	public class SetEndpointMeasurementsWizardStep extends SetMeasurementsWizardStep {
-		public SetEndpointMeasurementsWizardStep(){
-			super("Set Measurements", "Please enter the measurements for all arm-endpoint combinations.",
-					d_pm.getEndpointsModel(), d_dialog);
+	public static class SetEndpointMeasurementsWizardStep extends SetMeasurementsWizardStep {
+		public SetEndpointMeasurementsWizardStep(AddStudyWizardPresentation pm, JDialog dialog) {
+			super(pm, "Set Measurements", "Please enter the measurements for all arm-endpoint combinations.",
+					pm.getEndpointsModel(), dialog);
 		}
 	}
 	
-	@SuppressWarnings("serial")
-	public class SetAdverseEventMeasurementsWizardStep extends SetMeasurementsWizardStep {
-		public SetAdverseEventMeasurementsWizardStep(){
-			super("Input adverse event data", "Please enter the measurements for all arm-event combinations.",
-					d_pm.getAdverseEventsModel(), d_dialog);
+	public static class SetAdverseEventMeasurementsWizardStep extends SetMeasurementsWizardStep {
+		public SetAdverseEventMeasurementsWizardStep(AddStudyWizardPresentation pm, JDialog dialog){
+			super(pm, "Input adverse event data", "Please enter the measurements for all arm-event combinations.",
+					pm.getAdverseEventsModel(), dialog);
 		}
 
 	}
 	
-	@SuppressWarnings("serial")
-	public class SetPopulationCharMeasurementsWizardStep extends SetMeasurementsWizardStep {
-		public SetPopulationCharMeasurementsWizardStep(){
-			super("Input population data", "Please enter the measurements for all population baseline characteristics.",
-					d_pm.getPopulationCharsModel(), d_dialog);
+	public static class SetPopulationCharMeasurementsWizardStep extends SetMeasurementsWizardStep {
+		public SetPopulationCharMeasurementsWizardStep(AddStudyWizardPresentation pm, JDialog dialog){
+			super(pm, "Input population data", "Please enter the measurements for all population baseline characteristics.",
+					pm.getPopulationCharsModel(), dialog);
 		}
 
 	}
 	
-	@SuppressWarnings("serial")
-	public class SetArmsWizardStep extends PanelWizardStep {
+	public static class SetArmsWizardStep extends PanelWizardStep {
 		private class NewDrugButtonListener implements ActionListener{
 			int d_index;
 
@@ -293,10 +232,14 @@ public class AddStudyWizard implements ViewBuilder{
 		private PanelBuilder d_builder;
 		private NotEmptyValidator d_validator;
 		private JScrollPane d_scrollPane;
+		private AddStudyWizardPresentation d_pm;
+		private Main d_main;
 		
-		public SetArmsWizardStep(){
+		public SetArmsWizardStep(AddStudyWizardPresentation pm, Main main) {
 			super("Select Arms", "Please input the appropriate arms. " +
 					"The drug field of every arm must be filled in order to continue. At least one arm must be included.");
+			d_pm = pm;
+			d_main = main;
 			if (d_pm.isEditing())
 				setComplete(true);
 		}
@@ -414,45 +357,42 @@ public class AddStudyWizard implements ViewBuilder{
 		
 	}
 	
-	@SuppressWarnings("serial")
-	public class SelectEndpointWizardStep extends SelectFromFiniteListWizardStep<Endpoint> {
-		public SelectEndpointWizardStep() {
-			super(d_pm.getEndpointSelectModel());
+	public static class SelectEndpointWizardStep extends SelectFromFiniteListWizardStep<Endpoint> {
+		public SelectEndpointWizardStep(AddStudyWizardPresentation pm) {
+			super(pm.getEndpointSelectModel());
 		}		
 	}
 	
-	@SuppressWarnings("serial")
-	public class SelectPopulationCharsWizardStep extends SelectFromFiniteListWizardStep<PopulationCharacteristic> {
-		public SelectPopulationCharsWizardStep() {
-			super(d_pm.getPopulationCharSelectModel());
+	public static class SelectPopulationCharsWizardStep extends SelectFromFiniteListWizardStep<PopulationCharacteristic> {
+		public SelectPopulationCharsWizardStep(AddStudyWizardPresentation pm) {
+			super(pm.getPopulationCharSelectModel());
 		}
 		
 	}
 	
-	@SuppressWarnings("serial")
-	public class SelectAdverseEventWizardStep extends SelectFromFiniteListWizardStep<AdverseEvent> {
-		public SelectAdverseEventWizardStep() {
-			super(d_pm.getAdverseEventSelectModel());
+	public static class SelectAdverseEventWizardStep extends SelectFromFiniteListWizardStep<AdverseEvent> {
+		public SelectAdverseEventWizardStep(AddStudyWizardPresentation pm) {
+			super(pm.getAdverseEventSelectModel());
 		}		
 	}
 	
-	
-	@SuppressWarnings("serial")
-	public class EnterCharacteristicsWizardStep extends PanelWizardStep{
+	public static class EnterCharacteristicsWizardStep extends PanelWizardStep{
 		JPanel d_me = this;
 		private PanelBuilder d_builder;
 		private JScrollPane d_scrollPane;
 		private NotEmptyValidator d_validator;
 
-		private Set<BasicStudyCharacteristic> excludedChars = new HashSet<BasicStudyCharacteristic>();		
+		private Set<BasicStudyCharacteristic> excludedChars = new HashSet<BasicStudyCharacteristic>();	
+		private AddStudyWizardPresentation d_pm;
 		
-		public EnterCharacteristicsWizardStep () {
+		public EnterCharacteristicsWizardStep(AddStudyWizardPresentation pm) {
 			super("Enter additional information", "Enter additional information for this study. " +
 					"Fields may be left empty if unknown.");
 			
 			excludedChars.add(BasicStudyCharacteristic.TITLE);
 			excludedChars.add(BasicStudyCharacteristic.CREATION_DATE);
 			excludedChars.add(BasicStudyCharacteristic.SOURCE);
+			d_pm = pm;
 			if (d_pm.isEditing())
 				setComplete(true);
 		}
@@ -597,16 +537,18 @@ public class AddStudyWizard implements ViewBuilder{
 		}
 	}
 	
-	
-	@SuppressWarnings("serial")
-	public class SelectIndicationWizardStep extends PanelWizardStep {
+	public static class SelectIndicationWizardStep extends PanelWizardStep {
 		private PanelBuilder d_builder;
 		private NotEmptyValidator d_validator;
 		private JScrollPane d_scrollPane;
+		private AddStudyWizardPresentation d_pm;
+		private Main d_main;
 
-		public SelectIndicationWizardStep () {
+		public SelectIndicationWizardStep (AddStudyWizardPresentation pm, Main main) {
 			super("Select Indication", "Select the indication for this study. " +
 					"An indication must be selected to continue.");
+			d_pm = pm;
+			d_main = main;
 			if (d_pm.isEditing())
 				setComplete(true);
 		}
@@ -661,8 +603,7 @@ public class AddStudyWizard implements ViewBuilder{
 		}
 	}
 	
-	@SuppressWarnings("serial")
-	private class EnterIdTitleWizardStep extends PanelWizardStep {
+	public static class EnterIdTitleWizardStep extends PanelWizardStep {
 		JPanel d_me = this;
 		private JTextField d_idField;
 		private JComponent d_titleField;
@@ -670,12 +611,16 @@ public class AddStudyWizard implements ViewBuilder{
 		private JButton d_importButton;
 		private NotEmptyValidator d_validator;
 		private JScrollPane d_scrollPane;
-		
-		 public EnterIdTitleWizardStep() {
-			super("Select ID and Title","Set the ID and title of the study. Studies can also be extracted from Clinicaltrials.gov using the NCT-id.");
-		 }
+		private AddStudyWizardPresentation d_pm;
+		private JDialog d_dialog;
 
-		 @Override
+		public EnterIdTitleWizardStep(AddStudyWizardPresentation pm, JDialog dialog) {
+			super("Select ID and Title","Set the ID and title of the study. Studies can also be extracted from Clinicaltrials.gov using the NCT-id.");
+			d_pm = pm;
+			d_dialog = dialog;
+		}
+
+		@Override
 		public void prepare() {
 			 this.setVisible(false);
 			 d_validator = new NotEmptyValidator();
@@ -715,7 +660,7 @@ public class AddStudyWizard implements ViewBuilder{
 					
 					public void focusLost(FocusEvent e) {
 						if (!d_pm.checkID()){
-							JOptionPane.showMessageDialog(d_main, "There is already a study called \"" + 
+							JOptionPane.showMessageDialog(d_dialog, "There is already a study called \"" + 
 									d_pm.getIdModel().getValue() + "\".\nPlease save under a different title.",
 									"Error: study already exists", JOptionPane.ERROR_MESSAGE);
 							setComplete(false);
@@ -833,17 +778,18 @@ public class AddStudyWizard implements ViewBuilder{
 	}
 	
 	public static void addStylesToDoc(StyledDocument doc) {
-        //Initialize some styles.
-        Style def = StyleContext.getDefaultStyleContext().
-                        getStyle(StyleContext.DEFAULT_STYLE);
+       //Initialize some styles.
+       Style def = StyleContext.getDefaultStyleContext().
+                       getStyle(StyleContext.DEFAULT_STYLE);
 
-        Style regular = doc.addStyle("regular", def);
+       Style regular = doc.addStyle("regular", def);
 
-        Style bold = doc.addStyle("bold", regular);
-        StyleConstants.setBold(bold, true);
-        
-        // The image must first be wrapped in a style
-        Style style = doc.addStyle("tip", null);
-        StyleConstants.setIcon(style, ImageLoader.getIcon(FileNames.ICON_TIP)); 
+       Style bold = doc.addStyle("bold", regular);
+       StyleConstants.setBold(bold, true);
+       
+       // The image must first be wrapped in a style
+       Style style = doc.addStyle("tip", null);
+       StyleConstants.setIcon(style, ImageLoader.getIcon(FileNames.ICON_TIP)); 
 	}
+
 }

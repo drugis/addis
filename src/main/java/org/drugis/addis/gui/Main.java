@@ -81,9 +81,9 @@ import org.drugis.addis.entities.DomainManager;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityCategory;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.components.AddisScrollPane;
 import org.drugis.addis.gui.components.AddisTabbedPane;
+import org.drugis.addis.gui.wizard.AddStudyWizard;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.common.ImageLoader;
@@ -94,7 +94,6 @@ import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.event.TaskFailedEvent;
-import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardFrameCloser;
 
 import com.jgoodies.binding.value.ValueModel;
@@ -484,11 +483,11 @@ public class Main extends JFrame {
 				getPresentationModelFactory(), this, study);
 		
 		leftTreeFocus(d_domainTreeModel.getRoot());
-		AddStudyWizard wizardBuilder = new AddStudyWizard(pm, this, dialog);
-		Wizard wizard = wizardBuilder.buildPanel();
+		AddStudyWizard wizard = new AddStudyWizard(pm, this, dialog);
 		dialog.getContentPane().add(wizard);
 		dialog.pack();
 		WizardFrameCloser.bind(wizard, dialog);
+		bindPrintScreen(wizard);
 		dialog.setVisible(true);
 
 		TreePath path = d_domainTreeModel.getPathTo(study);

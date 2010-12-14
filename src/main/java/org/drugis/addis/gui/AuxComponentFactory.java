@@ -48,9 +48,9 @@ import javax.swing.text.StyledDocument;
 
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.PubMedIdList;
-import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.ListPanel;
+import org.drugis.addis.gui.wizard.AddStudyWizard;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.HtmlWordWrapper;
@@ -181,7 +181,7 @@ public class AuxComponentFactory {
 			
 			area.setBackground(COLOR_NOTE);
 			
-			try {
+			try { // FIXME: does not seem to belong here?
 				doc.insertString(doc.getLength(), AddStudyWizard.DEFAULT_NOTETITLE + "\n", doc.getStyle("bold"));
 				doc.insertString(doc.getLength(), (String)model.getValue(), doc.getStyle("regular"));
 			} catch (BadLocationException e) {
