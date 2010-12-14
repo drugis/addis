@@ -42,8 +42,8 @@ import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM.BRAType;
@@ -64,27 +64,27 @@ import com.jgoodies.forms.layout.FormLayout;
 @SuppressWarnings("serial")
 public class BenefitRiskWizard extends Wizard {
 
-	public BenefitRiskWizard(Main parent, BenefitRiskWizardPM pm) {
-		super(buildModel(pm, parent));
+	public BenefitRiskWizard(AddisWindow mainWindow, BenefitRiskWizardPM pm) {
+		super(buildModel(pm, mainWindow));
 		getTitleComponent().setPreferredSize(new Dimension(750, 100));
 		setPreferredSize(new Dimension(750, 750));
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 	}
 
-	private static WizardModel buildModel(final BenefitRiskWizardPM pm, Main frame) {
+	private static WizardModel buildModel(final BenefitRiskWizardPM pm, AddisWindow mainWindow) {
 		DynamicModel wizardModel = new DynamicModel();
 		wizardModel.add(new SelectIndicationWizardStep(pm));
-		wizardModel.add(new SelectStudyWizardStep(pm, frame), new Condition() {
+		wizardModel.add(new SelectStudyWizardStep(pm, mainWindow), new Condition() {
 			public boolean evaluate(WizardModel model) {
 				return pm.getEvidenceTypeHolder().getValue() == BRAType.SingleStudy;
 			}
 		});
-		wizardModel.add(new SelectOutcomeMeasuresAndArmsWizardStep(pm, frame), new Condition() {
+		wizardModel.add(new SelectOutcomeMeasuresAndArmsWizardStep(pm, mainWindow), new Condition() {
 			public boolean evaluate(WizardModel model) {
 				return pm.getEvidenceTypeHolder().getValue() == BRAType.SingleStudy;
 			}
 		});
-		wizardModel.add(new SelectCriteriaAndAlternativesWizardStep(pm, frame), new Condition() {
+		wizardModel.add(new SelectCriteriaAndAlternativesWizardStep(pm, mainWindow), new Condition() {
 			public boolean evaluate(WizardModel model) {
 				return pm.getEvidenceTypeHolder().getValue() == BRAType.Synthesis;
 			}
@@ -139,7 +139,7 @@ public class BenefitRiskWizard extends Wizard {
 	}
 
 	private static class SelectStudyWizardStep extends PanelWizardStep {
-		public SelectStudyWizardStep(final BenefitRiskWizardPM pm, Main main){
+		public SelectStudyWizardStep(final BenefitRiskWizardPM pm, AddisWindow mainWindow){
 			super("Select Study","In this step, you select which study you use as a basis for your analysis.");
 			add(new JLabel("Study : "));
 
@@ -154,10 +154,10 @@ public class BenefitRiskWizard extends Wizard {
 	}
 
 	private static class SelectOutcomeMeasuresAndArmsWizardStep extends PanelWizardStep {
-		private Main d_main;
+		private AddisWindow d_main;
 		private BenefitRiskWizardPM d_pm;
 	
-		public SelectOutcomeMeasuresAndArmsWizardStep(BenefitRiskWizardPM pm, Main main) {
+		public SelectOutcomeMeasuresAndArmsWizardStep(BenefitRiskWizardPM pm, AddisWindow main) {
 			super("Select OutcomeMeasures and Arms","In this step, you select the criteria (specific outcomemeasures) " +
 					"and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least " +
 					"two criteria and at least two alternatives must be included.");
@@ -264,14 +264,14 @@ public class BenefitRiskWizard extends Wizard {
 	}
 
 	private static class SelectCriteriaAndAlternativesWizardStep extends PanelWizardStep {
-		private Main d_main;
+		private AddisWindow d_mainWindow;
 		private BenefitRiskWizardPM d_pm;
 
-		public SelectCriteriaAndAlternativesWizardStep(BenefitRiskWizardPM pm, Main main){
+		public SelectCriteriaAndAlternativesWizardStep(BenefitRiskWizardPM pm, AddisWindow main){
 			super("Select Criteria and Alternatives","In this step, you select the criteria (analyses on specific outcomemeasures) " +
 				  "and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least two criteria " +
 				  "and at least two alternatives must be included.");
-			d_main = main;
+			d_mainWindow = main;
 			d_pm = pm;
 		}
 
@@ -293,7 +293,7 @@ public class BenefitRiskWizard extends Wizard {
 					"Save analysis", JOptionPane.QUESTION_MESSAGE);
 			if (res != null) {
 				try {
-					d_main.leftTreeFocus(d_pm.saveAnalysis(res));
+					d_mainWindow.leftTreeFocus(d_pm.saveAnalysis(res));
 				} catch (EntityIdExistsException e) {
 					JOptionPane.showMessageDialog(this.getTopLevelAncestor(), 
 							"There already exists an analysis with the given name, input another name",

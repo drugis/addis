@@ -36,13 +36,13 @@ import com.jgoodies.binding.value.ValueModel;
 public class AddIndicationDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private Indication d_indication;
-	private Main d_main;
+	private AddisWindow d_mainWindow;
 	private ValueModel d_selectionModel;
 	
-	public AddIndicationDialog(Main frame, Domain domain, ValueModel selection) {
-		super(frame, "Add Indication");
+	public AddIndicationDialog(AddisWindow mainWindow, Domain domain, ValueModel selection) {
+		super(mainWindow, "Add Indication");
 		setModal(true);
-		d_main = frame;
+		d_mainWindow = mainWindow;
 		d_domain = domain;
 		d_indication = new Indication(0L, "");
 		AddIndicationView view = new AddIndicationView(new PresentationModel<Indication>(d_indication), d_okButton);
@@ -61,7 +61,7 @@ public class AddIndicationDialog extends OkCancelDialog {
 	@Override
 	protected void commit() {
 		if (d_domain.getIndications().contains(d_indication)) {
-			JOptionPane.showMessageDialog(d_main,
+			JOptionPane.showMessageDialog(d_mainWindow,
 			    "An item with the code " + d_indication.getCode() + " already exists in the domain.",
 			    "Couldn't add Indication", JOptionPane.ERROR_MESSAGE);
 			return;
@@ -69,7 +69,7 @@ public class AddIndicationDialog extends OkCancelDialog {
 		
 		d_domain.addIndication(d_indication);
 		setVisible(false);
-		d_main.leftTreeFocus(d_indication);
+		d_mainWindow.leftTreeFocus(d_indication);
 		if (d_selectionModel != null)
 			d_selectionModel.setValue(d_indication);
 	}

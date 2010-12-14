@@ -39,9 +39,9 @@ import javax.swing.JProgressBar;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.LyndOBrienChartFactory;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.LyndOBrienPresentation;
@@ -71,7 +71,7 @@ public class LyndOBrienView implements ViewBuilder {
 	private JPanel d_panel;
 	private JLabel d_pvalueLabel;
 	
-	public LyndOBrienView(AbstractBenefitRiskPresentation<?,?> pm, Main main) {
+	public LyndOBrienView(AbstractBenefitRiskPresentation<?,?> pm, AddisWindow mainWindow) {
 		d_pm = pm.getLyndOBrienPresentation();
 		d_BRpm = pm;
 		d_pvalueLabel = new JLabel();

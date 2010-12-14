@@ -40,16 +40,16 @@ import com.jgoodies.binding.value.ValueModel;
 @SuppressWarnings("serial")
 public class AddVariableDialog extends OkCancelDialog {
 	private Domain d_domain;
-	private Main d_main;
+	private AddisWindow d_mainWindow;
 	private ValueModel d_selectionModel;
 	private PresentationModel<Variable> d_pm;
 	
-	public AddVariableDialog(Main frame, Domain domain, Variable variable, ValueModel selectionModel) {
-		super(frame, "Add " + VariablePresentation.getEntityName(variable) );
-		this.d_main = frame;
-		this.setModal(true);
+	public AddVariableDialog(AddisWindow mainWindow, Domain domain, Variable variable, ValueModel selectionModel) {
+		super(mainWindow, "Add " + VariablePresentation.getEntityName(variable) );
+		d_mainWindow = mainWindow;
+		setModal(true);
 		d_domain = domain;
-		d_pm = frame.getPresentationModelFactory().getCreationModel(variable);
+		d_pm = mainWindow.getPresentationModelFactory().getCreationModel(variable);
 		
 		AddVariableView view = new AddVariableView(d_pm, d_okButton);
 		
@@ -69,7 +69,7 @@ public class AddVariableDialog extends OkCancelDialog {
 		if (d_domain.getEndpoints().contains(d_pm.getBean()) ||
 				d_domain.getAdverseEvents().contains(d_pm.getBean()) ||
 				d_domain.getPopulationCharacteristics().contains(d_pm.getBean())) {
-			JOptionPane.showMessageDialog(d_main,
+			JOptionPane.showMessageDialog(d_mainWindow,
 			    "An item with the name " + d_pm.getBean().getName() + " already exists in the domain.",
 			    "Couldn't add Variable", JOptionPane.ERROR_MESSAGE);
 			return;
@@ -88,6 +88,6 @@ public class AddVariableDialog extends OkCancelDialog {
 		setVisible(false);
 		if (d_selectionModel != null)
 			d_selectionModel.setValue(d_pm.getBean());
-		d_main.leftTreeFocus(d_pm.getBean());
+		d_mainWindow.leftTreeFocus(d_pm.getBean());
 	}
 }

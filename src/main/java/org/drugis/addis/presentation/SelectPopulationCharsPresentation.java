@@ -23,20 +23,20 @@
 package org.drugis.addis.presentation;
 
 import org.drugis.addis.entities.PopulationCharacteristic;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.Main;
 
 @SuppressWarnings("serial")
 public class SelectPopulationCharsPresentation
 extends SelectFromFiniteListPresentationImpl<PopulationCharacteristic> {
-	public SelectPopulationCharsPresentation(ListHolder<PopulationCharacteristic> options, Main main) {
+	public SelectPopulationCharsPresentation(ListHolder<PopulationCharacteristic> options, AddisWindow mainWindow) {
 		super(options, "Population Baseline Characteristics", "Select Population Baseline Characteristics",
-			"Please select the appropriate population baseline characteristics.", main);
+			"Please select the appropriate population baseline characteristics.", mainWindow);
 	}
 	
 	@Override
 	public void showAddOptionDialog(int idx) {
-		d_main.showAddDialog(
+		d_mainWindow.showAddDialog(
 				CategoryKnowledgeFactory.getCategoryKnowledge(PopulationCharacteristic.class),
 				getSlot(idx));
 	}

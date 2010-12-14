@@ -29,7 +29,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.gui.AddIndicationDialog;
-import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.builder.IndicationView;
 import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.common.gui.ViewBuilder;
@@ -42,9 +42,9 @@ public class IndicationsKnowledge extends CategoryKnowledgeBase {
 	}
 	
 		
-	public JDialog getAddDialog(Main main, Domain domain,
+	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain,
 			ValueModel selectionModel) {
-		return new AddIndicationDialog(main, domain, selectionModel);
+		return new AddIndicationDialog(mainWindow, domain, selectionModel);
 	}
 	
 	@Override
@@ -53,9 +53,7 @@ public class IndicationsKnowledge extends CategoryKnowledgeBase {
 	}
 
 
-	@Override
-	public ViewBuilder getEntityViewBuilder(Main main, Domain domain,
-			Entity entity) {
+	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain, Entity entity) {
 		return new IndicationView(
 				(IndicationPresentation) main.getPresentationModelFactory().getModel(((Indication) entity)), main);
 	}

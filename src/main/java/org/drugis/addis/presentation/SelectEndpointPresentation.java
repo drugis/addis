@@ -23,8 +23,8 @@
 package org.drugis.addis.presentation;
 
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 
 import com.jgoodies.binding.value.ValueModel;
@@ -35,14 +35,14 @@ extends SelectFromFiniteListPresentationImpl<Endpoint> implements NoteModelPrese
 	
 	private final AddStudyWizardPresentation d_pm;
 
-	public SelectEndpointPresentation(ListHolder<Endpoint> options, Main main, AddStudyWizardPresentation pm) {
-		super(options, "Endpoint", "Select Endpoint", "Please select the appropriate endpoints.", main);
+	public SelectEndpointPresentation(ListHolder<Endpoint> options, AddisWindow mainWindow, AddStudyWizardPresentation pm) {
+		super(options, "Endpoint", "Select Endpoint", "Please select the appropriate endpoints.", mainWindow);
 		d_pm = pm;
 	}
 
 	@Override
 	public void showAddOptionDialog(int idx) {
-		d_main.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Endpoint.class), getSlot(idx));
+		d_mainWindow.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Endpoint.class), getSlot(idx));
 	}
 
 	public ValueModel getNoteModel(int idx) {

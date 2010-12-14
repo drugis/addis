@@ -48,10 +48,10 @@ import javax.swing.SwingUtilities;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.ConvergencePlotsDialog;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.components.AddisTabbedPane;
@@ -130,12 +130,11 @@ implements ViewBuilder {
 		}
 	}
 	
-	private final Main d_main;
+	private final AddisWindow d_mainWindow;
 	
-	public NetworkMetaAnalysisView(NetworkMetaAnalysisPresentation model, Main main) {
-		super(model, main);
-		d_main = main;
-
+	public NetworkMetaAnalysisView(NetworkMetaAnalysisPresentation model, AddisWindow mainWindow) {
+		super(model, mainWindow);
+		d_mainWindow = mainWindow;
 		d_pm.startModels();
 	}
 	
@@ -221,7 +220,7 @@ implements ViewBuilder {
 	private ActionListener buildRButtonActionListener(final MCMCModel model) {
 		return new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new FileSaveDialog(d_main, "R", "R files") {
+				new FileSaveDialog(d_mainWindow, "R", "R files") {
 					@Override
 					public void doAction(String path, String extension) {
 						try {
@@ -267,7 +266,7 @@ implements ViewBuilder {
 		row += 2;
 		
 		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(
-				d_pm, d_parent.getPresentationModelFactory());
+				d_pm, d_mainWindow.getPresentationModelFactory());
 		EnhancedTable table = new EnhancedTable(inconsistencyFactorsTableModel, 300);
 		final TablePanel inconsistencyFactorsTablePanel = new TablePanel(table);
 		
@@ -277,7 +276,7 @@ implements ViewBuilder {
 					Runnable r = new Runnable() {
 						public void run() {
 							inconsistencyFactorsTablePanel.doLayout();
-							d_parent.reloadRightPanel();
+							d_mainWindow.reloadRightPanel();
 						}
 					};
 					SwingUtilities.invokeLater(r);
@@ -480,12 +479,12 @@ implements ViewBuilder {
 
 	protected void showConvergencePlots(MixedTreatmentComparison mtc, Parameter p) {
 		if(mtc.getResults().getNumberOfSamples() > 0) {
-			JDialog dialog = new ConvergencePlotsDialog(d_main, mtc, p);
-			dialog.setLocationRelativeTo(d_main);
+			JDialog dialog = new ConvergencePlotsDialog(d_mainWindow, mtc, p);
+			dialog.setLocationRelativeTo(d_mainWindow);
 			dialog.pack();
 			dialog.setVisible(true);
 		} else {
-			JOptionPane.showMessageDialog(d_main, "Convergence plots cannot be shown because the results of " +
+			JOptionPane.showMessageDialog(d_mainWindow, "Convergence plots cannot be shown because the results of " +
 					"this analysis has been discarded to save memory.", "No results available", JOptionPane.WARNING_MESSAGE);
 		}
 	}
@@ -519,7 +518,7 @@ implements ViewBuilder {
 		JButton button = new JButton("Save Image");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ImageExporter.writeImage(d_main, comp, (int) comp.getSize().getWidth(), (int) comp.getSize().getHeight());
+				ImageExporter.writeImage(d_mainWindow, comp, (int) comp.getSize().getWidth(), (int) comp.getSize().getHeight());
 			}
 		});
 		return button;
@@ -530,7 +529,7 @@ implements ViewBuilder {
 		button.setToolTipText("Save data set for analysis using drugis.org MTC");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				new FileSaveDialog(d_main, "xml", "XML files") {
+				new FileSaveDialog(d_mainWindow, "xml", "XML files") {
 					@Override
 					public void doAction(String path, String extension) {
 						writeXML(path, d_pm.getNetworkXML());
@@ -569,7 +568,7 @@ implements ViewBuilder {
 		JButton saveBtn = new JButton("Save Image");
 		saveBtn.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
-				panel.saveImage(d_main);
+				panel.saveImage(d_mainWindow);
 			}
 		});
 		ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
@@ -586,7 +585,7 @@ implements ViewBuilder {
 	 * @return A TablePanel
 	 */
 	private NetworkMetaAnalysisTablePanel createNetworkTablePanel( MixedTreatmentComparison networkModel ) {
-			NetworkTableModel networkAnalysisTableModel = new NetworkTableModel(d_pm, d_parent.getPresentationModelFactory(), networkModel);
-		return new NetworkMetaAnalysisTablePanel(d_parent, networkAnalysisTableModel);
+			NetworkTableModel networkAnalysisTableModel = new NetworkTableModel(d_pm, d_mainWindow.getPresentationModelFactory(), networkModel);
+		return new NetworkMetaAnalysisTablePanel(d_mainWindow, networkAnalysisTableModel);
 	}
 }

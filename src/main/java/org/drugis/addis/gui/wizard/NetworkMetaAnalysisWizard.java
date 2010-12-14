@@ -29,7 +29,7 @@ import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 
-import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.SelectableStudyGraph;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.presentation.SelectableStudyGraphModel;
@@ -47,13 +47,13 @@ import com.jgoodies.forms.layout.FormLayout;
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisWizard extends Wizard {
 
-	public NetworkMetaAnalysisWizard(Main parent, NetworkMetaAnalysisWizardPM model) {
-		super(buildModel(model, parent));
+	public NetworkMetaAnalysisWizard(AddisWindow mainWindow, NetworkMetaAnalysisWizardPM model) {
+		super(buildModel(model, mainWindow));
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 		setPreferredSize(new Dimension(950, 650));
 	}
 
-	private static WizardModel buildModel(NetworkMetaAnalysisWizardPM pm, Main main) {
+	private static WizardModel buildModel(NetworkMetaAnalysisWizardPM pm, AddisWindow main) {
 		StaticModel wizardModel = new StaticModel();
 		wizardModel.add(new SelectIndicationWizardStep(pm));
 		wizardModel.add(new SelectEndpointWizardStep(pm));
@@ -69,7 +69,7 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 	public static class OverviewWizardStep extends AbstractOverviewWizardStep<SelectableStudyGraphModel> {
 		private StudyGraph d_studyGraph;
 
-		public OverviewWizardStep(NetworkMetaAnalysisWizardPM pm, Main main) {
+		public OverviewWizardStep(NetworkMetaAnalysisWizardPM pm, AddisWindow main) {
 			super(pm, main);
 
 			setLayout(new BorderLayout());
@@ -106,7 +106,7 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 
 		private SelectableStudyGraph d_studyGraph;
 
-		public SelectDrugsWizardStep(NetworkMetaAnalysisWizardPM pm, Main main) {
+		public SelectDrugsWizardStep(NetworkMetaAnalysisWizardPM pm, AddisWindow main) {
 			super("Select Drugs","Select the drugs to be used for the network meta-analysis. Click to select (green) or deselect (gray).  To continue, (1) at least two drugs must be selected, and (2) all selected drugs must be connected.");
 					
 			setLayout(new BorderLayout());

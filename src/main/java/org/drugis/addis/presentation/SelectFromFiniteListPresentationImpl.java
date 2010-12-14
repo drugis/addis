@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.common.EqualsUtil;
 
 import com.jgoodies.binding.beans.Model;
@@ -43,14 +43,14 @@ implements SelectFromFiniteListPresentation<T> {
 	protected ListHolder<T> d_options;
 	protected ValueModel d_addSlotsEnabled;
 	protected InputCompleteModel d_inputCompleteModel;
-	protected Main d_main;
+	protected AddisWindow d_mainWindow;
 	public static final String PROPERTY_NSLOTS = "nSlots";
 	private String d_typeName;
 	private String d_title;
 	private String d_description;
 
 	public SelectFromFiniteListPresentationImpl(ListHolder<T> options,
-			String typeName, String title, String description, Main main) {
+			String typeName, String title, String description, AddisWindow mainWindow) {
 		d_typeName = typeName;
 		d_title = title;
 		d_description = description;
@@ -58,7 +58,7 @@ implements SelectFromFiniteListPresentation<T> {
 		d_options = options;
 		d_addSlotsEnabled = new AddSlotsAlwaysEnabledModel();
 		d_inputCompleteModel = new InputCompleteModel();
-		d_main = main;
+		d_mainWindow = mainWindow;
 	}
 
 	public ListHolder<T> getOptions() {

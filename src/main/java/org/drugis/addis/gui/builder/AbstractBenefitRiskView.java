@@ -31,7 +31,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
-import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
@@ -49,16 +49,16 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 
 
 	protected PresentationType d_pm;
-	protected Main d_main;
+	protected AddisWindow d_mainWindow;
 	protected ViewBuilder d_view;
 
-	public AbstractBenefitRiskView(PresentationType model, Main main) {
+	public AbstractBenefitRiskView(PresentationType model, AddisWindow main) {
 		d_pm = model;
-		d_main = main;
+		d_mainWindow = main;
 		if (getAnalysis().getAnalysisType() == AnalysisType.SMAA) {
-			d_view = new SMAAView(d_pm, d_main);
+			d_view = new SMAAView(d_pm, d_mainWindow);
 		} else {
-			d_view = new LyndOBrienView(d_pm, d_main);
+			d_view = new LyndOBrienView(d_pm, d_mainWindow);
 		}
 		d_pm.startAllSimulations();
 	}

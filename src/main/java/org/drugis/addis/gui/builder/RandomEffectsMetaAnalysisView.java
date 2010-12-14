@@ -41,8 +41,8 @@ import org.drugis.addis.entities.relativeeffect.BasicRiskDifference;
 import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
 import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
@@ -60,8 +60,8 @@ implements ViewBuilder {
 	
 	private boolean d_isWizard;
 
-	public RandomEffectsMetaAnalysisView(RandomEffectsMetaAnalysisPresentation pm, Main parent) {
-		super(pm, parent);
+	public RandomEffectsMetaAnalysisView(RandomEffectsMetaAnalysisPresentation pm, AddisWindow mainWindow) {
+		super(pm, mainWindow);
 		d_isWizard = false;
 	}
 

@@ -33,8 +33,8 @@ import javax.swing.JDialog;
 import javax.swing.JTable;
 
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CharacteristicSelectDialog;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.addis.presentation.StudyListPresentation;
 import org.drugis.common.gui.GUIHelper;
@@ -43,7 +43,7 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
 @SuppressWarnings("serial")
 public class StudiesTablePanel extends TablePanel {
-	public StudiesTablePanel(StudyListPresentation studyListPresentationModel, Main main) {
+	public StudiesTablePanel(StudyListPresentation studyListPresentationModel, AddisWindow main) {
 		super(createTable(studyListPresentationModel, main));
 		
 		ButtonBarBuilder2 bb = new ButtonBarBuilder2();
@@ -53,7 +53,7 @@ public class StudiesTablePanel extends TablePanel {
 		add(bb.getPanel(), BorderLayout.SOUTH);
 	}
 
-	public static JTable createTable(final StudyListPresentation studyListPM, final Main main) {
+	public static JTable createTable(final StudyListPresentation studyListPM, final AddisWindow main) {
 		StudyCharTableModel model = new StudyCharTableModel(studyListPM, main.getPresentationModelFactory());
 		JTable table = new EnhancedTable(model);
 		table.addMouseListener(new MouseAdapter() {
@@ -66,11 +66,11 @@ public class StudiesTablePanel extends TablePanel {
 				}
 			}
 		});
-		table.addKeyListener(new EntityTableDeleteListener((Main) main));
+		table.addKeyListener(new EntityTableDeleteListener(main));
 		return table;
 	}
 
-	public static JButton buildCustomizeButton(final StudyListPresentation studyListPM, final Main main) {
+	public static JButton buildCustomizeButton(final StudyListPresentation studyListPM, final AddisWindow main) {
 		JButton customizeButton = new JButton("Customize Shown Characteristics");
 		customizeButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {

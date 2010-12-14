@@ -26,13 +26,13 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import org.drugis.addis.entities.Entity;
-import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.AddisWindow;
 
 public class EntityTableDeleteListener extends KeyAdapter {
 	
-	private Main d_main;
+	private AddisWindow d_main;
 
-	public EntityTableDeleteListener(Main main) {
+	public EntityTableDeleteListener(AddisWindow main) {
 		d_main = main;
 	}
 	

@@ -29,6 +29,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
 import org.drugis.addis.gui.wizard.MetaAnalysisWizard;
@@ -60,11 +61,11 @@ public class PairWiseMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 		return FileNames.ICON_METASTUDY_NEW;
 	}
 	
-	public JDialog getAddDialog(Main main, Domain domain,
+	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain,
 			ValueModel selectionModel) {
-		JDialog dialog = new JDialog(main, "Create DerSimonian-Laird random effects meta-analysis", true);
-		Wizard wizard = new MetaAnalysisWizard(main,
-				new MetaAnalysisWizardPresentation(domain, main.getPresentationModelFactory()));
+		JDialog dialog = new JDialog(mainWindow, "Create DerSimonian-Laird random effects meta-analysis", true);
+		Wizard wizard = new MetaAnalysisWizard(mainWindow,
+				new MetaAnalysisWizardPresentation(domain, mainWindow.getPresentationModelFactory()));
 		dialog.getContentPane().add(wizard);
 		dialog.pack();
 		WizardFrameCloser.bind(wizard, dialog);
@@ -83,13 +84,9 @@ public class PairWiseMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 		"includedDrugs", "studiesIncluded", "sampleSize" };
 	}
 
-	@Override
-	public ViewBuilder getEntityViewBuilder(Main main, Domain domain,
-			Entity entity) {
+	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain, Entity entity) {
 		return new RandomEffectsMetaAnalysisView(
 				(RandomEffectsMetaAnalysisPresentation)main.getPresentationModelFactory().getModel(((RandomEffectsMetaAnalysis) entity)), 
 				main);
 	}
-	
-	
 }

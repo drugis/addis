@@ -46,7 +46,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 @SuppressWarnings("serial")
-public class WelcomeDialog extends JDialog {
+public class WelcomeDialog extends JDialog { // FIXME: should be JFrame
 	private static final int COMP_HEIGHT = 65;
 	private static final int FULL_WIDTH = 446; // width of the header image
 	private static final int SPACING = 3;
@@ -55,9 +55,9 @@ public class WelcomeDialog extends JDialog {
 	
 	private Main d_main;
 
-	public WelcomeDialog(Main parent) {
-		super(parent);
-		d_main = parent;
+	public WelcomeDialog(Main main) {
+		super();
+		d_main = main;
 		setTitle("Welcome to " + AppInfo.getAppName());		
 		initComps();
 		setResizable(false);
@@ -67,36 +67,34 @@ public class WelcomeDialog extends JDialog {
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);				
 			}
-			@Override
-			public void windowClosed(WindowEvent e) {
-				d_main.setVisible(true);
-			}
 		});
+	}
+	
+	private void closeWelcome() {
+		setVisible(false);
+		dispose();
 	}
 	
 	private void initComps() {
 		final AbstractAction exampleAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				d_main.loadExampleDomain();	
-				setVisible(false);
-				dispose();
+				d_main.loadExampleDomain();
+				closeWelcome();
 			}
 		};
 		
 		final AbstractAction loadAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 				if(d_main.fileLoadActions() != JFileChooser.CANCEL_OPTION) {
-					setVisible(false);
-					dispose();
+					closeWelcome();
 				}
 			}
 		};
 			
 		final AbstractAction newAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				d_main.newDomain();
-				setVisible(false);
-				dispose();
+				d_main.newFileActions();
+				closeWelcome();
 			}
 		};
 		

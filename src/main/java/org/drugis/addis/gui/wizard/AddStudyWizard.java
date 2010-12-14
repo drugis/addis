@@ -44,10 +44,10 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.MeasurementTable;
@@ -82,33 +82,33 @@ public class AddStudyWizard extends Wizard {
 	private static final String EXAMPLE_NCT_ID = "NCT00296517";
 	public static final String DEFAULT_NOTETITLE = "Source Text (ClinicalTrials.gov):";
 
-	public AddStudyWizard(final AddStudyWizardPresentation pm, final Main main, JDialog dialog) {
-		super(buildModel(pm, main, dialog));
+	public AddStudyWizard(final AddStudyWizardPresentation pm, final AddisWindow mainWindow, JDialog dialog) {
+		super(buildModel(pm, mainWindow, dialog));
 		
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 		addWizardListener(new WizardAdapter() {
 			@Override
 			public void wizardClosed(WizardEvent e) {
-				main.leftTreeFocus(pm.saveStudy());
+				mainWindow.leftTreeFocus(pm.saveStudy());
 			}
 		});
 		setOverviewVisible(false);
 		setPreferredSize(new Dimension(760, 570));
 	}
 	
-	private static AbstractWizardModel buildModel(final AddStudyWizardPresentation pm, Main main, JDialog dialog) {
+	private static AbstractWizardModel buildModel(final AddStudyWizardPresentation pm, AddisWindow mainWindow, JDialog dialog) {
 		StaticModel wizardModel = new StaticModel();
 		wizardModel.add(new EnterIdTitleWizardStep(pm, dialog));
-		wizardModel.add(new SelectIndicationWizardStep(pm, main));
+		wizardModel.add(new SelectIndicationWizardStep(pm, mainWindow));
 		wizardModel.add(new EnterCharacteristicsWizardStep(pm));
 		wizardModel.add(new SelectEndpointWizardStep(pm));
-		wizardModel.add(new SetArmsWizardStep(pm, main));
+		wizardModel.add(new SetArmsWizardStep(pm, mainWindow));
 		wizardModel.add(new SetEndpointMeasurementsWizardStep(pm, dialog));
 		wizardModel.add(new SelectAdverseEventWizardStep(pm));
 		wizardModel.add(new SetAdverseEventMeasurementsWizardStep(pm, dialog));
 		wizardModel.add(new SelectPopulationCharsWizardStep(pm));
 		wizardModel.add(new SetPopulationCharMeasurementsWizardStep(pm, dialog));
-		wizardModel.add(new ReviewStudyStep(pm, main));
+		wizardModel.add(new ReviewStudyStep(pm, mainWindow));
 		
 		wizardModel.setLastVisible(false);
 		// The measurements + variable lists are saved on viewing the measurement tables
@@ -119,14 +119,14 @@ public class AddStudyWizard extends Wizard {
 	
 	public static class ReviewStudyStep extends PanelWizardStep {
 		 private final AddStudyWizardPresentation d_pm;
-		private final Main d_main;
+		private final AddisWindow d_mainwindow;
 
-		public ReviewStudyStep(AddStudyWizardPresentation pm, Main main) {
+		public ReviewStudyStep(AddStudyWizardPresentation pm, AddisWindow mainWindow) {
 			 super("Review study", "Please review the study to be created. " +
 					 "You can go back through the wizard to correct any mistakes, " +
 					 "but after the study has been added it cannot be changed.");
 			d_pm = pm;
-			d_main = main;
+			d_mainwindow = mainWindow;
 			 setLayout(new BorderLayout());
 			 setComplete(true);
 		 }
@@ -134,7 +134,7 @@ public class AddStudyWizard extends Wizard {
 		 @Override
 		 public void prepare() {
 			 StudyView view = new StudyView(d_pm.getNewStudyPM(), d_pm.getDomain(), 
-					 d_main, d_main.getPresentationModelFactory());
+					 d_mainwindow, d_mainwindow.getPresentationModelFactory());
 			 removeAll();
 			 add(view.buildPanel(), BorderLayout.CENTER);
 			 this.setVisible(true);			 
@@ -213,7 +213,7 @@ public class AddStudyWizard extends Wizard {
 			}
 			
 			public void actionPerformed(ActionEvent e) {
-				d_main.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class), d_pm.getArmModel(d_index).getModel(Arm.PROPERTY_DRUG));
+				d_mainWindow.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class), d_pm.getArmModel(d_index).getModel(Arm.PROPERTY_DRUG));
 			}
 		}
 		private class RemoveArmListener extends AbstractAction {
@@ -233,13 +233,13 @@ public class AddStudyWizard extends Wizard {
 		private NotEmptyValidator d_validator;
 		private JScrollPane d_scrollPane;
 		private AddStudyWizardPresentation d_pm;
-		private Main d_main;
+		private AddisWindow d_mainWindow;
 		
-		public SetArmsWizardStep(AddStudyWizardPresentation pm, Main main) {
+		public SetArmsWizardStep(AddStudyWizardPresentation pm, AddisWindow mainWindow) {
 			super("Select Arms", "Please input the appropriate arms. " +
 					"The drug field of every arm must be filled in order to continue. At least one arm must be included.");
 			d_pm = pm;
-			d_main = main;
+			d_mainWindow = mainWindow;
 			if (d_pm.isEditing())
 				setComplete(true);
 		}
@@ -542,13 +542,13 @@ public class AddStudyWizard extends Wizard {
 		private NotEmptyValidator d_validator;
 		private JScrollPane d_scrollPane;
 		private AddStudyWizardPresentation d_pm;
-		private Main d_main;
+		private AddisWindow d_mainWindow;
 
-		public SelectIndicationWizardStep (AddStudyWizardPresentation pm, Main main) {
+		public SelectIndicationWizardStep (AddStudyWizardPresentation pm, AddisWindow mainWindow) {
 			super("Select Indication", "Select the indication for this study. " +
 					"An indication must be selected to continue.");
 			d_pm = pm;
-			d_main = main;
+			d_mainWindow = mainWindow;
 			if (d_pm.isEditing())
 				setComplete(true);
 		}
@@ -587,7 +587,7 @@ public class AddStudyWizard extends Wizard {
 			d_builder.add(btn, cc.xy(5, 3));
 			btn.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent arg0) {
-					d_main.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Indication.class),
+					d_mainWindow.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Indication.class),
 							d_pm.getIndicationModel());
 				}
 			});

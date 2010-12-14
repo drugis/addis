@@ -28,6 +28,7 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.builder.TitledPanelBuilder;
@@ -51,12 +52,12 @@ public class StudiesKnowledge extends CategoryKnowledgeBase {
 		return FileNames.ICON_STUDY_NEW;
 	}
 	
-	public JDialog getAddDialog(Main main, Domain domain,
+	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain,
 			ValueModel selectionModel) {
-		JDialog dialog = new JDialog(main, "Add Study", true);
+		JDialog dialog = new JDialog(mainWindow, "Add Study", true);
 		AddStudyWizard wizard = new AddStudyWizard(
 				new AddStudyWizardPresentation(domain,
-						main.getPresentationModelFactory(), main), main, dialog);
+						mainWindow.getPresentationModelFactory(), mainWindow), mainWindow, dialog);
 		dialog.getContentPane().add(wizard);
 		dialog.pack();
 		WizardFrameCloser.bind(wizard, dialog);
@@ -70,15 +71,14 @@ public class StudiesKnowledge extends CategoryKnowledgeBase {
 	}
 	
 	@Override
-	public ViewBuilder getCategoryViewBuilder(Main main, Domain domain) {
+	public ViewBuilder getCategoryViewBuilder(AddisWindow main, Domain domain) {
 		DefaultStudyListPresentation studyListPM = new DefaultStudyListPresentation(
 				domain.getStudiesHolder());
 		TitledPanelBuilder view = new TitledPanelBuilder(new StudiesTablePanel(studyListPM, main), "Studies");
 		return view;
 	}
 
-	@Override
-	public ViewBuilder getEntityViewBuilder(Main main, Domain domain,
+	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain,
 			Entity entity) {
 		return new StudyView((StudyPresentation) main.getPresentationModelFactory()
 				.getModel(((Study) entity)), main.getDomain(), main);

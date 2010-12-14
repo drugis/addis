@@ -32,8 +32,8 @@ import javax.swing.JPanel;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.VariablePresentation;
 import org.drugis.common.gui.OneWayObjectFormat;
@@ -49,11 +49,11 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class VariableView implements ViewBuilder {
 	private VariablePresentation d_model;
-	private Main d_frame;
+	private AddisWindow d_frame;
 	
-	public VariableView(VariablePresentation model, Main frame) {
+	public VariableView(VariablePresentation model, AddisWindow main) {
 		d_model = model;
-		d_frame = frame;
+		d_frame = main;
 	}
 
 	public JComponent buildPanel() {

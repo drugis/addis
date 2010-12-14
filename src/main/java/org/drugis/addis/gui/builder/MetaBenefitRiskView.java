@@ -32,9 +32,9 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.EntitiesTablePanel;
 import org.drugis.addis.gui.components.TablePanel;
@@ -50,8 +50,8 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRiskPresentation> {
 	
-	public MetaBenefitRiskView(MetaBenefitRiskPresentation pm, Main main) {
-		super(pm, main);
+	public MetaBenefitRiskView(MetaBenefitRiskPresentation pm, AddisWindow mainWindow) {
+		super(pm, mainWindow);
 	}
 
 	@Override
@@ -101,14 +101,14 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		JButton button = new JButton("Save Image");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ImageExporter.writeImage(d_main, chart, (int) chart.getSize().getWidth(), (int) chart.getSize().getHeight());
+				ImageExporter.writeImage(d_mainWindow, chart, (int) chart.getSize().getWidth(), (int) chart.getSize().getHeight());
 			}
 		});
 		return button;
 	}
 	protected JComponent buildAnalysesPart() {	
 		String[] formatter = {"name","type","indication","outcomeMeasure","includedDrugs","includedStudies","sampleSize"};
-		return new EntitiesTablePanel(Arrays.asList(formatter), d_pm.getAnalysesModel(), d_main, d_pm.getFactory());
+		return new EntitiesTablePanel(Arrays.asList(formatter), d_pm.getAnalysesModel(), d_mainWindow, d_pm.getFactory());
 	}
 
 	@Override

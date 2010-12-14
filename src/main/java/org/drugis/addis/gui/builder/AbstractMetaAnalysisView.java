@@ -28,9 +28,9 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.presentation.AbstractMetaAnalysisPresentation;
 import org.drugis.common.gui.OneWayObjectFormat;
@@ -43,11 +43,11 @@ import com.jgoodies.forms.layout.FormLayout;
 public abstract class AbstractMetaAnalysisView<T extends AbstractMetaAnalysisPresentation<?>> {
 
 	protected T d_pm;
-	protected Main d_parent;
+	protected AddisWindow d_parent;
 
-	public AbstractMetaAnalysisView(T model, Main main) {
+	public AbstractMetaAnalysisView(T model, AddisWindow mainWindow) {
 		d_pm = model;
-		d_parent = main;
+		d_parent = mainWindow;
 	}
 
 	protected JComponent buildStudiesPart() {

@@ -30,6 +30,7 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.MetaBenefitRiskView;
 import org.drugis.addis.gui.builder.StudyBenefitRiskView;
@@ -48,9 +49,9 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 		super("benefit-risk analysis", "Benefit-risk analyses", FileNames.ICON_BENEFITRISK, BenefitRiskAnalysis.class);
 	}
 	
-	public JDialog getAddDialog(Main main, Domain domain, ValueModel selectionModel) {
-		JDialog dialog = new JDialog(main, "Create Benefit-risk analysis", true);
-		Wizard wizard = new BenefitRiskWizard(main,	new BenefitRiskWizardPM(domain));
+	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel) {
+		JDialog dialog = new JDialog(mainWindow, "Create Benefit-risk analysis", true);
+		Wizard wizard = new BenefitRiskWizard(mainWindow, new BenefitRiskWizardPM(domain));
 		dialog.getContentPane().add(wizard);
 		dialog.pack();
 		WizardFrameCloser.bind(wizard, dialog);
@@ -71,17 +72,15 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 		return new String[] { "name", "analysisType", "indication", "outcomeMeasures", "alternatives" };
 	}
 
-	@Override
-	public ViewBuilder getEntityViewBuilder(Main main, Domain domain,
-			Entity entity) {
+	public ViewBuilder getEntityViewBuilder(AddisWindow mainWindow, Domain domain, Entity entity) {
 		if (entity instanceof MetaBenefitRiskAnalysis) {
 			MetaBenefitRiskAnalysis meta = (MetaBenefitRiskAnalysis) entity;
-			MetaBenefitRiskPresentation model = (MetaBenefitRiskPresentation) main.getPresentationModelFactory().getModel((MetaBenefitRiskAnalysis)meta );
-			return new MetaBenefitRiskView(model, main);
+			MetaBenefitRiskPresentation model = (MetaBenefitRiskPresentation) mainWindow.getPresentationModelFactory().getModel((MetaBenefitRiskAnalysis)meta );
+			return new MetaBenefitRiskView(model, mainWindow);
 		} else if (entity instanceof StudyBenefitRiskAnalysis) {
 			StudyBenefitRiskAnalysis sbra = (StudyBenefitRiskAnalysis) entity;
-			StudyBenefitRiskPresentation model = (StudyBenefitRiskPresentation) main.getPresentationModelFactory().getModel((StudyBenefitRiskAnalysis) sbra );
-			return new StudyBenefitRiskView(model, main);
+			StudyBenefitRiskPresentation model = (StudyBenefitRiskPresentation) mainWindow.getPresentationModelFactory().getModel((StudyBenefitRiskAnalysis) sbra );
+			return new StudyBenefitRiskView(model, mainWindow);
 		}
 		throw new RuntimeException("Unhandled BR Type!");
 	}

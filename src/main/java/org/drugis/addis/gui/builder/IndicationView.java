@@ -27,9 +27,9 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.IndicationPresentation;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
@@ -44,11 +44,11 @@ import com.jgoodies.forms.layout.FormLayout;
 public class IndicationView implements ViewBuilder {
 	
 	private IndicationPresentation d_pm;
-	private Main d_parent;
+	private AddisWindow d_parent;
 
-	public IndicationView(IndicationPresentation pm, Main parent) {
+	public IndicationView(IndicationPresentation pm, AddisWindow main) {
 		d_pm = pm;
-		this.d_parent = parent;
+		d_parent = main;
 	}
 	
 	public JComponent buildPanel() {

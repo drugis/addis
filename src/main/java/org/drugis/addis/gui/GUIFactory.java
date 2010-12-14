@@ -80,7 +80,7 @@ public class GUIFactory {
 		return textLabel;
 	}
 
-	public static JComponent buildStudyPanel(StudyListPresentation studies, Main parent) {
+	public static JComponent buildStudyPanel(StudyListPresentation studies, AddisWindow parent) {
 		JComponent studiesComp = null;
 		if(studies.getIncludedStudies().getValue().isEmpty()) {
 			studiesComp = new JLabel("No studies found.");
