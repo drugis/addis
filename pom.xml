@@ -72,17 +72,17 @@
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc-mcmc</artifactId>
-			<version>0.5-SNAPSHOT</version>
+			<version>0.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc-model</artifactId>
-			<version>0.5-SNAPSHOT</version>
+			<version>0.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc-lib</artifactId>
-			<version>0.5-SNAPSHOT</version>
+			<version>0.6</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jgoodies</groupId>
