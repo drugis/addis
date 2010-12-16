@@ -31,9 +31,9 @@ import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.addis.treeplot.BinnedScale;
-import org.drugis.addis.treeplot.IdentityScale;
-import org.drugis.addis.treeplot.RelativeEffectBar;
+import org.drugis.addis.forestplot.BinnedScale;
+import org.drugis.addis.forestplot.IdentityScale;
+import org.drugis.addis.forestplot.RelativeEffectBar;
 import org.junit.Test;
 
 public class RelativeEffectBarTest {

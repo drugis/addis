@@ -24,6 +24,9 @@ package org.drugis.addis.entities;
 
 import java.util.Set;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 public class Arm extends AbstractEntity {
 	private Integer d_size;
 	private Drug d_drug;
@@ -33,15 +36,14 @@ public class Arm extends AbstractEntity {
 	public static final String PROPERTY_DRUG = "drug";
 	public static final String PROPERTY_DOSE = "dose";	
 	
-	public Arm(){
-	}
-	
 	public Arm(Drug drug, AbstractDose dose, int size) {
 		d_drug = drug;
 		d_dose = dose;
 		d_size = size;
 		init();
 	}
+
+	public Arm() {}
 
 	public Drug getDrug() {
 		return d_drug;
@@ -88,4 +90,25 @@ public class Arm extends AbstractEntity {
 	public Arm clone() {
 		return new Arm(getDrug(), getDose().clone(), getSize());
 	}
+	
+	protected static final XMLFormat<Arm> ARM_XML = new XMLFormat<Arm>(Arm.class) {
+		@Override
+		public Arm newInstance(Class<Arm> cls, InputElement xml) {
+			return new Arm();
+		}
+		
+		@Override
+		public void read(InputElement ie, Arm a) throws XMLStreamException {
+			a.setSize(ie.getAttribute(PROPERTY_SIZE, 0));
+			a.setDose((AbstractDose) ie.get(PROPERTY_DOSE));
+			a.setDrug((Drug) ie.get(PROPERTY_DRUG, Drug.class));
+		}
+
+		@Override
+		public void write(Arm a, OutputElement oe) throws XMLStreamException {
+			oe.setAttribute(PROPERTY_SIZE, a.getSize());
+			oe.add(a.getDose(), PROPERTY_DOSE);
+			oe.add(a.getDrug(), PROPERTY_DRUG, Drug.class);
+		}
+	};
 }

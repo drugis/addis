@@ -37,11 +37,11 @@ import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
-import org.drugis.addis.treeplot.BinnedScale;
-import org.drugis.addis.treeplot.ForestPlot;
-import org.drugis.addis.treeplot.IdentityScale;
-import org.drugis.addis.treeplot.LinearScale;
-import org.drugis.addis.treeplot.LogScale;
+import org.drugis.addis.forestplot.BinnedScale;
+import org.drugis.addis.forestplot.ForestPlot;
+import org.drugis.addis.forestplot.IdentityScale;
+import org.drugis.addis.forestplot.LinearScale;
+import org.drugis.addis.forestplot.LogScale;
 import org.drugis.common.Interval;
 
 

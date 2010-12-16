@@ -20,12 +20,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.treeplot;
+package org.drugis.addis.forestplot;
 
-public interface Scale {
-	
-	public double getNormalized(double x);
+public class IdentityScale implements Scale {
 
-	public double getMax(); 
-	public double getMin();
+	public double getMax() {
+		return 1.0;
+	}
+
+	public double getMin() {
+		return 0.0;
+	}
+
+	public double getNormalized(double x) {
+		return x;
+	}
+
 }

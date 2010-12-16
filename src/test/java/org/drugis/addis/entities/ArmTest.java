@@ -23,7 +23,10 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertFalse;
+import javolution.xml.stream.XMLStreamException;
 
+import org.drugis.addis.ExampleData;
+import org.drugis.addis.util.XMLHelper;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,4 +73,12 @@ public class ArmTest {
 	public void testCloneReturnsDistinctDose() {
 		assertFalse(d_orig.getDose() == d_clone.getDose());
 	}
+	
+	@Test
+	public void testXML() throws XMLStreamException {
+		Arm arm = ExampleData.buildStudyAdditionalThreeArm().getArms().get(0);
+		String xml = XMLHelper.toXml(arm, Arm.class);
+		AssertEntityEquals.assertEntityEquals(arm, XMLHelper.<Arm>fromXml(xml));
+	}	
+		
 }

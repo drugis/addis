@@ -23,8 +23,11 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.*;
+import javolution.xml.stream.XMLStreamException;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.util.XMLHelper;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
 
@@ -70,4 +73,11 @@ public class DrugTest {
 		Drug d2 = new Drug("Paroxetine", "atc");
 		assertEquals(d1.hashCode(), d2.hashCode());
 	}
+	
+	@Test
+	public void testXML() throws XMLStreamException {
+		Drug d = ExampleData.buildDrugParoxetine();
+		String xml = XMLHelper.toXml(d, Drug.class);
+		AssertEntityEquals.assertEntityEquals(d,(Drug) XMLHelper.fromXml(xml));
+	}	
 }
