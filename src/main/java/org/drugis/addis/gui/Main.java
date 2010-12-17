@@ -96,7 +96,6 @@ public class Main {
 							JOptionPane.showMessageDialog(null, cause.toString(),
 									"Task Failed: " + taskEvent.getSource(),
 									JOptionPane.ERROR_MESSAGE);
-							
 						}
 					};
 					SwingUtilities.invokeLater(r);

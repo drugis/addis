@@ -37,7 +37,7 @@ import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.StudyGraphModel.Edge;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
-import org.drugis.common.gui.ImageExporter;
+import org.drugis.addis.util.ImageExporterExperimental;
 import org.jgraph.JGraph;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.GraphLayoutCache;
@@ -93,9 +93,6 @@ public class StudyGraph extends JPanel {
 		d_jgraph.getGraphLayoutCache().edit(nested);
 		
 		d_jgraph.repaint();
-		
-		//BufferedImage img = jgraph.getImage(Color.white, 10);
-		//PNGExporter.writePNG("graph.png", img);
 	}
 
 	protected MyDefaultCellViewFactory getCellFactory() {
@@ -114,7 +111,9 @@ public class StudyGraph extends JPanel {
 	public void saveImage(JFrame frame) {
 		Color oldCol = d_jgraph.getBackground();
 		d_jgraph.setBackground(Color.white);
-		ImageExporter.writeImage(frame, this, (int) getSize().getWidth(), (int) getSize().getHeight());
+		d_jgraph.setDoubleBuffered(false);
+		ImageExporterExperimental.writeImage(frame, d_jgraph, (int) getSize().getWidth(), (int) getSize().getHeight());
+		d_jgraph.setDoubleBuffered(true);
 		d_jgraph.setBackground(oldCol);
 	}
 	

@@ -21,12 +21,12 @@ import javax.swing.JComponent;
 
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.ext.awt.image.codec.imageio.ImageIOPNGImageWriter;
-import org.apache.batik.ext.awt.image.codec.png.PNGImageWriter;
 import org.apache.batik.ext.awt.image.spi.ImageWriterRegistry;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.batik.svggen.SwingSVGPrettyPrint;
 import org.drugis.common.gui.FileSaveDialog;
 import org.jfree.chart.JFreeChart;
+import org.jgraph.JGraph;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
@@ -91,6 +91,63 @@ public class ImageExporterExperimental {
 		writePNG(path, bufferedImage);
 	}
 
+
+	public static void writeImage(Component frame, final JGraph p, final int width, final int height) {
+		String [] extensions = {"png", "svg"};
+		String [] descriptions = {"PNG files", "SVG files"};
+		new FileSaveDialog(frame, extensions, descriptions) {
+			@Override
+			public void doAction(String path, String extension) {
+				if (extension.equals("png"))
+					writePNG(path, p, width, height);
+				else if (extension.equals("svg"))
+					writeSVG(path, p, width, height);
+				else
+					throw new IllegalArgumentException("Unknown extension " + extension);
+			}
+		};
+	}
+	
+	protected static void writeSVG(String path, JGraph graph, int width, int height) {
+        // Get a DOMImplementation and create an XML document
+        DOMImplementation domImpl =
+            GenericDOMImplementation.getDOMImplementation();
+        Document document = domImpl.createDocument(null, "svg", null);
+
+        // Create an instance of the SVG Generator
+        SVGGraphics2D svgGenerator = new SVGGraphics2D(document);
+
+        Dimension dim = new Dimension(width, height);
+		// draw the chart in the SVG generator
+		svgGenerator.setSVGCanvasSize(dim);
+        graph.paint(svgGenerator);
+
+        // Write svg file
+        OutputStream outputStream;
+		try {
+			outputStream = new FileOutputStream(path);
+	        Writer out = new OutputStreamWriter(outputStream, "UTF-8");
+	        svgGenerator.stream(out, true /* use css */);						
+	        outputStream.flush();
+	        outputStream.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	protected static void writePNG(String path, JGraph graph, int width, int height) {
+		GraphicsConfiguration config = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+		BufferedImage bufferedImage = config.createCompatibleImage(width, height, Transparency.OPAQUE);
+
+		Graphics2D toWrite = bufferedImage.createGraphics();
+		toWrite.setBackground(Color.WHITE);
+		toWrite.clearRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
+		toWrite.setColor(Color.BLACK);
+		graph.paint(toWrite);
+		
+		writePNG(path, bufferedImage);
+	}
+	
 	public static void writeImage(Component frame, final JFreeChart p, final int width, final int height) {
 		String [] extensions = {"png", "svg"};
 		String [] descriptions = {"PNG files", "SVG files"};
