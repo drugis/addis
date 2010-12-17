@@ -71,6 +71,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
+			<artifactId>mtc-test</artifactId>
+			<version>0.6.1-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.drugis</groupId>
 			<artifactId>mtc-mcmc</artifactId>
 			<version>0.6.1-SNAPSHOT</version>
 		</dependency>

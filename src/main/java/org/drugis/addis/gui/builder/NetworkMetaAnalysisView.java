@@ -63,7 +63,7 @@ import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
 import org.drugis.addis.presentation.NetworkVarianceTableModel;
-import org.drugis.addis.presentation.PvalueTableModel;
+import org.drugis.addis.presentation.NodeSplitResultsTableModel;
 import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
@@ -381,7 +381,7 @@ implements ViewBuilder {
 				cc.xyw(1, row, 3));
 		row += 2;
 		
-		builder.add(buildPvalueTable(), cc.xyw(1, row, 3));
+		builder.add(buildNodeSplitResultsTable(), cc.xyw(1, row, 3));
 
 		for (BasicParameter p : d_pm.getSplitParameters()) {
 			LayoutUtil.addRow(layout);
@@ -413,8 +413,8 @@ implements ViewBuilder {
 		return builder.getPanel();
 	}
 
-	private JComponent buildPvalueTable() {
-		PvalueTableModel tableModel = new PvalueTableModel(d_pm);
+	private JComponent buildNodeSplitResultsTable() {
+		NodeSplitResultsTableModel tableModel = new NodeSplitResultsTableModel(d_pm);
 		
 		EnhancedTable table = new EnhancedTable(tableModel);
 		table.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
