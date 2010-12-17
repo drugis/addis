@@ -48,8 +48,24 @@ public class ImageExporterExperimental {
 		};
 	}
 	
-	public static void writeSVG(String path, JComponent p, int width,
-			int height) {
+	public interface DrawCommand<T, C extends Graphics2D> {
+		public void draw(T toDraw, C canvas, Dimension dim);
+	}
+	
+	protected static <T> void writePNG(String path, DrawCommand<T, Graphics2D> drawer, T toDraw, Dimension dim) {
+		GraphicsConfiguration config = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+		BufferedImage bufferedImage = config.createCompatibleImage(dim.width, dim.height, Transparency.OPAQUE);
+
+		Graphics2D canvas = bufferedImage.createGraphics();
+		canvas.setBackground(Color.WHITE);
+		canvas.clearRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
+		canvas.setColor(Color.BLACK);
+		drawer.draw(toDraw, canvas, dim);
+		
+		writePNG(path, bufferedImage);
+	}
+	
+	public static <T> void writeSVG(String path, DrawCommand<T, SVGGraphics2D> drawer, T toDraw, Dimension dim) {
         // Get a DOMImplementation and create an XML document
         DOMImplementation domImpl =
             GenericDOMImplementation.getDOMImplementation();
@@ -58,11 +74,10 @@ public class ImageExporterExperimental {
         Document document = domImpl.createDocument(svgNS, "svg", null);
         // Create an instance of the SVG Generator
         SVGGraphics2D svgGenerator = new SVGGraphics2D(document);
-        Dimension dim = new Dimension(width, height);
 		// draw the chart in the SVG generator
 		svgGenerator.setSVGCanvasSize(dim);
 		ImageWriterRegistry.getInstance().register(new ImageIOPNGImageWriter());
-		SwingSVGPrettyPrint.print(p, svgGenerator);
+		drawer.draw(toDraw, svgGenerator, dim);
 		
         // Write svg file
         OutputStream outputStream;
@@ -76,19 +91,21 @@ public class ImageExporterExperimental {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public static void writeSVG(String path, JComponent p, int width, int height) {
+		writeSVG(path, new DrawCommand<JComponent, SVGGraphics2D>() {
+			public void draw(JComponent toDraw, SVGGraphics2D canvas, Dimension dim) {
+				SwingSVGPrettyPrint.print(toDraw, canvas);
+			}
+		}, p, new Dimension(width, height));
+	}
 
-	protected static void writePNG(String path, JComponent p, int width,
-			int height) {
-		GraphicsConfiguration config = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-		BufferedImage bufferedImage = config.createCompatibleImage(width, height, Transparency.OPAQUE);
-
-		Graphics2D toWrite = bufferedImage.createGraphics();
-		toWrite.setBackground(Color.WHITE);
-		toWrite.clearRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-		toWrite.setColor(Color.BLACK);
-		p.paint(toWrite);
-		
-		writePNG(path, bufferedImage);
+	protected static void writePNG(String path, JComponent p, int width, int height) {
+		writePNG(path,  new DrawCommand<JComponent, Graphics2D>() {
+			public void draw(JComponent toDraw, Graphics2D canvas, Dimension dim) {
+				toDraw.paint(canvas);
+			}
+		}, p, new Dimension(width, height));
 	}
 
 
@@ -109,43 +126,11 @@ public class ImageExporterExperimental {
 	}
 	
 	protected static void writeSVG(String path, JGraph graph, int width, int height) {
-        // Get a DOMImplementation and create an XML document
-        DOMImplementation domImpl =
-            GenericDOMImplementation.getDOMImplementation();
-        Document document = domImpl.createDocument(null, "svg", null);
-
-        // Create an instance of the SVG Generator
-        SVGGraphics2D svgGenerator = new SVGGraphics2D(document);
-
-        Dimension dim = new Dimension(width, height);
-		// draw the chart in the SVG generator
-		svgGenerator.setSVGCanvasSize(dim);
-        graph.paint(svgGenerator);
-
-        // Write svg file
-        OutputStream outputStream;
-		try {
-			outputStream = new FileOutputStream(path);
-	        Writer out = new OutputStreamWriter(outputStream, "UTF-8");
-	        svgGenerator.stream(out, true /* use css */);						
-	        outputStream.flush();
-	        outputStream.close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	protected static void writePNG(String path, JGraph graph, int width, int height) {
-		GraphicsConfiguration config = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-		BufferedImage bufferedImage = config.createCompatibleImage(width, height, Transparency.OPAQUE);
-
-		Graphics2D toWrite = bufferedImage.createGraphics();
-		toWrite.setBackground(Color.WHITE);
-		toWrite.clearRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-		toWrite.setColor(Color.BLACK);
-		graph.paint(toWrite);
-		
-		writePNG(path, bufferedImage);
+		writeSVG(path, new DrawCommand<JGraph, SVGGraphics2D>() {
+			public void draw(JGraph toDraw, SVGGraphics2D canvas, Dimension dim) {
+		        toDraw.paint(canvas);
+			}
+		}, graph, new Dimension(width, height));
 	}
 	
 	public static void writeImage(Component frame, final JFreeChart p, final int width, final int height) {
@@ -165,47 +150,26 @@ public class ImageExporterExperimental {
 	}
 
 	protected static void writeSVG(String path, JFreeChart chart, int width, int height) {
-        // Get a DOMImplementation and create an XML document
-        DOMImplementation domImpl =
-            GenericDOMImplementation.getDOMImplementation();
-        Document document = domImpl.createDocument(null, "svg", null);
-
-        // Create an instance of the SVG Generator
-        SVGGraphics2D svgGenerator = new SVGGraphics2D(document);
-
-        Dimension dim = new Dimension(width, height);
-		// draw the chart in the SVG generator
-		svgGenerator.setSVGCanvasSize(dim);
-        chart.draw(svgGenerator, new Rectangle(dim));
-
-        // Write svg file
-        OutputStream outputStream;
-		try {
-			outputStream = new FileOutputStream(path);
-	        Writer out = new OutputStreamWriter(outputStream, "UTF-8");
-	        svgGenerator.stream(out, true /* use css */);						
-	        outputStream.flush();
-	        outputStream.close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		writeSVG(path, new DrawCommand<JFreeChart, SVGGraphics2D>() {
+			public void draw(JFreeChart toDraw, SVGGraphics2D canvas, Dimension dim) {
+				toDraw.draw(canvas, new Rectangle(dim));
+			}
+		}, chart, new Dimension(width, height));
 	}
 
-	protected static void writePNG(String path, JFreeChart chart, int width,
-			int height) {
-		GraphicsConfiguration config = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-		BufferedImage bufferedImage = config.createCompatibleImage(width, height, Transparency.OPAQUE);
-
-		Graphics2D toWrite = bufferedImage.createGraphics();
-		toWrite.setBackground(Color.WHITE);
-		toWrite.clearRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-		toWrite.setColor(Color.BLACK);
-		chart.draw(toWrite, new Rectangle(width, height));
-		
-		writePNG(path, bufferedImage);
+	protected static void writePNG(String path, JFreeChart chart, int width, int height) {
+		writePNG(path,  new DrawCommand<JFreeChart, Graphics2D>() {
+			public void draw(JFreeChart toDraw, Graphics2D canvas, Dimension dim) {
+				toDraw.draw(canvas, new Rectangle(dim.width, dim.height));
+			}
+		}, chart, new Dimension(width, height));
 	}
 	
 	private static void writePNG(String filename, BufferedImage b) {
-		try{ImageIO.write(b,"png",new File(filename));}catch (Exception e) {e.printStackTrace();}
+		try {
+			ImageIO.write(b, "png", new File(filename));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
