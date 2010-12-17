@@ -33,17 +33,13 @@ import org.drugis.mtc.MCMCResultsListener;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class MCMCResultsMemoryUsageModel extends AbstractValueModel implements ValueHolder<String> {
+public class MCMCResultsMemoryUsageModel extends AbstractValueModel implements ValueHolder<String>, MCMCResultsListener {
 
 	private MCMCResults d_results;
 
 	public MCMCResultsMemoryUsageModel(MCMCResults results) {
 		d_results = results;
-		d_results.addResultsListener(new MCMCResultsListener() {
-			public void resultsEvent(MCMCResultsEvent event) {
-				fireValueChange(null, getValue());
-			}
-		});
+		d_results.addResultsListener(this);
 	}
 
 	public String getValue() {
@@ -70,9 +66,12 @@ public class MCMCResultsMemoryUsageModel extends AbstractValueModel implements V
 		throw new IllegalAccessError("MCMCResultsMemoryUsageModel is read-only");
 	}
 
-	public void clear() {
-		d_results.clear();
+	public void resultsEvent(MCMCResultsEvent event) {
 		fireValueChange(null, getValue());
 	}
+//	public void clear() {
+//		d_results.clear();
+//		fireValueChange(null, getValue());
+//	}
 
 }

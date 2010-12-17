@@ -39,6 +39,10 @@ public class SummaryCellRenderer implements TableCellRenderer {
 
 	public Component getTableCellRendererComponent(JTable table, Object cellContents,
 			boolean isSelected, boolean hasFocus, int row, int column) {
+		return (new DefaultTableCellRenderer()).getTableCellRendererComponent(table, getCellText(cellContents), isSelected, hasFocus, row, column);
+	}
+
+	private String getCellText(Object cellContents) {
 		String str = "N/A";
 		if (cellContents instanceof NormalSummary) {
 			str = getNormalSummaryString(cellContents);
@@ -47,7 +51,7 @@ public class SummaryCellRenderer implements TableCellRenderer {
 		} else if (cellContents instanceof NodeSplitPValueSummary) {
 			str = getNodeSplitPvalueString(cellContents);
 		}
-		return (new DefaultTableCellRenderer()).getTableCellRendererComponent(table, str, isSelected, hasFocus, row, column);
+		return str;
 	}
 
 	private String getNodeSplitPvalueString(Object cellContents) {
@@ -79,7 +83,7 @@ public class SummaryCellRenderer implements TableCellRenderer {
 			String mu = format(re.getMean());
 			String sigma = format(re.getStandardDeviation());
 			
-			str = mu + " +/- " + sigma;
+			str = mu + " \u00B1 " + sigma;
 		}
 		return str;
 	}

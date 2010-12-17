@@ -29,7 +29,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.gui.AddDrugDialog;
-import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.builder.DrugView;
 import org.drugis.addis.presentation.DrugPresentation;
 import org.drugis.common.gui.ViewBuilder;
@@ -41,9 +41,9 @@ public class DrugsKnowledge extends CategoryKnowledgeBase {
 		super("drug", FileNames.ICON_DRUG, Drug.class);
 	}
 	
-	public JDialog getAddDialog(Main main, Domain domain,
+	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain,
 			ValueModel selectionModel) {
-		return new AddDrugDialog(main, domain, selectionModel);
+		return new AddDrugDialog(mainWindow, domain, selectionModel);
 	}
 	
 	@Override
@@ -51,9 +51,7 @@ public class DrugsKnowledge extends CategoryKnowledgeBase {
 		return new String[] { "name", "atcCode" };
 	}
 
-	@Override
-	public ViewBuilder getEntityViewBuilder(Main main, Domain domain,
-			Entity entity) {
+	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain, Entity entity) {
 		return new DrugView((DrugPresentation) main.getPresentationModelFactory().getModel(((Drug) entity)), main);
 	}
 }

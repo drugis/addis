@@ -31,9 +31,9 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import org.drugis.addis.forestplot.ForestPlot;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;
 import org.drugis.addis.presentation.ForestPlotPresentation;
-import org.drugis.addis.treeplot.ForestPlot;
 import org.drugis.common.gui.ImageExporter;
 
 @SuppressWarnings("serial")

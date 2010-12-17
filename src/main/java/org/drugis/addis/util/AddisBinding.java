@@ -56,6 +56,7 @@ import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -80,7 +81,7 @@ public class AddisBinding extends XMLBinding {
 		XMLObjectWriter writer = new XMLObjectWriter().setOutput(os).setBinding(new AddisBinding());
 		writer.setReferenceResolver(new XMLReferenceResolver());		
 		writer.setIndentation("\t");
-//		The top level cannot be aliased, thats why its being renamed here (in JSMAA)
+//		The top level cannot be aliased, that's why its being renamed here (in JSMAA)
 		if (model instanceof DomainData) {
 			writer.write((DomainData) model, "ADDIS-Domain", DomainData.class);
 		} else {
@@ -106,6 +107,7 @@ public class AddisBinding extends XMLBinding {
 
 		setAlias(FixedDose.class, "fixedDose");
 		setAlias(FlexibleDose.class, "flexibleDose");
+		setAlias(UnknownDose.class, "unknownDose");
 		setAlias(SIUnit.class, "SIUnit");
 		setAlias(Arm.class, "arm");
 		setAlias(Indication.class, "indication");

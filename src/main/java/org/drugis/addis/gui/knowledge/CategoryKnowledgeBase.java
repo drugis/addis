@@ -26,10 +26,10 @@ import java.util.Arrays;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledge;
-import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.builder.TitledPanelBuilder;
 import org.drugis.addis.gui.components.EntitiesTablePanel;
-import org.drugis.addis.gui.components.PanelViewBuilder;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.gui.ViewBuilder;
@@ -85,12 +85,11 @@ public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 	}
 	
 	private ViewBuilder buildEntityTable(ListHolder<? extends Entity> entities,
-			String[] formatter, String title, PresentationModelFactory pmf, Main main) {
-		return new PanelViewBuilder(new EntitiesTablePanel(Arrays.asList(formatter), 
-														   entities, main, pmf, getPlural()));
+			String[] formatter, String title, PresentationModelFactory pmf, AddisWindow main) {
+		return new TitledPanelBuilder(new EntitiesTablePanel(Arrays.asList(formatter), entities, main, pmf), getPlural());
 	}
 	
-	public ViewBuilder getCategoryViewBuilder(Main main, Domain domain) {
+	public ViewBuilder getCategoryViewBuilder(AddisWindow main, Domain domain) {
 		return buildEntityTable(domain.getCategoryContentsModel(domain.getCategory(getEntityClass())),
 				getShownProperties(), getPlural(), main.getPresentationModelFactory(), main);
 	}
@@ -103,6 +102,4 @@ public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 		return new String[] {};
 	}
 	
-	abstract public ViewBuilder getEntityViewBuilder(Main main, Domain domain,
-			final Entity entity);
 }

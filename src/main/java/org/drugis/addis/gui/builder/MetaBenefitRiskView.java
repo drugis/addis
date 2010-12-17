@@ -24,8 +24,6 @@ package org.drugis.addis.gui.builder;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 
 import javax.swing.JButton;
@@ -34,9 +32,9 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.EntitiesTablePanel;
 import org.drugis.addis.gui.components.TablePanel;
@@ -52,8 +50,8 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRiskPresentation> {
 	
-	public MetaBenefitRiskView(MetaBenefitRiskPresentation pm, Main main) {
-		super(pm, main);
+	public MetaBenefitRiskView(MetaBenefitRiskPresentation pm, AddisWindow mainWindow) {
+		super(pm, mainWindow);
 	}
 
 	@Override
@@ -77,18 +75,6 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		final JComponent progressBars = buildProgressBars();
 		builder.add(progressBars, cc.xy(1, 9));
 		
-		if (d_pm.getMeasurementsReadyModel().getValue()) {
-			progressBars.setVisible(false);
-		}
-		
-		d_pm.getMeasurementsReadyModel().addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				if (progressBars != null) {
-					progressBars.setVisible(false);
-				}
-			}
-		});
-		
 		return builder.getPanel();
 	}
 	
@@ -104,7 +90,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		for (Task t : d_pm.getMeasurementTasks()) {
 			LayoutUtil.addRow(layout);
 			row += 2;
-			JProgressBar bar = new TaskProgressBar(t);
+			JProgressBar bar = new TaskProgressBar(d_pm.getProgressModel(t));
 			builder.add(bar,cc.xy(1, row));
 		}
 		
@@ -115,14 +101,14 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		JButton button = new JButton("Save Image");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ImageExporter.writeImage(d_main, chart, (int) chart.getSize().getWidth(), (int) chart.getSize().getHeight());
+				ImageExporter.writeImage(d_mainWindow, chart, (int) chart.getSize().getWidth(), (int) chart.getSize().getHeight());
 			}
 		});
 		return button;
 	}
 	protected JComponent buildAnalysesPart() {	
 		String[] formatter = {"name","type","indication","outcomeMeasure","includedDrugs","includedStudies","sampleSize"};
-		return new EntitiesTablePanel(Arrays.asList(formatter), d_pm.getAnalysesModel(), d_main, d_pm.getFactory(), null);
+		return new EntitiesTablePanel(Arrays.asList(formatter), d_pm.getAnalysesModel(), d_mainWindow, d_pm.getFactory());
 	}
 
 	@Override
@@ -133,13 +119,13 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setOpaque(true);
 		
-		builder.add(AuxComponentFactory.createNoteField("Relative measurements: odds ratio or mean difference, with "
-				+ d_pm.getBaseline() +" as the common comparator."),cc.xy(1, 1));
+		builder.add(AuxComponentFactory.createHtmlField("<p>Relative measurements: odds ratio or mean difference, with "
+				+ d_pm.getBaseline() +" as the common comparator.</p>"),cc.xy(1, 1));
 		builder.add(new TablePanel(new EnhancedTable(d_pm.getRelativeMeasurementTableModel())), cc.xy(1, 3));
 		
-		builder.add(AuxComponentFactory.createNoteField("Absolute measurements: odds or mean calculated from the assumed odds or mean for " + 
+		builder.add(AuxComponentFactory.createHtmlField("<p>Absolute measurements: odds or mean calculated from the assumed odds or mean for " + 
 				d_pm.getBaseline() + ". The method used to derive the assumed odds or mean are heuristic, "
-				+ "and the absolute values should be interpreted with care."), cc.xy(1, 5));
+				+ "and the absolute values should be interpreted with care.</p>"), cc.xy(1, 5));
 		builder.add(new TablePanel(new EnhancedTable(d_pm.getAbsoluteMeasurementTableModel())), cc.xy(1, 9));
 	
 		return builder.getPanel();

@@ -30,6 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.drugis.common.DateUtil;
 import org.drugis.common.EqualsUtil;
@@ -93,8 +96,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public final static String PROPERTY_ADVERSE_EVENTS = "adverseEvents";
 	public final static String PROPERTY_POPULATION_CHARACTERISTICS = "populationCharacteristics";
 	public final static String PROPERTY_ARMS = "arms";
-	public final static String PROPERTY_CHARACTERISTIC = "Characteristics";
-	public final static String PROPERTY_NOTE = "Note";
+	public final static String PROPERTY_CHARACTERISTICS = "characteristics";
+	public final static String PROPERTY_NOTES = "notes";
 	public final static String PROPERTY_INDICATION = "indication";
 	
 	private List<Arm> d_arms = new ArrayList<Arm>();
@@ -214,7 +217,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public void setCharacteristic(BasicStudyCharacteristic c, Object val) {
 		d_chars.put(c, val);
 		/* Beware: Every characteristicHolder attached to this study will receive this event, even though only one characteristic has changed*/
-		firePropertyChange(PROPERTY_CHARACTERISTIC, c, c);
+		firePropertyChange(PROPERTY_CHARACTERISTICS, c, c);
 	}
 
 	public CharacteristicsMap setCharacteristics() {
@@ -492,7 +495,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 
 	public void putNote(Object key, Note note){
 		d_notes.put(key, note);
-		firePropertyChange(PROPERTY_NOTE, key, key);
+		firePropertyChange(PROPERTY_NOTES, key, key);
 	}
 
 	public Note getNote(Object key){
@@ -528,4 +531,35 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public String[] getXmlExclusions() {
 		return new String[] {"sampleSize", "outcomeMeasures", "drugs"};
 	}
+	
+	protected static final XMLFormat<Study> STUDY_XML = new XMLFormat<Study>(Study.class) {
+		@SuppressWarnings("unchecked")
+		@Override
+		public void read(InputElement ie, Study s) throws XMLStreamException {
+			s.setStudyId(ie.getAttribute(PROPERTY_ID, null));
+			s.setAdverseEvents((List<AdverseEvent>) ie.get(PROPERTY_ADVERSE_EVENTS, ArrayList.class));
+			s.setArms((List<Arm>) ie.get(PROPERTY_ARMS, ArrayList.class));
+			s.setCharacteristics((CharacteristicsMap) ie.get(PROPERTY_CHARACTERISTICS));
+			s.setEndpoints((List<Endpoint>) ie.get(PROPERTY_ENDPOINTS, ArrayList.class));
+			s.setIndication((Indication) ie.get(PROPERTY_INDICATION, Indication.class));
+			s.setMeasurements((Map<MeasurementKey, Measurement>) ie.get("measurements", HashMap.class)); 
+			s.setNotes((Map<Object, Note>) ie.get(PROPERTY_NOTES, HashMap.class));
+			s.setPopulationCharacteristics((List<PopulationCharacteristic>) ie.get(PROPERTY_POPULATION_CHARACTERISTICS, ArrayList.class));
+		}
+
+		@Override
+		public void write(Study s, OutputElement oe) throws XMLStreamException {
+			oe.setAttribute(PROPERTY_ID, s.getStudyId());
+			oe.add(new ArrayList<AdverseEvent>(s.getAdverseEvents()), PROPERTY_ADVERSE_EVENTS, ArrayList.class);
+			oe.add(new ArrayList<Arm>(s.getArms()), PROPERTY_ARMS, ArrayList.class);
+			oe.add(s.getCharacteristics(), PROPERTY_CHARACTERISTICS);
+			oe.add(new ArrayList<Endpoint>(s.getEndpoints()), PROPERTY_ENDPOINTS, ArrayList.class);
+			oe.add(s.getIndication(), PROPERTY_INDICATION, Indication.class);
+			oe.add(new HashMap<MeasurementKey, Measurement>(s.getMeasurements()), "measurements", HashMap.class);
+			oe.add(new HashMap<Object, Note>(s.getNotes()), PROPERTY_NOTES, HashMap.class);
+			oe.add(new ArrayList<PopulationCharacteristic> (s.getPopulationCharacteristics()), PROPERTY_POPULATION_CHARACTERISTICS, ArrayList.class);
+			
+		}
+	};
+
 }

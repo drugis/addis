@@ -20,33 +20,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.treeplot;
+package org.drugis.addis.forestplot;
 
-import org.drugis.common.Interval;
+import java.awt.Graphics2D;
 
-public class LogScale implements Scale {
+public class PlotUtil {
 
-	private double d_max;
-	private double d_min;
-
-	public LogScale(Interval<Double> interval) {
-		d_max = interval.getUpperBound();
-		d_min = interval.getLowerBound();
-	}
-
-	public double getMax() {
-		return d_max;
-	}
-
-	public double getMin() {
-		return d_min;
-	}
-
-	public double getNormalized(double x) {
-		return Math.log(x / d_min) / Math.log(d_max / d_min); 
+	public static void drawWeightBox(Graphics2D g2d, int ycentre, int xcentre, int width) {
+		assert(width % 2 == 1);
+		g2d.fillRect(xcentre - width/2,ycentre - width/2, width, width);		
 	}
 	
-	public double getNormalizedLog10(double x) {
-		return Math.log10(x / d_min) / Math.log10(d_max / d_min); 
+	public static void drawInterval(Graphics2D g2d, int ycentre, int lower, int upper) {
+		g2d.drawLine(lower, ycentre, upper, ycentre);
 	}
+	
 }

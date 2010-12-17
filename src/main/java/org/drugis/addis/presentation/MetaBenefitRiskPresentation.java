@@ -25,14 +25,17 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
+import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.MCMCModel;
@@ -41,24 +44,19 @@ import org.drugis.mtc.MCMCModel;
 public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<Drug, MetaBenefitRiskAnalysis> {
 	
 	private AllSummariesDefinedModel d_allSummariesDefinedModel;
-	private List<MCMCModel> d_baselineModels;
+	private List<MCMCModel> d_baselineModels = new ArrayList<MCMCModel>();
+	private Map<Task, TaskProgressModel> d_progressModels = new HashMap<Task, TaskProgressModel>();
 
 	public MetaBenefitRiskPresentation(MetaBenefitRiskAnalysis bean, PresentationModelFactory pmf) {
 		super(bean, pmf);
 		
 		d_pmf = pmf;
-		d_baselineModels = new ArrayList<MCMCModel>();
 		initAllBaselineModels();
-		d_allSummariesDefinedModel = new AllSummariesDefinedModel(bean.getEffectSummaries());
-		
-		if (bean.getAnalysisType().equals(AnalysisType.SMAA)) {
-			startSMAA();
-		} else {
-			startLyndOBrien();
-		}
+		initAllProgressModels();
 	}
 
-	private void startSMAA() {
+	@Override
+	protected void startSMAA() {
 		if ((Boolean)getMeasurementsReadyModel().getValue()) {
 			getSMAAPresentation().startSMAA();
 		}
@@ -70,7 +68,8 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		});
 	}
 
-	private void startLyndOBrien() {
+	@Override
+	protected void startLyndOBrien() {
 		if (getMeasurementsReadyModel().getValue()) {
 			getLyndOBrienPresentation().startLyndOBrien();
 		}
@@ -90,6 +89,9 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	
 	@Override
 	public ValueHolder<Boolean> getMeasurementsReadyModel() {
+		if (d_allSummariesDefinedModel == null) {
+			d_allSummariesDefinedModel = new AllSummariesDefinedModel(getBean().getEffectSummaries());
+		}
 		return d_allSummariesDefinedModel;
 	}
 	
@@ -101,17 +103,13 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	
 	@Override
 	public synchronized void startAllSimulations() {
-		getBean().runAllConsistencyModels();
-		List<Task> tasks = getBaselineTasks();
-		ThreadHandler.getInstance().scheduleTasks(tasks);
+		ThreadHandler.getInstance().scheduleTasks(getMeasurementTasks());
 	}
 
 	private List<Task> getBaselineTasks() {
 		List<Task> tasks = new ArrayList<Task>();
 		for (MCMCModel model : d_baselineModels) {
-			if (!model.isReady()) {
-				tasks.add((Task) model.getActivityTask());
-			}
+			tasks.add(model.getActivityTask());
 		}
 		return tasks;
 	}
@@ -121,6 +119,21 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		for (OutcomeMeasure om : getBean().getOutcomeMeasures()) {
 			model = getBean().getBaselineModel(om);
 			d_baselineModels.add(model);
+		}
+	}
+	
+
+	private void initAllProgressModels() {
+		for (MetaAnalysis ma : getBean().getMetaAnalyses()) {
+			if (ma instanceof NetworkMetaAnalysis) {
+				NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
+				NetworkMetaAnalysisPresentation p = (NetworkMetaAnalysisPresentation)d_pmf.getModel(nma);
+				d_progressModels.put(nma.getConsistencyModel().getActivityTask(), 
+						p.getProgressModel(nma.getConsistencyModel()));
+			}
+		}
+		for (Task t : getBaselineTasks()) {
+			d_progressModels.put(t, new TaskProgressModel(t));
 		}
 	}
 	
@@ -135,5 +148,8 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	public Drug getBaseline() {
 		return getBean().getBaseline();
 	}
-}
 
+	public TaskProgressModel getProgressModel(Task t) {
+		return d_progressModels.get(t);
+	}
+}

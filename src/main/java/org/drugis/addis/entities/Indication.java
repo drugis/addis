@@ -25,6 +25,9 @@ package org.drugis.addis.entities;
 import java.util.Collections;
 import java.util.Set;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 public class Indication extends AbstractEntity implements Comparable<Indication> {
 	
 	private String d_name;
@@ -95,4 +98,20 @@ public class Indication extends AbstractEntity implements Comparable<Indication>
 	public String toString() {
 		return d_code.toString() + " " + d_name;
 	}
+	
+	protected static final XMLFormat<Indication> IND_XML = new XMLFormat<Indication>(Indication.class) {
+
+		@Override
+		public void read(InputElement ie, Indication i) throws XMLStreamException {
+			i.setName(ie.getAttribute(PROPERTY_NAME, null));
+			i.setCode(ie.getAttribute(PROPERTY_CODE, 0L));
+		}
+
+		@Override
+		public void write(Indication i, OutputElement oe) throws XMLStreamException {
+			oe.setAttribute(PROPERTY_NAME, i.getName());
+			oe.setAttribute(PROPERTY_CODE, i.getCode());
+		}
+	};
+	
 }

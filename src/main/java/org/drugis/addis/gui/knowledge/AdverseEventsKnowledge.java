@@ -30,7 +30,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.AddVariableDialog;
-import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.builder.VariableView;
 import org.drugis.addis.presentation.VariablePresentation;
 import org.drugis.common.gui.ViewBuilder;
@@ -42,10 +42,10 @@ public class AdverseEventsKnowledge extends CategoryKnowledgeBase {
 		super("adverse event", FileNames.ICON_ADVERSE_EVENT, AdverseEvent.class);
 	}
 	
-	public JDialog getAddDialog(Main main, Domain domain,
+	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain,
 			ValueModel selectionModel) {
 		Variable variable = new AdverseEvent("", Variable.Type.RATE);
-		return new AddVariableDialog(main, domain, variable, selectionModel);
+		return new AddVariableDialog(mainWindow, domain, variable, selectionModel);
 	}
 	
 	@Override
@@ -53,8 +53,7 @@ public class AdverseEventsKnowledge extends CategoryKnowledgeBase {
 		return new String[] { "name", "description", "unitOfMeasurement", "type", "direction" };
 	}
 
-	@Override
-	public ViewBuilder getEntityViewBuilder(Main main, Domain domain,
+	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain,
 			Entity entity) {
 		return new VariableView(
 				(VariablePresentation) main.getPresentationModelFactory().getModel(((Variable) entity)), main);

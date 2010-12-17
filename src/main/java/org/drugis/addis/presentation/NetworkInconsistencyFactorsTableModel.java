@@ -35,7 +35,7 @@ import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.NormalSummary;
 
 @SuppressWarnings("serial")
-public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel implements TableModelWithDescription{
+public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 	private static final String NA = "N/A";
 	private NetworkMetaAnalysisPresentation d_pm;
 	private PresentationModelFactory d_pmf;
@@ -115,13 +115,5 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel i
 
 	private InconsistencyModel getModel() {
 		return (InconsistencyModel) d_pm.getInconsistencyModel();
-	}
-
-	public String getDescription() {
-		return "Inconsistency Factors";
-	}
-
-	public String getTitle() {
-		return getDescription();
 	}
 }

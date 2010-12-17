@@ -332,9 +332,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		for (MetaAnalysis ma : getMetaAnalyses() ){
 			if (ma instanceof NetworkMetaAnalysis) {
 				ConsistencyModel model = ((NetworkMetaAnalysis) ma).getConsistencyModel();
-				if (!model.isReady()) {
-					tasks.add((Task) model.getActivityTask());
-				}			
+				tasks.add((Task) model.getActivityTask());
 			}
 		}
 		return tasks;

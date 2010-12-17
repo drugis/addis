@@ -46,7 +46,7 @@ import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.addis.treeplot.ForestPlot;
+import org.drugis.addis.forestplot.ForestPlot;
 import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Test;

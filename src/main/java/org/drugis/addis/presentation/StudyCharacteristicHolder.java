@@ -56,7 +56,7 @@ public class StudyCharacteristicHolder extends AbstractValueModel {
 	private class CharChangedListener implements PropertyChangeListener {
 
 		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals(Study.PROPERTY_CHARACTERISTIC)) {
+			if (evt.getPropertyName().equals(Study.PROPERTY_CHARACTERISTICS)) {
 				if (evt.getNewValue().equals(d_char))
 					firePropertyChange("value", null, d_study.getCharacteristic(d_char));
 			}

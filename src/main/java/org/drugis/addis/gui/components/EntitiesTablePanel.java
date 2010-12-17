@@ -27,7 +27,7 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 
 import org.drugis.addis.entities.Entity;
-import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.presentation.EntityTableModel;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -36,8 +36,8 @@ import org.drugis.addis.presentation.PresentationModelFactory;
 public class EntitiesTablePanel extends TablePanel {
 	private final ListHolder<? extends Entity> d_entities;
 
-	public EntitiesTablePanel(List<String> formatter, ListHolder<? extends Entity> entities, final Main parent, PresentationModelFactory pmf, String title) {
-		super(new EnhancedTable(new EntityTableModel(entities, formatter, pmf, title)));
+	public EntitiesTablePanel(List<String> formatter, ListHolder<? extends Entity> entities, final AddisWindow parent, PresentationModelFactory pmf) {
+		super(new EnhancedTable(new EntityTableModel(entities, formatter, pmf)));
 		d_entities = entities;
 				
 		if (parent != null)

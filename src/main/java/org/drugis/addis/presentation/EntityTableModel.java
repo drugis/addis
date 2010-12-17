@@ -35,17 +35,15 @@ import com.jgoodies.binding.value.ValueModel;
 
 
 @SuppressWarnings("serial")
-public class EntityTableModel extends AbstractTableModel implements TableModelWithDescription {
+public class EntityTableModel extends AbstractTableModel {
 	ListHolder<? extends Entity> d_entities;
 	List<String> d_props;
 	private final PresentationModelFactory d_pmf;
-	private final String d_title;
 
-	public EntityTableModel(ListHolder<? extends Entity> entities, List<String> properties, PresentationModelFactory pmf, String title) {
+	public EntityTableModel(ListHolder<? extends Entity> entities, List<String> properties, PresentationModelFactory pmf) {
 		d_entities = entities;
 		d_props = properties;
 		d_pmf = pmf;
-		d_title = title;
 		
 		d_entities.addValueChangeListener(new PropertyChangeListener() {	
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -85,9 +83,5 @@ public class EntityTableModel extends AbstractTableModel implements TableModelWi
 		}
 			
 		return name.substring(0, 1).toUpperCase() + name.substring(1);
-	}
-
-	public String getDescription() {
-		return d_title;
 	}
 }

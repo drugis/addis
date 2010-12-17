@@ -20,9 +20,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation;
+package org.drugis.addis.gui.builder;
 
-public interface TableModelWithDescription {
+import javax.swing.JComponent;
 
-	public String getDescription();
+import org.drugis.common.gui.ViewBuilder;
+
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
+public class TitledPanelBuilder implements ViewBuilder {
+	
+	private JComponent d_jc;
+	private final String d_title;
+
+	public TitledPanelBuilder(JComponent jc, String title) {
+		d_jc = jc;
+		d_title = title;
+	}
+
+	public JComponent buildPanel() {
+
+		FormLayout layout = new FormLayout(
+				"pref:grow:fill",
+				"p, 3dlu, p");
+		
+		PanelBuilder builder = new PanelBuilder(layout);
+		builder.setDefaultDialogBorder();
+		
+		CellConstraints cc =  new CellConstraints();
+		
+		builder.addSeparator(d_title, cc.xy(1, 1));
+		builder.add(d_jc, cc.xy(1, 3));
+		
+		return builder.getPanel();
+	}
+
 }
+
+

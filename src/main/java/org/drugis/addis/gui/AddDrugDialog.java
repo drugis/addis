@@ -36,12 +36,12 @@ import com.jgoodies.binding.value.ValueModel;
 public class AddDrugDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private Drug d_drug;
-	private Main d_main;
+	private AddisWindow d_mainWindow;
 	private ValueModel d_selectionModel;
 	
-	public AddDrugDialog(Main frame, Domain domain, ValueModel selectionModel) {
-		super(frame, "Add Drug");
-		this.d_main = frame;
+	public AddDrugDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel) {
+		super(mainWindow, "Add Drug");
+		d_mainWindow = mainWindow;
 		this.setModal(true);
 		d_domain = domain;
 		d_drug = new Drug("", "");
@@ -61,7 +61,7 @@ public class AddDrugDialog extends OkCancelDialog {
 	@Override
 	protected void commit() {
 		if (d_domain.getDrugs().contains(d_drug)) {
-			JOptionPane.showMessageDialog(d_main,
+			JOptionPane.showMessageDialog(d_mainWindow,
 			    "An item with the name " + d_drug.getName() + " already exists in the domain.",
 			    "Couldn't add Drug", JOptionPane.ERROR_MESSAGE);
 			return;
@@ -69,7 +69,7 @@ public class AddDrugDialog extends OkCancelDialog {
 		
 		d_domain.addDrug(d_drug);
 		setVisible(false);
-		d_main.leftTreeFocus(d_drug);
+		d_mainWindow.leftTreeFocus(d_drug);
 		if (d_selectionModel != null)
 			d_selectionModel.setValue(d_drug);
 	}

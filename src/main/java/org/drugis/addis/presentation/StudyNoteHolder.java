@@ -55,7 +55,7 @@ public class StudyNoteHolder extends AbstractValueModel {
 	private class NoteChangedListener implements PropertyChangeListener {
 
 		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals(Study.PROPERTY_NOTE)) {
+			if (evt.getPropertyName().equals(Study.PROPERTY_NOTES)) {
 				if (evt.getNewValue().equals(d_key))
 					firePropertyChange("value", null, d_study.getNote(d_key).getText());
 			}

@@ -46,10 +46,15 @@ extends PresentationModel<AnalysisType> {
 		
 		if (bean.getAnalysisType().equals(org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType.SMAA)) {
 			d_smaaPresentation = new SMAAPresentation<Alternative, AnalysisType>(getBean());
+			startSMAA();
 		} else {
 			d_lyndOBrienPresentation = new LyndOBrienPresentation<Alternative, AnalysisType>(getBean());
+			startLyndOBrien();
 		}
 	}
+	
+	protected abstract void startSMAA();
+	protected abstract void startLyndOBrien();
 	
 	public PresentationModelFactory getFactory() {
 		return d_pmf;

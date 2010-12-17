@@ -25,11 +25,11 @@ package org.drugis.addis.plot;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.drugis.addis.treeplot.BinnedScale;
-import org.drugis.addis.treeplot.IdentityScale;
-import org.drugis.addis.treeplot.LinearScale;
-import org.drugis.addis.treeplot.LogScale;
-import org.drugis.addis.treeplot.BinnedScale.Bin;
+import org.drugis.addis.forestplot.BinnedScale;
+import org.drugis.addis.forestplot.IdentityScale;
+import org.drugis.addis.forestplot.LinearScale;
+import org.drugis.addis.forestplot.LogScale;
+import org.drugis.addis.forestplot.BinnedScale.Bin;
 import org.drugis.common.Interval;
 import org.junit.Test;
 

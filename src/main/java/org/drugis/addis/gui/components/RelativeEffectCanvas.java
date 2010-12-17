@@ -28,8 +28,8 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
+import org.drugis.addis.forestplot.ForestPlot;
 import org.drugis.addis.presentation.ForestPlotPresentation;
-import org.drugis.addis.treeplot.ForestPlot;
 
 @SuppressWarnings("serial")
 public class RelativeEffectCanvas extends JPanel {

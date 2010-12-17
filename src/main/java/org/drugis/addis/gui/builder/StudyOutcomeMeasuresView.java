@@ -34,9 +34,9 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.RelativeEffectTableDialog;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.presentation.MeanDifferenceTableModel;
@@ -63,7 +63,7 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 	private JFrame d_mainWindow;
 	private boolean d_isEndpoints;
 
-	public StudyOutcomeMeasuresView(StudyPresentation model, Main main, boolean endpoints) {
+	public StudyOutcomeMeasuresView(StudyPresentation model, AddisWindow main, boolean endpoints) {
 		this(model, main, main.getPresentationModelFactory(), endpoints);
 	}
 	

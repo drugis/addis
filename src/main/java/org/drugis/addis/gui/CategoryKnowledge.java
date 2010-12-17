@@ -66,7 +66,7 @@ public interface CategoryKnowledge {
 	/**
 	 * Builds the creation dialog for this category.
 	 */
-	public JDialog getAddDialog(Main main, Domain domain, ValueModel selectionModel);
+	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel);
 	
 	/**
 	 * Whether the category should get a toolbar button.
@@ -76,10 +76,10 @@ public interface CategoryKnowledge {
 	/**
 	 * What to show for the category
 	 */
-	public ViewBuilder getCategoryViewBuilder(Main main, Domain domain);
+	public ViewBuilder getCategoryViewBuilder(AddisWindow main, Domain domain);
 	
 	/**
 	 * What to show for a specific entity 
 	 */
-	public ViewBuilder getEntityViewBuilder(Main main, Domain domain, Entity entity);
+	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain, Entity entity);
 }

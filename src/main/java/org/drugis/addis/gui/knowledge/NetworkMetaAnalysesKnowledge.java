@@ -28,6 +28,7 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.NetworkMetaAnalysisView;
 import org.drugis.addis.gui.wizard.NetworkMetaAnalysisWizard;
@@ -54,11 +55,11 @@ public class NetworkMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 		return FileNames.ICON_NETWMETASTUDY_NEW;
 	}
 
-	public JDialog getAddDialog(Main main, Domain domain,
+	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain,
 			ValueModel selectionModel) {
-		JDialog dialog = new JDialog(main, "Create Network meta-analysis", true);
-		Wizard wizard = new NetworkMetaAnalysisWizard(main,
-				new NetworkMetaAnalysisWizardPM(domain, main.getPresentationModelFactory()));
+		JDialog dialog = new JDialog(mainWindow, "Create Network meta-analysis", true);
+		Wizard wizard = new NetworkMetaAnalysisWizard(mainWindow,
+				new NetworkMetaAnalysisWizardPM(domain, mainWindow.getPresentationModelFactory()));
 		dialog.getContentPane().add(wizard);
 		dialog.pack();
 		WizardFrameCloser.bind(wizard, dialog);
@@ -77,9 +78,7 @@ public class NetworkMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 				"includedDrugs", "studiesIncluded", "sampleSize" };
 	}
 
-	@Override
-	public ViewBuilder getEntityViewBuilder(Main main, Domain domain,
-			Entity entity) {
+	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain, Entity entity) {
 		return new NetworkMetaAnalysisView(
 				(NetworkMetaAnalysisPresentation) main.getPresentationModelFactory().getModel(((NetworkMetaAnalysis) entity)),
 				main);

@@ -28,16 +28,16 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.builder.StudiesNodeView;
 import org.drugis.addis.gui.builder.StudyView;
-import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
+import org.drugis.addis.gui.builder.TitledPanelBuilder;
 import org.drugis.addis.gui.components.StudiesTablePanel;
+import org.drugis.addis.gui.wizard.AddStudyWizard;
 import org.drugis.addis.presentation.DefaultStudyListPresentation;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.common.gui.ViewBuilder;
-import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardFrameCloser;
 
 import com.jgoodies.binding.value.ValueModel;
@@ -52,16 +52,16 @@ public class StudiesKnowledge extends CategoryKnowledgeBase {
 		return FileNames.ICON_STUDY_NEW;
 	}
 	
-	public JDialog getAddDialog(Main main, Domain domain,
-			ValueModel selectionModel) { // TODO: AddStudyWizard should implement Wizard to simplify code below.
-		JDialog dialog = new JDialog(main, "Add Study", true);
-		AddStudyWizard wizardBuilder = new AddStudyWizard(
+	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain,
+			ValueModel selectionModel) {
+		JDialog dialog = new JDialog(mainWindow, "Add Study", true);
+		AddStudyWizard wizard = new AddStudyWizard(
 				new AddStudyWizardPresentation(domain,
-						main.getPresentationModelFactory(), main), main, dialog);
-		Wizard wizard = wizardBuilder.buildPanel();
+						mainWindow.getPresentationModelFactory(), mainWindow), mainWindow, dialog);
 		dialog.getContentPane().add(wizard);
 		dialog.pack();
 		WizardFrameCloser.bind(wizard, dialog);
+		Main.bindPrintScreen(wizard);
 		return dialog;
 	}
 	
@@ -71,15 +71,14 @@ public class StudiesKnowledge extends CategoryKnowledgeBase {
 	}
 	
 	@Override
-	public ViewBuilder getCategoryViewBuilder(Main main, Domain domain) {
+	public ViewBuilder getCategoryViewBuilder(AddisWindow main, Domain domain) {
 		DefaultStudyListPresentation studyListPM = new DefaultStudyListPresentation(
 				domain.getStudiesHolder());
-		StudiesNodeView view = new StudiesNodeView(new StudiesTablePanel(studyListPM, main));
+		TitledPanelBuilder view = new TitledPanelBuilder(new StudiesTablePanel(studyListPM, main), "Studies");
 		return view;
 	}
 
-	@Override
-	public ViewBuilder getEntityViewBuilder(Main main, Domain domain,
+	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain,
 			Entity entity) {
 		return new StudyView((StudyPresentation) main.getPresentationModelFactory()
 				.getModel(((Study) entity)), main.getDomain(), main);

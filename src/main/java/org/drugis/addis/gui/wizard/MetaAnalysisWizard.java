@@ -32,13 +32,14 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
@@ -58,28 +59,28 @@ import com.jgoodies.forms.layout.FormLayout;
 @SuppressWarnings("serial")
 public class MetaAnalysisWizard extends Wizard {
 	
-	public MetaAnalysisWizard(Main parent, MetaAnalysisWizardPresentation pm) {
-		super(buildModel(pm, parent));
+	public MetaAnalysisWizard(AddisWindow mainWindow, MetaAnalysisWizardPresentation pm) {
+		super(buildModel(pm, mainWindow));
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 		setPreferredSize(new Dimension(950, 650));
 	}
 	
-	private static WizardModel buildModel(MetaAnalysisWizardPresentation pm, Main frame) {
+	private static WizardModel buildModel(MetaAnalysisWizardPresentation pm, AddisWindow mainWindow) {
 		StaticModel wizardModel = new StaticModel();
 		wizardModel.add(new SelectIndicationWizardStep(pm));
 		wizardModel.add(new SelectEndpointWizardStep(pm));
-		wizardModel.add(new SelectDrugsWizardStep(pm, frame));
-		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm, frame);
+		wizardModel.add(new SelectDrugsWizardStep(pm, mainWindow));
+		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm, mainWindow);
 		wizardModel.add(selectStudiesStep);
 		Bindings.bind(selectStudiesStep, "complete", pm.getMetaAnalysisCompleteModel());
 		wizardModel.add(new SelectArmsWizardStep(pm));
-		wizardModel.add(new OverviewWizardStep(pm, frame));
+		wizardModel.add(new OverviewWizardStep(pm, mainWindow));
 		return wizardModel;
 	}
 
 	public static class OverviewWizardStep extends AbstractOverviewWizardStep<StudyGraphModel> {
-		public OverviewWizardStep(MetaAnalysisWizardPresentation pm, Main frame) {
-			super(pm, frame);
+		public OverviewWizardStep(MetaAnalysisWizardPresentation pm, AddisWindow mainWindow) {
+			super(pm, mainWindow);
 		}
 		
 		@Override
@@ -90,7 +91,7 @@ public class MetaAnalysisWizard extends Wizard {
 			
 			RandomEffectsMetaAnalysisPresentation pm = ((MetaAnalysisWizardPresentation)d_pm).getMetaAnalysisModel();
 			final RandomEffectsMetaAnalysisView mav = new RandomEffectsMetaAnalysisView(
-					(RandomEffectsMetaAnalysisPresentation)pm, d_main);
+					(RandomEffectsMetaAnalysisPresentation)pm, d_mainWindow);
 			final JComponent panel = mav.getPlotsPanel(true);
 
 			if(d_pm.getOutcomeMeasureModel().getValue().getType() == Type.RATE){
@@ -116,10 +117,10 @@ public class MetaAnalysisWizard extends Wizard {
 
 	public static class SelectDrugsWizardStep extends PanelWizardStep {
 		MetaAnalysisWizardPresentation d_pm;
-		Main d_frame;
+		JFrame d_frame;
 		private StudyGraph d_studyGraph;
 
-		public SelectDrugsWizardStep(MetaAnalysisWizardPresentation pm, Main frame) {
+		public SelectDrugsWizardStep(MetaAnalysisWizardPresentation pm, JFrame frame) {
 			super("Select Drugs","Select the drugs to be used for meta analysis.");
 			
 			d_pm = pm;

@@ -31,8 +31,8 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.StudiesTablePanel;
@@ -52,9 +52,9 @@ import com.jgoodies.forms.layout.FormLayout;
 public class DrugView implements ViewBuilder{
 	private static final String SEARCH_DOMAIN = "medicines.org.uk";
 	private DrugPresentation d_model;
-	private Main d_parent;
+	private AddisWindow d_parent;
 
-	public DrugView(DrugPresentation model, Main parent) {
+	public DrugView(DrugPresentation model, AddisWindow parent) {
 		d_model = model;
 		d_parent = parent;
 	}

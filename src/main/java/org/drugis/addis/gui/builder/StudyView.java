@@ -32,9 +32,9 @@ import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -60,7 +60,7 @@ public class StudyView implements ViewBuilder {
 		d_armsView = new StudyArmsView(model, pmf);			
 	}
 	
-	public StudyView(StudyPresentation model, Domain domain, Main main) {
+	public StudyView(StudyPresentation model, Domain domain, AddisWindow main) {
 		this(model, domain, main, main.getPresentationModelFactory());
 	}
 	

@@ -33,7 +33,7 @@ import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.QuantileSummary;
 
 @SuppressWarnings("serial")
-public class NetworkVarianceTableModel extends AbstractTableModel implements TableModelWithDescription {
+public class NetworkVarianceTableModel extends AbstractTableModel {
 
 	private static final int RANDOM_EFFECTS = 0;
 	private NetworkMetaAnalysisPresentation d_pm;
@@ -50,12 +50,10 @@ public class NetworkVarianceTableModel extends AbstractTableModel implements Tab
 			}
 		};
 		
-		if (mtc instanceof InconsistencyModel) {
-			InconsistencyModel incons = (InconsistencyModel) mtc;
-			attachListener(incons.getInconsistencyVariance());
+		if (isInconsistency()) {
+			attachListener(((InconsistencyModel) mtc).getInconsistencyVariance());
 		}
-		Parameter randomEffectsVariance = mtc.getRandomEffectsVariance();
-		attachListener(randomEffectsVariance);
+		attachListener(mtc.getRandomEffectsVariance());
 	}
 	
 	private void attachListener(Parameter p) {
@@ -75,10 +73,6 @@ public class NetworkVarianceTableModel extends AbstractTableModel implements Tab
 	public String getColumnName(int column) {
 		return column == 0 ? "Parameter" : "Median (95% CrI)";
 	}
-	
-	public String getDescription() {
-		return null;
-	}
 
 	public int getRowCount() {
 		return isInconsistency() ? 2 : 1;
@@ -97,8 +91,7 @@ public class NetworkVarianceTableModel extends AbstractTableModel implements Tab
 	}
 
 	private QuantileSummary getEstimate(int row) {
-		InconsistencyModel model = d_pm.getInconsistencyModel();
-		if (model.isReady()){
+		if (d_mtc.isReady()){
 			if (row == RANDOM_EFFECTS) {
 				return getRandomEffectsSummary();
 			} else {

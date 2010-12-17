@@ -35,8 +35,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javolution.xml.stream.XMLStreamException;
+
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Study.MeasurementKey;
+import org.drugis.addis.util.XMLHelper;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -350,5 +353,20 @@ public class StudyTest {
 	@Test
 	public void testCloneHasDistinctCharacteristics() {
 		assertFalse(d_orig.getCharacteristics() == d_clone.getCharacteristics());
+	}
+	
+	@Test
+	public void testXML() throws XMLStreamException {
+		Study s = ExampleData.buildStudyChouinard();
+		Note note = new Note(Source.MANUAL, "this is the test text");
+		s.putNote(s.getArms().get(0), note);
+		List<PopulationCharacteristic> chars = new ArrayList<PopulationCharacteristic>();
+		chars.add(ExampleData.buildAgeVariable());
+		s.setPopulationCharacteristics(chars);
+		String xml = XMLHelper.toXml(s, Study.class);
+		//System.out.println(xml);
+		Study parsedStudy = (Study)XMLHelper.fromXml(xml);
+		AssertEntityEquals.assertEntityEquals(s, parsedStudy);
+		assertEquals(s.getNote(s.getArms().get(0).toString()), parsedStudy.getNote(parsedStudy.getArms().get(0).toString()));
 	}
 }

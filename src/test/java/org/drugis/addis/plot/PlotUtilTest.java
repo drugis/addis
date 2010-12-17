@@ -24,7 +24,7 @@ package org.drugis.addis.plot;
 
 import java.util.Collections;
 
-import org.drugis.addis.treeplot.PlotUtil;
+import org.drugis.addis.forestplot.PlotUtil;
 import org.junit.Test;
 
 public class PlotUtilTest {

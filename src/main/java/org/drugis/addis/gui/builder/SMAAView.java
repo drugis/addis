@@ -35,7 +35,7 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
@@ -68,12 +68,12 @@ public class SMAAView implements ViewBuilder  {
 	private SMAAPresentation d_pm;
 	@SuppressWarnings("unchecked")
 	private final AbstractBenefitRiskPresentation d_BRpm;
-	private final Main d_main;
+	private final AddisWindow d_mainWindow;
 
 	@SuppressWarnings("unchecked")
-	public SMAAView(AbstractBenefitRiskPresentation pm, Main main) {
+	public SMAAView(AbstractBenefitRiskPresentation pm, AddisWindow mainWindow) {
 		d_pm = pm.getSMAAPresentation();
-		d_main = main;
+		d_mainWindow = mainWindow;
 		d_BRpm = pm;
 	}
 
@@ -106,7 +106,7 @@ public class SMAAView implements ViewBuilder  {
 		JButton expButton = new JButton("Export model to JSMAA");
 		expButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new FileSaveDialog(d_main, "jsmaa", "JSMAA") {
+				new FileSaveDialog(d_mainWindow, "jsmaa", "JSMAA") {
 					@Override
 					public void doAction(String path, String extension) {
 						d_pm.saveSmaa(path);
@@ -196,7 +196,7 @@ public class SMAAView implements ViewBuilder  {
 			chart.addSubtitle(new org.jfree.chart.title.ShortTextTitle("Rank 1 is best, rank N is worst."));
 	
 			JPanel panel = new JPanel(new BorderLayout());
-			fi.smaa.jsmaa.gui.views.ResultsView view = new fi.smaa.jsmaa.gui.views.ResultsView(d_main, table, chart, "");
+			fi.smaa.jsmaa.gui.views.ResultsView view = new fi.smaa.jsmaa.gui.views.ResultsView(d_mainWindow, table, chart, "");
 			panel.add(d_pm.getSmaaSimulationProgressBar(), BorderLayout.NORTH);
 			JComponent viewPanel = view.buildPanel();
 			panel.add(viewPanel, BorderLayout.CENTER);
@@ -214,7 +214,7 @@ public class SMAAView implements ViewBuilder  {
 		JButton button = new JButton("Save Image");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ImageExporter.writeImage(d_main, chart, (int) chart.getSize().getWidth(), (int) chart.getSize().getHeight());
+				ImageExporter.writeImage(d_mainWindow, chart, (int) chart.getSize().getWidth(), (int) chart.getSize().getHeight());
 			}
 		});
 		return button;
@@ -230,7 +230,7 @@ public class SMAAView implements ViewBuilder  {
 			chart.getCategoryPlot().setRenderer(renderer);
 			ResultsTable table = new ResultsTable(d_pm.getCentralWeightsTableModel());
 			table.setDefaultRenderer(Object.class, new CentralWeightsCellRenderer(1.0));
-			JComponent viewPanel = new ResultsView(d_main, table, chart, "").buildPanel();
+			JComponent viewPanel = new ResultsView(d_mainWindow, table, chart, "").buildPanel();
 			
 			JPanel panel = new JPanel(new BorderLayout());
 			panel.add(viewPanel, BorderLayout.CENTER);

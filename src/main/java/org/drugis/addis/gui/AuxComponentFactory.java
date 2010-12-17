@@ -46,12 +46,11 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.NumberFormatter;
 import javax.swing.text.StyledDocument;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.PubMedIdList;
-import org.drugis.addis.gui.builder.wizard.AddStudyWizard;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.ListPanel;
+import org.drugis.addis.gui.wizard.AddStudyWizard;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.HtmlWordWrapper;
@@ -182,7 +181,7 @@ public class AuxComponentFactory {
 			
 			area.setBackground(COLOR_NOTE);
 			
-			try {
+			try { // FIXME: does not seem to belong here?
 				doc.insertString(doc.getLength(), AddStudyWizard.DEFAULT_NOTETITLE + "\n", doc.getStyle("bold"));
 				doc.insertString(doc.getLength(), (String)model.getValue(), doc.getStyle("regular"));
 			} catch (BadLocationException e) {
@@ -202,22 +201,13 @@ public class AuxComponentFactory {
 		return row;
 	}
 	
-	public static JComponent createNoteField(String text) {
-		if(text.length() != 0){	
-			JComponent htmlPane = HtmlWordWrapper.createHtmlPane(text);
-			htmlPane.setBorder(null);
-			
-			JScrollPane pane = new JScrollPane(htmlPane);
-			pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-			
-			//pane.setPreferredSize(AddStudyWizard.defaultTextPaneDimension((JTextPane)htmlPane));			
-			String[] arr = StringEscapeUtils.escapeHtml(text).split(" ");
-			pane.setPreferredSize(new Dimension(0, (arr.length < 85 ? arr.length + 18 : 85)) );			
-			
-			pane.setWheelScrollingEnabled(true);
-			
-			return pane;
-		}
-		return null;
+	/**
+	 * Create a styles HTML text pane with a certain (HTML) body text. Use &lt;p&gt;'s to structure.
+	 */
+	public static JComponent createHtmlField(String bodyText) {
+		String text = "<html><head><style type=\"text/css\">body { width: 420px; margin-bottom: 15px; } p { margin-left: 10px; padding-left: 0px; }</style></head><body>"
+			+ bodyText + "</body></html>";
+		JTextPane htmlPane = HtmlWordWrapper.createHtmlPane(text);
+		return htmlPane;
 	}
 }

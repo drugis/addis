@@ -28,7 +28,7 @@ import java.awt.Dimension;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
-import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.presentation.SelectableStudyCharTableModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
@@ -42,13 +42,13 @@ import com.jgoodies.forms.layout.FormLayout;
 @SuppressWarnings("serial")
 public class SelectStudiesWizardStep extends PanelWizardStep {
 
-	public SelectStudiesWizardStep(AbstractMetaAnalysisWizardPM<?> pm, Main frame) {
+	public SelectStudiesWizardStep(AbstractMetaAnalysisWizardPM<?> pm, AddisWindow mainWindow) {
 		super("Select Studies","Select the studies to be used for meta analysis. At least one study must be selected to continue.");
 
 		setLayout(new BorderLayout());
 		JComponent studiesComp;			
 
-		EnhancedTable table = new EnhancedTable(new SelectableStudyCharTableModel(pm.getStudyListModel(), frame.getPresentationModelFactory()));
+		EnhancedTable table = new EnhancedTable(new SelectableStudyCharTableModel(pm.getStudyListModel(), mainWindow.getPresentationModelFactory()));
 
 		JScrollPane sPane = new JScrollPane(table);
 		sPane.getVerticalScrollBar().setUnitIncrement(16);			

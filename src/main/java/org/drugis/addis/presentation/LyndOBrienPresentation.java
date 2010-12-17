@@ -41,6 +41,8 @@ public class LyndOBrienPresentation<Alternative extends Entity, AnalysisType ext
 	
 	public LyndOBrienPresentation(AnalysisType at) {
 		d_a = at;
+		d_model = new LyndOBrienModelImpl(new BenefitRiskDistributionImpl<Alternative>(d_a));
+		d_tpm = new TaskProgressModel(d_model.getTask());
 	}
 	
 	public LyndOBrienModel getModel() {
@@ -52,9 +54,7 @@ public class LyndOBrienPresentation<Alternative extends Entity, AnalysisType ext
 	}
 
 	public void startLyndOBrien() {
-		d_model = new LyndOBrienModelImpl(new BenefitRiskDistributionImpl<Alternative>(d_a));
 		d_initializedModel.setValue(true);
-		d_tpm = new TaskProgressModel(d_model.getTask());
 		ThreadHandler.getInstance().scheduleTask(d_model.getTask());
 	}
 

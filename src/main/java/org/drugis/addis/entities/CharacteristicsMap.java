@@ -46,8 +46,7 @@ public class CharacteristicsMap extends MapBean<Characteristic, Object> {
 		public void read(InputElement xml,	CharacteristicsMap obj) throws XMLStreamException {
 			for(BasicStudyCharacteristic c : BasicStudyCharacteristic.values()){
 				Object value = xml.get(c.toString());
-				if(value != null)
-					obj.put(c, value );	
+				if(value != null) obj.put(c, value);	
 			}
 		}
 

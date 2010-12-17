@@ -39,7 +39,7 @@ import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.Summary;
 
 @SuppressWarnings("serial")
-public class PvalueTableModel extends AbstractTableModel {
+public class NodeSplitResultsTableModel extends AbstractTableModel {
 
 	private static final String NA = "N/A";
 	private static final int COL_NAME = 0;
@@ -54,7 +54,7 @@ public class PvalueTableModel extends AbstractTableModel {
 	private int d_rowcount;
 	private List<BasicParameter> d_parameters;
 	
-	public PvalueTableModel(NetworkMetaAnalysisPresentation pm) {
+	public NodeSplitResultsTableModel(NetworkMetaAnalysisPresentation pm) {
 		d_pm = pm;
 		
 		d_listener = new PropertyChangeListener() {

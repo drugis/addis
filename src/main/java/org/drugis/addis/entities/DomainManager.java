@@ -35,6 +35,10 @@ public class DomainManager {
 		return d_domain;
 	}
 	
+	public void resetDomain() {
+		d_domain = new DomainImpl();
+	}
+	
 	/**
 	 * Replace the Domain by a new instance loaded from a XML stream.
 	 * @param is Stream to read objects from.

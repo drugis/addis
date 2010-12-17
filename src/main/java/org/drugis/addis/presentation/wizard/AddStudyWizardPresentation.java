@@ -48,7 +48,7 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.BasicArmPresentation;
@@ -170,20 +170,20 @@ public class AddStudyWizardPresentation {
 	
 	private Study d_origStudy = null;
 	
-	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, Main main) {
+	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, AddisWindow mainWindow) {
 		d_domain = d;
 		d_pmf = pmf;
 		d_endpointListHolder = new EndpointListHolder(d_domain);
 		d_adverseEventListHolder = new AdverseEventListHolder(d_domain);
 		d_populationCharsListHolder = d_domain.getPopulationCharacteristicsHolder();
-		d_endpointSelect = new SelectEndpointPresentation(d_endpointListHolder, main, this);
-		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_adverseEventListHolder, main);
-		d_populationCharSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder, main);
+		d_endpointSelect = new SelectEndpointPresentation(d_endpointListHolder, mainWindow, this);
+		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_adverseEventListHolder, mainWindow);
+		d_populationCharSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder, mainWindow);
 		clearStudies();
 	}
 	
-	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, Main main, Study origStudy) {
-		this(d, pmf, main);
+	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, AddisWindow mainWindow, Study origStudy) {
+		this(d, pmf, mainWindow);
 		d_origStudy  = origStudy;
 		setNewStudy(origStudy.clone());
 	}
