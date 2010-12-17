@@ -46,43 +46,43 @@
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>common-lib</artifactId>
-			<version>0.4</version>
+			<version>0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>common-gui</artifactId>
-			<version>0.4</version>
+			<version>0.5-SNAPSHOT</version>
 		</dependency>
     	<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>common-test</artifactId>
-			<version>0.4</version>
+			<version>0.5-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>fi.smaa.jsmaa</groupId>
 			<artifactId>lib</artifactId>
-			<version>0.8.1</version>
+			<version>0.9-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.smaa.jsmaa</groupId>
 			<artifactId>gui</artifactId>
-			<version>0.8.1</version>
+			<version>0.9-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc-mcmc</artifactId>
-			<version>0.6</version>
+			<version>0.6.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc-model</artifactId>
-			<version>0.6</version>
+			<version>0.6.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc-lib</artifactId>
-			<version>0.6</version>
+			<version>0.6.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jgoodies</groupId>
@@ -134,13 +134,6 @@
 			<groupId>jgraph</groupId>
 			<artifactId>jgraph</artifactId>
 			<version>5.13.0.0</version>
-		</dependency>
-
-
-		<dependency>
-		    <groupId>batik</groupId>
-		    <artifactId>batik-svggen</artifactId>
-		    <version>1.6-1</version>
 		</dependency>
 
 		<dependency>
