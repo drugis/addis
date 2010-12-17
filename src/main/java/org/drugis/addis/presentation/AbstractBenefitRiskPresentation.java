@@ -27,7 +27,6 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 
 import com.jgoodies.binding.PresentationModel;
 
-import fi.smaa.jsmaa.gui.components.SimulationProgressBar;
 import fi.smaa.jsmaa.simulator.BuildQueue;
 
 @SuppressWarnings("serial")
@@ -36,7 +35,6 @@ extends PresentationModel<AnalysisType> {
 
 	protected PresentationModelFactory d_pmf;
 	protected BuildQueue d_buildQueue;
-	protected SimulationProgressBar d_progressBar;
 	private SMAAPresentation<Alternative, AnalysisType> d_smaaPresentation;
 	private LyndOBrienPresentation<Alternative, AnalysisType> d_lyndOBrienPresentation;
 

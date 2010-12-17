@@ -1,11 +1,9 @@
 package org.drugis.addis.presentation;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.Assert;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Characteristic;
@@ -14,8 +12,6 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristics;
-import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

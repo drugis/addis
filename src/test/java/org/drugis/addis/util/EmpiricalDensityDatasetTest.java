@@ -38,7 +38,7 @@ import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
 import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
-import org.drugis.mtc.util.FileResults;
+import org.drugis.mtc.test.FileResults;
 import org.drugis.mtc.yadas.RandomEffectsVariance;
 import org.jfree.data.general.DatasetChangeEvent;
 import org.jfree.data.general.DatasetChangeListener;
