@@ -174,7 +174,7 @@ implements ViewBuilder {
 		
 		builder.add(AuxComponentFactory.createHtmlField("<p>Network meta-analysis results can use quite a bit of memory. Here, the results of " +
 				"analyses may be discarded to save memory. The aggregate-level results will be maintained. However, after " +
-				"discarding the results, it will no longer be possible to display the convergence plots.</p>"), cc.xyw(2, row, 7));
+				"discarding the results, it will no longer be possible to display the convergence plots.</p>"), cc.xyw(2, row, 9));
 		LayoutUtil.addRow(builder.getLayout());
 		row += 2;
 
