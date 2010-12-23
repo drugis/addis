@@ -23,6 +23,7 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -33,6 +34,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -76,6 +79,7 @@ import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 import org.drugis.common.gui.task.TaskProgressBar;
+import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.event.TaskEvent;
@@ -367,26 +371,30 @@ implements ViewBuilder {
 	private JComponent buildNodeSplitTab() {
 		final FormLayout layout = new FormLayout(
 				"pref, 3dlu, pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();
+		final int width = 3;
 		
 		int row = 1;
-		builder.addSeparator("Results - node-splitting analysis of inconsistency", cc.xyw(1, row, 3));
+		builder.addSeparator("Results - node-splitting analysis of inconsistency", cc.xyw(1, row, width));
 		row += 2;
 		
 		builder.add(
 				AuxComponentFactory.createHtmlField("<p>Node-splitting analysis is an alternative method to assess inconsistency in network meta-analysis. It assesses whether direct and indirect evidence on a specific node (the split node) are in agreement. While the results are easier to interpret, it requires a separate model to be run for each node to be split.</p><p>The table below allows you to compare the estimated quantiles for the direct and indirect evidence as well as the combined evidence. In addition a P-value is shown; a large value indicates no significant inconsistency was found. See S. Dias et al. (2010), <em>Checking consistency in mixed treatment comparison meta-analysis</em>, Statistics in Medicine, 29(7-8, Sp. Iss. SI): 932-944. <a href=\"http://dx.doi.org/10.1002/sim.3767\">doi:10.1002/sim.3767</a>.</p>"),
-				cc.xyw(1, row, 3));
+				cc.xyw(1, row, width));
 		row += 2;
 		
-		builder.add(buildNodeSplitResultsTable(), cc.xyw(1, row, 3));
+		builder.add(buildNodeSplitRunAllButton(), cc.xyw(1, row, width));
+		row += 2;
+		
+		builder.add(buildNodeSplitResultsTable(), cc.xyw(1, row, width));
 
 		for (BasicParameter p : d_pm.getSplitParameters()) {
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.addSeparator(p.getName(), cc.xyw(1, row, 3));
+			builder.addSeparator(p.getName(), cc.xyw(1, row, width));
 			
 			LayoutUtil.addRow(layout);
 			row += 2;
@@ -396,21 +404,37 @@ implements ViewBuilder {
 
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.add(makeNodeSplitDensityChart(p), cc.xyw(1, row, 3));
+			builder.add(makeNodeSplitDensityChart(p), cc.xyw(1, row, width));
 			
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.addSeparator("Convergence", cc.xyw(1, row, 3));
+			builder.addSeparator("Convergence", cc.xyw(1, row, width));
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xyw(1, row, 3));
+			builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xyw(1, row, width));
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.add(buildConvergenceTable(model, d_pm.getNodesplitModelConstructedModel(p)), cc.xyw(1, row, 3));
+			builder.add(buildConvergenceTable(model, d_pm.getNodesplitModelConstructedModel(p)), cc.xyw(1, row, width));
 			
 		}
 		
 		return builder.getPanel();
+	}
+
+	private Component buildNodeSplitRunAllButton() {
+		JButton button = new JButton(ImageLoader.getIcon(FileNames.ICON_RUN));
+		button.setText("Run all node-split models");
+		button.setToolTipText("Run all simulations");
+		final List<Task> tasks = new ArrayList<Task>();
+		for (BasicParameter p : d_pm.getSplitParameters()) {
+			tasks.add(d_pm.getNodeSplitModel(p).getActivityTask());
+		}
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ThreadHandler.getInstance().scheduleTasks(tasks);
+			}
+		});
+		return button;
 	}
 
 	private JComponent buildNodeSplitResultsTable() {
