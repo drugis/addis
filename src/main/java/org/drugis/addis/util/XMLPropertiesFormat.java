@@ -61,7 +61,7 @@ public class XMLPropertiesFormat {
 	}
 	
 	private static boolean tryRead(InputElement ie, PropertyDefinition<?> pd) throws XMLStreamException {
-		Object val = ie.get(pd.getTagName(), pd.getType());
+		Object val = pd.getType() == null ? ie.get(pd.getTagName()) : ie.get(pd.getTagName(), pd.getType());
 		if (val != null) {
 			pd.setValue(val);
 			return true;
@@ -78,7 +78,11 @@ public class XMLPropertiesFormat {
 	@SuppressWarnings("unchecked")
 	public static void writeProperties(List<PropertyDefinition> props, OutputElement oe) throws XMLStreamException {
 		for (PropertyDefinition pd : props) {
-			oe.add(pd.getValue(), pd.getTagName(), pd.getType());
+			if (pd.getType() == null) {
+				oe.add(pd.getValue(), pd.getTagName());
+			} else {
+				oe.add(pd.getValue(), pd.getTagName(), pd.getType());
+			}
 		}
 	}
 }

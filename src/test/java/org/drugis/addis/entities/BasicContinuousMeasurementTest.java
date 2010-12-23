@@ -24,7 +24,9 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import javolution.xml.stream.XMLStreamException;
 
+import org.drugis.addis.util.XMLHelper;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,5 +65,12 @@ public class BasicContinuousMeasurementTest {
 		Measurement m = new BasicContinuousMeasurement(13.5, 20.0, 50);
 		assertEquals(m, m.clone());
 		assertFalse(m == m.clone());
+	}
+	
+	@Test
+	public void testXML() throws XMLStreamException {
+		String xml = XMLHelper.toXml(d_basicContinuousMeasurement, BasicContinuousMeasurement.class);
+		BasicContinuousMeasurement bcmFromXml = XMLHelper.fromXml(xml);
+		assertEquals(d_basicContinuousMeasurement, bcmFromXml);
 	}
 }

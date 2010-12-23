@@ -24,7 +24,16 @@ package org.drugis.addis.entities;
 
 import static org.drugis.common.EqualsUtil.equal;
 
+import java.util.List;
+
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
+import org.drugis.addis.util.XMLPropertiesFormat;
+import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
 import org.drugis.common.Interval;
+
+import scala.actors.threadpool.Arrays;
 
 public class FlexibleDose extends AbstractDose {
 	private Interval<Double> d_flexDose;
@@ -105,14 +114,39 @@ public class FlexibleDose extends AbstractDose {
 		hash = hash * 31 + getUnit().hashCode();
 		return hash;
 	}
-	
-	@Override
-	public String[] getXmlExclusions() {
-		return new String[] {"flexibleDose"};
-	}
 
 	@Override
 	public AbstractDose clone() {
 		return new FlexibleDose(getFlexibleDose(), getUnit());
 	}
+	
+	@SuppressWarnings("unchecked")
+	protected List<PropertyDefinition> d_propList = Arrays.asList(new PropertyDefinition<?>[]{
+			new PropertyDefinition<SIUnit>(PROPERTY_UNIT, SIUnit.class) {
+				public SIUnit getValue() { return getUnit(); }
+				public void setValue(Object val) { setUnit((SIUnit) val); }
+			}
+	});
+	
+	protected static final XMLFormat<FlexibleDose> FLEXIBLE_DOSE_XML = new XMLFormat<FlexibleDose>(FlexibleDose.class) {
+
+		@Override
+		public boolean isReferenceable() {
+			return false;
+		}
+		
+		@Override
+		public void read(InputElement ie, FlexibleDose fd) throws XMLStreamException {
+			fd.setMaxDose(ie.getAttribute(PROPERTY_MAX_DOSE, 0.0));
+			fd.setMinDose(ie.getAttribute(PROPERTY_MIN_DOSE, 0.0));
+			XMLPropertiesFormat.readProperties(ie, fd.d_propList);
+		}
+
+		@Override
+		public void write(FlexibleDose fd, OutputElement oe) throws XMLStreamException {
+			oe.setAttribute(PROPERTY_MAX_DOSE, fd.getMaxDose());
+			oe.setAttribute(PROPERTY_MIN_DOSE, fd.getMinDose());
+			XMLPropertiesFormat.writeProperties(fd.d_propList, oe);
+		}
+	};
 }

@@ -24,13 +24,15 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import javolution.xml.stream.XMLStreamException;
 
+import org.drugis.addis.util.XMLHelper;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
 public class BasicRateMeasurementTest {
-	private BasicMeasurement d_measurement;
+	private BasicRateMeasurement d_measurement;
 	private Arm d_pg;
 	
 	@Before
@@ -59,5 +61,12 @@ public class BasicRateMeasurementTest {
 	public void testClone() {
 		assertEquals(d_measurement, d_measurement.clone());
 		assertFalse(d_measurement == d_measurement.clone());
+	}
+	
+	@Test
+	public void testXML() throws XMLStreamException {
+		String xml = XMLHelper.toXml(d_measurement, BasicRateMeasurement.class);
+		BasicRateMeasurement brmFromXml = XMLHelper.fromXml(xml);
+		assertEquals(d_measurement, brmFromXml);
 	}
 }

@@ -22,6 +22,16 @@
 
 package org.drugis.addis.entities;
 
+import java.util.List;
+
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
+import org.drugis.addis.util.XMLPropertiesFormat;
+import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
+
+import scala.actors.threadpool.Arrays;
+
 public class AdverseEvent extends AbstractVariable implements OutcomeMeasure {
 
 	public AdverseEvent() {
@@ -54,4 +64,32 @@ public class AdverseEvent extends AbstractVariable implements OutcomeMeasure {
 		}
 		return 0;
 	}
+	
+	@SuppressWarnings("unchecked")
+	protected List<PropertyDefinition> d_propDefs = Arrays.asList(new PropertyDefinition<?>[]{
+			new PropertyDefinition<Variable.Type>(PROPERTY_TYPE, Variable.Type.class) {
+				public Variable.Type getValue() { return AdverseEvent.this.getType(); }
+				public void setValue(Object val) { AdverseEvent.this.setType((Variable.Type) val); }
+			}
+		});
+	
+	protected static final XMLFormat<AdverseEvent> ADVERSE_EVENT_XML = new XMLFormat<AdverseEvent>(AdverseEvent.class) {
+		@Override
+		public AdverseEvent newInstance(Class<AdverseEvent> cls, InputElement xml) throws XMLStreamException {
+			return new AdverseEvent();
+		};
+
+		@Override
+		public void read(InputElement ie, AdverseEvent ae) throws XMLStreamException {
+			VARIABLE_XML.read(ie, ae);
+			XMLPropertiesFormat.readProperties(ie, ae.d_propDefs);
+		}
+
+		@Override
+		public void write(AdverseEvent ae, OutputElement oe) throws XMLStreamException {
+			VARIABLE_XML.write(ae, oe);
+			XMLPropertiesFormat.writeProperties(ae.d_propDefs, oe);
+		}
+	};
+	
 }

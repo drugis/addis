@@ -528,13 +528,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		d_measurements = m;
 	}
 
-	@Override
-	public String[] getXmlExclusions() {
-		return new String[] {"sampleSize", "outcomeMeasures", "drugs"};
-	}
-	
 	@SuppressWarnings("unchecked")
-	private List<PropertyDefinition> d_propDefs = Arrays.asList(new PropertyDefinition<?>[]{
+	private List<PropertyDefinition> d_propDefs = Arrays.asList(new PropertyDefinition[]{
 		new PropertyDefinition<Indication>(PROPERTY_INDICATION, Indication.class) {
 			public Indication getValue() { return getIndication(); }
 			public void setValue(Object val) { setIndication((Indication) val); }
@@ -586,5 +581,4 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			XMLPropertiesFormat.writeProperties(s.d_propDefs, oe);
 		}
 	};
-
 }

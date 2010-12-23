@@ -239,12 +239,12 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		
 		@Override
 		public void read(InputElement arg0, NetworkMetaAnalysis arg1) throws XMLStreamException {
-			XML.read(arg0, arg1);
+			ABSTRACT_META_ANALYSIS_XML.read(arg0, arg1);
 		}
 
 		@Override
 		public void write(NetworkMetaAnalysis arg0, OutputElement arg1) throws XMLStreamException {
-			XML.write(arg0, arg1);
+			ABSTRACT_META_ANALYSIS_XML.write(arg0, arg1);
 		}
 	};
 	

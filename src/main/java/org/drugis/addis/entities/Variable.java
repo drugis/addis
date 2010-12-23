@@ -22,6 +22,9 @@
 
 package org.drugis.addis.entities;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 import org.drugis.addis.util.EnumXMLFormat;
 
 
@@ -53,9 +56,9 @@ public interface Variable extends Entity, Comparable<Variable> {
 	public static final String PROPERTY_NAME = "name";
 	public final static String PROPERTY_TYPE = "type";	
 	public final static String PROPERTY_DESCRIPTION = "description";
+	public static final String PROPERTY_UNIT_OF_MEASUREMENT = "unitOfMeasurement";
 	public static final String UOM_DEFAULT_RATE = "Ratio of Patients";
 	public static final String UOM_DEFAULT_CONTINUOUS = "";
-	public static final String PROPERTY_UNIT_OF_MEASUREMENT = "unitOfMeasurement";
 
 	public void setDescription(String description);
 
@@ -83,4 +86,23 @@ public interface Variable extends Entity, Comparable<Variable> {
 	 * @return An appropriate type of Measurement.
 	 */
 	public Measurement buildMeasurement(int size);
+	
+	public void setType(Type val);
+
+	static final XMLFormat<Variable> VARIABLE_XML = new XMLFormat<Variable>(Variable.class) {
+		
+		@Override
+		public void read(InputElement ie, Variable v) throws XMLStreamException {
+			v.setDescription(ie.getAttribute(PROPERTY_DESCRIPTION, null));
+			v.setName(ie.getAttribute(PROPERTY_NAME, null));
+			v.setUnitOfMeasurement(ie.getAttribute(PROPERTY_UNIT_OF_MEASUREMENT, null));
+		}
+
+		@Override
+		public void write(Variable v, OutputElement oe) throws XMLStreamException {
+			oe.setAttribute(PROPERTY_DESCRIPTION, v.getDescription());
+			oe.setAttribute(PROPERTY_NAME, v.getName());
+			oe.setAttribute(PROPERTY_UNIT_OF_MEASUREMENT, v.getUnitOfMeasurement());
+		}
+	};
 }

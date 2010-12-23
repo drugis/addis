@@ -364,7 +364,6 @@ public class StudyTest {
 		chars.add(ExampleData.buildAgeVariable());
 		s.setPopulationCharacteristics(chars);
 		String xml = XMLHelper.toXml(s, Study.class);
-		//System.out.println(xml);
 		Study parsedStudy = (Study)XMLHelper.fromXml(xml);
 		AssertEntityEquals.assertEntityEquals(s, parsedStudy);
 		assertEquals(s.getNote(s.getArms().get(0).toString()), parsedStudy.getNote(parsedStudy.getArms().get(0).toString()));

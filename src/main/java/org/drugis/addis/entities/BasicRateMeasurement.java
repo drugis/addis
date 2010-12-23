@@ -22,6 +22,9 @@
 
 package org.drugis.addis.entities;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 
 public class BasicRateMeasurement extends BasicMeasurement implements RateMeasurement {
 	
@@ -63,11 +66,6 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 	}
 	
 	@Override
-	public String[] getXmlExclusions() {
-		return new String[] {"label"};
-	}
-	
-	@Override
 	public boolean equals(Object o) {
 		if (o instanceof BasicRateMeasurement) {
 			BasicRateMeasurement other = (BasicRateMeasurement) o;
@@ -86,4 +84,25 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 	public Measurement clone() {
 		return new BasicRateMeasurement(d_rate, d_sampleSize);
 	}
+	
+	protected static final XMLFormat<BasicRateMeasurement> BRM_XML = new XMLFormat<BasicRateMeasurement>(BasicRateMeasurement.class) {
+
+		@Override
+		public boolean isReferenceable() {
+			return false;
+		}
+		
+		@Override
+		public void read(InputElement ie, BasicRateMeasurement brm) throws XMLStreamException {
+			brm.setRate(ie.getAttribute(PROPERTY_RATE, 0));
+			brm.setSampleSize(ie.getAttribute(PROPERTY_SAMPLESIZE, 0));
+		}
+
+		@Override
+		public void write(BasicRateMeasurement brm, OutputElement oe) throws XMLStreamException {
+			oe.setAttribute(PROPERTY_RATE, brm.getRate());
+			oe.setAttribute(PROPERTY_SAMPLESIZE, brm.getSampleSize());
+		}
+	};
+	
 }

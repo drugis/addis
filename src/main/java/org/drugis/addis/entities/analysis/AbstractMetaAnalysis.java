@@ -40,6 +40,10 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.util.XMLPropertiesFormat;
+import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
+
+import scala.actors.threadpool.Arrays;
 
 public abstract class AbstractMetaAnalysis extends AbstractEntity implements MetaAnalysis {
 	
@@ -184,16 +188,28 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		return armList;
 	}
 	
-	protected static final XMLFormat<AbstractMetaAnalysis> XML = new XMLFormat<AbstractMetaAnalysis>(AbstractMetaAnalysis.class) {		
+	@SuppressWarnings("unchecked")
+	private List<PropertyDefinition> d_propDefs = Arrays.asList(new PropertyDefinition<?>[]{
+		new PropertyDefinition<Indication>(PROPERTY_INDICATION, Indication.class) {
+			public Indication getValue() { return getIndication(); }
+			public void setValue(Object val) { d_indication = (Indication) val; }
+		},
+		new PropertyDefinition<OutcomeMeasure>(PROPERTY_OUTCOME_MEASURE, null) {
+			public OutcomeMeasure getValue() { return getOutcomeMeasure(); }
+			public void setValue(Object val) { d_outcome = (OutcomeMeasure) val; }
+		},
+		new PropertyDefinition<ArmMap>("armEntries", ArmMap.class) {
+			public ArmMap getValue() { return d_armMap; }
+			public void setValue(Object val) { d_armMap = (ArmMap) val; }
+		}
+	});
+		
+	protected static final XMLFormat<AbstractMetaAnalysis> ABSTRACT_META_ANALYSIS_XML = new XMLFormat<AbstractMetaAnalysis>(AbstractMetaAnalysis.class) {		
+		
 		@Override
-		public void read(javolution.xml.XMLFormat.InputElement ie,
-				AbstractMetaAnalysis meta) throws XMLStreamException {
+		public void read(javolution.xml.XMLFormat.InputElement ie, AbstractMetaAnalysis meta) throws XMLStreamException {
 			meta.d_name = ie.getAttribute("name").toString();
-			meta.d_indication = ie.get("indication", Indication.class);
-			meta.d_outcome = ie.get("outcomeMeasure");
-			
-			meta.d_armMap = ie.get("armEntries", ArmMap.class);
-						
+			XMLPropertiesFormat.readProperties(ie, meta.d_propDefs);
 			meta.calculateDerived();
 		}
 
@@ -202,10 +218,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 				javolution.xml.XMLFormat.OutputElement oe)
 				throws XMLStreamException {
 			oe.setAttribute("name", meta.getName());
-			oe.add(meta.getIndication(), "indication", Indication.class);
-			oe.add(meta.getOutcomeMeasure(), "outcomeMeasure");
-
-			oe.add(meta.d_armMap, "armEntries", ArmMap.class);
+			XMLPropertiesFormat.writeProperties(meta.d_propDefs, oe);
 		}
 	};
 	

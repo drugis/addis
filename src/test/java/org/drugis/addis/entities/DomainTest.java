@@ -35,12 +35,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javolution.xml.stream.XMLStreamException;
+
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
+import org.drugis.addis.util.XMLHelper;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -875,5 +878,24 @@ public class DomainTest {
 		assertEquals(Collections.singleton(anl), d_domain.getNetworkMetaAnalyses());
 		addMetaAnalysisToDomain();
 		assertEquals(Collections.singleton(anl), d_domain.getNetworkMetaAnalyses());
+	}
+	
+	
+	@Test
+	public void testXML() throws XMLStreamException {
+		DomainImpl origDomain = new DomainImpl();
+		ExampleData.initDefaultData(origDomain);
+		DomainData origData = origDomain.getDomainData();
+		origData.addVariable(new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"}));
+		origData.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisHamD()); 
+		
+		String xml = XMLHelper.toXml(origData, DomainData.class);
+		DomainData loadedData = XMLHelper.fromXml(xml);
+
+		DomainImpl domainFromXml = new DomainImpl();
+		domainFromXml.setDomainData(loadedData);
+		
+		assertEquals(origDomain.getIndications(), loadedData.getIndications());
+		AssertEntityEquals.assertDomainEquals(origDomain, domainFromXml);
 	}
 }

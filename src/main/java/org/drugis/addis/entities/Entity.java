@@ -32,7 +32,4 @@ public interface Entity extends Observable {
 	 * @return A set of entities that this entity depends on. Never null.
 	 */
 	public Set<? extends Entity> getDependencies();
-
-	public String[] getXmlExclusions();
-	
 }

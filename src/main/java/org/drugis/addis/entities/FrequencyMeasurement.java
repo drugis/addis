@@ -24,9 +24,15 @@ package org.drugis.addis.entities;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+
+import org.drugis.addis.util.XMLPropertiesFormat;
+import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
+
+import scala.actors.threadpool.Arrays;
 
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
@@ -165,11 +171,23 @@ public class FrequencyMeasurement extends BasicMeasurement {
 		return d_frequencies.hashCode();
 	}
 
-	public Map<String, Integer> getFrequencies() {
+	FrequencyMap getFrequencies() {
 		return d_frequencies;
 	}
 
-	protected static final XMLFormat<FrequencyMeasurement> XML = new XMLFormat<FrequencyMeasurement>(FrequencyMeasurement.class) {
+	@SuppressWarnings("unchecked")
+	private List<PropertyDefinition> d_propDefs = Arrays.asList(new PropertyDefinition<?>[]{
+		new PropertyDefinition<CategoricalPopulationCharacteristic>("variable", CategoricalPopulationCharacteristic.class) {
+			public CategoricalPopulationCharacteristic getValue() { return getCategoricalVariable(); }
+			public void setValue(Object val) { d_cv = (CategoricalPopulationCharacteristic) val; }
+		},
+		new PropertyDefinition<FrequencyMap>(PROPERTY_FREQUENCIES, FrequencyMap.class) {
+			public FrequencyMap getValue() { return getFrequencies(); }
+			public void setValue(Object val) { d_frequencies = (FrequencyMap) val; }
+		}
+	});
+		
+	protected static final XMLFormat<FrequencyMeasurement> FREQUENCY_MEASUREMENT_XML = new XMLFormat<FrequencyMeasurement>(FrequencyMeasurement.class) {
 		@Override
 		public FrequencyMeasurement newInstance(Class<FrequencyMeasurement> arg0, XMLFormat.InputElement arg1) 
 		throws XMLStreamException {
@@ -177,25 +195,20 @@ public class FrequencyMeasurement extends BasicMeasurement {
 		}
 		
 		@Override
-		public void read(javolution.xml.XMLFormat.InputElement ie,
-				FrequencyMeasurement fm) throws XMLStreamException {
-			fm.d_cv = ie.get("variable", CategoricalPopulationCharacteristic.class);
-			fm.d_frequencies = ie.get("frequencies", FrequencyMap.class);
+		public void read(InputElement ie, FrequencyMeasurement fm) throws XMLStreamException {
+			XMLPropertiesFormat.readProperties(ie, fm.d_propDefs);
 			fm.updateSampleSize();
 		}
 
 		@Override
-		public void write(FrequencyMeasurement fm,
-				javolution.xml.XMLFormat.OutputElement oe)
-				throws XMLStreamException {
-			oe.add(fm.d_cv, "variable", CategoricalPopulationCharacteristic.class);
-			oe.add(fm.d_frequencies, "frequencies", FrequencyMap.class);
+		public void write(FrequencyMeasurement fm, OutputElement oe) throws XMLStreamException {
+			XMLPropertiesFormat.writeProperties(fm.d_propDefs, oe);
 		}
 	};
 	
 	
 	@SuppressWarnings("unused")
-	private static final XMLFormat<FrequencyMap> armMapXML = new XMLFormat<FrequencyMap>(FrequencyMap.class) {
+	private static final XMLFormat<FrequencyMap> frequencyMapXML = new XMLFormat<FrequencyMap>(FrequencyMap.class) {
 		@Override
 		public FrequencyMap newInstance(Class<FrequencyMap> cls, XMLFormat.InputElement xml) {
 			return new FrequencyMap();
