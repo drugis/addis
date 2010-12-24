@@ -45,6 +45,7 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
+import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.DefaultListHolder;
 import org.drugis.addis.presentation.ListHolder;
@@ -344,7 +345,9 @@ public class DomainImpl implements Domain {
 		} else if (entity instanceof MetaAnalysis) {
 			deleteMetaAnalysis((MetaAnalysis) entity);
 		} else if (entity instanceof MetaBenefitRiskAnalysis) {
-			deleteBenefitRiskAnalysis((MetaBenefitRiskAnalysis) entity);
+			deleteMetaBenefitRiskAnalysis((MetaBenefitRiskAnalysis) entity);
+		} else if (entity instanceof StudyBenefitRiskAnalysis) {
+			deleteStudyBenefitRiskAnalysis((StudyBenefitRiskAnalysis) entity);
 		} else if (entity instanceof Indication) {
 			deleteIndication((Indication) entity);
 		} else {
@@ -419,13 +422,20 @@ public class DomainImpl implements Domain {
 		fireDomainChanged(DomainEvent.Type.ANALYSES);
 	}
 
-	public void deleteBenefitRiskAnalysis(MetaBenefitRiskAnalysis bra)
+	public void deleteMetaBenefitRiskAnalysis(MetaBenefitRiskAnalysis bra)
 			throws DependentEntitiesException {
 		checkDependents(bra);
 		d_domainData.removeBRAnalysis(bra);
 		fireDomainChanged(DomainEvent.Type.BENEFITRISK_ANALYSIS);
 	}
-	
+
+	public void deleteStudyBenefitRiskAnalysis(StudyBenefitRiskAnalysis bra)
+	throws DependentEntitiesException {
+		checkDependents(bra);
+		d_domainData.removeBRAnalysis(bra);
+		fireDomainChanged(DomainEvent.Type.BENEFITRISK_ANALYSIS);
+	}
+
 	@SuppressWarnings("serial")
 	private class StudiesForEntityListHolder extends AbstractListHolder<Study> implements DomainListener {
 		
