@@ -26,7 +26,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javolution.xml.XMLBinding;
 import javolution.xml.XMLFormat;
@@ -63,6 +69,8 @@ import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.common.Interval;
+
+import scala.collection.mutable.HashSet;
 
 @SuppressWarnings("serial")
 public class AddisBinding extends XMLBinding {
@@ -169,12 +177,66 @@ public class AddisBinding extends XMLBinding {
 		}
 	};
 	
+	@SuppressWarnings("unchecked")
+	XMLFormat<List> listXML = new XMLFormat<List>(null) {
+		@Override
+		public List newInstance(java.lang.Class<List> cls, XMLFormat.InputElement xml) throws XMLStreamException {
+			return new ArrayList();
+		}
+		
+		@Override
+		public boolean isReferenceable() {
+			return false;
+		}
+
+		@Override
+		public void read(javolution.xml.XMLFormat.InputElement xml, List obj) throws XMLStreamException {
+			while (xml.hasNext()) {
+				obj.add(xml.getNext());
+			}
+		}
+
+		@Override
+		public void write(List obj, javolution.xml.XMLFormat.OutputElement xml)
+				throws XMLStreamException {
+            for (Object o : obj) {
+                xml.add(o);
+            }
+		};
+	};
+	
+	@SuppressWarnings("unchecked")
+	XMLFormat<Set> setXML = new XMLFormat<Set>(null) {
+		@Override
+		public boolean isReferenceable() {
+			return false;
+		}
+
+		@Override
+		public void read(javolution.xml.XMLFormat.InputElement xml, Set obj) throws XMLStreamException {
+			while (xml.hasNext()) {
+				obj.add(xml.getNext());
+			}
+		}
+
+		@Override
+		public void write(Set obj, javolution.xml.XMLFormat.OutputElement xml)
+				throws XMLStreamException {
+            for (Object o : obj) {
+                xml.add(o);
+            }
+		};
+	};
 
     @SuppressWarnings("unchecked")
 	@Override
 	public XMLFormat getFormat(Class cls) throws XMLStreamException {
         if (Date.class.isAssignableFrom(cls)) {
             return dateXML; // Overrides default XML format.
+        } else if (cls.equals(List.class) || cls.equals(ArrayList.class)) {
+        	return listXML;
+        } else if (cls.equals(TreeSet.class)) {
+        	return setXML;
         } else {
             return super.getFormat(cls);
         }
