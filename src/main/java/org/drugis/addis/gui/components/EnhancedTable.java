@@ -31,6 +31,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
+import org.drugis.addis.gui.util.TableCopyHandler;
 import org.drugis.common.gui.GUIHelper;
 
 import com.sun.java.components.TableSorter;
@@ -53,6 +54,7 @@ public class EnhancedTable extends JTable {
 		TableSorter sort = new TableSorter(model);
 		sort.setTableHeader(getTableHeader());
 		setModel(sort);
+		TableCopyHandler.registerCopyAction(this);
 	}
 	
 	public void setSortingStatus(int column, int order) {
