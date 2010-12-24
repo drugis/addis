@@ -26,13 +26,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 import org.drugis.addis.util.XMLPropertiesFormat;
 import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
-
-import javolution.xml.XMLFormat;
-import javolution.xml.XMLFormat.InputElement;
-import javolution.xml.XMLFormat.OutputElement;
-import javolution.xml.stream.XMLStreamException;
 
 public class CategoricalPopulationCharacteristic extends AbstractVariable implements PopulationCharacteristic {
 	private String[] d_categories;

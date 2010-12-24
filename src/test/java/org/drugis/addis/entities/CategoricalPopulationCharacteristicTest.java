@@ -90,7 +90,6 @@ public class CategoricalPopulationCharacteristicTest {
 	public void testXML() throws XMLStreamException {
 		CategoricalPopulationCharacteristic gender = new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
 		String xml = XMLHelper.toXml(gender, CategoricalPopulationCharacteristic.class);
-		System.out.println(xml);
 		CategoricalPopulationCharacteristic objFromXml = XMLHelper.fromXml(xml);
 		assertEntityEquals(gender, objFromXml);
 	}

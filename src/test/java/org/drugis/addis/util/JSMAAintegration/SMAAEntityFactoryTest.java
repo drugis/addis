@@ -85,7 +85,7 @@ public class SMAAEntityFactoryTest {
 	@Test
 	public void testCreateSmaaModel() {
 		SMAAModel smaaModel = d_smaaFactory.createSmaaModel(d_brAnalysis);
-		for(OutcomeMeasure om : d_brAnalysis.getOutcomeMeasures()){
+		for(OutcomeMeasure om : d_brAnalysis.getCriteria()){
 			for(Drug d : d_brAnalysis.getDrugs()){
 				if (d.equals(d_brAnalysis.getBaseline()))
 					continue;
@@ -99,7 +99,7 @@ public class SMAAEntityFactoryTest {
 	@Test 
 	public void testGetOutcomeMeasure() {
 		d_smaaFactory.createSmaaModel(d_brAnalysis);
-		for (OutcomeMeasure om : d_brAnalysis.getOutcomeMeasures()) {
+		for (OutcomeMeasure om : d_brAnalysis.getCriteria()) {
 			CardinalCriterion crit = d_smaaFactory.getCriterion(om);
 			assertEquals(om, d_smaaFactory.getOutcomeMeasure(crit));
 		}
@@ -108,7 +108,7 @@ public class SMAAEntityFactoryTest {
 	@Test
 	public void testCreateSmaaModelStudy() {
 		SMAAModel smaaModel = d_smaaFactoryArm.createSmaaModel(d_brAnalysisStudy);
-		for(OutcomeMeasure om : d_brAnalysisStudy.getOutcomeMeasures()){
+		for(OutcomeMeasure om : d_brAnalysisStudy.getCriteria()){
 			for(Arm d : d_brAnalysisStudy.getAlternatives()){
 				fi.smaa.jsmaa.model.Measurement actualMeasurement = 
 					smaaModel.getMeasurement(d_smaaFactoryArm.getCriterion(om), d_smaaFactoryArm.getAlternative(d));

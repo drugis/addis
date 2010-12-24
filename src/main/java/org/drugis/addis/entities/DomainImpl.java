@@ -133,11 +133,15 @@ public class DomainImpl implements Domain {
 	}
 		
 	public DomainImpl() {
-		d_domainData = new DomainData();
+		this(new DomainData());
+	}
+	
+	public DomainImpl(DomainData loadedData) {
+		d_domainData = loadedData;
 		d_listeners = new ArrayList<DomainListener>();
 		d_studyListener = new StudyChangeListener();
 	}
-	
+
 	private class StudyChangeListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
 			fireDomainChanged(DomainEvent.Type.STUDIES);

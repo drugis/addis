@@ -116,7 +116,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	
 	private void initAllBaselineModels() {
 		AbstractBaselineModel<?> model;
-		for (OutcomeMeasure om : getBean().getOutcomeMeasures()) {
+		for (OutcomeMeasure om : getBean().getCriteria()) {
 			model = getBean().getBaselineModel(om);
 			d_baselineModels.add(model);
 		}

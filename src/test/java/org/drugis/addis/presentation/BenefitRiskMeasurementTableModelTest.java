@@ -52,7 +52,7 @@ public class BenefitRiskMeasurementTableModelTest {
 	
 	@Test
 	public void testGetColumnCount() {
-		assertEquals(d_brAnalysis.getOutcomeMeasures().size() + 1, d_pm.getColumnCount());
+		assertEquals(d_brAnalysis.getCriteria().size() + 1, d_pm.getColumnCount());
 	}
 	
 	@Test
@@ -68,7 +68,7 @@ public class BenefitRiskMeasurementTableModelTest {
 	
 	@Test
 	public void testGetOutcomeNames() {
-		List<OutcomeMeasure> outcomeMeasures = d_brAnalysis.getOutcomeMeasures();
+		List<OutcomeMeasure> outcomeMeasures = d_brAnalysis.getCriteria();
 		for (int j=0; j<outcomeMeasures.size(); ++j) {
 			assertEquals(outcomeMeasures.get(j).toString(), d_pm.getColumnName(j+1));
 		}
@@ -77,9 +77,9 @@ public class BenefitRiskMeasurementTableModelTest {
 	@Test
 	public void testGetValueAt() {
 		for (int i=0; i<d_brAnalysis.getDrugs().size(); ++i)
-			for (int j=0; j<d_brAnalysis.getOutcomeMeasures().size(); ++j) {
+			for (int j=0; j<d_brAnalysis.getCriteria().size(); ++j) {
 				Drug drug = d_brAnalysis.getDrugs().get(i);
-				OutcomeMeasure om = d_brAnalysis.getOutcomeMeasures().get(j);
+				OutcomeMeasure om = d_brAnalysis.getCriteria().get(j);
 				Object expected = d_pmf.getLabeledModel(d_brAnalysis.getRelativeEffectDistribution(drug, om));
 				Object actual = d_pm.getValueAt(i, j+1);
 				assertEquals(expected.toString(), actual.toString());
@@ -92,8 +92,8 @@ public class BenefitRiskMeasurementTableModelTest {
 		d_pm = new BenefitRiskMeasurementTableModel<Drug>(d_brAnalysis, d_brAnalysis.getAbsoluteMeasurementSource(), d_pmf);
 		for (int i=0; i < d_brAnalysis.getDrugs().size(); ++i) {
 			Drug drug = d_brAnalysis.getDrugs().get(i);
-			for (int j=0; j < d_brAnalysis.getOutcomeMeasures().size(); ++j) {
-				OutcomeMeasure om = d_brAnalysis.getOutcomeMeasures().get(j);
+			for (int j=0; j < d_brAnalysis.getCriteria().size(); ++j) {
+				OutcomeMeasure om = d_brAnalysis.getCriteria().get(j);
 				GaussianBase expected = (GaussianBase)d_brAnalysis.getAbsoluteEffectDistribution(drug, om);
 				GaussianBase actual = (GaussianBase)((PresentationModel)d_pm.getValueAt(i, j+1)).getBean();
 				assertEquals(expected.getMu(), actual.getMu(), 0.000001);

@@ -49,7 +49,7 @@ public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extend
 	}
 	
 	public int getColumnCount() {
-		return d_br.getOutcomeMeasures().size()+1;
+		return d_br.getCriteria().size()+1;
 	}
 
 	public int getRowCount() {
@@ -66,7 +66,7 @@ public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extend
 		if (index == 0) {
 			return "Alternative";
 		}
-		return d_br.getOutcomeMeasures().get(index-1).toString();	
+		return d_br.getCriteria().get(index-1).toString();	
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
@@ -74,7 +74,7 @@ public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extend
 
 		if (columnIndex == 0) return a.toString();
 
-		OutcomeMeasure om = d_br.getOutcomeMeasures().get(columnIndex-1);
+		OutcomeMeasure om = d_br.getCriteria().get(columnIndex-1);
 		return d_pmf.getLabeledModel(d_source.getMeasurement(a, om));
 	}
 }

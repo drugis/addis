@@ -27,10 +27,12 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -898,4 +900,17 @@ public class DomainTest {
 		assertEquals(origDomain.getIndications(), loadedData.getIndications());
 		AssertEntityEquals.assertDomainEquals(origDomain, domainFromXml);
 	}
+
+	@Test
+	public void testDefaultDataXML() throws XMLStreamException {
+		InputStream xmlStream = getClass().getResourceAsStream("../defaultData.xml");
+		assertNotNull(xmlStream);
+		DomainData importedDomain = (DomainData)XMLHelper.fromXml(xmlStream);
+		String xml = XMLHelper.toXml(importedDomain, DomainData.class);
+		DomainData loadedData = XMLHelper.fromXml(xml);
+		DomainImpl loadedImpl = new DomainImpl(loadedData);
+		DomainImpl importedImpl = new DomainImpl(importedDomain);
+		AssertEntityEquals.assertDomainEquals(importedImpl, loadedImpl);
+	}
+
 }

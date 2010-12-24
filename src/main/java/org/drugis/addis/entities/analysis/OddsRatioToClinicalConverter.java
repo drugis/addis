@@ -39,7 +39,7 @@ public class OddsRatioToClinicalConverter {
 		d_br = br;
 		d_om = om;
 		if (om.getType() != Type.RATE) throw new IllegalArgumentException("Only rate-outcomes supported");
-		if (!br.getOutcomeMeasures().contains(om)) throw new IllegalArgumentException("OutcomeMeasure not present in Benefit-Risk analysis");
+		if (!br.getCriteria().contains(om)) throw new IllegalArgumentException("OutcomeMeasure not present in Benefit-Risk analysis");
 	}
 	
 	/**

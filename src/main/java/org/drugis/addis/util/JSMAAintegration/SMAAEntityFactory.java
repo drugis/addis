@@ -85,7 +85,7 @@ public class SMAAEntityFactory<AltType extends Entity> {
 			smaaModel.addAlternative(getAlternative(a));
 		}
 		
-		for (OutcomeMeasure om : brAnalysis.getOutcomeMeasures()) {
+		for (OutcomeMeasure om : brAnalysis.getCriteria()) {
 			CardinalCriterion crit = getCriterion(om);
 			smaaModel.addCriterion(crit);
 			

@@ -58,7 +58,6 @@ public class XMLHelper {
 	}
 	
 	public static <T> T fromXml(InputStream xmlStream) throws XMLStreamException {	     
-		//StringReader sreader = new StringReader(xml);
 		XMLObjectReader reader = new XMLObjectReader().setInput(xmlStream).setBinding(new AddisBinding());
 		reader.setReferenceResolver(new XMLReferenceResolver());
 		return reader.<T>read();

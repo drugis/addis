@@ -106,7 +106,7 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		
 		row += 2;
 		builder.addLabel("Criteria:", cc.xy(1, row));
-		ListPanel criteriaList = new ListPanel(getAnalysis(), BenefitRiskAnalysis.PROPERTY_OUTCOMEMEASURES, OutcomeMeasure.class);
+		ListPanel criteriaList = new ListPanel(getAnalysis(), BenefitRiskAnalysis.PROPERTY_CRITERIA, OutcomeMeasure.class);
 		builder.add(criteriaList,cc.xy(3, row));
 		
 		row += 2;

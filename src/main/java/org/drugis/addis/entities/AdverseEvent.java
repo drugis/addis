@@ -70,7 +70,12 @@ public class AdverseEvent extends AbstractVariable implements OutcomeMeasure {
 			new PropertyDefinition<Variable.Type>(PROPERTY_TYPE, Variable.Type.class) {
 				public Variable.Type getValue() { return AdverseEvent.this.getType(); }
 				public void setValue(Object val) { AdverseEvent.this.setType((Variable.Type) val); }
+			},
+			new PropertyDefinition<OutcomeMeasure.Direction>(PROPERTY_DIRECTION, OutcomeMeasure.Direction.class) {
+				public OutcomeMeasure.Direction getValue() { return getDirection(); }
+				public void setValue(Object val) { setDirection((OutcomeMeasure.Direction) val); }
 			}
+
 		});
 	
 	protected static final XMLFormat<AdverseEvent> ADVERSE_EVENT_XML = new XMLFormat<AdverseEvent>(AdverseEvent.class) {
