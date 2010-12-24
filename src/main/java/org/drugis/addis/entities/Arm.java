@@ -22,6 +22,7 @@
 
 package org.drugis.addis.entities;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -88,8 +89,7 @@ public class Arm extends AbstractEntity {
 	
 	@Override
 	public Set<Entity> getDependencies() {
-		// TODO Auto-generated method stub
-		return null;
+		return Collections.<Entity>singleton(d_drug);
 	}
 	
 	@SuppressWarnings("unchecked")
