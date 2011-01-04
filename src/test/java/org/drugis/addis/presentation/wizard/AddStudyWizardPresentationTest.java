@@ -140,13 +140,15 @@ public class AddStudyWizardPresentationTest {
 	
 	@Test
 	public void testCheckID() {
-		assertEquals(true,d_wizard.checkID());
+		d_wizard.getNewStudyPM().getBean().setStudyId("This is not in the domain");
+		assertEquals(true, d_wizard.isIdAvailable());
 		d_wizard.getIdModel().setValue(d_domain.getStudies().first().getStudyId());
-		assertEquals(false,d_wizard.checkID());
+		assertEquals(false,d_wizard.isIdAvailable());
 	}
 	
 	@Test
 	public void testSaveStudy() {
+		d_wizard.getNewStudyPM().getBean().setStudyId("This is not in the domain");
 		d_wizard.getEndpointSelectModel().getSlot(0).setValue(d_domain.getEndpoints().first());
 		d_wizard.getIndicationModel().setValue(d_domain.getIndications().first());
 		d_wizard.saveStudy();

@@ -680,7 +680,7 @@ public class AddStudyWizard extends Wizard {
 				d_idField.addFocusListener(new FocusListener() {
 					
 					public void focusLost(FocusEvent e) {
-						if (!d_pm.checkID()){
+						if (!d_pm.isIdAvailable()){
 							JOptionPane.showMessageDialog(d_dialog, "There is already a study called \"" + 
 									d_pm.getIdModel().getValue() + "\".\nPlease save under a different title.",
 									"Error: study already exists", JOptionPane.ERROR_MESSAGE);

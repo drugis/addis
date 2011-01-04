@@ -356,7 +356,7 @@ public class AddStudyWizardPresentation {
 			throw new IllegalStateException("No arms selected in study.");
 		if (d_endpointSelect.countSlots() == 0) 
 			throw new IllegalStateException("No endpoints selected in study.");
-		if (!checkID())
+		if (!isIdAvailable())
 			throw new IllegalStateException("Study with this ID already exists in domain");
 		
 		// transfer the notes from the imported study to the new one.
@@ -380,7 +380,8 @@ public class AddStudyWizardPresentation {
 		return getNewStudy();
 	}
 
-	public boolean checkID() {
+	public boolean isIdAvailable() {
+		if(getNewStudy().getStudyId() == null) return true;
 		if (!d_domain.getStudies().contains(getNewStudy())) {
 			return true;
 		}
