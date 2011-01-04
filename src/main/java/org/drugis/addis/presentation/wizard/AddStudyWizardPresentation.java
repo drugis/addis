@@ -158,8 +158,6 @@ public class AddStudyWizardPresentation {
 	private StudyPresentation d_newStudyPM;
 	private StudyPresentation d_importedStudyPM;
 	
-	//List<ModifiableHolder<Endpoint>> d_selectedEndpointsList;
-	
 	List<BasicArmPresentation> d_selectedArmList;
 	private ListHolder<Endpoint> d_endpointListHolder;
 	private ListHolder<AdverseEvent> d_adverseEventListHolder;
@@ -217,7 +215,7 @@ public class AddStudyWizardPresentation {
 			String studyID = getIdModel().getValue().toString().trim().replace(" ", "%20");
 			String url = "http://clinicaltrials.gov/show/"+studyID+"?displayxml=true";
 			d_importedStudyPM = (StudyPresentation) new StudyPresentation(ClinicaltrialsImporter.getClinicaltrialsData(url),d_pmf);
-			d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study("", new Indication(0l,"")),d_pmf);
+			d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study(), d_pmf);
 			migrateImportToNew(studyID);
 		} else {
 			throw new IOException("No Study Id Entered");
@@ -282,8 +280,8 @@ public class AddStudyWizardPresentation {
 	}
 	
 	public void clearStudies() {
-		d_importedStudyPM = (StudyPresentation) new StudyPresentation(new Study("", new Indication(0l,"")),d_pmf);
-		d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study("", new Indication(0l,"")),d_pmf);
+		d_importedStudyPM = (StudyPresentation) new StudyPresentation(new Study(), d_pmf);
+		d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study(), d_pmf);
 		getSourceModel().setValue(Source.MANUAL);
 		d_endpointSelect.clear();
 		while (d_adverseEventSelect.countSlots() > 0) {

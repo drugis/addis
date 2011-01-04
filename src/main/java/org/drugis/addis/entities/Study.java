@@ -114,7 +114,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private Indication d_indication;
 	private Map<Object, Note> d_notes = new HashMap<Object, Note>();
 	
-	private Study() {
+	public Study() {
 	}
 
 	@Override

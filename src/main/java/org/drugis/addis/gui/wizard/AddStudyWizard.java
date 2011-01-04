@@ -599,7 +599,6 @@ public class AddStudyWizard extends Wizard {
 			
 			d_builder.addLabel("Indication",cc.xy(1, 3));	
 			
-			// add set indication box
 			JComboBox indBox = AuxComponentFactory.createBoundComboBox(d_pm.getIndicationListModel(), d_pm.getIndicationModel());
 			d_builder.add(indBox, cc.xyw(3, 3, 2));
 			d_validator.add(indBox);
