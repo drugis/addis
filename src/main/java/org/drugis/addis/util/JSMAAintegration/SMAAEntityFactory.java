@@ -37,6 +37,7 @@ import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
+import org.drugis.addis.entities.relativeeffect.LogitGaussian;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
 
 import fi.smaa.jsmaa.model.Alternative;
@@ -61,7 +62,9 @@ public class SMAAEntityFactory<AltType extends Entity> {
 	public static CardinalMeasurement createCardinalMeasurement(Distribution re) {
 		if (re instanceof GaussianBase) {
 			GaussianBase gauss = (GaussianBase)re;
-			if (re instanceof LogGaussian) {
+			if (re instanceof LogitGaussian) {
+				return new LogitNormalMeasurement(gauss.getMu(), gauss.getSigma());
+			} else if (re instanceof LogGaussian) {
 				return new LogNormalMeasurement(gauss.getMu(), gauss.getSigma());
 			} else if (re instanceof Gaussian) {
 				return new GaussianMeasurement(gauss.getMu(), gauss.getSigma());

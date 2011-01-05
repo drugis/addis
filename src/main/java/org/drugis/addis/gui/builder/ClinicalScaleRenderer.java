@@ -32,9 +32,9 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.OddsRatioToClinicalConverter;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.OddsRatioScalePresentation;
+import org.drugis.addis.presentation.RiskScalePresentation;
 import org.drugis.addis.presentation.SMAAPresentation;
 import org.drugis.common.gui.NumberAndIntervalFormat;
 
@@ -46,12 +46,9 @@ import fi.smaa.jsmaa.model.Criterion;
 import fi.smaa.jsmaa.model.ScaleCriterion;
 
 public class ClinicalScaleRenderer implements ScaleRenderer {
-
-	private final MetaBenefitRiskPresentation d_pm;
 	private SMAAPresentation<Drug, BenefitRiskAnalysis<Drug>> d_smaapm;
 
 	public ClinicalScaleRenderer(MetaBenefitRiskPresentation pm, SMAAPresentation<Drug, BenefitRiskAnalysis<Drug>> smaapm) {
-		d_pm = pm;
 		d_smaapm = smaapm;
 	}
 
@@ -60,10 +57,8 @@ public class ClinicalScaleRenderer implements ScaleRenderer {
 			ScaleCriterion criterion = (ScaleCriterion)c;
 			OutcomeMeasure outcome = d_smaapm.getOutcomeMeasureForCriterion(criterion);
 			if (outcome.getType() == Variable.Type.RATE) {
-				OddsRatioToClinicalConverter converter = new OddsRatioToClinicalConverter(d_pm.getBean(), outcome);
-				OddsRatioScalePresentation cpm = new OddsRatioScalePresentation(criterion, converter);
-				JPanel panel = buildOddsRatioClinicalView(cpm);
-				return panel;
+				RiskScalePresentation cpm = new RiskScalePresentation(criterion);
+				return buildRiskClinicalView(cpm);
 			} else {
 				PresentationModel<ScaleCriterion> cpm = new PresentationModel<ScaleCriterion>((ScaleCriterion) c);
 				JLabel orLabel = new JLabel("RMD: ");
@@ -78,9 +73,8 @@ public class ClinicalScaleRenderer implements ScaleRenderer {
 		return new JLabel("NA");
 	}
 
-	private JPanel buildOddsRatioClinicalView(OddsRatioScalePresentation cpm) {
+	private JPanel buildRiskClinicalView(RiskScalePresentation cpm) {
 		JPanel panel = new JPanel(new FlowLayout());
-		addPropertyToPanel(cpm, panel, "OR: ", OddsRatioScalePresentation.PROPERTY_ODDS_RATIO);
 		addPropertyToPanel(cpm, panel, "Risk: ", OddsRatioScalePresentation.PROPERTY_RISK);
 		addPropertyToPanel(cpm, panel, "RD: ", OddsRatioScalePresentation.PROPERTY_RISK_DIFFERENCE);
 		
@@ -93,7 +87,7 @@ public class ClinicalScaleRenderer implements ScaleRenderer {
 		return panel;
 	}
 
-	private void addPropertyToPanel(OddsRatioScalePresentation cpm, JPanel panel, String text, String property) {
+	private void addPropertyToPanel(PresentationModel<?> cpm, JPanel panel, String text, String property) {
 		JLabel label = new JLabel(text);
 		JLabel valueLabel = BasicComponentFactory.createLabel(cpm.getModel(property),
 				new NumberAndIntervalFormat());

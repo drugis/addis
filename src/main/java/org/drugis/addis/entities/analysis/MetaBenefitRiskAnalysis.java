@@ -50,6 +50,7 @@ import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
+import org.drugis.addis.entities.relativeeffect.LogitGaussian;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
@@ -259,7 +260,8 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	}
 	
 	public Distribution getMeasurement(Drug d, OutcomeMeasure om) {
-		return getRelativeEffectDistribution(d, om);
+		GaussianBase logOdds = getAbsoluteEffectDistribution(d, om);
+		return new LogitGaussian(logOdds.getMu(), logOdds.getSigma());
 	}
 	
 	public MeasurementSource<Drug> getAbsoluteMeasurementSource() {
