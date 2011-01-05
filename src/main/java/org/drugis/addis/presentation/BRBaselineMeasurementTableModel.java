@@ -39,7 +39,7 @@ public class BRBaselineMeasurementTableModel extends AbstractTableModel {
 	
 	public BRBaselineMeasurementTableModel(MetaBenefitRiskAnalysis bra) {
 		d_br = bra;
-		d_source = bra.getAbsoluteMeasurementSource();
+		d_source = bra.getMeasurementSource();
 		d_source.addMeasurementsChangedListener(new Listener() {
 			public void notifyMeasurementsChanged() {
 				fireTableDataChanged();
@@ -81,6 +81,6 @@ public class BRBaselineMeasurementTableModel extends AbstractTableModel {
 		Drug a = d_br.getBaseline();
 
 		if (columnIndex == 0) return om.toString();
-		else return d_source.getMeasurement(a, om);
+		else return d_br.getAbsoluteEffectDistribution(a, om);
 	}
 }

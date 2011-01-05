@@ -42,7 +42,7 @@ public class BenefitRiskMeasurementTableModelTest {
 	@Before
 	public void setUp() {
 		d_brAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
-		d_pm = new BenefitRiskMeasurementTableModel<Drug>(d_brAnalysis, d_brAnalysis.getRelativeMeasurementSource());
+		d_pm = new BenefitRiskMeasurementTableModel<Drug>(d_brAnalysis);
 	}
 	
 	@Test
@@ -80,20 +80,5 @@ public class BenefitRiskMeasurementTableModelTest {
 				assertEquals(expected.getMu(), actual.getMu(), 0.000001);
 				assertEquals(expected.getSigma(), actual.getSigma(), 0.000001);
 			}
-	}
-
-	@Test
-	public void testGetValueAtAbsolute() {
-		d_pm = new BenefitRiskMeasurementTableModel<Drug>(d_brAnalysis, d_brAnalysis.getAbsoluteMeasurementSource());
-		for (int i=0; i < d_brAnalysis.getDrugs().size(); ++i) {
-			Drug drug = d_brAnalysis.getDrugs().get(i);
-			for (int j=0; j < d_brAnalysis.getCriteria().size(); ++j) {
-				OutcomeMeasure om = d_brAnalysis.getCriteria().get(j);
-				GaussianBase expected = (GaussianBase)d_brAnalysis.getAbsoluteEffectDistribution(drug, om);
-				GaussianBase actual = (GaussianBase) d_pm.getValueAt(i, j+1);
-				assertEquals(expected.getMu(), actual.getMu(), 0.000001);
-				assertEquals(expected.getSigma(), actual.getSigma(), 0.000001);
-			}
-		}
 	}
 }

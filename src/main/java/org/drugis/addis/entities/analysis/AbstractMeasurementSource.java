@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.Entity;
-import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.relativeeffect.Distribution;
 
 public abstract class AbstractMeasurementSource<Alternative extends Entity> implements MeasurementSource<Alternative> {
 	List<Listener> d_listeners = new ArrayList<Listener>(); 
@@ -41,7 +39,4 @@ public abstract class AbstractMeasurementSource<Alternative extends Entity> impl
 			l.notifyMeasurementsChanged();
 		}
 	}
-
-	abstract public Distribution getMeasurement(Alternative a, OutcomeMeasure criterion);
-	
 }

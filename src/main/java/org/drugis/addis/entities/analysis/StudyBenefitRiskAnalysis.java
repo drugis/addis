@@ -59,11 +59,9 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 	private List<Arm> d_alternatives;
 	private AnalysisType d_analysisType;
 	
-	private class AbsoluteMeasurementSource extends AbstractMeasurementSource<Arm> {
-		public Distribution getMeasurement(Arm alternative, OutcomeMeasure criterion) {
-			return StudyBenefitRiskAnalysis.this.getMeasurement(alternative, criterion);
-		}
+	private class StudyMeasurementSource extends AbstractMeasurementSource<Arm> {
 	}
+	
 	public StudyBenefitRiskAnalysis(String name, Indication indication, Study study, 
 			List<OutcomeMeasure> criteria, List<Arm> alternatives, AnalysisType analysisType) {
 		d_name = name;
@@ -185,8 +183,8 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 		return getName();
 	}
 
-	public MeasurementSource<Arm> getAbsoluteMeasurementSource() {
-		return new AbsoluteMeasurementSource();
+	public MeasurementSource<Arm> getMeasurementSource() {
+		return new StudyMeasurementSource();
 	}
 
 	public AnalysisType getAnalysisType() {

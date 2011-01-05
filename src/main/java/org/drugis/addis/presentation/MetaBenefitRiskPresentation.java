@@ -147,7 +147,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	}
 	
 	public BenefitRiskMeasurementTableModel<Drug> getMeasurementTableModel() {
-		return new BenefitRiskMeasurementTableModel<Drug>(getBean(), getBean().getAbsoluteMeasurementSource());
+		return new BenefitRiskMeasurementTableModel<Drug>(getBean());
 	}
 
 	public Drug getBaseline() {

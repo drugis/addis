@@ -57,7 +57,6 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.addis.mcmcmodel.BaselineMeanDifferenceModel;
 import org.drugis.addis.mcmcmodel.BaselineOddsModel;
-import org.drugis.addis.presentation.AllSummariesDefinedModel;
 import org.drugis.addis.util.EnumXMLFormat;
 import org.drugis.addis.util.XMLPropertiesFormat;
 import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
@@ -74,6 +73,19 @@ import org.drugis.mtc.summary.Summary;
 import scala.actors.threadpool.Arrays;
 
 public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<Drug> {
+	private final class MetaMeasurementSource extends AbstractMeasurementSource<Drug> {
+		public MetaMeasurementSource() {
+			PropertyChangeListener l = new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					notifyListeners();
+				}
+			};
+			for (Summary s : getEffectSummaries()) {
+				s.addPropertyChangeListener(l);
+			}
+		}
+	}
+
 	private String d_name;
 	private Indication d_indication;
 	private List<OutcomeMeasure> d_outcomeMeasures;
@@ -86,38 +98,6 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	public static String PROPERTY_DRUGS = "drugs";
 	public static String PROPERTY_BASELINE = "baseline";
 	public static String PROPERTY_METAANALYSES = "metaAnalyses";
-	
-	private class AbsoluteMeasurementSource extends AbstractMeasurementSource<Drug> {
-		public AbsoluteMeasurementSource() {
-			List<Summary> summaryList = getEffectSummaries();
-			AllSummariesDefinedModel allSummariesDefinedModel = new AllSummariesDefinedModel(summaryList);
-			allSummariesDefinedModel.addValueChangeListener(new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent evt) {
-					if (evt.getNewValue().equals(true)) notifyListeners();
-				}
-			});
-		}
-		
-		public Distribution getMeasurement(Drug alternative, OutcomeMeasure criterion) {
-			return getAbsoluteEffectDistribution(alternative, criterion);
-		}
-	}
-
-	private class RelativeMeasurementSource extends AbstractMeasurementSource<Drug> {
-		public RelativeMeasurementSource() {
-			List<Summary> summaryList = getRelativeEffectSummaries();
-			AllSummariesDefinedModel allSummariesDefinedModel = new AllSummariesDefinedModel(summaryList);
-			allSummariesDefinedModel.addValueChangeListener(new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent evt) {
-					if (evt.getNewValue().equals(true)) notifyListeners();
-				}
-			});
-		}
-
-		public Distribution getMeasurement(Drug alternative, OutcomeMeasure criterion) {
-			return getRelativeEffectDistribution(alternative, criterion);
-		}
-	}
 	
 	private MetaBenefitRiskAnalysis() {
 		d_baselineModelMap = new HashMap<OutcomeMeasure,AbstractBaselineModel<?>>();
@@ -269,14 +249,6 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 			return logOdds == null ? null : new LogitGaussian(logOdds.getMu(), logOdds.getSigma());
 		}
 		return getAbsoluteEffectDistribution(d, om);
-	}
-	
-	public MeasurementSource<Drug> getAbsoluteMeasurementSource() {
-		return new AbsoluteMeasurementSource();
-	}
-	
-	public MeasurementSource<Drug> getRelativeMeasurementSource() {
-		return new RelativeMeasurementSource();
 	}
 	
 	/**
@@ -443,5 +415,9 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		List<Drug> alternatives = getDrugs();
 		alternatives.remove(getBaseline());
 		return alternatives;
+	}
+
+	public MeasurementSource<Drug> getMeasurementSource() {
+		return new MetaMeasurementSource();
 	}
 }

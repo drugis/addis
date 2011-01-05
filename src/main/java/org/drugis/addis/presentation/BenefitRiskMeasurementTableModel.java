@@ -27,7 +27,6 @@ import javax.swing.table.AbstractTableModel;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.MeasurementSource;
 import org.drugis.addis.entities.analysis.MeasurementSource.Listener;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 
@@ -35,12 +34,10 @@ import org.drugis.addis.entities.relativeeffect.Distribution;
 public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extends AbstractTableModel {
 	
 	protected final BenefitRiskAnalysis<Alternative> d_br;
-	private final MeasurementSource<Alternative> d_source;
 	
-	public BenefitRiskMeasurementTableModel(BenefitRiskAnalysis<Alternative> bra, MeasurementSource<Alternative> source) {
+	public BenefitRiskMeasurementTableModel(BenefitRiskAnalysis<Alternative> bra) {
 		d_br = bra;
-		d_source = source;
-		d_source.addMeasurementsChangedListener(new Listener() {
+		d_br.getMeasurementSource().addMeasurementsChangedListener(new Listener() {
 			public void notifyMeasurementsChanged() {
 				fireTableDataChanged();
 			}

@@ -26,21 +26,17 @@ import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.MeasurementSource;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MeasurementSource.Listener;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 
 @SuppressWarnings("serial")
-public class BRRelativeMeasurementTableModel extends AbstractTableModel {
-	
+public class BRRelativeMeasurementTableModel extends AbstractTableModel {	
 	protected final MetaBenefitRiskAnalysis d_br;
-	private MeasurementSource<Drug> d_source;
 	
 	public BRRelativeMeasurementTableModel(MetaBenefitRiskAnalysis bra) {
 		d_br = bra;
-		d_source = bra.getRelativeMeasurementSource();
-		d_source.addMeasurementsChangedListener(new Listener() {
+		d_br.getMeasurementSource().addMeasurementsChangedListener(new Listener() {
 			public void notifyMeasurementsChanged() {
 				fireTableDataChanged();
 			}
@@ -82,6 +78,6 @@ public class BRRelativeMeasurementTableModel extends AbstractTableModel {
 		if (columnIndex == 0) return om.toString();
 
 		Drug a = d_br.getNonBaselineAlternatives().get(columnIndex - 1);
-		return d_source.getMeasurement(a, om);
+		return d_br.getRelativeEffectDistribution(a, om);
 	}
 }
