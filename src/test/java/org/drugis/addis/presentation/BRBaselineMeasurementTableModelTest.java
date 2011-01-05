@@ -25,7 +25,6 @@ package org.drugis.addis.presentation;
 import static org.junit.Assert.assertEquals;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
@@ -68,9 +67,8 @@ public class BRBaselineMeasurementTableModelTest {
 	@Test
 	public void testGetValueAt() {
 		for (int j = 0; j < d_brAnalysis.getCriteria().size(); ++j) {
-			Drug drug = d_brAnalysis.getBaseline();
 			OutcomeMeasure om = d_brAnalysis.getCriteria().get(j);
-			GaussianBase expected = (GaussianBase) d_brAnalysis.getAbsoluteEffectDistribution(drug, om );
+			GaussianBase expected = (GaussianBase) d_brAnalysis.getBaselineDistribution(om);
 			GaussianBase actual = (GaussianBase) d_pm.getValueAt(j, 1);
 			assertEquals(expected.getMu(), actual.getMu(), 0.000001);
 			assertEquals(expected.getSigma(), actual.getSigma(), 0.000001);

@@ -300,7 +300,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	/**
 	 * The absolute effect of d on om given the assumed odds of the baseline treatment. 
 	 */
-	public GaussianBase getAbsoluteEffectDistribution(Drug d, OutcomeMeasure om) {
+	private GaussianBase getAbsoluteEffectDistribution(Drug d, OutcomeMeasure om) {
 		GaussianBase baseline = getBaselineDistribution(om);
 		GaussianBase relative = getRelativeEffectDistribution(d, om);
 		if (baseline == null || relative == null) return null;
@@ -321,6 +321,48 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 			}
 		}
 		return tasks;
+	}
+		
+	public AnalysisType getAnalysisType() {
+		return d_analysisType;
+	}
+
+	public List<Summary> getRelativeEffectSummaries() {
+		List<Summary> summaryList = new ArrayList<Summary>();
+		for (MetaAnalysis ma : getMetaAnalyses()) {
+			if (ma instanceof NetworkMetaAnalysis) {
+				for(Drug d: getNonBaselineAlternatives()) {
+					Parameter p = new BasicParameter(new Treatment(getBaseline().getName()), new Treatment(d.getName()));
+					NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
+					summaryList.add(nma.getNormalSummary(nma.getConsistencyModel(), p));
+				}
+			}
+		}
+		return summaryList;
+	}
+
+	public List<Summary> getAbsoluteEffectSummaries() {
+		List<Summary> summaryList = new ArrayList<Summary>();
+		for (OutcomeMeasure om : getCriteria()) {
+			summaryList.add(getBaselineModel(om).getSummary());
+		}
+		return summaryList;
+	}
+
+	public List<Summary> getEffectSummaries() {
+		List<Summary> summaryList = getAbsoluteEffectSummaries();
+		summaryList.addAll(getRelativeEffectSummaries());
+		return summaryList;
+	}
+
+	public List<Drug> getNonBaselineAlternatives() {
+		List<Drug> alternatives = getDrugs();
+		alternatives.remove(getBaseline());
+		return alternatives;
+	}
+
+	public MeasurementSource<Drug> getMeasurementSource() {
+		return new MetaMeasurementSource();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -376,48 +418,4 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 
 			}
 		};
-		
-	public AnalysisType getAnalysisType() {
-		return d_analysisType;
-	}
-
-	public List<Summary> getRelativeEffectSummaries() {
-		List<Summary> summaryList = new ArrayList<Summary>();
-		for (MetaAnalysis ma : getMetaAnalyses()) {
-			if (ma instanceof NetworkMetaAnalysis) {
-				for(Drug d: getAlternatives()) {
-					if (!d.equals(getBaseline())) {
-						Parameter p = new BasicParameter(new Treatment(getBaseline().getName()), new Treatment(d.getName()));
-						NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
-						summaryList.add(nma.getNormalSummary(nma.getConsistencyModel(), p));
-					}
-				}
-			}
-		}
-		return summaryList;
-	}
-
-	public List<Summary> getAbsoluteEffectSummaries() {
-		List<Summary> summaryList = new ArrayList<Summary>();
-		for (OutcomeMeasure om : getCriteria()) {
-			summaryList.add(getBaselineModel(om).getSummary());
-		}
-		return summaryList;
-	}
-
-	public List<Summary> getEffectSummaries() {
-		List<Summary> summaryList = getAbsoluteEffectSummaries();
-		summaryList.addAll(getRelativeEffectSummaries());
-		return summaryList;
-	}
-
-	public List<Drug> getNonBaselineAlternatives() {
-		List<Drug> alternatives = getDrugs();
-		alternatives.remove(getBaseline());
-		return alternatives;
-	}
-
-	public MeasurementSource<Drug> getMeasurementSource() {
-		return new MetaMeasurementSource();
-	}
 }

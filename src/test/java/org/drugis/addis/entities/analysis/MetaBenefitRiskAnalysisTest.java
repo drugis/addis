@@ -44,6 +44,7 @@ import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
+import org.drugis.addis.entities.relativeeffect.LogitGaussian;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.util.XMLHelper;
 import org.junit.Before;
@@ -101,7 +102,7 @@ public class MetaBenefitRiskAnalysisTest {
 	}
 	
 	@Test
-	public void testGetAbsoluteEffect() {
+	public void testGetMeasurement() {
 		OutcomeMeasure om = ExampleData.buildEndpointHamd();
 		Drug fluox = ExampleData.buildDrugFluoxetine();
 		Drug parox = ExampleData.buildDrugParoxetine();
@@ -111,17 +112,17 @@ public class MetaBenefitRiskAnalysisTest {
 		double expectedMu = baseline.getMu() + relative.getMu();
 		double expectedSigma = Math.sqrt(Math.pow(baseline.getSigma(), 2) + Math.pow(relative.getSigma(), 2));
 
-		LogGaussian absoluteF = (LogGaussian)d_BRAnalysis.getAbsoluteEffectDistribution(fluox, om);
+		LogitGaussian absoluteF = (LogitGaussian)d_BRAnalysis.getMeasurement(fluox, om);
 		assertEquals(expectedMu, absoluteF.getMu(), 0.0000001);
 		assertEquals(expectedSigma, absoluteF.getSigma(), 0.0000001);
 
-		LogGaussian absoluteP = (LogGaussian)d_BRAnalysis.getAbsoluteEffectDistribution(parox, om);
+		LogitGaussian absoluteP = (LogitGaussian)d_BRAnalysis.getMeasurement(parox, om);
 		assertEquals(baseline.getMu(), absoluteP.getMu(), 0.0000001);
 		assertEquals(baseline.getSigma(), absoluteP.getSigma(), 0.0001);
 	}
 	
 	@Test
-	public void testGetAbsoluteEffectContinuous() {
+	public void testGetMeasurementContinuous() {
 		OutcomeMeasure om = ExampleData.buildEndpointCgi();
 		Drug fluox = ExampleData.buildDrugFluoxetine();
 		Drug parox = ExampleData.buildDrugParoxetine();
@@ -132,11 +133,11 @@ public class MetaBenefitRiskAnalysisTest {
 		double expectedMu = baseline.getMu() + relative.getMu();
 		double expectedSigma = Math.sqrt(Math.pow(baseline.getSigma(), 2) + Math.pow(relative.getSigma(), 2));
 
-		Gaussian absoluteP = (Gaussian)br.getAbsoluteEffectDistribution(parox, om);
+		Gaussian absoluteP = (Gaussian)br.getMeasurement(parox, om);
 		assertEquals(expectedMu, absoluteP.getMu(), 0.0000001);
 		assertEquals(expectedSigma, absoluteP.getSigma(), 0.0000001);
 		
-		Gaussian absoluteF = (Gaussian)br.getAbsoluteEffectDistribution(fluox, om);
+		Gaussian absoluteF = (Gaussian)br.getMeasurement(fluox, om);
 		assertEquals(baseline.getMu(), absoluteF.getMu(), 0.0000001);
 		assertEquals(baseline.getSigma(), absoluteF.getSigma(), 0.0001);
 	}

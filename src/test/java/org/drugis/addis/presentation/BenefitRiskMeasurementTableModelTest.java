@@ -71,14 +71,15 @@ public class BenefitRiskMeasurementTableModelTest {
 	
 	@Test
 	public void testGetValueAt() {
-		for (int i=0; i<d_brAnalysis.getDrugs().size(); ++i)
-			for (int j=0; j<d_brAnalysis.getCriteria().size(); ++j) {
+		for (int i = 0; i < d_brAnalysis.getDrugs().size(); ++i) {
+			for (int j = 0; j < d_brAnalysis.getCriteria().size(); ++j) {
 				Drug drug = d_brAnalysis.getDrugs().get(i);
 				OutcomeMeasure om = d_brAnalysis.getCriteria().get(j);
-				GaussianBase expected = (GaussianBase)d_brAnalysis.getAbsoluteEffectDistribution(drug, om);
+				GaussianBase expected = (GaussianBase)d_brAnalysis.getMeasurement(drug, om);
 				GaussianBase actual = (GaussianBase) d_pm.getValueAt(i, j+1);
 				assertEquals(expected.getMu(), actual.getMu(), 0.000001);
 				assertEquals(expected.getSigma(), actual.getSigma(), 0.000001);
 			}
+		}
 	}
 }

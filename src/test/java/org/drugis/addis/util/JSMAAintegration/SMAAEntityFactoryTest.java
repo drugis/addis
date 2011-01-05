@@ -90,7 +90,7 @@ public class SMAAEntityFactoryTest {
 				if (d.equals(d_brAnalysis.getBaseline()))
 					continue;
 				fi.smaa.jsmaa.model.Measurement actualMeasurement = smaaModel.getMeasurement(d_smaaFactory.getCriterion(om), d_smaaFactory.getAlternative(d));
-				GaussianBase expDistribution = d_brAnalysis.getAbsoluteEffectDistribution(d, om);
+				GaussianBase expDistribution = (GaussianBase) d_brAnalysis.getMeasurement(d, om);
 				assertEquals(expDistribution.getMu(), ((LogitNormalMeasurement) actualMeasurement).getMean(), 0.0001);
 				assertEquals(expDistribution.getSigma(), ((LogitNormalMeasurement) actualMeasurement).getStDev(), 0.0001);
 			}
