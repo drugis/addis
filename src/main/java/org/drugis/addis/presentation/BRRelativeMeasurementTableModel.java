@@ -24,22 +24,22 @@ package org.drugis.addis.presentation;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MeasurementSource;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MeasurementSource.Listener;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 
 @SuppressWarnings("serial")
-public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extends AbstractTableModel {
+public class BRRelativeMeasurementTableModel extends AbstractTableModel {
 	
-	protected final BenefitRiskAnalysis<Alternative> d_br;
-	private final MeasurementSource<Alternative> d_source;
+	protected final MetaBenefitRiskAnalysis d_br;
+	private MeasurementSource<Drug> d_source;
 	
-	public BenefitRiskMeasurementTableModel(BenefitRiskAnalysis<Alternative> bra, MeasurementSource<Alternative> source) {
+	public BRRelativeMeasurementTableModel(MetaBenefitRiskAnalysis bra) {
 		d_br = bra;
-		d_source = source;
+		d_source = bra.getRelativeMeasurementSource();
 		d_source.addMeasurementsChangedListener(new Listener() {
 			public void notifyMeasurementsChanged() {
 				fireTableDataChanged();
@@ -48,11 +48,12 @@ public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extend
 	}
 	
 	public int getColumnCount() {
-		return d_br.getCriteria().size()+1;
+		// One column for each non-baseline alternative and one for the criteria names.
+		return d_br.getAlternatives().size();
 	}
 
 	public int getRowCount() {
-		return d_br.getAlternatives().size();
+		return d_br.getCriteria().size();
 	}
 
 	@Override
@@ -63,9 +64,9 @@ public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extend
 	@Override
 	public String getColumnName(int index) {
 		if (index == 0) {
-			return "Alternative";
+			return "Criterion";
 		}
-		return d_br.getCriteria().get(index-1).toString();	
+		return d_br.getNonBaselineAlternatives().get(index-1).toString();	
 	}
 	
 	@Override
@@ -73,15 +74,14 @@ public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extend
 		if (index == 0) {
 			return String.class;
 		}
-		return Distribution.class;	
+		return Distribution.class;
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		Alternative a = d_br.getAlternatives().get(rowIndex);
+		OutcomeMeasure om = d_br.getCriteria().get(rowIndex);
+		if (columnIndex == 0) return om.toString();
 
-		if (columnIndex == 0) return a.toString();
-
-		OutcomeMeasure om = d_br.getCriteria().get(columnIndex-1);
-		return d_br.getMeasurement(a, om);
+		Drug a = d_br.getNonBaselineAlternatives().get(columnIndex - 1);
+		return d_source.getMeasurement(a, om);
 	}
 }

@@ -125,20 +125,5 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		return d_view.buildPanel();
 	}
 
-	protected JPanel buildMeasurementsPanel() {
-		FormLayout layout = new FormLayout(
-				"pref:grow:fill",
-				"p, 3dlu, p"
-				);
-		CellConstraints cc = new CellConstraints();
-		PanelBuilder builder = new PanelBuilder(layout, new JPanel());
-		builder.setDefaultDialogBorder();
-		builder.setOpaque(true);
-		
-		builder.addSeparator("Measurements", cc.xy(1, 1));
-		builder.add(buildMeasurementsPart(), cc.xy(1, 3));
-		return builder.getPanel();
-	}
-
-	protected abstract JComponent buildMeasurementsPart();
+	protected abstract JPanel buildMeasurementsPanel();
 }

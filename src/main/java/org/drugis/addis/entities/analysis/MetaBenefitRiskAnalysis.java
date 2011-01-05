@@ -266,7 +266,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	public Distribution getMeasurement(Drug d, OutcomeMeasure om) {
 		if (om.getType() == Type.RATE) {
 			GaussianBase logOdds = getAbsoluteEffectDistribution(d, om);
-			return new LogitGaussian(logOdds.getMu(), logOdds.getSigma());
+			return logOdds == null ? null : new LogitGaussian(logOdds.getMu(), logOdds.getSigma());
 		}
 		return getAbsoluteEffectDistribution(d, om);
 	}
@@ -437,5 +437,11 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		List<Summary> summaryList = getAbsoluteEffectSummaries();
 		summaryList.addAll(getRelativeEffectSummaries());
 		return summaryList;
+	}
+
+	public List<Drug> getNonBaselineAlternatives() {
+		List<Drug> alternatives = getDrugs();
+		alternatives.remove(getBaseline());
+		return alternatives;
 	}
 }

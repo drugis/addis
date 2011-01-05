@@ -25,6 +25,7 @@ package org.drugis.addis.gui.builder;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
@@ -42,16 +43,19 @@ public class StudyBenefitRiskView extends AbstractBenefitRiskView<StudyBenefitRi
 		super(model, mainWindow);
 	}
 	
-	public JPanel buildMeasurementsPart() {
+	public JPanel buildMeasurementsPanel() {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = new FormLayout("pref:grow:fill",
 				"p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
-		if(d_pm instanceof StudyBenefitRiskPresentation) {
-			builder.add(AuxComponentFactory.createHtmlField("<p>Measurements: incidence approximated with Beta-distribution, or continuous variables approximated with a Normal distribution.</p>"),
-					cc.xy(1, 1));
-			builder.add(new TablePanel(new EnhancedTable(((StudyBenefitRiskPresentation) d_pm).getMeasurementTableModel())), cc.xy(1, 3));
-		}
+		builder.setDefaultDialogBorder();
+
+		builder.add(AuxComponentFactory.createHtmlField("<p>Measurements: incidence approximated with Beta-distribution, or continuous variables approximated with a Normal distribution.</p>"),
+				cc.xy(1, 1));
+		EnhancedTable table = new EnhancedTable(((StudyBenefitRiskPresentation) d_pm).getMeasurementTableModel());
+		table.setDefaultRenderer(Distribution.class, new DistributionQuantileCellRenderer());
+		builder.add(new TablePanel(table), cc.xy(1, 3));
+
 		return builder.getPanel();
 	}
 

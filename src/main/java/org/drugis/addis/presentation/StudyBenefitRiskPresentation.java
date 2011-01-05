@@ -36,7 +36,7 @@ public class StudyBenefitRiskPresentation extends
 	}
 
 	public TableModel getMeasurementTableModel() {
-		return new BenefitRiskMeasurementTableModel<Arm>(getBean(), getBean().getAbsoluteMeasurementSource() , d_pmf);
+		return new BenefitRiskMeasurementTableModel<Arm>(getBean(), getBean().getAbsoluteMeasurementSource());
 	}
 
 	public synchronized void startAllSimulations() {

@@ -24,6 +24,7 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
@@ -34,63 +35,57 @@ import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BenefitRiskMeasurementTableModelTest {
-
-	private BenefitRiskMeasurementTableModel<Drug> d_pm;
+public class BRRelativeMeasurementTableModelTest {
+	private BRRelativeMeasurementTableModel d_pm;
 	private MetaBenefitRiskAnalysis d_brAnalysis;
 
 	@Before
 	public void setUp() {
 		d_brAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
-		d_pm = new BenefitRiskMeasurementTableModel<Drug>(d_brAnalysis, d_brAnalysis.getRelativeMeasurementSource());
+		d_pm = new BRRelativeMeasurementTableModel(d_brAnalysis);
 	}
 	
 	@Test
 	public void testGetColumnCount() {
-		assertEquals(d_brAnalysis.getCriteria().size() + 1, d_pm.getColumnCount());
+		assertEquals(d_brAnalysis.getDrugs().size(), d_pm.getColumnCount());
 	}
 	
 	@Test
 	public void testGetRowCount() {
-		assertEquals(d_brAnalysis.getDrugs().size(), d_pm.getRowCount());
+		assertEquals(d_brAnalysis.getCriteria().size(), d_pm.getRowCount());
 	}
 	
 	@Test
-	public void testGetDrugNames() {
-		for (int i=0; i<d_brAnalysis.getDrugs().size(); ++i)
-			assertEquals(d_brAnalysis.getDrugs().get(i).getName(), d_pm.getValueAt(i, 0));
+	public void testGetColumnNames() {
+		List<Drug> drugs = getNonBaselines();
+		for (int i = 0; i < drugs.size(); ++i) {
+			assertEquals(drugs.get(i).getName(), d_pm.getColumnName(i + 1));
+		}
+	}
+
+	private List<Drug> getNonBaselines() {
+		List<Drug> drugs = new ArrayList<Drug>(d_brAnalysis.getDrugs());
+		drugs.remove(d_brAnalysis.getBaseline());
+		return drugs;
 	}
 	
 	@Test
 	public void testGetOutcomeNames() {
 		List<OutcomeMeasure> outcomeMeasures = d_brAnalysis.getCriteria();
-		for (int j=0; j<outcomeMeasures.size(); ++j) {
-			assertEquals(outcomeMeasures.get(j).toString(), d_pm.getColumnName(j+1));
+		for (int j = 0; j < outcomeMeasures.size(); ++j) {
+			assertEquals(outcomeMeasures.get(j).toString(), d_pm.getValueAt(j, 0));
 		}
-	}
-	
-	@Test
-	public void testGetValueAt() {
-		for (int i=0; i<d_brAnalysis.getDrugs().size(); ++i)
-			for (int j=0; j<d_brAnalysis.getCriteria().size(); ++j) {
-				Drug drug = d_brAnalysis.getDrugs().get(i);
-				OutcomeMeasure om = d_brAnalysis.getCriteria().get(j);
-				GaussianBase expected = (GaussianBase)d_brAnalysis.getAbsoluteEffectDistribution(drug, om);
-				GaussianBase actual = (GaussianBase) d_pm.getValueAt(i, j+1);
-				assertEquals(expected.getMu(), actual.getMu(), 0.000001);
-				assertEquals(expected.getSigma(), actual.getSigma(), 0.000001);
-			}
 	}
 
 	@Test
-	public void testGetValueAtAbsolute() {
-		d_pm = new BenefitRiskMeasurementTableModel<Drug>(d_brAnalysis, d_brAnalysis.getAbsoluteMeasurementSource());
-		for (int i=0; i < d_brAnalysis.getDrugs().size(); ++i) {
-			Drug drug = d_brAnalysis.getDrugs().get(i);
+	public void testGetValueAt() {
+		List<Drug> drugs = getNonBaselines();
+		for (int i = 0; i < drugs.size(); ++i) {
 			for (int j=0; j < d_brAnalysis.getCriteria().size(); ++j) {
+				Drug drug = drugs.get(i);
 				OutcomeMeasure om = d_brAnalysis.getCriteria().get(j);
-				GaussianBase expected = (GaussianBase)d_brAnalysis.getAbsoluteEffectDistribution(drug, om);
-				GaussianBase actual = (GaussianBase) d_pm.getValueAt(i, j+1);
+				GaussianBase expected = (GaussianBase) d_brAnalysis.getRelativeEffectDistribution(drug, om);
+				GaussianBase actual = (GaussianBase) d_pm.getValueAt(j, i + 1);
 				assertEquals(expected.getMu(), actual.getMu(), 0.000001);
 				assertEquals(expected.getSigma(), actual.getSigma(), 0.000001);
 			}

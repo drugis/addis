@@ -35,7 +35,7 @@ import org.drugis.mtc.summary.QuantileSummary;
 
 public class SummaryCellRenderer implements TableCellRenderer {
 
-	private static final DecimalFormat s_format = new DecimalFormat("#.##");
+	private static final DecimalFormat s_format = new DecimalFormat("0.00");
 
 	public Component getTableCellRendererComponent(JTable table, Object cellContents,
 			boolean isSelected, boolean hasFocus, int row, int column) {
@@ -88,7 +88,7 @@ public class SummaryCellRenderer implements TableCellRenderer {
 		return str;
 	}
 	
-	 String format(double d) {
+	public static String format(double d) {
     	return s_format.format(d);
 	 }
 }

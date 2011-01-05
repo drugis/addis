@@ -62,6 +62,9 @@ public class EnhancedTableHeader extends JTableHeader {
 		}
 		for (int i = 0; i < rows; i++) {
 			renderer = table.getCellRenderer(i, modelIndex);
+			if (renderer == null) {
+				renderer =  table.getDefaultRenderer(Object.class);
+			}
 			Object valueAt = table.getValueAt(i, modelIndex);
 			component = renderer.getTableCellRendererComponent(table, valueAt, false, false, i, modelIndex);
 			
