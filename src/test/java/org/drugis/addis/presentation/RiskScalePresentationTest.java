@@ -48,7 +48,7 @@ public class RiskScalePresentationTest {
 	@Test
 	public void testRiskModelShouldGiveCorrectValue() {
 		Object actual = d_pm.getModel(OddsRatioScalePresentation.PROPERTY_RISK).getValue();
-		Object expected = d_criterion.getScale();
+		Object expected = RiskScalePresentation.convertInterval(d_criterion.getScale());
 		assertEquals(expected, actual);
 	}
 	
@@ -56,7 +56,7 @@ public class RiskScalePresentationTest {
 	public void testRiskModelShouldFireOnScaleChange() {
 		ValueModel model = d_pm.getModel(OddsRatioScalePresentation.PROPERTY_RISK);
 		fi.smaa.jsmaa.model.Interval interval = new fi.smaa.jsmaa.model.Interval(0.8, 0.99);
-		Object expected = interval;
+		Object expected = RiskScalePresentation.convertInterval(interval);
 		assertValueModelFires(model, interval, expected);
 	}
 
@@ -71,7 +71,7 @@ public class RiskScalePresentationTest {
 	public void testRiskDifferenceModelShouldFireOnScaleChange() {
 		ValueModel model = d_pm.getModel(OddsRatioScalePresentation.PROPERTY_RISK_DIFFERENCE);
 		fi.smaa.jsmaa.model.Interval interval = new fi.smaa.jsmaa.model.Interval(0.8, 0.99);
-		Object expected = d_criterion.getScale().getEnd() - d_criterion.getScale().getStart();
+		Object expected = interval.getEnd() - interval.getStart();
 		assertValueModelFires(model, interval, expected);
 	}
 	
