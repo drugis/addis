@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="addis-data">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="indications" type="Indications"/>
+				<xs:element name="endpoints" type="Endpoints"/>
+				<xs:element name="adverseEvents" type="AdverseEvents"/>
+				<xs:element name="drugs" type="Drugs"/>
+				<xs:element name="populationCharacteristics" type="PopulationCharacteristics"/>
+				<xs:element name="studies" type="Studies"/>
+			</xs:sequence>
+		</xs:complexType>
+		<xs:key name="drugNameKey">
+			<xs:selector xpath="drugs/drug"/>
+			<xs:field xpath="@name"/>
+		</xs:key>
+		<xs:keyref name="armsdrugdummy" refer="drugNameKey">
+			<xs:selector xpath="studies/study/arms/arm/drug"/>
+			<xs:field xpath="@name"/>
+		</xs:keyref>
+		
+		<xs:key name="indicationNameKey">
+			<xs:selector xpath="indications/indication"/>
+			<xs:field xpath="@name"/>
+		</xs:key>
+		<xs:keyref name="studyIndicationdummy" refer="indicationNameKey">
+			<xs:selector xpath="studies/study/indication"/>
+			<xs:field xpath="@name"/>
+		</xs:keyref>
+		
+		<xs:key name="adverseEventNameKey">
+			<xs:selector xpath="adverseEvents/adverseEvent"/>
+			<xs:field xpath="@name"/>
+		</xs:key>
+		<xs:keyref name="studyAdverseEventdummy" refer="adverseEventNameKey">
+			<xs:selector xpath="studies/study/adverseEvents/adverseEvent"/>
+			<xs:field xpath="@name"/>
+		</xs:keyref>
+	</xs:element>
+	<xs:complexType name="Indications">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="indication" type="Indication"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Endpoints">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="endpoint" type="OutcomeMeasure"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AdverseEvents">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="adverseEvent" type="OutcomeMeasure"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Drugs">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="drug" type="Drug"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PopulationCharacteristics">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="populationCharacteristic" type="OutcomeMeasure"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Studies">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="study" type="Study"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Indication">
+		<xs:attribute name="code" type="xs:integer"/>
+		<xs:attribute name="name" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="OutcomeMeasure">
+		<xs:choice>
+			<xs:element name="continuous" type="ContinuousVariable"/>
+			<xs:element name="rate" type="RateVariable"/>
+			<xs:element name="categorical" type="CategoricalVariable"/>
+		</xs:choice>
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="description" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="ContinuousVariable">
+		<xs:attribute name="direction" type="Direction"/>
+		<xs:attribute name="unitOfMeasurement" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="RateVariable">
+		<xs:attribute name="direction" type="Direction"/>
+	</xs:complexType>
+	<xs:complexType name="CategoricalVariable">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="category" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Drug">
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="atcCode" type="Alphanumeric"/>
+	</xs:complexType>
+	<xs:complexType name="Study">
+		<xs:sequence>
+			<xs:element name = "indication" type="IndicationReference"/>
+			<xs:element name = "characteristics" type="Characteristics"/>
+			<xs:element name = "adverseEvents" type="AdverseEventReferences"/>
+			<xs:element name="arms" type="Arms"/>
+		</xs:sequence>
+		<xs:attribute name = "StudyId" type="xs:string" />
+	</xs:complexType>
+	
+	<xs:complexType name="AdverseEventReferences">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name = "adverseEvent" type="AdverseEventReference"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Characteristics">
+	<xs:sequence>
+		<xs:element name = "title" type="xs:string"/>
+		<xs:element name = "allocation" type="Allocation" default="UNKNOWN" minOccurs="0"/>
+		<xs:element name = "blinding" type="Blinding" default="UNKNOWN" minOccurs="0"/>
+		<xs:element name="centers" type="xs:integer"  minOccurs="0"/>
+		<xs:element name = "objective" type="xs:string"  minOccurs="0"/>
+		<xs:element name="studyStart" type="xs:date"  minOccurs="0"/>
+		<xs:element name="studyEnd" type="xs:date"  minOccurs="0"/>
+		<xs:element name = "status" type="Status" default="UNKNOWN" minOccurs="0"/>
+		<!-- check this, because there should always be a inclusion, exclusion and source -->
+		<xs:element name = "inclusion" type="xs:string" default="UNKNOWN" minOccurs="0"/>
+		<xs:element name = "exclusion" type="xs:string" default="UNKNOWN" minOccurs="0"/>
+		<xs:element name = "references" type="References"/>
+		<xs:element name = "source" type="Source" default="MANUAL" minOccurs="0"/>
+		<xs:element name = "creationDate" type="xs:date" minOccurs="0"/>
+	</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="References">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:choice>
+				<xs:element name = "pubMedId" type="xs:integer"/> 
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="Status">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NOT_YET_RECRUITING"/>
+			<xs:enumeration value="RECRUITING"/>
+			<xs:enumeration value="ENROLLING"/>
+			<xs:enumeration value="ACTIVE"/>
+			<xs:enumeration value="COMPLETED"/>			
+			<xs:enumeration value="SUSPENDED"/>
+			<xs:enumeration value="TERMINATED"/>
+			<xs:enumeration value="WITHDRAWN"/>						
+			<xs:enumeration value="UNKNOWN"/>	
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="Blinding">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OPEN"/>
+			<xs:enumeration value="SINGLE_BLIND"/>
+			<xs:enumeration value="DOUBLE_BLIND"/>
+			<xs:enumeration value="TRIPLE_BLIND"/>
+			<xs:enumeration value="UNKNOWN"/>	
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Source">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="MANUAL"/>
+			<xs:enumeration value="CLINICALTRIALS"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="Allocation">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="RANDOMIZED"/>
+			<xs:enumeration value="NONRANDOMIZED"/>
+			<xs:enumeration value="UNKNOWN"/>	
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="Direction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="LOWER_IS_BETTER"/>
+			<xs:enumeration value="HIGHER_IS_BETTER"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Alphanumeric">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="([a-zA-Z0-9])*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="Arms">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="arm" type="Arm"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Arm">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="flexibleDose" type="FlexibleDose"/>
+				<xs:element name="fixedDose" type="FixedDose"/>
+			</xs:choice>
+			<xs:element name="drug" type="DrugReference"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:integer"/>
+		<xs:attribute name="size" type="xs:integer"/>
+	</xs:complexType>
+	<xs:complexType name="FlexibleDose">
+		<xs:attribute name="minDose" type="xs:float"/>
+		<xs:attribute name="maxDose" type="xs:float"/>
+		<xs:attribute name="unit" type="Unit"/>
+	</xs:complexType>
+	<xs:complexType name="FixedDose">
+		<xs:attribute name="quantity" type="xs:float"/>
+		<xs:attribute name="unit" type="Unit"/>
+	</xs:complexType>
+	<xs:simpleType name="Unit">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="MILLIGRAMS_A_DAY"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="DrugReference">
+		<xs:attribute name="name" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="IndicationReference">
+		<xs:attribute name="name" type="xs:string"/>
+	</xs:complexType>
+		<xs:complexType name="AdverseEventReference">
+		<xs:attribute name="name" type="xs:string"/>
+	</xs:complexType>
+</xs:schema>

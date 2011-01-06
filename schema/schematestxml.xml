@@ -1,0 +1,68 @@
+
+
+<addis-data xsi:noNamespaceSchemaLocation="./ADDIS-Schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<indications>
+		<indication code="130" name="Erectile Dysfunction"/>
+		<indication code="2709" name="Eating Disorder"/>
+	</indications>
+	<endpoints>
+		<endpoint name="CGI Severity Change" description="Change from baseline CGI Severity of Illness score">
+			<continuous direction="HIGHER_IS_BETTER" unitOfMeasurement="Deviation from the baseline of CGI Severity of Illness score"/>
+		</endpoint>
+		<endpoint name="Dropouts" description="Number of patients dropping out of the study prematurely">
+			<rate direction="LOWER_IS_BETTER"/>
+		</endpoint>
+	</endpoints>
+	<adverseEvents>
+		<adverseEvent name="Abdominal Pain" description="">
+			<rate direction="LOWER_IS_BETTER"/>
+		</adverseEvent>
+		<adverseEvent name="Increased Duration Of Sleep" description="">
+			<rate direction="LOWER_IS_BETTER"/>
+		</adverseEvent>
+	</adverseEvents>
+	<drugs>
+		<drug name="Fluoxetine" atcCode="N013423"/>
+		<drug name="Paroxetine" atcCode="N0134233"/>
+	</drugs>
+	<populationCharacteristics>
+		<populationCharacteristic name="Gender" description="WHICH ONE IS IT">
+			<categorical>
+				<category>MALE</category>
+				<category>FEMALE</category>
+			</categorical>
+		</populationCharacteristic>
+	</populationCharacteristics>
+	<studies>
+		<study>
+			<indication name="Erectile Dysfunction"/>
+			<characteristics>
+				<title>Sertraline versus paroxetine in major depression: clinical outcome after six months of continuous therapy</title>
+				<allocation>RANDOMIZED</allocation>
+				<blinding>DOUBLE_BLIND</blinding>
+				<objective>Relatively little research is available comparing the efficacy and tolerability of selective serotonin reuptake inhibitors (SSRIs) during continuation therapy. This investigation reports the differential effect of 6 months of treatment with sertraline versus paroxetine for symptoms of depression, quality of life, and personality outcomes.</objective>
+				<status>COMPLETED</status>
+				<inclusion>The subjects were male and female outpatients, aged 18 years and older, who met DSM-III-R criteria for major depression and who had a 10-item Montgomery-Åsberg Depression Rating Scale (MADRS)9  score of 21 or more at baseline,      with less than 25% improvement on the MADRS during the washout period. Enrollment of fertile women was contingent upon a negative      result on a pregnancy test and stable use for 3 months of medically accepted contraception before study entry.</inclusion>
+				<exclusion>(1) current or past history of mania or hypomania, alcoholism or substance abuse, dementia, or epilepsy; (2) presence of psychotic depression or organic affective illness; (3) history of suicide attempts or current high suicide risk (&gt;4 on item 10 of the MADRS); (4) current use of any psychotropic medication, except for the use of one of three hypnotic/anxiolytic medications (nitrazepam [2.5-10 mg], flunitrazepam [0.5-2 mg], or oxazepam [15-25 mg]); (5) treatment with lithium in the month prior to the screening or with a monoamine oxidase inhibitor in the 2 weeks before the screening; (6) a history of significant intolerance or allergic reaction to sertraline or paroxetine; and (7) evidence of clinically significant hepatic or renal disease, any other acute or unstable medical condition, or use of any concomitant medication that might interfere with the safe conduct of the study.</exclusion>
+				<references>
+					<pubMedId>11106136</pubMedId>
+					<pubMedId>11106138</pubMedId>
+				</references>
+			</characteristics>
+			<adverseEvents>
+				<adverseEvent name="Abdominal Pain"/>
+				<adverseEvent name="Increased Duration Of Sleep"/>
+			</adverseEvents>
+			<arms>
+				<arm id="76" size="177">
+					<flexibleDose maxDose="40.0" minDose="20.0" unit="MILLIGRAMS_A_DAY"/>
+					<drug name="Fluoxetine"/>
+				</arm>
+				<arm id="77" size="176">
+					<fixedDose quantity="50.0" unit="MILLIGRAMS_A_DAY"/>
+					<drug name="Paroxetine"/>
+				</arm>
+			</arms>
+		</study>
+	</studies>
+</addis-data>
