@@ -112,8 +112,8 @@ public class AddisWindow extends JFrame {
 		});
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		setPreferredSize(new Dimension(Math.min(1020, screenSize.width), Math.min(764, screenSize.height)));
-		setMinimumSize(new Dimension(700, 500));
+		setPreferredSize(new Dimension(Math.min(1014, screenSize.width), Math.max(550, screenSize.height / 5 * 4)));
+		setMinimumSize(new Dimension(750, 550)); // fit the screen for 800x600 resolution
 
 		addWindowListener(new WindowAdapter() {
 			@Override
