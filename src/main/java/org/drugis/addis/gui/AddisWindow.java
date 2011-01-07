@@ -164,7 +164,7 @@ public class AddisWindow extends JFrame {
 	}
 
 	private JButton createToolbarButton(final CategoryKnowledge knowledge) {
-		String title = "Create " + knowledge.getSingularCapitalized();
+		String title = "New " + knowledge.getSingularCapitalized();
 		JButton topAddStudyButton = new JButton(title,
 				ImageLoader.getIcon(knowledge.getNewIconName()));
 		topAddStudyButton.setToolTipText(title);

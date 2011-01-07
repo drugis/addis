@@ -205,7 +205,7 @@ public class AuxComponentFactory {
 	 * Create a styles HTML text pane with a certain (HTML) body text. Use &lt;p&gt;'s to structure.
 	 */
 	public static JComponent createHtmlField(String bodyText) {
-		String text = "<html><head><style type=\"text/css\">body { width: 420px; margin-bottom: 15px; } p { margin-left: 10px; padding-left: 0px; }</style></head><body>"
+		String text = "<html><head><style type=\"text/css\">body { width: 450px; margin-bottom: 15px; } p { margin-left: 10px; padding-left: 0px; }</style></head><body>"
 			+ bodyText + "</body></html>";
 		JTextPane htmlPane = HtmlWordWrapper.createHtmlPane(text);
 		return htmlPane;

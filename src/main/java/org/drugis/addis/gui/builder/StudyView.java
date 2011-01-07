@@ -115,10 +115,6 @@ public class StudyView implements ViewBuilder {
 	}
 
 	private JComponent buildPopulationPart() {
-		return createPopulationPanel();
-	}
-
-	private JComponent createPopulationPanel() {
 		if (d_model.getPopulationCharacteristicCount() < 1) {
 			return new JLabel("No Population Characteristics");
 		}
