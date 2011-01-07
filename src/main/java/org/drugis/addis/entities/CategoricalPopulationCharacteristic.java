@@ -22,8 +22,15 @@
 
 package org.drugis.addis.entities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
+import org.drugis.addis.util.XMLPropertiesFormat;
+import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
 
 public class CategoricalPopulationCharacteristic extends AbstractVariable implements PopulationCharacteristic {
 	private String[] d_categories;
@@ -75,8 +82,35 @@ public class CategoricalPopulationCharacteristic extends AbstractVariable implem
 		return m;
 	}
 	
-	@Override
-	public String[] getXmlExclusions() {
-		return new String[] {"categoriesAsList"};
-	}
+	
+	@SuppressWarnings("unchecked")
+	private List<PropertyDefinition> d_propDefs = Arrays.asList(new PropertyDefinition[]{
+			new PropertyDefinition<ArrayList>("categories", ArrayList.class) {
+				public ArrayList<String> getValue() { return new ArrayList<String>(getCategoriesAsList()); }
+				public void setValue(Object val) { setCategoriesAsList((ArrayList<String>) val); }
+			}
+	});
+	
+	protected static final XMLFormat<CategoricalPopulationCharacteristic> CPC_XML = 
+		new XMLFormat<CategoricalPopulationCharacteristic>(CategoricalPopulationCharacteristic.class) {
+
+		@Override
+		public boolean isReferenceable() { return false; }
+		
+		@Override
+		public void read(InputElement ie, CategoricalPopulationCharacteristic cpc) throws XMLStreamException {
+			cpc.setDescription(ie.getAttribute(PROPERTY_DESCRIPTION, null));
+			cpc.setName(ie.getAttribute(PROPERTY_NAME, null));
+			// read unused unit of measurement attribute for legacy xml
+			ie.getAttribute(PROPERTY_UNIT_OF_MEASUREMENT, null); 
+			XMLPropertiesFormat.readProperties(ie, cpc.d_propDefs);
+		}
+
+		@Override
+		public void write(CategoricalPopulationCharacteristic cpc, OutputElement oe) throws XMLStreamException {
+			oe.setAttribute(PROPERTY_DESCRIPTION, cpc.getDescription());
+			oe.setAttribute(PROPERTY_NAME, cpc.getName());
+			XMLPropertiesFormat.writeProperties(cpc.d_propDefs, oe);
+		}
+	};
 }

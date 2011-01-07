@@ -23,7 +23,9 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.*;
+import javolution.xml.stream.XMLStreamException;
 
+import org.drugis.addis.util.XMLHelper;
 import org.junit.Test;
 
 public class UnknownDoseTest {
@@ -51,4 +53,13 @@ public class UnknownDoseTest {
 	public void testHashCode() {
 		assertEquals(1, new UnknownDose().hashCode());
 	}
+	
+	@Test
+	public void testXML() throws XMLStreamException {
+		UnknownDose d = new UnknownDose();
+		String xml = XMLHelper.toXml(d, UnknownDose.class);
+		UnknownDose objFromXml = XMLHelper.fromXml(xml);
+		assertEquals(d, objFromXml);
+	}
+	
 }

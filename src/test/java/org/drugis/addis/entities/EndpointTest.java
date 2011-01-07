@@ -25,6 +25,12 @@ package org.drugis.addis.entities;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.TreeSet;
+
+import javolution.xml.stream.XMLStreamException;
+
+import org.drugis.addis.ExampleData;
+import org.drugis.addis.util.XMLHelper;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
 
@@ -85,4 +91,35 @@ public class EndpointTest {
 		JUnitUtil.assertNotEquals(new Endpoint(name1, Variable.Type.RATE), new Endpoint(name2, Variable.Type.RATE));
 		assertEquals(new Endpoint(name1, Variable.Type.RATE).hashCode(), new Endpoint(name1, Variable.Type.RATE).hashCode());
 	}
+	
+	@Test
+	public void testXMLContinuous() throws XMLStreamException {
+		Endpoint endpoint = ExampleData.buildEndpointCgi();
+		String xml = XMLHelper.toXml(endpoint, Endpoint.class);
+		Endpoint objFromXml = XMLHelper.fromXml(xml);
+		AssertEntityEquals.assertEntityEquals(endpoint, objFromXml);
+	}
+	
+	@Test
+	public void testXMLRate() throws XMLStreamException {
+		Endpoint endpoint = ExampleData.buildEndpointHamd();
+		String xml = XMLHelper.toXml(endpoint, Endpoint.class);
+		Endpoint objFromXml = XMLHelper.fromXml(xml);
+		AssertEntityEquals.assertEntityEquals(endpoint, objFromXml);
+	}
+	
+	@Test
+	public void testXMLListOfEndpoints() throws XMLStreamException {
+		TreeSet<Endpoint> set = new TreeSet<Endpoint>();
+		
+		set.add(ExampleData.buildEndpointCgi());
+		set.add(ExampleData.buildEndpointHamd());
+		set.add(ExampleData.buildEndpointCVdeath());
+		
+		String xml = XMLHelper.toXml(set,TreeSet.class);
+		TreeSet<Endpoint> objFromXml = XMLHelper.fromXml(xml);
+		
+		assertEquals(set, objFromXml);
+	}
+	
 }

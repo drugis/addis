@@ -32,7 +32,7 @@ import org.drugis.addis.entities.relativeeffect.Distribution;
 public interface BenefitRiskAnalysis<Alternative extends Entity> extends Comparable<BenefitRiskAnalysis<?>>, Entity {
 	public static String PROPERTY_NAME = "name";
 	public static String PROPERTY_INDICATION = "indication";
-	public static String PROPERTY_OUTCOMEMEASURES = "outcomeMeasures";
+	public static String PROPERTY_CRITERIA = "criteria";
 	public static String PROPERTY_ALTERNATIVES = "alternatives";
 	public static String PROPERTY_ANALYSIS_TYPE = "analysisType";
 
@@ -42,11 +42,13 @@ public interface BenefitRiskAnalysis<Alternative extends Entity> extends Compara
 	
 	public abstract Indication getIndication();
 
-	public abstract List<OutcomeMeasure> getOutcomeMeasures();
+	public abstract List<OutcomeMeasure> getCriteria();
 
 	public abstract List<Alternative> getAlternatives();
 
 	public abstract String getName();
 	
 	public Distribution getMeasurement(Alternative a, OutcomeMeasure criterion);
+
+	public MeasurementSource<Alternative> getMeasurementSource();
 }

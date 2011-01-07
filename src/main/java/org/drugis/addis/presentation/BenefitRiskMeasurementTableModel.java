@@ -27,21 +27,17 @@ import javax.swing.table.AbstractTableModel;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.MeasurementSource;
 import org.drugis.addis.entities.analysis.MeasurementSource.Listener;
+import org.drugis.addis.entities.relativeeffect.Distribution;
 
 @SuppressWarnings("serial")
 public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extends AbstractTableModel {
 	
 	protected final BenefitRiskAnalysis<Alternative> d_br;
-	private final PresentationModelFactory d_pmf;
-	private final MeasurementSource<Alternative> d_source;
 	
-	public BenefitRiskMeasurementTableModel(BenefitRiskAnalysis<Alternative> bra, MeasurementSource<Alternative> source, PresentationModelFactory pmf) {
+	public BenefitRiskMeasurementTableModel(BenefitRiskAnalysis<Alternative> bra) {
 		d_br = bra;
-		d_source = source;
-		d_pmf = pmf;
-		d_source.addMeasurementsChangedListener(new Listener() {
+		d_br.getMeasurementSource().addMeasurementsChangedListener(new Listener() {
 			public void notifyMeasurementsChanged() {
 				fireTableDataChanged();
 			}
@@ -49,7 +45,7 @@ public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extend
 	}
 	
 	public int getColumnCount() {
-		return d_br.getOutcomeMeasures().size()+1;
+		return d_br.getCriteria().size()+1;
 	}
 
 	public int getRowCount() {
@@ -66,7 +62,15 @@ public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extend
 		if (index == 0) {
 			return "Alternative";
 		}
-		return d_br.getOutcomeMeasures().get(index-1).toString();	
+		return d_br.getCriteria().get(index-1).toString();	
+	}
+	
+	@Override
+	public Class<?> getColumnClass(int index) {
+		if (index == 0) {
+			return String.class;
+		}
+		return Distribution.class;	
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
@@ -74,7 +78,7 @@ public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extend
 
 		if (columnIndex == 0) return a.toString();
 
-		OutcomeMeasure om = d_br.getOutcomeMeasures().get(columnIndex-1);
-		return d_pmf.getLabeledModel(d_source.getMeasurement(a, om));
+		OutcomeMeasure om = d_br.getCriteria().get(columnIndex-1);
+		return d_br.getMeasurement(a, om);
 	}
 }

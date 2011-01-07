@@ -33,9 +33,13 @@ import java.util.Set;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
+import org.drugis.addis.util.XMLPropertiesFormat;
+import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
 import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.drugis.common.DateUtil;
 import org.drugis.common.EqualsUtil;
+
+import scala.actors.threadpool.Arrays;
 
 public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 
@@ -110,7 +114,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private Indication d_indication;
 	private Map<Object, Note> d_notes = new HashMap<Object, Note>();
 	
-	public Study(){
+	public Study() {
 	}
 
 	@Override
@@ -170,7 +174,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 
 	public List<Arm> getArms() {
-		return d_arms;
+		return Collections.unmodifiableList(d_arms);
 	}
 
 	public void setArms(List<Arm> arms) {
@@ -220,11 +224,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		firePropertyChange(PROPERTY_CHARACTERISTICS, c, c);
 	}
 
-	public CharacteristicsMap setCharacteristics() {
-		throw new IllegalAccessError("Can't set characteristics map directly.");
-	}
-
-	public void setCharacteristics(CharacteristicsMap m) {
+	private void setCharacteristics(CharacteristicsMap m) {
 		d_chars = m;
 	}
 
@@ -505,7 +505,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public Map<Object,Note> getNotes() {
 		return d_notes;
 	}
-	public void setNotes(Map<Object,Note> notes) {
+	
+	private void setNotes(Map<Object,Note> notes) {
 		d_notes = notes;
 	}
 
@@ -523,43 +524,61 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return d_measurements;
 	}
 
-	public void setMeasurements(Map<MeasurementKey, Measurement> m) {
+	private void setMeasurements(Map<MeasurementKey, Measurement> m) {
 		d_measurements = m;
 	}
 
-	@Override
-	public String[] getXmlExclusions() {
-		return new String[] {"sampleSize", "outcomeMeasures", "drugs"};
-	}
+	@SuppressWarnings("unchecked")
+	private List<PropertyDefinition> d_propDefs = Arrays.asList(new PropertyDefinition[]{
+		new PropertyDefinition<Indication>(PROPERTY_INDICATION, Indication.class) {
+			public Indication getValue() { return getIndication(); }
+			public void setValue(Object val) { setIndication((Indication) val); }
+		},
+		new PropertyDefinition<CharacteristicsMap>(PROPERTY_CHARACTERISTICS, CharacteristicsMap.class) {
+			public CharacteristicsMap getValue() { return getCharacteristics(); }
+			public void setValue(Object val) { setCharacteristics((CharacteristicsMap) val); }
+		},
+		new PropertyDefinition<ArrayList>(PROPERTY_ADVERSE_EVENTS, ArrayList.class) {
+			public ArrayList<AdverseEvent> getValue() { return new ArrayList<AdverseEvent>(getAdverseEvents()); }
+			public void setValue(Object val) { setAdverseEvents((ArrayList<AdverseEvent>) val); }
+		},
+		new PropertyDefinition<ArrayList>(PROPERTY_ENDPOINTS, ArrayList.class) {
+			public ArrayList<Endpoint> getValue() { return new ArrayList<Endpoint>(getEndpoints()); }
+			public void setValue(Object val) { setEndpoints((ArrayList<Endpoint>) val); }
+		},
+		new PropertyDefinition<ArrayList>(PROPERTY_POPULATION_CHARACTERISTICS, ArrayList.class) {
+			public ArrayList<PopulationCharacteristic> getValue() { return new ArrayList<PopulationCharacteristic>(getPopulationCharacteristics()); }
+			public void setValue(Object val) { setPopulationCharacteristics((ArrayList<PopulationCharacteristic>) val); }
+		},
+		new PropertyDefinition<ArrayList>(PROPERTY_ARMS, ArrayList.class) {
+			public ArrayList<Arm> getValue() { return new ArrayList<Arm>(getArms()); }
+			public void setValue(Object val) { setArms((ArrayList<Arm>) val); }
+		},
+		new PropertyDefinition<HashMap>("measurements", HashMap.class) {
+			public HashMap getValue() { return (HashMap) getMeasurements(); }
+			public void setValue(Object val) { setMeasurements((HashMap) val); }
+		},
+		new PropertyDefinition<HashMap>(PROPERTY_NOTES, HashMap.class) {
+			public HashMap getValue() { return (HashMap) getNotes(); }
+			public void setValue(Object val) { setNotes((HashMap) val); }
+		}
+	});
 	
 	protected static final XMLFormat<Study> STUDY_XML = new XMLFormat<Study>(Study.class) {
-		@SuppressWarnings("unchecked")
+		public Study newInstance(Class<Study> cls, InputElement xml) throws XMLStreamException {
+			return new Study();
+		};
+
 		@Override
 		public void read(InputElement ie, Study s) throws XMLStreamException {
 			s.setStudyId(ie.getAttribute(PROPERTY_ID, null));
-			s.setAdverseEvents((List<AdverseEvent>) ie.get(PROPERTY_ADVERSE_EVENTS, ArrayList.class));
-			s.setArms((List<Arm>) ie.get(PROPERTY_ARMS, ArrayList.class));
-			s.setCharacteristics((CharacteristicsMap) ie.get(PROPERTY_CHARACTERISTICS));
-			s.setEndpoints((List<Endpoint>) ie.get(PROPERTY_ENDPOINTS, ArrayList.class));
-			s.setIndication((Indication) ie.get(PROPERTY_INDICATION, Indication.class));
-			s.setMeasurements((Map<MeasurementKey, Measurement>) ie.get("measurements", HashMap.class)); 
-			s.setNotes((Map<Object, Note>) ie.get(PROPERTY_NOTES, HashMap.class));
-			s.setPopulationCharacteristics((List<PopulationCharacteristic>) ie.get(PROPERTY_POPULATION_CHARACTERISTICS, ArrayList.class));
+			XMLPropertiesFormat.readProperties(ie, s.d_propDefs);
 		}
 
 		@Override
 		public void write(Study s, OutputElement oe) throws XMLStreamException {
 			oe.setAttribute(PROPERTY_ID, s.getStudyId());
-			oe.add(new ArrayList<AdverseEvent>(s.getAdverseEvents()), PROPERTY_ADVERSE_EVENTS, ArrayList.class);
-			oe.add(new ArrayList<Arm>(s.getArms()), PROPERTY_ARMS, ArrayList.class);
-			oe.add(s.getCharacteristics(), PROPERTY_CHARACTERISTICS);
-			oe.add(new ArrayList<Endpoint>(s.getEndpoints()), PROPERTY_ENDPOINTS, ArrayList.class);
-			oe.add(s.getIndication(), PROPERTY_INDICATION, Indication.class);
-			oe.add(new HashMap<MeasurementKey, Measurement>(s.getMeasurements()), "measurements", HashMap.class);
-			oe.add(new HashMap<Object, Note>(s.getNotes()), PROPERTY_NOTES, HashMap.class);
-			oe.add(new ArrayList<PopulationCharacteristic> (s.getPopulationCharacteristics()), PROPERTY_POPULATION_CHARACTERISTICS, ArrayList.class);
-			
+			XMLPropertiesFormat.writeProperties(s.d_propDefs, oe);
 		}
 	};
-
 }

@@ -73,7 +73,7 @@ public class StudyBenefitRiskAnalysisTest {
 		List<OutcomeMeasure> criteria = new ArrayList<OutcomeMeasure>();
 		criteria.add(ExampleData.buildEndpointHamd());
 		criteria.add(ExampleData.buildAdverseEventConvulsion());
-		assertEquals(criteria, d_analysis.getOutcomeMeasures());
+		assertEquals(criteria, d_analysis.getCriteria());
 		assertEquals(ExampleData.buildStudyChouinard().getArms(), d_analysis.getAlternatives());
 	}
 	
@@ -81,7 +81,7 @@ public class StudyBenefitRiskAnalysisTest {
 	public void testDependencies() {
 		Set<Entity> expected = new HashSet<Entity>();
 		expected.add(d_analysis.getStudy());
-		expected.addAll(d_analysis.getOutcomeMeasures());
+		expected.addAll(d_analysis.getCriteria());
 		expected.add(d_analysis.getIndication());
 		expected.addAll(d_analysis.getStudy().getDependencies());
 		assertEquals(expected , d_analysis.getDependencies());

@@ -43,6 +43,7 @@ import org.drugis.addis.presentation.SMAAPresentation;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.common.gui.task.TaskProgressBar;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -197,7 +198,7 @@ public class SMAAView implements ViewBuilder  {
 	
 			JPanel panel = new JPanel(new BorderLayout());
 			fi.smaa.jsmaa.gui.views.ResultsView view = new fi.smaa.jsmaa.gui.views.ResultsView(d_mainWindow, table, chart, "");
-			panel.add(d_pm.getSmaaSimulationProgressBar(), BorderLayout.NORTH);
+			panel.add(getSmaaSimulationProgressBar(), BorderLayout.NORTH);
 			JComponent viewPanel = view.buildPanel();
 			panel.add(viewPanel, BorderLayout.CENTER);
 			
@@ -207,7 +208,10 @@ public class SMAAView implements ViewBuilder  {
 	
 			return panel;
 		}
-	
+	}
+
+	private Component getSmaaSimulationProgressBar() {
+		return new TaskProgressBar(d_pm.getTaskProgressModel());
 	}
 	
 	protected JButton createSaveImageButton(final JComponent chart) {
@@ -246,9 +250,7 @@ public class SMAAView implements ViewBuilder  {
 	public JComponent buildCentralWeightsPart() {
 		return createWaiter(new CentralWeightsBuilder());
 	}
-
 	
-
 	@SuppressWarnings("unchecked")
 	protected BuildViewWhenReadyComponent createWaiter(ViewBuilder builder) {
 		return new BuildViewWhenReadyComponent(builder, 

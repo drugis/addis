@@ -116,7 +116,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	
 	private void initAllBaselineModels() {
 		AbstractBaselineModel<?> model;
-		for (OutcomeMeasure om : getBean().getOutcomeMeasures()) {
+		for (OutcomeMeasure om : getBean().getCriteria()) {
 			model = getBean().getBaselineModel(om);
 			d_baselineModels.add(model);
 		}
@@ -137,12 +137,17 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		}
 	}
 	
-	public BenefitRiskMeasurementTableModel<Drug> getAbsoluteMeasurementTableModel() {
-		return new BenefitRiskMeasurementTableModel<Drug>(getBean(), getBean().getAbsoluteMeasurementSource() , d_pmf);
+	public BRBaselineMeasurementTableModel getBaselineMeasurementTableModel() {
+		return new BRBaselineMeasurementTableModel(getBean());
+
 	}
 
-	public BenefitRiskMeasurementTableModel<Drug> getRelativeMeasurementTableModel() {
-		return new BenefitRiskMeasurementTableModel<Drug>(getBean(), getBean().getRelativeMeasurementSource(), d_pmf);
+	public BRRelativeMeasurementTableModel getRelativeMeasurementTableModel() {
+		return new BRRelativeMeasurementTableModel(getBean());
+	}
+	
+	public BenefitRiskMeasurementTableModel<Drug> getMeasurementTableModel() {
+		return new BenefitRiskMeasurementTableModel<Drug>(getBean());
 	}
 
 	public Drug getBaseline() {
@@ -152,4 +157,5 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	public TaskProgressModel getProgressModel(Task t) {
 		return d_progressModels.get(t);
 	}
+
 }

@@ -27,20 +27,28 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javolution.xml.stream.XMLStreamException;
+
+import static org.drugis.addis.entities.AssertEntityEquals.*;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.presentation.ListHolder;
+import org.drugis.addis.util.XMLHelper;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -154,6 +162,50 @@ public class DomainTest {
 		assertEquals(Collections.singleton(s), d_domain.getStudies());
 	}
 	
+	
+	@Test
+	public void testAddStudyBenefitRiskAnalysis() throws Exception {
+		StudyBenefitRiskAnalysis sbr = ExampleData.buildStudyBenefitRiskAnalysis();
+		ExampleData.initDefaultData(d_domain);
+		d_domain.addBenefitRiskAnalysis(sbr);
+		assertTrue(d_domain.getBenefitRiskAnalyses().contains(sbr));
+		assertEntityEquals(sbr, d_domain.getBenefitRiskAnalyses().first());
+	}
+	
+	@Test
+	public void testDeleteStudyBenefitRiskAnalysis() throws DependentEntitiesException {
+		StudyBenefitRiskAnalysis sbr = ExampleData.buildStudyBenefitRiskAnalysis();
+		ExampleData.initDefaultData(d_domain);
+		d_domain.addBenefitRiskAnalysis(sbr);
+		assertTrue(d_domain.getBenefitRiskAnalyses().contains(sbr));
+		assertEntityEquals(sbr, d_domain.getBenefitRiskAnalyses().first());
+
+		d_domain.deleteEntity(sbr);
+		assertFalse(d_domain.getBenefitRiskAnalyses().contains(sbr));
+	}
+
+	
+	@Test
+	public void testAddMetaBenefitRiskAnalysis() throws Exception {
+		MetaBenefitRiskAnalysis mbr = ExampleData.buildMetaBenefitRiskAnalysis();
+		ExampleData.initDefaultData(d_domain);
+		d_domain.addBenefitRiskAnalysis(mbr);
+		assertTrue(d_domain.getBenefitRiskAnalyses().contains(mbr));
+		assertEntityEquals(mbr, d_domain.getBenefitRiskAnalyses().first());
+	}
+	
+	@Test
+	public void testDeleteMetaBenefitRiskAnalysis() throws DependentEntitiesException {
+		MetaBenefitRiskAnalysis mbr = ExampleData.buildMetaBenefitRiskAnalysis();
+		ExampleData.initDefaultData(d_domain);
+		d_domain.addBenefitRiskAnalysis(mbr);
+		assertTrue(d_domain.getBenefitRiskAnalyses().contains(mbr));
+		assertEntityEquals(mbr, d_domain.getBenefitRiskAnalyses().first());
+
+		d_domain.deleteEntity(mbr);
+		assertFalse(d_domain.getBenefitRiskAnalyses().contains(mbr));
+	}
+
 	@Test
 	public void testAddMetaAnalysis() throws Exception {
 		assertEquals(0, d_domain.getMetaAnalyses().size());
@@ -876,4 +928,36 @@ public class DomainTest {
 		addMetaAnalysisToDomain();
 		assertEquals(Collections.singleton(anl), d_domain.getNetworkMetaAnalyses());
 	}
+	
+	
+	@Test
+	public void testXML() throws XMLStreamException {
+		DomainImpl origDomain = new DomainImpl();
+		ExampleData.initDefaultData(origDomain);
+		DomainData origData = origDomain.getDomainData();
+		origData.addVariable(new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"}));
+		origData.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisHamD()); 
+		
+		String xml = XMLHelper.toXml(origData, DomainData.class);
+		DomainData loadedData = XMLHelper.fromXml(xml);
+
+		DomainImpl domainFromXml = new DomainImpl();
+		domainFromXml.setDomainData(loadedData);
+		
+		assertEquals(origDomain.getIndications(), loadedData.getIndications());
+		AssertEntityEquals.assertDomainEquals(origDomain, domainFromXml);
+	}
+
+	@Test
+	public void testDefaultDataXML() throws XMLStreamException {
+		InputStream xmlStream = getClass().getResourceAsStream("../defaultData.xml");
+		assertNotNull(xmlStream);
+		DomainData importedDomain = (DomainData)XMLHelper.fromXml(xmlStream);
+		String xml = XMLHelper.toXml(importedDomain, DomainData.class);
+		DomainData loadedData = XMLHelper.fromXml(xml);
+		DomainImpl loadedImpl = new DomainImpl(loadedData);
+		DomainImpl importedImpl = new DomainImpl(importedDomain);
+		AssertEntityEquals.assertDomainEquals(importedImpl, loadedImpl);
+	}
+
 }

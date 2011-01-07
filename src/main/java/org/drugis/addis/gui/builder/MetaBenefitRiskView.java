@@ -22,6 +22,7 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -30,8 +31,12 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
@@ -39,6 +44,7 @@ import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.EntitiesTablePanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
+import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.task.TaskProgressBar;
@@ -50,6 +56,19 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRiskPresentation> {
 	
+	@SuppressWarnings("serial")
+	private final class DistributionParameterCellRenderer extends DefaultTableCellRenderer {
+		public Component getTableCellRendererComponent(JTable table, Object value, 
+				boolean isSelected, boolean hasFocus, int row, int column) {
+			if (value instanceof GaussianBase) {
+				GaussianBase d = (GaussianBase)value;
+				String str = SummaryCellRenderer.format(d.getMu()) + " \u00B1 " + SummaryCellRenderer.format(d.getSigma());
+				return super.getTableCellRendererComponent(table, str, isSelected, hasFocus, row, column);
+			}
+			return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		}
+	}
+
 	public MetaBenefitRiskView(MetaBenefitRiskPresentation pm, AddisWindow mainWindow) {
 		super(pm, mainWindow);
 	}
@@ -112,22 +131,48 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 	}
 
 	@Override
-	protected JComponent buildMeasurementsPart() {
+	protected JPanel buildMeasurementsPanel() {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = new FormLayout("pref:grow:fill",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
+		builder.setDefaultDialogBorder();
 		builder.setOpaque(true);
 		
-		builder.add(AuxComponentFactory.createHtmlField("<p>Relative measurements: odds ratio or mean difference, with "
-				+ d_pm.getBaseline() +" as the common comparator.</p>"),cc.xy(1, 1));
-		builder.add(new TablePanel(new EnhancedTable(d_pm.getRelativeMeasurementTableModel())), cc.xy(1, 3));
+		int row = 1;
+		int width = 1;
 		
-		builder.add(AuxComponentFactory.createHtmlField("<p>Absolute measurements: odds or mean calculated from the assumed odds or mean for " + 
+		builder.addSeparator("Relative effect distributions", cc.xyw(1, row, width));
+		row += 2;
+		builder.add(AuxComponentFactory.createHtmlField("<p>Relative measurements: log odds-ratio or mean difference, with "
+				+ d_pm.getBaseline() +" as the common comparator.</p>"),cc.xy(1, row));
+		row += 2;
+		EnhancedTable table = new EnhancedTable(d_pm.getRelativeMeasurementTableModel());
+		table.setDefaultRenderer(Distribution.class, new DistributionParameterCellRenderer());
+		builder.add(new TablePanel(table), cc.xy(1, row));
+		row += 2;
+
+		builder.addSeparator("Baseline effect distributions", cc.xyw(1, row, width));
+		row += 2;
+		builder.add(AuxComponentFactory.createHtmlField("<p>Baseline measurements: log odds or mean for " + 
 				d_pm.getBaseline() + ". The method used to derive the assumed odds or mean are heuristic, "
-				+ "and the absolute values should be interpreted with care.</p>"), cc.xy(1, 5));
-		builder.add(new TablePanel(new EnhancedTable(d_pm.getAbsoluteMeasurementTableModel())), cc.xy(1, 9));
-	
+				+ "and these values should be interpreted with care.</p>"), cc.xy(1, row));
+		row += 2;
+		EnhancedTable table2 = new EnhancedTable(d_pm.getBaselineMeasurementTableModel());
+		table2.setDefaultRenderer(Distribution.class, new DistributionParameterCellRenderer());
+		builder.add(new TablePanel(table2), cc.xy(1, row));
+		row += 2;
+		
+		builder.addSeparator("Measurements", cc.xyw(1, row, width));
+		row += 2;
+		builder.add(AuxComponentFactory.createHtmlField("<p>Measurements: incidence approximated with logit-Normal distribution, or continuous variables approximated with a Normal distribution.</p>"),
+				cc.xy(1, row));
+		row += 2;
+		EnhancedTable table3 = new EnhancedTable(d_pm.getMeasurementTableModel());
+		table3.setDefaultRenderer(Distribution.class, new DistributionQuantileCellRenderer());
+		builder.add(new TablePanel(table3), cc.xy(1, row));
+		row += 2;
+		
 		return builder.getPanel();
 	}
 }

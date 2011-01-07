@@ -23,7 +23,9 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.*;
+import javolution.xml.stream.XMLStreamException;
 
+import org.drugis.addis.util.XMLHelper;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
 
@@ -63,4 +65,15 @@ public class PubMedIdTest {
 		assertEquals(new PubMedId("12345"), new PubMedId("12345"));
 		JUnitUtil.assertNotEquals(new PubMedId("12345"), new PubMedId("12346"));
 	}
+	
+	@Test
+	public void testXML() throws XMLStreamException {
+		PubMedIdList expectedList = new PubMedIdList();
+		expectedList.add(new PubMedId("12345"));
+		expectedList.add(new PubMedId("5006"));
+		String xml = XMLHelper.toXml(expectedList, PubMedIdList.class);
+		PubMedIdList parsedList = (PubMedIdList)XMLHelper.fromXml(xml);
+		assertEquals(expectedList, parsedList);
+	}
+	
 }

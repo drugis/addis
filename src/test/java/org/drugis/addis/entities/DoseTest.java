@@ -23,9 +23,11 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.*;
+import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.SIUnit;
+import org.drugis.addis.util.XMLHelper;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
@@ -126,4 +128,23 @@ public class DoseTest {
 		assertEquals(dose, dose.clone());
 		assertFalse(dose == dose.clone());
 	}
+	
+	@Test
+	public void testXMLFixedDose() throws XMLStreamException {
+		FixedDose dose = new FixedDose(12.5, SIUnit.MILLIGRAMS_A_DAY);
+		String xml = XMLHelper.toXml(dose, FixedDose.class);
+		FixedDose objFromXml = XMLHelper.fromXml(xml);
+		assertEquals(dose, objFromXml);
+	}
+	
+	@Test
+	public void testXMLFlexibleDose() throws XMLStreamException {
+		Interval<Double> q1 = new Interval<Double>(13.0, 15.0);
+		FlexibleDose dose = new FlexibleDose(q1, SIUnit.MILLIGRAMS_A_DAY);
+		String xml = XMLHelper.toXml(dose, FlexibleDose.class);
+		FlexibleDose objFromXml = XMLHelper.fromXml(xml);
+		assertEquals(dose, objFromXml);
+	}
+	
+	
 }

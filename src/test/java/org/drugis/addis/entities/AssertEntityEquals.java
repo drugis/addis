@@ -196,7 +196,7 @@ public class AssertEntityEquals {
 		for (int i = 0; i < expected.getAlternatives().size(); ++i) {
 			assertEntityEquals(expected.getAlternatives().get(i), actual.getAlternatives().get(i));
 		}
-		assertEquals(expected.getOutcomeMeasures(), actual.getOutcomeMeasures());
+		assertEquals(expected.getCriteria(), actual.getCriteria());
 	}
 	
 	
@@ -252,7 +252,8 @@ public class AssertEntityEquals {
 		assertEntityEquals(d1.getAdverseEvents(), d2.getAdverseEvents());
 		assertEntityEquals(d1.getPopulationCharacteristics(), d2.getPopulationCharacteristics());
 		assertEntityEquals(d1.getStudies(), d2.getStudies());
-		assertEntityEquals(d1.getMetaAnalyses(), d2.getMetaAnalyses());	
+		assertEntityEquals(d1.getMetaAnalyses(), d2.getMetaAnalyses());
+		assertEntityEquals(d1.getBenefitRiskAnalyses(), d2.getBenefitRiskAnalyses());
 	}
 
 }

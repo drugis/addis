@@ -23,9 +23,13 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.*;
+import static org.drugis.addis.entities.AssertEntityEquals.*;
 
 import java.util.Collections;
 
+import javolution.xml.stream.XMLStreamException;
+
+import org.drugis.addis.util.XMLHelper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -81,4 +85,13 @@ public class CategoricalPopulationCharacteristicTest {
 
 		assertFalse(gender2.equals(new Integer(2)));
 	}
+	
+	@Test
+	public void testXML() throws XMLStreamException {
+		CategoricalPopulationCharacteristic gender = new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
+		String xml = XMLHelper.toXml(gender, CategoricalPopulationCharacteristic.class);
+		CategoricalPopulationCharacteristic objFromXml = XMLHelper.fromXml(xml);
+		assertEntityEquals(gender, objFromXml);
+	}
+	
 }

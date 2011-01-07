@@ -85,13 +85,14 @@ public class SMAAEntityFactoryTest {
 	@Test
 	public void testCreateSmaaModel() {
 		SMAAModel smaaModel = d_smaaFactory.createSmaaModel(d_brAnalysis);
-		for(OutcomeMeasure om : d_brAnalysis.getOutcomeMeasures()){
+		for(OutcomeMeasure om : d_brAnalysis.getCriteria()){
 			for(Drug d : d_brAnalysis.getDrugs()){
 				if (d.equals(d_brAnalysis.getBaseline()))
 					continue;
 				fi.smaa.jsmaa.model.Measurement actualMeasurement = smaaModel.getMeasurement(d_smaaFactory.getCriterion(om), d_smaaFactory.getAlternative(d));
-				GaussianBase expDistribution = d_brAnalysis.getRelativeEffectDistribution(d, om);
-				assertEquals(Math.log(expDistribution.getQuantile(0.50)), ((LogNormalMeasurement) actualMeasurement).getMean(), 0.0001);
+				GaussianBase expDistribution = (GaussianBase) d_brAnalysis.getMeasurement(d, om);
+				assertEquals(expDistribution.getMu(), ((LogitNormalMeasurement) actualMeasurement).getMean(), 0.0001);
+				assertEquals(expDistribution.getSigma(), ((LogitNormalMeasurement) actualMeasurement).getStDev(), 0.0001);
 			}
 		}
 	}
@@ -99,7 +100,7 @@ public class SMAAEntityFactoryTest {
 	@Test 
 	public void testGetOutcomeMeasure() {
 		d_smaaFactory.createSmaaModel(d_brAnalysis);
-		for (OutcomeMeasure om : d_brAnalysis.getOutcomeMeasures()) {
+		for (OutcomeMeasure om : d_brAnalysis.getCriteria()) {
 			CardinalCriterion crit = d_smaaFactory.getCriterion(om);
 			assertEquals(om, d_smaaFactory.getOutcomeMeasure(crit));
 		}
@@ -108,7 +109,7 @@ public class SMAAEntityFactoryTest {
 	@Test
 	public void testCreateSmaaModelStudy() {
 		SMAAModel smaaModel = d_smaaFactoryArm.createSmaaModel(d_brAnalysisStudy);
-		for(OutcomeMeasure om : d_brAnalysisStudy.getOutcomeMeasures()){
+		for(OutcomeMeasure om : d_brAnalysisStudy.getCriteria()){
 			for(Arm d : d_brAnalysisStudy.getAlternatives()){
 				fi.smaa.jsmaa.model.Measurement actualMeasurement = 
 					smaaModel.getMeasurement(d_smaaFactoryArm.getCriterion(om), d_smaaFactoryArm.getAlternative(d));

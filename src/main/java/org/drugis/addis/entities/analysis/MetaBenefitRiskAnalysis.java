@@ -46,17 +46,20 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
+import org.drugis.addis.entities.relativeeffect.LogitGaussian;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.addis.mcmcmodel.BaselineMeanDifferenceModel;
 import org.drugis.addis.mcmcmodel.BaselineOddsModel;
-import org.drugis.addis.presentation.AllSummariesDefinedModel;
 import org.drugis.addis.util.EnumXMLFormat;
+import org.drugis.addis.util.XMLPropertiesFormat;
+import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
 import org.drugis.addis.util.comparator.AlphabeticalComparator;
 import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.drugis.common.threading.Task;
@@ -67,7 +70,22 @@ import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.Summary;
 
+import scala.actors.threadpool.Arrays;
+
 public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<Drug> {
+	private final class MetaMeasurementSource extends AbstractMeasurementSource<Drug> {
+		public MetaMeasurementSource() {
+			PropertyChangeListener l = new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					notifyListeners();
+				}
+			};
+			for (Summary s : getEffectSummaries()) {
+				s.addPropertyChangeListener(l);
+			}
+		}
+	}
+
 	private String d_name;
 	private Indication d_indication;
 	private List<OutcomeMeasure> d_outcomeMeasures;
@@ -80,38 +98,6 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	public static String PROPERTY_DRUGS = "drugs";
 	public static String PROPERTY_BASELINE = "baseline";
 	public static String PROPERTY_METAANALYSES = "metaAnalyses";
-	
-	private class AbsoluteMeasurementSource extends AbstractMeasurementSource<Drug> {
-		public AbsoluteMeasurementSource() {
-			List<Summary> summaryList = getEffectSummaries();
-			AllSummariesDefinedModel allSummariesDefinedModel = new AllSummariesDefinedModel(summaryList);
-			allSummariesDefinedModel.addValueChangeListener(new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent evt) {
-					if (evt.getNewValue().equals(true)) notifyListeners();
-				}
-			});
-		}
-		
-		public Distribution getMeasurement(Drug alternative, OutcomeMeasure criterion) {
-			return getAbsoluteEffectDistribution(alternative, criterion);
-		}
-	}
-
-	private class RelativeMeasurementSource extends AbstractMeasurementSource<Drug> {
-		public RelativeMeasurementSource() {
-			List<Summary> summaryList = getRelativeEffectSummaries();
-			AllSummariesDefinedModel allSummariesDefinedModel = new AllSummariesDefinedModel(summaryList);
-			allSummariesDefinedModel.addValueChangeListener(new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent evt) {
-					if (evt.getNewValue().equals(true)) notifyListeners();
-				}
-			});
-		}
-
-		public Distribution getMeasurement(Drug alternative, OutcomeMeasure criterion) {
-			return getRelativeEffectDistribution(alternative, criterion);
-		}
-	}
 	
 	private MetaBenefitRiskAnalysis() {
 		d_baselineModelMap = new HashMap<OutcomeMeasure,AbstractBaselineModel<?>>();
@@ -144,7 +130,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		d_indication = indication;
 	}
 
-	public List<OutcomeMeasure> getOutcomeMeasures() {
+	public List<OutcomeMeasure> getCriteria() {
 		List<OutcomeMeasure> sortedList = findOutcomeMeasures();
 		Collections.sort(sortedList, new OutcomeComparator());
 		return sortedList;
@@ -254,16 +240,15 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		return (GaussianBase) getRelativeEffect(d, om).getDistribution();
 	}
 	
+	/**
+	 * Get the measurement to be used in the BenefitRisk simulation.
+	 */
 	public Distribution getMeasurement(Drug d, OutcomeMeasure om) {
-		return getRelativeEffectDistribution(d, om);
-	}
-	
-	public MeasurementSource<Drug> getAbsoluteMeasurementSource() {
-		return new AbsoluteMeasurementSource();
-	}
-	
-	public MeasurementSource<Drug> getRelativeMeasurementSource() {
-		return new RelativeMeasurementSource();
+		if (om.getType() == Type.RATE) {
+			GaussianBase logOdds = getAbsoluteEffectDistribution(d, om);
+			return logOdds == null ? null : new LogitGaussian(logOdds.getMu(), logOdds.getSigma());
+		}
+		return getAbsoluteEffectDistribution(d, om);
 	}
 	
 	/**
@@ -315,7 +300,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	/**
 	 * The absolute effect of d on om given the assumed odds of the baseline treatment. 
 	 */
-	public GaussianBase getAbsoluteEffectDistribution(Drug d, OutcomeMeasure om) {
+	private GaussianBase getAbsoluteEffectDistribution(Drug d, OutcomeMeasure om) {
 		GaussianBase baseline = getBaselineDistribution(om);
 		GaussianBase relative = getRelativeEffectDistribution(d, om);
 		if (baseline == null || relative == null) return null;
@@ -337,38 +322,6 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		}
 		return tasks;
 	}
-	
-	protected static final XMLFormat<MetaBenefitRiskAnalysis> METABR_XML = 
-		new XMLFormat<MetaBenefitRiskAnalysis>(MetaBenefitRiskAnalysis.class) {
-			@Override
-			public MetaBenefitRiskAnalysis newInstance(Class<MetaBenefitRiskAnalysis> cls, InputElement xml) {
-				return new MetaBenefitRiskAnalysis();
-			}
-			
-			@SuppressWarnings("unchecked")
-			@Override
-			public void read(InputElement ie, MetaBenefitRiskAnalysis br) throws XMLStreamException {
-				br.setName(ie.getAttribute(PROPERTY_NAME, null)); 
-				br.d_analysisType = EnumXMLFormat.getEnumAttribute(ie, PROPERTY_ANALYSIS_TYPE, AnalysisType.SMAA);
-				br.setBaseline(ie.get(PROPERTY_BASELINE, Drug.class));
-				br.setDrugs((List<Drug>) ie.get(PROPERTY_DRUGS, ArrayList.class));
-				br.setIndication((Indication) ie.get(PROPERTY_INDICATION, Indication.class));
-				br.setMetaAnalyses((List<MetaAnalysis>) ie.get(PROPERTY_METAANALYSES, ArrayList.class));
-				if (ie.hasNext()) { // support legacy XML (where both MetaAnalyses and OutcomeMeasures were saved)
-					ie.get(PROPERTY_OUTCOMEMEASURES, ArrayList.class);
-				}
-			}
-		
-			@Override
-			public void write(MetaBenefitRiskAnalysis br, OutputElement oe) throws XMLStreamException {
-				oe.setAttribute(PROPERTY_NAME, br.getName());
-				oe.setAttribute(PROPERTY_ANALYSIS_TYPE, br.d_analysisType.toString());
-				oe.add(br.getBaseline(), PROPERTY_BASELINE, Drug.class);
-				oe.add(new ArrayList<Drug>(br.getDrugs()), PROPERTY_DRUGS, ArrayList.class);
-				oe.add(br.getIndication(), PROPERTY_INDICATION, Indication.class);
-				oe.add(new ArrayList<MetaAnalysis>(br.getMetaAnalyses()), PROPERTY_METAANALYSES, ArrayList.class);
-			}
-		};
 		
 	public AnalysisType getAnalysisType() {
 		return d_analysisType;
@@ -378,12 +331,10 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		List<Summary> summaryList = new ArrayList<Summary>();
 		for (MetaAnalysis ma : getMetaAnalyses()) {
 			if (ma instanceof NetworkMetaAnalysis) {
-				for(Drug d: getAlternatives()) {
-					if (!d.equals(getBaseline())) {
-						Parameter p = new BasicParameter(new Treatment(getBaseline().getName()), new Treatment(d.getName()));
-						NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
-						summaryList.add(nma.getNormalSummary(nma.getConsistencyModel(), p));
-					}
+				for(Drug d: getNonBaselineAlternatives()) {
+					Parameter p = new BasicParameter(new Treatment(getBaseline().getName()), new Treatment(d.getName()));
+					NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
+					summaryList.add(nma.getNormalSummary(nma.getConsistencyModel(), p));
 				}
 			}
 		}
@@ -392,7 +343,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 
 	public List<Summary> getAbsoluteEffectSummaries() {
 		List<Summary> summaryList = new ArrayList<Summary>();
-		for (OutcomeMeasure om : getOutcomeMeasures()) {
+		for (OutcomeMeasure om : getCriteria()) {
 			summaryList.add(getBaselineModel(om).getSummary());
 		}
 		return summaryList;
@@ -403,4 +354,68 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		summaryList.addAll(getRelativeEffectSummaries());
 		return summaryList;
 	}
+
+	public List<Drug> getNonBaselineAlternatives() {
+		List<Drug> alternatives = getDrugs();
+		alternatives.remove(getBaseline());
+		return alternatives;
+	}
+
+	public MeasurementSource<Drug> getMeasurementSource() {
+		return new MetaMeasurementSource();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private List<PropertyDefinition> d_propDefs = Arrays.asList(new PropertyDefinition[]{
+		new PropertyDefinition<Drug>(PROPERTY_BASELINE, Drug.class) {
+			public Drug getValue() { return getBaseline(); }
+			public void setValue(Object val) { setBaseline((Drug) val);}
+		},
+		new PropertyDefinition<ArrayList>(PROPERTY_DRUGS, ArrayList.class) {
+			public ArrayList<Drug> getValue() { return new ArrayList<Drug>(getDrugs()); }
+			public void setValue(Object val) { setDrugs((ArrayList<Drug>) val);}
+		},
+		new PropertyDefinition<Indication>(PROPERTY_INDICATION, Indication.class) {
+			public Indication getValue() { return getIndication(); }
+			public void setValue(Object val) { setIndication((Indication) val); }
+		},
+		new PropertyDefinition<ArrayList>(PROPERTY_METAANALYSES, ArrayList.class) {
+			public ArrayList<MetaAnalysis> getValue() { return new ArrayList<MetaAnalysis>(getMetaAnalyses()); }
+			public void setValue(Object val) { setMetaAnalyses((ArrayList<MetaAnalysis>) val);}
+		}
+	});
+	
+	@SuppressWarnings("unchecked")
+	private List<PropertyDefinition> d_legacyPropDefs = Arrays.asList(new PropertyDefinition[]{
+		new PropertyDefinition<ArrayList>("outcomeMeasures", ArrayList.class) {
+			public ArrayList getValue() { return null; }
+			public void setValue(Object val) { }
+		}
+	});
+		
+	protected static final XMLFormat<MetaBenefitRiskAnalysis> METABR_XML = 
+		new XMLFormat<MetaBenefitRiskAnalysis>(MetaBenefitRiskAnalysis.class) {
+			@Override
+			public MetaBenefitRiskAnalysis newInstance(Class<MetaBenefitRiskAnalysis> cls, InputElement xml) {
+				return new MetaBenefitRiskAnalysis();
+			}
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			public void read(InputElement ie, MetaBenefitRiskAnalysis br) throws XMLStreamException {
+				List<PropertyDefinition> propdefs = new ArrayList(br.d_propDefs);
+				propdefs.addAll(br.d_legacyPropDefs);
+				br.setName(ie.getAttribute(PROPERTY_NAME, null));
+				br.d_analysisType = EnumXMLFormat.getEnumAttribute(ie, PROPERTY_ANALYSIS_TYPE, AnalysisType.SMAA);
+				XMLPropertiesFormat.readProperties(ie, propdefs);
+			}
+		
+			@Override
+			public void write(MetaBenefitRiskAnalysis br, OutputElement oe) throws XMLStreamException {
+				oe.setAttribute(PROPERTY_NAME, br.getName());
+				oe.setAttribute(PROPERTY_ANALYSIS_TYPE, br.d_analysisType.toString());
+				XMLPropertiesFormat.writeProperties(br.d_propDefs, oe);
+
+			}
+		};
 }

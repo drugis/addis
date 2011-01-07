@@ -51,15 +51,15 @@ public class BenefitRiskDistributionImpl<Alternative extends Entity> implements 
 		initRiskBenefits(a);
 		initAxisLabelsAndMultipliers(a);
 		
-		Distribution measurement = getMeasurement(a, a.getAlternatives().get(0), a.getOutcomeMeasures().get(0));
+		Distribution measurement = getMeasurement(a, a.getAlternatives().get(0), a.getCriteria().get(0));
 
-		d_benefitAxisName += getAxisLabel(measurement, a.getOutcomeMeasures().get(0).getName());
-		d_riskAxisName += getAxisLabel(measurement, a.getOutcomeMeasures().get(1).getName());
+		d_benefitAxisName += getAxisLabel(measurement, a.getCriteria().get(0).getName());
+		d_riskAxisName += getAxisLabel(measurement, a.getCriteria().get(1).getName());
 		
 	}
 
 	private void initAxisLabelsAndMultipliers(BenefitRiskAnalysis<Alternative> a) {
-		switch(a.getOutcomeMeasures().get(0).getDirection()) {
+		switch(a.getCriteria().get(0).getDirection()) {
 		case HIGHER_IS_BETTER:
 			d_benefitAxisName = "";
 			d_benefitMultiplier = 1;
@@ -69,7 +69,7 @@ public class BenefitRiskDistributionImpl<Alternative extends Entity> implements 
 			d_benefitMultiplier = -1;
 			break;
 		}
-		switch(a.getOutcomeMeasures().get(1).getDirection()) {
+		switch(a.getCriteria().get(1).getDirection()) {
 		case HIGHER_IS_BETTER:
 			d_riskAxisName = "-";
 			d_riskMultiplier = -1;
@@ -93,19 +93,19 @@ public class BenefitRiskDistributionImpl<Alternative extends Entity> implements 
 
 	private void initRiskBenefits(BenefitRiskAnalysis<Alternative> a) {
 		Alternative alternative = a.getAlternatives().get(0);
-		OutcomeMeasure criterion = a.getOutcomeMeasures().get(0);
+		OutcomeMeasure criterion = a.getCriteria().get(0);
 		d_baseBenefit = SMAAEntityFactory.createCardinalMeasurement(getMeasurement(a, alternative, criterion));
 
 		alternative = a.getAlternatives().get(1);
-		criterion = a.getOutcomeMeasures().get(0);
+		criterion = a.getCriteria().get(0);
 		d_subjBenefit = SMAAEntityFactory.createCardinalMeasurement(getMeasurement(a, alternative, criterion));
 
 		alternative = a.getAlternatives().get(0);
-		criterion = a.getOutcomeMeasures().get(1);
+		criterion = a.getCriteria().get(1);
 		d_baseRisk = SMAAEntityFactory.createCardinalMeasurement(getMeasurement(a, alternative, criterion));
 
 		alternative = a.getAlternatives().get(1);
-		criterion = a.getOutcomeMeasures().get(1);
+		criterion = a.getCriteria().get(1);
 		d_subjRisk = SMAAEntityFactory.createCardinalMeasurement(getMeasurement(a, alternative, criterion));
 	}
 

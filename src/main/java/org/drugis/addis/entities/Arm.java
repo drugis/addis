@@ -22,7 +22,14 @@
 
 package org.drugis.addis.entities;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+
+import org.drugis.addis.util.XMLPropertiesFormat;
+import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
+
+import scala.actors.threadpool.Arrays;
 
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
@@ -82,9 +89,20 @@ public class Arm extends AbstractEntity {
 	
 	@Override
 	public Set<Entity> getDependencies() {
-		// TODO Auto-generated method stub
-		return null;
+		return Collections.<Entity>singleton(d_drug);
 	}
+	
+	@SuppressWarnings("unchecked")
+	private List<PropertyDefinition> d_propDefs = Arrays.asList(new PropertyDefinition<?>[]{
+		new PropertyDefinition<AbstractDose>(PROPERTY_DOSE, null) {
+			public AbstractDose getValue() { return getDose(); }
+			public void setValue(Object val) { setDose((AbstractDose) val); }
+		},
+		new PropertyDefinition<Drug>(PROPERTY_DRUG, Drug.class) {
+			public Drug getValue() { return getDrug(); }
+			public void setValue(Object val) { setDrug((Drug) val); }
+		}
+	});
 	
 	@Override
 	public Arm clone() {
@@ -100,15 +118,13 @@ public class Arm extends AbstractEntity {
 		@Override
 		public void read(InputElement ie, Arm a) throws XMLStreamException {
 			a.setSize(ie.getAttribute(PROPERTY_SIZE, 0));
-			a.setDose((AbstractDose) ie.get(PROPERTY_DOSE));
-			a.setDrug((Drug) ie.get(PROPERTY_DRUG, Drug.class));
+			XMLPropertiesFormat.readProperties(ie, a.d_propDefs);
 		}
 
 		@Override
 		public void write(Arm a, OutputElement oe) throws XMLStreamException {
 			oe.setAttribute(PROPERTY_SIZE, a.getSize());
-			oe.add(a.getDose(), PROPERTY_DOSE);
-			oe.add(a.getDrug(), PROPERTY_DRUG, Drug.class);
+			XMLPropertiesFormat.writeProperties(a.d_propDefs, oe);
 		}
 	};
 }

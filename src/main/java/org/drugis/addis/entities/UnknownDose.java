@@ -22,6 +22,16 @@
 
 package org.drugis.addis.entities;
 
+import java.util.List;
+
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
+import org.drugis.addis.util.XMLPropertiesFormat;
+import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
+
+import scala.actors.threadpool.Arrays;
+
 public class UnknownDose extends AbstractDose {
 	
 	public UnknownDose() {
@@ -53,12 +63,28 @@ public class UnknownDose extends AbstractDose {
 	}
 	
 	@Override
-	public String[] getXmlExclusions() {
-		return new String[] {"unit"};
-	}
-
-	@Override
 	public AbstractDose clone() {
 		return new UnknownDose();
 	}
+	
+	@SuppressWarnings("unchecked")
+	protected List<PropertyDefinition> d_propList = Arrays.asList(new PropertyDefinition<?>[]{
+			new PropertyDefinition<SIUnit>(PROPERTY_UNIT, SIUnit.class) {
+				public SIUnit getValue() { return getUnit(); }
+				public void setValue(Object val) { setUnit((SIUnit) val); }
+			}
+	});
+	
+	protected static final XMLFormat<UnknownDose> UNKNOWN_DOSE_XML = new XMLFormat<UnknownDose>(UnknownDose.class) {
+
+		@Override
+		public void read(InputElement ie, UnknownDose ud) throws XMLStreamException {
+			XMLPropertiesFormat.readProperties(ie, ud.d_propList);
+		}
+
+		@Override
+		public void write(UnknownDose ud, OutputElement oe) throws XMLStreamException {
+			XMLPropertiesFormat.writeProperties(ud.d_propList, oe);
+		}
+	};
 }

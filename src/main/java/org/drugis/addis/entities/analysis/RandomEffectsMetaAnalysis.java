@@ -217,7 +217,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		@Override
 		public void read(InputElement ie, RandomEffectsMetaAnalysis analysis) throws XMLStreamException {
 			analysis.d_isCorrected = ie.getAttribute(PROPERTY_CORRECTED, false);
-			XML.read(ie, analysis);
+			ABSTRACT_META_ANALYSIS_XML.read(ie, analysis);
 		}
 
 		@Override
@@ -225,7 +225,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 			if(analysis.d_isCorrected) {
 				oe.setAttribute(PROPERTY_CORRECTED, true);
 			}
-			XML.write(analysis, oe);
+			ABSTRACT_META_ANALYSIS_XML.write(analysis, oe);
 		}
 	};
 

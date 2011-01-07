@@ -34,7 +34,7 @@ import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
-import org.drugis.mtc.util.FileResults;
+import org.drugis.mtc.test.FileResults;
 import org.drugis.mtc.yadas.RandomEffectsVariance;
 import org.easymock.EasyMock;
 import org.junit.Before;
