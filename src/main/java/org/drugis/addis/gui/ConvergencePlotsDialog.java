@@ -28,8 +28,8 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
 
-import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.common.gui.task.TaskProgressBar;
 import org.drugis.common.threading.SimpleSuspendableTask;
 import org.drugis.common.threading.ThreadHandler;
@@ -63,15 +63,16 @@ public class ConvergencePlotsDialog extends JDialog {
 	private SimpleSuspendableTask d_task;
 
 	public ConvergencePlotsDialog(final JFrame main, final MixedTreatmentComparison mtc, final Parameter p) {
-		super(main, p + " convergence diagnostics", false);		
-		setSize(640, 480);
+		super(main, p + " convergence diagnostics", false);
 		d_rHatSeries = new XYSeries("R-Hat");
 		d_vHatSeries = new XYSeries("sqrt(vHat)");
 		d_wSeries = new XYSeries("sqrt(W)");
 		d_task = createTask(mtc.getResults(), p);
 		
-		JPanel panel = createPanel();
-		super.add(panel);
+		super.add(new JScrollPane(createPanel()));
+		super.setLocationRelativeTo(main);
+		super.setModal(true);
+		super.setLocationByPlatform(true);
         super.pack();
 
 		mtc.getResults().addResultsListener(new MCMCResultsListener() {
@@ -89,7 +90,7 @@ public class ConvergencePlotsDialog extends JDialog {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p");
-		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
 		

@@ -50,7 +50,9 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 	public NetworkMetaAnalysisWizard(AddisWindow mainWindow, NetworkMetaAnalysisWizardPM model) {
 		super(buildModel(model, mainWindow));
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
-		setPreferredSize(new Dimension(950, 650));
+		
+		setPreferredSize(new Dimension(mainWindow.getWidth() / 5 * 4, mainWindow.getHeight() / 5 * 4));
+		setMinimumSize(new Dimension(mainWindow.getMinimumSize().width - 100, mainWindow.getMinimumSize().height - 100));
 	}
 
 	private static WizardModel buildModel(NetworkMetaAnalysisWizardPM pm, AddisWindow main) {

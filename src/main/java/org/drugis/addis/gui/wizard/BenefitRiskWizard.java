@@ -66,8 +66,11 @@ public class BenefitRiskWizard extends Wizard {
 
 	public BenefitRiskWizard(AddisWindow mainWindow, BenefitRiskWizardPM pm) {
 		super(buildModel(pm, mainWindow));
-		getTitleComponent().setPreferredSize(new Dimension(750, 100));
-		setPreferredSize(new Dimension(750, 750));
+		
+		getTitleComponent().setPreferredSize(new Dimension(mainWindow.getWidth() / 5 * 4, 100));
+		setPreferredSize(new Dimension(mainWindow.getWidth() / 5 * 4, mainWindow.getHeight() / 5 * 4));
+		setMinimumSize(new Dimension(mainWindow.getMinimumSize().width - 100, mainWindow.getMinimumSize().height - 100));
+		
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 	}
 

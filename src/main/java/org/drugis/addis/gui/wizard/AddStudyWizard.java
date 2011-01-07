@@ -115,7 +115,9 @@ public class AddStudyWizard extends Wizard {
 			}
 		});
 		setOverviewVisible(false);
-		setPreferredSize(new Dimension(760, 570));
+		
+		dialog.setPreferredSize(new Dimension(mainWindow.getWidth() / 5 * 4, mainWindow.getHeight() / 5 * 4));
+		dialog.setMinimumSize(new Dimension(mainWindow.getMinimumSize().width - 100, mainWindow.getMinimumSize().height - 100));
 	}
 	
 	private static AbstractWizardModel buildModel(final AddStudyWizardPresentation pm, AddisWindow mainWindow, JDialog dialog) {

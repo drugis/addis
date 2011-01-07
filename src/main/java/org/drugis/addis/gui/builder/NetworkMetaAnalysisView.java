@@ -24,6 +24,7 @@ package org.drugis.addis.gui.builder;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -504,7 +505,8 @@ implements ViewBuilder {
 	protected void showConvergencePlots(MixedTreatmentComparison mtc, Parameter p) {
 		if(mtc.getResults().getNumberOfSamples() > 0) {
 			JDialog dialog = new ConvergencePlotsDialog(d_mainWindow, mtc, p);
-			dialog.setLocationRelativeTo(d_mainWindow);
+			dialog.setPreferredSize(new Dimension(d_mainWindow.getWidth() / 5 * 4, d_mainWindow.getHeight() / 5 * 4));
+			dialog.setMinimumSize(new Dimension(d_mainWindow.getMinimumSize().width - 100, d_mainWindow.getMinimumSize().height - 100));
 			dialog.pack();
 			dialog.setVisible(true);
 		} else {

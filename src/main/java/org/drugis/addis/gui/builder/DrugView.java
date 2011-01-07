@@ -104,9 +104,10 @@ public class DrugView implements ViewBuilder{
 		
 		builder.addLabel("Name:", cc.xy(1, 1));
 		AbstractValueModel drugname = d_model.getModel(Drug.PROPERTY_NAME);
-		builder.add(BasicComponentFactory.createLabel(drugname), cc.xy(3,1));
+		
+		builder.add(BasicComponentFactory.createLabel(drugname) , cc.xy(3,1));
 		builder.add(new JLabel("-"), cc.xy(4,1));
-		builder.add(new LinkLabel("Search for SmPC at " + SEARCH_DOMAIN, getSearchUrl(drugname)), cc.xy(5,1));
+		builder.add(new LinkLabel("Search for SmPC at " + SEARCH_DOMAIN, getSearchUrl(drugname)), cc.xy(5, 1));
 		builder.addLabel("ATC Code:", cc.xy(1, 3));
 		builder.add(BasicComponentFactory.createLabel(d_model.getModel(Drug.PROPERTY_ATCCODE)), cc.xy(3, 3));
 		

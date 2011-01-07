@@ -62,7 +62,9 @@ public class MetaAnalysisWizard extends Wizard {
 	public MetaAnalysisWizard(AddisWindow mainWindow, MetaAnalysisWizardPresentation pm) {
 		super(buildModel(pm, mainWindow));
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
-		setPreferredSize(new Dimension(950, 650));
+		
+		setPreferredSize(new Dimension(mainWindow.getWidth() / 5 * 4, mainWindow.getHeight() / 5 * 4));
+		setMinimumSize(new Dimension(mainWindow.getMinimumSize().width - 100, mainWindow.getMinimumSize().height - 100));
 	}
 	
 	private static WizardModel buildModel(MetaAnalysisWizardPresentation pm, AddisWindow mainWindow) {
