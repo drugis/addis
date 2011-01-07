@@ -45,11 +45,11 @@ import javax.swing.UIManager;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainManager;
-import org.drugis.addis.util.ImageExporterExperimental;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.FileLoadDialog;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.GUIHelper;
+import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.event.TaskFailedEvent;
 
@@ -124,7 +124,7 @@ public class Main {
 		new FileSaveDialog(component, "svg", "SVG files") {
 			@Override
 			public void doAction(String path, String extension) {
-				ImageExporterExperimental.writeSVG(path, component, component.getWidth(), component.getHeight());
+				ImageExporter.writeSVG(path, component, component.getWidth(), component.getHeight());
 			}
 		};
 	}

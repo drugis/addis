@@ -37,7 +37,7 @@ import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.StudyGraphModel.Edge;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
-import org.drugis.addis.util.ImageExporterExperimental;
+import org.drugis.common.gui.ImageExporter;
 import org.jgraph.JGraph;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.GraphLayoutCache;
@@ -112,7 +112,7 @@ public class StudyGraph extends JPanel {
 		Color oldCol = d_jgraph.getBackground();
 		d_jgraph.setBackground(Color.white);
 		d_jgraph.setDoubleBuffered(false);
-		ImageExporterExperimental.writeImage(frame, d_jgraph, (int) getSize().getWidth(), (int) getSize().getHeight());
+		ImageExporter.writeImage(frame, d_jgraph, (int) getSize().getWidth(), (int) getSize().getHeight());
 		d_jgraph.setDoubleBuffered(true);
 		d_jgraph.setBackground(oldCol);
 	}

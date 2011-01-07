@@ -71,11 +71,11 @@ import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EmpiricalDensityDataset;
-import org.drugis.addis.util.ImageExporterExperimental;
 import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
 import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.FileSaveDialog;
+import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 import org.drugis.common.gui.task.TaskProgressBar;
@@ -542,7 +542,7 @@ implements ViewBuilder {
 		JButton button = new JButton("Save Image");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ImageExporterExperimental.writeImage(d_mainWindow, chart, 600, 400);
+				ImageExporter.writeImage(d_mainWindow, chart, 600, 400);
 			}
 		});
 		return button;
