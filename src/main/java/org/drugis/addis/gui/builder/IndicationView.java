@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.AddisWindow;
+import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.presentation.IndicationPresentation;
@@ -53,7 +54,7 @@ public class IndicationView implements ViewBuilder {
 	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -71,7 +72,7 @@ public class IndicationView implements ViewBuilder {
 
 	private JPanel buildOverviewPart() {
 		CellConstraints cc = new CellConstraints();
-		FormLayout layout = new FormLayout("right:pref, 3dlu, left:pref:grow",
+		FormLayout layout = new FormLayout("right:pref, 3dlu, fill:0:grow",
 				"p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.addLabel("SNOMED Concept ID:", cc.xy(1, 1));
@@ -81,8 +82,7 @@ public class IndicationView implements ViewBuilder {
 		builder.add(BasicComponentFactory.createLabel(codeModel), cc.xy(3, 1));
 		
 		builder.addLabel("Fully Specified Name:", cc.xy(1, 3));
-		builder.add(BasicComponentFactory.createLabel(
-				d_pm.getModel(Indication.PROPERTY_NAME)), cc.xy(3, 3));
+		builder.add(AuxComponentFactory.createAutoWrapLabel(d_pm.getModel(Indication.PROPERTY_NAME)), cc.xy(3, 3));
 		return builder.getPanel();
 	}
 }

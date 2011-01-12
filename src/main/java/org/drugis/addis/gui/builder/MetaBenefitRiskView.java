@@ -76,7 +76,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 	@Override
 	protected JPanel buildOverviewPanel() {
 		FormLayout layout = new FormLayout(
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout, new JPanel());
@@ -99,7 +99,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 	
 	private JComponent buildProgressBars() {
 		FormLayout layout = new FormLayout(
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();
@@ -133,7 +133,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 	@Override
 	protected JPanel buildMeasurementsPanel() {
 		CellConstraints cc = new CellConstraints();
-		FormLayout layout = new FormLayout("pref:grow:fill",
+		FormLayout layout = new FormLayout("fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
@@ -144,8 +144,8 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		
 		builder.addSeparator("Relative effect distributions", cc.xyw(1, row, width));
 		row += 2;
-		builder.add(AuxComponentFactory.createHtmlField("<p>Relative measurements: log odds-ratio or mean difference, with "
-				+ d_pm.getBaseline() +" as the common comparator.</p>"),cc.xy(1, row));
+		builder.add(AuxComponentFactory.createHtmlField("Relative measurements: log odds-ratio or mean difference, with "
+				+ d_pm.getBaseline() +" as the common comparator."),cc.xy(1, row));
 		row += 2;
 		EnhancedTable table = new EnhancedTable(d_pm.getRelativeMeasurementTableModel());
 		table.setDefaultRenderer(Distribution.class, new DistributionParameterCellRenderer());
@@ -154,9 +154,9 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 
 		builder.addSeparator("Baseline effect distributions", cc.xyw(1, row, width));
 		row += 2;
-		builder.add(AuxComponentFactory.createHtmlField("<p>Baseline measurements: log odds or mean for " + 
+		builder.add(AuxComponentFactory.createHtmlField("Baseline measurements: log odds or mean for " + 
 				d_pm.getBaseline() + ". The method used to derive the assumed odds or mean are heuristic, "
-				+ "and these values should be interpreted with care.</p>"), cc.xy(1, row));
+				+ "and these values should be interpreted with care."), cc.xy(1, row));
 		row += 2;
 		EnhancedTable table2 = new EnhancedTable(d_pm.getBaselineMeasurementTableModel());
 		table2.setDefaultRenderer(Distribution.class, new DistributionParameterCellRenderer());
@@ -165,7 +165,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		
 		builder.addSeparator("Measurements", cc.xyw(1, row, width));
 		row += 2;
-		builder.add(AuxComponentFactory.createHtmlField("<p>Measurements: incidence approximated with logit-Normal distribution, or continuous variables approximated with a Normal distribution.</p>"),
+		builder.add(AuxComponentFactory.createHtmlField("Measurements: incidence approximated with logit-Normal distribution, or continuous variables approximated with a Normal distribution."),
 				cc.xy(1, row));
 		row += 2;
 		EnhancedTable table3 = new EnhancedTable(d_pm.getMeasurementTableModel());

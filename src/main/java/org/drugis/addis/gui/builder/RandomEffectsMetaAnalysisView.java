@@ -67,7 +67,7 @@ implements ViewBuilder {
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -86,7 +86,7 @@ implements ViewBuilder {
 		tabbedPane.addTab("Overview", builder.getPanel());
 		
 		layout = new FormLayout(
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu, p");
 		builder = new PanelBuilder(layout);
 
@@ -112,7 +112,7 @@ implements ViewBuilder {
 	private JComponent buildContinuousPlotsPart() {
 		
 		FormLayout layout = new FormLayout(
-				"pref:grow:fill", "p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"fill:0:grow", "p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
@@ -132,7 +132,7 @@ implements ViewBuilder {
 	private JComponent buildRatePlotsPart() {
 		
 		FormLayout layout = new FormLayout(
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -157,10 +157,10 @@ implements ViewBuilder {
 	@SuppressWarnings("serial")
 	private JComponent buildRelativeEffectPart(Class<? extends RelativeEffect<?>> type) {
 		FormLayout layout1 = new FormLayout(
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu, p, 3dlu, p");
 		FormLayout layout2 = new FormLayout(
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu");
 		JPanel encapsulating = new JPanel(layout1);
 		

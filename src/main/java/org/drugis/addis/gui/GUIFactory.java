@@ -40,17 +40,17 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.StudyListPresentation;
-import org.drugis.common.HtmlWordWrapper;
 import org.drugis.common.ImageLoader;
+import org.drugis.common.gui.GUIHelper;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.StandardChartTheme;
+import org.jfree.chart.renderer.category.StandardBarPainter;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.AbstractValueModel;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.StandardChartTheme;
-import org.jfree.chart.renderer.category.StandardBarPainter;
 
 public class GUIFactory {
 	public static JButton createPlusButton(String toolTipText) {
@@ -115,7 +115,7 @@ public class GUIFactory {
 			return null;
 		}
 		return "<html><b>From " + note.getSource().toString() + "</b><br>\n" + 
-			HtmlWordWrapper.wordWrap(note.getText(), false) + "</html>";
+			GUIHelper.wordWrap(note.getText(), false) + "</html>";
 	}
 
 }

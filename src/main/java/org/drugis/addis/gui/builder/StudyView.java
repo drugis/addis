@@ -66,7 +66,7 @@ public class StudyView implements ViewBuilder {
 	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout( 
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		
@@ -88,7 +88,7 @@ public class StudyView implements ViewBuilder {
 		tabbedPane.addTab("Overview", builder.getPanel());
 
 		layout = new FormLayout( 
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		

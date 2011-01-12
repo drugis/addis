@@ -35,7 +35,6 @@ import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
-import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -49,7 +48,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, left:pref:grow",
+				"right:pref, 3dlu, fill:0:grow",
 				"p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
@@ -57,7 +56,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		int fullWidth = 3;
 
 		builder.addLabel("ID:", cc.xy(1, 1));
-		JLabel idLabel = BasicComponentFactory.createLabel(d_model.getModel(Study.PROPERTY_ID));
+		JLabel idLabel = AuxComponentFactory.createAutoWrapLabel(d_model.getModel(Study.PROPERTY_ID));
 		idLabel.setToolTipText(GUIFactory.createToolTip(d_model.getNote(Study.PROPERTY_ID)));
 		builder.add(idLabel,
 				cc.xyw(3, 1, fullWidth - 2));

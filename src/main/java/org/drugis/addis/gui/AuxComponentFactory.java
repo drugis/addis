@@ -25,7 +25,6 @@ package org.drugis.addis.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.text.Format;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Set;
@@ -44,6 +43,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.NumberFormatter;
 import javax.swing.text.StyledDocument;
@@ -55,7 +55,6 @@ import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.gui.wizard.AddStudyWizard;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.common.HtmlWordWrapper;
 import org.drugis.common.gui.DayDateFormat;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OneWayObjectFormat;
@@ -208,11 +207,13 @@ public class AuxComponentFactory {
 	/**
 	 * Create a styles HTML text pane with a certain (HTML) body text. Use &lt;p&gt;'s to structure.
 	 */
-	public static JComponent createHtmlField(String bodyText) {
-		String text = "<html><head><style type=\"text/css\">body { width: 450; margin-bottom: 15px; } p { margin-left: 10px; padding-left: 0px; }</style></head><body>"
-			+ bodyText + "</body></html>";
-		JTextPane htmlPane = HtmlWordWrapper.createHtmlPane(text);
-		return htmlPane;
+	public static JComponent createHtmlField(String bodyText) {	
+		JLabel label = new JLabel("<html><div style='margin:0; padding: 10px;'>" + bodyText + "</div></html>", SwingConstants.CENTER);
+		label.setOpaque(true);
+		label.setBackground(COLOR_NOTE);
+		//label.setBorder(BorderFactory.createLineBorder(Color.gray));
+		label.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		return label;
 	}
 	
 	public static JLabel createAutoWrapLabel(ValueModel value) {

@@ -19,7 +19,7 @@ public class HTMLWrappingModel extends AbstractValueModel {
 		});
 	}
 	public Object getValue() {
-		return "<html><p style='margin-top: 3px;'>" + d_nested.getValue() + "</p></html>";
+		return "<html><p style='margin-top: 3px; '>" + d_nested.getValue() + "</p></html>";
 	}
 	public void setValue(Object newValue) {
 		throw new IllegalAccessError(this.getClass().getName()+" is read-only!");

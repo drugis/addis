@@ -32,15 +32,14 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.gui.AddisWindow;
+import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 import org.drugis.common.gui.LayoutUtil;
-import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 
-import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -77,7 +76,7 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 
 	protected JPanel buildOverviewPart() {
 		CellConstraints cc = new CellConstraints();
-		FormLayout layout = new FormLayout("right:pref, 3dlu, left:pref:grow",
+		FormLayout layout = new FormLayout("right:pref, 3dlu, fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		
@@ -88,20 +87,17 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		builder.add(tmp , cc.xy(3, 1));
 		
 		builder.addLabel("Analysis type:", cc.xy(1, 3));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_ANALYSIS_TYPE), new OneWayObjectFormat()),
-				cc.xy(3, 3));
+		builder.add(AuxComponentFactory.createAutoWrapLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_ANALYSIS_TYPE)),	cc.xy(3, 3));
 
 		builder.addLabel("Indication:", cc.xy(1, 5));
-		builder.add(BasicComponentFactory.createLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_INDICATION), new OneWayObjectFormat()), 
-				cc.xy(3, 5));
+		builder.add(AuxComponentFactory.createAutoWrapLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_INDICATION)), cc.xy(3, 5));
 
 		int row = 5;
 		if (d_pm instanceof StudyBenefitRiskPresentation) {
 			row += 2;
 			LayoutUtil.addRow(layout);
 			builder.addLabel("Study:", cc.xy(1, row));
-			builder.add(BasicComponentFactory.createLabel(d_pm.getModel(StudyBenefitRiskAnalysis.PROPERTY_STUDY), new OneWayObjectFormat()), 
-					cc.xy(3, row));
+			builder.add(AuxComponentFactory.createAutoWrapLabel(d_pm.getModel(StudyBenefitRiskAnalysis.PROPERTY_STUDY)), cc.xy(3, row));
 		}
 		
 		row += 2;
