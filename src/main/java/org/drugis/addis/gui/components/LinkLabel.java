@@ -35,15 +35,22 @@ public class LinkLabel extends JLabel{
 
 	private String d_url;
 
-	public LinkLabel (String text, String url) {
-		super(generateLabel(text, url));
+	public LinkLabel (String linkText, String url) {
+		super(generateLabel("", linkText, url));
+		d_url = url;
+		this.addMouseListener(new ClickListener());
+		this.setToolTipText("Go to " + url);
+	}
+	
+	public LinkLabel(String text, String linkText, String url) {
+		super(generateLabel(text, linkText, url));
 		d_url = url;
 		this.addMouseListener(new ClickListener());
 		this.setToolTipText("Go to " + url);
 	}
 
-	private static String generateLabel(String text, String url) {
-		return "<html><a href=\""+url+"\">"+text+"</a></html>";
+	private static String generateLabel(String text, String linkText, String url) {
+		return "<html> "+text+" <a href=\""+url+"\">"+linkText+"</a></html>";
 	}
 	
 	private class ClickListener extends MouseAdapter {
