@@ -25,6 +25,7 @@ package org.drugis.addis.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.text.Format;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Set;
@@ -42,6 +43,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.NumberFormatter;
 import javax.swing.text.StyledDocument;
@@ -176,6 +178,7 @@ public class AuxComponentFactory {
 			row+=2;
 			
 			JTextPane area = new JTextPane();
+			
 			StyledDocument doc = area.getStyledDocument();
 			AddStudyWizard.addStylesToDoc(doc);
 			
@@ -189,6 +192,7 @@ public class AuxComponentFactory {
 			}
 	
 			area.setEditable(false);
+			
 			
 			JScrollPane pane = new JScrollPane(area);
 			pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -205,9 +209,13 @@ public class AuxComponentFactory {
 	 * Create a styles HTML text pane with a certain (HTML) body text. Use &lt;p&gt;'s to structure.
 	 */
 	public static JComponent createHtmlField(String bodyText) {
-		String text = "<html><head><style type=\"text/css\">body { width: 450px; margin-bottom: 15px; } p { margin-left: 10px; padding-left: 0px; }</style></head><body>"
+		String text = "<html><head><style type=\"text/css\">body { width: 450; margin-bottom: 15px; } p { margin-left: 10px; padding-left: 0px; }</style></head><body>"
 			+ bodyText + "</body></html>";
 		JTextPane htmlPane = HtmlWordWrapper.createHtmlPane(text);
 		return htmlPane;
+	}
+	
+	public static JLabel createAutoWrapLabel(ValueModel value) {
+		return BasicComponentFactory.createLabel(new HTMLWrappingModel(value));
 	}
 }

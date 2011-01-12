@@ -55,7 +55,6 @@ public class EndpointsKnowledge extends CategoryKnowledgeBase {
 	}
 
 	public ViewBuilder getEntityViewBuilder(AddisWindow mainWindow, Domain domain, Entity entity) {
-		return new VariableView(
-				(VariablePresentation) mainWindow.getPresentationModelFactory().getModel(((Variable) entity)), mainWindow);
+		return new VariableView((VariablePresentation) mainWindow.getPresentationModelFactory().getModel(((Variable) entity)), mainWindow);
 	}
 }

@@ -33,13 +33,13 @@ import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.AddisWindow;
+import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.VariablePresentation;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 
-import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.value.ConverterFactory;
 import com.jgoodies.binding.value.ValueModel;
@@ -77,22 +77,22 @@ public class VariableView implements ViewBuilder {
 
 	private JPanel buildOverviewPart() {
 		FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, pref:grow",
+				"right:pref, 3dlu, fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();
 		
 		builder.addLabel("Name:", cc.xy(1, 1));
-		builder.add(BasicComponentFactory.createLabel(
+		builder.add(AuxComponentFactory.createAutoWrapLabel(
 				d_model.getModel(Variable.PROPERTY_NAME)), cc.xy(3, 1));
 		
 		builder.addLabel("Description:", cc.xy(1, 3));
- 		builder.add(BasicComponentFactory.createLabel(
-				d_model.getModel(Variable.PROPERTY_DESCRIPTION)), cc.xy(3, 3));
+		
+		builder.add(AuxComponentFactory.createAutoWrapLabel(d_model.getModel(Variable.PROPERTY_DESCRIPTION)), cc.xy(3, 3));
 
  		if(! (d_model.getBean() instanceof CategoricalPopulationCharacteristic)) {
  			builder.addLabel("Unit of Measurement:", cc.xy(1, 5));
- 			builder.add(BasicComponentFactory.createLabel(
+ 			builder.add(AuxComponentFactory.createAutoWrapLabel(
  					d_model.getModel(Variable.PROPERTY_UNIT_OF_MEASUREMENT)), cc.xy(3, 5));
  		}
 
@@ -100,15 +100,14 @@ public class VariableView implements ViewBuilder {
 				d_model.getModel(Variable.PROPERTY_TYPE),
 				new OneWayObjectFormat());
 		builder.addLabel("Type:", cc.xy(1, 7));
-		builder.add(BasicComponentFactory.createLabel(typeModel), cc.xy(3, 7));
+		builder.add(AuxComponentFactory.createAutoWrapLabel(typeModel), cc.xy(3, 7));
 		
 		if (d_model.getBean() instanceof OutcomeMeasure) {
 			builder.addLabel("Direction:", cc.xy(1, 9));
 			ValueModel directionModel = ConverterFactory.createStringConverter(
 					d_model.getModel(OutcomeMeasure.PROPERTY_DIRECTION),
 					new OneWayObjectFormat());
-			builder.add(BasicComponentFactory.createLabel(
-					directionModel), cc.xy(3, 9));
+			builder.add(AuxComponentFactory.createAutoWrapLabel(directionModel), cc.xy(3, 9));
 		}
 		
 		if( d_model.getBean() instanceof CategoricalPopulationCharacteristic) {
@@ -119,7 +118,6 @@ public class VariableView implements ViewBuilder {
 			Bindings.bind(listBox,d_model.getCategoriesListModel());
 			builder.add(listBox, cc.xy(3, 11));
 		}
-
 		return builder.getPanel();
 	}
 
