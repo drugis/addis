@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.drugis.addis.entities.Measurement;
 import org.drugis.mtc.util.DerSimonianLairdPooling;
-import org.drugis.mtc.util.EstimateWithPrecision;
+import org.drugis.common.stat.EstimateWithPrecision;
 
 public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurement> implements RandomEffectMetaAnalysisRelativeEffect<Measurement> {
 	

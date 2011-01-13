@@ -1,6 +1,6 @@
 package org.drugis.addis.entities.relativeeffect;
 
-import org.drugis.mtc.util.Statistics;
+import org.drugis.common.stat.Statistics;
 
 public class LogitGaussian extends GaussianBase {
 	public LogitGaussian(double mu, double sigma) {
