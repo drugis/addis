@@ -30,6 +30,7 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.util.JSMAAintegration.BRSMAASimulationBuilder;
 import org.drugis.addis.util.JSMAAintegration.SMAAEntityFactory;
 import org.drugis.common.gui.task.TaskProgressModel;
+import org.drugis.common.threading.NullTask;
 
 import fi.smaa.jsmaa.gui.jfreechart.CentralWeightsDataset;
 import fi.smaa.jsmaa.gui.jfreechart.RankAcceptabilitiesDataset;
@@ -60,7 +61,7 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 	protected SMAAEntityFactory<Alternative> d_smaaf;
 	private ValueHolder<Boolean> d_initializedModel= new ModifiableHolder<Boolean>(false);
 
-	private BRSMAASimulationBuilder d_simulationBuilder;
+	private TaskProgressModel d_progressModel = new TaskProgressModel(new NullTask());
 
 	public SMAAPresentation(AnalysisType a) {
 		d_a = a;
@@ -78,9 +79,6 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 		d_prefPresModel = new PreferencePresentationModel(d_smaaModel, false);
 		d_initializedModel.setValue(true);
 		
-		d_simulationBuilder = new BRSMAASimulationBuilder(d_smaaModel,
-				d_rankAccepTM, d_rankAccepDS, d_cwTM, d_cwDS);
-		
 		d_smaaModel.addModelListener(new SMAAModelListener() {
 			public void modelChanged(ModelChangeEvent type) {
 				startSimulation();
@@ -88,13 +86,17 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 		});
 		startSimulation();
 	}
+
+	private BRSMAASimulationBuilder createBuilder() {
+		return new BRSMAASimulationBuilder(d_smaaModel, d_rankAccepTM, d_rankAccepDS, d_cwTM, d_cwDS, d_progressModel);
+	}
 	
 	public ValueHolder<Boolean> getInitializedModel() {
 		return d_initializedModel;
 	}
 
 	protected void startSimulation() {
-		d_buildQueue.add(d_simulationBuilder);
+		d_buildQueue.add(createBuilder());
 	}
 
 	public PreferencePresentationModel getSmaaPreferenceModel() {
@@ -122,7 +124,7 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 	}
 	
 	public TaskProgressModel getTaskProgressModel() {
-		return d_simulationBuilder.getTaskProgressModel();
+		return d_progressModel;
 	}
 
 	public OutcomeMeasure getOutcomeMeasureForCriterion(CardinalCriterion crit) {
