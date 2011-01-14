@@ -76,7 +76,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 	@Override
 	protected JPanel buildOverviewPanel() {
 		FormLayout layout = new FormLayout(
-				"fill:0:grow",
+				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout, new JPanel());
@@ -99,7 +99,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 	
 	private JComponent buildProgressBars() {
 		FormLayout layout = new FormLayout(
-				"fill:0:grow",
+				"pref:grow:fill",
 				"p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();
@@ -133,7 +133,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 	@Override
 	protected JPanel buildMeasurementsPanel() {
 		CellConstraints cc = new CellConstraints();
-		FormLayout layout = new FormLayout("fill:0:grow",
+		FormLayout layout = new FormLayout("pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();

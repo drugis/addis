@@ -81,7 +81,7 @@ public class SMAAView implements ViewBuilder  {
 	public JComponent buildPanel() {
 		CellConstraints cc=  new CellConstraints();
 		FormLayout layout = new FormLayout(
-				"fill:0:grow",
+				"pref:grow:fill",
 				"p, 3dlu, p, " + // 1-3 
 				"3dlu, p, 3dlu, p, " + // 4-7
 				"3dlu, p, 3dlu, p, " + // 8-11 
@@ -121,7 +121,7 @@ public class SMAAView implements ViewBuilder  {
 	final class PreferencesBuilder implements ViewBuilder {
 
 		public JComponent buildPanel() {
-			FormLayout layout = new FormLayout("fill:0:grow", "p, 3dlu, p");
+			FormLayout layout = new FormLayout("pref:grow:fill", "p, 3dlu, p");
 			PanelBuilder builder = new PanelBuilder(layout);
 			builder.setOpaque(true);
 

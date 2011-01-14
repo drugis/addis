@@ -77,7 +77,7 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"left:pref, 3dlu, left:pref, 3dlu, fill:0:grow", 
+				"left:pref, 3dlu, left:pref, 3dlu, pref:grow:fill", 
 				"p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();

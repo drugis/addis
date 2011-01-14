@@ -17,6 +17,8 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
+1.5: User interface improvements, risk-based sampling in MetaBR.
+
 1.4: Lynd & O'Brien benefit-risk analysis, corrected meta-analysis,
    network meta-analysis enhancements (assessment of convergence,
    variance parameters, node-splitting analysis, R-dump of results,
