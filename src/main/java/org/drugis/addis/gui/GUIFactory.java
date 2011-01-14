@@ -29,6 +29,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.AdverseEvent;
@@ -71,12 +72,10 @@ public class GUIFactory {
 		} if (e instanceof AdverseEvent) {
 			fname = FileNames.ICON_ADVERSE_EVENT;
 		}
-		JLabel textLabel = null;
 		Icon icon = ImageLoader.getIcon(fname);
-		textLabel = new JLabel(e.getName(), icon, JLabel.CENTER);			
+		JLabel textLabel = new JLabel(e.getName(), icon, JLabel.CENTER);
 		
-		Bindings.bind(textLabel, "text", 
-				new PresentationModel<OutcomeMeasure>(e).getModel(OutcomeMeasure.PROPERTY_NAME));
+		Bindings.bind(textLabel, "text", new HTMLWrappingModel(new PresentationModel<OutcomeMeasure>(e).getModel(OutcomeMeasure.PROPERTY_NAME)));
 		return textLabel;
 	}
 

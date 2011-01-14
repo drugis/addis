@@ -37,6 +37,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
+import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.SMAAPresentation;
@@ -81,15 +82,15 @@ public class SMAAView implements ViewBuilder  {
 	public JComponent buildPanel() {
 		CellConstraints cc=  new CellConstraints();
 		FormLayout layout = new FormLayout(
-				"fill:0:grow",
+				"left:0:grow",
 				"p, 3dlu, p, " + // 1-3 
 				"3dlu, p, 3dlu, p, " + // 4-7
 				"3dlu, p, 3dlu, p, " + // 8-11 
 				"3dlu, p, 3dlu, p "
 				);
-		PanelBuilder d_builder = new PanelBuilder(layout, new JPanel());
+		PanelBuilder d_builder = new PanelBuilder(layout, new ScrollableJPanel());
 		d_builder.setDefaultDialogBorder();
-		d_builder.setOpaque(true);
+		//d_builder.setOpaque(true);
 		
 		d_builder.addSeparator("Preferences", cc.xy(1, 5));
 		d_builder.add(buildPreferencesPart(), cc.xy(1, 7));
@@ -121,7 +122,7 @@ public class SMAAView implements ViewBuilder  {
 	final class PreferencesBuilder implements ViewBuilder {
 
 		public JComponent buildPanel() {
-			FormLayout layout = new FormLayout("fill:0:grow", "p, 3dlu, p");
+			FormLayout layout = new FormLayout("center:pref", "p, 3dlu, p");
 			PanelBuilder builder = new PanelBuilder(layout);
 			builder.setOpaque(true);
 
@@ -188,6 +189,11 @@ public class SMAAView implements ViewBuilder  {
 	class RankAcceptabilitiesBuilder implements ViewBuilder {
 		
 		public JComponent buildPanel() {
+			FormLayout layout = new FormLayout("pref, 3dlu, fill:0:grow", "p, 3dlu, p, 3dlu, p");
+			CellConstraints cc = new CellConstraints();
+			PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+			builder.setDefaultDialogBorder();
+			
 			ResultsTable table = new ResultsTable(d_pm.getRankAcceptabilitiesTableModel());
 			table.setDefaultRenderer(Object.class, new ResultsCellColorRenderer(1.0));			
 			
@@ -195,18 +201,21 @@ public class SMAAView implements ViewBuilder  {
 			        "Rank Acceptability", "Alternative", "Rank Acceptability",
 			        d_pm.getRankAcceptabilityDataSet(), PlotOrientation.VERTICAL, true, true, false);
 			chart.addSubtitle(new org.jfree.chart.title.ShortTextTitle("Rank 1 is best, rank N is worst."));
-	
-			JPanel panel = new JPanel(new BorderLayout());
+			
+			//JPanel panel = new JPanel(new BorderLayout());
 			fi.smaa.jsmaa.gui.views.ResultsView view = new fi.smaa.jsmaa.gui.views.ResultsView(d_mainWindow, table, chart, "");
-			panel.add(getSmaaSimulationProgressBar(), BorderLayout.NORTH);
-			JComponent viewPanel = view.buildPanel();
-			panel.add(viewPanel, BorderLayout.CENTER);
+			builder.add(getSmaaSimulationProgressBar(), cc.xy(1, 1));
+			//panel.add(getSmaaSimulationProgressBar(), BorderLayout.NORTH);
+			builder.add(view.buildPanel(), cc.xy(1, 3));
+			//panel.add(view.buildPanel(), BorderLayout.CENTER);
 			
 			ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
-			bbuilder.addButton(createSaveImageButton(findChartPanel(viewPanel)));
-			panel.add(bbuilder.getPanel(), BorderLayout.SOUTH);
-	
-			return panel;
+			bbuilder.addButton(createSaveImageButton(findChartPanel(view.buildPanel())));
+			//panel.add(bbuilder.getPanel(), BorderLayout.SOUTH);
+			builder.add(bbuilder.getPanel(), cc.xyw(1, 5, 3));
+			
+			return builder.getPanel();
+			//return panel;
 		}
 	}
 

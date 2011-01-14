@@ -31,6 +31,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import org.drugis.addis.entities.Study;
@@ -67,7 +68,7 @@ implements ViewBuilder {
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"fill:0:grow",
+				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -86,13 +87,14 @@ implements ViewBuilder {
 		tabbedPane.addTab("Overview", builder.getPanel());
 		
 		layout = new FormLayout(
-				"fill:0:grow",
+				"pref:grow:fill",
 				"p, 3dlu, p");
 		builder = new PanelBuilder(layout);
 
 		builder.add(getPlotsPanel(false), cc.xy(1, 3));
 		tabbedPane.addTab("Results", builder.getPanel());
 		
+		//return new JScrollPane(tabbedPane);
 		return tabbedPane;
 	}
 
@@ -116,6 +118,7 @@ implements ViewBuilder {
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
+		builder.setBorder(BorderFactory.createEmptyBorder());
 		
 		CellConstraints cc = new CellConstraints();
 		builder.addSeparator("Mean difference", cc.xy(1, 1));
@@ -150,17 +153,16 @@ implements ViewBuilder {
 			builder.addSeparator("Risk difference", cc.xy(1, 11));
 			builder.add(buildRelativeEffectPart(BasicRiskDifference.class), cc.xy(1, 13));
 		}
-
 		return builder.getPanel();
 	}
 
 	@SuppressWarnings("serial")
 	private JComponent buildRelativeEffectPart(Class<? extends RelativeEffect<?>> type) {
 		FormLayout layout1 = new FormLayout(
-				"fill:0:grow",
+				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p");
 		FormLayout layout2 = new FormLayout(
-				"fill:0:grow",
+				"pref:grow:fill",
 				"p, 3dlu");
 		JPanel encapsulating = new JPanel(layout1);
 		
@@ -170,7 +172,7 @@ implements ViewBuilder {
 		final RelativeEffectCanvas canvas = new RelativeEffectCanvas(d_pm.getForestPlotPresentation(type));
 		builder.add(canvas, cc.xy(1, 1));
 		
-		builder.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.black, 1), BorderFactory.createEmptyBorder(1, 1, 1, 1)));
+		builder.setBorder(BorderFactory.createLineBorder(Color.black));
 		builder.setBackground(Color.white);
 		
 		encapsulating.add(builder.getPanel(),cc.xy(1, 1));
@@ -189,7 +191,8 @@ implements ViewBuilder {
 			encapsulating.add(new JLabel(" "), cc.xy(1, 3));
 			encapsulating.add(bbuilder.getPanel(), cc.xy(1, 5));
 		}
-		return encapsulating;	
+		
+		return new JScrollPane(encapsulating);	
 	}
 
 }

@@ -32,6 +32,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.AddisWindow;
@@ -77,7 +78,7 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"left:pref, 3dlu, left:pref, 3dlu, fill:0:grow", 
+				"left:0:grow, 3dlu, left:pref, 3dlu, left:pref", 
 				"p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
@@ -92,9 +93,7 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 				
 				outcomeMeasureLabelWithIcon.setToolTipText(GUIFactory.createToolTip(
 						d_model.getBean().getNote(om)));
-				builder.add(
-						outcomeMeasureLabelWithIcon,
-						cc.xy(1, row));
+				builder.add( outcomeMeasureLabelWithIcon, cc.xy(1, row));
 				
 				JPanel panel = new JPanel(new FlowLayout());
 				if (om.getType().equals(Variable.Type.RATE)) {
@@ -152,7 +151,7 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 	}
 	
 	private JButton createRatioButton(final RelativeEffectTableModel tableModel) {
-		JButton button = new JButton(tableModel.getTitle());
+		JButton button = new JButton(StringUtils.remove(tableModel.getTitle(), " Table"));
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				RelativeEffectTableDialog dlg = new RelativeEffectTableDialog(d_mainWindow, tableModel);
