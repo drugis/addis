@@ -249,23 +249,29 @@
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="rate" type="xs:integer"/>
 	</xs:complexType>
-	<xs:complexType name="PairwiseMetaAnalysis">
+	<xs:complexType name="MetaAnalysis">
 		<xs:sequence>
 			<xs:element name="indication" type="NameReference"/>
 			<xs:choice>
 				<xs:element name="adverseEvent" type="NameReference"/>
 				<xs:element name="endpoint" type="NameReference"/>
 			</xs:choice>
-			<xs:sequence maxOccurs="2" minOccurs="2">
-				<xs:element name="alternative" type="Alternative"/>
-			</xs:sequence>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string"/>
 	</xs:complexType>
+	<xs:complexType name="PairwiseMetaAnalysis">
+		<xs:complexContent>
+			<xs:extension base="MetaAnalysis">
+				<xs:sequence maxOccurs="2" minOccurs="2">
+					<xs:element name="alternative" type="Alternative"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="NetworkMetaAnalysis">
 		<xs:complexContent>
-			<xs:extension base="PairwiseMetaAnalysis">
-				<xs:sequence maxOccurs="unbounded" minOccurs="0">
+			<xs:extension base="MetaAnalysis">
+				<xs:sequence maxOccurs="unbounded" minOccurs="2">
 					<xs:element name="alternative" type="Alternative"/>
 				</xs:sequence>
 			</xs:extension>
