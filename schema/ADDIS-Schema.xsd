@@ -241,7 +241,7 @@
 	</xs:complexType>
 	<xs:complexType name="Study">
 		<xs:sequence>
-			<xs:element name="indication" type="NameReference"/>
+			<xs:element name="indication" type="NameReferenceWithNotes"/>
 			<xs:element name="characteristics" type="Characteristics"/>
 			<xs:element name="studyOutcomeMeasures" type="StudyOutcomeMeasures"/>
 			<xs:element name="arms" type="Arms"/>
@@ -274,19 +274,9 @@
 		<xs:simpleContent>
 			<xs:extension base="xs:string">
 				<xs:attribute name="date" type="xs:date"/>
-				<xs:attribute name="source" type="Source"/>
+				<xs:attribute name="source" type="SourceEnum" use="required"/>
 			</xs:extension>
 		</xs:simpleContent>
-	</xs:complexType>
-	<xs:complexType name="EndpointReferences">
-		<xs:sequence maxOccurs="unbounded" minOccurs="0">
-			<xs:element name="endpoint" type="NameReference"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="PopulationCharacteristicReferences">
-		<xs:sequence minOccurs="0">
-			<xs:element name="populationCharacteristic" type="NameReference"/>
-		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Measurements">
 		<xs:sequence maxOccurs="unbounded">
@@ -361,25 +351,20 @@
 			<xs:element name="arm" type="ArmReference"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="AdverseEventReferences">
-		<xs:sequence maxOccurs="unbounded">
-			<xs:element name="adverseEvent" type="NameReference"/>
-		</xs:sequence>
-	</xs:complexType>
 	<xs:complexType name="Characteristics">
 		<xs:sequence>
-			<xs:element name="title" type="xs:string"/>
-			<xs:element default="UNKNOWN" minOccurs="0" name="allocation" type="Allocation"/>
-			<xs:element default="UNKNOWN" minOccurs="0" name="blinding" type="Blinding"/>
+			<xs:element name="title" type="StringWithNotes"/>
+			<xs:element minOccurs="0" name="allocation" type="Allocation"/>
+			<xs:element minOccurs="0" name="blinding" type="Blinding"/>
 			<xs:element minOccurs="0" name="centers" type="xs:integer"/>
-			<xs:element minOccurs="0" name="objective" type="xs:string"/>
-			<xs:element minOccurs="0" name="studyStart" type="xs:date"/>
-			<xs:element minOccurs="0" name="studyEnd" type="xs:date"/>
-			<xs:element default="UNKNOWN" minOccurs="0" name="status" type="Status"/><!-- check this, because there should always be a inclusion, exclusion and source -->
-			<xs:element default="UNKNOWN" minOccurs="0" name="inclusion" type="xs:string"/>
-			<xs:element default="UNKNOWN" minOccurs="0" name="exclusion" type="xs:string"/>
+			<xs:element minOccurs="0" name="objective" type="StringWithNotes"/>
+			<xs:element minOccurs="0" name="studyStart" type="DateWithNotes"/>
+			<xs:element minOccurs="0" name="studyEnd" type="DateWithNotes"/>
+			<xs:element minOccurs="0" name="status" type="Status"/><!-- check this, because there should always be a inclusion, exclusion and source -->
+			<xs:element minOccurs="0" name="inclusion" type="StringWithNotes"/>
+			<xs:element minOccurs="0" name="exclusion" type="StringWithNotes"/>
 			<xs:element name="references" type="References"/>
-			<xs:element default="MANUAL" minOccurs="0" name="source" type="Source"/>
+			<xs:element minOccurs="0" name="source" type="Source"/>
 			<xs:element minOccurs="0" name="creationDate" type="xs:date"/>
 		</xs:sequence>
 	</xs:complexType>
@@ -390,7 +375,13 @@
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:simpleType name="Status">
+	<xs:complexType name="Status">
+		<xs:sequence>
+			<xs:element name="value" type="StatusEnum"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="StatusEnum">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="NOT_YET_RECRUITING"/>
 			<xs:enumeration value="RECRUITING"/>
@@ -409,7 +400,7 @@
 			<xs:enumeration value="SMAA"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="Blinding">
+	<xs:simpleType name="BlindingEnum">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="OPEN"/>
 			<xs:enumeration value="SINGLE_BLIND"/>
@@ -418,13 +409,31 @@
 			<xs:enumeration value="UNKNOWN"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="Source">
+	<xs:complexType name="Source">
+		<xs:sequence>
+			<xs:element name="value" type="SourceEnum"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="SourceEnum">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="MANUAL"/>
 			<xs:enumeration value="CLINICALTRIALS"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="Allocation">
+	<xs:complexType name="Allocation">
+		<xs:sequence>
+			<xs:element name="value" type="AllocationEnum"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Blinding">
+		<xs:sequence>
+			<xs:element name="value" type="BlindingEnum"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="AllocationEnum">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="RANDOMIZED"/>
 			<xs:enumeration value="NONRANDOMIZED"/>
@@ -470,10 +479,17 @@
 	<xs:simpleType name="Unit">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="MILLIGRAMS_A_DAY"/>
-		</xs:restriction>
+		</xs:restriction> 
 	</xs:simpleType>
 	<xs:complexType name="NameReference">
 		<xs:attribute name="name" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="NameReferenceWithNotes">
+		<xs:complexContent>
+			<xs:extension base="TypeWithNotes">
+				<xs:attribute name="name" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="IdReference">
 		<xs:attribute name="id" type="xs:integer"/>
@@ -481,5 +497,22 @@
 	<xs:complexType name="ArmReference">
 		<xs:attribute name="id" type="xs:integer"/>
 		<xs:attribute name="study" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="TypeWithNotes">
+		<xs:sequence>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StringWithNotes">
+		<xs:sequence>
+			<xs:element name="value" type="xs:string"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DateWithNotes">
+		<xs:sequence>
+			<xs:element name="value" type="xs:date"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
 	</xs:complexType>
 </xs:schema>
