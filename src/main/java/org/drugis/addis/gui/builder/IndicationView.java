@@ -54,7 +54,7 @@ public class IndicationView implements ViewBuilder {
 	
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"fill:0:grow",
+				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -72,7 +72,7 @@ public class IndicationView implements ViewBuilder {
 
 	private JPanel buildOverviewPart() {
 		CellConstraints cc = new CellConstraints();
-		FormLayout layout = new FormLayout("right:pref, 3dlu, fill:0:grow",
+		FormLayout layout = new FormLayout("right:pref, 3dlu, pref:grow:fill",
 				"p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.addLabel("SNOMED Concept ID:", cc.xy(1, 1));

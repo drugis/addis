@@ -66,10 +66,12 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 	
 	@Override
 	protected String[] getShownProperties() {
-		// Meta: "drugs" , "baseline", "metaAnalyses"
-		// S study: "study" , "arms"
-		
-		return new String[] { "name", "analysisType", "indication", "outcomeMeasures", "alternatives" };
+		return new String[] { 
+				BenefitRiskAnalysis.PROPERTY_NAME, 
+				BenefitRiskAnalysis.PROPERTY_ANALYSIS_TYPE, 
+				BenefitRiskAnalysis.PROPERTY_INDICATION,
+				BenefitRiskAnalysis.PROPERTY_CRITERIA,
+				BenefitRiskAnalysis.PROPERTY_ALTERNATIVES};
 	}
 
 	public ViewBuilder getEntityViewBuilder(AddisWindow mainWindow, Domain domain, Entity entity) {

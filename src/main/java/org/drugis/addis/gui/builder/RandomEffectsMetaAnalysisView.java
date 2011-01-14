@@ -114,7 +114,7 @@ implements ViewBuilder {
 	private JComponent buildContinuousPlotsPart() {
 		
 		FormLayout layout = new FormLayout(
-				"fill:0:grow", "p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"pref:grow:fill", "p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
@@ -135,7 +135,7 @@ implements ViewBuilder {
 	private JComponent buildRatePlotsPart() {
 		
 		FormLayout layout = new FormLayout(
-				"fill:0:grow",
+				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);

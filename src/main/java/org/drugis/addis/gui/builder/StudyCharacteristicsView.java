@@ -48,7 +48,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, fill:0:grow",
+				"right:pref, 3dlu, pref:grow:fill",
 				"p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();

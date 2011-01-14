@@ -6,6 +6,9 @@
 		<indication code="2709" name="Eating Disorder"/>
 	</indications>
 	<endpoints>
+		<endpoint name="HAM-D Responders" description="Responders with a 50% increase in HAM-D score">
+			<rate direction="HIGHER_IS_BETTER"/>
+		</endpoint>
 		<endpoint name="CGI Severity Change" description="Change from baseline CGI Severity of Illness score">
 			<continuous direction="HIGHER_IS_BETTER" unitOfMeasurement="Deviation from the baseline of CGI Severity of Illness score"/>
 		</endpoint>
@@ -14,16 +17,36 @@
 		</endpoint>
 	</endpoints>
 	<adverseEvents>
+		<adverseEvent name="Nervousness" description="">
+			<rate direction="LOWER_IS_BETTER"/>
+		</adverseEvent>
+		<adverseEvent name="Sweating" description="">
+			<rate direction="LOWER_IS_BETTER"/>
+		</adverseEvent>
+		<adverseEvent name="Pharyngitis" description="">
+			<rate direction="LOWER_IS_BETTER"/>
+		</adverseEvent>
+		<adverseEvent name="Diarrhea" description="">
+			<rate direction="LOWER_IS_BETTER"/>
+		</adverseEvent>
+		<adverseEvent name="Somnolence" description="">
+			<rate direction="LOWER_IS_BETTER"/>
+		</adverseEvent>
 		<adverseEvent name="Abdominal Pain" description="">
 			<rate direction="LOWER_IS_BETTER"/>
 		</adverseEvent>
 		<adverseEvent name="Increased Duration Of Sleep" description="">
 			<rate direction="LOWER_IS_BETTER"/>
 		</adverseEvent>
+		<adverseEvent name="Blurred Vision">
+			<rate direction="LOWER_IS_BETTER"/>
+		</adverseEvent>
 	</adverseEvents>
 	<drugs>
+		<drug name="Placebo" atcCode=""/>
 		<drug name="Fluoxetine" atcCode="N013423"/>
 		<drug name="Paroxetine" atcCode="N0134233"/>
+		<drug name="Venlafaxine" atcCode="N06AX16"/>
 	</drugs>
 	<populationCharacteristics>
 		<populationCharacteristic name="Gender" description="WHICH ONE IS IT">
@@ -32,27 +55,104 @@
 				<category>FEMALE</category>
 			</categorical>
 		</populationCharacteristic>
+		<populationCharacteristic name="Age" description="Age">
+			<continuous unitOfMeasurement="Years from birth"/>
+		</populationCharacteristic>
+		<populationCharacteristic name="Age group" description="">
+			<categorical>
+				<category>Child (0 - 18)</category>
+				<category>Adult (18 - 65)</category>
+				<category>Elderly (65+)</category>
+			</categorical>
+		</populationCharacteristic>
 	</populationCharacteristics>
 	<studies>
-		<study>
-			<indication name="Erectile Dysfunction"/>
+		<study name="Aberg-Wistedt et al, 2000">
+			<indication name="Erectile Dysfunction">
+				<notes>
+					<note source="MANUAL"/>
+				</notes>
+			</indication>
 			<characteristics>
-				<title>Sertraline versus paroxetine in major depression: clinical outcome after six months of continuous therapy</title>
-				<allocation>RANDOMIZED</allocation>
-				<blinding>DOUBLE_BLIND</blinding>
-				<objective>Relatively little research is available comparing the efficacy and tolerability of selective serotonin reuptake inhibitors (SSRIs) during continuation therapy. This investigation reports the differential effect of 6 months of treatment with sertraline versus paroxetine for symptoms of depression, quality of life, and personality outcomes.</objective>
-				<status>COMPLETED</status>
-				<inclusion>The subjects were male and female outpatients, aged 18 years and older, who met DSM-III-R criteria for major depression and who had a 10-item Montgomery-Åsberg Depression Rating Scale (MADRS)9  score of 21 or more at baseline,      with less than 25% improvement on the MADRS during the washout period. Enrollment of fertile women was contingent upon a negative      result on a pregnancy test and stable use for 3 months of medically accepted contraception before study entry.</inclusion>
-				<exclusion>(1) current or past history of mania or hypomania, alcoholism or substance abuse, dementia, or epilepsy; (2) presence of psychotic depression or organic affective illness; (3) history of suicide attempts or current high suicide risk (&gt;4 on item 10 of the MADRS); (4) current use of any psychotropic medication, except for the use of one of three hypnotic/anxiolytic medications (nitrazepam [2.5-10 mg], flunitrazepam [0.5-2 mg], or oxazepam [15-25 mg]); (5) treatment with lithium in the month prior to the screening or with a monoamine oxidase inhibitor in the 2 weeks before the screening; (6) a history of significant intolerance or allergic reaction to sertraline or paroxetine; and (7) evidence of clinically significant hepatic or renal disease, any other acute or unstable medical condition, or use of any concomitant medication that might interfere with the safe conduct of the study.</exclusion>
+				<title>
+					<value>Sertraline versus paroxetine in major depression: clinical outcome after six months of continuous therapy</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</title>
+				<allocation>
+					<value>RANDOMIZED</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</allocation>
+				<blinding>
+					<value>DOUBLE_BLIND</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</blinding>
+				<objective>
+					<value>Relatively little research is available comparing the efficacy and tolerability of selective serotonin reuptake inhibitors (SSRIs) during continuation therapy. This investigation reports the differential effect of 6 months of treatment with sertraline versus paroxetine for symptoms of depression, quality of life, and personality outcomes.</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</objective>
+				<status>
+					<value>COMPLETED</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</status>
+				<inclusion>
+					<value>The subjects were male and female outpatients, aged 18 years and older, who met DSM-III-R criteria for major depression and who had a 10-item Montgomery-Åsberg Depression Rating Scale (MADRS)9  score of 21 or more at baseline,      with less than 25% improvement on the MADRS during the washout period. Enrollment of fertile women was contingent upon a negative      result on a pregnancy test and stable use for 3 months of medically accepted contraception before study entry.</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</inclusion>
+				<exclusion>
+					<value>(1) current or past history of mania or hypomania, alcoholism or substance abuse, dementia, or epilepsy; (2) presence of psychotic depression or organic affective illness; (3) history of suicide attempts or current high suicide risk (&gt;4 on item 10 of the MADRS); (4) current use of any psychotropic medication, except for the use of one of three hypnotic/anxiolytic medications (nitrazepam [2.5-10 mg], flunitrazepam [0.5-2 mg], or oxazepam [15-25 mg]); (5) treatment with lithium in the month prior to the screening or with a monoamine oxidase inhibitor in the 2 weeks before the screening; (6) a history of significant intolerance or allergic reaction to sertraline or paroxetine; and (7) evidence of clinically significant hepatic or renal disease, any other acute or unstable medical condition, or use of any concomitant medication that might interfere with the safe conduct of the study.</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</exclusion>
 				<references>
 					<pubMedId>11106136</pubMedId>
 					<pubMedId>11106138</pubMedId>
 				</references>
 			</characteristics>
-			<adverseEvents>
-				<adverseEvent name="Abdominal Pain"/>
-				<adverseEvent name="Increased Duration Of Sleep"/>
-			</adverseEvents>
+			<studyOutcomeMeasures>
+				<studyOutcomeMeasure id="12">
+					<adverseEvent name="Abdominal Pain"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14">This is what was in ClinicalTrials.gov. NOT REALLY</note>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="62457">
+					<adverseEvent name="Increased Duration Of Sleep"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="62462">
+					<endpoint name="Dropouts"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="234656">
+					<endpoint name="HAM-D Responders"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="6542562">
+					<populationCharacteristic name="Gender"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+			</studyOutcomeMeasures>
 			<arms>
 				<arm id="76" size="177">
 					<flexibleDose maxDose="40.0" minDose="20.0" unit="MILLIGRAMS_A_DAY"/>
@@ -63,6 +163,348 @@
 					<drug name="Paroxetine"/>
 				</arm>
 			</arms>
+			<measurements>
+				<measurement>
+					<studyOutcomeMeasure id="234656"/>
+					<arm id="76"/>
+					<continuousMeasurement mean="-2.5" sampleSize="177" stdDev="1.6"/>
+				</measurement>
+				<measurement>
+					<studyOutcomeMeasure id="62462"/>
+					<arm id="77"/>
+					<rateMeasurement rate="30" sampleSize="176"/>
+				</measurement>
+				<measurement>
+					<studyOutcomeMeasure id="6542562"/>
+					<arm id="77"/>
+					<categoricalMeasurement>
+						<category name="MALE" rate="100"/>
+						<category name="FEMALE" rate="77"/>
+					</categoricalMeasurement>
+				</measurement>
+			</measurements>
+		</study>
+		<study name="Rudolph and Feiger, 1999">
+			<indication name="Eating Disorder">
+				<notes>
+					<note source="MANUAL"/>
+				</notes>
+			</indication>
+			<characteristics>
+				<title>
+					<value>A double-blind, randomized, placebo-controlled trial of once-daily venlafaxine extended release (XR) and fluoxetine for the treatment of depression.</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</title>
+				<allocation>
+					<value>RANDOMIZED</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</allocation>
+				<blinding>
+					<value>DOUBLE_BLIND</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</blinding>
+				<objective>
+					<value>We compared the efficacy and tolerability of venlafaxine XR with that of fluoxetine in a multicenter, randomized, double-blind, placebo-controlled study in depressed outpatients.</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</objective>
+				<status>
+					<value>COMPLETED</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</status>
+				<inclusion>
+					<value>The study population consisted of outpatients age 18 years and older who met Diagnostic and Statistical Manual of Mental Disorders (DSM)-IV criteria for major depressive disorder. The diagnosis of major depressive disorder was based on a clinical interview of the patient and subsequent completion by the investigator of a worksheet containing the DSM IV criteria. In addition, patients had to have symptoms of depression for at least one month before study entry, and they had to have minimum prestudy and baseline (after washout) scores of 20 on the 21-item Hamilton Rating Scale for Depression (HAM-D-21).</value>
+					<notes>
+						<note source="MANUAL" date="2011-01-14">text</note>
+					</notes>
+				</inclusion>
+				<exclusion>
+					<value>Patients were excluded from study participation if they had recent (within six months) treatment with or a known hypersensitivity to either of the active study drugs, certain specified medical conditions, bipolar mood disorder, a psychotic disorder not associated with depression, or a history of drug or alcohol dependence within a year of study entry. Acutely suicidal patients and pregnant or lactating women were also excluded. Patients whose HAM-D-21 score decreased by more than 20% from the prestudy evaluation to the baseline evaluation were excluded from randomization. Each prospective study patient gave written informed consent.</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</exclusion>
+				<references>
+					<pubMedId>10701474</pubMedId>
+				</references>
+			</characteristics>
+			<studyOutcomeMeasures>
+				<studyOutcomeMeasure id="55">
+					<adverseEvent name="Abdominal Pain"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="9578987">
+					<adverseEvent name="Blurred Vision"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="865785">
+					<endpoint name="Dropouts"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="23458927">
+					<endpoint name="HAM-D Responders"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="2034978">
+					<populationCharacteristic name="Gender"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+			</studyOutcomeMeasures>
+			<arms>
+				<arm id="1226" size="100">
+					<flexibleDose maxDose="225.0" minDose="75.0" unit="MILLIGRAMS_A_DAY"/>
+					<drug name="Venlafaxine"/>
+				</arm>
+				<arm id="1227" size="103">
+					<flexibleDose maxDose="60.0" minDose="20.0" unit="MILLIGRAMS_A_DAY"/>
+					<drug name="Fluoxetine"/>
+				</arm>
+				<arm id="1228" size="98">
+					<fixedDose quantity="0.0" unit="MILLIGRAMS_A_DAY"/>
+					<drug name="Placebo"/>
+				</arm>
+			</arms>
+			<measurements>
+				<measurement>
+					<studyOutcomeMeasure id="865785"/>
+					<arm id="1226"/>
+					<rateMeasurement rate="8" sampleSize="119"/>
+				</measurement>
+			</measurements>
+		</study>
+		<study name="Tylee et al, 1997">
+			<indication name="Eating Disorder">
+				<notes>
+					<note source="MANUAL"/>
+				</notes>
+			</indication>
+			<characteristics>
+				<title>
+					<value>A double-blind, randomized, 12-week comparison study of the safety and efficacy of venlafaxine and fluoxetine in moderate to severe depression in general practice.</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</title>
+				<allocation>
+					<value>RANDOMIZED</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</allocation>
+				<blinding>
+					<value>DOUBLE_BLIND</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</blinding>
+				<objective>
+					<value>To evaluate the comparative efficacy and safety of venlafaxine and fluoxetine for the treatment of depression in general practice.</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</objective>
+				<inclusion>
+					<value>- &gt;= 18 years of age
+ - Met DSM-IV criteria for major depression
+ - Baseline MADRS &gt;= 19
+ - Depressive symptoms for at least 14 days before entry</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</inclusion>
+				<exclusion>
+					<value>
+ - Use of study drugs within 1 month of entry
+ - History of psychosis
+ - Presense of organic mental disorder
+ - Bipolar depression
+ - Acutely suicidal
+ - Use of psychoactive drugs/electroconvulsive therapy within 1 month of entry
+ - Drug/alcohol dependence
+ - History of clinically significant physical disorder
+ - Clinically significant abnormalities on physical examination, electrocardiogram or laboratory tests
+ - Pregnancy or lactation</value>
+					<notes>
+						<note source="MANUAL"/>
+					</notes>
+				</exclusion>
+				<references/>
+			</characteristics>
+			<studyOutcomeMeasures>
+				<studyOutcomeMeasure id="26134">
+					<adverseEvent name="Somnolence"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="123452">
+					<adverseEvent name="Diarrhea"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="48">
+					<adverseEvent name="Pharyngitis"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="75">
+					<endpoint name="Dropouts"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="234">
+					<endpoint name="HAM-D Responders"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+			</studyOutcomeMeasures>
+			<arms>
+				<arm id="1409" size="171">
+					<fixedDose quantity="75.0" unit="MILLIGRAMS_A_DAY"/>
+					<drug name="Venlafaxine"/>
+				</arm>
+				<arm id="1410" size="170">
+					<fixedDose quantity="20.0" unit="MILLIGRAMS_A_DAY"/>
+					<drug name="Fluoxetine"/>
+				</arm>
+			</arms>
+			<measurements>
+				<measurement>
+					<studyOutcomeMeasure id="26134"/>
+					<arm id="1409"/>
+					<rateMeasurement rate="10" sampleSize="171"/>
+				</measurement>
+				<measurement>
+					<studyOutcomeMeasure id="234"/>
+					<arm id="1410"/>
+					<rateMeasurement rate="29" sampleSize="170"/>
+				</measurement>
+			</measurements>
 		</study>
 	</studies>
+	<metaAnalyses>
+		<pairwiseMetaAnalysis name="Fluox-Venla Nervousness">
+			<indication name="Eating Disorder"/>
+			<adverseEvent name="Nervousness"/>
+			<alternative>
+				<drug name="Fluoxetine"/>
+				<arms>
+					<arm id="1410" study="Tylee et al, 1997"/>
+				</arms>
+			</alternative>
+			<alternative>
+				<drug name="Venlafaxine"/>
+				<arms>
+					<arm id="1409" study="Tylee et al, 1997"/>
+				</arms>
+			</alternative>
+		</pairwiseMetaAnalysis>
+		<networkMetaAnalysis name="Fluox Venla Network">
+			<indication name="Eating Disorder"/>
+			<adverseEvent name="Nervousness"/>
+			<alternative>
+				<drug name="Fluoxetine"/>
+				<arms>
+					<arm id="1410" study="Tylee et al, 1997"/>
+				</arms>
+			</alternative>
+			<alternative>
+				<drug name="Venlafaxine"/>
+				<arms>
+					<arm id="1409" study="Tylee et al, 1997"/>
+				</arms>
+			</alternative>
+			<alternative>
+				<drug name="Venlafaxine"/>
+				<arms>
+					<arm id="1226" study="Rudolph and Feiger, 1999"/>
+				</arms>
+			</alternative>
+			<alternative>
+				<drug name="Fluoxetine"/>
+				<arms>
+					<arm id="1227" study="Rudolph and Feiger, 1999"/>
+				</arms>
+			</alternative>
+		</networkMetaAnalysis>
+	</metaAnalyses>
+	<benefitRiskAnalyses>
+		<studyBenefitRiskAnalysis name="Benkert HAM-D/weight gain" analysisType="LyndOBrien">
+			<indication name="Eating Disorder"/>
+			<study name="211"/>
+			<arms>
+				<arm id="214"/>
+				<arm id="213"/>
+			</arms>
+			<outcomeMeasures>
+				<endpoint name="3"/>
+				<adverseEvent name="61"/>
+			</outcomeMeasures>
+		</studyBenefitRiskAnalysis>
+		<studyBenefitRiskAnalysis name="Fava et al, 2002 BR" analysisType="SMAA">
+			<indication name="Eating Disorder"/>
+			<study name="685"/>
+			<arms>
+				<arm id="687"/>
+				<arm id="689"/>
+				<arm id="688"/>
+			</arms>
+			<outcomeMeasures>
+				<adverseEvent name="42"/>
+				<adverseEvent name="20"/>
+				<endpoint name="3"/>
+				<adverseEvent name="34"/>
+				<adverseEvent name="40"/>
+				<adverseEvent name="22"/>
+			</outcomeMeasures>
+		</studyBenefitRiskAnalysis>
+		<metaBenefitRiskAnalysis name="Fluox-Venla BR" analysisType="SMAA">
+			<baseline name="Placebo"/>
+			<drugs>
+				<drug name="Fluoxetine"/>
+				<drug name="Placebo"/>
+			</drugs>
+			<indication name="Erectile Dysfunction"/>
+			<metaAnalyses>
+				<metaAnalysis name="Fluox-Venla Nervousness"/>
+				<metaAnalysis name="Fluox Venla Network"/>
+			</metaAnalyses>
+		</metaBenefitRiskAnalysis>
+		<metaBenefitRiskAnalysis name="Hansen BR" analysisType="SMAA">
+			<baseline name="Fluoxetine"/>
+			<drugs>
+				<drug name="Fluoxetine"/>
+				<drug name="Paroxetine"/>
+				<drug name="Placebo"/>
+			</drugs>
+			<indication name="Erectile Dysfunction"/>
+			<metaAnalyses>
+				<metaAnalysis name="Fluox-Venla Nervousness"/>
+				<metaAnalysis name="Fluox Venla Network"/>
+			</metaAnalyses>
+		</metaBenefitRiskAnalysis>
+	</benefitRiskAnalyses>
 </addis-data>

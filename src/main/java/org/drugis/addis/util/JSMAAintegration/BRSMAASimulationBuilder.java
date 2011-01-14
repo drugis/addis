@@ -23,7 +23,6 @@
 package org.drugis.addis.util.JSMAAintegration;
 
 import org.drugis.common.gui.task.TaskProgressModel;
-import org.drugis.common.threading.NullTask;
 
 import fi.smaa.jsmaa.gui.jfreechart.CentralWeightsDataset;
 import fi.smaa.jsmaa.gui.jfreechart.RankAcceptabilitiesDataset;
@@ -42,13 +41,13 @@ public class BRSMAASimulationBuilder extends SimulationBuilder<SMAAModel, SMAA2R
 	private TaskProgressModel d_progressModel;
 
 	public BRSMAASimulationBuilder(SMAAModel model, RankAcceptabilityTableModel resTableModel, RankAcceptabilitiesDataset dataSet,
-				CentralWeightTableModel cwTableModel, CentralWeightsDataset cwDataSet) {
+				CentralWeightTableModel cwTableModel, CentralWeightsDataset cwDataSet, TaskProgressModel progressModel) {
 		super(model);
 		d_resTableModel = resTableModel;
 		d_resDataset = dataSet;
 		d_cwTableModel = cwTableModel;
 		d_cwDataset = cwDataSet;
-		d_progressModel = new TaskProgressModel(new NullTask());
+		d_progressModel = progressModel;
 	}
 
 	private void setResults(SMAA2Results results) {
@@ -66,8 +65,7 @@ public class BRSMAASimulationBuilder extends SimulationBuilder<SMAAModel, SMAA2R
 	}
 
 	@Override
-	protected void prepareSimulation(SMAA2Simulation simulation,
-			SMAA2Results results) {
+	protected void prepareSimulation(SMAA2Simulation simulation, SMAA2Results results) {
 		setResults(results);
 	}
 	

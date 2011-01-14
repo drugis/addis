@@ -47,6 +47,7 @@ import fi.smaa.jsmaa.model.CardinalCriterion;
 import fi.smaa.jsmaa.model.CardinalMeasurement;
 import fi.smaa.jsmaa.model.GaussianMeasurement;
 import fi.smaa.jsmaa.model.LogNormalMeasurement;
+import fi.smaa.jsmaa.model.LogitNormalMeasurement;
 import fi.smaa.jsmaa.model.SMAAModel;
 
 public class SMAAEntityFactoryTest {
