@@ -11,6 +11,7 @@
 				<xs:element name="populationCharacteristics" type="PopulationCharacteristics"/>
 				<xs:element name="studies" type="Studies"/>
 				<xs:element name="metaAnalyses" type="MetaAnalyses"/>
+<!--				<xs:element name="benefitRiskAnalyses" type="BenefitRiskAnalayses"/> -->
 			</xs:sequence>
 		</xs:complexType>
 		<xs:key name="drugNameKey">
@@ -21,8 +22,8 @@
 			<xs:selector xpath="studies/study/arms/arm/drug"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
-		<xs:keyref name="pairwiseMetaAnalysesDrugNameKeyRef" refer="drugNameKey">
-			<xs:selector xpath="metaAnalyses/pairwiseMetaAnalysis/alternative/drug"/>
+		<xs:keyref name="metaAnalysesDrugNameKeyRef" refer="drugNameKey">
+			<xs:selector xpath="metaAnalyses/*/alternative/drug"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
 		<xs:key name="indicationNameKey">
@@ -33,16 +34,16 @@
 			<xs:selector xpath="studies/study/indication"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
-		<xs:keyref name="pairwiseMetaAnalysisIndicationKeyRef" refer="indicationNameKey">
-			<xs:selector xpath="metaAnalyses/pairwiseMetaAnalysis/indication"/>
+		<xs:keyref name="metaAnalysisIndicationKeyRef" refer="indicationNameKey">
+			<xs:selector xpath="metaAnalyses/*/indication"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
 		<xs:key name="studyIdKey">
 			<xs:selector xpath="studies/study"/>
 			<xs:field xpath="@studyId"/>
 		</xs:key>
-		<xs:keyref name="pairwiseMetaAnalysesStudyIdDummy" refer="studyIdKey">
-			<xs:selector xpath="metaAnalyses/pairwiseMetaAnalysis/alternative/arms/arm"/>
+		<xs:keyref name="metaAnalysesStudyIdKeyRef" refer="studyIdKey">
+			<xs:selector xpath="metaAnalyses/*/alternative/arms/arm"/>
 			<xs:field xpath="@study"/>
 		</xs:keyref>
 		<xs:key name="adverseEventNameKey">
@@ -50,35 +51,31 @@
 			<xs:field xpath="@name"/>
 		</xs:key>
 		<xs:keyref name="studyAdverseEventKeyRef" refer="adverseEventNameKey">
-			<xs:selector xpath="studies/study/adverseEvents/adverseEvent"/>
+			<xs:selector xpath="studies/study/studyOutcomeMeasures/studyOutcomeMeasure/adverseEvent"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
 		<xs:keyref name="studyMeasurementsAdverseEventKeyRef" refer="adverseEventNameKey">
 			<xs:selector xpath="studies/study/measurements/measurement/adverseEvent"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
-		<xs:keyref name="pairwiseMetaAnalysesAdverseEventKeyRef" refer="adverseEventNameKey">
-			<xs:selector xpath="metaAnalyses/pairwiseMetaAnalysis/adverseEvent"/>
+		<xs:keyref name="metaAnalysesAdverseEventKeyRef" refer="adverseEventNameKey">
+			<xs:selector xpath="metaAnalyses/*/adverseEvent"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
-		<xs:key name="studyArmKey">
-			<xs:selector xpath="studies/study/arms/arm"/>
-			<xs:field xpath="@id"/>
-		</xs:key>
-		<xs:keyref name="PairwiseMetaAnalysisStudyArmKeyKeyRef" refer="studyArmKey">
-			<xs:selector xpath="metaAnalyses/pairwiseMetaAnalysis/arms/arm"/>
+		<xs:keyref name="metaAnalysisStudyArmKeyKeyRef" refer="studyIdKey">
+			<xs:selector xpath="metaAnalyses/*/arms/arm"/>
 			<xs:field xpath="@study"/>
 		</xs:keyref>
-		<xs:keyref name="NetworkMetaAnalysisStudyArmKeyKeyRef" refer="studyArmKey">
-			<xs:selector xpath="metaAnalyses/networkMetaAnalysis/arms/arm"/>
-			<xs:field xpath="@study"/>
+		<xs:keyref name="metaAnalysisArmIdKeyKeyRef" refer="armIdKey">
+			<xs:selector xpath="metaAnalyses/*/alternative/arms/arm"/>
+			<xs:field xpath="@id"/>
 		</xs:keyref>
 		<xs:key name="endpointNameKey">
 			<xs:selector xpath="endpoints/endpoint"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
 		<xs:keyref name="endpointInStudyKeyRef" refer="endpointNameKey">
-			<xs:selector xpath="studies/study/endpoints/endpoint"/>
+			<xs:selector xpath="studies/study/studyOutcomeMeasures/studyOutcomeMeasure/endpoint"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
 		<xs:key name="populationCharacteristicsNameKey">
@@ -86,7 +83,7 @@
 			<xs:field xpath="@name"/>
 		</xs:key>
 		<xs:keyref name="populationCharacteristicsInStudyKeyRef" refer="populationCharacteristicsNameKey">
-			<xs:selector xpath="studies/study/populationCharacteristics/populationCharacteristic"/>
+			<xs:selector xpath="studies/study/studyOutcomeMeasures/studyOutcomeMeasure/populationCharacteristic"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
 		<xs:key name="armIdKey">
@@ -97,6 +94,10 @@
 			<xs:selector xpath="studies/study/measurements/measurement/arm"/>
 			<xs:field xpath="@id"/>
 		</xs:keyref>
+		<xs:key name="pairwiseMetaAnalysisNameKey">
+			<xs:selector xpath="metaAnalyses/*"/>
+			<xs:field xpath="@name"/>
+		</xs:key>
 	</xs:element>
 	<xs:complexType name="Indications">
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
@@ -167,24 +168,51 @@
 	</xs:complexType>
 	<xs:complexType name="Study">
 		<xs:sequence>
-			<xs:element name="indication" type="IndicationReference"/>
+			<xs:element name="indication" type="NameReference"/>
 			<xs:element name="characteristics" type="Characteristics"/>
-			<xs:element name="adverseEvents" type="AdverseEventReferences"/>
-			<xs:element name="endpoints" type="EndpointReferences"/>
-			<xs:element name="populationCharacteristics" type="PopulationCharacteristicReferences"/>
+			<xs:element name="studyOutcomeMeasures" type="StudyOutcomeMeasures"/>
 			<xs:element name="arms" type="Arms"/>
 			<xs:element name="measurements" type="Measurements"/>
 		</xs:sequence>
 		<xs:attribute name="studyId" type="xs:string"/>
 	</xs:complexType>
+	<xs:complexType name="StudyOutcomeMeasures">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="studyOutcomeMeasure" type="StudyOutcomeMeasure"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StudyOutcomeMeasure">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="adverseEvent" type="NameReference"/>
+				<xs:element name="endpoint" type="NameReference"/>
+				<xs:element name="populationCharacteristic" type="NameReference"/>
+			</xs:choice>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:integer" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="Notes">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="note" type="Note"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Note">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="date" type="xs:date"/>
+				<xs:attribute name="source" type="Source"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 	<xs:complexType name="EndpointReferences">
 		<xs:sequence maxOccurs="unbounded" minOccurs="0">
-			<xs:element name="endpoint" type="EndpointReference"/>
+			<xs:element name="endpoint" type="NameReference"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="PopulationCharacteristicReferences">
 		<xs:sequence minOccurs="0">
-			<xs:element name="populationCharacteristic" type="PopulationCharacteristicReference"/>
+			<xs:element name="populationCharacteristic" type="NameReference"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Measurements">
@@ -194,11 +222,7 @@
 	</xs:complexType>
 	<xs:complexType name="Measurement">
 		<xs:sequence>
-			<xs:choice>
-				<xs:element name="adverseEvent" type="AdverseEventReference"/>
-				<xs:element name="endpoint" type="EndpointReference"/>
-				<xs:element name="populationCharacteristic" type="PopulationCharacteristicReference"/>
-			</xs:choice>
+			<xs:element name="studyOutcomeMeasure" type="IdReference"/>
 			<xs:element name="arm" type="ArmReference"/>
 			<xs:choice>
 				<xs:element name="rateMeasurement" type="RateMeasurement"/>
@@ -207,8 +231,6 @@
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
-
-
 	<xs:complexType name="RateMeasurement">
 		<xs:attribute name="rate" type="xs:integer"/>
 		<xs:attribute name="sampleSize" type="xs:integer"/>
@@ -227,13 +249,12 @@
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="rate" type="xs:integer"/>
 	</xs:complexType>
-	
 	<xs:complexType name="PairwiseMetaAnalysis">
 		<xs:sequence>
-			<xs:element name="indication" type="IndicationReference"/>
+			<xs:element name="indication" type="NameReference"/>
 			<xs:choice>
-				<xs:element name="adverseEvent" type="AdverseEventReference"/>
-				<xs:element name="endpoint" type="EndpointReference"/>
+				<xs:element name="adverseEvent" type="NameReference"/>
+				<xs:element name="endpoint" type="NameReference"/>
 			</xs:choice>
 			<xs:sequence maxOccurs="2" minOccurs="2">
 				<xs:element name="alternative" type="Alternative"/>
@@ -252,7 +273,7 @@
 	</xs:complexType>
 	<xs:complexType name="Alternative">
 		<xs:sequence>
-			<xs:element name="drug" type="DrugReference"/>
+			<xs:element name="drug" type="NameReference"/>
 			<xs:element name="arms" type="AnalysisArms"/>
 		</xs:sequence>
 	</xs:complexType>
@@ -263,7 +284,7 @@
 	</xs:complexType>
 	<xs:complexType name="AdverseEventReferences">
 		<xs:sequence maxOccurs="unbounded">
-			<xs:element name="adverseEvent" type="AdverseEventReference"/>
+			<xs:element name="adverseEvent" type="NameReference"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Characteristics">
@@ -275,8 +296,7 @@
 			<xs:element minOccurs="0" name="objective" type="xs:string"/>
 			<xs:element minOccurs="0" name="studyStart" type="xs:date"/>
 			<xs:element minOccurs="0" name="studyEnd" type="xs:date"/>
-			<xs:element default="UNKNOWN" minOccurs="0" name="status" type="Status"/>
-<!-- check this, because there should always be a inclusion, exclusion and source -->
+			<xs:element default="UNKNOWN" minOccurs="0" name="status" type="Status"/><!-- check this, because there should always be a inclusion, exclusion and source -->
 			<xs:element default="UNKNOWN" minOccurs="0" name="inclusion" type="xs:string"/>
 			<xs:element default="UNKNOWN" minOccurs="0" name="exclusion" type="xs:string"/>
 			<xs:element name="references" type="References"/>
@@ -348,7 +368,7 @@
 				<xs:element name="flexibleDose" type="FlexibleDose"/>
 				<xs:element name="fixedDose" type="FixedDose"/>
 			</xs:choice>
-			<xs:element name="drug" type="DrugReference"/>
+			<xs:element name="drug" type="NameReference"/>
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:integer"/>
 		<xs:attribute name="size" type="xs:integer"/>
@@ -367,26 +387,14 @@
 			<xs:enumeration value="MILLIGRAMS_A_DAY"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:complexType name="DrugReference">
+	<xs:complexType name="NameReference">
 		<xs:attribute name="name" type="xs:string"/>
 	</xs:complexType>
-	<xs:complexType name="IndicationReference">
-		<xs:attribute name="name" type="xs:string"/>
-	</xs:complexType>
-	<xs:complexType name="AdverseEventReference">
-		<xs:attribute name="name" type="xs:string"/>
-	</xs:complexType>
-	<xs:complexType name="EndpointReference">
-		<xs:attribute name="name" type="xs:string"/>
-	</xs:complexType>
-	<xs:complexType name="StudyReference">
-		<xs:attribute name="name" type="xs:string"/>
+	<xs:complexType name="IdReference">
+		<xs:attribute name="id" type="xs:integer"/>
 	</xs:complexType>
 	<xs:complexType name="ArmReference">
 		<xs:attribute name="id" type="xs:integer"/>
 		<xs:attribute name="study" type="xs:string"/>
-	</xs:complexType>
-	<xs:complexType name="PopulationCharacteristicReference">
-		<xs:attribute name="name" type="xs:string"/>
 	</xs:complexType>
 </xs:schema>

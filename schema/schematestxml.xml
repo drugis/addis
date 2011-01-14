@@ -82,17 +82,38 @@
 					<pubMedId>11106138</pubMedId>
 				</references>
 			</characteristics>
-			<adverseEvents>
-				<adverseEvent name="Abdominal Pain"/>
-				<adverseEvent name="Increased Duration Of Sleep"/>
-			</adverseEvents>
-			<endpoints>
-				<endpoint name="Dropouts"/>
-				<endpoint name="HAM-D Responders"/>				
-			</endpoints>
-			<populationCharacteristics>
-				<populationCharacteristic name="Gender"/>
-			</populationCharacteristics>
+			<studyOutcomeMeasures>
+				<studyOutcomeMeasure id="12">
+					<adverseEvent name="Abdominal Pain"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14">This is what was in ClinicalTrials.gov. NOT REALLY</note>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="62457">
+					<adverseEvent name="Increased Duration Of Sleep"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="62462">
+					<endpoint name="Dropouts"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="234656">
+					<endpoint name="HAM-D Responders"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="6542562">
+					<populationCharacteristic name="Gender"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+			</studyOutcomeMeasures>
 			<arms>
 				<arm id="76" size="177">
 					<flexibleDose maxDose="40.0" minDose="20.0" unit="MILLIGRAMS_A_DAY"/>
@@ -105,17 +126,17 @@
 			</arms>
 			<measurements>
 				<measurement>
-					<endpoint name="CGI Severity Change"/>
+					<studyOutcomeMeasure id="234656"/>
 					<arm id="76"/>
 					<continuousMeasurement mean="-2.5" sampleSize="177" stdDev="1.6"/>
 				</measurement>
 				<measurement>
-					<adverseEvent name="Sweating"/>
+					<studyOutcomeMeasure id="62462"/>
 					<arm id="77"/>
 					<rateMeasurement rate="30" sampleSize="176"/>
 				</measurement>
 				<measurement>
-					<populationCharacteristic name="Gender"/>
+					<studyOutcomeMeasure id="6542562"/>
 					<arm id="77"/>
 					<categoricalMeasurement>
 						<category name="MALE" rate="100"/>
@@ -124,10 +145,10 @@
 				</measurement>
 			</measurements>
 		</study>
-		<study  studyId="Rudolph and Feiger, 1999">
+		<study studyId="Rudolph and Feiger, 1999">
 			<indication name="Eating Disorder"/>
 			<characteristics>
-				<title>A double-blind, randomized, placebo-controlled trial of once-daily venlafaxine extended release (XR) and fluoxetine for the treatment of depression.</title> 
+				<title>A double-blind, randomized, placebo-controlled trial of once-daily venlafaxine extended release (XR) and fluoxetine for the treatment of depression.</title>
 				<allocation>RANDOMIZED</allocation>
 				<blinding>DOUBLE_BLIND</blinding>
 				<objective>We compared the efficacy and tolerability of venlafaxine XR with that of fluoxetine in a multicenter, randomized, double-blind, placebo-controlled study in depressed outpatients.</objective>
@@ -138,17 +159,38 @@
 					<pubMedId>10701474</pubMedId>
 				</references>
 			</characteristics>
-			<adverseEvents>
-				<adverseEvent name="Abdominal Pain"/>
-				<adverseEvent name="Blurred Vision"/>
-			</adverseEvents>
-			<endpoints>
-				<endpoint name="Dropouts"/>
-				<endpoint name="HAM-D Responders"/>				
-			</endpoints>			
-			<populationCharacteristics>
-				<populationCharacteristic name="Gender"/>
-			</populationCharacteristics>
+			<studyOutcomeMeasures>
+				<studyOutcomeMeasure id="55">
+					<adverseEvent name="Abdominal Pain"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="9578987">
+					<adverseEvent name="Blurred Vision"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="865785">
+					<endpoint name="Dropouts"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="23458927">
+					<endpoint name="HAM-D Responders"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="2034978">
+					<populationCharacteristic name="Gender"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+			</studyOutcomeMeasures>
 			<arms>
 				<arm id="1226" size="100">
 					<flexibleDose maxDose="225.0" minDose="75.0" unit="MILLIGRAMS_A_DAY"/>
@@ -165,51 +207,87 @@
 			</arms>
 			<measurements>
 				<measurement>
-					<adverseEvent name="Nervousness"/>
+				<studyOutcomeMeasure id="865785"/>
 					<arm id="1226"/>
 					<rateMeasurement rate="8" sampleSize="119"/>
 				</measurement>
 			</measurements>
 		</study>
-		<study  studyId="Tylee et al, 1997">
-			<indication name ="Eating Disorder" />
+		<study studyId="Tylee et al, 1997">
+			<indication name="Eating Disorder"/>
 			<characteristics>
-				<title>A double-blind, randomized, 12-week comparison study of the safety and efficacy of venlafaxine and fluoxetine in moderate to severe depression in general practice.&#10;&#10;Primary Care Psychiatry 1997; 3: 51-58 </title>
+				<title>A double-blind, randomized, 12-week comparison study of the safety and efficacy of venlafaxine and fluoxetine in moderate to severe depression in general practice.
+
+Primary Care Psychiatry 1997; 3: 51-58 </title>
 				<allocation>RANDOMIZED</allocation>
 				<blinding>DOUBLE_BLIND</blinding>
-				<objective>To evaluate the comparative efficacy and safety of venlafaxine and fluoxetine for the treatment of depression in general practice.</objective>				
-				<inclusion> - &gt;= 18 years of age&#10; - Met DSM-IV criteria for major depression&#10; - Baseline MADRS &gt;= 19&#10; - Depressive symptoms for at least 14 days before entry</inclusion>
-				<exclusion> - Use of study drugs within 1 month of entry&#10; - History of psychosis&#10; - Presense of organic mental disorder&#10; - Bipolar depression&#10; - Acutely suicidal&#10; - Use of psychoactive drugs/electroconvulsive therapy within 1 month of entry&#10; - Drug/alcohol dependence&#10; - History of clinically significant physical disorder&#10; - Clinically significant abnormalities on physical examination, electrocardiogram or laboratory tests&#10; - Pregnancy or lactation</exclusion>
+				<objective>To evaluate the comparative efficacy and safety of venlafaxine and fluoxetine for the treatment of depression in general practice.</objective>
+				<inclusion> - &gt;= 18 years of age
+ - Met DSM-IV criteria for major depression
+ - Baseline MADRS &gt;= 19
+ - Depressive symptoms for at least 14 days before entry</inclusion>
+				<exclusion> - Use of study drugs within 1 month of entry
+ - History of psychosis
+ - Presense of organic mental disorder
+ - Bipolar depression
+ - Acutely suicidal
+ - Use of psychoactive drugs/electroconvulsive therapy within 1 month of entry
+ - Drug/alcohol dependence
+ - History of clinically significant physical disorder
+ - Clinically significant abnormalities on physical examination, electrocardiogram or laboratory tests
+ - Pregnancy or lactation</exclusion>
 				<references/>
 			</characteristics>
-			<adverseEvents>
-				<adverseEvent name="Somnolence"/>
-				<adverseEvent name="Diarrhea"/>
-				<adverseEvent name="Pharyngitis"/>
-			</adverseEvents>
-			<endpoints>
-				<endpoint name = "Dropouts"/>	
-				<endpoint name = "HAM-D Responders"/>
-			</endpoints>	
-			<populationCharacteristics/>
+			<studyOutcomeMeasures>
+				<studyOutcomeMeasure id="26134">
+					<adverseEvent name="Somnolence"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="123452">
+					<adverseEvent name="Diarrhea"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="48">
+					<adverseEvent name="Pharyngitis"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="75">
+					<endpoint name="Dropouts"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+				<studyOutcomeMeasure id="234">
+					<endpoint name="HAM-D Responders"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
+				</studyOutcomeMeasure>
+			</studyOutcomeMeasures>
 			<arms>
-				<arm id = "1409" size="171">
+				<arm id="1409" size="171">
 					<fixedDose quantity="75.0" unit="MILLIGRAMS_A_DAY"/>
 					<drug name="Venlafaxine"/>
 				</arm>
-				<arm id = "1410" size="170">
+				<arm id="1410" size="170">
 					<fixedDose quantity="20.0" unit="MILLIGRAMS_A_DAY"/>
 					<drug name="Fluoxetine"/>
 				</arm>
 			</arms>
 			<measurements>
 				<measurement>
-					<adverseEvent name="Nervousness"/>
+				<studyOutcomeMeasure id="26134"/>
 					<arm id="1409"/>
 					<rateMeasurement rate="10" sampleSize="171"/>
 				</measurement>
 				<measurement>
-					<adverseEvent name="Nervousness"/>
+					<studyOutcomeMeasure id="234"/>
 					<arm id="1410"/>
 					<rateMeasurement rate="29" sampleSize="170"/>
 				</measurement>
@@ -217,7 +295,7 @@
 		</study>
 	</studies>
 	<metaAnalyses>
-		<pairwiseMetaAnalysis  name="Fluox-Venla Nervousness">
+		<pairwiseMetaAnalysis name="Fluox-Venla Nervousness">
 			<indication name="Eating Disorder"/>
 			<adverseEvent name="Nervousness"/>
 			<alternative>
@@ -233,7 +311,33 @@
 				</arms>
 			</alternative>
 		</pairwiseMetaAnalysis>
+		<networkMetaAnalysis name="Fluox Venla Network">
+			<indication name="Eating Disorder"/>
+			<adverseEvent name="Nervousness"/>
+			<alternative>
+				<drug name="Fluoxetine"/>
+				<arms>
+					<arm id="1410" study="Tylee et al, 1997"/>
+				</arms>
+			</alternative>
+			<alternative>
+				<drug name="Venlafaxine"/>
+				<arms>
+					<arm id="1409" study="Tylee et al, 1997"/>
+				</arms>
+			</alternative>
+			<alternative>
+				<drug name="Venlafaxine"/>
+				<arms>
+					<arm id="1226" study="Rudolph and Feiger, 1999"/>
+				</arms>
+			</alternative>
+			<alternative>
+				<drug name="Fluoxetine"/>
+				<arms>
+					<arm id="1227" study="Rudolph and Feiger, 1999"/>
+				</arms>
+			</alternative>
+		</networkMetaAnalysis>
 	</metaAnalyses>
-	
-	
 </addis-data>
