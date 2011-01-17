@@ -1,5 +1,3 @@
-
-
 <addis-data xsi:noNamespaceSchemaLocation="./ADDIS-Schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<indications>
 		<indication code="130" name="Erectile Dysfunction"/>
@@ -157,10 +155,16 @@
 				<arm id="76" size="177">
 					<flexibleDose maxDose="40.0" minDose="20.0" unit="MILLIGRAMS_A_DAY"/>
 					<drug name="Fluoxetine"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
 				</arm>
 				<arm id="77" size="176">
 					<fixedDose quantity="50.0" unit="MILLIGRAMS_A_DAY"/>
 					<drug name="Paroxetine"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
 				</arm>
 			</arms>
 			<measurements>
@@ -273,14 +277,23 @@
 				<arm id="1226" size="100">
 					<flexibleDose maxDose="225.0" minDose="75.0" unit="MILLIGRAMS_A_DAY"/>
 					<drug name="Venlafaxine"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
 				</arm>
 				<arm id="1227" size="103">
 					<flexibleDose maxDose="60.0" minDose="20.0" unit="MILLIGRAMS_A_DAY"/>
 					<drug name="Fluoxetine"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
 				</arm>
 				<arm id="1228" size="98">
 					<fixedDose quantity="0.0" unit="MILLIGRAMS_A_DAY"/>
 					<drug name="Placebo"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
 				</arm>
 			</arms>
 			<measurements>
@@ -385,10 +398,16 @@
 				<arm id="1409" size="171">
 					<fixedDose quantity="75.0" unit="MILLIGRAMS_A_DAY"/>
 					<drug name="Venlafaxine"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
 				</arm>
 				<arm id="1410" size="170">
 					<fixedDose quantity="20.0" unit="MILLIGRAMS_A_DAY"/>
 					<drug name="Fluoxetine"/>
+					<notes>
+						<note source="CLINICALTRIALS" date="2010-01-14"/>
+					</notes>
 				</arm>
 			</arms>
 			<measurements>
