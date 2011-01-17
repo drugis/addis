@@ -13,8 +13,7 @@
 				<xs:element name="metaAnalyses" type="MetaAnalyses"/>
 				<xs:element name="benefitRiskAnalyses" type="BenefitRiskAnalyses"/>
 			</xs:sequence>
-		</xs:complexType>
-
+		</xs:complexType><!-- Keys and keyrefs -->
 		<xs:key name="drugNameKey">
 			<xs:selector xpath="drugs/drug"/>
 			<xs:field xpath="@name"/>
@@ -113,65 +112,12 @@
 		</xs:key>
 		<xs:keyref name="metaBenefitRiskAnalysisMetaAnalysisNameKeyRef" refer="metaAnalysisNameKey">
 			<xs:selector xpath="benefitRiskAnalyses/metaBenefitRiskAnalysis/metaAnalyses/metaAnalysis"/>
-			<xs:field xpath="@name"/>		
+			<xs:field xpath="@name"/>
 		</xs:keyref>
-		
 	</xs:element>
 	
-	<xs:complexType name = "BenefitRiskAnalyses">
-		<xs:sequence minOccurs="0" maxOccurs="unbounded">
-			<xs:choice>
-				<xs:element name="studyBenefitRiskAnalysis" type="StudyBenefitRiskAnalysis"/>
-				<xs:element name="metaBenefitRiskAnalysis" type="MetaBenefitRiskAnalysis"/>
-			</xs:choice>
-		</xs:sequence>
-	</xs:complexType>
+	<!-- Top-level types -->
 	
-	<xs:complexType name="MetaBenefitRiskAnalysis">
-		<xs:sequence>
-			<xs:element name="baseline" type="NameReference"/>
-			<xs:element name="drugs" type="DrugReferences"/>
-			<xs:element name="indication" type="NameReference"/>
-			<xs:element name="metaAnalyses" type="MetaAnalysisReferences"/>
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string"/>
-		<xs:attribute name="analysisType" type="BenefitRiskAnalysisType"/>	
-	</xs:complexType>
-	<xs:complexType name="DrugReferences">
-		<xs:sequence maxOccurs="unbounded">
-			<xs:element name="drug" type="NameReference"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="MetaAnalysisReferences">
-		<xs:sequence maxOccurs="unbounded">
-			<xs:element name="metaAnalysis" type="NameReference"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="StudyBenefitRiskAnalysis">
-		<xs:sequence>
-			<xs:element name="indication" type="NameReference"/>
-			<xs:element name="study" type="NameReference"/>
-			<xs:element name="arms" type="ArmReferences"/>
-			<xs:element name="outcomeMeasures" type="OutcomeMeasuresReferences"/>			
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string"/>
-		<xs:attribute name="analysisType" type="BenefitRiskAnalysisType"/>		
-	</xs:complexType>
-	<xs:complexType name="ArmReferences">
-		<xs:sequence maxOccurs="unbounded">
-			<xs:element name="arm" type="IdReference"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="OutcomeMeasuresReferences">
-		<xs:sequence maxOccurs="unbounded">
-			<xs:choice>
-				<xs:element name="adverseEvent" type="NameReference"/>
-				<xs:element name="endpoint" type="NameReference"/>
-				<xs:element name="populationCharacteristic" type="NameReference"/>
-			</xs:choice>
-		</xs:sequence>
-	</xs:complexType>
-
 	<xs:complexType name="Indications">
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="indication" type="Indication"/>
@@ -210,9 +156,24 @@
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
+	<xs:complexType name="BenefitRiskAnalyses">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:choice>
+				<xs:element name="studyBenefitRiskAnalysis" type="StudyBenefitRiskAnalysis"/>
+				<xs:element name="metaBenefitRiskAnalysis" type="MetaBenefitRiskAnalysis"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- Second-level types -->
+	
 	<xs:complexType name="Indication">
 		<xs:attribute name="code" type="xs:integer"/>
 		<xs:attribute name="name" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="Drug">
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="atcCode" type="Alphanumeric"/>
 	</xs:complexType>
 	<xs:complexType name="OutcomeMeasure">
 		<xs:choice>
@@ -222,22 +183,6 @@
 		</xs:choice>
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="description" type="xs:string"/>
-	</xs:complexType>
-	<xs:complexType name="ContinuousVariable">
-		<xs:attribute name="direction" type="Direction"/>
-		<xs:attribute name="unitOfMeasurement" type="xs:string"/>
-	</xs:complexType>
-	<xs:complexType name="RateVariable">
-		<xs:attribute name="direction" type="Direction"/>
-	</xs:complexType>
-	<xs:complexType name="CategoricalVariable">
-		<xs:sequence maxOccurs="unbounded">
-			<xs:element name="category" type="xs:string"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="Drug">
-		<xs:attribute name="name" type="xs:string"/>
-		<xs:attribute name="atcCode" type="Alphanumeric"/>
 	</xs:complexType>
 	<xs:complexType name="Study">
 		<xs:sequence>
@@ -249,6 +194,57 @@
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string"/>
 	</xs:complexType>
+	<xs:complexType name="MetaAnalysis">
+		<xs:sequence>
+			<xs:element name="indication" type="NameReference"/>
+			<xs:choice>
+				<xs:element name="adverseEvent" type="NameReference"/>
+				<xs:element name="endpoint" type="NameReference"/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="PairwiseMetaAnalysis">
+		<xs:complexContent>
+			<xs:extension base="MetaAnalysis">
+				<xs:sequence maxOccurs="2" minOccurs="2">
+					<xs:element name="alternative" type="Alternative"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="NetworkMetaAnalysis">
+		<xs:complexContent>
+			<xs:extension base="MetaAnalysis">
+				<xs:sequence maxOccurs="unbounded" minOccurs="2">
+					<xs:element name="alternative" type="Alternative"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MetaBenefitRiskAnalysis">
+		<xs:sequence>
+			<xs:element name="baseline" type="NameReference"/>
+			<xs:element name="drugs" type="DrugReferences"/>
+			<xs:element name="indication" type="NameReference"/>
+			<xs:element name="metaAnalyses" type="MetaAnalysisReferences"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="analysisType" type="BenefitRiskAnalysisType"/>
+	</xs:complexType>
+	<xs:complexType name="StudyBenefitRiskAnalysis">
+		<xs:sequence>
+			<xs:element name="indication" type="NameReference"/>
+			<xs:element name="study" type="NameReference"/>
+			<xs:element name="arms" type="ArmReferences"/>
+			<xs:element name="outcomeMeasures" type="OutcomeMeasuresReferences"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="analysisType" type="BenefitRiskAnalysisType"/>
+	</xs:complexType>
+	
+	<!-- The terrible offspring of Study and its notes-->
+
 	<xs:complexType name="StudyOutcomeMeasures">
 		<xs:sequence maxOccurs="unbounded">
 			<xs:element name="studyOutcomeMeasure" type="StudyOutcomeMeasure"/>
@@ -265,6 +261,71 @@
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:integer" use="required"/>
 	</xs:complexType>
+	<xs:complexType name="Characteristics">
+		<xs:sequence>
+			<xs:element name="title" type="StringWithNotes"/>
+			<xs:element minOccurs="0" name="allocation" type="Allocation"/>
+			<xs:element minOccurs="0" name="blinding" type="Blinding"/>
+			<xs:element minOccurs="0" name="centers" type="xs:integer"/>
+			<xs:element minOccurs="0" name="objective" type="StringWithNotes"/>
+			<xs:element minOccurs="0" name="studyStart" type="DateWithNotes"/>
+			<xs:element minOccurs="0" name="studyEnd" type="DateWithNotes"/>
+			<xs:element minOccurs="0" name="status" type="Status"/> <!-- check this, because there should always be a inclusion, exclusion and source -->
+			<xs:element minOccurs="0" name="inclusion" type="StringWithNotes"/>
+			<xs:element minOccurs="0" name="exclusion" type="StringWithNotes"/>
+			<xs:element name="references" type="References"/>
+			<xs:element minOccurs="0" name="source" type="Source"/>
+			<xs:element minOccurs="0" name="creationDate" type="xs:date"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="References">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:choice>
+				<xs:element name="pubMedId" type="xs:integer"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Status">
+		<xs:sequence>
+			<xs:element name="value" type="StatusEnum"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Source">
+		<xs:sequence>
+			<xs:element name="value" type="SourceEnum"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Allocation">
+		<xs:sequence>
+			<xs:element name="value" type="AllocationEnum"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Blinding">
+		<xs:sequence>
+			<xs:element name="value" type="BlindingEnum"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Arms">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="arm" type="Arm"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Arm">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="flexibleDose" type="FlexibleDose"/>
+				<xs:element name="fixedDose" type="FixedDose"/>
+			</xs:choice>
+			<xs:element name="drug" type="NameReference"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:integer"/>
+		<xs:attribute name="size" type="xs:integer"/>
+	</xs:complexType>
 	<xs:complexType name="Notes">
 		<xs:sequence maxOccurs="unbounded">
 			<xs:element name="note" type="Note"/>
@@ -277,6 +338,21 @@
 				<xs:attribute name="source" type="SourceEnum" use="required"/>
 			</xs:extension>
 		</xs:simpleContent>
+	</xs:complexType>
+	
+	<!-- Outcomemeasures and variables -->
+
+	<xs:complexType name="ContinuousVariable">
+		<xs:attribute name="direction" type="Direction"/>
+		<xs:attribute name="unitOfMeasurement" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="RateVariable">
+		<xs:attribute name="direction" type="Direction"/>
+	</xs:complexType>
+	<xs:complexType name="CategoricalVariable">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="category" type="xs:string"/>
+		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Measurements">
 		<xs:sequence maxOccurs="unbounded">
@@ -312,34 +388,9 @@
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="rate" type="xs:integer"/>
 	</xs:complexType>
-	<xs:complexType name="MetaAnalysis">
-		<xs:sequence>
-			<xs:element name="indication" type="NameReference"/>
-			<xs:choice>
-				<xs:element name="adverseEvent" type="NameReference"/>
-				<xs:element name="endpoint" type="NameReference"/>
-			</xs:choice>
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string"/>
-	</xs:complexType>
-	<xs:complexType name="PairwiseMetaAnalysis">
-		<xs:complexContent>
-			<xs:extension base="MetaAnalysis">
-				<xs:sequence maxOccurs="2" minOccurs="2">
-					<xs:element name="alternative" type="Alternative"/>
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	<xs:complexType name="NetworkMetaAnalysis">
-		<xs:complexContent>
-			<xs:extension base="MetaAnalysis">
-				<xs:sequence maxOccurs="unbounded" minOccurs="2">
-					<xs:element name="alternative" type="Alternative"/>
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
+	
+	<!-- Helpers for Meta-analyses -->
+	
 	<xs:complexType name="Alternative">
 		<xs:sequence>
 			<xs:element name="drug" type="NameReference"/>
@@ -351,36 +402,19 @@
 			<xs:element name="arm" type="ArmReference"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="Characteristics">
-		<xs:sequence>
-			<xs:element name="title" type="StringWithNotes"/>
-			<xs:element minOccurs="0" name="allocation" type="Allocation"/>
-			<xs:element minOccurs="0" name="blinding" type="Blinding"/>
-			<xs:element minOccurs="0" name="centers" type="xs:integer"/>
-			<xs:element minOccurs="0" name="objective" type="StringWithNotes"/>
-			<xs:element minOccurs="0" name="studyStart" type="DateWithNotes"/>
-			<xs:element minOccurs="0" name="studyEnd" type="DateWithNotes"/>
-			<xs:element minOccurs="0" name="status" type="Status"/><!-- check this, because there should always be a inclusion, exclusion and source -->
-			<xs:element minOccurs="0" name="inclusion" type="StringWithNotes"/>
-			<xs:element minOccurs="0" name="exclusion" type="StringWithNotes"/>
-			<xs:element name="references" type="References"/>
-			<xs:element minOccurs="0" name="source" type="Source"/>
-			<xs:element minOccurs="0" name="creationDate" type="xs:date"/>
-		</xs:sequence>
+
+	<!-- Enums and other simple utility types (doses, alphanumeric and such) -->
+
+	<xs:complexType name="FlexibleDose">
+		<xs:attribute name="minDose" type="xs:float"/>
+		<xs:attribute name="maxDose" type="xs:float"/>
+		<xs:attribute name="unit" type="Unit"/>
 	</xs:complexType>
-	<xs:complexType name="References">
-		<xs:sequence minOccurs="0" maxOccurs="unbounded">
-			<xs:choice>
-				<xs:element name="pubMedId" type="xs:integer"/>
-			</xs:choice>
-		</xs:sequence>
+	<xs:complexType name="FixedDose">
+		<xs:attribute name="quantity" type="xs:float"/>
+		<xs:attribute name="unit" type="Unit"/>
 	</xs:complexType>
-	<xs:complexType name="Status">
-		<xs:sequence>
-			<xs:element name="value" type="StatusEnum"/>
-			<xs:element name="notes" type="Notes"/>
-		</xs:sequence>
-	</xs:complexType>
+
 	<xs:simpleType name="StatusEnum">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="NOT_YET_RECRUITING"/>
@@ -409,35 +443,9 @@
 			<xs:enumeration value="UNKNOWN"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:complexType name="Source">
-		<xs:sequence>
-			<xs:element name="value" type="SourceEnum"/>
-			<xs:element name="notes" type="Notes"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:simpleType name="SourceEnum">
+	<xs:simpleType name="Unit">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="MANUAL"/>
-			<xs:enumeration value="CLINICALTRIALS"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:complexType name="Allocation">
-		<xs:sequence>
-			<xs:element name="value" type="AllocationEnum"/>
-			<xs:element name="notes" type="Notes"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="Blinding">
-		<xs:sequence>
-			<xs:element name="value" type="BlindingEnum"/>
-			<xs:element name="notes" type="Notes"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:simpleType name="AllocationEnum">
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="RANDOMIZED"/>
-			<xs:enumeration value="NONRANDOMIZED"/>
-			<xs:enumeration value="UNKNOWN"/>
+			<xs:enumeration value="MILLIGRAMS_A_DAY"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="Direction">
@@ -451,36 +459,22 @@
 			<xs:pattern value="([a-zA-Z0-9])*"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:complexType name="Arms">
-		<xs:sequence maxOccurs="unbounded">
-			<xs:element name="arm" type="Arm"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="Arm">
-		<xs:sequence>
-			<xs:choice>
-				<xs:element name="flexibleDose" type="FlexibleDose"/>
-				<xs:element name="fixedDose" type="FixedDose"/>
-			</xs:choice>
-			<xs:element name="drug" type="NameReference"/>
-		</xs:sequence>
-		<xs:attribute name="id" type="xs:integer"/>
-		<xs:attribute name="size" type="xs:integer"/>
-	</xs:complexType>
-	<xs:complexType name="FlexibleDose">
-		<xs:attribute name="minDose" type="xs:float"/>
-		<xs:attribute name="maxDose" type="xs:float"/>
-		<xs:attribute name="unit" type="Unit"/>
-	</xs:complexType>
-	<xs:complexType name="FixedDose">
-		<xs:attribute name="quantity" type="xs:float"/>
-		<xs:attribute name="unit" type="Unit"/>
-	</xs:complexType>
-	<xs:simpleType name="Unit">
+	<xs:simpleType name="AllocationEnum">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="MILLIGRAMS_A_DAY"/>
-		</xs:restriction> 
+			<xs:enumeration value="RANDOMIZED"/>
+			<xs:enumeration value="NONRANDOMIZED"/>
+			<xs:enumeration value="UNKNOWN"/>
+		</xs:restriction>
 	</xs:simpleType>
+	<xs:simpleType name="SourceEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="MANUAL"/>
+			<xs:enumeration value="CLINICALTRIALS"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Reference types as well as list types thereof-->
+
 	<xs:complexType name="NameReference">
 		<xs:attribute name="name" type="xs:string"/>
 	</xs:complexType>
@@ -498,6 +492,30 @@
 		<xs:attribute name="id" type="xs:integer"/>
 		<xs:attribute name="study" type="xs:string"/>
 	</xs:complexType>
+	<xs:complexType name="DrugReferences">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="drug" type="NameReference"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MetaAnalysisReferences">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="metaAnalysis" type="NameReference"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ArmReferences">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="arm" type="IdReference"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OutcomeMeasuresReferences">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:choice>
+				<xs:element name="adverseEvent" type="NameReference"/>
+				<xs:element name="endpoint" type="NameReference"/>
+				<xs:element name="populationCharacteristic" type="NameReference"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType><!-- Types with notes (for Study) -->
 	<xs:complexType name="TypeWithNotes">
 		<xs:sequence>
 			<xs:element name="notes" type="Notes"/>
