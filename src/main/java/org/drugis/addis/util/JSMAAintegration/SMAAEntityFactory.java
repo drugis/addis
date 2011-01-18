@@ -31,7 +31,9 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
@@ -47,6 +49,8 @@ import fi.smaa.jsmaa.model.CardinalMeasurement;
 import fi.smaa.jsmaa.model.GaussianMeasurement;
 import fi.smaa.jsmaa.model.LogNormalMeasurement;
 import fi.smaa.jsmaa.model.LogitNormalMeasurement;
+import fi.smaa.jsmaa.model.ReferenceableGaussianMeasurement;
+import fi.smaa.jsmaa.model.RelativeLogitNormalMeasurement;
 import fi.smaa.jsmaa.model.SMAAModel;
 import fi.smaa.jsmaa.model.ScaleCriterion;
 
@@ -92,10 +96,24 @@ public class SMAAEntityFactory<AltType extends Entity> {
 		for (OutcomeMeasure om : brAnalysis.getCriteria()) {
 			CardinalCriterion crit = getCriterion(om);
 			smaaModel.addCriterion(crit);
+			if (om.getType().equals(Type.RATE) && brAnalysis instanceof MetaBenefitRiskAnalysis) {
+				MetaBenefitRiskAnalysis mbr = (MetaBenefitRiskAnalysis)brAnalysis;
+				smaaModel.getImpactMatrix().setBaseline(crit, new ReferenceableGaussianMeasurement(
+						mbr.getBaselineDistribution(om).getMu(), mbr.getBaselineDistribution(om).getSigma()));
+			}
 			
 			for (AltType a : brAnalysis.getAlternatives()) {
-				CardinalMeasurement m = createCardinalMeasurement(brAnalysis.getMeasurement(a, om));
-				smaaModel.setMeasurement(crit, getAlternative(a), m);
+				if (om.getType().equals(Type.RATE) && brAnalysis instanceof MetaBenefitRiskAnalysis) {
+					MetaBenefitRiskAnalysis mbr = (MetaBenefitRiskAnalysis)brAnalysis;
+					CardinalMeasurement m = new RelativeLogitNormalMeasurement(smaaModel.getImpactMatrix().getBaseline(crit),
+							new GaussianMeasurement(
+									mbr.getRelativeEffectDistribution((Drug) a, om).getMu(),
+									mbr.getRelativeEffectDistribution((Drug) a, om).getSigma()));
+					smaaModel.setMeasurement(crit, getAlternative(a), m);
+				} else {
+					CardinalMeasurement m = createCardinalMeasurement(brAnalysis.getMeasurement(a, om));
+					smaaModel.setMeasurement(crit, getAlternative(a), m);
+				}
 			}
 		}
 		return smaaModel;
