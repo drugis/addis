@@ -51,6 +51,7 @@ import fi.smaa.jsmaa.model.LogNormalMeasurement;
 import fi.smaa.jsmaa.model.LogitNormalMeasurement;
 import fi.smaa.jsmaa.model.ReferenceableGaussianMeasurement;
 import fi.smaa.jsmaa.model.RelativeLogitNormalMeasurement;
+import fi.smaa.jsmaa.model.RelativeNormalMeasurement;
 import fi.smaa.jsmaa.model.SMAAModel;
 import fi.smaa.jsmaa.model.ScaleCriterion;
 
@@ -96,19 +97,25 @@ public class SMAAEntityFactory<AltType extends Entity> {
 		for (OutcomeMeasure om : brAnalysis.getCriteria()) {
 			CardinalCriterion crit = getCriterion(om);
 			smaaModel.addCriterion(crit);
-			if (om.getType().equals(Type.RATE) && brAnalysis instanceof MetaBenefitRiskAnalysis) {
+			if (brAnalysis instanceof MetaBenefitRiskAnalysis) {
 				MetaBenefitRiskAnalysis mbr = (MetaBenefitRiskAnalysis)brAnalysis;
 				smaaModel.getImpactMatrix().setBaseline(crit, new ReferenceableGaussianMeasurement(
 						mbr.getBaselineDistribution(om).getMu(), mbr.getBaselineDistribution(om).getSigma()));
 			}
 			
 			for (AltType a : brAnalysis.getAlternatives()) {
-				if (om.getType().equals(Type.RATE) && brAnalysis instanceof MetaBenefitRiskAnalysis) {
+				if (brAnalysis instanceof MetaBenefitRiskAnalysis) {
 					MetaBenefitRiskAnalysis mbr = (MetaBenefitRiskAnalysis)brAnalysis;
-					CardinalMeasurement m = new RelativeLogitNormalMeasurement(smaaModel.getImpactMatrix().getBaseline(crit),
-							new GaussianMeasurement(
-									mbr.getRelativeEffectDistribution((Drug) a, om).getMu(),
-									mbr.getRelativeEffectDistribution((Drug) a, om).getSigma()));
+					ReferenceableGaussianMeasurement baseline = smaaModel.getImpactMatrix().getBaseline(crit);
+					GaussianMeasurement relative = new GaussianMeasurement(
+							mbr.getRelativeEffectDistribution((Drug) a, om).getMu(),
+							mbr.getRelativeEffectDistribution((Drug) a, om).getSigma());
+					CardinalMeasurement m = null; 
+					if (om.getType().equals(Type.RATE)) {
+						m = new RelativeLogitNormalMeasurement(baseline, relative);
+					} else if (om.getType().equals(Type.CONTINUOUS)) {
+						m = new RelativeNormalMeasurement(baseline, relative);
+					}
 					smaaModel.setMeasurement(crit, getAlternative(a), m);
 				} else {
 					CardinalMeasurement m = createCardinalMeasurement(brAnalysis.getMeasurement(a, om));
