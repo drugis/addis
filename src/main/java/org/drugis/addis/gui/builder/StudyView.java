@@ -97,7 +97,7 @@ public class StudyView implements ViewBuilder {
 		cc = new CellConstraints();
 		row = 1;
 		
-			builder.addSeparator("Baseline Characteristics", cc.xy(1, row));
+		builder.addSeparator("Baseline Characteristics", cc.xy(1, row));
 		row += 2;
 		builder.add(buildPopulationPart(), cc.xy(1, row));
 		row += 2;
