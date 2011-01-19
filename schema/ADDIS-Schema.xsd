@@ -362,7 +362,7 @@
 	<xs:complexType name="Measurement">
 		<xs:sequence>
 			<xs:element name="studyOutcomeMeasure" type="IdReference"/>
-			<xs:element name="arm" type="ArmReference"/>
+			<xs:element name="arm" minOccurs="0" type="ArmReference"/>
 			<xs:choice>
 				<xs:element name="rateMeasurement" type="RateMeasurement"/>
 				<xs:element name="continuousMeasurement" type="ContinuousMeasurement"/>
