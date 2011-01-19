@@ -59,7 +59,7 @@ public class VariableView implements ViewBuilder {
 	public JComponent buildPanel() {
 
 		FormLayout layout = new FormLayout(
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -77,7 +77,7 @@ public class VariableView implements ViewBuilder {
 
 	private JPanel buildOverviewPart() {
 		FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, pref:grow:fill",
+				"right:pref, 3dlu, fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();

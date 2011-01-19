@@ -45,7 +45,7 @@ public class StudyBenefitRiskView extends AbstractBenefitRiskView<StudyBenefitRi
 	
 	public JPanel buildMeasurementsPanel() {
 		CellConstraints cc = new CellConstraints();
-		FormLayout layout = new FormLayout("pref:grow:fill",
+		FormLayout layout = new FormLayout("fill:0:grow",
 				"p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
@@ -62,7 +62,7 @@ public class StudyBenefitRiskView extends AbstractBenefitRiskView<StudyBenefitRi
 	@Override
 	protected JPanel buildOverviewPanel() {
 		FormLayout layout = new FormLayout(
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu, p, " + // 1-3 
 				"3dlu, p");
 		

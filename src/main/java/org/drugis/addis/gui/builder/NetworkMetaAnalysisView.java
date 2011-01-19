@@ -149,7 +149,7 @@ implements ViewBuilder {
 	
 	public JComponent buildOverviewTab() {
 		final FormLayout layout = new FormLayout(
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p" +
 				", 3dlu, p"); // Memory usage part
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
@@ -250,7 +250,7 @@ implements ViewBuilder {
 	}
 	
 	private JComponent buildInconsistencyTab() {
-		FormLayout layout = new FormLayout("3dlu, pref:grow:fill, 3dlu",
+		FormLayout layout = new FormLayout("3dlu, fill:0:grow, 3dlu",
 		"3dlu, p, 3dlu, p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		
@@ -333,7 +333,7 @@ implements ViewBuilder {
 	}
 	
 	private JComponent buildConsistencyTab() {
-		FormLayout layout = new FormLayout(	"3dlu, pref:grow:fill, 3dlu",
+		FormLayout layout = new FormLayout(	"3dlu, fill:0:grow, 3dlu",
 		"3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu" );
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		CellConstraints cc =  new CellConstraints();
@@ -391,7 +391,7 @@ implements ViewBuilder {
 	
 	private JComponent buildNodeSplitTab() {
 		final FormLayout layout = new FormLayout(
-				"pref, 3dlu, pref:grow:fill",
+				"pref, 3dlu, fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());

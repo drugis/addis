@@ -79,7 +79,7 @@ public class LyndOBrienView implements ViewBuilder {
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, " +
 				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new JPanel());
@@ -117,7 +117,7 @@ public class LyndOBrienView implements ViewBuilder {
 		
 		public JComponent buildPanel() {
 			FormLayout layout = new FormLayout(
-					"pref:grow:fill",
+					"fill:0:grow",
 					"p, 3dlu, p, 3dlu, p");
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc =  new CellConstraints();
