@@ -22,6 +22,7 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
@@ -77,12 +78,12 @@ public class LyndOBrienView implements ViewBuilder {
 		d_pvalueLabel = new JLabel();
 	}
 
-	public JComponent buildPanel() {
+	public JPanel buildPanel() {
 		FormLayout layout = new FormLayout(
 				"fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, " +
 				"p, 3dlu, p, 3dlu, p, 3dlu, p");
-		PanelBuilder builder = new PanelBuilder(layout, new JPanel());
+		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		CellConstraints cc =  new CellConstraints();
 
@@ -109,35 +110,55 @@ public class LyndOBrienView implements ViewBuilder {
 				"\u03BC that " + baselineName + " is superior to " + alternativeName + ". Indicates the" +
 				" proportion of datapoints in the Benefit-Risk" +
 				" plane that lie below the line y = \u03BC x"), cc.xy(1,13));
+		
 		d_panel = builder.getPanel();
+		d_panel.setBackground(Color.blue);
 		return d_panel;
 	}
 
 	private class ScatterplotBuilder implements ViewBuilder, TaskListener {
-		
-		public JComponent buildPanel() {
+
+		public JPanel buildPanel() {
 			FormLayout layout = new FormLayout(
-					"fill:0:grow",
+					"pref",
 					"p, 3dlu, p, 3dlu, p");
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc =  new CellConstraints();
+			
 			JProgressBar bar = new TaskProgressBar(d_pm.getProgressModel());
 			builder.add(bar,cc.xy(1, 1));
+			
 			final draggableMuChartPanel component = new draggableMuChartPanel(LyndOBrienChartFactory.buildScatterPlot(d_pm.getModel()));
+			
+			component.validate();
+			component.updateUI();
+			component.setSize(d_panel.getSize().width, d_panel.getSize().height);
+
 			d_pm.getModel().getTask().addTaskListener(this);
 			component.addListener(new PropertyChangeListener() {
-				
 				public void propertyChange(PropertyChangeEvent evt) {
 					java.lang.Double mu = component.getMu();
 					setMuAndPValueLabel(mu);
+					
 				}
 			});
 
 			d_pm.getModel().getTask().addTaskListener(component);
-			builder.add(component, cc.xy(1,3));
+			
+
+			FormLayout chartLayout = new FormLayout("fill:0:grow", "p");
+			PanelBuilder chartBuilder = new PanelBuilder(chartLayout);
+			chartBuilder.add(component, cc.xy(1, 1)); 
+			builder.add(chartBuilder.getPanel(), cc.xy(1, 3));
+			
+			//builder.add(component, cc.xy(1,3));
 			setMuAndPValueLabel(1.0);
 			builder.add(d_pvalueLabel, cc.xy(1,5));
-
+			
+			builder.setBackground(Color.red);
+			
+			builder.getContainer().validate();
+			
 			return builder.getPanel();
 		}
 
