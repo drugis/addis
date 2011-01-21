@@ -171,8 +171,12 @@ implements ViewBuilder {
 	
 	private JComponent buildMemoryUsageTab() {
 		CellConstraints cc = new CellConstraints();
+		
+		FormLayout header = new FormLayout("fill:0:grow", "p");
+		PanelBuilder builderheader = new PanelBuilder(header);
+		
 		FormLayout layout = new FormLayout(
-				"3dlu, left:pref, 3dlu, right:pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu",
+				"3dlu, left:0:grow, 3dlu, left:pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu",
 				"3dlu, p, 3dlu, p"
 				);
 		PanelBuilder builder = new PanelBuilder(layout);
@@ -181,16 +185,21 @@ implements ViewBuilder {
 		builder.addSeparator("Memory usage", cc.xyw(2, row, 7));
 		row += 2;
 		
-		builder.add(AuxComponentFactory.createHtmlField("Network meta-analysis results can use quite a bit of memory. Here, the results of " +
+		builderheader.add(AuxComponentFactory.createHtmlField("Network meta-analysis results can use quite a bit of memory. Here, the results of " +
 				"analyses may be discarded to save memory. The aggregate-level results will be maintained. However, after " +
-				"discarding the results, it will no longer be possible to display the convergence plots."), cc.xyw(2, row, 7));
+		"discarding the results, it will no longer be possible to display the convergence plots."), cc.xy(1,1));
+		
+		builder.add(builderheader.getPanel(), cc.xyw(2, row, 7));
+		
 		LayoutUtil.addRow(builder.getLayout());
 		row += 2;
 
 		row = buildMemoryUsage(d_pm.getConsistencyModel(), "Consistency model", builder, layout, row);
 		row = buildMemoryUsage(d_pm.getInconsistencyModel(), "Inconsistency model", builder, layout, row);
+		builder.addSeparator("", cc.xyw(2, row-1, 3));
 		for(BasicParameter p : d_pm.getSplitParameters()) {
 			row = buildMemoryUsage(d_pm.getNodeSplitModel(p), "<html>Node Split model:<br />&nbsp;&nbsp;&nbsp; Parameter " + p.getName() + "</html>", builder, layout, row);
+			builder.addSeparator("", cc.xyw(2, row-1, 3));
 		}
 		
 		return builder.getPanel();
@@ -221,7 +230,7 @@ implements ViewBuilder {
 		});
 		builder.add(clearButton, cc.xy(6, row));
 		final JButton saveButton = new JButton(ImageLoader.getIcon(FileNames.ICON_SAVEFILE));
-		saveButton.setToolTipText("Dump to R-file");
+		saveButton.setToolTipText("Save to R-file");
 		Bindings.bind(saveButton, "enabled", resultsAvailableModel);
 		saveButton.addActionListener(buildRButtonActionListener(model));
 		builder.add(saveButton, cc.xy(8, row));

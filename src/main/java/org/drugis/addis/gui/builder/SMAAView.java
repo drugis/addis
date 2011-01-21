@@ -32,6 +32,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
@@ -183,15 +184,17 @@ public class SMAAView implements ViewBuilder  {
 	}
 	
 	public JComponent buildRankAcceptabilitiesPart() {
-		return createWaiter(new RankAcceptabilitiesBuilder());
+		JScrollPane rankpane = new JScrollPane(createWaiter(new RankAcceptabilitiesBuilder()));
+		rankpane.setViewportBorder(null);
+		return rankpane;
 	}
 
 	class RankAcceptabilitiesBuilder implements ViewBuilder {
 		
 		public JComponent buildPanel() {
-			FormLayout layout = new FormLayout("pref, 3dlu, fill:0:grow", "p, 3dlu, p, 3dlu, p");
+			FormLayout layout = new FormLayout("pref", "p, 3dlu, p, 3dlu, p");
 			CellConstraints cc = new CellConstraints();
-			PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+			PanelBuilder builder = new PanelBuilder(layout);
 			builder.setDefaultDialogBorder();
 			
 			ResultsTable table = new ResultsTable(d_pm.getRankAcceptabilitiesTableModel());
@@ -202,20 +205,19 @@ public class SMAAView implements ViewBuilder  {
 			        d_pm.getRankAcceptabilityDataSet(), PlotOrientation.VERTICAL, true, true, false);
 			chart.addSubtitle(new org.jfree.chart.title.ShortTextTitle("Rank 1 is best, rank N is worst."));
 			
-			//JPanel panel = new JPanel(new BorderLayout());
 			fi.smaa.jsmaa.gui.views.ResultsView view = new fi.smaa.jsmaa.gui.views.ResultsView(d_mainWindow, table, chart, "");
+			
 			builder.add(getSmaaSimulationProgressBar(), cc.xy(1, 1));
-			//panel.add(getSmaaSimulationProgressBar(), BorderLayout.NORTH);
+			
 			builder.add(view.buildPanel(), cc.xy(1, 3));
-			//panel.add(view.buildPanel(), BorderLayout.CENTER);
+			
 			
 			ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
 			bbuilder.addButton(createSaveImageButton(findChartPanel(view.buildPanel())));
-			//panel.add(bbuilder.getPanel(), BorderLayout.SOUTH);
-			builder.add(bbuilder.getPanel(), cc.xyw(1, 5, 3));
+			
+			builder.add(bbuilder.getPanel(), cc.xy(1, 5));
 			
 			return builder.getPanel();
-			//return panel;
 		}
 	}
 
@@ -257,12 +259,13 @@ public class SMAAView implements ViewBuilder  {
 	}
 
 	public JComponent buildCentralWeightsPart() {
-		return createWaiter(new CentralWeightsBuilder());
+		JScrollPane cpane = new JScrollPane(createWaiter(new CentralWeightsBuilder()));
+		cpane.setViewportBorder(null);
+		return cpane;
 	}
 	
 	@SuppressWarnings("unchecked")
 	protected BuildViewWhenReadyComponent createWaiter(ViewBuilder builder) {
-		return new BuildViewWhenReadyComponent(builder, 
-				d_BRpm.getSMAAPresentation().getInitializedModel(), WAITING_MESSAGE);
+		return new BuildViewWhenReadyComponent(builder, d_BRpm.getSMAAPresentation().getInitializedModel(), WAITING_MESSAGE);
 	}
 }
