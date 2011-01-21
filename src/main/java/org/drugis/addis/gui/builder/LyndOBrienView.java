@@ -22,7 +22,6 @@
 
 package org.drugis.addis.gui.builder;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
@@ -36,6 +35,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
@@ -88,7 +88,9 @@ public class LyndOBrienView implements ViewBuilder {
 		CellConstraints cc =  new CellConstraints();
 
 		builder.addSeparator("Benefit-risk plane");
-		builder.add(createWaiter(new ScatterplotBuilder()), cc.xy(1,3));
+		JScrollPane scatter = new JScrollPane(createWaiter(new ScatterplotBuilder()));
+		scatter.setViewportBorder(null);
+		builder.add(scatter, cc.xy(1,3));
 
 		String alternativeName = new String();
 		String baselineName = new String();
@@ -105,20 +107,24 @@ public class LyndOBrienView implements ViewBuilder {
 				alternativeName +" is better and" +
 				" results in the SE quadrant indicate that "+ baselineName  + " is better."), cc.xy(1,7));
 		builder.addSeparator("Benefit-Risk Aceptability curve", cc.xy(1, 9));
-		builder.add(createWaiter(new PvalueplotBuilder()), cc.xy(1,11));
+		
+		JScrollPane pvalue = new JScrollPane(createWaiter(new PvalueplotBuilder()));
+		pvalue.setViewportBorder(null);
+		builder.add(pvalue, cc.xy(1,11));
+		
 		builder.add(AuxComponentFactory.createHtmlField("Probability for a given acceptability threshold " +
 				"\u03BC that " + baselineName + " is superior to " + alternativeName + ". Indicates the" +
 				" proportion of datapoints in the Benefit-Risk" +
 				" plane that lie below the line y = \u03BC x"), cc.xy(1,13));
 		
 		d_panel = builder.getPanel();
-		d_panel.setBackground(Color.blue);
+		
 		return d_panel;
 	}
 
 	private class ScatterplotBuilder implements ViewBuilder, TaskListener {
 
-		public JPanel buildPanel() {
+		public JComponent buildPanel() {
 			FormLayout layout = new FormLayout(
 					"pref",
 					"p, 3dlu, p, 3dlu, p");
@@ -129,10 +135,6 @@ public class LyndOBrienView implements ViewBuilder {
 			builder.add(bar,cc.xy(1, 1));
 			
 			final draggableMuChartPanel component = new draggableMuChartPanel(LyndOBrienChartFactory.buildScatterPlot(d_pm.getModel()));
-			
-			component.validate();
-			component.updateUI();
-			component.setSize(d_panel.getSize().width, d_panel.getSize().height);
 
 			d_pm.getModel().getTask().addTaskListener(this);
 			component.addListener(new PropertyChangeListener() {
@@ -145,19 +147,10 @@ public class LyndOBrienView implements ViewBuilder {
 
 			d_pm.getModel().getTask().addTaskListener(component);
 			
-
-			FormLayout chartLayout = new FormLayout("fill:0:grow", "p");
-			PanelBuilder chartBuilder = new PanelBuilder(chartLayout);
-			chartBuilder.add(component, cc.xy(1, 1)); 
-			builder.add(chartBuilder.getPanel(), cc.xy(1, 3));
-			
-			//builder.add(component, cc.xy(1,3));
+			builder.add(component, cc.xy(1,3));
 			setMuAndPValueLabel(1.0);
 			builder.add(d_pvalueLabel, cc.xy(1,5));
 			
-			builder.setBackground(Color.red);
-			
-			builder.getContainer().validate();
 			
 			return builder.getPanel();
 		}

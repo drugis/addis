@@ -32,6 +32,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
@@ -98,8 +99,8 @@ public class SMAAView implements ViewBuilder  {
 		d_builder.addSeparator("Rank Acceptabilities", cc.xy(1, 9));
 		d_builder.add(buildRankAcceptabilitiesPart(), cc.xy(1, 11));
 		
-		//d_builder.addSeparator("Central Weights", cc.xy(1, 13));
-		//d_builder.add(buildCentralWeightsPart(), cc.xy(1, 15));
+		d_builder.addSeparator("Central Weights", cc.xy(1, 13));
+		d_builder.add(buildCentralWeightsPart(), cc.xy(1, 15));
 		
 		return d_builder.getPanel();	
 	}
@@ -183,7 +184,9 @@ public class SMAAView implements ViewBuilder  {
 	}
 	
 	public JComponent buildRankAcceptabilitiesPart() {
-		return createWaiter(new RankAcceptabilitiesBuilder());
+		JScrollPane rankpane = new JScrollPane(createWaiter(new RankAcceptabilitiesBuilder()));
+		rankpane.setViewportBorder(null);
+		return rankpane;
 	}
 
 	class RankAcceptabilitiesBuilder implements ViewBuilder {
@@ -256,7 +259,9 @@ public class SMAAView implements ViewBuilder  {
 	}
 
 	public JComponent buildCentralWeightsPart() {
-		return createWaiter(new CentralWeightsBuilder());
+		JScrollPane cpane = new JScrollPane(createWaiter(new CentralWeightsBuilder()));
+		cpane.setViewportBorder(null);
+		return cpane;
 	}
 	
 	@SuppressWarnings("unchecked")

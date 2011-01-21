@@ -174,7 +174,10 @@ implements ViewBuilder {
 		builder.setBorder(BorderFactory.createLineBorder(Color.black));
 		builder.setBackground(Color.white);
 		
-		encapsulating.add(new JScrollPane(builder.getPanel()),cc.xy(1, 1));
+		JScrollPane scrollPane = new JScrollPane(builder.getPanel());
+		scrollPane.setViewportBorder(null);
+		
+		encapsulating.add(scrollPane,cc.xy(1, 1));
 		
 		if (!d_isWizard) {
 			JButton saveBtn = new JButton("Save Image");
@@ -191,7 +194,7 @@ implements ViewBuilder {
 			encapsulating.add(bbuilder.getPanel(), cc.xy(1, 5));
 		}
 		
-		return new JScrollPane(encapsulating);	
+		return encapsulating;	
 	}
 
 }
