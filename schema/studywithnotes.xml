@@ -1,0 +1,288 @@
+<?xml version="1.0" ?>
+<addis-data>
+	<indications>
+		<indication id="0" name="Depression" code="1"/>
+	</indications>
+	<endpoints>
+		<endpoint id="1" description="Patients responding to treatment based on CGI-I" name="CGI responders" unitOfMeasurement="Ratio of Patients">
+			<direction value="HIGHER_IS_BETTER"/>
+			<type value="RATE"/>
+		</endpoint>
+		<endpoint id="2" description="Change from baseline in CGI-S (severity of illness)" name="Change from baseline CGI-S" unitOfMeasurement="Rating scale">
+			<direction value="LOWER_IS_BETTER"/>
+			<type value="CONTINUOUS"/>
+		</endpoint>
+		<endpoint id="3" description="Change from baseline in HAM-D (17 item) score" name="Change from baseline HAM-D" unitOfMeasurement="Rating scale">
+			<direction value="LOWER_IS_BETTER"/>
+			<type value="CONTINUOUS"/>
+		</endpoint>
+	</endpoints>
+	<adverseEvents>
+		<adverseEvent id="4" description="indeed" name="Erectile Dysfunction" unitOfMeasurement="Ratio of Patients">
+			<type value="RATE"/>
+			<direction value="LOWER_IS_BETTER"/>
+		</adverseEvent>
+	</adverseEvents>
+	<drugs>
+		<drug id="5" name="Bupropion" atcCode="N06AX12"/>
+		<drug id="6" name="Placebo" atcCode="Placebo"/>
+	</drugs>
+	<populationCharacteristics>
+		<categoricalCharacteristic description="You know" name="Gender">
+			<categories>
+				<string value="MALE"/>
+				<string value="FEMALE"/>
+			</categories>
+		</categoricalCharacteristic>
+	</populationCharacteristics>
+	<studies>
+		<study id="7" studyId="NCT00296517">
+			<indication ref="0"/>
+			<characteristics>
+				<TITLE class="string" value="Study In Patients With Depression Not Responding to Selective Serotonin Re-uptake Inhibitors"/>
+				<ALLOCATION class="allocation" value="RANDOMIZED"/>
+				<BLINDING class="blinding" value="DOUBLE_BLIND"/>
+				<CENTERS class="number" value="65"/>
+				<OBJECTIVE class="string" value="This study is designed to evaluate the efficacy and safety in depressive patients who did&#10;      not respond sufficiently to selective serotonin re-uptake inhibitors (SSRI)."/>
+				<STUDY_START class="date" date="01 Jan 2006"/>
+				<STATUS class="status" value="COMPLETED"/>
+				<INCLUSION class="string" value="-  [At the start of the pretreatment phase]&#10;&#10;          -  Target disease: Patients diagnosed as having the following primary disease on the&#10;             basis of DSM-IV-TR criteria.&#10;&#10;          -  Major Depressive Disorder, Single Episode (296.2x) (excluding with psychotic&#10;             features)&#10;&#10;          -  Major Depressive Disorder, Recurrent (296.3x) (excluding with psychotic features)&#10;&#10;          -  HAM-D (17 items) total score is &gt;=16.&#10;&#10;          -  Patients who have been treated with marketed paroxetine (Paxil®) at 20mg/day to&#10;             40mg/day for 4 weeks and more at the start of the pretreatment phase.&#10;&#10;          -  Age: &gt;=18 years old (at the time of informed consent) , &lt;65 years old (at the start&#10;             of treatment phase )&#10;&#10;          -  Gender: Male or female.&#10;&#10;          -  Inpatients or outpatients: Either&#10;&#10;          -  Informed consent: The subject himself/herself must give written informed consent.&#10;             However, if the subject is under 20 at the time of giving consent, both the subject&#10;             himself/herself and his/her legally acceptable representative must give written&#10;             informed consent.&#10;&#10;        [At the end of the pretreatment phase]&#10;&#10;          1. HAM-D (17 items) total score is ≥14.&#10;&#10;          2. Percentage of change from the start of the pretreatment phase in the HAM-D (17 items)&#10;             total score is &lt;50%&#10;&#10;        [At the start of the treatment phase]&#10;&#10;          1. HAM-D (17 items) total score is ≥14.&#10;&#10;          2. Percentage of change from the start of the pretreatment phase in the HAM-D (17 items)&#10;             total score is &lt;50%"/>
+				<EXCLUSION class="string" value="[At the start of the pre-treatment phase]&#10;&#10;          -  Patients with a complication of glaucoma&#10;&#10;          -  Patients concomitantly using a drug increasing the risk of bleeding and patients with&#10;             bleeding tendency or predisposition to bleeding&#10;&#10;          -  Patients with predisposition to seizure (who currently have or have a past history of&#10;             seizure, febrile convulsive seizure in infancy, cerebral tumour, cerebrovascular&#10;             disorder or head injury, who have a family history of idiopathic seizure, patients&#10;             with diabetes who have been treated with oral hypoglycaemics or insulin, or who use&#10;             drugs lowering the threshold of seizure).&#10;&#10;          -  Patients who currently have or have a past history of the following disorders:&#10;&#10;          -  Anorexia nervosa (DSM-IV-TR 307.1)&#10;&#10;          -  Bulimia nervosa (DSM-IV-TR 307.51)&#10;&#10;          -  Patients with a history of manic episode&#10;&#10;          -  Patients with a past or current DSM- IV-TR diagnosis of schizophrenia or other&#10;             psychotic disorder&#10;&#10;          -  Patients with a current DSM-IV-TR Axis II diagnosis (e.g., antisocial or borderline&#10;             personality disorder)&#10;&#10;          -  Patients starting psychotherapy (except for supportive psychotherapy not aimed at&#10;             therapeutic efficacy and unlikely to affect efficacy evaluation) and formal cognitive&#10;             behaviour therapy within 5 weeks prior to the start of the pre-treatment phase&#10;&#10;          -  Patients with a diagnosis of substance abuse (alcohol or drug) by the DSM-IV-TR&#10;             criteria or with a diagnosis of substance dependence within 1 year prior to the start&#10;             of the pre-treatment phase&#10;&#10;          -  Patients who have received electroconvulsive therapy within 17 weeks prior to the&#10;             start of the pre-treatment phase&#10;&#10;          -  Patients who have taken MAO inhibitors (selegiline hydrochloride) within 2 weeks&#10;             prior to the start of the pre-treatment phase&#10;&#10;          -  Patients who have taken another investigational drug within 12 weeks prior to the&#10;             start of the pre-treatment phase&#10;&#10;          -  Female patients who are pregnant, possibly pregnant or are nursing, and those who&#10;             want to become pregnant before 30 days after the last dose of the investigational&#10;             product&#10;&#10;          -  Patients who have attempted suicide within 17 weeks prior to the start of the&#10;             pre-treatment phase, or patients for whom the score of suicide-related item No. 3 of&#10;             HAM-D is &gt;=3, or patients in whom the risk of suicide is judged to be high by the&#10;             investigator (sub-investigator)&#10;&#10;          -  Patients in whom the risk of homicide is judged to be high by the investigator&#10;             (sub-investigator)&#10;&#10;          -  Patients with a history of hypersensitivity to 323U66 and/or paroxetine&#10;&#10;          -  Patients with serious cerebral disease&#10;&#10;          -  Patients who have ECG or clinical evidence of any cardiac condition that the&#10;             investigator (sub-investigator) feels may predispose the subject to ischemia or&#10;             arrhythmia&#10;&#10;          -  Patients with serious physical symptoms (i.e. cardiac/hepatic/renal disorder,&#10;             hematopoietic disorder) The index of seriousness is Grade 3 of &quot;Criteria for&#10;             classification of seriousness of adverse drug reactions to pharmaceutical products,&#10;             etc.&quot; (PAB/PSD No.80 in 1992).&#10;&#10;          -  Patients with a history or complication of cancer or malignant tumour.&#10;&#10;          -  Patients whose major depressive disorder is due to direct physiological effects of a&#10;             general medical condition (for example, hypothyroidism, Parkinson's disease, chronic&#10;             pain)&#10;&#10;          -  Patients with systolic blood pressure of &gt;=160 mmHg or diastolic blood pressure of&#10;             &gt;=100 mmHg&#10;&#10;          -  Patients who are inappropriate for participating in the study in the judgement of the&#10;             investigator (sub-investigator)&#10;&#10;        [At the start of the treatment phase]&#10;&#10;          1. Patients whose compliance of paroxetine during the pretreatment phase is less than&#10;             70%.&#10;&#10;          2. Patients who have ECG or clinical evidence of any cardiac condition that the&#10;             investigator (sub-investigator) feels may predispose the subject to ischemia or&#10;             arrhythmia&#10;&#10;          3. Patients with systolic blood pressure of &gt;=160 mmHg or diastolic blood pressure of&#10;             &gt;=100 mmHg"/>
+				<SOURCE class="source" value="CLINICALTRIALS"/>
+				<CREATION_DATE class="date" date="19 Jan 2011"/>
+			</characteristics>
+			<adverseEvents>
+				<adverseEvent ref="4"/>
+			</adverseEvents>
+			<endpoints>
+				<endpoint ref="2"/>
+				<endpoint ref="3"/>
+				<endpoint ref="1"/>
+			</endpoints>
+			<populationCharacteristics>
+				<categoricalCharacteristic description="You know" name="Gender">
+					<categories>
+						<string value="MALE"/>
+						<string value="FEMALE"/>
+					</categories>
+				</categoricalCharacteristic>
+			</populationCharacteristics>
+			<arms>
+				<arm id="8" size="100">
+					<dose class="fixedDose" quantity="0.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug ref="6"/>
+				</arm>
+				<arm id="9" size="105">
+					<dose class="flexibleDose" maxDose="300.0" minDose="100.0">
+						<unit value="MILLIGRAMS_A_DAY"/>
+					</dose>
+					<drug ref="5"/>
+				</arm>
+			</arms>
+			<measurements>
+				<measurement id="10">
+					<outcomeMeasure class="adverseEvent" ref="4"/>
+					<arm ref="8"/>
+					<measurement class="rateMeasurement" rate="0" sampleSize="100"/>
+				</measurement>
+				<measurement id="11">
+					<outcomeMeasure class="endpoint" ref="2"/>
+					<arm ref="8"/>
+					<measurement class="continuousMeasurement" mean="0.0" sampleSize="100" stdDev="0.0"/>
+				</measurement>
+				<measurement id="12">
+					<outcomeMeasure class="endpoint" ref="3"/>
+					<arm ref="8"/>
+					<measurement class="continuousMeasurement" mean="0.0" sampleSize="100" stdDev="0.0"/>
+				</measurement>
+				<measurement id="13">
+					<outcomeMeasure class="endpoint" ref="2"/>
+					<arm ref="9"/>
+					<measurement class="continuousMeasurement" mean="0.0" sampleSize="100" stdDev="0.0"/>
+				</measurement>
+				<measurement id="14">
+					<outcomeMeasure class="adverseEvent" ref="4"/>
+					<arm ref="9"/>
+					<measurement class="rateMeasurement" rate="0" sampleSize="105"/>
+				</measurement>
+				<measurement id="15">
+					<outcomeMeasure class="endpoint" ref="1"/>
+					<arm ref="8"/>
+					<measurement class="rateMeasurement" rate="0" sampleSize="100"/>
+				</measurement>
+				<measurement id="16">
+					<outcomeMeasure class="categoricalCharacteristic" description="You know" name="Gender">
+						<categories>
+							<string value="MALE"/>
+							<string value="FEMALE"/>
+						</categories>
+					</outcomeMeasure>
+					<measurement class="frequencyMeasurement" id="17">
+						<variable description="You know" name="Gender">
+							<categories>
+								<string value="MALE"/>
+								<string value="FEMALE"/>
+							</categories>
+						</variable>
+						<frequencies>
+							<frequency category="FEMALE" count="0"/>
+							<frequency category="MALE" count="0"/>
+						</frequencies>
+					</measurement>
+				</measurement>
+				<measurement id="18">
+					<outcomeMeasure class="categoricalCharacteristic" description="You know" name="Gender">
+						<categories>
+							<string value="MALE"/>
+							<string value="FEMALE"/>
+						</categories>
+					</outcomeMeasure>
+					<arm ref="9"/>
+					<measurement class="frequencyMeasurement" id="19">
+						<variable description="You know" name="Gender">
+							<categories>
+								<string value="MALE"/>
+								<string value="FEMALE"/>
+							</categories>
+						</variable>
+						<frequencies>
+							<frequency category="FEMALE" count="0"/>
+							<frequency category="MALE" count="0"/>
+						</frequencies>
+					</measurement>
+				</measurement>
+				<measurement id="20">
+					<outcomeMeasure class="categoricalCharacteristic" description="You know" name="Gender">
+						<categories>
+							<string value="MALE"/>
+							<string value="FEMALE"/>
+						</categories>
+					</outcomeMeasure>
+					<arm ref="8"/>
+					<measurement class="frequencyMeasurement" id="21">
+						<variable description="You know" name="Gender">
+							<categories>
+								<string value="MALE"/>
+								<string value="FEMALE"/>
+							</categories>
+						</variable>
+						<frequencies>
+							<frequency category="FEMALE" count="0"/>
+							<frequency category="MALE" count="0"/>
+						</frequencies>
+					</measurement>
+				</measurement>
+				<measurement id="22">
+					<outcomeMeasure class="endpoint" ref="3"/>
+					<arm ref="9"/>
+					<measurement class="continuousMeasurement" mean="0.0" sampleSize="100" stdDev="0.0"/>
+				</measurement>
+				<measurement id="23">
+					<outcomeMeasure class="endpoint" ref="1"/>
+					<arm ref="9"/>
+					<measurement class="rateMeasurement" rate="0" sampleSize="100"/>
+				</measurement>
+			</measurements>
+			<notes>
+				<note id="24">
+					<key class="basicCharacteristic" value="SOURCE"/>
+					<noteText value="http://clinicaltrials.gov/show/NCT00296517"/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="25">
+					<key class="basicCharacteristic" value="CREATION_DATE"/>
+					<noteText value="Information obtained from ClinicalTrials.gov on January 17, 2011"/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="26">
+					<key class="basicCharacteristic" value="BLINDING"/>
+					<noteText value="Allocation:  Randomized, Endpoint Classification:  Safety/Efficacy Study, Intervention Model:  Parallel Assignment, Masking:  Double Blind (Subject, Caregiver, Investigator, Outcomes Assessor), Primary Purpose:  Treatment"/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="27">
+					<key class="basicCharacteristic" value="INCLUSION"/>
+					<noteText value="Inclusion criteria:&#10;&#10;          -  [At the start of the pretreatment phase]&#10;&#10;          -  Target disease: Patients diagnosed as having the following primary disease on the&#10;             basis of DSM-IV-TR criteria.&#10;&#10;          -  Major Depressive Disorder, Single Episode (296.2x) (excluding with psychotic&#10;             features)&#10;&#10;          -  Major Depressive Disorder, Recurrent (296.3x) (excluding with psychotic features)&#10;&#10;          -  HAM-D (17 items) total score is &gt;=16.&#10;&#10;          -  Patients who have been treated with marketed paroxetine (Paxil®) at 20mg/day to&#10;             40mg/day for 4 weeks and more at the start of the pretreatment phase.&#10;&#10;          -  Age: &gt;=18 years old (at the time of informed consent) , &lt;65 years old (at the start&#10;             of treatment phase )&#10;&#10;          -  Gender: Male or female.&#10;&#10;          -  Inpatients or outpatients: Either&#10;&#10;          -  Informed consent: The subject himself/herself must give written informed consent.&#10;             However, if the subject is under 20 at the time of giving consent, both the subject&#10;             himself/herself and his/her legally acceptable representative must give written&#10;             informed consent.&#10;&#10;        [At the end of the pretreatment phase]&#10;&#10;          1. HAM-D (17 items) total score is ≥14.&#10;&#10;          2. Percentage of change from the start of the pretreatment phase in the HAM-D (17 items)&#10;             total score is &lt;50%&#10;&#10;        [At the start of the treatment phase]&#10;&#10;          1. HAM-D (17 items) total score is ≥14.&#10;&#10;          2. Percentage of change from the start of the pretreatment phase in the HAM-D (17 items)&#10;             total score is &lt;50%&#10;&#10;        Exclusion Criteria:&#10;&#10;        [At the start of the pre-treatment phase]&#10;&#10;          -  Patients with a complication of glaucoma&#10;&#10;          -  Patients concomitantly using a drug increasing the risk of bleeding and patients with&#10;             bleeding tendency or predisposition to bleeding&#10;&#10;          -  Patients with predisposition to seizure (who currently have or have a past history of&#10;             seizure, febrile convulsive seizure in infancy, cerebral tumour, cerebrovascular&#10;             disorder or head injury, who have a family history of idiopathic seizure, patients&#10;             with diabetes who have been treated with oral hypoglycaemics or insulin, or who use&#10;             drugs lowering the threshold of seizure).&#10;&#10;          -  Patients who currently have or have a past history of the following disorders:&#10;&#10;          -  Anorexia nervosa (DSM-IV-TR 307.1)&#10;&#10;          -  Bulimia nervosa (DSM-IV-TR 307.51)&#10;&#10;          -  Patients with a history of manic episode&#10;&#10;          -  Patients with a past or current DSM- IV-TR diagnosis of schizophrenia or other&#10;             psychotic disorder&#10;&#10;          -  Patients with a current DSM-IV-TR Axis II diagnosis (e.g., antisocial or borderline&#10;             personality disorder)&#10;&#10;          -  Patients starting psychotherapy (except for supportive psychotherapy not aimed at&#10;             therapeutic efficacy and unlikely to affect efficacy evaluation) and formal cognitive&#10;             behaviour therapy within 5 weeks prior to the start of the pre-treatment phase&#10;&#10;          -  Patients with a diagnosis of substance abuse (alcohol or drug) by the DSM-IV-TR&#10;             criteria or with a diagnosis of substance dependence within 1 year prior to the start&#10;             of the pre-treatment phase&#10;&#10;          -  Patients who have received electroconvulsive therapy within 17 weeks prior to the&#10;             start of the pre-treatment phase&#10;&#10;          -  Patients who have taken MAO inhibitors (selegiline hydrochloride) within 2 weeks&#10;             prior to the start of the pre-treatment phase&#10;&#10;          -  Patients who have taken another investigational drug within 12 weeks prior to the&#10;             start of the pre-treatment phase&#10;&#10;          -  Female patients who are pregnant, possibly pregnant or are nursing, and those who&#10;             want to become pregnant before 30 days after the last dose of the investigational&#10;             product&#10;&#10;          -  Patients who have attempted suicide within 17 weeks prior to the start of the&#10;             pre-treatment phase, or patients for whom the score of suicide-related item No. 3 of&#10;             HAM-D is &gt;=3, or patients in whom the risk of suicide is judged to be high by the&#10;             investigator (sub-investigator)&#10;&#10;          -  Patients in whom the risk of homicide is judged to be high by the investigator&#10;             (sub-investigator)&#10;&#10;          -  Patients with a history of hypersensitivity to 323U66 and/or paroxetine&#10;&#10;          -  Patients with serious cerebral disease&#10;&#10;          -  Patients who have ECG or clinical evidence of any cardiac condition that the&#10;             investigator (sub-investigator) feels may predispose the subject to ischemia or&#10;             arrhythmia&#10;&#10;          -  Patients with serious physical symptoms (i.e. cardiac/hepatic/renal disorder,&#10;             hematopoietic disorder) The index of seriousness is Grade 3 of &quot;Criteria for&#10;             classification of seriousness of adverse drug reactions to pharmaceutical products,&#10;             etc.&quot; (PAB/PSD No.80 in 1992).&#10;&#10;          -  Patients with a history or complication of cancer or malignant tumour.&#10;&#10;          -  Patients whose major depressive disorder is due to direct physiological effects of a&#10;             general medical condition (for example, hypothyroidism, Parkinson's disease, chronic&#10;             pain)&#10;&#10;          -  Patients with systolic blood pressure of &gt;=160 mmHg or diastolic blood pressure of&#10;             &gt;=100 mmHg&#10;&#10;          -  Patients who are inappropriate for participating in the study in the judgement of the&#10;             investigator (sub-investigator)&#10;&#10;        [At the start of the treatment phase]&#10;&#10;          1. Patients whose compliance of paroxetine during the pretreatment phase is less than&#10;             70%.&#10;&#10;          2. Patients who have ECG or clinical evidence of any cardiac condition that the&#10;             investigator (sub-investigator) feels may predispose the subject to ischemia or&#10;             arrhythmia&#10;&#10;          3. Patients with systolic blood pressure of &gt;=160 mmHg or diastolic blood pressure of&#10;             &gt;=100 mmHg"/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="28">
+					<key class="basicCharacteristic" value="STUDY_START"/>
+					<noteText value="January 2006"/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="29">
+					<key class="basicCharacteristic" value="STATUS"/>
+					<noteText value="Completed"/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="30">
+					<key class="string" value="indication"/>
+					<noteText value="Major Depressive Disorder (MDD)"/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="31">
+					<key class="endpoint" ref="3"/>
+					<noteText value="Change From Baseline in the Hamilton Depression Scale (HAM-D 17 Items) Total Score at Week 8 and Total Score at Week 12"/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="32">
+					<key class="basicCharacteristic" value="EXCLUSION"/>
+					<noteText value="Inclusion criteria:&#10;&#10;          -  [At the start of the pretreatment phase]&#10;&#10;          -  Target disease: Patients diagnosed as having the following primary disease on the&#10;             basis of DSM-IV-TR criteria.&#10;&#10;          -  Major Depressive Disorder, Single Episode (296.2x) (excluding with psychotic&#10;             features)&#10;&#10;          -  Major Depressive Disorder, Recurrent (296.3x) (excluding with psychotic features)&#10;&#10;          -  HAM-D (17 items) total score is &gt;=16.&#10;&#10;          -  Patients who have been treated with marketed paroxetine (Paxil®) at 20mg/day to&#10;             40mg/day for 4 weeks and more at the start of the pretreatment phase.&#10;&#10;          -  Age: &gt;=18 years old (at the time of informed consent) , &lt;65 years old (at the start&#10;             of treatment phase )&#10;&#10;          -  Gender: Male or female.&#10;&#10;          -  Inpatients or outpatients: Either&#10;&#10;          -  Informed consent: The subject himself/herself must give written informed consent.&#10;             However, if the subject is under 20 at the time of giving consent, both the subject&#10;             himself/herself and his/her legally acceptable representative must give written&#10;             informed consent.&#10;&#10;        [At the end of the pretreatment phase]&#10;&#10;          1. HAM-D (17 items) total score is ≥14.&#10;&#10;          2. Percentage of change from the start of the pretreatment phase in the HAM-D (17 items)&#10;             total score is &lt;50%&#10;&#10;        [At the start of the treatment phase]&#10;&#10;          1. HAM-D (17 items) total score is ≥14.&#10;&#10;          2. Percentage of change from the start of the pretreatment phase in the HAM-D (17 items)&#10;             total score is &lt;50%&#10;&#10;        Exclusion Criteria:&#10;&#10;        [At the start of the pre-treatment phase]&#10;&#10;          -  Patients with a complication of glaucoma&#10;&#10;          -  Patients concomitantly using a drug increasing the risk of bleeding and patients with&#10;             bleeding tendency or predisposition to bleeding&#10;&#10;          -  Patients with predisposition to seizure (who currently have or have a past history of&#10;             seizure, febrile convulsive seizure in infancy, cerebral tumour, cerebrovascular&#10;             disorder or head injury, who have a family history of idiopathic seizure, patients&#10;             with diabetes who have been treated with oral hypoglycaemics or insulin, or who use&#10;             drugs lowering the threshold of seizure).&#10;&#10;          -  Patients who currently have or have a past history of the following disorders:&#10;&#10;          -  Anorexia nervosa (DSM-IV-TR 307.1)&#10;&#10;          -  Bulimia nervosa (DSM-IV-TR 307.51)&#10;&#10;          -  Patients with a history of manic episode&#10;&#10;          -  Patients with a past or current DSM- IV-TR diagnosis of schizophrenia or other&#10;             psychotic disorder&#10;&#10;          -  Patients with a current DSM-IV-TR Axis II diagnosis (e.g., antisocial or borderline&#10;             personality disorder)&#10;&#10;          -  Patients starting psychotherapy (except for supportive psychotherapy not aimed at&#10;             therapeutic efficacy and unlikely to affect efficacy evaluation) and formal cognitive&#10;             behaviour therapy within 5 weeks prior to the start of the pre-treatment phase&#10;&#10;          -  Patients with a diagnosis of substance abuse (alcohol or drug) by the DSM-IV-TR&#10;             criteria or with a diagnosis of substance dependence within 1 year prior to the start&#10;             of the pre-treatment phase&#10;&#10;          -  Patients who have received electroconvulsive therapy within 17 weeks prior to the&#10;             start of the pre-treatment phase&#10;&#10;          -  Patients who have taken MAO inhibitors (selegiline hydrochloride) within 2 weeks&#10;             prior to the start of the pre-treatment phase&#10;&#10;          -  Patients who have taken another investigational drug within 12 weeks prior to the&#10;             start of the pre-treatment phase&#10;&#10;          -  Female patients who are pregnant, possibly pregnant or are nursing, and those who&#10;             want to become pregnant before 30 days after the last dose of the investigational&#10;             product&#10;&#10;          -  Patients who have attempted suicide within 17 weeks prior to the start of the&#10;             pre-treatment phase, or patients for whom the score of suicide-related item No. 3 of&#10;             HAM-D is &gt;=3, or patients in whom the risk of suicide is judged to be high by the&#10;             investigator (sub-investigator)&#10;&#10;          -  Patients in whom the risk of homicide is judged to be high by the investigator&#10;             (sub-investigator)&#10;&#10;          -  Patients with a history of hypersensitivity to 323U66 and/or paroxetine&#10;&#10;          -  Patients with serious cerebral disease&#10;&#10;          -  Patients who have ECG or clinical evidence of any cardiac condition that the&#10;             investigator (sub-investigator) feels may predispose the subject to ischemia or&#10;             arrhythmia&#10;&#10;          -  Patients with serious physical symptoms (i.e. cardiac/hepatic/renal disorder,&#10;             hematopoietic disorder) The index of seriousness is Grade 3 of &quot;Criteria for&#10;             classification of seriousness of adverse drug reactions to pharmaceutical products,&#10;             etc.&quot; (PAB/PSD No.80 in 1992).&#10;&#10;          -  Patients with a history or complication of cancer or malignant tumour.&#10;&#10;          -  Patients whose major depressive disorder is due to direct physiological effects of a&#10;             general medical condition (for example, hypothyroidism, Parkinson's disease, chronic&#10;             pain)&#10;&#10;          -  Patients with systolic blood pressure of &gt;=160 mmHg or diastolic blood pressure of&#10;             &gt;=100 mmHg&#10;&#10;          -  Patients who are inappropriate for participating in the study in the judgement of the&#10;             investigator (sub-investigator)&#10;&#10;        [At the start of the treatment phase]&#10;&#10;          1. Patients whose compliance of paroxetine during the pretreatment phase is less than&#10;             70%.&#10;&#10;          2. Patients who have ECG or clinical evidence of any cardiac condition that the&#10;             investigator (sub-investigator) feels may predispose the subject to ischemia or&#10;             arrhythmia&#10;&#10;          3. Patients with systolic blood pressure of &gt;=160 mmHg or diastolic blood pressure of&#10;             &gt;=100 mmHg"/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="33">
+					<key class="arm" ref="8"/>
+					<noteText value="Arm Type: Placebo Comparator&#10;Arm Description: Subjects with Major Depressive Disorder who were randomised to placebo to match Bupropion SR during the treatment period.&#10;&#10;Intervention Name: Placebo&#10;Intervention Type: Drug&#10;Intervention Description: Subjects with Major Depressive Disorder who were randomised to placebo to match Bupropion SR during the treatment period."/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="34">
+					<key class="endpoint" ref="1"/>
+					<noteText value="Percentage of Responders Based on the Clinical Global Impression - Global Improvement (CGI-I) Scale at Weeks 8 and 12"/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="35">
+					<key class="endpoint" ref="2"/>
+					<noteText value="Change From Baseline in the Hamilton Depression Scale (HAM-D 17 Items) Total Score"/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="36">
+					<key class="basicCharacteristic" value="ALLOCATION"/>
+					<noteText value="Allocation:  Randomized, Endpoint Classification:  Safety/Efficacy Study, Intervention Model:  Parallel Assignment, Masking:  Double Blind (Subject, Caregiver, Investigator, Outcomes Assessor), Primary Purpose:  Treatment"/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="37">
+					<key class="basicCharacteristic" value="CENTERS"/>
+					<noteText value=""/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="38">
+					<key class="string" value="studyId"/>
+					<noteText value="NCT00296517"/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="39">
+					<key class="arm" ref="9"/>
+					<noteText value="Arm Type: Experimental&#10;Arm Description: Subjects with Major Depressive Disorder who were randomized to take 100mg of Bupropion SR in the morning and placebo in the evening for one week. Week 2 subjects were given 100mg dose of Bupropion morning and evening. Weeks 3 thru 12 received 150mg dose morning and evening. Week 1=dose level 1, 100 mg. Week 2=dose level 2, 200 mg. Weeks 3 - 12=dose level 3, 300 mg.&#10;&#10;Intervention Name: 323U66 (Bupropion Hydrochloride Sustained Release)&#10;Intervention Type: Drug&#10;Intervention Description: Subjects with Major Depressive Disorder who were randomized to take 100mg of Bupropion SR in the morning and placebo in the evening for one week. Week 2 subjects were given 100mg dose of Bupropion morning and evening. Weeks 3 thru 12 received 150mg dose morning and evening. Week 1=dose level 1, 100 mg. Week 2=dose level 2, 200 mg. Weeks 3 - 12=dose level 3, 300 mg."/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="40">
+					<key class="basicCharacteristic" value="TITLE"/>
+					<noteText value="Brief title: Study In Patients With Depression Not Responding to Selective Serotonin Re-uptake Inhibitors&#10;&#10;Official title: Clinical Evaluation of 323U66 SR in Patients With Depression - Placebo-controlled, Double-blind, Comparative Study in Patients With Depression Who Did Not Respond Sufficiently to Selective Serotonin Re-uptake Inhibitors"/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="41">
+					<key class="basicCharacteristic" value="OBJECTIVE"/>
+					<noteText value="This study is designed to evaluate the efficacy and safety in depressive patients who did&#10;      not respond sufficiently to selective serotonin re-uptake inhibitors (SSRI)."/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+				<note id="42">
+					<key class="basicCharacteristic" value="STUDY_END"/>
+					<noteSrc value="CLINICALTRIALS"/>
+				</note>
+			</notes>
+		</study>
+	</studies>
+	<metaAnalyses/>
+	<benefitRiskAnalyses/>
+</addis-data>

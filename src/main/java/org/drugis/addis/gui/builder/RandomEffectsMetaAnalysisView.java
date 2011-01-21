@@ -87,14 +87,13 @@ implements ViewBuilder {
 		tabbedPane.addTab("Overview", builder.getPanel());
 		
 		layout = new FormLayout(
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu, p");
 		builder = new PanelBuilder(layout);
 
 		builder.add(getPlotsPanel(false), cc.xy(1, 3));
 		tabbedPane.addTab("Results", builder.getPanel());
-		
-		//return new JScrollPane(tabbedPane);
+
 		return tabbedPane;
 	}
 
@@ -114,7 +113,7 @@ implements ViewBuilder {
 	private JComponent buildContinuousPlotsPart() {
 		
 		FormLayout layout = new FormLayout(
-				"pref:grow:fill", "p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"fill:0:grow", "p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
@@ -159,7 +158,7 @@ implements ViewBuilder {
 	@SuppressWarnings("serial")
 	private JComponent buildRelativeEffectPart(Class<? extends RelativeEffect<?>> type) {
 		FormLayout layout1 = new FormLayout(
-				"pref:grow:fill",
+				"left:0:grow",
 				"p, 3dlu, p, 3dlu, p");
 		FormLayout layout2 = new FormLayout(
 				"pref:grow:fill",
@@ -175,7 +174,7 @@ implements ViewBuilder {
 		builder.setBorder(BorderFactory.createLineBorder(Color.black));
 		builder.setBackground(Color.white);
 		
-		encapsulating.add(builder.getPanel(),cc.xy(1, 1));
+		encapsulating.add(new JScrollPane(builder.getPanel()),cc.xy(1, 1));
 		
 		if (!d_isWizard) {
 			JButton saveBtn = new JButton("Save Image");

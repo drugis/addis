@@ -47,7 +47,7 @@ import fi.smaa.jsmaa.model.CardinalCriterion;
 import fi.smaa.jsmaa.model.CardinalMeasurement;
 import fi.smaa.jsmaa.model.GaussianMeasurement;
 import fi.smaa.jsmaa.model.LogNormalMeasurement;
-import fi.smaa.jsmaa.model.LogitNormalMeasurement;
+import fi.smaa.jsmaa.model.RelativeLogitNormalMeasurement;
 import fi.smaa.jsmaa.model.SMAAModel;
 
 public class SMAAEntityFactoryTest {
@@ -59,8 +59,8 @@ public class SMAAEntityFactoryTest {
 
 	@Before
 	public void setup() {
-		d_brAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 		d_smaaFactory = new SMAAEntityFactory<Drug>();
+		d_brAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 		
 		d_smaaFactoryArm = new SMAAEntityFactory<Arm>();
 		List<OutcomeMeasure> criteria = new ArrayList<OutcomeMeasure>();
@@ -73,7 +73,6 @@ public class SMAAEntityFactoryTest {
 	
 	@Test
 	public void testCreateCardinalMeasurementRate() {
-		
 		GaussianBase relativeEffect = d_brAnalysis.getRelativeEffectDistribution(ExampleData.buildDrugFluoxetine(), ExampleData.buildEndpointHamd());
 		CardinalMeasurement actual = SMAAEntityFactory.createCardinalMeasurement(relativeEffect);
 		assertTrue(!((LogNormalMeasurement) actual).getMean().isNaN());
@@ -91,9 +90,13 @@ public class SMAAEntityFactoryTest {
 				if (d.equals(d_brAnalysis.getBaseline()))
 					continue;
 				fi.smaa.jsmaa.model.Measurement actualMeasurement = smaaModel.getMeasurement(d_smaaFactory.getCriterion(om), d_smaaFactory.getAlternative(d));
-				GaussianBase expDistribution = (GaussianBase) d_brAnalysis.getMeasurement(d, om);
-				assertEquals(expDistribution.getMu(), ((LogitNormalMeasurement) actualMeasurement).getMean(), 0.0001);
-				assertEquals(expDistribution.getSigma(), ((LogitNormalMeasurement) actualMeasurement).getStDev(), 0.0001);
+				GaussianBase relDistr = (GaussianBase) d_brAnalysis.getRelativeEffectDistribution(d, om);
+				GaussianBase basDistr = (GaussianBase) d_brAnalysis.getBaselineDistribution(om);
+				assertTrue(actualMeasurement instanceof RelativeLogitNormalMeasurement);
+				assertEquals(relDistr.getMu(), ((RelativeLogitNormalMeasurement) actualMeasurement).getRelative().getMean(), 0.0001);
+				assertEquals(relDistr.getSigma(), ((RelativeLogitNormalMeasurement) actualMeasurement).getRelative().getStDev(), 0.0001);
+				assertEquals(basDistr.getMu(), ((RelativeLogitNormalMeasurement) actualMeasurement).getBaseline().getMean(), 0.0001);
+				assertEquals(basDistr.getSigma(), ((RelativeLogitNormalMeasurement) actualMeasurement).getBaseline().getStDev(), 0.0001);
 			}
 		}
 	}

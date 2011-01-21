@@ -70,10 +70,6 @@ public class ConvergencePlotsDialog extends JDialog {
 		d_task = createTask(mtc.getResults(), p);
 		
 		super.add(new JScrollPane(createPanel()));
-		super.setLocationRelativeTo(main);
-		super.setModal(true);
-		super.setLocationByPlatform(true);
-        super.pack();
 
 		mtc.getResults().addResultsListener(new MCMCResultsListener() {
 			public void resultsEvent(MCMCResultsEvent event) {

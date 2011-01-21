@@ -149,7 +149,7 @@ implements ViewBuilder {
 	
 	public JComponent buildOverviewTab() {
 		final FormLayout layout = new FormLayout(
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p" +
 				", 3dlu, p"); // Memory usage part
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
@@ -250,7 +250,7 @@ implements ViewBuilder {
 	}
 	
 	private JComponent buildInconsistencyTab() {
-		FormLayout layout = new FormLayout("3dlu, pref:grow:fill, 3dlu",
+		FormLayout layout = new FormLayout("3dlu, fill:0:grow, 3dlu",
 		"3dlu, p, 3dlu, p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		
@@ -333,7 +333,7 @@ implements ViewBuilder {
 	}
 	
 	private JComponent buildConsistencyTab() {
-		FormLayout layout = new FormLayout(	"3dlu, pref:grow:fill, 3dlu",
+		FormLayout layout = new FormLayout(	"3dlu, fill:0:grow, 3dlu",
 		"3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu" );
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		CellConstraints cc =  new CellConstraints();
@@ -391,7 +391,7 @@ implements ViewBuilder {
 	
 	private JComponent buildNodeSplitTab() {
 		final FormLayout layout = new FormLayout(
-				"pref, 3dlu, pref:grow:fill",
+				"pref, 3dlu, fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
@@ -533,6 +533,9 @@ implements ViewBuilder {
 			JDialog dialog = new ConvergencePlotsDialog(d_mainWindow, mtc, p);
 			dialog.setPreferredSize(new Dimension(d_mainWindow.getWidth() / 5 * 4, d_mainWindow.getHeight() / 5 * 4));
 			dialog.setMinimumSize(new Dimension(d_mainWindow.getMinimumSize().width - 100, d_mainWindow.getMinimumSize().height - 100));
+			dialog.setModal(true);
+			dialog.setLocationRelativeTo(d_mainWindow);
+			dialog.setLocationByPlatform(true);
 			dialog.pack();
 			dialog.setVisible(true);
 		} else {
@@ -548,7 +551,7 @@ implements ViewBuilder {
 		chart.addSubtitle(new org.jfree.chart.title.ShortTextTitle(d_pm.getRankProbabilityRankChartNote()));
 
 		FormLayout layout = new FormLayout(
-				"pref:grow:fill",
+				"fill:0:grow",
 				"p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();

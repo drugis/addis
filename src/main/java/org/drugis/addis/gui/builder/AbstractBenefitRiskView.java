@@ -76,7 +76,7 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 
 	protected JPanel buildOverviewPart() {
 		CellConstraints cc = new CellConstraints();
-		FormLayout layout = new FormLayout("right:pref, 3dlu, pref:grow:fill",
+		FormLayout layout = new FormLayout("right:pref, 3dlu, fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		
