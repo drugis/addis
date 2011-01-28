@@ -50,11 +50,11 @@
 			<xs:selector xpath="benefitRiskAnalyses/*/indication"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
-		<xs:key name="nameKey">
+		<xs:key name="studyNameKey">
 			<xs:selector xpath="studies/study"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
-		<xs:keyref name="metaAnalysesStudyIdKeyRef" refer="nameKey">
+		<xs:keyref name="metaAnalysesStudyIdKeyRef" refer="studyNameKey">
 			<xs:selector xpath="metaAnalyses/*/alternative/arms/arm"/>
 			<xs:field xpath="@study"/>
 		</xs:keyref>
@@ -74,7 +74,11 @@
 			<xs:selector xpath="metaAnalyses/*/adverseEvent"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
-		<xs:keyref name="metaAnalysisStudyArmKeyRef" refer="nameKey">
+		<xs:keyref name="studyBenefitRiskAnalysisStudyNameKeyRef" refer="studyNameKey">
+			<xs:selector xpath="benefitRiskAnalyses/*/study"/>
+			<xs:field xpath="@name"/>
+		</xs:keyref>
+		<xs:keyref name="metaAnalysisStudyArmKeyRef" refer="studyNameKey">
 			<xs:selector xpath="metaAnalyses/*/arms/arm"/>
 			<xs:field xpath="@study"/>
 		</xs:keyref>

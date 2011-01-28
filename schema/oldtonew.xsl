@@ -162,7 +162,9 @@
 						<xsl:for-each select="endpoints/endpoint | adverseEvents/adverseEvent | populationCharacteristics/*">
 							<xsl:element name="studyOutcomeMeasure">
 								<xsl:variable name="id" select="@ref"/>
-								<xsl:variable name="tmpname" select="//*[@id=$id]/@name|@name"/>
+								<xsl:variable name="tmpname" select="/addis-data/endpoints/*[@id=$id]/@name | 
+														/addis-data/adverseEvents/*[@id=$id]/@name |
+														@name"/>
 								<xsl:attribute name="id">
 									<xsl:value-of select="concat(name(), '-',$tmpname)"/>
 								</xsl:attribute>
@@ -223,7 +225,9 @@
 								<xsl:element name="studyOutcomeMeasure">
 									<xsl:variable name="id" select="outcomeMeasure/@ref"/>
 									<xsl:variable name="pcname" select="outcomeMeasure/@name"/>
-									<xsl:variable name="tmpname" select="(//categoricalCharacteristic[@name=$pcname] | //*[@id=$id])/@name"/>
+									<xsl:variable name="tmpname" select="(/addis-data/populationCharacteristics/categoricalCharacteristic[@name=$pcname] | 
+															/addis-data/adverseEvents/*[@id=$id]/@name |
+															/addis-data/endpoints/*[@id=$id])/@name"/>
 									<xsl:attribute name="id">
 										<xsl:value-of select="concat(outcomeMeasure/@class, '-', $tmpname)"/>
 									</xsl:attribute>
@@ -281,6 +285,111 @@
 			</xsl:for-each><!-- study -->
 		</studies>
 	</xsl:template>
+	<xsl:template match="/addis-data/metaAnalyses">
+		<metaAnalyses>
+			<xsl:for-each select="*">
+				<xsl:variable name="metaAnalysisType">
+					<xsl:choose>
+						<xsl:when test="name() = &quot;randomEffectsMetaAnalysis&quot;">pairwiseMetaAnalysis</xsl:when>
+						<xsl:when test="name() = &quot;networkMetaAnalysis&quot;">networkMetaAnalysis</xsl:when>
+					</xsl:choose>
+				</xsl:variable>
+				<xsl:element name="{$metaAnalysisType}">
+					<xsl:attribute name="name">
+						<xsl:value-of select="@name"/>
+					</xsl:attribute>
+					<xsl:element name="indication">
+						<xsl:attribute name="name">
+							<xsl:variable name="indicationId" select="indication/@ref"/>
+							<xsl:value-of select="/addis-data/indications/*[@id=$indicationId]/@name"/>
+						</xsl:attribute>
+					</xsl:element>
+					<xsl:variable name="outcometype" select="outcomeMeasure/@class"/>
+					<xsl:element name="{$outcometype}">
+						<xsl:variable name="id" select="outcomeMeasure/@ref"/>
+						<xsl:attribute name="name">
+							<xsl:value-of select="(/addis-data/adverseEvents/*[@id=$id] |
+										/addis-data/endpoints/*[@id=$id])/@name"/>
+						</xsl:attribute>
+					</xsl:element>
+					<xsl:for-each select="armEntries/armEntry[not(drug/@ref = preceding-sibling::*/drug/@ref)]">
+						<alternative>
+							<xsl:variable name="id" select="drug/@ref"/>
+							<xsl:element name="drug">
+								<xsl:attribute name="name">
+									<xsl:value-of select="/addis-data/drugs/drug[@id=$id]/@name"/>
+								</xsl:attribute>
+							</xsl:element>
+							<arms>
+								<xsl:for-each select="../*[drug/@ref = $id]">
+									<xsl:element name="arm">
+										<xsl:attribute name="{name()}">
+											<xsl:value-of select="arm/@ref"/>
+										</xsl:attribute>
+										<xsl:attribute name="study">
+											<xsl:variable name="studyId" select="study/@ref"/>
+											<xsl:value-of select="/addis-data/studies/study[@id=$studyId]/@studyId"/>
+										</xsl:attribute>
+									</xsl:element>
+								</xsl:for-each>
+							</arms>
+						</alternative>
+					</xsl:for-each>
+				</xsl:element>
+			</xsl:for-each>
+		</metaAnalyses>
+	</xsl:template>
+	
+	<xsl:template match="benefitRiskAnalyses">
+		<benefitRiskAnalyses>
+			<xsl:for-each select="studyBenefitRiskAnalysis">
+				<xsl:element name="studyBenefitRiskAnalysis">
+					<xsl:attribute name="name">
+						<xsl:value-of select="@name"/>
+					</xsl:attribute>
+					<xsl:attribute name="analysisType">
+						<xsl:value-of select="@analysisType"/>
+					</xsl:attribute>
+					<xsl:element name="indication">
+						<xsl:attribute name="name">
+							<xsl:variable name="indicationId" select="indication/@ref"/>
+							<xsl:value-of select="/addis-data/indications/*[@id=$indicationId]/@name"/>
+						</xsl:attribute>
+					</xsl:element>
+					<xsl:element name="study">
+						<xsl:variable name="studyId" select="study/@ref"/>
+						<xsl:attribute name="name">
+							<xsl:value-of select="/addis-data/studies/study[@id=$studyId]/@studyId"/>
+						</xsl:attribute>
+					</xsl:element>
+					<arms>
+						<xsl:for-each select="arms/arm">
+							<xsl:element name="arm">
+								<xsl:attribute name="id">
+									<xsl:value-of select="@ref"/>
+								</xsl:attribute>
+							</xsl:element>
+						</xsl:for-each>
+					</arms>
+					<outcomeMeasures>
+						<xsl:for-each select="outcomeMeasures/*">
+							<xsl:element name="{name()}">
+								<xsl:attribute name="name">
+									<xsl:variable name="id" select="@ref"/>
+									<xsl:value-of select="(/addis-data/adverseEvents/*[@id=$id] |
+												/addis-data/endpoints/*[@id=$id])/@name"/>
+								</xsl:attribute>
+							</xsl:element>
+						</xsl:for-each>
+					</outcomeMeasures>
+				</xsl:element>
+			</xsl:for-each>
+			
+		</benefitRiskAnalyses>
+	</xsl:template>
+	
+	
+	
 	<xsl:template name="outcomeMeasure">
 		<xsl:attribute name="name">
 			<xsl:value-of select="@name"/>
