@@ -473,31 +473,31 @@
 	<benefitRiskAnalyses>
 		<studyBenefitRiskAnalysis name="Benkert HAM-D/weight gain" analysisType="LyndOBrien">
 			<indication name="Eating Disorder"/>
-			<study name="211"/>
+			<study name="Tylee et al, 1997"/>
 			<arms>
-				<arm id="214"/>
-				<arm id="213"/>
+				<arm id="1227"/>
+				<arm id="1409"/>
 			</arms>
 			<outcomeMeasures>
-				<endpoint name="3"/>
-				<adverseEvent name="61"/>
+				<endpoint name="HAM-D Responders"/>
+				<adverseEvent name="Increased Duration Of Sleep"/>
 			</outcomeMeasures>
 		</studyBenefitRiskAnalysis>
 		<studyBenefitRiskAnalysis name="Fava et al, 2002 BR" analysisType="SMAA">
 			<indication name="Eating Disorder"/>
-			<study name="685"/>
+			<study name="Rudolph and Feiger, 1999"/>
 			<arms>
-				<arm id="687"/>
-				<arm id="689"/>
-				<arm id="688"/>
+				<arm id="1410"/>
+				<arm id="1226"/>
+				<arm id="1227"/>
 			</arms>
 			<outcomeMeasures>
-				<adverseEvent name="42"/>
-				<adverseEvent name="20"/>
-				<endpoint name="3"/>
-				<adverseEvent name="34"/>
-				<adverseEvent name="40"/>
-				<adverseEvent name="22"/>
+				<adverseEvent name="Diarrhea"/>
+				<adverseEvent name="Increased Duration Of Sleep"/>
+				<endpoint name="HAM-D Responders"/>
+				<adverseEvent name="Sweating"/>
+				<adverseEvent name="Pharyngitis"/>
+				<adverseEvent name="Blurred Vision"/>
 			</outcomeMeasures>
 		</studyBenefitRiskAnalysis>
 		<metaBenefitRiskAnalysis name="Fluox-Venla BR" analysisType="SMAA">

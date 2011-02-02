@@ -58,10 +58,22 @@
 			<xs:selector xpath="metaAnalyses/*/alternative/arms/arm"/>
 			<xs:field xpath="@study"/>
 		</xs:keyref>
+		<xs:keyref name="studyBenefitRiskAnalysisStudyNameKeyRef" refer="studyNameKey">
+			<xs:selector xpath="benefitRiskAnalyses/*/study"/>
+			<xs:field xpath="@name"/>
+		</xs:keyref>
+		<xs:keyref name="metaAnalysisStudyArmKeyRef" refer="studyNameKey">
+			<xs:selector xpath="metaAnalyses/*/arms/arm"/>
+			<xs:field xpath="@study"/>
+		</xs:keyref>
 		<xs:key name="adverseEventNameKey">
 			<xs:selector xpath="adverseEvents/adverseEvent"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
+		<xs:keyref name="benefitRiskAnalysisAdverseEventKeyRef" refer="adverseEventNameKey">
+			<xs:selector xpath="benefitRiskAnalyses/studyBenefitRiskAnalysis/outcomeMeasures/adverseEvent"/>
+			<xs:field xpath="@name"/>
+		</xs:keyref>
 		<xs:keyref name="studyAdverseEventKeyRef" refer="adverseEventNameKey">
 			<xs:selector xpath="studies/study/studyOutcomeMeasures/studyOutcomeMeasure/adverseEvent"/>
 			<xs:field xpath="@name"/>
@@ -74,22 +86,14 @@
 			<xs:selector xpath="metaAnalyses/*/adverseEvent"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
-		<xs:keyref name="studyBenefitRiskAnalysisStudyNameKeyRef" refer="studyNameKey">
-			<xs:selector xpath="benefitRiskAnalyses/*/study"/>
-			<xs:field xpath="@name"/>
-		</xs:keyref>
-		<xs:keyref name="metaAnalysisStudyArmKeyRef" refer="studyNameKey">
-			<xs:selector xpath="metaAnalyses/*/arms/arm"/>
-			<xs:field xpath="@study"/>
-		</xs:keyref>
-		<xs:keyref name="metaAnalysisArmIdKeyRef" refer="armIdKey">
-			<xs:selector xpath="metaAnalyses/*/alternative/arms/arm"/>
-			<xs:field xpath="@id"/>
-		</xs:keyref>
 		<xs:key name="endpointNameKey">
 			<xs:selector xpath="endpoints/endpoint"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
+		<xs:keyref name="studyBenefitRiskAnalysisEndpointKeyRef" refer="endpointNameKey">
+			<xs:selector xpath="benefitRiskAnalyses/studyBenefitRiskAnalysis/outcomeMeasures/endpoint"/>
+			<xs:field xpath="@name"/>
+		</xs:keyref>
 		<xs:keyref name="endpointInStudyKeyRef" refer="endpointNameKey">
 			<xs:selector xpath="studies/study/studyOutcomeMeasures/studyOutcomeMeasure/endpoint"/>
 			<xs:field xpath="@name"/>
@@ -108,6 +112,14 @@
 		</xs:key>
 		<xs:keyref name="studyMeasurementArmRef" refer="armIdKey">
 			<xs:selector xpath="studies/study/measurements/measurement/arm"/>
+			<xs:field xpath="@id"/>
+		</xs:keyref>
+		<xs:keyref name="studyBenefitRiskAnalysisArmRef" refer="armIdKey">
+			<xs:selector xpath="benefitRiskAnalyses/studyBenefitRiskAnalysis/arms/arm"/>
+			<xs:field xpath="@id"/>
+		</xs:keyref>
+		<xs:keyref name="metaAnalysisArmIdKeyRef" refer="armIdKey">
+			<xs:selector xpath="metaAnalyses/*/alternative/arms/arm"/>
 			<xs:field xpath="@id"/>
 		</xs:keyref>
 		<xs:key name="metaAnalysisNameKey">
@@ -149,7 +161,16 @@
 	</xs:complexType>
 	<xs:complexType name="Studies">
 		<xs:sequence maxOccurs="unbounded">
-			<xs:element name="study" type="Study"/>
+			<xs:element name="study" type="Study">
+				<xs:key name="studyOutcomeMeasureIdKey">
+					<xs:selector xpath="studyOutcomeMeasures/studyOutcomeMeasure"/>
+					<xs:field xpath="@id"/>
+				</xs:key>
+				<xs:keyref name="studyMeasurementOutcomeMeasureIdKeyRef" refer="studyOutcomeMeasureIdKey">
+					<xs:selector xpath="measurements/measurement/studyOutcomeMeasure"/>
+					<xs:field xpath="@id"/>
+				</xs:keyref>
+			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="MetaAnalyses">
@@ -228,9 +249,9 @@
 	</xs:complexType>
 	<xs:complexType name="MetaBenefitRiskAnalysis">
 		<xs:sequence>
+			<xs:element name="indication" type="NameReference"/>
 			<xs:element name="baseline" type="NameReference"/>
 			<xs:element name="drugs" type="DrugReferences"/>
-			<xs:element name="indication" type="NameReference"/>
 			<xs:element name="metaAnalyses" type="MetaAnalysisReferences"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string"/>
@@ -241,7 +262,12 @@
 			<xs:element name="indication" type="NameReference"/>
 			<xs:element name="study" type="NameReference"/>
 			<xs:element name="arms" type="ArmReferences"/>
-			<xs:element name="outcomeMeasures" type="OutcomeMeasuresReferences"/>
+			<xs:element name="outcomeMeasures" type="OutcomeMeasuresReferences">
+				<xs:unique name="noDuplicateOutcomeMeasures">
+					<xs:selector xpath="*"/>
+					<xs:field xpath="@name"/>
+				</xs:unique>
+			</xs:element>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="analysisType" type="BenefitRiskAnalysisType"/>
@@ -261,26 +287,26 @@
 				<xs:element name="endpoint" type="NameReference"/>
 				<xs:element name="populationCharacteristic" type="NameReference"/>
 			</xs:choice>
-			<xs:element name="notes" type="Notes"/>
+			<xs:element minOccurs="0" name="notes" type="Notes"/>
 		</xs:sequence>
-		<xs:attribute name="id" type="xs:integer" use="required"/>
+		<xs:attribute name="id" type="xs:string" use="required"/>
 	</xs:complexType>
 	<xs:complexType name="Characteristics">
-		<xs:sequence>
+		<xs:all>
 			<xs:element name="title" type="StringWithNotes"/>
 			<xs:element minOccurs="0" name="allocation" type="Allocation"/>
 			<xs:element minOccurs="0" name="blinding" type="Blinding"/>
-			<xs:element minOccurs="0" name="centers" type="xs:integer"/>
+			<xs:element minOccurs="0" name="centers" type="IntegerWithNotes"/>
 			<xs:element minOccurs="0" name="objective" type="StringWithNotes"/>
-			<xs:element minOccurs="0" name="studyStart" type="DateWithNotes"/>
-			<xs:element minOccurs="0" name="studyEnd" type="DateWithNotes"/>
+			<xs:element minOccurs="0" name="study_start" type="StringWithNotes"/> <!-- TODO: fix date conversion in xslt so this can be date with notes -->
+			<xs:element minOccurs="0" name="study_end" type="StringWithNotes"/>
 			<xs:element minOccurs="0" name="status" type="Status"/> <!-- check this, because there should always be a inclusion, exclusion and source -->
 			<xs:element minOccurs="0" name="inclusion" type="StringWithNotes"/>
 			<xs:element minOccurs="0" name="exclusion" type="StringWithNotes"/>
 			<xs:element name="references" type="References"/>
 			<xs:element minOccurs="0" name="source" type="Source"/>
-			<xs:element minOccurs="0" name="creationDate" type="xs:date"/>
-		</xs:sequence>
+			<xs:element minOccurs="0" name="creation_date" type="StringWithNotes"/> <!-- TODO: fix date conversion in xslt so this can be date with notes -->
+		</xs:all>
 	</xs:complexType>
 	<xs:complexType name="References">
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
@@ -325,13 +351,13 @@
 				<xs:element name="fixedDose" type="FixedDose"/>
 			</xs:choice>
 			<xs:element name="drug" type="NameReference"/>
-			<xs:element name="notes" type="Notes"/>
+			<xs:element minOccurs="0" name="notes" type="Notes"/>
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:integer"/>
 		<xs:attribute name="size" type="xs:integer"/>
 	</xs:complexType>
 	<xs:complexType name="Notes">
-		<xs:sequence maxOccurs="unbounded">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="note" type="Note"/>
 		</xs:sequence>
 	</xs:complexType>
@@ -365,7 +391,7 @@
 	</xs:complexType>
 	<xs:complexType name="Measurement">
 		<xs:sequence>
-			<xs:element name="studyOutcomeMeasure" type="IdReference"/>
+			<xs:element name="studyOutcomeMeasure" type="StringIdReference"/>
 			<xs:element name="arm" minOccurs="0" type="ArmReference"/>
 			<xs:choice>
 				<xs:element name="rateMeasurement" type="RateMeasurement"/>
@@ -492,6 +518,9 @@
 	<xs:complexType name="IdReference">
 		<xs:attribute name="id" type="xs:integer"/>
 	</xs:complexType>
+	<xs:complexType name="StringIdReference">
+		<xs:attribute name="id" type="xs:string"/>
+	</xs:complexType>
 	<xs:complexType name="ArmReference">
 		<xs:attribute name="id" type="xs:integer"/>
 		<xs:attribute name="study" type="xs:string"/>
@@ -519,10 +548,13 @@
 				<xs:element name="populationCharacteristic" type="NameReference"/>
 			</xs:choice>
 		</xs:sequence>
-	</xs:complexType><!-- Types with notes (for Study) -->
+	</xs:complexType>
+	
+	<!-- Types with notes (for Study) -->
+	
 	<xs:complexType name="TypeWithNotes">
 		<xs:sequence>
-			<xs:element name="notes" type="Notes"/>
+			<xs:element minOccurs="0" name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="StringWithNotes">
@@ -534,6 +566,12 @@
 	<xs:complexType name="DateWithNotes">
 		<xs:sequence>
 			<xs:element name="value" type="xs:date"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IntegerWithNotes">
+		<xs:sequence>
+			<xs:element name="value" type="xs:integer"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>
