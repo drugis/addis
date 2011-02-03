@@ -243,9 +243,9 @@
 						</goals>
 						<configuration>
 							<extension>true</extension>
-							<schemaDirectory>${basedir}/src/main/xsd</schemaDirectory>
+							<schemaDirectory>${basedir}/src/main/resources/org/drugis/addis/entities</schemaDirectory>
 							<schemaIncludes>
-								<include>addis.xsd</include>
+								<include>addis-1.xsd</include>
 							</schemaIncludes>
 							<generateDirectory>${basedir}/src/main/generated-entities</generateDirectory>
 							<generatePackage>org.drugis.addis.entities.data</generatePackage>
