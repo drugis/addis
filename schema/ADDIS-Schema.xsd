@@ -537,7 +537,7 @@
 	</xs:complexType>
 	<xs:complexType name="ArmReferences">
 		<xs:sequence maxOccurs="unbounded">
-			<xs:element name="arm" type="IdReference"/>
+			<xs:element name="arm" type="ArmReference"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="OutcomeMeasuresReferences">
