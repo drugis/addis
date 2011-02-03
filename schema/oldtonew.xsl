@@ -405,8 +405,12 @@
 					<arms>
 						<xsl:for-each select="arms/arm">
 							<xsl:element name="arm">
+								<xsl:variable name="armId" select="@ref"/>
 								<xsl:attribute name="id">
-									<xsl:value-of select="@ref"/>
+									<xsl:value-of select="$armId"/>
+								</xsl:attribute>
+								<xsl:attribute name="study">
+									<xsl:value-of select="/addis-data/studies/study[arms/arm/@id=$armId]/@studyId"/>
 								</xsl:attribute>
 							</xsl:element>
 						</xsl:for-each>
