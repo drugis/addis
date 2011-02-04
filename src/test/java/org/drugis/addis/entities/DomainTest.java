@@ -22,6 +22,7 @@
 
 package org.drugis.addis.entities;
 
+import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
@@ -39,7 +40,6 @@ import java.util.List;
 
 import javolution.xml.stream.XMLStreamException;
 
-import static org.drugis.addis.entities.AssertEntityEquals.*;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;

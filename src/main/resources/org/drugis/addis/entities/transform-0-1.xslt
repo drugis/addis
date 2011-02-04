@@ -5,7 +5,7 @@
 	<xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 	<xsl:output method="xml" indent="yes"/>
 	<xsl:template match="/">
-		<addis-data xsi:noNamespaceSchemaLocation="./ADDIS-Schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<addis-data xsi:noNamespaceSchemaLocation="http://drugis.org/files/addis-1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<xsl:apply-templates/>
 		</addis-data>
 	</xsl:template>

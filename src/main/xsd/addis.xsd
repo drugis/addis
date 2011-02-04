@@ -292,7 +292,7 @@
 		<xs:attribute name="id" type="xs:string" use="required"/>
 	</xs:complexType>
 	<xs:complexType name="Characteristics">
-		<xs:sequence>
+		<xs:all>
 			<xs:element name="title" type="StringWithNotes"/>
 			<xs:element minOccurs="0" name="allocation" type="Allocation"/>
 			<xs:element minOccurs="0" name="blinding" type="Blinding"/>
@@ -306,7 +306,7 @@
 			<xs:element name="references" type="References"/>
 			<xs:element minOccurs="0" name="source" type="Source"/>
 			<xs:element minOccurs="0" name="creation_date" type="StringWithNotes"/> <!-- TODO: fix date conversion in xslt so this can be date with notes -->
-		</xs:sequence>
+		</xs:all>
 	</xs:complexType>
 	<xs:complexType name="References">
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">

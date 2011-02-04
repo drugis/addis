@@ -107,7 +107,7 @@ public class AssertEntityEquals {
 	}
 	
 
-	private static void assertEntityEquals(SortedSet<? extends Entity> expected, SortedSet<? extends Entity> actual) {
+	public static void assertEntityEquals(SortedSet<? extends Entity> expected, SortedSet<? extends Entity> actual) {
 		assertEntityEquals(asList(expected), asList(actual));
 	}
 
