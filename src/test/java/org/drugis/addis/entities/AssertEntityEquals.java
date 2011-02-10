@@ -40,6 +40,7 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.common.EqualsUtil;
+import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 
 public class AssertEntityEquals {
 	
@@ -222,18 +223,18 @@ public class AssertEntityEquals {
 			assertEntityEquals((Variable) expected, (Variable) actual);
 		else if (expected instanceof MetaAnalysis) {
 			assertEntityEquals((MetaAnalysis)expected, (MetaAnalysis)actual);
-		} else if (expected instanceof CharacteristicsMap) { // FIXME: WTF.
-			Map<Object,Object> expMap = (Map<Object,Object>) expected;
-			Map<Object,Object> actMap = (Map<Object,Object>) actual;
-			for(Entry e : expMap.entrySet() ){
-				assertTrue(actMap.keySet().contains(e.getKey()));
-				boolean objFound = false;
-				String objToCompare = e.getValue().toString();
-				for (Object o : expMap.values()) {
-					if (o.toString().equals(objToCompare))
-						objFound = true;
+		} else if (expected instanceof CharacteristicsMap) {
+			CharacteristicsMap expCh = (CharacteristicsMap) expected;
+			CharacteristicsMap actCh = (CharacteristicsMap) actual;
+			assertAllAndOnly(expCh.keySet(), actCh.keySet());
+			for (Characteristic key : expCh.keySet()) {
+				Object expValue = expCh.get(key);
+				Object actValue = actCh.get(key);
+				if (expValue instanceof Entity) {
+					assertEntityEquals((Entity)expValue, (Entity)actValue);
+				} else {
+					assertEquals(expValue, actValue);
 				}
-				assertTrue(objFound);
 			}
 		} else if (expected instanceof MetaBenefitRiskAnalysis) {
 			assertEntityEquals((MetaBenefitRiskAnalysis)expected, (MetaBenefitRiskAnalysis)actual);
