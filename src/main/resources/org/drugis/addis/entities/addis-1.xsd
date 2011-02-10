@@ -193,7 +193,7 @@
 	<!-- Second-level types -->
 	
 	<xs:complexType name="Indication">
-		<xs:attribute name="code" type="xs:integer"/>
+		<xs:attribute name="code" type="xs:long"/>
 		<xs:attribute name="name" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="Drug">
@@ -311,7 +311,7 @@
 	<xs:complexType name="References">
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:choice>
-				<xs:element name="pubMedId" type="xs:integer"/>
+				<xs:element name="pubMedId" type="xs:int"/>
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
@@ -353,8 +353,8 @@
 			<xs:element name="drug" type="NameReference"/>
 			<xs:element minOccurs="0" name="notes" type="Notes"/>
 		</xs:sequence>
-		<xs:attribute name="id" type="xs:integer"/>
-		<xs:attribute name="size" type="xs:integer"/>
+		<xs:attribute name="id" type="xs:int"/>
+		<xs:attribute name="size" type="xs:int"/>
 	</xs:complexType>
 	<xs:complexType name="Notes">
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
@@ -401,12 +401,12 @@
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="RateMeasurement">
-		<xs:attribute name="rate" type="xs:integer"/>
-		<xs:attribute name="sampleSize" type="xs:integer"/>
+		<xs:attribute name="rate" type="xs:int"/>
+		<xs:attribute name="sampleSize" type="xs:int"/>
 	</xs:complexType>
 	<xs:complexType name="ContinuousMeasurement">
 		<xs:attribute name="mean" type="xs:double"/>
-		<xs:attribute name="sampleSize" type="xs:integer"/>
+		<xs:attribute name="sampleSize" type="xs:int"/>
 		<xs:attribute name="stdDev" type="xs:double"/>
 	</xs:complexType>
 	<xs:complexType name="CategoricalMeasurement">
@@ -416,7 +416,7 @@
 	</xs:complexType>
 	<xs:complexType name="Category">
 		<xs:attribute name="name" type="xs:string"/>
-		<xs:attribute name="rate" type="xs:integer"/>
+		<xs:attribute name="rate" type="xs:int"/>
 	</xs:complexType>
 	
 	<!-- Helpers for Meta-analyses -->
@@ -516,13 +516,13 @@
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="IdReference">
-		<xs:attribute name="id" type="xs:integer"/>
+		<xs:attribute name="id" type="xs:int"/>
 	</xs:complexType>
 	<xs:complexType name="StringIdReference">
 		<xs:attribute name="id" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="ArmReference">
-		<xs:attribute name="id" type="xs:integer"/>
+		<xs:attribute name="id" type="xs:int"/>
 		<xs:attribute name="study" type="xs:string" use="required"/>
 	</xs:complexType>
 	<xs:complexType name="DrugReferences">
@@ -571,7 +571,7 @@
 	</xs:complexType>
 	<xs:complexType name="IntegerWithNotes">
 		<xs:sequence>
-			<xs:element name="value" type="xs:integer"/>
+			<xs:element name="value" type="xs:int"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>

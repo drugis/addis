@@ -2,11 +2,10 @@ package org.drugis.addis.util;
 
 import static org.drugis.addis.entities.AssertEntityEquals.assertDomainEquals;
 import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.InputStream;
-import java.math.BigInteger;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -16,10 +15,8 @@ import javax.xml.bind.Unmarshaller;
 import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.AssertEntityEquals;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.CharacteristicsMap;
@@ -35,17 +32,16 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.CategoricalVariable;
 import org.drugis.addis.entities.data.ContinuousVariable;
-import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.data.NameReference;
 import org.drugis.addis.entities.data.Notes;
 import org.drugis.addis.entities.data.OutcomeMeasure;
 import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.StringWithNotes;
-import org.drugis.addis.entities.data.Unit;
 import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.common.Interval;
 import org.junit.Before;
@@ -237,7 +233,7 @@ public class JAXBConvertorTest {
 		long code = 12;
 		
 		org.drugis.addis.entities.data.Indication i1 = new org.drugis.addis.entities.data.Indication(); 
-		i1.setCode(BigInteger.valueOf(code));
+		i1.setCode(code);
 		i1.setName(name);
 	
 		Indication i2 = new Indication(code, name);
@@ -272,8 +268,8 @@ public class JAXBConvertorTest {
 		domain.addDrug(drug);
 		
 		org.drugis.addis.entities.data.Arm arm1 = new org.drugis.addis.entities.data.Arm();
-		arm1.setId(BigInteger.valueOf(1L));
-		arm1.setSize(BigInteger.valueOf(size));
+		arm1.setId(1);
+		arm1.setSize(size);
 		arm1.setNotes(new Notes());
 		org.drugis.addis.entities.data.FixedDose fixDose = new org.drugis.addis.entities.data.FixedDose();
 		fixDose.setQuantity(quantity);
