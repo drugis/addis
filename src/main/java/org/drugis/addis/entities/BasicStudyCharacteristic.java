@@ -51,7 +51,8 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 	
 	public enum Allocation {
 		RANDOMIZED("Randomized"),
-		NONRANDOMIZED("Non-randomized");
+		NONRANDOMIZED("Non-randomized"),
+		UNKNOWN("Unknown");
 		
 		private String d_title;
 		static EnumXMLFormat<Allocation> XML = new EnumXMLFormat<Allocation>(Allocation.class);

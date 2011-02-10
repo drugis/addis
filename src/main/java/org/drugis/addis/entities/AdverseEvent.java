@@ -33,20 +33,15 @@ import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
 import scala.actors.threadpool.Arrays;
 
 public class AdverseEvent extends AbstractVariable implements OutcomeMeasure {
+	private Direction d_direction;
 
 	public AdverseEvent() {
-		super("", Type.RATE);
+		this("", Type.RATE);
 	}
 	
 	public AdverseEvent(String name, Variable.Type type) {
 		super(name, type);
-	}
-
-	public Direction getDirection() {
-		return Direction.LOWER_IS_BETTER;
-	}
-	
-	public void setDirection(Direction dir) {
+		d_direction = Direction.LOWER_IS_BETTER;
 	}
 	
 	@Override
@@ -63,6 +58,16 @@ public class AdverseEvent extends AbstractVariable implements OutcomeMeasure {
 			return d_name.hashCode() + 7; //magic number ?
 		}
 		return 0;
+	}
+		
+	public void setDirection(Direction dir) {
+		Direction oldVal = d_direction;
+		d_direction = dir;
+		firePropertyChange(PROPERTY_DIRECTION, oldVal, d_direction);
+	}
+	
+	public Direction getDirection() {
+		return d_direction;
 	}
 	
 	@SuppressWarnings("unchecked")
