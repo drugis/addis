@@ -71,7 +71,8 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 		OPEN("Open"),
 		SINGLE_BLIND("Single blind"),
 		DOUBLE_BLIND("Double blind"),
-		TRIPLE_BLIND("Triple blind");
+		TRIPLE_BLIND("Triple blind"),
+		UNKNOWN("Unknown");
 		
 		Blinding(String title) {
 			d_title = title;

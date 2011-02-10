@@ -9,7 +9,6 @@ import java.io.InputStream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import javolution.xml.stream.XMLStreamException;
@@ -30,8 +29,10 @@ import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.SIUnit;
-import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
+import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
+import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.data.AddisData;
@@ -51,14 +52,14 @@ import org.junit.Test;
 public class JAXBConvertorTest {
 
 	private JAXBContext d_jaxb;
-	private Marshaller d_marshaller;
+	//private Marshaller d_marshaller;
 	private Unmarshaller d_unmarshaller;
 	
 	@Before
 	public void setup() throws JAXBException{
 		d_jaxb = JAXBContext.newInstance("org.drugis.addis.entities.data" );
 		d_unmarshaller = d_jaxb.createUnmarshaller();
-		d_marshaller = d_jaxb.createMarshaller();
+//		d_marshaller = d_jaxb.createMarshaller();
 //		d_unmarshaller.setEventHandler(new AddisDataValidationEventHandler());
 	}
 	
@@ -299,17 +300,72 @@ public class JAXBConvertorTest {
 	
 	@Test
 	public void testConvertStudyChars() {
-		org.drugis.addis.entities.data.Characteristics chars1 = new org.drugis.addis.entities.data.Characteristics();
-		chars1.setTitle(stringWithNotes("MyStudy"));
 		Allocation alloc = Allocation.RANDOMIZED;
+		Blinding blind = Blinding.UNKNOWN;
+		String title = "MyStudy";
+		int centers = 5;
+		String objective = "The loftiest of goals";
+		String incl = "Obesity";
+		String excl = "Diabetes";
+		Status status = Status.ENROLLING;
+		Source source = Source.MANUAL;
+		
+		org.drugis.addis.entities.data.Characteristics chars1 = new org.drugis.addis.entities.data.Characteristics();
+		chars1.setTitle(stringWithNotes(title));
 		chars1.setAllocation(allocationWithNotes(alloc));
+		chars1.setBlinding(blindingWithNotes(blind));
+		chars1.setCenters(intWithNotes(centers));
+		chars1.setObjective(stringWithNotes(objective));
+		fail("StudyStart, StudyEnd not tested yet"); // FIXME
+		chars1.setStatus(statusWithNotes(status));
+		chars1.setInclusion(stringWithNotes(incl));
+		chars1.setExclusion(stringWithNotes(excl));
+		fail("References not tested yet"); // FIXME
+		chars1.setSource(sourceWithNotes(source));
+		fail("CreationDate not tested yet"); // FIXME
 		
 		CharacteristicsMap chars2 = new CharacteristicsMap();
+		chars2.put(BasicStudyCharacteristic.TITLE, title);
 		chars2.put(BasicStudyCharacteristic.ALLOCATION, alloc);
+		chars2.put(BasicStudyCharacteristic.BLINDING, blind);
+		chars2.put(BasicStudyCharacteristic.CENTERS, centers);
+		chars2.put(BasicStudyCharacteristic.OBJECTIVE, objective);
+		chars2.put(BasicStudyCharacteristic.INCLUSION, incl);
+		chars2.put(BasicStudyCharacteristic.EXCLUSION, excl);
+		chars2.put(BasicStudyCharacteristic.STATUS, status);
+		chars2.put(BasicStudyCharacteristic.SOURCE, source);
 		
 		assertEntityEquals(chars2, JAXBConvertor.convertStudyCharacteristics(chars1));
 	}
-	
+
+	private org.drugis.addis.entities.data.Source sourceWithNotes(Source nested) {
+		org.drugis.addis.entities.data.Source source = new org.drugis.addis.entities.data.Source();
+		source.setValue(nested);
+		source.setNotes(new Notes());
+		return source;
+	}
+
+	private org.drugis.addis.entities.data.Status statusWithNotes(Status nested) {
+		org.drugis.addis.entities.data.Status status = new org.drugis.addis.entities.data.Status();
+		status.setValue(nested);
+		status.setNotes(new Notes());
+		return status;
+	}
+
+	private org.drugis.addis.entities.data.IntegerWithNotes intWithNotes(int centers) {
+		org.drugis.addis.entities.data.IntegerWithNotes integer = new org.drugis.addis.entities.data.IntegerWithNotes();
+		integer.setValue(centers);
+		integer.setNotes(new Notes());
+		return integer;
+	}
+
+	private org.drugis.addis.entities.data.Blinding blindingWithNotes(Blinding nested) {
+		org.drugis.addis.entities.data.Blinding blinding = new org.drugis.addis.entities.data.Blinding();
+		blinding.setValue(nested);
+		blinding.setNotes(new Notes());
+		return blinding;
+	}
+
 	private org.drugis.addis.entities.data.Allocation allocationWithNotes(Allocation nested) {
 		org.drugis.addis.entities.data.Allocation allocation = new org.drugis.addis.entities.data.Allocation();
 		allocation.setValue(nested);
@@ -332,15 +388,17 @@ public class JAXBConvertorTest {
 		DomainImpl domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
 		
-		org.drugis.addis.entities.data.Study study = new org.drugis.addis.entities.data.Study();
+		//org.drugis.addis.entities.data.Study study = new org.drugis.addis.entities.data.Study();
 		
 
-		Study study2 = new Study();
+		//Study study2 = new Study();
 		
 		fail();
 	}
 
 	@Test
+	@Ignore
+	// ACCEPTANCE TEST -- should be replaced by something nicer so we can remove the Javalution support.
 	public void testAddisDataToDomainData() throws JAXBException, XMLStreamException, ConversionException {
 		InputStream xmlStream = getClass().getResourceAsStream("defaultData.xml");
 		assertNotNull(xmlStream);

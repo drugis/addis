@@ -10,21 +10,15 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.Characteristics;
-import org.drugis.addis.entities.data.ContinuousVariable;
-import org.drugis.addis.entities.data.Direction;
 import org.drugis.addis.entities.data.OutcomeMeasure;
-import org.drugis.addis.entities.data.RateVariable;
-import org.drugis.addis.entities.data.Unit;
 import org.drugis.common.Interval;
 
 public class JAXBConvertor {
@@ -79,7 +73,7 @@ public class JAXBConvertor {
 
 	static Indication convertIndication(
 			org.drugis.addis.entities.data.Indication i) {
-		return new Indication(i.getCode().longValue(), i.getName());
+		return new Indication(i.getCode(), i.getName());
 	}
 
 	static Drug convertDrug(org.drugis.addis.entities.data.Drug d) {
@@ -140,7 +134,7 @@ public class JAXBConvertor {
 													(double) arm.getFlexibleDose().getMinDose(), 
 													(double) arm.getFlexibleDose().getMaxDose()
 												 ), arm.getFlexibleDose().getUnit());
-			Arm newArm = new Arm(d, flexDose, arm.getSize().intValue());
+			Arm newArm = new Arm(d, flexDose, arm.getSize());
 			return newArm;
 		}
 		
@@ -177,6 +171,13 @@ public class JAXBConvertor {
 		CharacteristicsMap map = new CharacteristicsMap();
 		map.put(BasicStudyCharacteristic.ALLOCATION, chars1.getAllocation().getValue());
 		map.put(BasicStudyCharacteristic.TITLE, chars1.getTitle().getValue());
+		map.put(BasicStudyCharacteristic.BLINDING, chars1.getBlinding().getValue());
+		map.put(BasicStudyCharacteristic.CENTERS, chars1.getCenters().getValue());
+		map.put(BasicStudyCharacteristic.OBJECTIVE, chars1.getObjective().getValue());
+		map.put(BasicStudyCharacteristic.INCLUSION, chars1.getInclusion().getValue());
+		map.put(BasicStudyCharacteristic.EXCLUSION, chars1.getExclusion().getValue());
+		map.put(BasicStudyCharacteristic.STATUS, chars1.getStatus().getValue());
+		map.put(BasicStudyCharacteristic.SOURCE, chars1.getSource().getValue());
 		return map;
 	}
 

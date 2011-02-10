@@ -23,14 +23,12 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.Map.Entry;
@@ -200,8 +198,6 @@ public class AssertEntityEquals {
 		assertEquals(expected.getCriteria(), actual.getCriteria());
 	}
 	
-	
-	@SuppressWarnings("unchecked")
 	public static void assertEntityEquals(Entity expected, Entity actual){
 		if (expected instanceof Endpoint)
 			assertEntityEquals((Endpoint) expected, (Endpoint) actual);
