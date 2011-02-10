@@ -276,7 +276,7 @@ public class JAXBConvertorTest {
 		arm1.setSize(BigInteger.valueOf(size));
 		arm1.setNotes(new Notes());
 		org.drugis.addis.entities.data.FixedDose fixDose = new org.drugis.addis.entities.data.FixedDose();
-		fixDose.setQuantity(Float.valueOf((float)quantity));
+		fixDose.setQuantity(quantity);
 		fixDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		arm1.setFixedDose(fixDose);
 		NameReference nameRef = new NameReference();
@@ -290,8 +290,8 @@ public class JAXBConvertorTest {
 		
 		arm1.setFixedDose(null);
 		org.drugis.addis.entities.data.FlexibleDose flexDose = new org.drugis.addis.entities.data.FlexibleDose();
-		flexDose.setMinDose(Float.valueOf((float)quantity));
-		flexDose.setMaxDose(Float.valueOf((float)maxQuantity));
+		flexDose.setMinDose(quantity);
+		flexDose.setMaxDose(maxQuantity);
 		flexDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		arm1.setFlexibleDose(flexDose);
 		

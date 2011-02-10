@@ -405,9 +405,9 @@
 		<xs:attribute name="sampleSize" type="xs:integer"/>
 	</xs:complexType>
 	<xs:complexType name="ContinuousMeasurement">
-		<xs:attribute name="mean" type="xs:float"/>
+		<xs:attribute name="mean" type="xs:double"/>
 		<xs:attribute name="sampleSize" type="xs:integer"/>
-		<xs:attribute name="stdDev" type="xs:float"/>
+		<xs:attribute name="stdDev" type="xs:double"/>
 	</xs:complexType>
 	<xs:complexType name="CategoricalMeasurement">
 		<xs:sequence maxOccurs="unbounded">
@@ -436,12 +436,12 @@
 	<!-- Enums and other simple utility types (doses, alphanumeric and such) -->
 
 	<xs:complexType name="FlexibleDose">
-		<xs:attribute name="minDose" type="xs:float"/>
-		<xs:attribute name="maxDose" type="xs:float"/>
+		<xs:attribute name="minDose" type="xs:double"/>
+		<xs:attribute name="maxDose" type="xs:double"/>
 		<xs:attribute name="unit" type="Unit"/>
 	</xs:complexType>
 	<xs:complexType name="FixedDose">
-		<xs:attribute name="quantity" type="xs:float"/>
+		<xs:attribute name="quantity" type="xs:double"/>
 		<xs:attribute name="unit" type="Unit"/>
 	</xs:complexType>
 
