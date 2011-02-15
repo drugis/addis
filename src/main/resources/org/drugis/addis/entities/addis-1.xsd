@@ -298,14 +298,14 @@
 			<xs:element minOccurs="0" name="blinding" type="Blinding"/>
 			<xs:element minOccurs="0" name="centers" type="IntegerWithNotes"/>
 			<xs:element minOccurs="0" name="objective" type="StringWithNotes"/>
-			<xs:element minOccurs="0" name="study_start" type="StringWithNotes"/> <!-- TODO: fix date conversion in xslt so this can be date with notes -->
-			<xs:element minOccurs="0" name="study_end" type="StringWithNotes"/>
+			<xs:element minOccurs="0" name="study_start" type="DateWithNotes"/>
+			<xs:element minOccurs="0" name="study_end" type="DateWithNotes"/>
 			<xs:element minOccurs="0" name="status" type="Status"/> <!-- check this, because there should always be a inclusion, exclusion and source -->
 			<xs:element minOccurs="0" name="inclusion" type="StringWithNotes"/>
 			<xs:element minOccurs="0" name="exclusion" type="StringWithNotes"/>
 			<xs:element name="references" type="References"/>
 			<xs:element minOccurs="0" name="source" type="Source"/>
-			<xs:element minOccurs="0" name="creation_date" type="StringWithNotes"/> <!-- TODO: fix date conversion in xslt so this can be date with notes -->
+			<xs:element minOccurs="0" name="creation_date" type="DateWithNotes"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="References">

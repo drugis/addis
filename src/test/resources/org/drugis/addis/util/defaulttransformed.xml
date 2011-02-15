@@ -1,26 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
-<addis-data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://drugis.org/files/addis-1.xsd">
-	
-   <indications>
+<?xml version="1.0" encoding="UTF-8"?>
+<addis-data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="http://drugis.org/files/addis-1.xsd">
+	  <indications>
       <indication code="310497006" name="Severe depression"/>
    </indications>
-	
-   <endpoints>
-      <endpoint name="CGI Severity Change" description="Change from baseline CGI Severity of Illness score">
-         <continuous direction="HIGHER_IS_BETTER" unitOfMeasurement="Deviation from the baseline of CGI Severity of Illness score"/>
+	  <endpoints>
+      <endpoint name="CGI Severity Change"
+                description="Change from baseline CGI Severity of Illness score">
+         <continuous direction="HIGHER_IS_BETTER"
+                     unitOfMeasurement="Deviation from the baseline of CGI Severity of Illness score"/>
       </endpoint>
-      <endpoint name="Dropouts" description="Number of patients dropping out of the study prematurely">
+      <endpoint name="Dropouts"
+                description="Number of patients dropping out of the study prematurely">
          <rate direction="LOWER_IS_BETTER"/>
       </endpoint>
-      <endpoint name="HAM-D Responders" description="Responders with a 50% increase in HAM-D score">
+      <endpoint name="HAM-D Responders"
+                description="Responders with a 50% increase in HAM-D score">
          <rate direction="HIGHER_IS_BETTER"/>
       </endpoint>
-      <endpoint name="MADRS Responders" description="Responders with a 50% increase in MADRS score">
+      <endpoint name="MADRS Responders"
+                description="Responders with a 50% increase in MADRS score">
          <rate direction="HIGHER_IS_BETTER"/>
       </endpoint>
    </endpoints>
-	
-   <adverseEvents>
+	  <adverseEvents>
       <adverseEvent name="Abdominal Pain" description="">
          <rate direction="LOWER_IS_BETTER"/>
       </adverseEvent>
@@ -196,8 +199,7 @@
          <rate direction="LOWER_IS_BETTER"/>
       </adverseEvent>
    </adverseEvents>
-	
-   <drugs>
+	  <drugs>
       <drug name="Bupropion" atcCode="N06AX12"/>
       <drug name="Citalopram" atcCode="N06AB04"/>
       <drug name="Duloxetine" atcCode="N06AX21"/>
@@ -210,10 +212,8 @@
       <drug name="Sertraline" atcCode="N06AB06"/>
       <drug name="Venlafaxine" atcCode="N06AX16"/>
    </drugs>
-	
-   <populationCharacteristics/>
-	
-   <studies>
+	  <populationCharacteristics/>
+	  <studies>
       <study name="Aberg-Wistedt et al, 2000">
          <indication name="Severe depression">
             <notes/>
@@ -6009,11 +6009,11 @@ British Journal of Clinical Research 1993; 4:145-152</value>
                <notes/>
             </objective>
             <study_start>
-               <value>01 Nov 1998</value>
+               <value>1998-11-01</value>
                <notes/>
             </study_start>
             <study_end>
-               <value>30 Jun 2000</value>
+               <value>2000-06-30</value>
                <notes/>
             </study_end>
             <status>
@@ -10311,8 +10311,7 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
          </measurements>
       </study>
    </studies>
-	
-   <metaAnalyses>
+	  <metaAnalyses>
       <pairwiseMetaAnalysis name="Fluox-Venla Diarrhea">
          <indication name="Severe depression"/>
          <adverseEvent name="Diarrhea"/>
@@ -10768,8 +10767,7 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
          </alternative>
       </networkMetaAnalysis>
    </metaAnalyses>
-	
-   <benefitRiskAnalyses>
+	  <benefitRiskAnalyses>
       <studyBenefitRiskAnalysis name="Benkert HAM-D/weight gain" analysisType="LyndOBrien">
          <indication name="Severe depression"/>
          <study name="Benkert et al, 2000"/>
@@ -10834,5 +10832,4 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
          </metaAnalyses>
       </metaBenefitRiskAnalysis>
    </benefitRiskAnalyses>
-
 </addis-data>
