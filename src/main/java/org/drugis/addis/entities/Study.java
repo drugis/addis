@@ -395,11 +395,13 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		setAdverseEvents(newList);
 	}
 
-	public void addOutcomeMeasure(OutcomeMeasure om) {
+	public void addOutcomeMeasure(Variable om) {
 		if (om instanceof Endpoint)
 			addEndpoint((Endpoint) om);
 		else if (om instanceof AdverseEvent) {
 			addAdverseEvent((AdverseEvent) om);
+		} else if (om instanceof PopulationCharacteristic) {
+			d_populationChars.add((PopulationCharacteristic) om); // FIXME
 		} else {
 			throw new IllegalStateException("Illegal OutcomeMeasure type " + om.getClass());
 		}
@@ -573,6 +575,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		public void read(InputElement ie, Study s) throws XMLStreamException {
 			s.setStudyId(ie.getAttribute(PROPERTY_ID, null));
 			XMLPropertiesFormat.readProperties(ie, s.d_propDefs);
+			if (s.getCharacteristic(BasicStudyCharacteristic.PUBMED) == null) {
+				s.setCharacteristic(BasicStudyCharacteristic.PUBMED, new PubMedIdList());
+			}
 		}
 
 		@Override
@@ -581,4 +586,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			XMLPropertiesFormat.writeProperties(s.d_propDefs, oe);
 		}
 	};
+
+	public void setMeasurement(MeasurementKey key, Measurement value) {
+		d_measurements.put(key, value);
+	}
 }

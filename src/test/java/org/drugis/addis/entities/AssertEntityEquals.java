@@ -22,6 +22,7 @@
 
 package org.drugis.addis.entities;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -97,7 +98,7 @@ public class AssertEntityEquals {
 		} else if (expected instanceof RateMeasurement) 
 			assertEquals( ((RateMeasurement) expected).getRate() , ((RateMeasurement) actual).getRate() );
 		else if (expected instanceof FrequencyMeasurement) {
-			assertEquals(((FrequencyMeasurement) expected).getCategoricalVariable() , ((FrequencyMeasurement) actual).getCategoricalVariable());
+			assertArrayEquals(((FrequencyMeasurement) expected).getCategories() , ((FrequencyMeasurement) actual).getCategories());
 			assertEquals(((FrequencyMeasurement) expected).getFrequencies() , ((FrequencyMeasurement) actual).getFrequencies());
 		} else {
 			System.err.println("Measurement type not recognized.");
