@@ -47,6 +47,7 @@ import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
@@ -54,6 +55,7 @@ import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.Variable.Type;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.Arms;
 import org.drugis.addis.entities.data.CategoricalVariable;
@@ -68,7 +70,6 @@ import org.drugis.addis.entities.data.NameReference;
 import org.drugis.addis.entities.data.NameReferenceWithNotes;
 import org.drugis.addis.entities.data.Notes;
 import org.drugis.addis.entities.data.OutcomeMeasure;
-import org.drugis.addis.entities.data.PairwiseMetaAnalysis;
 import org.drugis.addis.entities.data.RateMeasurement;
 import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
@@ -790,7 +791,7 @@ public class JAXBConvertorTest {
 		cm1.setSampleSize(110);
 		m2.setContinuousMeasurement(cm1);
 		list.add(m2);
-		
+		//----------------------------------------
 		Study study2 = new Study();
 		study2.setStudyId(name);
 		study2.setIndication(ExampleData.buildIndicationDepression());
@@ -816,8 +817,56 @@ public class JAXBConvertorTest {
 	public void testConvertPairWiseMetaAnalysis() {
 		DomainImpl domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		//PairwiseMetaAnalysis pwma = ExampleData.build
+		domain.addEndpoint(ExampleData.buildEndpointCgi());
+		domain.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
+		domain.addIndication(ExampleData.buildIndicationDepression());
+	
+		String name = "Fluox-Venla Diarrhea";	
+		org.drugis.addis.entities.data.PairwiseMetaAnalysis pwma = new org.drugis.addis.entities.data.PairwiseMetaAnalysis();
+		pwma.setName(name);		
+		pwma.setIndication(nameReference(ExampleData.buildIndicationDepression().getName()));
+		pwma.setEndpoint(nameReference(ExampleData.buildEndpointHamd().getName()));
+		pwma.setAdverseEvent(nameReference(ExampleData.buildAdverseEventDiarrhea().getName()));
 		
+		String study_name = "My fancy study";
+		org.drugis.addis.entities.data.Study study = new org.drugis.addis.entities.data.Study();
+		study.setName(study_name);
+		NameReferenceWithNotes indicationRef = new NameReferenceWithNotes();
+		indicationRef.setName(ExampleData.buildIndicationDepression().getName());
+		indicationRef.setNotes(new Notes());
+		study.setIndication(indicationRef);
+		// arms
+		Arms arms = new Arms();
+		study.setArms(arms);
+		arms.getArm().add(buildFixedDoseArmData(1, 100, ExampleData.buildDrugFluoxetine().getName(), 12.5));
+		arms.getArm().add(buildFixedDoseArmData(2, 102, ExampleData.buildDrugParoxetine().getName(), 12.5));
+		// om
+		StudyOutcomeMeasures studyOutcomeMeasures = new StudyOutcomeMeasures();
+		study.setStudyOutcomeMeasures(studyOutcomeMeasures);
+		StudyOutcomeMeasure ep1 = new StudyOutcomeMeasure();
+		String ep1ref = "endpoint-" + ExampleData.buildEndpointHamd().getName();
+		ep1.setId(ep1ref);
+		ep1.setEndpoint(nameReference(ExampleData.buildEndpointHamd().getName()));
+		studyOutcomeMeasures.getStudyOutcomeMeasure().add(ep1);
+				
+		//-----------------------------------
+		Study study2 = new Study();
+		study2.setStudyId(name);
+		
+		List<StudyArmsEntry> armsList = new ArrayList<StudyArmsEntry>();
+		Arm arm_base = buildFixedDoseArm(100, ExampleData.buildDrugFluoxetine(), 12.5);
+		Arm arm_subject = buildFixedDoseArm(102, ExampleData.buildDrugParoxetine(), 12.5);
+		study2.addArm(arm_subject);
+		study2.addArm(arm_base);
+		armsList.add(new StudyArmsEntry(study2, arm_base, arm_subject));
+		
+		study2.addEndpoint(ExampleData.buildEndpointHamd());
+		study2.addOutcomeMeasure(ExampleData.buildEndpointHamd());
+		study2.setIndication(new Indication(1L, ExampleData.buildIndicationDepression().getName()));
+		
+		RandomEffectsMetaAnalysis pwma2 = new RandomEffectsMetaAnalysis(name, ExampleData.buildEndpointHamd(), armsList);
+		
+		assertEntityEquals(pwma2, JAXBConvertor.convertPairWiseMetaAnalysis(pwma, domain));
 		
 	}
 	

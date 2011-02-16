@@ -29,15 +29,18 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.Variable.Type;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.Arms;
 import org.drugis.addis.entities.data.Category;
 import org.drugis.addis.entities.data.Characteristics;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.OutcomeMeasure;
+import org.drugis.addis.entities.data.PairwiseMetaAnalysis;
 import org.drugis.addis.entities.data.References;
 import org.drugis.addis.entities.data.StudyOutcomeMeasure;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
@@ -345,5 +348,16 @@ public class JAXBConvertor {
 			map.put(new MeasurementKey(oms.get(omId), arm), convertMeasurement(m));
 		}
 		return map;
+	}
+
+	public static RandomEffectsMetaAnalysis convertPairWiseMetaAnalysis(PairwiseMetaAnalysis pwma, Domain domain) {
+		
+		List<StudyArmsEntry> studyArms;
+		
+		StudyArmsEntry e = new StudyArmsEntry(study, base, pwma.getEndpoint());
+		studyArms.add(e);
+		org.drugis.addis.entities.OutcomeMeasure om;
+		
+		return new RandomEffectsMetaAnalysis(pwma.getName(), om, studyArms);
 	}
 }
