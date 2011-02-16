@@ -113,6 +113,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	private Indication d_indication;
 	private Map<Object, Note> d_notes = new HashMap<Object, Note>();
+	private List<Integer> d_armIds = null;
 	
 	public Study() {
 	}
@@ -189,6 +190,20 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		List<Arm> newVal = new ArrayList<Arm>(d_arms);
 		newVal.add(group);
 		setArms(newVal);
+	}
+	
+	public void setArmIds(List<Integer> ids) { // FIXME: for JAXB
+		d_armIds = ids;
+	}
+	
+	public List<Integer> getArmIds() { // FIXME: for JAXB
+		if (d_armIds == null) {
+			d_armIds = new ArrayList<Integer>();
+			for (int i = 0; i < getArms().size(); ++i) {
+				d_armIds.add(i);
+			}
+		}
+		return d_armIds;
 	}
 
 	public Set<Drug> getDrugs() {

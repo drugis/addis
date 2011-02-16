@@ -57,6 +57,9 @@ import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.data.AddisData;
+import org.drugis.addis.entities.data.Alternative;
+import org.drugis.addis.entities.data.AnalysisArms;
+import org.drugis.addis.entities.data.ArmReference;
 import org.drugis.addis.entities.data.Arms;
 import org.drugis.addis.entities.data.CategoricalVariable;
 import org.drugis.addis.entities.data.Category;
@@ -713,14 +716,7 @@ public class JAXBConvertorTest {
 		return ref;
 	}
 
-	@Test
-	public void testConvertStudy() throws ConversionException {
-		DomainImpl domain = new DomainImpl();
-		ExampleData.initDefaultData(domain);
-		domain.addEndpoint(ExampleData.buildEndpointCgi());
-		domain.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
-		
-		String name = "My fancy study";
+	public org.drugis.addis.entities.data.Study buildStudy(String name) {
 		org.drugis.addis.entities.data.Study study = new org.drugis.addis.entities.data.Study();
 		study.setName(name);
 		NameReferenceWithNotes indicationRef = new NameReferenceWithNotes();
@@ -791,6 +787,20 @@ public class JAXBConvertorTest {
 		cm1.setSampleSize(110);
 		m2.setContinuousMeasurement(cm1);
 		list.add(m2);
+		
+		return study;
+	}
+	
+	@Test
+	public void testConvertStudy() throws ConversionException {
+		DomainImpl domain = new DomainImpl();
+		ExampleData.initDefaultData(domain);
+		domain.addEndpoint(ExampleData.buildEndpointCgi());
+		domain.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
+		
+		String name = "My fancy study";
+		org.drugis.addis.entities.data.Study study = buildStudy(name);
+		
 		//----------------------------------------
 		Study study2 = new Study();
 		study2.setStudyId(name);
@@ -807,67 +817,60 @@ public class JAXBConvertorTest {
 		study2.setCharacteristic(BasicStudyCharacteristic.CENTERS, 3);
 		study2.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, Allocation.RANDOMIZED);
 		study2.setCharacteristic(BasicStudyCharacteristic.PUBMED, new PubMedIdList());
-		study2.setMeasurement(ExampleData.buildEndpointHamd(), arm2, JAXBConvertor.convertMeasurement(m1));
-		study2.setMeasurement(ExampleData.buildAgeVariable(), JAXBConvertor.convertMeasurement(m2));
+		study2.setMeasurement(ExampleData.buildEndpointHamd(), arm2, new BasicRateMeasurement(10, 110));
+		study2.setMeasurement(ExampleData.buildAgeVariable(), new BasicContinuousMeasurement(0.2, 0.01, 110));
 		
 		assertEntityEquals(study2, JAXBConvertor.convertStudy(study, domain));
 	}
 	
 	@Test
-	public void testConvertPairWiseMetaAnalysis() {
+	public void testConvertPairWiseMetaAnalysis() throws ConversionException {
 		DomainImpl domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
 		domain.addEndpoint(ExampleData.buildEndpointCgi());
-		domain.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
 		domain.addIndication(ExampleData.buildIndicationDepression());
-	
+		
+		String study_name = "My fancy study";
+		org.drugis.addis.entities.data.Study study = buildStudy(study_name);
+
 		String name = "Fluox-Venla Diarrhea";	
 		org.drugis.addis.entities.data.PairwiseMetaAnalysis pwma = new org.drugis.addis.entities.data.PairwiseMetaAnalysis();
 		pwma.setName(name);		
 		pwma.setIndication(nameReference(ExampleData.buildIndicationDepression().getName()));
 		pwma.setEndpoint(nameReference(ExampleData.buildEndpointHamd().getName()));
-		pwma.setAdverseEvent(nameReference(ExampleData.buildAdverseEventDiarrhea().getName()));
+		// Base
+		Alternative fluox = new Alternative();
+		fluox.setDrug(nameReference(ExampleData.buildDrugFluoxetine().getName()));
+		AnalysisArms fluoxArms = new AnalysisArms();
+		fluoxArms.getArm().add(armReference(study_name, study.getArms().getArm().get(0)));
+		fluox.setArms(fluoxArms);
+		pwma.getAlternative().add(fluox);
+		// Subject
+		Alternative parox = new Alternative();
+		parox.setDrug(nameReference(ExampleData.buildDrugParoxetine().getName()));
+		AnalysisArms paroxArms = new AnalysisArms();
+		paroxArms.getArm().add(armReference(study_name, study.getArms().getArm().get(1)));
+		parox.setArms(paroxArms);
+		pwma.getAlternative().add(parox);
 		
-		String study_name = "My fancy study";
-		org.drugis.addis.entities.data.Study study = new org.drugis.addis.entities.data.Study();
-		study.setName(study_name);
-		NameReferenceWithNotes indicationRef = new NameReferenceWithNotes();
-		indicationRef.setName(ExampleData.buildIndicationDepression().getName());
-		indicationRef.setNotes(new Notes());
-		study.setIndication(indicationRef);
-		// arms
-		Arms arms = new Arms();
-		study.setArms(arms);
-		arms.getArm().add(buildFixedDoseArmData(1, 100, ExampleData.buildDrugFluoxetine().getName(), 12.5));
-		arms.getArm().add(buildFixedDoseArmData(2, 102, ExampleData.buildDrugParoxetine().getName(), 12.5));
-		// om
-		StudyOutcomeMeasures studyOutcomeMeasures = new StudyOutcomeMeasures();
-		study.setStudyOutcomeMeasures(studyOutcomeMeasures);
-		StudyOutcomeMeasure ep1 = new StudyOutcomeMeasure();
-		String ep1ref = "endpoint-" + ExampleData.buildEndpointHamd().getName();
-		ep1.setId(ep1ref);
-		ep1.setEndpoint(nameReference(ExampleData.buildEndpointHamd().getName()));
-		studyOutcomeMeasures.getStudyOutcomeMeasure().add(ep1);
-				
 		//-----------------------------------
-		Study study2 = new Study();
-		study2.setStudyId(name);
-		
+		Study study2 = JAXBConvertor.convertStudy(study, domain);
 		List<StudyArmsEntry> armsList = new ArrayList<StudyArmsEntry>();
-		Arm arm_base = buildFixedDoseArm(100, ExampleData.buildDrugFluoxetine(), 12.5);
-		Arm arm_subject = buildFixedDoseArm(102, ExampleData.buildDrugParoxetine(), 12.5);
-		study2.addArm(arm_subject);
-		study2.addArm(arm_base);
-		armsList.add(new StudyArmsEntry(study2, arm_base, arm_subject));
-		
-		study2.addEndpoint(ExampleData.buildEndpointHamd());
-		study2.addOutcomeMeasure(ExampleData.buildEndpointHamd());
-		study2.setIndication(new Indication(1L, ExampleData.buildIndicationDepression().getName()));
+		armsList.add(new StudyArmsEntry(study2, study2.getArms().get(0), study2.getArms().get(1)));
+		domain.addStudy(study2);
 		
 		RandomEffectsMetaAnalysis pwma2 = new RandomEffectsMetaAnalysis(name, ExampleData.buildEndpointHamd(), armsList);
 		
 		assertEntityEquals(pwma2, JAXBConvertor.convertPairWiseMetaAnalysis(pwma, domain));
 		
+	}
+
+	private ArmReference armReference(String study_name,
+			org.drugis.addis.entities.data.Arm arm1) {
+		ArmReference fluoxArmRef = new ArmReference();
+		fluoxArmRef.setStudy(study_name);
+		fluoxArmRef.setId(arm1.getId());
+		return fluoxArmRef;
 	}
 	
 	@Test

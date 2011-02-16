@@ -35,6 +35,7 @@ import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.data.AddisData;
+import org.drugis.addis.entities.data.ArmReference;
 import org.drugis.addis.entities.data.Arms;
 import org.drugis.addis.entities.data.Category;
 import org.drugis.addis.entities.data.Characteristics;
@@ -84,16 +85,18 @@ public class JAXBConvertor {
 		newStudy.setStudyId(study.getName());
 		newStudy.setIndication(findIndication(domain, study.getIndication().getName()));
 		
-		// TODO: workin here !!
 		LinkedHashMap<String, Variable> outcomeMeasures = convertStudyOutcomeMeasures(study.getStudyOutcomeMeasures(), domain);
 		for(Entry<String, Variable> om : outcomeMeasures.entrySet()) {
 			newStudy.addOutcomeMeasure(om.getValue());
 		}
 		
 		LinkedHashMap<Integer, Arm> arms = convertStudyArms(study.getArms(), domain);
+		List<Integer> ids = new ArrayList<Integer>();
 		for(Entry<Integer, Arm> arm : arms.entrySet()) { 
 			newStudy.addArm(arm.getValue());
+			ids.add(arm.getKey());
 		}
+		newStudy.setArmIds(ids);
 		
 		CharacteristicsMap map = convertStudyCharacteristics(study.getCharacteristics());
 		for(Entry<Characteristic, Object> m : map.entrySet()) {
@@ -186,6 +189,16 @@ public class JAXBConvertor {
 		for (PopulationCharacteristic pc : domain.getPopulationCharacteristics()) {
 			if (pc.getName().equals(name)) {
 				return pc;
+			}
+		}
+		return null;
+	}
+	
+
+	private static Study findStudy(String name, Domain domain) {
+		for (Study s : domain.getStudies()) {
+			if (s.getStudyId().equals(name)) {
+				return s;
 			}
 		}
 		return null;
@@ -350,14 +363,54 @@ public class JAXBConvertor {
 		return map;
 	}
 
-	public static RandomEffectsMetaAnalysis convertPairWiseMetaAnalysis(PairwiseMetaAnalysis pwma, Domain domain) {
+	public static RandomEffectsMetaAnalysis convertPairWiseMetaAnalysis(PairwiseMetaAnalysis pwma, Domain domain)
+	throws ConversionException {
+		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
 		
-		List<StudyArmsEntry> studyArms;
-		
-		StudyArmsEntry e = new StudyArmsEntry(study, base, pwma.getEndpoint());
-		studyArms.add(e);
-		org.drugis.addis.entities.OutcomeMeasure om;
+		org.drugis.addis.entities.OutcomeMeasure om = findOutcomeMeasure(domain, pwma);
+		if (pwma.getAlternative().size() != 2) {
+			throw new ConversionException("PairWiseMetaAnalysis must have exactly 2 alternatives. Offending MA: " + pwma);
+		}
+		List<ArmReference> baseArms = pwma.getAlternative().get(0).getArms().getArm();
+		List<ArmReference> subjArms = pwma.getAlternative().get(1).getArms().getArm();
+		if (baseArms.size() != subjArms.size()) {
+			throw new ConversionException("Alternative lists must have equal length. Offending MA: " + pwma);
+		}
+		for (int i = 0; i < baseArms.size(); ++i) {
+			if (!baseArms.get(i).getStudy().equals(subjArms.get(i).getStudy())) {
+				throw new ConversionException("Matching arms must be from the same study. Offending arms: " + 
+						baseArms.get(i) + " -- " + subjArms.get(i) + " -- from " + pwma.getName());
+			}
+			Study study = findStudy(baseArms.get(i).getStudy(), domain);
+			Arm base = findArm(study, baseArms.get(i).getId());
+			Arm subj = findArm(study, subjArms.get(i).getId());
+			StudyArmsEntry e = new StudyArmsEntry(study, base, subj);
+			studyArms.add(e);
+		}
 		
 		return new RandomEffectsMetaAnalysis(pwma.getName(), om, studyArms);
+	}
+
+	private static Arm findArm(Study study, Integer id) {
+		for (int i = 0; i < study.getArmIds().size(); ++i) {
+			if (study.getArmIds().get(i).equals(id)) {
+				return study.getArms().get(i);
+			}
+		}
+		return null;
+	}
+
+	private static org.drugis.addis.entities.OutcomeMeasure findOutcomeMeasure(Domain domain, 
+			org.drugis.addis.entities.data.MetaAnalysis ma)
+	throws ConversionException {
+		org.drugis.addis.entities.OutcomeMeasure om = null;
+		if (ma.getEndpoint() != null) {
+			om = findEndpoint(domain, ma.getEndpoint().getName());
+		} else if (ma.getAdverseEvent() != null) {
+			om = findAdverseEvent(domain, ma.getAdverseEvent().getName());
+		} else {
+			throw new ConversionException("MetaAnalysis has unsupported OutcomeMeasure: " + ma);
+		}
+		return om;
 	}
 }
