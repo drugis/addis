@@ -9,6 +9,7 @@ import static org.junit.Assert.fail;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import java.util.Random;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
@@ -57,13 +59,18 @@ import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.Variable.Type;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.Alternative;
 import org.drugis.addis.entities.data.AnalysisArms;
 import org.drugis.addis.entities.data.ArmReference;
+import org.drugis.addis.entities.data.ArmReferences;
 import org.drugis.addis.entities.data.Arms;
+import org.drugis.addis.entities.data.BenefitRiskAnalysisType;
 import org.drugis.addis.entities.data.CategoricalVariable;
 import org.drugis.addis.entities.data.Category;
 import org.drugis.addis.entities.data.Characteristics;
@@ -72,10 +79,12 @@ import org.drugis.addis.entities.data.ContinuousVariable;
 import org.drugis.addis.entities.data.DateWithNotes;
 import org.drugis.addis.entities.data.IdReference;
 import org.drugis.addis.entities.data.Measurements;
+import org.drugis.addis.entities.data.MetaAnalyses;
 import org.drugis.addis.entities.data.NameReference;
 import org.drugis.addis.entities.data.NameReferenceWithNotes;
 import org.drugis.addis.entities.data.Notes;
 import org.drugis.addis.entities.data.OutcomeMeasure;
+import org.drugis.addis.entities.data.OutcomeMeasuresReferences;
 import org.drugis.addis.entities.data.RateMeasurement;
 import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
@@ -89,7 +98,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.jgoodies.binding.beans.BeanUtils;
+import scala.actors.threadpool.Arrays;
+
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 public class JAXBConvertorTest {
@@ -750,9 +760,7 @@ public class JAXBConvertorTest {
 		study.getCharacteristics().setAllocation(allocationWithNotes(Allocation.RANDOMIZED));
 		
 		// Measurements
-		Measurements measurements = new Measurements();
-		List<org.drugis.addis.entities.data.Measurement> list = measurements.getMeasurement();
-		study.setMeasurements(measurements);
+		List<org.drugis.addis.entities.data.Measurement> list = study.getMeasurements().getMeasurement();
 		org.drugis.addis.entities.data.Measurement m1 = new org.drugis.addis.entities.data.Measurement();
 		m1.setArm(idReference(2));
 		m1.setStudyOutcomeMeasure(stringIdReference("endpoint-" + endpointName[0]));
@@ -822,6 +830,10 @@ public class JAXBConvertorTest {
 		chars.setTitle(stringWithNotes(title));
 		chars.setReferences(new References());
 		
+		// Measurements (empty)
+		Measurements measurements = new Measurements();
+		study.setMeasurements(measurements);
+		
 		return study;
 	}
 	
@@ -857,15 +869,47 @@ public class JAXBConvertorTest {
 		assertEntityEquals(study2, JAXBConvertor.convertStudy(study, domain));
 	}
 	
+	private class MetaAnalysisWithStudies {
+		public org.drugis.addis.entities.data.PairwiseMetaAnalysis d_pwma;
+		public org.drugis.addis.entities.data.NetworkMetaAnalysis d_nwma;
+		public List<org.drugis.addis.entities.data.Study> d_studies;
+		
+		public MetaAnalysisWithStudies(org.drugis.addis.entities.data.PairwiseMetaAnalysis ma, List<org.drugis.addis.entities.data.Study> s) {
+			d_pwma = ma;
+			d_studies = s;
+		}
+		
+		public MetaAnalysisWithStudies(org.drugis.addis.entities.data.NetworkMetaAnalysis ma, List<org.drugis.addis.entities.data.Study> s) {
+			d_nwma = ma;
+			d_studies = s;
+		}
+	}
+	
 	@Test
 	public void testConvertPairWiseMetaAnalysis() throws ConversionException {
 		DomainImpl domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
 		
+		String name = "Fluox-Venla Diarrhea for PMA";
+		
+		MetaAnalysisWithStudies ma = buildPairWiseMetaAnalysis(name);
+		
+		//-----------------------------------
+		Study study2 = JAXBConvertor.convertStudy(ma.d_studies.get(0), domain);
+		List<StudyArmsEntry> armsList = new ArrayList<StudyArmsEntry>();
+		armsList.add(new StudyArmsEntry(study2, study2.getArms().get(0), study2.getArms().get(1)));
+		domain.addStudy(study2);
+		
+		RandomEffectsMetaAnalysis pwma2 = new RandomEffectsMetaAnalysis(name, ExampleData.buildEndpointHamd(), armsList);
+		
+		assertEntityEquals(pwma2, JAXBConvertor.convertPairWiseMetaAnalysis(ma.d_pwma, domain));
+		
+	}
+
+	private MetaAnalysisWithStudies buildPairWiseMetaAnalysis(String name) {
 		String study_name = "My fancy pair-wise study";
 		org.drugis.addis.entities.data.Study study = buildStudy(study_name);
 
-		String name = "Fluox-Venla Diarrhea for PMA";	
 		org.drugis.addis.entities.data.PairwiseMetaAnalysis pwma = new org.drugis.addis.entities.data.PairwiseMetaAnalysis();
 		pwma.setName(name);		
 		pwma.setIndication(nameReference(ExampleData.buildIndicationDepression().getName()));
@@ -885,16 +929,8 @@ public class JAXBConvertorTest {
 		parox.setArms(paroxArms);
 		pwma.getAlternative().add(parox);
 		
-		//-----------------------------------
-		Study study2 = JAXBConvertor.convertStudy(study, domain);
-		List<StudyArmsEntry> armsList = new ArrayList<StudyArmsEntry>();
-		armsList.add(new StudyArmsEntry(study2, study2.getArms().get(0), study2.getArms().get(1)));
-		domain.addStudy(study2);
-		
-		RandomEffectsMetaAnalysis pwma2 = new RandomEffectsMetaAnalysis(name, ExampleData.buildEndpointHamd(), armsList);
-		
-		assertEntityEquals(pwma2, JAXBConvertor.convertPairWiseMetaAnalysis(pwma, domain));
-		
+		MetaAnalysisWithStudies ma = new MetaAnalysisWithStudies(pwma, Collections.singletonList(study));
+		return ma;
 	}
 
 	private ArmReference armReference(String study_name,
@@ -906,11 +942,47 @@ public class JAXBConvertorTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testConvertNetworkMetaAnalysis() throws Exception, InstantiationException, InvocationTargetException, NoSuchMethodException {
 		DomainImpl domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
+		String name = "CGI network meta-analysis";
 		
+		MetaAnalysisWithStudies ma = buildNetworkMetaAnalysis(name);
+		
+		List<Study> studies = new ArrayList<Study>();
+		for (org.drugis.addis.entities.data.Study study : ma.d_studies) {
+			Study studyEnt = JAXBConvertor.convertStudy(study, domain);
+			domain.addStudy(studyEnt);
+			studies.add(studyEnt);
+		}
+
+		List<Drug> drugs = new ArrayList<Drug>();
+		drugs.add(ExampleData.buildDrugFluoxetine());
+		drugs.add(ExampleData.buildDrugParoxetine());
+		drugs.add(ExampleData.buildDrugSertraline());
+		Map<Study, Map<Drug, Arm>> armMap = new HashMap<Study, Map<Drug,Arm>>();
+		Map<Drug, Arm> study1map = new HashMap<Drug, Arm>();
+		study1map.put(ExampleData.buildDrugFluoxetine(), studies.get(0).getArms().get(0));
+		study1map.put(ExampleData.buildDrugSertraline(), studies.get(0).getArms().get(1));
+		armMap.put(studies.get(0), study1map);
+		Map<Drug, Arm> study2map = new HashMap<Drug, Arm>();
+		study2map.put(ExampleData.buildDrugParoxetine(), studies.get(1).getArms().get(0));
+		study2map.put(ExampleData.buildDrugSertraline(), studies.get(1).getArms().get(1));
+		armMap.put(studies.get(1), study2map);
+		Map<Drug, Arm> study3map = new HashMap<Drug, Arm>();
+		study3map.put(ExampleData.buildDrugSertraline(), studies.get(2).getArms().get(0));
+		study3map.put(ExampleData.buildDrugParoxetine(), studies.get(2).getArms().get(1));
+		study3map.put(ExampleData.buildDrugFluoxetine(), studies.get(2).getArms().get(2));
+		armMap.put(studies.get(2), study3map);
+		
+		Collections.sort(studies); // So the reading *by definition* puts the studies in their natural order
+		NetworkMetaAnalysis expected = new NetworkMetaAnalysis(name, ExampleData.buildIndicationDepression(),
+				ExampleData.buildEndpointCgi(), studies, drugs, armMap);
+		
+		assertEntityEquals(expected, JAXBConvertor.convertNetworkMetaAnalysis(ma.d_nwma, domain));
+	}
+
+	private MetaAnalysisWithStudies buildNetworkMetaAnalysis(String name) {
 		String study_one = "A Network Meta analysis study ONE";
 		String study_two = "A Network Meta analysis study TWO";
 		String study_three = "A Network Meta analysis study THREE";
@@ -937,11 +1009,16 @@ public class JAXBConvertorTest {
 		org.drugis.addis.entities.data.Study study3 = buildStudySkeleton(study_three, study_three, 
 				indicationName, endpoints, new String[] {}, new String[] {}, arms3);
 
-		String name = "CGI network meta-analysis";	
 		org.drugis.addis.entities.data.NetworkMetaAnalysis nma = new org.drugis.addis.entities.data.NetworkMetaAnalysis();
 		nma.setName(name);		
 		nma.setIndication(nameReference(indicationName));
 		nma.setEndpoint(nameReference(ExampleData.buildEndpointCgi().getName()));
+		
+		List<org.drugis.addis.entities.data.Study> studiesl = new ArrayList<org.drugis.addis.entities.data.Study>();
+		studiesl.add(study1);
+		studiesl.add(study2);
+		studiesl.add(study3);
+
 		
 		// Fluoxetine
 		Alternative fluox = new Alternative();
@@ -969,56 +1046,88 @@ public class JAXBConvertorTest {
 		setr.setArms(sertrArms);
 		nma.getAlternative().add(setr);
 		
-		Study study1ent = JAXBConvertor.convertStudy(study1, domain);
-		domain.addStudy(study1ent);
-		Study study2ent = JAXBConvertor.convertStudy(study2, domain);
-		domain.addStudy(study2ent);
-		Study study3ent = JAXBConvertor.convertStudy(study3, domain);
-		domain.addStudy(study3ent);
+		return new MetaAnalysisWithStudies(nma, studiesl);
+	}
+	
+	@Test
+	public void testConvertMetaAnalyses() throws NullPointerException, ConversionException {
+		DomainImpl domain = new DomainImpl();
+		ExampleData.initDefaultData(domain);
 		
-		List<Study> studies = new ArrayList<Study>();
-		studies.add(study1ent);
-		studies.add(study2ent);
-		studies.add(study3ent);
-		List<Drug> drugs = new ArrayList<Drug>();
-		drugs.add(ExampleData.buildDrugFluoxetine());
-		drugs.add(ExampleData.buildDrugParoxetine());
-		drugs.add(ExampleData.buildDrugSertraline());
-		Map<Study, Map<Drug, Arm>> armMap = new HashMap<Study, Map<Drug,Arm>>();
-		Map<Drug, Arm> study1map = new HashMap<Drug, Arm>();
-		study1map.put(ExampleData.buildDrugFluoxetine(), study1ent.getArms().get(0));
-		study1map.put(ExampleData.buildDrugSertraline(), study1ent.getArms().get(1));
-		armMap.put(study1ent, study1map);
-		Map<Drug, Arm> study2map = new HashMap<Drug, Arm>();
-		study2map.put(ExampleData.buildDrugParoxetine(), study2ent.getArms().get(0));
-		study2map.put(ExampleData.buildDrugSertraline(), study2ent.getArms().get(1));
-		armMap.put(study2ent, study2map);
-		Map<Drug, Arm> study3map = new HashMap<Drug, Arm>();
-		study3map.put(ExampleData.buildDrugSertraline(), study3ent.getArms().get(0));
-		study3map.put(ExampleData.buildDrugParoxetine(), study3ent.getArms().get(1));
-		study3map.put(ExampleData.buildDrugFluoxetine(), study3ent.getArms().get(2));
-		armMap.put(study3ent, study3map);
-		NetworkMetaAnalysis expected = new NetworkMetaAnalysis(name, ExampleData.buildIndicationDepression(),
-				ExampleData.buildEndpointCgi(), studies, drugs, armMap);
+		MetaAnalyses analyses = new MetaAnalyses();
+		MetaAnalysisWithStudies ma1 = buildPairWiseMetaAnalysis("XXX");
+		analyses.getPairwiseMetaAnalysisOrNetworkMetaAnalysis().add(ma1.d_pwma);
+		MetaAnalysisWithStudies ma2 = buildNetworkMetaAnalysis("XXX 2");
+		analyses.getPairwiseMetaAnalysisOrNetworkMetaAnalysis().add(ma2.d_nwma);
 		
-		assertEntityEquals(expected, JAXBConvertor.convertNetworkMetaAnalysis(nma, domain));
+		addStudies(domain, ma1);
+		addStudies(domain, ma2);
+		
+		List<MetaAnalysis> expected = new ArrayList<MetaAnalysis>();
+		expected.add(JAXBConvertor.convertPairWiseMetaAnalysis(ma1.d_pwma, domain));
+		expected.add(JAXBConvertor.convertNetworkMetaAnalysis(ma2.d_nwma, domain));
+		
+		assertEntityEquals(expected, JAXBConvertor.convertMetaAnalyses(analyses, domain));
+	}
+
+	private void addStudies(DomainImpl domain, MetaAnalysisWithStudies ma1)
+			throws ConversionException {
+		for (org.drugis.addis.entities.data.Study study : ma1.d_studies) {
+			domain.addStudy(JAXBConvertor.convertStudy(study, domain));
+		}
 	}
 	
 	@Test
 	@Ignore
-	public void testConvertMetaAnalyses() {
-		fail();
-	}
+	public void testConvertStudyBenefitRiskAnalysis() throws ConversionException {
+		DomainImpl domain = new DomainImpl();
+		ExampleData.initDefaultData(domain);
+		domain.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
+		domain.addAdverseEvent(ExampleData.buildAdverseEventDiarrhea());
+		
+		String name = "BR Analysis";
+		String[] adverseEvents = {ExampleData.buildAdverseEventDiarrhea().getName(), ExampleData.buildAdverseEventConvulsion().getName() };
+		String[] endpoints = { ExampleData.buildEndpointCgi().getName(), ExampleData.buildEndpointHamd().getName() };
+		Arms arms = new Arms();
+		arms.getArm().add(buildFixedDoseArmData(1, 12, ExampleData.buildDrugFluoxetine().getName(), 13));
+		arms.getArm().add(buildFlexibleDoseArmData(2, 23, ExampleData.buildDrugParoxetine().getName(), 2, 45));
+		arms.getArm().add(buildFlexibleDoseArmData(3, 11, ExampleData.buildDrugParoxetine().getName(), 5, 12));
+		org.drugis.addis.entities.data.Study study = buildStudySkeleton("Study for Benefit-Risk", "HI", 
+				ExampleData.buildIndicationDepression().getName(),
+				endpoints, adverseEvents, new String[]{}, arms);
+		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br = new org.drugis.addis.entities.data.StudyBenefitRiskAnalysis();
+		
+		br.setName(name);
+		br.setIndication(nameReference(study.getIndication().getName()));
+		br.setStudy(nameReference(study.getName()));
+		br.setAnalysisType(AnalysisType.LyndOBrien);
+		br.setOutcomeMeasures(new OutcomeMeasuresReferences());
+		br.getOutcomeMeasures().getEndpoint().add(nameReference(endpoints[0]));
+		br.getOutcomeMeasures().getEndpoint().add(nameReference(adverseEvents[1]));
+		ArmReferences armRefs = new ArmReferences();
+		armRefs.getArm().add(armReference(study.getName(), arms.getArm().get(1)));
+		armRefs.getArm().add(armReference(study.getName(), arms.getArm().get(2)));
+		br.setArms(armRefs);
+		
+		Study convertStudy = JAXBConvertor.convertStudy(study, domain);
+		List<org.drugis.addis.entities.OutcomeMeasure> criteria = new ArrayList<org.drugis.addis.entities.OutcomeMeasure>();
+		criteria.add(ExampleData.buildEndpointCgi());
+		criteria.add(ExampleData.buildAdverseEventConvulsion());
+		
+		List<Arm> alternatives = new ArrayList<Arm>();
+		alternatives.add(convertStudy.getArms().get(1));
+		alternatives.add(convertStudy.getArms().get(2));
+		
+		StudyBenefitRiskAnalysis expected = new StudyBenefitRiskAnalysis(name, 
+				ExampleData.buildIndicationDepression(), convertStudy,
+				criteria , alternatives, AnalysisType.LyndOBrien);
+		
+		assertEntityEquals(expected, JAXBConvertor.convertStudyBenefitRiskAnalysis(br, domain));
+	}	
 	
 	@Test
 	@Ignore
 	public void testConvertMetaBenefitRiskAnalysis() {
-		fail();
-	}
-	
-	@Test
-	@Ignore
-	public void testConvertStudyBenefitRiskAnalysis() {
 		fail();
 	}
 	

@@ -86,6 +86,10 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		
 		setSampleSize();
 	}
+	
+	public AbstractMetaAnalysis(String name, Indication indication, OutcomeMeasure om, Map<Study, Map<Drug, Arm>> armMap) { 
+		this(name, indication, om, calculateStudies(armMap), calculateDrugs(armMap), armMap);
+	}
 
 	private void setSampleSize() {
 		for (Study s : d_studies) {
@@ -304,14 +308,25 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	};
 
 	private void calculateDerived() {
-		d_studies = new ArrayList<Study>(d_armMap.keySet());
-		Collections.sort(d_studies);
-		Set<Drug> drugs = new HashSet<Drug>();
-		for (Study s : d_studies) {
-			drugs.addAll(d_armMap.get(s).keySet());
-		}
-		d_drugs = new ArrayList<Drug>(drugs);
-		Collections.sort(d_drugs);
+		ArmMap armMap = d_armMap;
+		d_studies = calculateStudies(armMap);
+		d_drugs = calculateDrugs(armMap);
 		setSampleSize();
+	}
+
+	private static List<Drug> calculateDrugs(Map<Study, Map<Drug, Arm>> armMap) {
+		Set<Drug> drugs = new HashSet<Drug>();
+		for (Map<Drug, Arm> entry : armMap.values()) {
+			drugs.addAll(entry.keySet());
+		}
+		List<Drug> list = new ArrayList<Drug>(drugs);
+		Collections.sort(list);
+		return list;
+	}
+
+	private static List<Study> calculateStudies(Map<Study, Map<Drug, Arm>> armMap) {
+		ArrayList<Study> studies = new ArrayList<Study>(armMap.keySet());
+		Collections.sort(studies);
+		return studies;
 	}
 }

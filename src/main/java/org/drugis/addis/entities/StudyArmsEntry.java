@@ -25,17 +25,19 @@ package org.drugis.addis.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudyArmsEntry {
+public class StudyArmsEntry implements Comparable<StudyArmsEntry> {
 
 	private Study d_study;
 	private Arm d_base;
 	private Arm d_subject;
 
-	public StudyArmsEntry(Study study, Arm base, Arm subject){
+	public StudyArmsEntry(Study study, Arm base, Arm subject) {
 		d_study   = study;
 		d_base    = base;
 		d_subject = subject;
 		checkArms();
+		
+		
 	}
 	
 	private void checkArms() throws IllegalArgumentException {
@@ -66,5 +68,9 @@ public class StudyArmsEntry {
 		}
 		
 		return studyList;
+	}
+
+	public int compareTo(StudyArmsEntry o) {
+		return getStudy().compareTo(o.getStudy());
 	}
 }

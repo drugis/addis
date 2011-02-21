@@ -1,6 +1,7 @@
 package org.drugis.addis.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.FrequencyMeasurement;
@@ -35,12 +37,14 @@ import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.ArmReference;
 import org.drugis.addis.entities.data.Arms;
 import org.drugis.addis.entities.data.Category;
 import org.drugis.addis.entities.data.Characteristics;
 import org.drugis.addis.entities.data.Measurements;
+import org.drugis.addis.entities.data.MetaAnalyses;
 import org.drugis.addis.entities.data.NetworkMetaAnalysis;
 import org.drugis.addis.entities.data.OutcomeMeasure;
 import org.drugis.addis.entities.data.PairwiseMetaAnalysis;
@@ -78,6 +82,13 @@ public class JAXBConvertor {
 			newDomain.addStudy(convertStudy(s, newDomain));
 		}
 		// Meta-analyses
+		for(MetaAnalysis ma : convertMetaAnalyses(addisData.getMetaAnalyses(), newDomain)) {
+			try {
+				newDomain.addMetaAnalysis(ma);
+			} catch (EntityIdExistsException e) {
+				throw new ConversionException("Duplicate entity in XML: " + e);
+			}
+		}
 		// Benefit-risk analyses
 		return newDomain;	
 	}
@@ -389,13 +400,33 @@ public class JAXBConvertor {
 			studyArms.add(new StudyArmsEntry(study, base, subj));
 		}
 		
+		Collections.sort(studyArms);
+		
 		return new RandomEffectsMetaAnalysis(pwma.getName(), om, studyArms);
 	}
 	
-	public static MetaAnalysis convertNetworkMetaAnalysis(
-			NetworkMetaAnalysis nma, DomainImpl domain) {
-		// TODO Auto-generated method stub
-		return null;
+	public static MetaAnalysis convertNetworkMetaAnalysis(NetworkMetaAnalysis nma, Domain domain) throws ConversionException {
+		String name = nma.getName();
+		Indication indication = findIndication(domain, nma.getIndication().getName());
+		org.drugis.addis.entities.OutcomeMeasure om = findOutcomeMeasure(domain, nma);
+		List<Study> studies = new ArrayList<Study>();		
+		List<Drug> drugs = new ArrayList<Drug>();
+		Map<Study, Map<Drug, Arm>> armMap = new HashMap<Study, Map<Drug,Arm>>();
+		for (org.drugis.addis.entities.data.Alternative a : nma.getAlternative()) {
+			Drug drug = findDrug(domain, a.getDrug().getName());
+			drugs.add(drug);
+			for (ArmReference armRef : a.getArms().getArm()) {
+				Study study = findStudy(armRef.getStudy(), domain);
+				if (!studies.contains(study)) {
+					studies.add(study);
+					armMap.put(study, new HashMap<Drug, Arm>());
+				}
+				Arm arm = findArm(study, armRef.getId());
+				armMap.get(study).put(drug, arm);
+			}
+		}
+
+		return new org.drugis.addis.entities.analysis.NetworkMetaAnalysis(name, indication, om, armMap);
 	}
 
 	private static Arm findArm(Study study, Integer id) {
@@ -419,5 +450,26 @@ public class JAXBConvertor {
 			throw new ConversionException("MetaAnalysis has unsupported OutcomeMeasure: " + ma);
 		}
 		return om;
+	}
+
+	public static List<MetaAnalysis> convertMetaAnalyses(MetaAnalyses analyses, Domain domain) throws ConversionException {
+		List<MetaAnalysis> list = new ArrayList<MetaAnalysis>();
+		
+		for(org.drugis.addis.entities.data.MetaAnalysis ma : analyses.getPairwiseMetaAnalysisOrNetworkMetaAnalysis()) {
+			if(ma instanceof NetworkMetaAnalysis) {
+				list.add(convertNetworkMetaAnalysis((NetworkMetaAnalysis)ma, domain));
+			}else if(ma instanceof PairwiseMetaAnalysis) {
+				list.add(convertPairWiseMetaAnalysis((PairwiseMetaAnalysis)ma, domain));
+			}else {
+				throw new ConversionException("Unsupported MetaAnalysis Type" + ma);
+			}
+		}
+		return list;
+	}
+
+	public static StudyBenefitRiskAnalysis convertStudyBenefitRiskAnalysis(
+			org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br, DomainImpl domain) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
