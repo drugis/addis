@@ -20,7 +20,6 @@ import java.util.Random;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
@@ -40,6 +39,8 @@ import org.drugis.addis.entities.DomainData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.FrequencyMeasurement;
@@ -59,7 +60,9 @@ import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.Variable.Type;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
@@ -70,16 +73,18 @@ import org.drugis.addis.entities.data.AnalysisArms;
 import org.drugis.addis.entities.data.ArmReference;
 import org.drugis.addis.entities.data.ArmReferences;
 import org.drugis.addis.entities.data.Arms;
-import org.drugis.addis.entities.data.BenefitRiskAnalysisType;
+import org.drugis.addis.entities.data.BenefitRiskAnalyses;
 import org.drugis.addis.entities.data.CategoricalVariable;
 import org.drugis.addis.entities.data.Category;
 import org.drugis.addis.entities.data.Characteristics;
 import org.drugis.addis.entities.data.ContinuousMeasurement;
 import org.drugis.addis.entities.data.ContinuousVariable;
 import org.drugis.addis.entities.data.DateWithNotes;
+import org.drugis.addis.entities.data.DrugReferences;
 import org.drugis.addis.entities.data.IdReference;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
+import org.drugis.addis.entities.data.MetaAnalysisReferences;
 import org.drugis.addis.entities.data.NameReference;
 import org.drugis.addis.entities.data.NameReferenceWithNotes;
 import org.drugis.addis.entities.data.Notes;
@@ -97,8 +102,6 @@ import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import scala.actors.threadpool.Arrays;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
@@ -1078,7 +1081,6 @@ public class JAXBConvertorTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testConvertStudyBenefitRiskAnalysis() throws ConversionException {
 		DomainImpl domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
@@ -1095,21 +1097,13 @@ public class JAXBConvertorTest {
 		org.drugis.addis.entities.data.Study study = buildStudySkeleton("Study for Benefit-Risk", "HI", 
 				ExampleData.buildIndicationDepression().getName(),
 				endpoints, adverseEvents, new String[]{}, arms);
-		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br = new org.drugis.addis.entities.data.StudyBenefitRiskAnalysis();
 		
-		br.setName(name);
-		br.setIndication(nameReference(study.getIndication().getName()));
-		br.setStudy(nameReference(study.getName()));
-		br.setAnalysisType(AnalysisType.LyndOBrien);
-		br.setOutcomeMeasures(new OutcomeMeasuresReferences());
-		br.getOutcomeMeasures().getEndpoint().add(nameReference(endpoints[0]));
-		br.getOutcomeMeasures().getEndpoint().add(nameReference(adverseEvents[1]));
-		ArmReferences armRefs = new ArmReferences();
-		armRefs.getArm().add(armReference(study.getName(), arms.getArm().get(1)));
-		armRefs.getArm().add(armReference(study.getName(), arms.getArm().get(2)));
-		br.setArms(armRefs);
+		Integer[] armIds = { 1, 2 };
+		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br = buildStudyBR(
+				name, study, endpoints, adverseEvents, armIds);
 		
 		Study convertStudy = JAXBConvertor.convertStudy(study, domain);
+		domain.addStudy(convertStudy);
 		List<org.drugis.addis.entities.OutcomeMeasure> criteria = new ArrayList<org.drugis.addis.entities.OutcomeMeasure>();
 		criteria.add(ExampleData.buildEndpointCgi());
 		criteria.add(ExampleData.buildAdverseEventConvulsion());
@@ -1123,18 +1117,130 @@ public class JAXBConvertorTest {
 				criteria , alternatives, AnalysisType.LyndOBrien);
 		
 		assertEntityEquals(expected, JAXBConvertor.convertStudyBenefitRiskAnalysis(br, domain));
+	}
+
+	private org.drugis.addis.entities.data.StudyBenefitRiskAnalysis buildStudyBR(
+			String name, org.drugis.addis.entities.data.Study study,
+			String[] endpoints, String[] adverseEvents, Integer[] armIds) {
+		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br = new org.drugis.addis.entities.data.StudyBenefitRiskAnalysis();
+		br.setName(name);
+		br.setIndication(nameReference(study.getIndication().getName()));
+		br.setStudy(nameReference(study.getName()));
+		br.setAnalysisType(AnalysisType.LyndOBrien);
+		br.setOutcomeMeasures(new OutcomeMeasuresReferences());
+		br.getOutcomeMeasures().getEndpoint().add(nameReference(endpoints[0]));
+		br.getOutcomeMeasures().getAdverseEvent().add(nameReference(adverseEvents[1]));
+		ArmReferences armRefs = new ArmReferences();
+		for (Integer id : armIds) {
+			armRefs.getArm().add(armReference(study.getName(), study.getArms().getArm().get(id)));
+		}
+		br.setArms(armRefs);
+		return br;
 	}	
 	
 	@Test
-	@Ignore
-	public void testConvertMetaBenefitRiskAnalysis() {
-		fail();
+	public void testConvertMetaBenefitRiskAnalysis() throws ConversionException, NullPointerException, IllegalArgumentException, EntityIdExistsException {
+		DomainImpl domain = new DomainImpl();
+		ExampleData.initDefaultData(domain);
+		domain.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
+		domain.addAdverseEvent(ExampleData.buildAdverseEventDiarrhea());
+		
+		String name = "Meta Benefit-Risk Analysis Test";
+		// create entities
+		String pairWiseName = "First Pair-Wise";
+		String networkMetaName = "Second Network Meta Analysis";
+		MetaAnalysisWithStudies ma1 = buildPairWiseMetaAnalysis(pairWiseName);
+		MetaAnalysisWithStudies ma2 = buildNetworkMetaAnalysis(networkMetaName);
+		
+		// add to the domain
+		addStudies(domain, ma1);
+		addStudies(domain, ma2);
+		RandomEffectsMetaAnalysis ma1ent = JAXBConvertor.convertPairWiseMetaAnalysis(ma1.d_pwma, domain);
+		domain.addMetaAnalysis(ma1ent);
+		MetaAnalysis ma2ent = JAXBConvertor.convertNetworkMetaAnalysis(ma2.d_nwma, domain);
+		domain.addMetaAnalysis(ma2ent);
+		
+		// create BR analysis
+		String[] drugs = { ma1.d_pwma.getAlternative().get(0).getDrug().getName(), ma1.d_pwma.getAlternative().get(1).getDrug().getName() };
+		String indication = ma1.d_pwma.getIndication().getName();
+		String[] meta = { pairWiseName, networkMetaName };
+		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis br = buildMetaBR(
+				name, drugs, indication, meta);
+
+		List<MetaAnalysis> metaList = new ArrayList<MetaAnalysis>();
+		metaList.add(ma1ent);
+		metaList.add(ma2ent);
+		
+		MetaBenefitRiskAnalysis expected = new MetaBenefitRiskAnalysis(name, ma1ent.getIndication(), metaList , ma1ent.getIncludedDrugs().get(0), 
+				ma1ent.getIncludedDrugs(), AnalysisType.SMAA);
+		assertEntityEquals(expected, JAXBConvertor.convertMetaBenefitRiskAnalysis(br, domain));
+	}
+
+	private org.drugis.addis.entities.data.MetaBenefitRiskAnalysis buildMetaBR(
+			String name, String[] drugs, String indication, String[] meta) {
+		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis br = new org.drugis.addis.entities.data.MetaBenefitRiskAnalysis();
+		br.setName(name);
+		br.setAnalysisType(AnalysisType.SMAA);
+		br.setIndication(nameReference(indication));
+		br.setBaseline(nameReference(drugs[0]));
+		DrugReferences dRef = new DrugReferences();
+		dRef.getDrug().add(nameReference(drugs[0]));
+		dRef.getDrug().add(nameReference(drugs[1]));
+		br.setDrugs(dRef);
+		MetaAnalysisReferences mRefs = new MetaAnalysisReferences();
+		for (String mName : meta) {
+			mRefs.getMetaAnalysis().add(nameReference(mName));
+		}
+		br.setMetaAnalyses(mRefs);
+		return br;
 	}
 	
 	@Test
-	@Ignore
-	public void testConvertBenefitRiskAnalyses() {
-		fail();
+	public void testConvertBenefitRiskAnalyses() throws ConversionException, EntityIdExistsException {
+		DomainImpl domain = new DomainImpl();
+		ExampleData.initDefaultData(domain);
+		domain.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
+		domain.addAdverseEvent(ExampleData.buildAdverseEventDiarrhea());
+		
+		String name = "BR Analysis";
+		String[] adverseEvents = {ExampleData.buildAdverseEventDiarrhea().getName(), ExampleData.buildAdverseEventConvulsion().getName() };
+		String[] endpoints = { ExampleData.buildEndpointCgi().getName(), ExampleData.buildEndpointHamd().getName() };
+		Arms arms = new Arms();
+		arms.getArm().add(buildFixedDoseArmData(1, 12, ExampleData.buildDrugFluoxetine().getName(), 13));
+		arms.getArm().add(buildFlexibleDoseArmData(2, 23, ExampleData.buildDrugParoxetine().getName(), 2, 45));
+		arms.getArm().add(buildFlexibleDoseArmData(3, 11, ExampleData.buildDrugParoxetine().getName(), 5, 12));
+		org.drugis.addis.entities.data.Study study = buildStudySkeleton("Study for Benefit-Risk", "HI", 
+				ExampleData.buildIndicationDepression().getName(),
+				endpoints, adverseEvents, new String[]{}, arms);
+		
+		Integer[] armIds = { 1, 2 };
+		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis studyBR = buildStudyBR(
+				name, study, endpoints, adverseEvents, armIds);
+		
+		Study convertStudy = JAXBConvertor.convertStudy(study, domain);
+		domain.addStudy(convertStudy);
+		
+		String pwName = "pairwise MA";
+		String nwName = "network MA";
+		MetaAnalysisWithStudies pairWiseMetaAnalysis = buildPairWiseMetaAnalysis(pwName);
+		MetaAnalysisWithStudies networkMetaAnalysis = buildNetworkMetaAnalysis(nwName);
+		addStudies(domain, pairWiseMetaAnalysis);
+		domain.addMetaAnalysis(JAXBConvertor.convertPairWiseMetaAnalysis(pairWiseMetaAnalysis.d_pwma, domain));
+		addStudies(domain, networkMetaAnalysis);
+		domain.addMetaAnalysis(JAXBConvertor.convertNetworkMetaAnalysis(networkMetaAnalysis.d_nwma, domain));
+		
+		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis metaBR = buildMetaBR("Meta BR", new String[] { ExampleData.buildDrugFluoxetine().getName(), ExampleData.buildDrugParoxetine().getName() }, 
+				ExampleData.buildIndicationDepression().getName(),
+				new String[] { pwName, nwName });
+		
+		BenefitRiskAnalyses analyses = new BenefitRiskAnalyses();
+		analyses.getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis().add(metaBR);
+		analyses.getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis().add(studyBR);
+		
+		List<BenefitRiskAnalysis<?>> expected = new ArrayList<BenefitRiskAnalysis<?>>();
+		expected.add(JAXBConvertor.convertMetaBenefitRiskAnalysis(metaBR, domain));
+		expected.add(JAXBConvertor.convertStudyBenefitRiskAnalysis(studyBR, domain));
+		assertEntityEquals(expected, JAXBConvertor.convertBenefitRiskAnalyses(analyses, domain));
 	}
 	
 	@Test
