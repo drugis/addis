@@ -541,12 +541,10 @@
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="OutcomeMeasuresReferences">
-		<xs:sequence maxOccurs="unbounded">
-			<xs:choice>
-				<xs:element name="adverseEvent" type="NameReference"/>
-				<xs:element name="endpoint" type="NameReference"/>
-				<xs:element name="populationCharacteristic" type="NameReference"/>
-			</xs:choice>
+		<xs:sequence>
+			<xs:element name="adverseEvent" type="NameReference" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="endpoint" type="NameReference" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="populationCharacteristic" type="NameReference" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	

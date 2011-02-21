@@ -27,5 +27,10 @@
 			<javaType name="org.drugis.addis.entities.Source" parseMethod="valueOf" printMethod="name" />
 		</bindings>
 
+		<!-- Benefit risk -->
+    <bindings node="//xs:simpleType[@name='BenefitRiskAnalysisType']">
+			<javaType name="org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType" parseMethod="valueOf" printMethod="name" />
+		</bindings>
+
 	</bindings>
 </bindings>
