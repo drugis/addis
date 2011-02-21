@@ -33,6 +33,7 @@ import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.Variable.Type;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.ArmReference;
@@ -40,6 +41,7 @@ import org.drugis.addis.entities.data.Arms;
 import org.drugis.addis.entities.data.Category;
 import org.drugis.addis.entities.data.Characteristics;
 import org.drugis.addis.entities.data.Measurements;
+import org.drugis.addis.entities.data.NetworkMetaAnalysis;
 import org.drugis.addis.entities.data.OutcomeMeasure;
 import org.drugis.addis.entities.data.PairwiseMetaAnalysis;
 import org.drugis.addis.entities.data.References;
@@ -384,11 +386,16 @@ public class JAXBConvertor {
 			Study study = findStudy(baseArms.get(i).getStudy(), domain);
 			Arm base = findArm(study, baseArms.get(i).getId());
 			Arm subj = findArm(study, subjArms.get(i).getId());
-			StudyArmsEntry e = new StudyArmsEntry(study, base, subj);
-			studyArms.add(e);
+			studyArms.add(new StudyArmsEntry(study, base, subj));
 		}
 		
 		return new RandomEffectsMetaAnalysis(pwma.getName(), om, studyArms);
+	}
+	
+	public static MetaAnalysis convertNetworkMetaAnalysis(
+			NetworkMetaAnalysis nma, DomainImpl domain) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private static Arm findArm(Study study, Integer id) {
