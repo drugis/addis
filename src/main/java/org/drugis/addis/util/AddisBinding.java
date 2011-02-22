@@ -22,8 +22,6 @@
 
 package org.drugis.addis.util;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,9 +32,6 @@ import java.util.TreeSet;
 
 import javolution.xml.XMLBinding;
 import javolution.xml.XMLFormat;
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
-import javolution.xml.XMLReferenceResolver;
 import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.entities.AdverseEvent;
@@ -73,25 +68,6 @@ public class AddisBinding extends XMLBinding {
 
 	public AddisBinding() {
 		setAliases();
-	}
-
-	public static Object readModel(InputStream is) throws XMLStreamException {
-		XMLObjectReader reader = new XMLObjectReader().setInput(is).setBinding(new AddisBinding());
-		reader.setReferenceResolver(new XMLReferenceResolver());
-		return reader.read();
-	}
-
-	public static void writeModel(Object model, OutputStream os) throws XMLStreamException {
-		XMLObjectWriter writer = new XMLObjectWriter().setOutput(os).setBinding(new AddisBinding());
-		writer.setReferenceResolver(new XMLReferenceResolver());		
-		writer.setIndentation("\t");
-//		The top level cannot be aliased, that's why its being renamed here (in JSMAA)
-		if (model instanceof DomainData) {
-			writer.write((DomainData) model, "ADDIS-Domain", DomainData.class);
-		} else {
-			writer.write(model, "Addis-model", Object.class);
-		}
-		writer.close();
 	}
 	
 	private void setAliases() {

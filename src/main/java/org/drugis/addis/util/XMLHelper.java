@@ -22,43 +22,56 @@
 
 package org.drugis.addis.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.StringReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 
-import org.drugis.addis.entities.DomainData;
-
-import javolution.io.AppendableWriter;
-import javolution.text.TextBuilder;
 import javolution.xml.XMLObjectReader;
 import javolution.xml.XMLObjectWriter;
 import javolution.xml.XMLReferenceResolver;
 import javolution.xml.stream.XMLStreamException;
 
+import org.drugis.addis.entities.DomainData;
+
 public class XMLHelper {
 
-	public static <T> String toXml(T obj, Class<T> cls) throws XMLStreamException {	     
-	    TextBuilder xml = TextBuilder.newInstance();
-	    AppendableWriter out = new AppendableWriter().setOutput(xml);
-		XMLObjectWriter writer = new XMLObjectWriter().setOutput(out).setBinding(new AddisBinding());
-		writer.setReferenceResolver(new XMLReferenceResolver());		
+	public static <T> String toXml(T obj, Class<T> cls) throws XMLStreamException {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		toXml(obj, cls, out);
+		try {
+			return out.toString("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static <T> void toXml(T obj, Class<T> cls, OutputStream out)
+			throws XMLStreamException {
+		XMLObjectWriter writer = XMLObjectWriter.newInstance(out, "UTF-8");
+		writer.setBinding(new AddisBinding());
+		writer.setReferenceResolver(new XMLReferenceResolver());
 		writer.setIndentation("\t");
 		if (cls.equals(DomainData.class))
 			writer.write(obj, "addis-data", cls);
 		else
 			writer.write(obj, cls.getCanonicalName(), cls);
 		writer.close();
-		return xml.toString();
 	}
 
-	public static <T> T fromXml(String xml) throws XMLStreamException {	     
-		StringReader sreader = new StringReader(xml);
-		XMLObjectReader reader = new XMLObjectReader().setInput(sreader).setBinding(new AddisBinding());
-		reader.setReferenceResolver(new XMLReferenceResolver());
-		return reader.<T>read();
+	public static <T> T fromXml(String xml) throws XMLStreamException {
+		try {
+			ByteArrayInputStream is = new ByteArrayInputStream(xml.getBytes("UTF-8"));
+			return fromXml(is);
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
-	public static <T> T fromXml(InputStream xmlStream) throws XMLStreamException {	     
-		XMLObjectReader reader = new XMLObjectReader().setInput(xmlStream).setBinding(new AddisBinding());
+	public static <T> T fromXml(InputStream xmlStream) throws XMLStreamException {
+		XMLObjectReader reader = XMLObjectReader.newInstance(xmlStream, "UTF-8");
+		reader.setBinding(new AddisBinding());
 		reader.setReferenceResolver(new XMLReferenceResolver());
 		return reader.<T>read();
 	}
