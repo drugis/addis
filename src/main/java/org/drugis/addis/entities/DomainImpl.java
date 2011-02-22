@@ -117,8 +117,7 @@ public class DomainImpl implements Domain {
 	public void saveXMLDomainData(OutputStream os)
 	throws IOException {
 		try {
-			String s = XMLHelper.toXml(d_domainData, DomainData.class);
-			os.write(s.getBytes());
+			XMLHelper.toXml(d_domainData, DomainData.class, os);
 		} catch (XMLStreamException e) {
 			e.printStackTrace();
 		}

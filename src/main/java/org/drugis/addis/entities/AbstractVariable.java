@@ -100,21 +100,16 @@ public abstract class AbstractVariable extends AbstractEntity implements Variabl
 	
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof OutcomeMeasure) {
-			if (!(this instanceof OutcomeMeasure)) {
-				return false;
-			}
-			OutcomeMeasure other = (OutcomeMeasure)o;
-			return EqualsUtil.equal(other.getName(), getName()); 
+		if (o instanceof Variable) {
+			Variable other = (Variable) o;
+			return EqualsUtil.equal(other.getName(), getName());
 		}
-		if (o instanceof PopulationCharacteristic) {
-			if (!(this instanceof PopulationCharacteristic)) {
-				return false;
-			}
-			PopulationCharacteristic other = (PopulationCharacteristic)o;
-			return EqualsUtil.equal(other.getName(), getName()); 
-		}
-		return false;		
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return getName().hashCode();
 	}
 
 	public BasicMeasurement buildMeasurement(Arm a) {

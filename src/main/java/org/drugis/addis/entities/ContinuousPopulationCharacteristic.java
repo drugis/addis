@@ -22,6 +22,9 @@
 
 package org.drugis.addis.entities;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 
 public class ContinuousPopulationCharacteristic extends AbstractVariable implements PopulationCharacteristic {
 
@@ -32,4 +35,24 @@ public class ContinuousPopulationCharacteristic extends AbstractVariable impleme
 	public ContinuousPopulationCharacteristic(String name) {
 		super(name, Type.CONTINUOUS);
 	}
+	
+	protected static final XMLFormat<ContinuousPopulationCharacteristic> CONT_PC_XML = 
+		new XMLFormat<ContinuousPopulationCharacteristic>(ContinuousPopulationCharacteristic.class) {
+
+		@Override
+		public void read(InputElement ie, ContinuousPopulationCharacteristic cpc) throws XMLStreamException {
+			cpc.setDescription(ie.getAttribute(PROPERTY_DESCRIPTION, null));
+			cpc.setName(ie.getAttribute(PROPERTY_NAME, null));
+			// read unused unit of measurement attribute for legacy xml
+			cpc.setUnitOfMeasurement(ie.getAttribute(PROPERTY_UNIT_OF_MEASUREMENT, null));
+			if (ie.hasNext()) { ie.get("type", String.class); }
+		}
+
+		@Override
+		public void write(ContinuousPopulationCharacteristic cpc, OutputElement oe) throws XMLStreamException {
+			oe.setAttribute(PROPERTY_DESCRIPTION, cpc.getDescription());
+			oe.setAttribute(PROPERTY_NAME, cpc.getName());
+			oe.setAttribute(PROPERTY_UNIT_OF_MEASUREMENT, cpc.getUnitOfMeasurement());
+		}
+	};
 }

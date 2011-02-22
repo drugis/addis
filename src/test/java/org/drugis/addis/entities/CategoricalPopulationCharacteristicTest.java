@@ -75,7 +75,8 @@ public class CategoricalPopulationCharacteristicTest {
 	@Test
 	public void testEquals() {
 		CategoricalPopulationCharacteristic gender2 = new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
-		assertTrue(gender2.equals(d_gender));
+		assertEquals(d_gender, gender2);
+		assertEquals(d_gender.hashCode(), gender2.hashCode());
 		
 		gender2 = new CategoricalPopulationCharacteristic("Gender2", new String[]{"Male", "Female"});
 		assertFalse(gender2.equals(d_gender));
@@ -91,6 +92,19 @@ public class CategoricalPopulationCharacteristicTest {
 		CategoricalPopulationCharacteristic gender = new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
 		String xml = XMLHelper.toXml(gender, CategoricalPopulationCharacteristic.class);
 		CategoricalPopulationCharacteristic objFromXml = XMLHelper.fromXml(xml);
+		assertEntityEquals(gender, objFromXml);
+	}
+	
+	private static final String s_legacyXML = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" +
+		"<org.drugis.addis.entities.CategoricalPopulationCharacteristic description=\"\" name=\"Gender\">" +
+			"<categories><string value=\"Male\"/><string value=\"Female\"/></categories>" +
+			"<type value=\"CATEGORICAL\"/>" +
+		"</org.drugis.addis.entities.CategoricalPopulationCharacteristic>";
+	
+	@Test
+	public void testLegacyXML() throws XMLStreamException {
+		CategoricalPopulationCharacteristic gender = new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
+		CategoricalPopulationCharacteristic objFromXml = XMLHelper.fromXml(s_legacyXML);
 		assertEntityEquals(gender, objFromXml);
 	}
 	

@@ -71,11 +71,6 @@ public class CategoricalPopulationCharacteristic extends AbstractVariable implem
 	}
 
 	@Override
-	public int compareTo(Variable other) {
-		return getName().compareTo(other.getName());
-	}
-
-	@Override
 	public FrequencyMeasurement buildMeasurement(int size) {
 		FrequencyMeasurement m = new FrequencyMeasurement(this);
 		m.setSampleSize(size);
@@ -91,19 +86,27 @@ public class CategoricalPopulationCharacteristic extends AbstractVariable implem
 			}
 	});
 	
+	@SuppressWarnings("unchecked")
+	private List<PropertyDefinition> d_legacyPropDefs = Arrays.asList(new PropertyDefinition[]{
+		new PropertyDefinition<String>("type", String.class) {
+			public String getValue() { return null; }
+			public void setValue(Object val) { }
+		}
+	});
+	
 	protected static final XMLFormat<CategoricalPopulationCharacteristic> CPC_XML = 
 		new XMLFormat<CategoricalPopulationCharacteristic>(CategoricalPopulationCharacteristic.class) {
-
-		@Override
-		public boolean isReferenceable() { return false; }
 		
+		@SuppressWarnings("unchecked")
 		@Override
 		public void read(InputElement ie, CategoricalPopulationCharacteristic cpc) throws XMLStreamException {
+			List<PropertyDefinition> propDefs = new ArrayList<PropertyDefinition>(cpc.d_propDefs);
+			propDefs.addAll(cpc.d_legacyPropDefs);
 			cpc.setDescription(ie.getAttribute(PROPERTY_DESCRIPTION, null));
 			cpc.setName(ie.getAttribute(PROPERTY_NAME, null));
-			// read unused unit of measurement attribute for legacy xml
-			ie.getAttribute(PROPERTY_UNIT_OF_MEASUREMENT, null); 
-			XMLPropertiesFormat.readProperties(ie, cpc.d_propDefs);
+			ie.getAttribute(PROPERTY_UNIT_OF_MEASUREMENT, null); // read unused unit of measurement attribute for legacy xml
+
+			XMLPropertiesFormat.readProperties(ie, propDefs);
 		}
 
 		@Override
