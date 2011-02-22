@@ -66,7 +66,6 @@ public class ContinuousPopulationCharacteristicTest {
 	public void testXML() throws XMLStreamException {
 		ContinuousPopulationCharacteristic age = buildAge();
 		String xml = XMLHelper.toXml(age, ContinuousPopulationCharacteristic.class);
-		System.out.println(xml);
 		ContinuousPopulationCharacteristic objFromXml = XMLHelper.fromXml(xml);
 		assertEntityEquals(age, objFromXml);
 	}
