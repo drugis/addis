@@ -6,6 +6,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -22,9 +26,13 @@ import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 
 import javolution.xml.stream.XMLStreamException;
 
+import org.apache.xalan.xsltc.trax.TransformerFactoryImpl;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
@@ -1250,12 +1258,12 @@ public class JAXBConvertorTest {
 	}
 	
 	@Test
-	@Ignore
+	
 	// ACCEPTANCE TEST -- should be replaced by something nicer so we can remove the Javalution support.
-	public void testAddisDataToDomainData() throws JAXBException, XMLStreamException, ConversionException {
-		InputStream xmlStream = getClass().getResourceAsStream("defaultData.xml");
+	public void testAddisDataToDomainData() throws Exception {
+		InputStream xmlStream = getClass().getResourceAsStream("../defaultData.xml");
 		assertNotNull(xmlStream);
-		InputStream transformedXmlStream = getClass().getResourceAsStream("defaulttransformed.xml");
+		InputStream transformedXmlStream = getTransformed();
 		assertNotNull(transformedXmlStream);
 		DomainData importedDomainData = (DomainData)XMLHelper.fromXml(xmlStream);
 		Domain importedDomain = new DomainImpl(importedDomainData);
@@ -1263,5 +1271,22 @@ public class JAXBConvertorTest {
 		AddisData data = (AddisData) d_unmarshaller.unmarshal(transformedXmlStream);
 		Domain domainData = JAXBConvertor.addisDataToDomain(data);
 		assertDomainEquals(importedDomain, domainData);
+	}
+	
+	private InputStream getTransformed() throws TransformerException, IOException {
+		TransformerFactory factory = TransformerFactoryImpl.newInstance();
+		InputStream xmlFile = getClass().getResourceAsStream("../defaultData.xml");
+		InputStream xslFile = getClass().getResourceAsStream("../entities/transform-0-1.xslt");
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		
+	    javax.xml.transform.Source xmlSource = new javax.xml.transform.stream.StreamSource(xmlFile);
+	    javax.xml.transform.Source xsltSource = new javax.xml.transform.stream.StreamSource(xslFile);
+	    javax.xml.transform.Result result = new javax.xml.transform.stream.StreamResult(os);
+	    
+	    javax.xml.transform.Transformer trans = factory.newTransformer(xsltSource);
+	    trans.transform(xmlSource, result);
+	    os.close();
+	    
+	    return new ByteArrayInputStream(os.toByteArray());
 	}
 }
