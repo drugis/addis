@@ -114,7 +114,12 @@ public abstract class AbstractVariable extends AbstractEntity implements Variabl
 			PopulationCharacteristic other = (PopulationCharacteristic)o;
 			return EqualsUtil.equal(other.getName(), getName()); 
 		}
-		return false;		
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return getName().hashCode();
 	}
 
 	public BasicMeasurement buildMeasurement(Arm a) {

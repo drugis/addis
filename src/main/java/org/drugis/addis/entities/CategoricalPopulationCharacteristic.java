@@ -71,11 +71,6 @@ public class CategoricalPopulationCharacteristic extends AbstractVariable implem
 	}
 
 	@Override
-	public int compareTo(Variable other) {
-		return getName().compareTo(other.getName());
-	}
-
-	@Override
 	public FrequencyMeasurement buildMeasurement(int size) {
 		FrequencyMeasurement m = new FrequencyMeasurement(this);
 		m.setSampleSize(size);
@@ -101,9 +96,6 @@ public class CategoricalPopulationCharacteristic extends AbstractVariable implem
 	
 	protected static final XMLFormat<CategoricalPopulationCharacteristic> CPC_XML = 
 		new XMLFormat<CategoricalPopulationCharacteristic>(CategoricalPopulationCharacteristic.class) {
-
-		@Override
-		public boolean isReferenceable() { return false; }
 		
 		@SuppressWarnings("unchecked")
 		@Override

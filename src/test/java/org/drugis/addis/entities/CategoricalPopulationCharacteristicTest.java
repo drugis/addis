@@ -75,7 +75,8 @@ public class CategoricalPopulationCharacteristicTest {
 	@Test
 	public void testEquals() {
 		CategoricalPopulationCharacteristic gender2 = new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
-		assertTrue(gender2.equals(d_gender));
+		assertEquals(d_gender, gender2);
+		assertEquals(d_gender.hashCode(), gender2.hashCode());
 		
 		gender2 = new CategoricalPopulationCharacteristic("Gender2", new String[]{"Male", "Female"});
 		assertFalse(gender2.equals(d_gender));
