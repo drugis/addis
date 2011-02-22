@@ -172,6 +172,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		d_indication = i;
 		setArms(new ArrayList<Arm>());
 		setCharacteristic(BasicStudyCharacteristic.CREATION_DATE, DateUtil.getCurrentDateWithoutTime());
+		setCharacteristic(BasicStudyCharacteristic.TITLE, "");
+		setCharacteristic(BasicStudyCharacteristic.PUBMED, new PubMedIdList());
 	}
 
 	public List<Arm> getArms() {
