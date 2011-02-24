@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.print.attribute.standard.Fidelity;
-
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
@@ -524,6 +522,7 @@ public class JAXBConvertor {
 		for (NameReference ref : br.getMetaAnalyses().getMetaAnalysis()) {
 			metaAnalysis.add(findMetaAnalysis(domain, ref.getName()));
 		}
+		drugs.remove(baseline);
 		return new MetaBenefitRiskAnalysis(br.getName(), indication, metaAnalysis, baseline, drugs, br.getAnalysisType());
 	}
 

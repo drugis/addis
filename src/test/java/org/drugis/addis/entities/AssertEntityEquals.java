@@ -24,6 +24,7 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -50,9 +51,9 @@ public class AssertEntityEquals {
 	}
 
 	public static void assertEntityEquals(OutcomeMeasure expected, OutcomeMeasure actual) {
-		assertEquals(expected.getDirection(),actual.getDirection());
-		assertEquals(expected.getType(),actual.getType());
 		assertEquals(expected, actual);
+		assertEquals(expected.getType(),actual.getType());
+		assertEquals(expected.getDirection(),actual.getDirection());
 	}
 	
 	public static void assertEntityEquals(Drug expected, Drug actual) {
@@ -196,7 +197,12 @@ public class AssertEntityEquals {
 		for (int i = 0; i < expected.getAlternatives().size(); ++i) {
 			assertEntityEquals(expected.getAlternatives().get(i), actual.getAlternatives().get(i));
 		}
-		assertEquals(expected.getCriteria(), actual.getCriteria());
+		assertEquals(expected.getCriteria().size(), actual.getCriteria().size());
+		for (int i = 0; i < expected.getCriteria().size(); ++i) {
+			assertEntityEquals(expected.getCriteria().get(i), actual.getCriteria().get(i));
+		}
+		
+		
 	}
 	
 	public static void assertEntityEquals(Entity expected, Entity actual){

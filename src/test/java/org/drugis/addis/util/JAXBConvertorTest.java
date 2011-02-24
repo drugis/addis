@@ -8,7 +8,6 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -26,13 +25,9 @@ import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 
-import javolution.xml.stream.XMLStreamException;
-
-import org.apache.xalan.xsltc.trax.TransformerFactoryImpl;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
@@ -47,7 +42,6 @@ import org.drugis.addis.entities.DomainData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
@@ -110,6 +104,8 @@ import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
@@ -1179,8 +1175,11 @@ public class JAXBConvertorTest {
 		metaList.add(ma1ent);
 		metaList.add(ma2ent);
 		
-		MetaBenefitRiskAnalysis expected = new MetaBenefitRiskAnalysis(name, ma1ent.getIndication(), metaList , ma1ent.getIncludedDrugs().get(0), 
-				ma1ent.getIncludedDrugs(), AnalysisType.SMAA);
+		List<Drug> drugsEnt = new ArrayList<Drug>(ma1ent.getIncludedDrugs());
+		Drug baseline = drugsEnt.get(0);
+		drugsEnt.remove(baseline);
+		MetaBenefitRiskAnalysis expected = new MetaBenefitRiskAnalysis(name, ma1ent.getIndication(), metaList , baseline, 
+				drugsEnt, AnalysisType.SMAA);
 		assertEntityEquals(expected, JAXBConvertor.convertMetaBenefitRiskAnalysis(br, domain));
 	}
 
@@ -1258,7 +1257,6 @@ public class JAXBConvertorTest {
 	}
 	
 	@Test
-	
 	// ACCEPTANCE TEST -- should be replaced by something nicer so we can remove the Javalution support.
 	public void testAddisDataToDomainData() throws Exception {
 		InputStream xmlStream = getClass().getResourceAsStream("../defaultData.xml");
@@ -1274,19 +1272,20 @@ public class JAXBConvertorTest {
 	}
 	
 	private InputStream getTransformed() throws TransformerException, IOException {
-		TransformerFactory factory = TransformerFactoryImpl.newInstance();
+		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
+		TransformerFactory tFactory = TransformerFactory.newInstance(); 
 		InputStream xmlFile = getClass().getResourceAsStream("../defaultData.xml");
-		InputStream xslFile = getClass().getResourceAsStream("../entities/transform-0-1.xslt");
+		InputStream xsltFile = getClass().getResourceAsStream("../entities/transform-0-1.xslt");
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		
 	    javax.xml.transform.Source xmlSource = new javax.xml.transform.stream.StreamSource(xmlFile);
-	    javax.xml.transform.Source xsltSource = new javax.xml.transform.stream.StreamSource(xslFile);
+	    javax.xml.transform.Source xsltSource = new javax.xml.transform.stream.StreamSource(xsltFile);
 	    javax.xml.transform.Result result = new javax.xml.transform.stream.StreamResult(os);
 	    
-	    javax.xml.transform.Transformer trans = factory.newTransformer(xsltSource);
+	    javax.xml.transform.Transformer trans = tFactory.newTransformer(xsltSource);
 	    trans.transform(xmlSource, result);
 	    os.close();
-	    
+
 	    return new ByteArrayInputStream(os.toByteArray());
 	}
 }

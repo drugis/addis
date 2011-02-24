@@ -186,7 +186,12 @@
 			<groupId>gov.lanl</groupId>
 			<artifactId>yadas</artifactId>
 			<version>1.0-SNAPSHOT</version>
-		</dependency>	
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.saxon</groupId>
+			<artifactId>saxon</artifactId>
+			<version>9.1.0.8</version>
+		</dependency>
 	</dependencies>
     <build>
         <plugins>
