@@ -38,7 +38,7 @@ public class PubMedId {
 		setId(id);
 	}
 
-	private String getId() {
+	public String getId() {
 		return d_id;
 	}
 	

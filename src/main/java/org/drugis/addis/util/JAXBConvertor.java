@@ -2,6 +2,8 @@ package org.drugis.addis.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,12 +28,17 @@ import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
+import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
+import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
+import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
 import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
@@ -43,18 +50,26 @@ import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.ArmReference;
 import org.drugis.addis.entities.data.Arms;
 import org.drugis.addis.entities.data.BenefitRiskAnalyses;
+import org.drugis.addis.entities.data.CategoricalVariable;
 import org.drugis.addis.entities.data.Category;
 import org.drugis.addis.entities.data.Characteristics;
+import org.drugis.addis.entities.data.ContinuousVariable;
+import org.drugis.addis.entities.data.DateWithNotes;
+import org.drugis.addis.entities.data.IntegerWithNotes;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
 import org.drugis.addis.entities.data.NameReference;
 import org.drugis.addis.entities.data.NetworkMetaAnalysis;
-import org.drugis.addis.entities.data.OutcomeMeasure;
+import org.drugis.addis.entities.data.Notes;
 import org.drugis.addis.entities.data.PairwiseMetaAnalysis;
+import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
+import org.drugis.addis.entities.data.StringWithNotes;
 import org.drugis.addis.entities.data.StudyOutcomeMeasure;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
 import org.drugis.common.Interval;
+
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 public class JAXBConvertor {
 	
@@ -136,21 +151,76 @@ public class JAXBConvertor {
 		return a;
 	}
 
+	static org.drugis.addis.entities.data.OutcomeMeasure convertAdverseEvent(AdverseEvent a) throws ConversionException {
+		return convertOutcomeMeasure(a);
+	}
+
 	static Indication convertIndication(
 			org.drugis.addis.entities.data.Indication i) {
 		return new Indication(i.getCode(), i.getName());
+	}
+	
+	static org.drugis.addis.entities.data.Indication convertIndication(Indication i) {
+		org.drugis.addis.entities.data.Indication ind = new org.drugis.addis.entities.data.Indication();
+		ind.setCode(i.getCode());
+		ind.setName(i.getName());
+		return ind;
 	}
 
 	static Drug convertDrug(org.drugis.addis.entities.data.Drug d) {
 		return new Drug(d.getName(), d.getAtcCode());
 	}
 
+	static org.drugis.addis.entities.data.Drug convertDrug(Drug d) {
+		org.drugis.addis.entities.data.Drug drug = new org.drugis.addis.entities.data.Drug();
+		drug.setName(d.getName());
+		drug.setAtcCode(d.getAtcCode());
+		return drug;
+	}
+	
 	static Endpoint convertEndpoint(org.drugis.addis.entities.data.OutcomeMeasure om) throws ConversionException {
 		Endpoint e = new Endpoint();
 		convertOutcomeMeasure(om, e);
 		return e;
 	}
 
+	static org.drugis.addis.entities.data.OutcomeMeasure convertEndpoint(Endpoint e) throws ConversionException {
+		return convertOutcomeMeasure(e);
+	}
+
+	private static org.drugis.addis.entities.data.OutcomeMeasure convertOutcomeMeasure(Variable o) throws ConversionException {
+		org.drugis.addis.entities.data.OutcomeMeasure om = new org.drugis.addis.entities.data.OutcomeMeasure();
+		om.setDescription(o.getDescription());
+		om.setName(o.getName());
+		switch (o.getType()) {
+		case CATEGORICAL:
+			if(o instanceof CategoricalPopulationCharacteristic) {
+				CategoricalVariable varCat = new CategoricalVariable();
+				varCat.getCategory().addAll(((CategoricalPopulationCharacteristic) o).getCategoriesAsList());
+				om.setCategorical(varCat);
+			} else {
+				throw new ConversionException("Categorical outcomemeasures don't exist");
+			}
+			break;
+		case CONTINUOUS:
+			ContinuousVariable varC = new ContinuousVariable();
+			if(o instanceof OutcomeMeasure) {
+				varC.setDirection(((OutcomeMeasure) o).getDirection());
+			}
+			varC.setUnitOfMeasurement(o.getUnitOfMeasurement());
+			om.setContinuous(varC);
+			break;
+		case RATE:
+			RateVariable varR = new RateVariable();
+			if(o instanceof OutcomeMeasure) {
+				varR.setDirection(((OutcomeMeasure) o).getDirection());
+			}
+			om.setRate(varR);
+			break;
+		}
+		return om;
+	}
+	
 	private static void convertOutcomeMeasure(
 			org.drugis.addis.entities.data.OutcomeMeasure from,
 			org.drugis.addis.entities.OutcomeMeasure to)
@@ -242,12 +312,42 @@ public class JAXBConvertor {
 		
 		return null;
 	}
+	
+	static org.drugis.addis.entities.data.Arm convertArm(Arm arm) throws ConversionException {
+		org.drugis.addis.entities.data.Arm newArm = new org.drugis.addis.entities.data.Arm();
+		newArm.setDrug(nameReference(arm.getDrug().getName()));
+		if(arm.getDose() instanceof FixedDose) {
+			newArm.setFixedDose(convertFixedDose((FixedDose)arm.getDose()));
+		} else {
+			newArm.setFlexibleDose(convertFlexibleDose((FlexibleDose)arm.getDose()));
+		}
+		newArm.setSize(arm.getSize());
+		//newArm.setId(arm.get)
+		newArm.setNotes(new Notes());
+
+		return newArm;
+	}
+
+	private static org.drugis.addis.entities.data.FlexibleDose convertFlexibleDose(FlexibleDose dose) {
+		org.drugis.addis.entities.data.FlexibleDose newDose = new org.drugis.addis.entities.data.FlexibleDose();
+		newDose.setUnit(dose.getUnit());
+		newDose.setMinDose(dose.getMinDose());
+		newDose.setMaxDose(dose.getMaxDose());
+		return newDose;
+	}
+
+	private static org.drugis.addis.entities.data.FixedDose convertFixedDose(FixedDose dose) {
+		org.drugis.addis.entities.data.FixedDose newDose = new org.drugis.addis.entities.data.FixedDose();
+		newDose.setQuantity(dose.getQuantity());
+		newDose.setUnit(dose.getUnit());
+		return newDose;
+	}
 
 	public static AddisData domainToAddisData(Domain domain) {
 		return null;
 	}
 
-	static Variable convertPopulationCharacteristic(OutcomeMeasure m) throws ConversionException {
+	static Variable convertPopulationCharacteristic(org.drugis.addis.entities.data.OutcomeMeasure m) throws ConversionException {
 		if(m.getRate() != null) {
 			throw new ConversionException("Population Characteristics should not be rate");
 		}
@@ -267,6 +367,15 @@ public class JAXBConvertor {
 			return catPC;
 		}
 		throw new ConversionException("Unknown variable type");
+	}
+	
+	static org.drugis.addis.entities.data.OutcomeMeasure convertPopulationCharacteristic(PopulationCharacteristic pc) throws ConversionException {
+		/*org.drugis.addis.entities.data.OutcomeMeasure om = new org.drugis.addis.entities.data.OutcomeMeasure();
+		om.setName(pc.getName());
+		om.setDescription(pc.getDescription());
+		om.setContinuous()*/
+		
+		return convertOutcomeMeasure(pc);
 	}
 	
 	private static PubMedIdList getPubMedIds(References refs) {
@@ -317,6 +426,32 @@ public class JAXBConvertor {
 		return map;
 	}	
 
+	public static Characteristics convertStudyCharacteristics(CharacteristicsMap characteristics) {
+		Characteristics newChars = new Characteristics();
+		newChars.setAllocation(allocationWithNotes((Allocation) characteristics.get(BasicStudyCharacteristic.ALLOCATION)));
+		newChars.setBlinding(blindingWithNotes((Blinding) characteristics.get(BasicStudyCharacteristic.BLINDING)));
+		newChars.setCenters(intWithNotes((Integer) characteristics.get(BasicStudyCharacteristic.CENTERS)));
+		newChars.setCreationDate(dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.CREATION_DATE)));
+		newChars.setExclusion(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.EXCLUSION)));
+		newChars.setInclusion(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.INCLUSION)));
+		newChars.setObjective(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.OBJECTIVE)));
+		newChars.setReferences(convertReferences((PubMedIdList)characteristics.get(BasicStudyCharacteristic.PUBMED)));
+		newChars.setSource(sourceWithNotes((Source) characteristics.get(BasicStudyCharacteristic.SOURCE)));
+		newChars.setStatus(statusWithNotes((Status) characteristics.get(BasicStudyCharacteristic.STATUS)));
+		newChars.setStudyStart(dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.STUDY_START)));
+		newChars.setStudyEnd(dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.STUDY_END)));
+		newChars.setTitle(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.TITLE)));
+		return newChars;
+	}
+	
+	private static References convertReferences(PubMedIdList pubMedIdList) {
+		References refs = new References();
+		for(PubMedId x : pubMedIdList) {
+			refs.getPubMedId().add(Integer.parseInt(x.getId()));
+		}
+		return refs;
+	}
+
 	public static org.drugis.addis.entities.Variable convertStudyOutcomeMeasure(StudyOutcomeMeasure om, Domain domain) throws ConversionException {
 		if(om.getEndpoint() != null) {
 			return findEndpoint(domain, om.getEndpoint().getName());
@@ -345,6 +480,16 @@ public class JAXBConvertor {
 			map.put(a.getId(), convertArm(a, domain));
 		}
 		return map;
+	}
+	
+	public static Arms convertStudyArms(LinkedHashMap<Integer, Arm> map) throws ConversionException {
+		Arms arms = new Arms();
+		for (Entry<Integer, Arm> x : map.entrySet()) {
+			org.drugis.addis.entities.data.Arm convertedArm = convertArm(x.getValue());
+			convertedArm.setId(x.getKey());
+			arms.getArm().add(convertedArm);
+		}
+		return arms;
 	}
 
 	public static Measurement convertMeasurement(org.drugis.addis.entities.data.Measurement m) throws ConversionException {
@@ -533,5 +678,67 @@ public class JAXBConvertor {
 			}
 		}
 		return null;
+	}
+	
+
+	public static NameReference nameReference(String name) {
+		NameReference ref = new NameReference();
+		ref.setName(name);
+		return ref;
+	}
+
+	public static org.drugis.addis.entities.data.Allocation allocationWithNotes(Allocation nested) {
+		org.drugis.addis.entities.data.Allocation allocation = new org.drugis.addis.entities.data.Allocation();
+		allocation.setValue(nested);
+		allocation.setNotes(new Notes());
+		return allocation;
+	}
+
+	public static StringWithNotes stringWithNotes(String string) {
+		StringWithNotes strNot = new StringWithNotes();
+		strNot.setValue(string);
+		strNot.setNotes(new Notes());
+		return strNot;
+	}
+
+	public static org.drugis.addis.entities.data.Blinding blindingWithNotes(Blinding nested) {
+		org.drugis.addis.entities.data.Blinding blinding = new org.drugis.addis.entities.data.Blinding();
+		blinding.setValue(nested);
+		blinding.setNotes(new Notes());
+		return blinding;
+	}
+
+	public static org.drugis.addis.entities.data.IntegerWithNotes intWithNotes(int centers) {
+		org.drugis.addis.entities.data.IntegerWithNotes integer = new org.drugis.addis.entities.data.IntegerWithNotes();
+		integer.setValue(centers);
+		integer.setNotes(new Notes());
+		return integer;
+	}
+
+	public static org.drugis.addis.entities.data.Status statusWithNotes(Status nested) {
+		org.drugis.addis.entities.data.Status status = new org.drugis.addis.entities.data.Status();
+		status.setValue(nested);
+		status.setNotes(new Notes());
+		return status;
+	}
+
+	public static org.drugis.addis.entities.data.Source sourceWithNotes(Source nested) {
+		org.drugis.addis.entities.data.Source source = new org.drugis.addis.entities.data.Source();
+		source.setValue(nested);
+		source.setNotes(new Notes());
+		return source;
+	}
+
+	public static DateWithNotes dateWithNotes(Date date) {
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTime(date);
+		return dateWithNotes(cal);
+	}
+	
+	public static DateWithNotes dateWithNotes(GregorianCalendar cal) {
+		org.drugis.addis.entities.data.DateWithNotes date = new org.drugis.addis.entities.data.DateWithNotes();
+		date.setValue(new XMLGregorianCalendarImpl(cal));
+		date.setNotes(new Notes());
+		return date;
 	}
 }
