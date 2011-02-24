@@ -91,6 +91,11 @@
 			<version>0.8.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.8.3</version>
+		</dependency>
+		<dependency>
 			<groupId>com.jgoodies</groupId>
 			<artifactId>binding</artifactId>
 			<version>2.0.6</version>
@@ -130,7 +135,6 @@
 			<artifactId>swingx</artifactId>
 			<version>1.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.jgrapht</groupId>
 			<artifactId>jgrapht-jdk1.5</artifactId>
@@ -163,21 +167,31 @@
 			<artifactId>jaxb-impl</artifactId>
 			<version>2.1.3</version>
 		</dependency>
-	    	<dependency>
-                        <groupId>jfree</groupId>
-                	<artifactId>jfreechart</artifactId>
-                	<version>1.0.12</version>
-                </dependency>
-      		<dependency>
-          		<groupId>javolution</groupId>
-          		<artifactId>javolution</artifactId>
-          		<version>5.5.1</version>
-      		</dependency>
-		 <dependency>
+		<dependency>
+			<groupId>org.jvnet.jaxb2_commons</groupId>
+			<artifactId>jaxb2-basics-runtime</artifactId>
+			<version>0.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>jfree</groupId>
+			<artifactId>jfreechart</artifactId>
+			<version>1.0.12</version>
+		</dependency>
+		<dependency>
+			<groupId>javolution</groupId>
+			<artifactId>javolution</artifactId>
+			<version>5.5.1</version>
+		</dependency>
+		<dependency>
 			<groupId>gov.lanl</groupId>
 			<artifactId>yadas</artifactId>
 			<version>1.0-SNAPSHOT</version>
-		</dependency>	
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.saxon</groupId>
+			<artifactId>saxon</artifactId>
+			<version>9.1.0.8</version>
+		</dependency>
 	</dependencies>
     <build>
         <plugins>
@@ -214,20 +228,80 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
-    			<plugin>
-       				<groupId>org.codehaus.mojo</groupId>
-       				<artifactId>jaxb2-maven-plugin</artifactId>
-       				<executions>
-         				<execution>
-           					<goals>
-             						<goal>xjc</goal>
-           					</goals>
-         				</execution>
-       				</executions>
-       				<configuration>
-         				<packageName>org.drugis.addis.imports</packageName>
-         				<outputDirectory>${basedir}/src/main/generated-source</outputDirectory>
-       				</configuration>
+			<plugin>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>ClinicalTrials.gov import schema</id>
+						<goals>
+								<goal>generate</goal>
+						</goals>
+						<configuration>
+							<schemaDirectory>${basedir}/src/main/xsd</schemaDirectory>
+							<schemaIncludes>
+								<include>**/clinicaltrials.xsd</include>
+							</schemaIncludes>
+							<generateDirectory>${basedir}/src/main/generated-source</generateDirectory>
+							<generatePackage>org.drugis.addis.imports</generatePackage>
+						</configuration>
+					</execution>
+					<execution>
+						<id>ADDIS schema</id>
+						<goals>
+								<goal>generate</goal>
+						</goals>
+						<configuration>
+							<extension>true</extension>
+							<schemaDirectory>${basedir}/src/main/resources/org/drugis/addis/entities</schemaDirectory>
+							<bindingDirectory>${basedir}/src/main/resources/org/drugis/addis/entities</bindingDirectory>
+							<schemaIncludes>
+								<include>addis-1.xsd</include>
+							</schemaIncludes>
+							<bindingIncludes>
+								<include>addis-1.xjb</include>
+							</bindingIncludes>
+							<generateDirectory>${basedir}/src/main/generated-entities</generateDirectory>
+							<generatePackage>org.drugis.addis.entities.data</generatePackage>
+							<args>
+								<arg>-Xinject-listener-code</arg>
+								<arg>-XtoString</arg>
+								<arg>-Xequals</arg>
+								<arg>-XhashCode</arg>
+								<!-- <arg>-Xcopyable</arg> -->
+								<!-- <arg>-Xmergeable</arg> -->
+							</args>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>com.sun.xml.bind</groupId>
+						<artifactId>jaxb-xjc</artifactId>
+						<version>2.1.3</version>
+					</dependency>
+					<dependency>
+						<groupId>com.sun.xml.bind</groupId>
+						<artifactId>jaxb-impl</artifactId>
+						<version>2.1.3</version>
+					</dependency>
+					<dependency>
+						<groupId>org.jvnet.jaxb2-commons</groupId>
+						<artifactId>property-listener-injector</artifactId>
+						<version>1.0</version>
+						<exclusions>
+							<exclusion>
+								<groupId>com.sun.xml.bind</groupId>
+								<artifactId>jaxb-xjc</artifactId>
+							</exclusion>
+						</exclusions>
+					</dependency>
+					<dependency>
+						<groupId>org.jvnet.jaxb2_commons</groupId>
+						<artifactId>jaxb2-basics</artifactId>
+						<version>0.6.0</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>

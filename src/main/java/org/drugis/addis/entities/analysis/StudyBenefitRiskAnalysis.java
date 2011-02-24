@@ -46,6 +46,7 @@ import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
 import org.drugis.addis.util.EnumXMLFormat;
 import org.drugis.addis.util.XMLPropertiesFormat;
 import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
+import org.drugis.addis.util.comparator.OutcomeComparator;
 
 import scala.actors.threadpool.Arrays;
 
@@ -67,13 +68,19 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 		d_name = name;
 		d_indication = indication;
 		d_study = study;
-		d_criteria = Collections.unmodifiableList(criteria);
+		setCriteria(criteria);
 		d_alternatives = Collections.unmodifiableList(alternatives);
 		d_analysisType = analysisType;
 		if(d_analysisType == AnalysisType.LyndOBrien && (d_criteria.size() != 2 || d_alternatives.size() != 2) ) {
 			throw new IllegalArgumentException("Attempt to create Lynd & O'Brien analysis with not exactly 2 criteria and 2 alternatives");
 		}
 				
+	}
+
+	private void setCriteria(List<OutcomeMeasure> criteria) {
+		criteria = new ArrayList<OutcomeMeasure>(criteria);
+		Collections.sort(criteria, new OutcomeComparator());
+		d_criteria = Collections.unmodifiableList(criteria);
 	}
 
 	private StudyBenefitRiskAnalysis() {
@@ -148,7 +155,7 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 		},
 		new PropertyDefinition<ArrayList>("outcomeMeasures", ArrayList.class) {
 			public ArrayList<OutcomeMeasure> getValue() { return new ArrayList<OutcomeMeasure>(getCriteria()); }
-			public void setValue(Object val) { d_criteria = (ArrayList<OutcomeMeasure>) val;}
+			public void setValue(Object val) { setCriteria((ArrayList<OutcomeMeasure>) val);}
 		}
 	});
 	

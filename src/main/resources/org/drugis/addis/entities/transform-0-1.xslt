@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<xsl:stylesheet version="2.0"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:fn="http://www.w3.org/2005/xpath-functions"
+	xmlns:xdt="http://www.w3.org/2005/xpath-datatypes"
+	xmlns:err="http://www.w3.org/2005/xqt-errors"
+	exclude-result-prefixes="xs xdt err fn">
 	<xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
 	<xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 	<xsl:output method="xml" indent="yes"/>
 	<xsl:template match="/">
-		<addis-data xsi:noNamespaceSchemaLocation="./ADDIS-Schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<addis-data xsi:noNamespaceSchemaLocation="http://drugis.org/files/addis-1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<xsl:apply-templates/>
 		</addis-data>
 	</xsl:template>
@@ -133,7 +140,20 @@
 								<value>
 									<xsl:choose>
 										<xsl:when test="@date">
-											<xsl:value-of select="@date"/>
+											<xsl:variable name="parsed" select="fn:replace(@date,'([0-9]+) ([A-Za-z]{3}) ([0-9]{4})', '$3-$2-$1')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Jan-(.*)', '$1-01-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Feb-(.*)', '$1-02-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Mar-(.*)', '$1-03-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Apr-(.*)', '$1-04-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-May-(.*)', '$1-05-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Jun-(.*)', '$1-06-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Jul-(.*)', '$1-07-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Aug-(.*)', '$1-08-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Sep-(.*)', '$1-09-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Oct-(.*)', '$1-10-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Nov-(.*)', '$1-11-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Dec-(.*)', '$1-12-$2')" />
+											<xsl:value-of select="$parsed" />
 										</xsl:when>
 										<xsl:when test="@value">
 											<xsl:value-of select="@value"/>

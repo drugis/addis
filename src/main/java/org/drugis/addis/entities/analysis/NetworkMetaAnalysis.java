@@ -86,6 +86,11 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			Map<Study, Map<Drug, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, studies, drugs, armMap);
 	}
+	
+	public NetworkMetaAnalysis(String name, Indication indication,
+			OutcomeMeasure om, Map<Study, Map<Drug, Arm>> armMap) throws IllegalArgumentException {
+		super(name, indication, om, armMap);
+	}
 
 	private InconsistencyModel createInconsistencyModel() {
 		InconsistencyModel inconsistencyModel = (DefaultModelFactory.instance()).getInconsistencyModel((Network<? extends org.drugis.mtc.Measurement>) getBuilder().buildNetwork());

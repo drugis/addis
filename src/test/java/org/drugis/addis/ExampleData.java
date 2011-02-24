@@ -218,6 +218,7 @@ public class ExampleData {
 				"with moderate to severe depression.");
 		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		Calendar startDate = Calendar.getInstance();
+		startDate.set(Calendar.MILLISECOND, 0);
 		startDate.set(1991, Calendar.DECEMBER, 13, 0, 0, 0);
 		study.setCharacteristic(BasicStudyCharacteristic.STUDY_START, startDate.getTime());
 		

@@ -29,13 +29,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 import org.drugis.addis.util.XMLPropertiesFormat;
 import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
 
 import scala.actors.threadpool.Arrays;
-
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
 
 public class FrequencyMeasurement extends BasicMeasurement {
 
@@ -43,7 +43,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	
 	@SuppressWarnings("serial")
 	private static class FrequencyMap extends HashMap<String, Integer> {
-		
+	
 	}
 
 	private static class FrequencyEntry {
@@ -59,6 +59,8 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	}
 	
 	private FrequencyMap d_frequencies = new FrequencyMap();
+
+	private String[] d_categories;
 	 
 	public static final String PROPERTY_FREQUENCIES = "frequencies";
 	
@@ -69,14 +71,25 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	public FrequencyMeasurement(CategoricalPopulationCharacteristic cv) {
 		super(0);
 		d_cv = cv;
+		d_categories = d_cv.getCategories();
 		for (String cat : d_cv.getCategories()) {
 			getFrequencies().put(cat, new Integer(0));
 		}
 	}
 	
+	public FrequencyMeasurement(String[] categories, HashMap<String, Integer> map) {
+		super(0);
+		d_categories = categories;
+		d_frequencies = new FrequencyMap();
+		for (String cat : d_categories) {
+			d_frequencies.put(cat, map.get(cat));
+		}
+		updateSampleSize();
+	}
+
 	private void updateSampleSize() {
 		int size = 0;
-		for (String cat : d_cv.getCategories()) {
+		for (String cat : d_categories) {
 			size += getFrequencies().get(cat).intValue();
 		}
 		setSampleSize(size);
@@ -100,13 +113,13 @@ public class FrequencyMeasurement extends BasicMeasurement {
 			throw new IllegalArgumentException("illegal category");
 		}
 	}
-	
-	public CategoricalPopulationCharacteristic getCategoricalVariable() {
-		return d_cv;
+
+	public String[] getCategories() {
+		return d_categories;
 	}
 	
 	public void add(FrequencyMeasurement other) {
-		for (String cat : d_cv.getCategories()) {
+		for (String cat : d_categories) {
 			setFrequency(cat, getFrequency(cat) + other.getFrequency(cat));
 		}
 	}
@@ -117,13 +130,16 @@ public class FrequencyMeasurement extends BasicMeasurement {
 
 	@Override
 	public Set<Entity> getDependencies() {
-		return Collections.<Entity>singleton(d_cv);
+		if (d_cv != null) {
+			return Collections.<Entity>singleton(d_cv);
+		}
+		return Collections.emptySet();
 	}
 	
 	@Override
 	public String toString() {
 		String ret = new String();
-		for (String cat : d_cv.getCategories()) {
+		for (String cat : d_categories) {
 			if (!ret.equals("")) {
 				ret += " / ";
 			}
@@ -132,12 +148,11 @@ public class FrequencyMeasurement extends BasicMeasurement {
 		return ret;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public FrequencyMeasurement clone() {
-		FrequencyMeasurement m = new FrequencyMeasurement(getCategoricalVariable());
-		for (String cat : d_cv.getCategories()) {
-			m.setFrequency(cat, getFrequency(cat));
-		}
+		FrequencyMeasurement m = new FrequencyMeasurement(d_categories, (HashMap<String, Integer>)d_frequencies.clone());
+		m.d_cv = d_cv;
 		return m;
 	}
 	
@@ -145,7 +160,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	public boolean equals(Object o) {
 		if (o instanceof FrequencyMeasurement) {
 			FrequencyMeasurement m = (FrequencyMeasurement) o;
-			if (!m.getCategoricalVariable().equals(getCategoricalVariable())) {
+			if (!Arrays.deepEquals(getCategories(), m.getCategories())) {
 				return false;
 			}
 			return frequenciesEqual(getFrequencies(), m.getFrequencies());
@@ -178,8 +193,8 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	@SuppressWarnings("unchecked")
 	private List<PropertyDefinition> d_propDefs = Arrays.asList(new PropertyDefinition<?>[]{
 		new PropertyDefinition<CategoricalPopulationCharacteristic>("variable", CategoricalPopulationCharacteristic.class) {
-			public CategoricalPopulationCharacteristic getValue() { return getCategoricalVariable(); }
-			public void setValue(Object val) { d_cv = (CategoricalPopulationCharacteristic) val; }
+			public CategoricalPopulationCharacteristic getValue() { return d_cv; }
+			public void setValue(Object val) { d_cv = (CategoricalPopulationCharacteristic) val; d_categories = d_cv.getCategories(); }
 		},
 		new PropertyDefinition<FrequencyMap>(PROPERTY_FREQUENCIES, FrequencyMap.class) {
 			public FrequencyMap getValue() { return getFrequencies(); }

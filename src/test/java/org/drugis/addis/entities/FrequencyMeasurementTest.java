@@ -24,9 +24,9 @@ package org.drugis.addis.entities;
 
 import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
@@ -111,7 +111,7 @@ public class FrequencyMeasurementTest {
 	public void testDeepCopy() {
 		d_meas.setFrequency(d_cv.getCategories()[0], 25);		
 		FrequencyMeasurement m = d_meas.clone();
-		assertTrue(d_meas.getCategoricalVariable() == m.getCategoricalVariable());
+		assertArrayEquals(d_meas.getCategories(), m.getCategories());
 		assertEquals(25, m.getFrequency(d_cv.getCategories()[0]));
 		assertEquals(0, m.getFrequency(d_cv.getCategories()[1]));		
 		
@@ -134,8 +134,8 @@ public class FrequencyMeasurementTest {
 	}
 	
 	@Test
-	public void testGetCategoricalVariable() {
-		assertEquals(d_cv, d_meas.getCategoricalVariable());
+	public void testGetCategories() {
+		assertArrayEquals(d_cv.getCategories(), d_meas.getCategories());
 	}
 	
 	@Test

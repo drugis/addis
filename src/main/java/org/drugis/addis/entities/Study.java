@@ -113,6 +113,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	private Indication d_indication;
 	private Map<Object, Note> d_notes = new HashMap<Object, Note>();
+	private List<Integer> d_armIds = null;
 	
 	public Study() {
 	}
@@ -171,6 +172,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		d_indication = i;
 		setArms(new ArrayList<Arm>());
 		setCharacteristic(BasicStudyCharacteristic.CREATION_DATE, DateUtil.getCurrentDateWithoutTime());
+		setCharacteristic(BasicStudyCharacteristic.TITLE, "");
+		setCharacteristic(BasicStudyCharacteristic.PUBMED, new PubMedIdList());
 	}
 
 	public List<Arm> getArms() {
@@ -189,6 +192,20 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		List<Arm> newVal = new ArrayList<Arm>(d_arms);
 		newVal.add(group);
 		setArms(newVal);
+	}
+	
+	public void setArmIds(List<Integer> ids) { // FIXME: for JAXB
+		d_armIds = ids;
+	}
+	
+	public List<Integer> getArmIds() { // FIXME: for JAXB
+		if (d_armIds == null) {
+			d_armIds = new ArrayList<Integer>();
+			for (int i = 0; i < getArms().size(); ++i) {
+				d_armIds.add(i);
+			}
+		}
+		return d_armIds;
 	}
 
 	public Set<Drug> getDrugs() {
@@ -395,11 +412,13 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		setAdverseEvents(newList);
 	}
 
-	public void addOutcomeMeasure(OutcomeMeasure om) {
+	public void addOutcomeMeasure(Variable om) {
 		if (om instanceof Endpoint)
 			addEndpoint((Endpoint) om);
 		else if (om instanceof AdverseEvent) {
 			addAdverseEvent((AdverseEvent) om);
+		} else if (om instanceof PopulationCharacteristic) {
+			d_populationChars.add((PopulationCharacteristic) om); // FIXME
 		} else {
 			throw new IllegalStateException("Illegal OutcomeMeasure type " + om.getClass());
 		}
@@ -573,6 +592,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		public void read(InputElement ie, Study s) throws XMLStreamException {
 			s.setStudyId(ie.getAttribute(PROPERTY_ID, null));
 			XMLPropertiesFormat.readProperties(ie, s.d_propDefs);
+			if (s.getCharacteristic(BasicStudyCharacteristic.PUBMED) == null) {
+				s.setCharacteristic(BasicStudyCharacteristic.PUBMED, new PubMedIdList());
+			}
 		}
 
 		@Override
@@ -581,4 +603,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			XMLPropertiesFormat.writeProperties(s.d_propDefs, oe);
 		}
 	};
+
+	public void setMeasurement(MeasurementKey key, Measurement value) {
+		d_measurements.put(key, value);
+	}
 }

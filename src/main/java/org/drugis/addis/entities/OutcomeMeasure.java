@@ -48,6 +48,13 @@ public interface OutcomeMeasure extends Variable {
 		}
 		
 		static EnumXMLFormat<Direction> XML = new EnumXMLFormat<Direction>(Direction.class);
+		
+		public static Direction parse(String str) {
+			return Direction.valueOf(str);
+		}
+		public static String print(Direction dir) {
+			return dir.name();
+		}
 	}
 
 
@@ -55,6 +62,8 @@ public interface OutcomeMeasure extends Variable {
 
 	public Variable.Type getType();
 
+	public void setDirection(Direction direction);
+	
 	public Direction getDirection();
 	
 	public BasicMeasurement buildMeasurement();

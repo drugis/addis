@@ -62,7 +62,7 @@ public class MeasurementInputHelper {
 		} else if (m instanceof RateMeasurement) {
 			return new String[] {"Occurence", "Subjects"};
 		} else if (m instanceof FrequencyMeasurement) {
-			return ((FrequencyMeasurement)m).getCategoricalVariable().getCategories();
+			return ((FrequencyMeasurement)m).getCategories();
 		}
 		throw new IllegalStateException("Unhandled measurement type");
 	}
@@ -88,7 +88,7 @@ public class MeasurementInputHelper {
 			List<JTextField> comps = new ArrayList<JTextField>();
 			FrequencyMeasurement fm = (FrequencyMeasurement) m;
 			FrequencyMeasurementPresentation model = new FrequencyMeasurementPresentation(fm);
-			for (String cat : fm.getCategoricalVariable().getCategories()) {
+			for (String cat : fm.getCategories()) {
 				comps.add(MeasurementInputHelper.buildFormatted(model.getFrequencyModel(cat)));
 			}
 			return comps.toArray(new JTextField[]{});

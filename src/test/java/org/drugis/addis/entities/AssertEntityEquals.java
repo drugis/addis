@@ -22,15 +22,15 @@
 
 package org.drugis.addis.entities;
 
+import static org.drugis.common.JUnitUtil.assertAllAndOnly;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.Map.Entry;
@@ -50,9 +50,9 @@ public class AssertEntityEquals {
 	}
 
 	public static void assertEntityEquals(OutcomeMeasure expected, OutcomeMeasure actual) {
-		assertEquals(expected.getDirection(),actual.getDirection());
-		assertEquals(expected.getType(),actual.getType());
 		assertEquals(expected, actual);
+		assertEquals(expected.getType(),actual.getType());
+		assertEquals(expected.getDirection(),actual.getDirection());
 	}
 	
 	public static void assertEntityEquals(Drug expected, Drug actual) {
@@ -98,7 +98,7 @@ public class AssertEntityEquals {
 		} else if (expected instanceof RateMeasurement) 
 			assertEquals( ((RateMeasurement) expected).getRate() , ((RateMeasurement) actual).getRate() );
 		else if (expected instanceof FrequencyMeasurement) {
-			assertEquals(((FrequencyMeasurement) expected).getCategoricalVariable() , ((FrequencyMeasurement) actual).getCategoricalVariable());
+			assertArrayEquals(((FrequencyMeasurement) expected).getCategories() , ((FrequencyMeasurement) actual).getCategories());
 			assertEquals(((FrequencyMeasurement) expected).getFrequencies() , ((FrequencyMeasurement) actual).getFrequencies());
 		} else {
 			System.err.println("Measurement type not recognized.");
@@ -107,7 +107,7 @@ public class AssertEntityEquals {
 	}
 	
 
-	private static void assertEntityEquals(SortedSet<? extends Entity> expected, SortedSet<? extends Entity> actual) {
+	public static void assertEntityEquals(SortedSet<? extends Entity> expected, SortedSet<? extends Entity> actual) {
 		assertEntityEquals(asList(expected), asList(actual));
 	}
 
@@ -196,11 +196,14 @@ public class AssertEntityEquals {
 		for (int i = 0; i < expected.getAlternatives().size(); ++i) {
 			assertEntityEquals(expected.getAlternatives().get(i), actual.getAlternatives().get(i));
 		}
-		assertEquals(expected.getCriteria(), actual.getCriteria());
+		assertEquals(expected.getCriteria().size(), actual.getCriteria().size());
+		for (int i = 0; i < expected.getCriteria().size(); ++i) {
+			assertEntityEquals(expected.getCriteria().get(i), actual.getCriteria().get(i));
+		}
+		
+		
 	}
 	
-	
-	@SuppressWarnings("unchecked")
 	public static void assertEntityEquals(Entity expected, Entity actual){
 		if (expected instanceof Endpoint)
 			assertEntityEquals((Endpoint) expected, (Endpoint) actual);
@@ -222,18 +225,18 @@ public class AssertEntityEquals {
 			assertEntityEquals((Variable) expected, (Variable) actual);
 		else if (expected instanceof MetaAnalysis) {
 			assertEntityEquals((MetaAnalysis)expected, (MetaAnalysis)actual);
-		} else if (expected instanceof CharacteristicsMap) { // FIXME: WTF.
-			Map<Object,Object> expMap = (Map<Object,Object>) expected;
-			Map<Object,Object> actMap = (Map<Object,Object>) actual;
-			for(Entry e : expMap.entrySet() ){
-				assertTrue(actMap.keySet().contains(e.getKey()));
-				boolean objFound = false;
-				String objToCompare = e.getValue().toString();
-				for (Object o : expMap.values()) {
-					if (o.toString().equals(objToCompare))
-						objFound = true;
+		} else if (expected instanceof CharacteristicsMap) {
+			CharacteristicsMap expCh = (CharacteristicsMap) expected;
+			CharacteristicsMap actCh = (CharacteristicsMap) actual;
+			assertAllAndOnly(expCh.keySet(), actCh.keySet());
+			for (Characteristic key : expCh.keySet()) {
+				Object expValue = expCh.get(key);
+				Object actValue = actCh.get(key);
+				if (expValue instanceof Entity) {
+					assertEntityEquals((Entity)expValue, (Entity)actValue);
+				} else {
+					assertEquals(expValue, actValue);
 				}
-				assertTrue(objFound);
 			}
 		} else if (expected instanceof MetaBenefitRiskAnalysis) {
 			assertEntityEquals((MetaBenefitRiskAnalysis)expected, (MetaBenefitRiskAnalysis)actual);

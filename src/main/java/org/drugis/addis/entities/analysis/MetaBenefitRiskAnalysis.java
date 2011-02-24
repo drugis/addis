@@ -88,7 +88,6 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 
 	private String d_name;
 	private Indication d_indication;
-	private List<OutcomeMeasure> d_outcomeMeasures;
 	private List<MetaAnalysis> d_metaAnalyses;
 	private List<Drug> d_drugs;
 	private Drug d_baseline;
@@ -102,7 +101,6 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	private MetaBenefitRiskAnalysis() {
 		d_baselineModelMap = new HashMap<OutcomeMeasure,AbstractBaselineModel<?>>();
 		d_metaAnalyses = new ArrayList<MetaAnalysis>();
-		d_outcomeMeasures = new ArrayList<OutcomeMeasure>();
 	}
 	
 	public MetaBenefitRiskAnalysis(String id, Indication indication, List<MetaAnalysis> metaAnalysis,
@@ -110,11 +108,10 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		super();
 		d_indication = indication;
 		d_metaAnalyses = metaAnalysis;
-		d_outcomeMeasures = findOutcomeMeasures();
 		d_drugs = drugs;
 		d_baselineModelMap = new HashMap<OutcomeMeasure, AbstractBaselineModel<?>>();
 		d_analysisType = analysisType;
-		if(d_analysisType == AnalysisType.LyndOBrien && (d_outcomeMeasures.size() != 2 || d_drugs.size() != 1) ) {
+		if(d_analysisType == AnalysisType.LyndOBrien && (d_metaAnalyses.size() != 2 || d_drugs.size() != 1) ) {
 			throw new IllegalArgumentException("Attempt to create Lynd & O'Brien analysis with not exactly 2 criteria and 2 alternatives");
 		}
 		
@@ -174,7 +171,6 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	public Set<? extends Entity> getDependencies() {
 		HashSet<Entity> dependencies = new HashSet<Entity>();
 		dependencies.add(d_indication);
-		dependencies.addAll(d_outcomeMeasures);
 		dependencies.addAll(d_drugs);
 		dependencies.addAll(d_metaAnalyses);
 		return dependencies;
