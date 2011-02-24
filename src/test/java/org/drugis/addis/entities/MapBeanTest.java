@@ -25,11 +25,9 @@ package org.drugis.addis.entities;
 import static org.easymock.EasyMock.verify;
 
 import java.beans.PropertyChangeListener;
-import java.util.Date;
 
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class MapBeanTest {

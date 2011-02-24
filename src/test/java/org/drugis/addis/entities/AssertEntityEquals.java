@@ -22,9 +22,9 @@
 
 package org.drugis.addis.entities;
 
+import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -40,7 +40,6 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.common.EqualsUtil;
-import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 
 public class AssertEntityEquals {
 	

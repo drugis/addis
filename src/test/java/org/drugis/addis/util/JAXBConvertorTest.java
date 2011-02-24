@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -105,14 +104,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
-
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 public class JAXBConvertorTest {
-	
-	private static final Random s_random = new Random();
-
 	private JAXBContext d_jaxb;
 	//private Marshaller d_marshaller;
 	private Unmarshaller d_unmarshaller;
