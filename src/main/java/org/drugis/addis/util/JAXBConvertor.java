@@ -61,6 +61,7 @@ import org.drugis.addis.entities.data.IdReference;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
 import org.drugis.addis.entities.data.NameReference;
+import org.drugis.addis.entities.data.NameReferenceWithNotes;
 import org.drugis.addis.entities.data.NetworkMetaAnalysis;
 import org.drugis.addis.entities.data.Notes;
 import org.drugis.addis.entities.data.PairwiseMetaAnalysis;
@@ -116,37 +117,6 @@ public class JAXBConvertor {
 			newDomain.addBenefitRiskAnalysis(br);
 		}
 		return newDomain;	
-	}
-
-	static Study convertStudy(org.drugis.addis.entities.data.Study study, Domain domain) throws ConversionException {
-		Study newStudy = new Study();
-		newStudy.setStudyId(study.getName());
-		newStudy.setIndication(findIndication(domain, study.getIndication().getName()));
-		
-		LinkedHashMap<String, Variable> outcomeMeasures = convertStudyOutcomeMeasures(study.getStudyOutcomeMeasures(), domain);
-		for(Entry<String, Variable> om : outcomeMeasures.entrySet()) {
-			newStudy.addOutcomeMeasure(om.getValue());
-		}
-		
-		LinkedHashMap<Integer, Arm> arms = convertStudyArms(study.getArms(), domain);
-		List<Integer> ids = new ArrayList<Integer>();
-		for(Entry<Integer, Arm> arm : arms.entrySet()) { 
-			newStudy.addArm(arm.getValue());
-			ids.add(arm.getKey());
-		}
-		newStudy.setArmIds(ids);
-		
-		CharacteristicsMap map = convertStudyCharacteristics(study.getCharacteristics());
-		for(Entry<Characteristic, Object> m : map.entrySet()) {
-			newStudy.setCharacteristic((BasicStudyCharacteristic) m.getKey(), m.getValue());
-		}
-		
-		Map<MeasurementKey, Measurement> measurements = convertMeasurements(study.getMeasurements(), arms, outcomeMeasures);
-		for(Entry<MeasurementKey, Measurement> m : measurements.entrySet()) {
-			newStudy.setMeasurement(m.getKey(), m.getValue());
-		}
-		
-		return newStudy;
 	}
 
 	static AdverseEvent convertAdverseEvent(org.drugis.addis.entities.data.OutcomeMeasure ae) throws ConversionException {
@@ -395,7 +365,6 @@ public class JAXBConvertor {
 		if (chars1.getAllocation() != null) {
 			map.put(BasicStudyCharacteristic.ALLOCATION, chars1.getAllocation().getValue());
 		}
-		map.put(BasicStudyCharacteristic.TITLE, chars1.getTitle().getValue());
 		if (chars1.getBlinding() != null) {
 			map.put(BasicStudyCharacteristic.BLINDING, chars1.getBlinding().getValue());
 		}
@@ -426,25 +395,48 @@ public class JAXBConvertor {
 		if (chars1.getCreationDate() != null) {
 			map.put(BasicStudyCharacteristic.CREATION_DATE, chars1.getCreationDate().getValue().toGregorianCalendar().getTime());
 		}
+		map.put(BasicStudyCharacteristic.TITLE, chars1.getTitle().getValue());
 		map.put(BasicStudyCharacteristic.PUBMED, getPubMedIds(chars1.getReferences()));
 		return map;
 	}	
 
 	public static Characteristics convertStudyCharacteristics(CharacteristicsMap characteristics) {
 		Characteristics newChars = new Characteristics();
-		newChars.setAllocation(allocationWithNotes((Allocation) characteristics.get(BasicStudyCharacteristic.ALLOCATION)));
-		newChars.setBlinding(blindingWithNotes((Blinding) characteristics.get(BasicStudyCharacteristic.BLINDING)));
-		newChars.setCenters(intWithNotes((Integer) characteristics.get(BasicStudyCharacteristic.CENTERS)));
-		newChars.setCreationDate(dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.CREATION_DATE)));
-		newChars.setExclusion(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.EXCLUSION)));
-		newChars.setInclusion(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.INCLUSION)));
-		newChars.setObjective(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.OBJECTIVE)));
-		newChars.setReferences(convertReferences((PubMedIdList)characteristics.get(BasicStudyCharacteristic.PUBMED)));
-		newChars.setSource(sourceWithNotes((Source) characteristics.get(BasicStudyCharacteristic.SOURCE)));
-		newChars.setStatus(statusWithNotes((Status) characteristics.get(BasicStudyCharacteristic.STATUS)));
-		newChars.setStudyStart(dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.STUDY_START)));
-		newChars.setStudyEnd(dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.STUDY_END)));
+		if (characteristics.containsKey(BasicStudyCharacteristic.ALLOCATION)) {
+			newChars.setAllocation(allocationWithNotes((Allocation) characteristics.get(BasicStudyCharacteristic.ALLOCATION)));
+		}
+		if (characteristics.containsKey(BasicStudyCharacteristic.BLINDING)) {
+			newChars.setBlinding(blindingWithNotes((Blinding) characteristics.get(BasicStudyCharacteristic.BLINDING)));
+		}
+		if (characteristics.containsKey(BasicStudyCharacteristic.CENTERS)) {
+			newChars.setCenters(intWithNotes((Integer) characteristics.get(BasicStudyCharacteristic.CENTERS)));
+		}
+		if (characteristics.containsKey(BasicStudyCharacteristic.CREATION_DATE)) {
+			newChars.setCreationDate(dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.CREATION_DATE)));
+		}
+		if (characteristics.containsKey(BasicStudyCharacteristic.EXCLUSION)) {
+			newChars.setExclusion(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.EXCLUSION)));
+		}
+		if (characteristics.containsKey(BasicStudyCharacteristic.INCLUSION)) {
+			newChars.setInclusion(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.INCLUSION)));
+		}
+		if (characteristics.containsKey(BasicStudyCharacteristic.OBJECTIVE)) {
+			newChars.setObjective(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.OBJECTIVE)));
+		}
+		if (characteristics.containsKey(BasicStudyCharacteristic.STATUS)) {
+			newChars.setStatus(statusWithNotes((Status) characteristics.get(BasicStudyCharacteristic.STATUS)));
+		}
+		if (characteristics.containsKey(BasicStudyCharacteristic.SOURCE)) {
+			newChars.setSource(sourceWithNotes((Source) characteristics.get(BasicStudyCharacteristic.SOURCE)));
+		}
+		if (characteristics.containsKey(BasicStudyCharacteristic.STUDY_START)) {
+			newChars.setStudyStart(dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.STUDY_START)));
+		}
+		if (characteristics.containsKey(BasicStudyCharacteristic.STUDY_END)) {
+			newChars.setStudyEnd(dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.STUDY_END)));
+		}
 		newChars.setTitle(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.TITLE)));
+		newChars.setReferences(convertReferences((PubMedIdList)characteristics.get(BasicStudyCharacteristic.PUBMED)));
 		return newChars;
 	}
 	
@@ -599,9 +591,11 @@ public class JAXBConvertor {
 				m.setArm(idReference(armId));
 			}
 			m.setStudyOutcomeMeasure(stringIdReference(findKey(oms, item.getKey().getVariable())));
-			measurements.getMeasurement().add(m);
+			if (item.getValue() != null) {
+				measurements.getMeasurement().add(m);
+			}
 		}
-		return measurements ;
+		return measurements;
 	}
 	
 	public static <K, V> K findKey(Map<K,V> map, V value) {
@@ -611,6 +605,72 @@ public class JAXBConvertor {
 			}
 		}
 		return null;
+	}
+	
+	static Study convertStudy(org.drugis.addis.entities.data.Study study, Domain domain) throws ConversionException {
+		Study newStudy = new Study();
+		newStudy.setStudyId(study.getName());
+		newStudy.setIndication(findIndication(domain, study.getIndication().getName()));
+		
+		LinkedHashMap<String, Variable> outcomeMeasures = convertStudyOutcomeMeasures(study.getStudyOutcomeMeasures(), domain);
+		for(Entry<String, Variable> om : outcomeMeasures.entrySet()) {
+			newStudy.addOutcomeMeasure(om.getValue());
+		}
+		
+		LinkedHashMap<Integer, Arm> arms = convertStudyArms(study.getArms(), domain);
+		List<Integer> ids = new ArrayList<Integer>();
+		for(Entry<Integer, Arm> arm : arms.entrySet()) { 
+			newStudy.addArm(arm.getValue());
+			ids.add(arm.getKey());
+		}
+		newStudy.setArmIds(ids);
+		
+		CharacteristicsMap map = convertStudyCharacteristics(study.getCharacteristics());
+		for(Entry<Characteristic, Object> m : map.entrySet()) {
+			newStudy.setCharacteristic((BasicStudyCharacteristic) m.getKey(), m.getValue());
+		}
+		
+		Map<MeasurementKey, Measurement> measurements = convertMeasurements(study.getMeasurements(), arms, outcomeMeasures);
+		for(Entry<MeasurementKey, Measurement> m : measurements.entrySet()) {
+			newStudy.setMeasurement(m.getKey(), m.getValue());
+		}
+		
+		return newStudy;
+	}
+	
+	public static org.drugis.addis.entities.data.Study convertStudy(Study study) throws ConversionException {
+		org.drugis.addis.entities.data.Study newStudy = new org.drugis.addis.entities.data.Study();
+		newStudy.setName(study.getStudyId());
+		newStudy.setIndication(nameReferenceWithNotes(study.getIndication().getName()));
+		
+		// convert arms
+		LinkedHashMap<Integer, Arm> armMap = new LinkedHashMap<Integer, Arm>();
+		for(int i = 0; i < study.getArms().size(); ++i) {
+			armMap.put(study.getArmIds().get(i), study.getArms().get(i));
+		}
+		System.out.println(armMap);
+		newStudy.setArms(convertStudyArms(armMap));
+		
+		// convert outcome measures
+		LinkedHashMap<String, Variable> omMap = new LinkedHashMap<String, Variable>();
+		for (Endpoint e : study.getEndpoints()) {
+			omMap.put("endpoint-" + e.getName(), e);
+		}
+		for (AdverseEvent e : study.getAdverseEvents()) {
+			omMap.put("adverseEvent-" + e.getName(), e);
+		}
+		for (PopulationCharacteristic e : study.getPopulationCharacteristics()) {
+			omMap.put("popChar-" + e.getName(), e);
+		}
+		newStudy.setStudyOutcomeMeasures(convertStudyOutcomeMeasures(omMap));
+		
+		// convert measurements
+		newStudy.setMeasurements(convertMeasurements(study.getMeasurements(), armMap, omMap));
+		
+		// convert characteristics
+		newStudy.setCharacteristics(convertStudyCharacteristics(study.getCharacteristics()));
+		
+		return newStudy ;
 	}
 
 	public static RandomEffectsMetaAnalysis convertPairWiseMetaAnalysis(PairwiseMetaAnalysis pwma, Domain domain)
@@ -838,5 +898,12 @@ public class JAXBConvertor {
 		StringIdReference ref = new StringIdReference();
 		ref.setId(id);
 		return ref;
+	}
+
+	public static NameReferenceWithNotes nameReferenceWithNotes(String indicationName) {
+		NameReferenceWithNotes indicationRef = new NameReferenceWithNotes();
+		indicationRef.setName(indicationName);
+		indicationRef.setNotes(new Notes());
+		return indicationRef;
 	}
 }

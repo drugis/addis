@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -734,9 +735,7 @@ public class JAXBConvertorTest {
 			String[] popCharName, Arms arms) {
 		org.drugis.addis.entities.data.Study study = new org.drugis.addis.entities.data.Study();
 		study.setName(name);
-		NameReferenceWithNotes indicationRef = new NameReferenceWithNotes();
-		indicationRef.setName(indicationName);
-		indicationRef.setNotes(new Notes());
+		NameReferenceWithNotes indicationRef = JAXBConvertor.nameReferenceWithNotes(indicationName);
 		study.setIndication(indicationRef);
 		
 		// Outcome measures
@@ -782,7 +781,7 @@ public class JAXBConvertorTest {
 		
 		return study;
 	}
-	
+
 	@Test
 	public void testConvertStudy() throws ConversionException {
 		DomainImpl domain = new DomainImpl();
@@ -805,6 +804,7 @@ public class JAXBConvertorTest {
 		study2.addArm(arm1);
 		Arm arm2 = buildFixedDoseArm(102, ExampleData.buildDrugParoxetine(), 12.5);
 		study2.addArm(arm2);
+		study2.setArmIds(Arrays.asList(new Integer[] {1, 2}));
 		study2.setCharacteristic(BasicStudyCharacteristic.TITLE, "WHOO");
 		study2.setCharacteristic(BasicStudyCharacteristic.CENTERS, 3);
 		study2.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, Allocation.RANDOMIZED);
@@ -813,6 +813,7 @@ public class JAXBConvertorTest {
 		study2.setMeasurement(ExampleData.buildAgeVariable(), new BasicContinuousMeasurement(0.2, 0.01, 110));
 		
 		assertEntityEquals(study2, JAXBConvertor.convertStudy(study, domain));
+		assertEquals(study, JAXBConvertor.convertStudy(study2));
 	}
 	
 	private class MetaAnalysisWithStudies {
