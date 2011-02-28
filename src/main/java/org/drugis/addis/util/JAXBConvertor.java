@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 import java.util.Map.Entry;
 
 import org.drugis.addis.entities.AdverseEvent;
@@ -48,9 +49,11 @@ import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.data.AddisData;
+import org.drugis.addis.entities.data.AdverseEvents;
 import org.drugis.addis.entities.data.Alternative;
 import org.drugis.addis.entities.data.AnalysisArms;
 import org.drugis.addis.entities.data.ArmReference;
+import org.drugis.addis.entities.data.ArmReferences;
 import org.drugis.addis.entities.data.Arms;
 import org.drugis.addis.entities.data.BenefitRiskAnalyses;
 import org.drugis.addis.entities.data.CategoricalMeasurement;
@@ -60,18 +63,26 @@ import org.drugis.addis.entities.data.Characteristics;
 import org.drugis.addis.entities.data.ContinuousMeasurement;
 import org.drugis.addis.entities.data.ContinuousVariable;
 import org.drugis.addis.entities.data.DateWithNotes;
+import org.drugis.addis.entities.data.DrugReferences;
+import org.drugis.addis.entities.data.Drugs;
+import org.drugis.addis.entities.data.Endpoints;
 import org.drugis.addis.entities.data.IdReference;
+import org.drugis.addis.entities.data.Indications;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
+import org.drugis.addis.entities.data.MetaAnalysisReferences;
 import org.drugis.addis.entities.data.NameReference;
 import org.drugis.addis.entities.data.NameReferenceWithNotes;
 import org.drugis.addis.entities.data.Notes;
+import org.drugis.addis.entities.data.OutcomeMeasuresReferences;
 import org.drugis.addis.entities.data.PairwiseMetaAnalysis;
+import org.drugis.addis.entities.data.PopulationCharacteristics;
 import org.drugis.addis.entities.data.RateMeasurement;
 import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
 import org.drugis.addis.entities.data.StringIdReference;
 import org.drugis.addis.entities.data.StringWithNotes;
+import org.drugis.addis.entities.data.Studies;
 import org.drugis.addis.entities.data.StudyOutcomeMeasure;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
 import org.drugis.common.Interval;
@@ -91,17 +102,20 @@ public class JAXBConvertor {
 	
 	public static Domain addisDataToDomain(AddisData addisData) throws ConversionException {
 		Domain newDomain = new org.drugis.addis.entities.DomainImpl();
-		for (org.drugis.addis.entities.data.OutcomeMeasure om : addisData.getEndpoints().getEndpoint()) {
-			newDomain.addEndpoint(convertEndpoint(om));
+		for(org.drugis.addis.entities.data.Indication i : addisData.getIndications().getIndication()) {
+			newDomain.addIndication(convertIndication(i));
 		}
 		for (org.drugis.addis.entities.data.Drug d : addisData.getDrugs().getDrug()) {
 			newDomain.addDrug(convertDrug(d));
 		}
-		for(org.drugis.addis.entities.data.Indication i : addisData.getIndications().getIndication()) {
-			newDomain.addIndication(convertIndication(i));
+		for (org.drugis.addis.entities.data.OutcomeMeasure om : addisData.getEndpoints().getEndpoint()) {
+			newDomain.addEndpoint(convertEndpoint(om));
 		}
 		for(org.drugis.addis.entities.data.OutcomeMeasure ae : addisData.getAdverseEvents().getAdverseEvent()) {
 			newDomain.addAdverseEvent(convertAdverseEvent(ae));
+		}
+		for(org.drugis.addis.entities.data.OutcomeMeasure ae : addisData.getPopulationCharacteristics().getPopulationCharacteristic()) {
+			newDomain.addPopulationCharacteristic((PopulationCharacteristic) convertPopulationCharacteristic(ae));
 		}
 		for(org.drugis.addis.entities.data.Study s : addisData.getStudies().getStudy()) {
 			newDomain.addStudy(convertStudy(s, newDomain));
@@ -121,6 +135,40 @@ public class JAXBConvertor {
 		return newDomain;	
 	}
 
+	public static AddisData domainToAddisData(Domain domain) throws ConversionException {
+		AddisData addisData = new AddisData();
+		addisData.setIndications(new Indications());
+		for (Indication i : domain.getIndications()) {
+			addisData.getIndications().getIndication().add(convertIndication(i));
+		}
+		addisData.setDrugs(new Drugs());
+		for (Drug d : domain.getDrugs()) {
+			addisData.getDrugs().getDrug().add(convertDrug(d));
+		}
+		addisData.setEndpoints(new Endpoints());
+		for (Endpoint e : domain.getEndpoints()) {
+			addisData.getEndpoints().getEndpoint().add(convertEndpoint(e));
+		}
+		addisData.setAdverseEvents(new AdverseEvents());
+		for (AdverseEvent e : domain.getAdverseEvents()) {
+			addisData.getAdverseEvents().getAdverseEvent().add(convertAdverseEvent(e));
+		}
+		addisData.setPopulationCharacteristics(new PopulationCharacteristics());
+		for (PopulationCharacteristic e : domain.getPopulationCharacteristics()) {
+			addisData.getPopulationCharacteristics().getPopulationCharacteristic().add(convertPopulationCharacteristic(e));
+		}
+		addisData.setStudies(new Studies());
+		for (Study s : domain.getStudies()) {
+			addisData.getStudies().getStudy().add(convertStudy(s));
+		}
+		List<MetaAnalysis> metaAnalyses = new ArrayList<MetaAnalysis>(domain.getMetaAnalyses());
+		addisData.setMetaAnalyses(convertMetaAnalyses(metaAnalyses));
+		ArrayList<BenefitRiskAnalysis<?>> brAnalyses = new ArrayList<BenefitRiskAnalysis<?>>(domain.getBenefitRiskAnalyses());
+		addisData.setBenefitRiskAnalyses(convertBenefitRiskAnalyses(brAnalyses));
+		
+		return addisData;
+	}
+	
 	static AdverseEvent convertAdverseEvent(org.drugis.addis.entities.data.OutcomeMeasure ae) throws ConversionException {
 		AdverseEvent a = new AdverseEvent();
 		convertOutcomeMeasure(ae, a);
@@ -317,10 +365,6 @@ public class JAXBConvertor {
 		newDose.setQuantity(dose.getQuantity());
 		newDose.setUnit(dose.getUnit());
 		return newDose;
-	}
-
-	public static AddisData domainToAddisData(Domain domain) {
-		return null;
 	}
 
 	static Variable convertPopulationCharacteristic(org.drugis.addis.entities.data.OutcomeMeasure m) throws ConversionException {
@@ -725,7 +769,7 @@ public class JAXBConvertor {
 				} else {
 					arm = item.getSubject();
 				}
-				Integer armId = item.getStudy().getArmIds().get(item.getStudy().getArms().indexOf(arm)); // FIXME: need a better mechanism.
+				Integer armId = findArmId(item.getStudy(), arm);
 				arms.getArm().add(armReference(item.getStudy().getStudyId(), armId));
 			}
 			alt.setArms(arms);
@@ -776,9 +820,9 @@ public class JAXBConvertor {
 			
 			for(Study study : ma.getIncludedStudies()) {
 				Arm arm = ma.getArm(study, d);
-				int index = study.getArms().indexOf(arm);
-				if(index != -1) {
-					arms.getArm().add(armReference(study.getStudyId(), study.getArmIds().get(index)));
+				Integer id = findArmId(study, arm);
+				if(id != null) {
+					arms.getArm().add(armReference(study.getStudyId(), id));
 				}
 			}
 			alt.setArms(arms);
@@ -788,6 +832,13 @@ public class JAXBConvertor {
 		return nma; 
 	}
 
+	public static Integer findArmId(Study study, Arm arm) {
+		int index = study.getArms().indexOf(arm);
+		if (index != -1) {
+			return study.getArmIds().get(index);
+		}
+		return null;
+	}
 
 	private static Arm findArm(Study study, Integer id) {
 		for (int i = 0; i < study.getArmIds().size(); ++i) {
@@ -827,18 +878,18 @@ public class JAXBConvertor {
 		return list;
 	}
 	
-	public static List<BenefitRiskAnalysis<?>> convertBenefitRiskAnalyses(BenefitRiskAnalyses analyses, Domain domain) throws ConversionException {
-		List<BenefitRiskAnalysis<?>> list = new ArrayList<BenefitRiskAnalysis<?>>();
-		for (Object o : analyses.getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis()) {
-			if(o instanceof org.drugis.addis.entities.data.StudyBenefitRiskAnalysis) {
-				list.add(convertStudyBenefitRiskAnalysis((org.drugis.addis.entities.data.StudyBenefitRiskAnalysis) o, domain));
-			}else if (o instanceof org.drugis.addis.entities.data.MetaBenefitRiskAnalysis) {
-				list.add(convertMetaBenefitRiskAnalysis((org.drugis.addis.entities.data.MetaBenefitRiskAnalysis) o, domain));
-			}else {
-				throw new ConversionException("Unsupported Benefit-Risk Analysis Type" + o);
+	public static MetaAnalyses convertMetaAnalyses(List<MetaAnalysis> list) throws ConversionException {
+		MetaAnalyses analyses = new MetaAnalyses();
+		for(MetaAnalysis ma : list) {
+			if(ma instanceof NetworkMetaAnalysis) {
+				analyses.getPairwiseMetaAnalysisOrNetworkMetaAnalysis().add(convertNetworkMetaAnalysis((NetworkMetaAnalysis) ma));
+			} else if(ma instanceof RandomEffectsMetaAnalysis) {
+				analyses.getPairwiseMetaAnalysisOrNetworkMetaAnalysis().add(convertPairWiseMetaAnalysis((RandomEffectsMetaAnalysis) ma));
+			} else {
+				throw new ConversionException("Unsupported MetaAnalysis Type" + ma);
 			}
 		}
-		return list;
+		return analyses;
 	}
 
 	public static StudyBenefitRiskAnalysis convertStudyBenefitRiskAnalysis(
@@ -863,6 +914,35 @@ public class JAXBConvertor {
 		
 		return new StudyBenefitRiskAnalysis(br.getName(), indication, study, criteria, alternatives, br.getAnalysisType());
 	}
+	
+	public static org.drugis.addis.entities.data.StudyBenefitRiskAnalysis convertStudyBenefitRiskAnalysis(StudyBenefitRiskAnalysis br) throws ConversionException {
+		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis newBr = new org.drugis.addis.entities.data.StudyBenefitRiskAnalysis();
+		
+		newBr.setName(br.getName());
+		newBr.setAnalysisType(br.getAnalysisType());
+		newBr.setIndication(nameReference(br.getIndication().getName()));
+		newBr.setStudy(nameReference(br.getStudy().getStudyId()));
+		
+		OutcomeMeasuresReferences oms = new OutcomeMeasuresReferences();
+		for (OutcomeMeasure om : br.getCriteria()) {
+			if (om instanceof Endpoint) {
+				oms.getEndpoint().add(nameReference(om.getName()));
+			} else if (om instanceof AdverseEvent) {
+				oms.getAdverseEvent().add(nameReference(om.getName()));
+			} else {
+				throw new ConversionException("Unsupported OutcomeMeasure type " + om);
+			}
+		}
+		newBr.setOutcomeMeasures(oms);
+		
+		ArmReferences arms = new ArmReferences();
+		for (Arm arm : br.getAlternatives()) {
+			arms.getArm().add(armReference(br.getStudy().getStudyId(), findArmId(br.getStudy(), arm)));
+		}
+		newBr.setArms(arms);
+		
+		return newBr;
+	}
 
 	public static MetaBenefitRiskAnalysis convertMetaBenefitRiskAnalysis(
 			org.drugis.addis.entities.data.MetaBenefitRiskAnalysis br, Domain domain) {
@@ -879,7 +959,59 @@ public class JAXBConvertor {
 		drugs.remove(baseline);
 		return new MetaBenefitRiskAnalysis(br.getName(), indication, metaAnalysis, baseline, drugs, br.getAnalysisType());
 	}
+	
 
+	public static org.drugis.addis.entities.data.MetaBenefitRiskAnalysis convertMetaBenefitRiskAnalysis(MetaBenefitRiskAnalysis br) {
+		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis newBr = new org.drugis.addis.entities.data.MetaBenefitRiskAnalysis();
+		newBr.setName(br.getName());
+		newBr.setAnalysisType(br.getAnalysisType());
+		newBr.setBaseline(nameReference(br.getBaseline().getName()));
+		newBr.setIndication(nameReference(br.getIndication().getName()));
+		
+		DrugReferences drugRefs = new DrugReferences();
+		for(Drug d : br.getDrugs()) {
+			drugRefs.getDrug().add(nameReference(d.getName()));
+		}
+		newBr.setDrugs(drugRefs);
+		
+		MetaAnalysisReferences maRefs = new MetaAnalysisReferences();
+		for(MetaAnalysis m : br.getMetaAnalyses()) {
+			maRefs.getMetaAnalysis().add(nameReference(m.getName()));
+		}
+		
+		newBr.setMetaAnalyses(maRefs);
+		return newBr;
+	}
+
+	public static List<BenefitRiskAnalysis<?>> convertBenefitRiskAnalyses(BenefitRiskAnalyses analyses, Domain domain) throws ConversionException {
+		List<BenefitRiskAnalysis<?>> list = new ArrayList<BenefitRiskAnalysis<?>>();
+		for (Object o : analyses.getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis()) {
+			if(o instanceof org.drugis.addis.entities.data.StudyBenefitRiskAnalysis) {
+				list.add(convertStudyBenefitRiskAnalysis((org.drugis.addis.entities.data.StudyBenefitRiskAnalysis) o, domain));
+			}else if (o instanceof org.drugis.addis.entities.data.MetaBenefitRiskAnalysis) {
+				list.add(convertMetaBenefitRiskAnalysis((org.drugis.addis.entities.data.MetaBenefitRiskAnalysis) o, domain));
+			}else {
+				throw new ConversionException("Unsupported Benefit-Risk Analysis Type" + o);
+			}
+		}
+		return list;
+	}
+	
+
+	public static BenefitRiskAnalyses convertBenefitRiskAnalyses(List<BenefitRiskAnalysis<?>> list) throws ConversionException {
+		BenefitRiskAnalyses analyses = new BenefitRiskAnalyses();
+		for (BenefitRiskAnalysis<?> br : list) {
+			if (br instanceof StudyBenefitRiskAnalysis) {
+				analyses.getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis().add(convertStudyBenefitRiskAnalysis((StudyBenefitRiskAnalysis) br));
+			} else if (br instanceof MetaBenefitRiskAnalysis) {
+				analyses.getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis().add(convertMetaBenefitRiskAnalysis((MetaBenefitRiskAnalysis) br));
+			} else {
+				throw new ConversionException("Unsupported Benefit-Risk Analysis Type" + br);
+			}
+		}
+		return analyses;
+	}
+	
 	private static MetaAnalysis findMetaAnalysis(Domain domain, String name) {
 		for (MetaAnalysis ma : domain.getMetaAnalyses()) {
 			if (ma.getName().equals(name)) {

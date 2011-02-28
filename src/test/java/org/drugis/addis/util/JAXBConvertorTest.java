@@ -987,8 +987,6 @@ public class JAXBConvertorTest {
 		return new MetaAnalysisWithStudies(nma, studiesl);
 	}
 	
-	// FIXME: continue below this comment.
-	
 	@Test
 	public void testConvertMetaAnalyses() throws NullPointerException, ConversionException {
 		DomainImpl domain = new DomainImpl();
@@ -1008,6 +1006,7 @@ public class JAXBConvertorTest {
 		expected.add(JAXBConvertor.convertNetworkMetaAnalysis(ma2.d_nwma, domain));
 		
 		assertEntityEquals(expected, JAXBConvertor.convertMetaAnalyses(analyses, domain));
+		assertEquals(analyses, JAXBConvertor.convertMetaAnalyses(expected));
 	}
 
 	private void addStudies(DomainImpl domain, MetaAnalysisWithStudies ma1)
@@ -1016,7 +1015,7 @@ public class JAXBConvertorTest {
 			domain.addStudy(JAXBConvertor.convertStudy(study, domain));
 		}
 	}
-	
+		
 	@Test
 	public void testConvertStudyBenefitRiskAnalysis() throws ConversionException {
 		DomainImpl domain = new DomainImpl();
@@ -1054,6 +1053,7 @@ public class JAXBConvertorTest {
 				criteria , alternatives, AnalysisType.LyndOBrien);
 		
 		assertEntityEquals(expected, JAXBConvertor.convertStudyBenefitRiskAnalysis(br, domain));
+		assertEquals(br, JAXBConvertor.convertStudyBenefitRiskAnalysis(expected));
 	}
 
 	private org.drugis.addis.entities.data.StudyBenefitRiskAnalysis buildStudyBR(
@@ -1114,6 +1114,7 @@ public class JAXBConvertorTest {
 		MetaBenefitRiskAnalysis expected = new MetaBenefitRiskAnalysis(name, ma1ent.getIndication(), metaList , baseline, 
 				drugsEnt, AnalysisType.SMAA);
 		assertEntityEquals(expected, JAXBConvertor.convertMetaBenefitRiskAnalysis(br, domain));
+		assertEquals(br, JAXBConvertor.convertMetaBenefitRiskAnalysis(expected));
 	}
 
 	private org.drugis.addis.entities.data.MetaBenefitRiskAnalysis buildMetaBR(
@@ -1171,7 +1172,7 @@ public class JAXBConvertorTest {
 		
 		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis metaBR = buildMetaBR("Meta BR", new String[] { ExampleData.buildDrugFluoxetine().getName(), ExampleData.buildDrugParoxetine().getName() }, 
 				ExampleData.buildIndicationDepression().getName(),
-				new String[] { pwName, nwName });
+				new String[] { nwName, pwName });
 		
 		BenefitRiskAnalyses analyses = new BenefitRiskAnalyses();
 		analyses.getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis().add(metaBR);
@@ -1180,9 +1181,11 @@ public class JAXBConvertorTest {
 		List<BenefitRiskAnalysis<?>> expected = new ArrayList<BenefitRiskAnalysis<?>>();
 		expected.add(JAXBConvertor.convertMetaBenefitRiskAnalysis(metaBR, domain));
 		expected.add(JAXBConvertor.convertStudyBenefitRiskAnalysis(studyBR, domain));
+
 		assertEntityEquals(expected, JAXBConvertor.convertBenefitRiskAnalyses(analyses, domain));
+		assertEquals(analyses, JAXBConvertor.convertBenefitRiskAnalyses(expected));
 	}
-	
+
 	@Test
 	@Ignore
 	public void testConvertStudyWithNotes() {
@@ -1190,7 +1193,6 @@ public class JAXBConvertorTest {
 	}
 	
 	@Test
-	@Ignore
 	// ACCEPTANCE TEST -- should be replaced by something nicer so we can remove the Javalution support.
 	public void testAddisDataToDomainData() throws Exception {
 		InputStream xmlStream = getClass().getResourceAsStream("../defaultData.xml");
@@ -1205,9 +1207,10 @@ public class JAXBConvertorTest {
 	}
 	
 	@Test
-	@Ignore
 	// ACCEPTANCE TEST -- should be replaced by something nicer so we can remove the Javalution support.
+	@Ignore
 	public void testDomainDataToAddisData() throws Exception {
+		// FIXME: currently the study.studyOutcomeMeasures order differs between expected and actual, probably due to XSLT transform.
 		InputStream xmlStream = getClass().getResourceAsStream("../defaultData.xml");
 		InputStream transformedXmlStream = getTransformed();
 
