@@ -1207,10 +1207,10 @@ public class JAXBConvertorTest {
 	}
 	
 	@Test
-	// ACCEPTANCE TEST -- should be replaced by something nicer so we can remove the Javalution support.
 	@Ignore
+	// ACCEPTANCE TEST -- should be replaced by something nicer so we can remove the Javalution support.
 	public void testDomainDataToAddisData() throws Exception {
-		// FIXME: currently the study.studyOutcomeMeasures order differs between expected and actual, probably due to XSLT transform.
+		// FIXME: currently the expected has NULL for the arm-notes.
 		InputStream xmlStream = getClass().getResourceAsStream("../defaultData.xml");
 		InputStream transformedXmlStream = getTransformed();
 

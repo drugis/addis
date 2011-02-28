@@ -181,45 +181,14 @@
 						</references>
 					</characteristics>
 					<studyOutcomeMeasures>
-						<xsl:for-each select="endpoints/endpoint | adverseEvents/adverseEvent | populationCharacteristics/*">
-							<xsl:element name="studyOutcomeMeasure">
-								<xsl:variable name="id" select="@ref"/>
-								<xsl:variable name="tmpname" select="/addis-data/endpoints/*[@id=$id]/@name | 
-														/addis-data/adverseEvents/*[@id=$id]/@name |
-														@name"/>
-								<xsl:attribute name="id">
-									<xsl:value-of select="concat(name(), '-',$tmpname)"/>
-								</xsl:attribute>
-
-								<xsl:choose>
-									<xsl:when  test="name(..)=&quot;populationCharacteristics&quot;">
-										<xsl:element name="populationCharacteristic">
-											<xsl:attribute name="name">
-												<xsl:value-of select="$tmpname"/>
-											</xsl:attribute>
-										</xsl:element>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:element name="{name()}">
-											<xsl:attribute name="name">
-												<xsl:value-of select="$tmpname"/>
-											</xsl:attribute>
-										</xsl:element>
-									</xsl:otherwise>
-								</xsl:choose>
-								<xsl:if test="../../notes/note/key[@ref=$id]">
-									<notes>
-										<xsl:for-each select="../../notes/note/key[@ref=$id]">
-											<xsl:element name="note">
-												<xsl:attribute name="source">
-													<xsl:value-of select="../noteSrc/@value"/>
-												</xsl:attribute>
-												<xsl:value-of select="../noteText/@value"/>
-											</xsl:element>
-										</xsl:for-each>
-									</notes>
-								</xsl:if>
-							</xsl:element>
+						<xsl:for-each select="endpoints/endpoint">
+							<xsl:call-template name="studyOutcomeMeasure"/>
+						</xsl:for-each>
+						<xsl:for-each select="adverseEvents/adverseEvent">
+							<xsl:call-template name="studyOutcomeMeasure"/>
+						</xsl:for-each>
+						<xsl:for-each select="populationCharacteristics/*">
+							<xsl:call-template name="studyOutcomeMeasure"/>
 						</xsl:for-each>
 					</studyOutcomeMeasures>
 					<arms>
@@ -494,6 +463,46 @@
 	</xsl:template>
 	
 	
+	<xsl:template name="studyOutcomeMeasure">
+		<xsl:element name="studyOutcomeMeasure">
+		<xsl:variable name="id" select="@ref"/>
+		<xsl:variable name="tmpname" select="/addis-data/endpoints/*[@id=$id]/@name | 
+								/addis-data/adverseEvents/*[@id=$id]/@name |
+								@name"/>
+		<xsl:attribute name="id">
+			<xsl:value-of select="concat(name(), '-',$tmpname)"/>
+		</xsl:attribute>
+
+		<xsl:choose>
+			<xsl:when  test="name(..)=&quot;populationCharacteristics&quot;">
+				<xsl:element name="populationCharacteristic">
+					<xsl:attribute name="name">
+						<xsl:value-of select="$tmpname"/>
+					</xsl:attribute>
+				</xsl:element>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="{name()}">
+					<xsl:attribute name="name">
+						<xsl:value-of select="$tmpname"/>
+					</xsl:attribute>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
+		<xsl:if test="../../notes/note/key[@ref=$id]">
+			<notes>
+				<xsl:for-each select="../../notes/note/key[@ref=$id]">
+					<xsl:element name="note">
+						<xsl:attribute name="source">
+							<xsl:value-of select="../noteSrc/@value"/>
+						</xsl:attribute>
+						<xsl:value-of select="../noteText/@value"/>
+					</xsl:element>
+				</xsl:for-each>
+			</notes>
+		</xsl:if>
+	</xsl:element>
+	</xsl:template>
 	
 	<xsl:template name="outcomeMeasure">
 		<xsl:attribute name="name">
