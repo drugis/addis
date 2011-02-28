@@ -44,9 +44,12 @@ import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.data.AddisData;
+import org.drugis.addis.entities.data.Alternative;
+import org.drugis.addis.entities.data.AnalysisArms;
 import org.drugis.addis.entities.data.ArmReference;
 import org.drugis.addis.entities.data.Arms;
 import org.drugis.addis.entities.data.BenefitRiskAnalyses;
@@ -62,7 +65,6 @@ import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
 import org.drugis.addis.entities.data.NameReference;
 import org.drugis.addis.entities.data.NameReferenceWithNotes;
-import org.drugis.addis.entities.data.NetworkMetaAnalysis;
 import org.drugis.addis.entities.data.Notes;
 import org.drugis.addis.entities.data.PairwiseMetaAnalysis;
 import org.drugis.addis.entities.data.RateMeasurement;
@@ -648,7 +650,6 @@ public class JAXBConvertor {
 		for(int i = 0; i < study.getArms().size(); ++i) {
 			armMap.put(study.getArmIds().get(i), study.getArms().get(i));
 		}
-		System.out.println(armMap);
 		newStudy.setArms(convertStudyArms(armMap));
 		
 		// convert outcome measures
@@ -702,7 +703,38 @@ public class JAXBConvertor {
 		return new RandomEffectsMetaAnalysis(pwma.getName(), om, studyArms);
 	}
 	
-	public static MetaAnalysis convertNetworkMetaAnalysis(NetworkMetaAnalysis nma, Domain domain) throws ConversionException {
+	public static PairwiseMetaAnalysis convertPairWiseMetaAnalysis(RandomEffectsMetaAnalysis reMa) throws ConversionException {
+		PairwiseMetaAnalysis pwma = new PairwiseMetaAnalysis();
+		pwma.setName(reMa.getName());
+		pwma.setIndication(nameReference(reMa.getIndication().getName()));
+		if(reMa.getOutcomeMeasure() instanceof Endpoint) {
+			pwma.setEndpoint(nameReference(reMa.getOutcomeMeasure().getName()));
+		} else if(reMa.getOutcomeMeasure() instanceof AdverseEvent) {
+			pwma.setAdverseEvent(nameReference(reMa.getOutcomeMeasure().getName()));
+		} else {
+			throw new ConversionException("Outcome Measure type not supported: " + reMa.getOutcomeMeasure());
+		}
+		for(Drug d : reMa.getIncludedDrugs()) {
+			Alternative alt = new Alternative();
+			alt.setDrug(nameReference(d.getName()));
+			AnalysisArms arms = new AnalysisArms();
+			for(StudyArmsEntry item : reMa.getStudyArms()) {
+				Arm arm = null;
+				if (reMa.getFirstDrug().equals(d)) {
+					arm = item.getBase();
+				} else {
+					arm = item.getSubject();
+				}
+				Integer armId = item.getStudy().getArmIds().get(item.getStudy().getArms().indexOf(arm)); // FIXME: need a better mechanism.
+				arms.getArm().add(armReference(item.getStudy().getStudyId(), armId));
+			}
+			alt.setArms(arms);
+			pwma.getAlternative().add(alt);
+		}
+		return pwma ;
+	}
+	
+	public static NetworkMetaAnalysis convertNetworkMetaAnalysis(org.drugis.addis.entities.data.NetworkMetaAnalysis nma, Domain domain) throws ConversionException {
 		String name = nma.getName();
 		Indication indication = findIndication(domain, nma.getIndication().getName());
 		org.drugis.addis.entities.OutcomeMeasure om = findOutcomeMeasure(domain, nma);
@@ -723,8 +755,39 @@ public class JAXBConvertor {
 			}
 		}
 
-		return new org.drugis.addis.entities.analysis.NetworkMetaAnalysis(name, indication, om, armMap);
+		return new NetworkMetaAnalysis(name, indication, om, armMap);
 	}
+	
+	public static org.drugis.addis.entities.data.NetworkMetaAnalysis convertNetworkMetaAnalysis(NetworkMetaAnalysis ma) throws ConversionException {
+		org.drugis.addis.entities.data.NetworkMetaAnalysis nma = new org.drugis.addis.entities.data.NetworkMetaAnalysis();
+		nma.setName(ma.getName());
+		nma.setIndication(nameReference(ma.getIndication().getName()));
+		if(ma.getOutcomeMeasure() instanceof Endpoint) {
+			nma.setEndpoint(nameReference(ma.getOutcomeMeasure().getName()));
+		} else if(ma.getOutcomeMeasure() instanceof AdverseEvent) {
+			nma.setAdverseEvent(nameReference(ma.getOutcomeMeasure().getName()));
+		} else {
+			throw new ConversionException("Outcome Measure type not supported: " + ma.getOutcomeMeasure());
+		}
+		for(Drug d : ma.getIncludedDrugs()) {
+			Alternative alt = new Alternative();
+			alt.setDrug(nameReference(d.getName()));
+			AnalysisArms arms = new AnalysisArms();
+			
+			for(Study study : ma.getIncludedStudies()) {
+				Arm arm = ma.getArm(study, d);
+				int index = study.getArms().indexOf(arm);
+				if(index != -1) {
+					arms.getArm().add(armReference(study.getStudyId(), study.getArmIds().get(index)));
+				}
+			}
+			alt.setArms(arms);
+			nma.getAlternative().add(alt);
+		}
+		
+		return nma; 
+	}
+
 
 	private static Arm findArm(Study study, Integer id) {
 		for (int i = 0; i < study.getArmIds().size(); ++i) {
@@ -753,8 +816,8 @@ public class JAXBConvertor {
 		List<MetaAnalysis> list = new ArrayList<MetaAnalysis>();
 		
 		for(org.drugis.addis.entities.data.MetaAnalysis ma : analyses.getPairwiseMetaAnalysisOrNetworkMetaAnalysis()) {
-			if(ma instanceof NetworkMetaAnalysis) {
-				list.add(convertNetworkMetaAnalysis((NetworkMetaAnalysis)ma, domain));
+			if(ma instanceof org.drugis.addis.entities.data.NetworkMetaAnalysis) {
+				list.add(convertNetworkMetaAnalysis((org.drugis.addis.entities.data.NetworkMetaAnalysis)ma, domain));
 			}else if(ma instanceof PairwiseMetaAnalysis) {
 				list.add(convertPairWiseMetaAnalysis((PairwiseMetaAnalysis)ma, domain));
 			}else {
@@ -905,5 +968,18 @@ public class JAXBConvertor {
 		indicationRef.setName(indicationName);
 		indicationRef.setNotes(new Notes());
 		return indicationRef;
+	}
+
+	public static ArmReference armReference(String study_name,
+			org.drugis.addis.entities.data.Arm arm1) {
+		Integer id = arm1.getId();
+		return armReference(study_name, id);
+	}
+
+	private static ArmReference armReference(String study_name, Integer id) {
+		ArmReference fluoxArmRef = new ArmReference();
+		fluoxArmRef.setStudy(study_name);
+		fluoxArmRef.setId(id);
+		return fluoxArmRef;
 	}
 }

@@ -446,7 +446,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 
 	private void updateMeasurements() { // FIXME: this is dangerous code, fix it so we don't need it.
-		/*
 		// Add default measurements for all outcomes
 		for (OutcomeMeasure om : getOutcomeMeasures()) {
 			for (Arm a : getArms()) {
@@ -475,7 +474,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 				d_measurements.remove(k);
 			}
 		}
-		*/
 	}
 
 	private boolean orphanKey(MeasurementKey k) {

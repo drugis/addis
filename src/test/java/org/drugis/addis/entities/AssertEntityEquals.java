@@ -25,6 +25,7 @@ package org.drugis.addis.entities;
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -38,6 +39,8 @@ import java.util.Map.Entry;
 import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.common.EqualsUtil;
 
@@ -178,6 +181,24 @@ public class AssertEntityEquals {
 		assertEquals(expected.getOutcomeMeasure(), actual.getOutcomeMeasure());
 		assertEquals(expected.getIndication(), actual.getIndication());
 		assertEquals(expected.getDependencies(), actual.getDependencies());
+		if (expected instanceof NetworkMetaAnalysis) {
+			assertTrue(actual instanceof NetworkMetaAnalysis);
+			NetworkMetaAnalysis expNetwork = (NetworkMetaAnalysis) expected;
+			NetworkMetaAnalysis actNetwork = (NetworkMetaAnalysis) actual;
+			for (Drug d : expNetwork.getIncludedDrugs()) {
+				for (Study s : expNetwork.getIncludedStudies()) {
+					assertEntityEquals(expNetwork.getArm(s, d), actNetwork.getArm(s, d));
+				}
+			}
+		} else {
+			assertTrue(actual instanceof RandomEffectsMetaAnalysis);
+			RandomEffectsMetaAnalysis expPairWise = (RandomEffectsMetaAnalysis) expected;
+			RandomEffectsMetaAnalysis actPairWise = (RandomEffectsMetaAnalysis) actual;
+			for (StudyArmsEntry s : expPairWise.getStudyArms()) {
+				assertEntityEquals(s.getBase(), actPairWise.getArm(s.getStudy(), expPairWise.getFirstDrug()));
+				assertEntityEquals(s.getSubject(), actPairWise.getArm(s.getStudy(), expPairWise.getSecondDrug()));
+			}
+		}
 	}
 	
 	public static void assertEntityEquals(MetaBenefitRiskAnalysis expected, MetaBenefitRiskAnalysis actual) {
