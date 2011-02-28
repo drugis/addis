@@ -50,20 +50,24 @@ import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.ArmReference;
 import org.drugis.addis.entities.data.Arms;
 import org.drugis.addis.entities.data.BenefitRiskAnalyses;
+import org.drugis.addis.entities.data.CategoricalMeasurement;
 import org.drugis.addis.entities.data.CategoricalVariable;
 import org.drugis.addis.entities.data.Category;
 import org.drugis.addis.entities.data.Characteristics;
+import org.drugis.addis.entities.data.ContinuousMeasurement;
 import org.drugis.addis.entities.data.ContinuousVariable;
 import org.drugis.addis.entities.data.DateWithNotes;
-import org.drugis.addis.entities.data.IntegerWithNotes;
+import org.drugis.addis.entities.data.IdReference;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
 import org.drugis.addis.entities.data.NameReference;
 import org.drugis.addis.entities.data.NetworkMetaAnalysis;
 import org.drugis.addis.entities.data.Notes;
 import org.drugis.addis.entities.data.PairwiseMetaAnalysis;
+import org.drugis.addis.entities.data.RateMeasurement;
 import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
+import org.drugis.addis.entities.data.StringIdReference;
 import org.drugis.addis.entities.data.StringWithNotes;
 import org.drugis.addis.entities.data.StudyOutcomeMeasure;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
@@ -465,6 +469,22 @@ public class JAXBConvertor {
 		
 		throw new ConversionException("StudyOutcomeMeasure type not supported: " + om.toString());
 	}
+	
+	public static StudyOutcomeMeasure convertStudyOutcomeMeasure(Variable var) throws ConversionException {
+		StudyOutcomeMeasure newOutcome = new StudyOutcomeMeasure();
+		NameReference value = new NameReference();
+		value.setName(var.getName());
+		if(var instanceof Endpoint) {
+			newOutcome.setEndpoint(value);
+		} else if(var instanceof AdverseEvent){
+			newOutcome.setAdverseEvent(value);
+		} else if(var instanceof PopulationCharacteristic) {
+			newOutcome.setPopulationCharacteristic(value);
+		} else {
+			throw new ConversionException("Unsupported type of StudyOutcomeMeasure: " + var);
+		}
+		return newOutcome;
+	}
 
 	public static LinkedHashMap<String, Variable> convertStudyOutcomeMeasures(StudyOutcomeMeasures oms, Domain domain) throws ConversionException {
 		LinkedHashMap<String, Variable> map = new LinkedHashMap<String, Variable>();
@@ -473,6 +493,18 @@ public class JAXBConvertor {
 		}
 		return map;
 	}
+	
+	public static StudyOutcomeMeasures convertStudyOutcomeMeasures(LinkedHashMap<String, Variable> linkedMap) throws ConversionException {
+		StudyOutcomeMeasures measures = new StudyOutcomeMeasures();
+		for(Entry<String, Variable> item : linkedMap.entrySet()) {
+			StudyOutcomeMeasure om = new StudyOutcomeMeasure();
+			om = convertStudyOutcomeMeasure(item.getValue());
+			om.setId(item.getKey());
+			measures.getStudyOutcomeMeasure().add(om);
+		}
+		return measures;
+	}
+
 	
 	public static LinkedHashMap<Integer, Arm> convertStudyArms(Arms arms, Domain domain) throws ConversionException {
 		LinkedHashMap<Integer, Arm> map = new LinkedHashMap<Integer, Arm>();
@@ -491,7 +523,7 @@ public class JAXBConvertor {
 		}
 		return arms;
 	}
-
+	
 	public static Measurement convertMeasurement(org.drugis.addis.entities.data.Measurement m) throws ConversionException {
 		if(m.getRateMeasurement() != null) {
 			return new BasicRateMeasurement(m.getRateMeasurement().getRate(), m.getRateMeasurement().getSampleSize());
@@ -516,6 +548,37 @@ public class JAXBConvertor {
 		throw new ConversionException("Measurement type not supported: " + m.toString());
 	}
 	
+
+	public static org.drugis.addis.entities.data.Measurement convertMeasurement(Measurement m) throws ConversionException {
+		org.drugis.addis.entities.data.Measurement measurement = new org.drugis.addis.entities.data.Measurement();
+		Integer sampleSize = m.getSampleSize();
+		if(m instanceof BasicRateMeasurement) {
+			RateMeasurement value = new RateMeasurement();
+			value.setSampleSize(sampleSize);
+			value.setRate(((BasicRateMeasurement) m).getRate());
+			measurement.setRateMeasurement(value);
+		} else if(m instanceof BasicContinuousMeasurement) {
+			ContinuousMeasurement value = new ContinuousMeasurement();
+			value.setSampleSize(sampleSize);
+			value.setMean(((BasicContinuousMeasurement) m).getMean());
+			value.setStdDev(((BasicContinuousMeasurement) m).getStdDev());
+			measurement.setContinuousMeasurement(value);
+		} else if(m instanceof FrequencyMeasurement) {
+			CategoricalMeasurement value = new CategoricalMeasurement();
+			for(String cat : ((FrequencyMeasurement) m).getCategories()) {
+				Category newCat = new Category();
+				newCat.setName(cat);
+				newCat.setRate(((FrequencyMeasurement) m).getFrequency(cat));
+				value.getCategory().add(newCat);
+			}
+			measurement.setCategoricalMeasurement(value);
+		} else {
+			throw new ConversionException("Measurement type not supported: " + m.toString());
+		}
+		
+		return measurement;
+	}
+	
 	public static Map<MeasurementKey, Measurement> convertMeasurements(Measurements measurements, Map<Integer, Arm> arms, Map<String, Variable> oms) 
 	throws ConversionException {
 		Map<MeasurementKey, Measurement> map = new HashMap<MeasurementKey, Measurement>();
@@ -525,6 +588,29 @@ public class JAXBConvertor {
 			map.put(new MeasurementKey(oms.get(omId), arm), convertMeasurement(m));
 		}
 		return map;
+	}
+	
+	public static Measurements convertMeasurements(Map<MeasurementKey, Measurement> map, Map<Integer, Arm> arms, Map<String, Variable> oms) throws ConversionException {
+		Measurements measurements = new Measurements();
+		for(Entry<MeasurementKey, Measurement> item : map.entrySet()) {
+			org.drugis.addis.entities.data.Measurement m = convertMeasurement(item.getValue());
+			Integer armId = findKey(arms, item.getKey().getArm());
+			if (armId != null) {
+				m.setArm(idReference(armId));
+			}
+			m.setStudyOutcomeMeasure(stringIdReference(findKey(oms, item.getKey().getVariable())));
+			measurements.getMeasurement().add(m);
+		}
+		return measurements ;
+	}
+	
+	public static <K, V> K findKey(Map<K,V> map, V value) {
+		for (Entry<K, V> e : map.entrySet()) {
+			if (e.getValue().equals(value)) {
+				return e.getKey();
+			}
+		}
+		return null;
 	}
 
 	public static RandomEffectsMetaAnalysis convertPairWiseMetaAnalysis(PairwiseMetaAnalysis pwma, Domain domain)
@@ -740,5 +826,17 @@ public class JAXBConvertor {
 		date.setValue(new XMLGregorianCalendarImpl(cal));
 		date.setNotes(new Notes());
 		return date;
+	}
+
+	public static IdReference idReference(int id) {
+		IdReference ref = new IdReference();
+		ref.setId(id);
+		return ref;
+	}
+
+	public static StringIdReference stringIdReference(String id) {
+		StringIdReference ref = new StringIdReference();
+		ref.setId(id);
+		return ref;
 	}
 }

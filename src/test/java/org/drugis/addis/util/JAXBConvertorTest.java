@@ -81,7 +81,6 @@ import org.drugis.addis.entities.data.Characteristics;
 import org.drugis.addis.entities.data.ContinuousMeasurement;
 import org.drugis.addis.entities.data.ContinuousVariable;
 import org.drugis.addis.entities.data.DrugReferences;
-import org.drugis.addis.entities.data.IdReference;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
 import org.drugis.addis.entities.data.MetaAnalysisReferences;
@@ -92,7 +91,6 @@ import org.drugis.addis.entities.data.OutcomeMeasuresReferences;
 import org.drugis.addis.entities.data.RateMeasurement;
 import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
-import org.drugis.addis.entities.data.StringIdReference;
 import org.drugis.addis.entities.data.StudyOutcomeMeasure;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
 import org.drugis.addis.util.JAXBConvertor.ConversionException;
@@ -101,6 +99,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.drugis.common.JUnitUtil.*;
 
 public class JAXBConvertorTest {
 	private JAXBContext d_jaxb;
@@ -357,16 +356,11 @@ public class JAXBConvertorTest {
 	}
 
 	private Arm buildFixedDoseArm(int size, Drug drug, double quantity) {
-		FixedDose fixDose2 = new FixedDose(quantity, SIUnit.MILLIGRAMS_A_DAY);
-		Arm arm2 = new Arm(drug, fixDose2, size);
-		return arm2;
+		return new Arm(drug, new FixedDose(quantity, SIUnit.MILLIGRAMS_A_DAY), size);
 	}
 
-	private Arm buildFlexibleDoseArm(int size, Drug drug,
-			double minQuantity, double maxQuantity) {
-		FlexibleDose flexDose2 = new FlexibleDose(new Interval<Double> (minQuantity, maxQuantity), SIUnit.MILLIGRAMS_A_DAY);
-		Arm arm3 = new Arm(drug, flexDose2, size);
-		return arm3;
+	private Arm buildFlexibleDoseArm(int size, Drug drug, double minQuantity, double maxQuantity) {
+		return new Arm(drug, new FlexibleDose(new Interval<Double> (minQuantity, maxQuantity), SIUnit.MILLIGRAMS_A_DAY), size);
 	}
 	
 	@Test
@@ -383,11 +377,9 @@ public class JAXBConvertorTest {
 		Drug drug = new Drug(name, code);
 		domain.addDrug(drug);
 		
-		org.drugis.addis.entities.data.Arm arm1 = buildFixedDoseArmData(1,
-				size1, name, quantity);
+		org.drugis.addis.entities.data.Arm arm1 = buildFixedDoseArmData(1, size1, name, quantity);
 		
-		org.drugis.addis.entities.data.Arm arm2 = buildFlexibleDoseArmData(
-				2, size2, name, minQuantity, maxQuantity);
+		org.drugis.addis.entities.data.Arm arm2 = buildFlexibleDoseArmData(2, size2, name, minQuantity, maxQuantity);
 		
 		Arms arms = new Arms();
 		arms.getArm().add(arm1);
@@ -397,8 +389,9 @@ public class JAXBConvertorTest {
 		Set<Integer> keys = new HashSet<Integer>();
 		keys.add(1);
 		keys.add(2);
-		assertEquals(keys , convertedArms.keySet());
-		assertEquals(size1, (int)convertedArms.get(1).getSize());
+		
+		assertEquals(keys , convertedArms.keySet());		
+		assertEquals(size1, (int)convertedArms.get(1).getSize());		
 		assertEquals(size2, (int)convertedArms.get(2).getSize());
 		assertEquals(FixedDose.class, convertedArms.get(1).getDose().getClass());
 		assertEquals(FlexibleDose.class, convertedArms.get(2).getDose().getClass());
@@ -408,31 +401,31 @@ public class JAXBConvertorTest {
 
 	private org.drugis.addis.entities.data.Arm buildFlexibleDoseArmData(
 			Integer id, int size2, String name, double minQuantity, double maxQuantity) {
-		org.drugis.addis.entities.data.Arm arm2 = new org.drugis.addis.entities.data.Arm();
-		arm2.setId(id);
-		arm2.setSize(size2);
-		arm2.setNotes(new Notes());
+		org.drugis.addis.entities.data.Arm newArm = new org.drugis.addis.entities.data.Arm();
+		newArm.setId(id);
+		newArm.setSize(size2);
+		newArm.setNotes(new Notes());
 		org.drugis.addis.entities.data.FlexibleDose flexDose = new org.drugis.addis.entities.data.FlexibleDose();
 		flexDose.setMinDose(minQuantity);
 		flexDose.setMaxDose(maxQuantity);
 		flexDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
-		arm2.setFlexibleDose(flexDose);
-		arm2.setDrug(nameReference(name));
-		return arm2;
+		newArm.setFlexibleDose(flexDose);
+		newArm.setDrug(nameReference(name));
+		return newArm;
 	}
 
 	private org.drugis.addis.entities.data.Arm buildFixedDoseArmData(
 			Integer id, int size1, String name, double quantity) {
-		org.drugis.addis.entities.data.Arm arm1 = new org.drugis.addis.entities.data.Arm();
-		arm1.setId(id);
-		arm1.setSize(size1);
-		arm1.setNotes(new Notes());
+		org.drugis.addis.entities.data.Arm newArm = new org.drugis.addis.entities.data.Arm();
+		newArm.setId(id);
+		newArm.setSize(size1);
+		newArm.setNotes(new Notes());
 		org.drugis.addis.entities.data.FixedDose fixDose = new org.drugis.addis.entities.data.FixedDose();
 		fixDose.setQuantity(quantity);
 		fixDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
-		arm1.setFixedDose(fixDose);
-		arm1.setDrug(nameReference(name));
-		return arm1;
+		newArm.setFixedDose(fixDose);
+		newArm.setDrug(nameReference(name));
+		return newArm;
 	}
 	
 	@Test
@@ -493,10 +486,6 @@ public class JAXBConvertorTest {
 		assertEntityEquals(chars2, JAXBConvertor.convertStudyCharacteristics(chars1));
 		assertEquals(chars1, JAXBConvertor.convertStudyCharacteristics(chars2));
 	}
-
-	com.sun.xml.bind.v2.runtime.JAXBContextImpl context;
-	
-	// TODO: rest of the tests below
 	
 	@Test
 	public void testConvertStudyOutcomeMeasure() throws ConversionException {
@@ -506,19 +495,25 @@ public class JAXBConvertorTest {
 		Endpoint ep = ExampleData.buildEndpointHamd();
 		StudyOutcomeMeasure om = new StudyOutcomeMeasure();
 		om.setEndpoint(nameReference(ep.getName()));
+		
 		assertEntityEquals(ep, JAXBConvertor.convertStudyOutcomeMeasure(om, domain));
+		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(ep), om);
 		
 		AdverseEvent ade = ExampleData.buildAdverseEventDiarrhea();
 		domain.addAdverseEvent(ade);
 		om.setEndpoint(null);
 		om.setAdverseEvent(nameReference(ade.getName()));
+		
 		assertEntityEquals(ade, JAXBConvertor.convertStudyOutcomeMeasure(om, domain));
+		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(ade), om);
 		
 		PopulationCharacteristic pc = ExampleData.buildGenderVariable();
 		domain.addPopulationCharacteristic(pc);
 		om.setAdverseEvent(null);
 		om.setPopulationCharacteristic(nameReference(pc.getName()));
+		
 		assertEntityEquals(pc, JAXBConvertor.convertStudyOutcomeMeasure(om, domain));
+		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(pc), om);
 	}
 	
 	@Test(expected=ConversionException.class)
@@ -531,25 +526,26 @@ public class JAXBConvertorTest {
 	@Test
 	public void testConvertStudyOutcomeMeasures() throws ConversionException {
 		Domain domain = new DomainImpl();
-		ExampleData.initDefaultData(domain);		
+		ExampleData.initDefaultData(domain);
 		Endpoint ep = ExampleData.buildEndpointHamd();
-		AdverseEvent ade = ExampleData.buildAdverseEventDiarrhea();
-		domain.addAdverseEvent(ade);
+		domain.addAdverseEvent(ExampleData.buildAdverseEventDiarrhea());
+		
 		LinkedHashMap<String, Variable> vars = new LinkedHashMap<String, Variable>();
 		vars.put("X", ep);
-		vars.put("Y", ade);
+		vars.put("Y", ExampleData.buildAdverseEventDiarrhea());
 
 		StudyOutcomeMeasure epRef = new StudyOutcomeMeasure();
 		epRef.setId("X");
 		epRef.setEndpoint(nameReference(ep.getName()));
 		StudyOutcomeMeasure adeRef = new StudyOutcomeMeasure();
 		adeRef.setId("Y");
-		adeRef.setAdverseEvent(nameReference(ade.getName()));
+		adeRef.setAdverseEvent(nameReference(ExampleData.buildAdverseEventDiarrhea().getName()));
 		StudyOutcomeMeasures oms = new StudyOutcomeMeasures();
 		oms.getStudyOutcomeMeasure().add(epRef);
 		oms.getStudyOutcomeMeasure().add(adeRef);
 		
 		assertEquals(vars, JAXBConvertor.convertStudyOutcomeMeasures(oms, domain));
+		assertEquals(JAXBConvertor.convertStudyOutcomeMeasures(vars), oms);
 	}
 	
 	@Test
@@ -561,7 +557,9 @@ public class JAXBConvertorTest {
 		rm.setSampleSize(s);
 		org.drugis.addis.entities.data.Measurement meas = new org.drugis.addis.entities.data.Measurement();
 		meas.setRateMeasurement(rm);
-		assertEntityEquals(new BasicRateMeasurement(c, s), JAXBConvertor.convertMeasurement(meas));
+		BasicRateMeasurement expected1 = new BasicRateMeasurement(c, s);
+		assertEntityEquals(expected1, JAXBConvertor.convertMeasurement(meas));
+		assertEquals(meas, JAXBConvertor.convertMeasurement(expected1));
 		
 		org.drugis.addis.entities.data.ContinuousMeasurement cm = new org.drugis.addis.entities.data.ContinuousMeasurement();
 		double m = 3.14;
@@ -570,8 +568,11 @@ public class JAXBConvertorTest {
 		cm.setStdDev(e);
 		cm.setSampleSize(s);
 		meas = new org.drugis.addis.entities.data.Measurement();
+		meas.setRateMeasurement(null);
 		meas.setContinuousMeasurement(cm);
-		assertEntityEquals(new BasicContinuousMeasurement(m, e, s), JAXBConvertor.convertMeasurement(meas));
+		BasicContinuousMeasurement expected2 = new BasicContinuousMeasurement(m, e, s);
+		assertEntityEquals(expected2, JAXBConvertor.convertMeasurement(meas));
+		assertEquals(meas, JAXBConvertor.convertMeasurement(expected2));
 		
 		org.drugis.addis.entities.data.CategoricalMeasurement fm = new org.drugis.addis.entities.data.CategoricalMeasurement();
 		Category c1 = new Category();
@@ -587,8 +588,9 @@ public class JAXBConvertorTest {
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		map.put("Dogs", 2145);
 		map.put("Cats", 18);
-		FrequencyMeasurement expected = new FrequencyMeasurement(new String[] {"Cats", "Dogs"}, map);
-		assertEntityEquals(expected, JAXBConvertor.convertMeasurement(meas));
+		FrequencyMeasurement expected3 = new FrequencyMeasurement(new String[] {"Cats", "Dogs"}, map);	
+		assertEntityEquals(expected3, JAXBConvertor.convertMeasurement(meas));
+		assertEquals(meas, JAXBConvertor.convertMeasurement(expected3));
 	}
 	
 	@Test
@@ -628,32 +630,32 @@ public class JAXBConvertorTest {
 		Measurements measurements = new Measurements();
 		List<org.drugis.addis.entities.data.Measurement> list = measurements.getMeasurement();
 		org.drugis.addis.entities.data.Measurement m1 = new org.drugis.addis.entities.data.Measurement();
-		m1.setArm(idReference(5));
-		m1.setStudyOutcomeMeasure(stringIdReference(epName));
+		m1.setArm(JAXBConvertor.idReference(5));
+		m1.setStudyOutcomeMeasure(JAXBConvertor.stringIdReference(epName));
 		m1.setRateMeasurement(rm1);
 		org.drugis.addis.entities.data.Measurement m2 = new org.drugis.addis.entities.data.Measurement();
-		m2.setArm(idReference(8));
-		m2.setStudyOutcomeMeasure(stringIdReference(epName));
+		m2.setArm(JAXBConvertor.idReference(8));
+		m2.setStudyOutcomeMeasure(JAXBConvertor.stringIdReference(epName));
 		m2.setRateMeasurement(rm2);
 		org.drugis.addis.entities.data.Measurement m3 = new org.drugis.addis.entities.data.Measurement();
-		m3.setArm(idReference(5));
-		m3.setStudyOutcomeMeasure(stringIdReference(aeName));
+		m3.setArm(JAXBConvertor.idReference(5));
+		m3.setStudyOutcomeMeasure(JAXBConvertor.stringIdReference(aeName));
 		m3.setRateMeasurement(rm2);
 		org.drugis.addis.entities.data.Measurement m4 = new org.drugis.addis.entities.data.Measurement();
-		m4.setArm(idReference(8));
-		m4.setStudyOutcomeMeasure(stringIdReference(aeName));
+		m4.setArm(JAXBConvertor.idReference(8));
+		m4.setStudyOutcomeMeasure(JAXBConvertor.stringIdReference(aeName));
 		m4.setRateMeasurement(rm1);
 		org.drugis.addis.entities.data.Measurement m5 = new org.drugis.addis.entities.data.Measurement();
-		m5.setArm(idReference(5));
-		m5.setStudyOutcomeMeasure(stringIdReference(pcName));
+		m5.setArm(JAXBConvertor.idReference(5));
+		m5.setStudyOutcomeMeasure(JAXBConvertor.stringIdReference(pcName));
 		m5.setContinuousMeasurement(cm1);
 		org.drugis.addis.entities.data.Measurement m6 = new org.drugis.addis.entities.data.Measurement();
-		m6.setArm(idReference(8));
-		m6.setStudyOutcomeMeasure(stringIdReference(pcName));
+		m6.setArm(JAXBConvertor.idReference(8));
+		m6.setStudyOutcomeMeasure(JAXBConvertor.stringIdReference(pcName));
 		m6.setContinuousMeasurement(cm1);
 		org.drugis.addis.entities.data.Measurement m7 = new org.drugis.addis.entities.data.Measurement();
 		m7.setArm(null);
-		m7.setStudyOutcomeMeasure(stringIdReference(pcName));
+		m7.setStudyOutcomeMeasure(JAXBConvertor.stringIdReference(pcName));
 		m7.setContinuousMeasurement(cm1);
 		list.add(m1);		
 		list.add(m2);
@@ -671,21 +673,10 @@ public class JAXBConvertorTest {
 		expected.put(new MeasurementKey(pc, arm5), ccm1);
 		expected.put(new MeasurementKey(pc, arm8), ccm1);
 		expected.put(new MeasurementKey(pc, null), ccm1);
+		
 		assertEquals(expected, JAXBConvertor.convertMeasurements(measurements, arms, oms));
+		assertAllAndOnly(measurements.getMeasurement(), JAXBConvertor.convertMeasurements(expected, arms, oms).getMeasurement());
 	}
-
-	private StringIdReference stringIdReference(String id) {
-		StringIdReference ref = new StringIdReference();
-		ref.setId(id);
-		return ref;
-	}
-
-	private IdReference idReference(int id) {
-		IdReference ref = new IdReference();
-		ref.setId(id);
-		return ref;
-	}
-
 
 	public org.drugis.addis.entities.data.Study buildStudy(String name) {
 		String indicationName = ExampleData.buildIndicationDepression().getName();
@@ -717,8 +708,8 @@ public class JAXBConvertorTest {
 		// Measurements
 		List<org.drugis.addis.entities.data.Measurement> list = study.getMeasurements().getMeasurement();
 		org.drugis.addis.entities.data.Measurement m1 = new org.drugis.addis.entities.data.Measurement();
-		m1.setArm(idReference(2));
-		m1.setStudyOutcomeMeasure(stringIdReference("endpoint-" + endpointName[0]));
+		m1.setArm(JAXBConvertor.idReference(2));
+		m1.setStudyOutcomeMeasure(JAXBConvertor.stringIdReference("endpoint-" + endpointName[0]));
 		RateMeasurement rm1 = new RateMeasurement();
 		rm1.setRate(10);
 		rm1.setSampleSize(110);
@@ -726,7 +717,7 @@ public class JAXBConvertorTest {
 		list.add(m1);
 		org.drugis.addis.entities.data.Measurement m2 = new org.drugis.addis.entities.data.Measurement();
 		m2.setArm(null);
-		m2.setStudyOutcomeMeasure(stringIdReference("popChar-" + popCharName[0]));
+		m2.setStudyOutcomeMeasure(JAXBConvertor.stringIdReference("popChar-" + popCharName[0]));
 		ContinuousMeasurement cm1 = new ContinuousMeasurement();
 		cm1.setMean(0.2);
 		cm1.setStdDev(0.01);
