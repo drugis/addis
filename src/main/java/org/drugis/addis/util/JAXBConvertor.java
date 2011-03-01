@@ -1,5 +1,6 @@
 package org.drugis.addis.util;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -399,7 +400,7 @@ public class JAXBConvertor {
 	
 	private static PubMedIdList getPubMedIds(References refs) {
 		PubMedIdList pubMedList = new PubMedIdList();
-		for(Integer ref : refs.getPubMedId()) {
+		for(BigInteger ref : refs.getPubMedId()) {
 			pubMedList.add(new PubMedId(ref.toString()));
 		}
 		return pubMedList;
@@ -488,7 +489,7 @@ public class JAXBConvertor {
 	private static References convertReferences(PubMedIdList pubMedIdList) {
 		References refs = new References();
 		for(PubMedId x : pubMedIdList) {
-			refs.getPubMedId().add(Integer.parseInt(x.getId()));
+			refs.getPubMedId().add(new BigInteger(x.getId()));
 		}
 		return refs;
 	}

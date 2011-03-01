@@ -13,7 +13,8 @@
 				<xs:element name="metaAnalyses" type="MetaAnalyses"/>
 				<xs:element name="benefitRiskAnalyses" type="BenefitRiskAnalyses"/>
 			</xs:sequence>
-		</xs:complexType><!-- Keys and keyrefs -->
+		</xs:complexType>
+		<!-- Keys and keyrefs -->
 		<xs:key name="drugNameKey">
 			<xs:selector xpath="drugs/drug"/>
 			<xs:field xpath="@name"/>
@@ -71,7 +72,8 @@
 			<xs:field xpath="@name"/>
 		</xs:key>
 		<xs:keyref name="benefitRiskAnalysisAdverseEventKeyRef" refer="adverseEventNameKey">
-			<xs:selector xpath="benefitRiskAnalyses/studyBenefitRiskAnalysis/outcomeMeasures/adverseEvent"/>
+			<xs:selector
+				xpath="benefitRiskAnalyses/studyBenefitRiskAnalysis/outcomeMeasures/adverseEvent"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
 		<xs:keyref name="studyAdverseEventKeyRef" refer="adverseEventNameKey">
@@ -91,7 +93,8 @@
 			<xs:field xpath="@name"/>
 		</xs:key>
 		<xs:keyref name="studyBenefitRiskAnalysisEndpointKeyRef" refer="endpointNameKey">
-			<xs:selector xpath="benefitRiskAnalyses/studyBenefitRiskAnalysis/outcomeMeasures/endpoint"/>
+			<xs:selector
+				xpath="benefitRiskAnalyses/studyBenefitRiskAnalysis/outcomeMeasures/endpoint"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
 		<xs:keyref name="endpointInStudyKeyRef" refer="endpointNameKey">
@@ -102,8 +105,10 @@
 			<xs:selector xpath="populationCharacteristics/populationCharacteristic"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
-		<xs:keyref name="populationCharacteristicsInStudyKeyRef" refer="populationCharacteristicsNameKey">
-			<xs:selector xpath="studies/study/studyOutcomeMeasures/studyOutcomeMeasure/populationCharacteristic"/>
+		<xs:keyref name="populationCharacteristicsInStudyKeyRef"
+			refer="populationCharacteristicsNameKey">
+			<xs:selector
+				xpath="studies/study/studyOutcomeMeasures/studyOutcomeMeasure/populationCharacteristic"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
 		<xs:key name="armIdKey">
@@ -127,13 +132,14 @@
 			<xs:field xpath="@name"/>
 		</xs:key>
 		<xs:keyref name="metaBenefitRiskAnalysisMetaAnalysisNameKeyRef" refer="metaAnalysisNameKey">
-			<xs:selector xpath="benefitRiskAnalyses/metaBenefitRiskAnalysis/metaAnalyses/metaAnalysis"/>
+			<xs:selector
+				xpath="benefitRiskAnalyses/metaBenefitRiskAnalysis/metaAnalyses/metaAnalysis"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
 	</xs:element>
-	
+
 	<!-- Top-level types -->
-	
+
 	<xs:complexType name="Indications">
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="indication" type="Indication"/>
@@ -166,7 +172,8 @@
 					<xs:selector xpath="studyOutcomeMeasures/studyOutcomeMeasure"/>
 					<xs:field xpath="@id"/>
 				</xs:key>
-				<xs:keyref name="studyMeasurementOutcomeMeasureIdKeyRef" refer="studyOutcomeMeasureIdKey">
+				<xs:keyref name="studyMeasurementOutcomeMeasureIdKeyRef"
+					refer="studyOutcomeMeasureIdKey">
 					<xs:selector xpath="measurements/measurement/studyOutcomeMeasure"/>
 					<xs:field xpath="@id"/>
 				</xs:keyref>
@@ -189,9 +196,9 @@
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
-	
+
 	<!-- Second-level types -->
-	
+
 	<xs:complexType name="Indication">
 		<xs:attribute name="code" type="xs:long"/>
 		<xs:attribute name="name" type="xs:string"/>
@@ -272,7 +279,7 @@
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="analysisType" type="BenefitRiskAnalysisType"/>
 	</xs:complexType>
-	
+
 	<!-- The terrible offspring of Study and its notes-->
 
 	<xs:complexType name="StudyOutcomeMeasures">
@@ -300,7 +307,8 @@
 			<xs:element minOccurs="0" name="objective" type="StringWithNotes"/>
 			<xs:element minOccurs="0" name="study_start" type="DateWithNotes"/>
 			<xs:element minOccurs="0" name="study_end" type="DateWithNotes"/>
-			<xs:element minOccurs="0" name="status" type="Status"/> <!-- check this, because there should always be a inclusion, exclusion and source -->
+			<xs:element minOccurs="0" name="status" type="Status"/>
+			<!-- check this, because there should always be a inclusion, exclusion and source -->
 			<xs:element minOccurs="0" name="inclusion" type="StringWithNotes"/>
 			<xs:element minOccurs="0" name="exclusion" type="StringWithNotes"/>
 			<xs:element name="references" type="References"/>
@@ -311,7 +319,7 @@
 	<xs:complexType name="References">
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:choice>
-				<xs:element name="pubMedId" type="xs:int"/>
+				<xs:element name="pubMedId" type="xs:integer"/>
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
@@ -369,7 +377,7 @@
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
-	
+
 	<!-- Outcomemeasures and variables -->
 
 	<xs:complexType name="ContinuousVariable">
@@ -418,9 +426,9 @@
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="rate" type="xs:int"/>
 	</xs:complexType>
-	
+
 	<!-- Helpers for Meta-analyses -->
-	
+
 	<xs:complexType name="Alternative">
 		<xs:sequence>
 			<xs:element name="drug" type="NameReference"/>
@@ -544,12 +552,13 @@
 		<xs:sequence>
 			<xs:element name="adverseEvent" type="NameReference" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="endpoint" type="NameReference" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="populationCharacteristic" type="NameReference" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="populationCharacteristic" type="NameReference" minOccurs="0"
+				maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-	
+
 	<!-- Types with notes (for Study) -->
-	
+
 	<xs:complexType name="TypeWithNotes">
 		<xs:sequence>
 			<xs:element minOccurs="0" name="notes" type="Notes"/>

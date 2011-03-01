@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -445,9 +446,9 @@ public class JAXBConvertorTest {
 		PubMedIdList pmids = new PubMedIdList();
 		pmids.add(new PubMedId("1"));
 		pmids.add(new PubMedId("12345"));
-		List<Integer> pmints = new ArrayList<Integer>();
+		List<BigInteger> pmints = new ArrayList<BigInteger>();
 		for (PubMedId id : pmids) {
-			pmints.add(Integer.parseInt(id.toString()));
+			pmints.add(new BigInteger(id.getId()));
 		}
 		
 		org.drugis.addis.entities.data.Characteristics chars1 = new org.drugis.addis.entities.data.Characteristics();
