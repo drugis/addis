@@ -58,7 +58,7 @@ import org.drugis.addis.entities.data.Arms;
 import org.drugis.addis.entities.data.BenefitRiskAnalyses;
 import org.drugis.addis.entities.data.CategoricalMeasurement;
 import org.drugis.addis.entities.data.CategoricalVariable;
-import org.drugis.addis.entities.data.Category;
+import org.drugis.addis.entities.data.CategoryMeasurement;
 import org.drugis.addis.entities.data.Characteristics;
 import org.drugis.addis.entities.data.ContinuousMeasurement;
 import org.drugis.addis.entities.data.ContinuousVariable;
@@ -390,11 +390,6 @@ public class JAXBConvertor {
 	}
 	
 	static org.drugis.addis.entities.data.OutcomeMeasure convertPopulationCharacteristic(PopulationCharacteristic pc) throws ConversionException {
-		/*org.drugis.addis.entities.data.OutcomeMeasure om = new org.drugis.addis.entities.data.OutcomeMeasure();
-		om.setName(pc.getName());
-		om.setDescription(pc.getDescription());
-		om.setContinuous()*/
-		
 		return convertOutcomeMeasure(pc);
 	}
 	
@@ -576,7 +571,7 @@ public class JAXBConvertor {
 		if(m.getCategoricalMeasurement() != null) {
 			HashMap<String, Integer> map = new HashMap<String, Integer>();
 			List<String> names = new ArrayList<String>();
-			for(Category c : m.getCategoricalMeasurement().getCategory()) {
+			for(CategoryMeasurement c : m.getCategoricalMeasurement().getCategory()) {
 				map.put(c.getName(), c.getRate());
 				names.add(c.getName());
 			}
@@ -604,7 +599,7 @@ public class JAXBConvertor {
 		} else if(m instanceof FrequencyMeasurement) {
 			CategoricalMeasurement value = new CategoricalMeasurement();
 			for(String cat : ((FrequencyMeasurement) m).getCategories()) {
-				Category newCat = new Category();
+				CategoryMeasurement newCat = new CategoryMeasurement();
 				newCat.setName(cat);
 				newCat.setRate(((FrequencyMeasurement) m).getFrequency(cat));
 				value.getCategory().add(newCat);

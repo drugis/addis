@@ -3,6 +3,7 @@ package org.drugis.addis.util;
 import static org.drugis.addis.entities.AssertEntityEquals.assertDomainEquals;
 import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
 import static org.drugis.addis.util.JAXBConvertor.nameReference;
+import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -77,7 +78,7 @@ import org.drugis.addis.entities.data.ArmReferences;
 import org.drugis.addis.entities.data.Arms;
 import org.drugis.addis.entities.data.BenefitRiskAnalyses;
 import org.drugis.addis.entities.data.CategoricalVariable;
-import org.drugis.addis.entities.data.Category;
+import org.drugis.addis.entities.data.CategoryMeasurement;
 import org.drugis.addis.entities.data.Characteristics;
 import org.drugis.addis.entities.data.ContinuousMeasurement;
 import org.drugis.addis.entities.data.ContinuousVariable;
@@ -99,8 +100,6 @@ import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.drugis.common.JUnitUtil.*;
 
 public class JAXBConvertorTest {
 	private JAXBContext d_jaxb;
@@ -576,10 +575,10 @@ public class JAXBConvertorTest {
 		assertEquals(meas, JAXBConvertor.convertMeasurement(expected2));
 		
 		org.drugis.addis.entities.data.CategoricalMeasurement fm = new org.drugis.addis.entities.data.CategoricalMeasurement();
-		Category c1 = new Category();
+		CategoryMeasurement c1 = new CategoryMeasurement();
 		c1.setName("Cats");
 		c1.setRate(18);
-		Category c2 = new Category();
+		CategoryMeasurement c2 = new CategoryMeasurement();
 		c2.setName("Dogs");
 		c2.setRate(2145);
 		fm.getCategory().add(c1);

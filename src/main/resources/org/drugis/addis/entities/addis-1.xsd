@@ -419,10 +419,10 @@
 	</xs:complexType>
 	<xs:complexType name="CategoricalMeasurement">
 		<xs:sequence maxOccurs="unbounded">
-			<xs:element name="category" type="Category"/>
+			<xs:element name="category" type="CategoryMeasurement"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="Category">
+	<xs:complexType name="CategoryMeasurement">
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="rate" type="xs:int"/>
 	</xs:complexType>
