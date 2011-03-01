@@ -48,6 +48,8 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
+import org.drugis.addis.entities.PubMedId;
+import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
@@ -201,6 +203,13 @@ public class ClinicaltrialsImporter {
 		study.putNote((Object)BasicStudyCharacteristic.INCLUSION, new Note(Source.CLINICALTRIALS, criteria.trim()));
 		study.putNote((Object)BasicStudyCharacteristic.EXCLUSION, new Note(Source.CLINICALTRIALS, criteria.trim()));
 		
+		// References
+		for (Reference ref : studyImport.getReference()) {
+			if (ref.getPMID() != null) {
+				((PubMedIdList)study.getCharacteristic(BasicStudyCharacteristic.PUBMED)).add(new PubMedId(ref.getPMID()));
+			}
+		}
+		
 		// Add note to the study-arms.
 		Map<String,Arm> armLabels = new HashMap<String,Arm>();
 		for(ArmGroup ag : studyImport.getArmGroup()){
@@ -247,7 +256,21 @@ public class ClinicaltrialsImporter {
 	}
 
 	private static String createTitleNote(ClinicalStudy studyImport) {
-		return "Brief title: " + studyImport.getBriefTitle().trim() + "\n\nOfficial title: " + studyImport.getOfficialTitle().trim();
+		StringBuilder titleNote = new StringBuilder();
+		titleNote.append("Brief title: ");
+		if (studyImport.getBriefTitle() != null) {
+			titleNote.append(studyImport.getBriefTitle().trim());
+		} else {
+			titleNote.append("N/A");
+		}
+		titleNote.append("\n\n");
+		titleNote.append("Official title: ");
+		if (studyImport.getOfficialTitle() != null) {
+			titleNote.append(studyImport.getOfficialTitle().trim());
+		} else {
+			titleNote.append("N/A");
+		}
+		return titleNote.toString();
 	}
 
 	private static boolean designContains(ClinicalStudy studyImport, String contains) {
