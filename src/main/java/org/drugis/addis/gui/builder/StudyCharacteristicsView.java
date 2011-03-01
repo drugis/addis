@@ -64,7 +64,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		int row = 3;
 		for (Characteristic c : StudyCharacteristics.values()) {
 			LayoutUtil.addRow(layout);
-			builder.addLabel(c.getDescription() + ":", cc.xy(1, row));
+			builder.addLabel(c.getDescription() + ":", cc.xy(1, row, "right, top"));
 
 			JComponent charView = 
 				AuxComponentFactory.createCharacteristicView(d_model.getCharacteristicModel(c));

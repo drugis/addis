@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -49,6 +50,7 @@ import javax.swing.text.NumberFormatter;
 import javax.swing.text.StyledDocument;
 
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.ListPanel;
@@ -114,9 +116,9 @@ public class AuxComponentFactory {
 			component = BasicComponentFactory.createLabel(model, new DayDateFormat());
 		} else if (valueType.equals(PubMedIdList.class)) {
 			component = new JPanel();
-			PubMedIdList pubmedIds = (PubMedIdList) model.getValue();			
-			for (int i = 0; i < pubmedIds.size(); i++) {
-				component.add(new LinkLabel(pubmedIds.get(i).toString(), "http://www.ncbi.nlm.nih.gov/pubmed/" + pubmedIds.get(i).toString()));	
+			component.setLayout(new BoxLayout(component, BoxLayout.Y_AXIS));
+			for (PubMedId pmid : (PubMedIdList) model.getValue()) {
+				component.add(new LinkLabel(pmid.getId(), "http://www.ncbi.nlm.nih.gov/pubmed/" + pmid.getId()));	
 			}
 		} else if (valueType.equals(Set.class)) {
 			component = new ListPanel(model, "value", Entity.class);
