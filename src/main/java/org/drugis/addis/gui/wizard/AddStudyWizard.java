@@ -29,6 +29,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -742,8 +744,13 @@ public class AddStudyWizard extends Wizard {
 					d_importButton.setEnabled(false);				
 					d_pm.importCT();
 					d_importButton.setEnabled(true);
-				} catch (Exception e) {
+				} catch (FileNotFoundException e) { // file not found is expected when user enters "strange" IDs
 					JOptionPane.showMessageDialog(d_me, "Couldn't find NCT ID: "+ d_pm.getIdModel().getValue(), "Not Found" , JOptionPane.WARNING_MESSAGE);
+				} catch (IOException e) { // IOExceptions are expected when there is a network error -- so report them
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(d_me, "Unable to read from ClinicalTrials.gov: " + e.getMessage(), "Error reading", JOptionPane.ERROR_MESSAGE);
+				} catch (Exception e) { // otherwise throw onwards.
+					throw new RuntimeException("Unexpected error trying to import study from ClinicalTrials.gov", e);
 				}
 				prepare();
 			}
