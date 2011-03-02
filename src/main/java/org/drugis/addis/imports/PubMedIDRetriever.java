@@ -35,9 +35,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 public class PubMedIDRetriever {
-	private static final int READ_TIMEOUT = 3000;
-	private static final int CONNECTION_TIMEOUT = 3000;
-	private static final String PUBMED_API = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
+	public static final int READ_TIMEOUT = 3000;
+	public static final int CONNECTION_TIMEOUT = 3000;
+	public static final String PUBMED_API = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
 
 	public PubMedIdList importPubMedID(String StudyID) {
 		// First returned document is a key into the results.
@@ -50,11 +50,12 @@ public class PubMedIDRetriever {
 		return getIdList(docTwo);
 	}
 	
-	private Document parse (InputStream is) {
+	public static Document parse (InputStream is) {
 		try {
 			DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
 			domFactory.setValidating(false);
 			domFactory.setNamespaceAware(false);
+			domFactory.setIgnoringElementContentWhitespace(true);
 			DocumentBuilder builder = domFactory.newDocumentBuilder();
 			
 			Document ret = builder.parse(is);
@@ -89,7 +90,7 @@ public class PubMedIDRetriever {
 		return PubMedID;
 	}
 
-	private InputStream openUrl(String url) {
+	public static InputStream openUrl(String url) {
 		try { 
 			URLConnection urlConn = new URL(url).openConnection();
 			urlConn.setConnectTimeout(CONNECTION_TIMEOUT);
