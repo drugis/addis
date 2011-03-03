@@ -294,7 +294,7 @@
 				<xs:element name="endpoint" type="NameReference"/>
 				<xs:element name="populationCharacteristic" type="NameReference"/>
 			</xs:choice>
-			<xs:element minOccurs="0" name="notes" type="Notes"/>
+			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:string" use="required"/>
 	</xs:complexType>
@@ -359,7 +359,7 @@
 				<xs:element name="fixedDose" type="FixedDose"/>
 			</xs:choice>
 			<xs:element name="drug" type="NameReference"/>
-			<xs:element minOccurs="0" name="notes" type="Notes"/>
+			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:int"/>
 		<xs:attribute name="size" type="xs:int"/>
@@ -561,7 +561,7 @@
 
 	<xs:complexType name="TypeWithNotes">
 		<xs:sequence>
-			<xs:element minOccurs="0" name="notes" type="Notes"/>
+			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="StringWithNotes">

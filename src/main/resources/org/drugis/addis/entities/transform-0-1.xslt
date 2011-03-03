@@ -232,18 +232,16 @@
 										<xsl:value-of select="/addis-data/drugs/drug[@id=$drugId]/@name"/>
 									</xsl:attribute>
 								</xsl:element>
-								<xsl:if test="../../notes/note/key[@ref=$id]">
-									<notes>
-										<xsl:for-each select="../../notes/note/key[@ref=$id]">
-											<xsl:element name="note">
-												<xsl:attribute name="source">
-													<xsl:value-of select="../noteSrc/@value"/>
-												</xsl:attribute>
-												<xsl:value-of select="../noteText/@value"/>
-											</xsl:element>
-										</xsl:for-each>
-									</notes>
-								</xsl:if>
+								<notes>
+									<xsl:for-each select="../../notes/note/key[@ref=$id]">
+										<xsl:element name="note">
+											<xsl:attribute name="source">
+												<xsl:value-of select="../noteSrc/@value"/>
+											</xsl:attribute>
+											<xsl:value-of select="../noteText/@value"/>
+										</xsl:element>
+									</xsl:for-each>
+								</notes>
 								
 							</xsl:element>
 						</xsl:for-each>
@@ -489,18 +487,16 @@
 				</xsl:element>
 			</xsl:otherwise>
 		</xsl:choose>
-		<xsl:if test="../../notes/note/key[@ref=$id]">
-			<notes>
-				<xsl:for-each select="../../notes/note/key[@ref=$id]">
-					<xsl:element name="note">
-						<xsl:attribute name="source">
-							<xsl:value-of select="../noteSrc/@value"/>
-						</xsl:attribute>
-						<xsl:value-of select="../noteText/@value"/>
-					</xsl:element>
-				</xsl:for-each>
-			</notes>
-		</xsl:if>
+		<notes>
+			<xsl:for-each select="../../notes/note/key[@ref=$id]">
+				<xsl:element name="note">
+					<xsl:attribute name="source">
+						<xsl:value-of select="../noteSrc/@value"/>
+					</xsl:attribute>
+					<xsl:value-of select="../noteText/@value"/>
+				</xsl:element>
+			</xsl:for-each>
+		</notes>
 	</xsl:element>
 	</xsl:template>
 	
