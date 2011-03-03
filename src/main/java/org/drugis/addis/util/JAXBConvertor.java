@@ -1,6 +1,8 @@
 package org.drugis.addis.util;
 
 import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -346,7 +348,6 @@ public class JAXBConvertor {
 			newArm.setFlexibleDose(convertFlexibleDose((FlexibleDose)arm.getDose()));
 		}
 		newArm.setSize(arm.getSize());
-		//newArm.setId(arm.get)
 		newArm.setNotes(new Notes());
 
 		return newArm;
@@ -505,6 +506,7 @@ public class JAXBConvertor {
 	
 	public static StudyOutcomeMeasure convertStudyOutcomeMeasure(Variable var) throws ConversionException {
 		StudyOutcomeMeasure newOutcome = new StudyOutcomeMeasure();
+		newOutcome.setNotes(new Notes());
 		NameReference value = new NameReference();
 		value.setName(var.getName());
 		if(var instanceof Endpoint) {
@@ -1079,18 +1081,14 @@ public class JAXBConvertor {
 		source.setNotes(new Notes());
 		return source;
 	}
-
-	public static DateWithNotes dateWithNotes(Date date) {
-		GregorianCalendar cal = new GregorianCalendar();
-		cal.setTime(date);
-		return dateWithNotes(cal);
-	}
 	
-	public static DateWithNotes dateWithNotes(GregorianCalendar cal) {
-		org.drugis.addis.entities.data.DateWithNotes date = new org.drugis.addis.entities.data.DateWithNotes();
-		date.setValue(new XMLGregorianCalendarImpl(cal));
-		date.setNotes(new Notes());
-		return date;
+	public static DateWithNotes dateWithNotes(Date date) {
+		org.drugis.addis.entities.data.DateWithNotes dateWithNotes = new org.drugis.addis.entities.data.DateWithNotes();
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		String calFormat = format.format(date);
+		dateWithNotes.setValue(XMLGregorianCalendarImpl.parse(calFormat));
+		dateWithNotes.setNotes(new Notes());
+		return dateWithNotes;
 	}
 
 	public static IdReference idReference(int id) {

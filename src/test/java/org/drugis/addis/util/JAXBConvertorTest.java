@@ -9,6 +9,7 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -16,6 +17,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,12 +26,20 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+
+import javolution.text.CharArray;
+import javolution.xml.XMLFormat;
+import javolution.xml.XMLObjectReader;
+import javolution.xml.XMLReferenceResolver;
+import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AdverseEvent;
@@ -82,6 +93,7 @@ import org.drugis.addis.entities.data.CategoryMeasurement;
 import org.drugis.addis.entities.data.Characteristics;
 import org.drugis.addis.entities.data.ContinuousMeasurement;
 import org.drugis.addis.entities.data.ContinuousVariable;
+import org.drugis.addis.entities.data.DateWithNotes;
 import org.drugis.addis.entities.data.DrugReferences;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
@@ -95,11 +107,14 @@ import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
 import org.drugis.addis.entities.data.StudyOutcomeMeasure;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
+import org.drugis.addis.imports.PubMedDataBankRetriever;
 import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 public class JAXBConvertorTest {
 	private JAXBContext d_jaxb;
@@ -456,8 +471,8 @@ public class JAXBConvertorTest {
 		chars1.setBlinding(JAXBConvertor.blindingWithNotes(blind));
 		chars1.setCenters(JAXBConvertor.intWithNotes(centers));
 		chars1.setObjective(JAXBConvertor.stringWithNotes(objective));
-		chars1.setStudyStart(JAXBConvertor.dateWithNotes(studyStart));
-		chars1.setStudyEnd(JAXBConvertor.dateWithNotes(studyEnd));
+		chars1.setStudyStart(JAXBConvertor.dateWithNotes(studyStart.getTime()));
+		chars1.setStudyEnd(JAXBConvertor.dateWithNotes(studyEnd.getTime()));
 		chars1.setStatus(JAXBConvertor.statusWithNotes(status));
 		chars1.setInclusion(JAXBConvertor.stringWithNotes(incl));
 		chars1.setExclusion(JAXBConvertor.stringWithNotes(excl));
@@ -465,7 +480,7 @@ public class JAXBConvertorTest {
 		refs.getPubMedId().addAll(pmints);
 		chars1.setReferences(refs);
 		chars1.setSource(JAXBConvertor.sourceWithNotes(source));
-		chars1.setCreationDate(JAXBConvertor.dateWithNotes(created));
+		chars1.setCreationDate(JAXBConvertor.dateWithNotes(created.getTime()));
 
 		
 		CharacteristicsMap chars2 = new CharacteristicsMap();
@@ -494,6 +509,7 @@ public class JAXBConvertorTest {
 		
 		Endpoint ep = ExampleData.buildEndpointHamd();
 		StudyOutcomeMeasure om = new StudyOutcomeMeasure();
+		om.setNotes(new Notes());
 		om.setEndpoint(nameReference(ep.getName()));
 		
 		assertEntityEquals(ep, JAXBConvertor.convertStudyOutcomeMeasure(om, domain));
@@ -535,9 +551,11 @@ public class JAXBConvertorTest {
 		vars.put("Y", ExampleData.buildAdverseEventDiarrhea());
 
 		StudyOutcomeMeasure epRef = new StudyOutcomeMeasure();
+		epRef.setNotes(new Notes());
 		epRef.setId("X");
 		epRef.setEndpoint(nameReference(ep.getName()));
 		StudyOutcomeMeasure adeRef = new StudyOutcomeMeasure();
+		adeRef.setNotes(new Notes());
 		adeRef.setId("Y");
 		adeRef.setAdverseEvent(nameReference(ExampleData.buildAdverseEventDiarrhea().getName()));
 		StudyOutcomeMeasures oms = new StudyOutcomeMeasures();
@@ -744,6 +762,7 @@ public class JAXBConvertorTest {
 		// Outcome measures: Endpoints
 		for (String epName : endpointName) {
 			StudyOutcomeMeasure ep = new StudyOutcomeMeasure();
+			ep.setNotes(new Notes());
 			ep.setId("endpoint-" + epName);
 			ep.setEndpoint(nameReference(epName));
 			studyOutcomeMeasures.getStudyOutcomeMeasure().add(ep);
@@ -752,6 +771,7 @@ public class JAXBConvertorTest {
 		// Outcome measures: Adverse events
 		for (String aeName : adverseEventName) {
 			StudyOutcomeMeasure ae = new StudyOutcomeMeasure();
+			ae.setNotes(new Notes());
 			ae.setId("adverseEvent-" + aeName);
 			ae.setAdverseEvent(nameReference(aeName));
 			studyOutcomeMeasures.getStudyOutcomeMeasure().add(ae);
@@ -760,6 +780,7 @@ public class JAXBConvertorTest {
 		// Outcome measures: Population chars
 		for (String pcName : popCharName) {
 			StudyOutcomeMeasure pc = new StudyOutcomeMeasure();
+			pc.setNotes(new Notes());
 			pc.setId("popChar-" + pcName);
 			pc.setPopulationCharacteristic(nameReference(pcName));
 			studyOutcomeMeasures.getStudyOutcomeMeasure().add(pc);
@@ -782,7 +803,7 @@ public class JAXBConvertorTest {
 	}
 
 	@Test
-	@Ignore // FIXME: unignore!
+//	@Ignore // FIXME: unignore!
 	// This test is currently ignored because Study populates the measurements with default values, which get translated back to
 	// the entities.data objects (but are not in the expected). We want to disable that behaviour in Study. Until then, this test
 	// is ignored.
@@ -1210,17 +1231,72 @@ public class JAXBConvertorTest {
 	}
 	
 	@Test
-	
 	// ACCEPTANCE TEST -- should be replaced by something nicer so we can remove the Javalution support.
 	public void testDomainDataToAddisData() throws Exception {
-		// FIXME: currently the expected has NULL for the arm-notes.
 		InputStream xmlStream = getClass().getResourceAsStream("../defaultData.xml");
 		InputStream transformedXmlStream = getTransformed();
 
-		Domain domain = new DomainImpl((DomainData)XMLHelper.fromXml(xmlStream));
+		Domain domain = new DomainImpl((DomainData)fromXmlPreserveArmIds(xmlStream));
 
 		AddisData data = (AddisData) d_unmarshaller.unmarshal(transformedXmlStream);
+		sortMeasurements(data);
 		assertEquals(data, JAXBConvertor.domainToAddisData(domain)); 
+	}
+	
+	private void sortMeasurements(AddisData data) {
+		for(org.drugis.addis.entities.data.Study s : data.getStudies().getStudy()) {
+			Collections.sort(s.getMeasurements().getMeasurement(), new MeasurementComparator(s));
+		}
+	}
+	
+	public static class MeasurementComparator implements Comparator<org.drugis.addis.entities.data.Measurement> {
+		private org.drugis.addis.entities.data.Study d_study;
+
+		public MeasurementComparator(org.drugis.addis.entities.data.Study s) {
+			d_study = s;
+		}
+
+		public int compare(org.drugis.addis.entities.data.Measurement o1, org.drugis.addis.entities.data.Measurement o2) {
+			int omId1 = findOmIndex(o1.getStudyOutcomeMeasure().getId());
+			int omId2 = findOmIndex(o2.getStudyOutcomeMeasure().getId());
+			if (omId1 != omId2) {
+				return omId1 - omId2;
+			}
+			return o1.getArm().getId().compareTo(o2.getArm().getId());
+		}
+
+		private int findOmIndex(String id) {
+			List<StudyOutcomeMeasure> oms = d_study.getStudyOutcomeMeasures().getStudyOutcomeMeasure();
+			for (int i = 0; i < oms.size(); ++i) {
+				if (oms.get(i).getId().equals(id)) {
+					return i;
+				}
+			}
+			return -1;
+		}
+	}
+	
+	@Test
+	public void testDateWithNotes() {
+		String date = "2010-11-12";
+		Date oldXmlDate = new Date(2010 - 1900, 11 - 1, 12);
+		DateWithNotes dwn = JAXBConvertor.dateWithNotes(oldXmlDate);
+		
+		XMLGregorianCalendar cal = XMLGregorianCalendarImpl.parse(date);
+		DateWithNotes dwn2 = new DateWithNotes();
+		dwn2.setNotes(new Notes());
+		dwn2.setValue(cal);
+		
+		assertEquals(dwn, dwn2);
+	}
+
+	@Test
+	@Ignore
+	public void writeTransformedXML() throws TransformerException, IOException {
+		InputStream transformedXmlStream = getTransformed();
+		FileOutputStream output = new FileOutputStream("transformedDefaultData.xml");
+		PubMedDataBankRetriever.copyStream(transformedXmlStream, output);
+		output.close();
 	}
 	
 	private InputStream getTransformed() throws TransformerException, IOException {
@@ -1239,5 +1315,49 @@ public class JAXBConvertorTest {
 	    os.close();
 
 	    return new ByteArrayInputStream(os.toByteArray());
+	}
+
+	private static final class IdResolver extends XMLReferenceResolver {
+		private Map<Integer, Object> d_idMap = new HashMap<Integer, Object>();
+
+		public void createReference(Object obj, XMLFormat.InputElement xml)
+		throws XMLStreamException {
+			CharArray value = xml.getAttribute("id");
+			if (value == null)
+				return;
+			d_idMap.put(value.toInt(), obj);
+			super.createReference(obj, xml);
+		}
+
+		public Integer getId(Object obj) {
+			for (Entry<Integer, Object> entry : d_idMap.entrySet()) {
+				if (entry.getValue() == obj) {
+					return entry.getKey();
+				}
+			}
+			return null;
+		}
+	}
+	
+	public static <T> T fromXmlPreserveArmIds(InputStream xmlStream) throws XMLStreamException {
+		XMLObjectReader reader = XMLObjectReader.newInstance(xmlStream, "UTF-8");
+		reader.setBinding(new AddisBinding());
+		IdResolver resolver = new IdResolver();
+		reader.setReferenceResolver(resolver);
+		T read = reader.<T>read();
+		if (read instanceof DomainData) {
+			fixArmIds((DomainData)read, resolver);
+		}
+		return read;
+	}
+
+	private static void fixArmIds(DomainData data, IdResolver resolver) {
+		for (Study s : data.getStudies()) {
+			List<Integer> ids = new ArrayList<Integer>();
+			for (Arm a : s.getArms()) {
+				ids.add(resolver.getId(a));
+			}
+			s.setArmIds(ids);
+		}
 	}
 }
