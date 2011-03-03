@@ -225,4 +225,8 @@ public class StudyPresentation extends PresentationModel<Study> {
 	public Note getNote(Object key) {
 		return getBean().getNote(key);
 	}
+
+	public void initializeDefaultMeasurements() {
+		getBean().initializeDefaultMeasurements();
+	}
 }

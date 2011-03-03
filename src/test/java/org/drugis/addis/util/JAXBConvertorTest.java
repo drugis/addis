@@ -119,15 +119,12 @@ import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl
 
 public class JAXBConvertorTest {
 	private JAXBContext d_jaxb;
-	//private Marshaller d_marshaller;
 	private Unmarshaller d_unmarshaller;
 	
 	@Before
 	public void setup() throws JAXBException{
 		d_jaxb = JAXBContext.newInstance("org.drugis.addis.entities.data" );
 		d_unmarshaller = d_jaxb.createUnmarshaller();
-//		d_marshaller = d_jaxb.createMarshaller();
-//		d_unmarshaller.setEventHandler(new AddisDataValidationEventHandler());
 	}
 	
 	@Test
@@ -804,10 +801,6 @@ public class JAXBConvertorTest {
 	}
 
 	@Test
-	@Ignore // FIXME: unignore!
-	// This test is currently ignored because Study populates the measurements with default values, which get translated back to
-	// the entities.data objects (but are not in the expected). We want to disable that behaviour in Study. Until then, this test
-	// is ignored.
 	public void testConvertStudy() throws ConversionException {
 		DomainImpl domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
@@ -1339,20 +1332,18 @@ public class JAXBConvertorTest {
 		assertEquals(dwn, dwn2);
 	}
 
-	@Test
-	@Ignore
-	public void writeTransformedXML() throws TransformerException, IOException {
+	public static void writeTransformedXML() throws TransformerException, IOException {
 		InputStream transformedXmlStream = getTransformed();
 		FileOutputStream output = new FileOutputStream("transformedDefaultData.xml");
 		PubMedDataBankRetriever.copyStream(transformedXmlStream, output);
 		output.close();
 	}
 	
-	private InputStream getTransformed() throws TransformerException, IOException {
+	private static InputStream getTransformed() throws TransformerException, IOException {
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
 		TransformerFactory tFactory = TransformerFactory.newInstance(); 
-		InputStream xmlFile = getClass().getResourceAsStream("../defaultData.xml");
-		InputStream xsltFile = getClass().getResourceAsStream("../entities/transform-0-1.xslt");
+		InputStream xmlFile = JAXBConvertorTest.class.getResourceAsStream("../defaultData.xml");
+		InputStream xsltFile = JAXBConvertorTest.class.getResourceAsStream("../entities/transform-0-1.xslt");
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		
 	    javax.xml.transform.Source xmlSource = new javax.xml.transform.stream.StreamSource(xmlFile);

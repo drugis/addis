@@ -244,6 +244,7 @@ public class StudyTest {
 		s.addArm(arm2);
 		s.setPopulationCharacteristics(Collections.singletonList(v));
 		
+		s.initializeDefaultMeasurements();
 		assertEquals(300, (int)s.getMeasurement(v).getSampleSize());
 		assertEquals(200, (int)s.getMeasurement(v, arm1).getSampleSize());
 		assertEquals(100, (int)s.getMeasurement(v, arm2).getSampleSize());
@@ -277,6 +278,7 @@ public class StudyTest {
 		vars2.add(v2);
 		vars2.add(v3);
 		s.setPopulationCharacteristics(vars2);
+		s.initializeDefaultMeasurements();
 		
 		assertEquals(m20, s.getMeasurement(v2));
 		assertEquals(m21, s.getMeasurement(v2, arm1));
@@ -284,6 +286,7 @@ public class StudyTest {
 		assertEquals(200, (int)s.getMeasurement(v3, arm1).getSampleSize());
 		
 		s.setPopulationCharacteristics(vars1);
+		s.initializeDefaultMeasurements();
 		assertEquals(200, (int)s.getMeasurement(v1).getSampleSize());
 		assertEquals(200, (int)s.getMeasurement(v1, arm1).getSampleSize());
 	}

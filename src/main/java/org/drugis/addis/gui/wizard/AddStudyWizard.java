@@ -187,8 +187,9 @@ public class AddStudyWizard extends Wizard {
 		@Override
 		public void prepare() {
 			this.setVisible(false);
-			if (d_scrollPane != null)
+			if (d_scrollPane != null) {
 				 remove(d_scrollPane);
+			}
 			 
 			buildWizardStep();
 			this.setVisible(true);

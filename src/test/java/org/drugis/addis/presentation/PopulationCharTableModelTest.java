@@ -60,6 +60,7 @@ public class PopulationCharTableModelTest {
 		chars.add(ExampleData.buildGenderVariable());
 		chars.add(ExampleData.buildAgeVariable());
 		d_study.setPopulationCharacteristics(chars);
+		d_study.initializeDefaultMeasurements();
 		d_model = new PopulationCharTableModel(d_study, d_pmf);
 	}
 	

@@ -69,8 +69,8 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class AddStudyWizardPresentation {
 	
-	public interface OutcomeMeasurementsModel {
-		TableModel getMeasurementTableModel();
+	public abstract class OutcomeMeasurementsModel {
+		abstract public TableModel getMeasurementTableModel();
 	}
 	
 	@SuppressWarnings("serial")
@@ -346,7 +346,8 @@ public class AddStudyWizardPresentation {
 
 	public StudyMeasurementTableModel getEndpointMeasurementTableModel() {
 		commitOutcomesArmsToNew();
-		return new StudyMeasurementTableModel(getNewStudy(),d_pmf, Endpoint.class);
+		d_newStudyPM.initializeDefaultMeasurements();
+		return new StudyMeasurementTableModel(getNewStudy(), d_pmf, Endpoint.class);
 	}
 	
 	
@@ -464,11 +465,13 @@ public class AddStudyWizardPresentation {
 
 	private StudyMeasurementTableModel getAdverseEventMeasurementTableModel() {
 		commitAdverseEventsToStudy();
+		d_newStudyPM.initializeDefaultMeasurements();
 		return new StudyMeasurementTableModel(getNewStudy(),d_pmf, AdverseEvent.class);
 	}
 	
 	private PopulationCharTableModel getPopulationCharMeasurementTableModel() {
 		commitPopulationCharsToStudy();
+		d_newStudyPM.initializeDefaultMeasurements();
 		return d_newStudyPM.getPopulationCharTableModel();
 	}
 
