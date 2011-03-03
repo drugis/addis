@@ -53,7 +53,7 @@ public class MapBeanTest {
 		PropertyChangeListener listener =
 			JUnitUtil.mockStrictListener(d_map, MapBean.PROPERTY_CONTENTS, null, null);
 		d_map.addPropertyChangeListener(listener);
-		d_map.put(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.SINGLE_BLIND);
+		d_map.put(BasicStudyCharacteristic.BLINDING, new ObjectWithNotes<Object>(BasicStudyCharacteristic.Blinding.SINGLE_BLIND));
 		verify(listener);
 	}
 }

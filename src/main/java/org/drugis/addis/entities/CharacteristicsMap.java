@@ -28,7 +28,7 @@ import java.util.Set;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
-public class CharacteristicsMap extends MapBean<Characteristic, Object> {
+public class CharacteristicsMap extends MapBean<Characteristic, ObjectWithNotes<?>> {
 	
 	@Override
 	public Set<Entity> getDependencies() {
@@ -46,14 +46,14 @@ public class CharacteristicsMap extends MapBean<Characteristic, Object> {
 		public void read(InputElement xml,	CharacteristicsMap obj) throws XMLStreamException {
 			for(BasicStudyCharacteristic c : BasicStudyCharacteristic.values()){
 				Object value = xml.get(c.toString());
-				if(value != null) obj.put(c, value);	
+				if(value != null) obj.put(c, new ObjectWithNotes<Object>(value));	
 			}
 		}
 
 		@Override
 		public void write(CharacteristicsMap map, OutputElement xml) throws XMLStreamException {	
 			for(BasicStudyCharacteristic c : BasicStudyCharacteristic.values())
-					xml.add( map.get(c), c.toString());
+					xml.add(map.get(c) == null ? null : map.get(c).getValue(), c.toString());
 		}
 	};	
 }

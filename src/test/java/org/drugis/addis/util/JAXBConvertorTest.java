@@ -61,6 +61,7 @@ import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
@@ -482,19 +483,19 @@ public class JAXBConvertorTest {
 
 		
 		CharacteristicsMap chars2 = new CharacteristicsMap();
-		chars2.put(BasicStudyCharacteristic.TITLE, title);
-		chars2.put(BasicStudyCharacteristic.ALLOCATION, alloc);
-		chars2.put(BasicStudyCharacteristic.BLINDING, blind);
-		chars2.put(BasicStudyCharacteristic.CENTERS, centers);
-		chars2.put(BasicStudyCharacteristic.OBJECTIVE, objective);
-		chars2.put(BasicStudyCharacteristic.STUDY_START, studyStart.getTime());
-		chars2.put(BasicStudyCharacteristic.STUDY_END, studyEnd.getTime());
-		chars2.put(BasicStudyCharacteristic.INCLUSION, incl);
-		chars2.put(BasicStudyCharacteristic.EXCLUSION, excl);
-		chars2.put(BasicStudyCharacteristic.PUBMED, pmids); // References
-		chars2.put(BasicStudyCharacteristic.STATUS, status);
-		chars2.put(BasicStudyCharacteristic.SOURCE, source);
-		chars2.put(BasicStudyCharacteristic.CREATION_DATE, created.getTime());
+		chars2.put(BasicStudyCharacteristic.TITLE, new ObjectWithNotes<Object>(title));
+		chars2.put(BasicStudyCharacteristic.ALLOCATION, new ObjectWithNotes<Object>(alloc));
+		chars2.put(BasicStudyCharacteristic.BLINDING, new ObjectWithNotes<Object>(blind));
+		chars2.put(BasicStudyCharacteristic.CENTERS, new ObjectWithNotes<Object>(centers));
+		chars2.put(BasicStudyCharacteristic.OBJECTIVE, new ObjectWithNotes<Object>(objective));
+		chars2.put(BasicStudyCharacteristic.STUDY_START, new ObjectWithNotes<Object>(studyStart.getTime()));
+		chars2.put(BasicStudyCharacteristic.STUDY_END, new ObjectWithNotes<Object>(studyEnd.getTime()));
+		chars2.put(BasicStudyCharacteristic.INCLUSION, new ObjectWithNotes<Object>(incl));
+		chars2.put(BasicStudyCharacteristic.EXCLUSION, new ObjectWithNotes<Object>(excl));
+		chars2.put(BasicStudyCharacteristic.PUBMED, new ObjectWithNotes<Object>(pmids)); // References
+		chars2.put(BasicStudyCharacteristic.STATUS, new ObjectWithNotes<Object>(status));
+		chars2.put(BasicStudyCharacteristic.SOURCE, new ObjectWithNotes<Object>(source));
+		chars2.put(BasicStudyCharacteristic.CREATION_DATE, new ObjectWithNotes<Object>(created.getTime()));
 		
 		assertEntityEquals(chars2, JAXBConvertor.convertStudyCharacteristics(chars1));
 		assertEquals(chars1, JAXBConvertor.convertStudyCharacteristics(chars2));

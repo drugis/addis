@@ -121,7 +121,7 @@ public class StudyPresentation extends PresentationModel<Study> {
 	}
 		
 	public boolean isStudyFinished() {
-		Object status = getBean().getCharacteristics().get(BasicStudyCharacteristic.STATUS);
+		Object status = getBean().getCharacteristic(BasicStudyCharacteristic.STATUS);
 		if (status != null) {
 			return status.equals(BasicStudyCharacteristic.Status.COMPLETED);
 		}

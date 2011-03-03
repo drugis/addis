@@ -40,6 +40,7 @@ import org.drugis.common.DateUtil;
 import org.drugis.common.EqualsUtil;
 
 import scala.actors.threadpool.Arrays;
+import scala.collection.script.End;
 
 public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 
@@ -94,6 +95,12 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			return null;
 		}
 	}
+	
+	public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> {
+		public StudyOutcomeMeasure(T obj) {
+			super(obj);
+		}
+	}
 
 	public final static String PROPERTY_ID = "studyId";
 	public final static String PROPERTY_ENDPOINTS = "endpoints";
@@ -107,11 +114,13 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private List<Arm> d_arms = new ArrayList<Arm>();
 	private String d_studyId;
 	private Map<MeasurementKey, Measurement> d_measurements = new HashMap<MeasurementKey, Measurement>();
-	private List<Endpoint> d_endpointList = new ArrayList<Endpoint>();
+	private List<StudyOutcomeMeasure<Endpoint>> d_endpointList = new ArrayList<StudyOutcomeMeasure<Endpoint>>();
 	private List<AdverseEvent> d_adverseEvents = new ArrayList<AdverseEvent>();
 	private List<PopulationCharacteristic> d_populationChars = new ArrayList<PopulationCharacteristic>();
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	private Indication d_indication;
+	private List<Note> d_indicationNotes = new ArrayList<Note>();
+	private List<Note> d_idNotes = new ArrayList<Note>();
 	private Map<Object, Note> d_notes = new HashMap<Object, Note>();
 	private List<Integer> d_armIds = null;
 	
@@ -131,6 +140,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		newStudy.setMeasurements(cloneMeasurements(newStudy.getArms()));
 		
 		newStudy.setCharacteristics(cloneCharacteristics());
+		newStudy.d_indicationNotes = new ArrayList<Note>(d_indicationNotes); // FIXME: clone the notes as well
+		newStudy.d_idNotes = new ArrayList<Note>(d_idNotes);
 		newStudy.setNotes(getNotes());
 		return newStudy;
 	}
@@ -183,8 +194,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public void setArms(List<Arm> arms) {
 		List<Arm> oldVal = d_arms;
 		d_arms = arms;
-		updateMeasurements();
-
 		firePropertyChange(PROPERTY_ARMS, oldVal, d_arms);
 	}
 
@@ -236,12 +245,12 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 
 	public void setCharacteristic(BasicStudyCharacteristic c, Object val) {
-		d_chars.put(c, val);
+		d_chars.put(c, new ObjectWithNotes<Object>(val));
 		/* Beware: Every characteristicHolder attached to this study will receive this event, even though only one characteristic has changed*/
 		firePropertyChange(PROPERTY_CHARACTERISTICS, c, c);
 	}
 
-	private void setCharacteristics(CharacteristicsMap m) {
+	public void setCharacteristics(CharacteristicsMap m) {
 		d_chars = m;
 	}
 
@@ -346,7 +355,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public List<OutcomeMeasure> getOutcomeMeasures() {
 		List<OutcomeMeasure> l = new ArrayList<OutcomeMeasure>();
 		
-		List<OutcomeMeasure> sortedList = new ArrayList<OutcomeMeasure>(d_endpointList);
+		List<OutcomeMeasure> sortedList = new ArrayList<OutcomeMeasure>(getEndpoints());
 		Collections.sort(sortedList, new OutcomeComparator());
 		
 		l.addAll(sortedList);
@@ -360,7 +369,11 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 
 	public List<Endpoint> getEndpoints() {
-		return Collections.unmodifiableList(d_endpointList);
+		List<Endpoint> list = new ArrayList<Endpoint>();
+		for (StudyOutcomeMeasure<Endpoint> e : d_endpointList) {
+			list.add(e.getValue());
+		}
+		return list ;
 	}
 
 	public List<AdverseEvent> getAdverseEvents() {
@@ -373,7 +386,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 
 	public List<? extends Variable> getVariables(Class<? extends Variable> type) {
 		if (type == Endpoint.class) {
-			return Collections.unmodifiableList(d_endpointList);
+			return getEndpoints();
 		} else if (type == AdverseEvent.class){
 			return Collections.unmodifiableList(d_adverseEvents);
 		} else if (type == OutcomeMeasure.class) {
@@ -383,23 +396,29 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 
 	public void setEndpoints(List<Endpoint> endpoints) {
+		List<StudyOutcomeMeasure<Endpoint>> endpointList = new ArrayList<StudyOutcomeMeasure<Endpoint>>();
+		for (Endpoint e : endpoints) {
+			endpointList.add(new StudyOutcomeMeasure<Endpoint>(e));
+		}
+		setEndpointsWithNotes(endpointList);
+	}
+	
+
+	private void setEndpointsWithNotes(List<StudyOutcomeMeasure<Endpoint>> newVal) {
 		List<Endpoint> oldVal = getEndpoints();
-		d_endpointList = new ArrayList<Endpoint>(endpoints);
-		updateMeasurements();
+		d_endpointList = newVal;
 		firePropertyChange(PROPERTY_ENDPOINTS, oldVal, getEndpoints());
 	}
 
 	public void setAdverseEvents(List<AdverseEvent> ade) {
 		List<AdverseEvent> oldVal = getAdverseEvents();
 		d_adverseEvents = new ArrayList<AdverseEvent>(ade);
-		updateMeasurements();
 		firePropertyChange(PROPERTY_ADVERSE_EVENTS, oldVal, getAdverseEvents());
 	}
 
 	public void setPopulationCharacteristics(List<PopulationCharacteristic> chars) {
 		List<? extends Variable> oldVal = getVariables(PopulationCharacteristic.class);
 		d_populationChars = new ArrayList<PopulationCharacteristic>(chars);
-		updateMeasurements();
 		firePropertyChange(PROPERTY_POPULATION_CHARACTERISTICS, oldVal, getVariables(PopulationCharacteristic.class));
 	}
 
@@ -428,9 +447,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		if (om == null) 
 			throw new NullPointerException("Cannot add a NULL outcome measure");
 
-		List<Endpoint> newVal = new ArrayList<Endpoint>(d_endpointList);
-		newVal.add(om);
-		setEndpoints(newVal);
+		List<StudyOutcomeMeasure<Endpoint>> newVal = new ArrayList<StudyOutcomeMeasure<Endpoint>>(d_endpointList);
+		newVal.add(new StudyOutcomeMeasure<Endpoint>(om));
+		setEndpointsWithNotes(newVal);
 	}
 
 	public void deleteOutcomeMeasure(Endpoint om) {
@@ -438,15 +457,11 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 
 	public void deleteEndpoint(Endpoint om) {
-		if (d_endpointList.contains(om)) {
-			List<Endpoint> newVal = new ArrayList<Endpoint>(d_endpointList);
-			newVal.remove(om);
-			setEndpoints(newVal);
+		if (d_endpointList.contains(new StudyOutcomeMeasure<Endpoint>(om))) {
+			List<StudyOutcomeMeasure<Endpoint>> newVal = new ArrayList<StudyOutcomeMeasure<Endpoint>>(d_endpointList);
+			newVal.remove(new StudyOutcomeMeasure<Endpoint>(om));
+			setEndpointsWithNotes(newVal);
 		}
-	}
-
-	private void updateMeasurements() { // FIXME: this is dangerous code, fix it so we don't need it.
-		//initializeDefaultMeasurements();
 	}
 
 	public void initializeDefaultMeasurements() {
@@ -506,7 +521,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 
 	public Object getCharacteristic(Characteristic c) {
-		return d_chars.get(c);
+		return d_chars.get(c) != null ? d_chars.get(c).getValue() : null;
 	}
 
 	public int getSampleSize() {
@@ -516,13 +531,62 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return s;
 	}
 
-	public void putNote(Object key, Note note){
-		d_notes.put(key, note);
+	public void putNote(Object key, Note note) { // TODO: refactor here
+		if (key.equals(PROPERTY_INDICATION)) {
+			d_indicationNotes.clear();
+			d_indicationNotes.add(note);
+		} else if (key.equals(PROPERTY_ID)) {
+			d_idNotes.clear();
+			d_idNotes.add(note);
+		} else if (key instanceof BasicStudyCharacteristic) {
+			if (d_chars.get(key) == null) {
+				d_chars.put((Characteristic) key, new ObjectWithNotes<Object>(null));
+			}
+			d_chars.get(key).getNotes().clear();
+			d_chars.get(key).getNotes().add(note);
+		} else if (key instanceof Arm) {
+			Arm arm = (Arm) key;
+			arm.getNotes().clear();
+			arm.getNotes().add(note);
+		} else if(key instanceof Endpoint) {
+			StudyOutcomeMeasure<Endpoint> found = findStudyOutcomeMeasure(key);
+			found.getNotes().clear();
+			found.getNotes().add(note);
+		} else {
+			d_notes.put(key, note);
+		}
 		firePropertyChange(PROPERTY_NOTES, key, key);
 	}
 
+	private StudyOutcomeMeasure<Endpoint> findStudyOutcomeMeasure(Object key) {
+		StudyOutcomeMeasure<Endpoint> found = null;
+		for (StudyOutcomeMeasure<Endpoint> som : d_endpointList) {
+			if(som.getValue().equals(key)) {
+				found = som;
+			}
+		}
+		return found;
+	}
+
 	public Note getNote(Object key){
-		return d_notes.get(key);
+		List<Note> notes = getNotes(key);
+		return notes.size() > 0 ? notes.get(0) : null;
+	}
+	
+	private List<Note> getNotes(Object key) {
+		if (key.equals(PROPERTY_INDICATION)) {
+			return d_indicationNotes;
+		} else if (key.equals(PROPERTY_ID)) {
+			return d_idNotes;
+		} else if (key instanceof BasicStudyCharacteristic) {
+			ObjectWithNotes<?> objectWithNotes = d_chars.get(key);
+			return objectWithNotes == null ? Collections.<Note>emptyList() : objectWithNotes.getNotes();
+		} else if (key instanceof Arm) {
+			return ((Arm)key).getNotes();
+		} else if (key instanceof Endpoint) {
+			return findStudyOutcomeMeasure(key).getNotes();
+		}
+		return Collections.singletonList(d_notes.get(key));
 	}
 
 	public Map<Object,Note> getNotes() {
@@ -533,14 +597,10 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		d_notes = notes;
 	}
 
-	public void removeNote (Object key){
-		d_notes.remove(key);
-	}
-
 	public void removeEndpoint(int i) {
-		List<Endpoint> newVal = new ArrayList<Endpoint>(d_endpointList);
+		ArrayList<StudyOutcomeMeasure<Endpoint>> newVal = new ArrayList<StudyOutcomeMeasure<Endpoint>>(d_endpointList);
 		newVal.remove(i);
-		setEndpoints(newVal);
+		setEndpointsWithNotes(newVal);
 	}
 
 	public Map<MeasurementKey, Measurement> getMeasurements() {

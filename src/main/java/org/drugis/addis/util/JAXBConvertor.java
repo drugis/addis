@@ -30,6 +30,7 @@ import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PubMedId;
@@ -404,80 +405,80 @@ public class JAXBConvertor {
 	public static CharacteristicsMap convertStudyCharacteristics(Characteristics chars1) {
 		CharacteristicsMap map = new CharacteristicsMap();
 		if (chars1.getAllocation() != null) {
-			map.put(BasicStudyCharacteristic.ALLOCATION, chars1.getAllocation().getValue());
+			map.put(BasicStudyCharacteristic.ALLOCATION, new ObjectWithNotes<Object>(chars1.getAllocation().getValue()));
 		}
 		if (chars1.getBlinding() != null) {
-			map.put(BasicStudyCharacteristic.BLINDING, chars1.getBlinding().getValue());
+			map.put(BasicStudyCharacteristic.BLINDING, new ObjectWithNotes<Object>(chars1.getBlinding().getValue()));
 		}
 		if (chars1.getCenters() != null) {
-			map.put(BasicStudyCharacteristic.CENTERS, chars1.getCenters().getValue());
+			map.put(BasicStudyCharacteristic.CENTERS, new ObjectWithNotes<Object>(chars1.getCenters().getValue()));
 		}
 		if (chars1.getObjective() != null) {
-			map.put(BasicStudyCharacteristic.OBJECTIVE, chars1.getObjective().getValue());
+			map.put(BasicStudyCharacteristic.OBJECTIVE, new ObjectWithNotes<Object>(chars1.getObjective().getValue()));
 		}
 		if (chars1.getStudyStart() != null) {
-			map.put(BasicStudyCharacteristic.STUDY_START, chars1.getStudyStart().getValue().toGregorianCalendar().getTime());
+			map.put(BasicStudyCharacteristic.STUDY_START, new ObjectWithNotes<Object>(chars1.getStudyStart().getValue().toGregorianCalendar().getTime()));
 		}
 		if (chars1.getStudyEnd() != null) {
-			map.put(BasicStudyCharacteristic.STUDY_END, chars1.getStudyEnd().getValue().toGregorianCalendar().getTime());
+			map.put(BasicStudyCharacteristic.STUDY_END, new ObjectWithNotes<Object>(chars1.getStudyEnd().getValue().toGregorianCalendar().getTime()));
 		}
 		if (chars1.getInclusion() != null) {
-			map.put(BasicStudyCharacteristic.INCLUSION, chars1.getInclusion().getValue());
+			map.put(BasicStudyCharacteristic.INCLUSION, new ObjectWithNotes<Object>(chars1.getInclusion().getValue()));
 		}
 		if (chars1.getExclusion() != null) {
-				map.put(BasicStudyCharacteristic.EXCLUSION, chars1.getExclusion().getValue());
+				map.put(BasicStudyCharacteristic.EXCLUSION, new ObjectWithNotes<Object>(chars1.getExclusion().getValue()));
 		}
 		if (chars1.getStatus() != null) {
-			map.put(BasicStudyCharacteristic.STATUS, chars1.getStatus().getValue());
+			map.put(BasicStudyCharacteristic.STATUS, new ObjectWithNotes<Object>(chars1.getStatus().getValue()));
 		}
 		if (chars1.getSource() != null) {
-			map.put(BasicStudyCharacteristic.SOURCE, chars1.getSource().getValue());
+			map.put(BasicStudyCharacteristic.SOURCE, new ObjectWithNotes<Object>(chars1.getSource().getValue()));
 		}
 		if (chars1.getCreationDate() != null) {
-			map.put(BasicStudyCharacteristic.CREATION_DATE, chars1.getCreationDate().getValue().toGregorianCalendar().getTime());
+			map.put(BasicStudyCharacteristic.CREATION_DATE, new ObjectWithNotes<Object>(chars1.getCreationDate().getValue().toGregorianCalendar().getTime()));
 		}
-		map.put(BasicStudyCharacteristic.TITLE, chars1.getTitle().getValue());
-		map.put(BasicStudyCharacteristic.PUBMED, getPubMedIds(chars1.getReferences()));
+		map.put(BasicStudyCharacteristic.TITLE, new ObjectWithNotes<Object>(chars1.getTitle().getValue()));
+		map.put(BasicStudyCharacteristic.PUBMED, new ObjectWithNotes<Object>(getPubMedIds(chars1.getReferences())));
 		return map;
 	}	
 
 	public static Characteristics convertStudyCharacteristics(CharacteristicsMap characteristics) {
 		Characteristics newChars = new Characteristics();
 		if (characteristics.containsKey(BasicStudyCharacteristic.ALLOCATION)) {
-			newChars.setAllocation(allocationWithNotes((Allocation) characteristics.get(BasicStudyCharacteristic.ALLOCATION)));
+			newChars.setAllocation(allocationWithNotes((Allocation) characteristics.get(BasicStudyCharacteristic.ALLOCATION).getValue()));
 		}
 		if (characteristics.containsKey(BasicStudyCharacteristic.BLINDING)) {
-			newChars.setBlinding(blindingWithNotes((Blinding) characteristics.get(BasicStudyCharacteristic.BLINDING)));
+			newChars.setBlinding(blindingWithNotes((Blinding) characteristics.get(BasicStudyCharacteristic.BLINDING).getValue()));
 		}
 		if (characteristics.containsKey(BasicStudyCharacteristic.CENTERS)) {
-			newChars.setCenters(intWithNotes((Integer) characteristics.get(BasicStudyCharacteristic.CENTERS)));
+			newChars.setCenters(intWithNotes((Integer) characteristics.get(BasicStudyCharacteristic.CENTERS).getValue()));
 		}
 		if (characteristics.containsKey(BasicStudyCharacteristic.CREATION_DATE)) {
-			newChars.setCreationDate(dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.CREATION_DATE)));
+			newChars.setCreationDate(dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.CREATION_DATE).getValue()));
 		}
 		if (characteristics.containsKey(BasicStudyCharacteristic.EXCLUSION)) {
-			newChars.setExclusion(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.EXCLUSION)));
+			newChars.setExclusion(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.EXCLUSION).getValue()));
 		}
 		if (characteristics.containsKey(BasicStudyCharacteristic.INCLUSION)) {
-			newChars.setInclusion(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.INCLUSION)));
+			newChars.setInclusion(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.INCLUSION).getValue()));
 		}
 		if (characteristics.containsKey(BasicStudyCharacteristic.OBJECTIVE)) {
-			newChars.setObjective(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.OBJECTIVE)));
+			newChars.setObjective(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.OBJECTIVE).getValue()));
 		}
 		if (characteristics.containsKey(BasicStudyCharacteristic.STATUS)) {
-			newChars.setStatus(statusWithNotes((Status) characteristics.get(BasicStudyCharacteristic.STATUS)));
+			newChars.setStatus(statusWithNotes((Status) characteristics.get(BasicStudyCharacteristic.STATUS).getValue()));
 		}
 		if (characteristics.containsKey(BasicStudyCharacteristic.SOURCE)) {
-			newChars.setSource(sourceWithNotes((Source) characteristics.get(BasicStudyCharacteristic.SOURCE)));
+			newChars.setSource(sourceWithNotes((Source) characteristics.get(BasicStudyCharacteristic.SOURCE).getValue()));
 		}
 		if (characteristics.containsKey(BasicStudyCharacteristic.STUDY_START)) {
-			newChars.setStudyStart(dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.STUDY_START)));
+			newChars.setStudyStart(dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.STUDY_START).getValue()));
 		}
 		if (characteristics.containsKey(BasicStudyCharacteristic.STUDY_END)) {
-			newChars.setStudyEnd(dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.STUDY_END)));
+			newChars.setStudyEnd(dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.STUDY_END).getValue()));
 		}
-		newChars.setTitle(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.TITLE)));
-		newChars.setReferences(convertReferences((PubMedIdList)characteristics.get(BasicStudyCharacteristic.PUBMED)));
+		newChars.setTitle(stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.TITLE).getValue()));
+		newChars.setReferences(convertReferences((PubMedIdList)characteristics.get(BasicStudyCharacteristic.PUBMED).getValue()));
 		return newChars;
 	}
 	
@@ -683,9 +684,7 @@ public class JAXBConvertor {
 		newStudy.setArmIds(ids);
 		
 		CharacteristicsMap map = convertStudyCharacteristics(study.getCharacteristics());
-		for(Entry<Characteristic, Object> m : map.entrySet()) {
-			newStudy.setCharacteristic((BasicStudyCharacteristic) m.getKey(), m.getValue());
-		}
+		newStudy.setCharacteristics(map);
 		
 		Map<MeasurementKey, Measurement> measurements = convertMeasurements(study.getMeasurements(), arms, outcomeMeasures);
 		for(Entry<MeasurementKey, Measurement> m : measurements.entrySet()) {

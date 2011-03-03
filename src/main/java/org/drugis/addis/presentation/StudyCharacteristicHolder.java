@@ -46,7 +46,7 @@ public class StudyCharacteristicHolder extends AbstractValueModel {
 	}
 
 	public Object getValue() {
-		return d_study.getCharacteristics().get(d_char);
+		return d_study.getCharacteristic(d_char);
 	}
 	
 	public Characteristic getCharacteristic() {

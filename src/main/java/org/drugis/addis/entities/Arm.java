@@ -22,6 +22,7 @@
 
 package org.drugis.addis.entities;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -38,10 +39,11 @@ public class Arm extends AbstractEntity {
 	private Integer d_size;
 	private Drug d_drug;
 	private AbstractDose d_dose;
+	private List<Note> d_notes = new ArrayList<Note>();
 	
 	public static final String PROPERTY_SIZE = "size";
 	public static final String PROPERTY_DRUG = "drug";
-	public static final String PROPERTY_DOSE = "dose";	
+	public static final String PROPERTY_DOSE = "dose";
 	
 	public Arm(Drug drug, AbstractDose dose, int size) {
 		d_drug = drug;
@@ -105,10 +107,14 @@ public class Arm extends AbstractEntity {
 	});
 	
 	@Override
-	public Arm clone() {
+	public Arm clone() { // FIXME: support cloning of notes.
 		return new Arm(getDrug(), getDose().clone(), getSize());
 	}
-	
+
+	public List<Note> getNotes() {
+		return d_notes;
+	}
+
 	protected static final XMLFormat<Arm> ARM_XML = new XMLFormat<Arm>(Arm.class) {
 		@Override
 		public Arm newInstance(Class<Arm> cls, InputElement xml) {

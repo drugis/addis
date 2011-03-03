@@ -37,7 +37,7 @@ public class CharacteristicsMapTest {
 	@Test
 	public void testGetDependencies() {
 		 CharacteristicsMap map = new CharacteristicsMap();
-		 map.put(BasicStudyCharacteristic.INCLUSION, "TEST");
+		 map.put(BasicStudyCharacteristic.INCLUSION, new ObjectWithNotes<String>("TEST"));
 		 assertEquals(Collections.EMPTY_SET, map.getDependencies());
 	}
 	
