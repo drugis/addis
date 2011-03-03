@@ -625,20 +625,35 @@ public class JAXBConvertor {
 	
 	public static Measurements convertMeasurements(Map<MeasurementKey, Measurement> map, Map<Integer, Arm> arms, Map<String, Variable> oms) throws ConversionException {
 		Measurements measurements = new Measurements();
-		for(Entry<MeasurementKey, Measurement> item : map.entrySet()) {
-			org.drugis.addis.entities.data.Measurement m = convertMeasurement(item.getValue());
-			Integer armId = findKey(arms, item.getKey().getArm());
-			if (armId != null) {
-				m.setArm(idReference(armId));
+		for (Entry<String, Variable> omEntry : oms.entrySet()) {
+			for (Entry<Integer, Arm> armEntry : arms.entrySet()) {
+				findAndAddMeasurement(map, armEntry.getKey(), armEntry.getValue(), omEntry.getKey(), omEntry.getValue(), measurements);
 			}
-			m.setStudyOutcomeMeasure(stringIdReference(findKey(oms, item.getKey().getVariable())));
-			if (item.getValue() != null) {
-				measurements.getMeasurement().add(m);
-			}
+			findAndAddMeasurement(map, null, null, omEntry.getKey(), omEntry.getValue(), measurements);
 		}
 		return measurements;
 	}
-	
+
+
+	private static void findAndAddMeasurement(
+			Map<MeasurementKey, Measurement> source, 
+			Integer armId, Arm arm,	String omId, Variable om,
+			Measurements target)
+	throws ConversionException {
+		if (om instanceof OutcomeMeasure && arm == null) {
+			return;
+		}
+		MeasurementKey key = new MeasurementKey(om, arm);
+		if (source.containsKey(key)) {
+			org.drugis.addis.entities.data.Measurement m = convertMeasurement(source.get(key));
+			if (armId != null) {
+				m.setArm(idReference(armId));
+			}
+			m.setStudyOutcomeMeasure(stringIdReference(omId));
+			target.getMeasurement().add(m);
+		}
+	}
+
 	public static <K, V> K findKey(Map<K,V> map, V value) {
 		for (Entry<K, V> e : map.entrySet()) {
 			if (e.getValue().equals(value)) {

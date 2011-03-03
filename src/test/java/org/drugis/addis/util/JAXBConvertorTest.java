@@ -783,6 +783,9 @@ public class JAXBConvertorTest {
 
 	@Test
 	@Ignore // FIXME: unignore!
+	// This test is currently ignored because Study populates the measurements with default values, which get translated back to
+	// the entities.data objects (but are not in the expected). We want to disable that behaviour in Study. Until then, this test
+	// is ignored.
 	public void testConvertStudy() throws ConversionException {
 		DomainImpl domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
@@ -1207,7 +1210,7 @@ public class JAXBConvertorTest {
 	}
 	
 	@Test
-	@Ignore
+	
 	// ACCEPTANCE TEST -- should be replaced by something nicer so we can remove the Javalution support.
 	public void testDomainDataToAddisData() throws Exception {
 		// FIXME: currently the expected has NULL for the arm-notes.
