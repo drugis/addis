@@ -167,7 +167,9 @@ public class ExampleData {
 	
 	public static Study buildStudyChouinardNoHamd() {
 		Study s = realBuildStudyChouinard();
-		s.deleteEndpoint(buildEndpointHamd());
+		List<Endpoint> endpoints = s.getEndpoints();
+		endpoints.remove(buildEndpointHamd());
+		s.setEndpoints(endpoints);
 		return s;
 	}
 

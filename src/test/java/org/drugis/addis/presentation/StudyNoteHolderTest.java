@@ -41,9 +41,10 @@ public class StudyNoteHolderTest {
 
 	@Before
 	public void setUp() {
-		d_study = new Study("", new Indication(0l, ""));
-		d_study.putNote("key", new Note(Source.CLINICALTRIALS, "testNote"));
-		d_noteHolder = new StudyNoteHolder(d_study,"key");
+		Indication indication = new Indication(0l, "");
+		d_study = new Study("", indication);
+		d_study.putNote(Study.PROPERTY_INDICATION, new Note(Source.CLINICALTRIALS, "testNote"));
+		d_noteHolder = new StudyNoteHolder(d_study, Study.PROPERTY_INDICATION);
 	}
 	
 	@Test
@@ -61,7 +62,7 @@ public class StudyNoteHolderTest {
 		Note n = new Note(Source.CLINICALTRIALS, "newNote");
 		PropertyChangeListener l = JUnitUtil.mockListener(d_noteHolder, "value", null, n.getText());
 		d_noteHolder.addPropertyChangeListener(l);
-		d_study.putNote("key",n);
+		d_study.putNote(Study.PROPERTY_INDICATION, n);
 		verify(l);
 	}
 }

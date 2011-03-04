@@ -52,11 +52,20 @@ public class StudyTest {
 	private Arm d_pg;
 	private Study d_orig;
 	private Study d_clone;
+	private Note d_note;
 
 	@Before
 	public void setUp() {
+		d_note = new Note(Source.CLINICALTRIALS, "Original text Yo!");
 		d_pg = new Arm(null, null, 0);
 		d_orig = ExampleData.buildStudyFava2002();
+		
+		// Add some notes to test them being cloned.
+		d_orig.putNote(d_orig.getArms().get(1), d_note);
+		d_orig.putNote(d_orig.getAdverseEvents().get(0), d_note);
+		d_orig.putNote(Study.PROPERTY_ID, d_note);
+		d_orig.putNote(BasicStudyCharacteristic.SOURCE, d_note);
+		
 		d_clone = d_orig.clone();
 	}
 	
@@ -188,12 +197,6 @@ public class StudyTest {
 	}	
 	
 	@Test
-	public void testDeleteEndpoint() throws Exception {
-		JUnitUtil.testDeleter(new Study("study", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "deleteEndpoint",
-				new Endpoint("e", Variable.Type.CONTINUOUS));
-	}
-	
-	@Test
 	public void testSetCharacteristic() {
 		Study study = new Study("X", new Indication(0L, ""));
 		
@@ -302,6 +305,8 @@ public class StudyTest {
 		s.addArm(arm);
 		Endpoint e = new Endpoint("Ep", Type.RATE);
 		s.addEndpoint(e);
+		AdverseEvent a = new AdverseEvent("ADE", Type.RATE);
+		s.addAdverseEvent(a);
 		
 		testNote(s, Study.PROPERTY_INDICATION);
 		testNote(s, Study.PROPERTY_ID);
@@ -311,6 +316,7 @@ public class StudyTest {
 		testNote(s, BasicStudyCharacteristic.PUBMED);
 		testNote(s, arm);
 		testNote(s, e);
+		testNote(s, a);
 	}
 
 	private void testNote(Study s, Object obj) {
@@ -367,6 +373,27 @@ public class StudyTest {
 	@Test
 	public void testCloneHasDistinctCharacteristics() {
 		assertFalse(d_orig.getCharacteristics() == d_clone.getCharacteristics());
+	}
+	
+	@Test
+	public void testCloneHasDistinctNotes() {
+		Note note = new Note(Source.MANUAL);
+		
+		assertNull(d_clone.getNote(d_clone.getEndpoints().get(0)));
+		d_clone.putNote(d_clone.getEndpoints().get(0), note);
+		assertNull(d_orig.getNote(d_orig.getEndpoints().get(0)));
+		
+		assertNull(d_clone.getNote(Study.PROPERTY_INDICATION));
+		d_clone.putNote(Study.PROPERTY_INDICATION, note);
+		assertNull(d_orig.getNote(Study.PROPERTY_INDICATION));
+		
+		assertNull(d_clone.getNote(BasicStudyCharacteristic.BLINDING));
+		d_clone.putNote(BasicStudyCharacteristic.BLINDING, note);
+		assertNull(d_orig.getNote(BasicStudyCharacteristic.BLINDING));
+		
+		assertNull(d_clone.getNote(d_clone.getArms().get(0)));
+		d_clone.putNote(d_clone.getArms().get(0), note);
+		assertNull(d_orig.getNote(d_orig.getArms().get(0)));
 	}
 	
 	@Test

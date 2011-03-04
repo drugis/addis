@@ -107,8 +107,10 @@ public class Arm extends AbstractEntity {
 	});
 	
 	@Override
-	public Arm clone() { // FIXME: support cloning of notes.
-		return new Arm(getDrug(), getDose().clone(), getSize());
+	public Arm clone() {
+		Arm arm = new Arm(getDrug(), getDose().clone(), getSize());
+		arm.getNotes().addAll(getNotes());
+		return arm;
 	}
 
 	public List<Note> getNotes() {

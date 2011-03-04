@@ -36,4 +36,11 @@ public class ObjectWithNotes<T> {
 	public int hashCode() {
 		return getValue().hashCode();
 	}
+	
+	@Override
+	public ObjectWithNotes<T> clone() {
+		ObjectWithNotes<T> clone = new ObjectWithNotes<T>(d_obj);
+		clone.d_notes.addAll(d_notes);
+		return clone;
+	}
 }

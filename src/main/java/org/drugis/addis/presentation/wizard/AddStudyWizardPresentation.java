@@ -428,13 +428,7 @@ public class AddStudyWizardPresentation {
 		getNewStudy().setPopulationCharacteristics(outcomeMeasures);
 	}
 	
-	private void transferNotes() {
-		if (getImportStudy().getNote(Study.PROPERTY_ID) != null) {
-			getNewStudy().putNote(Study.PROPERTY_ID, getImportStudy().getNote(Study.PROPERTY_ID));
-		}
-		if (getImportStudy().getNote(Study.PROPERTY_INDICATION) != null) {
-			getNewStudy().putNote(Study.PROPERTY_INDICATION, getImportStudy().getNote(Study.PROPERTY_INDICATION));
-		}
+	private void transferNotes() { // FIXME: should be able to remove.
 		for (Entry<Object,Note> noteEntry : getImportStudy().getNotes().entrySet()) {
 			Object key = noteEntry.getKey();
 			Note value = noteEntry.getValue();
