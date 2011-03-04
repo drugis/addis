@@ -303,7 +303,7 @@ public class AddStudyWizard extends Wizard {
 			int row = buildArmsPart(1, d_builder, cc, 3, layout);
 			
 			if(d_pm.getNumberArms() == 0 ) {
-				d_pm.addArmModels(1);
+				d_pm.addArms(1);
 				row += 2;
 				prepare();
 			}
@@ -313,7 +313,7 @@ public class AddStudyWizard extends Wizard {
 			d_builder.add(btn, cc.xy(1, row+=2));
 			btn.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
-					d_pm.addArmModels(1);
+					d_pm.addArms(1);
 					prepare();
 				}
 			});

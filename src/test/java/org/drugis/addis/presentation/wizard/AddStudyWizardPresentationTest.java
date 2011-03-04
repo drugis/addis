@@ -118,7 +118,7 @@ public class AddStudyWizardPresentationTest {
 	@Test
 	public void testgetNumberArms() {
 		int numArms = d_wizard.getNumberArms();
-		d_wizard.addArmModels(2);
+		d_wizard.addArms(2);
 		assertEquals(numArms + 2,d_wizard.getNumberArms());
 		d_wizard.removeArm(0);
 		assertEquals(numArms + 1,d_wizard.getNumberArms());
@@ -165,7 +165,6 @@ public class AddStudyWizardPresentationTest {
 		d_wizardImported.getIndicationModel().setValue(d_domain.getIndications().first());
 		d_wizardImported.getEndpointSelectModel().getSlot(0).setValue(d_domain.getEndpoints().first());
 		d_wizardImported.getEndpointSelectModel().getSlot(1).setValue(d_domain.getEndpoints().last());
-		d_wizardImported.commitArmsToNew();
 		d_wizardImported.saveStudy();
 		assertEquals("NCT00644527", d_wizardImported.getStudy().getNote(Study.PROPERTY_ID).getText());
 		assertTrue(d_wizardImported.getStudy().getNote(BasicStudyCharacteristic.TITLE).getText().contains("Rezeptive Musiktherapie Bei Depression"));

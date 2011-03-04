@@ -203,7 +203,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 
 	public List<Arm> getArms() {
-		return Collections.unmodifiableList(d_arms);
+		return d_arms;
 	}
 
 	public void setArms(List<Arm> arms) {
@@ -736,5 +736,13 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	
 	public List<StudyOutcomeMeasure<PopulationCharacteristic>> getStudyPopulationCharacteristics() {
 		return d_populationChars;
+	}
+
+	public ObjectWithNotes<?> getStudyIdWithNotes() {
+		return d_studyId;
+	}
+	
+	public ObjectWithNotes<?> getIndicationWithNotes() {
+		return d_indication;
 	}
 }

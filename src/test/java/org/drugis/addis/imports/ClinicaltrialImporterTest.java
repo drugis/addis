@@ -69,7 +69,6 @@ public class ClinicaltrialImporterTest {
 		ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, getXMLResource("NCT00644527.xml"));
 		
 		testRetrievedStudy();
-		//assertEquals(new Endpoint("Change of a composite measure including the Hamilton Depression Scale (double weighted), the Beck Depression Inventory (single weighted) and the HADS-D-scale (single weighted) between study entry and 5 / 10 and 15-week-follow-up.", Type.RATE), testStudy); //:TODO how should this be set?
  	}
 
 	private void testRetrievedStudy() {
@@ -107,8 +106,5 @@ public class ClinicaltrialImporterTest {
 		Boolean checkNote = note.getText().contains("the HADS-D-scale (single weighted) between study entry and 5 / 10 and 15-week-follow-up") 
 		                 || note.getText().contains("Quality of life (SF 36), Vital Exhaustion Brief Questionnaire, Primary outcome measure at 5 and 10 weeks.");
 		assertTrue(checkNote);
-		// these tests should be solved for story 1, point 8
-	
 	}
-	
 }
