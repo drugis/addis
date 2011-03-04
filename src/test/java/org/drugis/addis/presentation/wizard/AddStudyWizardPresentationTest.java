@@ -107,21 +107,6 @@ public class AddStudyWizardPresentationTest {
 		assertEquals("March 2008",d_wizardImported.getCharacteristicNoteModel(BasicStudyCharacteristic.STUDY_START).getValue());
 	}
 	
-//	@Test
-//	public void testGetEndpointListModel() {
-//		JUnitUtil.assertAllAndOnly(d_domain.getEndpoints(), d_wizard.getEndpointListModel().getValue());
-//	}
-	
-	@Test 
-	public void testGetEndpointNoteModel() throws MalformedURLException, IOException {
-		importStudy();
-		String note = (String) d_wizardImported.getEndpointNoteModel(1).getValue();
-		assertTrue(note.contains("Quality of life"));
-		d_wizardImported.removeImportEndpoint(0);
-		note = (String) d_wizardImported.getEndpointNoteModel(0).getValue();
-		assertTrue(note.contains("Quality of life"));
-	}
-	
 	@Test
 	public void testgetNumberEndpoints() {
 		int numEndpoints = d_wizard.getEndpointSelectModel().getSlots().size();
@@ -180,7 +165,7 @@ public class AddStudyWizardPresentationTest {
 		d_wizardImported.getIndicationModel().setValue(d_domain.getIndications().first());
 		d_wizardImported.getEndpointSelectModel().getSlot(0).setValue(d_domain.getEndpoints().first());
 		d_wizardImported.getEndpointSelectModel().getSlot(1).setValue(d_domain.getEndpoints().last());
-		d_wizardImported.commitOutcomesArmsToNew();
+		d_wizardImported.commitArmsToNew();
 		d_wizardImported.saveStudy();
 		assertEquals("NCT00644527", d_wizardImported.getStudy().getNote(Study.PROPERTY_ID).getText());
 		assertTrue(d_wizardImported.getStudy().getNote(BasicStudyCharacteristic.TITLE).getText().contains("Rezeptive Musiktherapie Bei Depression"));

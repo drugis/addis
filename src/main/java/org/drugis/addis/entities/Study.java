@@ -96,7 +96,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		}
 	}
 	
-	public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> {
+	@SuppressWarnings("serial")
+	public static class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> {
 		public StudyOutcomeMeasure(T obj) {
 			super(obj);
 		}
@@ -723,5 +724,17 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 
 	public void setMeasurement(MeasurementKey key, Measurement value) {
 		d_measurements.put(key, value);
+	}
+
+	public List<StudyOutcomeMeasure<Endpoint>> getStudyEndpoints() {
+		return d_endpoints;
+	}
+	
+	public List<StudyOutcomeMeasure<AdverseEvent>> getStudyAdverseEvents() {
+		return d_adverseEvents;
+	}
+	
+	public List<StudyOutcomeMeasure<PopulationCharacteristic>> getStudyPopulationCharacteristics() {
+		return d_populationChars;
 	}
 }

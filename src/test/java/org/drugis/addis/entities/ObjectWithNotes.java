@@ -3,20 +3,14 @@ package org.drugis.addis.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObjectWithNotes<T> {
-	private T d_obj;
+import org.drugis.addis.presentation.ModifiableHolder;
+
+@SuppressWarnings("serial")
+public class ObjectWithNotes<T> extends ModifiableHolder<T> {
 	private List<Note> d_notes = new ArrayList<Note>();
 
 	public ObjectWithNotes(T obj) {
-		d_obj = obj;	
-	}
-	
-	public T getValue() {
-		return d_obj;
-	}
-	
-	public void setValue(T obj) {
-		d_obj = obj;
+		super(obj);	
 	}
 	
 	public List<Note> getNotes() { 
@@ -39,7 +33,7 @@ public class ObjectWithNotes<T> {
 	
 	@Override
 	public ObjectWithNotes<T> clone() {
-		ObjectWithNotes<T> clone = new ObjectWithNotes<T>(d_obj);
+		ObjectWithNotes<T> clone = new ObjectWithNotes<T>(getValue());
 		clone.d_notes.addAll(d_notes);
 		return clone;
 	}

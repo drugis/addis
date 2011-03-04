@@ -159,7 +159,6 @@ public class AssertEntityEquals {
 		}
 		
 		//notes
-		System.out.println(actual.getNotes());
 		assertEquals(expected.getNotes().keySet().size(), actual.getNotes().keySet().size());
 	}
 	

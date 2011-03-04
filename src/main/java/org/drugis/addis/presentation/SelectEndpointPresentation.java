@@ -22,22 +22,20 @@
 
 package org.drugis.addis.presentation;
 
+
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class SelectEndpointPresentation
-extends SelectFromFiniteListPresentationImpl<Endpoint> implements NoteModelPresentation{
-	
-	private final AddStudyWizardPresentation d_pm;
-
-	public SelectEndpointPresentation(ListHolder<Endpoint> options, AddisWindow mainWindow, AddStudyWizardPresentation pm) {
+extends SelectVariablesPresentation<Endpoint> implements NoteModelPresentation{
+	public SelectEndpointPresentation(ListHolder<Endpoint> options, AddisWindow mainWindow) {
 		super(options, "Endpoint", "Select Endpoint", "Please select the appropriate endpoints.", mainWindow);
-		d_pm = pm;
 	}
 
 	@Override
@@ -46,13 +44,27 @@ extends SelectFromFiniteListPresentationImpl<Endpoint> implements NoteModelPrese
 	}
 
 	public ValueModel getNoteModel(int idx) {
-		return d_pm.getEndpointNoteModel(idx);
+		return new NoteModel(getSlot(idx));
+	}
+	
+	static class NoteModel extends AbstractValueModel {
+		private final StudyOutcomeMeasure<Endpoint> d_slot;
+
+		public NoteModel(StudyOutcomeMeasure<Endpoint> slot) {
+			d_slot = slot;
+		}
+		
+		public String getValue() {
+			return d_slot.getNotes().size() > 0 ? d_slot.getNotes().get(0).getText() : null;
+		}
+
+		public void setValue(Object newValue) {
+		}
 	}
 	
 	@Override
 	public void removeSlot(int idx) {
 		super.removeSlot(idx);
-		d_pm.removeImportEndpoint(idx);
 	}
 	
 }

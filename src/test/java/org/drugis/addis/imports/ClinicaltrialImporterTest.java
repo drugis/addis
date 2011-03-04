@@ -28,7 +28,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -36,7 +35,6 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
-import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.junit.Before;
@@ -102,8 +100,8 @@ public class ClinicaltrialImporterTest {
 		assertTrue(((String)d_testStudy.getCharacteristic(BasicStudyCharacteristic.EXCLUSION)).contains("Patients under psychiatric treatment because of psychoses"));
 		
 		
-		assertTrue(d_testStudy.getOutcomeMeasures().size() > 0);
-		Note note = d_testStudy.getNote(new ArrayList<OutcomeMeasure>(d_testStudy.getOutcomeMeasures()).get(1));
+		assertTrue(d_testStudy.getEndpoints().size() > 0);
+		Note note = d_testStudy.getStudyEndpoints().get(0).getNotes().get(0);
 		
 		
 		Boolean checkNote = note.getText().contains("the HADS-D-scale (single weighted) between study entry and 5 / 10 and 15-week-follow-up") 

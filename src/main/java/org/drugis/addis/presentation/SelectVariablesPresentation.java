@@ -25,9 +25,10 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.common.EqualsUtil;
 
@@ -36,10 +37,10 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
-abstract public class SelectFromFiniteListPresentationImpl<T> extends Model
+abstract public class SelectVariablesPresentation<T extends Variable> extends Model
 implements SelectFromFiniteListPresentation<T> {
 
-	protected List<ModifiableHolder<T>> d_slots;
+	protected List<StudyOutcomeMeasure<T>> d_slots;
 	protected ListHolder<T> d_options;
 	protected ValueModel d_addSlotsEnabled;
 	protected InputCompleteModel d_inputCompleteModel;
@@ -48,13 +49,14 @@ implements SelectFromFiniteListPresentation<T> {
 	private String d_typeName;
 	private String d_title;
 	private String d_description;
+	private PropertyChangeListener d_slotValueListener = new SlotsUniqueListener();
 
-	public SelectFromFiniteListPresentationImpl(ListHolder<T> options,
+	public SelectVariablesPresentation(ListHolder<T> options,
 			String typeName, String title, String description, AddisWindow mainWindow) {
 		d_typeName = typeName;
 		d_title = title;
 		d_description = description;
-		d_slots = new ArrayList<ModifiableHolder<T>>();
+		d_slots = new ArrayList<StudyOutcomeMeasure<T>>();
 		d_options = options;
 		d_addSlotsEnabled = new AddSlotsAlwaysEnabledModel();
 		d_inputCompleteModel = new InputCompleteModel();
@@ -66,7 +68,8 @@ implements SelectFromFiniteListPresentation<T> {
 	}
 
 	public void addSlot() {
-		Slot<T> s = new Slot<T>(d_slots);
+		StudyOutcomeMeasure<T> s = new StudyOutcomeMeasure<T>(null);
+		s.addPropertyChangeListener("value", d_slotValueListener);
 		d_slots.add(s);
 		firePropertyChange(PROPERTY_NSLOTS, d_slots.size() - 1, d_slots.size());
 		d_inputCompleteModel.addSlot(s);
@@ -77,13 +80,14 @@ implements SelectFromFiniteListPresentation<T> {
 	}
 
 	public void removeSlot(int idx) {
-		ModifiableHolder<T> s = d_slots.get(idx);
+		StudyOutcomeMeasure<T> s = d_slots.get(idx);
+		s.removePropertyChangeListener("value", d_slotValueListener);
 		d_slots.remove(idx);
 		firePropertyChange(PROPERTY_NSLOTS, d_slots.size() + 1, d_slots.size());
 		d_inputCompleteModel.removeSlot(s);
 	}
 
-	public ModifiableHolder<T> getSlot(int idx) {
+	public StudyOutcomeMeasure<T> getSlot(int idx) {
 		return d_slots.get(idx);
 	}
 
@@ -115,11 +119,29 @@ implements SelectFromFiniteListPresentation<T> {
 		return d_description;
 	}
 
-	public List<ModifiableHolder<T>> getSlots() { 
-		return Collections.unmodifiableList(d_slots);
+	public List<ModifiableHolder<T>> getSlots() {
+		List<ModifiableHolder<T>> slots = new ArrayList<ModifiableHolder<T>>();
+		for (StudyOutcomeMeasure<T> slot : d_slots) {
+			slots.add(slot);
+		}
+		return slots;
 	}
+
+	public void setSlots(List<StudyOutcomeMeasure<T>> slots) {
+		for (StudyOutcomeMeasure<T> slot : d_slots) {
+			slot.removePropertyChangeListener("value", d_slotValueListener);
+		}
+		d_slots = slots;
+		for (StudyOutcomeMeasure<T> slot : d_slots) {
+			slot.addPropertyChangeListener("value", d_slotValueListener);
+		}
+	}
+
 	
 	public void clear() {
+		for (StudyOutcomeMeasure<T> slot : d_slots) {
+			slot.removePropertyChangeListener("value", d_slotValueListener);
+		}
 		d_slots.clear();
 	}
 
@@ -139,6 +161,21 @@ implements SelectFromFiniteListPresentation<T> {
 			}
 		}
 		
+	}
+	
+	class SlotsUniqueListener implements PropertyChangeListener {
+		@SuppressWarnings("unchecked")
+		public void propertyChange(PropertyChangeEvent evt) {
+			StudyOutcomeMeasure<T> holder = (StudyOutcomeMeasure<T>) evt.getSource();
+			if (holder.getValue() == null) {
+				return;
+			}
+			for (StudyOutcomeMeasure<T> som : d_slots) {
+				if (som.getValue() != null && som != holder && EqualsUtil.equal(som.getValue(), holder.getValue())) {
+					som.setValue(null);
+				}
+			}
+		}
 	}
 	
 	class InputCompleteModel extends AbstractValueModel implements PropertyChangeListener {

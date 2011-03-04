@@ -53,7 +53,7 @@ import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 
 
 
@@ -243,15 +243,15 @@ public class ClinicaltrialsImporter {
 
 		// Outcome Measures
 		for (PrimaryOutcome endp : studyImport.getPrimaryOutcome()) {
-			Endpoint e = new Endpoint(endp.getMeasure(), Variable.Type.RATE);
-			study.addEndpoint(e);
-			study.putNote(e, new Note(Source.CLINICALTRIALS, endp.getMeasure()));
+			StudyOutcomeMeasure<Endpoint> om = new StudyOutcomeMeasure<Endpoint>(null);
+			om.getNotes().add(new Note(Source.CLINICALTRIALS, endp.getMeasure()));
+			study.getStudyEndpoints().add(om);
 		}
 		
 		for (SecondaryOutcome endp : studyImport.getSecondaryOutcome()) {
-			Endpoint e = new Endpoint(endp.getMeasure(), Variable.Type.RATE);
-			study.addEndpoint(e);
-			study.putNote(e, new Note(Source.CLINICALTRIALS, endp.getMeasure()));
+			StudyOutcomeMeasure<Endpoint> om = new StudyOutcomeMeasure<Endpoint>(null);
+			om.getNotes().add(new Note(Source.CLINICALTRIALS, endp.getMeasure()));
+			study.getStudyEndpoints().add(om);
 		}	
 	}
 

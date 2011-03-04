@@ -188,20 +188,16 @@ public class StudyPresentation extends PresentationModel<Study> {
 	
 	public List<OutcomeMeasure> getEndpoints() {
 		List<OutcomeMeasure> s = new ArrayList<OutcomeMeasure>();
-		for (OutcomeMeasure m : getBean().getOutcomeMeasures()) {
-			if (m instanceof Endpoint) {
-				s.add(m);
-			}
+		for (Endpoint e : getBean().getEndpoints()) {
+			s.add(e);
 		}
 		return s;
 	}
 	
 	public List<OutcomeMeasure> getAdverseEvents() {
 		List<OutcomeMeasure> s = new ArrayList<OutcomeMeasure>();
-		for (OutcomeMeasure m : getBean().getOutcomeMeasures()) {
-			if (m instanceof AdverseEvent) {
-				s.add(m);
-			}
+		for (AdverseEvent a : getBean().getAdverseEvents()) {
+			s.add(a);
 		}
 		return s;
 	}	

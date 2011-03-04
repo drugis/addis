@@ -150,7 +150,7 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 				d_builder.add(addOptionButton, cc.xy(7, row));
 			}
 			
-			if ( d_pm instanceof NoteModelPresentation) {
+			if (d_pm instanceof NoteModelPresentation) {
 				row = AuxComponentFactory.addNoteField(d_builder, cc, row, 5, 1, layout, ((NoteModelPresentation) d_pm).getNoteModel(i));
 				LayoutUtil.addRow(layout);
 				row += 2;
