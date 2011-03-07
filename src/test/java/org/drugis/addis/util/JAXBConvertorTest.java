@@ -5,7 +5,6 @@ import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
 import static org.drugis.addis.util.JAXBConvertor.nameReference;
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -114,7 +113,6 @@ import org.drugis.addis.imports.PubMedDataBankRetriever;
 import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.common.Interval;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -345,7 +343,11 @@ public class JAXBConvertorTest {
 		org.drugis.addis.entities.data.Arm arm1 = new org.drugis.addis.entities.data.Arm();
 		arm1.setId(null);
 		arm1.setSize(size);
-		arm1.setNotes(new Notes());
+		Notes armNotes = new Notes();
+		Note note = new Note(Source.CLINICALTRIALS, "This is an arm note content");
+		armNotes.getNote().add(JAXBConvertor.convertNote(note));
+		arm1.setNotes(armNotes);
+		
 		org.drugis.addis.entities.data.FixedDose fixDose = new org.drugis.addis.entities.data.FixedDose();
 		fixDose.setQuantity(quantity);
 		fixDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
@@ -353,6 +355,7 @@ public class JAXBConvertorTest {
 		arm1.setDrug(nameReference(name));
 		
 		Arm arm2 = buildFixedDoseArm(size, drug, quantity);
+		arm2.getNotes().add(note);
 		
 		assertEntityEquals(arm2, JAXBConvertor.convertArm(arm1, domain));
 		assertEquals(arm1, JAXBConvertor.convertArm(arm2));
@@ -365,6 +368,7 @@ public class JAXBConvertorTest {
 		arm1.setFlexibleDose(flexDose);
 		
 		Arm arm3 = buildFlexibleDoseArm(size, drug, quantity, maxQuantity);
+		arm3.getNotes().add(note);
 		
 		assertEntityEquals(arm3, JAXBConvertor.convertArm(arm1, domain));
 		assertEquals(arm1, JAXBConvertor.convertArm(arm3));
@@ -742,7 +746,7 @@ public class JAXBConvertorTest {
 		cm1.setSampleSize(110);
 		m2.setContinuousMeasurement(cm1);
 		list.add(m2);
-		
+				
 		return study;
 	}
 
@@ -798,6 +802,8 @@ public class JAXBConvertorTest {
 		// Measurements (empty)
 		Measurements measurements = new Measurements();
 		study.setMeasurements(measurements);
+		
+		study.setNotes(new Notes());
 		
 		return study;
 	}
@@ -876,7 +882,16 @@ public class JAXBConvertorTest {
 		studyData.getCharacteristics().getAllocation().getNotes().getNote().add(JAXBConvertor.convertNote(charNote));
 		studyEntity.getCharacteristics().get(BasicStudyCharacteristic.ALLOCATION).getNotes().add(charNote);
 		
+		Note indicationNote = new Note(Source.CLINICALTRIALS, "Depression! Aah!");
+		studyData.getIndication().getNotes().getNote().add(JAXBConvertor.convertNote(indicationNote));
+		studyEntity.getIndicationWithNotes().getNotes().add(indicationNote);
+		
+		Note idNote = new Note(Source.CLINICALTRIALS, "NCT1337");
+		studyData.getNotes().getNote().add(JAXBConvertor.convertNote(idNote));
+		studyEntity.getStudyIdWithNotes().getNotes().add(idNote);
+		
 		assertEntityEquals(studyEntity, JAXBConvertor.convertStudy(studyData, domain));
+		assertEquals(studyData, JAXBConvertor.convertStudy(studyEntity));
 	}
 	
 	private class MetaAnalysisWithStudies {
