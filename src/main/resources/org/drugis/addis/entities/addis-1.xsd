@@ -223,6 +223,7 @@
 			<xs:element name="studyOutcomeMeasures" type="StudyOutcomeMeasures"/>
 			<xs:element name="arms" type="Arms"/>
 			<xs:element name="measurements" type="Measurements"/>
+			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string"/>
 	</xs:complexType>

@@ -308,6 +308,16 @@
 							</measurement>
 						</xsl:for-each>
 					</measurements>
+					<notes>
+						<xsl:for-each select="notes/note/key[@value=&quot;studyId&quot;]">
+							<xsl:element name="note">
+								<xsl:attribute name="source">
+									<xsl:value-of select="../noteSrc/@value"/>
+								</xsl:attribute>
+								<xsl:value-of select="../noteText/@value"/>
+							</xsl:element>
+						</xsl:for-each>
+					</notes>
 				</xsl:element>
 			</xsl:for-each><!-- study -->
 		</studies>
