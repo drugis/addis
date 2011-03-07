@@ -61,6 +61,7 @@ import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PubMedId;
@@ -511,24 +512,24 @@ public class JAXBConvertorTest {
 		om.setNotes(new Notes());
 		om.setEndpoint(nameReference(ep.getName()));
 		
-		assertEntityEquals(ep, JAXBConvertor.convertStudyOutcomeMeasure(om, domain));
-		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(ep), om);
+		assertEntityEquals(ep, JAXBConvertor.convertStudyOutcomeMeasure(om, domain).getValue());
+		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(new Study.StudyOutcomeMeasure<Variable>(ep)), om);
 		
 		AdverseEvent ade = ExampleData.buildAdverseEventDiarrhea();
 		domain.addAdverseEvent(ade);
 		om.setEndpoint(null);
 		om.setAdverseEvent(nameReference(ade.getName()));
 		
-		assertEntityEquals(ade, JAXBConvertor.convertStudyOutcomeMeasure(om, domain));
-		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(ade), om);
+		assertEntityEquals(ade, JAXBConvertor.convertStudyOutcomeMeasure(om, domain).getValue());
+		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(new Study.StudyOutcomeMeasure<Variable>(ade)), om);
 		
 		PopulationCharacteristic pc = ExampleData.buildGenderVariable();
 		domain.addPopulationCharacteristic(pc);
 		om.setAdverseEvent(null);
 		om.setPopulationCharacteristic(nameReference(pc.getName()));
 		
-		assertEntityEquals(pc, JAXBConvertor.convertStudyOutcomeMeasure(om, domain));
-		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(pc), om);
+		assertEntityEquals(pc, JAXBConvertor.convertStudyOutcomeMeasure(om, domain).getValue());
+		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(new Study.StudyOutcomeMeasure<Variable>(pc)), om);
 	}
 	
 	@Test(expected=ConversionException.class)
@@ -545,9 +546,9 @@ public class JAXBConvertorTest {
 		Endpoint ep = ExampleData.buildEndpointHamd();
 		domain.addAdverseEvent(ExampleData.buildAdverseEventDiarrhea());
 		
-		LinkedHashMap<String, Variable> vars = new LinkedHashMap<String, Variable>();
-		vars.put("X", ep);
-		vars.put("Y", ExampleData.buildAdverseEventDiarrhea());
+		LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> vars = new LinkedHashMap<String, Study.StudyOutcomeMeasure<?>>();
+		vars.put("X", new Study.StudyOutcomeMeasure<Variable>(ep));
+		vars.put("Y", new Study.StudyOutcomeMeasure<Variable>(ExampleData.buildAdverseEventDiarrhea()));
 
 		StudyOutcomeMeasure epRef = new StudyOutcomeMeasure();
 		epRef.setNotes(new Notes());
@@ -617,16 +618,16 @@ public class JAXBConvertorTest {
 		arms.put(5, arm5);
 		Arm arm8 = new Arm(new Drug("LSD", "UFO"), new FixedDose(100.0, SIUnit.MILLIGRAMS_A_DAY), 42);
 		arms.put(8, arm8);
-		Map<String, Variable> oms = new HashMap<String, Variable>();
+		Map<String, Study.StudyOutcomeMeasure<?>> oms = new HashMap<String, Study.StudyOutcomeMeasure<?>>();
 		String pcName = "popChar-hair";
 		ContinuousPopulationCharacteristic pc = new ContinuousPopulationCharacteristic("Hair Length");
-		oms.put(pcName, pc);
+		oms.put(pcName, new Study.StudyOutcomeMeasure<Variable>(pc));
 		String epName = "endpoint-tripping";
 		Endpoint ep = new Endpoint("Tripping achieved", Type.RATE, Direction.HIGHER_IS_BETTER);
-		oms.put(epName, ep);
+		oms.put(epName, new Study.StudyOutcomeMeasure<Variable>(ep));
 		String aeName = "ade-nojob";
 		AdverseEvent ae = new AdverseEvent("Job loss", Type.RATE);
-		oms.put(aeName, ae);
+		oms.put(aeName, new Study.StudyOutcomeMeasure<Variable>(ae));
 		
 		org.drugis.addis.entities.data.RateMeasurement rm1 = new org.drugis.addis.entities.data.RateMeasurement();
 		rm1.setRate(10);
@@ -712,7 +713,7 @@ public class JAXBConvertorTest {
 		// Arms
 		Arms arms = new Arms();
 		arms.getArm().add(buildFixedDoseArmData(1, 100, ExampleData.buildDrugFluoxetine().getName(), 12.5));
-		arms.getArm().add(buildFixedDoseArmData(2, 102, ExampleData.buildDrugParoxetine().getName(), 12.5));
+		arms.getArm().add(buildFlexibleDoseArmData(2, 102, ExampleData.buildDrugParoxetine().getName(), 12.5, 15.3));
 		
 		org.drugis.addis.entities.data.Study study = buildStudySkeleton(name,
 				title, indicationName, endpointName, adverseEventName,
@@ -821,7 +822,7 @@ public class JAXBConvertorTest {
 		study2.addOutcomeMeasure(ExampleData.buildAgeVariable());
 		Arm arm1 = buildFixedDoseArm(100, ExampleData.buildDrugFluoxetine(), 12.5);
 		study2.addArm(arm1);
-		Arm arm2 = buildFixedDoseArm(102, ExampleData.buildDrugParoxetine(), 12.5);
+		Arm arm2 = buildFlexibleDoseArm(102, ExampleData.buildDrugParoxetine(), 12.5, 15.3);
 		study2.addArm(arm2);
 		study2.setArmIds(Arrays.asList(new Integer[] {1, 2}));
 		study2.setCharacteristic(BasicStudyCharacteristic.TITLE, "WHOO");
@@ -833,6 +834,49 @@ public class JAXBConvertorTest {
 		
 		assertEntityEquals(study2, JAXBConvertor.convertStudy(study, domain));
 		assertEquals(study, JAXBConvertor.convertStudy(study2));
+	}
+	
+	@Test
+	public void testConvertNote() {
+		org.drugis.addis.entities.data.Note note = new org.drugis.addis.entities.data.Note();
+		note.setSource(Source.CLINICALTRIALS);
+		String text = "Some text here";
+		note.setValue(text);
+		
+		Note expected = new Note(Source.CLINICALTRIALS, text);
+		
+		assertEquals(expected, JAXBConvertor.convertNote(note));
+		assertEquals(note, JAXBConvertor.convertNote(expected));
+	}
+	
+	@Test
+	public void testConvertStudyWithNotes() throws ConversionException {
+		DomainImpl domain = new DomainImpl();
+		ExampleData.initDefaultData(domain);
+		domain.addEndpoint(ExampleData.buildEndpointCgi());
+		domain.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
+		
+		String name = "My fancy study";
+		org.drugis.addis.entities.data.Study studyData = buildStudy(name);
+		Study studyEntity = JAXBConvertor.convertStudy(studyData, domain);
+		
+		Note armNote = new Note(Source.CLINICALTRIALS, "Some text here");
+		studyData.getArms().getArm().get(0).getNotes().getNote().add(JAXBConvertor.convertNote(armNote));
+		studyData.getArms().getArm().get(1).getNotes().getNote().add(JAXBConvertor.convertNote(armNote));
+		studyEntity.getArms().get(0).getNotes().add(armNote);
+		studyEntity.getArms().get(1).getNotes().add(armNote);
+		
+		Note adeNote = new Note(Source.MANUAL, "I would not like to suffer from this!");
+		studyData.getStudyOutcomeMeasures().getStudyOutcomeMeasure().get(2).getNotes().getNote().add(JAXBConvertor.convertNote(adeNote));
+		studyEntity.getStudyAdverseEvents().get(0).getNotes().add(adeNote);
+		Note hamdNote = new Note(Source.MANUAL, "Mmm... HAM!");
+		studyData.getStudyOutcomeMeasures().getStudyOutcomeMeasure().get(0).getNotes().getNote().add(JAXBConvertor.convertNote(hamdNote));
+		studyEntity.getStudyEndpoints().get(0).getNotes().add(hamdNote);
+		Note charNote = new Note(Source.CLINICALTRIALS, "A randomized double blind trial of something");
+		studyData.getCharacteristics().getAllocation().getNotes().getNote().add(JAXBConvertor.convertNote(charNote));
+		studyEntity.getCharacteristics().get(BasicStudyCharacteristic.ALLOCATION).getNotes().add(charNote);
+		
+		assertEntityEquals(studyEntity, JAXBConvertor.convertStudy(studyData, domain));
 	}
 	
 	private class MetaAnalysisWithStudies {
@@ -1203,12 +1247,6 @@ public class JAXBConvertorTest {
 
 		assertEntityEquals(expected, JAXBConvertor.convertBenefitRiskAnalyses(analyses, domain));
 		assertEquals(analyses, JAXBConvertor.convertBenefitRiskAnalyses(expected));
-	}
-
-	@Test
-	@Ignore
-	public void testConvertStudyWithNotes() {
-		fail("Note conversion not implemented");
 	}
 	
 	@Test

@@ -745,4 +745,17 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public ObjectWithNotes<?> getIndicationWithNotes() {
 		return d_indication;
 	}
+
+	@SuppressWarnings("unchecked")
+	public void addStudyOutcomeMeasure(StudyOutcomeMeasure<?> value) {
+		if (value.getValue() instanceof Endpoint) {
+			d_endpoints.add((StudyOutcomeMeasure<Endpoint>) value);
+		} else if (value.getValue() instanceof AdverseEvent) {
+			d_adverseEvents.add((StudyOutcomeMeasure<AdverseEvent>) value);
+		} else if (value.getValue() instanceof PopulationCharacteristic) {
+			d_populationChars.add((StudyOutcomeMeasure<PopulationCharacteristic>) value);
+		} else {
+			throw new IllegalArgumentException("Unknown StudyOutcomeMeasure type: " + value.getValue());
+		}
+	}
 }

@@ -73,5 +73,15 @@ public class Note extends AbstractEntity {
 		d_source = source;
 	}
 	
-
+	public boolean equals(Object o) {
+		if (o instanceof Note && o != null) {
+			Note other = (Note) o;
+			return other.d_source.equals(d_source) && other.d_text.equals(d_text);
+		}
+		return false;
+	}
+	
+	public int hashCode() {
+		return d_source.hashCode() * 31 + d_text.hashCode();
+	}
 }
