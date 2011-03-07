@@ -324,44 +324,28 @@
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Status">
-		<xs:complexContent>
-			<xs:restriction base="TypeWithNotes">
-				<xs:sequence>
-					<xs:element name="value" type="StatusEnum"/>
-					<xs:element name="notes" type="Notes"/>
-				</xs:sequence>
-			</xs:restriction>
-		</xs:complexContent>
+		<xs:sequence>
+			<xs:element name="value" type="StatusEnum"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Source">
-		<xs:complexContent>
-			<xs:restriction base="TypeWithNotes">
-				<xs:sequence>
-					<xs:element name="value" type="SourceEnum"/>
-					<xs:element name="notes" type="Notes"/>
-				</xs:sequence>
-			</xs:restriction>
-		</xs:complexContent>
+		<xs:sequence>
+			<xs:element name="value" type="SourceEnum"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Allocation">
-		<xs:complexContent>
-			<xs:restriction base="TypeWithNotes">
-				<xs:sequence>
-					<xs:element name="value" type="AllocationEnum"/>
-					<xs:element name="notes" type="Notes"/>
-				</xs:sequence>
-			</xs:restriction>
-		</xs:complexContent>
+		<xs:sequence>
+			<xs:element name="value" type="AllocationEnum"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Blinding">
-		<xs:complexContent>
-			<xs:restriction base="TypeWithNotes">
-				<xs:sequence>
-					<xs:element name="value" type="BlindingEnum"/>
-					<xs:element name="notes" type="Notes"/>
-				</xs:sequence>
-			</xs:restriction>
-		</xs:complexContent>
+		<xs:sequence>
+			<xs:element name="value" type="BlindingEnum"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Arms">
 		<xs:sequence maxOccurs="unbounded">
@@ -533,10 +517,11 @@
 		<xs:attribute name="name" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="NameReferenceWithNotes">
-		<xs:sequence>
-			<xs:element name="notes" type="Notes"/>
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string"/>
+		<xs:complexContent>
+			<xs:extension base="TypeWithNotes">
+				<xs:attribute name="name" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="IdReference">
 		<xs:attribute name="id" type="xs:int"/>
@@ -573,40 +558,28 @@
 	</xs:complexType>
 
 	<!-- Types with notes (for Study) -->
+
 	<xs:complexType name="TypeWithNotes">
 		<xs:sequence>
-			<xs:element name="value" type="xs:anyType"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="StringWithNotes">
-		<xs:complexContent>
-			<xs:restriction base="TypeWithNotes">
-				<xs:sequence>
-					<xs:element name="value" type="xs:string"/>
-					<xs:element name="notes" type="Notes"/>
-				</xs:sequence>
-			</xs:restriction>
-		</xs:complexContent>
+		<xs:sequence>
+			<xs:element name="value" type="xs:string"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="DateWithNotes">
-		<xs:complexContent>
-			<xs:restriction base="TypeWithNotes">
-				<xs:sequence>
-					<xs:element name="value" type="xs:date"/>
-					<xs:element name="notes" type="Notes"/>
-				</xs:sequence>
-			</xs:restriction>
-		</xs:complexContent>
+		<xs:sequence>
+			<xs:element name="value" type="xs:date"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="IntegerWithNotes">
-		<xs:complexContent>
-			<xs:restriction base="TypeWithNotes">
-				<xs:sequence>
-					<xs:element name="value" type="xs:int"/>
-					<xs:element name="notes" type="Notes"/>
-				</xs:sequence>
-			</xs:restriction>
-		</xs:complexContent>
+		<xs:sequence>
+			<xs:element name="value" type="xs:int"/>
+			<xs:element name="notes" type="Notes"/>
+		</xs:sequence>
 	</xs:complexType>
 </xs:schema>
