@@ -24,6 +24,7 @@ package org.drugis.addis.imports;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 import java.io.InputStream;
 import java.text.ParseException;
@@ -33,7 +34,6 @@ import java.util.Date;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
@@ -52,7 +52,7 @@ public class ClinicaltrialImporterTest {
 	@Before
 	public void setUp() {
 		d_testDomain = new DomainImpl();
-		d_testStudy  = new Study("testStudyID", new Indication(-1L, "testIndicationID"));
+		d_testStudy  = new Study();
 	}
 	
 	@Test
@@ -72,13 +72,13 @@ public class ClinicaltrialImporterTest {
  	}
 
 	private void testRetrievedStudy() {
-		assertEquals("NCT00644527",d_testStudy.getStudyId());
+		assertEquals("NCT00644527", d_testStudy.getStudyId());
 		assertEquals("Receptive Music Therapy for the Treatment of Depression", d_testStudy.getCharacteristic(BasicStudyCharacteristic.TITLE));
 		assertEquals(BasicStudyCharacteristic.Allocation.RANDOMIZED, d_testStudy.getCharacteristic( BasicStudyCharacteristic.ALLOCATION));
 		assertEquals(BasicStudyCharacteristic.Blinding.DOUBLE_BLIND, d_testStudy.getCharacteristic( BasicStudyCharacteristic.BLINDING));
 		assertEquals(1, d_testStudy.getCharacteristic(BasicStudyCharacteristic.CENTERS));
 		assertTrue(((String)d_testStudy.getCharacteristic(BasicStudyCharacteristic.OBJECTIVE)).contains("specific interest is the use of music in the evening") );
-		assertEquals("Depression", d_testStudy.getIndication().getName()); 
+		assertNull(d_testStudy.getIndication()); 
 
 		Date expectedStartDate = null, expectedEndDate = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");

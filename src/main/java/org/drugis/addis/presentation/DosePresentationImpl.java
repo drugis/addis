@@ -43,6 +43,9 @@ class DosePresentationImpl implements DosePresentation {
 	public DosePresentationImpl(
 			BasicArmPresentation basicArmPresentation) {
 		d_pg = basicArmPresentation.getBean();
+		if (d_pg.getDose() == null) {
+			d_pg.setDose(new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY));
+		}
 		d_min = new ValueHolder(getMinDose(d_pg));
 		d_max = new ValueHolder(getMaxDose(d_pg));
 		d_unit = new ValueHolder(d_pg.getDose().getUnit());

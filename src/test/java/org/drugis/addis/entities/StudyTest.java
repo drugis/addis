@@ -61,10 +61,13 @@ public class StudyTest {
 		d_orig = ExampleData.buildStudyFava2002();
 		
 		// Add some notes to test them being cloned.
-		d_orig.putNote(d_orig.getArms().get(1), d_note);
-		d_orig.putNote(d_orig.getAdverseEvents().get(0), d_note);
-		d_orig.putNote(Study.PROPERTY_ID, d_note);
-		d_orig.putNote(BasicStudyCharacteristic.SOURCE, d_note);
+		d_orig.getArms().get(1).getNotes().add(d_note);
+		d_orig.getStudyAdverseEvents().get(0).getNotes().add(d_note);
+		d_orig.getStudyIdWithNotes().getNotes().add(d_note);
+		ObjectWithNotes<Object> val = new ObjectWithNotes<Object>(null);
+		val.getNotes().add(d_note);
+		d_orig.setCharacteristicWithNotes(BasicStudyCharacteristic.SOURCE,
+				val);
 		
 		d_clone = d_orig.clone();
 	}
@@ -379,34 +382,35 @@ public class StudyTest {
 	public void testCloneHasDistinctNotes() {
 		Note note = new Note(Source.MANUAL);
 		
-		assertNull(d_clone.getNote(d_clone.getEndpoints().get(0)));
-		d_clone.putNote(d_clone.getEndpoints().get(0), note);
-		assertNull(d_orig.getNote(d_orig.getEndpoints().get(0)));
+		assertTrue(d_clone.getStudyEndpoints().get(0).getNotes().isEmpty());
+		d_clone.getStudyEndpoints().get(0).getNotes().add(note);
+		assertTrue(d_orig.getStudyEndpoints().get(0).getNotes().isEmpty());
 		
-		assertNull(d_clone.getNote(Study.PROPERTY_INDICATION));
-		d_clone.putNote(Study.PROPERTY_INDICATION, note);
-		assertNull(d_orig.getNote(Study.PROPERTY_INDICATION));
+		assertTrue(d_clone.getIndicationWithNotes().getNotes().isEmpty());
+		d_clone.getIndicationWithNotes().getNotes().add(note);
+		assertTrue(d_orig.getIndicationWithNotes().getNotes().isEmpty());
 		
-		assertNull(d_clone.getNote(BasicStudyCharacteristic.BLINDING));
-		d_clone.putNote(BasicStudyCharacteristic.BLINDING, note);
-		assertNull(d_orig.getNote(BasicStudyCharacteristic.BLINDING));
+		assertTrue(d_clone.getCharacteristicWithNotes(BasicStudyCharacteristic.BLINDING).getNotes().isEmpty());
+		d_clone.getCharacteristicWithNotes(BasicStudyCharacteristic.BLINDING).getNotes().add(note);
+		assertTrue(d_orig.getCharacteristicWithNotes(BasicStudyCharacteristic.BLINDING).getNotes().isEmpty());
 		
-		assertNull(d_clone.getNote(d_clone.getArms().get(0)));
-		d_clone.putNote(d_clone.getArms().get(0), note);
-		assertNull(d_orig.getNote(d_orig.getArms().get(0)));
+		assertTrue(d_clone.getArms().get(0).getNotes().isEmpty());
+		d_clone.getArms().get(0).getNotes().add(note);
+		assertTrue(d_orig.getArms().get(0).getNotes().isEmpty());
 	}
 	
 	@Test
 	public void testXML() throws XMLStreamException {
 		Study s = ExampleData.buildStudyChouinard();
 		Note note = new Note(Source.MANUAL, "this is the test text");
-		s.putNote(s.getArms().get(0), note);
+		s.getArms().get(0).getNotes().add(note);
 		List<PopulationCharacteristic> chars = new ArrayList<PopulationCharacteristic>();
 		chars.add(ExampleData.buildAgeVariable());
 		s.setPopulationCharacteristics(chars);
 		String xml = XMLHelper.toXml(s, Study.class);
 		Study parsedStudy = (Study)XMLHelper.fromXml(xml);
 		AssertEntityEquals.assertEntityEquals(s, parsedStudy);
-		assertEquals(s.getNote(s.getArms().get(0).toString()), parsedStudy.getNote(parsedStudy.getArms().get(0).toString()));
+		assertEquals(s.getArms().get(0).getNotes(), parsedStudy.getArms().get(0).getNotes());
+		assertEquals(s.getStudyAdverseEvents().get(0).getNotes(), parsedStudy.getStudyAdverseEvents().get(0).getNotes());
 	}
 }

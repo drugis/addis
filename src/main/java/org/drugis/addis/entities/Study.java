@@ -28,8 +28,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
@@ -258,10 +258,21 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		dep.add(d_indication.getValue());
 		return dep;
 	}
-
+	
+	public Object getCharacteristic(Characteristic c) {
+		return d_chars.get(c) != null ? d_chars.get(c).getValue() : null;
+	}
+	
 	public void setCharacteristic(BasicStudyCharacteristic c, Object val) {
-		d_chars.put(c, new ObjectWithNotes<Object>(val));
-		/* Beware: Every characteristicHolder attached to this study will receive this event, even though only one characteristic has changed*/
+		setCharacteristicWithNotes(c, new ObjectWithNotes<Object>(val));
+	}
+	
+	public ObjectWithNotes<?> getCharacteristicWithNotes(Characteristic c) {
+		return d_chars.get(c);
+	}
+	
+	public void setCharacteristicWithNotes(BasicStudyCharacteristic c, ObjectWithNotes<?> val) {
+		d_chars.put(c, val);
 		firePropertyChange(PROPERTY_CHARACTERISTICS, c, c);
 	}
 
@@ -539,10 +550,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		throw new IllegalStateException(k + " is not a valid measurement key");
 	}
 
-	public Object getCharacteristic(Characteristic c) {
-		return d_chars.get(c) != null ? d_chars.get(c).getValue() : null;
-	}
-
 	public int getSampleSize() {
 		int s = 0;
 		for (Arm pg : d_arms)
@@ -550,6 +557,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return s;
 	}
 
+	@Deprecated
 	public void putNote(Object key, Note note) { // TODO: refactor here
 		ObjectWithNotes<?> target = null;
 		if (key.equals(PROPERTY_INDICATION)) {
@@ -599,6 +607,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return null;
 	}
 
+	@Deprecated
 	public Note getNote(Object key){
 		List<Note> notes = getNotes(key);
 		return (notes != null && notes.size() > 0) ? notes.get(0) : null;
@@ -619,7 +628,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		}
 		return null;
 	}
-
+	
+	@Deprecated
 	public Map<Object,Note> getNotes() {
 		Map<Object, Note> notes = new HashMap<Object, Note>();
 		addNoteIfExists(PROPERTY_ID, notes);
@@ -645,6 +655,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		}
 	}
 	
+	@Deprecated
 	private void setNotes(Map<Object,Note> notes) {
 		for (Entry<Object, Note> entry : notes.entrySet()) {
 			putNote(entry.getKey(), entry.getValue());
