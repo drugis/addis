@@ -6,8 +6,6 @@ import static org.drugis.addis.util.JAXBConvertor.nameReference;
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -33,7 +31,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 
 import javolution.text.CharArray;
 import javolution.xml.XMLFormat;
@@ -1299,8 +1296,8 @@ public class JAXBConvertorTest {
 		try {
 			// read transformed XML
 			InputStream xmlStream = new FileInputStream(args[0]);
-			InputStream transformedXmlStream = getTransformed(xmlStream);
-			xmlStream.close();			
+			InputStream transformedXmlStream = JAXBConvertor.transformLegacyXML(xmlStream);
+			xmlStream.close();
 			JAXBContext jaxb = JAXBContext.newInstance("org.drugis.addis.entities.data");
 			Unmarshaller unmarshaller = jaxb.createUnmarshaller();
 			AddisData data = (AddisData) unmarshaller.unmarshal(transformedXmlStream);
@@ -1503,25 +1500,7 @@ public class JAXBConvertorTest {
 	}
 	
 	private static InputStream getTransformed() throws TransformerException, IOException {
-		return getTransformed(JAXBConvertorTest.class.getResourceAsStream("../defaultData.xml"));
-	}
-
-	private static InputStream getTransformed(InputStream xmlFile)
-	throws TransformerException, IOException {
-		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
-		TransformerFactory tFactory = TransformerFactory.newInstance(); 
-		InputStream xsltFile = JAXBConvertorTest.class.getResourceAsStream("../entities/transform-0-1.xslt");
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		
-	    javax.xml.transform.Source xmlSource = new javax.xml.transform.stream.StreamSource(xmlFile);
-	    javax.xml.transform.Source xsltSource = new javax.xml.transform.stream.StreamSource(xsltFile);
-	    javax.xml.transform.Result result = new javax.xml.transform.stream.StreamResult(os);
-	    
-	    javax.xml.transform.Transformer trans = tFactory.newTransformer(xsltSource);
-	    trans.transform(xmlSource, result);
-	    os.close();
-
-	    return new ByteArrayInputStream(os.toByteArray());
+		return JAXBConvertor.transformLegacyXML(JAXBConvertorTest.class.getResourceAsStream("../defaultData.xml"));
 	}
 
 	private static final class IdResolver extends XMLReferenceResolver {

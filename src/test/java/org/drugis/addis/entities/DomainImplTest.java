@@ -22,14 +22,9 @@
 
 package org.drugis.addis.entities;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -84,62 +79,4 @@ public class DomainImplTest {
 		Set<Entity> deps = d_domain.getDependents(ExampleData.buildDrugFluoxetine());
 		assertTrue(deps.contains(ma));
 	}
-	
-	@Test
-	public void testReloadingDomainFiresListeners() throws Exception {
-		ExampleData.initDefaultData(d_domain);
-		
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		d_domain.saveXMLDomainData(bos);
-
-		DomainListener mock2 = createMock(DomainListener.class);
-		d_domain.addListener(mock2);
-		for (DomainEvent.Type t : DomainEvent.Type.values()) {
-			mock2.domainChanged(new DomainEvent(t));
-		}
-		replay(mock2);
-		
-		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-		d_domain.loadXMLDomainData(bis);
-
-		verify(mock2);	
-	}
-	
-	@Test
-	public void testClearingDomainFiresListeners() throws Exception {
-		ExampleData.initDefaultData(d_domain);
-
-		DomainListener mock2 = createMock(DomainListener.class);
-		d_domain.addListener(mock2);
-		for (DomainEvent.Type t : DomainEvent.Type.values()) {
-			mock2.domainChanged(new DomainEvent(t));
-		}
-		
-		replay(mock2);
-		d_domain.clearDomain();
-		verify(mock2);	
-	}
-	
-	@Test
-	public void testReloadingDomainKeepsStudyListener() throws Exception {
-		ExampleData.initDefaultData(d_domain);
-		
-			
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		d_domain.saveXMLDomainData(bos);
-		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-		d_domain.loadXMLDomainData(bis);
-		
-		Study s = (Study) d_domain.getStudies().first();
-		
-		DomainListener mock3 = createMock(DomainListener.class);
-		d_domain.addListener(mock3);
-		mock3.domainChanged(new DomainEvent(DomainEvent.Type.STUDIES));
-		replay(mock3);
-		
-		s.addArm(new Arm(new Drug("viagra-2", "atc"), new FixedDose(100.0, SIUnit.MILLIGRAMS_A_DAY), 
-				10));
-		verify(mock3);
-	}
-	
 }

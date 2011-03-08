@@ -26,6 +26,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.TransformerException;
+
+import org.drugis.addis.entities.data.AddisData;
+import org.drugis.addis.util.JAXBConvertor;
+import org.drugis.addis.util.JAXBConvertor.ConversionException;
+
 
 
 public class DomainManager {
@@ -45,9 +54,21 @@ public class DomainManager {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public void loadXMLDomain(InputStream is)
-	throws IOException, ClassNotFoundException {
-		d_domain.loadXMLDomainData(is);
+	public void loadXMLDomain(InputStream is) throws IOException {
+		try {
+			InputStream transformedXmlStream = JAXBConvertor.transformLegacyXML(is);
+			is.close();
+			JAXBContext jaxb = JAXBContext.newInstance("org.drugis.addis.entities.data");
+			Unmarshaller unmarshaller = jaxb.createUnmarshaller();
+			AddisData data = (AddisData) unmarshaller.unmarshal(transformedXmlStream);
+			d_domain = (DomainImpl) JAXBConvertor.addisDataToDomain(data);
+		} catch (TransformerException e) {
+			throw new RuntimeException(e);
+		} catch (JAXBException e) {
+			throw new RuntimeException(e);
+		} catch (ConversionException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/**

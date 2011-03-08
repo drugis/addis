@@ -30,8 +30,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.DomainManager;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,6 +50,7 @@ public class DomainManagerTest {
 	
 	@Test
 	public void testSaveLoadDomain() throws IOException, ClassNotFoundException {
+		d_manager = new DomainManager();
 		ExampleData.initDefaultData(d_manager.getDomain());
 		
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -67,6 +66,7 @@ public class DomainManagerTest {
 	
 	@Test
 	public void testSaveLoadDomainXml() throws IOException, ClassNotFoundException {
+		d_manager = new DomainManager();
 		ExampleData.initDefaultData(d_manager.getDomain());
 		
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();

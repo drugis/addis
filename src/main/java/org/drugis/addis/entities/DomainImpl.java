@@ -27,7 +27,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,8 +40,8 @@ import java.util.TreeSet;
 import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
@@ -91,22 +90,6 @@ public class DomainImpl implements Domain {
 	
 	private List<DomainListener> d_listeners;
 	private PropertyChangeListener d_studyListener;
-	
-	/**
-	 * Replace the DomainData by a new instance loaded from a xml file.
-	 * @param is Stream to read objects from.
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	public void loadXMLDomainData(InputStream is)
-	throws IOException, ClassNotFoundException {
-		try {
-			d_domainData = XMLHelper.fromXml(is);
-		} catch (XMLStreamException e) {
-			throw new RuntimeException(e);
-		}
-		domainDataReinit();
-	}
 	
 	/**
 	 * Save the Domain to an xml stream.

@@ -84,7 +84,7 @@ public class ExampleData {
 	private static Study s_studyBennie;
 	private static Study s_studyDeWilde;
 	private static Study s_studyChouinard;
-	private static Study s_MultipleArmsperDrugStudy;
+	private static Study s_studyMultipleArmsPerDrug;
 	
 	private static CategoricalPopulationCharacteristic s_gender;
 	private static ContinuousPopulationCharacteristic s_age;
@@ -155,6 +155,7 @@ public class ExampleData {
 		s_studyBennie = null;
 		s_studyDeWilde = null;
 		s_studyChouinard = null;
+		s_studyMultipleArmsPerDrug = null;
 	}
 
 	public static Study buildStudyChouinard() {
@@ -325,11 +326,11 @@ public class ExampleData {
 	}
 
 	public static Study buildStudyMultipleArmsperDrug() {
-		if (s_MultipleArmsperDrugStudy == null) {
-			s_MultipleArmsperDrugStudy = realBuildMultipleArmsperDrugStudy();
+		if (s_studyMultipleArmsPerDrug == null) {
+			s_studyMultipleArmsPerDrug = realBuildMultipleArmsperDrugStudy();
 		}
 		
-		return s_MultipleArmsperDrugStudy;
+		return s_studyMultipleArmsPerDrug;
 	}
 	
 	private static Study realBuildMultipleArmsperDrugStudy() {

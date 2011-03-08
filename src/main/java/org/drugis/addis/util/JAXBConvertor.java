@@ -1,5 +1,9 @@
 package org.drugis.addis.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -11,6 +15,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
@@ -29,6 +36,7 @@ import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
@@ -38,7 +46,6 @@ import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
@@ -725,6 +732,7 @@ public class JAXBConvertor {
 		convertNotes(study.getIndication().getNotes().getNote(), newStudy.getIndicationWithNotes().getNotes());
 		
 		LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> outcomeMeasures = convertStudyOutcomeMeasures(study.getStudyOutcomeMeasures(), domain);
+//		System.out.println(study.getStudyOutcomeMeasures());
 		for(Entry<String, Study.StudyOutcomeMeasure<?>> om : outcomeMeasures.entrySet()) {
 			newStudy.addStudyOutcomeMeasure(om.getValue());
 		}
@@ -1192,5 +1200,23 @@ public class JAXBConvertor {
 		converted.setSource(note.getSource());
 		converted.setValue(note.getText());
 		return converted;
+	}
+
+	public static InputStream transformLegacyXML(InputStream xmlFile)
+	throws TransformerException, IOException {
+		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
+		TransformerFactory tFactory = TransformerFactory.newInstance(); 
+		InputStream xsltFile = JAXBConvertorTest.class.getResourceAsStream("../entities/transform-0-1.xslt");
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		
+	    javax.xml.transform.Source xmlSource = new javax.xml.transform.stream.StreamSource(xmlFile);
+	    javax.xml.transform.Source xsltSource = new javax.xml.transform.stream.StreamSource(xsltFile);
+	    javax.xml.transform.Result result = new javax.xml.transform.stream.StreamResult(os);
+	    
+	    javax.xml.transform.Transformer trans = tFactory.newTransformer(xsltSource);
+	    trans.transform(xmlSource, result);
+	    os.close();
+	
+	    return new ByteArrayInputStream(os.toByteArray());
 	}
 }

@@ -223,8 +223,6 @@ public interface Domain {
 	 */
 	public void removeListener(DomainListener listener);
 
-	public void clearDomain();
-
 	/**
 	 * Return whether any entities depend on this entity.
 	 * @param entity
