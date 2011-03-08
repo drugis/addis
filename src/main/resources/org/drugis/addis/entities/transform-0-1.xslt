@@ -141,18 +141,18 @@
 									<xsl:choose>
 										<xsl:when test="@date">
 											<xsl:variable name="parsed" select="fn:replace(@date,'([0-9]+) ([A-Za-z]{3}) ([0-9]{4})', '$3-$2-$1')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Jan-(.*)', '$1-01-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Feb-(.*)', '$1-02-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Mar-(.*)', '$1-03-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Apr-(.*)', '$1-04-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-May-(.*)', '$1-05-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Jun-(.*)', '$1-06-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Jul-(.*)', '$1-07-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Aug-(.*)', '$1-08-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Sep-(.*)', '$1-09-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Oct-(.*)', '$1-10-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Nov-(.*)', '$1-11-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-Dec-(.*)', '$1-12-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Jj]an-(.*)', '$1-01-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Ff]eb-(.*)', '$1-02-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Mm]ar-(.*)', '$1-03-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Aa]pr-(.*)', '$1-04-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Mm]ay-(.*)', '$1-05-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Jj]un-(.*)', '$1-06-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Jj]ul-(.*)', '$1-07-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Aa]ug-(.*)', '$1-08-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Ss]ep-(.*)', '$1-09-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Oo]ct-(.*)', '$1-10-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Nn]ov-(.*)', '$1-11-$2')" />
+											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Dd]ec-(.*)', '$1-12-$2')" />
 											<xsl:value-of select="$parsed" />
 										</xsl:when>
 										<xsl:when test="@value">
@@ -252,11 +252,22 @@
 								<xsl:element name="studyOutcomeMeasure">
 									<xsl:variable name="id" select="outcomeMeasure/@ref"/>
 									<xsl:variable name="pcname" select="outcomeMeasure/@name"/>
-									<xsl:variable name="tmpname" select="(/addis-data/populationCharacteristics/categoricalCharacteristic[@name=$pcname] | 
+									<xsl:variable name="outcomeName" select="(/addis-data/populationCharacteristics/categoricalCharacteristic[@name=$pcname] |
+															/addis-data/populationCharacteristics/*[@id=$id] | 
 															/addis-data/adverseEvents/*[@id=$id] |
 															/addis-data/endpoints/*[@id=$id])/@name"/>
+									<xsl:variable name="typeName">
+										<xsl:choose>
+											<xsl:when test="outcomeMeasure/@class=&quot;categoricalCharacteristic&quot; or outcomeMeasure/@class=&quot;continuousCharacteristic&quot;">
+												<xsl:value-of select="&quot;popChar&quot;" />
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:value-of select="outcomeMeasure/@class" />
+											</xsl:otherwise>
+										</xsl:choose>
+									</xsl:variable>
 									<xsl:attribute name="id">
-										<xsl:value-of select="concat(outcomeMeasure/@class, '-', $tmpname)"/>
+										<xsl:value-of select="concat($typeName, '-', $outcomeName)"/>
 									</xsl:attribute>
 								</xsl:element>
 								<xsl:if test="arm/@ref">
@@ -474,25 +485,35 @@
 	<xsl:template name="studyOutcomeMeasure">
 		<xsl:element name="studyOutcomeMeasure">
 		<xsl:variable name="id" select="@ref"/>
-		<xsl:variable name="tmpname" select="/addis-data/endpoints/*[@id=$id]/@name | 
+		<xsl:variable name="outcomeName" select="/addis-data/endpoints/*[@id=$id]/@name | 
 								/addis-data/adverseEvents/*[@id=$id]/@name |
-								@name"/>
+								/addis-data/populationCharacteristics/*[@id=$id]/@name"/>
+		<xsl:variable name="typeName">
+			<xsl:choose>
+				<xsl:when test="name(..)=&quot;populationCharacteristics&quot;">
+					<xsl:value-of select="&quot;popChar&quot;" />
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="name()" />
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		<xsl:attribute name="id">
-			<xsl:value-of select="concat(name(), '-',$tmpname)"/>
+			<xsl:value-of select="concat($typeName, '-', $outcomeName)"/>
 		</xsl:attribute>
 
 		<xsl:choose>
-			<xsl:when  test="name(..)=&quot;populationCharacteristics&quot;">
+			<xsl:when test="name(..)=&quot;populationCharacteristics&quot;">
 				<xsl:element name="populationCharacteristic">
 					<xsl:attribute name="name">
-						<xsl:value-of select="$tmpname"/>
+						<xsl:value-of select="$outcomeName"/>
 					</xsl:attribute>
 				</xsl:element>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:element name="{name()}">
 					<xsl:attribute name="name">
-						<xsl:value-of select="$tmpname"/>
+						<xsl:value-of select="$outcomeName"/>
 					</xsl:attribute>
 				</xsl:element>
 			</xsl:otherwise>
