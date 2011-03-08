@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -1293,7 +1294,77 @@ public class JAXBConvertorTest {
 		assertEquals(data, JAXBConvertor.domainToAddisData(domain)); 
 	}
 	
-	private void sortBenefitRiskOutcomes(AddisData data) {
+	
+	public static void main(String[] args) {
+		try {
+			// read transformed XML
+			InputStream xmlStream = new FileInputStream(args[0]);
+			InputStream transformedXmlStream = getTransformed(xmlStream);
+			xmlStream.close();			
+			JAXBContext jaxb = JAXBContext.newInstance("org.drugis.addis.entities.data");
+			Unmarshaller unmarshaller = jaxb.createUnmarshaller();
+			AddisData data = (AddisData) unmarshaller.unmarshal(transformedXmlStream);
+
+			// read legacy XML
+			xmlStream = new FileInputStream(args[0]);
+			Domain domain = new DomainImpl((DomainData)fromXmlPreserveArmIds(xmlStream));
+			xmlStream.close();
+			
+			// do some trivial transformations to assure a certain order where the order doesn't matter
+			sortMeasurements(data);
+			sortAnalysisArms(data);
+			sortBenefitRiskOutcomes(data);
+			sortCategoricalMeasurementCategories(data);
+			AddisData dataFromDomain = JAXBConvertor.domainToAddisData(domain);
+			sortPopulationCharacteristics(dataFromDomain);
+			
+			// "data converted from domain from legacy XML" == "data read from transformed XML"
+			assertEquals(data, dataFromDomain);
+
+			// "domain converted from data from transformed XML" == "domain read from legacy XML"
+			Domain domainFromData = JAXBConvertor.addisDataToDomain(data);
+			assertDomainEquals(domain, domainFromData);
+
+			System.out.println("Congratulations! The Javalution and JAXB unmarshalling have identical results!");
+//			xmlStream = new FileInputStream(args[0]);
+//			PubMedDataBankRetriever.copyStream(transformedXmlStream, System.out);
+//			xmlStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static void sortCategoricalMeasurementCategories(AddisData data) {
+		for (org.drugis.addis.entities.data.Study s : data.getStudies().getStudy()) {
+			for (org.drugis.addis.entities.data.Measurement m : s.getMeasurements().getMeasurement()) {
+				if (m.getCategoricalMeasurement() != null) {
+					CategoricalVariable var = findVariable(data, s, m.getStudyOutcomeMeasure().getId());
+					Collections.sort(m.getCategoricalMeasurement().getCategory(), new CategoryMeasurementComparator(var));
+				}
+			}
+		}
+	}
+
+	private static CategoricalVariable findVariable(AddisData data, org.drugis.addis.entities.data.Study s, String id) {
+		String varName = null;
+		for (StudyOutcomeMeasure x : s.getStudyOutcomeMeasures().getStudyOutcomeMeasure()) {
+			if (x.getId().equals(id)) {
+				varName = x.getPopulationCharacteristic().getName();
+			}
+		}
+		for (OutcomeMeasure x : data.getPopulationCharacteristics().getPopulationCharacteristic()) {
+			if (x.getName().equals(varName)) {
+				return x.getCategorical();
+			}
+		}
+		return null;
+	}
+
+	private static void sortPopulationCharacteristics(AddisData data) {
+		Collections.sort(data.getPopulationCharacteristics().getPopulationCharacteristic(), new PopCharComparator());
+	}
+
+	private static void sortBenefitRiskOutcomes(AddisData data) {
 		for(Object obj : data.getBenefitRiskAnalyses().getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis()) {
 			if (obj instanceof org.drugis.addis.entities.data.StudyBenefitRiskAnalysis) {
 				org.drugis.addis.entities.data.StudyBenefitRiskAnalysis sbr = (org.drugis.addis.entities.data.StudyBenefitRiskAnalysis) obj;
@@ -1303,7 +1374,7 @@ public class JAXBConvertorTest {
 		}
 	}
 
-	private void sortAnalysisArms(AddisData data) {
+	private static void sortAnalysisArms(AddisData data) {
 		for(org.drugis.addis.entities.data.MetaAnalysis ma : data.getMetaAnalyses().getPairwiseMetaAnalysisOrNetworkMetaAnalysis()) {
 			List<Alternative> alternatives = null;
 			if (ma instanceof org.drugis.addis.entities.data.PairwiseMetaAnalysis) {
@@ -1321,9 +1392,41 @@ public class JAXBConvertorTest {
 		}
 	}
 
-	private void sortMeasurements(AddisData data) {
+	private static void sortMeasurements(AddisData data) {
 		for(org.drugis.addis.entities.data.Study s : data.getStudies().getStudy()) {
 			Collections.sort(s.getMeasurements().getMeasurement(), new MeasurementComparator(s));
+		}
+	}
+	
+	public static class PopCharComparator implements Comparator<org.drugis.addis.entities.data.OutcomeMeasure> {
+		public int compare(OutcomeMeasure o1, OutcomeMeasure o2) {
+			if (scoreType(o1) != scoreType(o2)) {
+				return scoreType(o1) - scoreType(o2);
+			}
+			return o1.getName().compareTo(o2.getName());
+		}
+
+		private int scoreType(OutcomeMeasure o1) {
+			if (o1.getContinuous() != null) {
+				return 1;
+			} else if (o1.getRate() != null) {
+				return 2;
+			} else if (o1.getCategorical() != null) {
+				return 3;
+			}
+			return 0;
+		}
+	}
+	
+	public static class CategoryMeasurementComparator implements Comparator<CategoryMeasurement> {
+		private final CategoricalVariable d_var;
+
+		public CategoryMeasurementComparator(CategoricalVariable var) {
+			d_var = var;
+		}
+
+		public int compare(CategoryMeasurement o1, CategoryMeasurement o2) {
+			return d_var.getCategory().indexOf(o1.getName()) - d_var.getCategory().indexOf(o2.getName());
 		}
 	}
 	
@@ -1357,6 +1460,12 @@ public class JAXBConvertorTest {
 			int omId2 = findOmIndex(o2.getStudyOutcomeMeasure().getId());
 			if (omId1 != omId2) {
 				return omId1 - omId2;
+			}
+			if (o1.getArm() == null) {
+				return o2.getArm() == null ? 0 : 1;
+			}
+			if (o2.getArm() == null) {
+				return -1;
 			}
 			return o1.getArm().getId().compareTo(o2.getArm().getId());
 		}
@@ -1394,9 +1503,13 @@ public class JAXBConvertorTest {
 	}
 	
 	private static InputStream getTransformed() throws TransformerException, IOException {
+		return getTransformed(JAXBConvertorTest.class.getResourceAsStream("../defaultData.xml"));
+	}
+
+	private static InputStream getTransformed(InputStream xmlFile)
+	throws TransformerException, IOException {
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
 		TransformerFactory tFactory = TransformerFactory.newInstance(); 
-		InputStream xmlFile = JAXBConvertorTest.class.getResourceAsStream("../defaultData.xml");
 		InputStream xsltFile = JAXBConvertorTest.class.getResourceAsStream("../entities/transform-0-1.xslt");
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		
