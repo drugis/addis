@@ -1272,7 +1272,7 @@ public class JAXBConvertorTest {
 		Domain importedDomain = new DomainImpl(importedDomainData);
 		
 		AddisData data = (AddisData) d_unmarshaller.unmarshal(transformedXmlStream);
-		Domain domainData = JAXBConvertor.addisDataToDomain(data);
+		Domain domainData = JAXBConvertor.convertAddisDataToDomain(data);
 		assertDomainEquals(importedDomain, domainData);
 	}
 	
@@ -1288,7 +1288,7 @@ public class JAXBConvertorTest {
 		sortMeasurements(data);
 		sortAnalysisArms(data);
 		sortBenefitRiskOutcomes(data);
-		assertEquals(data, JAXBConvertor.domainToAddisData(domain)); 
+		assertEquals(data, JAXBConvertor.convertDomainToAddisData(domain)); 
 	}
 	
 	
@@ -1312,14 +1312,14 @@ public class JAXBConvertorTest {
 			sortAnalysisArms(data);
 			sortBenefitRiskOutcomes(data);
 			sortCategoricalMeasurementCategories(data);
-			AddisData dataFromDomain = JAXBConvertor.domainToAddisData(domain);
+			AddisData dataFromDomain = JAXBConvertor.convertDomainToAddisData(domain);
 			sortPopulationCharacteristics(dataFromDomain);
 			
 			// "data converted from domain from legacy XML" == "data read from transformed XML"
 			assertEquals(data, dataFromDomain);
 
 			// "domain converted from data from transformed XML" == "domain read from legacy XML"
-			Domain domainFromData = JAXBConvertor.addisDataToDomain(data);
+			Domain domainFromData = JAXBConvertor.convertAddisDataToDomain(data);
 			assertDomainEquals(domain, domainFromData);
 
 			System.out.println("Congratulations! The Javalution and JAXB unmarshalling have identical results!");
@@ -1492,7 +1492,8 @@ public class JAXBConvertorTest {
 		assertEquals(dwn, dwn2);
 	}
 
-	public static void writeTransformedXML() throws TransformerException, IOException {
+	@Test
+	public void writeTransformedXML() throws TransformerException, IOException {
 		InputStream transformedXmlStream = getTransformed();
 		FileOutputStream output = new FileOutputStream("transformedDefaultData.xml");
 		PubMedDataBankRetriever.copyStream(transformedXmlStream, output);

@@ -322,6 +322,7 @@ public class StudyTest {
 		testNote(s, a);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void testNote(Study s, Object obj) {
 		Note note = new Note(Source.CLINICALTRIALS);
 		note.setText(Long.toString(new Random().nextLong()));

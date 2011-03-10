@@ -110,7 +110,7 @@ public class JAXBConvertor {
 	
 	private JAXBConvertor() {}
 	
-	public static Domain addisDataToDomain(AddisData addisData) throws ConversionException {
+	public static Domain convertAddisDataToDomain(AddisData addisData) throws ConversionException {
 		Domain newDomain = new org.drugis.addis.entities.DomainImpl();
 		for(org.drugis.addis.entities.data.Indication i : addisData.getIndications().getIndication()) {
 			newDomain.addIndication(convertIndication(i));
@@ -145,7 +145,7 @@ public class JAXBConvertor {
 		return newDomain;	
 	}
 
-	public static AddisData domainToAddisData(Domain domain) throws ConversionException {
+	public static AddisData convertDomainToAddisData(Domain domain) throws ConversionException {
 		AddisData addisData = new AddisData();
 		addisData.setIndications(new Indications());
 		for (Indication i : domain.getIndications()) {

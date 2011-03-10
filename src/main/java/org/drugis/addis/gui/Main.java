@@ -28,12 +28,15 @@ import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -182,23 +185,79 @@ public class Main {
 	public Domain getDomain() {
 		return d_domainMgr.getDomain();
 	}
+	
+	private enum XmlFormatType {
+		LEGACY,
+		SCHEMA1,
+		SCHEMA_FUTURE
+	}
 
 	private void loadDomainFromXMLFile(String fileName) throws IOException,	ClassNotFoundException {
 		File f = new File(fileName);
 		if (f.exists() && f.isFile()) {
-			FileInputStream fis = new FileInputStream(f);
-			d_domainMgr.loadXMLDomain(fis);
+			BufferedInputStream fis = new BufferedInputStream(new FileInputStream(f));
+			switch (determineXmlType(fis)) {
+			case LEGACY:
+				d_domainMgr.loadLegacyXMLDomain(fis);
+				askToConvertToNew(fileName);
+				break;
+			case SCHEMA1:
+				d_domainMgr.loadXMLDomain(fis);
+				setFileNameAndReset(fileName);
+				break;
+			case SCHEMA_FUTURE:
+				throw new IllegalArgumentException("The XML file was created with a newer version of ADDIS. Please download the new version to read it.");
+			}
 		} else {
 			throw new FileNotFoundException(fileName + " not found");
 		}
 	}
 
-	private void loadDomainFromXMLResource(String fileName) throws IOException, ClassNotFoundException {
-		InputStream fis = Main.class.getResourceAsStream("/org/drugis/addis/" + fileName);
-		d_domainMgr.loadXMLDomain(fis);
+	private void askToConvertToNew(String fileName) {
+		int response = JOptionPane.showConfirmDialog(d_window, 
+				"The data format for ADDIS has changed.\n\nWould you like to save this file in the new file format (.addis)?", 
+				"Save in new format?", JOptionPane.YES_NO_OPTION);
+		
+		if (response == JOptionPane.OK_OPTION) {
+			if(fileName.endsWith(".xml")) {
+				fileName = fileName.replace(".xml", ".addis");
+			} else {
+				fileName += ".addis"; 
+			}
+			saveDomainToFile(fileName);
+		} else {
+			setCurFilename(null);
+			setDisplayName(DISPLAY_NEW);
+			setDataChanged(true);
+		}
 	}
 
-	
+	private XmlFormatType determineXmlType(InputStream is) throws IOException {
+		is.mark(1024);
+		byte[] buffer = new byte[1024];
+		int bytesRead = is.read(buffer);
+		String str = new String(buffer, 0, bytesRead);
+		Pattern pattern = Pattern.compile("http://drugis.org/files/addis-([0-9]*).xsd");
+		Matcher matcher = pattern.matcher(str);
+		XmlFormatType type = null;
+		if (matcher.find()) {
+			if (matcher.group(1).equals("1")) {
+				type = XmlFormatType.SCHEMA1;
+			} else {
+				type = XmlFormatType.SCHEMA_FUTURE;
+			}
+		} else {
+			type = XmlFormatType.LEGACY;
+		}
+		is.reset();
+		return type;
+	}
+
+	private void loadDomainFromXMLResource(String fileName) throws IOException, ClassNotFoundException {
+		InputStream fis = Main.class.getResourceAsStream("/org/drugis/addis/" + fileName);
+		d_domainMgr.loadLegacyXMLDomain(fis);
+	}
+
 	void newFileActions() {
 		resetDomain();
 		newDomain();
@@ -227,14 +286,13 @@ public class Main {
 	}
 
 	public int fileLoadActions() {
-		FileLoadDialog d = new FileLoadDialog(d_window, "xml", "XML files") {
+		FileLoadDialog d = new FileLoadDialog(d_window, new String[] {"addis", "xml"}, new String[] {"ADDIS data files", "ADDIS legacy XML files"}) {
 			@Override
 			public void doAction(String path, String extension) {
 				try {
 					resetDomain();
 					loadDomainFromXMLFile(path);
 					showMainWindow();
-					setFileNameAndReset(path);
 				} catch (Exception e) {
 					throw new RuntimeException("Error loading data from " + path + ": " + e.getMessage(), e);
 				}

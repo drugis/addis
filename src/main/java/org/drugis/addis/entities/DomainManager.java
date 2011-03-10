@@ -26,13 +26,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.TransformerException;
 
 import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.util.JAXBConvertor;
+import org.drugis.addis.util.JAXBHandler;
 import org.drugis.addis.util.JAXBConvertor.ConversionException;
 
 
@@ -49,21 +48,31 @@ public class DomainManager {
 	}
 	
 	/**
-	 * Replace the Domain by a new instance loaded from a XML stream.
+	 * Replace the Domain by a new instance loaded from a XML stream (old format, .xml).
+	 * @param is Stream to read objects from.
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void loadLegacyXMLDomain(InputStream is) throws IOException {
+		try {
+			InputStream transformedXmlStream = JAXBConvertor.transformLegacyXML(is);
+			is.close();
+			loadXMLDomain(transformedXmlStream);
+		} catch (TransformerException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Replace the Domain by a new instance loaded from a XML stream (new format, .addis).
 	 * @param is Stream to read objects from.
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
 	public void loadXMLDomain(InputStream is) throws IOException {
 		try {
-			InputStream transformedXmlStream = JAXBConvertor.transformLegacyXML(is);
-			is.close();
-			JAXBContext jaxb = JAXBContext.newInstance("org.drugis.addis.entities.data");
-			Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-			AddisData data = (AddisData) unmarshaller.unmarshal(transformedXmlStream);
-			d_domain = (DomainImpl) JAXBConvertor.addisDataToDomain(data);
-		} catch (TransformerException e) {
-			throw new RuntimeException(e);
+			AddisData data = JAXBHandler.unmarshallAddisData(is);
+			d_domain = (DomainImpl) JAXBConvertor.convertAddisDataToDomain(data);
 		} catch (JAXBException e) {
 			throw new RuntimeException(e);
 		} catch (ConversionException e) {
@@ -72,13 +81,29 @@ public class DomainManager {
 	}
 	
 	/**
-	 * Save the Domain by a new instance loaded from a XML stream.
+	 * Save the domain to an XML stream (old format, .xml)
 	 * @param os Stream to write objects to.
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public void saveXMLDomain(OutputStream os)
-	throws IOException {
+	@Deprecated
+	public void saveLegacyXMLDomain(OutputStream os) throws IOException {
 		d_domain.saveXMLDomainData(os);
+	}
+
+	/**
+	 * Save the domain to an XML stream (new format, .xml)
+	 * @param os Stream to write objects to.
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void saveXMLDomain(OutputStream os) throws IOException {
+		try {
+			JAXBHandler.marshallAddisData(JAXBConvertor.convertDomainToAddisData(d_domain), os);
+		} catch (JAXBException e) {
+			throw new RuntimeException(e);
+		} catch (ConversionException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
