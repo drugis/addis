@@ -416,7 +416,7 @@ public class AddisWindow extends JFrame {
 			
 			public void actionPerformed(ActionEvent e) {
 				if (d_main.getCurFilename() == null) {				
-					new MainFileSaveDialog(AddisWindow.this, "xml", "XML files");
+					new MainFileSaveDialog(AddisWindow.this, "addis", "ADDIS data files");
 				} else {
 					d_main.saveDomainToFile(d_main.getCurFilename());
 				}
@@ -438,7 +438,7 @@ public class AddisWindow extends JFrame {
 
 		saveItem.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
-				new MainFileSaveDialog(AddisWindow.this, "xml", "XML files");
+				new MainFileSaveDialog(AddisWindow.this, "addis", "ADDIS data files");
 			}
 		});
 		return saveItem;
