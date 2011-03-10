@@ -22,7 +22,7 @@
 
 package org.drugis.addis.gui;
 
-import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -36,6 +36,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
 
 import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
@@ -136,7 +137,7 @@ public class WelcomeDialog extends JDialog { // FIXME: should be JFrame
 		JButton button = new JButton(text, ImageLoader.getIcon(icon));
 		button.setPreferredSize(new Dimension(BUTTON_WIDTH, COMP_HEIGHT));
 		button.setHorizontalAlignment(SwingConstants.LEFT);
-		button.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+		button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		button.addActionListener(action);
 		return button;
 	}
@@ -145,8 +146,8 @@ public class WelcomeDialog extends JDialog { // FIXME: should be JFrame
 		JTextPane pane = new JTextPane();
 		pane.setText(txt);
 		pane.setPreferredSize(new Dimension(TEXT_WIDTH, COMP_HEIGHT));
-		pane.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
-		pane.setBackground(Color.WHITE);
+		pane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		pane.setEditable(false);
 		return pane;
 	}
 
