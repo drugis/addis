@@ -1235,7 +1235,7 @@ public class JAXBConvertor {
 	throws TransformerException, IOException {
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
 		TransformerFactory tFactory = TransformerFactory.newInstance(); 
-		InputStream xsltFile = JAXBConvertor.class.getResourceAsStream("../entities/transform-0-1.xslt");
+		InputStream xsltFile = JAXBConvertor.class.getResourceAsStream("transform-0-1.xslt");
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		
 	    javax.xml.transform.Source xmlSource = new javax.xml.transform.stream.StreamSource(xmlFile);
