@@ -37,6 +37,8 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.PopulationCharacteristic;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.StudyListPresentation;
@@ -64,17 +66,19 @@ public class GUIFactory {
 		return button;
 	}
 
-	public static JComponent createOutcomeMeasureLabelWithIcon(OutcomeMeasure e) {
+	public static JComponent createOutcomeMeasureLabelWithIcon(Variable e) {
 		String fname = FileNames.ICON_STUDY;
 		if (e instanceof Endpoint) {
 			fname = FileNames.ICON_ENDPOINT;
-		} if (e instanceof AdverseEvent) {
+		} else if (e instanceof AdverseEvent) {
 			fname = FileNames.ICON_ADVERSE_EVENT;
+		} else if (e instanceof PopulationCharacteristic) {
+			fname = FileNames.ICON_POPULATION_CHAR;
 		}
 		Icon icon = ImageLoader.getIcon(fname);
 		JLabel textLabel = new JLabel(e.getName(), icon, JLabel.CENTER);
 		
-		Bindings.bind(textLabel, "text", new HTMLWrappingModel(new PresentationModel<OutcomeMeasure>(e).getModel(OutcomeMeasure.PROPERTY_NAME)));
+		Bindings.bind(textLabel, "text", new HTMLWrappingModel(new PresentationModel<Variable>(e).getModel(OutcomeMeasure.PROPERTY_NAME)));
 		return textLabel;
 	}
 

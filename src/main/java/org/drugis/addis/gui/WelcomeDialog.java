@@ -117,7 +117,7 @@ public class WelcomeDialog extends JDialog { // FIXME: should be JFrame
 				createLabel("Load an existing ADDIS data file stored on your computer."),
 				cc.xy(3, 5));
 		
-		builder.add(createButton("New dataset", FileNames.ICON_NEWFILE, newAction), cc.xy(1, 7));
+		builder.add(createButton("New dataset", FileNames.ICON_FILE_NEW, newAction), cc.xy(1, 7));
 		builder.add(
 				createLabel("Start with an empty file to build up your own data and analyses."),
 				cc.xy(3, 7));

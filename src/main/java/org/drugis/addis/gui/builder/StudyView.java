@@ -24,19 +24,17 @@ package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.AddisWindow;
-import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.components.AddisTabbedPane;
-import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.common.gui.ViewBuilder;
@@ -46,18 +44,18 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class StudyView implements ViewBuilder {
-	private StudyPresentation d_model;
 	private StudyCharacteristicsView d_charView;
 	private StudyOutcomeMeasuresView d_epView;
 	private StudyOutcomeMeasuresView d_adeView;	
 	private StudyArmsView d_armsView;
+	private StudyOutcomeMeasuresView d_pcView;
 	
 	public StudyView(StudyPresentation model, Domain domain, JFrame parent, PresentationModelFactory pmf) {
-		d_model = model;
-		d_charView = new StudyCharacteristicsView(model);
-		d_epView = new StudyOutcomeMeasuresView(model, parent, pmf, true);
-		d_adeView = new StudyOutcomeMeasuresView(model, parent, pmf, false);		
-		d_armsView = new StudyArmsView(model, pmf);			
+		d_charView = new StudyCharacteristicsView(parent, model);
+		d_epView = new StudyOutcomeMeasuresView(model, parent, pmf, Endpoint.class);
+		d_adeView = new StudyOutcomeMeasuresView(model, parent, pmf, AdverseEvent.class);
+		d_pcView = new StudyOutcomeMeasuresView(model, parent, pmf, PopulationCharacteristic.class);
+		d_armsView = new StudyArmsView(parent, model, pmf);			
 	}
 	
 	public StudyView(StudyPresentation model, Domain domain, AddisWindow main) {
@@ -115,11 +113,7 @@ public class StudyView implements ViewBuilder {
 	}
 
 	private JComponent buildPopulationPart() {
-		if (d_model.getPopulationCharacteristicCount() < 1) {
-			return new JLabel("No Population Characteristics");
-		}
-		MeasurementTable measurementTable = new MeasurementTable(d_model.getPopulationCharTableModel());
-		return AuxComponentFactory.createUnscrollableTablePanel(measurementTable);
+		return d_pcView.buildPanel();
 	}
 
 	private JPanel buildArmsPart() {

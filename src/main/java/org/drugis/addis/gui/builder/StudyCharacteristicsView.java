@@ -23,14 +23,17 @@
 package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JScrollPane;
 
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Characteristic;
+import org.drugis.addis.entities.DerivedStudyCharacteristic;
+import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristics;
 import org.drugis.addis.gui.AuxComponentFactory;
-import org.drugis.addis.gui.GUIFactory;
+import org.drugis.addis.gui.NoteViewButton;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -42,40 +45,46 @@ import com.jgoodies.forms.layout.FormLayout;
 public class StudyCharacteristicsView implements ViewBuilder {
 	
 	private StudyPresentation d_model;
-	public StudyCharacteristicsView(StudyPresentation model) {
+	private JFrame d_parent;
+	public StudyCharacteristicsView(JFrame parent, StudyPresentation model) {
+		d_parent = parent;
 		d_model = model;
 	}
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, fill:0:grow",
+				"right:pref, 3dlu, left:pref, 3dlu, fill:0:grow",
 				"p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 		
-		int fullWidth = 3;
+		int fullWidth = 5;
 
 		builder.addLabel("ID:", cc.xy(1, 1));
 		JLabel idLabel = AuxComponentFactory.createAutoWrapLabel(d_model.getModel(Study.PROPERTY_ID));
-		idLabel.setToolTipText(GUIFactory.createToolTip(d_model.getNote(Study.PROPERTY_ID)));
+		builder.add(new NoteViewButton(d_parent, "Study ID", d_model.getBean().getStudyIdWithNotes().getNotes()), cc.xy(3, 1));
 		builder.add(idLabel,
-				cc.xyw(3, 1, fullWidth - 2));
+				cc.xyw(5, 1, fullWidth - 4));
 		
 		int row = 3;
 		for (Characteristic c : StudyCharacteristics.values()) {
 			LayoutUtil.addRow(layout);
 			builder.addLabel(c.getDescription() + ":", cc.xy(1, row, "right, top"));
-
+			
+			if (c instanceof BasicStudyCharacteristic || c == DerivedStudyCharacteristic.INDICATION) {
+				ObjectWithNotes<?> characteristicWithNotes = null;
+				if (c instanceof BasicStudyCharacteristic) {
+					characteristicWithNotes = d_model.getBean().getCharacteristicWithNotes(c);
+				} else {
+					characteristicWithNotes = d_model.getBean().getIndicationWithNotes();
+				}
+				builder.add(new NoteViewButton(d_parent, c.getDescription(), characteristicWithNotes == null ? null : characteristicWithNotes.getNotes()),
+						cc.xy(3, row, "left, top"));
+			}
+			
 			JComponent charView = 
 				AuxComponentFactory.createCharacteristicView(d_model.getCharacteristicModel(c));
-			if (charView instanceof JScrollPane) {
-				JScrollPane pane = (JScrollPane)charView;
-				((JComponent)pane.getViewport().getView()).setToolTipText(
-						GUIFactory.createToolTip(d_model.getNote(c)));
-			} else {
-				charView.setToolTipText(GUIFactory.createToolTip(d_model.getNote(c)));
-			}
-			builder.add(charView, cc.xyw(3, row, fullWidth - 2));
+			builder.add(charView, cc.xyw(5, row, fullWidth - 4));
 
 			row += 2;
 		}

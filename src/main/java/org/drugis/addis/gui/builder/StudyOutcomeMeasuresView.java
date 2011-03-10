@@ -33,11 +33,16 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.apache.commons.lang.StringUtils;
+import org.drugis.addis.entities.AdverseEvent;
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
+import org.drugis.addis.gui.NoteViewButton;
 import org.drugis.addis.gui.RelativeEffectTableDialog;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.presentation.MeanDifferenceTableModel;
@@ -62,59 +67,71 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 	private StudyPresentation d_model;
 	private PresentationModelFactory d_pmf;
 	private JFrame d_mainWindow;
-	private boolean d_isEndpoints;
+	private Class<? extends Variable> d_type;
 
-	public StudyOutcomeMeasuresView(StudyPresentation model, AddisWindow main, boolean endpoints) {
-		this(model, main, main.getPresentationModelFactory(), endpoints);
+	public StudyOutcomeMeasuresView(StudyPresentation model, AddisWindow main, Class<? extends Variable> type) {
+		this(model, main, main.getPresentationModelFactory(), type);
 	}
 	
 	public StudyOutcomeMeasuresView(StudyPresentation model, JFrame parent, 
-			PresentationModelFactory pmf, boolean endpoints) {
+			PresentationModelFactory pmf, Class<? extends Variable> type) {
 		d_model = model;
 		d_pmf = pmf;
 		d_mainWindow = parent;
-		d_isEndpoints = endpoints;		
+		d_type = type;		
 	}
 
 	public JComponent buildPanel() {
 		FormLayout layout = new FormLayout(
-				"left:0:grow, 3dlu, left:pref, 3dlu, left:pref", 
+				"left:pref, 3dlu, left:0:grow, 3dlu, left:pref, 3dlu, left:pref", 
 				"p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 	
-		List<OutcomeMeasure> outcomeMeasures = d_isEndpoints ? d_model.getEndpoints() : d_model.getAdverseEvents();
+		List<? extends StudyOutcomeMeasure<?>> outcomeMeasures = null;
+		if (d_type == Endpoint.class) {
+			outcomeMeasures = d_model.getBean().getStudyEndpoints();
+		} else if (d_type == AdverseEvent.class) {
+			 outcomeMeasures = d_model.getBean().getStudyAdverseEvents();
+		} else if (d_type == PopulationCharacteristic.class) {
+			outcomeMeasures = d_model.getBean().getStudyPopulationCharacteristics();
+		}
 		if (outcomeMeasures.isEmpty()) {
-			builder.addLabel("No " + (d_isEndpoints ? "Endpoints" : "Adverse Events"), cc.xy(1, 1));
+			builder.addLabel("No " + d_type.getSimpleName(), cc.xy(1, 1));
 		} else {
 			int row = 1;
-			for (OutcomeMeasure om : outcomeMeasures) {
-				JComponent outcomeMeasureLabelWithIcon = GUIFactory.createOutcomeMeasureLabelWithIcon(om);
+			for (StudyOutcomeMeasure<?> som : outcomeMeasures) {
+				Variable var = (Variable) som.getValue();
+				NoteViewButton omNotes = new NoteViewButton(d_mainWindow, var.getName(), som.getNotes());
+				builder.add(omNotes, cc.xy(1, row));
 				
-				outcomeMeasureLabelWithIcon.setToolTipText(GUIFactory.createToolTip(
-						d_model.getBean().getNote(om)));
-				builder.add( outcomeMeasureLabelWithIcon, cc.xy(1, row));
+				builder.add( GUIFactory.createOutcomeMeasureLabelWithIcon(var), cc.xy(3, row));
 				
 				JPanel panel = new JPanel(new FlowLayout());
-				if (om.getType().equals(Variable.Type.RATE)) {
-					panel.add(createOddsRatioButton(om));
-					panel.add(createRiskRatioButton(om));
-					panel.add(createRiskDifferenceButton(om));
-				} else if (om.getType().equals(Variable.Type.CONTINUOUS)) {
-					panel.add(createWMDButton(om));
-					panel.add(createSMDButton(om));
+				if (var instanceof OutcomeMeasure) {
+					OutcomeMeasure om = (OutcomeMeasure) var;
+					if (om.getType().equals(Variable.Type.RATE)) {
+						panel.add(createOddsRatioButton(om));
+						panel.add(createRiskRatioButton(om));
+						panel.add(createRiskDifferenceButton(om));
+					} else if (om.getType().equals(Variable.Type.CONTINUOUS)) {
+						panel.add(createWMDButton(om));
+						panel.add(createSMDButton(om));
+					}
 				}
-				builder.add(panel, cc.xy(3, row));
+				builder.add(panel, cc.xy(5, row));
 				row += 2;
 
 				LayoutUtil.addRow(layout);
 			}
 		
 			EnhancedTable measurementTable = null;
-			if (d_isEndpoints) {
+			if (d_type == Endpoint.class) {
 				measurementTable = new EnhancedTable(d_model.getEndpointTableModel());
-			} else {
+			} else if (d_type == AdverseEvent.class) {
 				measurementTable = new EnhancedTable(d_model.getAdverseEventTableModel());
+			} else if (d_type == PopulationCharacteristic.class) {
+				measurementTable = new EnhancedTable(d_model.getPopulationCharTableModel());
 			}
 			measurementTable.setSortingStatus(0, TableSorter.ASCENDING);
 

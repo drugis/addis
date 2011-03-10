@@ -38,7 +38,6 @@ import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FlexibleDose;
-import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
@@ -201,10 +200,6 @@ public class StudyPresentation extends PresentationModel<Study> {
 		}
 		return s;
 	}	
-	
-	public String getNoteText(Object key) {
-		return getNote(key).getText();
-	}
 
 	public PopulationCharTableModel getPopulationCharTableModel() {
 		return new PopulationCharTableModel(getBean(), d_pmf);
@@ -216,10 +211,6 @@ public class StudyPresentation extends PresentationModel<Study> {
 	
 	public TableModel getAdverseEventTableModel() {
 		return new StudyMeasurementTableModel(getBean(), d_pmf, AdverseEvent.class);
-	}
-
-	public Note getNote(Object key) {
-		return getBean().getNote(key);
 	}
 
 	public void initializeDefaultMeasurements() {

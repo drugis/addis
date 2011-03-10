@@ -624,7 +624,7 @@ public class AddisWindow extends JFrame {
 
 	private JMenuItem createNewItem() {
 		JMenuItem newItem = new JMenuItem("New", ImageLoader
-				.getIcon(FileNames.ICON_NEWFILE));
+				.getIcon(FileNames.ICON_FILE_NEW));
 		newItem.setMnemonic('n');
 		newItem.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {

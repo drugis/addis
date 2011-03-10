@@ -46,7 +46,7 @@ public class FileNames {
 	public static final String ICON_SAVEFILE = "savefile.gif";
 	public static final String ICON_SAVEFILEAS = "saveas.gif";	
 	public static final String ICON_OPENFILE = "openfile.gif";
-	public static final String ICON_NEWFILE = "newfile.gif";
+	public static final String ICON_FILE_NEW = "newfile.gif";
 	public static final String ICON_DOCTOR = "legodoctor.png";
 	public static final String ICON_PILLS = "handandpills.png";
 	public static final String ICON_TIP = "tip.gif";
@@ -56,4 +56,6 @@ public class FileNames {
 	public static final String IMAGE_HEADER = "header.png";
 	public static final String IMAGE_FOOTER = "footer.png";
 	public static final String ICON_RUN = "run.gif";
+	public static final String ICON_NOTE = "note.gif";
+	public static final String ICON_NOTE_NEW = "note_new.gif";
 }

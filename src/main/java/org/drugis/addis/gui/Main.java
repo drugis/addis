@@ -168,7 +168,7 @@ public class Main {
 
 	private void initializeDomain() {
 		d_domainMgr = new DomainManager();
-		d_domainChanged = new DomainChangedModel(getDomain(), false);
+		attachDomainChangedModel();
 	}
 	
 	public void loadExampleDomain() {
@@ -199,10 +199,12 @@ public class Main {
 			switch (determineXmlType(fis)) {
 			case LEGACY:
 				d_domainMgr.loadLegacyXMLDomain(fis);
+				attachDomainChangedModel();
 				askToConvertToNew(fileName);
 				break;
 			case SCHEMA1:
 				d_domainMgr.loadXMLDomain(fis);
+				attachDomainChangedModel();
 				setFileNameAndReset(fileName);
 				break;
 			case SCHEMA_FUTURE:
@@ -211,6 +213,10 @@ public class Main {
 		} else {
 			throw new FileNotFoundException(fileName + " not found");
 		}
+	}
+
+	private void attachDomainChangedModel() {
+		d_domainChanged = new DomainChangedModel(getDomain(), false);
 	}
 
 	private void askToConvertToNew(String fileName) {
@@ -225,10 +231,10 @@ public class Main {
 				fileName += ".addis"; 
 			}
 			saveDomainToFile(fileName);
+			setFileNameAndReset(fileName);
 		} else {
 			setCurFilename(null);
 			setDisplayName(DISPLAY_NEW);
-			setDataChanged(true);
 		}
 	}
 
@@ -256,6 +262,7 @@ public class Main {
 	private void loadDomainFromXMLResource(String fileName) throws IOException, ClassNotFoundException {
 		InputStream fis = Main.class.getResourceAsStream("/org/drugis/addis/" + fileName);
 		d_domainMgr.loadLegacyXMLDomain(fis);
+		attachDomainChangedModel();
 	}
 
 	void newFileActions() {
@@ -273,7 +280,7 @@ public class Main {
 	private void resetDomain() {
 		ThreadHandler.getInstance().clear();	// Terminate all running threads.
 		d_domainMgr.resetDomain(); // Create an empty domain.
-		d_domainChanged = new DomainChangedModel(getDomain(), false);
+		attachDomainChangedModel();
 		disposeMainWindow();
 	}
 
