@@ -17,7 +17,8 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
-1.5: User interface improvements, risk-based sampling in MetaBR.
+1.5: User interface improvements, risk-based sampling in MetaBR, new
+   schema-based XML format.
 
 1.4: Lynd & O'Brien benefit-risk analysis, corrected meta-analysis,
    network meta-analysis enhancements (assessment of convergence,
