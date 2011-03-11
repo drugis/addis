@@ -536,7 +536,7 @@ public class JAXBConvertorTest {
 		om.setNotes(new Notes());
 		om.setEndpoint(nameReference(ep.getName()));
 		
-		assertEntityEquals(ep, JAXBConvertor.convertStudyOutcomeMeasure(om, domain).getValue());
+		assertEntityEquals(ep, (Endpoint)JAXBConvertor.convertStudyOutcomeMeasure(om, domain).getValue());
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(new Study.StudyOutcomeMeasure<Variable>(ep)), om);
 		
 		AdverseEvent ade = ExampleData.buildAdverseEventDiarrhea();
@@ -544,7 +544,7 @@ public class JAXBConvertorTest {
 		om.setEndpoint(null);
 		om.setAdverseEvent(nameReference(ade.getName()));
 		
-		assertEntityEquals(ade, JAXBConvertor.convertStudyOutcomeMeasure(om, domain).getValue());
+		assertEntityEquals(ade, (AdverseEvent)JAXBConvertor.convertStudyOutcomeMeasure(om, domain).getValue());
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(new Study.StudyOutcomeMeasure<Variable>(ade)), om);
 		
 		PopulationCharacteristic pc = ExampleData.buildGenderVariable();
@@ -552,7 +552,7 @@ public class JAXBConvertorTest {
 		om.setAdverseEvent(null);
 		om.setPopulationCharacteristic(nameReference(pc.getName()));
 		
-		assertEntityEquals(pc, JAXBConvertor.convertStudyOutcomeMeasure(om, domain).getValue());
+		assertEntityEquals(pc, (PopulationCharacteristic)JAXBConvertor.convertStudyOutcomeMeasure(om, domain).getValue());
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(new Study.StudyOutcomeMeasure<Variable>(pc)), om);
 	}
 	
