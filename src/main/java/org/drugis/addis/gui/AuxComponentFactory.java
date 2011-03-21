@@ -92,8 +92,10 @@ public class AuxComponentFactory {
 		area.setEditable(editable);
 		area.setLineWrap(true);
 		area.setWrapStyleWord(true);
-		if (!editable)
+		if (!editable) {
 			area.setUI(new javax.swing.plaf.basic.BasicTextAreaUI());
+		}
+		
 		JScrollPane pane = new JScrollPane(area);
 		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		pane.setPreferredSize(new Dimension(
