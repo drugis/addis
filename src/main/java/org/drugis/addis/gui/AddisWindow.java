@@ -615,11 +615,6 @@ public class AddisWindow extends JFrame {
 		WizardFrameCloser.bind(wizard, dialog);
 		Main.bindPrintScreen(wizard);
 		dialog.setVisible(true);
-
-		TreePath path = d_domainTreeModel.getPathTo(study);
-		if (path != null) {
-			d_leftPanelTree.setSelectionPath(path);
-		}
 	}
 
 	private JMenuItem createNewItem() {

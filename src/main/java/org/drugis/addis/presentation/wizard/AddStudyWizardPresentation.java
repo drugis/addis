@@ -421,4 +421,8 @@ public class AddStudyWizardPresentation {
 	public boolean isEditing() {
 		return (d_origStudy != null);
 	}
+
+	public Study getOldStudy() {
+		return d_origStudy;
+	}
 }

@@ -93,8 +93,8 @@ import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.AbstractWizardModel;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
-import org.pietschy.wizard.WizardAdapter;
 import org.pietschy.wizard.WizardEvent;
+import org.pietschy.wizard.WizardListener;
 import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -115,10 +115,13 @@ public class AddStudyWizard extends Wizard {
 		super(buildModel(pm, mainWindow, dialog));
 		
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
-		addWizardListener(new WizardAdapter() {
-			@Override
+		addWizardListener(new WizardListener() {
 			public void wizardClosed(WizardEvent e) {
 				mainWindow.leftTreeFocus(pm.saveStudy());
+			}
+			
+			public void wizardCancelled(WizardEvent e) {
+				mainWindow.leftTreeFocus(pm.getOldStudy());
 			}
 		});
 		setOverviewVisible(false);
