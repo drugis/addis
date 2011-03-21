@@ -30,6 +30,7 @@ import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
+import org.drugis.addis.entities.RatePopulationCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Variable.Type;
@@ -60,8 +61,12 @@ public class VariablePresentation extends PresentationModel<Variable> implements
 			if (newValue.equals(Type.CATEGORICAL) && (bean instanceof PopulationCharacteristic))
 				setBean(new CategoricalPopulationCharacteristic());
 			
-			else if (!newValue.equals(Type.CATEGORICAL) && (bean instanceof PopulationCharacteristic)) {
+			else if (newValue.equals(Type.CONTINUOUS) && (bean instanceof PopulationCharacteristic)) {
 				ContinuousPopulationCharacteristic newBean = new ContinuousPopulationCharacteristic();
+				newBean.setType((Type) newValue);
+				setBean(newBean);
+			} else if (newValue.equals(Type.RATE) && (bean instanceof PopulationCharacteristic)) {
+				RatePopulationCharacteristic newBean = new RatePopulationCharacteristic();
 				newBean.setType((Type) newValue);
 				setBean(newBean);
 			}

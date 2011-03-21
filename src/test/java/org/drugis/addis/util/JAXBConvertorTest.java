@@ -85,6 +85,7 @@ import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
+import org.drugis.addis.entities.RatePopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
@@ -284,16 +285,20 @@ public class JAXBConvertorTest {
 		assertEquals(m, JAXBConvertor.convertPopulationCharacteristic(p));
 	}
 	
-	@Test(expected=ConversionException.class)
-	public void testConvertRatePopCharThrows() throws ConversionException {
+	@Test
+	public void testConvertRatePopChar() throws ConversionException {
+		String name = "Seizure";
+		String description = "Its bad hmmkay";
 		OutcomeMeasure m = new OutcomeMeasure();
-		m.setName("Seizure");
-		m.setDescription("Its bad hmmkay");
-		RateVariable value = new RateVariable();
-		value.setDirection(Direction.LOWER_IS_BETTER);
-		m.setRate(value);
+		m.setName(name);
+		m.setDescription(description);
+		m.setRate(new RateVariable());
 		
-		JAXBConvertor.convertPopulationCharacteristic(m);
+		RatePopulationCharacteristic p = new RatePopulationCharacteristic(name);
+		p.setDescription(description);
+		
+		assertEntityEquals(p, JAXBConvertor.convertPopulationCharacteristic(m));
+		assertEquals(m, JAXBConvertor.convertPopulationCharacteristic(p));
 	}
 	
 	@Test

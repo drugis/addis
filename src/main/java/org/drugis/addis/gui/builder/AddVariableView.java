@@ -100,6 +100,11 @@ public class AddVariableView implements ViewBuilder {
 				} else {
 					d_dynamicLabel.setText("Unit of Measurement: ");
 				}
+				if (d_type.getSelectedItem().equals(Type.RATE)) {
+					d_unitOfMeasurement.setEnabled(false);
+				} else {
+					d_unitOfMeasurement.setEnabled(true);
+				}
 			}
 		});
 		

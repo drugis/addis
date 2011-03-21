@@ -34,6 +34,7 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityCategory;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PopulationCharacteristic;
+import org.drugis.addis.entities.RatePopulationCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -65,6 +66,7 @@ public class CategoryKnowledgeFactory {
 		s_knowledge.put(PopulationCharacteristic.class, popcharKnowledge);
 		s_knowledge.put(CategoricalPopulationCharacteristic.class, popcharKnowledge);
 		s_knowledge.put(ContinuousPopulationCharacteristic.class, popcharKnowledge);
+		s_knowledge.put(RatePopulationCharacteristic.class, popcharKnowledge);
 	};
 	
 	public static CategoryKnowledge getCategoryKnowledge(EntityCategory category) {

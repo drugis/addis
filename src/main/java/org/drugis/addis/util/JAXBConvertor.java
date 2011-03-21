@@ -65,6 +65,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
+import org.drugis.addis.entities.RatePopulationCharacteristic;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
@@ -418,7 +419,12 @@ public class JAXBConvertor {
 
 	static Variable convertPopulationCharacteristic(org.drugis.addis.entities.data.OutcomeMeasure m) throws ConversionException {
 		if(m.getRate() != null) {
-			throw new ConversionException("Population Characteristics should not be rate");
+			RatePopulationCharacteristic ratePC =  new RatePopulationCharacteristic();
+			ratePC.setName(m.getName());
+			ratePC.setDescription(m.getDescription());
+			ratePC.setType(Type.RATE);
+			ratePC.setUnitOfMeasurement(Variable.UOM_DEFAULT_RATE);
+			return ratePC;
 		}
 		if(m.getContinuous() != null) {
 			ContinuousPopulationCharacteristic contPC = new ContinuousPopulationCharacteristic();
