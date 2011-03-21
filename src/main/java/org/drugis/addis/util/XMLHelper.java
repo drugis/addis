@@ -63,7 +63,7 @@ public class XMLHelper {
 	public static <T> T fromXml(String xml) throws XMLStreamException {
 		try {
 			ByteArrayInputStream is = new ByteArrayInputStream(xml.getBytes("UTF-8"));
-			return fromXml(is);
+			return XMLHelper.<T>fromXml(is);
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}

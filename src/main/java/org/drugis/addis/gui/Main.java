@@ -235,6 +235,7 @@ public class Main {
 		} else {
 			setCurFilename(null);
 			setDisplayName(DISPLAY_NEW);
+			setDataChanged(true);
 		}
 	}
 

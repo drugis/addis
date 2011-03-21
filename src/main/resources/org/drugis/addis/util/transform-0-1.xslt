@@ -396,7 +396,12 @@
 						<xsl:value-of select="@name"/>
 					</xsl:attribute>
 					<xsl:attribute name="analysisType">
-						<xsl:value-of select="@analysisType"/>
+						<xsl:choose>
+							<xsl:when test="@analysisType">
+								<xsl:value-of select="@analysisType"/>
+							</xsl:when>
+							<xsl:otherwise>SMAA</xsl:otherwise>
+						</xsl:choose>
 					</xsl:attribute>
 					<xsl:element name="indication">
 						<xsl:attribute name="name">
@@ -442,7 +447,12 @@
 						<xsl:value-of select="@name"/>
 					</xsl:attribute>
 					<xsl:attribute name="analysisType">
-						<xsl:value-of select="@analysisType"/>
+						<xsl:choose>
+							<xsl:when test="@analysisType">
+								<xsl:value-of select="@analysisType"/>
+							</xsl:when>
+							<xsl:otherwise>SMAA</xsl:otherwise>
+						</xsl:choose>
 					</xsl:attribute>
 					<xsl:element name="indication">
 						<xsl:attribute name="name">
