@@ -33,10 +33,8 @@ import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Source;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.pietschy.wizard.InvalidStateException;
 
@@ -156,19 +154,5 @@ public class AddStudyWizardPresentationTest {
 		d_wizard.getEndpointSelectModel().getSlot(0).setValue(d_domain.getEndpoints().first());
 		d_wizard.getIndicationModel().setValue(d_domain.getIndications().first());
 		d_wizard.saveStudy();
-	}
-	
-	@Test
-	@Ignore //FIXME: re-enable once notes are handled in a sane way.
-	public void testTransferNotes() throws MalformedURLException, IOException {
-		importStudy();
-		d_wizardImported.getIndicationModel().setValue(d_domain.getIndications().first());
-		d_wizardImported.getEndpointSelectModel().getSlot(0).setValue(d_domain.getEndpoints().first());
-		d_wizardImported.getEndpointSelectModel().getSlot(1).setValue(d_domain.getEndpoints().last());
-		d_wizardImported.saveStudy();
-		assertEquals("NCT00644527", d_wizardImported.getStudy().getNote(Study.PROPERTY_ID).getText());
-		assertTrue(d_wizardImported.getStudy().getNote(BasicStudyCharacteristic.TITLE).getText().contains("Rezeptive Musiktherapie Bei Depression"));
-		assertTrue(d_wizardImported.getStudy().getNote(d_wizardImported.getEndpointSelectModel().getSlot(0).getValue()).getText().contains("the Beck Depression Inventory (single weighted)"));
-		assertTrue(d_wizardImported.getStudy().getNote(d_wizardImported.getArmModel(3).getBean()).getText().contains("Each 50% of the subjects will be assigned randomly"));
 	}
 }

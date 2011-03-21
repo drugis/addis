@@ -7,7 +7,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -15,7 +14,6 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.gui.AuxComponentFactory;
-import org.drugis.addis.gui.wizard.AddStudyWizard;
 import org.drugis.addis.presentation.NotesModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
@@ -53,19 +51,7 @@ public class NotesView extends JPanel {
 		
 		int row = 1;
 		for (Note note : d_notes.getNotes()) {
-			String text = "";/*"<i>2010-01-01</i> "*/ 
-			switch (note.getSource()) {
-			case CLINICALTRIALS:
-				text += "<b>" + AddStudyWizard.DEFAULT_NOTETITLE + "</b><br/>";
-				break;
-			case MANUAL:
-				text += "<b>User Note:</b><br/>";
-			}
-			text += note.getText().replace("\n", "<br/>\n");
-			JComponent noteField = AuxComponentFactory.createHtmlField(text);
-			//noteField.se
-			builder.add(noteField, cc.xyw(1, row, 3));
-			
+			builder.add(AuxComponentFactory.createNoteView(note, d_editable), cc.xyw(1, row, 3));			
 			LayoutUtil.addRow(layout);
 			row += 2;
 		}

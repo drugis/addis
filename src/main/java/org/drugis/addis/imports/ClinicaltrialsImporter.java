@@ -107,7 +107,7 @@ public class ClinicaltrialsImporter {
 	
 	private static ObjectWithNotes<Object> objectWithNote(Object val, String note) {
 		ObjectWithNotes<Object> obj = new ObjectWithNotes<Object>(val);
-		obj.getNotes().add(new Note(Source.CLINICALTRIALS, note));
+		obj.getNotes().add(new Note(Source.CLINICALTRIALS, note != null ? note : "N/A"));
 		return obj;
 	}
 	

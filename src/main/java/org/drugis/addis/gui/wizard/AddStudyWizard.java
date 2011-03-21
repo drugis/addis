@@ -70,6 +70,7 @@ import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
@@ -147,7 +148,17 @@ public class AddStudyWizard extends Wizard {
 		return wizardModel;
 	}
 	
-	private static NotesView buildNotesEditor(ObjectWithNotes<?> obj) {
+	// FIXME: should probably be in presentation
+	private static ObjectWithNotes<?> getCharWithNotes(Study newStudy, BasicStudyCharacteristic schar) {
+		ObjectWithNotes<?> charWithNotes = newStudy.getCharacteristicWithNotes(schar);
+		if (charWithNotes == null) {
+			newStudy.setCharacteristic(schar, null);
+			charWithNotes = newStudy.getCharacteristicWithNotes(schar);
+		}
+		return charWithNotes;
+	}
+	
+	private static NotesView buildNotesEditor(TypeWithNotes obj) {
 		return new NotesView(new NotesModel(obj.getNotes()), true);
 	}
 	
@@ -385,9 +396,9 @@ public class AddStudyWizard extends Wizard {
 				builder.add(sizeField, cc.xy(13, row));
 				
 				// Show the notes from the imported study for the drug
-				row += AuxComponentFactory.addNoteField(builder, cc, row, 3, 11, layout, d_pm.getArmNoteModel(curArmNumber));
-//				buildNotesEditor(d_pm.getNewStudyPM().getBean().getArms().get(curArmNumber));
-				
+				LayoutUtil.addRow(layout);
+				row += 2;
+				builder.add(buildNotesEditor(d_pm.getNewStudyPM().getBean().getArms().get(curArmNumber)), cc.xyw(3, row, 11));
 			}
 			return row;
 		}
@@ -476,7 +487,9 @@ public class AddStudyWizard extends Wizard {
 					builder.add(createCharacteristicComponent(c), cc.xyw(3, row,fullWidth));
 
 					// add note field
-					row = AuxComponentFactory.addNoteField(builder, cc, row, 3, 1, layout, d_pm.getCharacteristicNoteModel(c));
+					LayoutUtil.addRow(layout);
+					row += 2;
+					builder.add(buildNotesEditor(getCharWithNotes(d_pm.getNewStudyPM().getBean(), c)), cc.xy(3, row));
 
 					LayoutUtil.addRow(layout);
 					row += 2;
@@ -630,7 +643,7 @@ public class AddStudyWizard extends Wizard {
 			});
 			
 			// add note
-			AuxComponentFactory.addNoteField(d_builder, cc, 3, 3, 1, layout, d_pm.getIndicationNoteModel());
+			d_builder.add(buildNotesEditor(d_pm.getNewStudyPM().getBean().getIndicationWithNotes()), cc.xy(3, 5));
 
 			this.setLayout(new BorderLayout());
 			d_scrollPane = new JScrollPane(d_builder.getPanel());
@@ -730,8 +743,7 @@ public class AddStudyWizard extends Wizard {
 				d_validator.add(d_titleField);
 				d_builder.add(d_titleField, cc.xy(3, 7));		
 				
-				// add title note
-				d_builder.add(buildNotesEditor(newStudy.getCharacteristicWithNotes(BasicStudyCharacteristic.TITLE)), cc.xy(3, 9));
+				d_builder.add(buildNotesEditor((ObjectWithNotes<?>) getCharWithNotes(newStudy, BasicStudyCharacteristic.TITLE)), cc.xy(3, 9));
 				
 				// add clear button
 				JButton clearButton = new JButton("Clear input");

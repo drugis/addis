@@ -35,7 +35,7 @@ import scala.actors.threadpool.Arrays;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
-public class Arm extends AbstractEntity {
+public class Arm extends AbstractEntity implements TypeWithNotes {
 	private Integer d_size;
 	private Drug d_drug;
 	private AbstractDose d_dose;

@@ -31,9 +31,11 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
-import org.drugis.addis.presentation.NoteModelPresentation;
+import org.drugis.addis.gui.components.NotesView;
+import org.drugis.addis.presentation.NotesModel;
 import org.drugis.addis.presentation.SelectFromFiniteListPresentation;
 import org.drugis.addis.presentation.wizard.CompleteListener;
 import org.drugis.common.gui.LayoutUtil;
@@ -150,11 +152,14 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 				d_builder.add(addOptionButton, cc.xy(7, row));
 			}
 			
-			if (d_pm instanceof NoteModelPresentation) {
-				row = AuxComponentFactory.addNoteField(d_builder, cc, row, 5, 1, layout, ((NoteModelPresentation) d_pm).getNoteModel(i));
+			if (d_pm.getSlot(i) instanceof TypeWithNotes) {
 				LayoutUtil.addRow(layout);
 				row += 2;
+				d_builder.add(new NotesView(new NotesModel(((TypeWithNotes)d_pm.getSlot(i)).getNotes()), true), cc.xy(5, row));
 			}
+			
+			LayoutUtil.addRow(layout);
+			row += 2;
 		}
 		return row;	
 	}

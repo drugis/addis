@@ -26,7 +26,6 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
@@ -34,14 +33,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Study.MeasurementKey;
-import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.util.XMLHelper;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -212,6 +209,16 @@ public class StudyTest {
 	}
 	
 	@Test
+	public void testSetCharacteristicKeepsNotes() {
+		Study study = new Study("X", new Indication(0L, ""));
+		study.setCharacteristic(BasicStudyCharacteristic.TITLE, null);
+		Note note = new Note(Source.MANUAL, "My text");
+		study.getCharacteristicWithNotes(BasicStudyCharacteristic.TITLE).getNotes().add(note);
+		study.setCharacteristic(BasicStudyCharacteristic.TITLE, "My title");
+		assertEquals(Collections.singletonList(note), study.getCharacteristicWithNotes(BasicStudyCharacteristic.TITLE).getNotes());
+	}
+	
+	@Test
 	public void testGetSampleSize() {
 		Arm pg1 = new Arm(null, null, 25);
 		Arm pg2 = new Arm(null, null, 35);
@@ -298,38 +305,6 @@ public class StudyTest {
 		s.initializeDefaultMeasurements();
 		assertEquals(200, (int)s.getMeasurement(v1).getSampleSize());
 		assertEquals(200, (int)s.getMeasurement(v1, arm1).getSampleSize());
-	}
-	
-	@Test
-	public void testPutGetNote(){
-		Indication i = new Indication(0L, "Y");
-		Study s = new Study("X", i);
-		Arm arm = new Arm(new Drug("Drug", "ATC"), new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY), 100);
-		s.addArm(arm);
-		Endpoint e = new Endpoint("Ep", Type.RATE);
-		s.addEndpoint(e);
-		AdverseEvent a = new AdverseEvent("ADE", Type.RATE);
-		s.addAdverseEvent(a);
-		
-		testNote(s, Study.PROPERTY_INDICATION);
-		testNote(s, Study.PROPERTY_ID);
-		testNote(s, BasicStudyCharacteristic.TITLE);
-		testNote(s, BasicStudyCharacteristic.CENTERS);
-		testNote(s, BasicStudyCharacteristic.STUDY_START);
-		testNote(s, BasicStudyCharacteristic.PUBMED);
-		testNote(s, arm);
-		testNote(s, e);
-		testNote(s, a);
-	}
-
-	@SuppressWarnings("deprecation")
-	private void testNote(Study s, Object obj) {
-		Note note = new Note(Source.CLINICALTRIALS);
-		note.setText(Long.toString(new Random().nextLong()));
-
-		assertNull(s.getNote(obj));
-		s.putNote(obj, note);
-		assertEquals(note, s.getNote(obj));
 	}
 
 	@Test

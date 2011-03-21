@@ -28,7 +28,7 @@ import java.util.List;
 import org.drugis.addis.presentation.ModifiableHolder;
 
 @SuppressWarnings("serial")
-public class ObjectWithNotes<T> extends ModifiableHolder<T> {
+public class ObjectWithNotes<T> extends ModifiableHolder<T> implements TypeWithNotes {
 	private List<Note> d_notes = new ArrayList<Note>();
 
 	public ObjectWithNotes(T obj) {

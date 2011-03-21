@@ -264,7 +264,12 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 	
 	public void setCharacteristic(BasicStudyCharacteristic c, Object val) {
-		setCharacteristicWithNotes(c, new ObjectWithNotes<Object>(val));
+		if (getCharacteristicWithNotes(c) != null) {
+			getCharacteristicWithNotes(c).setValue(val);
+			firePropertyChange(PROPERTY_CHARACTERISTICS, c, c);
+		} else {
+			setCharacteristicWithNotes(c, new ObjectWithNotes<Object>(val));
+		}
 	}
 	
 	public ObjectWithNotes<?> getCharacteristicWithNotes(Characteristic c) {
@@ -558,7 +563,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 
 	@Deprecated
-	public void putNote(Object key, Note note) { // TODO: refactor here
+	private void putNote(Object key, Note note) { // TODO: refactor here
 		ObjectWithNotes<?> target = null;
 		if (key.equals(PROPERTY_INDICATION)) {
 			target = d_indication;
@@ -608,7 +613,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 
 	@Deprecated
-	public Note getNote(Object key){
+	private Note getNote(Object key){
 		List<Note> notes = getNotes(key);
 		return (notes != null && notes.size() > 0) ? notes.get(0) : null;
 	}

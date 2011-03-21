@@ -50,6 +50,7 @@ import javax.swing.text.NumberFormatter;
 import javax.swing.text.StyledDocument;
 
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.gui.components.LinkLabel;
@@ -58,7 +59,6 @@ import org.drugis.addis.gui.wizard.AddStudyWizard;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.gui.DayDateFormat;
-import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OneWayObjectFormat;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -67,8 +67,6 @@ import com.jgoodies.binding.formatter.EmptyNumberFormatter;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.util.DefaultUnitConverter;
 
 public class AuxComponentFactory {
@@ -173,38 +171,43 @@ public class AuxComponentFactory {
 		return scroll;
 	}
 
-	@Deprecated
-	public static int addNoteField(PanelBuilder builder, CellConstraints cc, int row, int col, int width, FormLayout layout, ValueModel model) {
-		if(model != null && model.getValue() != null && model.getValue() != ""){
-			LayoutUtil.addRow(layout);
-			row+=2;
-			
-			JTextPane area = new JTextPane();
-			
-			StyledDocument doc = area.getStyledDocument();
-			AddStudyWizard.addStylesToDoc(doc);
-			
-			area.setBackground(COLOR_NOTE);
-			
-			try { // FIXME: does not seem to belong here?
+	public static JComponent createNoteView(Note note, boolean scrollable) {
+		JTextPane area = new JTextPane();
+		
+		StyledDocument doc = area.getStyledDocument();
+		AddStudyWizard.addStylesToDoc(doc);
+		
+		area.setBackground(COLOR_NOTE);
+		
+		try { // FIXME: does not seem to belong here?
+			switch (note.getSource()) {
+			case CLINICALTRIALS:
 				doc.insertString(doc.getLength(), AddStudyWizard.DEFAULT_NOTETITLE + "\n", doc.getStyle("bold"));
-				doc.insertString(doc.getLength(), (String)model.getValue(), doc.getStyle("regular"));
-			} catch (BadLocationException e) {
-				e.printStackTrace();
+				break;
+			case MANUAL:
+				doc.insertString(doc.getLength(), "User Note:" + "\n", doc.getStyle("bold"));
+				break;
 			}
-	
-			area.setEditable(false);
-			
-			
-			JScrollPane pane = new JScrollPane(area);
-			pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-			pane.setPreferredSize(AddStudyWizard.defaultTextPaneDimension(area));
-			
-			pane.setWheelScrollingEnabled(true);
-			pane.getVerticalScrollBar().setValue(0);
-			builder.add(pane, cc.xyw(col, row, width));
+			doc.insertString(doc.getLength(), (String)note.getText(), doc.getStyle("regular"));
+		} catch (BadLocationException e) {
+			e.printStackTrace();
 		}
-		return row;
+
+		area.setEditable(false);
+		if (!scrollable) {
+			area.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY), 
+					BorderFactory.createEmptyBorder(4,4,4,4)));
+			return area;
+		}
+		
+		JScrollPane pane = new JScrollPane(area);
+		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		pane.setPreferredSize(AddStudyWizard.defaultTextPaneDimension(area));
+		
+		pane.setWheelScrollingEnabled(true);
+		pane.getVerticalScrollBar().setValue(0);
+		
+		return pane;
 	}
 	
 	/**
