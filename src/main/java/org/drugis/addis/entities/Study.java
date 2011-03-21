@@ -264,9 +264,10 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 	
 	public void setCharacteristic(BasicStudyCharacteristic c, Object val) {
-		if (getCharacteristicWithNotes(c) != null) {
-			getCharacteristicWithNotes(c).setValue(val);
-			firePropertyChange(PROPERTY_CHARACTERISTICS, c, c);
+		ObjectWithNotes<?> charVal = getCharacteristicWithNotes(c);
+		if (charVal != null) {
+			charVal.setValue(val);
+			setCharacteristicWithNotes(c, charVal); //FIXME: this is a hack because d_chars is exposed & also firing events.
 		} else {
 			setCharacteristicWithNotes(c, new ObjectWithNotes<Object>(val));
 		}

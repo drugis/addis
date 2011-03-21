@@ -255,7 +255,7 @@ public class AddStudyWizardPresentation {
 	}
 
 	public ValueModel getCharacteristicNoteModel(BasicStudyCharacteristic c) {
-		return new NoteModel(getNewStudy().getCharacteristics().get(c));
+		return new NoteModel(getNewStudy().getCharacteristicWithNotes(c));
 	}
 
 	public void addArms(int numArms) {
