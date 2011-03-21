@@ -59,7 +59,7 @@ public class NoteViewButton extends JButton {
 
 	private void showView() {
 		if (d_noteView == null) {
-			d_noteView = new NoteView(d_parent, d_description, d_notes);
+			d_noteView = new NotesViewDialog(d_parent, d_description, d_notes);
 		}
 		d_noteView.setVisible(true);
 	}

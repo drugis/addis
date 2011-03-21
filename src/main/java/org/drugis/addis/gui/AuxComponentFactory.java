@@ -173,6 +173,7 @@ public class AuxComponentFactory {
 		return scroll;
 	}
 
+	@Deprecated
 	public static int addNoteField(PanelBuilder builder, CellConstraints cc, int row, int col, int width, FormLayout layout, ValueModel model) {
 		if(model != null && model.getValue() != null && model.getValue() != ""){
 			LayoutUtil.addRow(layout);

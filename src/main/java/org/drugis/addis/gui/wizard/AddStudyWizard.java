@@ -64,10 +64,12 @@ import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
@@ -76,8 +78,10 @@ import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
+import org.drugis.addis.gui.components.NotesView;
 import org.drugis.addis.imports.PubMedIDRetriever;
 import org.drugis.addis.presentation.DosePresentation;
+import org.drugis.addis.presentation.NotesModel;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.wizard.CompleteListener;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.OutcomeMeasurementsModel;
@@ -142,6 +146,11 @@ public class AddStudyWizard extends Wizard {
 		
 		return wizardModel;
 	}
+	
+	private static NotesView buildNotesEditor(ObjectWithNotes<?> obj) {
+		return new NotesView(new NotesModel(obj.getNotes()), true);
+	}
+	
 	
 	public static class ReviewStudyStep extends PanelWizardStep {
 		 private final AddStudyWizardPresentation d_pm;
@@ -376,7 +385,9 @@ public class AddStudyWizard extends Wizard {
 				builder.add(sizeField, cc.xy(13, row));
 				
 				// Show the notes from the imported study for the drug
-				row = AuxComponentFactory.addNoteField(builder, cc, row, 3, 11, layout, d_pm.getArmNoteModel(curArmNumber));
+				row += AuxComponentFactory.addNoteField(builder, cc, row, 3, 11, layout, d_pm.getArmNoteModel(curArmNumber));
+//				buildNotesEditor(d_pm.getNewStudyPM().getBean().getArms().get(curArmNumber));
+				
 			}
 			return row;
 		}
@@ -658,9 +669,9 @@ public class AddStudyWizard extends Wizard {
 			 buildWizardStep();
 			 this.setVisible(true);
 			 repaint();
-		 }
-		 
-		 private void buildWizardStep() {
+		}
+		
+		private void buildWizardStep() {
 			 FormLayout layout = new FormLayout(
 						"right:pref, 3dlu, pref:grow:fill, 3dlu, left:pref",
 						"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
@@ -710,7 +721,8 @@ public class AddStudyWizard extends Wizard {
 				d_builder.add(d_importButton, cc.xy(5, 3));	
 				
 				// add note to ID field
-				AuxComponentFactory.addNoteField(d_builder, cc, 3, 3, 1, layout, d_pm.getIdNoteModel());
+				Study newStudy = d_pm.getNewStudyPM().getBean();
+				d_builder.add(buildNotesEditor(newStudy.getStudyIdWithNotes()), cc.xy(3, 5));
 
 				// add title label
 				d_builder.addLabel("Title:",cc.xy(1, 7));
@@ -719,7 +731,7 @@ public class AddStudyWizard extends Wizard {
 				d_builder.add(d_titleField, cc.xy(3, 7));		
 				
 				// add title note
-				AuxComponentFactory.addNoteField(d_builder, cc, 7, 3, 1, layout, d_pm.getCharacteristicNoteModel(BasicStudyCharacteristic.TITLE));
+				d_builder.add(buildNotesEditor(newStudy.getCharacteristicWithNotes(BasicStudyCharacteristic.TITLE)), cc.xy(3, 9));
 				
 				// add clear button
 				JButton clearButton = new JButton("Clear input");
