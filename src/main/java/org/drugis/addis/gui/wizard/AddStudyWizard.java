@@ -49,6 +49,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.table.TableModel;
@@ -729,7 +730,7 @@ public class AddStudyWizard extends Wizard {
 				// add import button
 				d_importButton = GUIFactory.createIconButton(FileNames.ICON_IMPORT,
 						"Enter NCT id to retrieve study data from ClinicalTrials.gov");
-				d_importButton.setDisabledIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
+				d_importButton.setEnabled(false);
 				d_importButton.addActionListener(new AbstractAction() {
 					public void actionPerformed(ActionEvent arg0) {
 						CTRetriever ctRetriever = new CTRetriever();
@@ -767,13 +768,25 @@ public class AddStudyWizard extends Wizard {
 				
 				add(d_scrollPane, BorderLayout.CENTER);
 		 }
-		 
+		
+		public class StartLoadingAnimation implements Runnable {
+			public void run() {
+				d_importButton.setDisabledIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
+				d_importButton.setEnabled(false);
+			}
+		}
+		public class StopLoadingAnimation implements Runnable {
+			public void run() {
+				d_importButton.setDisabledIcon(ImageLoader.getIcon(FileNames.ICON_IMPORT));
+				d_importButton.setEnabled(true);
+			}		 
+		}
 		public class CTRetriever implements Runnable {
 			public void run() {
 				try {
-					d_importButton.setEnabled(false);				
+					SwingUtilities.invokeAndWait(new StartLoadingAnimation());
 					d_pm.importCT();
-					d_importButton.setEnabled(true);
+					SwingUtilities.invokeAndWait(new StopLoadingAnimation());
 				} catch (FileNotFoundException e) { // file not found is expected when user enters "strange" IDs
 					JOptionPane.showMessageDialog(d_me, "Couldn't find NCT ID: "+ d_pm.getIdModel().getValue(), "Not Found" , JOptionPane.WARNING_MESSAGE);
 				} catch (IOException e) { // IOExceptions are expected when there is a network error -- so report them
@@ -786,7 +799,7 @@ public class AddStudyWizard extends Wizard {
 			}
 		}
 
-		private class ImportButtonEnableListener implements CaretListener{
+		private class ImportButtonEnableListener implements CaretListener {
 			public void caretUpdate(CaretEvent arg0) {
 				d_importButton.setEnabled(!d_idField.getText().equals(""));
 			}
