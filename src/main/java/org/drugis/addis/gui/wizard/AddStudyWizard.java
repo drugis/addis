@@ -637,13 +637,13 @@ public class AddStudyWizard extends Wizard {
 			d_builder.add(indBox, cc.xyw(3, 3, 2));
 			d_validator.add(indBox);
 			
-			// add 'add indication' button
-			JButton btn = GUIFactory.createPlusButton("add new indication");
+			// (new) '+' button
+			JButton btn = GUIFactory.createPlusButton("Create Indication");
 			d_builder.add(btn, cc.xy(5, 3));
 			btn.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent arg0) {
-					d_mainWindow.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Indication.class),
-							d_pm.getIndicationModel());
+					d_mainWindow.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Indication.class),d_pm.getIndicationModel());
+					prepare();
 				}
 			});
 			
