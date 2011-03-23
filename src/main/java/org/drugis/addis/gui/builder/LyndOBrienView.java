@@ -38,6 +38,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.gui.AddisWindow;
@@ -92,14 +93,16 @@ public class LyndOBrienView implements ViewBuilder {
 		scatter.setViewportBorder(null);
 		builder.add(scatter, cc.xy(1,3));
 
-		String alternativeName = new String();
-		String baselineName = new String();
+		String alternativeName = "";
+		String baselineName = "";
+		Object baseline = d_BRpm.getBean().getAlternatives().get(0);
+		Object alternative = d_BRpm.getBean().getAlternatives().get(1);
 		if(d_BRpm.getBean() instanceof StudyBenefitRiskAnalysis) {
-			baselineName = ((Arm) d_BRpm.getBean().getAlternatives().get(0)).getDrug().toString();
-			alternativeName = ((Arm) d_BRpm.getBean().getAlternatives().get(1)).getDrug().toString();
+			baselineName = ((Arm)baseline).getDrug().toString() + " (" + ((Arm)baseline).getDose().toString() + ")";
+			alternativeName = ((Arm)alternative).getDrug().toString() + " (" + ((Arm)alternative).getDose().toString() + ")";
 		} else if (d_BRpm.getBean() instanceof MetaBenefitRiskAnalysis) {
-			baselineName = d_BRpm.getBean().getAlternatives().get(0).toString();
-			alternativeName = d_BRpm.getBean().getAlternatives().get(1).toString();
+			baselineName = ((Drug)baseline).toString();
+			alternativeName = ((Drug)alternative).toString();
 		}
 		
 		builder.add(AuxComponentFactory.createHtmlField("Results of Monte Carlo simulations based on the difference-distributions of" +
