@@ -26,46 +26,55 @@ package org.drugis.addis.presentation;
 
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
-import org.drugis.addis.entities.PopulationCharacteristic;
+import org.drugis.addis.entities.AdverseEvent;
+import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
 @SuppressWarnings("serial")
-public class SelectPopulationCharsPresentationTest {
-	private PopulationCharacteristic d_var1 = ExampleData.buildAgeVariable();
-	private PopulationCharacteristic d_var2 = ExampleData.buildGenderVariable();
-	private PopulationCharacteristic d_var3 = new ContinuousPopulationCharacteristic("Blood Pressure");
-	private AbstractListHolder<PopulationCharacteristic> d_list;
-	private SelectPopulationCharsPresentation d_pm;
+public class SelectVariablesPresentationTest {
+	private static final String TYPENAME = "Adverse Event";
+	private static final String DESCRIPTION = "Please select the appropriate adverse events.";
+	private static final String TITLE = "Select Adverse Events";
+
+	public static class SelectPresentation extends SelectVariablesPresentation<AdverseEvent> {
+		public SelectPresentation(ListHolder<AdverseEvent> options) {
+			super(options, TYPENAME, TITLE, DESCRIPTION, null);
+		}
+		
+	}
+	private AdverseEvent d_ade1 = new AdverseEvent("ADE 1", Variable.Type.RATE);
+	private AdverseEvent d_ade2 = new AdverseEvent("ADE 2", Variable.Type.RATE);
+	private AdverseEvent d_ade3 = new AdverseEvent("ADE 3", Variable.Type.RATE);
+	private ListHolder<AdverseEvent> d_list;
+	private SelectAdverseEventsPresentation d_pm;
 	
 	@Before
 	public void setUp() {
-		d_list = new AbstractListHolder<PopulationCharacteristic>() {
+		d_list = new AbstractListHolder<AdverseEvent>() {
 			@Override
-			public List<PopulationCharacteristic> getValue() {
-				List<PopulationCharacteristic> l = new ArrayList<PopulationCharacteristic>();
-				l.add(d_var1);
-				l.add(d_var2);
+			public List<AdverseEvent> getValue() {
+				List<AdverseEvent> l = new ArrayList<AdverseEvent>();
+				l.add(d_ade1);
+				l.add(d_ade2);
 				return l;
 			}
 		};
 		
-		d_pm = new SelectPopulationCharsPresentation(d_list,  null);
+		d_pm = new SelectAdverseEventsPresentation(d_list, null);
 	}
 	
 	@Test
 	public void testGetTypeName() {
-		assertNotNull(d_pm.getTypeName());
+		assertEquals(TYPENAME, d_pm.getTypeName());
 	}
 	
 	@Test
@@ -75,14 +84,14 @@ public class SelectPopulationCharsPresentationTest {
 	
 	@Test
 	public void testGetTitle() {
-		assertNotNull(d_pm.getTitle());
-		assertNotNull(d_pm.getDescription());
+		assertEquals(TITLE, d_pm.getTitle());
+		assertEquals(DESCRIPTION, d_pm.getDescription());
 	}
 	
 	@Test
 	public void testGetOptions() {
 		assertEquals(d_list.getValue(), d_pm.getOptions().getValue());
-		d_list.getValue().add(d_var3);
+		d_list.getValue().add(d_ade3);
 		assertEquals(d_list.getValue(), d_pm.getOptions().getValue());
 	}
 	
@@ -96,8 +105,8 @@ public class SelectPopulationCharsPresentationTest {
 	@Test
 	public void testGetSlot() {
 		d_pm.addSlot();
-		d_pm.getSlot(0).setValue(d_var2);
-		assertEquals(d_var2, d_pm.getSlot(0).getValue());
+		d_pm.getSlot(0).setValue(d_ade2);
+		assertEquals(d_ade2, d_pm.getSlot(0).getValue());
 	}
 	
 	@Test
@@ -108,11 +117,21 @@ public class SelectPopulationCharsPresentationTest {
 		assertEquals(0, d_pm.countSlots());
 		
 		d_pm.addSlot();
-		d_pm.getSlot(0).setValue(d_var1);
+		d_pm.getSlot(0).setValue(d_ade1);
 		d_pm.addSlot();
-		d_pm.getSlot(1).setValue(d_var2);
+		d_pm.getSlot(1).setValue(d_ade2);
 		d_pm.removeSlot(0);
-		assertEquals(d_pm.getSlot(0).getValue(), d_var2);
+		assertEquals(d_pm.getSlot(0).getValue(), d_ade2);
+	}
+	
+	@Test
+	public void testAddSlotsEnabledModel() {
+		assertEquals(d_pm.getAddSlotsEnabledModel().getValue(), Boolean.TRUE);
+		d_pm.addSlot();
+		d_pm.addSlot();
+		assertEquals(d_pm.getAddSlotsEnabledModel().getValue(), Boolean.TRUE);
+		d_pm.addSlot();
+		assertEquals(d_pm.getAddSlotsEnabledModel().getValue(), Boolean.TRUE);
 	}
 	
 	@Test
@@ -129,8 +148,21 @@ public class SelectPopulationCharsPresentationTest {
 		mock = JUnitUtil.mockListener(d_pm.getInputCompleteModel(), "value",
 				Boolean.FALSE, Boolean.TRUE);
 		d_pm.getInputCompleteModel().addValueChangeListener(mock);
-		d_pm.getSlot(0).setValue(d_var2);
+		d_pm.getSlot(0).setValue(d_ade2);
 		assertEquals(Boolean.TRUE, d_pm.getInputCompleteModel().getValue());
+		verify(mock);
+	}
+	
+	@Test
+	public void testInputCompleteModelAfterSetSlots() {
+		assertEquals(Boolean.TRUE, d_pm.getInputCompleteModel().getValue());
+		PropertyChangeListener mock = JUnitUtil.mockListener(d_pm.getInputCompleteModel(), "value",
+				Boolean.TRUE, Boolean.FALSE);
+		d_pm.getInputCompleteModel().addValueChangeListener(mock);
+		ArrayList<StudyOutcomeMeasure<AdverseEvent>> slots = new ArrayList<StudyOutcomeMeasure<AdverseEvent>>();
+		slots.add(new StudyOutcomeMeasure<AdverseEvent>(null));
+		d_pm.setSlots(slots);
+		assertEquals(Boolean.FALSE, d_pm.getInputCompleteModel().getValue());
 		verify(mock);
 	}
 	
@@ -138,10 +170,10 @@ public class SelectPopulationCharsPresentationTest {
 	public void testSelectSameValueTwiceRemovesFromFirst() {
 		d_pm.addSlot();
 		d_pm.addSlot();
-		d_pm.getSlot(1).setValue(d_var1);
-		assertEquals(d_var1, d_pm.getSlot(1).getValue());
-		d_pm.getSlot(0).setValue(d_var1);
-		assertEquals(d_var1, d_pm.getSlot(0).getValue());
+		d_pm.getSlot(1).setValue(d_ade1);
+		assertEquals(d_ade1, d_pm.getSlot(1).getValue());
+		d_pm.getSlot(0).setValue(d_ade1);
+		assertEquals(d_ade1, d_pm.getSlot(0).getValue());
 		assertEquals(null, d_pm.getSlot(1).getValue());
 	}
 }

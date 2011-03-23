@@ -29,7 +29,6 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -65,10 +64,10 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 		}	
 	} 
 		
-	private class AddOptionButtonListener extends AbstractAction {
+	private class newOptionButtonListener extends AbstractAction {
 		int d_index;
 
-		public AddOptionButtonListener(int index) {
+		public newOptionButtonListener(int index) {
 			d_index = index;
 		}
 		
@@ -144,13 +143,12 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 			btn.addActionListener(new RemoveSlotListener(i));
 						
 			// dropdown
-			JComboBox endpoints = AuxComponentFactory.createBoundComboBox(d_pm.getOptions(), d_pm.getSlot(i));
-			d_builder.add(endpoints, cc.xy(5, row));
+			d_builder.add(AuxComponentFactory.createBoundComboBox(d_pm.getOptions(), d_pm.getSlot(i)), cc.xy(5, row));
 			
-			// possibly add "new X" button
+			// (new) + button
 			if (d_pm.hasAddOptionDialog()) {
 				JButton addOptionButton = GUIFactory.createPlusButton("Create " + d_pm.getTypeName());
-				addOptionButton.addActionListener(new AddOptionButtonListener(i));
+				addOptionButton.addActionListener(new newOptionButtonListener(i));
 				d_builder.add(addOptionButton, cc.xy(7, row));
 			}
 			

@@ -71,10 +71,14 @@ implements SelectFromFiniteListPresentation<T> {
 
 	public void addSlot() {
 		StudyOutcomeMeasure<T> s = new StudyOutcomeMeasure<T>(null);
-		s.addPropertyChangeListener("value", d_slotValueListener);
-		d_slots.add(s);
+		addSlot(s);
+	}
+
+	private void addSlot(StudyOutcomeMeasure<T> slot) {
+		slot.addPropertyChangeListener("value", d_slotValueListener);
+		d_slots.add(slot);
 		firePropertyChange(PROPERTY_NSLOTS, d_slots.size() - 1, d_slots.size());
-		d_inputCompleteModel.addSlot(s);
+		d_inputCompleteModel.addSlot(slot);
 	}
 
 	public int countSlots() {
@@ -130,23 +134,14 @@ implements SelectFromFiniteListPresentation<T> {
 	}
 
 	public void setSlots(List<StudyOutcomeMeasure<T>> slots) {
-		for (StudyOutcomeMeasure<T> slot : d_slots) {
-			slot.removePropertyChangeListener("value", d_slotValueListener);
+		for (int i = d_slots.size()-1; i >= 0; --i) {
+			removeSlot(i);
 		}
-		d_slots = slots;
-		for (StudyOutcomeMeasure<T> slot : d_slots) {
-			slot.addPropertyChangeListener("value", d_slotValueListener);
+		for (StudyOutcomeMeasure<T> slot : slots) {
+			addSlot(slot);
 		}
 	}
-
 	
-	public void clear() {
-		for (StudyOutcomeMeasure<T> slot : d_slots) {
-			slot.removePropertyChangeListener("value", d_slotValueListener);
-		}
-		d_slots.clear();
-	}
-
 	class Slot<E> extends ModifiableHolder<E> {
 		private List<ModifiableHolder<E>> d_slots;
 		public Slot(List<ModifiableHolder<E>> slots) {

@@ -4,6 +4,7 @@
 .settings
 .gitignore
 *~
-src/main/generated-source
+src/main/generated-source/
+src/main/generated-entities/
 target
 version
