@@ -38,11 +38,11 @@ import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.components.NotesView;
 import org.drugis.addis.presentation.NotesModel;
 import org.drugis.addis.presentation.SelectFromFiniteListPresentation;
-import org.drugis.addis.presentation.wizard.CompleteListener;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
 
 import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -84,7 +84,9 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 		this.setLayout(new BorderLayout());
 		d_pm = pm;
 		setComplete((Boolean)d_pm.getInputCompleteModel().getValue());
-		d_pm.getInputCompleteModel().addValueChangeListener(new CompleteListener(this));
+		//d_pm.getInputCompleteModel().addValueChangeListener(new CompleteListener(this));
+		
+		PropertyConnector.connectAndUpdate(d_pm.getInputCompleteModel(), this, "complete");
 	}
 		
 	 @Override

@@ -180,7 +180,7 @@ implements SelectFromFiniteListPresentation<T> {
 		}
 	}
 	
-	class InputCompleteModel extends AbstractValueModel implements PropertyChangeListener {
+	public class InputCompleteModel extends AbstractValueModel implements PropertyChangeListener {
 		private Boolean d_oldValue;
 		
 		public InputCompleteModel() {

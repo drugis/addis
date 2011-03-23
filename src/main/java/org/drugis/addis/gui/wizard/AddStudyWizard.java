@@ -88,7 +88,6 @@ import org.drugis.addis.imports.PubMedIDRetriever;
 import org.drugis.addis.presentation.DosePresentation;
 import org.drugis.addis.presentation.NotesModel;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
-import org.drugis.addis.presentation.wizard.CompleteListener;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.OutcomeMeasurementsModel;
 import org.drugis.addis.util.PubMedListFormat;
 import org.drugis.addis.util.RunnableReadyModel;
@@ -302,7 +301,7 @@ public class AddStudyWizard extends Wizard {
 		public void prepare() {
 			 this.setVisible(false);
 			 d_validator = new NotEmptyValidator();
-			 d_validator.addValueChangeListener(new CompleteListener(this));
+			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
 			 
 			 if (d_scrollPane != null)
 				 remove(d_scrollPane);
@@ -436,7 +435,6 @@ public class AddStudyWizard extends Wizard {
 		JPanel d_me = this;
 		private PanelBuilder d_builder;
 		private JScrollPane d_scrollPane;
-		private NotEmptyValidator d_validator;
 
 		private Set<BasicStudyCharacteristic> excludedChars = new HashSet<BasicStudyCharacteristic>();	
 		private AddStudyWizardPresentation d_pm;
@@ -449,19 +447,13 @@ public class AddStudyWizard extends Wizard {
 			excludedChars.add(BasicStudyCharacteristic.CREATION_DATE);
 			excludedChars.add(BasicStudyCharacteristic.SOURCE);
 			d_pm = pm;
-			if (d_pm.isEditing())
-				setComplete(true);
+			setComplete(true);
 		}
 		
 		@Override
 		public void prepare() {
-			d_validator = new NotEmptyValidator();
-			d_validator.addValueChangeListener(new CompleteListener(this));
-			
 			if (d_scrollPane != null)
 				 remove(d_scrollPane);
-			 
-			setComplete(true); // Don't require fields to be filled
 			 
 			buildWizardStep();
 			repaint(); 
@@ -615,7 +607,7 @@ public class AddStudyWizard extends Wizard {
 		public void prepare() {
 			 this.setVisible(false);
 			 d_validator = new NotEmptyValidator();
-			 d_validator.addValueChangeListener(new CompleteListener(this));
+			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
 			 
 			 if (d_scrollPane != null)
 				 remove(d_scrollPane);
@@ -681,10 +673,7 @@ public class AddStudyWizard extends Wizard {
 		public void prepare() {
 			 this.setVisible(false);
 			 d_validator = new NotEmptyValidator();
-			 d_validator.addValueChangeListener(new CompleteListener(this));
-			/* PropertyConnector connector = new PropertyConnector(aaTextInfo, summary, aaTextInfo, summary);
-			 connector.connect(bean1, property1Name, bean2, property2Name);
-			 d_validator.addValueChangeListener(connector);*/
+			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
 			 
 			 if (d_scrollPane != null)
 				 remove(d_scrollPane);
