@@ -136,6 +136,7 @@ import org.drugis.addis.imports.PubMedDataBankRetriever;
 import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.common.Interval;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -1522,6 +1523,7 @@ public class JAXBConvertorTest {
 	}
 
 	@Test
+	@Ignore
 	public void writeTransformedXML() throws TransformerException, IOException {
 		InputStream transformedXmlStream = getTransformed();
 		FileOutputStream output = new FileOutputStream("transformedDefaultData.xml");

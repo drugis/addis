@@ -26,6 +26,7 @@ package org.drugis.addis.util;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -41,15 +42,19 @@ public class JAXBHandlerTest {
 	@Test
 	public void testUnmarshallMarshallXMLCompare() throws JAXBException, SAXException, FileNotFoundException {
 		// read xml file
-		AddisData data = JAXBHandler.unmarshallAddisData(new FileInputStream("schema/schematestxml.xml"));
+		AddisData data = JAXBHandler.unmarshallAddisData(JAXBHandlerTest.class.getResourceAsStream("schema_test.xml"));
 
 		// write out
-		JAXBHandler.marshallAddisData(data, new FileOutputStream("schema/jaxb_marshall_test.xml"));
+		String testFile = "jaxb_marshall_test.xml";
+		JAXBHandler.marshallAddisData(data, new FileOutputStream(testFile));
 
 		// read back generated xml
-		AddisData data_clone = JAXBHandler.unmarshallAddisData(new FileInputStream("schema/jaxb_marshall_test.xml"));
+		AddisData data_clone = JAXBHandler.unmarshallAddisData(new FileInputStream(testFile));
 		
 		// compare
 		assertEquals(data, data_clone);
+		
+		File temp = new File(testFile);
+		temp.delete();
 	}
 }
