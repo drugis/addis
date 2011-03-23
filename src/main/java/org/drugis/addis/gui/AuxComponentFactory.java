@@ -73,6 +73,8 @@ import com.jgoodies.forms.util.DefaultUnitConverter;
 
 public class AuxComponentFactory {
 
+	private static final String USER_NOTE = "User Note:";
+	private static final String NCT_NOTE = "Source Text (ClinicalTrials.gov):";
 	public static final Color COLOR_NOTE = new Color(255, 255, 180);
 
 	public static <T> JComboBox createBoundComboBox(T[] values, ValueModel model) {
@@ -186,10 +188,10 @@ public class AuxComponentFactory {
 		try { // FIXME: does not seem to belong here?
 			switch (note.getSource()) {
 			case CLINICALTRIALS:
-				doc.insertString(doc.getLength(), AddStudyWizard.DEFAULT_NOTETITLE + "\n", doc.getStyle("bold"));
+				doc.insertString(doc.getLength(), NCT_NOTE + "\n", doc.getStyle("bold"));
 				break;
 			case MANUAL:
-				doc.insertString(doc.getLength(), "User Note:" + "\n", doc.getStyle("bold"));
+				doc.insertString(doc.getLength(), USER_NOTE + "\n", doc.getStyle("bold"));
 				break;
 			}
 			doc.insertString(doc.getLength(), (String)note.getText(), doc.getStyle("regular"));

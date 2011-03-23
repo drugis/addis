@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.presentation.ModifiableHolder;
+import org.drugis.common.EqualsUtil;
 
 @SuppressWarnings("serial")
 public class ObjectWithNotes<T> extends ModifiableHolder<T> implements TypeWithNotes {
@@ -45,7 +46,7 @@ public class ObjectWithNotes<T> extends ModifiableHolder<T> implements TypeWithN
 	public boolean equals(Object o) {
 		if (o instanceof ObjectWithNotes<?>) {
 			ObjectWithNotes<?> other = (ObjectWithNotes<?>)o;
-			return other.getValue().equals(getValue());
+			return EqualsUtil.equal(other.getValue(), getValue());
 		}
 		return false;
 	}

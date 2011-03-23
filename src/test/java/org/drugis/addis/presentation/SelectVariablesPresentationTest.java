@@ -30,6 +30,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.entities.AdverseEvent;
@@ -164,6 +165,14 @@ public class SelectVariablesPresentationTest {
 		d_pm.setSlots(slots);
 		assertEquals(Boolean.FALSE, d_pm.getInputCompleteModel().getValue());
 		verify(mock);
+	}
+	
+	@Test
+	public void testSetSlotsModifiesUnderlyingList() {
+		ArrayList<StudyOutcomeMeasure<AdverseEvent>> list = new ArrayList<StudyOutcomeMeasure<AdverseEvent>>();
+		d_pm.setSlots(list);
+		d_pm.addSlot();
+		assertEquals(Collections.singletonList(new StudyOutcomeMeasure<Variable>(null)), list);		
 	}
 	
 	@Test

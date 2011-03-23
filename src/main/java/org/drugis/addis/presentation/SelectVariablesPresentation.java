@@ -71,12 +71,12 @@ implements SelectFromFiniteListPresentation<T> {
 
 	public void addSlot() {
 		StudyOutcomeMeasure<T> s = new StudyOutcomeMeasure<T>(null);
-		addSlot(s);
+		d_slots.add(s);
+		bindSlot(s);
 	}
 
-	private void addSlot(StudyOutcomeMeasure<T> slot) {
+	private void bindSlot(StudyOutcomeMeasure<T> slot) {
 		slot.addPropertyChangeListener("value", d_slotValueListener);
-		d_slots.add(slot);
 		firePropertyChange(PROPERTY_NSLOTS, d_slots.size() - 1, d_slots.size());
 		d_inputCompleteModel.addSlot(slot);
 	}
@@ -87,8 +87,12 @@ implements SelectFromFiniteListPresentation<T> {
 
 	public void removeSlot(int idx) {
 		StudyOutcomeMeasure<T> s = d_slots.get(idx);
-		s.removePropertyChangeListener("value", d_slotValueListener);
 		d_slots.remove(idx);
+		unbindSlot(s);
+	}
+
+	private void unbindSlot(StudyOutcomeMeasure<T> s) {
+		s.removePropertyChangeListener("value", d_slotValueListener);
 		firePropertyChange(PROPERTY_NSLOTS, d_slots.size() + 1, d_slots.size());
 		d_inputCompleteModel.removeSlot(s);
 	}
@@ -134,11 +138,12 @@ implements SelectFromFiniteListPresentation<T> {
 	}
 
 	public void setSlots(List<StudyOutcomeMeasure<T>> slots) {
-		for (int i = d_slots.size()-1; i >= 0; --i) {
-			removeSlot(i);
+		for (StudyOutcomeMeasure<T> slot : d_slots) {
+			unbindSlot(slot);
 		}
+		d_slots = slots;
 		for (StudyOutcomeMeasure<T> slot : slots) {
-			addSlot(slot);
+			bindSlot(slot);
 		}
 	}
 	

@@ -49,6 +49,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -112,7 +113,7 @@ import com.toedter.calendar.JDateChooser;
 @SuppressWarnings("serial")
 public class AddStudyWizard extends Wizard {
 	private static final String EXAMPLE_NCT_ID = "NCT00296517";
-	public static final String DEFAULT_NOTETITLE = "Source Text (ClinicalTrials.gov):";
+	public static final String INSERT_EXAMPLE_ID = "control I";
 
 	public AddStudyWizard(final AddStudyWizardPresentation pm, final AddisWindow mainWindow, JDialog dialog) {
 		super(buildModel(pm, mainWindow, dialog));
@@ -681,6 +682,9 @@ public class AddStudyWizard extends Wizard {
 			 this.setVisible(false);
 			 d_validator = new NotEmptyValidator();
 			 d_validator.addValueChangeListener(new CompleteListener(this));
+			/* PropertyConnector connector = new PropertyConnector(aaTextInfo, summary, aaTextInfo, summary);
+			 connector.connect(bean1, property1Name, bean2, property2Name);
+			 d_validator.addValueChangeListener(connector);*/
 			 
 			 if (d_scrollPane != null)
 				 remove(d_scrollPane);
@@ -709,6 +713,7 @@ public class AddStudyWizard extends Wizard {
 				d_builder.addLabel("ID:",cc.xy(1, 3));
 				d_idField = BasicComponentFactory.createTextField(d_pm.getIdModel(), false);
 				d_idField.setColumns(30);
+				bindDefaultId(d_idField);
 				d_validator.add(d_idField);
 				d_builder.add(d_idField, cc.xy(3, 3));
 				d_idField.addCaretListener(new ImportButtonEnableListener());
@@ -730,7 +735,7 @@ public class AddStudyWizard extends Wizard {
 				// add import button
 				d_importButton = GUIFactory.createIconButton(FileNames.ICON_IMPORT,
 						"Enter NCT id to retrieve study data from ClinicalTrials.gov");
-				d_importButton.setEnabled(false);
+				d_importButton.setEnabled(isIdValid());
 				d_importButton.addActionListener(new AbstractAction() {
 					public void actionPerformed(ActionEvent arg0) {
 						CTRetriever ctRetriever = new CTRetriever();
@@ -801,9 +806,24 @@ public class AddStudyWizard extends Wizard {
 
 		private class ImportButtonEnableListener implements CaretListener {
 			public void caretUpdate(CaretEvent arg0) {
-				d_importButton.setEnabled(!d_idField.getText().equals(""));
+				d_importButton.setEnabled(isIdValid());
 			}
 		 }
+
+		private boolean isIdValid() {
+			return d_idField.getText().toUpperCase().trim().matches("^NCT[0-9]+$");
+		}
+		
+		public static void bindDefaultId(final JTextField idField) {
+			idField.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(INSERT_EXAMPLE_ID), "insertSample");
+			idField.getActionMap().put("insertSample", 
+					new AbstractAction("insertSample") { 
+						public void actionPerformed(ActionEvent evt) {
+							idField.setText(EXAMPLE_NCT_ID);
+						} 
+					} 
+			);
+		}
 	}	
 	
 	private static JComponent buildTip() {
