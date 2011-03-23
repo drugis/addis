@@ -32,7 +32,8 @@ import org.drugis.addis.AppInfo;
 public final class CopyrightInfo {
 	private final int YEAR2009 = 0;
 	private final int YEAR2010 = 1;
-	private final String[] years = {"2009", "2010"};
+	private final int YEAR2011 = 2;
+	private final String[] years = {"2009", "2010", "2011"};
 	private final static String HEADER_FILENAME = "HEADER";
 	private String [][] d_authors;
 	private static String d_aboutText;
@@ -45,6 +46,7 @@ public final class CopyrightInfo {
 		d_authors[YEAR2009] = new String[] {"Gert van Valkenhoef" , "Tommi Tervonen"};
 		d_authors[YEAR2010] = new String[] {"Gert van Valkenhoef" , "Tommi Tervonen", "Tijs Zwinkels", "Maarten Jacobs",
 									"Hanno Koeslag", "Florin Schimbinschi", "Ahmad Kamal", "Daniel Reid"};
+		d_authors[YEAR2011] = new String[] {"Gert van Valkenhoef", "Ahmad Kamal", "Daniel Reid", "Florin Schimbinschi" };
 		d_aboutText = new String(AppInfo.getAppName() + " is open source and licensed under GPLv3.\n");
 		
 		d_headerText = "/*\n" +

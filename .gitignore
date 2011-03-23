@@ -2,6 +2,8 @@
 .metadata
 .project
 .settings
+.gitignore
 *~
 src/main/generated-source
 target
+version
