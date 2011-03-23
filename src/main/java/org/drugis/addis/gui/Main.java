@@ -296,7 +296,7 @@ public class Main {
 	}
 
 	public int fileLoadActions() {
-		FileLoadDialog d = new FileLoadDialog(d_window, new String[] {"addis", "xml"}, new String[] {"ADDIS data files", "ADDIS legacy XML files"}) {
+		FileLoadDialog d = new FileLoadDialog(d_window, new String[][] {{"addis", "xml"}, {"addis"}, {"xml"}}, new String[] {"ADDIS or legacy XML files", "ADDIS data files", "ADDIS legacy XML files"}) {
 			@Override
 			public void doAction(String path, String extension) {
 				try {
