@@ -146,7 +146,6 @@ implements ViewBuilder {
 	public NetworkMetaAnalysisView(NetworkMetaAnalysisPresentation model, AddisWindow mainWindow) {
 		super(model, mainWindow);
 		d_mainWindow = mainWindow;
-		d_pm.startModels();
 	}
 	
 	public JComponent buildOverviewTab() {
@@ -261,18 +260,19 @@ implements ViewBuilder {
 	}
 	
 	private JComponent buildInconsistencyTab() {
-		FormLayout layout = new FormLayout("3dlu, fill:0:grow, 3dlu",
-		"3dlu, p, 3dlu, p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu");
+		FormLayout layout = new FormLayout("pref, 3dlu, fill:0:grow",
+		"p, 3dlu, p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
-		
+		builder.setDefaultDialogBorder();		
 		CellConstraints cc = new CellConstraints();
-		int row = 2;
-		builder.addSeparator("Results - network inconsistency model", cc.xy(2, row));
+		
+		int row = 1;
+		builder.addSeparator("Results - network inconsistency model", cc.xyw(1, row, 3));
 		row += 2;
 		
 		final InconsistencyModel inconsistencyModel = (InconsistencyModel) d_pm.getInconsistencyModel();
-		JProgressBar incProgressBar = new TaskProgressBar(d_pm.getProgressModel(inconsistencyModel));
-		builder.add(incProgressBar, cc.xy(2, row));
+		builder.add(createStartButton(inconsistencyModel), cc.xy(1, row));
+		builder.add(new TaskProgressBar(d_pm.getProgressModel(inconsistencyModel)), cc.xy(3, row));
 		row += 2;
 		
 		String inconsistencyText = "In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em> of evidence, " +
@@ -284,13 +284,13 @@ implements ViewBuilder {
 				"101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.";
 		JComponent inconsistencyNote = AuxComponentFactory.createHtmlField(inconsistencyText);
 		
-		builder.add(inconsistencyNote, cc.xy(2, row));
+		builder.add(inconsistencyNote, cc.xyw(1, row, 3));
 		row += 2;
 		
 		TablePanel inconsistencyTablePanel = createNetworkTablePanel(inconsistencyModel);
-		builder.addSeparator("Network Meta-Analysis (Inconsistency Model)", cc.xy(2, row));
+		builder.addSeparator("Network Meta-Analysis (Inconsistency Model)", cc.xyw(1, row, 3));
 		row += 2;
-		builder.add(inconsistencyTablePanel, cc.xy(2,row));
+		builder.add(inconsistencyTablePanel, cc.xyw(1, row, 3));
 		row += 2;
 		
 		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(
@@ -312,9 +312,9 @@ implements ViewBuilder {
 			}
 		});
 		
-		builder.addSeparator("Inconsistency Factors", cc.xy(2, row));
+		builder.addSeparator("Inconsistency Factors", cc.xyw(1, row, 3));
 		row += 2;
-		builder.add(inconsistencyFactorsTablePanel, cc.xy(2, row));
+		builder.add(inconsistencyFactorsTablePanel, cc.xyw(1, row, 3));
 		row += 2;
 		
 		NetworkVarianceTableModel mixedComparisonTableModel = new NetworkVarianceTableModel(d_pm, inconsistencyModel);
@@ -322,9 +322,9 @@ implements ViewBuilder {
 		mixedComparisontable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
 		final TablePanel mixedComparisonTablePanel = new TablePanel(mixedComparisontable);
 		
-		builder.addSeparator("Variance Calculation", cc.xy(2, row));
+		builder.addSeparator("Variance Calculation", cc.xyw(1, row, 3));
 		row += 2;
-		builder.add(mixedComparisonTablePanel, cc.xy(2, row));
+		builder.add(mixedComparisonTablePanel, cc.xyw(1, row, 3));
 		row += 2;
 		
 		inconsistencyModel.getActivityTask().addTaskListener(
@@ -333,28 +333,33 @@ implements ViewBuilder {
 				})
 			);
 		
-		builder.addSeparator("Convergence", cc.xy(2, row));
+		builder.addSeparator("Convergence", cc.xyw(1, row, 3));
 		row += 2;
-		builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xy(2, row));
+		builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xyw(1, row, 3));
 		row += 2;
-		builder.add(buildConvergenceTable(inconsistencyModel, d_pm.getInconsistencyModelConstructedModel()), cc.xy(2, row));
+		builder.add(buildConvergenceTable(inconsistencyModel, d_pm.getInconsistencyModelConstructedModel()), cc.xyw(1, row, 3));
 		row += 2;
 		
 		return builder.getPanel();
 	}
 	
 	private JComponent buildConsistencyTab() {
-		FormLayout layout = new FormLayout(	"3dlu, fill:0:grow, 3dlu",
-		"3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu" );
+		FormLayout layout = new FormLayout("pref, 3dlu, fill:0:grow",
+		"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
+		builder.setDefaultDialogBorder();
 		CellConstraints cc =  new CellConstraints();
 		
-		builder.addSeparator("Results - network consistency model", cc.xy(2, 2));
+		int row = 1;
+		builder.addSeparator("Results - network consistency model", cc.xyw(1, row, 3));
 		
+		row += 2;
 		final ConsistencyModel consistencyModel = d_pm.getConsistencyModel();
+		builder.add(createStartButton(consistencyModel), cc.xy(1, row));
 		JProgressBar conProgressBar = new TaskProgressBar(d_pm.getProgressModel(consistencyModel));
-		builder.add(conProgressBar, cc.xy(2, 4));
+		builder.add(conProgressBar, cc.xy(3, row));
 		
+		row += 2;
 		String consistencyText = "If there is no relevant inconsistency in the evidence, a consistency model can be used to draw " +
 				"conclusions about the relative effect of the included treatments. Using normal meta-analysis, we could only get a " +
 				"subset of the confidence intervals for relative effects we derive using network meta-analysis. " +
@@ -365,36 +370,35 @@ implements ViewBuilder {
 				"each of the treatments is the best, the second best, etc. This is given below in the rank probability plot. " +
 				"Rank probabilities sum to one, both within a rank over treatments and within a treatment over ranks.";
 		JComponent consistencyNote = AuxComponentFactory.createHtmlField(consistencyText);
-		
-		builder.add(consistencyNote, cc.xy(2, 6));
+		builder.add(consistencyNote, cc.xyw(1, row, 3));
 		
 		TablePanel consistencyTablePanel = createNetworkTablePanel(consistencyModel);
 		consistencyModel.getActivityTask().addTaskListener(
 				new AnalysisFinishedListener(new TablePanel[] {consistencyTablePanel}));
-		
-		int row = 8;
-		builder.addSeparator("Network Meta-Analysis (Consistency Model)", cc.xy(2, row));
+
 		row += 2;
-		builder.add(consistencyTablePanel, cc.xy(2, row));
+		builder.addSeparator("Network Meta-Analysis (Consistency Model)", cc.xyw(1, row, 3));
+		row += 2;
+		builder.add(consistencyTablePanel, cc.xyw(1, row, 3));
 		row += 2;
 		
-		builder.add(createRankProbChart(), cc.xy(2, row));
+		builder.add(createRankProbChart(), cc.xyw(1, row, 3));
 		row += 2;
 		
 		EnhancedTable varianceTable = new EnhancedTable(new NetworkVarianceTableModel(d_pm, consistencyModel), 300);
 		varianceTable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
 		
-		builder.addSeparator("Variance Parameters", cc.xy(2, row));
+		builder.addSeparator("Variance Parameters", cc.xyw(1, row, 3));
 		row += 2;
-		builder.add(new TablePanel(varianceTable), cc.xy(2, row));
-		row += 2;
-		
-		builder.addSeparator("Convergence", cc.xy(2, row));
+		builder.add(new TablePanel(varianceTable), cc.xyw(1, row, 3));
 		row += 2;
 		
-		builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xy(2, row));
+		builder.addSeparator("Convergence", cc.xyw(1, row, 3));
 		row += 2;
-		builder.add(buildConvergenceTable(consistencyModel, d_pm.getConsistencyModelConstructedModel()), cc.xy(2, row));
+		
+		builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xyw(1, row, 3));
+		row += 2;
+		builder.add(buildConvergenceTable(consistencyModel, d_pm.getConsistencyModelConstructedModel()), cc.xyw(1, row, 3));
 		row += 2;
 		
 		return builder.getPanel();
@@ -484,7 +488,7 @@ implements ViewBuilder {
 		return new TablePanel(table);
 	}
 
-	private JButton createStartButton(final NodeSplitModel model) {
+	private JButton createStartButton(final MixedTreatmentComparison model) {
 		JButton button = new JButton(ImageLoader.getIcon(FileNames.ICON_RUN));
 		button.setToolTipText("Run simulation");
 		button.addActionListener(new ActionListener() {
