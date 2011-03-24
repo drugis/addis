@@ -96,11 +96,7 @@ public class Main {
 					Runnable r = new Runnable() {
 						public void run() {
 							Throwable cause = taskEvent.getCause();
-							System.err.println("Task Failed: " + taskEvent.getSource());
-							cause.printStackTrace();
-							JOptionPane.showMessageDialog(null, cause.toString(),
-									"Task Failed: " + taskEvent.getSource(),
-									JOptionPane.ERROR_MESSAGE);
+							ErrorDialog.showDialog(cause, taskEvent.getSource() + " failed");
 						}
 					};
 					SwingUtilities.invokeLater(r);
@@ -334,7 +330,7 @@ public class Main {
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
 				e.printStackTrace();
-				ErrorDialog.showDialog(e, e.toString());
+				ErrorDialog.showDialog(e, "Unexpected error.");
 			}
 		};
 		

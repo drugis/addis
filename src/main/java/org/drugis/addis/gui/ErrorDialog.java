@@ -1,24 +1,37 @@
 package org.drugis.addis.gui;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import com.jgoodies.binding.value.ValueHolder;
 
 public class ErrorDialog {
 
 	private static final long serialVersionUID = 954780612211006478L;
 
 	public static void showDialog(final Throwable e, String title) {
-		final String smallMessage = e.getMessage();
-		final JLabel basicMessage = new JLabel(smallMessage);
+		final String smallMessage = "<html><b>" + e.getMessage() + "</b><BR><BR>Consider restarting ADDIS.</HTML>";
+		final JPanel panel = new JPanel(new BorderLayout());
+		panel.add(new JLabel(smallMessage), BorderLayout.NORTH);
+		final JScrollPane stackTrace = AuxComponentFactory.createTextArea(new ValueHolder(stackTrace(e)), false);
+		stackTrace.setPreferredSize(new Dimension(750, 300));
+		panel.add(stackTrace, BorderLayout.CENTER);
+		stackTrace.setVisible(false);
         final JButton stackTraceButton = new JButton("Show Stack Trace");
 
         JOptionPane pane =
-            new JOptionPane(basicMessage, JOptionPane.ERROR_MESSAGE,
+            new JOptionPane(panel, JOptionPane.ERROR_MESSAGE,
                             JOptionPane.YES_NO_OPTION, null,
                             new Object[] {stackTraceButton,"Continue"});
 
@@ -29,12 +42,12 @@ public class ErrorDialog {
                 public void actionPerformed(ActionEvent event) {
                     String label = stackTraceButton.getText( );
                     if (label.startsWith("Show")) {
-                        basicMessage.setText(getHTMLDetails(e));
+                        stackTrace.setVisible(true);
                         stackTraceButton.setText("Hide stack trace");
                         dialog.pack( );
                     }
                     else {
-                        basicMessage.setText(smallMessage);
+                    	stackTrace.setVisible(false);
                         stackTraceButton.setText("Show stack trace");
                         dialog.pack( );
                     }
@@ -43,6 +56,12 @@ public class ErrorDialog {
         dialog.setVisible(true);
     }
 
+	public static String stackTrace(Throwable throwable) {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+        throwable.printStackTrace(new PrintStream(os));
+        return os.toString();
+	}
+	
 	public static String getHTMLDetails(Throwable throwable) {
         StringBuffer b = new StringBuffer("<html>");
         int lengthOfLastTrace = 1;  // initial value

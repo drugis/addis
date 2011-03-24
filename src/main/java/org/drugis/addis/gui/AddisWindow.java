@@ -31,6 +31,7 @@ import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -293,7 +294,17 @@ public class AddisWindow extends JFrame {
 		d_editMenuEditItem = createEditItem();
 		d_editMenuEditItem.setEnabled(false);
 		editMenu.add(d_editMenuEditItem);
-		
+
+//		Leaving this here because it's handy		
+//		JMenuItem menuItem = new JMenuItem("Generate error");
+//		editMenu.add(menuItem);
+//		
+//		menuItem.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				throw new RuntimeException("Test exception");
+//			}
+//		});
+//		
 		return editMenu;
 	}
 

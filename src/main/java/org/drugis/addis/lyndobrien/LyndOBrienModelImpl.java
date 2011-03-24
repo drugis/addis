@@ -85,7 +85,7 @@ public class LyndOBrienModelImpl extends AbstractIterativeComputation implements
 
 	@Override
 	public void doStep() {
-		d_data.add(d_brd.nextSample());		
+		d_data.add(d_brd.nextSample());
 	}
 
 	public int getSimulationIterations() {
