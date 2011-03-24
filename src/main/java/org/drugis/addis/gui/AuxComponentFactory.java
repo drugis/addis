@@ -83,6 +83,7 @@ public class AuxComponentFactory {
 	private static final String USER_NOTE = "User Note:";
 	private static final String NCT_NOTE = "Source Text (ClinicalTrials.gov):";
 	public static final Color COLOR_NOTE = new Color(255, 255, 180);
+	public static final Color COLOR_NOTE_EDIT = new Color(255, 255, 210);
 
 	public static <T> JComboBox createBoundComboBox(T[] values, ValueModel model) {
 		SelectionInList<T> typeSelectionInList =
@@ -192,7 +193,7 @@ public class AuxComponentFactory {
 		
 		area.setBackground(COLOR_NOTE);
 		
-		try { // FIXME: does not seem to belong here?
+		try {
 			switch (note.getSource()) {
 			case CLINICALTRIALS:
 				doc.insertString(doc.getLength(), NCT_NOTE + "\n", doc.getStyle("bold"));

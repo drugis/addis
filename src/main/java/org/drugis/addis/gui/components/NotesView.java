@@ -55,7 +55,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 @SuppressWarnings("serial")
 public class NotesView extends JPanel {
-	private static final String DEFAULT_NOTE_TEXT = "To add a note, click here then press the button to the right";
+	private static final String DEFAULT_NOTE_TEXT = "To add a note, enter text here and then press the button to the right";
 	private final NotesModel d_notes;
 	private final boolean d_editable;
 
@@ -92,6 +92,7 @@ public class NotesView extends JPanel {
 			addNoteButton.setEnabled(false);
 			
 			final JTextArea area = (JTextArea) editNote.getViewport().getView();
+			area.setBackground(AuxComponentFactory.COLOR_NOTE_EDIT);
 			
 			area.getDocument().addDocumentListener(new DocumentListener() {
 				private void validateComponents() {
