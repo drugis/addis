@@ -334,8 +334,7 @@ public class Main {
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(null, e.toString(),
-						"Unexpected Error", JOptionPane.ERROR_MESSAGE);
+				ErrorDialog.showDialog(e, e.toString());
 			}
 		};
 		
