@@ -45,7 +45,12 @@ public class ErrorDialog {
 	private static final long serialVersionUID = 954780612211006478L;
 
 	public static void showDialog(final Throwable e, String title) {
-		final String smallMessage = "<html><b>" + e.getMessage() + "</b><BR><BR>Consider restarting ADDIS.</HTML>";
+		showDialog(e, title, true);
+	}
+
+	public static void showDialog(final Throwable e, String title, boolean restartAdvised) {
+		final String smallMessage = "<html><b>" + e.getMessage() + "</b>" +
+			(restartAdvised ? "<br><br>Consider restarting ADDIS." : "") + "</html>";
 		final JPanel panel = new JPanel(new BorderLayout());
 		panel.add(new JLabel(smallMessage), BorderLayout.NORTH);
 		final JScrollPane stackTrace = AuxComponentFactory.createTextArea(new ValueHolder(stackTrace(e)), false);
