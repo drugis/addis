@@ -537,21 +537,21 @@ public class AddStudyWizard extends Wizard {
 			}
 			
 			public void run() {				
-					String studyID = d_pm.getIdModel().getValue().toString().trim();
-					try {
-						d_importButton.setEnabled(false);
-						
-						PubMedIdList importPubMedID = new PubMedIDRetriever().importPubMedID(studyID.replace(" ", "%20"));
-						
-						if (!importPubMedID.isEmpty()) {
-							d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED).setValue(importPubMedID);
-						} else {
-							JOptionPane.showMessageDialog(d_me, "The Study ID ("+studyID+")\nhas no PubMed ID associated", "Warning", JOptionPane.WARNING_MESSAGE);
-						}
-						d_importButton.setEnabled(true);
-					} catch (Exception e) {
-						JOptionPane.showMessageDialog(d_me, "Couldn't retrieve PubMed ID ...", e.getMessage(), JOptionPane.ERROR_MESSAGE);
+				String studyID = d_pm.getIdModel().getValue().toString().trim();
+				try {
+					d_importButton.setEnabled(false);
+					
+					PubMedIdList importPubMedID = new PubMedIDRetriever().importPubMedID(studyID.replace(" ", "%20"));
+					
+					if (!importPubMedID.isEmpty()) {
+						d_pm.getCharacteristicModel(BasicStudyCharacteristic.PUBMED).setValue(importPubMedID);
+					} else {
+						JOptionPane.showMessageDialog(d_me, "The Study ID ("+studyID+")\nhas no PubMed ID associated", "Warning", JOptionPane.WARNING_MESSAGE);
 					}
+					d_importButton.setEnabled(true);
+				} catch (IOException e) {
+					JOptionPane.showMessageDialog(d_me, "Couldn't retrieve PubMed ID ...", e.getMessage(), JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		}
 		

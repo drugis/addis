@@ -24,24 +24,27 @@
 
 package org.drugis.addis.imports;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class PubMedIDRetriever {
 	public static final int READ_TIMEOUT = 3000;
 	public static final int CONNECTION_TIMEOUT = 3000;
 	public static final String PUBMED_API = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
 
-	public PubMedIdList importPubMedID(String StudyID) {
+	public PubMedIdList importPubMedID(String StudyID) throws IOException {
 		// First returned document is a key into the results.
 		InputStream inOne = openUrl(PUBMED_API + "esearch.fcgi?db=pubmed&retmax=0&usehistory=y&term="+StudyID+"[Secondary%20Source%20ID]");
 		String resultsUrl = getResultsUrl(inOne);
@@ -52,23 +55,29 @@ public class PubMedIDRetriever {
 		return getIdList(docTwo);
 	}
 	
-	public static Document parse (InputStream is) {
+	public static Document parse(InputStream is) throws IOException {
+		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+		domFactory.setValidating(false);
+		domFactory.setNamespaceAware(false);
+		domFactory.setIgnoringElementContentWhitespace(true);
+		DocumentBuilder builder = null;
 		try {
-			DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-			domFactory.setValidating(false);
-			domFactory.setNamespaceAware(false);
-			domFactory.setIgnoringElementContentWhitespace(true);
-			DocumentBuilder builder = domFactory.newDocumentBuilder();
-			
-			Document ret = builder.parse(is);
-	
-			return ret;
-		} catch (Exception e) {
-			throw new RuntimeException("Error parsing PubMed response", e);
+			builder = domFactory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			throw new RuntimeException(e);
 		}
+		
+		Document ret;
+		try {
+			ret = builder.parse(is);
+		} catch (SAXException e) {
+			throw new IOException(e);
+		}
+
+		return ret;
     }
 
-	private String getResultsUrl(InputStream inOne) {
+	private String getResultsUrl(InputStream inOne) throws IOException {
 		Document docOne = parse(inOne);
 		String queryKey = getTagValue(docOne, "QueryKey");
 		String webEnv = getTagValue(docOne, "WebEnv");
