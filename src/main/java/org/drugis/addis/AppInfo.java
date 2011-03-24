@@ -41,7 +41,7 @@ import org.drugis.addis.util.Version;
 
 public class AppInfo {
 	private static final String APPNAMEFALLBACK = "ADDIS";
-	private static final String APPVERSIONFALLBACK = "UNKNOWN";
+	public static final String APPVERSIONFALLBACK = "UNKNOWN";
 
 	public static String getAppVersion() {
 		return getProperty("version", APPVERSIONFALLBACK);

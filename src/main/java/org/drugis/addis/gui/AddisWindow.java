@@ -295,16 +295,16 @@ public class AddisWindow extends JFrame {
 		d_editMenuEditItem.setEnabled(false);
 		editMenu.add(d_editMenuEditItem);
 
-//		Leaving this here because it's handy		
-//		JMenuItem menuItem = new JMenuItem("Generate error");
-//		editMenu.add(menuItem);
-//		
-//		menuItem.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				throw new RuntimeException("Test exception");
-//			}
-//		});
-//		
+		if(AppInfo.getAppVersion().equals(AppInfo.APPVERSIONFALLBACK)) {
+			JMenuItem menuItem = new JMenuItem("Generate error");
+			editMenu.add(menuItem);
+			
+			menuItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					throw new RuntimeException("Test exception");
+				}
+			});
+		}
 		return editMenu;
 	}
 

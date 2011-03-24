@@ -18,7 +18,7 @@ Versions
 --------
 
 1.5: User interface improvements, risk-based sampling in MetaBR, new
-   schema-based XML format.
+   schema-based XML format, added note taking in study wizard.
 
 1.4: Lynd & O'Brien benefit-risk analysis, corrected meta-analysis,
    network meta-analysis enhancements (assessment of convergence,
