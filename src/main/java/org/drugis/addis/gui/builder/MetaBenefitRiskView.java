@@ -32,10 +32,10 @@ import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
@@ -47,6 +47,7 @@ import org.drugis.addis.gui.components.EntitiesTablePanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.SummaryCellRenderer;
+import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.task.TaskProgressBar;
@@ -101,23 +102,36 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 	
 	private JComponent buildProgressBars() {
 		FormLayout layout = new FormLayout(
-				"fill:0:grow",
-				"p, 3dlu, p");
+				"pref, 3dlu, fill:0:grow",
+				"p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();
 
-		builder.addSeparator("Running sub-analyses. Please wait.",cc.xy(1,1));
-		int row = 1;
+		builder.addSeparator("Sub-analyses are required. Please run them.", cc.xyw(1, 1, 3));
+		builder.add(createRunAllButton(), cc.xyw(1, 3, 3));
+		int row = 3;
 		for (Task t : d_pm.getMeasurementTasks()) {
 			LayoutUtil.addRow(layout);
 			row += 2;
-			JProgressBar bar = new TaskProgressBar(d_pm.getProgressModel(t));
-			builder.add(bar,cc.xy(1, row));
+			builder.add(AuxComponentFactory.createStartButton(t), cc.xy(1, row));
+			builder.add(new TaskProgressBar(d_pm.getProgressModel(t)), cc.xy(3, row));
 		}
 		
 		return builder.getPanel();
 	}
 	
+	private JButton createRunAllButton() {
+		JButton button = new JButton(ImageLoader.getIcon(FileNames.ICON_RUN));
+		button.setText("Run all required sub-analyses");
+		button.setToolTipText("Run all simulations");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				d_pm.startAllSimulations();
+			}
+		});
+		return button;
+	}
+
 	protected JButton createSaveImageButton(final JComponent chart) {
 		JButton button = new JButton("Save Image");
 		button.addActionListener(new ActionListener() {

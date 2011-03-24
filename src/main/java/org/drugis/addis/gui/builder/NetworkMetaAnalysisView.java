@@ -271,7 +271,7 @@ implements ViewBuilder {
 		row += 2;
 		
 		final InconsistencyModel inconsistencyModel = (InconsistencyModel) d_pm.getInconsistencyModel();
-		builder.add(createStartButton(inconsistencyModel), cc.xy(1, row));
+		builder.add(AuxComponentFactory.createStartButton(inconsistencyModel.getActivityTask()), cc.xy(1, row));
 		builder.add(new TaskProgressBar(d_pm.getProgressModel(inconsistencyModel)), cc.xy(3, row));
 		row += 2;
 		
@@ -355,7 +355,7 @@ implements ViewBuilder {
 		
 		row += 2;
 		final ConsistencyModel consistencyModel = d_pm.getConsistencyModel();
-		builder.add(createStartButton(consistencyModel), cc.xy(1, row));
+		builder.add(AuxComponentFactory.createStartButton(consistencyModel.getActivityTask()), cc.xy(1, row));
 		JProgressBar conProgressBar = new TaskProgressBar(d_pm.getProgressModel(consistencyModel));
 		builder.add(conProgressBar, cc.xy(3, row));
 		
@@ -441,7 +441,7 @@ implements ViewBuilder {
 			LayoutUtil.addRow(layout);
 			row += 2;
 			NodeSplitModel model = d_pm.getNodeSplitModel(p);
-			builder.add(createStartButton(model), cc.xy(1, row));
+			builder.add(AuxComponentFactory.createStartButton(model.getActivityTask()), cc.xy(1, row));
 			builder.add(new TaskProgressBar(d_pm.getProgressModel(model)), cc.xy(3, row));
 
 			LayoutUtil.addRow(layout);
@@ -486,17 +486,6 @@ implements ViewBuilder {
 		table.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
 		table.setDefaultRenderer(NodeSplitPValueSummary.class, new SummaryCellRenderer());
 		return new TablePanel(table);
-	}
-
-	private JButton createStartButton(final MixedTreatmentComparison model) {
-		JButton button = new JButton(ImageLoader.getIcon(FileNames.ICON_RUN));
-		button.setToolTipText("Run simulation");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ThreadHandler.getInstance().scheduleTask(model.getActivityTask());
-			}
-		});
-		return button;
 	}
 
 	public JComponent buildPanel() {

@@ -67,7 +67,7 @@ import fi.smaa.jsmaa.gui.views.PreferenceInformationView;
 import fi.smaa.jsmaa.gui.views.ResultsView;
 
 public class SMAAView implements ViewBuilder  {
-	protected static final String WAITING_MESSAGE = "Please wait while the sub-analyses run";
+	public static final String WAITING_MESSAGE = "Please wait while the sub-analyses run";
 
 	@SuppressWarnings("unchecked")
 	private SMAAPresentation d_pm;
@@ -85,7 +85,7 @@ public class SMAAView implements ViewBuilder  {
 	public JComponent buildPanel() {
 		CellConstraints cc=  new CellConstraints();
 		FormLayout layout = new FormLayout(
-				"left:0:grow",
+				"fill:0:grow",
 				"p, 3dlu, p, " + // 1-3 
 				"3dlu, p, 3dlu, p, " + // 4-7
 				"3dlu, p, 3dlu, p, " + // 8-11 
