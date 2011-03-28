@@ -61,7 +61,7 @@ import org.drugis.common.threading.event.TaskFailedEvent;
 @SuppressWarnings("serial")
 public class Main {
 	
-	private static final String EXAMPLE_XML = "defaultData.xml";
+	private static final String EXAMPLE_XML = "defaultData.addis";
 	public static final String PRINT_SCREEN = "F12"; // control p ... alt x ... etc
 	private static final String DISPLAY_EXAMPLE = "Example Data";
 	private static final String DISPLAY_NEW = "New File";
@@ -264,7 +264,7 @@ public class Main {
 
 	private void loadDomainFromXMLResource(String fileName) throws IOException, ClassNotFoundException {
 		InputStream fis = Main.class.getResourceAsStream("/org/drugis/addis/" + fileName);
-		d_domainMgr.loadLegacyXMLDomain(fis);
+		d_domainMgr.loadXMLDomain(fis);
 		attachDomainChangedModel();
 	}
 

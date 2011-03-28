@@ -1523,7 +1523,6 @@ public class JAXBConvertorTest {
 	}
 
 	@Test
-	@Ignore
 	public void writeTransformedXML() throws TransformerException, IOException {
 		InputStream transformedXmlStream = getTransformed();
 		FileOutputStream output = new FileOutputStream("transformedDefaultData.xml");
