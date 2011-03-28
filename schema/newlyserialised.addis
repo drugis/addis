@@ -1,0 +1,938 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addis-data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="addis-2.xsd">
+    <indications>
+        <indication name="Severe depression" code="310497006"/>
+    </indications>
+    <endpoints>
+        <endpoint description="" name="CGI Severity Change">
+            <continuous unitOfMeasurement="Deviation from the baseline of CGI Severity of Illness score" direction="HIGHER_IS_BETTER"/>
+        </endpoint>
+        <endpoint description="" name="Dropouts">
+            <rate direction="LOWER_IS_BETTER"/>
+        </endpoint>
+        <endpoint description="" name="HAM-D Responders">
+            <rate direction="HIGHER_IS_BETTER"/>
+        </endpoint>
+        <endpoint description="" name="MADRS Responders">
+            <rate direction="HIGHER_IS_BETTER"/>
+        </endpoint>
+    </endpoints>
+    <adverseEvents>
+        <adverseEvent description="" name="Abdominal Pain">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Abnormal Ejaculation">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Accommodation Disturbances">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Agitation">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Anorexia">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Anxiety">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Appetite Increased">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Asthenia">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Back Pain">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Blurred Vision">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Bronchitis">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Chest Pain">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Concentration Difficulties">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Constipation">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Depersonalization">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Diarrhea">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Diminished Sexual Desire">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Dizziness">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Dream Abnormality">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Dry Mouth">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Dysmenorrhea">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Dyspepsia">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Emotional Indifference">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Erectile Dysfunction">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Failing Memory">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Fatigue">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Flatulence">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Flu Syndrome">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Gastralgia">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Headache">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Impotence">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Increased Duration Of Sleep">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Increased Salivation">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Increased Sexual Desire">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Infection">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Insomnia">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Micturation Disturbances">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Nausea">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Nervousness">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Orgasmic Dysfunction">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Orgiastic Dysfunction">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Pain">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Palpitation">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Pharyngitis">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Rash">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Reduced Salivation">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Reduced Sleep">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Respiratory Disorder">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Rhinitis">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Sexual Dysfunction">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Somnolence">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Sweating">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Tinnitis">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Tremor">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Vertigo">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Vomiting">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Weight Gain">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+        <adverseEvent description="" name="Weight Loss">
+            <rate direction="LOWER_IS_BETTER"/>
+        </adverseEvent>
+    </adverseEvents>
+    <drugs>
+        <drug atcCode="N06AX12" name="Bupropion"/>
+        <drug atcCode="N06AB04" name="Citalopram"/>
+        <drug atcCode="N06AX21" name="Duloxetine"/>
+        <drug atcCode="N06AB10" name="Escitalopram"/>
+        <drug atcCode="N06AB03" name="Fluoxetine"/>
+        <drug atcCode="N06AB08" name="Fluvoxamine"/>
+        <drug atcCode="N06AX11" name="Mirtazapine"/>
+        <drug atcCode="N06AB05" name="Paroxetine"/>
+        <drug atcCode="Placebo" name="Placebo"/>
+        <drug atcCode="N06AB06" name="Sertraline"/>
+        <drug atcCode="N06AX16" name="Venlafaxine"/>
+    </drugs>
+    <populationCharacteristics/>
+    <studies>
+        <study name="Aberg-Wistedt et al, 2000">
+            <indication name="Severe depression">
+                <notes/>
+            </indication>
+            <characteristics>
+                <title>
+                    <value>Sertraline versus paroxetine in major depression: clinical outcome after six months of continuous therapy</value>
+                    <notes/>
+                </title>
+                <allocation>
+                    <value>RANDOMIZED</value>
+                    <notes/>
+                </allocation>
+                <blinding>
+                    <value>DOUBLE_BLIND</value>
+                    <notes/>
+                </blinding>
+                <objective>
+                    <value>Relatively little research is available comparing the efficacy and tolerability of selective serotonin reuptake inhibitors (SSRIs) during continuation therapy. This investigation reports the differential effect of 6 months of treatment with sertraline versus paroxetine for symptoms of depression, quality of life, and personality outcomes.</value>
+                    <notes/>
+                </objective>
+                <status>
+                    <value>COMPLETED</value>
+                    <notes/>
+                </status>
+                <inclusion>
+                    <value>The subjects were male and female outpatients, aged 18 years and older, who met DSM-III-R criteria for major depression and who had a 10-item Montgomery-Åsberg Depression Rating Scale (MADRS)9  score of 21 or more at baseline, with less than 25% improvement on the MADRS during the washout period. Enrollment of fertile women was contingent upon a negative result on a pregnancy test and stable use for 3 months of medically accepted contraception before study entry.</value>
+                    <notes/>
+                </inclusion>
+                <exclusion>
+                    <value>(1) current or past history of mania or hypomania, alcoholism or substance abuse, dementia, or epilepsy; (2) presence of psychotic depression or organic affective illness; (3) history of suicide attempts or current high suicide risk (&gt;4 on item 10 of the MADRS); (4) current use of any psychotropic medication, except for the use of one of three hypnotic/anxiolytic medications (nitrazepam [2.5-10 mg], flunitrazepam [0.5-2 mg], or oxazepam [15-25 mg]); (5) treatment with lithium in the month prior to the screening or with a monoamine oxidase inhibitor in the 2 weeks before the screening; (6) a history of significant intolerance or allergic reaction to sertraline or paroxetine; and (7) evidence of clinically significant hepatic or renal disease, any other acute or unstable medical condition, or use of any concomitant medication that might interfere with the safe conduct of the study.</value>
+                    <notes/>
+                </exclusion>
+                <references>
+                    <pubMedId>11106136</pubMedId>
+                </references>
+            </characteristics>
+            <studyOutcomeMeasures>
+                <studyOutcomeMeasure id="endpoint-MADRS Responders">
+                    <endpoint name="MADRS Responders"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-Dropouts">
+                    <endpoint name="Dropouts"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-CGI Severity Change">
+                    <endpoint name="CGI Severity Change"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Erectile Dysfunction">
+                    <adverseEvent name="Erectile Dysfunction"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Palpitation">
+                    <adverseEvent name="Palpitation"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Somnolence">
+                    <adverseEvent name="Somnolence"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Abnormal Ejaculation">
+                    <adverseEvent name="Abnormal Ejaculation"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Dream Abnormality">
+                    <adverseEvent name="Dream Abnormality"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Diarrhea">
+                    <adverseEvent name="Diarrhea"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Weight Loss">
+                    <adverseEvent name="Weight Loss"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Diminished Sexual Desire">
+                    <adverseEvent name="Diminished Sexual Desire"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Orgasmic Dysfunction">
+                    <adverseEvent name="Orgasmic Dysfunction"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Increased Duration Of Sleep">
+                    <adverseEvent name="Increased Duration Of Sleep"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Weight Gain">
+                    <adverseEvent name="Weight Gain"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Reduced Salivation">
+                    <adverseEvent name="Reduced Salivation"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Headache">
+                    <adverseEvent name="Headache"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Nausea">
+                    <adverseEvent name="Nausea"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Dizziness">
+                    <adverseEvent name="Dizziness"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Sweating">
+                    <adverseEvent name="Sweating"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Accommodation Disturbances">
+                    <adverseEvent name="Accommodation Disturbances"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+            </studyOutcomeMeasures>
+            <arms>
+                <arm size="177" name="83">
+                    <notes/>
+                </arm>
+                <arm size="176" name="85">
+                    <notes/>
+                </arm>
+            </arms>
+            <measurements>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-MADRS Responders"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="158"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-MADRS Responders"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="157"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-Dropouts"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="61"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-Dropouts"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="64"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-CGI Severity Change"/>
+                    <arm id="83"/>
+                    <continuousMeasurement stdDev="1.6" sampleSize="177" mean="-2.5"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-CGI Severity Change"/>
+                    <arm id="85"/>
+                    <continuousMeasurement stdDev="1.5" sampleSize="176" mean="-2.6"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Erectile Dysfunction"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="8"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Erectile Dysfunction"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="11"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Palpitation"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="19"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Palpitation"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="5"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Somnolence"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="24"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Somnolence"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="15"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Abnormal Ejaculation"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="16"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Abnormal Ejaculation"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="13"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Dream Abnormality"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="49"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Dream Abnormality"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="37"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Diarrhea"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="9"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Diarrhea"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="27"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Weight Loss"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="12"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Weight Loss"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="22"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Diminished Sexual Desire"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="30"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Diminished Sexual Desire"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="19"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Orgasmic Dysfunction"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="46"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Orgasmic Dysfunction"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="33"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Increased Duration Of Sleep"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="27"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Increased Duration Of Sleep"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="8"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Weight Gain"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="59"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Weight Gain"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="36"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Reduced Salivation"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="26"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Reduced Salivation"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="19"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Headache"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="0"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Headache"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="20"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Nausea"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="18"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Nausea"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="20"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Dizziness"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="26"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Dizziness"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="12"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Sweating"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="39"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Sweating"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="30"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Accommodation Disturbances"/>
+                    <arm id="83"/>
+                    <rateMeasurement sampleSize="177" rate="22"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Accommodation Disturbances"/>
+                    <arm id="85"/>
+                    <rateMeasurement sampleSize="176" rate="20"/>
+                </measurement>
+            </measurements>
+            <epochs>
+                <epoch name="Screening">
+                    <notes/>
+                </epoch>
+                <epoch name="Randomization">
+                    <notes/>
+                </epoch>
+                <epoch name="Main phase">
+                    <notes/>
+                </epoch>
+                <epoch name="Follow up">
+                    <notes/>
+                </epoch>
+            </epochs>
+            <activities>
+                <studyActivity>
+                    <activity>
+                        <randomization/>
+                    </activity>
+                    <usedBy epoch="Randomization" arm="83"/>
+                    <usedBy epoch="Randomization" arm="85"/>
+                    <notes/>
+                </studyActivity>
+                <studyActivity>
+                    <activity>
+                        <follow-up/>
+                    </activity>
+                    <usedBy epoch="Follow up" arm="83"/>
+                    <usedBy epoch="Follow up" arm="85"/>
+                    <notes/>
+                </studyActivity>
+                <studyActivity>
+                    <activity>
+                        <screening/>
+                    </activity>
+                    <usedBy epoch="Screening" arm="83"/>
+                    <usedBy epoch="Screening" arm="85"/>
+                    <notes/>
+                </studyActivity>
+                <studyActivity>
+                    <activity>
+                        <treatment>
+                            <flexibleDose unit="MILLIGRAMS_A_DAY" maxDose="40.0" minDose="20.0"/>
+                            <drug name="Paroxetine"/>
+                        </treatment>
+                    </activity>
+                    <usedBy epoch="Main phase" arm="83"/>
+                    <notes/>
+                </studyActivity>
+                <studyActivity>
+                    <activity>
+                        <treatment>
+                            <flexibleDose unit="MILLIGRAMS_A_DAY" maxDose="150.0" minDose="50.0"/>
+                            <drug name="Sertraline"/>
+                        </treatment>
+                    </activity>
+                    <usedBy epoch="Main phase" arm="85"/>
+                    <notes/>
+                </studyActivity>
+            </activities>
+            
+            <notes/>
+        </study>
+        <study name="Alves et al, 1999">
+            <indication name="Severe depression">
+                <notes/>
+            </indication>
+            <characteristics>
+                <title>
+                    <value>Efficacy and tolerability of venlafaxine and fluoxetine in outpatients with major depression. (Primary Care Psychiatry, 1999; 5:57-63)</value>
+                    <notes/>
+                </title>
+                <allocation>
+                    <value>RANDOMIZED</value>
+                    <notes/>
+                </allocation>
+                <blinding>
+                    <value>DOUBLE_BLIND</value>
+                    <notes/>
+                </blinding>
+                <centers>
+                    <value>3</value>
+                    <notes/>
+                </centers>
+                <objective>
+                    <value>A 12 week double-blind, randomized comparison of the efficacy and tolerability of venlafaxine and fluoxetine in outpatients with major depression.</value>
+                    <notes/>
+                </objective>
+                <status>
+                    <value>COMPLETED</value>
+                    <notes/>
+                </status>
+                <inclusion>
+                    <value>Males or females aged 18-65 years were eligible for the study if they met DSM-IV diagnostic criteria for major depression, had a minimum score of 20 on the 21-item HAM-D scale and had less than a 20% decrease in HAM-D score between screening and baseline. Women of childbearing potential were required to have a negative urine beta-human chorionic gonadotropin test prior to study entry and had to use a medically acceptable form of contraception (hormonal, intrauterine device or combination of barrier methods) throughout the study.</value>
+                    <notes/>
+                </inclusion>
+                <exclusion>
+                    <value>Patients were excluded if they had known sensitivity to venlafaxine or fluoxetine. In addition, patients with a history of any clinically significant cardiac, hepatic or renal disease or clinically significant abnormalities on a screeing physical examination, electrodiagram (ECG) or laboratory tests were excluded. Patients with any mental or neurologic disorder were also excluded (narrow anlge glaucoma, urinary retention, a history of a seizure disorder, a history of bipolar disorder, or a history of drug or alcohol dependence). Women who were breast-feeding were not eligible. Patients where preculded from participation if they had used any investigational drug, antipsychotic drug, electroconvulsive therapy or sumatriptan within 30 days of the baseline, fluoxetine within 21 days, a monoamine oxidase inhibitor within 14 days or other antidepressants, anxiolytic or sedative-hypnotic drug (except diazepam) within 7 days. The use of other drugs with psychotropic effects (e.g. beta-adrenergic blockers) within 7 days wasy prohibited unless a stable dose had been maintained for at least 3 months.</value>
+                    <notes/>
+                </exclusion>
+                <references/>
+            </characteristics>
+            <studyOutcomeMeasures>
+                <studyOutcomeMeasure id="endpoint-MADRS Responders">
+                    <endpoint name="MADRS Responders"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-Dropouts">
+                    <endpoint name="Dropouts"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-HAM-D Responders">
+                    <endpoint name="HAM-D Responders"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Insomnia">
+                    <adverseEvent name="Insomnia"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Anxiety">
+                    <adverseEvent name="Anxiety"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Vomiting">
+                    <adverseEvent name="Vomiting"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Nausea">
+                    <adverseEvent name="Nausea"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Dry Mouth">
+                    <adverseEvent name="Dry Mouth"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Dizziness">
+                    <adverseEvent name="Dizziness"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Constipation">
+                    <adverseEvent name="Constipation"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Anorexia">
+                    <adverseEvent name="Anorexia"/>
+                    <notes/>
+                </studyOutcomeMeasure>
+            </studyOutcomeMeasures>
+            <arms>
+                <arm size="40" name="173">
+                    <notes/>
+                </arm>
+                <arm size="47" name="175">
+                    <notes/>
+                </arm>
+            </arms>
+            <measurements>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-MADRS Responders"/>
+                    <arm id="173"/>
+                    <rateMeasurement sampleSize="40" rate="32"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-MADRS Responders"/>
+                    <arm id="175"/>
+                    <rateMeasurement sampleSize="47" rate="26"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-Dropouts"/>
+                    <arm id="173"/>
+                    <rateMeasurement sampleSize="40" rate="10"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-Dropouts"/>
+                    <arm id="175"/>
+                    <rateMeasurement sampleSize="47" rate="9"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-HAM-D Responders"/>
+                    <arm id="173"/>
+                    <rateMeasurement sampleSize="40" rate="25"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-HAM-D Responders"/>
+                    <arm id="175"/>
+                    <rateMeasurement sampleSize="47" rate="30"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Insomnia"/>
+                    <arm id="173"/>
+                    <rateMeasurement sampleSize="40" rate="2"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Insomnia"/>
+                    <arm id="175"/>
+                    <rateMeasurement sampleSize="47" rate="5"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Anxiety"/>
+                    <arm id="173"/>
+                    <rateMeasurement sampleSize="40" rate="1"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Anxiety"/>
+                    <arm id="175"/>
+                    <rateMeasurement sampleSize="47" rate="4"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Vomiting"/>
+                    <arm id="173"/>
+                    <rateMeasurement sampleSize="40" rate="6"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Vomiting"/>
+                    <arm id="175"/>
+                    <rateMeasurement sampleSize="47" rate="1"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Nausea"/>
+                    <arm id="173"/>
+                    <rateMeasurement sampleSize="40" rate="13"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Nausea"/>
+                    <arm id="175"/>
+                    <rateMeasurement sampleSize="47" rate="13"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Dry Mouth"/>
+                    <arm id="173"/>
+                    <rateMeasurement sampleSize="40" rate="4"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Dry Mouth"/>
+                    <arm id="175"/>
+                    <rateMeasurement sampleSize="47" rate="3"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Dizziness"/>
+                    <arm id="173"/>
+                    <rateMeasurement sampleSize="40" rate="4"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Dizziness"/>
+                    <arm id="175"/>
+                    <rateMeasurement sampleSize="47" rate="1"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Constipation"/>
+                    <arm id="173"/>
+                    <rateMeasurement sampleSize="40" rate="3"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Constipation"/>
+                    <arm id="175"/>
+                    <rateMeasurement sampleSize="47" rate="1"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Anorexia"/>
+                    <arm id="173"/>
+                    <rateMeasurement sampleSize="40" rate="3"/>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Anorexia"/>
+                    <arm id="175"/>
+                    <rateMeasurement sampleSize="47" rate="1"/>
+                </measurement>
+            </measurements>
+            <epochs>
+                <epoch name="Main phase">
+                    <notes/>
+                </epoch>
+                <epoch name="Phase I">
+                    <notes/>
+                </epoch>
+                <epoch name="Phase II">
+                    <notes><note source="MANUAL">Cross-over!</note></notes>
+                </epoch>
+            </epochs>
+            <activities>
+                <studyActivity>
+                    <activity>
+                        <treatment>
+                            <flexibleDose unit="MILLIGRAMS_A_DAY" maxDose="150.0" minDose="75.0"/>
+                            <drug name="Venlafaxine"/>
+                        </treatment>
+                    </activity>
+                    <usedBy epoch="Phase I" arm="173"/>
+                    <usedBy epoch="Phase II" arm="175"/>
+                    <notes/>
+                </studyActivity>
+                <studyActivity>
+                    <activity>
+                        <treatment>
+                            <flexibleDose unit="MILLIGRAMS_A_DAY" maxDose="40.0" minDose="20.0"/>
+                            <drug name="Fluoxetine"/>
+                        </treatment>
+                    </activity>
+                    <usedBy epoch="Phase I" arm="175"/>
+                    <usedBy epoch="Phase II" arm="173"/>
+                    <notes/>
+                </studyActivity>
+                <studyActivity>
+                    <activity>
+                        <randomization/>
+                    </activity>
+                    <usedBy epoch="main phase" arm="175"/>
+                    <usedBy epoch="main phase" arm="173"/>
+                    <notes></notes>
+                </studyActivity>
+            </activities>
+            <notes/>
+        </study>
+     </studies>
+    <metaAnalyses>
+        <pairwiseMetaAnalysis name="Fluox-Venla Dizziness">
+            <indication name="Severe depression"/>
+            <adverseEvent name="Dizziness"/>
+            <alternative>
+                <drug name="Fluoxetine"/>
+                <arms>
+                    <arm name="175"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <drug name="Venlafaxine"/>
+                <arms>
+                    <arm name="173"/>
+                </arms>
+            </alternative>
+        </pairwiseMetaAnalysis>
+        <pairwiseMetaAnalysis name="Fluox-Venla HAM-D">
+            <indication name="Severe depression"/>
+            <endpoint name="HAM-D Responders"/>
+            <alternative>
+                <drug name="Fluoxetine"/>
+                <arms>
+                    <arm name="175"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <drug name="Venlafaxine"/>
+                <arms>
+                    <arm name="173"/>
+                </arms>
+            </alternative>
+        </pairwiseMetaAnalysis>
+        <pairwiseMetaAnalysis name="Fluox-Venla Insomnia">
+            <indication name="Severe depression"/>
+            <adverseEvent name="Insomnia"/>
+            <alternative>
+                <drug name="Fluoxetine"/>
+                <arms>
+                    <arm name="175"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <drug name="Venlafaxine"/>
+                <arms>
+                    <arm name="173"/>
+                </arms>
+            </alternative>
+        </pairwiseMetaAnalysis>
+        <pairwiseMetaAnalysis name="Fluox-Venla Nausea">
+            <indication name="Severe depression"/>
+            <adverseEvent name="Nausea"/>
+            <alternative>
+                <drug name="Fluoxetine"/>
+                <arms>
+                    <arm name="175"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <drug name="Venlafaxine"/>
+                <arms>
+                    <arm name="173"/>
+                </arms>
+            </alternative>
+        </pairwiseMetaAnalysis>
+        <networkMetaAnalysis name="Hansen Diarrhea">
+            <indication name="Severe depression"/>
+            <adverseEvent name="Diarrhea"/>
+            <alternative>
+                <drug name="Paroxetine"/>
+                <arms>
+                    <arm name="83"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <drug name="Sertraline"/>
+                <arms>
+                    <arm name="85"/>
+                </arms>
+            </alternative>
+        </networkMetaAnalysis>
+
+    </metaAnalyses>
+    <benefitRiskAnalyses/>
+</addis-data>
