@@ -50,7 +50,7 @@ public class PubMedDataBankRetriever {
 		}
 	}
 	
-	public List<DataBankId> getDataBankList(PubMedId id) {
+	public List<DataBankId> getDataBankList(PubMedId id) throws IOException {
 		InputStream is = PubMedIDRetriever.openUrl(PubMedIDRetriever.PUBMED_API + 
 				"efetch.fcgi?db=pubmed&retmode=xml&id=" + id.getId());
 		Document doc = PubMedIDRetriever.parse(is);
@@ -90,7 +90,7 @@ public class PubMedDataBankRetriever {
 		return list;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		String[] pmids = {
 				"15562200", "17130196", "17277036", "15504997",
 				"17130197", "15855572", "17373638", "12882864",

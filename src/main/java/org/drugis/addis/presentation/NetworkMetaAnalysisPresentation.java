@@ -132,10 +132,6 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	public TaskProgressModel getProgressModel(MixedTreatmentComparison mtc) {
 		return d_progressModels.get(mtc);
 	}
-
-	public void startModels() {
-		getBean().run();
-	}
 	
 	public QuantileSummary getQuantileSummary(MixedTreatmentComparison m, Parameter p) {
 		return getBean().getQuantileSummary(m, p);

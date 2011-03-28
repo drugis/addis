@@ -257,7 +257,7 @@ public class LyndOBrienView implements ViewBuilder {
 	
 	
 	protected BuildViewWhenReadyComponent createWaiter(ViewBuilder builder) {
-		return new BuildViewWhenReadyComponent(builder, d_BRpm.getMeasurementsReadyModel(), "");
+		return new BuildViewWhenReadyComponent(builder, d_BRpm.getMeasurementsReadyModel(), SMAAView.WAITING_MESSAGE);
 	}
 
 }

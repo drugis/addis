@@ -61,7 +61,6 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		} else {
 			d_view = new LyndOBrienView(d_pm, d_mainWindow);
 		}
-		d_pm.startAllSimulations();
 	}
 	
 

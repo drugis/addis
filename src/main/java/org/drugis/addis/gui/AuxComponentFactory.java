@@ -27,12 +27,15 @@ package org.drugis.addis.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -51,6 +54,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.NumberFormatter;
 import javax.swing.text.StyledDocument;
 
+import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.PubMedId;
@@ -60,8 +64,11 @@ import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.gui.wizard.AddStudyWizard;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.DayDateFormat;
 import org.drugis.common.gui.OneWayObjectFormat;
+import org.drugis.common.threading.Task;
+import org.drugis.common.threading.ThreadHandler;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
@@ -76,6 +83,7 @@ public class AuxComponentFactory {
 	private static final String USER_NOTE = "User Note:";
 	private static final String NCT_NOTE = "Source Text (ClinicalTrials.gov):";
 	public static final Color COLOR_NOTE = new Color(255, 255, 180);
+	public static final Color COLOR_NOTE_EDIT = new Color(255, 255, 210);
 
 	public static <T> JComboBox createBoundComboBox(T[] values, ValueModel model) {
 		SelectionInList<T> typeSelectionInList =
@@ -185,7 +193,7 @@ public class AuxComponentFactory {
 		
 		area.setBackground(COLOR_NOTE);
 		
-		try { // FIXME: does not seem to belong here?
+		try {
 			switch (note.getSource()) {
 			case CLINICALTRIALS:
 				doc.insertString(doc.getLength(), NCT_NOTE + "\n", doc.getStyle("bold"));
@@ -230,5 +238,16 @@ public class AuxComponentFactory {
 	
 	public static JLabel createAutoWrapLabel(ValueModel value) {
 		return BasicComponentFactory.createLabel(new HTMLWrappingModel(value));
+	}
+
+	public static JButton createStartButton(final Task task) {
+		JButton button = new JButton(ImageLoader.getIcon(FileNames.ICON_RUN));
+		button.setToolTipText("Run simulation");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ThreadHandler.getInstance().scheduleTask(task);
+			}
+		});
+		return button;
 	}
 }

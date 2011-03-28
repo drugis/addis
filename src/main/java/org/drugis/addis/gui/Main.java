@@ -73,7 +73,7 @@ public class Main {
 	private String d_displayName = null;
 	private DomainChangedModel d_domainChanged;
 
-	public Main() {
+	public Main(String[] args) {
 		ImageLoader.setImagePath("/org/drugis/addis/gfx/");
 		
 		GUIHelper.initializeLookAndFeel();
@@ -81,8 +81,12 @@ public class Main {
 		ToolTipManager.sharedInstance().setInitialDelay(0);
 
 		GUIFactory.configureJFreeChartLookAndFeel();
-
-		initializeDomain();		
+ 
+		initializeDomain();
+		
+		if (args.length > 0) {
+			d_curFilename = args[0];
+		}
 		
 		addTaskFailureListener();
 	}
@@ -325,7 +329,7 @@ public class Main {
 		setDataChanged(false);
 	}
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		ThreadGroup threadGroup = new ThreadGroup("ExceptionGroup") {
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
@@ -337,13 +341,27 @@ public class Main {
 		Thread mainThread = new Thread(threadGroup, "Main thread") {
 			@Override
 			public void run() {
-				Main main = new Main();
-				main.showWelcome();
+				Main main = new Main(args);
+				main.startGUI();
 			}
 		};
 		mainThread.start();
 	}
  
+	private void startGUI() {
+		if (d_curFilename == null) {
+			showWelcome();
+		} else {
+			try {
+				loadDomainFromXMLFile(d_curFilename);
+			} catch (Exception e) {
+				ErrorDialog.showDialog(e, "Could not load file.", false);
+			} finally {
+				showMainWindow();
+			}
+		}
+	}
+
 	public void leftTreeFocus(Object node) {
 		d_window.leftTreeFocus(node);
 	}
