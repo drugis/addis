@@ -45,11 +45,11 @@ public class ErrorDialog {
 	private static final long serialVersionUID = 954780612211006478L;
 
 	public static void showDialog(final Throwable e, String title) {
-		showDialog(e, title, true);
+		showDialog(e, title, e.getMessage(), true);
 	}
 
-	public static void showDialog(final Throwable e, String title, boolean restartAdvised) {
-		final String smallMessage = "<html><b>" + e.getMessage() + "</b>" +
+	public static void showDialog(final Throwable e, String title, String message, boolean restartAdvised) {
+		final String smallMessage = "<html><b>" + message + "</b>" +
 			(restartAdvised ? "<br><br>Consider restarting ADDIS." : "") + "</html>";
 		final JPanel panel = new JPanel(new BorderLayout());
 		panel.add(new JLabel(smallMessage), BorderLayout.NORTH);

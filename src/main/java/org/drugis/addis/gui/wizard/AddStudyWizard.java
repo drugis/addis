@@ -78,6 +78,7 @@ import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
+import org.drugis.addis.gui.ErrorDialog;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
@@ -550,7 +551,7 @@ public class AddStudyWizard extends Wizard {
 					}
 					d_importButton.setEnabled(true);
 				} catch (IOException e) {
-					JOptionPane.showMessageDialog(d_me, "Couldn't retrieve PubMed ID ...", e.getMessage(), JOptionPane.ERROR_MESSAGE);
+					ErrorDialog.showDialog(e, "Couldn't retrieve PubMed ID", "Error reading from PubMed: " + e.toString(), false);
 				}
 			}
 		}
@@ -784,8 +785,7 @@ public class AddStudyWizard extends Wizard {
 				} catch (FileNotFoundException e) { // file not found is expected when user enters "strange" IDs
 					JOptionPane.showMessageDialog(d_me, "Couldn't find NCT ID: "+ d_pm.getIdModel().getValue(), "Not Found" , JOptionPane.WARNING_MESSAGE);
 				} catch (IOException e) { // IOExceptions are expected when there is a network error -- so report them
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(d_me, "Unable to read from ClinicalTrials.gov: " + e.getMessage(), "Error reading", JOptionPane.ERROR_MESSAGE);
+					ErrorDialog.showDialog(e, "Couldn't retrieve study", "Error reading from ClinicalTrials.gov: " + e.toString(), false);
 				} catch (Exception e) { // otherwise throw onwards.
 					throw new RuntimeException("Unexpected error trying to import study from ClinicalTrials.gov", e);
 				}
