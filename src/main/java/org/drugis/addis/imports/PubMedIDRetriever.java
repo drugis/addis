@@ -43,6 +43,21 @@ public class PubMedIDRetriever {
 	public static final int READ_TIMEOUT = 3000;
 	public static final int CONNECTION_TIMEOUT = 3000;
 	public static final String PUBMED_API = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
+	
+	public static class ParseException extends IOException {
+		private static final long serialVersionUID = -3902366298759803187L;
+		private final Throwable d_cause;
+
+		public ParseException(String message, Throwable cause) {
+			super(message);
+			d_cause = cause;
+		}
+		
+		@Override
+		public Throwable getCause() {
+			return d_cause;
+		}
+	}
 
 	public PubMedIdList importPubMedID(String StudyID) throws IOException {
 		// First returned document is a key into the results.
@@ -71,7 +86,7 @@ public class PubMedIDRetriever {
 		try {
 			ret = builder.parse(is);
 		} catch (SAXException e) {
-			throw new IOException(e);
+			throw new ParseException("Error parsing PubMed response", e);
 		}
 
 		return ret;
@@ -101,16 +116,12 @@ public class PubMedIDRetriever {
 		return PubMedID;
 	}
 
-	public static InputStream openUrl(String url) {
-		try { 
-			URLConnection urlConn = new URL(url).openConnection();
-			urlConn.setConnectTimeout(CONNECTION_TIMEOUT);
-			urlConn.setReadTimeout(READ_TIMEOUT);
-			InputStream is = urlConn.getInputStream();
-			return is;
-		} catch (Exception e) {
-			throw new RuntimeException("Could not open PubMed connection", e);
-		}
+	public static InputStream openUrl(String url) throws IOException {
+		URLConnection urlConn = new URL(url).openConnection();
+		urlConn.setConnectTimeout(CONNECTION_TIMEOUT);
+		urlConn.setReadTimeout(READ_TIMEOUT);
+		InputStream is = urlConn.getInputStream();
+		return is;
 	}
 
 }

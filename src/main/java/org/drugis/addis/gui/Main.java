@@ -355,7 +355,7 @@ public class Main {
 			try {
 				loadDomainFromXMLFile(d_curFilename);
 			} catch (Exception e) {
-				ErrorDialog.showDialog(e, "Could not load file.", false);
+				ErrorDialog.showDialog(e, "Could not load file.", e.getMessage(), false);
 			} finally {
 				showMainWindow();
 			}
