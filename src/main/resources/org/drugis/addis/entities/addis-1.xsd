@@ -567,19 +567,19 @@
 	</xs:complexType>
 	<xs:complexType name="StringWithNotes">
 		<xs:sequence>
-			<xs:element name="value" type="xs:string"/>
+			<xs:element minOccurs="0" name="value" type="xs:string"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="DateWithNotes">
 		<xs:sequence>
-			<xs:element name="value" type="xs:date"/>
+			<xs:element minOccurs="0" name="value" type="xs:date"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="IntegerWithNotes">
 		<xs:sequence>
-			<xs:element name="value" type="xs:int"/>
+			<xs:element minOccurs="0" name="value" type="xs:int"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>

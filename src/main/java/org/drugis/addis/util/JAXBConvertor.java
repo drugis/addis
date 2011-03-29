@@ -510,57 +510,57 @@ public class JAXBConvertor {
 
 	public static Characteristics convertStudyCharacteristics(CharacteristicsMap characteristics) {
 		Characteristics newChars = new Characteristics();
-		if (characteristics.containsKey(BasicStudyCharacteristic.ALLOCATION)) {
+		if (inMap(characteristics, BasicStudyCharacteristic.ALLOCATION)) {
 			org.drugis.addis.entities.data.Allocation allocationWithNotes = allocationWithNotes((Allocation) characteristics.get(BasicStudyCharacteristic.ALLOCATION).getValue());
 			convertOldNotes(characteristics.get(BasicStudyCharacteristic.ALLOCATION).getNotes() , allocationWithNotes.getNotes().getNote());
 			newChars.setAllocation(allocationWithNotes);
 		}
-		if (characteristics.containsKey(BasicStudyCharacteristic.BLINDING)) {
+		if (inMap(characteristics, BasicStudyCharacteristic.BLINDING)) {
 			org.drugis.addis.entities.data.Blinding blindingWithNotes = blindingWithNotes((Blinding) characteristics.get(BasicStudyCharacteristic.BLINDING).getValue());
 			convertOldNotes(characteristics.get(BasicStudyCharacteristic.BLINDING).getNotes(), blindingWithNotes.getNotes().getNote());
 			newChars.setBlinding(blindingWithNotes);
 		}
-		if (characteristics.containsKey(BasicStudyCharacteristic.CENTERS)) {
+		if (inMap(characteristics, BasicStudyCharacteristic.CENTERS)) {
 			IntegerWithNotes intWithNotes = intWithNotes((Integer) characteristics.get(BasicStudyCharacteristic.CENTERS).getValue());
 			convertOldNotes(characteristics.get(BasicStudyCharacteristic.CENTERS).getNotes(), intWithNotes.getNotes().getNote());
 			newChars.setCenters(intWithNotes);
 		}
-		if (characteristics.containsKey(BasicStudyCharacteristic.CREATION_DATE)) {
+		if (inMap(characteristics, BasicStudyCharacteristic.CREATION_DATE)) {
 			DateWithNotes dateWithNotes = dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.CREATION_DATE).getValue());
 			newChars.setCreationDate(dateWithNotes);
 			convertOldNotes(characteristics.get(BasicStudyCharacteristic.CREATION_DATE).getNotes(), dateWithNotes.getNotes().getNote());
 		}
-		if (characteristics.containsKey(BasicStudyCharacteristic.EXCLUSION)) {
+		if (inMap(characteristics, BasicStudyCharacteristic.EXCLUSION)) {
 			StringWithNotes stringWithNotes = stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.EXCLUSION).getValue());
 			newChars.setExclusion(stringWithNotes);
 			convertOldNotes(characteristics.get(BasicStudyCharacteristic.EXCLUSION).getNotes(), stringWithNotes.getNotes().getNote());
 		}
-		if (characteristics.containsKey(BasicStudyCharacteristic.INCLUSION)) {
+		if (inMap(characteristics, BasicStudyCharacteristic.INCLUSION)) {
 			StringWithNotes stringWithNotes = stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.INCLUSION).getValue());
 			newChars.setInclusion(stringWithNotes);
 			convertOldNotes(characteristics.get(BasicStudyCharacteristic.INCLUSION).getNotes(), stringWithNotes.getNotes().getNote());
 		}
-		if (characteristics.containsKey(BasicStudyCharacteristic.OBJECTIVE)) {
+		if (inMap(characteristics, BasicStudyCharacteristic.OBJECTIVE)) {
 			StringWithNotes stringWithNotes = stringWithNotes((String) characteristics.get(BasicStudyCharacteristic.OBJECTIVE).getValue());
 			newChars.setObjective(stringWithNotes);
 			convertOldNotes(characteristics.get(BasicStudyCharacteristic.OBJECTIVE).getNotes(), stringWithNotes.getNotes().getNote());
 		}
-		if (characteristics.containsKey(BasicStudyCharacteristic.STATUS)) {
+		if (inMap(characteristics, BasicStudyCharacteristic.STATUS)) {
 			org.drugis.addis.entities.data.Status statusWithNotes = statusWithNotes((Status) characteristics.get(BasicStudyCharacteristic.STATUS).getValue());
 			newChars.setStatus(statusWithNotes);
 			convertOldNotes(characteristics.get(BasicStudyCharacteristic.STATUS).getNotes(), statusWithNotes.getNotes().getNote());
 		}
-		if (characteristics.containsKey(BasicStudyCharacteristic.SOURCE)) {
+		if (inMap(characteristics, BasicStudyCharacteristic.SOURCE)) {
 			org.drugis.addis.entities.data.Source sourceWithNotes = sourceWithNotes((Source) characteristics.get(BasicStudyCharacteristic.SOURCE).getValue());
 			newChars.setSource(sourceWithNotes);
 			convertOldNotes(characteristics.get(BasicStudyCharacteristic.SOURCE).getNotes(), sourceWithNotes.getNotes().getNote());
 		}
-		if (characteristics.containsKey(BasicStudyCharacteristic.STUDY_START)) {
+		if (inMap(characteristics, BasicStudyCharacteristic.STUDY_START)) {
 			DateWithNotes dateWithNotes = dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.STUDY_START).getValue());
 			newChars.setStudyStart(dateWithNotes);
 			convertOldNotes(characteristics.get(BasicStudyCharacteristic.STUDY_START).getNotes(), dateWithNotes.getNotes().getNote());
 		}
-		if (characteristics.containsKey(BasicStudyCharacteristic.STUDY_END)) {
+		if (inMap(characteristics, BasicStudyCharacteristic.STUDY_END)) {
 			DateWithNotes dateWithNotes = dateWithNotes((Date) characteristics.get(BasicStudyCharacteristic.STUDY_END).getValue());
 			newChars.setStudyEnd(dateWithNotes);
 			convertOldNotes(characteristics.get(BasicStudyCharacteristic.STUDY_END).getNotes(), dateWithNotes.getNotes().getNote());
@@ -570,6 +570,10 @@ public class JAXBConvertor {
 		convertOldNotes(characteristics.get(BasicStudyCharacteristic.TITLE).getNotes(), stringWithNotes.getNotes().getNote());
 		newChars.setReferences(convertReferences((PubMedIdList)characteristics.get(BasicStudyCharacteristic.PUBMED).getValue()));
 		return newChars;
+	}
+
+	private static boolean inMap(CharacteristicsMap characteristics, BasicStudyCharacteristic c) {
+		return characteristics.containsKey(c) && characteristics.get(c) != null;
 	}
 	
 	private static References convertReferences(PubMedIdList pubMedIdList) {
@@ -1164,7 +1168,7 @@ public class JAXBConvertor {
 		return blinding;
 	}
 
-	public static org.drugis.addis.entities.data.IntegerWithNotes intWithNotes(int centers) {
+	public static org.drugis.addis.entities.data.IntegerWithNotes intWithNotes(Integer centers) {
 		org.drugis.addis.entities.data.IntegerWithNotes integer = new org.drugis.addis.entities.data.IntegerWithNotes();
 		integer.setValue(centers);
 		integer.setNotes(new Notes());

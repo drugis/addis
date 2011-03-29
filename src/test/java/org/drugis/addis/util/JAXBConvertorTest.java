@@ -136,7 +136,6 @@ import org.drugis.addis.imports.PubMedDataBankRetriever;
 import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.common.Interval;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -532,6 +531,28 @@ public class JAXBConvertorTest {
 		
 		assertEntityEquals(chars2, JAXBConvertor.convertStudyCharacteristics(chars1));
 		assertEquals(chars1, JAXBConvertor.convertStudyCharacteristics(chars2));
+	}
+	
+	@Test
+	public void testConvertCharacteristicsWithNulls() {
+		String title = "title";
+		org.drugis.addis.entities.data.Characteristics chars1 = new org.drugis.addis.entities.data.Characteristics();
+		chars1.setTitle(JAXBConvertor.stringWithNotes(title));
+		chars1.setReferences(new References());
+		chars1.setCenters(null);
+		
+		CharacteristicsMap chars2 = new CharacteristicsMap();
+		chars2.put(BasicStudyCharacteristic.TITLE, new ObjectWithNotes<Object>(title));
+		chars2.put(BasicStudyCharacteristic.PUBMED, new ObjectWithNotes<Object>(new PubMedIdList()));
+		chars2.put(BasicStudyCharacteristic.CENTERS, null);
+		
+		assertEquals(chars1, JAXBConvertor.convertStudyCharacteristics(chars2));
+		
+		chars1.setCenters(JAXBConvertor.intWithNotes(null));
+		chars2.put(BasicStudyCharacteristic.CENTERS, new ObjectWithNotes<Object>(null));
+		
+		assertEquals(chars1, JAXBConvertor.convertStudyCharacteristics(chars2));
+		assertEntityEquals(chars2, JAXBConvertor.convertStudyCharacteristics(chars1));
 	}
 	
 	@Test
