@@ -302,19 +302,19 @@
 	<xs:complexType name="Characteristics">
 		<xs:sequence>
 			<xs:element name="title" type="StringWithNotes"/>
-			<xs:element minOccurs="0" name="allocation" type="Allocation"/>
-			<xs:element minOccurs="0" name="blinding" type="Blinding"/>
-			<xs:element minOccurs="0" name="centers" type="IntegerWithNotes"/>
-			<xs:element minOccurs="0" name="objective" type="StringWithNotes"/>
-			<xs:element minOccurs="0" name="study_start" type="DateWithNotes"/>
-			<xs:element minOccurs="0" name="study_end" type="DateWithNotes"/>
-			<xs:element minOccurs="0" name="status" type="Status"/>
+			<xs:element name="allocation" type="Allocation"/>
+			<xs:element name="blinding" type="Blinding"/>
+			<xs:element name="centers" type="IntegerWithNotes"/>
+			<xs:element name="objective" type="StringWithNotes"/>
+			<xs:element name="study_start" type="DateWithNotes"/>
+			<xs:element name="study_end" type="DateWithNotes"/>
+			<xs:element name="status" type="Status"/>
 			<!-- check this, because there should always be a inclusion, exclusion and source -->
-			<xs:element minOccurs="0" name="inclusion" type="StringWithNotes"/>
-			<xs:element minOccurs="0" name="exclusion" type="StringWithNotes"/>
+			<xs:element name="inclusion" type="StringWithNotes"/>
+			<xs:element name="exclusion" type="StringWithNotes"/>
 			<xs:element name="references" type="References"/>
-			<xs:element minOccurs="0" name="source" type="Source"/>
-			<xs:element minOccurs="0" name="creation_date" type="DateWithNotes"/>
+			<xs:element name="source" type="Source"/>
+			<xs:element name="creation_date" type="DateWithNotes"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="References">
@@ -326,7 +326,7 @@
 	</xs:complexType>
 	<xs:complexType name="Status">
 		<xs:sequence>
-			<xs:element name="value" type="StatusEnum"/>
+			<xs:element name="value" type="StatusEnum" default="UNKNOWN"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>
@@ -338,13 +338,13 @@
 	</xs:complexType>
 	<xs:complexType name="Allocation">
 		<xs:sequence>
-			<xs:element name="value" type="AllocationEnum"/>
+			<xs:element name="value" type="AllocationEnum" default="UNKNOWN"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Blinding">
 		<xs:sequence>
-			<xs:element name="value" type="BlindingEnum"/>
+			<xs:element name="value" type="BlindingEnum" default="UNKNOWN"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>
