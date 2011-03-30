@@ -133,45 +133,46 @@
 						</notes>
 					</xsl:element>
 					<characteristics>
-						<xsl:for-each select="characteristics/*[not(self::PUBMED)]">
-							<xsl:variable name="ucname" select="local-name()" />
-							<xsl:variable name="lcname" select="translate($ucname, $ucletters, $lcletters)" />
-							<xsl:element name="{$lcname}">
-								<value>
-									<xsl:choose>
-										<xsl:when test="@date">
-											<xsl:variable name="parsed" select="fn:replace(@date,'([0-9]+) ([A-Za-z]{3}) ([0-9]{4})', '$3-$2-$1')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Jj]an-(.*)', '$1-01-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Ff]eb-(.*)', '$1-02-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Mm]ar-(.*)', '$1-03-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Aa]pr-(.*)', '$1-04-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Mm]ay-(.*)', '$1-05-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Jj]un-(.*)', '$1-06-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Jj]ul-(.*)', '$1-07-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Aa]ug-(.*)', '$1-08-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Ss]ep-(.*)', '$1-09-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Oo]ct-(.*)', '$1-10-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Nn]ov-(.*)', '$1-11-$2')" />
-											<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Dd]ec-(.*)', '$1-12-$2')" />
-											<xsl:value-of select="$parsed" />
-										</xsl:when>
-										<xsl:when test="@value">
-											<xsl:value-of select="@value"/>
-										</xsl:when>
-									</xsl:choose>
-								</value>
-								<notes>
-									<xsl:for-each select="../../notes/note/key[@class=&quot;basicCharacteristic&quot; and @value=$ucname]">
-										<xsl:element name="note">
-											<xsl:attribute name="source">
-												<xsl:value-of select="../noteSrc/@value"/>
-											</xsl:attribute>
-											<xsl:value-of select="../noteText/@value"/>
-										</xsl:element>
-									</xsl:for-each>
-								</notes>
-							</xsl:element>
-						</xsl:for-each>
+						<xsl:call-template name="studyCharacteristic">
+							<xsl:with-param name="characteristic">title</xsl:with-param>
+						</xsl:call-template>
+						<xsl:call-template name="studyCharacteristic">
+							<xsl:with-param name="characteristic">allocation</xsl:with-param>
+							<xsl:with-param name="defaultValue">UNKNOWN</xsl:with-param>
+						</xsl:call-template>
+						<xsl:call-template name="studyCharacteristic">
+							<xsl:with-param name="characteristic">blinding</xsl:with-param>
+							<xsl:with-param name="defaultValue">UNKNOWN</xsl:with-param>
+						</xsl:call-template>
+						<xsl:call-template name="studyCharacteristic">
+							<xsl:with-param name="characteristic">centers</xsl:with-param>
+						</xsl:call-template>
+						<xsl:call-template name="studyCharacteristic">
+							<xsl:with-param name="characteristic">objective</xsl:with-param>
+						</xsl:call-template>
+						<xsl:call-template name="studyCharacteristic">
+							<xsl:with-param name="characteristic">study_start</xsl:with-param>
+						</xsl:call-template>
+						<xsl:call-template name="studyCharacteristic">
+							<xsl:with-param name="characteristic">study_end</xsl:with-param>
+						</xsl:call-template>
+						<xsl:call-template name="studyCharacteristic">
+							<xsl:with-param name="characteristic">status</xsl:with-param>
+							<xsl:with-param name="defaultValue">UNKNOWN</xsl:with-param>
+						</xsl:call-template>
+						<xsl:call-template name="studyCharacteristic">
+							<xsl:with-param name="characteristic">inclusion</xsl:with-param>
+						</xsl:call-template>
+						<xsl:call-template name="studyCharacteristic">
+							<xsl:with-param name="characteristic">exclusion</xsl:with-param>
+						</xsl:call-template>
+						<xsl:call-template name="studyCharacteristic">
+							<xsl:with-param name="characteristic">source</xsl:with-param>
+							<xsl:with-param name="defaultValue">MANUAL</xsl:with-param>
+						</xsl:call-template>
+						<xsl:call-template name="studyCharacteristic">
+							<xsl:with-param name="characteristic">creation_date</xsl:with-param>
+						</xsl:call-template>
 						<references>
 							<xsl:for-each select="characteristics/PUBMED/pubMedId">
 								<xsl:element name="pubMedId">
@@ -333,6 +334,7 @@
 			</xsl:for-each><!-- study -->
 		</studies>
 	</xsl:template>
+
 	<xsl:template match="/addis-data/metaAnalyses">
 		<metaAnalyses>
 			<xsl:for-each select="*">
@@ -539,6 +541,61 @@
 			</xsl:for-each>
 		</notes>
 	</xsl:element>
+	</xsl:template>
+	
+	<xsl:template name="studyCharacteristic">
+		<xsl:param name="characteristic" />
+		<xsl:param name="defaultValue" />
+		<xsl:variable name="ucname" select="translate($characteristic, $lcletters, $ucletters)" />
+		<xsl:element name="{$characteristic}">
+			<xsl:choose>
+				<xsl:when test="characteristics/*[local-name()=$ucname]">
+					<xsl:for-each select="characteristics/*[local-name()=$ucname]">
+						<value>
+							<xsl:choose>
+								<xsl:when test="@date">
+									<xsl:variable name="parsed" select="fn:replace(@date,'([0-9]+) ([A-Za-z]{3}) ([0-9]{4})', '$3-$2-$1')" />
+									<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Jj]an-(.*)', '$1-01-$2')" />
+									<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Ff]eb-(.*)', '$1-02-$2')" />
+									<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Mm]ar-(.*)', '$1-03-$2')" />
+									<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Aa]pr-(.*)', '$1-04-$2')" />
+									<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Mm]ay-(.*)', '$1-05-$2')" />
+									<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Jj]un-(.*)', '$1-06-$2')" />
+									<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Jj]ul-(.*)', '$1-07-$2')" />
+									<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Aa]ug-(.*)', '$1-08-$2')" />
+									<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Ss]ep-(.*)', '$1-09-$2')" />
+									<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Oo]ct-(.*)', '$1-10-$2')" />
+									<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Nn]ov-(.*)', '$1-11-$2')" />
+									<xsl:variable name="parsed" select="fn:replace($parsed, '(.*)-[Dd]ec-(.*)', '$1-12-$2')" />
+									<xsl:value-of select="$parsed" />
+								</xsl:when>
+								<xsl:when test="@value">
+									<xsl:value-of select="@value"/>
+								</xsl:when>
+							</xsl:choose>
+						</value>
+						<notes>
+							<xsl:for-each select="../../notes/note/key[@class=&quot;basicCharacteristic&quot; and @value=$ucname]">
+								<xsl:element name="note">
+									<xsl:attribute name="source">
+										<xsl:value-of select="../noteSrc/@value"/>
+									</xsl:attribute>
+									<xsl:value-of select="../noteText/@value"/>
+								</xsl:element>
+							</xsl:for-each>
+						</notes>
+					</xsl:for-each>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:if test="$defaultValue">
+						<value>
+							<xsl:value-of select="$defaultValue"/>
+						</value>
+					</xsl:if>
+					<notes/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:element>
 	</xsl:template>
 	
 	<xsl:template name="outcomeMeasure">
