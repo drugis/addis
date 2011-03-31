@@ -53,6 +53,8 @@ import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
+import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 
 
@@ -244,7 +246,7 @@ public class ClinicaltrialsImporter {
 
 	private static BasicStudyCharacteristic.Status guessStatus(
 			ClinicalStudy studyImport) {
-		BasicStudyCharacteristic.Status status = null;
+		BasicStudyCharacteristic.Status status = BasicStudyCharacteristic.Status.UNKNOWN;
 		if (studyImport.getOverallStatus().toLowerCase().contains("recruiting"))
 			status = BasicStudyCharacteristic.Status.RECRUITING;
 		else if (studyImport.getOverallStatus().contains("Enrolling"))
@@ -281,7 +283,7 @@ public class ClinicaltrialsImporter {
 
 	private static BasicStudyCharacteristic.Blinding guessBlinding(
 			ClinicalStudy studyImport) {
-		BasicStudyCharacteristic.Blinding blinding = null;
+		BasicStudyCharacteristic.Blinding blinding = Blinding.UNKNOWN;
 		if (designContains(studyImport, "open label"))
 			blinding = BasicStudyCharacteristic.Blinding.OPEN;
 		else if (designContains(studyImport, "single blind"))    
@@ -295,11 +297,11 @@ public class ClinicaltrialsImporter {
 
 	private static BasicStudyCharacteristic.Allocation guessAllocation(
 			ClinicalStudy studyImport) {
-		BasicStudyCharacteristic.Allocation allocation = null;
+		Allocation allocation = Allocation.UNKNOWN;
 		if (designContains(studyImport, "non-randomized")) 
-			allocation = BasicStudyCharacteristic.Allocation.NONRANDOMIZED;
+			allocation = Allocation.NONRANDOMIZED;
 		else if (designContains(studyImport, "randomized"))
-			allocation = BasicStudyCharacteristic.Allocation.RANDOMIZED;
+			allocation = Allocation.RANDOMIZED;
 		return allocation;
 	}
 
