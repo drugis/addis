@@ -32,23 +32,24 @@ import org.drugis.addis.util.EnumXMLFormat;
 
 public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 
-	TITLE("Title", String.class, true),
-	ALLOCATION("Group allocation", Allocation.class, true),
-	BLINDING("Blinding", Blinding.class, true),
-	CENTERS("Number of study centers", Integer.class, false),
-	OBJECTIVE("Study Objective", String.class, false),
-	STUDY_START("Study start date", Date.class, false),
-	STUDY_END("Study end date", Date.class, false),
-	STATUS("Study status", Status.class, false),
-	INCLUSION("Inclusion criteria", String.class, false),
-	EXCLUSION("Exclusion criteria", String.class, false),
-	PUBMED("Pubmed ID", PubMedIdList.class, false),
-	SOURCE("Source of the data", Source.class, false),
-	CREATION_DATE("Creation/extraction date", Date.class, false);
+	TITLE("Title", String.class, true, null),
+	ALLOCATION("Group allocation", Allocation.class, true, Allocation.UNKNOWN),
+	BLINDING("Blinding", Blinding.class, true, Blinding.UNKNOWN),
+	CENTERS("Number of study centers", Integer.class, false, null),
+	OBJECTIVE("Study Objective", String.class, false, null),
+	STUDY_START("Study start date", Date.class, false, null),
+	STUDY_END("Study end date", Date.class, false, null),
+	STATUS("Study status", Status.class, false, Status.UNKNOWN),
+	INCLUSION("Inclusion criteria", String.class, false, null),
+	EXCLUSION("Exclusion criteria", String.class, false, null),
+	PUBMED("Pubmed ID", PubMedIdList.class, false, new PubMedIdList()),
+	SOURCE("Source of the data", Source.class, false, Source.MANUAL),
+	CREATION_DATE("Creation/extraction date", Date.class, false, null);
 
 	private String d_description;
 	private Class<?> d_type;
 	private boolean d_defaultVisible;
+	private Object d_defaultValue;
 	static EnumXMLFormat<BasicStudyCharacteristic> XML = new EnumXMLFormat<BasicStudyCharacteristic>(BasicStudyCharacteristic.class);
 	
 	public enum Allocation {
@@ -97,7 +98,8 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 		COMPLETED("Completed"),
 		SUSPENDED("Suspended"),
 		TERMINATED("Terminated"),
-		WITHDRAWN("Withdrawn");
+		WITHDRAWN("Withdrawn"),
+		UNKNOWN("Unknown");
 		
 		private String d_title;
 		static EnumXMLFormat<Status> XML = new EnumXMLFormat<Status>(Status.class);
@@ -112,10 +114,11 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 		}		
 	}
 	
-	BasicStudyCharacteristic(String name, Class<?> type, boolean defaultVisible) {
+	BasicStudyCharacteristic(String name, Class<?> type, boolean defaultVisible, Object defaultValue) {
 		d_description = name;
 		d_type = type;
 		d_defaultVisible = defaultVisible;
+		d_defaultValue = defaultValue;
 	}	
 
 	public String getDescription() {
@@ -128,5 +131,9 @@ public enum BasicStudyCharacteristic implements Serializable, Characteristic {
 
 	public boolean getDefaultVisible() {
 		return d_defaultVisible;
+	}
+	
+	public Object getDefaultValue() {
+		return d_defaultValue;
 	}
 }

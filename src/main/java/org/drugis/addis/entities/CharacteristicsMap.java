@@ -31,6 +31,11 @@ import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
 public class CharacteristicsMap extends MapBean<Characteristic, ObjectWithNotes<?>> {
+	public CharacteristicsMap() {
+		for (BasicStudyCharacteristic c : BasicStudyCharacteristic.values()) {
+			put(c, new ObjectWithNotes<Object>(c.getDefaultValue()));
+		}
+	}
 	
 	@Override
 	public Set<Entity> getDependencies() {

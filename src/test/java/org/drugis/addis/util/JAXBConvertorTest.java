@@ -537,18 +537,11 @@ public class JAXBConvertorTest {
 	public void testConvertCharacteristicsWithNulls() {
 		String title = "title";
 		org.drugis.addis.entities.data.Characteristics chars1 = new org.drugis.addis.entities.data.Characteristics();
-		chars1.setTitle(JAXBConvertor.stringWithNotes(title));
-		chars1.setReferences(new References());
-		chars1.setCenters(null);
+		initializeCharacteristics(chars1, title);
 		
 		CharacteristicsMap chars2 = new CharacteristicsMap();
 		chars2.put(BasicStudyCharacteristic.TITLE, new ObjectWithNotes<Object>(title));
 		chars2.put(BasicStudyCharacteristic.PUBMED, new ObjectWithNotes<Object>(new PubMedIdList()));
-		chars2.put(BasicStudyCharacteristic.CENTERS, null);
-		
-		assertEquals(chars1, JAXBConvertor.convertStudyCharacteristics(chars2));
-		
-		chars1.setCenters(JAXBConvertor.intWithNotes(null));
 		chars2.put(BasicStudyCharacteristic.CENTERS, new ObjectWithNotes<Object>(null));
 		
 		assertEquals(chars1, JAXBConvertor.convertStudyCharacteristics(chars2));
@@ -772,7 +765,6 @@ public class JAXBConvertorTest {
 				title, indicationName, endpointName, adverseEventName,
 				popCharName, arms);
 		
-		
 		study.getCharacteristics().setCenters(JAXBConvertor.intWithNotes(3));
 		study.getCharacteristics().setAllocation(JAXBConvertor.allocationWithNotes(Allocation.RANDOMIZED));
 		
@@ -797,6 +789,22 @@ public class JAXBConvertorTest {
 		list.add(m2);
 				
 		return study;
+	}
+
+	private void initializeCharacteristics(Characteristics characteristics, String title) {
+		characteristics.setAllocation(JAXBConvertor.allocationWithNotes(Allocation.UNKNOWN));
+		characteristics.setBlinding(JAXBConvertor.blindingWithNotes(Blinding.UNKNOWN));
+		characteristics.setCenters(JAXBConvertor.intWithNotes(null));
+		characteristics.setCreationDate(JAXBConvertor.dateWithNotes(null));
+		characteristics.setExclusion(JAXBConvertor.stringWithNotes(null));
+		characteristics.setInclusion(JAXBConvertor.stringWithNotes(null));
+		characteristics.setObjective(JAXBConvertor.stringWithNotes(null));
+		characteristics.setReferences(new References());
+		characteristics.setSource(JAXBConvertor.sourceWithNotes(Source.MANUAL));
+		characteristics.setStatus(JAXBConvertor.statusWithNotes(Status.UNKNOWN));
+		characteristics.setStudyEnd(JAXBConvertor.dateWithNotes(null));
+		characteristics.setStudyStart(JAXBConvertor.dateWithNotes(null));
+		characteristics.setTitle(JAXBConvertor.stringWithNotes(title));
 	}
 
 	private org.drugis.addis.entities.data.Study buildStudySkeleton(
@@ -845,8 +853,7 @@ public class JAXBConvertorTest {
 		// Study characteristics
 		Characteristics chars = new Characteristics();
 		study.setCharacteristics(chars);
-		chars.setTitle(JAXBConvertor.stringWithNotes(title));
-		chars.setReferences(new References());
+		initializeCharacteristics(study.getCharacteristics(), title);
 		
 		// Measurements (empty)
 		Measurements measurements = new Measurements();
