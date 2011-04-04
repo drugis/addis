@@ -225,10 +225,19 @@
                     <value>DOUBLE_BLIND</value>
                     <notes/>
                 </blinding>
+                <centers>
+                    <notes/>
+                </centers>
                 <objective>
                     <value>Relatively little research is available comparing the efficacy and tolerability of selective serotonin reuptake inhibitors (SSRIs) during continuation therapy. This investigation reports the differential effect of 6 months of treatment with sertraline versus paroxetine for symptoms of depression, quality of life, and personality outcomes.</value>
                     <notes/>
                 </objective>
+                <study_start>
+                    <notes/>
+                </study_start>
+                <study_end>
+                    <notes/>
+                </study_end>
                 <status>
                     <value>COMPLETED</value>
                     <notes/>
@@ -244,6 +253,13 @@
                 <references>
                     <pubMedId>11106136</pubMedId>
                 </references>
+                <source>
+                    <value>MANUAL</value>
+                    <notes/>
+                </source>
+                <creation_date>
+                    <notes/>
+                </creation_date>
             </characteristics>
             <studyOutcomeMeasures>
                 <studyOutcomeMeasure id="endpoint-MADRS Responders">
@@ -338,203 +354,403 @@
             <measurements>
                 <measurement>
                     <studyOutcomeMeasure id="endpoint-MADRS Responders"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="158"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="endpoint-MADRS Responders"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="157"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="endpoint-Dropouts"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="61"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="endpoint-Dropouts"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="64"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="endpoint-CGI Severity Change"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <continuousMeasurement stdDev="1.6" sampleSize="177" mean="-2.5"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="endpoint-CGI Severity Change"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <continuousMeasurement stdDev="1.5" sampleSize="176" mean="-2.6"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Erectile Dysfunction"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="8"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Erectile Dysfunction"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="11"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Palpitation"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="19"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Palpitation"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="5"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Somnolence"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="24"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Somnolence"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="15"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Abnormal Ejaculation"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="16"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Abnormal Ejaculation"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="13"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Dream Abnormality"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="49"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Dream Abnormality"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="37"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Diarrhea"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="9"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Diarrhea"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="27"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Weight Loss"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="12"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Weight Loss"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="22"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Diminished Sexual Desire"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="30"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Diminished Sexual Desire"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="19"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Orgasmic Dysfunction"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="46"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Orgasmic Dysfunction"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="33"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Increased Duration Of Sleep"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="27"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Increased Duration Of Sleep"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="8"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Weight Gain"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="59"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Weight Gain"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="36"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Reduced Salivation"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="26"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Reduced Salivation"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="19"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Headache"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="0"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Headache"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="20"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Nausea"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="18"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Nausea"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="20"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Dizziness"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="26"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Dizziness"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="12"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Sweating"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="39"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Sweating"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="30"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Accommodation Disturbances"/>
-                    <arm id="83"/>
+                    <arm name="83"/>
                     <rateMeasurement sampleSize="177" rate="22"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Accommodation Disturbances"/>
-                    <arm id="85"/>
+                    <arm name="85"/>
                     <rateMeasurement sampleSize="176" rate="20"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
             </measurements>
             <epochs>
@@ -597,8 +813,7 @@
                     <notes/>
                 </studyActivity>
             </activities>
-            
-            <notes/>
+             <notes/>
         </study>
         <study name="Alves et al, 1999">
             <indication name="Severe depression">
@@ -625,6 +840,12 @@
                     <value>A 12 week double-blind, randomized comparison of the efficacy and tolerability of venlafaxine and fluoxetine in outpatients with major depression.</value>
                     <notes/>
                 </objective>
+                <study_start>
+                    <notes/>
+                </study_start>
+                <study_end>
+                    <notes/>
+                </study_end>
                 <status>
                     <value>COMPLETED</value>
                     <notes/>
@@ -638,6 +859,13 @@
                     <notes/>
                 </exclusion>
                 <references/>
+                <source>
+                    <value>MANUAL</value>
+                    <notes/>
+                </source>
+                <creation_date>
+                    <notes/>
+                </creation_date>
             </characteristics>
             <studyOutcomeMeasures>
                 <studyOutcomeMeasure id="endpoint-MADRS Responders">
@@ -696,113 +924,223 @@
             <measurements>
                 <measurement>
                     <studyOutcomeMeasure id="endpoint-MADRS Responders"/>
-                    <arm id="173"/>
+                    <arm name="173"/>
                     <rateMeasurement sampleSize="40" rate="32"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="endpoint-MADRS Responders"/>
-                    <arm id="175"/>
+                    <arm name="175"/>
                     <rateMeasurement sampleSize="47" rate="26"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="endpoint-Dropouts"/>
-                    <arm id="173"/>
+                    <arm name="173"/>
                     <rateMeasurement sampleSize="40" rate="10"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="endpoint-Dropouts"/>
-                    <arm id="175"/>
+                    <arm name="175"/>
                     <rateMeasurement sampleSize="47" rate="9"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="endpoint-HAM-D Responders"/>
-                    <arm id="173"/>
+                    <arm name="173"/>
                     <rateMeasurement sampleSize="40" rate="25"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="endpoint-HAM-D Responders"/>
-                    <arm id="175"/>
+                    <arm name="175"/>
                     <rateMeasurement sampleSize="47" rate="30"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Insomnia"/>
-                    <arm id="173"/>
+                    <arm name="173"/>
                     <rateMeasurement sampleSize="40" rate="2"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Insomnia"/>
-                    <arm id="175"/>
+                    <arm name="175"/>
                     <rateMeasurement sampleSize="47" rate="5"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Anxiety"/>
-                    <arm id="173"/>
+                    <arm name="173"/>
                     <rateMeasurement sampleSize="40" rate="1"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Anxiety"/>
-                    <arm id="175"/>
+                    <arm name="175"/>
                     <rateMeasurement sampleSize="47" rate="4"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Vomiting"/>
-                    <arm id="173"/>
+                    <arm name="173"/>
                     <rateMeasurement sampleSize="40" rate="6"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Vomiting"/>
-                    <arm id="175"/>
+                    <arm name="175"/>
                     <rateMeasurement sampleSize="47" rate="1"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Nausea"/>
-                    <arm id="173"/>
+                    <arm name="173"/>
                     <rateMeasurement sampleSize="40" rate="13"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Nausea"/>
-                    <arm id="175"/>
+                    <arm name="175"/>
                     <rateMeasurement sampleSize="47" rate="13"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Dry Mouth"/>
-                    <arm id="173"/>
+                    <arm name="173"/>
                     <rateMeasurement sampleSize="40" rate="4"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Dry Mouth"/>
-                    <arm id="175"/>
+                    <arm name="175"/>
                     <rateMeasurement sampleSize="47" rate="3"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Dizziness"/>
-                    <arm id="173"/>
+                    <arm name="173"/>
                     <rateMeasurement sampleSize="40" rate="4"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Dizziness"/>
-                    <arm id="175"/>
+                    <arm name="175"/>
                     <rateMeasurement sampleSize="47" rate="1"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Constipation"/>
-                    <arm id="173"/>
+                    <arm name="173"/>
                     <rateMeasurement sampleSize="40" rate="3"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Constipation"/>
-                    <arm id="175"/>
+                    <arm name="175"/>
                     <rateMeasurement sampleSize="47" rate="1"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Anorexia"/>
-                    <arm id="173"/>
+                    <arm name="173"/>
                     <rateMeasurement sampleSize="40" rate="3"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
                 <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Anorexia"/>
-                    <arm id="175"/>
+                    <arm name="175"/>
                     <rateMeasurement sampleSize="47" rate="1"/>
+                    <whenTaken>
+                        <fromEpochEnd>
+                            <offset>P0M</offset>
+                        </fromEpochEnd>
+                    </whenTaken>
                 </measurement>
             </measurements>
             <epochs>
@@ -850,89 +1188,8 @@
             </activities>
             <notes/>
         </study>
-     </studies>
-    <metaAnalyses>
-        <pairwiseMetaAnalysis name="Fluox-Venla Dizziness">
-            <indication name="Severe depression"/>
-            <adverseEvent name="Dizziness"/>
-            <alternative>
-                <drug name="Fluoxetine"/>
-                <arms>
-                    <arm name="175"/>
-                </arms>
-            </alternative>
-            <alternative>
-                <drug name="Venlafaxine"/>
-                <arms>
-                    <arm name="173"/>
-                </arms>
-            </alternative>
-        </pairwiseMetaAnalysis>
-        <pairwiseMetaAnalysis name="Fluox-Venla HAM-D">
-            <indication name="Severe depression"/>
-            <endpoint name="HAM-D Responders"/>
-            <alternative>
-                <drug name="Fluoxetine"/>
-                <arms>
-                    <arm name="175"/>
-                </arms>
-            </alternative>
-            <alternative>
-                <drug name="Venlafaxine"/>
-                <arms>
-                    <arm name="173"/>
-                </arms>
-            </alternative>
-        </pairwiseMetaAnalysis>
-        <pairwiseMetaAnalysis name="Fluox-Venla Insomnia">
-            <indication name="Severe depression"/>
-            <adverseEvent name="Insomnia"/>
-            <alternative>
-                <drug name="Fluoxetine"/>
-                <arms>
-                    <arm name="175"/>
-                </arms>
-            </alternative>
-            <alternative>
-                <drug name="Venlafaxine"/>
-                <arms>
-                    <arm name="173"/>
-                </arms>
-            </alternative>
-        </pairwiseMetaAnalysis>
-        <pairwiseMetaAnalysis name="Fluox-Venla Nausea">
-            <indication name="Severe depression"/>
-            <adverseEvent name="Nausea"/>
-            <alternative>
-                <drug name="Fluoxetine"/>
-                <arms>
-                    <arm name="175"/>
-                </arms>
-            </alternative>
-            <alternative>
-                <drug name="Venlafaxine"/>
-                <arms>
-                    <arm name="173"/>
-                </arms>
-            </alternative>
-        </pairwiseMetaAnalysis>
-        <networkMetaAnalysis name="Hansen Diarrhea">
-            <indication name="Severe depression"/>
-            <adverseEvent name="Diarrhea"/>
-            <alternative>
-                <drug name="Paroxetine"/>
-                <arms>
-                    <arm name="83"/>
-                </arms>
-            </alternative>
-            <alternative>
-                <drug name="Sertraline"/>
-                <arms>
-                    <arm name="85"/>
-                </arms>
-            </alternative>
-        </networkMetaAnalysis>
-
-    </metaAnalyses>
-    <benefitRiskAnalyses/>
+  
+    </studies>
+    <metaAnalyses/>
+    <benefitRiskAnalyses />
 </addis-data>

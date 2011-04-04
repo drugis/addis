@@ -8,14 +8,11 @@
             <xsl:apply-templates select="@*|node()" />
         </xsl:copy>
     </xsl:template>
-    <xsl:template match="/addis-data/studies/study">
-        <xsl:copy>
-            <xsl:apply-templates select="@*|node()" />
-        </xsl:copy>
-        <xsl:for-each select="arms/arm">
-            <arm>
-                <xsl:attribute name="name">Test</xsl:attribute>
-            </arm>
-        </xsl:for-each>
+    <xsl:template match="addis-data/studies/study/arms/*">
+        <arm>
+            <xsl:attribute name="name">
+                <xsl:value-of select="../../@name"/>
+            </xsl:attribute>
+        </arm>
     </xsl:template>
 </xsl:stylesheet>

@@ -152,27 +152,27 @@
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Endpoints">
-		<xs:sequence maxOccurs="unbounded">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="endpoint" type="OutcomeMeasure"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="AdverseEvents">
-		<xs:sequence maxOccurs="unbounded">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="adverseEvent" type="OutcomeMeasure"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Drugs">
-		<xs:sequence maxOccurs="unbounded">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="drug" type="Drug"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="PopulationCharacteristics">
-		<xs:sequence maxOccurs="unbounded" minOccurs="0">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="populationCharacteristic" type="OutcomeMeasure"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Studies">
-		<xs:sequence maxOccurs="unbounded">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="study" type="Study">
 				<xs:key name="studyOutcomeMeasureIdKey">
 					<xs:selector xpath="studyOutcomeMeasures/studyOutcomeMeasure"/>
@@ -292,7 +292,7 @@
 	<!-- The terrible offspring of Study and its notes-->
 
 	<xs:complexType name="StudyOutcomeMeasures">
-		<xs:sequence maxOccurs="unbounded">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="studyOutcomeMeasure" type="StudyOutcomeMeasure"/>
 		</xs:sequence>
 	</xs:complexType>
@@ -310,19 +310,18 @@
 	<xs:complexType name="Characteristics">
 		<xs:sequence>
 			<xs:element name="title" type="StringWithNotes"/>
-			<xs:element minOccurs="0" name="allocation" type="Allocation"/>
-			<xs:element minOccurs="0" name="blinding" type="Blinding"/>
-			<xs:element minOccurs="0" name="centers" type="IntegerWithNotes"/>
-			<xs:element minOccurs="0" name="objective" type="StringWithNotes"/>
-			<xs:element minOccurs="0" name="study_start" type="DateWithNotes"/>
-			<xs:element minOccurs="0" name="study_end" type="DateWithNotes"/>
-			<xs:element minOccurs="0" name="status" type="Status"/>
-			<!-- check this, because there should always be a inclusion, exclusion and source -->
-			<xs:element minOccurs="0" name="inclusion" type="StringWithNotes"/>
-			<xs:element minOccurs="0" name="exclusion" type="StringWithNotes"/>
+			<xs:element name="allocation" type="Allocation"/>
+			<xs:element name="blinding" type="Blinding"/>
+			<xs:element name="centers" type="IntegerWithNotes"/>
+			<xs:element name="objective" type="StringWithNotes"/>
+			<xs:element name="study_start" type="DateWithNotes"/>
+			<xs:element name="study_end" type="DateWithNotes"/>
+			<xs:element name="status" type="Status"/>
+			<xs:element name="inclusion" type="StringWithNotes"/>
+			<xs:element name="exclusion" type="StringWithNotes"/>
 			<xs:element name="references" type="References"/>
-			<xs:element minOccurs="0" name="source" type="Source"/>
-			<xs:element minOccurs="0" name="creation_date" type="DateWithNotes"/>
+			<xs:element name="source" type="Source"/>
+			<xs:element name="creation_date" type="DateWithNotes"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="References">
@@ -334,30 +333,30 @@
 	</xs:complexType>
 	<xs:complexType name="Status">
 		<xs:sequence>
-			<xs:element name="value" type="StatusEnum"/>
+			<xs:element name="value" type="StatusEnum" default="UNKNOWN"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Source">
 		<xs:sequence>
-			<xs:element name="value" type="SourceEnum"/>
+			<xs:element name="value" type="SourceEnum" default="MANUAL"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Allocation">
 		<xs:sequence>
-			<xs:element name="value" type="AllocationEnum"/>
+			<xs:element name="value" type="AllocationEnum" default="UNKNOWN"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Blinding">
 		<xs:sequence>
-			<xs:element name="value" type="BlindingEnum"/>
+			<xs:element name="value" type="BlindingEnum" default="UNKNOWN"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Arms">
-		<xs:sequence maxOccurs="unbounded">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="arm" type="Arm"/>
 		</xs:sequence>
 	</xs:complexType>
@@ -388,6 +387,7 @@
 	</xs:complexType>
 	<xs:complexType name="Epoch">
 		<xs:sequence>
+			<xs:element minOccurs="0" name="duration" type="xs:duration"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string"/>
@@ -447,19 +447,20 @@
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Measurements">
-		<xs:sequence maxOccurs="unbounded">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="measurement" type="Measurement"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Measurement">
 		<xs:sequence>
 			<xs:element name="studyOutcomeMeasure" type="StringIdReference"/>
-			<xs:element name="arm" minOccurs="0" type="IdReference"/>
+			<xs:element name="arm" minOccurs="0" type="NameReference"/>
 			<xs:choice>
 				<xs:element name="rateMeasurement" type="RateMeasurement"/>
 				<xs:element name="continuousMeasurement" type="ContinuousMeasurement"/>
 				<xs:element name="categoricalMeasurement" type="CategoricalMeasurement"/>
 			</xs:choice>
+			<xs:element name="whenTaken" type="MeasurementMoment"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="RateMeasurement">
@@ -479,6 +480,19 @@
 	<xs:complexType name="CategoryMeasurement">
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="rate" type="xs:int"/>
+	</xs:complexType>
+	<xs:complexType name="MeasurementMoment">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="fromEpochStart" type="MeasurementOffset"/>
+				<xs:element name="fromEpochEnd" type="MeasurementOffset"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MeasurementOffset">
+		<xs:sequence>
+			<xs:element name="offset" type="xs:duration"/>
+		</xs:sequence>
 	</xs:complexType>
 
 	<!-- Helpers for Meta-analyses -->
@@ -584,7 +598,7 @@
 		<xs:attribute name="id" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="ArmReference">
-		<xs:attribute name="id" type="xs:int"/>
+		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="study" type="xs:string" use="required"/>
 	</xs:complexType>
 	<xs:complexType name="DrugReferences">
@@ -606,8 +620,7 @@
 		<xs:sequence>
 			<xs:element name="adverseEvent" type="NameReference" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="endpoint" type="NameReference" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="populationCharacteristic" type="NameReference" minOccurs="0"
-				maxOccurs="unbounded"/>
+			<xs:element name="populationCharacteristic" type="NameReference" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 
@@ -620,19 +633,19 @@
 	</xs:complexType>
 	<xs:complexType name="StringWithNotes">
 		<xs:sequence>
-			<xs:element name="value" type="xs:string"/>
+			<xs:element minOccurs="0" name="value" type="xs:string"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="DateWithNotes">
 		<xs:sequence>
-			<xs:element name="value" type="xs:date"/>
+			<xs:element minOccurs="0" name="value" type="xs:date"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="IntegerWithNotes">
 		<xs:sequence>
-			<xs:element name="value" type="xs:int"/>
+			<xs:element minOccurs="0" name="value" type="xs:int"/>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 	</xs:complexType>
