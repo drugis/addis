@@ -928,7 +928,7 @@
                     <rateMeasurement sampleSize="40" rate="32"/>
                     <whenTaken>
                         <fromEpochEnd>
-                            <offset>P0M</offset>
+                            <offset>PT0S</offset>
                         </fromEpochEnd>
                     </whenTaken>
                 </measurement>
@@ -938,7 +938,7 @@
                     <rateMeasurement sampleSize="47" rate="26"/>
                     <whenTaken>
                         <fromEpochEnd>
-                            <offset>P0M</offset>
+                            <offset>P0D</offset>
                         </fromEpochEnd>
                     </whenTaken>
                 </measurement>

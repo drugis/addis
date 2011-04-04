@@ -405,6 +405,7 @@
 			</xs:sequence>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="Activity">
 		<xs:sequence>
@@ -483,6 +484,7 @@
 	</xs:complexType>
 	<xs:complexType name="MeasurementMoment">
 		<xs:sequence>
+			<xs:element name="epoch"/>
 			<xs:choice>
 				<xs:element name="fromEpochStart" type="MeasurementOffset"/>
 				<xs:element name="fromEpochEnd" type="MeasurementOffset"/>
@@ -505,7 +507,7 @@
 	</xs:complexType>
 	<xs:complexType name="AnalysisArms">
 		<xs:sequence maxOccurs="unbounded">
-			<xs:element name="arm" type="NameReference"/>
+			<xs:element name="arm" type="ArmReference"/>
 		</xs:sequence>
 	</xs:complexType>
 
