@@ -417,7 +417,6 @@
 				<xs:element name="follow-up"/>
 			</xs:choice>
 		</xs:sequence>
-		<xs:attribute name="name" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="ActivityUsedBy">
 		<xs:attribute name="epoch" type="xs:string"/>
