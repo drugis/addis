@@ -14,9 +14,9 @@ public class TreatmentActivity extends AbstractEntity implements Activity {
 	public static final String PROPERTY_DOSE = "dose";
 
 
-	public TreatmentActivity(Drug drug, AbstractDose fixedDose) {
+	public TreatmentActivity(Drug drug, AbstractDose dose) {
 		d_drug = drug;
-		d_dose = fixedDose;
+		d_dose = dose;
 	}
 
 	public Drug getDrug() {
@@ -73,5 +73,12 @@ public class TreatmentActivity extends AbstractEntity implements Activity {
 	@Override
 	public int hashCode() {
 		return (d_drug != null ? d_drug.hashCode() : 0) * 31 + (d_dose != null ? d_dose.hashCode() : 0);
+	}
+	
+	/**
+	 * Deep equality and shallow equality are equivalent for this type.
+	 */
+	public boolean deepEquals(Entity other) {
+		return equals(other);
 	}
 }

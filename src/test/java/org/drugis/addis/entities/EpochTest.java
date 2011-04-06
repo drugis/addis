@@ -1,6 +1,8 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 
@@ -49,13 +51,20 @@ public class EpochTest {
 		Epoch e = new Epoch("Main phase", DatatypeFactory.newInstance().newDuration("P42D"));
 		Epoch e2 = new Epoch("Main phase", null);
 		Epoch e3 = new Epoch("Randomization", null);
-		assertEquals(e, d_treatment);
-		JUnitUtil.assertNotEquals(e2, d_randomization);
-		JUnitUtil.assertNotEquals(d_null, d_treatment);
-		assertEquals(e3, d_randomization);
-		assertEquals(e.hashCode(), d_treatment.hashCode());
-		assertEquals(e3.hashCode(), d_randomization.hashCode());
-		d_null.hashCode();
+		
+		// equality is defined on the NAME field.
+		assertEquals(e, e2);
+		JUnitUtil.assertNotEquals(e2, e3);
+		assertEquals(e.hashCode(), e2.hashCode());
+		d_null.hashCode(); // hashCode() should also be defined for NULL name
+		
+		// deep equality is defined by equality of the object graph
+		assertTrue(e.deepEquals(d_treatment));
+		assertFalse(e2.deepEquals(d_randomization));
+		assertFalse(d_null.deepEquals(d_treatment));
+		assertTrue(e3.deepEquals(d_randomization));
+		e3.getNotes().add(new Note());
+		assertFalse(e3.deepEquals(d_randomization));
 	}
 	
 	@Test

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.xml.datatype.Duration;
 
+import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.EqualsUtil;
 
 public class Epoch extends AbstractEntity implements TypeWithNotes {
@@ -55,13 +56,19 @@ public class Epoch extends AbstractEntity implements TypeWithNotes {
 	public boolean equals(Object obj) {
 		if (obj != null && obj instanceof Epoch) {
 			Epoch other = (Epoch) obj;
-			return EqualsUtil.equal(other.getName(), getName()) && EqualsUtil.equal(other.getDuration(), getDuration());
+			return EqualsUtil.equal(other.getName(), getName());
 		}
 		return false;
 	}
 	
 	@Override
 	public int hashCode() {
-		return (d_name == null ? 0 : d_name.hashCode()) * 31 + (d_duration == null ? 0 : d_duration.hashCode());
+		return (d_name == null ? 0 : d_name.hashCode()); 
+	}
+	
+	public boolean deepEquals(Entity obj) {
+		if(!equals(obj)) return false;
+		Epoch other = (Epoch) obj;
+		return EqualsUtil.equal(other.getDuration(), getDuration()) && EntityUtil.deepEqual(other.getNotes(), getNotes());
 	}
 }

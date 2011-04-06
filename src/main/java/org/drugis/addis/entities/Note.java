@@ -82,6 +82,13 @@ public class Note extends AbstractEntity {
 		}
 		return false;
 	}
+
+	/**
+	 * Deep equality and shallow equality are equivalent for this type.
+	 */
+	public boolean deepEquals(Entity other) {
+		return equals(other);
+	}
 	
 	public int hashCode() {
 		return d_source.hashCode() * 31 + d_text.hashCode();

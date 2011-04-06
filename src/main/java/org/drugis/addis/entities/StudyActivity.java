@@ -2,8 +2,12 @@ package org.drugis.addis.entities;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.drugis.addis.util.EntityUtil;
+import org.drugis.common.EqualsUtil;
 
 public class StudyActivity extends AbstractEntity implements TypeWithNotes {
 	public static final String PROPERTY_NAME = "name";
@@ -14,6 +18,8 @@ public class StudyActivity extends AbstractEntity implements TypeWithNotes {
 		private final Epoch d_epoch;
 		private final Arm d_arm;
 		public UsedBy(Epoch e, Arm a) {
+			assert(e != null);
+			assert(a != null);
 			d_epoch = e;
 			d_arm = a;
 		}
@@ -23,11 +29,26 @@ public class StudyActivity extends AbstractEntity implements TypeWithNotes {
 		public Arm getArm() {
 			return d_arm;
 		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj != null && obj instanceof UsedBy) {
+				UsedBy other = (UsedBy) obj;
+				return EqualsUtil.equal(other.getEpoch(), getEpoch()) && EqualsUtil.equal(other.getArm(), getArm());
+			}
+			return false;
+		}
+		
+		@Override
+		public int hashCode() {
+			return 31 * d_epoch.hashCode() + d_arm.hashCode();
+		}
 	}
 
 	private String d_name;
 	private Activity d_activity;
-	private List<UsedBy> d_usedBy = new ArrayList<UsedBy>();
+	private Set<UsedBy> d_usedBy = new HashSet<UsedBy>();
+	private List<Note> d_notes = new ArrayList<Note>();
 	
 	public StudyActivity(String name, Activity activity) {
 		d_name = name;
@@ -37,8 +58,7 @@ public class StudyActivity extends AbstractEntity implements TypeWithNotes {
 
 	@Override
 	public Set<? extends Entity> getDependencies() {
-		// TODO Auto-generated method stub
-		return null;
+		return d_activity.getDependencies();
 	}
 
 
@@ -63,17 +83,40 @@ public class StudyActivity extends AbstractEntity implements TypeWithNotes {
 	}
 
 
-	public void setUsedBy(List<UsedBy> usedBy) {
-		d_usedBy = usedBy;
+	public void setUsedBy(Set<UsedBy> usedBy) {
+		Set<UsedBy> oldValue = d_usedBy;
+		d_usedBy = new HashSet<UsedBy>(usedBy);
+		firePropertyChange(PROPERTY_USED_BY, oldValue, d_usedBy);
 	}
 
 
-	public List<UsedBy> getUsedBy() {
-		return d_usedBy;
+	public Set<UsedBy> getUsedBy() {
+		return Collections.unmodifiableSet(d_usedBy);
 	}
 
 
 	public List<Note> getNotes() {
-		return Collections.emptyList();
+		return d_notes ;
+	}
+	
+	public boolean deepEquals(Entity obj) {
+		if(!equals(obj)) return false;
+		StudyActivity other = (StudyActivity) obj;
+		return EntityUtil.deepEqual(other.getActivity(), getActivity()) && other.getUsedBy().equals(getUsedBy()) && 
+			EntityUtil.deepEqual(other.getNotes(), getNotes());
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj != null && obj instanceof StudyActivity) {
+			StudyActivity other = (StudyActivity) obj;
+			return EqualsUtil.equal(other.getName(), getName());
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return (getName() != null ? getName().hashCode() : 0);
 	}
 }
