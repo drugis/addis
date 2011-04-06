@@ -24,13 +24,11 @@
 
 package org.drugis.addis.util;
 
-import static org.drugis.addis.entities.AssertEntityEquals.assertDomainEquals;
 import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
 import static org.drugis.addis.util.JAXBConvertor.nameReference;
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 import static org.junit.Assert.assertEquals;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,19 +46,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.TransformerException;
-
-import javolution.text.CharArray;
-import javolution.xml.XMLFormat;
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLReferenceResolver;
-import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AdverseEvent;
@@ -72,7 +63,6 @@ import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.CharacteristicsMap;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.DomainData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
@@ -1321,73 +1311,21 @@ public class JAXBConvertorTest {
 	}
 	
 	@Test
-	// ACCEPTANCE TEST -- should be replaced by something nicer so we can remove the Javalution support.
-	public void testAddisDataToDomainData() throws Exception {
-		InputStream xmlStream = getClass().getResourceAsStream("../defaultData.xml");
+	public void testRoundTripConversion() throws Exception {
 		InputStream transformedXmlStream = getTransformed();
-
-		DomainData importedDomainData = (DomainData)XMLHelper.fromXml(xmlStream);
-		Domain importedDomain = new DomainImpl(importedDomainData);
 		
-		AddisData data = (AddisData) d_unmarshaller.unmarshal(transformedXmlStream);
-		Domain domainData = JAXBConvertor.convertAddisDataToDomain(data);
-		assertDomainEquals(importedDomain, domainData);
-	}
-	
-	@Test
-	// ACCEPTANCE TEST -- should be replaced by something nicer so we can remove the Javalution support.
-	public void testDomainDataToAddisData() throws Exception {
-		InputStream xmlStream = getClass().getResourceAsStream("../defaultData.xml");
-		InputStream transformedXmlStream = getTransformed();
-
-		Domain domain = new DomainImpl((DomainData)fromXmlPreserveArmIds(xmlStream));
-
 		AddisData data = (AddisData) d_unmarshaller.unmarshal(transformedXmlStream);
 		sortMeasurements(data);
 		sortAnalysisArms(data);
 		sortBenefitRiskOutcomes(data);
-		assertEquals(data, JAXBConvertor.convertDomainToAddisData(domain)); 
+		sortCategoricalMeasurementCategories(data);
+		Domain domainData = JAXBConvertor.convertAddisDataToDomain(data);
+		sortPopulationCharacteristics(data);
+		AddisData roundTrip = JAXBConvertor.convertDomainToAddisData(domainData);
+		assertEquals(data, roundTrip);
 	}
 	
-	
-	public static void main(String[] args) {
-		try {
-			// read transformed XML
-			InputStream xmlStream = new FileInputStream(args[0]);
-			InputStream transformedXmlStream = JAXBConvertor.transformLegacyXML(xmlStream);
-			xmlStream.close();
-			JAXBContext jaxb = JAXBContext.newInstance("org.drugis.addis.entities.data");
-			Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-			AddisData data = (AddisData) unmarshaller.unmarshal(transformedXmlStream);
-
-			// read legacy XML
-			xmlStream = new FileInputStream(args[0]);
-			Domain domain = new DomainImpl((DomainData)fromXmlPreserveArmIds(xmlStream));
-			xmlStream.close();
-			
-			// do some trivial transformations to assure a certain order where the order doesn't matter
-			sortMeasurements(data);
-			sortAnalysisArms(data);
-			sortBenefitRiskOutcomes(data);
-			sortCategoricalMeasurementCategories(data);
-			AddisData dataFromDomain = JAXBConvertor.convertDomainToAddisData(domain);
-			sortPopulationCharacteristics(dataFromDomain);
-			
-			// "data converted from domain from legacy XML" == "data read from transformed XML"
-			assertEquals(data, dataFromDomain);
-
-			// "domain converted from data from transformed XML" == "domain read from legacy XML"
-			Domain domainFromData = JAXBConvertor.convertAddisDataToDomain(data);
-			assertDomainEquals(domain, domainFromData);
-
-			System.out.println("Congratulations! The Javalution and JAXB unmarshalling have identical results!");
-//			xmlStream = new FileInputStream(args[0]);
-//			PubMedDataBankRetriever.copyStream(transformedXmlStream, System.out);
-//			xmlStream.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	// FIXME: add additional test data sets
 	
 	private static void sortCategoricalMeasurementCategories(AddisData data) {
 		for (org.drugis.addis.entities.data.Study s : data.getStudies().getStudy()) {
@@ -1560,49 +1498,5 @@ public class JAXBConvertorTest {
 	
 	private static InputStream getTransformed() throws TransformerException, IOException {
 		return JAXBConvertor.transformLegacyXML(JAXBConvertorTest.class.getResourceAsStream("../defaultData.xml"));
-	}
-
-	private static final class IdResolver extends XMLReferenceResolver {
-		private Map<Integer, Object> d_idMap = new HashMap<Integer, Object>();
-
-		public void createReference(Object obj, XMLFormat.InputElement xml)
-		throws XMLStreamException {
-			CharArray value = xml.getAttribute("id");
-			if (value == null)
-				return;
-			d_idMap.put(value.toInt(), obj);
-			super.createReference(obj, xml);
-		}
-
-		public Integer getId(Object obj) {
-			for (Entry<Integer, Object> entry : d_idMap.entrySet()) {
-				if (entry.getValue() == obj) {
-					return entry.getKey();
-				}
-			}
-			return null;
-		}
-	}
-	
-	public static <T> T fromXmlPreserveArmIds(InputStream xmlStream) throws XMLStreamException {
-		XMLObjectReader reader = XMLObjectReader.newInstance(xmlStream, "UTF-8");
-		reader.setBinding(new AddisBinding());
-		IdResolver resolver = new IdResolver();
-		reader.setReferenceResolver(resolver);
-		T read = reader.<T>read();
-		if (read instanceof DomainData) {
-			fixArmIds((DomainData)read, resolver);
-		}
-		return read;
-	}
-
-	private static void fixArmIds(DomainData data, IdResolver resolver) {
-		for (Study s : data.getStudies()) {
-			List<Integer> ids = new ArrayList<Integer>();
-			for (Arm a : s.getArms()) {
-				ids.add(resolver.getId(a));
-			}
-			s.setArmIds(ids);
-		}
 	}
 }

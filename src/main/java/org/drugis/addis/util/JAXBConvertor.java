@@ -286,6 +286,7 @@ public class JAXBConvertor {
 			org.drugis.addis.entities.OutcomeMeasure to)
 	throws ConversionException {
 		to.setName(from.getName());
+		to.setDescription(from.getDescription());
 		if (from.getCategorical() != null) {
 			throw(new ConversionException("Endpoints should not be categorical (yet)"));
 		} else if (from.getContinuous() != null) {
