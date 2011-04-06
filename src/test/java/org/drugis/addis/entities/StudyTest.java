@@ -376,19 +376,4 @@ public class StudyTest {
 		d_clone.getArms().get(0).getNotes().add(note);
 		assertTrue(d_orig.getArms().get(0).getNotes().isEmpty());
 	}
-	
-	@Test
-	public void testXML() throws XMLStreamException {
-		Study s = ExampleData.buildStudyChouinard();
-		Note note = new Note(Source.MANUAL, "this is the test text");
-		s.getArms().get(0).getNotes().add(note);
-		List<PopulationCharacteristic> chars = new ArrayList<PopulationCharacteristic>();
-		chars.add(ExampleData.buildAgeVariable());
-		s.setPopulationCharacteristics(chars);
-		String xml = XMLHelper.toXml(s, Study.class);
-		Study parsedStudy = (Study)XMLHelper.fromXml(xml);
-		AssertEntityEquals.assertEntityEquals(s, parsedStudy);
-		assertEquals(s.getArms().get(0).getNotes(), parsedStudy.getArms().get(0).getNotes());
-		assertEquals(s.getStudyAdverseEvents().get(0).getNotes(), parsedStudy.getStudyAdverseEvents().get(0).getNotes());
-	}
 }

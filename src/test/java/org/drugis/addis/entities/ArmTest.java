@@ -75,12 +75,4 @@ public class ArmTest {
 	public void testCloneReturnsDistinctDose() {
 		assertFalse(d_orig.getDose() == d_clone.getDose());
 	}
-	
-	@Test
-	public void testXML() throws XMLStreamException {
-		Arm arm = ExampleData.buildStudyAdditionalThreeArm().getArms().get(0);
-		String xml = XMLHelper.toXml(arm, Arm.class);
-		AssertEntityEquals.assertEntityEquals(arm, XMLHelper.<Arm>fromXml(xml));
-	}	
-		
 }

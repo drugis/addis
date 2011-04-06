@@ -919,36 +919,4 @@ public class DomainTest {
 		addMetaAnalysisToDomain();
 		assertEquals(Collections.singleton(anl), d_domain.getNetworkMetaAnalyses());
 	}
-	
-	
-	@Test
-	public void testXML() throws XMLStreamException {
-		DomainImpl origDomain = new DomainImpl();
-		ExampleData.initDefaultData(origDomain);
-		DomainData origData = origDomain.getDomainData();
-		origData.addVariable(new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"}));
-		origData.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisHamD()); 
-		
-		String xml = XMLHelper.toXml(origData, DomainData.class);
-		DomainData loadedData = XMLHelper.fromXml(xml);
-
-		DomainImpl domainFromXml = new DomainImpl();
-		domainFromXml.setDomainData(loadedData);
-		
-		assertEquals(origDomain.getIndications(), loadedData.getIndications());
-		AssertEntityEquals.assertDomainEquals(origDomain, domainFromXml);
-	}
-
-	@Test
-	public void testDefaultDataXML() throws XMLStreamException {
-		InputStream xmlStream = getClass().getResourceAsStream("../defaultData.xml");
-		assertNotNull(xmlStream);
-		DomainData importedDomain = (DomainData)XMLHelper.fromXml(xmlStream);
-		String xml = XMLHelper.toXml(importedDomain, DomainData.class);
-		DomainData loadedData = XMLHelper.fromXml(xml);
-		DomainImpl loadedImpl = new DomainImpl(loadedData);
-		DomainImpl importedImpl = new DomainImpl(importedDomain);
-		AssertEntityEquals.assertDomainEquals(importedImpl, loadedImpl);
-	}
-
 }

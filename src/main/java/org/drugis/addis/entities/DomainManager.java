@@ -81,17 +81,6 @@ public class DomainManager {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	/**
-	 * Save the domain to an XML stream (old format, .xml)
-	 * @param os Stream to write objects to.
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@Deprecated
-	public void saveLegacyXMLDomain(OutputStream os) throws IOException {
-		d_domain.saveXMLDomainData(os);
-	}
 
 	/**
 	 * Save the domain to an XML stream (new format, .xml)

@@ -46,30 +46,40 @@ public class Arm extends AbstractEntity implements TypeWithNotes {
 	public static final String PROPERTY_SIZE = "size";
 	public static final String PROPERTY_DRUG = "drug";
 	public static final String PROPERTY_DOSE = "dose";
+
+	public Arm(String name, int size) {
+		
+	}
 	
+	@Deprecated
 	public Arm(Drug drug, AbstractDose dose, int size) {
 		d_drug = drug;
 		d_dose = dose;
 		d_size = size;
 		init();
 	}
-
+	
+	@Deprecated
 	public Arm() {}
-
+	
+	@Deprecated
 	public Drug getDrug() {
 		return d_drug;
 	}
 	
+	@Deprecated
 	public void setDrug(Drug drug) {
 		Drug oldVal = d_drug;
 		d_drug = drug;
 		firePropertyChange(PROPERTY_DRUG, oldVal, d_drug);
 	}
 	
+	@Deprecated
 	public AbstractDose getDose() {
 		return d_dose;
 	}
 	
+	@Deprecated
 	public void setDose(AbstractDose dose) {
 		AbstractDose oldVal = d_dose;
 		d_dose = dose;
@@ -96,18 +106,6 @@ public class Arm extends AbstractEntity implements TypeWithNotes {
 		return Collections.<Entity>singleton(d_drug);
 	}
 	
-	@SuppressWarnings("unchecked")
-	private List<PropertyDefinition> d_propDefs = Arrays.asList(new PropertyDefinition<?>[]{
-		new PropertyDefinition<AbstractDose>(PROPERTY_DOSE, null) {
-			public AbstractDose getValue() { return getDose(); }
-			public void setValue(Object val) { setDose((AbstractDose) val); }
-		},
-		new PropertyDefinition<Drug>(PROPERTY_DRUG, Drug.class) {
-			public Drug getValue() { return getDrug(); }
-			public void setValue(Object val) { setDrug((Drug) val); }
-		}
-	});
-	
 	@Override
 	public Arm clone() {
 		Arm arm = new Arm(getDrug(), getDose().clone(), getSize());
@@ -118,23 +116,4 @@ public class Arm extends AbstractEntity implements TypeWithNotes {
 	public List<Note> getNotes() {
 		return d_notes;
 	}
-
-	protected static final XMLFormat<Arm> ARM_XML = new XMLFormat<Arm>(Arm.class) {
-		@Override
-		public Arm newInstance(Class<Arm> cls, InputElement xml) {
-			return new Arm();
-		}
-		
-		@Override
-		public void read(InputElement ie, Arm a) throws XMLStreamException {
-			a.setSize(ie.getAttribute(PROPERTY_SIZE, 0));
-			XMLPropertiesFormat.readProperties(ie, a.d_propDefs);
-		}
-
-		@Override
-		public void write(Arm a, OutputElement oe) throws XMLStreamException {
-			oe.setAttribute(PROPERTY_SIZE, a.getSize());
-			XMLPropertiesFormat.writeProperties(a.d_propDefs, oe);
-		}
-	};
 }

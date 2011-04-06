@@ -81,12 +81,4 @@ public class NetworkMetaAnalysisTest {
 		assertEquals(expected.getConfidenceInterval(), actual.getConfidenceInterval());
 		assertEquals(expected.getAxisType(), actual.getAxisType());
 	}
-	
-	@Test
-	public void testXML() throws XMLStreamException {
-		NetworkMetaAnalysis analysis = ExampleData.buildNetworkMetaAnalysisHamD();
-		String xml = XMLHelper.toXml(analysis, NetworkMetaAnalysis.class);		
-		NetworkMetaAnalysis importedAnalysis = (NetworkMetaAnalysis)XMLHelper.fromXml(xml);
-		assertEntityEquals(analysis, importedAnalysis);
-	}
 }

@@ -128,22 +128,6 @@ public class StudyBenefitRiskAnalysisTest {
 	}
 	
 	@Test
-	public void testXML() throws XMLStreamException {
-		String xml = XMLHelper.toXml(d_analysis, StudyBenefitRiskAnalysis.class);
-		StudyBenefitRiskAnalysis importedAnalysis = (StudyBenefitRiskAnalysis)XMLHelper.fromXml(xml);
-		assertEntityEquals(d_analysis, importedAnalysis);
-	}
-
-	@Test
-	public void testLegacyXML() throws XMLStreamException {
-		InputStream xmlStream = getClass().getResourceAsStream("studyLegacyBR.xml");
-		assertNotNull(xmlStream);
-		StudyBenefitRiskAnalysis importedAnalysis = 
-			(StudyBenefitRiskAnalysis)XMLHelper.fromXml(xmlStream);
-		assertEntityEquals(d_analysis, importedAnalysis);
-	}	
-	
-	@Test
 	public void testLyndOBrienException() throws IllegalArgumentException {
 		Indication indication = ExampleData.buildIndicationDepression();
 		Study study = ExampleData.buildStudyChouinard();

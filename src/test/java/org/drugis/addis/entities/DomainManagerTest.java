@@ -30,6 +30,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.drugis.addis.ExampleData;
 import org.junit.Before;
@@ -51,25 +52,19 @@ public class DomainManagerTest {
 	}
 	
 	@Test
-	@SuppressWarnings("deprecation")
-	public void testSaveLoadLegacyXml() throws IOException, ClassNotFoundException {
-		d_manager = new DomainManager();
-		ExampleData.initDefaultData(d_manager.getDomain());
+	public void testLoadLegacyXml() throws IOException, ClassNotFoundException {
+		InputStream lis = DomainManagerTest.class.getResourceAsStream("../defaultData.xml");
+		d_manager.loadLegacyXMLDomain(lis);
 		
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		d_manager.saveLegacyXMLDomain(bos);
-		Domain domain = d_manager.getDomain();
-		d_manager.resetDomain();
-
-		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-		d_manager.loadLegacyXMLDomain(bis);
+		InputStream nis = DomainManagerTest.class.getResourceAsStream("../defaultData.addis");
+		DomainManager managerNew = new DomainManager();
+		managerNew.loadXMLDomain(nis);
 		
-		assertDomainEquals(domain, d_manager.getDomain());
+		assertDomainEquals(managerNew.getDomain(), d_manager.getDomain());
 	}
 	
 	@Test
 	public void testSaveLoadXml() throws IOException, ClassNotFoundException {
-		d_manager = new DomainManager();
 		ExampleData.initDefaultData(d_manager.getDomain());
 		
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();

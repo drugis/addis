@@ -145,22 +145,6 @@ public class MetaBenefitRiskAnalysisTest {
 	}
 	
 	@Test
-	public void testXML() throws XMLStreamException {
-		String xml = XMLHelper.toXml(d_BRAnalysis, MetaBenefitRiskAnalysis.class);
-		MetaBenefitRiskAnalysis importedAnalysis = (MetaBenefitRiskAnalysis)XMLHelper.fromXml(xml);
-		assertEntityEquals(d_BRAnalysis, importedAnalysis);
-	}
-	
-	@Test
-	public void testLegacyXML() throws XMLStreamException {
-		InputStream xmlStream = getClass().getResourceAsStream("legacyBR.xml");
-		assertNotNull(xmlStream);
-		MetaBenefitRiskAnalysis importedAnalysis = 
-			(MetaBenefitRiskAnalysis)XMLHelper.fromXml(xmlStream);
-		assertEntityEquals(d_BRAnalysis, importedAnalysis);
-	}
-	
-	@Test
 	public void testLOBrianAnalysisException() throws IllegalArgumentException {
 		Indication indication = ExampleData.buildIndicationDepression();
 		
