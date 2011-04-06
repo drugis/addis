@@ -262,7 +262,7 @@ public class AddStudyWizardPresentation {
 
 	public void addArms(int numArms) {
 		for(int i = 0; i < numArms; ++i){
-			Arm arm = new Arm(new Drug("", ""), new FixedDose(0l, SIUnit.MILLIGRAMS_A_DAY),0);
+			Arm arm = new Arm("Arm " + (i + 1), 0,new Drug("", ""), new FixedDose(0l, SIUnit.MILLIGRAMS_A_DAY));
 			getNewStudy().getArms().add(arm);
 		}
 	}

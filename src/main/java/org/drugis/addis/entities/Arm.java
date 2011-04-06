@@ -29,34 +29,33 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.drugis.addis.util.XMLPropertiesFormat;
-import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
-
-import scala.actors.threadpool.Arrays;
-
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
+import org.drugis.addis.util.EntityUtil;
+import org.drugis.common.EqualsUtil;
 
 public class Arm extends AbstractEntity implements TypeWithNotes {
+	private String d_name;
 	private Integer d_size;
 	private Drug d_drug;
 	private AbstractDose d_dose;
 	private List<Note> d_notes = new ArrayList<Note>();
 	
 	public static final String PROPERTY_SIZE = "size";
+	@Deprecated
 	public static final String PROPERTY_DRUG = "drug";
+	@Deprecated
 	public static final String PROPERTY_DOSE = "dose";
+	public static final String PROPERTY_NAME = "name";
 
 	public Arm(String name, int size) {
-		
+		d_name = name;
+		d_size = size;
 	}
 	
 	@Deprecated
-	public Arm(Drug drug, AbstractDose dose, int size) {
+	public Arm(String name, int size, Drug drug, AbstractDose dose) {
+		this(name, size);
 		d_drug = drug;
 		d_dose = dose;
-		d_size = size;
-		init();
 	}
 	
 	@Deprecated
@@ -88,7 +87,7 @@ public class Arm extends AbstractEntity implements TypeWithNotes {
 	
 	@Override
 	public String toString() {
-		return  d_drug + ", " + d_dose + ", size: " + d_size;
+		return getName();
 	}
 
 	public Integer getSize() {
@@ -101,19 +100,51 @@ public class Arm extends AbstractEntity implements TypeWithNotes {
 		firePropertyChange(PROPERTY_SIZE, oldVal, d_size);
 	}
 	
+	public String getName() {
+		return d_name;
+	}
+
+	public void setName(String name) {
+		String oldVal = d_name;
+		d_name = name;
+		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
+	}
+	
 	@Override
 	public Set<Entity> getDependencies() {
-		return Collections.<Entity>singleton(d_drug);
+		return Collections.emptySet();
 	}
 	
 	@Override
 	public Arm clone() {
-		Arm arm = new Arm(getDrug(), getDose().clone(), getSize());
+		Arm arm = new Arm(getName(), getSize());
 		arm.getNotes().addAll(getNotes());
+		arm.setDrug(getDrug());
+		arm.setDose(getDose());
 		return arm;
 	}
 
 	public List<Note> getNotes() {
 		return d_notes;
+	}
+
+	public boolean deepEquals(Entity obj) {
+		if (!equals(obj)) return false;
+		Arm other = (Arm) obj;
+		return EqualsUtil.equal(other.getSize(), getSize()) && EntityUtil.deepEqual(other.getNotes(), getNotes());
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj != null && obj instanceof Arm) {
+			Arm other = (Arm) obj;
+			return EqualsUtil.equal(other.getName(), getName());
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return (getName() != null ? getName().hashCode() : 0);
 	}
 }

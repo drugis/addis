@@ -31,7 +31,7 @@ public class StudyActivityTest {
 		d_rndActivity = PredefinedActivity.RANDOMIZATION;
 		d_randomization = new StudyActivity(d_rndTitle, d_rndActivity);
 		d_epoch = new Epoch("Main phase", DatatypeFactory.newInstance().newDuration("PT5H"));
-		d_arm = new Arm();
+		d_arm = new Arm("Group", 12);
 		d_fluoxetine = new Drug("Fluoxetine", null);
 		Activity treatment = new TreatmentActivity(d_fluoxetine, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));
 		d_main = new StudyActivity("treatment", treatment);
@@ -63,7 +63,7 @@ public class StudyActivityTest {
 		UsedBy ub = new UsedBy(d_epoch, d_arm);
 		UsedBy ub2 = new UsedBy(d_epoch, d_arm);
 		UsedBy ub3 = new UsedBy(e, d_arm);
-		UsedBy ub4 = new UsedBy(e, new Arm(new Drug("Fluoxetine", "CODE"), new FixedDose(), 100));
+		UsedBy ub4 = new UsedBy(e, new Arm("New Group", 8));
 		assertEquals(ub, ub2);
 		JUnitUtil.assertNotEquals(ub, ub3);
 		JUnitUtil.assertNotEquals(ub3, ub4);

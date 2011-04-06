@@ -80,7 +80,7 @@ public class StudyPresentationModelTest {
 		assertEquals(new Integer(0), model.getValue());
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, new Integer(1));
 		model.addPropertyChangeListener(mock);
-		d_study.addArm(new Arm(null, null, 1));
+		d_study.addArm(new Arm("a", 1, null, null));
 
 		verify(mock);
 		assertEquals(new Integer(1), model.getValue());
@@ -91,7 +91,7 @@ public class StudyPresentationModelTest {
 		StudyCharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.STUDYSIZE);
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, new Integer(100));
 		model.addPropertyChangeListener(mock);
-		d_study.addArm(new Arm(null, null, 100));
+		d_study.addArm(new Arm("a", 100, null, null));
 
 		verify(mock);
 		assertEquals(new Integer(100), model.getValue());		
@@ -104,7 +104,7 @@ public class StudyPresentationModelTest {
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, Collections.singleton(d));
 		model.addPropertyChangeListener(mock);
 		
-		d_study.addArm(new Arm(d, null, 0));
+		d_study.addArm(new Arm("a", 0, d, null));
 
 		verify(mock);
 		assertEquals(Collections.singleton(d), model.getValue());	
@@ -115,7 +115,7 @@ public class StudyPresentationModelTest {
 		StudyCharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.DOSING);
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, DerivedStudyCharacteristic.Dosing.FLEXIBLE);
 		model.addPropertyChangeListener(mock);
-		d_study.addArm(new Arm(null, new FlexibleDose(new Interval<Double>(1d,10d), SIUnit.MILLIGRAMS_A_DAY), 0));
+		d_study.addArm(new Arm("A", 0, null, new FlexibleDose(new Interval<Double>(1d,10d), SIUnit.MILLIGRAMS_A_DAY)));
 		
 		verify(mock);
 		assertEquals(DerivedStudyCharacteristic.Dosing.FLEXIBLE, model.getValue());
@@ -124,22 +124,22 @@ public class StudyPresentationModelTest {
 	@Test
 	public void testGetArmCount() {
 		assertEquals(d_study.getArms().size(), d_model.getArmCount());
-		d_study.addArm(new Arm(new Drug("X", "Y"), null, 0));
+		d_study.addArm(new Arm("X", 0, new Drug("X", "Y"), null));
 		assertEquals(d_study.getArms().size(), d_model.getArmCount());
 	}
 	
 	@Test
 	public void testGetArms() {
-		Arm arm = new Arm(new Drug("X", "Y"), null, 0);
+		Arm arm = new Arm("X", 0, new Drug("X", "Y"), null);
 		d_study.addArm(arm);
 		assertEquals(Collections.singletonList(d_pmf.getModel(arm)), d_model.getArms());
 	}
 	
 	@Test
 	public void testGetPopulationCharacteristicCount() {
-		Arm arm1 = new Arm(new Drug("X", "Y"), null, 0);
+		Arm arm1 = new Arm("arm1", 0, new Drug("X", "Y"), null);
 		d_study.addArm(arm1);
-		Arm arm2 = new Arm(new Drug("X", "Y"), null, 0);
+		Arm arm2 = new Arm("arm2", 0, new Drug("X", "Y"), null);
 		d_study.addArm(arm2);
 		ContinuousPopulationCharacteristic age = new ContinuousPopulationCharacteristic("Age");
 		assertEquals(0, d_model.getPopulationCharacteristicCount());

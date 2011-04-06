@@ -160,8 +160,8 @@ public class CorrectedOddsRatioTest {
 	{
 		Study s = new Study(studyName, d_ind);
 		s.addEndpoint(d_ep);
-		Arm g_fluox = new Arm(d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), fluoxSize);
-		Arm g_parox = new Arm(d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), sertraSize);		
+		Arm g_fluox = new Arm("fluox", fluoxSize, d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));
+		Arm g_parox = new Arm("sertr", sertraSize, d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));		
 		
 		s.addArm(g_parox);
 		s.addArm(g_fluox);

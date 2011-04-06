@@ -368,10 +368,10 @@ public class JAXBConvertor {
 	
 	static Arm convertArm(org.drugis.addis.entities.data.Arm arm, Domain domain) throws ConversionException {
 		Drug d = findDrug(domain, arm.getDrug().getName());
-		
+		String name = arm.getDrug().getName() + "-" + arm.getId();
 		if(arm.getFixedDose() != null) {
 			FixedDose fixDose = new FixedDose(arm.getFixedDose().getQuantity(), arm.getFixedDose().getUnit());
-			Arm newArm = new Arm(d, fixDose, arm.getSize().intValue());
+			Arm newArm = new Arm(name, arm.getSize().intValue(), d, fixDose);
 			convertNotes(arm.getNotes().getNote(), newArm.getNotes());
 			return newArm;
 		}
@@ -380,7 +380,7 @@ public class JAXBConvertor {
 													(double) arm.getFlexibleDose().getMinDose(), 
 													(double) arm.getFlexibleDose().getMaxDose()
 												 ), arm.getFlexibleDose().getUnit());
-			Arm newArm = new Arm(d, flexDose, arm.getSize());
+			Arm newArm = new Arm(name, arm.getSize(), d, flexDose);
 			convertNotes(arm.getNotes().getNote(), newArm.getNotes());
 			return newArm;
 		}

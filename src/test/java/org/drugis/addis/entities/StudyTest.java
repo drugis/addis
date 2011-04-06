@@ -56,7 +56,7 @@ public class StudyTest {
 	@Before
 	public void setUp() {
 		d_note = new Note(Source.CLINICALTRIALS, "Original text Yo!");
-		d_pg = new Arm(null, null, 0);
+		d_pg = new Arm("", 0, null, null);
 		d_orig = ExampleData.buildStudyFava2002();
 		
 		// Add some notes to test them being cloned.
@@ -142,7 +142,7 @@ public class StudyTest {
 		Study study = new Study("X", new Indication(0L, ""));
 		Endpoint endpoint = new Endpoint("e", Variable.Type.RATE);
 		study.addEndpoint(endpoint);
-		Arm group = new Arm(null, null, 100);
+		Arm group = new Arm("", 100, null, null);
 		study.addArm(group);
 		BasicRateMeasurement m = new BasicRateMeasurement(0, group.getSize());
 		m.setRate(12);
@@ -155,7 +155,7 @@ public class StudyTest {
 	public void testSetMeasurementThrowsException1() {
 		Study study = new Study("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("E", Variable.Type.RATE);
-		Arm pg = new Arm(null, null, 100);
+		Arm pg = new Arm("", 100, null, null);
 		study.setMeasurement(e, pg, 
 				new BasicRateMeasurement(100, pg.getSize()));
 	}
@@ -165,7 +165,7 @@ public class StudyTest {
 		Study study = new Study("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("e", Variable.Type.RATE);
 		study.addEndpoint(e);
-		Arm group = new Arm(null, null, 100);
+		Arm group = new Arm("", 100, null, null);
 		study.addArm(group);
 		
 		BasicMeasurement m = new BasicRateMeasurement(12, group.getSize());
@@ -222,8 +222,8 @@ public class StudyTest {
 	
 	@Test
 	public void testGetSampleSize() {
-		Arm pg1 = new Arm(null, null, 25);
-		Arm pg2 = new Arm(null, null, 35);
+		Arm pg1 = new Arm("pg1", 25, null, null);
+		Arm pg2 = new Arm("pg2", 35, null, null);
 		Study s = new Study("s1", new Indication(01L, "i"));
 		s.addArm(pg1);
 		s.addArm(pg2);
@@ -241,7 +241,7 @@ public class StudyTest {
 	public void testSetPopulationChar() {
 		PopulationCharacteristic v = new ContinuousPopulationCharacteristic("Age");
 		Study s = new Study("X", new Indication(0L, "Y"));
-		s.addArm(new Arm(new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY), 200));
+		s.addArm(new Arm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY)));
 		s.setPopulationCharacteristics(Collections.singletonList(v));
 		BasicContinuousMeasurement m = new BasicContinuousMeasurement(0.0, 1.0, 5);
 		
@@ -256,9 +256,9 @@ public class StudyTest {
 	public void testAddPopulationCharDefaultMeasurements() {
 		PopulationCharacteristic v = new ContinuousPopulationCharacteristic("Age");
 		Study s = new Study("X", new Indication(0L, "Y"));
-		Arm arm1 = new Arm(new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY), 200);
+		Arm arm1 = new Arm("arm1", 200, new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY));
 		s.addArm(arm1);
-		Arm arm2 = new Arm(new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY), 100);
+		Arm arm2 = new Arm("arm2", 100, new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY));
 		s.addArm(arm2);
 		s.setPopulationCharacteristics(Collections.singletonList(v));
 		
@@ -271,7 +271,7 @@ public class StudyTest {
 	@Test
 	public void testChangePopulationCharRetainMeasurements() {
 		Study s = new Study("X", new Indication(0L, "Y"));
-		Arm arm1 = new Arm(new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY), 200);
+		Arm arm1 = new Arm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY));
 		s.addArm(arm1);
 		
 		PopulationCharacteristic v1 = new ContinuousPopulationCharacteristic("Age1");

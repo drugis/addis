@@ -51,7 +51,7 @@ public class BasicArmPresentationTest {
 	@Before
 	public void setUp() {
 		d_pmf = new PresentationModelFactory(new DomainImpl());
-		d_pg = new Arm(null, null, 0);
+		d_pg = new Arm("", 0, null, null);
 		d_pres = new BasicArmPresentation(d_pg, d_pmf);
 	}
 	

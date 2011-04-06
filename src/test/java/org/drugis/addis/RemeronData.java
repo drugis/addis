@@ -112,7 +112,7 @@ public class RemeronData {
 		Study study = getOrCreateStudy(id);
 		
 		String drugId = unquote(parts[COLUMN_DRUG]);
-		Arm arm = new Arm(getOrCreateDrug(drugId), new UnknownDose(), getInt(parts[COLUMN_ITT]));
+		Arm arm = new Arm(drugId, getInt(parts[COLUMN_ITT]), getOrCreateDrug(drugId), new UnknownDose());
 		study.addArm(arm);
 		addEndpointMeasurement(study, arm, parts);
 		addAdverseEventMeasurements(study, arm, parts);

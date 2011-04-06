@@ -174,19 +174,19 @@ public class BasicOddsRatioTest {
 	{
 		Study s = new Study(studyName, d_ind);
 		s.addEndpoint(d_ep);
-		Arm g_fluox = new Arm(d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), fluoxSize);
-		Arm g_parox = new Arm(d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), sertraSize);		
+		Arm g_fluox = new Arm("Fluox", fluoxSize, d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));
+		Arm g_sertr = new Arm("Sertr", sertraSize, d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));		
 		
-		s.addArm(g_parox);
+		s.addArm(g_sertr);
 		s.addArm(g_fluox);
 		
-		BasicRateMeasurement m_parox = (BasicRateMeasurement) d_ep.buildMeasurement(g_parox);
+		BasicRateMeasurement m_sertr = (BasicRateMeasurement) d_ep.buildMeasurement(g_sertr);
 		BasicRateMeasurement m_fluox = (BasicRateMeasurement) d_ep.buildMeasurement(g_fluox);
 		
-		m_parox.setRate(sertraResp);
+		m_sertr.setRate(sertraResp);
 		m_fluox.setRate(fluoxResp);
 		
-		s.setMeasurement(d_ep, g_parox, m_parox);
+		s.setMeasurement(d_ep, g_sertr, m_sertr);
 		s.setMeasurement(d_ep, g_fluox, m_fluox);		
 		
 		return s;

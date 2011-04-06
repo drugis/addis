@@ -359,7 +359,7 @@ public class JAXBConvertorTest {
 		domain.addDrug(drug);
 		
 		org.drugis.addis.entities.data.Arm arm1 = new org.drugis.addis.entities.data.Arm();
-		arm1.setId(null);
+		arm1.setId(12);
 		arm1.setSize(size);
 		Notes armNotes = new Notes();
 		Note note = new Note(Source.CLINICALTRIALS, "This is an arm note content");
@@ -372,10 +372,11 @@ public class JAXBConvertorTest {
 		arm1.setFixedDose(fixDose);
 		arm1.setDrug(nameReference(name));
 		
-		Arm arm2 = buildFixedDoseArm(size, drug, quantity);
+		Arm arm2 = buildFixedDoseArm(size, drug, 12, quantity);
 		arm2.getNotes().add(note);
 		
 		assertEntityEquals(arm2, JAXBConvertor.convertArm(arm1, domain));
+		arm1.setId(null);
 		assertEquals(arm1, JAXBConvertor.convertArm(arm2));
 		
 		arm1.setFixedDose(null);
@@ -385,19 +386,20 @@ public class JAXBConvertorTest {
 		flexDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 		arm1.setFlexibleDose(flexDose);
 		
-		Arm arm3 = buildFlexibleDoseArm(size, drug, quantity, maxQuantity);
+		Arm arm3 = buildFlexibleDoseArm(size, drug, 12, quantity, maxQuantity);
 		arm3.getNotes().add(note);
-		
+		arm1.setId(12); // FIXME
 		assertEntityEquals(arm3, JAXBConvertor.convertArm(arm1, domain));
+		arm1.setId(null);
 		assertEquals(arm1, JAXBConvertor.convertArm(arm3));
 	}
 
-	private Arm buildFixedDoseArm(int size, Drug drug, double quantity) {
-		return new Arm(drug, new FixedDose(quantity, SIUnit.MILLIGRAMS_A_DAY), size);
+	private Arm buildFixedDoseArm(int size, Drug drug, int id, double quantity) {
+		return new Arm(drug.getName() + "-" + id, size, drug, new FixedDose(quantity, SIUnit.MILLIGRAMS_A_DAY));
 	}
 
-	private Arm buildFlexibleDoseArm(int size, Drug drug, double minQuantity, double maxQuantity) {
-		return new Arm(drug, new FlexibleDose(new Interval<Double> (minQuantity, maxQuantity), SIUnit.MILLIGRAMS_A_DAY), size);
+	private Arm buildFlexibleDoseArm(int size, Drug drug, int id, double minQuantity, double maxQuantity) {
+		return new Arm(drug.getName() + "-" + id, size, drug, new FlexibleDose(new Interval<Double> (minQuantity, maxQuantity), SIUnit.MILLIGRAMS_A_DAY));
 	}
 	
 	@Test
@@ -651,9 +653,9 @@ public class JAXBConvertorTest {
 	@Test
 	public void testConvertMeasurements() throws ConversionException {
 		Map<Integer, Arm> arms = new HashMap<Integer, Arm>();
-		Arm arm5 = new Arm(new Drug("Opium", "OPIUM4TW"), new FixedDose(100.0, SIUnit.MILLIGRAMS_A_DAY), 42);
+		Arm arm5 = new Arm("arm5", 42, new Drug("Opium", "OPIUM4TW"), new FixedDose(100.0, SIUnit.MILLIGRAMS_A_DAY));
 		arms.put(5, arm5);
-		Arm arm8 = new Arm(new Drug("LSD", "UFO"), new FixedDose(100.0, SIUnit.MILLIGRAMS_A_DAY), 42);
+		Arm arm8 = new Arm("arm8", 42, new Drug("LSD", "UFO"), new FixedDose(100.0, SIUnit.MILLIGRAMS_A_DAY));
 		arms.put(8, arm8);
 		Map<String, Study.StudyOutcomeMeasure<?>> oms = new HashMap<String, Study.StudyOutcomeMeasure<?>>();
 		String pcName = "popChar-hair";
@@ -873,9 +875,9 @@ public class JAXBConvertorTest {
 		study2.addEndpoint(ExampleData.buildEndpointCgi());
 		study2.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
 		study2.addOutcomeMeasure(ExampleData.buildAgeVariable());
-		Arm arm1 = buildFixedDoseArm(100, ExampleData.buildDrugFluoxetine(), 12.5);
+		Arm arm1 = buildFixedDoseArm(100, ExampleData.buildDrugFluoxetine(), 1, 12.5);
 		study2.addArm(arm1);
-		Arm arm2 = buildFlexibleDoseArm(102, ExampleData.buildDrugParoxetine(), 12.5, 15.3);
+		Arm arm2 = buildFlexibleDoseArm(102, ExampleData.buildDrugParoxetine(), 2, 12.5, 15.3);
 		study2.addArm(arm2);
 		study2.setArmIds(Arrays.asList(new Integer[] {1, 2}));
 		study2.setCharacteristic(BasicStudyCharacteristic.TITLE, "WHOO");

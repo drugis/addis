@@ -50,8 +50,8 @@ public class BasicStandardisedMeanDifferenceTest {
 	
 	@Before
 	public void setUp() {
-		Arm subjs = new Arm(null, null, s_subjSize);
-		Arm basels = new Arm(null, null, s_baslSize);
+		Arm subjs = new Arm("subj", s_subjSize, null, null);
+		Arm basels = new Arm("basl", s_baslSize, null, null);
 		d_subject = new BasicContinuousMeasurement(s_subjMean, s_subjStdDev, subjs.getSize());
 		d_baseline = new BasicContinuousMeasurement(s_baselMean, s_baslStdDev, basels.getSize());
 		d_smd = new BasicStandardisedMeanDifference(d_baseline, d_subject);

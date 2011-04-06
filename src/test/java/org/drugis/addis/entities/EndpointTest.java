@@ -67,7 +67,7 @@ public class EndpointTest {
 	
 	@Test
 	public void testBuildMeasurement() {
-		Arm pg = new Arm(null, null, 0);
+		Arm pg = new Arm("", 0, null, null);
 		Endpoint e = new Endpoint("e", Variable.Type.RATE);
 		e.setType(Variable.Type.RATE);
 		assertTrue(e.buildMeasurement(pg) instanceof BasicRateMeasurement);

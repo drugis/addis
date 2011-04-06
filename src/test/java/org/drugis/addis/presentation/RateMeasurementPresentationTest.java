@@ -44,7 +44,7 @@ public class RateMeasurementPresentationTest {
 	
 	@Before
 	public void setUp() {
-		d_pg = new Arm(null, null, 101);
+		d_pg = new Arm("pg", 101, null, null);
 		d_measurement = new BasicRateMeasurement(67, d_pg.getSize());
 		d_presentation = new RateMeasurementPresentation(d_measurement);
 	}

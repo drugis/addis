@@ -128,7 +128,7 @@ public class NetworkData extends DefaultHandler {
 	private Arm addOrCreateArm(Study study, Drug drug, int samp) {
 		Arm arm = findArm(study, drug);
 		if (arm == null) {
-			arm = new Arm(drug, new UnknownDose(), samp);
+			arm = new Arm(drug.getName(), samp, drug, new UnknownDose());
 			study.addArm(arm);
 		}
 		return arm;

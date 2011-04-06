@@ -80,8 +80,8 @@ public class ForestPlotPresentationTest {
 		d_s1.addEndpoint(d_endpoint);
 		d_baseline = new Drug("DrugA", "");
 		d_subject = new Drug("DrugB", "");
-		Arm pBase = new Arm(d_baseline, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY), s_baseSize);
-		Arm pSubj = new Arm(d_subject,  new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY), s_subjSize);
+		Arm pBase = new Arm("base", s_baseSize, d_baseline, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY));
+		Arm pSubj = new Arm("subj",  s_subjSize, d_subject, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY));
 		d_s1.addArm(pBase);
 		d_s1.addArm(pSubj);
 		d_mBase1 = new BasicContinuousMeasurement(s_mean1, s_stdDev1, pBase.getSize());
@@ -91,8 +91,8 @@ public class ForestPlotPresentationTest {
 		
 		d_s2 = new Study("Y", new Indication(0L, ""));
 		d_s2.addEndpoint(d_endpoint);
-		Arm pBase2 = new Arm(d_baseline, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY), s_baseSize);
-		Arm pSubj2 = new Arm(d_subject, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY), s_subjSize);
+		Arm pBase2 = new Arm("base2", s_baseSize, d_baseline, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY));
+		Arm pSubj2 = new Arm("subj2", s_subjSize, d_subject, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY));
 		d_s2.addArm(pBase2);
 		d_s2.addArm(pSubj2);
 		d_mBase2 = new BasicContinuousMeasurement(s_mean2, s_stdDev2, pBase2.getSize());

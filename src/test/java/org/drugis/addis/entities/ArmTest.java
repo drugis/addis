@@ -24,55 +24,79 @@
 
 package org.drugis.addis.entities;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import javolution.xml.stream.XMLStreamException;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
-import org.drugis.addis.ExampleData;
-import org.drugis.addis.util.XMLHelper;
+import java.util.Collections;
+
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ArmTest {
 	
-	private Arm d_pg;
-	private Arm d_orig;
-	private Arm d_clone;
+	private Arm d_arm;
+	private String d_name;
 
 	@Before
 	public void setUp() {
-		d_pg = new Arm(null, null, 0);
-		d_orig = new Arm(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY), 123);
-		d_clone = d_orig.clone();
+		d_name = "Group 1";
+		d_arm = new Arm(d_name, 0);
 	}
 	
 	@Test
 	public void testSetSize() {
-		JUnitUtil.testSetter(d_pg, Arm.PROPERTY_SIZE, 0, 1);
+		JUnitUtil.testSetter(d_arm, Arm.PROPERTY_SIZE, 0, 1);
 	}
 	
 	@Test
-	public void testSetDrug() {
-		JUnitUtil.testSetter(d_pg, Arm.PROPERTY_DRUG, null, new Drug("D", "atc"));
+	public void testSetName() {
+		JUnitUtil.testSetter(d_arm, Arm.PROPERTY_NAME, d_name, "New Name");
 	}
 	
 	@Test
-	public void testSetDose() {
-		JUnitUtil.testSetter(d_pg, Arm.PROPERTY_DOSE, null, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY));
+	public void testEquals() {
+		// equality is defined on the NAME field.
+		assertEquals(d_arm, new Arm(d_name, 12));
+		assertEquals(d_arm.hashCode(), new Arm(d_name, 12).hashCode());
+		JUnitUtil.assertNotEquals(d_arm, new Arm("Group 2", 0));
+
+		// deep equality is defined by equality of the object graph
+		assertTrue(d_arm.deepEquals(d_arm));
+		assertFalse(d_arm.deepEquals(new Arm(d_name, 12)));
+		assertTrue(d_arm.deepEquals(new Arm(d_name, 0)));
+		d_arm.getNotes().add(new Note());
+		assertFalse(d_arm.deepEquals(new Arm(d_name, 0)));
+	}
+	
+	 
+	@Test
+	public void testDependencies() {
+		assertEquals(Collections.emptySet(), d_arm.getDependencies());
+	}
+	
+	@Test
+	public void testToString() {
+		assertEquals(d_arm.getName(), d_arm.toString());
+	}
+	
+	@Test
+	public void testNotes() {
+		assertEquals(Collections.emptyList(), d_arm.getNotes());
+		Note n = new Note(Source.MANUAL, "Zis is a note");
+		d_arm.getNotes().add(n);
+		assertEquals(Collections.singletonList(n), d_arm.getNotes());
 	}
 	
 	@Test
 	public void testCloneReturnsEqualEntity() {
-		AssertEntityEquals.assertEntityEquals(d_orig, d_clone);
+		assertTrue(d_arm.clone().deepEquals(d_arm));
 	}
 	
 	@Test
 	public void testCloneReturnsDistinctObject() {
-		assertFalse(d_orig == d_clone);
-	}
-	
-	@Test
-	public void testCloneReturnsDistinctDose() {
-		assertFalse(d_orig.getDose() == d_clone.getDose());
+		assertNotSame(d_arm, d_arm.clone());
 	}
 }

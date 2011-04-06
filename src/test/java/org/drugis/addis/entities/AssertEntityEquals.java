@@ -70,9 +70,7 @@ public class AssertEntityEquals {
 		if (expected == null || actual == null) {
 			return expected == actual;
 		}
-		return EqualsUtil.equal(expected.getDrug(), actual.getDrug()) &&
-			EqualsUtil.equal(expected.getDose(), actual.getDose()) &&
-			EqualsUtil.equal(expected.getSize(), actual.getSize());
+		return expected.deepEquals(actual);
 	}
 
 	public static void assertEntityEquals(Arm expected, Arm actual) {
