@@ -132,6 +132,7 @@ import org.junit.Test;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 public class JAXBConvertorTest {
+	private static final String TEST_DATA_A_0 = "../testDataA-0.xml";
 	private JAXBContext d_jaxb;
 	private Unmarshaller d_unmarshaller;
 	
@@ -1500,6 +1501,6 @@ public class JAXBConvertorTest {
 	}
 	
 	private static InputStream getTransformed() throws TransformerException, IOException {
-		return JAXBConvertor.transformLegacyXML(JAXBConvertorTest.class.getResourceAsStream("../defaultData.xml"));
+		return JAXBConvertor.transformLegacyXML(JAXBConvertorTest.class.getResourceAsStream(TEST_DATA_A_0));
 	}
 }

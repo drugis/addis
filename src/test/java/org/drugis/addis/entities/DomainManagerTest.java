@@ -53,10 +53,10 @@ public class DomainManagerTest {
 	
 	@Test
 	public void testLoadLegacyXml() throws IOException, ClassNotFoundException {
-		InputStream lis = DomainManagerTest.class.getResourceAsStream("../defaultData.xml");
+		InputStream lis = DomainManagerTest.class.getResourceAsStream("../testDataA-0.xml");
 		d_manager.loadLegacyXMLDomain(lis);
 		
-		InputStream nis = DomainManagerTest.class.getResourceAsStream("../defaultData.addis");
+		InputStream nis = DomainManagerTest.class.getResourceAsStream("../testDataA-1.addis");
 		DomainManager managerNew = new DomainManager();
 		managerNew.loadXMLDomain(nis);
 		
