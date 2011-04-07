@@ -141,6 +141,7 @@ import org.junit.Test;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 public class JAXBConvertorTest {
+	private static final String TEST_DATA_A_0 = "../testDataA-0.xml";
 	private JAXBContext d_jaxb;
 	private Unmarshaller d_unmarshaller;
 	
@@ -1323,7 +1324,7 @@ public class JAXBConvertorTest {
 	@Test
 	// ACCEPTANCE TEST -- should be replaced by something nicer so we can remove the Javalution support.
 	public void testAddisDataToDomainData() throws Exception {
-		InputStream xmlStream = getClass().getResourceAsStream("../defaultData.xml");
+		InputStream xmlStream = getClass().getResourceAsStream(TEST_DATA_A_0);
 		InputStream transformedXmlStream = getTransformed();
 
 		DomainData importedDomainData = (DomainData)XMLHelper.fromXml(xmlStream);
@@ -1337,7 +1338,7 @@ public class JAXBConvertorTest {
 	@Test
 	// ACCEPTANCE TEST -- should be replaced by something nicer so we can remove the Javalution support.
 	public void testDomainDataToAddisData() throws Exception {
-		InputStream xmlStream = getClass().getResourceAsStream("../defaultData.xml");
+		InputStream xmlStream = getClass().getResourceAsStream(TEST_DATA_A_0);
 		InputStream transformedXmlStream = getTransformed();
 
 		Domain domain = new DomainImpl((DomainData)fromXmlPreserveArmIds(xmlStream));
@@ -1559,7 +1560,7 @@ public class JAXBConvertorTest {
 	}
 	
 	private static InputStream getTransformed() throws TransformerException, IOException {
-		return JAXBConvertor.transformLegacyXML(JAXBConvertorTest.class.getResourceAsStream("../defaultData.xml"));
+		return JAXBConvertor.transformLegacyXML(JAXBConvertorTest.class.getResourceAsStream(TEST_DATA_A_0));
 	}
 
 	private static final class IdResolver extends XMLReferenceResolver {
