@@ -941,7 +941,7 @@ public class DomainTest {
 
 	@Test
 	public void testDefaultDataXML() throws XMLStreamException {
-		InputStream xmlStream = getClass().getResourceAsStream("../defaultData.xml");
+		InputStream xmlStream = getClass().getResourceAsStream("../testDataA-0.xml");
 		assertNotNull(xmlStream);
 		DomainData importedDomain = (DomainData)XMLHelper.fromXml(xmlStream);
 		String xml = XMLHelper.toXml(importedDomain, DomainData.class);
