@@ -17,7 +17,7 @@ public class StudyActivity extends AbstractEntity implements TypeWithNotes {
 	public static class UsedBy {
 		private final Epoch d_epoch;
 		private final Arm d_arm;
-		public UsedBy(Epoch e, Arm a) {
+		public UsedBy(Arm a, Epoch e) {
 			assert(e != null);
 			assert(a != null);
 			d_epoch = e;
@@ -82,18 +82,23 @@ public class StudyActivity extends AbstractEntity implements TypeWithNotes {
 		return d_activity;
 	}
 
-
+	/**
+	 * Set the set of (arm, epoch) pairs that use this StudyActivity.
+	 * @param usedBy Set of (arm, epoch) pairs; defensively copied.
+	 */
 	public void setUsedBy(Set<UsedBy> usedBy) {
 		Set<UsedBy> oldValue = d_usedBy;
 		d_usedBy = new HashSet<UsedBy>(usedBy);
 		firePropertyChange(PROPERTY_USED_BY, oldValue, d_usedBy);
 	}
 
-
+	/**
+	 * Get the set of (arm, epoch) pairs that use this StudyActivity.
+	 * @return unmodifiable set.
+	 */
 	public Set<UsedBy> getUsedBy() {
 		return Collections.unmodifiableSet(d_usedBy);
 	}
-
 
 	public List<Note> getNotes() {
 		return d_notes ;

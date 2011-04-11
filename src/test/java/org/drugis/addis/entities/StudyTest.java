@@ -37,11 +37,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javolution.xml.stream.XMLStreamException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Study.MeasurementKey;
-import org.drugis.addis.util.XMLHelper;
+import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +53,7 @@ public class StudyTest {
 	private Study d_orig;
 	private Study d_clone;
 	private Note d_note;
+	private Study d_empty;
 
 	@Before
 	public void setUp() {
@@ -69,6 +71,7 @@ public class StudyTest {
 				val);
 		
 		d_clone = d_orig.clone();
+		d_empty = new Study("empty", ExampleData.buildIndicationDepression());
 	}
 	
 	@Test
@@ -137,6 +140,103 @@ public class StudyTest {
 		assertEquals(id, study.toString());
 	}
 	
+	@Test
+	public void testSetStudyActivityAt() throws DatatypeConfigurationException {
+		Arm arm1 = new Arm("testArm1", 100);
+		Arm arm2 = new Arm("testArm2", 200);
+		Epoch epoch1 = new Epoch("testEpoch1", DatatypeFactory.newInstance().newDuration(10000));
+		StudyActivity randomization = new StudyActivity("Randomization", PredefinedActivity.RANDOMIZATION);
+		d_empty.getEpochs().add(epoch1);
+		d_empty.addArm(arm1);
+		d_empty.getStudyActivities().add(randomization);
+		d_empty.setStudyActivityAt(arm1, epoch1, randomization);
+		Set<UsedBy> usedByRandomization = new HashSet<UsedBy>();
+		UsedBy usedByarm1epoch1 = new UsedBy(arm1, epoch1);
+		usedByRandomization.add(usedByarm1epoch1);
+		assertEquals(usedByRandomization, randomization.getUsedBy());
+
+		// adding again should not change anything
+		d_empty.setStudyActivityAt(arm1, epoch1, randomization);
+		assertEquals(usedByRandomization, randomization.getUsedBy());
+
+		// adding new UsedBy should change UsedBy
+		d_empty.addArm(arm2);
+		d_empty.setStudyActivityAt(arm2, epoch1, randomization);
+		UsedBy usedByarm2epoch1 = new UsedBy(arm2, epoch1);
+		usedByRandomization.add(usedByarm2epoch1);
+		assertEquals(usedByRandomization, randomization.getUsedBy());
+		
+		// adding new activity for an (arm, epoch) pair should remove any other activity at those coordinates
+		StudyActivity screening = new StudyActivity("Screening", PredefinedActivity.SCREENING);
+		d_empty.getStudyActivities().add(screening);
+		d_empty.setStudyActivityAt(arm1, epoch1, screening);		
+		Set<UsedBy> usedByScreening= new HashSet<UsedBy>();
+		usedByScreening.add(usedByarm1epoch1);
+		usedByRandomization.remove(usedByarm1epoch1);
+		assertEquals(usedByScreening, screening.getUsedBy());
+		assertEquals(usedByRandomization, randomization.getUsedBy());
+		
+		// adding <null> activity should clear item
+		d_empty.setStudyActivityAt(arm2, epoch1, null);
+		assertEquals(Collections.emptySet(), randomization.getUsedBy());
+	}
+	
+	@Test
+	public void testGetStudyActivityAt() throws DatatypeConfigurationException {
+		Arm arm1 = new Arm("testArm1", 100);
+		Arm arm2 = new Arm("testArm2", 200);
+		Arm arm3 = new Arm("testArm3", 300);
+		Epoch epoch1 = new Epoch("Trias", DatatypeFactory.newInstance().newDuration(10000));
+		Epoch epoch2 = new Epoch("Jura", DatatypeFactory.newInstance().newDuration(10000));
+		StudyActivity randomization = new StudyActivity("Randomization", PredefinedActivity.RANDOMIZATION);
+		StudyActivity skriening = new StudyActivity("Screening", PredefinedActivity.SCREENING);
+		d_empty.getEpochs().add(epoch1);
+		d_empty.getEpochs().add(epoch2);
+		d_empty.addArm(arm1);
+		d_empty.addArm(arm2);
+		d_empty.getStudyActivities().add(randomization);
+		d_empty.getStudyActivities().add(skriening);
+		d_empty.setStudyActivityAt(arm1, epoch1, randomization);
+		d_empty.setStudyActivityAt(arm2, epoch1, randomization);
+		d_empty.setStudyActivityAt(arm2, epoch1, skriening);
+		d_empty.setStudyActivityAt(arm1, epoch2, skriening);
+		
+		assertEquals(randomization, d_empty.getStudyActivityAt(arm1, epoch1));
+		assertEquals(skriening, d_empty.getStudyActivityAt(arm2, epoch1));
+		assertEquals(skriening, d_empty.getStudyActivityAt(arm1, epoch2));
+		assertEquals(null, d_empty.getStudyActivityAt(arm3, epoch1));
+	}
+	
+	@Test (expected=IllegalArgumentException.class)
+	public void testArmNotExistsException() throws DatatypeConfigurationException {
+		Arm arm1 = new Arm("testArm1", 100);
+		Epoch epoch1 = new Epoch("testEpoch1", DatatypeFactory.newInstance().newDuration(10000));
+		StudyActivity randomization = new StudyActivity("Randomization", PredefinedActivity.RANDOMIZATION);
+		d_empty.getEpochs().add(epoch1);
+		d_empty.getStudyActivities().add(randomization);
+		d_empty.setStudyActivityAt(arm1, epoch1, randomization);
+	}
+
+	@Test (expected=IllegalArgumentException.class)
+	public void testEpochNotExistsException() throws DatatypeConfigurationException {
+		Arm arm1 = new Arm("testArm1", 100);
+		Epoch epoch1 = new Epoch("testEpoch1", DatatypeFactory.newInstance().newDuration(10000));
+		StudyActivity randomization = new StudyActivity("Randomization", PredefinedActivity.RANDOMIZATION);
+		d_empty.addArm(arm1);
+		d_empty.getStudyActivities().add(randomization);
+		d_empty.setStudyActivityAt(arm1, epoch1, randomization);
+	}
+
+	@Test (expected=IllegalArgumentException.class)
+	public void testStudyActivityNotExistsException() throws DatatypeConfigurationException {
+		Arm arm1 = new Arm("testArm1", 100);
+		Epoch epoch1 = new Epoch("testEpoch1", DatatypeFactory.newInstance().newDuration(10000));
+		StudyActivity randomization = new StudyActivity("Randomization", PredefinedActivity.RANDOMIZATION);
+		d_empty.addArm(arm1);
+		d_empty.getEpochs().add(epoch1);
+		d_empty.setStudyActivityAt(arm1, epoch1, randomization);
+	}
+
 	@Test
 	public void testSetMeasurement() {
 		Study study = new Study("X", new Indication(0L, ""));

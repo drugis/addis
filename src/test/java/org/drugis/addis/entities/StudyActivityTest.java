@@ -60,10 +60,10 @@ public class StudyActivityTest {
 	@Test
 	public void testUsedByEquals() throws DatatypeConfigurationException {
 		Epoch e = new Epoch("Randomization",DatatypeFactory.newInstance().newDuration("PT2H"));
-		UsedBy ub = new UsedBy(d_epoch, d_arm);
-		UsedBy ub2 = new UsedBy(d_epoch, d_arm);
-		UsedBy ub3 = new UsedBy(e, d_arm);
-		UsedBy ub4 = new UsedBy(e, new Arm("New Group", 8));
+		UsedBy ub = new UsedBy(d_arm, d_epoch);
+		UsedBy ub2 = new UsedBy(d_arm, d_epoch);
+		UsedBy ub3 = new UsedBy(d_arm, e);
+		UsedBy ub4 = new UsedBy(new Arm("New Group", 8), e);
 		assertEquals(ub, ub2);
 		JUnitUtil.assertNotEquals(ub, ub3);
 		JUnitUtil.assertNotEquals(ub3, ub4);
@@ -83,7 +83,7 @@ public class StudyActivityTest {
 		assertFalse(d_undefined.deepEquals(d_randomization));
 		d_undefined.setActivity(d_rndActivity);
 		assertTrue(d_randomization.deepEquals(d_randomization));
-		d_undefined.setUsedBy(Collections.singleton(new UsedBy(d_epoch, d_arm)));
+		d_undefined.setUsedBy(Collections.singleton(new UsedBy(d_arm, d_epoch)));
 		assertFalse(d_undefined.deepEquals(d_randomization));
 		d_undefined.setUsedBy(Collections.<UsedBy>emptySet());
 		d_undefined.getNotes().add(new Note());
@@ -98,7 +98,7 @@ public class StudyActivityTest {
 	
 	@Test
 	public void testSetUsedBy() {
-		UsedBy ub = new UsedBy(d_epoch, d_arm);
+		UsedBy ub = new UsedBy(d_arm, d_epoch);
 		JUnitUtil.testSetter(d_randomization, StudyActivity.PROPERTY_USED_BY, Collections.emptySet(), 
 				Collections.singleton(ub));
 	}

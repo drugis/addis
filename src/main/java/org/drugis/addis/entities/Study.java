@@ -31,11 +31,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
+import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.drugis.common.DateUtil;
 import org.drugis.common.EqualsUtil;
+
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
 
 public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 
@@ -106,23 +109,31 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 
 	public final static String PROPERTY_ID = "studyId";
+	public final static String PROPERTY_INDICATION = "indication";
+	public final static String PROPERTY_CHARACTERISTICS = "characteristics";
+	
 	public final static String PROPERTY_ENDPOINTS = "endpoints";
 	public final static String PROPERTY_ADVERSE_EVENTS = "adverseEvents";
 	public final static String PROPERTY_POPULATION_CHARACTERISTICS = "populationCharacteristics";
-	public final static String PROPERTY_ARMS = "arms";
-	public final static String PROPERTY_CHARACTERISTICS = "characteristics";
-	public final static String PROPERTY_NOTES = "notes";
-	public final static String PROPERTY_INDICATION = "indication";
 	
-	private List<Arm> d_arms = new ArrayList<Arm>();
+	public final static String PROPERTY_ARMS = "arms";
+	public final static String PROPERTY_EPOCHS = "epochs";
+	public final static String PROPERTY_STUDY_ACTIVITIES = "studyActivities";
+	
 	private ObjectWithNotes<String> d_studyId;
-	private Map<MeasurementKey, Measurement> d_measurements = new HashMap<MeasurementKey, Measurement>();
+	private ObjectWithNotes<Indication> d_indication;
+	private CharacteristicsMap d_chars = new CharacteristicsMap();
+	
 	private List<StudyOutcomeMeasure<Endpoint>> d_endpoints = new ArrayList<StudyOutcomeMeasure<Endpoint>>();
 	private List<StudyOutcomeMeasure<AdverseEvent>> d_adverseEvents = new ArrayList<StudyOutcomeMeasure<AdverseEvent>>();
 	private List<StudyOutcomeMeasure<PopulationCharacteristic>> d_populationChars = new ArrayList<StudyOutcomeMeasure<PopulationCharacteristic>>();
-	private CharacteristicsMap d_chars = new CharacteristicsMap();
-	private ObjectWithNotes<Indication> d_indication;
+
+	private ObservableList<Arm> d_arms = new ArrayListModel<Arm>();
 	private List<Integer> d_armIds = null;
+	private ObservableList<Epoch> d_epochs = new ArrayListModel<Epoch>();
+	private ObservableList<StudyActivity> d_studyActivities = new ArrayListModel<StudyActivity>(); 
+
+	private Map<MeasurementKey, Measurement> d_measurements = new HashMap<MeasurementKey, Measurement>();
 	
 	public Study() {
 		d_indication = new ObjectWithNotes<Indication>(null);
@@ -201,15 +212,17 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return d_arms;
 	}
 
+	@Deprecated
 	public void setArms(List<Arm> arms) {
-		List<Arm> oldVal = d_arms;
-		d_arms = arms;
+		List<Arm> oldVal = new ArrayList<Arm>(d_arms);
+		d_arms.clear();
+		d_arms.addAll(arms);
 		firePropertyChange(PROPERTY_ARMS, oldVal, d_arms);
 	}
 
-	public void addArm(Arm group) {
+	public void addArm(Arm arm) {
 		List<Arm> newVal = new ArrayList<Arm>(d_arms);
-		newVal.add(group);
+		newVal.add(arm);
 		setArms(newVal);
 	}
 	
@@ -225,6 +238,63 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			}
 		}
 		return d_armIds;
+	}
+	
+	public ObservableList<Epoch> getEpochs() {
+		return d_epochs;
+	}
+
+	public ObservableList<StudyActivity> getStudyActivities() {
+		return d_studyActivities;
+	}
+	
+	/**
+	 * Set a particular studyActivity as being used by an (arm, epoch) pair.
+	 * Constraint: At most one StudyActivity exists for each (arm, epoch) pair; any previous entry will be overwritten.
+	 * @param arm
+	 * @param epoch
+	 * @param activity A StudyActivity or null; when null, clears any activity at that (arm, epoch) pair.
+	 */
+	public void setStudyActivityAt(Arm arm, Epoch epoch, StudyActivity activity) {
+		assertContains(d_arms, arm);
+		assertContains(d_epochs, epoch);
+		
+		if (activity == null) {
+			clearStudyActivityAt(arm, epoch);
+		} else {
+			assertContains(d_studyActivities, activity);
+			clearStudyActivityAt(arm, epoch);
+			Set<UsedBy> usedBy = new HashSet<UsedBy>(activity.getUsedBy());
+			usedBy.add(new UsedBy(arm, epoch));
+			activity.setUsedBy(usedBy);
+		}
+	}
+
+	public StudyActivity getStudyActivityAt(Arm arm, Epoch epoch) {
+		UsedBy coordinate = new UsedBy(arm, epoch);
+		for (StudyActivity activity : d_studyActivities) {
+			if (activity.getUsedBy().contains(coordinate)) {
+				return activity;
+			}
+		}
+		return null;
+	}
+	
+	private <E> void assertContains(ObservableList<E> list, E item) {
+		if (!list.contains(item)) {
+			throw new IllegalArgumentException("The " + item.getClass().getSimpleName() + " <" + item + " > does not exist in this study");
+		}
+	}
+
+	private void clearStudyActivityAt(Arm arm, Epoch epoch) {
+		UsedBy coordinate = new UsedBy(arm, epoch);
+		for (StudyActivity activity : d_studyActivities) {
+			if (activity.getUsedBy().contains(coordinate)) {
+				Set<UsedBy> usedBy = new HashSet<UsedBy>(activity.getUsedBy());
+				usedBy.remove(coordinate);
+				activity.setUsedBy(usedBy);
+			}
+		}
 	}
 
 	public Set<Drug> getDrugs() {
@@ -558,36 +628,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return s;
 	}
 
-	@Deprecated
-	private void putNote(Object key, Note note) { // TODO: refactor here
-		ObjectWithNotes<?> target = null;
-		if (key.equals(PROPERTY_INDICATION)) {
-			target = d_indication;
-		} else if (key.equals(PROPERTY_ID)) {
-			target = d_studyId;
-		} else if (key instanceof BasicStudyCharacteristic) {
-			if (d_chars.get(key) == null && note != null) {
-				d_chars.put((Characteristic) key, new ObjectWithNotes<Object>(null));
-			}
-			target = d_chars.get(key);
-		} else if (key instanceof Arm) {
-			Arm arm = (Arm) key;
-			arm.getNotes().clear();
-			arm.getNotes().add(note);
-		} else if(key instanceof Variable) {
-			target = (StudyOutcomeMeasure<?>) findStudyOutcomeMeasure(key);
-		} else {
-			throw new IllegalArgumentException("Trying to add a note to " + key + " but this is not supported");
-		}
-		if (target != null) {
-			target.getNotes().clear();
-			if (note != null) {
-				target.getNotes().add(note);
-			}
-		}
-		firePropertyChange(PROPERTY_NOTES, key, key);
-	}
-
 	private StudyOutcomeMeasure<?> findStudyOutcomeMeasure(Object key) {
 		if (key instanceof Endpoint) {
 			return findStudyOutcomeMeasureInList(d_endpoints, (Endpoint)key);
@@ -653,13 +693,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private void addNoteIfExists(Object key, Map<Object, Note> target) {
 		if (getNote(key) != null) {
 			target.put(key, getNote(key));
-		}
-	}
-	
-	@Deprecated
-	private void setNotes(Map<Object,Note> notes) {
-		for (Entry<Object, Note> entry : notes.entrySet()) {
-			putNote(entry.getKey(), entry.getValue());
 		}
 	}
 
