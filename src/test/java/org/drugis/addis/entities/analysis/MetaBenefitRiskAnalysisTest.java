@@ -24,17 +24,13 @@
 
 package org.drugis.addis.entities.analysis;
 
-import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Drug;
@@ -48,7 +44,6 @@ import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.LogitGaussian;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.addis.util.XMLHelper;
 import org.junit.Before;
 import org.junit.Test;
 

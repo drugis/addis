@@ -24,7 +24,6 @@
 
 package org.drugis.addis.entities;
 
-import org.drugis.addis.util.EnumXMLFormat;
 
 public enum Source {
 	MANUAL("Manual Input"), 
@@ -40,5 +39,4 @@ public enum Source {
 		return d_description;
 	}
 	
-	static EnumXMLFormat<Source> XML = new EnumXMLFormat<Source>(Source.class);
 }

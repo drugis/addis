@@ -34,9 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
@@ -59,9 +56,6 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.addis.mcmcmodel.BaselineMeanDifferenceModel;
 import org.drugis.addis.mcmcmodel.BaselineOddsModel;
-import org.drugis.addis.util.EnumXMLFormat;
-import org.drugis.addis.util.XMLPropertiesFormat;
-import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
 import org.drugis.addis.util.comparator.AlphabeticalComparator;
 import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.drugis.common.threading.Task;
@@ -71,8 +65,6 @@ import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.Summary;
-
-import scala.actors.threadpool.Arrays;
 
 public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<Drug> {
 	private final class MetaMeasurementSource extends AbstractMeasurementSource<Drug> {
@@ -99,11 +91,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	public static String PROPERTY_DRUGS = "drugs";
 	public static String PROPERTY_BASELINE = "baseline";
 	public static String PROPERTY_METAANALYSES = "metaAnalyses";
-	
-	private MetaBenefitRiskAnalysis() {
-		d_baselineModelMap = new HashMap<OutcomeMeasure,AbstractBaselineModel<?>>();
-		d_metaAnalyses = new ArrayList<MetaAnalysis>();
-	}
+
 	
 	public MetaBenefitRiskAnalysis(String id, Indication indication, List<MetaAnalysis> metaAnalysis,
 			Drug baseline, List<Drug> drugs, AnalysisType analysisType) {
@@ -123,10 +111,6 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 
 	public Indication getIndication() {
 		return d_indication;
-	}
-
-	private void setIndication(Indication indication) {
-		d_indication = indication;
 	}
 
 	public List<OutcomeMeasure> getCriteria() {
@@ -363,57 +347,4 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		return new MetaMeasurementSource();
 	}
 	
-	@SuppressWarnings("unchecked")
-	private List<PropertyDefinition> d_propDefs = Arrays.asList(new PropertyDefinition[]{
-		new PropertyDefinition<Drug>(PROPERTY_BASELINE, Drug.class) {
-			public Drug getValue() { return getBaseline(); }
-			public void setValue(Object val) { setBaseline((Drug) val);}
-		},
-		new PropertyDefinition<ArrayList>(PROPERTY_DRUGS, ArrayList.class) {
-			public ArrayList<Drug> getValue() { return new ArrayList<Drug>(getDrugs()); }
-			public void setValue(Object val) { setDrugs((ArrayList<Drug>) val);}
-		},
-		new PropertyDefinition<Indication>(PROPERTY_INDICATION, Indication.class) {
-			public Indication getValue() { return getIndication(); }
-			public void setValue(Object val) { setIndication((Indication) val); }
-		},
-		new PropertyDefinition<ArrayList>(PROPERTY_METAANALYSES, ArrayList.class) {
-			public ArrayList<MetaAnalysis> getValue() { return new ArrayList<MetaAnalysis>(getMetaAnalyses()); }
-			public void setValue(Object val) { setMetaAnalyses((ArrayList<MetaAnalysis>) val);}
-		}
-	});
-	
-	@SuppressWarnings("unchecked")
-	private List<PropertyDefinition> d_legacyPropDefs = Arrays.asList(new PropertyDefinition[]{
-		new PropertyDefinition<ArrayList>("outcomeMeasures", ArrayList.class) {
-			public ArrayList getValue() { return null; }
-			public void setValue(Object val) { }
-		}
-	});
-		
-	protected static final XMLFormat<MetaBenefitRiskAnalysis> METABR_XML = 
-		new XMLFormat<MetaBenefitRiskAnalysis>(MetaBenefitRiskAnalysis.class) {
-			@Override
-			public MetaBenefitRiskAnalysis newInstance(Class<MetaBenefitRiskAnalysis> cls, InputElement xml) {
-				return new MetaBenefitRiskAnalysis();
-			}
-			
-			@SuppressWarnings("unchecked")
-			@Override
-			public void read(InputElement ie, MetaBenefitRiskAnalysis br) throws XMLStreamException {
-				List<PropertyDefinition> propdefs = new ArrayList(br.d_propDefs);
-				propdefs.addAll(br.d_legacyPropDefs);
-				br.setName(ie.getAttribute(PROPERTY_NAME, null));
-				br.d_analysisType = EnumXMLFormat.getEnumAttribute(ie, PROPERTY_ANALYSIS_TYPE, AnalysisType.SMAA);
-				XMLPropertiesFormat.readProperties(ie, propdefs);
-			}
-		
-			@Override
-			public void write(MetaBenefitRiskAnalysis br, OutputElement oe) throws XMLStreamException {
-				oe.setAttribute(PROPERTY_NAME, br.getName());
-				oe.setAttribute(PROPERTY_ANALYSIS_TYPE, br.d_analysisType.toString());
-				XMLPropertiesFormat.writeProperties(br.d_propDefs, oe);
-
-			}
-		};
 }

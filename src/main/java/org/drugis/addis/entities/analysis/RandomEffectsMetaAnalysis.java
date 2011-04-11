@@ -32,9 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
@@ -53,11 +50,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	public static final String PROPERTY_INCLUDED_STUDIES_COUNT = "studiesIncluded";
 	public static final String PROPERTY_CORRECTED = "isCorrected";
 	private boolean d_isCorrected = false;
-	
-	private RandomEffectsMetaAnalysis() {
-		super();
-	}
-	
+
 	/**
 	 * @throws IllegalArgumentException if all studies don't measure the same indication OR
 	 * if the list of studies is empty
@@ -209,27 +202,6 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		return getRelativeEffect(getFirstDrug(), getSecondDrug(), type);
 	}
 	
-	protected static final XMLFormat<RandomEffectsMetaAnalysis> NETWORK_XML = 
-		new XMLFormat<RandomEffectsMetaAnalysis>(RandomEffectsMetaAnalysis.class) {
-		@Override
-		public RandomEffectsMetaAnalysis newInstance(Class<RandomEffectsMetaAnalysis> cls, InputElement xml) {
-			return new RandomEffectsMetaAnalysis();
-		}
-
-		@Override
-		public void read(InputElement ie, RandomEffectsMetaAnalysis analysis) throws XMLStreamException {
-			analysis.d_isCorrected = ie.getAttribute(PROPERTY_CORRECTED, false);
-			ABSTRACT_META_ANALYSIS_XML.read(ie, analysis);
-		}
-
-		@Override
-		public void write(RandomEffectsMetaAnalysis analysis, OutputElement oe) throws XMLStreamException {
-			if(analysis.d_isCorrected) {
-				oe.setAttribute(PROPERTY_CORRECTED, true);
-			}
-			ABSTRACT_META_ANALYSIS_XML.write(analysis, oe);
-		}
-	};
 
 	public boolean getIsCorrected() {
 		return d_isCorrected;

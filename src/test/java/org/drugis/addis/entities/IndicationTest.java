@@ -26,10 +26,7 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import javolution.xml.stream.XMLStreamException;
 
-import org.drugis.addis.ExampleData;
-import org.drugis.addis.util.XMLHelper;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
 
@@ -67,12 +64,6 @@ public class IndicationTest {
 		Indication i1 = new Indication(310497006L, "Severe depression");
 		assertEquals(i1.getCode().toString() + " " + i1.getName(), i1.toString());
 	}
-	
-	@Test
-	public void testXML() throws XMLStreamException {
-		Indication i = ExampleData.buildIndicationDepression();
-		String xml = XMLHelper.toXml(i, Indication.class);
-		AssertEntityEquals.assertEntityEquals(i, (Indication)XMLHelper.fromXml(xml));
-	}
+
 	
 }

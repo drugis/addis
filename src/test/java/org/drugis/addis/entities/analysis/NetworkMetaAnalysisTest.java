@@ -24,10 +24,8 @@
 
 package org.drugis.addis.entities.analysis;
 
-import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Drug;
@@ -35,7 +33,6 @@ import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.presentation.NetworkTableModelTest;
-import org.drugis.addis.util.XMLHelper;
 import org.drugis.common.JUnitUtil;
 import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.Treatment;

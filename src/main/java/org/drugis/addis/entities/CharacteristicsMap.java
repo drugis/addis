@@ -27,9 +27,6 @@ package org.drugis.addis.entities;
 import java.util.Collections;
 import java.util.Set;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 public class CharacteristicsMap extends MapBean<Characteristic, ObjectWithNotes<?>> {
 	public CharacteristicsMap() {
 		for (BasicStudyCharacteristic c : BasicStudyCharacteristic.values()) {
@@ -41,26 +38,5 @@ public class CharacteristicsMap extends MapBean<Characteristic, ObjectWithNotes<
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();
 	}
-	
-	protected static XMLFormat<CharacteristicsMap> XMLMap = new XMLFormat<CharacteristicsMap>(CharacteristicsMap.class) {
-		
-		@Override
-		public boolean isReferenceable() {
-			return false;
-		}
-		
-		@Override
-		public void read(InputElement xml,	CharacteristicsMap obj) throws XMLStreamException {
-			for(BasicStudyCharacteristic c : BasicStudyCharacteristic.values()){
-				Object value = xml.get(c.toString());
-				if(value != null) obj.put(c, new ObjectWithNotes<Object>(value));	
-			}
-		}
 
-		@Override
-		public void write(CharacteristicsMap map, OutputElement xml) throws XMLStreamException {	
-			for(BasicStudyCharacteristic c : BasicStudyCharacteristic.values())
-					xml.add(map.get(c) == null ? null : map.get(c).getValue(), c.toString());
-		}
-	};	
 }

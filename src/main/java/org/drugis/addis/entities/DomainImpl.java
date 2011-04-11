@@ -28,8 +28,6 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,8 +36,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
@@ -50,7 +46,6 @@ import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.DefaultListHolder;
 import org.drugis.addis.presentation.ListHolder;
-import org.drugis.addis.util.XMLHelper;
 
 import com.jgoodies.binding.beans.BeanUtils;
 
@@ -93,30 +88,6 @@ public class DomainImpl implements Domain {
 	private List<DomainListener> d_listeners;
 	private PropertyChangeListener d_studyListener;
 	
-	/**
-	 * Save the Domain to an xml stream.
-	 * @param os Stream to write objects to.
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	public void saveXMLDomainData(OutputStream os)
-	throws IOException {
-		try {
-			XMLHelper.toXml(d_domainData, DomainData.class, os);
-		} catch (XMLStreamException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void domainDataReinit() {
-		for (Study s : d_domainData.getStudies()) {
-			s.addPropertyChangeListener(d_studyListener);
-		}
-		for (DomainEvent.Type t : DomainEvent.Type.values()) {
-			fireDomainChanged(t);
-		}
-	}
-		
 	public DomainImpl() {
 		this(new DomainData());
 	}
@@ -131,12 +102,7 @@ public class DomainImpl implements Domain {
 		public void propertyChange(PropertyChangeEvent evt) {
 			fireDomainChanged(DomainEvent.Type.STUDIES);
 		}		
-/*
- NOTE: 	Found an error "expected IllegalArgumentException but found AssertionException" from 
- 		multiple sources trailing through here to Mock.
- 		This was solved by moving these tests around within their classes. Suspecting bug in 
- 		JUnit. 
-*/
+
 	}
 	
 	public void setDomainData(DomainData d) {
@@ -519,11 +485,6 @@ public class DomainImpl implements Domain {
 
 	public SortedSet<AdverseEvent> getAdverseEvents() {
 		return Collections.unmodifiableSortedSet(d_domainData.getAdverseEvents());
-	}
-
-	public void clearDomain() {
-		d_domainData = new DomainData();
-		domainDataReinit();
 	}
 
 	public void addBenefitRiskAnalysis(BenefitRiskAnalysis<?> brAnalysis) {

@@ -30,17 +30,13 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
@@ -50,7 +46,6 @@ import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.presentation.ListHolder;
-import org.drugis.addis.util.XMLHelper;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;

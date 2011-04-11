@@ -24,20 +24,10 @@
 
 package org.drugis.addis.entities;
 
-import java.util.HashMap;
 import java.util.Set;
-import java.util.Map.Entry;
 
-import javolution.xml.XMLFormat;
-
-import org.drugis.addis.util.EntryXMLFormat;
-import org.drugis.addis.util.HashMapXMLFormat;
 import org.drugis.common.beans.AbstractObservable;
 
-@SuppressWarnings("unchecked")
 public abstract class AbstractEntity extends AbstractObservable implements Entity {
-	protected static final XMLFormat<HashMap> mapXML = new HashMapXMLFormat();	
-	protected static final XMLFormat<Entry> entryXML = new EntryXMLFormat();
-
 	public abstract Set<? extends Entity> getDependencies();
 }

@@ -24,7 +24,6 @@
 
 package org.drugis.addis.entities;
 
-import org.drugis.addis.util.EnumXMLFormat;
 
 
 public interface OutcomeMeasure extends Variable {
@@ -48,8 +47,6 @@ public interface OutcomeMeasure extends Variable {
 		public String toString() {
 			return d_string;
 		}
-		
-		static EnumXMLFormat<Direction> XML = new EnumXMLFormat<Direction>(Direction.class);
 		
 		public static Direction parse(String str) {
 			return Direction.valueOf(str);

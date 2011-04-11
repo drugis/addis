@@ -24,18 +24,13 @@
 
 package org.drugis.addis.entities.analysis;
 
-import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javolution.xml.stream.XMLStreamException;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
@@ -49,7 +44,6 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
-import org.drugis.addis.util.XMLHelper;
 import org.junit.Before;
 import org.junit.Test;
 

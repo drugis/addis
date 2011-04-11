@@ -30,9 +30,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
@@ -45,12 +42,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
-import org.drugis.addis.util.EnumXMLFormat;
-import org.drugis.addis.util.XMLPropertiesFormat;
-import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
 import org.drugis.addis.util.comparator.OutcomeComparator;
-
-import scala.actors.threadpool.Arrays;
 
 public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<Arm> {
 	public static String PROPERTY_STUDY = "study";
@@ -83,10 +75,6 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 		criteria = new ArrayList<OutcomeMeasure>(criteria);
 		Collections.sort(criteria, new OutcomeComparator());
 		d_criteria = Collections.unmodifiableList(criteria);
-	}
-
-	private StudyBenefitRiskAnalysis() {
-		
 	}
 
 	@Override
@@ -140,49 +128,7 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 		return d_study;
 	}
 
-	
-	@SuppressWarnings("unchecked")
-	private List<PropertyDefinition> d_propDefs = Arrays.asList(new PropertyDefinition[]{
-		new PropertyDefinition<Indication>(PROPERTY_INDICATION, Indication.class) {
-			public Indication getValue() { return getIndication(); }
-			public void setValue(Object val) { d_indication = (Indication) val; }
-		},
-		new PropertyDefinition<Study>(PROPERTY_STUDY, Study.class) {
-			public Study getValue() { return getStudy(); }
-			public void setValue(Object val) { d_study = (Study) val;}
-		},
-		new PropertyDefinition<ArrayList>(PROPERTY_ARMS, ArrayList.class) {
-			public ArrayList<Arm> getValue() { return new ArrayList<Arm>(getArms()); }
-			public void setValue(Object val) { d_alternatives = (ArrayList<Arm>) val;}
-		},
-		new PropertyDefinition<ArrayList>("outcomeMeasures", ArrayList.class) {
-			public ArrayList<OutcomeMeasure> getValue() { return new ArrayList<OutcomeMeasure>(getCriteria()); }
-			public void setValue(Object val) { setCriteria((ArrayList<OutcomeMeasure>) val);}
-		}
-	});
-	
-	protected static final XMLFormat<StudyBenefitRiskAnalysis> STUDYBR_XML = 
-		new XMLFormat<StudyBenefitRiskAnalysis>(StudyBenefitRiskAnalysis.class) {
-			@Override
-			public StudyBenefitRiskAnalysis newInstance(Class<StudyBenefitRiskAnalysis> cls, InputElement xml) {
-				return new StudyBenefitRiskAnalysis();
-			}
-			
-			@Override
-			public void read(InputElement ie, StudyBenefitRiskAnalysis br) throws XMLStreamException {
-				br.setName(ie.getAttribute(PROPERTY_NAME, null));
-				br.d_analysisType = EnumXMLFormat.getEnumAttribute(ie, PROPERTY_ANALYSIS_TYPE, AnalysisType.SMAA); 
-				XMLPropertiesFormat.readProperties(ie, br.d_propDefs);
-			}
-		
-			@Override
-			public void write(StudyBenefitRiskAnalysis br, OutputElement oe) throws XMLStreamException {
-				oe.setAttribute(PROPERTY_NAME, br.getName());
-				oe.setAttribute(PROPERTY_ANALYSIS_TYPE, br.getAnalysisType().toString());
-				XMLPropertiesFormat.writeProperties(br.d_propDefs, oe);
-			}
-		};
-		
+
 	private void setName(String name) {
 		d_name = name;
 	}

@@ -24,16 +24,7 @@
 
 package org.drugis.addis.entities;
 
-import java.util.List;
-
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
-import org.drugis.addis.util.XMLPropertiesFormat;
-import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
 import org.drugis.common.EqualsUtil;
-
-import scala.actors.threadpool.Arrays;
 
 
 public class FixedDose extends AbstractDose {
@@ -91,32 +82,5 @@ public class FixedDose extends AbstractDose {
 	public AbstractDose clone() {
 		return new FixedDose(getQuantity(), getUnit());
 	}
-	
-	@SuppressWarnings("unchecked")
-	protected List<PropertyDefinition> d_propList = Arrays.asList(new PropertyDefinition<?>[]{
-			new PropertyDefinition<SIUnit>(PROPERTY_UNIT, SIUnit.class) {
-				public SIUnit getValue() { return getUnit(); }
-				public void setValue(Object val) { setUnit((SIUnit) val); }
-			}
-	});
-	
-	protected static final XMLFormat<FixedDose> FIXED_DOSE_XML = new XMLFormat<FixedDose>(FixedDose.class) {
 
-		@Override
-		public boolean isReferenceable() {
-			return false;
-		}
-		
-		@Override
-		public void read(InputElement ie, FixedDose fd) throws XMLStreamException {
-			fd.setQuantity(ie.getAttribute(PROPERTY_QUANTITY, 0.0));
-			XMLPropertiesFormat.readProperties(ie, fd.d_propList);
-		}
-
-		@Override
-		public void write(FixedDose fd, OutputElement oe) throws XMLStreamException {
-			oe.setAttribute(PROPERTY_QUANTITY, fd.getQuantity());
-			XMLPropertiesFormat.writeProperties(fd.d_propList, oe);
-		}
-	};
 }

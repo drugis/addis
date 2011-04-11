@@ -27,9 +27,6 @@ package org.drugis.addis.entities;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 
@@ -175,70 +172,6 @@ public class DomainData {
 		d_variables.remove(var);
 	}
 	
-	protected static final XMLFormat<DomainData> XML = new XMLFormat<DomainData>(DomainData.class) {
-		
-		@Override
-		public DomainData newInstance(Class<DomainData> cls, InputElement ie) throws XMLStreamException {
-			// In newInstance, only use getAttribute, not get. Thats why no indication can be instantiated at this point
-			return new DomainData();
-		}
-		
-		@Override
-		public boolean isReferenceable() {
-			return false;
-		}
-		
-		@Override
-		@SuppressWarnings("unchecked")
-		public void read(InputElement ie, DomainData d) throws XMLStreamException {
-			d.setIndications(ie.get("indications",TreeSet.class));
-			d.setEndpoints(ie.get("endpoints",TreeSet.class));
-			
-			TreeSet ade = ie.get("adverseEvents",TreeSet.class);
-			if (ade != null)
-				d.setAdes(ade);
-			
-			d.setDrugs(ie.get("drugs",TreeSet.class));
-			
-			TreeSet popchars = ie.get("populationCharacteristics", TreeSet.class);
-			if (popchars != null)
-				d.setVariables(popchars);
-			
-			TreeSet catChar = ie.get("categoricalCharacteristic", TreeSet.class);
-			if (catChar != null)
-				d.setVariables(catChar);
-			
-			TreeSet contChar = ie.get("continuousCharacteristic", TreeSet.class);
-			if (contChar != null)
-				d.setVariables(contChar);
-			
-			TreeSet study = ie.get("studies", TreeSet.class);
-			if (study != null)
-				d.setStudies(study);
-			
-			TreeSet metaAnalysis = ie.get("metaAnalyses", TreeSet.class);
-			if (metaAnalysis != null)
-				d.setMetaAnalyses(metaAnalysis);
-			
-			TreeSet BRAnalysis = ie.get("benefitRiskAnalyses", TreeSet.class);
-			if (BRAnalysis != null)
-				d.setBenefitRiskAnalyses(BRAnalysis);
-		}
-		
-		@Override
-		public void write(DomainData d, OutputElement oe) throws XMLStreamException {
-			oe.add(new TreeSet<Indication>(d.getIndications()),"indications",TreeSet.class);
-			oe.add(new TreeSet<Endpoint>(d.getEndpoints()),"endpoints",TreeSet.class);
-			if (d.getAdverseEvents().size() != 0)
-				oe.add(new TreeSet<AdverseEvent>(d.getAdverseEvents()),"adverseEvents",TreeSet.class);
-			oe.add(new TreeSet<Drug>(d.getDrugs()), "drugs", TreeSet.class);
-			oe.add(new TreeSet<PopulationCharacteristic>(d.getVariables()), "populationCharacteristics", TreeSet.class);
-			oe.add(new TreeSet<Study>(d.getStudies()),"studies", TreeSet.class);
-			oe.add(new TreeSet<MetaAnalysis>(d.getMetaAnalyses()), "metaAnalyses", TreeSet.class);
-			oe.add(new TreeSet<BenefitRiskAnalysis<?>>(d.getBenefitRiskAnalyses()), "benefitRiskAnalyses", TreeSet.class);
-		}
-	};
-
 	public void addBenefitRiskAnalysis(BenefitRiskAnalysis<?> brAnalysis) {
 		d_benefitRiskAnalyses.add(brAnalysis);		
 	}

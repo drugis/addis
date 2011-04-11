@@ -24,10 +24,6 @@
 
 package org.drugis.addis.entities;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
-import org.drugis.addis.util.EnumXMLFormat;
 
 
 public interface Variable extends Entity, Comparable<Variable> {
@@ -52,7 +48,6 @@ public interface Variable extends Entity, Comparable<Variable> {
 			return d_name;
 		}
 		
-		static EnumXMLFormat<Type> XML = new EnumXMLFormat<Type>(Type.class);
 	}
 
 	public static final String PROPERTY_NAME = "name";
@@ -91,20 +86,4 @@ public interface Variable extends Entity, Comparable<Variable> {
 	
 	public void setType(Type val);
 
-	static final XMLFormat<Variable> VARIABLE_XML = new XMLFormat<Variable>(Variable.class) {
-		
-		@Override
-		public void read(InputElement ie, Variable v) throws XMLStreamException {
-			v.setDescription(ie.getAttribute(PROPERTY_DESCRIPTION, null));
-			v.setName(ie.getAttribute(PROPERTY_NAME, null));
-			v.setUnitOfMeasurement(ie.getAttribute(PROPERTY_UNIT_OF_MEASUREMENT, null));
-		}
-
-		@Override
-		public void write(Variable v, OutputElement oe) throws XMLStreamException {
-			oe.setAttribute(PROPERTY_DESCRIPTION, v.getDescription());
-			oe.setAttribute(PROPERTY_NAME, v.getName());
-			oe.setAttribute(PROPERTY_UNIT_OF_MEASUREMENT, v.getUnitOfMeasurement());
-		}
-	};
 }

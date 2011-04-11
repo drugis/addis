@@ -24,15 +24,8 @@
 
 package org.drugis.addis.entities;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
-import org.drugis.addis.util.XMLPropertiesFormat;
-import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
 
 public class CategoricalPopulationCharacteristic extends AbstractVariable implements PopulationCharacteristic {
 	private String[] d_categories;
@@ -78,44 +71,5 @@ public class CategoricalPopulationCharacteristic extends AbstractVariable implem
 		m.setSampleSize(size);
 		return m;
 	}
-	
-	
-	@SuppressWarnings("unchecked")
-	private List<PropertyDefinition> d_propDefs = Arrays.asList(new PropertyDefinition[]{
-			new PropertyDefinition<ArrayList>("categories", ArrayList.class) {
-				public ArrayList<String> getValue() { return new ArrayList<String>(getCategoriesAsList()); }
-				public void setValue(Object val) { setCategoriesAsList((ArrayList<String>) val); }
-			}
-	});
-	
-	@SuppressWarnings("unchecked")
-	private List<PropertyDefinition> d_legacyPropDefs = Arrays.asList(new PropertyDefinition[]{
-		new PropertyDefinition<String>("type", String.class) {
-			public String getValue() { return null; }
-			public void setValue(Object val) { }
-		}
-	});
-	
-	protected static final XMLFormat<CategoricalPopulationCharacteristic> CPC_XML = 
-		new XMLFormat<CategoricalPopulationCharacteristic>(CategoricalPopulationCharacteristic.class) {
-		
-		@SuppressWarnings("unchecked")
-		@Override
-		public void read(InputElement ie, CategoricalPopulationCharacteristic cpc) throws XMLStreamException {
-			List<PropertyDefinition> propDefs = new ArrayList<PropertyDefinition>(cpc.d_propDefs);
-			propDefs.addAll(cpc.d_legacyPropDefs);
-			cpc.setDescription(ie.getAttribute(PROPERTY_DESCRIPTION, null));
-			cpc.setName(ie.getAttribute(PROPERTY_NAME, null));
-			ie.getAttribute(PROPERTY_UNIT_OF_MEASUREMENT, null); // read unused unit of measurement attribute for legacy xml
 
-			XMLPropertiesFormat.readProperties(ie, propDefs);
-		}
-
-		@Override
-		public void write(CategoricalPopulationCharacteristic cpc, OutputElement oe) throws XMLStreamException {
-			oe.setAttribute(PROPERTY_DESCRIPTION, cpc.getDescription());
-			oe.setAttribute(PROPERTY_NAME, cpc.getName());
-			XMLPropertiesFormat.writeProperties(cpc.d_propDefs, oe);
-		}
-	};
 }

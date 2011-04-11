@@ -24,14 +24,11 @@
 
 package org.drugis.addis.entities;
 
-import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 
-import javolution.xml.stream.XMLStreamException;
-
-import org.drugis.addis.util.XMLHelper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -63,31 +60,5 @@ public class ContinuousPopulationCharacteristicTest {
 	public void testToString() {
 		assertEquals(d_age.getName(), d_age.toString());
 	}
-	
-	@Test
-	public void testXML() throws XMLStreamException {
-		ContinuousPopulationCharacteristic age = buildAge();
-		String xml = XMLHelper.toXml(age, ContinuousPopulationCharacteristic.class);
-		ContinuousPopulationCharacteristic objFromXml = XMLHelper.fromXml(xml);
-		assertEntityEquals(age, objFromXml);
-	}
 
-	private ContinuousPopulationCharacteristic buildAge() {
-		ContinuousPopulationCharacteristic age = new ContinuousPopulationCharacteristic("Age");
-		age.setDescription("Age in years from birth");
-		age.setUnitOfMeasurement("Gregorian calendar years");
-		return age;
-	}
-	
-	private static final String s_legacyXML = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" +
-		"<org.drugis.addis.entities.ContinuousPopulationCharacteristic id=\"0\" description=\"Age in years from birth\" name=\"Age\" unitOfMeasurement=\"Gregorian calendar years\">" +
-			"<type value=\"CONTINUOUS\"/>" +
-		"</org.drugis.addis.entities.ContinuousPopulationCharacteristic>";
-	
-	@Test
-	public void testLegacyXML() throws XMLStreamException {
-		ContinuousPopulationCharacteristic age = buildAge();
-		ContinuousPopulationCharacteristic objFromXml = XMLHelper.fromXml(s_legacyXML);
-		assertEntityEquals(age, objFromXml);
-	}
 }

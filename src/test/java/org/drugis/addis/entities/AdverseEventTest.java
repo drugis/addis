@@ -26,9 +26,7 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import javolution.xml.stream.XMLStreamException;
 
-import org.drugis.addis.util.XMLHelper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,13 +44,4 @@ public class AdverseEventTest {
 		assertFalse(d_ade.equals(new Endpoint("name", Variable.Type.RATE)));
 		assertTrue(d_ade.equals(new AdverseEvent("name", Variable.Type.RATE)));
 	}
-	
-	@Test
-	public void testXML() throws XMLStreamException {
-		AdverseEvent ade = new AdverseEvent("name", Variable.Type.RATE);
-		String xml = XMLHelper.toXml(ade, AdverseEvent.class);
-		AdverseEvent objFromXml = XMLHelper.fromXml(xml);
-		AssertEntityEquals.assertEntityEquals(ade, objFromXml);
-	}
-	
 }

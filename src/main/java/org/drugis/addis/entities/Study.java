@@ -30,19 +30,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
-import org.drugis.addis.util.XMLPropertiesFormat;
-import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
 import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.drugis.common.DateUtil;
 import org.drugis.common.EqualsUtil;
-
-import scala.actors.threadpool.Arrays;
 
 public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 
@@ -683,63 +676,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private void setMeasurements(Map<MeasurementKey, Measurement> m) {
 		d_measurements = m;
 	}
-
-	@SuppressWarnings("unchecked")
-	private List<PropertyDefinition> d_propDefs = Arrays.asList(new PropertyDefinition[]{
-		new PropertyDefinition<Indication>(PROPERTY_INDICATION, Indication.class) {
-			public Indication getValue() { return getIndication(); }
-			public void setValue(Object val) { setIndication((Indication) val); }
-		},
-		new PropertyDefinition<CharacteristicsMap>(PROPERTY_CHARACTERISTICS, CharacteristicsMap.class) {
-			public CharacteristicsMap getValue() { return getCharacteristics(); }
-			public void setValue(Object val) { setCharacteristics((CharacteristicsMap) val); }
-		},
-		new PropertyDefinition<ArrayList>(PROPERTY_ADVERSE_EVENTS, ArrayList.class) {
-			public ArrayList<AdverseEvent> getValue() { return new ArrayList<AdverseEvent>(getAdverseEvents()); }
-			public void setValue(Object val) { setAdverseEvents((ArrayList<AdverseEvent>) val); }
-		},
-		new PropertyDefinition<ArrayList>(PROPERTY_ENDPOINTS, ArrayList.class) {
-			public ArrayList<Endpoint> getValue() { return new ArrayList<Endpoint>(getEndpoints()); }
-			public void setValue(Object val) { setEndpoints((ArrayList<Endpoint>) val); }
-		},
-		new PropertyDefinition<ArrayList>(PROPERTY_POPULATION_CHARACTERISTICS, ArrayList.class) {
-			public ArrayList<PopulationCharacteristic> getValue() { return new ArrayList<PopulationCharacteristic>(getPopulationCharacteristics()); }
-			public void setValue(Object val) { setPopulationCharacteristics((ArrayList<PopulationCharacteristic>) val); }
-		},
-		new PropertyDefinition<ArrayList>(PROPERTY_ARMS, ArrayList.class) {
-			public ArrayList<Arm> getValue() { return new ArrayList<Arm>(getArms()); }
-			public void setValue(Object val) { setArms((ArrayList<Arm>) val); }
-		},
-		new PropertyDefinition<HashMap>("measurements", HashMap.class) {
-			public HashMap getValue() { return (HashMap) getMeasurements(); }
-			public void setValue(Object val) { setMeasurements((HashMap) val); }
-		},
-		new PropertyDefinition<HashMap>(PROPERTY_NOTES, HashMap.class) {
-			public HashMap getValue() { return (HashMap) getNotes(); }
-			public void setValue(Object val) { setNotes((HashMap) val); }
-		}
-	});
-	
-	protected static final XMLFormat<Study> STUDY_XML = new XMLFormat<Study>(Study.class) {
-		public Study newInstance(Class<Study> cls, InputElement xml) throws XMLStreamException {
-			return new Study();
-		};
-
-		@Override
-		public void read(InputElement ie, Study s) throws XMLStreamException {
-			s.setStudyId(ie.getAttribute(PROPERTY_ID, null));
-			XMLPropertiesFormat.readProperties(ie, s.d_propDefs);
-			if (s.getCharacteristic(BasicStudyCharacteristic.PUBMED) == null) {
-				s.setCharacteristic(BasicStudyCharacteristic.PUBMED, new PubMedIdList());
-			}
-		}
-
-		@Override
-		public void write(Study s, OutputElement oe) throws XMLStreamException {
-			oe.setAttribute(PROPERTY_ID, s.getStudyId());
-			XMLPropertiesFormat.writeProperties(s.d_propDefs, oe);
-		}
-	};
 
 	public void setMeasurement(MeasurementKey key, Measurement value) {
 		d_measurements.put(key, value);

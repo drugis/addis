@@ -26,9 +26,6 @@ package org.drugis.addis.entities;
 
 import java.text.DecimalFormat;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 
 public class BasicContinuousMeasurement extends BasicMeasurement implements ContinuousMeasurement {
 	private Double d_mean;
@@ -104,24 +101,4 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	public Measurement clone() {
 		return new BasicContinuousMeasurement(d_mean, d_stdDev, d_sampleSize);
 	}
-	
-	protected static final XMLFormat<BasicContinuousMeasurement> BRM_XML = new XMLFormat<BasicContinuousMeasurement>(BasicContinuousMeasurement.class) {
-
-		@Override
-		public boolean isReferenceable() { return false; }
-		
-		@Override
-		public void read(InputElement ie, BasicContinuousMeasurement bcm) throws XMLStreamException {
-			bcm.setMean(ie.getAttribute(PROPERTY_MEAN, 0.0));
-			bcm.setSampleSize(ie.getAttribute(PROPERTY_SAMPLESIZE, 0));
-			bcm.setStdDev(ie.getAttribute(PROPERTY_STDDEV, 0.0));
-		}
-
-		@Override
-		public void write(BasicContinuousMeasurement bcm, OutputElement oe) throws XMLStreamException {
-			oe.setAttribute(PROPERTY_MEAN, bcm.getMean());
-			oe.setAttribute(PROPERTY_SAMPLESIZE, bcm.getSampleSize());
-			oe.setAttribute(PROPERTY_STDDEV, bcm.getStdDev());
-		}
-	};
 }

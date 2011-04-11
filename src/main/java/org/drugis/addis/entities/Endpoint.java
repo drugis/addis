@@ -24,14 +24,6 @@
 
 package org.drugis.addis.entities;
 
-import java.util.List;
-
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-import org.drugis.addis.util.XMLPropertiesFormat;
-import org.drugis.addis.util.XMLPropertiesFormat.PropertyDefinition;
-
-import scala.actors.threadpool.Arrays;
 
 public class Endpoint extends AbstractVariable implements OutcomeMeasure {
 	
@@ -76,34 +68,4 @@ public class Endpoint extends AbstractVariable implements OutcomeMeasure {
 		return d_direction;
 	}
 	
-	@SuppressWarnings("unchecked")
-	protected List<PropertyDefinition> d_propDefs = Arrays.asList(new PropertyDefinition<?>[]{
-			new PropertyDefinition<Direction>(PROPERTY_DIRECTION, Direction.class) {
-				public Direction getValue() { return getDirection(); }
-				public void setValue(Object val) { setDirection((Direction) val); }
-			},
-			new PropertyDefinition<Variable.Type>(PROPERTY_TYPE, Variable.Type.class) {
-				public Variable.Type getValue() { return Endpoint.this.getType(); }
-				public void setValue(Object val) { Endpoint.this.setType((Variable.Type) val); }
-			}
-		});
-	
-	protected static final XMLFormat<Endpoint> ENDPOINT_XML = new XMLFormat<Endpoint>(Endpoint.class) {
-		@Override
-		public Endpoint newInstance(Class<Endpoint> cls, InputElement xml) throws XMLStreamException {
-			return new Endpoint();
-		};
-
-		@Override
-		public void read(InputElement ie, Endpoint e) throws XMLStreamException {
-			VARIABLE_XML.read(ie, e);
-			XMLPropertiesFormat.readProperties(ie, e.d_propDefs);
-		}
-
-		@Override
-		public void write(Endpoint e, OutputElement oe) throws XMLStreamException {
-			VARIABLE_XML.write(e, oe);
-			XMLPropertiesFormat.writeProperties(e.d_propDefs, oe);
-		}
-	};
 }

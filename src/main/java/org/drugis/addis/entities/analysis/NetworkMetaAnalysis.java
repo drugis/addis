@@ -29,9 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
@@ -79,10 +76,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	private RankProbabilitySummary d_rankProbabilitySummary;
 	private Map<BasicParameter, NodeSplitModel> d_nodeSplitModels = new HashMap<BasicParameter, NodeSplitModel>();
 	
-	private NetworkMetaAnalysis() {
-		super();
-	}
-	
+
 	public NetworkMetaAnalysis(String name, Indication indication,
 			OutcomeMeasure om, List<? extends Study> studies, List<Drug> drugs,
 			Map<Study, Map<Drug, Arm>> armMap) throws IllegalArgumentException {
@@ -237,24 +231,6 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return d_rankProbabilitySummary;
 	}
 
-	protected static final XMLFormat<NetworkMetaAnalysis> NETWORK_XML = 
-			new XMLFormat<NetworkMetaAnalysis>(NetworkMetaAnalysis.class) {
-		@Override
-		public NetworkMetaAnalysis newInstance(Class<NetworkMetaAnalysis> cls, InputElement xml) {
-			return new NetworkMetaAnalysis();
-		}
-		
-		@Override
-		public void read(InputElement arg0, NetworkMetaAnalysis arg1) throws XMLStreamException {
-			ABSTRACT_META_ANALYSIS_XML.read(arg0, arg1);
-		}
-
-		@Override
-		public void write(NetworkMetaAnalysis arg0, OutputElement arg1) throws XMLStreamException {
-			ABSTRACT_META_ANALYSIS_XML.write(arg0, arg1);
-		}
-	};
-	
 	public boolean isContinuous() {
 		return d_isContinuous;
 	}

@@ -24,7 +24,6 @@
 
 package org.drugis.addis.entities;
 
-import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -35,10 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javolution.xml.stream.XMLStreamException;
-
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.util.XMLHelper;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -162,12 +158,5 @@ public class FrequencyMeasurementTest {
 		assertEquals(d_meas, d_meas.clone());
 		assertFalse(d_meas == d_meas.clone());
 	}
-	
-	@Test
-	public void testXML() throws XMLStreamException {
-		FrequencyMeasurement measurement = new FrequencyMeasurement(ExampleData.buildGenderVariable());
-		String xml = XMLHelper.toXml(measurement, FrequencyMeasurement.class);
-		FrequencyMeasurement importedMeasurement = (FrequencyMeasurement)XMLHelper.fromXml(xml);
-		assertEntityEquals(measurement, importedMeasurement);
-	}
+
 }

@@ -27,14 +27,8 @@ package org.drugis.addis.entities;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 public class PubMedId {
 	private String d_id;
-
-	private PubMedId() {
-	}
 	
 	public PubMedId(String id) {
 		setId(id);
@@ -70,28 +64,4 @@ public class PubMedId {
 		d_id = id;
 	}
 
-	protected static final XMLFormat<PubMedId> XML = new XMLFormat<PubMedId>(PubMedId.class) {
-		@Override
-		public PubMedId newInstance(java.lang.Class<PubMedId> cls, XMLFormat.InputElement ie) throws XMLStreamException {
-			return new PubMedId();
-		};
-
-		@Override
-		public void read(javolution.xml.XMLFormat.InputElement ie,
-				PubMedId obj) throws XMLStreamException {
-			obj.setId(ie.getAttribute("value").toString());
-		}
-
-		@Override
-		public void write(PubMedId obj,
-				javolution.xml.XMLFormat.OutputElement oe)
-				throws XMLStreamException {
-			oe.setAttribute("value", obj.getId());				
-		}
-
-		@Override
-		public boolean isReferenceable() {
-			return false;
-		}
-	};
 }

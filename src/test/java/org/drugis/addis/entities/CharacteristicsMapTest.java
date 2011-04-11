@@ -24,14 +24,10 @@
 
 package org.drugis.addis.entities;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
 
-import javolution.xml.stream.XMLStreamException;
-
-import org.drugis.addis.ExampleData;
-import org.drugis.addis.util.XMLHelper;
 import org.junit.Test;
 
 public class CharacteristicsMapTest {
@@ -41,13 +37,5 @@ public class CharacteristicsMapTest {
 		 CharacteristicsMap map = new CharacteristicsMap();
 		 map.put(BasicStudyCharacteristic.INCLUSION, new ObjectWithNotes<String>("TEST"));
 		 assertEquals(Collections.EMPTY_SET, map.getDependencies());
-	}
-	
-	@Test
-	public void testXML() throws XMLStreamException {
-		CharacteristicsMap expectedMap = ExampleData.buildStudyChouinard().getCharacteristics();
-		String xml = XMLHelper.toXml(expectedMap, CharacteristicsMap.class);
-		CharacteristicsMap parsedMap = (CharacteristicsMap)XMLHelper.fromXml(xml);
-		AssertEntityEquals.assertEntityEquals(expectedMap, parsedMap);
 	}
 }

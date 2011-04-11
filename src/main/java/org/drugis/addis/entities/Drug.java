@@ -27,9 +27,6 @@ package org.drugis.addis.entities;
 import java.util.Collections;
 import java.util.Set;
 
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
-
 public class Drug extends AbstractEntity implements Comparable<Drug> {
 
 	private String d_name = "";
@@ -100,19 +97,5 @@ public class Drug extends AbstractEntity implements Comparable<Drug> {
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();
 	}
-	
-	protected static final XMLFormat<Drug> DRUG_XML = new XMLFormat<Drug>(Drug.class) {
 
-		@Override
-		public void read(InputElement ie, Drug d) throws XMLStreamException {
-			d.setName(ie.getAttribute(PROPERTY_NAME, null));
-			d.setAtcCode(ie.getAttribute(PROPERTY_ATCCODE, null));
-		}
-
-		@Override
-		public void write(Drug d, OutputElement oe) throws XMLStreamException {
-			oe.setAttribute(PROPERTY_NAME, d.getName());
-			oe.setAttribute(PROPERTY_ATCCODE, d.getAtcCode());
-		}
-	};
 }

@@ -26,8 +26,6 @@ package org.drugis.addis.entities;
 
 import java.io.Serializable;
 
-import org.drugis.addis.util.EnumXMLFormat;
-
 public enum SIUnit implements Serializable {
 	MILLIGRAMS_A_DAY("Milligrams a Day", "mg/day");
 	
@@ -50,8 +48,5 @@ public enum SIUnit implements Serializable {
 	public String toString() {
 		return d_symbol;
 	}
-	
-	
-	EnumXMLFormat<SIUnit> XML = new EnumXMLFormat<SIUnit>(SIUnit.class);
-	
+		
 }
