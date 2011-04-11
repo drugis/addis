@@ -36,6 +36,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -121,6 +122,9 @@ public class PresentationModelFactory {
 		}
 		if (obj instanceof Arm) {
 			return new BasicArmPresentation((Arm)obj, this);
+		}
+		if (obj instanceof TreatmentActivity) {
+			return new TreatmentActivityPresentation((TreatmentActivity)obj, this);
 		}
 		if (obj instanceof Drug) {
 			Drug d = (Drug) obj;

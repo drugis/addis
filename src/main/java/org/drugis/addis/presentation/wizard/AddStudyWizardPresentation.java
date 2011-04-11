@@ -55,6 +55,7 @@ import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
 import org.drugis.addis.presentation.AbstractListHolder;
+import org.drugis.addis.presentation.BasicArmPresentation;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.MutableCharacteristicHolder;
 import org.drugis.addis.presentation.PopulationCharTableModel;
@@ -286,6 +287,10 @@ public class AddStudyWizardPresentation {
 	
 	public DrugListHolder getDrugsModel(){
 		return new DrugListHolder();
+	}
+	
+	public BasicArmPresentation getArmModel(int armNumber){
+		return new BasicArmPresentation(getNewStudy().getArms().get(armNumber), d_pmf);
 	}
 	
 	public TreatmentActivityPresentation getTreatmentActivityModel(int armNumber){

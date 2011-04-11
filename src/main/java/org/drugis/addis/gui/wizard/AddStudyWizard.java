@@ -398,7 +398,7 @@ public class AddStudyWizard extends Wizard {
 				
 				// add group size
 				JTextField sizeField =  new JFormattedTextField(new DefaultFormatter());
-				PropertyConnector.connectAndUpdate(d_pm.getTreatmentActivityModel(curArmNumber).getModel(Arm.PROPERTY_SIZE), sizeField, "value");
+				PropertyConnector.connectAndUpdate(d_pm.getArmModel(curArmNumber).getModel(Arm.PROPERTY_SIZE), sizeField, "value");
 				sizeField.setColumns(4);
 				d_validator.add(sizeField);
 				builder.add(sizeField, cc.xy(13, row));
