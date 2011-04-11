@@ -273,7 +273,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 			if (ma.getOutcomeMeasure().equals(om))
 				for (Study s : ma.getIncludedStudies())
 					for (Arm a : s.getArms())
-						if (a.getDrug().equals(getBaseline()))
+						if (s.getDrug(a).equals(getBaseline()))
 							result.add((M)s.getMeasurement(om,a));
 		
 		return result;

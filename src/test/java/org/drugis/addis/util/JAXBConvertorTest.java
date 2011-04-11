@@ -433,8 +433,8 @@ public class JAXBConvertorTest {
 		assertEquals(keys , convertedArms.keySet());		
 		assertEquals(size1, (int)convertedArms.get(1).getSize());		
 		assertEquals(size2, (int)convertedArms.get(2).getSize());
-		assertEquals(FixedDose.class, convertedArms.get(1).getDose().getClass());
-		assertEquals(FlexibleDose.class, convertedArms.get(2).getDose().getClass());
+		assertEquals(FixedDose.class, convertedArms.get(1).getTreatmentActivity().getDose().getClass());
+		assertEquals(FlexibleDose.class, convertedArms.get(2).getTreatmentActivity().getDose().getClass());
 		
 		assertEquals(arms, JAXBConvertor.convertStudyArms(convertedArms));
 	}

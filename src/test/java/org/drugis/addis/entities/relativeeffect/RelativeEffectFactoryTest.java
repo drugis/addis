@@ -45,8 +45,8 @@ public class RelativeEffectFactoryTest {
 		Arm pBase = s.getArms().get(0);
 		Arm pSubj = s.getArms().get(1);
 		// sanity check:
-		assertEquals(base, pBase.getDrug());
-		assertEquals(subj, pSubj.getDrug());
+		assertEquals(base, s.getDrug(pBase));
+		assertEquals(subj, s.getDrug(pSubj));
 		
 		RelativeEffect<?> expected = new BasicStandardisedMeanDifference(
 				(ContinuousMeasurement)s.getMeasurement(e, pBase),
@@ -78,8 +78,8 @@ public class RelativeEffectFactoryTest {
 		Arm pBase = s.getArms().get(0);
 		Arm pSubj = s.getArms().get(1);
 		// sanity check:
-		assertEquals(base, pBase.getDrug());
-		assertEquals(subj, pSubj.getDrug());
+		assertEquals(base, s.getDrug(pBase));
+		assertEquals(subj, s.getDrug(pSubj));
 		
 		RelativeEffect<?> expected = new BasicMeanDifference(
 				(ContinuousMeasurement)s.getMeasurement(e, pBase),
@@ -111,8 +111,8 @@ public class RelativeEffectFactoryTest {
 		Arm pBase = s.getArms().get(0);
 		Arm pSubj = s.getArms().get(1);
 		// sanity check:
-		assertEquals(base, pBase.getDrug());
-		assertEquals(subj, pSubj.getDrug());
+		assertEquals(base, s.getDrug(pBase));
+		assertEquals(subj, s.getDrug(pSubj));
 		
 		RelativeEffect<?> expected = new BasicOddsRatio(
 				(RateMeasurement)s.getMeasurement(e, pBase),
@@ -144,8 +144,8 @@ public class RelativeEffectFactoryTest {
 		Arm pBase = s.getArms().get(0);
 		Arm pSubj = s.getArms().get(1);
 		// sanity check:
-		assertEquals(base, pBase.getDrug());
-		assertEquals(subj, pSubj.getDrug());
+		assertEquals(base, s.getDrug(pBase));
+		assertEquals(subj, s.getDrug(pSubj));
 		
 		RelativeEffect<?> expected = new BasicRiskRatio(
 				(RateMeasurement)s.getMeasurement(e, pBase),
@@ -177,8 +177,8 @@ public class RelativeEffectFactoryTest {
 		Arm pBase = s.getArms().get(0);
 		Arm pSubj = s.getArms().get(1);
 		// sanity check:
-		assertEquals(base, pBase.getDrug());
-		assertEquals(subj, pSubj.getDrug());
+		assertEquals(base, s.getDrug(pBase));
+		assertEquals(subj, s.getDrug(pSubj));
 		
 		RelativeEffect<?> expected = new BasicRiskDifference(
 				(RateMeasurement)s.getMeasurement(e, pBase),

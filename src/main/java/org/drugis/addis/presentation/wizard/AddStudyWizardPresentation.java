@@ -63,6 +63,7 @@ import org.drugis.addis.presentation.SelectFromFiniteListPresentation;
 import org.drugis.addis.presentation.SelectPopulationCharsPresentation;
 import org.drugis.addis.presentation.StudyMeasurementTableModel;
 import org.drugis.addis.presentation.StudyPresentation;
+import org.drugis.addis.presentation.TreatmentActivityPresentation;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
@@ -279,8 +280,8 @@ public class AddStudyWizardPresentation {
 		return new DrugListHolder();
 	}
 	
-	public BasicArmPresentation getArmModel(int armNumber){
-		return new BasicArmPresentation(getNewStudy().getArms().get(armNumber), d_pmf);
+	public TreatmentActivityPresentation getTreatmentActivityModel(int armNumber){
+		return new TreatmentActivityPresentation(getNewStudy().getArms().get(armNumber).getTreatmentActivity(), d_pmf);
 	}
 	
 	public ValueModel getArmNoteModel(int idx) {

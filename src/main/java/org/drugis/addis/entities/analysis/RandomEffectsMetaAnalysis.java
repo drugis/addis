@@ -77,10 +77,10 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		super(name, getIndication(studyArms), om, getStudies(studyArms), getDrugs(studyArms), getArmMap(studyArms));
 		
 		for (StudyArmsEntry s : studyArms){
-			if(!s.getBase().getDrug().equals(getFirstDrug())){
+			if(!s.getStudy().getDrug(s.getBase()).equals(getFirstDrug())){
 				throw new IllegalArgumentException("Left drug not consistent over all studies");
 			}
-			if(!s.getSubject().getDrug().equals(getSecondDrug())){
+			if(!s.getStudy().getDrug(s.getSubject()).equals(getSecondDrug())){
 				throw new IllegalArgumentException("Right drug not consistent over all studies");
 			}
 		}
@@ -112,8 +112,8 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		Map<Study, Map<Drug, Arm>> armMap = new HashMap<Study, Map<Drug, Arm>>();
 		for (StudyArmsEntry sae : studyArms) {
 			Map<Drug, Arm> drugMap = new HashMap<Drug, Arm>();
-			drugMap.put(sae.getBase().getDrug(), sae.getBase());
-			drugMap.put(sae.getSubject().getDrug(), sae.getSubject());
+			drugMap.put(sae.getStudy().getDrug(sae.getBase()), sae.getBase());
+			drugMap.put(sae.getStudy().getDrug(sae.getSubject()), sae.getSubject());
 			armMap.put(sae.getStudy(), drugMap);
 		}
 		return armMap;
@@ -124,11 +124,13 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	}
 
 	private static Drug getSecondDrug(List<StudyArmsEntry> studyArms) {
-		return studyArms.get(0).getSubject().getDrug();
+		StudyArmsEntry studyArmsEntry = studyArms.get(0);
+		return studyArmsEntry.getStudy().getDrug(studyArmsEntry.getSubject());
 	}
 
 	private static Drug getFirstDrug(List<StudyArmsEntry> studyArms) {
-		return studyArms.get(0).getBase().getDrug();
+		StudyArmsEntry studyArmsEntry = studyArms.get(0);
+		return studyArmsEntry.getStudy().getDrug(studyArmsEntry.getBase());
 	}
 
 	private static List<? extends Study> getStudies(

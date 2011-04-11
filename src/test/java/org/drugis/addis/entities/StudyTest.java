@@ -446,7 +446,7 @@ public class StudyTest {
 	@Test
 	public void testCloneHasCorrectMeasurementKeys() {
 		Arm arm = d_clone.getArms().get(1);
-		arm.setDrug(ExampleData.buildDrugViagra());
+		d_clone.setDrug(arm, ExampleData.buildDrugViagra());
 		assertEquals(d_orig.getMeasurement(d_orig.getEndpoints().get(0), d_orig.getArms().get(1)),
 				d_clone.getMeasurement(d_clone.getEndpoints().get(0), arm));
 	}

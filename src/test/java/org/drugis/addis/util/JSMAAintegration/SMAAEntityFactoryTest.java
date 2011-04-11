@@ -118,7 +118,7 @@ public class SMAAEntityFactoryTest {
 		for(OutcomeMeasure om : d_brAnalysisStudy.getCriteria()){
 			for(Arm d : d_brAnalysisStudy.getAlternatives()){
 				fi.smaa.jsmaa.model.Measurement actualMeasurement = 
-					smaaModel.getMeasurement(d_smaaFactoryArm.getCriterion(om), d_smaaFactoryArm.getAlternative(d));
+					smaaModel.getMeasurement(d_smaaFactoryArm.getCriterion(om), d_smaaFactoryArm.getAlternative(d_brAnalysisStudy.getStudy(), d));
 				Distribution expDistribution = d_brAnalysisStudy.getMeasurement(d, om);
 				if (om.equals(ExampleData.buildEndpointCgi())) {
 					TransformedStudentT expected = (TransformedStudentT)expDistribution;

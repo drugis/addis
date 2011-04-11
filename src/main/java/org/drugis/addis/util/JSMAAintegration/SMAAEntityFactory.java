@@ -32,10 +32,12 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
@@ -93,7 +95,7 @@ public class SMAAEntityFactory<AltType extends Entity> {
 		SMAAModel smaaModel = new SMAAModel(brAnalysis.getName());
 				
 		for (AltType a : brAnalysis.getAlternatives()) {
-			smaaModel.addAlternative(getAlternative(a));
+			smaaModel.addAlternative(getAlternative(brAnalysis, a));
 		}
 		
 		for (OutcomeMeasure om : brAnalysis.getCriteria()) {
@@ -118,14 +120,25 @@ public class SMAAEntityFactory<AltType extends Entity> {
 					} else if (om.getType().equals(Type.CONTINUOUS)) {
 						m = new RelativeNormalMeasurement(baseline, relative);
 					}
-					smaaModel.setMeasurement(crit, getAlternative(a), m);
+					smaaModel.setMeasurement(crit, getAlternative(brAnalysis, a), m);
 				} else {
 					CardinalMeasurement m = createCardinalMeasurement(brAnalysis.getMeasurement(a, om));
-					smaaModel.setMeasurement(crit, getAlternative(a), m);
+					smaaModel.setMeasurement(crit, getAlternative(brAnalysis, a), m);
 				}
 			}
 		}
 		return smaaModel;
+	}
+
+	private Alternative getAlternative(BenefitRiskAnalysis<AltType> brAnalysis,
+			AltType a) {
+		Alternative alternative;
+		if (brAnalysis instanceof StudyBenefitRiskAnalysis) {
+			alternative = getAlternative(((StudyBenefitRiskAnalysis)brAnalysis).getStudy(), (Arm)a);
+		} else {
+			alternative = getAlternative((Drug)a);
+		}
+		return alternative;
 	}
 	
 	CardinalCriterion getCriterion(OutcomeMeasure om) {
@@ -146,20 +159,22 @@ public class SMAAEntityFactory<AltType extends Entity> {
 		return null; 
 	}
 	
-	Alternative getAlternative(AltType a2) {
-		if(d_entityAlternativeMap.containsKey(a2))
-			return d_entityAlternativeMap.get(a2);
-		Alternative a = null;
-		if (a2 instanceof Arm) {
-			Arm arm = (Arm) a2;
-			a = new Alternative(arm.getDrug() + " " + arm.getDose());
-		} else if (a2 instanceof Drug) {
-			Drug drug = (Drug) a2;
-			a = new Alternative(drug.getName());
-		} else {
-			a = new Alternative(a2.toString());
-		}
-		d_entityAlternativeMap.put(a2, a);
+	@SuppressWarnings("unchecked")
+	Alternative getAlternative(Study study, Arm arm) {
+		if(d_entityAlternativeMap.containsKey(arm))
+			return d_entityAlternativeMap.get(arm);
+		Alternative a = new Alternative(study.getDrug(arm) + " " + study.getDose(arm));
+		d_entityAlternativeMap.put((AltType) arm, a);
+		return a;
+	}
+	
+	@SuppressWarnings("unchecked")
+	Alternative getAlternative(Drug drug) {
+		if(d_entityAlternativeMap.containsKey(drug))
+			return d_entityAlternativeMap.get(drug);
+
+		Alternative a = new Alternative(drug.getName());
+		d_entityAlternativeMap.put((AltType)drug, a);
 		return a;
 	}
 }

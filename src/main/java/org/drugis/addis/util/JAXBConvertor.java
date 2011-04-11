@@ -390,12 +390,12 @@ public class JAXBConvertor {
 	
 	static org.drugis.addis.entities.data.Arm convertArm(Arm arm) throws ConversionException {
 		org.drugis.addis.entities.data.Arm newArm = new org.drugis.addis.entities.data.Arm();
-		newArm.setDrug(nameReference(arm.getDrug().getName()));
+		newArm.setDrug(nameReference(arm.getTreatmentActivity().getDrug().getName()));
 		
-		if(arm.getDose() instanceof FixedDose) {
-			newArm.setFixedDose(convertFixedDose((FixedDose)arm.getDose()));
+		if(arm.getTreatmentActivity().getDose() instanceof FixedDose) {
+			newArm.setFixedDose(convertFixedDose((FixedDose)arm.getTreatmentActivity().getDose()));
 		} else {
-			newArm.setFlexibleDose(convertFlexibleDose((FlexibleDose)arm.getDose()));
+			newArm.setFlexibleDose(convertFlexibleDose((FlexibleDose)arm.getTreatmentActivity().getDose()));
 		}
 		newArm.setSize(arm.getSize());
 		

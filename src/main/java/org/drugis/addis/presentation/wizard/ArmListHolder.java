@@ -52,7 +52,7 @@ public class ArmListHolder extends AbstractListHolder<Arm> implements PropertyCh
 		// get arms per study per drug
 		ArrayList<Arm> armList = new ArrayList<Arm>();
 		for (Arm curArm : d_study.getArms()) {
-			if (curArm.getDrug().equals(d_drug)) {
+			if (d_study.getDrug(curArm).equals(d_drug)) {
 				armList.add(curArm);
 			}
 		}

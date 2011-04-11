@@ -105,11 +105,12 @@ public class RandomEffectsMetaAnalysisTest {
 		List<StudyArmsEntry> entries = d_rema.getStudyArms();
 		assertEquals(d_studyList.size(), entries.size());
 		for (int i = 0; i < d_studyList.size(); ++i) {
-			assertEquals(d_studyList.get(i), entries.get(i).getStudy());
-			assertEquals(d_fluox, entries.get(i).getBase().getDrug());
-			assertEquals(d_sertr, entries.get(i).getSubject().getDrug());
-			assertTrue(d_studyList.get(i).getArms().contains(entries.get(i).getBase()));
-			assertTrue(d_studyList.get(i).getArms().contains(entries.get(i).getSubject()));
+			StudyArmsEntry studyArmsEntry = entries.get(i);
+			assertEquals(d_studyList.get(i), studyArmsEntry.getStudy());
+			assertEquals(d_fluox, studyArmsEntry.getStudy().getDrug(studyArmsEntry.getBase()));
+			assertEquals(d_sertr, studyArmsEntry.getStudy().getDrug(studyArmsEntry.getSubject()));
+			assertTrue(d_studyList.get(i).getArms().contains(studyArmsEntry.getBase()));
+			assertTrue(d_studyList.get(i).getArms().contains(studyArmsEntry.getSubject()));
 		}
 	}
 	

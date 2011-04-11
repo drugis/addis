@@ -193,8 +193,7 @@ public class ClinicaltrialsImporter {
 		// Add note to the study-arms.
 		Map<String,Arm> armLabels = new HashMap<String,Arm>();
 		for(ArmGroup ag : studyImport.getArmGroup()){
-			Arm arm = new Arm();
-			arm.setSize(0);
+			Arm arm = new Arm(ag.getArmGroupLabel(), 0);
 			study.addArm(arm);
 			String noteStr = "Arm Type: " + ag.getArmGroupType()+"\nArm Description: "+ag.getDescription();
 			arm.getNotes().add(new Note(Source.CLINICALTRIALS, noteStr.trim()));

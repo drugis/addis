@@ -300,7 +300,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public Set<Drug> getDrugs() {
 		Set<Drug> drugs = new HashSet<Drug>();
 		for (Arm g : getArms()) {
-			drugs.add(g.getDrug());
+			drugs.add(getDrug(g));
 		}
 		return drugs;
 	}
@@ -745,5 +745,22 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		} else {
 			throw new IllegalArgumentException("Unknown StudyOutcomeMeasure type: " + value.getValue());
 		}
+	}
+	
+	public TreatmentActivity getTreatment(Arm arm) {
+		assertContains(d_arms, arm);
+		return arm.getTreatmentActivity();
+	}
+	
+	public Drug getDrug(Arm arm) {
+		return getTreatment(arm).getDrug();
+	}
+	
+	public AbstractDose getDose(Arm arm) {
+		return getTreatment(arm).getDose();
+	}
+
+	public void setDrug(Arm arm, Drug drug) {
+		getTreatment(arm).setDrug(drug);
 	}
 }

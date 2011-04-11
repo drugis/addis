@@ -31,7 +31,6 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class BasicArmPresentation extends PresentationModel<Arm> implements LabeledPresentation {
-	
 	public class LabelModel extends DefaultLabelModel {
 		
 		public LabelModel() {
@@ -40,9 +39,7 @@ public class BasicArmPresentation extends PresentationModel<Arm> implements Labe
 		
 		@Override
 		public Object getValue() {
-			if (getBean().getDrug() == null)
-				return "INCOMPLETE";
-			return getBean().getDrug().toString();
+			return getBean().getName();
 		}
 	}
 
@@ -52,9 +49,5 @@ public class BasicArmPresentation extends PresentationModel<Arm> implements Labe
 
 	public AbstractValueModel getLabelModel() {
 		return new LabelModel();
-	}
-	
-	public DosePresentation getDoseModel() {
-		return new DosePresentationImpl(this);
 	}
 }

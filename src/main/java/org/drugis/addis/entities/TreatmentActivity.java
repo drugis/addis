@@ -51,7 +51,7 @@ public class TreatmentActivity extends AbstractEntity implements Activity {
 	
 	@Override
 	public TreatmentActivity clone() {
-		return new TreatmentActivity(d_drug, d_dose.clone());
+		return new TreatmentActivity(d_drug, d_dose == null ? null : d_dose.clone());
 	}
 
 	public String getDescription() {

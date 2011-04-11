@@ -78,8 +78,8 @@ public class StudyPresentation extends PresentationModel<Study> {
 			protected Object getNewValue() {
 				Dosing dose = DerivedStudyCharacteristic.Dosing.FIXED;
 				for (Arm pg : getBean().getArms()) {
-					if (pg.getDose() != null)
-						if (pg.getDose() instanceof FlexibleDose)
+					if (getBean().getDose(pg) != null)
+						if (getBean().getDose(pg) instanceof FlexibleDose)
 							dose = DerivedStudyCharacteristic.Dosing.FLEXIBLE; 
 				}
 				return dose;

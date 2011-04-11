@@ -35,54 +35,26 @@ import org.drugis.common.EqualsUtil;
 public class Arm extends AbstractEntity implements TypeWithNotes {
 	private String d_name;
 	private Integer d_size;
-	private Drug d_drug;
-	private AbstractDose d_dose;
 	private List<Note> d_notes = new ArrayList<Note>();
+	private TreatmentActivity d_activity;
 	
 	public static final String PROPERTY_SIZE = "size";
-	@Deprecated
-	public static final String PROPERTY_DRUG = "drug";
-	@Deprecated
-	public static final String PROPERTY_DOSE = "dose";
 	public static final String PROPERTY_NAME = "name";
 
 	public Arm(String name, int size) {
-		d_name = name;
-		d_size = size;
+		this(name, size, null, null);
 	}
 	
 	@Deprecated
 	public Arm(String name, int size, Drug drug, AbstractDose dose) {
-		this(name, size);
-		d_drug = drug;
-		d_dose = dose;
+		d_name = name;
+		d_size = size;
+		d_activity = new TreatmentActivity(drug, dose);
 	}
-	
+
 	@Deprecated
-	public Arm() {}
-	
-	@Deprecated
-	public Drug getDrug() {
-		return d_drug;
-	}
-	
-	@Deprecated
-	public void setDrug(Drug drug) {
-		Drug oldVal = d_drug;
-		d_drug = drug;
-		firePropertyChange(PROPERTY_DRUG, oldVal, d_drug);
-	}
-	
-	@Deprecated
-	public AbstractDose getDose() {
-		return d_dose;
-	}
-	
-	@Deprecated
-	public void setDose(AbstractDose dose) {
-		AbstractDose oldVal = d_dose;
-		d_dose = dose;
-		firePropertyChange(PROPERTY_DOSE, oldVal, d_dose);
+	public TreatmentActivity getTreatmentActivity() {
+		return d_activity;
 	}
 	
 	@Override
@@ -119,8 +91,7 @@ public class Arm extends AbstractEntity implements TypeWithNotes {
 	public Arm clone() {
 		Arm arm = new Arm(getName(), getSize());
 		arm.getNotes().addAll(getNotes());
-		arm.setDrug(getDrug());
-		arm.setDose(getDose());
+		arm.d_activity = d_activity.clone();
 		return arm;
 	}
 

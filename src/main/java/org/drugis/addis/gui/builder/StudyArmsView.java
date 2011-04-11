@@ -33,9 +33,11 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.gui.NoteViewButton;
 import org.drugis.addis.presentation.BasicArmPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
+import org.drugis.addis.presentation.TreatmentActivityPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
@@ -50,13 +52,13 @@ import com.jgoodies.forms.layout.FormLayout;
 public class StudyArmsView implements ViewBuilder {
 	
 	private PresentationModel<? extends Study> d_model;
-	private PresentationModelFactory d_pm;
+	private PresentationModelFactory d_pmf;
 	private JFrame d_parent;
 
 	public StudyArmsView(JFrame parent, PresentationModel<? extends Study> model, PresentationModelFactory pm) {
 		d_parent = parent;
 		d_model = model;
-		d_pm = pm;
+		d_pmf = pm;
 	}
 
 	public JPanel buildPanel() {
@@ -86,9 +88,12 @@ public class StudyArmsView implements ViewBuilder {
 	}
 
 	private int buildArm(FormLayout layout, PanelBuilder builder, CellConstraints cc, int row, Arm g) {
-		BasicArmPresentation armModel = (BasicArmPresentation)d_pm.getModel(g);
+		TreatmentActivity activity = d_model.getBean().getTreatment(g);
+		TreatmentActivityPresentation activityModel = (TreatmentActivityPresentation)d_pmf.getModel(activity);
+		BasicArmPresentation armModel = (BasicArmPresentation)d_pmf.getModel(g);
 		LayoutUtil.addRow(layout);
-		final JLabel armLabel = BasicComponentFactory.createLabel(d_pm.getLabeledModel(g).getLabelModel()); 
+		
+		final JLabel armLabel = BasicComponentFactory.createLabel(d_pmf.getLabeledModel(g).getLabelModel()); 
 		//armLabel.setToolTipText(GUIFactory.createToolTip(d_model.getBean().getNote(armModel.getBean())));
 		JButton button = new NoteViewButton(d_parent, "Arm: " + g.toString(), g.getNotes());
 		builder.add(button, cc.xy(1, row));
@@ -96,7 +101,7 @@ public class StudyArmsView implements ViewBuilder {
 		
 		builder.add(
 				BasicComponentFactory.createLabel(
-						armModel.getModel(Arm.PROPERTY_DOSE),
+						activityModel.getModel(TreatmentActivity.PROPERTY_DOSE),
 						new OneWayObjectFormat()),
 						cc.xy(5, row, "right, center"));
 		

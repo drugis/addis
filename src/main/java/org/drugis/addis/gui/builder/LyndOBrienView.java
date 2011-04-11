@@ -41,6 +41,7 @@ import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.gui.AddisWindow;
@@ -100,8 +101,11 @@ public class LyndOBrienView implements ViewBuilder {
 		Object baseline = d_BRpm.getBean().getAlternatives().get(0);
 		Object alternative = d_BRpm.getBean().getAlternatives().get(1);
 		if(d_BRpm.getBean() instanceof StudyBenefitRiskAnalysis) {
-			baselineName = ((Arm)baseline).getDrug().toString() + " (" + ((Arm)baseline).getDose().toString() + ")";
-			alternativeName = ((Arm)alternative).getDrug().toString() + " (" + ((Arm)alternative).getDose().toString() + ")";
+			Study s = ((StudyBenefitRiskAnalysis) d_BRpm.getBean()).getStudy();
+			Arm baseArm = (Arm)baseline;
+			Arm altArm = (Arm)alternative;
+			baselineName = s.getDrug(baseArm).toString() + " (" + s.getDose(baseArm).toString() + ")"; // FIXME: use TreatmentActivity?
+			alternativeName = s.getDrug(altArm).toString() + " (" + s.getDose(altArm).toString() + ")";
 		} else if (d_BRpm.getBean() instanceof MetaBenefitRiskAnalysis) {
 			baselineName = ((Drug)baseline).toString();
 			alternativeName = ((Drug)alternative).toString();

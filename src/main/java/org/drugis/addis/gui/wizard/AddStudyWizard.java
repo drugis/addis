@@ -74,6 +74,7 @@ import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
@@ -267,7 +268,7 @@ public class AddStudyWizard extends Wizard {
 			}
 			
 			public void actionPerformed(ActionEvent e) {
-				d_mainWindow.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class), d_pm.getArmModel(d_index).getModel(Arm.PROPERTY_DRUG));
+				d_mainWindow.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class), d_pm.getTreatmentActivityModel(d_index).getModel(TreatmentActivity.PROPERTY_DRUG));
 			}
 		}
 		private class RemoveArmListener extends AbstractAction {
@@ -366,7 +367,7 @@ public class AddStudyWizard extends Wizard {
 				btn.addActionListener(new RemoveArmListener(curArmNumber));
 				
 				// Set the drug of this arm
-				JComboBox drugsBox = AuxComponentFactory.createBoundComboBox(d_pm.getDrugsModel(), d_pm.getArmModel(curArmNumber).getModel(Arm.PROPERTY_DRUG));
+				JComboBox drugsBox = AuxComponentFactory.createBoundComboBox(d_pm.getDrugsModel(), d_pm.getTreatmentActivityModel(curArmNumber).getModel(TreatmentActivity.PROPERTY_DRUG));
 				d_validator.add(drugsBox);
 				builder.add(drugsBox, cc.xy(3, row));
 				
@@ -376,7 +377,7 @@ public class AddStudyWizard extends Wizard {
 				btn.addActionListener(new NewDrugButtonListener(curArmNumber));
 				
 				// add min dose
-				DosePresentation doseModel = d_pm.getArmModel(curArmNumber).getDoseModel();
+				DosePresentation doseModel = d_pm.getTreatmentActivityModel(curArmNumber).getDoseModel();
 				JTextField minDoseField =  new JFormattedTextField(new DefaultFormatter());
 				PropertyConnector.connectAndUpdate(doseModel.getMinModel(), minDoseField, "value");
 				minDoseField.setColumns(4);
@@ -397,7 +398,7 @@ public class AddStudyWizard extends Wizard {
 				
 				// add group size
 				JTextField sizeField =  new JFormattedTextField(new DefaultFormatter());
-				PropertyConnector.connectAndUpdate(d_pm.getArmModel(curArmNumber).getModel(Arm.PROPERTY_SIZE), sizeField, "value");
+				PropertyConnector.connectAndUpdate(d_pm.getTreatmentActivityModel(curArmNumber).getModel(Arm.PROPERTY_SIZE), sizeField, "value");
 				sizeField.setColumns(4);
 				d_validator.add(sizeField);
 				builder.add(sizeField, cc.xy(13, row));
