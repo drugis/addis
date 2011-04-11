@@ -768,4 +768,16 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public void setDrug(Arm arm, Drug drug) {
 		getTreatment(arm).setDrug(drug);
 	}
+
+	public boolean deepEquals(Entity obj) {
+		if (!equals(obj)) {
+			return false;
+		} 
+		Study other = (Study)obj;
+		return 	EqualsUtil.equal(other.getIndication(), getIndication()) &&
+				EqualsUtil.equal(other.getCharacteristics(), getCharacteristics()) &&
+				EqualsUtil.equal(other.getEndpoints(), getEndpoints()) &&
+				EqualsUtil.equal(other.getAdverseEvents(), getAdverseEvents()) &&
+				EqualsUtil.equal(other.getPopulationCharacteristics(), getPopulationCharacteristics()); 
+	}
 }

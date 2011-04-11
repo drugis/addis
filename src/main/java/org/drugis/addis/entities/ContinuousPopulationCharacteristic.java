@@ -36,4 +36,11 @@ public class ContinuousPopulationCharacteristic extends AbstractVariable impleme
 		super(name, Type.CONTINUOUS);
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if(o != null && o instanceof PopulationCharacteristic) {
+			return super.equals(o);
+		}
+		return false;
+	}
 }

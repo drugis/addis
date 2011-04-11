@@ -27,6 +27,8 @@ package org.drugis.addis.entities;
 import java.util.Arrays;
 import java.util.List;
 
+import org.drugis.common.EqualsUtil;
+
 public class CategoricalPopulationCharacteristic extends AbstractVariable implements PopulationCharacteristic {
 	private String[] d_categories;
 	
@@ -71,5 +73,21 @@ public class CategoricalPopulationCharacteristic extends AbstractVariable implem
 		m.setSampleSize(size);
 		return m;
 	}
-
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o != null && o instanceof PopulationCharacteristic) {
+			return super.equals(o);			
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean deepEquals(Entity obj) {
+		if (super.deepEquals(obj)) {
+			CategoricalPopulationCharacteristic other = (CategoricalPopulationCharacteristic)obj;
+			return EqualsUtil.equal(other.getCategoriesAsList(), getCategoriesAsList()); 
+		}
+		return false;
+	}
 }

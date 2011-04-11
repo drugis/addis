@@ -83,8 +83,8 @@ public class AssertEntityEquals {
 	public static void assertEntityEquals(Variable expected, Variable actual) {
 		assertEquals(expected, actual);
 		assertEquals(expected.getName(), actual.getName());
-		assertEquals(expected.getDescription(),actual.getDescription());
 		assertEquals(expected.getType(), actual.getType());
+		assertEquals(expected.getDescription(),actual.getDescription());
 		assertEquals(expected.getUnitOfMeasurement(), actual.getUnitOfMeasurement());	
 	}
 	

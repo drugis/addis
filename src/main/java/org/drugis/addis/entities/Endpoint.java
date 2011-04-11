@@ -24,6 +24,8 @@
 
 package org.drugis.addis.entities;
 
+import org.drugis.common.EqualsUtil;
+
 
 public class Endpoint extends AbstractVariable implements OutcomeMeasure {
 	
@@ -68,4 +70,11 @@ public class Endpoint extends AbstractVariable implements OutcomeMeasure {
 		return d_direction;
 	}
 	
+	@Override
+	public boolean deepEquals(Entity obj) {
+		if (!super.deepEquals(obj)) return false;
+		
+		Endpoint other = (Endpoint) obj;
+		return EqualsUtil.equal(other.getDirection(), getDirection());
+	}
 }

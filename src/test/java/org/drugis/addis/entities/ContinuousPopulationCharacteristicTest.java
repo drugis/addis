@@ -60,5 +60,5 @@ public class ContinuousPopulationCharacteristicTest {
 	public void testToString() {
 		assertEquals(d_age.getName(), d_age.toString());
 	}
-
+	
 }

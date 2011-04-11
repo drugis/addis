@@ -34,4 +34,12 @@ public class RatePopulationCharacteristic extends AbstractVariable implements Po
 	public RatePopulationCharacteristic(String name) {
 		super(name, Type.RATE);
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o != null && o instanceof PopulationCharacteristic) {
+			return super.equals(o);
+		}
+		return false;
+	}
 }

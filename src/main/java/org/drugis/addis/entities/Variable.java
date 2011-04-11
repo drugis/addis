@@ -86,4 +86,5 @@ public interface Variable extends Entity, Comparable<Variable> {
 	
 	public void setType(Type val);
 
+	public boolean deepEquals(Entity obj);
 }

@@ -76,15 +76,5 @@ public class EndpointTest {
 		e.setName(name);
 		assertEquals(name, e.toString());
 	}
-	
 
-	@Test
-	public void testEquals() {
-		String name1 = "Endpoint A";
-		String name2 = "Endpoint B";
-		
-		assertEquals(new Endpoint(name1, Variable.Type.RATE), new Endpoint(name1, Variable.Type.RATE));
-		JUnitUtil.assertNotEquals(new Endpoint(name1, Variable.Type.RATE), new Endpoint(name2, Variable.Type.RATE));
-		assertEquals(new Endpoint(name1, Variable.Type.RATE).hashCode(), new Endpoint(name1, Variable.Type.RATE).hashCode());
-	}
 }

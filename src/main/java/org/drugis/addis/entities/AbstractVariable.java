@@ -132,4 +132,13 @@ public abstract class AbstractVariable extends AbstractEntity implements Variabl
 	public BasicMeasurement buildMeasurement() {
 		return buildMeasurement(0);
 	}
+	
+	public boolean deepEquals(Entity obj) {
+		if (!equals(obj)) return false;
+		
+		AbstractVariable other = (AbstractVariable)obj;
+		return EqualsUtil.equal(other.getType(), getType()) &&
+			EqualsUtil.equal(other.getDescription(), getDescription()) &&
+			EqualsUtil.equal(other.getUnitOfMeasurement(), getUnitOfMeasurement());
+	}
 }
