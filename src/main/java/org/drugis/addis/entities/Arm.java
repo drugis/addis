@@ -33,23 +33,31 @@ import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.EqualsUtil;
 
 public class Arm extends AbstractEntity implements TypeWithNotes {
+	public static Arm createArm(Study study, String name, int size,
+			Drug drug, AbstractDose dose) {
+		Arm arm = new Arm(name, size);
+		study.addArm(arm);
+		StudyActivity studyActivity = new StudyActivity(name + " treatment", new TreatmentActivity(drug, dose));
+		study.getStudyActivities().add(studyActivity);
+		if (study.getEpochs().isEmpty()) {
+			study.getEpochs().add(new Epoch("Main phase", null));
+		}
+		Epoch epoch = study.getEpochs().get(0);
+		study.setStudyActivityAt(arm, epoch, studyActivity);
+		return arm;
+	}
+
 	private String d_name;
 	private Integer d_size;
 	private List<Note> d_notes = new ArrayList<Note>();
-	private TreatmentActivity d_activity;
+	private TreatmentActivity d_activity = new TreatmentActivity(null, null);
 	
 	public static final String PROPERTY_SIZE = "size";
 	public static final String PROPERTY_NAME = "name";
 
 	public Arm(String name, int size) {
-		this(name, size, null, null);
-	}
-	
-	@Deprecated
-	public Arm(String name, int size, Drug drug, AbstractDose dose) {
 		d_name = name;
 		d_size = size;
-		d_activity = new TreatmentActivity(drug, dose);
 	}
 
 	@Deprecated

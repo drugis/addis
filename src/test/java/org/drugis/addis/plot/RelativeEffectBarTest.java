@@ -43,8 +43,8 @@ public class RelativeEffectBarTest {
 	@Test
 	public void testNormalPlot() {
 		// Create relative effect.
-		Arm p1 = new Arm("p1", 100, null, null);
-		Arm p2 = new Arm("p2", 100, null, null);
+		Arm p1 = new Arm("p1", 100);
+		Arm p2 = new Arm("p2", 100);
 		RelativeEffect<ContinuousMeasurement> effect = new BasicMeanDifference(new BasicContinuousMeasurement(0.25, 1.26 / Math.sqrt(2), p1.getSize()), 
 											new BasicContinuousMeasurement(0.5, 1.26 / Math.sqrt(2), p2.getSize()));
 	
@@ -70,8 +70,8 @@ public class RelativeEffectBarTest {
 	
 	@Test
 	public void testCombinedPlot() {
-		Arm p1 = new Arm("p1", 100, null, null);
-		Arm p2 = new Arm("p2", 100, null, null);
+		Arm p1 = new Arm("p1", 100);
+		Arm p2 = new Arm("p2", 100);
 		RelativeEffect<ContinuousMeasurement> effect = new BasicMeanDifference(new BasicContinuousMeasurement(0.25, 1.26 / Math.sqrt(2), p1.getSize()), 
 											new BasicContinuousMeasurement(0.5, 1.26 / Math.sqrt(2), p2.getSize()));
 	

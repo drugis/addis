@@ -749,15 +749,20 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	
 	public TreatmentActivity getTreatment(Arm arm) {
 		assertContains(d_arms, arm);
-		return arm.getTreatmentActivity();
+		if (d_epochs.isEmpty()) {
+			return arm.getTreatmentActivity();
+		}
+		Epoch epoch = d_epochs.get(d_epochs.size() - 1); 
+		StudyActivity studyActivity = getStudyActivityAt(arm, epoch);
+		return studyActivity == null ? null : (TreatmentActivity) studyActivity.getActivity();
 	}
 	
 	public Drug getDrug(Arm arm) {
-		return getTreatment(arm).getDrug();
+		return getTreatment(arm) == null ? null : getTreatment(arm).getDrug();
 	}
 	
 	public AbstractDose getDose(Arm arm) {
-		return getTreatment(arm).getDose();
+		return getTreatment(arm) == null ? null : getTreatment(arm).getDose();
 	}
 
 	public void setDrug(Arm arm, Drug drug) {

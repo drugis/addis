@@ -369,23 +369,21 @@ public class JAXBConvertor {
 	static Arm convertArm(org.drugis.addis.entities.data.Arm arm, Domain domain) throws ConversionException {
 		Drug d = findDrug(domain, arm.getDrug().getName());
 		String name = arm.getDrug().getName() + "-" + arm.getId();
+		Arm newArm = new Arm(name, arm.getSize());
+		newArm.getTreatmentActivity().setDrug(d);
+		convertNotes(arm.getNotes().getNote(), newArm.getNotes());
 		if(arm.getFixedDose() != null) {
 			FixedDose fixDose = new FixedDose(arm.getFixedDose().getQuantity(), arm.getFixedDose().getUnit());
-			Arm newArm = new Arm(name, arm.getSize().intValue(), d, fixDose);
-			convertNotes(arm.getNotes().getNote(), newArm.getNotes());
-			return newArm;
+			newArm.getTreatmentActivity().setDose(fixDose);
 		}
 		else if(arm.getFlexibleDose() != null) {
 			FlexibleDose flexDose = new FlexibleDose(new Interval<Double> (
 													(double) arm.getFlexibleDose().getMinDose(), 
 													(double) arm.getFlexibleDose().getMaxDose()
 												 ), arm.getFlexibleDose().getUnit());
-			Arm newArm = new Arm(name, arm.getSize(), d, flexDose);
-			convertNotes(arm.getNotes().getNote(), newArm.getNotes());
-			return newArm;
+			newArm.getTreatmentActivity().setDose(flexDose);
 		}
-		
-		return null;
+		return newArm;
 	}
 	
 	static org.drugis.addis.entities.data.Arm convertArm(Arm arm) throws ConversionException {

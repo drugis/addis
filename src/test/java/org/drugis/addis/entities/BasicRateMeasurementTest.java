@@ -37,7 +37,7 @@ public class BasicRateMeasurementTest {
 	
 	@Before
 	public void setUp() {
-		d_pg = new Arm("", 101, null, null);
+		d_pg = new Arm("", 101);
 		d_measurement = new BasicRateMeasurement(67, d_pg.getSize());
 	}
 	

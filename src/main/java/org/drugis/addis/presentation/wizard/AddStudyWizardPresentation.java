@@ -41,6 +41,7 @@ import org.drugis.addis.entities.DomainEvent;
 import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.ObjectWithNotes;
@@ -49,10 +50,11 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyActivity;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
 import org.drugis.addis.presentation.AbstractListHolder;
-import org.drugis.addis.presentation.BasicArmPresentation;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.MutableCharacteristicHolder;
 import org.drugis.addis.presentation.PopulationCharTableModel;
@@ -262,9 +264,15 @@ public class AddStudyWizardPresentation {
 	}
 
 	public void addArms(int numArms) {
+		if (getNewStudy().getEpochs().isEmpty()) {
+			getNewStudy().getEpochs().add(new Epoch("Main phase", null));
+		}
 		for(int i = 0; i < numArms; ++i){
-			Arm arm = new Arm("Arm " + (i + 1), 0,new Drug("", ""), new FixedDose(0l, SIUnit.MILLIGRAMS_A_DAY));
+			Arm arm = new Arm("Arm " + (i + 1), 0);
+			StudyActivity activity = new StudyActivity("Treatment " + (i + 1), new TreatmentActivity(null, new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY)));
+			getNewStudy().getStudyActivities().add(activity);
 			getNewStudy().getArms().add(arm);
+			getNewStudy().setStudyActivityAt(arm, getNewStudy().getEpochs().get(0), activity);
 		}
 	}
 	
@@ -281,7 +289,8 @@ public class AddStudyWizardPresentation {
 	}
 	
 	public TreatmentActivityPresentation getTreatmentActivityModel(int armNumber){
-		return new TreatmentActivityPresentation(getNewStudy().getArms().get(armNumber).getTreatmentActivity(), d_pmf);
+		Arm arm = getNewStudy().getArms().get(armNumber);
+		return new TreatmentActivityPresentation(getNewStudy().getTreatment(arm), d_pmf);
 	}
 	
 	public ValueModel getArmNoteModel(int idx) {

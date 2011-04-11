@@ -229,7 +229,7 @@ public class ExampleData {
 		
 		// Paroxetine data 1
 		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		Arm parox = new Arm("Paroxetine-0", 102, buildDrugParoxetine(), dose);
+		Arm parox = Arm.createArm(study, "Paroxetine-0", 102, buildDrugParoxetine(), dose);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(parox);
 		pHamd.setRate(67);
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(parox);
@@ -239,7 +239,6 @@ public class ExampleData {
 		pConv.setRate(10);
 		pConv.setSampleSize(40);
 		
-		study.addArm(parox);
 		study.setMeasurement(buildEndpointHamd(), parox, pHamd);
 		study.setMeasurement(buildEndpointCgi(), parox, pCgi);
 		study.setMeasurement(buildAdverseEventConvulsion(),parox, pConv);
@@ -248,7 +247,7 @@ public class ExampleData {
 		
 		// Fluoxetine data
 		dose = new FixedDose(27.5, SIUnit.MILLIGRAMS_A_DAY);
-		Arm fluox = new Arm("Fluoxetine-1", 101, buildDrugFluoxetine(), dose);
+		Arm fluox = Arm.createArm(study, "Fluoxetine-1", 101, buildDrugFluoxetine(), dose);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(fluox);
 		fHamd.setRate(67);
 		BasicContinuousMeasurement fCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(fluox);
@@ -258,7 +257,6 @@ public class ExampleData {
 		fConv.setRate(12);
 		fConv.setSampleSize(40);
 		
-		study.addArm(fluox);
 		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);		
 		study.setMeasurement(buildEndpointCgi(), fluox, fCgi);
 		study.setMeasurement(buildAdverseEventConvulsion(), fluox, pConv);
@@ -300,7 +298,7 @@ public class ExampleData {
 		
 		// Paroxetine data
 		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		Arm parox = new Arm("Paroxetine-0", 37, buildDrugParoxetine(), dose);
+		Arm parox = Arm.createArm(study, "Paroxetine-0", 37, buildDrugParoxetine(), dose);
 		
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
 		pHamd.setRate(23);
@@ -308,20 +306,18 @@ public class ExampleData {
 		pConv.setRate(10);
 		pConv.setSampleSize(40);
 		
-		study.addArm(parox);
 		study.setMeasurement(hamd, parox, pHamd);
 		study.setMeasurement(buildAdverseEventConvulsion(),parox, pConv);
 
 		// Fluoxetine data
 		dose = new FixedDose(27.5, SIUnit.MILLIGRAMS_A_DAY);
-		Arm fluox = new Arm("Fluoxetine-1", 41, fluoxetine, dose);
+		Arm fluox = Arm.createArm(study, "Fluoxetine-1", 41, fluoxetine, dose);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(26);
 		BasicRateMeasurement fConv = (BasicRateMeasurement) buildAdverseEventConvulsion().buildMeasurement(fluox);
 		fConv.setRate(10);
 		fConv.setSampleSize(34);
 		
-		study.addArm(fluox);
 		study.setMeasurement(hamd, fluox, fHamd);
 		study.setMeasurement(buildAdverseEventConvulsion(), fluox, fConv);
 		return study;
@@ -361,26 +357,23 @@ public class ExampleData {
 		
 		// Paroxetine data 1
 		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		Arm parox = new Arm("Paroxetine-0", 37, buildDrugParoxetine(), dose);
+		Arm parox = Arm.createArm(study, "Paroxetine-0", 37, buildDrugParoxetine(), dose);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
 		pHamd.setRate(23);
-		study.addArm(parox);
 		study.setMeasurement(hamd, parox, pHamd);
 		
 		// Paroxetine data 2
 		dose = new FixedDose(5.5, SIUnit.MILLIGRAMS_A_DAY);
-		parox = new Arm("Paroxetine-1", 54, buildDrugParoxetine(), dose);
+		parox = Arm.createArm(study, "Paroxetine-1", 54, buildDrugParoxetine(), dose);
 		pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
 		pHamd.setRate(23);
-		study.addArm(parox);
 		study.setMeasurement(hamd, parox, pHamd);
 
 		// Fluoxetine data
 		dose = new FixedDose(27.5, SIUnit.MILLIGRAMS_A_DAY);
-		Arm fluox = new Arm("Fluoxetine-2", 41, fluoxetine, dose);
+		Arm fluox = Arm.createArm(study, "Fluoxetine-2", 41, fluoxetine, dose);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(26);
-		study.addArm(fluox);
 		study.setMeasurement(hamd, fluox, fHamd);
 		return study;
 	}
@@ -421,49 +414,45 @@ public class ExampleData {
 		
 		// Citalopram data
 		FixedDose dose = new FixedDose(40, SIUnit.MILLIGRAMS_A_DAY);
-		Arm cita = new Arm("Citalopram-0", 125, buildDrugCitalopram(), dose);
+		Arm cita = Arm.createArm(study, "Citalopram-0", 125, buildDrugCitalopram(), dose);
 		BasicContinuousMeasurement cCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(cita);
 		cCgi.setMean(-1.2);
 		cCgi.setStdDev(0.1);
 		BasicRateMeasurement cMadrs = (BasicRateMeasurement)buildEndpointMadrs().buildMeasurement(cita);
 		cMadrs.setRate(57);
-		study.addArm(cita);
 		study.setMeasurement(buildEndpointCgi(), cita, cCgi);
 		study.setMeasurement(buildEndpointMadrs(), cita, cMadrs);
 		
 		// Escitalopram high dose data
 		dose = new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY);
-		Arm esciHigh = new Arm("Escitalopram-1", 125, buildDrugEscitalopram(), dose);
+		Arm esciHigh = Arm.createArm(study, "Escitalopram-1", 125, buildDrugEscitalopram(), dose);
 		BasicContinuousMeasurement ehCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(esciHigh);
 		ehCgi.setMean(-1.4);
 		ehCgi.setStdDev(0.1);
 		BasicRateMeasurement ehMadrs = (BasicRateMeasurement)buildEndpointMadrs().buildMeasurement(esciHigh);
 		ehMadrs.setRate(64);
-		study.addArm(esciHigh);
 		study.setMeasurement(buildEndpointCgi(), esciHigh, ehCgi);
 		study.setMeasurement(buildEndpointMadrs(), esciHigh, ehMadrs);
 
 		// Escitalopram low dose data
 		dose = new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY);
-		Arm esciLow = new Arm("Escitalopram-2", 119, buildDrugEscitalopram(), dose);
+		Arm esciLow = Arm.createArm(study, "Escitalopram-2", 119, buildDrugEscitalopram(), dose);
 		BasicContinuousMeasurement elCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(esciLow);
 		elCgi.setMean(-1.3);
 		elCgi.setStdDev(0.1);
 		BasicRateMeasurement elMadrs = (BasicRateMeasurement)buildEndpointMadrs().buildMeasurement(esciLow);
 		elMadrs.setRate(59);
-		study.addArm(esciLow);
 		study.setMeasurement(buildEndpointCgi(), esciLow, elCgi);
 		study.setMeasurement(buildEndpointMadrs(), esciLow, elMadrs);
 		
 		// Placebo data
 		dose = new FixedDose(0, SIUnit.MILLIGRAMS_A_DAY);
-		Arm placebo = new Arm("Placebo-3", 122, buildPlacebo(), dose);
+		Arm placebo = Arm.createArm(study, "Placebo-3", 122, buildPlacebo(), dose);
 		BasicContinuousMeasurement plCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(placebo);
 		plCgi.setMean(-0.8);
 		plCgi.setStdDev(0.1);
 		BasicRateMeasurement plMadrs = (BasicRateMeasurement)buildEndpointMadrs().buildMeasurement(placebo);
 		plMadrs.setRate(33);
-		study.addArm(placebo);
 		study.setMeasurement(buildEndpointCgi(), placebo, plCgi);
 		study.setMeasurement(buildEndpointMadrs(), placebo, plMadrs);
 		return study;
@@ -490,25 +479,23 @@ public class ExampleData {
 		
 		// Fluoxetine data
 		FixedDose dose = new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY);
-		Arm fluox = new Arm("Fluoxetine-0", 144, buildDrugFluoxetine(), dose);
+		Arm fluox = Arm.createArm(study, "Fluoxetine-0", 144, buildDrugFluoxetine(), dose);
 		BasicContinuousMeasurement fCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(fluox);
 		fCgi.setMean(0.67);
 		fCgi.setStdDev(0.5);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(fluox);
 		fHamd.setRate(63);
-		study.addArm(fluox);
 		study.setMeasurement(buildEndpointCgi(), fluox, fCgi);
 		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);
 
 		// Sertraline data
 		dose = new FixedDose(50, SIUnit.MILLIGRAMS_A_DAY);
-		Arm sertr = new Arm("Sertraline-1", 142, buildDrugSertraline(), dose);
+		Arm sertr = Arm.createArm(study, "Sertraline-1", 142, buildDrugSertraline(), dose);
 		BasicContinuousMeasurement sCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(sertr);
 		sCgi.setMean(0.69);
 		sCgi.setStdDev(0.5);
 		BasicRateMeasurement sHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(sertr);
 		sHamd.setRate(73);
-		study.addArm(sertr);
 		study.setMeasurement(buildEndpointCgi(), sertr, sCgi);
 		study.setMeasurement(buildEndpointHamd(), sertr, sHamd);
 		return study;
@@ -534,37 +521,34 @@ public class ExampleData {
 
 		// Paroxetine data
 		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		Arm parox = new Arm("Paroxetine-0", 37, buildDrugParoxetine(), dose);
+		Arm parox = Arm.createArm(study, "Paroxetine-0", 37, buildDrugParoxetine(), dose);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(parox);
 		pHamd.setRate(23);
 		BasicContinuousMeasurement pCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(parox);
 		pCgi.setMean(-1.69);
 		pCgi.setStdDev(0.16);
-		study.addArm(parox);
 		study.setMeasurement(buildEndpointHamd(), parox, pHamd);
 		study.setMeasurement(buildEndpointCgi(), parox, pCgi);
 		
 		// Fluoxetine data
 		dose = new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY);
-		Arm fluox = new Arm("Fluoxetine-1", 144, buildDrugFluoxetine(), dose);
+		Arm fluox = Arm.createArm(study, "Fluoxetine-1", 144, buildDrugFluoxetine(), dose);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(fluox);
 		fHamd.setRate(63);
 		BasicContinuousMeasurement fCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(fluox);
 		fCgi.setMean(-1.8);
 		fCgi.setStdDev(0.16);
-		study.addArm(fluox);
 		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);
 		study.setMeasurement(buildEndpointCgi(), fluox, fCgi);
 
 		// Sertraline data
 		dose = new FixedDose(50, SIUnit.MILLIGRAMS_A_DAY);
-		Arm sertr = new Arm("Sertraline-2", 142, buildDrugSertraline(), dose);
+		Arm sertr = Arm.createArm(study, "Sertraline-2", 142, buildDrugSertraline(), dose);
 		BasicRateMeasurement sHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(sertr);
 		sHamd.setRate(73);
 		BasicContinuousMeasurement sCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(sertr);
 		sCgi.setMean(-0.84);
 		sCgi.setStdDev(0.24);
-		study.addArm(sertr);
 		study.setMeasurement(buildEndpointHamd(), sertr, sHamd);
 		study.setMeasurement(buildEndpointCgi(), sertr, sCgi);
 		return study;
@@ -613,16 +597,14 @@ public class ExampleData {
 		
 		// Candesartan data
 		FixedDose cDose = new FixedDose(32, SIUnit.MILLIGRAMS_A_DAY);
-		Arm cand = new Arm("Candesartan-0", 1273, buildDrugCandesartan(), cDose);
+		Arm cand = Arm.createArm(study, "Candesartan-0", 1273, buildDrugCandesartan(), cDose);
 		BasicRateMeasurement cDeath = new BasicRateMeasurement(302, cand.getSize());
-		study.addArm(cand);
 		study.setMeasurement(buildEndpointCVdeath(), cand, cDeath);
 		
 		// Placebo data
 		FixedDose pDose = new FixedDose(32, SIUnit.MILLIGRAMS_A_DAY);
-		Arm placebo = new Arm("Placebo-1", 1271, buildPlacebo(), pDose);
+		Arm placebo = Arm.createArm(study, "Placebo-1", 1271, buildPlacebo(), pDose);
 		BasicRateMeasurement pDeath = new BasicRateMeasurement(347, placebo.getSize());
-		study.addArm(placebo);
 		OutcomeMeasure om = buildEndpointCVdeath();
 		study.setMeasurement(om, placebo, pDeath);
 		
@@ -664,26 +646,23 @@ public class ExampleData {
 		
 		// Sertraline data
 		FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
-		Arm sertr = new Arm("Sertraline-0", 96, sertraline, dose);
+		Arm sertr = Arm.createArm(study, "Sertraline-0", 96, sertraline, dose);
 		BasicRateMeasurement sHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
 		sHamd.setRate(70);
-		study.addArm(sertr);
 		study.setMeasurement(hamd, sertr, sHamd);
 
 		// Fluoxetine data
 		dose = new FixedDose(30.0, SIUnit.MILLIGRAMS_A_DAY);
-		Arm fluox = new Arm("Fluoxetine-1", 92, fluoxetine, dose);
+		Arm fluox = Arm.createArm(study, "Fluoxetine-1", 92, fluoxetine, dose);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(57);
-		study.addArm(fluox);
 		study.setMeasurement(hamd, fluox, fHamd);
 		
 		// Paroxetine data
 		dose = new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY);
-		Arm parox = new Arm("Paroxetine-2", 93, paroxetine, dose);
+		Arm parox = Arm.createArm(study, "Paroxetine-2", 93, paroxetine, dose);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
 		pHamd.setRate(64);
-		study.addArm(parox);
 		study.setMeasurement(hamd, parox, pHamd);
 		
 		return study;
@@ -969,26 +948,23 @@ public class ExampleData {
         
         // Sertraline data
         FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);
-        Arm sertr = new Arm("Sertraline-0", 96, sertraline, dose);
+        Arm sertr = Arm.createArm(study, "Sertraline-0", 96, sertraline, dose);
         BasicRateMeasurement sHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
         sHamd.setRate(70);
-        study.addArm(sertr);
         study.setMeasurement(hamd, sertr, sHamd);
 
         // Fluoxetine data
         dose = new FixedDose(30.0, SIUnit.MILLIGRAMS_A_DAY);
-        Arm fluox = new Arm("Fluoxetine-1", 92, fluoxetine, dose);
+        Arm fluox = Arm.createArm(study, "Fluoxetine-1", 92, fluoxetine, dose);
         BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
         fHamd.setRate(0);
-        study.addArm(fluox);
         study.setMeasurement(hamd, fluox, fHamd);
         
         // Paroxetine data
         dose = new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY);
-        Arm parox = new Arm("Paroxetine-2", 93, paroxetine, dose);
+        Arm parox = Arm.createArm(study, "Paroxetine-2", 93, paroxetine, dose);
         BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
         pHamd.setRate(64);
-        study.addArm(parox);
         study.setMeasurement(hamd, parox, pHamd);
         
         return study;

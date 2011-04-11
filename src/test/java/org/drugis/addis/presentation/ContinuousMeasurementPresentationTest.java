@@ -44,7 +44,7 @@ public class ContinuousMeasurementPresentationTest {
 	
 	@Before
 	public void setUp() {
-		d_pg = new Arm("1", 1, null, null);
+		d_pg = new Arm("1", 1);
 		d_basicContinuousMeasurement = new BasicContinuousMeasurement(0.0, 0.0, d_pg.getSize());
 		d_pres = new ContinuousMeasurementPresentation<BasicContinuousMeasurement>(d_basicContinuousMeasurement);
 	}

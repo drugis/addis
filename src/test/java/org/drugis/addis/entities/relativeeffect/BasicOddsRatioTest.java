@@ -174,8 +174,8 @@ public class BasicOddsRatioTest {
 	{
 		Study s = new Study(studyName, d_ind);
 		s.addEndpoint(d_ep);
-		Arm g_fluox = new Arm("Fluox", fluoxSize, d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));
-		Arm g_sertr = new Arm("Sertr", sertraSize, d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));		
+		Arm g_fluox = Arm.createArm(s, "Fluox", fluoxSize, d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));
+		Arm g_sertr = Arm.createArm(s, "Sertr", sertraSize, d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));		
 		
 		s.addArm(g_sertr);
 		s.addArm(g_fluox);
