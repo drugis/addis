@@ -91,12 +91,9 @@ public class ArmTest {
 	}
 	
 	@Test
-	public void testCloneReturnsEqualEntity() {
-		assertTrue(d_arm.clone().deepEquals(d_arm));
-	}
-	
-	@Test
-	public void testCloneReturnsDistinctObject() {
-		assertNotSame(d_arm, d_arm.clone());
+	public void testCloneReturnsDifferentEqualEntity() {
+		Arm clone_arm = d_arm.clone();
+		assertTrue(clone_arm.deepEquals(d_arm));
+		assertNotSame(clone_arm, d_arm);
 	}
 }

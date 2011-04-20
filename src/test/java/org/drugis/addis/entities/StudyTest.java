@@ -43,7 +43,6 @@ import javax.xml.datatype.DatatypeFactory;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
-import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -375,7 +374,9 @@ public class StudyTest {
 	@Test
 	public void testGetSampleSize() {
 		Study s = new Study("s1", new Indication(01L, "i"));
+		@SuppressWarnings("unused")
 		Arm pg1 = Arm.createArm(s, "pg1", 25, null, null);
+		@SuppressWarnings("unused")
 		Arm pg2 = Arm.createArm(s, "pg2", 35, null, null);
 		assertEquals(60, s.getSampleSize());
 	}

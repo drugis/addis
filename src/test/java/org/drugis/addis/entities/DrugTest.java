@@ -65,6 +65,7 @@ public class DrugTest {
 		
 		assertTrue(d1.equals(d2));
 		assertFalse(d1.equals(d3));
+		// TODO: Ask Gert about atc code (does it also have to be equal?)
 	}
 	
 	@Test

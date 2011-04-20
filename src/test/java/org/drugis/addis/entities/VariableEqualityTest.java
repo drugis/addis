@@ -24,7 +24,6 @@
 
 package org.drugis.addis.entities;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -32,8 +31,6 @@ import static org.junit.Assert.assertTrue;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
-
-import scala.testing.SUnit.AssertFailed;
 
 public class VariableEqualityTest {
 

@@ -128,11 +128,6 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 		return d_study;
 	}
 
-
-	private void setName(String name) {
-		d_name = name;
-	}
-	
 	@Override
 	public String toString() {
 		return getName();

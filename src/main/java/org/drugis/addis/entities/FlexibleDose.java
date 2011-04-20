@@ -24,8 +24,7 @@
 
 package org.drugis.addis.entities;
 
-import static org.drugis.common.EqualsUtil.equal;
-
+import org.drugis.common.EqualsUtil;
 import org.drugis.common.Interval;
 
 public class FlexibleDose extends AbstractDose {
@@ -94,7 +93,7 @@ public class FlexibleDose extends AbstractDose {
 	public boolean equals(Object o) {
 		if (o instanceof FlexibleDose) {
 			FlexibleDose other = (FlexibleDose)o;
-			return equal(other.getFlexibleDose(), getFlexibleDose()) && equal(other.getUnit(), getUnit());
+			return EqualsUtil.equal(other.getFlexibleDose(), getFlexibleDose()) && EqualsUtil.equal(other.getUnit(), getUnit());
 		}
 		return false;
 	}

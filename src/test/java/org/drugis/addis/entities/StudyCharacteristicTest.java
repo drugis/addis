@@ -25,25 +25,18 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
+import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.junit.Test;
 
 public class StudyCharacteristicTest {
 
 	@Test
-	public void testGetDescription() {
+	public void testGetters() {
 		assertEquals("Number of study centers", BasicStudyCharacteristic.CENTERS.getDescription());
-		for (Characteristic c : BasicStudyCharacteristic.values()) {
-			assertTrue(c.getDescription().length() > 0);
-		}
-	}
-	
-	@Test
-	public void testGetValueType() {
-		for (Characteristic c : BasicStudyCharacteristic.values()) {
-			assertNotNull(c.getValueType());
-		}
+		assertEquals(Integer.class, BasicStudyCharacteristic.CENTERS.getValueType());
+		assertEquals(false, BasicStudyCharacteristic.CENTERS.getDefaultVisible());
+		assertEquals(Blinding.UNKNOWN, BasicStudyCharacteristic.BLINDING.getDefaultValue());
+		assertEquals(null, BasicStudyCharacteristic.CENTERS.getDefaultValue());
 	}
 }

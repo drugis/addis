@@ -26,7 +26,7 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
@@ -71,5 +71,12 @@ public class CategoricalPopulationCharacteristicTest {
 	@Test
 	public void testToString() {
 		assertEquals(d_gender.getName(), d_gender.toString());
+	}
+	
+	@Test
+	public void testClone() {
+		CategoricalPopulationCharacteristic clone_var = d_gender.clone();
+		assertTrue(d_gender.deepEquals(clone_var));
+		assertNotSame(d_gender, clone_var);
 	}
 }

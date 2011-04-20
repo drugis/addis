@@ -131,7 +131,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	@Override
 	public FrequencyMeasurement clone() {
 		FrequencyMeasurement m = new FrequencyMeasurement(d_categories, d_frequencies);
-		m.d_cv = d_cv;
+		m.d_cv = new CategoricalPopulationCharacteristic(d_cv);
 		return m;
 	}
 	

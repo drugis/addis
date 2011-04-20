@@ -45,6 +45,12 @@ public class CategoricalPopulationCharacteristic extends AbstractVariable implem
 		d_description = "";
 	}
 	
+	public CategoricalPopulationCharacteristic(CategoricalPopulationCharacteristic cv) {
+		super(cv.getName(), Type.CATEGORICAL);
+		d_categories = cv.getCategories();
+		d_description = cv.getDescription();
+	}
+
 	public String[] getCategories() {
 		return d_categories;
 	}
@@ -89,5 +95,10 @@ public class CategoricalPopulationCharacteristic extends AbstractVariable implem
 			return EqualsUtil.equal(other.getCategoriesAsList(), getCategoriesAsList()); 
 		}
 		return false;
+	}
+	
+	@Override
+	protected CategoricalPopulationCharacteristic clone() {
+		return new CategoricalPopulationCharacteristic(this);
 	}
 }
