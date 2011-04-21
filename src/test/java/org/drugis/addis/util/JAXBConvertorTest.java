@@ -28,7 +28,9 @@ import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
 import static org.drugis.addis.util.JAXBConvertor.nameReference;
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,12 +52,16 @@ import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.TransformerException;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.AssertEntityEquals;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -67,6 +73,7 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
+import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.FrequencyMeasurement;
@@ -75,13 +82,16 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.PopulationCharacteristic;
+import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.RatePopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.StudyArmsEntry;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
@@ -113,6 +123,7 @@ import org.drugis.addis.entities.data.DrugReferences;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
 import org.drugis.addis.entities.data.MetaAnalysisReferences;
+import org.drugis.addis.entities.data.NameReference;
 import org.drugis.addis.entities.data.NameReferenceWithNotes;
 import org.drugis.addis.entities.data.Notes;
 import org.drugis.addis.entities.data.OutcomeMeasure;
@@ -122,6 +133,7 @@ import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
 import org.drugis.addis.entities.data.StudyOutcomeMeasure;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
+import org.drugis.addis.entities.data.Treatment;
 import org.drugis.addis.imports.PubMedDataBankRetriever;
 import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.common.Interval;
@@ -351,6 +363,46 @@ public class JAXBConvertorTest {
 	public void testConvertArm() throws ConversionException {
 		int size = 99;
 		String name = "Sildenafil";
+
+		
+		org.drugis.addis.entities.data.Arm arm1 = new org.drugis.addis.entities.data.Arm();
+		arm1.setName(name + "-12");
+		arm1.setSize(size);
+		Notes armNotes = new Notes();
+		Note note = new Note(Source.CLINICALTRIALS, "This is an arm note content");
+		armNotes.getNote().add(JAXBConvertor.convertNote(note));
+		arm1.setNotes(armNotes);
+		
+//		org.drugis.addis.entities.data.FixedDose fixDose = new org.drugis.addis.entities.data.FixedDose();
+//		fixDose.setQuantity(quantity);
+//		fixDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
+//		arm1.setFixedDose(fixDose);
+//		arm1.setDrug(nameReference(name));
+		
+		Arm arm2 = new Arm(name + "-12", size);
+		arm2.getNotes().add(note);
+		
+		assertEntityEquals(arm2, JAXBConvertor.convertArm(arm1));
+		assertEquals(arm1, JAXBConvertor.convertArm(arm2));
+		
+//		arm1.setFixedDose(null);
+//		org.drugis.addis.entities.data.FlexibleDose flexDose = new org.drugis.addis.entities.data.FlexibleDose();
+//		flexDose.setMinDose(quantity);
+//		flexDose.setMaxDose(maxQuantity);
+//		flexDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
+//		arm1.setFlexibleDose(flexDose);
+//		
+//		Arm arm3 = buildFlexibleDoseArm(size, drug, 12, quantity, maxQuantity);
+//		arm3.getNotes().add(note);
+//		arm1.setId(12); // FIXME
+//		assertEntityEquals(arm3, JAXBConvertor.convertArm(arm1, domain));
+//		arm1.setId(null);
+//		assertEquals(arm1, JAXBConvertor.convertArm(arm3));
+	}
+	
+	@Test
+	public void testConvertTreatmentActivity() throws ConversionException {
+		String name = "Sildenafil";
 		String code = "G04BE03";
 		double quantity = 12.5;
 		double maxQuantity = 34.5;
@@ -358,57 +410,85 @@ public class JAXBConvertorTest {
 		Domain domain = new DomainImpl();
 		Drug drug = new Drug(name, code);
 		domain.addDrug(drug);
-		
-		org.drugis.addis.entities.data.Arm arm1 = new org.drugis.addis.entities.data.Arm();
-		arm1.setId(12);
-		arm1.setSize(size);
-		Notes armNotes = new Notes();
-		Note note = new Note(Source.CLINICALTRIALS, "This is an arm note content");
-		armNotes.getNote().add(JAXBConvertor.convertNote(note));
-		arm1.setNotes(armNotes);
-		
+
+		// fixdose part
 		org.drugis.addis.entities.data.FixedDose fixDose = new org.drugis.addis.entities.data.FixedDose();
 		fixDose.setQuantity(quantity);
-		fixDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
-		arm1.setFixedDose(fixDose);
-		arm1.setDrug(nameReference(name));
+		fixDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);		
 		
-		Arm arm2 = buildFixedDoseArm(size, drug, 12, quantity);
-		arm2.getNotes().add(note);
+		Treatment t = new org.drugis.addis.entities.data.Treatment();
+		t.setDrug(nameReference(name));
+		t.setFixedDose(fixDose);		
+		TreatmentActivity ta = buildFixedDoseTreatmentActivity(drug, quantity);
 		
-		assertEntityEquals(arm2, JAXBConvertor.convertArm(arm1, domain));
-		arm1.setId(null);
-		assertEquals(arm1, JAXBConvertor.convertArm(arm2));
-		
-		arm1.setFixedDose(null);
+		assertTrue(EntityUtil.deepEqual(ta, JAXBConvertor.convertTreatmentActivity(t, domain)));
+		assertEquals(t, JAXBConvertor.convertTreatmentActivity(ta));
+
+		// flexdose part
 		org.drugis.addis.entities.data.FlexibleDose flexDose = new org.drugis.addis.entities.data.FlexibleDose();
 		flexDose.setMinDose(quantity);
 		flexDose.setMaxDose(maxQuantity);
 		flexDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
-		arm1.setFlexibleDose(flexDose);
+
+		Treatment t2 = new org.drugis.addis.entities.data.Treatment();
+		t2.setDrug(nameReference(name));
+		t2.setFlexibleDose(flexDose);		
 		
-		Arm arm3 = buildFlexibleDoseArm(size, drug, 12, quantity, maxQuantity);
-		arm3.getNotes().add(note);
-		arm1.setId(12); // FIXME
-		assertEntityEquals(arm3, JAXBConvertor.convertArm(arm1, domain));
-		arm1.setId(null);
-		assertEquals(arm1, JAXBConvertor.convertArm(arm3));
+		TreatmentActivity ta2 = buildFlexibleDoseTreatmentActivity(drug, quantity, maxQuantity);
+		assertTrue(EntityUtil.deepEqual(ta2, JAXBConvertor.convertTreatmentActivity(t2, domain)));
+		assertEquals(t2, JAXBConvertor.convertTreatmentActivity(ta2));
+
 	}
 
-	private Arm buildFixedDoseArm(int size, Drug drug, int id, double quantity) {
-		Arm a = new Arm(drug.getName() + "-" + id, size);
-		a.getTreatmentActivity().setDrug(drug);
-		a.getTreatmentActivity().setDose(new FixedDose(quantity, SIUnit.MILLIGRAMS_A_DAY));
-		return a;
-	}
+	@Test
+	public void testConvertEpoch() throws DatatypeConfigurationException {
+		String name = "Randomization";
+		Duration duration = DatatypeFactory.newInstance().newDuration("P42D");
+		
+		Epoch e = new Epoch(name, duration);
+		org.drugis.addis.entities.data.Epoch de = new org.drugis.addis.entities.data.Epoch();
+		de.setName(name);
+		de.setDuration(duration);
+		
+		assertTrue(EntityUtil.deepEqual(e, JAXBConvertor.convertEpoch(de)));
 
-	private Arm buildFlexibleDoseArm(int size, Drug drug, int id, double minQuantity, double maxQuantity) {
-		Arm a = new Arm(drug.getName() + "-" + id, size);
-		a.getTreatmentActivity().setDrug(drug);
-		a.getTreatmentActivity().setDose(new FlexibleDose(new Interval<Double> (minQuantity, maxQuantity), SIUnit.MILLIGRAMS_A_DAY));
-		return a;
 	}
 	
+	@Test @Ignore
+	public void testConvertStudyActivity() {
+		String name = "Randomization";
+		PredefinedActivity activity = PredefinedActivity.RANDOMIZATION;
+		StudyActivity sa = new StudyActivity(name, activity);
+		
+		org.drugis.addis.entities.data.StudyActivity saData = new org.drugis.addis.entities.data.StudyActivity();
+		org.drugis.addis.entities.data.Activity activData = new org.drugis.addis.entities.data.Activity();
+		activData.setPredefined(activity);
+		saData.setName(name);
+//		saData.setActivity(activData.getRandomization());
+		
+	}
+	
+	private TreatmentActivity buildFixedDoseTreatmentActivity(Drug drug, double quantity) {
+		FixedDose dose = new FixedDose(quantity, SIUnit.MILLIGRAMS_A_DAY);
+		return new TreatmentActivity(drug, dose);
+	}
+
+	private TreatmentActivity buildFlexibleDoseTreatmentActivity(Drug drug, double minQuantity, double maxQuantity) {
+		FlexibleDose dose = new FlexibleDose(new Interval<Double> (minQuantity, maxQuantity), SIUnit.MILLIGRAMS_A_DAY);
+		return new TreatmentActivity(drug, dose);
+	}
+	
+	@Test
+	public void testValueForActivity() throws Exception {
+		InputStream transformedXmlStream = getTransformed2();
+		System.clearProperty("javax.xml.transform.TransformerFactory");
+		
+//		File transformedXmlStream = new File("schema/transformed.xml");
+		AddisData data = (AddisData) d_unmarshaller.unmarshal(transformedXmlStream);
+		System.out.println(data.getStudies().getStudy().get(0).getActivities());
+	}
+	
+	/*
 	@Test
 	public void testConvertArms() throws ConversionException {
 		int size1 = 99;
@@ -1505,8 +1585,12 @@ public class JAXBConvertorTest {
 		PubMedDataBankRetriever.copyStream(transformedXmlStream, output);
 		output.close();
 	}
-	
+	*/
 	private static InputStream getTransformed() throws TransformerException, IOException {
 		return JAXBConvertor.transformLegacyXML(JAXBConvertorTest.class.getResourceAsStream(TEST_DATA_A_0));
+	}
+	
+	private static InputStream getTransformed2() throws TransformerException, IOException {
+		return JAXBConvertor.transformToLatest(getTransformed(), 1);
 	}
 }

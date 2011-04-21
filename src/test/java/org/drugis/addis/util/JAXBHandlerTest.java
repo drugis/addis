@@ -28,21 +28,21 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerException;
 
 import org.drugis.addis.entities.data.AddisData;
-import org.drugis.addis.util.JAXBHandler;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
 public class JAXBHandlerTest {
 	@Test
-	public void testUnmarshallMarshallXMLCompare() throws JAXBException, SAXException, FileNotFoundException {
+	public void testUnmarshallMarshallXMLCompare() throws JAXBException, SAXException, TransformerException, IOException {
 		// read xml file
-		AddisData data = JAXBHandler.unmarshallAddisData(JAXBHandlerTest.class.getResourceAsStream("schema_test.xml"));
+		AddisData data = JAXBHandler.unmarshallAddisData(JAXBConvertor.transformToLatest(JAXBHandlerTest.class.getResourceAsStream("schema_test.xml"), 1));
 
 		// write out
 		String testFile = "jaxb_marshall_test.xml";

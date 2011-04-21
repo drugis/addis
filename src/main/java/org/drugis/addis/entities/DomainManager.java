@@ -57,7 +57,7 @@ public class DomainManager {
 	 */
 	public void loadLegacyXMLDomain(InputStream is) throws IOException {
 		try {
-			InputStream transformedXmlStream = JAXBConvertor.transformLegacyXML(is);
+			InputStream transformedXmlStream = JAXBConvertor.transformToLatest(JAXBConvertor.transformLegacyXML(is), 1);
 			is.close();
 			loadXMLDomain(transformedXmlStream);
 		} catch (TransformerException e) {
@@ -73,11 +73,13 @@ public class DomainManager {
 	 */
 	public void loadXMLDomain(InputStream is) throws IOException {
 		try {
-			AddisData data = JAXBHandler.unmarshallAddisData(is);
+			AddisData data = JAXBHandler.unmarshallAddisData(JAXBConvertor.transformToLatest(is, 1));
 			d_domain = (DomainImpl) JAXBConvertor.convertAddisDataToDomain(data);
 		} catch (JAXBException e) {
 			throw new RuntimeException(e);
 		} catch (ConversionException e) {
+			throw new RuntimeException(e);
+		} catch (TransformerException e) {
 			throw new RuntimeException(e);
 		}
 	}

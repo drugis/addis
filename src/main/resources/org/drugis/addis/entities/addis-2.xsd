@@ -411,10 +411,7 @@
 		<xs:sequence>
 			<xs:choice>
 				<xs:element name="treatment" type="Treatment"/>
-				<xs:element name="randomization"/>
-				<xs:element name="screening"/>
-				<xs:element name="wash-out"/>
-				<xs:element name="follow-up"/>
+				<xs:element name="predefined" type="PredefinedActivityEnum"/>
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
@@ -577,6 +574,14 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="MANUAL"/>
 			<xs:enumeration value="CLINICALTRIALS"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PredefinedActivityEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="RANDOMIZATION"/>
+			<xs:enumeration value="SCREENING"/>
+			<xs:enumeration value="WASH_OUT"/>
+			<xs:enumeration value="FOLLOW_UP"/>
 		</xs:restriction>
 	</xs:simpleType>
 

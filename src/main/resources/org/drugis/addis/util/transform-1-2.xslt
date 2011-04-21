@@ -64,7 +64,7 @@
                 <studyActivity>
                     <xsl:attribute name="name">Randomization</xsl:attribute>
                     <activity>
-                        <randomization/>
+                        <predefined>RANDOMIZATION</predefined>
                     </activity>
                     <xsl:for-each select="../arms/arm">
                         <xsl:variable name="armid" select="@id"/>

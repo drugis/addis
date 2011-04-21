@@ -256,10 +256,10 @@
 							<schemaDirectory>${basedir}/src/main/resources/org/drugis/addis/entities</schemaDirectory>
 							<bindingDirectory>${basedir}/src/main/resources/org/drugis/addis/entities</bindingDirectory>
 							<schemaIncludes>
-								<include>addis-1.xsd</include>
+								<include>addis-2.xsd</include>
 							</schemaIncludes>
 							<bindingIncludes>
-								<include>addis-1.xjb</include>
+								<include>addis-2.xjb</include>
 							</bindingIncludes>
 							<generateDirectory>${basedir}/src/main/generated-entities</generateDirectory>
 							<generatePackage>org.drugis.addis.entities.data</generatePackage>
