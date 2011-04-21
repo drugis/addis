@@ -107,6 +107,7 @@ public class Arm extends AbstractEntity implements TypeWithNotes {
 		return d_notes;
 	}
 
+	@Override
 	public boolean deepEquals(Entity obj) {
 		if (!equals(obj)) return false;
 		Arm other = (Arm) obj;

@@ -881,7 +881,7 @@ public class JAXBConvertorTest {
 		study2.addEndpoint(ExampleData.buildEndpointHamd());
 		study2.addEndpoint(ExampleData.buildEndpointCgi());
 		study2.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
-		study2.addOutcomeMeasure(ExampleData.buildAgeVariable());
+		study2.addVariable(ExampleData.buildAgeVariable());
 		Arm arm1 = buildFixedDoseArm(100, ExampleData.buildDrugFluoxetine(), 1, 12.5);
 		study2.addArm(arm1);
 		Arm arm2 = buildFlexibleDoseArm(102, ExampleData.buildDrugParoxetine(), 2, 12.5, 15.3);

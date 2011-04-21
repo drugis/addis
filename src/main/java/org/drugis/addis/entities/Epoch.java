@@ -71,4 +71,9 @@ public class Epoch extends AbstractEntity implements TypeWithNotes {
 		Epoch other = (Epoch) obj;
 		return EqualsUtil.equal(other.getDuration(), getDuration()) && EntityUtil.deepEqual(other.getNotes(), getNotes());
 	}
+	
+	@Override
+	protected Epoch clone() {
+		return new Epoch(d_name, d_duration);
+	}
 }

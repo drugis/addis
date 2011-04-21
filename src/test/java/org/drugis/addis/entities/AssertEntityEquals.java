@@ -25,26 +25,21 @@
 package org.drugis.addis.entities;
 
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
-import java.util.Map.Entry;
 
-import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
-import org.drugis.common.EqualsUtil;
+import org.drugis.addis.util.EntityUtil;
 
 public class AssertEntityEquals {
 	
@@ -96,19 +91,7 @@ public class AssertEntityEquals {
 	}
 	
 	public static void assertEntityEquals(Measurement expected, Measurement actual) {
-		assertEquals(expected.getSampleSize(), actual.getSampleSize());
-		if (expected instanceof ContinuousMeasurement) {
-			assertEquals( ((ContinuousMeasurement) expected).getMean() , ((ContinuousMeasurement) actual).getMean() );
-			assertEquals( ((ContinuousMeasurement) expected).getStdDev() , ((ContinuousMeasurement) actual).getStdDev() );
-		} else if (expected instanceof RateMeasurement) 
-			assertEquals( ((RateMeasurement) expected).getRate() , ((RateMeasurement) actual).getRate() );
-		else if (expected instanceof FrequencyMeasurement) {
-			assertArrayEquals(((FrequencyMeasurement) expected).getCategories() , ((FrequencyMeasurement) actual).getCategories());
-			assertEquals(((FrequencyMeasurement) expected).getFrequencies() , ((FrequencyMeasurement) actual).getFrequencies());
-		} else {
-			System.err.println("Measurement type not recognized.");
-			fail();
-		}
+		EntityUtil.deepEqual(expected, actual);
 	}
 	
 
@@ -131,49 +114,9 @@ public class AssertEntityEquals {
 	}
 	
 	public static void assertEntityEquals(Study expected, Study actual) {
-		assertTrue(expected.deepEquals(actual));
-		assertEntityEquals(expected.getAdverseEvents(), actual.getAdverseEvents());
-		assertEntityEquals(expected.getArms(), actual.getArms());
-		assertEntityEquals(expected.getEndpoints(), actual.getEndpoints());
-		assertEntityEquals(expected.getOutcomeMeasures(), actual.getOutcomeMeasures());
-		assertEntityEquals(expected.getPopulationCharacteristics(), actual.getPopulationCharacteristics());
-		assertEquals(expected.getDrugs(), actual.getDrugs());
-		
-		// indication
-		assertEntityEquals(expected.getIndication(), actual.getIndication());
-		
-		// measurements
-		assertEquals(expected.getMeasurements().keySet().size(), actual.getMeasurements().keySet().size());
-		for (Entry<MeasurementKey, Measurement> entry : expected.getMeasurements().entrySet()) {
-			Object actualKey = findMatchingKey(entry.getKey(), actual.getMeasurements().keySet());
-			assertEquals(entry.getValue(), actual.getMeasurements().get(actualKey));
-		}
-
-		// characteristics
-		assertEquals(expected.getCharacteristics().keySet().size(), actual.getCharacteristics().keySet().size());
-		Iterator<Characteristic> charIterator = expected.getCharacteristics().keySet().iterator();
-		while (charIterator.hasNext()) {
-			Characteristic curChar = charIterator.next();
-			if (expected.getCharacteristic(curChar) instanceof Date)
-				assertEquals(expected.getCharacteristic(curChar).toString(), actual.getCharacteristic(curChar).toString());
-			else
-				assertEquals(expected.getCharacteristic(curChar), actual.getCharacteristic(curChar));
-		}
-		
-		//notes
-		assertEquals(expected.getNotes().keySet().size(), actual.getNotes().keySet().size());
+		assertTrue(EntityUtil.deepEqual(expected, actual));
 	}
 	
-	private static Object findMatchingKey(MeasurementKey key, Set<MeasurementKey> keySet) {
-		for (MeasurementKey otherKey : keySet) {
-			if (EqualsUtil.equal(key.getVariable(), otherKey.getVariable()) &&
-					armsEqual(key.getArm(), otherKey.getArm())) {
-				return otherKey;
-			}
-		}
-		return null;
-	}
-
 	public static void assertEntityEquals(MetaAnalysis expected, MetaAnalysis actual) {
 		assertEquals(expected.getName(), actual.getName());
 		assertEquals(expected.getType(), actual.getType());

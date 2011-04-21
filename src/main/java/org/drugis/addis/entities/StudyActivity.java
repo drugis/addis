@@ -124,4 +124,12 @@ public class StudyActivity extends AbstractEntity implements TypeWithNotes {
 	public int hashCode() {
 		return (getName() != null ? getName().hashCode() : 0);
 	}
+	
+	@Override
+	protected StudyActivity clone() {
+		StudyActivity cloned = new StudyActivity(d_name, d_activity);
+		cloned.setUsedBy(new HashSet<UsedBy>(getUsedBy()));
+		return cloned;
+	}
+
 }

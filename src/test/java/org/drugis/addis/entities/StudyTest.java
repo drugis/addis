@@ -45,7 +45,6 @@ import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class StudyTest {
@@ -334,11 +333,42 @@ public class StudyTest {
 				new String[] { "Mars", "Venus" });
 		study1.addPopulationCharacteristic(pc);
 		assertFalse(study1.deepEquals(study2));
+		study1.setPopulationCharacteristics(Collections.<PopulationCharacteristic>emptyList());
+		study2.setPopulationCharacteristics(Collections.<PopulationCharacteristic>emptyList());
+		assertTrue(study1.deepEquals(study2));
 		
-		// FIXME : unfinished
-		// , arms, epochs, studyActivities, measurements
+		Arm arm = new Arm("Arm1", 9001);
+		study2.addArm(arm);
+		assertFalse(study1.deepEquals(study2));
+		study1.addArm(arm);
+		assertTrue(study1.deepEquals(study2));
 		
-		// (notes)
+		study1.getEpochs().add(new Epoch("Epoch1", null));
+		assertFalse(study1.deepEquals(study2));
+		study2.getEpochs().add(new Epoch("Epoch1", null));
+		assertTrue(study1.deepEquals(study2));
+		
+		StudyActivity randomization1 = new StudyActivity("Dancing", PredefinedActivity.RANDOMIZATION);
+		StudyActivity randomization2 = new StudyActivity("Dancing", PredefinedActivity.RANDOMIZATION);
+		study1.getStudyActivities().add(randomization1);
+		assertFalse(study1.deepEquals(study2));
+		study2.getStudyActivities().add(randomization2);
+		assertTrue(study1.deepEquals(study2));
+
+		study1.setStudyActivityAt(arm, new Epoch("Epoch1", null), randomization1);
+		assertFalse(study1.deepEquals(study2));
+		study2.setStudyActivityAt(arm, new Epoch("Epoch1", null), randomization1);
+		assertTrue(study1.deepEquals(study2));
+		
+		study1.setMeasurement(ExampleData.buildAdverseEventConvulsion(), arm, new BasicRateMeasurement(50, 100));
+		assertFalse(study1.deepEquals(study2));
+		study2.setMeasurement(ExampleData.buildAdverseEventConvulsion(), arm, new BasicRateMeasurement(50, 100));
+		assertTrue(study1.deepEquals(study2));
+		
+		study1.getStudyIdWithNotes().getNotes().add(new Note(Source.MANUAL, "testnote"));
+		assertFalse(study1.deepEquals(study2));
+		study2.getStudyIdWithNotes().getNotes().add(new Note(Source.MANUAL, "testnote"));
+		assertTrue(study1.deepEquals(study2));
 	}
 	
 	@Test
@@ -461,7 +491,7 @@ public class StudyTest {
 		assertEquals(200, (int)s.getMeasurement(v1, arm1).getSampleSize());
 	}
 
-	@Test @Ignore
+	@Test
 	public void testCloneReturnsEqualEntity() {
 		assertEquals(d_orig, d_clone);
 		AssertEntityEquals.assertEntityEquals(d_orig, d_clone);

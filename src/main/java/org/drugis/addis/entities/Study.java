@@ -157,6 +157,15 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		newStudy.setMeasurements(cloneMeasurements(newStudy.getArms()));
 		
 		newStudy.setCharacteristics(cloneCharacteristics());
+		
+		for(Epoch e: getEpochs()) {
+			newStudy.getEpochs().add(e.clone());
+		}
+
+		for(StudyActivity sa: getStudyActivities()) {
+			newStudy.getStudyActivities().add(sa.clone());
+		}
+		
 		return newStudy;
 	}
 
@@ -264,6 +273,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			clearStudyActivityAt(arm, epoch);
 		} else {
 			assertContains(d_studyActivities, activity);
+			activity = d_studyActivities.get(d_studyActivities.indexOf(activity)); // ensure we have the *same* object, not just an *equal* one.
 			clearStudyActivityAt(arm, epoch);
 			Set<UsedBy> usedBy = new HashSet<UsedBy>(activity.getUsedBy());
 			usedBy.add(new UsedBy(arm, epoch));
@@ -400,9 +410,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return getMeasurement(v, null);
 	}
 
-	private void forceLegalArguments(OutcomeMeasure e, Arm g, Measurement m) {
-		if (!getArms().contains(g)) {
-			throw new IllegalArgumentException("Arm " + g + " not part of this study.");
+	private void forceLegalArguments(OutcomeMeasure e, Arm a, Measurement m) {
+		if (!getArms().contains(a)) {
+			throw new IllegalArgumentException("Arm " + a + " not part of this study.");
 		}
 		if (!getOutcomeMeasures().contains(e)) {
 			throw new IllegalArgumentException("Outcome " + e + " not measured by this study.");
@@ -412,38 +422,38 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		}
 	}
 
-	public void setMeasurement(OutcomeMeasure e, Arm g, Measurement m) {
-		forceLegalArguments(e, g, m);
-		d_measurements.put(new MeasurementKey(e, g), m);
+	public void setMeasurement(OutcomeMeasure e, Arm a, Measurement m) {
+		forceLegalArguments(e, a, m);
+		d_measurements.put(new MeasurementKey(e, a), m);
 	}
 
 	/**
 	 * Set population characteristic measurement on arm.
 	 * @param v
-	 * @param g
+	 * @param a
 	 * @param m
 	 */
-	public void setMeasurement(Variable v, Arm g, Measurement m) {
-		forceLegalArguments(v, g, m);
-		d_measurements.put(new MeasurementKey(v, g), m);
+	public void setMeasurement(Variable v, Arm a, Measurement m) {
+		forceLegalArguments(v, a, m);
+		d_measurements.put(new MeasurementKey(v, a), m);
 	}
 
 	/**
 	 * Set population characteristic measurement on study.
 	 * @param v
-	 * @param g
 	 * @param m
 	 */
 	public void setMeasurement(Variable v, Measurement m) {
+		forceLegalArguments(v, null, m);
 		setMeasurement(v, null, m);
 	}
 
-	private void forceLegalArguments(Variable v, Arm g, Measurement m) {
+	private void forceLegalArguments(Variable v, Arm a, Measurement m) {
 		if (!getPopulationCharacteristics().contains(v)) {
 			throw new IllegalArgumentException("Variable " + v + " not in study");
 		}
-		if (g != null && !d_arms.contains(g)) {
-			throw new IllegalArgumentException("Arm " + g + " not in study");
+		if (a != null && !d_arms.contains(a)) {
+			throw new IllegalArgumentException("Arm " + a + " not in study");
 		}
 		if (!m.isOfType(v.getType())) {
 			throw new IllegalArgumentException("Measurement does not conform with outcome");
@@ -553,13 +563,13 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		setPopulationCharacteristicsWithNotes(newVal);
 	}
 	
-	public void addOutcomeMeasure(Variable om) {
+	public void addVariable(Variable om) {
 		if (om instanceof Endpoint)
 			addEndpoint((Endpoint) om);
 		else if (om instanceof AdverseEvent) {
 			addAdverseEvent((AdverseEvent) om);
 		} else if (om instanceof PopulationCharacteristic) {
-			addPopulationCharacteristic((PopulationCharacteristic) om); // FIXME
+			addPopulationCharacteristic((PopulationCharacteristic) om);
 		} else {
 			throw new IllegalStateException("Illegal OutcomeMeasure type " + om.getClass());
 		}
@@ -627,74 +637,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		for (Arm pg : d_arms)
 			s += pg.getSize();
 		return s;
-	}
-
-	private StudyOutcomeMeasure<?> findStudyOutcomeMeasure(Object key) {
-		if (key instanceof Endpoint) {
-			return findStudyOutcomeMeasureInList(d_endpoints, (Endpoint)key);
-		} else if (key instanceof AdverseEvent) {
-			return findStudyOutcomeMeasureInList(d_adverseEvents, (AdverseEvent)key);
-		} else {
-			return findStudyOutcomeMeasureInList(d_populationChars, (PopulationCharacteristic)key);
-		}
-	}
-	
-	private <T extends Variable> StudyOutcomeMeasure<T> findStudyOutcomeMeasureInList(
-			List<StudyOutcomeMeasure<T>> list, T om) {
-		for (StudyOutcomeMeasure<T> som : list) {
-			if(som.getValue().equals(om)) {
-				return som;
-			}
-		}
-		return null;
-	}
-
-	@Deprecated
-	private Note getNote(Object key){
-		List<Note> notes = getNotes(key);
-		return (notes != null && notes.size() > 0) ? notes.get(0) : null;
-	}
-	
-	private List<Note> getNotes(Object key) {
-		if (key.equals(PROPERTY_INDICATION)) {
-			return d_indication.getNotes();
-		} else if (key.equals(PROPERTY_ID)) {
-			return d_studyId.getNotes();
-		} else if (key instanceof BasicStudyCharacteristic) {
-			ObjectWithNotes<?> objectWithNotes = d_chars.get(key);
-			return objectWithNotes == null ? Collections.<Note>emptyList() : objectWithNotes.getNotes();
-		} else if (key instanceof Arm) {
-			return ((Arm)key).getNotes();
-		} else if (key instanceof Variable) {
-			return findStudyOutcomeMeasure(key).getNotes();
-		}
-		return null;
-	}
-	
-	@Deprecated
-	public Map<Object,Note> getNotes() {
-		Map<Object, Note> notes = new HashMap<Object, Note>();
-		addNoteIfExists(PROPERTY_ID, notes);
-		addNoteIfExists(PROPERTY_INDICATION, notes);
-		for (Characteristic key : d_chars.keySet()) {
-			addNoteIfExists(key, notes);
-		}
-		for (Arm arm : d_arms) {
-			addNoteIfExists(arm, notes);
-		}
-		for (Variable om : getVariables(OutcomeMeasure.class)) {
-			addNoteIfExists(om, notes);
-		}
-		for (Variable pc : getVariables(PopulationCharacteristic.class)) {
-			addNoteIfExists(pc, notes);
-		}
-		return notes;
-	}
-	
-	private void addNoteIfExists(Object key, Map<Object, Note> target) {
-		if (getNote(key) != null) {
-			target.put(key, getNote(key));
-		}
 	}
 
 	public void removeEndpoint(int i) {
@@ -779,6 +721,11 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 				EqualsUtil.equal(other.getCharacteristics(), getCharacteristics()) &&
 				EntityUtil.deepEqual(other.getEndpoints(), getEndpoints()) &&
 				EntityUtil.deepEqual(other.getAdverseEvents(), getAdverseEvents()) &&
-				EntityUtil.deepEqual(other.getPopulationCharacteristics(), getPopulationCharacteristics()); 
+				EntityUtil.deepEqual(other.getPopulationCharacteristics(), getPopulationCharacteristics()) &&
+				EntityUtil.deepEqual(other.getArms(), getArms()) &&
+				EntityUtil.deepEqual(other.getEpochs(), getEpochs()) &&
+				EntityUtil.deepEqual(other.getStudyActivities(), getStudyActivities()) &&
+				EntityUtil.deepEqual(other.getMeasurements(), getMeasurements()) && 
+				EqualsUtil.equal(other.getStudyIdWithNotes().getNotes(), getStudyIdWithNotes().getNotes());
 	}
 }
