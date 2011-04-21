@@ -30,4 +30,8 @@ import org.drugis.common.beans.AbstractObservable;
 
 public abstract class AbstractEntity extends AbstractObservable implements Entity {
 	public abstract Set<? extends Entity> getDependencies();
+	
+	public boolean deepEquals(Entity other) {
+		return equals(other);
+	}
 }

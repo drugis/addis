@@ -27,6 +27,8 @@ package org.drugis.addis.entities;
 import java.util.Collections;
 import java.util.Set;
 
+import org.drugis.common.EqualsUtil;
+
 public class Indication extends AbstractEntity implements Comparable<Indication> {
 	
 	private String d_name;
@@ -83,7 +85,7 @@ public class Indication extends AbstractEntity implements Comparable<Indication>
 	public boolean equals(Object o) {
 		if (o instanceof Indication) {
 			Indication other = (Indication)o;
-			return other.d_code.equals(d_code);
+			return EqualsUtil.equal(other.d_code, d_code);
 		}
 		return false;
 	}

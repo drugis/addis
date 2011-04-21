@@ -281,7 +281,7 @@ public class AddStudyWizardPresentation {
 		return getNewStudy().getArms().size();
 	}
 	
-	public void removeArm(int armNum){
+	public void removeArm(int armNum){ // FIXME: should update UsedBys or not be allowed if used by something?
 		getNewStudy().getArms().remove(armNum);
 	}
 	
@@ -316,7 +316,7 @@ public class AddStudyWizardPresentation {
 			return d_arm.getNotes().size() > 0 ? d_arm.getNotes().get(0).getText() : null;
 		}
 
-		public void setValue(Object newValue) {
+		public void setValue(Object newValue) { // FIXME: Whaaaaaat
 		}
 	}
 	
@@ -332,7 +332,7 @@ public class AddStudyWizardPresentation {
 			return (d_obj != null && d_obj.getNotes().size() > 0) ? d_obj.getNotes().get(0).getText() : null;
 		}
 
-		public void setValue(Object newValue) {
+		public void setValue(Object newValue) { // FIXME: Whaaaaaat
 		}
 	}
 

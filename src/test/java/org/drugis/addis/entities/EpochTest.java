@@ -17,33 +17,33 @@ public class EpochTest {
 	
 	private Epoch d_null;
 	private Epoch d_randomization;
-	private Epoch d_treatment;
+	private Epoch d_mainphase;
 
 	@Before
 	public void setUp() throws DatatypeConfigurationException {
 		d_null = new Epoch(null, null);
 		d_randomization = new Epoch("Randomization", null);
-		d_treatment = new Epoch("Main phase", DatatypeFactory.newInstance().newDuration("P42D"));
+		d_mainphase = new Epoch("Main phase", DatatypeFactory.newInstance().newDuration("P42D"));
 	}
 	
 	@Test
 	public void testConstruction() throws DatatypeConfigurationException {
 		assertEquals(null, d_null.getName());
 		assertEquals("Randomization", d_randomization.getName());
-		assertEquals("Main phase", d_treatment.getName());
+		assertEquals("Main phase", d_mainphase.getName());
 		
 		assertEquals(null, d_null.getDuration());
-		assertEquals(DatatypeFactory.newInstance().newDuration("P42D"), d_treatment.getDuration());
+		assertEquals(DatatypeFactory.newInstance().newDuration("P42D"), d_mainphase.getDuration());
 		
 		assertEquals(Collections.emptyList(), d_null.getNotes());
 		Note n = new Note(Source.MANUAL, "Zis is a note");
-		d_treatment.getNotes().add(n);
-		assertEquals(Collections.singletonList(n), d_treatment.getNotes());
+		d_mainphase.getNotes().add(n);
+		assertEquals(Collections.singletonList(n), d_mainphase.getNotes());
 	}
 	
 	@Test
 	public void testDependencies() {
-		assertEquals(Collections.emptySet(), d_treatment.getDependencies());
+		assertEquals(Collections.emptySet(), d_mainphase.getDependencies());
 	}
 	
 	@Test
@@ -59,9 +59,9 @@ public class EpochTest {
 		d_null.hashCode(); // hashCode() should also be defined for NULL name
 		
 		// deep equality is defined by equality of the object graph
-		assertTrue(e.deepEquals(d_treatment));
+		assertTrue(e.deepEquals(d_mainphase));
 		assertFalse(e2.deepEquals(d_randomization));
-		assertFalse(d_null.deepEquals(d_treatment));
+		assertFalse(d_null.deepEquals(d_mainphase));
 		assertTrue(e3.deepEquals(d_randomization));
 		e3.getNotes().add(new Note());
 		assertFalse(e3.deepEquals(d_randomization));

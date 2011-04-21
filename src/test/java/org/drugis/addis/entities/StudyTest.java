@@ -313,12 +313,14 @@ public class StudyTest {
 		assertFalse(study1.deepEquals(study2));
 		study1.addEndpoint(ExampleData.buildEndpointCgi());
 		assertTrue(study1.deepEquals(study2));
+		// Here we might test if the equality is based on .equals or .deepEquals of Endpoint
 		
 		// adverseEvents
 		study2.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
 		assertFalse(study1.deepEquals(study2));
 		study1.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
 		assertTrue(study1.deepEquals(study2));
+		// Here we might test if the equality is based on .equals or .deepEquals of AdverseEvent
 		
 		// populationCharacteristics
 		study2.addPopulationCharacteristic(ExampleData.buildAgeVariable());
@@ -326,11 +328,13 @@ public class StudyTest {
 		study1.addPopulationCharacteristic(ExampleData.buildAgeVariable());
 		assertTrue(study1.deepEquals(study2));
 		study2.addPopulationCharacteristic(ExampleData.buildGenderVariable());
+		// Here we DO test if the equality is based on .equals or .deepEquals of PopulationCharacteristic
 		PopulationCharacteristic pc = new CategoricalPopulationCharacteristic(
 				ExampleData.buildGenderVariable().getName(),
 				new String[] { "Mars", "Venus" });
 		study1.addPopulationCharacteristic(pc);
-		// assertFalse(study1.deepEquals(study2));
+		assertFalse(study1.deepEquals(study2));
+		
 		// FIXME : unfinished
 		// , arms, epochs, studyActivities, measurements
 		

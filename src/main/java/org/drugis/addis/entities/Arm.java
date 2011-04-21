@@ -33,7 +33,7 @@ import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.EqualsUtil;
 
 public class Arm extends AbstractEntity implements TypeWithNotes {
-	public static Arm createArm(Study study, String name, int size,
+	public static Arm createArm(Study study, String name, Integer size,
 			Drug drug, AbstractDose dose) {
 		Arm arm = new Arm(name, size);
 		study.addArm(arm);

@@ -131,7 +131,7 @@ public class AssertEntityEquals {
 	}
 	
 	public static void assertEntityEquals(Study expected, Study actual) {
-		assertEquals(expected, actual);
+		assertTrue(expected.deepEquals(actual));
 		assertEntityEquals(expected.getAdverseEvents(), actual.getAdverseEvents());
 		assertEntityEquals(expected.getArms(), actual.getArms());
 		assertEntityEquals(expected.getEndpoints(), actual.getEndpoints());

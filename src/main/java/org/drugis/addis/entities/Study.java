@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drugis.addis.entities.StudyActivity.UsedBy;
+import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.drugis.common.DateUtil;
 import org.drugis.common.EqualsUtil;
@@ -299,8 +300,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 
 	public Set<Drug> getDrugs() {
 		Set<Drug> drugs = new HashSet<Drug>();
-		for (Arm g : getArms()) {
-			drugs.add(getDrug(g));
+		for (Arm a : getArms()) {
+			drugs.add(getDrug(a));
 		}
 		return drugs;
 	}
@@ -774,10 +775,10 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 			return false;
 		} 
 		Study other = (Study)obj;
-		return 	EqualsUtil.equal(other.getIndication(), getIndication()) &&
+		return 	EntityUtil.deepEqual(other.getIndication(), getIndication()) &&
 				EqualsUtil.equal(other.getCharacteristics(), getCharacteristics()) &&
-				EqualsUtil.equal(other.getEndpoints(), getEndpoints()) &&
-				EqualsUtil.equal(other.getAdverseEvents(), getAdverseEvents()) &&
-				EqualsUtil.equal(other.getPopulationCharacteristics(), getPopulationCharacteristics()); 
+				EntityUtil.deepEqual(other.getEndpoints(), getEndpoints()) &&
+				EntityUtil.deepEqual(other.getAdverseEvents(), getAdverseEvents()) &&
+				EntityUtil.deepEqual(other.getPopulationCharacteristics(), getPopulationCharacteristics()); 
 	}
 }
