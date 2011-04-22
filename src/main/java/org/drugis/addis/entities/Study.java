@@ -130,7 +130,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	private List<StudyOutcomeMeasure<PopulationCharacteristic>> d_populationChars = new ArrayList<StudyOutcomeMeasure<PopulationCharacteristic>>();
 
 	private ObservableList<Arm> d_arms = new ArrayListModel<Arm>();
-	private List<Integer> d_armIds = null;
 	private ObservableList<Epoch> d_epochs = new ArrayListModel<Epoch>();
 	private ObservableList<StudyActivity> d_studyActivities = new ArrayListModel<StudyActivity>(); 
 
@@ -234,20 +233,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		List<Arm> newVal = new ArrayList<Arm>(d_arms);
 		newVal.add(arm);
 		setArms(newVal);
-	}
-	
-	public void setArmIds(List<Integer> ids) { // FIXME: for JAXB
-		d_armIds = ids;
-	}
-	
-	public List<Integer> getArmIds() { // FIXME: for JAXB
-		if (d_armIds == null) {
-			d_armIds = new ArrayList<Integer>();
-			for (int i = 0; i < getArms().size(); ++i) {
-				d_armIds.add(i);
-			}
-		}
-		return d_armIds;
 	}
 	
 	public ObservableList<Epoch> getEpochs() {
@@ -724,8 +709,26 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 				EntityUtil.deepEqual(other.getPopulationCharacteristics(), getPopulationCharacteristics()) &&
 				EntityUtil.deepEqual(other.getArms(), getArms()) &&
 				EntityUtil.deepEqual(other.getEpochs(), getEpochs()) &&
-				EntityUtil.deepEqual(other.getStudyActivities(), getStudyActivities()) &&
+//				EntityUtil.deepEqual(other.getStudyActivities(), getStudyActivities()) &&
 				EntityUtil.deepEqual(other.getMeasurements(), getMeasurements()) && 
 				EqualsUtil.equal(other.getStudyIdWithNotes().getNotes(), getStudyIdWithNotes().getNotes());
+	}
+
+	public Arm findArm(String armName) {
+		for(Arm a : d_arms) {
+			if(a.getName() == armName) { 
+				return a;
+			}
+		}
+		return null;
+	}
+
+	public Epoch findEpoch(String epochName) {
+		for(Epoch e : d_epochs) {
+			if(e.getName() == epochName) { 
+				return e;
+			}
+		}
+		return null;
 	}
 }

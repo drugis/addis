@@ -32,12 +32,15 @@ import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -45,6 +48,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 
 import org.drugis.addis.entities.AbstractDose;
+import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
@@ -67,11 +71,13 @@ import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
+import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.RatePopulationCharacteristic;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Variable;
@@ -79,6 +85,7 @@ import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
 import org.drugis.addis.entities.Study.MeasurementKey;
+import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
@@ -86,6 +93,7 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
+import org.drugis.addis.entities.data.ActivityUsedBy;
 import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.AdverseEvents;
 import org.drugis.addis.entities.data.Alternative;
@@ -121,6 +129,7 @@ import org.drugis.addis.entities.data.References;
 import org.drugis.addis.entities.data.StringIdReference;
 import org.drugis.addis.entities.data.StringWithNotes;
 import org.drugis.addis.entities.data.Studies;
+import org.drugis.addis.entities.data.StudyActivities;
 import org.drugis.addis.entities.data.StudyOutcomeMeasure;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
 import org.drugis.common.Interval;
@@ -368,6 +377,66 @@ public class JAXBConvertor {
 		}
 	}
 	
+
+	public static StudyActivity convertStudyActivity(org.drugis.addis.entities.data.StudyActivity saData, Study s, Domain domain) throws ConversionException {
+		StudyActivity newStudyActivity = new StudyActivity(saData.getName(), convertActivity(saData.getActivity(), domain));
+		
+		List<ActivityUsedBy> usedByData = saData.getUsedBy();
+		Set<UsedBy> usedBy = new HashSet<UsedBy>(newStudyActivity.getUsedBy());
+		for(ActivityUsedBy aub: usedByData) {
+			usedBy.add(convertUsedBy(aub, s));
+		}
+		newStudyActivity.setUsedBy(usedBy);
+		return newStudyActivity;
+	}
+	
+	private static UsedBy convertUsedBy(ActivityUsedBy aub, Study s) {
+		Arm a = s.findArm(aub.getArm());
+		Epoch e = s.findEpoch(aub.getEpoch());
+		return new UsedBy(a, e);
+	}
+
+	static Activity convertActivity(org.drugis.addis.entities.data.Activity activity, Domain domain) throws ConversionException {
+		if (activity.getPredefined() != null) {
+			return activity.getPredefined();
+		} else if (activity.getTreatment() != null) {
+			return convertTreatmentActivity(activity.getTreatment(), domain);
+		} else {
+			throw new ConversionException("Unknown Activity type " + activity);
+		}
+	}
+	
+	public static org.drugis.addis.entities.data.Activity convertActivity(Activity activity) throws ConversionException {
+		org.drugis.addis.entities.data.Activity converted = new org.drugis.addis.entities.data.Activity();
+		if (activity instanceof PredefinedActivity) {
+			converted.setPredefined((PredefinedActivity) activity);
+		} else if (activity instanceof TreatmentActivity){
+			converted.setTreatment(convertTreatmentActivity((TreatmentActivity) activity));
+		} else {
+			throw new ConversionException("Unknown Activity type " + activity);
+		}
+		return converted;
+	}
+
+
+	public static org.drugis.addis.entities.data.StudyActivity convertStudyActivity(StudyActivity sa) throws ConversionException {
+		org.drugis.addis.entities.data.StudyActivity newActivity = new org.drugis.addis.entities.data.StudyActivity();
+		newActivity.setName(sa.getName());
+		newActivity.setActivity(convertActivity(sa.getActivity()));
+		for(UsedBy ub : sa.getUsedBy()) {
+			newActivity.getUsedBy().add(convertUsedBy(ub));
+		}
+		newActivity.setNotes(new Notes());
+		return newActivity;
+	}
+	
+	private static ActivityUsedBy convertUsedBy(UsedBy ub) {
+		ActivityUsedBy aub = new ActivityUsedBy();
+		aub.setArm(ub.getArm().getName());
+		aub.setEpoch(ub.getEpoch().getName());
+		return aub;
+	}
+
 	static TreatmentActivity convertTreatmentActivity(org.drugis.addis.entities.data.Treatment t, Domain domain) throws ConversionException {
 		Drug drug = findDrug(domain, t.getDrug().getName());
 		AbstractDose dose;
@@ -399,6 +468,7 @@ public class JAXBConvertor {
 		org.drugis.addis.entities.data.Epoch newEpoch = new org.drugis.addis.entities.data.Epoch();
 		newEpoch.setName(e.getName());
 		newEpoch.setDuration(e.getDuration());
+		newEpoch.setNotes(new Notes());
 		return newEpoch ;
 	}
 
@@ -410,20 +480,6 @@ public class JAXBConvertor {
 	static Arm convertArm(org.drugis.addis.entities.data.Arm arm) throws ConversionException {
 		Arm newArm = new Arm(arm.getName(), arm.getSize());
 		convertNotes(arm.getNotes().getNote(), newArm.getNotes());
-
-		/*newArm.getTreatmentActivity().setDrug(d);
-		if(arm.getFixedDose() != null) {
-			FixedDose fixDose = new FixedDose(arm.getFixedDose().getQuantity(), arm.getFixedDose().getUnit());
-			newArm.getTreatmentActivity().setDose(fixDose);
-		}
-		else if(arm.getFlexibleDose() != null) {
-			FlexibleDose flexDose = new FlexibleDose(new Interval<Double> (
-													(double) arm.getFlexibleDose().getMinDose(), 
-													(double) arm.getFlexibleDose().getMaxDose()
-												 ), arm.getFlexibleDose().getUnit());
-			newArm.getTreatmentActivity().setDose(flexDose);
-		}
-		return newArm; */
 		return newArm;
 	}
 	
@@ -437,12 +493,6 @@ public class JAXBConvertor {
 		convertOldNotes(arm.getNotes(), newArm.getNotes().getNote());
 	
 		return newArm;
-		/*	if(arm.getTreatmentActivity().getDose() instanceof FixedDose) {
-			newArm.setFixedDose(convertFixedDose((FixedDose)arm.getTreatmentActivity().getDose()));
-		} else {
-			newArm.setFlexibleDose(convertFlexibleDose((FlexibleDose)arm.getTreatmentActivity().getDose()));
-		}*/
-		
 	}
 
 	private static org.drugis.addis.entities.data.FlexibleDose convertFlexibleDose(FlexibleDose dose) {
@@ -680,24 +730,6 @@ public class JAXBConvertor {
 		return measures;
 	}
 
-/*	
-	public static LinkedHashMap<Integer, Arm> convertStudyArms(Arms arms, Domain domain) throws ConversionException {
-		LinkedHashMap<Integer, Arm> map = new LinkedHashMap<Integer, Arm>();
-		for(org.drugis.addis.entities.data.Arm a : arms.getArm()) {
-			map.put(a.getId(), convertArm(a, domain));
-		}
-		return map;
-	}
-	
-	public static Arms convertStudyArms(LinkedHashMap<Integer, Arm> map) throws ConversionException {
-		Arms arms = new Arms();
-		for (Entry<Integer, Arm> x : map.entrySet()) {
-			org.drugis.addis.entities.data.Arm convertedArm = convertArm(x.getValue());
-			convertedArm.setId(x.getKey());
-			arms.getArm().add(convertedArm);
-		}
-		return arms;
-	}*/
 	
 	public static Measurement convertMeasurement(org.drugis.addis.entities.data.Measurement m) throws ConversionException {
 		if(m.getRateMeasurement() != null) {
@@ -754,33 +786,30 @@ public class JAXBConvertor {
 		return measurement;
 	}
 	
-	public static Map<MeasurementKey, Measurement> convertMeasurements(Measurements measurements, Map<String, Arm> arms, Map<String, org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> outcomeMeasures) 
+	public static Map<MeasurementKey, Measurement> convertMeasurements(Measurements measurements, List<Arm> arms, Map<String, org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> outcomeMeasures) 
 	throws ConversionException {
 		Map<MeasurementKey, Measurement> map = new HashMap<MeasurementKey, Measurement>();
 		for(org.drugis.addis.entities.data.Measurement m : measurements.getMeasurement()) {
 			String omId = m.getStudyOutcomeMeasure().getId();
-			Arm arm = m.getArm() != null ? arms.get(m.getArm().getName()) : null;
+			Arm arm = m.getArm() != null ? findArm(m.getArm().getName(), arms) : null;
 			map.put(new MeasurementKey(outcomeMeasures.get(omId).getValue(), arm), convertMeasurement(m));
 		}
 		return map;
 	}
 	
-	public static Measurements convertMeasurements(Map<MeasurementKey, Measurement> map, Map<String, Arm> arms, Map<String, Study.StudyOutcomeMeasure<?>> oms) throws ConversionException {
+	public static Measurements convertMeasurements(Map<MeasurementKey, Measurement> map, List<Arm> arms, Map<String, Study.StudyOutcomeMeasure<?>> oms) throws ConversionException {
 		Measurements measurements = new Measurements();
 		for (Entry<String, Study.StudyOutcomeMeasure<?>> omEntry : oms.entrySet()) {
-			for (Entry<String, Arm> armEntry : arms.entrySet()) {
-				findAndAddMeasurement(map, armEntry.getKey(), armEntry.getValue(), omEntry.getKey(), omEntry.getValue().getValue(), measurements);
+			for (Arm a: arms) {
+				findAndAddMeasurement(map, a, omEntry.getKey(), omEntry.getValue().getValue(), measurements);
 			}
-			findAndAddMeasurement(map, null, null, omEntry.getKey(), omEntry.getValue().getValue(), measurements);
+			findAndAddMeasurement(map, null, omEntry.getKey(), omEntry.getValue().getValue(), measurements);
 		}
 		return measurements;
 	}
 
 
-	private static void findAndAddMeasurement(
-			Map<MeasurementKey, Measurement> source, 
-			String string, Arm arm,	String omId, Variable om,
-			Measurements target)
+	private static void findAndAddMeasurement(Map<MeasurementKey, Measurement> source, Arm arm, String omId, Variable om, Measurements target)
 	throws ConversionException {
 		if (om instanceof OutcomeMeasure && arm == null) {
 			return;
@@ -788,8 +817,8 @@ public class JAXBConvertor {
 		MeasurementKey key = new MeasurementKey(om, arm);
 		if (source.containsKey(key)) {
 			org.drugis.addis.entities.data.Measurement m = convertMeasurement(source.get(key));
-			if (string != null) {
-				m.setArm(nameReference(string));
+			if (arm != null) {
+				m.setArm(nameReference(arm.getName()));
 			}
 			m.setStudyOutcomeMeasure(stringIdReference(omId));
 			target.getMeasurement().add(m);
@@ -812,12 +841,16 @@ public class JAXBConvertor {
 		convertNotes(study.getIndication().getNotes().getNote(), newStudy.getIndicationWithNotes().getNotes());
 		
 		LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> outcomeMeasures = convertStudyOutcomeMeasures(study.getStudyOutcomeMeasures(), domain);
-//		System.out.println(study.getStudyOutcomeMeasures());
 		for(Entry<String, Study.StudyOutcomeMeasure<?>> om : outcomeMeasures.entrySet()) {
 			newStudy.addStudyOutcomeMeasure(om.getValue());
 		}
 		
-		LinkedHashMap<String, Arm> arms = null;//convertStudyArms(study.getArms(), domain);
+		List<Arm> arms = convertStudyArms(study.getArms());
+		newStudy.setArms(arms);
+
+		newStudy.getEpochs().addAll(convertEpochs(study.getEpochs()));
+
+		newStudy.getStudyActivities().addAll(convertStudyActivities(study.getActivities(), newStudy, domain));
 		
 		CharacteristicsMap map = convertStudyCharacteristics(study.getCharacteristics());
 		newStudy.setCharacteristics(map);
@@ -832,6 +865,41 @@ public class JAXBConvertor {
 		return newStudy;
 	}
 	
+	private static Collection<? extends StudyActivity> convertStudyActivities(org.drugis.addis.entities.data.StudyActivities activities, Study s, Domain domain) throws ConversionException {
+		List<StudyActivity> l = new ArrayList<StudyActivity>();
+		for(org.drugis.addis.entities.data.StudyActivity sa: activities.getStudyActivity()) {
+			l.add(convertStudyActivity(sa, s, domain));
+		}
+		return l;	
+	}
+
+	private static List<Epoch> convertEpochs(org.drugis.addis.entities.data.Epochs epochs) {
+		List<Epoch> l = new ArrayList<Epoch>();
+		for(org.drugis.addis.entities.data.Epoch e: epochs.getEpoch()) {
+			Epoch newEpoch = new Epoch(e.getName(), e.getDuration());
+			convertNotes(e.getNotes().getNote(), newEpoch.getNotes());
+		}
+		return l;
+	}
+
+	private static List<Arm> convertStudyArms(org.drugis.addis.entities.data.Arms arms) {
+		List<Arm> l = new ArrayList<Arm>();
+		for (org.drugis.addis.entities.data.Arm a: arms.getArm()) {
+			Arm newA = new Arm(a.getName(), a.getSize());
+			convertNotes(a.getNotes().getNote(), newA.getNotes());
+			l.add(newA);
+		}
+		return l;
+	}
+	
+	private static org.drugis.addis.entities.data.Arms convertStudyArms(List<Arm> arms) throws ConversionException {
+		org.drugis.addis.entities.data.Arms newArms = new org.drugis.addis.entities.data.Arms();
+		for (Arm a: arms) {
+			newArms.getArm().add(convertArm(a));
+		}
+		return newArms; 
+	}
+
 	public static org.drugis.addis.entities.data.Study convertStudy(Study study) throws ConversionException {
 		org.drugis.addis.entities.data.Study newStudy = new org.drugis.addis.entities.data.Study();
 		newStudy.setName(study.getStudyId());
@@ -840,8 +908,11 @@ public class JAXBConvertor {
 		newStudy.setIndication(indication);
 		
 		// convert arms
-		LinkedHashMap<String, Arm> armMap = null;
-		newStudy.setArms(null);//convertStudyArms(armMap));
+		newStudy.setArms(convertStudyArms(study.getArms()));
+		
+		newStudy.setEpochs(convertEpochs(study.getEpochs()));
+		
+		newStudy.setActivities(convertStudyActivities(study.getStudyActivities()));
 		
 		// convert outcome measures
 		LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> omMap = new LinkedHashMap<String, Study.StudyOutcomeMeasure<?>>();
@@ -857,7 +928,7 @@ public class JAXBConvertor {
 		newStudy.setStudyOutcomeMeasures(convertStudyOutcomeMeasures(omMap));
 		
 		// convert measurements
-		newStudy.setMeasurements(convertMeasurements(study.getMeasurements(), armMap, omMap));
+		newStudy.setMeasurements(convertMeasurements(study.getMeasurements(), study.getArms(), omMap));
 		
 		// convert characteristics
 		newStudy.setCharacteristics(convertStudyCharacteristics(study.getCharacteristics()));
@@ -867,6 +938,22 @@ public class JAXBConvertor {
 		newStudy.setNotes(notes);
 		
 		return newStudy ;
+	}
+
+	private static StudyActivities convertStudyActivities(List<StudyActivity> studyActivities) throws ConversionException {
+		StudyActivities newActivities = new StudyActivities();
+		for (StudyActivity sa : studyActivities) {
+			newActivities.getStudyActivity().add(convertStudyActivity(sa));
+		}
+		return newActivities;
+	}
+
+	private static org.drugis.addis.entities.data.Epochs convertEpochs(List<Epoch> epochs) {
+		org.drugis.addis.entities.data.Epochs newEpochs = new org.drugis.addis.entities.data.Epochs();
+		for (Epoch e: epochs) {
+			newEpochs.getEpoch().add(convertEpoch(e));
+		}
+		return newEpochs;
 	}
 
 	public static RandomEffectsMetaAnalysis convertPairWiseMetaAnalysis(PairwiseMetaAnalysis pwma, Domain domain)
@@ -888,8 +975,8 @@ public class JAXBConvertor {
 						baseArms.get(i) + " -- " + subjArms.get(i) + " -- from " + pwma.getName());
 			}
 			Study study = findStudy(baseArms.get(i).getStudy(), domain);
-			Arm base = findArm(study, baseArms.get(i).getName());
-			Arm subj = findArm(study, subjArms.get(i).getName());
+			Arm base = findArm(baseArms.get(i).getName(), study.getArms());
+			Arm subj = findArm(subjArms.get(i).getName(), study.getArms());
 			studyArms.add(new StudyArmsEntry(study, base, subj));
 		}
 		
@@ -944,7 +1031,7 @@ public class JAXBConvertor {
 					studies.add(study);
 					armMap.put(study, new HashMap<Drug, Arm>());
 				}
-				Arm arm = findArm(study, armRef.getName());
+				Arm arm = findArm(armRef.getName(), study.getArms());
 				armMap.get(study).put(drug, arm);
 			}
 		}
@@ -979,16 +1066,8 @@ public class JAXBConvertor {
 		return nma; 
 	}
 
-	public static Integer findArmId(Study study, Arm arm) {
-		int index = study.getArms().indexOf(arm);
-		if (index != -1) {
-			return study.getArmIds().get(index);
-		}
-		return null;
-	}
-
-	private static Arm findArm(Study study, String name) {
-		for (Arm arm : study.getArms()) {
+	private static Arm findArm(String name, List<Arm> arms) {
+		for (Arm arm : arms) {
 			if (arm.getName().equals(name)) {
 				return arm;
 			}
@@ -1056,7 +1135,7 @@ public class JAXBConvertor {
 		}
 		List<Arm> alternatives = new ArrayList<Arm>();
 		for (ArmReference ref : br.getArms().getArm()) {
-			alternatives.add(findArm(study, ref.getName()));
+			alternatives.add(findArm(ref.getName(), study.getArms()));
 		}
 		
 		return new StudyBenefitRiskAnalysis(br.getName(), indication, study, criteria, alternatives, br.getAnalysisType());
@@ -1310,4 +1389,5 @@ public class JAXBConvertor {
 	
 	    return new ByteArrayInputStream(os.toByteArray());
 	}
+
 }
