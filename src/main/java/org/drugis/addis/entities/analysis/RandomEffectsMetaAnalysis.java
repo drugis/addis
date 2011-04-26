@@ -76,11 +76,11 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	throws IllegalArgumentException {
 		super(name, getIndication(studyArms), om, getStudies(studyArms), getDrugs(studyArms), getArmMap(studyArms));
 		
-		for (StudyArmsEntry s : studyArms){
-			if(!s.getStudy().getDrug(s.getBase()).equals(getFirstDrug())){
+		for (StudyArmsEntry sae : studyArms){
+			if(!sae.getStudy().getDrug(sae.getBase()).equals(getFirstDrug())){
 				throw new IllegalArgumentException("Left drug not consistent over all studies");
 			}
-			if(!s.getStudy().getDrug(s.getSubject()).equals(getSecondDrug())){
+			if(!sae.getStudy().getDrug(sae.getSubject()).equals(getSecondDrug())){
 				throw new IllegalArgumentException("Right drug not consistent over all studies");
 			}
 		}

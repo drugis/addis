@@ -76,4 +76,9 @@ public class Epoch extends AbstractEntity implements TypeWithNotes {
 	protected Epoch clone() {
 		return new Epoch(d_name, d_duration);
 	}
+	
+	@Override
+	public String toString() {
+		return getName() + " " + getDuration() + " " + getNotes();
+	}
 }

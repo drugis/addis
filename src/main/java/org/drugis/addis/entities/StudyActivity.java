@@ -14,7 +14,7 @@ public class StudyActivity extends AbstractEntity implements TypeWithNotes {
 	public static final String PROPERTY_ACTIVITY = "activity";
 	public static final String PROPERTY_USED_BY = "usedBy";
 
-	public static class UsedBy {
+	public static class UsedBy implements Comparable<UsedBy> {
 		private final Epoch d_epoch;
 		private final Arm d_arm;
 		public UsedBy(Arm a, Epoch e) {
@@ -30,6 +30,7 @@ public class StudyActivity extends AbstractEntity implements TypeWithNotes {
 			return d_arm;
 		}
 		
+		
 		@Override
 		public boolean equals(Object obj) {
 			if (obj != null && obj instanceof UsedBy) {
@@ -42,6 +43,14 @@ public class StudyActivity extends AbstractEntity implements TypeWithNotes {
 		@Override
 		public int hashCode() {
 			return 31 * d_epoch.hashCode() + d_arm.hashCode();
+		}
+		public int compareTo(UsedBy o) {
+			int armsComp = o.getArm().getName().compareTo(getArm().getName());
+			if(armsComp != 0) {
+				return armsComp;
+			} else {
+				return getEpoch().getName().compareTo(o.getEpoch().getName());
+			}
 		}
 	}
 

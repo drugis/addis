@@ -41,6 +41,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.Map.Entry;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -423,7 +424,7 @@ public class JAXBConvertor {
 		org.drugis.addis.entities.data.StudyActivity newActivity = new org.drugis.addis.entities.data.StudyActivity();
 		newActivity.setName(sa.getName());
 		newActivity.setActivity(convertActivity(sa.getActivity()));
-		for(UsedBy ub : sa.getUsedBy()) {
+		for(UsedBy ub : new TreeSet<UsedBy>(sa.getUsedBy())) {
 			newActivity.getUsedBy().add(convertUsedBy(ub));
 		}
 		newActivity.setNotes(new Notes());
@@ -469,11 +470,14 @@ public class JAXBConvertor {
 		newEpoch.setName(e.getName());
 		newEpoch.setDuration(e.getDuration());
 		newEpoch.setNotes(new Notes());
+		convertOldNotes(e.getNotes(), newEpoch.getNotes().getNote());
 		return newEpoch ;
 	}
 
 	static Epoch convertEpoch(org.drugis.addis.entities.data.Epoch e) {
-		return new Epoch(e.getName(), e.getDuration());
+		Epoch newEpoch = new Epoch(e.getName(), e.getDuration());
+		convertNotes(e.getNotes().getNote(), newEpoch.getNotes());
+		return newEpoch;
 	}
 
 	
@@ -865,7 +869,7 @@ public class JAXBConvertor {
 		return newStudy;
 	}
 	
-	private static Collection<? extends StudyActivity> convertStudyActivities(org.drugis.addis.entities.data.StudyActivities activities, Study s, Domain domain) throws ConversionException {
+	public static Collection<? extends StudyActivity> convertStudyActivities(org.drugis.addis.entities.data.StudyActivities activities, Study s, Domain domain) throws ConversionException {
 		List<StudyActivity> l = new ArrayList<StudyActivity>();
 		for(org.drugis.addis.entities.data.StudyActivity sa: activities.getStudyActivity()) {
 			l.add(convertStudyActivity(sa, s, domain));
@@ -878,6 +882,7 @@ public class JAXBConvertor {
 		for(org.drugis.addis.entities.data.Epoch e: epochs.getEpoch()) {
 			Epoch newEpoch = new Epoch(e.getName(), e.getDuration());
 			convertNotes(e.getNotes().getNote(), newEpoch.getNotes());
+			l.add(newEpoch);
 		}
 		return l;
 	}
@@ -940,7 +945,7 @@ public class JAXBConvertor {
 		return newStudy ;
 	}
 
-	private static StudyActivities convertStudyActivities(List<StudyActivity> studyActivities) throws ConversionException {
+	public static org.drugis.addis.entities.data.StudyActivities convertStudyActivities(List<StudyActivity> studyActivities) throws ConversionException {
 		StudyActivities newActivities = new StudyActivities();
 		for (StudyActivity sa : studyActivities) {
 			newActivities.getStudyActivity().add(convertStudyActivity(sa));

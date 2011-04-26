@@ -709,7 +709,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 				EntityUtil.deepEqual(other.getPopulationCharacteristics(), getPopulationCharacteristics()) &&
 				EntityUtil.deepEqual(other.getArms(), getArms()) &&
 				EntityUtil.deepEqual(other.getEpochs(), getEpochs()) &&
-//				EntityUtil.deepEqual(other.getStudyActivities(), getStudyActivities()) &&
+				EntityUtil.deepEqual(other.getStudyActivities(), getStudyActivities()) &&
 				EntityUtil.deepEqual(other.getMeasurements(), getMeasurements()) && 
 				EqualsUtil.equal(other.getStudyIdWithNotes().getNotes(), getStudyIdWithNotes().getNotes());
 	}
