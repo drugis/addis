@@ -858,39 +858,41 @@ public class JAXBConvertorTest {
 		
 		// Arms
 		Arms arms = new Arms();
-		String armName1 = "Arm number 1";
-		String armName2 = "Arm number 2";
-		arms.getArm().add(buildArmData(armName1, 100));
-		arms.getArm().add(buildArmData(armName2, 2));
+		String fluoxArmName = "fluox arm";
+		String paroxArmName = "parox arm";
+		arms.getArm().add(buildArmData(fluoxArmName, 100));
+		arms.getArm().add(buildArmData(paroxArmName, 42));
 				//buildFlexibleDoseArmData(2, 102, ExampleData.buildDrugParoxetine().getName(), 12.5, 15.3));
 
-		String epochName1 = "Randomization";
-		String epochName2 = "Main phase";
+		String randomizationEpochName = "Randomization";
+		String mainEpochName = "Main phase";
 		
 		Epochs epochs = new Epochs();
-		epochs.getEpoch().add(buildEpoch(epochName1, null));
-		epochs.getEpoch().add(buildEpoch(epochName2, DatatypeFactory.newInstance().newDuration("P2D")));
+		epochs.getEpoch().add(buildEpoch(randomizationEpochName, null));
+		epochs.getEpoch().add(buildEpoch(mainEpochName, DatatypeFactory.newInstance().newDuration("P2D")));
 
 		StudyActivities sas = new StudyActivities();
 		sas.getStudyActivity().add(buildStudyActivity("Randomization", PredefinedActivity.RANDOMIZATION));
-		TreatmentActivity treatmentActivity = new TreatmentActivity(ExampleData.buildDrugFluoxetine(), new FixedDose(12.5, SIUnit.MILLIGRAMS_A_DAY));
-		sas.getStudyActivity().add(buildStudyActivity("Fluox fixed dose", treatmentActivity));
+		TreatmentActivity fluoxActivity = new TreatmentActivity(ExampleData.buildDrugFluoxetine(), new FixedDose(12.5, SIUnit.MILLIGRAMS_A_DAY));
+		sas.getStudyActivity().add(buildStudyActivity("Fluox fixed dose", fluoxActivity));
+		TreatmentActivity paroxActivity = new TreatmentActivity(ExampleData.buildDrugParoxetine(), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY));
+		sas.getStudyActivity().add(buildStudyActivity("Parox fixed dose", paroxActivity));
 		
 		ActivityUsedBy aub1 = new ActivityUsedBy();
-		aub1.setArm(armName1);
-		aub1.setEpoch(epochName1);
+		aub1.setArm(fluoxArmName);
+		aub1.setEpoch(randomizationEpochName);
 
 		ActivityUsedBy aub2 = new ActivityUsedBy();
-		aub2.setArm(armName2);
-		aub2.setEpoch(epochName2);
+		aub2.setArm(fluoxArmName);
+		aub2.setEpoch(mainEpochName);
 
 		ActivityUsedBy aub3 = new ActivityUsedBy();
-		aub3.setArm(armName1);
-		aub3.setEpoch(epochName2);
+		aub3.setArm(paroxArmName);
+		aub3.setEpoch(mainEpochName);
 		
 		sas.getStudyActivity().get(0).getUsedBy().add(aub1);
 		sas.getStudyActivity().get(1).getUsedBy().add(aub2);
-		sas.getStudyActivity().get(1).getUsedBy().add(aub3);
+		sas.getStudyActivity().get(2).getUsedBy().add(aub3);
 		
 		org.drugis.addis.entities.data.Study study = buildStudySkeleton(name,
 				title, indicationName, endpointName, adverseEventName,
@@ -902,7 +904,7 @@ public class JAXBConvertorTest {
 		// Measurements
 		List<org.drugis.addis.entities.data.Measurement> list = study.getMeasurements().getMeasurement();
 		org.drugis.addis.entities.data.Measurement m1 = new org.drugis.addis.entities.data.Measurement();
-		m1.setArm(JAXBConvertor.nameReference(armName2));
+		m1.setArm(JAXBConvertor.nameReference(paroxArmName));
 		m1.setStudyOutcomeMeasure(JAXBConvertor.stringIdReference("endpoint-" + endpointName[0]));
 		RateMeasurement rm1 = new RateMeasurement();
 		rm1.setRate(10);
@@ -1045,10 +1047,10 @@ public class JAXBConvertorTest {
 		study2.addEndpoint(ExampleData.buildEndpointCgi());
 		study2.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
 		study2.addVariable(ExampleData.buildAgeVariable());
-		Arm arm1 = new Arm("Arm number 1", 100);// buildFixedDoseArm(100, ExampleData.buildDrugFluoxetine(), 1, 12.5);
-		study2.addArm(arm1);
-		Arm arm2 = new Arm("Arm number 2", 2);//buildFlexibleDoseArm(102, ExampleData.buildDrugParoxetine(), 2, 12.5, 15.3);
-		study2.addArm(arm2);
+		Arm fluoxArm = new Arm("fluox arm", 100);
+		study2.addArm(fluoxArm);
+		Arm paroxArm = new Arm("parox arm", 42);
+		study2.addArm(paroxArm);
 		Epoch epoch1 = new Epoch("Randomization", null);
 		Epoch epoch2 = new Epoch("Main phase", DatatypeFactory.newInstance().newDuration("P2D"));
 		study2.getEpochs().add(epoch1);
@@ -1056,25 +1058,25 @@ public class JAXBConvertorTest {
 		study2.getEpochs().add(epoch2);
 		
 		StudyActivity sa1 = new StudyActivity("Randomization", PredefinedActivity.RANDOMIZATION);
-		StudyActivity sa2 = new StudyActivity("Fluox fixed dose", new TreatmentActivity(ExampleData.buildDrugFluoxetine(), new FixedDose(12.5, SIUnit.MILLIGRAMS_A_DAY)));
+		StudyActivity fluoxTreatment = new StudyActivity("Fluox fixed dose", new TreatmentActivity(ExampleData.buildDrugFluoxetine(), new FixedDose(12.5, SIUnit.MILLIGRAMS_A_DAY)));
+		StudyActivity paroxTreatment = new StudyActivity("Parox fixed dose", new TreatmentActivity(ExampleData.buildDrugParoxetine(), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY)));
 		study2.getStudyActivities().add(sa1);
 		assertStudiesNotEqual(domain, study, study2);
-		study2.getStudyActivities().add(sa2);
+		study2.getStudyActivities().add(fluoxTreatment);
+		study2.getStudyActivities().add(paroxTreatment);
 		
 		study2.setCharacteristic(BasicStudyCharacteristic.TITLE, "WHOO");
 		study2.setCharacteristic(BasicStudyCharacteristic.CENTERS, 3);
 		study2.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, Allocation.RANDOMIZED);
 		study2.setCharacteristic(BasicStudyCharacteristic.PUBMED, new PubMedIdList());
-		study2.setMeasurement(ExampleData.buildEndpointHamd(), arm2, new BasicRateMeasurement(10, 110));
+		study2.setMeasurement(ExampleData.buildEndpointHamd(), paroxArm, new BasicRateMeasurement(10, 110));
 		assertStudiesNotEqual(domain, study, study2);
 		study2.setMeasurement(ExampleData.buildAgeVariable(), new BasicContinuousMeasurement(0.2, 0.01, 110));
 		
-		study2.setStudyActivityAt(arm1, epoch1, sa1);
+		study2.setStudyActivityAt(fluoxArm, epoch1, sa1);
 		assertStudiesNotEqual(domain, study, study2);
-		study2.setStudyActivityAt(arm1, epoch2, sa2);
-		study2.setStudyActivityAt(arm2, epoch2, sa2);
-		
-		assertEquals(study.getActivities(), JAXBConvertor.convertStudyActivities(study2.getStudyActivities()));
+		study2.setStudyActivityAt(fluoxArm, epoch2, fluoxTreatment);
+		study2.setStudyActivityAt(paroxArm, epoch2, paroxTreatment);
 		
 		assertEntityEquals(study2, JAXBConvertor.convertStudy(study, domain));
 		assertEquals(study, JAXBConvertor.convertStudy(study2));
@@ -1172,6 +1174,7 @@ public class JAXBConvertorTest {
 		RandomEffectsMetaAnalysis pwma2 = new RandomEffectsMetaAnalysis(name, ExampleData.buildEndpointHamd(), armsList);
 		
 		assertEntityEquals(pwma2, JAXBConvertor.convertPairWiseMetaAnalysis(ma.d_pwma, domain));
+		
 		assertEquals(ma.d_pwma, JAXBConvertor.convertPairWiseMetaAnalysis(pwma2));
 	}
 
