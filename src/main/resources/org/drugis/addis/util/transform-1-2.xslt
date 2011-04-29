@@ -24,7 +24,7 @@
         <xsl:copy>
             <xsl:apply-templates select="@*|node()"/>
             <whenTaken>
-                <epoch>Main phase</epoch>
+                <epoch name="Main phase"/>
                 <fromEpochEnd>
                     <offset>P0D</offset>
                 </fromEpochEnd>

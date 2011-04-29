@@ -480,7 +480,7 @@
 	</xs:complexType>
 	<xs:complexType name="MeasurementMoment">
 		<xs:sequence>
-			<xs:element name="epoch"/>
+			<xs:element name="epoch" type="NameReference"/>
 			<xs:choice>
 				<xs:element name="fromEpochStart" type="MeasurementOffset"/>
 				<xs:element name="fromEpochEnd" type="MeasurementOffset"/>

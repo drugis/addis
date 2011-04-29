@@ -44,6 +44,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -115,6 +117,8 @@ import org.drugis.addis.entities.data.Endpoints;
 import org.drugis.addis.entities.data.IdReference;
 import org.drugis.addis.entities.data.Indications;
 import org.drugis.addis.entities.data.IntegerWithNotes;
+import org.drugis.addis.entities.data.MeasurementMoment;
+import org.drugis.addis.entities.data.MeasurementOffset;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
 import org.drugis.addis.entities.data.MetaAnalysisReferences;
@@ -394,6 +398,12 @@ public class JAXBConvertor {
 	private static UsedBy convertUsedBy(ActivityUsedBy aub, Study s) {
 		Arm a = s.findArm(aub.getArm());
 		Epoch e = s.findEpoch(aub.getEpoch());
+		if(a == null || e == null) {
+			System.out.println(s);
+			System.out.println(s.getArms());
+			System.out.println(s.getEpochs());
+			System.out.println(aub);
+		}
 		return new UsedBy(a, e);
 	}
 
@@ -760,7 +770,7 @@ public class JAXBConvertor {
 	}
 	
 
-	public static org.drugis.addis.entities.data.Measurement convertMeasurement(Measurement m) throws ConversionException {
+	public static org.drugis.addis.entities.data.Measurement convertMeasurement(Measurement m, String defaultEpochName) throws ConversionException {
 		org.drugis.addis.entities.data.Measurement measurement = new org.drugis.addis.entities.data.Measurement();
 		Integer sampleSize = m.getSampleSize();
 		if(m instanceof BasicRateMeasurement) {
@@ -786,8 +796,22 @@ public class JAXBConvertor {
 		} else {
 			throw new ConversionException("Measurement type not supported: " + m.toString());
 		}
-		
+		addWhenTaken(defaultEpochName, measurement);
 		return measurement;
+	}
+
+	private static void addWhenTaken(String defaultEpochName,
+			org.drugis.addis.entities.data.Measurement measurement) {
+		MeasurementMoment whenTaken = new MeasurementMoment();
+		whenTaken.setEpoch(nameReference(defaultEpochName));
+		MeasurementOffset offset = new MeasurementOffset();
+		try {
+			offset.setOffset(DatatypeFactory.newInstance().newDuration("P0D"));
+		} catch (DatatypeConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+		whenTaken.setFromEpochEnd(offset);
+		measurement.setWhenTaken(whenTaken);
 	}
 	
 	public static Map<MeasurementKey, Measurement> convertMeasurements(Measurements measurements, List<Arm> arms, Map<String, org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> outcomeMeasures) 
@@ -801,26 +825,26 @@ public class JAXBConvertor {
 		return map;
 	}
 	
-	public static Measurements convertMeasurements(Map<MeasurementKey, Measurement> map, List<Arm> arms, Map<String, Study.StudyOutcomeMeasure<?>> oms) throws ConversionException {
+	public static Measurements convertMeasurements(Map<MeasurementKey, Measurement> map, List<Arm> arms, String defaultEpochName, Map<String, Study.StudyOutcomeMeasure<?>> oms) throws ConversionException {
 		Measurements measurements = new Measurements();
 		for (Entry<String, Study.StudyOutcomeMeasure<?>> omEntry : oms.entrySet()) {
 			for (Arm a: arms) {
-				findAndAddMeasurement(map, a, omEntry.getKey(), omEntry.getValue().getValue(), measurements);
+				findAndAddMeasurement(map, a, defaultEpochName, omEntry.getKey(), omEntry.getValue().getValue(), measurements);
 			}
-			findAndAddMeasurement(map, null, omEntry.getKey(), omEntry.getValue().getValue(), measurements);
+			findAndAddMeasurement(map, null, defaultEpochName, omEntry.getKey(), omEntry.getValue().getValue(), measurements);
 		}
 		return measurements;
 	}
 
 
-	private static void findAndAddMeasurement(Map<MeasurementKey, Measurement> source, Arm arm, String omId, Variable om, Measurements target)
+	private static void findAndAddMeasurement(Map<MeasurementKey, Measurement> source, Arm arm, String defaultEpochName, String omId, Variable om, Measurements target)
 	throws ConversionException {
 		if (om instanceof OutcomeMeasure && arm == null) {
 			return;
 		}
 		MeasurementKey key = new MeasurementKey(om, arm);
 		if (source.containsKey(key)) {
-			org.drugis.addis.entities.data.Measurement m = convertMeasurement(source.get(key));
+			org.drugis.addis.entities.data.Measurement m = convertMeasurement(source.get(key), defaultEpochName);
 			if (arm != null) {
 				m.setArm(nameReference(arm.getName()));
 			}
@@ -933,7 +957,8 @@ public class JAXBConvertor {
 		newStudy.setStudyOutcomeMeasures(convertStudyOutcomeMeasures(omMap));
 		
 		// convert measurements
-		newStudy.setMeasurements(convertMeasurements(study.getMeasurements(), study.getArms(), omMap));
+		String defaultEpochName = study.getEpochs().get(study.getEpochs().getSize()-1).getName();
+		newStudy.setMeasurements(convertMeasurements(study.getMeasurements(), study.getArms(), defaultEpochName, omMap));
 		
 		// convert characteristics
 		newStudy.setCharacteristics(convertStudyCharacteristics(study.getCharacteristics()));
@@ -1062,7 +1087,9 @@ public class JAXBConvertor {
 			
 			for(Study study : ma.getIncludedStudies()) {
 				Arm arm = ma.getArm(study, d);
-				arms.getArm().add(armReference(study.getStudyId(), arm.getName()));
+				if (arm != null) {
+					arms.getArm().add(armReference(study.getStudyId(), arm.getName()));
+				}
 			}
 			alt.setArms(arms);
 			nma.getAlternative().add(alt);
@@ -1071,7 +1098,7 @@ public class JAXBConvertor {
 		return nma; 
 	}
 
-	private static Arm findArm(String name, List<Arm> arms) {
+	static Arm findArm(String name, List<Arm> arms) {
 		for (Arm arm : arms) {
 			if (arm.getName().equals(name)) {
 				return arm;
@@ -1332,11 +1359,7 @@ public class JAXBConvertor {
 		return reference;
 	}
 
-	public static ArmReference armReference(String studyName, org.drugis.addis.entities.data.Arm arm) {
-		return armReference(studyName, arm.getName());
-	}
-
-	private static ArmReference armReference(String studyName, String armName) {
+	public static ArmReference armReference(String studyName, String armName) {
 		ArmReference ref = new ArmReference();
 		ref.setStudy(studyName);
 		ref.setName(armName);

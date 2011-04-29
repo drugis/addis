@@ -716,7 +716,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 
 	public Arm findArm(String armName) {
 		for(Arm a : d_arms) {
-			if(a.getName() == armName) { 
+			if(a.getName().equals(armName)) { 
 				return a;
 			}
 		}
@@ -725,7 +725,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 
 	public Epoch findEpoch(String epochName) {
 		for(Epoch e : d_epochs) {
-			if(e.getName() == epochName) { 
+			if(e.getName().equals(epochName)) { 
 				return e;
 			}
 		}

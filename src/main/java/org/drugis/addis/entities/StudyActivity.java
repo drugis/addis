@@ -45,7 +45,7 @@ public class StudyActivity extends AbstractEntity implements TypeWithNotes {
 			return 31 * d_epoch.hashCode() + d_arm.hashCode();
 		}
 		public int compareTo(UsedBy o) {
-			int armsComp = o.getArm().getName().compareTo(getArm().getName());
+			int armsComp = getArm().getName().compareTo(o.getArm().getName());
 			if(armsComp != 0) {
 				return armsComp;
 			} else {
