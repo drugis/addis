@@ -1377,14 +1377,19 @@ public class JAXBConvertor {
 		return converted;
 	}
 
-	public static InputStream transformLegacyXML(InputStream xmlFile)
+	/**
+	 * Convert legacy XML ("version 0") to schema v1 compliant XML.
+	 * @param xml Legacy XML input stream.
+	 * @return Schema v1 compliant XML.
+	 */
+	public static InputStream transformLegacyXML(InputStream xml)
 	throws TransformerException, IOException {
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
 		TransformerFactory tFactory = TransformerFactory.newInstance(); 
 		InputStream xsltFile = JAXBConvertor.class.getResourceAsStream("transform-0-1.xslt");
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		
-	    javax.xml.transform.Source xmlSource = new javax.xml.transform.stream.StreamSource(xmlFile);
+	    javax.xml.transform.Source xmlSource = new javax.xml.transform.stream.StreamSource(xml);
 	    javax.xml.transform.Source xsltSource = new javax.xml.transform.stream.StreamSource(xsltFile);
 	    javax.xml.transform.Result result = new javax.xml.transform.stream.StreamResult(os);
 	    
@@ -1395,6 +1400,12 @@ public class JAXBConvertor {
 	    return new ByteArrayInputStream(os.toByteArray());
 	}
 
+	/**
+	 * Convert an XML stream to the latest XML version.
+	 * @param xml An XML input stream
+	 * @param version The schema version of the source.
+	 * @return XML compliant with most recent schema.
+	 */
 	public static InputStream transformToLatest(InputStream xml, int version)
 	throws TransformerException, IOException {
 		if (version == 2) {

@@ -29,10 +29,17 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.xml.transform.TransformerException;
+
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.imports.PubMedDataBankRetriever;
+import org.drugis.addis.imports.PubMedIDRetriever;
+import org.drugis.addis.util.JAXBConvertor;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -53,13 +60,13 @@ public class DomainManagerTest {
 	}
 	
 	@Test
-	public void testLoadLegacyXml() throws IOException, ClassNotFoundException {
+	public void testLoadLegacyXml() throws IOException, ClassNotFoundException, TransformerException {
 		InputStream lis = DomainManagerTest.class.getResourceAsStream("../testDataA-0.xml");
 		d_manager.loadLegacyXMLDomain(lis);
 		
 		InputStream nis = DomainManagerTest.class.getResourceAsStream("../testDataA-1.addis");
 		DomainManager managerNew = new DomainManager();
-		managerNew.loadXMLDomain(nis);
+		managerNew.loadXMLDomain(nis, 1);
 		
 		assertDomainEquals(managerNew.getDomain(), d_manager.getDomain());
 	}
@@ -74,7 +81,7 @@ public class DomainManagerTest {
 		d_manager.resetDomain();
 
 		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-		d_manager.loadXMLDomain(bis);
+		d_manager.loadXMLDomain(bis, 2);
 		
 		assertDomainEquals(domain, d_manager.getDomain());
 	}

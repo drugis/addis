@@ -57,9 +57,9 @@ public class DomainManager {
 	 */
 	public void loadLegacyXMLDomain(InputStream is) throws IOException {
 		try {
-			InputStream transformedXmlStream = JAXBConvertor.transformToLatest(JAXBConvertor.transformLegacyXML(is), 1);
+			InputStream transformedXmlStream = JAXBConvertor.transformLegacyXML(is);
 			is.close();
-			loadXMLDomain(transformedXmlStream);
+			loadXMLDomain(transformedXmlStream, 1);
 		} catch (TransformerException e) {
 			throw new RuntimeException(e);
 		}
@@ -67,11 +67,12 @@ public class DomainManager {
 	
 	/**
 	 * Replace the Domain by a new instance loaded from a XML stream (new format, .addis).
-	 * @param is Stream to read objects from.
+	 * @param is XML stream to read objects from.
+	 * @param version Schema version the xml is in.
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public void loadXMLDomain(InputStream is) throws IOException {
+	public void loadXMLDomain(InputStream is, int version) throws IOException {
 		try {
 			AddisData data = JAXBHandler.unmarshallAddisData(JAXBConvertor.transformToLatest(is, 1));
 			d_domain = (DomainImpl) JAXBConvertor.convertAddisDataToDomain(data);

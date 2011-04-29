@@ -175,7 +175,7 @@ public class Main {
 	
 	public void loadExampleDomain() {
 		try {
-			loadDomainFromXMLResource(EXAMPLE_XML);
+			loadDomainFromXMLResource(EXAMPLE_XML, 1);
 		} catch (Exception e) {
 			throw new RuntimeException("Error loading default data: " + e.getMessage(), e);
 		}
@@ -191,6 +191,7 @@ public class Main {
 	private enum XmlFormatType {
 		LEGACY,
 		SCHEMA1,
+		SCHEMA2,
 		SCHEMA_FUTURE
 	}
 
@@ -205,7 +206,12 @@ public class Main {
 				askToConvertToNew(fileName);
 				break;
 			case SCHEMA1:
-				d_domainMgr.loadXMLDomain(fis);
+				d_domainMgr.loadXMLDomain(fis, 1);
+				attachDomainChangedModel();
+				setFileNameAndReset(fileName);
+				break;
+			case SCHEMA2: // FIXME refactor
+				d_domainMgr.loadXMLDomain(fis, 2);
 				attachDomainChangedModel();
 				setFileNameAndReset(fileName);
 				break;
@@ -252,6 +258,8 @@ public class Main {
 		if (matcher.find()) {
 			if (matcher.group(1).equals("1")) {
 				type = XmlFormatType.SCHEMA1;
+			} else if (matcher.group(1).equals("2")) {
+				type = XmlFormatType.SCHEMA2;
 			} else {
 				type = XmlFormatType.SCHEMA_FUTURE;
 			}
@@ -262,9 +270,9 @@ public class Main {
 		return type;
 	}
 
-	private void loadDomainFromXMLResource(String fileName) throws IOException, ClassNotFoundException {
+	private void loadDomainFromXMLResource(String fileName, int version) throws IOException, ClassNotFoundException {
 		InputStream fis = Main.class.getResourceAsStream("/org/drugis/addis/" + fileName);
-		d_domainMgr.loadXMLDomain(fis);
+		d_domainMgr.loadXMLDomain(fis, version);
 		attachDomainChangedModel();
 	}
 
