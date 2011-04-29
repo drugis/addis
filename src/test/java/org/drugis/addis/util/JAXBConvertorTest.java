@@ -1790,5 +1790,6 @@ public class JAXBConvertorTest {
 	
 	private static InputStream getTransformed2() throws TransformerException, IOException {
 		return JAXBConvertor.transformToLatest(getTransformed(), 1);
+//		return JAXBConvertor.transformToLatest(JAXBConvertorTest.class.getResourceAsStream("../defaultData.addis"), 1);
 	}
 }

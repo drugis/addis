@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:tf="example.com"
+    exclude-result-prefixes="xs tf" version="2.0">
     <xsl:output indent="yes"/>
     <xsl:strip-space elements="*"/>
     <xsl:template match="node()|@*">
@@ -31,19 +33,32 @@
             </whenTaken>
         </xsl:copy>
     </xsl:template>
+    
+    <xsl:function name="tf:getArmName">
+        <xsl:param name="root"/>
+        <xsl:param name="studyName"/>
+        <xsl:param name="armId"/>
+        <xsl:variable name="armDrug" select="$root/addis-data/studies/study[@name=$studyName]/arms/arm[@id=$armId]/drug/@name"/>
+        <xsl:value-of select="concat($armDrug, '-', $armId)"/>
+    </xsl:function>
 
-    <xsl:template match="measurements/measurement/arm | alternative/arms/arm | studyBenefitRiskAnalysis/arms/arm">
-        <xsl:variable name="armid" select="@id"/>
-        <xsl:variable name="armdrug" select="/addis-data/studies/study/arms/arm[@id=$armid]/drug/@name"/>
-        <xsl:variable name="armname" select="concat($armdrug, '-', $armid)"/>
+    <xsl:template match="measurements/measurement/arm">
+        <xsl:variable name="armName" select="tf:getArmName(/, ../../../@name, @id)"/>
         <arm>
-            <xsl:if test="name(..) != 'measurement'">
-                <xsl:attribute name="study">
-                    <xsl:value-of select="@study"/>
-                </xsl:attribute>
-            </xsl:if>
             <xsl:attribute name="name">
-                <xsl:value-of select="$armname"/>
+                <xsl:value-of select="$armName"/>
+            </xsl:attribute>
+        </arm>
+    </xsl:template>
+    
+    <xsl:template match="alternative/arms/arm | studyBenefitRiskAnalysis/arms/arm">
+        <xsl:variable name="armName" select="tf:getArmName(/, @study, @id)"/>
+        <arm>
+            <xsl:attribute name="study">
+                <xsl:value-of select="@study"/>
+            </xsl:attribute>
+            <xsl:attribute name="name">
+                <xsl:value-of select="$armName"/>
             </xsl:attribute>
         </arm>
     </xsl:template>
@@ -67,14 +82,11 @@
                         <predefined>RANDOMIZATION</predefined>
                     </activity>
                     <xsl:for-each select="../arms/arm">
-                        <xsl:variable name="armid" select="@id"/>
-                        <xsl:variable name="armdrug"
-                            select="/addis-data/studies/study/arms/arm[@id=$armid]/drug/@name"/>
-                        <xsl:variable name="armname" select="concat($armdrug, '-', $armid)"/>
+                        <xsl:variable name="armName" select="tf:getArmName(/, @id, ../@name)"/>
                         <usedBy>
                             <xsl:attribute name="epoch">Randomization</xsl:attribute>
                             <xsl:attribute name="arm">
-                                <xsl:value-of select="$armname"/>
+                                <xsl:value-of select="$armName"/>
                             </xsl:attribute>
                         </usedBy>
                     </xsl:for-each>
@@ -83,13 +95,10 @@
             </xsl:if>
 
             <xsl:for-each select="../arms/arm">
-                <xsl:variable name="armid" select="@id"/>
-                <xsl:variable name="armdrug"
-                    select="/addis-data/studies/study/arms/arm[@id=$armid]/drug/@name"/>
-                <xsl:variable name="armname" select="concat($armdrug, '-', $armid)"/>
+                <xsl:variable name="armName" select="tf:getArmName(/, @id, ../@name)"/>
                 <studyActivity>
                     <xsl:attribute name="name">
-                        <xsl:value-of select="$armname"/>
+                        <xsl:value-of select="$armName"/>
                     </xsl:attribute>
                     <activity>
                         <treatment>
@@ -99,7 +108,7 @@
                     <usedBy>
                         <xsl:attribute name="epoch">Main phase</xsl:attribute>
                         <xsl:attribute name="arm">
-                            <xsl:value-of select="$armname"/>
+                            <xsl:value-of select="$armName"/>
                         </xsl:attribute>
                     </usedBy>
                     <notes/>
