@@ -26,7 +26,13 @@ package org.drugis.addis.gui.wizard;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -35,24 +41,32 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
+import javax.swing.DropMode;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.TransferHandler;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultFormatter;
@@ -103,7 +117,9 @@ import org.pietschy.wizard.WizardListener;
 import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.ComboBoxAdapter;
 import com.jgoodies.binding.beans.PropertyConnector;
+import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -140,6 +156,11 @@ public class AddStudyWizard extends Wizard {
 		wizardModel.add(new EnterIdTitleWizardStep(pm, dialog));
 		wizardModel.add(new SelectIndicationWizardStep(pm, mainWindow));
 		wizardModel.add(new EnterCharacteristicsWizardStep(pm));
+		
+		wizardModel.add(new AddArmsWizardStep(pm));
+		wizardModel.add(new AddEpochsWizardStep(pm));
+		wizardModel.add(new AssignActivitiesWizardStep(pm));
+		
 		wizardModel.add(new SelectEndpointWizardStep(pm));
 		wizardModel.add(new SetArmsWizardStep(pm, mainWindow));
 		wizardModel.add(new SetEndpointMeasurementsWizardStep(pm, dialog));
@@ -170,9 +191,418 @@ public class AddStudyWizard extends Wizard {
 		return new NotesView(new NotesModel(obj.getNotes()), true);
 	}
 	
+	// -- Wizard Steps
+	
+	public static class AddArmsWizardStep extends PanelWizardStep {
+		JPanel d_me = this;
+		private PanelBuilder d_builder;
+		private JScrollPane d_scrollPane;
+		
+		private AddStudyWizardPresentation d_pm;
+		private NotEmptyValidator d_validator;
+		
+		public AddArmsWizardStep(AddStudyWizardPresentation pm) {
+			super("Add arms", "Enter the arms for this study.");
+			
+			d_pm = pm;
+			if (d_pm.isEditing())
+				setComplete(true);
+		}
+		
+		 @Override
+		public void prepare() {
+			 this.setVisible(false);
+			 d_validator = new NotEmptyValidator();
+			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
+			 
+			 if (d_scrollPane != null)
+				 remove(d_scrollPane);
+			 
+			 buildWizardStep();
+			 this.setVisible(true);
+			 repaint();
+		 }
+
+		private void buildWizardStep() {
+			FormLayout layout = new FormLayout(
+					"left:pref, 3dlu, right:pref, 3dlu, pref:grow, 7dlu, right:pref, 3dlu, pref",
+					"p"
+					);
+			layout.setColumnGroups(new int[][]{{3, 7}, {5, 9}});
+			d_builder = new PanelBuilder(layout);
+			d_builder.setDefaultDialogBorder();
+			CellConstraints cc = new CellConstraints();
+			
+			int rows = 1;
+			
+			// start arms form
+			d_builder.addSeparator("Arms", cc.xyw(1, 1, 9));
+			
+			for(int armNumber = 0; armNumber < d_pm.getNumberArms(); ++armNumber) {
+				rows = addArmComponents(d_builder, layout, cc, rows, armNumber);
+			}
+			
+			// add 'Add Arm' button 
+			LayoutUtil.addRow(layout); rows+=2;
+			JButton armBtn = new JButton("Add Arm");
+			d_builder.add(armBtn, cc.xy(1, rows));
+			armBtn.addActionListener(new AbstractAction() {
+				public void actionPerformed(ActionEvent e) {
+					d_pm.addArms(1);
+					prepare();
+				}
+			});
+			
+			if(d_pm.getNumberArms() == 0 ) {
+				d_pm.addArms(1);
+				prepare();
+			}
+			
+			JPanel panel = d_builder.getPanel();
+			this.setLayout(new BorderLayout());
+			d_scrollPane = new JScrollPane(panel);
+			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+		
+			add(d_scrollPane, BorderLayout.CENTER);
+		}
+
+		private int addArmComponents(PanelBuilder builder, FormLayout layout, CellConstraints cc, int rows, int armNumber) {
+			LayoutUtil.addRow(layout); rows+=2;
+			
+			// add 'remove arm button' 
+			JButton removeBtn = new JButton("Remove");
+			builder.add(removeBtn, cc.xy(1, rows));
+			removeBtn.addActionListener(new RemoveArmListener(armNumber));
+			
+			// add labels
+			builder.addLabel("Name: ", cc.xy (3,  rows));
+			builder.addLabel("Size: ", cc.xy(7, rows));
+			
+			// add text fields
+			JTextField nameField = new JFormattedTextField(new DefaultFormatter());
+			d_validator.add(nameField);
+			builder.add(nameField, cc.xy(5, rows));
+			
+			JTextField sizeField =  new JFormattedTextField(new DefaultFormatter());
+			PropertyConnector.connectAndUpdate(d_pm.getArmModel(armNumber).getModel(Arm.PROPERTY_SIZE), sizeField, "value");
+			sizeField.setColumns(4);
+			d_validator.add(sizeField);
+			builder.add(sizeField, cc.xy(9, rows));
+			
+			// add notes
+			LayoutUtil.addRow(layout); rows+=2;
+			d_builder.add(buildNotesEditor(d_pm.getNewStudyPM().getBean().getArms().get(armNumber)), cc.xyw(5, rows, 5));
+			LayoutUtil.addRow(layout); rows+=2;
+			
+			return rows;
+		}
+		
+		private class RemoveArmListener extends AbstractAction {
+			int d_index;
+			
+			public RemoveArmListener(int index) {
+				d_index = index;
+			}
+			
+			public void actionPerformed(ActionEvent e) {
+				d_pm.removeArm(d_index);
+				prepare();
+			}	
+		}
+	}
+	
+	public static class AddEpochsWizardStep extends PanelWizardStep {
+		JPanel d_me = this;
+		private PanelBuilder d_builder;
+		private JScrollPane d_scrollPane;
+		
+		private AddStudyWizardPresentation d_pm;
+		private NotEmptyValidator d_validator;
+		
+		public AddEpochsWizardStep(AddStudyWizardPresentation pm) {
+			super("Add epochs", "Enter the epochs for this study.");
+			
+			d_pm = pm;
+			if (d_pm.isEditing())
+				setComplete(true);
+		}
+		
+		@Override
+		public void prepare() {
+			 this.setVisible(false);
+			 d_validator = new NotEmptyValidator();
+			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
+			 
+			 if (d_scrollPane != null)
+				 remove(d_scrollPane);
+			 
+			 buildWizardStep();
+			 this.setVisible(true);
+			 repaint();
+		 }
+
+		private void buildWizardStep() {
+			FormLayout layout = new FormLayout(
+					"left:pref, 3dlu, right:pref, 3dlu, pref:grow",
+					"p"
+					);
+			d_builder = new PanelBuilder(layout);
+			d_builder.setDefaultDialogBorder();
+			CellConstraints cc = new CellConstraints();
+			
+			int rows = 1;
+			// start epochs form
+			d_builder.addSeparator("Epochs", cc.xyw(1, 1, 5));
+			
+			for(int epochNumber = 0; epochNumber < d_pm.getNumberEpochs(); ++epochNumber) {
+				rows = addEpochComponents(d_builder, layout, cc, rows, epochNumber);
+			}
+			
+			//TODO: remove next 2 lines when addEpoch is written
+			rows = addEpochComponents(d_builder, layout, cc, rows, 1);
+			rows = addEpochComponents(d_builder, layout, cc, rows, 2);
+			
+			// add 'Add Epoch' button 
+			LayoutUtil.addRow(layout); rows+=2;
+			JButton epochBtn = new JButton("Add Epoch");
+			d_builder.add(epochBtn, cc.xy(1, rows));
+			epochBtn.addActionListener(new AbstractAction() {
+				public void actionPerformed(ActionEvent e) {
+					//TODO: write addEpoch method
+					//	d_pm.addEpoch("^_^");
+					prepare();
+				}
+			});
+			
+			if(d_pm.getNumberEpochs() == 0 ) {
+				//	d_pm.addEpoch("^_^");
+				//prepare();
+			}
+			
+			JPanel panel = d_builder.getPanel();
+			this.setLayout(new BorderLayout());
+			d_scrollPane = new JScrollPane(panel);
+			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+		
+			add(d_scrollPane, BorderLayout.CENTER);
+		}
+
+		private int addEpochComponents(PanelBuilder builder, FormLayout layout, CellConstraints cc, int rows, int epochNumber) {
+			LayoutUtil.addRow(layout); rows+=2;
+			
+			// add 'remove epoch button' 
+			JButton removeBtn = new JButton("Remove");
+			builder.add(removeBtn, cc.xy(1, rows));
+			removeBtn.addActionListener(new RemoveEpochListener(epochNumber));
+			
+			// add labels
+			builder.addLabel("Name: ", cc.xy(3,  rows));
+			
+			// add text field
+			JTextField nameField = new JFormattedTextField(new DefaultFormatter());
+			d_validator.add(nameField);
+			builder.add(nameField, cc.xy(5, rows));
+			
+			// add note
+			LayoutUtil.addRow(layout); rows+=2;
+			// TODO: uncomment this when addEpoch is done
+			//d_builder.add(buildNotesEditor(d_pm.getNewStudyPM().getBean().getEpochs().get(epochNumber)), cc.xy(5, rows));
+			LayoutUtil.addRow(layout); rows+=2;
+			
+			return rows;
+		}
+		
+		private class RemoveEpochListener extends AbstractAction {
+			int d_index;
+			
+			public RemoveEpochListener(int index) {
+				d_index = index;
+			}
+			
+			public void actionPerformed(ActionEvent e) {
+				d_pm.removeEpoch(d_index);
+				prepare();
+			}	
+		}
+	}	
+	
+	public static class AssignActivitiesWizardStep extends PanelWizardStep{
+		JPanel d_me = this;
+		private PanelBuilder d_builder;
+		private JScrollPane d_scrollPane;
+		
+		private AddStudyWizardPresentation d_pm;
+		private NotEmptyValidator d_validator;
+		public JTable armsEpochsTable;
+		
+		public AssignActivitiesWizardStep(AddStudyWizardPresentation pm) {
+			super("Assign activities", "Select teh activities that ye wants to add.");
+			
+			d_pm = pm;
+			if (d_pm.isEditing())
+				setComplete(true);
+		}
+		
+		@Override
+		public void prepare() {
+			 this.setVisible(false);
+			 d_validator = new NotEmptyValidator();
+			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
+			 
+			 if (d_scrollPane != null)
+				 remove(d_scrollPane);
+			 
+			 buildWizardStep();
+			 this.setVisible(true);
+			 repaint();
+		 }
+		
+		private void buildWizardStep() {
+			FormLayout layout = new FormLayout(
+					"fill:pref, 7dlu, fill:pref:grow",
+					"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+					);
+			d_builder = new PanelBuilder(layout);
+			d_builder.setDefaultDialogBorder();
+			CellConstraints cc = new CellConstraints();
+			
+			// add labels
+			d_builder.addLabel("Activities: ", cc.xy(1, 1));
+			d_builder.addLabel("Arms and Epochs: ", cc.xy(3, 1));
+			
+			// add activities combo-box
+			String[] activities = { "Screening", "Randomization", "Fluoxetine", "Paroxetine", "Placebo" };
+
+			JList activityList = new JList(activities);
+			activityList.setDragEnabled(true);
+			activityList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			activityList.setLayoutOrientation(JList.VERTICAL);
+
+			JScrollPane activityScrollPane = new JScrollPane(activityList);
+			//activityScrollPane.setPreferredSize(new Dimension(100, 250));
+			d_builder.add(activityScrollPane , cc.xy(1, 3));
+			
+			createTable(cc);
+			
+			createButtons(cc);
+						
+			this.setLayout(new BorderLayout());
+			d_scrollPane = new JScrollPane(d_builder.getPanel());
+			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+		
+			add(d_scrollPane, BorderLayout.CENTER);
+		}
+
+		private void createTable(CellConstraints cc) {
+			// add arms & epochs table
+			final DefaultTableModel tableModel = new DefaultTableModel();
+			tableModel.addColumn("Arm");
+			tableModel.addColumn("Item 1");
+			tableModel.addColumn("Item 2");
+			
+			// add arm names
+			List<Arm> list = d_pm.getNewStudyPM().getBean().getArms();
+			Iterator<Arm> itr = list.iterator();
+			while (itr.hasNext()) {
+				Arm arm = itr.next();
+				tableModel.addRow(new Object[]{arm.getName()});
+			}
+			
+			final JTable armsEpochsTable = new JTable(tableModel);
+			JScrollPane tableScrollPane = new JScrollPane(armsEpochsTable);
+			//armsEpochsTable.setFillsViewportHeight(true);
+			armsEpochsTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			armsEpochsTable.setDropMode(DropMode.ON_OR_INSERT_ROWS);
+			armsEpochsTable.setTransferHandler(new TransferHandler(){
+				
+				public boolean canImport(TransferSupport support) {
+	                if (!support.isDrop()) {
+	                    return false;
+	                }
+
+	                // import Strings
+	                if (!support.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+	                    return false;
+	                }
+
+	                return true;
+	            }
+
+	            public boolean importData(TransferSupport support) {
+	                // if we can't handle the import, say so
+	                if (!canImport(support)) {
+	                    return false;
+	                }
+
+	                // fetch the drop location
+	                JTable.DropLocation dl = (JTable.DropLocation)support.getDropLocation();
+
+	                int row = dl.getRow();
+	                int column = dl.getColumn();
+
+	                // fetch the data and bail if this fails
+	                String data;
+	                try {
+	                    data = (String)support.getTransferable().getTransferData(DataFlavor.stringFlavor);
+	                } catch (UnsupportedFlavorException e) {
+	                    return false;
+	                } catch (IOException e) {
+	                    return false;
+	                }
+
+	                if (column > 0) {
+	                	tableModel.setValueAt(data, row, column);
+	                } else {
+	                	return false;
+	                }
+	                
+	                Rectangle rect = armsEpochsTable.getCellRect(row, 0, false);
+	                if (rect != null) {
+	                	armsEpochsTable.scrollRectToVisible(rect);
+	                }
+
+	                return true;
+	            }
+			});
+			
+			
+			d_builder.add(tableScrollPane, cc.xy(3, 3));
+		}
+
+		private void createButtons(CellConstraints cc) {
+			// add new, edit and remove buttons
+			JButton newActBtn = new JButton("New Activity");
+			d_builder.add(newActBtn, cc.xy(1, 5));
+			newActBtn.addActionListener(new AbstractAction() {
+				public void actionPerformed(ActionEvent e) {
+					//TODO: write code here
+				}
+			});
+			
+			JButton editActBtn = new JButton("Edit Activity");
+			d_builder.add(editActBtn, cc.xy(1, 7));
+			editActBtn.addActionListener(new AbstractAction() {
+				public void actionPerformed(ActionEvent e) {
+					//TODO: write code here
+				}
+			});
+			
+			JButton remActBtn = new JButton("Remove Activity");
+			d_builder.add(remActBtn, cc.xy(1, 9));
+			remActBtn.addActionListener(new AbstractAction() {
+				public void actionPerformed(ActionEvent e) {
+					//TODO: write code here
+				}
+			});
+		}
+		
+		class SourceTransferHandler extends TransferHandler {
+
+        }
+	}
 	
 	public static class ReviewStudyStep extends PanelWizardStep {
-		 private final AddStudyWizardPresentation d_pm;
+		private final AddStudyWizardPresentation d_pm;
 		private final AddisWindow d_mainwindow;
 
 		public ReviewStudyStep(AddStudyWizardPresentation pm, AddisWindow mainWindow) {

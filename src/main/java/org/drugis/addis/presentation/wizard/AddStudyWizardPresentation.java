@@ -268,7 +268,7 @@ public class AddStudyWizardPresentation {
 		if (getNewStudy().getEpochs().isEmpty()) {
 			getNewStudy().getEpochs().add(new Epoch("Main phase", null));
 		}
-		for(int i = 0; i < numArms; ++i){
+		for(int i = 0; i < numArms; ++i) {
 			Arm arm = new Arm("Arm " + (i + 1), 0);
 			StudyActivity activity = new StudyActivity("Treatment " + (i + 1), new TreatmentActivity(null, new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY)));
 			getNewStudy().getStudyActivities().add(activity);
@@ -283,6 +283,14 @@ public class AddStudyWizardPresentation {
 	
 	public void removeArm(int armNum){ // FIXME: should update UsedBys or not be allowed if used by something?
 		getNewStudy().getArms().remove(armNum);
+	}
+	
+	public int getNumberEpochs(){
+		return getNewStudy().getEpochs().size();
+	}
+	
+	public void removeEpoch(int index){
+		getNewStudy().getEpochs().remove(index);
 	}
 	
 	public DrugListHolder getDrugsModel(){
