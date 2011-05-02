@@ -32,6 +32,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
@@ -43,6 +44,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.DropMode;
 import javax.swing.JButton;
@@ -59,11 +61,15 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
+import javax.swing.border.Border;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.text.BadLocationException;
@@ -99,6 +105,7 @@ import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.components.NotesView;
 import org.drugis.addis.imports.PubMedIDRetriever;
+import org.drugis.addis.presentation.BasicArmPresentation;
 import org.drugis.addis.presentation.DosePresentation;
 import org.drugis.addis.presentation.NotesModel;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
@@ -116,6 +123,7 @@ import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.beans.PropertyConnector;
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -203,12 +211,60 @@ public class AddStudyWizard extends Wizard {
 			d_pm = pm;
 			if (d_pm.isEditing())
 				setComplete(true);
+			d_validator = new ArmNameValidator(d_pm.getArms());
+		}
+		
+		public class ArmNameValidator extends NotEmptyValidator {
+			 private final ObservableList<Arm> d_armListModel;
+			 PropertyChangeListener d_nameListener;
+
+			 public ArmNameValidator(ObservableList<Arm> armListModel) {
+				 d_armListModel = armListModel;
+				 d_nameListener = new PropertyChangeListener() {
+					public void propertyChange(PropertyChangeEvent evt) {
+						update();
+					}
+				};
+				 armListModel.addListDataListener(new ListDataListener() {
+					public void intervalRemoved(ListDataEvent e) {
+						updateListeners();
+					}
+					
+					public void intervalAdded(ListDataEvent e) {
+						updateListeners();
+					}
+
+					public void contentsChanged(ListDataEvent e) {
+						updateListeners();
+					}
+					
+					private void updateListeners() {
+						for (Arm a: d_armListModel) {
+							a.removePropertyChangeListener(d_nameListener);
+							a.addPropertyChangeListener(d_nameListener);
+						}
+						update();
+					}
+				});
+			}
+
+			@Override
+			public Boolean getValue() {	
+				return super.getValue() && areNamesUnique() && d_armListModel.size() > 1;
+			}
+
+			private boolean areNamesUnique() {
+				Set<String> s = new HashSet<String>();
+				for (Arm a: d_armListModel) {
+					if (!s.add(a.getName())) return false;
+				}
+				return true; 
+			}
 		}
 		
 		 @Override
 		public void prepare() {
 			 this.setVisible(false);
-			 d_validator = new NotEmptyValidator();
 			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
 			 
 			 if (d_scrollPane != null)
@@ -245,7 +301,8 @@ public class AddStudyWizard extends Wizard {
 			armBtn.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
 					d_pm.addArms(1);
-					prepare();
+//					prepare();
+//					FIXME : only call prepare once.
 				}
 			});
 			
@@ -273,23 +330,6 @@ public class AddStudyWizard extends Wizard {
 			JTextField nameField = new JTextField();
 			PropertyConnector.connectAndUpdate(d_pm.getArmModel(armNumber).getModel(Arm.PROPERTY_NAME), nameField, "text");
 			d_validator.add(nameField);
-			/*
-			nameField.addFocusListener(new FocusListener() {
-				
-				public void focusLost(FocusEvent e) {
-					if (!d_pm.isUniqueArmName(nameField.getText())) {
-						JOptionPane.showMessageDialog(d_dialog, "There is already a study called \"" + 
-								d_pm.getIdModel().getValue() + "\".\nPlease save under a different title.",
-								"Error: study already exists", JOptionPane.ERROR_MESSAGE);
-						setComplete(false);
-						nameField.setText("");
-					}
-				}
-				
-				public void focusGained(FocusEvent e) {
-				}
-			});			
-			*/
 			builder.add(nameField, cc.xy(5, rows));
 			
 			JTextField sizeField =  new JFormattedTextField(new DefaultFormatter());
@@ -314,7 +354,7 @@ public class AddStudyWizard extends Wizard {
 			}
 			
 			public void actionPerformed(ActionEvent e) {
-				d_pm.removeArm(d_index);
+				d_pm.getArms().remove(d_index);
 				prepare();
 			}	
 		}
@@ -713,7 +753,7 @@ public class AddStudyWizard extends Wizard {
 			}
 			
 			public void actionPerformed(ActionEvent e) {
-				d_pm.removeArm(d_index);
+				d_pm.getArms().remove(d_index);
 				prepare();
 			}	
 		}
@@ -763,13 +803,7 @@ public class AddStudyWizard extends Wizard {
 			
 			
 			int row = buildArmsPart(1, d_builder, cc, 3, layout);
-			
-			if(d_pm.getNumberArms() == 0 ) {
-				d_pm.addArms(1);
-				row += 2;
-				prepare();
-			}
-			
+						
 			// add 'Add Arm' button 
 			JButton btn = new JButton("Add");
 			d_builder.add(btn, cc.xy(1, row+=2));
@@ -1155,15 +1189,21 @@ public class AddStudyWizard extends Wizard {
 				bindDefaultId(d_idField);
 				d_builder.add(d_idField, cc.xy(3, 3));
 				d_idField.addCaretListener(new ImportButtonEnableListener());
-				d_idField.addCaretListener( new CaretListener() {
+				final Border border = d_idField.getBorder();
+				d_idField.addCaretListener(new CaretListener() {
+					
 					public void caretUpdate(CaretEvent e) {
 						if (!d_pm.isIdAvailable()){
 							d_idField.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+							d_idField.setToolTipText("Study ID already exists, please change it.");
+							d_idField.dispatchEvent(new KeyEvent(d_idField, KeyEvent.KEY_PRESSED, 0, KeyEvent.CTRL_MASK, KeyEvent.VK_F1, KeyEvent.CHAR_UNDEFINED));
 						} else {
-							d_idField.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+							d_idField.setToolTipText("");
+							d_idField.setBorder(border);
 						}
 					}
 				});
+				
 				d_validator.add(d_idField);
 				
 				// add import button

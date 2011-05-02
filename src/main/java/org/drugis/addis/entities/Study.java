@@ -217,7 +217,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		setCharacteristic(BasicStudyCharacteristic.PUBMED, new PubMedIdList());
 	}
 
-	public List<Arm> getArms() {
+	public ObservableList<Arm> getArms() {
 		return d_arms;
 	}
 

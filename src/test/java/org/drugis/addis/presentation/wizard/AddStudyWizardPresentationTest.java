@@ -120,7 +120,7 @@ public class AddStudyWizardPresentationTest {
 		int numArms = d_wizard.getNumberArms();
 		d_wizard.addArms(2);
 		assertEquals(numArms + 2,d_wizard.getNumberArms());
-		d_wizard.removeArm(0);
+		d_wizard.getArms().remove(0);
 		assertEquals(numArms + 1,d_wizard.getNumberArms());
 	}
 	

@@ -282,12 +282,8 @@ public class AddStudyWizardPresentation {
 		return getArms().size();
 	}
 
-	private List<Arm> getArms() {
+	public ObservableList<Arm> getArms() {
 		return getNewStudy().getArms();
-	}
-	
-	public void removeArm(int armNum){ // FIXME: should update UsedBys, or not be allowed to be used by something?
-		getArms().remove(armNum);
 	}
 	
 	public ObservableList<Epoch> getEpochs() {
@@ -464,11 +460,4 @@ public class AddStudyWizardPresentation {
 		return d_origStudy;
 	}
 
-	public boolean hasUniqueName(Arm arm) {
-		if(arm.getName().equals("")) return true;
-		if (! getArms().contains(arm)) {
-			return true;
-		}
-		return false;		
-	}
 }
