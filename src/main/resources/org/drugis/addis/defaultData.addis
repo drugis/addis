@@ -222,14 +222,14 @@
         <populationCharacteristic description="MADRS score at baseline" name="MADRS baseline">
             <continuous unitOfMeasurement="Rating scale"/>
         </populationCharacteristic>
-        <populationCharacteristic description="" name="Sex">
+        <populationCharacteristic description="Body weight in kg" name="Weight">
+            <continuous unitOfMeasurement="kg"/>
+        </populationCharacteristic>
+        <populationCharacteristic description="Sex" name="Sex">
             <categorical>
                 <category>Male</category>
                 <category>Female</category>
             </categorical>
-        </populationCharacteristic>
-        <populationCharacteristic description="Body weight in kg" name="Weight">
-            <continuous unitOfMeasurement="kg"/>
         </populationCharacteristic>
     </populationCharacteristics>
     <studies>

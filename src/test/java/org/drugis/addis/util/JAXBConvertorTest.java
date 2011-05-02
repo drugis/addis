@@ -1572,9 +1572,18 @@ public class JAXBConvertorTest {
 	}
 	
 	@Test
-	public void testRoundTripConversion() throws Exception {
-		InputStream transformedXmlStream = getTransformed2();
-		
+	public void testDefaultDataRoundTripConversion() throws Exception {
+		doRoundTripTest(getTransformedDefaultData());
+	}
+
+
+	@Test
+	public void testSmallerDataRoundTripConversion() throws Exception {
+		doRoundTripTest(getTransformedTestData());
+	}
+
+	private void doRoundTripTest(InputStream transformedXmlStream)
+			throws JAXBException, ConversionException {
 		System.clearProperty("javax.xml.transform.TransformerFactory");
 		AddisData data = (AddisData) d_unmarshaller.unmarshal(transformedXmlStream);
 		sortMeasurements(data);
@@ -1585,11 +1594,10 @@ public class JAXBConvertorTest {
 		sortPopulationCharacteristics(data);
 		sortUsedBys(data);
 		AddisData roundTrip = JAXBConvertor.convertDomainToAddisData(domainData);
+		sortPopulationCharacteristics(roundTrip);
 		assertEquals(data, roundTrip);
 	}
-	
-	// FIXME: add additional test data sets
-	
+		
 	private void sortUsedBys(AddisData data) {
 		for (org.drugis.addis.entities.data.Study s : data.getStudies().getStudy()) {
 			for(org.drugis.addis.entities.data.StudyActivity a : s.getActivities().getStudyActivity()) {
@@ -1779,7 +1787,7 @@ public class JAXBConvertorTest {
 
 	@Test @Ignore
 	public void writeTransformedXML() throws TransformerException, IOException {
-		InputStream transformedXmlStream = getTransformed2();
+		InputStream transformedXmlStream = getTransformedDefaultData();
 		FileOutputStream output = new FileOutputStream("transformedDefaultData.xml");
 		PubMedDataBankRetriever.copyStream(transformedXmlStream, output);
 		output.close();
@@ -1788,8 +1796,11 @@ public class JAXBConvertorTest {
 		return JAXBConvertor.transformLegacyXML(JAXBConvertorTest.class.getResourceAsStream(TEST_DATA_A_0));
 	}
 	
-	private static InputStream getTransformed2() throws TransformerException, IOException {
+	private static InputStream getTransformedDefaultData() throws TransformerException, IOException {
+		return JAXBConvertor.transformToLatest(JAXBConvertorTest.class.getResourceAsStream("../defaultData.addis"), 1);
+	}
+
+	private static InputStream getTransformedTestData() throws TransformerException, IOException {
 		return JAXBConvertor.transformToLatest(getTransformed(), 1);
-//		return JAXBConvertor.transformToLatest(JAXBConvertorTest.class.getResourceAsStream("../defaultData.addis"), 1);
 	}
 }

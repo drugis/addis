@@ -111,11 +111,8 @@
 				xpath="studies/study/studyOutcomeMeasures/studyOutcomeMeasure/populationCharacteristic"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
-		<xs:key name="armIdKey">
-			<xs:selector xpath="studies/study/arms/arm"/>
-			<xs:field xpath="@name"/>
-		</xs:key>
-		<xs:keyref name="studyActivityArmIdKey" refer="armIdKey">
+
+<!--		<xs:keyref name="studyActivityArmIdKey" refer="armIdKey">
 			<xs:selector xpath="studies/study/activities/studyActivity/usedBy"/>
 			<xs:field xpath="@arm"/>
 		</xs:keyref>
@@ -133,7 +130,7 @@
 			<xs:selector xpath="metaAnalyses/*/alternative/arms/arm"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
-		<xs:key name="metaAnalysisNameKey">
+-->		<xs:key name="metaAnalysisNameKey">
 			<xs:selector xpath="metaAnalyses/*"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
@@ -227,7 +224,12 @@
 			<xs:element name="indication" type="NameReferenceWithNotes"/>
 			<xs:element name="characteristics" type="Characteristics"/>
 			<xs:element name="studyOutcomeMeasures" type="StudyOutcomeMeasures"/>
-			<xs:element name="arms" type="Arms"/>
+			<xs:element name="arms" type="Arms">
+				<xs:unique name="armsInStudyUnique">
+					<xs:selector xpath="arm"/>
+					<xs:field xpath="@name"/>
+				</xs:unique>
+			</xs:element>
 			<xs:element name="measurements" type="Measurements"/>
 			<xs:element name="epochs" type="Epochs"/>
 			<xs:element name="activities" type="StudyActivities"/>

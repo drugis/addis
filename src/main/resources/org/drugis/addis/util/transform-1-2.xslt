@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:tf="example.com"
+    xmlns:tf="http://example.com"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://drugis.org/files/addis-2.xsd"
     exclude-result-prefixes="xs tf" version="2.0">
     <xsl:output indent="yes"/>
     <xsl:strip-space elements="*"/>
@@ -82,7 +84,7 @@
                         <predefined>RANDOMIZATION</predefined>
                     </activity>
                     <xsl:for-each select="../arms/arm">
-                        <xsl:variable name="armName" select="tf:getArmName(/, @id, ../@name)"/>
+                        <xsl:variable name="armName" select="tf:getArmName(/, ../../@name, @id)"/>
                         <usedBy>
                             <xsl:attribute name="epoch">Randomization</xsl:attribute>
                             <xsl:attribute name="arm">
@@ -95,7 +97,7 @@
             </xsl:if>
 
             <xsl:for-each select="../arms/arm">
-                <xsl:variable name="armName" select="tf:getArmName(/, @id, ../@name)"/>
+                <xsl:variable name="armName" select="tf:getArmName(/, ../../@name, @id)"/>
                 <studyActivity>
                     <xsl:attribute name="name">
                         <xsl:value-of select="$armName"/>
