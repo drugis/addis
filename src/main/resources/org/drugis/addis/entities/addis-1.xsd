@@ -112,10 +112,11 @@
 			<xs:field xpath="@name"/>
 		</xs:keyref>
 		<xs:key name="armIdKey">
-			<xs:selector xpath="studies/study/arms/arm"/>
+			<xs:selector xpath="study/arms/arm"/>
 			<xs:field xpath="@id"/>
 		</xs:key>
-		<xs:keyref name="studyMeasurementArmRef" refer="armIdKey">
+		<!--	Not possible to ref. multiple keys at once 
+			<xs:keyref name="studyMeasurementArmRef" refer="armIdKey">
 			<xs:selector xpath="studies/study/measurements/measurement/arm"/>
 			<xs:field xpath="@id"/>
 		</xs:keyref>
@@ -126,7 +127,7 @@
 		<xs:keyref name="metaAnalysisArmIdKeyRef" refer="armIdKey">
 			<xs:selector xpath="metaAnalyses/*/alternative/arms/arm"/>
 			<xs:field xpath="@id"/>
-		</xs:keyref>
+		</xs:keyref> -->
 		<xs:key name="metaAnalysisNameKey">
 			<xs:selector xpath="metaAnalyses/*"/>
 			<xs:field xpath="@name"/>

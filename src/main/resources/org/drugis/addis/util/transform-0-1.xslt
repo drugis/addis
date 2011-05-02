@@ -166,13 +166,6 @@
 						<xsl:call-template name="studyCharacteristic">
 							<xsl:with-param name="characteristic">exclusion</xsl:with-param>
 						</xsl:call-template>
-						<xsl:call-template name="studyCharacteristic">
-							<xsl:with-param name="characteristic">source</xsl:with-param>
-							<xsl:with-param name="defaultValue">MANUAL</xsl:with-param>
-						</xsl:call-template>
-						<xsl:call-template name="studyCharacteristic">
-							<xsl:with-param name="characteristic">creation_date</xsl:with-param>
-						</xsl:call-template>
 						<references>
 							<xsl:for-each select="characteristics/PUBMED/pubMedId">
 								<xsl:element name="pubMedId">
@@ -180,6 +173,13 @@
 								</xsl:element>
 							</xsl:for-each>
 						</references>
+						<xsl:call-template name="studyCharacteristic">
+							<xsl:with-param name="characteristic">source</xsl:with-param>
+							<xsl:with-param name="defaultValue">MANUAL</xsl:with-param>
+						</xsl:call-template>
+						<xsl:call-template name="studyCharacteristic">
+							<xsl:with-param name="characteristic">creation_date</xsl:with-param>
+						</xsl:call-template>
 					</characteristics>
 					<studyOutcomeMeasures>
 						<xsl:for-each select="endpoints/endpoint">
