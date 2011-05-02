@@ -26,17 +26,14 @@ package org.drugis.addis.gui.wizard;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
@@ -46,6 +43,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.DropMode;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -117,9 +115,7 @@ import org.pietschy.wizard.WizardListener;
 import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.adapter.ComboBoxAdapter;
 import com.jgoodies.binding.beans.PropertyConnector;
-import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -253,11 +249,6 @@ public class AddStudyWizard extends Wizard {
 				}
 			});
 			
-			if(d_pm.getNumberArms() == 0 ) {
-				d_pm.addArms(1);
-				prepare();
-			}
-			
 			JPanel panel = d_builder.getPanel();
 			this.setLayout(new BorderLayout());
 			d_scrollPane = new JScrollPane(panel);
@@ -279,8 +270,26 @@ public class AddStudyWizard extends Wizard {
 			builder.addLabel("Size: ", cc.xy(7, rows));
 			
 			// add text fields
-			JTextField nameField = new JFormattedTextField(new DefaultFormatter());
+			JTextField nameField = new JTextField();
+			PropertyConnector.connectAndUpdate(d_pm.getArmModel(armNumber).getModel(Arm.PROPERTY_NAME), nameField, "text");
 			d_validator.add(nameField);
+			/*
+			nameField.addFocusListener(new FocusListener() {
+				
+				public void focusLost(FocusEvent e) {
+					if (!d_pm.isUniqueArmName(nameField.getText())) {
+						JOptionPane.showMessageDialog(d_dialog, "There is already a study called \"" + 
+								d_pm.getIdModel().getValue() + "\".\nPlease save under a different title.",
+								"Error: study already exists", JOptionPane.ERROR_MESSAGE);
+						setComplete(false);
+						nameField.setText("");
+					}
+				}
+				
+				public void focusGained(FocusEvent e) {
+				}
+			});			
+			*/
 			builder.add(nameField, cc.xy(5, rows));
 			
 			JTextField sizeField =  new JFormattedTextField(new DefaultFormatter());
@@ -354,7 +363,7 @@ public class AddStudyWizard extends Wizard {
 			// start epochs form
 			d_builder.addSeparator("Epochs", cc.xyw(1, 1, 5));
 			
-			for(int epochNumber = 0; epochNumber < d_pm.getNumberEpochs(); ++epochNumber) {
+			for(int epochNumber = 0; epochNumber < d_pm.getEpochs().size(); ++epochNumber) {
 				rows = addEpochComponents(d_builder, layout, cc, rows, epochNumber);
 			}
 			
@@ -373,11 +382,6 @@ public class AddStudyWizard extends Wizard {
 					prepare();
 				}
 			});
-			
-			if(d_pm.getNumberEpochs() == 0 ) {
-				//	d_pm.addEpoch("^_^");
-				//prepare();
-			}
 			
 			JPanel panel = d_builder.getPanel();
 			this.setLayout(new BorderLayout());
@@ -420,7 +424,7 @@ public class AddStudyWizard extends Wizard {
 			}
 			
 			public void actionPerformed(ActionEvent e) {
-				d_pm.removeEpoch(d_index);
+				d_pm.getEpochs().remove(d_index);
 				prepare();
 			}	
 		}
@@ -1083,6 +1087,7 @@ public class AddStudyWizard extends Wizard {
 			add(d_scrollPane, BorderLayout.CENTER);
 		}
 	}
+
 	
 	public static class EnterIdTitleWizardStep extends PanelWizardStep {
 		JPanel d_me = this;
@@ -1093,18 +1098,31 @@ public class AddStudyWizard extends Wizard {
 		private NotEmptyValidator d_validator;
 		private JScrollPane d_scrollPane;
 		private AddStudyWizardPresentation d_pm;
-		private JDialog d_dialog;
+		
+		public class IdStepValidator extends NotEmptyValidator {
+			 public IdStepValidator(ValueModel idModel) {
+				 idModel.addValueChangeListener(new PropertyChangeListener() {
+					public void propertyChange(PropertyChangeEvent evt) {
+						update();
+					}
+				});
+			}
 
+			@Override
+			public Boolean getValue() {
+				return super.getValue() && d_pm.isIdAvailable();
+			}
+		}
+		
 		public EnterIdTitleWizardStep(AddStudyWizardPresentation pm, JDialog dialog) {
 			super("Select ID and Title","Set the ID and title of the study. Studies can also be extracted from Clinicaltrials.gov using the NCT-id.");
 			d_pm = pm;
-			d_dialog = dialog;
 		}
 
 		@Override
 		public void prepare() {
 			 this.setVisible(false);
-			 d_validator = new NotEmptyValidator();
+			 d_validator = new IdStepValidator(d_pm.getIdModel());
 			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
 			 
 			 if (d_scrollPane != null)
@@ -1135,23 +1153,18 @@ public class AddStudyWizard extends Wizard {
 				d_idField = BasicComponentFactory.createTextField(d_pm.getIdModel(), false);
 				d_idField.setColumns(30);
 				bindDefaultId(d_idField);
-				d_validator.add(d_idField);
 				d_builder.add(d_idField, cc.xy(3, 3));
 				d_idField.addCaretListener(new ImportButtonEnableListener());
-				d_idField.addFocusListener(new FocusListener() {
-					
-					public void focusLost(FocusEvent e) {
+				d_idField.addCaretListener( new CaretListener() {
+					public void caretUpdate(CaretEvent e) {
 						if (!d_pm.isIdAvailable()){
-							JOptionPane.showMessageDialog(d_dialog, "There is already a study called \"" + 
-									d_pm.getIdModel().getValue() + "\".\nPlease save under a different title.",
-									"Error: study already exists", JOptionPane.ERROR_MESSAGE);
-							setComplete(false);
+							d_idField.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+						} else {
+							d_idField.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 						}
 					}
-					
-					public void focusGained(FocusEvent e) {
-					}
 				});
+				d_validator.add(d_idField);
 				
 				// add import button
 				d_importButton = GUIFactory.createIconButton(FileNames.ICON_IMPORT,
@@ -1181,7 +1194,7 @@ public class AddStudyWizard extends Wizard {
 				JButton clearButton = new JButton("Clear input");
 				clearButton.addActionListener(new AbstractAction() {
 					public void actionPerformed(ActionEvent arg0) {
-						d_pm.clearStudies();
+						d_pm.resetStudy();
 						prepare();	
 					}
 				});

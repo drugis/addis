@@ -68,6 +68,7 @@ import org.drugis.addis.presentation.StudyMeasurementTableModel;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.addis.presentation.TreatmentActivityPresentation;
 
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
@@ -181,7 +182,7 @@ public class AddStudyWizardPresentation {
 		d_endpointSelect = new SelectEndpointPresentation(d_endpointListHolder, d_mainWindow);
 		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_adverseEventListHolder, d_mainWindow);
 		d_populationCharSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder,d_mainWindow);
-		clearStudies();
+		resetStudy();
 	}
 
 	private void updateSelectionHolders() {
@@ -246,7 +247,7 @@ public class AddStudyWizardPresentation {
 		return new NoteModel(getNewStudy().getIndicationWithNotes());
 	}
 	
-	public void clearStudies() {
+	public void resetStudy() {
 		d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study(), d_pmf);
 		getSourceModel().setValue(Source.MANUAL);
 
@@ -265,32 +266,32 @@ public class AddStudyWizardPresentation {
 	}
 
 	public void addArms(int numArms) {
-		if (getNewStudy().getEpochs().isEmpty()) {
-			getNewStudy().getEpochs().add(new Epoch("Main phase", null));
+		if (getEpochs().isEmpty()) {
+			getEpochs().add(new Epoch("Main phase", null));
 		}
 		for(int i = 0; i < numArms; ++i) {
-			Arm arm = new Arm("Arm " + (i + 1), 0);
+			Arm arm = new Arm("Arm " + (getArms().size() + 1), 0);
 			StudyActivity activity = new StudyActivity("Treatment " + (i + 1), new TreatmentActivity(null, new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY)));
 			getNewStudy().getStudyActivities().add(activity);
-			getNewStudy().getArms().add(arm);
-			getNewStudy().setStudyActivityAt(arm, getNewStudy().getEpochs().get(0), activity);
+			getArms().add(arm);
+			getNewStudy().setStudyActivityAt(arm, getEpochs().get(0), activity);
 		}
 	}
 	
 	public int getNumberArms(){
-		return getNewStudy().getArms().size();
+		return getArms().size();
+	}
+
+	private List<Arm> getArms() {
+		return getNewStudy().getArms();
 	}
 	
-	public void removeArm(int armNum){ // FIXME: should update UsedBys or not be allowed if used by something?
-		getNewStudy().getArms().remove(armNum);
+	public void removeArm(int armNum){ // FIXME: should update UsedBys, or not be allowed to be used by something?
+		getArms().remove(armNum);
 	}
 	
-	public int getNumberEpochs(){
-		return getNewStudy().getEpochs().size();
-	}
-	
-	public void removeEpoch(int index){
-		getNewStudy().getEpochs().remove(index);
+	public ObservableList<Epoch> getEpochs() {
+		return getNewStudy().getEpochs();
 	}
 	
 	public DrugListHolder getDrugsModel(){
@@ -298,18 +299,18 @@ public class AddStudyWizardPresentation {
 	}
 	
 	public BasicArmPresentation getArmModel(int armNumber){
-		return new BasicArmPresentation(getNewStudy().getArms().get(armNumber), d_pmf);
+		return new BasicArmPresentation(getArms().get(armNumber), d_pmf);
 	}
 	
 	public TreatmentActivityPresentation getTreatmentActivityModel(int armNumber){
-		Arm arm = getNewStudy().getArms().get(armNumber);
+		Arm arm = getArms().get(armNumber);
 		return new TreatmentActivityPresentation(getNewStudy().getTreatment(arm), d_pmf);
 	}
 	
 	public ValueModel getArmNoteModel(int idx) {
-		if(getNewStudy().getArms().size() <= idx)
+		if(getArms().size() <= idx)
 			return null;
-		return new ArmNoteModel(getNewStudy().getArms().get(idx));
+		return new ArmNoteModel(getArms().get(idx));
 	}
 	
 	@SuppressWarnings("serial")
@@ -351,7 +352,7 @@ public class AddStudyWizardPresentation {
 	
 	
 	public Study saveStudy() {
-		if (getNewStudy().getArms().isEmpty()) 
+		if (getArms().isEmpty()) 
 			throw new IllegalStateException("No arms selected in study.");
 		if (getNewStudy().getEndpoints().isEmpty()) 
 			throw new IllegalStateException("No endpoints selected in study.");
@@ -383,6 +384,18 @@ public class AddStudyWizardPresentation {
 		}
 		
 		return false;
+	}
+	
+	public boolean isUniqueArmName(String current) {
+		if (current.isEmpty()) {
+			return true;
+		}
+		for (int i=0; i < getNumberArms(); ++i) {
+			if(getArms().get(i).getName().equals(current)) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	Study getStudy() {
@@ -449,5 +462,13 @@ public class AddStudyWizardPresentation {
 
 	public Study getOldStudy() {
 		return d_origStudy;
+	}
+
+	public boolean hasUniqueName(Arm arm) {
+		if(arm.getName().equals("")) return true;
+		if (! getArms().contains(arm)) {
+			return true;
+		}
+		return false;		
 	}
 }

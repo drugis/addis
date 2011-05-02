@@ -45,6 +45,7 @@ import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -59,7 +60,8 @@ public class AddDrugView implements ViewBuilder {
 	private JPanel d_panel; 
 
 	public AddDrugView(PresentationModel<Drug> presentationModel, JButton okButton) {
-		d_validator = new NotEmptyValidator(okButton);
+		d_validator = new NotEmptyValidator();
+		Bindings.bind(okButton, "enabled", d_validator);
 		d_model = presentationModel;
 	}
 	

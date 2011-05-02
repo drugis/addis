@@ -35,6 +35,8 @@ import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jgoodies.binding.adapter.Bindings;
+
 public class NotEmptyValidatorTest {
 	
 	private NotEmptyValidator v;
@@ -43,7 +45,8 @@ public class NotEmptyValidatorTest {
 	@Before
 	public void setUp() {
 		button = new JButton("but");
-		v = new NotEmptyValidator(button);
+		v = new NotEmptyValidator();
+		Bindings.bind(button, "enabled", v);
 	}
 	
 	@Test

@@ -53,11 +53,6 @@ public class NotEmptyValidator extends AbstractValueModel{
 	private DocumentListener d_myTextListener = new MyTextListener();
 	private ComboBoxListener d_myActionListener = new ComboBoxListener();
 	private MyListDataListener d_myListDataChangeListener = new MyListDataListener();
-	private JButton button = new JButton();
-	
-	public NotEmptyValidator(JButton button) {
-		this.button = button;
-	}
 	
 	public NotEmptyValidator() {
 		
@@ -77,20 +72,23 @@ public class NotEmptyValidator extends AbstractValueModel{
 		} else if (field instanceof JList) {
 			((JList) field).getModel().addListDataListener(d_myListDataChangeListener);
 			d_fields.add(field);
-		}
+		} 
 		
 		/* If we are dealing with a container component, add all components recursively */
-		else if (field instanceof JComponent){
+		else if (field instanceof Container){
 			Container pane = (Container) field;
 			for (Component component : pane.getComponents())
 				if (component instanceof JComponent)
 					add((JComponent) component);
+		} else {
+			System.out.println("Unknown component type in validator");
 		}
-		checkFieldsEmptyForButton();
+		update();
 	}
 	
-	private void checkFieldsEmptyForButton() {
-		button.setEnabled(!checkFieldsEmpty());
+	public void update() {
+		Boolean value = getValue();
+		fireValueChange(null, value);
 	}
 
 	private boolean checkFieldsEmpty() {
@@ -121,49 +119,48 @@ public class NotEmptyValidator extends AbstractValueModel{
 			}
 			
 		}
-		fireValueChange(null, !empty);
 		return empty;
 	}	
 	
 	private class MyListDataListener implements ListDataListener {
 
 		public void contentsChanged(ListDataEvent arg0) {
-			checkFieldsEmptyForButton();
+			update();
 			
 		}
 
 		public void intervalAdded(ListDataEvent arg0) {
-			checkFieldsEmptyForButton();
+			update();
 			
 		}
 
 		public void intervalRemoved(ListDataEvent arg0) {
-			checkFieldsEmptyForButton();
+			update();
 		}
 		
 	}
 	
 	private class ComboBoxListener implements ActionListener, ItemListener{
 		public void actionPerformed(ActionEvent arg0) {
-			checkFieldsEmptyForButton();
+			update();
 		}
 
 		public void itemStateChanged(ItemEvent arg0) {
-			checkFieldsEmptyForButton();
+			update();
 		}
 	}
 	
 	private class MyTextListener implements DocumentListener {
 		public void changedUpdate(DocumentEvent arg0) {
-			checkFieldsEmptyForButton();			
+			update();			
 		}
 
 		public void insertUpdate(DocumentEvent arg0) {
-			checkFieldsEmptyForButton();
+			update();
 		}
 
 		public void removeUpdate(DocumentEvent arg0) {
-			checkFieldsEmptyForButton();
+			update();
 		}
 	}
 	

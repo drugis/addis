@@ -36,6 +36,7 @@ import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -48,7 +49,8 @@ public class AddIndicationView implements ViewBuilder {
 	private NotEmptyValidator d_validator;
 	
 	public AddIndicationView(PresentationModel<Indication> model, JButton okButton) {
-		d_validator = new NotEmptyValidator(okButton);
+		d_validator = new NotEmptyValidator();
+		Bindings.bind(okButton, "enabled", d_validator);
 		d_model = model;
 	}
 	

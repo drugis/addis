@@ -92,7 +92,7 @@ public class AddStudyWizardPresentationTest {
 	@Test
 	public void testClearStudies() throws MalformedURLException, IOException {
 		importStudy();
-		d_wizardImported.clearStudies();
+		d_wizardImported.resetStudy();
 		assertEquals(Source.MANUAL, d_wizardImported.getSourceModel().getValue());
 		assertEquals(null, d_wizardImported.getTitleModel().getValue());
 		assertEquals(null,d_wizardImported.getIndicationNoteModel().getValue());

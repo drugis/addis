@@ -79,7 +79,8 @@ public class AddVariableView implements ViewBuilder {
 	public AddVariableView(PresentationModel<Variable> model, JButton okButton) {
 		d_model = (VariablePresentation) model;
 		d_dOkButton = okButton;
-		d_validator = new NotEmptyValidator(d_dOkButton);
+		d_validator = new NotEmptyValidator();
+		Bindings.bind(d_dOkButton, "enabled", d_validator);
 	}
 	
 	private void initComponents() {
