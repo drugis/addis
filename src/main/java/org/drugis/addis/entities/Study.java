@@ -723,18 +723,25 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		}
 		return null;
 	}
-
-	public static Arm createArm(Study study, String name, Integer size,
-			Drug drug, AbstractDose dose) {
+	
+	/**
+	 * Creates an Arm, adds it to the Study and creates an appropriate TreatmentActivity in the last Epoch.
+	 * @param name Name of the arm to be created.
+	 * @param size Number of subjects in the arm to be created.
+	 * @param drug The drug administered.
+	 * @param dose The dose administered.
+	 * @return The created arm, already added and embedded in the study structure.
+	 */
+	public Arm createAndAddArm(String name, Integer size, Drug drug, AbstractDose dose) {
 		Arm arm = new Arm(name, size);
-		study.getArms().add(arm);
+		getArms().add(arm);
 		StudyActivity studyActivity = new StudyActivity(name + " treatment", new TreatmentActivity(drug, dose));
-		study.getStudyActivities().add(studyActivity);
-		if (study.getEpochs().isEmpty()) {
-			study.getEpochs().add(new Epoch("Main phase", null));
+		getStudyActivities().add(studyActivity);
+		if (getEpochs().isEmpty()) {
+			getEpochs().add(new Epoch("Main phase", null));
 		}
-		Epoch epoch = study.getEpochs().get(study.getEpochs().size() - 1);
-		study.setStudyActivityAt(arm, epoch, studyActivity);
+		Epoch epoch = getEpochs().get(getEpochs().size() - 1);
+		this.setStudyActivityAt(arm, epoch, studyActivity);
 		return arm;
 	}
 }

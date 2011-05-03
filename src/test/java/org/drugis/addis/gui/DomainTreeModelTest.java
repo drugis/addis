@@ -85,7 +85,7 @@ public class DomainTreeModelTest {
 		d_firstStudy = new Study("First", d_firstIndication);
 		d_firstDrug = new Drug("Drug", "atc");
 		
-		Arm pg = Study.createArm(d_firstStudy, "first", 100, d_firstDrug, new FixedDose(100.0, SIUnit.MILLIGRAMS_A_DAY));
+		Arm pg = d_firstStudy.createAndAddArm("first", 100, d_firstDrug, new FixedDose(100.0, SIUnit.MILLIGRAMS_A_DAY));
 		
 		d_firstStudy.addEndpoint(d_firstEndpoint);
 		d_firstStudy.addAdverseEvent(d_firstADE);
