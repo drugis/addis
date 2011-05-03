@@ -874,7 +874,7 @@ public class JAXBConvertor {
 		}
 		
 		List<Arm> arms = convertStudyArms(study.getArms());
-		newStudy.setArms(arms);
+		newStudy.getArms().addAll(arms);
 
 		newStudy.getEpochs().addAll(convertEpochs(study.getEpochs()));
 

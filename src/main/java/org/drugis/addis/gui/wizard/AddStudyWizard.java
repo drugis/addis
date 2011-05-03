@@ -82,7 +82,9 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PubMedIdList;
@@ -102,7 +104,6 @@ import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.components.NotesView;
 import org.drugis.addis.imports.PubMedIDRetriever;
-import org.drugis.addis.presentation.ListOfNamedValidator;
 import org.drugis.addis.presentation.DosePresentation;
 import org.drugis.addis.presentation.NotesModel;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
@@ -188,236 +189,65 @@ public class AddStudyWizard extends Wizard {
 	}
 	
 	private static NotesView buildNotesEditor(TypeWithNotes obj) {
-		return new NotesView(new NotesModel(obj.getNotes()), true);
+		return buildNotesEditor(obj.getNotes());
+	}
+
+	static NotesView buildNotesEditor(List<Note> notes) {
+		return new NotesView(new NotesModel(notes), true);
 	}
 	
 	// -- Wizard Steps
 	
-	public static class AddArmsWizardStep extends PanelWizardStep {
-		JPanel d_me = this;
-		private PanelBuilder d_builder;
-		private JScrollPane d_scrollPane;
-		
+	public static class AddArmsWizardStep extends AddListItemsWizardStep<Arm> {
 		private AddStudyWizardPresentation d_pm;
-		private ListOfNamedValidator<Arm> d_validator;
-		
 		public AddArmsWizardStep(AddStudyWizardPresentation pm) {
-			super("Add arms", "Enter the arms for this study.");
-			
+			super("Add arms", "Enter the arms for this study.", "Arm", pm.getArms(), 2);
 			d_pm = pm;
-			if (d_pm.isEditing())
-				setComplete(true);
-			d_validator = new ListOfNamedValidator<Arm>(d_pm.getArms(), 2);
-		}
-		
-		public void rebuild() { 
-			 this.setVisible(false);
-			 
-			 if (d_scrollPane != null)
-				 remove(d_scrollPane);
-			 buildWizardStep();
-			 
-			 this.setVisible(true);
 		}
 		
 		@Override
-		public void prepare() {
-			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
-			 rebuild();
-		 }
-
-		private void buildWizardStep() {
-			FormLayout layout = new FormLayout(
-					"left:pref, 3dlu, right:pref, 3dlu, pref:grow, 7dlu, right:pref, 3dlu, pref",
-					"p"
-					);
-			layout.setColumnGroups(new int[][]{{3, 7}, {5, 9}});
-			d_builder = new PanelBuilder(layout);
-			d_builder.setDefaultDialogBorder();
-			CellConstraints cc = new CellConstraints();
-			
-			int rows = 1;
-			
-			// start arms form
-			d_builder.addSeparator("Arms", cc.xyw(1, 1, 9));
-			
-			for(int armNumber = 0; armNumber < d_pm.getArms().size(); ++armNumber) {
-				rows = addArmComponents(d_builder, layout, cc, rows, armNumber);
-			}
-			
-			// add 'Add Arm' button 
-			LayoutUtil.addRow(layout); rows+=2;
-			JButton armBtn = new JButton("Add Arm");
-			d_builder.add(armBtn, cc.xy(1, rows));
-			armBtn.addActionListener(new AbstractAction() {
-				public void actionPerformed(ActionEvent e) {
-					d_pm.getArms().add(new Arm(d_pm.nextArmName(), 0));
-					rebuild();
-				}
-			});
-			
-			JPanel panel = d_builder.getPanel();
-			this.setLayout(new BorderLayout());
-			d_scrollPane = new JScrollPane(panel);
-			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-		
-			add(d_scrollPane, BorderLayout.CENTER);
+		protected Arm createItem() {
+			return new Arm(d_pm.nextArmName(), 0);
 		}
-
-		private int addArmComponents(PanelBuilder builder, FormLayout layout, CellConstraints cc, int rows, int armNumber) {
-			LayoutUtil.addRow(layout); rows+=2;
-			
-			// add 'remove arm button' 
-			JButton removeBtn = new JButton("Remove");
-			builder.add(removeBtn, cc.xy(1, rows));
-			removeBtn.addActionListener(new RemoveArmListener(armNumber));
-			
-			// add labels
-			builder.addLabel("Name: ", cc.xy (3,  rows));
+		
+		@Override
+		protected void addAdditionalFields(PanelBuilder builder,
+				CellConstraints cc, int rows, int idx) {
 			builder.addLabel("Size: ", cc.xy(7, rows));
-			
-			// add text fields
-			
-			JTextField nameField = BasicComponentFactory.createTextField(
-					d_pm.getArmModel(armNumber).getModel(Arm.PROPERTY_NAME), false);
-			builder.add(nameField, cc.xy(5, rows));
-			
 			JTextField sizeField = BasicComponentFactory.createFormattedTextField(
-					d_pm.getArmModel(armNumber).getModel(Arm.PROPERTY_SIZE), new DefaultFormatter()); 
+					d_pm.getArmModel(idx).getModel(Arm.PROPERTY_SIZE), new DefaultFormatter()); 
 			sizeField.setColumns(4);
 			builder.add(sizeField, cc.xy(9, rows));
-			
-			// add notes
-			LayoutUtil.addRow(layout); rows+=2;
-			d_builder.add(buildNotesEditor(d_pm.getNewStudyPM().getBean().getArms().get(armNumber)), cc.xyw(5, rows, 5));
-			LayoutUtil.addRow(layout); rows+=2;
-			
-			return rows;
 		}
-		
-		private class RemoveArmListener extends AbstractAction {
-			int d_index;
-			
-			public RemoveArmListener(int index) {
-				d_index = index;
-			}
-			
-			public void actionPerformed(ActionEvent e) {
-				d_pm.getArms().remove(d_index);
-				rebuild();
-			}	
+
+		@Override
+		protected List<Note> getNotes(Arm t) {
+			return t.getNotes();
 		}
+
 	}
 	
-	public static class AddEpochsWizardStep extends PanelWizardStep {
-		JPanel d_me = this;
-		private PanelBuilder d_builder;
-		private JScrollPane d_scrollPane;
-		
+	public static class AddEpochsWizardStep extends AddListItemsWizardStep<Epoch> {
 		private AddStudyWizardPresentation d_pm;
-		private NotEmptyValidator d_validator;
-		
 		public AddEpochsWizardStep(AddStudyWizardPresentation pm) {
-			super("Add epochs", "Enter the epochs for this study.");
-			
+			super("Add epochs", "Enter the epochs for this study.", "Epoch", pm.getEpochs(), 1);
 			d_pm = pm;
-			if (d_pm.isEditing())
-				setComplete(true);
 		}
 		
 		@Override
-		public void prepare() {
-			 this.setVisible(false);
-			 d_validator = new NotEmptyValidator();
-			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
-			 
-			 if (d_scrollPane != null)
-				 remove(d_scrollPane);
-			 
-			 buildWizardStep();
-			 this.setVisible(true);
-			 repaint();
-		 }
-
-		private void buildWizardStep() {
-			FormLayout layout = new FormLayout(
-					"left:pref, 3dlu, right:pref, 3dlu, pref:grow",
-					"p"
-					);
-			d_builder = new PanelBuilder(layout);
-			d_builder.setDefaultDialogBorder();
-			CellConstraints cc = new CellConstraints();
-			
-			int rows = 1;
-			// start epochs form
-			d_builder.addSeparator("Epochs", cc.xyw(1, 1, 5));
-			
-			for(int epochNumber = 0; epochNumber < d_pm.getEpochs().size(); ++epochNumber) {
-				rows = addEpochComponents(d_builder, layout, cc, rows, epochNumber);
-			}
-			
-			//TODO: remove next 2 lines when addEpoch is written
-			rows = addEpochComponents(d_builder, layout, cc, rows, 1);
-			rows = addEpochComponents(d_builder, layout, cc, rows, 2);
-			
-			// add 'Add Epoch' button 
-			LayoutUtil.addRow(layout); rows+=2;
-			JButton epochBtn = new JButton("Add Epoch");
-			d_builder.add(epochBtn, cc.xy(1, rows));
-			epochBtn.addActionListener(new AbstractAction() {
-				public void actionPerformed(ActionEvent e) {
-					//TODO: write addEpoch method
-					//	d_pm.addEpoch("^_^");
-					prepare();
-				}
-			});
-			
-			JPanel panel = d_builder.getPanel();
-			this.setLayout(new BorderLayout());
-			d_scrollPane = new JScrollPane(panel);
-			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-		
-			add(d_scrollPane, BorderLayout.CENTER);
+		protected void addAdditionalFields(PanelBuilder builder, CellConstraints cc, int rows, int idx) {
 		}
 
-		private int addEpochComponents(PanelBuilder builder, FormLayout layout, CellConstraints cc, int rows, int epochNumber) {
-			LayoutUtil.addRow(layout); rows+=2;
-			
-			// add 'remove epoch button' 
-			JButton removeBtn = new JButton("Remove");
-			builder.add(removeBtn, cc.xy(1, rows));
-			removeBtn.addActionListener(new RemoveEpochListener(epochNumber));
-			
-			// add labels
-			builder.addLabel("Name: ", cc.xy(3,  rows));
-			
-			// add text field
-			JTextField nameField = new JFormattedTextField(new DefaultFormatter());
-			d_validator.add(nameField);
-			builder.add(nameField, cc.xy(5, rows));
-			
-			// add note
-			LayoutUtil.addRow(layout); rows+=2;
-			// TODO: uncomment this when addEpoch is done
-			//d_builder.add(buildNotesEditor(d_pm.getNewStudyPM().getBean().getEpochs().get(epochNumber)), cc.xy(5, rows));
-			LayoutUtil.addRow(layout); rows+=2;
-			
-			return rows;
+		@Override
+		protected Epoch createItem() {
+			return new Epoch(d_pm.nextEpochName(), null);
 		}
-		
-		private class RemoveEpochListener extends AbstractAction {
-			int d_index;
-			
-			public RemoveEpochListener(int index) {
-				d_index = index;
-			}
-			
-			public void actionPerformed(ActionEvent e) {
-				d_pm.getEpochs().remove(d_index);
-				prepare();
-			}	
+
+		@Override
+		protected List<Note> getNotes(Epoch t) {
+			return t.getNotes();
 		}
-	}	
+	}
 	
 	public static class AssignActivitiesWizardStep extends PanelWizardStep{
 		JPanel d_me = this;

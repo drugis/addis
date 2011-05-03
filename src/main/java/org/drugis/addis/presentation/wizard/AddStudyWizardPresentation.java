@@ -172,6 +172,7 @@ public class AddStudyWizardPresentation {
 	private Study d_origStudy = null;
 	private AddisWindow d_mainWindow;
 	private int d_armsCreated = 0;
+	private int d_epochsCreated = 0;
 	
 	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, AddisWindow mainWindow) {
 		d_domain = d;
@@ -252,10 +253,15 @@ public class AddStudyWizardPresentation {
 		d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study(), d_pmf);
 		getSourceModel().setValue(Source.MANUAL);
 		
-		d_armsCreated = 0;
 		// Add 2 arms by default:
+		d_armsCreated = 0;
 		getArms().add(new Arm(nextArmName(), 0));
 		getArms().add(new Arm(nextArmName(), 0));
+
+		// Add 1 epoch by default:
+		d_epochsCreated = 0;
+		getEpochs().add(new Epoch(nextEpochName(), null));
+		
 		updateSelectionHolders();
 		d_endpointSelect.addSlot(); // by default have 1 endpoint slot.
 	}
@@ -451,6 +457,10 @@ public class AddStudyWizardPresentation {
 
 	public String nextArmName() {
 		return "Arm " + (++d_armsCreated);
+	}
+
+	public String nextEpochName() {
+		return "Epoch " + (++d_epochsCreated );
 	}
 
 }

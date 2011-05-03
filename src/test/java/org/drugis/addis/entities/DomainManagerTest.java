@@ -29,17 +29,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.transform.TransformerException;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.imports.PubMedDataBankRetriever;
-import org.drugis.addis.imports.PubMedIDRetriever;
-import org.drugis.addis.util.JAXBConvertor;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
