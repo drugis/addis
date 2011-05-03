@@ -130,7 +130,7 @@ public abstract class RelativeEffectTableModelBaseTest {
 
 	@Test
 	public void testGetDescription() {
-		String description = d_threeArmModel.getTitle() + " for \"" + d_threeArmStudy.getStudyId()
+		String description = d_threeArmModel.getTitle() + " for \"" + d_threeArmStudy.getName()
 				+ "\" on Endpoint \"" + d_endpoint.getName() + "\"";
 		assertEquals(description, d_threeArmModel.getDescription());
 	}

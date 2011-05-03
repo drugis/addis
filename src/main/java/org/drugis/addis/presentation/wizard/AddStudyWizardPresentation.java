@@ -207,11 +207,11 @@ public class AddStudyWizardPresentation {
 	}
 	
 	public ValueModel getIdModel() {
-		return d_newStudyPM.getModel(Study.PROPERTY_ID);
+		return d_newStudyPM.getModel(Study.PROPERTY_NAME);
 	}
 	
 	public ValueModel getIdNoteModel() {
-		return new NoteModel(getNewStudy().getStudyIdWithNotes());
+		return new NoteModel(getNewStudy().getNameWithNotes());
 	}
 	
 	public ValueModel getTitleModel() {
@@ -371,7 +371,7 @@ public class AddStudyWizardPresentation {
 	}
 
 	public boolean isIdAvailable() {
-		if(getNewStudy().getStudyId() == null) return true;
+		if(getNewStudy().getName() == null) return true;
 		if (!d_domain.getStudies().contains(getNewStudy())) {
 			return true;
 		}

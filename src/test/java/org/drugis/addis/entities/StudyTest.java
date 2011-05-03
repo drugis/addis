@@ -64,7 +64,7 @@ public class StudyTest {
 		// Add some notes to test them being cloned.
 		d_orig.getArms().get(1).getNotes().add(d_note);
 		d_orig.getStudyAdverseEvents().get(0).getNotes().add(d_note);
-		d_orig.getStudyIdWithNotes().getNotes().add(d_note);
+		d_orig.getNameWithNotes().getNotes().add(d_note);
 		ObjectWithNotes<Object> val = new ObjectWithNotes<Object>(null);
 		val.getNotes().add(d_note);
 		d_orig.setCharacteristicWithNotes(BasicStudyCharacteristic.SOURCE,
@@ -76,7 +76,7 @@ public class StudyTest {
 	
 	@Test
 	public void testSetId() {
-		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_ID, "X", "NCT00351273");
+		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_NAME, "X", "NCT00351273");
 	}
 	
 	@Test
@@ -290,7 +290,7 @@ public class StudyTest {
 		Study study1 = new Study("Title", ExampleData.buildIndicationDepression());
 		Study study2 = new Study("Other Title", ExampleData.buildIndicationDepression());
 		assertFalse(study1.deepEquals(study2));
-		study2.setStudyId("Title");
+		study2.setName("Title");
 		assertTrue(study1.deepEquals(study2));
 		
 		// indication
@@ -365,9 +365,9 @@ public class StudyTest {
 		study2.setMeasurement(ExampleData.buildAdverseEventConvulsion(), arm, new BasicRateMeasurement(50, 100));
 		assertTrue(study1.deepEquals(study2));
 		
-		study1.getStudyIdWithNotes().getNotes().add(new Note(Source.MANUAL, "testnote"));
+		study1.getNameWithNotes().getNotes().add(new Note(Source.MANUAL, "testnote"));
 		assertFalse(study1.deepEquals(study2));
-		study2.getStudyIdWithNotes().getNotes().add(new Note(Source.MANUAL, "testnote"));
+		study2.getNameWithNotes().getNotes().add(new Note(Source.MANUAL, "testnote"));
 		assertTrue(study1.deepEquals(study2));
 	}
 	

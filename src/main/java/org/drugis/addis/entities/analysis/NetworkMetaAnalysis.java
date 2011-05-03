@@ -123,11 +123,11 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 					Measurement m = s.getMeasurement(v, a);
 					if(m instanceof BasicRateMeasurement) {
 						BasicRateMeasurement brm = (BasicRateMeasurement)m;	
-						((DichotomousNetworkBuilder) getTypedBuilder(brm)).add(s.getStudyId(), s.getDrug(a).getName(),
+						((DichotomousNetworkBuilder) getTypedBuilder(brm)).add(s.getName(), s.getDrug(a).getName(),
 																			   brm.getRate(), brm.getSampleSize());
 					} else if (m instanceof BasicContinuousMeasurement) {
 						BasicContinuousMeasurement cm = (BasicContinuousMeasurement) m;
-						((ContinuousNetworkBuilder) getTypedBuilder(cm)).add(s.getStudyId(), s.getDrug(a).getName(),
+						((ContinuousNetworkBuilder) getTypedBuilder(cm)).add(s.getName(), s.getDrug(a).getName(),
 																	           cm.getMean(), cm.getStdDev(), cm.getSampleSize());
 					}
 				}

@@ -1054,7 +1054,7 @@ public class JAXBConvertorTest {
 		
 		//----------------------------------------
 		Study study2 = new Study();
-		study2.setStudyId(name);
+		study2.setName(name);
 		study2.setIndication(ExampleData.buildIndicationDepression());
 		study2.addEndpoint(ExampleData.buildEndpointHamd());
 		study2.addEndpoint(ExampleData.buildEndpointCgi());
@@ -1146,7 +1146,7 @@ public class JAXBConvertorTest {
 		
 		Note idNote = new Note(Source.CLINICALTRIALS, "NCT1337");
 		studyData.getNotes().getNote().add(JAXBConvertor.convertNote(idNote));
-		studyEntity.getStudyIdWithNotes().getNotes().add(idNote);
+		studyEntity.getNameWithNotes().getNotes().add(idNote);
 		
 		assertEntityEquals(studyEntity, JAXBConvertor.convertStudy(studyData, domain));
 		assertEquals(studyData, JAXBConvertor.convertStudy(studyEntity));

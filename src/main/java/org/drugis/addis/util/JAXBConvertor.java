@@ -363,7 +363,7 @@ public class JAXBConvertor {
 
 	private static Study findStudy(String name, Domain domain) {
 		for (Study s : domain.getStudies()) {
-			if (s.getStudyId().equals(name)) {
+			if (s.getName().equals(name)) {
 				return s;
 			}
 		}
@@ -864,7 +864,7 @@ public class JAXBConvertor {
 	
 	static Study convertStudy(org.drugis.addis.entities.data.Study study, Domain domain) throws ConversionException {
 		Study newStudy = new Study();
-		newStudy.setStudyId(study.getName());
+		newStudy.setName(study.getName());
 		newStudy.setIndication(findIndication(domain, study.getIndication().getName()));
 		convertNotes(study.getIndication().getNotes().getNote(), newStudy.getIndicationWithNotes().getNotes());
 		
@@ -888,7 +888,7 @@ public class JAXBConvertor {
 			newStudy.setMeasurement(m.getKey(), m.getValue());
 		}
 		
-		convertNotes(study.getNotes().getNote(), newStudy.getStudyIdWithNotes().getNotes());
+		convertNotes(study.getNotes().getNote(), newStudy.getNameWithNotes().getNotes());
 		
 		return newStudy;
 	}
@@ -931,7 +931,7 @@ public class JAXBConvertor {
 
 	public static org.drugis.addis.entities.data.Study convertStudy(Study study) throws ConversionException {
 		org.drugis.addis.entities.data.Study newStudy = new org.drugis.addis.entities.data.Study();
-		newStudy.setName(study.getStudyId());
+		newStudy.setName(study.getName());
 		NameReferenceWithNotes indication = nameReferenceWithNotes(study.getIndication().getName());
 		convertOldNotes(study.getIndicationWithNotes().getNotes(), indication.getNotes().getNote());
 		newStudy.setIndication(indication);
@@ -964,7 +964,7 @@ public class JAXBConvertor {
 		newStudy.setCharacteristics(convertStudyCharacteristics(study.getCharacteristics()));
 		
 		Notes notes = new Notes();
-		convertOldNotes(study.getStudyIdWithNotes().getNotes(), notes.getNote());
+		convertOldNotes(study.getNameWithNotes().getNotes(), notes.getNote());
 		newStudy.setNotes(notes);
 		
 		return newStudy ;
@@ -1037,7 +1037,7 @@ public class JAXBConvertor {
 				} else {
 					arm = item.getSubject();
 				}
-				arms.getArm().add(armReference(item.getStudy().getStudyId(), arm.getName()));
+				arms.getArm().add(armReference(item.getStudy().getName(), arm.getName()));
 			}
 			alt.setArms(arms);
 			pwma.getAlternative().add(alt);
@@ -1088,7 +1088,7 @@ public class JAXBConvertor {
 			for(Study study : ma.getIncludedStudies()) {
 				Arm arm = ma.getArm(study, d);
 				if (arm != null) {
-					arms.getArm().add(armReference(study.getStudyId(), arm.getName()));
+					arms.getArm().add(armReference(study.getName(), arm.getName()));
 				}
 			}
 			alt.setArms(arms);
@@ -1179,7 +1179,7 @@ public class JAXBConvertor {
 		newBr.setName(br.getName());
 		newBr.setAnalysisType(br.getAnalysisType());
 		newBr.setIndication(nameReference(br.getIndication().getName()));
-		newBr.setStudy(nameReference(br.getStudy().getStudyId()));
+		newBr.setStudy(nameReference(br.getStudy().getName()));
 		
 		OutcomeMeasuresReferences oms = new OutcomeMeasuresReferences();
 		for (OutcomeMeasure om : br.getCriteria()) {
@@ -1195,7 +1195,7 @@ public class JAXBConvertor {
 		
 		ArmReferences arms = new ArmReferences();
 		for (Arm arm : br.getAlternatives()) {
-			arms.getArm().add(armReference(br.getStudy().getStudyId(), arm.getName()));
+			arms.getArm().add(armReference(br.getStudy().getName(), arm.getName()));
 		}
 		newBr.setArms(arms);
 		

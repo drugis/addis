@@ -329,14 +329,14 @@ public class DomainTest {
 		List<Endpoint> l1 = new ArrayList<Endpoint>();
 		l1.add(e1);
 		Study s1 = new Study("X", d_indication);
-		s1.setStudyId("s1");
+		s1.setName("s1");
 		s1.setEndpoints(l1);
 		
 		ArrayList<Endpoint> l2 = new ArrayList<Endpoint>();
 		l2.add(e2);
 		l2.add(e1);
 		Study s2 = new Study("X", d_indication);
-		s2.setStudyId("s2");
+		s2.setName("s2");
 		s2.setEndpoints(l2);
 		
 		ListHolder<Study> e1Studies = d_domain.getStudies(e1);

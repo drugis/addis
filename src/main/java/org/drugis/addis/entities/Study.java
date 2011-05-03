@@ -41,7 +41,7 @@ import org.drugis.common.EqualsUtil;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
-public class Study extends AbstractEntity implements Comparable<Study>, Entity {
+public class Study extends AbstractEntity implements Comparable<Study>, Entity, TypeWithName {
 
 	public static class MeasurementKey extends AbstractEntity implements Entity {
 
@@ -109,7 +109,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		}
 	}
 
-	public final static String PROPERTY_ID = "studyId";
 	public final static String PROPERTY_INDICATION = "indication";
 	public final static String PROPERTY_CHARACTERISTICS = "characteristics";
 	
@@ -121,7 +120,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	public final static String PROPERTY_EPOCHS = "epochs";
 	public final static String PROPERTY_STUDY_ACTIVITIES = "studyActivities";
 	
-	private ObjectWithNotes<String> d_studyId;
+	private ObjectWithNotes<String> d_name;
 	private ObjectWithNotes<Indication> d_indication;
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	
@@ -137,13 +136,13 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	
 	public Study() {
 		d_indication = new ObjectWithNotes<Indication>(null);
-		d_studyId = new ObjectWithNotes<String>(null);
+		d_name = new ObjectWithNotes<String>(null);
 	}
 
 	@Override
 	public Study clone() {
 		Study newStudy = new Study();
-		newStudy.d_studyId = d_studyId.clone();
+		newStudy.d_name = d_name.clone();
 		newStudy.d_indication = d_indication.clone();
 
 		newStudy.setArms(cloneArms());
@@ -209,7 +208,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 	}
 
 	public Study(String id, Indication i) {
-		d_studyId = new ObjectWithNotes<String>(id);
+		d_name = new ObjectWithNotes<String>(id);
 		d_indication = new ObjectWithNotes<Indication>(i);
 		setArms(new ArrayList<Arm>());
 		setCharacteristic(BasicStudyCharacteristic.CREATION_DATE, DateUtil.getCurrentDateWithoutTime());
@@ -351,40 +350,40 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return d_chars;
 	}
 
-	public String getStudyId() {
-		return d_studyId.getValue();
+	public String getName() {
+		return d_name.getValue();
 	}
 
-	public void setStudyId(String id) {
-		String oldVal = d_studyId.getValue();
-		d_studyId.setValue(id);
-		firePropertyChange(PROPERTY_ID, oldVal, id);
+	public void setName(String name) {
+		String oldVal = d_name.getValue();
+		d_name.setValue(name);
+		firePropertyChange(PROPERTY_NAME, oldVal, name);
 	}
 
 	@Override
 	public String toString() {
-		return getStudyId();
+		return getName();
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Study) {
 			Study other = (Study)o;
-			if (other.getStudyId() == null) {
-				return getStudyId() == null;
+			if (other.getName() == null) {
+				return getName() == null;
 			}
-			return other.getStudyId().equals(getStudyId());
+			return other.getName().equals(getName());
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return getStudyId() == null ? 0 : getStudyId().hashCode();
+		return getName() == null ? 0 : getName().hashCode();
 	}
 
 	public int compareTo(Study other) {
-		return getStudyId().compareTo(other.getStudyId());
+		return getName().compareTo(other.getName());
 	}
 
 	public Measurement getMeasurement(Variable v, Arm g) {
@@ -654,8 +653,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 		return d_populationChars;
 	}
 
-	public ObjectWithNotes<?> getStudyIdWithNotes() {
-		return d_studyId;
+	public ObjectWithNotes<?> getNameWithNotes() {
+		return d_name;
 	}
 	
 	public ObjectWithNotes<?> getIndicationWithNotes() {
@@ -711,7 +710,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity {
 				EntityUtil.deepEqual(other.getEpochs(), getEpochs()) &&
 				EntityUtil.deepEqual(other.getStudyActivities(), getStudyActivities()) &&
 				EntityUtil.deepEqual(other.getMeasurements(), getMeasurements()) && 
-				EqualsUtil.equal(other.getStudyIdWithNotes().getNotes(), getStudyIdWithNotes().getNotes());
+				EqualsUtil.equal(other.getNameWithNotes().getNotes(), getNameWithNotes().getNotes());
 	}
 
 	public Arm findArm(String armName) {

@@ -117,15 +117,15 @@ public class AddStudyWizardPresentationTest {
 	
 	@Test
 	public void testCheckID() {
-		d_wizard.getNewStudyPM().getBean().setStudyId("This is not in the domain");
+		d_wizard.getNewStudyPM().getBean().setName("This is not in the domain");
 		assertEquals(true, d_wizard.isIdAvailable());
-		d_wizard.getIdModel().setValue(d_domain.getStudies().first().getStudyId());
+		d_wizard.getIdModel().setValue(d_domain.getStudies().first().getName());
 		assertEquals(false,d_wizard.isIdAvailable());
 	}
 	
 	@Test
 	public void testSaveStudy() {
-		d_wizard.getNewStudyPM().getBean().setStudyId("This is not in the domain");
+		d_wizard.getNewStudyPM().getBean().setName("This is not in the domain");
 		d_wizard.getEndpointSelectModel().getSlot(0).setValue(d_domain.getEndpoints().first());
 		d_wizard.getIndicationModel().setValue(d_domain.getIndications().first());
 		d_wizard.saveStudy();
@@ -143,7 +143,7 @@ public class AddStudyWizardPresentationTest {
 	
 	@Test(expected=IllegalStateException.class)
 	public void testSaveIllegalID() throws InvalidStateException {
-		d_wizard.getIdModel().setValue(d_domain.getStudies().first().getStudyId());
+		d_wizard.getIdModel().setValue(d_domain.getStudies().first().getName());
 		d_wizard.getEndpointSelectModel().getSlot(0).setValue(d_domain.getEndpoints().first());
 		d_wizard.getIndicationModel().setValue(d_domain.getIndications().first());
 		d_wizard.saveStudy();

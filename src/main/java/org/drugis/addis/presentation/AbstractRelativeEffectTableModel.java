@@ -86,7 +86,7 @@ implements RelativeEffectTableModel {
 	}
 
 	public String getDescription() {
-		return getTitle() + " for \"" + d_study.getStudyId() 
+		return getTitle() + " for \"" + d_study.getName() 
 				+ "\" on Endpoint \"" + d_outMeas.getName() + "\"";
 	}
 
