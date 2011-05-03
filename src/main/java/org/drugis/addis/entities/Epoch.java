@@ -10,16 +10,14 @@ import javax.xml.datatype.Duration;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.EqualsUtil;
 
-public class Epoch extends AbstractEntity implements TypeWithNotes {
-	public static final String PROPERTY_NAME = "name";
+public class Epoch extends AbstractNamedEntity<Epoch> implements TypeWithNotes {
 	public static final String PROPERTY_DURATION = "duration";
 
-	private String d_name;
 	private Duration d_duration;
 	private List<Note> d_notes = new ArrayList<Note>();
 	
 	public Epoch(String name, Duration duration) {
-		d_name = name;
+		super(name);
 		d_duration = duration;
 	}
 
@@ -30,16 +28,6 @@ public class Epoch extends AbstractEntity implements TypeWithNotes {
 	@Override
 	public Set<? extends Entity> getDependencies() {
 		return Collections.emptySet();
-	}
-
-	public void setName(String name) {
-		String oldValue = d_name;
-		d_name = name;
-		firePropertyChange(PROPERTY_NAME, oldValue, d_name);
-	}
-
-	public String getName() {
-		return d_name;
 	}
 
 	public void setDuration(Duration duration) {
@@ -54,16 +42,10 @@ public class Epoch extends AbstractEntity implements TypeWithNotes {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj != null && obj instanceof Epoch) {
-			Epoch other = (Epoch) obj;
-			return EqualsUtil.equal(other.getName(), getName());
+		if (obj instanceof Epoch) {
+			return super.equals(obj);
 		}
 		return false;
-	}
-	
-	@Override
-	public int hashCode() {
-		return (d_name == null ? 0 : d_name.hashCode()); 
 	}
 	
 	public boolean deepEquals(Entity obj) {
@@ -74,7 +56,7 @@ public class Epoch extends AbstractEntity implements TypeWithNotes {
 	
 	@Override
 	protected Epoch clone() {
-		return new Epoch(d_name, d_duration);
+		return new Epoch(getName(), d_duration);
 	}
 	
 	@Override

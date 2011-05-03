@@ -26,7 +26,7 @@ package org.drugis.addis.entities;
 
 
 
-public interface Variable extends Entity, Comparable<Variable> {
+public interface Variable extends Entity, Comparable<Variable>, TypeWithName {
 	
 	public enum Type {
 		CONTINUOUS("Continuous"),
@@ -50,7 +50,6 @@ public interface Variable extends Entity, Comparable<Variable> {
 		
 	}
 
-	public static final String PROPERTY_NAME = "name";
 	public final static String PROPERTY_TYPE = "type";	
 	public final static String PROPERTY_DESCRIPTION = "description";
 	public static final String PROPERTY_UNIT_OF_MEASUREMENT = "unitOfMeasurement";
@@ -64,10 +63,6 @@ public interface Variable extends Entity, Comparable<Variable> {
 	public void setUnitOfMeasurement(String um);
 
 	public String getUnitOfMeasurement();
-
-	public void setName(String name);
-
-	public String getName();
 
 	public Variable.Type getType();
 	

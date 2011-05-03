@@ -27,31 +27,14 @@ package org.drugis.addis.entities;
 import java.util.Collections;
 import java.util.Set;
 
-public class Drug extends AbstractEntity implements Comparable<Drug> {
-
-	private String d_name = "";
+public class Drug extends AbstractNamedEntity<Drug> implements Comparable<Drug> {
 	private String d_atcCode = "";
 	
-	public static final String PROPERTY_NAME = "name";
 	public static final String PROPERTY_ATCCODE = "atcCode";	
 	
-	
-	public Drug(){
-	}
-	
 	public Drug(String name, String atcCode) {
-		d_name = name;
+		super(name);
 		d_atcCode = atcCode;
-	}
-
-	public String getName() {
-		return d_name;
-	}
-
-	public void setName(String name) {
-		String oldVal = d_name;
-		d_name = name;
-		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
 	}
 	
 	public String getAtcCode() {
@@ -72,25 +55,9 @@ public class Drug extends AbstractEntity implements Comparable<Drug> {
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Drug) {
-			Drug other = (Drug) o;
-			if (other.getName() == null) {
-				return getName() == null;
-			}
-			return other.getName().equals(getName());
+			return super.equals(o);
 		}
 		return false;
-	}
-	
-	@Override
-	public int hashCode() {
-		return getName() == null ? 0 : getName().hashCode();
-	}
-
-	public int compareTo(Drug other) {
-		if (other == null) {
-			return 1;
-		}
-		return getName().compareTo(other.getName());
 	}
 
 	@Override

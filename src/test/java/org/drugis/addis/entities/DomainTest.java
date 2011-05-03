@@ -282,7 +282,6 @@ public class DomainTest {
 		
 		d_domain.addIndication(d_indication);
 		d_domain.addListener(mockListener);
-		d_indication = new Indication(0L, "");
 		d_domain.addStudy(new Study("X", d_indication));
 		verify(mockListener);
 	}
@@ -820,9 +819,9 @@ public class DomainTest {
 	
 	@Test
 	public void testGetCategoryForEntity() {
-		assertEquals(Indication.class, d_domain.getCategory(new Indication()).getEntityClass());
+		assertEquals(Indication.class, d_domain.getCategory(new Indication(13L, "indication")).getEntityClass());
 		assertEquals(null, d_domain.getCategory(new Arm("arm", 3)));
-		assertEquals(Drug.class, d_domain.getCategory(new Drug()).getEntityClass());
+		assertEquals(Drug.class, d_domain.getCategory(new Drug("drug", "")).getEntityClass());
 		assertEquals(BenefitRiskAnalysis.class, 
 				d_domain.getCategory(ExampleData.buildMetaBenefitRiskAnalysis()).getEntityClass());
 	}

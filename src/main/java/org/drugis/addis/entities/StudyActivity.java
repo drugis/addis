@@ -9,8 +9,7 @@ import java.util.Set;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.EqualsUtil;
 
-public class StudyActivity extends AbstractEntity implements TypeWithNotes {
-	public static final String PROPERTY_NAME = "name";
+public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements TypeWithNotes {
 	public static final String PROPERTY_ACTIVITY = "activity";
 	public static final String PROPERTY_USED_BY = "usedBy";
 
@@ -54,13 +53,12 @@ public class StudyActivity extends AbstractEntity implements TypeWithNotes {
 		}
 	}
 
-	private String d_name;
 	private Activity d_activity;
 	private Set<UsedBy> d_usedBy = new HashSet<UsedBy>();
 	private List<Note> d_notes = new ArrayList<Note>();
 	
 	public StudyActivity(String name, Activity activity) {
-		d_name = name;
+		super(name);
 		d_activity = activity;
 	}
 
@@ -68,17 +66,6 @@ public class StudyActivity extends AbstractEntity implements TypeWithNotes {
 	@Override
 	public Set<? extends Entity> getDependencies() {
 		return d_activity.getDependencies();
-	}
-
-
-	public void setName(String name) {
-		String oldValue = d_name;
-		d_name = name;
-		firePropertyChange(PROPERTY_NAME, oldValue, d_name);
-	}
-
-	public String getName() {
-		return d_name;
 	}
 
 	public void setActivity(Activity activity) {
@@ -122,21 +109,15 @@ public class StudyActivity extends AbstractEntity implements TypeWithNotes {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if(obj != null && obj instanceof StudyActivity) {
-			StudyActivity other = (StudyActivity) obj;
-			return EqualsUtil.equal(other.getName(), getName());
+		if(obj instanceof StudyActivity) {
+			return super.equals(obj);
 		}
 		return false;
 	}
 	
 	@Override
-	public int hashCode() {
-		return (getName() != null ? getName().hashCode() : 0);
-	}
-	
-	@Override
 	protected StudyActivity clone() {
-		StudyActivity cloned = new StudyActivity(d_name, d_activity);
+		StudyActivity cloned = new StudyActivity(getName(), d_activity);
 		cloned.setUsedBy(new HashSet<UsedBy>(getUsedBy()));
 		return cloned;
 	}

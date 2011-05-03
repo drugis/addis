@@ -27,48 +27,22 @@ package org.drugis.addis.entities;
 import java.util.Collections;
 import java.util.Set;
 
-import org.drugis.common.EqualsUtil;
-
-public class Indication extends AbstractEntity implements Comparable<Indication> {
-	
-	private String d_name;
+public class Indication extends AbstractNamedEntity<Indication> implements Comparable<Indication>, TypeWithName {
 	/**
 	 * SNOMED CT code is defined as a 64-bit int.
 	 */
 	private Long d_code;
 	
-	public static final String PROPERTY_NAME = "name";
 	public static final String PROPERTY_CODE = "code";
 	
-	public Indication() {
-
-	}
-	
 	public Indication(Long code, String name) {
+		super(name);
 		d_code = code;
-		d_name = name;
-	}
-
-	public int compareTo(Indication other) {
-		if (other == null) {
-			return 1;
-		}
-		return d_code.compareTo(other.d_code);
 	}
 
 	@Override
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();
-	}
-
-	public void setName(String name) {
-		String oldVal = d_name;
-		d_name = name;
-		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
-	}
-
-	public String getName() {
-		return d_name;
 	}
 
 	public void setCode(Long code) {
@@ -84,20 +58,14 @@ public class Indication extends AbstractEntity implements Comparable<Indication>
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Indication) {
-			Indication other = (Indication)o;
-			return EqualsUtil.equal(other.d_code, d_code);
+			return super.equals(o);
 		}
 		return false;
 	}
 	
 	@Override
-	public int hashCode() {
-		return d_code.hashCode();
-	}
-	
-	@Override
 	public String toString() {
-		return d_code.toString() + " " + d_name;
+		return d_code.toString() + " " + getName();
 	}
 
 	

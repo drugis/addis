@@ -26,6 +26,7 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
@@ -47,8 +48,8 @@ public class IndicationTest {
 		Indication i2 = new Indication(310497006L, "Zware depressie");
 		Indication i3 = new Indication(0L, "Severe depression");
 		
-		assertEquals(i1, i2);
-		assertFalse(i1.equals(i3));
+		assertFalse(i1.equals(i2));
+		assertTrue(i1.equals(i3));
 		assertFalse(i2.equals(i3));
 	}
 	

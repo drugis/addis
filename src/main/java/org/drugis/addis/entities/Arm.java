@@ -32,7 +32,7 @@ import java.util.Set;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.EqualsUtil;
 
-public class Arm extends AbstractEntity implements TypeWithNotes, TypeWithName {
+public class Arm extends AbstractNamedEntity<Arm> implements TypeWithNotes {
 	public static Arm createArm(Study study, String name, Integer size,
 			Drug drug, AbstractDose dose) {
 		Arm arm = new Arm(name, size);
@@ -47,7 +47,6 @@ public class Arm extends AbstractEntity implements TypeWithNotes, TypeWithName {
 		return arm;
 	}
 
-	private String d_name;
 	private Integer d_size;
 	private List<Note> d_notes = new ArrayList<Note>();
 	private TreatmentActivity d_activity = new TreatmentActivity(null, null);
@@ -55,7 +54,7 @@ public class Arm extends AbstractEntity implements TypeWithNotes, TypeWithName {
 	public static final String PROPERTY_SIZE = "size";
 
 	public Arm(String name, int size) {
-		d_name = name;
+		super(name);
 		d_size = size;
 	}
 
@@ -78,17 +77,7 @@ public class Arm extends AbstractEntity implements TypeWithNotes, TypeWithName {
 		d_size = size;
 		firePropertyChange(PROPERTY_SIZE, oldVal, d_size);
 	}
-	
-	public String getName() {
-		return d_name;
-	}
 
-	public void setName(String name) {
-		String oldVal = d_name;
-		d_name = name;
-		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
-	}
-	
 	@Override
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();
@@ -115,15 +104,9 @@ public class Arm extends AbstractEntity implements TypeWithNotes, TypeWithName {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if(obj != null && obj instanceof Arm) {
-			Arm other = (Arm) obj;
-			return EqualsUtil.equal(other.getName(), getName());
+		if (obj instanceof Arm) {
+			return super.equals(obj);
 		}
 		return false;
-	}
-	
-	@Override
-	public int hashCode() {
-		return (getName() != null ? getName().hashCode() : 0);
 	}
 }

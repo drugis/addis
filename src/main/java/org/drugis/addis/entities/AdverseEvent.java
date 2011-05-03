@@ -46,14 +46,6 @@ public class AdverseEvent extends AbstractVariable implements OutcomeMeasure {
 		}
 		return false;
 	}
-	
-	@Override
-	public int hashCode() {
-		if (d_name != null) {
-			return d_name.hashCode() + 7; //magic number ?
-		}
-		return 0;
-	}
 		
 	public void setDirection(Direction dir) {
 		Direction oldVal = d_direction;

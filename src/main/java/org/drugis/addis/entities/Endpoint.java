@@ -52,14 +52,6 @@ public class Endpoint extends AbstractVariable implements OutcomeMeasure {
 		return false;
 	}
 	
-	@Override
-	public int hashCode() {
-		if (d_name != null) {
-			return d_name.hashCode();
-		}
-		return 0;
-	}
-	
 	public void setDirection(Direction dir) {
 		Direction oldVal = d_direction;
 		d_direction = dir;

@@ -29,15 +29,14 @@ import java.util.Set;
 
 import org.drugis.common.EqualsUtil;
 
-public abstract class AbstractVariable extends AbstractEntity implements Variable {
+public abstract class AbstractVariable extends AbstractNamedEntity<Variable> implements Variable {
 
-	protected String d_name;
 	String d_description = "";
 	protected String d_unitOfMeasurement;
 	protected Variable.Type d_type;
 	
 	protected AbstractVariable(String name, Variable.Type type) {
-		d_name = name;
+		super(name);
 		d_type = type;
 				
 		if (d_type == Variable.Type.RATE)
@@ -66,16 +65,6 @@ public abstract class AbstractVariable extends AbstractEntity implements Variabl
 		return d_unitOfMeasurement;
 	}
 
-	public void setName(String name) {
-		String oldVal = d_name;
-		d_name = name;
-		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
-	}
-
-	public String getName() {
-		return d_name;
-	}
-
 	@Override
 	public String toString() {
 		return getName();
@@ -91,10 +80,6 @@ public abstract class AbstractVariable extends AbstractEntity implements Variabl
 		return d_type;
 	}
 
-	public int compareTo(Variable other) {
-		return getName().compareTo(other.getName());
-	}
-
 	@Override
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();
@@ -103,16 +88,11 @@ public abstract class AbstractVariable extends AbstractEntity implements Variabl
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Variable) {
-			Variable other = (Variable) o;
-			return EqualsUtil.equal(other.getName(), getName());
+			return super.equals(o);
 		}
 		return false;
 	}
-	
-	@Override
-	public int hashCode() {
-		return getName().hashCode();
-	}
+
 
 	public BasicMeasurement buildMeasurement(Arm a) {
 		return buildMeasurement(a.getSize());
