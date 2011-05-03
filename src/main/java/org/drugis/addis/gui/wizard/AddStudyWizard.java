@@ -67,8 +67,6 @@ import javax.swing.TransferHandler;
 import javax.swing.border.Border;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.text.BadLocationException;
@@ -104,6 +102,7 @@ import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.components.NotesView;
 import org.drugis.addis.imports.PubMedIDRetriever;
+import org.drugis.addis.presentation.ListOfNamedValidator;
 import org.drugis.addis.presentation.DosePresentation;
 import org.drugis.addis.presentation.NotesModel;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
@@ -121,8 +120,6 @@ import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.beans.PropertyConnector;
-import com.jgoodies.binding.list.ObservableList;
-import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -202,7 +199,7 @@ public class AddStudyWizard extends Wizard {
 		private JScrollPane d_scrollPane;
 		
 		private AddStudyWizardPresentation d_pm;
-		private ArmNameValidator d_validator;
+		private ListOfNamedValidator<Arm> d_validator;
 		
 		public AddArmsWizardStep(AddStudyWizardPresentation pm) {
 			super("Add arms", "Enter the arms for this study.");
@@ -210,64 +207,7 @@ public class AddStudyWizard extends Wizard {
 			d_pm = pm;
 			if (d_pm.isEditing())
 				setComplete(true);
-			d_validator = new ArmNameValidator(d_pm.getArms());
-		}
-		
-		public static class ArmNameValidator  extends AbstractValueModel {
-			 private final ObservableList<Arm> d_armListModel;
-			 PropertyChangeListener d_nameListener;
-
-			 public ArmNameValidator(ObservableList<Arm> armListModel) {
-				 d_armListModel = armListModel;
-				 d_nameListener = new PropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent evt) {
-						update();
-					}
-				};
-				
-				armListModel.addListDataListener(new ListDataListener() {
-					public void intervalRemoved(ListDataEvent e) {
-						updateListeners();
-					}
-					
-					public void intervalAdded(ListDataEvent e) {
-						updateListeners();
-					}
-
-					public void contentsChanged(ListDataEvent e) {
-						updateListeners();
-					}
-				});
-				
-				updateListeners();
-			}
-			
-			private void updateListeners() {
-				for (Arm a: d_armListModel) {
-					a.removePropertyChangeListener(d_nameListener);
-					a.addPropertyChangeListener(d_nameListener);
-				}
-				update();
-			}
-
-			private void update() {
-				fireValueChange(null, getValue());
-			}
-
-			public Boolean getValue() {	
-				return areNamesUniqueAndValid() && d_armListModel.size() > 1;
-			}
-
-			public void setValue(Object newValue) {}
-			
-			private boolean areNamesUniqueAndValid() {
-				Set<String> s = new HashSet<String>();
-				for (Arm a: d_armListModel) {
-					if (a.getName().length() == 0 || !s.add(a.getName())) return false;
-				}
-				return true;
-			}
-
+			d_validator = new ListOfNamedValidator<Arm>(d_pm.getArms(), 2);
 		}
 		
 		public void rebuild() { 

@@ -32,7 +32,7 @@ import java.util.Set;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.EqualsUtil;
 
-public class Arm extends AbstractEntity implements TypeWithNotes {
+public class Arm extends AbstractEntity implements TypeWithNotes, TypeWithName {
 	public static Arm createArm(Study study, String name, Integer size,
 			Drug drug, AbstractDose dose) {
 		Arm arm = new Arm(name, size);
@@ -53,7 +53,6 @@ public class Arm extends AbstractEntity implements TypeWithNotes {
 	private TreatmentActivity d_activity = new TreatmentActivity(null, null);
 	
 	public static final String PROPERTY_SIZE = "size";
-	public static final String PROPERTY_NAME = "name";
 
 	public Arm(String name, int size) {
 		d_name = name;
