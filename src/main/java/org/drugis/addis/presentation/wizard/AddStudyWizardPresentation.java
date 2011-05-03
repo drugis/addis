@@ -171,6 +171,7 @@ public class AddStudyWizardPresentation {
 	
 	private Study d_origStudy = null;
 	private AddisWindow d_mainWindow;
+	private int d_armsCreated = 0;
 	
 	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, AddisWindow mainWindow) {
 		d_domain = d;
@@ -250,8 +251,11 @@ public class AddStudyWizardPresentation {
 	public void resetStudy() {
 		d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study(), d_pmf);
 		getSourceModel().setValue(Source.MANUAL);
-
-		addArms(2); // by default have 2 arm slots.
+		
+		d_armsCreated = 0;
+		// Add 2 arms by default:
+		getArms().add(new Arm(nextArmName(), 0));
+		getArms().add(new Arm(nextArmName(), 0));
 		updateSelectionHolders();
 		d_endpointSelect.addSlot(); // by default have 1 endpoint slot.
 	}
@@ -265,21 +269,18 @@ public class AddStudyWizardPresentation {
 		return new NoteModel(getNewStudy().getCharacteristicWithNotes(c));
 	}
 
+	@Deprecated
 	public void addArms(int numArms) {
 		if (getEpochs().isEmpty()) {
 			getEpochs().add(new Epoch("Main phase", null));
 		}
 		for(int i = 0; i < numArms; ++i) {
-			Arm arm = new Arm("Arm " + (getArms().size() + 1), 0);
+			Arm arm = new Arm(nextArmName(), 0);
 			StudyActivity activity = new StudyActivity("Treatment " + (i + 1), new TreatmentActivity(null, new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY)));
 			getNewStudy().getStudyActivities().add(activity);
 			getArms().add(arm);
 			getNewStudy().setStudyActivityAt(arm, getEpochs().get(0), activity);
 		}
-	}
-	
-	public int getNumberArms(){
-		return getArms().size();
 	}
 
 	public ObservableList<Arm> getArms() {
@@ -321,7 +322,7 @@ public class AddStudyWizardPresentation {
 			return d_arm.getNotes().size() > 0 ? d_arm.getNotes().get(0).getText() : null;
 		}
 
-		public void setValue(Object newValue) { // FIXME: Whaaaaaat
+		public void setValue(Object newValue) {
 		}
 	}
 	
@@ -337,7 +338,7 @@ public class AddStudyWizardPresentation {
 			return (d_obj != null && d_obj.getNotes().size() > 0) ? d_obj.getNotes().get(0).getText() : null;
 		}
 
-		public void setValue(Object newValue) { // FIXME: Whaaaaaat
+		public void setValue(Object newValue) {
 		}
 	}
 
@@ -380,18 +381,6 @@ public class AddStudyWizardPresentation {
 		}
 		
 		return false;
-	}
-	
-	public boolean isUniqueArmName(String current) {
-		if (current.isEmpty()) {
-			return true;
-		}
-		for (int i=0; i < getNumberArms(); ++i) {
-			if(getArms().get(i).getName().equals(current)) {
-				return false;
-			}
-		}
-		return true;
 	}
 	
 	Study getStudy() {
@@ -458,6 +447,10 @@ public class AddStudyWizardPresentation {
 
 	public Study getOldStudy() {
 		return d_origStudy;
+	}
+
+	public String nextArmName() {
+		return "Arm " + (++d_armsCreated);
 	}
 
 }

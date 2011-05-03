@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.DropMode;
 import javax.swing.JButton;
@@ -58,10 +57,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
@@ -105,7 +104,6 @@ import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.components.NotesView;
 import org.drugis.addis.imports.PubMedIDRetriever;
-import org.drugis.addis.presentation.BasicArmPresentation;
 import org.drugis.addis.presentation.DosePresentation;
 import org.drugis.addis.presentation.NotesModel;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
@@ -124,6 +122,7 @@ import org.pietschy.wizard.models.StaticModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -203,7 +202,7 @@ public class AddStudyWizard extends Wizard {
 		private JScrollPane d_scrollPane;
 		
 		private AddStudyWizardPresentation d_pm;
-		private NotEmptyValidator d_validator;
+		private ArmNameValidator d_validator;
 		
 		public AddArmsWizardStep(AddStudyWizardPresentation pm) {
 			super("Add arms", "Enter the arms for this study.");
@@ -214,7 +213,7 @@ public class AddStudyWizard extends Wizard {
 			d_validator = new ArmNameValidator(d_pm.getArms());
 		}
 		
-		public class ArmNameValidator extends NotEmptyValidator {
+		public static class ArmNameValidator  extends AbstractValueModel {
 			 private final ObservableList<Arm> d_armListModel;
 			 PropertyChangeListener d_nameListener;
 
@@ -225,7 +224,8 @@ public class AddStudyWizard extends Wizard {
 						update();
 					}
 				};
-				 armListModel.addListDataListener(new ListDataListener() {
+				
+				armListModel.addListDataListener(new ListDataListener() {
 					public void intervalRemoved(ListDataEvent e) {
 						updateListeners();
 					}
@@ -237,42 +237,53 @@ public class AddStudyWizard extends Wizard {
 					public void contentsChanged(ListDataEvent e) {
 						updateListeners();
 					}
-					
-					private void updateListeners() {
-						for (Arm a: d_armListModel) {
-							a.removePropertyChangeListener(d_nameListener);
-							a.addPropertyChangeListener(d_nameListener);
-						}
-						update();
-					}
 				});
+				
+				updateListeners();
+			}
+			
+			private void updateListeners() {
+				for (Arm a: d_armListModel) {
+					a.removePropertyChangeListener(d_nameListener);
+					a.addPropertyChangeListener(d_nameListener);
+				}
+				update();
 			}
 
-			@Override
+			private void update() {
+				fireValueChange(null, getValue());
+			}
+
 			public Boolean getValue() {	
-				return super.getValue() && areNamesUnique() && d_armListModel.size() > 1;
+				return areNamesUniqueAndValid() && d_armListModel.size() > 1;
 			}
 
-			private boolean areNamesUnique() {
+			public void setValue(Object newValue) {}
+			
+			private boolean areNamesUniqueAndValid() {
 				Set<String> s = new HashSet<String>();
 				for (Arm a: d_armListModel) {
-					if (!s.add(a.getName())) return false;
+					if (a.getName().length() == 0 || !s.add(a.getName())) return false;
 				}
-				return true; 
+				return true;
 			}
+
 		}
 		
-		 @Override
-		public void prepare() {
+		public void rebuild() { 
 			 this.setVisible(false);
-			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
 			 
 			 if (d_scrollPane != null)
 				 remove(d_scrollPane);
-			 
 			 buildWizardStep();
+			 
 			 this.setVisible(true);
-			 repaint();
+		}
+		
+		@Override
+		public void prepare() {
+			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
+			 rebuild();
 		 }
 
 		private void buildWizardStep() {
@@ -290,7 +301,7 @@ public class AddStudyWizard extends Wizard {
 			// start arms form
 			d_builder.addSeparator("Arms", cc.xyw(1, 1, 9));
 			
-			for(int armNumber = 0; armNumber < d_pm.getNumberArms(); ++armNumber) {
+			for(int armNumber = 0; armNumber < d_pm.getArms().size(); ++armNumber) {
 				rows = addArmComponents(d_builder, layout, cc, rows, armNumber);
 			}
 			
@@ -300,9 +311,8 @@ public class AddStudyWizard extends Wizard {
 			d_builder.add(armBtn, cc.xy(1, rows));
 			armBtn.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
-					d_pm.addArms(1);
-//					prepare();
-//					FIXME : only call prepare once.
+					d_pm.getArms().add(new Arm(d_pm.nextArmName(), 0));
+					rebuild();
 				}
 			});
 			
@@ -327,15 +337,14 @@ public class AddStudyWizard extends Wizard {
 			builder.addLabel("Size: ", cc.xy(7, rows));
 			
 			// add text fields
-			JTextField nameField = new JTextField();
-			PropertyConnector.connectAndUpdate(d_pm.getArmModel(armNumber).getModel(Arm.PROPERTY_NAME), nameField, "text");
-			d_validator.add(nameField);
+			
+			JTextField nameField = BasicComponentFactory.createTextField(
+					d_pm.getArmModel(armNumber).getModel(Arm.PROPERTY_NAME), false);
 			builder.add(nameField, cc.xy(5, rows));
 			
-			JTextField sizeField =  new JFormattedTextField(new DefaultFormatter());
-			PropertyConnector.connectAndUpdate(d_pm.getArmModel(armNumber).getModel(Arm.PROPERTY_SIZE), sizeField, "value");
+			JTextField sizeField = BasicComponentFactory.createFormattedTextField(
+					d_pm.getArmModel(armNumber).getModel(Arm.PROPERTY_SIZE), new DefaultFormatter()); 
 			sizeField.setColumns(4);
-			d_validator.add(sizeField);
 			builder.add(sizeField, cc.xy(9, rows));
 			
 			// add notes
@@ -355,7 +364,7 @@ public class AddStudyWizard extends Wizard {
 			
 			public void actionPerformed(ActionEvent e) {
 				d_pm.getArms().remove(d_index);
-				prepare();
+				rebuild();
 			}	
 		}
 	}
@@ -773,7 +782,7 @@ public class AddStudyWizard extends Wizard {
 				setComplete(true);
 		}
 		
-		 @Override
+		@Override
 		public void prepare() {
 			 this.setVisible(false);
 			 d_validator = new NotEmptyValidator();
@@ -825,7 +834,7 @@ public class AddStudyWizard extends Wizard {
 
 		private int buildArmsPart(int fullwidth, PanelBuilder builder,	CellConstraints cc, int row, FormLayout layout) {
 			// For all the arms found in the imported study
-			for(int curArmNumber = 0; curArmNumber < d_pm.getNumberArms(); ++curArmNumber){
+			for(int curArmNumber = 0; curArmNumber < d_pm.getArms().size(); ++curArmNumber){
 				LayoutUtil.addRow(layout);
 				row+=2;
 				
@@ -1225,7 +1234,7 @@ public class AddStudyWizard extends Wizard {
 				// add title label
 				d_builder.addLabel("Title:",cc.xy(1, 7));
 				d_titleField = AuxComponentFactory.createTextArea(d_pm.getTitleModel(), true);
-				d_validator.add(d_titleField);
+				d_validator.add((JTextArea)((JScrollPane)d_titleField).getViewport().getView());
 				d_builder.add(d_titleField, cc.xy(3, 7));		
 				
 				d_builder.add(buildNotesEditor((ObjectWithNotes<?>) getCharWithNotes(newStudy, BasicStudyCharacteristic.TITLE)), cc.xy(3, 9));

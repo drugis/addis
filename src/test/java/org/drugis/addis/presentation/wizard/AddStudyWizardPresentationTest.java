@@ -98,7 +98,7 @@ public class AddStudyWizardPresentationTest {
 		assertEquals(null,d_wizardImported.getIndicationNoteModel().getValue());
 		//assertEquals(1,d_wizardImported.getNumberEndpoints());
 		assertEquals(1,d_wizardImported.getEndpointSelectModel().getSlots().size());
-		assertEquals(2,d_wizardImported.getNumberArms());
+		assertEquals(2,d_wizardImported.getArms().size());
 	}
 	
 	@Test
@@ -113,15 +113,6 @@ public class AddStudyWizardPresentationTest {
 		d_wizard.getEndpointSelectModel().addSlot();
 		d_wizard.getEndpointSelectModel().addSlot();
 		assertEquals(numEndpoints + 2, d_wizard.getEndpointSelectModel().getSlots().size());
-	}
-	
-	@Test
-	public void testgetNumberArms() {
-		int numArms = d_wizard.getNumberArms();
-		d_wizard.addArms(2);
-		assertEquals(numArms + 2,d_wizard.getNumberArms());
-		d_wizard.getArms().remove(0);
-		assertEquals(numArms + 1,d_wizard.getNumberArms());
 	}
 	
 	@Test

@@ -24,8 +24,6 @@
 
 package org.drugis.addis.gui.components;
 
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -58,7 +56,6 @@ public class NotEmptyValidator extends AbstractValueModel{
 	}
 	
 	public void add(JComponent field) {
-		
 		if (field instanceof JTextComponent) {
 			((JTextComponent) field).getDocument().addDocumentListener(d_myTextListener);
 			d_fields.add(field);
@@ -67,27 +64,44 @@ public class NotEmptyValidator extends AbstractValueModel{
 			((JComboBox) field).addItemListener(d_myActionListener);
 			d_fields.add(field);
 		} else if (field instanceof JDateChooser) {
+			// FIXME: shouldn't this listen to something?
 			d_fields.add(field);
 		} else if (field instanceof JList) {
 			((JList) field).getModel().addListDataListener(d_myListDataChangeListener);
 			d_fields.add(field);
-		} 
-		
-		/* If we are dealing with a container component, add all components recursively */
-		else if (field instanceof Container){
-			Container pane = (Container) field;
-			for (Component component : pane.getComponents())
-				if (component instanceof JComponent)
-					add((JComponent) component);
 		} else {
-			System.out.println("Unknown component type in validator");
+			throw new RuntimeException("Unknown component type in validator");
 		}
 		update();
 	}
 	
+	public void remove(JComponent field) {
+		if (field instanceof JTextComponent) {
+			((JTextComponent) field).getDocument().removeDocumentListener(d_myTextListener);
+			d_fields.remove(field);
+		} else if (field instanceof JComboBox) {
+			((JComboBox) field).removeActionListener(d_myActionListener);
+			((JComboBox) field).removeItemListener(d_myActionListener);
+			d_fields.remove(field);
+		} else if (field instanceof JDateChooser) {
+			d_fields.remove(field);
+		} else if (field instanceof JList) {
+			((JList) field).getModel().removeListDataListener(d_myListDataChangeListener);
+			d_fields.remove(field);
+		}
+	}
+	
+	/**
+	 * Remove all fields from the validator.
+	 */
+	public void clear() {
+		for (int i = d_fields.size() - 1; i >= 0; --i) {
+			remove(d_fields.get(i));
+		}
+	}
+	
 	public void update() {
-		Boolean value = getValue();
-		fireValueChange(null, value);
+		fireValueChange(null, getValue());
 	}
 
 	private boolean checkFieldsEmpty() {
@@ -119,24 +133,28 @@ public class NotEmptyValidator extends AbstractValueModel{
 			
 		}
 		return empty;
-	}	
+	}
+	
+	
+	public void setValue(Object newValue) {
+	}
+	
+	public Boolean getValue() {
+		return !checkFieldsEmpty();
+	}
 	
 	private class MyListDataListener implements ListDataListener {
-
 		public void contentsChanged(ListDataEvent arg0) {
 			update();
-			
 		}
 
 		public void intervalAdded(ListDataEvent arg0) {
 			update();
-			
 		}
 
 		public void intervalRemoved(ListDataEvent arg0) {
 			update();
 		}
-		
 	}
 	
 	private class ComboBoxListener implements ActionListener, ItemListener{
@@ -162,12 +180,4 @@ public class NotEmptyValidator extends AbstractValueModel{
 			update();
 		}
 	}
-	
-	public void setValue(Object newValue) {
-	}
-	
-	public Boolean getValue() {
-		return !checkFieldsEmpty();
-	}
-	
 }
