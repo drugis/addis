@@ -48,8 +48,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class StudyTest {
-	
-	private Arm d_pg;
 	private Study d_orig;
 	private Study d_clone;
 	private Note d_note;
@@ -59,7 +57,6 @@ public class StudyTest {
 	public void setUp() {
 		d_note = new Note(Source.CLINICALTRIALS, "Original text Yo!");
 		d_orig = ExampleData.buildStudyFava2002();
-		d_pg = new Arm("", 0);
 		
 		// Add some notes to test them being cloned.
 		d_orig.getArms().get(1).getNotes().add(d_note);
@@ -106,22 +103,10 @@ public class StudyTest {
 	}
 	
 	@Test
-	public void testSetArms() {
-		List<Arm> list = Collections.singletonList(d_pg);
-		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_ARMS, Collections.EMPTY_LIST, 
-				list);
-	}
-	
-	@Test
 	public void testInitialArms() {
 		Study study = new Study("X", new Indication(0L, ""));
 		assertNotNull(study.getArms());
 		assertTrue(study.getArms().isEmpty());
-	}
-	
-	@Test
-	public void testAddArm() {
-		JUnitUtil.testAdder(new Study("X", new Indication(0L, "")), Study.PROPERTY_ARMS, "addArm", d_pg);
 	}
 	
 	@Test
@@ -147,7 +132,7 @@ public class StudyTest {
 		Epoch epoch1 = new Epoch("testEpoch1", DatatypeFactory.newInstance().newDuration(10000));
 		StudyActivity randomization = new StudyActivity("Randomization", PredefinedActivity.RANDOMIZATION);
 		d_empty.getEpochs().add(epoch1);
-		d_empty.addArm(arm1);
+		d_empty.getArms().add(arm1);
 		d_empty.getStudyActivities().add(randomization);
 		d_empty.setStudyActivityAt(arm1, epoch1, randomization);
 		Set<UsedBy> usedByRandomization = new HashSet<UsedBy>();
@@ -160,7 +145,7 @@ public class StudyTest {
 		assertEquals(usedByRandomization, randomization.getUsedBy());
 
 		// adding new UsedBy should change UsedBy
-		d_empty.addArm(arm2);
+		d_empty.getArms().add(arm2);
 		d_empty.setStudyActivityAt(arm2, epoch1, randomization);
 		UsedBy usedByarm2epoch1 = new UsedBy(arm2, epoch1);
 		usedByRandomization.add(usedByarm2epoch1);
@@ -192,8 +177,8 @@ public class StudyTest {
 		StudyActivity skriening = new StudyActivity("Screening", PredefinedActivity.SCREENING);
 		d_empty.getEpochs().add(epoch1);
 		d_empty.getEpochs().add(epoch2);
-		d_empty.addArm(arm1);
-		d_empty.addArm(arm2);
+		d_empty.getArms().add(arm1);
+		d_empty.getArms().add(arm2);
 		d_empty.getStudyActivities().add(randomization);
 		d_empty.getStudyActivities().add(skriening);
 		d_empty.setStudyActivityAt(arm1, epoch1, randomization);
@@ -222,7 +207,7 @@ public class StudyTest {
 		Arm arm1 = new Arm("testArm1", 100);
 		Epoch epoch1 = new Epoch("testEpoch1", DatatypeFactory.newInstance().newDuration(10000));
 		StudyActivity randomization = new StudyActivity("Randomization", PredefinedActivity.RANDOMIZATION);
-		d_empty.addArm(arm1);
+		d_empty.getArms().add(arm1);
 		d_empty.getStudyActivities().add(randomization);
 		d_empty.setStudyActivityAt(arm1, epoch1, randomization);
 	}
@@ -232,7 +217,7 @@ public class StudyTest {
 		Arm arm1 = new Arm("testArm1", 100);
 		Epoch epoch1 = new Epoch("testEpoch1", DatatypeFactory.newInstance().newDuration(10000));
 		StudyActivity randomization = new StudyActivity("Randomization", PredefinedActivity.RANDOMIZATION);
-		d_empty.addArm(arm1);
+		d_empty.getArms().add(arm1);
 		d_empty.getEpochs().add(epoch1);
 		d_empty.setStudyActivityAt(arm1, epoch1, randomization);
 	}
@@ -338,9 +323,9 @@ public class StudyTest {
 		assertTrue(study1.deepEquals(study2));
 		
 		Arm arm = new Arm("Arm1", 9001);
-		study2.addArm(arm);
+		study2.getArms().add(arm);
 		assertFalse(study1.deepEquals(study2));
-		study1.addArm(arm);
+		study1.getArms().add(arm);
 		assertTrue(study1.deepEquals(study2));
 		
 		study1.getEpochs().add(new Epoch("Epoch1", null));

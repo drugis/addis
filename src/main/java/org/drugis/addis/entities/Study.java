@@ -145,7 +145,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		newStudy.d_name = d_name.clone();
 		newStudy.d_indication = d_indication.clone();
 
-		newStudy.setArms(cloneArms());
+		newStudy.d_arms = cloneArms();
 
 		newStudy.d_endpoints = cloneStudyOutcomeMeasures(d_endpoints);
 		newStudy.d_adverseEvents = cloneStudyOutcomeMeasures(d_adverseEvents);
@@ -199,8 +199,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return new MeasurementKey(key.getVariable(), newArms.get(idx));
 	}
 
-	private List<Arm> cloneArms() {
-		List<Arm> newList = new ArrayList<Arm>();
+	private ObservableList<Arm> cloneArms() {
+		ObservableList<Arm> newList = new ArrayListModel<Arm>();
 		for(Arm a : getArms()) {
 			newList.add(a.clone());
 		}
@@ -210,7 +210,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	public Study(String id, Indication i) {
 		d_name = new ObjectWithNotes<String>(id);
 		d_indication = new ObjectWithNotes<Indication>(i);
-		setArms(new ArrayList<Arm>());
+		d_arms = new ArrayListModel<Arm>();
 		setCharacteristic(BasicStudyCharacteristic.CREATION_DATE, DateUtil.getCurrentDateWithoutTime());
 		setCharacteristic(BasicStudyCharacteristic.TITLE, "");
 		setCharacteristic(BasicStudyCharacteristic.PUBMED, new PubMedIdList());
@@ -221,17 +221,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 
 	@Deprecated
-	public void setArms(List<Arm> arms) {
-		List<Arm> oldVal = new ArrayList<Arm>(d_arms);
-		d_arms.clear();
-		d_arms.addAll(arms);
-		firePropertyChange(PROPERTY_ARMS, oldVal, d_arms);
-	}
-
 	public void addArm(Arm arm) {
-		List<Arm> newVal = new ArrayList<Arm>(d_arms);
-		newVal.add(arm);
-		setArms(newVal);
+		getArms().add(arm);
 	}
 	
 	public ObservableList<Epoch> getEpochs() {
@@ -678,9 +669,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	
 	public TreatmentActivity getTreatment(Arm arm) {
 		assertContains(d_arms, arm);
-		if (d_epochs.isEmpty()) {
-			return arm.getTreatmentActivity();
-		}
 		Epoch epoch = d_epochs.get(d_epochs.size() - 1); 
 		StudyActivity studyActivity = getStudyActivityAt(arm, epoch);
 		return studyActivity == null ? null : (TreatmentActivity) studyActivity.getActivity();

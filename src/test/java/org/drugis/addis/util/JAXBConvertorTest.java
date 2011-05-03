@@ -516,8 +516,8 @@ public class JAXBConvertorTest {
 		Study s = new Study("studyname", ExampleData.buildIndicationChronicHeartFailure());
 		s.getEpochs().add(epoch1);
 		s.getEpochs().add(epoch2);
-		s.addArm(arm1);
-		s.addArm(arm2);
+		s.getArms().add(arm1);
+		s.getArms().add(arm2);
 		
 		ActivityUsedBy usedByData = buildActivityUsedby(armName1, epochName1);
 		saData.getUsedBy().add(usedByData);
@@ -1061,9 +1061,9 @@ public class JAXBConvertorTest {
 		study2.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
 		study2.addVariable(ExampleData.buildAgeVariable());
 		Arm fluoxArm = new Arm("fluox arm", 100);
-		study2.addArm(fluoxArm);
+		study2.getArms().add(fluoxArm);
 		Arm paroxArm = new Arm("parox arm", 42);
-		study2.addArm(paroxArm);
+		study2.getArms().add(paroxArm);
 		Epoch epoch1 = new Epoch("Randomization", null);
 		Epoch epoch2 = new Epoch("Main phase", DatatypeFactory.newInstance().newDuration("P2D"));
 		study2.getEpochs().add(epoch1);

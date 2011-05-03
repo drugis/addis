@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.AdverseEvent;
@@ -129,11 +131,10 @@ public class StudyPresentation extends PresentationModel<Study> {
 		return false;
 	}
 	
-	public abstract class ListeningCharacteristicHolder extends StudyCharacteristicHolder implements PropertyChangeListener {
-
+	public abstract class ListeningCharacteristicHolder extends StudyCharacteristicHolder implements PropertyChangeListener, ListDataListener {
 		public ListeningCharacteristicHolder(Study study, Characteristic characteristic) {
 			super(study, characteristic);
-			study.addPropertyChangeListener(this);
+			study.getArms().addListDataListener(this);
 			for (Arm p : study.getArms()) {
 				p.addPropertyChangeListener(this);
 			}
@@ -147,16 +148,31 @@ public class StudyPresentation extends PresentationModel<Study> {
 		}
 
 		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getSource() == d_study) {
-				if (evt.getPropertyName().equals(Study.PROPERTY_ARMS)) {
-					for (Arm p : d_study.getArms()) {
-						p.addPropertyChangeListener(this);
-					}
-				} else {
-					return;
-				}
-			} 
+			update();
+		}
+
+		private void update() {
 			firePropertyChange("value", null, getNewValue());
+		}
+		
+		private void updateListeners() {
+			for (Arm p : d_study.getArms()) {
+				p.removePropertyChangeListener(this);
+				p.addPropertyChangeListener(this);
+			}
+			update();
+		}
+		
+		public void intervalAdded(ListDataEvent e) {
+			updateListeners();
+		}
+
+		public void intervalRemoved(ListDataEvent e) {
+			updateListeners();			
+		}
+		
+		public void contentsChanged(ListDataEvent e) {
+			updateListeners();			
 		}
 	}
 

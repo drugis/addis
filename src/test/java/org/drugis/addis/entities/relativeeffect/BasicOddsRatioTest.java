@@ -177,8 +177,8 @@ public class BasicOddsRatioTest {
 		Arm g_fluox = Arm.createArm(s, "Fluox", fluoxSize, d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));
 		Arm g_sertr = Arm.createArm(s, "Sertr", sertraSize, d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));		
 		
-		s.addArm(g_sertr);
-		s.addArm(g_fluox);
+		s.getArms().add(g_sertr);
+		s.getArms().add(g_fluox);
 		
 		BasicRateMeasurement m_sertr = (BasicRateMeasurement) d_ep.buildMeasurement(g_sertr);
 		BasicRateMeasurement m_fluox = (BasicRateMeasurement) d_ep.buildMeasurement(g_fluox);

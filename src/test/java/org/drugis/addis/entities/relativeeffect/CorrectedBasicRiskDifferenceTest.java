@@ -154,8 +154,8 @@ public class CorrectedBasicRiskDifferenceTest {
 		Arm g_fluox = Arm.createArm(s, "fluox", fluoxSize, d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));
 		Arm g_parox = Arm.createArm(s, "sertr", sertraSize, d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));		
 		
-		s.addArm(g_parox);
-		s.addArm(g_fluox);
+		s.getArms().add(g_parox);
+		s.getArms().add(g_fluox);
 		
 		BasicRateMeasurement m_parox = (BasicRateMeasurement) d_ep.buildMeasurement(g_parox);
 		BasicRateMeasurement m_fluox = (BasicRateMeasurement) d_ep.buildMeasurement(g_fluox);
