@@ -163,7 +163,7 @@ public class AddStudyWizard extends Wizard {
 		wizardModel.add(new AssignActivitiesWizardStep(pm));
 		
 		wizardModel.add(new SelectEndpointWizardStep(pm));
-		wizardModel.add(new SetArmsWizardStep(pm, mainWindow));
+//		wizardModel.add(new SetArmsWizardStep(pm, mainWindow));
 		wizardModel.add(new SetEndpointMeasurementsWizardStep(pm, dialog));
 		wizardModel.add(new SelectAdverseEventWizardStep(pm));
 		wizardModel.add(new SetAdverseEventMeasurementsWizardStep(pm, dialog));

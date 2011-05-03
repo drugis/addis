@@ -295,7 +295,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	public Set<Drug> getDrugs() {
 		Set<Drug> drugs = new HashSet<Drug>();
 		for (Arm a : getArms()) {
-			drugs.add(getDrug(a));
+			if (getDrug(a) != null) {
+				drugs.add(getDrug(a));
+			}
 		}
 		return drugs;
 	}

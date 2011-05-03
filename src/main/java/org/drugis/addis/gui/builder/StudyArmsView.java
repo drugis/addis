@@ -46,7 +46,6 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class StudyArmsView implements ViewBuilder {
@@ -64,21 +63,17 @@ public class StudyArmsView implements ViewBuilder {
 	public JPanel buildPanel() {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = new FormLayout( 
-				"left:pref, 5dlu, left:pref, 5dlu, left:pref, 5dlu, center:pref, 5dlu, center:pref",
+				"left:pref, 5dlu, left:pref, 5dlu, left:pref, 5dlu, left:pref, 5dlu, right:pref",
 				"p"
 				);
-		
-		int fullWidth = 7;
-		for (int i = 1; i < d_model.getBean().getOutcomeMeasures().size(); ++i) {			
-			layout.appendColumn(ColumnSpec.decode("3dlu"));
-			layout.appendColumn(ColumnSpec.decode("center:pref"));			
-			fullWidth += 2;
-		}
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		int row = 1;
 
-		builder.addLabel("Size", cc.xy(7, row, "center, center"));		
+		builder.addLabel("Arm", cc.xy(3, row));
+		builder.addLabel("Drug", cc.xy(5, row));
+		builder.addLabel("Dose", cc.xy(7, row));
+		builder.addLabel("Size", cc.xy(9, row));		
 		row += 2;
 
 		for (Arm g : d_model.getBean().getArms()) {
@@ -88,30 +83,35 @@ public class StudyArmsView implements ViewBuilder {
 	}
 
 	private int buildArm(FormLayout layout, PanelBuilder builder, CellConstraints cc, int row, Arm g) {
-		TreatmentActivity activity = d_model.getBean().getTreatment(g);
-		TreatmentActivityPresentation activityModel = (TreatmentActivityPresentation)d_pmf.getModel(activity);
 		BasicArmPresentation armModel = (BasicArmPresentation)d_pmf.getModel(g);
 		LayoutUtil.addRow(layout);
 		
 		final JLabel armLabel = BasicComponentFactory.createLabel(d_pmf.getLabeledModel(g).getLabelModel()); 
-		//armLabel.setToolTipText(GUIFactory.createToolTip(d_model.getBean().getNote(armModel.getBean())));
 		JButton button = new NoteViewButton(d_parent, "Arm: " + g.toString(), g.getNotes());
 		builder.add(button, cc.xy(1, row));
 		builder.add(armLabel, cc.xy(3, row));
 		
-		builder.add(
-				BasicComponentFactory.createLabel(
-						activityModel.getModel(TreatmentActivity.PROPERTY_DOSE),
-						new OneWayObjectFormat()),
-						cc.xy(5, row, "right, center"));
+		TreatmentActivity activity = d_model.getBean().getTreatment(g);
+		if (activity != null) {
+			TreatmentActivityPresentation activityModel = (TreatmentActivityPresentation)d_pmf.getModel(activity);
+			builder.add(
+					BasicComponentFactory.createLabel(
+							activityModel.getModel(TreatmentActivity.PROPERTY_DRUG),
+							new OneWayObjectFormat()),
+							cc.xy(5, row));
+			builder.add(
+					BasicComponentFactory.createLabel(
+							activityModel.getModel(TreatmentActivity.PROPERTY_DOSE),
+							new OneWayObjectFormat()),
+							cc.xy(7, row));
+		}
 		
 		builder.add(
 				BasicComponentFactory.createLabel(
-						armModel.getModel(Arm.PROPERTY_SIZE),
-						NumberFormat.getInstance()),
-				cc.xy(7, row, "center, center"));
-		
-		row += 2;
-		return row;
+					armModel.getModel(Arm.PROPERTY_SIZE),
+					NumberFormat.getInstance()),
+					cc.xy(9, row));
+
+		return row + 2;
 	}
 }
