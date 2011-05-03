@@ -178,8 +178,8 @@ public class BasicRiskRatioTest {
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize) {
 		Study s = new Study(studyName, d_ind);
 		s.addEndpoint(d_ep);
-		Arm g_fluox = Arm.createArm(s, "fluox", fluoxSize, d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));
-		Arm g_parox = Arm.createArm(s, "sertr", sertraSize, d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));		
+		Arm g_fluox = Study.createArm(s, "fluox", fluoxSize, d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));
+		Arm g_parox = Study.createArm(s, "sertr", sertraSize, d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));		
 		
 		s.getArms().add(g_parox);
 		s.getArms().add(g_fluox);

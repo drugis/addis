@@ -275,7 +275,7 @@ public class RandomEffectsMetaAnalysisTest {
 	
 	private Arm addArm(Study study, Drug drug, int nSubjects) {
 		FixedDose dose = new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY);
-		Arm group = Arm.createArm(study, drug.getName(), nSubjects, drug, dose);
+		Arm group = Study.createArm(study, drug.getName(), nSubjects, drug, dose);
 		return group;
 	}
 	

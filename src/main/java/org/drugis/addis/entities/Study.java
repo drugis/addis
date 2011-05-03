@@ -669,6 +669,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	
 	public TreatmentActivity getTreatment(Arm arm) {
 		assertContains(d_arms, arm);
+		if (d_epochs.isEmpty()) {
+			return null;
+		}
 		Epoch epoch = d_epochs.get(d_epochs.size() - 1); 
 		StudyActivity studyActivity = getStudyActivityAt(arm, epoch);
 		return studyActivity == null ? null : (TreatmentActivity) studyActivity.getActivity();
@@ -719,5 +722,19 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 			}
 		}
 		return null;
+	}
+
+	public static Arm createArm(Study study, String name, Integer size,
+			Drug drug, AbstractDose dose) {
+		Arm arm = new Arm(name, size);
+		study.getArms().add(arm);
+		StudyActivity studyActivity = new StudyActivity(name + " treatment", new TreatmentActivity(drug, dose));
+		study.getStudyActivities().add(studyActivity);
+		if (study.getEpochs().isEmpty()) {
+			study.getEpochs().add(new Epoch("Main phase", null));
+		}
+		Epoch epoch = study.getEpochs().get(study.getEpochs().size() - 1);
+		study.setStudyActivityAt(arm, epoch, studyActivity);
+		return arm;
 	}
 }
