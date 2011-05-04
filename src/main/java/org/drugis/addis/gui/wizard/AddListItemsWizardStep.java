@@ -5,6 +5,8 @@ package org.drugis.addis.gui.wizard;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -12,17 +14,19 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.presentation.ListOfNamedValidator;
+import org.drugis.addis.presentation.wizard.AddListItemsPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.beans.PropertyConnector;
-import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -32,35 +36,62 @@ import com.jgoodies.forms.layout.FormLayout;
 public abstract class AddListItemsWizardStep<T extends TypeWithName> extends PanelWizardStep {
 	private PanelBuilder d_builder;
 	private JScrollPane d_scrollPane;
-	protected ListOfNamedValidator<T> d_validator;
-	protected ObservableList<T> d_list;
-	private String d_typeName;
+	private ListOfNamedValidator<T> d_validator;
+	protected AddListItemsPresentation<T> d_pm;
 
-	public AddListItemsWizardStep(String name, String summary, String typeName, ObservableList<T> list, int minItems) {
+	public AddListItemsWizardStep(String name, String summary, AddListItemsPresentation<T> pm) {
 		super(name, summary);
-		d_typeName = typeName;
-		d_list = list;
-		d_validator = new ListOfNamedValidator<T>(d_list, minItems);
+		d_pm = pm;
+		resetUnderlyingList();
+		d_pm.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				resetUnderlyingList();
+				rebuild();
+			}
+		});
+	}
+
+	private void resetUnderlyingList() {
+		d_validator = new ListOfNamedValidator<T>(d_pm.getList(), d_pm.getMinElements());
+		PropertyConnector.connectAndUpdate(d_validator, this, "complete");
+		d_pm.getList().addListDataListener(new ListDataListener() {
+			
+			public void intervalRemoved(ListDataEvent e) {
+				rebuild();
+			}
+			
+			public void intervalAdded(ListDataEvent e) {
+				rebuild();
+			}
+			
+			public void contentsChanged(ListDataEvent e) {
+				rebuild();
+			}
+		});
 	}
 
 	protected abstract void addAdditionalFields(PanelBuilder builder, CellConstraints cc, int rows, int idx);
-	protected abstract T createItem();
-	protected abstract List<Note> getNotes(T t);
+
+	protected T createItem() {
+		return d_pm.createItem();
+	}
+	protected List<Note> getNotes(T t) {
+		return d_pm.getNotes(t);
+	}
 
 	public void rebuild() { 
-		 this.setVisible(false);
+		this.setVisible(false);
 		 
-		 if (d_scrollPane != null)
-			 remove(d_scrollPane);
-		 buildWizardStep();
+		if (d_scrollPane != null)
+			remove(d_scrollPane);
+		buildWizardStep();
 		 
-		 this.setVisible(true);
+		this.setVisible(true);
 	}
 
 	@Override
 	public void prepare() {
-		 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
-		 rebuild();
+		rebuild();
 	 }
 
 	private void buildWizardStep() {
@@ -74,19 +105,18 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		CellConstraints cc = new CellConstraints();
 		
 		int rows = 1;
-		d_builder.addSeparator(d_typeName + "s", cc.xyw(1, 1, 9));
+		d_builder.addSeparator(d_pm.getItemName() + "s", cc.xyw(1, 1, 9));
 		
-		for(int i = 0; i < d_list.size(); ++i) {
+		for(int i = 0; i < d_pm.getList().size(); ++i) {
 			rows = addComponents(d_builder, layout, cc, rows, i);
 		}
 		
 		rows = addRow(layout, rows);
-		JButton addBtn = new JButton("Add " + d_typeName);
+		JButton addBtn = new JButton("Add " + d_pm.getItemName());
 		d_builder.add(addBtn, cc.xy(1, rows));
 		addBtn.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
-				d_list.add(createItem());
-				rebuild();
+				d_pm.getList().add(createItem());
 			}
 		});
 		
@@ -109,7 +139,7 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		// name input field
 		builder.addLabel("Name: ", cc.xy (3, rows));
 		JTextField nameField = BasicComponentFactory.createTextField(
-				getNameModel(d_list.get(idx)), false);
+				getNameModel(d_pm.getList().get(idx)), false);
 		builder.add(nameField, cc.xy(5, rows));
 		
 		// type specific input fields
@@ -117,7 +147,7 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		
 		// notes
 		rows = addRow(layout, rows);
-		d_builder.add(AddStudyWizard.buildNotesEditor(getNotes(d_list.get(idx))), cc.xyw(5, rows, 5));
+		d_builder.add(AddStudyWizard.buildNotesEditor(getNotes(d_pm.getList().get(idx))), cc.xyw(5, rows, 5));
 	
 		return rows;
 	}
@@ -139,8 +169,7 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		}
 		
 		public void actionPerformed(ActionEvent e) {
-			d_list.remove(d_index);
-			rebuild();
+			d_pm.getList().remove(d_index);
 		}	
 	}
 }

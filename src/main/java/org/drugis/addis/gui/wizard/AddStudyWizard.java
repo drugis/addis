@@ -106,6 +106,8 @@ import org.drugis.addis.gui.components.NotesView;
 import org.drugis.addis.imports.PubMedIDRetriever;
 import org.drugis.addis.presentation.DosePresentation;
 import org.drugis.addis.presentation.NotesModel;
+import org.drugis.addis.presentation.wizard.AddArmsPresentation;
+import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.OutcomeMeasurementsModel;
 import org.drugis.addis.util.PubMedListFormat;
@@ -119,6 +121,7 @@ import org.pietschy.wizard.WizardEvent;
 import org.pietschy.wizard.WizardListener;
 import org.pietschy.wizard.models.StaticModel;
 
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.value.ValueModel;
@@ -158,8 +161,8 @@ public class AddStudyWizard extends Wizard {
 		wizardModel.add(new SelectIndicationWizardStep(pm, mainWindow));
 		wizardModel.add(new EnterCharacteristicsWizardStep(pm));
 		
-		wizardModel.add(new AddArmsWizardStep(pm));
-		wizardModel.add(new AddEpochsWizardStep(pm));
+		wizardModel.add(new AddArmsWizardStep(pm.getAddArmsModel()));
+		wizardModel.add(new AddEpochsWizardStep(pm.getAddEpochsModel()));
 		wizardModel.add(new AssignActivitiesWizardStep(pm));
 		
 		wizardModel.add(new SelectEndpointWizardStep(pm));
@@ -199,15 +202,8 @@ public class AddStudyWizard extends Wizard {
 	// -- Wizard Steps
 	
 	public static class AddArmsWizardStep extends AddListItemsWizardStep<Arm> {
-		private AddStudyWizardPresentation d_pm;
-		public AddArmsWizardStep(AddStudyWizardPresentation pm) {
-			super("Add arms", "Enter the arms for this study.", "Arm", pm.getArms(), 2);
-			d_pm = pm;
-		}
-		
-		@Override
-		protected Arm createItem() {
-			return new Arm(d_pm.nextArmName(), 0);
+		public AddArmsWizardStep(AddArmsPresentation pm) {
+			super("Add arms", "Enter the arms for this study.", pm);
 		}
 		
 		@Override
@@ -215,37 +211,20 @@ public class AddStudyWizard extends Wizard {
 				CellConstraints cc, int rows, int idx) {
 			builder.addLabel("Size: ", cc.xy(7, rows));
 			JTextField sizeField = BasicComponentFactory.createFormattedTextField(
-					d_pm.getArmModel(idx).getModel(Arm.PROPERTY_SIZE), new DefaultFormatter()); 
+					new PresentationModel<Arm>(d_pm.getList().get(idx)).getModel(Arm.PROPERTY_SIZE), new DefaultFormatter()); 
 			sizeField.setColumns(4);
 			builder.add(sizeField, cc.xy(9, rows));
-		}
-
-		@Override
-		protected List<Note> getNotes(Arm t) {
-			return t.getNotes();
 		}
 
 	}
 	
 	public static class AddEpochsWizardStep extends AddListItemsWizardStep<Epoch> {
-		private AddStudyWizardPresentation d_pm;
-		public AddEpochsWizardStep(AddStudyWizardPresentation pm) {
-			super("Add epochs", "Enter the epochs for this study.", "Epoch", pm.getEpochs(), 1);
-			d_pm = pm;
+		public AddEpochsWizardStep(AddEpochsPresentation pm) {
+			super("Add epochs", "Enter the epochs for this study.", pm);
 		}
 		
 		@Override
 		protected void addAdditionalFields(PanelBuilder builder, CellConstraints cc, int rows, int idx) {
-		}
-
-		@Override
-		protected Epoch createItem() {
-			return new Epoch(d_pm.nextEpochName(), null);
-		}
-
-		@Override
-		protected List<Note> getNotes(Epoch t) {
-			return t.getNotes();
 		}
 	}
 	

@@ -68,6 +68,7 @@ import org.drugis.addis.presentation.StudyMeasurementTableModel;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.addis.presentation.TreatmentActivityPresentation;
 
+import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
@@ -168,6 +169,8 @@ public class AddStudyWizardPresentation {
 	private SelectAdverseEventsPresentation d_adverseEventSelect;
 	private SelectPopulationCharsPresentation d_populationCharSelect;
 	private SelectEndpointPresentation d_endpointSelect;
+	private AddArmsPresentation d_arms;
+	private AddEpochsPresentation d_epochs;
 	
 	private Study d_origStudy = null;
 	private AddisWindow d_mainWindow;
@@ -184,6 +187,8 @@ public class AddStudyWizardPresentation {
 		d_endpointSelect = new SelectEndpointPresentation(d_endpointListHolder, d_mainWindow);
 		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_adverseEventListHolder, d_mainWindow);
 		d_populationCharSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder,d_mainWindow);
+		d_arms = new AddArmsPresentation(new ArrayListModel<Arm>(), "Arm", 2);
+		d_epochs = new AddEpochsPresentation(new ArrayListModel<Epoch>(), "Epoch", 1);
 		resetStudy();
 	}
 
@@ -191,6 +196,8 @@ public class AddStudyWizardPresentation {
 		d_endpointSelect.setSlots(getNewStudy().getStudyEndpoints());
 		d_adverseEventSelect.setSlots(getNewStudy().getStudyAdverseEvents());
 		d_populationCharSelect.setSlots(getNewStudy().getStudyPopulationCharacteristics());
+		getAddArmsModel().setList(getArms());
+		getAddEpochsModel().setList(getEpochs());
 	}
 	
 	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, AddisWindow mainWindow, Study origStudy) {
@@ -305,6 +312,14 @@ public class AddStudyWizardPresentation {
 		return new BasicArmPresentation(getArms().get(armNumber), d_pmf);
 	}
 	
+	public AddArmsPresentation getAddArmsModel() {
+		return d_arms;
+	}
+
+	public AddEpochsPresentation getAddEpochsModel() {
+		return d_epochs;
+	}
+
 	public TreatmentActivityPresentation getTreatmentActivityModel(int armNumber){
 		Arm arm = getArms().get(armNumber);
 		return new TreatmentActivityPresentation(getNewStudy().getTreatment(arm), d_pmf);
