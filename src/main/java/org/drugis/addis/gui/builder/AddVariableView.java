@@ -74,13 +74,11 @@ public class AddVariableView implements ViewBuilder {
 	private JScrollPane d_scrollPane;
 	private JButton d_AddcatBtn;
 	private SelectionInList<String> d_categoriesListModel;
-	private JButton d_dOkButton;
 	
 	public AddVariableView(PresentationModel<Variable> model, JButton okButton) {
 		d_model = (VariablePresentation) model;
-		d_dOkButton = okButton;
 		d_validator = new NotEmptyValidator();
-		Bindings.bind(d_dOkButton, "enabled", d_validator);
+		Bindings.bind(okButton, "enabled", d_validator);
 	}
 	
 	private void initComponents() {

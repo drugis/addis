@@ -39,9 +39,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -67,7 +67,8 @@ import javax.swing.TransferHandler;
 import javax.swing.border.Border;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultFormatter;
@@ -83,6 +84,7 @@ import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
+import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
@@ -91,6 +93,7 @@ import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.gui.AddisWindow;
@@ -238,7 +241,7 @@ public class AddStudyWizard extends Wizard {
 		public JTable armsEpochsTable;
 		
 		public AssignActivitiesWizardStep(AddStudyWizardPresentation pm) {
-			super("Assign activities", "Select teh activities that ye wants to add.");
+			super("Assign activities", "Drag activities to their proper combination of (arm, epoch).");
 			
 			d_pm = pm;
 			if (d_pm.isEditing())
@@ -271,11 +274,15 @@ public class AddStudyWizard extends Wizard {
 			// add labels
 			d_builder.addLabel("Activities: ", cc.xy(1, 1));
 			d_builder.addLabel("Arms and Epochs: ", cc.xy(3, 1));
-			
-			// add activities combo-box
-			String[] activities = { "Screening", "Randomization", "Fluoxetine", "Paroxetine", "Placebo" };
 
-			JList activityList = new JList(activities);
+			Study study = d_pm.getNewStudyPM().getBean();
+			study.getStudyActivities().add(new StudyActivity("Test1", new TreatmentActivity(new Drug("foo", "code1"), new FixedDose(12.5, SIUnit.MILLIGRAMS_A_DAY))));
+			study.getStudyActivities().add(new StudyActivity("Test2", new TreatmentActivity(new Drug("bar", "code1"), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY))));
+			Vector<String> activityNames = new Vector<String>();
+			for(StudyActivity sa : study .getStudyActivities()) {
+				activityNames.add(sa.getName());
+			}
+			JList activityList = new JList(activityNames);
 			activityList.setDragEnabled(true);
 			activityList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			activityList.setLayoutOrientation(JList.VERTICAL);
@@ -284,9 +291,9 @@ public class AddStudyWizard extends Wizard {
 			//activityScrollPane.setPreferredSize(new Dimension(100, 250));
 			d_builder.add(activityScrollPane , cc.xy(1, 3));
 			
-			createTable(cc);
+			createArmsAndEpochsTable(cc);
 			
-			createButtons(cc);
+			createButtons(cc, activityList);
 						
 			this.setLayout(new BorderLayout());
 			d_scrollPane = new JScrollPane(d_builder.getPanel());
@@ -295,103 +302,96 @@ public class AddStudyWizard extends Wizard {
 			add(d_scrollPane, BorderLayout.CENTER);
 		}
 
-		private void createTable(CellConstraints cc) {
+		private void createArmsAndEpochsTable(CellConstraints cc) {
 			// add arms & epochs table
-			final DefaultTableModel tableModel = new DefaultTableModel();
-			tableModel.addColumn("Arm");
-			tableModel.addColumn("Item 1");
-			tableModel.addColumn("Item 2");
-			
-			// add arm names
-			List<Arm> list = d_pm.getNewStudyPM().getBean().getArms();
-			Iterator<Arm> itr = list.iterator();
-			while (itr.hasNext()) {
-				Arm arm = itr.next();
-				tableModel.addRow(new Object[]{arm.getName()});
-			}
-			
+			final StudyActivitiesTableModel tableModel = new StudyActivitiesTableModel(d_pm.getNewStudyPM().getBean());
+
 			final JTable armsEpochsTable = new JTable(tableModel);
+			armsEpochsTable.getTableHeader().setReorderingAllowed(false);
+			armsEpochsTable.getTableHeader().setResizingAllowed(false);
 			JScrollPane tableScrollPane = new JScrollPane(armsEpochsTable);
-			//armsEpochsTable.setFillsViewportHeight(true);
 			armsEpochsTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-			armsEpochsTable.setDropMode(DropMode.ON_OR_INSERT_ROWS);
+			armsEpochsTable.setDropMode(DropMode.ON);
 			armsEpochsTable.setTransferHandler(new TransferHandler(){
-				
 				public boolean canImport(TransferSupport support) {
 	                if (!support.isDrop()) {
 	                    return false;
 	                }
-
-	                // import Strings
 	                if (!support.isDataFlavorSupported(DataFlavor.stringFlavor)) {
 	                    return false;
 	                }
-
 	                return true;
 	            }
 
-	            public boolean importData(TransferSupport support) {
-	                // if we can't handle the import, say so
-	                if (!canImport(support)) {
-	                    return false;
-	                }
-
-	                // fetch the drop location
-	                JTable.DropLocation dl = (JTable.DropLocation)support.getDropLocation();
-
-	                int row = dl.getRow();
-	                int column = dl.getColumn();
-
-	                // fetch the data and bail if this fails
-	                String data;
-	                try {
-	                    data = (String)support.getTransferable().getTransferData(DataFlavor.stringFlavor);
-	                } catch (UnsupportedFlavorException e) {
-	                    return false;
-	                } catch (IOException e) {
-	                    return false;
-	                }
-
-	                if (column > 0) {
-	                	tableModel.setValueAt(data, row, column);
-	                } else {
-	                	return false;
-	                }
-	                
-	                Rectangle rect = armsEpochsTable.getCellRect(row, 0, false);
-	                if (rect != null) {
-	                	armsEpochsTable.scrollRectToVisible(rect);
-	                }
-
-	                return true;
-	            }
+				public boolean importData(TransferSupport support) {
+					if (!canImport(support)) {
+					    return false;
+					}
+					JTable.DropLocation dl = (JTable.DropLocation)support.getDropLocation();
+					
+					int row = dl.getRow();
+					int column = dl.getColumn();
+					
+					String data;
+		            try {
+		                data = (String)support.getTransferable().getTransferData(DataFlavor.stringFlavor);
+		            } catch (UnsupportedFlavorException e) {
+		                return false;
+		            } catch (IOException e) {
+		                return false;
+		            }
+		
+		            if (column > 0) {
+		            	tableModel.setValueAt(data, row, column);
+		            } else {
+		            	return false;
+		            }
+		            
+		            Rectangle rect = armsEpochsTable.getCellRect(row, 0, false);
+		            if (rect != null) {
+		            	armsEpochsTable.scrollRectToVisible(rect);
+		            }
+		
+		            return true;
+		        }
 			});
-			
-			
-			d_builder.add(tableScrollPane, cc.xy(3, 3));
+			d_builder.add(tableScrollPane, cc.xywh(3, 3, 1, 5));
 		}
 
-		private void createButtons(CellConstraints cc) {
-			// add new, edit and remove buttons
-			JButton newActBtn = new JButton("New Activity");
-			d_builder.add(newActBtn, cc.xy(1, 5));
-			newActBtn.addActionListener(new AbstractAction() {
+		private void createButtons(CellConstraints cc, JList activities) {
+			final JButton newButton = new JButton("New Activity");
+			final JButton editButton = new JButton("Edit Activity");
+			final JButton removeButton = new JButton("Remove Activity");
+
+			// make sure edit and remove are only enabled when anything is selected.
+			editButton.setEnabled(activities.getSelectedIndex() >= 0);
+			removeButton.setEnabled(activities.getSelectedIndex() >= 0);
+		
+			activities.addListSelectionListener( new ListSelectionListener() {
+				public void valueChanged(ListSelectionEvent e) {
+					boolean anySelected = ((JList) (e.getSource())).getSelectedIndex() >= 0;
+					editButton.setEnabled(anySelected);
+					removeButton.setEnabled(anySelected);
+				}					
+			});
+			
+			d_builder.add(newButton, cc.xy(1, 5));
+			newButton.addActionListener(new AbstractAction() {
+				public void actionPerformed(ActionEvent e) {
+//					dialog.aAddStudyActivityDialog(d_pm);
+				}
+			});
+			
+
+			d_builder.add(editButton, cc.xy(1, 7));
+			editButton.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
 					//TODO: write code here
 				}
 			});
 			
-			JButton editActBtn = new JButton("Edit Activity");
-			d_builder.add(editActBtn, cc.xy(1, 7));
-			editActBtn.addActionListener(new AbstractAction() {
-				public void actionPerformed(ActionEvent e) {
-					//TODO: write code here
-				}
-			});
-			
-			JButton remActBtn = new JButton("Remove Activity");
-			d_builder.add(remActBtn, cc.xy(1, 9));
-			remActBtn.addActionListener(new AbstractAction() {
+			d_builder.add(removeButton, cc.xy(1, 9));
+			removeButton.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
 					//TODO: write code here
 				}
@@ -856,6 +856,9 @@ public class AddStudyWizard extends Wizard {
 			d_builder.addLabel("Indication",cc.xy(1, 3));	
 			
 			JComboBox indBox = AuxComponentFactory.createBoundComboBox(d_pm.getIndicationListModel(), d_pm.getIndicationModel());
+			if(d_pm.getIndicationListModel().getValue().size() > 0) {
+				indBox.setSelectedIndex(0);
+			}
 			d_builder.add(indBox, cc.xyw(3, 3, 2));
 			d_validator.add(indBox);
 			
