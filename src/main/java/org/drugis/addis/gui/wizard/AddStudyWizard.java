@@ -41,7 +41,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -166,7 +165,7 @@ public class AddStudyWizard extends Wizard {
 		
 		wizardModel.add(new AddArmsWizardStep(pm.getAddArmsModel()));
 		wizardModel.add(new AddEpochsWizardStep(pm.getAddEpochsModel()));
-		wizardModel.add(new AssignActivitiesWizardStep(pm));
+		wizardModel.add(new AssignActivitiesWizardStep(pm, mainWindow, dialog));
 		
 		wizardModel.add(new SelectEndpointWizardStep(pm));
 //		wizardModel.add(new SetArmsWizardStep(pm, mainWindow));
@@ -224,6 +223,8 @@ public class AddStudyWizard extends Wizard {
 	public static class AddEpochsWizardStep extends AddListItemsWizardStep<Epoch> {
 		public AddEpochsWizardStep(AddEpochsPresentation pm) {
 			super("Add epochs", "Enter the epochs for this study.", pm);
+			pm.getList().add(createItem());
+			rebuild();
 		}
 		
 		@Override
@@ -231,18 +232,21 @@ public class AddStudyWizard extends Wizard {
 		}
 	}
 	
-	public static class AssignActivitiesWizardStep extends PanelWizardStep{
-		JPanel d_me = this;
+	public static class AssignActivitiesWizardStep extends PanelWizardStep {
 		private PanelBuilder d_builder;
 		private JScrollPane d_scrollPane;
 		
 		private AddStudyWizardPresentation d_pm;
 		private NotEmptyValidator d_validator;
-		public JTable armsEpochsTable;
 		
-		public AssignActivitiesWizardStep(AddStudyWizardPresentation pm) {
+		public JTable armsEpochsTable;
+		private final JDialog d_parent;
+		private AddisWindow d_mainWindow;
+		
+		public AssignActivitiesWizardStep(AddStudyWizardPresentation pm, AddisWindow mainWindow, JDialog parent) {
 			super("Assign activities", "Drag activities to their proper combination of (arm, epoch).");
-			
+			d_parent = parent;
+			d_mainWindow = mainWindow;
 			d_pm = pm;
 			if (d_pm.isEditing())
 				setComplete(true);
@@ -278,17 +282,13 @@ public class AddStudyWizard extends Wizard {
 			Study study = d_pm.getNewStudyPM().getBean();
 			study.getStudyActivities().add(new StudyActivity("Test1", new TreatmentActivity(new Drug("foo", "code1"), new FixedDose(12.5, SIUnit.MILLIGRAMS_A_DAY))));
 			study.getStudyActivities().add(new StudyActivity("Test2", new TreatmentActivity(new Drug("bar", "code1"), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY))));
-			Vector<String> activityNames = new Vector<String>();
-			for(StudyActivity sa : study .getStudyActivities()) {
-				activityNames.add(sa.getName());
-			}
-			JList activityList = new JList(activityNames);
+			
+			JList activityList = new JList(study.getStudyActivities());			
 			activityList.setDragEnabled(true);
 			activityList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			activityList.setLayoutOrientation(JList.VERTICAL);
 
 			JScrollPane activityScrollPane = new JScrollPane(activityList);
-			//activityScrollPane.setPreferredSize(new Dimension(100, 250));
 			d_builder.add(activityScrollPane , cc.xy(1, 3));
 			
 			createArmsAndEpochsTable(cc);
@@ -378,7 +378,9 @@ public class AddStudyWizard extends Wizard {
 			d_builder.add(newButton, cc.xy(1, 5));
 			newButton.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
-//					dialog.aAddStudyActivityDialog(d_pm);
+					AddStudyActivityDialog addStudyActivityDialog = new AddStudyActivityDialog(d_parent, d_mainWindow, d_pm);
+					addStudyActivityDialog.setLocationRelativeTo(d_parent);
+					addStudyActivityDialog.setVisible(true);
 				}
 			});
 			

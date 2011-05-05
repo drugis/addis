@@ -477,5 +477,4 @@ public class AddStudyWizardPresentation {
 	public String nextEpochName() {
 		return "Epoch " + (++d_epochsCreated );
 	}
-
 }
