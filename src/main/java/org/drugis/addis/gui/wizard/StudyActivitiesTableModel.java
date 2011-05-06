@@ -32,6 +32,11 @@ public class StudyActivitiesTableModel extends AbstractTableModel {
 		return column == 0 ? "Arms" : d_study.getEpochs().get(column - 1).getName();
 	}
 	
+	@Override
+	public Class<?> getColumnClass(int column) {
+		return column == 0 ? String.class : StudyActivity.class;
+	}
+	
 	public void setValueAt(StudyActivity activity, int row, int column) {
 		d_study.setStudyActivityAt(d_study.getArms().get(row), d_study.getEpochs().get(column - 1),  activity);
 	}

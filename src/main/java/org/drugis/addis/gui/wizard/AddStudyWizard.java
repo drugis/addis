@@ -26,6 +26,7 @@ package org.drugis.addis.gui.wizard;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -44,6 +45,7 @@ import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DropMode;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -122,6 +124,8 @@ import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardEvent;
 import org.pietschy.wizard.WizardListener;
 import org.pietschy.wizard.models.StaticModel;
+
+import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -327,6 +331,13 @@ public class AddStudyWizard extends Wizard {
 			});
 			activityList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			activityList.setLayoutOrientation(JList.VERTICAL);
+			activityList.setCellRenderer(new DefaultListCellRenderer() {
+				public Component getListCellRendererComponent(JList list, Object value,
+						int index, boolean isSelected, boolean cellHasFocus) {
+					return super.getListCellRendererComponent(list, ((StudyActivity)value).getName(), 
+							index, isSelected, cellHasFocus);
+				}
+			});
 
 			JScrollPane activityScrollPane = new JScrollPane(activityList);
 			d_builder.add(activityScrollPane , cc.xy(1, 3));
@@ -385,6 +396,15 @@ public class AddStudyWizard extends Wizard {
 	            	tableModel.setValueAt(data, dl.getRow(), dl.getColumn());
 		            return true;
 		        }
+			});
+			armsEpochsTable.setDefaultRenderer(StudyActivity.class, new DefaultTableCellHeaderRenderer() {
+				@Override
+				public Component getTableCellRendererComponent(JTable table, Object value,
+						boolean arg2, boolean arg3, int arg4, int arg5) {
+					String strValue = value == null ? "" : ((StudyActivity)value).getName();
+					return super.getTableCellRendererComponent(table, strValue, 
+							arg2, arg3, arg4, arg5);
+				}
 			});
 			d_builder.add(tableScrollPane, cc.xywh(3, 3, 1, 5));
 		}
