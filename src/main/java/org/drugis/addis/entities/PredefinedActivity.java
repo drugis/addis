@@ -19,6 +19,11 @@ public enum PredefinedActivity implements Activity {
 	public String getDescription() {
 		return d_description;
 	}
+	
+	@Override
+	public String toString() {
+		return getDescription();
+	}
 
 	/**
 	 * Deep equality and shallow equality are equivalent for this type.

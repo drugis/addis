@@ -27,8 +27,8 @@ package org.drugis.addis.gui.wizard;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -243,6 +243,17 @@ public class AddStudyWizard extends Wizard {
 		private final JDialog d_parent;
 		private AddisWindow d_mainWindow;
 		
+		private static DataFlavor s_studyActivityFlavor = createFlavor();
+		
+		private static DataFlavor createFlavor() {
+			try {
+				return new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType + ";class=" +
+						StudyActivity.class.getCanonicalName());
+			} catch (ClassNotFoundException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
 		public AssignActivitiesWizardStep(AddStudyWizardPresentation pm, AddisWindow mainWindow, JDialog parent) {
 			super("Assign activities", "Drag activities to their proper combination of (arm, epoch).");
 			d_parent = parent;
@@ -285,6 +296,35 @@ public class AddStudyWizard extends Wizard {
 			
 			JList activityList = new JList(study.getStudyActivities());			
 			activityList.setDragEnabled(true);
+			activityList.setTransferHandler(new TransferHandler() {
+				@Override
+				public int getSourceActions(JComponent c) {
+					return COPY;
+				}
+				
+				@Override
+				protected Transferable createTransferable(final JComponent c) {
+					return new Transferable() {
+						private Object d_value = ((JList)c).getSelectedValue();
+						
+						public boolean isDataFlavorSupported(DataFlavor flavor) {
+							return flavor.equals(s_studyActivityFlavor);
+						}
+						
+						public DataFlavor[] getTransferDataFlavors() {
+							return new DataFlavor[] { s_studyActivityFlavor };
+						}
+						
+						public Object getTransferData(DataFlavor flavor)
+								throws UnsupportedFlavorException, IOException {
+							if (!isDataFlavorSupported(flavor)) {
+								throw new UnsupportedFlavorException(flavor);
+							}
+							return d_value;
+						}
+					}; 
+				}
+			});
 			activityList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			activityList.setLayoutOrientation(JList.VERTICAL);
 
@@ -317,9 +357,13 @@ public class AddStudyWizard extends Wizard {
 	                if (!support.isDrop()) {
 	                    return false;
 	                }
-	                if (!support.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+	                if (!support.isDataFlavorSupported(s_studyActivityFlavor)) {
 	                    return false;
 	                }
+					JTable.DropLocation dl = (JTable.DropLocation)support.getDropLocation();
+					if (dl.getColumn() <= 0) {
+						return false;
+					}
 	                return true;
 	            }
 
@@ -327,31 +371,18 @@ public class AddStudyWizard extends Wizard {
 					if (!canImport(support)) {
 					    return false;
 					}
-					JTable.DropLocation dl = (JTable.DropLocation)support.getDropLocation();
-					
-					int row = dl.getRow();
-					int column = dl.getColumn();
-					
-					String data;
+
+					StudyActivity data;
 		            try {
-		                data = (String)support.getTransferable().getTransferData(DataFlavor.stringFlavor);
+		                data = (StudyActivity)support.getTransferable().getTransferData(s_studyActivityFlavor);
 		            } catch (UnsupportedFlavorException e) {
 		                return false;
 		            } catch (IOException e) {
 		                return false;
 		            }
-		
-		            if (column > 0) {
-		            	tableModel.setValueAt(data, row, column);
-		            } else {
-		            	return false;
-		            }
-		            
-		            Rectangle rect = armsEpochsTable.getCellRect(row, 0, false);
-		            if (rect != null) {
-		            	armsEpochsTable.scrollRectToVisible(rect);
-		            }
-		
+
+					JTable.DropLocation dl = (JTable.DropLocation)support.getDropLocation();
+	            	tableModel.setValueAt(data, dl.getRow(), dl.getColumn());
 		            return true;
 		        }
 			});

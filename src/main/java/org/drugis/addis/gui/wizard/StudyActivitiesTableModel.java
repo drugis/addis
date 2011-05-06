@@ -22,19 +22,17 @@ public class StudyActivitiesTableModel extends AbstractTableModel {
 		return d_study.getArms().size();
 	}
 
-	public Object getValueAt(int rowIndex, int columnIndex) {
-		if(columnIndex == 0) return d_study.getArms().get(rowIndex);
-		return d_study.getStudyActivityAt(d_study.getArms().get(rowIndex), d_study.getEpochs().get(columnIndex - 1));
+	public Object getValueAt(int row, int column) {
+		if(column == 0) return d_study.getArms().get(row);
+		return d_study.getStudyActivityAt(d_study.getArms().get(row), d_study.getEpochs().get(column - 1));
 	}
 
 	@Override
 	public String getColumnName(int column) {
-		return column == 0 ? "Arms" : d_study.getEpochs().get(column-1).getName();
+		return column == 0 ? "Arms" : d_study.getEpochs().get(column - 1).getName();
 	}
 	
-	@Override
-	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		d_study.setStudyActivityAt(d_study.getArms().get(rowIndex), d_study.getEpochs().get(columnIndex - 1), 
-				new StudyActivity(aValue.toString(), null));
+	public void setValueAt(StudyActivity activity, int row, int column) {
+		d_study.setStudyActivityAt(d_study.getArms().get(row), d_study.getEpochs().get(column - 1),  activity);
 	}
 }

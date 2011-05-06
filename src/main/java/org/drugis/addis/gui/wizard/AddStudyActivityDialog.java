@@ -173,7 +173,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		List<Object> types = new ArrayList<Object>();
 		types.add("Treatment");
 		for (PredefinedActivity pa : PredefinedActivity.values()) {
-			types.add(pa.getDescription());
+			types.add(pa);
 		}
 		return types.toArray();
 	}
