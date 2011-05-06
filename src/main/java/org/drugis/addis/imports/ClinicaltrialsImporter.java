@@ -46,6 +46,7 @@ import javax.xml.bind.Unmarshaller;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
@@ -166,6 +167,11 @@ public class ClinicaltrialsImporter {
 		addStudyArms(study, studyImport);
 
 		addStudyEndpoints(study, studyImport);
+		
+		if (study.getCharacteristic(BasicStudyCharacteristic.ALLOCATION).equals(Allocation.RANDOMIZED)) {
+			study.getEpochs().add(new Epoch("Randomization", null));
+		}
+		study.getEpochs().add(new Epoch("Main phase", null));
 		
 		// Import date & Source.
 		study.setCharacteristicWithNotes(BasicStudyCharacteristic.CREATION_DATE, 

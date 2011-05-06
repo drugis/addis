@@ -85,7 +85,6 @@ import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
-import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
@@ -295,9 +294,7 @@ public class AddStudyWizard extends Wizard {
 			d_builder.addLabel("Arms and Epochs: ", cc.xy(3, 1));
 
 			Study study = d_pm.getNewStudyPM().getBean();
-			study.getStudyActivities().add(new StudyActivity("Test1", new TreatmentActivity(new Drug("foo", "code1"), new FixedDose(12.5, SIUnit.MILLIGRAMS_A_DAY))));
-			study.getStudyActivities().add(new StudyActivity("Test2", new TreatmentActivity(new Drug("bar", "code1"), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY))));
-			
+
 			JList activityList = new JList(study.getStudyActivities());			
 			activityList.setDragEnabled(true);
 			activityList.setTransferHandler(new TransferHandler() {
@@ -620,7 +617,7 @@ public class AddStudyWizard extends Wizard {
 			d_builder.add(btn, cc.xy(1, row+=2));
 			btn.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
-					d_pm.addArms(1);
+//					d_pm.addArms(1);
 					prepare();
 				}
 			});

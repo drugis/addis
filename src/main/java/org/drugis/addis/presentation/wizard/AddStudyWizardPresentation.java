@@ -42,16 +42,12 @@ import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
-import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
-import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyActivity;
-import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
 import org.drugis.addis.presentation.AbstractListHolder;
@@ -174,8 +170,6 @@ public class AddStudyWizardPresentation {
 	
 	private Study d_origStudy = null;
 	private AddisWindow d_mainWindow;
-	private int d_armsCreated = 0;
-	private int d_epochsCreated = 0;
 	
 	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, AddisWindow mainWindow) {
 		d_domain = d;
@@ -261,13 +255,11 @@ public class AddStudyWizardPresentation {
 		getSourceModel().setValue(Source.MANUAL);
 		
 		// Add 2 arms by default:
-		d_armsCreated = 0;
-		getArms().add(new Arm(nextArmName(), 0));
-		getArms().add(new Arm(nextArmName(), 0));
-
+		getArms().add(getAddArmsModel().createItem());
+		getArms().add(getAddArmsModel().createItem());
+		
 		// Add 1 epoch by default:
-		d_epochsCreated = 0;
-		getEpochs().add(new Epoch(nextEpochName(), null));
+		getEpochs().add(getAddEpochsModel().createItem());
 		
 		updateSelectionHolders();
 		d_endpointSelect.addSlot(); // by default have 1 endpoint slot.
@@ -280,20 +272,6 @@ public class AddStudyWizardPresentation {
 
 	public ValueModel getCharacteristicNoteModel(BasicStudyCharacteristic c) {
 		return new NoteModel(getNewStudy().getCharacteristicWithNotes(c));
-	}
-
-	@Deprecated
-	public void addArms(int numArms) {
-		if (getEpochs().isEmpty()) {
-			getEpochs().add(new Epoch("Main phase", null));
-		}
-		for(int i = 0; i < numArms; ++i) {
-			Arm arm = new Arm(nextArmName(), 0);
-			StudyActivity activity = new StudyActivity("Treatment " + (i + 1), new TreatmentActivity(null, new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY)));
-			getNewStudy().getStudyActivities().add(activity);
-			getArms().add(arm);
-			getNewStudy().setStudyActivityAt(arm, getEpochs().get(0), activity);
-		}
 	}
 
 	public ObservableList<Arm> getArms() {
@@ -468,13 +446,5 @@ public class AddStudyWizardPresentation {
 
 	public Study getOldStudy() {
 		return d_origStudy;
-	}
-
-	public String nextArmName() {
-		return "Arm " + (++d_armsCreated);
-	}
-
-	public String nextEpochName() {
-		return "Epoch " + (++d_epochsCreated );
 	}
 }
