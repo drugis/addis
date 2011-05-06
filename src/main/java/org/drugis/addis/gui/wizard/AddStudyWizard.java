@@ -70,6 +70,7 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultFormatter;
@@ -123,8 +124,6 @@ import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardEvent;
 import org.pietschy.wizard.WizardListener;
 import org.pietschy.wizard.models.StaticModel;
-
-import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -394,7 +393,7 @@ public class AddStudyWizard extends Wizard {
 		            return true;
 		        }
 			});
-			armsEpochsTable.setDefaultRenderer(StudyActivity.class, new DefaultTableCellHeaderRenderer() {
+			armsEpochsTable.setDefaultRenderer(StudyActivity.class, new DefaultTableCellRenderer() {
 				@Override
 				public Component getTableCellRendererComponent(JTable table, Object value,
 						boolean arg2, boolean arg3, int arg4, int arg5) {
