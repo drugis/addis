@@ -211,7 +211,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		// add name
 		builder.addLabel("Name: ", cc.xy(1, 11));
 		JTextField activityName = BasicComponentFactory.createTextField(d_nameModel, false);
-		d_validator.add(activityName);
+		d_validator.add(d_nameModel);
 		builder.add(activityName, cc.xy(3, 11));
 		
 		// show or hide drug

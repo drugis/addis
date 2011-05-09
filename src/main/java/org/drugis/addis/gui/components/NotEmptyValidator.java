@@ -28,6 +28,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,7 @@ import javax.swing.event.ListDataListener;
 import javax.swing.text.JTextComponent;
 
 import com.jgoodies.binding.value.AbstractValueModel;
+import com.jgoodies.binding.value.ValueModel;
 import com.toedter.calendar.JDateChooser;
 
 @SuppressWarnings("serial")
@@ -50,11 +53,13 @@ public class NotEmptyValidator extends AbstractValueModel{
 	private DocumentListener d_myTextListener = new MyTextListener();
 	private ComboBoxListener d_myActionListener = new ComboBoxListener();
 	private MyListDataListener d_myListDataChangeListener = new MyListDataListener();
+	private List<ValueModel> d_valModels = new ArrayList<ValueModel>();
 	
 	public NotEmptyValidator() {
 		
 	}
 	
+	//FIXME: @DeprecatedAtSomePoint
 	public void add(JComponent field) {
 		if (field instanceof JTextComponent) {
 			((JTextComponent) field).getDocument().addDocumentListener(d_myTextListener);
@@ -132,6 +137,12 @@ public class NotEmptyValidator extends AbstractValueModel{
 			}
 			
 		}
+		for (ValueModel vm: d_valModels) {
+			if (vm.getValue().equals("")) {
+				empty = true;
+				break;
+			}
+		}
 		return empty;
 	}
 	
@@ -179,5 +190,14 @@ public class NotEmptyValidator extends AbstractValueModel{
 		public void removeUpdate(DocumentEvent arg0) {
 			update();
 		}
+	}
+
+	public void add(ValueModel model) {
+		d_valModels.add(model);
+		model.addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				update();
+			}
+		});
 	}
 }
