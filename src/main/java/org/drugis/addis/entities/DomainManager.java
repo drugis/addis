@@ -74,7 +74,7 @@ public class DomainManager {
 	 */
 	public void loadXMLDomain(InputStream is, int version) throws IOException {
 		try {
-			AddisData data = JAXBHandler.unmarshallAddisData(JAXBConvertor.transformToLatest(is, 1));
+			AddisData data = JAXBHandler.unmarshallAddisData(JAXBConvertor.transformToLatest(is, version));
 			d_domain = (DomainImpl) JAXBConvertor.convertAddisDataToDomain(data);
 		} catch (JAXBException e) {
 			throw new RuntimeException(e);
