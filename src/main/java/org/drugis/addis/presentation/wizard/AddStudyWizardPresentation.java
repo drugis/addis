@@ -28,8 +28,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.AdverseEvent;
@@ -48,6 +51,8 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyActivity;
+import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
 import org.drugis.addis.presentation.AbstractListHolder;
@@ -190,8 +195,38 @@ public class AddStudyWizardPresentation {
 		d_endpointSelect.setSlots(getNewStudy().getStudyEndpoints());
 		d_adverseEventSelect.setSlots(getNewStudy().getStudyAdverseEvents());
 		d_populationCharSelect.setSlots(getNewStudy().getStudyPopulationCharacteristics());
+		
 		getAddArmsModel().setList(getArms());
 		getAddEpochsModel().setList(getEpochs());
+		
+		ListDataListener removeOrphansListener = new ListDataListener() {
+			
+			public void intervalRemoved(ListDataEvent e) {
+				deleteOrphanUsedBys();
+			}
+			
+			public void intervalAdded(ListDataEvent e) {
+				deleteOrphanUsedBys();
+			}
+			
+			public void contentsChanged(ListDataEvent e) {
+				deleteOrphanUsedBys();
+			}
+		};
+		getAddArmsModel().getList().addListDataListener(removeOrphansListener);
+		getAddEpochsModel().getList().addListDataListener(removeOrphansListener);
+	}
+	
+	private void deleteOrphanUsedBys() {
+		for (StudyActivity sa : getNewStudy().getStudyActivities()) {
+			for (UsedBy ub: sa.getUsedBy()) {
+				if(getNewStudy().findArm(ub.getArm().getName()) == null || getNewStudy().findEpoch(ub.getEpoch().getName()) == null) {
+					HashSet<UsedBy> usedBy = new HashSet<UsedBy>(sa.getUsedBy());
+					usedBy.remove(ub);
+					sa.setUsedBy(usedBy);
+				}
+			}
+		}
 	}
 	
 	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, AddisWindow mainWindow, Study origStudy) {

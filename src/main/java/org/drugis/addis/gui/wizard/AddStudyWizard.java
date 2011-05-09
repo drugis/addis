@@ -66,6 +66,8 @@ import javax.swing.TransferHandler;
 import javax.swing.border.Border;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -241,7 +243,7 @@ public class AddStudyWizard extends Wizard {
 		
 		private static DataFlavor s_studyActivityFlavor = createFlavor();
 		private JList d_activityList;
-		private ContentAwareListModel<StudyActivity> d_activityContentAware;
+		private StudyActivitiesTableModel d_tableModel;
 		
 		private static DataFlavor createFlavor() {
 			try {
@@ -290,9 +292,22 @@ public class AddStudyWizard extends Wizard {
 
 			Study study = d_pm.getNewStudyPM().getBean();
 
-			d_activityContentAware = new ContentAwareListModel<StudyActivity>(study.getStudyActivities());
-			d_activityList = new JList(d_activityContentAware);
+			ContentAwareListModel<StudyActivity> dataModel = new ContentAwareListModel<StudyActivity>(study.getStudyActivities());
+			dataModel.addListDataListener(new ListDataListener() {
+				public void intervalRemoved(ListDataEvent e) {
+					d_tableModel.fireTableDataChanged();
+				}
+				
+				public void intervalAdded(ListDataEvent e) {
+					d_tableModel.fireTableDataChanged();
+				}
+				
+				public void contentsChanged(ListDataEvent e) {
+					d_tableModel.fireTableDataChanged();
+				}
+			});
 			
+			d_activityList = new JList(dataModel);
 			d_activityList.setDragEnabled(true);
 			d_activityList.setTransferHandler(new TransferHandler() {
 				@Override
@@ -348,10 +363,10 @@ public class AddStudyWizard extends Wizard {
 		}
 
 		private void createArmsAndEpochsTable(CellConstraints cc) {
-			// add arms & epochs table
-			final StudyActivitiesTableModel tableModel = new StudyActivitiesTableModel(d_pm.getNewStudyPM().getBean());
+			d_tableModel = new StudyActivitiesTableModel(d_pm.getNewStudyPM().getBean());
 
-			final JTable armsEpochsTable = new JTable(tableModel);
+			final JTable armsEpochsTable = new JTable(d_tableModel);
+			
 			armsEpochsTable.getTableHeader().setReorderingAllowed(false);
 			armsEpochsTable.getTableHeader().setResizingAllowed(false);
 			JScrollPane tableScrollPane = new JScrollPane(armsEpochsTable);
@@ -387,7 +402,7 @@ public class AddStudyWizard extends Wizard {
 		            }
 
 					JTable.DropLocation dl = (JTable.DropLocation)support.getDropLocation();
-	            	tableModel.setValueAt(data, dl.getRow(), dl.getColumn());
+	            	d_tableModel.setValueAt(data, dl.getRow(), dl.getColumn());
 		            return true;
 		        }
 			});
