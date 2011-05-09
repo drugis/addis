@@ -24,7 +24,6 @@
 
 package org.drugis.addis.presentation;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,6 +32,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.TypeWithName;
+import org.drugis.addis.util.ContentAwareListModel;
 
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -45,6 +45,7 @@ public class ListOfNamedValidator<T extends TypeWithName> extends AbstractValueM
 	private final ObservableList<T> d_listModel;
 	PropertyChangeListener d_nameListener;
 	private int d_minElms;
+	private ContentAwareListModel<T> d_contentAware;
 
 	/**
 	 * @param listModel The list to validate.
@@ -53,37 +54,25 @@ public class ListOfNamedValidator<T extends TypeWithName> extends AbstractValueM
 	public ListOfNamedValidator(ObservableList<T> listModel, int minElms) {
 		d_minElms = minElms;
 		d_listModel = listModel;
-		d_nameListener = new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				update();
-			}
-		};
+		d_contentAware = new ContentAwareListModel<T>(d_listModel);
 		
-		listModel.addListDataListener(new ListDataListener() {
+		d_contentAware.addListDataListener(new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {
-				updateListeners();
+				update();
 			}
 			
 			public void intervalAdded(ListDataEvent e) {
-				updateListeners();
+				update();
 			}
 
 			public void contentsChanged(ListDataEvent e) {
-				updateListeners();
+				update();
 			}
 		});
 		
-		updateListeners();
-	}
-	
-	private void updateListeners() {
-		for (T e : d_listModel) {
-			e.removePropertyChangeListener(d_nameListener);
-			e.addPropertyChangeListener(d_nameListener);
-		}
 		update();
 	}
-
+	
 	private void update() {
 		fireValueChange(null, getValue());
 	}
