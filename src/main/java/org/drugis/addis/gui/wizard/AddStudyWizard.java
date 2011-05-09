@@ -774,7 +774,7 @@ public class AddStudyWizard extends Wizard {
 			d_builder.addLabel("Indication",cc.xy(1, 3));	
 			
 			JComboBox indBox = AuxComponentFactory.createBoundComboBox(d_pm.getIndicationListModel(), d_pm.getIndicationModel());
-			if(d_pm.getIndicationListModel().getValue().size() > 0) {
+			if(d_pm.getIndicationListModel().getValue().size() == 1 && indBox.getSelectedIndex() < 0) {
 				indBox.setSelectedIndex(0);
 			}
 			d_builder.add(indBox, cc.xyw(3, 3, 2));
