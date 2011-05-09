@@ -174,8 +174,8 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 			study.getStudyActivities().add(new StudyActivity(d_nameModel.getValue(), getActivity()));
 		} else {
 			StudyActivity activity = study.findStudyActivity(d_pm.getNewStudyPM().getBean().getStudyActivities().get(d_selectedIndex).getName());
-			study.getStudyActivities().remove(activity);
-			study.getStudyActivities().add(new StudyActivity(d_nameModel.getValue(), getActivity()));
+			activity.setName(d_nameModel.getValue());
+			activity.setActivity(getActivity());
 		}
 		
 		disposeOfDialog();

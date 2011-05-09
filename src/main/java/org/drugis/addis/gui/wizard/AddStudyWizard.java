@@ -108,6 +108,7 @@ import org.drugis.addis.presentation.wizard.AddArmsPresentation;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.OutcomeMeasurementsModel;
+import org.drugis.addis.util.ContentAwareListModel;
 import org.drugis.addis.util.PubMedListFormat;
 import org.drugis.addis.util.RunnableReadyModel;
 import org.drugis.common.ImageLoader;
@@ -240,6 +241,7 @@ public class AddStudyWizard extends Wizard {
 		
 		private static DataFlavor s_studyActivityFlavor = createFlavor();
 		private JList d_activityList;
+		private ContentAwareListModel<StudyActivity> d_activityContentAware;
 		
 		private static DataFlavor createFlavor() {
 			try {
@@ -288,7 +290,9 @@ public class AddStudyWizard extends Wizard {
 
 			Study study = d_pm.getNewStudyPM().getBean();
 
-			d_activityList = new JList(study.getStudyActivities());			
+			d_activityContentAware = new ContentAwareListModel<StudyActivity>(study.getStudyActivities());
+			d_activityList = new JList(d_activityContentAware);
+			
 			d_activityList.setDragEnabled(true);
 			d_activityList.setTransferHandler(new TransferHandler() {
 				@Override
