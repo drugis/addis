@@ -82,35 +82,60 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 	private TreatmentActivityPresentation d_treatmentModel;
 	private NotEmptyValidator d_validator;
 	private ValueHolder<String> d_nameModel;
+	private final boolean d_isEditing;
+	private int d_selectedIndex;
 	
-	public AddStudyActivityDialog(JDialog parent, AddisWindow mainWindow, AddStudyWizardPresentation pm) {
+	public AddStudyActivityDialog(JDialog parent, AddisWindow mainWindow, AddStudyWizardPresentation pm, int selectedActivity) {
 		super(parent);
 		d_mainWindow = mainWindow;
 		d_pm = pm;
+		d_selectedIndex = selectedActivity;
+		d_isEditing = selectedActivity > -1;
 		d_treatmentModel = new TreatmentActivityPresentation(new TreatmentActivity(null, null), mainWindow.getPresentationModelFactory());
 		d_validator = new Validator();
+
+		PropertyChangeListener nameUpdater = new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				updateName();
+			}
+		};
 		
-		d_nameModel = new ModifiableHolder<String>("");
-		d_activityHolder = new ModifiableHolder<Object>("Treatment");
+		if(!d_isEditing) {
+			setTitle("New Activity");
+			d_activityHolder = new ModifiableHolder<Object>("Treatment");
+			d_nameModel = new ModifiableHolder<String>("");
+		} else {
+			setTitle("Edit Activity");
+			StudyActivity activityContent = d_pm.getNewStudyPM().getBean().getStudyActivities().get(selectedActivity).clone();
+			
+			d_nameModel = new ModifiableHolder<String>(activityContent.getName());
+			boolean isTreatment = activityContent.getActivity() instanceof TreatmentActivity;
+			if (isTreatment) {
+				TreatmentActivity ta = (TreatmentActivity) activityContent.getActivity();
+				d_treatmentModel.setValue(TreatmentActivity.PROPERTY_DRUG, ta.getDrug());
+				d_treatmentModel.setValue(TreatmentActivity.PROPERTY_DOSE, ta.getDose());				
+			}
+			d_activityHolder = new ModifiableHolder<Object>(isTreatment ? "Treatment" : activityContent.getActivity());
+		}
+		
+		d_activityHolder.addValueChangeListener(nameUpdater);
+		
+		d_treatmentModel.getModel(TreatmentActivity.PROPERTY_DRUG).addValueChangeListener(nameUpdater);
 		d_activityHolder.addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				rebuild();
 			}
 		});
 		
-		PropertyChangeListener nameUpdater = new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				updateName();
-			}
-		};
-		d_activityHolder.addValueChangeListener(nameUpdater);
-		d_treatmentModel.getModel(TreatmentActivity.PROPERTY_DRUG).addValueChangeListener(nameUpdater);
 		updateName();
 		setResizable(false);
-		setTitle("New Activity");
 		rebuild();
 	}
 	
+	public AddStudyActivityDialog(JDialog parent, AddisWindow mainWindow, AddStudyWizardPresentation pm) {
+		this(parent, mainWindow, pm, -1);
+	}
+
 	private void updateName() {
 		if (d_activityHolder.getValue().equals("Treatment")) {
 			Object drug = d_treatmentModel.getModel(TreatmentActivity.PROPERTY_DRUG).getValue();
@@ -134,6 +159,10 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 
 	@Override
 	protected void cancel() {
+		disposeOfDialog();
+	}
+
+	private void disposeOfDialog() {
 		setVisible(false);
 		dispose();
 	}
@@ -141,13 +170,15 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 	@Override
 	protected void commit() {
 		Study study = d_pm.getNewStudyPM().getBean();
-		StudyActivity act = new StudyActivity(
-				d_nameModel.getValue(),
-				getActivity()
-				);
-		study.getStudyActivities().add(act);
+		if(!d_isEditing) {
+			study.getStudyActivities().add(new StudyActivity(d_nameModel.getValue(), getActivity()));
+		} else {
+			StudyActivity activity = study.findStudyActivity(d_pm.getNewStudyPM().getBean().getStudyActivities().get(d_selectedIndex).getName());
+			study.getStudyActivities().remove(activity);
+			study.getStudyActivities().add(new StudyActivity(d_nameModel.getValue(), getActivity()));
+		}
 		
-		cancel();
+		disposeOfDialog();
 	}
 
 	private Activity getActivity() {

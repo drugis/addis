@@ -723,6 +723,15 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		}
 		return null;
 	}
+
+	public StudyActivity findStudyActivity(String activityName) {
+		for(StudyActivity sa : d_studyActivities) {
+			if(sa.getName().equals(activityName)) { 
+				return sa;
+			}
+		}
+		return null;
+	}
 	
 	/**
 	 * Creates an Arm, adds it to the Study and creates an appropriate TreatmentActivity in the last Epoch.
@@ -744,4 +753,5 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		this.setStudyActivityAt(arm, epoch, studyActivity);
 		return arm;
 	}
+
 }

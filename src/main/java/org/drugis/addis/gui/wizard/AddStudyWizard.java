@@ -32,7 +32,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -51,7 +50,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -83,7 +81,6 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.Indication;
@@ -91,11 +88,9 @@ import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PubMedIdList;
-import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
-import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
@@ -108,7 +103,6 @@ import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.components.NotesView;
 import org.drugis.addis.imports.PubMedIDRetriever;
-import org.drugis.addis.presentation.DosePresentation;
 import org.drugis.addis.presentation.NotesModel;
 import org.drugis.addis.presentation.wizard.AddArmsPresentation;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
@@ -170,7 +164,6 @@ public class AddStudyWizard extends Wizard {
 		wizardModel.add(new AssignActivitiesWizardStep(pm, mainWindow, dialog));
 		
 		wizardModel.add(new SelectEndpointWizardStep(pm));
-//		wizardModel.add(new SetArmsWizardStep(pm, mainWindow));
 		wizardModel.add(new SetEndpointMeasurementsWizardStep(pm, dialog));
 		wizardModel.add(new SelectAdverseEventWizardStep(pm));
 		wizardModel.add(new SetAdverseEventMeasurementsWizardStep(pm, dialog));
@@ -195,7 +188,7 @@ public class AddStudyWizard extends Wizard {
 		return charWithNotes;
 	}
 	
-	private static NotesView buildNotesEditor(TypeWithNotes obj) {
+	static NotesView buildNotesEditor(TypeWithNotes obj) {
 		return buildNotesEditor(obj.getNotes());
 	}
 
@@ -246,6 +239,7 @@ public class AddStudyWizard extends Wizard {
 		private AddisWindow d_mainWindow;
 		
 		private static DataFlavor s_studyActivityFlavor = createFlavor();
+		private JList d_activityList;
 		
 		private static DataFlavor createFlavor() {
 			try {
@@ -294,9 +288,9 @@ public class AddStudyWizard extends Wizard {
 
 			Study study = d_pm.getNewStudyPM().getBean();
 
-			JList activityList = new JList(study.getStudyActivities());			
-			activityList.setDragEnabled(true);
-			activityList.setTransferHandler(new TransferHandler() {
+			d_activityList = new JList(study.getStudyActivities());			
+			d_activityList.setDragEnabled(true);
+			d_activityList.setTransferHandler(new TransferHandler() {
 				@Override
 				public int getSourceActions(JComponent c) {
 					return COPY;
@@ -325,9 +319,9 @@ public class AddStudyWizard extends Wizard {
 					}; 
 				}
 			});
-			activityList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			activityList.setLayoutOrientation(JList.VERTICAL);
-			activityList.setCellRenderer(new DefaultListCellRenderer() {
+			d_activityList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			d_activityList.setLayoutOrientation(JList.VERTICAL);
+			d_activityList.setCellRenderer(new DefaultListCellRenderer() {
 				public Component getListCellRendererComponent(JList list, Object value,
 						int index, boolean isSelected, boolean cellHasFocus) {
 					return super.getListCellRendererComponent(list, ((StudyActivity)value).getName(), 
@@ -335,12 +329,12 @@ public class AddStudyWizard extends Wizard {
 				}
 			});
 
-			JScrollPane activityScrollPane = new JScrollPane(activityList);
-			d_builder.add(activityScrollPane , cc.xy(1, 3));
+			JScrollPane activityScrollPane = new JScrollPane(d_activityList);
+			d_builder.add(activityScrollPane, cc.xy(1, 3));
 			
 			createArmsAndEpochsTable(cc);
 			
-			createButtons(cc, activityList);
+			createButtons(cc, d_activityList);
 						
 			this.setLayout(new BorderLayout());
 			d_scrollPane = new JScrollPane(d_builder.getPanel());
@@ -357,9 +351,9 @@ public class AddStudyWizard extends Wizard {
 			armsEpochsTable.getTableHeader().setReorderingAllowed(false);
 			armsEpochsTable.getTableHeader().setResizingAllowed(false);
 			JScrollPane tableScrollPane = new JScrollPane(armsEpochsTable);
-			armsEpochsTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			armsEpochsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			armsEpochsTable.setDropMode(DropMode.ON);
-			armsEpochsTable.setTransferHandler(new TransferHandler(){
+			armsEpochsTable.setTransferHandler(new TransferHandler() {
 				public boolean canImport(TransferSupport support) {
 	                if (!support.isDrop()) {
 	                    return false;
@@ -414,7 +408,7 @@ public class AddStudyWizard extends Wizard {
 			editButton.setEnabled(activities.getSelectedIndex() >= 0);
 			removeButton.setEnabled(activities.getSelectedIndex() >= 0);
 		
-			activities.addListSelectionListener( new ListSelectionListener() {
+			activities.addListSelectionListener(new ListSelectionListener() {
 				public void valueChanged(ListSelectionEvent e) {
 					boolean anySelected = ((JList) (e.getSource())).getSelectedIndex() >= 0;
 					editButton.setEnabled(anySelected);
@@ -435,14 +429,19 @@ public class AddStudyWizard extends Wizard {
 			d_builder.add(editButton, cc.xy(1, 7));
 			editButton.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
-					//TODO: write code here
+					AddStudyActivityDialog addStudyActivityDialog = new AddStudyActivityDialog(d_parent, d_mainWindow, d_pm, d_activityList.getSelectedIndex());
+					addStudyActivityDialog.setLocationRelativeTo(d_parent);
+					addStudyActivityDialog.setVisible(true);
 				}
 			});
 			
 			d_builder.add(removeButton, cc.xy(1, 9));
 			removeButton.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
-					//TODO: write code here
+					Study study = d_pm.getNewStudyPM().getBean();
+					StudyActivity studyActivity = d_pm.getNewStudyPM().getBean().getStudyActivities().get(d_activityList.getSelectedIndex());
+					StudyActivity activity = study.findStudyActivity(studyActivity.getName());
+					study.getStudyActivities().remove(activity);
 				}
 			});
 		}
@@ -538,155 +537,6 @@ public class AddStudyWizard extends Wizard {
 					pm.getPopulationCharsModel(), dialog);
 		}
 
-	}
-	
-	public static class SetArmsWizardStep extends PanelWizardStep {
-		private class NewDrugButtonListener implements ActionListener{
-			int d_index;
-
-			public NewDrugButtonListener(int index) {
-				d_index = index;
-			}
-			
-			public void actionPerformed(ActionEvent e) {
-				d_mainWindow.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class), d_pm.getTreatmentActivityModel(d_index).getModel(TreatmentActivity.PROPERTY_DRUG));
-			}
-		}
-		private class RemoveArmListener extends AbstractAction {
-			int d_index;
-			
-			public RemoveArmListener(int index) {
-				d_index = index;
-			}
-			
-			public void actionPerformed(ActionEvent e) {
-				d_pm.getArms().remove(d_index);
-				prepare();
-			}	
-		}
-		
-		private PanelBuilder d_builder;
-		private NotEmptyValidator d_validator;
-		private JScrollPane d_scrollPane;
-		private AddStudyWizardPresentation d_pm;
-		private AddisWindow d_mainWindow;
-		
-		public SetArmsWizardStep(AddStudyWizardPresentation pm, AddisWindow mainWindow) {
-			super("Select Arms", "Please input the appropriate arms. " +
-					"The drug field of every arm must be filled in order to continue. At least one arm must be included.");
-			d_pm = pm;
-			d_mainWindow = mainWindow;
-			if (d_pm.isEditing())
-				setComplete(true);
-		}
-		
-		@Override
-		public void prepare() {
-			 this.setVisible(false);
-			 d_validator = new NotEmptyValidator();
-			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
-			 
-			 if (d_scrollPane != null)
-				 remove(d_scrollPane);
-			 
-			 buildWizardStep();
-			 this.setVisible(true);
-			 repaint();
-		 }
-		 
-		private void buildWizardStep() {// 300px
-			FormLayout layout = new FormLayout(
-					"fill:pref, 3dlu, 300px, 3dlu,  right:pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref",
-					"p, 3dlu, p, 3dlu, p"
-					);	
-			d_builder = new PanelBuilder(layout);
-			d_builder.setDefaultDialogBorder();
-			CellConstraints cc = new CellConstraints();
-			
-			// Labels
-			d_builder.add(new JLabel("Drug:"),cc.xy(3, 1));
-			d_builder.add(new JLabel("Dose:"),cc.xy(7, 1));
-			d_builder.add(new JLabel("Size:"),cc.xy(13, 1));
-			
-			
-			int row = buildArmsPart(1, d_builder, cc, 3, layout);
-						
-			// add 'Add Arm' button 
-			JButton btn = new JButton("Add");
-			d_builder.add(btn, cc.xy(1, row+=2));
-			btn.addActionListener(new AbstractAction() {
-				public void actionPerformed(ActionEvent e) {
-//					d_pm.addArms(1);
-					prepare();
-				}
-			});
-			d_builder.addSeparator("", cc.xyw(3, row, 11));
-			
-			JPanel panel = d_builder.getPanel();
-			this.setLayout(new BorderLayout());
-			d_scrollPane = new JScrollPane(panel);
-			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-		
-			add(d_scrollPane, BorderLayout.CENTER);
-		}
-
-		private int buildArmsPart(int fullwidth, PanelBuilder builder,	CellConstraints cc, int row, FormLayout layout) {
-			// For all the arms found in the imported study
-			for(int curArmNumber = 0; curArmNumber < d_pm.getArms().size(); ++curArmNumber){
-				LayoutUtil.addRow(layout);
-				row+=2;
-				
-				// add 'remove arm button' 
-				JButton btn = new JButton("Remove");
-				builder.add(btn, cc.xy(1, row));
-				btn.addActionListener(new RemoveArmListener(curArmNumber));
-				
-				// Set the drug of this arm
-				JComboBox drugsBox = AuxComponentFactory.createBoundComboBox(d_pm.getDrugsModel(), d_pm.getTreatmentActivityModel(curArmNumber).getModel(TreatmentActivity.PROPERTY_DRUG));
-				d_validator.add(drugsBox);
-				builder.add(drugsBox, cc.xy(3, row));
-				
-				// add 'add drug button' 
-				btn = GUIFactory.createPlusButton("Create drug");
-				builder.add(btn, cc.xy(5, row));
-				btn.addActionListener(new NewDrugButtonListener(curArmNumber));
-				
-				// add min dose
-				DosePresentation doseModel = d_pm.getTreatmentActivityModel(curArmNumber).getDoseModel();
-				JTextField minDoseField =  new JFormattedTextField(new DefaultFormatter());
-				PropertyConnector.connectAndUpdate(doseModel.getMinModel(), minDoseField, "value");
-				minDoseField.setColumns(4);
-				d_validator.add(minDoseField);
-				builder.add(minDoseField, cc.xy(7, row));
-				
-				// add max dose
-				JTextField maxDoseField = new JFormattedTextField(new DefaultFormatter());
-				PropertyConnector.connectAndUpdate(doseModel.getMaxModel(), maxDoseField, "value");
-				maxDoseField.setColumns(4);
-				d_validator.add(maxDoseField);
-				builder.add(maxDoseField, cc.xy(9, row));
-				
-				// add dose unit
-				JComboBox doseUnitBox = AuxComponentFactory.createBoundComboBox(SIUnit.values(), doseModel.getUnitModel());
-				d_validator.add(doseUnitBox);
-				builder.add(doseUnitBox, cc.xy(11, row));
-				
-				// add group size
-				JTextField sizeField =  new JFormattedTextField(new DefaultFormatter());
-				PropertyConnector.connectAndUpdate(d_pm.getArmModel(curArmNumber).getModel(Arm.PROPERTY_SIZE), sizeField, "value");
-				sizeField.setColumns(4);
-				d_validator.add(sizeField);
-				builder.add(sizeField, cc.xy(13, row));
-				
-				// Show the notes from the imported study for the drug
-				LayoutUtil.addRow(layout);
-				row += 2;
-				builder.add(buildNotesEditor(d_pm.getNewStudyPM().getBean().getArms().get(curArmNumber)), cc.xyw(3, row, 11));
-			}
-			return row;
-		}
-		
-		
 	}
 	
 	public static class SelectEndpointWizardStep extends SelectFromFiniteListWizardStep<Endpoint> {

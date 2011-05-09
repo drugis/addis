@@ -140,7 +140,7 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 	}
 	
 	@Override
-	protected StudyActivity clone() {
+	public StudyActivity clone() {
 		StudyActivity cloned = new StudyActivity(getName(), d_activity);
 		cloned.setUsedBy(new HashSet<UsedBy>(getUsedBy()));
 		return cloned;
