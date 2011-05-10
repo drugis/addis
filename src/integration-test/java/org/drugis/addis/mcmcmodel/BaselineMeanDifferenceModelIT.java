@@ -51,7 +51,7 @@ public class BaselineMeanDifferenceModelIT {
 		TaskUtil.run(model.getActivityTask());
 		
 		assertTrue(model.isReady());
-		Thread.sleep(10);
+		SummaryHelper.waitUntilDefined(model.getSummary());
 		assertEquals(expectedMu, model.getSummary().getMean(), dev);
 		assertEquals(expectedSigma, model.getResult().getSigma(), dev * 2);
 	}

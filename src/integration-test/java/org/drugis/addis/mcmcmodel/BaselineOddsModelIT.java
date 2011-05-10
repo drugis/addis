@@ -24,7 +24,8 @@
 
 package org.drugis.addis.mcmcmodel;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,7 @@ public class BaselineOddsModelIT {
 		TaskUtil.run(model.getActivityTask());
 		
 		assertTrue(model.isReady());
+		SummaryHelper.waitUntilDefined(model.getSummary());
 		assertEquals(expectedMu, model.getResult().getMu(), dev);
 		assertEquals(expectedSigma, model.getResult().getSigma(), dev);
 	}
