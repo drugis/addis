@@ -39,7 +39,6 @@ abstract public class RenameMonitor<T extends TypeWithName> {
 	};
 
 	public RenameMonitor(final AddListItemsPresentation<T> listPresentation) {
-		d_list = listPresentation.getList();
 		listPresentation.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals(AddListItemsPresentation.PROPERTY_LIST)) {
@@ -47,10 +46,13 @@ abstract public class RenameMonitor<T extends TypeWithName> {
 				}
 			}
 		});
+		resetList(listPresentation.getList());
 	}
 
 	private void resetList(ObservableList<T> list) {
-		d_list.removeListDataListener(d_listListener);
+		if (d_list != null) {
+			d_list.removeListDataListener(d_listListener);
+		}
 		d_list = list;
 		list.addListDataListener(d_listListener);
 		updateListeners();

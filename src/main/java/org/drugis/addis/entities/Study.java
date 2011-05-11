@@ -34,6 +34,7 @@ import java.util.Set;
 
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.util.EntityUtil;
+import org.drugis.addis.util.RebuildableHashMap;
 import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.drugis.common.DateUtil;
 import org.drugis.common.EqualsUtil;
@@ -132,7 +133,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private ObservableList<Epoch> d_epochs = new ArrayListModel<Epoch>();
 	private ObservableList<StudyActivity> d_studyActivities = new ArrayListModel<StudyActivity>(); 
 
-	private Map<MeasurementKey, Measurement> d_measurements = new HashMap<MeasurementKey, Measurement>();
+	private RebuildableHashMap<MeasurementKey, Measurement> d_measurements = new RebuildableHashMap<MeasurementKey, Measurement>();
 	
 	public Study() {
 		d_indication = new ObjectWithNotes<Indication>(null);
@@ -627,7 +628,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 
 	private void setMeasurements(Map<MeasurementKey, Measurement> m) {
-		d_measurements = m;
+		d_measurements = (RebuildableHashMap<MeasurementKey, Measurement>) m;
 	}
 
 	public void setMeasurement(MeasurementKey key, Measurement value) {
@@ -756,6 +757,10 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		Epoch epoch = getEpochs().get(getEpochs().size() - 1);
 		this.setStudyActivityAt(arm, epoch, studyActivity);
 		return arm;
+	}
+
+	public void rehashMeasurements() {
+		d_measurements.rebuild();
 	}
 
 }

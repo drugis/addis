@@ -89,7 +89,7 @@ public class AddStudyWizardPresentation {
 				act.rebuildUsedBy();
 			}
 			// rebuild measurement hash maps
-			// FIXME
+			getNewStudy().rehashMeasurements();
 		}
 	}
 
