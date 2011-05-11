@@ -67,6 +67,7 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 		public int hashCode() {
 			return 31 * d_epoch.hashCode() + d_arm.hashCode();
 		}
+		
 		public int compareTo(UsedBy o) {
 			int armsComp = getArm().getName().compareTo(o.getArm().getName());
 			if(armsComp != 0) {
@@ -78,6 +79,7 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 	}
 
 	private Activity d_activity;
+	// FIXME: the hashCode() of UsedBy is non-static during the AddStudyWizard, so we cannot use this.
 	private Set<UsedBy> d_usedBy = new HashSet<UsedBy>();
 	private List<Note> d_notes = new ArrayList<Note>();
 	
