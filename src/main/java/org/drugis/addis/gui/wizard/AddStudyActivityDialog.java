@@ -67,12 +67,19 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class AddStudyActivityDialog extends OkCancelDialog {
+	
 	@SuppressWarnings("serial")
 	public final class Validator extends NotEmptyValidator {
+		String d_origName = "";
 		@Override
 		public Boolean getValue() {
-			return super.getValue() && isNameUnique();
+			return super.getValue() && isNameUnique(d_origName);
 		}
+		
+		public void setOrigName(String orig) {
+			d_origName = orig;
+		}
+		
 	}
 
 	private static final long serialVersionUID = 325928004747685827L;
@@ -80,7 +87,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 	private AddisWindow d_mainWindow;
 	private ModifiableHolder<Object> d_activityHolder;
 	private TreatmentActivityPresentation d_treatmentModel;
-	private NotEmptyValidator d_validator;
+	private Validator d_validator;
 	private ValueHolder<String> d_nameModel;
 	private final boolean d_isEditing;
 	private int d_selectedIndex;
@@ -109,6 +116,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 			StudyActivity activityContent = d_pm.getNewStudyPM().getBean().getStudyActivities().get(selectedActivity).clone();
 			
 			d_nameModel = new ModifiableHolder<String>(activityContent.getName());
+			d_validator.setOrigName(d_nameModel.getValue());
 			boolean isTreatment = activityContent.getActivity() instanceof TreatmentActivity;
 			if (isTreatment) {
 				TreatmentActivity ta = (TreatmentActivity) activityContent.getActivity();
@@ -145,12 +153,12 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		}
 	}
 	
-	private boolean isNameUnique() {
+	private boolean isNameUnique(String origName) {
 		Object current = d_nameModel.getValue();
 		ObservableList<StudyActivity> activities = d_pm.getNewStudyPM().getBean().getStudyActivities();
 		
 		for (StudyActivity act : activities) {
-			if(act.getName().equals(current)) {
+			if(act.getName().equals(current) && !act.getName().equals(origName)) {
 				return false;
 			}
 		}
