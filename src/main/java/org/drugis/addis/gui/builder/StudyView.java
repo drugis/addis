@@ -26,7 +26,6 @@ package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import org.drugis.addis.entities.AdverseEvent;
@@ -51,13 +50,15 @@ public class StudyView implements ViewBuilder {
 	private StudyOutcomeMeasuresView d_adeView;	
 	private StudyArmsView d_armsView;
 	private StudyOutcomeMeasuresView d_pcView;
+	private StudyDesignView d_designView;
 	
 	public StudyView(StudyPresentation model, Domain domain, JFrame parent, PresentationModelFactory pmf) {
 		d_charView = new StudyCharacteristicsView(parent, model);
 		d_epView = new StudyOutcomeMeasuresView(model, parent, pmf, Endpoint.class);
 		d_adeView = new StudyOutcomeMeasuresView(model, parent, pmf, AdverseEvent.class);
 		d_pcView = new StudyOutcomeMeasuresView(model, parent, pmf, PopulationCharacteristic.class);
-		d_armsView = new StudyArmsView(parent, model, pmf);			
+		d_armsView = new StudyArmsView(parent, model, pmf);
+		d_designView = new StudyDesignView(model);
 	}
 	
 	public StudyView(StudyPresentation model, Domain domain, AddisWindow main) {
@@ -73,19 +74,23 @@ public class StudyView implements ViewBuilder {
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
-		
 		int row = 1;
+
+		// ---------- Overview ----------
+		
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getSingularCapitalized(), cc.xy(1,row));
 		row += 2;
 		builder.add(d_charView.buildPanel(), cc.xy(1, row));
 		row += 2;
 		builder.addSeparator("Arms", cc.xy(1, row));
 		row += 2;
-		builder.add(buildArmsPart(),cc.xy(1, row));
+		builder.add(d_armsView.buildPanel(),cc.xy(1, row));
 
 		
 		JTabbedPane tabbedPane = new AddisTabbedPane();
 		tabbedPane.addTab("Overview", builder.getPanel());
+
+		// ---------- Data ----------
 
 		layout = new FormLayout( 
 				"fill:0:grow",
@@ -99,34 +104,32 @@ public class StudyView implements ViewBuilder {
 		
 		builder.addSeparator("Baseline Characteristics", cc.xy(1, row));
 		row += 2;
-		builder.add(buildPopulationPart(), cc.xy(1, row));
+		builder.add(d_pcView.buildPanel(), cc.xy(1, row));
 		row += 2;
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Endpoint.class).getPlural(), cc.xy(1, row));
 		row += 2;
-		builder.add(buildEndpointPart(), cc.xy(1, row));
+		builder.add(d_epView.buildPanel(), cc.xy(1, row));
 		row += 2;
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(AdverseEvent.class).getPlural(), cc.xy(1, row));		
 		row += 2;
-		builder.add(buildAdverseEventPart(), cc.xy(1, row));
+		builder.add(d_adeView.buildPanel(), cc.xy(1, row));
 
 		tabbedPane.addTab("Data", builder.getPanel());
+		
+		// ---------- Study design ----------
+		
+		builder = new PanelBuilder(layout);
+		builder.setDefaultDialogBorder();
+		cc = new CellConstraints();
+		row = 1;
+		
+		builder.addSeparator("Study Design", cc.xy(1, row));
+		row += 2;
+		builder.add(d_designView.buildPanel(), cc.xy(1, row));
 
+		tabbedPane.addTab("Design", builder.getPanel());
+		
+		
 		return tabbedPane;
-	}
-
-	private JComponent buildPopulationPart() {
-		return d_pcView.buildPanel();
-	}
-
-	private JPanel buildArmsPart() {
-		return d_armsView.buildPanel();
-	}
-
-	private JComponent buildEndpointPart() {
-		return d_epView.buildPanel();
-	}
-	
-	private JComponent buildAdverseEventPart() {
-		return d_adeView.buildPanel();
 	}
 }

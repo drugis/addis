@@ -29,8 +29,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JViewport;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -38,6 +41,7 @@ import javax.swing.table.TableColumnModel;
 
 @SuppressWarnings("serial")
 public class EnhancedTableHeader extends JTableHeader {
+	private static final int PADDING = 25;
 	private static final int DEFAULT_MAX_COL_WIDTH = 150;
 	private int d_maxColWidth = DEFAULT_MAX_COL_WIDTH;
 	private final JTable d_table;
@@ -54,23 +58,29 @@ public class EnhancedTableHeader extends JTableHeader {
 	}
 
 	public static int getRequiredColumnWidth(JTable table, TableColumn column) {
-		int modelIndex = column.getModelIndex();
+		int columnIndex = column.getModelIndex();
 		TableCellRenderer renderer;
 		Component component;
 		int requiredWidth = 0;
 		int rows = table.getRowCount();
 		if (column.getHeaderValue() != null) {
-			requiredWidth = (int) column.getHeaderValue().toString().length()*7;
+			renderer = column.getHeaderRenderer();
+			if (renderer == null) {
+				renderer = table.getTableHeader().getDefaultRenderer();
+			}
+			Object value = column.getHeaderValue();
+			component = renderer.getTableCellRendererComponent(table, value, false, false, -1, columnIndex);
+			requiredWidth = component.getPreferredSize().width + PADDING;
 		}
-		for (int i = 0; i < rows; i++) {
-			renderer = table.getCellRenderer(i, modelIndex);
+		for (int rowIndex = 0; rowIndex < rows; rowIndex++) {
+			renderer = table.getCellRenderer(rowIndex, columnIndex);
 			if (renderer == null) {
 				renderer =  table.getDefaultRenderer(Object.class);
 			}
-			Object valueAt = table.getValueAt(i, modelIndex);
-			component = renderer.getTableCellRendererComponent(table, valueAt, false, false, i, modelIndex);
+			Object valueAt = table.getValueAt(rowIndex, columnIndex);
+			component = renderer.getTableCellRendererComponent(table, valueAt, false, false, rowIndex, columnIndex);
 			
-			requiredWidth = Math.max(requiredWidth, component.getPreferredSize().width + 25);
+			requiredWidth = Math.max(requiredWidth, component.getPreferredSize().width + PADDING);
 		}
 		return requiredWidth;
 	}
@@ -87,15 +97,9 @@ public class EnhancedTableHeader extends JTableHeader {
 	}
 
 	public static void autoSizeColumns(JTable table, int maxColWidth) {
-		int col_count = table.getModel().getColumnCount();
-		
-		for (int i = 0; i < col_count; i++) {
+		for (int i = 0; i < table.getColumnCount(); i++) {
 			TableColumn col = table.getColumnModel().getColumn(i);
-			int requiredColumnWidth = getRequiredColumnWidth(table, col);
-			if (requiredColumnWidth > maxColWidth) {
-				requiredColumnWidth = maxColWidth;
-			}
-			col.setMinWidth(requiredColumnWidth);
+			col.setMinWidth(Math.min(getRequiredColumnWidth(table, col), maxColWidth));
 		}
 	}
 
