@@ -34,7 +34,7 @@ import com.jgoodies.binding.list.ObservableList;
 
 public abstract class AddListItemsPresentation<T extends TypeWithName> extends AbstractObservable {
 
-	private static final String PROPERTY_LIST = "list";
+	public static final String PROPERTY_LIST = "list";
 
 	protected ObservableList<T> d_list;
 	protected final String d_itemName;

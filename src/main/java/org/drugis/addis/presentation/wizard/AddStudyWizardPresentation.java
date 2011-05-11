@@ -52,6 +52,7 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
+import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
@@ -76,6 +77,22 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class AddStudyWizardPresentation {
 	
+	private final class RebuildIndicesMonitor<T extends TypeWithName> extends RenameMonitor<T> {
+		private RebuildIndicesMonitor(AddListItemsPresentation<T> listPresentation) {
+			super(listPresentation);
+		}
+
+		@Override
+		protected void renameDetected() {
+			// rebuild usedBy sets
+			for (StudyActivity act : getNewStudy().getStudyActivities()) {
+				act.rebuildUsedBy();
+			}
+			// rebuild measurement hash maps
+			// FIXME
+		}
+	}
+
 	public abstract class OutcomeMeasurementsModel {
 		abstract public TableModel getMeasurementTableModel();
 	}
@@ -187,10 +204,12 @@ public class AddStudyWizardPresentation {
 		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_adverseEventListHolder, d_mainWindow);
 		d_populationCharSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder,d_mainWindow);
 		d_arms = new AddArmsPresentation(new ArrayListModel<Arm>(), "Arm", 2);
+		new RebuildIndicesMonitor<Arm>(d_arms); // registers itself as listener to d_arms
 		d_epochs = new AddEpochsPresentation(new ArrayListModel<Epoch>(), "Epoch", 1);
+		new RebuildIndicesMonitor<Epoch>(d_epochs); // registers itself as listener to d_epochs
 		resetStudy();
 	}
-
+	
 	private void updateSelectionHolders() {
 		d_endpointSelect.setSlots(getNewStudy().getStudyEndpoints());
 		d_adverseEventSelect.setSlots(getNewStudy().getStudyAdverseEvents());

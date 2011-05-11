@@ -8,12 +8,16 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-class RebuildableHashSet<T> implements Set<T> {
+public class RebuildableHashSet<T> implements Set<T> {
 	Set<T> d_nested = new HashSet<T>();
 	
 	public RebuildableHashSet() {
 	}
 	
+	public RebuildableHashSet(Collection<? extends T> c) {
+		d_nested = new HashSet<T>(c);
+	}
+
 	public void rebuild() {
 		d_nested = new HashSet<T>(d_nested);
 	}

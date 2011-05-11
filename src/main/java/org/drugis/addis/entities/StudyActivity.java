@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drugis.addis.util.EntityUtil;
+import org.drugis.addis.util.RebuildableHashSet;
 import org.drugis.common.EqualsUtil;
 
 public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements TypeWithNotes {
@@ -80,7 +81,7 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 
 	private Activity d_activity;
 	// FIXME: the hashCode() of UsedBy is non-static during the AddStudyWizard, so we cannot use this.
-	private Set<UsedBy> d_usedBy = new HashSet<UsedBy>();
+	private RebuildableHashSet<UsedBy> d_usedBy = new RebuildableHashSet<UsedBy>();
 	private List<Note> d_notes = new ArrayList<Note>();
 	
 	public StudyActivity(String name, Activity activity) {
@@ -110,7 +111,7 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 	 */
 	public void setUsedBy(Set<UsedBy> usedBy) {
 		Set<UsedBy> oldValue = d_usedBy;
-		d_usedBy = new HashSet<UsedBy>(usedBy);
+		d_usedBy = new RebuildableHashSet<UsedBy>(usedBy);
 		firePropertyChange(PROPERTY_USED_BY, oldValue, d_usedBy);
 	}
 
@@ -120,6 +121,10 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 	 */
 	public Set<UsedBy> getUsedBy() {
 		return Collections.unmodifiableSet(d_usedBy);
+	}
+	
+	public void rebuildUsedBy() {
+		d_usedBy.rebuild();
 	}
 
 	public List<Note> getNotes() {
