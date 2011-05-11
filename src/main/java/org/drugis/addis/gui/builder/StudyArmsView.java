@@ -74,7 +74,6 @@ public class StudyArmsView implements ViewBuilder {
 		builder.addLabel("Drug", cc.xy(5, row));
 		builder.addLabel("Dose", cc.xy(7, row));
 		builder.addLabel("Size", cc.xy(9, row));		
-		row += 2;
 
 		for (Arm g : d_model.getBean().getArms()) {
 			row = buildArm(layout, builder, cc, row, g);
@@ -85,6 +84,7 @@ public class StudyArmsView implements ViewBuilder {
 	private int buildArm(FormLayout layout, PanelBuilder builder, CellConstraints cc, int row, Arm g) {
 		BasicArmPresentation armModel = (BasicArmPresentation)d_pmf.getModel(g);
 		LayoutUtil.addRow(layout);
+		row += 2;
 		
 		final JLabel armLabel = BasicComponentFactory.createLabel(d_pmf.getLabeledModel(g).getLabelModel()); 
 		JButton button = new NoteViewButton(d_parent, "Arm: " + g.toString(), g.getNotes());
@@ -112,6 +112,6 @@ public class StudyArmsView implements ViewBuilder {
 					NumberFormat.getInstance()),
 					cc.xy(9, row));
 
-		return row + 2;
+		return row;
 	}
 }
