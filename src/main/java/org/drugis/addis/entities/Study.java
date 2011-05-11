@@ -628,7 +628,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 
 	private void setMeasurements(Map<MeasurementKey, Measurement> m) {
-		d_measurements = (RebuildableHashMap<MeasurementKey, Measurement>) m;
+		d_measurements = new RebuildableHashMap<MeasurementKey, Measurement>(m);
 	}
 
 	public void setMeasurement(MeasurementKey key, Measurement value) {

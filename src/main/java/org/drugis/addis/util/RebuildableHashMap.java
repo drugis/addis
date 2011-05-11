@@ -67,4 +67,14 @@ public class RebuildableHashMap<K, V> implements Map<K, V> {
 	public Collection<V> values() {
 		return d_nested.values();
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return d_nested.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return d_nested.hashCode();
+	}
 }

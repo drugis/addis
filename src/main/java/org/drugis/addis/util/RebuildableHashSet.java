@@ -73,4 +73,14 @@ public class RebuildableHashSet<T> implements Set<T> {
 	public <U> U[] toArray(U[] a) {
 		return d_nested.toArray(a);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return d_nested.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return d_nested.hashCode();
+	}
 }
