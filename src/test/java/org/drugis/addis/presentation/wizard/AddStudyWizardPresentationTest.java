@@ -25,20 +25,30 @@
 package org.drugis.addis.presentation.wizard;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Set;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.Epoch;
+import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.Source;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyActivity;
+import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.pietschy.wizard.InvalidStateException;
+
+import com.jgoodies.binding.list.ObservableList;
 
 public class AddStudyWizardPresentationTest {
 	
@@ -148,4 +158,22 @@ public class AddStudyWizardPresentationTest {
 		d_wizard.getIndicationModel().setValue(d_domain.getIndications().first());
 		d_wizard.saveStudy();
 	}
+	
+	@Test
+	public void testDeleteOrphanUsedBys() throws MalformedURLException, IOException {
+		importStudy();
+		Study study = d_wizard.getStudy();
+		ObservableList<Arm> arms = study.getArms();
+		ObservableList<Epoch> epochs = study.getEpochs();
+		ObservableList<StudyActivity> studyActivities = study.getStudyActivities();
+		studyActivities.add(new StudyActivity("test", PredefinedActivity.RANDOMIZATION));
+		study.setStudyActivityAt(arms.get(0), epochs.get(0), studyActivities.get(0));
+		study.setStudyActivityAt(arms.get(1), epochs.get(0), studyActivities.get(0));
+		Set<UsedBy> usedBy = study.getStudyActivities().get(0).getUsedBy();
+		d_wizard.deleteOrphanUsedBys();
+		assertEquals(usedBy, study.getStudyActivities().get(0).getUsedBy());
+		arms.remove(1);
+		assertFalse(usedBy.equals(study.getStudyActivities().get(0).getUsedBy()));
+	}
+	
 }

@@ -236,7 +236,7 @@ public class AddStudyWizardPresentation {
 		getAddEpochsModel().getList().addListDataListener(removeOrphansListener);
 	}
 	
-	private void deleteOrphanUsedBys() {
+	void deleteOrphanUsedBys() {
 		for (StudyActivity sa : getNewStudy().getStudyActivities()) {
 			for (UsedBy ub: sa.getUsedBy()) {
 				if(getNewStudy().findArm(ub.getArm().getName()) == null || getNewStudy().findEpoch(ub.getEpoch().getName()) == null) {
