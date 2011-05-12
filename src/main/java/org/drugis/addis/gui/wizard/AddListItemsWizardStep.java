@@ -117,10 +117,10 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 
 	private void buildWizardStep() {
 		FormLayout layout = new FormLayout(
-				"left:pref, 3dlu, right:pref, 3dlu, pref:grow, 7dlu, right:pref, 3dlu, pref",
+				"left:pref, 3dlu, right:pref, 3dlu, fill:pref:grow, 7dlu, right:pref, 3dlu, pref",
 				"p"
 				);
-		layout.setColumnGroups(new int[][]{{3, 7}, {5, 9}});
+		//layout.setColumnGroups(new int[][]{{3, 7}, {5, 9}});
 		d_builder = new PanelBuilder(layout);
 		d_builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();

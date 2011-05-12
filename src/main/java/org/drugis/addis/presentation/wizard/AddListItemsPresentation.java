@@ -74,5 +74,4 @@ public abstract class AddListItemsPresentation<T extends TypeWithName> extends A
 	public String nextItemName() {
 		return getItemName() + " " + (++d_itemsCreated);
 	}
-
 }

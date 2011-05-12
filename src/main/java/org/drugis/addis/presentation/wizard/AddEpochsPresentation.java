@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.Note;
+import org.drugis.addis.presentation.EpochDurationPresentation;
 
 import com.jgoodies.binding.list.ObservableList;
 
@@ -47,4 +48,7 @@ public class AddEpochsPresentation extends AddListItemsPresentation<Epoch> {
 		return new Epoch(nextItemName(), null);
 	}
 
+	public EpochDurationPresentation getDurationModel(int idx) {
+		return new EpochDurationPresentation(getList().get(idx));
+	}
 }

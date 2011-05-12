@@ -105,6 +105,7 @@ import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.components.NotesView;
 import org.drugis.addis.imports.PubMedIDRetriever;
+import org.drugis.addis.presentation.EpochDurationPresentation;
 import org.drugis.addis.presentation.NotesModel;
 import org.drugis.addis.presentation.wizard.AddArmsPresentation;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
@@ -124,6 +125,8 @@ import org.pietschy.wizard.models.StaticModel;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.beans.PropertyAdapter;
 import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -223,10 +226,37 @@ public class AddStudyWizard extends Wizard {
 			super("Add epochs", "Enter the epochs for this study.", pm);
 			pm.getList().add(createItem());
 			rebuild();
-		}
+		}	
 		
 		@Override
 		protected void addAdditionalFields(PanelBuilder builder, CellConstraints cc, int rows, int idx) {
+			EpochDurationPresentation durationModel = ((AddEpochsPresentation)d_pm).getDurationModel(idx);
+			ValueModel definedModel = new PropertyAdapter<EpochDurationPresentation>(
+					durationModel, EpochDurationPresentation.PROPERTY_DEFINED, true);
+			
+			JPanel panel = new JPanel();
+			panel.add(new JLabel("Duration: "));
+
+			// defined/undefined radio buttons
+			panel.add(BasicComponentFactory.createRadioButton(definedModel, true, "Known"));
+			panel.add(BasicComponentFactory.createRadioButton(definedModel, false, "Unknown"));
+
+			// duration quantity input
+			final JTextField quantityField = BasicComponentFactory.createFormattedTextField(
+					new PropertyAdapter<EpochDurationPresentation>(durationModel, EpochDurationPresentation.PROPERTY_QUANTITY, true),
+					new DefaultFormatter());
+			quantityField.setColumns(4);
+			Bindings.bind(quantityField, "enabled", definedModel);
+			panel.add(quantityField);
+
+			// duration units input
+			final JComboBox unitsField = AuxComponentFactory.createBoundComboBox(
+					EpochDurationPresentation.DateUnits.values(), 
+					new PropertyAdapter<EpochDurationPresentation>(durationModel, EpochDurationPresentation.PROPERTY_UNITS, true));
+			Bindings.bind(unitsField, "enabled", definedModel);
+			panel.add(unitsField);
+			
+			builder.add(panel, cc.xy(7, rows));
 		}
 	}
 	
