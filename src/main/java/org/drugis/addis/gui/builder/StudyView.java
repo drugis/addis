@@ -38,17 +38,16 @@ import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyPresentation;
+import org.drugis.common.gui.SingleColumnPanelBuilder;
 import org.drugis.common.gui.ViewBuilder;
 
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 public class StudyView implements ViewBuilder {
 	private StudyCharacteristicsView d_characteristicsView;
 	private StudyOutcomeMeasuresView d_endpointView;
 	private StudyOutcomeMeasuresView d_adverseEventView;	
 	private StudyArmsView d_armsView;
+	private StudyEpochsView d_epochsView;
 	private StudyOutcomeMeasuresView d_pcView;
 	private StudyDesignView d_designView;
 	
@@ -58,6 +57,7 @@ public class StudyView implements ViewBuilder {
 		d_adverseEventView = new StudyOutcomeMeasuresView(model, parent, pmf, AdverseEvent.class);
 		d_pcView = new StudyOutcomeMeasuresView(model, parent, pmf, PopulationCharacteristic.class);
 		d_armsView = new StudyArmsView(parent, model, pmf);
+		d_epochsView = new StudyEpochsView(parent, model, pmf);
 		d_designView = new StudyDesignView(model);
 	}
 	
@@ -66,72 +66,40 @@ public class StudyView implements ViewBuilder {
 	}
 	
 	public JComponent buildPanel() {
-		FormLayout layout = new FormLayout( 
-				"fill:0:grow",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
-				);
+		SingleColumnPanelBuilder builder = new SingleColumnPanelBuilder();
 		
-		PanelBuilder builder = new PanelBuilder(layout);
-		builder.setDefaultDialogBorder();
-		CellConstraints cc = new CellConstraints();
-		int row = 1;
-
 		// ---------- Overview ----------
 		
-		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getSingularCapitalized(), cc.xy(1,row));
-		row += 2;
-		builder.add(d_characteristicsView.buildPanel(), cc.xy(1, row));
-		row += 2;
-
-		
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getSingularCapitalized());
+		builder.add(d_characteristicsView.buildPanel());
 		JTabbedPane tabbedPane = new AddisTabbedPane();
 		tabbedPane.addTab("Overview", builder.getPanel());
 
 		// ---------- Study design ----------
 		
-		builder = new PanelBuilder(layout);
-		builder.setDefaultDialogBorder();
-		cc = new CellConstraints();
-		row = 1;
+		builder = new SingleColumnPanelBuilder();
 		
-		builder.addSeparator("Arms", cc.xy(1, row));
-		row += 2;
-		builder.add(d_armsView.buildPanel(),cc.xy(1, row));
-		row += 2;
-		builder.addSeparator("Study Design", cc.xy(1, row));
-		row += 2;
-		builder.add(d_designView.buildPanel(), cc.xy(1, row));
+		builder.addSeparator("Arms");
+		builder.add(d_armsView.buildPanel());
+		builder.addSeparator("Epochs");
+		builder.add(d_epochsView.buildPanel());
+		builder.addSeparator("Study Design");
+		builder.add(d_designView.buildPanel());
 
 		tabbedPane.addTab("Design", builder.getPanel());
 
 		// ---------- Data ----------
 
-		layout = new FormLayout( 
-				"fill:0:grow",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
-				);
-		
-		builder = new PanelBuilder(layout);
-		builder.setDefaultDialogBorder();
-		cc = new CellConstraints();
-		row = 1;
-		
-		builder.addSeparator("Baseline Characteristics", cc.xy(1, row));
-		row += 2;
-		builder.add(d_pcView.buildPanel(), cc.xy(1, row));
-		row += 2;
-		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Endpoint.class).getPlural(), cc.xy(1, row));
-		row += 2;
-		builder.add(d_endpointView.buildPanel(), cc.xy(1, row));
-		row += 2;
-		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(AdverseEvent.class).getPlural(), cc.xy(1, row));		
-		row += 2;
-		builder.add(d_adverseEventView.buildPanel(), cc.xy(1, row));
+		builder = new SingleColumnPanelBuilder();
 
+		builder.addSeparator("Baseline Characteristics");
+		builder.add(d_pcView.buildPanel());
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Endpoint.class).getPlural());
+		builder.add(d_endpointView.buildPanel());
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(AdverseEvent.class).getPlural());		
+		builder.add(d_adverseEventView.buildPanel());
 		tabbedPane.addTab("Data", builder.getPanel());
-		
-		
-		
+
 		return tabbedPane;
 	}
 }

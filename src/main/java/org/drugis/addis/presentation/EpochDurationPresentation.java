@@ -29,6 +29,7 @@ public class EpochDurationPresentation extends AbstractObservable {
 	public static final String PROPERTY_DEFINED = "defined";
 	public static final String PROPERTY_UNITS = "units";
 	public static final String PROPERTY_QUANTITY = "quantity";
+	public static final String PROPERTY_LABEL = "label";
 	
 	private static final Data DEFAULT_DATA = new Data(DateUnits.Weeks, 0);
 	
@@ -89,6 +90,14 @@ public class EpochDurationPresentation extends AbstractObservable {
 						firePropertyChange(PROPERTY_QUANTITY, DEFAULT_DATA.quantity, d_data.quantity);
 						firePropertyChange(PROPERTY_UNITS, DEFAULT_DATA.units, d_data.units);
 					}
+				}
+			}
+		});
+		addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (!evt.getPropertyName().equals(PROPERTY_LABEL)) {
+					firePropertyChange(PROPERTY_LABEL, null, getLabel());
 				}
 			}
 		});
@@ -166,5 +175,9 @@ public class EpochDurationPresentation extends AbstractObservable {
 		} catch (DatatypeConfigurationException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public String getLabel() {
+		return getDefined() ? d_data.quantity + " " + d_data.units : "Undefined";
 	}
 }

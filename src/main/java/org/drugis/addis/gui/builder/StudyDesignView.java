@@ -41,7 +41,7 @@ public class StudyDesignView implements ViewBuilder {
 					setText("<html>" + sa.getActivity().toString() + "</html>");
 				}
 			} else {
-				setText(value.toString());
+				setText(value == null ? "" : value.toString());
 			}
 			return this;
 		}

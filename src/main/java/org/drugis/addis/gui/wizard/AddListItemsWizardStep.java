@@ -132,7 +132,7 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 			rows = addComponents(d_builder, layout, cc, rows, i);
 		}
 		
-		rows = addRow(layout, rows);
+		rows = LayoutUtil.addRow(layout, rows);
 		JButton addBtn = new JButton("Add " + d_pm.getItemName());
 		d_builder.add(addBtn, cc.xy(1, rows));
 		addBtn.addActionListener(new AbstractAction() {
@@ -150,7 +150,7 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 	}
 
 	private int addComponents(PanelBuilder builder, FormLayout layout, CellConstraints cc, int rows, int idx) {
-		rows = addRow(layout, rows);
+		rows = LayoutUtil.addRow(layout, rows);
 		
 		// add "remove" button 
 		JButton removeBtn = new JButton("Remove");
@@ -167,15 +167,10 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		addAdditionalFields(builder, cc, rows, idx);
 		
 		// notes
-		rows = addRow(layout, rows);
+		rows = LayoutUtil.addRow(layout, rows);
 		d_builder.add(AddStudyWizard.buildNotesEditor(getNotes(d_pm.getList().get(idx))), cc.xyw(5, rows, 5));
 	
 		return rows;
-	}
-
-	private int addRow(FormLayout layout, int rows) {
-		LayoutUtil.addRow(layout);
-		return rows + 2;
 	}
 	
 	private ValueModel getNameModel(TypeWithName item) {

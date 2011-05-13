@@ -153,7 +153,7 @@ public class EpochDurationPresentationTest {
 	
 	@Test
 	public void testSetterEvents() {
-		PropertyChangeListener mockListener = createMock(PropertyChangeListener.class);
+		PropertyChangeListener mockListener = createNiceMock(PropertyChangeListener.class);
 		mockListener.propertyChange(JUnitUtil.eqPropertyChangeEvent(
 				new PropertyChangeEvent(d_pm1, EpochDurationPresentation.PROPERTY_UNITS, DateUnits.Weeks, DateUnits.Hours)));
 		mockListener.propertyChange(JUnitUtil.eqPropertyChangeEvent(
@@ -184,7 +184,7 @@ public class EpochDurationPresentationTest {
 	
 	@Test
 	public void testListenerEventsBothFields() throws DatatypeConfigurationException {
-		PropertyChangeListener mockListener = createMock(PropertyChangeListener.class);
+		PropertyChangeListener mockListener = createNiceMock(PropertyChangeListener.class);
 		mockListener.propertyChange(JUnitUtil.eqPropertyChangeEvent(
 				new PropertyChangeEvent(d_pm1, EpochDurationPresentation.PROPERTY_QUANTITY, 6, 8)));
 		mockListener.propertyChange(JUnitUtil.eqPropertyChangeEvent(
@@ -197,7 +197,7 @@ public class EpochDurationPresentationTest {
 	
 	@Test
 	public void testListenerEventsNoFields() throws DatatypeConfigurationException {
-		PropertyChangeListener mockListener = createMock(PropertyChangeListener.class);
+		PropertyChangeListener mockListener = createNiceMock(PropertyChangeListener.class);
 		replay(mockListener);
 		d_pm1.addPropertyChangeListener(mockListener);
 		d_epoch1.setDuration(DatatypeFactory.newInstance().newDuration("P42D"));
@@ -206,7 +206,7 @@ public class EpochDurationPresentationTest {
 	
 	@Test
 	public void testListenerEventsDefined() throws DatatypeConfigurationException {
-		PropertyChangeListener mockListener = createMock(PropertyChangeListener.class);
+		PropertyChangeListener mockListener = createNiceMock(PropertyChangeListener.class);
 		mockListener.propertyChange(JUnitUtil.eqPropertyChangeEvent(
 				new PropertyChangeEvent(d_pm2, EpochDurationPresentation.PROPERTY_DEFINED, false, true)));
 		mockListener.propertyChange(JUnitUtil.eqPropertyChangeEvent(
@@ -218,4 +218,12 @@ public class EpochDurationPresentationTest {
 		d_epoch2.setDuration(DatatypeFactory.newInstance().newDuration("PT5H"));
 		verify(mockListener);
 	}
+	
+	@Test
+	public void testToString() {
+		assertEquals("6 Weeks", d_pm1.getLabel());
+		assertEquals("Undefined", d_pm2.getLabel());
+		assertEquals("3 Days", d_pm3.getLabel());
+	}
+	
 }
