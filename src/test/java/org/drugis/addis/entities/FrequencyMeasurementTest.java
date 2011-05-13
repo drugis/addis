@@ -30,7 +30,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import java.beans.PropertyChangeListener;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,12 +90,7 @@ public class FrequencyMeasurementTest {
 			assertFalse(d_meas.isOfType(t));
 		}
 	}
-	
-	@Test
-	public void testGetDependencies() {
-		assertEquals(Collections.singleton(d_cv), d_meas.getDependencies());
-	}
-	
+
 	@Test
 	public void testToString() {
 		d_meas.setFrequency(d_cv.getCategories()[0], 25);
@@ -158,5 +152,4 @@ public class FrequencyMeasurementTest {
 		assertEquals(d_meas, d_meas.clone());
 		assertFalse(d_meas == d_meas.clone());
 	}
-
 }

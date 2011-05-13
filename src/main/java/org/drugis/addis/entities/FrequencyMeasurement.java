@@ -33,12 +33,8 @@ import scala.actors.threadpool.Arrays;
 
 public class FrequencyMeasurement extends BasicMeasurement {
 
-	private CategoricalPopulationCharacteristic d_cv;
-
 	private Map<String, Integer> d_frequencies = new HashMap<String, Integer>();
-
 	private String[] d_categories;
-	 
 	public static final String PROPERTY_FREQUENCIES = "frequencies";
 	
 	private FrequencyMeasurement() {
@@ -47,9 +43,8 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	
 	public FrequencyMeasurement(CategoricalPopulationCharacteristic cv) {
 		super(0);
-		d_cv = cv;
-		d_categories = d_cv.getCategories();
-		for (String cat : d_cv.getCategories()) {
+		d_categories = cv.getCategories();
+		for (String cat : cv.getCategories()) {
 			getFrequencies().put(cat, new Integer(0));
 		}
 	}
@@ -105,14 +100,11 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	}
 		
 	public boolean isOfType(Variable.Type type) {
-		return false;
+		return type.equals(Variable.Type.CATEGORICAL);
 	}
 
 	@Override
 	public Set<Entity> getDependencies() {
-		if (d_cv != null) {
-			return Collections.<Entity>singleton(d_cv);
-		}
 		return Collections.emptySet();
 	}
 	
@@ -130,9 +122,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	
 	@Override
 	public FrequencyMeasurement clone() {
-		FrequencyMeasurement m = new FrequencyMeasurement(d_categories, d_frequencies);
-		m.d_cv = new CategoricalPopulationCharacteristic(d_cv);
-		return m;
+		return new FrequencyMeasurement(d_categories, d_frequencies);
 	}
 	
 	@Override
