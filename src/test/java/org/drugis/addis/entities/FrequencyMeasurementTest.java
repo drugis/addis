@@ -87,7 +87,7 @@ public class FrequencyMeasurementTest {
 	@Test
 	public void testIsOfType() {
 		for (Variable.Type t : Variable.Type.values()) {
-			assertFalse(d_meas.isOfType(t));
+			assertEquals(t.equals(Variable.Type.CATEGORICAL), d_meas.isOfType(t));
 		}
 	}
 

@@ -224,7 +224,6 @@ public class AddStudyWizard extends Wizard {
 	public static class AddEpochsWizardStep extends AddListItemsWizardStep<Epoch> {
 		public AddEpochsWizardStep(AddEpochsPresentation pm) {
 			super("Add epochs", "Enter the epochs for this study.", pm);
-			pm.getList().add(createItem());
 			rebuild();
 		}	
 		
