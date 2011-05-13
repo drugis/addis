@@ -50,10 +50,12 @@ import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
+import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
@@ -164,15 +166,22 @@ public class ClinicaltrialsImporter {
 			}
 		}
 		
-		addStudyArms(study, studyImport);
+		Epoch mainphaseEpoch = new Epoch("Main phase", null);
+		study.getEpochs().add(mainphaseEpoch);
+		addStudyArms(study, studyImport, mainphaseEpoch);
 
 		addStudyEndpoints(study, studyImport);
 		
 		if (study.getCharacteristic(BasicStudyCharacteristic.ALLOCATION).equals(Allocation.RANDOMIZED)) {
-			study.getEpochs().add(new Epoch("Randomization", null));
+			Epoch randomizationEpoch = new Epoch("Randomization", null);
+			study.getEpochs().add(randomizationEpoch);
+			StudyActivity randomizationActivity = new StudyActivity("Randomization", PredefinedActivity.RANDOMIZATION);
+			study.getStudyActivities().add(randomizationActivity);
+			for (Arm a: study.getArms()) {
+				study.setStudyActivityAt(a, randomizationEpoch, randomizationActivity);
+			}
 		}
-		study.getEpochs().add(new Epoch("Main phase", null));
-		
+
 		// Import date & Source.
 		study.setCharacteristicWithNotes(BasicStudyCharacteristic.CREATION_DATE, 
 				objectWithNote(new Date(), studyImport.getRequiredHeader().getDownloadDate().trim()));
@@ -195,27 +204,32 @@ public class ClinicaltrialsImporter {
 		}
 	}
 
-	private static void addStudyArms(Study study, ClinicalStudy studyImport) {
+	private static void addStudyArms(Study study, ClinicalStudy studyImport, Epoch mainphaseEpoch) {
 		// Add note to the study-arms.
 		Map<String,Arm> armLabels = new HashMap<String,Arm>();
 		for(ArmGroup ag : studyImport.getArmGroup()){
 			Arm arm = new Arm(ag.getArmGroupLabel(), 0);
 			study.getArms().add(arm);
-			String noteStr = "Arm Type: " + ag.getArmGroupType()+"\nArm Description: "+ag.getDescription();
+			String noteStr = "Arm Type: " + ag.getArmGroupType() + "\nArm Description: " + ag.getDescription();
 			arm.getNotes().add(new Note(Source.CLINICALTRIALS, noteStr.trim()));
 			armLabels.put(ag.getArmGroupLabel(), arm);
 		}
 		
-		// Add note to the drugs within the study-arm.
+		// Add note about the drugs to the study-arms.
 		for(Intervention i : studyImport.getIntervention()){
-			String noteStr = "\n\nIntervention Name: "+i.getInterventionName()+"\nIntervention Type: "+i.getInterventionType()+"\nIntervention Description: "+i.getDescription();
+			String noteStr = "\n\nIntervention Name: " + i.getInterventionName() + "\nIntervention Type: " + 
+								i.getInterventionType() + "\nIntervention Description: " + i.getDescription();
 			boolean notAssigned = true;
 			for (String label : i.getArmGroupLabel()) {
+				StudyActivity act = new StudyActivity(i.getInterventionName(), null);
+				study.getStudyActivities().add(act);
+				act.getNotes().add(new Note(Source.CLINICALTRIALS, i.getDescription())); 
 				Arm arm = armLabels.get(label);
 				if (arm != null) {
 					notAssigned = false;
 					Note note = arm.getNotes().get(0);
 					note.setText(note.getText() + noteStr);
+					study.setStudyActivityAt(arm, mainphaseEpoch, act);
 				}
 			}
 			/* Add the intervention note to all arms if it can't be mapped to any single arm */
