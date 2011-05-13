@@ -24,8 +24,6 @@
 
 package org.drugis.addis.presentation.wizard;
 
-import java.util.List;
-
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Note;
 
@@ -38,7 +36,7 @@ public class AddArmsPresentation extends AddListItemsPresentation<Arm> {
 	}
 
 	@Override
-	public List<Note> getNotes(Arm t) {
+	public ObservableList<Note> getNotes(Arm t) {
 		return t.getNotes();
 	}
 	

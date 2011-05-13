@@ -39,7 +39,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -106,7 +105,6 @@ import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.components.NotesView;
 import org.drugis.addis.imports.PubMedIDRetriever;
 import org.drugis.addis.presentation.EpochDurationPresentation;
-import org.drugis.addis.presentation.NotesModel;
 import org.drugis.addis.presentation.wizard.AddArmsPresentation;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
@@ -128,6 +126,7 @@ import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.beans.PropertyAdapter;
 import com.jgoodies.binding.beans.PropertyConnector;
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -198,8 +197,8 @@ public class AddStudyWizard extends Wizard {
 		return buildNotesEditor(obj.getNotes());
 	}
 
-	static NotesView buildNotesEditor(List<Note> notes) {
-		return new NotesView(new NotesModel(notes), true);
+	static NotesView buildNotesEditor(ObservableList<Note> notes) {
+		return new NotesView(notes, true);
 	}
 	
 	// -- Wizard Steps

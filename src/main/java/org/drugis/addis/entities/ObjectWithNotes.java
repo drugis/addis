@@ -24,21 +24,21 @@
 
 package org.drugis.addis.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.common.EqualsUtil;
 
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
+
 @SuppressWarnings("serial")
 public class ObjectWithNotes<T> extends ModifiableHolder<T> implements TypeWithNotes {
-	private List<Note> d_notes = new ArrayList<Note>();
+	private ObservableList<Note> d_notes = new ArrayListModel<Note>();
 
 	public ObjectWithNotes(T obj) {
 		super(obj);	
 	}
 	
-	public List<Note> getNotes() { 
+	public ObservableList<Note> getNotes() { 
 		return d_notes;
 	}
 	

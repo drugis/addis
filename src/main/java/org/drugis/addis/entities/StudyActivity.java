@@ -24,15 +24,16 @@
 
 package org.drugis.addis.entities;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.RebuildableHashSet;
 import org.drugis.common.EqualsUtil;
+
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
 
 public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements TypeWithNotes {
 	public static final String PROPERTY_ACTIVITY = "activity";
@@ -82,7 +83,7 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 	private Activity d_activity;
 	// FIXME: the hashCode() of UsedBy is non-static during the AddStudyWizard, so we cannot use this.
 	private RebuildableHashSet<UsedBy> d_usedBy = new RebuildableHashSet<UsedBy>();
-	private List<Note> d_notes = new ArrayList<Note>();
+	private ObservableList<Note> d_notes = new ArrayListModel<Note>();
 	
 	public StudyActivity(String name, Activity activity) {
 		super(name);
@@ -127,7 +128,7 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 		d_usedBy.rebuild();
 	}
 
-	public List<Note> getNotes() {
+	public ObservableList<Note> getNotes() {
 		return d_notes ;
 	}
 	

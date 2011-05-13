@@ -24,10 +24,10 @@
 
 package org.drugis.addis.entities;
 
-import java.util.List;
+import com.jgoodies.binding.list.ObservableList;
 
 public interface TypeWithNotes {
 
-	public List<Note> getNotes();
+	public ObservableList<Note> getNotes();
 
 }

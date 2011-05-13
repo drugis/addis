@@ -28,7 +28,6 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -48,6 +47,7 @@ import org.pietschy.wizard.PanelWizardStep;
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.beans.PropertyConnector;
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -96,7 +96,7 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 	protected T createItem() {
 		return d_pm.createItem();
 	}
-	protected List<Note> getNotes(T t) {
+	protected ObservableList<Note> getNotes(T t) {
 		return d_pm.getNotes(t);
 	}
 

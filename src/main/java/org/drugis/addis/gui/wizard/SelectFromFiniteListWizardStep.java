@@ -36,7 +36,6 @@ import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.components.NotesView;
-import org.drugis.addis.presentation.NotesModel;
 import org.drugis.addis.presentation.SelectFromFiniteListPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
@@ -157,7 +156,7 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 			if (d_pm.getSlot(i) instanceof TypeWithNotes) {
 				LayoutUtil.addRow(layout);
 				row += 2;
-				d_builder.add(new NotesView(new NotesModel(((TypeWithNotes)d_pm.getSlot(i)).getNotes()), true), cc.xy(5, row));
+				d_builder.add(new NotesView(((TypeWithNotes)d_pm.getSlot(i)).getNotes(), true), cc.xy(5, row));
 			}
 			
 			LayoutUtil.addRow(layout);

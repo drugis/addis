@@ -24,8 +24,6 @@
 
 package org.drugis.addis.presentation.wizard;
 
-import java.util.List;
-
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.presentation.EpochDurationPresentation;
@@ -39,7 +37,7 @@ public class AddEpochsPresentation extends AddListItemsPresentation<Epoch> {
 	}
 
 	@Override
-	public List<Note> getNotes(Epoch t) {
+	public ObservableList<Note> getNotes(Epoch t) {
 		return t.getNotes();
 	}
 	

@@ -24,17 +24,18 @@
 
 package org.drugis.addis.entities;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.EqualsUtil;
 
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
+
 public class Arm extends AbstractNamedEntity<Arm> implements TypeWithNotes {
 	private Integer d_size;
-	private List<Note> d_notes = new ArrayList<Note>();
+	private ObservableList<Note> d_notes = new ArrayListModel<Note>();
 	
 	public static final String PROPERTY_SIZE = "size";
 
@@ -70,7 +71,7 @@ public class Arm extends AbstractNamedEntity<Arm> implements TypeWithNotes {
 		return arm;
 	}
 
-	public List<Note> getNotes() {
+	public ObservableList<Note> getNotes() {
 		return d_notes;
 	}
 

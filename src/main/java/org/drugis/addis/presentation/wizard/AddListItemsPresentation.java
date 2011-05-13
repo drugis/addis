@@ -24,8 +24,6 @@
 
 package org.drugis.addis.presentation.wizard;
 
-import java.util.List;
-
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.TypeWithName;
 import org.drugis.common.beans.AbstractObservable;
@@ -49,7 +47,7 @@ public abstract class AddListItemsPresentation<T extends TypeWithName> extends A
 	}
 
 	public abstract T createItem();
-	public abstract List<Note> getNotes(T t);
+	public abstract ObservableList<Note> getNotes(T t);
 
 
 	public ObservableList<T> getList() {

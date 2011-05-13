@@ -29,8 +29,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -38,15 +36,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.gui.AuxComponentFactory;
-import org.drugis.addis.presentation.NotesModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -56,18 +56,18 @@ import com.jgoodies.forms.layout.FormLayout;
 @SuppressWarnings("serial")
 public class NotesView extends JPanel {
 	private static final String DEFAULT_NOTE_TEXT = "To add a note, enter text here and then press the button to the right";
-	private final NotesModel d_notes;
+	private final ObservableList<Note> d_notes;
 	private final boolean d_editable;
 
-	public NotesView(NotesModel notes, boolean editable) {
+	public NotesView(ObservableList<Note> notes, boolean editable) {
 		super(new BorderLayout());
 		d_notes = notes;
 		d_editable = editable;
 		add(buildPanel(), BorderLayout.CENTER);
-		d_notes.addPropertyChangeListener(new NotesListener());
+		d_notes.addListDataListener(new NotesListener());
 	}
 	
-	public NotesView(NotesModel notes) {
+	public NotesView(ObservableList<Note> notes) {
 		this(notes, false);
 	}
 	
@@ -80,7 +80,7 @@ public class NotesView extends JPanel {
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		int row = 1;
-		for (Note note : d_notes.getNotes()) {
+		for (Note note : d_notes) {
 			builder.add(AuxComponentFactory.createNoteView(note, d_editable), cc.xyw(1, row, 3));			
 			LayoutUtil.addRow(layout);
 			row += 2;
@@ -129,19 +129,31 @@ public class NotesView extends JPanel {
 			
 			addNoteButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					d_notes.addNote(new Note(Source.MANUAL, (String) model.getValue()));
+					d_notes.add(new Note(Source.MANUAL, (String) model.getValue()));
 				}});
 		}
 		
 		return builder.getPanel();
 	}
 	
-	private class NotesListener implements PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent evt) {
+	private class NotesListener implements ListDataListener {
+		public void update() {
 			setVisible(false);
 			removeAll();
 			add(buildPanel(), BorderLayout.CENTER);
 			setVisible(true);
+		}
+		@Override
+		public void contentsChanged(ListDataEvent e) {
+			update();
+		}
+		@Override
+		public void intervalAdded(ListDataEvent e) {
+			update();
+		}
+		@Override
+		public void intervalRemoved(ListDataEvent e) {
+			update();
 		}
 	}
 }

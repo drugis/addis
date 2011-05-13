@@ -24,9 +24,7 @@
 
 package org.drugis.addis.entities;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import javax.xml.datatype.Duration;
@@ -34,18 +32,21 @@ import javax.xml.datatype.Duration;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.EqualsUtil;
 
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
+
 public class Epoch extends AbstractNamedEntity<Epoch> implements TypeWithNotes {
 	public static final String PROPERTY_DURATION = "duration";
 
 	private Duration d_duration;
-	private List<Note> d_notes = new ArrayList<Note>();
+	private ObservableList<Note> d_notes = new ArrayListModel<Note>();
 	
 	public Epoch(String name, Duration duration) {
 		super(name);
 		d_duration = duration;
 	}
 
-	public List<Note> getNotes() {
+	public ObservableList<Note> getNotes() {
 		return d_notes;
 	}
 
