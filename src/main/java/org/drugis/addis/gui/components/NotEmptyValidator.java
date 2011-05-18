@@ -47,7 +47,7 @@ import com.jgoodies.binding.value.ValueModel;
 import com.toedter.calendar.JDateChooser;
 
 @SuppressWarnings("serial")
-public class NotEmptyValidator extends AbstractValueModel{
+public class NotEmptyValidator extends AbstractValueModel {
 	
 	private List<JComponent> d_fields = new ArrayList<JComponent>();
 	private DocumentListener d_myTextListener = new MyTextListener();

@@ -71,5 +71,7 @@ public class ContentAwareListModel<T extends Observable> extends AbstractListMod
 		return d_nested.getSize();
 	}
 	
-	// setNestedList(...)
+	public ObservableList<T> getList() {
+		return d_nested;
+	}
 }

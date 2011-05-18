@@ -673,13 +673,28 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		if (d_epochs.isEmpty()) {
 			return null;
 		}
+		Epoch epoch = getTreatmentEpoch();
+		if (epoch == null) {
+			return null;
+		}
+		return (TreatmentActivity)getStudyActivityAt(arm, epoch).getActivity();
+	}
+	
+	private Epoch getTreatmentEpoch() {
 		for (Epoch epoch : d_epochs) {
-			StudyActivity studyActivity = getStudyActivityAt(arm, epoch);
-			if (studyActivity != null && studyActivity.getActivity() instanceof TreatmentActivity) {
-				return (TreatmentActivity)studyActivity.getActivity();
-			}
+			if (isTreatmentEpoch(epoch)) return epoch;
 		}
 		return null;
+	}
+
+	private boolean isTreatmentEpoch(Epoch epoch) {
+		for (Arm arm : d_arms) {
+			StudyActivity sa = getStudyActivityAt(arm, epoch);
+			if (sa == null || !(sa.getActivity() instanceof TreatmentActivity)) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public Drug getDrug(Arm arm) {

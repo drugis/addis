@@ -92,6 +92,7 @@ import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
@@ -127,6 +128,7 @@ import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.beans.PropertyAdapter;
 import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -259,12 +261,59 @@ public class AddStudyWizard extends Wizard {
 	}
 	
 	public static class AssignActivitiesWizardStep extends PanelWizardStep {
+		
+		public final class Validator extends AbstractValueModel {
+			private ContentAwareListModel<StudyActivity> d_list;
+			
+			public Validator(ObservableList<StudyActivity> list) {
+				d_list = new ContentAwareListModel<StudyActivity>(list);
+				d_list.addListDataListener(new ListDataListener() {
+					@Override
+					public void intervalRemoved(ListDataEvent e) {
+						fireValueChange(null, areDrugAndDoseFilledIn());
+					}
+					
+					@Override
+					public void intervalAdded(ListDataEvent e) {
+						fireValueChange(null, areDrugAndDoseFilledIn());
+					}
+					
+					@Override
+					public void contentsChanged(ListDataEvent e) {
+						fireValueChange(null, areDrugAndDoseFilledIn());
+					}
+				});
+			}
+
+			private boolean areDrugAndDoseFilledIn() {
+				for (StudyActivity act : d_list.getList()) {
+					if (act.getActivity() instanceof TreatmentActivity) {
+						TreatmentActivity ta = (TreatmentActivity) act.getActivity();
+						System.out.println(ta.getDrug() + "; " + ta.getDose());
+						if(ta.getDrug() == null || ta.getDose() == null)
+							return false;
+					} else if (act.getActivity() == null) {
+						return false;
+					}
+				}
+				return true;
+			}
+
+			public Boolean getValue() {
+				return areDrugAndDoseFilledIn() && d_list.getSize() > 0;
+			}
+
+			public void setValue(Object newValue) {
+			}
+		}
+		
+		
+		
 		private PanelBuilder d_builder;
 		private JScrollPane d_scrollPane;
 		
 		private AddStudyWizardPresentation d_pm;
-		private NotEmptyValidator d_validator;
-		
+		private Validator d_validator;
 		public JTable armsEpochsTable;
 		private final JDialog d_parent;
 		private AddisWindow d_mainWindow;
@@ -294,7 +343,7 @@ public class AddStudyWizard extends Wizard {
 		@Override
 		public void prepare() {
 			 this.setVisible(false);
-			 d_validator = new NotEmptyValidator();
+			 d_validator = new Validator(d_pm.getNewStudyPM().getBean().getStudyActivities());
 			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
 			 
 			 if (d_scrollPane != null)
