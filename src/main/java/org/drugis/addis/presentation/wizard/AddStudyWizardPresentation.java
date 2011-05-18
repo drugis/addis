@@ -354,7 +354,7 @@ public class AddStudyWizardPresentation {
 
 	public TreatmentActivityPresentation getTreatmentActivityModel(int armNumber){
 		Arm arm = getArms().get(armNumber);
-		return new TreatmentActivityPresentation(getNewStudy().getTreatment(arm), d_pmf);
+		return new TreatmentActivityPresentation(getNewStudy().getTreatment(arm));
 	}
 	
 	public ValueModel getArmNoteModel(int idx) {

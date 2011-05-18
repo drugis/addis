@@ -65,7 +65,7 @@ public class TreatmentActivity extends AbstractEntity implements Activity {
 	
 	@Override
 	public String toString() {
-		return  d_drug + ", " + d_dose ;
+		return getDescription();
 	}
 
 	@Override

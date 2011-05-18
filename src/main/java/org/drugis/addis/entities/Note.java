@@ -27,6 +27,8 @@ package org.drugis.addis.entities;
 import java.util.Collections;
 import java.util.Set;
 
+import org.drugis.common.EqualsUtil;
+
 public class Note extends AbstractEntity {
 	
 	public static final String PROPERTY_TEXT = "text";
@@ -78,7 +80,7 @@ public class Note extends AbstractEntity {
 	public boolean equals(Object o) {
 		if (o instanceof Note && o != null) {
 			Note other = (Note) o;
-			return other.d_source.equals(d_source) && other.d_text.equals(d_text);
+			return EqualsUtil.equal(other.d_source, d_source) && EqualsUtil.equal(other.d_text, d_text);
 		}
 		return false;
 	}

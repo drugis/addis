@@ -1,0 +1,192 @@
+package org.drugis.addis.presentation.wizard;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drugis.addis.entities.Activity;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Note;
+import org.drugis.addis.entities.PredefinedActivity;
+import org.drugis.addis.entities.StudyActivity;
+import org.drugis.addis.entities.TreatmentActivity;
+import org.drugis.addis.presentation.AbstractListHolder;
+import org.drugis.addis.presentation.TreatmentActivityPresentation;
+import org.drugis.addis.presentation.ValueHolder;
+
+import scala.actors.threadpool.Arrays;
+
+import com.jgoodies.binding.beans.PropertyAdapter;
+import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.value.AbstractValueModel;
+import com.jgoodies.binding.value.ValueModel;
+
+public class StudyActivityPresentation {
+	public class ValidModel extends AbstractValueModel implements ValueHolder<Boolean> {
+		private static final long serialVersionUID = -9106397706220712681L;
+
+		ValidModel() {
+			PropertyChangeListener listener = new PropertyChangeListener() {
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					firePropertyChange("value", null, getValue());
+				}
+			};
+			d_treatmentModel.getBean().addPropertyChangeListener(listener);
+			d_newActivity.addPropertyChangeListener(listener);
+		}
+		@Override
+		public Boolean getValue() {
+			return isProperlyFilledIn() && isNameUnique();
+		}
+
+		@Override
+		public void setValue(Object newValue) {
+		}
+	}
+
+	private final ObservableList<StudyActivity> d_activityList;
+	private final StudyActivity d_oldActivity;
+	private StudyActivity d_newActivity;
+	private ValueModel d_nameHolder;
+	private ValueModel d_activityHolder;
+	private TreatmentActivityPresentation d_treatmentModel;
+	private List<Activity> d_activityOptions;
+	private ValueHolder<Boolean> d_valid;
+	private AbstractListHolder<Drug> d_drugOptions;
+
+	public StudyActivityPresentation(ObservableList<StudyActivity> activityList, AbstractListHolder<Drug> drugOptions) {
+		this (activityList, drugOptions, null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public StudyActivityPresentation(ObservableList<StudyActivity> activityList, AbstractListHolder<Drug> drugOptions, StudyActivity activity) {
+		d_activityList = activityList;
+		d_drugOptions = drugOptions;
+		d_oldActivity = activity;
+		d_newActivity = activity == null ? new StudyActivity(null, null) : activity.clone();
+		d_nameHolder = new PropertyAdapter<StudyActivity>(d_newActivity, StudyActivity.PROPERTY_NAME, true);
+		d_activityHolder = new PropertyAdapter<StudyActivity>(d_newActivity, StudyActivity.PROPERTY_ACTIVITY, true);
+		d_activityOptions = new ArrayList<Activity>(Arrays.asList(PredefinedActivity.values()));
+		TreatmentActivity initialTreatment = getInitialTreatment();
+		d_activityOptions.add(initialTreatment);
+		d_treatmentModel = new TreatmentActivityPresentation(initialTreatment);
+		d_valid = new ValidModel();
+		PropertyChangeListener listener = new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				updateName();
+			}
+		};
+		if (!isEditing()) {
+			d_activityHolder.addValueChangeListener(listener);
+			d_treatmentModel.addBeanPropertyChangeListener(listener);
+		}
+	}
+
+	private boolean isProperlyFilledIn() {
+		if (d_newActivity.getName() == null || d_newActivity.getName().equals("")) {
+			return false;
+		}
+		Activity activity = d_newActivity.getActivity();
+		if (activity == null) {
+			return false;
+		}
+		if (activity instanceof TreatmentActivity) {
+			TreatmentActivity ta = (TreatmentActivity) activity;
+			if(ta.getDrug() == null || ta.getDose() == null) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private boolean isNameUnique() {
+		for (StudyActivity act : d_activityList) {
+			if(act.getName().equals(d_newActivity.getName()) && !act.equals(d_oldActivity)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private TreatmentActivity getInitialTreatment() {
+		if (d_newActivity.getActivity() instanceof TreatmentActivity) {
+			return (TreatmentActivity) d_newActivity.getActivity();
+		} else {
+			return new TreatmentActivity(null, null);
+		}
+	}
+	
+	public boolean isEditing() {
+		return d_oldActivity != null;
+	}
+	
+	/**
+	 * The value model containing the activity name. Class of value: String.
+	 */
+	public ValueModel getNameModel() {
+		return d_nameHolder;
+	}
+	
+	/**
+	 * Get the activity notes.
+	 */
+	public ObservableList<Note> getNotesModel() {
+		return d_newActivity.getNotes();
+	}
+	
+	/**
+	 * The value model containing the activity type. Class of value: Activity.
+	 */
+	public ValueModel getActivityModel() {
+		return d_activityHolder;
+	}
+	
+	/**
+	 * The list of selectable activity types.
+	 */
+	public List<Activity> getActivityOptions() {
+		return d_activityOptions;
+	}
+	
+	/**
+	 * The presentation model for the treatment activity.
+	 */
+	public TreatmentActivityPresentation getTreatmentModel() {
+		return d_treatmentModel;
+	}
+	
+	/**
+	 * A value model indicating whether the input is complete and valid.
+	 */
+	public ValueHolder<Boolean> getValidModel() {
+		return d_valid;
+	}
+	
+	/**
+	 * Commit the activity to the activityList.
+	 */
+	public void commit() {
+		if(isEditing()) {
+			d_activityList.remove(d_oldActivity);
+		}
+		d_activityList.add(d_newActivity);
+	}
+
+	public AbstractListHolder<Drug> getDrugOptions() {
+		return d_drugOptions;
+	}
+	
+	private void updateName() {
+		if (d_activityHolder.getValue() instanceof TreatmentActivity) {
+			Object drug = d_treatmentModel.getModel(TreatmentActivity.PROPERTY_DRUG).getValue();
+			if (drug != null) {
+				d_nameHolder.setValue(drug.toString());
+			}
+		} else if (d_activityHolder.getValue() != null){
+			d_newActivity.setName(d_activityHolder.getValue().toString());
+		}
+	}
+}

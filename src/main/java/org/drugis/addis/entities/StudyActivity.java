@@ -149,9 +149,15 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 	
 	@Override
 	public StudyActivity clone() {
-		StudyActivity cloned = new StudyActivity(getName(), d_activity);
+		StudyActivity cloned = new StudyActivity(getName(), cloneActivity());
 		cloned.setUsedBy(new HashSet<UsedBy>(getUsedBy()));
+		cloned.d_notes.addAll(d_notes);
 		return cloned;
+	}
+
+
+	private Activity cloneActivity() {
+		return d_activity instanceof TreatmentActivity ? ((TreatmentActivity) d_activity).clone() : d_activity;
 	}
 
 }

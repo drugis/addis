@@ -124,7 +124,7 @@ public class PresentationModelFactory {
 			return new BasicArmPresentation((Arm)obj, this);
 		}
 		if (obj instanceof TreatmentActivity) {
-			return new TreatmentActivityPresentation((TreatmentActivity)obj, this);
+			return new TreatmentActivityPresentation((TreatmentActivity)obj);
 		}
 		if (obj instanceof Drug) {
 			Drug d = (Drug) obj;

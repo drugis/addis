@@ -79,6 +79,7 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
 import org.drugis.addis.FileNames;
+import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -109,6 +110,7 @@ import org.drugis.addis.presentation.EpochDurationPresentation;
 import org.drugis.addis.presentation.wizard.AddArmsPresentation;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
+import org.drugis.addis.presentation.wizard.StudyActivityPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.OutcomeMeasurementsModel;
 import org.drugis.addis.util.ContentAwareListModel;
 import org.drugis.addis.util.PubMedListFormat;
@@ -287,12 +289,7 @@ public class AddStudyWizard extends Wizard {
 
 			private boolean areDrugAndDoseFilledIn() {
 				for (StudyActivity act : d_list.getList()) {
-					if (act.getActivity() instanceof TreatmentActivity) {
-						TreatmentActivity ta = (TreatmentActivity) act.getActivity();
-						System.out.println(ta.getDrug() + "; " + ta.getDose());
-						if(ta.getDrug() == null || ta.getDose() == null)
-							return false;
-					} else if (act.getActivity() == null) {
+					if (!properlyFilledIn(act)) {
 						return false;
 					}
 				}
@@ -300,7 +297,7 @@ public class AddStudyWizard extends Wizard {
 			}
 
 			public Boolean getValue() {
-				return areDrugAndDoseFilledIn() && d_list.getSize() > 0;
+				return areDrugAndDoseFilledIn();
 			}
 
 			public void setValue(Object newValue) {
@@ -332,7 +329,7 @@ public class AddStudyWizard extends Wizard {
 		}
 		
 		public AssignActivitiesWizardStep(AddStudyWizardPresentation pm, AddisWindow mainWindow, JDialog parent) {
-			super("Assign activities", "Drag activities to their proper combination of (arm, epoch).");
+			super("Assign activities", "Drag activities to their proper combination of (arm, epoch). Incomplete activities are shown in red.");
 			d_parent = parent;
 			d_mainWindow = mainWindow;
 			d_pm = pm;
@@ -373,14 +370,17 @@ public class AddStudyWizard extends Wizard {
 			dataModel.addListDataListener(new ListDataListener() {
 				public void intervalRemoved(ListDataEvent e) {
 					d_tableModel.fireTableDataChanged();
+					revalidate();
 				}
 				
 				public void intervalAdded(ListDataEvent e) {
 					d_tableModel.fireTableDataChanged();
+					revalidate();
 				}
 				
 				public void contentsChanged(ListDataEvent e) {
 					d_tableModel.fireTableDataChanged();
+					revalidate();
 				}
 			});
 			
@@ -420,8 +420,14 @@ public class AddStudyWizard extends Wizard {
 			d_activityList.setCellRenderer(new DefaultListCellRenderer() {
 				public Component getListCellRendererComponent(JList list, Object value,
 						int index, boolean isSelected, boolean cellHasFocus) {
-					return super.getListCellRendererComponent(list, ((StudyActivity)value).getName(), 
-							index, isSelected, cellHasFocus);
+					StudyActivity sa = (StudyActivity)value;
+					JComponent listCellRendererComponent = (JComponent) super.getListCellRendererComponent(list, sa.getName(), 
+									index, isSelected, cellHasFocus);
+					if(!properlyFilledIn(sa)) {
+						listCellRendererComponent.setBorder(BorderFactory.createLineBorder(Color.RED));
+						listCellRendererComponent.setForeground(Color.RED);
+					}
+					return listCellRendererComponent;
 				}
 			});
 
@@ -437,6 +443,20 @@ public class AddStudyWizard extends Wizard {
 			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		
 			add(d_scrollPane, BorderLayout.CENTER);
+		}
+
+		private boolean properlyFilledIn(StudyActivity act) {
+			Activity activity = act.getActivity();
+			if (activity == null) {
+				return false;
+			}
+			if (activity instanceof TreatmentActivity) {
+				TreatmentActivity ta = (TreatmentActivity) activity;
+				if(ta.getDrug() == null || ta.getDose() == null) {
+					return false;
+				}
+			}
+			return true;
 		}
 
 		private void createArmsAndEpochsTable(CellConstraints cc) {
@@ -515,7 +535,8 @@ public class AddStudyWizard extends Wizard {
 			d_builder.add(newButton, cc.xy(1, 5));
 			newButton.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
-					AddStudyActivityDialog addStudyActivityDialog = new AddStudyActivityDialog(d_parent, d_mainWindow, d_pm);
+					AddStudyActivityDialog addStudyActivityDialog = new AddStudyActivityDialog(d_parent, d_mainWindow, 
+							new StudyActivityPresentation(getStudyActivities(), d_pm.getDrugsModel()));
 					addStudyActivityDialog.setLocationRelativeTo(d_parent);
 					addStudyActivityDialog.setVisible(true);
 				}
@@ -525,10 +546,13 @@ public class AddStudyWizard extends Wizard {
 			d_builder.add(editButton, cc.xy(1, 7));
 			editButton.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
-					AddStudyActivityDialog addStudyActivityDialog = new AddStudyActivityDialog(d_parent, d_mainWindow, d_pm, d_activityList.getSelectedIndex());
+					AddStudyActivityDialog addStudyActivityDialog = new AddStudyActivityDialog(d_parent, d_mainWindow, 
+							new StudyActivityPresentation(getStudyActivities(), d_pm.getDrugsModel(), getStudyActivities().get(d_activityList.getSelectedIndex())));
 					addStudyActivityDialog.setLocationRelativeTo(d_parent);
 					addStudyActivityDialog.setVisible(true);
 				}
+
+
 			});
 			
 			d_builder.add(removeButton, cc.xy(1, 9));
@@ -545,7 +569,12 @@ public class AddStudyWizard extends Wizard {
 		class SourceTransferHandler extends TransferHandler {
 
         }
+		
+		private ObservableList<StudyActivity> getStudyActivities() {
+			return d_pm.getNewStudyPM().getBean().getStudyActivities();
+		}
 	}
+	
 	
 	public static class ReviewStudyStep extends PanelWizardStep {
 		private final AddStudyWizardPresentation d_pm;

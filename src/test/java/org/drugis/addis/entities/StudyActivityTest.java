@@ -26,6 +26,7 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
@@ -134,4 +135,19 @@ public class StudyActivityTest {
 		d_randomization.getNotes().add(n);
 		assertEquals(Collections.singletonList(n), d_randomization.getNotes());
 	}
+	
+	@Test
+	public void testClone() {
+		assertTrue(d_main.deepEquals(d_main.clone()));
+		assertNotSame(d_main, d_main.clone());
+		assertNotSame(d_main.getActivity(), d_main.clone().getActivity());
+		assertNotSame(d_main.getUsedBy(), d_main.clone().getUsedBy());
+		
+		assertEquals(Collections.emptyList(), d_main.getNotes());
+		assertNotSame(d_main.getNotes(), d_main.clone().getNotes());
+		
+		d_main.getNotes().add(new Note());
+		assertTrue(d_main.deepEquals(d_main.clone()));
+	}
+	
 }

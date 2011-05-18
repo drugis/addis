@@ -62,4 +62,5 @@ public enum PredefinedActivity implements Activity {
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {}
 	public void removePropertyChangeListener(PropertyChangeListener listener) {}
+	
 }

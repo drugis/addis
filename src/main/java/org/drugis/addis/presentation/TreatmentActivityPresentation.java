@@ -31,7 +31,7 @@ import com.jgoodies.binding.PresentationModel;
 @SuppressWarnings("serial")
 public class TreatmentActivityPresentation extends PresentationModel<TreatmentActivity> {
 
-	public TreatmentActivityPresentation(TreatmentActivity bean, PresentationModelFactory pmf) {
+	public TreatmentActivityPresentation(TreatmentActivity bean) {
 		super(bean);
 	}
 

@@ -27,7 +27,6 @@ package org.drugis.addis.presentation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.SIUnit;
@@ -38,14 +37,12 @@ import org.junit.Test;
 
 public class TreatmentActivityPresentationTest {
 	private TreatmentActivity d_activity;
-	private PresentationModelFactory d_pmf;
 	private TreatmentActivityPresentation d_pm;
 
 	@Before
 	public void setUp() {
-		d_pmf = new PresentationModelFactory(new DomainImpl());
 		d_activity = new TreatmentActivity(null, null);
-		d_pm = new TreatmentActivityPresentation(d_activity, d_pmf);
+		d_pm = new TreatmentActivityPresentation(d_activity);
 	}
 	
 	@Test
