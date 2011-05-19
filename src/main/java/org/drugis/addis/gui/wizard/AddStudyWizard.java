@@ -432,6 +432,7 @@ public class AddStudyWizard extends Wizard {
 			});
 
 			JScrollPane activityScrollPane = new JScrollPane(d_activityList);
+			activityScrollPane.setPreferredSize(new Dimension(200, 300));
 			d_builder.add(activityScrollPane, cc.xy(1, 3));
 			
 			createArmsAndEpochsTable(cc);
@@ -463,10 +464,8 @@ public class AddStudyWizard extends Wizard {
 			d_tableModel = new StudyActivitiesTableModel(d_pm.getNewStudyPM().getBean());
 
 			final JTable armsEpochsTable = new JTable(d_tableModel);
-			
+
 			armsEpochsTable.getTableHeader().setReorderingAllowed(false);
-			armsEpochsTable.getTableHeader().setResizingAllowed(false);
-			JScrollPane tableScrollPane = new JScrollPane(armsEpochsTable);
 			armsEpochsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			armsEpochsTable.setDropMode(DropMode.ON);
 			armsEpochsTable.setTransferHandler(new TransferHandler() {
@@ -512,6 +511,7 @@ public class AddStudyWizard extends Wizard {
 							arg2, arg3, arg4, arg5);
 				}
 			});
+			JScrollPane tableScrollPane = new JScrollPane(armsEpochsTable);
 			d_builder.add(tableScrollPane, cc.xywh(3, 3, 1, 5));
 		}
 

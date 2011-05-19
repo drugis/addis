@@ -25,15 +25,18 @@
 package org.drugis.addis.gui.wizard;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 
 import org.drugis.addis.entities.Drug;
@@ -61,6 +64,8 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		super(parent);
 		d_mainWindow = mainWindow;
 		d_pm = pm;
+		this.setMinimumSize(new Dimension(550, 280));
+		this.setResizable(false);
 
 		if(d_pm.isEditing()) {
 			setTitle("Edit Activity");
@@ -98,19 +103,20 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 	public void rebuild() {
 		getUserPanel().setVisible(false);
 		getUserPanel().removeAll(); // remove previous components (if any)
-		initComps();
+		getUserPanel().add(buildPanel());
 		getUserPanel().setVisible(true);
 		pack();
 	 }
 
-	private void initComps() {
+	private JScrollPane buildPanel() {
 		FormLayout layout = new FormLayout(
-				"fill:pref, 7dlu, fill:pref:grow, 3dlu, left:pref",
+				"left:pref, 7dlu, pref:grow:fill, 3dlu, left:pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
 		final PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		final CellConstraints cc = new CellConstraints();
+		
 		
 		// add type
 		builder.addLabel("Type: ", cc.xy(1, 1));
@@ -130,18 +136,17 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		// add name
 		builder.addLabel("Name: ", cc.xy(1, 11));
 		builder.add(BasicComponentFactory.createTextField(d_pm.getNameModel(), false), cc.xy(3, 11));
-		
 		// show or hide drug
 		if (d_pm.getActivityModel().getValue() instanceof TreatmentActivity) {
 			showDrug(builder, cc);
 		}
-
+		builder.addSeparator("", cc.xyw(1, 9, 5));
 		// NOOOOTES
 		builder.add(AddStudyWizard.buildNotesEditor(d_pm.getNotesModel()), cc.xyw(1, 13, 5));
-
 		PropertyConnector.connectAndUpdate(d_pm.getValidModel(), d_okButton, "enabled");
-		
-		getUserPanel().add(builder.getPanel());
+		JScrollPane scrollPane = new JScrollPane(builder.getPanel());
+		scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
+		return scrollPane;
 	}
 
 	private void showDrug(PanelBuilder builder, CellConstraints cc) {
@@ -166,6 +171,5 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		builder.addLabel("Dose: ", cc.xy(1, 7));
 		DoseView doseView = new DoseView(d_pm.getTreatmentModel().getDoseModel());
 		builder.add(doseView.buildPanel(), cc.xy(3, 7));
-		builder.addSeparator("", cc.xyw(1, 9, 5));
 	}
 }

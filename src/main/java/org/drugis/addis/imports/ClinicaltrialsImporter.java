@@ -174,7 +174,7 @@ public class ClinicaltrialsImporter {
 		
 		if (study.getCharacteristic(BasicStudyCharacteristic.ALLOCATION).equals(Allocation.RANDOMIZED)) {
 			Epoch randomizationEpoch = new Epoch("Randomization", null);
-			study.getEpochs().add(randomizationEpoch);
+			study.getEpochs().add(0, randomizationEpoch);
 			StudyActivity randomizationActivity = new StudyActivity("Randomization", PredefinedActivity.RANDOMIZATION);
 			study.getStudyActivities().add(randomizationActivity);
 			for (Arm a: study.getArms()) {
