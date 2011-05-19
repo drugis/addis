@@ -12,7 +12,7 @@ import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
-import org.drugis.addis.gui.components.EnhancedTable;
+import org.drugis.addis.gui.components.EnhancedTableHeader;
 import org.drugis.addis.gui.wizard.StudyActivitiesTableModel;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.common.gui.ViewBuilder;
@@ -61,18 +61,33 @@ public class StudyDesignView implements ViewBuilder {
 				"p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
-
-		final EnhancedTable armsEpochsTable = new EnhancedTable(d_tableModel, 100000);
 		
+		// We can't use the EnhancedTable because it doesn't play nicely with the cell renderer.
+		JTable armsEpochsTable = new JTable(d_tableModel);
+		
+		// Set our own row height and cell renderer
 		armsEpochsTable.setRowHeight(calculateHeight());
-
-		armsEpochsTable.getTableHeader().setReorderingAllowed(false);
-		armsEpochsTable.getTableHeader().setResizingAllowed(false);
 		armsEpochsTable.setDefaultRenderer(StudyActivity.class, new StudyActivityRenderer());
-		armsEpochsTable.autoSizeColumns();
+		
+		// use our own column resizer
+		armsEpochsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		EnhancedTableHeader tableHeader = new EnhancedTableHeader(armsEpochsTable.getColumnModel(), armsEpochsTable);
+		tableHeader.setMaxColWidth(1000);
+		armsEpochsTable.setTableHeader(tableHeader);
+		tableHeader.autoSizeColumns();
+		
+		// disable reordering and resizing of columns
+		tableHeader.setReorderingAllowed(false);
+		tableHeader.setResizingAllowed(false);
+
+		// create a scrollpane that only scrolls horizontally
+		JScrollPane tableScrollPane = new JScrollPane(armsEpochsTable);
+		tableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+
+		// fit the viewport to the contents
 		armsEpochsTable.setPreferredScrollableViewportSize(armsEpochsTable.getPreferredSize());
 		
-		JScrollPane tableScrollPane = new JScrollPane(armsEpochsTable);
 		builder.add(tableScrollPane, cc.xy(1,1));
 		return builder.getPanel();
 	}
