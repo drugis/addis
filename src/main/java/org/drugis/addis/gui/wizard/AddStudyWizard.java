@@ -70,6 +70,7 @@ import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultFormatter;
@@ -471,7 +472,10 @@ public class AddStudyWizard extends Wizard {
 			armsEpochsTable.getTableHeader().setReorderingAllowed(false);
 			armsEpochsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			armsEpochsTable.setDropMode(DropMode.ON);
-			armsEpochsTable.setTransferHandler(new TransferHandler() {
+			
+			
+			
+			TransferHandler transferHandler = new TransferHandler() {
 				public boolean canImport(TransferSupport support) {
 	                if (!support.isDrop()) {
 	                    return false;
@@ -479,11 +483,16 @@ public class AddStudyWizard extends Wizard {
 	                if (!support.isDataFlavorSupported(s_studyActivityFlavor)) {
 	                    return false;
 	                }
-					JTable.DropLocation dl = (JTable.DropLocation)support.getDropLocation();
-					if (dl.getColumn() <= 0) {
-						return false;
-					}
-	                return true;
+	                if (support.getDropLocation() instanceof JTable.DropLocation) { // drop to table cell
+						JTable.DropLocation dl = (JTable.DropLocation)support.getDropLocation();
+						return dl.getColumn() > 0;
+	                }
+	                if (support.getDropLocation() instanceof TransferHandler.DropLocation) { // drop to table header
+	                	TransferHandler.DropLocation dl = (TransferHandler.DropLocation)support.getDropLocation();
+	                	int idx = armsEpochsTable.getTableHeader().getColumnModel().getColumnIndexAtX(dl.getDropPoint().x);
+	                	return idx > 0;
+	                }
+	                return false;
 	            }
 
 				public boolean importData(TransferSupport support) {
@@ -501,10 +510,14 @@ public class AddStudyWizard extends Wizard {
 		            }
 
 					JTable.DropLocation dl = (JTable.DropLocation)support.getDropLocation();
+					// TODO: handle drop to header
 	            	d_tableModel.setValueAt(data, dl.getRow(), dl.getColumn());
 		            return true;
 		        }
-			});
+			};
+			
+			armsEpochsTable.setTransferHandler(transferHandler);
+			armsEpochsTable.getTableHeader().setTransferHandler(transferHandler);
 			armsEpochsTable.setDefaultRenderer(StudyActivity.class, new DefaultTableCellRenderer() {
 				@Override
 				public Component getTableCellRendererComponent(JTable table, Object value,
