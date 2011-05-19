@@ -17,7 +17,9 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
-1.5: User interface improvements, risk-based sampling in MetaBR, new
+1.7: Input study design (time structure)
+
+1.6: User interface improvements, risk-based sampling in MetaBR, new
    schema-based XML format, added note taking in study wizard.
 
 1.4: Lynd & O'Brien benefit-risk analysis, corrected meta-analysis,
