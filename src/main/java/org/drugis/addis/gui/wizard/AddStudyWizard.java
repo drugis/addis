@@ -464,7 +464,10 @@ public class AddStudyWizard extends Wizard {
 			d_tableModel = new StudyActivitiesTableModel(d_pm.getNewStudyPM().getBean());
 
 			final JTable armsEpochsTable = new JTable(d_tableModel);
-
+			armsEpochsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			for (int i = 0 ; i < armsEpochsTable.getColumnCount(); i++) {
+				armsEpochsTable.getColumnModel().getColumn(i).setMinWidth(100);
+			}
 			armsEpochsTable.getTableHeader().setReorderingAllowed(false);
 			armsEpochsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			armsEpochsTable.setDropMode(DropMode.ON);
