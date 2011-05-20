@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.drugis.common.EqualsUtil;
+
 import scala.actors.threadpool.Arrays;
 
 public class FrequencyMeasurement extends BasicMeasurement {
@@ -65,12 +67,16 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	private void updateSampleSize() {
 		int size = 0;
 		for (String cat : d_categories) {
-			size += getFrequencies().get(cat).intValue();
+			if (getFrequencies().get(cat) == null) {
+				setSampleSize(null);
+				return;
+			}
+			size += getFrequencies().get(cat);
 		}
 		setSampleSize(size);
 	}
 
-	public void setFrequency(String category, int freq) throws IllegalArgumentException {
+	public void setFrequency(String category, Integer freq) throws IllegalArgumentException {
 		checkCategory(category);
 		Map<String, Integer> oldfreq = new HashMap<String,Integer>(getFrequencies());
 		getFrequencies().put(category, freq);
@@ -78,9 +84,9 @@ public class FrequencyMeasurement extends BasicMeasurement {
 		firePropertyChange(PROPERTY_FREQUENCIES, oldfreq, getFrequencies());
 	}
 	
-	public int getFrequency(String category) throws IllegalArgumentException {
+	public Integer getFrequency(String category) throws IllegalArgumentException {
 		checkCategory(category);
-		return getFrequencies().get(category).intValue();
+		return getFrequencies().get(category);
 	}
 
 	private void checkCategory(String category) {
@@ -115,7 +121,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 			if (!ret.equals("")) {
 				ret += " / ";
 			}
-			ret += cat + " = " + getFrequencies().get(cat).intValue();
+			ret += cat + " = " + getFrequencies().get(cat);
 		}
 		return ret;
 	}
@@ -143,7 +149,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 			return false;
 		}
 		for (String key : frequencies.keySet()) {
-			if (frequencies.get(key).intValue() != frequencies2.get(key).intValue()) {
+			if (! EqualsUtil.equal(frequencies.get(key), frequencies2.get(key))) {
 				return false;
 			}
 		}

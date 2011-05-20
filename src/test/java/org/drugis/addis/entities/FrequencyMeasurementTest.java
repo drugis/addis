@@ -58,7 +58,7 @@ public class FrequencyMeasurementTest {
 	@Test
 	public void testSetFrequency() {
 		d_meas.setFrequency(d_cv.getCategories()[0], 5);
-		assertEquals(5, d_meas.getFrequency(d_cv.getCategories()[0]));
+		assertEquals(new Integer(5), d_meas.getFrequency(d_cv.getCategories()[0]));
 	}
 	
 	@Test
@@ -104,11 +104,11 @@ public class FrequencyMeasurementTest {
 		d_meas.setFrequency(d_cv.getCategories()[0], 25);		
 		FrequencyMeasurement m = d_meas.clone();
 		assertArrayEquals(d_meas.getCategories(), m.getCategories());
-		assertEquals(25, m.getFrequency(d_cv.getCategories()[0]));
-		assertEquals(0, m.getFrequency(d_cv.getCategories()[1]));		
+		assertEquals(new Integer(25), m.getFrequency(d_cv.getCategories()[0]));
+		assertEquals(new Integer(0), m.getFrequency(d_cv.getCategories()[1]));		
 		
 		d_meas.setFrequency(d_cv.getCategories()[0], 50);
-		assertEquals(25, m.getFrequency(d_cv.getCategories()[0]));		
+		assertEquals(new Integer(25), m.getFrequency(d_cv.getCategories()[0]));		
 	}
 	
 	@Test
@@ -137,12 +137,12 @@ public class FrequencyMeasurementTest {
 		d_meas.setFrequency(d_cv.getCategories()[1], 20);
 	
 		m.add(d_meas);
-		assertEquals(25, m.getFrequency(d_cv.getCategories()[0]));
-		assertEquals(20, m.getFrequency(d_cv.getCategories()[1]));
+		assertEquals(new Integer(25), m.getFrequency(d_cv.getCategories()[0]));
+		assertEquals(new Integer(20), m.getFrequency(d_cv.getCategories()[1]));
 		
 		m.add(d_meas);
-		assertEquals(50, m.getFrequency(d_cv.getCategories()[0]));
-		assertEquals(40, m.getFrequency(d_cv.getCategories()[1]));
+		assertEquals(new Integer(50), m.getFrequency(d_cv.getCategories()[0]));
+		assertEquals(new Integer(40), m.getFrequency(d_cv.getCategories()[1]));
 	}
 	
 	@Test

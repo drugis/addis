@@ -24,12 +24,15 @@
 
 package org.drugis.addis.gui;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
-import javax.swing.text.DefaultFormatter;
+import javax.swing.JFormattedTextField.AbstractFormatter;
+import javax.swing.text.DefaultFormatterFactory;
 
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
@@ -40,9 +43,11 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.presentation.FrequencyMeasurementPresentation;
+import org.drugis.addis.util.MissingValueFormat;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.beans.PropertyConnector;
+import com.jgoodies.binding.value.ConverterFactory;
 import com.jgoodies.binding.value.ValueModel;
 
 public class MeasurementInputHelper {
@@ -69,21 +74,24 @@ public class MeasurementInputHelper {
 		throw new IllegalStateException("Unhandled measurement type");
 	}
 
-	public static JTextField[] getComponents(BasicMeasurement m) {
+	public static JTextField[] getComponents(BasicMeasurement m, ValueModel enabledModel) {
+		DoubleFormatter doubleFormatter = new DoubleFormatter(); 
+		IntegerFormatter intFormatter = new IntegerFormatter();
 		if (m instanceof BasicContinuousMeasurement) {
 			PresentationModel<BasicContinuousMeasurement> model = 
 				new PresentationModel<BasicContinuousMeasurement>((BasicContinuousMeasurement)m);
+			
 			return new JTextField[] {
-				MeasurementInputHelper.buildFormatted(model.getModel(BasicContinuousMeasurement.PROPERTY_MEAN)),
-				MeasurementInputHelper.buildFormatted(model.getModel(BasicContinuousMeasurement.PROPERTY_STDDEV)),
-				MeasurementInputHelper.buildFormatted(model.getModel(BasicContinuousMeasurement.PROPERTY_SAMPLESIZE))
+				MeasurementInputHelper.buildFormatted(model.getModel(BasicContinuousMeasurement.PROPERTY_MEAN), enabledModel, doubleFormatter),
+				MeasurementInputHelper.buildFormatted(model.getModel(BasicContinuousMeasurement.PROPERTY_STDDEV), enabledModel,doubleFormatter),
+				MeasurementInputHelper.buildFormatted(model.getModel(BasicContinuousMeasurement.PROPERTY_SAMPLESIZE), enabledModel, intFormatter)
 			};
 		} else if (m instanceof BasicRateMeasurement) {
 			PresentationModel<BasicRateMeasurement> model = 
 				new PresentationModel<BasicRateMeasurement>((BasicRateMeasurement)m);
 			return new JTextField[] {
-				MeasurementInputHelper.buildFormatted(model.getModel(BasicRateMeasurement.PROPERTY_RATE)),
-				MeasurementInputHelper.buildFormatted(model.getModel(BasicRateMeasurement.PROPERTY_SAMPLESIZE))
+				MeasurementInputHelper.buildFormatted(model.getModel(BasicRateMeasurement.PROPERTY_RATE), enabledModel, intFormatter),
+				MeasurementInputHelper.buildFormatted(model.getModel(BasicRateMeasurement.PROPERTY_SAMPLESIZE), enabledModel, intFormatter)
 			};
 			
 		} else if (m instanceof FrequencyMeasurement) {
@@ -91,20 +99,54 @@ public class MeasurementInputHelper {
 			FrequencyMeasurement fm = (FrequencyMeasurement) m;
 			FrequencyMeasurementPresentation model = new FrequencyMeasurementPresentation(fm);
 			for (String cat : fm.getCategories()) {
-				comps.add(MeasurementInputHelper.buildFormatted(model.getFrequencyModel(cat)));
+				comps.add(MeasurementInputHelper.buildFormatted(model.getFrequencyModel(cat), enabledModel, intFormatter));
 			}
 			return comps.toArray(new JTextField[]{});
 		}
 		throw new IllegalStateException("Unhandled Measurement sub-type");
 	}
+	
+	private static class IntegerFormatter extends AbstractFormatter {
+		private static final long serialVersionUID = -3955737227956551845L;
+		private final MissingValueFormat d_format;
 
-	public static JFormattedTextField buildFormatted(ValueModel model) {
-		DefaultFormatter formatter = new DefaultFormatter();
-		formatter.setCommitsOnValidEdit(true);
-		JFormattedTextField field = new JFormattedTextField(formatter);
+		public IntegerFormatter(){
+			d_format = new MissingValueFormat(NumberFormat.getIntegerInstance());
+		}
+		@Override
+		public Object stringToValue(String text) throws ParseException {
+			Object value = d_format.parseObject(text);
+			return value == null ? null : ((Number)value).intValue();
+		}
+		@Override
+		public String valueToString(Object value) throws ParseException {
+			return d_format.format(value);
+		}
+	}
+	
+	private static class DoubleFormatter extends AbstractFormatter {
+		private static final long serialVersionUID = -3955737227956551845L;
+		private final MissingValueFormat d_format;
+
+		public DoubleFormatter(){
+			d_format = new MissingValueFormat(NumberFormat.getNumberInstance());
+		}
+		@Override
+		public Object stringToValue(String text) throws ParseException {
+			Object value = d_format.parseObject(text);
+			return value == null ? null : ((Number)value).doubleValue();
+		}
+		@Override
+		public String valueToString(Object value) throws ParseException {
+			return d_format.format(value);
+		}
+	}
+
+	public static JFormattedTextField buildFormatted(ValueModel model, ValueModel enabledModel, AbstractFormatter formatter) {
+		JFormattedTextField field = new JFormattedTextField(new DefaultFormatterFactory(formatter, formatter, formatter, formatter));
 		PropertyConnector.connectAndUpdate(model, field, "value");
+		PropertyConnector.connectAndUpdate(ConverterFactory.createBooleanNegator(enabledModel), field, "enabled");
 		field.setColumns(5);
 		return field;
 	}
-
 }

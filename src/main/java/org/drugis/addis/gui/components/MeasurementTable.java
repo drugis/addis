@@ -27,6 +27,7 @@ package org.drugis.addis.gui.components;
 import java.awt.FlowLayout;
 import java.awt.Window;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,6 +36,10 @@ import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.gui.MeasurementInputHelper;
+
+import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.value.ValueHolder;
+import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class MeasurementTable extends JTableWithPopupEditor {
@@ -67,16 +72,16 @@ public class MeasurementTable extends JTableWithPopupEditor {
 		if (col < 1) {
 			return null;
 		}
-		
 		return createPanel((BasicMeasurement)getModel().getValueAt(row, col));
 	}
 
 	private JPanel createPanel(BasicMeasurement m) {
-		JPanel panel = new JPanel();
-		panel.setLayout(new FlowLayout());
-		
+		JPanel panel = new JPanel(new FlowLayout());
 		String[] h = MeasurementInputHelper.getHeaders(m);
-		JComponent[] c = MeasurementInputHelper.getComponents(m);
+		ValueModel enabledModel = new ValueHolder(false);
+		JCheckBox checkBox = BasicComponentFactory.createCheckBox(enabledModel, "Missing");
+		JComponent[] c = MeasurementInputHelper.getComponents(m, enabledModel);
+		panel.add(checkBox);
 		for (int i = 0; i < h.length; ++i) {
 			panel.add(new JLabel(h[i]));
 			panel.add(c[i]);

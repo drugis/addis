@@ -55,10 +55,14 @@ public class FrequencyMeasurementPresentation extends PresentationModel<Frequenc
 		}
 
 		public void setValue(Object newValue) {
-			if (newValue instanceof Integer)
+			System.out.println(newValue); 
+			if (newValue instanceof Integer) {
 				getBean().setFrequency(d_cat, (Integer)newValue);
-			else
+			} else if (newValue == null) {
+				getBean().setFrequency(d_cat, null);
+			} else {
 				throw new IllegalArgumentException("Can only set frequencies with an Integer");
+			}
 		}
 	}
 	
