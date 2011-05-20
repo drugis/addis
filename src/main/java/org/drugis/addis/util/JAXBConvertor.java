@@ -749,7 +749,7 @@ public class JAXBConvertor {
 		if(m.getRateMeasurement() != null) {
 			return new BasicRateMeasurement(m.getRateMeasurement().getRate(), m.getRateMeasurement().getSampleSize());
 		}
-		if(m.getContinuousMeasurement() != null) {
+		if(m.getContinuousMeasurement() != null) {			
 			return new BasicContinuousMeasurement(
 					m.getContinuousMeasurement().getMean(), 
 					m.getContinuousMeasurement().getStdDev(),

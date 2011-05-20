@@ -34,7 +34,7 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 		super(0);
 	}
 	
-	public BasicRateMeasurement(int rate, int size) {
+	public BasicRateMeasurement(Integer rate, Integer size) {
 		super(size);
 		d_rate = rate;
 	}

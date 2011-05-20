@@ -30,7 +30,7 @@ import java.util.Set;
 public abstract class BasicMeasurement extends AbstractEntity implements Measurement {
 	protected Integer d_sampleSize;
 
-	public BasicMeasurement(int size) {
+	public BasicMeasurement(Integer size) {
 		d_sampleSize = size;
 	}
 
