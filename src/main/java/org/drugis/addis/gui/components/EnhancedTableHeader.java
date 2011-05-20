@@ -63,11 +63,15 @@ public class EnhancedTableHeader extends JTableHeader {
 		if (column.getHeaderValue() != null) {
 			renderer = column.getHeaderRenderer();
 			if (renderer == null) {
-				renderer = table.getTableHeader().getDefaultRenderer();
+				if(table.getTableHeader() != null) {
+					renderer = table.getTableHeader().getDefaultRenderer();
+				}
 			}
-			Object value = column.getHeaderValue();
-			component = renderer.getTableCellRendererComponent(table, value, false, false, -1, columnIndex);
-			requiredWidth = component.getPreferredSize().width + PADDING;
+			if (renderer != null) {
+				Object value = column.getHeaderValue();
+				component = renderer.getTableCellRendererComponent(table, value, false, false, -1, columnIndex);
+				requiredWidth = component.getPreferredSize().width + PADDING;
+			}
 		}
 		for (int rowIndex = 0; rowIndex < rows; rowIndex++) {
 			renderer = table.getCellRenderer(rowIndex, columnIndex);
