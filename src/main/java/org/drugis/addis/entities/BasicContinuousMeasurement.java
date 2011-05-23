@@ -98,7 +98,7 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	}
 	
 	@Override
-	public Measurement clone() {
+	public BasicMeasurement clone() {
 		return new BasicContinuousMeasurement(d_mean, d_stdDev, d_sampleSize);
 	}
 }

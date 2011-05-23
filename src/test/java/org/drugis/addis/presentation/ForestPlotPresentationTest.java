@@ -33,7 +33,6 @@ import java.util.List;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
-import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
@@ -63,8 +62,8 @@ public class ForestPlotPresentationTest {
 	private static final int s_baseSize = 41;
 	
 	private ForestPlotPresentation d_pm;
-	private ContinuousMeasurement d_mBase1;
-	private ContinuousMeasurement d_mSubj1;
+	private BasicContinuousMeasurement d_mBase1;
+	private BasicContinuousMeasurement d_mSubj1;
 	private BasicContinuousMeasurement d_mBase2;
 	private BasicContinuousMeasurement d_mSubj2;
 	private Study d_s2;

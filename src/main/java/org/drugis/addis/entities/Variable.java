@@ -77,7 +77,7 @@ public interface Variable extends Entity, Comparable<Variable>, TypeWithName {
 	 * @param size Default group size
 	 * @return An appropriate type of Measurement.
 	 */
-	public Measurement buildMeasurement(int size);
+	public BasicMeasurement buildMeasurement(int size);
 	
 	public void setType(Type val);
 

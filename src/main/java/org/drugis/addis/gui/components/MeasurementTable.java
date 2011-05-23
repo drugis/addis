@@ -34,15 +34,14 @@ import javax.swing.JPanel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
-import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.gui.MeasurementInputHelper;
+import org.drugis.addis.presentation.wizard.MissingMeasurementPresentation;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.value.ValueHolder;
-import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class MeasurementTable extends JTableWithPopupEditor {
+
 	/**
 	 * Uneditable measurement table.
 	 * @param tableModel
@@ -72,15 +71,14 @@ public class MeasurementTable extends JTableWithPopupEditor {
 		if (col < 1) {
 			return null;
 		}
-		return createPanel((BasicMeasurement)getModel().getValueAt(row, col));
+		return createPanel((MissingMeasurementPresentation)getValueAt(row, col));
 	}
 
-	private JPanel createPanel(BasicMeasurement m) {
+	private JPanel createPanel(MissingMeasurementPresentation mmp) {
 		JPanel panel = new JPanel(new FlowLayout());
-		String[] h = MeasurementInputHelper.getHeaders(m);
-		ValueModel enabledModel = new ValueHolder(false);
-		JCheckBox checkBox = BasicComponentFactory.createCheckBox(enabledModel, "Missing");
-		JComponent[] c = MeasurementInputHelper.getComponents(m, enabledModel);
+		String[] h = MeasurementInputHelper.getHeaders(mmp.getMeasurement());
+		JCheckBox checkBox = BasicComponentFactory.createCheckBox(mmp.getMissingModel(), "Missing");
+		JComponent[] c = MeasurementInputHelper.getComponents(mmp);
 		panel.add(checkBox);
 		for (int i = 0; i < h.length; ++i) {
 			panel.add(new JLabel(h[i]));

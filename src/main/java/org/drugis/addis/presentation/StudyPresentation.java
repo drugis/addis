@@ -224,14 +224,14 @@ public class StudyPresentation extends PresentationModel<Study> {
 	}
 
 	public TableModel getEndpointTableModel() {
-		return new StudyMeasurementTableModel(getBean(), d_pmf, Endpoint.class);
+		return new StudyMeasurementTableModel(getBean(), d_pmf, Endpoint.class, false);
 	}
 	
 	public TableModel getAdverseEventTableModel() {
-		return new StudyMeasurementTableModel(getBean(), d_pmf, AdverseEvent.class);
+		return new StudyMeasurementTableModel(getBean(), d_pmf, AdverseEvent.class, false);
 	}
 
-	public void initializeDefaultMeasurements() {
-		getBean().initializeDefaultMeasurements();
-	}
+//	public void initializeDefaultMeasurements() {
+//		getBean().initializeDefaultMeasurements();
+//	}
 }

@@ -61,6 +61,7 @@ import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
+import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
@@ -76,7 +77,6 @@ import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.PopulationCharacteristic;
@@ -806,7 +806,7 @@ public class JAXBConvertorTest {
 		list.add(buildContinuousMeasurement(null, pcName, cm1, "Main phase"));
 		
 		
-		Map<MeasurementKey, Measurement> expected = new HashMap<MeasurementKey, Measurement>();
+		Map<MeasurementKey, BasicMeasurement> expected = new HashMap<MeasurementKey, BasicMeasurement>();
 		expected.put(new MeasurementKey(ep, arm5), crm1);
 		expected.put(new MeasurementKey(ep, arm8), crm2);
 		expected.put(new MeasurementKey(ae, arm5), crm2);

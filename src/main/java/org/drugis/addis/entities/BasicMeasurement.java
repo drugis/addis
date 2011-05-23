@@ -50,5 +50,5 @@ public abstract class BasicMeasurement extends AbstractEntity implements Measure
 	}
 	
 	@Override
-	public abstract Measurement clone();
+	public abstract BasicMeasurement clone();
 }

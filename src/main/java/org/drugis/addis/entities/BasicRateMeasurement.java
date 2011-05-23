@@ -81,7 +81,7 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 	}
 	
 	@Override
-	public Measurement clone() {
+	public BasicMeasurement clone() {
 		return new BasicRateMeasurement(d_rate, d_sampleSize);
 	}
 	

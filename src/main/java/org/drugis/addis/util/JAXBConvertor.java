@@ -55,6 +55,7 @@ import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
+import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
@@ -745,7 +746,7 @@ public class JAXBConvertor {
 	}
 
 	
-	public static Measurement convertMeasurement(org.drugis.addis.entities.data.Measurement m) throws ConversionException {
+	public static BasicMeasurement convertMeasurement(org.drugis.addis.entities.data.Measurement m) throws ConversionException {
 		if(m.getRateMeasurement() != null) {
 			return new BasicRateMeasurement(m.getRateMeasurement().getRate(), m.getRateMeasurement().getSampleSize());
 		}
@@ -814,9 +815,9 @@ public class JAXBConvertor {
 		measurement.setWhenTaken(whenTaken);
 	}
 	
-	public static Map<MeasurementKey, Measurement> convertMeasurements(Measurements measurements, List<Arm> arms, Map<String, org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> outcomeMeasures) 
+	public static Map<MeasurementKey, BasicMeasurement> convertMeasurements(Measurements measurements, List<Arm> arms, Map<String, org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> outcomeMeasures) 
 	throws ConversionException {
-		Map<MeasurementKey, Measurement> map = new HashMap<MeasurementKey, Measurement>();
+		Map<MeasurementKey, BasicMeasurement> map = new HashMap<MeasurementKey, BasicMeasurement>();
 		for(org.drugis.addis.entities.data.Measurement m : measurements.getMeasurement()) {
 			String omId = m.getStudyOutcomeMeasure().getId();
 			Arm arm = m.getArm() != null ? findArm(m.getArm().getName(), arms) : null;
@@ -825,7 +826,7 @@ public class JAXBConvertor {
 		return map;
 	}
 	
-	public static Measurements convertMeasurements(Map<MeasurementKey, Measurement> map, List<Arm> arms, String defaultEpochName, Map<String, Study.StudyOutcomeMeasure<?>> oms) throws ConversionException {
+	public static Measurements convertMeasurements(Map<MeasurementKey, BasicMeasurement> map, List<Arm> arms, String defaultEpochName, Map<String, Study.StudyOutcomeMeasure<?>> oms) throws ConversionException {
 		Measurements measurements = new Measurements();
 		for (Entry<String, Study.StudyOutcomeMeasure<?>> omEntry : oms.entrySet()) {
 			for (Arm a: arms) {
@@ -837,7 +838,7 @@ public class JAXBConvertor {
 	}
 
 
-	private static void findAndAddMeasurement(Map<MeasurementKey, Measurement> source, Arm arm, String defaultEpochName, String omId, Variable om, Measurements target)
+	private static void findAndAddMeasurement(Map<MeasurementKey, BasicMeasurement> source, Arm arm, String defaultEpochName, String omId, Variable om, Measurements target)
 	throws ConversionException {
 		if (om instanceof OutcomeMeasure && arm == null) {
 			return;
@@ -883,8 +884,8 @@ public class JAXBConvertor {
 		CharacteristicsMap map = convertStudyCharacteristics(study.getCharacteristics());
 		newStudy.setCharacteristics(map);
 		
-		Map<MeasurementKey, Measurement> measurements = convertMeasurements(study.getMeasurements(), arms, outcomeMeasures);
-		for(Entry<MeasurementKey, Measurement> m : measurements.entrySet()) {
+		Map<MeasurementKey, BasicMeasurement> measurements = convertMeasurements(study.getMeasurements(), arms, outcomeMeasures);
+		for(Entry<MeasurementKey, BasicMeasurement> m : measurements.entrySet()) {
 			newStudy.setMeasurement(m.getKey(), m.getValue());
 		}
 		

@@ -49,15 +49,15 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		private Variable d_variable;
 		private Arm d_arm;
 
-		public MeasurementKey(Variable v, Arm g)  {
+		public MeasurementKey(Variable v, Arm a)  {
 			if (v == null) {
 				throw new NullPointerException("Variable may not be null");
 			}
-			if (v instanceof OutcomeMeasure && g == null) {
+			if (v instanceof OutcomeMeasure && a == null) {
 				throw new NullPointerException("Arm may not be null for Endpoints/ADEs");
 			}
 			d_variable = v;
-			d_arm = g;
+			d_arm = a;
 		}
 
 		public Variable getVariable() {
@@ -133,7 +133,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private ObservableList<Epoch> d_epochs = new ArrayListModel<Epoch>();
 	private ObservableList<StudyActivity> d_studyActivities = new ArrayListModel<StudyActivity>(); 
 
-	private RebuildableHashMap<MeasurementKey, Measurement> d_measurements = new RebuildableHashMap<MeasurementKey, Measurement>();
+	private RebuildableHashMap<MeasurementKey, BasicMeasurement> d_measurements = new RebuildableHashMap<MeasurementKey, BasicMeasurement>();
 	
 	public Study() {
 		d_indication = new ObjectWithNotes<Indication>(null);
@@ -184,8 +184,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return cm;
 	}
 
-	private Map<MeasurementKey, Measurement> cloneMeasurements(List<Arm> newArms) {
-		HashMap<MeasurementKey, Measurement> hashMap = new HashMap<MeasurementKey, Measurement>();
+	private Map<MeasurementKey, BasicMeasurement> cloneMeasurements(List<Arm> newArms) {
+		HashMap<MeasurementKey, BasicMeasurement> hashMap = new HashMap<MeasurementKey, BasicMeasurement>();
 		for(MeasurementKey key : d_measurements.keySet()) {
 			hashMap.put(fixKey(key, newArms), d_measurements.get(key).clone());
 		}
@@ -380,8 +380,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return getName().compareTo(other.getName());
 	}
 
-	public Measurement getMeasurement(Variable v, Arm g) {
-		return d_measurements.get(new MeasurementKey(v, g));
+	public BasicMeasurement getMeasurement(Variable v, Arm a) {
+		return d_measurements.get(new MeasurementKey(v, a));
 	}
 
 	public Measurement getMeasurement(Variable v) {
@@ -400,7 +400,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		}
 	}
 
-	public void setMeasurement(OutcomeMeasure e, Arm a, Measurement m) {
+	public void setMeasurement(OutcomeMeasure e, Arm a, BasicMeasurement m) {
 		forceLegalArguments(e, a, m);
 		d_measurements.put(new MeasurementKey(e, a), m);
 	}
@@ -411,7 +411,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	 * @param a
 	 * @param m
 	 */
-	public void setMeasurement(Variable v, Arm a, Measurement m) {
+	public void setMeasurement(Variable v, Arm a, BasicMeasurement m) {
 		forceLegalArguments(v, a, m);
 		d_measurements.put(new MeasurementKey(v, a), m);
 	}
@@ -421,7 +421,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	 * @param v
 	 * @param m
 	 */
-	public void setMeasurement(Variable v, Measurement m) {
+	public void setMeasurement(Variable v, BasicMeasurement m) {
 		forceLegalArguments(v, null, m);
 		setMeasurement(v, null, m);
 	}
@@ -553,36 +553,16 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		}
 	}
 
-
-	public void initializeDefaultMeasurements() {
-		// Add default measurements for all outcomes
-		for (OutcomeMeasure om : getOutcomeMeasures()) {
-			for (Arm a : getArms()) {
-				MeasurementKey key = new MeasurementKey(om, a);
-				if (d_measurements.get(key) == null) {
-					d_measurements.put(key, om.buildMeasurement(a.getSize()));
-				}
-			}
-		}
-		// Add measurements for all population characteristics
-		for (Variable v : getVariables(Variable.class)) {
-			MeasurementKey key = new MeasurementKey(v, null);
-			if (d_measurements.get(key) == null) {
-				d_measurements.put(key, v.buildMeasurement(getSampleSize()));
-			}
-			for (Arm g : getArms()) {
-				key = new MeasurementKey(v, g);
-				if (d_measurements.get(key) == null) {
-					d_measurements.put(key, v.buildMeasurement(g.getSize()));
-				}
-			}
-		}
-		// Remove orphan measurements
+	private void removeOrphanMeasurements() {
 		for (MeasurementKey k : new HashSet<MeasurementKey>(d_measurements.keySet())) {
 			if (orphanKey(k)) {
 				d_measurements.remove(k);
 			}
 		}
+	}
+
+	public BasicMeasurement buildDefaultMeasurement(Variable v, Arm a) {
+		return v.buildMeasurement(a == null ? getSampleSize() : a.getSize());
 	}
 
 	private boolean orphanKey(MeasurementKey k) {
@@ -623,15 +603,15 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		setEndpointsWithNotes(newVal);
 	}
 
-	public Map<MeasurementKey, Measurement> getMeasurements() {
+	public Map<MeasurementKey, BasicMeasurement> getMeasurements() {
 		return d_measurements;
 	}
 
-	private void setMeasurements(Map<MeasurementKey, Measurement> m) {
-		d_measurements = new RebuildableHashMap<MeasurementKey, Measurement>(m);
+	private void setMeasurements(Map<MeasurementKey, BasicMeasurement> m) {
+		d_measurements = new RebuildableHashMap<MeasurementKey, BasicMeasurement>(m);
 	}
 
-	public void setMeasurement(MeasurementKey key, Measurement value) {
+	public void setMeasurement(MeasurementKey key, BasicMeasurement value) {
 		d_measurements.put(key, value);
 	}
 

@@ -30,16 +30,24 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.FrequencyMeasurement;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Variable;
+import org.drugis.addis.presentation.wizard.MissingMeasurementPresentation;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +57,8 @@ public class MeasurementTableModelTest {
 	private Study d_standardStudy;
 	private PresentationModelFactory d_pmf;
 	private StudyMeasurementTableModel d_model;
+	private PopulationCharTableModel d_popcharTablemodel;
+	private Study d_popcharStudy;
 	
 	@Before
 	public void setUp() {
@@ -56,37 +66,79 @@ public class MeasurementTableModelTest {
 		ExampleData.initDefaultData(domain);
 		d_pmf = new PresentationModelFactory(domain);
 		d_standardStudy = ExampleData.buildStudyDeWilde();
-		d_model = new StudyMeasurementTableModel(d_standardStudy, d_pmf, Endpoint.class);
+		d_model = new StudyMeasurementTableModel(d_standardStudy, d_pmf, Endpoint.class, false);
+		
+		// init for specific PopulationCharacteristic tests
+		List<PopulationCharacteristic> chars = new ArrayList<PopulationCharacteristic>();
+		chars.add(ExampleData.buildGenderVariable());
+		chars.add(ExampleData.buildAgeVariable());
+		d_popcharStudy = ExampleData.buildStudyDeWilde().clone();
+		d_popcharStudy.setPopulationCharacteristics(chars);
+		d_popcharTablemodel = new PopulationCharTableModel(d_popcharStudy, d_pmf);
 	}
 		
 	@Test
 	public void testGetColumnCount() {
 		assertEquals(d_standardStudy.getArms().size() + 1, d_model.getColumnCount());
 	}
+	
+	@Test
+	public void testGetPopcharColumnCount() {
+		assertEquals(d_popcharStudy.getArms().size() + 2, d_popcharTablemodel.getColumnCount());
+	}
 
 	@Test
 	public void testGetRowCount() {
 		assertEquals(d_standardStudy.getEndpoints().size(), d_model.getRowCount());
 	}
+	
+	@Test
+	public void testGetPopcharRowCount() {
+		assertEquals(d_popcharStudy.getVariables(Variable.class).size(), d_popcharTablemodel.getRowCount());
+	}
 
 	@Test
 	public void testGetValueAt() {
-		
 		int index = 0;
-		for (OutcomeMeasure m : d_standardStudy.getOutcomeMeasures()) {
-			if (m instanceof Endpoint) {
-				Endpoint e = (Endpoint) m;
-				assertEquals(e.getName(), d_model.getValueAt(index, 0));
-				index++;
-			}
+		for (Variable v : d_standardStudy.getEndpoints()) {
+			assertEquals(v.getName(), d_model.getValueAt(index, 0));
+			
+			presentMeasurementCorrectlyBound(v, d_standardStudy.getArms().get(0), (MissingMeasurementPresentation)d_model.getValueAt(index, 1));
+			presentMeasurementCorrectlyBound(v, d_standardStudy.getArms().get(1), (MissingMeasurementPresentation)d_model.getValueAt(index, 2));
+			index++;
 		}
-		
-		assertEquals(
-				d_standardStudy.getMeasurement(
-					d_standardStudy.getOutcomeMeasures().get(0),
-					d_standardStudy.getArms().get(0)),
-				d_model.getValueAt(0, 1));
 	}
+	
+	@Test
+	public void testPopcharGetValueAt() {
+		int index = 0;
+		for (Variable v : d_popcharStudy.getVariables(Variable.class)) {
+			assertEquals(v.getName(), d_popcharTablemodel.getValueAt(index, 0));
+			
+			missingMeasurementCorrectlyBound(v, d_popcharStudy.getArms().get(0), (MissingMeasurementPresentation)d_popcharTablemodel.getValueAt(index, 1));
+			missingMeasurementCorrectlyBound(v, d_popcharStudy.getArms().get(1), (MissingMeasurementPresentation)d_popcharTablemodel.getValueAt(index, 2));
+			missingMeasurementCorrectlyBound(v, null, (MissingMeasurementPresentation)d_popcharTablemodel.getValueAt(index, 3));
+			index++;
+		}
+	}
+	
+	private void missingMeasurementCorrectlyBound(Variable v, Arm a, MissingMeasurementPresentation mmp) {
+		assertEquals(Boolean.TRUE, mmp.getMissingModel().getValue());
+		mmp.getMissingModel().setValue(false);
+		assertSame(mmp.getMeasurement(), d_popcharStudy.getMeasurement(v, a));
+		mmp.getMissingModel().setValue(true);
+		assertEquals(null, d_popcharStudy.getMeasurement(v, a));
+	}
+	
+	
+	private void presentMeasurementCorrectlyBound(Variable v, Arm a, MissingMeasurementPresentation mmp) {
+		assertEquals(Boolean.FALSE, mmp.getMissingModel().getValue());
+		assertSame(mmp.getMeasurement(), d_standardStudy.getMeasurement(v, a));
+		mmp.getMissingModel().setValue(true);
+		assertEquals(null, d_standardStudy.getMeasurement(v, a));
+		assertEquals(Boolean.TRUE, mmp.getMissingModel().getValue());
+		mmp.getMissingModel().setValue(false);
+	}	
 	
 	@Test
 	public void testGetColumnName() {
@@ -99,9 +151,20 @@ public class MeasurementTableModelTest {
 	}
 	
 	@Test
+	public void testGetPopcharColumnName() {
+		assertEquals("Population characteristic", d_popcharTablemodel.getColumnName(0));
+		for (int i = 0; i < d_popcharStudy.getArms().size(); i++) {
+			String exp = d_pmf.getLabeledModel(d_popcharStudy.getArms().get(i)).getLabelModel().getString();
+			String cname= d_popcharTablemodel.getColumnName(i + 1);
+			assertEquals(exp, cname);
+		}
+		assertEquals("Overall", d_popcharTablemodel.getColumnName(3));
+	}
+	
+	@Test
 	public void testIsCellEditable() {
-		for (int i=0;i<d_model.getRowCount();i++) {
-			for (int j=0;j<d_model.getColumnCount();j++) {
+		for (int i = 0; i < d_model.getRowCount(); i++) {
+			for (int j = 0; j < d_model.getColumnCount(); j++) {
 				assertFalse(d_model.isCellEditable(i, j));				
 			}
 		}
@@ -121,6 +184,25 @@ public class MeasurementTableModelTest {
 				d_standardStudy.getArms().get(0));
 		meas.setSampleSize(667);
 		meas.setRate(666);
+		verify(mock);
+	}
+	
+	@Test 
+	public void testTotalPopcharMeasurementsChangesFireTableDataChanged() {
+		((MissingMeasurementPresentation)d_popcharTablemodel.getValueAt(0, d_popcharTablemodel.getColumnCount()-1)).getMissingModel().setValue(false);
+		TableModelListener mock = createMock(TableModelListener.class);
+		d_popcharTablemodel.addTableModelListener(mock);		
+		mock.tableChanged((TableModelEvent)JUnitUtil.eqEventObject(new TableModelEvent(d_popcharTablemodel)));
+		expectLastCall().times(3);
+		
+		replay(mock);
+		
+		FrequencyMeasurement meas = (FrequencyMeasurement) d_popcharStudy.getMeasurement(
+				d_popcharStudy.getPopulationCharacteristics().get(0));
+		// 1 tableupdate
+		meas.setSampleSize(667);
+		// 2 tableupdates
+		meas.setFrequency("Male", 50);
 		verify(mock);
 	}	
 }

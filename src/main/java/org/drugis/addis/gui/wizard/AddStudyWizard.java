@@ -620,16 +620,13 @@ public class AddStudyWizard extends Wizard {
 		private OutcomeMeasurementsModel d_model;
 		private JDialog d_dialog;
 		private MeasurementTable d_table;
-		private AddStudyWizardPresentation d_pm;
 		
 		public SetMeasurementsWizardStep(AddStudyWizardPresentation pm, String title, String description,
 				OutcomeMeasurementsModel model, JDialog dialog) {
 			super(title, description);
 			d_model = model;
 			d_dialog = dialog;
-			d_pm = pm;
-			if (d_pm.isEditing())
-				setComplete(true);
+			setComplete(true);
 		} 
 		
 		@Override
