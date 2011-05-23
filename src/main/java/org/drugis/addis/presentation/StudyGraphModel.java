@@ -84,12 +84,14 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	
 	protected ListHolder<Drug> d_drugs;
 	private ListHolder<Study> d_studies;
+	private final ValueHolder<OutcomeMeasure> d_om;
 	
-	public StudyGraphModel(ListHolder<Study> studies, ListHolder<Drug> drugs){
+	public StudyGraphModel(ListHolder<Study> studies, ListHolder<Drug> drugs, ValueHolder<OutcomeMeasure> om){
 		super(Edge.class);
 		
 		d_drugs = drugs;
-		d_studies = studies;	
+		d_studies = studies;
+		d_om = om;	
 		
 		resetGraph();
 		
@@ -104,7 +106,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	
 	public StudyGraphModel(ValueHolder<Indication> indication, ValueHolder<OutcomeMeasure> outcome, 
 			ListHolder<Drug> drugs, Domain domain) {
-		this(new DomainStudyListHolder(domain, indication, outcome), drugs);
+		this(new DomainStudyListHolder(domain, indication, outcome), drugs, outcome);
 	}
 	
 	public void resetGraph() {
@@ -170,10 +172,10 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		return filter(a, d_studies.getValue());
 	}
 
-	private List<Study> filter(Drug a, List<Study> allStudies) {
+	private List<Study> filter(Drug d, List<Study> allStudies) {
 		List<Study> studies = new ArrayList<Study>();
 		for (Study s : allStudies) {
-			if (s.getDrugs().contains(a)) {
+			if (s.getMeasuredDrugs(d_om.getValue()).contains(d)) {
 				studies.add(s);
 			}
 		}

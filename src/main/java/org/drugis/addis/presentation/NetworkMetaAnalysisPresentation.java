@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -99,7 +100,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 
 	public StudyGraphModel getStudyGraphModel() {
 		return new StudyGraphModel(new DefaultListHolder<Study>(getBean().getIncludedStudies()),
-				new DefaultListHolder<Drug>(getBean().getIncludedDrugs()));
+				new DefaultListHolder<Drug>(getBean().getIncludedDrugs()), new UnmodifiableHolder<OutcomeMeasure>(getBean().getOutcomeMeasure()));
 	}
 
 	public CategoryDataset getRankProbabilityDataset() {

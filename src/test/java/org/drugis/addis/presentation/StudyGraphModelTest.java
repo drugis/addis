@@ -206,7 +206,7 @@ public class StudyGraphModelTest {
 		AbstractListHolder<Drug> drugListHolder = new DefaultListHolder<Drug>(d_drugs);
 		AbstractListHolder<Study> studyListHolder = new DefaultListHolder<Study>(new ArrayList<Study>());
 		
-		d_pm = new StudyGraphModel(studyListHolder, drugListHolder);
+		d_pm = new StudyGraphModel(studyListHolder, drugListHolder, new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()));
 		assertEquals(3, d_pm.vertexSet().size());
 		assertTrue(d_pm.edgeSet().isEmpty());
 		

@@ -58,10 +58,10 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	private StudyGraphModel d_selectedStudyGraph;
 	private ValueHolder<Boolean> d_studySelectionCompleteModel;
 
-	public NetworkMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmm) {
-		super(d, pmm);
+	public NetworkMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmf) {
+		super(d, pmf);
 		d_selectedStudyGraph = new StudyGraphModel(getSelectedStudiesModel(), 
-				getSelectedDrugsModel()); // FIXME: Use BuildStudyGraphPresentation, don't create multiple copies.
+				getSelectedDrugsModel(), getOutcomeMeasureModel()); // FIXME: Use BuildStudyGraphPresentation, don't create multiple copies.
 		d_studyGraphPresentationModel.getSelectedDrugsModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
 				updateArmHolders();
