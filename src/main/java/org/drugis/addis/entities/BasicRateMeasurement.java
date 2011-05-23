@@ -84,4 +84,9 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 		return new BasicRateMeasurement(d_rate, d_sampleSize);
 	}
 	
+	@Override
+	public boolean isComplete() {
+		return super.isComplete() && d_rate != null;
+	}
+	
 }

@@ -51,4 +51,9 @@ public abstract class BasicMeasurement extends AbstractEntity implements Measure
 	
 	@Override
 	public abstract BasicMeasurement clone();
+	
+	@Override
+	public boolean isComplete() {
+		return d_sampleSize != null;
+	}
 }

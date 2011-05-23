@@ -25,7 +25,9 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -61,6 +63,17 @@ public class BasicContinuousMeasurementTest {
 		assertEquals("0.0 \u00B1 0.0 (1)", m.toString());
 		BasicContinuousMeasurement m2 = new BasicContinuousMeasurement(null, null, 5);
 		assertEquals("N/A \u00B1 N/A (5)", m2.toString());
+	}
+	
+	@Test
+	public void testIsComplete() {
+		assertTrue(getMeasurement().isComplete());
+		BasicContinuousMeasurement m1 = new BasicContinuousMeasurement(0.0, 0.0, null);
+		assertFalse(m1.isComplete());
+		BasicContinuousMeasurement m2 = new BasicContinuousMeasurement(0.0, null, 100);
+		assertFalse(m2.isComplete());
+		BasicContinuousMeasurement m4 = new BasicContinuousMeasurement(null, 0.0, 100);
+		assertFalse(m4.isComplete());
 	}
 	
 	@Test

@@ -553,6 +553,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		}
 	}
 
+	// FIXME: use in arms/outcomeMeasures listeners
 	private void removeOrphanMeasurements() {
 		for (MeasurementKey k : new HashSet<MeasurementKey>(d_measurements.keySet())) {
 			if (orphanKey(k)) {
@@ -756,6 +757,52 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 
 	public void rehashMeasurements() {
 		d_measurements.rebuild();
+	}
+
+	/**
+	 * @return The Drugs that have at least one Arm with a complete measurement for the Variable v.
+	 */
+	public Set<Drug> getMeasuredDrugs(Variable v) {
+		Set<Drug> drugs = new HashSet<Drug>();
+		for (Drug d : getDrugs()) {
+			if (isMeasured(v, d)) {
+				drugs.add(d);
+			}
+		}
+		return drugs;
+	}
+	
+	public List<Arm> getMeasuredArms(Variable v, Drug d) {
+		List<Arm> arms = new ArrayList<Arm>();
+		for (Arm a : getArms(d)) {
+			if (isMeasured(v, a)) {
+				arms.add(a);
+			}
+		}
+		return arms;
+	}
+
+	private boolean isMeasured(Variable v, Drug d) {
+		for (Arm a : getArms(d)) {
+			if (isMeasured(v, a)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isMeasured(Variable v, Arm a) {
+		return getMeasurement(v, a) != null && getMeasurement(v, a).isComplete();
+	}
+
+	private List<Arm> getArms(Drug d) {
+		List<Arm> arms = new ArrayList<Arm>();
+		for (Arm a : getArms()) {
+			if (getDrug(a).equals(d)) {
+				arms.add(a);
+			}
+		}
+		return arms;
 	}
 
 }

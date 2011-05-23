@@ -103,4 +103,10 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	public BasicMeasurement clone() {
 		return new BasicContinuousMeasurement(d_mean, d_stdDev, d_sampleSize);
 	}
+	
+	@Override
+	public boolean isComplete() {
+		return super.isComplete() && d_stdDev != null && d_mean != null;
+	}
+	
 }

@@ -35,4 +35,9 @@ public interface Measurement extends Observable, Entity {
 	public boolean isOfType(Variable.Type type);
 
 	public Measurement clone();
+	
+	/**
+	 * @return true if all required fields are filled in.
+	 */
+	public abstract boolean isComplete();
 }

@@ -26,6 +26,7 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -60,6 +61,15 @@ public class BasicRateMeasurementTest {
 		d_measurement.setRate(10);
 		d_measurement.setSampleSize(null);
 		assertEquals("10 / N/A", d_measurement.toString());
+	}
+	
+	@Test
+	public void testIsComplete() {
+		assertTrue(d_measurement.isComplete());
+		BasicRateMeasurement m1 = new BasicRateMeasurement(0, null);
+		assertFalse(m1.isComplete());
+		BasicRateMeasurement m2 = new BasicRateMeasurement(null, 5);
+		assertFalse(m2.isComplete());
 	}
 	
 	@Test

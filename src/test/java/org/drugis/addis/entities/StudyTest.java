@@ -530,4 +530,32 @@ public class StudyTest {
 		d_clone.getArms().get(0).getNotes().add(note);
 		assertTrue(d_orig.getArms().get(0).getNotes().isEmpty());
 	}
+	
+	@Test
+	public void testMeasuredDrugs() {
+		assertEquals(d_clone.getDrugs(), d_clone.getMeasuredDrugs(ExampleData.buildEndpointHamd()));
+		assertEquals(Collections.emptySet(), d_clone.getMeasuredDrugs(ExampleData.buildAdverseEventConvulsion()));
+		BasicRateMeasurement m = new BasicRateMeasurement(null, 100);
+		d_clone.setMeasurement(ExampleData.buildAdverseEventConvulsion(), d_clone.getArms().get(0), m);
+		assertEquals(Collections.emptySet(), d_clone.getMeasuredDrugs(ExampleData.buildAdverseEventConvulsion()));
+		m.setRate(20);
+		Drug d = d_clone.getDrug(d_clone.getArms().get(0));
+		assertEquals(Collections.singleton(d), d_clone.getMeasuredDrugs(ExampleData.buildAdverseEventConvulsion()));
+	}
+	
+	@Test
+	public void testMeasuredArms() {
+		Arm a1 = d_clone.getArms().get(0);
+		Drug d1 = d_clone.getDrug(a1);
+		assertEquals(Collections.singletonList(a1), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), d1));
+		Arm a2 = d_clone.getArms().get(1);
+		Drug d2 = d_clone.getDrug(a2);
+		assertEquals(Collections.singletonList(a2), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), d2));
+	
+		assertEquals(Collections.emptyList(), d_clone.getMeasuredArms(ExampleData.buildAdverseEventConvulsion(), d1));
+		
+		d_clone.createAndAddArm("Bla", 100, d1, new FixedDose());
+		assertEquals(Collections.singletonList(a1), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), d1));
+
+	}
 }
