@@ -26,6 +26,8 @@ package org.drugis.addis.entities;
 
 import java.text.DecimalFormat;
 
+import org.drugis.common.EqualsUtil;
+
 
 public class BasicContinuousMeasurement extends BasicMeasurement implements ContinuousMeasurement {
 	private Double d_mean;
@@ -69,14 +71,14 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	
 	@Override
 	public String toString() {
-		if (d_mean == null || d_stdDev == null || d_sampleSize == null) {
-			return "INCOMPLETE"; 
-		}
-		
 		DecimalFormat df = new DecimalFormat("##0.0##");
-		return df.format(d_mean) + " \u00B1 " + df.format(d_stdDev) + " (" + d_sampleSize + ")";
+		return conditionalFormat(df, d_mean) + " \u00B1 " + conditionalFormat(df, d_stdDev) + " (" + (d_sampleSize == null ? "N/A" : d_sampleSize) + ")";
 	}
 
+	public String conditionalFormat(DecimalFormat df, Double mean) {
+		return (mean == null ? "N/A" : df.format(mean));
+	}
+	
 	public boolean isOfType(Variable.Type type) {
 		return type.equals(Variable.Type.CONTINUOUS);
 	}
@@ -85,9 +87,9 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	public boolean equals(Object o) {
 		if (o instanceof BasicContinuousMeasurement) {
 			BasicContinuousMeasurement other = (BasicContinuousMeasurement) o;
-			return d_sampleSize.equals(other.d_sampleSize) && 
-				d_mean.equals(other.d_mean) &&
-				d_stdDev.equals(other.d_stdDev);
+			return EqualsUtil.equal(d_sampleSize, other.d_sampleSize) && 
+				EqualsUtil.equal(d_mean, other.d_mean) &&
+				EqualsUtil.equal(d_stdDev, other.d_stdDev);
 		}
 		return false;
 	}

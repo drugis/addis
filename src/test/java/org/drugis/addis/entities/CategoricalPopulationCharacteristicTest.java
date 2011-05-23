@@ -60,7 +60,7 @@ public class CategoricalPopulationCharacteristicTest {
 		Measurement m = d_gender.buildMeasurement();
 		assertTrue(m instanceof FrequencyMeasurement);
 		assertArrayEquals(d_gender.getCategories(), ((FrequencyMeasurement)m).getCategories());
-		assertEquals(new Integer(0), m.getSampleSize());
+		assertEquals(null, m.getSampleSize());
 	}
 	
 	@Test

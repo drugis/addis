@@ -59,6 +59,8 @@ public class BasicContinuousMeasurementTest {
 	public void testToString() {
 		BasicContinuousMeasurement m = getMeasurement();
 		assertEquals("0.0 \u00B1 0.0 (1)", m.toString());
+		BasicContinuousMeasurement m2 = new BasicContinuousMeasurement(null, null, 5);
+		assertEquals("N/A \u00B1 N/A (5)", m2.toString());
 	}
 	
 	@Test

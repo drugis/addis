@@ -55,7 +55,6 @@ public class FrequencyMeasurementPresentation extends PresentationModel<Frequenc
 		}
 
 		public void setValue(Object newValue) {
-			System.out.println(newValue); 
 			if (newValue instanceof Integer) {
 				getBean().setFrequency(d_cat, (Integer)newValue);
 			} else if (newValue == null) {

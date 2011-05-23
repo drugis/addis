@@ -40,14 +40,14 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	public static final String PROPERTY_FREQUENCIES = "frequencies";
 	
 	private FrequencyMeasurement() {
-		super(0);
+		super(null);
 	}
 	
 	public FrequencyMeasurement(CategoricalPopulationCharacteristic cv) {
-		super(0);
+		super(null);
 		d_categories = cv.getCategories();
 		for (String cat : cv.getCategories()) {
-			getFrequencies().put(cat, new Integer(0));
+			getFrequencies().put(cat, null);
 		}
 	}
 	
@@ -55,7 +55,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	 * @param map Note: defensively copied. 
 	 */
 	public FrequencyMeasurement(String[] categories, Map<String, Integer> map) {
-		super(0);
+		super(null);
 		d_categories = categories;
 		d_frequencies = new HashMap<String, Integer>();
 		for (String cat : d_categories) {
@@ -101,7 +101,11 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	
 	public void add(FrequencyMeasurement other) {
 		for (String cat : d_categories) {
-			setFrequency(cat, getFrequency(cat) + other.getFrequency(cat));
+			if (getFrequency(cat) == null || other.getFrequency(cat) == null) {
+				setFrequency(cat, null);
+			} else {
+				setFrequency(cat, getFrequency(cat) + other.getFrequency(cat));
+			}
 		}
 	}
 		
@@ -121,7 +125,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 			if (!ret.equals("")) {
 				ret += " / ";
 			}
-			ret += cat + " = " + getFrequencies().get(cat);
+			ret += cat + " = " + (getFrequencies().get(cat) == null ? "N/A" : getFrequencies().get(cat));
 		}
 		return ret;
 	}
@@ -149,7 +153,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 			return false;
 		}
 		for (String key : frequencies.keySet()) {
-			if (! EqualsUtil.equal(frequencies.get(key), frequencies2.get(key))) {
+			if (!EqualsUtil.equal(frequencies.get(key), frequencies2.get(key))) {
 				return false;
 			}
 		}

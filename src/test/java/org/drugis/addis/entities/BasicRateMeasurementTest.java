@@ -54,7 +54,12 @@ public class BasicRateMeasurementTest {
 	
 	@Test
 	public void testToString() {
-		assertEquals("67/101", d_measurement.toString());
+		assertEquals("67 / 101", d_measurement.toString());
+		d_measurement.setRate(null);
+		assertEquals("N/A / 101", d_measurement.toString());
+		d_measurement.setRate(10);
+		d_measurement.setSampleSize(null);
+		assertEquals("10 / N/A", d_measurement.toString());
 	}
 	
 	@Test

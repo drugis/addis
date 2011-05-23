@@ -24,6 +24,8 @@
 
 package org.drugis.addis.entities;
 
+import org.drugis.common.EqualsUtil;
+
 
 
 public class BasicRateMeasurement extends BasicMeasurement implements RateMeasurement {
@@ -45,10 +47,7 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 
 	@Override
 	public String toString() {
-		if (d_rate == null || getSampleSize() == null) {
-			return "INCOMPLETE";
-		}
-		return d_rate.toString() + "/" + getSampleSize().toString();
+		return (d_rate == null ? "N/A" : d_rate.toString()) + " / " + (getSampleSize() == null ? "N/A" : getSampleSize().toString());
 	}
 	
 	public void setRate(Integer rate) {
@@ -69,8 +68,8 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 	public boolean equals(Object o) {
 		if (o instanceof BasicRateMeasurement) {
 			BasicRateMeasurement other = (BasicRateMeasurement) o;
-			return d_sampleSize.equals(other.d_sampleSize) &&
-				d_rate.equals(other.d_rate);
+			return EqualsUtil.equal(d_sampleSize, other.d_sampleSize) &&
+				EqualsUtil.equal(d_rate, other.d_rate);
 		}
 		return false;
 	}

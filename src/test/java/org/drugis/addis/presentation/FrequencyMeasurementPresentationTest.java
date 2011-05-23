@@ -52,7 +52,7 @@ public class FrequencyMeasurementPresentationTest {
 	
 	@Test
 	public void testGetLabel() {
-		assertEquals("Male = 0 / Female = 0", d_pm.getLabelModel().getValue());
+		assertEquals("Male = N/A / Female = N/A", d_pm.getLabelModel().getValue());
 	}
 	
 	@Test
@@ -60,7 +60,7 @@ public class FrequencyMeasurementPresentationTest {
 		AbstractValueModel lm = d_pm.getLabelModel();
 		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
 		PropertyChangeEvent event = new PropertyChangeEvent(
-				lm, "value", null, "Male = 1 / Female = 0");
+				lm, "value", null, "Male = 1 / Female = N/A");
 		mock.propertyChange(JUnitUtil.eqPropertyChangeEvent(event));
 		expectLastCall().anyTimes();
 		replay(mock);
@@ -75,7 +75,7 @@ public class FrequencyMeasurementPresentationTest {
 		AbstractValueModel lm = d_pm.getLabelModel();
 		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
 		PropertyChangeEvent event = new PropertyChangeEvent(
-				lm, "value", null, "Male = 0 / Female = 100");
+				lm, "value", null, "Male = N/A / Female = 100");
 		mock.propertyChange(JUnitUtil.eqPropertyChangeEvent(event));
 		expectLastCall().anyTimes();
 		replay(mock);

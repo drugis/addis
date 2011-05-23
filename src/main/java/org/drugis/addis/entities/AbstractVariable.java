@@ -101,9 +101,9 @@ public abstract class AbstractVariable extends AbstractNamedEntity<Variable> imp
 	public BasicMeasurement buildMeasurement(int size) {
 		switch (getType()) {
 		case CONTINUOUS:
-			return new BasicContinuousMeasurement(0.0, 0.0, size);
+			return new BasicContinuousMeasurement(null, null, size);
 		case RATE:
-			return new BasicRateMeasurement(0, size);
+			return new BasicRateMeasurement(null, size);
 		default:
 			throw new IllegalStateException("Not all enum cases covered");
 		}
