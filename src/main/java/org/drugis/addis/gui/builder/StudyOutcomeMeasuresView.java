@@ -47,6 +47,7 @@ import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.NoteViewButton;
 import org.drugis.addis.gui.RelativeEffectTableDialog;
 import org.drugis.addis.gui.components.EnhancedTable;
+import org.drugis.addis.gui.components.MeasurementCellRenderer;
 import org.drugis.addis.presentation.MeanDifferenceTableModel;
 import org.drugis.addis.presentation.OddsRatioTableModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -55,6 +56,7 @@ import org.drugis.addis.presentation.RiskDifferenceTableModel;
 import org.drugis.addis.presentation.RiskRatioTableModel;
 import org.drugis.addis.presentation.StandardisedMeanDifferenceTableModel;
 import org.drugis.addis.presentation.StudyPresentation;
+import org.drugis.addis.presentation.wizard.MissingMeasurementPresentation;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -136,6 +138,7 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 				measurementTable = new EnhancedTable(d_model.getPopulationCharTableModel());
 			}
 			measurementTable.setSortingStatus(0, TableSorter.ASCENDING);
+			measurementTable.setDefaultRenderer(MissingMeasurementPresentation.class, new MeasurementCellRenderer());
 
 			builder.add(AuxComponentFactory.createUnscrollableTablePanel(measurementTable),
 					cc.xyw(1, row, 5));

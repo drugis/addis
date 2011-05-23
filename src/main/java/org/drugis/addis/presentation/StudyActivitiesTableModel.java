@@ -22,7 +22,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui.wizard;
+package org.drugis.addis.presentation;
 
 import javax.swing.table.AbstractTableModel;
 

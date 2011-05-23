@@ -37,7 +37,7 @@ import javax.swing.table.TableModel;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.gui.components.EnhancedTableHeader;
-import org.drugis.addis.gui.wizard.StudyActivitiesTableModel;
+import org.drugis.addis.presentation.StudyActivitiesTableModel;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.common.gui.ViewBuilder;
 

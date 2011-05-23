@@ -48,4 +48,8 @@ public class MissingMeasurementPresentation {
 	public ValueModel getMissingModel() {
 		return d_missingModel;
 	}
+
+	public String getDescription() {
+		return d_missingModel.getValue().equals(Boolean.TRUE) ? "MISSING" : d_m.toString();
+	}
 }

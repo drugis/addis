@@ -58,6 +58,15 @@ public class StudyMeasurementTableModel extends AbstractTableModel {
 		initTable();
 	}
 
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
+		if(isArmColumn(columnIndex)) {
+			return String.class;
+		} else {
+			return MissingMeasurementPresentation.class;
+		}
+	}
+	
 	private void initTable() {
 		for (Arm a : d_study.getArms()) {
 			initVariables(a);

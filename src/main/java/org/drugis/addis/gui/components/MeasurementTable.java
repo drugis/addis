@@ -58,6 +58,8 @@ public class MeasurementTable extends JTableWithPopupEditor {
 	public MeasurementTable(TableModel tableModel, Window parent) {
 		super(tableModel, parent);
 
+		setDefaultRenderer(MissingMeasurementPresentation.class, new MeasurementCellRenderer());
+
 		setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
 		TableColumn column = null;
 		for (int i = 0; i < getModel().getColumnCount(); i++) {

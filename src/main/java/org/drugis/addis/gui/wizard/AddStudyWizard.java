@@ -107,6 +107,7 @@ import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.components.NotesView;
 import org.drugis.addis.imports.PubMedIDRetriever;
 import org.drugis.addis.presentation.EpochDurationPresentation;
+import org.drugis.addis.presentation.StudyActivitiesTableModel;
 import org.drugis.addis.presentation.wizard.AddArmsPresentation;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
