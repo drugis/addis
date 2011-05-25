@@ -146,8 +146,12 @@ public class JAXBConvertor {
 	
 	@SuppressWarnings("serial")
 	public static class ConversionException extends Exception {
-		public ConversionException(String s) {
-			super(s);
+		public ConversionException(String msg) {
+			super(msg);
+		}
+		
+		public ConversionException(String msg, Throwable cause) {
+			super(msg, cause);
 		}
 	}
 	
@@ -396,16 +400,14 @@ public class JAXBConvertor {
 		return newStudyActivity;
 	}
 	
-	private static UsedBy convertUsedBy(ActivityUsedBy aub, Study s) {
-		Arm a = s.findArm(aub.getArm());
-		Epoch e = s.findEpoch(aub.getEpoch());
-		if(a == null || e == null) {
-			System.out.println(s);
-			System.out.println(s.getArms());
-			System.out.println(s.getEpochs());
-			System.out.println(aub);
+	private static UsedBy convertUsedBy(ActivityUsedBy aub, Study s) throws ConversionException {
+		try {
+			Arm a = findArm(aub.getArm(), s);
+			Epoch e = findEpoch(aub.getEpoch(), s);
+			return new UsedBy(a, e);
+		} catch (ConversionException e) {
+			throw new ConversionException("Could not parse activities in study \"" + s + "\"", e);
 		}
-		return new UsedBy(a, e);
 	}
 
 	static Activity convertActivity(org.drugis.addis.entities.data.Activity activity, Domain domain) throws ConversionException {
@@ -1098,14 +1100,27 @@ public class JAXBConvertor {
 		
 		return nma; 
 	}
+	
+	static Epoch findEpoch(String name, Study study) throws ConversionException {
+		for (Epoch epoch : study.getEpochs()) {
+			if (epoch.getName().equals(name)) {
+				return epoch;
+			}
+		}
+		throw new ConversionException("Undefined epoch name \"" + name + "\"");
+	}
+	
+	static Arm findArm(String name, Study study) throws ConversionException {
+		return findArm(name, study.getArms());
+	}
 
-	static Arm findArm(String name, List<Arm> arms) {
+	static Arm findArm(String name, List<Arm> arms) throws ConversionException {
 		for (Arm arm : arms) {
 			if (arm.getName().equals(name)) {
 				return arm;
 			}
 		}
-		return null;
+		throw new ConversionException("Undefined arm name \"" + name + "\"");
 	}
 
 	private static org.drugis.addis.entities.OutcomeMeasure findOutcomeMeasure(Domain domain, 

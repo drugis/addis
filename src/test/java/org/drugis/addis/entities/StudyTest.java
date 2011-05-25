@@ -495,7 +495,7 @@ public class StudyTest {
 	public void testCloneReturnsDistinctMeasurements() {
 		assertFalse(d_orig.getMeasurements() == d_clone.getMeasurements());
 		for (MeasurementKey key : d_orig.getMeasurements().keySet()) {
-			assertFalse(d_orig.getMeasurements().get(key) == d_clone.getMeasurements().get(key));
+			assertNotSame(d_orig.getMeasurements().get(key), d_clone.getMeasurements().get(key));
 		}
 	}
 	
