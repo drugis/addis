@@ -84,6 +84,7 @@ public class AddStudyWizardPresentation {
 
 		@Override
 		protected void renameDetected() {
+			System.out.println("Rename detected");
 			// rebuild usedBy sets
 			for (StudyActivity act : getNewStudy().getStudyActivities()) {
 				act.rebuildUsedBy();
@@ -202,7 +203,7 @@ public class AddStudyWizardPresentation {
 		d_populationCharsListHolder = d_domain.getPopulationCharacteristicsHolder();
 		d_endpointSelect = new SelectEndpointPresentation(d_endpointListHolder, d_mainWindow);
 		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_adverseEventListHolder, d_mainWindow);
-		d_populationCharSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder,d_mainWindow);
+		d_populationCharSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder, d_mainWindow);
 		d_arms = new AddArmsPresentation(new ArrayListModel<Arm>(), "Arm", 2);
 		new RebuildIndicesMonitor<Arm>(d_arms); // registers itself as listener to d_arms
 		d_epochs = new AddEpochsPresentation(new ArrayListModel<Epoch>(), "Epoch", 1);
@@ -219,7 +220,6 @@ public class AddStudyWizardPresentation {
 		getAddEpochsModel().setList(getEpochs());
 		
 		ListDataListener removeOrphansListener = new ListDataListener() {
-			
 			public void intervalRemoved(ListDataEvent e) {
 				deleteOrphanUsedBys();
 			}

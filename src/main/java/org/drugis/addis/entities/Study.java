@@ -162,10 +162,24 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		}
 
 		for(StudyActivity sa: getStudyActivities()) {
-			newStudy.getStudyActivities().add(sa.clone());
+			newStudy.getStudyActivities().add(cloneStudyActivity(sa, newStudy.getArms(), newStudy.getEpochs()));
 		}
 		
 		return newStudy;
+	}
+
+	private StudyActivity cloneStudyActivity(StudyActivity sa, ObservableList<Arm> newArms, ObservableList<Epoch> newEpochs) {
+		StudyActivity newSA = sa.clone();
+		Set<UsedBy> newUsedBys = new HashSet<UsedBy>();
+		for(UsedBy ub: sa.getUsedBy()) {
+			newUsedBys.add(fixUsedBy(ub, newArms, newEpochs));
+		}
+		newSA.setUsedBy(newUsedBys);
+		return newSA;
+	}
+
+	private UsedBy fixUsedBy(UsedBy ub, ObservableList<Arm> newArms, ObservableList<Epoch> newEpochs) {
+		return new UsedBy(newArms.get(newArms.indexOf(ub.getArm())), newEpochs.get(newEpochs.indexOf(ub.getEpoch()))) ;
 	}
 
 	private <T extends Variable> List<StudyOutcomeMeasure<T>> cloneStudyOutcomeMeasures(List<StudyOutcomeMeasure<T>> soms) {

@@ -25,7 +25,6 @@
 package org.drugis.addis.entities;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.drugis.addis.util.EntityUtil;
@@ -150,7 +149,7 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 	@Override
 	public StudyActivity clone() {
 		StudyActivity cloned = new StudyActivity(getName(), cloneActivity());
-		cloned.setUsedBy(new HashSet<UsedBy>(getUsedBy()));
+		cloned.setUsedBy(getUsedBy()); // setUsedBy already copies the set, and UsedBy do not need cloning because they are immutable
 		cloned.d_notes.addAll(d_notes);
 		return cloned;
 	}

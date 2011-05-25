@@ -51,7 +51,6 @@ abstract public class RenameMonitor<T extends TypeWithName> {
 		}
 	};
 	private PropertyChangeListener d_itemListener = new PropertyChangeListener() {
-		
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equals(TypeWithName.PROPERTY_NAME)) {
 				renameDetected();

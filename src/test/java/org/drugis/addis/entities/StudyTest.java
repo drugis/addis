@@ -28,6 +28,8 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
@@ -503,6 +505,19 @@ public class StudyTest {
 		d_clone.setDrug(arm, ExampleData.buildDrugViagra());
 		assertEquals(d_orig.getMeasurement(d_orig.getEndpoints().get(0), d_orig.getArms().get(1)),
 				d_clone.getMeasurement(d_clone.getEndpoints().get(0), arm));
+	}
+	
+	@Test
+	public void testClonedUsedBysReferToClonedArmAndEpoch() {
+		assertSame(d_orig.getArms().get(0), d_orig.getStudyActivities().get(0).getUsedBy().iterator().next().getArm());
+		assertEquals(d_orig.getArms().get(0), d_clone.getStudyActivities().get(0).getUsedBy().iterator().next().getArm());
+		assertNotSame(d_orig.getArms().get(0), d_clone.getStudyActivities().get(0).getUsedBy().iterator().next().getArm());
+		assertSame(d_clone.getArms().get(0), d_clone.getStudyActivities().get(0).getUsedBy().iterator().next().getArm());
+		
+		assertSame(d_orig.getEpochs().get(0), d_orig.getStudyActivities().get(0).getUsedBy().iterator().next().getEpoch());
+		assertEquals(d_orig.getEpochs().get(0), d_clone.getStudyActivities().get(0).getUsedBy().iterator().next().getEpoch());
+		assertNotSame(d_orig.getEpochs().get(0), d_clone.getStudyActivities().get(0).getUsedBy().iterator().next().getEpoch());
+		assertSame(d_clone.getEpochs().get(0), d_clone.getStudyActivities().get(0).getUsedBy().iterator().next().getEpoch());
 	}
 	
 	@Test
