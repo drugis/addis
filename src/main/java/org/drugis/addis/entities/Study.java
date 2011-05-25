@@ -384,7 +384,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return d_measurements.get(new MeasurementKey(v, a));
 	}
 
-	public Measurement getMeasurement(Variable v) {
+	public BasicMeasurement getMeasurement(Variable v) {
 		return getMeasurement(v, null);
 	}
 

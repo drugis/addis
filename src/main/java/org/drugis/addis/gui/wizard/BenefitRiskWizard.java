@@ -172,7 +172,7 @@ public class BenefitRiskWizard extends Wizard {
 		
 		@Override
 		public void prepare() {
-			this.removeAll();
+			removeAll();
 			add(buildPanel());
 			Bindings.bind(this, "complete", d_pm.getCompleteModel());
 		}
@@ -224,11 +224,10 @@ public class BenefitRiskWizard extends Wizard {
 			CellConstraints cc = new CellConstraints();
 			
 			JLabel outcomeMeasuresLabel = new JLabel("Criteria");
-			outcomeMeasuresLabel.setFont(
-				outcomeMeasuresLabel.getFont().deriveFont(Font.BOLD));
+			outcomeMeasuresLabel.setFont(outcomeMeasuresLabel.getFont().deriveFont(Font.BOLD));
 			builder.add(outcomeMeasuresLabel, cc.xy(1, 1));
 			int row = 1;
-			for(OutcomeMeasure out : d_pm.getStudyModel().getValue().getOutcomeMeasures()){
+			for (OutcomeMeasure out : d_pm.getStudyModel().getValue().getOutcomeMeasures()) {
 				// Add outcome measure checkbox
 				row += 2;
 				LayoutUtil.addRow(layout);
@@ -254,11 +253,11 @@ public class BenefitRiskWizard extends Wizard {
 			builder.add(alternativesLabel, cc.xy(1, 1));
 			
 			int row = 1;
-			for(Arm a : d_pm.getStudyModel().getValue().getArms() ){
+			for(final Arm a : d_pm.getStudyModel().getValue().getArms() ){
 				LayoutUtil.addRow(layout);
 
-				ValueHolder<Boolean> selectedModel = d_pm.getAlternativeSelectedModel(a);
-				ValueHolder<Boolean> enabledModel  = d_pm.getAlternativeEnabledModel(a);
+				final ValueHolder<Boolean> selectedModel = d_pm.getAlternativeSelectedModel(a);
+				final ValueHolder<Boolean> enabledModel  = d_pm.getAlternativeEnabledModel(a);
 				
 				JCheckBox armCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(a.toString(), enabledModel, selectedModel);				
 				builder.add(armCheckbox, cc.xy(1, row += 2));

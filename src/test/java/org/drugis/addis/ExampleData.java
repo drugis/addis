@@ -636,12 +636,9 @@ public class ExampleData {
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
 		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, 1);
 		study.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, BasicStudyCharacteristic.Allocation.RANDOMIZED);
-		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION,
-				"");
-		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION,
-				"");
-		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
-				"");
+		study.setCharacteristic(BasicStudyCharacteristic.INCLUSION, "");
+		study.setCharacteristic(BasicStudyCharacteristic.EXCLUSION, "");
+		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, "");
 		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		
 		// Sertraline data
