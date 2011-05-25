@@ -395,14 +395,14 @@
 		<xs:attribute name="name" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="StudyActivities">
-		<xs:sequence maxOccurs="unbounded">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="studyActivity" type="StudyActivity"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="StudyActivity">
 		<xs:sequence>
 			<xs:element name="activity" type="Activity"/>
-			<xs:sequence maxOccurs="unbounded">
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="usedBy" type="ActivityUsedBy"/>
 			</xs:sequence>
 			<xs:element name="notes" type="Notes"/>

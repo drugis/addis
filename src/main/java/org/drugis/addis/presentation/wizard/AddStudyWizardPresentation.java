@@ -84,7 +84,6 @@ public class AddStudyWizardPresentation {
 
 		@Override
 		protected void renameDetected() {
-			System.out.println("Rename detected");
 			// rebuild usedBy sets
 			for (StudyActivity act : getNewStudy().getStudyActivities()) {
 				act.rebuildUsedBy();
