@@ -469,11 +469,9 @@ public class AddStudyWizard extends Wizard {
 			for (int i = 0 ; i < armsEpochsTable.getColumnCount(); i++) {
 				armsEpochsTable.getColumnModel().getColumn(i).setMinWidth(100);
 			}
-			armsEpochsTable.getTableHeader().setReorderingAllowed(false);
+			armsEpochsTable.getTableHeader().setReorderingAllowed(false);			
 			armsEpochsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			armsEpochsTable.setDropMode(DropMode.ON);
-			
-			
+			armsEpochsTable.setDropMode(DropMode.ON_OR_INSERT_COLS);
 			
 			TransferHandler transferHandler = new TransferHandler() {
 				public boolean canImport(TransferSupport support) {
@@ -484,18 +482,19 @@ public class AddStudyWizard extends Wizard {
 	                    return false;
 	                }
 	                if (support.getDropLocation() instanceof JTable.DropLocation) { // drop to table cell
-						JTable.DropLocation dl = (JTable.DropLocation)support.getDropLocation();
-						return dl.getColumn() > 0;
+						return ((JTable.DropLocation)support.getDropLocation()).getColumn() > 0;
 	                }
 	                if (support.getDropLocation() instanceof TransferHandler.DropLocation) { // drop to table header
-	                	TransferHandler.DropLocation dl = (TransferHandler.DropLocation)support.getDropLocation();
-	                	int idx = armsEpochsTable.getTableHeader().getColumnModel().getColumnIndexAtX(dl.getDropPoint().x);
-	                	return idx > 0;
+	                	return getHeaderColumnIndex(support.getDropLocation()) > 0;
 	                }
 	                return false;
 	            }
 
-				public boolean importData(TransferSupport support) {
+				private int getHeaderColumnIndex(TransferHandler.DropLocation dl) {
+					return armsEpochsTable.getTableHeader().getColumnModel().getColumnIndexAtX(dl.getDropPoint().x);
+				}
+
+				public boolean importData(TransferSupport support) {				
 					if (!canImport(support)) {
 					    return false;
 					}
@@ -508,11 +507,18 @@ public class AddStudyWizard extends Wizard {
 		            } catch (IOException e) {
 		                return false;
 		            }
-
-					JTable.DropLocation dl = (JTable.DropLocation)support.getDropLocation();
-					// TODO: handle drop to header
-	            	d_tableModel.setValueAt(data, dl.getRow(), dl.getColumn());
-		            return true;
+		            
+		            if (support.getDropLocation() instanceof JTable.DropLocation) { // drop to table cell
+						JTable.DropLocation dl = (JTable.DropLocation)support.getDropLocation();
+		            	d_tableModel.setValueAt(data, dl.getRow(), dl.getColumn());
+			            return true;()
+		            } else { // drop to table header
+		            	int columnIndex = getHeaderColumnIndex(support.getDropLocation());
+		            	for (int i = 0; i < armsEpochsTable.getRowCount(); i++) {
+		            		d_tableModel.setValueAt(data, i, columnIndex);
+		            	}
+		            	return true;
+		            }
 		        }
 			};
 			
