@@ -24,10 +24,15 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
@@ -37,6 +42,7 @@ import org.drugis.addis.entities.StudyCharacteristics;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.NoteViewButton;
 import org.drugis.addis.presentation.StudyPresentation;
+import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -68,9 +74,10 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		builder.add(idLabel,
 				cc.xyw(5, 1, fullWidth - 4));
 		
-		int row = 3;
+		int row = 1;
 		for (Characteristic c : StudyCharacteristics.values()) {
-			LayoutUtil.addRow(layout);
+			row = LayoutUtil.addRow(layout, row);
+
 			builder.addLabel(c.getDescription() + ":", cc.xy(1, row, "right, top"));
 			
 			if (c instanceof BasicStudyCharacteristic || c == DerivedStudyCharacteristic.INDICATION) {
@@ -84,12 +91,26 @@ public class StudyCharacteristicsView implements ViewBuilder {
 						cc.xy(3, row, "left, top"));
 			}
 			
-			JComponent charView = 
-				AuxComponentFactory.createCharacteristicView(d_model.getCharacteristicModel(c));
+			JComponent charView = AuxComponentFactory.createCharacteristicView(d_model.getCharacteristicModel(c));
 			builder.add(charView, cc.xyw(5, row, fullWidth - 4));
-
-			row += 2;
 		}
+		
+		row = LayoutUtil.addRow(layout, row);
+		builder.addSeparator("", cc.xyw(1, row, fullWidth));
+		
+		JButton d80Button = new JButton("View D80 Report", ImageLoader.getIcon(FileNames.ICON_FILE_NEW));
+		d80Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				D80ReportView view = new D80ReportView(d_parent);
+				view.setVisible(true);
+			}
+		});
+		
+		row = LayoutUtil.addRow(layout, row);
+		builder.add(d80Button, cc.xyw(1, row, 3));
+		builder.add(new JLabel("Description of D80 Report here"), cc.xy(5, row));
+		
 		return builder.getPanel();
 	}
 }

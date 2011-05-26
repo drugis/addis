@@ -511,7 +511,7 @@ public class AddStudyWizard extends Wizard {
 		            if (support.getDropLocation() instanceof JTable.DropLocation) { // drop to table cell
 						JTable.DropLocation dl = (JTable.DropLocation)support.getDropLocation();
 		            	d_tableModel.setValueAt(data, dl.getRow(), dl.getColumn());
-			            return true;()
+			            return true;
 		            } else { // drop to table header
 		            	int columnIndex = getHeaderColumnIndex(support.getDropLocation());
 		            	for (int i = 0; i < armsEpochsTable.getRowCount(); i++) {

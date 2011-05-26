@@ -61,7 +61,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 	private AddisWindow d_mainWindow;
 	
 	public AddStudyActivityDialog(JDialog parent, AddisWindow mainWindow, StudyActivityPresentation pm) {
-		super(parent);
+		super(parent, "Activity", false);
 		d_mainWindow = mainWindow;
 		d_pm = pm;
 		this.setMinimumSize(new Dimension(550, 280));
