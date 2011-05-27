@@ -36,24 +36,18 @@ public class D80ReportView extends JDialog {
 		builder.setDefaultDialogBorder();
 		
 		// Editor pane
-		
-		//String html = D80TableGenerator.getHtml();
-		
-		String html = "<html><table border='1'><tr><td>test</td></tr></table></html>";
-		
-		d_htmlPane = new JLabel(html);	
-		builder.add(d_htmlPane, cc.xy(1, 1));
-		
+		d_htmlPane = new JLabel(D80TableGenerator.getHtml());	
+		builder.add(d_htmlPane, cc.xy(1, 1));		
 		
 		// Buttons
-		
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.add(new JButton("Export table as html"));
 		buttonsPanel.add(new JButton("Copy table to clip board"));
-		builder.add(buttonsPanel, cc.xy(1, 2));
+		builder.add(buttonsPanel, cc.xy(1, 3));
 		
 		JScrollPane scrollPane = new JScrollPane(builder.getPanel());
 		scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
+		scrollPane.getVerticalScrollBar().setUnitIncrement(6);
 		add(scrollPane);
 	}
 }
