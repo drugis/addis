@@ -52,6 +52,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MockStudyBenefitRiskAnalysis;
@@ -170,17 +171,19 @@ public class ExampleData {
 	
 	public static Study buildStudyChouinardNoHamd() {
 		Study s = realBuildStudyChouinard();
-		List<Endpoint> endpoints = s.getEndpoints();
+		List<Endpoint> endpoints = Study.extractVariables(s.getEndpoints());
 		endpoints.remove(buildEndpointHamd());
-		s.setEndpoints(endpoints);
+		s.getEndpoints().clear();
+		s.getEndpoints().addAll(Study.wrapVariables(endpoints));
 		return s;
 	}
 
 	private static Study realBuildStudyChouinard() {
 		Study study = new Study("Chouinard et al, 1999", buildIndicationDepression());
-		study.setEndpoints(new ArrayList<Endpoint>(
-				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
-		study.addAdverseEvent(buildAdverseEventConvulsion());
+		study.getEndpoints().clear();
+		study.getEndpoints().addAll(Study.wrapVariables(new ArrayList<Endpoint>(
+						Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()}))));
+		study.getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(buildAdverseEventConvulsion()));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -275,8 +278,10 @@ public class ExampleData {
 		Endpoint hamd = buildEndpointHamd();
 		Drug fluoxetine = buildDrugFluoxetine();
 		Study study = new Study("De Wilde et al, 1993", buildIndicationDepression());
-		study.setEndpoints(Collections.singletonList(hamd));
-		study.setAdverseEvents(Collections.singletonList(buildAdverseEventConvulsion()));
+		study.getEndpoints().clear();
+		study.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(hamd)));
+		study.getAdverseEvents().clear();
+		study.getAdverseEvents().addAll(Study.wrapVariables(Collections.singletonList(buildAdverseEventConvulsion())));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -335,7 +340,8 @@ public class ExampleData {
 		Endpoint hamd = buildEndpointHamd();
 		Drug fluoxetine = buildDrugFluoxetine();
 		Study study = new Study("MultipleArms, 1993", buildIndicationDepression());
-		study.setEndpoints(Collections.singletonList(hamd));
+		study.getEndpoints().clear();
+		study.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(hamd)));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -395,8 +401,9 @@ public class ExampleData {
 
 	private static Study realBuildStudyBurke() {
 		Study study = new Study("Burke et al, 2002", buildIndicationDepression());
-		study.setEndpoints(new ArrayList<Endpoint>(Arrays.asList(new Endpoint[]{buildEndpointCgi(), buildEndpointMadrs()})));
-		study.addAdverseEvent(buildAdverseEventDiarrhea());
+		study.getEndpoints().clear();
+		study.getEndpoints().addAll(Study.wrapVariables(new ArrayList<Endpoint>(Arrays.asList(new Endpoint[]{buildEndpointCgi(), buildEndpointMadrs()}))));
+		study.getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(buildAdverseEventDiarrhea()));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -461,9 +468,10 @@ public class ExampleData {
 	
 	private static Study realBuildStudyBennie() {
 		Study study = new Study("Bennie et al, 1995", buildIndicationDepression());
-		study.setEndpoints(new ArrayList<Endpoint>(
-				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
-		study.addAdverseEvent(buildAdverseEventConvulsion());
+		study.getEndpoints().clear();
+		study.getEndpoints().addAll(Study.wrapVariables(new ArrayList<Endpoint>(
+						Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()}))));
+		study.getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(buildAdverseEventConvulsion()));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -511,8 +519,9 @@ public class ExampleData {
 
 	private static Study realBuildStudyThreeArm() {
 		Study study = new Study("SciFictional et al, 2359", buildIndicationDepression());
-		study.setEndpoints(new ArrayList<Endpoint>(
-				Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()})));
+		study.getEndpoints().clear();
+		study.getEndpoints().addAll(Study.wrapVariables(new ArrayList<Endpoint>(
+						Arrays.asList(new Endpoint[]{buildEndpointHamd(), buildEndpointCgi()}))));
 		
 		study.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, 
 				"This is a fictional study that I just created because I need a three-arm study.");
@@ -564,7 +573,8 @@ public class ExampleData {
 
 	private static Study realBuildStudyMcMurray() {
 		Study study = new Study("McMurray et al, 2003", buildIndicationChronicHeartFailure());
-		study.setEndpoints(Collections.singletonList(buildEndpointCVdeath()));
+		study.getEndpoints().clear();
+		study.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(buildEndpointCVdeath())));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -625,12 +635,15 @@ public class ExampleData {
 		Drug sertraline = buildDrugSertraline();
 		Drug paroxetine = buildDrugParoxetine();
 		Study study = new Study("Fava et al, 2002", buildIndicationDepression());
-		study.setEndpoints(Collections.singletonList(hamd));
+		study.getEndpoints().clear();
+		study.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(hamd)));
 		List<AdverseEvent> ade = new ArrayList<AdverseEvent>();
 		ade.add(buildAdverseEventConvulsion());
 		ade.add(buildAdverseEventSexualDysfunction());
-		study.setAdverseEvents(ade);
-		study.setPopulationCharacteristics(Collections.<PopulationCharacteristic>singletonList(buildGenderVariable()));
+		study.getAdverseEvents().clear();
+		study.getAdverseEvents().addAll(Study.wrapVariables(ade));
+		study.getPopulationChars().clear();
+		study.getPopulationChars().addAll(Study.wrapVariables(Collections.<PopulationCharacteristic>singletonList(buildGenderVariable())));
 		
 		// Study characteristics
 		study.setCharacteristic(BasicStudyCharacteristic.BLINDING, BasicStudyCharacteristic.Blinding.DOUBLE_BLIND);
@@ -941,7 +954,8 @@ public class ExampleData {
         Drug sertraline = buildDrugSertraline();
         Drug paroxetine = buildDrugParoxetine();
         Study study = new Study("fluoxRatingZeroStudy", buildIndicationDepression());
-        study.setEndpoints(Collections.singletonList(hamd));
+        study.getEndpoints().clear();
+		study.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(hamd)));
         
         // Sertraline data
         FixedDose dose = new FixedDose(75.0, SIUnit.MILLIGRAMS_A_DAY);

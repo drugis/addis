@@ -45,6 +45,7 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -141,23 +142,25 @@ public class StudyPresentationModelTest {
 		d_study.createAndAddArm("arm2", 0, new Drug("X", "Y"), null);
 		ContinuousPopulationCharacteristic age = new ContinuousPopulationCharacteristic("Age");
 		assertEquals(0, d_model.getPopulationCharacteristicCount());
-		d_study.setPopulationCharacteristics(Collections.<PopulationCharacteristic>singletonList(age));
+		d_study.getPopulationChars().clear();
+		d_study.getPopulationChars().addAll(Study.wrapVariables(Collections.<PopulationCharacteristic>singletonList(age)));
 		assertEquals(1, d_model.getPopulationCharacteristicCount());
 	}
 	
 	@Test
 	public void testGetPopulationCharacteristicsOverall() {
 		ContinuousPopulationCharacteristic age = new ContinuousPopulationCharacteristic("Age");
-		d_study.setPopulationCharacteristics(Collections.<PopulationCharacteristic>singletonList(age));
+		d_study.getPopulationChars().clear();
+		d_study.getPopulationChars().addAll(Study.wrapVariables(Collections.<PopulationCharacteristic>singletonList(age)));
 		assertEquals(Collections.singletonList(age), d_model.getPopulationCharacteristics());
 	}
 	
 	@Test
 	public void testGetEndpoints() {
 		Endpoint ep = new Endpoint("ep", Variable.Type.RATE);
-		d_study.addEndpoint(ep);
+		d_study.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(ep));
 		AdverseEvent ade = new AdverseEvent("ade1", Variable.Type.RATE);
-		d_study.addAdverseEvent(ade);
+		d_study.getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(ade));
 		
 		assertEquals(Collections.singletonList(ep), d_model.getEndpoints());
 	}
@@ -165,9 +168,9 @@ public class StudyPresentationModelTest {
 	@Test
 	public void testGetAdes() {
 		Endpoint ep = new Endpoint("ep", Variable.Type.RATE);
-		d_study.addEndpoint(ep);
+		d_study.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(ep));
 		AdverseEvent ade = new AdverseEvent("ade1", Variable.Type.RATE);
-		d_study.addAdverseEvent(ade);
+		d_study.getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(ade));
 		
 		assertEquals(Collections.singletonList(ade), d_model.getAdverseEvents());
 	}

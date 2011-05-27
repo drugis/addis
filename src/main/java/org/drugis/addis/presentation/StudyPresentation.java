@@ -24,15 +24,11 @@
 
 package org.drugis.addis.presentation;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.AdverseEvent;
@@ -131,51 +127,6 @@ public class StudyPresentation extends PresentationModel<Study> {
 		return false;
 	}
 	
-	public abstract class ListeningCharacteristicHolder extends StudyCharacteristicHolder implements PropertyChangeListener, ListDataListener {
-		public ListeningCharacteristicHolder(Study study, Characteristic characteristic) {
-			super(study, characteristic);
-			study.getArms().addListDataListener(this);
-			for (Arm p : study.getArms()) {
-				p.addPropertyChangeListener(this);
-			}
-		}
-		
-		protected abstract Object getNewValue();
-		
-		@Override
-		public Object getValue() {
-			return getNewValue();
-		}
-
-		public void propertyChange(PropertyChangeEvent evt) {
-			update();
-		}
-
-		private void update() {
-			firePropertyChange("value", null, getNewValue());
-		}
-		
-		private void updateListeners() {
-			for (Arm p : d_study.getArms()) {
-				p.removePropertyChangeListener(this);
-				p.addPropertyChangeListener(this);
-			}
-			update();
-		}
-		
-		public void intervalAdded(ListDataEvent e) {
-			updateListeners();
-		}
-
-		public void intervalRemoved(ListDataEvent e) {
-			updateListeners();			
-		}
-		
-		public void contentsChanged(ListDataEvent e) {
-			updateListeners();			
-		}
-	}
-
 	public int getArmCount() {
 		return getBean().getArms().size();
 	}
@@ -205,7 +156,8 @@ public class StudyPresentation extends PresentationModel<Study> {
 	
 	public List<OutcomeMeasure> getEndpoints() {
 		List<OutcomeMeasure> s = new ArrayList<OutcomeMeasure>();
-		for (Endpoint e : getBean().getEndpoints()) {
+		Study r = getBean();
+		for (Endpoint e : Study.extractVariables(r.getEndpoints())) {
 			s.add(e);
 		}
 		return s;
@@ -213,7 +165,8 @@ public class StudyPresentation extends PresentationModel<Study> {
 	
 	public List<OutcomeMeasure> getAdverseEvents() {
 		List<OutcomeMeasure> s = new ArrayList<OutcomeMeasure>();
-		for (AdverseEvent a : getBean().getAdverseEvents()) {
+		Study r = getBean();
+		for (AdverseEvent a : Study.extractVariables(r.getAdverseEvents())) {
 			s.add(a);
 		}
 		return s;

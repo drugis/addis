@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -36,7 +37,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -44,10 +44,10 @@ import javax.xml.datatype.DatatypeFactory;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Study.MeasurementKey;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class StudyTest {
@@ -77,32 +77,6 @@ public class StudyTest {
 	@Test
 	public void testSetId() {
 		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_NAME, "X", "NCT00351273");
-	}
-	
-	@Test
-	public void testSetEndpoints() {
-		List<Endpoint> list = Collections.singletonList(new Endpoint("e", Variable.Type.RATE));
-		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, Collections.EMPTY_LIST, 
-				list);
-	}
-	
-	@Test
-	public void testSetPopulationCharacteristics() {
-		List<Variable> list = Collections.<Variable>singletonList(new ContinuousPopulationCharacteristic("e"));
-		JUnitUtil.testSetter(new Study("X", new Indication(0L, "")),
-				Study.PROPERTY_POPULATION_CHARACTERISTICS, Collections.EMPTY_LIST, 
-				list);
-	}
-	
-	@Test
-	public void testAddEndpoint() {
-		JUnitUtil.testAdder(new Study("X", new Indication(0L, "")), Study.PROPERTY_ENDPOINTS, "addEndpoint", new Endpoint("e", Variable.Type.RATE));
-	}
-	
-	@Test(expected=NullPointerException.class)
-	public void testAddOutcomeMeasureNULLthrows() {
-		Study s = new Study("s", new Indication(0L, ""));
-		s.addEndpoint(null);
 	}
 	
 	@Test
@@ -229,7 +203,7 @@ public class StudyTest {
 	public void testSetMeasurement() {
 		Study study = new Study("X", new Indication(0L, ""));
 		Endpoint endpoint = new Endpoint("e", Variable.Type.RATE);
-		study.addEndpoint(endpoint);
+		study.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(endpoint));
 		Arm group = study.createAndAddArm("", 100, null, null);
 		BasicRateMeasurement m = new BasicRateMeasurement(0, group.getSize());
 		m.setRate(12);
@@ -251,7 +225,7 @@ public class StudyTest {
 	public void testSetMeasurementThrowsException2() {
 		Study study = new Study("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("e", Variable.Type.RATE);
-		study.addEndpoint(e);
+		study.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(e));
 		Arm group = study.createAndAddArm("", 100, null, null);
 		
 		BasicMeasurement m = new BasicRateMeasurement(12, group.getSize());
@@ -296,33 +270,35 @@ public class StudyTest {
 		study2.getCharacteristicWithNotes(BasicStudyCharacteristic.TITLE).getNotes().clear();
 		
 		// endpoints
-		study2.addEndpoint(ExampleData.buildEndpointCgi());
+		study2.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(ExampleData.buildEndpointCgi()));
 		assertFalse(study1.deepEquals(study2));
-		study1.addEndpoint(ExampleData.buildEndpointCgi());
+		study1.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(ExampleData.buildEndpointCgi()));
 		assertTrue(study1.deepEquals(study2));
 		// Here we might test if the equality is based on .equals or .deepEquals of Endpoint
 		
 		// adverseEvents
-		study2.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
+		study2.getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(ExampleData.buildAdverseEventConvulsion()));
 		assertFalse(study1.deepEquals(study2));
-		study1.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
+		study1.getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(ExampleData.buildAdverseEventConvulsion()));
 		assertTrue(study1.deepEquals(study2));
 		// Here we might test if the equality is based on .equals or .deepEquals of AdverseEvent
 		
 		// populationCharacteristics
-		study2.addPopulationCharacteristic(ExampleData.buildAgeVariable());
+		study2.getPopulationChars().add(new StudyOutcomeMeasure<PopulationCharacteristic>(ExampleData.buildAgeVariable()));
 		assertFalse(study1.deepEquals(study2));
-		study1.addPopulationCharacteristic(ExampleData.buildAgeVariable());
+		study1.getPopulationChars().add(new StudyOutcomeMeasure<PopulationCharacteristic>(ExampleData.buildAgeVariable()));
 		assertTrue(study1.deepEquals(study2));
-		study2.addPopulationCharacteristic(ExampleData.buildGenderVariable());
+		study2.getPopulationChars().add(new StudyOutcomeMeasure<PopulationCharacteristic>(ExampleData.buildGenderVariable()));
 		// Here we DO test if the equality is based on .equals or .deepEquals of PopulationCharacteristic
 		PopulationCharacteristic pc = new CategoricalPopulationCharacteristic(
 				ExampleData.buildGenderVariable().getName(),
 				new String[] { "Mars", "Venus" });
-		study1.addPopulationCharacteristic(pc);
+		study1.getPopulationChars().add(new StudyOutcomeMeasure<PopulationCharacteristic>(pc));
 		assertFalse(study1.deepEquals(study2));
-		study1.setPopulationCharacteristics(Collections.<PopulationCharacteristic>emptyList());
-		study2.setPopulationCharacteristics(Collections.<PopulationCharacteristic>emptyList());
+		study1.getPopulationChars().clear();
+		study1.getPopulationChars().addAll(Study.wrapVariables(Collections.<PopulationCharacteristic>emptyList()));
+		study2.getPopulationChars().clear();
+		study2.getPopulationChars().addAll(Study.wrapVariables(Collections.<PopulationCharacteristic>emptyList()));
 		assertTrue(study1.deepEquals(study2));
 		
 		Arm arm = new Arm("Arm1", 9001);
@@ -415,7 +391,8 @@ public class StudyTest {
 		PopulationCharacteristic v = new ContinuousPopulationCharacteristic("Age");
 		Study s = new Study("X", new Indication(0L, "Y"));
 		s.createAndAddArm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY));
-		s.setPopulationCharacteristics(Collections.singletonList(v));
+		s.getPopulationChars().clear();
+		s.getPopulationChars().addAll(Study.wrapVariables(Collections.singletonList(v)));
 		BasicContinuousMeasurement m = new BasicContinuousMeasurement(0.0, 1.0, 5);
 		
 		s.setMeasurement(v, m);
@@ -425,7 +402,7 @@ public class StudyTest {
 		assertEquals(m, s.getMeasurement(v, s.getArms().get(0)));
 	}
 	
-	@Test @Ignore 
+	@Test
 	public void testChangePopulationCharRetainMeasurements() {
 		Study s = new Study("X", new Indication(0L, "Y"));
 		Arm arm1 = s.createAndAddArm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY));
@@ -437,7 +414,7 @@ public class StudyTest {
 		ArrayList<PopulationCharacteristic> vars1 = new ArrayList<PopulationCharacteristic>();
 		vars1.add(v1);
 		vars1.add(v2);
-		s.setPopulationCharacteristics(vars1);
+		s.getPopulationChars().addAll(Study.wrapVariables(vars1));
 		
 		BasicMeasurement m10 = new BasicContinuousMeasurement(3.0, 2.0, 150);
 		BasicMeasurement m11 = new BasicContinuousMeasurement(3.0, 2.0, 150);
@@ -447,22 +424,15 @@ public class StudyTest {
 		s.setMeasurement(v1, arm1, m11);
 		s.setMeasurement(v2, m20);
 		s.setMeasurement(v2, arm1, m21);
-		
-		ArrayList<PopulationCharacteristic> vars2 = new ArrayList<PopulationCharacteristic>();
-		vars2.add(v2);
-		vars2.add(v3);
-		s.setPopulationCharacteristics(vars2);
-//		s.initializeDefaultMeasurements();
+
+		s.getPopulationChars().remove(new StudyOutcomeMeasure<PopulationCharacteristic>(v1));
+		s.getPopulationChars().add(new StudyOutcomeMeasure<PopulationCharacteristic>(v3));
 		
 		assertEquals(m20, s.getMeasurement(v2));
 		assertEquals(m21, s.getMeasurement(v2, arm1));
-		assertEquals(200, (int)s.getMeasurement(v3).getSampleSize());
-		assertEquals(200, (int)s.getMeasurement(v3, arm1).getSampleSize());
 		
-		s.setPopulationCharacteristics(vars1);
-//		s.initializeDefaultMeasurements();
-		assertEquals(200, (int)s.getMeasurement(v1).getSampleSize());
-		assertEquals(200, (int)s.getMeasurement(v1, arm1).getSampleSize());
+		assertNull(s.getMeasurement(v1));
+		assertNull(s.getMeasurement(v1, arm1));
 	}
 
 	@Test
@@ -486,9 +456,9 @@ public class StudyTest {
 	
 	@Test
 	public void testCloneReturnsDistinctVariableLists() {
-		assertFalse(d_orig.getEndpoints() == d_clone.getEndpoints());
-		assertFalse(d_orig.getAdverseEvents() == d_clone.getAdverseEvents());
-		assertFalse(d_orig.getPopulationCharacteristics() == d_clone.getPopulationCharacteristics());
+		assertFalse(Study.extractVariables(d_orig.getEndpoints()) == Study.extractVariables(d_clone.getEndpoints()));
+		assertFalse(Study.extractVariables(d_orig.getAdverseEvents()) == Study.extractVariables(d_clone.getAdverseEvents()));
+		assertFalse(Study.extractVariables(d_orig.getPopulationChars()) == Study.extractVariables(d_clone.getPopulationChars()));
 	}
 	
 	@Test
@@ -503,8 +473,8 @@ public class StudyTest {
 	public void testCloneHasCorrectMeasurementKeys() {
 		Arm arm = d_clone.getArms().get(1);
 		d_clone.setDrug(arm, ExampleData.buildDrugViagra());
-		assertEquals(d_orig.getMeasurement(d_orig.getEndpoints().get(0), d_orig.getArms().get(1)),
-				d_clone.getMeasurement(d_clone.getEndpoints().get(0), arm));
+		assertEquals(d_orig.getMeasurement(Study.extractVariables(d_orig.getEndpoints()).get(0), d_orig.getArms().get(1)),
+				d_clone.getMeasurement(Study.extractVariables(d_clone.getEndpoints()).get(0), arm));
 	}
 	
 	@Test

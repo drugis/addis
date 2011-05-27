@@ -37,6 +37,7 @@ import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Test;
@@ -173,7 +174,7 @@ public class BasicOddsRatioTest {
 	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize)
 	{
 		Study s = new Study(studyName, d_ind);
-		s.addEndpoint(d_ep);
+		s.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_ep));
 		Arm g_fluox = s.createAndAddArm("Fluox", fluoxSize, d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));
 		Arm g_sertr = s.createAndAddArm("Sertr", sertraSize, d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));		
 		

@@ -73,7 +73,8 @@ public class MeasurementTableModelTest {
 		chars.add(ExampleData.buildGenderVariable());
 		chars.add(ExampleData.buildAgeVariable());
 		d_popcharStudy = ExampleData.buildStudyDeWilde().clone();
-		d_popcharStudy.setPopulationCharacteristics(chars);
+		d_popcharStudy.getPopulationChars().clear();
+		d_popcharStudy.getPopulationChars().addAll(Study.wrapVariables(chars));
 		d_popcharTablemodel = new PopulationCharTableModel(d_popcharStudy, d_pmf);
 	}
 		
@@ -89,7 +90,7 @@ public class MeasurementTableModelTest {
 
 	@Test
 	public void testGetRowCount() {
-		assertEquals(d_standardStudy.getEndpoints().size(), d_model.getRowCount());
+		assertEquals(Study.extractVariables(d_standardStudy.getEndpoints()).size(), d_model.getRowCount());
 	}
 	
 	@Test
@@ -100,7 +101,7 @@ public class MeasurementTableModelTest {
 	@Test
 	public void testGetValueAt() {
 		int index = 0;
-		for (Variable v : d_standardStudy.getEndpoints()) {
+		for (Variable v : Study.extractVariables(d_standardStudy.getEndpoints())) {
 			assertEquals(v.getName(), d_model.getValueAt(index, 0));
 			
 			presentMeasurementCorrectlyBound(v, d_standardStudy.getArms().get(0), (MissingMeasurementPresentation)d_model.getValueAt(index, 1));
@@ -198,7 +199,7 @@ public class MeasurementTableModelTest {
 		replay(mock);
 		
 		FrequencyMeasurement meas = (FrequencyMeasurement) d_popcharStudy.getMeasurement(
-				d_popcharStudy.getPopulationCharacteristics().get(0));
+				Study.extractVariables(d_popcharStudy.getPopulationChars()).get(0));
 		// 1 tableupdate
 		meas.setSampleSize(667);
 		// 2 tableupdates

@@ -101,7 +101,7 @@ public class ClinicaltrialImporterTest {
 		assertTrue(((String)d_testStudy.getCharacteristic(BasicStudyCharacteristic.EXCLUSION)).contains("Patients under psychiatric treatment because of psychoses"));
 		
 		
-		assertTrue(d_testStudy.getEndpoints().size() > 0);
+		assertTrue(Study.extractVariables(d_testStudy.getEndpoints()).size() > 0);
 		Note note = d_testStudy.getStudyEndpoints().get(0).getNotes().get(0);
 		
 		

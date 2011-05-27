@@ -39,8 +39,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
-abstract public class SelectVariablesPresentation<T extends Variable> extends Model
-implements SelectFromFiniteListPresentation<T> {
+abstract public class SelectVariablesPresentation<T extends Variable> extends Model implements SelectFromFiniteListPresentation<T> {
 
 	protected List<StudyOutcomeMeasure<T>> d_slots;
 	protected ListHolder<T> d_options;

@@ -56,6 +56,7 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -87,8 +88,8 @@ public class DomainTreeModelTest {
 		
 		Arm pg = d_firstStudy.createAndAddArm("first", 100, d_firstDrug, new FixedDose(100.0, SIUnit.MILLIGRAMS_A_DAY));
 		
-		d_firstStudy.addEndpoint(d_firstEndpoint);
-		d_firstStudy.addAdverseEvent(d_firstADE);
+		d_firstStudy.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_firstEndpoint));
+		d_firstStudy.getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(d_firstADE));
 		
 		d_firstStudy.setMeasurement(d_firstEndpoint, pg, d_firstEndpoint.buildMeasurement(pg));
 		d_firstStudy.setMeasurement(d_firstADE, pg, d_firstADE.buildMeasurement(pg));

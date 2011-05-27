@@ -47,6 +47,7 @@ import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
@@ -235,7 +236,7 @@ public class RandomEffectsMetaAnalysisTest {
 			int sertraResp, int sertraSize,
 			Indication ind) {
 		Study s = new Study(studyName, ind);
-		s.addEndpoint(d_rateEndpoint);
+		s.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_rateEndpoint));
 		
 		addRateMeasurement(s, d_fluox, fluoxSize, fluoxResp);		
 		addRateMeasurement(s, d_sertr, sertraSize, sertraResp);
@@ -248,7 +249,7 @@ public class RandomEffectsMetaAnalysisTest {
 			int sertrSize, double sertrMean, double sertrDev,
 			Indication ind) {
 		Study s = new Study(studyName, ind);
-		s.addEndpoint(d_contEndpoint);
+		s.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_contEndpoint));
 		
 		addContinuousMeasurement(s, d_fluox, fluoxSize, fluoxMean, fluoxDev);
 		addContinuousMeasurement(s, d_sertr, sertrSize, sertrMean, sertrDev);

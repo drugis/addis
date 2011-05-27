@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
@@ -45,6 +46,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -101,7 +103,7 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testGetEndpointSetForAdverseEvent() {
-		d_domain.getStudies().first().addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
+		d_domain.getStudies().first().getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(ExampleData.buildAdverseEventConvulsion()));
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		List<OutcomeMeasure> expected = new ArrayList<OutcomeMeasure>();
 		expected.add(ExampleData.buildEndpointCgi());

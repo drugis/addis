@@ -42,6 +42,7 @@ import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
@@ -76,7 +77,7 @@ public class ForestPlotPresentationTest {
 	public void setUp() {
 		d_s1 = new Study("X", new Indication(0L, ""));
 		d_endpoint = new Endpoint("E", Variable.Type.CONTINUOUS);
-		d_s1.addEndpoint(d_endpoint);
+		d_s1.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_endpoint));
 		d_baseline = new Drug("DrugA", "");
 		d_subject = new Drug("DrugB", "");
 		Arm pBase = d_s1.createAndAddArm("base", s_baseSize, d_baseline, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY));
@@ -87,7 +88,7 @@ public class ForestPlotPresentationTest {
 		d_s1.setMeasurement(d_endpoint, pSubj, d_mSubj1);
 		
 		d_s2 = new Study("Y", new Indication(0L, ""));
-		d_s2.addEndpoint(d_endpoint);
+		d_s2.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_endpoint));
 		Arm pBase2 = d_s2.createAndAddArm("base2", s_baseSize, d_baseline, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY));
 		Arm pSubj2 = d_s2.createAndAddArm("subj2", s_subjSize, d_subject, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY));
 		d_mBase2 = new BasicContinuousMeasurement(s_mean2, s_stdDev2, pBase2.getSize());

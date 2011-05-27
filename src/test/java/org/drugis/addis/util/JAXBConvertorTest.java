@@ -1056,9 +1056,9 @@ public class JAXBConvertorTest {
 		Study study2 = new Study();
 		study2.setName(name);
 		study2.setIndication(ExampleData.buildIndicationDepression());
-		study2.addEndpoint(ExampleData.buildEndpointHamd());
-		study2.addEndpoint(ExampleData.buildEndpointCgi());
-		study2.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
+		study2.getEndpoints().add(new org.drugis.addis.entities.Study.StudyOutcomeMeasure<Endpoint>(ExampleData.buildEndpointHamd()));
+		study2.getEndpoints().add(new org.drugis.addis.entities.Study.StudyOutcomeMeasure<Endpoint>(ExampleData.buildEndpointCgi()));
+		study2.getAdverseEvents().add(new org.drugis.addis.entities.Study.StudyOutcomeMeasure<AdverseEvent>(ExampleData.buildAdverseEventConvulsion()));
 		study2.addVariable(ExampleData.buildAgeVariable());
 		Arm fluoxArm = new Arm("fluox arm", 100);
 		study2.getArms().add(fluoxArm);
@@ -1080,6 +1080,7 @@ public class JAXBConvertorTest {
 		study2.setCharacteristic(BasicStudyCharacteristic.CENTERS, 3);
 		study2.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, Allocation.RANDOMIZED);
 		study2.setCharacteristic(BasicStudyCharacteristic.PUBMED, new PubMedIdList());
+		study2.setCharacteristic(BasicStudyCharacteristic.CREATION_DATE, null);
 		study2.setMeasurement(ExampleData.buildEndpointHamd(), paroxArm, new BasicRateMeasurement(10, 110));
 		assertStudiesNotEqual(domain, study, study2);
 		study2.setMeasurement(ExampleData.buildAgeVariable(), new BasicContinuousMeasurement(0.2, 0.01, 110));

@@ -62,13 +62,13 @@ public class OutcomeListHolder extends AbstractListHolder<OutcomeMeasure> implem
 		if (this.d_indication.getValue() != null) {
 			for (Study s : d_domain.getStudies(this.d_indication.getValue()).getValue()) {
 				ArrayList<OutcomeMeasure> tempEndpoints = new ArrayList<OutcomeMeasure>();
-				tempEndpoints.addAll(s.getEndpoints());
+				tempEndpoints.addAll(Study.extractVariables(s.getEndpoints()));
 				tempEndpoints.removeAll(endpoints);
 				endpoints.addAll(tempEndpoints);
 			}			
 			for (Study s : d_domain.getStudies(this.d_indication.getValue()).getValue()) {
 				ArrayList<OutcomeMeasure> tempAdes = new ArrayList<OutcomeMeasure>();
-				tempAdes.addAll(s.getAdverseEvents());
+				tempAdes.addAll(Study.extractVariables(s.getAdverseEvents()));
 				tempAdes.removeAll(ades);
 				ades.addAll(tempAdes);
 			}			

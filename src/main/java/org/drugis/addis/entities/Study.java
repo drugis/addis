@@ -32,6 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.RebuildableHashMap;
@@ -125,9 +128,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private ObjectWithNotes<Indication> d_indication;
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 	
-	private List<StudyOutcomeMeasure<Endpoint>> d_endpoints = new ArrayList<StudyOutcomeMeasure<Endpoint>>();
-	private List<StudyOutcomeMeasure<AdverseEvent>> d_adverseEvents = new ArrayList<StudyOutcomeMeasure<AdverseEvent>>();
-	private List<StudyOutcomeMeasure<PopulationCharacteristic>> d_populationChars = new ArrayList<StudyOutcomeMeasure<PopulationCharacteristic>>();
+	private ObservableList<StudyOutcomeMeasure<Endpoint>> d_endpoints = new ArrayListModel<StudyOutcomeMeasure<Endpoint>>();
+	private ObservableList<StudyOutcomeMeasure<AdverseEvent>> d_adverseEvents = new ArrayListModel<StudyOutcomeMeasure<AdverseEvent>>();
+	private ObservableList<StudyOutcomeMeasure<PopulationCharacteristic>> d_populationChars = new ArrayListModel<StudyOutcomeMeasure<PopulationCharacteristic>>();
 
 	private ObservableList<Arm> d_arms = new ArrayListModel<Arm>();
 	private ObservableList<Epoch> d_epochs = new ArrayListModel<Epoch>();
@@ -136,8 +139,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private RebuildableHashMap<MeasurementKey, BasicMeasurement> d_measurements = new RebuildableHashMap<MeasurementKey, BasicMeasurement>();
 	
 	public Study() {
-		d_indication = new ObjectWithNotes<Indication>(null);
-		d_name = new ObjectWithNotes<String>(null);
+		this(null, null);
 	}
 
 	@Override
@@ -148,9 +150,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 
 		newStudy.d_arms = cloneArms();
 
-		newStudy.d_endpoints = cloneStudyOutcomeMeasures(d_endpoints);
-		newStudy.d_adverseEvents = cloneStudyOutcomeMeasures(d_adverseEvents);
-		newStudy.d_populationChars = cloneStudyOutcomeMeasures(d_populationChars);
+		newStudy.d_endpoints = cloneStudyOutcomeMeasures(getEndpoints());
+		newStudy.d_adverseEvents = cloneStudyOutcomeMeasures(getAdverseEvents());
+		newStudy.d_populationChars = cloneStudyOutcomeMeasures(getPopulationChars());
 
 		// Copy measurements _AFTER_ the outcomes, since setEndpoints() etc removes orphan measurements from the study.
 		newStudy.setMeasurements(cloneMeasurements(newStudy.getArms()));
@@ -182,8 +184,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return new UsedBy(newArms.get(newArms.indexOf(ub.getArm())), newEpochs.get(newEpochs.indexOf(ub.getEpoch()))) ;
 	}
 
-	private <T extends Variable> List<StudyOutcomeMeasure<T>> cloneStudyOutcomeMeasures(List<StudyOutcomeMeasure<T>> soms) {
-		List<StudyOutcomeMeasure<T>> list = new ArrayList<StudyOutcomeMeasure<T>>();
+	private <T extends Variable> ObservableList<StudyOutcomeMeasure<T>> cloneStudyOutcomeMeasures(List<StudyOutcomeMeasure<T>> soms) {
+		ObservableList<StudyOutcomeMeasure<T>> list = new ArrayListModel<StudyOutcomeMeasure<T>>();
 		for (StudyOutcomeMeasure<T> som : soms) {
 			list.add(som.clone());
 		}
@@ -229,6 +231,25 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		setCharacteristic(BasicStudyCharacteristic.CREATION_DATE, DateUtil.getCurrentDateWithoutTime());
 		setCharacteristic(BasicStudyCharacteristic.TITLE, "");
 		setCharacteristic(BasicStudyCharacteristic.PUBMED, new PubMedIdList());
+		
+		ListDataListener orphanListener = new ListDataListener() {
+			@Override
+			public void intervalRemoved(ListDataEvent e) {
+				removeOrphanMeasurements();
+			}			
+			@Override
+			public void intervalAdded(ListDataEvent e) {
+				removeOrphanMeasurements();
+			}
+			@Override
+			public void contentsChanged(ListDataEvent e) {
+				removeOrphanMeasurements();
+			}
+		};
+		d_arms.addListDataListener(orphanListener);
+		d_endpoints.addListDataListener(orphanListener);
+		d_populationChars.addListDataListener(orphanListener);
+		d_adverseEvents.addListDataListener(orphanListener);
 	}
 
 	public ObservableList<Arm> getArms() {
@@ -322,7 +343,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	public Set<Entity> getDependencies() {
 		HashSet<Entity> dep = new HashSet<Entity>(getDrugs());
 		dep.addAll(getOutcomeMeasures());
-		dep.addAll(getPopulationCharacteristics());
+		dep.addAll(extractVariables(getPopulationChars()));
 		dep.add(d_indication.getValue());
 		return dep;
 	}
@@ -441,7 +462,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 
 	private void forceLegalArguments(Variable v, Arm a, Measurement m) {
-		if (!getPopulationCharacteristics().contains(v)) {
+		if (!extractVariables(getPopulationChars()).contains(v)) {
 			throw new IllegalArgumentException("Variable " + v + " not in study");
 		}
 		if (a != null && !d_arms.contains(a)) {
@@ -453,17 +474,13 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 
 	public List<OutcomeMeasure> getOutcomeMeasures() {
-		List<OutcomeMeasure> sortedList = new ArrayList<OutcomeMeasure>(getEndpoints());
-		sortedList.addAll(getAdverseEvents());
+		List<OutcomeMeasure> sortedList = new ArrayList<OutcomeMeasure>(extractVariables(getEndpoints()));
+		sortedList.addAll(extractVariables(getAdverseEvents()));
 		Collections.sort(sortedList, new OutcomeComparator());
 		return sortedList;
 	}
 
-	public List<Endpoint> getEndpoints() {
-		return extractVariables(d_endpoints);
-	}
-
-	private <T  extends Variable> List<T> extractVariables(List<StudyOutcomeMeasure<T>> soms) {
+	public static <T  extends Variable> List<T> extractVariables(List<StudyOutcomeMeasure<T>> soms) {
 		List<T> vars = new ArrayList<T>();
 		for (StudyOutcomeMeasure<T> som : soms) {
 			vars.add(som.getValue());
@@ -471,103 +488,29 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return vars;
 	}
 
-	public List<AdverseEvent> getAdverseEvents() {
-		return extractVariables(d_adverseEvents);
-	}
-
-	public List<PopulationCharacteristic> getPopulationCharacteristics() {
-		return extractVariables(d_populationChars);
-	}
-
 	public List<? extends Variable> getVariables(Class<? extends Variable> type) {
 		if (type == Endpoint.class) {
-			return getEndpoints();
+			return extractVariables(getEndpoints());
 		} else if (type == AdverseEvent.class){
-			return getAdverseEvents();
+			return extractVariables(getAdverseEvents());
 		} else if (type == OutcomeMeasure.class) {
-			return Collections.unmodifiableList(getOutcomeMeasures());
+			return getOutcomeMeasures();
 		}
-		return getPopulationCharacteristics(); 
+		return extractVariables(getPopulationChars()); 
 	}
 
-	private <T extends Variable> List<StudyOutcomeMeasure<T>> wrapVariables(List<T> vars) {
-		List<StudyOutcomeMeasure<T>> soms = new ArrayList<StudyOutcomeMeasure<T>>();
-		for (T v : vars) {
-			soms.add(new StudyOutcomeMeasure<T>(v));
-		}
-		return soms;
-	}
-	
-	public void setEndpoints(List<Endpoint> endpoints) {
-		setEndpointsWithNotes(wrapVariables(endpoints));
-	}
-
-	private void setEndpointsWithNotes(List<StudyOutcomeMeasure<Endpoint>> endpoints) {
-		List<Endpoint> oldVal = getEndpoints();
-		d_endpoints = endpoints;
-		firePropertyChange(PROPERTY_ENDPOINTS, oldVal, getEndpoints());
-	}
-
-	public void setAdverseEvents(List<AdverseEvent> adverseEvents) {
-		setAdverseEventsWithNotes(wrapVariables(adverseEvents));
-	}
-	
-	private void setAdverseEventsWithNotes(List<StudyOutcomeMeasure<AdverseEvent>> adverseEvents) {
-		List<AdverseEvent> oldVal = getAdverseEvents();
-		d_adverseEvents = adverseEvents;
-		firePropertyChange(PROPERTY_ADVERSE_EVENTS, oldVal, getAdverseEvents());
-	}
-
-	public void setPopulationCharacteristics(List<PopulationCharacteristic> chars) {
-		setPopulationCharacteristicsWithNotes(wrapVariables(chars));
-	}
-
-	private void setPopulationCharacteristicsWithNotes(List<StudyOutcomeMeasure<PopulationCharacteristic>> chars) {
-		List<? extends Variable> oldVal = getVariables(PopulationCharacteristic.class);
-		d_populationChars = chars;
-		firePropertyChange(PROPERTY_POPULATION_CHARACTERISTICS, oldVal, getPopulationCharacteristics());
-	}
-
-	public void addAdverseEvent(AdverseEvent ade) {
-		if (ade == null) 
-			throw new NullPointerException("Cannot add a NULL outcome measure");
-
-		List<StudyOutcomeMeasure<AdverseEvent>> newList = new ArrayList<StudyOutcomeMeasure<AdverseEvent>>(d_adverseEvents);
-		newList.add(new StudyOutcomeMeasure<AdverseEvent>(ade));
-		setAdverseEventsWithNotes(newList);
-	}
-
-	public void addEndpoint(Endpoint om) {
-		if (om == null) 
-			throw new NullPointerException("Cannot add a NULL outcome measure");
-
-		List<StudyOutcomeMeasure<Endpoint>> newVal = new ArrayList<StudyOutcomeMeasure<Endpoint>>(d_endpoints);
-		newVal.add(new StudyOutcomeMeasure<Endpoint>(om));
-		setEndpointsWithNotes(newVal);
-	}
-	
-	public void addPopulationCharacteristic(PopulationCharacteristic pc) {
-		if (pc == null) 
-			throw new NullPointerException("Cannot add a NULL outcome measure");
-
-		List<StudyOutcomeMeasure<PopulationCharacteristic>> newVal = new ArrayList<StudyOutcomeMeasure<PopulationCharacteristic>>(d_populationChars);
-		newVal.add(new StudyOutcomeMeasure<PopulationCharacteristic>(pc));
-		setPopulationCharacteristicsWithNotes(newVal);
-	}
-	
 	public void addVariable(Variable om) {
 		if (om instanceof Endpoint)
-			addEndpoint((Endpoint) om);
+			getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(((Endpoint) om)));
 		else if (om instanceof AdverseEvent) {
-			addAdverseEvent((AdverseEvent) om);
+			getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(((AdverseEvent) om)));
 		} else if (om instanceof PopulationCharacteristic) {
-			addPopulationCharacteristic((PopulationCharacteristic) om);
+			getPopulationChars().add(new StudyOutcomeMeasure<PopulationCharacteristic>(((PopulationCharacteristic) om)));
 		} else {
 			throw new IllegalStateException("Illegal OutcomeMeasure type " + om.getClass());
 		}
 	}
 
-	// FIXME: use in arms/outcomeMeasures listeners
 	private void removeOrphanMeasurements() {
 		for (MeasurementKey k : new HashSet<MeasurementKey>(d_measurements.keySet())) {
 			if (orphanKey(k)) {
@@ -613,9 +556,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 
 	public void removeEndpoint(int i) {
-		ArrayList<StudyOutcomeMeasure<Endpoint>> newVal = new ArrayList<StudyOutcomeMeasure<Endpoint>>(d_endpoints);
-		newVal.remove(i);
-		setEndpointsWithNotes(newVal);
+		getEndpoints().remove(i);
 	}
 
 	public Map<MeasurementKey, BasicMeasurement> getMeasurements() {
@@ -631,15 +572,15 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 
 	public List<StudyOutcomeMeasure<Endpoint>> getStudyEndpoints() {
-		return d_endpoints;
+		return getEndpoints();
 	}
 	
 	public List<StudyOutcomeMeasure<AdverseEvent>> getStudyAdverseEvents() {
-		return d_adverseEvents;
+		return getAdverseEvents();
 	}
 	
 	public List<StudyOutcomeMeasure<PopulationCharacteristic>> getStudyPopulationCharacteristics() {
-		return d_populationChars;
+		return getPopulationChars();
 	}
 
 	public ObjectWithNotes<?> getNameWithNotes() {
@@ -653,11 +594,11 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	@SuppressWarnings("unchecked")
 	public void addStudyOutcomeMeasure(StudyOutcomeMeasure<?> value) {
 		if (value.getValue() instanceof Endpoint) {
-			d_endpoints.add((StudyOutcomeMeasure<Endpoint>) value);
+			getEndpoints().add((StudyOutcomeMeasure<Endpoint>) value);
 		} else if (value.getValue() instanceof AdverseEvent) {
-			d_adverseEvents.add((StudyOutcomeMeasure<AdverseEvent>) value);
+			getAdverseEvents().add((StudyOutcomeMeasure<AdverseEvent>) value);
 		} else if (value.getValue() instanceof PopulationCharacteristic) {
-			d_populationChars.add((StudyOutcomeMeasure<PopulationCharacteristic>) value);
+			getPopulationChars().add((StudyOutcomeMeasure<PopulationCharacteristic>) value);
 		} else {
 			throw new IllegalArgumentException("Unknown StudyOutcomeMeasure type: " + value.getValue());
 		}
@@ -711,9 +652,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		Study other = (Study)obj;
 		return 	EntityUtil.deepEqual(other.getIndication(), getIndication()) &&
 				EqualsUtil.equal(other.getCharacteristics(), getCharacteristics()) &&
-				EntityUtil.deepEqual(other.getEndpoints(), getEndpoints()) &&
-				EntityUtil.deepEqual(other.getAdverseEvents(), getAdverseEvents()) &&
-				EntityUtil.deepEqual(other.getPopulationCharacteristics(), getPopulationCharacteristics()) &&
+				EntityUtil.deepEqual(Study.extractVariables(other.getEndpoints()), extractVariables(getEndpoints())) &&
+				EntityUtil.deepEqual(Study.extractVariables(other.getAdverseEvents()), extractVariables(getAdverseEvents())) &&
+				EntityUtil.deepEqual(Study.extractVariables(other.getPopulationChars()), extractVariables(getPopulationChars())) &&
 				EntityUtil.deepEqual(other.getArms(), getArms()) &&
 				EntityUtil.deepEqual(other.getEpochs(), getEpochs()) &&
 				EntityUtil.deepEqual(other.getStudyActivities(), getStudyActivities()) &&
@@ -819,4 +760,24 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return arms;
 	}
 
+	public ObservableList<StudyOutcomeMeasure<Endpoint>> getEndpoints() {
+		return d_endpoints;
+	}
+
+	public ObservableList<StudyOutcomeMeasure<AdverseEvent>> getAdverseEvents() {
+		return d_adverseEvents;
+	}
+
+	public ObservableList<StudyOutcomeMeasure<PopulationCharacteristic>> getPopulationChars() {
+		return d_populationChars;
+	}
+
+	public static <T extends Variable> List<StudyOutcomeMeasure<T>> wrapVariables(List<T> vars) {
+		List<StudyOutcomeMeasure<T>> soms = new ArrayList<StudyOutcomeMeasure<T>>();
+		for (T v : vars) {
+			soms.add(new StudyOutcomeMeasure<T>(v));
+		}
+		return soms;
+	}
+	
 }

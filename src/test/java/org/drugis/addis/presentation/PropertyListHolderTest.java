@@ -37,6 +37,7 @@ import java.util.Set;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.common.JUnitUtil;
 import org.easymock.EasyMock;
@@ -53,15 +54,19 @@ public class PropertyListHolderTest {
 		List<Endpoint> endpoints = new ArrayList<Endpoint>();
 		endpoints.add(new Endpoint("EP1", Type.RATE));
 		endpoints.add(new Endpoint("EP2", Type.CONTINUOUS));
-		study.setEndpoints(endpoints);
+		List<StudyOutcomeMeasure<Endpoint>> wrappedEndpoints = Study.wrapVariables(endpoints);
+		study.getEndpoints().addAll(wrappedEndpoints);
 		
-		assertEquals(endpoints, (new PropertyListHolder<Endpoint>(study, Study.PROPERTY_ENDPOINTS, Endpoint.class)).getValue());
+		assertEquals(wrappedEndpoints, (new PropertyListHolder<Endpoint>(study, Study.PROPERTY_ENDPOINTS, Endpoint.class)).getValue());
 		
 		endpoints.add(new Endpoint("EP3", Type.CONTINUOUS));
 		assertFalse(endpoints.equals((new PropertyListHolder<Endpoint>(study, Study.PROPERTY_ENDPOINTS, Endpoint.class)).getValue()));
 		
-		study.setEndpoints(endpoints);
-		assertEquals(endpoints, (new PropertyListHolder<Endpoint>(study, Study.PROPERTY_ENDPOINTS, Endpoint.class)).getValue());
+		study.getEndpoints().clear();
+		study.getEndpoints().addAll(Study.wrapVariables(endpoints));
+		wrappedEndpoints.clear();
+		wrappedEndpoints.addAll(study.getEndpoints());
+		assertEquals(wrappedEndpoints, (new PropertyListHolder<Endpoint>(study, Study.PROPERTY_ENDPOINTS, Endpoint.class)).getValue());
 	}
 	
 	@Test
@@ -71,14 +76,16 @@ public class PropertyListHolderTest {
 		endpoints.add(new Endpoint("EP1", Type.RATE));
 		endpoints.add(new Endpoint("EP2", Type.CONTINUOUS));
 		
+		List<StudyOutcomeMeasure<Endpoint>> wrappedEndpoints = Study.wrapVariables(endpoints);
 		PropertyListHolder<Endpoint> listHolder = new PropertyListHolder<Endpoint>(study, Study.PROPERTY_ENDPOINTS, Endpoint.class);
 		
 		// create mock listener
-		PropertyChangeListener mockListener = JUnitUtil.mockListener(listHolder, "value", null, endpoints);
+		PropertyChangeListener mockListener = JUnitUtil.mockListener(listHolder, "value", null, wrappedEndpoints);
 		listHolder.addValueChangeListener(mockListener);
 		
 		// verify that the event is generated
-		study.setEndpoints(endpoints);
+		study.getEndpoints().clear();
+		study.getEndpoints().addAll(wrappedEndpoints);
 		EasyMock.verify(mockListener);
 	}
 
@@ -89,12 +96,14 @@ public class PropertyListHolderTest {
 		List<Endpoint> endpoints = new ArrayList<Endpoint>();
 		endpoints.add(new Endpoint("EP1", Type.RATE));
 		endpoints.add(new Endpoint("EP2", Type.CONTINUOUS));
-			
+		
+		List<StudyOutcomeMeasure<Endpoint>> wrapEndpoints = Study.wrapVariables(endpoints);
+		
 		PropertyListHolder<Endpoint> listHolder = new PropertyListHolder<Endpoint>(study, Study.PROPERTY_ENDPOINTS, Endpoint.class);
-		listHolder.setValue(endpoints);
+		listHolder.setValue(wrapEndpoints);
 	
 		assertFalse(listHolder.getValue() instanceof Set);
-		assertEquals(endpoints, study.getEndpoints());
+		assertEquals(wrapEndpoints, study.getEndpoints());
 	}
 	
 	// FIXME: tests below should test for proper support of PROPERTY that is a Set rather than a List.

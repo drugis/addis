@@ -32,9 +32,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+
 import org.drugis.addis.util.comparator.AlphabeticalComparator;
 
 import com.jgoodies.binding.PresentationModel;
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 /**
@@ -48,7 +52,25 @@ public class PropertyListHolder<E> extends AbstractListHolder<E> implements Prop
 	public PropertyListHolder(Object bean, String propertyName, Class<E> objType) {
 		PresentationModel pm = new PresentationModel(bean);
 		d_vm = pm.getModel(propertyName);
-		d_vm.addValueChangeListener(this);
+		
+		if (d_vm.getValue() instanceof ObservableList<?>) {
+			((ObservableList<?>) d_vm.getValue()).addListDataListener(new ListDataListener() {
+				@Override
+				public void intervalRemoved(ListDataEvent e) {
+					fireValueChange(null, getValue());
+				}
+				@Override
+				public void intervalAdded(ListDataEvent e) {
+					fireValueChange(null, getValue());
+				}
+				@Override
+				public void contentsChanged(ListDataEvent e) {
+					fireValueChange(null, getValue());
+				}
+			});
+		} else {
+			d_vm.addValueChangeListener(this);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -65,7 +87,10 @@ public class PropertyListHolder<E> extends AbstractListHolder<E> implements Prop
 	@SuppressWarnings("unchecked")
 	@Override
 	public void setValue(Object list) {
-		if (d_vm.getValue() instanceof List) {
+		if (d_vm.getValue() instanceof ObservableList) {
+			((ObservableList<E>) d_vm.getValue()).clear();
+			((ObservableList<E>) d_vm.getValue()).addAll((List<E>) list);
+		} else if (d_vm.getValue() instanceof List) {
 			d_vm.setValue((List<E>)list); 
 		}
 		else if (d_vm.getValue() instanceof Set){

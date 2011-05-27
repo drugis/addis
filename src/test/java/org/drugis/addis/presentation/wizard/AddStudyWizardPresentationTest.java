@@ -104,9 +104,8 @@ public class AddStudyWizardPresentationTest {
 		importStudy();
 		d_wizardImported.resetStudy();
 		assertEquals(Source.MANUAL, d_wizardImported.getSourceModel().getValue());
-		assertEquals(null, d_wizardImported.getTitleModel().getValue());
-		assertEquals(null,d_wizardImported.getIndicationNoteModel().getValue());
-		//assertEquals(1,d_wizardImported.getNumberEndpoints());
+		assertEquals("", d_wizardImported.getTitleModel().getValue());
+		assertEquals(null, d_wizardImported.getIndicationNoteModel().getValue());
 		assertEquals(1,d_wizardImported.getEndpointSelectModel().getSlots().size());
 		assertEquals(2,d_wizardImported.getArms().size());
 	}

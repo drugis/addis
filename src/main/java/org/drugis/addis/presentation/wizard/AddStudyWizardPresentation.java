@@ -403,7 +403,8 @@ public class AddStudyWizardPresentation {
 	public Study saveStudy() {
 		if (getArms().isEmpty()) 
 			throw new IllegalStateException("No arms selected in study.");
-		if (getNewStudy().getEndpoints().isEmpty()) 
+		Study r = getNewStudy();
+		if (Study.extractVariables(r.getEndpoints()).isEmpty()) 
 			throw new IllegalStateException("No endpoints selected in study.");
 		if (!isIdAvailable())
 			throw new IllegalStateException("Study with this ID already exists in domain");
