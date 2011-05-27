@@ -24,6 +24,9 @@
 
 package org.drugis.addis.presentation;
 
+import static org.easymock.EasyMock.createStrictMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -37,7 +40,6 @@ import org.drugis.common.JUnitUtil;
 import org.drugis.common.beans.AbstractObservable;
 import org.drugis.mtc.summary.Summary;
 import org.junit.Test;
-import static org.easymock.EasyMock.*;
 public class AllSummariesDefinedModelTest {
 	
 	public class MySummary extends AbstractObservable implements Summary {

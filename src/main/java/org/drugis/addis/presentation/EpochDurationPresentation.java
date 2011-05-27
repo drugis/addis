@@ -60,7 +60,7 @@ public class EpochDurationPresentation extends AbstractObservable {
 	private final Epoch d_epoch;
 	private Data d_data = DEFAULT_DATA;
 
-	public static enum DateUnits { // FIXME: does this belong here ?
+	public static enum DateUnits { // FIXME: does this belong here ? // REPLY: YEEEEs
 		Months,
 		Weeks,
 		Days,

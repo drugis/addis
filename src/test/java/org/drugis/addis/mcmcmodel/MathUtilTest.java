@@ -24,7 +24,7 @@
 
 package org.drugis.addis.mcmcmodel;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 

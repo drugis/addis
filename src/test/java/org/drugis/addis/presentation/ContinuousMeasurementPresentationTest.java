@@ -29,8 +29,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
 
-import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;

@@ -24,7 +24,8 @@
 
 package org.drugis.addis.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.drugis.addis.entities.Arm;
 import org.junit.Test;

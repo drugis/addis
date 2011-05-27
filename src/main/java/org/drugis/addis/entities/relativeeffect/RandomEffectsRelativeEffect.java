@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.Measurement;
-import org.drugis.mtc.util.DerSimonianLairdPooling;
 import org.drugis.common.stat.EstimateWithPrecision;
+import org.drugis.mtc.util.DerSimonianLairdPooling;
 
 public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurement> implements RandomEffectMetaAnalysisRelativeEffect<Measurement> {
 	

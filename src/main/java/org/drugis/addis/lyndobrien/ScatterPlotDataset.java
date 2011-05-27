@@ -26,8 +26,8 @@ package org.drugis.addis.lyndobrien;
 
 import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.event.TaskEvent;
-import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.common.threading.event.TaskProgressEvent;
+import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.jfree.data.xy.AbstractXYDataset;
 
 @SuppressWarnings("serial")

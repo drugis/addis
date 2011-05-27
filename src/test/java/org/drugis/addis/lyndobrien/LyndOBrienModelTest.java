@@ -34,8 +34,8 @@ import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.common.threading.event.TaskEvent;
-import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.common.threading.event.TaskProgressEvent;
+import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.junit.Before;
 import org.junit.Test;
 

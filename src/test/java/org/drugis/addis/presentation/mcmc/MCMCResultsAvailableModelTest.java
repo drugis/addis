@@ -24,8 +24,8 @@
 
 package org.drugis.addis.presentation.mcmc;
 
-import static org.junit.Assert.*;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
 

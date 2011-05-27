@@ -28,7 +28,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
-import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
 import org.drugis.common.Interval;
 import org.drugis.common.StudentTTable;
 import org.junit.Before;

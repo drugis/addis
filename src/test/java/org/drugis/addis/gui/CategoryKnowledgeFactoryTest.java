@@ -24,7 +24,7 @@
 
 package org.drugis.addis.gui;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;

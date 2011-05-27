@@ -36,7 +36,7 @@ public class D80ReportView extends JDialog {
 		builder.setDefaultDialogBorder();
 		
 		// Editor pane
-		d_htmlPane = new JLabel(D80TableGenerator.getHtml());	
+		d_htmlPane = new JLabel(D80TableGenerator.getTemplate());	
 		builder.add(d_htmlPane, cc.xy(1, 1));		
 		
 		// Buttons

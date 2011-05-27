@@ -31,6 +31,31 @@
 	.bold {
 		font-weight:bold;
 	}
+	table.nested {
+		width:100%;
+		padding:0px;
+		margin:0px;
+		border-width: 0px;
+		border-style: none;
+		border-collapse: collapse;
+	}
+	table.nested td {
+		padding:0px;
+		margin:0px;
+		border-width: 0px;
+		border-style: none;
+		border-collapse: collapse;
+	}
+	table.nested td.left {
+	/*
+	this does not render in java
+	you can't see this in the firefox template 'cause of the template names
+	one solution would be to wrap the content in a paragraph
+	*/
+		border-width: 0px 1px 0px 0px;
+		border-style: solid;
+		background-color
+	}
   </style>
 </head>
 <body>
@@ -42,7 +67,7 @@
     </tr>
     <tr>
       <td>Study identifier</td>
-      <td colspan='4'>&lt;code&gt;</td>
+      <td colspan='4'>$_study_id_$</td>
     </tr>
     <tr>
       <td rowspan='4'>Design</td>
@@ -50,48 +75,47 @@
     </tr>
     <tr>
       <td>Duration of main phase:</td>
-      <td colspan='3'>&lt;time&gt;</td>
+      <td colspan='3'>$_main_phase_$</td>
     </tr>
     <tr>
       <td>Duration of Run-in phase:</td>
-      <td colspan='3'>&lt;time&gt; &lt;not applicable&gt;</td>
+      <td colspan='3'>$_run_in_phase_$</td>
     </tr>
     <tr>
       <td>Duration of Extension phase:</td>
-      <td colspan='3'>&lt;time&gt; &lt;not applicable&gt;</td>
+      <td colspan='3'>$_extension_phase_$</td>
     </tr>
     <tr>
       <td>Hypothesis</td>
       <td colspan='4'>&lt;Superiority&gt; &lt;Equivalence&gt; &lt;Non-inferiority&gt; &lt;Exploratory: specify&gt;</td>
     </tr>
     <tr>
-      <td rowspan='3'>Treatments groups</td>
-      <td>&lt;group descriptor&gt;</td>
-      <td colspan='3'>&lt;treatment&gt; &lt;duration&gt; &lt;number&gt; &lt;randomized&gt;</td>
+      <td>Treatments groups</td>
+      <td colspan='4'>
+	<table class='nested'>
+	    $_arms_:{ it|
+	    <tr>
+		<td class='left'>$it.name$</td>
+	        <td>$it.treatment$ &nbsp; $it.duration$ &nbsp; $it.nrRandomized$</td>
+	    </tr>
+	    }$
+	</table>
+      </td>
+      
     </tr>
     <tr>
-      <td>&lt;group descriptor&gt;</td>
-      <td colspan='3'>&lt;treatment&gt; &lt;duration&gt; &lt;number&gt; &lt;randomized&gt;</td>
-    </tr>
-    <tr>
-      <td>&lt;group descriptor&gt;</td>
-      <td colspan='3'>&lt;treatment&gt; &lt;duration&gt; &lt;number&gt; &lt;randomized&gt;</td>
-    </tr>
-    <tr>
-      <td rowspan='3'>Endpoints and definitions</td>
-      <td>&lt;Co-&gt;Primary endpoint</td>
-      <td>&lt;label&gt;</td>
-      <td colspan='2'>&lt;free text&gt;</td>
-    </tr>
-    <tr>
-      <td>&lt;Secondary&gt; &lt;other: specify&gt; endpoint </td>
-      <td>&lt;label&gt;</td>
-      <td colspan='2'>&lt;free text&gt;</td>
-    </tr>
-    <tr>
-      <td>&lt;Secondary&gt; &lt;other: specify&gt; endpoint </td>
-      <td>&lt;label&gt;</td>
-      <td colspan='2'>&lt;free text&gt;</td>
+      <td>Endpoints and definitions</td>
+      <td colspan='4'>
+	<table class='nested'>
+	    $_endpoints_:{ it|
+	    <tr>
+		<td class='left'>&lt;primary / secondary&gt;</td>
+	        <td class='left'>$it.name$</td>
+		<td>&lt;free text&gt;</td>
+	    </tr>
+	    }$
+	</table>
+      </td>
     </tr>
     <tr>
       <td>Database lock</td>

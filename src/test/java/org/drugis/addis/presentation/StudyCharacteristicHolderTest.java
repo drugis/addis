@@ -25,16 +25,15 @@
 package org.drugis.addis.presentation;
 
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 
-import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MapBean;
-import org.drugis.addis.presentation.StudyCharacteristicHolder;
+import org.drugis.addis.entities.Study;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;

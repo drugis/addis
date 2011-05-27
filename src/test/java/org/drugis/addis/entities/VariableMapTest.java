@@ -24,7 +24,7 @@
 
 package org.drugis.addis.entities;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
 

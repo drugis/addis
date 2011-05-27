@@ -30,7 +30,6 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
 import org.drugis.common.JUnitUtil;
 import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.MCMCResults;

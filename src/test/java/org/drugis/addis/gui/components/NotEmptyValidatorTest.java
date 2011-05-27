@@ -24,14 +24,13 @@
 
 package org.drugis.addis.gui.components;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
-
-import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.junit.Before;
 import org.junit.Test;
 
