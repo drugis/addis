@@ -526,7 +526,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private boolean orphanKey(MeasurementKey k) {
 		// OutcomeMeasure measurement
 		if (k.d_variable instanceof OutcomeMeasure) {
-			if (!getOutcomeMeasures().contains(k.d_variable)) {
+			if (!getAdverseEvents().contains(new StudyOutcomeMeasure<Variable>(k.d_variable))
+					&& !getEndpoints().contains(new StudyOutcomeMeasure<Variable>(k.d_variable))
+					&& !getPopulationChars().contains(new StudyOutcomeMeasure<Variable>(k.d_variable)) ) {
 				return true;
 			}
 			if (!d_arms.contains(k.d_arm)){
