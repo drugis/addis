@@ -110,7 +110,7 @@ public class D80TableGenerator {
 		return ep;
 	}
 	
-	private static String getHtml(Study study) {
+	public static String getHtml(Study study) {
 		return (new D80TableGenerator(study)).render();
 	}
 	

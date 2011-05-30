@@ -102,7 +102,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		d80Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				D80ReportView view = new D80ReportView(d_parent);
+				D80ReportView view = new D80ReportView(d_parent, d_model.getBean());
 				view.setVisible(true);
 			}
 		});
