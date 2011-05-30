@@ -2,6 +2,11 @@ package org.drugis.addis.gui.builder;
 
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -36,15 +41,29 @@ public class D80ReportView extends JDialog {
 		builder.setDefaultDialogBorder();
 		
 		// Editor pane
-		d_htmlPane = new JLabel(D80TableGenerator.getTemplate());	
+		final String D80Report = D80TableGenerator.getTemplate();
+		d_htmlPane = new JLabel(D80Report);	
 		builder.add(d_htmlPane, cc.xy(1, 1));		
 		
-		// Buttons
+		// Buttons Panel
 		JPanel buttonsPanel = new JPanel();
-		buttonsPanel.add(new JButton("Export table as html"));
-		buttonsPanel.add(new JButton("Copy table to clip board"));
-		builder.add(buttonsPanel, cc.xy(1, 3));
+		// Export button
+		JButton exportButton = new JButton("Export table as html");
+		buttonsPanel.add(exportButton);
 		
+		// Copy to clipboard button
+		JButton clipboardButton = new JButton("Copy table to clip board");
+		clipboardButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				StringSelection data = new StringSelection(D80Report);
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clipboard.setContents(data, data);
+			}
+		});
+		buttonsPanel.add(clipboardButton);
+		builder.add(buttonsPanel, cc.xy(1, 3));
+		// add everything to a scrollpane
 		JScrollPane scrollPane = new JScrollPane(builder.getPanel());
 		scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
 		scrollPane.getVerticalScrollBar().setUnitIncrement(6);
