@@ -6,6 +6,9 @@
 		padding:0;
 		margin:0;
 	}
+	.bold {
+		font-weight:bold;
+	}
 	table {
 		padding:0;
 		margin:0;
@@ -27,9 +30,6 @@
 	}
 	td.first {
 		width:20%;
-	}
-	.bold {
-		font-weight:bold;
 	}
 	table.nested {
 		width:100%;
@@ -121,66 +121,38 @@
       <td>Database lock</td>
       <td colspan='4'>&lt;date&gt;</td>
     </tr>
-    <tr>
+    <tr class='bold'>
       <td colspan='5'>Results and Analysis</td>
     </tr>
     <tr>
       <td>Analysis description</td>
-      <td colspan='4'>Primary Analysis</td>
+      <td colspan='4'>&lt;description&gt;</td>
     </tr>
     <tr>
       <td>Analysis population and time point description</td>
       <td colspan='4'>&lt;Intent to treat&gt; &lt;Per protocol&gt; &lt;other specify&gt; &lt;time point&gt;</td>
     </tr>
     <tr>
-      <td rowspan='8'>Descriptive statistics and estimate variability</td>
-      <td>&lt;Treatment group&gt;</td>
-      <td>&lt;group descriptor&gt;</td>
-      <td>&lt;group descriptor&gt;</td>
-      <td>&lt;group descriptor&gt;</td>
+      <td rowspan='$_colspan_statistics_$'>Descriptive statistics and estimate variability</td>
+      <td>Treatment group</td>
+	$_arms_:{ it|
+      	<td>$it.treatment$</td>
+	}$
     </tr>
     <tr>
-      <td>Number of subjects</td>
-      <td>&lt;n&gt;</td>
-      <td>&lt;n&gt;</td>
-      <td>&lt;n&gt;</td>
+      <td>Number randomized</td>
+	$_arms_:{ it|
+      <td>$it.nrRandomized$</td>
+	}$
     </tr>
+	$_endpoints_:{ ep|
     <tr>
-      <td>&lt;endpoint&gt;(&lt;statistic&gt;)</td>
-      <td>&lt;point estimate&gt;</td>
-      <td>&lt;point estimate&gt;</td>
-      <td>&lt;point estimate&gt;</td>
+      <td>$ep.name$</td>
+	$ep.measurements:{ ms|
+      <td>$ms$ /</td>
+	}$
     </tr>
-    <tr>
-      <td>&lt;variability statistic&gt;</td>
-      <td>&lt;variability&gt;</td>
-      <td>&lt;variability&gt;</td>
-      <td>&lt;variability&gt;</td>
-    </tr>
-    <tr>
-      <td>&lt;endpoint&gt;(&lt;statistic&gt;)</td>
-      <td>&lt;point estimate&gt;</td>
-      <td>&lt;point estimate&gt;</td>
-      <td>&lt;point estimate&gt;</td>
-    </tr>
-    <tr>
-      <td>&lt;variability statistic&gt;</td>
-      <td>&lt;variability&gt;</td>
-      <td>&lt;variability&gt;</td>
-      <td>&lt;variability&gt;</td>
-    </tr>
-    <tr>
-      <td>&lt;endpoint&gt;(&lt;statistic&gt;)</td>
-      <td>&lt;point estimate&gt;</td>
-      <td>&lt;point estimate&gt;</td>
-      <td>&lt;point estimate&gt;</td>
-    </tr>
-    <tr>
-      <td>&lt;variability statistic&gt;</td>
-      <td>&lt;variability&gt;</td>
-      <td>&lt;variability&gt;</td>
-      <td>&lt;variability&gt;</td>
-    </tr>
+	}$
     <tr>
       <td rowspan='12'>Effect estimate per comparison</td>
       <td rowspan='4'>&lt;Co-&gt;Primary &lt;secondary&amp;&gt; &lt;other: specify&gt; endpoint</td>

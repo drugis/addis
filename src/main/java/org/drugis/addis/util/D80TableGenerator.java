@@ -3,6 +3,8 @@ package org.drugis.addis.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -37,6 +39,7 @@ public class D80TableGenerator {
 		processor.add("_extension_phase_",  getEpochDuration(extensionPhase));
 		processor.add("_arms_", getArms());
 		processor.add("_endpoints_", getEndpoints());
+		processor.add("_colspan_statistics_", d_study.getEndpoints().size() + 2);
 
 		return processor.render();
 	}
@@ -99,6 +102,13 @@ public class D80TableGenerator {
 		}
 		public String getDescription() {
 			return d_endpoint.getDescription();
+		}
+		public String[] getMeasurements() {
+			List<String> ms = new ArrayList<String>();
+			for (Arm a : d_study.getArms()) {
+				ms.add(d_study.getMeasurement(d_endpoint, a).toString());
+			}
+			return ms.toArray(new String[0]);
 		}
 	}
 	
