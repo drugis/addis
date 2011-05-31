@@ -48,7 +48,7 @@ import com.sun.java.components.TableSorter;
 public class NetworkMetaAnalysisTablePanel extends TablePanel {
 	
 	public NetworkMetaAnalysisTablePanel(JFrame parent, NetworkTableModel networkAnalysisTableModel) {
-		super(new EnhancedTable(networkAnalysisTableModel));
+		super(new JTable(networkAnalysisTableModel));
 		d_table.setDefaultRenderer(Object.class, new NetworkTableCellRenderer());
 		d_table.setTableHeader(null);
 	}
@@ -68,7 +68,8 @@ public class NetworkMetaAnalysisTablePanel extends TablePanel {
 			}
 			label.setOpaque(true);
 			
-			TableModel model = ((TableSorter) table.getModel()).getTableModel();
+//			TableModel model = ((TableSorter) table.getModel()).getTableModel();
+			TableModel model = table.getModel();
 			if (model instanceof NetworkTableModel) { // FIXME: Extract TableModelWithDescriptionAt interface
 				NetworkTableModel networkTableModel = (NetworkTableModel) model;
 				if (networkTableModel.getDescriptionAt(row, col) != null) {
