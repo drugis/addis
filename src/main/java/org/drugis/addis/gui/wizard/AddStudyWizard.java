@@ -33,6 +33,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
@@ -655,6 +657,28 @@ public class AddStudyWizard extends Wizard {
 			d_table = new MeasurementTable(tableModel, d_dialog);
 			d_scrollPane = new JScrollPane(d_table);
 			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+			d_scrollPane.addMouseListener(new MouseListener() {
+				@Override
+				public void mouseReleased(MouseEvent e) {
+				}
+				
+				@Override
+				public void mousePressed(MouseEvent e) {
+				}
+				
+				@Override
+				public void mouseExited(MouseEvent e) {
+				}
+				
+				@Override
+				public void mouseEntered(MouseEvent e) {
+				}
+				
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					d_table.destroyInputWindow();
+				}
+			});
 			
 			add(d_scrollPane, BorderLayout.CENTER);
 		}

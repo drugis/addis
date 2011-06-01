@@ -93,12 +93,16 @@ abstract public class JTableWithPopupEditor extends JTable {
 		// Make sure the window closes when our hidden field gains focus
 		d_hidden = new JLabel();
 		d_hidden.setFocusable(true);
-		d_hidden.addFocusListener(new FocusAdapter() {
+		FocusAdapter destroyInputListener = new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent ev) {
 				destroyInputWindow();
 			}
-		});
+		};
+		d_hidden.addFocusListener(destroyInputListener);
+		
+		d_parent.addFocusListener(destroyInputListener);
+		addFocusListener(destroyInputListener);
 		
 		this.addAncestorListener(new AncestorListener() {
 			public void ancestorRemoved(AncestorEvent event) {
