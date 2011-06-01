@@ -113,17 +113,7 @@ public class StudyActivityPresentation {
 		if (d_newActivity.getName() == null || d_newActivity.getName().equals("")) {
 			return false;
 		}
-		Activity activity = d_newActivity.getActivity();
-		if (activity == null) {
-			return false;
-		}
-		if (activity instanceof TreatmentActivity) {
-			TreatmentActivity ta = (TreatmentActivity) activity;
-			if(ta.getDrug() == null || ta.getDose() == null) {
-				return false;
-			}
-		}
-		return true;
+		return d_newActivity.isComplete();
 	}
 	
 	private boolean isNameUnique() {

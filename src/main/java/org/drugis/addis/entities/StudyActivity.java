@@ -159,4 +159,18 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 		return d_activity instanceof TreatmentActivity ? ((TreatmentActivity) d_activity).clone() : d_activity;
 	}
 
+
+	public boolean isComplete() {
+		if (d_activity == null) {
+			return false;
+		}
+		if (d_activity instanceof TreatmentActivity) {
+			TreatmentActivity ta = (TreatmentActivity) d_activity;
+			if(ta.getDrug() == null || ta.getDose() == null) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 }

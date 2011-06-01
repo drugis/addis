@@ -81,7 +81,6 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
 import org.drugis.addis.FileNames;
-import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -95,7 +94,6 @@ import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
-import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
@@ -292,7 +290,7 @@ public class AddStudyWizard extends Wizard {
 
 			private boolean areDrugAndDoseFilledIn() {
 				for (StudyActivity act : d_list.getList()) {
-					if (!properlyFilledIn(act)) {
+					if (!act.isComplete()) {
 						return false;
 					}
 				}
@@ -426,7 +424,7 @@ public class AddStudyWizard extends Wizard {
 					StudyActivity sa = (StudyActivity)value;
 					JComponent listCellRendererComponent = (JComponent) super.getListCellRendererComponent(list, sa.getName(), 
 									index, isSelected, cellHasFocus);
-					if(!properlyFilledIn(sa)) {
+					if(!sa.isComplete()) {
 						listCellRendererComponent.setBorder(BorderFactory.createLineBorder(Color.RED));
 						listCellRendererComponent.setForeground(Color.RED);
 					}
@@ -447,20 +445,6 @@ public class AddStudyWizard extends Wizard {
 			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		
 			add(d_scrollPane, BorderLayout.CENTER);
-		}
-
-		private boolean properlyFilledIn(StudyActivity act) {
-			Activity activity = act.getActivity();
-			if (activity == null) {
-				return false;
-			}
-			if (activity instanceof TreatmentActivity) {
-				TreatmentActivity ta = (TreatmentActivity) activity;
-				if(ta.getDrug() == null || ta.getDose() == null) {
-					return false;
-				}
-			}
-			return true;
 		}
 
 		private void createArmsAndEpochsTable(CellConstraints cc) {

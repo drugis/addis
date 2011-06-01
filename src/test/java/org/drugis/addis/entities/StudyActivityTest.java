@@ -150,4 +150,15 @@ public class StudyActivityTest {
 		assertTrue(d_main.deepEquals(d_main.clone()));
 	}
 	
+	@Test
+	public void testIsComplete() {
+		assertFalse(d_undefined.isComplete());
+		assertTrue(d_randomization.isComplete());
+		assertTrue(d_main.isComplete());
+		d_main.setActivity(new TreatmentActivity(null, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY)));
+		assertFalse(d_main.isComplete());
+		d_main.setActivity(new TreatmentActivity(d_fluoxetine, null));		
+		assertFalse(d_main.isComplete());
+	}
+	
 }
