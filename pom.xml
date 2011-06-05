@@ -72,23 +72,23 @@
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc-test</artifactId>
-			<version>0.8.1-SNAPSHOT</version>
+			<version>0.8.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc-mcmc</artifactId>
-			<version>0.8.1-SNAPSHOT</version>
+			<version>0.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc-model</artifactId>
-			<version>0.8.1-SNAPSHOT</version>
+			<version>0.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc-lib</artifactId>
-			<version>0.8.1-SNAPSHOT</version>
+			<version>0.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
