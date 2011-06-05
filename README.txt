@@ -17,6 +17,9 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
+1.6.1: Performance improvements for network meta-analysis, rank
+   probability table.
+
 1.6: User interface improvements, risk-based sampling in MetaBR, new
    schema-based XML format, added note taking in study wizard.
 
