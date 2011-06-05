@@ -345,7 +345,7 @@ implements ViewBuilder {
 	
 	private JComponent buildConsistencyTab() {
 		FormLayout layout = new FormLayout("pref, 3dlu, fill:0:grow",
-		"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+		"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();
 		CellConstraints cc =  new CellConstraints();
@@ -385,11 +385,13 @@ implements ViewBuilder {
 		builder.add(createRankProbChart(), cc.xyw(1, row, 3));
 		row += 2;
 		
-		EnhancedTable varianceTable = new EnhancedTable(new NetworkVarianceTableModel(d_pm, consistencyModel), 300);
-		varianceTable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
+		builder.add(createRankProbTable(), cc.xyw(1, row, 3));
+		row += 2;
 		
 		builder.addSeparator("Variance Parameters", cc.xyw(1, row, 3));
 		row += 2;
+		EnhancedTable varianceTable = new EnhancedTable(new NetworkVarianceTableModel(d_pm, consistencyModel), 300);
+		varianceTable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());		
 		builder.add(new TablePanel(varianceTable), cc.xyw(1, row, 3));
 		row += 2;
 		
@@ -571,6 +573,12 @@ implements ViewBuilder {
 		builder.add(bbuilder.getPanel(), cc.xy(1, 3));
 
 		return builder.getPanel();
+	}
+	
+	private JComponent createRankProbTable() {
+		EnhancedTable table = new EnhancedTable(d_pm.getRankProbabilityTableModel());
+		table.setDefaultRenderer(Double.class, new SummaryCellRenderer());
+		return new TablePanel(table);
 	}
 
 	private JButton createSaveImageButton(final JFreeChart chart) {

@@ -26,23 +26,23 @@ package org.drugis.addis.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.Collections;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.LabeledPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.sun.java.components.TableSorter;
 
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisTablePanel extends TablePanel {
@@ -51,8 +51,17 @@ public class NetworkMetaAnalysisTablePanel extends TablePanel {
 		super(new JTable(networkAnalysisTableModel));
 		d_table.setDefaultRenderer(Object.class, new NetworkTableCellRenderer());
 		d_table.setTableHeader(null);
+		setColumnWidths();
 	}
 	
+	private void setColumnWidths() {
+		d_table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		for (TableColumn c : Collections.list(d_table.getColumnModel().getColumns())) {
+			c.setMinWidth(170);
+			c.setPreferredWidth(170);
+		}
+	}
+
 	static class NetworkTableCellRenderer implements TableCellRenderer {
 		public Component getTableCellRendererComponent(JTable table,
 				Object val, boolean isSelected, boolean hasFocus, int row, int col) {
@@ -68,9 +77,8 @@ public class NetworkMetaAnalysisTablePanel extends TablePanel {
 			}
 			label.setOpaque(true);
 			
-//			TableModel model = ((TableSorter) table.getModel()).getTableModel();
 			TableModel model = table.getModel();
-			if (model instanceof NetworkTableModel) { // FIXME: Extract TableModelWithDescriptionAt interface
+			if (model instanceof NetworkTableModel) {
 				NetworkTableModel networkTableModel = (NetworkTableModel) model;
 				if (networkTableModel.getDescriptionAt(row, col) != null) {
 					label.setToolTipText(networkTableModel.getDescriptionAt(row, col));

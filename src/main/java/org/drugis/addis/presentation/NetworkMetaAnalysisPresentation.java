@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.table.TableModel;
+
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
@@ -105,6 +107,11 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	public CategoryDataset getRankProbabilityDataset() {
 		return new RankProbabilityDataset(getBean().getRankProbabilities());
 	}
+	
+
+	public TableModel getRankProbabilityTableModel() {
+		return new RankProbabilityTableModel(getBean().getRankProbabilities());
+	}
 
 	public ValueHolder<Boolean> getInconsistencyModelConstructedModel() {
 		return d_inconsistencyModelConstructed;
@@ -172,5 +179,4 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	public boolean isContinuous() {
 		return getBean().isContinuous();
 	}
-
 }
