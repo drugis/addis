@@ -125,8 +125,8 @@
       <td colspan='5'>Results and Analysis</td>
     </tr>
     <tr>
-      <td>Analysis description</td>
-      <td colspan='4'>&lt;description&gt;</td>
+      <td class='bold'>Analysis description</td>
+      <td colspan='4' class='bold'>Primary Analysis</td>
     </tr>
     <tr>
       <td>Analysis population and time point description</td>
@@ -136,11 +136,11 @@
       <td rowspan='$_colspan_statistics_$'>Descriptive statistics and estimate variability</td>
       <td>Treatment group</td>
 	$_arms_:{ it|
-      	<td>$it.treatment$</td>
+      	<td>$it.name$</td>
 	}$
     </tr>
     <tr>
-      <td>Number randomized</td>
+      <td>Number of subject</td>
 	$_arms_:{ it|
       <td>$it.nrRandomized$</td>
 	}$
@@ -149,62 +149,41 @@
     <tr>
       <td>$ep.name$</td>
 	$ep.measurements:{ ms|
-      <td>$ms$ /</td>
+      <td>$ms$</td>
 	}$
     </tr>
 	}$
+	
+	<!-- effect estimates -->
     <tr>
-      <td rowspan='12'>Effect estimate per comparison</td>
-      <td rowspan='4'>&lt;Co-&gt;Primary &lt;secondary&amp;&gt; &lt;other: specify&gt; endpoint</td>
+      <td rowspan='$_rowdata_arms_$'>Effect estimate per comparison</td>
+	$_endpoints_:{ep| <!-- start endpoints -->
+      <td rowspan='4'>$ep.name$</td>
       <td>Comparison groups</td>
-      <td colspan='2'>&lt;group descriptors&gt;</td>
+      $rest(_arms_):{arm|
+        <td>$arm.name$</td>
+      }$ <!-- arms -->
     </tr>
     <tr>
       <td>&lt;test statistic&gt;</td>
-      <td colspan='2'>&lt;point estimate&gt;</td>
+      $rest(_arms_):{arm|
+        <td>$arm.name$</td>
+      }$ <!-- arms -->
     </tr>
     <tr>
       <td>&lt;variability statistic&gt;</td>
-      <td colspan='2'>&lt;variability&gt;</td>
+      $rest(_arms_):{arm|
+        <td>$arm.name$</td>
+      }$ <!-- arms -->
     </tr>
     <tr>
-      <td>&lt;P-value&gt;</td>
-      <td colspan='2'>P-value</td>
+      <td>P-value</td>
+      $rest(_arms_):{arm|
+        <td>$arm.name$</td>
+      }$ <!-- arms -->
     </tr>
-    <tr>
-      <td rowspan='4'>&lt;Co-&gt;Primary &lt;secondary&amp;&gt; &lt;other: specify&gt; endpoint</td>
-      <td>Comparison groups</td>
-      <td colspan='2'>&lt;group descriptors&gt;</td>
-    </tr>
-    <tr>
-      <td>&lt;test statistic&gt;</td>
-      <td colspan='2'>&lt;point estimate&gt;</td>
-    </tr>
-    <tr>
-      <td>&lt;variability statistic&gt;</td>
-      <td colspan='2'>&lt;variability&gt;</td>
-    </tr>
-    <tr>
-      <td>&lt;P-value&gt;</td>
-      <td colspan='2'>P-value</td>
-    </tr>
-    <tr>
-      <td rowspan='4'>&lt;Co-&gt;Primary &lt;secondary&amp;&gt; &lt;other: specify&gt; endpoint</td>
-      <td>Comparison groups</td>
-      <td colspan='2'>&lt;group descriptors&gt;</td>
-    </tr>
-    <tr>
-      <td>&lt;test statistic&gt;</td>
-      <td colspan='2'>&lt;point estimate&gt;</td>
-    </tr>
-    <tr>
-      <td>&lt;variability statistic&gt;</td>
-      <td colspan='2'>&lt;variability&gt;</td>
-    </tr>
-    <tr>
-      <td>&lt;P-value&gt;</td>
-      <td colspan='2'>P-value</td>
-    </tr>
+    }$ <!-- endpoints -->
+
     <tr>
       <td>Notes</td>
       <td colspan='4'>&lt;free text&gt;</td>

@@ -29,8 +29,11 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -42,6 +45,7 @@ import org.drugis.addis.entities.StudyCharacteristics;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.NoteViewButton;
 import org.drugis.addis.presentation.StudyPresentation;
+import org.drugis.common.BrowserLaunch;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -98,7 +102,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		row = LayoutUtil.addRow(layout, row);
 		builder.addSeparator("", cc.xyw(1, row, fullWidth));
 		
-		JButton d80Button = new JButton("View D80 Report", ImageLoader.getIcon(FileNames.ICON_FILE_NEW));
+		JButton d80Button = new JButton("Summary of Efficacy Table", ImageLoader.getIcon(FileNames.ICON_FILE_NEW));
 		d80Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -108,8 +112,21 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		});
 		
 		row = LayoutUtil.addRow(layout, row);
-		builder.add(d80Button, cc.xyw(1, row, 3));
-		builder.add(new JLabel("Description of D80 Report here"), cc.xy(5, row));
+		builder.add(d80Button, cc.xy(5, row));
+		row = LayoutUtil.addRow(layout, row);
+		String str = "<html>Display the Summary of Efficacy Table according to the <a href='http://www.ema.europa.eu/ema/index.jsp?curl=pages/regulation/general/general_content_000121.jsp'>EMA D80</a> Clinical report template</html>";
+		JEditorPane jep = new JEditorPane("text/html", str);
+		jep.setEditable(false);
+		jep.setOpaque(false);
+		jep.addHyperlinkListener(new HyperlinkListener() {
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent e) {
+				if(HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
+					BrowserLaunch.openURL(e.getURL().toExternalForm());
+				}
+			}
+		});
+		builder.add(jep, cc.xy(5, row));
 		
 		return builder.getPanel();
 	}

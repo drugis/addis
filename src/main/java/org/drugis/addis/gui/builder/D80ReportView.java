@@ -34,7 +34,7 @@ public class D80ReportView extends JDialog {
 	private final Study d_study;
 
 	public D80ReportView(Frame owner, Study study) {
-		super(owner, "D80 Report Dialog", false);
+		super(owner, "Summary of Efficacy Table", false);
 		d_study = study;
 		setMinimumSize(new Dimension(owner.getWidth()/4*3, owner.getHeight()/4*3));
 		//setResizable(false);
@@ -68,7 +68,7 @@ public class D80ReportView extends JDialog {
 		buttonsPanel.add(exportButton);
 		
 		// Copy to clipboard button
-		JButton clipboardButton = new JButton("Copy table to clip board");
+		JButton clipboardButton = new JButton("Copy table to clipboard");
 		clipboardButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

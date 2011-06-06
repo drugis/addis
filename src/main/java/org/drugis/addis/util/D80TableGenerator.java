@@ -34,6 +34,7 @@ public class D80TableGenerator {
 		processor.add("_arms_", getArms());
 		processor.add("_endpoints_", getEndpoints());
 		processor.add("_colspan_statistics_", d_study.getEndpoints().size() + 2);
+		processor.add("_rowdata_arms_", getEndpoints().length * 4);
 
 		return processor.render();
 	}
@@ -43,7 +44,7 @@ public class D80TableGenerator {
 			EpochDurationPresentation pm = new EpochDurationPresentation(epoch);
 			return pm.getLabel();
 		}
-		return "&lt;time&gt;";
+		return "&lt;duration&gt;";
 	}
 	
 	@SuppressWarnings("unused")
