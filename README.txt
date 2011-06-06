@@ -17,7 +17,8 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
-1.7: Input study design (time structure), allow missing measurements.
+1.7: Input study design (time structure), allow missing measurements,
+   generate summary of efficacy table according to EMA D80 template.
 
 1.6.1: Performance improvements for network meta-analysis, rank
    probability table.
