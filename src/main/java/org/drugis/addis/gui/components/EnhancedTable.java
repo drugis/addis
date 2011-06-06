@@ -41,21 +41,44 @@ import com.sun.java.components.TableSorter;
 @SuppressWarnings("serial")
 public class EnhancedTable extends JTable {
 	
-	private EnhancedTableHeader d_tableHeader;
-
-	public EnhancedTable(TableModel model) {
-		super(model);
-		setDefaultRenderer(Object.class, new MyRenderer());		
-		d_tableHeader = new TooltipTableHeader(model, getColumnModel(), this);
-		setTableHeader(d_tableHeader);
-		setPreferredScrollableViewportSize(getPreferredSize());
-		setBackground(Color.WHITE);
-		autoSizeColumns();
-		setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+	/**
+	 * Create an Enhanced table with a default sorter and cell renderer, and then auto size the columns.
+	 * Note: this is pretty dangerous as the "default" renderer may not be appropriate and result in weird behavior from the auto-sizer.
+	 * @param model The table model.
+	 * @return A fully initialized EnhancedTable.
+	 */
+	@Deprecated
+	public static EnhancedTable createWithSorterAndAutoSize(TableModel model) {
+		EnhancedTable enhancedTable = new EnhancedTable(model);
 		
 		TableSorter sort = new TableSorter(model);
-		sort.setTableHeader(getTableHeader());
-		setModel(sort);
+		sort.setTableHeader(enhancedTable.getTableHeader());
+		enhancedTable.setModel(sort);
+		
+		enhancedTable.setDefaultRenderer(Object.class, new MyRenderer());
+		enhancedTable.autoSizeColumns();
+		enhancedTable.setPreferredScrollableViewportSize(enhancedTable.getPreferredSize());
+		
+		return enhancedTable;
+	}
+	
+	/**
+	 * Create a "bare" enhancedTable. You need to call autoSizeColumns() yourself.
+	 * @param model The table model.
+	 * @return A fully initialized EnhancedTable.
+	 */
+	public static EnhancedTable createBare(TableModel model) {
+		return new EnhancedTable(model);
+	}
+
+	private EnhancedTableHeader d_tableHeader;
+
+	private EnhancedTable(TableModel model) {
+		super(model);
+		d_tableHeader = new TooltipTableHeader(model, getColumnModel(), this);
+		setTableHeader(d_tableHeader);
+		setBackground(Color.WHITE);
+		setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		TableCopyHandler.registerCopyAction(this);
 	}
 	
@@ -81,7 +104,7 @@ public class EnhancedTable extends JTable {
 		autoSizeColumns();
 	}
 	
-	private class MyRenderer extends DefaultTableCellRenderer {
+	private static class MyRenderer extends DefaultTableCellRenderer {
 		
 		@Override
 		public void setValue(Object value) {

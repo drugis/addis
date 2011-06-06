@@ -74,8 +74,8 @@ import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EmpiricalDensityDataset;
-import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
 import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
+import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
@@ -484,7 +484,7 @@ implements ViewBuilder {
 	private JComponent buildNodeSplitResultsTable() {
 		NodeSplitResultsTableModel tableModel = new NodeSplitResultsTableModel(d_pm);
 		
-		EnhancedTable table = new EnhancedTable(tableModel);
+		EnhancedTable table = EnhancedTable.createWithSorterAndAutoSize(tableModel);
 		table.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
 		table.setDefaultRenderer(NodeSplitPValueSummary.class, new SummaryCellRenderer());
 		return new TablePanel(table);
@@ -518,7 +518,7 @@ implements ViewBuilder {
 
 	private JComponent buildConvergenceTable(final MixedTreatmentComparison mtc, ValueHolder<Boolean> modelConstructed) {
 		ConvergenceDiagnosticTableModel tableModel = new ConvergenceDiagnosticTableModel(mtc, modelConstructed);
-		EnhancedTable convergenceTable = new EnhancedTable(tableModel);
+		EnhancedTable convergenceTable = EnhancedTable.createWithSorterAndAutoSize(tableModel);
 		TablePanel pane = new TablePanel(convergenceTable);
 	
 		convergenceTable.addMouseListener(new MouseAdapter() {
@@ -576,8 +576,9 @@ implements ViewBuilder {
 	}
 	
 	private JComponent createRankProbTable() {
-		EnhancedTable table = new EnhancedTable(d_pm.getRankProbabilityTableModel());
+		EnhancedTable table = EnhancedTable.createBare(d_pm.getRankProbabilityTableModel());
 		table.setDefaultRenderer(Double.class, new SummaryCellRenderer());
+		table.autoSizeColumns();
 		return new TablePanel(table);
 	}
 
