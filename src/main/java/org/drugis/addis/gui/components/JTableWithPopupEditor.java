@@ -33,15 +33,19 @@ import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JWindow;
 import javax.swing.event.AncestorEvent;
@@ -104,7 +108,7 @@ abstract public class JTableWithPopupEditor extends JTable {
 		d_parent.addFocusListener(destroyInputListener);
 		addFocusListener(destroyInputListener);
 		
-		this.addAncestorListener(new AncestorListener() {
+		addAncestorListener(new AncestorListener() {
 			public void ancestorRemoved(AncestorEvent event) {
 				destroyInputWindow();
 			}
@@ -113,7 +117,15 @@ abstract public class JTableWithPopupEditor extends JTable {
 				positionWindow();
 			}
 			
-			public void ancestorAdded(AncestorEvent event) {
+			public void ancestorAdded(AncestorEvent e) {
+			}
+		});
+		addHierarchyListener(new HierarchyListener() {
+			@Override
+			public void hierarchyChanged(HierarchyEvent e) {
+				if(e.getChanged() instanceof JScrollPane) {
+					registerDestroyInputMouseListener(e.getChanged());
+				}
 			}
 		});
 	}
@@ -190,6 +202,31 @@ abstract public class JTableWithPopupEditor extends JTable {
 			d_window.setVisible(false);
 			d_window = null;
 		}
+	}
+
+	private void registerDestroyInputMouseListener(Component component) {
+		component.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				destroyInputWindow();
+			}
+		});
 	}
 	
 }

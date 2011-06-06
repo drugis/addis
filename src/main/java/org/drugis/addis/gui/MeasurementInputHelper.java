@@ -32,8 +32,6 @@ import java.util.List;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
 import javax.swing.text.DefaultFormatterFactory;
 
 import org.drugis.addis.entities.BasicContinuousMeasurement;
@@ -148,16 +146,6 @@ public class MeasurementInputHelper {
 
 	public static JFormattedTextField buildFormatted(ValueModel model, ValueModel disabledModel, AbstractFormatter formatter) {
 		final JFormattedTextField field = new JFormattedTextField(new DefaultFormatterFactory(formatter, formatter, formatter, formatter));
-		field.addCaretListener(new CaretListener() {
-			@Override
-			public void caretUpdate(CaretEvent e) {
-				try {
-					field.commitEdit();
-				} catch (ParseException e1) {
-					//FIXME: Should something be done here? Exceptions thrown seem to be benign.
-				}
-			}
-		});
 		PropertyConnector.connectAndUpdate(model, field, "value");
 		PropertyConnector.connectAndUpdate(ConverterFactory.createBooleanNegator(disabledModel), field, "enabled");
 		field.setColumns(5);

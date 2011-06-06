@@ -69,6 +69,7 @@ import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityCategory;
+import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.components.AddisScrollPane;
 import org.drugis.addis.gui.components.AddisTabbedPane;
@@ -347,7 +348,9 @@ public class AddisWindow extends JFrame {
 	
 	protected void editMenuAction() {
 		Entity selected = getSelectedEntity();
-		if (selected != null && selected instanceof Study) {
+		if (selected == null) {
+			
+		} else if (selected instanceof Study) {
 			Study study = (Study) selected;
 			if (getDomain().hasDependents(study)) {
 				JOptionPane.showMessageDialog(this,
@@ -357,7 +360,15 @@ public class AddisWindow extends JFrame {
 			} else {
 				showEditStudyWizard(study);
 			}
+		} else if (selected instanceof Indication) {
+			Indication indication = (Indication) selected;
+			showEditIndicationWizard(indication);
 		}
+	}
+
+	private void showEditIndicationWizard(Indication indication) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private JMenuItem createLoadItem() {
