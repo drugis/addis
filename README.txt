@@ -11,7 +11,7 @@ extracted by us from the original papers.
 Requirements
 ------------
 
-ADDIS is made in Java, and requires Java 5 (JRE 1.5) or newer. Most
+ADDIS is made in Java, and requires Java 6 (JRE 1.6) or newer. Most
 modern operating systems ship with a suitable JRE.
 
 Versions
@@ -63,7 +63,7 @@ external development / verification.
 
 In order to compile ADDIS, you need:
 
- - Java >= 1.5
+ - Java >= 1.6
  - Maven 2
  - Other dependencies should be downloaded automatically by Maven2
 
