@@ -76,6 +76,6 @@ public class MTCIT {
     	assertEquals(1, d_model.getInconsistencyFactors().size());
     	
     	for (Parameter p : d_model.getInconsistencyFactors()) 
-    		assertNotNull(d_model.getResults().getSamples(d_model.getResults().findParameter(p), 0));
+    		d_model.getResults().getSample(d_model.getResults().findParameter(p), 0, 0); // should not throw any error
     }
 }

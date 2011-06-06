@@ -53,7 +53,7 @@ public class AssertEntityEquals {
 		assertEquals(expected, actual);
 		assertEquals(expected.getType(),actual.getType());
 		assertEquals(expected.getDirection(),actual.getDirection());
-		assertEquals(expected.getDescription(),actual.getDescription());
+		assertEquals(expected.getDescription(), actual.getDescription());
 		assertEquals(expected.getUnitOfMeasurement(), actual.getUnitOfMeasurement());
 	}
 	

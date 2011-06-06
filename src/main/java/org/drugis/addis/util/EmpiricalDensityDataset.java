@@ -25,6 +25,7 @@
 package org.drugis.addis.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -105,11 +106,11 @@ public class EmpiricalDensityDataset extends AbstractXYDataset {
 	}
 
 	private void calcBounds(List<Integer> paramIndex) {
-		double[] samples = getSamples(paramIndex.get(0));
+		double[] samples = getSamplesArray(paramIndex.get(0));
 		d_bottom = s_p.evaluate(samples, 2.5);
 		d_top = s_p.evaluate(samples, 97.5);
 		for (int j : paramIndex.subList(1, paramIndex.size())) {
-			samples = getSamples(j);
+			samples = getSamplesArray(j);
 			d_bottom = Math.min(s_p.evaluate(samples, 2.5), d_bottom);
 			d_top = Math.max(s_p.evaluate(samples, 97.5), d_top);
 		}
@@ -120,10 +121,10 @@ public class EmpiricalDensityDataset extends AbstractXYDataset {
 	private void calcDensities(List<Integer> paramIndex) {
 		d_counts = new int[d_nSeries][d_nBins];
 		for (int j : paramIndex) {
-			double[] samples = getSamples(j);
-			double factor = samples.length * d_interval;
-			for (int i = 0; i < samples.length; ++i) {
-				double sample = samples[i];
+			List<Double> samples = getSamples(j);
+			double factor = samples.size() * d_interval;
+			for (int i = 0; i < samples.size(); ++i) {
+				double sample = samples.get(i);
 				if (sample >= d_bottom && sample < d_top) {
 					int idx = (int) ((sample - d_bottom) / d_interval);
 					++d_counts[j][idx];
@@ -135,7 +136,18 @@ public class EmpiricalDensityDataset extends AbstractXYDataset {
 		}
 	}
 
-	private double[] getSamples(int j) {
+	@Deprecated
+	private double[] getSamplesArray(int j) { // FIXME: eliminate
+		List<Double> list = getSamples(j);
+		double[] arr = new double[list.size()];
+		for (int i = 0; i < list.size(); ++i) {
+			arr[i] = list.get(i);
+		}
+		Arrays.sort(arr);
+		return arr;
+	}
+
+	private List<Double> getSamples(int j) {
 		return SummaryUtil.getAllChainsLastHalfSamples(d_results[j], d_parameters[j]);
 	}
 

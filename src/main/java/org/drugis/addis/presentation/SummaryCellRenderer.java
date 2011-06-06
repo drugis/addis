@@ -52,8 +52,14 @@ public class SummaryCellRenderer implements TableCellRenderer {
 			str = getQuantileSummaryString(cellContents);
 		} else if (cellContents instanceof NodeSplitPValueSummary) {
 			str = getNodeSplitPvalueString(cellContents);
+		} else if (cellContents instanceof Number) {
+			str = getDoubleString(cellContents);
 		}
 		return str;
+	}
+
+	private String getDoubleString(Object cellContents) {
+		return format((Double)cellContents);
 	}
 
 	private String getNodeSplitPvalueString(Object cellContents) {
