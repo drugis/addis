@@ -77,7 +77,6 @@ public class BasicRiskRatioTest {
 		d_newhouse = createStudy("Newhouse 2000", 84,119, 85,117);
 		d_sechter = createStudy("Sechter 1999", 76,120, 86,118);
 				
-		
 		d_ratioBennie = RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, d_fluox, d_sertra, BasicRiskRatio.class);
 		d_ratioBoyer = RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, d_fluox, d_sertra, BasicRiskRatio.class);
 		d_ratioFava = RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, d_fluox, d_sertra, BasicRiskRatio.class);
@@ -96,35 +95,38 @@ public class BasicRiskRatioTest {
 	}
 	
 	@Test
-	public void testGetConfidenceIntervalBennie() {
+	public void testStatisticsBennie() {
 		Interval<Double> ival = d_ratioBennie.getConfidenceInterval();
 		assertEquals(0.92, (ival.getLowerBound()), 0.01);
 		assertEquals(1.50, (ival.getUpperBound()), 0.01);
 	}
 	
 	@Test
-	public void testGetConfidenceIntervalBoyer() {
+	public void testGetStatisticsBoyer() {
 		Interval<Double> ival = d_ratioBoyer.getConfidenceInterval();
 		assertEquals(0.79, (ival.getLowerBound()), 0.01); 
-		assertEquals(1.30, (ival.getUpperBound()), 0.01); 
+		assertEquals(1.30, (ival.getUpperBound()), 0.01);
+		assertEquals(0.9003, d_ratioBoyer.getTwoSidedPValue(), 0.001);
 	}
 	
 	@Test
-	public void testGetConfidenceIntervalFava() {
+	public void testStatisticsFava() {
 		Interval<Double> ival = d_ratioFava.getConfidenceInterval();
 		assertEquals(0.96, (ival.getLowerBound()), 0.01); 
 		assertEquals(1.45, (ival.getUpperBound()), 0.01); 
+		assertEquals(0.1144, d_ratioFava.getTwoSidedPValue(), 0.001);
 	}
 	
 	@Test
-	public void testGetConfidenceIntervalNewhouse() {
+	public void testStatisticsNewhouse() {
 		Interval<Double> ival = d_ratioNewhouse.getConfidenceInterval();
 		assertEquals(0.87, (ival.getLowerBound()), 0.01); 
 		assertEquals(1.21, (ival.getUpperBound()), 0.01); 
+		assertEquals(0.7259, d_ratioNewhouse.getTwoSidedPValue(), 0.001);
 	}
 	
 	@Test
-	public void testGetConfidenceIntervalSechter() {
+	public void testStatisticsSechter() {
 		Interval<Double> ival = d_ratioSechter.getConfidenceInterval();
 		assertEquals(0.97, (ival.getLowerBound()), 0.01); 
 		assertEquals(1.38, (ival.getUpperBound()), 0.01); 

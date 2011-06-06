@@ -42,4 +42,9 @@ public class TransformedStudentT extends TransformedStudentTBase {
 	public double getCumulativeProbability(double x) {
 		return calculateCumulativeProbability(x);
 	}
+	
+	@Override
+	public String toString() {
+		return "StudentT(mu=" + getMu() + ", sigma=" + getSigma() + ", df=" + getDegreesOfFreedom() + ")";
+	}
 }

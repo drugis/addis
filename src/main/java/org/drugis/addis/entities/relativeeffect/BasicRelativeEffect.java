@@ -39,5 +39,4 @@ public interface BasicRelativeEffect<T extends Measurement>  extends RelativeEff
 	public abstract Double getError();
 
 	public abstract AxisType getAxisType();
-
 }

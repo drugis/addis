@@ -58,4 +58,16 @@ public class NetworkRelativeEffect<T extends Measurement> extends AbstractRelati
 	public boolean isDefined() {
 		return d_defined;
 	}
+	
+	@Override
+	public double getNeutralValue() {
+		if (d_distribution instanceof LogGaussian) {
+			return 1;
+		} else if (d_distribution instanceof Gaussian) {
+			return 0;
+		} else {
+			throw new IllegalStateException("Unknown distribution type " + d_distribution.getClass());
+		}
+	} 
+	
 }

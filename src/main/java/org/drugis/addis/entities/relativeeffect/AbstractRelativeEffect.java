@@ -40,4 +40,10 @@ public abstract class AbstractRelativeEffect<T extends Measurement> extends Abst
 	
 		return new ConfidenceInterval(getDistribution().getQuantile(0.5), getDistribution().getQuantile(0.025), getDistribution().getQuantile(0.975));
 	}
+
+	@Override
+	public double getTwoSidedPValue() {
+		double prob = getDistribution().getCumulativeProbability(getNeutralValue());
+		return 2 * Math.min(prob, 1 - prob);	
+	}
 }

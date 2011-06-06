@@ -54,7 +54,7 @@ public class BasicMeanDifferenceTest {
 	
 	@Test
 	public void testGetMean() {
-		assertEquals(s_mean1 - s_mean2, d_md.getConfidenceInterval().getPointEstimate(),0.0001);
+		assertEquals(s_mean1 - s_mean2, d_md.getConfidenceInterval().getPointEstimate(), 0.0001);
 	}
 	
 	@Test
@@ -76,6 +76,11 @@ public class BasicMeanDifferenceTest {
 	public void testGetSampleSize() {
 		int expected = s_subjSize + s_baslSize;
 		assertEquals(expected, (int) d_md.getSampleSize());
+	}
+	
+	@Test
+	public void testPValue() {
+		assertEquals(0.0, d_md.getTwoSidedPValue(), 0.0000001);
 	}
 	
 	private double square(double x) {

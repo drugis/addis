@@ -43,4 +43,10 @@ public class TransformedLogStudentT extends TransformedStudentTBase {
 	public double getCumulativeProbability(double x) {
 		return calculateCumulativeProbability(Math.log(x));
 	}
+	
+	@Override
+	public String toString() {
+		return "LogStudentT(mu=" + getMu() + ", sigma=" + getSigma() + ", df=" + getDegreesOfFreedom() + ")";
+	}
+	
 }
