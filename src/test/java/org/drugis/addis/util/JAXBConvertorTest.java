@@ -143,6 +143,7 @@ import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;

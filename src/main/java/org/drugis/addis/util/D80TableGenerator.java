@@ -6,12 +6,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-
-import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
@@ -138,31 +132,5 @@ public class D80TableGenerator {
 			throw new RuntimeException("Could not find / load template file.", e);
 		}
 		return html;
-	}
-	
-	public static void main(String[] args){
-		JFrame window = new JFrame();
-		
-		JLabel pane = new JLabel();
-		pane.setText(getHtml(getExample()));
-		window.add(pane);
-		
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.pack();
-		window.setVisible(true);
-	}
-
-	private static Study getExample() {
-		// TODO: get rid of example study
-		Study example = ExampleData.buildStudyDeWilde();
-		example.getEpochs().add(new Epoch("Randomization", null));
-		
-		Epoch mainPhase = (Epoch)example.findTreatmentEpoch();
-		try {
-			mainPhase.setDuration(DatatypeFactory.newInstance().newDuration("PT5H"));
-		} catch (DatatypeConfigurationException e) {
-			throw new RuntimeException(e);
-		}
-		return example;
 	}
 }
