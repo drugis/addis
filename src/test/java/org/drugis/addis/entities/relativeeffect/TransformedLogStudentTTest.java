@@ -52,6 +52,15 @@ public class TransformedLogStudentTTest {
 		assertEquals(9, d_student2.getDegreesOfFreedom());
 	}
 	
+	@Test public void testCalculateCumulativeProbability() {
+		assertEquals(0.5, d_student1.calculateCumulativeProbability(d_student1.getMu()), 0.000001);
+		assertEquals(0.75, d_student1.calculateCumulativeProbability(d_student1.getSigma()), 0.000001);
+		assertEquals(0.25, d_student1.calculateCumulativeProbability(-d_student1.getSigma()), 0.000001);
+		assertEquals(0.5, d_student2.calculateCumulativeProbability(d_student2.getMu()), 0.000001);
+		assertEquals(0.8282818, d_student2.calculateCumulativeProbability(d_student2.getMu() + d_student2.getSigma()), 0.000001);
+		assertEquals(0.1717181, d_student2.calculateCumulativeProbability(d_student2.getMu() - d_student2.getSigma()), 0.000001);
+	}
+	
 	@Test public void testGetQuantile() {
 		double t1_90 = 6.314;
 		double t1_95 = 12.706;

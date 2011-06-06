@@ -32,6 +32,7 @@ import org.junit.Test;
 
 public class LogGaussianTest {
 
+	private static final double EPSILON = 0.00001;
 	private LogGaussian d_gauss1;
 	private LogGaussian d_gauss2;
 
@@ -45,23 +46,30 @@ public class LogGaussianTest {
 	}
 
 	@Test public void testGetParameters() {
-		assertEquals(0.0, d_gauss1.getMu(), 0.00000001);
-		assertEquals(1.0, d_gauss1.getSigma(), 0.00000001);
-		assertEquals(-5.0, d_gauss2.getMu(), 0.00000001);
-		assertEquals(2.0, d_gauss2.getSigma(), 0.00000001);
+		assertEquals(0.0, d_gauss1.getMu(), EPSILON);
+		assertEquals(1.0, d_gauss1.getSigma(), EPSILON);
+		assertEquals(-5.0, d_gauss2.getMu(), EPSILON);
+		assertEquals(2.0, d_gauss2.getSigma(), EPSILON);
 	}
 
+	
+	@Test public void testCalculateCumulativeProbability() {
+		assertEquals(0.5, d_gauss1.calculateCumulativeProbability(d_gauss1.getMu()), EPSILON);
+		assertEquals(0.8413447, d_gauss1.calculateCumulativeProbability(d_gauss1.getSigma()), EPSILON);
+		assertEquals(0.1586552, d_gauss1.calculateCumulativeProbability(-d_gauss1.getSigma()), EPSILON);
+	}
+	
 	@Test public void testGetQuantile() {
 		double z90 = 1.644853626951;
 		double z95 = 1.959963984540;
-		assertEquals(Math.exp(z95 * 1.0 + 0.0), d_gauss1.getQuantile(0.975), 0.00001);
-		assertEquals(Math.exp(z95 * 2.0 + -5.0), d_gauss2.getQuantile(0.975), 0.00001);
-		assertEquals(Math.exp(-z95 * 1.0 + 0.0), d_gauss1.getQuantile(0.025), 0.00001);
-		assertEquals(Math.exp(-z95 * 2.0 + -5.0), d_gauss2.getQuantile(0.025), 0.00001);
-		assertEquals(Math.exp(z90 * 1.0 + 0.0), d_gauss1.getQuantile(0.95), 0.00001);
-		assertEquals(Math.exp(z90 * 2.0 + -5.0), d_gauss2.getQuantile(0.95), 0.00001);
-		assertEquals(Math.exp(0.0), d_gauss1.getQuantile(0.5), 0.00001);
-		assertEquals(Math.exp(-5.0), d_gauss2.getQuantile(0.5), 0.00001);
+		assertEquals(Math.exp(z95 * 1.0 + 0.0), d_gauss1.getQuantile(0.975), EPSILON);
+		assertEquals(Math.exp(z95 * 2.0 + -5.0), d_gauss2.getQuantile(0.975), EPSILON);
+		assertEquals(Math.exp(-z95 * 1.0 + 0.0), d_gauss1.getQuantile(0.025), EPSILON);
+		assertEquals(Math.exp(-z95 * 2.0 + -5.0), d_gauss2.getQuantile(0.025), EPSILON);
+		assertEquals(Math.exp(z90 * 1.0 + 0.0), d_gauss1.getQuantile(0.95), EPSILON);
+		assertEquals(Math.exp(z90 * 2.0 + -5.0), d_gauss2.getQuantile(0.95), EPSILON);
+		assertEquals(Math.exp(0.0), d_gauss1.getQuantile(0.5), EPSILON);
+		assertEquals(Math.exp(-5.0), d_gauss2.getQuantile(0.5), EPSILON);
 	}
 
 	@Test(expected=IllegalArgumentException.class) public void testPreconditionSigmaNonNegative() {
@@ -85,8 +93,8 @@ public class LogGaussianTest {
 
 		GaussianBase z = (GaussianBase)x.plus(y);
 		assertTrue(z instanceof LogGaussian);
-		assertEquals(expectedMu, z.getMu(), 0.0000001);
-		assertEquals(expectedSigma, z.getSigma(), 0.0000001);
+		assertEquals(expectedMu, z.getMu(), EPSILON);
+		assertEquals(expectedSigma, z.getSigma(), EPSILON);
 	}
 
 	@Test(expected=IllegalArgumentException.class)

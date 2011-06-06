@@ -69,6 +69,16 @@ public class TransformedStudentTTest {
 		assertEquals(-5.0, d_student2.getQuantile(0.5), 0.00001);
 	}
 	
+	@Test public void testCalculateCumulativeProbability() {
+		assertEquals(0.5, d_student1.calculateCumulativeProbability(d_student1.getMu()), 0.000001);
+		assertEquals(0.75, d_student1.calculateCumulativeProbability(d_student1.getSigma()), 0.000001);
+		assertEquals(0.25, d_student1.calculateCumulativeProbability(-d_student1.getSigma()), 0.000001);
+		assertEquals(0.5, d_student2.calculateCumulativeProbability(d_student2.getMu()), 0.000001);
+		assertEquals(0.8282818, d_student2.calculateCumulativeProbability(d_student2.getMu() + d_student2.getSigma()), 0.000001);
+		assertEquals(0.1717181, d_student2.calculateCumulativeProbability(d_student2.getMu() - d_student2.getSigma()), 0.000001);
+	}
+		
+	
 	@Test(expected=IllegalArgumentException.class) public void testPreconditionSigmaNonNegative() {
 		new TransformedStudentT(0.0, -.01, 1);
 	}

@@ -56,6 +56,14 @@ public abstract class GaussianBase extends AbstractObservable implements Distrib
 		}
 	}
 
+	protected double calculateCumulativeProbability(double x) {
+		try {
+			return d_dist.cumulativeProbability(x);
+		} catch (MathException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public double getSigma() {
 		return d_sigma;
 	}

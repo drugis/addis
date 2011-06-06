@@ -45,6 +45,7 @@ import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.LogitGaussian;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
+import org.drugis.addis.entities.relativeeffect.TransformedStudentTBase;
 
 import fi.smaa.jsmaa.model.Alternative;
 import fi.smaa.jsmaa.model.BetaMeasurement;
@@ -82,7 +83,7 @@ public class SMAAEntityFactory<AltType extends Entity> {
 				throw new IllegalArgumentException("Unhandled distribution: " + re);
 			}
 		} else if (re instanceof TransformedStudentT) {
-			TransformedStudentT studentt = (TransformedStudentT) re;
+			TransformedStudentTBase studentt = (TransformedStudentTBase) re;
 			return new GaussianMeasurement(studentt.getMu(), studentt.getSigma());
 		} else if (re instanceof Beta) {
 			Beta beta = (Beta) re;

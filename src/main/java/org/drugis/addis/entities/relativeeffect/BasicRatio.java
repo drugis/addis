@@ -41,6 +41,14 @@ public abstract class BasicRatio extends AbstractBasicRelativeEffect<RateMeasure
 		return new TransformedLogStudentT(getMu(), getSigma(), getDegreesOfFreedom());
 	}
 	
+	/**
+	 * @returns the p-value of the 
+	 */
+	public double getPValue() {
+		return 0.0;
+	}
+	
+	
 	protected abstract double getMu();
 	protected abstract double getSigma();
 }

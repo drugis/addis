@@ -48,4 +48,11 @@ public class LogitGaussian extends GaussianBase {
 	public double getQuantile(double p) {
 		return Statistics.ilogit(calculateQuantile(p));
 	}
+	
+	@Override
+	public double getCumulativeProbability(double x) {
+		assert (0 < x && x < 1);
+		return calculateCumulativeProbability(Statistics.logit(x));
+	}
+	
 }

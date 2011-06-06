@@ -24,24 +24,10 @@
 
 package org.drugis.addis.entities.relativeeffect;
 
-import org.apache.commons.math.MathException;
-import org.apache.commons.math.distribution.TDistribution;
-import org.apache.commons.math.distribution.TDistributionImpl;
-import org.drugis.common.beans.AbstractObservable;
 
-public class TransformedStudentT extends AbstractObservable implements Distribution {
-	private double d_mu;
-	private double d_sigma;
-	private final int d_degreesOfFreedom;
-
+public class TransformedStudentT extends TransformedStudentTBase {
 	public TransformedStudentT(double mu, double sigma, int degreesOfFreedom) {
-		if (Double.isNaN(mu)) throw new IllegalArgumentException("mu may not be NaN");
-		if (Double.isNaN(sigma)) throw new IllegalArgumentException("sigma may not be NaN");
-		if (sigma < 0.0) throw new IllegalArgumentException("sigma must be >= 0.0");
-		if (degreesOfFreedom < 1) throw new IllegalArgumentException("degreesOfFreedom must be >= 1");
-		d_mu = mu;
-		d_sigma = sigma;
-		d_degreesOfFreedom = degreesOfFreedom;
+		super(mu, sigma, degreesOfFreedom);
 	}
 
 	public AxisType getAxisType() {
@@ -49,33 +35,11 @@ public class TransformedStudentT extends AbstractObservable implements Distribut
 	}
 
 	public double getQuantile(double p) {
-		TDistribution dist = new TDistributionImpl(getDegreesOfFreedom());
-		try {
-			return dist.inverseCumulativeProbability(p) * d_sigma + d_mu;
-		} catch (MathException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	public double getMu() {
-		return d_mu;
-	}
-
-	public double getSigma() {
-		return d_sigma;
-	}
-
-	public int getDegreesOfFreedom() {
-		return d_degreesOfFreedom;
+		return calculateQuantile(p);
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if(o instanceof TransformedStudentT) {
-			TransformedStudentT other = (TransformedStudentT) o;
-			return other.d_mu == d_mu && other.d_sigma == d_sigma && other.d_degreesOfFreedom == d_degreesOfFreedom;
-		}
-		return false;
+	public double getCumulativeProbability(double x) {
+		return calculateCumulativeProbability(x);
 	}
-	
 }

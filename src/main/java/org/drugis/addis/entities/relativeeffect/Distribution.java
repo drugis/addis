@@ -35,6 +35,11 @@ public interface Distribution extends Observable {
 	public double getQuantile(double p);
 	
 	/**
+	 * Calculate the cumulative probability of <code>x</code>
+	 */
+	public double getCumulativeProbability(double x);
+	
+	/**
 	 * Get the axis type (does it make sense to plot this on a normal or log scale?
 	 */
 	public AxisType getAxisType();

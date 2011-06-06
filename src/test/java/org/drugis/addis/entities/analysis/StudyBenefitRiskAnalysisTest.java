@@ -44,6 +44,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
+import org.drugis.addis.entities.relativeeffect.TransformedStudentTBase;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -116,7 +117,7 @@ public class StudyBenefitRiskAnalysisTest {
 		
 		Arm arm = study.getArms().get(1);
 		ContinuousMeasurement measurement = (ContinuousMeasurement) study.getMeasurement(endpoint, arm);
-		TransformedStudentT expected = new TransformedStudentT(measurement.getMean(), measurement.getStdDev(),
+		TransformedStudentTBase expected = new TransformedStudentT(measurement.getMean(), measurement.getStdDev(),
 				measurement.getSampleSize() - 1);
 		assertEquals(expected, d_analysis.getMeasurement(arm, endpoint));
 	}

@@ -37,7 +37,12 @@ public class LogGaussian extends GaussianBase {
 	public double getQuantile(double p) {
 		return Math.exp(calculateQuantile(p));
 	}
-
+	
+	@Override
+	public double getCumulativeProbability(double x) {
+		return calculateCumulativeProbability(Math.log(x));
+	}
+	
 	@Override
 	protected boolean canEqual(GaussianBase other) {
 		return (other instanceof LogGaussian);
@@ -47,4 +52,5 @@ public class LogGaussian extends GaussianBase {
 	protected LogGaussian newInstance(double mu, double sigma) {
 		return new LogGaussian(mu, sigma);
 	}
+	
 }

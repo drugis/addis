@@ -36,7 +36,6 @@ public class Beta extends AbstractObservable implements Distribution {
 	private BetaDistribution d_dist;
 
 	public Beta(double alpha, double beta) {
-		// FIXME: Should alpha, beta also be tested for being int?
 		if (Double.isNaN(alpha)) throw new IllegalArgumentException("alpha may not be NaN");
 		if (Double.isNaN(beta)) throw new IllegalArgumentException("beta may not be NaN");
 		if (alpha <= 0) throw new IllegalArgumentException("alpha must be > 0"); 
@@ -74,5 +73,13 @@ public class Beta extends AbstractObservable implements Distribution {
 		}
 		return false;
 	}
-	
+
+	@Override
+	public double getCumulativeProbability(double x) {
+		try {
+			return d_dist.cumulativeProbability(x);
+		} catch (MathException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

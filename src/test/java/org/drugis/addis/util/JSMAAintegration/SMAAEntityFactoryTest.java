@@ -40,7 +40,7 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
-import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
+import org.drugis.addis.entities.relativeeffect.TransformedStudentTBase;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -121,7 +121,7 @@ public class SMAAEntityFactoryTest {
 					smaaModel.getMeasurement(d_smaaFactoryArm.getCriterion(om), d_smaaFactoryArm.getAlternative(d_brAnalysisStudy.getStudy(), d));
 				Distribution expDistribution = d_brAnalysisStudy.getMeasurement(d, om);
 				if (om.equals(ExampleData.buildEndpointCgi())) {
-					TransformedStudentT expected = (TransformedStudentT)expDistribution;
+					TransformedStudentTBase expected = (TransformedStudentTBase)expDistribution;
 					GaussianMeasurement actual = (GaussianMeasurement)actualMeasurement;
 					assertEquals(expected.getMu(), actual.getMean(), 0.0000001);
 					assertEquals(expected.getSigma(), actual.getStDev(), 0.0000001);

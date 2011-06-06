@@ -24,7 +24,6 @@
 
 package org.drugis.addis.entities.relativeeffect;
 
-
 public class Gaussian extends GaussianBase {
 	public Gaussian(double mu, double sigma) {
 		super(mu, sigma);
@@ -36,6 +35,11 @@ public class Gaussian extends GaussianBase {
 
 	public double getQuantile(double p) {
 		return calculateQuantile(p);
+	}
+
+	@Override
+	public double getCumulativeProbability(double x) {
+		return calculateCumulativeProbability(x);
 	}
 	
 	@Override

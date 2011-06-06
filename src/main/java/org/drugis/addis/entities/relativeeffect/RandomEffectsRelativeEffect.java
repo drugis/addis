@@ -83,12 +83,12 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 		
 		@Override
 		public double getMu(Distribution d) {
-			return ((TransformedStudentT)d).getMu();
+			return ((TransformedStudentTBase)d).getMu();
 		}
 		
 		@Override
 		public double getSigma(Distribution d) {
-			return ((TransformedStudentT)d).getSigma();
+			return ((TransformedStudentTBase)d).getSigma();
 		}
 		
 		@Override
