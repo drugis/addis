@@ -77,8 +77,7 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 		this(model, main, main.getPresentationModelFactory(), type);
 	}
 	
-	public StudyOutcomeMeasuresView(StudyPresentation model, JFrame parent, 
-			PresentationModelFactory pmf, Class<? extends Variable> type) {
+	public StudyOutcomeMeasuresView(StudyPresentation model, JFrame parent, PresentationModelFactory pmf, Class<? extends Variable> type) {
 		d_model = model;
 		d_pmf = pmf;
 		d_mainWindow = parent;

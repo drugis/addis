@@ -27,15 +27,20 @@ package org.drugis.addis.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
+import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.PredefinedActivity;
+import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
+import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
 import org.drugis.addis.presentation.EpochDurationPresentation;
 import org.stringtemplate.v4.ST;
 
@@ -131,6 +136,23 @@ public class D80TableGenerator {
 			}
 			return ms.toArray(new String[0]);
 		}
+		
+		public String[] getTestStatistics() {
+			List<String> statistics = new ArrayList<String>();
+			Arm base = d_study.getArms().get(0);
+			BasicMeasurement baseMeasurement = d_study.getMeasurement(d_endpoint, base);
+			DecimalFormat df = new DecimalFormat("###0.00");
+			for (Arm a : d_study.getArms().subList(1, d_study.getArms().size())) {
+				BasicMeasurement measurement = d_study.getMeasurement(d_endpoint, a);
+				if (measurement instanceof BasicRateMeasurement) {
+					BasicRiskRatio basicRiskRatio = new BasicRiskRatio((RateMeasurement)baseMeasurement, (RateMeasurement) measurement);
+					ConfidenceInterval ci = basicRiskRatio.getConfidenceInterval();
+					statistics.add(df.format(ci.getPointEstimate()) + " (" + df.format(ci.getLowerBound()) + ", " + df.format(ci.getUpperBound()) + ")");
+				}
+			}
+			return statistics.toArray(new String[0]);
+		}
+		
 	}
 	
 	public EndpointForTemplate[] getEndpoints() {
