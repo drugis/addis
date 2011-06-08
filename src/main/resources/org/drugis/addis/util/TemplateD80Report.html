@@ -67,7 +67,7 @@
     </tr>
     <tr>
       <td>Study identifier</td>
-      <td colspan='4'>$_study_id_$</td>
+      <td colspan='4'>$studyid$</td>
     </tr>
     <tr>
       <td rowspan='4'>Design</td>
@@ -75,15 +75,15 @@
     </tr>
     <tr>
       <td>Duration of main phase:</td>
-      <td colspan='3'>$_main_phase_$</td>
+      <td colspan='3'>$mainphase$</td>
     </tr>
     <tr>
       <td>Duration of Run-in phase:</td>
-      <td colspan='3'>$_run_in_phase_$</td>
+      <td colspan='3'>$runinphase$</td>
     </tr>
     <tr>
       <td>Duration of Extension phase:</td>
-      <td colspan='3'>$_extension_phase_$</td>
+      <td colspan='3'>$extensionphase$</td>
     </tr>
     <tr>
       <td>Hypothesis</td>
@@ -93,7 +93,7 @@
       <td>Treatments groups</td>
       <td colspan='4'>
 	<table class='nested'>
-	    $_arms_:{ it|
+	    $arms:{ it|
 	    <tr>
 		<td class='left'>$it.name$</td>
 	        <td>$it.treatment$ &nbsp; $it.duration$ &nbsp; $it.nrRandomized$</td>
@@ -107,7 +107,7 @@
       <td>Endpoints and definitions</td>
       <td colspan='4'>
 	<table class='nested'>
-	    $_endpoints_:{ it|
+	    $endpoints:{ it|
 	    <tr>
 		<td class='left'>&lt;primary / secondary&gt;</td>
 	        <td class='left'>$it.name$</td>
@@ -133,19 +133,19 @@
       <td colspan='4'>&lt;Intent to treat&gt; &lt;Per protocol&gt; &lt;other specify&gt; &lt;time point&gt;</td>
     </tr>
     <tr>
-      <td rowspan='$_colspan_statistics_$'>Descriptive statistics and estimate variability</td>
+      <td rowspan='$colspanstatistics$'>Descriptive statistics and estimate variability</td>
       <td>Treatment group</td>
-	$_arms_:{ it|
+	$arms:{ it|
       	<td>$it.name$</td>
 	}$
     </tr>
     <tr>
       <td>Number of subject</td>
-	$_arms_:{ it|
+	$arms:{ it|
       <td>$it.nrRandomized$</td>
 	}$
     </tr>
-	$_endpoints_:{ ep|
+	$endpoints:{ ep|
     <tr>
       <td>$ep.name$</td>
 	$ep.measurements:{ ms|
@@ -156,29 +156,29 @@
 	
 	<!-- effect estimates -->
     <tr>
-      <td rowspan='$_rowdata_arms_$'>Effect estimate per comparison</td>
-	$_endpoints_:{ep| <!-- start endpoints -->
+      <td rowspan='$nEndpointRows$'>Effect estimate per comparison</td>
+	$endpoints:{ep| <!-- start endpoints -->
       <td rowspan='4'>$ep.name$</td>
       <td>Comparison groups</td>
-      $rest(_arms_):{arm|
+      $rest(arms):{arm|
         <td>$arm.name$</td>
       }$ <!-- arms -->
     </tr>
     <tr>
       <td>&lt;test statistic&gt;</td>
-      $rest(_arms_):{arm|
+      $rest(arms):{arm|
         <td>$arm.name$</td>
       }$ <!-- arms -->
     </tr>
     <tr>
       <td>&lt;variability statistic&gt;</td>
-      $rest(_arms_):{arm|
+      $rest(arms):{arm|
         <td>$arm.name$</td>
       }$ <!-- arms -->
     </tr>
     <tr>
       <td>P-value</td>
-      $rest(_arms_):{arm|
+      $rest(arms):{arm|
         <td>$arm.name$</td>
       }$ <!-- arms -->
     </tr>

@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.PredefinedActivity;
@@ -51,14 +52,14 @@ public class D80TableGenerator {
 		Epoch extensionPhase = d_study.findEpochWithActivity(PredefinedActivity.FOLLOW_UP);
 		
 		ST processor = new ST(getTemplate(), '$', '$');
-		processor.add("_study_id_", d_study.getName());
-		processor.add("_main_phase_",  getEpochDuration(mainPhase));
-		processor.add("_run_in_phase_",  getEpochDuration(runInPhase));
-		processor.add("_extension_phase_",  getEpochDuration(extensionPhase));
-		processor.add("_arms_", getArms());
-		processor.add("_endpoints_", getEndpoints());
-		processor.add("_colspan_statistics_", d_study.getEndpoints().size() + 2);
-		processor.add("_rowdata_arms_", getEndpoints().length * 4);
+		processor.add("studyid", d_study.getName());
+		processor.add("mainphase",  getEpochDuration(mainPhase));
+		processor.add("runinphase",  getEpochDuration(runInPhase));
+		processor.add("extensionphase",  getEpochDuration(extensionPhase));
+		processor.add("arms", getArms());
+		processor.add("endpoints", getEndpoints());
+		processor.add("colspanstatistics", d_study.getEndpoints().size() + 2);
+		processor.add("nEndpointRows", getEndpoints().length * 4);
 
 		return processor.render();
 	}
@@ -125,7 +126,8 @@ public class D80TableGenerator {
 		public String[] getMeasurements() {
 			List<String> ms = new ArrayList<String>();
 			for (Arm a : d_study.getArms()) {
-				ms.add(d_study.getMeasurement(d_endpoint, a).toString());
+				BasicMeasurement measurement = d_study.getMeasurement(d_endpoint, a);
+				ms.add(measurement == null ? "MISSING" : measurement.toString());
 			}
 			return ms.toArray(new String[0]);
 		}
