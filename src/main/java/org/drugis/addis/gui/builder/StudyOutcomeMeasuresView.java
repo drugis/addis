@@ -131,11 +131,11 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 		
 			EnhancedTable measurementTable = null;
 			if (d_type == Endpoint.class) {
-				measurementTable = new EnhancedTable(d_model.getEndpointTableModel());
+				measurementTable = EnhancedTable.createWithSorterAndAutoSize(d_model.getEndpointTableModel());
 			} else if (d_type == AdverseEvent.class) {
-				measurementTable = new EnhancedTable(d_model.getAdverseEventTableModel());
+				measurementTable = EnhancedTable.createWithSorterAndAutoSize(d_model.getAdverseEventTableModel());
 			} else if (d_type == PopulationCharacteristic.class) {
-				measurementTable = new EnhancedTable(d_model.getPopulationCharTableModel());
+				measurementTable = EnhancedTable.createWithSorterAndAutoSize(d_model.getPopulationCharTableModel());
 			}
 			measurementTable.setSortingStatus(0, TableSorter.ASCENDING);
 			measurementTable.setDefaultRenderer(MissingMeasurementPresentation.class, new MeasurementCellRenderer());

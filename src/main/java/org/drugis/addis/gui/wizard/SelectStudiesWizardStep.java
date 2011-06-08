@@ -50,7 +50,7 @@ public class SelectStudiesWizardStep extends PanelWizardStep {
 		setLayout(new BorderLayout());
 		JComponent studiesComp;			
 
-		EnhancedTable table = new EnhancedTable(new SelectableStudyCharTableModel(pm.getStudyListModel(), mainWindow.getPresentationModelFactory()));
+		EnhancedTable table = EnhancedTable.createWithSorterAndAutoSize(new SelectableStudyCharTableModel(pm.getStudyListModel(), mainWindow.getPresentationModelFactory()));
 
 		JScrollPane sPane = new JScrollPane(table);
 		sPane.getVerticalScrollBar().setUnitIncrement(16);			

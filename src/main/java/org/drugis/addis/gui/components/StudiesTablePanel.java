@@ -57,7 +57,7 @@ public class StudiesTablePanel extends TablePanel {
 
 	public static JTable createTable(final StudyListPresentation studyListPM, final AddisWindow main) {
 		StudyCharTableModel model = new StudyCharTableModel(studyListPM, main.getPresentationModelFactory());
-		JTable table = new EnhancedTable(model);
+		JTable table = EnhancedTable.createWithSorterAndAutoSize(model);
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

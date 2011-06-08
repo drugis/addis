@@ -39,7 +39,7 @@ public class EntitiesTablePanel extends TablePanel {
 	private final ListHolder<? extends Entity> d_entities;
 
 	public EntitiesTablePanel(List<String> formatter, ListHolder<? extends Entity> entities, final AddisWindow parent, PresentationModelFactory pmf) {
-		super(new EnhancedTable(new EntityTableModel(entities, formatter, pmf)));
+		super(EnhancedTable.createWithSorterAndAutoSize(new EntityTableModel(entities, formatter, pmf)));
 		d_entities = entities;
 				
 		if (parent != null)
