@@ -33,18 +33,27 @@ import java.util.List;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
-import org.drugis.addis.entities.BasicRateMeasurement;
+import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
+import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Variable.Type;
+import org.drugis.addis.entities.relativeeffect.AbstractBasicRelativeEffect;
+import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
 import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
 import org.drugis.addis.presentation.EpochDurationPresentation;
 import org.stringtemplate.v4.ST;
 
 public class D80TableGenerator {
+	public enum StatisticType {
+		CONFIDENCE_INTERVAL, POINT_ESTIMATE, P_VALUE
+
+	}
+
 	private final Study d_study;
 
 	public D80TableGenerator(Study study) {
@@ -138,19 +147,74 @@ public class D80TableGenerator {
 		}
 		
 		public String[] getTestStatistics() {
+			return getStatistics(StatisticType.POINT_ESTIMATE);		
+		}
+
+		public String[] getVariabilityStatistics() {
+			return getStatistics(StatisticType.CONFIDENCE_INTERVAL);
+		}
+		
+		public String[] getPValueStatistics() {
+			return getStatistics(StatisticType.P_VALUE);
+		}
+		
+		public String[] getStatistics(StatisticType type) {
 			List<String> statistics = new ArrayList<String>();
 			Arm base = d_study.getArms().get(0);
-			BasicMeasurement baseMeasurement = d_study.getMeasurement(d_endpoint, base);
-			DecimalFormat df = new DecimalFormat("###0.00");
+			BasicMeasurement baseline = d_study.getMeasurement(d_endpoint, base);
 			for (Arm a : d_study.getArms().subList(1, d_study.getArms().size())) {
-				BasicMeasurement measurement = d_study.getMeasurement(d_endpoint, a);
-				if (measurement instanceof BasicRateMeasurement) {
-					BasicRiskRatio basicRiskRatio = new BasicRiskRatio((RateMeasurement)baseMeasurement, (RateMeasurement) measurement);
-					ConfidenceInterval ci = basicRiskRatio.getConfidenceInterval();
-					statistics.add(df.format(ci.getPointEstimate()) + " (" + df.format(ci.getLowerBound()) + ", " + df.format(ci.getUpperBound()) + ")");
-				}
+				BasicMeasurement subject = d_study.getMeasurement(d_endpoint, a);
+				statistics.add(getStatistic(type, baseline, subject));
 			}
 			return statistics.toArray(new String[0]);
+		}
+
+		private String getStatistic(StatisticType type,
+				BasicMeasurement baseline, BasicMeasurement subject) {
+			switch(type) {
+			case CONFIDENCE_INTERVAL :
+				return formatConfidenceInterval(baseline, subject);
+			case POINT_ESTIMATE :
+				return formatPointEstimate(baseline, subject);
+			case P_VALUE :
+				return formatPValue(baseline, subject);
+			}
+			return type == StatisticType.CONFIDENCE_INTERVAL ? 
+											formatConfidenceInterval(baseline, subject) : 
+											formatPointEstimate(baseline, subject);
+		}
+
+		
+		private String formatPValue(BasicMeasurement baseline, BasicMeasurement subject) {
+			DecimalFormat df = new DecimalFormat("###0.00");
+			AbstractBasicRelativeEffect<? extends Measurement> relEffect = getRelativeEffect(baseline, subject);
+			return 	df.format(relEffect.getTwoSidedPValue());
+		}
+
+		private String formatConfidenceInterval(BasicMeasurement baseline, BasicMeasurement subject) {
+			DecimalFormat df = new DecimalFormat("###0.00");
+			ConfidenceInterval ci = getconfidenceInterval(baseline, subject);
+			return 	"(" + df.format(ci.getLowerBound()) + ", " + df.format(ci.getUpperBound()) + ")";
+		}
+
+		private String formatPointEstimate(BasicMeasurement baseline, BasicMeasurement subject) {
+			DecimalFormat df = new DecimalFormat("###0.00");
+			ConfidenceInterval ci = getconfidenceInterval(baseline, subject);
+			return df.format(ci.getPointEstimate());
+		}
+
+		private ConfidenceInterval getconfidenceInterval(BasicMeasurement baseline, BasicMeasurement subject) {
+			return (getRelativeEffect(baseline, subject)).getConfidenceInterval();
+		}
+
+		private AbstractBasicRelativeEffect<? extends Measurement> getRelativeEffect(BasicMeasurement baseline, BasicMeasurement subject) {
+			return (d_endpoint.getType() == Type.CONTINUOUS ? 
+					new BasicMeanDifference((ContinuousMeasurement)baseline, (ContinuousMeasurement)subject) : 
+					new BasicRiskRatio((RateMeasurement) baseline, (RateMeasurement) subject));
+		}
+		
+		public String getTestStatisticType() {
+			return d_endpoint.getType() == Type.CONTINUOUS ? "Mean Difference" : "Risk Ratio";
 		}
 		
 	}

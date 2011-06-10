@@ -165,22 +165,22 @@
       }$ <!-- arms -->
     </tr>
     <tr>
-      <td>&lt;test statistic&gt;</td>
+      <td>$ep.testStatisticType$</td>
       $ep.testStatistics:{stat|
         <td>$stat$</td>
       }$ <!-- test statistics -->
     </tr>
     <tr>
-      <td>&lt;variability statistic&gt;</td>
-      $rest(arms):{arm|
-        <td>$arm.name$</td>
-      }$ <!-- arms -->
+      <td>Confidence Interval</td>
+      $ep.variabilityStatistics:{stat|
+        <td>$stat$</td>
+      }$ <!-- variability statistics -->
     </tr>
     <tr>
       <td>P-value</td>
-      $rest(arms):{arm|
-        <td>$arm.name$</td>
-      }$ <!-- arms -->
+      $ep.pValueStatistics:{stat|
+        <td>$stat$</td>
+      }$ <!-- P-Value statistics -->
     </tr>
     }$ <!-- endpoints -->
 
