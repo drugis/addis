@@ -63,35 +63,35 @@
   <tbody>
     <tr class='bold'>
       <td class='first'>Title:</td>
-      <td colspan='4'>&lt;title&gt;</td>
+      <td colspan='$colspan$'>&lt;title&gt;</td>
     </tr>
     <tr>
       <td>Study identifier</td>
-      <td colspan='4'>$studyid$</td>
+      <td colspan='$colspan$'>$studyid$</td>
     </tr>
     <tr>
       <td rowspan='4'>Design</td>
-      <td colspan='4'>&lt;free text&gt;</td>
+      <td colspan='$colspan$'>&lt;free text&gt;</td>
     </tr>
     <tr>
       <td>Duration of main phase:</td>
-      <td colspan='3'>$mainphase$</td>
+      <td colspan='$smallercolspan$'>$mainphase$</td>
     </tr>
     <tr>
       <td>Duration of Run-in phase:</td>
-      <td colspan='3'>$runinphase$</td>
+      <td colspan='$smallercolspan$'>$runinphase$</td>
     </tr>
     <tr>
       <td>Duration of Extension phase:</td>
-      <td colspan='3'>$extensionphase$</td>
+      <td colspan='$smallercolspan$'>$extensionphase$</td>
     </tr>
     <tr>
       <td>Hypothesis</td>
-      <td colspan='4'>&lt;Superiority&gt; &lt;Equivalence&gt; &lt;Non-inferiority&gt; &lt;Exploratory: specify&gt;</td>
+      <td colspan='$colspan$'>&lt;Superiority&gt; &lt;Equivalence&gt; &lt;Non-inferiority&gt; &lt;Exploratory: specify&gt;</td>
     </tr>
     <tr>
       <td>Treatments groups</td>
-      <td colspan='4'>
+      <td colspan='$colspan$'>
 	<table class='nested'>
 	    $arms:{ it|
 	    <tr>
@@ -105,7 +105,7 @@
     </tr>
     <tr>
       <td>Endpoints and definitions</td>
-      <td colspan='4'>
+      <td colspan='$colspan$'>
 	<table class='nested'>
 	    $endpoints:{ it|
 	    <tr>
@@ -119,21 +119,21 @@
     </tr>
     <tr>
       <td>Database lock</td>
-      <td colspan='4'>&lt;date&gt;</td>
+      <td colspan='$colspan$'>&lt;date&gt;</td>
     </tr>
     <tr class='bold'>
-      <td colspan='5'>Results and Analysis</td>
+      <td colspan='$fullcolspan$'>Results and Analysis</td>
     </tr>
     <tr>
       <td class='bold'>Analysis description</td>
-      <td colspan='4' class='bold'>Primary Analysis</td>
+      <td colspan='$colspan$' class='bold'>Primary Analysis</td>
     </tr>
     <tr>
       <td>Analysis population and time point description</td>
-      <td colspan='4'>&lt;Intent to treat&gt; &lt;Per protocol&gt; &lt;other specify&gt; &lt;time point&gt;</td>
+      <td colspan='$colspan$'>&lt;Intent to treat&gt; &lt;Per protocol&gt; &lt;other specify&gt; &lt;time point&gt;</td>
     </tr>
     <tr>
-      <td rowspan='$colspanstatistics$'>Descriptive statistics and estimate variability</td>
+      <td rowspan='$rowspanstatistics$'>Descriptive statistics and estimate variability</td>
       <td>Treatment group</td>
 	$arms:{ it|
       	<td>$it.name$</td>
@@ -186,11 +186,11 @@
 
     <tr>
       <td>Notes</td>
-      <td colspan='4'>&lt;free text&gt;</td>
+      <td colspan='$colspan$'>&lt;free text&gt;</td>
     </tr>
     <tr>
       <td>Analysis description</td>
-      <td colspan='4'>&lt;Secondary analysis&gt; &lt;Co-primary Analysis&gt; &lt;Other, specify: &gt;</td>
+      <td colspan='$colspan$'>&lt;Secondary analysis&gt; &lt;Co-primary Analysis&gt; &lt;Other, specify: &gt;</td>
     </tr>
   </tbody>
 </table>

@@ -98,6 +98,7 @@ public class D80ReportView extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				StringSelection data = new StringSelection(d_d80Report);
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+//				clipboard.
 				clipboard.setContents(data, data);
 			}
 		});

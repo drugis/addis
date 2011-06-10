@@ -72,8 +72,11 @@ public class D80TableGenerator {
 		processor.add("extensionphase",  getEpochDuration(extensionPhase));
 		processor.add("arms", getArms());
 		processor.add("endpoints", getEndpoints());
-		processor.add("colspanstatistics", d_study.getEndpoints().size() + 2);
+		processor.add("rowspanstatistics", d_study.getEndpoints().size() + 2);
 		processor.add("nEndpointRows", getEndpoints().length * 4);
+		processor.add("colspan", getArms().length + 1);
+		processor.add("fullcolspan", getArms().length + 2);
+		processor.add("smallercolspan", getArms().length);
 
 		return processor.render();
 	}
@@ -169,36 +172,35 @@ public class D80TableGenerator {
 			return statistics.toArray(new String[0]);
 		}
 
-		private String getStatistic(StatisticType type,
-				BasicMeasurement baseline, BasicMeasurement subject) {
+		private String getStatistic(StatisticType type, BasicMeasurement baseline, BasicMeasurement subject) {
+			DecimalFormat df = new DecimalFormat("###0.00");
 			switch(type) {
 			case CONFIDENCE_INTERVAL :
-				return formatConfidenceInterval(baseline, subject);
+				return formatConfidenceInterval(baseline, subject, df);
 			case POINT_ESTIMATE :
-				return formatPointEstimate(baseline, subject);
+				return formatPointEstimate(baseline, subject, df);
 			case P_VALUE :
-				return formatPValue(baseline, subject);
+				return formatPValue(baseline, subject, df);
+			default:
+				throw new RuntimeException("D80 table generator: unknown statistic type.");
 			}
-			return type == StatisticType.CONFIDENCE_INTERVAL ? 
-											formatConfidenceInterval(baseline, subject) : 
-											formatPointEstimate(baseline, subject);
 		}
 
 		
-		private String formatPValue(BasicMeasurement baseline, BasicMeasurement subject) {
-			DecimalFormat df = new DecimalFormat("###0.00");
+		private String formatPValue(BasicMeasurement baseline, BasicMeasurement subject, DecimalFormat df) {
+			if (subject == null) return "MISSING";
 			AbstractBasicRelativeEffect<? extends Measurement> relEffect = getRelativeEffect(baseline, subject);
 			return 	df.format(relEffect.getTwoSidedPValue());
 		}
 
-		private String formatConfidenceInterval(BasicMeasurement baseline, BasicMeasurement subject) {
-			DecimalFormat df = new DecimalFormat("###0.00");
+		private String formatConfidenceInterval(BasicMeasurement baseline, BasicMeasurement subject, DecimalFormat df) {
+			if (subject == null) return "MISSING";
 			ConfidenceInterval ci = getconfidenceInterval(baseline, subject);
 			return 	"(" + df.format(ci.getLowerBound()) + ", " + df.format(ci.getUpperBound()) + ")";
 		}
 
-		private String formatPointEstimate(BasicMeasurement baseline, BasicMeasurement subject) {
-			DecimalFormat df = new DecimalFormat("###0.00");
+		private String formatPointEstimate(BasicMeasurement baseline, BasicMeasurement subject, DecimalFormat df) {
+			if (subject == null) return "MISSING";
 			ConfidenceInterval ci = getconfidenceInterval(baseline, subject);
 			return df.format(ci.getPointEstimate());
 		}
