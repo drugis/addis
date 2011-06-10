@@ -17,6 +17,8 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
+1.6.2: Bugfix release
+
 1.6.1: Performance improvements for network meta-analysis, rank
    probability table.
 
