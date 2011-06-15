@@ -149,6 +149,7 @@ public class D80TableGenerator {
 			return ms.toArray(new String[0]);
 		}
 		
+		// These three are not used in Java but called by the template
 		public String[] getTestStatistics() {
 			return getStatistics(StatisticType.POINT_ESTIMATE);		
 		}
@@ -166,13 +167,14 @@ public class D80TableGenerator {
 			Arm base = d_study.getArms().get(0);
 			BasicMeasurement baseline = d_study.getMeasurement(d_endpoint, base);
 			for (Arm a : d_study.getArms().subList(1, d_study.getArms().size())) {
-				BasicMeasurement subject = d_study.getMeasurement(d_endpoint, a);
-				statistics.add(getStatistic(type, baseline, subject));
+					BasicMeasurement subject = d_study.getMeasurement(d_endpoint, a);
+					statistics.add(getStatistic(type, baseline, subject));
 			}
 			return statistics.toArray(new String[0]);
 		}
 
 		private String getStatistic(StatisticType type, BasicMeasurement baseline, BasicMeasurement subject) {
+			if (baseline == null || subject == null) return "MISSING";
 			DecimalFormat df = new DecimalFormat("###0.00");
 			switch(type) {
 			case CONFIDENCE_INTERVAL :
@@ -188,25 +190,18 @@ public class D80TableGenerator {
 
 		
 		private String formatPValue(BasicMeasurement baseline, BasicMeasurement subject, DecimalFormat df) {
-			if (subject == null) return "MISSING";
 			AbstractBasicRelativeEffect<? extends Measurement> relEffect = getRelativeEffect(baseline, subject);
 			return 	df.format(relEffect.getTwoSidedPValue());
 		}
 
 		private String formatConfidenceInterval(BasicMeasurement baseline, BasicMeasurement subject, DecimalFormat df) {
-			if (subject == null) return "MISSING";
-			ConfidenceInterval ci = getconfidenceInterval(baseline, subject);
+			ConfidenceInterval ci = (getRelativeEffect(baseline, subject)).getConfidenceInterval();
 			return 	"(" + df.format(ci.getLowerBound()) + ", " + df.format(ci.getUpperBound()) + ")";
 		}
 
 		private String formatPointEstimate(BasicMeasurement baseline, BasicMeasurement subject, DecimalFormat df) {
-			if (subject == null) return "MISSING";
-			ConfidenceInterval ci = getconfidenceInterval(baseline, subject);
+			ConfidenceInterval ci = (getRelativeEffect(baseline, subject)).getConfidenceInterval();
 			return df.format(ci.getPointEstimate());
-		}
-
-		private ConfidenceInterval getconfidenceInterval(BasicMeasurement baseline, BasicMeasurement subject) {
-			return (getRelativeEffect(baseline, subject)).getConfidenceInterval();
 		}
 
 		private AbstractBasicRelativeEffect<? extends Measurement> getRelativeEffect(BasicMeasurement baseline, BasicMeasurement subject) {
