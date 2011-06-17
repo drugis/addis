@@ -18,7 +18,8 @@ Versions
 --------
 
 1.7: Input study design (time structure), allow missing measurements,
-   generate summary of efficacy table according to EMA D80 template.
+   generate summary of efficacy table according to EMA D80 template,
+   support of primary/secondary endpoints.
 
 1.6.1: Performance improvements for network meta-analysis, rank
    probability table.
