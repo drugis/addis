@@ -53,6 +53,13 @@
         </arm>
     </xsl:template>
     
+    <xsl:template match="study/studyOutcomeMeasures/studyOutcomeMeasure">
+        <xsl:copy>
+            <xsl:attribute name="primary">true</xsl:attribute>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+    </xsl:template>
+    
     <xsl:template match="alternative/arms/arm | studyBenefitRiskAnalysis/arms/arm">
         <xsl:variable name="armName" select="tf:getArmName(/, @study, @id)"/>
         <arm>

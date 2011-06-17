@@ -143,7 +143,6 @@ import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -663,6 +662,7 @@ public class JAXBConvertorTest {
 		StudyOutcomeMeasure om = new StudyOutcomeMeasure();
 		om.setNotes(new Notes());
 		om.setEndpoint(nameReference(ep.getName()));
+		om.setPrimary(true);
 		
 		assertEntityEquals(ep, (Endpoint)JAXBConvertor.convertStudyOutcomeMeasure(om, domain).getValue());
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(new Study.StudyOutcomeMeasure<Variable>(ep)), om);
@@ -671,6 +671,8 @@ public class JAXBConvertorTest {
 		domain.addAdverseEvent(ade);
 		om.setEndpoint(null);
 		om.setAdverseEvent(nameReference(ade.getName()));
+		om.setPrimary(true);
+
 		
 		assertEntityEquals(ade, (AdverseEvent)JAXBConvertor.convertStudyOutcomeMeasure(om, domain).getValue());
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(new Study.StudyOutcomeMeasure<Variable>(ade)), om);
@@ -706,10 +708,12 @@ public class JAXBConvertorTest {
 		epRef.setNotes(new Notes());
 		epRef.setId("X");
 		epRef.setEndpoint(nameReference(ep.getName()));
+		epRef.setPrimary(true);
 		StudyOutcomeMeasure adeRef = new StudyOutcomeMeasure();
 		adeRef.setNotes(new Notes());
 		adeRef.setId("Y");
 		adeRef.setAdverseEvent(nameReference(ExampleData.buildAdverseEventDiarrhea().getName()));
+		adeRef.setPrimary(true);
 		StudyOutcomeMeasures oms = new StudyOutcomeMeasures();
 		oms.getStudyOutcomeMeasure().add(epRef);
 		oms.getStudyOutcomeMeasure().add(adeRef);
@@ -998,6 +1002,7 @@ public class JAXBConvertorTest {
 			ep.setNotes(new Notes());
 			ep.setId("endpoint-" + epName);
 			ep.setEndpoint(nameReference(epName));
+			ep.setPrimary(true);
 			studyOutcomeMeasures.getStudyOutcomeMeasure().add(ep);
 		}
 		
@@ -1007,6 +1012,7 @@ public class JAXBConvertorTest {
 			ae.setNotes(new Notes());
 			ae.setId("adverseEvent-" + aeName);
 			ae.setAdverseEvent(nameReference(aeName));
+			ae.setPrimary(true);
 			studyOutcomeMeasures.getStudyOutcomeMeasure().add(ae);
 		}
 		
@@ -1016,6 +1022,7 @@ public class JAXBConvertorTest {
 			pc.setNotes(new Notes());
 			pc.setId("popChar-" + pcName);
 			pc.setPopulationCharacteristic(nameReference(pcName));
+			pc.setPrimary(true);
 			studyOutcomeMeasures.getStudyOutcomeMeasure().add(pc);
 		}
 		
@@ -1786,7 +1793,7 @@ public class JAXBConvertorTest {
 		assertEquals(dwn, dwn2);
 	}
 
-	@Test @Ignore
+	@Test
 	public void writeTransformedXML() throws TransformerException, IOException {
 		InputStream transformedXmlStream = getTransformedDefaultData();
 		FileOutputStream output = new FileOutputStream("transformedDefaultData.xml");

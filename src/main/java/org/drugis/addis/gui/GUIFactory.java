@@ -38,7 +38,6 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Note;
-import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.components.LinkLabel;
@@ -50,9 +49,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.renderer.category.StandardBarPainter;
 
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.AbstractValueModel;
 
@@ -68,19 +65,23 @@ public class GUIFactory {
 		return button;
 	}
 
-	public static JComponent createOutcomeMeasureLabelWithIcon(Variable e) {
+	public static JComponent createOutcomeMeasureLabelWithIcon(Variable e, boolean isPrimary) {
 		String fname = FileNames.ICON_STUDY;
+		String primary = "";
 		if (e instanceof Endpoint) {
 			fname = FileNames.ICON_ENDPOINT;
+			primary = isPrimary ? " (primary)" : " (secondary)";
 		} else if (e instanceof AdverseEvent) {
 			fname = FileNames.ICON_ADVERSE_EVENT;
 		} else if (e instanceof PopulationCharacteristic) {
 			fname = FileNames.ICON_POPULATION_CHAR;
 		}
 		Icon icon = ImageLoader.getIcon(fname);
-		JLabel textLabel = new JLabel(e.getName(), icon, JLabel.CENTER);
+//		System.out.println(primary);
+		JLabel textLabel = new JLabel(e.getName() + primary, icon, JLabel.CENTER);
 		
-		Bindings.bind(textLabel, "text", new HTMLWrappingModel(new PresentationModel<Variable>(e).getModel(OutcomeMeasure.PROPERTY_NAME)));
+		// FIXME: Why was this here? Don't think the name can change.
+		//		Bindings.bind(textLabel, "text", new HTMLWrappingModel(new PresentationModel<Variable>(e).getModel(OutcomeMeasure.PROPERTY_NAME)));
 		return textLabel;
 	}
 

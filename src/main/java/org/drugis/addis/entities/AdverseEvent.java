@@ -64,5 +64,4 @@ public class AdverseEvent extends AbstractVariable implements OutcomeMeasure {
 		AdverseEvent other = (AdverseEvent) obj;
 		return EqualsUtil.equal(other.getDirection(), getDirection());
 	}
-	
 }

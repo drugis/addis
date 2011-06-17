@@ -29,17 +29,24 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.TypeWithNotes;
+import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.components.NotesView;
+import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.SelectFromFiniteListPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
 
+import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -83,7 +90,6 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 		this.setLayout(new BorderLayout());
 		d_pm = pm;
 		setComplete((Boolean)d_pm.getInputCompleteModel().getValue());
-		//d_pm.getInputCompleteModel().addValueChangeListener(new CompleteListener(this));
 		
 		PropertyConnector.connectAndUpdate(d_pm.getInputCompleteModel(), this, "complete");
 	}
@@ -133,10 +139,10 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 		add(d_scrollPane, BorderLayout.CENTER);
 	}
 
+	@SuppressWarnings("unchecked")
 	private int buildSlotsPart(int fullWidth, CellConstraints cc, int row, FormLayout layout) {
-		for(int i = 0; i < d_pm.countSlots(); ++i){
-			LayoutUtil.addRow(layout);
-			row+=2;
+		for(int i = 0; i < d_pm.countSlots(); ++i) {
+			row = LayoutUtil.addRow(layout, row);
 			
 			// add 'remove' button
 			JButton btn = new JButton("Remove");
@@ -144,7 +150,8 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 			btn.addActionListener(new RemoveSlotListener(i));
 						
 			// dropdown
-			d_builder.add(AuxComponentFactory.createBoundComboBox(d_pm.getOptions(), d_pm.getSlot(i)), cc.xy(5, row));
+			ModifiableHolder<T> slot = d_pm.getSlot(i);
+			d_builder.add(AuxComponentFactory.createBoundComboBox(d_pm.getOptions(), slot), cc.xy(5, row));
 			
 			// (new) + button
 			if (d_pm.hasAddOptionDialog()) {
@@ -152,15 +159,22 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 				addOptionButton.addActionListener(new newOptionButtonListener(i));
 				d_builder.add(addOptionButton, cc.xy(7, row));
 			}
-			
-			if (d_pm.getSlot(i) instanceof TypeWithNotes) {
-				LayoutUtil.addRow(layout);
-				row += 2;
-				d_builder.add(new NotesView(((TypeWithNotes)d_pm.getSlot(i)).getNotes(), true), cc.xy(5, row));
+
+			// Primary/secondary checkbox for Endpoints
+			if (slot.getValue() instanceof Endpoint) {
+				row = LayoutUtil.addRow(layout, row);
+				Study.StudyOutcomeMeasure<Variable> som = (StudyOutcomeMeasure<Variable>) slot;
+				JCheckBox primaryCB = BasicComponentFactory.createCheckBox(som.getPrimaryModel(), "Primary endpoint");
+
+				d_builder.add(primaryCB, cc.xy(7, row));
 			}
 			
-			LayoutUtil.addRow(layout);
-			row += 2;
+			if (slot instanceof TypeWithNotes) {
+				row = LayoutUtil.addRow(layout, row);
+				d_builder.add(new NotesView(((TypeWithNotes)slot).getNotes(), true), cc.xy(5, row));
+			}
+			
+			row = LayoutUtil.addRow(layout, row);
 		}
 		return row;	
 	}

@@ -40,6 +40,7 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.relativeeffect.AbstractBasicRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
@@ -126,14 +127,21 @@ public class D80TableGenerator {
 	@SuppressWarnings("unused")
 	private class EndpointForTemplate {		
 		private final Endpoint d_endpoint;
+		private final Boolean d_isPrimary;
 
-		public EndpointForTemplate(Endpoint endpoint) {
+		public EndpointForTemplate(Endpoint endpoint, Boolean isPrimary) {
 			d_endpoint = endpoint;
+			d_isPrimary = isPrimary;
 		}
 		
 		public String getType() { 
 			return d_endpoint.getType().toString();
 		}
+		
+		public String getPrimary() {
+			return d_isPrimary ? "Primary" : "Secondary";
+		}
+		
 		public String getName() {
 			return d_endpoint.getName();
 		}
@@ -219,7 +227,8 @@ public class D80TableGenerator {
 	public EndpointForTemplate[] getEndpoints() {
 		EndpointForTemplate[] ep = new EndpointForTemplate[d_study.getEndpoints().size()];
 		for (int i = 0; i < ep.length; ++i) {
-			ep[i] = new EndpointForTemplate(d_study.getEndpoints().get(i).getValue());
+			StudyOutcomeMeasure<Endpoint> endpoint = d_study.getEndpoints().get(i);
+			ep[i] = new EndpointForTemplate(endpoint.getValue(), endpoint.isPrimary());
 		}
 		return ep;
 	}

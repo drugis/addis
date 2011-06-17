@@ -308,6 +308,7 @@
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:string" use="required"/>
+		<xs:attribute name="primary" type="xs:boolean"/>
 	</xs:complexType>
 	<xs:complexType name="Characteristics">
 		<xs:sequence>

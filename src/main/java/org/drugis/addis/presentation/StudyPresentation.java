@@ -184,7 +184,4 @@ public class StudyPresentation extends PresentationModel<Study> {
 		return new StudyMeasurementTableModel(getBean(), d_pmf, AdverseEvent.class, false);
 	}
 
-//	public void initializeDefaultMeasurements() {
-//		getBean().initializeDefaultMeasurements();
-//	}
 }

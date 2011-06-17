@@ -36,6 +36,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.StudyActivity.UsedBy;
+import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.RebuildableHashMap;
 import org.drugis.addis.util.comparator.OutcomeComparator;
@@ -44,6 +45,7 @@ import org.drugis.common.EqualsUtil;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.value.ValueModel;
 
 public class Study extends AbstractEntity implements Comparable<Study>, Entity, TypeWithName {
 
@@ -101,8 +103,12 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	
 	@SuppressWarnings("serial")
 	public static class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> {
+		public final static String PROPERTY_IS_PRIMARY = "isPrimary";
+		private ModifiableHolder<Boolean> d_isPrimary;
+
 		public StudyOutcomeMeasure(T obj) {
 			super(obj);
+			d_isPrimary = new ModifiableHolder<Boolean>(Boolean.TRUE);
 		}
 		
 		@Override
@@ -111,6 +117,21 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 			clone.getNotes().addAll(getNotes());
 			return clone;
 		}
+		
+		public Boolean isPrimary() {
+			return d_isPrimary.getValue();
+		}
+		
+		public void setPrimary(boolean isPrimary) {
+			Boolean oldValue = d_isPrimary.getValue();
+			d_isPrimary.setValue(isPrimary);
+			firePropertyChange(PROPERTY_IS_PRIMARY, oldValue, d_isPrimary);
+		}
+
+		public ValueModel getPrimaryModel() {
+			return d_isPrimary;
+		}
+		
 	}
 
 	public final static String PROPERTY_INDICATION = "indication";

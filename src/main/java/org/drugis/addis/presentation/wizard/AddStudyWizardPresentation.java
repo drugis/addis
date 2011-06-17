@@ -395,7 +395,6 @@ public class AddStudyWizardPresentation {
 	}
 
 	public StudyMeasurementTableModel getEndpointMeasurementTableModel() {
-//		d_newStudyPM.initializeDefaultMeasurements();
 		return new StudyMeasurementTableModel(getNewStudy(), d_pmf, Endpoint.class, false);
 	}
 	
@@ -449,12 +448,10 @@ public class AddStudyWizardPresentation {
 	}
 
 	private StudyMeasurementTableModel getAdverseEventMeasurementTableModel() {
-//		d_newStudyPM.initializeDefaultMeasurements();
 		return new StudyMeasurementTableModel(getNewStudy(),d_pmf, AdverseEvent.class, false);
 	}
 	
 	private PopulationCharTableModel getPopulationCharMeasurementTableModel() {
-//		d_newStudyPM.initializeDefaultMeasurements();
 		return d_newStudyPM.getPopulationCharTableModel();
 	}
 

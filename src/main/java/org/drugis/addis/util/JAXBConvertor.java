@@ -692,7 +692,7 @@ public class JAXBConvertor {
 		return refs;
 	}
 
-	public static Study.StudyOutcomeMeasure<?> convertStudyOutcomeMeasure(StudyOutcomeMeasure om, Domain domain) throws ConversionException {
+	public static Study.StudyOutcomeMeasure<?> convertStudyOutcomeMeasure(org.drugis.addis.entities.data.StudyOutcomeMeasure om, Domain domain) throws ConversionException {
 		Variable var = null;
 		if(om.getEndpoint() != null) {
 			var = findEndpoint(domain, om.getEndpoint().getName());
@@ -704,22 +704,28 @@ public class JAXBConvertor {
 			throw new ConversionException("StudyOutcomeMeasure type not supported: " + om.toString());
 		}
 		Study.StudyOutcomeMeasure<Variable> studyOutcomeMeasure = new Study.StudyOutcomeMeasure<Variable>(var);
+		boolean isPrimaryNull = om.isPrimary() == null ? true : om.isPrimary();
+		studyOutcomeMeasure.setPrimary(om.getEndpoint() != null ? isPrimaryNull: true);
 		List<org.drugis.addis.entities.data.Note> notes = om.getNotes() == null ? Collections.<org.drugis.addis.entities.data.Note>emptyList() : om.getNotes().getNote();
 		convertNotes(notes, studyOutcomeMeasure.getNotes());
 		return studyOutcomeMeasure;
 	}
 	
-	public static StudyOutcomeMeasure convertStudyOutcomeMeasure(org.drugis.addis.entities.Study.StudyOutcomeMeasure<?> studyOutcomeMeasure) throws ConversionException {
+	public static org.drugis.addis.entities.data.StudyOutcomeMeasure convertStudyOutcomeMeasure(Study.StudyOutcomeMeasure<?> studyOutcomeMeasure) throws ConversionException {
 		StudyOutcomeMeasure newOutcome = new StudyOutcomeMeasure();
 		newOutcome.setNotes(new Notes());
 		NameReference value = new NameReference();
 		value.setName(studyOutcomeMeasure.getValue().getName());
+		newOutcome.setPrimary(true);
 		if(studyOutcomeMeasure.getValue() instanceof Endpoint) {
 			newOutcome.setEndpoint(value);
+			newOutcome.setPrimary(studyOutcomeMeasure.isPrimary());
 		} else if(studyOutcomeMeasure.getValue() instanceof AdverseEvent){
 			newOutcome.setAdverseEvent(value);
+			newOutcome.setPrimary(true);
 		} else if(studyOutcomeMeasure.getValue() instanceof PopulationCharacteristic) {
 			newOutcome.setPopulationCharacteristic(value);
+			newOutcome.setPrimary(true);
 		} else {
 			throw new ConversionException("Unsupported type of StudyOutcomeMeasure: " + studyOutcomeMeasure);
 		}
