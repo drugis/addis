@@ -54,7 +54,6 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 			return d_arm;
 		}
 		
-		
 		@Override
 		public boolean equals(Object obj) {
 			if (obj != null && obj instanceof UsedBy) {
@@ -88,7 +87,6 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 		super(name);
 		d_activity = activity;
 	}
-
 
 	@Override
 	public Set<? extends Entity> getDependencies() {

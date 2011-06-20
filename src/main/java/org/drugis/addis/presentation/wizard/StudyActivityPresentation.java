@@ -30,12 +30,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.Activity;
+import org.drugis.addis.entities.CombinationTreatment;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.presentation.AbstractListHolder;
+import org.drugis.addis.presentation.CombinationTreatmentPresentation;
 import org.drugis.addis.presentation.TreatmentActivityPresentation;
 import org.drugis.addis.presentation.ValueHolder;
 
@@ -79,6 +81,7 @@ public class StudyActivityPresentation {
 	private List<Activity> d_activityOptions;
 	private ValueHolder<Boolean> d_valid;
 	private AbstractListHolder<Drug> d_drugOptions;
+	private CombinationTreatmentPresentation d_combinationModel;
 
 	public StudyActivityPresentation(ObservableList<StudyActivity> activityList, AbstractListHolder<Drug> drugOptions) {
 		this (activityList, drugOptions, null);
@@ -95,7 +98,10 @@ public class StudyActivityPresentation {
 		d_activityOptions = new ArrayList<Activity>(Arrays.asList(PredefinedActivity.values()));
 		TreatmentActivity initialTreatment = getInitialTreatment();
 		d_activityOptions.add(initialTreatment);
+	    CombinationTreatment initialCombination = getInitialCombination();
+	    d_activityOptions.add(initialCombination);
 		d_treatmentModel = new TreatmentActivityPresentation(initialTreatment);
+		d_combinationModel = new CombinationTreatmentPresentation(initialCombination);
 		d_valid = new ValidModel();
 		PropertyChangeListener listener = new PropertyChangeListener() {
 			@Override
@@ -130,6 +136,14 @@ public class StudyActivityPresentation {
 			return (TreatmentActivity) d_newActivity.getActivity();
 		} else {
 			return new TreatmentActivity(null, null);
+		}
+	}
+	
+	private CombinationTreatment getInitialCombination() {
+		if (d_newActivity.getActivity() instanceof CombinationTreatment) {
+			return (CombinationTreatment) d_newActivity.getActivity();
+		} else {
+			return new CombinationTreatment();
 		}
 	}
 	
