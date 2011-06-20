@@ -40,8 +40,7 @@ public class MeanDifferenceTableModel extends AbstractRelativeEffectTableModel{
 	}
 
 	@Override
-	protected RelativeEffect<ContinuousMeasurement> getRelativeEffect(Measurement baseline,
-			Measurement subject) {
+	protected RelativeEffect<ContinuousMeasurement> getRelativeEffect(Measurement baseline, Measurement subject) {
 		return new BasicMeanDifference((ContinuousMeasurement) baseline, (ContinuousMeasurement) subject);
 	}
 

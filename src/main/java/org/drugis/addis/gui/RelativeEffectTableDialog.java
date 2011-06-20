@@ -51,6 +51,7 @@ import org.drugis.common.gui.GUIHelper;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class RelativeEffectTableDialog extends JDialog {
@@ -71,19 +72,25 @@ public class RelativeEffectTableDialog extends JDialog {
 	
 	
 	private class RatioTableCellRenderer implements TableCellRenderer {
-		public Component getTableCellRendererComponent(JTable table,
-				Object val, boolean isSelected, boolean hasFocus, int row, int col) {
+		public Component getTableCellRendererComponent(JTable table, Object val, boolean isSelected, boolean hasFocus, int row, int col) {
 			
 			if (row < 0) {
 				return new JLabel("");
 			}
 			
 			JComponent label = null;
-			if (((PresentationModel<?>)val).getBean() instanceof Arm) {
+			if (val == null) {
+				label = new JLabel("MISSING");
+			} else if (((PresentationModel<?>)val).getBean() instanceof Arm) {
 				label = new JLabel(((PresentationModel<?>)val).getBean().toString());
 				label.setBackground(Color.lightGray);
 			} else {
-				label = BasicComponentFactory.createLabel(((LabeledPresentation)val).getLabelModel());
+				LabeledPresentation labeled = (LabeledPresentation)val;
+				AbstractValueModel labelModel = labeled.getLabelModel();
+				if(labelModel.getValue() == null) {
+					System.out.println("FOO");
+				}
+				label = BasicComponentFactory.createLabel(labelModel);
 				label.setBackground(Color.white);
 			}
 			label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));

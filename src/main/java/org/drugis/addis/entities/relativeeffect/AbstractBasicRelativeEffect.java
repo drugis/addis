@@ -76,7 +76,7 @@ public abstract class AbstractBasicRelativeEffect<T extends Measurement> extends
 	protected abstract Integer getDegreesOfFreedom();
 	
 	public boolean isDefined() {
-		return getDegreesOfFreedom() > 0;
+		return d_subject.isComplete() && d_baseline.isComplete() && getDegreesOfFreedom() > 0;
 	}
 	
 	@Override

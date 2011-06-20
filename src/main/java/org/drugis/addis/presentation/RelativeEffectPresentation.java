@@ -45,7 +45,7 @@ public class RelativeEffectPresentation extends PresentationModel<RelativeEffect
 		public Object getValue() {
 			if (!getBean().isDefined()) {
 				return "N/A";
-			}			
+			}
 			DecimalFormat format = new DecimalFormat("###0.00");
 			ConfidenceInterval ci = getBean().getConfidenceInterval();
 			return format.format(ci.getPointEstimate()) + " (" + format.format(ci.getLowerBound()) + ", " + 

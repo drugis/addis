@@ -67,6 +67,9 @@ implements RelativeEffectTableModel {
 		
 		Measurement denominator = d_study.getMeasurement(d_outMeas, d_study.getArms().get(row));
 		Measurement numerator = d_study.getMeasurement(d_outMeas, d_study.getArms().get(col));
+		if (denominator == null || numerator == null) {
+			return null;
+		}
 		return d_pmf.getModel(getRelativeEffect(denominator, numerator));
 	}
 
