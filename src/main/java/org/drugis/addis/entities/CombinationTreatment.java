@@ -7,11 +7,14 @@ import java.util.Set;
 
 import org.drugis.common.EqualsUtil;
 
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
+
 public class CombinationTreatment extends AbstractEntity implements Activity {
 
 	public static final String PROPERTY_TREATMENTS = "treatments";
 	
-	private List<TreatmentActivity> d_treatments;
+	private ObservableList<TreatmentActivity> d_treatments = new ArrayListModel<TreatmentActivity>();
 
 	@Override
 	public Set<? extends Entity> getDependencies() {
@@ -31,12 +34,8 @@ public class CombinationTreatment extends AbstractEntity implements Activity {
 	}
 
 	public void addTreatment(Drug drug, AbstractDose dose) {
-		List<TreatmentActivity> oldValue = d_treatments;
-		if (d_treatments == null) {
-			d_treatments = new ArrayList<TreatmentActivity>();
-		}
-		d_treatments.add(new TreatmentActivity(drug, dose));
-		firePropertyChange(PROPERTY_TREATMENTS, oldValue, d_treatments);
+		TreatmentActivity ta = new TreatmentActivity(drug, dose);
+		d_treatments.add(ta);
 	}
 	
 	@Override
@@ -73,14 +72,12 @@ public class CombinationTreatment extends AbstractEntity implements Activity {
 		return doses;
 	}
 	
-	public List<TreatmentActivity> getTreatments() {
+	public ObservableList<TreatmentActivity> getTreatments() {
 		return d_treatments;
 	}
 	
-	public void setTreatments(List<TreatmentActivity> treatments) {
-		List<TreatmentActivity> oldValue = d_treatments;
-		d_treatments = treatments;
-		firePropertyChange(PROPERTY_TREATMENTS, oldValue, d_treatments);
+	@Override
+	public String toString() {
+		return getDescription();
 	}
-	
 }

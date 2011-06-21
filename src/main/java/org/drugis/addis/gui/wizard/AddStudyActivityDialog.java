@@ -47,11 +47,14 @@ import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.builder.DoseView;
+import org.drugis.addis.presentation.TreatmentActivityPresentation;
 import org.drugis.addis.presentation.wizard.StudyActivityPresentation;
+import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.beans.PropertyConnector;
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -112,15 +115,15 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 	private JScrollPane buildPanel() {
 		FormLayout layout = new FormLayout(
 				"left:pref, 7dlu, pref:grow:fill, 3dlu, left:pref",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"p"
 				);
 		final PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		final CellConstraints cc = new CellConstraints();
 		
-		
+		int row = 1;
 		// add type
-		builder.addLabel("Type: ", cc.xy(1, 1));
+		builder.addLabel("Type: ", cc.xy(1, row));
 		final JComboBox treatmentSelect = AuxComponentFactory.createBoundComboBox(d_pm.getActivityOptions().toArray(), d_pm.getActivityModel());
 		final ListCellRenderer renderer = treatmentSelect.getRenderer();
 		treatmentSelect.setRenderer(new ListCellRenderer() {
@@ -133,45 +136,73 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 						index, isSelected, cellHasFocus);
 			}
 		});
-		builder.add(treatmentSelect, cc.xy(3, 1));
+		builder.add(treatmentSelect, cc.xy(3, row));
 		
-		// add name
-		builder.addLabel("Name: ", cc.xy(1, 11));
-		builder.add(BasicComponentFactory.createTextField(d_pm.getNameModel(), false), cc.xy(3, 11));
 		// show or hide drug
 		if (d_pm.getActivityModel().getValue() instanceof TreatmentActivity) {
-			showDrug(builder, cc);
+			row = LayoutUtil.addRow(layout, row);
+			row = showDrug(builder, row, cc, d_pm.getTreatmentModel());
+		} else if (d_pm.getActivityModel().getValue() instanceof CombinationTreatment) {
+			final CombinationTreatment ct = (CombinationTreatment) d_pm.getActivityModel().getValue();
+			for(TreatmentActivity ta : ct.getTreatments()) {
+				row = LayoutUtil.addRow(layout, row);
+				row = showDrug(builder, row, cc, d_pm.getCombinationTreatmentModel().getTreatmentModel(ta));
+			}
+			JButton addDrugBtn = new JButton("Add drug to treatment");
+			addDrugBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					ct.addTreatment(null, null);
+					rebuild();
+				}
+			});
+			row = LayoutUtil.addRow(layout, row);
+			builder.add(addDrugBtn, cc.xyw(1, row, 5));
+			
 		}
-		builder.addSeparator("", cc.xyw(1, 9, 5));
+		row = LayoutUtil.addRow(layout, row);
+		builder.addSeparator("", cc.xyw(1, row, 5));
+
+		// add name
+		row = LayoutUtil.addRow(layout, row);
+		builder.addLabel("Name: ", cc.xy(1, row));
+		builder.add(BasicComponentFactory.createTextField(d_pm.getNameModel(), false), cc.xy(3, row));
+
 		// NOOOOTES
-		builder.add(AddStudyWizard.buildNotesEditor(d_pm.getNotesModel()), cc.xyw(1, 13, 5));
+		row = LayoutUtil.addRow(layout, row);
+		builder.add(AddStudyWizard.buildNotesEditor(d_pm.getNotesModel()), cc.xyw(1, row, 5));
 		PropertyConnector.connectAndUpdate(d_pm.getValidModel(), d_okButton, "enabled");
 		JScrollPane scrollPane = new JScrollPane(builder.getPanel());
 		scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
 		return scrollPane;
 	}
 
-	private void showDrug(PanelBuilder builder, CellConstraints cc) {
+	private int showDrug(PanelBuilder builder, int row, CellConstraints cc, final TreatmentActivityPresentation tap) {
 		// add drug
-		builder.addSeparator("", cc.xyw(1, 3, 5));
-		builder.addLabel("Drug: ", cc.xy(1, 5));
+		builder.addSeparator("", cc.xyw(1, row, 5));
 		
-		JComboBox drugSelect = AuxComponentFactory.createBoundComboBox(d_pm.getDrugOptions(), 
-				d_pm.getTreatmentModel().getModel(TreatmentActivity.PROPERTY_DRUG));
-		builder.add(drugSelect, cc.xy(3, 5));
+		FormLayout layout = builder.getLayout();
+		row = LayoutUtil.addRow(layout, row);
+		
+		builder.addLabel("Drug: ", cc.xy(1, row));
+		
+		final AbstractValueModel drugModel = tap.getModel(TreatmentActivity.PROPERTY_DRUG);
+		JComboBox drugSelect = AuxComponentFactory.createBoundComboBox(d_pm.getDrugOptions(), drugModel);
+		builder.add(drugSelect, cc.xy(3, row));
 		
 		JButton btn = GUIFactory.createPlusButton("Create drug");
-		builder.add(btn, cc.xy(5, 5));
+		builder.add(btn, cc.xy(5, row));
 		btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				d_mainWindow.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class), 
-						d_pm.getTreatmentModel().getModel(TreatmentActivity.PROPERTY_DRUG));
+				d_mainWindow.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class), drugModel);
 			}
 		});
 		
 		// add dose
-		builder.addLabel("Dose: ", cc.xy(1, 7));
-		DoseView doseView = new DoseView(d_pm.getTreatmentModel().getDoseModel());
-		builder.add(doseView.buildPanel(), cc.xy(3, 7));
+		row = LayoutUtil.addRow(layout, row);
+		builder.addLabel("Dose: ", cc.xy(1, row));
+		DoseView doseView = new DoseView(tap.getDoseModel());
+		builder.add(doseView.buildPanel(), cc.xy(3, row));
+		return row;
 	}
 }
