@@ -29,7 +29,10 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -57,6 +60,40 @@ public class D80ReportView extends JDialog {
 	private String d_d80Report;
 	private final Study d_study;
 
+	private class D80Transferable implements Transferable, ClipboardOwner {
+		private DataFlavor d_dataflavor = new DataFlavor("text/html; class=java.lang.String");
+		private final String text;
+		
+		public D80Transferable(String d80Report)  throws ClassNotFoundException {
+			text = d80Report;
+		}
+
+		@Override
+		public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+			if(flavor.equals(d_dataflavor)) {
+				return text;
+			} else {
+				throw new UnsupportedFlavorException (flavor);
+			}
+		}
+
+		@Override
+		public DataFlavor[] getTransferDataFlavors() {
+			return new DataFlavor[]{d_dataflavor};
+		}
+
+		@Override
+		public boolean isDataFlavorSupported(DataFlavor flavor) {
+			return "text/html".equals(flavor.getMimeType());
+		}
+
+		@Override
+		public void lostOwnership(Clipboard clipboard, Transferable contents) {
+			// Do nothing
+		}
+		
+	}
+	
 	public D80ReportView(Frame owner, Study study) {
 		super(owner, "Summary of Efficacy Table", false);
 		d_study = study;
@@ -96,7 +133,10 @@ public class D80ReportView extends JDialog {
 		clipboardButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				StringSelection data = new StringSelection(d_d80Report);
+				D80Transferable data = null;
+				try {
+					data = new D80Transferable(d_d80Report);
+				} catch (ClassNotFoundException e1) {}
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(data, data);
 			}

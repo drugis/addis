@@ -74,8 +74,8 @@ import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EmpiricalDensityDataset;
-import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
 import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
+import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
@@ -304,7 +304,6 @@ implements ViewBuilder {
 					Runnable r = new Runnable() {
 						public void run() {
 							inconsistencyFactorsTablePanel.doLayout();
-//							d_mainWindow.reloadRightPanel();
 						}
 					};
 					SwingUtilities.invokeLater(r);
