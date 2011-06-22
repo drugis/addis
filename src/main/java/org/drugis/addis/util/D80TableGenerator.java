@@ -229,7 +229,7 @@ public class D80TableGenerator {
 		EndpointForTemplate[] ep = new EndpointForTemplate[d_study.getEndpoints().size()];
 		for (int i = 0; i < ep.length; ++i) {
 			StudyOutcomeMeasure<Endpoint> endpoint = d_study.getEndpoints().get(i);
-			ep[i] = new EndpointForTemplate(endpoint.getValue(), endpoint.isPrimary());
+			ep[i] = new EndpointForTemplate(endpoint.getValue(), endpoint.getIsPrimary());
 		}
 		return ep;
 	}

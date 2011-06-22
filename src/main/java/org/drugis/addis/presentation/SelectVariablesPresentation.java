@@ -52,8 +52,7 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 	private String d_description;
 	private PropertyChangeListener d_slotValueListener = new SlotsUniqueListener();
 
-	public SelectVariablesPresentation(ListHolder<T> options,
-			String typeName, String title, String description, AddisWindow mainWindow) {
+	public SelectVariablesPresentation(ListHolder<T> options, String typeName, String title, String description, AddisWindow mainWindow) {
 		d_typeName = typeName;
 		d_title = title;
 		d_description = description;

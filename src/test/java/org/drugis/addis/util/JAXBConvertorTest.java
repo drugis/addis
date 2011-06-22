@@ -686,7 +686,7 @@ public class JAXBConvertorTest {
 		StudyOutcomeMeasure om = new StudyOutcomeMeasure();
 		om.setNotes(new Notes());
 		om.setEndpoint(nameReference(ep.getName()));
-		om.setPrimary(true);
+		om.setPrimary(false);
 		
 		assertEntityEquals(ep, (Endpoint)JAXBConvertor.convertStudyOutcomeMeasure(om, domain).getValue());
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(new Study.StudyOutcomeMeasure<Variable>(ep)), om);
@@ -695,8 +695,7 @@ public class JAXBConvertorTest {
 		domain.addAdverseEvent(ade);
 		om.setEndpoint(null);
 		om.setAdverseEvent(nameReference(ade.getName()));
-		om.setPrimary(true);
-
+		om.setPrimary(false);
 		
 		assertEntityEquals(ade, (AdverseEvent)JAXBConvertor.convertStudyOutcomeMeasure(om, domain).getValue());
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(new Study.StudyOutcomeMeasure<Variable>(ade)), om);
@@ -732,12 +731,12 @@ public class JAXBConvertorTest {
 		epRef.setNotes(new Notes());
 		epRef.setId("X");
 		epRef.setEndpoint(nameReference(ep.getName()));
-		epRef.setPrimary(true);
+		epRef.setPrimary(false);
 		StudyOutcomeMeasure adeRef = new StudyOutcomeMeasure();
 		adeRef.setNotes(new Notes());
 		adeRef.setId("Y");
 		adeRef.setAdverseEvent(nameReference(ExampleData.buildAdverseEventDiarrhea().getName()));
-		adeRef.setPrimary(true);
+		adeRef.setPrimary(false);
 		StudyOutcomeMeasures oms = new StudyOutcomeMeasures();
 		oms.getStudyOutcomeMeasure().add(epRef);
 		oms.getStudyOutcomeMeasure().add(adeRef);
@@ -1026,7 +1025,7 @@ public class JAXBConvertorTest {
 			ep.setNotes(new Notes());
 			ep.setId("endpoint-" + epName);
 			ep.setEndpoint(nameReference(epName));
-			ep.setPrimary(true);
+			ep.setPrimary(false);
 			studyOutcomeMeasures.getStudyOutcomeMeasure().add(ep);
 		}
 		
@@ -1036,7 +1035,7 @@ public class JAXBConvertorTest {
 			ae.setNotes(new Notes());
 			ae.setId("adverseEvent-" + aeName);
 			ae.setAdverseEvent(nameReference(aeName));
-			ae.setPrimary(true);
+			ae.setPrimary(false);
 			studyOutcomeMeasures.getStudyOutcomeMeasure().add(ae);
 		}
 		
@@ -1046,7 +1045,7 @@ public class JAXBConvertorTest {
 			pc.setNotes(new Notes());
 			pc.setId("popChar-" + pcName);
 			pc.setPopulationCharacteristic(nameReference(pcName));
-			pc.setPrimary(true);
+			pc.setPrimary(false);
 			studyOutcomeMeasures.getStudyOutcomeMeasure().add(pc);
 		}
 		

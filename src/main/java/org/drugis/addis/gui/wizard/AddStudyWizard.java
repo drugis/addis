@@ -46,6 +46,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DropMode;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -93,6 +94,7 @@ import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TypeWithNotes;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
@@ -105,6 +107,7 @@ import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.components.NotesView;
 import org.drugis.addis.imports.PubMedIDRetriever;
 import org.drugis.addis.presentation.EpochDurationPresentation;
+import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.StudyActivitiesTableModel;
 import org.drugis.addis.presentation.wizard.AddArmsPresentation;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
@@ -670,14 +673,23 @@ public class AddStudyWizard extends Wizard {
 	public static class SelectEndpointWizardStep extends SelectFromFiniteListWizardStep<Endpoint> {
 		public SelectEndpointWizardStep(AddStudyWizardPresentation pm) {
 			super(pm.getEndpointSelectModel());
-		}		
+		}
+		
+		@Override
+		protected int createAdditionalComponents(ModifiableHolder<Endpoint> slot, PanelBuilder builder, FormLayout layout, int row) {
+			row = LayoutUtil.addRow(layout, row);
+			Study.StudyOutcomeMeasure<Endpoint> som = (StudyOutcomeMeasure<Endpoint>) slot;
+			PropertyAdapter<StudyOutcomeMeasure<Endpoint>> primaryModel = new PropertyAdapter<Study.StudyOutcomeMeasure<Endpoint>>(som, Study.StudyOutcomeMeasure.PROPERTY_IS_PRIMARY, true);
+			JCheckBox primaryCB = BasicComponentFactory.createCheckBox(primaryModel, "Primary endpoint");
+			builder.add(primaryCB, (new CellConstraints()).xy(5, row));
+			return row;
+		}
 	}
 	
 	public static class SelectPopulationCharsWizardStep extends SelectFromFiniteListWizardStep<PopulationCharacteristic> {
 		public SelectPopulationCharsWizardStep(AddStudyWizardPresentation pm) {
 			super(pm.getPopulationCharSelectModel());
 		}
-		
 	}
 	
 	public static class SelectAdverseEventWizardStep extends SelectFromFiniteListWizardStep<AdverseEvent> {

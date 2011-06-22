@@ -108,7 +108,7 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 				NoteViewButton omNotes = new NoteViewButton(d_mainWindow, var.getName(), som.getNotes());
 				builder.add(omNotes, cc.xy(1, row));
 				
-				builder.add( GUIFactory.createOutcomeMeasureLabelWithIcon(var, som.isPrimary()), cc.xy(3, row));
+				builder.add( GUIFactory.createOutcomeMeasureLabelWithIcon(var, som.getIsPrimary()), cc.xy(3, row));
 				
 				JPanel panel = new JPanel(new FlowLayout());
 				if (var instanceof OutcomeMeasure) {

@@ -729,7 +729,7 @@ public class JAXBConvertor {
 		}
 		Study.StudyOutcomeMeasure<Variable> studyOutcomeMeasure = new Study.StudyOutcomeMeasure<Variable>(var);
 		boolean isPrimaryNull = om.isPrimary() == null ? true : om.isPrimary();
-		studyOutcomeMeasure.setPrimary(om.getEndpoint() != null ? isPrimaryNull: true);
+		studyOutcomeMeasure.setIsPrimary(om.getEndpoint() != null ? isPrimaryNull: true);
 		List<org.drugis.addis.entities.data.Note> notes = om.getNotes() == null ? Collections.<org.drugis.addis.entities.data.Note>emptyList() : om.getNotes().getNote();
 		convertNotes(notes, studyOutcomeMeasure.getNotes());
 		return studyOutcomeMeasure;
@@ -743,13 +743,13 @@ public class JAXBConvertor {
 		newOutcome.setPrimary(true);
 		if(studyOutcomeMeasure.getValue() instanceof Endpoint) {
 			newOutcome.setEndpoint(value);
-			newOutcome.setPrimary(studyOutcomeMeasure.isPrimary());
+			newOutcome.setPrimary(studyOutcomeMeasure.getIsPrimary());
 		} else if(studyOutcomeMeasure.getValue() instanceof AdverseEvent){
 			newOutcome.setAdverseEvent(value);
-			newOutcome.setPrimary(true);
+			newOutcome.setPrimary(false);
 		} else if(studyOutcomeMeasure.getValue() instanceof PopulationCharacteristic) {
 			newOutcome.setPopulationCharacteristic(value);
-			newOutcome.setPrimary(true);
+			newOutcome.setPrimary(false);
 		} else {
 			throw new ConversionException("Unsupported type of StudyOutcomeMeasure: " + studyOutcomeMeasure);
 		}

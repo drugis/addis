@@ -155,21 +155,15 @@ public class StudyPresentation extends PresentationModel<Study> {
 	}
 	
 	public List<OutcomeMeasure> getEndpoints() {
-		List<OutcomeMeasure> s = new ArrayList<OutcomeMeasure>();
-		Study r = getBean();
-		for (Endpoint e : Study.extractVariables(r.getEndpoints())) {
-			s.add(e);
-		}
-		return s;
+		List<OutcomeMeasure> endpoints = new ArrayList<OutcomeMeasure>();
+		endpoints.addAll(Study.extractVariables(getBean().getEndpoints()));
+		return endpoints;
 	}
 	
 	public List<OutcomeMeasure> getAdverseEvents() {
-		List<OutcomeMeasure> s = new ArrayList<OutcomeMeasure>();
-		Study r = getBean();
-		for (AdverseEvent a : Study.extractVariables(r.getAdverseEvents())) {
-			s.add(a);
-		}
-		return s;
+		List<OutcomeMeasure> adverseEvents = new ArrayList<OutcomeMeasure>();
+		adverseEvents.addAll(Study.extractVariables(getBean().getAdverseEvents()));
+		return adverseEvents;
 	}	
 
 	public PopulationCharTableModel getPopulationCharTableModel() {

@@ -29,15 +29,10 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.TypeWithNotes;
-import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.components.NotesView;
@@ -46,7 +41,6 @@ import org.drugis.addis.presentation.SelectFromFiniteListPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
 
-import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -139,7 +133,6 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 		add(d_scrollPane, BorderLayout.CENTER);
 	}
 
-	@SuppressWarnings("unchecked")
 	private int buildSlotsPart(int fullWidth, CellConstraints cc, int row, FormLayout layout) {
 		for(int i = 0; i < d_pm.countSlots(); ++i) {
 			row = LayoutUtil.addRow(layout, row);
@@ -160,14 +153,7 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 				d_builder.add(addOptionButton, cc.xy(7, row));
 			}
 
-			// Primary/secondary checkbox for Endpoints
-			if (slot.getValue() instanceof Endpoint) {
-				row = LayoutUtil.addRow(layout, row);
-				Study.StudyOutcomeMeasure<Variable> som = (StudyOutcomeMeasure<Variable>) slot;
-				JCheckBox primaryCB = BasicComponentFactory.createCheckBox(som.getPrimaryModel(), "Primary endpoint");
-
-				d_builder.add(primaryCB, cc.xy(7, row));
-			}
+			row = createAdditionalComponents(slot, d_builder, layout, row);
 			
 			if (slot instanceof TypeWithNotes) {
 				row = LayoutUtil.addRow(layout, row);
@@ -177,5 +163,9 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 			row = LayoutUtil.addRow(layout, row);
 		}
 		return row;	
+	}
+
+	protected int createAdditionalComponents(ModifiableHolder<T> slot, PanelBuilder builder, FormLayout layout, int row) {
+		return row;
 	}
 }

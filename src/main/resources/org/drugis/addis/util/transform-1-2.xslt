@@ -55,7 +55,7 @@
     
     <xsl:template match="study/studyOutcomeMeasures/studyOutcomeMeasure">
         <xsl:copy>
-            <xsl:attribute name="primary">true</xsl:attribute>
+            <xsl:attribute name="primary">false</xsl:attribute>
             <xsl:apply-templates select="@*|node()"/>
         </xsl:copy>
     </xsl:template>
