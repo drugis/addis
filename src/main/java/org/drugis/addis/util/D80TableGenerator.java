@@ -200,7 +200,11 @@ public class D80TableGenerator {
 		
 		private String formatPValue(BasicMeasurement baseline, BasicMeasurement subject, DecimalFormat df) {
 			AbstractBasicRelativeEffect<? extends Measurement> relEffect = getRelativeEffect(baseline, subject);
-			return 	df.format(relEffect.getTwoSidedPValue());
+			if (relEffect.getTwoSidedPValue() >= 0.01) {
+				return df.format(relEffect.getTwoSidedPValue());
+			} else {
+				return "&lt;0.01";
+			}
 		}
 
 		private String formatConfidenceInterval(BasicMeasurement baseline, BasicMeasurement subject, DecimalFormat df) {
