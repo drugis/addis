@@ -304,7 +304,7 @@ implements ViewBuilder {
 					Runnable r = new Runnable() {
 						public void run() {
 							inconsistencyFactorsTablePanel.doLayout();
-							d_mainWindow.reloadRightPanel();
+//							d_mainWindow.reloadRightPanel();
 						}
 					};
 					SwingUtilities.invokeLater(r);
