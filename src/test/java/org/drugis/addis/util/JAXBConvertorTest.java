@@ -66,6 +66,7 @@ import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.CharacteristicsMap;
+import org.drugis.addis.entities.CombinationTreatment;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
@@ -461,13 +462,17 @@ public class JAXBConvertorTest {
 	
 	@Test
 	public void testConvertStudyActivity() throws ConversionException, DatatypeConfigurationException {
-		String drugName = "Sildenafil";
-		String code = "G04BE03";
+		String drugName1 = "Sildenafil";
+		String drugName2 = "Paroxeflox";
+		String code1 = "G04BE03";
+		String code2 = "G04BE04";
 		double quantity = 12.5;
 		
 		Domain domain = new DomainImpl();
-		Drug drug = new Drug(drugName, code);
-		domain.addDrug(drug);
+		Drug drug1 = new Drug(drugName1, code1);
+		Drug drug2 = new Drug(drugName2, code2);
+		domain.addDrug(drug1);
+		domain.addDrug(drug2);
 		
 		// test with predefined activity
 		String activityName = "Randomization";
@@ -489,11 +494,11 @@ public class JAXBConvertorTest {
 		fixDose.setQuantity(quantity);
 		fixDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);		
 		Treatment t = new org.drugis.addis.entities.data.Treatment();
-		t.setDrug(nameReference(drugName));
+		t.setDrug(nameReference(drugName1));
 		t.setFixedDose(fixDose);		
-		TreatmentActivity ta = buildFixedDoseTreatmentActivity(drug, quantity);
+		TreatmentActivity ta1 = buildFixedDoseTreatmentActivity(drug1, quantity);
 		
-		sa = new StudyActivity(activityName, ta);
+		sa = new StudyActivity(activityName, ta1);
 		saData.getActivity().setPredefined(null);
 		saData.getActivity().setTreatment(t);
 
@@ -501,9 +506,24 @@ public class JAXBConvertorTest {
 		assertEquals(saData, JAXBConvertor.convertStudyActivity(sa));
 		
 		// test with Combination Treatment
+		Treatment t2 = new org.drugis.addis.entities.data.Treatment();
+		t2.setDrug(nameReference(drugName2));
+		t2.setFixedDose(fixDose);
+		org.drugis.addis.entities.data.CombinationTreatment ctData = new org.drugis.addis.entities.data.CombinationTreatment();
+		ctData.getTreatment().add(t);
+		ctData.getTreatment().add(t2);
 		
+		TreatmentActivity ta2 = buildFixedDoseTreatmentActivity(drug2, quantity);
+		CombinationTreatment ct = new CombinationTreatment();
+		ct.getTreatments().add(ta1);
+		ct.getTreatments().add(ta2);
+		sa = new StudyActivity(activityName, ct);
+		saData.getActivity().setTreatment(null);
+		saData.getActivity().setCombinationTreatment(ctData);
 		
-
+		assertTrue(EntityUtil.deepEqual(sa, JAXBConvertor.convertStudyActivity(saData, new Study(), domain)));
+		assertEquals(saData, JAXBConvertor.convertStudyActivity(sa));
+		
 		// test UsedBys
 		String armName1 = "armName1";
 		String armName2 = "armName2";

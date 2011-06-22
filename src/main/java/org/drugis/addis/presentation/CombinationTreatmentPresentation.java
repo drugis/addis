@@ -16,10 +16,12 @@ public class CombinationTreatmentPresentation extends PresentationModel<Combinat
 	
 	public static final String PROPERTY_NAME = "name";
 
+	private PropertyChangeListener d_nameListener;
+
 	public CombinationTreatmentPresentation(final CombinationTreatment ct) {
 		super(ct);
 
-		final PropertyChangeListener nameListener = new PropertyChangeListener() {
+		d_nameListener = new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals(TreatmentActivity.PROPERTY_DRUG)) {
@@ -48,13 +50,8 @@ public class CombinationTreatmentPresentation extends PresentationModel<Combinat
 				firePropertyChange(PROPERTY_NAME, null, getName());
 			}
 
-			protected void updateTreatmentListeners() {
-				for(TreatmentActivity ta : ct.getTreatments()) {
-					ta.removePropertyChangeListener(nameListener);
-					ta.addPropertyChangeListener(nameListener);
-				}
-			}
 		});
+		updateTreatmentListeners();
 	}
 
 	public TreatmentActivityPresentation getTreatmentModel(TreatmentActivity ta) {
@@ -68,4 +65,12 @@ public class CombinationTreatmentPresentation extends PresentationModel<Combinat
 		}
 		return name.length() > 0 ? name.substring(0, name.length() - 3) : "";
 	}
+
+	private void updateTreatmentListeners() {
+		for(TreatmentActivity ta : getBean().getTreatments()) {
+			ta.removePropertyChangeListener(d_nameListener);
+			ta.addPropertyChangeListener(d_nameListener);
+		}
+	}
+
 }
