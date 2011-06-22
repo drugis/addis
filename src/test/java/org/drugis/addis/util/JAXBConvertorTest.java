@@ -1613,8 +1613,7 @@ public class JAXBConvertorTest {
 		doRoundTripTest(getTransformedTestData());
 	}
 
-	private void doRoundTripTest(InputStream transformedXmlStream)
-			throws JAXBException, ConversionException {
+	private void doRoundTripTest(InputStream transformedXmlStream) throws JAXBException, ConversionException {
 		System.clearProperty("javax.xml.transform.TransformerFactory");
 		AddisData data = (AddisData) d_unmarshaller.unmarshal(transformedXmlStream);
 		sortMeasurements(data);
@@ -1828,7 +1827,7 @@ public class JAXBConvertorTest {
 	}
 	
 	private static InputStream getTransformedDefaultData() throws TransformerException, IOException {
-		return JAXBConvertor.transformToLatest(JAXBConvertorTest.class.getResourceAsStream("../defaultData.addis"), 1);
+		return JAXBConvertor.transformToLatest(JAXBConvertorTest.class.getResourceAsStream("../defaultData.addis"), 2);
 	}
 
 	private static InputStream getTransformedTestData() throws TransformerException, IOException {
