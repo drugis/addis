@@ -175,7 +175,7 @@ public class Main {
 	
 	public void loadExampleDomain() {
 		try {
-			loadDomainFromXMLResource(EXAMPLE_XML, 1);
+			loadDomainFromXMLResource(EXAMPLE_XML);
 		} catch (Exception e) {
 			throw new RuntimeException("Error loading default data: " + e.getMessage(), e);
 		}
@@ -189,38 +189,51 @@ public class Main {
 	}
 	
 	private enum XmlFormatType {
-		LEGACY,
-		SCHEMA1,
-		SCHEMA2,
-		SCHEMA_FUTURE
+		LEGACY(0),
+		SCHEMA1(1),
+		SCHEMA2(2),
+		SCHEMA_FUTURE(-1);
+		
+		private final int d_version;
+
+		XmlFormatType(int version) {
+			d_version = version;
+		}
+
+		public int getVersion() {
+			return d_version;
+		}
 	}
 
 	private void loadDomainFromXMLFile(String fileName) throws IOException,	ClassNotFoundException {
 		File f = new File(fileName);
 		if (f.exists() && f.isFile()) {
-			BufferedInputStream fis = new BufferedInputStream(new FileInputStream(f));
-			switch (determineXmlType(fis)) {
-			case LEGACY:
-				d_domainMgr.loadLegacyXMLDomain(fis);
-				attachDomainChangedModel();
+			FileInputStream in = new FileInputStream(f);
+			if (loadDomainFromInputStream(in).equals(XmlFormatType.LEGACY)) {
 				askToConvertToNew(fileName);
-				break;
-			case SCHEMA1:
-				d_domainMgr.loadXMLDomain(fis, 1);
-				attachDomainChangedModel();
+			} else {
 				setFileNameAndReset(fileName);
-				break;
-			case SCHEMA2: // FIXME refactor
-				d_domainMgr.loadXMLDomain(fis, 2);
-				attachDomainChangedModel();
-				setFileNameAndReset(fileName);
-				break;
-			case SCHEMA_FUTURE:
-				throw new IllegalArgumentException("The XML file was created with a newer version of ADDIS. Please download the new version to read it.");
 			}
 		} else {
 			throw new FileNotFoundException(fileName + " not found");
 		}
+	}
+
+	private XmlFormatType loadDomainFromInputStream(InputStream in)	throws IOException {
+		BufferedInputStream fis = new BufferedInputStream(in);
+		XmlFormatType xmlType = determineXmlType(fis);
+		switch (xmlType) {
+		case LEGACY:
+			d_domainMgr.loadLegacyXMLDomain(fis);
+			break;
+		case SCHEMA_FUTURE:
+			throw new IllegalArgumentException("The XML file was created with a newer version of ADDIS than you are using. Please download the new version to read it.");
+		default: // SCHEMA*
+			d_domainMgr.loadXMLDomain(fis, xmlType.getVersion());
+			break;
+		}
+		attachDomainChangedModel();
+		return xmlType;
 	}
 
 	private void attachDomainChangedModel() {
@@ -270,10 +283,9 @@ public class Main {
 		return type;
 	}
 
-	private void loadDomainFromXMLResource(String fileName, int version) throws IOException, ClassNotFoundException {
+	private void loadDomainFromXMLResource(String fileName) throws IOException, ClassNotFoundException {
 		InputStream fis = Main.class.getResourceAsStream("/org/drugis/addis/" + fileName);
-		d_domainMgr.loadXMLDomain(fis, version);
-		attachDomainChangedModel();
+		loadDomainFromInputStream(fis);
 	}
 
 	void newFileActions() {
