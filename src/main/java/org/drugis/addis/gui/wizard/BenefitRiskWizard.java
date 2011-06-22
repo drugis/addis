@@ -27,12 +27,14 @@ package org.drugis.addis.gui.wizard;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -65,13 +67,14 @@ import com.jgoodies.forms.layout.FormLayout;
 
 @SuppressWarnings("serial")
 public class BenefitRiskWizard extends Wizard {
+	private static final Dimension PREFERRED_COLUMN_SIZE = new Dimension(330, 370);
 
 	public BenefitRiskWizard(AddisWindow mainWindow, BenefitRiskWizardPM pm) {
 		super(buildModel(pm, mainWindow));
 		
-		getTitleComponent().setPreferredSize(new Dimension(mainWindow.getWidth() / 5 * 4, 100));
-		setPreferredSize(new Dimension(mainWindow.getWidth() / 5 * 4, mainWindow.getHeight() / 5 * 4));
-		setMinimumSize(new Dimension(mainWindow.getMinimumSize().width - 100, mainWindow.getMinimumSize().height - 100));
+		getTitleComponent().setPreferredSize(new Dimension(700 , 100));
+		setPreferredSize(new Dimension(700, 550));
+		setMinimumSize(new Dimension(700, 550));
 		
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 	}
@@ -236,7 +239,7 @@ public class BenefitRiskWizard extends Wizard {
 				builder.add(criteriaCheckBox, cc.xy(1, row));
 			}
 			
-			return AuxComponentFactory.createInScrollPane(builder, 350, 550);
+			return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
 		}
 
 		private Component buildArmsPane(BenefitRiskWizardPM pm) {
@@ -263,7 +266,7 @@ public class BenefitRiskWizard extends Wizard {
 				builder.add(armCheckbox, cc.xy(1, row += 2));
 			}
 			
-			return AuxComponentFactory.createInScrollPane(builder, 350, 550);
+			return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
 		}		
 	}
 
@@ -271,7 +274,7 @@ public class BenefitRiskWizard extends Wizard {
 		private AddisWindow d_mainWindow;
 		private BenefitRiskWizardPM d_pm;
 
-		public SelectCriteriaAndAlternativesWizardStep(BenefitRiskWizardPM pm, AddisWindow main){
+		public SelectCriteriaAndAlternativesWizardStep(BenefitRiskWizardPM pm, AddisWindow main) {
 			super("Select Criteria and Alternatives","In this step, you select the criteria (analyses on specific outcomemeasures) " +
 				  "and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least two criteria " +
 				  "and at least two alternatives must be included.");
@@ -309,19 +312,15 @@ public class BenefitRiskWizard extends Wizard {
 			}
 		}
 
-		private JPanel buildPanel() {
-			FormLayout layout = new FormLayout(
-					"left:pref, 3dlu, left:pref",
-					"p"
-					);	
+		private JComponent buildPanel() {
+			GridLayout layout = new GridLayout(1, 2, 15, 0);
 			
-			PanelBuilder builder = new PanelBuilder(layout);
-			CellConstraints cc = new CellConstraints();
+			JPanel panel = new JPanel(layout);
 			
-			builder.add(buildCriteriaPane(d_pm), cc.xy(1, 1));
-			builder.add(buildAlternativesPane(d_pm), cc.xy(3, 1));
+			panel.add(buildCriteriaPane(d_pm));
+			panel.add(buildAlternativesPane(d_pm));
 			
-			return builder.getPanel();
+			return panel;
 		}
 
 		private Component buildCriteriaPane(BenefitRiskWizardPM pm) {
@@ -357,7 +356,7 @@ public class BenefitRiskWizard extends Wizard {
 				builder.add(buildRadioButtonAnalysisPanel(out), cc.xy(3, row, CellConstraints.LEFT, CellConstraints.DEFAULT));
 			}
 			
-			return AuxComponentFactory.createInScrollPane(builder, 350, 550);
+			return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
 		}
 
 		private JPanel buildRadioButtonAnalysisPanel(OutcomeMeasure out) {
@@ -400,7 +399,7 @@ public class BenefitRiskWizard extends Wizard {
 				builder.add(drugCheckbox, cc.xy(1, row += 2));
 			}
 			
-			return AuxComponentFactory.createInScrollPane(builder, 350, 550);
+			return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
 		}
 	}
 }

@@ -177,11 +177,10 @@ public class AuxComponentFactory {
 		return checkBox;
 	}
 
-	public static JScrollPane createInScrollPane(PanelBuilder builder, int x, int y) {
+	public static JScrollPane createInScrollPane(PanelBuilder builder, Dimension prefSize) {
 		JScrollPane scroll = new JScrollPane(builder.getPanel());
-		scroll.setPreferredSize(new Dimension(x, y));
+		scroll.setPreferredSize(prefSize);
 		scroll.getVerticalScrollBar().setUnitIncrement(16);
-		scroll.setVisible(true);
 		return scroll;
 	}
 

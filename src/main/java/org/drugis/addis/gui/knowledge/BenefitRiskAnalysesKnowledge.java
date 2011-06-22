@@ -58,6 +58,7 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 		dialog.pack();
 		WizardFrameCloser.bind(wizard, dialog);
 		Main.bindPrintScreen(wizard);
+		dialog.setResizable(false);
 		return dialog;
 	}
 	
