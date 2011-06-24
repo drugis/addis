@@ -499,10 +499,6 @@ public class JAXBConvertorTest {
 
 		assertTrue(EntityUtil.deepEqual(sa, JAXBConvertor.convertStudyActivity(saData, new Study(), domain)));
 		assertEquals(saData, JAXBConvertor.convertStudyActivity(sa));
-		
-		// test with Combination Treatment
-		
-		
 
 		// test UsedBys
 		String armName1 = "armName1";

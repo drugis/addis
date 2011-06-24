@@ -112,7 +112,6 @@ public class StudyActivityPresentation {
 		if (!isEditing()) {
 			d_activityHolder.addValueChangeListener(listener);
 			d_treatmentModel.addBeanPropertyChangeListener(listener);
-			d_combinationModel.addPropertyChangeListener(listener);
 		}
 	}
 
@@ -187,11 +186,6 @@ public class StudyActivityPresentation {
 		return d_treatmentModel;
 	}
 	
-	public CombinationTreatmentPresentation getCombinationTreatmentModel() {
-		return d_combinationModel;
-	}
-	
-	
 	/**
 	 * A value model indicating whether the input is complete and valid.
 	 */
@@ -219,9 +213,7 @@ public class StudyActivityPresentation {
 			if (drug != null) {
 				d_nameHolder.setValue(drug.toString());
 			}
-		} else if(d_activityHolder.getValue() instanceof CombinationTreatment) {
-			d_newActivity.setName(d_combinationModel.getName());
-		} else if (d_activityHolder.getValue() != null) {
+		} else if (d_activityHolder.getValue() != null){
 			d_newActivity.setName(d_activityHolder.getValue().toString());
 		}
 	}

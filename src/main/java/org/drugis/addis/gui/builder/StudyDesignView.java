@@ -34,7 +34,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
-import org.drugis.addis.entities.CombinationTreatment;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.gui.components.EnhancedTableHeader;
@@ -62,9 +61,6 @@ public class StudyDesignView implements ViewBuilder {
 				if (sa.getActivity() instanceof TreatmentActivity) {
 					TreatmentActivity ta = (TreatmentActivity) sa.getActivity();
 					setText("<html>" + sa.getName() + "<br/>" + ta.getDrug().getName() + " (" + ta.getDose().toString() + ")</html>");
-				} else if (sa.getActivity() instanceof CombinationTreatment) {
-					CombinationTreatment ct = (CombinationTreatment) sa.getActivity();
-					setText("<html>" + sa.getName() + "</html>");
 				} else {
 					setText("<html>" + sa.getActivity().toString() + "</html>");
 				}

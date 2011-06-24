@@ -35,7 +35,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.entities.Activity;
-import org.drugis.addis.entities.CombinationTreatment;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Note;
@@ -121,7 +120,6 @@ public class StudyActivityPresentationTest {
 		StudyActivityPresentation pm1 = new StudyActivityPresentation(d_emptyList, null, d_activity);
 		List<Activity> list = new ArrayList<Activity>(Arrays.asList(PredefinedActivity.values()));
 		list.add(new TreatmentActivity(null, null));
-		list.add(new CombinationTreatment());
 		assertEquals(list, pm1.getActivityOptions());
 		
 		// Test initialization with treatment
@@ -129,25 +127,12 @@ public class StudyActivityPresentationTest {
 		StudyActivityPresentation pm2 = new StudyActivityPresentation(d_emptyList, null, activity);
 		list = new ArrayList<Activity>(Arrays.asList(PredefinedActivity.values()));
 		list.add(d_treatment);
-		list.add(new CombinationTreatment());
 		assertEquals(list, pm2.getActivityOptions());
-
+		
 		// Changing the TreatmentActivity in the PM should affect the option list
 		pm2.getTreatmentModel().getBean().setDrug(null);
 		d_treatment.setDrug(null);
 		assertEquals(list, pm2.getActivityOptions());
-
-		// Test initialization with combination treatment
-		CombinationTreatment ct = new CombinationTreatment();
-		ct.getTreatments().add(d_treatment);
-		ct.getTreatments().add(new TreatmentActivity(new Drug("Fluoxeparatinose", "secret"), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY)));
-		StudyActivity activity2 = new StudyActivity("Combination treatment", ct);
-		StudyActivityPresentation pm3 = new StudyActivityPresentation(d_emptyList, null, activity2);
-		list = new ArrayList<Activity>(Arrays.asList(PredefinedActivity.values()));
-		list.add(new TreatmentActivity(null, null));
-		list.add(ct);
-		assertEquals(list, pm3.getActivityOptions());
-
 	}
 	
 	@Test

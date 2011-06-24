@@ -27,6 +27,9 @@ package org.drugis.addis.entities;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -77,4 +80,11 @@ public class CombinationTreatmentTest {
 		assertEquals(ct, d_orig);
 		JUnitUtil.assertNotEquals(d_empty, d_orig);
 	}
+	
+	@Test
+	public void testSetTreatments() {
+		List<TreatmentActivity> singletonList = Collections.singletonList(new TreatmentActivity(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY)));
+		JUnitUtil.testSetter(d_empty, CombinationTreatment.PROPERTY_TREATMENTS, null, singletonList);
+	}
+	
 }

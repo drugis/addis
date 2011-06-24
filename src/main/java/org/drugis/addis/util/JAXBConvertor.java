@@ -60,7 +60,6 @@ import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.CharacteristicsMap;
-import org.drugis.addis.entities.CombinationTreatment;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
@@ -139,7 +138,6 @@ import org.drugis.addis.entities.data.Studies;
 import org.drugis.addis.entities.data.StudyActivities;
 import org.drugis.addis.entities.data.StudyOutcomeMeasure;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
-import org.drugis.addis.entities.data.Treatment;
 import org.drugis.common.Interval;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -417,27 +415,23 @@ public class JAXBConvertor {
 			return activity.getPredefined();
 		} else if (activity.getTreatment() != null) {
 			return convertTreatmentActivity(activity.getTreatment(), domain);
-		} else if (activity.getCombinationTreatment() != null) {
-			return convertCombinationTreatment(activity.getCombinationTreatment(), domain);
 		} else {
 			throw new ConversionException("Unknown Activity type " + activity);
 		}
 	}
-
-
+	
 	public static org.drugis.addis.entities.data.Activity convertActivity(Activity activity) throws ConversionException {
 		org.drugis.addis.entities.data.Activity converted = new org.drugis.addis.entities.data.Activity();
 		if (activity instanceof PredefinedActivity) {
 			converted.setPredefined((PredefinedActivity) activity);
 		} else if (activity instanceof TreatmentActivity){
 			converted.setTreatment(convertTreatmentActivity((TreatmentActivity) activity));
-		} else if (activity instanceof CombinationTreatment){
-			converted.setCombinationTreatment(convertCombinationTreatment((CombinationTreatment) activity));
 		} else {
 			throw new ConversionException("Unknown Activity type " + activity);
 		}
 		return converted;
 	}
+
 
 	public static org.drugis.addis.entities.data.StudyActivity convertStudyActivity(StudyActivity sa) throws ConversionException {
 		org.drugis.addis.entities.data.StudyActivity newActivity = new org.drugis.addis.entities.data.StudyActivity();
@@ -471,15 +465,6 @@ public class JAXBConvertor {
 		return newT;
 	}
 	
-	
-	private static Activity convertCombinationTreatment(org.drugis.addis.entities.data.CombinationTreatment combinationTreatment, Domain domain) throws ConversionException {
-		CombinationTreatment newCombinationTreatment = new CombinationTreatment();
-		for(Treatment ct : combinationTreatment.getTreatment()) {
-			newCombinationTreatment.getTreatments().add(convertTreatmentActivity(ct, domain));
-		}
-		return newCombinationTreatment;
-	}
-	
 	static org.drugis.addis.entities.data.Treatment convertTreatmentActivity(TreatmentActivity ta)  throws ConversionException {
 		org.drugis.addis.entities.data.Treatment t = new org.drugis.addis.entities.data.Treatment();
 		t.setDrug(nameReference(ta.getDrug().getName()));
@@ -493,15 +478,6 @@ public class JAXBConvertor {
 		return t;
 	}
 	
-
-	private static org.drugis.addis.entities.data.CombinationTreatment convertCombinationTreatment(CombinationTreatment activity) throws ConversionException {
-		org.drugis.addis.entities.data.CombinationTreatment ct = new org.drugis.addis.entities.data.CombinationTreatment();
-		for(TreatmentActivity ta : activity.getTreatments()) {
-			ct.getTreatment().add(convertTreatmentActivity(ta));
-		}
-		return ct;
-	}
-
 	static org.drugis.addis.entities.data.Epoch convertEpoch(Epoch e) {
 		org.drugis.addis.entities.data.Epoch newEpoch = new org.drugis.addis.entities.data.Epoch();
 		newEpoch.setName(e.getName());
