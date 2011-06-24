@@ -39,7 +39,6 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 
-import org.drugis.addis.entities.CombinationTreatment;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.gui.AddisWindow;
@@ -128,8 +127,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 			public Component getListCellRendererComponent(JList list, Object value,
 					int index, boolean isSelected, boolean cellHasFocus) {
 				return renderer.getListCellRendererComponent(list, 
-						value instanceof TreatmentActivity ? "Treatment" : 
-							value instanceof CombinationTreatment ? "Combination Treatment" : value,
+						value instanceof TreatmentActivity ? "Treatment" : value,
 						index, isSelected, cellHasFocus);
 			}
 		});

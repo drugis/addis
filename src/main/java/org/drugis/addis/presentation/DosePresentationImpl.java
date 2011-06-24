@@ -42,7 +42,8 @@ class DosePresentationImpl implements DosePresentation {
 	private ValueHolder d_max;
 	private ValueHolder d_unit;
 	
-	public DosePresentationImpl(TreatmentActivityPresentation treatmentActivityPresentation) {
+	public DosePresentationImpl(
+			TreatmentActivityPresentation treatmentActivityPresentation) {
 		d_activity = treatmentActivityPresentation.getBean();
 		if (d_activity.getDose() == null) {
 			d_activity.setDose(new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY));

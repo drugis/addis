@@ -414,7 +414,6 @@
 		<xs:sequence>
 			<xs:choice>
 				<xs:element name="treatment" type="Treatment"/>
-				<xs:element name="combinationTreatment" type="CombinationTreatment"/>
 				<xs:element name="predefined" type="PredefinedActivityEnum"/>
 			</xs:choice>
 		</xs:sequence>
@@ -432,12 +431,7 @@
 			<xs:element name="drug" type="NameReference"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="CombinationTreatment">
-		<xs:sequence>
-			<xs:element name="treatment" type="Treatment" maxOccurs="unbounded"/>
-		</xs:sequence>
-	</xs:complexType>
-	
+
 	<!-- Outcomemeasures and variables -->
 
 	<xs:complexType name="ContinuousVariable">
