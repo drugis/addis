@@ -193,12 +193,14 @@ public class ClinicaltrialsImporter {
 		// Outcome Measures
 		for (PrimaryOutcome endp : studyImport.getPrimaryOutcome()) {
 			StudyOutcomeMeasure<Endpoint> om = new StudyOutcomeMeasure<Endpoint>(null);
+			om.setIsPrimary(true);
 			om.getNotes().add(new Note(Source.CLINICALTRIALS, endp.getMeasure()));
 			study.getStudyEndpoints().add(om);
 		}
 		
 		for (SecondaryOutcome endp : studyImport.getSecondaryOutcome()) {
 			StudyOutcomeMeasure<Endpoint> om = new StudyOutcomeMeasure<Endpoint>(null);
+			om.setIsPrimary(false);
 			om.getNotes().add(new Note(Source.CLINICALTRIALS, endp.getMeasure()));
 			study.getStudyEndpoints().add(om);
 		}
