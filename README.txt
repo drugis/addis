@@ -17,6 +17,8 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
+1.9: Enable combination treatment (WIP).
+
 1.8: Input study design (time structure), allow missing measurements,
    generate summary of efficacy table according to EMA D80 template,
    support of primary/secondary endpoints.
