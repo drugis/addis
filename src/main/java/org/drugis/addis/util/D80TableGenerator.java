@@ -53,6 +53,7 @@ import org.stringtemplate.v4.ST;
 public class D80TableGenerator {
 	public enum StatisticType {
 		CONFIDENCE_INTERVAL, POINT_ESTIMATE, P_VALUE
+
 	}
 
 	private final Study d_study;

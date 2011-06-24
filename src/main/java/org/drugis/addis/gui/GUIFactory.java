@@ -77,7 +77,12 @@ public class GUIFactory {
 			fname = FileNames.ICON_POPULATION_CHAR;
 		}
 		Icon icon = ImageLoader.getIcon(fname);
-		return new JLabel(e.getName() + primary, icon, JLabel.CENTER);
+//		System.out.println(primary);
+		JLabel textLabel = new JLabel(e.getName() + primary, icon, JLabel.CENTER);
+		
+		// FIXME: Why was this here? Don't think the name can change.
+		//		Bindings.bind(textLabel, "text", new HTMLWrappingModel(new PresentationModel<Variable>(e).getModel(OutcomeMeasure.PROPERTY_NAME)));
+		return textLabel;
 	}
 
 	public static JComponent buildStudyPanel(StudyListPresentation studies, AddisWindow parent) {
