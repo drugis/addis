@@ -460,7 +460,6 @@
 				<xs:element name="continuousMeasurement" type="ContinuousMeasurement"/>
 				<xs:element name="categoricalMeasurement" type="CategoricalMeasurement"/>
 			</xs:choice>
-			<xs:element name="whenTaken" type="MeasurementMoment"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="RateMeasurement">
@@ -480,20 +479,6 @@
 	<xs:complexType name="CategoryMeasurement">
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="rate" type="xs:int"/>
-	</xs:complexType>
-	<xs:complexType name="MeasurementMoment">
-		<xs:sequence>
-			<xs:element name="epoch" type="NameReference"/>
-			<xs:choice>
-				<xs:element name="fromEpochStart" type="MeasurementOffset"/>
-				<xs:element name="fromEpochEnd" type="MeasurementOffset"/>
-			</xs:choice>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="MeasurementOffset">
-		<xs:sequence>
-			<xs:element name="offset" type="xs:duration"/>
-		</xs:sequence>
 	</xs:complexType>
 
 	<!-- Helpers for Meta-analyses -->

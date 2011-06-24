@@ -44,8 +44,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -118,8 +116,6 @@ import org.drugis.addis.entities.data.Endpoints;
 import org.drugis.addis.entities.data.IdReference;
 import org.drugis.addis.entities.data.Indications;
 import org.drugis.addis.entities.data.IntegerWithNotes;
-import org.drugis.addis.entities.data.MeasurementMoment;
-import org.drugis.addis.entities.data.MeasurementOffset;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
 import org.drugis.addis.entities.data.MetaAnalysisReferences;
@@ -805,22 +801,7 @@ public class JAXBConvertor {
 		} else {
 			throw new ConversionException("Measurement type not supported: " + m.toString());
 		}
-		addWhenTaken(defaultEpochName, measurement);
 		return measurement;
-	}
-
-	private static void addWhenTaken(String defaultEpochName,
-			org.drugis.addis.entities.data.Measurement measurement) {
-		MeasurementMoment whenTaken = new MeasurementMoment();
-		whenTaken.setEpoch(nameReference(defaultEpochName));
-		MeasurementOffset offset = new MeasurementOffset();
-		try {
-			offset.setOffset(DatatypeFactory.newInstance().newDuration("P0D"));
-		} catch (DatatypeConfigurationException e) {
-			throw new RuntimeException(e);
-		}
-		whenTaken.setFromEpochEnd(offset);
-		measurement.setWhenTaken(whenTaken);
 	}
 	
 	public static Map<MeasurementKey, BasicMeasurement> convertMeasurements(Measurements measurements, List<Arm> arms, Map<String, org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> outcomeMeasures) 

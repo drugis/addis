@@ -27,12 +27,6 @@
     <xsl:template match="measurement">
         <xsl:copy>
             <xsl:apply-templates select="@*|node()"/>
-            <whenTaken>
-                <epoch name="Main phase"/>
-                <fromEpochEnd>
-                    <offset>P0D</offset>
-                </fromEpochEnd>
-            </whenTaken>
         </xsl:copy>
     </xsl:template>
     
