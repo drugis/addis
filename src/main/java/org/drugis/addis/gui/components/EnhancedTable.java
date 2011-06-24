@@ -49,15 +49,20 @@ public class EnhancedTable extends JTable {
 	 */
 	@Deprecated
 	public static EnhancedTable createWithSorterAndAutoSize(TableModel model) {
-		EnhancedTable enhancedTable = new EnhancedTable(model);
+		EnhancedTable enhancedTable = createWithSorter(model);
+		
+		enhancedTable.setDefaultRenderer(Object.class, new MyRenderer());
+		enhancedTable.autoSizeColumns();
+		
+		return enhancedTable;
+	}
+
+	public static EnhancedTable createWithSorter(TableModel model) {
+		EnhancedTable enhancedTable = createBare(model);
 		
 		TableSorter sort = new TableSorter(model);
 		sort.setTableHeader(enhancedTable.getTableHeader());
 		enhancedTable.setModel(sort);
-		
-		enhancedTable.setDefaultRenderer(Object.class, new MyRenderer());
-		enhancedTable.autoSizeColumns();
-		enhancedTable.setPreferredScrollableViewportSize(enhancedTable.getPreferredSize());
 		
 		return enhancedTable;
 	}
@@ -90,6 +95,7 @@ public class EnhancedTable extends JTable {
 		if (d_tableHeader != null) {
 			d_tableHeader.autoSizeColumns();
 		}
+		setPreferredScrollableViewportSize(getPreferredSize());
 	}
 	
 	public EnhancedTable(TableModel model, int maxColWidth) {

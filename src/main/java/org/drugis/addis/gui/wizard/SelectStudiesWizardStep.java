@@ -43,8 +43,8 @@ public class SelectStudiesWizardStep extends PanelWizardStep {
 	public SelectStudiesWizardStep(AbstractMetaAnalysisWizardPM<?> pm, AddisWindow mainWindow) {
 		super("Select Studies","Select the studies to be used for meta analysis. At least one study must be selected to continue.");
 
-		final EnhancedTable table = EnhancedTable.createWithSorterAndAutoSize(new SelectableStudyCharTableModel(pm.getStudyListModel(), mainWindow.getPresentationModelFactory()));
-
+		final EnhancedTable table = EnhancedTable.createWithSorter(new SelectableStudyCharTableModel(pm.getStudyListModel(), mainWindow.getPresentationModelFactory()));
+		table.autoSizeColumns();
 		setLayout(new BorderLayout(0, 5));
 		JLabel label = BasicComponentFactory.createLabel(pm.getStudiesMeasuringLabelModel());
 		add(label, BorderLayout.NORTH);
