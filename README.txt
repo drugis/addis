@@ -17,10 +17,9 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
-1.7: Input study design (time structure), allow missing measurements,
+1.8: Input study design (time structure), allow missing measurements,
    generate summary of efficacy table according to EMA D80 template,
-   support of primary/secondary endpoints, support of multiple
-   drugs per treatment.
+   support of primary/secondary endpoints.
 
 1.6.2: Bugfix release
 
