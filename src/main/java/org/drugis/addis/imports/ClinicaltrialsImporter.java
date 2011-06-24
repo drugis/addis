@@ -81,7 +81,7 @@ public class ClinicaltrialsImporter {
 			URLConnection conn = updateWebService.openConnection();
 			InputStreamReader isr = new InputStreamReader(conn.getInputStream());
 			
-			JAXBContext jc = JAXBContext.newInstance("org.drugis.addis.imports"); //
+			JAXBContext jc = JAXBContext.newInstance("org.drugis.addis.imports");
 			Unmarshaller unmarshaller = jc.createUnmarshaller();
 			ClinicalStudy studyImport = (ClinicalStudy) unmarshaller.unmarshal(isr);
 			getClinicalTrialsData(study,studyImport);
