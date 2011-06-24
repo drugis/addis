@@ -22,6 +22,8 @@ Versions
    support of primary/secondary endpoints, support of multiple
    drugs per treatment.
 
+1.6.2: Bugfix release
+
 1.6.1: Performance improvements for network meta-analysis, rank
    probability table.
 
