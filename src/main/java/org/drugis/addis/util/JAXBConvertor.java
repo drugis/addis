@@ -141,7 +141,8 @@ import org.drugis.common.Interval;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 public class JAXBConvertor {
-	
+	public static final int LATEST_VERSION = 3;
+
 	@SuppressWarnings("serial")
 	public static class ConversionException extends Exception {
 		public ConversionException(String msg) {
@@ -1435,25 +1436,30 @@ public class JAXBConvertor {
 	 */
 	public static InputStream transformToLatest(InputStream xml, int version)
 	throws TransformerException, IOException {
-		if (version == 2) {
+		if (version == LATEST_VERSION) {
 			return xml;
-		} else if (version > 2) {
+		} else if (version > LATEST_VERSION) {
 			throw new RuntimeException("XML version from the future detected");
 		}
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
-		TransformerFactory tFactory = TransformerFactory.newInstance(); 
-		InputStream xsltFile = JAXBConvertor.class.getResourceAsStream("transform-1-2.xslt");
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		
-	    javax.xml.transform.Source xmlSource = new javax.xml.transform.stream.StreamSource(xml);
-	    javax.xml.transform.Source xsltSource = new javax.xml.transform.stream.StreamSource(xsltFile);
-	    javax.xml.transform.Result result = new javax.xml.transform.stream.StreamResult(os);
-	    
-	    javax.xml.transform.Transformer trans = tFactory.newTransformer(xsltSource);
-	    trans.transform(xmlSource, result);
-	    os.close();
-	
-	    return new ByteArrayInputStream(os.toByteArray());
+		TransformerFactory tFactory = TransformerFactory.newInstance();
+		for (int v = version; v < LATEST_VERSION; ++v) {
+			InputStream xsltFile = JAXBConvertor.class.getResourceAsStream("transform-" + v + "-" + (v + 1) + ".xslt");
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+			javax.xml.transform.Source xmlSource = new javax.xml.transform.stream.StreamSource(xml);
+			javax.xml.transform.Source xsltSource = new javax.xml.transform.stream.StreamSource(xsltFile);
+			javax.xml.transform.Result result = new javax.xml.transform.stream.StreamResult(os);
+
+			javax.xml.transform.Transformer trans = tFactory.newTransformer(xsltSource);
+			trans.transform(xmlSource, result);
+			os.close();
+
+			xml = new ByteArrayInputStream(os.toByteArray()); // next version XML
+		}
+		
+		return xml;
 	}
 
 }

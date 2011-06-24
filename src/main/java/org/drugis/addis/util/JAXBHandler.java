@@ -50,7 +50,7 @@ public class JAXBHandler {
 		initialize();
 		Marshaller marshaller = s_jaxb.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		marshaller.setProperty(Marshaller.JAXB_NO_NAMESPACE_SCHEMA_LOCATION, "http://drugis.org/files/addis-2.xsd");
+		marshaller.setProperty(Marshaller.JAXB_NO_NAMESPACE_SCHEMA_LOCATION, "http://drugis.org/files/addis-" + JAXBConvertor.LATEST_VERSION + ".xsd");
 		marshaller.marshal(data, os);
 	}
 	

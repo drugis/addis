@@ -192,6 +192,7 @@ public class Main {
 		LEGACY(0),
 		SCHEMA1(1),
 		SCHEMA2(2),
+		SCHEMA3(3),
 		SCHEMA_FUTURE(-1);
 		
 		private final int d_version;
@@ -273,6 +274,8 @@ public class Main {
 				type = XmlFormatType.SCHEMA1;
 			} else if (matcher.group(1).equals("2")) {
 				type = XmlFormatType.SCHEMA2;
+			} else if (matcher.group(1).equals("3")) {
+				type = XmlFormatType.SCHEMA3;
 			} else {
 				type = XmlFormatType.SCHEMA_FUTURE;
 			}
