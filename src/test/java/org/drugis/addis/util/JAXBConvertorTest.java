@@ -123,8 +123,6 @@ import org.drugis.addis.entities.data.ContinuousVariable;
 import org.drugis.addis.entities.data.DateWithNotes;
 import org.drugis.addis.entities.data.DrugReferences;
 import org.drugis.addis.entities.data.Epochs;
-import org.drugis.addis.entities.data.MeasurementMoment;
-import org.drugis.addis.entities.data.MeasurementOffset;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
 import org.drugis.addis.entities.data.MetaAnalysisReferences;
@@ -849,7 +847,6 @@ public class JAXBConvertorTest {
 	private org.drugis.addis.entities.data.Measurement buildContinuousMeasurement(String armName, String omName, org.drugis.addis.entities.data.ContinuousMeasurement cm, String epochName) {
 		org.drugis.addis.entities.data.Measurement m = initMeasurement(armName,	omName);
 		m.setContinuousMeasurement(cm);
-		m.setWhenTaken(buildWhenTaken(epochName));
 		return m;
 	}
 
@@ -867,7 +864,6 @@ public class JAXBConvertorTest {
 	private org.drugis.addis.entities.data.Measurement buildRateMeasurement(String armName, String omName, org.drugis.addis.entities.data.RateMeasurement rm, String epochName) {
 		org.drugis.addis.entities.data.Measurement m = initMeasurement(armName,	omName);
 		m.setRateMeasurement(rm);
-		m.setWhenTaken(buildWhenTaken(epochName) );
 		return m;
 	}
 
@@ -878,21 +874,7 @@ public class JAXBConvertorTest {
 			cms.getCategory().add(cm);
 		}
 		m.setCategoricalMeasurement(cms);
-		m.setWhenTaken(buildWhenTaken(epochName));
 		return m;
-	}
-
-	public MeasurementMoment buildWhenTaken(String epochName) {
-		MeasurementMoment whenTaken = new MeasurementMoment();
-		whenTaken.setEpoch(nameReference(epochName));
-		MeasurementOffset offset = new MeasurementOffset();
-		try {
-			offset.setOffset(DatatypeFactory.newInstance().newDuration("P0D"));
-		} catch (DatatypeConfigurationException e) {
-			throw new RuntimeException(e);
-		}
-		whenTaken.setFromEpochEnd(offset);
-		return whenTaken;
 	}
 
 	public org.drugis.addis.entities.data.Study buildStudy(String name) throws DatatypeConfigurationException, ConversionException {
