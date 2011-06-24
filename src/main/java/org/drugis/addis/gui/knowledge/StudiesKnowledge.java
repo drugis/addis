@@ -24,6 +24,8 @@
 
 package org.drugis.addis.gui.knowledge;
 
+import java.awt.Dimension;
+
 import javax.swing.JDialog;
 
 import org.drugis.addis.FileNames;
@@ -61,6 +63,8 @@ public class StudiesKnowledge extends CategoryKnowledgeBase {
 				new AddStudyWizardPresentation(domain,
 						mainWindow.getPresentationModelFactory(), mainWindow), mainWindow, dialog);
 		dialog.getContentPane().add(wizard);
+		dialog.setMinimumSize(new Dimension(700, 550));
+		dialog.setPreferredSize(AddisWindow.fitDimensionToScreen(790, 750));
 		dialog.pack();
 		WizardFrameCloser.bind(wizard, dialog);
 		Main.bindPrintScreen(wizard);

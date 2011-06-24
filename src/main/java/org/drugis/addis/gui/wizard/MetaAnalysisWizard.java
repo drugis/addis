@@ -26,7 +26,6 @@ package org.drugis.addis.gui.wizard;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -64,9 +63,6 @@ public class MetaAnalysisWizard extends Wizard {
 	public MetaAnalysisWizard(AddisWindow mainWindow, MetaAnalysisWizardPresentation pm) {
 		super(buildModel(pm, mainWindow));
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
-		
-		setPreferredSize(new Dimension(mainWindow.getWidth() / 5 * 4, mainWindow.getHeight() / 5 * 4));
-		setMinimumSize(new Dimension(mainWindow.getMinimumSize().width - 100, mainWindow.getMinimumSize().height - 100));
 	}
 	
 	private static WizardModel buildModel(MetaAnalysisWizardPresentation pm, AddisWindow mainWindow) {

@@ -115,8 +115,7 @@ public class AddisWindow extends JFrame {
 			}
 		});
 
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		setPreferredSize(new Dimension(Math.min(1014, screenSize.width), Math.max(550, screenSize.height / 5 * 4)));
+		setPreferredSize(fitDimensionToScreen(960, 800));
 		setMinimumSize(new Dimension(750, 550)); // fit the screen for 800x600 resolution
 
 		addWindowListener(new WindowAdapter() {
@@ -130,6 +129,13 @@ public class AddisWindow extends JFrame {
 		initComponents();
 		Main.bindPrintScreen(super.getContentPane());
 		updateTitle();
+	}
+	
+	public static Dimension fitDimensionToScreen(int width, int height) {
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		return new Dimension(
+				Math.min(width, screenSize.width - 20),
+				Math.min(height, screenSize.height - 50));
 	}
 	
 	public Domain getDomain() {
