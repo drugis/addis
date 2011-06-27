@@ -4,7 +4,7 @@
 	<groupId>org.drugis</groupId>
 	<artifactId>addis</artifactId>
 	<name>ADDIS</name>
-	<version>1.9.1-SNAPSHOT</version>
+	<version>1.9.0</version>
 
 	<repositories>
 		<repository>
@@ -46,17 +46,17 @@
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>common-lib</artifactId>
-			<version>0.4.4-SNAPSHOT</version>
+			<version>0.4.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>common-gui</artifactId>
-			<version>0.4.4-SNAPSHOT</version>
+			<version>0.4.4</version>
 		</dependency>
     	<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>common-test</artifactId>
-			<version>0.4.4-SNAPSHOT</version>
+			<version>0.4.4</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
