@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
+import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
@@ -67,6 +68,7 @@ public class D80TableGenerator {
 		Epoch extensionPhase = d_study.findEpochWithActivity(PredefinedActivity.FOLLOW_UP);
 		
 		ST processor = new ST(getTemplate(), '$', '$');
+		processor.add("title", d_study.getCharacteristic(BasicStudyCharacteristic.TITLE));
 		processor.add("studyid", d_study.getName());
 		processor.add("mainphase",  getEpochDuration(mainPhase));
 		processor.add("runinphase",  getEpochDuration(runInPhase));
