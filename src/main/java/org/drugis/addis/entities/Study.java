@@ -446,7 +446,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		if (!getOutcomeMeasures().contains(e)) {
 			throw new IllegalArgumentException("Outcome " + e + " not measured by this study.");
 		}
-		if (!m.isOfType(e.getType())) {
+		if (m != null && !m.isOfType(e.getType())) {
 			throw new IllegalArgumentException("Measurement does not conform with outcome");
 		}
 	}

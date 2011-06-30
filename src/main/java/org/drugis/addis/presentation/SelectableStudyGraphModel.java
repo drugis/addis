@@ -47,9 +47,8 @@ public class SelectableStudyGraphModel extends StudyGraphModel {
 			ValueHolder<OutcomeMeasure> outcome, ListHolder<Drug> drugs,
 			Domain domain) {
 		super(indication, outcome, drugs, domain);
-		
 		d_selectedDrugs = new DefaultListHolder<Drug>(new ArrayList<Drug>(d_drugs.getValue()));
-		d_drugs.addValueChangeListener(new DrugsChangedListener());		
+		d_drugs.addValueChangeListener(new DrugsChangedListener());
 	}
 	
 	public ListHolder<Drug> getSelectedDrugsModel() {

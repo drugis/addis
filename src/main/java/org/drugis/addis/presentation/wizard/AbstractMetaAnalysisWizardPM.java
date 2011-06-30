@@ -29,6 +29,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -95,12 +96,29 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	
 	abstract protected G buildStudyGraphPresentation();
 	
+	/**
+	 * Return all studies that measure the selected endpoint on the selected indication for at least two drugs.
+	 * @return List of studies
+	 */
 	protected List<Study> getStudiesEndpointAndIndication() {
 		if (d_outcomeHolder.getValue() == null || d_indicationHolder.getValue() == null) {
 			return Collections.emptyList();
 		}
+		
+		// Get all studies including the outcome
 		List<Study> studies = new ArrayList<Study>(d_domain.getStudies(d_outcomeHolder.getValue()).getValue());
+		// Retain only those relevant to the indication
 		studies.retainAll(d_domain.getStudies(d_indicationHolder.getValue()).getValue());
+		
+		// Remove studies that measure less than 2 drugs for this outcome
+		Iterator<Study> iterator = studies.iterator();
+		while (iterator.hasNext()) {
+			Study s = iterator.next();
+			if (s.getMeasuredDrugs(d_outcomeHolder.getValue()).size() < 2) {
+				iterator.remove();
+			}
+		}
+		
 		return studies;
 	}	
 	
@@ -175,7 +193,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 			if (d_indicationHolder.getValue() != null && d_outcomeHolder.getValue() != null) {
 				List<Study> studies = getStudiesEndpointAndIndication();
 				for (Study s : studies) {
-					drugs.addAll(s.getDrugs());
+					drugs.addAll(s.getMeasuredDrugs(d_outcomeHolder.getValue()));
 				}
 			}			
 			return new ArrayList<Drug>(drugs);

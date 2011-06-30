@@ -33,13 +33,17 @@ import static org.junit.Assert.assertTrue;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -152,6 +156,73 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 		assertEquals(2, graphModel.vertexSet().size());
 		assertEquals(0, graphModel.edgeSet().size());
+	}
+	
+	@Test
+	/* This test is motivated by bug #337, in which multiple drugs had only missing measurements;
+	 * this is rendered incorrectly, hiding some (non-connected) drugs behind others, thus disabling "next"
+	 */
+	public void testHandleStudyWithMissingMeasurements() {
+		makeMissing();
+		StudyGraphModel graphModel = d_pm.getSelectedStudyGraphModel();
+
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
+
+		assertEquals(2, graphModel.vertexSet().size());
+		assertEquals(1, graphModel.edgeSet().size());
+		
+		addCitalopram();
+		graphModel = d_pm.getSelectedStudyGraphModel();
+
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
+		
+		assertEquals(3, graphModel.vertexSet().size());
+		assertEquals(2, graphModel.edgeSet().size());
+	}
+
+	private void addCitalopram() {
+		Arm arm = ExampleData.buildStudyBennie().createAndAddArm("Citalopram-2", 100, 
+				ExampleData.buildDrugCitalopram(), new FixedDose(12, SIUnit.MILLIGRAMS_A_DAY));
+		ExampleData.buildStudyBennie().setMeasurement(ExampleData.buildEndpointCgi(), arm, 
+				new BasicContinuousMeasurement(3.0, 1.2, 103));
+		d_pm = new NetworkMetaAnalysisWizardPM(d_domain, new PresentationModelFactory(d_domain));
+	}
+
+	private void makeMissing() {
+		// make setraline missing in study bennie
+		ExampleData.buildStudyBennie().setMeasurement(ExampleData.buildEndpointCgi(), 
+				ExampleData.buildStudyBennie().findArm("Sertraline-1"), null);
+		
+		d_pm = new NetworkMetaAnalysisWizardPM(d_domain, new PresentationModelFactory(d_domain));
+	}
+	
+	@Test
+	public void testOnlyIncludeStudiesWithAtLeastTwoMeasuredDrugs() {
+		makeMissing();
+		
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
+
+		assertEquals(Collections.singletonList(ExampleData.buildStudyChouinard()), d_pm.getStudiesEndpointAndIndication());
+	}
+	
+	@Test
+	public void testIncludeOnlyDrugsMeasuredInSomeStudy() {
+		makeMissing();
+		addCitalopram();
+		
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
+		
+		Drug[] expected = new Drug[] {
+				ExampleData.buildDrugCitalopram(),
+				ExampleData.buildDrugFluoxetine(),
+				ExampleData.buildDrugParoxetine()
+			};
+		
+		assertEquals(Arrays.asList(expected), d_pm.getDrugListModel().getValue());
 	}
 	
 	@Test
