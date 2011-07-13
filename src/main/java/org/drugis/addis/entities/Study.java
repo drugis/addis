@@ -623,6 +623,10 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 	
 	public TreatmentActivity getTreatment(Arm arm) {
+		return getActivity(arm) instanceof TreatmentActivity ? (TreatmentActivity)getActivity(arm) : null;
+	}
+
+	public Activity getActivity(Arm arm) {
 		assertContains(d_arms, arm);
 		if (d_epochs.isEmpty()) {
 			return null;
@@ -631,9 +635,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		if (epoch == null) {
 			return null;
 		}
-		return (TreatmentActivity)getStudyActivityAt(arm, epoch).getActivity();
+		return getStudyActivityAt(arm, epoch).getActivity();
 	}
-	
+
 	public Epoch findTreatmentEpoch() {
 		for (Epoch epoch : d_epochs) {
 			if (isTreatmentEpoch(epoch)) return epoch;
@@ -644,7 +648,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private boolean isTreatmentEpoch(Epoch epoch) {
 		for (Arm arm : d_arms) {
 			StudyActivity sa = getStudyActivityAt(arm, epoch);
-			if (sa == null || !(sa.getActivity() instanceof TreatmentActivity)) {
+			if (sa == null || (!(sa.getActivity() instanceof TreatmentActivity) && !(sa.getActivity() instanceof CombinationTreatment))) {
 				return false;
 			}
 		}
@@ -669,7 +673,13 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 
 	public Drug getDrug(Arm arm) {
-		return getTreatment(arm) == null ? null : getTreatment(arm).getDrug();
+		Activity activity = getActivity(arm);
+		if (activity instanceof TreatmentActivity) {
+			return ((TreatmentActivity) activity).getDrug();
+		} else if(activity instanceof CombinationTreatment) {
+			return ((CombinationTreatment)activity).getTreatments().get(0).getDrug();
+		}
+		return null;
 	}
 	
 	public AbstractDose getDose(Arm arm) {

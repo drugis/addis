@@ -59,12 +59,23 @@ public class StudyDesignView implements ViewBuilder {
 			d_maxHeight = Math.max((int) getPreferredSize().getHeight(), d_maxHeight);
 			if (value instanceof StudyActivity) {
 				StudyActivity sa = (StudyActivity) value;
-				if (sa.getActivity() instanceof TreatmentActivity) {
+				if (sa.getActivity() instanceof CombinationTreatment) {
+					String text = "<html>";
+					CombinationTreatment ct = (CombinationTreatment) sa.getActivity();
+					for (TreatmentActivity ta : ct.getTreatments()) {
+						text += formatTreatment(ta);
+					}
+					setText(text + "</html>");
+				} else if (sa.getActivity() instanceof TreatmentActivity) {
 					TreatmentActivity ta = (TreatmentActivity) sa.getActivity();
-					setText("<html>" + sa.getName() + "<br/>" + ta.getDrug().getName() + " (" + ta.getDose().toString() + ")</html>");
+					setText("<html>" + formatTreatment(ta) + "</html>");
 				} else if (sa.getActivity() instanceof CombinationTreatment) {
 					CombinationTreatment ct = (CombinationTreatment) sa.getActivity();
-					setText("<html>" + sa.getName() + "</html>");
+					String treatmentTxt = "";
+					for(TreatmentActivity ta : ct.getTreatments()) {
+						treatmentTxt += formatTreatment(ta) + "<br/>";
+					}
+					setText("<html>" + treatmentTxt.substring(0, treatmentTxt.lastIndexOf("<br/>")) + "</html>");
 				} else {
 					setText("<html>" + sa.getActivity().toString() + "</html>");
 				}
@@ -123,6 +134,10 @@ public class StudyDesignView implements ViewBuilder {
 	private int calculateHeight() {
 		JLabel jLabel = new JLabel("<html>Text<br>Text</html>");
 		return (int) jLabel.getPreferredSize().getHeight();
+	}
+
+	private String formatTreatment(TreatmentActivity ta) {
+		return ta.getDrug().getName() + " (" + ta.getDose().toString() + ")";
 	}
 
 }

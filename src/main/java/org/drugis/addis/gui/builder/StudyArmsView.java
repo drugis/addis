@@ -31,7 +31,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.CombinationTreatment;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.gui.NoteViewButton;
@@ -75,43 +77,59 @@ public class StudyArmsView implements ViewBuilder {
 		builder.addLabel("Dose", cc.xy(7, row));
 		builder.addLabel("Size", cc.xy(9, row));		
 
-		for (Arm g : d_model.getBean().getArms()) {
-			row = buildArm(layout, builder, cc, row, g);
+		for (Arm a : d_model.getBean().getArms()) {
+			row = buildArm(layout, builder, cc, row, a);
 		}
 		return builder.getPanel();
 	}
 
-	private int buildArm(FormLayout layout, PanelBuilder builder, CellConstraints cc, int row, Arm g) {
-		BasicArmPresentation armModel = (BasicArmPresentation)d_pmf.getModel(g);
-		LayoutUtil.addRow(layout);
-		row += 2;
-		
-		final JLabel armLabel = BasicComponentFactory.createLabel(d_pmf.getLabeledModel(g).getLabelModel()); 
-		JButton button = new NoteViewButton(d_parent, "Arm: " + g.toString(), g.getNotes());
-		builder.add(button, cc.xy(1, row));
+	private int buildArm(FormLayout layout, PanelBuilder builder, CellConstraints cc, int row, Arm a) {
+		BasicArmPresentation armModel = (BasicArmPresentation)d_pmf.getModel(a);
+		row = LayoutUtil.addRow(layout, row);
+
+		// non-treatment arm components
+		JLabel sizeLabel = BasicComponentFactory.createLabel(armModel.getModel(Arm.PROPERTY_SIZE), NumberFormat.getInstance());
+		final JLabel armLabel = BasicComponentFactory.createLabel(d_pmf.getLabeledModel(a).getLabelModel()); 
+		JButton noteButton = new NoteViewButton(d_parent, "Arm: " + a.toString(), a.getNotes());
+
+		builder.add(noteButton, cc.xy(1, row));
 		builder.add(armLabel, cc.xy(3, row));
+		builder.add(sizeLabel, cc.xy(9, row));
 		
-		TreatmentActivity activity = d_model.getBean().getTreatment(g);
+		Activity activity = d_model.getBean().getActivity(a);
 		if (activity != null) {
-			TreatmentActivityPresentation activityModel = (TreatmentActivityPresentation)d_pmf.getModel(activity);
-			builder.add(
-					BasicComponentFactory.createLabel(
-							activityModel.getModel(TreatmentActivity.PROPERTY_DRUG),
-							new OneWayObjectFormat()),
-							cc.xy(5, row));
-			builder.add(
-					BasicComponentFactory.createLabel(
-							activityModel.getModel(TreatmentActivity.PROPERTY_DOSE),
-							new OneWayObjectFormat()),
-							cc.xy(7, row));
+			if (activity instanceof TreatmentActivity) {
+				TreatmentActivity ta = (TreatmentActivity)activity;
+				TreatmentActivityPresentation activityModel = (TreatmentActivityPresentation)d_pmf.getModel(ta);
+				addTreatmentActivity(activityModel, builder, cc, row);
+			} else if (activity instanceof CombinationTreatment) {
+				CombinationTreatment ct = (CombinationTreatment)activity;
+				for(int i = 0; i < ct.getTreatments().getSize(); ++i) {
+					if(i > 0) {
+						row = LayoutUtil.addRow(layout, row);
+					}
+					TreatmentActivity ta = ct.getTreatments().get(i);
+					TreatmentActivityPresentation activityModel = (TreatmentActivityPresentation)d_pmf.getModel(ta);
+					addTreatmentActivity(activityModel, builder, cc, row);
+				}
+			
+			}
 		}
-		
+		return row;
+	}
+
+	private void addTreatmentActivity(
+			TreatmentActivityPresentation activityModel, PanelBuilder builder,
+			CellConstraints cc, int row) {
 		builder.add(
 				BasicComponentFactory.createLabel(
-					armModel.getModel(Arm.PROPERTY_SIZE),
-					NumberFormat.getInstance()),
-					cc.xy(9, row));
-
-		return row;
+						activityModel.getModel(TreatmentActivity.PROPERTY_DRUG),
+						new OneWayObjectFormat()),
+						cc.xy(5, row));
+		builder.add(
+				BasicComponentFactory.createLabel(
+						activityModel.getModel(TreatmentActivity.PROPERTY_DOSE),
+						new OneWayObjectFormat()),
+						cc.xy(7, row));
 	}
 }
