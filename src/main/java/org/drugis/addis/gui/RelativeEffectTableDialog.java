@@ -27,6 +27,7 @@ package org.drugis.addis.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -36,7 +37,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -59,8 +59,8 @@ public class RelativeEffectTableDialog extends JDialog {
 	private RelativeEffectPlotDialog d_dialog;
 	private JDialog d_parentDialog;
 
-	public RelativeEffectTableDialog(JFrame parent, RelativeEffectTableModel model) {
-		super(parent, model.getTitle());
+	public RelativeEffectTableDialog(Window mainWindow, RelativeEffectTableModel model) {
+		super(mainWindow, model.getTitle());
 		d_parentDialog = this;
 		d_tableModel = model;
 		

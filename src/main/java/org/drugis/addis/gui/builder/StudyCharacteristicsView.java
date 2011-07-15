@@ -24,13 +24,13 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -57,8 +57,8 @@ import com.jgoodies.forms.layout.FormLayout;
 public class StudyCharacteristicsView implements ViewBuilder {
 	
 	private StudyPresentation d_model;
-	private JFrame d_parent;
-	public StudyCharacteristicsView(JFrame parent, StudyPresentation model) {
+	private Window d_parent;
+	public StudyCharacteristicsView(Window parent, StudyPresentation model) {
 		d_parent = parent;
 		d_model = model;
 	}

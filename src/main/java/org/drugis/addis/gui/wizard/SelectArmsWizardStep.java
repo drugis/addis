@@ -128,6 +128,6 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 		TreatmentActivity ta = (activity instanceof TreatmentActivity) ? 
 				 (TreatmentActivity)activity : 
 				 ((CombinationTreatment)activity).getTreatments().get(0);
-		drugAndDoseLabel.setText(ta.getDrug().getName() + "(" + ta.getDose() + ")");
+		drugAndDoseLabel.setText(ta.getDrug().getName() + " (" + ta.getDose() + ")");
 	}
 }

@@ -29,7 +29,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Note;
@@ -41,10 +40,10 @@ import com.jgoodies.binding.list.ObservableList;
 public class NoteViewButton extends JButton {
 	Window d_noteView;
 	private ObservableList<Note> d_notes;
-	private JFrame d_parent;
+	private Window d_parent;
 	private final String d_description;
 	
-	public NoteViewButton(JFrame parent, String description, ObservableList<Note> notes) {
+	public NoteViewButton(Window parent, String description, ObservableList<Note> notes) {
 		super(ImageLoader.getIcon(FileNames.ICON_NOTE));
 		d_parent = parent;
 		d_description = description;

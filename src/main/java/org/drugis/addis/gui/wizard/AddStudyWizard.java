@@ -177,7 +177,7 @@ public class AddStudyWizard extends Wizard {
 		wizardModel.add(new SetAdverseEventMeasurementsWizardStep(pm, dialog));
 		wizardModel.add(new SelectPopulationCharsWizardStep(pm));
 		wizardModel.add(new SetPopulationCharMeasurementsWizardStep(pm, dialog));
-		wizardModel.add(new ReviewStudyStep(pm, mainWindow));
+		wizardModel.add(new ReviewStudyStep(pm, mainWindow, dialog));
 		
 		wizardModel.setLastVisible(false);
 		// The measurements + variable lists are saved on viewing the measurement tables
@@ -585,13 +585,15 @@ public class AddStudyWizard extends Wizard {
 	public static class ReviewStudyStep extends PanelWizardStep {
 		private final AddStudyWizardPresentation d_pm;
 		private final AddisWindow d_mainwindow;
+		private final JDialog d_dialog;
 
-		public ReviewStudyStep(AddStudyWizardPresentation pm, AddisWindow mainWindow) {
+		public ReviewStudyStep(AddStudyWizardPresentation pm, AddisWindow mainWindow, JDialog dialog) {
 			 super("Review study", "Please review the study to be created. " +
 					 "You can go back through the wizard to correct any mistakes, " +
 					 "but after the study has been added it cannot be changed.");
 			d_pm = pm;
 			d_mainwindow = mainWindow;
+			d_dialog = dialog;
 			 setLayout(new BorderLayout());
 			 setComplete(true);
 		 }
@@ -599,7 +601,7 @@ public class AddStudyWizard extends Wizard {
 		 @Override
 		 public void prepare() {
 			 StudyView view = new StudyView(d_pm.getNewStudyPM(), d_pm.getDomain(), 
-					 d_mainwindow, d_mainwindow.getPresentationModelFactory());
+					 d_dialog, d_mainwindow.getPresentationModelFactory());
 			 removeAll();
 			 add(view.buildPanel(), BorderLayout.CENTER);
 			 this.setVisible(true);			 

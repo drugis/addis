@@ -24,10 +24,10 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.Window;
 import java.text.NumberFormat;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -54,9 +54,9 @@ public class StudyArmsView implements ViewBuilder {
 	
 	private PresentationModel<? extends Study> d_model;
 	private PresentationModelFactory d_pmf;
-	private JFrame d_parent;
+	private Window d_parent;
 
-	public StudyArmsView(JFrame parent, PresentationModel<? extends Study> model, PresentationModelFactory pm) {
+	public StudyArmsView(Window parent, PresentationModel<? extends Study> model, PresentationModelFactory pm) {
 		d_parent = parent;
 		d_model = model;
 		d_pmf = pm;

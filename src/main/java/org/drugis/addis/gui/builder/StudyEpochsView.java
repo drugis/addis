@@ -24,8 +24,9 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.Window;
+
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -47,9 +48,9 @@ public class StudyEpochsView {
 
 	private final StudyPresentation d_pm;
 	private final PresentationModelFactory d_pmf;
-	private final JFrame d_parent;
+	private final Window d_parent;
 
-	public StudyEpochsView(JFrame parent, StudyPresentation spm, PresentationModelFactory pmf) {
+	public StudyEpochsView(Window parent, StudyPresentation spm, PresentationModelFactory pmf) {
 		d_parent = parent;
 		d_pm = spm;
 		d_pmf = pmf;

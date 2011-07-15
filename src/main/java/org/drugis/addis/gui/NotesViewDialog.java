@@ -26,9 +26,9 @@ package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Window;
 
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -47,7 +47,7 @@ public class NotesViewDialog extends JDialog {
 	private final ObservableList<Note> d_notes;
 	private final String d_description;
 
-	public NotesViewDialog(JFrame parent, String description, ObservableList<Note> notes) {
+	public NotesViewDialog(Window parent, String description, ObservableList<Note> notes) {
 		super(parent, "Notes");
 		d_description = description;
 		d_notes = notes;

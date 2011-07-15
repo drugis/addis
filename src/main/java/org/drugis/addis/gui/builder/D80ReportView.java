@@ -26,8 +26,8 @@ package org.drugis.addis.gui.builder;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
@@ -94,12 +94,13 @@ public class D80ReportView extends JDialog {
 		
 	}
 	
-	public D80ReportView(Frame owner, Study study) {
-		super(owner, "Summary of Efficacy Table", false);
+	public D80ReportView(Window parent, Study study) {
+		super(parent, "Summary of Efficacy Table");
+		setModal(false);
 		d_study = study;
-		setMinimumSize(new Dimension(owner.getWidth()/4*3, owner.getHeight()/4*3));
+		setMinimumSize(new Dimension(parent.getWidth()/4*3, parent.getHeight()/4*3));
 		//setResizable(false);
-		setLocationRelativeTo(owner);
+		setLocationRelativeTo(parent);
 		
 		d_d80Report = D80TableGenerator.getHtml(d_study);
 		

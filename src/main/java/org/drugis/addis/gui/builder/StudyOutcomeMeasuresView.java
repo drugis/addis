@@ -25,16 +25,15 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.FlowLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.AdverseEvent;
@@ -72,14 +71,14 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 	
 	private StudyPresentation d_model;
 	private PresentationModelFactory d_pmf;
-	private JFrame d_mainWindow;
+	private Window d_mainWindow;
 	private Class<? extends Variable> d_type;
 
 	public StudyOutcomeMeasuresView(StudyPresentation model, AddisWindow main, Class<? extends Variable> type) {
 		this(model, main, main.getPresentationModelFactory(), type);
 	}
 	
-	public StudyOutcomeMeasuresView(StudyPresentation model, JFrame parent, PresentationModelFactory pmf, Class<? extends Variable> type) {
+	public StudyOutcomeMeasuresView(StudyPresentation model, Window parent, PresentationModelFactory pmf, Class<? extends Variable> type) {
 		d_model = model;
 		d_pmf = pmf;
 		d_mainWindow = parent;

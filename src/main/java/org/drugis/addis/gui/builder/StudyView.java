@@ -24,8 +24,9 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.Window;
+
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
 import org.drugis.addis.entities.AdverseEvent;
@@ -51,7 +52,7 @@ public class StudyView implements ViewBuilder {
 	private StudyOutcomeMeasuresView d_pcView;
 	private StudyDesignView d_designView;
 	
-	public StudyView(StudyPresentation model, Domain domain, JFrame parent, PresentationModelFactory pmf) {
+	public StudyView(StudyPresentation model, Domain domain, Window parent, PresentationModelFactory pmf) {
 		d_characteristicsView = new StudyCharacteristicsView(parent, model);
 		d_endpointView = new StudyOutcomeMeasuresView(model, parent, pmf, Endpoint.class);
 		d_adverseEventView = new StudyOutcomeMeasuresView(model, parent, pmf, AdverseEvent.class);
