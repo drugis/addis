@@ -34,6 +34,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
+import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.CombinationTreatment;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
@@ -47,16 +48,15 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class StudyDesignView implements ViewBuilder {
+	
+	int d_maxNDrugsInCombination = 1;
 
 	private class StudyActivityRenderer extends JLabel implements TableCellRenderer {
 		private static final long serialVersionUID = -3963454510182436593L;
 		
-		private int d_maxHeight;
-		
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			TableColumnModel colModel = table.getColumnModel();
 			setSize(colModel.getColumn(column).getWidth(), 0);
-			d_maxHeight = Math.max((int) getPreferredSize().getHeight(), d_maxHeight);
 			if (value instanceof StudyActivity) {
 				StudyActivity sa = (StudyActivity) value;
 				if (sa.getActivity() instanceof CombinationTreatment) {
@@ -75,7 +75,7 @@ public class StudyDesignView implements ViewBuilder {
 					for(TreatmentActivity ta : ct.getTreatments()) {
 						treatmentTxt += formatTreatment(ta) + "<br/>";
 					}
-					setText("<html>" + treatmentTxt.substring(0, treatmentTxt.lastIndexOf("<br/>")) + "</html>");
+					setText("<html>" + treatmentTxt + "</html>");
 				} else {
 					setText("<html>" + sa.getActivity().toString() + "</html>");
 				}
@@ -92,6 +92,13 @@ public class StudyDesignView implements ViewBuilder {
 	public StudyDesignView(StudyPresentation spm) {
 
 		d_tableModel = new StudyActivitiesTableModel(spm.getBean());
+		
+		for(StudyActivity sa : spm.getBean().getStudyActivities()) {
+			Activity activity = sa.getActivity();
+			if(activity instanceof CombinationTreatment) {
+				d_maxNDrugsInCombination = Math.max(d_maxNDrugsInCombination, ((CombinationTreatment) activity).getTreatments().getSize());
+			}
+		}
 	}
 
 	public JComponent buildPanel() {
@@ -105,8 +112,8 @@ public class StudyDesignView implements ViewBuilder {
 		JTable armsEpochsTable = new JTable(d_tableModel);
 		
 		// Set our own row height and cell renderer
-		armsEpochsTable.setRowHeight(calculateHeight());
 		armsEpochsTable.setDefaultRenderer(StudyActivity.class, new StudyActivityRenderer());
+		armsEpochsTable.setRowHeight(calculateHeight());
 		
 		// use our own column resizer
 		armsEpochsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -132,12 +139,17 @@ public class StudyDesignView implements ViewBuilder {
 	}
 
 	private int calculateHeight() {
-		JLabel jLabel = new JLabel("<html>Text<br>Text</html>");
+		String labelText = "<html>";
+		for (int i = 1; i < d_maxNDrugsInCombination; ++i) {
+			labelText += "text<br>";
+		}
+		labelText += "text</html>";
+		JLabel jLabel = new JLabel(labelText);
 		return (int) jLabel.getPreferredSize().getHeight();
 	}
 
 	private String formatTreatment(TreatmentActivity ta) {
-		return ta.getDrug().getName() + " (" + ta.getDose().toString() + ")";
+		return ta.getDrug().getName() + " (" + ta.getDose().toString() + ")<br/>";
 	}
 
 }

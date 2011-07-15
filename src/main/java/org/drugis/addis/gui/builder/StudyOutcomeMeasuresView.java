@@ -33,6 +33,8 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.AdverseEvent;
@@ -139,11 +141,12 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 			measurementTable.setSortingStatus(0, TableSorter.ASCENDING);
 			measurementTable.setDefaultRenderer(MissingMeasurementPresentation.class, new MeasurementCellRenderer());
 
-			builder.add(AuxComponentFactory.createUnscrollableTablePanel(measurementTable),
-					cc.xyw(1, row, 5));
+			builder.add(AuxComponentFactory.createUnscrollableTablePanel(measurementTable),	cc.xyw(1, row, 5));
 		}
-		
-		return builder.getPanel();
+		JScrollPane sp = new JScrollPane(builder.getPanel());
+		sp.setSize(builder.getPanel().getSize());
+		sp.setBorder(new EmptyBorder(0, 0, 0, 0));
+		return sp;
 	}
 
 	private JButton createOddsRatioButton(OutcomeMeasure om) {

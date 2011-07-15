@@ -151,14 +151,13 @@ public class AuxComponentFactory {
 		return field;
 	}
 
-	public static JComponent createUnscrollableTablePanel(
-			JTable measurementTable) {
+	public static JComponent createUnscrollableTablePanel(JTable table) {
 		JPanel panel = new JPanel(new BorderLayout());
-		panel.add(measurementTable, BorderLayout.CENTER);
-		panel.add(measurementTable.getTableHeader(), BorderLayout.PAGE_START);
+		panel.add(table, BorderLayout.CENTER);
+		panel.add(table.getTableHeader(), BorderLayout.PAGE_START);
 		
-		measurementTable.setBackground(Color.WHITE);
-		measurementTable.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+		table.setBackground(Color.WHITE);
+		table.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 		return panel;
 	}
 	
