@@ -25,13 +25,22 @@
 package org.drugis.addis.gui.wizard;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
+import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.CombinationTreatment;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyActivity;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.StudyGraphModel;
@@ -73,8 +82,7 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 		int row = 1;
 		for (Study curStudy : d_pm.getStudyListModel().getSelectedStudiesModel().getValue()) {
 			d_builder.addSeparator(curStudy.toString(), cc.xyw(1, row, 4));
-			LayoutUtil.addRow(d_layout);
-			row += 2;
+			row = LayoutUtil.addRow(d_layout, row);
 			
 			for (Drug drug: d_pm.getSelectedDrugsModel().getValue()) {
 				if (curStudy.getDrugs().contains(drug)) {
@@ -90,19 +98,36 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 		setComplete(true);
 	}
 
-	private int createArmSelect(int row, Study curStudy, Drug drug, CellConstraints cc) {
+	private int createArmSelect(int row, final Study curStudy, Drug drug, CellConstraints cc) {
 		d_builder.addLabel(drug.toString(), cc.xy(2, row));
 		
 		ListHolder<Arm> arms = d_pm.getArmsPerStudyPerDrug(curStudy, drug);
 
-		JComboBox drugBox  = AuxComponentFactory.createBoundComboBox(arms,
-				d_pm.getSelectedArmModel(curStudy, drug));
+		final JComboBox drugBox = AuxComponentFactory.createBoundComboBox(arms, d_pm.getSelectedArmModel(curStudy, drug));
 		if (arms.getValue().size() == 1)
 			drugBox.setEnabled(false);
-
-		d_builder.add(drugBox, cc.xy(4, row));
-		LayoutUtil.addRow(d_layout);
+		final JLabel drugAndDoseLabel = new JLabel();
 		
-		return row + 2;
+		d_builder.add(drugBox, cc.xy(4, row));
+		drugBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateDrugAndDoseLabel(curStudy, drugBox, drugAndDoseLabel);
+			}
+		});
+		row = LayoutUtil.addRow(d_layout, row);
+		updateDrugAndDoseLabel(curStudy, drugBox, drugAndDoseLabel);
+		d_builder.add(drugAndDoseLabel, cc.xy(4, row));
+		
+		return LayoutUtil.addRow(d_layout, row);
+	}
+
+	private void updateDrugAndDoseLabel(Study curStudy, JComboBox drugBox, JLabel drugAndDoseLabel) {
+		StudyActivity sa = curStudy.getStudyActivityAt((Arm) drugBox.getSelectedItem(), curStudy.findTreatmentEpoch());
+		Activity activity = sa.getActivity();
+		TreatmentActivity ta = (activity instanceof TreatmentActivity) ? 
+				 (TreatmentActivity)activity : 
+				 ((CombinationTreatment)activity).getTreatments().get(0);
+		drugAndDoseLabel.setText(ta.getDrug().getName() + "(" + ta.getDose() + ")");
 	}
 }

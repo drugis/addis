@@ -145,7 +145,6 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 		}
 		JScrollPane sp = new JScrollPane(builder.getPanel());
 		sp.setSize(builder.getPanel().getSize());
-		sp.setBorder(new EmptyBorder(0, 0, 0, 0));
 		return sp;
 	}
 
