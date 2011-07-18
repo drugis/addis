@@ -30,16 +30,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.presentation.AbstractListHolder;
 
 @SuppressWarnings("serial")
 public class ArmListHolder extends AbstractListHolder<Arm> implements PropertyChangeListener {
 	Study d_study;
-	Drug d_drug;
+	DrugSet d_drug;
 	
-	public ArmListHolder(Study s, Drug d) {
+	public ArmListHolder(Study s, DrugSet d) {
 		d_study = s;
 		d_drug = d;
 		
@@ -52,7 +52,7 @@ public class ArmListHolder extends AbstractListHolder<Arm> implements PropertyCh
 		// get arms per study per drug
 		ArrayList<Arm> armList = new ArrayList<Arm>();
 		for (Arm curArm : d_study.getArms()) {
-			if (d_study.getDrug(curArm).equals(d_drug)) {
+			if (d_study.getDrugs(curArm).equals(d_drug)) {
 				armList.add(curArm);
 			}
 		}

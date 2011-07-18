@@ -26,17 +26,17 @@ package org.drugis.addis.entities.relativeeffect;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.analysis.DrugSet;
 
 public class RelativeEffectFactory {
 	public static <T extends RelativeEffect<?>> RelativeEffect<?> buildRelativeEffect(
-			Study s, OutcomeMeasure om, Drug baseDrug, Drug subjDrug, Class<T> type, boolean isCorrected) {
+			Study s, OutcomeMeasure om, DrugSet baseDrug, DrugSet subjDrug, Class<T> type, boolean isCorrected) {
 		
 		Arm base = findFirstArm(s, baseDrug);
 		Arm subj = findFirstArm(s, subjDrug);
@@ -61,33 +61,13 @@ public class RelativeEffectFactory {
 	}
 	
 	public static <T extends RelativeEffect<?>> RelativeEffect<?> buildRelativeEffect(
-			Study s, OutcomeMeasure om, Drug baseDrug, Drug subjDrug, Class<T> type) {
-		
-		Arm base = findFirstArm(s, baseDrug);
-		Arm subj = findFirstArm(s, subjDrug);
-		
-		if (type.equals(BasicStandardisedMeanDifference.class)) {
-			return buildStandardisedMeanDifference(s, om, base, subj);
-		}
-		if (type.equals(BasicMeanDifference.class)) {
-			return buildMeanDifference(s, om, base, subj);
-		}
-		if (type.equals(BasicOddsRatio.class)) {
-			return buildOddsRatio(s, om, base, subj);
-		}
-		if (type.equals(BasicRiskRatio.class)) {
-			return buildRiskRatio(s, om, base, subj);
-		}
-		if (type.equals(BasicRiskDifference.class)) {
-			return buildRiskDifference(s, om, base, subj);
-		}
-		
-		return null;
+			Study s, OutcomeMeasure om, DrugSet baseDrug, DrugSet subjDrug, Class<T> type) {
+		return buildRelativeEffect(s, om, baseDrug, subjDrug, type, false);
 	}
 
-	public static Arm findFirstArm(Study s, Drug d) {
+	public static Arm findFirstArm(Study s, DrugSet d) {
 		for (Arm a : s.getArms()) {
-			if (s.getDrug(a).equals(d))
+			if (s.getDrugs(a).equals(d))
 				return a;
 		}
 		throw new IllegalArgumentException("Drug " + d.toString() + " not used in study " + s.toString());

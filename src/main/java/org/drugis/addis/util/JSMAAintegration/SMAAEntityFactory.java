@@ -29,13 +29,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Beta;
@@ -113,8 +113,8 @@ public class SMAAEntityFactory<AltType extends Entity> {
 					MetaBenefitRiskAnalysis mbr = (MetaBenefitRiskAnalysis)brAnalysis;
 					ReferenceableGaussianMeasurement baseline = smaaModel.getImpactMatrix().getBaseline(crit);
 					GaussianMeasurement relative = new GaussianMeasurement(
-							mbr.getRelativeEffectDistribution((Drug) a, om).getMu(),
-							mbr.getRelativeEffectDistribution((Drug) a, om).getSigma());
+							mbr.getRelativeEffectDistribution((DrugSet) a, om).getMu(),
+							mbr.getRelativeEffectDistribution((DrugSet) a, om).getSigma());
 					CardinalMeasurement m = null; 
 					if (om.getType().equals(Type.RATE)) {
 						m = new RelativeLogitNormalMeasurement(baseline, relative);
@@ -137,7 +137,7 @@ public class SMAAEntityFactory<AltType extends Entity> {
 		if (brAnalysis instanceof StudyBenefitRiskAnalysis) {
 			alternative = getAlternative(((StudyBenefitRiskAnalysis)brAnalysis).getStudy(), (Arm)a);
 		} else {
-			alternative = getAlternative((Drug)a);
+			alternative = getAlternative((DrugSet)a);
 		}
 		return alternative;
 	}
@@ -164,18 +164,18 @@ public class SMAAEntityFactory<AltType extends Entity> {
 	Alternative getAlternative(Study study, Arm arm) {
 		if(d_entityAlternativeMap.containsKey(arm))
 			return d_entityAlternativeMap.get(arm);
-		Alternative a = new Alternative(study.getDrug(arm) + " " + study.getDose(arm));
+		Alternative a = new Alternative(study.getDrugs(arm) + " " + study.getDose(arm));
 		d_entityAlternativeMap.put((AltType) arm, a);
 		return a;
 	}
 	
 	@SuppressWarnings("unchecked")
-	Alternative getAlternative(Drug drug) {
-		if(d_entityAlternativeMap.containsKey(drug))
-			return d_entityAlternativeMap.get(drug);
+	Alternative getAlternative(DrugSet a2) {
+		if(d_entityAlternativeMap.containsKey(a2))
+			return d_entityAlternativeMap.get(a2);
 
-		Alternative a = new Alternative(drug.getName());
-		d_entityAlternativeMap.put((AltType)drug, a);
+		Alternative a = new Alternative(a2.getName());
+		d_entityAlternativeMap.put((AltType)a2, a);
 		return a;
 	}
 }

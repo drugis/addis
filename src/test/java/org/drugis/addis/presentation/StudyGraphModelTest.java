@@ -39,10 +39,10 @@ import java.util.Set;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.presentation.StudyGraphModel.Edge;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.drugis.common.JUnitUtil;
@@ -52,24 +52,24 @@ import org.junit.Test;
 
 public class StudyGraphModelTest {
 	private StudyGraphModel d_pm;
-	private List<Drug> d_drugs;
+	private List<DrugSet> d_drugs;
 	private Domain d_domain;
 	
 	@Before
 	public void setUp() {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		d_drugs = new ArrayList<Drug>();
-		d_drugs.add(ExampleData.buildDrugFluoxetine());
-		d_drugs.add(ExampleData.buildDrugParoxetine());
-		d_drugs.add(ExampleData.buildDrugSertraline());
+		d_drugs = new ArrayList<DrugSet>();
+		d_drugs.add(new DrugSet(ExampleData.buildDrugFluoxetine()));
+		d_drugs.add(new DrugSet(ExampleData.buildDrugParoxetine()));
+		d_drugs.add(new DrugSet(ExampleData.buildDrugSertraline()));
 		d_pm = new StudyGraphModel(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
 				new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()),
-				new AbstractListHolder<Drug>() {
+				new AbstractListHolder<DrugSet>() {
 					private static final long serialVersionUID = 1L;
 
 					@Override
-					public List<Drug> getValue() {
+					public List<DrugSet> getValue() {
 						return d_drugs;
 					}}, d_domain);
 	}
@@ -87,13 +87,13 @@ public class StudyGraphModelTest {
 		studies.add(ExampleData.buildStudyDeWilde());
 		studies.add(ExampleData.buildStudyMultipleArmsperDrug());
 		
-		assertAllAndOnly(studies, d_pm.getStudies(ExampleData.buildDrugFluoxetine()));
+		assertAllAndOnly(studies, d_pm.getStudies(new DrugSet(ExampleData.buildDrugFluoxetine())));
 		
 		studies.remove(ExampleData.buildStudyBennie());
-		assertAllAndOnly(studies, d_pm.getStudies(ExampleData.buildDrugParoxetine()));
+		assertAllAndOnly(studies, d_pm.getStudies(new DrugSet(ExampleData.buildDrugParoxetine())));
 		
 		assertAllAndOnly(Collections.<Study>singletonList(ExampleData.buildStudyBennie()),
-				d_pm.getStudies(ExampleData.buildDrugSertraline()));
+				d_pm.getStudies(new DrugSet(ExampleData.buildDrugSertraline())));
 	}
 	
 	@Test
@@ -104,14 +104,14 @@ public class StudyGraphModelTest {
 		studies.add(ExampleData.buildStudyDeWilde());
 		studies.add(ExampleData.buildStudyMultipleArmsperDrug());
 		
-		assertAllAndOnly(studies, d_pm.getStudies(ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine()));
+		assertAllAndOnly(studies, d_pm.getStudies(new DrugSet(ExampleData.buildDrugFluoxetine()), new DrugSet(ExampleData.buildDrugParoxetine())));
 		
 		studies.remove(ExampleData.buildStudyBennie());
 		assertAllAndOnly(Collections.emptyList(), 
-				d_pm.getStudies(ExampleData.buildDrugParoxetine(), ExampleData.buildDrugSertraline()));
+				d_pm.getStudies(new DrugSet(ExampleData.buildDrugParoxetine()), new DrugSet(ExampleData.buildDrugSertraline())));
 		
 		assertAllAndOnly(Collections.<Study>singletonList(ExampleData.buildStudyBennie()),
-				d_pm.getStudies(ExampleData.buildDrugSertraline(), ExampleData.buildDrugFluoxetine()));
+				d_pm.getStudies(new DrugSet(ExampleData.buildDrugSertraline()), new DrugSet(ExampleData.buildDrugFluoxetine())));
 	}
 	
 	@Test
@@ -131,39 +131,39 @@ public class StudyGraphModelTest {
 		assertEquals(2, edgeSet.size());
 		
 		Edge edge1 = d_pm.getEdge(
-				getVertex(ExampleData.buildDrugFluoxetine()),
-				getVertex(ExampleData.buildDrugParoxetine()));
+				getVertex(new DrugSet(ExampleData.buildDrugFluoxetine())),
+				getVertex(new DrugSet(ExampleData.buildDrugParoxetine())));
 		assertNotNull(edge1);
 		assertEquals(3, edge1.getStudyCount());
 		
 		Edge edge2 = d_pm.getEdge(
-				getVertex(ExampleData.buildDrugFluoxetine()),
-				getVertex(ExampleData.buildDrugSertraline()));
+				getVertex(new DrugSet(ExampleData.buildDrugFluoxetine())),
+				getVertex(new DrugSet(ExampleData.buildDrugSertraline())));
 		assertNotNull(edge2);
 		assertEquals(1, edge2.getStudyCount());
 		
 		Edge edge3 = d_pm.getEdge(
-				getVertex(ExampleData.buildDrugSertraline()),
-				getVertex(ExampleData.buildDrugFluoxetine()));
+				getVertex(new DrugSet(ExampleData.buildDrugSertraline())),
+				getVertex(new DrugSet(ExampleData.buildDrugFluoxetine())));
 		assertEquals(edge2, edge3);
 	}
 	
 	@Test
 	public void testFindVertex() {
 		assertEquals(ExampleData.buildDrugFluoxetine(),
-				d_pm.findVertex(ExampleData.buildDrugFluoxetine()).getDrug());
+				d_pm.findVertex(new DrugSet(ExampleData.buildDrugFluoxetine())).getDrug());
 	}
 	
 	@Test
 	public void testNullIndication() {
 		d_pm = new StudyGraphModel(new UnmodifiableHolder<Indication>(null),
 				new UnmodifiableHolder<OutcomeMeasure>(null),
-				new AbstractListHolder<Drug>() {
+				new AbstractListHolder<DrugSet>() {
 					private static final long serialVersionUID = 1L;
 
 					@Override
-					public List<Drug> getValue() {
-						return new ArrayList<Drug>();
+					public List<DrugSet> getValue() {
+						return new ArrayList<DrugSet>();
 					}}, d_domain);
 		assertTrue(d_pm.vertexSet().isEmpty());
 	}
@@ -172,22 +172,22 @@ public class StudyGraphModelTest {
 	public void testNullEndpoint() {
 		d_pm = new StudyGraphModel(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
 				new UnmodifiableHolder<OutcomeMeasure>(null),
-				new AbstractListHolder<Drug>() {
+				new AbstractListHolder<DrugSet>() {
 					private static final long serialVersionUID = 1L;
 
 					@Override
-					public List<Drug> getValue() {
-						return new ArrayList<Drug>();
+					public List<DrugSet> getValue() {
+						return new ArrayList<DrugSet>();
 					}}, d_domain);
 		assertTrue(d_pm.vertexSet().isEmpty());
 	}
 		
 	@Test
 	public void testChangeDrugList() {
-		AbstractListHolder<Drug> drugListHolder = new DefaultListHolder<Drug>(new ArrayList<Drug>());
+		AbstractListHolder<DrugSet> drugListHolder = new DefaultListHolder<DrugSet>(new ArrayList<DrugSet>());
 		
 		PropertyChangeListener l = JUnitUtil.mockListener(drugListHolder, "value",
-				new ArrayList<Drug>(), new ArrayList<Drug>(d_drugs));
+				new ArrayList<DrugSet>(), new ArrayList<DrugSet>(d_drugs));
 		drugListHolder.addValueChangeListener(l);
 	
 		d_pm = new StudyGraphModel(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
@@ -203,7 +203,7 @@ public class StudyGraphModelTest {
 	
 	@Test
 	public void testChangeStudyList() {
-		AbstractListHolder<Drug> drugListHolder = new DefaultListHolder<Drug>(d_drugs);
+		AbstractListHolder<DrugSet> drugListHolder = new DefaultListHolder<DrugSet>(d_drugs);
 		AbstractListHolder<Study> studyListHolder = new DefaultListHolder<Study>(new ArrayList<Study>());
 		
 		d_pm = new StudyGraphModel(studyListHolder, drugListHolder, new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()));
@@ -215,11 +215,11 @@ public class StudyGraphModelTest {
 		assertEquals(2, d_pm.edgeSet().size());
 	}
 
-	private Vertex getVertex(Drug drug) {
+	private Vertex getVertex(DrugSet drug) {
 		return d_pm.findVertex(drug);
 	}
 
-	private int calcSampleSize(Drug drug) {
+	private int calcSampleSize(DrugSet drug) {
 		int n = 0;
 		for (Study s : d_pm.getStudies(drug)) {
 			n += s.getSampleSize();

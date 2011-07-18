@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -75,7 +76,7 @@ public class DomainImplTest {
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), studies,
-				ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine()); 
+				new DrugSet(ExampleData.buildDrugFluoxetine()), new DrugSet(ExampleData.buildDrugParoxetine())); 
 		d_domain.addMetaAnalysis(ma);
 		
 		Set<Entity> deps = d_domain.getDependents(ExampleData.buildDrugFluoxetine());

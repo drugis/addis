@@ -100,6 +100,7 @@ import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -1255,23 +1256,23 @@ public class JAXBConvertorTest {
 			studies.add(studyEnt);
 		}
 
-		List<Drug> drugs = new ArrayList<Drug>();
-		drugs.add(ExampleData.buildDrugFluoxetine());
-		drugs.add(ExampleData.buildDrugParoxetine());
-		drugs.add(ExampleData.buildDrugSertraline());
-		Map<Study, Map<Drug, Arm>> armMap = new HashMap<Study, Map<Drug,Arm>>();
-		Map<Drug, Arm> study1map = new HashMap<Drug, Arm>();
-		study1map.put(ExampleData.buildDrugFluoxetine(), studies.get(0).getArms().get(0));
-		study1map.put(ExampleData.buildDrugSertraline(), studies.get(0).getArms().get(1));
+		List<DrugSet> drugs = new ArrayList<DrugSet>();
+		drugs.add(new DrugSet(ExampleData.buildDrugFluoxetine()));
+		drugs.add(new DrugSet(ExampleData.buildDrugParoxetine()));
+		drugs.add(new DrugSet(ExampleData.buildDrugSertraline()));
+		Map<Study, Map<DrugSet, Arm>> armMap = new HashMap<Study, Map<DrugSet,Arm>>();
+		Map<DrugSet, Arm> study1map = new HashMap<DrugSet, Arm>();
+		study1map.put(new DrugSet(ExampleData.buildDrugFluoxetine()), studies.get(0).getArms().get(0));
+		study1map.put(new DrugSet(ExampleData.buildDrugSertraline()), studies.get(0).getArms().get(1));
 		armMap.put(studies.get(0), study1map);
-		Map<Drug, Arm> study2map = new HashMap<Drug, Arm>();
-		study2map.put(ExampleData.buildDrugParoxetine(), studies.get(1).getArms().get(0));
-		study2map.put(ExampleData.buildDrugSertraline(), studies.get(1).getArms().get(1));
+		Map<DrugSet, Arm> study2map = new HashMap<DrugSet, Arm>();
+		study2map.put(new DrugSet(ExampleData.buildDrugParoxetine()), studies.get(1).getArms().get(0));
+		study2map.put(new DrugSet(ExampleData.buildDrugSertraline()), studies.get(1).getArms().get(1));
 		armMap.put(studies.get(1), study2map);
-		Map<Drug, Arm> study3map = new HashMap<Drug, Arm>();
-		study3map.put(ExampleData.buildDrugSertraline(), studies.get(2).getArms().get(0));
-		study3map.put(ExampleData.buildDrugParoxetine(), studies.get(2).getArms().get(1));
-		study3map.put(ExampleData.buildDrugFluoxetine(), studies.get(2).getArms().get(2));
+		Map<DrugSet, Arm> study3map = new HashMap<DrugSet, Arm>();
+		study3map.put(new DrugSet(ExampleData.buildDrugSertraline()), studies.get(2).getArms().get(0));
+		study3map.put(new DrugSet(ExampleData.buildDrugParoxetine()), studies.get(2).getArms().get(1));
+		study3map.put(new DrugSet(ExampleData.buildDrugFluoxetine()), studies.get(2).getArms().get(2));
 		armMap.put(studies.get(2), study3map);
 		
 		Collections.sort(studies); // So the reading *by definition* puts the studies in their natural order
@@ -1523,8 +1524,8 @@ public class JAXBConvertorTest {
 		metaList.add(ma1ent);
 		metaList.add(ma2ent);
 		
-		List<Drug> drugsEnt = new ArrayList<Drug>(ma1ent.getIncludedDrugs());
-		Drug baseline = drugsEnt.get(0);
+		List<DrugSet> drugsEnt = new ArrayList<DrugSet>(ma1ent.getIncludedDrugs());
+		DrugSet baseline = drugsEnt.get(0);
 		drugsEnt.remove(baseline);
 		MetaBenefitRiskAnalysis expected = new MetaBenefitRiskAnalysis(name, ma1ent.getIndication(), metaList , baseline, 
 				drugsEnt, AnalysisType.SMAA);

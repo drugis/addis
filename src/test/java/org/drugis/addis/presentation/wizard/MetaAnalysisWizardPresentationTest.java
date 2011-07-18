@@ -47,6 +47,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -364,8 +365,8 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testGetDrugListModel() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		List<Drug> expected = d_wizard.getDrugListModel().getValue();
-		ListHolder<Drug> drugList = d_wizard.getDrugListModel();
+		List<DrugSet> expected = d_wizard.getDrugListModel().getValue();
+		ListHolder<DrugSet> drugList = d_wizard.getDrugListModel();
 		assertEquals(expected, drugList.getValue());
 	}
 	
@@ -373,7 +374,7 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testDrugListModelEventOnEndpointChange() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
-		List<Drug> newValue = d_wizard.getDrugListModel().getValue();
+		List<DrugSet> newValue = d_wizard.getDrugListModel().getValue();
 		
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		ValueModel drugList = d_wizard.getDrugListModel();
@@ -517,7 +518,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getStudyListModel().getSelectedStudyBooleanModel(ExampleData.buildStudyChouinard()).setValue(false);
 		d_wizard.getStudyListModel().getSelectedStudyBooleanModel(ExampleData.buildStudyDeWilde()).setValue(false);
 		
-		assertEquals(expected, d_wizard.getArmsPerStudyPerDrug(multipleArmsPerStudyPerDrug, parox).getValue() );
+		assertEquals(expected, d_wizard.getArmsPerStudyPerDrug(multipleArmsPerStudyPerDrug, new DrugSet(parox)).getValue() );
 	}
 	
 	@Test
@@ -555,12 +556,12 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(cita);
 		d_wizard.getSecondDrugModel().setValue(esci);
 
-		d_wizard.getSelectedArmModel(burke, esci);
+		d_wizard.getSelectedArmModel(burke, new DrugSet(esci));
 
 		Drug placebo = ExampleData.buildPlacebo();
 		d_wizard.getSecondDrugModel().setValue(placebo);
 
-		d_wizard.getSelectedArmModel(burke, placebo);
+		d_wizard.getSelectedArmModel(burke, new DrugSet(placebo));
 	}
 	
 }

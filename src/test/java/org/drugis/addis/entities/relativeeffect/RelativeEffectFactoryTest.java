@@ -33,6 +33,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.junit.Test;
 
 public class RelativeEffectFactoryTest {
@@ -45,15 +46,15 @@ public class RelativeEffectFactoryTest {
 		Arm pBase = s.getArms().get(0);
 		Arm pSubj = s.getArms().get(1);
 		// sanity check:
-		assertEquals(base, s.getDrug(pBase));
-		assertEquals(subj, s.getDrug(pSubj));
+		assertEquals(new DrugSet(base), s.getDrugs(pBase));
+		assertEquals(new DrugSet(subj), s.getDrugs(pSubj));
 		
 		RelativeEffect<?> expected = new BasicStandardisedMeanDifference(
 				(ContinuousMeasurement)s.getMeasurement(e, pBase),
 				(ContinuousMeasurement)s.getMeasurement(e, pSubj));
 		
 		RelativeEffect<?> actual =
-				RelativeEffectFactory.buildRelativeEffect(s, e, base, subj,
+				RelativeEffectFactory.buildRelativeEffect(s, e, new DrugSet(base), new DrugSet(subj),
 						BasicStandardisedMeanDifference.class);
 		
 		assertRelativeEffectEqual(expected, actual);
@@ -64,8 +65,8 @@ public class RelativeEffectFactoryTest {
 		RelativeEffectFactory.buildRelativeEffect(
 				ExampleData.buildStudyChouinard(),
 				ExampleData.buildEndpointHamd(),
-				ExampleData.buildDrugParoxetine(),
-				ExampleData.buildDrugFluoxetine(),
+				new DrugSet(ExampleData.buildDrugParoxetine()),
+				new DrugSet(ExampleData.buildDrugFluoxetine()),
 				BasicStandardisedMeanDifference.class);
 	}
 	
@@ -78,15 +79,15 @@ public class RelativeEffectFactoryTest {
 		Arm pBase = s.getArms().get(0);
 		Arm pSubj = s.getArms().get(1);
 		// sanity check:
-		assertEquals(base, s.getDrug(pBase));
-		assertEquals(subj, s.getDrug(pSubj));
+		assertEquals(new DrugSet(base), s.getDrugs(pBase));
+		assertEquals(new DrugSet(subj), s.getDrugs(pSubj));
 		
 		RelativeEffect<?> expected = new BasicMeanDifference(
 				(ContinuousMeasurement)s.getMeasurement(e, pBase),
 				(ContinuousMeasurement)s.getMeasurement(e, pSubj));
 		
 		RelativeEffect<?> actual =
-				RelativeEffectFactory.buildRelativeEffect(s, e, base, subj,
+				RelativeEffectFactory.buildRelativeEffect(s, e, new DrugSet(base), new DrugSet(subj),
 						BasicMeanDifference.class, false);
 		
 		assertRelativeEffectEqual(expected, actual);
@@ -97,8 +98,8 @@ public class RelativeEffectFactoryTest {
 		RelativeEffectFactory.buildRelativeEffect(
 				ExampleData.buildStudyChouinard(),
 				ExampleData.buildEndpointHamd(),
-				ExampleData.buildDrugParoxetine(),
-				ExampleData.buildDrugFluoxetine(),
+				new DrugSet(ExampleData.buildDrugParoxetine()),
+				new DrugSet(ExampleData.buildDrugFluoxetine()),
 				BasicMeanDifference.class, false);
 	}
 	
@@ -111,15 +112,15 @@ public class RelativeEffectFactoryTest {
 		Arm pBase = s.getArms().get(0);
 		Arm pSubj = s.getArms().get(1);
 		// sanity check:
-		assertEquals(base, s.getDrug(pBase));
-		assertEquals(subj, s.getDrug(pSubj));
+		assertEquals(new DrugSet(base), s.getDrugs(pBase));
+		assertEquals(new DrugSet(subj), s.getDrugs(pSubj));
 		
 		RelativeEffect<?> expected = new BasicOddsRatio(
 				(RateMeasurement)s.getMeasurement(e, pBase),
 				(RateMeasurement)s.getMeasurement(e, pSubj));
 		
 		RelativeEffect<?> actual =
-				RelativeEffectFactory.buildRelativeEffect(s, e, base, subj,
+				RelativeEffectFactory.buildRelativeEffect(s, e, new DrugSet(base), new DrugSet(subj),
 						BasicOddsRatio.class);
 		
 		assertRelativeEffectEqual(expected, actual);
@@ -130,8 +131,8 @@ public class RelativeEffectFactoryTest {
 		RelativeEffectFactory.buildRelativeEffect(
 				ExampleData.buildStudyChouinard(),
 				ExampleData.buildEndpointCgi(),
-				ExampleData.buildDrugParoxetine(),
-				ExampleData.buildDrugFluoxetine(),
+				new DrugSet(ExampleData.buildDrugParoxetine()),
+				new DrugSet(ExampleData.buildDrugFluoxetine()),
 				BasicOddsRatio.class);
 	}
 	
@@ -144,15 +145,15 @@ public class RelativeEffectFactoryTest {
 		Arm pBase = s.getArms().get(0);
 		Arm pSubj = s.getArms().get(1);
 		// sanity check:
-		assertEquals(base, s.getDrug(pBase));
-		assertEquals(subj, s.getDrug(pSubj));
+		assertEquals(new DrugSet(base), s.getDrugs(pBase));
+		assertEquals(new DrugSet(subj), s.getDrugs(pSubj));
 		
 		RelativeEffect<?> expected = new BasicRiskRatio(
 				(RateMeasurement)s.getMeasurement(e, pBase),
 				(RateMeasurement)s.getMeasurement(e, pSubj));
 		
 		RelativeEffect<?> actual =
-				RelativeEffectFactory.buildRelativeEffect(s, e, base, subj,
+				RelativeEffectFactory.buildRelativeEffect(s, e, new DrugSet(base), new DrugSet(subj),
 						BasicRiskRatio.class);
 		
 		assertRelativeEffectEqual(expected, actual);
@@ -163,8 +164,8 @@ public class RelativeEffectFactoryTest {
 		RelativeEffectFactory.buildRelativeEffect(
 				ExampleData.buildStudyChouinard(),
 				ExampleData.buildEndpointCgi(),
-				ExampleData.buildDrugParoxetine(),
-				ExampleData.buildDrugFluoxetine(),
+				new DrugSet(ExampleData.buildDrugParoxetine()),
+				new DrugSet(ExampleData.buildDrugFluoxetine()),
 				BasicRiskRatio.class);
 	}
 	
@@ -177,15 +178,15 @@ public class RelativeEffectFactoryTest {
 		Arm pBase = s.getArms().get(0);
 		Arm pSubj = s.getArms().get(1);
 		// sanity check:
-		assertEquals(base, s.getDrug(pBase));
-		assertEquals(subj, s.getDrug(pSubj));
+		assertEquals(new DrugSet(base), s.getDrugs(pBase));
+		assertEquals(new DrugSet(subj), s.getDrugs(pSubj));
 		
 		RelativeEffect<?> expected = new BasicRiskDifference(
 				(RateMeasurement)s.getMeasurement(e, pBase),
 				(RateMeasurement)s.getMeasurement(e, pSubj));
 		
 		RelativeEffect<?> actual =
-				RelativeEffectFactory.buildRelativeEffect(s, e, base, subj,
+				RelativeEffectFactory.buildRelativeEffect(s, e, new DrugSet(base), new DrugSet(subj),
 						BasicRiskDifference.class);
 		
 		assertRelativeEffectEqual(expected, actual);
@@ -196,8 +197,8 @@ public class RelativeEffectFactoryTest {
 		RelativeEffectFactory.buildRelativeEffect(
 				ExampleData.buildStudyChouinard(),
 				ExampleData.buildEndpointCgi(),
-				ExampleData.buildDrugParoxetine(),
-				ExampleData.buildDrugFluoxetine(),
+				new DrugSet(ExampleData.buildDrugParoxetine()),
+				new DrugSet(ExampleData.buildDrugFluoxetine()),
 				BasicRiskDifference.class);
 	}
 	

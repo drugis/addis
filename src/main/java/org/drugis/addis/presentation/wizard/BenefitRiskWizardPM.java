@@ -47,6 +47,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
@@ -334,13 +335,13 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return d_metaAnalysesSelectedHolder;
 	}
 
-	public ValueHolder<Set<Drug>> getAlternativesListModel() {
-		Set<Drug> drugSet = new TreeSet<Drug>();
+	public ValueHolder<Set<DrugSet>> getAlternativesListModel() {
+		Set<DrugSet> drugSet = new TreeSet<DrugSet>();
 		for(MetaAnalysis ma : d_domain.getMetaAnalyses()){
 			if(ma.getIndication() == getIndicationModel().getValue() )
 				drugSet.addAll(ma.getIncludedDrugs());
 		}
-		return new UnmodifiableHolder<Set<Drug>>(drugSet);
+		return new UnmodifiableHolder<Set<DrugSet>>(drugSet);
 	}
 
 	public ValueHolder<Boolean> getAlternativeEnabledModel(Entity e) {
@@ -355,7 +356,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 			getMetaAnalysesSelectedHolder().addValueChangeListener(model);
 
 			// To limit the number of selected alternatives to 2 (in L&O analysis)
-			for (Drug d : getAlternativesListModel().getValue()) {
+			for (DrugSet d : getAlternativesListModel().getValue()) {
 				getAlternativeSelectedModel(d).addValueChangeListener(model);
 			}
 		} else {
@@ -480,7 +481,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	}
 
 	private MetaBenefitRiskAnalysis createMetaBRAnalysis(String id) {
-		List<Drug> alternatives = convertList(getSelectedEntities(d_alternativeSelectedMap), Drug.class);
+		List<DrugSet> alternatives = convertList(getSelectedEntities(d_alternativeSelectedMap), DrugSet.class);
 		List<MetaAnalysis> metaAnalyses = new ArrayList<MetaAnalysis>();
 
 		List<OutcomeMeasure> keySetArray = new ArrayList<OutcomeMeasure>(d_metaAnalysisSelectedMap.keySet());
@@ -492,7 +493,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 				metaAnalyses.add(value);
 		}
 
-		Drug baseline = alternatives.get(0);
+		DrugSet baseline = alternatives.get(0);
 		alternatives.remove(0);
 		MetaBenefitRiskAnalysis brAnalysis = new MetaBenefitRiskAnalysis(
 				id,

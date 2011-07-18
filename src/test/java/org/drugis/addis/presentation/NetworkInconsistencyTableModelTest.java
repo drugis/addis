@@ -35,8 +35,8 @@ import javax.swing.event.TableModelListener;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
@@ -117,8 +117,10 @@ public class NetworkInconsistencyTableModelTest {
 	private NetworkMetaAnalysis buildMockContinuousNetworkMetaAnalysis() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard()});
-		List<Drug> drugs = Arrays.asList(new Drug[] {ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine(), 
-				ExampleData.buildDrugSertraline()});
+		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
+				new DrugSet(ExampleData.buildDrugFluoxetine()),
+				new DrugSet(ExampleData.buildDrugParoxetine()), 
+				new DrugSet(ExampleData.buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new MockNetworkMetaAnalysis("Test Network", 
 				ExampleData.buildIndicationDepression(), ExampleData.buildEndpointCgi(),

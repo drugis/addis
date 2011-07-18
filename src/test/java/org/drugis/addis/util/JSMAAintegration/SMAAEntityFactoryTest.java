@@ -32,8 +32,8 @@ import java.util.List;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
@@ -53,7 +53,7 @@ import fi.smaa.jsmaa.model.RelativeLogitNormalMeasurement;
 import fi.smaa.jsmaa.model.SMAAModel;
 
 public class SMAAEntityFactoryTest {
-	private SMAAEntityFactory<Drug> d_smaaFactory;
+	private SMAAEntityFactory<DrugSet> d_smaaFactory;
 	private MetaBenefitRiskAnalysis d_brAnalysis;
 	
 	private SMAAEntityFactory<Arm> d_smaaFactoryArm;
@@ -61,7 +61,7 @@ public class SMAAEntityFactoryTest {
 
 	@Before
 	public void setup() {
-		d_smaaFactory = new SMAAEntityFactory<Drug>();
+		d_smaaFactory = new SMAAEntityFactory<DrugSet>();
 		d_brAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 		
 		d_smaaFactoryArm = new SMAAEntityFactory<Arm>();
@@ -75,7 +75,7 @@ public class SMAAEntityFactoryTest {
 	
 	@Test
 	public void testCreateCardinalMeasurementRate() {
-		GaussianBase relativeEffect = d_brAnalysis.getRelativeEffectDistribution(ExampleData.buildDrugFluoxetine(), ExampleData.buildEndpointHamd());
+		GaussianBase relativeEffect = d_brAnalysis.getRelativeEffectDistribution(new DrugSet(ExampleData.buildDrugFluoxetine()), ExampleData.buildEndpointHamd());
 		CardinalMeasurement actual = SMAAEntityFactory.createCardinalMeasurement(relativeEffect);
 		assertTrue(!((LogNormalMeasurement) actual).getMean().isNaN());
 		assertTrue(actual instanceof LogNormalMeasurement);
@@ -88,7 +88,7 @@ public class SMAAEntityFactoryTest {
 	public void testCreateSmaaModel() {
 		SMAAModel smaaModel = d_smaaFactory.createSmaaModel(d_brAnalysis);
 		for(OutcomeMeasure om : d_brAnalysis.getCriteria()){
-			for(Drug d : d_brAnalysis.getDrugs()){
+			for(DrugSet d : d_brAnalysis.getDrugs()){
 				if (d.equals(d_brAnalysis.getBaseline()))
 					continue;
 				fi.smaa.jsmaa.model.Measurement actualMeasurement = smaaModel.getMeasurement(d_smaaFactory.getCriterion(om), d_smaaFactory.getAlternative(d));

@@ -30,8 +30,8 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
@@ -63,9 +63,9 @@ public class NetworkTableModel extends AbstractTableModel {
 		};
 		
 		// Listen to summaries
-		List<Drug> drugs = d_pm.getIncludedDrugs();
-		for(Drug d1 : drugs) {
-			for (Drug d2 : drugs) {
+		List<DrugSet> drugs = d_pm.getIncludedDrugs();
+		for(DrugSet d1 : drugs) {
+			for (DrugSet d2 : drugs) {
 				if (!d1.equals(d2)) {
 					attachListener(networkModel, d1, d2);
 				}
@@ -73,7 +73,7 @@ public class NetworkTableModel extends AbstractTableModel {
 		}
 	}
 
-	private void attachListener(MixedTreatmentComparison networkModel, Drug d1, Drug d2) {
+	private void attachListener(MixedTreatmentComparison networkModel, DrugSet d1, DrugSet d2) {
 		NormalSummary normalSummary = getSummary(d_model.getTreatment(d1), d_model.getTreatment(d2));
 		normalSummary.addPropertyChangeListener(d_listener);
 	}

@@ -35,9 +35,9 @@ import java.util.List;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,19 +45,19 @@ import org.junit.Test;
 public class SelectableStudyGraphModelTest {
 
 	private DomainImpl d_domain;
-	private ArrayList<Drug> d_drugs;
+	private ArrayList<DrugSet> d_drugs;
 	private SelectableStudyGraphModel d_pm;
-	private ListHolder<Drug> d_drugListHolder;
+	private ListHolder<DrugSet> d_drugListHolder;
 
 	@Before
 	public void setUp() {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		d_drugs = new ArrayList<Drug>();
-		d_drugs.add(ExampleData.buildDrugFluoxetine());
-		d_drugs.add(ExampleData.buildDrugParoxetine());
-		d_drugs.add(ExampleData.buildDrugSertraline());
-		d_drugListHolder = new DefaultListHolder<Drug>(d_drugs);
+		d_drugs = new ArrayList<DrugSet>();
+		d_drugs.add(new DrugSet(ExampleData.buildDrugFluoxetine()));
+		d_drugs.add(new DrugSet(ExampleData.buildDrugParoxetine()));
+		d_drugs.add(new DrugSet(ExampleData.buildDrugSertraline()));
+		d_drugListHolder = new DefaultListHolder<DrugSet>(d_drugs);
 		d_pm = new SelectableStudyGraphModel(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
 				new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()),
 				d_drugListHolder, d_domain);
@@ -66,8 +66,8 @@ public class SelectableStudyGraphModelTest {
 	@Test
 	public void testGetSelectedDrugsModel() {
 		
-		ListHolder<Drug> selDrugs = d_pm.getSelectedDrugsModel();
-		List<Drug> list = Collections.singletonList(ExampleData.buildDrugFluoxetine());
+		ListHolder<DrugSet> selDrugs = d_pm.getSelectedDrugsModel();
+		List<DrugSet> list = Collections.singletonList(new DrugSet(ExampleData.buildDrugFluoxetine()));
 		
 		PropertyChangeListener mock = JUnitUtil.mockListener(selDrugs, "value", selDrugs.getValue(), list);
 		selDrugs.addValueChangeListener(mock);
@@ -83,7 +83,7 @@ public class SelectableStudyGraphModelTest {
 		assertTrue(d_pm.isSelectionConnected());
 		
 		d_drugs.remove(ExampleData.buildDrugFluoxetine());
-		d_drugListHolder = new DefaultListHolder<Drug>(d_drugs);
+		d_drugListHolder = new DefaultListHolder<DrugSet>(d_drugs);
 		d_pm = new SelectableStudyGraphModel(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
 				new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()),
 				d_drugListHolder, d_domain);

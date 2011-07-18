@@ -31,8 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -43,7 +43,7 @@ import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.MCMCModel;
 
 @SuppressWarnings("serial")
-public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<Drug, MetaBenefitRiskAnalysis> {
+public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<DrugSet, MetaBenefitRiskAnalysis> {
 	
 	private AllSummariesDefinedModel d_allSummariesDefinedModel;
 	private List<MCMCModel> d_baselineModels = new ArrayList<MCMCModel>();
@@ -148,11 +148,11 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		return new BRRelativeMeasurementTableModel(getBean());
 	}
 	
-	public BenefitRiskMeasurementTableModel<Drug> getMeasurementTableModel() {
-		return new BenefitRiskMeasurementTableModel<Drug>(getBean());
+	public BenefitRiskMeasurementTableModel<DrugSet> getMeasurementTableModel() {
+		return new BenefitRiskMeasurementTableModel<DrugSet>(getBean());
 	}
 
-	public Drug getBaseline() {
+	public DrugSet getBaseline() {
 		return getBean().getBaseline();
 	}
 

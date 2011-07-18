@@ -37,7 +37,6 @@ import java.util.Set;
 import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
@@ -66,8 +65,8 @@ import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.Summary;
 
-public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<Drug> {
-	private final class MetaMeasurementSource extends AbstractMeasurementSource<Drug> {
+public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<DrugSet> {
+	private final class MetaMeasurementSource extends AbstractMeasurementSource<DrugSet> {
 		public MetaMeasurementSource() {
 			PropertyChangeListener l = new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
@@ -83,8 +82,8 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	private String d_name;
 	private Indication d_indication;
 	private List<MetaAnalysis> d_metaAnalyses;
-	private List<Drug> d_drugs;
-	private Drug d_baseline;
+	private List<DrugSet> d_drugs;
+	private DrugSet d_baseline;
 	private Map<OutcomeMeasure, AbstractBaselineModel<?>> d_baselineModelMap;
 	private AnalysisType d_analysisType;
 	
@@ -94,7 +93,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 
 	
 	public MetaBenefitRiskAnalysis(String id, Indication indication, List<MetaAnalysis> metaAnalysis,
-			Drug baseline, List<Drug> drugs, AnalysisType analysisType) {
+			DrugSet baseline, List<DrugSet> drugs, AnalysisType analysisType) {
 		super();
 		d_indication = indication;
 		d_metaAnalyses = metaAnalysis;
@@ -137,18 +136,18 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		d_metaAnalyses = metaAnalysis;
 	}
 	
-	public List<Drug> getAlternatives() {
+	public List<DrugSet> getAlternatives() {
 		return getDrugs();
 	}
 
-	public List<Drug> getDrugs() {
-		List<Drug> sortedList = new ArrayList<Drug>(d_drugs);
+	public List<DrugSet> getDrugs() {
+		List<DrugSet> sortedList = new ArrayList<DrugSet>(d_drugs);
 		sortedList.add(getBaseline());
 		Collections.sort(sortedList, new AlphabeticalComparator());
 		return sortedList;
 	}
 
-	void setDrugs(List<Drug> drugs) {
+	void setDrugs(List<DrugSet> drugs) {
 		d_drugs = drugs;
 		d_drugs.remove(getBaseline());
 	}
@@ -191,15 +190,15 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		return getName();
 	}
 
-	private void setBaseline(Drug baseline) {
+	private void setBaseline(DrugSet baseline) {
 		d_baseline = baseline;
 	}
 
-	public Drug getBaseline() {
+	public DrugSet getBaseline() {
 		return d_baseline;
 	}
 	
-	private RelativeEffect<? extends Measurement> getRelativeEffect(Drug d, OutcomeMeasure om) {
+	private RelativeEffect<? extends Measurement> getRelativeEffect(DrugSet d, OutcomeMeasure om) {
 		for(MetaAnalysis ma : getMetaAnalyses()){
 			if(ma.getOutcomeMeasure().equals(om)){
 				if (!d.equals(getBaseline())) {
@@ -218,14 +217,14 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	/**
 	 * The effect of d on om relative to the baseline treatment. 
 	 */
-	public GaussianBase getRelativeEffectDistribution(Drug d, OutcomeMeasure om) {
+	public GaussianBase getRelativeEffectDistribution(DrugSet d, OutcomeMeasure om) {
 		return (GaussianBase) getRelativeEffect(d, om).getDistribution();
 	}
 	
 	/**
 	 * Get the measurement to be used in the BenefitRisk simulation.
 	 */
-	public Distribution getMeasurement(Drug d, OutcomeMeasure om) {
+	public Distribution getMeasurement(DrugSet d, OutcomeMeasure om) {
 		if (om.getType() == Type.RATE) {
 			GaussianBase logOdds = getAbsoluteEffectDistribution(d, om);
 			return logOdds == null ? null : new LogitGaussian(logOdds.getMu(), logOdds.getSigma());
@@ -273,7 +272,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 			if (ma.getOutcomeMeasure().equals(om))
 				for (Study s : ma.getIncludedStudies())
 					for (Arm a : s.getArms())
-						if (s.getDrug(a).equals(getBaseline()))
+						if (s.getDrugs(a).equals(getBaseline()))
 							result.add((M)s.getMeasurement(om,a));
 		
 		return result;
@@ -282,7 +281,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	/**
 	 * The absolute effect of d on om given the assumed odds of the baseline treatment. 
 	 */
-	private GaussianBase getAbsoluteEffectDistribution(Drug d, OutcomeMeasure om) {
+	private GaussianBase getAbsoluteEffectDistribution(DrugSet d, OutcomeMeasure om) {
 		GaussianBase baseline = getBaselineDistribution(om);
 		GaussianBase relative = getRelativeEffectDistribution(d, om);
 		if (baseline == null || relative == null) return null;
@@ -313,8 +312,8 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		List<Summary> summaryList = new ArrayList<Summary>();
 		for (MetaAnalysis ma : getMetaAnalyses()) {
 			if (ma instanceof NetworkMetaAnalysis) {
-				for(Drug d: getNonBaselineAlternatives()) {
-					Parameter p = new BasicParameter(new Treatment(getBaseline().getName()), new Treatment(d.getName()));
+				for(DrugSet d: getNonBaselineAlternatives()) {
+					Parameter p = new BasicParameter(new Treatment(getBaseline().toString()), new Treatment(d.getName()));
 					NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
 					summaryList.add(nma.getNormalSummary(nma.getConsistencyModel(), p));
 				}
@@ -337,13 +336,13 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		return summaryList;
 	}
 
-	public List<Drug> getNonBaselineAlternatives() {
-		List<Drug> alternatives = getDrugs();
+	public List<DrugSet> getNonBaselineAlternatives() {
+		List<DrugSet> alternatives = getDrugs();
 		alternatives.remove(getBaseline());
 		return alternatives;
 	}
 
-	public MeasurementSource<Drug> getMeasurementSource() {
+	public MeasurementSource<DrugSet> getMeasurementSource() {
 		return new MetaMeasurementSource();
 	}
 	

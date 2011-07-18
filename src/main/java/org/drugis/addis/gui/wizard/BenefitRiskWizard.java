@@ -41,9 +41,9 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.gui.AddisWindow;
@@ -390,7 +390,7 @@ public class BenefitRiskWizard extends Wizard {
 			builder.add(alternativesLabel, cc.xy(1, 1));
 			
 			int row = 1;
-			for( Drug d : d_pm.getAlternativesListModel().getValue() ){
+			for (DrugSet d : d_pm.getAlternativesListModel().getValue()) {
 				LayoutUtil.addRow(layout);
 				ValueHolder<Boolean> enabledModel  = d_pm.getAlternativeEnabledModel(d);
 				ValueHolder<Boolean> selectedModel = d_pm.getAlternativeSelectedModel(d);

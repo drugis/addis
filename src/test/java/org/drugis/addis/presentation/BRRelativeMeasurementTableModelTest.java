@@ -30,8 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.junit.Before;
@@ -59,14 +59,14 @@ public class BRRelativeMeasurementTableModelTest {
 	
 	@Test
 	public void testGetColumnNames() {
-		List<Drug> drugs = getNonBaselines();
+		List<DrugSet> drugs = getNonBaselines();
 		for (int i = 0; i < drugs.size(); ++i) {
 			assertEquals(drugs.get(i).getName(), d_pm.getColumnName(i + 1));
 		}
 	}
 
-	private List<Drug> getNonBaselines() {
-		List<Drug> drugs = new ArrayList<Drug>(d_brAnalysis.getDrugs());
+	private List<DrugSet> getNonBaselines() {
+		List<DrugSet> drugs = new ArrayList<DrugSet>(d_brAnalysis.getDrugs());
 		drugs.remove(d_brAnalysis.getBaseline());
 		return drugs;
 	}
@@ -81,10 +81,10 @@ public class BRRelativeMeasurementTableModelTest {
 
 	@Test
 	public void testGetValueAt() {
-		List<Drug> drugs = getNonBaselines();
+		List<DrugSet> drugs = getNonBaselines();
 		for (int i = 0; i < drugs.size(); ++i) {
 			for (int j=0; j < d_brAnalysis.getCriteria().size(); ++j) {
-				Drug drug = drugs.get(i);
+				DrugSet drug = drugs.get(i);
 				OutcomeMeasure om = d_brAnalysis.getCriteria().get(j);
 				GaussianBase expected = (GaussianBase) d_brAnalysis.getRelativeEffectDistribution(drug, om);
 				GaussianBase actual = (GaussianBase) d_pm.getValueAt(j, i + 1);

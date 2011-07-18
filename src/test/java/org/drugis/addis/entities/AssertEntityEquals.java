@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -130,7 +131,7 @@ public class AssertEntityEquals {
 			assertTrue(actual instanceof NetworkMetaAnalysis);
 			NetworkMetaAnalysis expNetwork = (NetworkMetaAnalysis) expected;
 			NetworkMetaAnalysis actNetwork = (NetworkMetaAnalysis) actual;
-			for (Drug d : expNetwork.getIncludedDrugs()) {
+			for (DrugSet d : expNetwork.getIncludedDrugs()) {
 				for (Study s : expNetwork.getIncludedStudies()) {
 					assertEntityEquals(expNetwork.getArm(s, d), actNetwork.getArm(s, d));
 				}

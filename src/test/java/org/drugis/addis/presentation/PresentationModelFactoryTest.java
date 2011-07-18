@@ -40,6 +40,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,7 +66,7 @@ public class PresentationModelFactoryTest {
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
 		RandomEffectsMetaAnalysis anal = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
-				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());
+				studies, new DrugSet(ExampleData.buildDrugFluoxetine()), new DrugSet(ExampleData.buildDrugParoxetine()));
 		
 		PresentationModel m = d_manager.getModel(anal);
 		assertEquals(anal, m.getBean());

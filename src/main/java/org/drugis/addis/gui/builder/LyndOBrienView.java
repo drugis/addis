@@ -104,8 +104,8 @@ public class LyndOBrienView implements ViewBuilder {
 			Study s = ((StudyBenefitRiskAnalysis) d_BRpm.getBean()).getStudy();
 			Arm baseArm = (Arm)baseline;
 			Arm altArm = (Arm)alternative;
-			baselineName = s.getDrug(baseArm).toString() + " (" + s.getDose(baseArm).toString() + ")"; // FIXME: use TreatmentActivity?
-			alternativeName = s.getDrug(altArm).toString() + " (" + s.getDose(altArm).toString() + ")";
+			baselineName = s.getDrugs(baseArm).toString() + " (" + s.getDose(baseArm).toString() + ")"; // FIXME: use TreatmentActivity?
+			alternativeName = s.getDrugs(altArm).toString() + " (" + s.getDose(altArm).toString() + ")";
 		} else if (d_BRpm.getBean() instanceof MetaBenefitRiskAnalysis) {
 			baselineName = ((Drug)baseline).toString();
 			alternativeName = ((Drug)alternative).toString();

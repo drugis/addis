@@ -53,6 +53,7 @@ import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MockStudyBenefitRiskAnalysis;
@@ -806,8 +807,10 @@ public class ExampleData {
 	public static NetworkMetaAnalysis buildNetworkMetaAnalysisHamD() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				buildStudyBennie(), buildStudyChouinard(), buildStudyDeWilde(), buildStudyFava2002()});
-		List<Drug> drugs = Arrays.asList(new Drug[] {buildDrugFluoxetine(), buildDrugParoxetine(), 
-				buildDrugSertraline()});
+		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
+				new DrugSet(buildDrugFluoxetine()), 
+				new DrugSet(buildDrugParoxetine()), 
+				new DrugSet(buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network", 
 				buildIndicationDepression(), buildEndpointHamd(),
@@ -819,8 +822,10 @@ public class ExampleData {
 	public static NetworkMetaAnalysis buildNetworkMetaAnalysisConvulsion() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				buildStudyBennie(), buildStudyChouinard()});
-		List<Drug> drugs = Arrays.asList(new Drug[] {buildDrugFluoxetine(), buildDrugParoxetine(), 
-				buildDrugSertraline()});
+		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
+				new DrugSet(buildDrugFluoxetine()),
+				new DrugSet(buildDrugParoxetine()), 
+				new DrugSet(buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network2", 
 				buildIndicationDepression(), buildAdverseEventConvulsion(),
@@ -832,8 +837,10 @@ public class ExampleData {
 	public static NetworkMetaAnalysis buildNetworkMetaAnalysisCgi() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				buildStudyBennie(), buildStudyChouinard()});
-		List<Drug> drugs = Arrays.asList(new Drug[] {buildDrugFluoxetine(), buildDrugParoxetine(), 
-				buildDrugSertraline()});
+		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
+				new DrugSet(buildDrugFluoxetine()),
+				new DrugSet(buildDrugParoxetine()), 
+				new DrugSet(buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("CGI network", 
 				buildIndicationDepression(), buildEndpointCgi(),
@@ -843,12 +850,12 @@ public class ExampleData {
 	}
 	
 	
-	public static Map<Study, Map<Drug, Arm>> buildMap(List<Study> studies,
-			List<Drug> drugs) {
-		Map<Study, Map<Drug, Arm>> map = new HashMap<Study, Map<Drug,Arm>>();
+	public static Map<Study, Map<DrugSet, Arm>> buildMap(List<Study> studies,
+			List<DrugSet> drugs) {
+		Map<Study, Map<DrugSet, Arm>> map = new HashMap<Study, Map<DrugSet, Arm>>();
 		for (Study s : studies) {
-			Map<Drug, Arm> drugMap = new HashMap<Drug, Arm>();
-			for (Drug d : drugs) {
+			Map<DrugSet, Arm> drugMap = new HashMap<DrugSet, Arm>();
+			for (DrugSet d : drugs) {
 				if (s.getDrugs().contains(d)) {
 					drugMap.put(d, RelativeEffectFactory.findFirstArm(s, d));
 				}
@@ -878,10 +885,10 @@ public class ExampleData {
 		metaAnalysisList.add(buildMetaAnalysisConv());
 		
 		Drug parox = buildDrugParoxetine();
-		List<Drug> fluoxList = Collections.singletonList(buildDrugFluoxetine());
+		List<DrugSet> fluoxList = Collections.singletonList(new DrugSet(buildDrugFluoxetine()));
 		
 		return new MockMetaBenefitRiskAnalysis("testBenefitRiskAnalysis",
-										indication, metaAnalysisList, parox, fluoxList);										
+										indication, metaAnalysisList, new DrugSet(parox), fluoxList);										
 	}
 
 	public static StudyBenefitRiskAnalysis buildStudyBenefitRiskAnalysis() {
@@ -940,11 +947,11 @@ public class ExampleData {
 		Drug fluox = buildDrugFluoxetine();
 		Drug parox = buildDrugParoxetine();
 		Study study = buildStudyChouinard();
-		MetaAnalysis ma = new RandomEffectsMetaAnalysis("ma", om, Collections.singletonList(study), fluox, parox);
+		MetaAnalysis ma = new RandomEffectsMetaAnalysis("ma", om, Collections.singletonList(study), new DrugSet(fluox), new DrugSet(parox));
 		MetaBenefitRiskAnalysis br = new MockMetaBenefitRiskAnalysis("br", study.getIndication(), 
 				Collections.singletonList(ma), 
-				fluox, 
-				Collections.singletonList(parox));
+				new DrugSet(fluox), 
+				Collections.singletonList(new DrugSet(parox)));
 		return br;
 	}
 	

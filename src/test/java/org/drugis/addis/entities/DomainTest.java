@@ -41,6 +41,7 @@ import java.util.List;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
@@ -124,7 +125,7 @@ public class DomainTest {
 		studies.add(ExampleData.buildStudyDeWilde());
 		studies.add(new Study("iiidddd", ExampleData.buildIndicationDepression()));
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
-				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());
+				studies, new DrugSet(ExampleData.buildDrugFluoxetine()), new DrugSet(ExampleData.buildDrugParoxetine()));
 		d_domain.addMetaAnalysis(ma);
 	}
 	
@@ -221,7 +222,7 @@ public class DomainTest {
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
-				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());
+				studies, new DrugSet(ExampleData.buildDrugFluoxetine()), new DrugSet(ExampleData.buildDrugParoxetine()));
 		return ma;
 	}
 	
@@ -233,7 +234,7 @@ public class DomainTest {
 		study2.setIndication(ExampleData.buildIndicationChronicHeartFailure());
 		studies.add(study2);
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
-				studies, ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine());
+				studies, new DrugSet(ExampleData.buildDrugFluoxetine()), new DrugSet(ExampleData.buildDrugParoxetine()));
 		d_domain.addMetaAnalysis(ma);
 	}
 	
@@ -585,7 +586,7 @@ public class DomainTest {
 		s2.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(e));
 		
 		ArrayList<Study> studies = new ArrayList<Study>(d_domain.getStudies());
-		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", e, studies, fluox, parox); 
+		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", e, studies, new DrugSet(fluox), new DrugSet(parox)); 
 		d_domain.addMetaAnalysis(ma);
 		d_domain.deleteEntity(s1);
 	}

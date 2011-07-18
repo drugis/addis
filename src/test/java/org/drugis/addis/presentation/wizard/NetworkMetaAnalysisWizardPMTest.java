@@ -45,6 +45,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyListPresentation;
@@ -283,10 +284,10 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		Study multiple = ExampleData.buildStudyMultipleArmsperDrug();
 		List<Arm> arms = new ArrayList<Arm>(multiple.getArms());
-		arms.remove(d_pm.getSelectedArmModel(multiple, ExampleData.buildDrugParoxetine()).getValue());
-		arms.remove(d_pm.getSelectedArmModel(multiple, ExampleData.buildDrugFluoxetine()).getValue());
+		arms.remove(d_pm.getSelectedArmModel(multiple, new DrugSet(ExampleData.buildDrugParoxetine())).getValue());
+		arms.remove(d_pm.getSelectedArmModel(multiple, new DrugSet(ExampleData.buildDrugFluoxetine())).getValue());
 		Arm arm = arms.get(0); // The currently unused arm 
-		d_pm.getSelectedArmModel(multiple, ExampleData.buildDrugParoxetine()).setValue(arm);
+		d_pm.getSelectedArmModel(multiple, new DrugSet(ExampleData.buildDrugParoxetine())).setValue(arm);
 		
 		NetworkMetaAnalysis ma = d_pm.createMetaAnalysis("name");
 		
@@ -295,9 +296,9 @@ public class NetworkMetaAnalysisWizardPMTest {
 				d_pm.getStudyListModel().getSelectedStudiesModel().getValue());
 		assertEquals(d_pm.getOutcomeMeasureModel().getValue(), ma.getOutcomeMeasure());
 		assertEquals(d_pm.getIndicationModel().getValue(), ma.getIndication());
-		assertEquals(arm, ma.getArm(multiple, ExampleData.buildDrugParoxetine()));
+		assertEquals(arm, ma.getArm(multiple, new DrugSet(ExampleData.buildDrugParoxetine())));
 		for (Study s : ma.getIncludedStudies()) {
-			for (Drug d : s.getDrugs()) {
+			for (DrugSet d : s.getDrugs()) {
 				assertNotNull(ma.getArm(s, d));
 			}
 		}

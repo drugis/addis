@@ -31,8 +31,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.InconsistencyModel;
@@ -76,8 +76,10 @@ public class ContinuousInconsistencyModelIT {
     private NetworkMetaAnalysis buildContinuousNetworkMetaAnalysis() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), ExampleData.buildStudyAdditionalThreeArm()});
-		List<Drug> drugs = Arrays.asList(new Drug[] {ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugParoxetine(), 
-				ExampleData.buildDrugSertraline()});
+		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
+				new DrugSet(ExampleData.buildDrugFluoxetine()),
+				new DrugSet(ExampleData.buildDrugParoxetine()), 
+				new DrugSet(ExampleData.buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network", 
 				ExampleData.buildIndicationDepression(), ExampleData.buildEndpointCgi(),

@@ -26,7 +26,6 @@ package org.drugis.addis.entities.analysis;
 
 import java.util.List;
 
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
@@ -52,10 +51,10 @@ public interface MetaAnalysis extends Entity, Comparable<MetaAnalysis> {
 	public int getSampleSize();
 
 	public static final String PROPERTY_INCLUDED_DRUGS = "includedDrugs";
-	public List<Drug> getIncludedDrugs();
+	public List<DrugSet> getIncludedDrugs();
 	
 	public static final String PROPERTY_INCLUDED_STUDIES = "includedStudies";
 	public List<Study> getIncludedStudies();
 	public RelativeEffect<? extends Measurement> getRelativeEffect(
-			Drug d1, Drug d2, Class<? extends RelativeEffect<?>> type);
+			DrugSet baseline, DrugSet d, Class<? extends RelativeEffect<?>> type);
 }

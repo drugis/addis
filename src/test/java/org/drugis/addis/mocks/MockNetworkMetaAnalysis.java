@@ -30,10 +30,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
@@ -49,8 +49,8 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 	private ConsistencyModel d_mockConsistencyModel;
 
 	public MockNetworkMetaAnalysis(String name, Indication indication,
-			OutcomeMeasure om, List<? extends Study> studies, List<Drug> drugs,
-			Map<Study, Map<Drug, Arm>> armMap) throws IllegalArgumentException {
+			OutcomeMeasure om, List<? extends Study> studies, List<DrugSet> drugs,
+			Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, studies, drugs, armMap);
 		d_mockInconsistencyModel = new MockInconsistencyModel();
 		d_mockConsistencyModel = new MockConsistencyModel(toTreatments(drugs));
@@ -58,9 +58,9 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 		d_normalSummaries.put(d_mockInconsistencyModel, new HashMap<Parameter, NormalSummary>());
 	}
 
-	private List<Treatment> toTreatments(List<Drug> drugs) {
+	private List<Treatment> toTreatments(List<DrugSet> drugs) {
 		List<Treatment> ts = new ArrayList<Treatment>();
-		for (Drug d : drugs) {
+		for (DrugSet d : drugs) {
 			ts.add(new Treatment(d.getName()));
 		}
 		return ts;

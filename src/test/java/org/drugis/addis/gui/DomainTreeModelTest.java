@@ -57,6 +57,7 @@ import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -95,7 +96,7 @@ public class DomainTreeModelTest {
 		d_firstStudy.setMeasurement(d_firstADE, pg, d_firstADE.buildMeasurement(pg));
 				
 		d_firstMetaAnalysis = new RandomEffectsMetaAnalysis("meta", d_firstEndpoint, 
-				Collections.singletonList((Study)d_firstStudy), d_firstDrug, d_firstDrug);
+				Collections.singletonList((Study)d_firstStudy), new DrugSet(d_firstDrug), new DrugSet(d_firstDrug));
 		
 		d_networkAnalysis = ExampleData.buildNetworkMetaAnalysisHamD();
 		
@@ -300,7 +301,7 @@ public class DomainTreeModelTest {
 	@Test
 	public void testMetaStudyIsLeaf() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		RandomEffectsMetaAnalysis study = new RandomEffectsMetaAnalysis("meta2", d_firstEndpoint, new ArrayList<Study>(Collections.singleton(d_firstStudy)),
-				d_firstDrug, d_firstDrug);
+				new DrugSet(d_firstDrug), new DrugSet(d_firstDrug));
 		d_domain.addMetaAnalysis(study);
 		assertTrue(d_treeModel.isLeaf(study));
 		assertTrue(d_treeModel.isLeaf(d_networkAnalysis));

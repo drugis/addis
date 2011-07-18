@@ -39,6 +39,7 @@ import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -62,7 +63,7 @@ public class CorrectedBasicRiskDifferenceTest {
 		d_ep = new Endpoint("ep", Variable.Type.RATE);
 		
 		d_bennie = createStudy("Bennie 1995",0,144,73,142);
-		d_riskDifferenceBennie = (BasicRiskDifference) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, d_fluox, d_sertra, BasicRiskDifference.class, true);
+		d_riskDifferenceBennie = (BasicRiskDifference) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicRiskDifference.class, true);
 	}
 
 	@Test

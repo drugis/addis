@@ -38,6 +38,7 @@ import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,11 +68,11 @@ public class BasicOddsRatioTest {
 		d_sechter = createStudy("Sechter 1999", 76,120, 86,118);
 				
 		
-		d_ratioBennie = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, d_fluox, d_sertra, BasicOddsRatio.class);
-		d_ratioBoyer = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, d_fluox, d_sertra, BasicOddsRatio.class);
-		d_ratioFava = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, d_fluox, d_sertra, BasicOddsRatio.class);
-		d_ratioNewhouse = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, d_fluox, d_sertra, BasicOddsRatio.class);
-		d_ratioSechter = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, d_fluox, d_sertra, BasicOddsRatio.class);
+		d_ratioBennie = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicOddsRatio.class);
+		d_ratioBoyer = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicOddsRatio.class);
+		d_ratioFava = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicOddsRatio.class);
+		d_ratioNewhouse = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicOddsRatio.class);
+		d_ratioSechter = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicOddsRatio.class);
 	}
 	
 	@Test

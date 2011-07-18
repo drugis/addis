@@ -30,10 +30,10 @@ import java.util.Map;
 
 import javax.swing.table.TableModel;
 
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.Task;
@@ -102,7 +102,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 
 	public StudyGraphModel getStudyGraphModel() {
 		return new StudyGraphModel(new DefaultListHolder<Study>(getBean().getIncludedStudies()),
-				new DefaultListHolder<Drug>(getBean().getIncludedDrugs()), new UnmodifiableHolder<OutcomeMeasure>(getBean().getOutcomeMeasure()));
+				new DefaultListHolder<DrugSet>(getBean().getIncludedDrugs()), new UnmodifiableHolder<OutcomeMeasure>(getBean().getOutcomeMeasure()));
 	}
 
 	public CategoryDataset getRankProbabilityDataset() {
@@ -173,7 +173,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return getBean().getNormalSummary(model, p);
 	}
 
-	public List<Drug> getIncludedDrugs() {
+	public List<DrugSet> getIncludedDrugs() {
 		return getBean().getIncludedDrugs();
 	}
 

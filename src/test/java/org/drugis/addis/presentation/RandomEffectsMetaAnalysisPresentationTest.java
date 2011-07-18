@@ -35,6 +35,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.common.JUnitUtil;
@@ -46,8 +47,8 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		RandomEffectsMetaAnalysis meta = new RandomEffectsMetaAnalysis("meta",
 				ExampleData.buildEndpointHamd(),
 				Collections.singletonList(ExampleData.buildStudyChouinard()),
-				ExampleData.buildDrugFluoxetine(),
-				ExampleData.buildDrugParoxetine());
+				new DrugSet(ExampleData.buildDrugFluoxetine()),
+				new DrugSet(ExampleData.buildDrugParoxetine()));
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
@@ -60,8 +61,8 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		RandomEffectsMetaAnalysis meta = new RandomEffectsMetaAnalysis("meta",
 				ExampleData.buildEndpointCgi(),
 				Collections.singletonList(ExampleData.buildStudyChouinard()),
-				ExampleData.buildDrugFluoxetine(),
-				ExampleData.buildDrugParoxetine());
+				new DrugSet(ExampleData.buildDrugFluoxetine()),
+				new DrugSet(ExampleData.buildDrugParoxetine()));
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
@@ -74,8 +75,8 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		RandomEffectsMetaAnalysis meta = new RandomEffectsMetaAnalysis("meta",
 				ExampleData.buildEndpointCgi(),
 				Collections.singletonList(ExampleData.buildStudyChouinard()),
-				ExampleData.buildDrugFluoxetine(),
-				ExampleData.buildDrugParoxetine());
+				new DrugSet(ExampleData.buildDrugFluoxetine()),
+				new DrugSet(ExampleData.buildDrugParoxetine()));
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
@@ -91,8 +92,8 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		RandomEffectsMetaAnalysis meta = new RandomEffectsMetaAnalysis("meta",
 				ExampleData.buildEndpointCgi(),
 				Collections.singletonList(ExampleData.buildStudyChouinard()),
-				ExampleData.buildDrugFluoxetine(),
-				ExampleData.buildDrugParoxetine());
+				new DrugSet(ExampleData.buildDrugFluoxetine()),
+				new DrugSet(ExampleData.buildDrugParoxetine()));
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);

@@ -24,12 +24,15 @@
 
 package org.drugis.addis.util;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.common.EqualsUtil;
 
 public class EntityUtil {
@@ -69,5 +72,13 @@ public class EntityUtil {
 			}
 		}
 		return null;
+	}
+
+	public static HashSet<Entity> flatten(Collection<DrugSet> set) {
+		HashSet<Entity> flat = new HashSet<Entity>();
+		for (DrugSet nested : set) {
+			flat.addAll(nested.getContents());
+		}
+		return flat;
 	}
 }

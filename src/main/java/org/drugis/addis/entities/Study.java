@@ -36,6 +36,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.StudyActivity.UsedBy;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.RebuildableHashMap;
 import org.drugis.addis.util.comparator.OutcomeComparator;
@@ -335,12 +336,10 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		}
 	}
 
-	public Set<Drug> getDrugs() {
-		Set<Drug> drugs = new HashSet<Drug>();
+	public Set<DrugSet> getDrugs() {
+		Set<DrugSet> drugs = new HashSet<DrugSet>();
 		for (Arm a : getArms()) {
-			if (getDrug(a) != null) {
-				drugs.add(getDrug(a));
-			}
+			drugs.add(getDrugs(a));
 		}
 		return drugs;
 	}
@@ -357,13 +356,13 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 
 	@Override
 	public Set<Entity> getDependencies() {
-		HashSet<Entity> dep = new HashSet<Entity>(getDrugs());
+		HashSet<Entity> dep = EntityUtil.flatten(getDrugs());
 		dep.addAll(getOutcomeMeasures());
 		dep.addAll(extractVariables(getPopulationChars()));
 		dep.add(d_indication.getValue());
 		return dep;
 	}
-	
+
 	public Object getCharacteristic(Characteristic c) {
 		return d_chars.get(c) != null ? d_chars.get(c).getValue() : null;
 	}
@@ -672,14 +671,21 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return true;
 	}
 
+	@Deprecated
 	public Drug getDrug(Arm arm) {
 		Activity activity = getActivity(arm);
-		if (activity instanceof DrugTreatment) {
-			return ((DrugTreatment) activity).getDrug();
-		} else if(activity instanceof TreatmentActivity) {
+		if(activity instanceof TreatmentActivity) {
 			return ((TreatmentActivity)activity).getTreatments().get(0).getDrug();
 		}
 		return null;
+	}
+	
+	public DrugSet getDrugs(Arm a) {
+		Activity activity = getActivity(a);
+		if(activity instanceof TreatmentActivity) {
+			return new DrugSet(((TreatmentActivity)activity).getDrugs());
+		}
+		return new DrugSet();
 	}
 	
 	@Deprecated
@@ -765,9 +771,9 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	/**
 	 * @return The Drugs that have at least one Arm with a complete measurement for the Variable v.
 	 */
-	public Set<Drug> getMeasuredDrugs(Variable v) {
-		Set<Drug> drugs = new HashSet<Drug>();
-		for (Drug d : getDrugs()) {
+	public Set<DrugSet> getMeasuredDrugs(Variable v) {
+		Set<DrugSet> drugs = new HashSet<DrugSet>();
+		for (DrugSet d : getDrugs()) {
 			if (isMeasured(v, d)) {
 				drugs.add(d);
 			}
@@ -775,7 +781,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return drugs;
 	}
 	
-	public List<Arm> getMeasuredArms(Variable v, Drug d) {
+	public List<Arm> getMeasuredArms(Variable v, DrugSet d) {
 		List<Arm> arms = new ArrayList<Arm>();
 		for (Arm a : getArms(d)) {
 			if (isMeasured(v, a)) {
@@ -785,7 +791,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return arms;
 	}
 
-	private boolean isMeasured(Variable v, Drug d) {
+	private boolean isMeasured(Variable v, DrugSet d) {
 		for (Arm a : getArms(d)) {
 			if (isMeasured(v, a)) {
 				return true;
@@ -798,10 +804,10 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return getMeasurement(v, a) != null && getMeasurement(v, a).isComplete();
 	}
 
-	private List<Arm> getArms(Drug d) {
+	private List<Arm> getArms(DrugSet d) {
 		List<Arm> arms = new ArrayList<Arm>();
 		for (Arm a : getArms()) {
-			if (getDrug(a).equals(d)) {
+			if (getDrugs(a).equals(d)) {
 				arms.add(a);
 			}
 		}

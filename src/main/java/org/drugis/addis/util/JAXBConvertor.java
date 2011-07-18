@@ -91,6 +91,7 @@ import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -1043,13 +1044,14 @@ public class JAXBConvertor {
 		} else {
 			throw new ConversionException("Outcome Measure type not supported: " + reMa.getOutcomeMeasure());
 		}
-		for(Drug d : reMa.getIncludedDrugs()) {
+		for(DrugSet d : reMa.getIncludedDrugs()) {
 			Alternative alt = new Alternative();
 			if (alt.getDrugs() == null) {
 				alt.setDrugs(new AnalysisDrugs());
 			}
-			alt.getDrugs().getDrug().clear();
-			alt.getDrugs().getDrug().add(nameReference(d.getName()));
+			for (Drug drug : d.getContents()) {
+				alt.getDrugs().getDrug().add(nameReference(drug.getName()));				
+			}
 			AnalysisArms arms = new AnalysisArms();
 			for(StudyArmsEntry item : reMa.getStudyArms()) {
 				Arm arm = null;
@@ -1072,7 +1074,7 @@ public class JAXBConvertor {
 		org.drugis.addis.entities.OutcomeMeasure om = findOutcomeMeasure(domain, nma);
 		List<Study> studies = new ArrayList<Study>();		
 		List<Drug> drugs = new ArrayList<Drug>();
-		Map<Study, Map<Drug, Arm>> armMap = new HashMap<Study, Map<Drug,Arm>>();
+		Map<Study, Map<DrugSet, Arm>> armMap = new HashMap<Study, Map<DrugSet, Arm>>();
 		for (org.drugis.addis.entities.data.Alternative a : nma.getAlternative()) {
 			Drug drug = findDrug(domain, (a.getDrugs() != null ? a.getDrugs().getDrug().get(0) : null).getName());
 			drugs.add(drug);
@@ -1080,10 +1082,10 @@ public class JAXBConvertor {
 				Study study = findStudy(armRef.getStudy(), domain);
 				if (!studies.contains(study)) {
 					studies.add(study);
-					armMap.put(study, new HashMap<Drug, Arm>());
+					armMap.put(study, new HashMap<DrugSet, Arm>());
 				}
 				Arm arm = findArm(armRef.getName(), study.getArms());
-				armMap.get(study).put(drug, arm);
+				armMap.get(study).put(new DrugSet(drug), arm);
 			}
 		}
 
@@ -1101,13 +1103,14 @@ public class JAXBConvertor {
 		} else {
 			throw new ConversionException("Outcome Measure type not supported: " + ma.getOutcomeMeasure());
 		}
-		for(Drug d : ma.getIncludedDrugs()) {
+		for(DrugSet d : ma.getIncludedDrugs()) {
 			Alternative alt = new Alternative();
 			if (alt.getDrugs() == null) {
 				alt.setDrugs(new AnalysisDrugs());
 			}
-			alt.getDrugs().getDrug().clear();
-			alt.getDrugs().getDrug().add(nameReference(d.getName()));
+			for (Drug drug : d.getContents()) {
+				alt.getDrugs().getDrug().add(nameReference(drug.getName()));
+			}
 			AnalysisArms arms = new AnalysisArms();
 			
 			for(Study study : ma.getIncludedStudies()) {
@@ -1243,10 +1246,10 @@ public class JAXBConvertor {
 	public static MetaBenefitRiskAnalysis convertMetaBenefitRiskAnalysis(
 			org.drugis.addis.entities.data.MetaBenefitRiskAnalysis br, Domain domain) {
 		Indication indication = findIndication(domain, br.getIndication().getName());
-		Drug baseline = findDrug(domain, br.getBaseline().getName());
-		List<Drug> drugs = new ArrayList<Drug>();
+		DrugSet baseline = new DrugSet(findDrug(domain, br.getBaseline().getName()));
+		List<DrugSet> drugs = new ArrayList<DrugSet>();
 		for (NameReference ref : br.getDrugs().getDrug()) {
-			drugs.add(findDrug(domain, ref.getName()));
+			drugs.add(new DrugSet(findDrug(domain, ref.getName())));
 		}
 		List<MetaAnalysis> metaAnalysis = new ArrayList<MetaAnalysis>();
 		for (NameReference ref : br.getMetaAnalyses().getMetaAnalysis()) {
@@ -1265,8 +1268,8 @@ public class JAXBConvertor {
 		newBr.setIndication(nameReference(br.getIndication().getName()));
 		
 		DrugReferences drugRefs = new DrugReferences();
-		for(Drug d : br.getDrugs()) {
-			drugRefs.getDrug().add(nameReference(d.getName()));
+		for(DrugSet d : br.getDrugs()) {
+			drugRefs.getDrug().add(nameReference(d.getContents().iterator().next().getName()));
 		}
 		newBr.setDrugs(drugRefs);
 		

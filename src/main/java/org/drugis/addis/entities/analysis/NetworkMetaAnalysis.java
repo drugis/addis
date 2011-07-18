@@ -32,7 +32,6 @@ import java.util.Map;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -78,13 +77,13 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	
 
 	public NetworkMetaAnalysis(String name, Indication indication,
-			OutcomeMeasure om, List<? extends Study> studies, List<Drug> drugs,
-			Map<Study, Map<Drug, Arm>> armMap) throws IllegalArgumentException {
+			OutcomeMeasure om, List<? extends Study> studies, List<DrugSet> drugs,
+			Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, studies, drugs, armMap);
 	}
 	
 	public NetworkMetaAnalysis(String name, Indication indication,
-			OutcomeMeasure om, Map<Study, Map<Drug, Arm>> armMap) throws IllegalArgumentException {
+			OutcomeMeasure om, Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, armMap);
 	}
 
@@ -111,9 +110,9 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return nodeSplitModel;
 	}
 
-	private NetworkBuilder<? extends org.drugis.mtc.Measurement> createBuilder(List<? extends Study> studies, List<Drug> drugs, Map<Study, Map<Drug, Arm>> armMap) {
+	private NetworkBuilder<? extends org.drugis.mtc.Measurement> createBuilder(List<? extends Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
 		for(Study s : studies){
-			for (Drug d : drugs) {
+			for (DrugSet d : drugs) {
 				if(!s.getDrugs().contains(d))
 					continue;
 				for (Variable v : s.getVariables(OutcomeMeasure.class)) {
@@ -123,11 +122,11 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 					Measurement m = s.getMeasurement(v, a);
 					if(m instanceof BasicRateMeasurement) {
 						BasicRateMeasurement brm = (BasicRateMeasurement)m;	
-						((DichotomousNetworkBuilder) getTypedBuilder(brm)).add(s.getName(), s.getDrug(a).getName(),
+						((DichotomousNetworkBuilder) getTypedBuilder(brm)).add(s.getName(), s.getDrugs(a).toString(), // FIXME
 																			   brm.getRate(), brm.getSampleSize());
 					} else if (m instanceof BasicContinuousMeasurement) {
 						BasicContinuousMeasurement cm = (BasicContinuousMeasurement) m;
-						((ContinuousNetworkBuilder) getTypedBuilder(cm)).add(s.getName(), s.getDrug(a).getName(),
+						((ContinuousNetworkBuilder) getTypedBuilder(cm)).add(s.getName(), s.getDrugs(a).toString(), // FIXME
 																	           cm.getMean(), cm.getStdDev(), cm.getSampleSize());
 					}
 				}
@@ -235,13 +234,13 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return d_isContinuous;
 	}
 
-	public NetworkRelativeEffect<? extends Measurement> getRelativeEffect(Drug d1, Drug d2, Class<? extends RelativeEffect<?>> type) {
+	public NetworkRelativeEffect<? extends Measurement> getRelativeEffect(DrugSet d1, DrugSet d2, Class<? extends RelativeEffect<?>> type) {
 		
 		if(!getConsistencyModel().isReady())
 			return new NetworkRelativeEffect<Measurement>(); // empty relative effect.
 		
 		ConsistencyModel consistencyModel = getConsistencyModel();
-		Parameter param = consistencyModel.getRelativeEffect(new Treatment(d1.getName()), new Treatment(d2.getName()));
+		Parameter param = consistencyModel.getRelativeEffect(new Treatment(d1.toString()), new Treatment(d2.toString()));
 		NormalSummary estimate = getNormalSummary(consistencyModel, param);
 		
 		if (isContinuous()) {
@@ -253,14 +252,14 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	
 	public List<Treatment> getTreatments() {
 		List<Treatment> treatments = new ArrayList<Treatment>();
-		for (Drug d : d_drugs) {
+		for (DrugSet d : d_drugs) {
 			treatments.add(getTreatment(d));
 		}
 		return treatments;
 	}
 
-	public Treatment getTreatment(Drug d1) {
-		return getBuilder().getTreatment(d1.getName());
+	public Treatment getTreatment(DrugSet d) {
+		return getBuilder().getTreatment(d.toString());
 	}
 
 	public List<BasicParameter> getSplitParameters() {

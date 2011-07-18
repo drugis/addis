@@ -39,6 +39,7 @@ import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -65,11 +66,11 @@ public class CorrectedOddsRatioTest {
 		d_fava = createStudy("Fava 2002", 0, 92, 70, 96);
 		d_newhouse = createStudy("Newhouse 2000", 50,119, 0,117);
 		d_sechter = createStudy("Sechter 1999", 70,120, 86,118);
-		d_ratioBennie = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, d_fluox, d_sertra, BasicOddsRatio.class, true);
-		d_ratioBoyer = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, d_fluox, d_sertra, BasicOddsRatio.class, true);
-		d_ratioFava = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, d_fluox, d_sertra, BasicOddsRatio.class, true);
-		d_ratioNewhouse = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, d_fluox, d_sertra, BasicOddsRatio.class, true);
-		d_ratioSechter = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, d_fluox, d_sertra, BasicOddsRatio.class, true);
+		d_ratioBennie = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicOddsRatio.class, true);
+		d_ratioBoyer = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicOddsRatio.class, true);
+		d_ratioFava = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicOddsRatio.class, true);
+		d_ratioNewhouse = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicOddsRatio.class, true);
+		d_ratioSechter = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicOddsRatio.class, true);
 
 	}
 

@@ -34,11 +34,11 @@ import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.TreatmentActivity;
-import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
-import org.drugis.addis.entities.DrugTreatment;
+import org.drugis.addis.entities.TreatmentActivity;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.StudyGraphModel;
@@ -82,7 +82,7 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 			d_builder.addSeparator(curStudy.toString(), cc.xyw(1, row, 4));
 			row = LayoutUtil.addRow(d_layout, row);
 			
-			for (Drug drug: d_pm.getSelectedDrugsModel().getValue()) {
+			for (DrugSet drug: d_pm.getSelectedDrugsModel().getValue()) {
 				if (curStudy.getDrugs().contains(drug)) {
 					row = createArmSelect(row, curStudy, drug, cc);
 				}
@@ -96,7 +96,7 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 		setComplete(true);
 	}
 
-	private int createArmSelect(int row, final Study curStudy, Drug drug, CellConstraints cc) {
+	private int createArmSelect(int row, final Study curStudy, DrugSet drug, CellConstraints cc) {
 		d_builder.addLabel(drug.toString(), cc.xy(2, row));
 		
 		ListHolder<Arm> arms = d_pm.getArmsPerStudyPerDrug(curStudy, drug);

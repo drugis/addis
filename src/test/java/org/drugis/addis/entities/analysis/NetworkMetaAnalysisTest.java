@@ -68,7 +68,7 @@ public class NetworkMetaAnalysisTest {
 	public void testGetRelativeEffect() {
 		Drug base = ExampleData.buildDrugFluoxetine();
 		Drug subj = ExampleData.buildDrugParoxetine();
-		RelativeEffect<?> actual = d_mockAnalysis.getRelativeEffect(base, subj, BasicOddsRatio.class);
+		RelativeEffect<?> actual = d_mockAnalysis.getRelativeEffect(new DrugSet(base), new DrugSet(subj), BasicOddsRatio.class);
 		NormalSummary summary = d_mockAnalysis.getNormalSummary(d_mockAnalysis.getConsistencyModel(), 
 				new BasicParameter(new Treatment(base.toString()), new Treatment(subj.toString())));
 		RelativeEffect<?> expected = NetworkRelativeEffect.buildOddsRatio(summary.getMean(), summary.getStandardDeviation());

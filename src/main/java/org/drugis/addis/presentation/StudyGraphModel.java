@@ -30,24 +30,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.jgrapht.graph.ListenableUndirectedGraph;
 
 @SuppressWarnings("serial")
 public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.Vertex, StudyGraphModel.Edge> {
 	public static class Vertex {
-		private Drug d_drug;
+		private DrugSet d_drug;
 		private int d_sampleSize;
 		
-		public Vertex(Drug drug, int size) {
+		public Vertex(DrugSet drug, int size) {
 			d_drug = drug;
 			d_sampleSize = size;
 		}
 		
-		public Drug getDrug() {
+		public DrugSet getDrug() {
 			return d_drug;
 		}
 		
@@ -57,7 +57,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 				
 		@Override
 		public String toString() {
-			return d_drug.getName();
+			return d_drug.toString();
 		}
 	}
 	
@@ -82,11 +82,11 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		}
 	}
 	
-	protected ListHolder<Drug> d_drugs;
+	protected ListHolder<DrugSet> d_drugs;
 	private ListHolder<Study> d_studies;
 	private final ValueHolder<OutcomeMeasure> d_om;
 	
-	public StudyGraphModel(ListHolder<Study> studies, ListHolder<Drug> drugs, ValueHolder<OutcomeMeasure> om){
+	public StudyGraphModel(ListHolder<Study> studies, ListHolder<DrugSet> drugs, ValueHolder<OutcomeMeasure> om){
 		super(Edge.class);
 		
 		d_drugs = drugs;
@@ -105,7 +105,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	}
 	
 	public StudyGraphModel(ValueHolder<Indication> indication, ValueHolder<OutcomeMeasure> outcome, 
-			ListHolder<Drug> drugs, Domain domain) {
+			ListHolder<DrugSet> drugs, Domain domain) {
 		this(new DomainStudyListHolder(domain, indication, outcome), drugs, outcome);
 	}
 	
@@ -116,9 +116,9 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		removeAllEdges(edges);
 		removeAllVertices(verts);
 
-		List<Drug> drugs = d_drugs.getValue();
+		List<DrugSet> drugs = d_drugs.getValue();
 
-		for (Drug d : drugs) {
+		for (DrugSet d : drugs) {
 			addVertex(new Vertex(d, calculateSampleSize(d)));
 		}
 
@@ -132,7 +132,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		}
 	}
 
-	public Vertex findVertex(Drug drug) {
+	public Vertex findVertex(DrugSet drug) {
 		for (Vertex v : vertexSet()) {
 			if (v.getDrug().equals(drug)) {
 				return v;
@@ -142,7 +142,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		return null;
 	}
 
-	private int calculateSampleSize(Drug d) {
+	private int calculateSampleSize(DrugSet d) {
 		int n = 0;
 		for (Study s : getStudies(d)) {
 			n += s.getSampleSize();
@@ -154,25 +154,25 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	 * Return the list of drugs that are included in at least one of the studies having the correct indication
 	 * and outcome.
 	 */
-	public List<Drug> getDrugs() {
+	public List<DrugSet> getDrugs() {
 		return d_drugs.getValue();
 	}
 	
 	/**
 	 * Return the studies with the correct indication and outcome that compare the given drugs.
 	 */
-	public List<Study> getStudies(Drug a, Drug b) {
+	public List<Study> getStudies(DrugSet a, DrugSet b) {
 		return filter(b, getStudies(a));
 	}
 	
 	/**
 	 * Return the studies with the correct indication and outcome that include the given drug.
 	 */
-	public List<Study> getStudies(Drug a) {
-		return filter(a, d_studies.getValue());
+	public List<Study> getStudies(DrugSet d) {
+		return filter(d, d_studies.getValue());
 	}
 
-	private List<Study> filter(Drug d, List<Study> allStudies) {
+	private List<Study> filter(DrugSet d, List<Study> allStudies) {
 		List<Study> studies = new ArrayList<Study>();
 		for (Study s : allStudies) {
 			if (s.getMeasuredDrugs(d_om.getValue()).contains(d)) {

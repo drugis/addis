@@ -31,9 +31,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.analysis.DrugSet;
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.graph.UndirectedSubgraph;
@@ -41,17 +41,17 @@ import org.jgrapht.graph.UndirectedSubgraph;
 @SuppressWarnings("serial")
 public class SelectableStudyGraphModel extends StudyGraphModel {
 	
-	private ListHolder<Drug> d_selectedDrugs;
+	private ListHolder<DrugSet> d_selectedDrugs;
 
 	public SelectableStudyGraphModel(ValueHolder<Indication> indication,
-			ValueHolder<OutcomeMeasure> outcome, ListHolder<Drug> drugs,
+			ValueHolder<OutcomeMeasure> outcome, ListHolder<DrugSet> drugs,
 			Domain domain) {
 		super(indication, outcome, drugs, domain);
-		d_selectedDrugs = new DefaultListHolder<Drug>(new ArrayList<Drug>(d_drugs.getValue()));
+		d_selectedDrugs = new DefaultListHolder<DrugSet>(new ArrayList<DrugSet>(d_drugs.getValue()));
 		d_drugs.addValueChangeListener(new DrugsChangedListener());
 	}
 	
-	public ListHolder<Drug> getSelectedDrugsModel() {
+	public ListHolder<DrugSet> getSelectedDrugsModel() {
 		return d_selectedDrugs;
 	}
 	
@@ -60,7 +60,7 @@ public class SelectableStudyGraphModel extends StudyGraphModel {
 		
 		ConnectivityInspector<Vertex, Edge> inspectorGadget = new ConnectivityInspector<Vertex, Edge>(g);
 		Set<Vertex> connectedDrugs = inspectorGadget.connectedSetOf(this.findVertex(d_selectedDrugs.getValue().get(0)));
-		for (Drug d : d_selectedDrugs.getValue()) {
+		for (DrugSet d : d_selectedDrugs.getValue()) {
 			if (!connectedDrugs.contains(this.findVertex(d))) {
 				return false;
 			}
