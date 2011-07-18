@@ -483,9 +483,10 @@ implements ViewBuilder {
 	private JComponent buildNodeSplitResultsTable() {
 		NodeSplitResultsTableModel tableModel = new NodeSplitResultsTableModel(d_pm);
 		
-		EnhancedTable table = EnhancedTable.createWithSorterAndAutoSize(tableModel);
+		EnhancedTable table = EnhancedTable.createWithSorter(tableModel);
 		table.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
 		table.setDefaultRenderer(NodeSplitPValueSummary.class, new SummaryCellRenderer());
+		table.autoSizeColumns();
 		return new TablePanel(table);
 	}
 
@@ -517,7 +518,8 @@ implements ViewBuilder {
 
 	private JComponent buildConvergenceTable(final MixedTreatmentComparison mtc, ValueHolder<Boolean> modelConstructed) {
 		ConvergenceDiagnosticTableModel tableModel = new ConvergenceDiagnosticTableModel(mtc, modelConstructed);
-		EnhancedTable convergenceTable = EnhancedTable.createWithSorterAndAutoSize(tableModel);
+		EnhancedTable convergenceTable = EnhancedTable.createWithSorter(tableModel);
+		convergenceTable.autoSizeColumns();
 		TablePanel pane = new TablePanel(convergenceTable);
 	
 		convergenceTable.addMouseListener(new MouseAdapter() {

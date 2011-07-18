@@ -54,8 +54,9 @@ public class StudyBenefitRiskView extends AbstractBenefitRiskView<StudyBenefitRi
 
 		builder.add(AuxComponentFactory.createHtmlField("Measurements: incidence approximated with Beta-distribution, or continuous variables approximated with a Normal distribution."),
 				cc.xy(1, 1));
-		EnhancedTable table = EnhancedTable.createWithSorterAndAutoSize(((StudyBenefitRiskPresentation) d_pm).getMeasurementTableModel());
+		EnhancedTable table = EnhancedTable.createWithSorter(((StudyBenefitRiskPresentation) d_pm).getMeasurementTableModel());
 		table.setDefaultRenderer(Distribution.class, new DistributionQuantileCellRenderer());
+		table.autoSizeColumns();
 		builder.add(new TablePanel(table), cc.xy(1, 3));
 
 		return builder.getPanel();

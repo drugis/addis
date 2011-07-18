@@ -33,7 +33,6 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.AdverseEvent;
@@ -43,12 +42,12 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.gui.AddisWindow;
-import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.NoteViewButton;
 import org.drugis.addis.gui.RelativeEffectTableDialog;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.MeasurementCellRenderer;
+import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.MeanDifferenceTableModel;
 import org.drugis.addis.presentation.OddsRatioTableModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -131,20 +130,19 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 		
 			EnhancedTable measurementTable = null;
 			if (d_type == Endpoint.class) {
-				measurementTable = EnhancedTable.createWithSorterAndAutoSize(d_model.getEndpointTableModel());
+				measurementTable = EnhancedTable.createWithSorter(d_model.getEndpointTableModel());
 			} else if (d_type == AdverseEvent.class) {
-				measurementTable = EnhancedTable.createWithSorterAndAutoSize(d_model.getAdverseEventTableModel());
+				measurementTable = EnhancedTable.createWithSorter(d_model.getAdverseEventTableModel());
 			} else if (d_type == PopulationCharacteristic.class) {
-				measurementTable = EnhancedTable.createWithSorterAndAutoSize(d_model.getPopulationCharTableModel());
+				measurementTable = EnhancedTable.createWithSorter(d_model.getPopulationCharTableModel());
 			}
 			measurementTable.setSortingStatus(0, TableSorter.ASCENDING);
 			measurementTable.setDefaultRenderer(MissingMeasurementPresentation.class, new MeasurementCellRenderer());
+			measurementTable.autoSizeColumns();
 
-			builder.add(AuxComponentFactory.createUnscrollableTablePanel(measurementTable),	cc.xyw(1, row, 5));
+			builder.add(new TablePanel(measurementTable), cc.xyw(1, row, 5));
 		}
-		JScrollPane sp = new JScrollPane(builder.getPanel());
-		sp.setSize(builder.getPanel().getSize());
-		return sp;
+		return builder.getPanel();
 	}
 
 	private JButton createOddsRatioButton(OutcomeMeasure om) {

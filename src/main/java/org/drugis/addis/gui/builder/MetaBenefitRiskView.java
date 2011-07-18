@@ -163,8 +163,9 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		builder.add(AuxComponentFactory.createHtmlField("Relative measurements: log odds-ratio or mean difference, with "
 				+ d_pm.getBaseline() +" as the common comparator."),cc.xy(1, row));
 		row += 2;
-		EnhancedTable table = EnhancedTable.createWithSorterAndAutoSize(d_pm.getRelativeMeasurementTableModel());
+		EnhancedTable table = EnhancedTable.createWithSorter(d_pm.getRelativeMeasurementTableModel());
 		table.setDefaultRenderer(Distribution.class, new DistributionParameterCellRenderer());
+		table.autoSizeColumns();
 		builder.add(new TablePanel(table), cc.xy(1, row));
 		row += 2;
 
@@ -174,8 +175,9 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 				d_pm.getBaseline() + ". The method used to derive the assumed odds or mean are heuristic, "
 				+ "and these values should be interpreted with care."), cc.xy(1, row));
 		row += 2;
-		EnhancedTable table2 = EnhancedTable.createWithSorterAndAutoSize(d_pm.getBaselineMeasurementTableModel());
+		EnhancedTable table2 = EnhancedTable.createWithSorter(d_pm.getBaselineMeasurementTableModel());
 		table2.setDefaultRenderer(Distribution.class, new DistributionParameterCellRenderer());
+		table2.autoSizeColumns();
 		builder.add(new TablePanel(table2), cc.xy(1, row));
 		row += 2;
 		
@@ -184,8 +186,9 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		builder.add(AuxComponentFactory.createHtmlField("Measurements: incidence approximated with logit-Normal distribution, or continuous variables approximated with a Normal distribution."),
 				cc.xy(1, row));
 		row += 2;
-		EnhancedTable table3 = EnhancedTable.createWithSorterAndAutoSize(d_pm.getMeasurementTableModel());
+		EnhancedTable table3 = EnhancedTable.createWithSorter(d_pm.getMeasurementTableModel());
 		table3.setDefaultRenderer(Distribution.class, new DistributionQuantileCellRenderer());
+		table3.autoSizeColumns();
 		builder.add(new TablePanel(table3), cc.xy(1, row));
 		row += 2;
 		

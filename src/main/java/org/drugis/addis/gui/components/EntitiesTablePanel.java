@@ -39,7 +39,7 @@ public class EntitiesTablePanel extends TablePanel {
 	private final ListHolder<? extends Entity> d_entities;
 
 	public EntitiesTablePanel(List<String> formatter, ListHolder<? extends Entity> entities, final AddisWindow parent, PresentationModelFactory pmf) {
-		super(EnhancedTable.createWithSorterAndAutoSize(new EntityTableModel(entities, formatter, pmf)));
+		super(createTable(formatter, entities, pmf));
 		d_entities = entities;
 				
 		if (parent != null)
@@ -55,5 +55,11 @@ public class EntitiesTablePanel extends TablePanel {
 				}
 			}
 		});
+	}
+
+	private static EnhancedTable createTable(List<String> formatter, ListHolder<? extends Entity> entities, PresentationModelFactory pmf) {
+		EnhancedTable createWithSorter = EnhancedTable.createWithSorter(new EntityTableModel(entities, formatter, pmf));
+		createWithSorter.autoSizeColumns();
+		return createWithSorter;
 	}
 }

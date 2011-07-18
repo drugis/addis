@@ -79,8 +79,7 @@ public class DrugView implements ViewBuilder{
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural()
 							 + " measuring this "
 							 + CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class).getSingular() , cc.xy(1, 5));
-		builder.add(buildStudiesComp(), 
-				cc.xy(1, 7));
+		builder.add(buildStudiesComp(), cc.xy(1, 7));
 				
 		return builder.getPanel();	
 	}
