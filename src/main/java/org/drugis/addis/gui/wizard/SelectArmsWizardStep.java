@@ -34,11 +34,11 @@ import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.CombinationTreatment;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
-import org.drugis.addis.entities.TreatmentActivity;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.StudyGraphModel;
@@ -123,9 +123,9 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 	private void updateDrugAndDoseLabel(Study curStudy, JComboBox drugBox, JLabel drugAndDoseLabel) {
 		StudyActivity sa = curStudy.getStudyActivityAt((Arm) drugBox.getSelectedItem(), curStudy.findTreatmentEpoch());
 		Activity activity = sa.getActivity();
-		TreatmentActivity ta = (activity instanceof TreatmentActivity) ? 
-				 (TreatmentActivity)activity : 
-				 ((CombinationTreatment)activity).getTreatments().get(0);
+		DrugTreatment ta = (activity instanceof DrugTreatment) ? 
+				 (DrugTreatment)activity : 
+				 ((TreatmentActivity)activity).getTreatments().get(0);
 		drugAndDoseLabel.setText(ta.getDrug().getName() + " (" + ta.getDose() + ")");
 	}
 }

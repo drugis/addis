@@ -30,14 +30,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.Activity;
-import org.drugis.addis.entities.CombinationTreatment;
+import org.drugis.addis.entities.DrugTreatment;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.StudyActivity;
-import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.presentation.AbstractListHolder;
-import org.drugis.addis.presentation.CombinationTreatmentPresentation;
 import org.drugis.addis.presentation.TreatmentActivityPresentation;
 import org.drugis.addis.presentation.ValueHolder;
 
@@ -59,7 +58,7 @@ public class StudyActivityPresentation {
 					firePropertyChange("value", null, getValue());
 				}
 			};
-			d_treatmentModel.getBean().addPropertyChangeListener(listener);
+			d_treatmentModel.addPropertyChangeListener(listener);
 			d_newActivity.addPropertyChangeListener(listener);
 		}
 		@Override
@@ -77,11 +76,10 @@ public class StudyActivityPresentation {
 	private StudyActivity d_newActivity;
 	private ValueModel d_nameHolder;
 	private ValueModel d_activityHolder;
-	private TreatmentActivityPresentation d_treatmentModel;
 	private List<Activity> d_activityOptions;
 	private ValueHolder<Boolean> d_valid;
 	private AbstractListHolder<Drug> d_drugOptions;
-	private CombinationTreatmentPresentation d_combinationModel;
+	private TreatmentActivityPresentation d_treatmentModel;
 
 	public StudyActivityPresentation(ObservableList<StudyActivity> activityList, AbstractListHolder<Drug> drugOptions) {
 		this (activityList, drugOptions, null);
@@ -96,12 +94,9 @@ public class StudyActivityPresentation {
 		d_nameHolder = new PropertyAdapter<StudyActivity>(d_newActivity, StudyActivity.PROPERTY_NAME, true);
 		d_activityHolder = new PropertyAdapter<StudyActivity>(d_newActivity, StudyActivity.PROPERTY_ACTIVITY, true);
 		d_activityOptions = new ArrayList<Activity>(Arrays.asList(PredefinedActivity.values()));
-		TreatmentActivity initialTreatment = getInitialTreatment();
-		d_activityOptions.add(initialTreatment);
-	    CombinationTreatment initialCombination = getInitialCombination();
-	    d_activityOptions.add(initialCombination);
+	    TreatmentActivity initialTreatment = getInitialTreatment();
+	    d_activityOptions.add(initialTreatment);
 		d_treatmentModel = new TreatmentActivityPresentation(initialTreatment);
-		d_combinationModel = new CombinationTreatmentPresentation(initialCombination);
 		d_valid = new ValidModel();
 		PropertyChangeListener listener = new PropertyChangeListener() {
 			@Override
@@ -111,8 +106,7 @@ public class StudyActivityPresentation {
 		};
 		if (!isEditing()) {
 			d_activityHolder.addValueChangeListener(listener);
-			d_treatmentModel.addBeanPropertyChangeListener(listener);
-			d_combinationModel.addPropertyChangeListener(listener);
+			d_treatmentModel.addPropertyChangeListener(listener);
 		}
 	}
 
@@ -136,15 +130,7 @@ public class StudyActivityPresentation {
 		if (d_newActivity.getActivity() instanceof TreatmentActivity) {
 			return (TreatmentActivity) d_newActivity.getActivity();
 		} else {
-			return new TreatmentActivity(null, null);
-		}
-	}
-	
-	private CombinationTreatment getInitialCombination() {
-		if (d_newActivity.getActivity() instanceof CombinationTreatment) {
-			return (CombinationTreatment) d_newActivity.getActivity();
-		} else {
-			return new CombinationTreatment();
+			return new TreatmentActivity(new DrugTreatment(null, null));
 		}
 	}
 	
@@ -180,15 +166,8 @@ public class StudyActivityPresentation {
 		return d_activityOptions;
 	}
 	
-	/**
-	 * The presentation model for the treatment activity.
-	 */
 	public TreatmentActivityPresentation getTreatmentModel() {
 		return d_treatmentModel;
-	}
-	
-	public CombinationTreatmentPresentation getCombinationTreatmentModel() {
-		return d_combinationModel;
 	}
 	
 	
@@ -214,13 +193,8 @@ public class StudyActivityPresentation {
 	}
 	
 	private void updateName() {
-		if (d_activityHolder.getValue() instanceof TreatmentActivity) {
-			Object drug = d_treatmentModel.getModel(TreatmentActivity.PROPERTY_DRUG).getValue();
-			if (drug != null) {
-				d_nameHolder.setValue(drug.toString());
-			}
-		} else if(d_activityHolder.getValue() instanceof CombinationTreatment) {
-			d_newActivity.setName(d_combinationModel.getName());
+		if(d_activityHolder.getValue() instanceof TreatmentActivity) {
+			d_newActivity.setName(d_treatmentModel.getName());
 		} else if (d_activityHolder.getValue() != null) {
 			d_newActivity.setName(d_activityHolder.getValue().toString());
 		}

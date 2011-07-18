@@ -648,7 +648,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private boolean isTreatmentEpoch(Epoch epoch) {
 		for (Arm arm : d_arms) {
 			StudyActivity sa = getStudyActivityAt(arm, epoch);
-			if (sa == null || (!(sa.getActivity() instanceof TreatmentActivity) && !(sa.getActivity() instanceof CombinationTreatment))) {
+			if (sa == null || (!(sa.getActivity() instanceof DrugTreatment) && !(sa.getActivity() instanceof TreatmentActivity))) {
 				return false;
 			}
 		}
@@ -674,20 +674,23 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 
 	public Drug getDrug(Arm arm) {
 		Activity activity = getActivity(arm);
-		if (activity instanceof TreatmentActivity) {
-			return ((TreatmentActivity) activity).getDrug();
-		} else if(activity instanceof CombinationTreatment) {
-			return ((CombinationTreatment)activity).getTreatments().get(0).getDrug();
+		if (activity instanceof DrugTreatment) {
+			return ((DrugTreatment) activity).getDrug();
+		} else if(activity instanceof TreatmentActivity) {
+			return ((TreatmentActivity)activity).getTreatments().get(0).getDrug();
 		}
 		return null;
 	}
 	
+	@Deprecated
 	public AbstractDose getDose(Arm arm) {
-		return getTreatment(arm) == null ? null : getTreatment(arm).getDose();
+		return getTreatment(arm) == null ? null : getTreatment(arm).getTreatments().get(0).getDose();
 	}
 
+	@Deprecated
 	public void setDrug(Arm arm, Drug drug) {
-		getTreatment(arm).setDrug(drug);
+		ObservableList<DrugTreatment> treatments = getTreatment(arm).getTreatments();
+		treatments.get(0).setDrug(drug);
 	}
 
 	public boolean deepEquals(Entity obj) {
@@ -745,7 +748,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	public Arm createAndAddArm(String name, Integer size, Drug drug, AbstractDose dose) {
 		Arm arm = new Arm(name, size);
 		getArms().add(arm);
-		StudyActivity studyActivity = new StudyActivity(name + " treatment", new TreatmentActivity(drug, dose));
+		StudyActivity studyActivity = new StudyActivity(name + " treatment", new TreatmentActivity(new DrugTreatment(drug, dose)));
 		getStudyActivities().add(studyActivity);
 		if (getEpochs().isEmpty()) {
 			getEpochs().add(new Epoch("Main phase", null));

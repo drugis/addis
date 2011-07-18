@@ -58,7 +58,7 @@ public class StudyActivityTest {
 		d_epoch = new Epoch("Main phase", DatatypeFactory.newInstance().newDuration("PT5H"));
 		d_arm = new Arm("Group", 12);
 		d_fluoxetine = new Drug("Fluoxetine", null);
-		Activity treatment = new TreatmentActivity(d_fluoxetine, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));
+		Activity treatment = new TreatmentActivity(new DrugTreatment(d_fluoxetine, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY)));
 		d_main = new StudyActivity("treatment", treatment);
 	}
 
@@ -155,9 +155,9 @@ public class StudyActivityTest {
 		assertFalse(d_undefined.isComplete());
 		assertTrue(d_randomization.isComplete());
 		assertTrue(d_main.isComplete());
-		d_main.setActivity(new TreatmentActivity(null, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY)));
+		d_main.setActivity(new TreatmentActivity(new DrugTreatment(null, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY))));
 		assertFalse(d_main.isComplete());
-		d_main.setActivity(new TreatmentActivity(d_fluoxetine, null));		
+		d_main.setActivity(new TreatmentActivity(new DrugTreatment(d_fluoxetine, null)));		
 		assertFalse(d_main.isComplete());
 	}
 	

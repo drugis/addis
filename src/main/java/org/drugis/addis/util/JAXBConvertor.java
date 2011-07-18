@@ -58,7 +58,7 @@ import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.CharacteristicsMap;
-import org.drugis.addis.entities.CombinationTreatment;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
@@ -82,7 +82,7 @@ import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.StudyArmsEntry;
-import org.drugis.addis.entities.TreatmentActivity;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
@@ -113,7 +113,6 @@ import org.drugis.addis.entities.data.ContinuousMeasurement;
 import org.drugis.addis.entities.data.ContinuousVariable;
 import org.drugis.addis.entities.data.DateWithNotes;
 import org.drugis.addis.entities.data.DrugReferences;
-import org.drugis.addis.entities.data.DrugTreatment;
 import org.drugis.addis.entities.data.Drugs;
 import org.drugis.addis.entities.data.Endpoints;
 import org.drugis.addis.entities.data.IdReference;
@@ -426,13 +425,13 @@ public class JAXBConvertor {
 		org.drugis.addis.entities.data.Activity converted = new org.drugis.addis.entities.data.Activity();
 		if (activity instanceof PredefinedActivity) {
 			converted.setPredefined((PredefinedActivity) activity);
-		} else if (activity instanceof TreatmentActivity){
-			DrugTreatment dt = convertTreatmentActivity((TreatmentActivity) activity);
+		} else if (activity instanceof DrugTreatment){
+			org.drugis.addis.entities.data.DrugTreatment dt = convertTreatmentActivity((DrugTreatment) activity);
 			Treatment treatment = new org.drugis.addis.entities.data.Treatment();
-			treatment.getTreatment().add(dt);
+			treatment.getDrugTreatment().add(dt);
 			converted.setTreatment(treatment);
-		} else if (activity instanceof CombinationTreatment){
-			converted.setTreatment(convertCombinationTreatment((CombinationTreatment) activity));
+		} else if (activity instanceof TreatmentActivity){
+			converted.setTreatment(convertCombinationTreatment((TreatmentActivity) activity));
 		} else {
 			throw new ConversionException("Unknown Activity type " + activity);
 		}
@@ -457,7 +456,7 @@ public class JAXBConvertor {
 		return aub;
 	}
 
-	static TreatmentActivity convertDrugTreatment(org.drugis.addis.entities.data.DrugTreatment t, Domain domain) throws ConversionException {
+	static DrugTreatment convertDrugTreatment(org.drugis.addis.entities.data.DrugTreatment t, Domain domain) throws ConversionException {
 		Drug drug = findDrug(domain, t.getDrug().getName());
 		AbstractDose dose;
 		if (t.getFixedDose() != null) {
@@ -467,20 +466,20 @@ public class JAXBConvertor {
 		} else {
 			throw new ConversionException("Unknown dose type " + t );
 		}
-		TreatmentActivity newT = new TreatmentActivity(drug, dose);
+		DrugTreatment newT = new DrugTreatment(drug, dose);
 		return newT;
 	}
 	
 	
 	static Activity convertTreatmentActivity(org.drugis.addis.entities.data.Treatment treatment, Domain domain) throws ConversionException {
-		CombinationTreatment newCombinationTreatment = new CombinationTreatment();
-		for(org.drugis.addis.entities.data.DrugTreatment ct : treatment.getTreatment()) {
+		TreatmentActivity newCombinationTreatment = new TreatmentActivity();
+		for(org.drugis.addis.entities.data.DrugTreatment ct : treatment.getDrugTreatment()) {
 			newCombinationTreatment.getTreatments().add(convertDrugTreatment(ct, domain));
 		}
 		return newCombinationTreatment;
 	}
 	
-	private static org.drugis.addis.entities.data.DrugTreatment convertTreatmentActivity(TreatmentActivity ta)  throws ConversionException {
+	private static org.drugis.addis.entities.data.DrugTreatment convertTreatmentActivity(DrugTreatment ta)  throws ConversionException {
 		org.drugis.addis.entities.data.DrugTreatment t = new org.drugis.addis.entities.data.DrugTreatment();
 		t.setDrug(nameReference(ta.getDrug().getName()));
 		if (ta.getDose() instanceof FixedDose) {
@@ -494,10 +493,10 @@ public class JAXBConvertor {
 	}
 	
 
-	private static org.drugis.addis.entities.data.Treatment convertCombinationTreatment(CombinationTreatment activity) throws ConversionException {
+	private static org.drugis.addis.entities.data.Treatment convertCombinationTreatment(TreatmentActivity activity) throws ConversionException {
 		org.drugis.addis.entities.data.Treatment ct = new org.drugis.addis.entities.data.Treatment();
-		for(TreatmentActivity ta : activity.getTreatments()) {
-			ct.getTreatment().add(convertTreatmentActivity(ta));
+		for(DrugTreatment ta : activity.getTreatments()) {
+			ct.getDrugTreatment().add(convertTreatmentActivity(ta));
 		}
 		return ct;
 	}

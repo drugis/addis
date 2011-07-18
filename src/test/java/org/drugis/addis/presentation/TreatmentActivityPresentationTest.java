@@ -25,83 +25,58 @@
 package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
+import java.beans.PropertyChangeListener;
+
+import org.drugis.addis.entities.TreatmentActivity;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.SIUnit;
-import org.drugis.addis.entities.TreatmentActivity;
+import org.drugis.addis.presentation.TreatmentActivityPresentation;
 import org.drugis.common.Interval;
+import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.easymock.EasyMock.verify;
+
 public class TreatmentActivityPresentationTest {
-	private TreatmentActivity d_activity;
+
+	private TreatmentActivity d_combTreatment;
 	private TreatmentActivityPresentation d_pm;
 
 	@Before
 	public void setUp() {
-		d_activity = new TreatmentActivity(null, null);
-		d_pm = new TreatmentActivityPresentation(d_activity);
+		d_combTreatment = new TreatmentActivity();
+		d_combTreatment.addTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY));
+		d_combTreatment.addTreatment(new Drug("Paroxetine", "N062"), new FlexibleDose(new Interval<Double>(3.0, 7.0), SIUnit.MILLIGRAMS_A_DAY));
+		d_pm = new TreatmentActivityPresentation(d_combTreatment);
 	}
 	
 	@Test
-	public void testFixedDoseModelInitialValues() {
-		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		d_activity.setDose(dose);
-		assertEquals(dose.getQuantity(), d_pm.getDoseModel().getMinModel().getValue());
-		assertEquals(dose.getQuantity(), d_pm.getDoseModel().getMaxModel().getValue());
+	public void testName() {
+		assertEquals("Fluoxetine + Paroxetine", d_pm.getName());
+		d_pm.getBean().getTreatments().get(0).setDrug(null);
+		assertEquals("MISSING + Paroxetine", d_pm.getName());
 	}
-		
+
 	@Test
-	public void testFlexibleDoseModelInitialValues() {
-		FlexibleDose dose = new FlexibleDose(new Interval<Double>(25.5, 30.2), SIUnit.MILLIGRAMS_A_DAY);
-		d_activity.setDose(dose);
-		assertEquals(dose.getFlexibleDose().getLowerBound(), d_pm.getDoseModel().getMinModel().getValue());
-		assertEquals(dose.getFlexibleDose().getUpperBound(), d_pm.getDoseModel().getMaxModel().getValue());
+	public void testDrugChangeFiresNameChange() {
+		PropertyChangeListener mocklistener = 
+			JUnitUtil.mockListener(d_pm, TreatmentActivityPresentation.PROPERTY_NAME, null, "MISSING + Paroxetine");
+		d_pm.addPropertyChangeListener(mocklistener);
+		d_pm.getBean().getTreatments().get(0).setDrug(null);
+		verify(mocklistener);
 	}
 	
 	@Test
-	public void testFixedToFlexible() {
-		FixedDose dose = new FixedDose(25.5, SIUnit.MILLIGRAMS_A_DAY);
-		d_activity.setDose(dose);
-		d_pm.getDoseModel().getMaxModel().setValue(dose.getQuantity() + 2);
-		assertTrue(d_pm.getBean().getDose() instanceof FlexibleDose);
+	public void testListChangeFiresNameChange() {
+		PropertyChangeListener mocklistener = 
+			JUnitUtil.mockListener(d_pm, TreatmentActivityPresentation.PROPERTY_NAME, null, "Fluoxetine");
+		d_pm.addPropertyChangeListener(mocklistener);
+		d_pm.getBean().getTreatments().remove(1);
+		verify(mocklistener);
 	}
 	
-	@Test
-	public void testFlexibleToFixed() {
-		FlexibleDose dose = new FlexibleDose(new Interval<Double>(25.5, 30.2), SIUnit.MILLIGRAMS_A_DAY);
-		d_activity.setDose(dose);
-		d_pm.getDoseModel().getMaxModel().setValue(dose.getFlexibleDose().getLowerBound());
-		assertTrue(d_pm.getBean().getDose() instanceof FixedDose);
-	}
-	
-	@Test
-	public void testSetMaxLowerThanMinDose() {
-		FlexibleDose dose = new FlexibleDose(new Interval<Double>(10.0,20.0), SIUnit.MILLIGRAMS_A_DAY);
-		d_activity.setDose(dose);
-		d_pm.getDoseModel().getMaxModel().setValue(8d);
-		assertEquals(8d, d_pm.getDoseModel().getMaxModel().doubleValue(), 0.001);
-		assertEquals(8d, d_pm.getDoseModel().getMinModel().doubleValue(), 0.001);
-		assertTrue(d_pm.getBean().getDose() instanceof FixedDose);
-	}
-	
-	@Test
-	public void testSetMinHigherThanMaxDose() {
-		FlexibleDose dose = new FlexibleDose(new Interval<Double>(10.0,20.0), SIUnit.MILLIGRAMS_A_DAY);
-		d_activity.setDose(dose);
-		d_pm.getDoseModel().getMinModel().setValue(25d);
-		assertEquals(25d, d_pm.getDoseModel().getMaxModel().doubleValue(), 0.001);
-		assertEquals(25d, d_pm.getDoseModel().getMinModel().doubleValue(), 0.001);
-		assertTrue(d_pm.getBean().getDose() instanceof FixedDose);
-	}
-	
-	@Test
-	public void testSetUnit() {
-		FlexibleDose dose = new FlexibleDose(new Interval<Double>(10.0,20.0), null);
-		d_activity.setDose(dose);
-		d_pm.getDoseModel().getUnitModel().setValue(SIUnit.MILLIGRAMS_A_DAY);
-		assertEquals(SIUnit.MILLIGRAMS_A_DAY, d_pm.getBean().getDose().getUnit());
-	}
 }

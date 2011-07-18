@@ -35,8 +35,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.entities.Activity;
-import org.drugis.addis.entities.CombinationTreatment;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.PredefinedActivity;
@@ -57,7 +57,7 @@ public class StudyActivityPresentationTest {
 	private StudyActivity d_activity;
 	private Drug d_drug;
 	private FixedDose d_dose;
-	private TreatmentActivity d_treatment;
+	private DrugTreatment d_treatment;
 	private StudyActivity d_treatmentActivity;
 
 	@Before
@@ -67,8 +67,8 @@ public class StudyActivityPresentationTest {
 		
 		d_drug = new Drug("Fluoxetine", "SomeCode");
 		d_dose = new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY);
-		d_treatment = new TreatmentActivity(d_drug, d_dose);
-		d_treatmentActivity = new StudyActivity("Treatment", d_treatment);
+		d_treatment = new DrugTreatment(d_drug, d_dose);
+		d_treatmentActivity = new StudyActivity("Treatment", new TreatmentActivity(d_treatment));
 	}
 	
 	@Test
@@ -99,19 +99,19 @@ public class StudyActivityPresentationTest {
 	public void testTreatmentModel() {
 		// Test empty initialization
 		StudyActivityPresentation pm1 = new StudyActivityPresentation(d_emptyList, null, d_activity);
-		assertEquals(new TreatmentActivity(null, null), pm1.getTreatmentModel().getBean());
+		assertEquals(new TreatmentActivity(new DrugTreatment(null, null)), pm1.getTreatmentModel().getBean());
 
-		pm1.getTreatmentModel().getModel(TreatmentActivity.PROPERTY_DRUG).setValue(d_drug);
-		assertEquals(new TreatmentActivity(d_drug, null), pm1.getTreatmentModel().getBean());
+		pm1.getTreatmentModel().getTreatmentModels().get(0).getModel(DrugTreatment.PROPERTY_DRUG).setValue(d_drug);
+		assertEquals(new TreatmentActivity(new DrugTreatment(d_drug, null)), pm1.getTreatmentModel().getBean());
 
-		StudyActivity activity = new StudyActivity("Treatment", d_treatment);
+		StudyActivity activity = new StudyActivity("Treatment", new TreatmentActivity(d_treatment));
 		StudyActivityPresentation pm2 = new StudyActivityPresentation(d_emptyList, null, activity);
-		assertEquals(d_treatment, pm2.getTreatmentModel().getBean());
+		assertEquals(new TreatmentActivity(d_treatment), pm2.getTreatmentModel().getBean());
 		
 		// Test changes persist and proper cloning
-		pm2.getTreatmentModel().getModel(TreatmentActivity.PROPERTY_DRUG).setValue(null);
-		assertEquals(new TreatmentActivity(null, d_dose), pm2.getTreatmentModel().getBean());
-		JUnitUtil.assertNotEquals(new TreatmentActivity(null, d_dose), d_treatment);
+		pm2.getTreatmentModel().getTreatmentModels().get(0).getModel(DrugTreatment.PROPERTY_DRUG).setValue(null);
+		assertEquals(new TreatmentActivity(new DrugTreatment(null, d_dose)), pm2.getTreatmentModel().getBean());
+		JUnitUtil.assertNotEquals(new DrugTreatment(null, d_dose), d_treatment);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -120,31 +120,28 @@ public class StudyActivityPresentationTest {
 		// Test empty initialization
 		StudyActivityPresentation pm1 = new StudyActivityPresentation(d_emptyList, null, d_activity);
 		List<Activity> list = new ArrayList<Activity>(Arrays.asList(PredefinedActivity.values()));
-		list.add(new TreatmentActivity(null, null));
-		list.add(new CombinationTreatment());
+		list.add(new TreatmentActivity(new DrugTreatment(null, null)));
 		assertEquals(list, pm1.getActivityOptions());
 		
 		// Test initialization with treatment
-		StudyActivity activity = new StudyActivity("Treatment", d_treatment);
+		StudyActivity activity = new StudyActivity("Treatment", new TreatmentActivity(d_treatment));
 		StudyActivityPresentation pm2 = new StudyActivityPresentation(d_emptyList, null, activity);
 		list = new ArrayList<Activity>(Arrays.asList(PredefinedActivity.values()));
-		list.add(d_treatment);
-		list.add(new CombinationTreatment());
+		list.add(new TreatmentActivity(d_treatment));
 		assertEquals(list, pm2.getActivityOptions());
 
 		// Changing the TreatmentActivity in the PM should affect the option list
-		pm2.getTreatmentModel().getBean().setDrug(null);
+		pm2.getTreatmentModel().getTreatmentModels().get(0).getBean().setDrug(null);
 		d_treatment.setDrug(null);
 		assertEquals(list, pm2.getActivityOptions());
 
 		// Test initialization with combination treatment
-		CombinationTreatment ct = new CombinationTreatment();
+		TreatmentActivity ct = new TreatmentActivity();
 		ct.getTreatments().add(d_treatment);
-		ct.getTreatments().add(new TreatmentActivity(new Drug("Fluoxeparatinose", "secret"), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY)));
-		StudyActivity activity2 = new StudyActivity("Combination treatment", ct);
+		ct.getTreatments().add(new DrugTreatment(new Drug("Fluoxeparatinose", "secret"), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY)));
+		StudyActivity activity2 = new StudyActivity("Treatment", ct);
 		StudyActivityPresentation pm3 = new StudyActivityPresentation(d_emptyList, null, activity2);
 		list = new ArrayList<Activity>(Arrays.asList(PredefinedActivity.values()));
-		list.add(new TreatmentActivity(null, null));
 		list.add(ct);
 		assertEquals(list, pm3.getActivityOptions());
 
@@ -177,7 +174,7 @@ public class StudyActivityPresentationTest {
 		StudyActivityPresentation pm1 = new StudyActivityPresentation(d_emptyList, null, d_treatmentActivity);
 		PropertyChangeListener mockListener = JUnitUtil.mockListener(pm1.getValidModel(), "value", null, true);
 		pm1.getValidModel().addValueChangeListener(mockListener);
-		pm1.getTreatmentModel().getBean().setDrug(d_drug);
+		pm1.getTreatmentModel().getTreatmentModels().get(0).getBean().setDrug(d_drug);
 		verify(mockListener);
 		pm1.getValidModel().removeValueChangeListener(mockListener);
 		
@@ -233,9 +230,9 @@ public class StudyActivityPresentationTest {
 	public void testUpdateNameDrugChange() {
 		StudyActivityPresentation pm1 = new StudyActivityPresentation(d_emptyList, null);
 		pm1.getActivityModel().setValue(pm1.getTreatmentModel().getBean());
-		PropertyChangeListener mockListener = JUnitUtil.mockListener(pm1.getNameModel(), "value", null, d_drug.toString());
+		PropertyChangeListener mockListener = JUnitUtil.mockListener(pm1.getNameModel(), "value", "MISSING", d_drug.toString());
 		pm1.getNameModel().addValueChangeListener(mockListener);
-		pm1.getTreatmentModel().getBean().setDrug(d_drug);
+		pm1.getTreatmentModel().getTreatmentModels().get(0).getBean().setDrug(d_drug);
 		assertEquals(d_drug.toString(), pm1.getNameModel().getValue());
 		verify(mockListener);
 	}

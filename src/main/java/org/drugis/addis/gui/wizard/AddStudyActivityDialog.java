@@ -39,15 +39,15 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 
-import org.drugis.addis.entities.CombinationTreatment;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.TreatmentActivity;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.builder.DoseView;
-import org.drugis.addis.presentation.TreatmentActivityPresentation;
+import org.drugis.addis.presentation.DrugTreatmentPresentation;
 import org.drugis.addis.presentation.wizard.StudyActivityPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OkCancelDialog;
@@ -130,9 +130,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 			@Override
 			public Component getListCellRendererComponent(JList list, Object value,
 					int index, boolean isSelected, boolean cellHasFocus) {
-				return renderer.getListCellRendererComponent(list, 
-						value instanceof TreatmentActivity ? "Treatment" : 
-							value instanceof CombinationTreatment ? "Combination Treatment" : value,
+				return renderer.getListCellRendererComponent(list, value instanceof TreatmentActivity ? "Treatment" : value,
 						index, isSelected, cellHasFocus);
 			}
 		});
@@ -140,13 +138,10 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		
 		// show or hide drug
 		if (d_pm.getActivityModel().getValue() instanceof TreatmentActivity) {
-			row = LayoutUtil.addRow(layout, row);
-			row = showDrug(builder, row, cc, d_pm.getTreatmentModel());
-		} else if (d_pm.getActivityModel().getValue() instanceof CombinationTreatment) {
-			final CombinationTreatment ct = (CombinationTreatment) d_pm.getActivityModel().getValue();
-			for(TreatmentActivity ta : ct.getTreatments()) {
+			final TreatmentActivity ct = (TreatmentActivity) d_pm.getActivityModel().getValue();
+			for(DrugTreatment ta : ct.getTreatments()) {
 				row = LayoutUtil.addRow(layout, row);
-				row = showDrug(builder, row, cc, d_pm.getCombinationTreatmentModel().getTreatmentModel(ta));
+				row = showDrug(builder, row, cc, d_pm.getTreatmentModel().getTreatmentModel(ta));
 			}
 			JButton addDrugBtn = new JButton("Add drug to treatment");
 			addDrugBtn.addActionListener(new ActionListener() {
@@ -177,7 +172,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		return scrollPane;
 	}
 
-	private int showDrug(PanelBuilder builder, int row, CellConstraints cc, final TreatmentActivityPresentation tap) {
+	private int showDrug(PanelBuilder builder, int row, CellConstraints cc, final DrugTreatmentPresentation tap) {
 		// add drug
 		builder.addSeparator("", cc.xyw(1, row, 5));
 		
@@ -186,7 +181,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		
 		builder.addLabel("Drug: ", cc.xy(1, row));
 		
-		final AbstractValueModel drugModel = tap.getModel(TreatmentActivity.PROPERTY_DRUG);
+		final AbstractValueModel drugModel = tap.getModel(DrugTreatment.PROPERTY_DRUG);
 		JComboBox drugSelect = AuxComponentFactory.createBoundComboBox(d_pm.getDrugOptions(), drugModel);
 		builder.add(drugSelect, cc.xy(3, row));
 		

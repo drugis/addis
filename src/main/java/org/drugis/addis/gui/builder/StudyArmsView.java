@@ -33,13 +33,13 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.CombinationTreatment;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.TreatmentActivity;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.gui.NoteViewButton;
 import org.drugis.addis.presentation.BasicArmPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.addis.presentation.TreatmentActivityPresentation;
+import org.drugis.addis.presentation.DrugTreatmentPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
@@ -98,18 +98,18 @@ public class StudyArmsView implements ViewBuilder {
 		
 		Activity activity = d_model.getBean().getActivity(a);
 		if (activity != null) {
-			if (activity instanceof TreatmentActivity) {
-				TreatmentActivity ta = (TreatmentActivity)activity;
-				TreatmentActivityPresentation activityModel = (TreatmentActivityPresentation)d_pmf.getModel(ta);
+			if (activity instanceof DrugTreatment) {
+				DrugTreatment ta = (DrugTreatment)activity;
+				DrugTreatmentPresentation activityModel = (DrugTreatmentPresentation)d_pmf.getModel(ta);
 				addTreatmentActivity(activityModel, builder, cc, row);
-			} else if (activity instanceof CombinationTreatment) {
-				CombinationTreatment ct = (CombinationTreatment)activity;
+			} else if (activity instanceof TreatmentActivity) {
+				TreatmentActivity ct = (TreatmentActivity)activity;
 				for(int i = 0; i < ct.getTreatments().getSize(); ++i) {
 					if(i > 0) {
 						row = LayoutUtil.addRow(layout, row);
 					}
-					TreatmentActivity ta = ct.getTreatments().get(i);
-					TreatmentActivityPresentation activityModel = (TreatmentActivityPresentation)d_pmf.getModel(ta);
+					DrugTreatment ta = ct.getTreatments().get(i);
+					DrugTreatmentPresentation activityModel = (DrugTreatmentPresentation)d_pmf.getModel(ta);
 					addTreatmentActivity(activityModel, builder, cc, row);
 				}
 			
@@ -119,16 +119,16 @@ public class StudyArmsView implements ViewBuilder {
 	}
 
 	private void addTreatmentActivity(
-			TreatmentActivityPresentation activityModel, PanelBuilder builder,
+			DrugTreatmentPresentation activityModel, PanelBuilder builder,
 			CellConstraints cc, int row) {
 		builder.add(
 				BasicComponentFactory.createLabel(
-						activityModel.getModel(TreatmentActivity.PROPERTY_DRUG),
+						activityModel.getModel(DrugTreatment.PROPERTY_DRUG),
 						new OneWayObjectFormat()),
 						cc.xy(5, row));
 		builder.add(
 				BasicComponentFactory.createLabel(
-						activityModel.getModel(TreatmentActivity.PROPERTY_DOSE),
+						activityModel.getModel(DrugTreatment.PROPERTY_DOSE),
 						new OneWayObjectFormat()),
 						cc.xy(7, row));
 	}

@@ -24,43 +24,87 @@
 
 package org.drugis.addis.entities;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.drugis.common.EqualsUtil;
 
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
+
 public class TreatmentActivity extends AbstractEntity implements Activity {
 
-	private Drug d_drug;
-
-	private AbstractDose d_dose;
-	public static final String PROPERTY_DRUG = "drug";
-	public static final String PROPERTY_DOSE = "dose";
-
-
-	public TreatmentActivity(Drug drug, AbstractDose dose) {
-		d_drug = drug;
-		d_dose = dose;
-	}
-
-	public Drug getDrug() {
-		return d_drug;
-	}
-
-	public void setDrug(Drug drug) {
-		Drug oldVal = d_drug;
-		d_drug = drug;
-		firePropertyChange(PROPERTY_DRUG, oldVal, d_drug);
+	public static final String PROPERTY_TREATMENTS = "treatments";
+	
+	private ObservableList<DrugTreatment> d_treatments = new ArrayListModel<DrugTreatment>();
+	
+	public TreatmentActivity() {
 	}
 	
-	public AbstractDose getDose() {
-		return d_dose;
+	public TreatmentActivity(DrugTreatment ta) {
+		d_treatments.add(ta);
+	}
+
+	@Override
+	public Set<? extends Entity> getDependencies() {
+		return new HashSet<Entity>(getDrugs());
+	}
+
+	@Override
+	public String getDescription() {
+		if(d_treatments.size() == 0) {
+			return "No treatments.";
+		}
+		String out = "Treatment (";
+		for(DrugTreatment t : d_treatments) {
+			out = out + t.getDescription().substring(t.getDescription().lastIndexOf('(') + 1, t.getDescription().lastIndexOf(')')) + "; " ;
+		}
+		return out.substring(0, out.length() - 2) + ")";	
+	}
+
+	public void addTreatment(Drug drug, AbstractDose dose) {
+		DrugTreatment ta = new DrugTreatment(drug, dose);
+		d_treatments.add(ta);
 	}
 	
-	public void setDose(AbstractDose dose) {
-		AbstractDose oldVal = d_dose;
-		d_dose = dose;
-		firePropertyChange(PROPERTY_DOSE, oldVal, d_dose);
+	@Override
+	protected TreatmentActivity clone() {
+		TreatmentActivity clone = new TreatmentActivity();
+		for(DrugTreatment t : d_treatments) {
+			clone.addTreatment(t.getDrug(),  t.getDose() == null ? null : t.getDose().clone());
+		}
+		return clone;
+	}
+	
+	public List<Drug> getDrugs() {
+		List<Drug> drugs = new ArrayList<Drug>();
+		for(DrugTreatment ta : d_treatments) {
+			drugs.add(ta.getDrug());
+		}
+		return drugs;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof TreatmentActivity) {
+			TreatmentActivity other = (TreatmentActivity) obj;
+			return EqualsUtil.equal(other.getTreatments(), getTreatments());
+		}
+		return false;	
+	}
+
+	public  List<AbstractDose> getDoses() {
+		List<AbstractDose> doses = new ArrayList<AbstractDose>();
+		for(DrugTreatment ta : d_treatments) {
+			doses.add(ta.getDose());
+		}
+		return doses;
+	}
+	
+	public ObservableList<DrugTreatment> getTreatments() {
+		return d_treatments;
 	}
 	
 	@Override
@@ -68,41 +112,12 @@ public class TreatmentActivity extends AbstractEntity implements Activity {
 		return getDescription();
 	}
 
-	@Override
-	public Set<Entity> getDependencies() {
-		return Collections.<Entity>singleton(d_drug);
-	}
-	
-	@Override
-	public TreatmentActivity clone() {
-		return new TreatmentActivity(d_drug, d_dose == null ? null : d_dose.clone());
-	}
-
-	public String getDescription() {
-		if(d_drug != null) {
-			return "Treatment (" + d_drug.getName() + ( d_dose == null ? "" : " " + d_dose.toString() ) + ")";
+	public boolean isComplete() {
+		for (DrugTreatment dt : getTreatments()) {
+			if (!dt.isComplete()) {
+				return false;
+			}
 		}
-		return "Treatment (undefined)";
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (obj != null && obj instanceof TreatmentActivity) {
-			TreatmentActivity other = (TreatmentActivity) obj;
-			return EqualsUtil.equal(other.getDrug(), getDrug()) && EqualsUtil.equal(other.getDose(), getDose());
-		}
-		return false;
-	}
-	
-	@Override
-	public int hashCode() {
-		return (d_drug != null ? d_drug.hashCode() : 0) * 31 + (d_dose != null ? d_dose.hashCode() : 0);
-	}
-	
-	/**
-	 * Deep equality and shallow equality are equivalent for this type.
-	 */
-	public boolean deepEquals(Entity other) {
-		return equals(other);
+		return true;
 	}
 }

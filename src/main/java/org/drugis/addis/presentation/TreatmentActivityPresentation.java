@@ -24,18 +24,87 @@
 
 package org.drugis.addis.presentation;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.TreatmentActivity;
 
 import com.jgoodies.binding.PresentationModel;
 
-@SuppressWarnings("serial")
 public class TreatmentActivityPresentation extends PresentationModel<TreatmentActivity> {
+	private static final long serialVersionUID = -3639230649100997570L;
+	
+	public static final String PROPERTY_NAME = "name";
 
-	public TreatmentActivityPresentation(TreatmentActivity bean) {
-		super(bean);
+	private PropertyChangeListener d_nameListener;
+
+	public TreatmentActivityPresentation(final TreatmentActivity ct) {
+		super(ct);
+
+		d_nameListener = new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getPropertyName().equals(DrugTreatment.PROPERTY_DRUG)) {
+					firePropertyChange(PROPERTY_NAME, null, getName());
+				}
+			}
+		};
+		
+		ct.getTreatments().addListDataListener(new ListDataListener() {
+		
+			@Override
+			public void intervalRemoved(ListDataEvent e) {
+				updateTreatmentListeners();
+				firePropertyChange(PROPERTY_NAME, null, getName());
+			}
+			
+			@Override
+			public void intervalAdded(ListDataEvent e) {
+				updateTreatmentListeners();
+				firePropertyChange(PROPERTY_NAME, null, getName());
+			}
+			
+			@Override
+			public void contentsChanged(ListDataEvent e) {
+				updateTreatmentListeners();
+				firePropertyChange(PROPERTY_NAME, null, getName());
+			}
+
+		});
+		updateTreatmentListeners();
 	}
 
-	public DosePresentation getDoseModel() {
-		return new DosePresentationImpl(this);
+	public DrugTreatmentPresentation getTreatmentModel(DrugTreatment ta) {
+		return new DrugTreatmentPresentation(ta);
 	}
+
+	public List<DrugTreatmentPresentation> getTreatmentModels() {
+		ArrayList<DrugTreatmentPresentation> arrayList = new ArrayList<DrugTreatmentPresentation>();
+		for (DrugTreatment dt : getBean().getTreatments()) {
+			arrayList.add(getTreatmentModel(dt));
+		}
+		return arrayList; 
+	}
+	
+	public String getName() {
+		String name = "";
+		for(DrugTreatment ta : getBean().getTreatments()) {
+			name += (ta.getDrug() == null ? "MISSING" : ta.getDrug()) + " + ";
+		}
+		return name.length() > 0 ? name.substring(0, name.length() - 3) : "";
+	}
+
+	private void updateTreatmentListeners() {
+		for(DrugTreatment ta : getBean().getTreatments()) {
+			ta.removePropertyChangeListener(d_nameListener);
+			ta.addPropertyChangeListener(d_nameListener);
+		}
+	}
+
 }

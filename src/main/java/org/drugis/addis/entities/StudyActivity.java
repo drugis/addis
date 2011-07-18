@@ -164,9 +164,7 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 		}
 		if (d_activity instanceof TreatmentActivity) {
 			TreatmentActivity ta = (TreatmentActivity) d_activity;
-			if(ta.getDrug() == null || ta.getDose() == null) {
-				return false;
-			}
+			return ta.isComplete();
 		}
 		return true;
 	}

@@ -35,9 +35,9 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.Activity;
-import org.drugis.addis.entities.CombinationTreatment;
-import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
+import org.drugis.addis.entities.StudyActivity;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.gui.components.EnhancedTableHeader;
 import org.drugis.addis.presentation.StudyActivitiesTableModel;
 import org.drugis.addis.presentation.StudyPresentation;
@@ -59,20 +59,20 @@ public class StudyDesignView implements ViewBuilder {
 			setSize(colModel.getColumn(column).getWidth(), 0);
 			if (value instanceof StudyActivity) {
 				StudyActivity sa = (StudyActivity) value;
-				if (sa.getActivity() instanceof CombinationTreatment) {
+				if (sa.getActivity() instanceof TreatmentActivity) {
 					String text = "<html>";
-					CombinationTreatment ct = (CombinationTreatment) sa.getActivity();
-					for (TreatmentActivity ta : ct.getTreatments()) {
+					TreatmentActivity ct = (TreatmentActivity) sa.getActivity();
+					for (DrugTreatment ta : ct.getTreatments()) {
 						text += formatTreatment(ta);
 					}
 					setText(text + "</html>");
-				} else if (sa.getActivity() instanceof TreatmentActivity) {
-					TreatmentActivity ta = (TreatmentActivity) sa.getActivity();
+				} else if (sa.getActivity() instanceof DrugTreatment) {
+					DrugTreatment ta = (DrugTreatment) sa.getActivity();
 					setText("<html>" + formatTreatment(ta) + "</html>");
-				} else if (sa.getActivity() instanceof CombinationTreatment) {
-					CombinationTreatment ct = (CombinationTreatment) sa.getActivity();
+				} else if (sa.getActivity() instanceof TreatmentActivity) {
+					TreatmentActivity ct = (TreatmentActivity) sa.getActivity();
 					String treatmentTxt = "";
-					for(TreatmentActivity ta : ct.getTreatments()) {
+					for(DrugTreatment ta : ct.getTreatments()) {
 						treatmentTxt += formatTreatment(ta) + "<br/>";
 					}
 					setText("<html>" + treatmentTxt + "</html>");
@@ -95,8 +95,8 @@ public class StudyDesignView implements ViewBuilder {
 		
 		for(StudyActivity sa : spm.getBean().getStudyActivities()) {
 			Activity activity = sa.getActivity();
-			if(activity instanceof CombinationTreatment) {
-				d_maxNDrugsInCombination = Math.max(d_maxNDrugsInCombination, ((CombinationTreatment) activity).getTreatments().getSize());
+			if(activity instanceof TreatmentActivity) {
+				d_maxNDrugsInCombination = Math.max(d_maxNDrugsInCombination, ((TreatmentActivity) activity).getTreatments().getSize());
 			}
 		}
 	}
@@ -148,7 +148,7 @@ public class StudyDesignView implements ViewBuilder {
 		return (int) jLabel.getPreferredSize().getHeight();
 	}
 
-	private String formatTreatment(TreatmentActivity ta) {
+	private String formatTreatment(DrugTreatment ta) {
 		return ta.getDrug().getName() + " (" + ta.getDose().toString() + ")<br/>";
 	}
 
