@@ -39,6 +39,13 @@ public class CombinationTreatment extends AbstractEntity implements Activity {
 	public static final String PROPERTY_TREATMENTS = "treatments";
 	
 	private ObservableList<TreatmentActivity> d_treatments = new ArrayListModel<TreatmentActivity>();
+	
+	public CombinationTreatment() {
+	}
+	
+	public CombinationTreatment(TreatmentActivity ta) {
+		d_treatments.add(ta);
+	}
 
 	@Override
 	public Set<? extends Entity> getDependencies() {

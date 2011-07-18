@@ -110,6 +110,7 @@ import org.drugis.addis.entities.data.ActivityUsedBy;
 import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.Alternative;
 import org.drugis.addis.entities.data.AnalysisArms;
+import org.drugis.addis.entities.data.AnalysisDrugs;
 import org.drugis.addis.entities.data.ArmReference;
 import org.drugis.addis.entities.data.ArmReferences;
 import org.drugis.addis.entities.data.Arms;
@@ -122,6 +123,7 @@ import org.drugis.addis.entities.data.ContinuousMeasurement;
 import org.drugis.addis.entities.data.ContinuousVariable;
 import org.drugis.addis.entities.data.DateWithNotes;
 import org.drugis.addis.entities.data.DrugReferences;
+import org.drugis.addis.entities.data.DrugTreatment;
 import org.drugis.addis.entities.data.Epochs;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
@@ -142,6 +144,7 @@ import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -419,13 +422,13 @@ public class JAXBConvertorTest {
 		fixDose.setQuantity(quantity);
 		fixDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);		
 		
-		Treatment t = new org.drugis.addis.entities.data.Treatment();
-		t.setDrug(nameReference(name));
-		t.setFixedDose(fixDose);		
-		TreatmentActivity ta = buildFixedDoseTreatmentActivity(drug, quantity);
+		DrugTreatment dt = new org.drugis.addis.entities.data.DrugTreatment();
+		dt.setDrug(nameReference(name));
+		dt.setFixedDose(fixDose);		
+		CombinationTreatment ta = buildFixedDoseTreatmentActivity(drug, quantity);
 		
-		assertTrue(EntityUtil.deepEqual(ta, JAXBConvertor.convertTreatmentActivity(t, domain)));
-		assertEquals(t, JAXBConvertor.convertTreatmentActivity(ta));
+		assertTrue(EntityUtil.deepEqual(ta, JAXBConvertor.convertTreatmentActivity(wrapTreatment(dt), domain)));
+		assertEquals(wrapTreatment(dt), JAXBConvertor.convertActivity(ta).getTreatment());		
 
 		// flexdose part
 		org.drugis.addis.entities.data.FlexibleDose flexDose = new org.drugis.addis.entities.data.FlexibleDose();
@@ -433,14 +436,19 @@ public class JAXBConvertorTest {
 		flexDose.setMaxDose(maxQuantity);
 		flexDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
 
-		Treatment t2 = new org.drugis.addis.entities.data.Treatment();
-		t2.setDrug(nameReference(name));
-		t2.setFlexibleDose(flexDose);		
-		
-		TreatmentActivity ta2 = buildFlexibleDoseTreatmentActivity(drug, quantity, maxQuantity);
-		assertTrue(EntityUtil.deepEqual(ta2, JAXBConvertor.convertTreatmentActivity(t2, domain)));
-		assertEquals(t2, JAXBConvertor.convertTreatmentActivity(ta2));
+		DrugTreatment dt2 = new org.drugis.addis.entities.data.DrugTreatment();
+		dt2.setDrug(nameReference(name));
+		dt2.setFlexibleDose(flexDose);	
+		CombinationTreatment ta2 = buildFlexibleDoseTreatmentActivity(drug, quantity, maxQuantity);
+		assertTrue(EntityUtil.deepEqual(ta2, JAXBConvertor.convertTreatmentActivity(wrapTreatment(dt2), domain)));
+		assertEquals(wrapTreatment(dt2), JAXBConvertor.convertActivity(ta2).getTreatment());
 
+	}
+
+	private static Treatment wrapTreatment(DrugTreatment dt2) {
+		Treatment t2 = new org.drugis.addis.entities.data.Treatment();
+		t2.getTreatment().add(dt2);
+		return t2;
 	}
 
 	@Test
@@ -491,33 +499,32 @@ public class JAXBConvertorTest {
 		org.drugis.addis.entities.data.FixedDose fixDose = new org.drugis.addis.entities.data.FixedDose();
 		fixDose.setQuantity(quantity);
 		fixDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);		
-		Treatment t = new org.drugis.addis.entities.data.Treatment();
+		org.drugis.addis.entities.data.DrugTreatment t = new org.drugis.addis.entities.data.DrugTreatment();
 		t.setDrug(nameReference(drugName1));
 		t.setFixedDose(fixDose);		
-		TreatmentActivity ta1 = buildFixedDoseTreatmentActivity(drug1, quantity);
+		CombinationTreatment ta1 = buildFixedDoseTreatmentActivity(drug1, quantity);
 		
 		sa = new StudyActivity(activityName, ta1);
 		saData.getActivity().setPredefined(null);
-		saData.getActivity().setTreatment(t);
+		saData.getActivity().setTreatment(wrapTreatment(t));
 
 		assertTrue(EntityUtil.deepEqual(sa, JAXBConvertor.convertStudyActivity(saData, new Study(), domain)));
 		assertEquals(saData, JAXBConvertor.convertStudyActivity(sa));
 		
 		// test with Combination Treatment
-		Treatment t2 = new org.drugis.addis.entities.data.Treatment();
+		org.drugis.addis.entities.data.DrugTreatment t2 = new org.drugis.addis.entities.data.DrugTreatment();
 		t2.setDrug(nameReference(drugName2));
 		t2.setFixedDose(fixDose);
-		org.drugis.addis.entities.data.CombinationTreatment ctData = new org.drugis.addis.entities.data.CombinationTreatment();
+		org.drugis.addis.entities.data.Treatment ctData = new org.drugis.addis.entities.data.Treatment();
 		ctData.getTreatment().add(t);
 		ctData.getTreatment().add(t2);
 		
-		TreatmentActivity ta2 = buildFixedDoseTreatmentActivity(drug2, quantity);
+		CombinationTreatment ta2 = buildFixedDoseTreatmentActivity(drug2, quantity);
 		CombinationTreatment ct = new CombinationTreatment();
-		ct.getTreatments().add(ta1);
-		ct.getTreatments().add(ta2);
+		ct.getTreatments().add(ta1.getTreatments().get(0));
+		ct.getTreatments().add(ta2.getTreatments().get(0));
 		sa = new StudyActivity(activityName, ct);
-		saData.getActivity().setTreatment(null);
-		saData.getActivity().setCombinationTreatment(ctData);
+		saData.getActivity().setTreatment(ctData);
 		
 		assertTrue(EntityUtil.deepEqual(sa, JAXBConvertor.convertStudyActivity(saData, new Study(), domain)));
 		assertEquals(saData, JAXBConvertor.convertStudyActivity(sa));
@@ -561,14 +568,14 @@ public class JAXBConvertorTest {
 		return usedByData;
 	}
 	
-	private TreatmentActivity buildFixedDoseTreatmentActivity(Drug drug, double quantity) {
+	private CombinationTreatment buildFixedDoseTreatmentActivity(Drug drug, double quantity) {
 		FixedDose dose = new FixedDose(quantity, SIUnit.MILLIGRAMS_A_DAY);
-		return new TreatmentActivity(drug, dose);
+		return new CombinationTreatment(new TreatmentActivity(drug, dose));
 	}
 
-	private TreatmentActivity buildFlexibleDoseTreatmentActivity(Drug drug, double minQuantity, double maxQuantity) {
+	private CombinationTreatment buildFlexibleDoseTreatmentActivity(Drug drug, double minQuantity, double maxQuantity) {
 		FlexibleDose dose = new FlexibleDose(new Interval<Double> (minQuantity, maxQuantity), SIUnit.MILLIGRAMS_A_DAY);
-		return new TreatmentActivity(drug, dose);
+		return new CombinationTreatment(new TreatmentActivity(drug, dose));
 	}
 	
 
@@ -1082,8 +1089,8 @@ public class JAXBConvertorTest {
 		study2.getEpochs().add(epoch2);
 		
 		StudyActivity sa1 = new StudyActivity("Randomization", PredefinedActivity.RANDOMIZATION);
-		StudyActivity fluoxTreatment = new StudyActivity("Fluox fixed dose", new TreatmentActivity(ExampleData.buildDrugFluoxetine(), new FixedDose(12.5, SIUnit.MILLIGRAMS_A_DAY)));
-		StudyActivity paroxTreatment = new StudyActivity("Parox fixed dose", new TreatmentActivity(ExampleData.buildDrugParoxetine(), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY)));
+		StudyActivity fluoxTreatment = new StudyActivity("Fluox fixed dose", new CombinationTreatment(new TreatmentActivity(ExampleData.buildDrugFluoxetine(), new FixedDose(12.5, SIUnit.MILLIGRAMS_A_DAY))));
+		StudyActivity paroxTreatment = new StudyActivity("Parox fixed dose", new CombinationTreatment(new TreatmentActivity(ExampleData.buildDrugParoxetine(), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY))));
 		study2.getStudyActivities().add(sa1);
 		study2.getStudyActivities().add(fluoxTreatment);
 		study2.getStudyActivities().add(paroxTreatment);
@@ -1212,14 +1219,22 @@ public class JAXBConvertorTest {
 		pwma.setEndpoint(nameReference(ExampleData.buildEndpointHamd().getName()));
 		// Base
 		Alternative fluox = new Alternative();
-		fluox.setDrug(nameReference(ExampleData.buildDrugFluoxetine().getName()));
+		if (fluox.getDrugs() == null) {
+			fluox.setDrugs(new AnalysisDrugs());
+		}
+		fluox.getDrugs().getDrug().clear();
+		fluox.getDrugs().getDrug().add(nameReference(ExampleData.buildDrugFluoxetine().getName()));
 		AnalysisArms fluoxArms = new AnalysisArms();
 		fluoxArms.getArm().add(JAXBConvertor.armReference(study_name, study.getArms().getArm().get(0).getName()));
 		fluox.setArms(fluoxArms);
 		pwma.getAlternative().add(fluox);
 		// Subject
 		Alternative parox = new Alternative();
-		parox.setDrug(nameReference(ExampleData.buildDrugParoxetine().getName()));
+		if (parox.getDrugs() == null) {
+			parox.setDrugs(new AnalysisDrugs());
+		}
+		parox.getDrugs().getDrug().clear();
+		parox.getDrugs().getDrug().add(nameReference(ExampleData.buildDrugParoxetine().getName()));
 		AnalysisArms paroxArms = new AnalysisArms();
 		paroxArms.getArm().add(JAXBConvertor.armReference(study_name, study.getArms().getArm().get(1).getName()));
 		parox.setArms(paroxArms);
@@ -1287,9 +1302,9 @@ public class JAXBConvertorTest {
 		String paroxArmName = "parox arm";
 		String mainPhaseName = "Main phase";
 		String treatmentName = "Treatment";
-		TreatmentActivity fluoxFixedDose = buildFixedDoseTreatmentActivity(ExampleData.buildDrugFluoxetine(), 12.5);
-		TreatmentActivity sertraFixedDose = buildFixedDoseTreatmentActivity(ExampleData.buildDrugSertraline(), 12.5);
-		TreatmentActivity paroxFixedDose =  buildFixedDoseTreatmentActivity(ExampleData.buildDrugParoxetine(), 12.5);
+		CombinationTreatment fluoxFixedDose = buildFixedDoseTreatmentActivity(ExampleData.buildDrugFluoxetine(), 12.5);
+		CombinationTreatment sertraFixedDose = buildFixedDoseTreatmentActivity(ExampleData.buildDrugSertraline(), 12.5);
+		CombinationTreatment paroxFixedDose =  buildFixedDoseTreatmentActivity(ExampleData.buildDrugParoxetine(), 12.5);
 		buildArmEpochTreatmentActivityCombination(arms1, epochs1, sas1, 20, fluoxArmName, mainPhaseName, treatmentName, fluoxFixedDose);
 		buildArmEpochTreatmentActivityCombination(arms1, epochs1, sas1, 20, sertraArmName, mainPhaseName, treatmentName, sertraFixedDose);
 		
@@ -1333,7 +1348,11 @@ public class JAXBConvertorTest {
 		
 		// Fluoxetine
 		Alternative fluox = new Alternative();
-		fluox.setDrug(nameReference(ExampleData.buildDrugFluoxetine().getName()));
+		if (fluox.getDrugs() == null) {
+			fluox.setDrugs(new AnalysisDrugs());
+		}
+		fluox.getDrugs().getDrug().clear();
+		fluox.getDrugs().getDrug().add(nameReference(ExampleData.buildDrugFluoxetine().getName()));
 		AnalysisArms fluoxArms = new AnalysisArms();
 		fluoxArms.getArm().add(JAXBConvertor.armReference(study_one, arms1.getArm().get(0).getName())); // study 1
 		fluoxArms.getArm().add(JAXBConvertor.armReference(study_three, arms3.getArm().get(2).getName())); // study 3
@@ -1341,7 +1360,11 @@ public class JAXBConvertorTest {
 		nma.getAlternative().add(fluox);
 		// Paroxetine		
 		Alternative parox = new Alternative();
-		parox.setDrug(nameReference(ExampleData.buildDrugParoxetine().getName()));
+		if (parox.getDrugs() == null) {
+			parox.setDrugs(new AnalysisDrugs());
+		}
+		parox.getDrugs().getDrug().clear();
+		parox.getDrugs().getDrug().add(nameReference(ExampleData.buildDrugParoxetine().getName()));
 		AnalysisArms paroxArms = new AnalysisArms();
 		paroxArms.getArm().add(JAXBConvertor.armReference(study_two, arms2.getArm().get(0).getName())); // study 2
 		paroxArms.getArm().add(JAXBConvertor.armReference(study_three, arms3.getArm().get(1).getName())); // study 3
@@ -1349,7 +1372,11 @@ public class JAXBConvertorTest {
 		nma.getAlternative().add(parox);
 		// Sertraline
 		Alternative setr = new Alternative();
-		setr.setDrug(nameReference(ExampleData.buildDrugSertraline().getName()));
+		if (setr.getDrugs() == null) {
+			setr.setDrugs(new AnalysisDrugs());
+		}
+		setr.getDrugs().getDrug().clear();
+		setr.getDrugs().getDrug().add(nameReference(ExampleData.buildDrugSertraline().getName()));
 		AnalysisArms sertrArms  = new AnalysisArms();
 		sertrArms.getArm().add(JAXBConvertor.armReference(study_one, arms1.getArm().get(1).getName())); // study 1
 		sertrArms.getArm().add(JAXBConvertor.armReference(study_two, arms2.getArm().get(1).getName())); // study 2
@@ -1362,11 +1389,11 @@ public class JAXBConvertorTest {
 
 	private void buildArmEpochTreatmentActivityCombination(Arms arms, Epochs epochs,
 			StudyActivities sas, int armSize, String fluoxArmName,
-			String mainPhaseName, String treatmentName, TreatmentActivity treatmentActivity)
+			String mainPhaseName, String treatmentName, CombinationTreatment fluoxFixedDose)
 			throws DatatypeConfigurationException, ConversionException {
 		arms.getArm().add(buildArmData(fluoxArmName, armSize));
 		epochs.getEpoch().add(buildEpoch(mainPhaseName, DatatypeFactory.newInstance().newDuration("P2D")));
-		org.drugis.addis.entities.data.StudyActivity saTreatment1 = buildStudyActivity(treatmentName, treatmentActivity);
+		org.drugis.addis.entities.data.StudyActivity saTreatment1 = buildStudyActivity(treatmentName, fluoxFixedDose);
 		saTreatment1.getUsedBy().add(buildActivityUsedby(fluoxArmName, mainPhaseName));
 		sas.getStudyActivity().add(saTreatment1);
 	}
@@ -1414,15 +1441,13 @@ public class JAXBConvertorTest {
 		Epochs epochs = new Epochs();
 		StudyActivities sas = new StudyActivities();
 		
-		TreatmentActivity fluoxTA = buildFixedDoseTreatmentActivity(ExampleData.buildDrugFluoxetine(), 13);
-		TreatmentActivity paroxTAHigh = buildFixedDoseTreatmentActivity(ExampleData.buildDrugParoxetine(), 45);
-		TreatmentActivity paroxTALow = buildFixedDoseTreatmentActivity(ExampleData.buildDrugParoxetine(), 12);
+		CombinationTreatment fluoxTA = buildFixedDoseTreatmentActivity(ExampleData.buildDrugFluoxetine(), 13);
+		CombinationTreatment paroxTAHigh = buildFixedDoseTreatmentActivity(ExampleData.buildDrugParoxetine(), 45);
+		CombinationTreatment paroxTALow = buildFixedDoseTreatmentActivity(ExampleData.buildDrugParoxetine(), 12);
 		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 12, "fluox arm", "Main phase", "Treatment", fluoxTA);
 		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 23, "parox arm high", "Main phase", "Treatment", paroxTAHigh);
 		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 11, "parox arm low", "Main phase", "Treatment", paroxTALow);
-//		arms.getArm().add(buildFixedDoseArmData(1, 12, ExampleData.buildDrugFluoxetine().getName(), 13));
-//		arms.getArm().add(buildFlexibleDoseArmData(2, 23, ExampleData.buildDrugParoxetine().getName(), 2, 45));
-//		arms.getArm().add(buildFlexibleDoseArmData(3, 11, ExampleData.buildDrugParoxetine().getName(), 5, 12));
+
 		org.drugis.addis.entities.data.Study study = buildStudySkeleton("Study for Benefit-Risk", "HI", 
 				ExampleData.buildIndicationDepression().getName(), endpoints, adverseEvents, new String[]{}, arms, epochs, sas);
 		
@@ -1487,9 +1512,11 @@ public class JAXBConvertorTest {
 		domain.addMetaAnalysis(ma1ent);
 		MetaAnalysis ma2ent = JAXBConvertor.convertNetworkMetaAnalysis(ma2.d_nwma, domain);
 		domain.addMetaAnalysis(ma2ent);
+		Alternative r = ma1.d_pwma.getAlternative().get(0);
+		Alternative r1 = ma1.d_pwma.getAlternative().get(1);
 		
 		// create BR analysis
-		String[] drugs = { ma1.d_pwma.getAlternative().get(0).getDrug().getName(), ma1.d_pwma.getAlternative().get(1).getDrug().getName() };
+		String[] drugs = { (r.getDrugs() != null ? r.getDrugs().getDrug().get(0) : null).getName(), (r1.getDrugs() != null ? r1.getDrugs().getDrug().get(0) : null).getName() };
 		String indication = ma1.d_pwma.getIndication().getName();
 		String[] meta = { pairWiseName, networkMetaName };
 		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis br = buildMetaBR(
@@ -1541,9 +1568,9 @@ public class JAXBConvertorTest {
 		Epochs epochs = new Epochs();
 		StudyActivities sas = new StudyActivities();
 		
-		TreatmentActivity fluoxTA = buildFixedDoseTreatmentActivity(ExampleData.buildDrugFluoxetine(), 13);
-		TreatmentActivity paroxTAHigh = buildFixedDoseTreatmentActivity(ExampleData.buildDrugParoxetine(), 45);
-		TreatmentActivity paroxTALow = buildFixedDoseTreatmentActivity(ExampleData.buildDrugParoxetine(), 12);
+		CombinationTreatment fluoxTA = buildFixedDoseTreatmentActivity(ExampleData.buildDrugFluoxetine(), 13);
+		CombinationTreatment paroxTAHigh = buildFixedDoseTreatmentActivity(ExampleData.buildDrugParoxetine(), 45);
+		CombinationTreatment paroxTALow = buildFixedDoseTreatmentActivity(ExampleData.buildDrugParoxetine(), 12);
 		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 12, "fluox arm", "Main phase", "Treatment", fluoxTA);
 		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 23, "parox arm high", "Main phase", "Treatment", paroxTAHigh);
 		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 11, "parox arm low", "Main phase", "Treatment", paroxTALow);
@@ -1731,7 +1758,7 @@ public class JAXBConvertorTest {
 	
 	public static class AlternativeComparator implements Comparator<org.drugis.addis.entities.data.Alternative> {
 		public int compare(org.drugis.addis.entities.data.Alternative o1, org.drugis.addis.entities.data.Alternative o2) {
-			return o1.getDrug().getName().compareTo(o2.getDrug().getName());
+			return (o1.getDrugs() != null ? o1.getDrugs().getDrug().get(0) : null).getName().compareTo((o2.getDrugs() != null ? o2.getDrugs().getDrug().get(0) : null).getName());
 		}
 	}
 	

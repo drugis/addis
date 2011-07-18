@@ -414,7 +414,6 @@
 		<xs:sequence>
 			<xs:choice>
 				<xs:element name="treatment" type="Treatment"/>
-				<xs:element name="combinationTreatment" type="CombinationTreatment"/>
 				<xs:element name="predefined" type="PredefinedActivityEnum"/>
 			</xs:choice>
 		</xs:sequence>
@@ -423,7 +422,7 @@
 		<xs:attribute name="epoch" type="xs:string"/>
 		<xs:attribute name="arm" type="xs:string"/>
 	</xs:complexType>
-	<xs:complexType name="Treatment">
+	<xs:complexType name="DrugTreatment">
 		<xs:sequence>
 			<xs:choice>
 				<xs:element name="flexibleDose" type="FlexibleDose"/>
@@ -432,9 +431,9 @@
 			<xs:element name="drug" type="NameReference"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="CombinationTreatment">
+	<xs:complexType name="Treatment">
 		<xs:sequence>
-			<xs:element name="treatment" type="Treatment" maxOccurs="unbounded"/>
+			<xs:element name="treatment" type="DrugTreatment" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -491,8 +490,13 @@
 
 	<xs:complexType name="Alternative">
 		<xs:sequence>
-			<xs:element name="drug" type="NameReference"/>
+			<xs:element name="drugs" type="AnalysisDrugs"/>
 			<xs:element name="arms" type="AnalysisArms"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AnalysisDrugs">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="drug" type="NameReference"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="AnalysisArms">

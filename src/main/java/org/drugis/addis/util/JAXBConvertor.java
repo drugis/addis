@@ -101,6 +101,7 @@ import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.AdverseEvents;
 import org.drugis.addis.entities.data.Alternative;
 import org.drugis.addis.entities.data.AnalysisArms;
+import org.drugis.addis.entities.data.AnalysisDrugs;
 import org.drugis.addis.entities.data.ArmReference;
 import org.drugis.addis.entities.data.ArmReferences;
 import org.drugis.addis.entities.data.BenefitRiskAnalyses;
@@ -112,6 +113,7 @@ import org.drugis.addis.entities.data.ContinuousMeasurement;
 import org.drugis.addis.entities.data.ContinuousVariable;
 import org.drugis.addis.entities.data.DateWithNotes;
 import org.drugis.addis.entities.data.DrugReferences;
+import org.drugis.addis.entities.data.DrugTreatment;
 import org.drugis.addis.entities.data.Drugs;
 import org.drugis.addis.entities.data.Endpoints;
 import org.drugis.addis.entities.data.IdReference;
@@ -414,8 +416,6 @@ public class JAXBConvertor {
 			return activity.getPredefined();
 		} else if (activity.getTreatment() != null) {
 			return convertTreatmentActivity(activity.getTreatment(), domain);
-		} else if (activity.getCombinationTreatment() != null) {
-			return convertCombinationTreatment(activity.getCombinationTreatment(), domain);
 		} else {
 			throw new ConversionException("Unknown Activity type " + activity);
 		}
@@ -427,9 +427,12 @@ public class JAXBConvertor {
 		if (activity instanceof PredefinedActivity) {
 			converted.setPredefined((PredefinedActivity) activity);
 		} else if (activity instanceof TreatmentActivity){
-			converted.setTreatment(convertTreatmentActivity((TreatmentActivity) activity));
+			DrugTreatment dt = convertTreatmentActivity((TreatmentActivity) activity);
+			Treatment treatment = new org.drugis.addis.entities.data.Treatment();
+			treatment.getTreatment().add(dt);
+			converted.setTreatment(treatment);
 		} else if (activity instanceof CombinationTreatment){
-			converted.setCombinationTreatment(convertCombinationTreatment((CombinationTreatment) activity));
+			converted.setTreatment(convertCombinationTreatment((CombinationTreatment) activity));
 		} else {
 			throw new ConversionException("Unknown Activity type " + activity);
 		}
@@ -454,7 +457,7 @@ public class JAXBConvertor {
 		return aub;
 	}
 
-	static TreatmentActivity convertTreatmentActivity(org.drugis.addis.entities.data.Treatment t, Domain domain) throws ConversionException {
+	static TreatmentActivity convertDrugTreatment(org.drugis.addis.entities.data.DrugTreatment t, Domain domain) throws ConversionException {
 		Drug drug = findDrug(domain, t.getDrug().getName());
 		AbstractDose dose;
 		if (t.getFixedDose() != null) {
@@ -469,16 +472,16 @@ public class JAXBConvertor {
 	}
 	
 	
-	private static Activity convertCombinationTreatment(org.drugis.addis.entities.data.CombinationTreatment combinationTreatment, Domain domain) throws ConversionException {
+	static Activity convertTreatmentActivity(org.drugis.addis.entities.data.Treatment treatment, Domain domain) throws ConversionException {
 		CombinationTreatment newCombinationTreatment = new CombinationTreatment();
-		for(Treatment ct : combinationTreatment.getTreatment()) {
-			newCombinationTreatment.getTreatments().add(convertTreatmentActivity(ct, domain));
+		for(org.drugis.addis.entities.data.DrugTreatment ct : treatment.getTreatment()) {
+			newCombinationTreatment.getTreatments().add(convertDrugTreatment(ct, domain));
 		}
 		return newCombinationTreatment;
 	}
 	
-	static org.drugis.addis.entities.data.Treatment convertTreatmentActivity(TreatmentActivity ta)  throws ConversionException {
-		org.drugis.addis.entities.data.Treatment t = new org.drugis.addis.entities.data.Treatment();
+	private static org.drugis.addis.entities.data.DrugTreatment convertTreatmentActivity(TreatmentActivity ta)  throws ConversionException {
+		org.drugis.addis.entities.data.DrugTreatment t = new org.drugis.addis.entities.data.DrugTreatment();
 		t.setDrug(nameReference(ta.getDrug().getName()));
 		if (ta.getDose() instanceof FixedDose) {
 			t.setFixedDose(convertFixedDose((FixedDose) ta.getDose()));
@@ -491,8 +494,8 @@ public class JAXBConvertor {
 	}
 	
 
-	private static org.drugis.addis.entities.data.CombinationTreatment convertCombinationTreatment(CombinationTreatment activity) throws ConversionException {
-		org.drugis.addis.entities.data.CombinationTreatment ct = new org.drugis.addis.entities.data.CombinationTreatment();
+	private static org.drugis.addis.entities.data.Treatment convertCombinationTreatment(CombinationTreatment activity) throws ConversionException {
+		org.drugis.addis.entities.data.Treatment ct = new org.drugis.addis.entities.data.Treatment();
 		for(TreatmentActivity ta : activity.getTreatments()) {
 			ct.getTreatment().add(convertTreatmentActivity(ta));
 		}
@@ -1043,7 +1046,11 @@ public class JAXBConvertor {
 		}
 		for(Drug d : reMa.getIncludedDrugs()) {
 			Alternative alt = new Alternative();
-			alt.setDrug(nameReference(d.getName()));
+			if (alt.getDrugs() == null) {
+				alt.setDrugs(new AnalysisDrugs());
+			}
+			alt.getDrugs().getDrug().clear();
+			alt.getDrugs().getDrug().add(nameReference(d.getName()));
 			AnalysisArms arms = new AnalysisArms();
 			for(StudyArmsEntry item : reMa.getStudyArms()) {
 				Arm arm = null;
@@ -1068,7 +1075,7 @@ public class JAXBConvertor {
 		List<Drug> drugs = new ArrayList<Drug>();
 		Map<Study, Map<Drug, Arm>> armMap = new HashMap<Study, Map<Drug,Arm>>();
 		for (org.drugis.addis.entities.data.Alternative a : nma.getAlternative()) {
-			Drug drug = findDrug(domain, a.getDrug().getName());
+			Drug drug = findDrug(domain, (a.getDrugs() != null ? a.getDrugs().getDrug().get(0) : null).getName());
 			drugs.add(drug);
 			for (ArmReference armRef : a.getArms().getArm()) {
 				Study study = findStudy(armRef.getStudy(), domain);
@@ -1097,7 +1104,11 @@ public class JAXBConvertor {
 		}
 		for(Drug d : ma.getIncludedDrugs()) {
 			Alternative alt = new Alternative();
-			alt.setDrug(nameReference(d.getName()));
+			if (alt.getDrugs() == null) {
+				alt.setDrugs(new AnalysisDrugs());
+			}
+			alt.getDrugs().getDrug().clear();
+			alt.getDrugs().getDrug().add(nameReference(d.getName()));
 			AnalysisArms arms = new AnalysisArms();
 			
 			for(Study study : ma.getIncludedStudies()) {
