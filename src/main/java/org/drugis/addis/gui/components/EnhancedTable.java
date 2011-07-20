@@ -25,14 +25,21 @@
 package org.drugis.addis.gui.components;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
+import org.apache.commons.lang.StringUtils;
+import org.drugis.addis.entities.Entity;
 import org.drugis.addis.gui.util.TableCopyHandler;
 import org.drugis.common.gui.GUIHelper;
 
@@ -110,6 +117,37 @@ public class EnhancedTable extends JTable {
 		autoSizeColumns();
 	}
 	
+	public static void insertEntityRenderer(EnhancedTable table) {
+		final TableCellRenderer defaultRenderer = table.getDefaultRenderer(Object.class);
+		table.setDefaultRenderer(Object.class, new TableCellRenderer() {
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value,
+					boolean isSelected, boolean hasFocus, int row, int column) {
+				return defaultRenderer.getTableCellRendererComponent(table, getDescription(value, false), isSelected, hasFocus, row, column);
+			}
+	
+			@SuppressWarnings("unchecked")
+			private String getDescription(Object value, boolean nested) {
+				if (value instanceof Entity) {
+					return ((Entity)value).getDescription();
+				}
+				if (value instanceof Collection) {
+					return getElementDescriptions((Collection<?>) value, nested);
+				}
+				return value.toString();
+			}
+	
+			private String getElementDescriptions(Collection<?> c, boolean nested) {
+				List<String> desc = new ArrayList<String>();
+				for (Object o : c) {
+					desc.add(getDescription(o, true));
+				}
+				String str = StringUtils.join(desc, ", ");
+				return nested ? ("[" + str + "]") : str;
+			}
+		});
+	}
+
 	private static class MyRenderer extends DefaultTableCellRenderer {
 		
 		@Override

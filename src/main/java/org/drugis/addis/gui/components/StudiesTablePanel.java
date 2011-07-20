@@ -25,22 +25,15 @@
 package org.drugis.addis.gui.components;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JTable;
-import javax.swing.table.TableCellRenderer;
 
-import org.apache.commons.lang.StringUtils;
-import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CharacteristicSelectDialog;
@@ -65,34 +58,7 @@ public class StudiesTablePanel extends TablePanel {
 	public static JTable createTable(final StudyListPresentation studyListPM, final AddisWindow main) {
 		StudyCharTableModel model = new StudyCharTableModel(studyListPM, main.getPresentationModelFactory());
 		EnhancedTable table = EnhancedTable.createWithSorter(model);
-		final TableCellRenderer defaultRenderer = table.getDefaultRenderer(Object.class);
-		table.setDefaultRenderer(Object.class, new TableCellRenderer() {
-			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value,
-					boolean isSelected, boolean hasFocus, int row, int column) {
-				return defaultRenderer.getTableCellRendererComponent(table, getDescription(value, false), isSelected, hasFocus, row, column);
-			}
-
-			@SuppressWarnings("unchecked")
-			private String getDescription(Object value, boolean nested) {
-				if (value instanceof Entity) {
-					return ((Entity)value).getDescription();
-				}
-				if (value instanceof Collection) {
-					return getElementDescriptions((Collection<?>) value, nested);
-				}
-				return value.toString();
-			}
-
-			private String getElementDescriptions(Collection<?> c, boolean nested) {
-				List<String> desc = new ArrayList<String>();
-				for (Object o : c) {
-					desc.add(getDescription(o, true));
-				}
-				String str = StringUtils.join(desc, ", ");
-				return nested ? ("[" + str + "]") : str;
-			}
-		});
+		EnhancedTable.insertEntityRenderer(table);
 		table.autoSizeColumns();
 		table.addMouseListener(new MouseAdapter() {
 			@Override

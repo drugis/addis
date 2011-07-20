@@ -44,6 +44,7 @@ public class SelectStudiesWizardStep extends PanelWizardStep {
 		super("Select Studies","Select the studies to be used for meta analysis. At least one study must be selected to continue.");
 
 		final EnhancedTable table = EnhancedTable.createWithSorter(new SelectableStudyCharTableModel(pm.getStudyListModel(), mainWindow.getPresentationModelFactory()));
+		EnhancedTable.insertEntityRenderer(table);
 		table.autoSizeColumns();
 		setLayout(new BorderLayout(0, 5));
 		JLabel label = BasicComponentFactory.createLabel(pm.getStudiesMeasuringLabelModel());
