@@ -1076,11 +1076,11 @@ public class JAXBConvertor {
 		Indication indication = findIndication(domain, nma.getIndication().getName());
 		org.drugis.addis.entities.OutcomeMeasure om = findOutcomeMeasure(domain, nma);
 		List<Study> studies = new ArrayList<Study>();		
-		List<Drug> drugs = new ArrayList<Drug>();
+		List<DrugSet> drugs = new ArrayList<DrugSet>();
 		Map<Study, Map<DrugSet, Arm>> armMap = new HashMap<Study, Map<DrugSet, Arm>>();
 		for (org.drugis.addis.entities.data.Alternative a : nma.getAlternative()) {
-			Drug drug = findDrug(domain, (a.getDrugs() != null ? a.getDrugs().getDrug().get(0) : null).getName());
-			drugs.add(drug);
+			DrugSet drugSet = convertDrugSet(a.getDrugs(), domain);
+			drugs.add(drugSet);
 			for (ArmReference armRef : a.getArms().getArm()) {
 				Study study = findStudy(armRef.getStudy(), domain);
 				if (!studies.contains(study)) {
@@ -1088,13 +1088,21 @@ public class JAXBConvertor {
 					armMap.put(study, new HashMap<DrugSet, Arm>());
 				}
 				Arm arm = findArm(armRef.getName(), study.getArms());
-				armMap.get(study).put(new DrugSet(drug), arm);
+				armMap.get(study).put(drugSet, arm);
 			}
 		}
 
 		return new NetworkMetaAnalysis(name, indication, om, armMap);
 	}
 	
+	private static DrugSet convertDrugSet(AnalysisDrugs drugs, Domain domain) {
+		List<Drug> out = new ArrayList<Drug>();
+		for(NameReference d : drugs.getDrug()) {
+			out.add(findDrug(domain, d.getName()));
+		}
+		return new DrugSet(out);
+	}
+
 	public static org.drugis.addis.entities.data.NetworkMetaAnalysis convertNetworkMetaAnalysis(NetworkMetaAnalysis ma) throws ConversionException {
 		org.drugis.addis.entities.data.NetworkMetaAnalysis nma = new org.drugis.addis.entities.data.NetworkMetaAnalysis();
 		nma.setName(ma.getName());
@@ -1244,10 +1252,10 @@ public class JAXBConvertor {
 	public static MetaBenefitRiskAnalysis convertMetaBenefitRiskAnalysis(
 			org.drugis.addis.entities.data.MetaBenefitRiskAnalysis br, Domain domain) {
 		Indication indication = findIndication(domain, br.getIndication().getName());
-		DrugSet baseline = new DrugSet(findDrug(domain, br.getBaseline().getName()));
+		DrugSet baseline = convertDrugSet(br.getBaseline(), domain);
 		List<DrugSet> drugs = new ArrayList<DrugSet>();
-		for (AnalysisDrugs ref : br.getAlternatives().getAlternative()) {
-			drugs.add(new DrugSet(findDrug(domain, ref.getDrug().get(0).getName())));
+		for (AnalysisDrugs set : br.getAlternatives().getAlternative()) {
+			drugs.add(convertDrugSet(set, domain));
 		}
 		List<MetaAnalysis> metaAnalysis = new ArrayList<MetaAnalysis>();
 		for (NameReference ref : br.getMetaAnalyses().getMetaAnalysis()) {
@@ -1262,7 +1270,7 @@ public class JAXBConvertor {
 		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis newBr = new org.drugis.addis.entities.data.MetaBenefitRiskAnalysis();
 		newBr.setName(br.getName());
 		newBr.setAnalysisType(br.getAnalysisType());
-		newBr.setBaseline(nameReference(br.getBaseline().getDescription()));
+		newBr.setBaseline(convertDrugSet(br.getBaseline()));
 		newBr.setIndication(nameReference(br.getIndication().getName()));
 		
 		AlternativeDrugSets alternatives = new AlternativeDrugSets();

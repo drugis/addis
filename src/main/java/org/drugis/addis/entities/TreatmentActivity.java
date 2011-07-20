@@ -47,6 +47,10 @@ public class TreatmentActivity extends AbstractEntity implements Activity {
 		d_treatments.add(ta);
 	}
 
+	public TreatmentActivity(List<DrugTreatment> treatments) {
+		d_treatments.addAll(treatments);
+	}
+
 	@Override
 	public Set<? extends Entity> getDependencies() {
 		return new HashSet<Entity>(getDrugs());

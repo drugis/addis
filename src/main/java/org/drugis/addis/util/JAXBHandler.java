@@ -24,8 +24,11 @@
 
 package org.drugis.addis.util;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -38,6 +41,24 @@ import javax.xml.bind.ValidationEventLocator;
 import org.drugis.addis.entities.data.AddisData;
 
 public class JAXBHandler {
+	public static enum XmlFormatType {
+		LEGACY(0),
+		SCHEMA1(1),
+		SCHEMA2(2),
+		SCHEMA3(3),
+		SCHEMA_FUTURE(-1);
+		
+		private final int d_version;
+
+		XmlFormatType(int version) {
+			d_version = version;
+		}
+
+		public int getVersion() {
+			return d_version;
+		}
+	}
+	
 	private static JAXBContext s_jaxb;
 
 	private static void initialize() throws JAXBException {
@@ -78,5 +99,30 @@ public class JAXBHandler {
 			}
 			return false;
 		}
+	}
+
+	public static XmlFormatType determineXmlType(InputStream is) throws IOException {
+		is.mark(1024);
+		byte[] buffer = new byte[1024];
+		int bytesRead = is.read(buffer);
+		String str = new String(buffer, 0, bytesRead);
+		Pattern pattern = Pattern.compile("http://drugis.org/files/addis-([0-9]*).xsd");
+		Matcher matcher = pattern.matcher(str);
+		XmlFormatType type = null;
+		if (matcher.find()) {
+			if (matcher.group(1).equals("1")) {
+				type = XmlFormatType.SCHEMA1;
+			} else if (matcher.group(1).equals("2")) {
+				type = XmlFormatType.SCHEMA2;
+			} else if (matcher.group(1).equals("3")) {
+				type = XmlFormatType.SCHEMA3;
+			} else {
+				type = XmlFormatType.SCHEMA_FUTURE;
+			}
+		} else {
+			type = XmlFormatType.LEGACY;
+		}
+		is.reset();
+		return type;
 	}
 }

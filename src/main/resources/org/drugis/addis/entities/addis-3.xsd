@@ -268,7 +268,7 @@
 	<xs:complexType name="MetaBenefitRiskAnalysis">
 		<xs:sequence>
 			<xs:element name="indication" type="NameReference"/>
-			<xs:element name="baseline" type="NameReference"/>
+			<xs:element name="baseline" type="AnalysisDrugs"/>
 			<xs:element name="alternatives" type="AlternativeDrugSets"/>
 			<xs:element name="metaAnalyses" type="MetaAnalysisReferences"/>
 		</xs:sequence>

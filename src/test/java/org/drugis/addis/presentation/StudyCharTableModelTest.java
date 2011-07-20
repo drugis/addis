@@ -150,16 +150,6 @@ public class StudyCharTableModelTest {
 	}
 	
 	@Test
-	public void testGetColumnClass() {
-		assertEquals(String.class, d_model.getColumnClass(0));
-		int column = 1;
-		for (Characteristic c : StudyCharacteristics.values()) {
-			assertEquals(c.getValueType(), d_model.getColumnClass(column));
-			++column;
-		}
-	}
-	
-	@Test
 	public void testGetColumnNameRemoved() {
 		getFirstCharValueModel().setValue(false);
 		testGetColumnNameFirstMissingHelper();

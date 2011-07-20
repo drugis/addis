@@ -37,8 +37,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -50,6 +48,8 @@ import javax.swing.UIManager;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainManager;
+import org.drugis.addis.util.JAXBHandler;
+import org.drugis.addis.util.JAXBHandler.XmlFormatType;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.FileLoadDialog;
 import org.drugis.common.gui.FileSaveDialog;
@@ -188,24 +188,6 @@ public class Main {
 		return d_domainMgr.getDomain();
 	}
 	
-	private enum XmlFormatType {
-		LEGACY(0),
-		SCHEMA1(1),
-		SCHEMA2(2),
-		SCHEMA3(3),
-		SCHEMA_FUTURE(-1);
-		
-		private final int d_version;
-
-		XmlFormatType(int version) {
-			d_version = version;
-		}
-
-		public int getVersion() {
-			return d_version;
-		}
-	}
-
 	private void loadDomainFromXMLFile(String fileName) throws IOException,	ClassNotFoundException {
 		File f = new File(fileName);
 		if (f.exists() && f.isFile()) {
@@ -222,7 +204,7 @@ public class Main {
 
 	private XmlFormatType loadDomainFromInputStream(InputStream in)	throws IOException {
 		BufferedInputStream fis = new BufferedInputStream(in);
-		XmlFormatType xmlType = determineXmlType(fis);
+		XmlFormatType xmlType = JAXBHandler.determineXmlType(fis);
 		switch (xmlType) {
 		case LEGACY:
 			d_domainMgr.loadLegacyXMLDomain(fis);
@@ -259,31 +241,6 @@ public class Main {
 			setDisplayName(DISPLAY_NEW);
 			setDataChanged(true);
 		}
-	}
-
-	private XmlFormatType determineXmlType(InputStream is) throws IOException {
-		is.mark(1024);
-		byte[] buffer = new byte[1024];
-		int bytesRead = is.read(buffer);
-		String str = new String(buffer, 0, bytesRead);
-		Pattern pattern = Pattern.compile("http://drugis.org/files/addis-([0-9]*).xsd");
-		Matcher matcher = pattern.matcher(str);
-		XmlFormatType type = null;
-		if (matcher.find()) {
-			if (matcher.group(1).equals("1")) {
-				type = XmlFormatType.SCHEMA1;
-			} else if (matcher.group(1).equals("2")) {
-				type = XmlFormatType.SCHEMA2;
-			} else if (matcher.group(1).equals("3")) {
-				type = XmlFormatType.SCHEMA3;
-			} else {
-				type = XmlFormatType.SCHEMA_FUTURE;
-			}
-		} else {
-			type = XmlFormatType.LEGACY;
-		}
-		is.reset();
-		return type;
 	}
 
 	private void loadDomainFromXMLResource(String fileName) throws IOException, ClassNotFoundException {
