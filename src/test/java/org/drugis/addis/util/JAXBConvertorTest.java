@@ -148,6 +148,7 @@ import org.drugis.addis.util.JAXBHandler.XmlFormatType;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -155,6 +156,8 @@ import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl
 public class JAXBConvertorTest {
 	private static final String TEST_DATA_A_0 = "../testDataA-0.xml";
 	private static final String TEST_DATA_3 = "../testData-3.addis";
+	private static final String TEST_DATA_A_1 = "../testDataA-1.addis";
+
 	private JAXBContext d_jaxb;
 	private Unmarshaller d_unmarshaller;
 	
@@ -1646,6 +1649,11 @@ public class JAXBConvertorTest {
 	@Test
 	public void testSmallerDataRoundTripConversion() throws Exception {
 		doRoundTripTest(getTransformedTestData());
+	}
+
+	@Test @Ignore
+	public void testMysteriousDataRoundTripConversion() throws Exception {
+		doRoundTripTest(getTestData(TEST_DATA_A_1));
 	}
 	
 	@Test

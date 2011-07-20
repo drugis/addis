@@ -25051,7 +25051,53 @@ and Thiazolidinedione in Patients With Type 2 Diabetes (LEAD-4 Met+TZD)</value>
         </pairwiseMetaAnalysis>
     </metaAnalyses>
     <benefitRiskAnalyses>
+        <studyBenefitRiskAnalysis analysisType="LyndOBrien" name="dfsasdf">
+            <indication name="Type II diabetes mellitus "/>
+            <study name="ahren04"/>
+            <arms>
+                <arm study="ahren04" name="Placebo"/>
+                <arm study="ahren04" name="Vildagliptin"/>
+            </arms>
+            <outcomeMeasures>
+                <adverseEvent name="Bursitis"/>
+                <endpoint name="HbA1c change"/>
+            </outcomeMeasures>
+        </studyBenefitRiskAnalysis>
         <metaBenefitRiskAnalysis analysisType="LyndOBrien" name="ggjk">
+            <indication name="Type II diabetes mellitus "/>
+            <baseline>
+                <drug name="Sitagliptin"/>
+                <drug name="glimepiride"/>
+            </baseline>
+            <alternatives>
+                <alternative>
+                    <drug name="Sitagliptin"/>
+                    <drug name="glimepiride"/>
+                    <drug name="metformin"/>
+                </alternative>
+                <alternative>
+                    <drug name="Sitagliptin"/>
+                    <drug name="glimepiride"/>
+                </alternative>
+            </alternatives>
+            <metaAnalyses>
+                <metaAnalysis name="fgasdf"/>
+                <metaAnalysis name="hyerdf"/>
+            </metaAnalyses>
+        </metaBenefitRiskAnalysis>
+        <studyBenefitRiskAnalysis analysisType="SMAA" name="klbn">
+            <indication name="Type II diabetes mellitus "/>
+            <study name="ahren04"/>
+            <arms>
+                <arm study="ahren04" name="Placebo"/>
+                <arm study="ahren04" name="Vildagliptin"/>
+            </arms>
+            <outcomeMeasures>
+                <adverseEvent name="Worsening hypertension"/>
+                <endpoint name="HbA1c change"/>
+            </outcomeMeasures>
+        </studyBenefitRiskAnalysis>
+        <metaBenefitRiskAnalysis analysisType="SMAA" name="uopi">
             <indication name="Type II diabetes mellitus "/>
             <baseline>
                 <drug name="Sitagliptin"/>
