@@ -68,12 +68,12 @@ import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.CharacteristicsMap;
-import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Epoch;
@@ -93,7 +93,7 @@ import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.StudyArmsEntry;
-import org.drugis.addis.entities.DrugTreatment;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
@@ -112,6 +112,7 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.data.ActivityUsedBy;
 import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.Alternative;
+import org.drugis.addis.entities.data.AlternativeDrugSets;
 import org.drugis.addis.entities.data.AnalysisArms;
 import org.drugis.addis.entities.data.AnalysisDrugs;
 import org.drugis.addis.entities.data.ArmReference;
@@ -125,7 +126,6 @@ import org.drugis.addis.entities.data.Characteristics;
 import org.drugis.addis.entities.data.ContinuousMeasurement;
 import org.drugis.addis.entities.data.ContinuousVariable;
 import org.drugis.addis.entities.data.DateWithNotes;
-import org.drugis.addis.entities.data.DrugReferences;
 import org.drugis.addis.entities.data.Epochs;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
@@ -1542,16 +1542,22 @@ public class JAXBConvertorTest {
 		br.setAnalysisType(AnalysisType.SMAA);
 		br.setIndication(nameReference(indication));
 		br.setBaseline(nameReference(drugs[0]));
-		DrugReferences dRef = new DrugReferences();
-		dRef.getDrug().add(nameReference(drugs[0]));
-		dRef.getDrug().add(nameReference(drugs[1]));
-		br.setDrugs(dRef);
+		AlternativeDrugSets dRef = new AlternativeDrugSets();
+		dRef.getAlternative().add(createAnalysisDrugs(drugs[0]));
+		dRef.getAlternative().add(createAnalysisDrugs(drugs[1]));
+		br.setAlternatives(dRef);
 		MetaAnalysisReferences mRefs = new MetaAnalysisReferences();
 		for (String mName : meta) {
 			mRefs.getMetaAnalysis().add(nameReference(mName));
 		}
 		br.setMetaAnalyses(mRefs);
 		return br;
+	}
+
+	private AnalysisDrugs createAnalysisDrugs(String myDrug) {
+		AnalysisDrugs drugs1 = new AnalysisDrugs();
+		drugs1.getDrug().add(nameReference(myDrug));
+		return drugs1;
 	}
 	
 	@Test

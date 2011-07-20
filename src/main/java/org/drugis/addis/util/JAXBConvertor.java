@@ -58,11 +58,11 @@ import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.CharacteristicsMap;
-import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Epoch;
@@ -83,7 +83,7 @@ import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.StudyArmsEntry;
-import org.drugis.addis.entities.DrugTreatment;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
@@ -101,6 +101,7 @@ import org.drugis.addis.entities.data.ActivityUsedBy;
 import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.AdverseEvents;
 import org.drugis.addis.entities.data.Alternative;
+import org.drugis.addis.entities.data.AlternativeDrugSets;
 import org.drugis.addis.entities.data.AnalysisArms;
 import org.drugis.addis.entities.data.AnalysisDrugs;
 import org.drugis.addis.entities.data.ArmReference;
@@ -113,7 +114,6 @@ import org.drugis.addis.entities.data.Characteristics;
 import org.drugis.addis.entities.data.ContinuousMeasurement;
 import org.drugis.addis.entities.data.ContinuousVariable;
 import org.drugis.addis.entities.data.DateWithNotes;
-import org.drugis.addis.entities.data.DrugReferences;
 import org.drugis.addis.entities.data.Drugs;
 import org.drugis.addis.entities.data.Endpoints;
 import org.drugis.addis.entities.data.IdReference;
@@ -1046,12 +1046,7 @@ public class JAXBConvertor {
 		}
 		for(DrugSet d : reMa.getIncludedDrugs()) {
 			Alternative alt = new Alternative();
-			if (alt.getDrugs() == null) {
-				alt.setDrugs(new AnalysisDrugs());
-			}
-			for (Drug drug : d.getContents()) {
-				alt.getDrugs().getDrug().add(nameReference(drug.getName()));				
-			}
+			alt.setDrugs(convertDrugSet(d));
 			AnalysisArms arms = new AnalysisArms();
 			for(StudyArmsEntry item : reMa.getStudyArms()) {
 				Arm arm = null;
@@ -1066,6 +1061,14 @@ public class JAXBConvertor {
 			pwma.getAlternative().add(alt);
 		}
 		return pwma ;
+	}
+
+	private static AnalysisDrugs convertDrugSet(DrugSet d) {
+		AnalysisDrugs drugs = new AnalysisDrugs();
+		for (Drug drug : d.getContents()) {
+			drugs.getDrug().add(nameReference(drug.getName()));				
+		}
+		return drugs;
 	}
 	
 	public static NetworkMetaAnalysis convertNetworkMetaAnalysis(org.drugis.addis.entities.data.NetworkMetaAnalysis nma, Domain domain) throws ConversionException {
@@ -1105,12 +1108,7 @@ public class JAXBConvertor {
 		}
 		for(DrugSet d : ma.getIncludedDrugs()) {
 			Alternative alt = new Alternative();
-			if (alt.getDrugs() == null) {
-				alt.setDrugs(new AnalysisDrugs());
-			}
-			for (Drug drug : d.getContents()) {
-				alt.getDrugs().getDrug().add(nameReference(drug.getName()));
-			}
+			alt.setDrugs(convertDrugSet(d));
 			AnalysisArms arms = new AnalysisArms();
 			
 			for(Study study : ma.getIncludedStudies()) {
@@ -1248,8 +1246,8 @@ public class JAXBConvertor {
 		Indication indication = findIndication(domain, br.getIndication().getName());
 		DrugSet baseline = new DrugSet(findDrug(domain, br.getBaseline().getName()));
 		List<DrugSet> drugs = new ArrayList<DrugSet>();
-		for (NameReference ref : br.getDrugs().getDrug()) {
-			drugs.add(new DrugSet(findDrug(domain, ref.getName())));
+		for (AnalysisDrugs ref : br.getAlternatives().getAlternative()) {
+			drugs.add(new DrugSet(findDrug(domain, ref.getDrug().get(0).getName())));
 		}
 		List<MetaAnalysis> metaAnalysis = new ArrayList<MetaAnalysis>();
 		for (NameReference ref : br.getMetaAnalyses().getMetaAnalysis()) {
@@ -1267,11 +1265,11 @@ public class JAXBConvertor {
 		newBr.setBaseline(nameReference(br.getBaseline().getDescription()));
 		newBr.setIndication(nameReference(br.getIndication().getName()));
 		
-		DrugReferences drugRefs = new DrugReferences();
+		AlternativeDrugSets alternatives = new AlternativeDrugSets();
 		for(DrugSet d : br.getDrugs()) {
-			drugRefs.getDrug().add(nameReference(d.getContents().iterator().next().getName()));
+			alternatives.getAlternative().add(convertDrugSet(d));
 		}
-		newBr.setDrugs(drugRefs);
+		newBr.setAlternatives(alternatives);
 		
 		MetaAnalysisReferences maRefs = new MetaAnalysisReferences();
 		for(MetaAnalysis m : br.getMetaAnalyses()) {
