@@ -26,6 +26,7 @@ package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,6 +42,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -48,6 +50,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.text.BadLocationException;
@@ -62,6 +65,7 @@ import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.gui.wizard.AddStudyWizard;
+import org.drugis.addis.presentation.DefaultListHolder;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.ImageLoader;
@@ -69,6 +73,8 @@ import org.drugis.common.gui.DayDateFormat;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
+
+import scala.actors.threadpool.Arrays;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
@@ -86,17 +92,39 @@ public class AuxComponentFactory {
 	public static final Color COLOR_NOTE_EDIT = new Color(255, 255, 210);
 
 	public static <T> JComboBox createBoundComboBox(T[] values, ValueModel model) {
-		SelectionInList<T> typeSelectionInList =
-			new SelectionInList<T>(values, model);
-		JComboBox type = BasicComponentFactory.createComboBox(typeSelectionInList);
-		return type;
+		return createBoundComboBox(values, model, false);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> JComboBox createBoundComboBox(T[] values, ValueModel model, boolean isEntity) {
+		return createBoundComboBox(new DefaultListHolder<T>(Arrays.asList(values)), model, isEntity);
 	}
 	
 	public static <T> JComboBox createBoundComboBox(ValueModel listHolder, ValueModel model) {
+		return createBoundComboBox(listHolder, model, false);
+	}
+	
+	public static <T> JComboBox createBoundComboBox(ValueModel listHolder, ValueModel model, boolean isEntity) {
 		SelectionInList<T> typeSelectionInList =
 			new SelectionInList<T>(listHolder, model);
-		JComboBox type = BasicComponentFactory.createComboBox(typeSelectionInList);
-		return type;
+		JComboBox comboBox = BasicComponentFactory.createComboBox(typeSelectionInList);
+		
+		if (isEntity) {
+			final ListCellRenderer renderer = comboBox.getRenderer();
+			comboBox.setRenderer(new ListCellRenderer() {
+				@Override
+				public Component getListCellRendererComponent(JList list, Object value,
+						int index, boolean isSelected, boolean cellHasFocus) {
+					return renderer.getListCellRendererComponent(list, getDescription(value), index, isSelected, cellHasFocus);
+				}
+
+				private String getDescription(Object value) {
+					return value == null ? "" : ((Entity)value).getDescription();
+				}
+			});
+		}
+		
+		return comboBox;
 	}
 
 	public static JScrollPane createTextArea(ValueModel model, boolean editable) {

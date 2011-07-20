@@ -57,7 +57,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 				
 		@Override
 		public String toString() {
-			return d_drug.toString();
+			return d_drug.getDescription();
 		}
 	}
 	
