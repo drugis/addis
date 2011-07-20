@@ -272,11 +272,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return d_arms;
 	}
 
-	@Deprecated
-	public void addArm(Arm arm) {
-		getArms().add(arm);
-	}
-	
 	public ObservableList<Epoch> getEpochs() {
 		return d_epochs;
 	}
@@ -670,15 +665,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return true;
 	}
 
-	@Deprecated
-	public Drug getDrug(Arm arm) {
-		Activity activity = getActivity(arm);
-		if(activity instanceof TreatmentActivity) {
-			return ((TreatmentActivity)activity).getTreatments().get(0).getDrug();
-		}
-		return null;
-	}
-	
 	public DrugSet getDrugs(Arm a) {
 		Activity activity = getActivity(a);
 		if(activity instanceof TreatmentActivity) {
@@ -687,17 +673,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return new DrugSet();
 	}
 	
-	@Deprecated
-	public AbstractDose getDose(Arm arm) {
-		return getTreatment(arm) == null ? null : getTreatment(arm).getTreatments().get(0).getDose();
-	}
-
-	@Deprecated
-	public void setDrug(Arm arm, Drug drug) {
-		ObservableList<DrugTreatment> treatments = getTreatment(arm).getTreatments();
-		treatments.get(0).setDrug(drug);
-	}
-
 	public boolean deepEquals(Entity obj) {
 		if (!equals(obj)) {
 			return false;

@@ -31,6 +31,7 @@ import java.util.Map;
 
 import javax.swing.table.TableModel;
 
+import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -74,13 +75,17 @@ public class StudyPresentation extends PresentationModel<Study> {
 		d_doseHolder = new ListeningCharacteristicHolder(s, DerivedStudyCharacteristic.DOSING) {
 			@Override
 			protected Object getNewValue() {
-				Dosing dose = DerivedStudyCharacteristic.Dosing.FIXED;
-				for (Arm pg : getBean().getArms()) {
-					if (getBean().getDose(pg) != null)
-						if (getBean().getDose(pg) instanceof FlexibleDose)
-							dose = DerivedStudyCharacteristic.Dosing.FLEXIBLE; 
+				Dosing dosing = DerivedStudyCharacteristic.Dosing.FIXED;
+				for (Arm a : getBean().getArms()) {
+					if (getBean().getTreatment(a) != null) {
+						for (AbstractDose dose : getBean().getTreatment(a).getDoses()) {
+							if (dose != null && dose instanceof FlexibleDose) {
+								dosing = DerivedStudyCharacteristic.Dosing.FLEXIBLE;
+							}
+						}
+					}
 				}
-				return dose;
+				return dosing;
 			}			
 		};
 		addToCharMap(d_doseHolder);
