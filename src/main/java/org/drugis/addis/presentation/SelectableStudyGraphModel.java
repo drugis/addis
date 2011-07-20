@@ -31,9 +31,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.graph.UndirectedSubgraph;

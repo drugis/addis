@@ -34,7 +34,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;

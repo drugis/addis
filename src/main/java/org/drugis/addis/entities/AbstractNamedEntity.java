@@ -76,4 +76,9 @@ public abstract class AbstractNamedEntity<T extends TypeWithName> extends Abstra
 		}
 		return getName().compareTo(other.getName());
 	}
+	
+	@Override
+	public String getDescription() {
+		return getName();
+	}
 }

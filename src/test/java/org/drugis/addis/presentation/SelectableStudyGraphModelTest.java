@@ -35,9 +35,9 @@ import java.util.List;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,7 +82,7 @@ public class SelectableStudyGraphModelTest {
 	public void testIsSelectionCollected() {
 		assertTrue(d_pm.isSelectionConnected());
 		
-		d_drugs.remove(ExampleData.buildDrugFluoxetine());
+		d_drugs.remove(new DrugSet(ExampleData.buildDrugFluoxetine()));
 		d_drugListHolder = new DefaultListHolder<DrugSet>(d_drugs);
 		d_pm = new SelectableStudyGraphModel(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
 				new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()),

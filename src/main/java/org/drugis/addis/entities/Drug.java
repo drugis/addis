@@ -59,7 +59,16 @@ public class Drug extends AbstractNamedEntity<Drug> implements Comparable<Drug> 
 		}
 		return false;
 	}
-
+	
+	@Override
+	public boolean deepEquals(Entity other) {
+		if(!equals(other)) {
+			return false;
+		}
+		Drug d = (Drug) other;
+		return (getAtcCode().equals(d.getAtcCode()));
+	}
+	
 	@Override
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();

@@ -41,9 +41,9 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.gui.AddisWindow;
@@ -395,7 +395,7 @@ public class BenefitRiskWizard extends Wizard {
 				ValueHolder<Boolean> enabledModel  = d_pm.getAlternativeEnabledModel(d);
 				ValueHolder<Boolean> selectedModel = d_pm.getAlternativeSelectedModel(d);
 				
-				JCheckBox drugCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(d.getName(), enabledModel, selectedModel);
+				JCheckBox drugCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(d.getDescription(), enabledModel, selectedModel);
 				builder.add(drugCheckbox, cc.xy(1, row += 2));
 			}
 			

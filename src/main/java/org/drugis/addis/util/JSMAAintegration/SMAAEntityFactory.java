@@ -29,13 +29,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Beta;
@@ -174,7 +174,7 @@ public class SMAAEntityFactory<AltType extends Entity> {
 		if(d_entityAlternativeMap.containsKey(a2))
 			return d_entityAlternativeMap.get(a2);
 
-		Alternative a = new Alternative(a2.getName());
+		Alternative a = new Alternative(a2.getDescription());
 		d_entityAlternativeMap.put((AltType)a2, a);
 		return a;
 	}

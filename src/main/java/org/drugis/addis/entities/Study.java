@@ -36,7 +36,6 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.StudyActivity.UsedBy;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.RebuildableHashMap;
 import org.drugis.addis.util.comparator.OutcomeComparator;

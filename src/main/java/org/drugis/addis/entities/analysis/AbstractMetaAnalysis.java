@@ -31,9 +31,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -170,7 +173,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	}
 	
 	public List<DrugSet> getIncludedDrugs() {
-		return Collections.unmodifiableList(d_drugs);
+		return Collections.unmodifiableList(new ArrayList<DrugSet>(d_drugs));
 	}
 	
 	public Arm getArm(Study s, DrugSet d) {
@@ -188,13 +191,11 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	}
 
 	private static List<DrugSet> calculateDrugs(Map<Study, Map<DrugSet, Arm>> armMap) {
-		Set<DrugSet> drugs = new HashSet<DrugSet>();
+		SortedSet<DrugSet> drugs = new TreeSet<DrugSet>();
 		for (Map<DrugSet, Arm> entry : armMap.values()) {
 			drugs.addAll(entry.keySet());
 		}
-		List<DrugSet> list = new ArrayList<DrugSet>(drugs);
-		// Collections.sort(list); FIXME
-		return list;
+		return new ArrayList<DrugSet>(drugs);
 	}
 
 	private static List<Study> calculateStudies(Map<Study, Map<DrugSet, Arm>> armMap) {

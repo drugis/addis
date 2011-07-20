@@ -38,6 +38,7 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.FixedDose;
@@ -66,8 +67,8 @@ public class RandomEffectsMetaAnalysisTest {
 	 * 
 	 */
 	
-	private Drug d_fluox;
-	private Drug d_sertr;
+	private DrugSet d_fluox;
+	private DrugSet d_sertr;
 	
 	private Indication d_ind;
 	private Endpoint d_rateEndpoint;
@@ -81,8 +82,8 @@ public class RandomEffectsMetaAnalysisTest {
 	@Before
 	public void setUp() {
 		d_ind = new Indication(001L, "Impression");
-		d_fluox = new Drug("Fluoxetine","01");
-		d_sertr = new Drug("Sertraline","02");
+		d_fluox = new DrugSet(new Drug("Fluoxetine","01"));
+		d_sertr = new DrugSet(new Drug("Sertraline","02"));
 		d_rateEndpoint = new Endpoint("rate", Variable.Type.RATE);
 		d_contEndpoint = new Endpoint("continuous", Variable.Type.CONTINUOUS);
 		
@@ -98,7 +99,7 @@ public class RandomEffectsMetaAnalysisTest {
 		d_studyList.add(d_fava);
 		d_studyList.add(d_newhouse);
 		d_studyList.add(d_sechter);
-		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, new DrugSet(d_fluox), new DrugSet(d_sertr));
+		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, d_fluox, d_sertr);
 	}
 	
 	@Test
@@ -108,8 +109,8 @@ public class RandomEffectsMetaAnalysisTest {
 		for (int i = 0; i < d_studyList.size(); ++i) {
 			StudyArmsEntry studyArmsEntry = entries.get(i);
 			assertEquals(d_studyList.get(i), studyArmsEntry.getStudy());
-			assertEquals(new DrugSet(d_fluox), studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getBase()));
-			assertEquals(new DrugSet(d_sertr), studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getSubject()));
+			assertEquals(d_fluox, studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getBase()));
+			assertEquals(d_sertr, studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getSubject()));
 			assertTrue(d_studyList.get(i).getArms().contains(studyArmsEntry.getBase()));
 			assertTrue(d_studyList.get(i).getArms().contains(studyArmsEntry.getSubject()));
 		}
@@ -120,7 +121,7 @@ public class RandomEffectsMetaAnalysisTest {
 		Indication newInd = new Indication(666L, "bad");
 		Study newStudy = createRateStudy("name", 0, 10, 0, 20, newInd);
 		d_studyList.add(newStudy);
-		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, new DrugSet(d_fluox), new DrugSet(d_sertr));
+		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, d_fluox, d_sertr);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -158,7 +159,7 @@ public class RandomEffectsMetaAnalysisTest {
 	
 	@Test
 	public void testIncludedDrugs() {
-		assertEquals(Arrays.asList(new Drug [] {d_fluox, d_sertr}), d_rema.getIncludedDrugs());
+		assertEquals(Arrays.asList(new DrugSet [] {d_fluox, d_sertr}), d_rema.getIncludedDrugs());
 	}
 	
 	@Test
@@ -226,7 +227,7 @@ public class RandomEffectsMetaAnalysisTest {
 		studies.add(s2);
 		
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta",
-				d_contEndpoint, studies, new DrugSet(d_fluox), new DrugSet(d_sertr));
+				d_contEndpoint, studies, d_fluox, d_sertr);
 		RandomEffectMetaAnalysisRelativeEffect<Measurement> relativeEffect = ma.getRelativeEffect(BasicMeanDifference.class);
 		assertEquals(2.5, relativeEffect.getConfidenceInterval().getPointEstimate(), 0.01);
 	}
@@ -238,8 +239,8 @@ public class RandomEffectsMetaAnalysisTest {
 		Study s = new Study(studyName, ind);
 		s.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_rateEndpoint));
 		
-		addRateMeasurement(s, d_fluox, fluoxSize, fluoxResp);		
-		addRateMeasurement(s, d_sertr, sertraSize, sertraResp);
+		addRateMeasurement(s, d_fluox.getContents().first(), fluoxSize, fluoxResp);		
+		addRateMeasurement(s, d_sertr.getContents().first(), sertraSize, sertraResp);
 		
 		return s;
 	}
@@ -251,8 +252,8 @@ public class RandomEffectsMetaAnalysisTest {
 		Study s = new Study(studyName, ind);
 		s.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_contEndpoint));
 		
-		addContinuousMeasurement(s, d_fluox, fluoxSize, fluoxMean, fluoxDev);
-		addContinuousMeasurement(s, d_sertr, sertrSize, sertrMean, sertrDev);
+		addContinuousMeasurement(s, d_fluox.getContents().first(), fluoxSize, fluoxMean, fluoxDev);
+		addContinuousMeasurement(s, d_sertr.getContents().first(), sertrSize, sertrMean, sertrDev);
 		
 		return s ;
 	}
@@ -283,8 +284,8 @@ public class RandomEffectsMetaAnalysisTest {
 	@Test
 	public void testGetDependencies() {
 		HashSet<Entity> deps = new HashSet<Entity>();
-		deps.add(d_fluox);
-		deps.add(d_sertr);
+		deps.addAll(d_fluox.getContents());
+		deps.addAll(d_sertr.getContents());
 		deps.add(d_ind);
 		deps.add(d_rateEndpoint);
 		deps.addAll(Arrays.asList(new Study[]{d_bennie, d_boyer, d_fava, d_newhouse, d_sechter}));
@@ -294,12 +295,12 @@ public class RandomEffectsMetaAnalysisTest {
 	
 	@Test
 	public void testFilterUndefinedRelativeEffects() {
-		List<BasicRelativeEffect<? extends Measurement>> expected = d_rema.getFilteredRelativeEffects(new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class);
+		List<BasicRelativeEffect<? extends Measurement>> expected = d_rema.getFilteredRelativeEffects(d_fluox, d_sertr, BasicOddsRatio.class);
 		Study zeroRate = createRateStudy("ZeroRate 2012", 0, 120, 86, 118, d_ind);
 		d_studyList.add(zeroRate);
-		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, new DrugSet(d_fluox), new DrugSet(d_sertr));
-		List<BasicRelativeEffect<? extends Measurement>> actual = d_rema.getFilteredRelativeEffects(new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class);
-		assertFalse(RelativeEffectFactory.buildRelativeEffect(zeroRate, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class, false).isDefined());
+		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, d_fluox, d_sertr);
+		List<BasicRelativeEffect<? extends Measurement>> actual = d_rema.getFilteredRelativeEffects(d_fluox, d_sertr, BasicOddsRatio.class);
+		assertFalse(RelativeEffectFactory.buildRelativeEffect(zeroRate, d_rateEndpoint, d_fluox, d_sertr, BasicOddsRatio.class, false).isDefined());
 		ADDISTestUtil.assertRelativeEffectListEquals(expected, actual);
 	}
 }

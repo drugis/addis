@@ -26,8 +26,8 @@ package org.drugis.addis.presentation;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MeasurementSource.Listener;
 import org.drugis.addis.entities.relativeeffect.Distribution;
@@ -64,7 +64,7 @@ public class BRRelativeMeasurementTableModel extends AbstractTableModel {
 		if (index == 0) {
 			return "Criterion";
 		}
-		return d_br.getNonBaselineAlternatives().get(index-1).toString();	
+		return d_br.getNonBaselineAlternatives().get(index-1).getDescription();	
 	}
 	
 	@Override

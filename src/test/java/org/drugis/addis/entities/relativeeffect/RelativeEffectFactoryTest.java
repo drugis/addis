@@ -30,10 +30,10 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.junit.Test;
 
 public class RelativeEffectFactoryTest {

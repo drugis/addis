@@ -30,10 +30,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
@@ -61,7 +61,7 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 	private List<Treatment> toTreatments(List<DrugSet> drugs) {
 		List<Treatment> ts = new ArrayList<Treatment>();
 		for (DrugSet d : drugs) {
-			ts.add(new Treatment(d.getName()));
+			ts.add(new Treatment(d.getDescription()));
 		}
 		return ts;
 	}

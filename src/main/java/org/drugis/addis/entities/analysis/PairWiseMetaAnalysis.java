@@ -24,6 +24,8 @@
 
 package org.drugis.addis.entities.analysis;
 
+import org.drugis.addis.entities.DrugSet;
+
 
 public interface PairWiseMetaAnalysis extends MetaAnalysis {
 

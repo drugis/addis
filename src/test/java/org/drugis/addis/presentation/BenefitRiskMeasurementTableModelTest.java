@@ -29,8 +29,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.junit.Before;
@@ -59,8 +59,8 @@ public class BenefitRiskMeasurementTableModelTest {
 	
 	@Test
 	public void testGetDrugNames() {
-		for (int i=0; i<d_brAnalysis.getDrugs().size(); ++i)
-			assertEquals(d_brAnalysis.getDrugs().get(i).getName(), d_pm.getValueAt(i, 0));
+		for (int i = 0; i < d_brAnalysis.getDrugs().size(); ++i)
+			assertEquals(d_brAnalysis.getDrugs().get(i).getDescription(), d_pm.getValueAt(i, 0));
 	}
 	
 	@Test

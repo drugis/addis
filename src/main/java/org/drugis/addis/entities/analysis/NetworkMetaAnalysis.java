@@ -25,6 +25,8 @@
 package org.drugis.addis.entities.analysis;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,7 @@ import java.util.Map;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -77,11 +80,17 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	
 
 	public NetworkMetaAnalysis(String name, Indication indication,
-			OutcomeMeasure om, List<? extends Study> studies, List<DrugSet> drugs,
+			OutcomeMeasure om, List<? extends Study> studies, Collection<DrugSet> drugs,
 			Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
-		super(name, indication, om, studies, drugs, armMap);
+		super(name, indication, om, studies, sortDrugs(drugs), armMap);
 	}
 	
+	private static List<DrugSet> sortDrugs(Collection<DrugSet> drugs) {
+		ArrayList<DrugSet> list = new ArrayList<DrugSet>(drugs);
+		Collections.sort(list);
+		return list;
+	}
+
 	public NetworkMetaAnalysis(String name, Indication indication,
 			OutcomeMeasure om, Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, armMap);
@@ -122,11 +131,11 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 					Measurement m = s.getMeasurement(v, a);
 					if(m instanceof BasicRateMeasurement) {
 						BasicRateMeasurement brm = (BasicRateMeasurement)m;	
-						((DichotomousNetworkBuilder) getTypedBuilder(brm)).add(s.getName(), s.getDrugs(a).toString(), // FIXME
+						((DichotomousNetworkBuilder) getTypedBuilder(brm)).add(s.getName(), s.getDrugs(a).getDescription(),
 																			   brm.getRate(), brm.getSampleSize());
 					} else if (m instanceof BasicContinuousMeasurement) {
 						BasicContinuousMeasurement cm = (BasicContinuousMeasurement) m;
-						((ContinuousNetworkBuilder) getTypedBuilder(cm)).add(s.getName(), s.getDrugs(a).toString(), // FIXME
+						((ContinuousNetworkBuilder) getTypedBuilder(cm)).add(s.getName(), s.getDrugs(a).getDescription(),
 																	           cm.getMean(), cm.getStdDev(), cm.getSampleSize());
 					}
 				}
@@ -168,7 +177,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 
 	public NetworkBuilder<? extends org.drugis.mtc.Measurement> getBuilder() {
 		if (d_builder == null) {
-			d_builder = createBuilder(d_studies, d_drugs, d_armMap);
+			d_builder = createBuilder(d_studies, getIncludedDrugs(), d_armMap);
 		}
 		return d_builder;
 	}
@@ -240,7 +249,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			return new NetworkRelativeEffect<Measurement>(); // empty relative effect.
 		
 		ConsistencyModel consistencyModel = getConsistencyModel();
-		Parameter param = consistencyModel.getRelativeEffect(new Treatment(d1.toString()), new Treatment(d2.toString()));
+		Parameter param = consistencyModel.getRelativeEffect(new Treatment(d1.getDescription()), new Treatment(d2.getDescription()));
 		NormalSummary estimate = getNormalSummary(consistencyModel, param);
 		
 		if (isContinuous()) {
@@ -259,7 +268,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	public Treatment getTreatment(DrugSet d) {
-		return getBuilder().getTreatment(d.toString());
+		return getBuilder().getTreatment(d.getDescription());
 	}
 
 	public List<BasicParameter> getSplitParameters() {

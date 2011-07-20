@@ -26,13 +26,13 @@ package org.drugis.addis.entities.relativeeffect;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.analysis.DrugSet;
 
 public class RelativeEffectFactory {
 	public static <T extends RelativeEffect<?>> RelativeEffect<?> buildRelativeEffect(

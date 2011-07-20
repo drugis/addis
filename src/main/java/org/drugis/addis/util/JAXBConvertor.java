@@ -58,6 +58,7 @@ import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.CharacteristicsMap;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Domain;
@@ -91,7 +92,6 @@ import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -1264,7 +1264,7 @@ public class JAXBConvertor {
 		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis newBr = new org.drugis.addis.entities.data.MetaBenefitRiskAnalysis();
 		newBr.setName(br.getName());
 		newBr.setAnalysisType(br.getAnalysisType());
-		newBr.setBaseline(nameReference(br.getBaseline().getName()));
+		newBr.setBaseline(nameReference(br.getBaseline().getDescription()));
 		newBr.setIndication(nameReference(br.getIndication().getName()));
 		
 		DrugReferences drugRefs = new DrugReferences();

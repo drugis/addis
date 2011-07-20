@@ -37,6 +37,7 @@ import java.util.Set;
 import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
@@ -313,7 +314,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		for (MetaAnalysis ma : getMetaAnalyses()) {
 			if (ma instanceof NetworkMetaAnalysis) {
 				for(DrugSet d: getNonBaselineAlternatives()) {
-					Parameter p = new BasicParameter(new Treatment(getBaseline().toString()), new Treatment(d.getName()));
+					Parameter p = new BasicParameter(new Treatment(getBaseline().getDescription()), new Treatment(d.getDescription()));
 					NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
 					summaryList.add(nma.getNormalSummary(nma.getConsistencyModel(), p));
 				}

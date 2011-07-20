@@ -26,6 +26,7 @@ package org.drugis.addis.entities.analysis;
 
 import java.util.List;
 
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;

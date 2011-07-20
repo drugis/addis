@@ -24,7 +24,7 @@
 
 package org.drugis.addis.gui;
 
-import org.drugis.addis.entities.analysis.DrugSet;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.SelectableStudyGraphModel;
 import org.drugis.addis.presentation.wizard.SelectedDrugsGraphListener;

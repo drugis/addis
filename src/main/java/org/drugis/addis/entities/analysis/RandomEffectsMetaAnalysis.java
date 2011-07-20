@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -61,8 +62,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		checkREDataConsistency(studies, drug1, drug2);
 	}
 
-	private void checkREDataConsistency(List<? extends Study> studies,
-			DrugSet drug1, DrugSet drug2) {
+	private void checkREDataConsistency(List<? extends Study> studies, DrugSet drug1, DrugSet drug2) {
 		if (studies.size() == 0)
 			throw new IllegalArgumentException("No studies in MetaAnalysis");
 		for (Study s : studies)

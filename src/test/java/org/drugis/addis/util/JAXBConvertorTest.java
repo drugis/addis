@@ -46,6 +46,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -66,6 +68,7 @@ import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.CharacteristicsMap;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.Domain;
@@ -100,7 +103,6 @@ import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -1256,7 +1258,7 @@ public class JAXBConvertorTest {
 			studies.add(studyEnt);
 		}
 
-		List<DrugSet> drugs = new ArrayList<DrugSet>();
+		SortedSet<DrugSet> drugs = new TreeSet<DrugSet>();
 		drugs.add(new DrugSet(ExampleData.buildDrugFluoxetine()));
 		drugs.add(new DrugSet(ExampleData.buildDrugParoxetine()));
 		drugs.add(new DrugSet(ExampleData.buildDrugSertraline()));

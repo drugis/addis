@@ -30,10 +30,10 @@ import java.util.Map;
 
 import javax.swing.table.TableModel;
 
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.Task;

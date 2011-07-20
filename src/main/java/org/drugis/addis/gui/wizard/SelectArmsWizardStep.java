@@ -34,11 +34,11 @@ import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.StudyGraphModel;

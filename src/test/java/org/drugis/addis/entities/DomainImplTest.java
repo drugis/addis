@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;

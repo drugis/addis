@@ -26,7 +26,7 @@ package org.drugis.addis.gui;
 
 import java.awt.Color;
 
-import org.drugis.addis.entities.analysis.DrugSet;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.jgraph.graph.AttributeMap;

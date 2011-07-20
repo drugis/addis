@@ -46,7 +46,6 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,9 +89,9 @@ public class StudyTest {
 	@Test
 	public void testGetDrugs() {
 		Study s = ExampleData.buildStudyDeWilde();
-		Set<Drug> expected = new HashSet<Drug>();
-		expected.add(ExampleData.buildDrugFluoxetine());
-		expected.add(ExampleData.buildDrugParoxetine());
+		Set<DrugSet> expected = new HashSet<DrugSet>();
+		expected.add(new DrugSet(ExampleData.buildDrugFluoxetine()));
+		expected.add(new DrugSet(ExampleData.buildDrugParoxetine()));
 		assertEquals(expected, s.getDrugs());
 	}
 	
@@ -527,23 +526,24 @@ public class StudyTest {
 		d_clone.setMeasurement(ExampleData.buildAdverseEventConvulsion(), d_clone.getArms().get(0), m);
 		assertEquals(Collections.emptySet(), d_clone.getMeasuredDrugs(ExampleData.buildAdverseEventConvulsion()));
 		m.setRate(20);
-		Drug d = d_clone.getDrug(d_clone.getArms().get(0));
+		DrugSet d = d_clone.getDrugs(d_clone.getArms().get(0));
 		assertEquals(Collections.singleton(d), d_clone.getMeasuredDrugs(ExampleData.buildAdverseEventConvulsion()));
 	}
 	
 	@Test
 	public void testMeasuredArms() {
 		Arm a1 = d_clone.getArms().get(0);
-		Drug d1 = d_clone.getDrug(a1);
-		assertEquals(Collections.singletonList(a1), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), new DrugSet(d1)));
+		DrugSet d1 = d_clone.getDrugs(a1);
+		assertEquals(Collections.singletonList(a1), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), d1));
 		Arm a2 = d_clone.getArms().get(1);
-		Drug d2 = d_clone.getDrug(a2);
-		assertEquals(Collections.singletonList(a2), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), new DrugSet(d2)));
+		DrugSet d2 = d_clone.getDrugs(a2);
+		assertEquals(Collections.singletonList(a2), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), d2));
 	
-		assertEquals(Collections.emptyList(), d_clone.getMeasuredArms(ExampleData.buildAdverseEventConvulsion(), new DrugSet(d1)));
+		assertEquals(Collections.emptyList(), d_clone.getMeasuredArms(ExampleData.buildAdverseEventConvulsion(), d1));
 		
-		d_clone.createAndAddArm("Bla", 100, d1, new FixedDose());
-		assertEquals(Collections.singletonList(a1), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), new DrugSet(d1)));
+		assertEquals(1, d1.getContents().size()); 		// Sanity check
+		d_clone.createAndAddArm("Bla", 100, d1.getContents().first(), new FixedDose());
+		assertEquals(Collections.singletonList(a1), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), d1));
 
 	}
 }

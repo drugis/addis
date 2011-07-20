@@ -39,4 +39,9 @@ public interface Entity extends Observable {
 	 * Deep equality (i.e. equality of all data members).
 	 */
 	public boolean deepEquals(Entity other);
+	
+	/**
+	 * Human-readable string describing this entity, e.g. used to display it in the GUI.
+	 */
+	public String getDescription();
 }

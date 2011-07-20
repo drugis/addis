@@ -24,6 +24,7 @@
 
 package org.drugis.addis.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -31,8 +32,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.common.EqualsUtil;
 
 public class EntityUtil {
@@ -40,6 +41,10 @@ public class EntityUtil {
 		return o1 == null ? o2 == null : o1.deepEquals(o2);
 	}
 
+	public static boolean deepEqual(Collection<? extends Entity> o1, Collection<? extends Entity> o2) {
+		return deepEqual(new ArrayList<Entity>(o1), new ArrayList<Entity>(o2));
+	}
+	
 	public static boolean deepEqual(List<? extends Entity> o1, List<? extends Entity> o2) {
 		if (o1.size() == o2.size()) {
 			for (int i = 0; i < o1.size(); ++i) {

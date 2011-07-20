@@ -30,8 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.junit.Before;
@@ -61,7 +61,7 @@ public class BRRelativeMeasurementTableModelTest {
 	public void testGetColumnNames() {
 		List<DrugSet> drugs = getNonBaselines();
 		for (int i = 0; i < drugs.size(); ++i) {
-			assertEquals(drugs.get(i).getName(), d_pm.getColumnName(i + 1));
+			assertEquals(drugs.get(i).getDescription(), d_pm.getColumnName(i + 1));
 		}
 	}
 

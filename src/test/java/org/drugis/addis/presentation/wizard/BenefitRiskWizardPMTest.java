@@ -38,13 +38,12 @@ import java.util.TreeSet;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.presentation.ValueHolder;
@@ -58,6 +57,9 @@ public class BenefitRiskWizardPMTest {
 	private BenefitRiskWizardPM d_pm;
 	private Indication d_indication;
 	private Study d_study;
+	private DrugSet d_fluoxSet;
+	private DrugSet d_paroxSet;
+	private DrugSet d_sertrSet;
 
 	@Before
 	public void setUp() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
@@ -66,6 +68,11 @@ public class BenefitRiskWizardPMTest {
 		d_pm = new BenefitRiskWizardPM(d_domain); 
 		d_indication = ExampleData.buildIndicationDepression();
 		d_study = ExampleData.buildStudyChouinard().clone();
+		
+		d_fluoxSet = new DrugSet(ExampleData.buildDrugFluoxetine());
+		d_paroxSet = new DrugSet(ExampleData.buildDrugParoxetine());
+		d_sertrSet = new DrugSet(ExampleData.buildDrugSertraline());
+
 		
 		d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisHamD());
 		d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisConvulsion());
@@ -194,7 +201,7 @@ public class BenefitRiskWizardPMTest {
 	@Test
 	public void testGetAlternativeSelectedModel() {
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
-		Drug d = ExampleData.buildDrugParoxetine();
+		DrugSet d = new DrugSet(ExampleData.buildDrugParoxetine());
 		ValueHolder<Boolean> actual = d_pm.getAlternativeSelectedModel(d);
 		assertEquals(false, actual.getValue());
 		actual.setValue(true);
@@ -209,9 +216,9 @@ public class BenefitRiskWizardPMTest {
 		d_pm.getOutcomeSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).setValue(true);
-		assertTrue(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).getValue());
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine()).setValue(false);
+		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
+		assertTrue(d_pm.getAlternativeSelectedModel(d_fluoxSet).getValue());
+		d_pm.getAlternativeSelectedModel(d_paroxSet).setValue(false);
 		assertFalse(d_pm.getCompleteModel().getValue());
 	}
 
@@ -220,8 +227,8 @@ public class BenefitRiskWizardPMTest {
 		d_pm.getIndicationModel().setValue(d_indication);
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).setValue(true);
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine()).setValue(true);
+		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
+		d_pm.getAlternativeSelectedModel(d_paroxSet).setValue(true);
 		assertFalse(d_pm.getCompleteModel().getValue());
 	}
 
@@ -265,8 +272,8 @@ public class BenefitRiskWizardPMTest {
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).setValue(true);
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine()).setValue(true);
+		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
+		d_pm.getAlternativeSelectedModel(d_paroxSet).setValue(true);
 		assertTrue(d_pm.getCompleteModel().getValue());
 		d_pm.getOutcomeSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
 		assertEquals(null, d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).getValue());
@@ -282,8 +289,8 @@ public class BenefitRiskWizardPMTest {
 		d_pm.getOutcomeSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).setValue(true);
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine()).setValue(true);
+		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
+		d_pm.getAlternativeSelectedModel(d_paroxSet).setValue(true);
 		assertTrue(d_pm.getCompleteModel().getValue());
 	}
 
@@ -442,20 +449,19 @@ public class BenefitRiskWizardPMTest {
 
 		// First set a network-analysis with >3 alternatives
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
-		// Select two alternatives
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugSertraline()).setValue(true);
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).setValue(true);
+		d_pm.getAlternativeSelectedModel(d_sertrSet).setValue(true);
+		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
 		
 		// Change to a pair-wise meta-analysis (RandomEffectsMetaAnalysis)
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
 		
 		// The non-included alternative should be deselected and disabled.
-		assertTrue(d_pm.getAlternativeEnabledModel(ExampleData.buildDrugFluoxetine()).getValue());
-		assertTrue(d_pm.getAlternativeEnabledModel(ExampleData.buildDrugParoxetine()).getValue());
-		assertFalse(d_pm.getAlternativeEnabledModel(ExampleData.buildDrugSertraline()).getValue());
-		assertTrue(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).getValue());
-		assertFalse(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine()).getValue());
-		assertFalse(d_pm.getAlternativeSelectedModel(ExampleData.buildDrugSertraline()).getValue());
+		assertTrue(d_pm.getAlternativeEnabledModel(d_fluoxSet).getValue());
+		assertTrue(d_pm.getAlternativeEnabledModel(d_paroxSet).getValue());
+		assertFalse(d_pm.getAlternativeEnabledModel(d_sertrSet).getValue());
+		assertTrue(d_pm.getAlternativeSelectedModel(d_fluoxSet).getValue());
+		assertFalse(d_pm.getAlternativeSelectedModel(d_paroxSet).getValue());
+		assertFalse(d_pm.getAlternativeSelectedModel(d_sertrSet).getValue());
 	}
 	
 	@Test
@@ -470,11 +476,11 @@ public class BenefitRiskWizardPMTest {
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
 		//d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventDiarrhea()).setValue(ExampleData.buildNetworkMetaAnalysis());
 		// Select two alternatives
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugSertraline()).setValue(true);
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).setValue(true);
+		d_pm.getAlternativeSelectedModel(d_sertrSet).setValue(true);
+		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
 		
 		// The other alternative should be disabled.
-		assertFalse(d_pm.getAlternativeEnabledModel(ExampleData.buildDrugParoxetine()).getValue());
+		assertFalse(d_pm.getAlternativeEnabledModel(d_paroxSet).getValue());
 	}
 
 	@Test
@@ -502,11 +508,11 @@ public class BenefitRiskWizardPMTest {
 		// set a couple of network-analyses with >3 alternatives
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
 		// Select two alternatives
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine()).setValue(true);
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).setValue(true);
+		d_pm.getAlternativeSelectedModel(d_paroxSet).setValue(true);
+		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
 		
 		// The other alternative should be enabled.
-		assertTrue(d_pm.getAlternativeEnabledModel(ExampleData.buildDrugParoxetine()).getValue());
+		assertTrue(d_pm.getAlternativeEnabledModel(d_sertrSet).getValue());
 	}
 	
 	@Test
@@ -533,8 +539,8 @@ public class BenefitRiskWizardPMTest {
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
 		
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine()).setValue(true);
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine()).setValue(true);
+		d_pm.getAlternativeSelectedModel(d_paroxSet).setValue(true);
+		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
 		
 		d_pm.getStudyModel().setValue(ExampleData.buildStudyBennie().clone());
 		assertTrue(d_pm.getSelectedCriteria().isEmpty());

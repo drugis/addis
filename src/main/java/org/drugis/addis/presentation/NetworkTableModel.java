@@ -30,8 +30,8 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;

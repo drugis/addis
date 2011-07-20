@@ -40,14 +40,13 @@ import java.util.Map.Entry;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
@@ -378,12 +377,12 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		if(getEvidenceTypeHolder().getValue() == BRAType.Synthesis) {
 			// e is a drug in synthesis; 
 			// safeguard added for spurious checks caused by listeners
-			if(! (e instanceof Drug))
+			if(!(e instanceof DrugSet))
 				return false;
 			if(d_analysisTypeHolder.getValue() == AnalysisType.SMAA)
-				return getAlternativeIncludedInAllSelectedAnalyses((Drug) e);
+				return getAlternativeIncludedInAllSelectedAnalyses((DrugSet) e);
 			else if (d_analysisTypeHolder.getValue() == AnalysisType.LyndOBrien) {
-				if(!getAlternativeIncludedInAllSelectedAnalyses((Drug) e)) {
+				if(!getAlternativeIncludedInAllSelectedAnalyses((DrugSet) e)) {
 					return false;
 				} 
 				return (getAlternativeSelectedModel(e).getValue() == true) || nSelectedAlternatives() < 2;
@@ -409,7 +408,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return false;
 	}
 
-	private boolean getAlternativeIncludedInAllSelectedAnalyses(Drug e) {
+	private boolean getAlternativeIncludedInAllSelectedAnalyses(DrugSet e) {
 		boolean atLeastOneMASelected = false;
 		for(ValueHolder<MetaAnalysis> ma : getSelectedMetaAnalysisHolders()){
 			if(ma.getValue() == null)

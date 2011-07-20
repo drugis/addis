@@ -41,11 +41,10 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyListPresentation;
@@ -61,12 +60,18 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 	private Domain d_domain;
 	private NetworkMetaAnalysisWizardPM d_pm;
+	private DrugSet d_paroxSet;
+	private DrugSet d_fluoxSet;
+	private DrugSet d_sertrSet;
 	
 	@Before
 	public void setUp() {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
 		d_pm = new NetworkMetaAnalysisWizardPM(d_domain, new PresentationModelFactory(d_domain));
+		d_paroxSet = new DrugSet(ExampleData.buildDrugParoxetine());
+		d_fluoxSet = new DrugSet(ExampleData.buildDrugFluoxetine());
+		d_sertrSet = new DrugSet(ExampleData.buildDrugSertraline());
 	}
 	
 	@Test
@@ -77,18 +82,18 @@ public class NetworkMetaAnalysisWizardPMTest {
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		assertTrue((Boolean)completeModel.getValue());
 		
-		ArrayList<Drug> newList = new ArrayList<Drug>();
-		newList.add(ExampleData.buildDrugSertraline());
+		ArrayList<DrugSet> newList = new ArrayList<DrugSet>();
+		newList.add(d_sertrSet);
 		d_pm.getSelectedDrugsModel().setValue(newList);
 		assertFalse((Boolean)completeModel.getValue());
 		
-		newList = new ArrayList<Drug>(newList);
-		newList.add(ExampleData.buildDrugParoxetine());
+		newList = new ArrayList<DrugSet>(newList);
+		newList.add(d_paroxSet);
 		d_pm.getSelectedDrugsModel().setValue(newList);
 		assertFalse((Boolean)completeModel.getValue());
 		
-		newList = new ArrayList<Drug>(newList);		
-		newList.add(ExampleData.buildDrugFluoxetine());
+		newList = new ArrayList<DrugSet>(newList);		
+		newList.add(d_fluoxSet);
 		d_pm.getSelectedDrugsModel().setValue(newList);
 		assertTrue((Boolean)completeModel.getValue());		
 	}
@@ -104,9 +109,9 @@ public class NetworkMetaAnalysisWizardPMTest {
 		newList.addAll(d_pm.getStudiesEndpointAndIndication());
 		assertEquals(newList, listModel.getIncludedStudies().getValue());
 
-		ArrayList<Drug> selectionList = new ArrayList<Drug>();
-		selectionList.add(ExampleData.buildDrugSertraline());
-		selectionList.add(ExampleData.buildDrugParoxetine());
+		ArrayList<DrugSet> selectionList = new ArrayList<DrugSet>();
+		selectionList.add(d_sertrSet);
+		selectionList.add(d_paroxSet);
 		
 		ArrayList<Study> expected = new ArrayList<Study>();
 		PropertyChangeListener mock = JUnitUtil.mockListener(listModel.getIncludedStudies(), "value", newList, expected);
@@ -124,17 +129,17 @@ public class NetworkMetaAnalysisWizardPMTest {
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		ArrayList<Study> allStudiesList = new ArrayList<Study>(d_pm.getStudiesEndpointAndIndication());
 		
-		ArrayList<Drug> selectionList = new ArrayList<Drug>();
-		selectionList.add(ExampleData.buildDrugSertraline());
-		selectionList.add(ExampleData.buildDrugParoxetine());
+		ArrayList<DrugSet> selectionList = new ArrayList<DrugSet>();
+		selectionList.add(d_sertrSet);
+		selectionList.add(d_paroxSet);
 		
-		d_pm.getSelectedDrugsModel().setValue(new ArrayList<Drug>(selectionList));
+		d_pm.getSelectedDrugsModel().setValue(new ArrayList<DrugSet>(selectionList));
 		
 		PropertyChangeListener mock = JUnitUtil.mockListener(listModel.getIncludedStudies(), 
 				"value", new ArrayList<Study>(), allStudiesList);
 		listModel.getIncludedStudies().addValueChangeListener(mock);
 
-		selectionList.add(ExampleData.buildDrugFluoxetine());	
+		selectionList.add(d_fluoxSet);	
 		
 		d_pm.getSelectedDrugsModel().setValue(selectionList);		
 		
@@ -150,9 +155,9 @@ public class NetworkMetaAnalysisWizardPMTest {
 		assertEquals(3, graphModel.vertexSet().size());
 		assertEquals(2, graphModel.edgeSet().size());
 		
-		ArrayList<Drug> selectionList = new ArrayList<Drug>();
-		selectionList.add(ExampleData.buildDrugSertraline());
-		selectionList.add(ExampleData.buildDrugParoxetine());
+		ArrayList<DrugSet> selectionList = new ArrayList<DrugSet>();
+		selectionList.add(d_sertrSet);
+		selectionList.add(d_paroxSet);
 		d_pm.getSelectedDrugsModel().setValue(selectionList);
 
 		assertEquals(2, graphModel.vertexSet().size());
@@ -217,10 +222,10 @@ public class NetworkMetaAnalysisWizardPMTest {
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
 		
-		Drug[] expected = new Drug[] {
-				ExampleData.buildDrugCitalopram(),
-				ExampleData.buildDrugFluoxetine(),
-				ExampleData.buildDrugParoxetine()
+		DrugSet[] expected = new DrugSet[] {
+				new DrugSet(ExampleData.buildDrugCitalopram()),
+				d_fluoxSet,
+				d_paroxSet
 			};
 		
 		assertEquals(Arrays.asList(expected), d_pm.getDrugListModel().getValue());
@@ -277,17 +282,17 @@ public class NetworkMetaAnalysisWizardPMTest {
 	public void testCreateMetaAnalysis() {
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.getSelectedDrugsModel().setValue(Arrays.asList(new Drug[] {
-				ExampleData.buildDrugFluoxetine(),
-				ExampleData.buildDrugParoxetine(),
-				ExampleData.buildDrugSertraline()}));
+		d_pm.getSelectedDrugsModel().setValue(Arrays.asList(new DrugSet[] {
+				d_fluoxSet,
+				d_paroxSet,
+				d_sertrSet}));
 		
 		Study multiple = ExampleData.buildStudyMultipleArmsperDrug();
 		List<Arm> arms = new ArrayList<Arm>(multiple.getArms());
-		arms.remove(d_pm.getSelectedArmModel(multiple, new DrugSet(ExampleData.buildDrugParoxetine())).getValue());
-		arms.remove(d_pm.getSelectedArmModel(multiple, new DrugSet(ExampleData.buildDrugFluoxetine())).getValue());
+		arms.remove(d_pm.getSelectedArmModel(multiple, d_paroxSet).getValue());
+		arms.remove(d_pm.getSelectedArmModel(multiple, d_fluoxSet).getValue());
 		Arm arm = arms.get(0); // The currently unused arm 
-		d_pm.getSelectedArmModel(multiple, new DrugSet(ExampleData.buildDrugParoxetine())).setValue(arm);
+		d_pm.getSelectedArmModel(multiple, d_paroxSet).setValue(arm);
 		
 		NetworkMetaAnalysis ma = d_pm.createMetaAnalysis("name");
 		
@@ -296,7 +301,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 				d_pm.getStudyListModel().getSelectedStudiesModel().getValue());
 		assertEquals(d_pm.getOutcomeMeasureModel().getValue(), ma.getOutcomeMeasure());
 		assertEquals(d_pm.getIndicationModel().getValue(), ma.getIndication());
-		assertEquals(arm, ma.getArm(multiple, new DrugSet(ExampleData.buildDrugParoxetine())));
+		assertEquals(arm, ma.getArm(multiple, d_paroxSet));
 		for (Study s : ma.getIncludedStudies()) {
 			for (DrugSet d : s.getDrugs()) {
 				assertNotNull(ma.getArm(s, d));

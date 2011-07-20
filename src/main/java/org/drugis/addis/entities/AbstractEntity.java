@@ -34,4 +34,8 @@ public abstract class AbstractEntity extends AbstractObservable implements Entit
 	public boolean deepEquals(Entity other) {
 		return equals(other);
 	}
+	
+	public String getDescription() {
+		return toString();
+	}
 }

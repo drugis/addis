@@ -39,10 +39,10 @@ import java.util.Set;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.presentation.StudyGraphModel.Edge;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.drugis.common.JUnitUtil;
@@ -150,7 +150,7 @@ public class StudyGraphModelTest {
 	
 	@Test
 	public void testFindVertex() {
-		assertEquals(ExampleData.buildDrugFluoxetine(),
+		assertEquals(new DrugSet(ExampleData.buildDrugFluoxetine()),
 				d_pm.findVertex(new DrugSet(ExampleData.buildDrugFluoxetine())).getDrug());
 	}
 	

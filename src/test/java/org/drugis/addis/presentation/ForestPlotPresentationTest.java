@@ -35,6 +35,7 @@ import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
@@ -43,7 +44,6 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
-import org.drugis.addis.entities.analysis.DrugSet;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
@@ -138,8 +138,8 @@ public class ForestPlotPresentationTest {
 	
 	@Test
 	public void testGetDrugsLabel() {
-		assertEquals("DrugA", d_pm.getLowValueFavorsDrug().toString());
-		assertEquals("DrugB", d_pm.getHighValueFavorsDrug().toString());
+		assertEquals("DrugA", d_pm.getLowValueFavorsDrug().getDescription());
+		assertEquals("DrugB", d_pm.getHighValueFavorsDrug().getDescription());
 	}
 	
 	@Test
@@ -216,8 +216,8 @@ public class ForestPlotPresentationTest {
 	@Test
 	public void testLabelsForLowerIsBetter() {
 		d_endpoint.setDirection(Direction.LOWER_IS_BETTER);
-		assertEquals("DrugB", d_pm.getLowValueFavorsDrug().toString());
-		assertEquals("DrugA", d_pm.getHighValueFavorsDrug().toString());
+		assertEquals("DrugB", d_pm.getLowValueFavorsDrug().getDescription());
+		assertEquals("DrugA", d_pm.getHighValueFavorsDrug().getDescription());
 	}
 	
 	private static void assertRelativeEffectEqual(RelativeEffect<?> expected,

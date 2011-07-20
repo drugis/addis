@@ -60,12 +60,11 @@ public class DrugTest {
 	@Test
 	public void testEquals() {
 		Drug d1 = new Drug("Paroxetine", "atc");
-		Drug d2 = new Drug("Paroxetine", "atc");
-		Drug d3 = new Drug("Fluoxetine", "atc");
+		Drug d2 = new Drug("Paroxetine", "atasdfc");
+		Drug d3 = new Drug("Fluoxetine", "atcasdfasdf");
 		
 		assertTrue(d1.equals(d2));
 		assertFalse(d1.equals(d3));
-		// TODO: Ask Gert about atc code (does it also have to be equal?)
 	}
 	
 	@Test
@@ -75,4 +74,13 @@ public class DrugTest {
 		assertEquals(d1.hashCode(), d2.hashCode());
 	}
 
+	@Test
+	public void testDeepEqual() {
+		Drug d1 = new Drug("Paroxetine", "atc");
+		Drug d2 = new Drug("Paroxetine", "atasdfc");
+		Drug d3 = new Drug("Fluoxetine", "atasdfc");
+		assertTrue(d1.deepEquals(d1));
+		assertFalse(d1.deepEquals(d2));
+		assertFalse(d2.deepEquals(d3));
+	}
 }

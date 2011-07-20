@@ -28,7 +28,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import org.drugis.addis.entities.analysis.DrugSet;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.gui.SelectableStudyGraph;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
