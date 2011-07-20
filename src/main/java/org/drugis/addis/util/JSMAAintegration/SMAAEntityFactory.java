@@ -164,18 +164,18 @@ public class SMAAEntityFactory<AltType extends Entity> {
 	Alternative getAlternative(Study study, Arm arm) {
 		if(d_entityAlternativeMap.containsKey(arm))
 			return d_entityAlternativeMap.get(arm);
-		Alternative a = new Alternative(study.getDrugs(arm) + " " + study.getDose(arm));
+		Alternative a = new Alternative(study.getTreatment(arm).getDescription());
 		d_entityAlternativeMap.put((AltType) arm, a);
 		return a;
 	}
 	
 	@SuppressWarnings("unchecked")
-	Alternative getAlternative(DrugSet a2) {
-		if(d_entityAlternativeMap.containsKey(a2))
-			return d_entityAlternativeMap.get(a2);
+	Alternative getAlternative(DrugSet drugs) {
+		if(d_entityAlternativeMap.containsKey(drugs))
+			return d_entityAlternativeMap.get(drugs);
 
-		Alternative a = new Alternative(a2.getDescription());
-		d_entityAlternativeMap.put((AltType)a2, a);
+		Alternative a = new Alternative(drugs.getDescription());
+		d_entityAlternativeMap.put((AltType)drugs, a);
 		return a;
 	}
 }
