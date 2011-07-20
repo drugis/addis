@@ -84,6 +84,6 @@ public class ListPanel extends JPanel {
 	}
 	
 	private String makeListItem(Entity e) {
-		return "<li>" + e.toString() + "</li>";
+		return "<li>" + e.getDescription() + "</li>";
 	}
 }

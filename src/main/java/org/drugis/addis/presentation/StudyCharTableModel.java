@@ -112,4 +112,5 @@ public class StudyCharTableModel extends AbstractTableModel {
 			fireTableStructureChanged();
 		}		
 	}
+	
 }
