@@ -269,7 +269,7 @@
 		<xs:sequence>
 			<xs:element name="indication" type="NameReference"/>
 			<xs:element name="baseline" type="NameReference"/>
-			<xs:element name="drugs" type="DrugReferences"/>
+			<xs:element name="alternatives" type="AlternativeDrugSets"/>
 			<xs:element name="metaAnalyses" type="MetaAnalysisReferences"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string"/>
@@ -494,6 +494,11 @@
 			<xs:element name="arms" type="AnalysisArms"/>
 		</xs:sequence>
 	</xs:complexType>
+	<xs:complexType name="AlternativeDrugSets">
+		<xs:sequence minOccurs="2" maxOccurs="unbounded">
+			<xs:element name="alternative" type="AnalysisDrugs"/>
+		</xs:sequence>
+	</xs:complexType>
 	<xs:complexType name="AnalysisDrugs">
 		<xs:sequence maxOccurs="unbounded">
 			<xs:element name="drug" type="NameReference"/>
@@ -604,11 +609,6 @@
 	<xs:complexType name="ArmReference">
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="study" type="xs:string" use="required"/>
-	</xs:complexType>
-	<xs:complexType name="DrugReferences">
-		<xs:sequence maxOccurs="unbounded">
-			<xs:element name="drug" type="NameReference"/>
-		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="MetaAnalysisReferences">
 		<xs:sequence maxOccurs="unbounded">

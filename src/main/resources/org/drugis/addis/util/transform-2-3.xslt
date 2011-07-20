@@ -41,4 +41,17 @@
             </drugTreatment>
         </treatment>
     </xsl:template>
+    <xsl:template match="metaBenefitRiskAnalysis/drugs">
+        <alternatives>
+            <xsl:for-each select="child::node()">
+                <alternative>
+                    <drug>
+                        <xsl:attribute name="name">
+                            <xsl:value-of select="@name"/> 
+                        </xsl:attribute>
+                    </drug>
+                </alternative>
+            </xsl:for-each>
+        </alternatives>
+    </xsl:template>
 </xsl:stylesheet>
