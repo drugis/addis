@@ -29,15 +29,6 @@ import org.drugis.common.EqualsUtil;
 
 
 public abstract class OutcomeMeasure extends AbstractVariable {
-
-	protected Direction d_direction;
-
-	protected OutcomeMeasure(String name, VariableType type) {
-		super(name, type);
-	}
-
-	public final static String PROPERTY_DIRECTION = "direction";
-	
 	public enum Direction {
 		HIGHER_IS_BETTER("Higher is better"),
 		LOWER_IS_BETTER("Lower is better");
@@ -55,6 +46,14 @@ public abstract class OutcomeMeasure extends AbstractVariable {
 		public String toString() {
 			return d_string;
 		}
+	}
+	
+	public final static String PROPERTY_DIRECTION = "direction";
+
+	protected Direction d_direction;
+
+	protected OutcomeMeasure(String name, VariableType type) {
+		super(name, type);
 	}
 
 	public void setDirection(Direction dir) {

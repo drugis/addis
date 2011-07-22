@@ -24,8 +24,8 @@ public class CategoricalVariableTypeTest {
 	
 	@Test
 	public void testBuildMeasurement() {
-		assertEntityEquals(new FrequencyMeasurement(d_cats.toArray(new String[]{}), new HashMap<String, Integer>()), d_var.buildMeasurement(30));
-		assertEntityEquals(new FrequencyMeasurement(d_cats.toArray(new String[]{}), new HashMap<String, Integer>()), d_var.buildMeasurement());
+		assertEntityEquals(new FrequencyMeasurement(d_cats, new HashMap<String, Integer>()), d_var.buildMeasurement(30));
+		assertEntityEquals(new FrequencyMeasurement(d_cats, new HashMap<String, Integer>()), d_var.buildMeasurement());
 		assertNotNull(d_var.buildMeasurement());
 	}
 	

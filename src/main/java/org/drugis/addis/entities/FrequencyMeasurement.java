@@ -24,19 +24,18 @@
 
 package org.drugis.addis.entities;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.drugis.common.EqualsUtil;
 
-import scala.actors.threadpool.Arrays;
-
 public class FrequencyMeasurement extends BasicMeasurement {
-
 	private Map<String, Integer> d_frequencies = new HashMap<String, Integer>();
-	private String[] d_categories;
+	private List<String> d_categories = new ArrayList<String>();
 	public static final String PROPERTY_FREQUENCIES = "frequencies";
 	
 	private FrequencyMeasurement() {
@@ -44,19 +43,16 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	}
 	
 	public FrequencyMeasurement(PopulationCharacteristic cv) {
-		super(null);
-		d_categories = ((CategoricalVariableType) cv.getVariableType()).getCategories().toArray(new String[]{});
-		for (String cat : ((CategoricalVariableType) cv.getVariableType()).getCategories()) {
-			getFrequencies().put(cat, null);
-		}
+		this(((CategoricalVariableType) cv.getVariableType()).getCategories(), new HashMap<String, Integer>());
 	}
 	
 	/**
+	 * @param categories Note: defensively copied. 
 	 * @param map Note: defensively copied. 
 	 */
-	public FrequencyMeasurement(String[] categories, Map<String, Integer> map) {
+	public FrequencyMeasurement(List<String> categories, Map<String, Integer> map) {
 		super(null);
-		d_categories = categories;
+		d_categories = new ArrayList<String>(categories);
 		d_frequencies = new HashMap<String, Integer>();
 		for (String cat : d_categories) {
 			d_frequencies.put(cat, map.get(cat));
@@ -96,7 +92,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	}
 
 	public String[] getCategories() {
-		return d_categories;
+		return d_categories.toArray(new String[]{});
 	}
 	
 	public void add(FrequencyMeasurement other) {
@@ -139,7 +135,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 	public boolean equals(Object o) {
 		if (o instanceof FrequencyMeasurement) {
 			FrequencyMeasurement m = (FrequencyMeasurement) o;
-			if (!Arrays.deepEquals(getCategories(), m.getCategories())) {
+			if (!d_categories.equals(m.d_categories)) {
 				return false;
 			}
 			return frequenciesEqual(getFrequencies(), m.getFrequencies());

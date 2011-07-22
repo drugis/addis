@@ -787,7 +787,7 @@ public class JAXBConvertor {
 				map.put(c.getName(), c.getRate());
 				names.add(c.getName());
 			}
-			return new FrequencyMeasurement(names.toArray(new String[]{}), map);
+			return new FrequencyMeasurement(names, map);
 		}
 		
 		throw new ConversionException("Measurement type not supported: " + m.toString());

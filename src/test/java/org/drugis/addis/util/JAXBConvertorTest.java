@@ -798,7 +798,7 @@ public class JAXBConvertorTest {
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		map.put("Dogs", 2145);
 		map.put("Cats", 18);
-		FrequencyMeasurement expected3 = new FrequencyMeasurement(new String[] {"Cats", "Dogs"}, map);	
+		FrequencyMeasurement expected3 = new FrequencyMeasurement(Arrays.asList((new String[] {"Cats", "Dogs"})), map);	
 		assertEntityEquals(expected3, JAXBConvertor.convertMeasurement(meas));
 		assertEquals(meas, JAXBConvertor.convertMeasurement(expected3, "Main phase"));
 	}

@@ -22,11 +22,11 @@ public class CategoricalVariableType extends AbstractEntity implements VariableT
 	}
 
 	public BasicMeasurement buildMeasurement() {
-		return new FrequencyMeasurement(d_cats.toArray(new String[]{}), new HashMap<String, Integer>());
+		return new FrequencyMeasurement(d_cats, new HashMap<String, Integer>());
 	}
 
 	public BasicMeasurement buildMeasurement(int size) {
-		return new FrequencyMeasurement(d_cats.toArray(new String[]{}), new HashMap<String, Integer>());
+		return new FrequencyMeasurement(d_cats, new HashMap<String, Integer>());
 	}
 
 	public String getType() {
