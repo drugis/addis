@@ -80,7 +80,7 @@ public class DrugTreatment extends AbstractEntity {
 
 	public String getDescription() {
 		if(d_drug != null) {
-			return "Treatment (" + d_drug.getName() + ( d_dose == null ? "" : " " + d_dose.toString() ) + ")";
+			return d_drug.getName() + (d_dose == null ? "" : " " + d_dose.toString());
 		}
 		return "Treatment (undefined)";
 	}

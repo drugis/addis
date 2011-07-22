@@ -29,17 +29,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.gui.AuxComponentFactory;
+import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
@@ -97,35 +96,35 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 	}
 
 	private int createArmSelect(int row, final Study curStudy, DrugSet drug, CellConstraints cc) {
-		d_builder.addLabel(drug.toString(), cc.xy(2, row));
+		d_builder.addLabel(drug.getDescription(), cc.xy(2, row));
 		
 		ListHolder<Arm> arms = d_pm.getArmsPerStudyPerDrug(curStudy, drug);
 
 		final JComboBox drugBox = AuxComponentFactory.createBoundComboBox(arms, d_pm.getSelectedArmModel(curStudy, drug));
 		if (arms.getValue().size() == 1)
 			drugBox.setEnabled(false);
-		final JLabel drugAndDoseLabel = new JLabel();
+		final JPanel drugAndDosePanel = new JPanel(new BorderLayout());
 		
 		d_builder.add(drugBox, cc.xy(4, row));
 		drugBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				updateDrugAndDoseLabel(curStudy, drugBox, drugAndDoseLabel);
+				updateDrugAndDoseLabel(curStudy, drugBox, drugAndDosePanel);
 			}
 		});
 		row = LayoutUtil.addRow(d_layout, row);
-		updateDrugAndDoseLabel(curStudy, drugBox, drugAndDoseLabel);
-		d_builder.add(drugAndDoseLabel, cc.xy(4, row));
+		updateDrugAndDoseLabel(curStudy, drugBox, drugAndDosePanel);
+		d_builder.add(drugAndDosePanel, cc.xy(4, row));
 		
 		return LayoutUtil.addRow(d_layout, row);
 	}
 
-	private void updateDrugAndDoseLabel(Study curStudy, JComboBox drugBox, JLabel drugAndDoseLabel) {
+	private void updateDrugAndDoseLabel(Study curStudy, JComboBox drugBox, JPanel drugAndDosePanel) {
+		drugAndDosePanel.setVisible(false);
 		StudyActivity sa = curStudy.getStudyActivityAt((Arm) drugBox.getSelectedItem(), curStudy.findTreatmentEpoch());
-		Activity activity = sa.getActivity();
-		DrugTreatment ta = (activity instanceof DrugTreatment) ? 
-				 (DrugTreatment)activity : 
-				 ((TreatmentActivity)activity).getTreatments().get(0);
-		drugAndDoseLabel.setText(ta.getDrug().getName() + " (" + ta.getDose() + ")");
+		TreatmentActivity ta = (TreatmentActivity) sa.getActivity();
+		drugAndDosePanel.removeAll();
+		drugAndDosePanel.add(new ListPanel(ta.getTreatments()), BorderLayout.CENTER);
+		drugAndDosePanel.setVisible(true);
 	}
 }

@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.drugis.common.EqualsUtil;
 
 import com.jgoodies.binding.list.ArrayListModel;
@@ -61,11 +62,7 @@ public class TreatmentActivity extends AbstractEntity implements Activity {
 		if(d_treatments.size() == 0) {
 			return "No treatments.";
 		}
-		String out = "Treatment (";
-		for(DrugTreatment t : d_treatments) {
-			out = out + t.getDescription().substring(t.getDescription().lastIndexOf('(') + 1, t.getDescription().lastIndexOf(')')) + "; " ;
-		}
-		return out.substring(0, out.length() - 2) + ")";	
+		return StringUtils.join(d_treatments, " + ");
 	}
 
 	public void addTreatment(Drug drug, AbstractDose dose) {

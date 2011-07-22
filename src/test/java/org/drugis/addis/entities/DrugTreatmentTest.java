@@ -46,12 +46,12 @@ public class DrugTreatmentTest {
 	
 	@Test
 	public void testDescription() {
-		assertEquals("Treatment (Fluoxetine 12.0 mg/day)", d_orig.getDescription());
+		assertEquals("Fluoxetine 12.0 mg/day", d_orig.getDescription());
 		assertEquals("Treatment (undefined)", d_pg.getDescription());
 		d_pg.setDose(d_orig.getDose());
 		assertEquals("Treatment (undefined)", d_pg.getDescription());
 		d_orig.setDose(null);
-		assertEquals("Treatment (Fluoxetine)", d_orig.getDescription());
+		assertEquals("Fluoxetine", d_orig.getDescription());
 	}
 
 	@Test
