@@ -33,6 +33,7 @@ import java.awt.event.ItemListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -70,8 +71,10 @@ public class AddVariableView implements ViewBuilder {
 	private NotEmptyValidator d_validator;
 	private JScrollPane d_scrollPane;
 	private JButton d_AddcatBtn;
+	private final JDialog d_dialog;
 	
-	public AddVariableView(PresentationModel<Variable> model, JButton okButton) {
+	public AddVariableView(JDialog dialog, PresentationModel<Variable> model, JButton okButton) {
+		d_dialog = dialog;
 		d_model = (VariablePresentation) model;
 		d_validator = new NotEmptyValidator();
 		Bindings.bind(okButton, "enabled", d_validator);
@@ -91,7 +94,8 @@ public class AddVariableView implements ViewBuilder {
 					d_dynamicLabel.setText("Unit of Measurement: ");
 					d_validator.remove(d_categories);
 				}
-				d_unitOfMeasurement.setVisible(d_type.getSelectedItem() instanceof ContinuousVariableType);
+				updateUOMVisible();
+				d_dialog.pack();
 			}
 		});
 		
@@ -111,6 +115,8 @@ public class AddVariableView implements ViewBuilder {
 				d_model.getContinuousModel().getModel(ContinuousVariableType.PROPERTY_UNIT_OF_MEASUREMENT));
 		AutoSelectFocusListener.add(d_unitOfMeasurement);
 		d_unitOfMeasurement.setColumns(30);
+		d_dynamicLabel = new JLabel("Unit of Measurement:");
+		updateUOMVisible();
 		
 		if (d_model.getBean() instanceof OutcomeMeasure) {
 			d_direction = AuxComponentFactory.createBoundComboBox(
@@ -122,7 +128,11 @@ public class AddVariableView implements ViewBuilder {
 		d_validator.add(d_type);
 	}
 
-	
+
+	private void updateUOMVisible() {
+		d_unitOfMeasurement.setVisible(d_type.getSelectedItem() instanceof ContinuousVariableType);
+		d_dynamicLabel.setVisible(d_type.getSelectedItem() instanceof ContinuousVariableType);
+	}
 	
 	/**
 	 * @see org.drugis.common.gui.ViewBuilder#buildPanel()
@@ -151,7 +161,7 @@ public class AddVariableView implements ViewBuilder {
 		builder.addLabel("Description:", cc.xy(1, 7));
 		builder.add(d_description, cc.xy(3, 7));
 		
-		d_dynamicLabel = builder.addLabel("Unit of Measurement:", cc.xy(1, 9));
+		builder.add(d_dynamicLabel, cc.xy(1, 9));
 		builder.add(d_unitOfMeasurement, cc.xy(3, 9));
 		
 		d_scrollPane = new JScrollPane(d_categories);
