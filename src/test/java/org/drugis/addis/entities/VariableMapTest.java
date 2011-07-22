@@ -38,7 +38,8 @@ public class VariableMapTest {
 	@Before
 	public void setUp() {
 		d_map = new VariableMap();
-		d_age = new ContinuousPopulationCharacteristic("Age");
+		d_age = ContinuousPopulationCharacteristic
+				.createContinuousPopulationCharacteristic("Age");
 		d_map.put(d_age, d_age.buildMeasurement());
 	}
 	@Test

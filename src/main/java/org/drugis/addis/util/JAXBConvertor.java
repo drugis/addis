@@ -57,8 +57,10 @@ import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
+import org.drugis.addis.entities.CategoricalVariableType;
 import org.drugis.addis.entities.CharacteristicsMap;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
@@ -79,6 +81,7 @@ import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.RatePopulationCharacteristic;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
@@ -90,7 +93,6 @@ import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
 import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
-import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
@@ -274,32 +276,28 @@ public class JAXBConvertor {
 		org.drugis.addis.entities.data.OutcomeMeasure om = new org.drugis.addis.entities.data.OutcomeMeasure();
 		om.setDescription(o.getDescription());
 		om.setName(o.getName());
-		switch (o.getType()) {
-		case CATEGORICAL:
-			if(o instanceof CategoricalPopulationCharacteristic) {
-				CategoricalVariable varCat = new CategoricalVariable();
-				varCat.getCategory().addAll(((CategoricalPopulationCharacteristic) o).getCategoriesAsList());
-				om.setCategorical(varCat);
-			} else {
-				throw new ConversionException("Categorical outcomemeasures don't exist");
-			}
-			break;
-		case CONTINUOUS:
+		if (o.getVariableType() instanceof CategoricalVariableType) {
+			CategoricalVariableType cat = (CategoricalVariableType) o.getVariableType();
+			CategoricalVariable varCat = new CategoricalVariable();
+			varCat.getCategory().addAll(cat.getCategories());
+			om.setCategorical(varCat);
+		} else if (o.getVariableType() instanceof ContinuousVariableType) {
 			ContinuousVariable varC = new ContinuousVariable();
 			if(o instanceof OutcomeMeasure) {
 				varC.setDirection(((OutcomeMeasure) o).getDirection());
 			}
-			varC.setUnitOfMeasurement(o.getUnitOfMeasurement());
+			varC.setUnitOfMeasurement(((ContinuousVariableType) o.getVariableType()).getUnitOfMeasurement());
 			om.setContinuous(varC);
-			break;
-		case RATE:
+		} else if (o.getVariableType() instanceof RateVariableType) {
 			RateVariable varR = new RateVariable();
 			if(o instanceof OutcomeMeasure) {
 				varR.setDirection(((OutcomeMeasure) o).getDirection());
 			}
 			om.setRate(varR);
-			break;
+		} else {
+			throw new ConversionException("Variable type " + o.getVariableType() + " unknown");
 		}
+		
 		return om;
 	}
 	
@@ -312,11 +310,11 @@ public class JAXBConvertor {
 		if (from.getCategorical() != null) {
 			throw(new ConversionException("Endpoints should not be categorical (yet)"));
 		} else if (from.getContinuous() != null) {
-			to.setType(Type.CONTINUOUS);
-			to.setUnitOfMeasurement(from.getContinuous().getUnitOfMeasurement());
+			ContinuousVariableType type = new ContinuousVariableType(from.getContinuous().getUnitOfMeasurement());
+			to.setVariableType(type);
 			to.setDirection(from.getContinuous().getDirection());
 		} else if (from.getRate() != null) {
-			to.setType(Type.RATE);
+			to.setVariableType(new RateVariableType());
 			to.setDirection(from.getRate().getDirection());
 		}
 	}
@@ -552,30 +550,26 @@ public class JAXBConvertor {
 	}
 
 	static Variable convertPopulationCharacteristic(org.drugis.addis.entities.data.OutcomeMeasure m) throws ConversionException {
+		PopulationCharacteristic pc = null;
 		if(m.getRate() != null) {
-			RatePopulationCharacteristic ratePC =  new RatePopulationCharacteristic();
-			ratePC.setName(m.getName());
-			ratePC.setDescription(m.getDescription());
-			ratePC.setType(Type.RATE);
-			ratePC.setUnitOfMeasurement(Variable.UOM_DEFAULT_RATE);
-			return ratePC;
+			pc =  RatePopulationCharacteristic.createRatePopulationCharacteristic();
 		}
 		if(m.getContinuous() != null) {
-			ContinuousPopulationCharacteristic contPC = new ContinuousPopulationCharacteristic();
-			contPC.setName(m.getName());
-			contPC.setDescription(m.getDescription());
-			contPC.setType(Type.CONTINUOUS);
-			contPC.setUnitOfMeasurement(m.getContinuous().getUnitOfMeasurement());
-			return contPC;
+			pc = ContinuousPopulationCharacteristic.createContinuousPopulationCharacteristic();
+			((ContinuousVariableType)pc.getVariableType()).setUnitOfMeasurement(m.getContinuous().getUnitOfMeasurement());
 		}
 		if(m.getCategorical() != null) {
-			CategoricalPopulationCharacteristic catPC = new CategoricalPopulationCharacteristic();
-			catPC.setName(m.getName());
-			catPC.setDescription(m.getDescription());
-			catPC.setCategories(m.getCategorical().getCategory().toArray(new String[]{}));
-			return catPC;
+			pc = CategoricalPopulationCharacteristic.createCategoricalPopulationCharacteristic();
+			((CategoricalVariableType)pc.getVariableType()).getCategories().addAll(m.getCategorical().getCategory());
 		}
-		throw new ConversionException("Unknown variable type");
+		
+		if (pc == null) {
+			throw new ConversionException("Unknown variable type");
+		}
+		
+		pc.setName(m.getName());
+		pc.setDescription(m.getDescription());
+		return pc;
 	}
 	
 	static org.drugis.addis.entities.data.OutcomeMeasure convertPopulationCharacteristic(PopulationCharacteristic pc) throws ConversionException {

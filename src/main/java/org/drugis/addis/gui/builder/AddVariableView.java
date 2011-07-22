@@ -29,8 +29,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -42,10 +40,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import org.drugis.addis.entities.AdverseEvent;
+import org.drugis.addis.entities.CategoricalVariableType;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
@@ -56,7 +54,6 @@ import org.drugis.common.gui.ViewBuilder;
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
-import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -73,7 +70,6 @@ public class AddVariableView implements ViewBuilder {
 	private NotEmptyValidator d_validator;
 	private JScrollPane d_scrollPane;
 	private JButton d_AddcatBtn;
-	private SelectionInList<String> d_categoriesListModel;
 	
 	public AddVariableView(PresentationModel<Variable> model, JButton okButton) {
 		d_model = (VariablePresentation) model;
@@ -82,30 +78,20 @@ public class AddVariableView implements ViewBuilder {
 	}
 	
 	private void initComponents() {
-		ArrayList<Type> values = new ArrayList<Type>(Arrays.asList(Variable.Type.values()));
-		if (!(d_model.getBean() instanceof PopulationCharacteristic))
-			values.remove(Variable.Type.CATEGORICAL);
-		
-		d_type = AuxComponentFactory.createBoundComboBox( values.toArray(), d_model.getTypeModel());
+		d_type = AuxComponentFactory.createBoundComboBox(d_model.getVariableTypes(), d_model.getTypeModel());
 		d_type.addItemListener(new ItemListener() {	
 			public void itemStateChanged(ItemEvent e) {
-				boolean catVisible = d_type.getSelectedItem().equals(Type.CATEGORICAL);
-				d_unitOfMeasurement.setVisible(!catVisible);
+				boolean catVisible = d_type.getSelectedItem() instanceof CategoricalVariableType;
 				d_scrollPane.setVisible(catVisible);
 				d_AddcatBtn.setVisible(catVisible);
 				if (catVisible){
-					d_categoriesListModel = d_model.getCategoriesListModel();
-					Bindings.bind(d_categories, d_categoriesListModel);
-					d_validator.add(d_categories);
 					d_dynamicLabel.setText("Categories: ");
+					d_validator.add(d_categories);
 				} else {
 					d_dynamicLabel.setText("Unit of Measurement: ");
+					d_validator.remove(d_categories);
 				}
-				if (d_type.getSelectedItem().equals(Type.RATE)) {
-					d_unitOfMeasurement.setEnabled(false);
-				} else {
-					d_unitOfMeasurement.setEnabled(true);
-				}
+				d_unitOfMeasurement.setVisible(d_type.getSelectedItem() instanceof ContinuousVariableType);
 			}
 		});
 		
@@ -122,8 +108,7 @@ public class AddVariableView implements ViewBuilder {
 		d_validator.add(d_description);
 		
 		d_unitOfMeasurement = BasicComponentFactory.createTextField(
-				d_model.getModel(Variable.PROPERTY_UNIT_OF_MEASUREMENT), false);
-		
+				d_model.getContinuousModel().getModel(ContinuousVariableType.PROPERTY_UNIT_OF_MEASUREMENT));
 		AutoSelectFocusListener.add(d_unitOfMeasurement);
 		d_unitOfMeasurement.setColumns(30);
 		
@@ -132,7 +117,7 @@ public class AddVariableView implements ViewBuilder {
 					OutcomeMeasure.Direction.values(), d_model.getModel(OutcomeMeasure.PROPERTY_DIRECTION));
 		}
 		
-		d_categories = new JList();
+		d_categories = new JList(d_model.getCategoricalModel().getBean().getCategories());
 		
 		d_validator.add(d_type);
 	}

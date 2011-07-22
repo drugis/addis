@@ -25,21 +25,23 @@
 package org.drugis.addis.entities;
 
 
-public class RatePopulationCharacteristic extends AbstractVariable implements PopulationCharacteristic {
+public class RatePopulationCharacteristic extends PopCharImplPlsDel {
 
-	public RatePopulationCharacteristic() {
+	public static RatePopulationCharacteristic createRatePopulationCharacteristic(
+			String name) {
+		return new RatePopulationCharacteristic(name);
+	}
+
+	public static RatePopulationCharacteristic createRatePopulationCharacteristic() {
+		return new RatePopulationCharacteristic();
+	}
+
+	private RatePopulationCharacteristic() {
 		super("", Type.RATE);
 	}
 	
-	public RatePopulationCharacteristic(String name) {
+	private RatePopulationCharacteristic(String name) {
 		super(name, Type.RATE);
 	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if(o != null && o instanceof PopulationCharacteristic) {
-			return super.equals(o);
-		}
-		return false;
-	}
+
 }

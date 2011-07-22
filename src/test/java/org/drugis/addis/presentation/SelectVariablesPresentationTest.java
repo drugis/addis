@@ -52,9 +52,9 @@ public class SelectVariablesPresentationTest {
 		}
 		
 	}
-	private AdverseEvent d_ade1 = new AdverseEvent("ADE 1", Variable.Type.RATE);
-	private AdverseEvent d_ade2 = new AdverseEvent("ADE 2", Variable.Type.RATE);
-	private AdverseEvent d_ade3 = new AdverseEvent("ADE 3", Variable.Type.RATE);
+	private AdverseEvent d_ade1 = new AdverseEvent("ADE 1", AdverseEvent.convertVarType(Variable.Type.RATE));
+	private AdverseEvent d_ade2 = new AdverseEvent("ADE 2", AdverseEvent.convertVarType(Variable.Type.RATE));
+	private AdverseEvent d_ade3 = new AdverseEvent("ADE 3", AdverseEvent.convertVarType(Variable.Type.RATE));
 	private ListHolder<AdverseEvent> d_list;
 	private SelectAdverseEventsPresentation d_pm;
 	

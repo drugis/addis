@@ -202,7 +202,7 @@ public class StudyTest {
 	@Test
 	public void testSetMeasurement() {
 		Study study = new Study("X", new Indication(0L, ""));
-		Endpoint endpoint = new Endpoint("e", Variable.Type.RATE);
+		Endpoint endpoint = new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE));
 		study.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(endpoint));
 		Arm group = study.createAndAddArm("", 100, null, null);
 		BasicRateMeasurement m = new BasicRateMeasurement(0, group.getSize());
@@ -215,7 +215,7 @@ public class StudyTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetMeasurementThrowsException1() {
 		Study study = new Study("X", new Indication(0L, ""));
-		Endpoint e = new Endpoint("E", Variable.Type.RATE);
+		Endpoint e = new Endpoint("E", Endpoint.convertVarType(Variable.Type.RATE));
 		Arm pg = new Arm("", 100);
 		study.setMeasurement(e, pg, 
 				new BasicRateMeasurement(100, pg.getSize()));
@@ -224,7 +224,7 @@ public class StudyTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetMeasurementThrowsException2() {
 		Study study = new Study("X", new Indication(0L, ""));
-		Endpoint e = new Endpoint("e", Variable.Type.RATE);
+		Endpoint e = new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE));
 		study.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(e));
 		Arm group = study.createAndAddArm("", 100, null, null);
 		
@@ -290,9 +290,8 @@ public class StudyTest {
 		assertTrue(study1.deepEquals(study2));
 		study2.getPopulationChars().add(new StudyOutcomeMeasure<PopulationCharacteristic>(ExampleData.buildGenderVariable()));
 		// Here we DO test if the equality is based on .equals or .deepEquals of PopulationCharacteristic
-		PopulationCharacteristic pc = new CategoricalPopulationCharacteristic(
-				ExampleData.buildGenderVariable().getName(),
-				new String[] { "Mars", "Venus" });
+		PopulationCharacteristic pc = CategoricalPopulationCharacteristic
+				.createCategoricalPopulationCharacteristic(ExampleData.buildGenderVariable().getName(), new String[] { "Mars", "Venus" });
 		study1.getPopulationChars().add(new StudyOutcomeMeasure<PopulationCharacteristic>(pc));
 		assertFalse(study1.deepEquals(study2));
 		study1.getPopulationChars().clear();
@@ -383,14 +382,16 @@ public class StudyTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetPopulationCharNotPresent() {
-		Variable v = new ContinuousPopulationCharacteristic("Age");
+		Variable v = ContinuousPopulationCharacteristic
+				.createContinuousPopulationCharacteristic("Age");
 		Study s = new Study("X", new Indication(0L, "Y"));
 		s.setMeasurement(v, new BasicContinuousMeasurement(0.0, 1.0, 5));
 	}
 	
 	@Test
 	public void testSetPopulationChar() {
-		PopulationCharacteristic v = new ContinuousPopulationCharacteristic("Age");
+		PopulationCharacteristic v = ContinuousPopulationCharacteristic
+				.createContinuousPopulationCharacteristic("Age");
 		Study s = new Study("X", new Indication(0L, "Y"));
 		s.createAndAddArm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY));
 		s.getPopulationChars().clear();
@@ -409,9 +410,12 @@ public class StudyTest {
 		Study s = new Study("X", new Indication(0L, "Y"));
 		Arm arm1 = s.createAndAddArm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY));
 		
-		PopulationCharacteristic v1 = new ContinuousPopulationCharacteristic("Age1");
-		PopulationCharacteristic v2 = new ContinuousPopulationCharacteristic("Age2");
-		PopulationCharacteristic v3 = new ContinuousPopulationCharacteristic("Age3");
+		PopulationCharacteristic v1 = ContinuousPopulationCharacteristic
+				.createContinuousPopulationCharacteristic("Age1");
+		PopulationCharacteristic v2 = ContinuousPopulationCharacteristic
+				.createContinuousPopulationCharacteristic("Age2");
+		PopulationCharacteristic v3 = ContinuousPopulationCharacteristic
+				.createContinuousPopulationCharacteristic("Age3");
 		
 		ArrayList<PopulationCharacteristic> vars1 = new ArrayList<PopulationCharacteristic>();
 		vars1.add(v1);

@@ -46,7 +46,7 @@ public class EndpointsKnowledge extends CategoryKnowledgeBase {
 	
 	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain,
 			ValueModel selectionModel) {
-		Variable variable = new Endpoint("", Variable.Type.RATE);
+		Variable variable = new Endpoint("", Endpoint.convertVarType(Variable.Type.RATE));
 		return new AddVariableDialog(mainWindow, domain, variable, selectionModel);
 	}
 	

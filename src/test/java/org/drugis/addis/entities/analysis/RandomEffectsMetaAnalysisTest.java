@@ -84,8 +84,8 @@ public class RandomEffectsMetaAnalysisTest {
 		d_ind = new Indication(001L, "Impression");
 		d_fluox = new DrugSet(new Drug("Fluoxetine","01"));
 		d_sertr = new DrugSet(new Drug("Sertraline","02"));
-		d_rateEndpoint = new Endpoint("rate", Variable.Type.RATE);
-		d_contEndpoint = new Endpoint("continuous", Variable.Type.CONTINUOUS);
+		d_rateEndpoint = new Endpoint("rate", Endpoint.convertVarType(Variable.Type.RATE));
+		d_contEndpoint = new Endpoint("continuous", Endpoint.convertVarType(Variable.Type.CONTINUOUS));
 		
 		d_bennie = createRateStudy("Bennie 1995",63,144,73,142, d_ind);
 		d_boyer = createRateStudy("Boyer 1998", 61,120, 63,122, d_ind);

@@ -24,66 +24,35 @@
 
 package org.drugis.addis.presentation;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
+import org.drugis.addis.entities.CategoricalVariableType;
 import org.drugis.addis.entities.Characteristic;
-import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
-import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.PopulationCharacteristic;
-import org.drugis.addis.entities.RatePopulationCharacteristic;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.Variable.Type;
+import org.drugis.addis.entities.VariableType;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 
 import com.jgoodies.binding.PresentationModel;
-import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.binding.beans.PropertyAdapter;
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class VariablePresentation extends PresentationModel<Variable> implements StudyListPresentation, LabeledPresentation {
-
 	private ListHolder<Study> d_studies;
 	private CharacteristicVisibleMap d_characteristicVisibleMap = new CharacteristicVisibleMap();
-	private PresentationModelFactory d_pmf;
-	
-	
-	private class TypeValueHolder extends ModifiableHolder<Type> {
-			
-		public TypeValueHolder(Type t) {
-			super(t);
-		}
-		
-		@Override
-		public void setValue(Object newValue) {
-			Variable bean = getBean();
-			if (newValue.equals(Type.CATEGORICAL) && (bean instanceof PopulationCharacteristic))
-				setBean(new CategoricalPopulationCharacteristic());
-			
-			else if (newValue.equals(Type.CONTINUOUS) && (bean instanceof PopulationCharacteristic)) {
-				ContinuousPopulationCharacteristic newBean = new ContinuousPopulationCharacteristic();
-				newBean.setType((Type) newValue);
-				setBean(newBean);
-			} else if (newValue.equals(Type.RATE) && (bean instanceof PopulationCharacteristic)) {
-				RatePopulationCharacteristic newBean = new RatePopulationCharacteristic();
-				newBean.setType((Type) newValue);
-				setBean(newBean);
-			}
-			super.setValue(newValue);
-			
-			if ((bean instanceof OutcomeMeasure)) {
-				((OutcomeMeasure) bean).setType(getValue());
-			}
-		}
-	}
-	
+	private ContinuousVariableType d_continuousVariableType = new ContinuousVariableType();
+	private RateVariableType d_rateVariableType = new RateVariableType();
+	private CategoricalVariableType d_categoricalVariableType = new CategoricalVariableType();
+
 	public VariablePresentation(Variable bean, ListHolder<Study> studies, PresentationModelFactory pmf) {
 		super(bean);
 		d_studies = studies;
-		d_pmf = pmf;
 	}
 	
 	public ListHolder<Study> getIncludedStudies() {
@@ -107,28 +76,45 @@ public class VariablePresentation extends PresentationModel<Variable> implements
 	}
 	
 	public ValueModel getTypeModel() {
-		return new TypeValueHolder(getBean().getType());
+		return new PropertyAdapter<Variable>(getBean(), Variable.PROPERTY_VARIABLE_TYPE);
 	}
 	
-	public SelectionInList<String> getCategoriesListModel() {
+	public ObservableList<String> getCategoriesListModel() {
+		assertCategorical();
 		
-		if (!(getBean() instanceof CategoricalPopulationCharacteristic ))
-			throw new IllegalStateException(getBean() + " is not a categoricalPopulationCharacteristic");
-		
-		ValueModel stringListModel =  d_pmf.getModel((CategoricalPopulationCharacteristic) getBean())
-										            .getModel(CategoricalPopulationCharacteristic.PROPERTY_CATEGORIESASLIST);
-		
-		return new SelectionInList<String>(stringListModel);
+		return ((CategoricalVariableType)getBean().getVariableType()).getCategories();
+	}
+
+	private void assertCategorical() {
+		if (!(getBean().getVariableType() instanceof CategoricalVariableType))
+			throw new IllegalStateException(getBean() + " is not categorical");
 	}
 	
 	public void addNewCategory (String category) {
-		if (!(getBean() instanceof CategoricalPopulationCharacteristic ))
-			throw new IllegalStateException(getBean() + " is not a categoricalPopulationCharacteristic");
+		assertCategorical();
 		
-		CategoricalPopulationCharacteristic catVar = (CategoricalPopulationCharacteristic) getBean();
-		List<String> catsList = new ArrayList<String>(catVar.getCategoriesAsList());
+		List<String> catsList = d_categoricalVariableType.getCategories();
 		if (!catsList.contains(category))
 			catsList.add(category);
-		catVar.setCategoriesAsList(catsList);	
+	}
+
+	public VariableType[] getVariableTypes() {
+		if (getBean() instanceof PopulationCharacteristic) {
+			return new VariableType[] { d_continuousVariableType, d_rateVariableType, d_categoricalVariableType };
+		} else {
+			return new VariableType[] { d_continuousVariableType, d_rateVariableType };
+		}
+	}
+	
+	public PresentationModel<ContinuousVariableType> getContinuousModel() {
+		return new PresentationModel<ContinuousVariableType>(d_continuousVariableType);
+	}
+	
+	public PresentationModel<CategoricalVariableType> getCategoricalModel() {
+		return new PresentationModel<CategoricalVariableType>(d_categoricalVariableType);
+	}
+	
+	public PresentationModel<RateVariableType> getRateModel() {
+		return new PresentationModel<RateVariableType>(d_rateVariableType);
 	}
 }

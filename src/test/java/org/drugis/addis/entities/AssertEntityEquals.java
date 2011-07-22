@@ -91,7 +91,7 @@ public class AssertEntityEquals {
 	}
 	
 	public static void assertEntityEquals(Measurement expected, Measurement actual) {
-		EntityUtil.deepEqual(expected, actual);
+		assertTrue(EntityUtil.deepEqual(expected, actual));
 	}
 	
 

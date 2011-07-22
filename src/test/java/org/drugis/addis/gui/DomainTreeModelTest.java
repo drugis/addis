@@ -82,8 +82,8 @@ public class DomainTreeModelTest {
 	public void setUp() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		d_domain = new DomainImpl();
 		d_firstIndication = new Indication(8L, "Indication");		
-		d_firstEndpoint = new Endpoint("Endpoint", Variable.Type.RATE);
-		d_firstADE = new AdverseEvent("firstADE", Variable.Type.CONTINUOUS);
+		d_firstEndpoint = new Endpoint("Endpoint", Endpoint.convertVarType(Variable.Type.RATE));
+		d_firstADE = new AdverseEvent("firstADE", AdverseEvent.convertVarType(Variable.Type.CONTINUOUS));
 		d_firstStudy = new Study("First", d_firstIndication);
 		d_firstDrug = new Drug("Drug", "atc");
 		
@@ -100,7 +100,8 @@ public class DomainTreeModelTest {
 		
 		d_networkAnalysis = ExampleData.buildNetworkMetaAnalysisHamD();
 		
-		d_firstPopChar = new ContinuousPopulationCharacteristic("Age");
+		d_firstPopChar = ContinuousPopulationCharacteristic
+				.createContinuousPopulationCharacteristic("Age");
 		
 		d_domain.addIndication(d_firstIndication);
 		d_domain.addEndpoint(d_firstEndpoint);
@@ -244,7 +245,7 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addEndpoint(new Endpoint("E", Variable.Type.RATE));
+		d_domain.addEndpoint(new Endpoint("E", Endpoint.convertVarType(Variable.Type.RATE)));
 		
 		verify(listener);
 	}
@@ -293,7 +294,8 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addPopulationCharacteristic(new ContinuousPopulationCharacteristic("X"));
+		d_domain.addPopulationCharacteristic(ContinuousPopulationCharacteristic
+				.createContinuousPopulationCharacteristic("X"));
 		
 		verify(listener);
 	}	

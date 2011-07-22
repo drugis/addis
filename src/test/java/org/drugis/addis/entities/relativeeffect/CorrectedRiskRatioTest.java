@@ -60,7 +60,7 @@ public class CorrectedRiskRatioTest {
 		d_ind = new Indication(001L, "Impression");
 		d_fluox = new Drug("Fluoxetine","01");
 		d_sertra = new Drug("Sertraline","02");
-		d_ep = new Endpoint("ep", Variable.Type.RATE);
+		d_ep = new Endpoint("ep", Endpoint.convertVarType(Variable.Type.RATE));
 		
 		d_bennie = createStudy("Bennie 1995",0,144,73,142);
 		d_riskRatioBennie = (BasicRiskRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicRiskRatio.class, true);

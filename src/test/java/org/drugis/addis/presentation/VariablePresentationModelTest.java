@@ -57,7 +57,7 @@ public class VariablePresentationModelTest {
 		ExampleData.initDefaultData(d_domain);
 		d_pmf = new PresentationModelFactory(d_domain);
 		
-		d_omEndpoint = new Endpoint("testendpoint", Variable.Type.CONTINUOUS);
+		d_omEndpoint = new Endpoint("testendpoint", Endpoint.convertVarType(Variable.Type.CONTINUOUS));
 		d_pmEndpoint = (VariablePresentation) d_pmf.getModel(d_omEndpoint);
 	}
 	
@@ -68,14 +68,15 @@ public class VariablePresentationModelTest {
 	
 	@Test
 	public void testGetNameADE() {
-		Variable omAde = new AdverseEvent("testade", Variable.Type.CONTINUOUS);
+		Variable omAde = new AdverseEvent("testade", AdverseEvent.convertVarType(Variable.Type.CONTINUOUS));
 		VariablePresentation pm_ade = (VariablePresentation) d_pmf.getModel(omAde);
 		assertEquals ("Adverse event", pm_ade.getCategoryName());
 	}
 	
 	@Test
 	public void testGetNamePopChar() {
-		Variable omAde = new ContinuousPopulationCharacteristic("testvar");
+		Variable omAde = ContinuousPopulationCharacteristic
+				.createContinuousPopulationCharacteristic("testvar");
 		VariablePresentation pm = (VariablePresentation) d_pmf.getModel(omAde);
 		assertEquals ("Population characteristic", pm.getCategoryName());
 	}

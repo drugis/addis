@@ -27,78 +27,44 @@ package org.drugis.addis.entities;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drugis.common.EqualsUtil;
+import com.jgoodies.binding.list.ObservableList;
 
-public class CategoricalPopulationCharacteristic extends AbstractVariable implements PopulationCharacteristic {
-	private String[] d_categories;
-	
+public class CategoricalPopulationCharacteristic extends PopCharImplPlsDel implements PopulationCharacteristic {
+	public static CategoricalPopulationCharacteristic createCategoricalPopulationCharacteristic() {
+		return new CategoricalPopulationCharacteristic();
+	}
+
+	public static CategoricalPopulationCharacteristic createCategoricalPopulationCharacteristic(
+			String name, String[] categories) {
+		return new CategoricalPopulationCharacteristic(name, categories);
+	}
+
 	public static final String PROPERTY_CATEGORIESASLIST = "categoriesAsList";
 	
-	public CategoricalPopulationCharacteristic() {
+	private CategoricalPopulationCharacteristic() {
 		super("", Type.CATEGORICAL);
-		d_categories = new String[]{};
 	}
 	
-	public CategoricalPopulationCharacteristic(String name, String[] categories) {
+	private CategoricalPopulationCharacteristic(String name, String[] categories) {
 		super(name, Type.CATEGORICAL);
-		d_categories = categories;
-		d_description = "";
-	}
-	
-	public CategoricalPopulationCharacteristic(CategoricalPopulationCharacteristic cv) {
-		super(cv.getName(), Type.CATEGORICAL);
-		d_categories = cv.getCategories();
-		d_description = cv.getDescription();
+		getCategoriesAsList().addAll(Arrays.asList(categories));
 	}
 
 	public String[] getCategories() {
-		return d_categories;
+		return getCategoriesAsList().toArray(new String[]{});
 	}
 	
 	public void setCategories(String[] categories) {
-		d_categories = categories;
-	}
-	
-	public List<String> getCategoriesAsList() {
-		return Arrays.asList(d_categories);
-	}
-	
-	public void setCategoriesAsList(List<String> categories) {
-		setCategories((String[]) categories.toArray(d_categories));
-		firePropertyChange(PROPERTY_CATEGORIESASLIST, null, categories);
-	}
-	
-	@Override
-	public FrequencyMeasurement buildMeasurement() {
-		return new FrequencyMeasurement(this);
+		List<String> asList = Arrays.asList(categories);
+		setCategoriesAsList(asList);
 	}
 
-	@Override
-	public FrequencyMeasurement buildMeasurement(int size) {
-		FrequencyMeasurement m = new FrequencyMeasurement(this);
-		m.setSampleSize(size);
-		return m;
+	public void setCategoriesAsList(List<String> asList) {
+		getCategoriesAsList().clear();
+		getCategoriesAsList().addAll(asList);
 	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if (o != null && o instanceof PopulationCharacteristic) {
-			return super.equals(o);			
-		}
-		return false;
-	}
-	
-	@Override
-	public boolean deepEquals(Entity obj) {
-		if (super.deepEquals(obj)) {
-			CategoricalPopulationCharacteristic other = (CategoricalPopulationCharacteristic)obj;
-			return EqualsUtil.equal(other.getCategoriesAsList(), getCategoriesAsList()); 
-		}
-		return false;
-	}
-	
-	@Override
-	protected CategoricalPopulationCharacteristic clone() {
-		return new CategoricalPopulationCharacteristic(this);
+
+	public ObservableList<String> getCategoriesAsList() {
+		return ((CategoricalVariableType) d_varType).getCategories();
 	}
 }

@@ -24,6 +24,8 @@
 
 package org.drugis.addis.entities;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.Set;
 
@@ -31,18 +33,61 @@ import org.drugis.common.EqualsUtil;
 
 public abstract class AbstractVariable extends AbstractNamedEntity<Variable> implements Variable {
 
+	private final class UnitOfMeasurementListener implements
+			PropertyChangeListener {
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName().equals(ContinuousVariableType.PROPERTY_UNIT_OF_MEASUREMENT)) {
+				firePropertyChange(PROPERTY_UNIT_OF_MEASUREMENT, evt.getOldValue(), evt.getNewValue());
+			}
+		}
+	}
+
 	String d_description = "";
-	protected String d_unitOfMeasurement;
-	protected Variable.Type d_type;
+
+	protected VariableType d_varType;
+
+	private UnitOfMeasurementListener d_uomListener = new UnitOfMeasurementListener();;
 	
+	protected AbstractVariable(String name, VariableType type) {
+		super(name);
+		d_varType = type;
+	}
+	
+	@Deprecated
 	protected AbstractVariable(String name, Variable.Type type) {
 		super(name);
-		d_type = type;
-				
-		if (d_type == Variable.Type.RATE)
-			d_unitOfMeasurement = UOM_DEFAULT_RATE;
-		else
-			d_unitOfMeasurement = UOM_DEFAULT_CONTINUOUS;
+		
+		setVariableType(type);
+	}
+
+	private void setVariableType(Variable.Type type) {
+		if (d_varType instanceof ContinuousVariableType) {
+			d_varType.removePropertyChangeListener(d_uomListener);
+		}
+
+		VariableType varType = convertVarType(type);
+		if (varType instanceof ContinuousVariableType) {
+			varType.addPropertyChangeListener(d_uomListener);
+		}
+		d_varType = varType;
+	}
+
+	public static VariableType convertVarType(Variable.Type type) {
+		VariableType varType = null;
+		
+		switch (type) {
+		case CATEGORICAL:
+			varType = new CategoricalVariableType();
+			break;
+		case CONTINUOUS:
+			varType = new ContinuousVariableType(UOM_DEFAULT_CONTINUOUS);
+			break;
+		case RATE:
+			varType = new RateVariableType();
+			break;
+		}
+		return varType;
 	}
 	
 	public void setDescription(String description) {
@@ -55,14 +100,19 @@ public abstract class AbstractVariable extends AbstractNamedEntity<Variable> imp
 		return d_description;
 	}
 
-	public void setUnitOfMeasurement(String um) {
-		String oldVal = d_unitOfMeasurement;
-		d_unitOfMeasurement = um;
-		firePropertyChange(PROPERTY_UNIT_OF_MEASUREMENT, oldVal, d_unitOfMeasurement);
+	@Deprecated
+	public void setUnitOfMeasurement(String uom) {
+		if (d_varType instanceof ContinuousVariableType) {
+			((ContinuousVariableType) d_varType).setUnitOfMeasurement(uom);
+		}
 	}
 
+	@Deprecated
 	public String getUnitOfMeasurement() {
-		return d_unitOfMeasurement;
+		if (d_varType instanceof ContinuousVariableType) {
+			return ((ContinuousVariableType) d_varType).getUnitOfMeasurement();
+		}
+		return UOM_DEFAULT_RATE;
 	}
 
 	@Override
@@ -70,14 +120,16 @@ public abstract class AbstractVariable extends AbstractNamedEntity<Variable> imp
 		return getName();
 	}
 
+	@Deprecated
 	public void setType(Variable.Type type) {
-		Variable.Type oldVal = d_type;
-		d_type = type;
-		firePropertyChange(PROPERTY_TYPE, oldVal, d_type);
+		Variable.Type oldVal = getType();
+		setVariableType(type);
+		firePropertyChange(PROPERTY_TYPE, oldVal, type);
 	}
 
+	@Deprecated
 	public Variable.Type getType() {
-		return d_type;
+		return Variable.Type.valueOf(d_varType.getType().toUpperCase());
 	}
 
 	@Override
@@ -99,26 +151,28 @@ public abstract class AbstractVariable extends AbstractNamedEntity<Variable> imp
 	}
 
 	public BasicMeasurement buildMeasurement(int size) {
-		switch (getType()) {
-		case CONTINUOUS:
-			return new BasicContinuousMeasurement(null, null, size);
-		case RATE:
-			return new BasicRateMeasurement(null, size);
-		default:
-			throw new IllegalStateException("Not all enum cases covered");
-		}
+		return d_varType.buildMeasurement(size);
 	}
 	
 	public BasicMeasurement buildMeasurement() {
-		return buildMeasurement(0);
+		return d_varType.buildMeasurement();
 	}
 	
 	public boolean deepEquals(Entity obj) {
 		if (!equals(obj)) return false;
 		
 		AbstractVariable other = (AbstractVariable)obj;
-		return EqualsUtil.equal(other.getType(), getType()) &&
-			EqualsUtil.equal(other.getDescription(), getDescription()) &&
-			EqualsUtil.equal(other.getUnitOfMeasurement(), getUnitOfMeasurement());
+		return EqualsUtil.equal(other.getDescription(), getDescription()) &&
+			EqualsUtil.equal(other.getVariableType(), getVariableType());
+	}
+	
+	public VariableType getVariableType() {
+		return d_varType;
+	}
+	
+	public void setVariableType(VariableType type) {
+		VariableType oldValue = d_varType;
+		d_varType = type;
+		firePropertyChange(PROPERTY_VARIABLE_TYPE, oldValue, d_varType);
 	}
 }

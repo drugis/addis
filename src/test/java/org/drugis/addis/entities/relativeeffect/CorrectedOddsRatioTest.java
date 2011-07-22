@@ -59,7 +59,7 @@ public class CorrectedOddsRatioTest {
 		d_ind = new Indication(001L, "Impression");
 		d_fluox = new Drug("Fluoxetine","01");
 		d_sertra = new Drug("Sertraline","02");
-		d_ep = new Endpoint("ep", Variable.Type.RATE);
+		d_ep = new Endpoint("ep", Endpoint.convertVarType(Variable.Type.RATE));
 		
 		d_bennie = createStudy("Bennie 1995",0,144,73,142);
 		d_boyer = createStudy("Boyer 1998", 50,120, 0,122);

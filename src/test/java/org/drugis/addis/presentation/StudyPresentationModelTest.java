@@ -140,7 +140,8 @@ public class StudyPresentationModelTest {
 	public void testGetPopulationCharacteristicCount() {
 		d_study.createAndAddArm("arm1", 0, new Drug("X", "Y"), null);
 		d_study.createAndAddArm("arm2", 0, new Drug("X", "Y"), null);
-		ContinuousPopulationCharacteristic age = new ContinuousPopulationCharacteristic("Age");
+		ContinuousPopulationCharacteristic age = ContinuousPopulationCharacteristic
+				.createContinuousPopulationCharacteristic("Age");
 		assertEquals(0, d_model.getPopulationCharacteristicCount());
 		d_study.getPopulationChars().clear();
 		d_study.getPopulationChars().addAll(Study.wrapVariables(Collections.<PopulationCharacteristic>singletonList(age)));
@@ -149,7 +150,8 @@ public class StudyPresentationModelTest {
 	
 	@Test
 	public void testGetPopulationCharacteristicsOverall() {
-		ContinuousPopulationCharacteristic age = new ContinuousPopulationCharacteristic("Age");
+		ContinuousPopulationCharacteristic age = ContinuousPopulationCharacteristic
+				.createContinuousPopulationCharacteristic("Age");
 		d_study.getPopulationChars().clear();
 		d_study.getPopulationChars().addAll(Study.wrapVariables(Collections.<PopulationCharacteristic>singletonList(age)));
 		assertEquals(Collections.singletonList(age), d_model.getPopulationCharacteristics());
@@ -157,9 +159,9 @@ public class StudyPresentationModelTest {
 	
 	@Test
 	public void testGetEndpoints() {
-		Endpoint ep = new Endpoint("ep", Variable.Type.RATE);
+		Endpoint ep = new Endpoint("ep", Endpoint.convertVarType(Variable.Type.RATE));
 		d_study.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(ep));
-		AdverseEvent ade = new AdverseEvent("ade1", Variable.Type.RATE);
+		AdverseEvent ade = new AdverseEvent("ade1", AdverseEvent.convertVarType(Variable.Type.RATE));
 		d_study.getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(ade));
 		
 		assertEquals(Collections.singletonList(ep), d_model.getEndpoints());
@@ -167,9 +169,9 @@ public class StudyPresentationModelTest {
 	
 	@Test
 	public void testGetAdes() {
-		Endpoint ep = new Endpoint("ep", Variable.Type.RATE);
+		Endpoint ep = new Endpoint("ep", Endpoint.convertVarType(Variable.Type.RATE));
 		d_study.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(ep));
-		AdverseEvent ade = new AdverseEvent("ade1", Variable.Type.RATE);
+		AdverseEvent ade = new AdverseEvent("ade1", AdverseEvent.convertVarType(Variable.Type.RATE));
 		d_study.getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(ade));
 		
 		assertEquals(Collections.singletonList(ade), d_model.getAdverseEvents());

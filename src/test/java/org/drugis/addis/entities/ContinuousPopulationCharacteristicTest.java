@@ -37,7 +37,8 @@ public class ContinuousPopulationCharacteristicTest {
 	
 	@Before
 	public void setUp() {
-		d_age = new ContinuousPopulationCharacteristic("Age");
+		d_age = ContinuousPopulationCharacteristic
+				.createContinuousPopulationCharacteristic("Age");
 	}
 	
 	@Test

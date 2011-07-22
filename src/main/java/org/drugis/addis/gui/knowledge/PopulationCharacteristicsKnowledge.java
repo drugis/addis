@@ -47,7 +47,8 @@ public class PopulationCharacteristicsKnowledge extends CategoryKnowledgeBase {
 
 	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain,
 			ValueModel selectionModel) {
-		Variable variable = new ContinuousPopulationCharacteristic("");
+		Variable variable = ContinuousPopulationCharacteristic
+				.createContinuousPopulationCharacteristic("");
 		return new AddVariableDialog(mainWindow, domain, variable, selectionModel);
 	}	
 	

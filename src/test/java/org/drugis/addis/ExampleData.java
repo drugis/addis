@@ -129,14 +129,16 @@ public class ExampleData {
 
 	public static CategoricalPopulationCharacteristic buildGenderVariable() {
 		if (s_gender == null) {
-			s_gender = new CategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
+			s_gender = CategoricalPopulationCharacteristic
+					.createCategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
 		}
 		return s_gender;
 	}
 	
 	public static ContinuousPopulationCharacteristic buildAgeVariable() {
 		if (s_age == null) {
-			s_age = new ContinuousPopulationCharacteristic("Age");
+			s_age = ContinuousPopulationCharacteristic
+					.createContinuousPopulationCharacteristic("Age");
 		}
 		return s_age;
 	}
@@ -681,7 +683,7 @@ public class ExampleData {
 	
 	private static AdverseEvent buildAdverseEventSexualDysfunction() {
 		if (s_sexdysf == null) {
-			s_sexdysf = new AdverseEvent("Sexual Dysfunction", Variable.Type.RATE);
+			s_sexdysf = new AdverseEvent("Sexual Dysfunction", AdverseEvent.convertVarType(Variable.Type.RATE));
 			s_sexdysf.setDescription("Rate");
 		}
 		return s_sexdysf;
@@ -689,7 +691,7 @@ public class ExampleData {
 
 	public static AdverseEvent buildAdverseEventDiarrhea() {
 		if (s_diarrhea == null) {
-			s_diarrhea = new AdverseEvent("Diarrhea", Variable.Type.RATE);
+			s_diarrhea = new AdverseEvent("Diarrhea", AdverseEvent.convertVarType(Variable.Type.RATE));
 			s_diarrhea.setDescription("Rate");
 		}
 		return s_diarrhea;
@@ -767,7 +769,7 @@ public class ExampleData {
 
 	public static Endpoint buildEndpointHamd() {
 		if (s_endpointHamd == null) {
-			Endpoint e = new Endpoint("HAM-D Responders", Variable.Type.RATE);
+			Endpoint e = new Endpoint("HAM-D Responders", Endpoint.convertVarType(Variable.Type.RATE));
 			e.setDescription("Responders with a 50% increase in HAM-D score");
 			s_endpointHamd = e;
 		}
@@ -776,7 +778,7 @@ public class ExampleData {
 
 	public static Endpoint buildEndpointCgi() {
 		if (s_endpointCgi == null) { 
-			Endpoint cgi = new Endpoint("CGI Severity Change", Variable.Type.CONTINUOUS);
+			Endpoint cgi = new Endpoint("CGI Severity Change", Endpoint.convertVarType(Variable.Type.CONTINUOUS));
 			cgi.setDescription("Change from baseline CGI Severity of Illness score");
 			cgi.setUnitOfMeasurement("Deviation from the baseline of CGI Severity of Illness score");
 			s_endpointCgi = cgi;
@@ -786,7 +788,7 @@ public class ExampleData {
 
 	public static Endpoint buildEndpointMadrs() {
 		if (s_endpointMadrs == null) { 
-			Endpoint madrs = new Endpoint("MADRS Responders", Variable.Type.RATE);
+			Endpoint madrs = new Endpoint("MADRS Responders", Endpoint.convertVarType(Variable.Type.RATE));
 			madrs.setDescription("Responders with a 50% increase in MADRS score");
 			madrs.setUnitOfMeasurement("Ratio of Patients");
 			s_endpointMadrs = madrs;
@@ -796,7 +798,7 @@ public class ExampleData {
 
 	public static Endpoint buildEndpointCVdeath() {
 		if (s_endpointCVdeath == null) {
-			Endpoint e = new Endpoint("Cardiovascular Death Incidence", Variable.Type.RATE, Direction.LOWER_IS_BETTER);
+			Endpoint e = new Endpoint("Cardiovascular Death Incidence", Endpoint.convertVarType(Variable.Type.RATE), Direction.LOWER_IS_BETTER);
 			e.setDescription("Rate of mortality due to cardiovascular causes");
 			s_endpointCVdeath = e;
 		}
@@ -867,7 +869,7 @@ public class ExampleData {
 	
 	public static AdverseEvent buildAdverseEventConvulsion() {
 		if (s_convulsion == null) {
-			s_convulsion = new AdverseEvent("Convulsion", Variable.Type.RATE);
+			s_convulsion = new AdverseEvent("Convulsion", AdverseEvent.convertVarType(Variable.Type.RATE));
 			s_convulsion.setDescription("Rate of convulsion during study");
 		}
 		return s_convulsion;

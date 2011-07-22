@@ -47,25 +47,10 @@ public interface OutcomeMeasure extends Variable {
 		public String toString() {
 			return d_string;
 		}
-		
-		public static Direction parse(String str) {
-			return Direction.valueOf(str);
-		}
-		public static String print(Direction dir) {
-			return dir.name();
-		}
 	}
-
-
-	public void setType(Variable.Type type);
-
-	public Variable.Type getType();
 
 	public void setDirection(Direction direction);
 	
 	public Direction getDirection();
-	
-	public BasicMeasurement buildMeasurement();
-	
-	public BasicMeasurement buildMeasurement(int size);
+
 }

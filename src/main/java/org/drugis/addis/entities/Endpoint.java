@@ -28,22 +28,21 @@ import org.drugis.common.EqualsUtil;
 
 
 public class Endpoint extends AbstractVariable implements OutcomeMeasure {
-	
 	private Direction d_direction;
 	
 	public Endpoint() {
-		super("", Type.RATE);
+		this("", new RateVariableType());
 	}
 	
-	public Endpoint(String name, Variable.Type type, Direction direction) {
+	public Endpoint(String name, VariableType type) {
+		this(name, type, Direction.HIGHER_IS_BETTER);
+	}
+	
+	public Endpoint(String name, VariableType type, Direction dir) {
 		super(name, type);
-		d_direction = direction;
+		d_direction = dir;
 	}
-	
-	public Endpoint(String string, Variable.Type type) {
-		this(string, type, Direction.HIGHER_IS_BETTER);
-	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Endpoint) {

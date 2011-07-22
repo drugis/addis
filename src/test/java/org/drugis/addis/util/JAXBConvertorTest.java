@@ -70,6 +70,7 @@ import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.CharacteristicsMap;
 import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
@@ -182,9 +183,9 @@ public class JAXBConvertorTest {
 		value.setUnitOfMeasurement(unit);
 		m.setContinuous(value);
 		
-		Endpoint e = new Endpoint(name, Type.CONTINUOUS, dir);
+		Endpoint e = new Endpoint(name, Endpoint.convertVarType(Type.CONTINUOUS), dir);
 		e.setDescription(desc);
-		e.setUnitOfMeasurement(unit);
+		((ContinuousVariableType) e.getVariableType()).setUnitOfMeasurement(unit);
 		
 		assertEntityEquals(e, JAXBConvertor.convertEndpoint(m));
 		assertEquals(m, JAXBConvertor.convertEndpoint(e));
@@ -203,7 +204,7 @@ public class JAXBConvertorTest {
 		value.setDirection(dir);
 		m.setRate(value);
 		
-		Endpoint e = new Endpoint(name, Type.RATE, dir);
+		Endpoint e = new Endpoint(name, Endpoint.convertVarType(Type.RATE), dir);
 		e.setDescription(desc);
 		
 		assertEntityEquals(e, JAXBConvertor.convertEndpoint(m));
@@ -240,9 +241,9 @@ public class JAXBConvertorTest {
 		value.setUnitOfMeasurement(unit);
 		m.setContinuous(value);
 		
-		AdverseEvent e = new AdverseEvent(name, Type.CONTINUOUS);
+		AdverseEvent e = new AdverseEvent(name, AdverseEvent.convertVarType(Type.CONTINUOUS));
 		e.setDescription(desc);
-		e.setUnitOfMeasurement(unit);
+		((ContinuousVariableType) e.getVariableType()).setUnitOfMeasurement(unit);
 		
 		assertEntityEquals(e, JAXBConvertor.convertAdverseEvent(m));
 		assertEquals(m, JAXBConvertor.convertAdverseEvent(e));
@@ -260,7 +261,7 @@ public class JAXBConvertorTest {
 		value.setDirection(Direction.LOWER_IS_BETTER);
 		m.setRate(value);
 		
-		AdverseEvent e = new AdverseEvent(name, Type.RATE);
+		AdverseEvent e = new AdverseEvent(name, AdverseEvent.convertVarType(Type.RATE));
 		e.setDescription(desc);
 		
 		assertEntityEquals(e, JAXBConvertor.convertAdverseEvent(m));
@@ -296,8 +297,9 @@ public class JAXBConvertorTest {
 		value.setUnitOfMeasurement(unit);
 		m.setContinuous(value);
 		
-		ContinuousPopulationCharacteristic p = new ContinuousPopulationCharacteristic(name);
-		p.setUnitOfMeasurement(unit);
+		PopulationCharacteristic p = ContinuousPopulationCharacteristic
+				.createContinuousPopulationCharacteristic(name);
+		((ContinuousVariableType) p.getVariableType()).setUnitOfMeasurement(unit);
 		p.setDescription(desc);
 		
 		assertEntityEquals(p, JAXBConvertor.convertPopulationCharacteristic(m));
@@ -313,7 +315,7 @@ public class JAXBConvertorTest {
 		m.setDescription(description);
 		m.setRate(new RateVariable());
 		
-		RatePopulationCharacteristic p = new RatePopulationCharacteristic(name);
+		PopulationCharacteristic p = RatePopulationCharacteristic.createRatePopulationCharacteristic(name);
 		p.setDescription(description);
 		
 		assertEntityEquals(p, JAXBConvertor.convertPopulationCharacteristic(m));
@@ -335,7 +337,8 @@ public class JAXBConvertorTest {
 		}
 		m.setCategorical(var);
 		
-		CategoricalPopulationCharacteristic catChar = new CategoricalPopulationCharacteristic(name, categories);
+		CategoricalPopulationCharacteristic catChar = CategoricalPopulationCharacteristic
+				.createCategoricalPopulationCharacteristic(name, categories);
 		catChar.setDescription(desc);
 		
 		assertEntityEquals(catChar, JAXBConvertor.convertPopulationCharacteristic(m));
@@ -813,13 +816,14 @@ public class JAXBConvertorTest {
 		arms.add(arm8);
 		Map<String, Study.StudyOutcomeMeasure<?>> oms = new HashMap<String, Study.StudyOutcomeMeasure<?>>();
 		String pcName = "popChar-hair";
-		ContinuousPopulationCharacteristic pc = new ContinuousPopulationCharacteristic("Hair Length");
+		ContinuousPopulationCharacteristic pc = ContinuousPopulationCharacteristic
+				.createContinuousPopulationCharacteristic("Hair Length");
 		oms.put(pcName, new Study.StudyOutcomeMeasure<Variable>(pc));
 		String epName = "endpoint-tripping";
-		Endpoint ep = new Endpoint("Tripping achieved", Type.RATE, Direction.HIGHER_IS_BETTER);
+		Endpoint ep = new Endpoint("Tripping achieved", Endpoint.convertVarType(Type.RATE), Direction.HIGHER_IS_BETTER);
 		oms.put(epName, new Study.StudyOutcomeMeasure<Variable>(ep));
 		String aeName = "ade-nojob";
-		AdverseEvent ae = new AdverseEvent("Job loss", Type.RATE);
+		AdverseEvent ae = new AdverseEvent("Job loss", AdverseEvent.convertVarType(Type.RATE));
 		oms.put(aeName, new Study.StudyOutcomeMeasure<Variable>(ae));
 		
 		org.drugis.addis.entities.data.RateMeasurement rm1 = new org.drugis.addis.entities.data.RateMeasurement();

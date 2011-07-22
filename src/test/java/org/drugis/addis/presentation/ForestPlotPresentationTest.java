@@ -77,7 +77,7 @@ public class ForestPlotPresentationTest {
 	@Before
 	public void setUp() {
 		d_s1 = new Study("X", new Indication(0L, ""));
-		d_endpoint = new Endpoint("E", Variable.Type.CONTINUOUS);
+		d_endpoint = new Endpoint("E", Endpoint.convertVarType(Variable.Type.CONTINUOUS));
 		d_s1.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_endpoint));
 		d_baseline = new Drug("DrugA", "");
 		d_subject = new Drug("DrugB", "");

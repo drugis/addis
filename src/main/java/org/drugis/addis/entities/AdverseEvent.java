@@ -31,14 +31,14 @@ public class AdverseEvent extends AbstractVariable implements OutcomeMeasure {
 	private Direction d_direction;
 
 	public AdverseEvent() {
-		this("", Type.RATE);
+		this("", new RateVariableType());
 	}
-	
-	public AdverseEvent(String name, Variable.Type type) {
+
+	public AdverseEvent(String name, VariableType type) {
 		super(name, type);
 		d_direction = Direction.LOWER_IS_BETTER;
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof AdverseEvent) {

@@ -26,21 +26,22 @@ package org.drugis.addis.entities;
 
 
 
-public class ContinuousPopulationCharacteristic extends AbstractVariable implements PopulationCharacteristic {
+public class ContinuousPopulationCharacteristic extends PopCharImplPlsDel {
 
-	public ContinuousPopulationCharacteristic() {
+	public static ContinuousPopulationCharacteristic createContinuousPopulationCharacteristic() {
+		return new ContinuousPopulationCharacteristic();
+	}
+
+	public static ContinuousPopulationCharacteristic createContinuousPopulationCharacteristic(String name) {
+		return new ContinuousPopulationCharacteristic(name);
+	}
+
+	private ContinuousPopulationCharacteristic() {
 		super("", Type.CONTINUOUS);
 	}
 	
-	public ContinuousPopulationCharacteristic(String name) {
+	private ContinuousPopulationCharacteristic(String name) {
 		super(name, Type.CONTINUOUS);
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if(o != null && o instanceof PopulationCharacteristic) {
-			return super.equals(o);
-		}
-		return false;
-	}
 }

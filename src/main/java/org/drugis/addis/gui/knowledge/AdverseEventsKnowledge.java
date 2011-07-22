@@ -46,7 +46,7 @@ public class AdverseEventsKnowledge extends CategoryKnowledgeBase {
 	
 	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain,
 			ValueModel selectionModel) {
-		Variable variable = new AdverseEvent("", Variable.Type.RATE);
+		Variable variable = new AdverseEvent("", AdverseEvent.convertVarType(Variable.Type.RATE));
 		return new AddVariableDialog(mainWindow, domain, variable, selectionModel);
 	}
 	

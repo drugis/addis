@@ -36,7 +36,7 @@ public class EndpointCreationModelTest {
 
 	@Before
 	public void setUp() {
-		Endpoint endpoint = new Endpoint("X", Variable.Type.RATE);
+		Endpoint endpoint = new Endpoint("X", Endpoint.convertVarType(Variable.Type.RATE));
 		d_pm = new OutcomeMeasureCreationPresentation(endpoint);
 	}
 	

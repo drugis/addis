@@ -52,14 +52,14 @@ public class PropertyListHolderTest {
 	public void testListHolderReturnsContentsOfProperty() {
 		Study study = new Study("X", new Indication(8L, "EIGHT"));
 		List<Endpoint> endpoints = new ArrayList<Endpoint>();
-		endpoints.add(new Endpoint("EP1", Type.RATE));
-		endpoints.add(new Endpoint("EP2", Type.CONTINUOUS));
+		endpoints.add(new Endpoint("EP1", Endpoint.convertVarType(Type.RATE)));
+		endpoints.add(new Endpoint("EP2", Endpoint.convertVarType(Type.CONTINUOUS)));
 		List<StudyOutcomeMeasure<Endpoint>> wrappedEndpoints = Study.wrapVariables(endpoints);
 		study.getEndpoints().addAll(wrappedEndpoints);
 		
 		assertEquals(wrappedEndpoints, (new PropertyListHolder<Endpoint>(study, Study.PROPERTY_ENDPOINTS, Endpoint.class)).getValue());
 		
-		endpoints.add(new Endpoint("EP3", Type.CONTINUOUS));
+		endpoints.add(new Endpoint("EP3", Endpoint.convertVarType(Type.CONTINUOUS)));
 		assertFalse(endpoints.equals((new PropertyListHolder<Endpoint>(study, Study.PROPERTY_ENDPOINTS, Endpoint.class)).getValue()));
 		
 		study.getEndpoints().clear();
@@ -73,8 +73,8 @@ public class PropertyListHolderTest {
 	public void testListHolderPropagatesChangeEvents() {
 		Study study = new Study("X", new Indication(8L, "EIGHT"));
 		List<Endpoint> endpoints = new ArrayList<Endpoint>();
-		endpoints.add(new Endpoint("EP1", Type.RATE));
-		endpoints.add(new Endpoint("EP2", Type.CONTINUOUS));
+		endpoints.add(new Endpoint("EP1", Endpoint.convertVarType(Type.RATE)));
+		endpoints.add(new Endpoint("EP2", Endpoint.convertVarType(Type.CONTINUOUS)));
 		
 		List<StudyOutcomeMeasure<Endpoint>> wrappedEndpoints = Study.wrapVariables(endpoints);
 		PropertyListHolder<Endpoint> listHolder = new PropertyListHolder<Endpoint>(study, Study.PROPERTY_ENDPOINTS, Endpoint.class);
@@ -94,8 +94,8 @@ public class PropertyListHolderTest {
 	public void testListHolderSetsValuesInUnderlyingProperty() {
 		Study study = new Study("X", new Indication(8L, "EIGHT"));
 		List<Endpoint> endpoints = new ArrayList<Endpoint>();
-		endpoints.add(new Endpoint("EP1", Type.RATE));
-		endpoints.add(new Endpoint("EP2", Type.CONTINUOUS));
+		endpoints.add(new Endpoint("EP1", Endpoint.convertVarType(Type.RATE)));
+		endpoints.add(new Endpoint("EP2", Endpoint.convertVarType(Type.CONTINUOUS)));
 		
 		List<StudyOutcomeMeasure<Endpoint>> wrapEndpoints = Study.wrapVariables(endpoints);
 		

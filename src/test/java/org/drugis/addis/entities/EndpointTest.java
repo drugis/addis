@@ -31,38 +31,36 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Test;
 
 public class EndpointTest {
-
-
 	@Test
 	public void testSetDescription() {
-		JUnitUtil.testSetter(new Endpoint("e", Variable.Type.RATE), Endpoint.PROPERTY_DESCRIPTION, "", "My Description");
+		JUnitUtil.testSetter(new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE)), Endpoint.PROPERTY_DESCRIPTION, "", "My Description");
 	}
 	
 	@Test
 	public void testSetUnitOfMeasurement() {
-		JUnitUtil.testSetter(new Endpoint("e", Variable.Type.CONTINUOUS), Variable.PROPERTY_UNIT_OF_MEASUREMENT, "", "kg per day");
+		JUnitUtil.testSetter(new Endpoint("e", Endpoint.convertVarType(Variable.Type.CONTINUOUS)), Variable.PROPERTY_UNIT_OF_MEASUREMENT, "", "kg per day");
 	}
 
 	@Test
 	public void testSetName() {
-		JUnitUtil.testSetter(new Endpoint("e", Variable.Type.RATE), Endpoint.PROPERTY_NAME, "e", "My Name");
+		JUnitUtil.testSetter(new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE)), Endpoint.PROPERTY_NAME, "e", "My Name");
 	}
 	
 	@Test
 	public void testSetType() {
-		JUnitUtil.testSetter(new Endpoint("e", Variable.Type.RATE), Endpoint.PROPERTY_TYPE, Variable.Type.RATE, Variable.Type.CONTINUOUS);
+		JUnitUtil.testSetter(new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE)), Endpoint.PROPERTY_TYPE, Variable.Type.RATE, Variable.Type.CONTINUOUS);
 	}
 	
 	@Test
 	public void testSetDirection() {
-		JUnitUtil.testSetter(new Endpoint("e", Variable.Type.RATE), Endpoint.PROPERTY_DIRECTION,
+		JUnitUtil.testSetter(new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE)), Endpoint.PROPERTY_DIRECTION,
 				OutcomeMeasure.Direction.HIGHER_IS_BETTER, OutcomeMeasure.Direction.LOWER_IS_BETTER);
 	}
 	
 	@Test
 	public void testBuildMeasurement() {
 		Arm pg = new Arm("", 0);
-		Endpoint e = new Endpoint("e", Variable.Type.RATE);
+		Endpoint e = new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE));
 		e.setType(Variable.Type.RATE);
 		assertTrue(e.buildMeasurement(pg) instanceof BasicRateMeasurement);
 		e.setType(Variable.Type.CONTINUOUS);
@@ -72,9 +70,14 @@ public class EndpointTest {
 	@Test
 	public void testToString() {
 		String name = "TestName";
-		Endpoint e = new Endpoint("e", Variable.Type.RATE);
+		Endpoint e = new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE));
 		e.setName(name);
 		assertEquals(name, e.toString());
 	}
 
+	@Test
+	public void testVariableTypeGetterAndSetter() {
+		JUnitUtil.testSetter(new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE)), Variable.PROPERTY_VARIABLE_TYPE, 
+				new RateVariableType(), new ContinuousVariableType());
+	}
 }

@@ -42,7 +42,6 @@ import org.drugis.addis.presentation.VariablePresentation;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.gui.ViewBuilder;
 
-import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.value.ConverterFactory;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -114,10 +113,9 @@ public class VariableView implements ViewBuilder {
 		
 		if( d_model.getBean() instanceof CategoricalPopulationCharacteristic) {
 			builder.addLabel("categories:", cc.xy(1, 11));
-			JList listBox = new JList();
+			JList listBox = new JList(d_model.getCategoriesListModel());
 			Color c = d_frame.getRightPanel().getBackground();
 			listBox.setBackground(new Color(c.getRed(), c.getGreen(), c.getBlue()));
-			Bindings.bind(listBox,d_model.getCategoriesListModel());
 			builder.add(listBox, cc.xy(3, 11));
 		}
 		return builder.getPanel();
