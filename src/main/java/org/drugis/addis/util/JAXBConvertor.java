@@ -207,7 +207,7 @@ public class JAXBConvertor {
 			addisData.getEndpoints().getEndpoint().add(convertEndpoint(e));
 		}
 		addisData.setAdverseEvents(new AdverseEvents());
-		for (AdverseEvent e : domain.getAdverseEvents()) {
+		for (OutcomeMeasure e : domain.getAdverseEvents()) {
 			addisData.getAdverseEvents().getAdverseEvent().add(convertAdverseEvent(e));
 		}
 		addisData.setPopulationCharacteristics(new PopulationCharacteristics());
@@ -232,7 +232,7 @@ public class JAXBConvertor {
 		return a;
 	}
 
-	static org.drugis.addis.entities.data.OutcomeMeasure convertAdverseEvent(AdverseEvent a) throws ConversionException {
+	static org.drugis.addis.entities.data.OutcomeMeasure convertAdverseEvent(OutcomeMeasure a) throws ConversionException {
 		return convertOutcomeMeasure(a);
 	}
 

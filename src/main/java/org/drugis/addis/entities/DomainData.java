@@ -164,7 +164,7 @@ public class DomainData {
 		d_variables.remove(cv);
 	}
 	
-	public void removeAdverseEvent(AdverseEvent ade) {
+	public void removeAdverseEvent(OutcomeMeasure ade) {
 		d_ades.remove(ade);
 	}
 	

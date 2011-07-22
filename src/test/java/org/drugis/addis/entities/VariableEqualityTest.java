@@ -36,7 +36,7 @@ import org.junit.Test;
 
 public class VariableEqualityTest {
 
-	private AdverseEvent d_ade;
+	private OutcomeMeasure d_ade;
 	private Endpoint d_ep;
 	private PopulationCharacteristic d_gender;
 	private PopulationCharacteristic d_rate;

@@ -287,7 +287,7 @@ public class DomainImpl implements Domain {
 		} else if (entity instanceof Endpoint) {
 			deleteEndpoint((Endpoint) entity);
 		} else if (entity instanceof AdverseEvent) {
-			deleteAdverseEvent((AdverseEvent) entity);
+			deleteAdverseEvent((OutcomeMeasure) entity);
 		} else if (entity instanceof PopulationCharacteristic) {
 			deletePopulationCharacteristic((PopulationCharacteristic) entity);
 		} else if (entity instanceof Study) {
@@ -476,7 +476,7 @@ public class DomainImpl implements Domain {
 		fireDomainChanged(DomainEvent.Type.ADVERSE_EVENTS);
 	}
 
-	public void deleteAdverseEvent(AdverseEvent ade)
+	public void deleteAdverseEvent(OutcomeMeasure ade)
 			throws DependentEntitiesException {
 		checkDependents(ade);
 		d_domainData.removeAdverseEvent(ade);

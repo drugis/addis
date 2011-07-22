@@ -240,7 +240,7 @@ public class JAXBConvertorTest {
 		value.setUnitOfMeasurement(unit);
 		m.setContinuous(value);
 		
-		AdverseEvent e = new AdverseEvent(name, AdverseEvent.convertVarType(Type.CONTINUOUS));
+		org.drugis.addis.entities.OutcomeMeasure e = new AdverseEvent(name, AdverseEvent.convertVarType(Type.CONTINUOUS));
 		e.setDescription(desc);
 		((ContinuousVariableType) e.getVariableType()).setUnitOfMeasurement(unit);
 		
@@ -713,7 +713,7 @@ public class JAXBConvertorTest {
 		om.setAdverseEvent(nameReference(ade.getName()));
 		om.setPrimary(false);
 		
-		assertEntityEquals(ade, (AdverseEvent)JAXBConvertor.convertStudyOutcomeMeasure(om, domain).getValue());
+		assertEntityEquals(ade, (org.drugis.addis.entities.OutcomeMeasure)JAXBConvertor.convertStudyOutcomeMeasure(om, domain).getValue());
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(new Study.StudyOutcomeMeasure<Variable>(ade)), om);
 		
 		PopulationCharacteristic pc = ExampleData.buildGenderVariable();
