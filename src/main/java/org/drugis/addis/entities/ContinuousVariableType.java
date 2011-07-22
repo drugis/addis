@@ -57,4 +57,9 @@ public class ContinuousVariableType extends AbstractEntity implements VariableTy
 	public int hashCode() {
 		return d_uom != null ? d_uom.hashCode() : 0;
 	}
+	
+	@Override
+	public String toString() {
+		return getType();
+	}
 }

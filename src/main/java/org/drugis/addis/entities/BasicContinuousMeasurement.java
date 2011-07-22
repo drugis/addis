@@ -79,8 +79,8 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 		return (mean == null ? "N/A" : df.format(mean));
 	}
 	
-	public boolean isOfType(Variable.Type type) {
-		return type.equals(Variable.Type.CONTINUOUS);
+	public boolean isOfType(VariableType type) {
+		return type instanceof ContinuousVariableType;
 	}
 	
 	@Override

@@ -25,7 +25,7 @@
 package org.drugis.addis.entities.analysis;
 
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.Variable.Type;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.common.Interval;
 
 
@@ -40,7 +40,7 @@ public class OddsRatioToClinicalConverter {
 	public OddsRatioToClinicalConverter(MetaBenefitRiskAnalysis br, OutcomeMeasure om) {
 		d_br = br;
 		d_om = om;
-		if (om.getType() != Type.RATE) throw new IllegalArgumentException("Only rate-outcomes supported");
+		if (!(om.getVariableType() instanceof RateVariableType)) throw new IllegalArgumentException("Only rate-outcomes supported");
 		if (!br.getCriteria().contains(om)) throw new IllegalArgumentException("OutcomeMeasure not present in Benefit-Risk analysis");
 	}
 	

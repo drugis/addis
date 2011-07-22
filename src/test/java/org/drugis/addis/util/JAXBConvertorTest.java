@@ -67,9 +67,8 @@ import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
-import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
+import org.drugis.addis.entities.CategoricalVariableType;
 import org.drugis.addis.entities.CharacteristicsMap;
-import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
@@ -89,7 +88,7 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
-import org.drugis.addis.entities.RatePopulationCharacteristic;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
@@ -297,8 +296,7 @@ public class JAXBConvertorTest {
 		value.setUnitOfMeasurement(unit);
 		m.setContinuous(value);
 		
-		PopulationCharacteristic p = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic(name);
+		PopulationCharacteristic p = new PopulationCharacteristic(name, new ContinuousVariableType());
 		((ContinuousVariableType) p.getVariableType()).setUnitOfMeasurement(unit);
 		p.setDescription(desc);
 		
@@ -315,7 +313,7 @@ public class JAXBConvertorTest {
 		m.setDescription(description);
 		m.setRate(new RateVariable());
 		
-		PopulationCharacteristic p = RatePopulationCharacteristic.createRatePopulationCharacteristic(name);
+		PopulationCharacteristic p = new PopulationCharacteristic(name, new RateVariableType());
 		p.setDescription(description);
 		
 		assertEntityEquals(p, JAXBConvertor.convertPopulationCharacteristic(m));
@@ -337,8 +335,7 @@ public class JAXBConvertorTest {
 		}
 		m.setCategorical(var);
 		
-		CategoricalPopulationCharacteristic catChar = CategoricalPopulationCharacteristic
-				.createCategoricalPopulationCharacteristic(name, categories);
+		PopulationCharacteristic catChar = new PopulationCharacteristic(name, new CategoricalVariableType(Arrays.asList(categories)));
 		catChar.setDescription(desc);
 		
 		assertEntityEquals(catChar, JAXBConvertor.convertPopulationCharacteristic(m));
@@ -816,8 +813,7 @@ public class JAXBConvertorTest {
 		arms.add(arm8);
 		Map<String, Study.StudyOutcomeMeasure<?>> oms = new HashMap<String, Study.StudyOutcomeMeasure<?>>();
 		String pcName = "popChar-hair";
-		ContinuousPopulationCharacteristic pc = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("Hair Length");
+		PopulationCharacteristic pc = new PopulationCharacteristic("Hair Length", new ContinuousVariableType());
 		oms.put(pcName, new Study.StudyOutcomeMeasure<Variable>(pc));
 		String epName = "endpoint-tripping";
 		Endpoint ep = new Endpoint("Tripping achieved", Endpoint.convertVarType(Type.RATE), Direction.HIGHER_IS_BETTER);

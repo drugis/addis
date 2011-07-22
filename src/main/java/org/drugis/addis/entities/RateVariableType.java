@@ -25,4 +25,8 @@ public class RateVariableType extends AbstractEntity implements VariableType {
 		return (obj instanceof RateVariableType);
 	}
 	
+	@Override
+	public String toString() {
+		return getType();
+	}
 }

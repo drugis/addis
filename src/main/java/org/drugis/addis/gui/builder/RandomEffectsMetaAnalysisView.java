@@ -36,6 +36,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
+import org.drugis.addis.entities.ContinuousVariableType;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
@@ -101,15 +103,14 @@ implements ViewBuilder {
 
 	public JComponent getPlotsPanel(boolean isOverview) {
 		d_isWizard = isOverview;
-		switch (d_pm.getAnalysisType()) {
-		case RATE:
+		if (d_pm.getAnalysisType() instanceof RateVariableType) {
 			return buildRatePlotsPart();
-		case CONTINUOUS:
-			return buildContinuousPlotsPart();
-		default:
-			throw new RuntimeException("Unexpected case: " +
-					d_pm.getAnalysisType() + " is not a supported type of endpoint");
 		}
+		if (d_pm.getAnalysisType() instanceof ContinuousVariableType) {
+			return buildContinuousPlotsPart();
+		}
+		throw new RuntimeException("Unexpected case: " +
+				d_pm.getAnalysisType() + " is not a supported type of endpoint");
 	}
 
 	private JComponent buildContinuousPlotsPart() {

@@ -33,13 +33,12 @@ import org.junit.Test;
 
 public class VariableMapTest {
 	private VariableMap d_map;
-	private ContinuousPopulationCharacteristic d_age;
+	private PopulationCharacteristic d_age;
 	
 	@Before
 	public void setUp() {
 		d_map = new VariableMap();
-		d_age = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("Age");
+		d_age = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		d_map.put(d_age, d_age.buildMeasurement());
 	}
 	@Test

@@ -24,6 +24,23 @@
 
 package org.drugis.addis.entities;
 
-public interface PopulationCharacteristic extends Variable {
+public class PopulationCharacteristic extends AbstractVariable {
+
+	public PopulationCharacteristic(String name, VariableType type) {
+		super(name, type);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o != null && o instanceof PopulationCharacteristic) {
+			return super.equals(o);			
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return 37;
+	}
 
 }

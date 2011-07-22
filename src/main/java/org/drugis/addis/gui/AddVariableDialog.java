@@ -51,7 +51,7 @@ public class AddVariableDialog extends OkCancelDialog {
 		d_mainWindow = mainWindow;
 		setModal(true);
 		d_domain = domain;
-		d_pm = mainWindow.getPresentationModelFactory().getCreationModel(variable);
+		d_pm = mainWindow.getPresentationModelFactory().getModel(variable);
 		
 		AddVariableView view = new AddVariableView(d_pm, d_okButton);
 		

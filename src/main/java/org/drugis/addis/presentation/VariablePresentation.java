@@ -53,6 +53,15 @@ public class VariablePresentation extends PresentationModel<Variable> implements
 	public VariablePresentation(Variable bean, ListHolder<Study> studies, PresentationModelFactory pmf) {
 		super(bean);
 		d_studies = studies;
+		if (bean.getVariableType() instanceof ContinuousVariableType) {
+			d_continuousVariableType = (ContinuousVariableType) bean.getVariableType();
+		}
+		if (bean.getVariableType() instanceof CategoricalVariableType) {
+			d_categoricalVariableType = (CategoricalVariableType) bean.getVariableType();
+		}
+		if (bean.getVariableType() instanceof RateVariableType) {
+			d_rateVariableType = (RateVariableType) bean.getVariableType();
+		}
 	}
 	
 	public ListHolder<Study> getIncludedStudies() {

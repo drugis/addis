@@ -43,7 +43,7 @@ import javax.swing.tree.TreePath;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
@@ -100,8 +100,7 @@ public class DomainTreeModelTest {
 		
 		d_networkAnalysis = ExampleData.buildNetworkMetaAnalysisHamD();
 		
-		d_firstPopChar = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("Age");
+		d_firstPopChar = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		
 		d_domain.addIndication(d_firstIndication);
 		d_domain.addEndpoint(d_firstEndpoint);
@@ -294,8 +293,7 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addPopulationCharacteristic(ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("X"));
+		d_domain.addPopulationCharacteristic(new PopulationCharacteristic("X", new ContinuousVariableType()));
 		
 		verify(listener);
 	}	

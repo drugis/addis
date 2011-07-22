@@ -26,13 +26,14 @@ package org.drugis.addis.entities.relativeeffect;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
-import org.drugis.addis.entities.Variable;
 
 public class RelativeEffectFactory {
 	public static <T extends RelativeEffect<?>> RelativeEffect<?> buildRelativeEffect(
@@ -138,14 +139,14 @@ public class RelativeEffectFactory {
 	}
 	
 	private static ContinuousMeasurement findContinuousMeasurement(Study s, OutcomeMeasure om, Arm arm) {
-		if (!om.getType().equals(Variable.Type.CONTINUOUS)) {
+		if (!(om.getVariableType() instanceof ContinuousVariableType)) {
 			throw new IllegalArgumentException("OutcomeMeasure should be Continuous");
 		}
 		return (ContinuousMeasurement)s.getMeasurement(om, arm);
 	}
 	
 	private static RateMeasurement findRateMeasurement(Study s, OutcomeMeasure om, Arm arm) {
-		if (!om.getType().equals(Variable.Type.RATE)) {
+		if (!(om.getVariableType() instanceof RateVariableType)) {
 			throw new IllegalArgumentException("OutcomeMeasure should be Rate");
 		}
 		return (RateMeasurement)s.getMeasurement(om, arm);

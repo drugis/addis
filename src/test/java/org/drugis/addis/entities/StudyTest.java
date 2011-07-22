@@ -35,6 +35,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -230,7 +231,7 @@ public class StudyTest {
 		
 		BasicMeasurement m = new BasicRateMeasurement(12, group.getSize());
 		
-		study.getOutcomeMeasures().iterator().next().setType(Variable.Type.CONTINUOUS);
+		study.getOutcomeMeasures().iterator().next().setVariableType(new ContinuousVariableType());
 		study.setMeasurement(study.getOutcomeMeasures().iterator().next(), study.getArms().get(0), m);
 	}
 	
@@ -290,8 +291,7 @@ public class StudyTest {
 		assertTrue(study1.deepEquals(study2));
 		study2.getPopulationChars().add(new StudyOutcomeMeasure<PopulationCharacteristic>(ExampleData.buildGenderVariable()));
 		// Here we DO test if the equality is based on .equals or .deepEquals of PopulationCharacteristic
-		PopulationCharacteristic pc = CategoricalPopulationCharacteristic
-				.createCategoricalPopulationCharacteristic(ExampleData.buildGenderVariable().getName(), new String[] { "Mars", "Venus" });
+		PopulationCharacteristic pc = new PopulationCharacteristic(ExampleData.buildGenderVariable().getName(), new CategoricalVariableType(Arrays.asList((new String[] { "Mars", "Venus" }))));
 		study1.getPopulationChars().add(new StudyOutcomeMeasure<PopulationCharacteristic>(pc));
 		assertFalse(study1.deepEquals(study2));
 		study1.getPopulationChars().clear();
@@ -382,16 +382,14 @@ public class StudyTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetPopulationCharNotPresent() {
-		Variable v = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("Age");
+		Variable v = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		Study s = new Study("X", new Indication(0L, "Y"));
 		s.setMeasurement(v, new BasicContinuousMeasurement(0.0, 1.0, 5));
 	}
 	
 	@Test
 	public void testSetPopulationChar() {
-		PopulationCharacteristic v = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("Age");
+		PopulationCharacteristic v = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		Study s = new Study("X", new Indication(0L, "Y"));
 		s.createAndAddArm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY));
 		s.getPopulationChars().clear();
@@ -410,12 +408,9 @@ public class StudyTest {
 		Study s = new Study("X", new Indication(0L, "Y"));
 		Arm arm1 = s.createAndAddArm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, SIUnit.MILLIGRAMS_A_DAY));
 		
-		PopulationCharacteristic v1 = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("Age1");
-		PopulationCharacteristic v2 = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("Age2");
-		PopulationCharacteristic v3 = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("Age3");
+		PopulationCharacteristic v1 = new PopulationCharacteristic("Age1", new ContinuousVariableType());
+		PopulationCharacteristic v2 = new PopulationCharacteristic("Age2", new ContinuousVariableType());
+		PopulationCharacteristic v3 = new PopulationCharacteristic("Age3", new ContinuousVariableType());
 		
 		ArrayList<PopulationCharacteristic> vars1 = new ArrayList<PopulationCharacteristic>();
 		vars1.add(v1);

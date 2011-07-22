@@ -37,7 +37,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.drugis.addis.entities.Variable.Type;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
@@ -94,7 +94,7 @@ public class MetaAnalysisWizard extends Wizard {
 					(RandomEffectsMetaAnalysisPresentation)pm, d_mainWindow);
 			final JComponent panel = mav.getPlotsPanel(true);
 
-			if(d_pm.getOutcomeMeasureModel().getValue().getType() == Type.RATE){
+			if(d_pm.getOutcomeMeasureModel().getValue().getVariableType() instanceof RateVariableType){
 				JCheckBox checkBox = BasicComponentFactory.createCheckBox(pm.getModel(RandomEffectsMetaAnalysis.PROPERTY_CORRECTED), "Correct for zeroes");
 				add(checkBox, BorderLayout.NORTH);
 			}

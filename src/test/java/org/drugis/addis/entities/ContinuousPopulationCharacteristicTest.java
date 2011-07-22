@@ -33,12 +33,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ContinuousPopulationCharacteristicTest {
-	private ContinuousPopulationCharacteristic d_age;
+	private PopulationCharacteristic d_age;
 	
 	@Before
 	public void setUp() {
-		d_age = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("Age");
+		d_age = new PopulationCharacteristic("Age", new ContinuousVariableType());
 	}
 	
 	@Test

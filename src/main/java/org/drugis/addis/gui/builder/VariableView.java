@@ -28,15 +28,16 @@ import java.awt.Color;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 
-import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
+import org.drugis.addis.entities.CategoricalVariableType;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
+import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.VariablePresentation;
 import org.drugis.common.gui.OneWayObjectFormat;
@@ -91,14 +92,14 @@ public class VariableView implements ViewBuilder {
 		
 		builder.add(AuxComponentFactory.createAutoWrapLabel(d_model.getModel(Variable.PROPERTY_DESCRIPTION)), cc.xy(3, 3));
 
- 		if(! (d_model.getBean() instanceof CategoricalPopulationCharacteristic)) {
+ 		if(d_model.getBean().getVariableType() instanceof ContinuousVariableType) {
  			builder.addLabel("Unit of Measurement:", cc.xy(1, 5));
  			builder.add(AuxComponentFactory.createAutoWrapLabel(
- 					d_model.getModel(Variable.PROPERTY_UNIT_OF_MEASUREMENT)), cc.xy(3, 5));
+ 					d_model.getContinuousModel().getModel(ContinuousVariableType.PROPERTY_UNIT_OF_MEASUREMENT)), cc.xy(3, 5));
  		}
 
 		ValueModel typeModel = ConverterFactory.createStringConverter(
-				d_model.getModel(Variable.PROPERTY_TYPE),
+				d_model.getModel(Variable.PROPERTY_VARIABLE_TYPE),
 				new OneWayObjectFormat());
 		builder.addLabel("Type:", cc.xy(1, 7));
 		builder.add(AuxComponentFactory.createAutoWrapLabel(typeModel), cc.xy(3, 7));
@@ -111,9 +112,10 @@ public class VariableView implements ViewBuilder {
 			builder.add(AuxComponentFactory.createAutoWrapLabel(directionModel), cc.xy(3, 9));
 		}
 		
-		if( d_model.getBean() instanceof CategoricalPopulationCharacteristic) {
-			builder.addLabel("categories:", cc.xy(1, 11));
-			JList listBox = new JList(d_model.getCategoriesListModel());
+		if (d_model.getBean().getVariableType() instanceof CategoricalVariableType) {
+			CategoricalVariableType variableType = (CategoricalVariableType) d_model.getBean().getVariableType();
+			builder.addLabel("Categories:", cc.xy(1, 11));
+			ListPanel listBox = new ListPanel(variableType, CategoricalVariableType.PROPERTY_CATEGORIES, String.class);
 			Color c = d_frame.getRightPanel().getBackground();
 			listBox.setBackground(new Color(c.getRed(), c.getGreen(), c.getBlue()));
 			builder.add(listBox, cc.xy(3, 11));

@@ -154,14 +154,4 @@ public class PresentationModelFactoryTest {
 		Object actual = d_manager.getModel(myStudy).getBean().getCharacteristic(BasicStudyCharacteristic.OBJECTIVE);
 		assertEquals(expected, actual);
 	}
-	
-	
-	@Test
-	public void testGetEndpointCreationModel() {
-		OutcomeMeasure e = ExampleData.buildEndpointHamd();
-		PresentationModel m = d_manager.getCreationModel(e);
-		
-		assertEquals(e, m.getBean());
-		assertEquals(OutcomeMeasureCreationPresentation.class, m.getClass());
-	}
 }

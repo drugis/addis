@@ -39,10 +39,10 @@ import org.drugis.addis.presentation.PropertyListHolder;
 
 @SuppressWarnings("serial")
 public class ListPanel extends JPanel {
-	private ListHolder<? extends Entity> d_entities;
+	private ListHolder<?> d_entities;
 	private JLabel d_listLabel = new JLabel();
 	
-	public ListPanel(ListHolder<? extends Entity> entities) {
+	public ListPanel(ListHolder<?> entities) {
 		super(new BorderLayout());
 		d_listLabel.setBackground(null);
 		d_listLabel.setOpaque(true);
@@ -59,15 +59,15 @@ public class ListPanel extends JPanel {
 		super.add(d_listLabel, BorderLayout.CENTER);
 	}
 	
-	public <T extends Entity> ListPanel(List<T> entityList) {
-		this(new DefaultListHolder<T>(entityList));
+	public <E> ListPanel(List<E> entityList) {
+		this(new DefaultListHolder<E>(entityList));
 	}
 	
-	public <T extends Entity> ListPanel(Object bean, String propertyName, Class<T> objType) {
-		this(new PropertyListHolder<T>(bean, propertyName, objType));
+	public <E> ListPanel(Object bean, String propertyName, Class<E> objType) {
+		this(new PropertyListHolder<E>(bean, propertyName, objType));
 	}
 	
-	public void resetItems(ListHolder<? extends Entity> entities) {
+	public void resetItems(ListHolder<?> entities) {
 		d_entities = entities;
 	}
 	
@@ -83,7 +83,7 @@ public class ListPanel extends JPanel {
 		return listItems + "</ul></html>";
 	}
 	
-	private String makeListItem(Entity e) {
-		return "<li>" + e.getDescription() + "</li>";
+	private String makeListItem(Object obj) {
+		return "<li>" + (obj instanceof Entity ? ((Entity)obj).getDescription() : obj.toString()) + "</li>";
 	}
 }

@@ -30,10 +30,11 @@ import java.util.Collections;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AdverseEvent;
-import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Variable;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -75,8 +76,7 @@ public class VariablePresentationModelTest {
 	
 	@Test
 	public void testGetNamePopChar() {
-		Variable omAde = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("testvar");
+		Variable omAde = new PopulationCharacteristic("testvar", new ContinuousVariableType());
 		VariablePresentation pm = (VariablePresentation) d_pmf.getModel(omAde);
 		assertEquals ("Population characteristic", pm.getCategoryName());
 	}

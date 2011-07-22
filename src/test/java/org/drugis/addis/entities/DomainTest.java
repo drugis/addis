@@ -35,6 +35,7 @@ import static org.junit.Assert.assertTrue;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -705,8 +706,7 @@ public class DomainTest {
 	
 	@Test
 	public void testGetVariables() {
-		CategoricalPopulationCharacteristic c = CategoricalPopulationCharacteristic
-				.createCategoricalPopulationCharacteristic("x", new String[]{"x", "y", "z"});
+		PopulationCharacteristic c = new PopulationCharacteristic("x", new CategoricalVariableType(Arrays.asList((new String[]{"x", "y", "z"}))));
 		d_domain.addPopulationCharacteristic(c);
 		
 		assertEquals(Collections.singleton(c), d_domain.getPopulationCharacteristics());
@@ -718,8 +718,7 @@ public class DomainTest {
 		d_domain.addListener(mock);
 		mock.domainChanged(new DomainEvent(DomainEvent.Type.VARIABLES));
 		replay(mock);
-		d_domain.addPopulationCharacteristic(CategoricalPopulationCharacteristic
-				.createCategoricalPopulationCharacteristic("x", new String[]{"x"}));
+		d_domain.addPopulationCharacteristic(new PopulationCharacteristic("x", new CategoricalVariableType(Arrays.asList((new String[]{"x"})))));
 		verify(mock);
 	}
 	
@@ -727,15 +726,13 @@ public class DomainTest {
 	public void testVariablesHolder() {
 		ListHolder<PopulationCharacteristic> vars = d_domain.getPopulationCharacteristicsHolder();
 		
-		PopulationCharacteristic v1 = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("Age");
+		PopulationCharacteristic v1 = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		d_domain.addPopulationCharacteristic(v1);
 		
 		assertEquals(1, vars.getValue().size());
 		assertTrue(vars.getValue().contains(v1));
 		
-		PopulationCharacteristic v2 = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("Blood Pressure");
+		PopulationCharacteristic v2 = new PopulationCharacteristic("Blood Pressure", new ContinuousVariableType());
 		List<Variable> expected = new ArrayList<Variable>();
 		expected.add(v1);
 		expected.add(v2);

@@ -24,31 +24,16 @@
 
 package org.drugis.addis.entities;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.Set;
 
 import org.drugis.common.EqualsUtil;
 
 public abstract class AbstractVariable extends AbstractNamedEntity<Variable> implements Variable {
-
-	private final class UnitOfMeasurementListener implements
-			PropertyChangeListener {
-		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals(ContinuousVariableType.PROPERTY_UNIT_OF_MEASUREMENT)) {
-				firePropertyChange(PROPERTY_UNIT_OF_MEASUREMENT, evt.getOldValue(), evt.getNewValue());
-			}
-		}
-	}
-
 	String d_description = "";
 
 	protected VariableType d_varType;
 
-	private UnitOfMeasurementListener d_uomListener = new UnitOfMeasurementListener();;
-	
 	protected AbstractVariable(String name, VariableType type) {
 		super(name);
 		d_varType = type;
@@ -62,14 +47,8 @@ public abstract class AbstractVariable extends AbstractNamedEntity<Variable> imp
 	}
 
 	private void setVariableType(Variable.Type type) {
-		if (d_varType instanceof ContinuousVariableType) {
-			d_varType.removePropertyChangeListener(d_uomListener);
-		}
-
 		VariableType varType = convertVarType(type);
-		if (varType instanceof ContinuousVariableType) {
-			varType.addPropertyChangeListener(d_uomListener);
-		}
+
 		d_varType = varType;
 	}
 

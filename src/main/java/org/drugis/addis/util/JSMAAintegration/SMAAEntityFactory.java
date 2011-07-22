@@ -29,12 +29,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
-import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
@@ -116,9 +117,9 @@ public class SMAAEntityFactory<AltType extends Entity> {
 							mbr.getRelativeEffectDistribution((DrugSet) a, om).getMu(),
 							mbr.getRelativeEffectDistribution((DrugSet) a, om).getSigma());
 					CardinalMeasurement m = null; 
-					if (om.getType().equals(Type.RATE)) {
+					if (om.getVariableType() instanceof RateVariableType) {
 						m = new RelativeLogitNormalMeasurement(baseline, relative);
-					} else if (om.getType().equals(Type.CONTINUOUS)) {
+					} else if (om.getVariableType() instanceof ContinuousVariableType) {
 						m = new RelativeNormalMeasurement(baseline, relative);
 					}
 					smaaModel.setMeasurement(crit, getAlternative(brAnalysis, a), m);

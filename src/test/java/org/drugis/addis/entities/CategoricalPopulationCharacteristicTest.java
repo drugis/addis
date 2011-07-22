@@ -28,26 +28,26 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
 
 public class CategoricalPopulationCharacteristicTest {
-	CategoricalPopulationCharacteristic d_gender;
+	PopulationCharacteristic d_gender;
 	
 	@Before
 	public void setUp() {
-		d_gender = CategoricalPopulationCharacteristic
-				.createCategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
+		d_gender = new PopulationCharacteristic("Gender", new CategoricalVariableType(Arrays.asList((new String[]{"Male", "Female"}))));
 	}
 	
 	@Test
 	public void testCategories() {
 		String[] cats = {"Male", "Female"};
-		assertEquals(cats[0], d_gender.getCategories()[0]);
-		assertEquals(cats[1], d_gender.getCategories()[1]);
-		assertEquals(cats.length, d_gender.getCategories().length);
+		assertEquals(cats[0], ((CategoricalVariableType) d_gender.getVariableType()).getCategories().get(0));
+		assertEquals(cats[1], ((CategoricalVariableType) d_gender.getVariableType()).getCategories().get(1));
+		assertEquals(cats.length, ((CategoricalVariableType) d_gender.getVariableType()).getCategories().size());
 	}
 	
 	@Test
@@ -59,7 +59,7 @@ public class CategoricalPopulationCharacteristicTest {
 	public void testBuildMeasurement() {
 		Measurement m = d_gender.buildMeasurement();
 		assertTrue(m instanceof FrequencyMeasurement);
-		assertArrayEquals(d_gender.getCategories(), ((FrequencyMeasurement)m).getCategories());
+		assertArrayEquals(((CategoricalVariableType) d_gender.getVariableType()).getCategories().toArray(), ((FrequencyMeasurement)m).getCategories());
 		assertEquals(null, m.getSampleSize());
 	}
 	

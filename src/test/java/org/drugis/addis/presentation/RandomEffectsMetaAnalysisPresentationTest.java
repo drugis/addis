@@ -25,17 +25,19 @@
 package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.common.JUnitUtil;
@@ -53,7 +55,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
 		RandomEffectsMetaAnalysisPresentation pres = (RandomEffectsMetaAnalysisPresentation) fact.getModel(meta);
-		assertEquals(Variable.Type.RATE, pres.getAnalysisType());
+		assertEquals(new RateVariableType(), pres.getAnalysisType());
 	}
 	
 	@Test
@@ -67,7 +69,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
 		RandomEffectsMetaAnalysisPresentation pres = (RandomEffectsMetaAnalysisPresentation) fact.getModel(meta);
-		assertEquals(Variable.Type.CONTINUOUS, pres.getAnalysisType());
+		assertTrue(pres.getAnalysisType() instanceof ContinuousVariableType);
 	}
 	
 	@Test

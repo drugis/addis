@@ -31,12 +31,11 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -77,23 +76,6 @@ public class PresentationModelFactory {
 	
 	public void clearCache() {
 		d_cache.clear();
-	}
-	
-	@SuppressWarnings("unchecked")
-	public <T> PresentationModel<T> getCreationModel(T obj) {
-		PresentationModel model = createCreationModel(obj);
-		if (model != null) {
-			return (PresentationModel<T>)model;
-		}
-		return getModel(obj);
-	}
-	
-	@SuppressWarnings("unchecked")
-	private PresentationModel createCreationModel(Object obj) {
-		if (obj instanceof OutcomeMeasure) {
-			return new OutcomeMeasureCreationPresentation((OutcomeMeasure)obj);
-		}
-		return null;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -35,6 +35,7 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.ContinuousMeasurement;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.Measurement;
@@ -42,7 +43,6 @@ import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
-import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.relativeeffect.AbstractBasicRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
@@ -136,7 +136,7 @@ public class D80TableGenerator {
 		}
 		
 		public String getType() { 
-			return d_endpoint.getType().toString();
+			return d_endpoint.getVariableType().getType();
 		}
 		
 		public String getPrimary() {
@@ -218,13 +218,13 @@ public class D80TableGenerator {
 		}
 
 		private AbstractBasicRelativeEffect<? extends Measurement> getRelativeEffect(BasicMeasurement baseline, BasicMeasurement subject) {
-			return (d_endpoint.getType() == Type.CONTINUOUS ? 
+			return (d_endpoint.getVariableType() instanceof ContinuousVariableType ? 
 					new BasicMeanDifference((ContinuousMeasurement)baseline, (ContinuousMeasurement)subject) : 
 					new BasicRiskRatio((RateMeasurement) baseline, (RateMeasurement) subject));
 		}
 		
 		public String getTestStatisticType() {
-			return d_endpoint.getType() == Type.CONTINUOUS ? "Mean Difference" : "Risk Ratio";
+			return d_endpoint.getVariableType() instanceof ContinuousVariableType ? "Mean Difference" : "Risk Ratio";
 		}
 		
 	}

@@ -28,6 +28,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,20 +38,18 @@ public class VariableEqualityTest {
 
 	private AdverseEvent d_ade;
 	private Endpoint d_ep;
-	private CategoricalPopulationCharacteristic d_gender;
-	private RatePopulationCharacteristic d_rate;
-	private ContinuousPopulationCharacteristic d_cont;
+	private PopulationCharacteristic d_gender;
+	private PopulationCharacteristic d_rate;
+	private PopulationCharacteristic d_cont;
 
 
 	@Before
 	public void setUp() {
 		d_ade = new AdverseEvent("name", AdverseEvent.convertVarType(Variable.Type.RATE));
 		d_ep = new Endpoint("apocalypse", Endpoint.convertVarType(Variable.Type.CONTINUOUS));
-		d_gender = CategoricalPopulationCharacteristic
-				.createCategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
-		d_rate = RatePopulationCharacteristic.createRatePopulationCharacteristic("Test");
-		d_cont = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("TestCont");
+		d_gender = new PopulationCharacteristic("Gender", new CategoricalVariableType(Arrays.asList((new String[]{"Male", "Female"}))));
+		d_rate = new PopulationCharacteristic("Test", new RateVariableType());
+		d_cont = new PopulationCharacteristic("TestCont", new ContinuousVariableType());
 	}
 	
 	@Test
@@ -62,10 +62,10 @@ public class VariableEqualityTest {
 	@Test
 	public void testAdverseEventDeepEquals() {
 		// Test class
-		assertFalse(d_ade.deepEquals(new Endpoint(d_ade.getName(), Endpoint.convertVarType(d_ade.getType()))));
+		assertFalse(d_ade.deepEquals(new Endpoint(d_ade.getName(), d_ade.getVariableType())));
 		
 		// Test common fields
-		AdverseEvent var2 = new AdverseEvent(d_ade.getName(), AdverseEvent.convertVarType(d_ade.getType()));
+		AdverseEvent var2 = new AdverseEvent(d_ade.getName(), d_ade.getVariableType());
 		testCommonFields(d_ade, var2);
 		
 		var2.setDirection(OutcomeMeasure.Direction.HIGHER_IS_BETTER);
@@ -75,10 +75,10 @@ public class VariableEqualityTest {
 	@Test
 	public void testEndpointDeepEquals() {
 		// Test class
-		assertFalse(d_ep.deepEquals(new AdverseEvent(d_ep.getName(), AdverseEvent.convertVarType(d_ep.getType()))));
+		assertFalse(d_ep.deepEquals(new AdverseEvent(d_ep.getName(), d_ep.getVariableType())));
 		
 		// Test common fields
-		Endpoint var2 = new Endpoint(d_ep.getName(), Endpoint.convertVarType(d_ep.getType()));
+		Endpoint var2 = new Endpoint(d_ep.getName(), d_ep.getVariableType());
 		testCommonFields(d_ep, var2);
 
 		var2.setDirection(OutcomeMeasure.Direction.LOWER_IS_BETTER);
@@ -88,36 +88,34 @@ public class VariableEqualityTest {
 	@Test
 	public void testCategoricalPopCharDeepEquals() {
 		// Test class
-		assertFalse(d_gender.deepEquals(new AdverseEvent(d_gender.getName(), AdverseEvent.convertVarType(d_gender.getType()))));
+		assertFalse(d_gender.deepEquals(new AdverseEvent(d_gender.getName(), d_gender.getVariableType())));
 		
 		// Test common fields
-		CategoricalPopulationCharacteristic var2 = CategoricalPopulationCharacteristic
-				.createCategoricalPopulationCharacteristic(d_gender.getName(), d_gender.getCategories());
-		testCommonFields(d_gender, var2);
-
-		var2.setCategories(new String[] {"Mars", "Venus"});
+		PopulationCharacteristic var2 = new PopulationCharacteristic(d_gender.getName(), new CategoricalVariableType(((CategoricalVariableType) d_gender.getVariableType()).getCategories()));
+		var2.setVariableType(new CategoricalVariableType(Arrays.asList("Mars", "Venus")));
 		assertFalse(d_gender.deepEquals(var2));
+
+		var2 = new PopulationCharacteristic(d_gender.getName(), new CategoricalVariableType(((CategoricalVariableType) d_gender.getVariableType()).getCategories()));
+		testCommonFields(d_gender, var2);
 	}
 	
 	@Test
 	public void testRatePopCharDeepEquals() {
 		// Test class
-		assertFalse(d_rate.deepEquals(new AdverseEvent(d_rate.getName(), AdverseEvent.convertVarType(d_rate.getType()))));
+		assertFalse(d_rate.deepEquals(new AdverseEvent(d_rate.getName(), d_rate.getVariableType())));
 		
 		// Test common fields
-		RatePopulationCharacteristic var2 = RatePopulationCharacteristic
-				.createRatePopulationCharacteristic(d_rate.getName());
+		PopulationCharacteristic var2 = new PopulationCharacteristic(d_rate.getName(), new RateVariableType());
 		testCommonFields(d_rate, var2);
 	}
 
 	@Test
 	public void testContinuousPopCharDeepEquals() {
 		// Test class
-		assertFalse(d_cont.deepEquals(new AdverseEvent(d_cont.getName(), AdverseEvent.convertVarType(d_cont.getType()))));
+		assertFalse(d_cont.deepEquals(new AdverseEvent(d_cont.getName(), d_cont.getVariableType())));
 		
 		// Test common fields
-		ContinuousPopulationCharacteristic var2 = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic(d_cont.getName());
+		PopulationCharacteristic var2 = new PopulationCharacteristic(d_cont.getName(), new ContinuousVariableType());
 		testCommonFields(d_cont, var2);
 	}
 
@@ -135,8 +133,9 @@ public class VariableEqualityTest {
 		var1.setVariableType(new RateVariableType());
 		var2.setVariableType(new ContinuousVariableType());
 		assertFalse(var1.deepEquals(var2));
-		var1.setVariableType(new RateVariableType());
-		
+		var1.setVariableType(new ContinuousVariableType());
+		assertTrue(var1.deepEquals(var2));
+
 		// Equal on description
 		var1.setDescription("defcrib");
 		var2.setDescription("nuffink");
@@ -164,23 +163,19 @@ public class VariableEqualityTest {
 	
 	@Test
 	public void testCategoricalPopCharEquals() {
-		PopCharImplPlsDel gender2 = CategoricalPopulationCharacteristic
-				.createCategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
+		PopulationCharacteristic gender2 = new PopulationCharacteristic("Gender", new CategoricalVariableType(Arrays.asList((new String[]{"Male", "Female"}))));
 		assertEquals(d_gender, gender2);
 		assertEquals(d_gender.hashCode(), gender2.hashCode());
 		
-		gender2 = CategoricalPopulationCharacteristic
-				.createCategoricalPopulationCharacteristic("Gender2", new String[]{"Male", "Female"});
+		gender2 = new PopulationCharacteristic("Gender2", new CategoricalVariableType(Arrays.asList((new String[]{"Male", "Female"}))));
 		assertFalse(gender2.equals(d_gender));
 
-		gender2 = CategoricalPopulationCharacteristic
-				.createCategoricalPopulationCharacteristic(null, new String[]{"Male", "Female"});
+		gender2 = new PopulationCharacteristic(null, new CategoricalVariableType(Arrays.asList((new String[]{"Male", "Female"}))));
 		assertFalse(gender2.equals(d_gender));
 
 		assertFalse(gender2.equals(new Integer(2)));
 		
 		// Equality only on Name within PopulationCharacteristic hierarchy
-		assertEquals(d_gender, RatePopulationCharacteristic
-				.createRatePopulationCharacteristic(d_gender.getName()));
+		assertEquals(d_gender, new PopulationCharacteristic(d_gender.getName(), new RateVariableType()));
 	}
 }

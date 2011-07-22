@@ -35,20 +35,10 @@ public class EndpointTest {
 	public void testSetDescription() {
 		JUnitUtil.testSetter(new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE)), Endpoint.PROPERTY_DESCRIPTION, "", "My Description");
 	}
-	
-	@Test
-	public void testSetUnitOfMeasurement() {
-		JUnitUtil.testSetter(new Endpoint("e", Endpoint.convertVarType(Variable.Type.CONTINUOUS)), Variable.PROPERTY_UNIT_OF_MEASUREMENT, "", "kg per day");
-	}
 
 	@Test
 	public void testSetName() {
 		JUnitUtil.testSetter(new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE)), Endpoint.PROPERTY_NAME, "e", "My Name");
-	}
-	
-	@Test
-	public void testSetType() {
-		JUnitUtil.testSetter(new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE)), Endpoint.PROPERTY_TYPE, Variable.Type.RATE, Variable.Type.CONTINUOUS);
 	}
 	
 	@Test
@@ -61,9 +51,9 @@ public class EndpointTest {
 	public void testBuildMeasurement() {
 		Arm pg = new Arm("", 0);
 		Endpoint e = new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE));
-		e.setType(Variable.Type.RATE);
+		e.setVariableType(new RateVariableType());
 		assertTrue(e.buildMeasurement(pg) instanceof BasicRateMeasurement);
-		e.setType(Variable.Type.CONTINUOUS);
+		e.setVariableType(new ContinuousVariableType());
 		assertTrue(e.buildMeasurement(pg) instanceof BasicContinuousMeasurement);
 	}
 	

@@ -48,14 +48,6 @@ public class AssertEntityEquals {
 		assertEquals(expected.getCode(),  actual.getCode());
 		assertEquals(expected.getName(),  actual.getName());	
 	}
-
-	public static void assertEntityEquals(OutcomeMeasure expected, OutcomeMeasure actual) {
-		assertEquals(expected, actual);
-		assertEquals(expected.getType(),actual.getType());
-		assertEquals(expected.getDirection(),actual.getDirection());
-		assertEquals(expected.getDescription(), actual.getDescription());
-		assertEquals(expected.getUnitOfMeasurement(), actual.getUnitOfMeasurement());
-	}
 	
 	public static void assertEntityEquals(Drug expected, Drug actual) {
 		assertEquals(expected.getName(),actual.getName());
@@ -76,18 +68,7 @@ public class AssertEntityEquals {
 	}
 	
 	public static void assertEntityEquals(Variable expected, Variable actual) {
-		assertEquals(expected, actual);
-		assertEquals(expected.getName(), actual.getName());
-		assertEquals(expected.getType(), actual.getType());
-		assertEquals(expected.getDescription(),actual.getDescription());
-		assertEquals(expected.getUnitOfMeasurement(), actual.getUnitOfMeasurement());	
-	}
-	
-	public static void assertEntityEquals(CategoricalPopulationCharacteristic expected, CategoricalPopulationCharacteristic actual) {
-		assertEntityEquals((Variable) expected, (Variable) actual);
-		assertEquals(expected.getCategories().length, actual.getCategories().length);
-		for(int i = 0; i < expected.getCategories().length; ++i)
-			assertEquals(expected.getCategories()[i], actual.getCategories()[i]);
+		assertTrue(EntityUtil.deepEqual(expected, actual));
 	}
 	
 	public static void assertEntityEquals(Measurement expected, Measurement actual) {
@@ -171,20 +152,14 @@ public class AssertEntityEquals {
 	}
 	
 	public static void assertEntityEquals(Entity expected, Entity actual){
-		if (expected instanceof Endpoint)
-			assertEntityEquals((Endpoint) expected, (Endpoint) actual);
-		else if (expected instanceof Arm)
+		if (expected instanceof Arm)
 			assertEntityEquals((Arm) expected, (Arm) actual);
-		else if (expected instanceof CategoricalPopulationCharacteristic)
-			assertEntityEquals((CategoricalPopulationCharacteristic) expected, (CategoricalPopulationCharacteristic) actual);
 		else if (expected instanceof Drug)
 			assertEntityEquals((Drug) expected, (Drug) actual);
 		else if (expected instanceof Indication)
 			assertEntityEquals((Indication) expected, (Indication) actual);
 		else if (expected instanceof Measurement)
 			assertEntityEquals((Measurement) expected, (Measurement) actual);
-		else if (expected instanceof OutcomeMeasure)
-			assertEntityEquals((OutcomeMeasure) expected, (OutcomeMeasure) actual);
 		else if (expected instanceof Study)
 			assertEntityEquals((Study) expected, (Study) actual);
 		else if (expected instanceof Variable)

@@ -27,7 +27,7 @@ package org.drugis.addis.gui.knowledge;
 import javax.swing.JDialog;
 
 import org.drugis.addis.FileNames;
-import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.PopulationCharacteristic;
@@ -47,8 +47,7 @@ public class PopulationCharacteristicsKnowledge extends CategoryKnowledgeBase {
 
 	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain,
 			ValueModel selectionModel) {
-		Variable variable = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("");
+		Variable variable = new PopulationCharacteristic("", new ContinuousVariableType());
 		return new AddVariableDialog(mainWindow, domain, variable, selectionModel);
 	}	
 	

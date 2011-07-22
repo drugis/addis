@@ -36,9 +36,11 @@ import javax.swing.JPanel;
 
 import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.AdverseEvent;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.gui.AddisWindow;
@@ -113,11 +115,11 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 				JPanel panel = new JPanel(new FlowLayout());
 				if (var instanceof OutcomeMeasure) {
 					OutcomeMeasure om = (OutcomeMeasure) var;
-					if (om.getType().equals(Variable.Type.RATE)) {
+					if (om.getVariableType() instanceof RateVariableType) {
 						panel.add(createOddsRatioButton(om));
 						panel.add(createRiskRatioButton(om));
 						panel.add(createRiskDifferenceButton(om));
-					} else if (om.getType().equals(Variable.Type.CONTINUOUS)) {
+					} else if (om.getVariableType() instanceof ContinuousVariableType) {
 						panel.add(createWMDButton(om));
 						panel.add(createSMDButton(om));
 					}

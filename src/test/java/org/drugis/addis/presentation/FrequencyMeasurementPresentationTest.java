@@ -32,10 +32,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 
-import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
+import org.drugis.addis.entities.CategoricalVariableType;
 import org.drugis.addis.entities.FrequencyMeasurement;
-import org.drugis.addis.entities.PopCharImplPlsDel;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,14 +44,13 @@ import org.junit.Test;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 public class FrequencyMeasurementPresentationTest {
-	private PopCharImplPlsDel d_variable;
+	private PopulationCharacteristic d_variable;
 	private FrequencyMeasurement d_measurement;
 	private FrequencyMeasurementPresentation d_pm;
 	
 	@Before
 	public void setUp() {
-		d_variable = CategoricalPopulationCharacteristic
-				.createCategoricalPopulationCharacteristic("Gender", new String[] {"Male", "Female"});
+		d_variable = new PopulationCharacteristic("Gender", new CategoricalVariableType(Arrays.asList((new String[] {"Male", "Female"}))));
 		d_measurement = (FrequencyMeasurement) d_variable.buildMeasurement();
 		d_pm = new FrequencyMeasurementPresentation(d_measurement);
 	}

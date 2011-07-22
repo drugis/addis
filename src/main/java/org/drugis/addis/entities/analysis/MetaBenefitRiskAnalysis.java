@@ -43,9 +43,8 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.Distribution;
@@ -203,11 +202,11 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		for(MetaAnalysis ma : getMetaAnalyses()){
 			if(ma.getOutcomeMeasure().equals(om)){
 				if (!d.equals(getBaseline())) {
-					Class<? extends RelativeEffect<? extends Measurement>> type = (om.getType().equals(Variable.Type.RATE)) ? BasicOddsRatio.class : BasicMeanDifference.class;
+					Class<? extends RelativeEffect<? extends Measurement>> type = (om.getVariableType() instanceof RateVariableType) ? BasicOddsRatio.class : BasicMeanDifference.class;
 					return ma.getRelativeEffect(d_baseline, d, type);
 				}
 				else {
-					return (om.getType().equals(Variable.Type.RATE)) ?  NetworkRelativeEffect.buildOddsRatio(0.0, 0.0) : NetworkRelativeEffect.buildMeanDifference(0.0, 0.0); 
+					return (om.getVariableType() instanceof RateVariableType) ?  NetworkRelativeEffect.buildOddsRatio(0.0, 0.0) : NetworkRelativeEffect.buildMeanDifference(0.0, 0.0); 
 				}
 			}
 			
@@ -226,7 +225,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	 * Get the measurement to be used in the BenefitRisk simulation.
 	 */
 	public Distribution getMeasurement(DrugSet d, OutcomeMeasure om) {
-		if (om.getType() == Type.RATE) {
+		if (om.getVariableType() instanceof RateVariableType) {
 			GaussianBase logOdds = getAbsoluteEffectDistribution(d, om);
 			return logOdds == null ? null : new LogitGaussian(logOdds.getMu(), logOdds.getSigma());
 		}
@@ -254,16 +253,9 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	}
 	
 	private AbstractBaselineModel<?> createBaselineModel(OutcomeMeasure om) {
-		AbstractBaselineModel<?> model = null;
-			switch (om.getType()) {
-			case RATE:
-				model = new BaselineOddsModel(getBaselineMeasurements(om, RateMeasurement.class));
-			break;
-			case CONTINUOUS:
-				model = new BaselineMeanDifferenceModel(getBaselineMeasurements(om, ContinuousMeasurement.class));
-			break;
-			}
-		return model;
+		return (AbstractBaselineModel<?>) ((om.getVariableType() instanceof RateVariableType) ? 
+				new BaselineOddsModel(getBaselineMeasurements(om, RateMeasurement.class)) : 
+				new BaselineMeanDifferenceModel(getBaselineMeasurements(om, ContinuousMeasurement.class)));
 	}
 	
 	@SuppressWarnings("unchecked")

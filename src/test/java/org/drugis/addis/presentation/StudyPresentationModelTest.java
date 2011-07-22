@@ -34,7 +34,7 @@ import java.util.Collections;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
-import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
@@ -140,8 +140,7 @@ public class StudyPresentationModelTest {
 	public void testGetPopulationCharacteristicCount() {
 		d_study.createAndAddArm("arm1", 0, new Drug("X", "Y"), null);
 		d_study.createAndAddArm("arm2", 0, new Drug("X", "Y"), null);
-		ContinuousPopulationCharacteristic age = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("Age");
+		PopulationCharacteristic age = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		assertEquals(0, d_model.getPopulationCharacteristicCount());
 		d_study.getPopulationChars().clear();
 		d_study.getPopulationChars().addAll(Study.wrapVariables(Collections.<PopulationCharacteristic>singletonList(age)));
@@ -150,8 +149,7 @@ public class StudyPresentationModelTest {
 	
 	@Test
 	public void testGetPopulationCharacteristicsOverall() {
-		ContinuousPopulationCharacteristic age = ContinuousPopulationCharacteristic
-				.createContinuousPopulationCharacteristic("Age");
+		PopulationCharacteristic age = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		d_study.getPopulationChars().clear();
 		d_study.getPopulationChars().addAll(Study.wrapVariables(Collections.<PopulationCharacteristic>singletonList(age)));
 		assertEquals(Collections.singletonList(age), d_model.getPopulationCharacteristics());

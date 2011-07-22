@@ -25,8 +25,8 @@ public class ContinuousVariableTypeTest {
 	
 	@Test
 	public void testGetUnitOfMeasurement() {
-		JUnitUtil.testSetter(d_var, ContinuousVariableType.PROPERTY_UNIT_OF_MEASUREMENT, null, "quarts per inch");
-		JUnitUtil.testSetter(d_var, ContinuousVariableType.PROPERTY_UNIT_OF_MEASUREMENT, "quarts per inch", "pints per gallon");
+		JUnitUtil.testSetter(d_var, ContinuousVariableType.PROPERTY_UNIT_OF_MEASUREMENT, d_var.getUnitOfMeasurement(), "quarts per inch");
+		JUnitUtil.testSetter(d_var, ContinuousVariableType.PROPERTY_UNIT_OF_MEASUREMENT, d_var.getUnitOfMeasurement(), "pints per gallon");
 	}
 	
 	@Test

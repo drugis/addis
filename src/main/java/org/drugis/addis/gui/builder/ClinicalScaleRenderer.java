@@ -32,7 +32,7 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.OddsRatioScalePresentation;
@@ -58,7 +58,7 @@ public class ClinicalScaleRenderer implements ScaleRenderer {
 		if (c instanceof ScaleCriterion) {
 			ScaleCriterion criterion = (ScaleCriterion)c;
 			OutcomeMeasure outcome = d_smaapm.getOutcomeMeasureForCriterion(criterion);
-			if (outcome.getType() == Variable.Type.RATE) {
+			if (outcome.getVariableType() instanceof RateVariableType) {
 				RiskScalePresentation cpm = new RiskScalePresentation(criterion);
 				return buildRiskClinicalView(cpm);
 			} else {

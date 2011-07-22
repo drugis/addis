@@ -29,7 +29,7 @@ import java.util.List;
 
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.VariableType;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 
 import com.jgoodies.binding.PresentationModel;
@@ -84,7 +84,7 @@ implements StudyListPresentation {
 	}
 
 
-	public Variable.Type getAnalysisType() {
-		return getBean().getOutcomeMeasure().getType();
+	public VariableType getAnalysisType() {
+		return getBean().getOutcomeMeasure().getVariableType();
 	}
 }

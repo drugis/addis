@@ -29,6 +29,7 @@ import java.util.List;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
@@ -48,11 +49,7 @@ public class MockMetaBenefitRiskAnalysis extends MetaBenefitRiskAnalysis {
 	 */
 	@Override
 	public GaussianBase getBaselineDistribution(OutcomeMeasure om) {
-		switch (om.getType()) {
-			case RATE: return new LogGaussian(0.001, 0.0001);
-			case CONTINUOUS: return new Gaussian(0.001, 0.0001);
-		}
-		return null;
+		return om.getVariableType() instanceof RateVariableType ? new LogGaussian(0.001, 0.0001) : new Gaussian(0.001, 0.0001);
 	}
 
 }

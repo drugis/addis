@@ -38,8 +38,8 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
-import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
-import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
+import org.drugis.addis.entities.CategoricalVariableType;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
@@ -48,6 +48,7 @@ import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
@@ -90,8 +91,8 @@ public class ExampleData {
 	private static Study s_studyChouinard;
 	private static Study s_studyMultipleArmsPerDrug;
 	
-	private static CategoricalPopulationCharacteristic s_gender;
-	private static ContinuousPopulationCharacteristic s_age;
+	private static PopulationCharacteristic s_gender;
+	private static PopulationCharacteristic s_age;
 	private static Endpoint s_endpointMadrs;
 	private static Study s_studyBurke;
 	
@@ -127,18 +128,16 @@ public class ExampleData {
 		domain.addAdverseEvent(buildAdverseEventConvulsion());
 	}
 
-	public static CategoricalPopulationCharacteristic buildGenderVariable() {
+	public static PopulationCharacteristic buildGenderVariable() {
 		if (s_gender == null) {
-			s_gender = CategoricalPopulationCharacteristic
-					.createCategoricalPopulationCharacteristic("Gender", new String[]{"Male", "Female"});
+			s_gender = new PopulationCharacteristic("Gender", new CategoricalVariableType(Arrays.asList((new String[]{"Male", "Female"}))));
 		}
 		return s_gender;
 	}
 	
-	public static ContinuousPopulationCharacteristic buildAgeVariable() {
+	public static PopulationCharacteristic buildAgeVariable() {
 		if (s_age == null) {
-			s_age = ContinuousPopulationCharacteristic
-					.createContinuousPopulationCharacteristic("Age");
+			s_age = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		}
 		return s_age;
 	}
@@ -778,9 +777,8 @@ public class ExampleData {
 
 	public static Endpoint buildEndpointCgi() {
 		if (s_endpointCgi == null) { 
-			Endpoint cgi = new Endpoint("CGI Severity Change", Endpoint.convertVarType(Variable.Type.CONTINUOUS));
+			Endpoint cgi = new Endpoint("CGI Severity Change", new ContinuousVariableType("Deviation from the baseline of CGI Severity of Illness score"));
 			cgi.setDescription("Change from baseline CGI Severity of Illness score");
-			cgi.setUnitOfMeasurement("Deviation from the baseline of CGI Severity of Illness score");
 			s_endpointCgi = cgi;
 		}
 		return s_endpointCgi;
@@ -788,9 +786,8 @@ public class ExampleData {
 
 	public static Endpoint buildEndpointMadrs() {
 		if (s_endpointMadrs == null) { 
-			Endpoint madrs = new Endpoint("MADRS Responders", Endpoint.convertVarType(Variable.Type.RATE));
+			Endpoint madrs = new Endpoint("MADRS Responders", new RateVariableType());
 			madrs.setDescription("Responders with a 50% increase in MADRS score");
-			madrs.setUnitOfMeasurement("Ratio of Patients");
 			s_endpointMadrs = madrs;
 		}
 		return s_endpointMadrs;

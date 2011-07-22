@@ -60,8 +60,8 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 		return d_rate;
 	}
 	
-	public boolean isOfType(Variable.Type type) {
-		return type.equals(Variable.Type.RATE);
+	public boolean isOfType(VariableType type) {
+		return type instanceof RateVariableType;
 	}
 	
 	@Override

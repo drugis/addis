@@ -54,4 +54,9 @@ public class CategoricalVariableType extends AbstractEntity implements VariableT
 	public int hashCode() {
 		return d_cats == null ? 0 : d_cats.hashCode();
 	}
+	
+	@Override
+	public String toString() {
+		return getType();
+	}
 }

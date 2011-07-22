@@ -56,10 +56,8 @@ import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
-import org.drugis.addis.entities.CategoricalPopulationCharacteristic;
 import org.drugis.addis.entities.CategoricalVariableType;
 import org.drugis.addis.entities.CharacteristicsMap;
-import org.drugis.addis.entities.ContinuousPopulationCharacteristic;
 import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
@@ -80,7 +78,6 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
-import org.drugis.addis.entities.RatePopulationCharacteristic;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
@@ -552,14 +549,14 @@ public class JAXBConvertor {
 	static Variable convertPopulationCharacteristic(org.drugis.addis.entities.data.OutcomeMeasure m) throws ConversionException {
 		PopulationCharacteristic pc = null;
 		if(m.getRate() != null) {
-			pc =  RatePopulationCharacteristic.createRatePopulationCharacteristic();
+			pc =  new PopulationCharacteristic("", new RateVariableType());
 		}
 		if(m.getContinuous() != null) {
-			pc = ContinuousPopulationCharacteristic.createContinuousPopulationCharacteristic();
+			pc = new PopulationCharacteristic("", new ContinuousVariableType());
 			((ContinuousVariableType)pc.getVariableType()).setUnitOfMeasurement(m.getContinuous().getUnitOfMeasurement());
 		}
 		if(m.getCategorical() != null) {
-			pc = CategoricalPopulationCharacteristic.createCategoricalPopulationCharacteristic();
+			pc = new PopulationCharacteristic("", new CategoricalVariableType());
 			((CategoricalVariableType)pc.getVariableType()).getCategories().addAll(m.getCategorical().getCategory());
 		}
 		

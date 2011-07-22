@@ -43,10 +43,10 @@ public class FrequencyMeasurement extends BasicMeasurement {
 		super(null);
 	}
 	
-	public FrequencyMeasurement(CategoricalPopulationCharacteristic cv) {
+	public FrequencyMeasurement(PopulationCharacteristic cv) {
 		super(null);
-		d_categories = cv.getCategories();
-		for (String cat : cv.getCategories()) {
+		d_categories = ((CategoricalVariableType) cv.getVariableType()).getCategories().toArray(new String[]{});
+		for (String cat : ((CategoricalVariableType) cv.getVariableType()).getCategories()) {
 			getFrequencies().put(cat, null);
 		}
 	}
@@ -109,8 +109,8 @@ public class FrequencyMeasurement extends BasicMeasurement {
 		}
 	}
 		
-	public boolean isOfType(Variable.Type type) {
-		return type.equals(Variable.Type.CATEGORICAL);
+	public boolean isOfType(VariableType type) {
+		return type instanceof CategoricalVariableType;
 	}
 
 	@Override
