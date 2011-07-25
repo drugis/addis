@@ -218,6 +218,7 @@
 		</xs:choice>
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="description" type="xs:string"/>
+		<xs:attribute name="direction" type="Direction"/>
 	</xs:complexType>
 	<xs:complexType name="Study">
 		<xs:sequence>
@@ -440,12 +441,9 @@
 	<!-- Outcomemeasures and variables -->
 
 	<xs:complexType name="ContinuousVariable">
-		<xs:attribute name="direction" type="Direction"/>
 		<xs:attribute name="unitOfMeasurement" type="xs:string"/>
 	</xs:complexType>
-	<xs:complexType name="RateVariable">
-		<xs:attribute name="direction" type="Direction"/>
-	</xs:complexType>
+	<xs:complexType name="RateVariable"/>
 	<xs:complexType name="CategoricalVariable">
 		<xs:sequence maxOccurs="unbounded">
 			<xs:element name="category" type="xs:string"/>

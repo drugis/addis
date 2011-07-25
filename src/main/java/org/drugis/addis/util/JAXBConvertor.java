@@ -273,6 +273,9 @@ public class JAXBConvertor {
 		org.drugis.addis.entities.data.OutcomeMeasure om = new org.drugis.addis.entities.data.OutcomeMeasure();
 		om.setDescription(o.getDescription());
 		om.setName(o.getName());
+		if(o instanceof OutcomeMeasure) {
+			om.setDirection(((OutcomeMeasure) o).getDirection());
+		}
 		if (o.getVariableType() instanceof CategoricalVariableType) {
 			CategoricalVariableType cat = (CategoricalVariableType) o.getVariableType();
 			CategoricalVariable varCat = new CategoricalVariable();
@@ -280,16 +283,10 @@ public class JAXBConvertor {
 			om.setCategorical(varCat);
 		} else if (o.getVariableType() instanceof ContinuousVariableType) {
 			ContinuousVariable varC = new ContinuousVariable();
-			if(o instanceof OutcomeMeasure) {
-				varC.setDirection(((OutcomeMeasure) o).getDirection());
-			}
 			varC.setUnitOfMeasurement(((ContinuousVariableType) o.getVariableType()).getUnitOfMeasurement());
 			om.setContinuous(varC);
 		} else if (o.getVariableType() instanceof RateVariableType) {
 			RateVariable varR = new RateVariable();
-			if(o instanceof OutcomeMeasure) {
-				varR.setDirection(((OutcomeMeasure) o).getDirection());
-			}
 			om.setRate(varR);
 		} else {
 			throw new ConversionException("Variable type " + o.getVariableType() + " unknown");
@@ -309,10 +306,10 @@ public class JAXBConvertor {
 		} else if (from.getContinuous() != null) {
 			ContinuousVariableType type = new ContinuousVariableType(from.getContinuous().getUnitOfMeasurement());
 			to.setVariableType(type);
-			to.setDirection(from.getContinuous().getDirection());
+			to.setDirection(from.getDirection());
 		} else if (from.getRate() != null) {
 			to.setVariableType(new RateVariableType());
-			to.setDirection(from.getRate().getDirection());
+			to.setDirection(from.getDirection());
 		}
 	}
 	

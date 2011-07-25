@@ -178,7 +178,7 @@ public class JAXBConvertorTest {
 		m.setName(name);
 		m.setDescription(desc);
 		ContinuousVariable value = new ContinuousVariable();
-		value.setDirection(dir);
+		m.setDirection(dir);
 		value.setUnitOfMeasurement(unit);
 		m.setContinuous(value);
 		
@@ -200,7 +200,7 @@ public class JAXBConvertorTest {
 		m.setName(name);
 		m.setDescription(desc);
 		RateVariable value = new RateVariable();
-		value.setDirection(dir);
+		m.setDirection(dir);
 		m.setRate(value);
 		
 		Endpoint e = new Endpoint(name, Endpoint.convertVarType(Type.RATE), dir);
@@ -208,7 +208,7 @@ public class JAXBConvertorTest {
 		
 		assertEntityEquals(e, JAXBConvertor.convertEndpoint(m));
 		
-		value.setDirection(Direction.LOWER_IS_BETTER);
+		m.setDirection(Direction.LOWER_IS_BETTER);
 		e.setDirection(org.drugis.addis.entities.OutcomeMeasure.Direction.LOWER_IS_BETTER);
 		
 		assertEntityEquals(e, JAXBConvertor.convertEndpoint(m));
@@ -236,7 +236,7 @@ public class JAXBConvertorTest {
 		m.setName(name);
 		m.setDescription(desc);
 		ContinuousVariable value = new ContinuousVariable();
-		value.setDirection(Direction.LOWER_IS_BETTER);
+		m.setDirection(Direction.LOWER_IS_BETTER);
 		value.setUnitOfMeasurement(unit);
 		m.setContinuous(value);
 		
@@ -257,7 +257,7 @@ public class JAXBConvertorTest {
 		m.setName(name);
 		m.setDescription(desc);
 		RateVariable value = new RateVariable();
-		value.setDirection(Direction.LOWER_IS_BETTER);
+		m.setDirection(Direction.LOWER_IS_BETTER);
 		m.setRate(value);
 		
 		AdverseEvent e = new AdverseEvent(name, AdverseEvent.convertVarType(Type.RATE));
@@ -265,7 +265,7 @@ public class JAXBConvertorTest {
 		
 		assertEntityEquals(e, JAXBConvertor.convertAdverseEvent(m));
 		
-		value.setDirection(Direction.HIGHER_IS_BETTER);
+		m.setDirection(Direction.HIGHER_IS_BETTER);
 		e.setDirection(org.drugis.addis.entities.OutcomeMeasure.Direction.HIGHER_IS_BETTER);
 		
 		assertEntityEquals(e, JAXBConvertor.convertAdverseEvent(m));
