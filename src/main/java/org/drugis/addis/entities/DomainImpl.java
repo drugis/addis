@@ -46,6 +46,7 @@ import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.DefaultListHolder;
 import org.drugis.addis.presentation.ListHolder;
+import org.drugis.addis.util.SortedSetModel;
 
 import com.jgoodies.binding.beans.BeanUtils;
 
@@ -83,34 +84,21 @@ public class DomainImpl implements Domain {
 			CATEGORY_BENEFIT_RISK_ANALYSES
 		});
 	
-	private DomainData d_domainData;
+	private List<DomainListener> d_listeners = new ArrayList<DomainListener>();
+	private PropertyChangeListener d_studyListener = new StudyChangeListener();
+	private SortedSetModel<Endpoint> d_endpoints = new SortedSetModel<Endpoint>();
+	private SortedSetModel<Study> d_studies = new SortedSetModel<Study>();
+	private SortedSetModel<MetaAnalysis> d_metaAnalyses = new SortedSetModel<MetaAnalysis>();		
+	private SortedSetModel<Drug> d_drugs = new SortedSetModel<Drug>();
+	private SortedSetModel<Indication> d_indications = new SortedSetModel<Indication>();	
+	private SortedSetModel<PopulationCharacteristic> d_variables = new SortedSetModel<PopulationCharacteristic>();
+	private SortedSetModel<AdverseEvent> d_ades = new SortedSetModel<AdverseEvent>();
+	private SortedSetModel<BenefitRiskAnalysis<?>> d_benefitRiskAnalyses = new SortedSetModel<BenefitRiskAnalysis<?>>();
 	
-	private List<DomainListener> d_listeners;
-	private PropertyChangeListener d_studyListener;
-	
-	public DomainImpl() {
-		this(new DomainData());
-	}
-	
-	public DomainImpl(DomainData loadedData) {
-		d_domainData = loadedData;
-		d_listeners = new ArrayList<DomainListener>();
-		d_studyListener = new StudyChangeListener();
-	}
-
 	private class StudyChangeListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
 			fireDomainChanged(DomainEvent.Type.STUDIES);
-		}		
-
-	}
-	
-	public void setDomainData(DomainData d) {
-		d_domainData = d;
-	}
-	
-	public DomainData getDomainData() {
-		return d_domainData;
+		}
 	}
 	
 	public void addOutcomeMeasure(OutcomeMeasure om) {
@@ -128,13 +116,13 @@ public class DomainImpl implements Domain {
 			throw new NullPointerException("Endpoint may not be null");
 		}
 		
-		d_domainData.addEnpoint(e);
+		d_endpoints.add(e);
 
 		fireDomainChanged(DomainEvent.Type.ENDPOINTS);
 	}
 
 	public SortedSet<Endpoint> getEndpoints() {
-		return Collections.unmodifiableSortedSet(d_domainData.getEndpoints());
+		return Collections.unmodifiableSortedSet(d_endpoints.getSet());
 	}
 
 	public void addListener(DomainListener listener) {
@@ -159,7 +147,7 @@ public class DomainImpl implements Domain {
 		if (!getIndications().contains(s.getIndication())) {
 			throw new IllegalArgumentException("indication of this study not in the domain");
 		}
-		d_domainData.addStudy(s);
+		d_studies.add(s);
 		s.addPropertyChangeListener(d_studyListener);		
 		
 		fireDomainChanged(DomainEvent.Type.STUDIES);
@@ -179,32 +167,32 @@ public class DomainImpl implements Domain {
 			throw new IllegalArgumentException("Indication not in domain");
 		}*/
 		
-		for (MetaAnalysis m : d_domainData.getMetaAnalyses()) {
+		for (MetaAnalysis m : d_metaAnalyses.getSet()) {
 			if (m.getName().equals(ma.getName())) {
 				throw new EntityIdExistsException("There already exists a meta-analysis with the given name");
 			}
 		}
 		
-		d_domainData.addMetaAnalysis(ma);
+		d_metaAnalyses.add(ma);
 	
 		fireDomainChanged(DomainEvent.Type.ANALYSES);
 	}
 	
 	public SortedSet<Study> getStudies() {
-		return Collections.unmodifiableSortedSet(d_domainData.getStudies());
+		return Collections.unmodifiableSortedSet(d_studies.getSet());
 	}
 
 	public void addDrug(Drug d) throws NullPointerException {
 		if (d == null) {
 			throw new NullPointerException("Drug may not be null");
 		}
-		d_domainData.addDrug(d);
+		d_drugs.add(d);
 	
 		fireDomainChanged(DomainEvent.Type.DRUGS);
 	}
 
 	public SortedSet<Drug> getDrugs() {
-		return Collections.unmodifiableSortedSet(d_domainData.getDrugs());
+		return Collections.unmodifiableSortedSet(d_drugs.getSet());
 	}
 
 	public ListHolder<Study> getStudies(Variable e) 
@@ -263,17 +251,17 @@ public class DomainImpl implements Domain {
 	
 	public Set<Entity> getDependents(Entity e) {
 		Set<Entity> deps = new HashSet<Entity>();
-		for (Study s : d_domainData.getStudies()) {
+		for (Study s : d_studies.getSet()) {
 			if (s.getDependencies().contains(e)) {
 				deps.add(s);
 			}
 		}
-		for (MetaAnalysis s : d_domainData.getMetaAnalyses()) {
+		for (MetaAnalysis s : d_metaAnalyses.getSet()) {
 			if (s.getDependencies().contains(e)) {
 				deps.add(s);
 			}
 		}		
-		for (BenefitRiskAnalysis<?> s : d_domainData.getBenefitRiskAnalyses()) {
+		for (BenefitRiskAnalysis<?> s : d_benefitRiskAnalyses.getSet()) {
 			if (s.getDependencies().contains(e)) {
 				deps.add(s);
 			}
@@ -307,19 +295,19 @@ public class DomainImpl implements Domain {
 	
 	public void deletePopulationCharacteristic(PopulationCharacteristic v) throws DependentEntitiesException {
 		checkDependents(v);
-		d_domainData.removeVariable(v);
+		d_variables.remove(v);
 		fireDomainChanged(DomainEvent.Type.VARIABLES);
 	}
 
 	public void deleteStudy(Study s) throws DependentEntitiesException {
 		checkDependents(s);
-		d_domainData.removeStudy(s);
+		d_studies.remove(s);
 		fireDomainChanged(DomainEvent.Type.STUDIES);
 	}
 
 	public void deleteDrug(Drug d) throws DependentEntitiesException {
 		checkDependents(d);
-		d_domainData.removeDrug(d);
+		d_drugs.remove(d);
 		fireDomainChanged(DomainEvent.Type.DRUGS);
 	}
 
@@ -332,13 +320,13 @@ public class DomainImpl implements Domain {
 
 	public void deleteEndpoint(Endpoint e) throws DependentEntitiesException {
 		checkDependents(e);
-		d_domainData.removeEndpoint(e);
+		d_endpoints.remove(e);
 		fireDomainChanged(DomainEvent.Type.ENDPOINTS);		
 	}
 
 	public void deleteIndication(Indication i) throws DependentEntitiesException {
 		checkDependents(i);
-		d_domainData.removeIndication(i);
+		d_indications.remove(i);
 		fireDomainChanged(DomainEvent.Type.INDICATIONS);
 	}
 
@@ -347,7 +335,7 @@ public class DomainImpl implements Domain {
 		if (i == null) {
 			throw new NullPointerException();
 		}
-		d_domainData.addIndication(i);
+		d_indications.add(i);
 		fireDomainChanged(DomainEvent.Type.INDICATIONS);
 	}
 
@@ -358,31 +346,31 @@ public class DomainImpl implements Domain {
 	}
 
 	public SortedSet<Indication> getIndications() {
-		return Collections.unmodifiableSortedSet(d_domainData.getIndications());
+		return Collections.unmodifiableSortedSet(d_indications.getSet());
 	}
 
 	public SortedSet<MetaAnalysis> getMetaAnalyses() {
-		return Collections.unmodifiableSortedSet(d_domainData.getMetaAnalyses()); 
+		return Collections.unmodifiableSortedSet(d_metaAnalyses.getSet()); 
 	}
 
 	public void deleteMetaAnalysis(MetaAnalysis ma)
 			throws DependentEntitiesException {
 		checkDependents(ma);
-		d_domainData.removeMetaAnalysis(ma);
+		d_metaAnalyses.remove(ma);
 		fireDomainChanged(DomainEvent.Type.ANALYSES);
 	}
 
 	public void deleteMetaBenefitRiskAnalysis(MetaBenefitRiskAnalysis bra)
 			throws DependentEntitiesException {
 		checkDependents(bra);
-		d_domainData.removeBRAnalysis(bra);
+		d_benefitRiskAnalyses.remove(bra);
 		fireDomainChanged(DomainEvent.Type.BENEFITRISK_ANALYSIS);
 	}
 
 	public void deleteStudyBenefitRiskAnalysis(StudyBenefitRiskAnalysis bra)
 	throws DependentEntitiesException {
 		checkDependents(bra);
-		d_domainData.removeBRAnalysis(bra);
+		d_benefitRiskAnalyses.remove(bra);
 		fireDomainChanged(DomainEvent.Type.BENEFITRISK_ANALYSIS);
 	}
 
@@ -402,9 +390,9 @@ public class DomainImpl implements Domain {
 			List<Study> oldStudies = d_holderStudies;
 			d_holderStudies = new ArrayList<Study>();
 			if (i == null) {
-				d_holderStudies.addAll(d_domainData.getStudies());
+				d_holderStudies.addAll(d_studies.getSet());
 			} else {
-				for (Study s : d_domainData.getStudies()) {
+				for (Study s : d_studies.getSet()) {
 					if (s.getDependencies().contains(i)) {
 						d_holderStudies.add(s);
 					}
@@ -425,14 +413,14 @@ public class DomainImpl implements Domain {
 	}
 
 	public SortedSet<PopulationCharacteristic> getPopulationCharacteristics() {
-		return Collections.unmodifiableSortedSet(d_domainData.getVariables());
+		return Collections.unmodifiableSortedSet(d_variables.getSet());
 	}
 
 	public void addPopulationCharacteristic(PopulationCharacteristic c) {
 		if (c == null) {
 			throw new NullPointerException("Categorical Variable may not be null");
 		}
-		d_domainData.addVariable(c);
+		d_variables.add(c);
 	
 		fireDomainChanged(DomainEvent.Type.VARIABLES);
 	}
@@ -472,31 +460,31 @@ public class DomainImpl implements Domain {
 		if (ade == null) {
 			throw new NullPointerException();
 		}
-		d_domainData.addAdverseEvent(ade);
+		d_ades.add(ade);
 		fireDomainChanged(DomainEvent.Type.ADVERSE_EVENTS);
 	}
 
 	public void deleteAdverseEvent(OutcomeMeasure ade)
 			throws DependentEntitiesException {
 		checkDependents(ade);
-		d_domainData.removeAdverseEvent(ade);
+		d_ades.remove(ade);
 		fireDomainChanged(DomainEvent.Type.ADVERSE_EVENTS);		
 	}
 
 	public SortedSet<AdverseEvent> getAdverseEvents() {
-		return Collections.unmodifiableSortedSet(d_domainData.getAdverseEvents());
+		return Collections.unmodifiableSortedSet(d_ades.getSet());
 	}
 
 	public void addBenefitRiskAnalysis(BenefitRiskAnalysis<?> brAnalysis) {
 		if (brAnalysis == null) {
 			throw new NullPointerException();
 		}
-		d_domainData.addBenefitRiskAnalysis(brAnalysis);
+		d_benefitRiskAnalyses.add(brAnalysis);
 		fireDomainChanged(DomainEvent.Type.BENEFITRISK_ANALYSIS);
 	}
 
 	public SortedSet<BenefitRiskAnalysis<?>> getBenefitRiskAnalyses() {
-		return Collections.unmodifiableSortedSet(d_domainData.getBenefitRiskAnalyses());
+		return Collections.unmodifiableSortedSet(d_benefitRiskAnalyses.getSet());
 	}
 
 	public boolean hasDependents(Entity entity) {
