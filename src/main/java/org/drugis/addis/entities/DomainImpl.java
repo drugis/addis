@@ -91,8 +91,8 @@ public class DomainImpl implements Domain {
 	private SortedSetModel<MetaAnalysis> d_metaAnalyses = new SortedSetModel<MetaAnalysis>();		
 	private SortedSetModel<Drug> d_drugs = new SortedSetModel<Drug>();
 	private SortedSetModel<Indication> d_indications = new SortedSetModel<Indication>();	
-	private SortedSetModel<PopulationCharacteristic> d_variables = new SortedSetModel<PopulationCharacteristic>();
-	private SortedSetModel<AdverseEvent> d_ades = new SortedSetModel<AdverseEvent>();
+	private SortedSetModel<PopulationCharacteristic> d_populationCharacteristics = new SortedSetModel<PopulationCharacteristic>();
+	private SortedSetModel<AdverseEvent> d_adverseEvents = new SortedSetModel<AdverseEvent>();
 	private SortedSetModel<BenefitRiskAnalysis<?>> d_benefitRiskAnalyses = new SortedSetModel<BenefitRiskAnalysis<?>>();
 	
 	private class StudyChangeListener implements PropertyChangeListener {
@@ -295,7 +295,7 @@ public class DomainImpl implements Domain {
 	
 	public void deletePopulationCharacteristic(PopulationCharacteristic v) throws DependentEntitiesException {
 		checkDependents(v);
-		d_variables.remove(v);
+		d_populationCharacteristics.remove(v);
 		fireDomainChanged(DomainEvent.Type.VARIABLES);
 	}
 
@@ -413,66 +413,35 @@ public class DomainImpl implements Domain {
 	}
 
 	public SortedSet<PopulationCharacteristic> getPopulationCharacteristics() {
-		return Collections.unmodifiableSortedSet(d_variables.getSet());
+		return Collections.unmodifiableSortedSet(d_populationCharacteristics.getSet());
 	}
 
 	public void addPopulationCharacteristic(PopulationCharacteristic c) {
 		if (c == null) {
 			throw new NullPointerException("Categorical Variable may not be null");
 		}
-		d_variables.add(c);
+		d_populationCharacteristics.add(c);
 	
 		fireDomainChanged(DomainEvent.Type.VARIABLES);
 	}
-
-	public ListHolder<PopulationCharacteristic> getPopulationCharacteristicsHolder() {
-		return new VariablesHolder();
-	}
 	
-	@SuppressWarnings("serial")
-	private class VariablesHolder extends AbstractListHolder<PopulationCharacteristic> implements DomainListener {
-		private List<PopulationCharacteristic> d_vars;
-		
-		public VariablesHolder() {
-			d_vars = getVars();
-			addListener(this);
-		}
-
-		private ArrayList<PopulationCharacteristic> getVars() {
-			return new ArrayList<PopulationCharacteristic>(getPopulationCharacteristics());
-		}
-		
-		@Override
-		public List<PopulationCharacteristic> getValue() {
-			return d_vars;
-		}
-
-		public void domainChanged(DomainEvent evt) {
-			if (evt.getType().equals(DomainEvent.Type.VARIABLES)) {
-				List<PopulationCharacteristic> old = d_vars;
-				d_vars = getVars();
-				fireValueChange(old, d_vars);
-			}
-		}
-	}
-
 	public void addAdverseEvent(AdverseEvent ade) {
 		if (ade == null) {
 			throw new NullPointerException();
 		}
-		d_ades.add(ade);
+		d_adverseEvents.add(ade);
 		fireDomainChanged(DomainEvent.Type.ADVERSE_EVENTS);
 	}
 
 	public void deleteAdverseEvent(OutcomeMeasure ade)
 			throws DependentEntitiesException {
 		checkDependents(ade);
-		d_ades.remove(ade);
+		d_adverseEvents.remove(ade);
 		fireDomainChanged(DomainEvent.Type.ADVERSE_EVENTS);		
 	}
 
 	public SortedSet<AdverseEvent> getAdverseEvents() {
-		return Collections.unmodifiableSortedSet(d_ades.getSet());
+		return Collections.unmodifiableSortedSet(d_adverseEvents.getSet());
 	}
 
 	public void addBenefitRiskAnalysis(BenefitRiskAnalysis<?> brAnalysis) {
@@ -551,5 +520,30 @@ public class DomainImpl implements Domain {
 			}
 		}
 		return pwAnalyses;
+	}
+
+	@Override
+	public SortedSetModel<Drug> getDrugsModel() {
+		return d_drugs;
+	}
+
+	@Override
+	public SortedSetModel<Indication> getIndicationsModel() {
+		return d_indications;
+	}
+
+	@Override
+	public SortedSetModel<AdverseEvent> getAdverseEventsModel() {
+		return d_adverseEvents;
+	}
+
+	@Override
+	public SortedSetModel<Endpoint> getEndpointsModel() {
+		return d_endpoints;
+	}
+
+	@Override
+	public SortedSetModel<PopulationCharacteristic> getPopulationCharacteristicsModel() {
+		return d_populationCharacteristics;
 	}
 }

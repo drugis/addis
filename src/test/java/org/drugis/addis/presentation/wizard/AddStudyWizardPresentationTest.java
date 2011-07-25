@@ -90,7 +90,7 @@ public class AddStudyWizardPresentationTest {
 	
 	@Test
 	public void testGetIndicationListModel() {
-		assertTrue(d_wizard.getIndicationListModel().getValue().containsAll(d_domain.getIndications()));
+		assertTrue(d_wizard.getIndicationsModel().containsAll(d_domain.getIndications()));
 	}
 	
 	@Test

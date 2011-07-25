@@ -30,15 +30,18 @@ import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
+import org.drugis.addis.util.SortedSetModel;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
 public class SelectVariablesPresentationTest {
@@ -47,7 +50,7 @@ public class SelectVariablesPresentationTest {
 	private static final String TITLE = "Select Adverse Events";
 
 	public static class SelectPresentation extends SelectVariablesPresentation<AdverseEvent> {
-		public SelectPresentation(ListHolder<AdverseEvent> options) {
+		public SelectPresentation(ObservableList<AdverseEvent> options) {
 			super(options, TYPENAME, TITLE, DESCRIPTION, null);
 		}
 		
@@ -55,20 +58,12 @@ public class SelectVariablesPresentationTest {
 	private AdverseEvent d_ade1 = new AdverseEvent("ADE 1", AdverseEvent.convertVarType(Variable.Type.RATE));
 	private AdverseEvent d_ade2 = new AdverseEvent("ADE 2", AdverseEvent.convertVarType(Variable.Type.RATE));
 	private AdverseEvent d_ade3 = new AdverseEvent("ADE 3", AdverseEvent.convertVarType(Variable.Type.RATE));
-	private ListHolder<AdverseEvent> d_list;
+	private SortedSetModel<AdverseEvent> d_list;
 	private SelectAdverseEventsPresentation d_pm;
 	
 	@Before
 	public void setUp() {
-		d_list = new AbstractListHolder<AdverseEvent>() {
-			@Override
-			public List<AdverseEvent> getValue() {
-				List<AdverseEvent> l = new ArrayList<AdverseEvent>();
-				l.add(d_ade1);
-				l.add(d_ade2);
-				return l;
-			}
-		};
+		d_list = new SortedSetModel<AdverseEvent>(Arrays.asList(d_ade1, d_ade2));
 		
 		d_pm = new SelectAdverseEventsPresentation(d_list, null);
 	}
@@ -91,9 +86,9 @@ public class SelectVariablesPresentationTest {
 	
 	@Test
 	public void testGetOptions() {
-		assertEquals(d_list.getValue(), d_pm.getOptions().getValue());
-		d_list.getValue().add(d_ade3);
-		assertEquals(d_list.getValue(), d_pm.getOptions().getValue());
+		assertEquals(d_list, d_pm.getOptions());
+		d_list.add(d_ade3);
+		assertEquals(d_list, d_pm.getOptions());
 	}
 	
 	@Test

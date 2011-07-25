@@ -84,8 +84,8 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testGetIndicationSet() {
-		assertTrue(d_domain.getIndications().containsAll(d_wizard.getIndicationListModel().getValue()));
-		assertEquals(d_domain.getIndications().size(), d_wizard.getIndicationListModel().getValue().size());
+		assertTrue(d_domain.getIndications().containsAll(d_wizard.getIndicationsModel()));
+		assertEquals(d_domain.getIndications().size(), d_wizard.getIndicationsModel().size());
 	}
 	
 	@Test
@@ -132,7 +132,7 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testLabelEndpointEvents() {
-		List<Indication> indList = d_wizard.getIndicationListModel().getValue();
+		List<Indication> indList = d_wizard.getIndicationsModel();
 		d_wizard.getIndicationModel().setValue(indList.get(indList.size()-1));
 		
 		List<OutcomeMeasure> outcomeList = d_wizard.getOutcomeMeasureListModel().getValue();
@@ -155,7 +155,7 @@ public class MetaAnalysisWizardPresentationTest {
 		
 	@Test
 	public void testLabelIndicationEvents() {
-		List<Indication> indListModel = d_wizard.getIndicationListModel().getValue();
+		List<Indication> indListModel = d_wizard.getIndicationsModel();
 		d_wizard.getIndicationModel().setValue(indListModel.get(0));
 		
 		Indication indic = indListModel.get(0);	
@@ -175,10 +175,10 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testGetStudiesMeasuringLabelModel() {
-		d_wizard.getIndicationModel().setValue(d_wizard.getIndicationListModel().getValue().get(0));
+		d_wizard.getIndicationModel().setValue(d_wizard.getIndicationsModel().get(0));
 		d_wizard.getOutcomeMeasureModel().setValue(d_wizard.getOutcomeMeasureListModel().getValue().get(0));		
 		
-		Indication indic = d_wizard.getIndicationListModel().getValue().get(0);
+		Indication indic = d_wizard.getIndicationsModel().get(0);
 		OutcomeMeasure endp = (OutcomeMeasure) d_wizard.getOutcomeMeasureModel().getValue();
 		
 		d_wizard.getIndicationModel().setValue(indic);		

@@ -29,11 +29,13 @@ import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 
+import com.jgoodies.binding.list.ObservableList;
+
 @SuppressWarnings("serial")
 public class SelectAdverseEventsPresentation
 extends SelectVariablesPresentation<AdverseEvent> {
 	
-	public SelectAdverseEventsPresentation(ListHolder<AdverseEvent> options, AddisWindow mainWindow) {
+	public SelectAdverseEventsPresentation(ObservableList<AdverseEvent> options, AddisWindow mainWindow) {
 		super(options, "Adverse Event", "Select Adverse Events", "Please select the appropriate adverse events.", mainWindow);
 	}
 

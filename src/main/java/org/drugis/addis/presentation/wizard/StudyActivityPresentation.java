@@ -30,15 +30,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.Activity;
-import org.drugis.addis.entities.DrugTreatment;
-import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.StudyActivity;
-import org.drugis.addis.presentation.AbstractListHolder;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.presentation.TreatmentActivityPresentation;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.util.SortedSetModel;
 
 import scala.actors.threadpool.Arrays;
 
@@ -78,15 +78,15 @@ public class StudyActivityPresentation {
 	private ValueModel d_activityHolder;
 	private List<Activity> d_activityOptions;
 	private ValueHolder<Boolean> d_valid;
-	private AbstractListHolder<Drug> d_drugOptions;
+	private SortedSetModel<Drug> d_drugOptions;
 	private TreatmentActivityPresentation d_treatmentModel;
 
-	public StudyActivityPresentation(ObservableList<StudyActivity> activityList, AbstractListHolder<Drug> drugOptions) {
+	public StudyActivityPresentation(ObservableList<StudyActivity> activityList, SortedSetModel<Drug> drugOptions) {
 		this (activityList, drugOptions, null);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public StudyActivityPresentation(ObservableList<StudyActivity> activityList, AbstractListHolder<Drug> drugOptions, StudyActivity activity) {
+	public StudyActivityPresentation(ObservableList<StudyActivity> activityList, SortedSetModel<Drug> drugOptions, StudyActivity activity) {
 		d_activityList = activityList;
 		d_drugOptions = drugOptions;
 		d_oldActivity = activity;
@@ -188,7 +188,7 @@ public class StudyActivityPresentation {
 		d_activityList.add(d_newActivity);
 	}
 
-	public AbstractListHolder<Drug> getDrugOptions() {
+	public SortedSetModel<Drug> getDrugOptions() {
 		return d_drugOptions;
 	}
 	

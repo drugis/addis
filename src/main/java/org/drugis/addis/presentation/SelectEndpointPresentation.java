@@ -29,9 +29,11 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 
+import com.jgoodies.binding.list.ObservableList;
+
 @SuppressWarnings("serial")
 public class SelectEndpointPresentation extends SelectVariablesPresentation<Endpoint> {
-	public SelectEndpointPresentation(ListHolder<Endpoint> options, AddisWindow mainWindow) {
+	public SelectEndpointPresentation(ObservableList<Endpoint> options, AddisWindow mainWindow) {
 		super(options, "Endpoint", "Select Endpoint", "Please select the appropriate endpoints.", mainWindow);
 	}
 

@@ -38,7 +38,7 @@ import org.pietschy.wizard.PanelWizardStep;
 public class SelectIndicationWizardStep extends PanelWizardStep {
 	public SelectIndicationWizardStep(WizardWithSelectableIndicationPresentation pm) {
 		super("Select Indication","Select an Indication that you want to use for this meta analysis.");
-		JComboBox indBox = AuxComponentFactory.createBoundComboBox(pm.getIndicationListModel(), pm.getIndicationModel());
+		JComboBox indBox = AuxComponentFactory.createBoundComboBox(pm.getIndicationsModel(), pm.getIndicationModel(), true);
 		add(new JLabel("Indication : "));
 		add(indBox);
 		pm.getIndicationModel().addValueChangeListener(new PropertyChangeListener() {

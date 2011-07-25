@@ -51,6 +51,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.text.BadLocationException;
@@ -65,7 +66,6 @@ import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.gui.wizard.AddStudyWizard;
-import org.drugis.addis.presentation.DefaultListHolder;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.ImageLoader;
@@ -79,6 +79,7 @@ import scala.actors.threadpool.Arrays;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.formatter.EmptyNumberFormatter;
+import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -97,13 +98,37 @@ public class AuxComponentFactory {
 	
 	@SuppressWarnings("unchecked")
 	public static <T> JComboBox createBoundComboBox(T[] values, ValueModel model, boolean isEntity) {
-		return createBoundComboBox(new DefaultListHolder<T>(Arrays.asList(values)), model, isEntity);
+		return createBoundComboBox(new ArrayListModel<T>(Arrays.asList(values)), model, isEntity);
 	}
 	
+	@Deprecated
 	public static <T> JComboBox createBoundComboBox(ValueModel listHolder, ValueModel model) {
 		return createBoundComboBox(listHolder, model, false);
 	}
 	
+	public static <T> JComboBox createBoundComboBox(ListModel list, ValueModel model, boolean isEntity) {
+		SelectionInList<T> typeSelectionInList = new SelectionInList<T>(list, model);
+		JComboBox comboBox = BasicComponentFactory.createComboBox(typeSelectionInList);
+		
+		if (isEntity) {
+			final ListCellRenderer renderer = comboBox.getRenderer();
+			comboBox.setRenderer(new ListCellRenderer() {
+				@Override
+				public Component getListCellRendererComponent(JList list, Object value,
+						int index, boolean isSelected, boolean cellHasFocus) {
+					return renderer.getListCellRendererComponent(list, getDescription(value), index, isSelected, cellHasFocus);
+				}
+
+				private String getDescription(Object value) {
+					return value == null ? "" : ((Entity)value).getDescription();
+				}
+			});
+		}
+		
+		return comboBox;
+	}	
+	
+	@Deprecated
 	public static <T> JComboBox createBoundComboBox(ValueModel listHolder, ValueModel model, boolean isEntity) {
 		SelectionInList<T> typeSelectionInList =
 			new SelectionInList<T>(listHolder, model);

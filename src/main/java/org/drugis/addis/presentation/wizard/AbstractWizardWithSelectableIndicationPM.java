@@ -24,15 +24,11 @@
 
 package org.drugis.addis.presentation.wizard;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.presentation.AbstractListHolder;
-import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.util.SortedSetModel;
 
 public class AbstractWizardWithSelectableIndicationPM implements WizardWithSelectableIndicationPresentation {
 
@@ -48,14 +44,8 @@ public class AbstractWizardWithSelectableIndicationPM implements WizardWithSelec
 		return d_indicationHolder; 
 	}
 
-	@SuppressWarnings("serial")
-	public ListHolder<Indication> getIndicationListModel() {
-		return new AbstractListHolder<Indication>() {
-			@Override
-			public List<Indication> getValue() {
-				return new ArrayList<Indication>(d_domain.getIndications());
-			}
-		};
+	public SortedSetModel<Indication> getIndicationsModel() {
+		return d_domain.getIndicationsModel();
 	}
 
 }

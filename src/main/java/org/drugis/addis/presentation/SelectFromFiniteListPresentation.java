@@ -26,6 +26,7 @@ package org.drugis.addis.presentation;
 
 import java.util.List;
 
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
 
 public interface SelectFromFiniteListPresentation<T> {
@@ -88,7 +89,7 @@ public interface SelectFromFiniteListPresentation<T> {
 	/**
 	 * A list of options to select from.
 	 */
-	ListHolder<T> getOptions();
+	ObservableList<T> getOptions();
 
 	public List<ModifiableHolder<T>> getSlots();
 }

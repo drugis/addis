@@ -722,31 +722,6 @@ public class DomainTest {
 		verify(mock);
 	}
 	
-	@Test
-	public void testVariablesHolder() {
-		ListHolder<PopulationCharacteristic> vars = d_domain.getPopulationCharacteristicsHolder();
-		
-		PopulationCharacteristic v1 = new PopulationCharacteristic("Age", new ContinuousVariableType());
-		d_domain.addPopulationCharacteristic(v1);
-		
-		assertEquals(1, vars.getValue().size());
-		assertTrue(vars.getValue().contains(v1));
-		
-		PopulationCharacteristic v2 = new PopulationCharacteristic("Blood Pressure", new ContinuousVariableType());
-		List<Variable> expected = new ArrayList<Variable>();
-		expected.add(v1);
-		expected.add(v2);
-		PropertyChangeListener mock = JUnitUtil.mockListener(vars, "value", vars.getValue(), expected);
-		vars.addValueChangeListener(mock);
-		d_domain.addPopulationCharacteristic(v2);
-		verify(mock);
-		
-		assertEquals(2, vars.getValue().size());
-		
-		assertTrue(vars.getValue().contains(v1));
-		assertTrue(vars.getValue().contains(v2));
-	}
-	
 	@Test(expected=NullPointerException.class)
 	public void testAddAdeNull() {
 		d_domain.addAdverseEvent(null);

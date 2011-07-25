@@ -182,7 +182,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		builder.addLabel("Drug: ", cc.xy(1, row));
 		
 		final AbstractValueModel drugModel = tap.getModel(DrugTreatment.PROPERTY_DRUG);
-		JComboBox drugSelect = AuxComponentFactory.createBoundComboBox(d_pm.getDrugOptions(), drugModel);
+		JComboBox drugSelect = AuxComponentFactory.createBoundComboBox(d_pm.getDrugOptions(), drugModel, true);
 		builder.add(drugSelect, cc.xy(3, row));
 		
 		JButton btn = GUIFactory.createPlusButton("Create drug");

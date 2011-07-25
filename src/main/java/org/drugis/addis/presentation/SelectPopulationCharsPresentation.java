@@ -29,10 +29,12 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 
+import com.jgoodies.binding.list.ObservableList;
+
 @SuppressWarnings("serial")
 public class SelectPopulationCharsPresentation
 extends SelectVariablesPresentation<PopulationCharacteristic> {
-	public SelectPopulationCharsPresentation(ListHolder<PopulationCharacteristic> options, AddisWindow mainWindow) {
+	public SelectPopulationCharsPresentation(ObservableList<PopulationCharacteristic> options, AddisWindow mainWindow) {
 		super(options, "Population Baseline Characteristics", "Select Population Baseline Characteristics",
 			"Please select the appropriate population baseline characteristics.", mainWindow);
 	}

@@ -32,6 +32,7 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
+import org.drugis.addis.util.SortedSetModel;
 
 public interface Domain {
 	/**
@@ -209,12 +210,6 @@ public interface Domain {
 	 */
 	public ListHolder<Study> getStudiesHolder();
 	
-	/** 
-	 * Get all population characteristics
-	 * @return A ListHolder of studies.
-	 */
-	public ListHolder<PopulationCharacteristic> getPopulationCharacteristicsHolder();
-	
 	/**
 	 * Add a listener to the domain object.
 	 */
@@ -231,4 +226,14 @@ public interface Domain {
 	 * @return true if this entity is being used by others.
 	 */
 	public boolean hasDependents(Entity entity);
+
+	public SortedSetModel<Drug> getDrugsModel();
+
+	public SortedSetModel<Indication> getIndicationsModel();
+
+	public SortedSetModel<Endpoint> getEndpointsModel();
+
+	public SortedSetModel<AdverseEvent> getAdverseEventsModel();
+
+	public SortedSetModel<PopulationCharacteristic> getPopulationCharacteristicsModel();
 }

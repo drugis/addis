@@ -144,7 +144,7 @@ public class SelectFromFiniteListWizardStep<T> extends PanelWizardStep {
 						
 			// dropdown
 			ModifiableHolder<T> slot = d_pm.getSlot(i);
-			d_builder.add(AuxComponentFactory.createBoundComboBox(d_pm.getOptions(), slot), cc.xy(5, row));
+			d_builder.add(AuxComponentFactory.createBoundComboBox(d_pm.getOptions(), slot, true), cc.xy(5, row));
 			
 			// (new) + button
 			if (d_pm.hasAddOptionDialog()) {

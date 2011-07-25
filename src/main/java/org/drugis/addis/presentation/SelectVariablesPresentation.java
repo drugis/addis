@@ -35,6 +35,7 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.common.EqualsUtil;
 
 import com.jgoodies.binding.beans.Model;
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
@@ -42,7 +43,7 @@ import com.jgoodies.binding.value.ValueModel;
 abstract public class SelectVariablesPresentation<T extends Variable> extends Model implements SelectFromFiniteListPresentation<T> {
 
 	protected List<StudyOutcomeMeasure<T>> d_slots;
-	protected ListHolder<T> d_options;
+	protected ObservableList<T> d_options;
 	protected ValueModel d_addSlotsEnabled;
 	protected InputCompleteModel d_inputCompleteModel;
 	protected AddisWindow d_mainWindow;
@@ -52,7 +53,7 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 	private String d_description;
 	private PropertyChangeListener d_slotValueListener = new SlotsUniqueListener();
 
-	public SelectVariablesPresentation(ListHolder<T> options, String typeName, String title, String description, AddisWindow mainWindow) {
+	public SelectVariablesPresentation(ObservableList<T> options, String typeName, String title, String description, AddisWindow mainWindow) {
 		d_typeName = typeName;
 		d_title = title;
 		d_description = description;
@@ -63,7 +64,7 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 		d_mainWindow = mainWindow;
 	}
 
-	public ListHolder<T> getOptions() {
+	public ObservableList<T> getOptions() {
 		return d_options;
 	}
 

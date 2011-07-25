@@ -24,12 +24,8 @@
 
 package org.drugis.addis.presentation.wizard;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -40,14 +36,11 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.DomainEvent;
-import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.ObjectWithNotes;
-import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
@@ -56,10 +49,7 @@ import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
-import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.BasicArmPresentation;
-import org.drugis.addis.presentation.TreatmentActivityPresentation;
-import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.MutableCharacteristicHolder;
 import org.drugis.addis.presentation.PopulationCharTableModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -69,6 +59,8 @@ import org.drugis.addis.presentation.SelectFromFiniteListPresentation;
 import org.drugis.addis.presentation.SelectPopulationCharsPresentation;
 import org.drugis.addis.presentation.StudyMeasurementTableModel;
 import org.drugis.addis.presentation.StudyPresentation;
+import org.drugis.addis.presentation.TreatmentActivityPresentation;
+import org.drugis.addis.util.SortedSetModel;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
@@ -97,93 +89,10 @@ public class AddStudyWizardPresentation {
 		abstract public TableModel getMeasurementTableModel();
 	}
 	
-	@SuppressWarnings("serial")
-	private class DrugListHolder extends AbstractListHolder<Drug> implements PropertyChangeListener, DomainListener {
-		public DrugListHolder() {
-			d_domain.addListener(this);
-		}
-		
-		@Override
-		public List<Drug> getValue() {
-			return new ArrayList<Drug>(d_domain.getDrugs());
-		}
-
-		public void propertyChange(PropertyChangeEvent evt) {
-			fireValueChange(null, getValue());
-		}
-
-		public void domainChanged(DomainEvent evt) {
-			fireValueChange(null, getValue());
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	private abstract static class OutcomeListHolder<T extends OutcomeMeasure>
-	extends AbstractListHolder<T> 
-	implements PropertyChangeListener, DomainListener {
-		protected Domain d_domain;
-		
-		public OutcomeListHolder(Domain domain) {
-			domain.addListener(this);
-			d_domain = domain;
-		}
-
-		public void propertyChange(PropertyChangeEvent arg0) {
-			fireValueChange(null, getValue());			
-		}
-
-		public void domainChanged(DomainEvent evt) {
-			fireValueChange(null, getValue());			
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	private static class EndpointListHolder extends OutcomeListHolder<Endpoint> {
-		public EndpointListHolder(Domain domain) {
-			super(domain);
-		}
-		
-		@Override
-		public List<Endpoint> getValue() {
-			return new ArrayList<Endpoint>(d_domain.getEndpoints());
-		}
-	}
-
-	@SuppressWarnings("serial")
-	private static class AdverseEventListHolder extends OutcomeListHolder<AdverseEvent> {
-		public AdverseEventListHolder(Domain domain) {
-			super(domain);
-		}
-		
-		@Override
-		public List<AdverseEvent> getValue() {
-			return new ArrayList<AdverseEvent>(d_domain.getAdverseEvents());
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	private class IndicationListHolder extends AbstractListHolder<Indication> {
-		public IndicationListHolder() {
-			d_domain.addListener(new DomainListener() {
-				public void domainChanged(DomainEvent evt) {
-					fireValueChange(null, getValue());
-				}
-			});
-		}
-		
-		@Override
-		public List<Indication> getValue() {
-			return new ArrayList<Indication>(d_domain.getIndications());
-		}
-	}
-	
 	private Domain d_domain;
 	private PresentationModelFactory d_pmf;
 	private StudyPresentation d_newStudyPM;
 	
-	private ListHolder<Endpoint> d_endpointListHolder;
-	private ListHolder<AdverseEvent> d_adverseEventListHolder;
-	private ListHolder<PopulationCharacteristic> d_populationCharsListHolder;
 	private SelectAdverseEventsPresentation d_adverseEventSelect;
 	private SelectPopulationCharsPresentation d_populationCharSelect;
 	private SelectEndpointPresentation d_endpointSelect;
@@ -197,12 +106,9 @@ public class AddStudyWizardPresentation {
 		d_domain = d;
 		d_pmf = pmf;
 		d_mainWindow = mainWindow;
-		d_endpointListHolder = new EndpointListHolder(d_domain);
-		d_adverseEventListHolder = new AdverseEventListHolder(d_domain);
-		d_populationCharsListHolder = d_domain.getPopulationCharacteristicsHolder();
-		d_endpointSelect = new SelectEndpointPresentation(d_endpointListHolder, d_mainWindow);
-		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_adverseEventListHolder, d_mainWindow);
-		d_populationCharSelect = new SelectPopulationCharsPresentation(d_populationCharsListHolder, d_mainWindow);
+		d_endpointSelect = new SelectEndpointPresentation(d_domain.getEndpointsModel(), d_mainWindow);
+		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_domain.getAdverseEventsModel(), d_mainWindow);
+		d_populationCharSelect = new SelectPopulationCharsPresentation(d_domain.getPopulationCharacteristicsModel(), d_mainWindow);
 		d_arms = new AddArmsPresentation(new ArrayListModel<Arm>(), "Arm", 2);
 		new RebuildIndicesMonitor<Arm>(d_arms); // registers itself as listener to d_arms
 		d_epochs = new AddEpochsPresentation(new ArrayListModel<Epoch>(), "Epoch", 1);
@@ -291,8 +197,8 @@ public class AddStudyWizardPresentation {
 		updateSelectionHolders();
 	}
 
-	public ListHolder<Indication> getIndicationListModel() {
-		return new IndicationListHolder();
+	public SortedSetModel<Indication> getIndicationsModel() {
+		return d_domain.getIndicationsModel();
 	}
 	
 	public ValueModel getIndicationModel() {
@@ -335,8 +241,8 @@ public class AddStudyWizardPresentation {
 		return getNewStudy().getEpochs();
 	}
 	
-	public DrugListHolder getDrugsModel(){
-		return new DrugListHolder();
+	public SortedSetModel<Drug> getDrugsModel(){
+		return d_domain.getDrugsModel();
 	}
 	
 	public BasicArmPresentation getArmModel(int armNumber){

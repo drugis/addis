@@ -31,6 +31,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListModel;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.DrugSet;
@@ -39,9 +40,9 @@ import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.ListPanel;
-import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
+import org.drugis.addis.util.ListHolderWrapperPlsDel;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
 
@@ -98,10 +99,10 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 	private int createArmSelect(int row, final Study curStudy, DrugSet drug, CellConstraints cc) {
 		d_builder.addLabel(drug.getDescription(), cc.xy(2, row));
 		
-		ListHolder<Arm> arms = d_pm.getArmsPerStudyPerDrug(curStudy, drug);
+		ListModel arms = new ListHolderWrapperPlsDel<Arm>(d_pm.getArmsPerStudyPerDrug(curStudy, drug));
 
-		final JComboBox drugBox = AuxComponentFactory.createBoundComboBox(arms, d_pm.getSelectedArmModel(curStudy, drug));
-		if (arms.getValue().size() == 1)
+		final JComboBox drugBox = AuxComponentFactory.createBoundComboBox(arms, d_pm.getSelectedArmModel(curStudy, drug), true);
+		if (arms.getSize() == 1)
 			drugBox.setEnabled(false);
 		final JPanel drugAndDosePanel = new JPanel(new BorderLayout());
 		
