@@ -24,10 +24,16 @@
 
 package org.drugis.addis.presentation;
 
+import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
 
-public interface SelectableStudyListPresentation extends StudyListPresentation {
-	
+import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.value.AbstractValueModel;
+
+public interface SelectableStudyListPresentation {
+	public ObservableList<Study> getAvailableStudies();
 	public ModifiableHolder<Boolean> getSelectedStudyBooleanModel(Study s);
 	public ListHolder<Study> getSelectedStudiesModel();
+	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c);
+	public StudyListPresentation getSource();
 }

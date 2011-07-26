@@ -432,7 +432,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(d_fluoxSet);
 		d_wizard.getSecondDrugModel().setValue(d_paroxSet);
 		
-		assertEquals(expected, d_wizard.getStudyListModel().getIncludedStudies());
+		assertEquals(expected, d_wizard.getStudyListModel().getAvailableStudies());
 	}
 	
 	@Test
@@ -453,7 +453,7 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		// sanity checks
 		assertNull(unsetDrugModel.getValue());
-		assertTrue(d_wizard.getStudyListModel().getIncludedStudies().isEmpty());
+		assertTrue(d_wizard.getStudyListModel().getAvailableStudies().isEmpty());
 	}
 	
 	@Test
@@ -476,7 +476,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(d_fluoxSet);
 		d_wizard.getSecondDrugModel().setValue(d_paroxSet);
 		
-		assertEquals(d_wizard.getStudyListModel().getIncludedStudies(), d_wizard.getStudyListModel().getSelectedStudiesModel().getValue());
+		assertEquals(d_wizard.getStudyListModel().getAvailableStudies(), d_wizard.getStudyListModel().getSelectedStudiesModel().getValue());
 	}
 	
 	@Test

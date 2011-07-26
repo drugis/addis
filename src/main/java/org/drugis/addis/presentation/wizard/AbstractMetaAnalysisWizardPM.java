@@ -44,6 +44,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.DefaultSelectableStudyListPresentation;
+import org.drugis.addis.presentation.DefaultStudyListPresentation;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -95,24 +96,22 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		
 		d_studiesEndpointIndication = createStudiesIndicationOutcome();
 		d_selectableStudies = createSelectableStudies();
-		d_studyListPm = new DefaultSelectableStudyListPresentation(d_selectableStudies);
+		d_studyListPm = new DefaultSelectableStudyListPresentation(
+				new DefaultStudyListPresentation(d_selectableStudies));
 		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(listener);
 	}
 	
 	private ObservableList<Study> createSelectableStudies() {
-		final FilteredObservableList<Study> studies = new FilteredObservableList<Study>(getStudiesEndpointAndIndication(), getDrugFilter());
+		final FilteredObservableList<Study> studies = new FilteredObservableList<Study>(getStudiesEndpointAndIndication(), new DrugFilter());
 		PropertyChangeListener listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
-				studies.setFilter(getDrugFilter());
+				studies.setFilter((Filter<Study>) new DrugFilter());
 			}
 		};
 		getSelectedDrugsModel().addValueChangeListener(listener);
 		return studies;
 	}
-	private Filter<Study> getDrugFilter() {
-		return new DrugFilter();
-	}
-
+	
 	private ObservableList<Study> createStudiesIndicationOutcome() {
 		final FilteredObservableList<Study> studies = new FilteredObservableList<Study>(d_domain.getStudiesModel(), getIndicationOutcomeFilter());
 		PropertyChangeListener listener = new PropertyChangeListener() {

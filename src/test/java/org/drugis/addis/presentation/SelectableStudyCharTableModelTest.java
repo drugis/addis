@@ -58,7 +58,9 @@ public class SelectableStudyCharTableModelTest {
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
 		d_ind = d_domain.getIndications().first();
-		d_pm = new DefaultSelectableStudyListPresentation(new FilteredObservableList<Study>(d_domain.getStudiesModel(), new DomainImpl.IndicationFilter(d_ind)));
+		FilteredObservableList<Study> filteredStudies = new FilteredObservableList<Study>(d_domain.getStudiesModel(), new DomainImpl.IndicationFilter(d_ind));
+		d_pm = new DefaultSelectableStudyListPresentation(
+				new DefaultStudyListPresentation(filteredStudies));
 		d_model = new SelectableStudyCharTableModel(d_pm, new PresentationModelFactory(d_domain));
 		for (Characteristic c : StudyCharacteristics.values()) {
 			d_pm.getCharacteristicVisibleModel(c).setValue(true);
@@ -73,7 +75,7 @@ public class SelectableStudyCharTableModelTest {
 	@Test
 	public void testGetValueAt() {
 		int row = 0;
-		for (Study s : d_pm.getIncludedStudies()) {
+		for (Study s : d_pm.getAvailableStudies()) {
 			assertTrue((Boolean)d_model.getValueAt(row, 0));			
 			assertEquals(s, d_model.getValueAt(row, 1));
 			int column = 2;

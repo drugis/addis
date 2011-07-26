@@ -40,7 +40,6 @@ import com.jgoodies.binding.list.ArrayListModel;
 public class DefaultSelectableStudyListPresentationModelTest {
 
 	private DefaultSelectableStudyListPresentation d_model;
-	private DefaultListHolder<Study> d_holder;
 	private Study d_s1;
 	private Study d_s2;
 	private Indication d_ind;
@@ -55,7 +54,7 @@ public class DefaultSelectableStudyListPresentationModelTest {
 		d_studies.add(d_s1);
 		d_studies.add(d_s2);
 		
-		d_model = new DefaultSelectableStudyListPresentation(d_studies); 
+		d_model = new DefaultSelectableStudyListPresentation(new DefaultStudyListPresentation(d_studies)); 
 	}
 	
 	@Test

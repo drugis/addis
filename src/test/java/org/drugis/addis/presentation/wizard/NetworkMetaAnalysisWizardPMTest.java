@@ -111,17 +111,17 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		ArrayList<Study> newList = new ArrayList<Study>();
 		newList.addAll(d_pm.getStudiesEndpointAndIndication());
-		assertEquals(newList, listModel.getIncludedStudies());
+		assertEquals(newList, listModel.getAvailableStudies());
 
 		ArrayList<DrugSet> selectionList = new ArrayList<DrugSet>();
 		selectionList.add(d_sertrSet);
 		selectionList.add(d_paroxSet);
 		
 		ListDataListener mock = createStrictMock(ListDataListener.class);
-		mock.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(listModel.getIncludedStudies(), ListDataEvent.INTERVAL_REMOVED, 0, newList.size() - 1)));
+		mock.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(listModel.getAvailableStudies(), ListDataEvent.INTERVAL_REMOVED, 0, newList.size() - 1)));
 		replay(mock);
 		
-		listModel.getIncludedStudies().addListDataListener(mock);
+		listModel.getAvailableStudies().addListDataListener(mock);
 		d_pm.getSelectedDrugsModel().setValue(selectionList);
 		verify(mock);
 	}
@@ -141,10 +141,10 @@ public class NetworkMetaAnalysisWizardPMTest {
 		d_pm.getSelectedDrugsModel().setValue(new ArrayList<DrugSet>(selectionList));
 		
 		ListDataListener mock = createStrictMock(ListDataListener.class);
-		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(listModel.getIncludedStudies(), ListDataEvent.INTERVAL_ADDED, 0, allStudiesList.size() - 1)));
+		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(listModel.getAvailableStudies(), ListDataEvent.INTERVAL_ADDED, 0, allStudiesList.size() - 1)));
 		replay(mock);
 
-		listModel.getIncludedStudies().addListDataListener(mock);
+		listModel.getAvailableStudies().addListDataListener(mock);
 		selectionList.add(d_fluoxSet);	
 		d_pm.getSelectedDrugsModel().setValue(selectionList);		
 		verify(mock);
