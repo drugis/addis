@@ -816,21 +816,21 @@ public class DomainTest {
 	
 	@Test
 	public void testGetCategoryContents() {
-		assertEquals(d_domain.getIndications(), d_domain.getCategoryContents(
+		assertEquals(d_domain.getIndicationsModel(), d_domain.getCategoryContents(
 				d_domain.getCategory(Indication.class)));
-		assertEquals(d_domain.getDrugs(), d_domain.getCategoryContents(
+		assertEquals(d_domain.getDrugsModel(), d_domain.getCategoryContents(
 				d_domain.getCategory(Drug.class)));
-		assertEquals(d_domain.getEndpoints(), d_domain.getCategoryContents(
+		assertEquals(d_domain.getEndpointsModel(), d_domain.getCategoryContents(
 				d_domain.getCategory(Endpoint.class)));
-		assertEquals(d_domain.getAdverseEvents(), d_domain.getCategoryContents(
+		assertEquals(d_domain.getAdverseEventsModel(), d_domain.getCategoryContents(
 				d_domain.getCategory(AdverseEvent.class)));
-		assertEquals(d_domain.getPopulationCharacteristics(), d_domain.getCategoryContents(
+		assertEquals(d_domain.getPopulationCharacteristicsModel(), d_domain.getCategoryContents(
 				d_domain.getCategory(PopulationCharacteristic.class)));
-		assertEquals(d_domain.getStudies(), d_domain.getCategoryContents(
+		assertEquals(d_domain.getStudiesModel(), d_domain.getCategoryContents(
 				d_domain.getCategory(Study.class)));
-		assertEquals(d_domain.getPairWiseMetaAnalyses(), d_domain.getCategoryContents(
+		assertEquals(d_domain.getPairWiseMetaAnalysesModel(), d_domain.getCategoryContents(
 				d_domain.getCategory(PairWiseMetaAnalysis.class)));
-		assertEquals(d_domain.getBenefitRiskAnalyses(), d_domain.getCategoryContents(
+		assertEquals(d_domain.getBenefitRiskAnalysesModel(), d_domain.getCategoryContents(
 				d_domain.getCategory(BenefitRiskAnalysis.class)));
 	}
 	

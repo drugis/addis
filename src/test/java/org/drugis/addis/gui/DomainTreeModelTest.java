@@ -233,7 +233,6 @@ public class DomainTreeModelTest {
 		
 		d_treeModel.addTreeModelListener(listener);
 		d_domain.addIndication(new Indication(10L, "Blah"));
-		
 		verify(listener);
 	}
 	
@@ -245,7 +244,6 @@ public class DomainTreeModelTest {
 		
 		d_treeModel.addTreeModelListener(listener);
 		d_domain.addEndpoint(new Endpoint("E", Endpoint.convertVarType(Variable.Type.RATE)));
-		
 		verify(listener);
 	}
 	
@@ -256,8 +254,7 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addAdverseEvent(d_firstADE);
-		
+		d_domain.addAdverseEvent(new AdverseEvent());
 		verify(listener);
 	}
 	
@@ -270,7 +267,6 @@ public class DomainTreeModelTest {
 		
 		d_treeModel.addTreeModelListener(listener);
 		d_domain.addStudy(new Study("X", d_firstIndication));
-		
 		verify(listener);
 	}
 	
@@ -282,7 +278,6 @@ public class DomainTreeModelTest {
 		
 		d_treeModel.addTreeModelListener(listener);
 		d_domain.addDrug(new Drug("X", "atc"));
-		
 		verify(listener);
 	}	
 	
@@ -294,7 +289,6 @@ public class DomainTreeModelTest {
 		
 		d_treeModel.addTreeModelListener(listener);
 		d_domain.addPopulationCharacteristic(new PopulationCharacteristic("X", new ContinuousVariableType()));
-		
 		verify(listener);
 	}	
 	

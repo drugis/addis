@@ -46,9 +46,11 @@ import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.DefaultListHolder;
 import org.drugis.addis.presentation.ListHolder;
+import org.drugis.addis.util.FilteredObservableList;
 import org.drugis.addis.util.SortedSetModel;
 
 import com.jgoodies.binding.beans.BeanUtils;
+import com.jgoodies.binding.list.ObservableList;
 
 public class DomainImpl implements Domain {
 	private static final EntityCategory CATEGORY_INDICATIONS =
@@ -94,6 +96,22 @@ public class DomainImpl implements Domain {
 	private SortedSetModel<PopulationCharacteristic> d_populationCharacteristics = new SortedSetModel<PopulationCharacteristic>();
 	private SortedSetModel<AdverseEvent> d_adverseEvents = new SortedSetModel<AdverseEvent>();
 	private SortedSetModel<BenefitRiskAnalysis<?>> d_benefitRiskAnalyses = new SortedSetModel<BenefitRiskAnalysis<?>>();
+	private FilteredObservableList<MetaAnalysis> d_networkMetaAnalyses;
+	private FilteredObservableList<MetaAnalysis> d_pairWiseMetaAnalyses;
+	
+	public DomainImpl() {
+		d_pairWiseMetaAnalyses = new FilteredObservableList<MetaAnalysis>(d_metaAnalyses, new FilteredObservableList.Filter<MetaAnalysis>() {
+			public boolean accept(MetaAnalysis obj) {
+				return obj instanceof PairWiseMetaAnalysis;
+			}
+		});
+		d_networkMetaAnalyses = new FilteredObservableList<MetaAnalysis>(d_metaAnalyses, new FilteredObservableList.Filter<MetaAnalysis>() {
+			public boolean accept(MetaAnalysis obj) {
+				return obj instanceof NetworkMetaAnalysis;
+			}
+		});
+
+	}
 	
 	private class StudyChangeListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
@@ -478,14 +496,14 @@ public class DomainImpl implements Domain {
 	}
 
 	@SuppressWarnings("unchecked")
-	public SortedSet<? extends Entity> getCategoryContents(EntityCategory node) {
+	public ObservableList<? extends Entity> getCategoryContents(EntityCategory node) {
 		if (node == null) {
 			return null;
 		}
 		try {
 			PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(
-					Domain.class, node.getPropertyName());
-			return (SortedSet<? extends Entity>)BeanUtils.getValue(this, propertyDescriptor);
+					Domain.class, node.getPropertyName() + "Model");
+			return (ObservableList<? extends Entity>)BeanUtils.getValue(this, propertyDescriptor);
 		} catch (IntrospectionException e) {
 			throw new RuntimeException(e);
 		}
@@ -545,5 +563,30 @@ public class DomainImpl implements Domain {
 	@Override
 	public SortedSetModel<PopulationCharacteristic> getPopulationCharacteristicsModel() {
 		return d_populationCharacteristics;
+	}
+
+	@Override
+	public SortedSetModel<Study> getStudiesModel() {
+		return d_studies;
+	}
+
+	@Override
+	public SortedSetModel<MetaAnalysis> getMetaAnalysesModel() {
+		return d_metaAnalyses;
+	}
+
+	@Override
+	public ObservableList<MetaAnalysis> getPairWiseMetaAnalysesModel() {
+		return d_pairWiseMetaAnalyses;
+	}
+	
+	@Override
+	public ObservableList<MetaAnalysis> getNetworkMetaAnalysesModel() {
+		return d_networkMetaAnalyses;
+	}
+
+	@Override
+	public SortedSetModel<BenefitRiskAnalysis<?>> getBenefitRiskAnalysesModel() {
+		return d_benefitRiskAnalyses;
 	}
 }

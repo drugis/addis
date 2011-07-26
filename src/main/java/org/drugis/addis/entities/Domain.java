@@ -34,6 +34,8 @@ import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.util.SortedSetModel;
 
+import com.jgoodies.binding.list.ObservableList;
+
 public interface Domain {
 	/**
 	 * Get the list of top-level entity categories.
@@ -43,7 +45,7 @@ public interface Domain {
 	/**
 	 * Get the entities that belong to a category.
 	 */
-	public SortedSet<? extends Entity> getCategoryContents(EntityCategory node);
+	public ObservableList<? extends Entity> getCategoryContents(EntityCategory node);
 	
 	/** 
 	 * Get a ValueModel to the collection of entities that belong to a category.
@@ -236,4 +238,14 @@ public interface Domain {
 	public SortedSetModel<AdverseEvent> getAdverseEventsModel();
 
 	public SortedSetModel<PopulationCharacteristic> getPopulationCharacteristicsModel();
+
+	public SortedSetModel<Study> getStudiesModel();
+	
+	public SortedSetModel<MetaAnalysis> getMetaAnalysesModel();
+
+	public SortedSetModel<BenefitRiskAnalysis<?>> getBenefitRiskAnalysesModel();
+
+	public ObservableList<MetaAnalysis> getPairWiseMetaAnalysesModel();
+	
+	public ObservableList<MetaAnalysis> getNetworkMetaAnalysesModel();
 }

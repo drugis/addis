@@ -26,19 +26,19 @@ package org.drugis.addis.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
 
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.DomainEvent;
-import org.drugis.addis.entities.DomainListener;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityCategory;
-import org.drugis.common.CollectionUtil;
+
+import com.jgoodies.binding.list.ObservableList;
 
 
 public class DomainTreeModel implements TreeModel {
@@ -46,17 +46,28 @@ public class DomainTreeModel implements TreeModel {
 	private Domain d_domain;
 	
 	private List<TreeModelListener> d_listeners;
-	
-	
-	private class DomainListenerImpl implements DomainListener {
-		public void domainChanged(DomainEvent evt) {
+		
+	private class MyListDataListener implements ListDataListener {
+		public void contentsChanged(ListDataEvent e) {
+			fireTreeStructureChanged();	
+		}
+
+		public void intervalAdded(ListDataEvent e) {
+			fireTreeStructureChanged();	
+		}
+
+		public void intervalRemoved(ListDataEvent e) {
 			fireTreeStructureChanged();	
 		}
 	}
 	
 	public DomainTreeModel(Domain domain) {
 		d_domain = domain;
-		d_domain.addListener(new DomainListenerImpl());
+		
+		MyListDataListener l = new MyListDataListener();
+		for (EntityCategory c : d_domain.getCategories()) {
+			d_domain.getCategoryContents(c).addListDataListener(l);
+		}
 		
 		d_listeners = new ArrayList<TreeModelListener>();
 	}
@@ -67,7 +78,7 @@ public class DomainTreeModel implements TreeModel {
 		} else {
 			for (EntityCategory cat : d_domain.getCategories()) {
 				if (isCategoryRequest(cat, parent, childIndex)) {
-					return CollectionUtil.getElementAtIndex(d_domain.getCategoryContents(cat), childIndex);
+					return d_domain.getCategoryContents(cat).get(childIndex);
 				}
 			}
 		}
@@ -91,7 +102,7 @@ public class DomainTreeModel implements TreeModel {
 		if (d_root == parent) {
 			return d_domain.getCategories().size();
 		} else {
-			SortedSet<?> contents = d_domain.getCategoryContents(getCategoryNode(parent));
+			ObservableList<? extends Entity> contents = d_domain.getCategoryContents(getCategoryNode(parent));
 			if (contents != null) {
 				return contents.size();
 			}
@@ -103,9 +114,9 @@ public class DomainTreeModel implements TreeModel {
 		if (parent == d_root) {
 			return d_domain.getCategories().indexOf(child);
 		} else {
-			SortedSet<?> contents = d_domain.getCategoryContents(getCategoryNode(parent));
+			ObservableList<? extends Entity> contents = d_domain.getCategoryContents(getCategoryNode(parent));
 			if (contents != null) {
-				return CollectionUtil.getIndexOfElement(contents, child);
+				return contents.indexOf(child);
 			}
 		}
 		return -1;
