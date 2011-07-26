@@ -17,18 +17,14 @@ public class FilteredObservableList<E> extends AbstractList<E> implements Observ
 	}
 	
 	private final ObservableList<E> d_inner;
-	private final Filter<E> d_filter;
+	private Filter<E> d_filter;
 	private ArrayList<Integer> d_indices = new ArrayList<Integer>();
 	private ListDataListenerManager d_listenerManager = new ListDataListenerManager();
 
 	public FilteredObservableList(ObservableList<E> inner, Filter<E> filter) {
 		d_inner = inner;
 		d_filter = filter;
-		for (int i = 0; i < d_inner.size(); ++i) {
-			if (d_filter.accept(d_inner.get(i))) {
-				d_indices.add(i);
-			}
-		}
+		initializeIndices();
 		d_inner.addListDataListener(new ListDataListener() {
 			
 			@Override
@@ -46,6 +42,23 @@ public class FilteredObservableList<E> extends AbstractList<E> implements Observ
 				FilteredObservableList.this.contentsChanged(e.getIndex0(), e.getIndex1());
 			}
 		});
+	}
+
+	private void initializeIndices() {
+		for (int i = 0; i < d_inner.size(); ++i) {
+			if (d_filter.accept(d_inner.get(i))) {
+				d_indices.add(i);
+			}
+		}
+	}
+	
+	public void setFilter(Filter<E> filter) {
+		d_filter = filter;
+		int oldSize = size();
+		d_indices.clear();
+		d_listenerManager.fireIntervalRemoved(this, 0, oldSize - 1);
+		initializeIndices();
+		d_listenerManager.fireIntervalAdded(this, 0, size() - 1);
 	}
 
 	protected <F> int findFirstIndex(List<F> list, Filter<F> filter) {

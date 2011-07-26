@@ -198,4 +198,21 @@ public class FilteredObservableListTest {
 		assertEquals(Arrays.asList("Gert"), d_outer);
 		verify(mock);
 	}
+	
+	@Test
+	public void testSetFilter() {
+		ListDataListener mock = createStrictMock(ListDataListener.class);
+		mock.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_outer, ListDataEvent.INTERVAL_REMOVED, 0, 1)));
+		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_outer, ListDataEvent.INTERVAL_ADDED, 0, 2)));
+		replay(mock);
+		d_outer.addListDataListener(mock);
+		
+		d_outer.setFilter(new FilteredObservableList.Filter<String>() {
+			public boolean accept(String str) {
+				return !str.equals("Gert");
+			}
+		});
+		assertEquals(Arrays.asList("Daan", "Jan", "Klaas"), d_outer);
+		verify(mock);
+	}
 }
