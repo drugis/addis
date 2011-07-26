@@ -38,6 +38,8 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.util.ListHolderWrapperPlsDel;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,9 +60,8 @@ public class SelectableStudyGraphModelTest {
 		d_drugs.add(new DrugSet(ExampleData.buildDrugParoxetine()));
 		d_drugs.add(new DrugSet(ExampleData.buildDrugSertraline()));
 		d_drugListHolder = new DefaultListHolder<DrugSet>(d_drugs);
-		d_pm = new SelectableStudyGraphModel(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
-				new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()),
-				d_drugListHolder, d_domain);
+		ValueHolder<OutcomeMeasure> outcome = new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd());
+		d_pm = new SelectableStudyGraphModel(new ListHolderWrapperPlsDel<Study>(new DomainStudyListHolder(d_domain, new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()), outcome)), d_drugListHolder, outcome);
 	}
 	
 	@Test
@@ -84,9 +85,8 @@ public class SelectableStudyGraphModelTest {
 		
 		d_drugs.remove(new DrugSet(ExampleData.buildDrugFluoxetine()));
 		d_drugListHolder = new DefaultListHolder<DrugSet>(d_drugs);
-		d_pm = new SelectableStudyGraphModel(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
-				new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()),
-				d_drugListHolder, d_domain);
+		ValueHolder<OutcomeMeasure> outcome = new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd());
+		d_pm = new SelectableStudyGraphModel(new ListHolderWrapperPlsDel<Study>(new DomainStudyListHolder(d_domain, new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()), outcome)), d_drugListHolder, outcome);
 		
 		assertFalse(d_pm.isSelectionConnected());
 	}

@@ -88,7 +88,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 
 	@Override
 	protected SelectableStudyGraphModel buildStudyGraphPresentation() {
-		return new SelectableStudyGraphModel(d_indicationHolder, d_outcomeHolder, d_drugListHolder, d_domain);
+		return new SelectableStudyGraphModel(getStudiesEndpointAndIndication(), d_drugListHolder, d_outcomeHolder);
 	}
 	
 	public ValueModel getConnectedDrugsSelectedModel() {

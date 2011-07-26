@@ -30,9 +30,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drugis.addis.entities.Domain;
+import javax.swing.ListModel;
+
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.ConnectivityInspector;
@@ -43,14 +43,11 @@ public class SelectableStudyGraphModel extends StudyGraphModel {
 	
 	private ListHolder<DrugSet> d_selectedDrugs;
 
-	public SelectableStudyGraphModel(ValueHolder<Indication> indication,
-			ValueHolder<OutcomeMeasure> outcome, ListHolder<DrugSet> drugs,
-			Domain domain) {
-		super(indication, outcome, drugs, domain);
+	public SelectableStudyGraphModel(ListModel studies, ListHolder<DrugSet> drugs, ValueHolder<OutcomeMeasure> outcome) { // FIXME
+		super(studies, drugs, outcome);
 		d_selectedDrugs = new DefaultListHolder<DrugSet>(new ArrayList<DrugSet>(d_drugs.getValue()));
 		d_drugs.addValueChangeListener(new DrugsChangedListener());
 	}
-	
 	public ListHolder<DrugSet> getSelectedDrugsModel() {
 		return d_selectedDrugs;
 	}

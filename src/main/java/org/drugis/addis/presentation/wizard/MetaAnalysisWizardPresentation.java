@@ -200,6 +200,6 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 
 	@Override
 	protected StudyGraphModel buildStudyGraphPresentation() {
-		return new StudyGraphModel(d_indicationHolder, d_outcomeHolder, d_drugListHolder, d_domain);				
+		return new StudyGraphModel(getStudiesEndpointAndIndication(), d_drugListHolder,  d_outcomeHolder);				
 	}	
 }

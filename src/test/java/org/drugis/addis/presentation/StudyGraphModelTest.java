@@ -63,15 +63,14 @@ public class StudyGraphModelTest {
 		d_drugs.add(new DrugSet(ExampleData.buildDrugFluoxetine()));
 		d_drugs.add(new DrugSet(ExampleData.buildDrugParoxetine()));
 		d_drugs.add(new DrugSet(ExampleData.buildDrugSertraline()));
-		d_pm = new StudyGraphModel(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
-				new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()),
-				new AbstractListHolder<DrugSet>() {
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public List<DrugSet> getValue() {
-						return d_drugs;
-					}}, d_domain);
+		ValueHolder<OutcomeMeasure> outcome = new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd());
+		d_pm = new StudyGraphModel(new DomainStudyListHolder(d_domain, new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()), outcome), new AbstractListHolder<DrugSet>() {
+		private static final long serialVersionUID = 1L;
+		
+		@Override
+		public List<DrugSet> getValue() {
+			return d_drugs;
+		}}, outcome);
 	}
 	
 	@Test
@@ -156,29 +155,27 @@ public class StudyGraphModelTest {
 	
 	@Test
 	public void testNullIndication() {
-		d_pm = new StudyGraphModel(new UnmodifiableHolder<Indication>(null),
-				new UnmodifiableHolder<OutcomeMeasure>(null),
-				new AbstractListHolder<DrugSet>() {
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public List<DrugSet> getValue() {
-						return new ArrayList<DrugSet>();
-					}}, d_domain);
+		ValueHolder<OutcomeMeasure> outcome = new UnmodifiableHolder<OutcomeMeasure>(null);
+		d_pm = new StudyGraphModel(new DomainStudyListHolder(d_domain, new UnmodifiableHolder<Indication>(null), outcome), new AbstractListHolder<DrugSet>() {
+		private static final long serialVersionUID = 1L;
+		
+		@Override
+		public List<DrugSet> getValue() {
+			return new ArrayList<DrugSet>();
+		}}, outcome);
 		assertTrue(d_pm.vertexSet().isEmpty());
 	}
 	
 	@Test
 	public void testNullEndpoint() {
-		d_pm = new StudyGraphModel(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
-				new UnmodifiableHolder<OutcomeMeasure>(null),
-				new AbstractListHolder<DrugSet>() {
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public List<DrugSet> getValue() {
-						return new ArrayList<DrugSet>();
-					}}, d_domain);
+		ValueHolder<OutcomeMeasure> outcome = new UnmodifiableHolder<OutcomeMeasure>(null);
+		d_pm = new StudyGraphModel(new DomainStudyListHolder(d_domain, new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()), outcome), new AbstractListHolder<DrugSet>() {
+		private static final long serialVersionUID = 1L;
+		
+		@Override
+		public List<DrugSet> getValue() {
+			return new ArrayList<DrugSet>();
+		}}, outcome);
 		assertTrue(d_pm.vertexSet().isEmpty());
 	}
 		
@@ -189,10 +186,9 @@ public class StudyGraphModelTest {
 		PropertyChangeListener l = JUnitUtil.mockListener(drugListHolder, "value",
 				new ArrayList<DrugSet>(), new ArrayList<DrugSet>(d_drugs));
 		drugListHolder.addValueChangeListener(l);
+		ValueHolder<OutcomeMeasure> outcome = new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd());
 	
-		d_pm = new StudyGraphModel(new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()),
-				new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()),
-				drugListHolder, d_domain);
+		d_pm = new StudyGraphModel(new DomainStudyListHolder(d_domain, new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()), outcome), drugListHolder, outcome);
 		assertTrue(d_pm.vertexSet().isEmpty());
 		
 		drugListHolder.setValue(d_drugs);

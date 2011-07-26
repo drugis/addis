@@ -29,11 +29,16 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ListModel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.util.ListHolderWrapperPlsDel;
 import org.jgrapht.graph.ListenableUndirectedGraph;
 
 @SuppressWarnings("serial")
@@ -83,10 +88,14 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	}
 	
 	protected ListHolder<DrugSet> d_drugs;
-	private ListHolder<Study> d_studies;
+	private ListModel d_studies;
 	private final ValueHolder<OutcomeMeasure> d_om;
 	
 	public StudyGraphModel(ListHolder<Study> studies, ListHolder<DrugSet> drugs, ValueHolder<OutcomeMeasure> om){
+		this(new ListHolderWrapperPlsDel<Study>(studies), drugs, om);
+	}
+	
+	public StudyGraphModel(ListModel studies, ListHolder<DrugSet> drugs, ValueHolder<OutcomeMeasure> om){ // FIXME: change to ObservableList once available.
 		super(Edge.class);
 		
 		d_drugs = drugs;
@@ -100,11 +109,26 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 				resetGraph();
 			}
 		};
+		ListDataListener listListener = new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+				resetGraph();
+			}
+
+			public void intervalAdded(ListDataEvent e) {
+				resetGraph();
+			}
+			
+
+			public void contentsChanged(ListDataEvent e) {
+				resetGraph();
+			}
+		};
 		d_drugs.addValueChangeListener(listener);
-		d_studies.addValueChangeListener(listener);
+		d_studies.addListDataListener(listListener);
 	}
 	
-	public StudyGraphModel(ValueHolder<Indication> indication, ValueHolder<OutcomeMeasure> outcome, 
+	@Deprecated
+	protected StudyGraphModel(ValueHolder<Indication> indication, ValueHolder<OutcomeMeasure> outcome, 
 			ListHolder<DrugSet> drugs, Domain domain) {
 		this(new DomainStudyListHolder(domain, indication, outcome), drugs, outcome);
 	}
@@ -169,7 +193,18 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	 * Return the studies with the correct indication and outcome that include the given drug.
 	 */
 	public List<Study> getStudies(DrugSet d) {
-		return filter(d, d_studies.getValue());
+		return filter(d, d_studies);
+	}
+	
+	private List<Study> filter(DrugSet d, ListModel allStudies) {
+		List<Study> studies = new ArrayList<Study>();
+		for (int i = 0; i < allStudies.getSize(); ++i) {
+			Study s = (Study) allStudies.getElementAt(i);
+			if (s.getMeasuredDrugs(d_om.getValue()).contains(d)) {
+				studies.add(s);
+			}
+		}
+		return studies;
 	}
 
 	private List<Study> filter(DrugSet d, List<Study> allStudies) {

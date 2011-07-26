@@ -26,13 +26,14 @@ public class ListHolderWrapperPlsDel<T> extends AbstractListModel {
 	
 	protected void fireChangeEvent() {
 		int newSize = d_holder.getValue().size();
-		if (newSize > d_size) {
-			fireIntervalAdded(this, d_size, newSize - 1);
-		} else if (newSize < d_size) {
-			fireIntervalRemoved(this, newSize, d_size - 1);
-		}
-		fireContentsChanged(this, 0, Math.min(d_size, newSize) - 1);
+		int oldSize = d_size;
 		d_size = newSize;
+		if (newSize > d_size) {
+			fireIntervalAdded(this, oldSize, newSize - 1);
+		} else if (newSize < oldSize) {
+			fireIntervalRemoved(this, newSize, oldSize - 1);
+		}
+		fireContentsChanged(this, 0, Math.min(oldSize, newSize) - 1);
 	}
 	@Override
 	public Object getElementAt(int index) {

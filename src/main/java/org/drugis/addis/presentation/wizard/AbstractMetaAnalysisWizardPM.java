@@ -80,6 +80,8 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		d_indicationHolder.addPropertyChangeListener(new SetEmptyListener(d_outcomeHolder));
 	
 		d_outcomeListHolder = new OutcomeListHolder(d_indicationHolder, d_domain);		
+
+		d_studiesEndpointIndication = createStudiesIndicationOutcome();
 		d_drugListHolder = new DrugListHolder();
 		d_studyGraphPresentationModel = buildStudyGraphPresentation();
 		buildDrugHolders();
@@ -93,8 +95,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 				updateArmHolders();
 			}
 		};
-		
-		d_studiesEndpointIndication = createStudiesIndicationOutcome();
+
 		d_selectableStudies = createSelectableStudies();
 		d_studyListPm = new DefaultSelectableStudyListPresentation(
 				new DefaultStudyListPresentation(d_selectableStudies));
@@ -202,6 +203,10 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	}
 
 	public abstract MetaAnalysis createMetaAnalysis(String name);
+
+	protected ObservableList<Study> getSelectableStudies() {
+		return d_selectableStudies;
+	}
 
 	@SuppressWarnings("serial")
 	protected class DrugListHolder extends AbstractListHolder<DrugSet> implements PropertyChangeListener {
