@@ -1,20 +1,17 @@
 package org.drugis.addis.util;
 
 import java.util.AbstractList;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import com.jgoodies.binding.list.ObservableList;
 
 public class SortedSetModel<E> extends AbstractList<E> implements ObservableList<E> {
 	private SortedSet<E> d_set = new TreeSet<E>();
-	private List<ListDataListener> d_listeners = new ArrayList<ListDataListener>();
+	private ListDataListenerManager d_listenerManager = new ListDataListenerManager();
 
 	public SortedSetModel() {
 	}
@@ -47,7 +44,7 @@ public class SortedSetModel<E> extends AbstractList<E> implements ObservableList
 		if (!d_set.contains(element)) {
 			d_set.add(element);
 			int idx = indexOf(element);
-			fireIntervalAdded(idx, idx);
+			d_listenerManager.fireIntervalAdded(this, idx, idx);
 		}
 	}
 
@@ -56,7 +53,7 @@ public class SortedSetModel<E> extends AbstractList<E> implements ObservableList
 		if (index >= 0 && index < size()) {
 			E e = get(index);
 			d_set.remove(e);
-			fireIntervalRemoved(index, index);
+			d_listenerManager.fireIntervalRemoved(this, index, index);
 			return e;
 		}
 		throw new IndexOutOfBoundsException();
@@ -85,28 +82,14 @@ public class SortedSetModel<E> extends AbstractList<E> implements ObservableList
 
 	@Override
 	public void addListDataListener(ListDataListener l) {
-		d_listeners.add(l);
+		d_listenerManager.addListDataListener(l);
 	}
 	
 	@Override
 	public void removeListDataListener(ListDataListener l) {
-		d_listeners.remove(l);
+		d_listenerManager.removeListDataListener(l);
 	}
 	
-	private void fireIntervalAdded(int index0, int index1) {
-		ListDataEvent evt = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, index0, index1);
-		for (ListDataListener l : d_listeners) {
-			l.intervalAdded(evt);
-		}
-	}
-	
-	private void fireIntervalRemoved(int index0, int index1) {
-		ListDataEvent evt = new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, index0, index1);
-		for (ListDataListener l : d_listeners) {
-			l.intervalRemoved(evt);
-		}
-	}
-
 	public SortedSet<E> getSet() {
 		return new TreeSet<E>(d_set);
 	}
