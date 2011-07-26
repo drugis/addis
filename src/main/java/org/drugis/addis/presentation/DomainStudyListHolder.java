@@ -70,7 +70,7 @@ public class DomainStudyListHolder extends AbstractListHolder<Study> {
 		if (d_indication.getValue() == null || d_outcome.getValue() == null)
 			return Collections.emptyList();
 		List<Study> studies = d_domain.getStudies(d_indication.getValue()).getValue();
-		studies.retainAll(d_domain.getStudies(d_outcome.getValue()).getValue());
+		studies.retainAll(d_domain.getStudies(d_outcome.getValue()));
 		return studies;
 	}
 }

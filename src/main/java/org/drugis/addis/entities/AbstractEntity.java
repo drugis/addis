@@ -35,7 +35,7 @@ public abstract class AbstractEntity extends AbstractObservable implements Entit
 		return equals(other);
 	}
 	
-	public String getDescription() {
+	public String getLabel() {
 		return toString();
 	}
 }

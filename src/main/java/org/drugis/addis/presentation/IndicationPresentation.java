@@ -27,10 +27,13 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 
 import org.drugis.addis.entities.Characteristic;
+import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.util.FilteredObservableList;
 
 import com.jgoodies.binding.PresentationModel;
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
@@ -51,11 +54,11 @@ public class IndicationPresentation extends PresentationModel<Indication> implem
 	}
 
 	private CharacteristicVisibleMap d_charMap = new CharacteristicVisibleMap();
-	private ListHolder<Study> d_studies;
+	private ObservableList<Study> d_studies;
 
-	public IndicationPresentation(Indication bean, ListHolder<Study> studies) {
-		super(bean);
-		d_studies = studies;
+	public IndicationPresentation(final Indication indication, ObservableList<Study> sortedSetModel) {
+		super(indication);
+		d_studies = new FilteredObservableList<Study>(sortedSetModel, new DomainImpl.IndicationFilter(indication));
 	}
 
 	public AbstractValueModel getLabelModel() {
@@ -66,7 +69,7 @@ public class IndicationPresentation extends PresentationModel<Indication> implem
 		return d_charMap.get(c);
 	}
 
-	public ListHolder<Study> getIncludedStudies() {
+	public ObservableList<Study> getIncludedStudies() {
 		return d_studies;
 	}
 }

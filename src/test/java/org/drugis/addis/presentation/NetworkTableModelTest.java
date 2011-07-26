@@ -116,8 +116,8 @@ public class NetworkTableModelTest {
 				if(x == y){
 					assertEquals(d_analysis.getIncludedDrugs().get(x), ((PresentationModel<Drug>) d_tableModel.getValueAt(x, y)).getBean());
 				} else {
-					Treatment t1 = d_analysis.getBuilder().getTreatment(d_analysis.getIncludedDrugs().get(x).getDescription());
-					Treatment t2 = d_analysis.getBuilder().getTreatment(d_analysis.getIncludedDrugs().get(y).getDescription());
+					Treatment t1 = d_analysis.getBuilder().getTreatment(d_analysis.getIncludedDrugs().get(x).getLabel());
+					Treatment t2 = d_analysis.getBuilder().getTreatment(d_analysis.getIncludedDrugs().get(y).getLabel());
 					NormalSummary relEffect = d_analysis.getNormalSummary(model, model.getRelativeEffect(t1, t2));
 					assertEquals(distributionToString(new LogGaussian(relEffect.getMean(), relEffect.getStandardDeviation())), ((LabeledPresentation) d_tableModel.getValueAt(x, y)).getLabelModel().getString());
 				}
@@ -129,8 +129,8 @@ public class NetworkTableModelTest {
 	public void testUpdateFiresTableDataChangedEvent() throws InterruptedException {
 		ConsistencyModel model = d_analysis.getConsistencyModel();
 		TaskUtil.run(model.getActivityTask());
-		Treatment d1 = new Treatment(d_analysis.getIncludedDrugs().get(0).getDescription());
-		Treatment d2 = new Treatment(d_analysis.getIncludedDrugs().get(1).getDescription());
+		Treatment d1 = new Treatment(d_analysis.getIncludedDrugs().get(0).getLabel());
+		Treatment d2 = new Treatment(d_analysis.getIncludedDrugs().get(1).getLabel());
 		MockNormalSummary normalSummary = (MockNormalSummary)d_analysis.getNormalSummary(model, model.getRelativeEffect(d1, d2));
 		
 		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(d_tableModel));
@@ -162,8 +162,8 @@ public class NetworkTableModelTest {
 				if(x == y){
 					assertEquals(d_contAnalysis.getIncludedDrugs().get(x), ((PresentationModel<Drug>) d_contTableModel.getValueAt(x, y)).getBean());
 				} else {
-					Treatment t1 = d_contAnalysis.getBuilder().getTreatment(d_contAnalysis.getIncludedDrugs().get(x).getDescription());
-					Treatment t2 = d_contAnalysis.getBuilder().getTreatment(d_contAnalysis.getIncludedDrugs().get(y).getDescription());
+					Treatment t1 = d_contAnalysis.getBuilder().getTreatment(d_contAnalysis.getIncludedDrugs().get(x).getLabel());
+					Treatment t2 = d_contAnalysis.getBuilder().getTreatment(d_contAnalysis.getIncludedDrugs().get(y).getLabel());
 					NormalSummary relEffect = d_contAnalysis.getNormalSummary(model, model.getRelativeEffect(t1, t2));
 					assertEquals(distributionToString(new Gaussian(relEffect.getMean(), relEffect.getStandardDeviation())), ((LabeledPresentation) d_tableModel.getValueAt(x, y)).getLabelModel().getString());
 				}

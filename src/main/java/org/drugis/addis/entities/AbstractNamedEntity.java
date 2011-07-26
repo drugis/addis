@@ -78,7 +78,7 @@ public abstract class AbstractNamedEntity<T extends TypeWithName> extends Abstra
 	}
 	
 	@Override
-	public String getDescription() {
+	public String getLabel() {
 		return getName();
 	}
 }

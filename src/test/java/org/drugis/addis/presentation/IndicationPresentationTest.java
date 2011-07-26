@@ -27,26 +27,22 @@ package org.drugis.addis.presentation;
 import static org.easymock.EasyMock.verify;
 
 import java.beans.PropertyChangeListener;
-import java.util.List;
 
+import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
 
+import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 public class IndicationPresentationTest {
-	@SuppressWarnings("serial")
 	@Test
 	public void testCodeFireLabelChanged() {
 		Indication i = new Indication(5L, "Some indication");
-		IndicationPresentation p = new IndicationPresentation(i, new AbstractListHolder<Study>() {
-			@Override
-			public List<Study> getValue() {
-				return null;
-			}
-		});
+		IndicationPresentation p = new IndicationPresentation(i, new ArrayListModel<Study>());
 		AbstractValueModel model = p.getLabelModel();
 		PropertyChangeListener x = JUnitUtil.mockListener(model, "value", "5 Some indication", "6 Some indication");
 		model.addPropertyChangeListener(x);
@@ -54,16 +50,11 @@ public class IndicationPresentationTest {
 		verify(x);
 	}
 	
-	@SuppressWarnings("serial")
 	@Test
 	public void testNameFireLabelChanged() {
 		Indication i = new Indication(5L, "Some indication");
-		IndicationPresentation p = new IndicationPresentation(i, new AbstractListHolder<Study>() {
-			@Override
-			public List<Study> getValue() {
-				return null;
-			}			
-		});
+		Domain d = new DomainImpl();
+		IndicationPresentation p = new IndicationPresentation(i, d.getStudiesModel());
 		AbstractValueModel model = p.getLabelModel();
 		PropertyChangeListener x = JUnitUtil.mockListener(model, "value", "5 Some indication", "5 Other indication");
 		model.addPropertyChangeListener(x);

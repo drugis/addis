@@ -26,7 +26,7 @@ package org.drugis.addis.entities;
 
 public interface Activity extends Entity {
 	
-	public String getDescription();
+	public String getLabel();
 
 	public boolean deepEquals(Entity other);
 }

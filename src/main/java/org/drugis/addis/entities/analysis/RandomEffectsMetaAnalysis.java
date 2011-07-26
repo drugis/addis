@@ -140,8 +140,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		return studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getBase());
 	}
 
-	private static List<? extends Study> getStudies(
-			List<StudyArmsEntry> studyArms) {
+	private static List<? extends Study> getStudies(List<StudyArmsEntry> studyArms) {
 		return StudyArmsEntry.getStudyList(studyArms);
 	}
 

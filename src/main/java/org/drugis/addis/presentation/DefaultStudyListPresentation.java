@@ -27,13 +27,14 @@ package org.drugis.addis.presentation;
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
 
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 public class DefaultStudyListPresentation implements StudyListPresentation {
 	private CharacteristicVisibleMap d_characteristicVisibleMap = new CharacteristicVisibleMap();
-	private ListHolder<Study> d_list;
+	private ObservableList<Study> d_list;
 	
-	public DefaultStudyListPresentation(ListHolder<Study> list) {
+	public DefaultStudyListPresentation(ObservableList<Study> list) {
 		d_list = list;
 	}
 	
@@ -42,7 +43,7 @@ public class DefaultStudyListPresentation implements StudyListPresentation {
 		return d_characteristicVisibleMap.get(c);
 	}
 
-	public ListHolder<Study> getIncludedStudies() {
+	public ObservableList<Study> getIncludedStudies() {
 		return d_list;
 	}
 }

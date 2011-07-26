@@ -43,5 +43,5 @@ public interface Entity extends Observable {
 	/**
 	 * Human-readable string describing this entity, e.g. used to display it in the GUI.
 	 */
-	public String getDescription();
+	public String getLabel();
 }

@@ -306,7 +306,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		for (MetaAnalysis ma : getMetaAnalyses()) {
 			if (ma instanceof NetworkMetaAnalysis) {
 				for(DrugSet d: getNonBaselineAlternatives()) {
-					Parameter p = new BasicParameter(new Treatment(getBaseline().getDescription()), new Treatment(d.getDescription()));
+					Parameter p = new BasicParameter(new Treatment(getBaseline().getLabel()), new Treatment(d.getLabel()));
 					NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
 					summaryList.add(nma.getNormalSummary(nma.getConsistencyModel(), p));
 				}

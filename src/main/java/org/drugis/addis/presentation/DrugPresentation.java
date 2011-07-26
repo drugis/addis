@@ -25,28 +25,37 @@
 package org.drugis.addis.presentation;
 
 import org.drugis.addis.entities.Characteristic;
+import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.util.EntityUtil;
+import org.drugis.addis.util.FilteredObservableList;
 
 import com.jgoodies.binding.PresentationModel;
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class DrugPresentation extends PresentationModel<Drug> implements StudyListPresentation, LabeledPresentation {
 	
 	private CharacteristicVisibleMap d_charVisibleMap = new CharacteristicVisibleMap();
-	private ListHolder<Study> d_studies;
+	private FilteredObservableList<Study> d_studies;
 
-	public DrugPresentation(Drug drug, ListHolder<Study> studies) {
+	public DrugPresentation(final Drug drug, Domain domain) {
 		super(drug);
-		d_studies = studies;		
+		d_studies = new FilteredObservableList<Study>(domain.getStudiesModel(), new FilteredObservableList.Filter<Study>() {
+			@Override
+			public boolean accept(Study s) {
+				return EntityUtil.flatten(s.getDrugs()).contains(drug);
+			}
+		});		
 	}
 	
 	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c) {
 		return d_charVisibleMap.get(c);
 	}
 
-	public ListHolder<Study> getIncludedStudies() {
+	public ObservableList<Study> getIncludedStudies() {
 		return d_studies;
 	}
 

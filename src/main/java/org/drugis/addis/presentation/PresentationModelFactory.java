@@ -88,7 +88,7 @@ public class PresentationModelFactory {
 			return new StudyPresentation((Study) obj, this);
 		}		
 		if (obj instanceof Indication) {
-			return new IndicationPresentation((Indication)obj, d_domain.getStudies((Indication)obj));
+			return new IndicationPresentation((Indication)obj, d_domain.getStudiesModel());
 		}
 		if (obj instanceof RelativeEffect) {
 			return new RelativeEffectPresentation((RelativeEffect)obj);
@@ -110,7 +110,7 @@ public class PresentationModelFactory {
 		}
 		if (obj instanceof Drug) {
 			Drug d = (Drug) obj;
-			return new DrugPresentation(d, d_domain.getStudies(d));
+			return new DrugPresentation(d, d_domain);
 		}
 		if (obj instanceof RandomEffectsMetaAnalysis) {
 			return new RandomEffectsMetaAnalysisPresentation((RandomEffectsMetaAnalysis) obj, this);

@@ -58,7 +58,7 @@ public class TreatmentActivity extends AbstractEntity implements Activity {
 	}
 
 	@Override
-	public String getDescription() {
+	public String getLabel() {
 		if(d_treatments.size() == 0) {
 			return "No treatments.";
 		}
@@ -110,7 +110,7 @@ public class TreatmentActivity extends AbstractEntity implements Activity {
 	
 	@Override
 	public String toString() {
-		return getDescription();
+		return getLabel();
 	}
 
 	public boolean isComplete() {

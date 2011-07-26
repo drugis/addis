@@ -78,7 +78,7 @@ public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extend
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		Alternative a = d_br.getAlternatives().get(rowIndex);
 
-		if (columnIndex == 0) return a.getDescription();
+		if (columnIndex == 0) return a.getLabel();
 
 		OutcomeMeasure om = d_br.getCriteria().get(columnIndex-1);
 		return d_br.getMeasurement(a, om);

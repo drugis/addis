@@ -32,7 +32,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+
 import org.drugis.addis.entities.Study;
+
+import com.jgoodies.binding.list.ObservableList;
 
 public class DefaultSelectableStudyListPresentation extends DefaultStudyListPresentation implements SelectableStudyListPresentation{
 
@@ -41,29 +46,36 @@ public class DefaultSelectableStudyListPresentation extends DefaultStudyListPres
 	private ChangeListener d_listener = new ChangeListener();
 	private ListHolder<Study> d_selectedStudiesList = new DefaultListHolder<Study>(new ArrayList<Study>());
 
-	public DefaultSelectableStudyListPresentation(ListHolder<Study> list) {
+	public DefaultSelectableStudyListPresentation(ObservableList<Study> list) {
 		super(list);
 		
-		getIncludedStudies().addValueChangeListener(d_listener);
+		getIncludedStudies().addListDataListener(new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+				updateSelectedStudies();
+			}
+			public void intervalAdded(ListDataEvent e) {
+				updateSelectedStudies();
+			}
+			public void contentsChanged(ListDataEvent e) {
+				updateSelectedStudies();
+			}
+		});
 		d_selectedStudiesMap = new HashMap<Study, ModifiableHolder<Boolean>>();
 		updateSelectedStudies();
 	}
 	
 
 	private void updateSelectedStudies() {
-		List<Study> studyList = getIncludedStudies().getValue();
-		if (studyList != null) {
-			for (Study s : studyList) {
-				if (!d_selectedStudiesMap.containsKey(s)) {
-					d_selectedStudiesMap.put(s, getBooleanHolder());
-				}
+		for (Study s : getIncludedStudies()) {
+			if (!d_selectedStudiesMap.containsKey(s)) {
+				d_selectedStudiesMap.put(s, getBooleanHolder());
 			}
-			
-			Set<Study> leftStudies = new HashSet<Study>(d_selectedStudiesMap.keySet());
-			leftStudies.removeAll(studyList);
-			for (Study s : leftStudies) {
-				d_selectedStudiesMap.remove(s);
-			}
+		}
+		
+		Set<Study> leftStudies = new HashSet<Study>(d_selectedStudiesMap.keySet());
+		leftStudies.removeAll(getIncludedStudies());
+		for (Study s : leftStudies) {
+			d_selectedStudiesMap.remove(s);
 		}
 		d_selectedStudiesList.setValue(createSelectedStudies());
 	}
@@ -82,7 +94,7 @@ public class DefaultSelectableStudyListPresentation extends DefaultStudyListPres
 	private List<Study> createSelectedStudies() {
 		List<Study> selectedStudyList = new ArrayList<Study>();
 		
-		for (Study s : getIncludedStudies().getValue()) {
+		for (Study s : getIncludedStudies()) {
 			if (d_selectedStudiesMap.get(s).getValue() ) {
 				selectedStudyList.add(s);
 			}	
@@ -97,7 +109,7 @@ public class DefaultSelectableStudyListPresentation extends DefaultStudyListPres
 	 * @throws IllegalArgumentException if !getIncludedStudies().getValue().contains(s)
 	 */
 	public ModifiableHolder<Boolean> getSelectedStudyBooleanModel(Study s) throws IllegalArgumentException{
-		if (!getIncludedStudies().getValue().contains(s)) {
+		if (!getIncludedStudies().contains(s)) {
 			throw new IllegalArgumentException();
 		}
 		return d_selectedStudiesMap.get(s);

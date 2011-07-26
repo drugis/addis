@@ -40,13 +40,13 @@ public enum PredefinedActivity implements Activity {
 		d_description = description;
 	}
 	
-	public String getDescription() {
+	public String getLabel() {
 		return d_description;
 	}
 	
 	@Override
 	public String toString() {
-		return getDescription();
+		return getLabel();
 	}
 
 	/**

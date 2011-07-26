@@ -97,7 +97,7 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 	}
 
 	private int createArmSelect(int row, final Study curStudy, DrugSet drug, CellConstraints cc) {
-		d_builder.addLabel(drug.getDescription(), cc.xy(2, row));
+		d_builder.addLabel(drug.getLabel(), cc.xy(2, row));
 		
 		ListModel arms = new ListHolderWrapperPlsDel<Arm>(d_pm.getArmsPerStudyPerDrug(curStudy, drug));
 

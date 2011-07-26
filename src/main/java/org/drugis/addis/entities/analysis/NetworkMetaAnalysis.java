@@ -131,11 +131,11 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 					Measurement m = s.getMeasurement(v, a);
 					if(m instanceof BasicRateMeasurement) {
 						BasicRateMeasurement brm = (BasicRateMeasurement)m;	
-						((DichotomousNetworkBuilder) getTypedBuilder(brm)).add(s.getName(), s.getDrugs(a).getDescription(),
+						((DichotomousNetworkBuilder) getTypedBuilder(brm)).add(s.getName(), s.getDrugs(a).getLabel(),
 																			   brm.getRate(), brm.getSampleSize());
 					} else if (m instanceof BasicContinuousMeasurement) {
 						BasicContinuousMeasurement cm = (BasicContinuousMeasurement) m;
-						((ContinuousNetworkBuilder) getTypedBuilder(cm)).add(s.getName(), s.getDrugs(a).getDescription(),
+						((ContinuousNetworkBuilder) getTypedBuilder(cm)).add(s.getName(), s.getDrugs(a).getLabel(),
 																	           cm.getMean(), cm.getStdDev(), cm.getSampleSize());
 					}
 				}
@@ -249,7 +249,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			return new NetworkRelativeEffect<Measurement>(); // empty relative effect.
 		
 		ConsistencyModel consistencyModel = getConsistencyModel();
-		Parameter param = consistencyModel.getRelativeEffect(new Treatment(d1.getDescription()), new Treatment(d2.getDescription()));
+		Parameter param = consistencyModel.getRelativeEffect(new Treatment(d1.getLabel()), new Treatment(d2.getLabel()));
 		NormalSummary estimate = getNormalSummary(consistencyModel, param);
 		
 		if (isContinuous()) {
@@ -268,7 +268,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	public Treatment getTreatment(DrugSet d) {
-		return getBuilder().getTreatment(d.getDescription());
+		return getBuilder().getTreatment(d.getLabel());
 	}
 
 	public List<BasicParameter> getSplitParameters() {

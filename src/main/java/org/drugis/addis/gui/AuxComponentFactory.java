@@ -120,7 +120,7 @@ public class AuxComponentFactory {
 				}
 
 				private String getDescription(Object value) {
-					return value == null ? "" : ((Entity)value).getDescription();
+					return value == null ? "" : ((Entity)value).getLabel();
 				}
 			});
 		}
@@ -144,7 +144,7 @@ public class AuxComponentFactory {
 				}
 
 				private String getDescription(Object value) {
-					return value == null ? "" : ((Entity)value).getDescription();
+					return value == null ? "" : ((Entity)value).getLabel();
 				}
 			});
 		}

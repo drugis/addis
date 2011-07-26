@@ -161,7 +161,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		builder.addSeparator("Relative effect distributions", cc.xyw(1, row, width));
 		row += 2;
 		builder.add(AuxComponentFactory.createHtmlField("Relative measurements: log odds-ratio or mean difference, with "
-				+ d_pm.getBaseline().getDescription() +" as the common comparator."),cc.xy(1, row));
+				+ d_pm.getBaseline().getLabel() +" as the common comparator."),cc.xy(1, row));
 		row += 2;
 		EnhancedTable table = EnhancedTable.createWithSorter(d_pm.getRelativeMeasurementTableModel());
 		table.setDefaultRenderer(Distribution.class, new DistributionParameterCellRenderer());
@@ -172,7 +172,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRisk
 		builder.addSeparator("Baseline effect distributions", cc.xyw(1, row, width));
 		row += 2;
 		builder.add(AuxComponentFactory.createHtmlField("Baseline measurements: log odds or mean for " + 
-				d_pm.getBaseline().getDescription() + ". The method used to derive the assumed odds or mean are heuristic, "
+				d_pm.getBaseline().getLabel() + ". The method used to derive the assumed odds or mean are heuristic, "
 				+ "and these values should be interpreted with care."), cc.xy(1, row));
 		row += 2;
 		EnhancedTable table2 = EnhancedTable.createWithSorter(d_pm.getBaselineMeasurementTableModel());

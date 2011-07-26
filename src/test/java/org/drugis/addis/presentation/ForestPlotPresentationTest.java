@@ -138,8 +138,8 @@ public class ForestPlotPresentationTest {
 	
 	@Test
 	public void testGetDrugsLabel() {
-		assertEquals("DrugA", d_pm.getLowValueFavorsDrug().getDescription());
-		assertEquals("DrugB", d_pm.getHighValueFavorsDrug().getDescription());
+		assertEquals("DrugA", d_pm.getLowValueFavorsDrug().getLabel());
+		assertEquals("DrugB", d_pm.getHighValueFavorsDrug().getLabel());
 	}
 	
 	@Test
@@ -216,8 +216,8 @@ public class ForestPlotPresentationTest {
 	@Test
 	public void testLabelsForLowerIsBetter() {
 		d_endpoint.setDirection(Direction.LOWER_IS_BETTER);
-		assertEquals("DrugB", d_pm.getLowValueFavorsDrug().getDescription());
-		assertEquals("DrugA", d_pm.getHighValueFavorsDrug().getDescription());
+		assertEquals("DrugB", d_pm.getLowValueFavorsDrug().getLabel());
+		assertEquals("DrugA", d_pm.getHighValueFavorsDrug().getLabel());
 	}
 	
 	private static void assertRelativeEffectEqual(RelativeEffect<?> expected,

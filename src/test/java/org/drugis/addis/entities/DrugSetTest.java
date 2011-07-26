@@ -78,9 +78,9 @@ public class DrugSetTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetName() {
-		assertEquals("", d_empty.getDescription());
-		assertEquals(d_singleDrug.getName(), d_single.getDescription());
-		assertEquals("Candesartan + Viagra", d_multi.getDescription());
+		assertEquals("", d_empty.getLabel());
+		assertEquals(d_singleDrug.getName(), d_single.getLabel());
+		assertEquals("Candesartan + Viagra", d_multi.getLabel());
 		
 		// test alphabetic
 		List<Drug> more = Arrays.asList(new Drug[] {
@@ -89,7 +89,7 @@ public class DrugSetTest {
 			ExampleData.buildDrugFluoxetine(),
 			ExampleData.buildDrugViagra()
 		});
-		assertEquals("Fluoxetine + Paroxetine + Sertraline + Viagra", new DrugSet(more).getDescription());
+		assertEquals("Fluoxetine + Paroxetine + Sertraline + Viagra", new DrugSet(more).getLabel());
 	}
 	
 	@Test

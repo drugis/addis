@@ -61,7 +61,7 @@ public class BRRelativeMeasurementTableModelTest {
 	public void testGetColumnNames() {
 		List<DrugSet> drugs = getNonBaselines();
 		for (int i = 0; i < drugs.size(); ++i) {
-			assertEquals(drugs.get(i).getDescription(), d_pm.getColumnName(i + 1));
+			assertEquals(drugs.get(i).getLabel(), d_pm.getColumnName(i + 1));
 		}
 	}
 

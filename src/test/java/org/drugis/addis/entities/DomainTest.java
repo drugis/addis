@@ -52,6 +52,8 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jgoodies.binding.list.ObservableList;
+
 public class DomainTest {
 
 	private Domain d_domain;
@@ -343,21 +345,21 @@ public class DomainTest {
 		s2.getEndpoints().clear();
 		s2.getEndpoints().addAll(Study.wrapVariables(l2));
 		
-		ListHolder<Study> e1Studies = d_domain.getStudies(e1);
-		ListHolder<Study> e2Studies = d_domain.getStudies(e2);
-		ListHolder<Study> e3Studies = d_domain.getStudies(e3);
+		ObservableList<Study> e1Studies = d_domain.getStudies(e1);
+		ObservableList<Study> e2Studies = d_domain.getStudies(e2);
+		ObservableList<Study> e3Studies = d_domain.getStudies(e3);
 		
 		d_domain.addIndication(d_indication);
 		d_domain.addStudy(s1);
 		d_domain.addStudy(s2);
+
+		assertEquals(2, e1Studies.size());
+		assertEquals(1, e2Studies.size());
+		assertEquals(0, e3Studies.size());
 		
-		assertEquals(2, e1Studies.getValue().size());
-		assertEquals(1, e2Studies.getValue().size());
-		assertEquals(0, e3Studies.getValue().size());
-		
-		assertTrue(e1Studies.getValue().contains(s1));
-		assertTrue(e1Studies.getValue().contains(s2));
-		assertTrue(e2Studies.getValue().contains(s2));
+		assertTrue(e1Studies.contains(s1));
+		assertTrue(e1Studies.contains(s2));
+		assertTrue(e2Studies.contains(s2));
 	}
 	
 	@Test

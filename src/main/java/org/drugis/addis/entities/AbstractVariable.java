@@ -78,6 +78,11 @@ public abstract class AbstractVariable extends AbstractNamedEntity<Variable> imp
 	public String getDescription() {
 		return d_description;
 	}
+	
+	@Override
+	public String getLabel() {
+		return getName();
+	}
 
 	@Deprecated
 	public void setUnitOfMeasurement(String uom) {

@@ -78,8 +78,7 @@ public class StudiesKnowledge extends CategoryKnowledgeBase {
 	
 	@Override
 	public ViewBuilder getCategoryViewBuilder(AddisWindow main, Domain domain) {
-		DefaultStudyListPresentation studyListPM = new DefaultStudyListPresentation(
-				domain.getStudiesHolder());
+		DefaultStudyListPresentation studyListPM = new DefaultStudyListPresentation(domain.getStudiesModel());
 		TitledPanelBuilder view = new TitledPanelBuilder(new StudiesTablePanel(studyListPM, main), "Studies");
 		return view;
 	}

@@ -39,6 +39,7 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristics;
+import org.drugis.addis.util.FilteredObservableList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,7 +58,7 @@ public class SelectableStudyCharTableModelTest {
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
 		d_ind = d_domain.getIndications().first();
-		d_pm = new DefaultSelectableStudyListPresentation(d_domain.getStudies(d_ind));
+		d_pm = new DefaultSelectableStudyListPresentation(new FilteredObservableList<Study>(d_domain.getStudiesModel(), new DomainImpl.IndicationFilter(d_ind)));
 		d_model = new SelectableStudyCharTableModel(d_pm, new PresentationModelFactory(d_domain));
 		for (Characteristic c : StudyCharacteristics.values()) {
 			d_pm.getCharacteristicVisibleModel(c).setValue(true);
@@ -72,7 +73,7 @@ public class SelectableStudyCharTableModelTest {
 	@Test
 	public void testGetValueAt() {
 		int row = 0;
-		for (Study s : d_pm.getIncludedStudies().getValue()) {
+		for (Study s : d_pm.getIncludedStudies()) {
 			assertTrue((Boolean)d_model.getValueAt(row, 0));			
 			assertEquals(s, d_model.getValueAt(row, 1));
 			int column = 2;

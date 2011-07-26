@@ -27,11 +27,12 @@ package org.drugis.addis.presentation;
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
 
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 public interface StudyListPresentation {
 
-	public ListHolder<Study> getIncludedStudies();
+	public ObservableList<Study> getIncludedStudies();
 	
 	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c);
 }

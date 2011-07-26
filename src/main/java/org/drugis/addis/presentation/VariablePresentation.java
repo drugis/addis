@@ -44,13 +44,13 @@ import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class VariablePresentation extends PresentationModel<Variable> implements StudyListPresentation, LabeledPresentation {
-	private ListHolder<Study> d_studies;
+	private ObservableList<Study> d_studies;
 	private CharacteristicVisibleMap d_characteristicVisibleMap = new CharacteristicVisibleMap();
 	private ContinuousVariableType d_continuousVariableType = new ContinuousVariableType();
 	private RateVariableType d_rateVariableType = new RateVariableType();
 	private CategoricalVariableType d_categoricalVariableType = new CategoricalVariableType();
 
-	public VariablePresentation(Variable bean, ListHolder<Study> studies, PresentationModelFactory pmf) {
+	public VariablePresentation(Variable bean, ObservableList<Study> studies, PresentationModelFactory pmf) {
 		super(bean);
 		d_studies = studies;
 		if (bean.getVariableType() instanceof ContinuousVariableType) {
@@ -64,7 +64,7 @@ public class VariablePresentation extends PresentationModel<Variable> implements
 		}
 	}
 	
-	public ListHolder<Study> getIncludedStudies() {
+	public ObservableList<Study> getIncludedStudies() {
 		return d_studies;
 	}
 	

@@ -65,7 +65,7 @@ public class DrugTreatment extends AbstractEntity {
 	
 	@Override
 	public String toString() {
-		return getDescription();
+		return getLabel();
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class DrugTreatment extends AbstractEntity {
 		return new DrugTreatment(d_drug, d_dose == null ? null : d_dose.clone());
 	}
 
-	public String getDescription() {
+	public String getLabel() {
 		if(d_drug != null) {
 			return d_drug.getName() + (d_dose == null ? "" : " " + d_dose.toString());
 		}

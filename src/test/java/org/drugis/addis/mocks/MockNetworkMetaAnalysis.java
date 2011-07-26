@@ -61,7 +61,7 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 	private List<Treatment> toTreatments(List<DrugSet> drugs) {
 		List<Treatment> ts = new ArrayList<Treatment>();
 		for (DrugSet d : drugs) {
-			ts.add(new Treatment(d.getDescription()));
+			ts.add(new Treatment(d.getLabel()));
 		}
 		return ts;
 	}

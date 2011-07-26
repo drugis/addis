@@ -81,8 +81,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 			}			
 		});
 		
-		d_outcomeHolder.addPropertyChangeListener(
-				new SetEmptyListener(new ModifiableHolder[]{d_firstDrugHolder, d_secondDrugHolder}));
+		d_outcomeHolder.addPropertyChangeListener(new SetEmptyListener(new ModifiableHolder[]{d_firstDrugHolder, d_secondDrugHolder}));
 		
 		d_selectedDrugs = new SelectedDrugsHolder(d_firstDrugHolder, d_secondDrugHolder);
 		d_selectedDrugs.addValueChangeListener(new PropertyChangeListener() {
@@ -159,7 +158,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 			Arm left = d_selectedArms.get(s).get(d_firstDrugHolder.getValue()).getValue();
 			Arm right = d_selectedArms.get(s).get(d_secondDrugHolder.getValue()).getValue();
 			studyArms.add(new StudyArmsEntry(s, left, right));
-		}	
+		}
 		return new RandomEffectsMetaAnalysis("", (OutcomeMeasure) getOutcomeMeasureModel().getValue(), studyArms);
 	}
 	
@@ -194,7 +193,8 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 
 	public RandomEffectsMetaAnalysisPresentation getMetaAnalysisModel() {
-		d_pm = (RandomEffectsMetaAnalysisPresentation) d_pmf.getModel(buildMetaAnalysis());
+		RandomEffectsMetaAnalysis buildMetaAnalysis = buildMetaAnalysis();
+		d_pm = (RandomEffectsMetaAnalysisPresentation) d_pmf.getModel(buildMetaAnalysis);
 		return d_pm;
 	}
 

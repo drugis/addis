@@ -49,7 +49,7 @@ public class TreatmentActivityTest {
 	
 	@Test
 	public void testDescription() {
-		assertEquals("Fluoxetine 12.0 mg/day + Paroxetine 3.0-7.0 mg/day", d_orig.getDescription());
+		assertEquals("Fluoxetine 12.0 mg/day + Paroxetine 3.0-7.0 mg/day", d_orig.getLabel());
 	}
 	
 	@Test

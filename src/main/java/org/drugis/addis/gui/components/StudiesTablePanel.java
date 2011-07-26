@@ -65,7 +65,7 @@ public class StudiesTablePanel extends TablePanel {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() > 1) {
 					int row = ((EnhancedTable)e.getComponent()).rowAtPoint(e.getPoint());
-					Study s = studyListPM.getIncludedStudies().getValue().get(row);
+					Study s = studyListPM.getIncludedStudies().get(row);
 					main.leftTreeFocus(s);
 				}
 			}

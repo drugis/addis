@@ -64,7 +64,7 @@ public class BRRelativeMeasurementTableModel extends AbstractTableModel {
 		if (index == 0) {
 			return "Criterion";
 		}
-		return d_br.getNonBaselineAlternatives().get(index-1).getDescription();	
+		return d_br.getNonBaselineAlternatives().get(index-1).getLabel();	
 	}
 	
 	@Override

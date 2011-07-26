@@ -9,7 +9,7 @@ import javax.swing.event.ListDataEvent;
 
 import org.easymock.IArgumentMatcher;
 
-class ListDataEventMatcher implements IArgumentMatcher {
+public class ListDataEventMatcher implements IArgumentMatcher {
 	private ListDataEvent d_expected;
 
 	public ListDataEventMatcher(ListDataEvent expected) {

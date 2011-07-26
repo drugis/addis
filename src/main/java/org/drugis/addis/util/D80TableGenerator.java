@@ -107,7 +107,7 @@ public class D80TableGenerator {
 			return d_arm.getName();
 		}
 		public String getTreatment() {
-			return d_study.getTreatment(d_arm).getDescription();
+			return d_study.getTreatment(d_arm).getLabel();
 		}
 		public String getDuration() {
 			return getEpochDuration(d_study.findTreatmentEpoch());
@@ -147,7 +147,7 @@ public class D80TableGenerator {
 			return d_endpoint.getName();
 		}
 		public String getDescription() {
-			return d_endpoint.getDescription();
+			return d_endpoint.getLabel();
 		}
 		public String[] getMeasurements() {
 			List<String> ms = new ArrayList<String>();

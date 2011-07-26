@@ -61,9 +61,9 @@ public class IndicationTest {
 	}
 
 	@Test
-	public void testToString() {
+	public void testLabel() {
 		Indication i1 = new Indication(310497006L, "Severe depression");
-		assertEquals(i1.getCode().toString() + " " + i1.getName(), i1.toString());
+		assertEquals(i1.getCode().toString() + " " + i1.getName(), i1.getLabel());
 	}
 
 	

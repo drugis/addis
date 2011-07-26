@@ -58,7 +58,7 @@ public class DrugSet extends AbstractEntity implements Comparable<DrugSet> {
 		return d_contents;
 	}
 	
-	public String getDescription() {
+	public String getLabel() {
 		return StringUtils.join(d_contents, " + ");
 	}
 	

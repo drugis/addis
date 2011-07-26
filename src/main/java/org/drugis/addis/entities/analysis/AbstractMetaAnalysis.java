@@ -74,7 +74,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 			List<? extends Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) 
 	throws IllegalArgumentException {
 		checkDataConsistency(studies, indication, om);
-		
+
 		d_drugs = drugs;
 		d_studies = studies;
 		d_indication = indication;

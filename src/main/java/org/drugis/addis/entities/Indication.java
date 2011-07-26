@@ -65,8 +65,12 @@ public class Indication extends AbstractNamedEntity<Indication> implements Compa
 	
 	@Override
 	public String toString() {
-		return d_code.toString() + " " + getName();
+		return getLabel();
 	}
 
+	@Override
+	public String getLabel() {
+		return d_code.toString() + " " + getName();
+	}
 	
 }

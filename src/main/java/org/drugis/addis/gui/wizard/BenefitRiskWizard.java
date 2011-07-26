@@ -398,7 +398,7 @@ public class BenefitRiskWizard extends Wizard {
 				ValueHolder<Boolean> enabledModel  = d_pm.getAlternativeEnabledModel(d);
 				ValueHolder<Boolean> selectedModel = d_pm.getAlternativeSelectedModel(d);
 				
-				JCheckBox drugCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(d.getDescription(), enabledModel, selectedModel);
+				JCheckBox drugCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(d.getLabel(), enabledModel, selectedModel);
 				builder.add(drugCheckbox, cc.xy(1, row += 2));
 			}
 			

@@ -27,6 +27,8 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Characteristic;
@@ -44,9 +46,9 @@ public class StudyCharTableModel extends AbstractTableModel {
 		d_pmf = pmf;
 		for (Characteristic c : StudyCharacteristics.values()) {
 			ValueModel vm = d_pm.getCharacteristicVisibleModel(c);
-			vm.addValueChangeListener(new ValueChangeListener());
+			vm.addValueChangeListener(new CharacteristicVisibleListener());
 		}
-		d_pm.getIncludedStudies().addValueChangeListener(new ValueChangeListener());
+		d_pm.getIncludedStudies().addListDataListener(new StudyListChangeListener());
 	}
 		
 	public int getColumnCount() {
@@ -64,7 +66,7 @@ public class StudyCharTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		return d_pm.getIncludedStudies().getValue().size();
+		return d_pm.getIncludedStudies().size();
 	}
 
 	/**
@@ -79,10 +81,10 @@ public class StudyCharTableModel extends AbstractTableModel {
 		}
 		
 		if (columnIndex == 0) {
-			return d_pm.getIncludedStudies().getValue().get(rowIndex);
+			return d_pm.getIncludedStudies().get(rowIndex);
 		}
 		Characteristic c = getCharacteristic(columnIndex);
-		StudyPresentation spm = (StudyPresentation) d_pmf.getModel(d_pm.getIncludedStudies().getValue().get(rowIndex));
+		StudyPresentation spm = (StudyPresentation) d_pmf.getModel(d_pm.getIncludedStudies().get(rowIndex));
 		return spm.getCharacteristicModel(c).getValue();
 	}
 
@@ -107,10 +109,23 @@ public class StudyCharTableModel extends AbstractTableModel {
 		throw new IndexOutOfBoundsException();
 	}
 	
-	private class ValueChangeListener implements PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent evt) {
-			fireTableStructureChanged();
+	private class StudyListChangeListener implements ListDataListener {
+		public void contentsChanged(ListDataEvent e) {
+			fireTableStructureChanged(); // FIXME
+		}
+
+		public void intervalAdded(ListDataEvent e) {
+			fireTableStructureChanged(); // FIXME
+		}
+
+		public void intervalRemoved(ListDataEvent e) {
+			fireTableStructureChanged(); // FIXME
 		}		
 	}
 	
+	public class CharacteristicVisibleListener implements PropertyChangeListener {
+		public void propertyChange(PropertyChangeEvent evt) {
+			fireTableStructureChanged();
+		}
+	}	
 }

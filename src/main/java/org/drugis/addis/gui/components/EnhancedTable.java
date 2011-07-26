@@ -129,7 +129,7 @@ public class EnhancedTable extends JTable {
 			@SuppressWarnings("unchecked")
 			private String getDescription(Object value, boolean nested) {
 				if (value instanceof Entity) {
-					return ((Entity)value).getDescription();
+					return ((Entity)value).getLabel();
 				}
 				if (value instanceof Collection) {
 					return getElementDescriptions((Collection<?>) value, nested);

@@ -48,6 +48,7 @@ import org.drugis.addis.presentation.DefaultListHolder;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.util.FilteredObservableList;
 import org.drugis.addis.util.SortedSetModel;
+import org.drugis.addis.util.FilteredObservableList.Filter;
 
 import com.jgoodies.binding.beans.BeanUtils;
 import com.jgoodies.binding.list.ObservableList;
@@ -213,12 +214,21 @@ public class DomainImpl implements Domain {
 		return Collections.unmodifiableSortedSet(d_drugs.getSet());
 	}
 
-	public ListHolder<Study> getStudies(Variable e) 
+	public ObservableList<Study> getStudies(Variable e) 
 	throws NullPointerException {
 		if (e == null) {
-			throw new NullPointerException("Endpoint must not be null");
+			throw new NullPointerException("Variable must not be null");
 		}
-		return new StudiesForEntityListHolder(e);
+		if (e instanceof Endpoint) {
+			return new FilteredObservableList<Study>(getStudiesModel(), new EndpointFilter((Endpoint)e));
+		}
+		if (e instanceof AdverseEvent) {
+			return new FilteredObservableList<Study>(getStudiesModel(), new AdverseEventFilter((AdverseEvent)e));
+		}
+		if (e instanceof PopulationCharacteristic) {
+			return new FilteredObservableList<Study>(getStudiesModel(), new PopulationCharacteristicFilter((PopulationCharacteristic)e));
+		}
+		throw new RuntimeException(e.getClass() + " not supported");
 	}
 	
 	public ListHolder<Study> getStudies(Drug d)
@@ -588,5 +598,50 @@ public class DomainImpl implements Domain {
 	@Override
 	public SortedSetModel<BenefitRiskAnalysis<?>> getBenefitRiskAnalysesModel() {
 		return d_benefitRiskAnalyses;
+	}
+	
+	public static class EndpointFilter implements Filter<Study> {
+		private Endpoint d_endpoint;
+
+		public EndpointFilter(Endpoint e) {
+			d_endpoint = e;
+		}
+
+		public boolean accept(Study s) {
+			return Study.extractVariables(s.getEndpoints()).contains(d_endpoint);
+		}
+	}
+	public static class AdverseEventFilter implements Filter<Study> {
+		private AdverseEvent d_adverseEvent;
+
+		public AdverseEventFilter(AdverseEvent ade) {
+			d_adverseEvent = ade;
+		}
+
+		public boolean accept(Study s) {
+			return Study.extractVariables(s.getAdverseEvents()).contains(d_adverseEvent);
+		}
+	}
+	public static class PopulationCharacteristicFilter implements Filter<Study> {
+		private PopulationCharacteristic d_popChar;
+
+		public PopulationCharacteristicFilter(PopulationCharacteristic e) {
+			d_popChar = e;
+		}
+
+		public boolean accept(Study s) {
+			return Study.extractVariables(s.getPopulationChars()).contains(d_popChar);
+		}
+	}
+	public static class IndicationFilter implements Filter<Study> {
+		private final Indication d_indication;
+
+		public IndicationFilter(Indication indication) {
+			d_indication = indication;
+		}
+
+		public boolean accept(Study s) {
+			return s.getIndication().equals(d_indication);
+		}
 	}
 }

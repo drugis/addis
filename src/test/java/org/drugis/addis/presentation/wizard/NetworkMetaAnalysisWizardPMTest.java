@@ -24,7 +24,7 @@
 
 package org.drugis.addis.presentation.wizard;
 
-import static org.easymock.EasyMock.verify;
+import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -35,6 +35,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
@@ -50,6 +53,7 @@ import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyListPresentation;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.util.ListDataEventMatcher;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -107,17 +111,18 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		ArrayList<Study> newList = new ArrayList<Study>();
 		newList.addAll(d_pm.getStudiesEndpointAndIndication());
-		assertEquals(newList, listModel.getIncludedStudies().getValue());
+		assertEquals(newList, listModel.getIncludedStudies());
 
 		ArrayList<DrugSet> selectionList = new ArrayList<DrugSet>();
 		selectionList.add(d_sertrSet);
 		selectionList.add(d_paroxSet);
 		
-		ArrayList<Study> expected = new ArrayList<Study>();
-		PropertyChangeListener mock = JUnitUtil.mockListener(listModel.getIncludedStudies(), "value", newList, expected);
-		listModel.getIncludedStudies().addValueChangeListener(mock);
-		d_pm.getSelectedDrugsModel().setValue(selectionList);
+		ListDataListener mock = createStrictMock(ListDataListener.class);
+		mock.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(listModel.getIncludedStudies(), ListDataEvent.INTERVAL_REMOVED, 0, newList.size() - 1)));
+		replay(mock);
 		
+		listModel.getIncludedStudies().addListDataListener(mock);
+		d_pm.getSelectedDrugsModel().setValue(selectionList);
 		verify(mock);
 	}
 	
@@ -135,14 +140,13 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		d_pm.getSelectedDrugsModel().setValue(new ArrayList<DrugSet>(selectionList));
 		
-		PropertyChangeListener mock = JUnitUtil.mockListener(listModel.getIncludedStudies(), 
-				"value", new ArrayList<Study>(), allStudiesList);
-		listModel.getIncludedStudies().addValueChangeListener(mock);
+		ListDataListener mock = createStrictMock(ListDataListener.class);
+		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(listModel.getIncludedStudies(), ListDataEvent.INTERVAL_ADDED, 0, allStudiesList.size() - 1)));
+		replay(mock);
 
+		listModel.getIncludedStudies().addListDataListener(mock);
 		selectionList.add(d_fluoxSet);	
-		
 		d_pm.getSelectedDrugsModel().setValue(selectionList);		
-		
 		verify(mock);
 	}
 	

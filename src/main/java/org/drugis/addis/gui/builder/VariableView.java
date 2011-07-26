@@ -125,7 +125,7 @@ public class VariableView implements ViewBuilder {
 
 	private JComponent getStudiesComp() {
 		JComponent studiesComp = null;
-		if(d_model.getIncludedStudies().getValue().isEmpty()) {
+		if(d_model.getIncludedStudies().isEmpty()) {
 			studiesComp = new JLabel("No studies found.");
 		} else {
 			studiesComp = new StudiesTablePanel(d_model, d_frame);

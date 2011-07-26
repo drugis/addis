@@ -432,7 +432,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(d_fluoxSet);
 		d_wizard.getSecondDrugModel().setValue(d_paroxSet);
 		
-		assertEquals(expected, d_wizard.getStudyListModel().getIncludedStudies().getValue());
+		assertEquals(expected, d_wizard.getStudyListModel().getIncludedStudies());
 	}
 	
 	@Test
@@ -453,7 +453,7 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		// sanity checks
 		assertNull(unsetDrugModel.getValue());
-		assertTrue(d_wizard.getStudyListModel().getIncludedStudies().getValue().isEmpty());
+		assertTrue(d_wizard.getStudyListModel().getIncludedStudies().isEmpty());
 	}
 	
 	@Test
@@ -476,7 +476,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(d_fluoxSet);
 		d_wizard.getSecondDrugModel().setValue(d_paroxSet);
 		
-		assertEquals(d_wizard.getStudyListModel().getIncludedStudies().getValue(), d_wizard.getStudyListModel().getSelectedStudiesModel().getValue());
+		assertEquals(d_wizard.getStudyListModel().getIncludedStudies(), d_wizard.getStudyListModel().getSelectedStudiesModel().getValue());
 	}
 	
 	@Test
@@ -537,15 +537,14 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(d_fluoxSet);
 		d_wizard.getSecondDrugModel().setValue(d_paroxSet);
 		
-		List<Study> studies =
-			new ArrayList<Study>(d_wizard.getStudyListModel().getSelectedStudiesModel().getValue());
-		assertAllAndOnly(studies, d_wizard.getMetaAnalysisModel().getIncludedStudies().getValue());
+		List<Study> studies = new ArrayList<Study>(d_wizard.getStudyListModel().getSelectedStudiesModel().getValue());
+		assertAllAndOnly(studies, d_wizard.getMetaAnalysisModel().getIncludedStudies());
 		
 		d_wizard.getStudyListModel().getSelectedStudyBooleanModel(
 				ExampleData.buildStudyChouinard()).setValue(false);
 		studies.remove(ExampleData.buildStudyChouinard());
 		
-		assertAllAndOnly(studies, d_wizard.getMetaAnalysisModel().getIncludedStudies().getValue());
+		assertAllAndOnly(studies, d_wizard.getMetaAnalysisModel().getIncludedStudies());
 	}
 	
 	@Test

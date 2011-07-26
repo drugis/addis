@@ -165,7 +165,7 @@ public class SMAAEntityFactory<AltType extends Entity> {
 	Alternative getAlternative(Study study, Arm arm) {
 		if(d_entityAlternativeMap.containsKey(arm))
 			return d_entityAlternativeMap.get(arm);
-		Alternative a = new Alternative(study.getTreatment(arm).getDescription());
+		Alternative a = new Alternative(study.getTreatment(arm).getLabel());
 		d_entityAlternativeMap.put((AltType) arm, a);
 		return a;
 	}
@@ -175,7 +175,7 @@ public class SMAAEntityFactory<AltType extends Entity> {
 		if(d_entityAlternativeMap.containsKey(drugs))
 			return d_entityAlternativeMap.get(drugs);
 
-		Alternative a = new Alternative(drugs.getDescription());
+		Alternative a = new Alternative(drugs.getLabel());
 		d_entityAlternativeMap.put((AltType)drugs, a);
 		return a;
 	}

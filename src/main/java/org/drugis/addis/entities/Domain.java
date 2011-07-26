@@ -192,7 +192,7 @@ public interface Domain {
 	 * Get studies by Variable (Endpoint, AdverseEvent or PopulationCharacteristic).
 	 * @return An unmodifiable sorted set of studies. Never null.
 	 */
-	public ListHolder<Study> getStudies(Variable e);
+	public ObservableList<Study> getStudies(Variable e);
 	
 	/**
 	 * Get studies by Drug.

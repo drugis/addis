@@ -210,7 +210,7 @@ public class StudyGraphModelTest {
 		assertEquals(3, d_pm.vertexSet().size());
 		assertTrue(d_pm.edgeSet().isEmpty());
 		
-		studyListHolder.setValue(d_domain.getStudies(ExampleData.buildEndpointHamd()).getValue());
+		studyListHolder.setValue(d_domain.getStudies(ExampleData.buildEndpointHamd()));
 		assertEquals(3, d_pm.vertexSet().size());
 		assertEquals(2, d_pm.edgeSet().size());
 	}

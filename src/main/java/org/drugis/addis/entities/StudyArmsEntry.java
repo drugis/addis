@@ -68,7 +68,6 @@ public class StudyArmsEntry implements Comparable<StudyArmsEntry> {
 		for (StudyArmsEntry curStudyArmEntry : studyArms) {
 			studyList.add(curStudyArmEntry.getStudy());
 		}
-		
 		return studyList;
 	}
 

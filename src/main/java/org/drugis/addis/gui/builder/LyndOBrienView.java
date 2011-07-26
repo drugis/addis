@@ -104,11 +104,11 @@ public class LyndOBrienView implements ViewBuilder {
 			Study s = ((StudyBenefitRiskAnalysis) d_BRpm.getBean()).getStudy();
 			Arm baseArm = (Arm)baseline;
 			Arm altArm = (Arm)alternative;
-			baselineName = s.getTreatment(baseArm).getDescription(); // FIXME: use TreatmentActivity?
-			alternativeName = s.getTreatment(altArm).getDescription();
+			baselineName = s.getTreatment(baseArm).getLabel(); // FIXME: use TreatmentActivity?
+			alternativeName = s.getTreatment(altArm).getLabel();
 		} else if (d_BRpm.getBean() instanceof MetaBenefitRiskAnalysis) {
-			baselineName = ((DrugSet)baseline).getDescription();
-			alternativeName = ((DrugSet)alternative).getDescription();
+			baselineName = ((DrugSet)baseline).getLabel();
+			alternativeName = ((DrugSet)alternative).getLabel();
 		}
 		
 		builder.add(AuxComponentFactory.createHtmlField("Results of Monte Carlo simulations based on the difference-distributions of" +

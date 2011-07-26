@@ -84,6 +84,6 @@ public class ListPanel extends JPanel {
 	}
 	
 	private String makeListItem(Object obj) {
-		return "<li>" + (obj instanceof Entity ? ((Entity)obj).getDescription() : obj.toString()) + "</li>";
+		return "<li>" + (obj instanceof Entity ? ((Entity)obj).getLabel() : obj.toString()) + "</li>";
 	}
 }

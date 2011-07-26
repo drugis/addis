@@ -24,15 +24,14 @@
 
 package org.drugis.addis.presentation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.VariableType;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 
 import com.jgoodies.binding.PresentationModel;
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 
@@ -46,23 +45,8 @@ implements StudyListPresentation {
 	public AbstractMetaAnalysisPresentation(T bean, PresentationModelFactory mgr) {
 		super(bean);
 		d_mgr = mgr;
-		d_studyModel = new DefaultStudyListPresentation(new MyListHolder());
+		d_studyModel = new DefaultStudyListPresentation(new ArrayListModel<Study>(bean.getIncludedStudies()));
 	}
-	
-	
-	protected class MyListHolder extends AbstractListHolder<Study> {
-		@Override
-		public List<Study> getValue() {
-			List<Study> studies = new ArrayList<Study>(getBean().getIncludedStudies());
-			for (Study s : studies) {
-				if (!(s instanceof Study)) {
-					studies.remove(s);
-				}
-			}
-			return studies;
-		}		
-	}
-
 
 	public LabeledPresentation getIndicationModel() {
 		return d_mgr.getLabeledModel(getBean().getIndication());
@@ -79,7 +63,7 @@ implements StudyListPresentation {
 	}
 
 
-	public ListHolder<Study> getIncludedStudies() {
+	public ObservableList<Study> getIncludedStudies() {
 		return d_studyModel.getIncludedStudies();
 	}
 

@@ -60,7 +60,7 @@ public class BenefitRiskMeasurementTableModelTest {
 	@Test
 	public void testGetDrugNames() {
 		for (int i = 0; i < d_brAnalysis.getDrugs().size(); ++i)
-			assertEquals(d_brAnalysis.getDrugs().get(i).getDescription(), d_pm.getValueAt(i, 0));
+			assertEquals(d_brAnalysis.getDrugs().get(i).getLabel(), d_pm.getValueAt(i, 0));
 	}
 	
 	@Test

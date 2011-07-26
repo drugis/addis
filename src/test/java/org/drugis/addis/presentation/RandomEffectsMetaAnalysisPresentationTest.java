@@ -86,7 +86,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		List<Study> expected = new ArrayList<Study>();
 		expected.add(ExampleData.buildStudyChouinard());
 
-		JUnitUtil.assertAllAndOnly(expected, pres.getIncludedStudies().getValue());
+		JUnitUtil.assertAllAndOnly(expected, pres.getIncludedStudies());
 	}
 	
 	@Test

@@ -62,7 +62,7 @@ public class SelectableStudyCharTableModel extends StudyCharTableModel {
 	}
 
 	private ModifiableHolder<Boolean> getVisibleModelByRow(int rowIndex) {
-		return ((SelectableStudyListPresentation)d_pm).getSelectedStudyBooleanModel(d_pm.getIncludedStudies().getValue().get(rowIndex));
+		return ((SelectableStudyListPresentation)d_pm).getSelectedStudyBooleanModel(d_pm.getIncludedStudies().get(rowIndex));
 	}
 	
 	@Override

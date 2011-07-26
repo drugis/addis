@@ -55,10 +55,14 @@ public class FilteredObservableList<E> extends AbstractList<E> implements Observ
 	public void setFilter(Filter<E> filter) {
 		d_filter = filter;
 		int oldSize = size();
-		d_indices.clear();
-		d_listenerManager.fireIntervalRemoved(this, 0, oldSize - 1);
+		if(!isEmpty()) {
+			d_indices.clear();
+			d_listenerManager.fireIntervalRemoved(this, 0, oldSize - 1);
+		}
 		initializeIndices();
-		d_listenerManager.fireIntervalAdded(this, 0, size() - 1);
+		if(!isEmpty()) {
+			d_listenerManager.fireIntervalAdded(this, 0, size() - 1);
+		}
 	}
 
 	protected <F> int findFirstIndex(List<F> list, Filter<F> filter) {

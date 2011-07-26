@@ -46,6 +46,7 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class StudyCharTableModelTest {
@@ -63,7 +64,7 @@ public class StudyCharTableModelTest {
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
 		d_ind = d_domain.getIndications().first();
-		d_pm = new IndicationPresentation(d_ind,d_domain.getStudies(d_ind));
+		d_pm = new IndicationPresentation(d_ind, d_domain.getStudiesModel());
 		d_pmf = new PresentationModelFactory(d_domain);
 		d_model = new StudyCharTableModel(d_pm, d_pmf);
 		
@@ -81,13 +82,13 @@ public class StudyCharTableModelTest {
 	
 	@Test
 	public void testGetRowCount() {
-		assertEquals(d_pm.getIncludedStudies().getValue().size(), d_model.getRowCount());
+		assertEquals(d_pm.getIncludedStudies().size(), d_model.getRowCount());
 	}
 		
 	@Test
 	public void testGetValueAt() {
 		int row = 0;
-		for (Study s : d_pm.getIncludedStudies().getValue()) {
+		for (Study s : d_pm.getIncludedStudies()) {
 			assertEquals(s, d_model.getValueAt(row, 0));
 			int column = 1;
 			for (Characteristic c : StudyCharacteristics.values()) {
@@ -103,7 +104,7 @@ public class StudyCharTableModelTest {
 	public void testGetValueAtColumnRemoved() {
 		getFirstCharValueModel().setValue(false);
 		int row = 0;
-		for (Study s : d_pm.getIncludedStudies().getValue()) {
+		for (Study s : d_pm.getIncludedStudies()) {
 			assertEquals(s, d_model.getValueAt(row, 0));
 			int column = 0;
 			for (Characteristic c : StudyCharacteristics.values()) {
@@ -154,27 +155,15 @@ public class StudyCharTableModelTest {
 		getFirstCharValueModel().setValue(false);
 		testGetColumnNameFirstMissingHelper();
 	}
-	
-	//It is not possible to change the contents of Valuemodel which contains the set of studies. 
-	@SuppressWarnings("serial")
+
 	@Test
 	public void testChangeContentsFiresTableChanged() {
-
-		AbstractListHolder<Study> list = new AbstractListHolder<Study>() {
-			@Override
-			public void setValue(Object newValue) {
-				fireValueChange(null, newValue);
-			}
-			@Override
-			public List<Study> getValue() {
-				return new ArrayList<Study>();
-			}
-		};
+		ArrayListModel<Study> list = new ArrayListModel<Study>();
 		DefaultStudyListPresentation model = new DefaultStudyListPresentation(list);
 		TableModel tableModel = new StudyCharTableModel(model, new PresentationModelFactory(d_domain));
 		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(tableModel ));
 		tableModel.addTableModelListener(mock);
-		list.setValue(new ArrayList<Study>());
+		list.add(new Study());
 		verify(mock);
 	}
 

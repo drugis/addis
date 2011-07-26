@@ -128,8 +128,8 @@ public class ForestPlot extends JComponent {
 		}
 		
 		drawVCentrString(g2d, d_pm.getRelativeEffectAt(0).getName(), d_bars.size() + 1, originX, Align.CENTER);
-		drawVCentrString(g2d, "Favours " + d_pm.getLowValueFavorsDrug().getDescription(), d_bars.size() + 2, originX - HORPAD, Align.RIGHT);
-		drawVCentrString(g2d, "Favours " + d_pm.getHighValueFavorsDrug().getDescription(), d_bars.size() + 2, originX + HORPAD, Align.LEFT);
+		drawVCentrString(g2d, "Favours " + d_pm.getLowValueFavorsDrug().getLabel(), d_bars.size() + 2, originX - HORPAD, Align.RIGHT);
+		drawVCentrString(g2d, "Favours " + d_pm.getHighValueFavorsDrug().getLabel(), d_bars.size() + 2, originX + HORPAD, Align.LEFT);
 		
 		// Draw the Heterogeneity
 		if (d_pm.isMetaAnalysis()) {

@@ -82,7 +82,7 @@ public class GUIFactory {
 
 	public static JComponent buildStudyPanel(StudyListPresentation studies, AddisWindow parent) {
 		JComponent studiesComp = null;
-		if(studies.getIncludedStudies().getValue().isEmpty()) {
+		if(studies.getIncludedStudies().isEmpty()) {
 			studiesComp = new JLabel("No studies found.");
 		} else {
 			studiesComp = new StudiesTablePanel(studies, parent); 
