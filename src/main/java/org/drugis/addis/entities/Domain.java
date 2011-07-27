@@ -198,30 +198,20 @@ public interface Domain {
 	 * Get studies by Drug.
 	 * @return An unmodifiable sorted set of studies. Never null.
 	 */
-	public ListHolder<Study> getStudies(Drug d);
+	public ObservableList<Study> getStudies(Drug d);
 	
 	/**
 	 * Get studies by Indication.
 	 * @return An unmodifiable sorted set of studies. Never null.
 	 */
-	public ListHolder<Study> getStudies(Indication i);
+	public ObservableList<Study> getStudies(Indication i);
 	
 	/** 
 	 * Get all studies
 	 * @return A ListHolder of studies.
 	 */
-	public ListHolder<Study> getStudiesHolder();
+	public ObservableList<Study> getStudiesHolder();
 	
-	/**
-	 * Add a listener to the domain object.
-	 */
-	public void addListener(DomainListener listener);
-	
-	/**
-	 * Remove a listener from the domain object.
-	 */
-	public void removeListener(DomainListener listener);
-
 	/**
 	 * Return whether any entities depend on this entity.
 	 * @param entity

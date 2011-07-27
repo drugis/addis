@@ -37,13 +37,15 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
-import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.DefaultListHolder;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.util.FilteredObservableList;
@@ -54,6 +56,7 @@ import com.jgoodies.binding.beans.BeanUtils;
 import com.jgoodies.binding.list.ObservableList;
 
 public class DomainImpl implements Domain {
+
 	private static final EntityCategory CATEGORY_INDICATIONS =
 		new EntityCategory("indications", Indication.class);
 	private static final EntityCategory CATEGORY_DRUGS =
@@ -87,7 +90,6 @@ public class DomainImpl implements Domain {
 			CATEGORY_BENEFIT_RISK_ANALYSES
 		});
 	
-	private List<DomainListener> d_listeners = new ArrayList<DomainListener>();
 	private PropertyChangeListener d_studyListener = new StudyChangeListener();
 	private SortedSetModel<Endpoint> d_endpoints = new SortedSetModel<Endpoint>();
 	private SortedSetModel<Study> d_studies = new SortedSetModel<Study>();
@@ -116,7 +118,6 @@ public class DomainImpl implements Domain {
 	
 	private class StudyChangeListener implements PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
-			fireDomainChanged(DomainEvent.Type.STUDIES);
 		}
 	}
 	
@@ -136,26 +137,10 @@ public class DomainImpl implements Domain {
 		}
 		
 		d_endpoints.add(e);
-
-		fireDomainChanged(DomainEvent.Type.ENDPOINTS);
 	}
 
 	public SortedSet<Endpoint> getEndpoints() {
 		return Collections.unmodifiableSortedSet(d_endpoints.getSet());
-	}
-
-	public void addListener(DomainListener listener) {
-		if (!d_listeners.contains(listener)) {
-			d_listeners.add(listener);
-		}
-	}
-
-	public void removeListener(DomainListener listener) {
-		d_listeners.remove(listener);
-	}
-	
-	public List<DomainListener> getListeners() {
-		return Collections.unmodifiableList(d_listeners);
 	}
 
 	public void addStudy(Study s) throws NullPointerException {
@@ -167,9 +152,7 @@ public class DomainImpl implements Domain {
 			throw new IllegalArgumentException("indication of this study not in the domain");
 		}
 		d_studies.add(s);
-		s.addPropertyChangeListener(d_studyListener);		
-		
-		fireDomainChanged(DomainEvent.Type.STUDIES);
+		s.addPropertyChangeListener(d_studyListener);
 	}
 	
 	public void addMetaAnalysis(MetaAnalysis ma) throws 
@@ -193,8 +176,6 @@ public class DomainImpl implements Domain {
 		}
 		
 		d_metaAnalyses.add(ma);
-	
-		fireDomainChanged(DomainEvent.Type.ANALYSES);
 	}
 	
 	public SortedSet<Study> getStudies() {
@@ -206,8 +187,6 @@ public class DomainImpl implements Domain {
 			throw new NullPointerException("Drug may not be null");
 		}
 		d_drugs.add(d);
-	
-		fireDomainChanged(DomainEvent.Type.DRUGS);
 	}
 
 	public SortedSet<Drug> getDrugs() {
@@ -231,24 +210,24 @@ public class DomainImpl implements Domain {
 		throw new RuntimeException(e.getClass() + " not supported");
 	}
 	
-	public ListHolder<Study> getStudies(Drug d)
+	public ObservableList<Study> getStudies(Drug d)
 	throws NullPointerException {
 		if (d == null) {
 			throw new NullPointerException("Drug must not be null");
 		}
-		return new StudiesForEntityListHolder(d);
+		return new FilteredObservableList<Study>(getStudiesModel(), new DrugFilter(new DrugSet(d)));
 	}
 	
-	public ListHolder<Study> getStudies(Indication i)
+	public ObservableList<Study> getStudies(Indication i)
 	throws NullPointerException {
 		if (i == null) {
 			throw new NullPointerException("Indication must not be null");
 		}
-		return new StudiesForEntityListHolder(i);
+		return new FilteredObservableList<Study>(getStudiesModel(), new IndicationFilter(i));
 	}
 	
-	public ListHolder<Study> getStudiesHolder() {
-		return new StudiesForEntityListHolder(null);
+	public ObservableList<Study> getStudiesHolder() {
+		return getStudiesModel();
 	}
 
 	@Override
@@ -324,19 +303,16 @@ public class DomainImpl implements Domain {
 	public void deletePopulationCharacteristic(PopulationCharacteristic v) throws DependentEntitiesException {
 		checkDependents(v);
 		d_populationCharacteristics.remove(v);
-		fireDomainChanged(DomainEvent.Type.VARIABLES);
 	}
 
 	public void deleteStudy(Study s) throws DependentEntitiesException {
 		checkDependents(s);
 		d_studies.remove(s);
-		fireDomainChanged(DomainEvent.Type.STUDIES);
 	}
 
 	public void deleteDrug(Drug d) throws DependentEntitiesException {
 		checkDependents(d);
 		d_drugs.remove(d);
-		fireDomainChanged(DomainEvent.Type.DRUGS);
 	}
 
 	private void checkDependents(Entity d) throws DependentEntitiesException {
@@ -348,14 +324,12 @@ public class DomainImpl implements Domain {
 
 	public void deleteEndpoint(Endpoint e) throws DependentEntitiesException {
 		checkDependents(e);
-		d_endpoints.remove(e);
-		fireDomainChanged(DomainEvent.Type.ENDPOINTS);		
+		d_endpoints.remove(e);		
 	}
 
 	public void deleteIndication(Indication i) throws DependentEntitiesException {
 		checkDependents(i);
 		d_indications.remove(i);
-		fireDomainChanged(DomainEvent.Type.INDICATIONS);
 	}
 
 	
@@ -364,13 +338,6 @@ public class DomainImpl implements Domain {
 			throw new NullPointerException();
 		}
 		d_indications.add(i);
-		fireDomainChanged(DomainEvent.Type.INDICATIONS);
-	}
-
-	private void fireDomainChanged(DomainEvent.Type type) {
-		for (DomainListener l : new ArrayList<DomainListener>(d_listeners)) {
-			l.domainChanged(new DomainEvent(type));
-		}
 	}
 
 	public SortedSet<Indication> getIndications() {
@@ -385,59 +352,18 @@ public class DomainImpl implements Domain {
 			throws DependentEntitiesException {
 		checkDependents(ma);
 		d_metaAnalyses.remove(ma);
-		fireDomainChanged(DomainEvent.Type.ANALYSES);
 	}
 
 	public void deleteMetaBenefitRiskAnalysis(MetaBenefitRiskAnalysis bra)
 			throws DependentEntitiesException {
 		checkDependents(bra);
 		d_benefitRiskAnalyses.remove(bra);
-		fireDomainChanged(DomainEvent.Type.BENEFITRISK_ANALYSIS);
 	}
 
 	public void deleteStudyBenefitRiskAnalysis(StudyBenefitRiskAnalysis bra)
 	throws DependentEntitiesException {
 		checkDependents(bra);
 		d_benefitRiskAnalyses.remove(bra);
-		fireDomainChanged(DomainEvent.Type.BENEFITRISK_ANALYSIS);
-	}
-
-	@SuppressWarnings("serial")
-	private class StudiesForEntityListHolder extends AbstractListHolder<Study> implements DomainListener {
-		
-		private Entity d_holderEntity;
-		private List<Study> d_holderStudies;
-		
-		public StudiesForEntityListHolder(Entity i) {
-			d_holderEntity = i;
-			updateHolderStudies(i);
-			addListener(this);
-		}
-		
-		private void updateHolderStudies(Entity i) {
-			List<Study> oldStudies = d_holderStudies;
-			d_holderStudies = new ArrayList<Study>();
-			if (i == null) {
-				d_holderStudies.addAll(d_studies.getSet());
-			} else {
-				for (Study s : d_studies.getSet()) {
-					if (s.getDependencies().contains(i)) {
-						d_holderStudies.add(s);
-					}
-				}
-			}
-			firePropertyChange("value", oldStudies, d_holderStudies);
-		}
-		
-		@Override
-		public List<Study> getValue() {
-			return d_holderStudies;
-		}
-
-		public void domainChanged(DomainEvent evt) {
-			// FIXME: make this more intelligent, to update only when needed						
-			updateHolderStudies(d_holderEntity);			
-		}
 	}
 
 	public SortedSet<PopulationCharacteristic> getPopulationCharacteristics() {
@@ -449,8 +375,6 @@ public class DomainImpl implements Domain {
 			throw new NullPointerException("Categorical Variable may not be null");
 		}
 		d_populationCharacteristics.add(c);
-	
-		fireDomainChanged(DomainEvent.Type.VARIABLES);
 	}
 	
 	public void addAdverseEvent(AdverseEvent ade) {
@@ -458,14 +382,12 @@ public class DomainImpl implements Domain {
 			throw new NullPointerException();
 		}
 		d_adverseEvents.add(ade);
-		fireDomainChanged(DomainEvent.Type.ADVERSE_EVENTS);
 	}
 
 	public void deleteAdverseEvent(OutcomeMeasure ade)
 			throws DependentEntitiesException {
 		checkDependents(ade);
-		d_adverseEvents.remove(ade);
-		fireDomainChanged(DomainEvent.Type.ADVERSE_EVENTS);		
+		d_adverseEvents.remove(ade);		
 	}
 
 	public SortedSet<AdverseEvent> getAdverseEvents() {
@@ -477,7 +399,6 @@ public class DomainImpl implements Domain {
 			throw new NullPointerException();
 		}
 		d_benefitRiskAnalyses.add(brAnalysis);
-		fireDomainChanged(DomainEvent.Type.BENEFITRISK_ANALYSIS);
 	}
 
 	public SortedSet<BenefitRiskAnalysis<?>> getBenefitRiskAnalyses() {
@@ -521,10 +442,17 @@ public class DomainImpl implements Domain {
 	
 	public ListHolder<? extends Entity> getCategoryContentsModel(
 			final EntityCategory node) {
-		final DefaultListHolder<? extends Entity> listHolder = new DefaultListHolder<Entity>(new ArrayList<Entity>(getCategoryContents(node)));
-		addListener(new DomainListener() {
-			public void domainChanged(DomainEvent evt) {
-				listHolder.setValue(new ArrayList<Entity>(getCategoryContents(node)));
+		final ObservableList<? extends Entity> categoryContents = getCategoryContents(node);
+		final DefaultListHolder<? extends Entity> listHolder = new DefaultListHolder<Entity>(new ArrayList<Entity>(categoryContents));
+		categoryContents.addListDataListener(new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+				listHolder.setValue(new ArrayList<Entity>(categoryContents));
+			}
+			public void intervalAdded(ListDataEvent e) {
+				listHolder.setValue(new ArrayList<Entity>(categoryContents));
+			}
+			public void contentsChanged(ListDataEvent e) {
+				listHolder.setValue(new ArrayList<Entity>(categoryContents));
 			}
 		});
 		return listHolder;
@@ -642,6 +570,17 @@ public class DomainImpl implements Domain {
 
 		public boolean accept(Study s) {
 			return s.getIndication().equals(d_indication);
+		}
+	}
+	public class DrugFilter implements Filter<Study> {
+		private final DrugSet d_drugSet;
+		
+		public DrugFilter(DrugSet ds) {
+			d_drugSet = ds;
+		}
+		
+		public boolean accept(Study s) {
+			return s.getDrugs().contains(d_drugSet);
 		}
 	}
 }

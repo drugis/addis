@@ -93,7 +93,7 @@ public class BenefitRiskWizardPMTest {
 			for (MetaAnalysis analysis : d_domain.getMetaAnalyses()) {
 				expected.add(analysis.getOutcomeMeasure());
 			}*/
-			for (Study s : d_domain.getStudies(indication).getValue()) 
+			for (Study s : d_domain.getStudies(indication)) 
 				expected.addAll(s.getOutcomeMeasures());
 			d_pm.getIndicationModel().setValue(indication);
 			assertAllAndOnly(expected, d_pm.getOutcomesListModel().getValue());

@@ -60,13 +60,13 @@ public class OutcomeListHolder extends AbstractListHolder<OutcomeMeasure> implem
 		SortedSet<OutcomeMeasure> endpoints = new TreeSet<OutcomeMeasure>(new OutcomeComparator());
 		SortedSet<OutcomeMeasure> ades = new TreeSet<OutcomeMeasure>(new OutcomeComparator());
 		if (this.d_indication.getValue() != null) {
-			for (Study s : d_domain.getStudies(this.d_indication.getValue()).getValue()) {
+			for (Study s : d_domain.getStudies(this.d_indication.getValue())) {
 				ArrayList<OutcomeMeasure> tempEndpoints = new ArrayList<OutcomeMeasure>();
 				tempEndpoints.addAll(Study.extractVariables(s.getEndpoints()));
 				tempEndpoints.removeAll(endpoints);
 				endpoints.addAll(tempEndpoints);
 			}			
-			for (Study s : d_domain.getStudies(this.d_indication.getValue()).getValue()) {
+			for (Study s : d_domain.getStudies(this.d_indication.getValue())) {
 				ArrayList<OutcomeMeasure> tempAdes = new ArrayList<OutcomeMeasure>();
 				tempAdes.addAll(Study.extractVariables(s.getAdverseEvents()));
 				tempAdes.removeAll(ades);

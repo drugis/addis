@@ -48,6 +48,7 @@ import javax.swing.UIManager;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainManager;
+import org.drugis.addis.presentation.DomainChangedModel;
 import org.drugis.addis.util.JAXBHandler;
 import org.drugis.addis.util.JAXBHandler.XmlFormatType;
 import org.drugis.common.ImageLoader;

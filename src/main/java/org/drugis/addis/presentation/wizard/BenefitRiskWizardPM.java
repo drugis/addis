@@ -547,7 +547,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 			if(d_indicationHolder.getValue() == null) {
 				return new ArrayList<Study>();
 			} else {
-				return new ArrayList<Study>(d_domain.getStudies(d_indicationHolder.getValue()).getValue());
+				return d_domain.getStudies(d_indicationHolder.getValue());
 			}
 		}
 

@@ -25,9 +25,6 @@
 package org.drugis.addis.entities;
 
 import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -268,63 +265,6 @@ public class DomainTest {
 	}
 	
 	@Test
-	public void testAddEndpointListener() {
-		DomainListener mockListener = createMock(DomainListener.class);
-		mockListener.domainChanged(new DomainEvent(DomainEvent.Type.ENDPOINTS));		
-		replay(mockListener);
-		
-		d_domain.addListener(mockListener);
-		d_domain.addEndpoint(new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE)));
-		verify(mockListener);
-	}
-	
-	@Test
-	public void testAddStudyListener() {
-		DomainListener mockListener = createMock(DomainListener.class);
-		mockListener.domainChanged(new DomainEvent(DomainEvent.Type.STUDIES));		
-		replay(mockListener);
-		
-		d_domain.addIndication(d_indication);
-		d_domain.addListener(mockListener);
-		d_domain.addStudy(new Study("X", d_indication));
-		verify(mockListener);
-	}
-	
-	@Test
-	public void testAddAnalysisListener() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
-		ExampleData.initDefaultData(d_domain);
-		DomainListener mockListener = createMock(DomainListener.class);
-		mockListener.domainChanged(new DomainEvent(DomainEvent.Type.ANALYSES));
-		d_domain.addListener(mockListener);
-		
-		replay(mockListener);
-		d_domain.addMetaAnalysis(generateMetaAnalysis());
-		verify(mockListener);		
-	}
-	
-	@Test
-	public void testAddDrugListener() {
-		DomainListener mockListener = createMock(DomainListener.class);
-		mockListener.domainChanged(new DomainEvent(DomainEvent.Type.DRUGS));		
-		replay(mockListener);
-		
-		d_domain.addListener(mockListener);
-		d_domain.addDrug(new Drug("name", "atc"));
-		verify(mockListener);
-	}
-	
-	@Test
-	public void testAddIndicationListener() {
-		DomainListener mockListener = createMock(DomainListener.class);
-		mockListener.domainChanged(new DomainEvent(DomainEvent.Type.INDICATIONS));		
-		replay(mockListener);
-		
-		d_domain.addListener(mockListener);
-		d_domain.addIndication(new Indication(310497006L, "Severe depression"));
-		verify(mockListener);
-	}
-	
-	@Test
 	public void testGetStudiesByEndpoint() {
 		Endpoint e1 = new Endpoint("e1", Endpoint.convertVarType(Variable.Type.RATE));
 		Endpoint e2 = new Endpoint("e2", Endpoint.convertVarType(Variable.Type.RATE));
@@ -388,54 +328,20 @@ public class DomainTest {
 		Indication i2 = new Indication(007L,"This indication does not exists.");
 		d_domain.addIndication(i2);
 		
-		ListHolder<Study> studies = d_domain.getStudies(i1);
-		assertEquals(2, studies.getValue().size());
+		ObservableList<Study> studies = d_domain.getStudies(i1);
+		assertEquals(2, studies.size());
 		
-		assertEquals(0, d_domain.getStudies(i2).getValue().size());
+		assertEquals(0, d_domain.getStudies(i2).size());
 		
-		assertTrue(studies.getValue().contains(s1));
-		assertTrue(studies.getValue().contains(s2));
+		assertTrue(studies.contains(s1));
+		assertTrue(studies.contains(s2));
 		
 		Study s3 = new Study("s3", i1);
 		s3.getEndpoints().clear();
 		s3.getEndpoints().addAll(Study.wrapVariables(l2));
 		
 		d_domain.addStudy(s3);
-		assertTrue(studies.getValue().contains(s3));
-	}
-	
-	@Test
-	public void testGetStudiesByIndicationListFiresOnChange() {
-		Endpoint e1 = new Endpoint("e1", Endpoint.convertVarType(Variable.Type.RATE));
-
-		ArrayList<Endpoint> l1 = new ArrayList<Endpoint>();
-		l1.add(e1);
-		Indication i1 = new Indication(0L, "");
-		d_domain.addIndication(i1);
-		Study s1 = new Study("s1", i1);
-		s1.getEndpoints().clear();
-		s1.getEndpoints().addAll(Study.wrapVariables(l1));
-
-		d_domain.addStudy(s1);
-		
-		ListHolder<Study> studies = d_domain.getStudies(i1);
-		
-		assertTrue(studies.getValue().contains(s1));
-		
-		Study s3 = new Study("s3", i1);
-		s3.getEndpoints().clear();
-		s3.getEndpoints().addAll(Study.wrapVariables(l1));
-
-		List<Study> oldValue = studies.getValue();
-				
-		List<Study> newValue = new ArrayList<Study>(oldValue);
-		newValue.add(s3);
-				
-		PropertyChangeListener mock = JUnitUtil.mockListener(studies, "value", oldValue, newValue);
-		studies.addValueChangeListener(mock);
-		d_domain.addStudy(s3);
-		verify(mock);
-		assertTrue(studies.getValue().contains(s3));		
+		assertTrue(studies.contains(s3));
 	}
 	
 	@Test
@@ -467,20 +373,20 @@ public class DomainTest {
 		s2.setMeasurement(e, g3, m3);
 		
 		
-		ListHolder<Study> d1Studies = d_domain.getStudies(d1);
-		ListHolder<Study> d2Studies = d_domain.getStudies(d2);
-		ListHolder<Study> d3Studies = d_domain.getStudies(d3);		
+		ObservableList<Study> d1Studies = d_domain.getStudies(d1);
+		ObservableList<Study> d2Studies = d_domain.getStudies(d2);
+		ObservableList<Study> d3Studies = d_domain.getStudies(d3);		
 		
 		d_domain.addStudy(s1);
 		d_domain.addStudy(s2);
 		
-		assertEquals(2, d1Studies.getValue().size());
-		assertEquals(1, d2Studies.getValue().size());
-		assertEquals(0, d3Studies.getValue().size());
+		assertEquals(2, d1Studies.size());
+		assertEquals(1, d2Studies.size());
+		assertEquals(0, d3Studies.size());
 		
-		assertTrue(d1Studies.getValue().contains(s1));
-		assertTrue(d1Studies.getValue().contains(s2));
-		assertTrue(d2Studies.getValue().contains(s2));
+		assertTrue(d1Studies.contains(s1));
+		assertTrue(d1Studies.contains(s2));
+		assertTrue(d2Studies.contains(s2));
 	}
 	
 	@Test
@@ -511,15 +417,15 @@ public class DomainTest {
 		s2.setMeasurement(e, g3, m3);
 		
 		
-		ListHolder<Study> Studies = d_domain.getStudiesHolder();
+		ObservableList<Study> studies = d_domain.getStudiesHolder();
 		
 		d_domain.addStudy(s1);
 		d_domain.addStudy(s2);
 		
-		assertEquals(2, Studies.getValue().size());
+		assertEquals(2, studies.size());
 		
-		assertTrue(Studies.getValue().contains(s1));
-		assertTrue(Studies.getValue().contains(s2));
+		assertTrue(studies.contains(s1));
+		assertTrue(studies.contains(s2));
 	}
 		
 	@Test
@@ -594,20 +500,6 @@ public class DomainTest {
 	}
 	
 	@Test
-	public void testDeleteStudyFires() throws DependentEntitiesException {
-		Study s1 = new Study("X", d_indication);
-		d_domain.addIndication(d_indication);
-		d_domain.addStudy(s1);
-		
-		DomainListener mock = createMock(DomainListener.class);
-		d_domain.addListener(mock);
-		mock.domainChanged(new DomainEvent(DomainEvent.Type.STUDIES));		
-		replay(mock);
-		d_domain.deleteEntity(s1);
-		verify(mock);
-	}
-
-	@Test
 	public void testDeleteDrug() throws DependentEntitiesException {
 		Drug d = new Drug("X", "atc");
 		d_domain.addDrug(d);
@@ -626,19 +518,6 @@ public class DomainTest {
 	
 		s1.createAndAddArm("g", 10, d, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));
 		d_domain.deleteEntity(d);
-	}
-	
-	@Test
-	public void testDeleteDrugFires() throws DependentEntitiesException {
-		Drug d = new Drug("d", "atc");
-		d_domain.addDrug(d);
-		
-		DomainListener mock = createMock(DomainListener.class);
-		d_domain.addListener(mock);
-		mock.domainChanged(new DomainEvent(DomainEvent.Type.DRUGS));		
-		replay(mock);
-		d_domain.deleteEntity(d);
-		verify(mock);
 	}
 
 	@Test
@@ -661,20 +540,7 @@ public class DomainTest {
 			
 		d_domain.deleteEntity(e);
 	}
-	
-	@Test
-	public void testDeleteEndpointFires() throws DependentEntitiesException {
-		Endpoint d = new Endpoint("d", Endpoint.convertVarType(Variable.Type.RATE));
-		d_domain.addEndpoint(d);
-		
-		DomainListener mock = createMock(DomainListener.class);
-		d_domain.addListener(mock);
-		mock.domainChanged(new DomainEvent(DomainEvent.Type.ENDPOINTS));		
-		replay(mock);
-		d_domain.deleteEntity(d);
-		verify(mock);
-	}
-	
+
 	@Test
 	public void testDeleteIndication() throws DependentEntitiesException {
 		Indication i = new Indication(01L, "i");
@@ -694,34 +560,11 @@ public class DomainTest {
 	}
 	
 	@Test
-	public void testDeleteIndicationFires() throws DependentEntitiesException {
-		Indication i = new Indication(5L, "");
-		d_domain.addIndication(i);
-		
-		DomainListener mock = createMock(DomainListener.class);
-		d_domain.addListener(mock);
-		mock.domainChanged(new DomainEvent(DomainEvent.Type.INDICATIONS));		
-		replay(mock);
-		d_domain.deleteEntity(i);
-		verify(mock);
-	}
-	
-	@Test
 	public void testGetVariables() {
 		PopulationCharacteristic c = new PopulationCharacteristic("x", new CategoricalVariableType(Arrays.asList((new String[]{"x", "y", "z"}))));
 		d_domain.addPopulationCharacteristic(c);
 		
 		assertEquals(Collections.singleton(c), d_domain.getPopulationCharacteristics());
-	}
-	
-	@Test
-	public void testAddVariableFires() {
-		DomainListener mock = createMock(DomainListener.class);
-		d_domain.addListener(mock);
-		mock.domainChanged(new DomainEvent(DomainEvent.Type.VARIABLES));
-		replay(mock);
-		d_domain.addPopulationCharacteristic(new PopulationCharacteristic("x", new CategoricalVariableType(Arrays.asList((new String[]{"x"})))));
-		verify(mock);
 	}
 	
 	@Test(expected=NullPointerException.class)
@@ -736,17 +579,6 @@ public class DomainTest {
 		d_domain.addAdverseEvent(ade);
 		assertEquals(1, d_domain.getAdverseEvents().size());
 		assertEquals(Collections.singleton(ade), d_domain.getAdverseEvents());
-	}
-	
-	@Test
-	public void testAddAdeListener() {
-		DomainListener mockListener = createMock(DomainListener.class);
-		mockListener.domainChanged(new DomainEvent(DomainEvent.Type.ADVERSE_EVENTS));		
-		replay(mockListener);
-		
-		d_domain.addListener(mockListener);
-		d_domain.addAdverseEvent(new AdverseEvent("e", AdverseEvent.convertVarType(Variable.Type.RATE)));
-		verify(mockListener);
 	}
 	
 	@Test
@@ -769,20 +601,6 @@ public class DomainTest {
 			
 		d_domain.deleteEntity(a);
 	}
-	
-	@Test
-	public void testDeleteAdeFires() throws DependentEntitiesException {
-		AdverseEvent d = new AdverseEvent("d", AdverseEvent.convertVarType(Variable.Type.RATE));
-		d_domain.addAdverseEvent(d);
-		
-		DomainListener mock = createMock(DomainListener.class);
-		d_domain.addListener(mock);
-		mock.domainChanged(new DomainEvent(DomainEvent.Type.ADVERSE_EVENTS));		
-		replay(mock);
-		d_domain.deleteEntity(d);
-		verify(mock);
-	}
-
 	
 	@Test
 	public void testGetCategories() {

@@ -22,12 +22,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui;
+package org.drugis.addis.presentation;
+
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.DomainEvent;
-import org.drugis.addis.entities.DomainListener;
-import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.entities.EntityCategory;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 
@@ -37,13 +38,23 @@ public class DomainChangedModel extends AbstractValueModel implements ValueHolde
 
 	public DomainChangedModel(Domain domain, boolean changed) {
 		d_changed = changed;
-		domain.addListener(new DomainListener() {
-			public void domainChanged(DomainEvent evt) {
+
+		ListDataListener listener = new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
 				setValue(true);
 			}
-		});
+			public void intervalAdded(ListDataEvent e) {
+				setValue(true);
+			}
+			public void contentsChanged(ListDataEvent e) {
+				setValue(true);
+			}
+		};
+		for (EntityCategory c : domain.getCategories()) {
+			domain.getCategoryContents(c).addListDataListener(listener);
+		}
 	}
-
+	
 	public Boolean getValue() {
 		return d_changed;
 	}
