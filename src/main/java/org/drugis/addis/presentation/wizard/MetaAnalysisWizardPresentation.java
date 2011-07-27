@@ -30,6 +30,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DrugSet;
@@ -57,7 +60,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		super(d, pmm);
 				
 		d_metaAnalysisCompleteListener = new MetaAnalysisCompleteListener();		
-		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(d_metaAnalysisCompleteListener);
+		d_studyListPm.getSelectedStudiesModel().addListDataListener(d_metaAnalysisCompleteListener);
 	}
 
 	@Override
@@ -154,7 +157,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	public RandomEffectsMetaAnalysis buildMetaAnalysis() {
 		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
 		
-		for (Study s : getStudyListModel().getSelectedStudiesModel().getValue()) {
+		for (Study s : getStudyListModel().getSelectedStudiesModel()) {
 			Arm left = d_selectedArms.get(s).get(d_firstDrugHolder.getValue()).getValue();
 			Arm right = d_selectedArms.get(s).get(d_secondDrugHolder.getValue()).getValue();
 			studyArms.add(new StudyArmsEntry(s, left, right));
@@ -178,17 +181,27 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 	
 	@SuppressWarnings("serial")
-	public class MetaAnalysisCompleteListener extends AbstractValueModel implements PropertyChangeListener {
+	public class MetaAnalysisCompleteListener extends AbstractValueModel implements ListDataListener {
 
-		public void propertyChange(PropertyChangeEvent evt) {
+		private void fireChange() {
 			firePropertyChange(PROPERTYNAME_VALUE, null, getValue());
 		}
 
 		public Object getValue() {
-			return new Boolean(!d_studyListPm.getSelectedStudiesModel().getValue().isEmpty());
+			return new Boolean(!d_studyListPm.getSelectedStudiesModel().isEmpty());
 		}
 
 		public void setValue(Object newValue) {			
+		}
+
+		public void contentsChanged(ListDataEvent e) {
+			fireChange();
+		}
+		public void intervalAdded(ListDataEvent e) {
+			fireChange();
+		}
+		public void intervalRemoved(ListDataEvent e) {
+			fireChange();
 		}		
 	}
 

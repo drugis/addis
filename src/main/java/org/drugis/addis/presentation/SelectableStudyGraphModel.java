@@ -30,20 +30,21 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.swing.ListModel;
-
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.Study;
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.graph.UndirectedSubgraph;
+
+import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
 public class SelectableStudyGraphModel extends StudyGraphModel {
 	
 	private ListHolder<DrugSet> d_selectedDrugs;
 
-	public SelectableStudyGraphModel(ListModel studies, ListHolder<DrugSet> drugs, ValueHolder<OutcomeMeasure> outcome) { // FIXME
+	public SelectableStudyGraphModel(ObservableList<Study> studies, ListHolder<DrugSet> drugs, ValueHolder<OutcomeMeasure> outcome) {
 		super(studies, drugs, outcome);
 		d_selectedDrugs = new DefaultListHolder<DrugSet>(new ArrayList<DrugSet>(d_drugs.getValue()));
 		d_drugs.addValueChangeListener(new DrugsChangedListener());

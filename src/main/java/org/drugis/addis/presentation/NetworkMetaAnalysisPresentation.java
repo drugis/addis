@@ -51,6 +51,8 @@ import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.jfree.data.category.CategoryDataset;
 
+import com.jgoodies.binding.list.ArrayListModel;
+
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<NetworkMetaAnalysis> {
 	ValueHolder<Boolean> d_inconsistencyModelConstructed;
@@ -101,7 +103,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	}
 
 	public StudyGraphModel getStudyGraphModel() {
-		return new StudyGraphModel(new DefaultListHolder<Study>(getBean().getIncludedStudies()),
+		return new StudyGraphModel(new ArrayListModel<Study>(getBean().getIncludedStudies()),
 				new DefaultListHolder<DrugSet>(getBean().getIncludedDrugs()), new UnmodifiableHolder<OutcomeMeasure>(getBean().getOutcomeMeasure()));
 	}
 

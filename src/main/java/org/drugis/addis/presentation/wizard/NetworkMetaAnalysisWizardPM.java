@@ -51,6 +51,7 @@ import org.jgrapht.event.GraphEdgeChangeEvent;
 import org.jgrapht.event.GraphListener;
 import org.jgrapht.event.GraphVertexChangeEvent;
 
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
@@ -167,7 +168,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	public NetworkMetaAnalysis createMetaAnalysis(String name) {
 		Indication indication = getIndicationModel().getValue();
 		OutcomeMeasure om = getOutcomeMeasureModel().getValue();
-		List<? extends Study> studies = getSelectedStudiesModel().getValue();
+		List<? extends Study> studies = getSelectedStudiesModel();
 		List<DrugSet> drugs = getSelectedDrugsModel().getValue();
 		Map<Study, Map<DrugSet, Arm>> armMap = getArmMap();
 		
@@ -185,7 +186,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 		return map;
 	}
 
-	public ListHolder<Study> getSelectedStudiesModel() {
+	public ObservableList<Study> getSelectedStudiesModel() {
 		return getStudyListModel().getSelectedStudiesModel();
 	}
 }

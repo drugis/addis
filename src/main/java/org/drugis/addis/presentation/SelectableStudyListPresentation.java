@@ -33,7 +33,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 public interface SelectableStudyListPresentation {
 	public ObservableList<Study> getAvailableStudies();
 	public ModifiableHolder<Boolean> getSelectedStudyBooleanModel(Study s);
-	public ListHolder<Study> getSelectedStudiesModel();
+	public ObservableList<Study> getSelectedStudiesModel();
 	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c);
 	public StudyListPresentation getSource();
 }

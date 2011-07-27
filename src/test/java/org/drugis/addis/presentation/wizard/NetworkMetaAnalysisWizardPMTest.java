@@ -302,7 +302,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		assertEquals(d_pm.getSelectedDrugsModel().getValue(), ma.getIncludedDrugs());
 		JUnitUtil.assertAllAndOnly(ma.getIncludedStudies(),
-				d_pm.getStudyListModel().getSelectedStudiesModel().getValue());
+				d_pm.getStudyListModel().getSelectedStudiesModel());
 		assertEquals(d_pm.getOutcomeMeasureModel().getValue(), ma.getOutcomeMeasure());
 		assertEquals(d_pm.getIndicationModel().getValue(), ma.getIndication());
 		assertEquals(arm, ma.getArm(multiple, d_paroxSet));

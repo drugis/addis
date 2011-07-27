@@ -38,6 +38,7 @@ import javax.swing.event.ListDataListener;
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
 
+import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 
@@ -46,7 +47,7 @@ public class DefaultSelectableStudyListPresentation implements SelectableStudyLi
 	private HashMap<Study, ModifiableHolder<Boolean>> d_selectedStudiesMap;
 	
 	private ChangeListener d_listener = new ChangeListener();
-	private ListHolder<Study> d_selectedStudiesList = new DefaultListHolder<Study>(new ArrayList<Study>());
+	private ObservableList<Study> d_selectedStudiesList = new ArrayListModel<Study>();
 
 	private final StudyListPresentation d_source;
 
@@ -81,10 +82,11 @@ public class DefaultSelectableStudyListPresentation implements SelectableStudyLi
 		for (Study s : leftStudies) {
 			d_selectedStudiesMap.remove(s);
 		}
-		d_selectedStudiesList.setValue(createSelectedStudies());
+		d_selectedStudiesList.clear();
+		d_selectedStudiesList.addAll(createSelectedStudies());
 	}
 	
-	public ListHolder<Study> getSelectedStudiesModel() {
+	public ObservableList<Study> getSelectedStudiesModel() {
 		return d_selectedStudiesList;
 	}
 

@@ -29,15 +29,15 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.util.ListHolderWrapperPlsDel;
 import org.jgrapht.graph.ListenableUndirectedGraph;
+
+import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
 public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.Vertex, StudyGraphModel.Edge> {
@@ -86,14 +86,11 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	}
 	
 	protected ListHolder<DrugSet> d_drugs;
-	private ListModel d_studies;
+	private ObservableList<Study> d_studies;
 	private final ValueHolder<OutcomeMeasure> d_om;
+
 	
-	public StudyGraphModel(ListHolder<Study> studies, ListHolder<DrugSet> drugs, ValueHolder<OutcomeMeasure> om){
-		this(new ListHolderWrapperPlsDel<Study>(studies), drugs, om);
-	}
-	
-	public StudyGraphModel(ListModel studies, ListHolder<DrugSet> drugs, ValueHolder<OutcomeMeasure> om){ // FIXME: change to ObservableList once available.
+	public StudyGraphModel(ObservableList<Study> studies, ListHolder<DrugSet> drugs, ValueHolder<OutcomeMeasure> om){ // FIXME: change to ObservableList once available.
 		super(Edge.class);
 		
 		d_drugs = drugs;
@@ -186,17 +183,6 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	 */
 	public List<Study> getStudies(DrugSet d) {
 		return filter(d, d_studies);
-	}
-	
-	private List<Study> filter(DrugSet d, ListModel allStudies) {
-		List<Study> studies = new ArrayList<Study>();
-		for (int i = 0; i < allStudies.getSize(); ++i) {
-			Study s = (Study) allStudies.getElementAt(i);
-			if (s.getMeasuredDrugs(d_om.getValue()).contains(d)) {
-				studies.add(s);
-			}
-		}
-		return studies;
 	}
 
 	private List<Study> filter(DrugSet d, List<Study> allStudies) {

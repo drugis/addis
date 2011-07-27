@@ -180,13 +180,13 @@ public class StudyGraphModelTest {
 	@Test
 	public void testChangeStudyList() {
 		AbstractListHolder<DrugSet> drugListHolder = new DefaultListHolder<DrugSet>(d_drugs);
-		AbstractListHolder<Study> studyListHolder = new DefaultListHolder<Study>(new ArrayList<Study>());
+		ObservableList<Study> studyListHolder = new ArrayListModel<Study>();
 		
 		d_pm = new StudyGraphModel(studyListHolder, drugListHolder, new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()));
 		assertEquals(3, d_pm.vertexSet().size());
 		assertTrue(d_pm.edgeSet().isEmpty());
 		
-		studyListHolder.setValue(d_domain.getStudies(ExampleData.buildEndpointHamd()));
+		studyListHolder.addAll(d_domain.getStudies(ExampleData.buildEndpointHamd()));
 		assertEquals(3, d_pm.vertexSet().size());
 		assertEquals(2, d_pm.edgeSet().size());
 	}

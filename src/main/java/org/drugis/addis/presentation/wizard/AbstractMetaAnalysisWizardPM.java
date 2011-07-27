@@ -35,6 +35,9 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DrugSet;
@@ -90,8 +93,14 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		
 		d_selectedArms = new HashMap<Study, Map<DrugSet, ModifiableHolder<Arm>>>();
 		
-		PropertyChangeListener listener = new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent ev) {
+		ListDataListener listener = new ListDataListener() {
+			public void contentsChanged(ListDataEvent e) {
+				updateArmHolders();
+			}
+			public void intervalAdded(ListDataEvent e) {
+				updateArmHolders();
+			}
+			public void intervalRemoved(ListDataEvent e) {
 				updateArmHolders();
 			}
 		};
@@ -99,7 +108,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		d_selectableStudies = createSelectableStudies();
 		d_studyListPm = new DefaultSelectableStudyListPresentation(
 				new DefaultStudyListPresentation(d_selectableStudies));
-		d_studyListPm.getSelectedStudiesModel().addValueChangeListener(listener);
+		d_studyListPm.getSelectedStudiesModel().addListDataListener(listener);
 	}
 	
 	private ObservableList<Study> createSelectableStudies() {
@@ -170,7 +179,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	protected void updateArmHolders() {
 		d_selectedArms.clear();
 		
-		for(Study s : getStudyListModel().getSelectedStudiesModel().getValue()) {
+		for(Study s : getStudyListModel().getSelectedStudiesModel()) {
 			d_selectedArms.put(s, new HashMap<DrugSet, ModifiableHolder<Arm>>());
 			for(DrugSet d : getSelectedDrugsModel().getValue()){
 				if(s.getDrugs().contains(d)){

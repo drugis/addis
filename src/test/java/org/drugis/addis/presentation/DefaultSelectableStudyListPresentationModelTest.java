@@ -82,8 +82,8 @@ public class DefaultSelectableStudyListPresentationModelTest {
 	
 	@Test
 	public void testGetSelectedStudiesModel() {
-		assertEquals(d_studies, d_model.getSelectedStudiesModel().getValue());
+		assertEquals(d_studies, d_model.getSelectedStudiesModel());
 		d_model.getSelectedStudyBooleanModel(d_s1).setValue(false);
-		assertEquals(Collections.singletonList(d_s2), d_model.getSelectedStudiesModel().getValue());	
+		assertEquals(Collections.singletonList(d_s2), d_model.getSelectedStudiesModel());	
 	}
 }
