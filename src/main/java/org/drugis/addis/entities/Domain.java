@@ -25,217 +25,96 @@
 package org.drugis.addis.entities;
 
 import java.util.List;
-import java.util.SortedSet;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
-import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.util.SortedSetModel;
 
 import com.jgoodies.binding.list.ObservableList;
 
-public interface Domain {
+public abstract class Domain {
 	/**
 	 * Get the list of top-level entity categories.
 	 */
-	public List<EntityCategory> getCategories();
+	public abstract List<EntityCategory> getCategories();
 	
 	/**
 	 * Get the entities that belong to a category.
 	 */
-	public ObservableList<? extends Entity> getCategoryContents(EntityCategory node);
+	public abstract ObservableList<? extends Entity> getCategoryContents(EntityCategory node);
 	
 	/** 
 	 * Get a ValueModel to the collection of entities that belong to a category.
 	 */
-	public ListHolder<? extends Entity> getCategoryContentsModel(EntityCategory node);
+	@Deprecated
+	public abstract ListHolder<? extends Entity> getCategoryContentsModel(EntityCategory node);
 	
 	/**
 	 * Get the category an entity belongs to.
 	 * @param entity The entity to categorize.
 	 * @return The top-level category for the entity, or null if the entity is not a top-level entity.
 	 */
-	public EntityCategory getCategory(Entity entity);
+	public abstract EntityCategory getCategory(Entity entity);
 	
 	/**
 	 * Get the category a type of entity belongs to.
 	 * @param entityClass The class of entity to categorize.
 	 * @return The top-level category for the entity class, or null if the entity class is not top-level.
 	 */
-	public EntityCategory getCategory(Class<? extends Entity> entityClass);
-	 
-	/**
-	 * Adds an indication to the data model.
-	 * 
-	 * @param i the Indication to add
-	 * @throws NullPointerException if i is null
-	 */
-	public void addIndication(Indication i) throws NullPointerException;
+	public abstract EntityCategory getCategory(Class<? extends Entity> entityClass);
 	
-	/**
-	 * Get the indications stored in the data model.
-	 * @return An unmodifiable sorted set of indications. Never a null.
-	 */
-	public SortedSet<Indication> getIndications();
-	
-	/**
-	 * Adds an drug to the data model.
-	 * 
-	 * @param e the drug to add
-	 * @throws NullPointerException if e is null
-	 */
-	public void addDrug(Drug d) throws NullPointerException;
+	public abstract SortedSetModel<Drug> getDrugs();
 
-	/**
-	 * Get the drugs stored in the data model.
-	 * @return An unmodifiable sorted set of drugs. Never a null.
-	 */
-	public SortedSet<Drug> getDrugs();
-	
-	
-	/**
-	 * Adds an endpoint to the data model.
-	 * 
-	 * @param e the endpoint to add
-	 * @throws NullPointerException if e is null
-	 */
-	public void addEndpoint(Endpoint e) throws NullPointerException;
+	public abstract SortedSetModel<Indication> getIndications();
 
-	/**
-	 * Get the endpoints stored in the data model.
-	 * @return An unmodifiable sorted set of endpoints. Never a null.
-	 */
-	public SortedSet<Endpoint> getEndpoints();
-	
-	/**
-	 * Adds an adverse event to the data model.
-	 * 
-	 * @param ade the adverse event to add
-	 * @throws NullPointerException if ade is null
-	 */
-	public void addAdverseEvent(AdverseEvent ade);
-	
-	/**
-	 * Get the adverse events stored in the data model.
-	 * @return An unmodifiable sorted set of adverse events. Never a null.
-	 */
-	public SortedSet<AdverseEvent> getAdverseEvents();
-	
-	public void addPopulationCharacteristic(PopulationCharacteristic c);
-	
-	public SortedSet<PopulationCharacteristic> getPopulationCharacteristics();
-		
-	/**
-	 * Adds a study to the data model.
-	 * 
-	 * @param e the study to add
-	 * @throws NullPointerException if e is null
-	 * @throws IllegalArgumentException if indication of the study is not included in the domain yet
-	 */
-	public void addStudy(Study s) throws NullPointerException, IllegalArgumentException;
-	
-	/**
-	 * Get the studies stored in the data model, EXCLUDING the meta-studies.
-	 * @return An unmodifiable sorted set of studies. Never a null.
-	 */
-	public SortedSet<Study> getStudies();
+	public abstract SortedSetModel<Endpoint> getEndpoints();
 
-	/**
-	 * Adds a meta analysis to the data model.
-	 * 
-	 * @param ms the meta-study to add
-	 * @throws NullPointerException if ma is null
-	 * @throws IllegalArgumentException if some study within the meta-analysis is not included in the domain yet
-	 * OR the indication isn't in the domain yet.
-	 * @throws EntityIdExistsException if there is already an entity registered within the domain with the same ID. 
-	 */
-	public void addMetaAnalysis(MetaAnalysis ma) 
-		throws NullPointerException, IllegalArgumentException, EntityIdExistsException;
-	
-	/**
-	 * Get the meta-studies stored in the data model.
-	 * @return An unmodifiable sorted set of meta-studies. Never a null.
-	 */
-	public SortedSet<MetaAnalysis> getMetaAnalyses();	
-	
-	/**
-	 * Get the meta-studies stored in the data model.
-	 * @return An unmodifiable sorted set of meta-studies. Never a null.
-	 */
-	public SortedSet<NetworkMetaAnalysis> getNetworkMetaAnalyses();	
-	
-	/**
-	 * Get the meta-studies stored in the data model.
-	 * @return An unmodifiable sorted set of meta-studies. Never a null.
-	 */
-	public SortedSet<PairWiseMetaAnalysis> getPairWiseMetaAnalyses();	
-	
-	/**
-	 * Adds a BenefitRiskAnalysis to the data model.
-	 * 
-	 * @param br the BenefitRiskAnalysis to add
-	 */
-	public void addBenefitRiskAnalysis(BenefitRiskAnalysis<?> br);
+	public abstract SortedSetModel<AdverseEvent> getAdverseEvents();
 
-	public SortedSet<BenefitRiskAnalysis<?>> getBenefitRiskAnalyses();
+	public abstract SortedSetModel<PopulationCharacteristic> getPopulationCharacteristics();
+
+	public abstract SortedSetModel<Study> getStudies();
 	
+	public abstract SortedSetModel<MetaAnalysis> getMetaAnalyses();
+
+	public abstract SortedSetModel<BenefitRiskAnalysis<?>> getBenefitRiskAnalyses();
+
 	/**
 	 * Delete a top-level entity from the domain.
 	 * @param entity The entity to remove.
 	 * @throws DependentEntitiesException if the entity is used by other top-level entities.
 	 */
-	public void deleteEntity(Entity entity) throws DependentEntitiesException;
-	
-	/**
-	 * Get studies by Variable (Endpoint, AdverseEvent or PopulationCharacteristic).
-	 * @return An unmodifiable sorted set of studies. Never null.
-	 */
-	public ObservableList<Study> getStudies(Variable e);
-	
-	/**
-	 * Get studies by Drug.
-	 * @return An unmodifiable sorted set of studies. Never null.
-	 */
-	public ObservableList<Study> getStudies(Drug d);
-	
-	/**
-	 * Get studies by Indication.
-	 * @return An unmodifiable sorted set of studies. Never null.
-	 */
-	public ObservableList<Study> getStudies(Indication i);
-	
-	/** 
-	 * Get all studies
-	 * @return A ListHolder of studies.
-	 */
-	public ObservableList<Study> getStudiesHolder();
+	public abstract void deleteEntity(Entity entity) throws DependentEntitiesException;
 	
 	/**
 	 * Return whether any entities depend on this entity.
 	 * @param entity
 	 * @return true if this entity is being used by others.
 	 */
-	public boolean hasDependents(Entity entity);
-
-	public SortedSetModel<Drug> getDrugsModel();
-
-	public SortedSetModel<Indication> getIndicationsModel();
-
-	public SortedSetModel<Endpoint> getEndpointsModel();
-
-	public SortedSetModel<AdverseEvent> getAdverseEventsModel();
-
-	public SortedSetModel<PopulationCharacteristic> getPopulationCharacteristicsModel();
-
-	public SortedSetModel<Study> getStudiesModel();
+	public abstract boolean hasDependents(Entity entity);
 	
-	public SortedSetModel<MetaAnalysis> getMetaAnalysesModel();
+	// FIXME: move methods below to presentation layer
 
-	public SortedSetModel<BenefitRiskAnalysis<?>> getBenefitRiskAnalysesModel();
-
-	public ObservableList<MetaAnalysis> getPairWiseMetaAnalysesModel();
+	public abstract ObservableList<MetaAnalysis> getPairWiseMetaAnalyses();
 	
-	public ObservableList<MetaAnalysis> getNetworkMetaAnalysesModel();
+	public abstract ObservableList<MetaAnalysis> getNetworkMetaAnalyses();
+	
+	/**
+	 * Get studies by Variable (Endpoint, AdverseEvent or PopulationCharacteristic).
+	 * @return An unmodifiable sorted set of studies. Never null.
+	 */
+	public abstract ObservableList<Study> getStudies(Variable e);
+	
+	/**
+	 * Get studies by Drug.
+	 * @return An unmodifiable sorted set of studies. Never null.
+	 */
+	public abstract ObservableList<Study> getStudies(Drug d);
+	
+	/**
+	 * Get studies by Indication.
+	 * @return An unmodifiable sorted set of studies. Never null.
+	 */
+	public abstract ObservableList<Study> getStudies(Indication i);
 }

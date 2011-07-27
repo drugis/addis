@@ -64,7 +64,6 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
@@ -160,34 +159,30 @@ public class JAXBConvertor {
 	public static Domain convertAddisDataToDomain(AddisData addisData) throws ConversionException {
 		Domain newDomain = new org.drugis.addis.entities.DomainImpl();
 		for(org.drugis.addis.entities.data.Indication i : addisData.getIndications().getIndication()) {
-			newDomain.addIndication(convertIndication(i));
+			newDomain.getIndications().add(convertIndication(i));
 		}
 		for (org.drugis.addis.entities.data.Drug d : addisData.getDrugs().getDrug()) {
-			newDomain.addDrug(convertDrug(d));
+			newDomain.getDrugs().add(convertDrug(d));
 		}
 		for (org.drugis.addis.entities.data.OutcomeMeasure om : addisData.getEndpoints().getEndpoint()) {
-			newDomain.addEndpoint(convertEndpoint(om));
+			newDomain.getEndpoints().add(convertEndpoint(om));
 		}
 		for(org.drugis.addis.entities.data.OutcomeMeasure ae : addisData.getAdverseEvents().getAdverseEvent()) {
-			newDomain.addAdverseEvent(convertAdverseEvent(ae));
+			newDomain.getAdverseEvents().add(convertAdverseEvent(ae));
 		}
 		for(org.drugis.addis.entities.data.OutcomeMeasure ae : addisData.getPopulationCharacteristics().getPopulationCharacteristic()) {
-			newDomain.addPopulationCharacteristic((PopulationCharacteristic) convertPopulationCharacteristic(ae));
+			newDomain.getPopulationCharacteristics().add(((PopulationCharacteristic) convertPopulationCharacteristic(ae)));
 		}
 		for(org.drugis.addis.entities.data.Study s : addisData.getStudies().getStudy()) {
-			newDomain.addStudy(convertStudy(s, newDomain));
+			newDomain.getStudies().add(convertStudy(s, newDomain));
 		}
 		// Meta-analyses
 		for(MetaAnalysis ma : convertMetaAnalyses(addisData.getMetaAnalyses(), newDomain)) {
-			try {
-				newDomain.addMetaAnalysis(ma);
-			} catch (EntityIdExistsException e) {
-				throw new ConversionException("Duplicate entity in XML: " + e);
-			}
+			newDomain.getMetaAnalyses().add(ma);
 		}
 		// Benefit-risk analyses
 		for(BenefitRiskAnalysis<?> br : convertBenefitRiskAnalyses(addisData.getBenefitRiskAnalyses(), newDomain)) {
-			newDomain.addBenefitRiskAnalysis(br);
+			newDomain.getBenefitRiskAnalyses().add(br);
 		}
 		return newDomain;	
 	}

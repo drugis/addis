@@ -422,7 +422,7 @@ public class JAXBConvertorTest {
 		
 		Domain domain = new DomainImpl();
 		Drug drug = new Drug(name, code);
-		domain.addDrug(drug);
+		domain.getDrugs().add(drug);
 
 		// fixdose part
 		org.drugis.addis.entities.data.FixedDose fixDose = new org.drugis.addis.entities.data.FixedDose();
@@ -484,8 +484,8 @@ public class JAXBConvertorTest {
 		Domain domain = new DomainImpl();
 		Drug drug1 = new Drug(drugName1, code1);
 		Drug drug2 = new Drug(drugName2, code2);
-		domain.addDrug(drug1);
-		domain.addDrug(drug2);
+		domain.getDrugs().add(drug1);
+		domain.getDrugs().add(drug2);
 		
 		// test with predefined activity
 		String activityName = "Randomization";
@@ -708,7 +708,7 @@ public class JAXBConvertorTest {
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(new Study.StudyOutcomeMeasure<Variable>(ep)), om);
 		
 		AdverseEvent ade = ExampleData.buildAdverseEventDiarrhea();
-		domain.addAdverseEvent(ade);
+		domain.getAdverseEvents().add(ade);
 		om.setEndpoint(null);
 		om.setAdverseEvent(nameReference(ade.getName()));
 		om.setPrimary(false);
@@ -717,7 +717,7 @@ public class JAXBConvertorTest {
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(new Study.StudyOutcomeMeasure<Variable>(ade)), om);
 		
 		PopulationCharacteristic pc = ExampleData.buildGenderVariable();
-		domain.addPopulationCharacteristic(pc);
+		domain.getPopulationCharacteristics().add(pc);
 		om.setAdverseEvent(null);
 		om.setPopulationCharacteristic(nameReference(pc.getName()));
 		
@@ -737,7 +737,7 @@ public class JAXBConvertorTest {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
 		Endpoint ep = ExampleData.buildEndpointHamd();
-		domain.addAdverseEvent(ExampleData.buildAdverseEventDiarrhea());
+		domain.getAdverseEvents().add(ExampleData.buildAdverseEventDiarrhea());
 		
 		LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> vars = new LinkedHashMap<String, Study.StudyOutcomeMeasure<?>>();
 		vars.put("X", new Study.StudyOutcomeMeasure<Variable>(ep));
@@ -1076,10 +1076,10 @@ public class JAXBConvertorTest {
 
 	@Test
 	public void testConvertStudy() throws ConversionException, DatatypeConfigurationException {
-		DomainImpl domain = new DomainImpl();
+		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		domain.addEndpoint(ExampleData.buildEndpointCgi());
-		domain.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
+		domain.getEndpoints().add(ExampleData.buildEndpointCgi());
+		domain.getAdverseEvents().add(ExampleData.buildAdverseEventConvulsion());
 		
 		String name = "My fancy study";
 		org.drugis.addis.entities.data.Study study = buildStudy(name);
@@ -1128,7 +1128,7 @@ public class JAXBConvertorTest {
 		assertEquals(study, JAXBConvertor.convertStudy(study2));
 	}
 
-	private void assertStudiesNotEqual(DomainImpl domain,
+	private void assertStudiesNotEqual(Domain domain,
 			org.drugis.addis.entities.data.Study study, Study study2)
 			throws ConversionException {
 		assertFalse(EntityUtil.deepEqual(study2, JAXBConvertor.convertStudy(study, domain)));
@@ -1150,10 +1150,10 @@ public class JAXBConvertorTest {
 	
 	@Test
 	public void testConvertStudyWithNotes() throws ConversionException, DatatypeConfigurationException {
-		DomainImpl domain = new DomainImpl();
+		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		domain.addEndpoint(ExampleData.buildEndpointCgi());
-		domain.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
+		domain.getEndpoints().add(ExampleData.buildEndpointCgi());
+		domain.getAdverseEvents().add(ExampleData.buildAdverseEventConvulsion());
 		
 		String name = "My fancy study";
 		org.drugis.addis.entities.data.Study studyData = buildStudy(name);
@@ -1205,7 +1205,7 @@ public class JAXBConvertorTest {
 	
 	@Test
 	public void testConvertPairWiseMetaAnalysis() throws ConversionException, DatatypeConfigurationException {
-		DomainImpl domain = new DomainImpl();
+		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
 		
 		String name = "Fluox-Venla Diarrhea for PMA";
@@ -1215,7 +1215,7 @@ public class JAXBConvertorTest {
 		Study study = JAXBConvertor.convertStudy(ma.d_studies.get(0), domain);
 		List<StudyArmsEntry> armsList = new ArrayList<StudyArmsEntry>();
 		armsList.add(new StudyArmsEntry(study, study.getArms().get(0), study.getArms().get(1)));
-		domain.addStudy(study);
+		domain.getStudies().add(study);
 		
 		RandomEffectsMetaAnalysis pwma = new RandomEffectsMetaAnalysis(name, ExampleData.buildEndpointHamd(), armsList);
 		
@@ -1261,7 +1261,7 @@ public class JAXBConvertorTest {
 
 	@Test
 	public void testConvertNetworkMetaAnalysis() throws Exception, InstantiationException, InvocationTargetException, NoSuchMethodException {
-		DomainImpl domain = new DomainImpl();
+		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
 		String name = "CGI network meta-analysis";
 		
@@ -1270,7 +1270,7 @@ public class JAXBConvertorTest {
 		List<Study> studies = new ArrayList<Study>();
 		for (org.drugis.addis.entities.data.Study study : ma.d_studies) {
 			Study studyEnt = JAXBConvertor.convertStudy(study, domain);
-			domain.addStudy(studyEnt);
+			domain.getStudies().add(studyEnt);
 			studies.add(studyEnt);
 		}
 
@@ -1416,7 +1416,7 @@ public class JAXBConvertorTest {
 	
 	@Test
 	public void testConvertMetaAnalyses() throws NullPointerException, ConversionException, DatatypeConfigurationException {
-		DomainImpl domain = new DomainImpl();
+		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
 		
 		MetaAnalyses analyses = new MetaAnalyses();
@@ -1436,19 +1436,19 @@ public class JAXBConvertorTest {
 		assertEquals(analyses, JAXBConvertor.convertMetaAnalyses(expected));
 	}
 
-	private void addStudies(DomainImpl domain, MetaAnalysisWithStudies ma1)
+	private void addStudies(Domain domain, MetaAnalysisWithStudies ma1)
 			throws ConversionException {
 		for (org.drugis.addis.entities.data.Study study : ma1.d_studies) {
-			domain.addStudy(JAXBConvertor.convertStudy(study, domain));
+			domain.getStudies().add(JAXBConvertor.convertStudy(study, domain));
 		}
 	}
 		
 	@Test
 	public void testConvertStudyBenefitRiskAnalysis() throws ConversionException, DatatypeConfigurationException {
-		DomainImpl domain = new DomainImpl();
+		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		domain.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
-		domain.addAdverseEvent(ExampleData.buildAdverseEventDiarrhea());
+		domain.getAdverseEvents().add(ExampleData.buildAdverseEventConvulsion());
+		domain.getAdverseEvents().add(ExampleData.buildAdverseEventDiarrhea());
 		
 		String name = "BR Analysis";
 		String[] adverseEvents = {ExampleData.buildAdverseEventDiarrhea().getName(), ExampleData.buildAdverseEventConvulsion().getName() };
@@ -1471,7 +1471,7 @@ public class JAXBConvertorTest {
 		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br = buildStudyBR(name, study, endpoints, adverseEvents, whichArms);
 		
 		Study convertStudy = JAXBConvertor.convertStudy(study, domain);
-		domain.addStudy(convertStudy);
+		domain.getStudies().add(convertStudy);
 		List<org.drugis.addis.entities.OutcomeMeasure> criteria = new ArrayList<org.drugis.addis.entities.OutcomeMeasure>();
 		criteria.add(ExampleData.buildEndpointCgi());
 		criteria.add(ExampleData.buildAdverseEventConvulsion());
@@ -1509,10 +1509,10 @@ public class JAXBConvertorTest {
 	
 	@Test
 	public void testConvertMetaBenefitRiskAnalysis() throws ConversionException, NullPointerException, IllegalArgumentException, EntityIdExistsException, DatatypeConfigurationException {
-		DomainImpl domain = new DomainImpl();
+		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		domain.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
-		domain.addAdverseEvent(ExampleData.buildAdverseEventDiarrhea());
+		domain.getAdverseEvents().add(ExampleData.buildAdverseEventConvulsion());
+		domain.getAdverseEvents().add(ExampleData.buildAdverseEventDiarrhea());
 		
 		String name = "Meta Benefit-Risk Analysis Test";
 		// create entities
@@ -1525,9 +1525,9 @@ public class JAXBConvertorTest {
 		addStudies(domain, ma1);
 		addStudies(domain, ma2);
 		RandomEffectsMetaAnalysis ma1ent = JAXBConvertor.convertPairWiseMetaAnalysis(ma1.d_pwma, domain);
-		domain.addMetaAnalysis(ma1ent);
+		domain.getMetaAnalyses().add(ma1ent);
 		MetaAnalysis ma2ent = JAXBConvertor.convertNetworkMetaAnalysis(ma2.d_nwma, domain);
-		domain.addMetaAnalysis(ma2ent);
+		domain.getMetaAnalyses().add(ma2ent);
 
 		// create BR analysis
 		String[][] drugs = {
@@ -1581,10 +1581,10 @@ public class JAXBConvertorTest {
 	
 	@Test
 	public void testConvertBenefitRiskAnalyses() throws ConversionException, EntityIdExistsException, DatatypeConfigurationException {
-		DomainImpl domain = new DomainImpl();
+		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		domain.addAdverseEvent(ExampleData.buildAdverseEventConvulsion());
-		domain.addAdverseEvent(ExampleData.buildAdverseEventDiarrhea());
+		domain.getAdverseEvents().add(ExampleData.buildAdverseEventConvulsion());
+		domain.getAdverseEvents().add(ExampleData.buildAdverseEventDiarrhea());
 		
 		String name = "BR Analysis";
 		String[] adverseEvents = {ExampleData.buildAdverseEventDiarrhea().getName(), ExampleData.buildAdverseEventConvulsion().getName() };
@@ -1609,16 +1609,16 @@ public class JAXBConvertorTest {
 				name, study, endpoints, adverseEvents, whichArms);
 		
 		Study convertStudy = JAXBConvertor.convertStudy(study, domain);
-		domain.addStudy(convertStudy);
+		domain.getStudies().add(convertStudy);
 		
 		String pwName = "pairwise MA";
 		String nwName = "network MA";
 		MetaAnalysisWithStudies pairWiseMetaAnalysis = buildPairWiseMetaAnalysis(pwName);
 		MetaAnalysisWithStudies networkMetaAnalysis = buildNetworkMetaAnalysis(nwName);
 		addStudies(domain, pairWiseMetaAnalysis);
-		domain.addMetaAnalysis(JAXBConvertor.convertPairWiseMetaAnalysis(pairWiseMetaAnalysis.d_pwma, domain));
+		domain.getMetaAnalyses().add(JAXBConvertor.convertPairWiseMetaAnalysis(pairWiseMetaAnalysis.d_pwma, domain));
 		addStudies(domain, networkMetaAnalysis);
-		domain.addMetaAnalysis(JAXBConvertor.convertNetworkMetaAnalysis(networkMetaAnalysis.d_nwma, domain));
+		domain.getMetaAnalyses().add(JAXBConvertor.convertNetworkMetaAnalysis(networkMetaAnalysis.d_nwma, domain));
 		
 		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis metaBR = buildMetaBR("Meta BR", 
 				new String[][] { 

@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -48,7 +49,7 @@ import com.jgoodies.binding.list.ObservableList;
 
 public class SelectableStudyGraphModelTest {
 
-	private DomainImpl d_domain;
+	private Domain d_domain;
 	private ArrayList<DrugSet> d_drugs;
 	private SelectableStudyGraphModel d_pm;
 	private ListHolder<DrugSet> d_drugListHolder;

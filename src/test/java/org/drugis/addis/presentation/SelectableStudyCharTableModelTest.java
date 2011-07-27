@@ -57,8 +57,8 @@ public class SelectableStudyCharTableModelTest {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
-		d_ind = d_domain.getIndications().first();
-		FilteredObservableList<Study> filteredStudies = new FilteredObservableList<Study>(d_domain.getStudiesModel(), new DomainImpl.IndicationFilter(d_ind));
+		d_ind = d_domain.getIndications().get(0);
+		FilteredObservableList<Study> filteredStudies = new FilteredObservableList<Study>(d_domain.getStudies(), new DomainImpl.IndicationFilter(d_ind));
 		d_pm = new DefaultSelectableStudyListPresentation(
 				new DefaultStudyListPresentation(filteredStudies));
 		d_model = new SelectableStudyCharTableModel(d_pm, new PresentationModelFactory(d_domain));

@@ -78,11 +78,11 @@ public class AddVariableDialog extends OkCancelDialog {
 		}
 		
 		if (d_pm.getBean() instanceof Endpoint) {
-			d_domain.addEndpoint((Endpoint) d_pm.getBean());
+			d_domain.getEndpoints().add(((Endpoint) d_pm.getBean()));
 		} else if (d_pm.getBean() instanceof AdverseEvent) {
-			d_domain.addAdverseEvent((AdverseEvent) d_pm.getBean());
+			d_domain.getAdverseEvents().add(((AdverseEvent) d_pm.getBean()));
 		} else if (d_pm.getBean() instanceof PopulationCharacteristic) {
-			d_domain.addPopulationCharacteristic((PopulationCharacteristic) d_pm.getBean());
+			d_domain.getPopulationCharacteristics().add(((PopulationCharacteristic) d_pm.getBean()));
 		} else { 
 			throw new IllegalArgumentException("Unknown type of OutcomeMeasure.");
 		}

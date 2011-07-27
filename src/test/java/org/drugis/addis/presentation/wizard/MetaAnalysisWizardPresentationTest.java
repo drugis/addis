@@ -96,7 +96,7 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testSetIndication() {
-		Indication newValue = d_domain.getIndications().first();
+		Indication newValue = d_domain.getIndications().get(0);
 		ValueModel vm = d_wizard.getIndicationModel();
 		JUnitUtil.testSetter(vm, null, newValue);
 		
@@ -115,7 +115,7 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testGetEndpointSetForAdverseEvent() {
-		d_domain.getStudies().first().getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(ExampleData.buildAdverseEventConvulsion()));
+		d_domain.getStudies().get(0).getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(ExampleData.buildAdverseEventConvulsion()));
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		List<OutcomeMeasure> expected = new ArrayList<OutcomeMeasure>();
 		expected.add(ExampleData.buildEndpointCgi());
@@ -550,11 +550,11 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testSwitchingRateToContinuousDrugStep() {
 		Study burke = ExampleData.buildStudyBurke();
-		d_domain.addStudy(burke);
-		d_domain.addDrug(ExampleData.buildDrugCitalopram());
-		d_domain.addDrug(ExampleData.buildDrugEscitalopram());
-		d_domain.addEndpoint(ExampleData.buildEndpointMadrs());
-		d_domain.addAdverseEvent(ExampleData.buildAdverseEventDiarrhea());
+		d_domain.getStudies().add(burke);
+		d_domain.getDrugs().add(ExampleData.buildDrugCitalopram());
+		d_domain.getDrugs().add(ExampleData.buildDrugEscitalopram());
+		d_domain.getEndpoints().add(ExampleData.buildEndpointMadrs());
+		d_domain.getAdverseEvents().add(ExampleData.buildAdverseEventDiarrhea());
 		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());

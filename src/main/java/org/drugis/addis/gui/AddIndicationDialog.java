@@ -69,7 +69,7 @@ public class AddIndicationDialog extends OkCancelDialog {
 			return;
 		}
 		
-		d_domain.addIndication(d_indication);
+		d_domain.getIndications().add(d_indication);
 		setVisible(false);
 		d_mainWindow.leftTreeFocus(d_indication);
 		if (d_selectionModel != null)

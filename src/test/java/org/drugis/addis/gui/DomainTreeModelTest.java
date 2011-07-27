@@ -102,15 +102,15 @@ public class DomainTreeModelTest {
 		
 		d_firstPopChar = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		
-		d_domain.addIndication(d_firstIndication);
-		d_domain.addEndpoint(d_firstEndpoint);
-		d_domain.addAdverseEvent(d_firstADE);
-		d_domain.addStudy(d_firstStudy);
-		d_domain.addDrug(d_firstDrug);
-		d_domain.addPopulationCharacteristic(d_firstPopChar);
+		d_domain.getIndications().add(d_firstIndication);
+		d_domain.getEndpoints().add(d_firstEndpoint);
+		d_domain.getAdverseEvents().add(d_firstADE);
+		d_domain.getStudies().add(d_firstStudy);
+		d_domain.getDrugs().add(d_firstDrug);
+		d_domain.getPopulationCharacteristics().add(d_firstPopChar);
 		
-		d_domain.addMetaAnalysis(d_firstMetaAnalysis);
-		d_domain.addMetaAnalysis(d_networkAnalysis);
+		d_domain.getMetaAnalyses().add(d_firstMetaAnalysis);
+		d_domain.getMetaAnalyses().add(d_networkAnalysis);
 		
 		d_treeModel = new DomainTreeModel(d_domain);
 	}
@@ -232,7 +232,7 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addIndication(new Indication(10L, "Blah"));
+		d_domain.getIndications().add(new Indication(10L, "Blah"));
 		verify(listener);
 	}
 	
@@ -243,7 +243,7 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addEndpoint(new Endpoint("E", Endpoint.convertVarType(Variable.Type.RATE)));
+		d_domain.getEndpoints().add(new Endpoint("E", Endpoint.convertVarType(Variable.Type.RATE)));
 		verify(listener);
 	}
 	
@@ -254,7 +254,7 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addAdverseEvent(new AdverseEvent());
+		d_domain.getAdverseEvents().add(new AdverseEvent());
 		verify(listener);
 	}
 	
@@ -266,7 +266,7 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addStudy(new Study("X", d_firstIndication));
+		d_domain.getStudies().add(new Study("X", d_firstIndication));
 		verify(listener);
 	}
 	
@@ -277,7 +277,7 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addDrug(new Drug("X", "atc"));
+		d_domain.getDrugs().add(new Drug("X", "atc"));
 		verify(listener);
 	}	
 	
@@ -288,7 +288,7 @@ public class DomainTreeModelTest {
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.addPopulationCharacteristic(new PopulationCharacteristic("X", new ContinuousVariableType()));
+		d_domain.getPopulationCharacteristics().add(new PopulationCharacteristic("X", new ContinuousVariableType()));
 		verify(listener);
 	}	
 	
@@ -296,7 +296,7 @@ public class DomainTreeModelTest {
 	public void testMetaStudyIsLeaf() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		RandomEffectsMetaAnalysis study = new RandomEffectsMetaAnalysis("meta2", d_firstEndpoint, new ArrayList<Study>(Collections.singleton(d_firstStudy)),
 				new DrugSet(d_firstDrug), new DrugSet(d_firstDrug));
-		d_domain.addMetaAnalysis(study);
+		d_domain.getMetaAnalyses().add(study);
 		assertTrue(d_treeModel.isLeaf(study));
 		assertTrue(d_treeModel.isLeaf(d_networkAnalysis));
 	}

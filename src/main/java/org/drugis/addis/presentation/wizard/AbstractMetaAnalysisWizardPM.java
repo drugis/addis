@@ -123,7 +123,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	}
 	
 	private ObservableList<Study> createStudiesIndicationOutcome() {
-		final FilteredObservableList<Study> studies = new FilteredObservableList<Study>(d_domain.getStudiesModel(), getIndicationOutcomeFilter());
+		final FilteredObservableList<Study> studies = new FilteredObservableList<Study>(d_domain.getStudies(), getIndicationOutcomeFilter());
 		PropertyChangeListener listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				studies.setFilter(getIndicationOutcomeFilter());
@@ -207,7 +207,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 
 	public MetaAnalysis saveMetaAnalysis(String name) throws EntityIdExistsException {
 		MetaAnalysis ma = createMetaAnalysis(name);		
-		d_domain.addMetaAnalysis(ma);
+		d_domain.getMetaAnalyses().add(ma);
 		return ma;
 	}
 

@@ -73,32 +73,32 @@ public class DomainTest {
 	
 	@Test(expected=NullPointerException.class)
 	public void testAddEndpointNull() {
-		d_domain.addEndpoint(null);
+		d_domain.getEndpoints().add(null);
 	}
 	
 	@Test(expected=NullPointerException.class)
 	public void testAddStudyNull() {
-		d_domain.addStudy(null);
+		d_domain.getStudies().add(null);
 	}
 	
 	@Test(expected=NullPointerException.class)
 	public void testAddDrugNull() {
-		d_domain.addStudy(null);
+		d_domain.getStudies().add(null);
 	}
 	
 	@Test(expected=NullPointerException.class)
 	public void testAddIndicationNull() {
-		d_domain.addIndication(null);
+		d_domain.getIndications().add(null);
 	}
 	
 	@Test(expected=NullPointerException.class)
 	public void testAddMetaAnalysisNull() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
-		d_domain.addMetaAnalysis(null);
+		d_domain.getMetaAnalyses().add(null);
 	}
 	
 	@Test(expected=NullPointerException.class)
 	public void testAddVariableNull() {
-		d_domain.addPopulationCharacteristic(null);
+		d_domain.getPopulationCharacteristics().add(null);
 	}	
 	
 
@@ -106,15 +106,9 @@ public class DomainTest {
 	public void testAddEndpoint() {
 		Endpoint e = new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE));
 		assertEquals(0, d_domain.getEndpoints().size());
-		d_domain.addEndpoint(e);
+		d_domain.getEndpoints().add(e);
 		assertEquals(1, d_domain.getEndpoints().size());
-		assertEquals(Collections.singleton(e), d_domain.getEndpoints());
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void testAddStudyThrowsOnUnknownIndication() {
-		Study s = new Study("X", new Indication(2L, ""));
-		d_domain.addStudy(s);
+		assertEquals(Collections.singletonList(e), d_domain.getEndpoints());
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -125,28 +119,17 @@ public class DomainTest {
 		studies.add(new Study("iiidddd", ExampleData.buildIndicationDepression()));
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
 				studies, new DrugSet(ExampleData.buildDrugFluoxetine()), new DrugSet(ExampleData.buildDrugParoxetine()));
-		d_domain.addMetaAnalysis(ma);
-	}
-	
-	
-	
-	@Test(expected=EntityIdExistsException.class)
-	public void testAddMetaAnalysisThrowsOnExistingName() throws Exception {
-		ExampleData.initDefaultData(d_domain);
-		RandomEffectsMetaAnalysis ma = generateMetaAnalysis();
-		d_domain.addMetaAnalysis(ma);
-		RandomEffectsMetaAnalysis ma1 = generateMetaAnalysis();
-		d_domain.addMetaAnalysis(ma1);
+		d_domain.getMetaAnalyses().add(ma);
 	}
 	
 	@Test
 	public void testAddStudy() {
-		d_domain.addIndication(d_indication);
+		d_domain.getIndications().add(d_indication);
 		Study s = new Study("X", d_indication);
 		assertEquals(0, d_domain.getStudies().size());
-		d_domain.addStudy(s);
+		d_domain.getStudies().add(s);
 		assertEquals(1, d_domain.getStudies().size());
-		assertEquals(Collections.singleton(s), d_domain.getStudies());
+		assertEquals(Collections.singletonList(s), d_domain.getStudies());
 	}
 	
 	
@@ -154,18 +137,18 @@ public class DomainTest {
 	public void testAddStudyBenefitRiskAnalysis() throws Exception {
 		StudyBenefitRiskAnalysis sbr = ExampleData.buildStudyBenefitRiskAnalysis();
 		ExampleData.initDefaultData(d_domain);
-		d_domain.addBenefitRiskAnalysis(sbr);
+		d_domain.getBenefitRiskAnalyses().add(sbr);
 		assertTrue(d_domain.getBenefitRiskAnalyses().contains(sbr));
-		assertEntityEquals(sbr, d_domain.getBenefitRiskAnalyses().first());
+		assertEntityEquals(sbr, d_domain.getBenefitRiskAnalyses().get(0));
 	}
 	
 	@Test
 	public void testDeleteStudyBenefitRiskAnalysis() throws DependentEntitiesException {
 		StudyBenefitRiskAnalysis sbr = ExampleData.buildStudyBenefitRiskAnalysis();
 		ExampleData.initDefaultData(d_domain);
-		d_domain.addBenefitRiskAnalysis(sbr);
+		d_domain.getBenefitRiskAnalyses().add(sbr);
 		assertTrue(d_domain.getBenefitRiskAnalyses().contains(sbr));
-		assertEntityEquals(sbr, d_domain.getBenefitRiskAnalyses().first());
+		assertEntityEquals(sbr, d_domain.getBenefitRiskAnalyses().get(0));
 
 		d_domain.deleteEntity(sbr);
 		assertFalse(d_domain.getBenefitRiskAnalyses().contains(sbr));
@@ -176,18 +159,18 @@ public class DomainTest {
 	public void testAddMetaBenefitRiskAnalysis() throws Exception {
 		MetaBenefitRiskAnalysis mbr = ExampleData.buildMetaBenefitRiskAnalysis();
 		ExampleData.initDefaultData(d_domain);
-		d_domain.addBenefitRiskAnalysis(mbr);
+		d_domain.getBenefitRiskAnalyses().add(mbr);
 		assertTrue(d_domain.getBenefitRiskAnalyses().contains(mbr));
-		assertEntityEquals(mbr, d_domain.getBenefitRiskAnalyses().first());
+		assertEntityEquals(mbr, d_domain.getBenefitRiskAnalyses().get(0));
 	}
 	
 	@Test
 	public void testDeleteMetaBenefitRiskAnalysis() throws DependentEntitiesException {
 		MetaBenefitRiskAnalysis mbr = ExampleData.buildMetaBenefitRiskAnalysis();
 		ExampleData.initDefaultData(d_domain);
-		d_domain.addBenefitRiskAnalysis(mbr);
+		d_domain.getBenefitRiskAnalyses().add(mbr);
 		assertTrue(d_domain.getBenefitRiskAnalyses().contains(mbr));
-		assertEntityEquals(mbr, d_domain.getBenefitRiskAnalyses().first());
+		assertEntityEquals(mbr, d_domain.getBenefitRiskAnalyses().get(0));
 
 		d_domain.deleteEntity(mbr);
 		assertFalse(d_domain.getBenefitRiskAnalyses().contains(mbr));
@@ -205,14 +188,14 @@ public class DomainTest {
 	private RandomEffectsMetaAnalysis addMetaAnalysisToDomain() throws Exception {
 		ExampleData.initDefaultData(d_domain);
 		RandomEffectsMetaAnalysis ma = generateMetaAnalysis();
-		d_domain.addMetaAnalysis(ma);
+		d_domain.getMetaAnalyses().add(ma);
 		return ma;
 	}
 	
 	private NetworkMetaAnalysis addNetworkMetaAnalysisToDomain() throws Exception {
 		ExampleData.initDefaultData(d_domain);
 		NetworkMetaAnalysis ma = ExampleData.buildNetworkMetaAnalysisHamD();
-		d_domain.addMetaAnalysis(ma);
+		d_domain.getMetaAnalyses().add(ma);
 		return ma;
 	}
 
@@ -234,7 +217,7 @@ public class DomainTest {
 		studies.add(study2);
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
 				studies, new DrugSet(ExampleData.buildDrugFluoxetine()), new DrugSet(ExampleData.buildDrugParoxetine()));
-		d_domain.addMetaAnalysis(ma);
+		d_domain.getMetaAnalyses().add(ma);
 	}
 	
 	@Test
@@ -250,18 +233,18 @@ public class DomainTest {
 	public void testAddDrug() {
 		Drug d = new Drug("name", "atc");
 		assertEquals(0, d_domain.getDrugs().size());
-		d_domain.addDrug(d);
+		d_domain.getDrugs().add(d);
 		assertEquals(1, d_domain.getDrugs().size());
-		assertEquals(Collections.singleton(d), d_domain.getDrugs());
+		assertEquals(Collections.singletonList(d), d_domain.getDrugs());
 	}
 	
 	@Test
 	public void testAddIndication() {
 		Indication i1 = new Indication(310497006L, "Severe depression");
 		assertEquals(0, d_domain.getIndications().size());
-		d_domain.addIndication(i1);
+		d_domain.getIndications().add(i1);
 		assertEquals(1, d_domain.getIndications().size());
-		assertEquals(Collections.singleton(i1), d_domain.getIndications());
+		assertEquals(Collections.singletonList(i1), d_domain.getIndications());
 	}
 	
 	@Test
@@ -289,9 +272,9 @@ public class DomainTest {
 		ObservableList<Study> e2Studies = d_domain.getStudies(e2);
 		ObservableList<Study> e3Studies = d_domain.getStudies(e3);
 		
-		d_domain.addIndication(d_indication);
-		d_domain.addStudy(s1);
-		d_domain.addStudy(s2);
+		d_domain.getIndications().add(d_indication);
+		d_domain.getStudies().add(s1);
+		d_domain.getStudies().add(s2);
 
 		assertEquals(2, e1Studies.size());
 		assertEquals(1, e2Studies.size());
@@ -310,7 +293,7 @@ public class DomainTest {
 		ArrayList<Endpoint> l1 = new ArrayList<Endpoint>();
 		l1.add(e1);
 		Indication i1 = new Indication(0L, "");
-		d_domain.addIndication(i1);
+		d_domain.getIndications().add(i1);
 		Study s1 = new Study("s1", i1);
 		s1.getEndpoints().clear();
 		s1.getEndpoints().addAll(Study.wrapVariables(l1));
@@ -322,11 +305,11 @@ public class DomainTest {
 		s2.getEndpoints().clear();
 		s2.getEndpoints().addAll(Study.wrapVariables(l2));
 		
-		d_domain.addStudy(s1);
-		d_domain.addStudy(s2);
+		d_domain.getStudies().add(s1);
+		d_domain.getStudies().add(s2);
 		
 		Indication i2 = new Indication(007L,"This indication does not exists.");
-		d_domain.addIndication(i2);
+		d_domain.getIndications().add(i2);
 		
 		ObservableList<Study> studies = d_domain.getStudies(i1);
 		assertEquals(2, studies.size());
@@ -340,7 +323,7 @@ public class DomainTest {
 		s3.getEndpoints().clear();
 		s3.getEndpoints().addAll(Study.wrapVariables(l2));
 		
-		d_domain.addStudy(s3);
+		d_domain.getStudies().add(s3);
 		assertTrue(studies.contains(s3));
 	}
 	
@@ -358,10 +341,10 @@ public class DomainTest {
 		Arm g1 = s1.createAndAddArm("g1", 100, d1, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY));
 		BasicMeasurement m1 = new BasicRateMeasurement(10, g1.getSize());
 		s1.setMeasurement(e, g1, m1);
-		d_domain.addIndication(d_indication);
+		d_domain.getIndications().add(d_indication);
 		
 		Indication indic2 = new Indication(1L, "");
-		d_domain.addIndication(indic2);
+		d_domain.getIndications().add(indic2);
 		Study s2 = new Study("s2", indic2);
 		s2.getEndpoints().clear();
 		s2.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(e)));
@@ -377,8 +360,8 @@ public class DomainTest {
 		ObservableList<Study> d2Studies = d_domain.getStudies(d2);
 		ObservableList<Study> d3Studies = d_domain.getStudies(d3);		
 		
-		d_domain.addStudy(s1);
-		d_domain.addStudy(s2);
+		d_domain.getStudies().add(s1);
+		d_domain.getStudies().add(s2);
 		
 		assertEquals(2, d1Studies.size());
 		assertEquals(1, d2Studies.size());
@@ -402,10 +385,10 @@ public class DomainTest {
 		Arm g1 = s1.createAndAddArm("g1", 100, d1, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY));
 		BasicMeasurement m1 = new BasicRateMeasurement(10, g1.getSize());
 		s1.setMeasurement(e, g1, m1);
-		d_domain.addIndication(d_indication);
+		d_domain.getIndications().add(d_indication);
 		
 		Indication indic2 = new Indication(1L, "");
-		d_domain.addIndication(indic2);
+		d_domain.getIndications().add(indic2);
 		Study s2 = new Study("s2", indic2);
 		s2.getEndpoints().clear();
 		s2.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(e)));
@@ -417,10 +400,10 @@ public class DomainTest {
 		s2.setMeasurement(e, g3, m3);
 		
 		
-		ObservableList<Study> studies = d_domain.getStudiesHolder();
+		ObservableList<Study> studies = d_domain.getStudies();
 		
-		d_domain.addStudy(s1);
-		d_domain.addStudy(s2);
+		d_domain.getStudies().add(s1);
+		d_domain.getStudies().add(s2);
 		
 		assertEquals(2, studies.size());
 		
@@ -437,27 +420,27 @@ public class DomainTest {
 		
 		Endpoint e1 = new Endpoint("e1", Endpoint.convertVarType(Variable.Type.RATE));
 		Endpoint e2 = new Endpoint("e2", Endpoint.convertVarType(Variable.Type.RATE));
-		d1.addEndpoint(e1);
-		d1.addEndpoint(e2);
-		d2.addEndpoint(e1);
+		d1.getEndpoints().add(e1);
+		d1.getEndpoints().add(e2);
+		d2.getEndpoints().add(e1);
 		JUnitUtil.assertNotEquals(d1, d2);
-		d2.addEndpoint(e2);
+		d2.getEndpoints().add(e2);
 		assertEquals(d1, d2);
 		assertEquals(d1.hashCode(), d2.hashCode());
 		
 		Drug d = new Drug("d1", "atc");
-		d1.addDrug(d);
+		d1.getDrugs().add(d);
 		JUnitUtil.assertNotEquals(d1, d2);
-		d2.addDrug(d);
+		d2.getDrugs().add(d);
 		assertEquals(d1, d2);
 		assertEquals(d1.hashCode(), d2.hashCode());
 		
-		d1.addIndication(d_indication);
+		d1.getIndications().add(d_indication);
 		Study s = new Study("s1", d_indication);
-		d1.addStudy(s);
+		d1.getStudies().add(s);
 		JUnitUtil.assertNotEquals(d1, d2);
-		d2.addIndication(d_indication);
-		d2.addStudy(s);
+		d2.getIndications().add(d_indication);
+		d2.getStudies().add(s);
 		assertEquals(d1, d2);
 		assertEquals(d1.hashCode(), d2.hashCode());
 	}
@@ -465,8 +448,8 @@ public class DomainTest {
 	@Test
 	public void testDeleteStudy() throws DependentEntitiesException {
 		Study s = new Study("X", d_indication);
-		d_domain.addIndication(d_indication);
-		d_domain.addStudy(s);
+		d_domain.getIndications().add(d_indication);
+		d_domain.getStudies().add(s);
 		d_domain.deleteEntity(s);
 		assertTrue(d_domain.getStudies().isEmpty());
 	}
@@ -484,25 +467,25 @@ public class DomainTest {
 		s2.createAndAddArm("fluox", 23, fluox, new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY));
 		s2.createAndAddArm("parox", 23, parox, new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY));
 		
-		d_domain.addIndication(d_indication);
-		d_domain.addStudy(s1);
-		d_domain.addStudy(s2);
+		d_domain.getIndications().add(d_indication);
+		d_domain.getStudies().add(s1);
+		d_domain.getStudies().add(s2);
 		
 		Endpoint e = new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE));
-		d_domain.addEndpoint(e);
+		d_domain.getEndpoints().add(e);
 		s1.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(e));
 		s2.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(e));
 		
 		ArrayList<Study> studies = new ArrayList<Study>(d_domain.getStudies());
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", e, studies, new DrugSet(fluox), new DrugSet(parox)); 
-		d_domain.addMetaAnalysis(ma);
+		d_domain.getMetaAnalyses().add(ma);
 		d_domain.deleteEntity(s1);
 	}
 	
 	@Test
 	public void testDeleteDrug() throws DependentEntitiesException {
 		Drug d = new Drug("X", "atc");
-		d_domain.addDrug(d);
+		d_domain.getDrugs().add(d);
 		d_domain.deleteEntity(d);
 		assertTrue(d_domain.getDrugs().isEmpty());
 	}
@@ -510,11 +493,11 @@ public class DomainTest {
 	@Test(expected=DependentEntitiesException.class)
 	public void testDeleteDrugThrowsCorrectException() throws DependentEntitiesException {
 		Study s1 = new Study("X", d_indication);
-		d_domain.addIndication(d_indication);
-		d_domain.addStudy(s1);
+		d_domain.getIndications().add(d_indication);
+		d_domain.getStudies().add(s1);
 		
 		Drug d = new Drug("d", "atc");
-		d_domain.addDrug(d);
+		d_domain.getDrugs().add(d);
 	
 		s1.createAndAddArm("g", 10, d, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));
 		d_domain.deleteEntity(d);
@@ -523,7 +506,7 @@ public class DomainTest {
 	@Test
 	public void testDeleteEndpoint() throws DependentEntitiesException {
 		Endpoint e = new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE));
-		d_domain.addEndpoint(e);
+		d_domain.getEndpoints().add(e);
 		d_domain.deleteEntity(e);
 		assertTrue(d_domain.getEndpoints().isEmpty());
 	}
@@ -531,11 +514,11 @@ public class DomainTest {
 	@Test(expected=DependentEntitiesException.class)
 	public void testDeleteEndpointThrowsCorrectException() throws DependentEntitiesException {
 		Study s1 = new Study("X", d_indication);
-		d_domain.addIndication(d_indication);
-		d_domain.addStudy(s1);
+		d_domain.getIndications().add(d_indication);
+		d_domain.getStudies().add(s1);
 		
 		Endpoint e = new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE));
-		d_domain.addEndpoint(e);
+		d_domain.getEndpoints().add(e);
 		s1.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(e));
 			
 		d_domain.deleteEntity(e);
@@ -544,7 +527,7 @@ public class DomainTest {
 	@Test
 	public void testDeleteIndication() throws DependentEntitiesException {
 		Indication i = new Indication(01L, "i");
-		d_domain.addIndication(i);
+		d_domain.getIndications().add(i);
 		d_domain.deleteEntity(i);
 		assertTrue(d_domain.getIndications().isEmpty());
 	}
@@ -553,8 +536,8 @@ public class DomainTest {
 	public void testDeleteIndicationThrowsCorrectException() throws DependentEntitiesException {
 		Indication indication = new Indication(5L, "");
 		Study s1 = new Study("X", indication);
-		d_domain.addIndication(indication);
-		d_domain.addStudy(s1);
+		d_domain.getIndications().add(indication);
+		d_domain.getStudies().add(s1);
 			
 		d_domain.deleteEntity(indication);
 	}
@@ -562,29 +545,29 @@ public class DomainTest {
 	@Test
 	public void testGetVariables() {
 		PopulationCharacteristic c = new PopulationCharacteristic("x", new CategoricalVariableType(Arrays.asList((new String[]{"x", "y", "z"}))));
-		d_domain.addPopulationCharacteristic(c);
+		d_domain.getPopulationCharacteristics().add(c);
 		
-		assertEquals(Collections.singleton(c), d_domain.getPopulationCharacteristics());
+		assertEquals(Collections.singletonList(c), d_domain.getPopulationCharacteristics());
 	}
 	
 	@Test(expected=NullPointerException.class)
 	public void testAddAdeNull() {
-		d_domain.addAdverseEvent(null);
+		d_domain.getAdverseEvents().add(null);
 	}
 	
 	@Test
 	public void testAddAde() {
 		AdverseEvent ade = new AdverseEvent("a", AdverseEvent.convertVarType(Variable.Type.RATE));
 		assertEquals(0, d_domain.getAdverseEvents().size());
-		d_domain.addAdverseEvent(ade);
+		d_domain.getAdverseEvents().add(ade);
 		assertEquals(1, d_domain.getAdverseEvents().size());
-		assertEquals(Collections.singleton(ade), d_domain.getAdverseEvents());
+		assertEquals(Collections.singletonList(ade), d_domain.getAdverseEvents());
 	}
 	
 	@Test
 	public void testDeleteAde() throws DependentEntitiesException {
 		AdverseEvent e = new AdverseEvent("e", AdverseEvent.convertVarType(Variable.Type.RATE));
-		d_domain.addAdverseEvent(e);
+		d_domain.getAdverseEvents().add(e);
 		d_domain.deleteEntity(e);
 		assertTrue(d_domain.getAdverseEvents().isEmpty());
 	}
@@ -592,11 +575,11 @@ public class DomainTest {
 	@Test(expected=DependentEntitiesException.class)
 	public void testDeleteAdeThrowsCorrectException() throws DependentEntitiesException {
 		Study s1 = new Study("X", d_indication);
-		d_domain.addIndication(d_indication);
-		d_domain.addStudy(s1);
+		d_domain.getIndications().add(d_indication);
+		d_domain.getStudies().add(s1);
 		
 		AdverseEvent a = new AdverseEvent("e", AdverseEvent.convertVarType(Variable.Type.RATE));
-		d_domain.addAdverseEvent(a);
+		d_domain.getAdverseEvents().add(a);
 		s1.getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(a));
 			
 		d_domain.deleteEntity(a);
@@ -636,21 +619,21 @@ public class DomainTest {
 	
 	@Test
 	public void testGetCategoryContents() {
-		assertEquals(d_domain.getIndicationsModel(), d_domain.getCategoryContents(
+		assertEquals(d_domain.getIndications(), d_domain.getCategoryContents(
 				d_domain.getCategory(Indication.class)));
-		assertEquals(d_domain.getDrugsModel(), d_domain.getCategoryContents(
+		assertEquals(d_domain.getDrugs(), d_domain.getCategoryContents(
 				d_domain.getCategory(Drug.class)));
-		assertEquals(d_domain.getEndpointsModel(), d_domain.getCategoryContents(
+		assertEquals(d_domain.getEndpoints(), d_domain.getCategoryContents(
 				d_domain.getCategory(Endpoint.class)));
-		assertEquals(d_domain.getAdverseEventsModel(), d_domain.getCategoryContents(
+		assertEquals(d_domain.getAdverseEvents(), d_domain.getCategoryContents(
 				d_domain.getCategory(AdverseEvent.class)));
-		assertEquals(d_domain.getPopulationCharacteristicsModel(), d_domain.getCategoryContents(
+		assertEquals(d_domain.getPopulationCharacteristics(), d_domain.getCategoryContents(
 				d_domain.getCategory(PopulationCharacteristic.class)));
-		assertEquals(d_domain.getStudiesModel(), d_domain.getCategoryContents(
+		assertEquals(d_domain.getStudies(), d_domain.getCategoryContents(
 				d_domain.getCategory(Study.class)));
-		assertEquals(d_domain.getPairWiseMetaAnalysesModel(), d_domain.getCategoryContents(
+		assertEquals(d_domain.getPairWiseMetaAnalyses(), d_domain.getCategoryContents(
 				d_domain.getCategory(PairWiseMetaAnalysis.class)));
-		assertEquals(d_domain.getBenefitRiskAnalysesModel(), d_domain.getCategoryContents(
+		assertEquals(d_domain.getBenefitRiskAnalyses(), d_domain.getCategoryContents(
 				d_domain.getCategory(BenefitRiskAnalysis.class)));
 	}
 	
@@ -680,26 +663,26 @@ public class DomainTest {
 			}
 		});
 		
-		d_domain.addDrug(viagra);
+		d_domain.getDrugs().add(viagra);
 		
 		assertTrue(d_eventFired);
 	}
 	
 	@Test
 	public void testGetPairWiseMetaAnalyses() throws Exception {
-		assertEquals(Collections.emptySet(), d_domain.getPairWiseMetaAnalyses());
+		assertEquals(Collections.emptyList(), d_domain.getPairWiseMetaAnalyses());
 		PairWiseMetaAnalysis anl = addMetaAnalysisToDomain();
-		assertEquals(Collections.singleton(anl), d_domain.getPairWiseMetaAnalyses());
+		assertEquals(Collections.singletonList(anl), d_domain.getPairWiseMetaAnalyses());
 		addNetworkMetaAnalysisToDomain();
-		assertEquals(Collections.singleton(anl), d_domain.getPairWiseMetaAnalyses());
+		assertEquals(Collections.singletonList(anl), d_domain.getPairWiseMetaAnalyses());
 	}
 	
 	@Test
 	public void testGetNetworkMetaAnalyses() throws Exception {
-		assertEquals(Collections.emptySet(), d_domain.getNetworkMetaAnalyses());
+		assertEquals(Collections.emptyList(), d_domain.getNetworkMetaAnalyses());
 		NetworkMetaAnalysis anl = addNetworkMetaAnalysisToDomain();
-		assertEquals(Collections.singleton(anl), d_domain.getNetworkMetaAnalyses());
+		assertEquals(Collections.singletonList(anl), d_domain.getNetworkMetaAnalyses());
 		addMetaAnalysisToDomain();
-		assertEquals(Collections.singleton(anl), d_domain.getNetworkMetaAnalyses());
+		assertEquals(Collections.singletonList(anl), d_domain.getNetworkMetaAnalyses());
 	}
 }

@@ -43,7 +43,7 @@ public class DrugPresentation extends PresentationModel<Drug> implements StudyLi
 
 	public DrugPresentation(final Drug drug, Domain domain) {
 		super(drug);
-		d_studies = new FilteredObservableList<Study>(domain.getStudiesModel(), new FilteredObservableList.Filter<Study>() {
+		d_studies = new FilteredObservableList<Study>(domain.getStudies(), new FilteredObservableList.Filter<Study>() {
 			@Override
 			public boolean accept(Study s) {
 				return EntityUtil.flatten(s.getDrugs()).contains(drug);

@@ -35,6 +35,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
@@ -68,7 +69,7 @@ public class NetworkTableModelTest {
 
 	@Before
 	public void setUp() {
-		DomainImpl domain = new DomainImpl();
+		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
 		d_analysis = buildMockNetworkMetaAnalysis();
 		d_pmf = new PresentationModelFactory(domain);

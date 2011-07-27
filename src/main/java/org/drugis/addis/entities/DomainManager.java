@@ -39,7 +39,7 @@ import org.drugis.addis.util.JAXBConvertor.ConversionException;
 
 
 public class DomainManager {
-	private DomainImpl d_domain = new DomainImpl();
+	private Domain d_domain = new DomainImpl();
 	
 	public Domain getDomain() {
 		return d_domain;
@@ -75,7 +75,7 @@ public class DomainManager {
 	public void loadXMLDomain(InputStream is, int version) throws IOException {
 		try {
 			AddisData data = JAXBHandler.unmarshallAddisData(JAXBConvertor.transformToLatest(is, version));
-			d_domain = (DomainImpl) JAXBConvertor.convertAddisDataToDomain(data);
+			d_domain = (Domain) JAXBConvertor.convertAddisDataToDomain(data);
 		} catch (JAXBException e) {
 			throw new RuntimeException(e);
 		} catch (ConversionException e) {

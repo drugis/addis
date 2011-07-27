@@ -34,6 +34,7 @@ import javax.swing.event.TableModelListener;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
+import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Study;
@@ -57,7 +58,7 @@ public class NetworkInconsistencyTableModelTest {
 	
 	@Before
 	public void setUp() {
-		DomainImpl domain = new DomainImpl();
+		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
 		d_analysis = NetworkTableModelTest.buildMockNetworkMetaAnalysis();
 		d_pmf = new PresentationModelFactory(domain);

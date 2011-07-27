@@ -74,8 +74,8 @@ public class EntityTableModelTest {
 	
 	@Test
 	public void testGetValueAt() {
-		assertEquals(d_domain.getDrugs().first(), d_tableModel.getValueAt(0, 0));
-		assertEquals(d_domain.getDrugs().first().getAtcCode(), d_tableModel.getValueAt(0, 1));
+		assertEquals(d_domain.getDrugs().get(0), d_tableModel.getValueAt(0, 0));
+		assertEquals(d_domain.getDrugs().get(0).getAtcCode(), d_tableModel.getValueAt(0, 1));
 	}
 	
 	@Test
@@ -89,7 +89,7 @@ public class EntityTableModelTest {
 		int prevSize = d_tableModel.getRowCount();
 		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(d_tableModel));
 		d_tableModel.addTableModelListener(mock);
-		d_domain.addDrug(ExampleData.buildDrugViagra());
+		d_domain.getDrugs().add(ExampleData.buildDrugViagra());
 		verify(mock);
 		assertEquals(prevSize + 1, d_tableModel.getRowCount());
 	}

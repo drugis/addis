@@ -88,7 +88,7 @@ public class PresentationModelFactory {
 			return new StudyPresentation((Study) obj, this);
 		}		
 		if (obj instanceof Indication) {
-			return new IndicationPresentation((Indication)obj, d_domain.getStudiesModel());
+			return new IndicationPresentation((Indication)obj, d_domain.getStudies());
 		}
 		if (obj instanceof RelativeEffect) {
 			return new RelativeEffectPresentation((RelativeEffect)obj);

@@ -27,7 +27,7 @@ package org.drugis.addis.entities;
 import java.util.Collection;
 
 @SuppressWarnings("serial")
-public class DependentEntitiesException extends Exception {
+public class DependentEntitiesException extends RuntimeException {
 
 	private Collection<Entity> d_dependents;
 

@@ -69,7 +69,7 @@ public class AddDrugDialog extends OkCancelDialog {
 			return;
 		}
 		
-		d_domain.addDrug(d_drug);
+		d_domain.getDrugs().add(d_drug);
 		setVisible(false);
 		d_mainWindow.leftTreeFocus(d_drug);
 		if (d_selectionModel != null)

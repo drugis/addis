@@ -45,7 +45,7 @@ public class AbstractWizardWithSelectableIndicationPM implements WizardWithSelec
 	}
 
 	public SortedSetModel<Indication> getIndicationsModel() {
-		return d_domain.getIndicationsModel();
+		return d_domain.getIndications();
 	}
 
 }

@@ -41,6 +41,7 @@ import javax.swing.event.TableModelListener;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicRateMeasurement;
+import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FrequencyMeasurement;
@@ -62,7 +63,7 @@ public class MeasurementTableModelTest {
 	
 	@Before
 	public void setUp() {
-		DomainImpl domain = new DomainImpl();
+		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
 		d_pmf = new PresentationModelFactory(domain);
 		d_standardStudy = ExampleData.buildStudyDeWilde();

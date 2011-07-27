@@ -54,7 +54,7 @@ public class IndicationPresentationTest {
 	public void testNameFireLabelChanged() {
 		Indication i = new Indication(5L, "Some indication");
 		Domain d = new DomainImpl();
-		IndicationPresentation p = new IndicationPresentation(i, d.getStudiesModel());
+		IndicationPresentation p = new IndicationPresentation(i, d.getStudies());
 		AbstractValueModel model = p.getLabelModel();
 		PropertyChangeListener x = JUnitUtil.mockListener(model, "value", "5 Some indication", "5 Other indication");
 		model.addPropertyChangeListener(x);

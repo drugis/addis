@@ -132,22 +132,19 @@ public class PresentationModelFactoryTest {
 
 	@Test
 	public void testGetOtherModel() {
-		assertNotNull(d_manager.getModel((Study) d_domain.getStudies().first()));
-	}
-	
-	private void makeStudyPmOnce (Study study) {
-		d_manager.getModel(study);
+		assertNotNull(d_manager.getModel((Study) d_domain.getStudies().get(0)));
 	}
 	
 	@Test
 	public void testPresentationModelDoesntCacheDeleted () throws DependentEntitiesException {
 		String id = "whichEveriD";
-		d_domain.addStudy(new Study(id, d_domain.getIndications().first()));
+		d_domain.getStudies().add(new Study(id, d_domain.getIndications().get(0)));
 		
-		d_domain.getStudies().last().setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, "This value should not be retained");
-		assertEquals("This value should not be retained",d_domain.getStudies().last().getCharacteristic(BasicStudyCharacteristic.OBJECTIVE));
-		makeStudyPmOnce(d_domain.getStudies().last());
-		d_domain.deleteEntity(d_domain.getStudies().last());
+		Study lastStudy = d_domain.getStudies().get(d_domain.getStudies().size()-1);
+		lastStudy.setCharacteristic(BasicStudyCharacteristic.OBJECTIVE, "This value should not be retained");
+		assertEquals("This value should not be retained",lastStudy.getCharacteristic(BasicStudyCharacteristic.OBJECTIVE));
+		d_manager.getModel(lastStudy);
+		d_domain.deleteEntity(lastStudy);
 		
 		Study myStudy = new Study(id, new Indication(0l, ""));
 		Object expected = myStudy.getCharacteristic(BasicStudyCharacteristic.OBJECTIVE);

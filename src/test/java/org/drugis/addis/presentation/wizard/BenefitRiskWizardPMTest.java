@@ -37,6 +37,7 @@ import java.util.TreeSet;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Endpoint;
@@ -53,7 +54,7 @@ import org.junit.Test;
 
 public class BenefitRiskWizardPMTest {
 
-	private DomainImpl d_domain;
+	private Domain d_domain;
 	private BenefitRiskWizardPM d_pm;
 	private Indication d_indication;
 	private Study d_study;
@@ -74,13 +75,13 @@ public class BenefitRiskWizardPMTest {
 		d_sertrSet = new DrugSet(ExampleData.buildDrugSertraline());
 
 		
-		d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisHamD());
-		d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisConvulsion());
-		d_domain.addMetaAnalysis(ExampleData.buildMetaAnalysisConv());
-		d_domain.addMetaAnalysis(ExampleData.buildMetaAnalysisHamd());
-		d_domain.addMetaAnalysis(ExampleData.buildNetworkMetaAnalysisCgi());
+		d_domain.getMetaAnalyses().add(ExampleData.buildNetworkMetaAnalysisHamD());
+		d_domain.getMetaAnalyses().add(ExampleData.buildNetworkMetaAnalysisConvulsion());
+		d_domain.getMetaAnalyses().add(ExampleData.buildMetaAnalysisConv());
+		d_domain.getMetaAnalyses().add(ExampleData.buildMetaAnalysisHamd());
+		d_domain.getMetaAnalyses().add(ExampleData.buildNetworkMetaAnalysisCgi());
 		
-		d_domain.addStudy(d_study);
+		d_domain.getStudies().add(d_study);
 	
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 	}

@@ -27,6 +27,7 @@ package org.drugis.addis.presentation;
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
@@ -37,7 +38,7 @@ public class BenefitRiskPMTest {
 
 	private PresentationModelFactory d_pmf;
 	private MetaBenefitRiskPresentation d_mpm;
-	private DomainImpl d_domain;
+	private Domain d_domain;
 
 	@Before
 	public void setUp() {

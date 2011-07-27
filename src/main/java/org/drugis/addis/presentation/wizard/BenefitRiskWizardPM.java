@@ -461,7 +461,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		if(d_domain.getBenefitRiskAnalyses().contains(brAnalysis))
 			throw new EntityIdExistsException("Benefit Risk Analysis with this ID already exists in domain");
 
-		d_domain.addBenefitRiskAnalysis(brAnalysis);
+		d_domain.getBenefitRiskAnalyses().add(brAnalysis);
 		return brAnalysis;
 	}
 

@@ -106,9 +106,9 @@ public class AddStudyWizardPresentation {
 		d_domain = d;
 		d_pmf = pmf;
 		d_mainWindow = mainWindow;
-		d_endpointSelect = new SelectEndpointPresentation(d_domain.getEndpointsModel(), d_mainWindow);
-		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_domain.getAdverseEventsModel(), d_mainWindow);
-		d_populationCharSelect = new SelectPopulationCharsPresentation(d_domain.getPopulationCharacteristicsModel(), d_mainWindow);
+		d_endpointSelect = new SelectEndpointPresentation(d_domain.getEndpoints(), d_mainWindow);
+		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_domain.getAdverseEvents(), d_mainWindow);
+		d_populationCharSelect = new SelectPopulationCharsPresentation(d_domain.getPopulationCharacteristics(), d_mainWindow);
 		d_arms = new AddArmsPresentation(new ArrayListModel<Arm>(), "Arm", 2);
 		new RebuildIndicesMonitor<Arm>(d_arms); // registers itself as listener to d_arms
 		d_epochs = new AddEpochsPresentation(new ArrayListModel<Epoch>(), "Epoch", 1);
@@ -198,7 +198,7 @@ public class AddStudyWizardPresentation {
 	}
 
 	public SortedSetModel<Indication> getIndicationsModel() {
-		return d_domain.getIndicationsModel();
+		return d_domain.getIndications();
 	}
 	
 	public ValueModel getIndicationModel() {
@@ -242,7 +242,7 @@ public class AddStudyWizardPresentation {
 	}
 	
 	public SortedSetModel<Drug> getDrugsModel(){
-		return d_domain.getDrugsModel();
+		return d_domain.getDrugs();
 	}
 	
 	public BasicArmPresentation getArmModel(int armNumber){
@@ -323,7 +323,7 @@ public class AddStudyWizardPresentation {
 		}
 		
 		// Add the study to the domain.
-		d_domain.addStudy(getNewStudy());
+		d_domain.getStudies().add(getNewStudy());
 		
 		return getNewStudy();
 	}

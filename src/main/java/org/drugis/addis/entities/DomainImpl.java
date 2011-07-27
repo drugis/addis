@@ -25,17 +25,12 @@
 package org.drugis.addis.entities;
 
 import java.beans.IntrospectionException;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -55,7 +50,7 @@ import org.drugis.addis.util.FilteredObservableList.Filter;
 import com.jgoodies.binding.beans.BeanUtils;
 import com.jgoodies.binding.list.ObservableList;
 
-public class DomainImpl implements Domain {
+public class DomainImpl extends Domain {
 
 	private static final EntityCategory CATEGORY_INDICATIONS =
 		new EntityCategory("indications", Indication.class);
@@ -90,25 +85,48 @@ public class DomainImpl implements Domain {
 			CATEGORY_BENEFIT_RISK_ANALYSES
 		});
 	
-	private PropertyChangeListener d_studyListener = new StudyChangeListener();
-	private SortedSetModel<Endpoint> d_endpoints = new SortedSetModel<Endpoint>();
-	private SortedSetModel<Study> d_studies = new SortedSetModel<Study>();
-	private SortedSetModel<MetaAnalysis> d_metaAnalyses = new SortedSetModel<MetaAnalysis>();		
-	private SortedSetModel<Drug> d_drugs = new SortedSetModel<Drug>();
-	private SortedSetModel<Indication> d_indications = new SortedSetModel<Indication>();	
-	private SortedSetModel<PopulationCharacteristic> d_populationCharacteristics = new SortedSetModel<PopulationCharacteristic>();
-	private SortedSetModel<AdverseEvent> d_adverseEvents = new SortedSetModel<AdverseEvent>();
-	private SortedSetModel<BenefitRiskAnalysis<?>> d_benefitRiskAnalyses = new SortedSetModel<BenefitRiskAnalysis<?>>();
+	private class DomainSortedSetModel<E extends Entity> extends SortedSetModel<E> {
+		@Override
+		public void add(int index, E element) {
+			if (element == null) {
+				throw new NullPointerException("Entity added to the Domain may not be null");
+			}
+			super.add(index, element);
+		};
+		
+		@Override
+		public E remove(int index) {
+			checkDependents(get(index));
+			return super.remove(index);
+		}
+		
+		@Override
+		public boolean remove(Object o) {
+			if (o instanceof Entity) {
+				checkDependents((Entity)o);
+			}
+			return super.remove(o);
+		}
+	}
+	
+	private SortedSetModel<Endpoint> d_endpoints = new DomainSortedSetModel<Endpoint>();
+	private SortedSetModel<Study> d_studies = new DomainSortedSetModel<Study>();
+	private SortedSetModel<MetaAnalysis> d_metaAnalyses = new DomainSortedSetModel<MetaAnalysis>();		
+	private SortedSetModel<Drug> d_drugs = new DomainSortedSetModel<Drug>();
+	private SortedSetModel<Indication> d_indications = new DomainSortedSetModel<Indication>();	
+	private SortedSetModel<PopulationCharacteristic> d_populationCharacteristics = new DomainSortedSetModel<PopulationCharacteristic>();
+	private SortedSetModel<AdverseEvent> d_adverseEvents = new DomainSortedSetModel<AdverseEvent>();
+	private SortedSetModel<BenefitRiskAnalysis<?>> d_benefitRiskAnalyses = new DomainSortedSetModel<BenefitRiskAnalysis<?>>();
 	private FilteredObservableList<MetaAnalysis> d_networkMetaAnalyses;
 	private FilteredObservableList<MetaAnalysis> d_pairWiseMetaAnalyses;
 	
 	public DomainImpl() {
-		d_pairWiseMetaAnalyses = new FilteredObservableList<MetaAnalysis>(d_metaAnalyses, new FilteredObservableList.Filter<MetaAnalysis>() {
+		d_pairWiseMetaAnalyses = new FilteredObservableList<MetaAnalysis>(getMetaAnalyses(), new FilteredObservableList.Filter<MetaAnalysis>() {
 			public boolean accept(MetaAnalysis obj) {
 				return obj instanceof PairWiseMetaAnalysis;
 			}
 		});
-		d_networkMetaAnalyses = new FilteredObservableList<MetaAnalysis>(d_metaAnalyses, new FilteredObservableList.Filter<MetaAnalysis>() {
+		d_networkMetaAnalyses = new FilteredObservableList<MetaAnalysis>(getMetaAnalyses(), new FilteredObservableList.Filter<MetaAnalysis>() {
 			public boolean accept(MetaAnalysis obj) {
 				return obj instanceof NetworkMetaAnalysis;
 			}
@@ -116,81 +134,14 @@ public class DomainImpl implements Domain {
 
 	}
 	
-	private class StudyChangeListener implements PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent evt) {
-		}
-	}
-	
 	public void addOutcomeMeasure(OutcomeMeasure om) {
 		if (om instanceof Endpoint)
-			addEndpoint((Endpoint) om);
+			getEndpoints().add(((Endpoint) om));
 		else if (om instanceof AdverseEvent) {
-			addAdverseEvent((AdverseEvent) om);
+			getAdverseEvents().add(((AdverseEvent) om));
 		} else {
 			throw new IllegalStateException("Illegal OutcomeMeasure type " + om.getClass());
 		}
-	}
-
-	public void addEndpoint(Endpoint e) {
-		if (e == null) {
-			throw new NullPointerException("Endpoint may not be null");
-		}
-		
-		d_endpoints.add(e);
-	}
-
-	public SortedSet<Endpoint> getEndpoints() {
-		return Collections.unmodifiableSortedSet(d_endpoints.getSet());
-	}
-
-	public void addStudy(Study s) throws NullPointerException {
-		if (s == null) {
-			throw new NullPointerException("Study may not be null");
-		}
-		
-		if (!getIndications().contains(s.getIndication())) {
-			throw new IllegalArgumentException("indication of this study not in the domain");
-		}
-		d_studies.add(s);
-		s.addPropertyChangeListener(d_studyListener);
-	}
-	
-	public void addMetaAnalysis(MetaAnalysis ma) throws 
-			NullPointerException, IllegalArgumentException, EntityIdExistsException {
-		if (ma == null) {
-			throw new NullPointerException("Meta-Study may not be null");
-		}
-		/*
-		if (!getStudies().containsAll(ma.getStudies()))
-			throw new IllegalArgumentException("Not All studies in this Meta-Study are in the domain");
-		
-		Indication firstInd = (Indication) ma.getStudies().get(0).getIndication();
-		if (!getIndications().contains(firstInd)) {
-			throw new IllegalArgumentException("Indication not in domain");
-		}*/
-		
-		for (MetaAnalysis m : d_metaAnalyses.getSet()) {
-			if (m.getName().equals(ma.getName())) {
-				throw new EntityIdExistsException("There already exists a meta-analysis with the given name");
-			}
-		}
-		
-		d_metaAnalyses.add(ma);
-	}
-	
-	public SortedSet<Study> getStudies() {
-		return Collections.unmodifiableSortedSet(d_studies.getSet());
-	}
-
-	public void addDrug(Drug d) throws NullPointerException {
-		if (d == null) {
-			throw new NullPointerException("Drug may not be null");
-		}
-		d_drugs.add(d);
-	}
-
-	public SortedSet<Drug> getDrugs() {
-		return Collections.unmodifiableSortedSet(d_drugs.getSet());
 	}
 
 	public ObservableList<Study> getStudies(Variable e) 
@@ -199,37 +150,25 @@ public class DomainImpl implements Domain {
 			throw new NullPointerException("Variable must not be null");
 		}
 		if (e instanceof Endpoint) {
-			return new FilteredObservableList<Study>(getStudiesModel(), new EndpointFilter((Endpoint)e));
+			return new FilteredObservableList<Study>(getStudies(), new EndpointFilter((Endpoint)e));
 		}
 		if (e instanceof AdverseEvent) {
-			return new FilteredObservableList<Study>(getStudiesModel(), new AdverseEventFilter((AdverseEvent)e));
+			return new FilteredObservableList<Study>(getStudies(), new AdverseEventFilter((AdverseEvent)e));
 		}
 		if (e instanceof PopulationCharacteristic) {
-			return new FilteredObservableList<Study>(getStudiesModel(), new PopulationCharacteristicFilter((PopulationCharacteristic)e));
+			return new FilteredObservableList<Study>(getStudies(), new PopulationCharacteristicFilter((PopulationCharacteristic)e));
 		}
 		throw new RuntimeException(e.getClass() + " not supported");
 	}
 	
-	public ObservableList<Study> getStudies(Drug d)
-	throws NullPointerException {
-		if (d == null) {
-			throw new NullPointerException("Drug must not be null");
-		}
-		return new FilteredObservableList<Study>(getStudiesModel(), new DrugFilter(new DrugSet(d)));
+	public ObservableList<Study> getStudies(Drug d) {
+		return new FilteredObservableList<Study>(getStudies(), new DrugFilter(new DrugSet(d)));
 	}
 	
-	public ObservableList<Study> getStudies(Indication i)
-	throws NullPointerException {
-		if (i == null) {
-			throw new NullPointerException("Indication must not be null");
-		}
-		return new FilteredObservableList<Study>(getStudiesModel(), new IndicationFilter(i));
+	public ObservableList<Study> getStudies(Indication i) {
+		return new FilteredObservableList<Study>(getStudies(), new IndicationFilter(i));
 	}
 	
-	public ObservableList<Study> getStudiesHolder() {
-		return getStudiesModel();
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Domain) {
@@ -258,17 +197,17 @@ public class DomainImpl implements Domain {
 	
 	public Set<Entity> getDependents(Entity e) {
 		Set<Entity> deps = new HashSet<Entity>();
-		for (Study s : d_studies.getSet()) {
+		for (Study s : getStudies().getSet()) {
 			if (s.getDependencies().contains(e)) {
 				deps.add(s);
 			}
 		}
-		for (MetaAnalysis s : d_metaAnalyses.getSet()) {
+		for (MetaAnalysis s : getMetaAnalyses().getSet()) {
 			if (s.getDependencies().contains(e)) {
 				deps.add(s);
 			}
 		}		
-		for (BenefitRiskAnalysis<?> s : d_benefitRiskAnalyses.getSet()) {
+		for (BenefitRiskAnalysis<?> s : getBenefitRiskAnalyses().getSet()) {
 			if (s.getDependencies().contains(e)) {
 				deps.add(s);
 			}
@@ -278,131 +217,33 @@ public class DomainImpl implements Domain {
 	
 	public void deleteEntity(Entity entity) throws DependentEntitiesException {
 		if (entity instanceof Drug) {
-			deleteDrug((Drug) entity);
+			getDrugs().remove(((Drug) entity));
 		} else if (entity instanceof Endpoint) {
-			deleteEndpoint((Endpoint) entity);
+			getEndpoints().remove(((Endpoint) entity));
 		} else if (entity instanceof AdverseEvent) {
-			deleteAdverseEvent((OutcomeMeasure) entity);
+			getAdverseEvents().remove(((OutcomeMeasure) entity));
 		} else if (entity instanceof PopulationCharacteristic) {
-			deletePopulationCharacteristic((PopulationCharacteristic) entity);
+			getPopulationCharacteristics().remove(((PopulationCharacteristic) entity));
 		} else if (entity instanceof Study) {
-			deleteStudy((Study) entity);
+			getStudies().remove(((Study) entity));
 		} else if (entity instanceof MetaAnalysis) {
-			deleteMetaAnalysis((MetaAnalysis) entity);
+			getMetaAnalyses().remove(((MetaAnalysis) entity));
 		} else if (entity instanceof MetaBenefitRiskAnalysis) {
-			deleteMetaBenefitRiskAnalysis((MetaBenefitRiskAnalysis) entity);
+			getBenefitRiskAnalyses().remove(((MetaBenefitRiskAnalysis) entity));
 		} else if (entity instanceof StudyBenefitRiskAnalysis) {
-			deleteStudyBenefitRiskAnalysis((StudyBenefitRiskAnalysis) entity);
+			getBenefitRiskAnalyses().remove(((StudyBenefitRiskAnalysis) entity));
 		} else if (entity instanceof Indication) {
-			deleteIndication((Indication) entity);
+			getIndications().remove(((Indication) entity));
 		} else {
 			throw new RuntimeException("Unhandled entity type " + entity.getClass().getSimpleName());
 		}
 	}
 	
-	public void deletePopulationCharacteristic(PopulationCharacteristic v) throws DependentEntitiesException {
-		checkDependents(v);
-		d_populationCharacteristics.remove(v);
-	}
-
-	public void deleteStudy(Study s) throws DependentEntitiesException {
-		checkDependents(s);
-		d_studies.remove(s);
-	}
-
-	public void deleteDrug(Drug d) throws DependentEntitiesException {
-		checkDependents(d);
-		d_drugs.remove(d);
-	}
-
 	private void checkDependents(Entity d) throws DependentEntitiesException {
 		Set<Entity> deps = getDependents(d);
 		if (!deps.isEmpty()) {
 			throw new DependentEntitiesException(deps);
 		}
-	}
-
-	public void deleteEndpoint(Endpoint e) throws DependentEntitiesException {
-		checkDependents(e);
-		d_endpoints.remove(e);		
-	}
-
-	public void deleteIndication(Indication i) throws DependentEntitiesException {
-		checkDependents(i);
-		d_indications.remove(i);
-	}
-
-	
-	public void addIndication(Indication i) throws NullPointerException {
-		if (i == null) {
-			throw new NullPointerException();
-		}
-		d_indications.add(i);
-	}
-
-	public SortedSet<Indication> getIndications() {
-		return Collections.unmodifiableSortedSet(d_indications.getSet());
-	}
-
-	public SortedSet<MetaAnalysis> getMetaAnalyses() {
-		return Collections.unmodifiableSortedSet(d_metaAnalyses.getSet()); 
-	}
-
-	public void deleteMetaAnalysis(MetaAnalysis ma)
-			throws DependentEntitiesException {
-		checkDependents(ma);
-		d_metaAnalyses.remove(ma);
-	}
-
-	public void deleteMetaBenefitRiskAnalysis(MetaBenefitRiskAnalysis bra)
-			throws DependentEntitiesException {
-		checkDependents(bra);
-		d_benefitRiskAnalyses.remove(bra);
-	}
-
-	public void deleteStudyBenefitRiskAnalysis(StudyBenefitRiskAnalysis bra)
-	throws DependentEntitiesException {
-		checkDependents(bra);
-		d_benefitRiskAnalyses.remove(bra);
-	}
-
-	public SortedSet<PopulationCharacteristic> getPopulationCharacteristics() {
-		return Collections.unmodifiableSortedSet(d_populationCharacteristics.getSet());
-	}
-
-	public void addPopulationCharacteristic(PopulationCharacteristic c) {
-		if (c == null) {
-			throw new NullPointerException("Categorical Variable may not be null");
-		}
-		d_populationCharacteristics.add(c);
-	}
-	
-	public void addAdverseEvent(AdverseEvent ade) {
-		if (ade == null) {
-			throw new NullPointerException();
-		}
-		d_adverseEvents.add(ade);
-	}
-
-	public void deleteAdverseEvent(OutcomeMeasure ade)
-			throws DependentEntitiesException {
-		checkDependents(ade);
-		d_adverseEvents.remove(ade);		
-	}
-
-	public SortedSet<AdverseEvent> getAdverseEvents() {
-		return Collections.unmodifiableSortedSet(d_adverseEvents.getSet());
-	}
-
-	public void addBenefitRiskAnalysis(BenefitRiskAnalysis<?> brAnalysis) {
-		if (brAnalysis == null) {
-			throw new NullPointerException();
-		}
-		d_benefitRiskAnalyses.add(brAnalysis);
-	}
-
-	public SortedSet<BenefitRiskAnalysis<?>> getBenefitRiskAnalyses() {
-		return Collections.unmodifiableSortedSet(d_benefitRiskAnalyses.getSet());
 	}
 
 	public boolean hasDependents(Entity entity) {
@@ -433,15 +274,15 @@ public class DomainImpl implements Domain {
 		}
 		try {
 			PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(
-					Domain.class, node.getPropertyName() + "Model");
+					Domain.class, node.getPropertyName());
 			return (ObservableList<? extends Entity>)BeanUtils.getValue(this, propertyDescriptor);
 		} catch (IntrospectionException e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	public ListHolder<? extends Entity> getCategoryContentsModel(
-			final EntityCategory node) {
+	@Deprecated
+	public ListHolder<? extends Entity> getCategoryContentsModel(final EntityCategory node) {
 		final ObservableList<? extends Entity> categoryContents = getCategoryContents(node);
 		final DefaultListHolder<? extends Entity> listHolder = new DefaultListHolder<Entity>(new ArrayList<Entity>(categoryContents));
 		categoryContents.addListDataListener(new ListDataListener() {
@@ -458,73 +299,53 @@ public class DomainImpl implements Domain {
 		return listHolder;
 	}
 
-	public SortedSet<NetworkMetaAnalysis> getNetworkMetaAnalyses() {
-		SortedSet<NetworkMetaAnalysis> nwAnalyses = new TreeSet<NetworkMetaAnalysis>();
-		for (MetaAnalysis ma : getMetaAnalyses()) {
-			if (ma instanceof NetworkMetaAnalysis) {
-				nwAnalyses.add((NetworkMetaAnalysis)ma);
-			}
-		}
-		return nwAnalyses;
-	}
-
-	public SortedSet<PairWiseMetaAnalysis> getPairWiseMetaAnalyses() {
-		SortedSet<PairWiseMetaAnalysis> pwAnalyses = new TreeSet<PairWiseMetaAnalysis>();
-		for (MetaAnalysis ma : getMetaAnalyses()) {
-			if (ma instanceof PairWiseMetaAnalysis) {
-				pwAnalyses.add((PairWiseMetaAnalysis)ma);
-			}
-		}
-		return pwAnalyses;
-	}
-
 	@Override
-	public SortedSetModel<Drug> getDrugsModel() {
+	public SortedSetModel<Drug> getDrugs() {
 		return d_drugs;
 	}
 
 	@Override
-	public SortedSetModel<Indication> getIndicationsModel() {
+	public SortedSetModel<Indication> getIndications() {
 		return d_indications;
 	}
 
 	@Override
-	public SortedSetModel<AdverseEvent> getAdverseEventsModel() {
+	public SortedSetModel<AdverseEvent> getAdverseEvents() {
 		return d_adverseEvents;
 	}
 
 	@Override
-	public SortedSetModel<Endpoint> getEndpointsModel() {
+	public SortedSetModel<Endpoint> getEndpoints() {
 		return d_endpoints;
 	}
 
 	@Override
-	public SortedSetModel<PopulationCharacteristic> getPopulationCharacteristicsModel() {
+	public SortedSetModel<PopulationCharacteristic> getPopulationCharacteristics() {
 		return d_populationCharacteristics;
 	}
 
 	@Override
-	public SortedSetModel<Study> getStudiesModel() {
+	public SortedSetModel<Study> getStudies() {
 		return d_studies;
 	}
 
 	@Override
-	public SortedSetModel<MetaAnalysis> getMetaAnalysesModel() {
+	public SortedSetModel<MetaAnalysis> getMetaAnalyses() {
 		return d_metaAnalyses;
 	}
 
 	@Override
-	public ObservableList<MetaAnalysis> getPairWiseMetaAnalysesModel() {
+	public ObservableList<MetaAnalysis> getPairWiseMetaAnalyses() {
 		return d_pairWiseMetaAnalyses;
 	}
 	
 	@Override
-	public ObservableList<MetaAnalysis> getNetworkMetaAnalysesModel() {
+	public ObservableList<MetaAnalysis> getNetworkMetaAnalyses() {
 		return d_networkMetaAnalyses;
 	}
 
 	@Override
-	public SortedSetModel<BenefitRiskAnalysis<?>> getBenefitRiskAnalysesModel() {
+	public SortedSetModel<BenefitRiskAnalysis<?>> getBenefitRiskAnalyses() {
 		return d_benefitRiskAnalyses;
 	}
 	

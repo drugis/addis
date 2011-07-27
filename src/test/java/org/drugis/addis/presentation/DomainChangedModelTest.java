@@ -34,13 +34,13 @@ public class DomainChangedModelTest {
 	
 	@Test
 	public void testEndpoint() {
-		d_domain.getEndpointsModel().add(ExampleData.buildEndpointCgi());
+		d_domain.getEndpoints().add(ExampleData.buildEndpointCgi());
 		assertTrue(d_model.getValue());
 	}
 	
 	@Test
 	public void testStudy() {
-		d_domain.getStudiesModel().add(ExampleData.buildStudyBennie());
+		d_domain.getStudies().add(ExampleData.buildStudyBennie());
 		assertTrue(d_model.getValue());
 	}
 	

@@ -63,8 +63,8 @@ public class StudyCharTableModelTest {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
-		d_ind = d_domain.getIndications().first();
-		d_pm = new IndicationPresentation(d_ind, d_domain.getStudiesModel());
+		d_ind = d_domain.getIndications().get(0);
+		d_pm = new IndicationPresentation(d_ind, d_domain.getStudies());
 		d_pmf = new PresentationModelFactory(d_domain);
 		d_model = new StudyCharTableModel(d_pm, d_pmf);
 		

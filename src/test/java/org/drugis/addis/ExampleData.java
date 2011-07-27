@@ -100,32 +100,32 @@ public class ExampleData {
 	public static void initDefaultData(Domain domain) {
 		clearAll();
 		// depression data
-		domain.addIndication(buildIndicationDepression());
-		domain.addEndpoint(buildEndpointHamd());
-		domain.addEndpoint(buildEndpointCgi());
+		domain.getIndications().add(buildIndicationDepression());
+		domain.getEndpoints().add(buildEndpointHamd());
+		domain.getEndpoints().add(buildEndpointCgi());
 		//domain.addEndpoint(buildEndpointMadrs());
-		domain.addDrug(buildDrugFluoxetine());
-		domain.addDrug(buildDrugParoxetine());
-		domain.addDrug(buildDrugSertraline());
+		domain.getDrugs().add(buildDrugFluoxetine());
+		domain.getDrugs().add(buildDrugParoxetine());
+		domain.getDrugs().add(buildDrugSertraline());
 		//domain.addDrug(buildDrugCitalopram());
 		//domain.addDrug(buildDrugEscitalopram());
-		domain.addDrug(buildPlacebo());
-		domain.addStudy(buildStudyChouinard());
-		domain.addStudy(buildStudyDeWilde());		
-		domain.addStudy(buildStudyBennie());	
+		domain.getDrugs().add(buildPlacebo());
+		domain.getStudies().add(buildStudyChouinard());
+		domain.getStudies().add(buildStudyDeWilde());		
+		domain.getStudies().add(buildStudyBennie());	
 		//domain.addStudy(buildStudyBurke());
-		domain.addStudy(buildStudyMultipleArmsperDrug());
+		domain.getStudies().add(buildStudyMultipleArmsperDrug());
 			
 		// heart failure data
-		domain.addIndication(buildIndicationChronicHeartFailure());
-		domain.addDrug(buildDrugCandesartan());
-		domain.addEndpoint(buildEndpointCVdeath());
-		domain.addStudy(buildStudyMcMurray());
+		domain.getIndications().add(buildIndicationChronicHeartFailure());
+		domain.getDrugs().add(buildDrugCandesartan());
+		domain.getEndpoints().add(buildEndpointCVdeath());
+		domain.getStudies().add(buildStudyMcMurray());
 		
 		// unused stuff
-		domain.addPopulationCharacteristic(buildGenderVariable());
-		domain.addPopulationCharacteristic(buildAgeVariable());
-		domain.addAdverseEvent(buildAdverseEventConvulsion());
+		domain.getPopulationCharacteristics().add(buildGenderVariable());
+		domain.getPopulationCharacteristics().add(buildAgeVariable());
+		domain.getAdverseEvents().add(buildAdverseEventConvulsion());
 	}
 
 	public static PopulationCharacteristic buildGenderVariable() {
