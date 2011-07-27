@@ -30,19 +30,21 @@ import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.util.ListHolderWrapperPlsDel;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
 
 public class SelectableStudyGraphModelTest {
 
@@ -61,12 +63,14 @@ public class SelectableStudyGraphModelTest {
 		d_drugs.add(new DrugSet(ExampleData.buildDrugSertraline()));
 		d_drugListHolder = new DefaultListHolder<DrugSet>(d_drugs);
 		ValueHolder<OutcomeMeasure> outcome = new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd());
-		d_pm = new SelectableStudyGraphModel(new ListHolderWrapperPlsDel<Study>(new DomainStudyListHolder(d_domain, new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()), outcome)), d_drugListHolder, outcome);
+		ObservableList<Study> studies = new ArrayListModel<Study>(Arrays.asList(
+				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), 
+				ExampleData.buildStudyDeWilde(), ExampleData.buildStudyMultipleArmsperDrug()));
+		d_pm = new SelectableStudyGraphModel(studies, d_drugListHolder, outcome);
 	}
 	
 	@Test
 	public void testGetSelectedDrugsModel() {
-		
 		ListHolder<DrugSet> selDrugs = d_pm.getSelectedDrugsModel();
 		List<DrugSet> list = Collections.singletonList(new DrugSet(ExampleData.buildDrugFluoxetine()));
 		
@@ -75,18 +79,14 @@ public class SelectableStudyGraphModelTest {
 		
 		d_drugListHolder.setValue(list);
 		verify(mock);
-		
-		
 	}
 	
 	@Test
-	public void testIsSelectionCollected() {
+	public void testIsSelectionConnected() {
 		assertTrue(d_pm.isSelectionConnected());
-		
+
 		d_drugs.remove(new DrugSet(ExampleData.buildDrugFluoxetine()));
-		d_drugListHolder = new DefaultListHolder<DrugSet>(d_drugs);
-		ValueHolder<OutcomeMeasure> outcome = new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd());
-		d_pm = new SelectableStudyGraphModel(new ListHolderWrapperPlsDel<Study>(new DomainStudyListHolder(d_domain, new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()), outcome)), d_drugListHolder, outcome);
+		d_pm.getSelectedDrugsModel().setValue(d_drugs);
 		
 		assertFalse(d_pm.isSelectionConnected());
 	}

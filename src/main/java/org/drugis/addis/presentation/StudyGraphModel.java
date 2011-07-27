@@ -33,9 +33,7 @@ import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.util.ListHolderWrapperPlsDel;
@@ -125,12 +123,6 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		};
 		d_drugs.addValueChangeListener(listener);
 		d_studies.addListDataListener(listListener);
-	}
-	
-	@Deprecated
-	protected StudyGraphModel(ValueHolder<Indication> indication, ValueHolder<OutcomeMeasure> outcome, 
-			ListHolder<DrugSet> drugs, Domain domain) {
-		this(new DomainStudyListHolder(domain, indication, outcome), drugs, outcome);
 	}
 	
 	public void resetGraph() {

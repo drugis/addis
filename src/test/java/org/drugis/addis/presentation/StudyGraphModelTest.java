@@ -32,6 +32,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +41,6 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.StudyGraphModel.Edge;
@@ -49,11 +49,16 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
+
 
 public class StudyGraphModelTest {
 	private StudyGraphModel d_pm;
 	private List<DrugSet> d_drugs;
 	private Domain d_domain;
+	private AbstractListHolder<DrugSet> d_drugListHolder;
+	private ValueHolder<OutcomeMeasure> d_outcome;
 	
 	@Before
 	public void setUp() {
@@ -63,14 +68,12 @@ public class StudyGraphModelTest {
 		d_drugs.add(new DrugSet(ExampleData.buildDrugFluoxetine()));
 		d_drugs.add(new DrugSet(ExampleData.buildDrugParoxetine()));
 		d_drugs.add(new DrugSet(ExampleData.buildDrugSertraline()));
-		ValueHolder<OutcomeMeasure> outcome = new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd());
-		d_pm = new StudyGraphModel(new DomainStudyListHolder(d_domain, new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()), outcome), new AbstractListHolder<DrugSet>() {
-		private static final long serialVersionUID = 1L;
-		
-		@Override
-		public List<DrugSet> getValue() {
-			return d_drugs;
-		}}, outcome);
+		d_outcome = new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd());
+		ObservableList<Study> studies = new ArrayListModel<Study>(Arrays.asList(
+				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), 
+				ExampleData.buildStudyDeWilde(), ExampleData.buildStudyMultipleArmsperDrug()));
+		d_drugListHolder = new DefaultListHolder<DrugSet>(d_drugs);
+		d_pm = new StudyGraphModel(studies, d_drugListHolder, d_outcome);
 	}
 	
 	@Test
@@ -154,47 +157,24 @@ public class StudyGraphModelTest {
 	}
 	
 	@Test
-	public void testNullIndication() {
-		ValueHolder<OutcomeMeasure> outcome = new UnmodifiableHolder<OutcomeMeasure>(null);
-		d_pm = new StudyGraphModel(new DomainStudyListHolder(d_domain, new UnmodifiableHolder<Indication>(null), outcome), new AbstractListHolder<DrugSet>() {
-		private static final long serialVersionUID = 1L;
-		
-		@Override
-		public List<DrugSet> getValue() {
-			return new ArrayList<DrugSet>();
-		}}, outcome);
-		assertTrue(d_pm.vertexSet().isEmpty());
-	}
-	
-	@Test
 	public void testNullEndpoint() {
-		ValueHolder<OutcomeMeasure> outcome = new UnmodifiableHolder<OutcomeMeasure>(null);
-		d_pm = new StudyGraphModel(new DomainStudyListHolder(d_domain, new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()), outcome), new AbstractListHolder<DrugSet>() {
-		private static final long serialVersionUID = 1L;
-		
-		@Override
-		public List<DrugSet> getValue() {
-			return new ArrayList<DrugSet>();
-		}}, outcome);
+		d_pm = new StudyGraphModel(new ArrayListModel<Study>(), new DefaultListHolder<DrugSet>(Collections.<DrugSet>emptyList()), 
+				new UnmodifiableHolder<OutcomeMeasure>(null));
 		assertTrue(d_pm.vertexSet().isEmpty());
 	}
 		
 	@Test
 	public void testChangeDrugList() {
-		AbstractListHolder<DrugSet> drugListHolder = new DefaultListHolder<DrugSet>(new ArrayList<DrugSet>());
-		
-		PropertyChangeListener l = JUnitUtil.mockListener(drugListHolder, "value",
-				new ArrayList<DrugSet>(), new ArrayList<DrugSet>(d_drugs));
-		drugListHolder.addValueChangeListener(l);
-		ValueHolder<OutcomeMeasure> outcome = new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd());
-	
-		d_pm = new StudyGraphModel(new DomainStudyListHolder(d_domain, new UnmodifiableHolder<Indication>(ExampleData.buildIndicationDepression()), outcome), drugListHolder, outcome);
-		assertTrue(d_pm.vertexSet().isEmpty());
-		
-		drugListHolder.setValue(d_drugs);
-		verify(l);
 		assertEquals(3, d_pm.vertexSet().size());
 		assertEquals(2, d_pm.edgeSet().size());
+		
+		PropertyChangeListener l = JUnitUtil.mockListener(d_drugListHolder, "value",
+				 new ArrayList<DrugSet>(d_drugs), new ArrayList<DrugSet>());
+		d_drugListHolder.addValueChangeListener(l);
+	
+		d_drugListHolder.setValue(Collections.emptyList());
+		assertTrue(d_pm.vertexSet().isEmpty());
+		verify(l);
 	}
 	
 	@Test
