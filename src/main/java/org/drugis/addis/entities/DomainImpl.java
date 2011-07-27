@@ -26,14 +26,10 @@ package org.drugis.addis.entities;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
@@ -41,8 +37,6 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
-import org.drugis.addis.presentation.DefaultListHolder;
-import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.util.FilteredObservableList;
 import org.drugis.addis.util.SortedSetModel;
 import org.drugis.addis.util.FilteredObservableList.Filter;
@@ -281,24 +275,6 @@ public class DomainImpl extends Domain {
 		}
 	}
 	
-	@Deprecated
-	public ListHolder<? extends Entity> getCategoryContentsModel(final EntityCategory node) {
-		final ObservableList<? extends Entity> categoryContents = getCategoryContents(node);
-		final DefaultListHolder<? extends Entity> listHolder = new DefaultListHolder<Entity>(new ArrayList<Entity>(categoryContents));
-		categoryContents.addListDataListener(new ListDataListener() {
-			public void intervalRemoved(ListDataEvent e) {
-				listHolder.setValue(new ArrayList<Entity>(categoryContents));
-			}
-			public void intervalAdded(ListDataEvent e) {
-				listHolder.setValue(new ArrayList<Entity>(categoryContents));
-			}
-			public void contentsChanged(ListDataEvent e) {
-				listHolder.setValue(new ArrayList<Entity>(categoryContents));
-			}
-		});
-		return listHolder;
-	}
-
 	@Override
 	public SortedSetModel<Drug> getDrugs() {
 		return d_drugs;

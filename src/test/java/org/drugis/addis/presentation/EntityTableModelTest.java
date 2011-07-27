@@ -58,7 +58,7 @@ public class EntityTableModelTest {
 //		for (Drug d : d_domain.getDrugs())
 //			pm.add(pmf.getModel(d));
 		d_tableModel = new EntityTableModel(
-				d_domain.getCategoryContentsModel(d_domain.getCategory(Drug.class)),
+				d_domain.getCategoryContents(d_domain.getCategory(Drug.class)),
 				d_properties, new PresentationModelFactory(d_domain));
 	}
 	

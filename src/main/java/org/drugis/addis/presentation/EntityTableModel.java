@@ -24,31 +24,38 @@
 
 package org.drugis.addis.presentation;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Entity;
 
 import com.jgoodies.binding.beans.PropertyNotFoundException;
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
 
 
 @SuppressWarnings("serial")
 public class EntityTableModel extends AbstractTableModel {
-	ListHolder<? extends Entity> d_entities;
+	ObservableList<? extends Entity> d_entities;
 	List<String> d_props;
 	private final PresentationModelFactory d_pmf;
 
-	public EntityTableModel(ListHolder<? extends Entity> entities, List<String> properties, PresentationModelFactory pmf) {
+	public EntityTableModel(ObservableList<? extends Entity> entities, List<String> properties, PresentationModelFactory pmf) {
 		d_entities = entities;
 		d_props = properties;
 		d_pmf = pmf;
 		
-		d_entities.addValueChangeListener(new PropertyChangeListener() {	
-			public void propertyChange(PropertyChangeEvent evt) {
+		d_entities.addListDataListener(new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+				fireTableDataChanged();
+			}
+			public void intervalAdded(ListDataEvent e) {
+				fireTableDataChanged();
+			}
+			public void contentsChanged(ListDataEvent e) {
 				fireTableDataChanged();
 			}
 		});
@@ -59,15 +66,15 @@ public class EntityTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		return d_entities.getValue().size();
+		return d_entities.size();
 	}
 
 	public Object getValueAt(int row, int column) {
 		if (column == 0)
-			return d_entities.getValue().get(row);
+			return d_entities.get(row);
 		
 		try {
-			ValueModel model = d_pmf.getModel(d_entities.getValue().get(row)).getModel(d_props.get(column));
+			ValueModel model = d_pmf.getModel(d_entities.get(row)).getModel(d_props.get(column));
 			return model.getValue();
 		} catch (PropertyNotFoundException e) {
 			throw new RuntimeException(e);

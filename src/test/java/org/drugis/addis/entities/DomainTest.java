@@ -27,10 +27,9 @@ package org.drugis.addis.entities;
 import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,7 +43,6 @@ import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
-import org.drugis.addis.presentation.ListHolder;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,10 +50,8 @@ import org.junit.Test;
 import com.jgoodies.binding.list.ObservableList;
 
 public class DomainTest {
-
 	private Domain d_domain;
 	private Indication d_indication;
-	private boolean d_eventFired;
 	
 	@Before
 	public void setUp() {
@@ -639,33 +635,9 @@ public class DomainTest {
 	
 	@Test
 	public void testGetCategoryContentsModel() {
-		JUnitUtil.assertAllAndOnly(d_domain.getIndications(), d_domain.getCategoryContentsModel(
-				d_domain.getCategory(Indication.class)).getValue());
-		JUnitUtil.assertAllAndOnly(d_domain.getDrugs(), d_domain.getCategoryContentsModel(
-				d_domain.getCategory(Drug.class)).getValue());
-		JUnitUtil.assertAllAndOnly(d_domain.getEndpoints(), d_domain.getCategoryContentsModel(
-				d_domain.getCategory(Endpoint.class)).getValue());
-	}
-	
-	@Test
-	public void testGetCategoryContentsModelFiresOnChange() {
-		ListHolder<? extends Entity> model = d_domain.getCategoryContentsModel(d_domain.getCategory(Drug.class));
-		JUnitUtil.assertAllAndOnly(d_domain.getDrugs(), model.getValue());
-		Drug viagra = ExampleData.buildDrugViagra();
-		final ArrayList<Entity> drugs = new ArrayList<Entity>(model.getValue());
-		drugs.add(viagra);
-		d_eventFired = false;
-		
-		model.addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				d_eventFired = true;
-				assertEquals(drugs, evt.getNewValue());
-			}
-		});
-		
-		d_domain.getDrugs().add(viagra);
-		
-		assertTrue(d_eventFired);
+		assertSame(d_domain.getIndications(), d_domain.getCategoryContents(d_domain.getCategory(Indication.class)));
+		assertSame(d_domain.getDrugs(), d_domain.getCategoryContents(d_domain.getCategory(Drug.class)));
+		assertSame(d_domain.getEndpoints(), d_domain.getCategoryContents(d_domain.getCategory(Endpoint.class)));
 	}
 	
 	@Test

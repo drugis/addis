@@ -42,6 +42,9 @@ import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.MCMCModel;
 
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
+
 @SuppressWarnings("serial")
 public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<DrugSet, MetaBenefitRiskAnalysis> {
 	
@@ -83,9 +86,8 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		});
 	}
 	
-	public ListHolder<MetaAnalysis> getAnalysesModel() {
-		// FIXME: By the time it's possible the edit BR-analyses, this listholder should be hooked up.
-		return new DefaultListHolder<MetaAnalysis>(getBean().getMetaAnalyses());
+	public ObservableList<MetaAnalysis> getAnalysesModel() {
+		return new ArrayListModel<MetaAnalysis>(getBean().getMetaAnalyses());
 	}
 
 	

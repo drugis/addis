@@ -54,6 +54,6 @@ public class BenefitRiskPMTest {
 	
 	@Test
 	public void testGetAnalysesModel() {
-		assertAllAndOnly(d_mpm.getBean().getMetaAnalyses(), d_mpm.getAnalysesModel().getValue());
+		assertAllAndOnly(d_mpm.getBean().getMetaAnalyses(), d_mpm.getAnalysesModel());
 	}
 }

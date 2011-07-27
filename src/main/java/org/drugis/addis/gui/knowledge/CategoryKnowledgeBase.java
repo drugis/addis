@@ -32,9 +32,10 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledge;
 import org.drugis.addis.gui.builder.TitledPanelBuilder;
 import org.drugis.addis.gui.components.EntitiesTablePanel;
-import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.gui.ViewBuilder;
+
+import com.jgoodies.binding.list.ObservableList;
 
 public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 	private final String d_singular;
@@ -86,13 +87,13 @@ public abstract class CategoryKnowledgeBase implements CategoryKnowledge {
 		return false;
 	}
 	
-	private ViewBuilder buildEntityTable(ListHolder<? extends Entity> entities,
+	private ViewBuilder buildEntityTable(ObservableList<? extends Entity> observableList,
 			String[] formatter, String title, PresentationModelFactory pmf, AddisWindow main) {
-		return new TitledPanelBuilder(new EntitiesTablePanel(Arrays.asList(formatter), entities, main, pmf), getPlural());
+		return new TitledPanelBuilder(new EntitiesTablePanel(Arrays.asList(formatter), observableList, main, pmf), getPlural());
 	}
 	
 	public ViewBuilder getCategoryViewBuilder(AddisWindow main, Domain domain) {
-		return buildEntityTable(domain.getCategoryContentsModel(domain.getCategory(getEntityClass())),
+		return buildEntityTable(domain.getCategoryContents(domain.getCategory(getEntityClass())),
 				getShownProperties(), getPlural(), main.getPresentationModelFactory(), main);
 	}
 	

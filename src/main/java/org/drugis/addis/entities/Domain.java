@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
-import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.util.SortedSetModel;
 
 import com.jgoodies.binding.list.ObservableList;
@@ -43,12 +42,6 @@ public abstract class Domain {
 	 * Get the entities that belong to a category.
 	 */
 	public abstract ObservableList<? extends Entity> getCategoryContents(EntityCategory node);
-	
-	/** 
-	 * Get a ValueModel to the collection of entities that belong to a category.
-	 */
-	@Deprecated
-	public abstract ListHolder<? extends Entity> getCategoryContentsModel(EntityCategory node);
 	
 	/**
 	 * Get the category an entity belongs to.
