@@ -25,7 +25,7 @@
 package org.drugis.addis.entities;
 
 @SuppressWarnings("serial")
-public class EntityIdExistsException extends Exception {
+public class EntityIdExistsException extends RuntimeException {
 
 	public EntityIdExistsException(String string) {
 		super(string);

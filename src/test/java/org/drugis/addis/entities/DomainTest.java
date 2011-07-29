@@ -182,14 +182,12 @@ public class DomainTest {
 	}
 
 	private RandomEffectsMetaAnalysis addMetaAnalysisToDomain() throws Exception {
-		ExampleData.initDefaultData(d_domain);
 		RandomEffectsMetaAnalysis ma = generateMetaAnalysis();
 		d_domain.getMetaAnalyses().add(ma);
 		return ma;
 	}
 	
 	private NetworkMetaAnalysis addNetworkMetaAnalysisToDomain() throws Exception {
-		ExampleData.initDefaultData(d_domain);
 		NetworkMetaAnalysis ma = ExampleData.buildNetworkMetaAnalysisHamD();
 		d_domain.getMetaAnalyses().add(ma);
 		return ma;
@@ -218,6 +216,7 @@ public class DomainTest {
 	
 	@Test
 	public void testDeleteMetaAnalysis() throws Exception {
+		ExampleData.initDefaultData(d_domain);
 		RandomEffectsMetaAnalysis s = addMetaAnalysisToDomain();
 		
 		assertTrue(d_domain.getMetaAnalyses().contains(s));
@@ -606,6 +605,7 @@ public class DomainTest {
 	
 	@Test
 	public void testGetCategoryForEntity() {
+		ExampleData.initDefaultData(d_domain);
 		assertEquals(Indication.class, d_domain.getCategory(new Indication(13L, "indication")).getEntityClass());
 		assertEquals(null, d_domain.getCategory(new Arm("arm", 3)));
 		assertEquals(Drug.class, d_domain.getCategory(new Drug("drug", "")).getEntityClass());
@@ -642,6 +642,7 @@ public class DomainTest {
 	
 	@Test
 	public void testGetPairWiseMetaAnalyses() throws Exception {
+		ExampleData.initDefaultData(d_domain);
 		assertEquals(Collections.emptyList(), d_domain.getPairWiseMetaAnalyses());
 		PairWiseMetaAnalysis anl = addMetaAnalysisToDomain();
 		assertEquals(Collections.singletonList(anl), d_domain.getPairWiseMetaAnalyses());
@@ -651,6 +652,7 @@ public class DomainTest {
 	
 	@Test
 	public void testGetNetworkMetaAnalyses() throws Exception {
+		ExampleData.initDefaultData(d_domain);
 		assertEquals(Collections.emptyList(), d_domain.getNetworkMetaAnalyses());
 		NetworkMetaAnalysis anl = addNetworkMetaAnalysisToDomain();
 		assertEquals(Collections.singletonList(anl), d_domain.getNetworkMetaAnalyses());

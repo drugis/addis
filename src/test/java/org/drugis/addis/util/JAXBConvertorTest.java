@@ -717,7 +717,6 @@ public class JAXBConvertorTest {
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(new Study.StudyOutcomeMeasure<Variable>(ade)), om);
 		
 		PopulationCharacteristic pc = ExampleData.buildGenderVariable();
-		domain.getPopulationCharacteristics().add(pc);
 		om.setAdverseEvent(null);
 		om.setPopulationCharacteristic(nameReference(pc.getName()));
 		
@@ -1078,8 +1077,6 @@ public class JAXBConvertorTest {
 	public void testConvertStudy() throws ConversionException, DatatypeConfigurationException {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		domain.getEndpoints().add(ExampleData.buildEndpointCgi());
-		domain.getAdverseEvents().add(ExampleData.buildAdverseEventConvulsion());
 		
 		String name = "My fancy study";
 		org.drugis.addis.entities.data.Study study = buildStudy(name);
@@ -1152,8 +1149,6 @@ public class JAXBConvertorTest {
 	public void testConvertStudyWithNotes() throws ConversionException, DatatypeConfigurationException {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		domain.getEndpoints().add(ExampleData.buildEndpointCgi());
-		domain.getAdverseEvents().add(ExampleData.buildAdverseEventConvulsion());
 		
 		String name = "My fancy study";
 		org.drugis.addis.entities.data.Study studyData = buildStudy(name);
@@ -1447,7 +1442,6 @@ public class JAXBConvertorTest {
 	public void testConvertStudyBenefitRiskAnalysis() throws ConversionException, DatatypeConfigurationException {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		domain.getAdverseEvents().add(ExampleData.buildAdverseEventConvulsion());
 		domain.getAdverseEvents().add(ExampleData.buildAdverseEventDiarrhea());
 		
 		String name = "BR Analysis";
@@ -1511,8 +1505,6 @@ public class JAXBConvertorTest {
 	public void testConvertMetaBenefitRiskAnalysis() throws ConversionException, NullPointerException, IllegalArgumentException, EntityIdExistsException, DatatypeConfigurationException {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		domain.getAdverseEvents().add(ExampleData.buildAdverseEventConvulsion());
-		domain.getAdverseEvents().add(ExampleData.buildAdverseEventDiarrhea());
 		
 		String name = "Meta Benefit-Risk Analysis Test";
 		// create entities
@@ -1583,7 +1575,6 @@ public class JAXBConvertorTest {
 	public void testConvertBenefitRiskAnalyses() throws ConversionException, EntityIdExistsException, DatatypeConfigurationException {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		domain.getAdverseEvents().add(ExampleData.buildAdverseEventConvulsion());
 		domain.getAdverseEvents().add(ExampleData.buildAdverseEventDiarrhea());
 		
 		String name = "BR Analysis";

@@ -85,6 +85,9 @@ public class DomainImpl extends Domain {
 			if (element == null) {
 				throw new NullPointerException("Entity added to the Domain may not be null");
 			}
+			if (contains(element)) {
+				throw new EntityIdExistsException(element.getLabel());
+			}
 			super.add(index, element);
 		};
 		

@@ -32,8 +32,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.TreeSet;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
@@ -73,32 +74,29 @@ public class BenefitRiskWizardPMTest {
 		d_fluoxSet = new DrugSet(ExampleData.buildDrugFluoxetine());
 		d_paroxSet = new DrugSet(ExampleData.buildDrugParoxetine());
 		d_sertrSet = new DrugSet(ExampleData.buildDrugSertraline());
-
+		
+		d_domain.getStudies().remove(ExampleData.buildStudyChouinard());
+		d_domain.getStudies().add(d_study);
 		
 		d_domain.getMetaAnalyses().add(ExampleData.buildNetworkMetaAnalysisHamD());
 		d_domain.getMetaAnalyses().add(ExampleData.buildNetworkMetaAnalysisConvulsion());
 		d_domain.getMetaAnalyses().add(ExampleData.buildMetaAnalysisConv());
 		d_domain.getMetaAnalyses().add(ExampleData.buildMetaAnalysisHamd());
 		d_domain.getMetaAnalyses().add(ExampleData.buildNetworkMetaAnalysisCgi());
-		
-		d_domain.getStudies().add(d_study);
-	
+
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 	}
 	
 	@Test
-	public void testOutcomesListModelIncludesOutcomes() { // FIXME: should be on basis of analyses, not studies.
-		for (Indication indication : d_domain.getIndications()) {
-			TreeSet<OutcomeMeasure> expected = new TreeSet<OutcomeMeasure>();
-			/*
-			for (MetaAnalysis analysis : d_domain.getMetaAnalyses()) {
-				expected.add(analysis.getOutcomeMeasure());
-			}*/
-			for (Study s : d_domain.getStudies(indication)) 
-				expected.addAll(s.getOutcomeMeasures());
-			d_pm.getIndicationModel().setValue(indication);
-			assertAllAndOnly(expected, d_pm.getOutcomesListModel().getValue());
-		}
+	public void testOutcomesListModelIncludesOutcomes() {
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.Synthesis);
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		assertAllAndOnly(Arrays.asList(ExampleData.buildEndpointHamd(), ExampleData.buildEndpointCgi(),
+				ExampleData.buildAdverseEventConvulsion()), d_pm.getOutcomesListModel().getValue());
+		
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
+		assertAllAndOnly(Collections.singletonList(ExampleData.buildEndpointCVdeath()), d_pm.getOutcomesListModel().getValue());
+
 	}
 	
 	@Test
