@@ -95,33 +95,48 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		d_studies = studies;
 		d_om = om;	
 		
-		resetGraph();
+		drugsChanged();
 
-		ListDataListener listListener = new ListDataListener() {
+		ListDataListener drugsListener = new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {
-				resetGraph();
+				drugsChanged();
 			}
 			public void intervalAdded(ListDataEvent e) {
-				resetGraph();
+				drugsChanged();
 			}
 			public void contentsChanged(ListDataEvent e) {
-				resetGraph();
+				drugsChanged();
 			}
 		};
-		d_drugs.addListDataListener(listListener);
-		d_studies.addListDataListener(listListener);
+		ListDataListener studiesListener = new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+				studiesChanged();
+			}
+			public void intervalAdded(ListDataEvent e) {
+				studiesChanged();
+			}
+			public void contentsChanged(ListDataEvent e) {
+				studiesChanged();
+			}
+		};
+		d_drugs.addListDataListener(drugsListener);
+		d_studies.addListDataListener(studiesListener);
 	}
 	
-	public void resetGraph() {
-		ArrayList<Edge> edges = new ArrayList<Edge>(edgeSet());
+	public void drugsChanged() {
 		ArrayList<Vertex> verts = new ArrayList<Vertex>(vertexSet());
-
-		removeAllEdges(edges);
 		removeAllVertices(verts);
 
 		for (DrugSet d : d_drugs) {
 			addVertex(new Vertex(d, calculateSampleSize(d)));
 		}
+		
+		studiesChanged();
+	}
+
+	private void studiesChanged() {
+		ArrayList<Edge> edges = new ArrayList<Edge>(edgeSet());
+		removeAllEdges(edges);
 
 		for (int i = 0; i < (d_drugs.size() - 1); ++i) {
 			for (int j = i + 1; j < d_drugs.size(); ++j) {

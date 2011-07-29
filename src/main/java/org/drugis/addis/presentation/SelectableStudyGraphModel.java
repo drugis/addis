@@ -43,27 +43,43 @@ import com.jgoodies.binding.list.ObservableList;
 @SuppressWarnings("serial")
 public class SelectableStudyGraphModel extends StudyGraphModel {
 	
-	private ObservableList<DrugSet> d_selectedDrugs;
+	private ObservableList<DrugSet> d_selectedDrugs = new ArrayListModel<DrugSet>(d_drugs);
+	private ValueHolder<Boolean> d_complete = new ModifiableHolder<Boolean>(false);
 
 	public SelectableStudyGraphModel(ObservableList<Study> studies, ObservableList<DrugSet> drugs, ValueHolder<OutcomeMeasure> outcome) {
 		super(studies, drugs, outcome);
-		d_selectedDrugs = new ArrayListModel<DrugSet>(d_drugs);
-		d_drugs.addListDataListener(new ListDataListener() {
-			public void contentsChanged(ListDataEvent e) {
-				resetDrugs();
+		d_selectedDrugs.addListDataListener(new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+				updateComplete();
 			}
 			public void intervalAdded(ListDataEvent e) {
-				resetDrugs();
+				updateComplete();
 			}
-			public void intervalRemoved(ListDataEvent e) {
-				resetDrugs();
+			public void contentsChanged(ListDataEvent e) {
+				updateComplete();
 			}
-			private void resetDrugs() {
-				d_selectedDrugs.clear();
-				d_selectedDrugs.addAll(d_drugs);
-			}	
 		});
+		updateComplete();
 	}
+	
+	@Override
+	public void drugsChanged() {
+		super.drugsChanged();
+		
+		if (d_selectedDrugs != null) {
+			d_selectedDrugs.clear();
+			d_selectedDrugs.addAll(d_drugs);
+		}
+	}
+	
+	private void updateComplete() {
+		d_complete.setValue(getSelectedDrugsModel().size() > 1 && isSelectionConnected());
+	}
+	
+	public ValueHolder<Boolean> getSelectionCompleteModel() {
+		return d_complete;
+	}
+
 	public ObservableList<DrugSet> getSelectedDrugsModel() {
 		return d_selectedDrugs;
 	}

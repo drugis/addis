@@ -38,7 +38,6 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyGraphModel;
 import org.drugis.addis.presentation.StudyGraphModel;
@@ -55,7 +54,6 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<SelectableStudyGraphModel>{
-	private DrugSelectionCompleteListener d_connectedDrugsSelectedModel;
 	private StudyGraphModel d_selectedStudyGraph;
 	private ValueHolder<Boolean> d_studySelectionCompleteModel;
 
@@ -73,14 +71,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 				updateArmHolders();
 			}
 		});
-		getStudyGraphModel().addGraphListener(d_connectedDrugsSelectedModel);
-		getSelectedDrugsModel().addListDataListener(d_connectedDrugsSelectedModel);
 		d_studySelectionCompleteModel = new StudySelectionCompleteListener();
-	}
-
-	@Override
-	protected void buildDrugHolders() {
-		d_connectedDrugsSelectedModel = new DrugSelectionCompleteListener();
 	}
 
 	@Override
@@ -98,7 +89,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	}
 	
 	public ValueModel getConnectedDrugsSelectedModel() {
-		return d_connectedDrugsSelectedModel;
+		return getStudyGraphModel().getSelectionCompleteModel();
 	}
 	
 	public ValueHolder<Boolean> getStudySelectionCompleteModel() {
@@ -155,38 +146,6 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 			new ConnectivityInspector<Vertex, Edge>(getSelectedStudyGraphModel());
 		return inspectorGadget.isGraphConnected();
 	}
-	
-	@SuppressWarnings("serial")
-	private class DrugSelectionCompleteListener extends ModifiableHolder<Boolean> implements GraphListener<Vertex, Edge>, ListDataListener {
-		public DrugSelectionCompleteListener() {
-			setValue(false);
-		}
-		public void edgeAdded(GraphEdgeChangeEvent<Vertex, Edge> e) {
-			update();
-		}
-		public void edgeRemoved(GraphEdgeChangeEvent<Vertex, Edge> e) {
-			update();
-		}
-		public void vertexAdded(GraphVertexChangeEvent<Vertex> e) {
-			update();
-		}
-		public void vertexRemoved(GraphVertexChangeEvent<Vertex> e) {
-			update();
-		}
-		public void contentsChanged(ListDataEvent e) {
-			update();
-		}
-		public void intervalAdded(ListDataEvent e) {
-			update();
-		}
-		public void intervalRemoved(ListDataEvent e) {
-			update();
-		}
-
-		private void update() {
-			setValue(getSelectedDrugsModel().size() > 1 && d_studyGraphPresentationModel.isSelectionConnected());
-		}
-	}
 
 	@Override
 	public NetworkMetaAnalysis createMetaAnalysis(String name) {
@@ -212,5 +171,11 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 
 	public ObservableList<Study> getSelectedStudiesModel() {
 		return getStudyListModel().getSelectedStudiesModel();
+	}
+
+	@Override
+	protected void buildDrugHolders() {
+		// TODO Auto-generated method stub
+		
 	}
 }
