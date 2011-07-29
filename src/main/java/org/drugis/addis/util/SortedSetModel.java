@@ -11,7 +11,7 @@ import com.jgoodies.binding.list.ObservableList;
 
 public class SortedSetModel<E> extends AbstractList<E> implements ObservableList<E> {
 	private SortedSet<E> d_set = new TreeSet<E>();
-	private ListDataListenerManager d_listenerManager = new ListDataListenerManager();
+	private ListDataListenerManager d_listenerManager = new ListDataListenerManager(this);
 
 	public SortedSetModel() {
 	}
@@ -44,7 +44,7 @@ public class SortedSetModel<E> extends AbstractList<E> implements ObservableList
 		if (!d_set.contains(element)) {
 			d_set.add(element);
 			int idx = indexOf(element);
-			d_listenerManager.fireIntervalAdded(this, idx, idx);
+			d_listenerManager.fireIntervalAdded(idx, idx);
 		}
 	}
 
@@ -53,7 +53,7 @@ public class SortedSetModel<E> extends AbstractList<E> implements ObservableList
 		if (index >= 0 && index < size()) {
 			E e = get(index);
 			d_set.remove(e);
-			d_listenerManager.fireIntervalRemoved(this, index, index);
+			d_listenerManager.fireIntervalRemoved(index, index);
 			return e;
 		}
 		throw new IndexOutOfBoundsException();

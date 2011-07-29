@@ -44,6 +44,7 @@ import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.StudyGraphModel;
+import org.drugis.addis.util.ListDataEventProxy;
 import org.drugis.addis.util.ListDataListenerManager;
 
 import com.jgoodies.binding.list.ArrayListModel;
@@ -105,7 +106,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		ObservableList<DrugSet> d_list = new ArrayListModel<DrugSet>();
 		private ModifiableHolder<DrugSet> d_firstDrugHolder;
 		private ModifiableHolder<DrugSet> d_secondDrugHolder;
-		private ListDataListenerManager d_listenerManager = new ListDataListenerManager();
+		private ListDataListenerManager d_listenerManager = new ListDataEventProxy(this, d_list);
 
 
 		public SelectedDrugsHolder(ModifiableHolder<DrugSet> firstDrugHolder, ModifiableHolder<DrugSet> secondDrugHolder) {
@@ -139,21 +140,6 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 							d_list.set(d_list.size() - 1, (DrugSet) evt.getNewValue());
 						}
 					}
-				}
-			});
-			d_list.addListDataListener(new ListDataListener() {
-				public void intervalRemoved(ListDataEvent e) {
-					d_listenerManager.fireIntervalRemoved(SelectedDrugsHolder.this, e.getIndex0(), e.getIndex1());
-				}
-				
-				@Override
-				public void intervalAdded(ListDataEvent e) {
-					d_listenerManager.fireIntervalAdded(SelectedDrugsHolder.this, e.getIndex0(), e.getIndex1());
-				}
-				
-				@Override
-				public void contentsChanged(ListDataEvent e) {
-					d_listenerManager.fireContentsChanged(SelectedDrugsHolder.this, e.getIndex0(), e.getIndex1());
 				}
 			});
 		}

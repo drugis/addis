@@ -40,7 +40,6 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
 
-import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousVariableType;
@@ -76,7 +75,6 @@ public class DomainTreeModelTest {
 	private Study d_firstStudy;
 	private Drug d_firstDrug;
 	private RandomEffectsMetaAnalysis d_firstMetaAnalysis;
-	private NetworkMetaAnalysis d_networkAnalysis;
 	
 	@Before
 	public void setUp() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
@@ -97,8 +95,6 @@ public class DomainTreeModelTest {
 				
 		d_firstMetaAnalysis = new RandomEffectsMetaAnalysis("meta", d_firstEndpoint, 
 				Collections.singletonList((Study)d_firstStudy), new DrugSet(d_firstDrug), new DrugSet(d_firstDrug));
-		
-		d_networkAnalysis = ExampleData.buildNetworkMetaAnalysisHamD();
 		
 		d_firstPopChar = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		

@@ -3,6 +3,7 @@ package org.drugis.addis.entities;
 import java.util.Collection;
 
 public class EntityMissingDependenciesException extends RuntimeException {
+	private static final long serialVersionUID = 5277180215391051312L;
 	private Collection<Entity> d_dependencies;
 
 	public EntityMissingDependenciesException(Collection<Entity> dependencies) {
