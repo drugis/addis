@@ -26,16 +26,12 @@ package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.drugis.addis.entities.Drug;
-import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.StudyGraphModel.Edge;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
@@ -117,30 +113,5 @@ public class StudyGraph extends JPanel {
 		ImageExporter.writeImage(frame, d_jgraph, (int) getSize().getWidth(), (int) getSize().getHeight());
 		d_jgraph.setDoubleBuffered(true);
 		d_jgraph.setBackground(oldCol);
-	}
-	
-	public static class MutableDrugListHolder extends AbstractListHolder<Drug> {
-		private List<Drug> d_drugs;
-		
-		public MutableDrugListHolder(List<Drug> drugs) {
-			d_drugs = new ArrayList<Drug>(drugs);
-		}
-
-		@Override
-		public List<Drug> getValue() {
-			return d_drugs;
-		}
-		
-		@SuppressWarnings("unchecked")
-		@Override 
-		public void setValue(Object o) {
-			setValue((List<Drug>)o);
-		}
-		
-		public void setValue(List<Drug> drugs) {
-			List<Drug> oldValue = d_drugs;
-			d_drugs = new ArrayList<Drug>(drugs);
-			fireValueChange(oldValue, d_drugs);
-		}
 	}
 }
