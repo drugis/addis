@@ -584,12 +584,12 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testForNullPointersWhenSwitchingRateToContinuous() {
-		Study burke = ExampleData.buildStudyBurke();
-		d_domain.getStudies().add(burke);
 		d_domain.getDrugs().add(ExampleData.buildDrugCitalopram());
 		d_domain.getDrugs().add(ExampleData.buildDrugEscitalopram());
 		d_domain.getEndpoints().add(ExampleData.buildEndpointMadrs());
 		d_domain.getAdverseEvents().add(ExampleData.buildAdverseEventDiarrhea());
+		Study burke = ExampleData.buildStudyBurke();
+		d_domain.getStudies().add(burke);
 		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());

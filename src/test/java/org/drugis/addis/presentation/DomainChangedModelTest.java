@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.Study;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +42,11 @@ public class DomainChangedModelTest {
 	
 	@Test
 	public void testStudy() {
-		d_domain.getStudies().add(ExampleData.buildStudyBennie());
+		Indication i = ExampleData.buildIndicationDepression();
+		d_domain.getIndications().add(i);
+		assertTrue(d_model.getValue());
+		d_model.setValue(false);
+		d_domain.getStudies().add(new Study("heavy", i ));
 		assertTrue(d_model.getValue());
 	}
 	

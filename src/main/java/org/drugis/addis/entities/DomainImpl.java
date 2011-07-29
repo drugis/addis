@@ -26,6 +26,7 @@ package org.drugis.addis.entities;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -88,6 +89,8 @@ public class DomainImpl extends Domain {
 			if (contains(element)) {
 				throw new EntityIdExistsException(element.getLabel());
 			}
+			checkDependencies(element);
+		
 			super.add(index, element);
 		};
 		
@@ -236,6 +239,11 @@ public class DomainImpl extends Domain {
 		}
 	}
 	
+	/**
+	 * Checks whether an entity is being depended upon by other entities currently in the Domain.
+	 * @param d The entity to check for.
+	 * @throws DependentEntitiesException if the entity is being depended upon.
+	 */
 	private void checkDependents(Entity d) throws DependentEntitiesException {
 		Set<Entity> deps = getDependents(d);
 		if (!deps.isEmpty()) {
@@ -243,6 +251,24 @@ public class DomainImpl extends Domain {
 		}
 	}
 
+	/**
+	 * Checks whether an entity has unsatisfied dependencies.
+	 * @param d The entity to check for.
+	 * @throws EntityMissingDependenciesException if the entity has missing dependencies.
+	 */
+	private void checkDependencies(Entity d) throws EntityMissingDependenciesException {
+		List<Entity> unsatisfied = new ArrayList<Entity>();
+		for (Entity e : d.getDependencies()) {
+			EntityCategory c = getCategory(e);
+			if (!getCategoryContents(c).contains(e)) {
+					unsatisfied.add(e);
+			}
+		}
+		if (!unsatisfied.isEmpty()) {
+			throw new EntityMissingDependenciesException(unsatisfied);
+		}
+	}
+	
 	public boolean hasDependents(Entity entity) {
 		return !getDependents(entity).isEmpty();
 	}

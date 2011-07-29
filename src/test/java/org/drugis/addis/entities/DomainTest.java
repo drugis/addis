@@ -155,6 +155,8 @@ public class DomainTest {
 	public void testAddMetaBenefitRiskAnalysis() throws Exception {
 		MetaBenefitRiskAnalysis mbr = ExampleData.buildMetaBenefitRiskAnalysis();
 		ExampleData.initDefaultData(d_domain);
+		d_domain.getMetaAnalyses().add(ExampleData.buildMetaAnalysisHamd());
+		d_domain.getMetaAnalyses().add(ExampleData.buildMetaAnalysisConv());
 		d_domain.getBenefitRiskAnalyses().add(mbr);
 		assertTrue(d_domain.getBenefitRiskAnalyses().contains(mbr));
 		assertEntityEquals(mbr, d_domain.getBenefitRiskAnalyses().get(0));
@@ -164,6 +166,8 @@ public class DomainTest {
 	public void testDeleteMetaBenefitRiskAnalysis() throws DependentEntitiesException {
 		MetaBenefitRiskAnalysis mbr = ExampleData.buildMetaBenefitRiskAnalysis();
 		ExampleData.initDefaultData(d_domain);
+		d_domain.getMetaAnalyses().add(ExampleData.buildMetaAnalysisHamd());
+		d_domain.getMetaAnalyses().add(ExampleData.buildMetaAnalysisConv());
 		d_domain.getBenefitRiskAnalyses().add(mbr);
 		assertTrue(d_domain.getBenefitRiskAnalyses().contains(mbr));
 		assertEntityEquals(mbr, d_domain.getBenefitRiskAnalyses().get(0));
@@ -175,6 +179,7 @@ public class DomainTest {
 	@Test
 	public void testAddMetaAnalysis() throws Exception {
 		assertEquals(0, d_domain.getMetaAnalyses().size());
+		ExampleData.initDefaultData(d_domain);
 		RandomEffectsMetaAnalysis s = addMetaAnalysisToDomain();
 		
 		assertTrue(d_domain.getMetaAnalyses().contains(s));
@@ -246,7 +251,7 @@ public class DomainTest {
 	public void testGetStudiesByEndpoint() {
 		Endpoint e1 = new Endpoint("e1", Endpoint.convertVarType(Variable.Type.RATE));
 		Endpoint e2 = new Endpoint("e2", Endpoint.convertVarType(Variable.Type.RATE));
-		OutcomeMeasure e3 = new Endpoint("e3", Endpoint.convertVarType(Variable.Type.RATE));
+		Endpoint e3 = new Endpoint("e3", Endpoint.convertVarType(Variable.Type.RATE));
 		
 		List<Endpoint> l1 = new ArrayList<Endpoint>();
 		l1.add(e1);
@@ -268,6 +273,7 @@ public class DomainTest {
 		ObservableList<Study> e3Studies = d_domain.getStudies(e3);
 		
 		d_domain.getIndications().add(d_indication);
+		d_domain.getEndpoints().addAll(Arrays.asList(e1, e2, e3));
 		d_domain.getStudies().add(s1);
 		d_domain.getStudies().add(s2);
 
@@ -300,10 +306,11 @@ public class DomainTest {
 		s2.getEndpoints().clear();
 		s2.getEndpoints().addAll(Study.wrapVariables(l2));
 		
+		d_domain.getEndpoints().addAll(Arrays.asList(e1, e2));
 		d_domain.getStudies().add(s1);
 		d_domain.getStudies().add(s2);
 		
-		Indication i2 = new Indication(007L,"This indication does not exists.");
+		Indication i2 = new Indication(007L,"This indication does not exist.");
 		d_domain.getIndications().add(i2);
 		
 		ObservableList<Study> studies = d_domain.getStudies(i1);
@@ -355,6 +362,8 @@ public class DomainTest {
 		ObservableList<Study> d2Studies = d_domain.getStudies(d2);
 		ObservableList<Study> d3Studies = d_domain.getStudies(d3);		
 		
+		d_domain.getEndpoints().add(e);
+		d_domain.getDrugs().addAll(Arrays.asList(d1, d2, d3));
 		d_domain.getStudies().add(s1);
 		d_domain.getStudies().add(s2);
 		
@@ -395,6 +404,8 @@ public class DomainTest {
 		s2.setMeasurement(e, g3, m3);
 		
 		
+		d_domain.getEndpoints().add(e);
+		d_domain.getDrugs().addAll(Arrays.asList(d1, d2));
 		ObservableList<Study> studies = d_domain.getStudies();
 		
 		d_domain.getStudies().add(s1);
@@ -463,6 +474,7 @@ public class DomainTest {
 		s2.createAndAddArm("parox", 23, parox, new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY));
 		
 		d_domain.getIndications().add(d_indication);
+		d_domain.getDrugs().addAll(Arrays.asList(fluox, parox));
 		d_domain.getStudies().add(s1);
 		d_domain.getStudies().add(s2);
 		
@@ -646,6 +658,8 @@ public class DomainTest {
 		assertEquals(Collections.emptyList(), d_domain.getPairWiseMetaAnalyses());
 		PairWiseMetaAnalysis anl = addMetaAnalysisToDomain();
 		assertEquals(Collections.singletonList(anl), d_domain.getPairWiseMetaAnalyses());
+		d_domain.getAdverseEvents().add(ExampleData.buildAdverseEventSexualDysfunction());
+		d_domain.getStudies().add(ExampleData.buildStudyFava2002());
 		addNetworkMetaAnalysisToDomain();
 		assertEquals(Collections.singletonList(anl), d_domain.getPairWiseMetaAnalyses());
 	}
@@ -654,6 +668,8 @@ public class DomainTest {
 	public void testGetNetworkMetaAnalyses() throws Exception {
 		ExampleData.initDefaultData(d_domain);
 		assertEquals(Collections.emptyList(), d_domain.getNetworkMetaAnalyses());
+		d_domain.getAdverseEvents().add(ExampleData.buildAdverseEventSexualDysfunction());
+		d_domain.getStudies().add(ExampleData.buildStudyFava2002());
 		NetworkMetaAnalysis anl = addNetworkMetaAnalysisToDomain();
 		assertEquals(Collections.singletonList(anl), d_domain.getNetworkMetaAnalyses());
 		addMetaAnalysisToDomain();

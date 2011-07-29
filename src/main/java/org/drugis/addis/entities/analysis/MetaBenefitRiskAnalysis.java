@@ -55,6 +55,7 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.addis.mcmcmodel.BaselineMeanDifferenceModel;
 import org.drugis.addis.mcmcmodel.BaselineOddsModel;
+import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.comparator.AlphabeticalComparator;
 import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.drugis.common.threading.Task;
@@ -156,7 +157,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	public Set<? extends Entity> getDependencies() {
 		HashSet<Entity> dependencies = new HashSet<Entity>();
 		dependencies.add(d_indication);
-		dependencies.addAll(d_drugs);
+		dependencies.addAll(EntityUtil.flatten(d_drugs));
 		dependencies.addAll(d_metaAnalyses);
 		return dependencies;
 	}

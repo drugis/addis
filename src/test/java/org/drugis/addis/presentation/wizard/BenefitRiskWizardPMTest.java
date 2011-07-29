@@ -77,6 +77,8 @@ public class BenefitRiskWizardPMTest {
 		
 		d_domain.getStudies().remove(ExampleData.buildStudyChouinard());
 		d_domain.getStudies().add(d_study);
+		d_domain.getAdverseEvents().add(ExampleData.buildAdverseEventSexualDysfunction());
+		d_domain.getStudies().add(ExampleData.buildStudyFava2002());
 		
 		d_domain.getMetaAnalyses().add(ExampleData.buildNetworkMetaAnalysisHamD());
 		d_domain.getMetaAnalyses().add(ExampleData.buildNetworkMetaAnalysisConvulsion());
@@ -92,7 +94,8 @@ public class BenefitRiskWizardPMTest {
 		d_pm.getEvidenceTypeHolder().setValue(BRAType.Synthesis);
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		assertAllAndOnly(Arrays.asList(ExampleData.buildEndpointHamd(), ExampleData.buildEndpointCgi(),
-				ExampleData.buildAdverseEventConvulsion()), d_pm.getOutcomesListModel().getValue());
+				ExampleData.buildAdverseEventConvulsion(), ExampleData.buildAdverseEventSexualDysfunction()), 
+				d_pm.getOutcomesListModel().getValue());
 		
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
 		assertAllAndOnly(Collections.singletonList(ExampleData.buildEndpointCVdeath()), d_pm.getOutcomesListModel().getValue());

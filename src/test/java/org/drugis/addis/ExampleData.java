@@ -103,6 +103,7 @@ public class ExampleData {
 		domain.getIndications().add(buildIndicationDepression());
 		domain.getEndpoints().add(buildEndpointHamd());
 		domain.getEndpoints().add(buildEndpointCgi());
+		domain.getAdverseEvents().add(buildAdverseEventConvulsion());
 		//domain.addEndpoint(buildEndpointMadrs());
 		domain.getDrugs().add(buildDrugFluoxetine());
 		domain.getDrugs().add(buildDrugParoxetine());
@@ -125,7 +126,6 @@ public class ExampleData {
 		// unused stuff
 		domain.getPopulationCharacteristics().add(buildGenderVariable());
 		domain.getPopulationCharacteristics().add(buildAgeVariable());
-		domain.getAdverseEvents().add(buildAdverseEventConvulsion());
 	}
 
 	public static PopulationCharacteristic buildGenderVariable() {
@@ -680,7 +680,7 @@ public class ExampleData {
 		return study;
 	}
 	
-	private static AdverseEvent buildAdverseEventSexualDysfunction() {
+	public static AdverseEvent buildAdverseEventSexualDysfunction() {
 		if (s_sexdysf == null) {
 			s_sexdysf = new AdverseEvent("Sexual Dysfunction", AdverseEvent.convertVarType(Variable.Type.RATE));
 			s_sexdysf.setDescription("Rate");
