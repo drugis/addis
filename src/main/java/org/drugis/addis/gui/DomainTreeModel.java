@@ -47,26 +47,31 @@ public class DomainTreeModel implements TreeModel {
 	
 	private List<TreeModelListener> d_listeners;
 		
-	private class MyListDataListener implements ListDataListener {
+	private class CategoryListener implements ListDataListener {
+		private final EntityCategory d_category;
+
+		public CategoryListener(EntityCategory c) {
+			d_category = c;
+		}
+		
 		public void contentsChanged(ListDataEvent e) {
-			fireTreeStructureChanged();	
+			fireTreeStructureChanged(d_category);	
 		}
 
 		public void intervalAdded(ListDataEvent e) {
-			fireTreeStructureChanged();	
+			fireTreeStructureChanged(d_category);	
 		}
 
 		public void intervalRemoved(ListDataEvent e) {
-			fireTreeStructureChanged();	
+			fireTreeStructureChanged(d_category);	
 		}
 	}
 	
 	public DomainTreeModel(Domain domain) {
 		d_domain = domain;
 		
-		MyListDataListener l = new MyListDataListener();
 		for (EntityCategory c : d_domain.getCategories()) {
-			d_domain.getCategoryContents(c).addListDataListener(l);
+			d_domain.getCategoryContents(c).addListDataListener(new CategoryListener(c));
 		}
 		
 		d_listeners = new ArrayList<TreeModelListener>();
@@ -157,9 +162,9 @@ public class DomainTreeModel implements TreeModel {
 		d_listeners.remove(listener);
 	}
 
-	private void fireTreeStructureChanged() {
+	private void fireTreeStructureChanged(EntityCategory category) {
 		for (TreeModelListener l : d_listeners) {
-			l.treeStructureChanged(new TreeModelEvent(this, new Object[]{d_root}));
+			l.treeStructureChanged(new TreeModelEvent(this, new Object[]{d_root, category}));
 		}
 	}
 

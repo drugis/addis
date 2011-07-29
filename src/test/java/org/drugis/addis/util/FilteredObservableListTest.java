@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
 
 public class FilteredObservableListTest {
 	private ArrayListModel<String> d_inner;
@@ -214,5 +215,24 @@ public class FilteredObservableListTest {
 		});
 		assertEquals(Arrays.asList("Daan", "Jan", "Klaas"), d_outer);
 		verify(mock);
+	}
+	
+	@Test
+	public void testSublistUpdating() {
+		ObservableList<String> list = new SortedSetModel<String>(Arrays.asList("Aa", "Ab", "Ba", "Bb"));
+		ObservableList<String> aList = new FilteredObservableList<String>(list, new Filter<String>(){
+			public boolean accept(String obj) {
+				return obj.charAt(0) == 'A';
+			}});
+		ObservableList<String> bList = new FilteredObservableList<String>(list, new Filter<String>(){
+			public boolean accept(String obj) {
+				return obj.charAt(0) == 'B';
+			}});
+		assertEquals(Arrays.asList("Aa", "Ab"), aList);
+		assertEquals(Arrays.asList("Ba", "Bb"), bList);
+		
+		list.add("Ac");
+		assertEquals(Arrays.asList("Aa", "Ab", "Ac"), aList);
+		assertEquals(Arrays.asList("Ba", "Bb"), bList);
 	}
 }
